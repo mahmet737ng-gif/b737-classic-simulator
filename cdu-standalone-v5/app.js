@@ -7,7 +7,26 @@ function position(el,box){const [x1,y1,x2,y2]=box;Object.assign(el.style,{left:x
 function makeControls(){const click=$('clickmap');for(const c of map.controls){let el=document.createElement('button');el.type='button';el.className='hotspot '+c.shape;position(el,c.bbox_px);el.title=c.label+' — '+c.id;el.dataset.short=c.label;el.setAttribute('aria-label',c.label);let handled=false,timer;el.addEventListener('pointerdown',()=>{if(c.id.endsWith('KEY_CLR')){handled=false;timer=setTimeout(()=>{handled=true;core.press(state,pages,c.id,{longPress:true});update()},700)}});el.addEventListener('pointerup',()=>clearTimeout(timer));el.addEventListener('pointerleave',()=>clearTimeout(timer));el.addEventListener('pointercancel',()=>clearTimeout(timer));el.addEventListener('click',()=>{if(!handled){core.press(state,pages,c.id);update()}else handled=false});el.addEventListener('focus',()=>{if($('selected-code'))$('selected-code').textContent=JSON.stringify(c,null,2)});click.appendChild(el);byId[c.id]=el;}
  const outputs=$('annunciators');for(const a of map.outputs){const el=document.createElement('div');el.id=a.id;el.className='annunciator '+a.color+(a.label==='EXEC'?' exec':'');let b=a.sprite_bbox_px;position(el,b);if(a.illuminated_sprite){const pic=document.createElement('img');pic.className='light-glyph';pic.src=a.illuminated_sprite;el.appendChild(pic);}outputs.appendChild(el);byId[a.id]=el;}}
 function updateEHSI(){ if(window.EHSI_ENGINE) window.EHSI_ENGINE.renderToDom(state,core,$('ehsi-svg'),document); }
-function update(){const lines=core.render(state,pages);const box=$('fmc-lines');box.replaceChildren();for(let i=0;i<lines.length;i++){const d=document.createElement('div');d.className='fmc-line'+(i===0?' fmc-header':'')+(i===13?' scratch':'');d.textContent=lines[i]||' ';box.appendChild(d)}
+function update(){const lines=core.render(state,pages);const box=$('fmc-lines');box.replaceChildren();for(let i=0;i<lines.length;i++){
+  const d=document.createElement('div');
+  d.className='fmc-line'+(i===0?' fmc-header':'')+(i===13?' scratch':'');
+  d.textContent=lines[i]||' ';
+  // Anchors in native 1199×1312 coordinates. Each label uses the physical
+  // centre of its own LSK; values belong directly underneath that LSK.
+  const screenTop=1312*0.0765, screenHeight=1312*0.375;
+  let glyphTop;
+  if(i===0){glyphTop=117;}
+  else if(i===13){glyphTop=565;}
+  else {
+    const row=Math.floor((i-1)/2)+1;
+    const lsk=map.controls.find(c=>c.id==='CDU_CAPT_LSK_L'+row);
+    const cy=(lsk.bbox_px[1]+lsk.bbox_px[3])/2;
+    glyphTop=(i%2===1)?cy-13:cy+10;
+  }
+  d.style.top=((glyphTop-screenTop)/screenHeight*100)+'%';
+  d.dataset.displayRow=String(i);
+  box.appendChild(d);
+}
  box.style.opacity=state.brightness;
  const all=core.lights(state);for(const [l,on] of Object.entries(all)){const el=byId['CDU_CAPT_'+l+'_LIGHT'];if(el)el.classList.toggle('on',on)}
  $('page-now').textContent=state.page;$('scratch-now').textContent=state.message||state.scratch||'—';$('pending-now').textContent=core.pendingCount(state);$('key-now').textContent=state.lastKey;

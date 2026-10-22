@@ -1,0 +1,33 @@
+const assert=require('assert');
+const fs=require('fs'),path=require('path');
+const root=path.resolve(__dirname,'..');
+const map=JSON.parse(fs.readFileSync(path.join(root,'data/cdu-map.json'),'utf8'));
+const app=fs.readFileSync(path.join(root,'app.js'),'utf8');
+const css=fs.readFileSync(path.join(root,'style.css'),'utf8');
+const js=fs.readFileSync(path.join(root,'engine/cdu-engine.js'),'utf8');
+const pages=JSON.parse(fs.readFileSync(path.join(root,'data/page-definitions.json'),'utf8')).pages;
+const core=require(path.join(root,'engine/cdu-engine.js'));
+assert(map.controls.length===70);
+for(let n=1;n<=6;n++){
+ const ls=map.controls.find(x=>x.id==='CDU_CAPT_LSK_L'+n);
+ const rs=map.controls.find(x=>x.id==='CDU_CAPT_LSK_R'+n);
+ assert(ls&&rs,'LSK positions must exist');
+ assert(Math.abs((ls.bbox_px[1]+ls.bbox_px[3])/2-(rs.bbox_px[1]+rs.bbox_px[3])/2)<=1);
+ assert(app.includes("'CDU_CAPT_LSK_L'+row"));
+}
+const exec=map.outputs.find(x=>x.id==='CDU_CAPT_EXEC_LIGHT');
+assert.deepStrictEqual(exec.sprite_bbox_px,[793,695,880,739]);
+assert(fs.statSync(path.join(root,'assets/exec-off-plate.png')).size>500);
+assert(css.includes('#CDU_CAPT_EXEC_LIGHT.on{opacity:0!important}'));
+assert(css.includes('height:37.5%!important'));
+const s=core.makeState('RTE');
+for(const c of 'OIII')core.press(s,pages,'CDU_CAPT_KEY_'+c);
+core.press(s,pages,'CDU_CAPT_LSK_L1');
+for(const c of 'OIMM')core.press(s,pages,'CDU_CAPT_KEY_'+c);
+core.press(s,pages,'CDU_CAPT_LSK_R1');
+assert.equal(core.lights(s).EXEC,false,'EXEC must stay off during pre-activation route entry');
+core.press(s,pages,'CDU_CAPT_LSK_L5');
+assert.equal(core.lights(s).EXEC,true,'EXEC must illuminate after activate');
+core.press(s,pages,'CDU_CAPT_EXEC');
+assert.equal(core.lights(s).EXEC,false,'EXEC must be off after commit');
+console.log('PASS v5.1: six LSK anchored rows, EXEC plate, and route EXEC state');

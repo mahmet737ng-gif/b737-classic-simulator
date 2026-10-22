@@ -1662,25 +1662,27 @@
       "label": "EXEC",
       "side": "BELOW_DISPLAY",
       "center_px": [
-        813,
-        707
+        836,
+        717
       ],
       "rect_px": [
-        780,
-        698,
-        846,
-        717
+        793,
+        695,
+        880,
+        739
       ],
       "color": "white",
       "condition": "active_FMC_data_modified_not_executed",
       "fcom_folio": "11.10.6",
       "sprite_bbox_px": [
-        780,
-        698,
-        846,
-        717
+        793,
+        695,
+        880,
+        739
       ],
-      "condition_source": "FCOM 11.10.6"
+      "condition_source": "FCOM 11.10.6",
+      "off_state_plate": "assets/exec-off-plate.png",
+      "display_logic": "off plate covers permanent source-image lit bar; when pending, reveal original centered strip"
     }
   ],
   "status": "USER_REPORTED_HOTSPOT_CORRECTIONS_PENDING_IN_BROWSER_SIGNOFF",
@@ -1690,5 +1692,6 @@
     "Actual FCOM brightness BRT control is rotary, differs from approved DIM BRT key graphic.",
     "Simulator-injected CALL, FAIL, OFST test triggers do not claim true FMC simulation."
   ],
-  "version": "2.0"
+  "version": "2.0",
+  "revision": "5.1-hotfix"
 }
