@@ -633,6 +633,19 @@ for(const [action,value] of [['sampleLow','LOW'],['sampleNormal','NORMAL'],['sam
   document.querySelector('[data-action="'+action+'"]').addEventListener('click',
     ()=>apply('SET_SENSOR_SAMPLE',{sensor:selectedSensor(),value}));
 }
+document.querySelectorAll('[data-eis-action]').forEach(b=>b.addEventListener('click',()=>{
+const a=b.dataset.eisAction, engine=el('eisEngine').value, instrument=el('eisKey').value;
+const raw=el('eisValue').value, value=raw===''?null:Number(raw);
+if(a==='cold')apply('ENTER_COLD_DARK');
+else if(a==='observe'){
+ if(instrument==='n2Pct')apply('SET_ENGINE_N2',{engine,value});
+ else if(instrument==='egtC')apply('SET_ENGINE_EGT_C',{engine,value});
+ else apply('SET_ENGINE_INDICATION',{engine,instrument,value});
+}else if(a==='signal')apply('SET_INSTRUMENT_SIGNAL',{engine,instrument,value:el('eisSignal').value});
+else if(a==='used')apply('PUSH_FUEL_USED',{engine});
+else if(a==='resetUsed')apply('RESET_FUEL_USED',{engine});
+else if(a==='tick2')apply('ADVANCE_SECONDS',{value:2});
+}));
 document.querySelectorAll('[data-checklist-action]').forEach(button=>
   button.addEventListener('click',()=>{
     const action=button.dataset.checklistAction;
