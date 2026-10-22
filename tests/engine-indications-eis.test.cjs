@@ -62,5 +62,26 @@ assert.throws(()=>go(s,'SET_ENGINE_INDICATION',{engine:1,instrument:'oilQtyPct',
 assert.throws(()=>go(s,'SET_ENGINE_INDICATION',{engine:1,instrument:'typo',value:12}),TypeError);
 const commands=[{type:'ENTER_COLD_DARK'},{type:'SET_ENGINE_INDICATION',engine:1,instrument:'n1Pct',value:50}];
 assert.deepEqual(replay(start,commands),replay(start,commands));
+// Source §7.10.4: a single push/pull MAN SET N1 knob drives reference
+// bug only; it must not change measured N1 or Autothrottle commands.
+let manual=go(go(start,'ENTER_COLD_DARK').state,'SET_N1_FMC_REFERENCE',
+  {engine:1,value:93.5});
+assert.equal(e(manual.view,'1').n1Reference.bugTargetPct,93.5);
+assert.equal(e(manual.view,'2').n1Reference.bugTargetPct,null);
+assert.equal(e(manual.view,'1').n1Reference.manualSetReadout,null);
+manual=go(manual.state,'SET_N1_MANUAL_REFERENCE',{value:96.2});
+assert.equal(e(manual.view,'1').n1Reference.manualSetReadout,null);
+manual=go(manual.state,'SET_N1_REFERENCE_MODE',{value:'MANUAL'});
+assert.equal(e(manual.view,'1').n1Reference.bugTargetPct,96.2);
+assert.equal(e(manual.view,'2').n1Reference.bugTargetPct,96.2);
+assert.equal(e(manual.view,'1').n1Reference.manualSetReadout,96.2);
+assert.equal(e(manual.view,'1').n1Reference.autothrottleOverride,false);
+assert.equal(e(manual.view,'1').primary.n1Pct.display,'NO_DATA');
+manual=go(manual.state,'SET_N1_REFERENCE_MODE',{value:'FMC'});
+assert.equal(e(manual.view,'1').n1Reference.bugTargetPct,93.5);
+assert.equal(e(manual.view,'2').n1Reference.bugTargetPct,null);
+assert.equal(e(manual.view,'1').n1Reference.manualSetReadout,null);
+assert.throws(()=>go(manual.state,'SET_N1_MANUAL_REFERENCE',{value:130}),TypeError);
+assert.throws(()=>go(manual.state,'SET_N1_REFERENCE_MODE',{value:'WRONG'}),TypeError);
 assert.equal(start.propulsion.mode,'LEGACY_FIXTURE');
 console.log('ISN-09 EIS source limits, instrument failure, oil, FF/FU and replay PASS');
