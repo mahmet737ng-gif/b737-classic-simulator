@@ -25,6 +25,10 @@ const {evaluateEngineFireDetection}=require('./fire-detection-pilot.cjs');
 const {projectAnnunciation,compareAnnunciation}=
   require('./annunciation-output-engine.cjs');
 
+const {initPropulsion,synchronizedInputs,evaluatePropulsion,
+  applyPropulsionAction,PROPULSION_COMMANDS}=
+  require('./engine-apu-integration.cjs');
+
 const clone = x => JSON.parse(JSON.stringify(x));
 const bool = (v,n) => {if(typeof v !== 'boolean') throw new TypeError(n+' must be boolean');};
 const pick = (v,allowed,name) => {
@@ -64,6 +68,7 @@ function initialAircraftState() {
       }
     },
     sensors:initialSensorConfig(),
+    propulsion:initPropulsion(),
     fire:{selector:'NORMAL',acknowledged:false,
       loops:{A:{healthy:true,overheat:false,fire:false},
         B:{healthy:true,overheat:false,fire:false}}},
@@ -75,15 +80,17 @@ function initialAircraftState() {
 function deriveAircraftState(snapshot) {
   if(!snapshot || snapshot.schema!=='b737cl-integration-kernel-v0.1')
     throw new TypeError('B737CL integration state required');
-  const electrical=evaluateElectricalPower(snapshot.electrical);
-  const preliminary=evaluatePumpNetwork(electrical,snapshot.pumps);
-  const pressurePhysics=derivePressureDistribution(electrical,preliminary,snapshot.pumps);
-  const physicalNetwork=bindPressureSensors(preliminary,pressurePhysics,snapshot.pumps);
+  const modeled=synchronizedInputs(snapshot);
+  const electrical=evaluateElectricalPower(modeled.electrical);
+  const preliminary=evaluatePumpNetwork(electrical,modeled.pumps);
+  const pressurePhysics=derivePressureDistribution(electrical,preliminary,modeled.pumps);
+  const physicalNetwork=bindPressureSensors(preliminary,pressurePhysics,modeled.pumps);
   const observed=applySystemValveInhibit(
     bindSensorSignals(physicalNetwork,pressurePhysics,snapshot.sensors),
-    snapshot.pumps);
+    modeled.pumps);
   const network=observed.network;
   const electricalFeeders=evaluateAllFeeders(electrical);
+  const propulsion=evaluatePropulsion(snapshot.propulsion,electrical,pressurePhysics,modeled.pumps);
   const fireDetection=evaluateEngineFireDetection({
     selector:snapshot.fire.selector,
     power:electrical.fireDetectionPower,
@@ -106,7 +113,7 @@ function deriveAircraftState(snapshot) {
   const annunciation=projectAnnunciation(announInput,fireDetection);
   return {step:snapshot.step,electrical,electricalFeeders,pressurePhysics,
     pumps:network,sensors:observed.sensors,warnings,warningCauses:causes,
-    fireDetection,annunciation,
+    fireDetection,annunciation,propulsion,
     sourceModel:'FCOM_REFERENCED_PRESSURE_AND_FEEDER_V0.2_PILOT'};
 }
 
@@ -121,6 +128,8 @@ function transitionAircraftState(previous,action) {
   const side=()=>pick(p.system,HYD_IDS,'system');
   switch(p.type) {
     case 'SET_GENERATOR_AVAILABLE':
+      if(state.propulsion?.mode==='INTEGRATED'&&p.generator!=='EXT')
+        throw new Error('Integrated engine/APU authority owns GEN availability');
       pick(p.generator,['GEN1','GEN2','APU','EXT'],'generator');
       validateBoolean();one(e.available,p.generator,p.value);break;
     case 'SET_GENERATOR_SOURCE':
@@ -154,6 +163,8 @@ function transitionAircraftState(previous,action) {
     case 'SET_HYD_ELECTRIC_HEALTH':
       side();validateBoolean();h.electricHealthy[p.system]=p.value;break;
     case 'SET_ENGINE_RUNNING':
+      if(state.propulsion?.mode==='INTEGRATED')
+        throw new Error('Engine-driven hydraulic pump follows engine state in integrated mode');
       side();validateBoolean();h.engineDriven[p.system].engineRunning=p.value;break;
     case 'SET_ENGINE_HYD_SWITCH':
       side();validateBoolean();h.engineDriven[p.system].switchOn=p.value;break;
@@ -174,6 +185,15 @@ function transitionAircraftState(previous,action) {
     case 'SET_SENSOR_SETTLING':
       validateSensorId(p.sensor);validateBoolean();
       state.sensors[p.sensor].settling=p.value;break;
+    case 'ENTER_COLD_DARK':
+      state.propulsion=initPropulsion();
+      state.propulsion.mode='INTEGRATED';
+      e.phase='GROUND';
+      e.available.GEN1=false;e.available.GEN2=false;e.available.APU=false;
+      e.selected.bus1='GEN1';e.selected.bus2='GEN2';
+      for(const pump of FUEL_IDS)f.switches[pump]=false;
+      for(const system of HYD_IDS)h.electricSwitches[system]=false;
+      break;
     case 'SET_FIRE_LOOP':
       pick(p.loop,['A','B'],'loop');
       pick(p.field,['healthy','overheat','fire'],'field');
@@ -187,7 +207,22 @@ function transitionAircraftState(previous,action) {
     case 'ACK_MASTER_CAUTION':break;
     case 'SET_WARNING_RECALL':
       validateBoolean();state.warning.recallPressed=p.value;break;
-    default:throw new TypeError('Unknown action '+String(p.type));
+    default:
+      if(PROPULSION_COMMANDS.has(p.type))
+        applyPropulsionAction(state.propulsion,p,{
+          electrical:before.electrical,
+          propulsion:before.propulsion,
+          fuelAtInlet:state.pumps.fuel.fuelAtInlet
+        });
+      else throw new TypeError('Unknown action '+String(p.type));
+      break;
+  }
+  // FCOM §7.30.2 ground battery-switch OFF shuts down the APU.
+  if(state.propulsion?.mode==='INTEGRATED'&&e.phase==='GROUND'&&
+     !e.batterySwitchOn&&state.propulsion.apu.phase!=='OFF'){
+    state.propulsion.apu.phase='OFF';
+    state.propulsion.apu.bleedSwitchOn=false;
+    state.propulsion.apu.switch='OFF';
   }
   let afterNoLatch=deriveAircraftState(state);
   // Fire cutout remains until fire condition clears or a fresh detector
@@ -236,6 +271,12 @@ function transitionAircraftState(previous,action) {
     sensorChanges,
     sensorSignalChanges:compareSensorSignals(before.sensors,after.sensors),
     annunciationChanges:compareAnnunciation(before.annunciation,after.annunciation),
+    propulsionChanges:before.propulsion.mode==='INTEGRATED'||after.propulsion.mode==='INTEGRATED'?
+      {apu:{from:before.propulsion.apu?.phase||'NONE',to:after.propulsion.apu?.phase||'NONE'},
+       engines:Object.fromEntries(['1','2'].map(id=>[id,{
+         from:before.propulsion.engines?.[id]?.status||'LEGACY',
+         to:after.propulsion.engines?.[id]?.status||'LEGACY'
+       }]))}:null,
     activatedWarnings:after.warnings.causeIds.filter(x=>!before.warnings.causeIds.includes(x)),
     clearedWarnings:before.warnings.causeIds.filter(x=>!after.warnings.causeIds.includes(x)),
     masterCautionBefore:before.warnings.masterCaution.logicalDemand,
