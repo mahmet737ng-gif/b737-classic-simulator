@@ -63,3 +63,14 @@ main{grid-template-columns:minmax(0,1fr) 360px;align-items:start}
 .fmc-line.scratch{font-size:inherit!important;color:#f4f4f4}
 #CDU_CAPT_EXEC_LIGHT,#CDU_CAPT_EXEC_LIGHT.on{box-sizing:border-box!important;border:0!important;border-radius:0!important;transform:none!important;box-shadow:none!important;background:transparent url('assets/exec-off-plate.png') no-repeat center center!important;background-size:100% 100%!important;opacity:1!important;transition:opacity .10s ease-out!important}
 #CDU_CAPT_EXEC_LIGHT.on{opacity:0!important}
+
+
+/* v5.2 right-LSK aligned FMC text rendering */
+.fmc-header{position:absolute!important;left:2.7%!important;right:2.7%!important;width:94.6%!important;height:4.9%!important;display:block!important;white-space:nowrap!important}
+.fmc-header-title{position:absolute;left:0;top:0;right:18%;text-align:left;white-space:pre;overflow:hidden}
+.fmc-header-count{position:absolute;right:0;top:0;text-align:right;white-space:pre}
+.fmc-pairline{position:absolute!important;left:2.7%!important;right:2.7%!important;width:94.6%!important;height:4.9%!important;display:block!important}
+.fmc-pairline .fmc-left,.fmc-pairline .fmc-right{position:absolute;top:0;white-space:pre;overflow:hidden;text-overflow:clip;font:inherit;line-height:inherit;color:inherit}
+.fmc-pairline .fmc-left{left:0;width:47.5%;text-align:left}
+.fmc-pairline .fmc-right{right:0;width:47.5%;text-align:right}
+.fmc-pairline .fmc-left.full{width:100%}

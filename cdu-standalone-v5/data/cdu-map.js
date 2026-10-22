@@ -15,14 +15,14 @@ window.CDU_MAP = {
       "id": "CDU_CAPT_LSK_L1",
       "label": "L1",
       "bbox_px": [
-        154,
-        144,
-        217,
-        191
+        143,
+        148,
+        212,
+        204
       ],
       "center_px": [
-        185,
-        167
+        178,
+        176
       ],
       "panel": "PEDESTAL",
       "assembly": "CDU_CAPT",
@@ -30,21 +30,21 @@ window.CDU_MAP = {
       "shape": "rounded-rect",
       "mechanics": "momentary",
       "fcom_folio": "11.10.3-11.10.7",
-      "qa": "V2_SOURCE_PIXEL_REVIEW_PENDING_USER_SIGNOFF",
-      "note": " V2: bbox placed inside photograph key face (not bezel)."
+      "qa": "V5_2_PHOTOGRAPH_BOUNDARY",
+      "note": "V5.2 button contour from approved 1199x1312 photograph; awaiting user pixel QA."
     },
     {
       "id": "CDU_CAPT_LSK_L2",
       "label": "L2",
       "bbox_px": [
-        154,
-        219,
-        217,
-        266
+        143,
+        222,
+        211,
+        278
       ],
       "center_px": [
-        185,
-        242
+        177,
+        250
       ],
       "panel": "PEDESTAL",
       "assembly": "CDU_CAPT",
@@ -52,21 +52,21 @@ window.CDU_MAP = {
       "shape": "rounded-rect",
       "mechanics": "momentary",
       "fcom_folio": "11.10.3-11.10.7",
-      "qa": "V2_SOURCE_PIXEL_REVIEW_PENDING_USER_SIGNOFF",
-      "note": " V2: bbox placed inside photograph key face (not bezel)."
+      "qa": "V5_2_PHOTOGRAPH_BOUNDARY",
+      "note": "V5.2 button contour from approved 1199x1312 photograph; awaiting user pixel QA."
     },
     {
       "id": "CDU_CAPT_LSK_L3",
       "label": "L3",
       "bbox_px": [
-        154,
-        293,
-        217,
-        340
+        143,
+        298,
+        211,
+        353
       ],
       "center_px": [
-        185,
-        316
+        177,
+        326
       ],
       "panel": "PEDESTAL",
       "assembly": "CDU_CAPT",
@@ -74,21 +74,21 @@ window.CDU_MAP = {
       "shape": "rounded-rect",
       "mechanics": "momentary",
       "fcom_folio": "11.10.3-11.10.7",
-      "qa": "V2_SOURCE_PIXEL_REVIEW_PENDING_USER_SIGNOFF",
-      "note": " V2: bbox placed inside photograph key face (not bezel)."
+      "qa": "V5_2_PHOTOGRAPH_BOUNDARY",
+      "note": "V5.2 button contour from approved 1199x1312 photograph; awaiting user pixel QA."
     },
     {
       "id": "CDU_CAPT_LSK_L4",
       "label": "L4",
       "bbox_px": [
-        154,
-        368,
-        217,
-        415
+        143,
+        373,
+        211,
+        428
       ],
       "center_px": [
-        185,
-        391
+        177,
+        400
       ],
       "panel": "PEDESTAL",
       "assembly": "CDU_CAPT",
@@ -96,21 +96,21 @@ window.CDU_MAP = {
       "shape": "rounded-rect",
       "mechanics": "momentary",
       "fcom_folio": "11.10.3-11.10.7",
-      "qa": "V2_SOURCE_PIXEL_REVIEW_PENDING_USER_SIGNOFF",
-      "note": " V2: bbox placed inside photograph key face (not bezel)."
+      "qa": "V5_2_PHOTOGRAPH_BOUNDARY",
+      "note": "V5.2 button contour from approved 1199x1312 photograph; awaiting user pixel QA."
     },
     {
       "id": "CDU_CAPT_LSK_L5",
       "label": "L5",
       "bbox_px": [
-        154,
-        443,
-        217,
-        490
+        143,
+        449,
+        211,
+        504
       ],
       "center_px": [
-        185,
-        466
+        177,
+        476
       ],
       "panel": "PEDESTAL",
       "assembly": "CDU_CAPT",
@@ -118,21 +118,21 @@ window.CDU_MAP = {
       "shape": "rounded-rect",
       "mechanics": "momentary",
       "fcom_folio": "11.10.3-11.10.7",
-      "qa": "V2_SOURCE_PIXEL_REVIEW_PENDING_USER_SIGNOFF",
-      "note": " V2: bbox placed inside photograph key face (not bezel)."
+      "qa": "V5_2_PHOTOGRAPH_BOUNDARY",
+      "note": "V5.2 button contour from approved 1199x1312 photograph; awaiting user pixel QA."
     },
     {
       "id": "CDU_CAPT_LSK_L6",
       "label": "L6",
       "bbox_px": [
-        154,
-        518,
-        217,
-        565
+        143,
+        524,
+        211,
+        579
       ],
       "center_px": [
-        185,
-        541
+        177,
+        552
       ],
       "panel": "PEDESTAL",
       "assembly": "CDU_CAPT",
@@ -140,21 +140,21 @@ window.CDU_MAP = {
       "shape": "rounded-rect",
       "mechanics": "momentary",
       "fcom_folio": "11.10.3-11.10.7",
-      "qa": "V2_SOURCE_PIXEL_REVIEW_PENDING_USER_SIGNOFF",
-      "note": " V2: bbox placed inside photograph key face (not bezel)."
+      "qa": "V5_2_PHOTOGRAPH_BOUNDARY",
+      "note": "V5.2 button contour from approved 1199x1312 photograph; awaiting user pixel QA."
     },
     {
       "id": "CDU_CAPT_LSK_R1",
       "label": "R1",
       "bbox_px": [
-        870,
-        144,
-        933,
-        191
+        881,
+        148,
+        952,
+        204
       ],
       "center_px": [
-        901,
-        167
+        916,
+        176
       ],
       "panel": "PEDESTAL",
       "assembly": "CDU_CAPT",
@@ -162,21 +162,21 @@ window.CDU_MAP = {
       "shape": "rounded-rect",
       "mechanics": "momentary",
       "fcom_folio": "11.10.3-11.10.7",
-      "qa": "V2_SOURCE_PIXEL_REVIEW_PENDING_USER_SIGNOFF",
-      "note": " V2: bbox placed inside photograph key face (not bezel)."
+      "qa": "V5_2_PHOTOGRAPH_BOUNDARY",
+      "note": "V5.2 button contour from approved 1199x1312 photograph; awaiting user pixel QA."
     },
     {
       "id": "CDU_CAPT_LSK_R2",
       "label": "R2",
       "bbox_px": [
-        870,
-        219,
-        933,
-        266
+        881,
+        222,
+        951,
+        278
       ],
       "center_px": [
-        901,
-        242
+        916,
+        250
       ],
       "panel": "PEDESTAL",
       "assembly": "CDU_CAPT",
@@ -184,21 +184,21 @@ window.CDU_MAP = {
       "shape": "rounded-rect",
       "mechanics": "momentary",
       "fcom_folio": "11.10.3-11.10.7",
-      "qa": "V2_SOURCE_PIXEL_REVIEW_PENDING_USER_SIGNOFF",
-      "note": " V2: bbox placed inside photograph key face (not bezel)."
+      "qa": "V5_2_PHOTOGRAPH_BOUNDARY",
+      "note": "V5.2 button contour from approved 1199x1312 photograph; awaiting user pixel QA."
     },
     {
       "id": "CDU_CAPT_LSK_R3",
       "label": "R3",
       "bbox_px": [
-        870,
-        293,
-        933,
-        340
+        881,
+        298,
+        951,
+        353
       ],
       "center_px": [
-        901,
-        316
+        916,
+        326
       ],
       "panel": "PEDESTAL",
       "assembly": "CDU_CAPT",
@@ -206,21 +206,21 @@ window.CDU_MAP = {
       "shape": "rounded-rect",
       "mechanics": "momentary",
       "fcom_folio": "11.10.3-11.10.7",
-      "qa": "V2_SOURCE_PIXEL_REVIEW_PENDING_USER_SIGNOFF",
-      "note": " V2: bbox placed inside photograph key face (not bezel)."
+      "qa": "V5_2_PHOTOGRAPH_BOUNDARY",
+      "note": "V5.2 button contour from approved 1199x1312 photograph; awaiting user pixel QA."
     },
     {
       "id": "CDU_CAPT_LSK_R4",
       "label": "R4",
       "bbox_px": [
-        870,
-        368,
-        933,
-        415
+        882,
+        373,
+        951,
+        428
       ],
       "center_px": [
-        901,
-        391
+        916,
+        400
       ],
       "panel": "PEDESTAL",
       "assembly": "CDU_CAPT",
@@ -228,21 +228,21 @@ window.CDU_MAP = {
       "shape": "rounded-rect",
       "mechanics": "momentary",
       "fcom_folio": "11.10.3-11.10.7",
-      "qa": "V2_SOURCE_PIXEL_REVIEW_PENDING_USER_SIGNOFF",
-      "note": " V2: bbox placed inside photograph key face (not bezel)."
+      "qa": "V5_2_PHOTOGRAPH_BOUNDARY",
+      "note": "V5.2 button contour from approved 1199x1312 photograph; awaiting user pixel QA."
     },
     {
       "id": "CDU_CAPT_LSK_R5",
       "label": "R5",
       "bbox_px": [
-        870,
-        443,
-        933,
-        490
+        881,
+        449,
+        951,
+        504
       ],
       "center_px": [
-        901,
-        466
+        916,
+        476
       ],
       "panel": "PEDESTAL",
       "assembly": "CDU_CAPT",
@@ -250,21 +250,21 @@ window.CDU_MAP = {
       "shape": "rounded-rect",
       "mechanics": "momentary",
       "fcom_folio": "11.10.3-11.10.7",
-      "qa": "V2_SOURCE_PIXEL_REVIEW_PENDING_USER_SIGNOFF",
-      "note": " V2: bbox placed inside photograph key face (not bezel)."
+      "qa": "V5_2_PHOTOGRAPH_BOUNDARY",
+      "note": "V5.2 button contour from approved 1199x1312 photograph; awaiting user pixel QA."
     },
     {
       "id": "CDU_CAPT_LSK_R6",
       "label": "R6",
       "bbox_px": [
-        870,
-        518,
-        933,
-        565
+        881,
+        524,
+        951,
+        579
       ],
       "center_px": [
-        901,
-        541
+        916,
+        552
       ],
       "panel": "PEDESTAL",
       "assembly": "CDU_CAPT",
@@ -272,8 +272,8 @@ window.CDU_MAP = {
       "shape": "rounded-rect",
       "mechanics": "momentary",
       "fcom_folio": "11.10.3-11.10.7",
-      "qa": "V2_SOURCE_PIXEL_REVIEW_PENDING_USER_SIGNOFF",
-      "note": " V2: bbox placed inside photograph key face (not bezel)."
+      "qa": "V5_2_PHOTOGRAPH_BOUNDARY",
+      "note": "V5.2 button contour from approved 1199x1312 photograph; awaiting user pixel QA."
     },
     {
       "id": "CDU_CAPT_INIT_REF",
@@ -1203,14 +1203,14 @@ window.CDU_MAP = {
       "id": "CDU_CAPT_KEY_1",
       "label": "1",
       "bbox_px": [
-        212,
-        953,
-        261,
-        1002
+        207,
+        954,
+        268,
+        1015
       ],
       "center_px": [
         237,
-        978
+        984
       ],
       "panel": "PEDESTAL",
       "assembly": "CDU_CAPT",
@@ -1218,21 +1218,21 @@ window.CDU_MAP = {
       "shape": "circle",
       "mechanics": "momentary",
       "fcom_folio": "11.10.7",
-      "qa": "FIRST_PASS_PIXEL_ALIGNED_PENDING_HUMAN_SIGNOFF",
-      "note": ""
+      "qa": "V5_2_PIXEL_CONTOUR_REVIEWED",
+      "note": "V5.2: bbox tightened to detected button face contour."
     },
     {
       "id": "CDU_CAPT_KEY_2",
       "label": "2",
       "bbox_px": [
-        289,
-        953,
-        338,
-        1002
+        284,
+        954,
+        346,
+        1015
       ],
       "center_px": [
-        314,
-        978
+        315,
+        984
       ],
       "panel": "PEDESTAL",
       "assembly": "CDU_CAPT",
@@ -1240,21 +1240,21 @@ window.CDU_MAP = {
       "shape": "circle",
       "mechanics": "momentary",
       "fcom_folio": "11.10.7",
-      "qa": "FIRST_PASS_PIXEL_ALIGNED_PENDING_HUMAN_SIGNOFF",
-      "note": ""
+      "qa": "V5_2_PIXEL_CONTOUR_REVIEWED",
+      "note": "V5.2: bbox tightened to detected button face contour."
     },
     {
       "id": "CDU_CAPT_KEY_3",
       "label": "3",
       "bbox_px": [
-        363,
-        953,
-        412,
-        1002
+        361,
+        954,
+        423,
+        1016
       ],
       "center_px": [
-        388,
-        978
+        392,
+        985
       ],
       "panel": "PEDESTAL",
       "assembly": "CDU_CAPT",
@@ -1262,21 +1262,21 @@ window.CDU_MAP = {
       "shape": "circle",
       "mechanics": "momentary",
       "fcom_folio": "11.10.7",
-      "qa": "FIRST_PASS_PIXEL_ALIGNED_PENDING_HUMAN_SIGNOFF",
-      "note": ""
+      "qa": "V5_2_PIXEL_CONTOUR_REVIEWED",
+      "note": "V5.2: bbox tightened to detected button face contour."
     },
     {
       "id": "CDU_CAPT_KEY_4",
       "label": "4",
       "bbox_px": [
-        212,
-        1020,
-        261,
-        1069
+        206,
+        1023,
+        268,
+        1084
       ],
       "center_px": [
         237,
-        1045
+        1053
       ],
       "panel": "PEDESTAL",
       "assembly": "CDU_CAPT",
@@ -1284,21 +1284,21 @@ window.CDU_MAP = {
       "shape": "circle",
       "mechanics": "momentary",
       "fcom_folio": "11.10.7",
-      "qa": "FIRST_PASS_PIXEL_ALIGNED_PENDING_HUMAN_SIGNOFF",
-      "note": ""
+      "qa": "V5_2_PIXEL_CONTOUR_REVIEWED",
+      "note": "V5.2: bbox tightened to detected button face contour."
     },
     {
       "id": "CDU_CAPT_KEY_5",
       "label": "5",
       "bbox_px": [
-        289,
-        1020,
-        338,
-        1069
+        284,
+        1023,
+        346,
+        1085
       ],
       "center_px": [
-        314,
-        1045
+        315,
+        1054
       ],
       "panel": "PEDESTAL",
       "assembly": "CDU_CAPT",
@@ -1306,21 +1306,21 @@ window.CDU_MAP = {
       "shape": "circle",
       "mechanics": "momentary",
       "fcom_folio": "11.10.7",
-      "qa": "FIRST_PASS_PIXEL_ALIGNED_PENDING_HUMAN_SIGNOFF",
-      "note": ""
+      "qa": "V5_2_PIXEL_CONTOUR_REVIEWED",
+      "note": "V5.2: bbox tightened to detected button face contour."
     },
     {
       "id": "CDU_CAPT_KEY_6",
       "label": "6",
       "bbox_px": [
-        363,
-        1020,
-        412,
-        1069
+        361,
+        1023,
+        422,
+        1084
       ],
       "center_px": [
-        388,
-        1045
+        391,
+        1053
       ],
       "panel": "PEDESTAL",
       "assembly": "CDU_CAPT",
@@ -1328,21 +1328,21 @@ window.CDU_MAP = {
       "shape": "circle",
       "mechanics": "momentary",
       "fcom_folio": "11.10.7",
-      "qa": "FIRST_PASS_PIXEL_ALIGNED_PENDING_HUMAN_SIGNOFF",
-      "note": ""
+      "qa": "V5_2_PIXEL_CONTOUR_REVIEWED",
+      "note": "V5.2: bbox tightened to detected button face contour."
     },
     {
       "id": "CDU_CAPT_KEY_7",
       "label": "7",
       "bbox_px": [
-        212,
-        1087,
-        261,
-        1136
+        206,
+        1092,
+        268,
+        1153
       ],
       "center_px": [
         237,
-        1112
+        1122
       ],
       "panel": "PEDESTAL",
       "assembly": "CDU_CAPT",
@@ -1350,21 +1350,21 @@ window.CDU_MAP = {
       "shape": "circle",
       "mechanics": "momentary",
       "fcom_folio": "11.10.7",
-      "qa": "FIRST_PASS_PIXEL_ALIGNED_PENDING_HUMAN_SIGNOFF",
-      "note": ""
+      "qa": "V5_2_PIXEL_CONTOUR_REVIEWED",
+      "note": "V5.2: bbox tightened to detected button face contour."
     },
     {
       "id": "CDU_CAPT_KEY_8",
       "label": "8",
       "bbox_px": [
-        289,
-        1087,
-        338,
-        1136
+        284,
+        1092,
+        346,
+        1154
       ],
       "center_px": [
-        314,
-        1112
+        315,
+        1123
       ],
       "panel": "PEDESTAL",
       "assembly": "CDU_CAPT",
@@ -1372,21 +1372,21 @@ window.CDU_MAP = {
       "shape": "circle",
       "mechanics": "momentary",
       "fcom_folio": "11.10.7",
-      "qa": "FIRST_PASS_PIXEL_ALIGNED_PENDING_HUMAN_SIGNOFF",
-      "note": ""
+      "qa": "V5_2_PIXEL_CONTOUR_REVIEWED",
+      "note": "V5.2: bbox tightened to detected button face contour."
     },
     {
       "id": "CDU_CAPT_KEY_9",
       "label": "9",
       "bbox_px": [
-        363,
-        1087,
-        412,
-        1136
+        361,
+        1092,
+        423,
+        1154
       ],
       "center_px": [
-        388,
-        1112
+        392,
+        1123
       ],
       "panel": "PEDESTAL",
       "assembly": "CDU_CAPT",
@@ -1394,21 +1394,21 @@ window.CDU_MAP = {
       "shape": "circle",
       "mechanics": "momentary",
       "fcom_folio": "11.10.7",
-      "qa": "FIRST_PASS_PIXEL_ALIGNED_PENDING_HUMAN_SIGNOFF",
-      "note": ""
+      "qa": "V5_2_PIXEL_CONTOUR_REVIEWED",
+      "note": "V5.2: bbox tightened to detected button face contour."
     },
     {
       "id": "CDU_CAPT_KEY_DOT",
       "label": ".",
       "bbox_px": [
-        212,
-        1155,
-        261,
-        1204
+        206,
+        1160,
+        268,
+        1222
       ],
       "center_px": [
         237,
-        1180
+        1191
       ],
       "panel": "PEDESTAL",
       "assembly": "CDU_CAPT",
@@ -1416,21 +1416,21 @@ window.CDU_MAP = {
       "shape": "circle",
       "mechanics": "momentary",
       "fcom_folio": "11.10.7",
-      "qa": "FIRST_PASS_PIXEL_ALIGNED_PENDING_HUMAN_SIGNOFF",
-      "note": ""
+      "qa": "V5_2_PIXEL_CONTOUR_REVIEWED",
+      "note": "V5.2: bbox tightened to detected button face contour."
     },
     {
       "id": "CDU_CAPT_KEY_0",
       "label": "0",
       "bbox_px": [
-        289,
-        1155,
-        338,
-        1204
+        284,
+        1161,
+        346,
+        1223
       ],
       "center_px": [
-        314,
-        1180
+        315,
+        1192
       ],
       "panel": "PEDESTAL",
       "assembly": "CDU_CAPT",
@@ -1438,21 +1438,21 @@ window.CDU_MAP = {
       "shape": "circle",
       "mechanics": "momentary",
       "fcom_folio": "11.10.7",
-      "qa": "FIRST_PASS_PIXEL_ALIGNED_PENDING_HUMAN_SIGNOFF",
-      "note": ""
+      "qa": "V5_2_PIXEL_CONTOUR_REVIEWED",
+      "note": "V5.2: bbox tightened to detected button face contour."
     },
     {
       "id": "CDU_CAPT_KEY_PLUS_MINUS",
       "label": "+/-",
       "bbox_px": [
-        363,
-        1155,
-        412,
-        1204
+        361,
+        1161,
+        423,
+        1222
       ],
       "center_px": [
-        388,
-        1180
+        392,
+        1191
       ],
       "panel": "PEDESTAL",
       "assembly": "CDU_CAPT",
@@ -1460,8 +1460,8 @@ window.CDU_MAP = {
       "shape": "circle",
       "mechanics": "momentary",
       "fcom_folio": "11.10.7",
-      "qa": "FIRST_PASS_PIXEL_ALIGNED_PENDING_HUMAN_SIGNOFF",
-      "note": ""
+      "qa": "V5_2_PIXEL_CONTOUR_REVIEWED",
+      "note": "V5.2: bbox tightened to detected button face contour."
     },
     {
       "id": "CDU_CAPT_KEY_SP",
@@ -1693,5 +1693,5 @@ window.CDU_MAP = {
     "Simulator-injected CALL, FAIL, OFST test triggers do not claim true FMC simulation."
   ],
   "version": "2.0",
-  "revision": "5.1-hotfix"
+  "revision": "5.2-hotfix"
 };
