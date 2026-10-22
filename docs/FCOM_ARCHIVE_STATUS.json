@@ -1,0 +1,19 @@
+{
+  "schema": "B737CL-FCOM-archive-status-v1",
+  "source": "Sepehran Airlines 737 Classic FCOM",
+  "document_id": "D6-27370-300/400/500-SHI",
+  "source_sha256": "44e1989cc0481200e8475ae270b38645e90eafc3de46296989c4bce18881ae39",
+  "source_pages": 1937,
+  "pages_with_extracted_text": 1937,
+  "page_json": 1937,
+  "page_png": 1937,
+  "page_svg": 1937,
+  "table_candidates_csv": 1829,
+  "unique_embedded_image_assets": 968,
+  "image_placements": 1067,
+  "sqlite_fts5": true,
+  "source_archive_status": "complete extraction into private user Library; full source corpus NOT publicly distributed",
+  "verification": "1937/1937 machine checked; table cell semantics and all embedded figure cropping still require manual QA",
+  "toolkit": "tools/fcom-archive",
+  "notice": "Source document is Boeing Proprietary / Export Controlled. Public repo holds tools and non-proprietary status metadata only."
+}
