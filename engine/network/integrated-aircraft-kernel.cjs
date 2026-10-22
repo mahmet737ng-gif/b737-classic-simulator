@@ -6,6 +6,10 @@
  * caution flags. Fixed test-fixture configuration only, not a flight model.
  */
 const {evaluateElectricalPower}=require('./electrical-power-pilot.cjs');
+const {evaluateAllFeeders,compareElectricalTransitions}=
+  require('./electrical-feeder-audit.v0.2.cjs');
+const {derivePressureDistribution,bindPressureSensors,comparePressureTransitions}=
+  require('./pressure-distribution.v0.2.cjs');
 const {FUEL_IDS,HYD_IDS,evaluatePumpNetwork,evaluateWarningCauses,
   projectWarnings}=require('./pump-sensor-warning-engine.cjs');
 
@@ -56,11 +60,15 @@ function deriveAircraftState(snapshot) {
   if(!snapshot || snapshot.schema!=='b737cl-integration-kernel-v0.1')
     throw new TypeError('B737CL integration state required');
   const electrical=evaluateElectricalPower(snapshot.electrical);
-  const network=evaluatePumpNetwork(electrical,snapshot.pumps);
+  const preliminary=evaluatePumpNetwork(electrical,snapshot.pumps);
+  const pressurePhysics=derivePressureDistribution(electrical,preliminary,snapshot.pumps);
+  const network=bindPressureSensors(preliminary,pressurePhysics,snapshot.pumps);
+  const electricalFeeders=evaluateAllFeeders(electrical);
   const causes=evaluateWarningCauses(network);
   const warnings=projectWarnings(network,causes,electrical,snapshot.warning);
-  return {step:snapshot.step,electrical,pumps:network,warnings,
-    warningCauses:causes,sourceModel:'FCOM_REFERENCED_PARTIAL_PILOT'};
+  return {step:snapshot.step,electrical,electricalFeeders,pressurePhysics,
+    pumps:network,warnings,warningCauses:causes,
+    sourceModel:'FCOM_REFERENCED_PRESSURE_AND_FEEDER_V0.2_PILOT'};
 }
 
 /** Atomic source/switch/fault input transition and cause-latch update. */
@@ -153,6 +161,8 @@ function transitionAircraftState(previous,action) {
   }
   return {state,view:after,event:{
     sequence:state.step,action:clone(action),
+    electricalChanges:compareElectricalTransitions(before.electrical,after.electrical),
+    pressureChanges:comparePressureTransitions(before.pressurePhysics,after.pressurePhysics),
     sensorChanges,
     activatedWarnings:after.warnings.causeIds.filter(x=>!before.warnings.causeIds.includes(x)),
     clearedWarnings:before.warnings.causeIds.filter(x=>!after.warnings.causeIds.includes(x)),
