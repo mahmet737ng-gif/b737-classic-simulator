@@ -114,3 +114,16 @@ Next: validate the prototype independently, reconcile graph edges with aircraft 
 | ENG-035 Full cross-system aircraft kernel | NOT STARTED | Isolated pure-function outputs are not yet connected to live cockpit, CDU/EHSI, fuel/hydraulic actuators, master warning or flight dynamics. |
 
 Companion report: `docs/ELECTRICAL_INTEGRATION_TEST_01.md`. **Do not merge or deploy to main without separate review**; main may contain newer CDU/EHSI/AFM files that must not be overwritten.
+
+## 2026-10-23 — Coupled Electrical → Fuel/Hydraulic Pumps → Sensors → Warnings (branch pilot #02)
+
+| Task | Status | Evidence / guardrails |
+| --- | --- | --- |
+| ENG-036 Fuel AC pump consumer interface | DONE (TEST PILOT) | `engine/network/pump-sensor-warning-engine.cjs`; 6 pump channels, source case gating §6.20.18-19 (pp1167-68), switches/sensor lamps §12.10.2–3 (pp1826–1827). Nominal fluid/pressure assumptions labeled, not physical engine model. |
+| ENG-037 Hydraulic A/B electric pump consumer interface | DONE (TEST PILOT) | §13.10.1,13.10.4,13.20.2–3 (pp1842/1845/1847–48); source-specific pump output sensor, engine-driven independence, conditional combined system pressure and fire-switch inhibition. No numerical PSI. |
+| ENG-038 Fuel/Flt Cont warning cause engine | DONE (TEST PILOT) | §12.10.2–3 + §15.20.2–4 (pp1906–08); main single-pump recall, main dual-low caution, center low with switch logic, FLT CONT/HYD system-pressure caution, master caution ACK & new-fault re-arm. Exact annunciator bus/power provisional. |
+| ENG-039 Deterministic command/replay integration | DONE (TEST PILOT) | `engine/network/integrated-aircraft-kernel.cjs` + `tests/pump-warning-network.test.cjs`. Atomic input events, sensor changes, warning transitions, recovery, invalid input rejection. Not cockpit command system. |
+| ENG-040 Browser network demo using same runtime | DONE (ISOLATED PREVIEW CODE) | `power-consumers-lab/index.html`, generated `runtime.js`, `tools/build-power-consumers-lab.cjs`, `tests/power-consumers-browser.test.cjs`; runtime parity verified in Node VM, **real browser visual E2E not verified**. No deployment to Pages. |
+| ENG-041 Power/pressure system full model | NOT COMPLETE | Need contactor event engine, real AC feeder mapping/WDM, pump sensor independent faults, timing/cavitation/leak/PSI, full FUEL/HYD warning power and source QA, panel/CDU integration, browser QA. |
+
+Full case walkthrough and exact FCOM source references: `docs/POWER_PUMPS_WARNINGS_INTEGRATION.md`. Keep `main` and deployed UI untouched pending approval. The AFM/FCTM/QRH/WBM/FPPM corpus remains in private Library, not in public GitHub.
