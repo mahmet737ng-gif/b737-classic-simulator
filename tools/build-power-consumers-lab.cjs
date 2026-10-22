@@ -12,6 +12,7 @@ const modules=[
  ['sensorEngine','sensor-failure-engine.cjs'],
  ['firePilot','fire-detection-pilot.cjs'],
  ['annunciator','annunciation-output-engine.cjs'],
+ ['propulsionEngine','engine-apu-integration.cjs'],
  ['kernel','integrated-aircraft-kernel.cjs']
 ];
 function makeBrowserRuntime(){
@@ -26,6 +27,7 @@ function makeBrowserRuntime(){
  "if(p==='./sensor-failure-engine.cjs')return sensorEngine;"+
  "if(p==='./fire-detection-pilot.cjs')return firePilot;"+
  "if(p==='./annunciation-output-engine.cjs')return annunciator;"+
+ "if(p==='./engine-apu-integration.cjs')return propulsionEngine;"+
  "throw new Error('Unknown browser module '+p);};";
  return "(function(){'use strict';\n"+bodies.map(([name,body])=>
    'const '+name+'=(function(){const module={exports:{}};const exports=module.exports;'+
