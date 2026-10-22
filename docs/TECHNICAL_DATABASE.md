@@ -23,3 +23,17 @@ The MRG original full-page scanned JPEG preserves every table, schematic and ill
 ## AFM / cross-system provenance
 
 Private source: `/Technical Database/Sources/AFM-737-33V-D6-8730-R32/`. Original PDF and complete native extraction MUST remain private. Each consumer (FMC performance, engines, fuel, AFDS, avionics, braking, warning, CDL) should use `AFM-73733V-D6-8730.33V-R32-20180214` plus physical PDF page, original printed folio, airplane serial/effectivity, engine rating, appendix, units and validation status. The original PDF remains the authority for all scanned performance graphs. Do not blindly convert OCR chart numbers into FMC tables or overwrite aircraft configuration defaults without explicit QA. Appendix 43 affects ASN 29339 subject to SB 737-71-1884. Public repository has only registry/status, no Boeing source PDF or full-page reproductions.
+
+## Additional operational and performance manuals (2026-10-23)
+
+The **private** Technical Database in user Library now includes the following three separately indexed sources. **Original manuals, their complete texts, figure layouts, and SQLite databases must not be published in this public repo**.
+
+| Source ID | Type | PDF pages | Applicability | Ingestion QA |
+|---|---|---:|---|---|
+| `QRH-SEPEHRAN-D6-27370-3-500-SEP-20161216` | QRH | 584 | Airline-specific 737 Classic; confirm effectivity for each procedure | All pages text/layout indexed; checklist state machines pending verification |
+| `WBM-GECAP-D043A530-GEF1-R21-20151218` | Weight & Balance | 282 | GE Capital 737-300; specific serial/configuration, not generic | All pages indexed; 93 table **candidates**; limits, cells, and charts not yet validated |
+| `FPPM-737400-CFM56-3-22K-D632A004-KG404-R8-20120727` | Flight Planning/Performance | 174 | 737-400 CFM56-3 22K, CAT A/B brakes, FAA, 20K derate option | All pages indexed; 84 table **candidates**; chart data not validated |
+
+Private base location: `/Technical Database/Sources/<source_id>/`. Each folder contains `ORIGINAL_SOURCE.pdf`, `PRIVATE_FULL_ARCHIVE.zip`, `SEARCHABLE_FULL_TEXT.txt`, `TECHNICAL_INDEX.sqlite`, `TOPIC_MAP.jsonl`, `STRUCTURED_CANDIDATES.jsonl`, `QA_BACKLOG.json` and `manifest.json`. Unified private search: `/Technical Database/B737_QRH_WBM_FPPM_SEARCH_DATABASE_PRIVATE.sqlite`. Registry: `/Technical Database/SOURCE_REGISTRY.json`, which also includes the existing AFM, FCOM, MRG and two FCTM sources.
+
+All **1,040 new PDF pages** are machine-archived with provenance and full-text search; **zero** pages have human semantic sign-off. Candidate table parsing and keyword topic tags are **not approved simulator rules**. Do not apply WBM 737-300 load limits or FPPM 22K engine performance to a different aircraft/serial/rating. Flight safety, applicability, primary approved AFM and configured FCOM/QRH precedence must be maintained.
