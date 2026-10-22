@@ -42,6 +42,28 @@ for(const action of actions){
 }
 assert.deepEqual(snap(browser.replayAircraftActions(initialBrowser,actions).view),
  snap(source.replayAircraftActions(initialSource,actions).view));
+// Assert browser and Node use exactly the same Cold/Dark -> APU -> source transitions.
+const startActions=[
+  {type:'ENTER_COLD_DARK'},
+  {type:'SET_APU_SWITCH',value:'START'},
+  {type:'SET_APU_INLET_OPEN',value:true},
+  {type:'CONFIRM_APU_READY'},
+  {type:'SET_GENERATOR_SOURCE',bus:'bus1',value:'APU'},
+  {type:'SET_GENERATOR_SOURCE',bus:'bus2',value:'APU'},
+  {type:'SET_APU_BLEED',value:true},
+  {type:'SET_DUCT_PSI',value:35},
+  {type:'SET_FUEL_PUMP_SWITCH',pump:'MAIN2_AFT',value:true},
+  {type:'SET_ENGINE_START_SWITCH',engine:2,value:'GRD'},
+  {type:'SET_ENGINE_N1_ROTATION',engine:2,value:true},
+  {type:'SET_ENGINE_N2',engine:2,value:25},
+  {type:'SET_ENGINE_START_LEVER',engine:2,value:'IDLE'},
+  {type:'CONFIRM_ENGINE_LIGHTOFF',engine:2},
+  {type:'SET_ENGINE_N2',engine:2,value:46},
+  {type:'CONFIRM_ENGINE_IDLE',engine:2},
+  {type:'SET_GENERATOR_SOURCE',bus:'bus2',value:'GEN2'}
+];
+assert.deepEqual(snap(browser.replayAircraftActions(browser.initialAircraftState(),startActions)),
+ snap(source.replayAircraftActions(source.initialAircraftState(),startActions)));
 const html=fs.readFileSync(path.join(root,'power-consumers-lab/index.html'),'utf8');
 assert.match(html,/<script src="\.\/runtime\.js"><\/script>/);
 assert.match(html,/data-scenario="gen1"/);
@@ -54,6 +76,13 @@ assert.match(html,/data-action="sampleDrop"/);
 assert.match(html,/data-fireloop="A"/);
 assert.match(html,/data-fireloop="B"/);
 assert.match(html,/data-action="fireAck"/);
+assert.match(html,/data-powertrain="cold"/);
+assert.match(html,/data-powertrain="apuStart"/);
+assert.match(html,/data-powertrain="apuGen"/);
+assert.match(html,/data-powertrain="lightoff"/);
+assert.match(html,/data-powertrain="stable"/);
+assert.match(html,/id="powertrainStatus"/);
+
 assert.match(html,/data-action="enableAudio"/);
 assert.match(html,/id="annunciatorLamps"/);
 assert.match(html,/<script src="\.\.\/audio\/policy\/phrase-selector-v4\.js"><\/script>/);
