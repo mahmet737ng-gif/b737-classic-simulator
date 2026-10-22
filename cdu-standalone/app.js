@@ -2,10 +2,15 @@
 const $=id=>document.getElementById(id);
 const byId = Object.create(null);
 const LOG=[];
-const sim={mode:'standalone',page:'CRZ',subpage:1,scratch:'',message:'',call:false,fail:false,offset:false,brightness:1,active:{ORIGIN:'KSEA',DEST:'KJFK',FLIGHT:'DAL123',CI:'25',CRZ_ALT:'FL350',CRZ_SPEED:'.780',WPT1:'SEA',WPT2:'BKE',POS:'KSEA',OFFSET:'',N1:'97.0'},pending:{},last:'—'};
+const sim={mode:'standalone',page:'CRZ',subpage:1,scratch:'',message:'',call:false,fail:false,offset:false,brightness:1,active:{ORIGIN:'KSEA',DEST:'KJFK',FLIGHT:'DAL123',CI:'25',CRZ_ALT:'FL350',CRZ_SPEED:'.780',WPT1:'SEA',WPT2:'BKE',POS:'KSEA',OFFSET:'',N1:''},n1:{phase:'TAKEOFF',pmcMode:'UNKNOWN',pressureAltitudeFt:null,oatC:null,tatC:null,mach:null,iasKts:null,bleedMode:null,antiIceMode:null},pending:{},last:'—'};
 function v(k){return Object.hasOwn(sim.pending,k)?sim.pending[k]:sim.active[k]||''}
 function pendingCount(){return Object.keys(sim.pending).length}
 function left(a='',b=''){let x=String(a).slice(0,24),y=String(b).slice(0,24);return (x+' '.repeat(Math.max(1,24-x.length-y.length))+y).slice(0,24)}
+function epfsiN1(){
+ const factory=window.EPFSI_N1_ENGINE;
+ if(!factory)return {display:'---.-',calculated:false,canDriveAutothrottle:false,source:null,reason:'SOURCE_ENGINE_NOT_LOADED'};
+ return factory.cduAdapter({registration:'EP-FSI',serial:29340,engine:'CFM56-3B-1',ratingLbf:20000,...sim.n1});
+}
 function pageLines(){const mode=pendingCount()?'MOD':'ACT',a=Array(14).fill('');let p=sim.page;
  if(p==='CRZ'){
  a[0]=left(mode+' ECON CRZ','1/1');a[1]=left('CRZ ALT','OPT/MAX');a[2]=left(v('CRZ_ALT'),'FL340/361');a[3]=left('TGT SPD','TO T/D');a[4]=left(v('CRZ_SPEED'),'2004.5Z/100NM');a[5]=left('TURB N1','ACTUAL WIND');a[6]=left('87.3/ 87.3%','129/ 14');a[7]='FUEL AT KATL';a[8]='         12.5';a[10]='------------------------';a[11]=left('','ENG OUT>');a[13]=left('<LRC','RTA>');
@@ -16,7 +21,7 @@ function pageLines(){const mode=pendingCount()?'MOD':'ACT',a=Array(14).fill('');
  }else if(p==='INDEX'){
  a[0]=left('INIT/REF INDEX','1/1');a[2]=left('<IDENT','POS INIT>');a[4]=left('<RTE','PERF INIT>');a[6]=left('<TAKEOFF','N1 LIMIT>');a[8]=left('<APPROACH','');a[13]=left('<MENU','');
  }else if(p==='IDENT'){
- a[0]=left('IDENT','1/1');a[2]=left('MODEL','ENG RATING');a[3]=left('B737-500','CFM56-3');a[5]=left('NAV DATA','ACTIVE');a[6]=left('DEMO ONLY','TRAINER');a[13]=left('<INDEX','POS INIT>');
+ a[0]=left('IDENT','1/1');a[2]=left('MODEL','ENG RATING');a[3]=left('B737-300','3B-1/20K');a[5]=left('NAV DATA','ACTIVE');a[6]=left('DEMO ONLY','TRAINER');a[13]=left('<INDEX','POS INIT>');
  }else if(p==='POS_INIT'){
  a[0]=left('POS INIT','1/2');a[2]=left('LAST POS','');a[3]=left('N 00 00.0','');a[5]=left('REF AIRPORT','');a[6]=left(v('POS'),'');a[8]=left('SET IRS POS','');a[9]=left('TRAINING ONLY','');a[13]=left('<INDEX','RTE>');
  }else if(p==='LEGS'){
@@ -32,9 +37,18 @@ function pageLines(){const mode=pendingCount()?'MOD':'ACT',a=Array(14).fill('');
  }else if(p==='FIX'){
  a[0]=left('FIX INFO','1/1');a[2]=left('FIX','RAD/DIS');a[3]=left(v('WPT1'),'---/---');a[13]=left('<LEGS','');
  }else if(p==='N1_LIMIT'){
- a[0]=left('N1 LIMIT','1/1');a[2]=left('TO','CLB');a[3]=left(v('N1')+'%','94.0%');a[5]=left('ASSUMED TEMP','');a[6]=left('--- C','');a[13]=left('<INDEX','TAKEOFF>');
+ const n=epfsiN1();
+ a[0]=left('N1 LIMIT','1/1');
+ a[2]=left('TO N1','ENGINE');
+ a[3]=left(v('N1')?v('N1')+'% MAN':n.display,'3B-1 / 20K');
+ a[4]=left('PMC','AFM PAGE');
+ a[5]=left(sim.n1.pmcMode,n.source?'PDF '+n.source.pdfPage:'---');
+ a[7]=left('AFM AUTO N1','---.-');
+ a[8]=left('SOURCE','NOT VERIFIED');
+ a[10]=left('MANUAL N1','TRAINING ONLY');
+ a[13]=left('<INDEX','TAKEOFF>');
  }else if(p==='TAKEOFF'){
- a[0]=left('TAKEOFF REF','1/1');a[2]=left('FLAPS','V1');a[3]=left('5','---');a[4]=left('VR','V2');a[5]=left('---','---');a[7]=left('RUNWAY','');a[8]=left('---','');a[13]=left('<INDEX','');
+ a[0]=left('TAKEOFF REF','1/1');a[2]=left('FLAPS','V1');a[3]=left('5','---');a[4]=left('VR','V2');a[5]=left('---','---');a[7]=left('RUNWAY','N1 REF');a[8]=left('---',v('N1')?v('N1')+' MAN':'---.-');a[10]=left('AFM N1','NOT VERIFIED');a[13]=left('<INDEX','');
  }else if(p==='PERF_INIT'){
  a[0]=left('PERF INIT','1/1');a[2]=left('GR WT','FUEL');a[3]=left('---.-','---.-');a[4]=left('COST INDEX','CRZ ALT');a[5]=left(v('CI'),v('CRZ_ALT'));a[13]=left('<INDEX','N1 LIMIT>');
  }else{a[0]=left(p,'1/1');a[13]=left('<INDEX','');}
@@ -44,7 +58,7 @@ function pageLines(){const mode=pendingCount()?'MOD':'ACT',a=Array(14).fill('');
 function setMessage(message){sim.message=message;render()}
 function writeScratch(t){if(sim.scratch==='DELETE')sim.scratch='';if(sim.scratch.length<28)sim.scratch+=t;sim.message='';render()}
 function pressClr(all=false){if(sim.message){sim.message='';sim.scratch=''}else if(all){sim.scratch=''}else{sim.scratch=sim.scratch.slice(0,-1)}render()}
-function validate(field,value){if(field==='ORIGIN'||field==='DEST'||field==='POS')return /^[A-Z]{4}$/.test(value);if(field==='CI')return /^\d{1,3}$/.test(value);if(field==='CRZ_ALT')return /^(FL\d{2,3}|\d{3,5})$/.test(value);if(field==='CRZ_SPEED')return /^\.?\d{2,3}$/.test(value);if(field==='OFFSET')return /^(L|R)\d{1,2}(\.\d)?$/.test(value);if(field==='WPT1'||field==='WPT2')return /^[A-Z0-9]{2,7}$/.test(value);return value.length>0}
+function validate(field,value){if(field==='ORIGIN'||field==='DEST'||field==='POS')return /^[A-Z]{4}$/.test(value);if(field==='CI')return /^\d{1,3}$/.test(value);if(field==='CRZ_ALT')return /^(FL\d{2,3}|\d{3,5})$/.test(value);if(field==='CRZ_SPEED')return /^\.?\d{2,3}$/.test(value);if(field==='N1')return /^\d{1,3}(\.\d)?$/.test(value)&&Number(value)>=0&&Number(value)<=106;if(field==='OFFSET')return /^(L|R)\d{1,2}(\.\d)?$/.test(value);if(field==='WPT1'||field==='WPT2')return /^[A-Z0-9]{2,7}$/.test(value);return value.length>0}
 function assignField(field){let s=sim.scratch.trim().toUpperCase();if(!s){setMessage('INVALID ENTRY');return}if(s==='DELETE'){sim.pending[field]='';sim.scratch='';sim.message='';render();return}if(!validate(field,s)){setMessage('INVALID ENTRY');return}if(s===String(sim.active[field]??'').toUpperCase())delete sim.pending[field];else sim.pending[field]=s;sim.scratch='';sim.message='';render()}
 function setPage(page){sim.page=page;sim.message='';render()}
 function lsk(k){const p=sim.page;let x=null;if(p==='RTE'){x={'L1':'ORIGIN','R1':'DEST','R2':'FLIGHT'}[k];if(k==='R6')return setPage('LEGS');if(k==='L6')return setPage('INDEX')}else if(p==='LEGS'){x={'L1':'WPT1','L2':'WPT2','L4':'OFFSET'}[k];if(k==='L6')return setPage('RTE');if(k==='R6')return setPage('PROG')}else if(p==='CRZ'){x={'L2':'CRZ_SPEED','L1':'CRZ_ALT'}[k];if(k==='L6')return setPage('RTE')}else if(p==='POS_INIT'){x={'L3':'POS'}[k];if(k==='L6')return setPage('INDEX');if(k==='R6')return setPage('RTE')}else if(p==='PERF_INIT'){x={'L3':'CI','R3':'CRZ_ALT'}[k]}else if(p==='N1_LIMIT'){x={'L1':'N1'}[k]}else if(p==='FIX'){x={'L1':'WPT1'}[k]}
@@ -99,5 +113,16 @@ function render(){let output=pageLines();if(sim.message)output[12]=sim.message;e
  wrap.appendChild(row)}$('fmc-screen').style.opacity=1; $('fmc-lines').style.opacity=sim.brightness;
  const states={CALL:sim.call,FAIL:sim.fail,MSG:!!sim.message,OFST:sim.offset,EXEC:pendingCount()>0};for(const [key,on] of Object.entries(states)){const el=byId['CDU_CAPT_'+key+'_LIGHT'];if(el)el.classList.toggle('on',on)}
  $('page-now').textContent=sim.page;$('scratch-now').textContent=sim.message||sim.scratch||'—';$('pending-now').textContent=pendingCount();$('key-now').textContent=sim.last.replace('CDU_CAPT_','');}
-async function boot(){let map=window.CDU_MAP;if(!map)throw Error('CDU map not found');makeControls(map);render();$('reset').onclick=()=>{sim.page='CRZ';sim.scratch='';sim.message='';sim.pending={};sim.call=sim.fail=sim.offset=false;sim.brightness=1;sim.last='—';for(const id of ['call-test','fault-test','offset-test'])$(id).checked=false;render()};$('overlay-toggle').onclick=()=>{$('cdu-stage').classList.toggle('debug')};$('info-toggle').onclick=()=>{$('qa').hidden=!$('qa').hidden};for(const [id,key] of [['call-test','call'],['fault-test','fail'],['offset-test','offset']])$(id).addEventListener('change',e=>{sim[key]=e.target.checked;render()});$('test-message').onclick=()=>setMessage('CHECK FMC DATA');document.addEventListener('keydown',e=>{if(e.ctrlKey||e.metaKey||e.altKey)return;let id=null;if(e.key==='Backspace')id='KEY_CLR';else if(e.key==='Enter')id='EXEC';else if(e.key===' ')id='KEY_SP';else if(e.key==='.')id='KEY_DOT';else if(e.key==='/')id='KEY_SLASH';else if(/^[a-z0-9]$/i.test(e.key))id='KEY_'+e.key.toUpperCase();if(id){e.preventDefault();press('CDU_CAPT_'+id)}})}
+async function initializeN1Inputs(){
+ const fields={ 'n1-pmc-mode':'pmcMode','n1-phase':'phase','n1-pressure-alt':'pressureAltitudeFt','n1-oat':'oatC','n1-tat':'tatC','n1-mach':'mach','n1-ias':'iasKts','n1-bleed':'bleedMode','n1-anti-ice':'antiIceMode'};
+ for(const [id,k] of Object.entries(fields)){
+  const el=document.getElementById(id);if(!el)continue;
+  el.addEventListener('change',()=>{
+   const raw=String(el.value??'').trim();
+   sim.n1[k]=['pressureAltitudeFt','oatC','tatC','mach','iasKts'].includes(k)?(raw===''?null:Number(raw)):(raw===''?null:raw);
+   render();
+  });
+ }
+}
+function boot(){let map=window.CDU_MAP;if(!map)throw Error('CDU map not found');makeControls(map);initializeN1Inputs();render();$('reset').onclick=()=>{sim.page='CRZ';sim.scratch='';sim.message='';sim.pending={};sim.call=sim.fail=sim.offset=false;sim.brightness=1;sim.last='—';for(const id of ['call-test','fault-test','offset-test'])$(id).checked=false;render()};$('overlay-toggle').onclick=()=>{$('cdu-stage').classList.toggle('debug')};$('info-toggle').onclick=()=>{$('qa').hidden=!$('qa').hidden};for(const [id,key] of [['call-test','call'],['fault-test','fail'],['offset-test','offset']])$(id).addEventListener('change',e=>{sim[key]=e.target.checked;render()});$('test-message').onclick=()=>setMessage('CHECK FMC DATA');document.addEventListener('keydown',e=>{if(e.ctrlKey||e.metaKey||e.altKey)return;let id=null;if(e.key==='Backspace')id='KEY_CLR';else if(e.key==='Enter')id='EXEC';else if(e.key===' ')id='KEY_SP';else if(e.key==='.')id='KEY_DOT';else if(e.key==='/')id='KEY_SLASH';else if(/^[a-z0-9]$/i.test(e.key))id='KEY_'+e.key.toUpperCase();if(id){e.preventDefault();press('CDU_CAPT_'+id)}})}
 boot().catch(e=>{console.error(e);$('page-now').textContent='Data load failed — unzip ALL files and open using local server or Chromium with local file access';});
