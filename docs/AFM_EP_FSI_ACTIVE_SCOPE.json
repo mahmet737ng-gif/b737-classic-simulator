@@ -1,6 +1,6 @@
 {
   "schema": "b737-afm-aircraft-scope-v1",
-  "status": "PRIVATE_ACTIVE_AFM_V11_NUMERICAL_TRACES_PROVISIONAL_NO_N1_AUTOCALC",
+  "status": "PRIVATE_AFM_V12_BLEED_PROVISIONAL_AND_MCT_SOURCE_STEPS__AUTON1_BLOCKED",
   "source_id": "AFM-73733V-D6-8730.33V-R32-20180214",
   "active_aircraft": {
     "model": "737-33V",
@@ -17,8 +17,8 @@
     "installed_engine_independently_verified": false
   },
   "source_pdf_sha256": "3c7002212482f0c47a1735c2302ee304ef41ef4ca270591281b72f5f2a714105",
-  "private_library_path": "/Technical Database/Sources/AFM-737-33V-D6-8730-R32/EP-FSI-ASN29340/v11/",
-  "private_db_filename": "epfsi_afm_scoped_v11.sqlite",
+  "private_library_path": "/Technical Database/Sources/AFM-737-33V-D6-8730-R32/EP-FSI-ASN29340/v12/",
+  "private_db_filename": "epfsi_afm_scoped_v12.sqlite",
   "source_pdf_stored_separately": "/Technical Database/Sources/AFM-737-33V-D6-8730-R32/AFM_R32_original.pdf",
   "linked_tables": {
     "scoped_rules": 110,
@@ -42,15 +42,15 @@
   },
   "original_full_archive": "IMMUTABLE_HISTORY_ONLY",
   "other_serials": "DO_NOT_USE_FOR_THIS_SIMULATOR_AIRCRAFT",
-  "runtime_integration": "v10 CDU READ-ONLY SOURCE ROUTING REMAINS; V11 NUMERIC TRACE NOT CONNECTED",
+  "runtime_integration": "v10 CDU STATUS ADAPTER ONLY; v12 candidate numeric corrections held PRIVATE and NOT wired to live CDU",
   "certified_performance_values": "NONE",
   "note": "A single airplane-specific reference scope; the underlying full source archive is preserved as private historical evidence and does not authorize calculations for other aircraft.",
-  "supersedes": "EP-FSI-ASN29340/v10/epfsi_afm_scoped_v10.sqlite",
+  "supersedes": "EP-FSI-ASN29340/v11/epfsi_afm_scoped_v11.sqlite",
   "numerical_n1_computations_enabled": false,
   "reader_tests_passed": 24,
-  "version": 11,
+  "version": 12,
   "audit_note": "EP-FSI 29340 CFM56-3B-1 20K user-provided configuration; v10 source guards and CDU read-only adapter wired, graphics source private. No calculated N1 values until complete reliable digitization and QA.",
-  "private_db_sha256": "e7ba3e2df4ffeb7677ebe631f8b1a854a8ee49dbc1b857d2fd5e3f00aa45786a",
+  "private_db_sha256": "81e62a847070331398eb035160426642c24848a4f2b32e1d9bd137c1be90d114",
   "pmc_option": "UNKNOWN_BY_DEFAULT__NORMAL_OR_OFF_TRAINING_SCENARIO_SELECTABLE",
   "n1_source_charts": {
     "takeoff_normal": 128,
@@ -103,5 +103,17 @@
   "generic_n1_interpolation_math": "engine/fmc/performance/n1-interpolation-guard-v11.cjs",
   "qa_new_private_tests": 9,
   "qa_public_synthetic_interpolator_tests": 16,
-  "source_reference_discrepancy": "p126 power setting at 40–60 knots vs p128 chart header 0–60 knots: separate contexts"
+  "source_reference_discrepancy": "p126 power setting at 40–60 knots vs p128 chart header 0–60 knots: separate contexts",
+  "n1_numeric_digitization": {
+    "previous_v11_provisional_main_trace_points": 104,
+    "new_v12_provisional_bleed_sample_points": 16,
+    "bleed_curve_ids": 10,
+    "mct_six_source_steps": 6,
+    "chart_coverage_components": 12,
+    "independent_human_signoffs": 0
+  },
+  "n1_conditions_module": "engine/fmc/performance/afm-epfsi-n1-conditions-v12.cjs",
+  "numeric_n1_release_status": "BLOCKED",
+  "pmcoff_page756_numeric_qa": "PENDING",
+  "max_continuous_p130_full_nomogram": "PENDING"
 }
