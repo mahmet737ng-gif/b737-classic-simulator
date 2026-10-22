@@ -1,0 +1,3282 @@
+{
+  "chapter": 11,
+  "pdf_pages": [
+    1414,
+    1822
+  ],
+  "page_count": 409,
+  "pages": [
+    {
+      "pdf_page": 1414,
+      "fcom_folio": "11.TOC.1",
+      "section": "TOC",
+      "heading_hint": "Flight1111-FlightTableFlightOfManagement,ContentsManagement,Management,NavigationNavi",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1415,
+      "fcom_folio": "11.TOC.2",
+      "section": "TOC",
+      "heading_hint": "Table of Contents",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1416,
+      "fcom_folio": "11.TOC.3",
+      "section": "TOC",
+      "heading_hint": "Table of Contents",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1417,
+      "fcom_folio": "11.TOC.4",
+      "section": "TOC",
+      "heading_hint": "Table of Contents",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1418,
+      "fcom_folio": "11.TOC.5",
+      "section": "TOC",
+      "heading_hint": "Table of Contents",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1419,
+      "fcom_folio": "11.TOC.6",
+      "section": "TOC",
+      "heading_hint": "Table of Contents",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1420,
+      "fcom_folio": "11.TOC.7",
+      "section": "TOC",
+      "heading_hint": "Table of Contents",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1421,
+      "fcom_folio": "11.TOC.8",
+      "section": "TOC",
+      "heading_hint": "Table of Contents",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1422,
+      "fcom_folio": "11.10.1",
+      "section": "11.10",
+      "heading_hint": "Controls and Indicators                           Section 10",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1423,
+      "fcom_folio": "11.10.2",
+      "section": "11.10",
+      "heading_hint": "Controls and Indicators",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1424,
+      "fcom_folio": "11.10.3",
+      "section": "11.10",
+      "heading_hint": "Controls and Indicators",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1425,
+      "fcom_folio": "11.10.4",
+      "section": "11.10",
+      "heading_hint": "Controls and Indicators",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1426,
+      "fcom_folio": "11.10.5",
+      "section": "11.10",
+      "heading_hint": "Controls and Indicators",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1427,
+      "fcom_folio": "11.10.6",
+      "section": "11.10",
+      "heading_hint": "Controls and Indicators",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1428,
+      "fcom_folio": "11.10.7",
+      "section": "11.10",
+      "heading_hint": "Controls and Indicators",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1429,
+      "fcom_folio": "11.10.8",
+      "section": "11.10",
+      "heading_hint": "Controls and Indicators",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1430,
+      "fcom_folio": "11.10.9",
+      "section": "11.10",
+      "heading_hint": "Controls and Indicators",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1431,
+      "fcom_folio": "11.10.10",
+      "section": "11.10",
+      "heading_hint": "Controls and Indicators",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1432,
+      "fcom_folio": "11.10.11",
+      "section": "11.10",
+      "heading_hint": "Controls and Indicators",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1433,
+      "fcom_folio": "11.10.12",
+      "section": "11.10",
+      "heading_hint": "Controls and Indicators",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1434,
+      "fcom_folio": "11.10.13",
+      "section": "11.10",
+      "heading_hint": "Controls and Indicators",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1435,
+      "fcom_folio": "11.10.14",
+      "section": "11.10",
+      "heading_hint": "Controls and Indicators",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1436,
+      "fcom_folio": "11.10.15",
+      "section": "11.10",
+      "heading_hint": "Controls and Indicators",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1437,
+      "fcom_folio": "11.10.16",
+      "section": "11.10",
+      "heading_hint": "Controls and Indicators",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1438,
+      "fcom_folio": "11.10.17",
+      "section": "11.10",
+      "heading_hint": "Controls and Indicators",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1439,
+      "fcom_folio": "11.10.18",
+      "section": "11.10",
+      "heading_hint": "Controls and Indicators",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1440,
+      "fcom_folio": "11.10.19",
+      "section": "11.10",
+      "heading_hint": "Controls and Indicators",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1441,
+      "fcom_folio": "11.10.20",
+      "section": "11.10",
+      "heading_hint": "Controls and Indicators",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1442,
+      "fcom_folio": "11.10.21",
+      "section": "11.10",
+      "heading_hint": "Controls and Indicators",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1443,
+      "fcom_folio": "11.10.22",
+      "section": "11.10",
+      "heading_hint": "Controls and Indicators",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1444,
+      "fcom_folio": "11.10.23",
+      "section": "11.10",
+      "heading_hint": "Controls and Indicators",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1445,
+      "fcom_folio": "11.10.24",
+      "section": "11.10",
+      "heading_hint": "Controls and Indicators",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1446,
+      "fcom_folio": "11.10.25",
+      "section": "11.10",
+      "heading_hint": "Controls and Indicators",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1447,
+      "fcom_folio": "11.10.26",
+      "section": "11.10",
+      "heading_hint": "Controls and Indicators",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1448,
+      "fcom_folio": "11.10.27",
+      "section": "11.10",
+      "heading_hint": "Controls and Indicators",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1449,
+      "fcom_folio": "11.10.28",
+      "section": "11.10",
+      "heading_hint": "Controls and Indicators",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1450,
+      "fcom_folio": "11.10.29",
+      "section": "11.10",
+      "heading_hint": "Controls and Indicators",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1451,
+      "fcom_folio": "11.10.30",
+      "section": "11.10",
+      "heading_hint": "Controls and Indicators",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1452,
+      "fcom_folio": "11.10.31",
+      "section": "11.10",
+      "heading_hint": "Controls and Indicators",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1453,
+      "fcom_folio": "11.10.32",
+      "section": "11.10",
+      "heading_hint": "Controls and Indicators",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1454,
+      "fcom_folio": "11.10.33",
+      "section": "11.10",
+      "heading_hint": "Controls and Indicators",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1455,
+      "fcom_folio": "11.10.34",
+      "section": "11.10",
+      "heading_hint": "Controls and Indicators",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1456,
+      "fcom_folio": "11.10.35",
+      "section": "11.10",
+      "heading_hint": "Controls and Indicators",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1457,
+      "fcom_folio": "11.10.36",
+      "section": "11.10",
+      "heading_hint": "Controls and Indicators",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1458,
+      "fcom_folio": "11.10.37",
+      "section": "11.10",
+      "heading_hint": "Controls and Indicators",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1459,
+      "fcom_folio": "11.10.38",
+      "section": "11.10",
+      "heading_hint": "Controls and Indicators",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1460,
+      "fcom_folio": "11.10.39",
+      "section": "11.10",
+      "heading_hint": "Controls and Indicators",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1461,
+      "fcom_folio": "11.10.40",
+      "section": "11.10",
+      "heading_hint": "Controls and Indicators",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1462,
+      "fcom_folio": "11.10.41",
+      "section": "11.10",
+      "heading_hint": "Controls and Indicators",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1463,
+      "fcom_folio": "11.10.42",
+      "section": "11.10",
+      "heading_hint": "Controls and Indicators",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1464,
+      "fcom_folio": "11.10.43",
+      "section": "11.10",
+      "heading_hint": "Controls and Indicators",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1465,
+      "fcom_folio": "11.10.44",
+      "section": "11.10",
+      "heading_hint": "Controls and Indicators",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1466,
+      "fcom_folio": "11.20.1",
+      "section": "11.20",
+      "heading_hint": "Navigation Systems Description                   Section 20",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1467,
+      "fcom_folio": "11.20.2",
+      "section": "11.20",
+      "heading_hint": "Navigation Systems Description",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1468,
+      "fcom_folio": "11.20.3",
+      "section": "11.20",
+      "heading_hint": "Navigation Systems Description",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1469,
+      "fcom_folio": "11.20.4",
+      "section": "11.20",
+      "heading_hint": "Navigation Systems Description",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1470,
+      "fcom_folio": "11.20.5",
+      "section": "11.20",
+      "heading_hint": "Navigation Systems Description",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1471,
+      "fcom_folio": "11.20.6",
+      "section": "11.20",
+      "heading_hint": "Navigation Systems Description",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1472,
+      "fcom_folio": "11.20.7",
+      "section": "11.20",
+      "heading_hint": "Navigation Systems Description",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1473,
+      "fcom_folio": "11.20.8",
+      "section": "11.20",
+      "heading_hint": "Navigation Systems Description",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1474,
+      "fcom_folio": "11.20.9",
+      "section": "11.20",
+      "heading_hint": "Navigation Systems Description",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1475,
+      "fcom_folio": "11.20.10",
+      "section": "11.20",
+      "heading_hint": "Navigation Systems Description",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1476,
+      "fcom_folio": "11.20.11",
+      "section": "11.20",
+      "heading_hint": "Navigation Systems Description",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1477,
+      "fcom_folio": "11.20.12",
+      "section": "11.20",
+      "heading_hint": "Navigation Systems Description",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1478,
+      "fcom_folio": "11.20.13",
+      "section": "11.20",
+      "heading_hint": "Navigation Systems Description",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1479,
+      "fcom_folio": "11.20.14",
+      "section": "11.20",
+      "heading_hint": "Navigation Systems Description",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1480,
+      "fcom_folio": "11.20.15",
+      "section": "11.20",
+      "heading_hint": "Navigation Systems Description",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1481,
+      "fcom_folio": "11.20.16",
+      "section": "11.20",
+      "heading_hint": "Navigation Systems Description",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1482,
+      "fcom_folio": "11.20.17",
+      "section": "11.20",
+      "heading_hint": "Navigation Systems Description",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1483,
+      "fcom_folio": "11.20.18",
+      "section": "11.20",
+      "heading_hint": "Navigation Systems Description",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1484,
+      "fcom_folio": "11.20.19",
+      "section": "11.20",
+      "heading_hint": "Navigation Systems Description",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1485,
+      "fcom_folio": "11.20.20",
+      "section": "11.20",
+      "heading_hint": "Navigation Systems Description",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1486,
+      "fcom_folio": "11.30.1",
+      "section": "11.30",
+      "heading_hint": "30FlightFileFlightHighlightManagementManagementSystemSystemDescriptionDescription",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1487,
+      "fcom_folio": "11.30.2",
+      "section": "11.30",
+      "heading_hint": "Different FMC configurations may be installed due to a software update program.",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1488,
+      "fcom_folio": "11.30.3",
+      "section": "11.30",
+      "heading_hint": ",",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1489,
+      "fcom_folio": "11.30.4",
+      "section": "11.30",
+      "heading_hint": "On initial power-up, the Menu screen will be displayed on the MCDU. To select",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1490,
+      "fcom_folio": "11.31.1",
+      "section": "11.31",
+      "heading_hint": "31FlightFileFlightHighlightManagementManagementSystemSystemOperationOperation",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1491,
+      "fcom_folio": "11.31.2",
+      "section": "11.31",
+      "heading_hint": "Takeoff",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1492,
+      "fcom_folio": "11.31.3",
+      "section": "11.31",
+      "heading_hint": "Delete \u2013 remove FMC data and revert to default values, dash or box prompts, or a",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1493,
+      "fcom_folio": "11.31.4",
+      "section": "11.31",
+      "heading_hint": "Maintenance Index Page",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1494,
+      "fcom_folio": "11.31.5",
+      "section": "11.31",
+      "heading_hint": "I N I T / R E F  I N D E X    1 / 1",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1495,
+      "fcom_folio": "11.31.6",
+      "section": "11.31",
+      "heading_hint": "-",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1496,
+      "fcom_folio": "11.31.7",
+      "section": "11.31",
+      "heading_hint": "FMC Position Update",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1497,
+      "fcom_folio": "11.31.8",
+      "section": "11.31",
+      "heading_hint": "-",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1498,
+      "fcom_folio": "11.31.9",
+      "section": "11.31",
+      "heading_hint": "Note: With both navigation radios in AUTO tuning, if the FMC determines that",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1499,
+      "fcom_folio": "11.31.10",
+      "section": "11.31",
+      "heading_hint": "Note:  If the flight crew observes this indication, and an extended period of IRS",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1500,
+      "fcom_folio": "11.31.11",
+      "section": "11.31",
+      "heading_hint": "Actual Navigation Performance",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1501,
+      "fcom_folio": "11.31.12",
+      "section": "11.31",
+      "heading_hint": "P O S  S H I F T         3 / 3",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1502,
+      "fcom_folio": "11.31.13",
+      "section": "11.31",
+      "heading_hint": "P O S  S H I F T         3 / 3",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1503,
+      "fcom_folio": "11.31.14",
+      "section": "11.31",
+      "heading_hint": "P O S  S H I F T         3 / 3",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1504,
+      "fcom_folio": "11.31.15",
+      "section": "11.31",
+      "heading_hint": "Required Navigation Performance (RNP)",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1505,
+      "fcom_folio": "11.31.16",
+      "section": "11.31",
+      "heading_hint": "Lateral Navigation (LNAV)",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1506,
+      "fcom_folio": "11.31.17",
+      "section": "11.31",
+      "heading_hint": "Long Waypoint Names",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1507,
+      "fcom_folio": "11.31.18",
+      "section": "11.31",
+      "heading_hint": "Unnamed flight information region (FIR), upper flight information region (UIR),",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1508,
+      "fcom_folio": "11.31.19",
+      "section": "11.31",
+      "heading_hint": "Procedure Fix Waypoint Names",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1509,
+      "fcom_folio": "11.31.20",
+      "section": "11.31",
+      "heading_hint": "Unnamed turn points \u2013 unnamed turn points that are part of a procedure are",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1510,
+      "fcom_folio": "11.31.21",
+      "section": "11.31",
+      "heading_hint": "Altitude and course intercept conditional waypoints are displayed on the CDU",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1511,
+      "fcom_folio": "11.31.22",
+      "section": "11.31",
+      "heading_hint": "Manually Entered Place\u2013Bearing/Distance or Place\u2013Bearing/Place\u2013Bearing",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1512,
+      "fcom_folio": "11.31.23",
+      "section": "11.31",
+      "heading_hint": "\u2022  modifications to an active route are displayed as dashed white lines",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1513,
+      "fcom_folio": "11.31.24",
+      "section": "11.31",
+      "heading_hint": "Takeoff and Climb",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1514,
+      "fcom_folio": "11.31.25",
+      "section": "11.31",
+      "heading_hint": ",",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1515,
+      "fcom_folio": "11.31.26",
+      "section": "11.31",
+      "heading_hint": "MCP Altitude Intervention",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1516,
+      "fcom_folio": "11.31.27",
+      "section": "11.31",
+      "heading_hint": "Altitude intervention cannot be used to decrease cruise altitude. Setting a lower",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1517,
+      "fcom_folio": "11.31.28",
+      "section": "11.31",
+      "heading_hint": "In a path descent using speed intervention, VNAV PTH changes to VNAV SPD",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1518,
+      "fcom_folio": "11.31.29",
+      "section": "11.31",
+      "heading_hint": "The FMC calculates a descent path based on airspeed restrictions, altitude",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1519,
+      "fcom_folio": "11.31.30",
+      "section": "11.31",
+      "heading_hint": ",  ,  ,",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1520,
+      "fcom_folio": "11.31.31",
+      "section": "11.31",
+      "heading_hint": "-  ,  -",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1521,
+      "fcom_folio": "11.31.32",
+      "section": "11.31",
+      "heading_hint": ",",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1522,
+      "fcom_folio": "11.31.33",
+      "section": "11.31",
+      "heading_hint": "VNAV Cruise and Path Descent Profile (Non-Precision Approach)",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1523,
+      "fcom_folio": "11.31.34",
+      "section": "11.31",
+      "heading_hint": "APP",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1524,
+      "fcom_folio": "11.31.35",
+      "section": "11.31",
+      "heading_hint": "-",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1525,
+      "fcom_folio": "11.31.36",
+      "section": "11.31",
+      "heading_hint": "1   Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1526,
+      "fcom_folio": "11.31.37",
+      "section": "11.31",
+      "heading_hint": "VNAV Speed Descent",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1527,
+      "fcom_folio": "11.31.38",
+      "section": "11.31",
+      "heading_hint": "VNAV Cruise and Speed Descent Profile (Non-Precision Approach)",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1528,
+      "fcom_folio": "11.31.39",
+      "section": "11.31",
+      "heading_hint": "50'",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1529,
+      "fcom_folio": "11.31.40",
+      "section": "11.31",
+      "heading_hint": "-",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1530,
+      "fcom_folio": "11.31.41",
+      "section": "11.31",
+      "heading_hint": "1   Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1531,
+      "fcom_folio": "11.31.42",
+      "section": "11.31",
+      "heading_hint": "Vertical Angle",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1532,
+      "fcom_folio": "11.31.43",
+      "section": "11.31",
+      "heading_hint": "-",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1533,
+      "fcom_folio": "11.31.44",
+      "section": "11.31",
+      "heading_hint": "-",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1534,
+      "fcom_folio": "11.31.45",
+      "section": "11.31",
+      "heading_hint": "The following situations are generally encountered during approach operations,",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1535,
+      "fcom_folio": "11.31.46",
+      "section": "11.31",
+      "heading_hint": "\u2022  automatically while in a descent and the last waypoint of the approach",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1536,
+      "fcom_folio": "11.31.47",
+      "section": "11.31",
+      "heading_hint": "VNAV Cruise (Engine Out Above Eng Out Max Alt)",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1537,
+      "fcom_folio": "11.31.48",
+      "section": "11.31",
+      "heading_hint": "-",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1538,
+      "fcom_folio": "11.31.49",
+      "section": "11.31",
+      "heading_hint": "1  Engine Out Modification",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1539,
+      "fcom_folio": "11.31.50",
+      "section": "11.31",
+      "heading_hint": "Data Entry Rules",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1540,
+      "fcom_folio": "11.31.51",
+      "section": "11.31",
+      "heading_hint": "Data Pairs",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1541,
+      "fcom_folio": "11.31.52",
+      "section": "11.31",
+      "heading_hint": "Intentionally",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1542,
+      "fcom_folio": "11.32.1",
+      "section": "11.32",
+      "heading_hint": "32FlightFileFlightHighlightManagementManagementComputerComputer",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1543,
+      "fcom_folio": "11.32.2",
+      "section": "11.32",
+      "heading_hint": "When any storage capacity is full, entries which are no longer required should be",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1544,
+      "fcom_folio": "11.32.3",
+      "section": "11.32",
+      "heading_hint": "Derate/Variable Takeoff Rating",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1545,
+      "fcom_folio": "11.32.4",
+      "section": "11.32",
+      "heading_hint": "Reduced Thrust Climb",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1546,
+      "fcom_folio": "11.32.5",
+      "section": "11.32",
+      "heading_hint": "-  ,",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1547,
+      "fcom_folio": "11.32.6",
+      "section": "11.32",
+      "heading_hint": "If power is lost for more than ten seconds in flight:",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1548,
+      "fcom_folio": "11.32.7",
+      "section": "11.32",
+      "heading_hint": "FMC Failure",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1549,
+      "fcom_folio": "11.32.8",
+      "section": "11.32",
+      "heading_hint": "FMC Failure",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1550,
+      "fcom_folio": "11.33.1",
+      "section": "11.33",
+      "heading_hint": "ACARS Data Link                                Section 33",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1551,
+      "fcom_folio": "11.33.2",
+      "section": "11.33",
+      "heading_hint": "ACARS Data Link",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1552,
+      "fcom_folio": "11.33.3",
+      "section": "11.33",
+      "heading_hint": "ACARS Data Link",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1553,
+      "fcom_folio": "11.40.1",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight                                   Section 40",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1554,
+      "fcom_folio": "11.40.2",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1555,
+      "fcom_folio": "11.40.3",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1556,
+      "fcom_folio": "11.40.4",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1557,
+      "fcom_folio": "11.40.5",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1558,
+      "fcom_folio": "11.40.6",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1559,
+      "fcom_folio": "11.40.7",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1560,
+      "fcom_folio": "11.40.8",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1561,
+      "fcom_folio": "11.40.9",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1562,
+      "fcom_folio": "11.40.10",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1563,
+      "fcom_folio": "11.40.11",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1564,
+      "fcom_folio": "11.40.12",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1565,
+      "fcom_folio": "11.40.13",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1566,
+      "fcom_folio": "11.40.14",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1567,
+      "fcom_folio": "11.40.15",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1568,
+      "fcom_folio": "11.40.16",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1569,
+      "fcom_folio": "11.40.17",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1570,
+      "fcom_folio": "11.40.18",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1571,
+      "fcom_folio": "11.40.19",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1572,
+      "fcom_folio": "11.40.20",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1573,
+      "fcom_folio": "11.40.21",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1574,
+      "fcom_folio": "11.40.22",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1575,
+      "fcom_folio": "11.40.23",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1576,
+      "fcom_folio": "11.40.24",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1577,
+      "fcom_folio": "11.40.25",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1578,
+      "fcom_folio": "11.40.26",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1579,
+      "fcom_folio": "11.40.27",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1580,
+      "fcom_folio": "11.40.28",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1581,
+      "fcom_folio": "11.40.29",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1582,
+      "fcom_folio": "11.40.30",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1583,
+      "fcom_folio": "11.40.31",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1584,
+      "fcom_folio": "11.40.32",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1585,
+      "fcom_folio": "11.40.33",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1586,
+      "fcom_folio": "11.40.34",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1587,
+      "fcom_folio": "11.40.35",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1588,
+      "fcom_folio": "11.40.36",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1589,
+      "fcom_folio": "11.40.37",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1590,
+      "fcom_folio": "11.40.38",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1591,
+      "fcom_folio": "11.40.39",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1592,
+      "fcom_folio": "11.40.40",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1593,
+      "fcom_folio": "11.40.41",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1594,
+      "fcom_folio": "11.40.42",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1595,
+      "fcom_folio": "11.40.43",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1596,
+      "fcom_folio": "11.40.44",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1597,
+      "fcom_folio": "11.40.45",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1598,
+      "fcom_folio": "11.40.46",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1599,
+      "fcom_folio": "11.40.47",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1600,
+      "fcom_folio": "11.40.48",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1601,
+      "fcom_folio": "11.40.49",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1602,
+      "fcom_folio": "11.40.50",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1603,
+      "fcom_folio": "11.40.51",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1604,
+      "fcom_folio": "11.40.52",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1605,
+      "fcom_folio": "11.40.53",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1606,
+      "fcom_folio": "11.40.54",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1607,
+      "fcom_folio": "11.40.55",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1608,
+      "fcom_folio": "11.40.56",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1609,
+      "fcom_folio": "11.40.57",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1610,
+      "fcom_folio": "11.40.58",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1611,
+      "fcom_folio": "11.40.59",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1612,
+      "fcom_folio": "11.40.60",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1613,
+      "fcom_folio": "11.40.61",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1614,
+      "fcom_folio": "11.40.62",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1615,
+      "fcom_folio": "11.40.63",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1616,
+      "fcom_folio": "11.40.64",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1617,
+      "fcom_folio": "11.40.65",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1618,
+      "fcom_folio": "11.40.66",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1619,
+      "fcom_folio": "11.40.67",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1620,
+      "fcom_folio": "11.40.68",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1621,
+      "fcom_folio": "11.40.69",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1622,
+      "fcom_folio": "11.40.70",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1623,
+      "fcom_folio": "11.40.71",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1624,
+      "fcom_folio": "11.40.72",
+      "section": "11.40",
+      "heading_hint": "FMC Preflight",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1625,
+      "fcom_folio": "11.41.1",
+      "section": "11.41",
+      "heading_hint": "FMC Takeoff and Climb                          Section 41",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1626,
+      "fcom_folio": "11.41.2",
+      "section": "11.41",
+      "heading_hint": "FMC Takeoff and Climb",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1627,
+      "fcom_folio": "11.41.3",
+      "section": "11.41",
+      "heading_hint": "FMC Takeoff and Climb",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1628,
+      "fcom_folio": "11.41.4",
+      "section": "11.41",
+      "heading_hint": "FMC Takeoff and Climb",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1629,
+      "fcom_folio": "11.41.5",
+      "section": "11.41",
+      "heading_hint": "FMC Takeoff and Climb",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1630,
+      "fcom_folio": "11.41.6",
+      "section": "11.41",
+      "heading_hint": "FMC Takeoff and Climb",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1631,
+      "fcom_folio": "11.41.7",
+      "section": "11.41",
+      "heading_hint": "FMC Takeoff and Climb",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1632,
+      "fcom_folio": "11.41.8",
+      "section": "11.41",
+      "heading_hint": "FMC Takeoff and Climb",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1633,
+      "fcom_folio": "11.41.9",
+      "section": "11.41",
+      "heading_hint": "FMC Takeoff and Climb",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1634,
+      "fcom_folio": "11.41.10",
+      "section": "11.41",
+      "heading_hint": "FMC Takeoff and Climb",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1635,
+      "fcom_folio": "11.41.11",
+      "section": "11.41",
+      "heading_hint": "FMC Takeoff and Climb",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1636,
+      "fcom_folio": "11.41.12",
+      "section": "11.41",
+      "heading_hint": "FMC Takeoff and Climb",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1637,
+      "fcom_folio": "11.41.13",
+      "section": "11.41",
+      "heading_hint": "FMC Takeoff and Climb",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1638,
+      "fcom_folio": "11.41.14",
+      "section": "11.41",
+      "heading_hint": "FMC Takeoff and Climb",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1639,
+      "fcom_folio": "11.41.15",
+      "section": "11.41",
+      "heading_hint": "FMC Takeoff and Climb",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1640,
+      "fcom_folio": "11.41.16",
+      "section": "11.41",
+      "heading_hint": "FMC Takeoff and Climb",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1641,
+      "fcom_folio": "11.41.17",
+      "section": "11.41",
+      "heading_hint": "FMC Takeoff and Climb",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1642,
+      "fcom_folio": "11.41.18",
+      "section": "11.41",
+      "heading_hint": "FMC Takeoff and Climb",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1643,
+      "fcom_folio": "11.41.19",
+      "section": "11.41",
+      "heading_hint": "FMC Takeoff and Climb",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1644,
+      "fcom_folio": "11.41.20",
+      "section": "11.41",
+      "heading_hint": "FMC Takeoff and Climb",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1645,
+      "fcom_folio": "11.41.21",
+      "section": "11.41",
+      "heading_hint": "FMC Takeoff and Climb",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1646,
+      "fcom_folio": "11.41.22",
+      "section": "11.41",
+      "heading_hint": "FMC Takeoff and Climb",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1647,
+      "fcom_folio": "11.41.23",
+      "section": "11.41",
+      "heading_hint": "FMC Takeoff and Climb",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1648,
+      "fcom_folio": "11.41.24",
+      "section": "11.41",
+      "heading_hint": "FMC Takeoff and Climb",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1649,
+      "fcom_folio": "11.41.25",
+      "section": "11.41",
+      "heading_hint": "FMC Takeoff and Climb",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1650,
+      "fcom_folio": "11.41.26",
+      "section": "11.41",
+      "heading_hint": "FMC Takeoff and Climb",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1651,
+      "fcom_folio": "11.41.27",
+      "section": "11.41",
+      "heading_hint": "FMC Takeoff and Climb",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1652,
+      "fcom_folio": "11.41.28",
+      "section": "11.41",
+      "heading_hint": "FMC Takeoff and Climb",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1653,
+      "fcom_folio": "11.41.29",
+      "section": "11.41",
+      "heading_hint": "FMC Takeoff and Climb",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1654,
+      "fcom_folio": "11.41.30",
+      "section": "11.41",
+      "heading_hint": "FMC Takeoff and Climb",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1655,
+      "fcom_folio": "11.41.31",
+      "section": "11.41",
+      "heading_hint": "FMC Takeoff and Climb",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1656,
+      "fcom_folio": "11.41.32",
+      "section": "11.41",
+      "heading_hint": "FMC Takeoff and Climb",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1657,
+      "fcom_folio": "11.41.33",
+      "section": "11.41",
+      "heading_hint": "FMC Takeoff and Climb",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1658,
+      "fcom_folio": "11.41.34",
+      "section": "11.41",
+      "heading_hint": "FMC Takeoff and Climb",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1659,
+      "fcom_folio": "11.41.35",
+      "section": "11.41",
+      "heading_hint": "FMC Takeoff and Climb",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1660,
+      "fcom_folio": "11.41.36",
+      "section": "11.41",
+      "heading_hint": "FMC Takeoff and Climb",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1661,
+      "fcom_folio": "11.41.37",
+      "section": "11.41",
+      "heading_hint": "FMC Takeoff and Climb",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1662,
+      "fcom_folio": "11.41.38",
+      "section": "11.41",
+      "heading_hint": "FMC Takeoff and Climb",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1663,
+      "fcom_folio": "11.41.39",
+      "section": "11.41",
+      "heading_hint": "FMC Takeoff and Climb",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1664,
+      "fcom_folio": "11.41.40",
+      "section": "11.41",
+      "heading_hint": "FMC Takeoff and Climb",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1665,
+      "fcom_folio": "11.41.41",
+      "section": "11.41",
+      "heading_hint": "FMC Takeoff and Climb",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1666,
+      "fcom_folio": "11.41.42",
+      "section": "11.41",
+      "heading_hint": "FMC Takeoff and Climb",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1667,
+      "fcom_folio": "11.41.43",
+      "section": "11.41",
+      "heading_hint": "FMC Takeoff and Climb",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1668,
+      "fcom_folio": "11.41.44",
+      "section": "11.41",
+      "heading_hint": "FMC Takeoff and Climb",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1669,
+      "fcom_folio": "11.41.45",
+      "section": "11.41",
+      "heading_hint": "FMC Takeoff and Climb",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1670,
+      "fcom_folio": "11.41.46",
+      "section": "11.41",
+      "heading_hint": "FMC Takeoff and Climb",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1671,
+      "fcom_folio": "11.41.47",
+      "section": "11.41",
+      "heading_hint": "FMC Takeoff and Climb",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1672,
+      "fcom_folio": "11.41.48",
+      "section": "11.41",
+      "heading_hint": "FMC Takeoff and Climb",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1673,
+      "fcom_folio": "11.41.49",
+      "section": "11.41",
+      "heading_hint": "FMC Takeoff and Climb",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1674,
+      "fcom_folio": "11.41.50",
+      "section": "11.41",
+      "heading_hint": "FMC Takeoff and Climb",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1675,
+      "fcom_folio": "11.42.1",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise                                      Section 42",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1676,
+      "fcom_folio": "11.42.2",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1677,
+      "fcom_folio": "11.42.3",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1678,
+      "fcom_folio": "11.42.4",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1679,
+      "fcom_folio": "11.42.5",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1680,
+      "fcom_folio": "11.42.6",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1681,
+      "fcom_folio": "11.42.7",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1682,
+      "fcom_folio": "11.42.8",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1683,
+      "fcom_folio": "11.42.9",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1684,
+      "fcom_folio": "11.42.10",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1685,
+      "fcom_folio": "11.42.11",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1686,
+      "fcom_folio": "11.42.12",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1687,
+      "fcom_folio": "11.42.13",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1688,
+      "fcom_folio": "11.42.14",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1689,
+      "fcom_folio": "11.42.15",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1690,
+      "fcom_folio": "11.42.16",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1691,
+      "fcom_folio": "11.42.17",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1692,
+      "fcom_folio": "11.42.18",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1693,
+      "fcom_folio": "11.42.19",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1694,
+      "fcom_folio": "11.42.20",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1695,
+      "fcom_folio": "11.42.21",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1696,
+      "fcom_folio": "11.42.22",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1697,
+      "fcom_folio": "11.42.23",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1698,
+      "fcom_folio": "11.42.24",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1699,
+      "fcom_folio": "11.42.25",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1700,
+      "fcom_folio": "11.42.26",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1701,
+      "fcom_folio": "11.42.27",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1702,
+      "fcom_folio": "11.42.28",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1703,
+      "fcom_folio": "11.42.29",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1704,
+      "fcom_folio": "11.42.30",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1705,
+      "fcom_folio": "11.42.31",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1706,
+      "fcom_folio": "11.42.32",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1707,
+      "fcom_folio": "11.42.33",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1708,
+      "fcom_folio": "11.42.34",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1709,
+      "fcom_folio": "11.42.35",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1710,
+      "fcom_folio": "11.42.36",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1711,
+      "fcom_folio": "11.42.37",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1712,
+      "fcom_folio": "11.42.38",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1713,
+      "fcom_folio": "11.42.39",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1714,
+      "fcom_folio": "11.42.40",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1715,
+      "fcom_folio": "11.42.41",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1716,
+      "fcom_folio": "11.42.42",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1717,
+      "fcom_folio": "11.42.43",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1718,
+      "fcom_folio": "11.42.44",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1719,
+      "fcom_folio": "11.42.45",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1720,
+      "fcom_folio": "11.42.46",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1721,
+      "fcom_folio": "11.42.47",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1722,
+      "fcom_folio": "11.42.48",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1723,
+      "fcom_folio": "11.42.49",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1724,
+      "fcom_folio": "11.42.50",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1725,
+      "fcom_folio": "11.42.51",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1726,
+      "fcom_folio": "11.42.52",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1727,
+      "fcom_folio": "11.42.53",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1728,
+      "fcom_folio": "11.42.54",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1729,
+      "fcom_folio": "11.42.55",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1730,
+      "fcom_folio": "11.42.56",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1731,
+      "fcom_folio": "11.42.57",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1732,
+      "fcom_folio": "11.42.58",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1733,
+      "fcom_folio": "11.42.59",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1734,
+      "fcom_folio": "11.42.60",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1735,
+      "fcom_folio": "11.42.61",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1736,
+      "fcom_folio": "11.42.62",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1737,
+      "fcom_folio": "11.42.63",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1738,
+      "fcom_folio": "11.42.64",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1739,
+      "fcom_folio": "11.42.65",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1740,
+      "fcom_folio": "11.42.66",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1741,
+      "fcom_folio": "11.42.67",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1742,
+      "fcom_folio": "11.42.68",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1743,
+      "fcom_folio": "11.42.69",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1744,
+      "fcom_folio": "11.42.70",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1745,
+      "fcom_folio": "11.42.71",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1746,
+      "fcom_folio": "11.42.72",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1747,
+      "fcom_folio": "11.42.73",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1748,
+      "fcom_folio": "11.42.74",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1749,
+      "fcom_folio": "11.42.75",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1750,
+      "fcom_folio": "11.42.76",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1751,
+      "fcom_folio": "11.42.77",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1752,
+      "fcom_folio": "11.42.78",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1753,
+      "fcom_folio": "11.42.79",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1754,
+      "fcom_folio": "11.42.80",
+      "section": "11.42",
+      "heading_hint": "FMC Cruise",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1755,
+      "fcom_folio": "11.43.1",
+      "section": "11.43",
+      "heading_hint": "FMC Descent and Approach                      Section 43",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1756,
+      "fcom_folio": "11.43.2",
+      "section": "11.43",
+      "heading_hint": "FMC Descent and Approach",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1757,
+      "fcom_folio": "11.43.3",
+      "section": "11.43",
+      "heading_hint": "FMC Descent and Approach",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1758,
+      "fcom_folio": "11.43.4",
+      "section": "11.43",
+      "heading_hint": "FMC Descent and Approach",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1759,
+      "fcom_folio": "11.43.5",
+      "section": "11.43",
+      "heading_hint": "FMC Descent and Approach",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1760,
+      "fcom_folio": "11.43.6",
+      "section": "11.43",
+      "heading_hint": "FMC Descent and Approach",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1761,
+      "fcom_folio": "11.43.7",
+      "section": "11.43",
+      "heading_hint": "FMC Descent and Approach",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1762,
+      "fcom_folio": "11.43.8",
+      "section": "11.43",
+      "heading_hint": "FMC Descent and Approach",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1763,
+      "fcom_folio": "11.43.9",
+      "section": "11.43",
+      "heading_hint": "FMC Descent and Approach",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1764,
+      "fcom_folio": "11.43.10",
+      "section": "11.43",
+      "heading_hint": "FMC Descent and Approach",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1765,
+      "fcom_folio": "11.43.11",
+      "section": "11.43",
+      "heading_hint": "FMC Descent and Approach",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1766,
+      "fcom_folio": "11.43.12",
+      "section": "11.43",
+      "heading_hint": "FMC Descent and Approach",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1767,
+      "fcom_folio": "11.43.13",
+      "section": "11.43",
+      "heading_hint": "FMC Descent and Approach",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1768,
+      "fcom_folio": "11.43.14",
+      "section": "11.43",
+      "heading_hint": "FMC Descent and Approach",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1769,
+      "fcom_folio": "11.43.15",
+      "section": "11.43",
+      "heading_hint": "FMC Descent and Approach",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1770,
+      "fcom_folio": "11.43.16",
+      "section": "11.43",
+      "heading_hint": "FMC Descent and Approach",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1771,
+      "fcom_folio": "11.43.17",
+      "section": "11.43",
+      "heading_hint": "FMC Descent and Approach",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1772,
+      "fcom_folio": "11.43.18",
+      "section": "11.43",
+      "heading_hint": "FMC Descent and Approach",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1773,
+      "fcom_folio": "11.43.19",
+      "section": "11.43",
+      "heading_hint": "FMC Descent and Approach",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1774,
+      "fcom_folio": "11.43.20",
+      "section": "11.43",
+      "heading_hint": "FMC Descent and Approach",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1775,
+      "fcom_folio": "11.43.21",
+      "section": "11.43",
+      "heading_hint": "FMC Descent and Approach",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1776,
+      "fcom_folio": "11.43.22",
+      "section": "11.43",
+      "heading_hint": "FMC Descent and Approach",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1777,
+      "fcom_folio": "11.43.23",
+      "section": "11.43",
+      "heading_hint": "FMC Descent and Approach",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1778,
+      "fcom_folio": "11.43.24",
+      "section": "11.43",
+      "heading_hint": "FMC Descent and Approach",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1779,
+      "fcom_folio": "11.43.25",
+      "section": "11.43",
+      "heading_hint": "FMC Descent and Approach",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1780,
+      "fcom_folio": "11.43.26",
+      "section": "11.43",
+      "heading_hint": "FMC Descent and Approach",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1781,
+      "fcom_folio": "11.43.27",
+      "section": "11.43",
+      "heading_hint": "FMC Descent and Approach",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1782,
+      "fcom_folio": "11.43.28",
+      "section": "11.43",
+      "heading_hint": "FMC Descent and Approach",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1783,
+      "fcom_folio": "11.43.29",
+      "section": "11.43",
+      "heading_hint": "FMC Descent and Approach",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1784,
+      "fcom_folio": "11.43.30",
+      "section": "11.43",
+      "heading_hint": "FMC Descent and Approach",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1785,
+      "fcom_folio": "11.43.31",
+      "section": "11.43",
+      "heading_hint": "FMC Descent and Approach",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1786,
+      "fcom_folio": "11.43.32",
+      "section": "11.43",
+      "heading_hint": "FMC Descent and Approach",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1787,
+      "fcom_folio": "11.43.33",
+      "section": "11.43",
+      "heading_hint": "FMC Descent and Approach",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1788,
+      "fcom_folio": "11.43.34",
+      "section": "11.43",
+      "heading_hint": "FMC Descent and Approach",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1789,
+      "fcom_folio": "11.43.35",
+      "section": "11.43",
+      "heading_hint": "FMC Descent and Approach",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1790,
+      "fcom_folio": "11.43.36",
+      "section": "11.43",
+      "heading_hint": "FMC Descent and Approach",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1791,
+      "fcom_folio": "11.43.37",
+      "section": "11.43",
+      "heading_hint": "FMC Descent and Approach",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1792,
+      "fcom_folio": "11.43.38",
+      "section": "11.43",
+      "heading_hint": "FMC Descent and Approach",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1793,
+      "fcom_folio": "11.43.39",
+      "section": "11.43",
+      "heading_hint": "FMC Descent and Approach",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1794,
+      "fcom_folio": "11.43.40",
+      "section": "11.43",
+      "heading_hint": "FMC Descent and Approach",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1795,
+      "fcom_folio": "11.43.41",
+      "section": "11.43",
+      "heading_hint": "FMC Descent and Approach",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1796,
+      "fcom_folio": "11.43.42",
+      "section": "11.43",
+      "heading_hint": "FMC Descent and Approach",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1797,
+      "fcom_folio": "11.43.43",
+      "section": "11.43",
+      "heading_hint": "FMC Descent and Approach",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1798,
+      "fcom_folio": "11.43.44",
+      "section": "11.43",
+      "heading_hint": "FMC Descent and Approach",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1799,
+      "fcom_folio": "11.43.45",
+      "section": "11.43",
+      "heading_hint": "FMC Descent and Approach",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1800,
+      "fcom_folio": "11.43.46",
+      "section": "11.43",
+      "heading_hint": "FMC Descent and Approach",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1801,
+      "fcom_folio": "11.60.1",
+      "section": "11.60",
+      "heading_hint": "FMC/CDU Messages                             Section 60",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1802,
+      "fcom_folio": "11.60.2",
+      "section": "11.60",
+      "heading_hint": "FMC/CDU Messages",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1803,
+      "fcom_folio": "11.60.3",
+      "section": "11.60",
+      "heading_hint": "FMC/CDU Messages",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1804,
+      "fcom_folio": "11.60.4",
+      "section": "11.60",
+      "heading_hint": "FMC/CDU Messages",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1805,
+      "fcom_folio": "11.60.5",
+      "section": "11.60",
+      "heading_hint": "FMC/CDU Messages",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1806,
+      "fcom_folio": "11.60.6",
+      "section": "11.60",
+      "heading_hint": "FMC/CDU Messages",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1807,
+      "fcom_folio": "11.60.7",
+      "section": "11.60",
+      "heading_hint": "FMC/CDU Messages",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1808,
+      "fcom_folio": "11.60.8",
+      "section": "11.60",
+      "heading_hint": "FMC/CDU Messages",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1809,
+      "fcom_folio": "11.60.9",
+      "section": "11.60",
+      "heading_hint": "FMC/CDU Messages",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1810,
+      "fcom_folio": "11.60.10",
+      "section": "11.60",
+      "heading_hint": "FMC/CDU Messages",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1811,
+      "fcom_folio": "11.60.11",
+      "section": "11.60",
+      "heading_hint": "FMC/CDU Messages",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1812,
+      "fcom_folio": "11.60.12",
+      "section": "11.60",
+      "heading_hint": "FMC/CDU Messages",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1813,
+      "fcom_folio": "11.60.13",
+      "section": "11.60",
+      "heading_hint": "FMC/CDU Messages",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1814,
+      "fcom_folio": "11.60.14",
+      "section": "11.60",
+      "heading_hint": "FMC/CDU Messages",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1815,
+      "fcom_folio": "11.60.15",
+      "section": "11.60",
+      "heading_hint": "FMC/CDU Messages",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1816,
+      "fcom_folio": "11.60.16",
+      "section": "11.60",
+      "heading_hint": "FMC/CDU Messages",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1817,
+      "fcom_folio": "11.60.17",
+      "section": "11.60",
+      "heading_hint": "FMC/CDU Messages",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1818,
+      "fcom_folio": "11.60.18",
+      "section": "11.60",
+      "heading_hint": "FMC/CDU Messages",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1819,
+      "fcom_folio": "11.60.19",
+      "section": "11.60",
+      "heading_hint": "FMC/CDU Messages",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1820,
+      "fcom_folio": "11.60.20",
+      "section": "11.60",
+      "heading_hint": "FMC/CDU Messages",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1821,
+      "fcom_folio": "11.60.21",
+      "section": "11.60",
+      "heading_hint": "FMC/CDU Messages",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    },
+    {
+      "pdf_page": 1822,
+      "fcom_folio": "11.60.22",
+      "section": "11.60",
+      "heading_hint": "FMC/CDU Messages",
+      "has_text": true,
+      "source": "FCOM Sepehran, document D6-27370-300/400/500-SHI"
+    }
+  ]
+}

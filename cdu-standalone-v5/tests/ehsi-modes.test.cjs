@@ -1,0 +1,16 @@
+const assert=require('node:assert/strict');
+const E=require('../ehsi/ehsi-engine.js');
+assert.equal(E.MODES.length,7);
+assert.deepEqual(E.RANGES,[10,20,40,80,160,320]);
+const expected={MAP:'TRACK_UP',CTR_MAP:'TRACK_UP',FULL_NAV:'TRACK_UP',EXP_NAV:'TRACK_UP',FULL_VOR_ILS:'HEADING_UP',EXP_VOR_ILS:'HEADING_UP',PLAN:'TRUE_NORTH'};
+for(const [mode,orientation] of Object.entries(expected))assert.equal(E.orientation(mode),orientation);
+assert.equal(E.normalize({...E.defaultModel(),mode:'FULL_VOR_ILS',heading:372}).heading,12);
+assert.equal(E.normalize({...E.defaultModel(),mode:'INVALID',range:999}).mode,'MAP');
+const C=require('../engine/cdu-engine.js'),fs=require('fs'),vm=require('vm');
+const sandbox={window:{}};vm.createContext(sandbox);vm.runInContext(fs.readFileSync(require('path').join(__dirname,'../data/page-definitions.js'),'utf8'),sandbox);
+const p=sandbox.window.CDU_PAGES,s=C.makeState('RTE');
+const press=(key)=>C.press(s,p,'CDU_CAPT_'+key);
+for(const ch of 'OIII')press('KEY_'+ch);press('LSK_L1');for(const ch of 'OIMM')press('KEY_'+ch);press('LSK_R1');
+assert.equal(C.lights(s).EXEC,false);assert.equal(s.stagedRoute.ORIGIN,'OIII');assert.equal(s.stagedRoute.DEST,'OIMM');
+press('LSK_L5');assert.equal(C.lights(s).EXEC,true);press('EXEC');assert.equal(C.lights(s).EXEC,false);assert.equal(s.active.DEST,'OIMM');
+console.log('PASS EHSI seven orientations, ranges, invalid data normalization, CDU activation handshake');
