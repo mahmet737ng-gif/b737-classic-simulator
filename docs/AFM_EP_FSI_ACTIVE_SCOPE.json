@@ -1,0 +1,35 @@
+{
+  "schema": "b737-afm-aircraft-scope-v1",
+  "status": "ACTIVE_PRIVATE_REFERENCE",
+  "source_id": "AFM-73733V-D6-8730.33V-R32-20180214",
+  "active_aircraft": {
+    "model": "737-33V",
+    "serial_number": 29340,
+    "registration": "EP-FSI",
+    "registration_provenance": "USER_SPECIFIED",
+    "installed_engine": "UNVERIFIED",
+    "engine_rating": "UNVERIFIED"
+  },
+  "source_pdf_sha256": "3c7002212482f0c47a1735c2302ee304ef41ef4ca270591281b72f5f2a714105",
+  "private_library_path": "/Technical Database/Sources/AFM-737-33V-D6-8730-R32/EP-FSI-ASN29340/",
+  "private_db_filename": "epfsi_afm_scoped_v6.sqlite",
+  "source_pdf_stored_separately": "/Technical Database/Sources/AFM-737-33V-D6-8730-R32/AFM_R32_original.pdf",
+  "linked_tables": {
+    "scoped_rules": 110,
+    "scoped_charts": 6,
+    "cg_chart_pdf_page": 24,
+    "afm_kg_lb_weight_pairs": 4
+  },
+  "excluded_options_by_asn": [
+    "29",
+    "43",
+    "54",
+    "61"
+  ],
+  "engine_related_appendices": "ALL REQUIRE INSTALLED ENGINE AND SERVICE BULLETIN EVIDENCE BEFORE ACTIVATION",
+  "original_full_archive": "IMMUTABLE_HISTORY_ONLY",
+  "other_serials": "DO_NOT_USE_FOR_THIS_SIMULATOR_AIRCRAFT",
+  "runtime_integration": "NOT_YET_CONNECTED",
+  "certified_performance_values": "NONE",
+  "note": "A single airplane-specific reference scope; the underlying full source archive is preserved as private historical evidence and does not authorize calculations for other aircraft."
+}
