@@ -111,6 +111,10 @@
       "Digitize Section 4.2 performance nomograms with independent point checks",
       "Apply engine/ASN/Appendix effectivity gates",
       "Cross-validate numerical solutions before enabling FMC"
-    ]
+    ],
+    "read_only_consumer_api": "Validation-Batch-02/afm_reference_api.py",
+    "consumer_api_tests_passed": 5,
+    "runtime_integration_status": "NOT_INTEGRATED_WITH_SIMULATOR_CORE_OR_CDU",
+    "uncertainty": "Legacy database has a malformed SQLite foreign-key declaration targeting pages(pdf_page); v5 uses explicit consistency checks for newly-added tables. Further schema normalization remains pending."
   }
 }
