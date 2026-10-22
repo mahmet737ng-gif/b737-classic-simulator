@@ -30,7 +30,7 @@ const controls=[
 {id:'fire-warn-r',name:'Fire Warning Right',type:'lamp',x:1581,y:70,w:36,h:31,states:['OFF','ON'],initial:'ON',color:'red',text:'FIRE',detail:'Manual warning lamp demonstration.'},
 {id:'light-test',name:'Lights Test / Dimmer',type:'rotary',x:788,y:223,r:18,states:['DIM','BRT','TEST'],initial:'DIM',detail:'Dimming or lamp test selection, visual demonstration.'},
 {id:'anti-skid',name:'Anti-skid Selector',type:'toggle',x:1219,y:415,states:['OFF','ON'],initial:'OFF',detail:'Anti-skid control demonstration.'},
-{id:'autobrake-disarm',name:'Autobrake Disarm Light',type:'lamp',x:1217,y:369,w:36,h:18,states:['OFF','ON'],initial:'OFF',color:'amber',text:'DISARM',detail:'Manual lamp check only, no autobrake disarm logic.'},
+{id:'autobrake-disarm',name:'Autobrake Disarm Light',type:'lamp',x:1217,y:468,w:36,h:18,states:['OFF','ON'],initial:'OFF',color:'amber',text:'DISARM',detail:'Manual lamp check only, no autobrake disarm logic.'},
 {id:'gear-light-nose',name:'Nose Gear Down Light',type:'gearLamp',x:1298,y:218,w:35,h:17,text:'NOSE',color:'green',states:['OFF','ON'],initial:'ON',detail:'Simulated gear down indication derived from the animated handle position.'},
 {id:'gear-light-left',name:'Left Gear Down Light',type:'gearLamp',x:1279,y:239,w:32,h:17,text:'LEFT',color:'green',states:['OFF','ON'],initial:'ON',detail:'Simulated left gear down indication.'},
 {id:'gear-light-right',name:'Right Gear Down Light',type:'gearLamp',x:1317,y:239,w:32,h:17,text:'RIGHT',color:'green',states:['OFF','ON'],initial:'ON',detail:'Simulated right gear down indication.'},
@@ -82,20 +82,27 @@ function createControl(c){
   c.lamp=g.children[1];
  }
  (c.type==='gearLamp'?lampLayer:svg).append(g);
- g.addEventListener('click',e=>{e.preventDefault();if(c.type==='gear'&&g.dataset.dragged==='yes'){delete g.dataset.dragged;return}if(c.type==='gearLamp'){select(c.id);return}cycle(c.id,e.shiftKey?-1:1)});
+ g.addEventListener('click',e=>{e.preventDefault();if(g.dataset.dragged==='yes'){delete g.dataset.dragged;return}if(c.type==='gearLamp'){select(c.id);return}cycle(c.id,e.shiftKey?-1:1)});
  g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();cycle(c.id,e.shiftKey?-1:1)}else if(e.key==='ArrowUp'||e.key==='ArrowRight'){e.preventDefault();cycle(c.id,1)}else if(e.key==='ArrowDown'||e.key==='ArrowLeft'){e.preventDefault();cycle(c.id,-1)}});
- if(c.type==='rotary')g.addEventListener('wheel',e=>{e.preventDefault();cycle(c.id,e.deltaY<0?-1:1)},{passive:false});
+ if(c.type==='rotary'){g.addEventListener('wheel',e=>{e.preventDefault();cycle(c.id,e.deltaY<0?-1:1)},{passive:false});attachRotaryDrag(g,c)}
  if(c.type==='gear')attachGearDrag(g);
+}
+function attachRotaryDrag(g,c){
+ let down=null,last=-1;
+ g.addEventListener('pointerdown',e=>{if(e.button!==0)return;down={x:e.clientX,y:e.clientY,index:c.states.indexOf(values[c.id])};last=down.index;g.setPointerCapture(e.pointerId)});
+ g.addEventListener('pointermove',e=>{if(!down)return;const dx=e.clientX-down.x,dy=down.y-e.clientY;const travel=Math.abs(dx)>Math.abs(dy)?dx:dy;if(Math.abs(travel)<13)return;g.dataset.dragged='yes';const idx=Math.max(0,Math.min(c.states.length-1,down.index+Math.trunc(travel/23)));if(last!==idx){last=idx;setValue(c.id,c.states[idx])}});
+ g.addEventListener('pointerup',()=>{down=null;if(g.dataset.dragged==='yes')setTimeout(()=>delete g.dataset.dragged,250)});
+ g.addEventListener('pointercancel',()=>{down=null;delete g.dataset.dragged});
 }
 function attachGearDrag(g){let downY=null,downT=0;
  g.addEventListener('pointerdown',e=>{if(e.button!==0)return;downY=e.clientY;downT=performance.now();g.setPointerCapture(e.pointerId)});
  g.addEventListener('pointerup',e=>{if(downY===null)return;const dy=e.clientY-downY;downY=null;if(Math.abs(dy)<12)return;g.dataset.dragged='yes';setTimeout(()=>delete g.dataset.dragged,250);const next=dy>40?'DOWN':dy< -40?'UP':'OFF';setValue('gear',next)});
  g.addEventListener('pointercancel',()=>downY=null);
 }
-function cycle(id,dir=1){const c=byId[id];if(!c||c.type==='gearLamp')return;const i=c.states.indexOf(values[id]);setValue(id,c.states[(i+dir+c.states.length)%c.states.length]);}
+function cycle(id,dir=1){const c=byId[id];if(!c||c.type==='gearLamp')return;const i=c.states.indexOf(values[id]);const next=c.type==='rotary'||c.type==='gear'?Math.max(0,Math.min(c.states.length-1,i+dir)):(i+dir+c.states.length)%c.states.length;setValue(id,c.states[next]);}
 function setValue(id,val){const c=byId[id];if(!c||!c.states.includes(val)||c.type==='gearLamp')return;select(id);if(values[id]===val)return;const from=values[id];values[id]=val;log.unshift(new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',second:'2-digit'})+'  '+c.name+'  '+from+' → '+val);log=log.slice(0,18);renderHistory();if(id==='gear'){if(val==='UP'||val==='DOWN'){moving=true;gearLampRender();const token=++version;setTimeout(()=>{if(token!==version)return;gearPosition=val;moving=false;gearLampRender();save();},920)}else{version++;moving=false;gearLampRender()}}render();save();}
 function select(id){selected=id;const c=byId[id];document.querySelectorAll('.device').forEach(el=>el.classList.toggle('selected',el.dataset.id===id));$('name').textContent=c.name;$('description').textContent=c.detail;$('ref').textContent='MAIN PANEL / '+c.type.toUpperCase()+' / '+id.toUpperCase();$('value').textContent=values[id];const choices=$('choices');choices.replaceChildren();c.states.forEach(v=>{const b=document.createElement('button');b.textContent=v;b.className=values[id]===v?'active':'';b.disabled=c.type==='gearLamp';b.title=c.type==='gearLamp'?'Indication follows simulated landing-gear state.':'';b.addEventListener('click',()=>setValue(id,v));choices.appendChild(b)});}
-function angle(c,val){const i=c.states.indexOf(val);return c.type==='rotary' ? (-125 + 250*i/Math.max(1,c.states.length-1)):0}
+function angle(c,val){const i=c.states.indexOf(val);if(c.id==='autobrake')return [-140,-92,-50,0,49,90][i]??0;return c.type==='rotary' ? (-125 + 250*i/Math.max(1,c.states.length-1)):0}
 function render(){for(const c of controls){const val=values[c.id];if(c.rotor)c.rotor.style.transform='rotate('+angle(c,val)+'deg)';if(c.type==='toggle')c.lever.style.transform='translateY('+(val===c.states[0]?7:-7)+'px)';if(c.type==='gear')c.lever.style.transform='translateY('+(val==='UP'?-74:val==='OFF'?0:74)+'px)';if(c.type==='push')c.element.classList.toggle('pressed',val!==c.states[0]);if(c.type==='lamp')lampRender(c);c.element.setAttribute('aria-label',c.name+' '+val);}
  $('gearHandleState').textContent=values.gear;$('gearPosState').textContent=moving?'TRANSIT':gearPosition;$('brakeState').textContent=values.autobrake;$('lightsState').textContent='MANUAL TEST';
  if(selected)select(selected);gearLampRender();
