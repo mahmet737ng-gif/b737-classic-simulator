@@ -87,7 +87,8 @@ function bindSensorSignals(network,physics,config){
     sensor.state=sample.reportedPressure;
     sensor.quality=sample.quality;
     sensor.faultMode=sample.injectedFault;
-    sensor.authority='ISN_04_SENSOR_SIGNAL_AFTER_PRESSURE_MODEL';
+    sensor.signalAuthority='ISN_04_SENSOR_SIGNAL_AFTER_PRESSURE_MODEL';
+    sensor.physicalAuthority=sensor.authority;
     return sample;
   };
   const lamp=p=>p==='UNKNOWN'?null:p==='LOW';
