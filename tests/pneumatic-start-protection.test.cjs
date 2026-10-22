@@ -98,11 +98,16 @@ assert.ok(stalled.view.propulsion.protection.engines['2'].advisoryReasons.includ
 let duty=run(fixture.state,'SET_ENGINE_START_SWITCH',{engine:1,value:'GRD'});
 assert.equal(duty.view.propulsion.protection.engines['1'].attemptCount,1);
 duty=run(duty.state,'ADVANCE_SECONDS',{value:121});
-assert.equal(duty.view.propulsion.engines['1'].startSwitch,'OFF');
+// NP.21.33 does not document a two-minute automatic starter cutout.
+// The crew must take action; the simulator reports the over-limit event.
+assert.equal(duty.view.propulsion.engines['1'].startSwitch,'GRD');
 assert.equal(duty.view.propulsion.protection.engines['1'].startFault,'STARTER_DUTY_LIMIT');
+assert.ok(duty.view.propulsion.protection.engines['1'].advisoryReasons.includes('STARTER_DUTY_LIMIT'));
+assert.equal(duty.view.propulsion.protection.engines['1'].automaticEngineShutdown,false);
+assert.throws(()=>run(duty.state,'RESET_STARTER_DUTY_FAULT',{engine:1}),Error);
+duty=run(duty.state,'SET_ENGINE_START_SWITCH',{engine:1,value:'OFF'});
 assert.equal(duty.view.propulsion.protection.engines['1'].cooldownRemainingSeconds,20);
 assert.throws(()=>run(duty.state,'SET_ENGINE_START_SWITCH',{engine:1,value:'GRD'}),Error);
-assert.throws(()=>run(duty.state,'RESET_STARTER_DUTY_FAULT',{engine:1}),Error);
 duty=run(duty.state,'ADVANCE_SECONDS',{value:20});
 assert.equal(duty.view.propulsion.protection.engines['1'].cooldownRemainingSeconds,0);
 duty=run(duty.state,'RESET_STARTER_DUTY_FAULT',{engine:1});
