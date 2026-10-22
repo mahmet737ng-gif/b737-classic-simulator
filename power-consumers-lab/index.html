@@ -409,6 +409,15 @@ const onOff=v=>v===true?'ON':v===false?'OFF':'UNKNOWN';
 function render(){
   const d=kernel.deriveAircraftState(state);
   const b=d.electrical.buses;
+  const n1=state.indications.n1Reference;
+  el('eisN1Mode').value=n1.mode;
+  const set=n1.manualTargetPct;
+  el('eisKnobNeedle').style.setProperty('--eis-angle',
+    (set===null?-135:set/120*270-135)+'deg');
+  el('eisKnob').setAttribute('aria-valuenow',String(set===null?0:set));
+  el('eisKnob').setAttribute('aria-valuetext',set===null?'NOT SET':set.toFixed(1)+' percent');
+  t(el('eisKnobReadout'),'MAN SET '+(set===null?'--':set.toFixed(1))+
+    '% / '+n1.mode+' / no autothrottle override');
   const panel=el('eisPanels');
   panel.replaceChildren();
   if(d.indications.mode!=='INTEGRATED'){
@@ -462,7 +471,10 @@ function render(){
       );
       unit.append(q);
       const sub=document.createElement('p');sub.className='sub';
-      sub.textContent='EGT region: '+x.computed.egtRegion+
+      sub.textContent='N1 BUG: '+(x.n1Reference.bugTargetPct===null?'UNKNOWN':
+        x.n1Reference.bugTargetPct.toFixed(1)+'%')+
+        ' ('+x.n1Reference.targetQuality+') · '+
+        'EGT region: '+x.computed.egtRegion+
         ' · Fuel used: '+(x.fuelUsedKg===null?'UNKNOWN':x.fuelUsedKg.toFixed(2)+' kg')+
         ' · oil-high period: '+x.computed.oilTempHighSeconds+'s';
       unit.append(sub);panel.append(unit);
