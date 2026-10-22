@@ -1,22 +1,24 @@
 {
   "schema": "b737-afm-aircraft-scope-v1",
-  "status": "ACTIVE_PRIVATE_REFERENCE_V7_20K_RATING_USER_CONFIRMED",
+  "status": "ACTIVE_PRIVATE_REFERENCE_V8_CFM56_3B_1_20K_USER_CONFIRMED",
   "source_id": "AFM-73733V-D6-8730.33V-R32-20180214",
   "active_aircraft": {
     "model": "737-33V",
     "serial_number": 29340,
     "registration": "EP-FSI",
     "registration_provenance": "USER_SPECIFIED",
-    "installed_engine": null,
+    "installed_engine": "CFM56-3B-1",
     "engine_rating": "20K",
-    "installed_engine_status": "UNVERIFIED_EXACT_MODEL",
+    "installed_engine_status": "USER_CONFIRMED_NO_INDEPENDENT_MAINTENANCE_RECORD",
     "engine_rating_lbf": 20000,
     "engine_rating_provenance": "USER_EXPLICIT_CONFIRMATION_2026-10-23",
-    "engine_rating_independently_verified": false
+    "engine_rating_independently_verified": false,
+    "installed_engine_provenance": "USER_EXPLICIT_CONFIRMATION_2026-10-23",
+    "installed_engine_independently_verified": false
   },
   "source_pdf_sha256": "3c7002212482f0c47a1735c2302ee304ef41ef4ca270591281b72f5f2a714105",
-  "private_library_path": "/Technical Database/Sources/AFM-737-33V-D6-8730-R32/EP-FSI-ASN29340/v7/",
-  "private_db_filename": "epfsi_afm_scoped_v7.sqlite",
+  "private_library_path": "/Technical Database/Sources/AFM-737-33V-D6-8730-R32/EP-FSI-ASN29340/v8/",
+  "private_db_filename": "epfsi_afm_scoped_v8.sqlite",
   "source_pdf_stored_separately": "/Technical Database/Sources/AFM-737-33V-D6-8730-R32/AFM_R32_original.pdf",
   "linked_tables": {
     "scoped_rules": 110,
@@ -30,15 +32,24 @@
     "54",
     "61"
   ],
-  "engine_related_appendices": "Appendix 33 matches rated 20K; engine variant/PMC/service-bulletin effectivity still unverified; 22K operation not selected",
+  "engine_related_appendices": {
+    "33": "ENGINE_AND_RATING_MATCHED_CFM56-3B-1_20K__EFFECTIVITY_VERIFICATION_PENDING",
+    "43": "EXCLUDED_ASN29339_ONLY",
+    "1UK": "REDUCED_TAKEOFF_CONDITIONAL_ENGINE_MATCHED",
+    "2UK": "PMC_OFF_CONDITIONAL_ENGINE_MATCHED",
+    "15UK": "22K_NOT_SELECTED",
+    "17UK": "22K_NOT_SELECTED"
+  },
   "original_full_archive": "IMMUTABLE_HISTORY_ONLY",
   "other_serials": "DO_NOT_USE_FOR_THIS_SIMULATOR_AIRCRAFT",
   "runtime_integration": "NOT_YET_CONNECTED",
   "certified_performance_values": "NONE",
   "note": "A single airplane-specific reference scope; the underlying full source archive is preserved as private historical evidence and does not authorize calculations for other aircraft.",
-  "supersedes": "EP-FSI-ASN29340/epfsi_afm_scoped_v6.sqlite",
+  "supersedes": "EP-FSI-ASN29340/v7/epfsi_afm_scoped_v7.sqlite",
   "numerical_n1_computations_enabled": false,
-  "reader_tests_passed": 13,
-  "version": 7,
-  "audit_note": "Owner-confirmed installed 20K engine rating recorded as configuration assertion; AFM PDF p13 lists Appendix 33 for CFM56-3 at 20K. Exact installed engine type not inferred."
+  "reader_tests_passed": 20,
+  "version": 8,
+  "audit_note": "Owner confirmed CFM56-3B-1 and 20K for EP-FSI ASN29340. AFM Appendix Applicability Page A (PDF p13) includes 33 (CFM56-3 series at 20K), and lists 1UK reduced thrust / 2UK PMC OFF for CFM56-3-B1. This is not independent confirmation of the installed engine hardware or PMC state; N1 curves not digitized/validated.",
+  "private_db_sha256": "f720fdd5db01597db34c536b3d69ea43e156ad7b247fabfb82f9791fa28720b2",
+  "pmc_option": "UNVERIFIED"
 }
