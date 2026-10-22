@@ -118,3 +118,16 @@ Do not equate a source selector or training field with fully calculated performa
 | N1-FSI-07 Calculated N1 feed to FMC & autothrottle | P0 | BLOCKED UNTIL N1-FSI-03–06 | No automatic N1; manual entered N1 is marked MAN for button-training only, never a published calculated target |
 
 Private active dataset: `/Technical Database/Sources/AFM-737-33V-D6-8730-R32/EP-FSI-ASN29340/v10/epfsi_afm_scoped_v10.sqlite` (SHA256 40812cae7042c2c3c83135236883ea477d7b35fa7a6e0b25872ab31ac7f9b830). The public repository contains no Boeing scans or proprietary chart data. Browser screenshot visual QA remains unverified; CI covers the headless state machine only.
+
+## 2026-10-23 — Owner priority change: LAN classroom paused
+
+**Owner decision:** The three-seat local-network mode (Captain / First Officer / Instructor) is **DEFERRED**, not cancelled or deleted. Preserve all previously committed server, session synchronization, permissions and tests; do not spend current development cycles on network transport, pairing or networking UI unless the owner explicitly reactivates this work. The existing `sync-server/` and `trainer-lab/network.*` stay as a future reusable capability.
+
+**Immediate active priorities (single-device / standalone first):**
+1. Connect actual cockpit switches, selectors and knob animation events to `engine/trainer/core.js` without changing the owner's locked artwork or the root deployed cockpit.
+2. Extend deterministic electrical, fuel and hydraulics state/sensor rules tied to documented FCOM references; simulate equipment faults and indications.
+3. Integrate already implemented warning/audio phrase selection, including acknowledgment, suppression and source-driven event rules.
+4. Build state-aware instructor faults, Normal/Non-Normal QRH practice, checklist branches and repeatable scenario scoring/reset.
+5. Verify each vertical slice via automated state tests and a separate preview before any change to the main cockpit.
+
+**Status:** Priority decision recorded; no implementation of the above new integration milestones is claimed by this entry. LAN module retains its prior tested prototype status.
