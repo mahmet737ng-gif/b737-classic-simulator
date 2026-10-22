@@ -41,7 +41,8 @@ function initializeIndications(){
  }]));
  const data=()=>({channels:channel(),fuelUsedKg:null,
    displayMode:'FLOW',modeRemainingSeconds:0,oilHighTempSeconds:0});
- return {schema:'b737cl-eis-fsi-v1',engines:{'1':data(),'2':data()}};
+ return {schema:'b737cl-eis-fsi-v1',engines:{'1':data(),'2':data()},
+   n1Reference:{mode:'FMC',manualTargetPct:null,fmcTargetPct:{'1':null,'2':null}}};
 }
 function instrumentAction(state,action){
  const k=key(action.instrument),s=state.engines[id(action.engine)];
@@ -57,6 +58,17 @@ function instrumentAction(state,action){
      s.channels[k].lossElapsedSeconds=0;
    }
  }else throw new TypeError('unknown EIS command');
+}
+function n1ReferenceAction(state,action){
+ const r=state.n1Reference;
+ if(action.type==='SET_N1_REFERENCE_MODE'){
+   if(!['FMC','MANUAL'].includes(action.value))throw new TypeError('invalid N1 reference mode');
+   r.mode=action.value;
+ }else if(action.type==='SET_N1_MANUAL_REFERENCE'){
+   r.manualTargetPct=numberOrNull(action.value,'n1Pct');
+ }else if(action.type==='SET_N1_FMC_REFERENCE'){
+   r.fmcTargetPct[id(action.engine)]=numberOrNull(action.value,'n1Pct');
+ }else throw new TypeError('invalid N1 reference action');
 }
 function panelButton(state,action){
  const s=state.engines[id(action.engine)];
@@ -150,6 +162,19 @@ function evaluateIndications(indications,propulsion,phase){
        fuelFlowKgHr:values.fuelFlowKgHr,ffDigital:ff},
      secondary:{oilPressurePsi:values.oilPressurePsi,oilTempC:values.oilTempC,
        oilQtyPct:values.oilQtyPct,vibration:values.vibration},
+     n1Reference:{
+       mode:indications.n1Reference.mode,
+       manualSetReadout:indications.n1Reference.mode==='MANUAL'?
+         indications.n1Reference.manualTargetPct:null,
+       bugTargetPct:indications.n1Reference.mode==='MANUAL'?
+         indications.n1Reference.manualTargetPct:indications.n1Reference.fmcTargetPct[id],
+       targetQuality:indications.n1Reference.mode==='MANUAL'?
+         'CREW_SELECTED_NO_AUTOTHROTTLE_EFFECT':
+         indications.n1Reference.fmcTargetPct[id]===null?
+           'FMC_TARGET_NOT_PROVIDED':'EXTERNAL_FMC_TARGET',
+       autothrottleOverride:false,
+       source:source('7.10.3-4',1175)
+     },
      computed:{
        n1RedLimitDemand:n1===null?null:n1>=106,
        n2RedLimitDemand:n2===null?null:n2>=105,
@@ -169,6 +194,8 @@ function evaluateIndications(indications,propulsion,phase){
  }
  return result;
 }
-const INSTRUMENT_COMMANDS=new Set(['SET_ENGINE_INDICATION','SET_INSTRUMENT_SIGNAL','PUSH_FUEL_USED','RESET_FUEL_USED']);
+const INSTRUMENT_COMMANDS=new Set([
+ 'SET_ENGINE_INDICATION','SET_INSTRUMENT_SIGNAL','PUSH_FUEL_USED','RESET_FUEL_USED',
+ 'SET_N1_REFERENCE_MODE','SET_N1_MANUAL_REFERENCE','SET_N1_FMC_REFERENCE']);
 module.exports={initializeIndications,evaluateIndications,instrumentAction,panelButton,
- advanceIndications,INSTRUMENT_COMMANDS,LIMITS,INSTRUMENT_KEYS:NAMES};
+ advanceIndications,n1ReferenceAction,INSTRUMENT_COMMANDS,LIMITS,INSTRUMENT_KEYS:NAMES};
