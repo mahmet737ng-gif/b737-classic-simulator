@@ -114,6 +114,7 @@ function evaluateIndications(indications,propulsion,phase){
  const result={schema:'b737cl-eis-fsi-v1',mode:propulsion.mode,units:'SOURCE_UNITS_SI',engines:{},limits:LIMITS,
    source:source('7.10.3-11;L.10.7',1174),
    geometry:'EIS_FSI_PRIMARY_SECONDARY_LAYOUT_LOGIC_ONLY'};
+ if(propulsion.mode!=='INTEGRATED')return result;
  for(const id of ENGINE_IDS){
    const s=indications.engines[id],engine=propulsion.engines[id];
    const values={};
@@ -156,7 +157,7 @@ function evaluateIndications(indications,propulsion,phase){
        egtRegion,egtLimitC:egtLimit,
        egtStartAdvisoryFlash:starting && propulsion.protection.engines[id].egtDigitalFlashDemand,
        oilPressureLowLightDemand:oilPressureLow,
-       oilTempZone:oilT===null?'UNKNOWN':oilT>165?'ABOVE_MAX':
+       oilTempZone:oilT===null?'UNKNOWN':oilT>=165?'AT_OR_ABOVE_MAX':
          oilT>160?'CAUTION_TIME_LIMITED':'NORMAL',
        oilTempHighSeconds:s.oilHighTempSeconds,
        oilTemp15MinExceeded:s.oilHighTempSeconds>900,
