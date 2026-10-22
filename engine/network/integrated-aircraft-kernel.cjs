@@ -29,6 +29,10 @@ const {initPropulsion,synchronizedInputs,evaluatePropulsion,
   applyPropulsionAction,PROPULSION_COMMANDS}=
   require('./engine-apu-integration.cjs');
 
+const {PROTECTION_COMMANDS,applyProtectionAction,reconcileStarterEdges,
+  tickProtection,reconcileApuProtections}=
+  require('./pneumatic-start-protection.cjs');
+
 const clone = x => JSON.parse(JSON.stringify(x));
 const bool = (v,n) => {if(typeof v !== 'boolean') throw new TypeError(n+' must be boolean');};
 const pick = (v,allowed,name) => {
@@ -208,7 +212,8 @@ function transitionAircraftState(previous,action) {
     case 'SET_WARNING_RECALL':
       validateBoolean();state.warning.recallPressed=p.value;break;
     default:
-      if(PROPULSION_COMMANDS.has(p.type))
+      if(PROTECTION_COMMANDS.has(p.type))applyProtectionAction(state.propulsion,p);
+      else if(PROPULSION_COMMANDS.has(p.type))
         applyPropulsionAction(state.propulsion,p,{
           electrical:before.electrical,
           propulsion:before.propulsion,
@@ -216,6 +221,12 @@ function transitionAircraftState(previous,action) {
         });
       else throw new TypeError('Unknown action '+String(p.type));
       break;
+  }
+  if(state.propulsion?.mode==='INTEGRATED') {
+    if(previous.propulsion.mode==='INTEGRATED')
+      reconcileStarterEdges(state.propulsion,previous.propulsion);
+    if(p.type==='ADVANCE_SECONDS')tickProtection(state.propulsion,p.value);
+    reconcileApuProtections(state.propulsion);
   }
   // FCOM §7.30.2 ground battery-switch OFF shuts down the APU.
   if(state.propulsion?.mode==='INTEGRATED'&&e.phase==='GROUND'&&
