@@ -23,6 +23,7 @@
     th{color:#b7c5ce;white-space:nowrap}td{word-break:break-word}
     .scroller{overflow:auto}.light{border-radius:6px;padding:9px;background:#141b22;border:1px solid var(--line);min-height:45px}
     .warning{background:#472a20;border-color:#bb7756}.log{height:170px;overflow:auto;direction:ltr;text-align:left;font:12px/1.8 Consolas,monospace}
+    select{background:#253642;color:#fff;border:1px solid #6d8a9b;border-radius:7px;padding:8px;max-width:100%;font:inherit}
     .note{border-inline-start:3px solid var(--warn);padding:8px 12px;color:var(--muted);background:#1f252a}
     @media(max-width:550px){h1{font-size:19px}section{padding:12px}table{font-size:11px}button{padding:7px 9px}}
   </style>
@@ -58,6 +59,37 @@
       <button data-action="ack">ACK MASTER CAUTION</button>
       <button data-action="recall">RECALL (hold / release)</button>
     </div>
+  </section>
+  <section>
+    <h2>Sensor Failure Injector</h2>
+    <p class="sub">خطای سنسور جدا از خرابی واقعی پمپ است. سیگنال گزارش‌شده و وضعیت فیزیکی کنار هم نمایش داده می‌شوند.</p>
+    <div class="toolbar" style="align-items:center">
+      <label for="sensorId">Sensor</label>
+      <select id="sensorId" aria-label="Choose sensor"></select>
+      <label for="sensorMode">Fault mode</label>
+      <select id="sensorMode" aria-label="Choose sensor fault">
+        <option value="HEALTHY">HEALTHY</option>
+        <option value="OPEN_CIRCUIT">OPEN_CIRCUIT</option>
+        <option value="UNPOWERED">UNPOWERED</option>
+        <option value="STUCK_LOW">STUCK_LOW</option>
+        <option value="STUCK_NORMAL">STUCK_NORMAL</option>
+        <option value="INTERMITTENT">INTERMITTENT</option>
+      </select>
+      <button data-action="injectSensor">INJECT FAULT</button>
+      <button data-action="restoreSensor">RESTORE SENSOR</button>
+      <button data-action="settling">PENDING / RESOLVED</button>
+      <button data-action="sampleLow">Sample LOW</button>
+      <button data-action="sampleNormal">Sample NORMAL</button>
+      <button data-action="sampleDrop">Sample DROPOUT</button>
+    </div>
+    <p id="selectedSensor" class="sub"></p>
+    <div class="scroller">
+      <table aria-label="Sensor truth versus reported signals">
+        <thead><tr><th>Sensor</th><th>Physical</th><th>Reported</th><th>Quality</th><th>Fault</th></tr></thead>
+        <tbody id="sensorTable"></tbody>
+      </table>
+    </div>
+    <p class="note">Injected faults represent a test harness, not established airplane self-diagnostics. Delay stays unknown until a source establishes one.</p>
   </section>
   <section>
     <h2>Electrical Bus & Source</h2>
@@ -117,6 +149,17 @@ const kernel=globalThis.B737PowerNetwork;
 if(!kernel){document.querySelector('#log').textContent='Runtime failed to load';return;}
 let state=kernel.initialAircraftState();
 let events=[];
+const sensorIds=[
+  'FUEL.MAIN1_FWD','FUEL.MAIN1_AFT','FUEL.MAIN2_FWD','FUEL.MAIN2_AFT',
+  'FUEL.CTR_LEFT','FUEL.CTR_RIGHT',
+  'HYD.A.ELECTRIC','HYD.A.ENGINE','HYD.A.SYSTEM',
+  'HYD.B.ELECTRIC','HYD.B.ENGINE','HYD.B.SYSTEM'
+];
+const sel=document.getElementById('sensorId');
+for(const id of sensorIds){
+  const opt=document.createElement('option');opt.value=id;opt.textContent=id;sel.append(opt);
+}
+sel.value='FUEL.CTR_RIGHT';
 const el=id=>document.getElementById(id);
 const t=(node,value)=>node.textContent=String(value??'UNKNOWN');
 const cls=value=>value===true||value==='POWERED'||value==='AVAILABLE'||value==='NORMAL'||value==='RUNNING'?'good':
@@ -129,6 +172,14 @@ const onOff=v=>v===true?'ON':v===false?'OFF':'UNKNOWN';
 function render(){
   const d=kernel.deriveAircraftState(state);
   const b=d.electrical.buses;
+  el('sensorTable').replaceChildren();
+  for(const [name,s] of Object.entries(d.sensors))
+    rowTable(el('sensorTable'),[name,s.physicalPressure,s.reportedPressure,
+      s.quality,s.injectedFault||'NONE']);
+  const sensor=d.sensors[sel.value];
+  t(el('selectedSensor'),'Selected '+sel.value+': physical '+sensor.physicalPressure+
+    ' / reported '+sensor.reportedPressure+' / quality '+sensor.quality+
+    ' / diagnostic mismatch '+sensor.trainingDiagnosticMismatch);
   el('buses').replaceChildren();
   for(const [name,val] of [
     ['GEN BUS 1',b.generator1],['MAIN BUS 1',b.main1],['TRANSFER BUS 1',b.transfer1],
@@ -169,6 +220,7 @@ function render(){
   for(const ev of events.slice(-30).reverse()){
     const d=document.createElement('div');
     t(d,'#'+ev.sequence+' '+ev.action.type+'  sensors='+ev.sensorChanges.length+
+      '  signalChanges='+(ev.sensorSignalChanges||[]).length+
       '  new=['+ev.activatedWarnings.join('|')+']  cleared=['+ev.clearedWarnings.join('|')+']');
     el('log').append(d);
   }
@@ -205,6 +257,20 @@ document.querySelectorAll('[data-toggle]').forEach(b=>b.addEventListener('click'
     apply('SET_FUEL_PUMP_SWITCH',{pump,value:!state.pumps.fuel.switches[pump]});
   }
 }));
+const selectedSensor=()=>el('sensorId').value;
+el('sensorId').addEventListener('change',render);
+document.querySelector('[data-action="injectSensor"]').addEventListener('click',()=>apply('SET_SENSOR_MODE',{
+  sensor:selectedSensor(),value:el('sensorMode').value}));
+document.querySelector('[data-action="restoreSensor"]').addEventListener('click',()=>apply('SET_SENSOR_MODE',{
+  sensor:selectedSensor(),value:'HEALTHY'}));
+document.querySelector('[data-action="settling"]').addEventListener('click',()=>{
+  const sensor=selectedSensor();
+  apply('SET_SENSOR_SETTLING',{sensor,value:!state.sensors[sensor].settling});
+});
+for(const [action,value] of [['sampleLow','LOW'],['sampleNormal','NORMAL'],['sampleDrop','DROPOUT']]){
+  document.querySelector('[data-action="'+action+'"]').addEventListener('click',
+    ()=>apply('SET_SENSOR_SAMPLE',{sensor:selectedSensor(),value}));
+}
 document.querySelector('[data-action="ack"]').addEventListener('click',()=>apply('ACK_MASTER_CAUTION'));
 document.querySelector('[data-action="recall"]').addEventListener('click',()=>
   apply('SET_WARNING_RECALL',{value:!state.warning.recallPressed}));
