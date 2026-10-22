@@ -1,0 +1,48 @@
+name: NAVDB public-source import and QA
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'navigation/**'
+      - '.github/workflows/navdb.yml'
+  schedule:
+    - cron: '17 5 * * 1'
+permissions:
+  contents: read
+jobs:
+  build-navdb:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Unit tests on synthetic fixtures
+        run: python -m unittest discover -s navigation/tests -v
+      - name: Download world airports and navaids, build SQLite
+        run: python navigation/navdb.py build --download --data-dir navigation/data --db navigation/navdb.sqlite > navigation/build-report.json
+      - name: Verify and export Iran sample airports (community data only)
+        run: |
+          python navigation/navdb.py summary --db navigation/navdb.sqlite > navigation/summary.json
+          python navigation/navdb.py export OIII OIIE OIMM --db navigation/navdb.sqlite --output navigation/iran-airports.json > /dev/null
+          python - <<'PY'
+          import json
+          report=json.load(open('navigation/summary.json'))
+          counts=report['counts']
+          print('NAVDB counts:', counts)
+          assert counts['airports'] > 50000 and counts['navaids'] > 5000
+          assert counts['procedures'] == 0, 'Procedure activation is not validated'
+          sample=json.load(open('navigation/iran-airports.json'))
+          for icao in ('OIII','OIIE','OIMM'):
+              print(icao, 'found' if sample[icao] else 'not present in this community snapshot')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: navdb-world-${{ github.run_number }}
+          path: |
+            navigation/navdb.sqlite
+            navigation/build-report.json
+            navigation/summary.json
+            navigation/iran-airports.json
+          retention-days: 30
