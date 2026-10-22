@@ -370,6 +370,45 @@
     byId("realImportStatus").textContent="ورود دسته‌جمعی: "+success+" فایل ثبت شد. "+(failed.length? "موارد ناموفق: "+failed.join(" | "):"");
     input.value="";
   });
+
+  byId("diagnoseImported").addEventListener("click",async()=>{
+    if(!realReady||realBank.count===0){
+      byId("realDiagnostics").textContent="هیچ فایل واقعی برای آزمایش وارد نشده است.";
+      return;
+    }
+    const AC=window.AudioContext||window.webkitAudioContext;
+    if(!AC){byId("realDiagnostics").textContent="مرورگر AudioContext ندارد.";return;}
+    const ctx=new AC();
+    let pass=0;const issues=[];
+    try{
+      for(const [key,item] of realBank.cache.entries()){
+        byId("realDiagnostics").textContent="آزمون "+(pass+issues.length+1)+" / "+realBank.count+": "+item.name;
+        try{
+          const decoded=await ctx.decodeAudioData(await item.blob.arrayBuffer());
+          if(!decoded||!Number.isFinite(decoded.duration)||decoded.duration<=0)
+            throw Error("زمان یا دادهٔ نامعتبر");
+          let peak=0,energy=0,n=0,hardClip=0;
+          for(let ch=0;ch<decoded.numberOfChannels;ch++){
+            const samples=decoded.getChannelData(ch);
+            const step=Math.max(1,Math.floor(samples.length/250000));
+            for(let k=0;k<samples.length;k+=step){
+              const v=Math.abs(samples[k]);
+              peak=Math.max(peak,v);energy+=v*v;n++;
+              if(v>=.9999)hardClip++;
+            }
+          }
+          const rms=n?Math.sqrt(energy/n):0;
+          if(rms<.0003)issues.push(item.name+": تقریباً بی‌صداست");
+          else if(hardClip>n*.02)issues.push(item.name+": احتمال کلیپینگ شدید");
+          else pass++;
+        }catch(e){issues.push(item.name+": "+e.message);}
+      }
+    }finally{await ctx.close().catch(()=>{});}
+    byId("realDiagnostics").textContent="بررسی پایان یافت: "+pass+" سالم از "+
+      realBank.count+" فایل. "+(issues.length?"هشدار: "+issues.join(" | "):"هیچ اشکال اولیه‌ای تشخیص داده نشد.")+
+      " (این تست اصالت ضبط یا صحت صدای 737 را تأیید نمی‌کند.)";
+  });
+
   byId("deleteCurrent").addEventListener("click",async()=>{
     if(!realReady)return;
     try{await realBank.remove(byId("realTarget").value);refreshImportUI();}
