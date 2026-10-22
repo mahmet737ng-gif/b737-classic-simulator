@@ -164,3 +164,16 @@ Source-backed summary: `docs/SENSOR_FAILURE_ENGINE_STAGE_3.md`. Private Technica
 | ENG-052 Production cockpit lamp wiring and effects | BLOCKED | Need approved cockpit coordinate/image mappings, verified annunciator WDM/SSM circuits, local real audio clips and owner release approval. Do not edit `main`/live website on pilot status. |
 
 Reference: `docs/ANNUNCIATION_AUDIO_INTEGRATION_ISN05.md`. This stage is *functional signal integration*, not final installed aircraft-electronics fidelity or live cockpit deployment.
+
+## 2026-10-23 — ISN-06 Engine + APU + Fuel + Electrical integration
+
+| Task | Status | Evidence and limits |
+| --- | --- | --- |
+| ENG-053 Discrete APU battery/fuel/door/start/ready and GEN/bleed | DONE (ISOLATED TRAINING PILOT) | `engine/network/engine-apu-integration.cjs` source FCOM §§7.30.1–3 PDF pp1216–1218; battery and fire-handle interlocks, grounded start-ready input, DC boost fuel logic, available APU GEN and selected bleed. No autospool or hot-start thermal model. |
+| ENG-054 Engine 1/2 starting prerequisites and cutoff | DONE (DISCRETE PILOT) | FCOM NP.21.34–35 pp134–135, §§7.20.7–8 pp1208–09; pressurized air source, measured duct PSI, 25% N2 standard/max motoring min 20%, N1 rotation, source fuel feed, AC igniter selection, confirmed lightoff, 46% N2 starter cutout and confirmed idle. |
+| ENG-055 Generator ownership and engine-driven HYD link | DONE (INTEGRATED STATE) | `integrated-aircraft-kernel.cjs` derives GEN1/2/APU available from corresponding powerplant and generator health, engines A/B hydraulics from running states, with explicit selected bus handover and flight APU bus restriction. Legacy scenario mode retained without breaking earlier tests. |
+| ENG-056 APU GEN OFF BUS and Engine START VALVE OPEN indication | DONE (LOGICAL PROJECTION) | `annunciation-output-engine.cjs`; feedback-null stays UNKNOWN; no imaginary starter valve-open lamp just from selecting GRD. |
+| ENG-057 Interactive powerplant test panel and source parity | DONE (BRANCH PREVIEW) | `power-consumers-lab/index.html`, generated `runtime.js`, browser/Node replay parity in `tests/power-consumers-browser.test.cjs`. Not deployed to live main or production cockpit. |
+| ENG-058 Full start dynamics and protective faults | NOT COMPLETE | Need turbine/EGT/fuel-flow curves, appropriate EP-FSI aircraft records, bleed duct valve topology, APU/engine fault timing, starter-duty cycle, fire/shutdown links and tests. Values not invented. |
+
+Source/architecture and reproduction: `docs/ENGINE_APU_FUEL_ELECTRICAL_ISN06.md`. This is **functional switching and system dependency integration**, not a finished engines/airframe physical simulator. Keep `main` and live website unchanged until explicit approval.
