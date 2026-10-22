@@ -39,7 +39,7 @@ function makeLamp(id,control,kind,source,power,group){
     source
   };
 }
-function projectAnnunciation(view,fire,propulsion){
+function projectAnnunciation(view,fire,propulsion,indications){
   if(!view||!view.warnings||!view.pumps||!view.electrical)
     throw new TypeError('integrated aircraft view required');
   if(!fire||!fire.alerts)
@@ -109,6 +109,17 @@ function projectAnnunciation(view,fire,propulsion){
         propulsion.engines[id].startValveOpenIndication,
         'CAUTION',ref('7.20.7,NP.21.34-35',[1208,134,135]),
         'ENGINE_PANEL');
+    }
+  }
+  if(indications?.mode==='INTEGRATED'){
+    for(const id of ['1','2']){
+      const data=indications.engines[id].computed;
+      const group='EIS_PANEL';
+      const src=ref('7.10.3-10;L.10.7',[1174,1176,1180,86]);
+      set('ENG'+id+'_LOW_OIL_PRESSURE',data.oilPressureLowLightDemand,'CAUTION',src,group);
+      set('ENG'+id+'_N1_LIMIT',data.n1RedLimitDemand,'WARNING',src,group);
+      set('ENG'+id+'_N2_LIMIT',data.n2RedLimitDemand,'WARNING',src,group);
+      set('ENG'+id+'_EGT_LIMIT',data.egtLimitDemand,'WARNING',src,group);
     }
   }
   const sound=fire.alerts.fireBell;
