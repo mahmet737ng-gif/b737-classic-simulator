@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>B737 Classic | Integrated Systems Network - Draft</title>
+<style>
+:root{color-scheme:dark;font:14px/1.5 system-ui,Segoe UI,Arial,sans-serif;background:#08111e;color:#e8eef9}
+*{box-sizing:border-box}body{margin:0}header{padding:17px 22px;border-bottom:1px solid #25334a;background:#0b1626}
+header h1{font-size:19px;letter-spacing:.04em;margin:0}header p{margin:3px 0 0;color:#98aac4;font-size:12px}
+#count{color:#78c9ff}.note{color:#f0c074}.layout{display:grid;grid-template-columns:220px minmax(360px,1fr) 345px;min-height:calc(100vh - 82px)}
+aside{padding:15px;background:#0d1a2c;border-right:1px solid #24354d;overflow:auto}
+aside h2{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#94aaca;margin:8px 0}
+button,input{font:inherit}button{cursor:pointer}
+.group{width:100%;text-align:left;display:flex;align-items:center;gap:8px;padding:8px;border:0;border-radius:7px;background:transparent;color:#bdcce1}
+.group:hover,.group.active{background:#203957;color:#fff}.group strong{font-size:12px}
+.group span{min-width:40px;color:#9cccf9;font:11px ui-monospace,Consolas,monospace}
+main{padding:16px;min-width:0}
+#map{width:100%;height:min(69vh,660px);min-height:400px;background:radial-gradient(circle at 50% 43%,#152b48,#0b1728 73%);border:1px solid #2a3952;border-radius:12px}
+.node rect{fill:#182e4a;stroke:#537091;stroke-width:1.1;rx:12}.node text{fill:#e6f0ff;font-size:11px;text-anchor:middle;font-weight:650}
+.node.selected rect{fill:#164267;stroke:#59d9ff;stroke-width:2.3}.node.neighbor rect{stroke:#7aa9e6}
+.edge{fill:none;stroke-width:2;opacity:.74}.edge.in{stroke:#f0b66c}.edge.out{stroke:#5ed5d3}.edge.self{stroke:#a291f4}
+.foot{font-size:12px;color:#93aac9;margin-top:9px}
+.inspector{border-left:1px solid #24354d;background:#0e1b2e;padding:16px;max-height:calc(100vh - 82px);overflow:auto}
+input{width:100%;background:#101e34;color:white;padding:10px;border:1px solid #3b5574;border-radius:8px;outline:none}
+input:focus{border-color:#5cc8ff}
+.component{display:block;width:100%;border:1px solid #2a3e58;background:#12243b;border-radius:7px;color:#d6e6fa;text-align:left;margin:7px 0;padding:8px}
+.component small{display:block;color:#91adcb}.component.active{border-color:#54d1ff;background:#1a3b56}
+#detail{border-top:1px solid #30435e;padding-top:14px;margin-top:14px}
+#detail h3{margin:0 0 5px;font-size:15px}.trace{padding:9px;border:1px solid #2b405c;border-radius:7px;margin:7px 0}
+.trace b{display:block;color:#e5f4ff;font-size:12px}.trace small{color:#9fb9d3}
+kbd{background:#19344c;padding:2px 5px;border-radius:3px;font-size:11px}
+@media(max-width:1000px){.layout{grid-template-columns:180px minmax(300px,1fr)}.inspector{grid-column:1/-1;border-left:0;border-top:1px solid #24354d;max-height:none}.group{padding:7px}}
+@media(max-width:600px){.layout{display:block}aside{max-height:160px;border-right:0;border-bottom:1px solid #273950}#groups{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}.group strong{display:none}main{padding:8px}#map{min-height:300px;height:50vh}.inspector{padding:12px}}
+</style>
+</head>
+<body>
+<header><h1>737 CLASSIC / INTEGRATED SYSTEMS NETWORK <small style="font-size:11px;color:#ffd68f">v0.1 · DRAFT</small></h1>
+<p>737-300 / 400 / 500 · Functional dependencies only, not a wiring diagram or validated aircraft simulation · <span id="count">Loading graph...</span></p></header>
+<div class="layout">
+<aside><h2>FCOM Systems</h2><div id="groups"></div></aside>
+<main>
+<svg id="map" viewBox="0 0 920 575" role="img" aria-label="System-to-system directed dependency graph">
+<defs><marker id="outArrow" markerWidth="7" markerHeight="7" refX="5.5" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6" fill="none" stroke="#5ed5d3" stroke-width="1.4"/></marker>
+<marker id="inArrow" markerWidth="7" markerHeight="7" refX="5.5" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6" fill="none" stroke="#f0b66c" stroke-width="1.4"/></marker></defs>
+<g id="edges"></g><g id="nodes"></g></svg>
+<p class="foot">Select a system to expose its directed cross-system links. <span style="color:#5ed5d3">Cyan = outbound</span> · <span style="color:#f0b66c">amber = inbound</span>. Component details show source section and physical PDF page.</p>
+</main>
+<section class="inspector">
+<h2 id="systemTitle" style="margin-top:0">System inspector</h2>
+<input id="filter" placeholder="Search components in selected system" aria-label="Search components">
+<p id="systemStats" class="foot"></p>
+<div id="components"></div>
+<div id="detail"></div>
+</section></div>
+<script>
+'use strict';
+const svgNS='http://www.w3.org/2000/svg';
+const $=id=>document.getElementById(id);
+const mk=(tag,attrs={})=>{const el=document.createElementNS(svgNS,tag);for(const [k,v] of Object.entries(attrs))el.setAttribute(k,v);return el;};
+let graph, selectedGroup='ELEC', selectedNode=null;
+function pos(i){return {x:95+(i%5)*182,y:87+Math.floor(i/5)*188};}
+function renderSystems(){
+  $('groups').replaceChildren();
+  graph.groups.forEach(group=>{
+    const button=document.createElement('button');
+    button.type='button';button.className='group'+(selectedGroup===group.id?' active':'');
+    const label=document.createElement('strong');label.textContent=group.label;
+    const code=document.createElement('span');code.textContent=group.id;
+    button.append(code,label);button.onclick=()=>{selectedGroup=group.id;selectedNode=null;render();};
+    $('groups').append(button);
+  });
+}
+function renderMap(){
+  const edges=$('edges'), nodes=$('nodes');edges.replaceChildren();nodes.replaceChildren();
+  const names=graph.groups.map(g=>g.id), index=Object.fromEntries(names.map((n,i)=>[n,i]));
+  const links=new Map();
+  graph.edges.forEach(e=>{
+    const a=e.from.split('.')[0],b=e.to.split('.')[0];
+    if(a===b || (a!==selectedGroup && b!==selectedGroup))return;
+    const k=a+'>'+b;links.set(k,(links.get(k)||0)+1);
+  });
+  const neighbors=new Set();
+  for(const [k,count] of links){
+    const [a,b]=k.split('>'),pa=pos(index[a]),pb=pos(index[b]);
+    neighbors.add(a);neighbors.add(b);
+    const dx=pb.x-pa.x,dy=pb.y-pa.y,len=Math.max(1,Math.hypot(dx,dy));
+    const ux=dx/len,uy=dy/len;
+    const sx=pa.x+ux*53,sy=pa.y+uy*27,tx=pb.x-ux*53,ty=pb.y-uy*27;
+    const path=mk('path',{d:'M'+sx+','+sy+' Q'+((sx+tx)/2-uy*18)+','+((sy+ty)/2+ux*18)+' '+tx+','+ty,
+      class:'edge '+(a===selectedGroup?'out':'in'),
+      'marker-end':'url(#'+(a===selectedGroup?'outArrow':'inArrow')+')'});
+    const title=mk('title');title.textContent=a+' -> '+b+' ('+count+' links)';path.append(title);edges.append(path);
+  }
+  graph.groups.forEach((group,i)=>{
+    const p=pos(i),g=mk('g',{class:'node'+(group.id===selectedGroup?' selected':neighbors.has(group.id)?' neighbor':''),
+      tabindex:'0',role:'button','aria-label':group.label});
+    const r=mk('rect',{x:p.x-60,y:p.y-24,width:120,height:48});
+    const t=mk('text',{x:p.x,y:p.y-3});t.textContent=group.id;
+    const sub=mk('text',{x:p.x,y:p.y+12,style:'font-size:9px;font-weight:400;fill:#9db7d5'});sub.textContent='FCOM Ch '+group.fcomChapter;
+    g.append(r,t,sub);
+    g.onclick=()=>{selectedGroup=group.id;selectedNode=null;render();};
+    g.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();g.onclick();}};
+    nodes.append(g);
+  });
+}
+function traceItem(e,direction){
+  const container=document.createElement('div');container.className='trace';
+  const title=document.createElement('b');title.textContent=(direction==='in'?'FROM ':'TO ')+(direction==='in'?e.from:e.to);
+  const desc=document.createElement('small');
+  desc.textContent=e.kind+' · FCOM §'+e.source.section+' · PDF page '+e.source.pdfPage+
+    (e.verification==='functional-path-only'?' · FEEDER NOT VERIFIED':'')+
+    (e.condition?' · '+e.condition:'');
+  container.append(title,desc);return container;
+}
+function renderInspector(){
+  const group=graph.groups.find(g=>g.id===selectedGroup);
+  $('systemTitle').textContent=group.label+' / '+group.id;
+  const comps=graph.nodes.filter(n=>n.group===selectedGroup);
+  const inp=graph.edges.filter(e=>e.to.startsWith(selectedGroup+'.')).length;
+  const out=graph.edges.filter(e=>e.from.startsWith(selectedGroup+'.')).length;
+  $('systemStats').textContent=comps.length+' pilot components · '+inp+' inbound · '+out+' outbound edges';
+  const q=$('filter').value.trim().toLowerCase();
+  $('components').replaceChildren();
+  comps.filter(n=>(n.id+' '+n.label).toLowerCase().includes(q)).forEach(n=>{
+    const button=document.createElement('button');button.type='button';
+    button.className='component'+(selectedNode===n.id?' active':'');
+    const strong=document.createElement('strong');strong.textContent=n.label;
+    const small=document.createElement('small');small.textContent=n.id+' · '+n.kind;
+    button.append(strong,small);button.onclick=()=>{selectedNode=n.id;renderInspector();};
+    $('components').append(button);
+  });
+  const detail=$('detail');detail.replaceChildren();
+  if(!selectedNode)return;
+  const node=graph.nodes.find(n=>n.id===selectedNode), h=document.createElement('h3');
+  h.textContent=node.label;detail.append(h);
+  const inbound=graph.edges.filter(e=>e.to===node.id),outbound=graph.edges.filter(e=>e.from===node.id);
+  for(const [direction,es] of [['in',inbound],['out',outbound]]){
+    const label=document.createElement('p');label.textContent=direction==='in'?'INPUTS / DEPENDENCIES':'OUTPUTS / CONSEQUENCES';
+    label.style.color='#7fb5ec';label.style.fontWeight='bold';detail.append(label);
+    if(es.length===0){const p=document.createElement('p');p.textContent='No pilot edges mapped yet';detail.append(p);}
+    es.forEach(e=>detail.append(traceItem(e,direction)));
+  }
+}
+function render(){renderSystems();renderMap();renderInspector();}
+$('filter').addEventListener('input',renderInspector);
+fetch('../engine/network/b737cl-system-graph.v0.1.json').then(r=>{if(!r.ok)throw new Error('HTTP '+r.status);return r.json()}).then(data=>{
+  graph=data;$('count').textContent=data.groups.length+' groups / '+data.nodes.length+' nodes / '+data.edges.length+' directed links';
+  selectedGroup='ELEC';render();
+}).catch(e=>{$('count').textContent='Data unavailable';
+  $('systemTitle').textContent='Graph could not load';
+  $('systemStats').textContent='Serve this folder via a web server preserving repository relative paths. '+e.message;});
+</script></body></html>
