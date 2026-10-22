@@ -67,6 +67,35 @@
       <button data-action="recall">RECALL (hold / release)</button>
     </div>
   </section>
+  <section id="eisLab">
+    <h2>ISN-09 — EP-FSI Engine Instrument System (EIS)</h2>
+    <p class="sub">FCOM 7.10.3–11 | Two-engine FSI EIS training preview. Values come from engine sensors and direct measurements; no invented spool, oil or fuel-flow dynamics. Schematic presentation, not FCOM pixel-traced artwork.</p>
+    <div class="toolbar" style="align-items:center">
+      <button data-eis-action="cold">COLD &amp; DARK (RESET)</button>
+      <label for="eisEngine">Engine</label>
+      <select id="eisEngine"><option value="1">ENG 1</option><option value="2">ENG 2</option></select>
+      <label for="eisKey">Measurement</label>
+      <select id="eisKey">
+        <option value="n1Pct">N1 %</option><option value="n2Pct">N2 %</option>
+        <option value="egtC">EGT °C</option><option value="fuelFlowKgHr">Fuel Flow kg/h</option>
+        <option value="oilPressurePsi">Oil Pressure psi</option><option value="oilTempC">Oil Temp °C</option>
+        <option value="oilQtyPct">Oil Quantity %</option><option value="vibration">Vibration</option>
+      </select>
+      <input id="eisValue" type="number" step="any" placeholder="Measured value" aria-label="Observed measurement" style="max-width:145px"/>
+      <button data-eis-action="observe">SUBMIT SENSOR</button>
+      <label for="eisSignal">Signal</label>
+      <select id="eisSignal">
+        <option value="VALID">VALID</option><option value="SIGNAL_LOSS">SIGNAL LOSS</option>
+        <option value="INTERNAL_FAILURE">INTERNAL DISPLAY FAILURE</option>
+      </select>
+      <button data-eis-action="signal">INJECT SIGNAL STATE</button>
+      <button data-eis-action="used">FF/FU USED (10s)</button>
+      <button data-eis-action="resetUsed">RESET FUEL USED</button>
+      <button data-eis-action="tick2">ADVANCE +2 SECONDS</button>
+    </div>
+    <div class="eis-grid" id="eisPanels" aria-label="EIS primary and secondary displays"></div>
+    <p class="note" id="eisNote">Primary EIS failure: two-second lower-stop state, followed by dashes. Oil and other secondary EIS failures show missing/invalid indication. Reference limits are not replaced with fabricated current readings.</p>
+  </section>
   <section>
     <h2>ISN-08 — QRH Fault Scenario &amp; Checklist Routing</h2>
     <p class="sub">این نمایش فقط یک فهرست آموزشیِ مبتنی بر ارجاع QRH است، نه متن کامل چک‌لیست پروازی. هیچ مرحله‌ای خودکار سوییچ کاکپیت را نمی‌زند.</p>
