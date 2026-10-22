@@ -66,10 +66,11 @@ button.action.secondary{background:#142931;color:#b5d8d5;border-color:#385b5a}bu
   <label>هشدار مقصد<select id="realTarget" aria-label="Target warning"></select></label>
   <div class="actions"><button class="action" id="importOne">انتخاب فایل برای همین هشدار</button>
    <button class="action secondary" id="importMany">ورود دسته‌جمعی WAV/MP3</button>
-   <button class="action secondary" id="deleteCurrent">حذف فایل هشدار انتخابی</button></div>
+   <button class="action secondary" id="deleteCurrent">حذف فایل هشدار انتخابی</button><button class="action secondary" id="diagnoseImported">آزمون سلامت فایل‌های واردشده</button></div>
   <input type="file" id="realSingleFile" accept="audio/*,.wav,.mp3,.ogg,.m4a,.aac,.flac,.opus,.webm" hidden />
   <input type="file" id="realMultipleFiles" accept="audio/*,.wav,.mp3,.ogg,.m4a,.aac,.flac,.opus,.webm" multiple hidden />
   <p id="realImportStatus" class="source-status" role="status">در حال بررسی بانک صوتی مرورگر…</p>
+  <p id="realDiagnostics" class="source-status">برای بررسی فنی فایل‌ها روی «آزمون سلامت» بزن.</p>
   <p id="realCurrentClip" class="source-status">برای هشدار انتخاب‌شده هنوز فایل واقعی ثبت نشده است.</p>
  </div>
  <p class="muted" style="margin:14px 0 5px">منابع شناسایی‌شده؛ فایل‌های زیر هنوز به برنامه منتقل نشده‌اند:</p>
