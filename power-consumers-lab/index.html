@@ -68,6 +68,50 @@
     </div>
   </section>
   <section>
+    <h2>ISN-07 — Pneumatic Routing &amp; Start Protection</h2>
+    <p class="sub">فرمان شیر، وضعیت حسگر و فشار اندازه‌گیری‌شده جدا هستند. زمان استارتر فقط با فرمان ADVANCE SECONDS جلو می‌رود.</p>
+    <div class="toolbar" style="align-items:center">
+      <label for="isoMode">Isolation</label>
+      <select id="isoMode"><option value="AUTO">AUTO</option><option value="OPEN">OPEN</option><option value="CLOSE">CLOSE</option></select>
+      <button data-protection="isolation">SET ISOLATION</button>
+      <button data-protection="bleed1">ENG 1 BLEED ON/OFF</button>
+      <button data-protection="bleed2">ENG 2 BLEED ON/OFF</button>
+      <button data-protection="packL">L PACK OFF/AUTO</button>
+      <button data-protection="packR">R PACK OFF/AUTO</button>
+      <button data-protection="trip1">INJECT ENG1 BLEED TRIP</button>
+      <button data-protection="trip2">INJECT ENG2 BLEED TRIP</button>
+      <button data-protection="tripReset">BLEED TRIP RESET</button>
+    </div>
+    <div class="toolbar" style="align-items:center">
+      <label for="apuProtection">APU fault</label>
+      <select id="apuProtection">
+        <option value="OVERSPEED">OVERSPEED</option>
+        <option value="LOW_OIL_PRESSURE">LOW OIL PRESSURE</option>
+        <option value="HIGH_OIL_TEMPERATURE">HIGH OIL TEMPERATURE</option>
+        <option value="FIRE">FIRE</option>
+        <option value="FCU_FAILURE">FCU FAILURE</option>
+        <option value="BLEED_OVERTEMP">BLEED OVERTEMP (NO APU SHUTDOWN)</option>
+      </select>
+      <button data-protection="apuFault">TOGGLE APU FAULT</button>
+      <label for="egtObserved">Observed EGT °C</label>
+      <input id="egtObserved" type="number" min="-100" max="1300" value="725" style="max-width:95px"/>
+      <button data-protection="egt">ENTER ENGINE EGT</button>
+      <button data-protection="egtNoRise">EGT NO RISE (CONFIRMED)</button>
+      <button data-protection="slowN2">N2 ACCELERATION SLOW</button>
+      <label for="advanceStartTime">Seconds</label>
+      <input id="advanceStartTime" type="number" min="0" max="3600" value="10" style="max-width:80px"/>
+      <button data-protection="clock">ADVANCE SECONDS</button>
+      <button data-protection="starterReset">RESET STARTER DUTY FAULT</button>
+    </div>
+    <div class="scroller">
+      <table aria-label="Observed pneumatic and engine protections">
+        <thead><tr><th>Item</th><th>Command / State</th><th>Source / Condition</th><th>Fault / Procedure</th></tr></thead>
+        <tbody id="protectionStatus"></tbody>
+      </table>
+    </div>
+    <p class="note">این قسمت ابزار آزمون آموزشی است. هشدار استارت غیرعادی، راهنمای بررسی چک‌لیست است؛ بدون سنسور EGT/روغن معتبر یا مدل حرارتی، خاموشی خودکار موتور ساخته نمی‌شود.</p>
+  </section>
+  <section>
     <h2>ISN-06 — APU / Engine Start / Generator Sequencing</h2>
     <p class="sub">این پنل فقط فرمان‌های ورودی واقعی موتور شبیه‌ساز را می‌فرستد. مقادیر N2 و DUCT PSI تزریق ورودی آزمون هستند، نه محاسبهٔ خودکار عملکرد توربین.</p>
     <div class="toolbar">
@@ -283,6 +327,24 @@ const onOff=v=>v===true?'ON':v===false?'OFF':'UNKNOWN';
 function render(){
   const d=kernel.deriveAircraftState(state);
   const b=d.electrical.buses;
+  el('protectionStatus').replaceChildren();
+  if(d.propulsion.mode==='INTEGRATED'){
+    const pd=d.propulsion.pneumatic.distribution;
+    rowTable(el('protectionStatus'),['ISOLATION',pd.isolation.switch,pd.isolation.nominalProjectedPosition,pd.isolation.quality]);
+    rowTable(el('protectionStatus'),['DUAL BLEED',pd.dualBleedLightDemand?'ON':'OFF',
+      pd.apuBleedValve.projectedOpen?'APU VALVE OPEN':'APU BLEED CLOSED','FCOM 2.10.2']);
+    for(const n of ['1','2']){
+      const bleed=pd.engineValves[n],sp=d.propulsion.protection.engines[n];
+      rowTable(el('protectionStatus'),['ENG'+n+' BLEED',bleed.command?'ON':'OFF',
+        pd.engines[n].source,bleed.bleedTripLatched?'TRIP LATCHED':'NOMINAL']);
+      rowTable(el('protectionStatus'),['ENG'+n+' START',sp.starterElapsedSeconds+'s / cooldown '+sp.cooldownRemainingSeconds+'s',
+        'EGT '+(sp.egtC??'UNKNOWN')+'°C',sp.advisoryReasons.join(', ')||sp.startFault||'NO CONFIRMED ABORT']);
+    }
+    const ap=d.propulsion.protection.apu;
+    rowTable(el('protectionStatus'),['APU PROTECTION',
+      d.propulsion.apu.phase,ap.shutdownFaults.join(', ')||'NO SHUTDOWN FAULT',
+      ap.overtemperatureBleedClosure?'BLEED OVERTEMP CUTOUT':'BLEED NORMAL']);
+  }
   el('powertrainStatus').replaceChildren();
   if(d.propulsion.mode==='INTEGRATED'){
     const a=d.propulsion.apu;
@@ -413,6 +475,39 @@ for(const [action,value] of [['sampleLow','LOW'],['sampleNormal','NORMAL'],['sam
   document.querySelector('[data-action="'+action+'"]').addEventListener('click',
     ()=>apply('SET_SENSOR_SAMPLE',{sensor:selectedSensor(),value}));
 }
+document.querySelectorAll('[data-protection]').forEach(b=>b.addEventListener('click',()=>{
+  const n=b.dataset.protection,engine=el('engineSelect').value;
+  switch(n){
+    case 'isolation':apply('SET_ISOLATION_SWITCH',{value:el('isoMode').value});break;
+    case 'bleed1':case 'bleed2':{
+      const id=n==='bleed1'?'1':'2';
+      apply('SET_ENGINE_BLEED_SWITCH',{engine:id,
+        value:!state.propulsion.safety.pneumatic.engineBleedSwitches[id]});break;
+    }
+    case 'packL':case 'packR':{
+      const id=n==='packL'?'L':'R';
+      apply('SET_PACK_SWITCH',{pack:id,
+        value:state.propulsion.safety.pneumatic.packs[id]==='OFF'?'AUTO':'OFF'});break;
+    }
+    case 'trip1':case 'trip2':{
+      const id=n==='trip1'?'1':'2';
+      apply('SET_BLEED_TRIP_CONDITION',{engine:id,
+        value:!state.propulsion.safety.pneumatic.bleedTripCondition[id]});break;
+    }
+    case 'tripReset':apply('PUSH_BLEED_TRIP_RESET');break;
+    case 'apuFault':{
+      const fault=el('apuProtection').value;
+      apply('SET_APU_PROTECTION_SIGNAL',{fault,
+        value:!state.propulsion.safety.apuFaultSignals[fault]});break;
+    }
+    case 'egt':apply('SET_ENGINE_EGT_C',{engine,
+      value:Number(el('egtObserved').value)});break;
+    case 'egtNoRise':apply('SET_ENGINE_EGT_RISE_CONFIRMED',{engine,value:false});break;
+    case 'slowN2':apply('SET_ENGINE_N2_ACCELERATION',{engine,value:'SLOW'});break;
+    case 'clock':apply('ADVANCE_SECONDS',{value:Number(el('advanceStartTime').value)});break;
+    case 'starterReset':apply('RESET_STARTER_DUTY_FAULT',{engine});break;
+  }
+}));
 document.querySelectorAll('[data-powertrain]').forEach(b=>b.addEventListener('click',()=>{
   const n=b.dataset.powertrain, e=el('engineSelect').value;
   try{
