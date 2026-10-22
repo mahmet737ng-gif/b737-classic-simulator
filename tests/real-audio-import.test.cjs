@@ -21,7 +21,7 @@ assert.equal(keyFor("gpws","pull up"),"gpws|PULL UP");
 assert.equal(keyFor("radioAltitude","500"),"radioAltitude|500");
 assert.equal(suggestKey("a.mp3",tests),"radioAltitude|COLLECTION");
 assert.equal(suggestKey("e.mp3",tests),"shaker");
-assert.equal(suggestKey("c.mp3",tests),null);
+assert.equal(suggestKey("c.mp3",tests),"gpws|COLLECTION");
 assert.equal(suggestKey("b.mp3",tests),null);
 assert.equal(suggestKey("fire bell.wav",tests),"fireBell");
 assert.equal(suggestKey("stall_warning.wav",tests),"shaker");
