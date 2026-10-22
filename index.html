@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#0b1118" /><meta name="description" content="Interactive Boeing 737 Classic cockpit explorer — overhead, instrument panel and pedestal. Educational demo only." />
+  <title>B737 Classic · Interactive Flight Deck</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="cockpit-data.js" defer></script><script src="app.js" defer></script>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar" id="sidebar">
+      <div class="identity"><div class="wing-symbol">✈</div><div><b>FLIGHTDECK <em>737</em></b><small>CLASSIC COCKPIT SIMULATOR</small></div></div>
+      <div class="side-caption">COCKPIT EXPLORER</div>
+      <nav class="side-nav" aria-label="Cockpit panels">
+        <button class="nav-item active" data-view="all"><span class="nav-icon">▣</span><span>Complete Flight Deck</span><span class="nav-num">00</span></button>
+        <button class="nav-item" data-view="overhead"><span class="nav-icon">▥</span><span>Overhead Panel</span><span class="nav-num">01</span></button>
+        <button class="nav-item" data-view="main"><span class="nav-icon">▤</span><span>Main Instrument Panel</span><span class="nav-num">02</span></button>
+        <button class="nav-item" data-view="pedestal"><span class="nav-icon">≡</span><span>Center Pedestal</span><span class="nav-num">03</span></button>
+      </nav>
+      <div class="side-caption divided">QUICK SEARCH</div>
+      <label class="search-wrap"><span>⌕</span><input id="searchInput" type="search" placeholder="Battery, APU, lights..." aria-label="Find a cockpit control" /><span class="key-hint">/</span></label>
+      <div id="searchResults" class="search-results" aria-live="polite"></div>
+      <div class="side-end"><div class="mode-indicator"><span class="mode-ring">CL</span><div><b>737-300 / 400 / 500</b><small>Systems visualizer · beta 0.2</small></div></div><p>Independent educational prototype.<br/>Not an aircraft-certified simulator.</p></div>
+    </aside>
+    <div class="shell">
+      <header class="topbar">
+        <div class="top-left"><button class="mobile-menu" id="menuBtn" aria-label="Open navigation">☰</button><span class="top-label">AIRCRAFT / B737 CLASSIC</span><span class="slash">/</span><strong id="crumb">COMPLETE FLIGHT DECK</strong></div>
+        <div class="top-right"><span class="status-bubble"><i></i> INTERACTIVE DEMO</span><button id="helpBtn" class="icon-control" aria-label="Help and keyboard shortcuts">?</button></div>
+      </header>
+      <main class="workspace">
+        <div class="intro"><div><p class="eyebrow"><span class="short-line"></span> INTERACTIVE COCKPIT EXPLORER</p><h1>The <i>Classic</i> Flight Deck<span class="dot">.</span></h1><p class="intro-sub">Every panel in one workspace. Select a system, operate mapped cockpit controls and inspect their demo state.</p></div><div class="intro-side"><span class="outline-pill">BOEING 737-300 / -400 / -500</span><span>Visual reference · user-provided cockpit image</span></div></div>
+        <div class="workspace-toolbar">
+          <div class="tabs" role="tablist" aria-label="Choose a cockpit view"><button role="tab" data-tab="all" class="tab active" aria-selected="true">All Panels</button><button role="tab" data-tab="overhead" class="tab" aria-selected="false">Overhead</button><button role="tab" data-tab="main" class="tab" aria-selected="false">Main Panel</button><button role="tab" data-tab="pedestal" class="tab" aria-selected="false">Pedestal</button></div>
+          <div class="tool-actions"><label class="overlay-check"><input type="checkbox" id="showHotspots" checked/> <span>Switch points</span></label><span class="toolbar-separator"></span><button id="zoomOut" class="small-tool" aria-label="Zoom out">−</button><output id="zoomValue">100%</output><button id="zoomIn" class="small-tool" aria-label="Zoom in">+</button><button id="zoomReset" class="small-tool fit" title="Fit content">FIT</button><button id="fullscreen" class="small-tool expand" title="Fullscreen">⛶</button></div>
+        </div>
+        <div class="main-grid">
+          <section class="viewer-wrap" id="viewerWrap" aria-label="Interactive cockpit image">
+            <div class="viewer-header"><div><span class="mini-dot"></span> <strong id="viewName">COMPLETE FLIGHT DECK</strong><small id="viewSub">Three cockpit sections · select one to zoom in</small></div><span class="viewer-note">CLICK OR TAP AN OUTLINED CONTROL TO OPERATE</span></div>
+            <div class="viewer-scroll" id="viewerScroll"><div class="deck-root" id="deckRoot">
+              <div class="deck-section" data-section="overhead"><div class="section-caption"><span>01</span><strong>OVERHEAD PANEL</strong><button class="jump" data-jump="overhead">OPEN ↗</button></div><div class="panel-image overhead" id="panel-overhead"><img alt="Boeing 737 Classic overhead cockpit panel — clean extracted reference" src="assets/overhead.webp" draggable="false"/><div class="hit-layer" id="hits-overhead"></div></div></div>
+              <div class="deck-section" data-section="main"><div class="section-caption"><span>02</span><strong>MAIN INSTRUMENT PANEL</strong><button class="jump" data-jump="main">OPEN ↗</button></div><div class="panel-image main" id="panel-main"><img alt="Boeing 737 Classic main cockpit instrument panel" src="assets/main-panel.webp" draggable="false"/><div class="hit-layer" id="hits-main"></div></div></div>
+              <div class="deck-section" data-section="pedestal"><div class="section-caption"><span>03</span><strong>THROTTLE QUADRANT & PEDESTAL</strong><button class="jump" data-jump="pedestal">OPEN ↗</button></div><div class="panel-image pedestal" id="panel-pedestal"><img alt="Boeing 737 Classic center pedestal throttle quadrant and radio stack" src="assets/pedestal.webp" draggable="false"/><div class="hit-layer" id="hits-pedestal"></div></div></div>
+            </div></div>
+            <div class="viewer-footer"><span>PHOTO-BASED SWITCH MAP <b id="mappedCount">0</b> POINTS</span><span>Zoom in for precision • Scroll inside panel to inspect</span></div>
+          </section>
+          <aside class="inspector" aria-label="Control inspector">
+            <div class="inspector-eyebrow"><span>◎</span> CONTROL INSPECTOR <span class="learn-chip">DEMO</span></div>
+            <div class="inspector-card"><div class="control-heading"><span id="controlNumber">NO CONTROL SELECTED</span><span id="controlSystem">—</span></div><h2 id="controlTitle">Choose a switch<br/>on the panel</h2><p id="controlInfo">Select a highlighted cockpit control to inspect its position and operate the training-state model.</p><div class="control-status"><span>SIMULATED POSITION</span><strong id="controlState">—</strong></div><div class="state-choices" id="controlChoices"><span class="empty-choices">No control selected</span></div><div id="controlNote" class="control-note">State changes here do not yet reproduce validated aircraft system logic.</div></div>
+            <div class="scenario-panel"><div class="panel-caption">SCENARIO PRESETS</div><div class="scenario-buttons"><button data-preset="cold" class="scenario-btn">Cold & Dark</button><button data-preset="ground" class="scenario-btn selected">Ground Power</button><button data-preset="flight" class="scenario-btn">In Flight</button></div><span>Sets illustrative training states. Not an FCOM procedure.</span></div>
+            <div class="summary-panel"><div class="panel-caption">SYSTEM SNAPSHOT <span class="live-badge">LIVE DEMO</span></div><div class="summary-row"><span>DC / AC POWER</span><b id="powerState">STANDBY</b></div><div class="summary-row"><span>ENGINE GENERATORS</span><b id="engineState">OFF</b></div><div class="summary-row"><span>AUTOPILOT</span><b id="apState">OFF</b></div><div class="summary-row"><span>MODIFIED CONTROLS</span><b id="changedCount">0</b></div></div>
+            <div class="event-panel"><div class="panel-caption">RECENT ACTIONS <button id="clearLog" title="Clear event list">CLEAR</button></div><div class="event-list" id="eventList"><p>No switches operated yet.</p></div></div>
+          </aside>
+        </div>
+        <footer><div><strong>737 CLASSIC · COCKPIT EXPLORER</strong><span>Reference image supplied by project owner. Visual and switch mapping prototype.</span></div><div class="footer-actions"><button id="exportBtn">EXPORT STATES ↓</button><button id="resetBtn">RESET SCENARIO ↺</button></div></footer>
+      </main>
+    </div>
+  </div>
+  <dialog id="helpDialog"><h3>Using the Cockpit Explorer</h3><p>Choose a panel or click <b>OPEN</b> next to one. Tap one of the outlined switch targets; use the right-side inspector to change its demo state. Controls are mapped directly on the provided cockpit photograph.</p><p><b>Shortcuts:</b> / focuses search, + and − change zoom, 0 fits, Esc closes dialog. Use the navigation tabs to explore the full flight deck.</p><p><b>Current scope:</b> interaction and persistent demonstration states. FCOM-verified interlocks, failures and annunciation logic are a later development milestone.</p><button id="closeHelp">CLOSE</button></dialog>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

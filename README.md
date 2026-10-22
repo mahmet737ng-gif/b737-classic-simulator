@@ -1,5 +1,45 @@
-# B737 Classic Flightdeck Simulator
+# B737 Classic — Interactive Cockpit Explorer
 
-Interactive Boeing 737 Classic cockpit training prototype. Three connected cockpit sections: overhead, main instrument panel and pedestal. **Educational demonstration only — not for operational aviation use.**
+**Working prototype v0.2** — a photo-based Boeing 737-300/400/500 training interface built around the three sections of the owner-provided cockpit reference: Overhead, Main Instrument Panel and Center Pedestal.
 
-Source UI is based on a user-provided visual reference. Do not confuse visual switching with validated aircraft system logic.
+## Launch
+
+Open `index.html` in any modern browser. No build, external CDNs, paid services, login, package installation or backend is required.
+
+A public deployment is prepared with `.github/workflows/pages.yml`. Once GitHub Pages is enabled for this repository with **Source: GitHub Actions**, every push to `main` automatically deploys the site.
+
+## What works now
+
+- Original reference images are extracted with **handwritten annotations excluded**.
+- Complete cockpit page plus separately enlarged Overhead / Main Instrument Panel / Pedestal.
+- Data-defined clickable image hotspots, including 100+ mapped demonstrator controls.
+- A sidebar inspector with multi-position/toggle switch settings.
+- Search by control or system; scenario presets (Cold & Dark, Ground Power, In Flight); summary indicators; action log; zoom; fullscreen; keyboard shortcuts; browser-local state persistence; state export.
+- Layout adapts to desktop, tablet and phones.
+
+## Important limits
+
+- **Educational visual prototype only; not for aviation operations.** Switching demonstrates UI state changes, not aircraft-accurate hydraulics, electrics, bleed-air, FMC, autopilot, engine logic, annunciations or interlocks.
+- Panel artwork from a reference provided by the project owner is for prototype use. Before public redistribution, confirm rights to publish it.
+- Do not treat any values here as FCOM/FCTM/QRH-validated or airline-approved.
+- Hotspot coordinates should be individually checked against the reference at full size; additional switches may be mapped later without redesigning the UI.
+
+## File structure
+
+- `index.html`: cockpit workspace
+- `styles.css`: desktop/tablet/mobile layout
+- `cockpit-data.js`: panel geometry and mapped control registry; **source of truth** for UI targets
+- `app.js`: state machine for demonstration-only switching
+- `assets/*.webp`: reference cockpit panels, cleaned and optimized (offline-capable)
+- `docs/ROADMAP.md`: tasks and acceptance criteria
+- `.github/workflows/pages.yml`: deployment
+
+## Next milestones
+
+1. Audit control mapping on each panel against high-resolution reference.
+2. Import, index and page-link owner-provided FCOM, FCTM, QRH.
+3. Implement validated switch states and system interlocks in testable, independent modules.
+4. Couple annunciators, aircraft instruments and realistic startup/shutdown scenarios to the validated system model.
+5. Make safe switch guards/rotary behavior and touch/zoom interactions faithful to real hardware.
+
+Separate repository from JeppIran; no dependencies or files shared.
