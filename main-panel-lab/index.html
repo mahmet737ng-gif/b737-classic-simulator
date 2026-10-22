@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b1119">
+<meta name="description" content="B737 Classic interactive main panel — animated physical controls on cockpit photo. Educational prototype.">
+<title>B737 Classic · Animated Main Panel</title>
+<link rel="stylesheet" href="./panel.css">
+<script src="./panel.js" defer></script>
+</head>
+<body>
+<header class="top">
+  <div class="branding"><span class="wing">✈</span><div><strong>B737 CLASSIC</strong><small>MAIN PANEL · INTERACTIVE CONTROL LAB</small></div></div>
+  <div class="top-actions"><span class="status" id="testStatus"><i></i> VISUAL DEMONSTRATOR</span><a class="link" href="../index.html">← FULL COCKPIT</a></div>
+</header>
+<main>
+  <section class="main-work">
+    <div class="tools">
+      <div class="left-tools"><strong>MAIN INSTRUMENT PANEL</strong><small>Tap a knob, button, switch or lever directly on the panel. Drag the landing gear lever.</small></div>
+      <div class="right-tools"><button id="minus" title="Zoom out">−</button><output id="zoomValue">100%</output><button id="plus" title="Zoom in">+</button><button id="fit">FIT</button><button id="targets" class="active">TARGETS</button><button id="lampTest">LAMP TEST</button><button id="reset">RESET</button></div>
+    </div>
+    <div class="scroll" id="scroll">
+      <div class="stage" id="stage">
+        <img class="source" src="../assets/main-panel.webp" alt="B737 Classic main instrument panel photographic reference" draggable="false">
+        <svg id="overlays" class="overlays" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2048 705" preserveAspectRatio="none" aria-label="Animated cockpit controls">
+          <defs>
+            <linearGradient id="knobFront" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f4f5f4"/><stop offset=".52" stop-color="#babdc2"/><stop offset="1" stop-color="#737b82"/></linearGradient>
+            <linearGradient id="metal" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#525b65"/><stop offset=".28" stop-color="#d7d5d0"/><stop offset=".72" stop-color="#a9a59c"/><stop offset="1" stop-color="#4c4d4a"/></linearGradient>
+            <linearGradient id="leverGrip" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#594f30"/><stop offset=".35" stop-color="#c1b47b"/><stop offset=".7" stop-color="#c0aa64"/><stop offset="1" stop-color="#52492d"/></linearGradient>
+            <linearGradient id="plate" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#6c7073"/><stop offset="1" stop-color="#50565b"/></linearGradient>
+            <filter id="shadow" x="-70%" y="-70%" width="240%" height="240%"><feGaussianBlur stdDeviation="3"/></filter>
+            <filter id="glow" x="-70%" y="-70%" width="240%" height="240%"><feGaussianBlur stdDeviation="4"/></filter>
+          </defs>
+          <g id="devices"></g><g id="lamps"></g>
+        </svg>
+      </div>
+    </div>
+    <div class="footbar"><span><b id="mapped">0</b> independent cockpit parts · photo + animated vector layers</span><span>Visual interaction prototype · not certified or flight validated</span></div>
+  </section>
+  <aside class="inspector">
+    <div class="section-eyebrow">ACTIVE CONTROL</div>
+    <div class="detail"><span id="ref">NO SELECTION</span><h1 id="name">Touch a control</h1><p id="description">The original photograph remains the base layer. Movable hardware and lights are rendered as independent interactive layers.</p><div class="current"><span>SELECTED POSITION</span><output id="value">—</output></div><div class="choices" id="choices"></div><div class="hint" id="hint">For rotary selectors: tap to advance, Shift+tap or mouse wheel to reverse. Drag the gear lever vertically.</div></div>
+    <div class="section-eyebrow">QUICK OPERATIONS</div>
+    <div class="quick"><button data-set="gear:UP">GEAR UP</button><button data-set="gear:OFF">GEAR OFF</button><button data-set="gear:DOWN">GEAR DOWN</button><button data-set="autobrake:RTO">A/B RTO</button><button data-set="autobrake:OFF">A/B OFF</button><button data-set="autobrake:MAX">A/B MAX</button></div>
+    <div class="section-eyebrow">INDICATORS</div><div class="gear-readout"><span>GEAR HANDLE <b id="gearHandleState">DOWN</b></span><span>GEAR POSITION <b id="gearPosState">DOWN</b></span><span>AUTOBRAKE <b id="brakeState">OFF</b></span><span>LIGHTS <b id="lightsState">DEMO</b></span></div>
+    <div class="section-eyebrow">RECENT OPERATIONS <button id="clearLog" class="clear">CLEAR</button></div><div class="history" id="history">No controls moved.</div>
+    <p class="disclaimer">TRAINING UI ONLY. Gear movements, annunciator test lamps and selector detents demonstrate touch interaction. Hydraulic, electrical, autobrake and AFDS responses are <b>not</b> yet FCOM-validated; actual Boeing system conditions and interlocks are not modeled. Never use this for flight or aircraft operation.</p>
+  </aside>
+</main>
+</body></html>
