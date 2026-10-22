@@ -13,14 +13,14 @@ const modules=[
 ];
 function makeBrowserRuntime(){
  const bodies=modules.map(([name,file])=>[name,fs.readFileSync(path.join(root,'engine/network',file),'utf8').trim()]);
- const requireBlock="const require=(p)=>{const m={"+
- "'./electrical-power-pilot.cjs':electrical,"+
- "'./electrical-feeder-audit.v0.2.cjs':feederAudit,"+
- "'./pump-sensor-warning-engine.cjs':consumers,"+
- "'./pressure-distribution.v0.2.cjs':pressurePhysics,"+
- "'./electrical-consumer-feeders.cjs':feederMap,"+
- "'./fluid-pressure-engine.cjs':fluidObservations"+
- "};if(!Object.prototype.hasOwnProperty.call(m,p))throw new Error('Unknown browser module '+p);return m[p];};";
+ const requireBlock="const require=(p)=>{"+
+ "if(p==='./electrical-power-pilot.cjs')return electrical;"+
+ "if(p==='./electrical-feeder-audit.v0.2.cjs')return feederAudit;"+
+ "if(p==='./pump-sensor-warning-engine.cjs')return consumers;"+
+ "if(p==='./pressure-distribution.v0.2.cjs')return pressurePhysics;"+
+ "if(p==='./electrical-consumer-feeders.cjs')return feederMap;"+
+ "if(p==='./fluid-pressure-engine.cjs')return fluidObservations;"+
+ "throw new Error('Unknown browser module '+p);};";
  return "(function(){'use strict';\n"+bodies.map(([name,body])=>
    'const '+name+'=(function(){const module={exports:{}};const exports=module.exports;'+
    (name==='consumers'||name==='kernel'?requireBlock:'')+'\n'+body+
