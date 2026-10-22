@@ -1,0 +1,41 @@
+{
+  "schema": "b737-technical-source-status-v1",
+  "source_id": "AFM-73733V-D6-8730.33V-R32-20180214",
+  "document": "Boeing 737-300 / 737-33V FAA Approved Airplane Flight Manual",
+  "revision": "32",
+  "revision_date": "2018-02-14",
+  "asn_applicability": "29331–29342; Appendix 43 conditional to ASN 29339, SB 737-71-1884",
+  "sha256": "3c7002212482f0c47a1735c2302ee304ef41ef4ca270591281b72f5f2a714105",
+  "pdf_pages": 978,
+  "native_text_pages": 159,
+  "ocr_image_pages": 819,
+  "native_text_lines": 8511,
+  "ocr_text_lines": 14086,
+  "navigation_bookmarks": 1148,
+  "consumer_page_refs": 3204,
+  "qa": {
+    "index_coverage": "978/978",
+    "ocr_low_content_pages": 56,
+    "visual_semantic_signoff_pages": 0,
+    "manual_rule_examples_preliminary": 19,
+    "numerical_graph_table_qa": "UNVERIFIED"
+  },
+  "private_library_directory": "/Technical Database/Sources/AFM-737-33V-D6-8730-R32/",
+  "available_private_files": [
+    "AFM_R32_original.pdf",
+    "AFM_technical_archive_v2_OCR.zip",
+    "AFM_technical_index.sqlite",
+    "AFM_R32_978_page_search_text.txt",
+    "manifest.json",
+    "QA_BACKLOG.json",
+    "consumer_page_registry.csv",
+    "SOURCE_ANOMALIES_AND_EFFECTIVITY.json"
+  ],
+  "raw_source_in_public_repo": false,
+  "alerts": [
+    "DO NOT USE OCR numeric chart data in real operation or unverified simulator control laws",
+    "ASN/engine options and appendix effectivity required",
+    "source-internal unit discrepancy page 18 flagged"
+  ],
+  "note": "This status is an archival/indexing achievement, NOT completed page-by-page manual QA or full numeric FMC performance database."
+}
