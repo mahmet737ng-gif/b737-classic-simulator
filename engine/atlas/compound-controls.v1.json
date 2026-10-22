@@ -1,0 +1,203 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "B737 Classic Concentric Control Families, candidate pixel geometry v1",
+  "scope": "Two verified hardware compound-control functions and provisional hit geometries; other controls remain candidates",
+  "geometryStatus": "PROVISIONAL_NEEDS_PIXEL_REVIEW",
+  "masters": {
+    "main": {
+      "filename": "1000166281.png",
+      "nativeWidth": 6424,
+      "nativeHeight": 2212,
+      "sha256": "b6c206418feb44b43bd134cb57a51dddd8bbe928859382d3864f3fbcc5cbc1c8"
+    },
+    "overhead": {
+      "filename": "IMG_4525.PNG",
+      "nativeWidth": 2854,
+      "nativeHeight": 4661,
+      "sha256": "4433b15b604357d53c860b71405657df22400f1a8d5af0082f9175f5d7e323c0"
+    },
+    "pedestal": {
+      "filename": "IMG_4527.PNG",
+      "nativeWidth": 2176,
+      "nativeHeight": 4652,
+      "sha256": "d3ad7aa7e8a8992e2abc57514af4d76bd0f47548c5e92c0296f94a1013ca5f4d"
+    }
+  },
+  "groups": [
+    {
+      "id": "overhead.irs.isdu.dspl_brt",
+      "panel": "overhead",
+      "existingAtlasId": "overhead_irs_display_select",
+      "centerPx": [
+        800,
+        616
+      ],
+      "reference": {
+        "manual": "Sepehran 737 Classic FCOM, D6-27370-300/400/500-SHI",
+        "pages": [
+          "11.10.13",
+          "11.10.14"
+        ],
+        "fidelity": "operational functions FCOM-confirmed; mechanical angular geometry provisional"
+      },
+      "children": [
+        {
+          "id": "overhead.irs.isdu.brightness.inner",
+          "label": "IRS ISDU BRT",
+          "role": "inner",
+          "controlType": "rotary-continuous",
+          "hit": {
+            "shape": "circle",
+            "radiusPx": 23
+          },
+          "motion": {
+            "type": "rotary",
+            "model": "normalized_step",
+            "step": 0.05
+          },
+          "state": {
+            "kind": "number",
+            "initial": 0.75,
+            "min": 0,
+            "max": 1,
+            "step": 0.05,
+            "meaning": "normalized UI brightness setting, not an FCOM-calibrated voltage"
+          },
+          "command": "ISDU_SET_BRIGHTNESS",
+          "dependencies": [
+            "IRS display illumination"
+          ]
+        },
+        {
+          "id": "overhead.irs.isdu.display_selector.outer",
+          "label": "IRS ISDU DSPL SEL",
+          "role": "outer",
+          "controlType": "rotary-detent-with-spring-test",
+          "hit": {
+            "shape": "annulus",
+            "innerRadiusPx": 23,
+            "outerRadiusPx": 51
+          },
+          "motion": {
+            "type": "rotary",
+            "model": "detent",
+            "step": 1
+          },
+          "state": {
+            "kind": "enum",
+            "initial": "TK/GS",
+            "detents": [
+              "TEST",
+              "TK/GS",
+              "PPOS",
+              "WIND",
+              "HDG/STS"
+            ],
+            "springReturn": {
+              "from": "TEST",
+              "to": "TK/GS",
+              "trigger": "RELEASE"
+            }
+          },
+          "command": "ISDU_SET_DISPLAY_MODE",
+          "dependencies": [
+            "ISDU selected IRS",
+            "IRS mode and validity"
+          ]
+        }
+      ],
+      "notes": "Do NOT confuse DSPL SEL + BRT with separate LEFT/RIGHT IRS mode switches OFF/ALIGN/NAV/ATT."
+    },
+    {
+      "id": "main.mcp.heading_bank",
+      "panel": "main",
+      "existingAtlasId": "main_heading_knob",
+      "centerPx": [
+        3062,
+        270
+      ],
+      "reference": {
+        "manual": "Sepehran 737 Classic FCOM, D6-27370-300/400/500-SHI",
+        "pages": [
+          "4.10.13",
+          "4.10.14",
+          "4.10.15"
+        ],
+        "fidelity": "functional heading and bank-limit rules FCOM-confirmed; ring hit radii provisional"
+      },
+      "children": [
+        {
+          "id": "main.mcp.heading.inner",
+          "label": "MCP Heading",
+          "role": "inner",
+          "controlType": "rotary-encoder",
+          "hit": {
+            "shape": "circle",
+            "radiusPx": 41
+          },
+          "motion": {
+            "type": "rotary",
+            "model": "incremental",
+            "step": 1
+          },
+          "state": {
+            "kind": "integer-wrap",
+            "initial": 134,
+            "min": 0,
+            "max": 359,
+            "step": 1
+          },
+          "command": "MCP_SET_HEADING",
+          "dependencies": [
+            "MCP heading display",
+            "HSI heading bugs",
+            "AFDS heading mode"
+          ]
+        },
+        {
+          "id": "main.mcp.bank_angle.outer",
+          "label": "MCP Bank Angle Limit",
+          "role": "outer",
+          "controlType": "rotary-detent",
+          "hit": {
+            "shape": "annulus",
+            "innerRadiusPx": 41,
+            "outerRadiusPx": 68
+          },
+          "motion": {
+            "type": "rotary",
+            "model": "detent",
+            "step": 1
+          },
+          "state": {
+            "kind": "enum",
+            "initial": 25,
+            "detents": [
+              10,
+              15,
+              20,
+              25,
+              30
+            ]
+          },
+          "command": "MCP_SET_BANK_LIMIT",
+          "dependencies": [
+            "AFDS roll guidance HDG SEL / VOR"
+          ]
+        }
+      ]
+    }
+  ],
+  "unreviewedPotentialCompounds": [
+    {
+      "family": "COM/NAV/ADF radios",
+      "reason": "potential coaxial frequency tuning rings, equipment-version-dependent",
+      "status": "NEEDS_PHOTO_AND_FCOM_CONFIRMATION"
+    },
+    {
+      "family": "Transponder / radar / display controls",
+      "reason": "possible nested selectors depending on installed panel",
+      "status": "DO_NOT_ASSUME_COMPOUND_WITHOUT_EVIDENCE"
+    }
+  ]
+}
