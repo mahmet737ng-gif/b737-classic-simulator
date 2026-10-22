@@ -1,0 +1,30 @@
+name: EP-FSI AFM N1 v10 Test
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'engine/fmc/performance/**'
+      - 'cdu-standalone/**'
+      - 'tests/afm-epfsi-n1-v10.test.cjs'
+      - 'package.json'
+      - '.github/workflows/epfsi-n1-v10-tests.yml'
+  workflow_dispatch:
+jobs:
+  source-guard-and-cdu:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Node syntax and N1 source gate
+        run: |
+          node --check engine/fmc/performance/afm-epfsi-n1-v10.cjs
+          node --check cdu-standalone/app.js
+          node tests/afm-epfsi-n1-v10.test.cjs
+      - name: Standalone CDU headless state and compatibility
+        run: |
+          node cdu-standalone/tests/smoke.test.cjs
+          node cdu-standalone/tests/n1-v10-integration.test.cjs
