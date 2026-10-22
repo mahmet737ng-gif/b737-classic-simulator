@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "description": "Track-level mapping of ten user-supplied MP3 files for private audio review. The raw audio files are intentionally NOT checked into this public repository.",
   "releaseStatus": "source recordings not licensed for public distribution",
   "totalDistinctFiles": 10,
@@ -78,13 +78,14 @@
     },
     {
       "original": "a.mp3",
-      "category": "Unclassified",
+      "category": "Radio Altimeter / EGPWS Callouts",
       "engine": null,
       "slots": [
-        "A"
+        "Radio Altimeter Callouts — Full Recording"
       ],
-      "assetPath": "assets/unclassified/a.mp3",
-      "validation": "original soundboard also uses only A"
+      "assetPath": "assets/warnings/radio-altimeter/callouts-collection.mp3",
+      "validation": "identified directly by user; compiled recording requires splitting and labeling per altitude before live triggers",
+      "previewKey": "radioAltitude|COLLECTION"
     },
     {
       "original": "c.mp3",
@@ -94,24 +95,33 @@
         "C"
       ],
       "assetPath": "assets/unclassified/c.mp3",
-      "validation": "original soundboard also uses only C"
+      "validation": "unidentified; user named b as EGPWS, but b.mp3 was not supplied and must not be assumed to equal c.mp3"
     },
     {
       "original": "e.mp3",
-      "category": "Unclassified",
-      "engine": null,
+      "category": "Stall Warning / Stick Shaker",
+      "engine": "shaker",
       "slots": [
-        "E"
+        "Stick Shaker"
       ],
-      "assetPath": "assets/unclassified/e.mp3",
-      "validation": "original soundboard also uses only E"
+      "assetPath": "assets/warnings/stall/stick-shaker.mp3",
+      "validation": "identified directly by user"
     }
   ],
   "implementationNotes": [
     "The paired Takeoff Configuration and Cabin Altitude controls share exactly one assigned sample, not two copies.",
     "Metadata assignment is NOT an authenticity claim; supplied recordings have 101soundboards.com ID3 tagging.",
-    "Any unclassified item requires user identification before connecting to warning system events.",
     "The fully populated personal/offline test kit is delivered directly to the owner separately.",
-    "The public web lab accepts local user-provided audio via its uploader and keeps samples in browser IndexedDB."
-  ]
+    "The public web lab accepts local user-provided audio via its uploader and keeps samples in browser IndexedDB.",
+    "User identified a.mp3 as Radio Altimeter Callouts; full sequence is preview-only and must be split into individual callouts before triggering automatically.",
+    "User identified e.mp3 as Stick Shaker (stall warning), connected to the shaker event mapping.",
+    "User identified 'b' as EGPWS, but b.mp3 is absent; c.mp3 remains unclassified. This ambiguity must be resolved before further assignment."
+  ],
+  "userConfirmedOn": "2026-10-22",
+  "pendingFilenameClarification": {
+    "providedDescription": "b: EGPWS",
+    "missingFile": "b.mp3",
+    "existingUnclassified": "c.mp3",
+    "resolution": "Do not reassign c.mp3 to EGPWS without confirmation"
+  }
 }
