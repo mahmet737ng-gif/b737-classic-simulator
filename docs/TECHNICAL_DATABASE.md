@@ -65,3 +65,16 @@ All **1,040 new PDF pages** are machine-archived with provenance and full-text s
 **Crucial qualification:** All-source **page coverage** and machine **semantic categorization** are complete, but the interpretation is **not validated**. The database is not a finished control-law, sensor graph, FMC performance table, or executable QRH fault/warning engine. Source-passage tags and detected conditions must be checked against the correct printed folio, model, serial/configuration, original page, notes, and figures. The AFM's explicit user-confirmed conversion erratum (page 18, 105000 lb / 47627 kg versus raw 7627 kg) is a separate non-approved overlay; it must not overwrite the original AFM. The FCOM source also contains an invalid calendar date on its first-page extraction, flagged for verification.
 
 **Agent retrieval policy:** Search the user's **private Library** by the exact path `/Technical Database/Semantic-Index-V1` or materialize its SQLite/bundle for machine queries. The GitHub repository does **not** contain or expose the Boeing-proprietary source text. Distinguish `pdf_page` (local indexed position) from `original_pdf_page` (physical page; MRG maps 1..390 to 9..398). Never claim that every future chat has direct access unless the private Library is accessible in that session.
+
+## Engineering QA V2 (2026-10-23)
+
+The private Technical Database now has a **machine engineering-preflight/QA overlay** in `/Technical Database/Engineering-QA-V2/` (bundle `B737_ENGINEERING_QA_V2_PRIVATE.zip`, report `ENGINEERING_QA_REPORT_FA.md`). Source text and proprietary tables are **not committed** to this public repository.
+
+- Audited: **8 references / 5,067 indexed pages**; **87,693** deterministic structural, provenance and document-alignment assertions.
+- All 5,067 page positions present; 33,767 segment references, 7,503 extracted item links, 16,817 ontology mentions, and 172 relationship references structurally consistent.
+- Local native-PDF cross-check (1,762 pages) after order-tolerant comparison: **1,488 pass, 244 warning, 30 fail/needs investigation**. Ten MRG OCR-image pages have insufficient text and also remain open.
+- **6** QRH table-of-contents excerpts rejected as false positive branches. **2** FPPM tables (PDF pages 18 and 21) identified as missing from the earlier automated table inventory.
+- **9,419** candidate item/table/flow entities protected by release gates; 11 pages visually spot-checked, 10 small rows/values visually transcribed but still **not approved for simulation laws**.
+- Existing **1,019** open QA issues remain; **14** added high-priority blocker categories are tracked. **Engineer-signed operational rules: zero.**
+
+**Release policy:** `operational_use=BLOCKED` is mandatory until model/engine/aircraft serial effectivity, full graph and numeric table readings, QRH path predicates and applicable primary AFM/FCOM hierarchy are independently verified. Automated cross-reference validation is **not** an engineering certificate; flight use is prohibited. This overlay is non-destructive and does not overwrite either original source pages or Semantic Index V1.
