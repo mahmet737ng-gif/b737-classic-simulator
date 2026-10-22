@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>B737 Classic — Audio Warning Lab</title>
+<style>
+:root{color-scheme:dark;font:15px/1.5 system-ui,Segoe UI,Arial,sans-serif;background:#0b131a;color:#dfe9ed}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 80% -20%,#193e4a,transparent 40%),#0b131a}
+header{padding:25px max(20px,calc((100vw - 1150px)/2));border-bottom:1px solid #254451}
+.kicker{font:700 11px/1.3 ui-monospace,monospace;letter-spacing:.22em;color:#69c7b2}
+h1{font-size:clamp(27px,4vw,42px);line-height:1.15;margin:9px 0}.sub{color:#a6b5bc;max-width:810px}
+main{max-width:1150px;margin:0 auto;padding:24px 16px 60px;display:grid;gap:20px}
+.panel{background:#101f27;border:1px solid #31505a;border-radius:15px;padding:20px}
+.panel h2{margin:0 0 6px;font-size:18px;color:#eef9f7}.muted{color:#9aacb6;font-size:13px;margin:0 0 18px}
+.matrix{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
+.sound{background:#152932;color:#e5f2f3;border:1px solid #3b5962;min-height:91px;padding:12px;text-align:left;border-radius:10px;cursor:pointer;transition:.16s}
+.sound:hover,.sound:focus-visible{border-color:#68cdb8;background:#1a373e}
+.sound b{display:block;font-size:13px;letter-spacing:.03em}.sound small{color:#9bb4bd;display:block;margin-top:4px}
+.sound .chip{float:right;color:#6de0c3;font-size:10px;letter-spacing:.12em;border:1px solid #468577;border-radius:9px;padding:2px 6px}
+input,select{font:inherit}label{display:grid;gap:5px;font-size:12px;color:#a7c1c6;text-transform:uppercase;letter-spacing:.06em}
+input[type=number],select{width:100%;padding:10px;border-radius:7px;border:1px solid #38555e;background:#0a1720;color:#f3f8f6}
+input[type=checkbox]{accent-color:#62d5c2;transform:scale(1.2)}
+.params{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:13px}
+.toggles{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0}
+.toggles label{display:flex;gap:8px;align-items:center;border:1px solid #36545e;border-radius:8px;padding:9px 12px;background:#152832;text-transform:none;letter-spacing:0}
+.actions{display:flex;flex-wrap:wrap;gap:9px;margin:14px 0}
+button.action{border:1px solid #3e8072;border-radius:8px;background:#1b604e;color:#effef8;padding:10px 14px;font-weight:700;cursor:pointer}
+button.action.secondary{background:#142931;color:#b5d8d5;border-color:#385b5a}button:focus-visible{outline:2px solid white}
+.status-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.out{border:1px solid #33515a;background:#09171d;border-radius:9px;min-height:96px;padding:12px;font:13px/1.8 ui-monospace,monospace;white-space:pre-line;color:#cde7e2}
+.voice{color:#e8c98f}footer{color:#9eafb5;font-size:12px;line-height:1.65}
+@media(max-width:650px){.status-grid{grid-template-columns:1fr}header{padding:21px 16px}}
+
+.guided-heading,.review-navigation,.review-footer{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}
+.guided-heading h2{font-size:22px;margin:8px 0}.guided-heading .kicker{font-size:10px}
+#reviewCounter{font:700 19px ui-monospace,monospace;color:#7cdbc4}
+.review-progress{height:7px;background:#25434b;border-radius:15px;overflow:hidden;margin:14px 0 20px}
+#reviewProgressFill{height:100%;width:0%;background:#6bdabc;transition:width .2s}
+.review-current{display:flex;gap:16px;align-items:flex-start;min-height:135px;background:#092027;padding:19px;border-radius:12px;border:1px solid #275b57}
+.review-current h3{font-size:24px;margin:0 0 5px;direction:ltr;text-align:right}.review-current p{margin:0 0 10px;color:#b6cbc8}
+.review-number{font:700 38px ui-monospace,monospace;color:#78d3ba}
+.review-buttons{display:flex;flex-wrap:wrap;gap:10px;margin:13px 0}
+.review-buttons button{min-width:124px}
+.review-volume{display:flex;align-items:center;gap:12px;justify-content:start;margin-top:13px;text-transform:none;letter-spacing:0}
+.review-volume input{flex:1;max-width:280px;accent-color:#66d9ba}
+.review-notes{text-transform:none;letter-spacing:0;font-size:13px}
+.review-navigation{margin:18px 0}
+.review-footer{border-top:1px solid #2e5159;padding-top:15px}
+#reviewSummary{font-size:13px;color:#b6e0d5}
+@media(max-width:650px){.review-current h3{font-size:20px}.review-buttons button{flex:1}.review-navigation button{flex:1}}
+</style></head><body>
+<header><div class="kicker">B737 CLASSIC · AUDIO SYSTEM · EXPERIMENTAL</div><h1>Aural Warning Sound Lab</h1><div class="sub">Separate prototype for 737-300/-400/-500 warning logic and listening tests. Synthesized tones and browser text-to-speech are <strong>placeholders</strong>, not authentic aircraft samples. No effect on the current cockpit page.</div></header>
+<main>
+
+<section class="panel" id="guidedTest" dir="rtl" style="border-color:#3b8576">
+  <div class="guided-heading"><div><div class="kicker">GUIDED LISTENING REVIEW · تست مرحله‌به‌مرحله</div><h2>ارزیابی تک‌تک صداهای شبیه‌ساز</h2></div><strong id="reviewCounter">۱ / ۱۶</strong></div>
+  <div class="review-progress"><div id="reviewProgressFill"></div></div>
+  <div class="review-current"><div class="review-number" id="reviewNumber">01</div><div><h3 id="reviewTitle">Altitude Alert</h3><p id="reviewDescription">بوق هشدار ارتفاع</p><p class="muted">این نمونه‌ها فعلاً برای آزمایش رابط پخش و منطق اولیه هستند؛ صدای اصلی هواپیما نیستند.</p></div></div>
+  <label class="review-volume">بلندی پخش آزمایشی <input id="reviewVolume" type="range" min="4" max="45" value="17" step="1" aria-label="Preview volume"/><span id="reviewVolumeValue">۱۷٪</span></label>
+  <div class="review-buttons">
+    <button class="action" id="reviewPlay">▶ پخش صدا</button>
+    <button class="action secondary" id="reviewStop">■ توقف</button>
+    <button class="action" id="reviewApprove">✓ مورد تأیید</button>
+    <button class="action secondary" id="reviewFix">✎ نیاز به اصلاح</button>
+  </div>
+  <label class="review-notes">نظر یا تغییر موردنیاز<textarea id="reviewNote" rows="2" placeholder="مثلاً تُن تیزتر، تکرار آهسته‌تر، صدای بم‌تر..." style="width:100%;resize:vertical;padding:12px;color:#e3eeee;background:#07171e;border:1px solid #385c64;border-radius:8px;font:inherit"></textarea></label>
+  <div class="review-navigation"><button class="action secondary" id="reviewPrev">→ صدای قبلی</button><button class="action secondary" id="reviewNext">صدای بعدی ←</button></div>
+  <div class="review-footer"><div id="reviewSummary">هنوز موردی ارزیابی نشده</div><div class="review-buttons"><button class="action secondary" id="reviewCopy">کپی گزارش</button><button class="action secondary" id="reviewDownload">دریافت گزارش JSON</button><button class="action secondary" id="reviewReset">پاک‌کردن نتایج</button></div></div>
+</section>
+<section class="panel"><h2>01 · Listen to the warning palette</h2><p class="muted">Tap any sound. Browser audio must be activated by a user click. Voice warnings use your installed browser voice for now.</p>
+<div class="matrix" id="soundMatrix"></div></section>
+<section class="panel"><h2>02 · Condition-driven engine test</h2><p class="muted">Change inputs and choose Evaluate. Active indications and alert transitions follow the separate FCOM-based prototype logic; it is not yet connected to live systems.</p>
+<div class="params">
+<label>Variant<select id="variant"><option>737-300</option><option>737-500</option><option>737-400</option></select></label>
+<label>Pressure altitude (ft)<input id="pressureAltitudeFt" type="number" value="8800" step="100"></label>
+<label>MCP selected altitude (ft)<input id="selectedAltitudeFt" type="number" value="10000" step="100"></label>
+<label>Cabin altitude (ft)<input id="cabinAltitudeFt" type="number" value="5500" step="100"></label>
+<label>Radio altitude (ft)<input id="radioAltitudeFt" type="number" value="1600" step="10"></label>
+<label>Flaps<select id="flaps"><option>0</option><option selected>5</option><option>1</option><option>10</option><option>15</option><option>25</option><option>30</option><option>40</option></select></label>
+<label>IAS (kt)<input id="iasKt" type="number" value="230"></label>
+<label>VMO (kt)<input id="vmoKt" type="number" value="340"></label>
+<label>Left thrust-lever angle (°)<input id="thrustLever1Angle" type="number" value="45"></label>
+<label>Right thrust-lever angle (°)<input id="thrustLever2Angle" type="number" value="45"></label>
+<label>EGPWS message<select id="egpwsMessage"><option value="">None</option><option>PULL UP</option><option>SINK RATE</option><option>TERRAIN</option><option>DON'T SINK</option><option>GLIDESLOPE</option><option>WINDSHEAR</option><option>BANK ANGLE</option></select></label>
+</div>
+<div class="toggles" id="toggles">
+<label><input type="checkbox" id="onGround"> On ground</label>
+<label><input type="checkbox" id="takeoffThrust"> Takeoff thrust</label>
+<label><input type="checkbox" id="gearDownLocked" checked> Gear down & locked</label>
+<label><input type="checkbox" id="engine1Fire"> Engine 1 fire</label>
+<label><input type="checkbox" id="stallWarning"> Stall warning</label>
+<label><input type="checkbox" id="glideslopeCaptured"> G/S captured</label>
+<label><input type="checkbox" id="leadingEdgeTakeoff" checked> LE takeoff</label>
+<label><input type="checkbox" id="speedbrakeDown" checked> Speedbrake DOWN</label>
+<label><input type="checkbox" id="parkingBrakeSet"> Parking brake set</label>
+<label><input type="checkbox" id="stabilizerTrimTakeoff" checked> Trim in takeoff range</label>
+<label><input type="checkbox" id="approachActive" checked> Approach active</label>
+</div>
+<div class="actions">
+<button class="action" id="evaluate">EVALUATE + PLAY</button>
+<button class="action secondary" id="cutCabin">ALT HORN CUTOUT</button>
+<button class="action secondary" id="cutGear">GEAR HORN CUTOUT</button>
+<button class="action secondary" id="cutFire">FIRE BELL CUTOUT</button>
+<button class="action secondary" id="reset">RESET ENGINE</button>
+<button class="action secondary" id="stopAudio">STOP AUDIO</button>
+</div>
+<div class="status-grid"><div><div class="kicker">ACTIVE WARNING OUTPUT</div><div class="out" id="active">Engine idle</div></div>
+<div><div class="kicker">TRANSITIONS / LOG</div><div class="out" id="events">Click Evaluate to initialize state.</div></div></div></section>
+<footer>Reference: user-provided Sepehran 737CL FCOM Chapter 15. Validated rules include cabin/takeoff shared horn, gear horn conditions, altitude alert thresholds and inhibits. Alert arbitration priorities and sound timbres here are provisional engineering choices, not Boeing-certified behaviors. Radio voice and TCAS scenarios require installed equipment / configuration verification. Educational software; never for real operations.</footer>
+</main>
+<script src="../audio/warning-engine.js"></script><script src="lab.js"></script>
+</body></html>
