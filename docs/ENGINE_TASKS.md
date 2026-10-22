@@ -127,3 +127,15 @@ Companion report: `docs/ELECTRICAL_INTEGRATION_TEST_01.md`. **Do not merge or de
 | ENG-041 Power/pressure system full model | NOT COMPLETE | Need contactor event engine, real AC feeder mapping/WDM, pump sensor independent faults, timing/cavitation/leak/PSI, full FUEL/HYD warning power and source QA, panel/CDU integration, browser QA. |
 
 Full case walkthrough and exact FCOM source references: `docs/POWER_PUMPS_WARNINGS_INTEGRATION.md`. Keep `main` and deployed UI untouched pending approval. The AFM/FCTM/QRH/WBM/FPPM corpus remains in private Library, not in public GitHub.
+
+## 2026-10-23 — ISN-03 Stages 1+2 source-traced feeder & pressure integration
+
+| Task | Status | Evidence |
+| --- | --- | --- |
+| ENG-042 Pump Electrical Functional Feeder Registry | **DONE — bounded pilot** | `engine/network/electrical-feeder-audit.v0.2.cjs`; 8 consumer states plus physical feeder/circuit breaker/relay fields marked WDM/SSM-unverified. FCOM §6.20.18–19 PDF 1167–1168. |
+| ENG-043 Fuel/Hyraulic pressure distribution | **DONE — qualitative pilot** | `engine/network/pressure-distribution.v0.2.cjs`; per-pump outlets, independent engine and electric hydraulic A/B paths, individual engine-side fuel source priority, source-provenance. Dynamic actual PSI intentionally null absent validated physics. |
+| ENG-044 Feed/Pressure → Sensor/Warnings + transitions | **DONE — test pilot** | `engine/network/integrated-aircraft-kernel.cjs` computes pressure and rebinds the sensor truth before caution. Change events include AC bus/feed deltas and undelayed pressure transitions. |
+| ENG-045 Stage 1+2 regression, source/dynamic QA | **DONE — automated tests** | `tests/electrical-pressure-stage12.test.cjs`; GitHub CI [39864242355](https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/39864242355) success; existing pump, fire network, AC/DC and browser parity tests also pass. |
+| ENG-046 Quantitative aircraft-calibrated pressures / WDM | **BLOCKED — missing verified source specifics** | WDM/SSM feeder IDs, selected aircraft effectivity, pump displacement/pressure curves, hydraulic fluid/reservoir/PTU/accumulator model, suction/feed performance, pressure switch thresholds and timing. No fabricated engineering values. |
+
+See `docs/ELECTRICAL_FEEDER_PRESSURE_STAGE12.md` for exact source traceability and 10 end-to-end fault/recovery cases. Parallel experimental source adapters `electrical-consumer-feeders.cjs` and `fluid-pressure-engine.cjs` are retained but not authoritative warning pathways. This stage has not merged to `main` or deployed to the cockpit site.
