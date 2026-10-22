@@ -213,4 +213,6 @@ See `docs/QRH_CHECKLIST_INTEGRATION_ISN08.md`. **No modifications to main or dep
 | ENG-075 EIS demo and CI | DONE (ISOLATED TEST PILOT) | `power-consumers-lab/index.html`, source-matched `runtime.js`, `tests/engine-indications-eis.test.cjs` and browser parity test. Full visual/pixel-match browser QA not done. |
 | ENG-076 Production integration and performance calculations | BLOCKED | Need actual EP-FSI EIS bezel geometry, dynamic AFM 20K performance engine, FMC N1 target bug, EGT thrust mode, circuit/WDM references and release approval. |
 
+ENG-077: N1 MAN SET/FMC reference with touch/mouse wheel/keyboard pilot controls — DONE (source §7.10.3–4). The manual reference bug changes without modifying measured N1 or A/T; FMC numerical limit calculation remains BLOCKED pending FMC/Performance Engine connection.
+
 GitHub main and hosted cockpit were intentionally not changed. Source report: `docs/ENGINE_INDICATIONS_EIS_ISN09.md`.
