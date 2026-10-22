@@ -1,0 +1,32 @@
+'use strict';
+const assert=require('node:assert/strict'),fs=require('fs'),vm=require('vm'),path=require('path');
+const r=path.join(__dirname,'..');
+const map=JSON.parse(fs.readFileSync(path.join(r,'data/cdu-map.json'),'utf8'));
+assert.equal(map.controls.length,70);assert.equal(map.outputs.length,5);
+assert.equal(map.artwork_pixels[0],1199);assert.equal(map.artwork_pixels[1],1312);
+assert.equal(new Set(map.controls.map(c=>c.id)).size,70);
+const areaOverlap=(a,b)=>Math.max(0,Math.min(a[2],b[2])-Math.max(a[0],b[0]))*Math.max(0,Math.min(a[3],b[3])-Math.max(a[1],b[1]));
+for(let i=0;i<map.controls.length;i++)for(let j=i+1;j<map.controls.length;j++)assert.equal(areaOverlap(map.controls[i].bbox_px,map.controls[j].bbox_px),0,'overlap '+map.controls[i].id+'/'+map.controls[j].id);
+const pageList=JSON.parse(fs.readFileSync(path.join(r,'reference/chapter11-pages.json'),'utf8'));
+assert.equal(pageList.pages.length,409);assert.equal(pageList.pages[0].pdf_page,1414);assert.equal(pageList.pages.at(-1).pdf_page,1822);
+class N{constructor(){this.children=[];this.style={};this.dataset={};this.events={};this.attributes={};this.className='';this.checked=false;this.hidden=false;this.classList={toggle:(name,yes)=>{if(yes===undefined)yes=!this.className.split(' ').includes(name);let cl=new Set(this.className.split(' ').filter(Boolean));if(yes)cl.add(name);else cl.delete(name);this.className=Array.from(cl).join(' ')},contains:name=>this.className.split(' ').includes(name)};}appendChild(c){this.children.push(c)}addEventListener(t,fn){(this.events[t]??=[]).push(fn)}setAttribute(n,v){this.attributes[n]=v;}fire(t,v={}){(this.events[t]||[]).forEach(f=>f(v))}}
+const nodes={};const document={getElementById:id=>nodes[id]??(nodes[id]=new N()),createElement:t=>new N(),addEventListener:()=>{}};
+const context=vm.createContext({document,window:{CDU_MAP:map},Object,Date,console,setTimeout,clearTimeout});
+vm.runInContext(fs.readFileSync(path.join(r,'app.js'),'utf8'),context);
+async function go(){await new Promise(r=>setTimeout(r,15));
+ assert.equal(nodes['clickmap'].children.length,70);assert.equal(nodes['annunciators'].children.length,5);
+ const run=js=>vm.runInContext(js,context);
+ const page=()=>nodes['page-now'].textContent;
+ assert.equal(page(),'CRZ');
+ run("press('CDU_CAPT_RTE')");assert.equal(page(),'RTE');
+ for(let c of 'EDDF')run(`press('CDU_CAPT_KEY_${c}')`);
+ run("press('CDU_CAPT_LSK_L1')");assert.equal(nodes['pending-now'].textContent,1);assert.ok(run("byId['CDU_CAPT_EXEC_LIGHT'].classList.contains('on')"));
+ run("press('CDU_CAPT_EXEC')");assert.equal(nodes['pending-now'].textContent,0);assert.ok(!run("byId['CDU_CAPT_EXEC_LIGHT'].classList.contains('on')"));
+ run("press('CDU_CAPT_LSK_L1')");assert.ok(run("byId['CDU_CAPT_MSG_LIGHT'].classList.contains('on')"));
+ run("press('CDU_CAPT_KEY_CLR')");assert.ok(!run("byId['CDU_CAPT_MSG_LIGHT'].classList.contains('on')"));
+ run('sim.call=true; sim.fail=true; sim.offset=true; render()');for(let key of ['CALL','FAIL','OFST'])assert.ok(run("byId['CDU_CAPT_"+key+"_LIGHT'].classList.contains('on')"));
+ run('sim.call=false; sim.fail=false; sim.offset=false; render()');for(let key of ['CALL','FAIL','OFST'])assert.ok(!run("byId['CDU_CAPT_"+key+"_LIGHT'].classList.contains('on')"));
+ run("press('CDU_CAPT_DIM_BRT')");assert.equal(nodes['fmc-screen'].style.opacity,.4);
+ console.log('PASS: 70 independent physical controls; 5 independent indications; zero overlap; 409 indexed FCOM pages; key input, route edit, EXEC, MSG, CLR, CALL, FAIL, OFST, brightness.');
+}
+go().catch(e=>{console.error(e);process.exitCode=1});
