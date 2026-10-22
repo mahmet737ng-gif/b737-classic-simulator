@@ -188,3 +188,16 @@ Source/architecture and reproduction: `docs/ENGINE_APU_FUEL_ELECTRICAL_ISN06.md`
 - ENG-064: Full component physics and WDM-level wiring — BLOCKED pending source measurements and airframe-specific references.
 
 See docs/PNEUMATIC_START_PROTECTION_ISN07.md. Do not deploy to main or production cockpit without separate approval.
+
+## ISN-08 — Engine/APU QRH-linked fault scenarios (2026-10-23)
+
+| Task | Status | Evidence |
+| --- | --- | --- |
+| ENG-065 Remove unnecessary 120s starter over-limit fault | DONE | `pneumatic-start-protection.cjs`: elapsed seconds remain instructor-only; no alarm, required crew action, generated checklist or unverified auto-cutout when 120s is exceeded. |
+| ENG-066 QRH-linked engine/APU/bleed/fire cases | DONE (TRAINING PILOT) | `qrh-checklist-router.cjs`: Aborted Engine Start, APU low oil/overspeed/fault/fire, BLEED TRIP OFF and Engine 1 fire; refs to Sepehran QRH 2016, not full checklist text. |
+| ENG-067 Checklist progress state, observation guards and crew attestation | DONE (DETERMINISTIC) | Commands OPEN_CHECKLIST, CONFIRM_CHECKLIST_STEP, RESET_CHECKLIST, case actuation never automatic, sensor-evidence checks and replayable audit. |
+| ENG-068 Seven isolated fault scenario presets | DONE (BRANCH) | `qrh-training-scenarios.cjs` and power-consumers-lab selector, uses actual engine/system inputs not a force-checklist bit. |
+| ENG-069 CI and Node/browser source parity | DONE (AUTOMATED REGRESSION) | `tests/qrh-checklist-routing.test.cjs`; `tests/power-consumers-browser.test.cjs`, source-matched browser runtime. Visual/browser E2E remains outside this test. |
+| ENG-070 Production QRH and full instrumented effectivity | BLOCKED | Need current EP-FSI approved QRH, full branches, Engine 2/APU fire circuits and instrumentation, real cockpit layout and owner release approval. |
+
+See `docs/QRH_CHECKLIST_INTEGRATION_ISN08.md`. **No modifications to main or deployed website.**
