@@ -39,7 +39,7 @@ function makeLamp(id,control,kind,source,power,group){
     source
   };
 }
-function projectAnnunciation(view,fire){
+function projectAnnunciation(view,fire,propulsion){
   if(!view||!view.warnings||!view.pumps||!view.electrical)
     throw new TypeError('integrated aircraft view required');
   if(!fire||!fire.alerts)
@@ -84,6 +84,20 @@ function projectAnnunciation(view,fire){
   set('ENG1_OVHT',fire.alerts.engOverheat,'CAUTION',desc.fire,'FIRE_PANEL');
   set('MASTER_FIRE_WARN_CAPT',fire.alerts.masterFireWarn,'WARNING',desc.fire,'GLARESHIELD');
   set('MASTER_FIRE_WARN_FO',fire.alerts.masterFireWarn,'WARNING',desc.fire,'GLARESHIELD');
+  if(propulsion&&propulsion.mode==='INTEGRATED'){
+    // §7.30.2: APU GEN OFF BUS annunciates load-ready power awaiting
+    // electrical bus connection. This is a logical indication demand.
+    set('APU_GEN_OFF_BUS',propulsion.apu.generatorOffBusLightDemand,
+      'CAUTION',ref('7.30.2',[1217]),'APU_PANEL');
+    for(const id of ['1','2']){
+      // The start valve is a physical sensor/feedback indication, not an
+      // invented consequence of selecting GRD.
+      set('ENG'+id+'_START_VALVE_OPEN',
+        propulsion.engines[id].startValveOpenIndication,
+        'CAUTION',ref('7.20.7,NP.21.34-35',[1208,134,135]),
+        'ENGINE_PANEL');
+    }
+  }
   const sound=fire.alerts.fireBell;
   const audio={
     activeKeys:sound===true?['fireBell']:[],
