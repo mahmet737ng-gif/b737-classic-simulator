@@ -36,7 +36,7 @@ function makeBrowserRuntime(){
  "if(p==='./qrh-checklist-router.cjs')return checklistRouter;"+
  "if(p==='./qrh-training-scenarios.cjs')return scenarioRegistry;"+
  "if(p==='./engine-indication-eis.cjs')return eisEngine;"+
- "throw new Error('Unknown browser module '+p);};";
+ "throw new Error('Unknown module '+p);};";
  return "(function(){'use strict';\n"+bodies.map(([name,body])=>
    'const '+name+'=(function(){const module={exports:{}};const exports=module.exports;'+
    (name==='consumers'||name==='kernel'||name==='propulsionEngine'?requireBlock:'')+'\n'+body+
