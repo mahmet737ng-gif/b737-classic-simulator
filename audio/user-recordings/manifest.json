@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "description": "Track-level mapping of ten user-supplied MP3 files for private audio review. The raw audio files are intentionally NOT checked into this public repository.",
   "releaseStatus": "source recordings not licensed for public distribution",
   "totalDistinctFiles": 10,
@@ -89,13 +89,14 @@
     },
     {
       "original": "c.mp3",
-      "category": "Unclassified",
+      "category": "EGPWS / Alert Collection",
       "engine": null,
       "slots": [
-        "C"
+        "EGPWS — Full Recording (unsplit)"
       ],
-      "assetPath": "assets/unclassified/c.mp3",
-      "validation": "unidentified; user named b as EGPWS, but b.mp3 was not supplied and must not be assumed to equal c.mp3"
+      "assetPath": "assets/warnings/egpws/egpws-collection.mp3",
+      "validation": "identified by owner as EGPWS; must identify individual spoken alerts prior to automatic per-phrase triggering",
+      "previewKey": "gpws|COLLECTION"
     },
     {
       "original": "e.mp3",
@@ -115,13 +116,13 @@
     "The public web lab accepts local user-provided audio via its uploader and keeps samples in browser IndexedDB.",
     "User identified a.mp3 as Radio Altimeter Callouts; full sequence is preview-only and must be split into individual callouts before triggering automatically.",
     "User identified e.mp3 as Stick Shaker (stall warning), connected to the shaker event mapping.",
-    "User identified 'b' as EGPWS, but b.mp3 is absent; c.mp3 remains unclassified. This ambiguity must be resolved before further assignment."
+    "c.mp3 confirmed by owner to be the EGPWS file previously called b.mp3 by mistake. Assign as gpws|COLLECTION preview, not as a specific annunciation."
   ],
   "userConfirmedOn": "2026-10-22",
-  "pendingFilenameClarification": {
-    "providedDescription": "b: EGPWS",
-    "missingFile": "b.mp3",
-    "existingUnclassified": "c.mp3",
-    "resolution": "Do not reassign c.mp3 to EGPWS without confirmation"
+  "resolvedFilenameCorrection": {
+    "earlierMessage": "b: EGPWS",
+    "confirmation": "User confirmed b was a typo and referred to the already-uploaded c.mp3",
+    "classifiedOriginal": "c.mp3",
+    "category": "EGPWS — full recording"
   }
 }
