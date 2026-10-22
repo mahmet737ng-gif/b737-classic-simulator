@@ -12,7 +12,7 @@
 
 - 463 candidate records: main 57, overhead 141, pedestal 265. 413 interactive *input* candidates and 50 output candidates.
 - Every record has stable ID, classified control type, original-image absolute native pixel bbox + center, role, candidate state labels, lossless actual source-image crop, and machine QA notes.
-- 90 manually inspected and repositioned control rectangles (mainly Overhead and Pedestal Audio/Radar), with 5 additional missed regions indexed. These are **not** 90 pixel-perfect verified sprite contours.
+- 91 manually inspected and repositioned control rectangles (mainly Overhead and Pedestal Audio/Radar), with 5 additional missed regions indexed. These are **not** 91 pixel-perfect verified sprite contours.
 - 463/463 per-pixel source-crop comparison checks passed. Three SHA-256 source photo checks passed. 38 native-resolution regional review tiles and three full-resolution annotated maps generated.
 - 53 initial bounding box overlaps flagged; some are valid because lever travel zones can overlap indications. Zero FCOM-linked entries in this atlas yet, zero alternate pose photos verified, zero final owner-accepted controls.
 - Offline QA viewer `index.html` in local attached ZIP includes exact original photos, click/inspect/search, per-control state labels, numerical pixel-coordinate editor, JSON/CSV export. Original RGB pixels are not generatively altered.
