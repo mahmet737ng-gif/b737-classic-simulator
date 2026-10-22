@@ -37,5 +37,31 @@
     "ASN/engine options and appendix effectivity required",
     "source-internal unit discrepancy page 18 flagged"
   ],
-  "note": "This status is an archival/indexing achievement, NOT completed page-by-page manual QA or full numeric FMC performance database."
+  "note": "This status is an archival/indexing achievement, NOT completed page-by-page manual QA or full numeric FMC performance database.",
+  "validation_batch_01": {
+    "status": "FIRST_PASS_VALIDATION_RECORDED_NOT_ENGINE_READY",
+    "private_library_path": "/Technical Database/Sources/AFM-737-33V-D6-8730-R32/Validation-Batch-01/",
+    "source_pages_under_initial_review": "Section 1 PDF pp18–41 and Section 4.1 baseline PDF pp92–94",
+    "candidate_rules": 151,
+    "rule_source_pages": 20,
+    "manual_visual_pages": [
+      18,
+      19,
+      26,
+      32,
+      34,
+      92,
+      93,
+      94
+    ],
+    "manual_visual_confirmed_rule_count": 91,
+    "native_text_pending_visual_rule_count": 59,
+    "source_conflict_rule_count": 1,
+    "open_source_conflict": "PDF p18 ASN29331 original kg cell inconsistent with lb; requires authoritative resolution",
+    "manual_numeric_chart_digitization": "PENDING",
+    "engine_ready_rule_count": 0,
+    "numeric_limits_only_when_verified": "NO_AUTOMATIC_FMC_USE",
+    "integrity_tests": "PASS: record IDs, 12 ASN takeoff sets, 8 flap placard values, FKs, 978 source pages and 819 OCR source pages retained",
+    "note": "No original Boeing pages or proprietary derived rules in public repository. Exact candidates remain in private Technical Database."
+  }
 }
