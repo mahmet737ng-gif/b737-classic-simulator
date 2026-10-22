@@ -1,0 +1,26 @@
+name: Electrical Integration Pilot
+on:
+  push:
+    branches:
+      - design/integrated-systems-network-v01
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  electrical-integration:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Static syntax validation
+        run: |
+          node --check engine/network/electrical-power-pilot.cjs
+          node --check engine/network/fire-detection-pilot.cjs
+          node --check tests/electrical-integration.test.cjs
+          node --check tests/system-network.test.cjs
+      - name: Check source-traced integration graph and fire-loop pilot
+        run: node tests/system-network.test.cjs
+      - name: Check Electrical AC/DC standby plus cross-system fault propagation
+        run: node tests/electrical-integration.test.cjs
