@@ -124,9 +124,9 @@
     "registration": "EP-FSI",
     "registration_source": "USER_DECLARED",
     "status": "ONLY_ALLOWED_AFMPERFORMANCE_SOURCE_FOR_SIMULATOR",
-    "private_path": "/Technical Database/Sources/AFM-737-33V-D6-8730-R32/EP-FSI-ASN29340/v11/",
-    "private_database": "epfsi_afm_scoped_v11.sqlite",
-    "archive_version": "v11",
+    "private_path": "/Technical Database/Sources/AFM-737-33V-D6-8730-R32/EP-FSI-ASN29340/v12/",
+    "private_database": "epfsi_afm_scoped_v12.sqlite",
+    "archive_version": "v12",
     "rules": 110,
     "charts": 6,
     "cg_chart_pdf_page": 24,
@@ -136,7 +136,7 @@
     "numerical_n1_engine_ready": false,
     "runtime_connection": "v10 source-status only; v11 traces held out of runtime",
     "public_registry_file": "docs/AFM_EP_FSI_ACTIVE_SCOPE.json",
-    "version": 11,
+    "version": 12,
     "installed_engine_rating": "20K",
     "installed_engine_rating_lbf": 20000,
     "rating_provenance": "USER_CONFIRMED_2026-10-23",
@@ -146,7 +146,7 @@
     "rating_22K_selected": false,
     "unit_tests_passed": 29,
     "scope_note": "Only EP-FSI ASN29340. Exact engine model CFM56-3B-1 and 20K rating reported by owner; no independent maintenance-record proof. Appendix conditions and numeric N1 curves still not validated.",
-    "private_db_sha256": "e7ba3e2df4ffeb7677ebe631f8b1a854a8ee49dbc1b857d2fd5e3f00aa45786a",
+    "private_db_sha256": "81e62a847070331398eb035160426642c24848a4f2b32e1d9bd137c1be90d114",
     "installed_engine_model_afm_spelling": "CFM56-3-B1",
     "installed_engine_model_source": "USER_CONFIRMATION_2026-10-23",
     "appendix_1UK": "REDUCED_TAKEOFF_CONDITIONAL",
@@ -166,9 +166,10 @@
     "n1_axis_ticks_provisional": 15,
     "n1_source_sample_points_preliminary": 104,
     "n1_graph_altitude_segments": 26,
-    "dual_raster_same_source_checks_passed": 104
+    "dual_raster_same_source_checks_passed": 104,
+    "numeric_n1_enabled": false
   },
-  "active_profile_instruction": "Use EP-FSI v11 PRIVATE archive for source-image partial trace diagnostics. Do NOT feed any v11 provisional N1 value to CDU or autothrottle. v10 source selector remains operative. Complete graphs and independent QA needed.",
+  "active_profile_instruction": "EP-FSI 29340 CFM56-3B-1/20K. Private v12 includes v11 trace plus 16 provisional bleed samples, 6 MCT steps, 12 component slots. Runtime N1 remains blocked; use v10 CDU source-status only.",
   "validation_batch_03": {
     "batch": "EPFSI_N1_SOURCE_V9",
     "private_library_path": "/Technical Database/Sources/AFM-737-33V-D6-8730-R32/EP-FSI-ASN29340/v9/",
@@ -250,5 +251,23 @@
       "PMC installed state"
     ],
     "status": "PROVISIONAL_NUMERIC_SAMPLES_AVAILABLE__FMC_N1_AUTOCALC_BLOCKED"
+  },
+  "validation_batch_06": {
+    "batch_id": "EPFSI_N1_V12",
+    "private_library_path": "/Technical Database/Sources/AFM-737-33V-D6-8730-R32/EP-FSI-ASN29340/v12/",
+    "afm_pdf_pages_reviewed": [
+      128,
+      129,
+      130,
+      756
+    ],
+    "new_provisional_bleed_samples": 16,
+    "source_curve_catalog_size": 10,
+    "mct_source_steps": 6,
+    "private_sqlite_tests_passed": 14,
+    "fully_approved_n1_curve_points": 0,
+    "manual_independent_numeric_qa": 0,
+    "cdun1_auto": "BLOCKED",
+    "source_module": "engine/fmc/performance/afm-epfsi-n1-conditions-v12.cjs"
   }
 }
