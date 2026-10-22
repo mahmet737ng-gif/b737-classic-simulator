@@ -31,8 +31,8 @@ function makeBrowserRuntime(){
  "if(p==='./sensor-failure-engine.cjs')return sensorEngine;"+
  "if(p==='./fire-detection-pilot.cjs')return firePilot;"+
  "if(p==='./annunciation-output-engine.cjs')return annunciator;"+
- "if(p==='./engine-apu-integration.cjs')return propulsionEngine;"+
  "if(p==='./pneumatic-start-protection.cjs')return safetyEngine;"+
+ "if(p==='./engine-apu-integration.cjs')return propulsionEngine;"+
  "if(p==='./qrh-checklist-router.cjs')return checklistRouter;"+
  "if(p==='./qrh-training-scenarios.cjs')return scenarioRegistry;"+
  "if(p==='./engine-indication-eis.cjs')return eisEngine;"+
