@@ -64,15 +64,53 @@
     "integrity_tests": "PASS: record IDs, 12 ASN takeoff sets, 8 flap placard values, FKs, 978 source pages and 819 OCR source pages retained",
     "note": "No original Boeing pages or proprietary derived rules in public repository. Exact candidates remain in private Technical Database.",
     "corrected_asns": [
-      29331,
-      29337,
-      29338
+      29331
     ],
     "raw_source_conflict": "PDF p18 printed ZFW kg 7627; user confirmed 47627 kg for 105000 lb shared ASN row",
     "erratum_id": "AFM-R32-ERRATUM-USER-ZFW-001",
     "latest_private_validation_path": "/Technical Database/Sources/AFM-737-33V-D6-8730-R32/Validation-Batch-01-Erratum-01/",
     "user_confirmed_typographical_corrections": 1,
     "regulatory_status": "USER_CONFIRMED_NOT_OFFICIAL_AFM_AMENDMENT",
-    "source_typo_source_value_preserved": true
+    "source_typo_source_value_preserved": true,
+    "source_typo_asn": [
+      29331
+    ],
+    "erratum_scope_note": "Earlier v4 incorrectly marked 29337 and 29338 as typographical corrections. Original AFM PDF p18 already prints 47,627 kg for these serials; the source typo affects only 29331. Preserved v4 for audit; v5 supersedes incorrect correction attributions.",
+    "current_active_database": "Validation-Batch-02/afm_technical_validated_v5.sqlite"
+  },
+  "validation_batch_02": {
+    "batch_id": "AFM-R32-BATCH02",
+    "private_library_path": "/Technical Database/Sources/AFM-737-33V-D6-8730-R32/Validation-Batch-02/",
+    "validation_scope": "Selected Section 1 CG charts & Section 4.1/4.2 setup / N1 methodological rules; not complete section-level semantic review",
+    "incremental_rules": 20,
+    "total_typed_rule_rows": 174,
+    "registered_charts": 10,
+    "cg_effectivity_charts": 5,
+    "explicit_cg_chart_label_points": 13,
+    "pages_in_audit_ledger": 65,
+    "newly_selected_image_verified_pages": 18,
+    "image_previews_only": 2,
+    "number_of_numerical_engine_N1_curves_digitized": 0,
+    "ready_for_FMC": 0,
+    "native_archive_pdfs": 978,
+    "source_text_pages": 159,
+    "image_ocr_pages": 819,
+    "verification": {
+      "sqlite_integrity": "ok",
+      "new_page_references_missing": 0,
+      "new_chart_references_missing": 0,
+      "new_anchor_references_missing": 0
+    },
+    "corrections": [
+      "Corrected erroneous earlier user-erratum attribution: only ASN 29331 source printed ZFW kg typo",
+      "Narrowly specified lower temperature/altitude chart-bound exception in Section 4.1 instead of generic extrapolation policy"
+    ],
+    "status": "PRIVATE_INDEX_UPDATED__PARTIAL_SOURCE_VERIFICATION__NOT_ENGINE_READY",
+    "next_steps": [
+      "Verify Section 1 graphs to numerical polygon QA",
+      "Digitize Section 4.2 performance nomograms with independent point checks",
+      "Apply engine/ASN/Appendix effectivity gates",
+      "Cross-validate numerical solutions before enabling FMC"
+    ]
   }
 }
