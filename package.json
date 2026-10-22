@@ -1,0 +1,9 @@
+{
+  "name": "b737-classic-cockpit-explorer",
+  "version": "0.3.0",
+  "private": true,
+  "description": "Boeing 737 Classic photographic classroom demo (not flight simulation)",
+  "scripts": {
+    "test": "node --check app.js && node --check cockpit-data.js && node --check sim-engine.js && node tests/sim-engine.test.cjs"
+  }
+}

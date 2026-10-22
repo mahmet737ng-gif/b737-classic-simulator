@@ -5,7 +5,7 @@
   <meta name="theme-color" content="#0b1118" /><meta name="description" content="Interactive Boeing 737 Classic cockpit explorer — overhead, instrument panel and pedestal. Educational demo only." />
   <title>B737 Classic · Interactive Flight Deck</title>
   <link rel="stylesheet" href="styles.css" />
-  <script src="cockpit-data.js" defer></script><script src="app.js" defer></script>
+  <script src="cockpit-data.js" defer></script><script src="sim-engine.js" defer></script><script src="app.js" defer></script>
 </head>
 <body>
   <div class="app">
@@ -21,7 +21,7 @@
       <div class="side-caption divided">QUICK SEARCH</div>
       <label class="search-wrap"><span>⌕</span><input id="searchInput" type="search" placeholder="Battery, APU, lights..." aria-label="Find a cockpit control" /><span class="key-hint">/</span></label>
       <div id="searchResults" class="search-results" aria-live="polite"></div>
-      <div class="side-end"><div class="mode-indicator"><span class="mode-ring">CL</span><div><b>737-300 / 400 / 500</b><small>Systems visualizer · beta 0.2</small></div></div><p>Independent educational prototype.<br/>Not an aircraft-certified simulator.</p></div>
+      <div class="side-end"><div class="mode-indicator"><span class="mode-ring">CL</span><div><b>737-300 / 400 / 500</b><small>Systems visualizer · beta 0.3</small></div></div><p>Independent educational prototype.<br/>Not an aircraft-certified simulator.</p></div>
     </aside>
     <div class="shell">
       <header class="topbar">
@@ -48,7 +48,8 @@
             <div class="inspector-eyebrow"><span>◎</span> CONTROL INSPECTOR <span class="learn-chip">DEMO</span></div>
             <div class="inspector-card"><div class="control-heading"><span id="controlNumber">NO CONTROL SELECTED</span><span id="controlSystem">—</span></div><h2 id="controlTitle">Choose a switch<br/>on the panel</h2><p id="controlInfo">Select a switch to inspect it, then click it again to cycle its position — or choose a position below.</p><div class="control-status"><span>SIMULATED POSITION</span><strong id="controlState">—</strong></div><div class="state-choices" id="controlChoices"><span class="empty-choices">No control selected</span></div><div id="controlNote" class="control-note">State changes here do not yet reproduce validated aircraft system logic.</div></div>
             <div class="scenario-panel"><div class="panel-caption">SCENARIO PRESETS</div><div class="scenario-buttons"><button data-preset="cold" class="scenario-btn">Cold & Dark</button><button data-preset="ground" class="scenario-btn selected">Ground Power</button><button data-preset="flight" class="scenario-btn">In Flight</button></div><span>Sets illustrative training states. Not an FCOM procedure.</span></div>
-            <div class="summary-panel"><div class="panel-caption">SYSTEM SNAPSHOT <span class="live-badge">LIVE DEMO</span></div><div class="summary-row"><span>DC / AC POWER</span><b id="powerState">STANDBY</b></div><div class="summary-row"><span>ENGINE GENERATORS</span><b id="engineState">OFF</b></div><div class="summary-row"><span>AUTOPILOT</span><b id="apState">OFF</b></div><div class="summary-row"><span>MODIFIED CONTROLS</span><b id="changedCount">0</b></div></div>
+            <div class="summary-panel"><div class="panel-caption">SYSTEM SNAPSHOT <span class="live-badge">LIVE DEMO</span></div><div class="summary-row"><span>DC / AC POWER</span><b id="powerState">STANDBY</b></div><div class="summary-row"><span>BATTERY SELECTED</span><b id="batteryState">—</b></div><div class="summary-row"><span>STANDBY SELECTOR</span><b id="standbyState">—</b></div><div class="summary-row"><span>AC SOURCE SELECTED</span><b id="powerSourceState">—</b></div><div class="summary-row"><span>ENGINE GENERATORS</span><b id="engineState">OFF</b></div><div class="summary-row"><span>AUTOPILOT</span><b id="apState">OFF</b></div><div class="summary-row"><span>MODIFIED CONTROLS</span><b id="changedCount">0</b></div><p class="advisory" id="simulationAdvisory">Source selectors only; no true aircraft systems are simulated.</p></div>
+            <div class="exercise-panel"><div class="panel-caption">ELECTRICAL EXERCISE <span id="exerciseProgress" class="live-badge">0/6</span></div><p class="exercise-intro">Partial ground electrical orientation based on Sepehran 737CL FCOM, SP.6.1–SP.6.3, PDF pp. 196–198. This is <b>not</b> a complete checklist.</p><div id="exerciseList" class="exercise-list"></div><p class="exercise-status" id="exerciseStatus">Select a row to locate its switch on the panel.</p></div>
             <div class="event-panel"><div class="panel-caption">RECENT ACTIONS <button id="clearLog" title="Clear event list">CLEAR</button></div><div class="event-list" id="eventList"><p>No switches operated yet.</p></div></div>
           </aside>
         </div>
@@ -56,7 +57,7 @@
       </main>
     </div>
   </div>
-  <dialog id="helpDialog"><h3>Using the Cockpit Explorer</h3><p>Choose a panel or click <b>OPEN</b> next to one. Tap one of the outlined switch targets; use the right-side inspector to change its demo state. Controls are mapped directly on the provided cockpit photograph.</p><p><b>Shortcuts:</b> / focuses search, + and − change zoom, 0 fits, Esc closes dialog. Use the navigation tabs to explore the full flight deck.</p><p><b>Current scope:</b> interaction and persistent demonstration states. FCOM-verified interlocks, failures and annunciation logic are a later development milestone.</p><button id="closeHelp">CLOSE</button></dialog>
+  <dialog id="helpDialog"><h3>Using the Cockpit Explorer</h3><p>Choose a panel or click <b>OPEN</b> next to one. Tap one of the outlined switch targets; use the right-side inspector to change its demo state. Controls are mapped directly on the provided cockpit photograph.</p><p><b>Shortcuts:</b> / focuses search, + and − change zoom, 0 fits, Esc closes dialog. Use the navigation tabs to explore the full flight deck.</p><p><b>Current scope:</b> interaction and persistent demonstration states. The electrical exercise maps selected switch positions from FCOM SP.6.1–SP.6.3 (source PDF pages 196–198). It omits aircraft conditions, annunciation verification, interlocks, failures and the remaining checklist. None of the demo states is suitable for operating an aircraft.</p><button id="closeHelp">CLOSE</button></dialog>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 </body>
 </html>

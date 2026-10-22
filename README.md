@@ -30,7 +30,7 @@ A public deployment is prepared with `.github/workflows/pages.yml`. Once GitHub 
 - `styles.css`: desktop/tablet/mobile layout
 - `cockpit-data.js`: panel geometry and mapped control registry; **source of truth** for UI targets
 - `app.js`: state machine for demonstration-only switching
-- `assets/*.webp`: reference cockpit panels, cleaned and optimized (offline-capable)
+- `assets/*.webp`: original photographic panel assets with transparent backgrounds (offline-capable)
 - `docs/ROADMAP.md`: tasks and acceptance criteria
 - `.github/workflows/pages.yml`: deployment
 
@@ -43,3 +43,8 @@ A public deployment is prepared with `.github/workflows/pages.yml`. Once GitHub 
 5. Make safe switch guards/rotary behavior and touch/zoom interactions faithful to real hardware.
 
 Separate repository from JeppIran; no dependencies or files shared.
+
+
+## Beta 0.3: Source-grounded electrical orientation
+
+Includes a six-item, explicitly **partial** ground electrical demonstration, with photo-based shortcuts to each mapped selector. Derived by paraphrase from the user-provided Sepehran Airlines 737CL FCOM, Supplementary Procedures, Electrical Power Up, SP.6.1–SP.6.3 (source PDF pages 196–198). No FCOM text or pages are redistributed, and this demo is **not a complete procedure or a validation of aircraft system logic**. Actual availability, load transfer, generator readiness, indication lights, APU parameters and engine condition are not modeled.

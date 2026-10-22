@@ -1,0 +1,14 @@
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const vm=require('node:vm');
+const context={window:{}};
+vm.runInNewContext(fs.readFileSync(require('node:path').join(__dirname,'..','sim-engine.js'),'utf8'),context);
+const demo=context.window.B737SimEngine;
+assert.ok(demo,'The demo engine must load');
+const ground={battery:'ON','stby-power':'AUTO','hyd-elec1':'OFF','hyd-elec2':'OFF','gear-handle':'DOWN','external-power':'ON'};
+assert.equal(demo.status(ground).source,'GROUND POWER');
+assert.equal(demo.status({battery:'ON'}).power,'BATTERY ONLY');
+assert.equal(demo.status({battery:'OFF'}).power,'NO SOURCE');
+assert.equal(demo.evaluate(ground).filter(t=>t.ok).length,6);
+assert.equal(demo.evaluate({...ground,'external-power':'OFF'}).filter(t=>t.ok).length,5);
+console.log('Electrical demo model: 5 tests passed');
