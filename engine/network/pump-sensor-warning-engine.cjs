@@ -12,6 +12,7 @@
  */
 
 const SOURCE = 'FCOM-SEPEHRAN-1937';
+const {evaluateFeeder}=require('./electrical-feeder-audit.v0.2.cjs');
 const FUEL_IDS = Object.freeze([
   'MAIN1_FWD', 'MAIN1_AFT', 'MAIN2_FWD', 'MAIN2_AFT',
   'CTR_LEFT', 'CTR_RIGHT'
@@ -32,28 +33,29 @@ const light = p => p === 'UNKNOWN' ? null : p === 'LOW';
 const andKnown = (a,b) => a === false || b === false ? false :
   (a === null || b === null ? null : a && b);
 
-function consumerPower(electrical, id) {
-  if (!electrical || !electrical.buses || !Array.isArray(electrical.crossSystemEffects)) {
-    throw new TypeError('evaluateElectricalPower output required');
-  }
-  const effect = electrical.crossSystemEffects.find(x => x.id === id);
-  if (effect) return {state:'UNPOWERED', basis:'FCOM_FAILURE_TABLE', source:effect.source};
-  const b = electrical.buses;
-  if (b.generator1 === 'POWERED' && b.generator2 === 'POWERED') {
-    return {state:'POWERED', basis:'NOMINAL_TWO_AC_BUS_FIXTURE',
-      source:src('6.20.1-4',1153)};
-  }
-  if (b.generator1 === 'UNPOWERED' && b.generator2 === 'UNPOWERED') {
-    return {state:'UNPOWERED', basis:'ALL_NORMAL_AC_SOURCES_LOST',
-      source:src('6.20.1-4',1153)};
-  }
-  if (electrical.documentedFailureCase) {
-    return {state:'POWERED', basis:'OTHER_LOAD_NOT_IN_FCOM_FAILURE_LIST',
-      source:src(electrical.documentedFailureCase.includes('GEN1')?'6.20.18':'6.20.19',
-        electrical.documentedFailureCase.includes('GEN1')?1167:1168)};
-  }
-  return {state:'UNKNOWN', basis:'EXACT_FEEDER_AND_RELAY_UNVERIFIED',
-    source:src('6.20.3-4',1153)};
+const CONSUMER_IDS = Object.freeze({
+  'FUEL.TANK1_FORWARD_PUMP':'FUEL.MAIN1_FWD',
+  'FUEL.TANK2_FORWARD_PUMP':'FUEL.MAIN2_FWD',
+  'FUEL.CENTER_LEFT_PUMP':'FUEL.CTR_LEFT',
+  'FUEL.CENTER_RIGHT_PUMP':'FUEL.CTR_RIGHT',
+  'HYD.SYSTEM_A_ELECTRIC_PUMP':'HYD.A_ELECTRIC',
+  'HYD.SYSTEM_B_ELECTRIC_PUMP':'HYD.B_ELECTRIC',
+  'FUEL.MAIN1_AFT':'FUEL.MAIN1_AFT',
+  'FUEL.MAIN2_AFT':'FUEL.MAIN2_AFT'
+});
+function consumerPower(electrical,id) {
+  const key=CONSUMER_IDS[id];
+  if(!key)throw new TypeError('Unregistered pump electrical consumer '+String(id));
+  const feeder=evaluateFeeder(electrical,key);
+  const basis=feeder.basis==='FCOM_SPECIFIED_FAILED_LOAD_IN_NARROW_FLIGHT_CASE'?
+    'FCOM_FAILURE_TABLE' :
+    feeder.basis==='BOTH_GENERATOR_BUSES_LIVE_NORMAL_FIXTURE'?
+      'NOMINAL_TWO_AC_BUS_FIXTURE' :
+    feeder.basis==='NO_MAIN_GENERATOR_AC_IN_MODEL'?
+      'ALL_NORMAL_AC_SOURCES_LOST':
+    feeder.basis==='OTHER_CONSUMER_NOT_IN_FCOM_FAILED_LIST'?
+      'OTHER_LOAD_NOT_IN_FCOM_FAILURE_LIST':'EXACT_FEEDER_AND_RELAY_UNVERIFIED';
+  return {...feeder,basis};
 }
 
 function computeMotor({switchOn,working,power,medium,autoCutoff=false}) {
