@@ -124,9 +124,9 @@
     "registration": "EP-FSI",
     "registration_source": "USER_DECLARED",
     "status": "ONLY_ALLOWED_AFMPERFORMANCE_SOURCE_FOR_SIMULATOR",
-    "private_path": "/Technical Database/Sources/AFM-737-33V-D6-8730-R32/EP-FSI-ASN29340/v10/",
-    "private_database": "epfsi_afm_scoped_v10.sqlite",
-    "archive_version": "v10",
+    "private_path": "/Technical Database/Sources/AFM-737-33V-D6-8730-R32/EP-FSI-ASN29340/v11/",
+    "private_database": "epfsi_afm_scoped_v11.sqlite",
+    "archive_version": "v11",
     "rules": 110,
     "charts": 6,
     "cg_chart_pdf_page": 24,
@@ -134,19 +134,19 @@
     "historical_v5": "PRESERVED_AS_IMMUTABLE_ARCHIVE_NOT_ACTIVE",
     "engine_and_thrust_rating": "CFM56-3B-1 at 20K; owner confirmed, independently unverified",
     "numerical_n1_engine_ready": false,
-    "runtime_connection": "N1 LIMIT AND TAKEOFF REF READ-ONLY SOURCE ADAPTER WIRED; NUMERIC COMPUTATION BLOCKED",
+    "runtime_connection": "v10 source-status only; v11 traces held out of runtime",
     "public_registry_file": "docs/AFM_EP_FSI_ACTIVE_SCOPE.json",
-    "version": 10,
+    "version": 11,
     "installed_engine_rating": "20K",
     "installed_engine_rating_lbf": 20000,
     "rating_provenance": "USER_CONFIRMED_2026-10-23",
     "installed_engine_model": "CFM56-3B-1",
-    "previous_archive": "v9 preserved",
+    "previous_archive": "v10 preserved",
     "appendix_33": "MODEL_AND_RATING_MATCHED_20K__APPROVED_CONDITIONS_PENDING",
     "rating_22K_selected": false,
     "unit_tests_passed": 29,
     "scope_note": "Only EP-FSI ASN29340. Exact engine model CFM56-3B-1 and 20K rating reported by owner; no independent maintenance-record proof. Appendix conditions and numeric N1 curves still not validated.",
-    "private_db_sha256": "40812cae7042c2c3c83135236883ea477d7b35fa7a6e0b25872ab31ac7f9b830",
+    "private_db_sha256": "e7ba3e2df4ffeb7677ebe631f8b1a854a8ee49dbc1b857d2fd5e3f00aa45786a",
     "installed_engine_model_afm_spelling": "CFM56-3-B1",
     "installed_engine_model_source": "USER_CONFIRMATION_2026-10-23",
     "appendix_1UK": "REDUCED_TAKEOFF_CONDITIONAL",
@@ -163,9 +163,12 @@
     "n1_source_chart_modes": 6,
     "n1_chart_components": 14,
     "n1_source_rules": 11,
-    "n1_axis_ticks_provisional": 15
+    "n1_axis_ticks_provisional": 15,
+    "n1_source_sample_points_preliminary": 104,
+    "n1_graph_altitude_segments": 26,
+    "dual_raster_same_source_checks_passed": 104
   },
-  "active_profile_instruction": "EP-FSI ASN29340 CFM56-3B-1 20K v10 private SQLite. CDU N1 source-status routing is wired; manual N1 is TRAINING ONLY. Numerical N1 disabled pending full trace and independent QA. No actual A/T coupling.",
+  "active_profile_instruction": "Use EP-FSI v11 PRIVATE archive for source-image partial trace diagnostics. Do NOT feed any v11 provisional N1 value to CDU or autothrottle. v10 source selector remains operative. Complete graphs and independent QA needed.",
   "validation_batch_03": {
     "batch": "EPFSI_N1_SOURCE_V9",
     "private_library_path": "/Technical Database/Sources/AFM-737-33V-D6-8730-R32/EP-FSI-ASN29340/v9/",
@@ -223,5 +226,29 @@
     "physical_browser_visual_qa": "NOT VERIFIED",
     "status": "SOURCE_ROUTING_AND_STAGED_CDU_DONE__NUMERIC_N1_CURVE_QA_PENDING",
     "note": "Appendix2UK states only takeoff chart changes when PMC OFF; GA and MCT retain base AFM chart."
+  },
+  "validation_batch_05": {
+    "batch_id": "EPFSI_N1_TRACE_V11",
+    "private_library_path": "/Technical Database/Sources/AFM-737-33V-D6-8730-R32/EP-FSI-ASN29340/v11/",
+    "source_pdf_pages": [
+      128,
+      129
+    ],
+    "partial_altitude_labeled_graph_segments": 26,
+    "provisional_graph_sample_values": 104,
+    "source_image_consistency_checks": 104,
+    "independent_human_reviewed_values": 0,
+    "runtime_allowed_values": 0,
+    "private_source_adapter_tests": "9 PASS",
+    "public_generic_interpolation_math": "SYNTHETIC TEST DATA ONLY",
+    "outstanding": [
+      "full envelope and branch intersections",
+      "bleed and cowl anti-ice numeric corrections",
+      "PMC OFF cap",
+      "MCT nomogram",
+      "independent human QA",
+      "PMC installed state"
+    ],
+    "status": "PROVISIONAL_NUMERIC_SAMPLES_AVAILABLE__FMC_N1_AUTOCALC_BLOCKED"
   }
 }
