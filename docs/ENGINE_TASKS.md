@@ -144,3 +144,11 @@ Private active dataset: `/Technical Database/Sources/AFM-737-33V-D6-8730-R32/EP-
 | N1-FSI-08 Generic guarded interpolation math | DONE (SYNTHETIC TEST ONLY) | `engine/fmc/performance/n1-interpolation-guard-v11.cjs`, tests `tests/n1-interpolation-guard-v11.test.cjs`; public module contains no Boeing numerical curves. |
 
 Private source snapshot: `/Technical Database/Sources/AFM-737-33V-D6-8730-R32/EP-FSI-ASN29340/v11/epfsi_afm_scoped_v11.sqlite`; SHA256 `e7ba3e2df4ffeb7677ebe631f8b1a854a8ee49dbc1b857d2fd5e3f00aa45786a`. Reference: `docs/AFM_EP_FSI_N1_V11.md`. All 104 source N1 samples remain ineligible for runtime until complete independent QA.
+
+## 2026-10-23 — Technical Database machine-readable system/warning network V1
+
+- **PERSISTED IN PRIVATE LIBRARY:** `/Technical Database/Technical-Network-V1/` now contains one SQLite combining the existing 8 manuals / 5,067 indexed pages, source-page provenance and the first typed equipment network. See `docs/TECHNICAL_DATABASE.md`.
+- **SOURCE-LINKED GRAPH INCREMENT:** 91 nodes (including 26 lexical tags, not real devices), 104 ports, 56 documented functional connections, 43 original-expression warning/control conditions, 173 rule symbols, 11 explicit unresolved gaps. 39 rule predicates can be deterministically evaluated; 4 remain disabled where exact algorithms or full trigger details are unavailable.
+- **TESTS:** 25 Python rule/traceability checks PASS; SQLite PRAGMA integrity and standalone HTML viewer JS syntax PASS. Tests are in the private bundle and have **not** been integrated into the public CI.
+- **IMPLEMENTATION LIMIT:** No live connection yet from graph rules to `audio/warning-engine.js` or `engine/trainer/core.js`. The graph's 76 proposed consumer mappings are **NOT COMPLETE or ACTIVE**. No changes to the approved cockpit visual assets, original UI, or postponed LAN capability.
+- **Next work:** map source-documented switch and sensor keys to the deterministic cockpit state engine; exercise each warning/alarm from instructor fault injection; map checklist conditions; validate missing pin/channel/rating details only where they affect this educational trainer.
