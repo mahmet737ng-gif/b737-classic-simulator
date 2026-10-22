@@ -13,20 +13,30 @@ const files=[
   'engine/network/integrated-aircraft-kernel.cjs'
 ];
 function makeBrowserRuntime() {
-  const [electrical,consumer,feeders,pressure,kernel]=files.map(p=>
+  const [electrical,feeder,consumer,pressure,kernel]=files.map(p=>
     fs.readFileSync(path.join(root,p),'utf8').trim());
-  const wrap=(name,body,needsRequire=false)=>
-    'const '+name+'=(function(){const module={exports:{}};const exports=module.exports;'+
-    (needsRequire ?
-      "const require=(p)=>{if(p==='./electrical-power-pilot.cjs')return electrical;"+
-      "if(p==='./pump-sensor-warning-engine.cjs')return consumers;"+
-      "if(p==='./electrical-consumer-feeders.cjs')return feeders;"+
-      "if(p==='./fluid-pressure-engine.cjs')return pressureEngine;"+
-      "throw new Error('Unknown browser module '+p);};" : '')+
-    '\n'+body+'\nreturn module.exports;})();\n';
-  return "(function(){'use strict';\n"+wrap('electrical',electrical)+
-    wrap('consumers',consumer)+wrap('feeders',feeders)+
-    wrap('pressureEngine',pressure)+wrap('kernel',kernel,true)+
+  const wrap=(name,body,requires={}) => {
+    const resolver=Object.keys(requires).length===0?'':[
+      'const require=(p)=>{',
+      ...Object.entries(requires).map(([key,val])=>
+        "if(p==='"+key+"')return "+val+";"),
+      "throw new Error('Unknown browser module '+p);};"
+    ].join('');
+    return 'const '+name+'=(function(){const module={exports:{}};'+
+      'const exports=module.exports;'+resolver+'\n'+body+
+      '\nreturn module.exports;})();\n';
+  };
+  return "(function(){'use strict';\n"+
+    wrap('electrical',electrical)+
+    wrap('feeder',feeder)+
+    wrap('consumers',consumer,{'./electrical-feeder-audit.v0.2.cjs':'feeder'})+
+    wrap('pressure',pressure)+
+    wrap('kernel',kernel,{
+      './electrical-power-pilot.cjs':'electrical',
+      './electrical-feeder-audit.v0.2.cjs':'feeder',
+      './pressure-distribution.v0.2.cjs':'pressure',
+      './pump-sensor-warning-engine.cjs':'consumers'
+    })+
     'globalThis.B737PowerNetwork=Object.freeze(kernel);\n})();\n';
 }
 const dest=path.join(root,'power-consumers-lab/runtime.js');
