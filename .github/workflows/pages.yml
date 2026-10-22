@@ -20,6 +20,8 @@ jobs:
       - uses: actions/checkout@v4
       - name: Verify demo scripts and model
         run: npm test
+      - name: Syntax-check animated panel
+        run: node --check main-panel-lab/panel.js
       - uses: actions/configure-pages@v5
         with:
           enablement: true
