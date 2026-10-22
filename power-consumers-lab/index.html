@@ -31,6 +31,9 @@
     .lamp-face[data-state="ON"][data-kind="WARNING"]{background:#701c21;border-color:#f14b50;color:#fff}
     .lamp-face[data-state="ON"][data-kind="CAUTION"]{background:#66430b;border-color:#ffc35b;color:#fff1c7}
     .lamp-face[data-state="UNKNOWN"]{border-style:dashed;color:#e6ce8c}
+    .eis-knob{height:58px;width:58px;cursor:ew-resize;touch-action:none;flex:0 0 58px;background:radial-gradient(circle,#33434c 20%,#0e1820 65%,#52636d 70%);border:2px solid #7c939f;border-radius:50%;position:relative;box-shadow:0 2px 10px #080d11}
+    .eis-knob:focus-visible{outline:2px solid #e4ce95}
+    .eis-knob-needle{position:absolute;left:calc(50% - 2px);top:6px;width:4px;height:20px;background:#ffdd83;border-radius:3px;transform-origin:2px 23px;transform:rotate(var(--eis-angle,-135deg));transition:transform 120ms ease-out}
     .eis-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:14px;margin-top:16px;direction:ltr}
     .eis-unit{border:1px solid #495763;background:#10171e;border-radius:11px;padding:12px}
     .eis-unit h3{color:#c6dce8;margin:0 0 8px;text-align:center}
@@ -104,7 +107,18 @@
       <button data-eis-action="resetUsed">RESET FUEL USED</button>
       <button data-eis-action="tick2">ADVANCE +2 SECONDS</button>
     </div>
-    <div class="eis-grid" id="eisPanels" aria-label="EIS primary and secondary displays"></div>
+    <div class="toolbar" style="align-items:center;direction:ltr;margin-top:12px">
+      <label for="eisN1Mode">N1 SET Knob</label>
+      <select id="eisN1Mode"><option value="FMC">PUSH IN / FMC</option><option value="MANUAL">PULL OUT / MAN SET</option></select>
+      <button data-eis-action="n1Mode">SELECT N1 REFERENCE MODE</button>
+      <div id="eisKnob" class="eis-knob" role="slider" tabindex="0" aria-label="N1 manual set knob" aria-valuemin="0" aria-valuemax="120" aria-valuenow="0" title="Mouse wheel, drag or touch swipe to change manual N1">
+        <div id="eisKnobNeedle" class="eis-knob-needle"></div>
+      </div>
+      <span class="sub" id="eisKnobReadout">MAN SET: --</span>
+      <button data-eis-action="clearN1">CLEAR MANUAL VALUE</button>
+      <button data-eis-action="setFmcRef">ENTER EXTERNAL FMC BUG FROM MEASUREMENT</button>
+    </div>
+        <div class="eis-grid" id="eisPanels" aria-label="EIS primary and secondary displays"></div>
     <p class="note" id="eisNote">Primary EIS failure: two-second lower-stop state, followed by dashes. Oil and other secondary EIS failures show missing/invalid indication. Reference limits are not replaced with fabricated current readings.</p>
   </section>
   <section>
