@@ -4,7 +4,7 @@
   "private": true,
   "description": "Boeing 737 Classic photographic classroom demo (not flight simulation)",
   "scripts": {
-    "test": "node --check app.js && node --check cockpit-data.js && node --check sim-engine.js && node tests/sim-engine.test.cjs && node tests/engine-design.test.cjs && node --check audio/warning-engine.js && node --check audio-lab/lab.js && node --check audio-lab/real-audio-bank.js && node tests/audio-warning-engine.test.cjs && node tests/real-audio-import.test.cjs && node --check audio/policy/phrase-selector-v4.js && node tests/phrase-selector-v4.test.cjs && node tests/afm-epfsi-n1-v9.test.cjs && node --check engine/trainer/core.js && node --check trainer-lab/app.js && node tests/trainer-core.test.cjs && node --check sync-server/server.js && node --check trainer-lab/network.js && node tests/network-sync.test.cjs",
+    "test": "node --check app.js && node --check cockpit-data.js && node --check sim-engine.js && node tests/sim-engine.test.cjs && node tests/engine-design.test.cjs && node --check audio/warning-engine.js && node --check audio-lab/lab.js && node --check audio-lab/real-audio-bank.js && node tests/audio-warning-engine.test.cjs && node tests/real-audio-import.test.cjs && node --check audio/policy/phrase-selector-v4.js && node tests/phrase-selector-v4.test.cjs && node tests/afm-epfsi-n1-v9.test.cjs && node --check engine/trainer/core.js && node --check trainer-lab/app.js && node tests/trainer-core.test.cjs && node --check sync-server/server.js && node --check trainer-lab/network.js && node tests/network-sync.test.cjs && node tests/afm-epfsi-n1-v10.test.cjs && node cdu-standalone/tests/n1-v10-integration.test.cjs",
     "classroom": "node sync-server/server.js"
   }
 }
