@@ -19,6 +19,10 @@ const tests=[
 assert.equal(keyFor("intermittentHorn",null),"intermittentHorn");
 assert.equal(keyFor("gpws","pull up"),"gpws|PULL UP");
 assert.equal(keyFor("radioAltitude","500"),"radioAltitude|500");
+assert.equal(suggestKey("a.mp3",tests),"radioAltitude|COLLECTION");
+assert.equal(suggestKey("e.mp3",tests),"shaker");
+assert.equal(suggestKey("c.mp3",tests),null);
+assert.equal(suggestKey("b.mp3",tests),null);
 assert.equal(suggestKey("fire bell.wav",tests),"fireBell");
 assert.equal(suggestKey("stall_warning.wav",tests),"shaker");
 assert.equal(suggestKey("takeoff_config.wav",tests),"intermittentHorn");
@@ -29,4 +33,4 @@ assert.equal(validAudioFile({name:"fire-bell.wav",size:1234}),true);
 assert.equal(validAudioFile({name:"fire-bell.mp4",size:1234}),false);
 assert.equal(validAudioFile({name:"fire-bell.wav",size:0}),false);
 assert.equal(validAudioFile({name:"fire-bell.wav",size:41*1024*1024}),false);
-console.log("13 real-audio import registry tests passed");
+console.log("17 real-audio import registry tests passed");
