@@ -1,0 +1,7 @@
+const assert=require('node:assert/strict');const registry=require('../data/animation-registry.json');const engine=require('../motion-engine.js').createRegistryEngine(registry);const pointer=require('../pointer-interactions.js');
+function mock(){const events=new Map();return {style:{},events,addEventListener(name,fn){events.set(name,fn)},removeEventListener(name){events.delete(name)},setPointerCapture(){},hasPointerCapture(){return false},fire(name,args={}){const e={button:0,pointerId:1,clientX:100,clientY:100,deltaY:0,preventDefault(){this.prevented=true},...args};events.get(name)(e);return e}}}
+const el=mock();const x=pointer.bind(el,engine,'EFIS.EHSI_MODE');engine.input('EFIS.EHSI_MODE','select','MAP');el.fire('wheel',{deltaY:-120});assert.equal(engine.read('EFIS.EHSI_MODE').value,'CTR_MAP');
+el.fire('pointerdown',{clientY:100});el.fire('pointermove',{clientY:65});el.fire('pointerup',{clientY:65});assert.equal(engine.read('EFIS.EHSI_MODE').value,'PLAN');el.fire('click');assert.equal(engine.read('EFIS.EHSI_MODE').value,'PLAN');
+x.dispose();
+const p=mock(), d=pointer.bind(p,engine,'MCP.APP');p.fire('pointerdown');assert.equal(engine.read('MCP.APP').pressed,true);p.fire('pointercancel');assert.equal(engine.read('MCP.APP').pressed,false);d.dispose();
+console.log('PASS: wheel, touch swipe, synthetic click suppression, momentary cancel');

@@ -1,0 +1,2 @@
+const assert=require('node:assert/strict');const motor=require('../motion-engine.js').createRegistryEngine(require('../data/animation-registry.json'));
+motor.input('MCP.VS_THUMBWHEEL','select',950);motor.input('MCP.VS_THUMBWHEEL','step',1);assert.equal(motor.read('MCP.VS_THUMBWHEEL').value,1000);motor.input('MCP.VS_THUMBWHEEL','step',1);assert.equal(motor.read('MCP.VS_THUMBWHEEL').value,1100);console.log('PASS: dynamic V/S 50/100 ft/min bounds');

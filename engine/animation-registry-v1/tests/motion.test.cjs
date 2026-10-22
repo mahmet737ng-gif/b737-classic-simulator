@@ -1,0 +1,12 @@
+const assert=require('node:assert/strict');const {createRegistryEngine}=require('../motion-engine.js');const reg=require('../data/animation-registry.json');const motor=createRegistryEngine(reg);
+const outer='EFIS.EHSI_BRT_OUTER',inner='EFIS.WXR_BRT_INNER';
+const outerStyle={};const innerStyle={};const ele1={style:outerStyle},ele2={style:innerStyle};motor.attach(outer,ele1);motor.attach(inner,ele2);
+motor.input(outer,'step',1);assert.equal(motor.read(outer).value,1);assert.equal(motor.read(inner).value,0);assert.match(outerStyle.transform,/rotate\(/);assert.equal(innerStyle.transform,'rotate(0deg)');
+motor.input(inner,'step',1);assert.equal(motor.read(outer).value,1);assert.equal(motor.read(inner).value,1);
+motor.input('MCP.BANK_ANGLE_SELECTOR','select',25);motor.input('MCP.BANK_ANGLE_SELECTOR','step',1);assert.equal(motor.read('MCP.BANK_ANGLE_SELECTOR').value,30);motor.input('MCP.BANK_ANGLE_SELECTOR','step',1);assert.equal(motor.read('MCP.BANK_ANGLE_SELECTOR').value,30);
+motor.input('MCP.BANK_ANGLE_SELECTOR','step',-1);assert.equal(motor.read('MCP.BANK_ANGLE_SELECTOR').value,25);
+motor.input('MCP.ALTITUDE_SELECTOR','select',10000);motor.input('MCP.ALTITUDE_SELECTOR','step',1);assert.equal(motor.read('MCP.ALTITUDE_SELECTOR').value,10100);
+const pushEl={style:{}};motor.attach('MCP.APP',pushEl);const release=motor.press('MCP.APP');assert.equal(motor.read('MCP.APP').pressed,true);assert.match(pushEl.style.transform,/scale\(0.96\)/);release();assert.equal(motor.read('MCP.APP').pressed,false);
+motor.input('MCP.FD_CAPT','select','ON');assert.equal(motor.read('MCP.FD_CAPT').value,'ON');
+assert.throws(()=>motor.input('MCP.BANK_ANGLE_SELECTOR','select',40));assert.throws(()=>motor.read('MCP.UNSUPPORTED'));
+console.log('PASS: stable detents, inner/outer independence, button release and animation targets');
