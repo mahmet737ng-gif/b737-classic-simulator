@@ -385,10 +385,18 @@ function projectWarnings(network,warnCauses,electrical,control) {
       visible:visible(p.engineDriven.lowPressureLampDemand)},
       flightControl:{logicalDemand:p.flightControlLowPressureLampDemand,
       visible:visible(p.flightControlLowPressureLampDemand)}};
+  // FCOM §13.20.3 documents FLT CONT + HYD annunciators when loss of
+  // hydraulic output affects flight-control pressure. A lone pump LOW PRESS
+  // with the other pump maintaining system pressure is *not* enough evidence
+  // to declare the entire HYD caution circuit's behavior.
+  const hydFlightControlCaution=active.some(x=>x.system==='FLT CONT');
+  const otherHydPumpLow=Object.values(network.hydraulic).some(p=>
+    p.electric.lowPressureLampDemand!==false ||
+    p.engineDriven.lowPressureLampDemand!==false);
   const systemAnnunciators={
     FUEL: active.some(x=>x.system==='FUEL') || (control.recallPressed && simple.some(x=>x.system==='FUEL')),
-    HYD: null,  // Pump LOW PRESSURE -> system HYD caution rule still unverified.
-    'FLT CONT':active.some(x=>x.system==='FLT CONT')
+    HYD: hydFlightControlCaution ? true : (otherHydPumpLow ? null : false),
+    'FLT CONT':hydFlightControlCaution
   };
   return {
     causeIds:active.map(x=>x.id),
