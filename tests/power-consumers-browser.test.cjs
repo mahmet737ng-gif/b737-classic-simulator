@@ -89,6 +89,23 @@ const protectionActions=[
 ];
 assert.deepEqual(snap(browser.replayAircraftActions(browser.initialAircraftState(),protectionActions)),
  snap(source.replayAircraftActions(source.initialAircraftState(),protectionActions)));
+// Exact source parity for every training fault, QRH trigger and confirmed step.
+for(const id of source.TRAINING_SCENARIO_IDS){
+  const commands=source.trainingScenarioActions(id);
+  assert.deepEqual(snap(browser.trainingScenarioActions(id)),snap(commands));
+  assert.deepEqual(
+    snap(browser.replayAircraftActions(browser.initialAircraftState(),commands)),
+    snap(source.replayAircraftActions(source.initialAircraftState(),commands)),
+    'QRH scenario parity mismatch: '+id);
+}
+const checklistCommands=[
+ ...source.trainingScenarioActions('APU_LOW_OIL'),
+ {type:'OPEN_CHECKLIST',caseId:'APU_LOW_OIL_PRESSURE:APU'},
+ {type:'CONFIRM_CHECKLIST_STEP',caseId:'APU_LOW_OIL_PRESSURE:APU',stepId:'APU_SWITCH_OFF'}
+];
+assert.deepEqual(
+ snap(browser.replayAircraftActions(browser.initialAircraftState(),checklistCommands)),
+ snap(source.replayAircraftActions(source.initialAircraftState(),checklistCommands)));
 const html=fs.readFileSync(path.join(root,'power-consumers-lab/index.html'),'utf8');
 assert.match(html,/<script src="\.\/runtime\.js"><\/script>/);
 assert.match(html,/data-scenario="gen1"/);
@@ -113,6 +130,12 @@ assert.match(html,/data-protection="tripReset"/);
 assert.match(html,/data-protection="apuFault"/);
 assert.match(html,/data-protection="egt"/);
 assert.match(html,/id="protectionStatus"/);
+assert.match(html,/data-checklist-action="load"/);
+assert.match(html,/data-checklist-action="open"/);
+assert.match(html,/data-checklist-action="reset"/);
+assert.match(html,/id="qrhCases"/);
+assert.match(html,/id="qrhSteps"/);
+assert.doesNotMatch(html,/data-protection="starterReset"/);
 
 assert.match(html,/data-action="enableAudio"/);
 assert.match(html,/id="annunciatorLamps"/);
