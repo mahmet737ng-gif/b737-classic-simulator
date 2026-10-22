@@ -68,6 +68,59 @@
     </div>
   </section>
   <section>
+    <h2>ISN-06 — APU / Engine Start / Generator Sequencing</h2>
+    <p class="sub">این پنل فقط فرمان‌های ورودی واقعی موتور شبیه‌ساز را می‌فرستد. مقادیر N2 و DUCT PSI تزریق ورودی آزمون هستند، نه محاسبهٔ خودکار عملکرد توربین.</p>
+    <div class="toolbar">
+      <button data-powertrain="cold">ENTER COLD &amp; DARK</button>
+      <button data-powertrain="apuStart">APU START</button>
+      <button data-powertrain="apuDoor">APU DOOR OPEN CONFIRMED</button>
+      <button data-powertrain="apuReady">APU GOVERNED / READY CONFIRMED</button>
+      <button data-powertrain="apuWarm">APU +60s WARMUP</button>
+      <button data-powertrain="apuGen">APU GEN BOTH BUSSES</button>
+      <button data-powertrain="apuBleed">APU BLEED ON/OFF</button>
+      <button data-powertrain="apuStop">APU OFF</button>
+    </div>
+    <h3>Engine Starter &amp; Fuel</h3>
+    <div class="toolbar" style="align-items:center">
+      <label for="engineSelect">Engine</label>
+      <select id="engineSelect">
+        <option value="1">ENGINE 1</option>
+        <option value="2" selected>ENGINE 2</option>
+      </select>
+      <button data-powertrain="fuelPump">MAIN AFT FUEL PUMP ON</button>
+      <button data-powertrain="startGround">START SWITCH GRD</button>
+      <button data-powertrain="n1">N1 ROTATING CONFIRMED</button>
+      <label for="n2Input">N2 observed %</label>
+      <input id="n2Input" type="number" min="0" max="110" value="25" step="0.1" style="max-width:95px">
+      <button data-powertrain="n2">ENTER N2</button>
+      <button data-powertrain="idleLever">START LEVER IDLE</button>
+      <button data-powertrain="lightoff">LIGHTOFF CONFIRMED</button>
+      <button data-powertrain="stable">STABLE IDLE CONFIRMED</button>
+      <button data-powertrain="connectGen">CONNECT ENGINE GEN TO BUS</button>
+      <button data-powertrain="stopEngine">ENGINE FUEL LEVER CUTOFF</button>
+    </div>
+    <div class="toolbar" style="align-items:center">
+      <label for="ductPressure">Observed duct pressure PSI</label>
+      <input id="ductPressure" type="number" min="0" max="200" value="35" step="0.1" style="max-width:95px">
+      <button data-powertrain="duct">SET OBSERVED DUCT PSI</button>
+      <label for="ignitionSelect">Ignition</label>
+      <select id="ignitionSelect">
+        <option value="R" selected>IGN R</option>
+        <option value="L">IGN L</option>
+        <option value="BOTH">BOTH</option>
+      </select>
+      <button data-powertrain="ignition">SELECT IGNITION</button>
+    </div>
+    <p id="apuState" class="sub"></p>
+    <div class="scroller">
+      <table aria-label="Propulsion subsystem state">
+        <thead><tr><th>Component</th><th>Phase</th><th>Conditions</th><th>Generator</th><th>Fuel / air</th></tr></thead>
+        <tbody id="powertrainStatus"></tbody>
+      </table>
+    </div>
+    <p class="note">START VALVE OPEN با فیدبک سنسور مشخص می‌شود؛ قرارگرفتن سوییچ روی GRD به‌تنهایی به معنی دریافت فیدبک «باز» نیست. کنترل‌های این آزمایشگاه تأیید فیزیکی خودکار نیستند.</p>
+  </section>
+  <section>
     <h2>Sensor Failure Injector</h2>
     <p class="sub">خطای سنسور جدا از خرابی واقعی پمپ است. سیگنال گزارش‌شده و وضعیت فیزیکی کنار هم نمایش داده می‌شوند.</p>
     <div class="toolbar" style="align-items:center">
@@ -230,6 +283,22 @@ const onOff=v=>v===true?'ON':v===false?'OFF':'UNKNOWN';
 function render(){
   const d=kernel.deriveAircraftState(state);
   const b=d.electrical.buses;
+  el('powertrainStatus').replaceChildren();
+  if(d.propulsion.mode==='INTEGRATED'){
+    const a=d.propulsion.apu;
+    rowTable(el('powertrainStatus'),['APU',a.phase,a.dcBoostPump,
+      a.generatorAvailable?'AVAILABLE':'OFF',a.fuel+' / BLEED '+a.bleedSource]);
+    for(const [engine,p] of Object.entries(d.propulsion.engines)){
+      rowTable(el('powertrainStatus'),['ENGINE '+engine,p.phase,
+        p.status+' / N2 '+p.n2Pct+'%',p.generatorAvailable?'AVAILABLE':'OFF',
+        p.fuel.source+' / '+p.air.source+' / '+p.air.measuredPsi+' PSI']);
+    }
+    t(el('apuState'),'APU generator OFF BUS indication: '+
+      a.generatorOffBusLightDemand+' · Warmup advisory satisfied: '+
+      a.recommendedBleedWarmup.completed+' · Ignition selector: '+state.propulsion.ignitionSelect);
+  }else{
+    t(el('apuState'),'LEGACY FIXTURE: click ENTER COLD & DARK to activate physical start-event authority');
+  }
   el('annunciatorLamps').replaceChildren();
   for(const p of Object.values(d.annunciation.lamps)){
     const face=document.createElement('div');face.className='lamp-face';
@@ -344,6 +413,38 @@ for(const [action,value] of [['sampleLow','LOW'],['sampleNormal','NORMAL'],['sam
   document.querySelector('[data-action="'+action+'"]').addEventListener('click',
     ()=>apply('SET_SENSOR_SAMPLE',{sensor:selectedSensor(),value}));
 }
+document.querySelectorAll('[data-powertrain]').forEach(b=>b.addEventListener('click',()=>{
+  const n=b.dataset.powertrain, e=el('engineSelect').value;
+  try{
+    switch(n){
+      case 'cold':apply('ENTER_COLD_DARK');break;
+      case 'apuStart':apply('SET_APU_SWITCH',{value:'START'});break;
+      case 'apuDoor':apply('SET_APU_INLET_OPEN',{value:true});break;
+      case 'apuReady':apply('CONFIRM_APU_READY');break;
+      case 'apuWarm':apply('ADVANCE_SECONDS',{value:60});break;
+      case 'apuGen':
+        apply('SET_GENERATOR_SOURCE',{bus:'bus1',value:'APU'});
+        apply('SET_GENERATOR_SOURCE',{bus:'bus2',value:'APU'});
+        break;
+      case 'apuBleed':apply('SET_APU_BLEED',{
+        value:!state.propulsion.apu.bleedSwitchOn});break;
+      case 'apuStop':apply('SET_APU_SWITCH',{value:'OFF'});break;
+      case 'fuelPump':apply('SET_FUEL_PUMP_SWITCH',{
+        pump:e==='1'?'MAIN1_AFT':'MAIN2_AFT',value:true});break;
+      case 'startGround':apply('SET_ENGINE_START_SWITCH',{engine:e,value:'GRD'});break;
+      case 'n1':apply('SET_ENGINE_N1_ROTATION',{engine:e,value:true});break;
+      case 'n2':apply('SET_ENGINE_N2',{engine:e,value:Number(el('n2Input').value)});break;
+      case 'idleLever':apply('SET_ENGINE_START_LEVER',{engine:e,value:'IDLE'});break;
+      case 'lightoff':apply('CONFIRM_ENGINE_LIGHTOFF',{engine:e});break;
+      case 'stable':apply('CONFIRM_ENGINE_IDLE',{engine:e});break;
+      case 'connectGen':apply('SET_GENERATOR_SOURCE',{
+        bus:e==='1'?'bus1':'bus2',value:e==='1'?'GEN1':'GEN2'});break;
+      case 'stopEngine':apply('SET_ENGINE_START_LEVER',{engine:e,value:'CUTOFF'});break;
+      case 'duct':apply('SET_DUCT_PSI',{value:Number(el('ductPressure').value)});break;
+      case 'ignition':apply('SET_IGNITION_SELECTOR',{value:el('ignitionSelect').value});break;
+    }
+  }catch(error){audioStatus('Propulsion action blocked: '+error.message);}
+}));
 document.querySelectorAll('[data-fireloop]').forEach(b=>b.addEventListener('click',()=>{
   const loop=b.dataset.fireloop;
   apply('SET_FIRE_LOOP',{loop,field:'fire',value:!state.fire.loops[loop].fire});
