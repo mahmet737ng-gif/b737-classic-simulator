@@ -9,6 +9,7 @@ const modules=[
  ['pressurePhysics','pressure-distribution.v0.2.cjs'],
  ['feederMap','electrical-consumer-feeders.cjs'],
  ['fluidObservations','fluid-pressure-engine.cjs'],
+ ['sensorEngine','sensor-failure-engine.cjs'],
  ['kernel','integrated-aircraft-kernel.cjs']
 ];
 function makeBrowserRuntime(){
@@ -20,6 +21,7 @@ function makeBrowserRuntime(){
  "if(p==='./pressure-distribution.v0.2.cjs')return pressurePhysics;"+
  "if(p==='./electrical-consumer-feeders.cjs')return feederMap;"+
  "if(p==='./fluid-pressure-engine.cjs')return fluidObservations;"+
+ "if(p==='./sensor-failure-engine.cjs')return sensorEngine;"+
  "throw new Error('Unknown browser module '+p);};";
  return "(function(){'use strict';\n"+bodies.map(([name,body])=>
    'const '+name+'=(function(){const module={exports:{}};const exports=module.exports;'+
