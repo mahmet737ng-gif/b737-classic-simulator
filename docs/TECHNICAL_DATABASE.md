@@ -4,9 +4,9 @@ The shared technical research collection is named **Technical Database** (privat
 
 ## Active AFM scope for simulator — EP-FSI / ASN 29340
 
-**Only** Boeing 737-33V airframe serial **29340**, registration **EP-FSI** (registration supplied by project owner), is authorized for active AFM-derived performance extraction and future simulator consumption. Private active source: `/Technical Database/Sources/AFM-737-33V-D6-8730-R32/EP-FSI-ASN29340/epfsi_afm_scoped_v6.sqlite`. Public non-proprietary pointer: `docs/AFM_EP_FSI_ACTIVE_SCOPE.json`.
+**Only** Boeing 737-33V airframe serial **29340**, registration **EP-FSI** (registration supplied by project owner), is authorized for active AFM-derived performance extraction and future simulator consumption. Private active source: `/Technical Database/Sources/AFM-737-33V-D6-8730-R32/EP-FSI-ASN29340/v7/epfsi_afm_scoped_v7.sqlite`. Public non-proprietary pointer: `docs/AFM_EP_FSI_ACTIVE_SCOPE.json`.
 
-Do **not** activate performance limits, CG curves, engine performance graphs or special appendices from other serial numbers. The original 978-page AFM and v1–v5 archives remain PRIVATE as immutable historical source records, not live aircraft data. The applicable CG chart is **Section 1 Page 3B (PDF p24)**. Installed engine type, engine rating, PMC and relevant service bulletins remain **UNVERIFIED**; no N1 numerical performance function is engine-ready. v6 reader refuses any ASN except 29340 and all unverified N1 calculations. No simulator runtime integration has been completed.
+Do **not** activate performance limits, CG curves, engine performance graphs or special appendices from other serial numbers. The original 978-page AFM and v1–v5 archives remain PRIVATE as immutable historical source records, not live aircraft data. The applicable CG chart is **Section 1 Page 3B (PDF p24)**. Installed engine **rating 20K (20,000 lbf) was confirmed by the owner** (not independently verified). The exact engine model, PMC installation and service-bulletin applicability remain **UNVERIFIED**. AFM PDF page 13 identifies Appendix 33 for CFM56-3 engines operated at 20K; this is only a rating match, not an independent engine-model identification. **22K charts are not active; no N1 numerical performance function is engine-ready.** v7 reader refuses any ASN except 29340 and all unverified N1 calculations. No simulator runtime integration has been completed.
 
 ## Available reference corpora
 
@@ -84,3 +84,7 @@ The private Technical Database now has a **machine engineering-preflight/QA over
 - Existing **1,019** open QA issues remain; **14** added high-priority blocker categories are tracked. **Engineer-signed operational rules: zero.**
 
 **Release policy:** `operational_use=BLOCKED` is mandatory until model/engine/aircraft serial effectivity, full graph and numeric table readings, QRH path predicates and applicable primary AFM/FCOM hierarchy are independently verified. Automated cross-reference validation is **not** an engineering certificate; flight use is prohibited. This overlay is non-destructive and does not overwrite either original source pages or Semantic Index V1.
+
+## EP-FSI v7 (20K) update
+
+User explicitly confirmed EP-FSI ASN 29340 installed engine thrust rating is 20K. The private versioned SQLite file and read-only adapter store the owner assertion separately from aircraft documentation. Exact engine variant remains unverified; 20K is not evidence of -3B-1 or -3C-1. Appendix 33 is rating-matched but engine-specific N1/PMC data remain conditional and numeric performance calculations remain blocked. Superseded private v6 and original AFM are preserved.
