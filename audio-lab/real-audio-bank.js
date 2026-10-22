@@ -19,9 +19,10 @@ function fileNameBase(name){
 }
 function suggestKey(filename,tests){
   const base=fileNameBase(filename);
-  // Owner-confirmed file labels; no inference for c.mp3 or absent b.mp3.
+  // Owner-confirmed A/RA, C/EGPWS and E/Stick Shaker labels; b.mp3 remains absent.
   if(base === 'a') return 'radioAltitude|COLLECTION';
   if(base === 'e') return 'shaker';
+  if(base === 'c') return 'gpws|COLLECTION';
   const tokens=base.split("_");
   if(/^(?:sfx|sound|b737|boeing|737|b737ng|737ng)_/.test(base)) {
     // intentional: preserve original tokens for matching
