@@ -185,6 +185,11 @@
     "test_results": "15 Python + 14 JavaScript PASS",
     "public_code_module": "engine/fmc/performance/afm-epfsi-n1-v9.cjs",
     "live_cdu_unchanged": true,
-    "status": "SOURCE_ROUTING_COMPLETE_NUMERIC_CURVES_PENDING"
+    "status": "SOURCE_ROUTING_COMPLETE_NUMERIC_CURVES_PENDING",
+    "private_digitizer": "chart_digitizer.html",
+    "manual_trace_worksheet_items": 145,
+    "private_images_in_archive": true,
+    "browser_gui_e2e": "BLOCKED_ENVIRONMENT_NOT_PASSED",
+    "numeric_digitization_curves_approved": 0
   }
 }
