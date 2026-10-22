@@ -1,0 +1,49 @@
+{
+  "module": "NAVDB",
+  "version": "0.1.0",
+  "aircraft": "B737 Classic; EP-FSI",
+  "intent": "Simulator/training only. Never operational aviation.",
+  "current_source_data": {
+    "provider": "OurAirports public domain, community, NON_AIRAC",
+    "repository": "davidmegginson/ourairports-data",
+    "summary_record_counts": {
+      "airports": 86258,
+      "runways": 48345,
+      "navaids": 11008,
+      "frequencies": 30387
+    },
+    "scope": "SOURCE FILE RECORDS, not validated/activated FMC records",
+    "sha_evidence": "navigation/samples/iran-community-snapshot.json"
+  },
+  "completed": [
+    "Versioned SQLite schema for airport, runway, frequency, navaid, source and cycle provenance",
+    "Atomic importer with foreign-key/coordinate rejection and safe rollback",
+    "FAA ARINC 424 fixed-width raw record staging (NOT parsing/activation)",
+    "Read-only JSON query/export interface",
+    "Three locally passed synthetic unit tests",
+    "Real OurAirports source snapshot for OIII/OIIE/OIMM checked into repo",
+    "Weekly/on-push GitHub Actions build workflow installed"
+  ],
+  "verification": {
+    "local_synthetic_tests": "PASS_3",
+    "source_snapshot": "RETRIEVED_AND_COMMITTED",
+    "global_sqlite_build": "CI_RESULT_NOT_VERIFIED",
+    "github_actions_run": "NOT_INSPECTED",
+    "fmc_navigation_accuracy": "NOT_VERIFIED"
+  },
+  "not_started": [
+    "Verified ARINC 424-18 typed parser and continuation records",
+    "Enroute waypoints and airway ordering",
+    "SID/STAR/APP procedures, legs, altitudes, speeds and conditional branches",
+    "AIRAC automatic source-effective/expiration date enforcement",
+    "Regional licensed navdata import for Iran and other non-US states",
+    "CDU route-leg entry/selection, FMS and EFIS integration against EP-FSI equipment manual"
+  ],
+  "safeguards": [
+    "No invented navigation legs",
+    "No inferred source coverage",
+    "Empty procedure tables are NOT interpreted as no procedures",
+    "No unverified navdata connected to live trainer"
+  ],
+  "next_priority": "Inspect GitHub Actions worldwide build artifact; validate row counts and source version, then implement tested FAA ARINC parser."
+}
