@@ -68,6 +68,34 @@
     </div>
   </section>
   <section>
+    <h2>ISN-08 — QRH Fault Scenario &amp; Checklist Routing</h2>
+    <p class="sub">این نمایش فقط یک فهرست آموزشیِ مبتنی بر ارجاع QRH است، نه متن کامل چک‌لیست پروازی. هیچ مرحله‌ای خودکار سوییچ کاکپیت را نمی‌زند.</p>
+    <div class="toolbar" style="align-items:center">
+      <label for="trainingCase">Fault scenario</label>
+      <select id="trainingCase">
+        <option value="ABORTED_START_2">Aborted Engine Start 2 — EGT</option>
+        <option value="APU_LOW_OIL">APU LOW OIL PRESSURE</option>
+        <option value="APU_OVERSPEED">APU OVERSPEED</option>
+        <option value="APU_FIRE">APU FIRE</option>
+        <option value="APU_FCU_FAILURE">APU FAULT — FCU</option>
+        <option value="BLEED_TRIP_1">BLEED TRIP OFF — ENG 1</option>
+        <option value="ENGINE_FIRE_1">ENGINE FIRE — ENG 1</option>
+      </select>
+      <button data-checklist-action="load">LOAD DETERMINISTIC FAULT</button>
+      <button data-checklist-action="open">OPEN ACTIVE CHECKLIST</button>
+      <button data-checklist-action="reset">RESET CHECKLIST PROGRESS</button>
+    </div>
+    <p class="sub" id="checklistStatus">Select a fault scenario to see the corresponding QRH section.</p>
+    <div class="scroller">
+      <table aria-label="Active QRH training scenarios">
+        <thead><tr><th>QRH case</th><th>Basis</th><th>Section/Page</th><th>Progress</th></tr></thead>
+        <tbody id="qrhCases"></tbody>
+      </table>
+    </div>
+    <div id="qrhSteps" class="panel-lamps" aria-label="Checklist evidence and confirmations"></div>
+    <p class="note">هر موردی که وضعیت واقعی سوییچ آن را تأیید نکند، امکان Confirm ندارد. برای مراحل فاقد سنسور، عبارت CREW ATTESTATION نشان داده می‌شود. مرجع QRH (2016) برای استفاده عملیاتی معتبر فرض نشده است.</p>
+  </section>
+  <section>
     <h2>ISN-07 — Pneumatic Routing &amp; Start Protection</h2>
     <p class="sub">فرمان شیر، وضعیت حسگر و فشار اندازه‌گیری‌شده جدا هستند. زمان استارتر فقط با فرمان ADVANCE SECONDS جلو می‌رود.</p>
     <div class="toolbar" style="align-items:center">
@@ -101,7 +129,7 @@
       <label for="advanceStartTime">Seconds</label>
       <input id="advanceStartTime" type="number" min="0" max="3600" value="10" style="max-width:80px"/>
       <button data-protection="clock">ADVANCE SECONDS</button>
-      <button data-protection="starterReset">RESET STARTER DUTY FAULT</button>
+
     </div>
     <div class="scroller">
       <table aria-label="Observed pneumatic and engine protections">
@@ -327,6 +355,37 @@ const onOff=v=>v===true?'ON':v===false?'OFF':'UNKNOWN';
 function render(){
   const d=kernel.deriveAircraftState(state);
   const b=d.electrical.buses;
+  el('qrhCases').replaceChildren();
+  el('qrhSteps').replaceChildren();
+  for(const item of d.checklists.cases){
+    rowTable(el('qrhCases'),[item.title+' ['+item.unit+'] · '+item.status,
+      item.reason+' ('+item.certainty+')',
+      'QRH '+item.source.section+' / PDF '+item.source.pdfPage,
+      item.completedCount+'/'+item.totalCount]);
+  }
+  const selection=d.checklists.cases.find(x=>x.id===d.checklists.selected);
+  t(el('checklistStatus'),selection?
+    'Selected: '+selection.id+' — '+selection.status+' | '+selection.completedCount+'/'+selection.totalCount+
+    ' | QRH '+selection.source.section+' (PDF '+selection.source.pdfPage+')':
+    'Cases: '+(d.checklists.activeCaseIds.join(', ')||'NONE')+' | No selected checklist');
+  if(selection){
+    for(const item of selection.steps){
+      const node=document.createElement('div');
+      node.className='lamp-face';
+      node.dataset.state=item.confirmed?'ON':item.observed===false?'UNKNOWN':'OFF';
+      node.dataset.kind='CAUTION';
+      const title=document.createElement('strong');title.textContent=item.title;
+      const status=document.createElement('small');
+      status.textContent=(item.confirmed?'CONFIRMED · ':'PENDING · ')+
+        (item.observed===true?'SENSOR CHECKED':item.observed===false?'EVIDENCE NOT SATISFIED':'CREW ATTESTATION REQUIRED');
+      const button=document.createElement('button');
+      button.textContent='CONFIRM '+item.id;
+      button.disabled=item.confirmed||item.observed===false;
+      button.addEventListener('click',()=>apply('CONFIRM_CHECKLIST_STEP',{
+        caseId:selection.id,stepId:item.id,crewConfirmed:item.observed===null}));
+      node.append(title,status,button);el('qrhSteps').append(node);
+    }
+  }
   el('protectionStatus').replaceChildren();
   if(d.propulsion.mode==='INTEGRATED'){
     const pd=d.propulsion.pneumatic.distribution;
@@ -475,6 +534,25 @@ for(const [action,value] of [['sampleLow','LOW'],['sampleNormal','NORMAL'],['sam
   document.querySelector('[data-action="'+action+'"]').addEventListener('click',
     ()=>apply('SET_SENSOR_SAMPLE',{sensor:selectedSensor(),value}));
 }
+document.querySelectorAll('[data-checklist-action]').forEach(button=>
+  button.addEventListener('click',()=>{
+    const action=button.dataset.checklistAction;
+    if(action==='load'){
+      try{
+        const script=kernel.trainingScenarioActions(el('trainingCase').value);
+        const result=kernel.replayAircraftActions(kernel.initialAircraftState(),script);
+        state=result.state;events=[...result.events];render();
+      }catch(error){t(el('log'),'Scenario rejected: '+error.message);}
+    }else if(action==='open'){
+      const view=kernel.deriveAircraftState(state);
+      const first=view.checklists.activeCaseIds[0];
+      if(first)apply('OPEN_CHECKLIST',{caseId:first});
+      else t(el('log'),'No active QRH case to open');
+    }else if(action==='reset'){
+      const selected=state.checklist.selected;
+      if(selected)apply('RESET_CHECKLIST',{caseId:selected});
+    }
+  }));
 document.querySelectorAll('[data-protection]').forEach(b=>b.addEventListener('click',()=>{
   const n=b.dataset.protection,engine=el('engineSelect').value;
   switch(n){
@@ -505,7 +583,7 @@ document.querySelectorAll('[data-protection]').forEach(b=>b.addEventListener('cl
     case 'egtNoRise':apply('SET_ENGINE_EGT_RISE_CONFIRMED',{engine,value:false});break;
     case 'slowN2':apply('SET_ENGINE_N2_ACCELERATION',{engine,value:'SLOW'});break;
     case 'clock':apply('ADVANCE_SECONDS',{value:Number(el('advanceStartTime').value)});break;
-    case 'starterReset':apply('RESET_STARTER_DUTY_FAULT',{engine});break;
+
   }
 }));
 document.querySelectorAll('[data-powertrain]').forEach(b=>b.addEventListener('click',()=>{
