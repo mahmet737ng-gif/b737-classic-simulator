@@ -71,11 +71,12 @@ function tickProtection(p,dt){
    if(wasStarting){
      s.starterElapsedSeconds+=dt;
      if(s.starterElapsedSeconds>120){
+       // FCOM NP.21.33 is a crew operating limit, not a stated
+       // automatic starter cutout at 120 seconds. Do not move GRD or
+       // shut fuel off without an explicit pilot action.
        s.startFault='STARTER_DUTY_LIMIT';
-       e.startSwitch='OFF';e.startLever='CUTOFF';
-       e.phase='OFF';e.lightoffConfirmed=false;
-       endStarter(s);
-       results.push({id,reason:'STARTER_DUTY_LIMIT'});
+       results.push({id,reason:'STARTER_DUTY_LIMIT',
+         actionRequired:'CREW_ABORT_START',automaticCutout:false});
      }
    }
    if(e.startLever==='IDLE'&&e.phase!=='RUNNING')s.secondsAfterIdle+=dt;
