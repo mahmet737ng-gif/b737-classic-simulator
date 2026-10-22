@@ -36,6 +36,9 @@ const {PROTECTION_COMMANDS,applyProtectionAction,reconcileStarterEdges,
 const {initChecklistState,deriveChecklists,performChecklistAction}=
   require('./qrh-checklist-router.cjs');
 
+const {TRAINING_SCENARIO_IDS,trainingScenarioActions}=
+  require('./qrh-training-scenarios.cjs');
+
 const clone = x => JSON.parse(JSON.stringify(x));
 const bool = (v,n) => {if(typeof v !== 'boolean') throw new TypeError(n+' must be boolean');};
 const pick = (v,allowed,name) => {
@@ -323,4 +326,5 @@ function replayAircraftActions(initial,actions){
   return {state,view:deriveAircraftState(state),events};
 }
 module.exports={initialAircraftState,deriveAircraftState,
-  transitionAircraftState,replayAircraftActions};
+  transitionAircraftState,replayAircraftActions,
+  TRAINING_SCENARIO_IDS,trainingScenarioActions};
