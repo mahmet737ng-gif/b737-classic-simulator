@@ -16,6 +16,11 @@ const {FUEL_IDS,HYD_IDS,evaluatePumpNetwork,evaluateWarningCauses,
 const {evaluateConsumerFeederMap}=require('./electrical-consumer-feeders.cjs');
 const {evaluateFluidPressureNetwork}=require('./fluid-pressure-engine.cjs');
 
+const {initialSensorConfig,validateId:validateSensorId,
+  validateMode:validateSensorMode,validateSample:validateSensorSample,
+  bindSensorSignals,applySystemValveInhibit,compareSensorSignals}=
+    require('./sensor-failure-engine.cjs');
+
 const clone = x => JSON.parse(JSON.stringify(x));
 const bool = (v,n) => {if(typeof v !== 'boolean') throw new TypeError(n+' must be boolean');};
 const pick = (v,allowed,name) => {
@@ -54,6 +59,7 @@ function initialAircraftState() {
         }
       }
     },
+    sensors:initialSensorConfig(),
     warning:{acknowledged:[],activeCauseIds:[],recallPressed:false}
   };
 }
@@ -65,12 +71,16 @@ function deriveAircraftState(snapshot) {
   const electrical=evaluateElectricalPower(snapshot.electrical);
   const preliminary=evaluatePumpNetwork(electrical,snapshot.pumps);
   const pressurePhysics=derivePressureDistribution(electrical,preliminary,snapshot.pumps);
-  const network=bindPressureSensors(preliminary,pressurePhysics,snapshot.pumps);
+  const physicalNetwork=bindPressureSensors(preliminary,pressurePhysics,snapshot.pumps);
+  const observed=applySystemValveInhibit(
+    bindSensorSignals(physicalNetwork,pressurePhysics,snapshot.sensors),
+    snapshot.pumps);
+  const network=observed.network;
   const electricalFeeders=evaluateAllFeeders(electrical);
   const causes=evaluateWarningCauses(network);
   const warnings=projectWarnings(network,causes,electrical,snapshot.warning);
   return {step:snapshot.step,electrical,electricalFeeders,pressurePhysics,
-    pumps:network,warnings,warningCauses:causes,
+    pumps:network,sensors:observed.sensors,warnings,warningCauses:causes,
     sourceModel:'FCOM_REFERENCED_PRESSURE_AND_FEEDER_V0.2_PILOT'};
 }
 
@@ -129,6 +139,15 @@ function transitionAircraftState(previous,action) {
       side();validateBoolean();h.fluidAvailable[p.system]=p.value;break;
     case 'SET_FLIGHT_CONTROL_VALVE':
       side();validateBoolean();h.flightControlValveOn[p.system]=p.value;break;
+    case 'SET_SENSOR_MODE':
+      validateSensorId(p.sensor);validateSensorMode(p.value);
+      state.sensors[p.sensor].mode=p.value;break;
+    case 'SET_SENSOR_SAMPLE':
+      validateSensorId(p.sensor);validateSensorSample(p.value);
+      state.sensors[p.sensor].sample=p.value;break;
+    case 'SET_SENSOR_SETTLING':
+      validateSensorId(p.sensor);validateBoolean();
+      state.sensors[p.sensor].settling=p.value;break;
     case 'ACK_MASTER_CAUTION':break;
     case 'SET_WARNING_RECALL':
       validateBoolean();state.warning.recallPressed=p.value;break;
@@ -167,6 +186,7 @@ function transitionAircraftState(previous,action) {
     electricalChanges:compareElectricalTransitions(before.electrical,after.electrical),
     pressureChanges:comparePressureTransitions(before.pressurePhysics,after.pressurePhysics),
     sensorChanges,
+    sensorSignalChanges:compareSensorSignals(before.sensors,after.sensors),
     activatedWarnings:after.warnings.causeIds.filter(x=>!before.warnings.causeIds.includes(x)),
     clearedWarnings:before.warnings.causeIds.filter(x=>!after.warnings.causeIds.includes(x)),
     masterCautionBefore:before.warnings.masterCaution.logicalDemand,
