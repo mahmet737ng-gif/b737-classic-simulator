@@ -26,7 +26,7 @@ async function go(){await new Promise(r=>setTimeout(r,15));
  run("press('CDU_CAPT_KEY_CLR')");assert.ok(!run("byId['CDU_CAPT_MSG_LIGHT'].classList.contains('on')"));
  run('sim.call=true; sim.fail=true; sim.offset=true; render()');for(let key of ['CALL','FAIL','OFST'])assert.ok(run("byId['CDU_CAPT_"+key+"_LIGHT'].classList.contains('on')"));
  run('sim.call=false; sim.fail=false; sim.offset=false; render()');for(let key of ['CALL','FAIL','OFST'])assert.ok(!run("byId['CDU_CAPT_"+key+"_LIGHT'].classList.contains('on')"));
- run("press('CDU_CAPT_DIM_BRT')");assert.equal(nodes['fmc-screen'].style.opacity,.4);
+ run("press('CDU_CAPT_DIM_BRT')");assert.equal(nodes['fmc-screen'].style.opacity,1);assert.equal(nodes['fmc-lines'].style.opacity,.4);
  console.log('PASS: 70 independent physical controls; 5 independent indications; zero overlap; 409 indexed FCOM pages; key input, route edit, EXEC, MSG, CLR, CALL, FAIL, OFST, brightness.');
 }
 go().catch(e=>{console.error(e);process.exitCode=1});

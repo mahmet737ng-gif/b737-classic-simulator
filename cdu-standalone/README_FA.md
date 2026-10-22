@@ -24,3 +24,6 @@ Extract the entire ZIP, double-click `index.html` using Edge/Chrome. All control
 This is a demonstrable **input/training UI**, not a completed Boeing FMC. It does NOT compute real navigation, aircraft performance, lat/long, LNAV, VNAV, ACARS, IRS, or aerodynamic responses. No proof yet of accurate software-specific FMS page behavior beyond basic input/EXEC/scratchpad. See README QA. Border boxes are first-pass calibrated, visually checked at source resolution, but not independently flight-tested or approved.
 
 Source: Sepehran Boeing 737CL FCOM chapter 11; control behavior pp. 11.10.3–11.10.7; page inventory PDF pages 1414–1822.
+
+## اصلاحات v2
+فایل `V2_FIX_REPORT_FA.md` را بخوانید. تمام اصلاحات به‌طور مستقل روی پوشهٔ `cdu-standalone/` انجام شده‌اند و تصویر اصلی تأییدشده دست نخورده است. پیش از تست در مرورگر، فایل ZIP را کامل Extract کنید.
