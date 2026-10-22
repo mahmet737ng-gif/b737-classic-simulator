@@ -1,0 +1,24 @@
+const assert=require('node:assert/strict');
+const E=require('../ehsi/ehsi-engine.js');
+const C=require('../engine/cdu-engine.js');
+const vm=require('node:vm'),fs=require('node:fs');
+const code=fs.readFileSync(require('node:path').join(__dirname,'../data/page-definitions.js'),'utf8');
+const ctx={window:{}};vm.createContext(ctx);vm.runInContext(code,ctx);const pages=ctx.window.CDU_PAGES;
+assert.equal(E.MODES.length,7);
+for(const mode of E.MODES){const o=E.computeDisplay({...E.defaultModel(),mode});assert.ok(o.geometry.cx>0);assert.equal(o.mode,mode);assert.equal(o.orientation,mode==='PLAN'?'TRUE_NORTH':mode.includes('VOR_ILS')?'HEADING_UP':'TRACK_UP')}
+assert.equal(E.computeDisplay({...E.defaultModel(),mode:'MAP'}).geometry.full,false);
+assert.equal(E.computeDisplay({...E.defaultModel(),mode:'CTR_MAP'}).geometry.full,true);
+assert.equal(E.computeDisplay({...E.defaultModel(),mode:'FULL_NAV'}).geometry.full,true);
+assert.equal(E.computeDisplay({...E.defaultModel(),mode:'EXP_NAV'}).geometry.full,false);
+let f=E.defaultModel(); f.options.wxr=true;f.efis.remoteWxr=true;f.efis.wxrTransmitter=true;assert.equal(E.computeDisplay(f).wxVisible,true);
+f.mode='PLAN';assert.equal(E.computeDisplay(f).wxVisible,false);
+f=E.defaultModel();f.options.demoRoute=true;assert.equal(E.computeDisplay(f).simRouteVisible,false);
+f.route.points=[{x:0,y:0}];assert.equal(E.computeDisplay(f).simRouteVisible,true);
+f=E.defaultModel();const holder={ehsi:f}; E.step(holder,'range',1);assert.equal(holder.ehsi.range,80); E.step(holder,'mode',1);assert.equal(holder.ehsi.mode,'CTR_MAP');
+E.step(holder,'brightness',-1); assert.equal(holder.ehsi.efis.brightness,.92);
+E.step(holder,'wxBrightness',-1); assert.equal(holder.ehsi.efis.wxBrightness,.92);assert.equal(holder.ehsi.efis.brightness,.92);
+E.step(holder,'dh',1);assert.equal(holder.ehsi.efis.dh,160);
+const st=C.makeState('RTE');const press=x=>C.press(st,pages,'CDU_CAPT_'+x);
+for(const letter of 'OIII')press('KEY_'+letter);press('LSK_L1');for(const letter of 'OIMM')press('KEY_'+letter);press('LSK_R1');
+assert.equal(C.pendingCount(st),0);assert.equal(C.hasStagedRoute(st),true);press('LSK_L5');assert.equal(C.lights(st).EXEC,true);press('EXEC');assert.equal(st.active.ORIGIN,'OIII');assert.equal(st.active.DEST,'OIMM');assert.equal(C.lights(st).EXEC,false);
+console.log('PASS: 7 EFIS modes, orientation, arc/full geometry, WXR gate, independent brightness, DH, and CDU RTE/EXEC');

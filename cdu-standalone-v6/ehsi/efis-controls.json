@@ -1,0 +1,35 @@
+{
+  "schema": "b737classic-efis-control-panel/v1",
+  "configuration": "B737 Classic / Sepehran FCOM, 737-300/400/500 - FSA/FSE/FSG/FSI and other listed variants must be checked per tail",
+  "design_role": "Standalone simulator trainer; rendered controls not certified avionics",
+  "source": "Sepehran 737CL FCOM Vol 2, Ch 10; PDF pages 1321-1325, 1359-1390, 1408-1412",
+  "controls": [
+    {"id":"EFIS_CAPT_DH_REF","type":"rotary","range":"-20..999 feet, training approximation","fcom":"10.30.3 #2","notes":"DH display value, reset independent"},
+    {"id":"EFIS_CAPT_DH_RST","type":"momentary_push","fcom":"10.30.3 #3","notes":"Resets DH alert, normally applies to EADI; trainer has no EADI"},
+    {"id":"EFIS_CAPT_EADI_BRT","type":"rotary","fcom":"10.30.3 #4","notes":"EADI brightness stored but no EADI rendered"},
+    {"id":"EFIS_CAPT_EHSI_BRT_OUTER","type":"coaxial_rotary_outer","fcom":"10.30.3 #5","notes":"EHSI display brightness"},
+    {"id":"EFIS_CAPT_WXR_BRT_INNER","type":"coaxial_rotary_inner","fcom":"10.30.4 #6","notes":"Weather radar brightness separate; no simulated weather echo"},
+    {"id":"EFIS_CAPT_EHSI_MODE","type":"7_detent_rotary","detents":["FULL_VOR_ILS","EXP_VOR_ILS","FULL_NAV","EXP_NAV","MAP","CTR_MAP","PLAN"],"fcom":"10.40.10-10.40.12"},
+    {"id":"EFIS_CAPT_RANGE","type":"6_detent_rotary","detents_nm":[10,20,40,80,160,320],"fcom":"10.30.4 #8"},
+    {"id":"EFIS_CAPT_WXR","type":"alternate_push","fcom":"10.30.4 #9","notes":"Display needs local WXR + remote switch + external transmitter/data; prototype gates state and reports absent data"},
+    {"id":"EFIS_CAPT_TFC","type":"alternate_push","fcom":"10.30.5 #11","notes":"TCAS display select; traffic target data absent"},
+    {"id":"EFIS_CAPT_VOR_ADF","type":"alternate_push","fcom":"10.30.4 #10","requires":"valid VOR/ADF station data"},
+    {"id":"EFIS_CAPT_NAV_AID","type":"alternate_push","fcom":"10.30.4 #10","requires":"FMC navigation database"},
+    {"id":"EFIS_CAPT_ARPT","type":"alternate_push","fcom":"10.30.4 #10","requires":"FMC airports database"},
+    {"id":"EFIS_CAPT_RTE_DATA","type":"alternate_push","fcom":"10.30.4 #10","requires":"active FMC route and predicted altitudes/ETA"},
+    {"id":"EFIS_CAPT_WPT","type":"alternate_push","fcom":"10.30.5","requires":"FMC waypoint database","notes":"FCOM waypoint display for range <=40 NM"},
+    {"id":"EFIS_CAPT_TERR","type":"alternate_push","fcom":"10.30.5 #12","requires":"EGPWS terrain database/sensor","notes":"Mutually exclusive with WXR when selected"}
+  ],
+  "training_only_controls": ["REMOTE WXR", "WXR TX", "SIM ROUTE", "HDG slider", "TRK slider", "CRS slider"],
+  "display_rules": {
+    "MAP_CTR_MAP_FULL_NAV_EXP_NAV": "TRACK_UP",
+    "FULL_VOR_ILS_EXP_VOR_ILS": "HEADING_UP",
+    "PLAN": "TRUE_NORTH",
+    "MAP": "aircraft aft of display center with expanded compass arc",
+    "CTR_MAP": "aircraft centered, full map behind aircraft",
+    "FULL_NAV_FULL_VOR_ILS": "full compass rose",
+    "EXP_NAV_EXP_VOR_ILS": "expanded compass presentation",
+    "terrain_radar_tcas": "not simulated as real data without sensor feeds"
+  },
+  "qa_status": "GUI interaction validated in Chromium; physical panel proportions, complete EHSI symbology, transfer switching and failure annunciations require further FCOM-specific acceptance"
+}
