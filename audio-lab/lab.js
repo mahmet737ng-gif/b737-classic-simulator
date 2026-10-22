@@ -49,7 +49,8 @@
     ["radioAltitude", "RA · 40", "EGPWS radio-altitude", "40"],
     ["radioAltitude", "RA · 30", "EGPWS radio-altitude", "30"],
     ["radioAltitude", "RA · 20", "EGPWS radio-altitude", "20"],
-    ["radioAltitude", "RA · 10", "EGPWS radio-altitude", "10"]
+    ["radioAltitude", "RA · 10", "EGPWS radio-altitude", "10"],
+    ["altitude", "Altitude Deviation", "Momentary alert on deviation from MCP selected altitude", "ALTITUDE DEVIATION"]
   ];
   const matrix = byId("soundMatrix");
   for (const [id, label, desc, phrase] of SOUND_TESTS) {
