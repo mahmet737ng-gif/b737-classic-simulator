@@ -201,3 +201,16 @@ See docs/PNEUMATIC_START_PROTECTION_ISN07.md. Do not deploy to main or productio
 | ENG-070 Production QRH and full instrumented effectivity | BLOCKED | Need current EP-FSI approved QRH, full branches, Engine 2/APU fire circuits and instrumentation, real cockpit layout and owner release approval. |
 
 See `docs/QRH_CHECKLIST_INTEGRATION_ISN08.md`. **No modifications to main or deployed website.**
+
+## ISN-09 — EP-FSI EIS engine indications (2026-10-23)
+
+| Task | Status | Evidence |
+| --- | --- | --- |
+| ENG-071 Source-indexed FSI EIS choice | DONE (DOCUMENTED) | FCOM 7.10.3-11, PDF 1174-82: FSI has primary EIS plus EIS secondary; source `docs/ENGINE_INDICATIONS_EIS_ISN09.md`. |
+| ENG-072 Primary N1/N2/EGT limits and FF/FU | DONE (SIM MEASUREMENTS) | `engine/network/engine-indication-eis.cjs`, strict observed inputs; reused engine authoritative N2 and EGT; source L.10.7 limits; no fabricated turbine physics. |
+| ENG-073 Secondary oil pressure/temp/quantity and vibration | DONE (OBSERVATION MODEL) | Measured PSI/°C/%FULL/VIB with caution/limit zones, missing-data quality and local oil pressure logical demand. |
+| ENG-074 Instrument failure and controls | DONE (SOURCE-CONSTRAINED) | Primary signal failure 2-second lower stop then dashes; internal blank; secondary dash/blank; FF/FU used/reset time modes; explicit simulation-clock transitions. |
+| ENG-075 EIS demo and CI | DONE (ISOLATED TEST PILOT) | `power-consumers-lab/index.html`, source-matched `runtime.js`, `tests/engine-indications-eis.test.cjs` and browser parity test. Full visual/pixel-match browser QA not done. |
+| ENG-076 Production integration and performance calculations | BLOCKED | Need actual EP-FSI EIS bezel geometry, dynamic AFM 20K performance engine, FMC N1 target bug, EGT thrust mode, circuit/WDM references and release approval. |
+
+GitHub main and hosted cockpit were intentionally not changed. Source report: `docs/ENGINE_INDICATIONS_EIS_ISN09.md`.
