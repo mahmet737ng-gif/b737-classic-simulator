@@ -102,3 +102,19 @@ Phase E — Scenarios, integration, replay and acceptance: ENG-019,020,021,022,0
 - Server host command: `npm run classroom`. Classroom URL is printed from PC LAN address. **Static GitHub Pages cannot operate this multi-seat server**. No Internet needed on LAN, no external Node packages.
 - `PROTOTYPE / TRAINER_TESTED_NETWORK`; actual browser interactions and iPad display **not yet independently validated** because test environment blocks loopback Chromium navigation. No actual cockpit photo/hotspots synchronized until subsequent integration.
 - Security: classroom-only HTTP; two distinct randomized PINs; role-restricted instructor commands; no public Internet exposure, persistent logs or multiple-room scale. Original root cockpit and panel images unchanged.
+
+## EP-FSI AFM N1 delivery checkpoint — 2026-10-23 (v10)
+
+Do not equate a source selector or training field with fully calculated performance. All rows are airframe-specific (EP-FSI, MSN 29340, CFM56-3B-1 20K).
+
+| Task | Priority | Status | Acceptance evidence |
+| --- | --- | --- | --- |
+| N1-FSI-01 Source chart / effectivity routing | P0 | DONE (SOURCE SELECTOR) | `engine/fmc/performance/afm-epfsi-n1-v10.cjs`, 24 guarded source-selector unit tests PASS; original AFM PDF pages 126–130, 755–756, 862–864; 6 PMC/phase modes |
+| N1-FSI-02 Standalone CDU N1 LIMIT / TAKEOFF REF source state | P0 | DONE (GUARDED READ-ONLY) | `cdu-standalone/app.js` and `data/afm-epfsi-n1-v10.js`, headless CDU integration test PASS, same original unlit panel artwork; [CI run 39869327746](https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/39869327746) |
+| N1-FSI-03 Takeoff / go-around curve contour digitization | P0 | BLOCKED (NUMERIC QA) | Graph images retained private; 14 chart components cataloged; **zero** independently validated N1 points |
+| N1-FSI-04 Bleed / anti-ice / max-N1 corrections | P0 | BLOCKED (NUMERIC QA) | Source conditions indexed and checked, numerical correction polylines not fully digitized |
+| N1-FSI-05 Maximum Continuous nomogram multi-branch math | P0 | BLOCKED (CURVE + GOLDEN VECTORS) | Pressure/temperature/altitude/bleed/TAT nomogram components catalogued; no approved numeric engine |
+| N1-FSI-06 Real installed PMC option/state | P1 | UNVERIFIED | User confirmed airframe and engine/rating, not PMC option; training selector does not prove aircraft hardware |
+| N1-FSI-07 Calculated N1 feed to FMC & autothrottle | P0 | BLOCKED UNTIL N1-FSI-03–06 | No automatic N1; manual entered N1 is marked MAN for button-training only, never a published calculated target |
+
+Private active dataset: `/Technical Database/Sources/AFM-737-33V-D6-8730-R32/EP-FSI-ASN29340/v10/epfsi_afm_scoped_v10.sqlite` (SHA256 40812cae7042c2c3c83135236883ea477d7b35fa7a6e0b25872ab31ac7f9b830). The public repository contains no Boeing scans or proprietary chart data. Browser screenshot visual QA remains unverified; CI covers the headless state machine only.
