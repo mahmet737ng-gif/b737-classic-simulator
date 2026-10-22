@@ -28,6 +28,8 @@ jobs:
           node --check engine/network/fluid-pressure-engine.cjs
           node --check tests/feeder-pressure-stages.test.cjs
           node --check engine/network/sensor-failure-engine.cjs
+          node --check engine/network/annunciation-output-engine.cjs
+          node --check tests/annunciation-integration.test.cjs
           node --check tests/sensor-failure-network.test.cjs
           node --check tests/pump-warning-network.test.cjs
           node --check engine/network/electrical-feeder-audit.v0.2.cjs
@@ -50,6 +52,8 @@ jobs:
         run: node tests/feeder-pressure-stages.test.cjs
       - name: Check independent sensor faults and pressure/annunciator validity
         run: node tests/sensor-failure-network.test.cjs
+      - name: Verify ISN-05 annunciation, fire caution cutout and aural intents
+        run: node tests/annunciation-integration.test.cjs
       - name: Assert generated browser engine matches shared Node source
         run: node tools/build-power-consumers-lab.cjs --check
       - name: Browser runtime parity and deterministic events
