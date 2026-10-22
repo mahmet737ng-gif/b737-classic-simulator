@@ -10,7 +10,7 @@ Sepehran 737 Classic FCOM §7.10.8, physical PDF p.1179 identifies **FSI** in th
 
 | Reading / protection | FCOM ref (PDF page) | Implemented |
 | --- | --- | --- |
-| N1 % with manual-reference bug interface pending | §7.10.3–4 (1174–75), limitations L.10.7 (86) | Measured N1; red at >=106%. No synthetic FMC target or N1 computation. |
+| N1 % with the shared MAN SET/FMC reference bug | §7.10.3–4 (1174–75), limitations L.10.7 (86) | Measured N1; red at >=106%. Source-based pushed FMC versus pulled crew MAN SET N1 reference; external FMC target only, no synthetic FMC N1 calculation and no manual override of A/T. |
 | N2 % | §7.10.5 (1176), L.10.7 (86) | Sole authoritative N2 from ISN-06 engine/start sensor; red >=105%. |
 | EGT °C and abnormal-start flash | §7.10.4–5 (1175–76), L.10.7 (86) | Sole authoritative EGT from ISN-07 start-protection sensor; max start 725°C, max takeoff 930°C, continuous limit 895°C. Thrust context unresolved, so red EGT limit is unknown outside identified start/running regimes. |
 | Fuel Flow and Fuel Used | §7.10.6–7 (1177–78) | Observed kg/h, display in ×1000 kg/h, 10-second USED mode and one-second reset-preview; integrates kg only after explicit reset and valid flow samples with explicit elapsed-time steps. Data loss sets integration unknown instead of assuming zero fuel. |
@@ -25,6 +25,7 @@ These limits are general reference values in the uploaded FCOM. They **do not re
 ## Network contracts
 
 - `engine/network/engine-indication-eis.cjs`: two-engine measured-channel registry; primary/secondary projection; EIS signal quality, timer, and FF/FU buttons.
+- The **N1 manual set knob** accepts push-in FMC versus pull-out MANUAL mode, numeric desired bug selected through mouse wheel, pointer drag/touch swipe and keyboard. Both EIS engine readouts display the crew-selected manual bug when pulled; pushing back in returns to externally supplied per-engine FMC targets. This knob never modifies actual N1 or Autothrottle commands. Source: FCOM §7.10.3–4 pp.1174–1175. The web knob animation is a training schematic, not a calibrated physical Boeing bezel.
 - `integrated-aircraft-kernel.cjs`: shares state, timestamp-free explicit event order, `SET_ENGINE_INDICATION` (N1, oil, fuel flow, oil qty, vibration), `SET_INSTRUMENT_SIGNAL`, `PUSH_FUEL_USED`, `RESET_FUEL_USED`; N2 and EGT must use the **existing** authoritative `SET_ENGINE_N2` and `SET_ENGINE_EGT_C`, avoiding contradictory measurements. Only `ADVANCE_SECONDS` progresses timers and accumulated fuel used.
 - `annunciation-output-engine.cjs`: projects per-engine N1/N2/EGT red-limit demand and low oil pressure lamp from actual observed state; never invents MASTER CAUTION, general sound or WDM lamp power.
 - `power-consumers-lab/index.html`: separate branch-only test layout with two compact Primary/Secondary readout groups, numeric sensor controls, signal-loss testing, FF/FU and reset, and 2-second clock. Display is **functional EIS schematic, not pixel-matched cockpit artwork**.
@@ -36,7 +37,7 @@ These limits are general reference values in the uploaded FCOM. They **do not re
 
 1. Instrument calibration, actual color/scale geometry, bezel and display pixel positions from FSI FCOM photos and approved cockpit art; EIS readout cards are not the final cockpit.
 2. Real EGT/N1/N2 and fuel/oil dynamic models linked to the accepted AFM/technical database, engine rating 20K and installed CFM56-3B-1; this stage deliberately displays measured inputs, not fabricated start/performance curves.
-3. Takeoff reference N1 bug, FMC inputs, A/T limit authority, EGT thrust-limit-context and external sensor/power WDM topology.
+3. Automatic FMC-sourced N1 reference computation (external FMC targets are accepted, but not calculated); A/T limit authority, EGT thrust-limit-context and sensor/power WDM topology.
 4. Installed aircraft signal-failure transitions, timers and totalizer behavior under power interruption; existing timing is sourced at pilot scope.
 5. Human browser/phone/iPad visual E2E and actual audible quality/switch animations before production release.
 
