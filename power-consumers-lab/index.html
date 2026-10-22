@@ -31,6 +31,17 @@
     .lamp-face[data-state="ON"][data-kind="WARNING"]{background:#701c21;border-color:#f14b50;color:#fff}
     .lamp-face[data-state="ON"][data-kind="CAUTION"]{background:#66430b;border-color:#ffc35b;color:#fff1c7}
     .lamp-face[data-state="UNKNOWN"]{border-style:dashed;color:#e6ce8c}
+    .eis-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:14px;margin-top:16px;direction:ltr}
+    .eis-unit{border:1px solid #495763;background:#10171e;border-radius:11px;padding:12px}
+    .eis-unit h3{color:#c6dce8;margin:0 0 8px;text-align:center}
+    .eis-gauges{display:grid;grid-template-columns:repeat(4,minmax(72px,1fr));gap:8px}
+    .eis-gauge{background:#10191f;border:1px solid #3b4c55;border-radius:50%;aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:0;padding:4px;text-align:center}
+    .eis-gauge[data-severity="RED"]{border:2px solid #f45e5e;color:#ff9090}
+    .eis-gauge[data-severity="AMBER"]{border:2px solid #d8a94d;color:#ffca80}
+    .eis-gauge[data-severity="UNKNOWN"]{border-style:dashed;color:#98a6ac}
+    .eis-gauge b{font-size:15px;font-variant-numeric:tabular-nums}
+    .eis-gauge small{font-size:9px;line-height:1.3}
+    .eis-row-title{font-size:11px;letter-spacing:.07em;margin:8px 0 5px;color:#aebcc8;text-transform:uppercase}
     .note{border-inline-start:3px solid var(--warn);padding:8px 12px;color:var(--muted);background:#1f252a}
     @media(max-width:550px){h1{font-size:19px}section{padding:12px}table{font-size:11px}button{padding:7px 9px}}
   </style>
