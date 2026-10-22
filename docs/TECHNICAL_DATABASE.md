@@ -122,3 +122,18 @@ Runtime: the N1 v10 source-routing module is bundled with `cdu-standalone/index.
 ## EP-FSI v11 provisional graph traces
 
 Active private AFM index: `/Technical Database/Sources/AFM-737-33V-D6-8730-R32/EP-FSI-ASN29340/v11/epfsi_afm_scoped_v11.sqlite`. Only ASN 29340 and user-confirmed CFM56-3B-1 at 20K apply. AFM p128/p129 original scan yielded 26 labelled strokes and 104 provisional segment samples at -35, -30, -25, -20 °C. Two rasterizer passes of **the same** AFM source agreed; no independent human engineering signoff. Left-side trace segments do not form a complete operative N1 limit curve, and no bleed/PMC/anti-ice/multiaxis nomogram correction has been approved. All runtime numeric N1 must remain blocked; v10 CDU read-only source selection continues unchanged. Public interpolation code is trained/tested using synthetic test grids only. Evidence: `docs/AFM_EP_FSI_N1_V11.md`. Do not put private source images or sampled curves into the public repo.
+
+## Private Technical I/O & Warning Logic Network V1 (2026-10-23)
+
+The user requested a **machine-readable network of source-documented sensor/computer/control inputs, outputs and alarm activation rules**, persisted in the private Technical Database. The current non-destructive overlay is stored at:
+
+- `/Technical Database/Technical-Network-V1/B737_TECHNICAL_NETWORK_V1.sqlite` — all **8 source manuals / 5,067 indexed pages** plus the original QA tables and curated graph metadata.
+- `/Technical Database/Technical-Network-V1/B737_TECHNICAL_NETWORK_PRIVATE_BUNDLE.zip` — portable private bundle including the graph source records, offline visual explorer, GraphML and rule evaluator.
+- `/Technical Database/Technical-Network-V1/NETWORK_EXPLORER_OFFLINE.html` — offline equipment I/O browser.
+- `/Technical Database/Technical-Network-V1/README_FA.md` — Persian provenance and limitations.
+
+**Verified database counts:** 91 graph nodes (including **26 lexical domain tags that are not physical equipment**), 104 typed ports, 56 documented functional signal edges, 43 source-located condition/effect rules (39 syntactically evaluable and 4 deliberately non-executable), 173 rule I/O symbols, 64 node-to-page reference links, 11 explicit source-gaps; **25 unit tests passed**. SQLite integrity, ZIP archive, and standalone network browser JavaScript syntax were checked. The general 16,817 ontology mentions stay **lexical search matches**, never treated as hardware wiring.
+
+**Example:** Stall warning computer inputs documented in FCOM chapter 15 include AoA, air/ground, wing configuration, thrust and ADC output; signals connect to Stick Shaker, EFIS speed/pitch symbols, and GPWS windshear. The DCPCS functional drawing in FCOM chapter 2 shows N1/N2 through a stall management computer interface, but the specific source channel/pins/protocol are not identified. The **exact airborne stall AoA threshold/control law is not present in the indexed source and remains non-executable**. DCPCS ground N1/N2 prepressurization, taxi-in N1 opening and AUTO FAIL thresholds are recorded with source folios and qualifiers.
+
+**Do not overclaim:** This is a **partial verified-provenance system network over complete source text**, not a completed wiring diagram, validated Boeing warning computer or exhaustive 737CL fault/checklist state machine. Original manuals remain private. `graph_consumer_bindings` are proposed destinations for existing cockpit/audio training engines, **not installed live integrations**. Full engineering review remains unresolved; use to continue source-grounded educational cockpit behavior development.
