@@ -112,6 +112,10 @@ const eisActions=[
  {type:'SET_ENGINE_N2',engine:1,value:25},
  {type:'SET_ENGINE_EGT_C',engine:1,value:700},
  {type:'SET_ENGINE_INDICATION',engine:1,instrument:'n1Pct',value:53},
+ {type:'SET_N1_FMC_REFERENCE',engine:1,value:93.5},
+ {type:'SET_N1_MANUAL_REFERENCE',value:96.2},
+ {type:'SET_N1_REFERENCE_MODE',value:'MANUAL'},
+ {type:'SET_N1_REFERENCE_MODE',value:'FMC'},
  {type:'SET_ENGINE_INDICATION',engine:2,instrument:'fuelFlowKgHr',value:3600},
  {type:'RESET_FUEL_USED',engine:2},
  {type:'ADVANCE_SECONDS',value:1},
@@ -157,6 +161,9 @@ assert.match(html,/data-eis-action="signal"/);
 assert.match(html,/data-eis-action="used"/);
 assert.match(html,/data-eis-action="resetUsed"/);
 assert.match(html,/id="eisPanels"/);
+assert.match(html,/id="eisKnob"/);
+assert.match(html,/data-eis-action="n1Mode"/);
+assert.match(html,/data-eis-action="setFmcRef"/);
 assert.doesNotMatch(html,/data-protection="starterReset"/);
 
 assert.match(html,/data-action="enableAudio"/);
