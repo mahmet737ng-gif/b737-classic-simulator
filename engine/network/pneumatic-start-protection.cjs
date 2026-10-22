@@ -35,7 +35,6 @@ function verifyStartAttempt(p,id) {
  const e=p.safety.engines[id],eng=p.engines[id];
  if(eng.startSwitch==='GRD')return;
  if(e.cooldownRemainingSeconds>0)throw new Error('STARTER_COOLDOWN_REQUIRED: '+e.cooldownRemainingSeconds+'s');
- if(e.startFault==='STARTER_DUTY_LIMIT')throw new Error('STARTER_DUTY_FAULT_REQUIRES_RESET');
  if(e.attemptCount>0 && eng.n2Pct>=20 && !eng.lightoffConfirmed)
    throw new Error('EARLY_START_REENGAGEMENT_REQUIRES_N2_BELOW_20');
 }
@@ -69,15 +68,9 @@ function tickProtection(p,dt){
    if(s.cooldownRemainingSeconds>0&&!wasStarting)
      s.cooldownRemainingSeconds=Math.max(0,s.cooldownRemainingSeconds-dt);
    if(wasStarting){
+     // The pilot requested no 120-second limit fault or annunciation.
+     // Count elapsed start time only as passive instructor telemetry.
      s.starterElapsedSeconds+=dt;
-     if(s.starterElapsedSeconds>120){
-       // FCOM NP.21.33 is a crew operating limit, not a stated
-       // automatic starter cutout at 120 seconds. Do not move GRD or
-       // shut fuel off without an explicit pilot action.
-       s.startFault='STARTER_DUTY_LIMIT';
-       results.push({id,reason:'STARTER_DUTY_LIMIT',
-         actionRequired:'CREW_ABORT_START',automaticCutout:false});
-     }
    }
    if(e.startLever==='IDLE'&&e.phase!=='RUNNING')s.secondsAfterIdle+=dt;
  }
@@ -219,7 +212,6 @@ function evaluateStartProtections(p) {
  for(const id of IDS){
    const s=p.safety.engines[id],e=p.engines[id];
    const reasons=[];
-   if(s.startFault==='STARTER_DUTY_LIMIT')reasons.push('STARTER_DUTY_LIMIT');
    if(e.startLever==='IDLE' && e.phase!=='RUNNING'){
      if(s.egtC!==null&&s.egtC>=725)reasons.push('EGT_AT_OR_ABOVE_725_C');
      if(s.secondsAfterIdle>=10&&s.egtRiseConfirmed===false)
