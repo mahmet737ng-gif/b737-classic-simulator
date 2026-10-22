@@ -395,6 +395,65 @@ const onOff=v=>v===true?'ON':v===false?'OFF':'UNKNOWN';
 function render(){
   const d=kernel.deriveAircraftState(state);
   const b=d.electrical.buses;
+  const panel=el('eisPanels');
+  panel.replaceChildren();
+  if(d.indications.mode!=='INTEGRATED'){
+    const info=document.createElement('p');
+    info.textContent='LEGACY FIXTURE — select COLD & DARK to begin a measured EIS session';
+    panel.append(info);
+  }else{
+    const gauge=(label,measurement,severity)=>{
+      const cell=document.createElement('div');cell.className='eis-gauge';
+      cell.dataset.severity=severity;
+      const cap=document.createElement('small');cap.textContent=label;
+      const number=document.createElement('b');
+      number.textContent=measurement.value===null?measurement.display:
+        Number(measurement.value.toFixed(2)).toString();
+      const unit=document.createElement('small');
+      unit.textContent=measurement.unit+' · '+measurement.quality;
+      cell.append(cap,number,unit);
+      return cell;
+    };
+    const truth=(bool)=>bool===true?'RED':bool===null?'UNKNOWN':'NORMAL';
+    for(const id of ['1','2']){
+      const x=d.indications.engines[id],unit=document.createElement('div');
+      unit.className='eis-unit';
+      const heading=document.createElement('h3');
+      heading.textContent='ENGINE '+id+' · EIS FSI';
+      unit.append(heading);
+      const primaryTitle=document.createElement('p');
+      primaryTitle.className='eis-row-title';primaryTitle.textContent='Primary';
+      unit.append(primaryTitle);
+      const p=document.createElement('div');p.className='eis-gauges';
+      p.append(
+        gauge('N1',x.primary.n1Pct,truth(x.computed.n1RedLimitDemand)),
+        gauge('N2',x.primary.n2Pct,truth(x.computed.n2RedLimitDemand)),
+        gauge('EGT',x.primary.egtC,truth(x.computed.egtLimitDemand)),
+        gauge('FF/FU',{
+          value:x.primary.ffDigital.value,unit:x.primary.ffDigital.unit,
+          quality:x.primary.ffDigital.quality,display:'NO DATA'},'NORMAL')
+      );
+      unit.append(p);
+      const secTitle=document.createElement('p');
+      secTitle.className='eis-row-title';secTitle.textContent='Secondary';
+      unit.append(secTitle);
+      const q=document.createElement('div');q.className='eis-gauges';
+      q.append(
+        gauge('OIL PRESS',x.secondary.oilPressurePsi,truth(x.computed.oilPressureLowLightDemand)),
+        gauge('OIL TEMP',x.secondary.oilTempC,
+          x.computed.oilTempZone==='CAUTION_TIME_LIMITED'?'AMBER':
+          x.computed.oilTempZone==='AT_OR_ABOVE_MAX'?'RED':'NORMAL'),
+        gauge('OIL QTY',x.secondary.oilQtyPct,'NORMAL'),
+        gauge('VIB',x.secondary.vibration,'NORMAL')
+      );
+      unit.append(q);
+      const sub=document.createElement('p');sub.className='sub';
+      sub.textContent='EGT region: '+x.computed.egtRegion+
+        ' · Fuel used: '+(x.fuelUsedKg===null?'UNKNOWN':x.fuelUsedKg.toFixed(2)+' kg')+
+        ' · oil-high period: '+x.computed.oilTempHighSeconds+'s';
+      unit.append(sub);panel.append(unit);
+    }
+  }
   el('qrhCases').replaceChildren();
   el('qrhSteps').replaceChildren();
   for(const item of d.checklists.cases){
