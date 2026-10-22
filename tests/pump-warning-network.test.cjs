@@ -144,6 +144,7 @@ assert.equal(seq.view.pumps.hydraulic.A.systemPressure.psi,null);
 assert.equal(seq.view.pumps.hydraulic.A.flightControlLowPressureLampDemand,true);
 assert.ok(seq.view.warnings.causeIds.includes('FLT_CONT.A_PRESSURE_LOW'));
 assert.equal(seq.view.warnings.systemAnnunciators['FLT CONT'].logicalDemand,true);
+assert.equal(seq.view.warnings.systemAnnunciators.HYD.logicalDemand,true);
 assert.equal(seq.view.warnings.masterCaution.logicalDemand,true);
 
 // When the engine fire switch is pulled its related hydraulic engine pump
