@@ -13,6 +13,9 @@ const {derivePressureDistribution,bindPressureSensors,comparePressureTransitions
 const {FUEL_IDS,HYD_IDS,evaluatePumpNetwork,evaluateWarningCauses,
   projectWarnings}=require('./pump-sensor-warning-engine.cjs');
 
+const {evaluateConsumerFeederMap}=require('./electrical-consumer-feeders.cjs');
+const {evaluateFluidPressureNetwork}=require('./fluid-pressure-engine.cjs');
+
 const clone = x => JSON.parse(JSON.stringify(x));
 const bool = (v,n) => {if(typeof v !== 'boolean') throw new TypeError(n+' must be boolean');};
 const pick = (v,allowed,name) => {
