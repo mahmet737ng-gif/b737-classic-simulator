@@ -1,0 +1,185 @@
+{
+  "schemaVersion": 1,
+  "sources": {
+    "fcom": "Sepehran B737 Classic FCOM Sections 4.10, 8.10, 15.20",
+    "mrg": "B737 MRG (3,4,5,NG) IV.15 pp. 368-375"
+  },
+  "warningSystemArchitecture": {
+    "auralWarningModule": [
+      "fireBell",
+      "intermittentHorn",
+      "gearHorn",
+      "overspeed",
+      "apDisconnect",
+      "altitude"
+    ],
+    "independentEgpws": [
+      "gpws",
+      "radioAltitude",
+      "minimums"
+    ],
+    "mechanical": [
+      "shaker",
+      "trimMotor"
+    ],
+    "note": "MRG p369 confirms EGPWS does not use ordinary aural-warning module."
+  },
+  "rules": [
+    {
+      "id": "CABIN_ALTITUDE",
+      "play": "intermittentHorn",
+      "when": {
+        "cabinAltitudeFt": ">10000"
+      },
+      "until": "cabinAltitudeFt<=10000 OR cabinHornCutout",
+      "lamp": "CABIN ALTITUDE remains until cabin altitude below threshold",
+      "source": "FCOM 15.20.4"
+    },
+    {
+      "id": "TAKEOFF_CONFIG",
+      "play": "intermittentHorn",
+      "when": {
+        "onGround": true,
+        "takeoffThrust": true,
+        "badFlaps": "737-300 <1 or >15; 737-500 <5 or >15; 737-400 must be verified",
+        "badLeadingEdge": true,
+        "badSpeedbrake": true,
+        "parkingBrakeSet": true,
+        "badStabTrim": true,
+        "operator": "OR across bad configuration conditions"
+      },
+      "until": "configuration corrected",
+      "source": "FCOM 15.20.4-5; MRG p373-4"
+    },
+    {
+      "id": "FIRE",
+      "play": "fireBell",
+      "when": {
+        "fireDetectionSource": [
+          "ENG1",
+          "ENG2",
+          "APU",
+          "WHEEL_WELL",
+          "CARGO (as installed)"
+        ]
+      },
+      "until": "FIRE WARN/BELL CUTOUT acknowledgement, re-arm for new warning",
+      "source": "FCOM 8.10 and 15.20.1-2; MRG p368-9"
+    },
+    {
+      "id": "AUTOPILOT_DISCONNECT",
+      "play": "apDisconnect",
+      "when": "autopilot engaged->disengaged",
+      "minDurationSec": 2,
+      "until": "reset after min 2 seconds",
+      "source": "FCOM 4.10.20-21"
+    },
+    {
+      "id": "STALL",
+      "play": "shaker",
+      "when": "valid stall computer output in flight; ground self-test only with 115 VAC and inhibit conditions",
+      "until": "stall condition clears or test released",
+      "source": "FCOM 15.20.7; MRG p372"
+    },
+    {
+      "id": "BANK_ANGLE",
+      "play": "gpws|BANK ANGLE",
+      "when": "roll absolute crosses >35, >40, >45 deg",
+      "reset": "bank<=30 deg",
+      "mode": "one trigger per threshold",
+      "source": "FCOM 15.20.26"
+    },
+    {
+      "id": "EGPWS_PULL_UP",
+      "play": "gpws|PULL UP",
+      "when": "valid independently computed GPWS/EGPWS PULL UP message",
+      "until": "message clears or higher priority replaces it",
+      "source": "FCOM 15.20.13-15"
+    },
+    {
+      "id": "EGPWS_GLIDESLOPE",
+      "play": "gpws|GLIDESLOPE",
+      "when": "valid Mode 5 below-glideslope evaluated warning",
+      "notes": "deviation >1.3 dots for applicable configuration, escalating volume/rate and BELOW G/S inhibit conditions; do not derive from altitude alone",
+      "source": "FCOM 15.10.6-7; 15.20.14"
+    },
+    {
+      "id": "ALTITUDE_ALERT",
+      "play": "altitude",
+      "when": "enter within 900ft of MCP altitude or deviate >300ft after capture",
+      "inhibit": [
+        "flaps>=25",
+        "G/S captured"
+      ],
+      "source": "FCOM 15.20.8; MRG p369"
+    },
+    {
+      "id": "LANDING_GEAR",
+      "play": "gearHorn",
+      "when": "gear unlocked and flap/thrust landing-config predicates of Classic FCOM 15.20.5-6",
+      "until": "safe gear configuration; limited HORN CUTOUT applicability",
+      "source": "FCOM 15.20.5-6; MRG p375 variant differences"
+    },
+    {
+      "id": "OVERSPEED",
+      "play": "overspeed",
+      "when": "IAS>aircraft VMO OR Mach>aircraft MMO",
+      "until": "back below limit",
+      "source": "FCOM 15.20.6"
+    },
+    {
+      "id": "RADIO_ALTITUDE",
+      "playByHeightFt": {
+        "10": "radioAltitude|TEN",
+        "20": "radioAltitude|TWENTY",
+        "30": "radioAltitude|THIRTY",
+        "40": "radioAltitude|FORTY",
+        "50": "radioAltitude|FIFTY",
+        "100": "radioAltitude|ONE HUNDRED",
+        "500": "radioAltitude|FIVE HUNDRED",
+        "1000": "radioAltitude|ONE THOUSAND",
+        "2500": "radioAltitude|TWO THOUSAND FIVE HUNDRED"
+      },
+      "when": "valid EGPWS and RA input, approach descent crosses respective RA threshold",
+      "source": "FCOM 15.20.27"
+    },
+    {
+      "id": "MINIMUMS",
+      "play": [
+        "minimums|APPROACHING MINIMUMS",
+        "minimums|MINIMUMS"
+      ],
+      "when": [
+        "radioAlt crosses selected minimums + 80ft",
+        "radioAlt crosses selected minimums"
+      ],
+      "source": "FCOM 15.20.28"
+    },
+    {
+      "id": "TCAS",
+      "play": "tcas|<verified computed phrase>",
+      "when": "valid TCAS computer TA/RA output",
+      "inhibit": [
+        "under ~500ft RA voice",
+        "GPWS/windshear warnings override"
+      ],
+      "source": "FCOM 15.20.29-31"
+    },
+    {
+      "id": "TRIM",
+      "play": "trimMotor",
+      "when": "trim actuator/motor physically moving",
+      "note": "mechanical sound, not a flight warning"
+    }
+  ],
+  "segmentSafety": {
+    "compositeFiles": [
+      "a.mp3",
+      "c.mp3"
+    ],
+    "rule": "never play entire compilation as triggered alert",
+    "approvedSegmentsOnly": true,
+    "unidentifiedBehavior": "report MISSING CONFIRMED CLIP and remain silent, do not play full compilation",
+    "noAutomaticMappingBySilenceOrder": true
+  }
+}
