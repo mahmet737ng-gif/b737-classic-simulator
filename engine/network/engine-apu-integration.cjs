@@ -9,6 +9,8 @@
  * No synthetic N2/EGT/duct-pressure spool-up or invented time constants.
  * Aircraft source selections remain explicit, NEVER silently paralleled.
  */
+const {initializeProtection,evaluatePneumatics,evaluateStartProtections,
+  verifyStartAttempt}=require('./pneumatic-start-protection.cjs');
 const SOURCE='FCOM-SEPEHRAN-1937';
 const src=(section,pdfPages)=>({sourceId:SOURCE,section,pdfPages});
 const ENGINE_IDS=['1','2'];
@@ -29,6 +31,7 @@ function initPropulsion(){
     mode:'LEGACY_FIXTURE',
     engines:{'1':engine(),'2':engine()},
     ignitionSelect:'R',
+    safety:initializeProtection(),
     apu:{phase:'OFF',switch:'OFF',inletDoorOpen:false,
       fireSwitchIn:true,groundFireHandleIn:true,
       generatorHealthy:true,bleedSwitchOn:false,
@@ -87,20 +90,21 @@ function evaluatePropulsion(p,electrical,feed,pumps){
   const dcBoost=apu.phase==='DOOR_OPENING'||apu.phase==='STARTING'?
     (apu.dcBoostPumpHealthy&&usable?'RUNNING':'UNAVAILABLE'):
     ready?'OFF_AT_GOVERNED':'OFF';
-  const apuBleed=ready&&apu.bleedSwitchOn;
+  const pneumaticRouting=evaluatePneumatics(p,electrical);
+  const apuBleed=pneumaticRouting.apuBleedValve.projectedOpen;
   const other=p.engines;
-  const srcAir=apuBleed?'APU':
-    p.pneumatic.groundCartOn?'GROUND_CART':
-    p.pneumatic.crossbleedOn&&Object.values(other).some(x=>x.phase==='RUNNING')?
-      'ENGINE_CROSSBLEED':'NONE';
+  const srcAir=pneumaticRouting.engines['1'].source===
+    pneumaticRouting.engines['2'].source?
+      pneumaticRouting.engines['1'].source:'MIXED';
   const minDuct= Math.max(0,30-0.5*(p.pneumatic.fieldElevationFt/1000));
   const pressure=p.pneumatic.ductPsi===null?'UNMEASURED':
     p.pneumatic.ductPsi>=minDuct?'ADEQUATE':'LOW';
-  const airReady=srcAir!=='NONE'&&pressure==='ADEQUATE';
+  const airReady=pressure==='ADEQUATE';
   const ig=ignitionSupply(p,electrical);
   const engines={};
   for(const id of ENGINE_IDS){
     const eng=p.engines[id];
+    const ownAir=pneumaticRouting.engines[id];
     const dc=bat==='POWERED';
     const valveCommand=eng.startSwitch==='GRD'?
       (dc?'COMMAND_OPEN':'UNPOWERED'):'COMMAND_CLOSED';
@@ -113,7 +117,7 @@ function evaluatePropulsion(p,electrical,feed,pumps){
     if(eng.phase==='RUNNING')status='RUNNING_CONFIRMED';
     else if(eng.startSwitch==='GRD'){
       status=!dc?'NO_DC_START_VALVE':
-        !airReady?'AIR_NOT_CONFIRMED':
+        !(airReady&&ownAir.access==='AVAILABLE')?'AIR_NOT_CONFIRMED':
         !gate?'MOTORING_BELOW_FUEL_INTRODUCTION':
         eng.startLever!=='IDLE'?'READY_FOR_START_LEVER':
         fuel.state!=='PRESSURIZED'?'FUEL_NOT_CONFIRMED':
@@ -125,8 +129,8 @@ function evaluatePropulsion(p,electrical,feed,pumps){
       startLever:eng.startLever,n2Pct:eng.n2Pct,n1Rotating:eng.n1Rotating,
       starterValveCommand:valveCommand,
       startValveOpenIndication:eng.startValveOpenFeedback===null?null:eng.startValveOpenFeedback,
-      air:{source:srcAir,measuredPsi:p.pneumatic.ductPsi,minimumPsi:minDuct,
-        pressure:pressure,available:airReady},
+      air:{source:ownAir.source,measuredPsi:p.pneumatic.ductPsi,minimumPsi:minDuct,
+        pressure:pressure,available:airReady&&ownAir.access==='AVAILABLE'},
       dcStarterPower:bat,ignition:{...ig,available:ignitionAvailable},
       fuel,lightoffConfirmed:eng.lightoffConfirmed,
       status,generatorAvailable:eng.phase==='RUNNING'&&eng.generatorHealthy,
@@ -150,7 +154,8 @@ function evaluatePropulsion(p,electrical,feed,pumps){
       fault:apu.fault,source:src('7.30.1-3',[1216,1217,1218])
     },
     pneumatic:{source:srcAir,ductPsi:p.pneumatic.ductPsi,
-      minimumForStartPsi:minDuct,status:pressure},
+      minimumForStartPsi:minDuct,status:pressure,distribution:pneumaticRouting},
+    protection:evaluateStartProtections(p),
     unresolved:['No automatic N2, N1, fuel-flow or EGT computation',
       'Pneumatic duct pressure is an external measurement',
       'Engine generator quality/transient after idle not modeled',
@@ -229,6 +234,7 @@ function applyPropulsionAction(p,action,context){
     case 'SET_ENGINE_START_SWITCH':{
       const eng=chooseEngine();
       enumVal(q.value,['OFF','GRD','CONT','FLT'],'engine start switch');
+      if(q.value==='GRD' && eng.startSwitch!=='GRD')verifyStartAttempt(p,String(q.engine));
       eng.startSwitch=q.value;break;
     }
     case 'SET_ENGINE_START_LEVER':{
