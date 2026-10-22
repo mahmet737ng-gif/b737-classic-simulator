@@ -1,0 +1,282 @@
+{
+  "schemaVersion": 1,
+  "generatedFromUserUploadedClips": true,
+  "segmentationMethod": "silencedetect -34dB at >=0.13 second quiet interval, cutoff at midpoint; final <0.23 second residue merged",
+  "sources": [
+    "a.mp3",
+    "c.mp3"
+  ],
+  "access": "original and split MP3 files provided to owner privately; no copyrighted audio stored in public GitHub",
+  "segments": [
+    {
+      "id": "RA-01",
+      "source": "a.mp3",
+      "start": 0,
+      "end": 1.1883,
+      "reviewClip": "audio/segments/RA-01.mp3",
+      "verifiedMessage": null,
+      "enabledForLiveEvent": false
+    },
+    {
+      "id": "RA-02",
+      "source": "a.mp3",
+      "start": 1.1883,
+      "end": 2.4506,
+      "reviewClip": "audio/segments/RA-02.mp3",
+      "verifiedMessage": null,
+      "enabledForLiveEvent": false
+    },
+    {
+      "id": "RA-03",
+      "source": "a.mp3",
+      "start": 2.4506,
+      "end": 4.2286,
+      "reviewClip": "audio/segments/RA-03.mp3",
+      "verifiedMessage": null,
+      "enabledForLiveEvent": false
+    },
+    {
+      "id": "RA-04",
+      "source": "a.mp3",
+      "start": 4.2286,
+      "end": 5.327,
+      "reviewClip": "audio/segments/RA-04.mp3",
+      "verifiedMessage": null,
+      "enabledForLiveEvent": false
+    },
+    {
+      "id": "RA-05",
+      "source": "a.mp3",
+      "start": 5.327,
+      "end": 6.6686,
+      "reviewClip": "audio/segments/RA-05.mp3",
+      "verifiedMessage": null,
+      "enabledForLiveEvent": false
+    },
+    {
+      "id": "RA-06",
+      "source": "a.mp3",
+      "start": 6.6686,
+      "end": 7.5358,
+      "reviewClip": "audio/segments/RA-06.mp3",
+      "verifiedMessage": null,
+      "enabledForLiveEvent": false
+    },
+    {
+      "id": "RA-07",
+      "source": "a.mp3",
+      "start": 7.5358,
+      "end": 8.2816,
+      "reviewClip": "audio/segments/RA-07.mp3",
+      "verifiedMessage": null,
+      "enabledForLiveEvent": false
+    },
+    {
+      "id": "RA-08",
+      "source": "a.mp3",
+      "start": 8.2816,
+      "end": 9.0373,
+      "reviewClip": "audio/segments/RA-08.mp3",
+      "verifiedMessage": null,
+      "enabledForLiveEvent": false
+    },
+    {
+      "id": "RA-09",
+      "source": "a.mp3",
+      "start": 9.0373,
+      "end": 9.8273,
+      "reviewClip": "audio/segments/RA-09.mp3",
+      "verifiedMessage": null,
+      "enabledForLiveEvent": false
+    },
+    {
+      "id": "RA-10",
+      "source": "a.mp3",
+      "start": 9.8273,
+      "end": 10.6346,
+      "reviewClip": "audio/segments/RA-10.mp3",
+      "verifiedMessage": null,
+      "enabledForLiveEvent": false
+    },
+    {
+      "id": "RA-11",
+      "source": "a.mp3",
+      "start": 10.6346,
+      "end": 11.52,
+      "reviewClip": "audio/segments/RA-11.mp3",
+      "verifiedMessage": null,
+      "enabledForLiveEvent": false
+    },
+    {
+      "id": "EGPWS-01",
+      "source": "c.mp3",
+      "start": 0,
+      "end": 1.0567,
+      "reviewClip": "audio/segments/EGPWS-01.mp3",
+      "verifiedMessage": null,
+      "enabledForLiveEvent": false
+    },
+    {
+      "id": "EGPWS-02",
+      "source": "c.mp3",
+      "start": 1.0567,
+      "end": 2.1508,
+      "reviewClip": "audio/segments/EGPWS-02.mp3",
+      "verifiedMessage": null,
+      "enabledForLiveEvent": false
+    },
+    {
+      "id": "EGPWS-03",
+      "source": "c.mp3",
+      "start": 2.1508,
+      "end": 3.1656,
+      "reviewClip": "audio/segments/EGPWS-03.mp3",
+      "verifiedMessage": null,
+      "enabledForLiveEvent": false
+    },
+    {
+      "id": "EGPWS-04",
+      "source": "c.mp3",
+      "start": 3.1656,
+      "end": 4.1569,
+      "reviewClip": "audio/segments/EGPWS-04.mp3",
+      "verifiedMessage": null,
+      "enabledForLiveEvent": false
+    },
+    {
+      "id": "EGPWS-05",
+      "source": "c.mp3",
+      "start": 4.1569,
+      "end": 5.2097,
+      "reviewClip": "audio/segments/EGPWS-05.mp3",
+      "verifiedMessage": null,
+      "enabledForLiveEvent": false
+    },
+    {
+      "id": "EGPWS-06",
+      "source": "c.mp3",
+      "start": 5.2097,
+      "end": 6.2176,
+      "reviewClip": "audio/segments/EGPWS-06.mp3",
+      "verifiedMessage": null,
+      "enabledForLiveEvent": false
+    },
+    {
+      "id": "EGPWS-07",
+      "source": "c.mp3",
+      "start": 6.2176,
+      "end": 7.5699,
+      "reviewClip": "audio/segments/EGPWS-07.mp3",
+      "verifiedMessage": null,
+      "enabledForLiveEvent": false
+    },
+    {
+      "id": "EGPWS-08",
+      "source": "c.mp3",
+      "start": 7.5699,
+      "end": 8.5446,
+      "reviewClip": "audio/segments/EGPWS-08.mp3",
+      "verifiedMessage": null,
+      "enabledForLiveEvent": false
+    },
+    {
+      "id": "EGPWS-09",
+      "source": "c.mp3",
+      "start": 8.5446,
+      "end": 9.4277,
+      "reviewClip": "audio/segments/EGPWS-09.mp3",
+      "verifiedMessage": null,
+      "enabledForLiveEvent": false
+    },
+    {
+      "id": "EGPWS-10",
+      "source": "c.mp3",
+      "start": 9.4277,
+      "end": 10.4373,
+      "reviewClip": "audio/segments/EGPWS-10.mp3",
+      "verifiedMessage": null,
+      "enabledForLiveEvent": false
+    },
+    {
+      "id": "EGPWS-11",
+      "source": "c.mp3",
+      "start": 10.4373,
+      "end": 11.345,
+      "reviewClip": "audio/segments/EGPWS-11.mp3",
+      "verifiedMessage": null,
+      "enabledForLiveEvent": false
+    },
+    {
+      "id": "EGPWS-12",
+      "source": "c.mp3",
+      "start": 11.345,
+      "end": 12.4169,
+      "reviewClip": "audio/segments/EGPWS-12.mp3",
+      "verifiedMessage": null,
+      "enabledForLiveEvent": false
+    },
+    {
+      "id": "EGPWS-13",
+      "source": "c.mp3",
+      "start": 12.4169,
+      "end": 13.5811,
+      "reviewClip": "audio/segments/EGPWS-13.mp3",
+      "verifiedMessage": null,
+      "enabledForLiveEvent": false
+    },
+    {
+      "id": "EGPWS-14",
+      "source": "c.mp3",
+      "start": 13.5811,
+      "end": 14.6768,
+      "reviewClip": "audio/segments/EGPWS-14.mp3",
+      "verifiedMessage": null,
+      "enabledForLiveEvent": false
+    },
+    {
+      "id": "EGPWS-15",
+      "source": "c.mp3",
+      "start": 14.6768,
+      "end": 16.0764,
+      "reviewClip": "audio/segments/EGPWS-15.mp3",
+      "verifiedMessage": null,
+      "enabledForLiveEvent": false
+    },
+    {
+      "id": "EGPWS-16",
+      "source": "c.mp3",
+      "start": 16.0764,
+      "end": 16.8369,
+      "reviewClip": "audio/segments/EGPWS-16.mp3",
+      "verifiedMessage": null,
+      "enabledForLiveEvent": false
+    },
+    {
+      "id": "EGPWS-17",
+      "source": "c.mp3",
+      "start": 16.8369,
+      "end": 17.4815,
+      "reviewClip": "audio/segments/EGPWS-17.mp3",
+      "verifiedMessage": null,
+      "enabledForLiveEvent": false
+    },
+    {
+      "id": "EGPWS-18",
+      "source": "c.mp3",
+      "start": 17.4815,
+      "end": 18.2236,
+      "reviewClip": "audio/segments/EGPWS-18.mp3",
+      "verifiedMessage": null,
+      "enabledForLiveEvent": false
+    },
+    {
+      "id": "EGPWS-19",
+      "source": "c.mp3",
+      "start": 18.2236,
+      "end": 19.0171,
+      "reviewClip": "audio/segments/EGPWS-19.mp3",
+      "verifiedMessage": null,
+      "enabledForLiveEvent": false
+    }
+  ]
+}
