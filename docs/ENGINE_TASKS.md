@@ -84,3 +84,17 @@ Phase E — Scenarios, integration, replay and acceptance: ENG-019,020,021,022,0
 - **Verified machine coverage 1937/1937**; 1,829 detected table candidates (not a guarantee of correct CSV cell boundaries), 968 unique embedded image assets, and full-text indexed SQLite. The verifier reported zero missing pages, zero missing page images, zero source-hash mismatches, and zero empty-text pages.
 - User-facing offline browser and 7-part ZIP stored in the user's private Library; full text and SQLite also persist there for future reference. The public GitHub repository contains only extraction tooling and source-free status metadata.
 - This completes raw source extraction, NOT FCOM-derived semantic modeling of all switches or systems; equipment-specific effectivity and page-by-page interpretation remain open. See docs/FCOM_ARCHIVE_STATUS.json.
+
+## 2026-10-22 — Integrated Systems Network (ISN) design branch
+
+Branch: `design/integrated-systems-network-v01` (NOT merged to main / NOT deployed).
+
+| Task | Status | Evidence |
+| --- | --- | --- |
+| ENG-026 Source-traced directed systems graph | DONE (DRAFT DATASET ONLY) | `engine/network/b737cl-system-graph.v0.1.json`: 15 groups, 78 pilot nodes, 81 directed links and 7 fault cases. Every existing link reference has a valid source page index; graph completeness and physical wire paths NOT verified. |
+| ENG-027 Fire detector dual-loop fault/vote pure pilot | DONE (ISOLATED PROTOTYPE ONLY) | `engine/network/fire-detection-pilot.cjs`; source §8.20.1-2/PDF pages 1234-1235; 5 focused smoke checks passed through an isolated JS harness, full Node test runner still requires CI verification. |
+| ENG-028 Graph integrity / fault regression tests | WRITTEN; CI VERIFICATION PENDING | `tests/system-network.test.cjs`; NOT yet part of the root npm test script, no production integration. |
+| ENG-029 Interactive read-only network inspector | WRITTEN; BROWSER QA PENDING | `systems-network-lab/index.html`; loads graph JSON locally when served at repo root; intentionally not deployed / integrated. |
+| ENG-030 Full 200-leaf sensor/wiring/actuator coverage | NOT STARTED | Existing 200 leaf categories are taxonomy, not verified circuit/sensor implementations; requires aircraft-specific equipment effectivity and reviewed WDM/AMM/SSM where FCOM not sufficient. |
+
+Next: validate the prototype independently, reconcile graph edges with aircraft options, model signal quality/known vs unknown, then only in a separate preview connect network outputs to panels and audio. No existing web/iPad/Android code was changed.
