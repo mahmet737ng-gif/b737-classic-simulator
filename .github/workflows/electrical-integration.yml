@@ -34,6 +34,9 @@ jobs:
           node --check tests/engine-apu-integration.test.cjs
           node --check engine/network/pneumatic-start-protection.cjs
           node --check tests/pneumatic-start-protection.test.cjs
+          node --check engine/network/qrh-checklist-router.cjs
+          node --check engine/network/qrh-training-scenarios.cjs
+          node --check tests/qrh-checklist-routing.test.cjs
           node --check tests/sensor-failure-network.test.cjs
           node --check tests/pump-warning-network.test.cjs
           node --check engine/network/electrical-feeder-audit.v0.2.cjs
@@ -62,6 +65,8 @@ jobs:
         run: node tests/engine-apu-integration.test.cjs
       - name: Verify ISN-07 pneumatic routing, APU protection and starter-duty checks
         run: node tests/pneumatic-start-protection.test.cjs
+      - name: Verify ISN-08 QRH case detection, evidence-gated checklist progress and replay
+        run: node tests/qrh-checklist-routing.test.cjs
       - name: Assert generated browser engine matches shared Node source
         run: node tools/build-power-consumers-lab.cjs --check
       - name: Browser runtime parity and deterministic events
