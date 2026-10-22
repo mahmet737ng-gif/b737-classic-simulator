@@ -93,3 +93,12 @@ Phase E — Scenarios, integration, replay and acceptance: ENG-019,020,021,022,0
 - **Sources:** FCOM 6.10.8–9 (PDF 1147–1148), 6.20.1–4 (PDF 1150–1153), 12.10.2–3 (PDF 1826–1827), 13.10.1 (PDF 1842); QRH 6.1–6.4 (PDF 133–136). See `engine/trainer/README.md`.
 - **Open modeling assumptions:** approximate equipment-to-AC-bus mapping, selected generator logic, simplified hydraulic availability and QRH paths. No audio output, engine startup physics, or real cockpit event adapter implemented. Do not call source-validated or flight ready.
 - **Next task:** trace the detailed bus wiring; connect cockpit switch IDs and warning audio; add complete state-aware QRH branching and automated browser tests.
+
+## 2026-10-23 — ENG-TRAINER-002 three-seat LAN collaboration
+
+- **IMPLEMENTED / NETWORK INTEGRATION TESTED:** One authoritative in-memory state kernel on a Node.js HTTP host; Captain, First Officer, Instructor each get an exclusive role and synchronized derived states, warning lights, and checklist via SSE + POST. See `docs/NETWORK_CLASSROOM.md`.
+- Source code `sync-server/server.js`; network classroom UI `trainer-lab/network.html`, `network.js`, `network.css`, Windows entry `start-classroom.cmd`.
+- **25 real three-client HTTP+SSE integration assertions passed locally** (permissions, two PINs, stale-state conflict, fault scenarios, state reconciliation and reconnect). Add tests to `npm test` CI. Prior **28 core engine tests** also passed.
+- Server host command: `npm run classroom`. Classroom URL is printed from PC LAN address. **Static GitHub Pages cannot operate this multi-seat server**. No Internet needed on LAN, no external Node packages.
+- `PROTOTYPE / TRAINER_TESTED_NETWORK`; actual browser interactions and iPad display **not yet independently validated** because test environment blocks loopback Chromium navigation. No actual cockpit photo/hotspots synchronized until subsequent integration.
+- Security: classroom-only HTTP; two distinct randomized PINs; role-restricted instructor commands; no public Internet exposure, persistent logs or multiple-room scale. Original root cockpit and panel images unchanged.

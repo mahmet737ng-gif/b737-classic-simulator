@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>B737 Classic — Shared Systems Trainer</title><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="network.css"></head>
+<body>
+<header><div><small>SHARED COCKPIT TRAINING · LAN SESSION V0.2</small><h1>B737 Classic <span>Systems Trainer</span></h1><p>One aircraft state across Captain · First Officer · Instructor. Training only.</p></div><div class="head-actions"><button id="reset" class="secondary" hidden>INSTRUCTOR RESET</button><button id="export" class="secondary">EXPORT LOG</button></div></header>
+<section class="join-shell" id="joinShell">
+  <div class="join-title"><div><h2>Join the shared aircraft</h2><p>Connect all three devices to the same local URL and enter the classroom PIN printed by the host computer.</p></div><span id="networkStatus" class="network-status">NOT CONNECTED</span></div>
+  <form id="joinForm" class="join-grid">
+    <label>Seat <select id="seatSelect" required><option value="captain">Captain</option><option value="first_officer">First Officer</option><option value="instructor">Instructor</option></select></label>
+    <label>Room PIN <input id="roomPin" type="password" inputmode="numeric" autocomplete="off" maxlength="12" placeholder="From host terminal" required></label>
+    <label id="teacherPinGroup" hidden>Instructor PIN <input id="teacherPin" type="password" inputmode="numeric" autocomplete="off" maxlength="12" placeholder="Instructor code"></label>
+    <button type="submit" id="joinButton">JOIN</button>
+  </form>
+  <div id="joinedToolbar" class="joined-tools" hidden><strong id="myRole">—</strong><span id="seatStatus">Captain — · First Officer — · Instructor —</span><button id="leaveButton" class="secondary">LEAVE SEAT</button></div>
+  <p id="connectionMessage" class="help" role="status">Waiting for classroom connection.</p>
+</section>
+<main id="trainerMain" hidden>
+  <div class="column">
+    <section class="panel"><div class="panel-head"><h2>01. Control Panel</h2><span class="tag">Interactive</span></div><p class="help">Set sources, bus transfer, fuel and hydraulic pumps. Live indicators update from the shared model.</p><div id="controls"></div></section>
+    <section class="panel" id="instructorPanel" hidden><div class="panel-head"><h2>02. Instructor / Fault Injection</h2><span class="tag caution">TRAINING</span></div><div class="scenario-row"><button id="scenario1">GEN 1 BUS OFF</button><button id="scenario2">GEN 2 BUS OFF</button><button id="scenarioClear" class="secondary">Clear scenario</button></div><p class="help">Toggle faults individually; switching a fault OFF is not the same as resetting a latched cockpit switch.</p><div id="faults" class="fault-grid"></div></section>
+  </div>
+  <div class="column">
+    <section class="panel"><div class="panel-head"><h2>03. Electrical Distribution</h2><span class="tag">Derived State</span></div><div class="bus-grid"><div class="bus" id="genbus1"></div><div class="bus" id="genbus2"></div><div class="bus" id="transfer1"></div><div class="bus" id="transfer2"></div></div><div id="dcstatus" class="details"></div></section>
+    <section class="panel"><div class="panel-head"><h2>04. Fuel & Hydraulics</h2><span class="tag">Derived Sensors</span></div><div id="loadStatus"></div><p class="disclaimer">Equipment-to-AC-bus assignments are educational placeholders pending a configuration-specific load schedule. Engine-driven hydraulic pumps are represented separately.</p></section>
+    <section class="panel"><div class="panel-head"><h2>05. Annunciations</h2><span class="tag amber">FCOM-linked labels</span></div><div id="annunciators" class="lamp-grid"></div><div id="statusMessage" role="status"></div></section>
+    <section class="panel"><div class="panel-head"><h2>06. Checklist Practice</h2><span class="tag">QRH-linked</span></div><div id="checklist"></div><p class="disclaimer">Scenario flow is original educational guidance, not a reproduction or complete execution of the airline QRH. Reference: Sepehran QRH 6.1–6.4, PDF 133–136.</p></section>
+    <section class="panel"><div class="panel-head"><h2>Event Log</h2><span class="tag">Deterministic</span></div><div id="events" aria-live="polite"></div></section>
+  </div>
+</main>
+<footer>LAN multi-device training prototype. One host controls all state. Existing cockpit, approved images and root site are unchanged. Source labels: Sepehran 737CL FCOM, chapters 6, 12 and 13; QRH chapter 6.</footer>
+<script src="../engine/trainer/core.js"></script><script src="network.js"></script>
+</body></html>

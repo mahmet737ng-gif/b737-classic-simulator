@@ -1,0 +1,14 @@
+[hidden]{display:none!important}
+.join-shell{max-width:1530px;margin:18px auto 0;padding:19px 22px;background:#162634;border:1px solid #304357;border-radius:10px}
+.join-title{display:flex;align-items:start;justify-content:space-between;gap:15px;flex-wrap:wrap}
+.join-title h2{margin:0;font-size:19px}.join-title p{margin:5px 0 13px;color:#9cb5c6}
+.network-status{padding:6px 10px;border-radius:14px;font-weight:700;font-size:11px;letter-spacing:.7px;background:#59372f;color:#ffc8aa}
+.network-status.online{background:#174834;color:#a1eec8}.network-status.pending{background:#54482a;color:#ffe1a3}
+.join-grid{display:grid;grid-template-columns:1.2fr .9fr .9fr auto;gap:12px;align-items:end}
+.join-grid label{display:flex;flex-direction:column;gap:5px;color:#c4d3df;font-weight:600;font-size:12px}
+.join-grid input,.join-grid select{min-width:0;width:100%;background:#10202d;color:#f3f7fa;border:1px solid #55728a;border-radius:6px;padding:9px 11px;font:14px system-ui}
+.join-grid button{height:41px}.joined-tools{display:flex;align-items:center;flex-wrap:wrap;gap:13px}
+.joined-tools strong{color:#8bd3ef;text-transform:uppercase}.joined-tools span{color:#b6cadd;flex:1}
+.joined-tools button{font-size:12px}.join-shell .help{margin:8px 0 0}
+@media(max-width:780px){.join-grid{grid-template-columns:1fr 1fr}.join-grid button{grid-column:span 2}.join-shell{margin:10px 12px 0;padding:13px}}
+@media(max-width:420px){.join-grid{grid-template-columns:1fr}.join-grid button{grid-column:span 1}}
