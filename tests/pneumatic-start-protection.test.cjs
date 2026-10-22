@@ -92,25 +92,20 @@ let stalled=replay(fixture.state,[...start2,
  cmd('SET_ENGINE_N2_ACCELERATION',{engine:2,value:'SLOW'})
 ]);
 assert.ok(stalled.view.propulsion.protection.engines['2'].advisoryReasons.includes('SLOW_N2_ACCELERATION_AFTER_EGT_RISE'));
-// Time counts actual starter command only; abort cutout after the documented
-// 120-second starter duty limit. Rest requires 20 sec after first attempt,
-// 180 sec after second and subsequent attempts.
+// Two-minute starter usage is passive telemetry only, per owner's
+// instruction; no fault, checklist trigger, automatic cutout or crew prompt.
 let duty=run(fixture.state,'SET_ENGINE_START_SWITCH',{engine:1,value:'GRD'});
 assert.equal(duty.view.propulsion.protection.engines['1'].attemptCount,1);
 duty=run(duty.state,'ADVANCE_SECONDS',{value:121});
-// NP.21.33 does not document a two-minute automatic starter cutout.
-// The crew must take action; the simulator reports the over-limit event.
 assert.equal(duty.view.propulsion.engines['1'].startSwitch,'GRD');
-assert.equal(duty.view.propulsion.protection.engines['1'].startFault,'STARTER_DUTY_LIMIT');
-assert.ok(duty.view.propulsion.protection.engines['1'].advisoryReasons.includes('STARTER_DUTY_LIMIT'));
-assert.equal(duty.view.propulsion.protection.engines['1'].automaticEngineShutdown,false);
-assert.throws(()=>run(duty.state,'RESET_STARTER_DUTY_FAULT',{engine:1}),Error);
+assert.equal(duty.view.propulsion.protection.engines['1'].starterElapsedSeconds,121);
+assert.equal(duty.view.propulsion.protection.engines['1'].startFault,null);
+assert.equal(duty.view.propulsion.protection.engines['1'].advisoryReasons.includes('STARTER_DUTY_LIMIT'),false);
+assert.equal(duty.view.propulsion.protection.engines['1'].recommendedProcedure,'NONE_CONFIRMED');
 duty=run(duty.state,'SET_ENGINE_START_SWITCH',{engine:1,value:'OFF'});
 assert.equal(duty.view.propulsion.protection.engines['1'].cooldownRemainingSeconds,20);
 assert.throws(()=>run(duty.state,'SET_ENGINE_START_SWITCH',{engine:1,value:'GRD'}),Error);
 duty=run(duty.state,'ADVANCE_SECONDS',{value:20});
-assert.equal(duty.view.propulsion.protection.engines['1'].cooldownRemainingSeconds,0);
-duty=run(duty.state,'RESET_STARTER_DUTY_FAULT',{engine:1});
 duty=run(duty.state,'SET_ENGINE_START_SWITCH',{engine:1,value:'GRD'});
 assert.equal(duty.view.propulsion.protection.engines['1'].attemptCount,2);
 duty=run(duty.state,'SET_ENGINE_START_SWITCH',{engine:1,value:'OFF'});
