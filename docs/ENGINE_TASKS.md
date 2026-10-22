@@ -84,3 +84,12 @@ Phase E — Scenarios, integration, replay and acceptance: ENG-019,020,021,022,0
 - **Verified machine coverage 1937/1937**; 1,829 detected table candidates (not a guarantee of correct CSV cell boundaries), 968 unique embedded image assets, and full-text indexed SQLite. The verifier reported zero missing pages, zero missing page images, zero source-hash mismatches, and zero empty-text pages.
 - User-facing offline browser and 7-part ZIP stored in the user's private Library; full text and SQLite also persist there for future reference. The public GitHub repository contains only extraction tooling and source-free status metadata.
 - This completes raw source extraction, NOT FCOM-derived semantic modeling of all switches or systems; equipment-specific effectivity and page-by-page interpretation remain open. See docs/FCOM_ARCHIVE_STATUS.json.
+
+## 2026-10-23 — ENG-TRAINER-001 standalone electrical/fuel/hydraulic training slice
+
+- **PROTOTYPE implemented, unit tested:** `engine/trainer/core.js` immutable state, source selection, generator/transfer buses, six fuel and two electric hydraulic pumps, derived annunciations, faults, original educational BUS OFF checklist flow, deterministic event log and replay.
+- **Independent interface:** `trainer-lab/` — instructor presets, fault controls, electrical/bus status, fuel/hydraulic status, lamps and checklist UI. Root cockpit and user artwork unchanged.
+- **Verification:** 28 local Node.js tests passed; suite included in `npm test` deployment gate. Browser smoke test could not run due execution environment's blocked local URL/file access; interactive published-site QA pending.
+- **Sources:** FCOM 6.10.8–9 (PDF 1147–1148), 6.20.1–4 (PDF 1150–1153), 12.10.2–3 (PDF 1826–1827), 13.10.1 (PDF 1842); QRH 6.1–6.4 (PDF 133–136). See `engine/trainer/README.md`.
+- **Open modeling assumptions:** approximate equipment-to-AC-bus mapping, selected generator logic, simplified hydraulic availability and QRH paths. No audio output, engine startup physics, or real cockpit event adapter implemented. Do not call source-validated or flight ready.
+- **Next task:** trace the detailed bus wiring; connect cockpit switch IDs and warning audio; add complete state-aware QRH branching and automated browser tests.
