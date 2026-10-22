@@ -151,3 +151,16 @@ See `docs/ELECTRICAL_FEEDER_PRESSURE_STAGE12.md` for exact source traceability a
 | ENG-046 Physical wiring/delay/sensor power accuracy | BLOCKED (REFERENCE QA) | Need applicable WDM/SSM/AMM, fault threshold/time evidence, sensor power circuits and option/ASN effectivity. No numerical delays or sensor circuit responses invented. |
 
 Source-backed summary: `docs/SENSOR_FAILURE_ENGINE_STAGE_3.md`. Private Technical Database retains reference PDFs. GitHub public repo stores small source citations and independent logic, not proprietary full-page scans. Do not change `main` or the live cockpit without separate user approval.
+
+## 2026-10-23 — ISN-05 cockpit annunciation and aural output interface
+
+| Task | Status | Implemented result and follow-up |
+| --- | --- | --- |
+| ENG-047 Source-traced lamp projection from live pumps/sensors | DONE (ISOLATED PILOT) | `engine/network/annunciation-output-engine.cjs`, 23 lamp channels (amber caution, red FIRE WARN, per-pump LOW, FLT CONT, OVHT DET), clear ON/OFF/UNKNOWN and separate tentative physical visibility. WDM and panel exact placement still pending. |
+| ENG-048 Warning cause -> ACK and recall -> annunciator | DONE (TEST PILOT) | New adapter uses warning-cause/ACK state; clears master and system annunciator requests on ACK while retaining underlying local pressure-low. Single main pump remains simple recall-only. |
+| ENG-049 Battery-bus Engine 1 fire alert and fire-bell intent | DONE (PILOT ONLY) | `integrated-aircraft-kernel.cjs` uses `fire-detection-pilot.cjs`, two loops, selector, FIRE WARN cutout and re-arm, separate fireBell audio START/STOP/HOLD, OVHT DET caution; Engine 2/APU fire not yet integrated. |
+| ENG-050 Browser panel + user-gated audio mapping | DONE (ISOLATED TEST UI) | `power-consumers-lab/index.html` draws grouped warning outputs and fire-loop controls. Aural requests use preexisting `PhraseSelector` and opt-in player. **Mapped real fire sample not verified at repo asset path**, so actual audio file playback remains unverified. |
+| ENG-051 CI and source parity tests | DONE (NODE CI) | `tests/annunciation-integration.test.cjs` and updated `tests/power-consumers-browser.test.cjs`; confirmed branch workflow pass. Real browser visual E2E still pending. |
+| ENG-052 Production cockpit lamp wiring and effects | BLOCKED | Need approved cockpit coordinate/image mappings, verified annunciator WDM/SSM circuits, local real audio clips and owner release approval. Do not edit `main`/live website on pilot status. |
+
+Reference: `docs/ANNUNCIATION_AUDIO_INTEGRATION_ISN05.md`. This stage is *functional signal integration*, not final installed aircraft-electronics fidelity or live cockpit deployment.
