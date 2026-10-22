@@ -19,3 +19,7 @@ Private Library v9 also contains a source chart registry, 9 selection/condition 
 The module blocks any other serial number, engine, or rating, and does not invent a value when PMC is unknown or curve data unverified. Current CDU and Autothrottle behavior have NOT been changed. Future CDU numeric link remains conditional on full trace, effectivity, bleed/anti-ice/PMC QA.
 
 Private Boeing source material and scanned page images must stay in the private Technical Database at /Technical Database/Sources/AFM-737-33V-D6-8730-R32/EP-FSI-ASN29340/v9/ . Only source IDs, selection engine and nonproprietary metadata are committed publicly. Not for real aircraft operations.
+
+## Private digitization helper
+
+The offline file `chart_digitizer.html`, accompanying AFM source-page images, and manual two-pass A/B coordinate capture/export are in the **private** v9 archive. It has passed JavaScript syntax checking only; GUI/browser end-to-end verification was blocked by the runtime environment. Coordinates have **PROVISIONAL** source-image status and may not drive numerical N1 until separate engineering QA. The private N1_DIGITIZATION_WORKSHEET.csv has 145 pending trace work items.
