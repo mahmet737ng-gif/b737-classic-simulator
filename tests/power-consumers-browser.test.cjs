@@ -106,6 +106,23 @@ const checklistCommands=[
 assert.deepEqual(
  snap(browser.replayAircraftActions(browser.initialAircraftState(),checklistCommands)),
  snap(source.replayAircraftActions(source.initialAircraftState(),checklistCommands)));
+// EIS commands use the same FF/FU, sensor-failure and signal timer in Node and browser.
+const eisActions=[
+ {type:'ENTER_COLD_DARK'},
+ {type:'SET_ENGINE_N2',engine:1,value:25},
+ {type:'SET_ENGINE_EGT_C',engine:1,value:700},
+ {type:'SET_ENGINE_INDICATION',engine:1,instrument:'n1Pct',value:53},
+ {type:'SET_ENGINE_INDICATION',engine:2,instrument:'fuelFlowKgHr',value:3600},
+ {type:'RESET_FUEL_USED',engine:2},
+ {type:'ADVANCE_SECONDS',value:1},
+ {type:'ADVANCE_SECONDS',value:10},
+ {type:'PUSH_FUEL_USED',engine:2},
+ {type:'SET_INSTRUMENT_SIGNAL',engine:1,instrument:'n1Pct',value:'SIGNAL_LOSS'},
+ {type:'ADVANCE_SECONDS',value:2}
+];
+assert.deepEqual(
+ snap(browser.replayAircraftActions(browser.initialAircraftState(),eisActions)),
+ snap(source.replayAircraftActions(source.initialAircraftState(),eisActions)));
 const html=fs.readFileSync(path.join(root,'power-consumers-lab/index.html'),'utf8');
 assert.match(html,/<script src="\.\/runtime\.js"><\/script>/);
 assert.match(html,/data-scenario="gen1"/);
@@ -135,6 +152,11 @@ assert.match(html,/data-checklist-action="open"/);
 assert.match(html,/data-checklist-action="reset"/);
 assert.match(html,/id="qrhCases"/);
 assert.match(html,/id="qrhSteps"/);
+assert.match(html,/data-eis-action="observe"/);
+assert.match(html,/data-eis-action="signal"/);
+assert.match(html,/data-eis-action="used"/);
+assert.match(html,/data-eis-action="resetUsed"/);
+assert.match(html,/id="eisPanels"/);
 assert.doesNotMatch(html,/data-protection="starterReset"/);
 
 assert.match(html,/data-action="enableAudio"/);
