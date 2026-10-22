@@ -1,5 +1,11 @@
 # Technical Database — Boeing 737 sources
 
+## Current product scope — Cockpit Systems & Procedures Trainer (2026-10-23)
+
+The **active product goal** is interactive 737 Classic cockpit switching, system responses, injected faults/emergencies, indicators/audio, and state-aware Normal/Non-Normal checklist practice, **not** full-flight simulation. See [TRAINER_SCOPE.md](TRAINER_SCOPE.md).
+
+The EP-FSI ASN 29340 scoped AFM dataset described below stays the **exact-tail performance reference**; its numerical-only lockouts are **not a project-wide implementation blocker**. Other 737 Classic serial/variant data may be used as **explicitly labeled simulator surrogates** for training logic. Unresolved numeric performance QA must not block unrelated switch/fault/checklist modules. Original source and QA records remain unchanged, and simulation tests never imply aircraft operational approval.
+
 The shared technical research collection is named **Technical Database** (private user Library folder `/Technical Database`, formerly `/B737`). This is a source collection **separate from** the public simulator code repository. Source material must not be committed to this public repository without verified distribution permissions.
 
 ## Active AFM scope for simulator — EP-FSI / ASN 29340
