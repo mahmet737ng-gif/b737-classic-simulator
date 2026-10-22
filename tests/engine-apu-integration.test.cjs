@@ -153,7 +153,7 @@ assert.throws(()=>doIt(lowAir.state,'CONFIRM_ENGINE_LIGHTOFF',{engine:2}),Error)
 const noR=doIt(lowAir.state,'SET_DUCT_PSI',{value:31});
 assert.equal(noR.view.propulsion.engines['2'].status,'AWAITING_LIGHTOFF_CONFIRMATION');
 const loss=doIt(noR.state,'SET_APU_SWITCH',{value:'OFF'});
-assert.equal(loss.view.electrical.buses.acStandby,'POWERED'); // possibly battery inverter standby
+assert.equal(loss.view.electrical.buses.acStandby,'UNPOWERED'); // ground AUTO inhibits battery standby after AC loss
 assert.notEqual(loss.view.propulsion.engines['2'].status,'AWAITING_LIGHTOFF_CONFIRMATION');
 assert.throws(()=>doIt(loss.state,'CONFIRM_ENGINE_LIGHTOFF',{engine:2}),Error);
 // False positive engine gen availability cannot be set directly.
