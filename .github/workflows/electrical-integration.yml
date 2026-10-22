@@ -20,7 +20,12 @@ jobs:
           node --check engine/network/fire-detection-pilot.cjs
           node --check tests/electrical-integration.test.cjs
           node --check tests/system-network.test.cjs
+          node --check engine/network/pump-sensor-warning-engine.cjs
+          node --check engine/network/integrated-aircraft-kernel.cjs
+          node --check tests/pump-warning-network.test.cjs
       - name: Check source-traced integration graph and fire-loop pilot
         run: node tests/system-network.test.cjs
       - name: Check Electrical AC/DC standby plus cross-system fault propagation
         run: node tests/electrical-integration.test.cjs
+      - name: Verify real pump-state, discrete sensor and warning derivation
+        run: node tests/pump-warning-network.test.cjs
