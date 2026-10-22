@@ -1,0 +1,9 @@
+data/
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+build-report.json
+summary.json
+iran-airports.json
+output/
+__pycache__/
