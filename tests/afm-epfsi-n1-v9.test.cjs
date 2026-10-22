@@ -1,0 +1,20 @@
+'use strict';
+const assert=require('node:assert/strict');
+const n=require('../engine/fmc/performance/afm-epfsi-n1-v9.cjs');
+const a={registration:'EP-FSI',serial:29340,engine:'CFM56-3B-1',ratingLbf:20000,phase:'TAKEOFF',pmcMode:'NORMAL'};
+let count=0;function check(label,fn){fn();count++;console.log('PASS',label)}
+check('identity',()=>assert.doesNotThrow(()=>n.checkAirframe(a)));
+check('other ASN blocked',()=>assert.throws(()=>n.requestN1({...a,serial:29339}),{name:'AircraftMismatch'}));
+check('other engine blocked',()=>assert.throws(()=>n.requestN1({...a,engine:'CFM56-3C-1'}),{name:'AircraftMismatch'}));
+check('22K blocked',()=>assert.throws(()=>n.requestN1({...a,ratingLbf:22000}),{name:'AircraftMismatch'}));
+check('takeoff normal p128',()=>assert.equal(n.selectN1Chart(a).chart.pdfPage,128));
+check('go around normal p129',()=>assert.equal(n.selectN1Chart({...a,phase:'GO_AROUND'}).chart.pdfPage,129));
+check('MCT normal p130',()=>assert.equal(n.selectN1Chart({...a,phase:'MAX_CONTINUOUS'}).chart.pdfPage,130));
+check('takeoff PMC off p756',()=>assert.equal(n.selectN1Chart({...a,pmcMode:'OFF'}).chart.pdfPage,756));
+check('PMC OFF GA no fallback',()=>assert.equal(n.selectN1Chart({...a,phase:'GO_AROUND',pmcMode:'OFF'}).chart,null));
+check('unverified PMC blocked',()=>assert.equal(n.requestN1({...a,pmcMode:'UNKNOWN'}).reason,'PMC_STATE_UNVERIFIED'));
+check('unknown phase blocked',()=>assert.equal(n.requestN1({...a,phase:'CRUISE'}).reason,'INVALID_PHASE'));
+check('no N1 invented',()=>assert.equal(n.requestN1(a).n1Pct,null));
+check('CDU adapter blocked',()=>assert.equal(n.cduN1Adapter(a).calculated,false));
+check('reference is source linked',()=>assert.equal(n.requestN1(a).source.sourceId,n.AIRCRAFT.sourceId));
+console.log(count+' N1 source-selection tests passed');
