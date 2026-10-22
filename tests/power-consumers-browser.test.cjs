@@ -21,7 +21,13 @@ const actions=[
   {type:'SET_WARNING_RECALL',value:true},
   {type:'SET_BUS_TRANSFER',value:'OFF'},
   {type:'SET_HYD_ELECTRIC_SWITCH',system:'A',value:false},
-  {type:'SET_ENGINE_RUNNING',system:'A',value:false}
+  {type:'SET_ENGINE_RUNNING',system:'A',value:false},
+  {type:'SET_SENSOR_MODE',sensor:'FUEL.CTR_RIGHT',value:'STUCK_LOW'},
+  {type:'SET_SENSOR_MODE',sensor:'HYD.A.SYSTEM',value:'OPEN_CIRCUIT'},
+  {type:'SET_SENSOR_MODE',sensor:'FUEL.CTR_RIGHT',value:'INTERMITTENT'},
+  {type:'SET_SENSOR_SAMPLE',sensor:'FUEL.CTR_RIGHT',value:'DROPOUT'},
+  {type:'SET_SENSOR_SETTLING',sensor:'FUEL.CTR_RIGHT',value:true},
+  {type:'SET_SENSOR_SETTLING',sensor:'FUEL.CTR_RIGHT',value:false}
 ];
 const initialSource=source.initialAircraftState();
 const initialBrowser=browser.initialAircraftState();
@@ -41,6 +47,10 @@ assert.match(html,/<script src="\.\/runtime\.js"><\/script>/);
 assert.match(html,/data-scenario="gen1"/);
 assert.match(html,/data-scenario="gen2"/);
 assert.match(html,/data-action="ack"/);
+assert.match(html,/data-action="injectSensor"/);
+assert.match(html,/id="sensorTable"/);
+assert.match(html,/STUCK_NORMAL/);
+assert.match(html,/data-action="sampleDrop"/);
 const inline=/\<script\>([\s\S]*?)\<\/script\>\s*\<\/body\>/m.exec(html);
 assert.ok(inline,'interactive inline script missing');
 new vm.Script(inline[1],{filename:'power-consumers-lab/index.html:inline'});
