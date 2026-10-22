@@ -1,0 +1,51 @@
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const path=require('node:path');
+const EF=require('../engine.js');
+const map=require('../data/efis-map.json');
+assert.equal(map.source_page,1322);
+assert.equal(map.folio,'10.30.2');
+assert.equal(map.controls.length,14);
+assert.equal(map.readouts.length,1);
+assert.equal(new Set(map.controls.map(x=>x.id)).size,14);
+const count=(a,b)=>a.reduce((t,x)=>t+(b(x)?1:0),0);
+assert.equal(count(map.controls,x=>x.type==='alternate_push'),6);
+assert.equal(map.controls.filter(x=>x.id==='TERR').length,0);
+assert.deepEqual(EF.MODE,['FULL_NAV','EXP_NAV','FULL_VOR_ILS','EXP_VOR_ILS','MAP','CTR_MAP','PLAN']);
+assert.deepEqual(EF.RANGE,[10,20,40,80,160,320]);
+const [W,H]=map.panel_native_dimensions;
+for(const c of map.controls){
+ let [x1,y1,x2,y2]=c.bbox_in_panel_px;
+ assert.ok(x1>=0&&y1>=0&&x2<=W&&y2<=H&&x2>x1&&y2>y1,'outside source panel: '+c.id);
+ assert.ok(c.source.startsWith('10.30.'),'missing exact FCOM folio '+c.id);
+}
+for(const c of map.controls){const pair=map.controls.filter(d=>d.id!==c.id);for(const d of pair){
+  const [x1,y1,x2,y2]=c.bbox_in_panel_px,[a1,b1,a2,b2]=d.bbox_in_panel_px;
+  const w=Math.max(0,Math.min(x2,a2)-Math.max(x1,a1)), h=Math.max(0,Math.min(y2,b2)-Math.max(y1,b1));
+  const allowed=[['WXR_BRT_INNER','EHSI_BRT_OUTER'],['EHSI_RANGE','TFC']];
+  if(w*h>0)assert.ok(allowed.some(pair=>pair.includes(c.id)&&pair.includes(d.id)),'unexpected overlap '+c.id+' '+d.id);
+}}
+let s=EF.initial();
+let prior=s.brightnessTurns.WXR_BRT_INNER;
+EF.operate(s,'EHSI_BRT_OUTER',1);
+assert.equal(s.brightnessTurns.WXR_BRT_INNER,prior,'outer mistakenly updates inner');
+assert.equal(s.brightnessTurns.EHSI_BRT_OUTER,1);
+EF.operate(s,'WXR_BRT_INNER',-1);
+assert.equal(s.brightnessTurns.EHSI_BRT_OUTER,1,'inner mistakenly updates outer');
+assert.equal(s.brightnessTurns.WXR_BRT_INNER,-1);
+EF.setMode(s,'PLAN');EF.operate(s,'EHSI_MODE',1);assert.equal(s.mode,'FULL_NAV');
+EF.setRange(s,320);EF.operate(s,'EHSI_RANGE',1);assert.equal(s.range,10);
+EF.operate(s,'ARPT');EF.operate(s,'WPT');EF.operate(s,'NAV_AID');
+assert.deepEqual([s.switches.ARPT,s.switches.WPT,s.switches.NAV_AID],[true,true,true]);
+assert.match(EF.displayAvailability(s).wpt,/allowed/);
+EF.setRange(s,80);assert.match(EF.displayAvailability(s).wpt,/outside FCOM scale/);
+assert.match(EF.displayAvailability(s).navaid,/High-altitude/);
+EF.operate(s,'WXR');assert.equal(s.wxr,true);assert.match(EF.displayAvailability(s).wxr,/returns not connected/i);
+EF.operate(s,'WXR');assert.equal(s.wxr,false);
+EF.operate(s,'TFC');assert.equal(s.tfc,true);assert.match(EF.displayAvailability(s).tfc,/TCAS data not connected/);
+EF.operate(s,'DH_REF_SELECTOR'); assert.equal(s.selectedDH,150,'no fabricated numeric detent step');
+s.dhAlert=true;EF.operate(s,'DH_RST');assert.equal(s.dhAlert,false);
+EF.setDHTestValue(s,180);assert.equal(s.selectedDH,180);assert.match(s.dhValueSource,/test-console/);
+assert.throws(()=>EF.operate(s,'TERR'),/Not in FSI/);
+for(const x of ['assets/fcom-10-30-2-panel.png','assets/ehsi-map.png','assets/ehsi-plan.png'])assert.ok(fs.existsSync(path.resolve(__dirname,'..',x)));
+console.log('PASS: 14 FCOM controls + 1 readout, FSI exclusions, geometries, coaxial separation, selector state, WXR/TCAS/no-data safety, RST');

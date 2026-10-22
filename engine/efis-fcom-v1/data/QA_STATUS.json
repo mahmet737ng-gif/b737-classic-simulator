@@ -1,0 +1,23 @@
+{
+  "version": "1.0",
+  "source_fcom_vol": 2,
+  "chapter": 10,
+  "controls_mapped": 14,
+  "outputs_mapped": 1,
+  "files_source_only": true,
+  "chromium_e2e": "BLOCKED_BY_ADMINISTRATOR",
+  "node_tests": "PASS",
+  "state": "Local interactive prototype verified by reducer and simulated DOM; visual Edge QA pending",
+  "unverified": [
+    "Physical selector angular positions / rotary increments",
+    "DH feet per knob click",
+    "Live radar, TCAS, radio navigation and FMC data",
+    "Physical 3D hardware animation fidelity"
+  ],
+  "next": [
+    "User visual acceptance of hotspots on EP-FSI original FCOM art",
+    "Connect EFIS control events to FCOM-based EHSI symbol generator",
+    "Validate mode-specific annunciations and failure logic against rest of Chapter 10"
+  ],
+  "privacy": "Proprietary source figures not uploaded to public repository"
+}

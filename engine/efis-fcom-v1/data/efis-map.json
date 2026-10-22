@@ -1,0 +1,545 @@
+{
+  "schema": "b737classic-fsi-efis-panel/source-mapped-v1",
+  "aircraft": "EP-FSI / FCOM FSI diagram",
+  "source": "SEPEHRAN AIRLINES 737CL FCOM_241021_135227.pdf",
+  "source_page": 1322,
+  "folio": "10.30.2",
+  "descriptions": {
+    "10.30.3": 1323,
+    "10.30.4": 1324,
+    "10.30.5": 1325
+  },
+  "source_image_sha256": "6f10a232637d01b92fcdb32a6b83a112e65a440052babc28cec049f1665b2737",
+  "panel_crop_sha256": "96afe7780afc449043bb8fffc976870c386f82f9791ecf53f2bb90e14fb17cae",
+  "panel_native_dimensions": [
+    479,
+    299
+  ],
+  "panel_crop_of_figure": [
+    110,
+    82,
+    589,
+    381
+  ],
+  "controls": [
+    {
+      "id": "DH_REF_SELECTOR",
+      "label": "DH Selector",
+      "type": "rotary",
+      "shape": "round",
+      "bbox": [
+        187,
+        183,
+        239,
+        234
+      ],
+      "source": "10.30.3 #2",
+      "events": [
+        "rotate_cw",
+        "rotate_ccw"
+      ],
+      "verified": "functional; increments not stated",
+      "bbox_in_panel_px": [
+        77,
+        101,
+        129,
+        152
+      ],
+      "map_center": [
+        103,
+        126
+      ],
+      "unit": "px source_1322, panel crop origin source (110,82), reference image panel pixels scaled"
+    },
+    {
+      "id": "DH_RST",
+      "label": "RST",
+      "type": "momentary_push",
+      "shape": "round",
+      "bbox": [
+        203,
+        270,
+        224,
+        292
+      ],
+      "source": "10.30.3 #3",
+      "events": [
+        "push"
+      ],
+      "verified": "yes",
+      "bbox_in_panel_px": [
+        93,
+        188,
+        114,
+        210
+      ],
+      "map_center": [
+        103,
+        199
+      ],
+      "unit": "px source_1322, panel crop origin source (110,82), reference image panel pixels scaled"
+    },
+    {
+      "id": "EADI_BRT",
+      "label": "EADI BRT",
+      "type": "rotary",
+      "shape": "round",
+      "bbox": [
+        189,
+        315,
+        242,
+        366
+      ],
+      "source": "10.30.3 #4",
+      "events": [
+        "rotate_cw",
+        "rotate_ccw"
+      ],
+      "verified": "direction qualitative",
+      "bbox_in_panel_px": [
+        79,
+        233,
+        132,
+        284
+      ],
+      "map_center": [
+        105,
+        258
+      ],
+      "unit": "px source_1322, panel crop origin source (110,82), reference image panel pixels scaled"
+    },
+    {
+      "id": "EHSI_BRT_OUTER",
+      "label": "EHSI BRT (outer)",
+      "type": "concentric_rotary_outer",
+      "shape": "ring",
+      "bbox": [
+        283,
+        209,
+        340,
+        268
+      ],
+      "source": "10.30.3 #5",
+      "events": [
+        "rotate_cw",
+        "rotate_ccw"
+      ],
+      "verified": "yes",
+      "bbox_in_panel_px": [
+        173,
+        127,
+        230,
+        186
+      ],
+      "map_center": [
+        201,
+        156
+      ],
+      "unit": "px source_1322, panel crop origin source (110,82), reference image panel pixels scaled"
+    },
+    {
+      "id": "WXR_BRT_INNER",
+      "label": "WXR BRT (inner)",
+      "type": "concentric_rotary_inner",
+      "shape": "round",
+      "bbox": [
+        293,
+        220,
+        332,
+        260
+      ],
+      "source": "10.30.4 #6",
+      "events": [
+        "rotate_cw",
+        "rotate_ccw"
+      ],
+      "verified": "yes",
+      "bbox_in_panel_px": [
+        183,
+        138,
+        222,
+        178
+      ],
+      "map_center": [
+        202,
+        158
+      ],
+      "unit": "px source_1322, panel crop origin source (110,82), reference image panel pixels scaled"
+    },
+    {
+      "id": "EHSI_MODE",
+      "label": "Mode",
+      "type": "rotary_detent",
+      "shape": "round",
+      "bbox": [
+        341,
+        134,
+        409,
+        207
+      ],
+      "source": "10.30.4 #7",
+      "states": [
+        "FULL_NAV",
+        "EXP_NAV",
+        "FULL_VOR_ILS",
+        "EXP_VOR_ILS",
+        "MAP",
+        "CTR_MAP",
+        "PLAN"
+      ],
+      "verified": "detent names from diagram; angles unverified",
+      "bbox_in_panel_px": [
+        231,
+        52,
+        299,
+        125
+      ],
+      "map_center": [
+        265,
+        88
+      ],
+      "unit": "px source_1322, panel crop origin source (110,82), reference image panel pixels scaled"
+    },
+    {
+      "id": "EHSI_RANGE",
+      "label": "Range",
+      "type": "rotary_detent",
+      "shape": "ring",
+      "bbox": [
+        477,
+        147,
+        537,
+        205
+      ],
+      "source": "10.30.4 #8",
+      "states": [
+        10,
+        20,
+        40,
+        80,
+        160,
+        320
+      ],
+      "verified": "range values from diagram",
+      "bbox_in_panel_px": [
+        367,
+        65,
+        427,
+        123
+      ],
+      "map_center": [
+        397,
+        94
+      ],
+      "unit": "px source_1322, panel crop origin source (110,82), reference image panel pixels scaled"
+    },
+    {
+      "id": "TFC",
+      "label": "TFC",
+      "type": "push_at_rotary_center",
+      "shape": "round",
+      "bbox": [
+        494,
+        158,
+        520,
+        189
+      ],
+      "source": "10.30.5 #11",
+      "events": [
+        "push"
+      ],
+      "verified": "yes",
+      "bbox_in_panel_px": [
+        384,
+        76,
+        410,
+        107
+      ],
+      "map_center": [
+        397,
+        91
+      ],
+      "unit": "px source_1322, panel crop origin source (110,82), reference image panel pixels scaled"
+    },
+    {
+      "id": "WXR",
+      "label": "WXR",
+      "type": "alternate_push",
+      "shape": "rect",
+      "bbox": [
+        486,
+        222,
+        539,
+        273
+      ],
+      "source": "10.30.4 #9",
+      "events": [
+        "push"
+      ],
+      "verified": "yes",
+      "bbox_in_panel_px": [
+        376,
+        140,
+        429,
+        191
+      ],
+      "map_center": [
+        402,
+        165
+      ],
+      "unit": "px source_1322, panel crop origin source (110,82), reference image panel pixels scaled"
+    },
+    {
+      "id": "VOR_ADF",
+      "label": "VOR/ADF",
+      "type": "alternate_push",
+      "shape": "rect",
+      "bbox": [
+        286,
+        312,
+        334,
+        363
+      ],
+      "source": "10.30.4 #10",
+      "events": [
+        "push"
+      ],
+      "verified": "yes",
+      "bbox_in_panel_px": [
+        176,
+        230,
+        224,
+        281
+      ],
+      "map_center": [
+        200,
+        255
+      ],
+      "unit": "px source_1322, panel crop origin source (110,82), reference image panel pixels scaled"
+    },
+    {
+      "id": "NAV_AID",
+      "label": "NAV AID",
+      "type": "alternate_push",
+      "shape": "rect",
+      "bbox": [
+        340,
+        312,
+        391,
+        363
+      ],
+      "source": "10.30.4 #10",
+      "events": [
+        "push"
+      ],
+      "verified": "yes",
+      "bbox_in_panel_px": [
+        230,
+        230,
+        281,
+        281
+      ],
+      "map_center": [
+        255,
+        255
+      ],
+      "unit": "px source_1322, panel crop origin source (110,82), reference image panel pixels scaled"
+    },
+    {
+      "id": "ARPT",
+      "label": "ARPT",
+      "type": "alternate_push",
+      "shape": "rect",
+      "bbox": [
+        397,
+        312,
+        445,
+        363
+      ],
+      "source": "10.30.4 #10",
+      "events": [
+        "push"
+      ],
+      "verified": "yes",
+      "bbox_in_panel_px": [
+        287,
+        230,
+        335,
+        281
+      ],
+      "map_center": [
+        311,
+        255
+      ],
+      "unit": "px source_1322, panel crop origin source (110,82), reference image panel pixels scaled"
+    },
+    {
+      "id": "RTE_DATA",
+      "label": "RTE DATA",
+      "type": "alternate_push",
+      "shape": "rect",
+      "bbox": [
+        448,
+        312,
+        500,
+        363
+      ],
+      "source": "10.30.4 #10",
+      "events": [
+        "push"
+      ],
+      "verified": "yes",
+      "bbox_in_panel_px": [
+        338,
+        230,
+        390,
+        281
+      ],
+      "map_center": [
+        364,
+        255
+      ],
+      "unit": "px source_1322, panel crop origin source (110,82), reference image panel pixels scaled"
+    },
+    {
+      "id": "WPT",
+      "label": "WPT",
+      "type": "alternate_push",
+      "shape": "rect",
+      "bbox": [
+        505,
+        312,
+        553,
+        363
+      ],
+      "source": "10.30.5 #10",
+      "events": [
+        "push"
+      ],
+      "verified": "yes",
+      "bbox_in_panel_px": [
+        395,
+        230,
+        443,
+        281
+      ],
+      "map_center": [
+        419,
+        255
+      ],
+      "unit": "px source_1322, panel crop origin source (110,82), reference image panel pixels scaled"
+    }
+  ],
+  "readouts": [
+    {
+      "id": "DH_REF_INDICATOR",
+      "type": "readout",
+      "bbox_in_panel_px": [
+        66,
+        52,
+        147,
+        87
+      ],
+      "fcom": "10.30.3 #1"
+    }
+  ],
+  "knob_sprites": {
+    "MODE": {
+      "center": [
+        375,
+        170
+      ],
+      "outer": 34,
+      "inner": 0,
+      "sprite": "assets/knob-mode.png",
+      "bbox": [
+        231,
+        54,
+        299,
+        122
+      ]
+    },
+    "RANGE_RING": {
+      "center": [
+        507,
+        176
+      ],
+      "outer": 30,
+      "inner": 15,
+      "sprite": "assets/knob-range_ring.png",
+      "bbox": [
+        367,
+        64,
+        427,
+        124
+      ]
+    },
+    "BRIGHT_OUTER": {
+      "center": [
+        312,
+        239
+      ],
+      "outer": 29,
+      "inner": 20,
+      "sprite": "assets/knob-bright_outer.png",
+      "bbox": [
+        173,
+        128,
+        231,
+        186
+      ]
+    },
+    "BRIGHT_INNER": {
+      "center": [
+        312,
+        239
+      ],
+      "outer": 19,
+      "inner": 0,
+      "sprite": "assets/knob-bright_inner.png",
+      "bbox": [
+        183,
+        138,
+        221,
+        176
+      ]
+    },
+    "EADI_BRT": {
+      "center": [
+        215,
+        340
+      ],
+      "outer": 23,
+      "inner": 0,
+      "sprite": "assets/knob-eadi_brt.png",
+      "bbox": [
+        82,
+        235,
+        128,
+        281
+      ]
+    },
+    "DH_REF_SELECTOR": {
+      "center": [
+        212,
+        209
+      ],
+      "outer": 24,
+      "inner": 0,
+      "sprite": "assets/knob-dh_ref_selector.png",
+      "bbox": [
+        78,
+        103,
+        126,
+        151
+      ]
+    }
+  },
+  "notes": [
+    "All panel art is a 1:1 crop from original source PDF illustration; no added aircraft switches.",
+    "The figure is a schematic, not a calibrated mechanical drawing. Interactive angular steps are a training representation, NOT FCOM-certified detent angles.",
+    "The FSA drawing on 10.30.3 includes TERR and alternate legends and is excluded from EP-FSI panel.",
+    "WXR requires live weather radar and correct both-side power; no fake returns.",
+    "No knob numeric increments are asserted for DH, EADI BRT, EHSI BRT, WXR BRT."
+  ]
+}

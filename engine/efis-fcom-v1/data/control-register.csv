@@ -1,0 +1,17 @@
+<PARSED TEXT FOR SHEET: 1 / 1 TABS
+TAB NAME: data__control-register.csv>
+index,id,type,x1,y1,x2,y2,fcom_folio,verification,notes
+0,DH_REF_SELECTOR,rotary,77,101,129,152,10.30.3 #2,functional; increments not stated,
+1,DH_RST,momentary_push,93,188,114,210,10.30.3 #3,yes,
+2,EADI_BRT,rotary,79,233,132,284,10.30.3 #4,direction qualitative,
+3,EHSI_BRT_OUTER,concentric_rotary_outer,173,127,230,186,10.30.3 #5,yes,ring overlap intentional
+4,WXR_BRT_INNER,concentric_rotary_inner,183,138,222,178,10.30.4 #6,yes,ring overlap intentional
+5,EHSI_MODE,rotary_detent,231,52,299,125,10.30.4 #7,detent names from diagram; angles unverified,
+6,EHSI_RANGE,rotary_detent,367,65,427,123,10.30.4 #8,range values from diagram,ring overlap intentional
+7,TFC,push_at_rotary_center,384,76,410,107,10.30.5 #11,yes,ring overlap intentional
+8,WXR,alternate_push,376,140,429,191,10.30.4 #9,yes,
+9,VOR_ADF,alternate_push,176,230,224,281,10.30.4 #10,yes,
+10,NAV_AID,alternate_push,230,230,281,281,10.30.4 #10,yes,
+11,ARPT,alternate_push,287,230,335,281,10.30.4 #10,yes,
+12,RTE_DATA,alternate_push,338,230,390,281,10.30.4 #10,yes,
+13,WPT,alternate_push,395,230,443,281,10.30.5 #10,yes,
