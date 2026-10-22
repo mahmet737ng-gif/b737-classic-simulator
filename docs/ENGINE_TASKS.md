@@ -163,3 +163,12 @@ Private source snapshot: `/Technical Database/Sources/AFM-737-33V-D6-8730-R32/EP
 | QA / CDU | SOURCE ROUTING ONLY, NUMERIC N1 BLOCKED | 14 private SQLite checks, guarded conditions module, independent human numeric review 0, runtime eligible points 0 |
 
 Private active reference: `/Technical Database/Sources/AFM-737-33V-D6-8730-R32/EP-FSI-ASN29340/v12/epfsi_afm_scoped_v12.sqlite`. Existing CDU source selector remains on v10 until fully signed numeric curves and golden source vectors are available. No proprietary Boeing numerical curves in public GitHub.
+
+## 2026-10-23 — TECH-NET-V2 six-stage execution slice
+
+- **Source archive protected in private Library:** 8 manuals, 5,067 pages, 33,767 segments in `/Technical Database/Technical-Network-V2/B737_TECHNICAL_NETWORK_V2.sqlite`; V1 graph retained (91 nodes incl. 26 lexical tags, 104 ports, 56 documented links, 43 rule expressions; 39 structurally evaluable, 4 blocked).
+- **Expanded CANDIDATE catalog:** 3,553 name occurrences and 1,959 distinct text strings across all eight manuals. They are NOT identified unique aircraft LRUs nor proof of physical wiring. 65 non-topic nodes retained.
+- **Software contracts:** 16 labeled mappings, 14 instructor fault IDs, 10 training scenarios and QA gates; standalone `engine/trainer/integration-v2.js` and generic three-valued `source-rule-evaluator.js`.
+- **Isolated browser lab:** `systems-integration-lab/` provides 21 mapped command IDs, derived electrical/fuel/hydraulic indications, current warning engine fire/cabin/stall-instructor audio REQUESTS, DCPCS timed N1/N2 ground behavior and educational BUS OFF checklist progress. Original cockpit image/website root and deferred LAN networking unchanged.
+- **QA:** 26 private SQLite tests PASS and 40 local JavaScript contract/integration tests PASS (local WarningEngine-compatible stub). `npm test` now runs the actual repository WarningEngine module via CI; any CI failures must be addressed. Browser visual QA and real audio-asset playback not yet done.
+- **Outstanding:** full 737 component-by-component mapping, exact bus wiring, numerical Stall AOA law, exact QRH branching, cockpit photo hotspot mapping, MP3 phrase playback and end-user acceptance. Do not mark the six stages globally COMPLETE; this is a **partial working slice for each stage**.
