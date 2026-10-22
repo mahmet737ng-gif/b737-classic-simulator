@@ -152,3 +152,14 @@ Private source snapshot: `/Technical Database/Sources/AFM-737-33V-D6-8730-R32/EP
 - **TESTS:** 25 Python rule/traceability checks PASS; SQLite PRAGMA integrity and standalone HTML viewer JS syntax PASS. Tests are in the private bundle and have **not** been integrated into the public CI.
 - **IMPLEMENTATION LIMIT:** No live connection yet from graph rules to `audio/warning-engine.js` or `engine/trainer/core.js`. The graph's 76 proposed consumer mappings are **NOT COMPLETE or ACTIVE**. No changes to the approved cockpit visual assets, original UI, or postponed LAN capability.
 - **Next work:** map source-documented switch and sensor keys to the deterministic cockpit state engine; exercise each warning/alarm from instructor fault injection; map checklist conditions; validate missing pin/channel/rating details only where they affect this educational trainer.
+
+## EP-FSI v12 three-track performance checkpoint (2026-10-23)
+
+| Track | Status | Evidence |
+| --- | --- | --- |
+| Takeoff / Go-Around digitization | PARTIAL, PROVISIONAL | Private v12 AFM pp128–129: 10 bleed curves catalogued, 16 preliminary correction samples, v11 104 source-image main-chart samples preserved |
+| PMC OFF takeoff chart | SOURCE IDENTIFIED / FULL DIGITIZATION PENDING | AFM Appendix 2UK PDF p756; alternate source and separate MAX N1 cap |
+| MCT formula/nomogram | SIX STEPS MODELED / NUMERICAL VALUES PENDING | AFM PDF p130; lower of pressure/temperature limits then altitude, bleed, final nomogram |
+| QA / CDU | SOURCE ROUTING ONLY, NUMERIC N1 BLOCKED | 14 private SQLite checks, guarded conditions module, independent human numeric review 0, runtime eligible points 0 |
+
+Private active reference: `/Technical Database/Sources/AFM-737-33V-D6-8730-R32/EP-FSI-ASN29340/v12/epfsi_afm_scoped_v12.sqlite`. Existing CDU source selector remains on v10 until fully signed numeric curves and golden source vectors are available. No proprietary Boeing numerical curves in public GitHub.
