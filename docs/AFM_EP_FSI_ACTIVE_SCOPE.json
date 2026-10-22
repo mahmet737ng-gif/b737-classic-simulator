@@ -1,6 +1,6 @@
 {
   "schema": "b737-afm-aircraft-scope-v1",
-  "status": "ACTIVE_PRIVATE_REFERENCE_V8_CFM56_3B_1_20K_USER_CONFIRMED",
+  "status": "ACTIVE_PRIVATE_REFERENCE_V9_N1_SOURCE_SELECTION_READY_NUMERIC_BLOCKED",
   "source_id": "AFM-73733V-D6-8730.33V-R32-20180214",
   "active_aircraft": {
     "model": "737-33V",
@@ -17,8 +17,8 @@
     "installed_engine_independently_verified": false
   },
   "source_pdf_sha256": "3c7002212482f0c47a1735c2302ee304ef41ef4ca270591281b72f5f2a714105",
-  "private_library_path": "/Technical Database/Sources/AFM-737-33V-D6-8730-R32/EP-FSI-ASN29340/v8/",
-  "private_db_filename": "epfsi_afm_scoped_v8.sqlite",
+  "private_library_path": "/Technical Database/Sources/AFM-737-33V-D6-8730-R32/EP-FSI-ASN29340/v9/",
+  "private_db_filename": "epfsi_afm_scoped_v9.sqlite",
   "source_pdf_stored_separately": "/Technical Database/Sources/AFM-737-33V-D6-8730-R32/AFM_R32_original.pdf",
   "linked_tables": {
     "scoped_rules": 110,
@@ -42,14 +42,24 @@
   },
   "original_full_archive": "IMMUTABLE_HISTORY_ONLY",
   "other_serials": "DO_NOT_USE_FOR_THIS_SIMULATOR_AIRCRAFT",
-  "runtime_integration": "NOT_YET_CONNECTED",
+  "runtime_integration": "N1 SELECTOR ADAPTER ONLY — LIVE CDU UNCHANGED",
   "certified_performance_values": "NONE",
   "note": "A single airplane-specific reference scope; the underlying full source archive is preserved as private historical evidence and does not authorize calculations for other aircraft.",
-  "supersedes": "EP-FSI-ASN29340/v7/epfsi_afm_scoped_v7.sqlite",
+  "supersedes": "EP-FSI-ASN29340/v8/epfsi_afm_scoped_v8.sqlite",
   "numerical_n1_computations_enabled": false,
-  "reader_tests_passed": 20,
-  "version": 8,
+  "reader_tests_passed": 29,
+  "version": 9,
   "audit_note": "Owner confirmed CFM56-3B-1 and 20K for EP-FSI ASN29340. AFM Appendix Applicability Page A (PDF p13) includes 33 (CFM56-3 series at 20K), and lists 1UK reduced thrust / 2UK PMC OFF for CFM56-3-B1. This is not independent confirmation of the installed engine hardware or PMC state; N1 curves not digitized/validated.",
-  "private_db_sha256": "f720fdd5db01597db34c536b3d69ea43e156ad7b247fabfb82f9791fa28720b2",
-  "pmc_option": "UNVERIFIED"
+  "private_db_sha256": "7177c2cddd6cba6d5c65d56f5bce634c9271c1f151b8a1ebf9578d566c9341a0",
+  "pmc_option": "UNVERIFIED",
+  "n1_source_charts": {
+    "takeoff_normal": 128,
+    "go_around_normal": 129,
+    "max_continuous_normal": 130,
+    "takeoff_pmc_off": 756
+  },
+  "n1_selection_rule_count": 9,
+  "n1_numeric_points_independently_verified": 0,
+  "n1_cdu_staging_adapter": "engine/fmc/performance/afm-epfsi-n1-v9.cjs",
+  "n1_numerical_enabling_state": "BLOCKED"
 }
