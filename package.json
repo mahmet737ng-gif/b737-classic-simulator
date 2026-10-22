@@ -4,6 +4,6 @@
   "private": true,
   "description": "Boeing 737 Classic photographic classroom demo (not flight simulation)",
   "scripts": {
-    "test": "node --check app.js && node --check cockpit-data.js && node --check sim-engine.js && node tests/sim-engine.test.cjs && node tests/engine-design.test.cjs && node --check audio/warning-engine.js && node --check audio-lab/lab.js && node --check audio-lab/real-audio-bank.js && node tests/real-audio-import.test.cjs"
+    "test": "node --check app.js && node --check cockpit-data.js && node --check sim-engine.js && node tests/sim-engine.test.cjs && node tests/engine-design.test.cjs && node --check audio/warning-engine.js && node --check audio-lab/lab.js && node --check audio-lab/real-audio-bank.js && node tests/audio-warning-engine.test.cjs && node tests/real-audio-import.test.cjs"
   }
 }
