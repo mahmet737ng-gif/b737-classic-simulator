@@ -33,6 +33,9 @@ const {PROTECTION_COMMANDS,applyProtectionAction,reconcileStarterEdges,
   tickProtection,reconcileApuProtections}=
   require('./pneumatic-start-protection.cjs');
 
+const {initChecklistState,deriveChecklists,performChecklistAction}=
+  require('./qrh-checklist-router.cjs');
+
 const clone = x => JSON.parse(JSON.stringify(x));
 const bool = (v,n) => {if(typeof v !== 'boolean') throw new TypeError(n+' must be boolean');};
 const pick = (v,allowed,name) => {
@@ -73,6 +76,7 @@ function initialAircraftState() {
     },
     sensors:initialSensorConfig(),
     propulsion:initPropulsion(),
+    checklist:initChecklistState(),
     fire:{selector:'NORMAL',acknowledged:false,
       loops:{A:{healthy:true,overheat:false,fire:false},
         B:{healthy:true,overheat:false,fire:false}}},
@@ -115,9 +119,10 @@ function deriveAircraftState(snapshot) {
   const announInput={warnings,pumps:network,electrical,warningCauses:causes,
     warningControl:snapshot.warning};
   const annunciation=projectAnnunciation(announInput,fireDetection,propulsion);
+  const checklists=deriveChecklists(snapshot,{propulsion,fireDetection,annunciation});
   return {step:snapshot.step,electrical,electricalFeeders,pressurePhysics,
     pumps:network,sensors:observed.sensors,warnings,warningCauses:causes,
-    fireDetection,annunciation,propulsion,
+    fireDetection,annunciation,propulsion,checklists,
     sourceModel:'FCOM_REFERENCED_PRESSURE_AND_FEEDER_V0.2_PILOT'};
 }
 
@@ -190,6 +195,7 @@ function transitionAircraftState(previous,action) {
       validateSensorId(p.sensor);validateBoolean();
       state.sensors[p.sensor].settling=p.value;break;
     case 'ENTER_COLD_DARK':
+      state.checklist=initChecklistState();
       state.propulsion=initPropulsion();
       state.propulsion.mode='INTEGRATED';
       e.phase='GROUND';
@@ -197,6 +203,11 @@ function transitionAircraftState(previous,action) {
       e.selected.bus1='GEN1';e.selected.bus2='GEN2';
       for(const pump of FUEL_IDS)f.switches[pump]=false;
       for(const system of HYD_IDS)h.electricSwitches[system]=false;
+      break;
+    case 'OPEN_CHECKLIST':
+    case 'CONFIRM_CHECKLIST_STEP':
+    case 'RESET_CHECKLIST':
+      performChecklistAction(state.checklist,p,previous,before);
       break;
     case 'SET_FIRE_LOOP':
       pick(p.loop,['A','B'],'loop');
@@ -281,6 +292,13 @@ function transitionAircraftState(previous,action) {
     pressureChanges:comparePressureTransitions(before.pressurePhysics,after.pressurePhysics),
     sensorChanges,
     sensorSignalChanges:compareSensorSignals(before.sensors,after.sensors),
+    checklistChanges:{
+      activated:after.checklists.activeCaseIds.filter(id=>!before.checklists.activeCaseIds.includes(id)),
+      resolved:before.checklists.activeCaseIds.filter(id=>!after.checklists.activeCaseIds.includes(id)),
+      selectedBefore:before.checklists.selected,
+      selectedAfter:after.checklists.selected,
+      confirmations:after.checklists.audit.slice(before.checklists.audit.length)
+    },
     annunciationChanges:compareAnnunciation(before.annunciation,after.annunciation),
     propulsionChanges:before.propulsion.mode==='INTEGRATED'||after.propulsion.mode==='INTEGRATED'?
       {apu:{from:before.propulsion.apu?.phase||'NONE',to:after.propulsion.apu?.phase||'NONE'},
