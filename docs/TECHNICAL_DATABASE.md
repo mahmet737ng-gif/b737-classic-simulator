@@ -2,6 +2,12 @@
 
 The shared technical research collection is named **Technical Database** (private user Library folder `/Technical Database`, formerly `/B737`). This is a source collection **separate from** the public simulator code repository. Source material must not be committed to this public repository without verified distribution permissions.
 
+## Active AFM scope for simulator — EP-FSI / ASN 29340
+
+**Only** Boeing 737-33V airframe serial **29340**, registration **EP-FSI** (registration supplied by project owner), is authorized for active AFM-derived performance extraction and future simulator consumption. Private active source: `/Technical Database/Sources/AFM-737-33V-D6-8730-R32/EP-FSI-ASN29340/epfsi_afm_scoped_v6.sqlite`. Public non-proprietary pointer: `docs/AFM_EP_FSI_ACTIVE_SCOPE.json`.
+
+Do **not** activate performance limits, CG curves, engine performance graphs or special appendices from other serial numbers. The original 978-page AFM and v1–v5 archives remain PRIVATE as immutable historical source records, not live aircraft data. The applicable CG chart is **Section 1 Page 3B (PDF p24)**. Installed engine type, engine rating, PMC and relevant service bulletins remain **UNVERIFIED**; no N1 numerical performance function is engine-ready. v6 reader refuses any ASN except 29340 and all unverified N1 calculations. No simulator runtime integration has been completed.
+
 ## Available reference corpora
 
 | Source ID | Document | Coverage | Authority | Archive state |
