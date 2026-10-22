@@ -2033,7 +2033,8 @@ function initializeIndications(){
  }]));
  const data=()=>({channels:channel(),fuelUsedKg:null,
    displayMode:'FLOW',modeRemainingSeconds:0,oilHighTempSeconds:0});
- return {schema:'b737cl-eis-fsi-v1',engines:{'1':data(),'2':data()}};
+ return {schema:'b737cl-eis-fsi-v1',engines:{'1':data(),'2':data()},
+   n1Reference:{mode:'FMC',manualTargetPct:null,fmcTargetPct:{'1':null,'2':null}}};
 }
 function instrumentAction(state,action){
  const k=key(action.instrument),s=state.engines[id(action.engine)];
@@ -2049,6 +2050,17 @@ function instrumentAction(state,action){
      s.channels[k].lossElapsedSeconds=0;
    }
  }else throw new TypeError('unknown EIS command');
+}
+function n1ReferenceAction(state,action){
+ const r=state.n1Reference;
+ if(action.type==='SET_N1_REFERENCE_MODE'){
+   if(!['FMC','MANUAL'].includes(action.value))throw new TypeError('invalid N1 reference mode');
+   r.mode=action.value;
+ }else if(action.type==='SET_N1_MANUAL_REFERENCE'){
+   r.manualTargetPct=numberOrNull(action.value,'n1Pct');
+ }else if(action.type==='SET_N1_FMC_REFERENCE'){
+   r.fmcTargetPct[id(action.engine)]=numberOrNull(action.value,'n1Pct');
+ }else throw new TypeError('invalid N1 reference action');
 }
 function panelButton(state,action){
  const s=state.engines[id(action.engine)];
@@ -2142,6 +2154,19 @@ function evaluateIndications(indications,propulsion,phase){
        fuelFlowKgHr:values.fuelFlowKgHr,ffDigital:ff},
      secondary:{oilPressurePsi:values.oilPressurePsi,oilTempC:values.oilTempC,
        oilQtyPct:values.oilQtyPct,vibration:values.vibration},
+     n1Reference:{
+       mode:indications.n1Reference.mode,
+       manualSetReadout:indications.n1Reference.mode==='MANUAL'?
+         indications.n1Reference.manualTargetPct:null,
+       bugTargetPct:indications.n1Reference.mode==='MANUAL'?
+         indications.n1Reference.manualTargetPct:indications.n1Reference.fmcTargetPct[id],
+       targetQuality:indications.n1Reference.mode==='MANUAL'?
+         'CREW_SELECTED_NO_AUTOTHROTTLE_EFFECT':
+         indications.n1Reference.fmcTargetPct[id]===null?
+           'FMC_TARGET_NOT_PROVIDED':'EXTERNAL_FMC_TARGET',
+       autothrottleOverride:false,
+       source:source('7.10.3-4',1175)
+     },
      computed:{
        n1RedLimitDemand:n1===null?null:n1>=106,
        n2RedLimitDemand:n2===null?null:n2>=105,
@@ -2161,9 +2186,11 @@ function evaluateIndications(indications,propulsion,phase){
  }
  return result;
 }
-const INSTRUMENT_COMMANDS=new Set(['SET_ENGINE_INDICATION','SET_INSTRUMENT_SIGNAL','PUSH_FUEL_USED','RESET_FUEL_USED']);
+const INSTRUMENT_COMMANDS=new Set([
+ 'SET_ENGINE_INDICATION','SET_INSTRUMENT_SIGNAL','PUSH_FUEL_USED','RESET_FUEL_USED',
+ 'SET_N1_REFERENCE_MODE','SET_N1_MANUAL_REFERENCE','SET_N1_FMC_REFERENCE']);
 module.exports={initializeIndications,evaluateIndications,instrumentAction,panelButton,
- advanceIndications,INSTRUMENT_COMMANDS,LIMITS,INSTRUMENT_KEYS:NAMES};
+ advanceIndications,n1ReferenceAction,INSTRUMENT_COMMANDS,LIMITS,INSTRUMENT_KEYS:NAMES};
 return module.exports;})();
 const kernel=(function(){const module={exports:{}};const exports=module.exports;const require=(p)=>{if(p==='./electrical-power-pilot.cjs')return electrical;if(p==='./electrical-feeder-audit.v0.2.cjs')return feederAudit;if(p==='./pump-sensor-warning-engine.cjs')return consumers;if(p==='./pressure-distribution.v0.2.cjs')return pressurePhysics;if(p==='./electrical-consumer-feeders.cjs')return feederMap;if(p==='./fluid-pressure-engine.cjs')return fluidObservations;if(p==='./sensor-failure-engine.cjs')return sensorEngine;if(p==='./fire-detection-pilot.cjs')return firePilot;if(p==='./annunciation-output-engine.cjs')return annunciator;if(p==='./pneumatic-start-protection.cjs')return safetyEngine;if(p==='./engine-apu-integration.cjs')return propulsionEngine;if(p==='./qrh-checklist-router.cjs')return checklistRouter;if(p==='./qrh-training-scenarios.cjs')return scenarioRegistry;if(p==='./engine-indication-eis.cjs')return eisEngine;throw new Error('Unknown module '+p);};
 'use strict';
@@ -2208,7 +2235,7 @@ const {TRAINING_SCENARIO_IDS,trainingScenarioActions}=
   require('./qrh-training-scenarios.cjs');
 
 const {initializeIndications,evaluateIndications,instrumentAction,panelButton,
-  advanceIndications,INSTRUMENT_COMMANDS}=
+  advanceIndications,n1ReferenceAction,INSTRUMENT_COMMANDS}=
   require('./engine-indication-eis.cjs');
 
 const clone = x => JSON.parse(JSON.stringify(x));
@@ -2405,6 +2432,9 @@ function transitionAircraftState(previous,action) {
         if(state.propulsion.mode!=='INTEGRATED')throw new Error('EIS requires integrated propulsion mode');
         if(['SET_ENGINE_INDICATION','SET_INSTRUMENT_SIGNAL'].includes(p.type))
           instrumentAction(state.indications,p);
+        else if(p.type.startsWith('SET_N1_REFERENCE')||p.type==='SET_N1_MANUAL_REFERENCE'||
+            p.type==='SET_N1_FMC_REFERENCE')
+          n1ReferenceAction(state.indications,p);
         else panelButton(state.indications,p);
       }
       else if(PROTECTION_COMMANDS.has(p.type))applyProtectionAction(state.propulsion,p);
