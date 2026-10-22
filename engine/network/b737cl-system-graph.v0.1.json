@@ -1,0 +1,1949 @@
+{
+  "schema": "B737CL-ISN-DESIGN-v0.1",
+  "status": "DRAFT_GRAPH_NOT_EXECUTABLE_AIRCRAFT_MODEL",
+  "scope": "737-300/400/500 - Sepehran FCOM; option-dependent differences pending",
+  "authority": {
+    "primary": "FCOM-SEPEHRAN-1937",
+    "document": "D6-27370-300/400/500-SHI",
+    "pages": 1937,
+    "privateSourcePath": "/Technical Database",
+    "rule": "no proprietary manual scans/source prose in public repository"
+  },
+  "provenanceRules": {
+    "sourceTextChecked": "Manual text supports the stated functional relationship; not necessarily physical wire or exact connector route",
+    "functionalPathOnly": "AC availability is evidenced, but exact bus/circuit breaker wiring still needs maintenance/wiring source",
+    "noNGFallback": true,
+    "noArbitraryThresholds": true
+  },
+  "targetTaxonomy": "engine/maps/technical-database-systems-panels.v1.json",
+  "groups": [
+    {
+      "id": "GEN",
+      "label": "Airplane General & Emergency Equipment",
+      "fcomChapter": "1",
+      "existingTaxonomyLeafCount": 13
+    },
+    {
+      "id": "AIR",
+      "label": "Air Systems",
+      "fcomChapter": "2",
+      "existingTaxonomyLeafCount": 18
+    },
+    {
+      "id": "ICE",
+      "label": "Anti-Ice & Rain",
+      "fcomChapter": "3",
+      "existingTaxonomyLeafCount": 7
+    },
+    {
+      "id": "AFDS",
+      "label": "Automatic Flight",
+      "fcomChapter": "4",
+      "existingTaxonomyLeafCount": 19
+    },
+    {
+      "id": "COM",
+      "label": "Communications",
+      "fcomChapter": "5",
+      "existingTaxonomyLeafCount": 10
+    },
+    {
+      "id": "ELEC",
+      "label": "Electrical",
+      "fcomChapter": "6",
+      "existingTaxonomyLeafCount": 12
+    },
+    {
+      "id": "ENG",
+      "label": "Engines & APU",
+      "fcomChapter": "7",
+      "existingTaxonomyLeafCount": 16
+    },
+    {
+      "id": "FIRE",
+      "label": "Fire Protection",
+      "fcomChapter": "8",
+      "existingTaxonomyLeafCount": 9
+    },
+    {
+      "id": "FLT",
+      "label": "Flight Controls",
+      "fcomChapter": "9",
+      "existingTaxonomyLeafCount": 16
+    },
+    {
+      "id": "INST",
+      "label": "Flight Instruments & Displays",
+      "fcomChapter": "10",
+      "existingTaxonomyLeafCount": 16
+    },
+    {
+      "id": "NAV",
+      "label": "Flight Management & Navigation",
+      "fcomChapter": "11",
+      "existingTaxonomyLeafCount": 19
+    },
+    {
+      "id": "FUEL",
+      "label": "Fuel",
+      "fcomChapter": "12",
+      "existingTaxonomyLeafCount": 11
+    },
+    {
+      "id": "HYD",
+      "label": "Hydraulics",
+      "fcomChapter": "13",
+      "existingTaxonomyLeafCount": 9
+    },
+    {
+      "id": "GEAR",
+      "label": "Landing Gear & Brakes",
+      "fcomChapter": "14",
+      "existingTaxonomyLeafCount": 12
+    },
+    {
+      "id": "WARN",
+      "label": "Warning Systems",
+      "fcomChapter": "15",
+      "existingTaxonomyLeafCount": 13
+    }
+  ],
+  "nodes": [
+    {
+      "id": "ELEC.ENGINE1_GEN",
+      "group": "ELEC",
+      "kind": "source",
+      "label": "Engine 1 generator"
+    },
+    {
+      "id": "ELEC.ENGINE2_GEN",
+      "group": "ELEC",
+      "kind": "source",
+      "label": "Engine 2 generator"
+    },
+    {
+      "id": "ELEC.APU_GEN",
+      "group": "ELEC",
+      "kind": "source",
+      "label": "APU generator"
+    },
+    {
+      "id": "ELEC.EXTERNAL_AC",
+      "group": "ELEC",
+      "kind": "source",
+      "label": "External AC supply"
+    },
+    {
+      "id": "ELEC.GEN_BUS1",
+      "group": "ELEC",
+      "kind": "bus",
+      "label": "AC generator bus 1"
+    },
+    {
+      "id": "ELEC.GEN_BUS2",
+      "group": "ELEC",
+      "kind": "bus",
+      "label": "AC generator bus 2"
+    },
+    {
+      "id": "ELEC.TRANSFER_BUS1",
+      "group": "ELEC",
+      "kind": "bus",
+      "label": "AC transfer bus 1"
+    },
+    {
+      "id": "ELEC.TRANSFER_BUS2",
+      "group": "ELEC",
+      "kind": "bus",
+      "label": "AC transfer bus 2"
+    },
+    {
+      "id": "ELEC.AC_STANDBY",
+      "group": "ELEC",
+      "kind": "bus",
+      "label": "AC standby bus"
+    },
+    {
+      "id": "ELEC.AC_AVAILABLE",
+      "group": "ELEC",
+      "kind": "abstract",
+      "label": "AC power availability; exact pump feeder bus not yet mapped"
+    },
+    {
+      "id": "ELEC.BATTERY",
+      "group": "ELEC",
+      "kind": "source",
+      "label": "Aircraft battery"
+    },
+    {
+      "id": "ELEC.BATTERY_BUS",
+      "group": "ELEC",
+      "kind": "bus",
+      "label": "Battery bus"
+    },
+    {
+      "id": "ELEC.HOT_BATTERY_BUS",
+      "group": "ELEC",
+      "kind": "bus",
+      "label": "Hot battery bus"
+    },
+    {
+      "id": "ELEC.ENGINE1_GCB",
+      "group": "ELEC",
+      "kind": "actuator",
+      "label": "Generator 1 control relay / breaker"
+    },
+    {
+      "id": "ENG.ENGINE1",
+      "group": "ENG",
+      "kind": "plant",
+      "label": "Engine 1"
+    },
+    {
+      "id": "ENG.ENGINE2",
+      "group": "ENG",
+      "kind": "plant",
+      "label": "Engine 2"
+    },
+    {
+      "id": "ENG.APU",
+      "group": "ENG",
+      "kind": "plant",
+      "label": "Auxiliary power unit"
+    },
+    {
+      "id": "FUEL.CENTER_TANK",
+      "group": "FUEL",
+      "kind": "plant",
+      "label": "Center fuel tank"
+    },
+    {
+      "id": "FUEL.MAIN_TANK1",
+      "group": "FUEL",
+      "kind": "plant",
+      "label": "Main tank 1"
+    },
+    {
+      "id": "FUEL.CENTER_PUMP_L",
+      "group": "FUEL",
+      "kind": "actuator",
+      "label": "Left center tank AC fuel pump"
+    },
+    {
+      "id": "FUEL.CENTER_PUMP_L_PRESS",
+      "group": "FUEL",
+      "kind": "sensor",
+      "label": "Left center pump output pressure sensor"
+    },
+    {
+      "id": "FUEL.CENTER_PUMP_L_AUTO_STOP",
+      "group": "FUEL",
+      "kind": "controller",
+      "label": "Center pump auto-shutoff logic"
+    },
+    {
+      "id": "FUEL.CENTER_PUMP_L_LOW",
+      "group": "FUEL",
+      "kind": "indication",
+      "label": "Center pump low-pressure light"
+    },
+    {
+      "id": "FUEL.MAIN1_PUMP",
+      "group": "FUEL",
+      "kind": "actuator",
+      "label": "Main 1 AC boost pump"
+    },
+    {
+      "id": "FUEL.ENGINE1_FEED",
+      "group": "FUEL",
+      "kind": "plant",
+      "label": "Engine 1 fuel feed manifold"
+    },
+    {
+      "id": "FUEL.ENGINE1_SHUTOFF",
+      "group": "FUEL",
+      "kind": "actuator",
+      "label": "Engine 1 fuel shutoff valve"
+    },
+    {
+      "id": "FUEL.CROSSFEED_VALVE",
+      "group": "FUEL",
+      "kind": "actuator",
+      "label": "Fuel crossfeed valve"
+    },
+    {
+      "id": "HYD.ENG_PUMP_A",
+      "group": "HYD",
+      "kind": "actuator",
+      "label": "Engine 1-driven hydraulic pump / system A"
+    },
+    {
+      "id": "HYD.ENG_PUMP_B",
+      "group": "HYD",
+      "kind": "actuator",
+      "label": "Engine 2-driven hydraulic pump / system B"
+    },
+    {
+      "id": "HYD.ELEC_PUMP_A",
+      "group": "HYD",
+      "kind": "actuator",
+      "label": "AC motor-driven pump A"
+    },
+    {
+      "id": "HYD.ELEC_PUMP_B",
+      "group": "HYD",
+      "kind": "actuator",
+      "label": "AC motor-driven pump B"
+    },
+    {
+      "id": "HYD.SYSTEM_A",
+      "group": "HYD",
+      "kind": "plant",
+      "label": "Hydraulic system A pressure"
+    },
+    {
+      "id": "HYD.SYSTEM_B",
+      "group": "HYD",
+      "kind": "plant",
+      "label": "Hydraulic system B pressure"
+    },
+    {
+      "id": "HYD.STANDBY",
+      "group": "HYD",
+      "kind": "plant",
+      "label": "Standby hydraulic system"
+    },
+    {
+      "id": "HYD.PUMP_A_PRESS_SW",
+      "group": "HYD",
+      "kind": "sensor",
+      "label": "Pump A output low-pressure switch"
+    },
+    {
+      "id": "HYD.SYSTEM_A_PRESS_XDCR",
+      "group": "HYD",
+      "kind": "sensor",
+      "label": "Hydraulic A system pressure transmitter"
+    },
+    {
+      "id": "HYD.PUMP_A_LOW_LAMP",
+      "group": "HYD",
+      "kind": "indication",
+      "label": "Hydraulic pump A LOW PRESSURE light"
+    },
+    {
+      "id": "HYD.SYSTEM_A_GAUGE",
+      "group": "HYD",
+      "kind": "indication",
+      "label": "Hydraulic system A pressure gauge"
+    },
+    {
+      "id": "HYD.ENGINE1_SHUTOFF",
+      "group": "HYD",
+      "kind": "actuator",
+      "label": "Engine 1 hydraulic fluid shutoff valve"
+    },
+    {
+      "id": "HYD.RESERVOIR_A",
+      "group": "HYD",
+      "kind": "plant",
+      "label": "Hydraulic A reservoir (bleed-air pressurized)"
+    },
+    {
+      "id": "AIR.ENGINE1_BLEED",
+      "group": "AIR",
+      "kind": "plant",
+      "label": "Engine 1 bleed-air supply"
+    },
+    {
+      "id": "AIR.ENGINE1_BLEED_VALVE",
+      "group": "AIR",
+      "kind": "actuator",
+      "label": "Engine 1 bleed valve"
+    },
+    {
+      "id": "AIR.PACK1_VALVE",
+      "group": "AIR",
+      "kind": "actuator",
+      "label": "Pack valve fed by engine 1 bleed configuration"
+    },
+    {
+      "id": "AIR.BLEED_RESERVOIR_PRESS",
+      "group": "AIR",
+      "kind": "plant",
+      "label": "Hydraulic A/B reservoir pressurization supply"
+    },
+    {
+      "id": "ICE.WING1_ANTIICE",
+      "group": "ICE",
+      "kind": "actuator",
+      "label": "Affected-side wing anti-ice supply"
+    },
+    {
+      "id": "GEAR.HANDLE",
+      "group": "GEAR",
+      "kind": "control",
+      "label": "Landing gear handle UP/OFF/DN"
+    },
+    {
+      "id": "GEAR.GEAR_LOCK",
+      "group": "GEAR",
+      "kind": "controller",
+      "label": "Ground gear-lever mechanical lock / solenoid"
+    },
+    {
+      "id": "GEAR.GEAR_ACTUATORS",
+      "group": "GEAR",
+      "kind": "actuator",
+      "label": "Landing gear extension/retraction"
+    },
+    {
+      "id": "GEAR.GEAR_TRANSFER",
+      "group": "GEAR",
+      "kind": "actuator",
+      "label": "Landing gear hydraulic transfer function"
+    },
+    {
+      "id": "GEAR.NOSE_STEER_NORMAL",
+      "group": "GEAR",
+      "kind": "actuator",
+      "label": "Normal nose wheel steering"
+    },
+    {
+      "id": "GEAR.NOSE_STEER_ALT",
+      "group": "GEAR",
+      "kind": "actuator",
+      "label": "Alternate nose wheel steering"
+    },
+    {
+      "id": "GEAR.BRAKES_NORMAL",
+      "group": "GEAR",
+      "kind": "actuator",
+      "label": "Normal wheel brakes"
+    },
+    {
+      "id": "GEAR.BRAKES_ALTERNATE",
+      "group": "GEAR",
+      "kind": "actuator",
+      "label": "Alternate wheel brakes"
+    },
+    {
+      "id": "GEAR.ANTISKID",
+      "group": "GEAR",
+      "kind": "controller",
+      "label": "Antiskid controller"
+    },
+    {
+      "id": "GEAR.AUTOBRAKE",
+      "group": "GEAR",
+      "kind": "controller",
+      "label": "Autobrake controller"
+    },
+    {
+      "id": "GEAR.WHEEL_SPEED",
+      "group": "GEAR",
+      "kind": "sensor",
+      "label": "Main wheel speed sensing"
+    },
+    {
+      "id": "AFDS.AP_A",
+      "group": "AFDS",
+      "kind": "controller",
+      "label": "Autopilot A"
+    },
+    {
+      "id": "AFDS.AP_B",
+      "group": "AFDS",
+      "kind": "controller",
+      "label": "Autopilot B"
+    },
+    {
+      "id": "AFDS.FCC_A",
+      "group": "AFDS",
+      "kind": "controller",
+      "label": "Flight control computer A"
+    },
+    {
+      "id": "AFDS.FCC_B",
+      "group": "AFDS",
+      "kind": "controller",
+      "label": "Flight control computer B"
+    },
+    {
+      "id": "AFDS.AUTOTHROTTLE",
+      "group": "AFDS",
+      "kind": "controller",
+      "label": "Autothrottle"
+    },
+    {
+      "id": "INST.RA_CAPT",
+      "group": "INST",
+      "kind": "sensor",
+      "label": "Captain radio altimeter"
+    },
+    {
+      "id": "INST.RA_FO",
+      "group": "INST",
+      "kind": "sensor",
+      "label": "First officer radio altimeter"
+    },
+    {
+      "id": "INST.AIR_GROUND",
+      "group": "INST",
+      "kind": "sensor",
+      "label": "Air/ground status signal"
+    },
+    {
+      "id": "FIRE.ENG1_LOOP_A",
+      "group": "FIRE",
+      "kind": "sensor",
+      "label": "Engine 1 overheat/fire detection loop A"
+    },
+    {
+      "id": "FIRE.ENG1_LOOP_B",
+      "group": "FIRE",
+      "kind": "sensor",
+      "label": "Engine 1 overheat/fire detection loop B"
+    },
+    {
+      "id": "FIRE.ENG1_LOOP_MONITOR",
+      "group": "FIRE",
+      "kind": "controller",
+      "label": "Loop voting / fault discrimination"
+    },
+    {
+      "id": "FIRE.ENG1_OVERHEAT",
+      "group": "FIRE",
+      "kind": "indication",
+      "label": "Engine 1 overheat signal"
+    },
+    {
+      "id": "FIRE.ENG1_FIRE",
+      "group": "FIRE",
+      "kind": "indication",
+      "label": "Engine 1 fire signal"
+    },
+    {
+      "id": "FIRE.ENG1_FIRE_SWITCH",
+      "group": "FIRE",
+      "kind": "control",
+      "label": "Engine 1 fire switch pull and rotate"
+    },
+    {
+      "id": "FIRE.ENG1_EXT_BOTTLES",
+      "group": "FIRE",
+      "kind": "actuator",
+      "label": "Engine fire-extinguisher discharge squibs"
+    },
+    {
+      "id": "WARN.MASTER_CAUTION",
+      "group": "WARN",
+      "kind": "indication",
+      "label": "Both MASTER CAUTION lights"
+    },
+    {
+      "id": "WARN.OVHT_DET",
+      "group": "WARN",
+      "kind": "indication",
+      "label": "OVHT/DET system annunciator"
+    },
+    {
+      "id": "WARN.MASTER_FIRE_WARN",
+      "group": "WARN",
+      "kind": "indication",
+      "label": "Both master FIRE WARN lights"
+    },
+    {
+      "id": "WARN.FIRE_BELL",
+      "group": "WARN",
+      "kind": "audio",
+      "label": "Fire-warning bell"
+    },
+    {
+      "id": "WARN.LOOP_FAULT",
+      "group": "WARN",
+      "kind": "indication",
+      "label": "Engine detection FAULT indication"
+    },
+    {
+      "id": "WARN.HYD_PUMP_LOW",
+      "group": "WARN",
+      "kind": "indication",
+      "label": "Hydraulic pump LOW PRESSURE indication"
+    },
+    {
+      "id": "WARN.AUTOPILOT_DISCONNECT",
+      "group": "WARN",
+      "kind": "event",
+      "label": "Autopilot disengagement event"
+    }
+  ],
+  "edges": [
+    {
+      "id": "L001",
+      "from": "ENG.ENGINE1",
+      "to": "ELEC.ENGINE1_GEN",
+      "kind": "mechanical-power",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1150,
+        "section": "6.20.1",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "engine running, generator drive connected"
+    },
+    {
+      "id": "L002",
+      "from": "ENG.ENGINE2",
+      "to": "ELEC.ENGINE2_GEN",
+      "kind": "mechanical-power",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1150,
+        "section": "6.20.1",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "engine running, generator drive connected"
+    },
+    {
+      "id": "L003",
+      "from": "ENG.APU",
+      "to": "ELEC.APU_GEN",
+      "kind": "mechanical-power",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1150,
+        "section": "6.20.1",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "APU available"
+    },
+    {
+      "id": "L004",
+      "from": "ELEC.ENGINE1_GEN",
+      "to": "ELEC.GEN_BUS1",
+      "kind": "electric-power",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1152,
+        "section": "6.20.3-4",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "related generator connected; AC source not paralleled"
+    },
+    {
+      "id": "L005",
+      "from": "ELEC.ENGINE2_GEN",
+      "to": "ELEC.GEN_BUS2",
+      "kind": "electric-power",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1152,
+        "section": "6.20.3-4",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "related generator connected; AC source not paralleled"
+    },
+    {
+      "id": "L006",
+      "from": "ELEC.APU_GEN",
+      "to": "ELEC.GEN_BUS1",
+      "kind": "electric-power",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1153,
+        "section": "6.20.1-4",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "selection; may supply both on ground or one in flight"
+    },
+    {
+      "id": "L007",
+      "from": "ELEC.APU_GEN",
+      "to": "ELEC.GEN_BUS2",
+      "kind": "electric-power",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1153,
+        "section": "6.20.1-4",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "selection; may supply both on ground or one in flight"
+    },
+    {
+      "id": "L008",
+      "from": "ELEC.EXTERNAL_AC",
+      "to": "ELEC.GEN_BUS1",
+      "kind": "electric-power",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1151,
+        "section": "6.20.2-4",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "ground only, external AC available, battery ON and GRD PWR selected"
+    },
+    {
+      "id": "L009",
+      "from": "ELEC.EXTERNAL_AC",
+      "to": "ELEC.GEN_BUS2",
+      "kind": "electric-power",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1151,
+        "section": "6.20.2-4",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "ground only, external AC available, battery ON and GRD PWR selected"
+    },
+    {
+      "id": "L010",
+      "from": "ELEC.GEN_BUS1",
+      "to": "ELEC.TRANSFER_BUS1",
+      "kind": "electric-power",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1152,
+        "section": "6.20.3-4",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "normal transfer source"
+    },
+    {
+      "id": "L011",
+      "from": "ELEC.GEN_BUS2",
+      "to": "ELEC.TRANSFER_BUS2",
+      "kind": "electric-power",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1152,
+        "section": "6.20.3-4",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "normal transfer source"
+    },
+    {
+      "id": "L012",
+      "from": "ELEC.GEN_BUS2",
+      "to": "ELEC.TRANSFER_BUS1",
+      "kind": "electric-power",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1153,
+        "section": "6.20.4",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "automatic alternate supply if opposite source lost and BUS TRANS AUTO"
+    },
+    {
+      "id": "L013",
+      "from": "ELEC.GEN_BUS1",
+      "to": "ELEC.TRANSFER_BUS2",
+      "kind": "electric-power",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1153,
+        "section": "6.20.4",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "automatic alternate supply if opposite source lost and BUS TRANS AUTO"
+    },
+    {
+      "id": "L014",
+      "from": "ELEC.TRANSFER_BUS1",
+      "to": "ELEC.AC_STANDBY",
+      "kind": "electric-power",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1152,
+        "section": "6.20.3",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "normal standby AC source"
+    },
+    {
+      "id": "L015",
+      "from": "ELEC.BATTERY",
+      "to": "ELEC.BATTERY_BUS",
+      "kind": "electric-power",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1150,
+        "section": "6.20.1",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "battery circuit and selected power context"
+    },
+    {
+      "id": "L016",
+      "from": "ELEC.BATTERY",
+      "to": "ELEC.HOT_BATTERY_BUS",
+      "kind": "electric-power",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1152,
+        "section": "6.20.3",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "hot battery bus supply representation"
+    },
+    {
+      "id": "L017",
+      "from": "ELEC.BATTERY_BUS",
+      "to": "FIRE.ENG1_LOOP_MONITOR",
+      "kind": "electric-power",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1234,
+        "section": "8.20.1",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "engine overheat/fire detection powered by battery bus"
+    },
+    {
+      "id": "L018",
+      "from": "ELEC.HOT_BATTERY_BUS",
+      "to": "FIRE.ENG1_EXT_BOTTLES",
+      "kind": "electric-power",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1235,
+        "section": "8.20.1-2",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "fire extinguisher discharge power"
+    },
+    {
+      "id": "L019",
+      "from": "ELEC.HOT_BATTERY_BUS",
+      "to": "FUEL.ENGINE1_SHUTOFF",
+      "kind": "electric-power",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1835,
+        "section": "12.20.2",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "fuel shutoff valve motor power"
+    },
+    {
+      "id": "L020",
+      "from": "ELEC.BATTERY_BUS",
+      "to": "FUEL.CROSSFEED_VALVE",
+      "kind": "electric-power",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1835,
+        "section": "12.20.2",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "crossfeed valve motor power"
+    },
+    {
+      "id": "L021",
+      "from": "ELEC.AC_AVAILABLE",
+      "to": "FUEL.CENTER_PUMP_L",
+      "kind": "electric-power",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1834,
+        "section": "12.20.1",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "functional-path-only",
+      "condition": "AC-powered pump, exact source bus mapping PENDING"
+    },
+    {
+      "id": "L022",
+      "from": "ELEC.AC_AVAILABLE",
+      "to": "HYD.ELEC_PUMP_A",
+      "kind": "electric-power",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1847,
+        "section": "13.20.2",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "functional-path-only",
+      "condition": "AC-powered pump, exact source bus mapping PENDING"
+    },
+    {
+      "id": "L023",
+      "from": "ELEC.AC_AVAILABLE",
+      "to": "HYD.ELEC_PUMP_B",
+      "kind": "electric-power",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1847,
+        "section": "13.20.2",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "functional-path-only",
+      "condition": "AC-powered pump, exact source bus mapping PENDING"
+    },
+    {
+      "id": "L024",
+      "from": "FUEL.CENTER_TANK",
+      "to": "FUEL.CENTER_PUMP_L",
+      "kind": "fluid-flow",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1834,
+        "section": "12.20.1",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "center tank fuel present and pump can provide pressure"
+    },
+    {
+      "id": "L025",
+      "from": "FUEL.CENTER_PUMP_L",
+      "to": "FUEL.CENTER_PUMP_L_PRESS",
+      "kind": "measurement",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1834,
+        "section": "12.20.1",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "sensor measures individual pump output"
+    },
+    {
+      "id": "L026",
+      "from": "FUEL.CENTER_PUMP_L_PRESS",
+      "to": "FUEL.CENTER_PUMP_L_AUTO_STOP",
+      "kind": "sensor-signal",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1834,
+        "section": "12.20.1",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "low output pressure triggers automatic shutdown after a short delay; exact model delay not set"
+    },
+    {
+      "id": "L027",
+      "from": "FUEL.CENTER_PUMP_L_PRESS",
+      "to": "FUEL.CENTER_PUMP_L_LOW",
+      "kind": "sensor-signal",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1826,
+        "section": "12.10",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "pump low pressure with switch ON; special annunciation conditions apply"
+    },
+    {
+      "id": "L028",
+      "from": "FUEL.CENTER_PUMP_L",
+      "to": "FUEL.ENGINE1_FEED",
+      "kind": "fluid-flow",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1834,
+        "section": "12.20.1",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "normal center tank priority by lower-opening check valves"
+    },
+    {
+      "id": "L029",
+      "from": "FUEL.MAIN_TANK1",
+      "to": "FUEL.MAIN1_PUMP",
+      "kind": "fluid-flow",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1834,
+        "section": "12.20.1",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "main tank quantity present"
+    },
+    {
+      "id": "L030",
+      "from": "FUEL.MAIN1_PUMP",
+      "to": "FUEL.ENGINE1_FEED",
+      "kind": "fluid-flow",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1834,
+        "section": "12.20.1",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "normal own-side pressure feed after center priority"
+    },
+    {
+      "id": "L031",
+      "from": "FUEL.ENGINE1_FEED",
+      "to": "FUEL.ENGINE1_SHUTOFF",
+      "kind": "fluid-flow",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1835,
+        "section": "12.20.2",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "valve can isolate engine 1 fuel feed"
+    },
+    {
+      "id": "L032",
+      "from": "FUEL.ENGINE1_SHUTOFF",
+      "to": "ENG.ENGINE1",
+      "kind": "fluid-flow",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1835,
+        "section": "12.20.2",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "open valve + adequate fuel/ignition for combustion; full engine laws not implemented"
+    },
+    {
+      "id": "L033",
+      "from": "ENG.ENGINE1",
+      "to": "HYD.ENG_PUMP_A",
+      "kind": "mechanical-power",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1847,
+        "section": "13.20.2",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "engine turns drive pump; pump OFF switch isolates output flow"
+    },
+    {
+      "id": "L034",
+      "from": "ENG.ENGINE2",
+      "to": "HYD.ENG_PUMP_B",
+      "kind": "mechanical-power",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1847,
+        "section": "13.20.2",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "engine turns drive pump"
+    },
+    {
+      "id": "L035",
+      "from": "HYD.ENG_PUMP_A",
+      "to": "HYD.SYSTEM_A",
+      "kind": "hydraulic-pressure",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1847,
+        "section": "13.20.2",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "pump supply; engine pump flow isolated if switch OFF"
+    },
+    {
+      "id": "L036",
+      "from": "HYD.ELEC_PUMP_A",
+      "to": "HYD.SYSTEM_A",
+      "kind": "hydraulic-pressure",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1847,
+        "section": "13.20.2",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "electric motor pump available"
+    },
+    {
+      "id": "L037",
+      "from": "HYD.ENG_PUMP_B",
+      "to": "HYD.SYSTEM_B",
+      "kind": "hydraulic-pressure",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1847,
+        "section": "13.20.2",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "pump supply"
+    },
+    {
+      "id": "L038",
+      "from": "HYD.ELEC_PUMP_B",
+      "to": "HYD.SYSTEM_B",
+      "kind": "hydraulic-pressure",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1847,
+        "section": "13.20.2",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "electric motor pump available"
+    },
+    {
+      "id": "L039",
+      "from": "HYD.ENG_PUMP_A",
+      "to": "HYD.PUMP_A_PRESS_SW",
+      "kind": "measurement",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1848,
+        "section": "13.20.3",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "pump output pressure monitored"
+    },
+    {
+      "id": "L040",
+      "from": "HYD.PUMP_A_PRESS_SW",
+      "to": "HYD.PUMP_A_LOW_LAMP",
+      "kind": "sensor-signal",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1848,
+        "section": "13.20.3",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "pump low-pressure condition; powered lamp conditions require system logic"
+    },
+    {
+      "id": "L041",
+      "from": "HYD.SYSTEM_A",
+      "to": "HYD.SYSTEM_A_PRESS_XDCR",
+      "kind": "measurement",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1848,
+        "section": "13.20.3",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "combined pump pressure"
+    },
+    {
+      "id": "L042",
+      "from": "HYD.SYSTEM_A_PRESS_XDCR",
+      "to": "HYD.SYSTEM_A_GAUGE",
+      "kind": "sensor-signal",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1848,
+        "section": "13.20.3",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "system pressure indication"
+    },
+    {
+      "id": "L043",
+      "from": "AIR.BLEED_RESERVOIR_PRESS",
+      "to": "HYD.RESERVOIR_A",
+      "kind": "pneumatic-pressure",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1846,
+        "section": "13.20.1",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "reservoir is bleed-air pressurized"
+    },
+    {
+      "id": "L044",
+      "from": "HYD.SYSTEM_A",
+      "to": "GEAR.GEAR_ACTUATORS",
+      "kind": "hydraulic-pressure",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1866,
+        "section": "14.20.1-2",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "normal gear extension and retraction"
+    },
+    {
+      "id": "L045",
+      "from": "HYD.SYSTEM_B",
+      "to": "GEAR.GEAR_TRANSFER",
+      "kind": "hydraulic-pressure",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1866,
+        "section": "14.20.1",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "alternate retract supply under specified engine RPM/airborne/lever/lock conditions"
+    },
+    {
+      "id": "L046",
+      "from": "GEAR.GEAR_TRANSFER",
+      "to": "GEAR.GEAR_ACTUATORS",
+      "kind": "hydraulic-pressure",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1866,
+        "section": "14.20.1",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "conditional retraction transfer"
+    },
+    {
+      "id": "L047",
+      "from": "GEAR.HANDLE",
+      "to": "GEAR.GEAR_ACTUATORS",
+      "kind": "command",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1867,
+        "section": "14.20.1-2",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "UP/retraction, DN/extension, OFF removes hydraulic pressure"
+    },
+    {
+      "id": "L048",
+      "from": "INST.AIR_GROUND",
+      "to": "GEAR.GEAR_LOCK",
+      "kind": "sensor-signal",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1866,
+        "section": "14.20.1",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "in flight release solenoid opens handle ground lock"
+    },
+    {
+      "id": "L049",
+      "from": "GEAR.GEAR_LOCK",
+      "to": "GEAR.HANDLE",
+      "kind": "mechanical-interlock",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1866,
+        "section": "14.20.1",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "UP prevented on ground unless override used"
+    },
+    {
+      "id": "L050",
+      "from": "HYD.SYSTEM_A",
+      "to": "GEAR.NOSE_STEER_NORMAL",
+      "kind": "hydraulic-pressure",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1868,
+        "section": "14.20.3",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "normal steering with gear down and compressed"
+    },
+    {
+      "id": "L051",
+      "from": "HYD.SYSTEM_B",
+      "to": "GEAR.NOSE_STEER_ALT",
+      "kind": "hydraulic-pressure",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1868,
+        "section": "14.20.3",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "ALT selector and normal system B reservoir quantity on ground"
+    },
+    {
+      "id": "L052",
+      "from": "HYD.SYSTEM_B",
+      "to": "GEAR.BRAKES_NORMAL",
+      "kind": "hydraulic-pressure",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1869,
+        "section": "14.20.4",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "normal brakes"
+    },
+    {
+      "id": "L053",
+      "from": "HYD.SYSTEM_A",
+      "to": "GEAR.BRAKES_ALTERNATE",
+      "kind": "hydraulic-pressure",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1869,
+        "section": "14.20.4",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "automatic alternate supply if B low/failed"
+    },
+    {
+      "id": "L054",
+      "from": "HYD.SYSTEM_B",
+      "to": "GEAR.AUTOBRAKE",
+      "kind": "hydraulic-pressure",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1870,
+        "section": "14.20.5",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "normal brake system functional"
+    },
+    {
+      "id": "L055",
+      "from": "GEAR.WHEEL_SPEED",
+      "to": "GEAR.ANTISKID",
+      "kind": "sensor-signal",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1869,
+        "section": "14.20.4",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "detect skid, reduce associated brake pressure"
+    },
+    {
+      "id": "L056",
+      "from": "GEAR.ANTISKID",
+      "to": "GEAR.AUTOBRAKE",
+      "kind": "system-dependency",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1870,
+        "section": "14.20.5",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "antiskid operational required for RTO arming"
+    },
+    {
+      "id": "L057",
+      "from": "HYD.SYSTEM_A",
+      "to": "AFDS.AP_A",
+      "kind": "hydraulic-pressure",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1847,
+        "section": "13.20.2",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "loss of respective hydraulic system may disengage A/P A"
+    },
+    {
+      "id": "L058",
+      "from": "HYD.SYSTEM_B",
+      "to": "AFDS.AP_B",
+      "kind": "hydraulic-pressure",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1847,
+        "section": "13.20.2",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "loss of respective hydraulic system may disengage A/P B"
+    },
+    {
+      "id": "L059",
+      "from": "INST.RA_CAPT",
+      "to": "AFDS.FCC_A",
+      "kind": "sensor-signal",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1075,
+        "section": "4.20.4",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "related radio altimeter input"
+    },
+    {
+      "id": "L060",
+      "from": "INST.RA_FO",
+      "to": "AFDS.FCC_B",
+      "kind": "sensor-signal",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1075,
+        "section": "4.20.4",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "related radio altimeter input"
+    },
+    {
+      "id": "L061",
+      "from": "INST.RA_CAPT",
+      "to": "AFDS.AUTOTHROTTLE",
+      "kind": "sensor-signal",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1075,
+        "section": "4.20.4",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "captain RA used by A/T"
+    },
+    {
+      "id": "L062",
+      "from": "AFDS.AP_A",
+      "to": "WARN.AUTOPILOT_DISCONNECT",
+      "kind": "event",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1074,
+        "section": "4.20.3",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "if input/power/hydraulic loss prevents engaged mode"
+    },
+    {
+      "id": "L063",
+      "from": "AFDS.AP_B",
+      "to": "WARN.AUTOPILOT_DISCONNECT",
+      "kind": "event",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1074,
+        "section": "4.20.3",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "if input/power/hydraulic loss prevents engaged mode"
+    },
+    {
+      "id": "L064",
+      "from": "FIRE.ENG1_LOOP_A",
+      "to": "FIRE.ENG1_LOOP_MONITOR",
+      "kind": "sensor-signal",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1234,
+        "section": "8.20.1",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "NORMAL dual-loop voting; A/B selector option"
+    },
+    {
+      "id": "L065",
+      "from": "FIRE.ENG1_LOOP_B",
+      "to": "FIRE.ENG1_LOOP_MONITOR",
+      "kind": "sensor-signal",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1234,
+        "section": "8.20.1",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "NORMAL dual-loop voting; A/B selector option"
+    },
+    {
+      "id": "L066",
+      "from": "FIRE.ENG1_LOOP_MONITOR",
+      "to": "FIRE.ENG1_OVERHEAT",
+      "kind": "sensor-signal",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1235,
+        "section": "8.20.1-2",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "both healthy loops agree; single surviving healthy loop after auto-isolation, or selected healthy loop"
+    },
+    {
+      "id": "L067",
+      "from": "FIRE.ENG1_LOOP_MONITOR",
+      "to": "FIRE.ENG1_FIRE",
+      "kind": "sensor-signal",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1235,
+        "section": "8.20.1-2",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "higher fire detection threshold; exact temperature values not in captured section"
+    },
+    {
+      "id": "L068",
+      "from": "FIRE.ENG1_LOOP_MONITOR",
+      "to": "WARN.LOOP_FAULT",
+      "kind": "sensor-signal",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1234,
+        "section": "8.20.1",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "both loops invalid in NORMAL, or selected loop invalid in A/B"
+    },
+    {
+      "id": "L069",
+      "from": "FIRE.ENG1_OVERHEAT",
+      "to": "WARN.MASTER_CAUTION",
+      "kind": "annunciation",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1235,
+        "section": "8.20.2",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "ENG OVERHEAT active"
+    },
+    {
+      "id": "L070",
+      "from": "FIRE.ENG1_OVERHEAT",
+      "to": "WARN.OVHT_DET",
+      "kind": "annunciation",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1235,
+        "section": "8.20.2",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "ENG OVERHEAT active"
+    },
+    {
+      "id": "L071",
+      "from": "FIRE.ENG1_FIRE",
+      "to": "WARN.MASTER_FIRE_WARN",
+      "kind": "annunciation",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1235,
+        "section": "8.20.2",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "detected engine fire, subject to crew acknowledgement/reset"
+    },
+    {
+      "id": "L072",
+      "from": "FIRE.ENG1_FIRE",
+      "to": "WARN.FIRE_BELL",
+      "kind": "aural-warning",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1235,
+        "section": "8.20.2",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "detected fire, can be cut out/reset"
+    },
+    {
+      "id": "L073",
+      "from": "FIRE.ENG1_FIRE",
+      "to": "FIRE.ENG1_OVERHEAT",
+      "kind": "annunciation",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1235,
+        "section": "8.20.2",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "related overheat alert indications also illuminate"
+    },
+    {
+      "id": "L074",
+      "from": "FIRE.ENG1_FIRE_SWITCH",
+      "to": "FUEL.ENGINE1_SHUTOFF",
+      "kind": "command",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1235,
+        "section": "8.20.2",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "PULL closes"
+    },
+    {
+      "id": "L075",
+      "from": "FIRE.ENG1_FIRE_SWITCH",
+      "to": "AIR.ENGINE1_BLEED_VALVE",
+      "kind": "command",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1235,
+        "section": "8.20.2",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "PULL closes"
+    },
+    {
+      "id": "L076",
+      "from": "FIRE.ENG1_FIRE_SWITCH",
+      "to": "ELEC.ENGINE1_GCB",
+      "kind": "command",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1235,
+        "section": "8.20.2",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "PULL trips generator relay and breaker"
+    },
+    {
+      "id": "L077",
+      "from": "FIRE.ENG1_FIRE_SWITCH",
+      "to": "HYD.ENGINE1_SHUTOFF",
+      "kind": "command",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1235,
+        "section": "8.20.2",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "PULL closes; associated hydraulic pump low-pressure light deactivated"
+    },
+    {
+      "id": "L078",
+      "from": "FIRE.ENG1_FIRE_SWITCH",
+      "to": "FIRE.ENG1_EXT_BOTTLES",
+      "kind": "command",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1235,
+        "section": "8.20.2",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "PULL arms squib, subsequent ROTATE discharges bottle"
+    },
+    {
+      "id": "L079",
+      "from": "FIRE.ENG1_FIRE_SWITCH",
+      "to": "ICE.WING1_ANTIICE",
+      "kind": "system-inhibition",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1235,
+        "section": "8.20.2",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "PULL closes bleed, leading to affected-wing anti-ice supply loss"
+    },
+    {
+      "id": "L080",
+      "from": "FIRE.ENG1_FIRE_SWITCH",
+      "to": "AIR.PACK1_VALVE",
+      "kind": "system-inhibition",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1235,
+        "section": "8.20.2",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "PULL closes bleed, leading to bleed-operated pack valve closure"
+    },
+    {
+      "id": "L081",
+      "from": "FIRE.ENG1_FIRE_SWITCH",
+      "to": "HYD.ENG_PUMP_A",
+      "kind": "fluid-isolation",
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1847,
+        "section": "13.20.2",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "verification": "source-text-checked",
+      "condition": "PULL closes engine-driven pump fluid supply"
+    }
+  ],
+  "faultCases": [
+    {
+      "id": "FIRE1_ONE_LOOP_FAIL_NORMAL",
+      "classification": "latent-single-fault",
+      "inputs": [
+        "OVHT DET=NORMAL",
+        "one loop valid; other loop failed"
+      ],
+      "expected": [
+        "failed loop auto-excluded",
+        "good loop provides detection",
+        "no immediate cockpit single-loop fault indication"
+      ],
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1234,
+        "section": "8.20.1",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "note": "Do not illuminate FAULT solely for one failed loop in NORMAL"
+    },
+    {
+      "id": "FIRE1_BOTH_LOOPS_FAIL_NORMAL",
+      "classification": "detector-inoperative",
+      "inputs": [
+        "OVHT DET=NORMAL",
+        "loop A invalid",
+        "loop B invalid"
+      ],
+      "expected": [
+        "FAULT light ON",
+        "engine overheat/fire detection inoperative"
+      ],
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1234,
+        "section": "8.20.1",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      }
+    },
+    {
+      "id": "FIRE1_DETECTED",
+      "classification": "hazard",
+      "inputs": [
+        "valid detector voting indicates fire"
+      ],
+      "expected": [
+        "ENGINE1 FIRE SWITCH red",
+        "both FIRE WARN red",
+        "fire bell",
+        "related overheat indications"
+      ],
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1235,
+        "section": "8.20.2",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      }
+    },
+    {
+      "id": "ELEC_GEN1_LOSS_BUS_TRANSFER_AUTO",
+      "classification": "power-distribution",
+      "inputs": [
+        "engine generator 1 trips",
+        "BUS TRANS=AUTO",
+        "opposite generator bus available"
+      ],
+      "expected": [
+        "gen bus 1 and main bus 1 unpowered absent another source",
+        "transfer bus 1 uses opposite generator bus"
+      ],
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1153,
+        "section": "6.20.4",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      }
+    },
+    {
+      "id": "HYD_PUMP_A_LOW_PRESSURE",
+      "classification": "sensor-to-annunciator",
+      "inputs": [
+        "pump A output pressure low"
+      ],
+      "expected": [
+        "pump output pressure switch changes",
+        "related hydraulic pump LOW PRESSURE indication"
+      ],
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1848,
+        "section": "13.20.3",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "note": "Master caution depends on distinct FLT CONT/HYD conditions, not every pump low-pressure event"
+    },
+    {
+      "id": "GEAR_NO_HYD_A",
+      "classification": "system-degradation",
+      "inputs": [
+        "system A pressure lost",
+        "gear lever DN"
+      ],
+      "expected": [
+        "normal hydraulic extension unavailable",
+        "manual extension remains an alternative"
+      ],
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1867,
+        "section": "14.20.2",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      }
+    },
+    {
+      "id": "AUTOBRAKE_RTO_REJECT",
+      "classification": "control-law",
+      "inputs": [
+        "RTO selected on ground",
+        "antiskid/autobrake operational",
+        "forward thrust initially IDLE",
+        "wheel speed crosses 90 knots",
+        "reject and thrust returned to IDLE"
+      ],
+      "expected": [
+        "automatic maximum RTO braking using hydraulic system B if normal brakes functional"
+      ],
+      "source": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "pdfPage": 1870,
+        "section": "14.20.5",
+        "aircraft": "737-300/400/500",
+        "validation": "source-text-checked"
+      },
+      "note": "60–90 knot behavior and complete interlocks must be implemented separately"
+    }
+  ],
+  "toVerifyBeforeSimulation": [
+    "All exact electrical bus -> pump/avionics feeder paths",
+    "Every component connector and wire-level route requires WDM, not FCOM alone",
+    "Sensor quantitative thresholds/hysteresis/time delays absent from cited chapters",
+    "Aircraft effectivity: FS option blocks and installed equipment configuration",
+    "Fault-injection test cases must distinguish bus undervoltage from electrical source switch position",
+    "Monitored vs unmonitored and dual/single channel warning behavior"
+  ]
+}
