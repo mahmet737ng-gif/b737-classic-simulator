@@ -177,3 +177,14 @@ Reference: `docs/ANNUNCIATION_AUDIO_INTEGRATION_ISN05.md`. This stage is *functi
 | ENG-058 Full start dynamics and protective faults | NOT COMPLETE | Need turbine/EGT/fuel-flow curves, appropriate EP-FSI aircraft records, bleed duct valve topology, APU/engine fault timing, starter-duty cycle, fire/shutdown links and tests. Values not invented. |
 
 Source/architecture and reproduction: `docs/ENGINE_APU_FUEL_ELECTRICAL_ISN06.md`. This is **functional switching and system dependency integration**, not a finished engines/airframe physical simulator. Keep `main` and live website unchanged until explicit approval.
+
+## ISN-07 milestone (2026-10-23)
+
+- ENG-059: Pneumatic valve/isolation and left-right source selection — DONE as source-bounded event pilot; actual valve feedback and pressure dynamics are unresolved.
+- ENG-060: BLEED TRIP OFF latches and DUAL BLEED signals — DONE in logical annunciator output; source FCOM 2.10.2-3 and 2.20.1-2.
+- ENG-061: APU shutdown cause switching and overtemperature bleed inhibition — DONE in event engine; sensors and installed-aircraft effectivity remain open.
+- ENG-062: Starter duty and aborted-start checklist recommendations — DONE; 120-second limit is reported as an operating limit, not an automatic starter cutout.
+- ENG-063: Node and browser replay regression — DONE; branch CI verifies engine and UI syntax; visual browser QA outstanding.
+- ENG-064: Full component physics and WDM-level wiring — BLOCKED pending source measurements and airframe-specific references.
+
+See docs/PNEUMATIC_START_PROTECTION_ISN07.md. Do not deploy to main or production cockpit without separate approval.
