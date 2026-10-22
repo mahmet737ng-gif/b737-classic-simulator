@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>B737 Classic | Power → Pumps → Sensors → Warnings</title>
+  <style>
+    :root{color-scheme:dark;--bg:#10151b;--panel:#1b242c;--line:#35434d;--text:#eaf0f2;--muted:#a6b4bf;--good:#70d5a4;--bad:#ff9379;--warn:#ffd282}
+    *{box-sizing:border-box}body{font:14px/1.75 system-ui,-apple-system,Segoe UI,Tahoma,sans-serif;background:var(--bg);color:var(--text);margin:0}
+    header{padding:22px max(16px,calc((100vw - 1280px)/2));border-bottom:1px solid var(--line)}
+    main{max-width:1280px;margin:auto;padding:18px 16px 50px;display:grid;gap:16px}
+    h1{font-size:23px;margin:0}h2{font-size:17px;margin:0 0 12px}h3{font-size:14px;margin:12px 0 4px}
+    p{margin:8px 0}small,.sub{color:var(--muted)}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:16px}
+    section{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;min-width:0}
+    button{border:1px solid #6d8a9b;border-radius:7px;padding:8px 11px;cursor:pointer;background:#253642;color:#fff;font:inherit}
+    button:hover{background:#375064}button:focus-visible{outline:2px solid #e4ce95}
+    .toolbar{display:flex;flex-wrap:wrap;gap:8px}.caps{font-size:12px;letter-spacing:.03em;color:var(--muted)}
+    .buses{display:grid;grid-template-columns:repeat(auto-fit,minmax(128px,1fr));gap:10px}
+    .bus{border-radius:8px;padding:10px;border:1px solid var(--line);background:#172028;direction:ltr;text-align:center}
+    .bus strong,.bus small{display:block}.good{color:var(--good)}.bad{color:var(--bad)}.unknown{color:var(--warn)}
+    table{width:100%;border-collapse:collapse;font-size:12px;direction:ltr;text-align:left}
+    th,td{padding:9px 7px;border-bottom:1px solid #36464e;vertical-align:top}
+    th{color:#b7c5ce;white-space:nowrap}td{word-break:break-word}
+    .scroller{overflow:auto}.light{border-radius:6px;padding:9px;background:#141b22;border:1px solid var(--line);min-height:45px}
+    .warning{background:#472a20;border-color:#bb7756}.log{height:170px;overflow:auto;direction:ltr;text-align:left;font:12px/1.8 Consolas,monospace}
+    .note{border-inline-start:3px solid var(--warn);padding:8px 12px;color:var(--muted);background:#1f252a}
+    @media(max-width:550px){h1{font-size:19px}section{padding:12px}table{font-size:11px}button{padding:7px 9px}}
+  </style>
+</head>
+<body>
+<header>
+  <h1>B737 Classic — Integrated Power / Fuel / Hydraulic / Warning Lab</h1>
+  <p class="sub">شبکهٔ اجرایی واقعی کد: تغییر GEN → وضعیت موتور پمپ → سنسور فشار → شرط چراغ و MASTER CAUTION.</p>
+  <small>TEST BENCH ONLY · FCOM-REFERENCED PARTIAL MODEL · NOT FLIGHT/NAVIGATION SOFTWARE · Main site unchanged</small>
+</header>
+<main>
+  <section>
+    <h2>سناریوهای قابل تکرار</h2>
+    <div class="toolbar" id="scenarios">
+      <button data-scenario="normal">بازیابی وضعیت عادی</button>
+      <button data-scenario="gen1">قطع GEN 1</button>
+      <button data-scenario="gen2">قطع GEN 2</button>
+      <button data-scenario="both">قطع هر دو ژنراتور</button>
+      <button data-scenario="busOff">GEN 1 + BUS TRANS OFF</button>
+      <button data-scenario="hydA">از دست‌رفتن دو پمپ Hydraulic A</button>
+      <button data-scenario="fuelSingle">خرابی یک پمپ اصلی سوخت</button>
+      <button data-scenario="fuelDual">خرابی هر دو پمپ اصلی سوخت</button>
+      <button data-scenario="centerOff">خاموش کردن هر دو پمپ سنتر</button>
+    </div>
+    <h3>کنترل‌های لحظه‌ای</h3>
+    <div class="toolbar">
+      <button data-toggle="gen1">GEN 1: ON/OFF</button>
+      <button data-toggle="gen2">GEN 2: ON/OFF</button>
+      <button data-toggle="hydA">HYD ELEC A: ON/OFF</button>
+      <button data-toggle="hydB">HYD ELEC B: ON/OFF</button>
+      <button data-toggle="centerLeft">CTR L: ON/OFF</button>
+      <button data-toggle="centerRight">CTR R: ON/OFF</button>
+      <button data-action="ack">ACK MASTER CAUTION</button>
+      <button data-action="recall">RECALL (hold / release)</button>
+    </div>
+  </section>
+  <section>
+    <h2>Electrical Bus & Source</h2>
+    <div id="buses" class="buses" aria-live="polite"></div>
+    <p id="case" class="sub"></p>
+  </section>
+  <div class="grid">
+    <section>
+      <h2>Fuel Pumps · 6 channels</h2>
+      <div class="scroller">
+        <table aria-label="Fuel pump pressure sensors">
+          <thead><tr><th>Pump</th><th>AC</th><th>Motor</th><th>Pressure</th><th>LOW PRESS</th></tr></thead>
+          <tbody id="fuel"></tbody>
+        </table>
+      </div>
+    </section>
+    <section>
+      <h2>Hydraulics · A / B</h2>
+      <div class="scroller">
+        <table aria-label="Hydraulic output and system pressure sensors">
+          <thead><tr><th>Sys</th><th>ELEC Pump</th><th>ELEC Output</th><th>ENG Output</th><th>System</th><th>Low Lights (E/E/FC)</th></tr></thead>
+          <tbody id="hydraulic"></tbody>
+        </table>
+      </div>
+      <p class="sub">System Pressure: qualitative only; separate from electric pump output. Hydraulic PSI is intentionally not fabricated.</p>
+    </section>
+  </div>
+  <section>
+    <h2>Warning Logic</h2>
+    <div class="grid">
+      <div id="master" class="light" aria-live="polite"></div>
+      <div id="fuelAnn" class="light"></div>
+      <div id="fcAnn" class="light"></div>
+      <div id="hydAnn" class="light"></div>
+    </div>
+    <p id="warningCauses"></p>
+    <p id="simpleCauses" class="sub"></p>
+    <p id="warningPower" class="sub"></p>
+  </section>
+  <div class="grid">
+    <section>
+      <h2>Action / Sensor / Warning Events</h2>
+      <div id="log" class="log"></div>
+    </section>
+    <section>
+      <h2>اعتبار مهندسی</h2>
+      <p>FCOM: 6.20.18–19 · 12.10.2–3 · 12.20.1 · 13.10.1/4 · 13.20.2–3 · 15.20.2–4.</p>
+      <p class="note">رنگ چراغ‌های این صفحه نمایش آزمایشیِ تقاضای منطقی است؛ تغذیهٔ سخت‌افزاری مدار چراغ‌ها و صحت فشارهای عددی تأیید نشده‌اند. UNKNOWN به معنی نبودِ دادهٔ کافی است، نه خاموش‌بودن تجهیز.</p>
+    </section>
+  </div>
+</main>
+<script src="./runtime.js"></script>
+<script>
+'use strict';
+(function(){
+const kernel=globalThis.B737PowerNetwork;
+if(!kernel){document.querySelector('#log').textContent='Runtime failed to load';return;}
+let state=kernel.initialAircraftState();
+let events=[];
+const el=id=>document.getElementById(id);
+const t=(node,value)=>node.textContent=String(value??'UNKNOWN');
+const cls=value=>value===true||value==='POWERED'||value==='AVAILABLE'||value==='NORMAL'||value==='RUNNING'?'good':
+  value===false||value==='UNPOWERED'||value==='LOW'||String(value).startsWith('STOPPED')?'bad':'unknown';
+function cell(row,value){const c=row.insertCell();t(c,value);c.className=cls(value);return c;}
+function rowTable(tbody,values){
+  const row=tbody.insertRow();for(const val of values)cell(row,val);
+}
+const onOff=v=>v===true?'ON':v===false?'OFF':'UNKNOWN';
+function render(){
+  const d=kernel.deriveAircraftState(state);
+  const b=d.electrical.buses;
+  el('buses').replaceChildren();
+  for(const [name,val] of [
+    ['GEN BUS 1',b.generator1],['MAIN BUS 1',b.main1],['TRANSFER BUS 1',b.transfer1],
+    ['GEN BUS 2',b.generator2],['MAIN BUS 2',b.main2],['TRANSFER BUS 2',b.transfer2],
+    ['DC 1',b.dc1],['DC 2',b.dc2],['BATTERY BUS',b.battery],
+    ['AC STBY',b.acStandby],['DC STBY',b.dcStandby]
+  ]){
+    const div=document.createElement('div');div.className='bus';
+    const title=document.createElement('strong');t(title,name);
+    const desc=document.createElement('small');t(desc,val);desc.className=cls(val);
+    div.append(title,desc);el('buses').append(div);
+  }
+  t(el('case'),'FCOM failure case: '+(d.electrical.documentedFailureCase||'NONE')+
+    ' · Transfer 1 feed '+(b.transfer1Feed||'NONE')+' · Transfer 2 feed '+(b.transfer2Feed||'NONE'));
+  el('fuel').replaceChildren();
+  for(const [name,p] of Object.entries(d.pumps.fuel))
+    rowTable(el('fuel'),[name,p.ac,p.motor,p.outputPressureSensor.state,onOff(p.lowPressureLampDemand)]);
+  el('hydraulic').replaceChildren();
+  for(const [name,p] of Object.entries(d.pumps.hydraulic))
+    rowTable(el('hydraulic'),[name,p.electric.motor,
+      p.electric.outputPressureSensor.state,p.engineDriven.outputPressureSensor.state,
+      p.systemPressure.state,
+      [onOff(p.electric.lowPressureLampDemand),onOff(p.engineDriven.lowPressureLampDemand),
+        onOff(p.flightControlLowPressureLampDemand)].join(' / ')]);
+  const w=d.warnings;
+  const master=el('master');master.className='light '+(w.masterCaution.logicalDemand?'warning':'');
+  t(master,'MASTER CAUTION demand: '+onOff(w.masterCaution.logicalDemand)+
+    ' | actual visible: '+onOff(w.masterCaution.visible));
+  t(el('fuelAnn'),'FUEL annunciator demand: '+onOff(w.systemAnnunciators.FUEL.logicalDemand));
+  t(el('fcAnn'),'FLT CONT annunciator demand: '+onOff(w.systemAnnunciators['FLT CONT'].logicalDemand));
+  t(el('hydAnn'),'HYD annunciator: '+onOff(w.systemAnnunciators.HYD.logicalDemand)+' (unverified)');
+  t(el('warningCauses'),'Active conditions: '+(w.causeIds.join(', ')||'NONE'));
+  t(el('simpleCauses'),'Recall-only faults: '+(w.simpleRecallIds.join(', ')||'NONE')+
+    ' · Unresolved: '+(w.unresolvedCauses.join(', ')||'NONE'));
+  t(el('warningPower'),'Warning panel electrical quality: '+w.displayPower+
+    ' · Acknowledged active causes: '+state.warning.acknowledged.join(', '));
+  el('log').replaceChildren();
+  for(const ev of events.slice(-30).reverse()){
+    const d=document.createElement('div');
+    t(d,'#'+ev.sequence+' '+ev.action.type+'  sensors='+ev.sensorChanges.length+
+      '  new=['+ev.activatedWarnings.join('|')+']  cleared=['+ev.clearedWarnings.join('|')+']');
+    el('log').append(d);
+  }
+}
+function apply(type,fields={}){
+  try{
+    const x=kernel.transitionAircraftState(state,{type,...fields});
+    state=x.state;events.push(x.event);render();
+  }catch(e){const box=el('log');t(box,'Command rejected: '+e.message);}
+}
+function scenario(name){
+  state=kernel.initialAircraftState();events=[];
+  if(name==='gen1')apply('SET_GENERATOR_AVAILABLE',{generator:'GEN1',value:false});
+  if(name==='gen2')apply('SET_GENERATOR_AVAILABLE',{generator:'GEN2',value:false});
+  if(name==='both'){apply('SET_GENERATOR_AVAILABLE',{generator:'GEN1',value:false});apply('SET_GENERATOR_AVAILABLE',{generator:'GEN2',value:false});}
+  if(name==='busOff'){apply('SET_BUS_TRANSFER',{value:'OFF'});apply('SET_GENERATOR_AVAILABLE',{generator:'GEN1',value:false});}
+  if(name==='hydA'){apply('SET_ENGINE_RUNNING',{system:'A',value:false});apply('SET_HYD_ELECTRIC_SWITCH',{system:'A',value:false});}
+  if(name==='fuelSingle')apply('SET_FUEL_PUMP_HEALTH',{pump:'MAIN1_FWD',value:false});
+  if(name==='fuelDual'){apply('SET_FUEL_PUMP_HEALTH',{pump:'MAIN1_FWD',value:false});apply('SET_FUEL_PUMP_HEALTH',{pump:'MAIN1_AFT',value:false});}
+  if(name==='centerOff'){apply('SET_FUEL_PUMP_SWITCH',{pump:'CTR_LEFT',value:false});apply('SET_FUEL_PUMP_SWITCH',{pump:'CTR_RIGHT',value:false});}
+  render();
+}
+document.querySelectorAll('[data-scenario]').forEach(b=>b.addEventListener('click',()=>scenario(b.dataset.scenario)));
+document.querySelectorAll('[data-toggle]').forEach(b=>b.addEventListener('click',()=>{
+  const x=b.dataset.toggle;
+  if(x==='gen1'||x==='gen2'){
+    const gen=x==='gen1'?'GEN1':'GEN2';
+    apply('SET_GENERATOR_AVAILABLE',{generator:gen,value:!state.electrical.available[gen]});
+  }else if(x==='hydA'||x==='hydB'){
+    const system=x==='hydA'?'A':'B';
+    apply('SET_HYD_ELECTRIC_SWITCH',{system,value:!state.pumps.hydraulic.electricSwitches[system]});
+  }else{
+    const pump=x==='centerLeft'?'CTR_LEFT':'CTR_RIGHT';
+    apply('SET_FUEL_PUMP_SWITCH',{pump,value:!state.pumps.fuel.switches[pump]});
+  }
+}));
+document.querySelector('[data-action="ack"]').addEventListener('click',()=>apply('ACK_MASTER_CAUTION'));
+document.querySelector('[data-action="recall"]').addEventListener('click',()=>
+  apply('SET_WARNING_RECALL',{value:!state.warning.recallPressed}));
+render();
+})();
+</script>
+</body>
+</html>
