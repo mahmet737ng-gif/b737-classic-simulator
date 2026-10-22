@@ -659,6 +659,52 @@ for(const [action,value] of [['sampleLow','LOW'],['sampleNormal','NORMAL'],['sam
   document.querySelector('[data-action="'+action+'"]').addEventListener('click',
     ()=>apply('SET_SENSOR_SAMPLE',{sensor:selectedSensor(),value}));
 }
+const n1Knob=el('eisKnob');
+const adjustN1=amount=>{
+  if(state.propulsion.mode!=='INTEGRATED')return;
+  const prev=state.indications.n1Reference.manualTargetPct??0;
+  const target=Math.round(Math.max(0,Math.min(120,prev+amount))*10)/10;
+  if(target===prev)return;
+  apply('SET_N1_MANUAL_REFERENCE',{value:target});
+  if(state.indications.n1Reference.mode!=='MANUAL')
+    apply('SET_N1_REFERENCE_MODE',{value:'MANUAL'});
+};
+n1Knob.addEventListener('wheel',event=>{
+  event.preventDefault();adjustN1(event.deltaY<0?0.5:-0.5);
+},{passive:false});
+let knobGesture=null;
+n1Knob.addEventListener('pointerdown',event=>{
+  knobGesture={startY:event.clientY,lastTarget:state.indications.n1Reference.manualTargetPct??0,moved:false};
+  n1Knob.setPointerCapture?.(event.pointerId);
+});
+n1Knob.addEventListener('pointermove',event=>{
+  if(!knobGesture)return;
+  const change=(knobGesture.startY-event.clientY)*0.25;
+  if(Math.abs(change)<1)return;
+  knobGesture.moved=true;
+  const target=Math.round(Math.min(120,Math.max(0,knobGesture.lastTarget+change))*10)/10;
+  if(state.propulsion.mode==='INTEGRATED'&&target!==state.indications.n1Reference.manualTargetPct){
+    apply('SET_N1_MANUAL_REFERENCE',{value:target});
+    if(state.indications.n1Reference.mode!=='MANUAL')
+      apply('SET_N1_REFERENCE_MODE',{value:'MANUAL'});
+  }
+});
+n1Knob.addEventListener('pointerup',()=>{
+  if(knobGesture&&!knobGesture.moved){
+    const mode=state.indications.n1Reference.mode==='FMC'?'MANUAL':'FMC';
+    apply('SET_N1_REFERENCE_MODE',{value:mode});
+  }
+  knobGesture=null;
+});
+n1Knob.addEventListener('pointercancel',()=>{knobGesture=null;});
+n1Knob.addEventListener('keydown',event=>{
+  if(['ArrowRight','ArrowUp','ArrowLeft','ArrowDown','Enter',' '].includes(event.key)){
+    event.preventDefault();
+    if(event.key==='Enter'||event.key===' ')
+      apply('SET_N1_REFERENCE_MODE',{value:state.indications.n1Reference.mode==='FMC'?'MANUAL':'FMC'});
+    else adjustN1(['ArrowRight','ArrowUp'].includes(event.key)?0.5:-0.5);
+  }
+});
 document.querySelectorAll('[data-eis-action]').forEach(b=>b.addEventListener('click',()=>{
 const a=b.dataset.eisAction, engine=el('eisEngine').value, instrument=el('eisKey').value;
 const raw=el('eisValue').value, value=raw===''?null:Number(raw);
