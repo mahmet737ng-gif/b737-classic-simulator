@@ -66,6 +66,7 @@ function projectAnnunciation(view,fire){
   set('ANNUN_FUEL',fuelAnn,'CAUTION',desc.system,'GLARESHIELD');
   set('ANNUN_HYD',hydAnn,'CAUTION',desc.system,'GLARESHIELD');
   set('ANNUN_FLT_CONT',fltAnn,'CAUTION',desc.system,'GLARESHIELD');
+  set('ANNUN_OVHT_DET',activeSystem('OVHT/DET'),'CAUTION',desc.system,'GLARESHIELD');
   // Electrical system status: bus state is NOT equivalent to bus-off
   // bulb-feed logic; explicit uncertain until source schematic is audited.
   set('ANNUN_ELEC',null,'CAUTION',ref('6.20.1-19,15.20.3',[1150,1168,1907]),'GLARESHIELD');
