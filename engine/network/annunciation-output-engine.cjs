@@ -89,6 +89,19 @@ function projectAnnunciation(view,fire,propulsion){
     // electrical bus connection. This is a logical indication demand.
     set('APU_GEN_OFF_BUS',propulsion.apu.generatorOffBusLightDemand,
       'CAUTION',ref('7.30.2',[1217]),'APU_PANEL');
+    const pneumatic=propulsion.pneumatic?.distribution;
+    if(pneumatic){
+      set('DUAL_BLEED',pneumatic.dualBleedLightDemand,
+        'CAUTION',ref('2.10.2;2.20.2',[983,1001]),'AIR_SYSTEM_PANEL');
+      for(const side of ['1','2']){
+        set('BLEED_TRIP_'+side,pneumatic.engineValves[side].bleedTripLatched,
+          'CAUTION',ref('2.10.3;2.20.1',[984,1000]),'AIR_SYSTEM_PANEL');
+      }
+    }
+    for(const side of ['1','2']){
+      set('ENG'+side+'_EGT_FLASH',propulsion.protection.engines[side].egtDigitalFlashDemand,
+        'ADVISORY',ref('7.20.7',[1208]),'ENGINE_PANEL');
+    }
     for(const id of ['1','2']){
       // The start valve is a physical sensor/feedback indication, not an
       // invented consequence of selecting GRD.
