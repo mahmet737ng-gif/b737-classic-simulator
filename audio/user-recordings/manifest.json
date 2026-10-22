@@ -1,0 +1,117 @@
+{
+  "schemaVersion": 1,
+  "description": "Track-level mapping of ten user-supplied MP3 files for private audio review. The raw audio files are intentionally NOT checked into this public repository.",
+  "releaseStatus": "source recordings not licensed for public distribution",
+  "totalDistinctFiles": 10,
+  "totalTestSlots": 11,
+  "recordingAssignments": [
+    {
+      "original": "fire-alarm.mp3",
+      "category": "Warning/Fire",
+      "engine": "fireBell",
+      "slots": [
+        "Fire Warning Bell"
+      ],
+      "assetPath": "assets/warnings/fire/fire-bell.mp3",
+      "validation": "filename-grounded"
+    },
+    {
+      "original": "takeoff-config-and-cabin-altitude.mp3",
+      "category": "Warning/Configuration",
+      "engine": "intermittentHorn",
+      "slots": [
+        "Takeoff Configuration",
+        "Cabin Altitude"
+      ],
+      "assetPath": "assets/warnings/config/intermittent-horn.mp3",
+      "validation": "FCOM shared physical horn"
+    },
+    {
+      "original": "i-autopilot-disconnect.mp3",
+      "category": "Automatic Flight",
+      "engine": "apDisconnect",
+      "slots": [
+        "Autopilot Disconnect"
+      ],
+      "assetPath": "assets/warnings/autoflight/autopilot-disconnect.mp3",
+      "validation": "filename-grounded"
+    },
+    {
+      "original": "g-pull-up.mp3",
+      "category": "EGPWS",
+      "engine": "gpws|PULL UP",
+      "slots": [
+        "PULL UP"
+      ],
+      "assetPath": "assets/warnings/egpws/pull-up.mp3",
+      "validation": "filename-grounded"
+    },
+    {
+      "original": "h-bank-angle.mp3",
+      "category": "EGPWS",
+      "engine": "gpws|BANK ANGLE",
+      "slots": [
+        "BANK ANGLE"
+      ],
+      "assetPath": "assets/warnings/egpws/bank-angle.mp3",
+      "validation": "filename-grounded"
+    },
+    {
+      "original": "glideslope-alarm.mp3",
+      "category": "EGPWS",
+      "engine": "gpws|GLIDESLOPE",
+      "slots": [
+        "GLIDESLOPE"
+      ],
+      "assetPath": "assets/warnings/egpws/glideslope.mp3",
+      "validation": "filename-grounded"
+    },
+    {
+      "original": "aircraft-trim-spinning-power-assisted-steering-aircraft-control-board-2.mp3",
+      "category": "Flight controls/mechanical",
+      "engine": null,
+      "slots": [
+        "Trim Wheel Motor"
+      ],
+      "assetPath": "assets/systems/flight-controls/trim-wheel-motor.mp3",
+      "validation": "mechanical sound, not warning"
+    },
+    {
+      "original": "a.mp3",
+      "category": "Unclassified",
+      "engine": null,
+      "slots": [
+        "A"
+      ],
+      "assetPath": "assets/unclassified/a.mp3",
+      "validation": "original soundboard also uses only A"
+    },
+    {
+      "original": "c.mp3",
+      "category": "Unclassified",
+      "engine": null,
+      "slots": [
+        "C"
+      ],
+      "assetPath": "assets/unclassified/c.mp3",
+      "validation": "original soundboard also uses only C"
+    },
+    {
+      "original": "e.mp3",
+      "category": "Unclassified",
+      "engine": null,
+      "slots": [
+        "E"
+      ],
+      "assetPath": "assets/unclassified/e.mp3",
+      "validation": "original soundboard also uses only E"
+    }
+  ],
+  "implementationNotes": [
+    "The paired Takeoff Configuration and Cabin Altitude controls share exactly one assigned sample, not two copies.",
+    "Metadata assignment is NOT an authenticity claim; supplied recordings have 101soundboards.com ID3 tagging.",
+    "Any unclassified item requires user identification before connecting to warning system events.",
+    "The fully populated personal/offline test kit is delivered directly to the owner separately.",
+    "The public web lab accepts local user-provided audio via its uploader and keeps samples in browser IndexedDB."
+  ]
+}
