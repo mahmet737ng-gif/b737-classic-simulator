@@ -46,10 +46,40 @@ button.action.secondary{background:#142931;color:#b5d8d5;border-color:#385b5a}bu
 .review-footer{border-top:1px solid #2e5159;padding-top:15px}
 #reviewSummary{font-size:13px;color:#b6e0d5}
 @media(max-width:650px){.review-current h3{font-size:20px}.review-buttons button{flex:1}.review-navigation button{flex:1}}
+
+.import-grid{display:grid;gap:9px}.import-grid label{max-width:650px}
+.import-grid label select{margin-top:4px;text-transform:none;letter-spacing:0}
+.source-status{border:1px solid #31505a;border-radius:8px;background:#0a1922;color:#b6d6ca;padding:9px 12px;font:13px/1.6 system-ui,sans-serif;margin:0}
+.sources{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:8px}
+.sources a{border:1px solid #39535a;border-radius:7px;background:#101b27;color:#8fc4d3;padding:10px;font-size:12px;text-decoration:none}
+.sources a:hover{text-decoration:underline}
 </style></head><body>
 <header><div class="kicker">B737 CLASSIC · AUDIO SYSTEM · EXPERIMENTAL</div><h1>Aural Warning Sound Lab</h1><div class="sub">Separate prototype for 737-300/-400/-500 warning logic and listening tests. Synthesized tones and browser text-to-speech are <strong>placeholders</strong>, not authentic aircraft samples. No effect on the current cockpit page.</div></header>
 <main>
 
+
+<section class="panel" id="realAudioImporter" dir="rtl" style="border-color:#6a7149">
+ <div class="kicker">REAL RECORDINGS · USER-OWNED FILES</div>
+ <h2 style="font-size:22px;margin-top:7px">بانک صداهای واقعی — واردکردن و آزمودن</h2>
+ <p class="muted">ضبط‌های دارای مجوز را از روی دستگاهت انتخاب کن. فقط در همین مرورگر ذخیره می‌شوند؛ روی ریپوی عمومی آپلود نمی‌شوند. تا وقتی فایل واقعی برای هشداری وارد نشده باشد، همان صدای مصنوعی آزمایشی پخش می‌شود.</p>
+ <div class="import-grid">
+  <label>هشدار مقصد<select id="realTarget" aria-label="Target warning"></select></label>
+  <div class="actions"><button class="action" id="importOne">انتخاب فایل برای همین هشدار</button>
+   <button class="action secondary" id="importMany">ورود دسته‌جمعی WAV/MP3</button>
+   <button class="action secondary" id="deleteCurrent">حذف فایل هشدار انتخابی</button></div>
+  <input type="file" id="realSingleFile" accept="audio/*,.wav,.mp3,.ogg,.m4a,.aac,.flac,.opus,.webm" hidden />
+  <input type="file" id="realMultipleFiles" accept="audio/*,.wav,.mp3,.ogg,.m4a,.aac,.flac,.opus,.webm" multiple hidden />
+  <p id="realImportStatus" class="source-status" role="status">در حال بررسی بانک صوتی مرورگر…</p>
+  <p id="realCurrentClip" class="source-status">برای هشدار انتخاب‌شده هنوز فایل واقعی ثبت نشده است.</p>
+ </div>
+ <p class="muted" style="margin:14px 0 5px">منابع شناسایی‌شده؛ فایل‌های زیر هنوز به برنامه منتقل نشده‌اند:</p>
+ <div class="sources">
+  <a href="https://sonniss.com/gameaudiogdc/" target="_blank" rel="noopener noreferrer">Sonniss GDC 2020 — ضبط واقعی Stall / Gear / Trim (مجوز استفاده در اپ)</a>
+  <a href="https://www.101soundboards.com/boards/34296-737-sounds" target="_blank" rel="noopener noreferrer">737 Soundboard — شنیدن نمونه‌ها (مجوز بازنشر تأییدنشده)</a>
+  <a href="https://library.avsim.net/file/81893-feelthere-737-gpws-replacement-files" target="_blank" rel="noopener noreferrer">AVSIM 737 GPWS — استفاده محدود، نیازمند اجازه</a>
+  <a href="https://sonniss.com/gdc-bundle-license/" target="_blank" rel="noopener noreferrer">متن مجوز Sonniss</a>
+ </div>
+</section>
 <section class="panel" id="guidedTest" dir="rtl" style="border-color:#3b8576">
   <div class="guided-heading"><div><div class="kicker">GUIDED LISTENING REVIEW · تست مرحله‌به‌مرحله</div><h2>ارزیابی تک‌تک صداهای شبیه‌ساز</h2></div><strong id="reviewCounter">۱ / ۱۶</strong></div>
   <div class="review-progress"><div id="reviewProgressFill"></div></div>
@@ -106,5 +136,5 @@ button.action.secondary{background:#142931;color:#b5d8d5;border-color:#385b5a}bu
 <div><div class="kicker">TRANSITIONS / LOG</div><div class="out" id="events">Click Evaluate to initialize state.</div></div></div></section>
 <footer>Reference: user-provided Sepehran 737CL FCOM Chapter 15. Validated rules include cabin/takeoff shared horn, gear horn conditions, altitude alert thresholds and inhibits. Alert arbitration priorities and sound timbres here are provisional engineering choices, not Boeing-certified behaviors. Radio voice and TCAS scenarios require installed equipment / configuration verification. Educational software; never for real operations.</footer>
 </main>
-<script src="../audio/warning-engine.js"></script><script src="lab.js"></script>
+<script src="../audio/warning-engine.js"></script><script src="real-audio-bank.js"></script><script src="lab.js"></script>
 </body></html>
