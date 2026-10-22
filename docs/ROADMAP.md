@@ -1,5 +1,13 @@
 # 737 Classic Simulator — Project Roadmap
 
+## Product focus decision — interactive procedures trainer (2026-10-23)
+
+Owner explicitly clarified that this is **not a complete flight simulator**. The delivery goal is working switches, causal system responses, fault and emergency injection, indications and audio, and interactive Normal / Non-Normal checklists. See [TRAINER_SCOPE.md](TRAINER_SCOPE.md).
+
+**New execution order:** (1) finish control-to-state connection, (2) Electrical -> electric hydraulic/fuel pumps and warnings end-to-end, (3) inject faults/emergencies, (4) checklist branch and system-response engine, (5) expand to remaining cockpit systems and EFIS/CDU. Detailed aerodynamic, route, certified V-speed/CG/flight performance modeling is deferred unless needed as a simplified input to an educational scenario.
+
+Prior backlog statuses are historical records; this scope decision does **not** falsely mark any implementation DONE. Track scenario-level functional tests independently from source engineering verification.
+
 Status is recorded as DONE only for present files/features. Future FCOM/FCTM integration is not claimed.
 
 | ID | Milestone | Status | Verification |
