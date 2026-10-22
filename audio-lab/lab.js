@@ -27,6 +27,7 @@
     ["gpws", "EGPWS · WINDSHEAR", "Placeholder voice", "WINDSHEAR"],
     ["gpws", "EGPWS · TOO LOW GEAR", "Placeholder voice", "TOO LOW GEAR"],
     ["tcas", "TCAS · TRAFFIC", "Placeholder voice", "TRAFFIC TRAFFIC"],
+    ["radioAltitude", "RA · FULL CALLOUT COLLECTION", "User-identified a.mp3; listening preview only — not mapped to individual height thresholds", "COLLECTION"],
     ["radioAltitude", "RA · FIVE HUNDRED", "Placeholder voice", "FIVE HUNDRED"],
     ["minimums", "Minimums", "Placeholder voice", "APPROACHING MINIMUMS"],
     ["minimums", "MINIMUMS", "Radio minima", "MINIMUMS"],
