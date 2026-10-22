@@ -36,3 +36,10 @@ When updating the project, keep this ledger and the corresponding source data cu
 - [ ] Establish automated browser gesture tests and physical-state transition tests; verify rendering on the published URL.
 
 All future development must preserve the original photo layers and add real independently operable control layers. Do not replace user's exact cockpit art with an AI-generated image.
+
+## Engine-first design decision — 2026-10-22
+
+- [x] Design engine-first architecture and immutable contracts: see [ENGINE_BLUEPRINT.md](ENGINE_BLUEPRINT.md).
+- [x] Create status-driven implementation task ledger: see [ENGINE_TASKS.md](ENGINE_TASKS.md).
+- [x] Add prototype machine-readable control/state/command schemas in engine/spec/.
+- [ ] Implement validated systems. **Existing UI and original image import remain pending and unchanged by this design-only commit.**

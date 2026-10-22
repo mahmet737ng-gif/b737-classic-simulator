@@ -1,0 +1,158 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "B737 Classic Aircraft State Envelope v1",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "simTimeMs",
+    "eventIndex",
+    "configuration",
+    "environment",
+    "controls",
+    "systems",
+    "indications",
+    "instruments",
+    "failures"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "simTimeMs": {
+      "type": "number",
+      "minimum": 0
+    },
+    "eventIndex": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "configuration": {
+      "type": "object",
+      "required": [
+        "variant",
+        "fcomEdition",
+        "options"
+      ],
+      "properties": {
+        "variant": {
+          "type": "string",
+          "enum": [
+            "737-300",
+            "737-400",
+            "737-500"
+          ]
+        },
+        "fcomEdition": {
+          "type": "string"
+        },
+        "options": {
+          "type": "object"
+        }
+      }
+    },
+    "environment": {
+      "type": "object",
+      "properties": {
+        "onGround": {
+          "type": "boolean"
+        },
+        "airspeedKts": {
+          "type": "number",
+          "minimum": 0
+        },
+        "altitudeFt": {
+          "type": "number"
+        },
+        "externalPowerAvailable": {
+          "type": "boolean"
+        }
+      }
+    },
+    "controls": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "position": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "guardOpen": {
+            "type": "boolean"
+          },
+          "pulled": {
+            "type": "boolean"
+          },
+          "transitioning": {
+            "type": "boolean"
+          },
+          "locked": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "systems": {
+      "type": "object",
+      "properties": {
+        "electrical": {
+          "type": "object"
+        },
+        "fuel": {
+          "type": "object"
+        },
+        "apu": {
+          "type": "object"
+        },
+        "engines": {
+          "type": "object"
+        },
+        "hydraulics": {
+          "type": "object"
+        },
+        "pneumatics": {
+          "type": "object"
+        },
+        "pressurization": {
+          "type": "object"
+        },
+        "flightControls": {
+          "type": "object"
+        },
+        "gear": {
+          "type": "object"
+        },
+        "brakes": {
+          "type": "object"
+        },
+        "avionics": {
+          "type": "object"
+        },
+        "autoflight": {
+          "type": "object"
+        },
+        "fireWarning": {
+          "type": "object"
+        },
+        "iceHeat": {
+          "type": "object"
+        },
+        "lights": {
+          "type": "object"
+        }
+      }
+    },
+    "indications": {
+      "type": "object"
+    },
+    "instruments": {
+      "type": "object"
+    },
+    "failures": {
+      "type": "object"
+    }
+  }
+}

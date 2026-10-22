@@ -1,0 +1,229 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "B737 Classic Physical Control Definition v1",
+  "type": "object",
+  "required": [
+    "id",
+    "panelId",
+    "kind",
+    "positions",
+    "initial",
+    "geometry",
+    "reference",
+    "status"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]+$"
+    },
+    "panelId": {
+      "type": "string",
+      "enum": [
+        "overhead",
+        "main",
+        "pedestal",
+        "glareshield",
+        "sidewall",
+        "other"
+      ]
+    },
+    "kind": {
+      "type": "string",
+      "enum": [
+        "rotary-detent",
+        "rotary-continuous",
+        "rotary-encoder",
+        "toggle",
+        "toggle-guarded",
+        "momentary-push",
+        "maintained-push",
+        "push-pull",
+        "gated-lever",
+        "spring-return",
+        "circuit-breaker",
+        "annunciator"
+      ]
+    },
+    "positions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "initial": {
+      "type": "string"
+    },
+    "mechanics": {
+      "type": "object",
+      "properties": {
+        "guard": {
+          "type": "string",
+          "enum": [
+            "none",
+            "lift-required",
+            "pull-required",
+            "override-required"
+          ]
+        },
+        "endStops": {
+          "type": "boolean"
+        },
+        "springReturnPosition": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "motionProfileId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "interlockRuleIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "geometry": {
+      "type": "object",
+      "required": [
+        "imageSha256",
+        "nativeWidth",
+        "nativeHeight",
+        "coordinateStatus"
+      ],
+      "properties": {
+        "imageSha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "nativeWidth": {
+          "const": 6424
+        },
+        "nativeHeight": {
+          "const": 2212
+        },
+        "coordinateStatus": {
+          "enum": [
+            "unmeasured",
+            "calibrated",
+            "verified"
+          ]
+        },
+        "hitPolygon": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "array",
+            "prefixItems": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              }
+            ],
+            "minItems": 2,
+            "maxItems": 2
+          }
+        },
+        "pivot": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "spriteId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "motionAssetId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "reference": {
+      "type": "object",
+      "required": [
+        "document",
+        "section"
+      ],
+      "properties": {
+        "document": {
+          "type": "string"
+        },
+        "section": {
+          "type": "string"
+        },
+        "edition": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "DRAFT",
+        "IMPLEMENTED",
+        "TESTED",
+        "FCOM_VERIFIED",
+        "USER_ACCEPTED"
+      ]
+    },
+    "validation": {
+      "type": "object",
+      "properties": {
+        "tests": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "approvedBy": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "approvedAt": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    }
+  }
+}

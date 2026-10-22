@@ -1,0 +1,119 @@
+{
+  "schemaVersion": 1,
+  "image": {
+    "file": "1000166281.png",
+    "width": 6424,
+    "height": 2212,
+    "sha256": "b6c206418feb44b43bd134cb57a51dddd8bbe928859382d3864f3fbcc5cbc1c8",
+    "repositoryImport": "PENDING"
+  },
+  "controls": [
+    {
+      "id": "landing-gear-lever",
+      "panelId": "main",
+      "kind": "gated-lever",
+      "positions": [
+        "UP",
+        "OFF",
+        "DN"
+      ],
+      "initial": "DN",
+      "mechanics": {
+        "guard": "override-required",
+        "endStops": true,
+        "interlockRuleIds": [
+          "GEAR-14.20-GROUND-LOCK"
+        ]
+      },
+      "geometry": {
+        "imageSha256": "b6c206418feb44b43bd134cb57a51dddd8bbe928859382d3864f3fbcc5cbc1c8",
+        "nativeWidth": 6424,
+        "nativeHeight": 2212,
+        "coordinateStatus": "unmeasured",
+        "hitPolygon": null,
+        "pivot": null,
+        "spriteId": null,
+        "motionAssetId": null
+      },
+      "reference": {
+        "document": "Sepehran Airlines 737CL FCOM",
+        "section": "14.20.1–14.20.2",
+        "edition": null,
+        "notes": "Lock rule; lever OFF relieves gear hydraulic pressure; actual gear position modeled separately"
+      },
+      "status": "DRAFT"
+    },
+    {
+      "id": "autobrake-selector",
+      "panelId": "main",
+      "kind": "rotary-detent",
+      "positions": [
+        "RTO",
+        "OFF",
+        "1",
+        "2",
+        "3",
+        "MAX"
+      ],
+      "initial": "OFF",
+      "mechanics": {
+        "guard": "pull-required",
+        "endStops": true,
+        "interlockRuleIds": [
+          "AUTOBRAKE-14.10-MAX-PULL"
+        ]
+      },
+      "geometry": {
+        "imageSha256": "b6c206418feb44b43bd134cb57a51dddd8bbe928859382d3864f3fbcc5cbc1c8",
+        "nativeWidth": 6424,
+        "nativeHeight": 2212,
+        "coordinateStatus": "unmeasured",
+        "hitPolygon": null,
+        "pivot": null,
+        "spriteId": null,
+        "motionAssetId": null
+      },
+      "reference": {
+        "document": "Sepehran Airlines 737CL FCOM",
+        "section": "14.10.5",
+        "edition": null,
+        "notes": "Pull before selecting MAX; geometry and deceleration values not yet calibrated"
+      },
+      "status": "DRAFT"
+    },
+    {
+      "id": "antiskid-control",
+      "panelId": "main",
+      "kind": "toggle-guarded",
+      "positions": [
+        "OFF",
+        "ON"
+      ],
+      "initial": "ON",
+      "mechanics": {
+        "guard": "lift-required",
+        "endStops": true,
+        "interlockRuleIds": [
+          "ANTISKID-14.10-ON-GUARD"
+        ]
+      },
+      "geometry": {
+        "imageSha256": "b6c206418feb44b43bd134cb57a51dddd8bbe928859382d3864f3fbcc5cbc1c8",
+        "nativeWidth": 6424,
+        "nativeHeight": 2212,
+        "coordinateStatus": "unmeasured",
+        "hitPolygon": null,
+        "pivot": null,
+        "spriteId": null,
+        "motionAssetId": null
+      },
+      "reference": {
+        "document": "Sepehran Airlines 737CL FCOM",
+        "section": "14.10.5",
+        "edition": null,
+        "notes": "Position, guard geometry and movement require source photo validation"
+      },
+      "status": "DRAFT"
+    }
+  ]
+}

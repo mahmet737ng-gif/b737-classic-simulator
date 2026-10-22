@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "B737 Classic Engine Command/Event Contract v1",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "id",
+    "atSimMs",
+    "source",
+    "controlId",
+    "action"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "atSimMs": {
+      "type": "number",
+      "minimum": 0
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "pointer",
+        "touch",
+        "keyboard",
+        "training-scenario",
+        "external-simulator",
+        "instructor",
+        "system"
+      ]
+    },
+    "controlId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "action": {
+      "type": "string",
+      "enum": [
+        "SET_DETENT",
+        "ROTATE_STEP",
+        "SET_CONTINUOUS",
+        "BEGIN_PULL",
+        "END_PULL",
+        "OPEN_GUARD",
+        "CLOSE_GUARD",
+        "PRESS",
+        "RELEASE",
+        "MOVE_LEVER",
+        "TRIGGER_OVERRIDE",
+        "INJECT_FAILURE",
+        "CLEAR_FAILURE"
+      ]
+    },
+    "value": {
+      "type": [
+        "string",
+        "number",
+        "boolean",
+        "null"
+      ]
+    },
+    "preconditions": {
+      "type": "object"
+    },
+    "manualRuleId": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  }
+}
