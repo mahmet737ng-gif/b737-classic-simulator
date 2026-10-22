@@ -131,3 +131,16 @@ Private active dataset: `/Technical Database/Sources/AFM-737-33V-D6-8730-R32/EP-
 5. Verify each vertical slice via automated state tests and a separate preview before any change to the main cockpit.
 
 **Status:** Priority decision recorded; no implementation of the above new integration milestones is claimed by this entry. LAN module retains its prior tested prototype status.
+
+## N1-FSI v11 numerical extraction checkpoint (2026-10-23)
+
+| Task | Status | Evidence |
+| --- | --- | --- |
+| N1-FSI-03a Source-image cold-side stroke sampling | DONE — PROVISIONAL ONLY | AFM PDF p128 and p129; 26 altitude-labelled left-side strokes and **104 provisional sampled graph coordinates**, private v11 SQLite, 104 same-source dual-raster checks; independent human review not completed. |
+| N1-FSI-03b Complete pressure/temperature curve family | BLOCKED | Only one cold-side stroke segment per labelled altitude sampled. Need full curves, branch intersection logic and independent readout. |
+| N1-FSI-04 Bleed / anti-ice corrections | BLOCKED | Source notes indexed; no validated numerical curves. |
+| N1-FSI-05 MCT nomogram | BLOCKED | Original AFM p130 staged, no numerical full solution. |
+| N1-FSI-07 CDU performance value | BLOCKED | v10 displays source status/manual MAN; no v11 automatic numeric output. |
+| N1-FSI-08 Generic guarded interpolation math | DONE (SYNTHETIC TEST ONLY) | `engine/fmc/performance/n1-interpolation-guard-v11.cjs`, tests `tests/n1-interpolation-guard-v11.test.cjs`; public module contains no Boeing numerical curves. |
+
+Private source snapshot: `/Technical Database/Sources/AFM-737-33V-D6-8730-R32/EP-FSI-ASN29340/v11/epfsi_afm_scoped_v11.sqlite`; SHA256 `e7ba3e2df4ffeb7677ebe631f8b1a854a8ee49dbc1b857d2fd5e3f00aa45786a`. Reference: `docs/AFM_EP_FSI_N1_V11.md`. All 104 source N1 samples remain ineligible for runtime until complete independent QA.
