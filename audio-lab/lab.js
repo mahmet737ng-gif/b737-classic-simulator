@@ -22,6 +22,7 @@
     ["shaker", "Stall", "Stick-shaker rumble", null],
     ["apDisconnect", "Autopilot Disconnect", "Alert tone", null],
     ["atDisconnect", "A/T Disconnect", "Indicative tone only", null],
+    ["gpws", "EGPWS · FULL RECORDING", "Owner-confirmed c.mp3 — EGPWS compilation; audition only until individual warnings are identified", "COLLECTION"],
     ["gpws", "EGPWS · PULL UP", "Placeholder voice", "PULL UP"],
     ["gpws", "EGPWS · SINK RATE", "Placeholder voice", "SINK RATE"],
     ["gpws", "EGPWS · WINDSHEAR", "Placeholder voice", "WINDSHEAR"],
