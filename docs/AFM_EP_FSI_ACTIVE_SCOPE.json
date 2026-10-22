@@ -1,18 +1,22 @@
 {
   "schema": "b737-afm-aircraft-scope-v1",
-  "status": "ACTIVE_PRIVATE_REFERENCE",
+  "status": "ACTIVE_PRIVATE_REFERENCE_V7_20K_RATING_USER_CONFIRMED",
   "source_id": "AFM-73733V-D6-8730.33V-R32-20180214",
   "active_aircraft": {
     "model": "737-33V",
     "serial_number": 29340,
     "registration": "EP-FSI",
     "registration_provenance": "USER_SPECIFIED",
-    "installed_engine": "UNVERIFIED",
-    "engine_rating": "UNVERIFIED"
+    "installed_engine": null,
+    "engine_rating": "20K",
+    "installed_engine_status": "UNVERIFIED_EXACT_MODEL",
+    "engine_rating_lbf": 20000,
+    "engine_rating_provenance": "USER_EXPLICIT_CONFIRMATION_2026-10-23",
+    "engine_rating_independently_verified": false
   },
   "source_pdf_sha256": "3c7002212482f0c47a1735c2302ee304ef41ef4ca270591281b72f5f2a714105",
-  "private_library_path": "/Technical Database/Sources/AFM-737-33V-D6-8730-R32/EP-FSI-ASN29340/",
-  "private_db_filename": "epfsi_afm_scoped_v6.sqlite",
+  "private_library_path": "/Technical Database/Sources/AFM-737-33V-D6-8730-R32/EP-FSI-ASN29340/v7/",
+  "private_db_filename": "epfsi_afm_scoped_v7.sqlite",
   "source_pdf_stored_separately": "/Technical Database/Sources/AFM-737-33V-D6-8730-R32/AFM_R32_original.pdf",
   "linked_tables": {
     "scoped_rules": 110,
@@ -26,10 +30,15 @@
     "54",
     "61"
   ],
-  "engine_related_appendices": "ALL REQUIRE INSTALLED ENGINE AND SERVICE BULLETIN EVIDENCE BEFORE ACTIVATION",
+  "engine_related_appendices": "Appendix 33 matches rated 20K; engine variant/PMC/service-bulletin effectivity still unverified; 22K operation not selected",
   "original_full_archive": "IMMUTABLE_HISTORY_ONLY",
   "other_serials": "DO_NOT_USE_FOR_THIS_SIMULATOR_AIRCRAFT",
   "runtime_integration": "NOT_YET_CONNECTED",
   "certified_performance_values": "NONE",
-  "note": "A single airplane-specific reference scope; the underlying full source archive is preserved as private historical evidence and does not authorize calculations for other aircraft."
+  "note": "A single airplane-specific reference scope; the underlying full source archive is preserved as private historical evidence and does not authorize calculations for other aircraft.",
+  "supersedes": "EP-FSI-ASN29340/epfsi_afm_scoped_v6.sqlite",
+  "numerical_n1_computations_enabled": false,
+  "reader_tests_passed": 13,
+  "version": 7,
+  "audit_note": "Owner-confirmed installed 20K engine rating recorded as configuration assertion; AFM PDF p13 lists Appendix 33 for CFM56-3 at 20K. Exact installed engine type not inferred."
 }
