@@ -48,3 +48,8 @@ Separate repository from JeppIran; no dependencies or files shared.
 ## Beta 0.3: Source-grounded electrical orientation
 
 Includes a six-item, explicitly **partial** ground electrical demonstration, with photo-based shortcuts to each mapped selector. Derived by paraphrase from the user-provided Sepehran Airlines 737CL FCOM, Supplementary Procedures, Electrical Power Up, SP.6.1–SP.6.3 (source PDF pages 196–198). No FCOM text or pages are redistributed, and this demo is **not a complete procedure or a validation of aircraft system logic**. Actual availability, load transfer, generator readiness, indication lights, APU parameters and engine condition are not modeled.
+## Engine-first design v1.0 (2026-10-22)
+
+The full 737CL simulation kernel is now **architected but not implemented**. The design and machine-readable contracts live at [docs/ENGINE_BLUEPRINT.md](docs/ENGINE_BLUEPRINT.md) and [engine/spec/](engine/spec/). Track actual implementation in [docs/ENGINE_TASKS.md](docs/ENGINE_TASKS.md). The owner's locked original PNG ('1000166281.png', 6424×2212) is identified by SHA-256 there but **is not yet imported into this repository**; the live UI still uses the earlier WebP. The design commit intentionally leaves the current UI intact.
+
+Run 'npm test' for baseline demo tests and structural validation of architecture specs. This is NOT a claim of system accuracy.
