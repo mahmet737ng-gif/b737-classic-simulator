@@ -21,6 +21,10 @@ const {initialSensorConfig,validateId:validateSensorId,
   bindSensorSignals,applySystemValveInhibit,compareSensorSignals}=
     require('./sensor-failure-engine.cjs');
 
+const {evaluateEngineFireDetection}=require('./fire-detection-pilot.cjs');
+const {projectAnnunciation,compareAnnunciation}=
+  require('./annunciation-output-engine.cjs');
+
 const clone = x => JSON.parse(JSON.stringify(x));
 const bool = (v,n) => {if(typeof v !== 'boolean') throw new TypeError(n+' must be boolean');};
 const pick = (v,allowed,name) => {
@@ -60,6 +64,9 @@ function initialAircraftState() {
       }
     },
     sensors:initialSensorConfig(),
+    fire:{selector:'NORMAL',acknowledged:false,
+      loops:{A:{healthy:true,overheat:false,fire:false},
+        B:{healthy:true,overheat:false,fire:false}}},
     warning:{acknowledged:[],activeCauseIds:[],recallPressed:false}
   };
 }
@@ -77,10 +84,29 @@ function deriveAircraftState(snapshot) {
     snapshot.pumps);
   const network=observed.network;
   const electricalFeeders=evaluateAllFeeders(electrical);
+  const fireDetection=evaluateEngineFireDetection({
+    selector:snapshot.fire.selector,
+    power:electrical.fireDetectionPower,
+    loops:snapshot.fire.loops,
+    fireWarnAcknowledged:snapshot.fire.acknowledged
+  });
   const causes=evaluateWarningCauses(network);
+  if(fireDetection.overheatDetected===true){
+    causes.active.push({
+      id:'OVHT_DET.ENG1_OVERHEAT',system:'OVHT/DET',
+      source:{sourceId:'FCOM-SEPEHRAN-1937',section:'8.20.1-2,15.20.3',
+        pdfPages:[1234,1235,1907]}
+    });
+  }else if(fireDetection.overheatDetected===null){
+    causes.unresolved.push('OVHT_DET.ENG1_DETECTOR_UNPOWERED');
+  }
   const warnings=projectWarnings(network,causes,electrical,snapshot.warning);
+  const announInput={warnings,pumps:network,electrical,warningCauses:causes,
+    warningControl:snapshot.warning};
+  const annunciation=projectAnnunciation(announInput,fireDetection);
   return {step:snapshot.step,electrical,electricalFeeders,pressurePhysics,
     pumps:network,sensors:observed.sensors,warnings,warningCauses:causes,
+    fireDetection,annunciation,
     sourceModel:'FCOM_REFERENCED_PRESSURE_AND_FEEDER_V0.2_PILOT'};
 }
 
@@ -148,12 +174,34 @@ function transitionAircraftState(previous,action) {
     case 'SET_SENSOR_SETTLING':
       validateSensorId(p.sensor);validateBoolean();
       state.sensors[p.sensor].settling=p.value;break;
+    case 'SET_FIRE_LOOP':
+      pick(p.loop,['A','B'],'loop');
+      pick(p.field,['healthy','overheat','fire'],'field');
+      validateBoolean();
+      state.fire.loops[p.loop][p.field]=p.value;break;
+    case 'SET_FIRE_SELECTOR':
+      pick(p.value,['NORMAL','A','B'],'value');
+      state.fire.selector=p.value;break;
+    case 'ACK_FIRE_WARN':
+      state.fire.acknowledged=true;break;
     case 'ACK_MASTER_CAUTION':break;
     case 'SET_WARNING_RECALL':
       validateBoolean();state.warning.recallPressed=p.value;break;
     default:throw new TypeError('Unknown action '+String(p.type));
   }
-  const afterNoLatch=deriveAircraftState(state);
+  let afterNoLatch=deriveAircraftState(state);
+  // Fire cutout remains until fire condition clears or a fresh detector
+  // transition occurs. This is a discrete event model, not fire heat physics.
+  if(p.type!=='ACK_FIRE_WARN' &&
+     afterNoLatch.fireDetection.fireDetected===true &&
+     before.fireDetection.fireDetected!==true) {
+    state.fire.acknowledged=false;
+    afterNoLatch=deriveAircraftState(state);
+  }
+  if(afterNoLatch.fireDetection.fireDetected===false){
+    state.fire.acknowledged=false;
+    afterNoLatch=deriveAircraftState(state);
+  }
   const active=afterNoLatch.warningCauses.active.map(x=>x.id);
   const keepOld = state.warning.acknowledged.filter(id=>active.includes(id));
   state.warning.acknowledged = p.type==='ACK_MASTER_CAUTION' ?
@@ -187,6 +235,7 @@ function transitionAircraftState(previous,action) {
     pressureChanges:comparePressureTransitions(before.pressurePhysics,after.pressurePhysics),
     sensorChanges,
     sensorSignalChanges:compareSensorSignals(before.sensors,after.sensors),
+    annunciationChanges:compareAnnunciation(before.annunciation,after.annunciation),
     activatedWarnings:after.warnings.causeIds.filter(x=>!before.warnings.causeIds.includes(x)),
     clearedWarnings:before.warnings.causeIds.filter(x=>!after.warnings.causeIds.includes(x)),
     masterCautionBefore:before.warnings.masterCaution.logicalDemand,
