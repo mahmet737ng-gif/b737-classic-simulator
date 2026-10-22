@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>B737 Classic · P1 / P2 / P3 Instrument Lab</title>
+<meta name="theme-color" content="#10171e">
+<style>
+:root{color-scheme:dark;font-family:Arial,"Segoe UI",sans-serif;color:#e9eef3;background:#0b1015}
+*{box-sizing:border-box}body{margin:0;background:#090f15}button,input{font:inherit}button{cursor:pointer}button:focus-visible{outline:2px solid #85d6ff;outline-offset:3px}
+header{min-height:79px;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:15px;border-bottom:1px solid #31424f;background:linear-gradient(#202d39,#141d25)}
+h1{font-size:20px;letter-spacing:.045em;margin:0 0 4px}h1 span{color:#88cee9}header p{color:#9aafb9;font-size:12px;margin:0}
+.brand{display:flex;gap:14px;align-items:center}.brand i{font-size:31px;font-style:normal;color:#a3cee6}
+mark{background:#493b24;color:#ffdaa0;font-size:10px;letter-spacing:.13em;padding:7px 10px;border:1px solid #a77a3e;border-radius:6px}
+.top-actions,.tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.btn{border:1px solid #46647a;background:#253c4e;color:#e6f2f7;border-radius:6px;min-height:34px;padding:7px 11px}
+.btn:hover{background:#315068}.btn.active{background:#255c70;border-color:#7bc2dc}.btn.warn{background:#563232;border-color:#a26860}
+.shell{display:grid;grid-template-columns:minmax(0,1fr) 316px;min-height:calc(100vh - 79px)}
+main{min-width:0}.bar{padding:11px 14px;background:#121d26;border-bottom:1px solid #334858;display:flex;gap:10px;justify-content:space-between;align-items:center;flex-wrap:wrap}
+.bar strong{font-size:12px;color:#c1d9e6;letter-spacing:.15em}.zoom{display:inline-block;min-width:57px;text-align:center;font:700 12px ui-monospace,monospace;color:#a5e9f9}
+.viewport{overflow:auto;height:calc(100vh - 175px);min-height:450px;overscroll-behavior:contain;background:radial-gradient(ellipse at top,#283641,#090e13 85%);touch-action:pan-x pan-y}
+#deck{display:block;width:2400px;height:1120px;max-width:none;user-select:none;-webkit-user-select:none;touch-action:pan-x pan-y}
+#deck .control{cursor:pointer;outline:0}#deck .control:hover .ring{stroke:#8bddf9;stroke-width:4}
+#deck .control:focus-visible .ring{stroke:#adf3ff;stroke-width:5}
+#deck .control.selected .ring{stroke:#ffdf79;stroke-width:5}
+#deck text{user-select:none;pointer-events:none}#deck .click-label{pointer-events:none}
+#deck .warning-on{filter:drop-shadow(0 0 12px #ffc167)}#deck .fire-on{filter:drop-shadow(0 0 13px #fc554e)}
+#deck .needle{transition:transform .18s ease-out}#deck .readout{font-family:ui-monospace,Consolas,monospace}
+.note{padding:10px 16px;color:#8ca3b1;font-size:12px;border-top:1px solid #293d49}
+aside{background:#111b24;border-left:1px solid #304658;padding:18px;overflow:auto;max-height:calc(100vh - 79px)}
+aside h2{font-size:15px;letter-spacing:.1em;margin:0 0 15px}aside h3{font-size:11px;letter-spacing:.13em;color:#96b7c9;margin:20px 0 8px;text-transform:uppercase}
+.card{border:1px solid #385469;background:linear-gradient(#223340,#17232d);border-radius:10px;padding:14px;box-shadow:inset 0 1px #7590a322}
+#name{font-size:18px;font-weight:750;color:white;margin:9px 0}#chapter,#detail{font-size:12px;color:#aec3ce;line-height:1.65}#value{font:700 24px ui-monospace,monospace;color:#b5f2d7;margin:12px 0}
+.range-row{display:flex;gap:7px;align-items:center;margin-top:9px}.range-row button{flex:1}
+#faults{display:grid;grid-template-columns:1fr 1fr;gap:7px}#faults button{font-size:11px;text-align:left}
+#faults button.triggered{background:#6b4c2a;border-color:#cf9861;color:#fff2d7}
+#events{font:11px/1.6 ui-monospace,monospace;color:#a4b7c4;max-height:140px;overflow:auto;white-space:pre-line;border:1px solid #314353;padding:10px;background:#0e1821;border-radius:7px}
+#telemetry{font:12px/1.85 ui-monospace,monospace;color:#aceac4;background:#0e1821;padding:12px;border:1px solid #355063;border-radius:7px}
+.disclaimer{color:#b9a994;font-size:11px;line-height:1.6;margin-top:18px}
+footer{padding:13px 18px;color:#899dac;font-size:11px;background:#0d151b;border-top:1px solid #30404a}
+@media(max-width:1050px){.shell{grid-template-columns:1fr}aside{max-height:none;border-left:0;border-top:1px solid #385365}.viewport{height:60vh;min-height:400px}header{flex-wrap:wrap}}
+@media(max-width:520px){header{padding:14px}h1{font-size:16px}mark{font-size:9px}aside{padding:14px}}
+</style>
+</head>
+<body>
+<header><div class="brand"><i>✈</i><div><h1>737 CLASSIC <span>INSTRUMENT LAB</span></h1><p>P1 CAPTAIN · P2 CENTER EIS · P3 FIRST OFFICER · GLARESHIELD / MCP</p></div></div>
+<div class="top-actions"><mark>TRAINING DEMO — NOT FLIGHT VALIDATED</mark><a class="btn" href="../index.html" style="text-decoration:none">← Main site</a></div></header>
+<div class="shell"><main>
+<div class="bar"><strong>INTERACTIVE · VECTOR DETAIL · TOUCH CONTROLS</strong><div class="tools">
+<button class="btn" id="minus" aria-label="Zoom out">−</button><output class="zoom" id="zoomValue">100%</output><button class="btn" id="plus" aria-label="Zoom in">+</button>
+<button class="btn" id="fit">FIT</button><button class="btn" id="original">100%</button>
+<button class="btn" id="reset">RESET</button><button class="btn" id="lamp">LAMP TEST</button>
+<button class="btn" id="photo">PHOTO GUIDE</button>
+</div></div>
+<div class="viewport" id="viewport"><svg id="deck" viewBox="0 0 2400 1120" role="img" aria-label="Zoomable and interactive Boeing 737 Classic P1, P2 and P3 instrument panels with glare shield and MCP"></svg></div>
+<div class="note">Tap instrument, knob, lever or annunciator. Rotary knobs: tap, drag vertically, wheel, or use the ± inspector controls. Zoom stays sharp for vector instruments.</div></main>
+<aside><h2>CONTROL / SYSTEM INSPECTOR</h2>
+<div class="card"><div id="chapter">Select a control to inspect its FCOM chapter.</div><div id="name">Select an instrument</div><div id="detail">The cockpit is an interactive engineering demonstration. Use the controls to explore basic linked display behavior.</div><div id="value">—</div><div class="range-row"><button class="btn" id="down">− / PREV</button><button class="btn" id="up">+ / NEXT</button></div></div>
+<h3>Failure injection · demonstration</h3><div id="faults"></div>
+<h3>Engine test inputs · demonstration</h3><div class="range-row"><label for="throttle1">ENGINE 1</label><input id="throttle1" type="range" min="0" max="100" value="63" style="width:100%"></div>
+<div class="range-row"><label for="throttle2">ENGINE 2</label><input id="throttle2" type="range" min="0" max="100" value="61" style="width:100%"></div>
+<h3>Live values</h3><div id="telemetry"></div>
+<h3>Event log</h3><div id="events">Ready.</div>
+<p class="disclaimer"><b>Source trace:</b> Sepehran Airlines B737CL FCOM, Automatic Flight 4.10, Engines/APU 7.10, Flight Instruments 10, Warning Systems 15.10.1–15.10.2, and Landing Gear chapter. Layout is an engineering approximation, not pixel-perfect reproduction. EIS engine speeds, lighting, mode annunciations and failure injection are illustrative; they are <b>not</b> a validated Boeing or Sepehran systems model. Photographic assets have finite pixel resolution; the instrument drawings and lettering are vector.</p></aside></div>
+<footer>Standalone test page; existing home, Overhead and Pedestal remain unchanged. FCOM text and screenshots are not redistributed by this build.</footer>
+<script>
+(function(){
+'use strict';
+var svg=document.getElementById('deck'),NS='http://www.w3.org/2000/svg',viewport=document.getElementById('viewport');
+var Q=function(id){return document.getElementById(id)};
+var zoom=1,selected=null,controls={},gauges=[],annunciators=[],faults={},log=[],lamp=false,photo=false;
+var data={ias:245,heading:258,altitude:10000,vs:0,crsL:165,crsR:165,at:1,fdL:1,fdR:1,apA:0,apB:0,lnav:0,vnav:0,hdgsel:0,altHold:0,vsMode:0,gear:'DOWN',autobrake:'OFF',antiSkid:1,yawDamper:1,flap:0,gpwsFlap:0,gpwsGear:0,throttle1:63,throttle2:61,clockTest:0,markL:0,markR:0,lightsL:65,lightsR:65};
+var chapters={AFDS:'Automatic Flight · FCOM Chapter 4, Section 10',EIS:'Engines/APU · FCOM Chapter 7, Section 10',FLT:'Flight Instruments · FCOM Chapter 10',WARN:'Warning Systems · FCOM Chapter 15, 15.10.1–2',LAND:'Landing Gear · FCOM (controls and indicators)',GPWS:'Warning Systems · FCOM Chapter 15',LIGHT:'Cockpit lighting · FCOM controls/indicators'};
+var chapterById={};var defaults=JSON.parse(JSON.stringify(data));
+function el(tag,a,parent,content){var n=document.createElementNS(NS,tag);Object.keys(a||{}).forEach(function(k){n.setAttribute(k,a[k])});if(content!==undefined)n.textContent=content;(parent||svg).appendChild(n);return n}
+function rect(x,y,w,h,fill,stroke,r,parent){return el('rect',{x:x,y:y,width:w,height:h,rx:r||0,fill:fill||'none',stroke:stroke||'none'},parent)}
+function text(x,y,s,size,fill,parent,anchor,weight){return el('text',{x:x,y:y,'font-size':size||13,fill:fill||'#e2e7e9','text-anchor':anchor||'middle','font-weight':weight||'600','letter-spacing':'.6px'},parent,s)}
+function circ(x,y,r,fill,stroke,parent,sw){return el('circle',{cx:x,cy:y,r:r,fill:fill||'none',stroke:stroke||'none','stroke-width':sw||1},parent)}
+function line(x1,y1,x2,y2,color,w,parent){return el('line',{x1:x1,y1:y1,x2:x2,y2:y2,stroke:color||'#abb9bc','stroke-width':w||2,'stroke-linecap':'round'},parent)}
+function group(parent){return el('g',{},parent)}
+function defs(){
+svg.innerHTML='<defs><linearGradient id="skin" x2=".8" y2="1"><stop stop-color="#79838b"/><stop offset=".4" stop-color="#565f6b"/><stop offset="1" stop-color="#404b55"/></linearGradient><linearGradient id="blackMetal" x2=".3" y2="1"><stop stop-color="#46535d"/><stop offset=".45" stop-color="#1a252c"/><stop offset="1" stop-color="#080d11"/></linearGradient><radialGradient id="bezel" cx=".31" cy=".18"><stop stop-color="#d1d8d9"/><stop offset=".24" stop-color="#879097"/><stop offset=".48" stop-color="#333d45"/><stop offset=".79" stop-color="#10151c"/><stop offset="1" stop-color="#7d858b"/></radialGradient><radialGradient id="disc" cx=".38" cy=".25"><stop stop-color="#171c21"/><stop offset="1" stop-color="#010307"/></radialGradient><linearGradient id="sky" x2="0" y2="1"><stop stop-color="#103e89"/><stop offset="1" stop-color="#1b84d3"/></linearGradient><linearGradient id="earth" x2="0" y2="1"><stop stop-color="#a97c3e"/><stop offset="1" stop-color="#624a2d"/></linearGradient><linearGradient id="glass" x2=".8" y2="1"><stop stop-color="#ffffff" stop-opacity=".16"/><stop offset=".35" stop-color="#cce8fc" stop-opacity=".03"/><stop offset="1" stop-color="#0b141b" stop-opacity=".16"/></linearGradient><clipPath id="cl1"><rect x="378" y="339" width="330" height="228" rx="12"/></clipPath><clipPath id="cl3"><rect x="1694" y="339" width="330" height="228" rx="12"/></clipPath></defs>';
+}
+function screw(x,y,parent){circ(x,y,7,'url(#bezel)','#242c30',parent,1);line(x-4,y+2,x+4,y-2,'#253037',2,parent)}
+function plate(x,y,w,h,title){var g=group();rect(x,y,w,h,'url(#skin)','#222d36',9,g);rect(x+8,y+8,w-16,h-16,'none','#acb7bd',6,g).setAttribute('opacity','.21');screw(x+20,y+22,g);screw(x+w-20,y+22,g);screw(x+20,y+h-20,g);screw(x+w-20,y+h-20,g);if(title)text(x+26,y+50,title,17,'#d3d9dd',g,'start','750');return g}
+function bezelRect(x,y,w,h,parent){rect(x-7,y-7,w+14,h+14,'url(#blackMetal)','#22292c',14,parent);rect(x,y,w,h,'#040a10','#7c8993',8,parent);rect(x+2,y+2,w-4,h-4,'none','#93a7b044',7,parent)}
+function instrumentTag(x,y,label){text(x,y,label,14,'#ecf0f1',null,'middle','750')}
+function register(node,id,title,kind,chapter,desc,steps){controls[id]={id:id,title:title,kind:kind,chapter:chapters[chapter]||chapter,desc:desc,steps:steps||null};node.classList.add('control');node.setAttribute('role','button');node.setAttribute('tabindex','0');node.setAttribute('aria-label',title);node.dataset.id=id;
+node.addEventListener('click',function(e){e.stopPropagation();select(id);if(kind!=='read')change(id,1)});
+node.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();select(id);change(id,1)}if(e.key==='ArrowDown'){e.preventDefault();select(id);change(id,-1)}if(e.key==='ArrowUp'){e.preventDefault();select(id);change(id,1)}});
+node.addEventListener('wheel',function(e){e.preventDefault();e.stopPropagation();select(id);change(id,e.deltaY<0?1:-1)},{passive:false});
+var py=0,dragged=false;node.addEventListener('pointerdown',function(e){if(kind==='rotary'){py=e.clientY;dragged=false;node.setPointerCapture(e.pointerId)}});node.addEventListener('pointermove',function(e){if(kind==='rotary'&&node.hasPointerCapture(e.pointerId)){var dy=py-e.clientY;if(Math.abs(dy)>8){dragged=true;change(id,Math.trunc(dy/8));py=e.clientY}}});
+return node}
+function select(id){selected=id;var c=controls[id];Q('name').textContent=c.title;Q('chapter').textContent=c.chapter;Q('detail').textContent=c.desc;Q('value').textContent=String(data[id]===undefined?'—':data[id]);svg.querySelectorAll('.control').forEach(function(n){n.classList.toggle('selected',n.dataset.id===id)})}
+function note(s){log.unshift(new Date().toLocaleTimeString()+' · '+s);log=log.slice(0,13);Q('events').textContent=log.join('\n')}
+function change(id,direction){if(!data.hasOwnProperty(id))return;var c=controls[id];if(!c||c.kind==='read')return;
+if(c.steps){var idx=c.steps.indexOf(data[id]);data[id]=c.steps[(idx+direction%c.steps.length+c.steps.length)%c.steps.length]}
+else if(c.kind==='toggle')data[id]=data[id]?0:1;
+else{var step=id==='altitude'?100: id==='vs'?100:id==='ias'?1:id==='lightsL'||id==='lightsR'?5:1;var val=data[id]+direction*step;var mins={ias:100,heading:0,altitude:0,vs:-6000,crsL:0,crsR:0,lightsL:0,lightsR:0};var maxs={ias:400,heading:359,altitude:50000,vs:6000,crsL:359,crsR:359,lightsL:100,lightsR:100};if(val>(maxs[id]===undefined?100:maxs[id]))val=(id==='heading'||id==='crsL'||id==='crsR')?0:(maxs[id]||100);if(val<(mins[id]===undefined?0:mins[id]))val=(id==='heading'||id==='crsL'||id==='crsR')?359:(mins[id]||0);data[id]=val}
+note(c.title+' → '+data[id]);render();select(id)}
+function knob(x,y,id,label,init,min,max,kind,chap,desc){var g=group();text(x,y-44,label,13,'#dbe3e7',g);circ(x,y,31,'url(#bezel)','#0b1013',g,2).classList.add('ring');circ(x,y,21,'url(#blackMetal)','#a6acb3',g,2);line(x,y-15,x+10,y-24,'#e2eaf0',4,g);
+register(g,id,label,kind||'rotary',chap||'AFDS',desc||'Rotary selector: tap, drag or scroll.');return g}
+var mcpDisplays=[];
+function readout(x,y,id,width){rect(x,y,width||110,32,'#080c0b','#54635e',2);var t=text(x+(width||110)/2,y+24,'',24,'#92e2ad');t.classList.add('readout');mcpDisplays.push({node:t,id:id})}
+function pushButton(x,y,id,label){var g=group();rect(x,y,70,35,'url(#blackMetal)','#69747b',4,g).classList.add('ring');text(x+35,y+22,label,11,'#d8e3e4',g);register(g,id,label,'toggle','AFDS','Pushbutton mode selection (illustrative state, not a flight control computer).');return g}
+function warningBox(x,y,side){var lab=side==='L'?['FLT CONT','IRS','FUEL','ELEC','APU','OVHT/DET']:['ANTI-ICE','HYD','DOORS','ENG','OVERHEAD','AIR COND'];
+var g=group();rect(x,y,365,78,'#090c10','#6e777c',7,g);
+var fireX=side==='L'?x:x+290;var masterX=side==='L'?x+75:x+215;var packX=side==='L'?x+155:x+8;var fw=el('g',{},g);
+rect(fireX+3,y+5,67,65,'#541c1f','#a84549',3,fw).classList.add('fire-bg');text(fireX+36,y+29,'FIRE',14,'#fff',fw);text(fireX+36,y+46,'WARN',14,'#fff',fw);text(fireX+36,y+59,'BELL CUTOUT',7,'#ffe1df',fw);
+fw.addEventListener('click',function(){if(lamp){lamp=false}faults.FIRE=false;note('FIRE WARN cutout · demonstration');render()});fw.style.cursor='pointer';
+var mc=el('g',{},g);rect(masterX+3,y+5,67,65,'#715b1f','#ab8629',3,mc).classList.add('master-bg');text(masterX+36,y+30,'MASTER',12,'#fff4bd',mc);text(masterX+36,y+45,'CAUTION',12,'#fff4bd',mc);text(masterX+36,y+57,'PUSH RESET',8,'#fce7a3',mc);
+mc.addEventListener('click',function(){Object.keys(faults).forEach(function(k){if(k!=='FIRE')faults[k]=false});note('MASTER CAUTION reset · demo');render()});mc.style.cursor='pointer';
+var slots=group(g);
+lab.forEach(function(l,i){var col=i>=3?1:0,row=i%3;var xx=packX+col*94,yy=y+9+row*21;var t=text(xx+44,yy+12,l,11,'#6b5940',slots);annunciators.push({label:l,node:t,side:side})});
+rect(packX,y+5,191,67,'none','#555e5f',2,g);
+slots.addEventListener('click',function(){Object.keys(faults).forEach(function(k){if(k!=='FIRE'&&faults[k])faults[k]=false});note('Annunciator recall (demo)');render()});slots.style.cursor='pointer';
+annunciators.push({type:'fire',node:fw,side:side});annunciators.push({type:'master',node:mc,side:side});
+}
+function glareshield(){
+rect(64,22,2272,190,'url(#blackMetal)','#677783',22);
+text(1200,48,'737 CLASSIC · GLARESHIELD / P7',19,'#b4c1c9');
+warningBox(120,102,'L');warningBox(1905,102,'R');
+var box=group();rect(600,66,1184,123,'#4d565d','#818a93',9,box);rect(617,78,1151,98,'url(#blackMetal)','#9fa6ab',5,box);
+var spec=[
+{ id:'crsL',label:'COURSE',x:664,y:130,display:635,w:90 },
+{ id:'ias',label:'IAS / MACH',x:875,y:130,display:810,w:120 },
+{ id:'heading',label:'HEADING',x:1090,y:130,display:1037,w:107 },
+{ id:'altitude',label:'ALTITUDE',x:1333,y:130,display:1259,w:142 },
+{ id:'vs',label:'VERT SPEED',x:1544,y:130,display:1485,w:118 },
+{ id:'crsR',label:'COURSE',x:1720,y:130,display:1668,w:95 }];
+spec.forEach(function(s){readout(s.display,80,s.id,s.w);knob(s.x,s.y,s.id,s.label,data[s.id],0,100,'rotary','AFDS','MCP selected parameter; input demonstration, no AFDS guidance logic.')});
+['fdL','at','lnav','vnav','hdgsel','altHold','vsMode','apA','apB','fdR'].forEach(function(id,i){var labels={fdL:'F/D L',at:'A/T ARM',lnav:'LNAV',vnav:'VNAV',hdgsel:'HDG SEL',altHold:'ALT HOLD',vsMode:'V/S',apA:'CMD A',apB:'CMD B',fdR:'F/D R'};var x=620+i*115;var g=group();rect(x,182,95,23,'url(#blackMetal)','#6b777d',4,g).classList.add('ring');text(x+47,198,labels[id],12,data[id]?'#a7e8ad':'#a4b6bf',g);register(g,id,labels[id],'toggle','AFDS','Mode control selection is demonstrative only.')});
+}
+function flightScreen(x,y,side){var g=group();bezelRect(x,y,330,228,g);rect(x+10,y+11,310,111,'url(#sky)','none',2,g);rect(x+10,y+122,310,95,'url(#earth)','none',2,g);
+line(x+16,y+122,x+314,y+122,'#edcf91',3,g);
+for(var k=-2;k<=2;k++){var dy=k*22;line(x+140,y+124+dy,x+192,y+124+dy,'#fff',2,g);text(x+200,y+128+dy,String(Math.abs(k*5)),12,'#ddd',g,'start')}
+line(x+119,y+127,x+153,y+127,'#f753d1',4,g);line(x+185,y+127,x+216,y+127,'#f753d1',4,g);line(x+153,y+126,x+168,y+116,'#f753d1',3,g);line(x+168,y+116,x+185,y+126,'#f753d1',3,g);
+rect(x+15,y+60,52,105,'#071219bb','#5b717b',3,g);text(x+40,y+94,String(data.ias),17,'#dce8e7',g);text(x+40,y+117,'IAS',11,'#9cbed4',g);
+rect(x+258,y+60,55,105,'#071219bb','#5b717b',3,g);text(x+285,y+94,String(data.altitude),12,'#dce8e7',g);text(x+285,y+117,'ALT',11,'#9cbed4',g);
+text(x+166,y+27,'MCP SPD   ALT HOLD   LNAV   CMD',12,'#85e897',g);
+text(x+32,y+198,'0.380',15,'#ecf0f1',g);text(x+282,y+198,'DH200',13,'#78ed8e',g);
+rect(x+10,y+11,310,206,'url(#glass)','none',2,g);
+instrumentTag(x+165,y-18,side+' EADI');return g}
+function navScreen(x,y,side){var g=group();bezelRect(x,y,330,322,g);
+text(x+70,y+31,'31.9NM',15,'#e9e9e9',g);text(x+168,y+31,'TRK '+data.heading+' M',15,'#9df2a0',g);
+for(var r=70;r<=140;r+=35){el('path',{d:'M '+(x+165-r)+' '+(y+182)+' A '+r+' '+r+' 0 0 1 '+(x+165+r)+' '+(y+182),fill:'none',stroke:'#9caebb','stroke-width':'1.8'},g)}
+line(x+165,y+52,x+165,y+287,'#d63de8',3,g).setAttribute('stroke-dasharray','11 8');
+el('path',{d:'M '+(x+165)+' '+(y+272)+' l -13 17 h 26 z',fill:'none',stroke:'#fff','stroke-width':'2'},g);
+line(x+75,y+148,x+250,y+148,'#60727f',1,g);text(x+105,y+142,'15',14,'#c9dee6',g);
+text(x+205,y+124,'SPURS',15,'#e14fde',g);text(x+103,y+263,'KAKUS',13,'#16b1cf',g);text(x+241,y+263,'GIK',13,'#4fda91',g);
+text(x+165,y+306,'EHSI · MAP',12,'#b7c9d2',g);rect(x+8,y+8,314,306,'url(#glass)','none',9,g);
+instrumentTag(x+165,y-18,side+' EHSI');return g}
+function dial(cx,cy,r,label,units,start,max,valueGetter,orange,side){var g=group();circ(cx,cy,r+7,'url(#bezel)','#26333b',g,2);circ(cx,cy,r,'url(#disc)','#636c72',g,2);
+for(var i=0;i<=10;i++){var ang=(-135+i*27)*Math.PI/180;var x1=cx+Math.cos(ang)*(r-14),y1=cy+Math.sin(ang)*(r-14);var x2=cx+Math.cos(ang)*(r-3),y2=cy+Math.sin(ang)*(r-3);line(x1,y1,x2,y2,i>8?'#dc7654':'#d2e2e4',i%2===0?2.3:1.2,g);if(i%2===0)text(cx+Math.cos(ang)*(r-26),cy+Math.sin(ang)*(r-26)+3,String(Math.round(i*max/10)),Math.max(8,r*.125),'#dce1e3',g)}
+var needle=group(g);line(cx,cy,cx,cy-r*.69,orange?'#f8a36b':'#d6ecdb',Math.max(3,r*.045),needle);
+circ(cx,cy,5,'url(#bezel)','#14171b',g,1);
+var valText=text(cx,cy+r*.45,'',r*.27,'#7cff97',g);valText.classList.add('readout');text(cx,cy+r+19,label,Math.max(10,r*.17),'#ebeced',g);gauges.push({needle:needle,valText:valText,cx:cx,cy:cy,get:valueGetter,max:max});return g}
+function buttonSwitch(x,y,id,label,chapter,desc,steps){var g=group();rect(x-38,y-34,76,68,'#424c55','#a5b0b4',7,g).classList.add('ring');rect(x-16,y-24,32,48,'url(#blackMetal)','#c1cbcd',5,g);line(x-5,y-11,x+7,y+13,'#e9eced',7,g);text(x,y+46,label,11,'#e4eaf0',g);register(g,id,label,steps?'switch':'toggle',chapter,desc||'Clickable selector.',steps);return g}
+function pilot(side,x){plate(x,235,718,839,side==='CAPT'?'P1 · CAPTAIN INSTRUMENT PANEL':'P3 · FIRST OFFICER INSTRUMENT PANEL');var left=x+38,right=x+680;
+flightScreen(x+296,339,side);navScreen(x+296,604,side);
+dial(x+159,447,91,'MACH / AIRSPEED','KTS',0,420,function(){return data.ias},false,side);
+dial(x+156,777,79,'RMI / HEADING','DEG',0,360,function(){return data.heading},false,side);
+dial(x+609,435,77,'ALTIMETER','FT',0,40000,function(){return data.altitude},false,side);
+dial(x+611,598,75,'VERTICAL SPEED','FPM',-6000,6000,function(){return Math.abs(data.vs)},false,side);
+dial(x+159,995,54,'CLOCK','UTC',0,60,function(){return new Date().getSeconds()},false,side);
+buttonSwitch(x+607,988,side==='CAPT'?'lightsL':'lightsR','PANEL BRIGHT','LIGHT','Panel lights in the pilot section; training-only intensity.',null);
+var q=group();rect(x+65,259,199,50,'#252d30','#acb6bf',8,q);text(x+165,286,'A/P RST   A/T RST   FMC RST',12,'#f2f1eb',q);
+if(side==='CAPT'){buttonSwitch(x+240,995,'markL','MARKER','LIGHT','Marker beacon test.');}else{
+buttonSwitch(x+241,995,'gpwsFlap','FLAP INHIBIT','GPWS','GPWS inhibition (demonstrator).');
+buttonSwitch(x+342,995,'gpwsGear','GEAR INHIBIT','GPWS','GPWS inhibition (demonstrator).');
+}
+}
+function enginePanel(){
+plate(831,235,740,839,'P2 · CENTER ENGINE INSTRUMENTS');
+rect(864,302,350,710,'#3f4549','#aeb7ba',12);rect(880,317,316,665,'#27262d','#70818c',11);
+rect(1233,302,294,710,'#42474e','#aeb7ba',12);rect(1250,317,259,670,'#242931','#63737b',11);
+text(1034,338,'PRIMARY ENGINE INDICATIONS',17,'#dbe3e3');text(1378,338,'SECONDARY EIS',17,'#e3e8e8');
+text(1036,372,'N1',13,'#b6c8cf');dial(959,449,75,'N1  1','%',0,120,function(){return engineValue(1,'n1')},false);
+dial(1128,449,75,'N1  2','%',0,120,function(){return engineValue(2,'n1')},false);
+dial(959,641,75,'EGT 1','C',0,1000,function(){return engineValue(1,'egt')},true);
+dial(1128,641,75,'EGT 2','C',0,1000,function(){return engineValue(2,'egt')},true);
+dial(959,837,75,'N2  1','%',0,110,function(){return engineValue(1,'n2')},false);
+dial(1128,837,75,'N2  2','%',0,110,function(){return engineValue(2,'n2')},false);
+['OIL PRESS','OIL TEMP','OIL QTY','VIB'].forEach(function(l,i){var cy=417+i*155;dial(1310,cy,52,l+' 1','',0,100,function(){return engineValue(1,i===0?'oilP':i===1?'oilT':i===2?'oilQ':'vib')},false);dial(1450,cy,52,l+' 2','',0,100,function(){return engineValue(2,i===0?'oilP':i===1?'oilT':i===2?'oilQ':'vib')},false)});
+var status1=['REVERSER UNLOCKED','START VALVE OPEN','LOW OIL PRESS','OIL FILTER BYPASS'];
+status1.forEach(function(s,i){var xx=847+(i%2)*172;var yy=275+Math.floor(i/2)*20;var n=text(xx+80,yy,s,10,'#bc7843');annunciators.push({type:'engineStatus',node:n,label:s})});
+buttonSwitch(1554,528,'antiSkid','ANTISKID','LAND','Anti-skid selector demonstration.');
+var ab=knob(1554,740,'autobrake','AUTO BRAKE',null,0,0,'switch','LAND','Detented AUTO BRAKE demo selector.');controls.autobrake.steps=['OFF','RTO','1','2','3','MAX'];
+buttonSwitch(1554,946,'yawDamper','YAW DAMPER','LAND','Yaw damper selector is physically located in P2 reference; see FCOM flight controls.');
+var lever=group();rect(1539,561,29,112,'#090a0c','#acb6b8',8,lever);rect(1541,621,25,38,'url(#bezel)','#e0e9eb',12,lever);lever.classList.add('control');register(lever,'gear','LANDING GEAR','switch','LAND','Lever UP / OFF / DOWN; green indication is illustrative.',['UP','OFF','DOWN']);
+text(1553,552,'UP',12,'#fff');text(1553,680,'DN',12,'#fff');
+}
+function engineValue(side,k){var val=Number(data['throttle'+side]);if(k==='n1')return 19+val*.82;if(k==='n2')return 30+val*.68;if(k==='egt')return 220+val*5.7;if(k==='oilP')return 30+val*.5;if(k==='oilT')return 35+val*.45;if(k==='oilQ')return 94;if(k==='vib')return 20+val*.13;return 0}
+function isBright(){return lamp||Object.keys(faults).some(function(k){return !!faults[k]&&k!=='FIRE'})}
+function render(){mcpDisplays.forEach(function(x){var v=data[x.id];x.node.textContent=(x.id==='altitude'?String(v).padStart(5,'0'):x.id==='heading'||x.id==='crsL'||x.id==='crsR'?String(v).padStart(3,'0'):x.id==='vs'?(v>0?'+':'')+v:String(v))});
+gauges.forEach(function(d){var val=d.get(),angle=-135+(Math.max(0,Math.min(val/d.max,1)))*270;d.needle.setAttribute('transform','rotate('+angle+' '+d.cx+' '+d.cy+')');d.valText.textContent=d.max===1000?String(Math.round(val)):d.max===60?String(val):String(Math.round(val))});
+annunciators.forEach(function(a){if(a.type==='fire'){a.node.classList.toggle('fire-on',!!faults.FIRE||lamp);a.node.querySelector('.fire-bg').setAttribute('fill',faults.FIRE||lamp?'#dc2a25':'#541c1f')}
+else if(a.type==='master'){a.node.classList.toggle('warning-on',isBright());a.node.querySelector('.master-bg').setAttribute('fill',isBright()?'#d39f2d':'#715b1f')}
+else if(a.type==='engineStatus')a.node.setAttribute('fill',lamp?'#ffb46a':'#bc7843');
+else a.node.setAttribute('fill',(lamp||faults[a.label])?'#ffbf61':'#6b5940')});
+Object.keys(controls).forEach(function(id){var node=svg.querySelector('[data-id="'+id+'"]');if(node){node.setAttribute('aria-valuenow',String(data[id]));node.setAttribute('aria-label',controls[id].title+' '+data[id])}});
+Q('telemetry').textContent='MCP IAS '+data.ias+' KT · HDG '+data.heading+'°\nALT '+data.altitude+' FT · V/S '+data.vs+' FPM\nENG1 N1 '+engineValue(1,'n1').toFixed(1)+'%  EGT '+Math.round(engineValue(1,'egt'))+' C\nENG2 N1 '+engineValue(2,'n1').toFixed(1)+'%  EGT '+Math.round(engineValue(2,'egt'))+' C\nGEAR '+data.gear+' · AUTOBRAKE '+data.autobrake+'\nCAUTION '+(isBright()?'DEMO ON':'OFF')+' · FIRE '+(faults.FIRE?'DEMO ON':'OFF');
+if(selected)Q('value').textContent=String(data[selected]);Q('lamp').classList.toggle('active',lamp)}
+function zoomTo(z){zoom=Math.max(.3,Math.min(32,z));svg.style.width=Math.round(2400*zoom)+'px';svg.style.height=Math.round(1120*zoom)+'px';Q('zoomValue').textContent=Math.round(100*zoom)+'%'}
+function fit(){var z=Math.min(.98,(viewport.clientWidth-12)/2400);zoomTo(z);viewport.scrollLeft=0;viewport.scrollTop=0}
+function initialize(){defs();glareshield();pilot('CAPT',85);enginePanel();pilot('F/O',1600);
+text(1200,1110,'SIMULATOR LAB · VECTOR FACEPLATES / DIALS · ILLUSTRATIVE SYSTEM BEHAVIOR',15,'#9fafb9');
+var categories=['FLT CONT','IRS','FUEL','ELEC','APU','OVHT/DET','ANTI-ICE','HYD','DOORS','ENG','OVERHEAD','AIR COND','FIRE'];
+categories.forEach(function(k){var b=document.createElement('button');b.className='btn';b.textContent=k;b.addEventListener('click',function(){faults[k]=!faults[k];b.classList.toggle('triggered',!!faults[k]);note('Demo warning '+k+' '+(faults[k]?'ON':'OFF'));render()});Q('faults').appendChild(b)});
+Q('throttle1').addEventListener('input',function(e){data.throttle1=+e.target.value;render()});
+Q('throttle2').addEventListener('input',function(e){data.throttle2=+e.target.value;render()});
+Q('lamp').onclick=function(){lamp=!lamp;note('LAMP TEST '+(lamp?'ON':'OFF'));render()};
+Q('down').onclick=function(){if(selected)change(selected,-1)};
+Q('up').onclick=function(){if(selected)change(selected,1)};
+Q('plus').onclick=function(){zoomTo(zoom*1.4)};Q('minus').onclick=function(){zoomTo(zoom/1.4)};Q('fit').onclick=fit;Q('original').onclick=function(){zoomTo(1)};
+Q('reset').onclick=function(){data=JSON.parse(JSON.stringify(defaults));faults={};lamp=false;Q('throttle1').value=data.throttle1;Q('throttle2').value=data.throttle2;Q('faults').querySelectorAll('button').forEach(function(b){b.classList.remove('triggered')});note('RESET demo states');render()};
+Q('photo').onclick=function(){photo=!photo;var image=svg.querySelector('#photoGuide');if(image){image.remove();Q('photo').classList.remove('active')}else{var node=document.createElementNS(NS,'image');node.id='photoGuide';node.setAttribute('href','../assets/main-panel.webp');node.setAttribute('x',85);node.setAttribute('y',237);node.setAttribute('width',2235);node.setAttribute('height',835);node.setAttribute('preserveAspectRatio','xMidYMid meet');node.setAttribute('opacity','.8');node.setAttribute('pointer-events','none');svg.appendChild(node);Q('photo').classList.add('active')}};
+var last=0;viewport.addEventListener('wheel',function(e){if(e.ctrlKey){e.preventDefault();zoomTo(zoom*(e.deltaY<0?1.15:.87))}},{passive:false});
+render();requestAnimationFrame(fit);setInterval(function(){gauges.forEach(function(d){if(d.max===60){var a=-135+(new Date().getSeconds()/60)*270;d.needle.setAttribute('transform','rotate('+a+' '+d.cx+' '+d.cy+')')}})},1000)}
+initialize();
+})();
+</script></body></html>
