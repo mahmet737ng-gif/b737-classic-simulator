@@ -84,7 +84,7 @@ function createControl(c){
  (c.type==='gearLamp'?lampLayer:svg).append(g);
  g.addEventListener('click',e=>{e.preventDefault();if(g.dataset.dragged==='yes'){delete g.dataset.dragged;return}if(c.type==='gearLamp'){select(c.id);return}cycle(c.id,e.shiftKey?-1:1)});
  g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();cycle(c.id,e.shiftKey?-1:1)}else if(e.key==='ArrowUp'||e.key==='ArrowRight'){e.preventDefault();cycle(c.id,1)}else if(e.key==='ArrowDown'||e.key==='ArrowLeft'){e.preventDefault();cycle(c.id,-1)}});
- if(c.type==='rotary'){g.addEventListener('wheel',e=>{e.preventDefault();cycle(c.id,e.deltaY<0?-1:1)},{passive:false});attachRotaryDrag(g,c)}
+ if(c.type==='rotary'){g.classList.add('rotary-drag');g.addEventListener('wheel',e=>{e.preventDefault();cycle(c.id,e.deltaY<0?-1:1)},{passive:false});attachRotaryDrag(g,c)}
  if(c.type==='gear')attachGearDrag(g);
 }
 function attachRotaryDrag(g,c){
@@ -99,7 +99,7 @@ function attachGearDrag(g){let downY=null,downT=0;
  g.addEventListener('pointerup',e=>{if(downY===null)return;const dy=e.clientY-downY;downY=null;if(Math.abs(dy)<12)return;g.dataset.dragged='yes';setTimeout(()=>delete g.dataset.dragged,250);const next=dy>40?'DOWN':dy< -40?'UP':'OFF';setValue('gear',next)});
  g.addEventListener('pointercancel',()=>downY=null);
 }
-function cycle(id,dir=1){const c=byId[id];if(!c||c.type==='gearLamp')return;const i=c.states.indexOf(values[id]);const next=c.type==='rotary'||c.type==='gear'?Math.max(0,Math.min(c.states.length-1,i+dir)):(i+dir+c.states.length)%c.states.length;setValue(id,c.states[next]);}
+function cycle(id,dir=1){const c=byId[id];if(!c||c.type==='gearLamp')return;const i=c.states.indexOf(values[id]);const next=c.type==='rotary'?Math.max(0,Math.min(c.states.length-1,i+dir)):(i+dir+c.states.length)%c.states.length;setValue(id,c.states[next]);}
 function setValue(id,val){const c=byId[id];if(!c||!c.states.includes(val)||c.type==='gearLamp')return;select(id);if(values[id]===val)return;const from=values[id];values[id]=val;log.unshift(new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',second:'2-digit'})+'  '+c.name+'  '+from+' → '+val);log=log.slice(0,18);renderHistory();if(id==='gear'){if(val==='UP'||val==='DOWN'){moving=true;gearLampRender();const token=++version;setTimeout(()=>{if(token!==version)return;gearPosition=val;moving=false;gearLampRender();save();},920)}else{version++;moving=false;gearLampRender()}}render();save();}
 function select(id){selected=id;const c=byId[id];document.querySelectorAll('.device').forEach(el=>el.classList.toggle('selected',el.dataset.id===id));$('name').textContent=c.name;$('description').textContent=c.detail;$('ref').textContent='MAIN PANEL / '+c.type.toUpperCase()+' / '+id.toUpperCase();$('value').textContent=values[id];const choices=$('choices');choices.replaceChildren();c.states.forEach(v=>{const b=document.createElement('button');b.textContent=v;b.className=values[id]===v?'active':'';b.disabled=c.type==='gearLamp';b.title=c.type==='gearLamp'?'Indication follows simulated landing-gear state.':'';b.addEventListener('click',()=>setValue(id,v));choices.appendChild(b)});}
 function angle(c,val){const i=c.states.indexOf(val);if(c.id==='autobrake')return [-140,-92,-50,0,49,90][i]??0;return c.type==='rotary' ? (-125 + 250*i/Math.max(1,c.states.length-1)):0}
