@@ -40,7 +40,7 @@ const {TRAINING_SCENARIO_IDS,trainingScenarioActions}=
   require('./qrh-training-scenarios.cjs');
 
 const {initializeIndications,evaluateIndications,instrumentAction,panelButton,
-  advanceIndications,INSTRUMENT_COMMANDS}=
+  advanceIndications,n1ReferenceAction,INSTRUMENT_COMMANDS}=
   require('./engine-indication-eis.cjs');
 
 const clone = x => JSON.parse(JSON.stringify(x));
@@ -237,6 +237,9 @@ function transitionAircraftState(previous,action) {
         if(state.propulsion.mode!=='INTEGRATED')throw new Error('EIS requires integrated propulsion mode');
         if(['SET_ENGINE_INDICATION','SET_INSTRUMENT_SIGNAL'].includes(p.type))
           instrumentAction(state.indications,p);
+        else if(p.type.startsWith('SET_N1_REFERENCE')||p.type==='SET_N1_MANUAL_REFERENCE'||
+            p.type==='SET_N1_FMC_REFERENCE')
+          n1ReferenceAction(state.indications,p);
         else panelButton(state.indications,p);
       }
       else if(PROTECTION_COMMANDS.has(p.type))applyProtectionAction(state.propulsion,p);
