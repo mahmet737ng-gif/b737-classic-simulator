@@ -1,0 +1,26 @@
+{
+ "schema":"737cl-ch11-rule-catalog/0.1", "aircraft":"737-300/400/500 Sepehran option-specific", "scope":"Verified selected FCOM mechanics; NOT entire Chapter 11", "rules":[
+  {"id":"CDU-LSK-TO-SCRATCH","pdf_page":1424,"folio":"11.10.3","source_status":"FCOM_VERIFIED","trigger":"LSK press","effect":"moves data selected line <-> scratchpad or selects prompts and removes data with DELETE mode","implementation":"PARTIAL"},
+  {"id":"CDU-FAIL-MENU","pdf_page":1425,"folio":"11.10.4","source_status":"FCOM_VERIFIED","trigger":"self-test detects system failure","effect":"FAIL amber annunciation ON; only CDU with MENU key","implementation":"PARTIAL_SCENARIO"},
+  {"id":"CDU-FAIL-DIRINTC","pdf_page":1425,"folio":"11.10.4","source_status":"FCOM_VERIFIED","trigger":"FMC failed","effect":"FAIL amber ON for DIR INTC CDU configuration","implementation":"NOT_IMPLEMENTED"},
+  {"id":"CDU-MSG","pdf_page":1425,"folio":"11.10.4","source_status":"FCOM_VERIFIED","trigger":"scratchpad message shown","effect":"MSG white annunciation ON","implementation":"PARTIAL"},
+  {"id":"CDU-OFST","pdf_page":1425,"folio":"11.10.4","source_status":"FCOM_VERIFIED","trigger":"LNAV providing lateral offset guidance","effect":"OFST white ON","implementation":"SCENARIO_ONLY"},
+  {"id":"CDU-CALL","pdf_page":1425,"folio":"11.10.4","source_status":"FCOM_VERIFIED","trigger":"subsystem other than FMC requests control CDU","effect":"CALL white ON for MENU version","implementation":"SCENARIO_ONLY"},
+  {"id":"CDU-BRIGHTNESS","pdf_page":1425,"folio":"11.10.4","source_status":"FCOM_VERIFIED","trigger":"brightness control rotate","effect":"changes display brightness","implementation":"TRAINER_PARAMETER_ONLY; approved image button differs from documented knob"},
+  {"id":"CDU-INIT-REF","pdf_page":1426,"folio":"11.10.5","source_status":"FCOM_VERIFIED","trigger":"INIT REF press","effect":"page for initialization/reference data","implementation":"PARTIAL"},
+  {"id":"CDU-RTE","pdf_page":1426,"folio":"11.10.5","source_status":"FCOM_VERIFIED","trigger":"RTE press","effect":"route/origin/destination page","implementation":"PARTIAL"},
+  {"id":"CDU-CLB-CRZ-DES","pdf_page":1426,"folio":"11.10.5","source_status":"FCOM_VERIFIED","trigger":"CLB/CRZ/DES press","effect":"corresponding flight performance page","implementation":"SHELL"},
+  {"id":"CDU-MENU","pdf_page":1426,"folio":"11.10.5","source_status":"FCOM_VERIFIED","trigger":"MENU press","effect":"choose subsystem controlled by CDU","implementation":"SHELL"},
+  {"id":"CDU-LEGS","pdf_page":1426,"folio":"11.10.5","source_status":"FCOM_VERIFIED","trigger":"LEGS press","effect":"display/evaluate/modify lateral & vertical data","implementation":"SHELL"},
+  {"id":"CDU-DEPARR-HOLD-PROG","pdf_page":1426,"folio":"11.10.5","source_status":"FCOM_VERIFIED","trigger":"DEP ARR/HOLD/PROG press","effect":"corresponding procedure/holding/progress pages","implementation":"SHELL"},
+  {"id":"CDU-PAGE-NEXT-PREV","pdf_page":1427,"folio":"11.10.6","source_status":"FCOM_VERIFIED","trigger":"NEXT PAGE or PREV PAGE","effect":"moves between related pages","implementation":"NOT_IMPLEMENTED"},
+  {"id":"CDU-EXEC","pdf_page":1427,"folio":"11.10.6","source_status":"FCOM_VERIFIED","trigger":"EXEC press","effect":"activates eligible pending modifications; white EXEC annunciation extinguishes","implementation":"PARTIAL"},
+  {"id":"CDU-EXEC-LIGHT","pdf_page":1427,"folio":"11.10.6","source_status":"FCOM_VERIFIED","trigger":"active data modified but not executed","effect":"white EXEC ON","implementation":"PARTIAL"},
+  {"id":"CDU-ALPHANUMERIC","pdf_page":1428,"folio":"11.10.7","source_status":"FCOM_VERIFIED","trigger":"character key press","effect":"puts chosen character in scratchpad","implementation":"PARTIAL"},
+  {"id":"CDU-PLUS-MINUS","pdf_page":1428,"folio":"11.10.7","source_status":"FCOM_VERIFIED","trigger":"+/- key","effect":"first press minus, later presses alternate sign","implementation":"IMPLEMENTED"},
+  {"id":"CDU-DEL","pdf_page":1428,"folio":"11.10.7","source_status":"FCOM_VERIFIED","trigger":"DEL press","effect":"places DELETE token into scratchpad","implementation":"IMPLEMENTED"},
+  {"id":"CDU-CLR","pdf_page":1428,"folio":"11.10.7","source_status":"FCOM_VERIFIED","trigger":"CLR short/long","effect":"short clears last char or message; held clears full scratchpad","implementation":"IMPLEMENTED"},
+  {"id":"CDU-SP","pdf_page":1428,"folio":"11.10.7","source_status":"FCOM_VERIFIED","trigger":"SP press","effect":"appends blank space","implementation":"IMPLEMENTED"},
+  {"id":"CDU-PAGE-COMPONENTS","pdf_page":1430,"folio":"11.10.9","source_status":"FCOM_VERIFIED","trigger":"page rendering","effect":"ACT/MOD title, labels, scratchpad, x/y paging, mandatory boxes, optional dashes, caret prompts","implementation":"MODEL_ONLY"}
+ ]
+}

@@ -1,0 +1,57 @@
+{
+  "11.10": {
+    "start_pdf_page": 1422,
+    "title": "Controls and Indicators",
+    "start_printed_folio": "11.10.1"
+  },
+  "11.20": {
+    "start_pdf_page": 1466,
+    "title": "Navigation Systems Description",
+    "start_printed_folio": "11.20.1"
+  },
+  "11.30": {
+    "start_pdf_page": 1486,
+    "title": "Flight Management System Description",
+    "start_printed_folio": "11.30.1"
+  },
+  "11.31": {
+    "start_pdf_page": 1490,
+    "title": "Flight Management System Operation",
+    "start_printed_folio": "11.31.1"
+  },
+  "11.42": {
+    "start_pdf_page": 1538,
+    "title": "FMC Cruise",
+    "start_printed_folio": "11.42"
+  },
+  "11.32": {
+    "start_pdf_page": 1542,
+    "title": "Flight Management Computer",
+    "start_printed_folio": "11.32.1"
+  },
+  "11.33": {
+    "start_pdf_page": 1550,
+    "title": "ACARS Data Link",
+    "start_printed_folio": "11.33.1"
+  },
+  "11.40": {
+    "start_pdf_page": 1553,
+    "title": "FMC Preflight",
+    "start_printed_folio": "11.40.1"
+  },
+  "11.41": {
+    "start_pdf_page": 1625,
+    "title": "FMC Takeoff and Climb",
+    "start_printed_folio": "11.41.1"
+  },
+  "11.43": {
+    "start_pdf_page": 1755,
+    "title": "FMC Descent and Approach",
+    "start_printed_folio": "11.43.1"
+  },
+  "11.60": {
+    "start_pdf_page": 1801,
+    "title": "FMC/CDU Messages",
+    "start_printed_folio": "11.60.1"
+  }
+}
