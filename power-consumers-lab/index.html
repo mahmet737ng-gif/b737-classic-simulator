@@ -192,7 +192,7 @@ function syncAudio(view){
   const rel=phraseSelector.asset('fireBell');
   if(!rel){audioStatus('FireBell sound not mapped; audio held silent');return;}
   // Never play a whole a.mp3 / c.mp3 voice compilation.
-  if(/(?:^|\\/)(?:a|c)\\.mp3$/i.test(rel))
+  if(rel.endsWith('/a.mp3')||rel.endsWith('/c.mp3')||rel==='a.mp3'||rel==='c.mp3')
     throw new Error('Unsplit voice recording cannot be played');
   const clip=new Audio('../'+rel);
   clip.loop=true;
