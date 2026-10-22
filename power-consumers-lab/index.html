@@ -24,6 +24,13 @@
     .scroller{overflow:auto}.light{border-radius:6px;padding:9px;background:#141b22;border:1px solid var(--line);min-height:45px}
     .warning{background:#472a20;border-color:#bb7756}.log{height:170px;overflow:auto;direction:ltr;text-align:left;font:12px/1.8 Consolas,monospace}
     select{background:#253642;color:#fff;border:1px solid #6d8a9b;border-radius:7px;padding:8px;max-width:100%;font:inherit}
+    .panel-lamps{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px;direction:ltr}
+    .lamp-face{padding:10px 8px;border-radius:8px;border:1px solid #4c5660;background:#0f1318;text-align:center;min-height:66px}
+    .lamp-face strong{display:block;font-size:11px;word-break:break-word}
+    .lamp-face small{font-size:10px;word-break:break-word}
+    .lamp-face[data-state="ON"][data-kind="WARNING"]{background:#701c21;border-color:#f14b50;color:#fff}
+    .lamp-face[data-state="ON"][data-kind="CAUTION"]{background:#66430b;border-color:#ffc35b;color:#fff1c7}
+    .lamp-face[data-state="UNKNOWN"]{border-style:dashed;color:#e6ce8c}
     .note{border-inline-start:3px solid var(--warn);padding:8px 12px;color:var(--muted);background:#1f252a}
     @media(max-width:550px){h1{font-size:19px}section{padding:12px}table{font-size:11px}button{padding:7px 9px}}
   </style>
@@ -118,6 +125,22 @@
     </section>
   </div>
   <section>
+    <h2>ISN-05 — Glare Shield, Pump & Fire Annunciator Outputs</h2>
+    <p class="sub">لامپ‌ها از خروجی زندهٔ موتور محاسبه می‌شوند. چیدمان این آزمایشگاه آموزشی است و ادعای مطابقت پیکسلی با پنل واقعی ندارد.</p>
+    <div class="toolbar">
+      <button data-fireloop="A">FIRE SENSOR LOOP A: TOGGLE</button>
+      <button data-fireloop="B">FIRE SENSOR LOOP B: TOGGLE</button>
+      <button data-action="fireAck">FIRE WARN CUTOUT</button>
+      <button data-action="enableAudio">ENABLE VERIFIED SAMPLE AUDIO</button>
+      <button data-action="disableAudio">MUTE / STOP AUDIO</button>
+    </div>
+    <p id="fireState" class="sub"></p>
+    <p id="audioStatus" class="note" role="status">Playback disabled. Alert intents remain testable without sample files.</p>
+    <div id="annunciatorLamps" class="panel-lamps" aria-label="Logical cockpit annunciator panel"></div>
+    <p id="annunciatorPower" class="sub"></p>
+    <p class="note">ON is a logical command; physical lamp brightness and wiring are not yet WDM-verified. Audio is opt-in and uses only a verified, individually mapped clip if available.</p>
+  </section>
+  <section>
     <h2>Warning Logic</h2>
     <div class="grid">
       <div id="master" class="light" aria-live="polite"></div>
@@ -141,6 +164,7 @@
     </section>
   </div>
 </main>
+<script src="../audio/policy/phrase-selector-v4.js"></script>
 <script src="./runtime.js"></script>
 <script>
 'use strict';
@@ -149,6 +173,40 @@ const kernel=globalThis.B737PowerNetwork;
 if(!kernel){document.querySelector('#log').textContent='Runtime failed to load';return;}
 let state=kernel.initialAircraftState();
 let events=[];
+let audioEnabled=false,liveBell=null,lastAudioKey=null;
+const phraseSelector=globalThis.B737PhraseSelector?
+  new globalThis.B737PhraseSelector.PhraseSelector():null;
+const audioStatus=message=>{
+  const node=document.getElementById('audioStatus');
+  if(node)node.textContent=message;
+};
+function stopAudio(){
+  if(liveBell){liveBell.pause();liveBell.currentTime=0;liveBell=null;}
+  lastAudioKey=null;
+}
+function syncAudio(view){
+  const playing=view.annunciation.audio.activeKeys.includes('fireBell');
+  if(!playing){if(liveBell)stopAudio();return;}
+  if(!audioEnabled||!phraseSelector)return;
+  if(lastAudioKey==='fireBell')return;
+  const rel=phraseSelector.asset('fireBell');
+  if(!rel){audioStatus('FireBell sound not mapped; audio held silent');return;}
+  // Never play a whole a.mp3 / c.mp3 voice compilation.
+  if(/(?:^|\\/)(?:a|c)\\.mp3$/i.test(rel))
+    throw new Error('Unsplit voice recording cannot be played');
+  const clip=new Audio('../'+rel);
+  clip.loop=true;
+  clip.volume=.18;
+  clip.onerror=()=>{if(liveBell===clip){stopAudio();audioStatus(
+    'Mapped fireBell clip unavailable at '+rel+'; logical warning remains active');}};
+  liveBell=clip;lastAudioKey='fireBell';
+  const playback=clip.play();
+  if(playback&&typeof playback.catch==='function')playback.catch(e=>{
+    if(liveBell===clip){stopAudio();audioStatus('Browser or media blocked playback: '+e.message);}
+  });
+  audioStatus('FireBell clip requested (only if the mapped file exists)');
+}
+
 const sensorIds=[
   'FUEL.MAIN1_FWD','FUEL.MAIN1_AFT','FUEL.MAIN2_FWD','FUEL.MAIN2_AFT',
   'FUEL.CTR_LEFT','FUEL.CTR_RIGHT',
@@ -172,6 +230,21 @@ const onOff=v=>v===true?'ON':v===false?'OFF':'UNKNOWN';
 function render(){
   const d=kernel.deriveAircraftState(state);
   const b=d.electrical.buses;
+  el('annunciatorLamps').replaceChildren();
+  for(const p of Object.values(d.annunciation.lamps)){
+    const face=document.createElement('div');face.className='lamp-face';
+    face.dataset.state=p.logicalDemand;face.dataset.kind=p.severity;
+    const title=document.createElement('strong');title.textContent=p.id;
+    const sub=document.createElement('small');
+    sub.textContent='CMD '+p.logicalDemand+' · VIEW '+p.projectedVisibility;
+    face.append(title,sub);el('annunciatorLamps').append(face);
+  }
+  t(el('annunciatorPower'),'Panel power projection: '+d.annunciation.confirmedLogicPower+
+    ' · Fire audio intent: '+(d.annunciation.audio.activeKeys.join(', ')||'NONE'));
+  t(el('fireState'),'ENG1 Fire Detected: '+d.fireDetection.fireDetected+
+    ' · detector '+d.fireDetection.sensorStatus+
+    ' · Fire ACK '+state.fire.acknowledged);
+  syncAudio(d);
   el('sensorTable').replaceChildren();
   for(const [name,s] of Object.entries(d.sensors))
     rowTable(el('sensorTable'),[name,s.physicalPressure,s.reportedPressure,
@@ -271,6 +344,19 @@ for(const [action,value] of [['sampleLow','LOW'],['sampleNormal','NORMAL'],['sam
   document.querySelector('[data-action="'+action+'"]').addEventListener('click',
     ()=>apply('SET_SENSOR_SAMPLE',{sensor:selectedSensor(),value}));
 }
+document.querySelectorAll('[data-fireloop]').forEach(b=>b.addEventListener('click',()=>{
+  const loop=b.dataset.fireloop;
+  apply('SET_FIRE_LOOP',{loop,field:'fire',value:!state.fire.loops[loop].fire});
+}));
+document.querySelector('[data-action="fireAck"]').addEventListener('click',()=>apply('ACK_FIRE_WARN'));
+document.querySelector('[data-action="enableAudio"]').addEventListener('click',()=>{
+  audioEnabled=true;lastAudioKey=null;
+  audioStatus('Audio enabled by user; waiting for fire warning and verified media');
+  render();
+});
+document.querySelector('[data-action="disableAudio"]').addEventListener('click',()=>{
+  audioEnabled=false;stopAudio();audioStatus('Audio disabled');render();
+});
 document.querySelector('[data-action="ack"]').addEventListener('click',()=>apply('ACK_MASTER_CAUTION'));
 document.querySelector('[data-action="recall"]').addEventListener('click',()=>
   apply('SET_WARNING_RECALL',{value:!state.warning.recallPressed}));
