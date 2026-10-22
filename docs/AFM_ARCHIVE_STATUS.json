@@ -39,10 +39,10 @@
   ],
   "note": "This status is an archival/indexing achievement, NOT completed page-by-page manual QA or full numeric FMC performance database.",
   "validation_batch_01": {
-    "status": "FIRST_PASS_VALIDATION_RECORDED_NOT_ENGINE_READY",
+    "status": "FIRST_PASS_WITH_USER_CONFIRMED_ZFW_TYPO_ERRATUM_NOT_ENGINE_READY",
     "private_library_path": "/Technical Database/Sources/AFM-737-33V-D6-8730-R32/Validation-Batch-01/",
     "source_pages_under_initial_review": "Section 1 PDF pp18–41 and Section 4.1 baseline PDF pp92–94",
-    "candidate_rules": 151,
+    "candidate_rules": 154,
     "rule_source_pages": 20,
     "manual_visual_pages": [
       18,
@@ -62,6 +62,17 @@
     "engine_ready_rule_count": 0,
     "numeric_limits_only_when_verified": "NO_AUTOMATIC_FMC_USE",
     "integrity_tests": "PASS: record IDs, 12 ASN takeoff sets, 8 flap placard values, FKs, 978 source pages and 819 OCR source pages retained",
-    "note": "No original Boeing pages or proprietary derived rules in public repository. Exact candidates remain in private Technical Database."
+    "note": "No original Boeing pages or proprietary derived rules in public repository. Exact candidates remain in private Technical Database.",
+    "corrected_asns": [
+      29331,
+      29337,
+      29338
+    ],
+    "raw_source_conflict": "PDF p18 printed ZFW kg 7627; user confirmed 47627 kg for 105000 lb shared ASN row",
+    "erratum_id": "AFM-R32-ERRATUM-USER-ZFW-001",
+    "latest_private_validation_path": "/Technical Database/Sources/AFM-737-33V-D6-8730-R32/Validation-Batch-01-Erratum-01/",
+    "user_confirmed_typographical_corrections": 1,
+    "regulatory_status": "USER_CONFIRMED_NOT_OFFICIAL_AFM_AMENDMENT",
+    "source_typo_source_value_preserved": true
   }
 }
