@@ -160,5 +160,46 @@ assert.throws(()=>doIt(loss.state,'CONFIRM_ENGINE_LIGHTOFF',{engine:2}),Error);
 assert.throws(()=>doIt(cold,'SET_GENERATOR_AVAILABLE',{generator:'APU',value:true}),Error);
 assert.throws(()=>doIt(cold,'SET_ENGINE_N2',{engine:1,value:120}),TypeError);
 assert.throws(()=>doIt(cold,'SET_ENGINE_START_SWITCH',{engine:3,value:'GRD'}),TypeError);
+
+// Additional gates: altitude-dependent documented minimum air pressure,
+// fire-switch APU shutdown, battery switch ground trip, and ignition loss.
+const elCold=doIt(init(),'ENTER_COLD_DARK').state;
+let grounds=replay(elCold,[
+  cmd('SET_APU_SWITCH',{value:'START'}),
+  cmd('SET_APU_INLET_OPEN',{value:true}),
+  cmd('CONFIRM_APU_READY'),
+  cmd('SET_GENERATOR_SOURCE',{bus:'bus1',value:'APU'}),
+  cmd('SET_GENERATOR_SOURCE',{bus:'bus2',value:'APU'}),
+  cmd('SET_APU_BLEED',{value:true}),
+  cmd('SET_FIELD_ELEVATION_FT',{value:4000}),
+  cmd('SET_DUCT_PSI',{value:27}),
+  cmd('SET_FUEL_PUMP_SWITCH',{pump:'MAIN1_AFT',value:true}),
+  cmd('SET_ENGINE_START_SWITCH',{engine:1,value:'GRD'}),
+  cmd('SET_ENGINE_N1_ROTATION',{engine:1,value:true}),
+  cmd('SET_ENGINE_N2',{engine:1,value:25}),
+  cmd('SET_ENGINE_START_LEVER',{engine:1,value:'IDLE'})
+]);
+assert.equal(grounds.view.propulsion.engines['1'].air.minimumPsi,28);
+assert.equal(grounds.view.propulsion.engines['1'].status,'AIR_NOT_CONFIRMED');
+assert.throws(()=>doIt(grounds.state,'CONFIRM_ENGINE_LIGHTOFF',{engine:1}),Error);
+grounds=doIt(grounds.state,'SET_DUCT_PSI',{value:28});
+assert.equal(grounds.view.propulsion.engines['1'].status,'AWAITING_LIGHTOFF_CONFIRMATION');
+const faultIgn=doIt(grounds.state,'SET_IGNITION_SELECTOR',{value:'L'});
+assert.equal(faultIgn.view.propulsion.engines['1'].ignition.left,'AVAILABLE');
+const stalledApu=doIt(grounds.state,'SET_APU_FIRE_SWITCH_IN',{value:false});
+assert.equal(stalledApu.view.propulsion.apu.phase,'OFF');
+assert.equal(stalledApu.view.propulsion.apu.bleedSource,'OFF');
+assert.equal(stalledApu.view.electrical.sourceAssignments.bus1,null);
+const groundBatt=doIt(grounds.state,'SET_BATTERY_SWITCH',{value:false});
+assert.equal(groundBatt.view.propulsion.apu.phase,'OFF');
+assert.equal(groundBatt.view.electrical.sourceAssignments.bus1,null);
+const invalidStart=doIt(elCold,'SET_APU_GROUND_FIRE_HANDLE_IN',{value:false});
+assert.equal(doIt(invalidStart.state,'SET_APU_SWITCH',{value:'START'}).view.propulsion.apu.fault,'APU_START_INTERLOCK');
+const apuFuelPumpLoss=doIt(grounds.state,'SET_FUEL_PUMP_SWITCH',{pump:'MAIN1_AFT',value:false});
+assert.equal(apuFuelPumpLoss.view.propulsion.engines['1'].fuel.state,'UNCONFIRMED');
+assert.throws(()=>doIt(apuFuelPumpLoss.state,'CONFIRM_ENGINE_LIGHTOFF',{engine:1}),Error);
+assert.throws(()=>doIt(elCold,'SET_DUCT_PSI',{value:-0.1}),TypeError);
+assert.throws(()=>doIt(elCold,'SET_FIELD_ELEVATION_FT',{value:16000}),TypeError);
+
 assert.equal(init().propulsion.mode,'LEGACY_FIXTURE');
 console.log('ISN-06 cold-dark APU battery/bleed; engine N2 fuel/ignition sequence; generator/hydraulic synchronization PASS');
