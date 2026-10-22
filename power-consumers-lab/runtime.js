@@ -251,7 +251,7 @@ function compareElectricalTransitions(before,after) {
 }
 module.exports={FEEDS,evaluateFeeder,evaluateAllFeeders,compareElectricalTransitions};
 return module.exports;})();
-const consumers=(function(){const module={exports:{}};const exports=module.exports;const require=(p)=>{if(p==='./electrical-power-pilot.cjs')return electrical;if(p==='./electrical-feeder-audit.v0.2.cjs')return feederAudit;if(p==='./pump-sensor-warning-engine.cjs')return consumers;if(p==='./pressure-distribution.v0.2.cjs')return pressurePhysics;if(p==='./electrical-consumer-feeders.cjs')return feederMap;if(p==='./fluid-pressure-engine.cjs')return fluidObservations;if(p==='./sensor-failure-engine.cjs')return sensorEngine;throw new Error('Unknown browser module '+p);};
+const consumers=(function(){const module={exports:{}};const exports=module.exports;const require=(p)=>{if(p==='./electrical-power-pilot.cjs')return electrical;if(p==='./electrical-feeder-audit.v0.2.cjs')return feederAudit;if(p==='./pump-sensor-warning-engine.cjs')return consumers;if(p==='./pressure-distribution.v0.2.cjs')return pressurePhysics;if(p==='./electrical-consumer-feeders.cjs')return feederMap;if(p==='./fluid-pressure-engine.cjs')return fluidObservations;if(p==='./sensor-failure-engine.cjs')return sensorEngine;if(p==='./fire-detection-pilot.cjs')return firePilot;if(p==='./annunciation-output-engine.cjs')return annunciator;throw new Error('Unknown browser module '+p);};
 'use strict';
 
 /**
@@ -957,7 +957,254 @@ module.exports={SENSOR_IDS:ids,SENSOR_MODES:modes,SENSOR_SAMPLES:samples,
   validateSensorConfig,interpretSensor,bindSensorSignals,
   applySystemValveInhibit,compareSensorSignals};
 return module.exports;})();
-const kernel=(function(){const module={exports:{}};const exports=module.exports;const require=(p)=>{if(p==='./electrical-power-pilot.cjs')return electrical;if(p==='./electrical-feeder-audit.v0.2.cjs')return feederAudit;if(p==='./pump-sensor-warning-engine.cjs')return consumers;if(p==='./pressure-distribution.v0.2.cjs')return pressurePhysics;if(p==='./electrical-consumer-feeders.cjs')return feederMap;if(p==='./fluid-pressure-engine.cjs')return fluidObservations;if(p==='./sensor-failure-engine.cjs')return sensorEngine;throw new Error('Unknown browser module '+p);};
+const firePilot=(function(){const module={exports:{}};const exports=module.exports;
+'use strict';
+
+/**
+ * 737 Classic engine overheat/fire detection: isolated, testable pilot model.
+ * FCOM Sepehran D6-27370-300/400/500-SHI, §8.20.1-2,
+ * private source PDF physical pages 1234-1235.
+ *
+ * NOT a full thermal detector model: A/B overheat and fire flags are outputs
+ * of a yet-to-be-implemented sensor physics layer. No temperatures, debounce
+ * times or wiring assumptions are invented here.
+ *
+ * No UI effects; never directly writes lamps or plays audio.
+ */
+const VALID_SELECTORS = new Set(['NORMAL', 'A', 'B']);
+
+function checkLoop(loop, side) {
+  if (!loop || typeof loop !== 'object') {
+    throw new TypeError('loop ' + side + ' must be provided');
+  }
+  for (const field of ['healthy', 'overheat', 'fire']) {
+    if (typeof loop[field] !== 'boolean') {
+      throw new TypeError('loop ' + side + '.' + field + ' must be boolean');
+    }
+  }
+}
+
+/**
+ * @param {Object} input
+ * @param {'NORMAL'|'A'|'B'} input.selector
+ * @param {'POWERED'|'UNPOWERED'} input.power
+ * @param {{A:{healthy:boolean,overheat:boolean,fire:boolean},
+ *          B:{healthy:boolean,overheat:boolean,fire:boolean}}} input.loops
+ * @param {boolean} [input.fireWarnAcknowledged]
+ * @param {boolean} [input.masterCautionAcknowledged]
+ * @returns {Object} derived detector/alert conditions (no mutable state)
+ */
+function evaluateEngineFireDetection(input) {
+  if (!input || !VALID_SELECTORS.has(input.selector)) {
+    throw new TypeError('selector must be NORMAL, A or B');
+  }
+  if (!['POWERED', 'UNPOWERED'].includes(input.power)) {
+    throw new TypeError('power must be POWERED or UNPOWERED');
+  }
+  if (typeof (input.fireWarnAcknowledged ?? false) !== 'boolean' ||
+      typeof (input.masterCautionAcknowledged ?? false) !== 'boolean') {
+    throw new TypeError('acknowledgement values must be boolean');
+  }
+  if (!input.loops) throw new TypeError('loops A and B are required');
+  checkLoop(input.loops.A, 'A');
+  checkLoop(input.loops.B, 'B');
+
+  // The FCOM documents detector dependence on the battery bus, but
+  // not the complete cockpit indication behavior with that bus dead.
+  // UNKNOWN is intentional: do not fabricate a lit FAULT or a clear warning.
+  if (input.power === 'UNPOWERED') {
+    return {
+      sensorStatus: 'UNPOWERED', operational: false,
+      activeLoops: [], silentlyDegraded: null, detectorFault: null,
+      overheatDetected: null, fireDetected: null,
+      alerts: {
+        engOverheat: null, ovhtDet: null, masterCaution: null,
+        engFireSwitch: null, masterFireWarn: null, fireBell: null
+      },
+      reason: 'DETECTION_BUS_UNPOWERED_INDICATION_UNVERIFIED'
+    };
+  }
+
+  const l = input.loops;
+  const healthy = input.selector === 'NORMAL'
+    ? ['A','B'].filter(side => l[side].healthy)
+    : (l[input.selector].healthy ? [input.selector] : []);
+  const operational = healthy.length > 0;
+  const silentlyDegraded = input.selector === 'NORMAL' && healthy.length === 1;
+  const detectorFault = !operational;
+
+  // In NORMAL, healthy A AND B must agree. If one fails, it is automatically
+  // excluded and the surviving loop operates alone without a failure light.
+  const vote = field => !operational ? false :
+    (healthy.length === 1 ? l[healthy[0]][field] :
+      l.A[field] && l.B[field]);
+  const fire = vote('fire');
+  const overheat = vote('overheat') || fire;
+  const fa = input.fireWarnAcknowledged ?? false;
+  const ca = input.masterCautionAcknowledged ?? false;
+  return {
+    sensorStatus: detectorFault ? 'FAULT' : silentlyDegraded ? 'DEGRADED' : 'VALID',
+    operational, activeLoops: healthy, silentlyDegraded, detectorFault,
+    overheatDetected: overheat, fireDetected: fire,
+    alerts: {
+      engOverheat: overheat,
+      ovhtDet: overheat,
+      masterCaution: overheat && !ca,
+      engFireSwitch: fire,
+      masterFireWarn: fire && !fa,
+      fireBell: fire && !fa
+    },
+    reason: detectorFault ? 'SELECTED_DETECTORS_INOPERATIVE' :
+      silentlyDegraded ? 'ONE_LOOP_AUTOMATICALLY_ISOLATED' : 'NOMINAL'
+  };
+}
+
+module.exports = { evaluateEngineFireDetection };
+return module.exports;})();
+const annunciator=(function(){const module={exports:{}};const exports=module.exports;
+'use strict';
+/**
+ * ISN-05: logical output adapter, NOT aircraft WDM lamp-pin validation.
+ * FCOM Sepehran Ch 12 §12.10.2-3 PDF pp1826-27; Ch13 §13.10.1,
+ * 13.10.4 pp1842,1845; Ch15 §15.20.1-4 pp1905-08;
+ * Ch8 §8.20.1-2 pp1234-35.
+ *
+ * The real visual output layer gets lamp commands, physical visibility
+ * confidence, and an audio *intent* (not an automatically played file).
+ * In particular: MASTER CAUTION / FUEL / HYD low pressure have NO
+ * general caution aural cue in these source cases.
+ */
+const SOURCE='FCOM-SEPEHRAN-1937';
+const ref=(section,pdfPages)=>({sourceId:SOURCE,section,pdfPages});
+const desc={
+  masterCaution:ref('15.20.2',[1906]),
+  system:ref('15.20.3-4',[1907,1908]),
+  fuel:ref('12.10.2-3',[1826,1827]),
+  hydraulic:ref('13.10.1,13.10.4',[1842,1845]),
+  fire:ref('8.20.1-2,15.20.2',[1234,1235,1906])
+};
+function logical(v){
+  if(v===true)return 'ON';
+  if(v===false)return 'OFF';
+  if(v===null||v===undefined)return 'UNKNOWN';
+  throw new TypeError('lamp input must be boolean or null');
+}
+function annunciationDisplay(logicalDemand, panelPower){
+  if(panelPower==='PILOT_ASSUMED_PANEL_AVAILABLE')return logical(logicalDemand);
+  return 'UNKNOWN';
+}
+function makeLamp(id,control,kind,source,power,group){
+  const demand=logical(control);
+  return {
+    id,group,severity:kind,
+    logicalDemand:demand,
+    projectedVisibility:annunciationDisplay(control,power),
+    actualLampCircuit:'NOT_VERIFIED_WDM',
+    source
+  };
+}
+function projectAnnunciation(view,fire){
+  if(!view||!view.warnings||!view.pumps||!view.electrical)
+    throw new TypeError('integrated aircraft view required');
+  if(!fire||!fire.alerts)
+    throw new TypeError('fire-detection evaluation required');
+  const warning=view.warnings, panelPower=warning.displayPower;
+  const lamps={};
+  const set=(id,d,kind,source,group='OVERHEAD')=>{
+    lamps[id]=makeLamp(id,d,kind,source,panelPower,group);
+  };
+  set('MASTER_CAUTION_CAPT',warning.masterCaution.logicalDemand,'CAUTION',desc.masterCaution,'GLARESHIELD');
+  set('MASTER_CAUTION_FO',warning.masterCaution.logicalDemand,'CAUTION',desc.masterCaution,'GLARESHIELD');
+  // System-annunciator lenses are resettable. Existing warning domain
+  // owns active causes and ACKs; recall can temporarily show simple faults.
+  // Keep physical pump pressure lamps independent of master ACK.
+  const anyUnack=warning.unacknowledgedCauseIds.length>0;
+  const recalling=view.warningControl?.recallPressed===true;
+  const activeSystem=id=>view.warningCauses.active.some(x=>x.system===id && 
+    warning.unacknowledgedCauseIds.includes(x.id));
+  const simpleSystem=id=>recalling && view.warningCauses.simple.some(x=>x.system===id);
+  const fuelAnn=activeSystem('FUEL')||simpleSystem('FUEL');
+  const fltAnn=activeSystem('FLT CONT');
+  const hydAnn=warning.systemAnnunciators.HYD.logicalDemand===null?
+    null:(activeSystem('FLT CONT')?true:false);
+  set('ANNUN_FUEL',fuelAnn,'CAUTION',desc.system,'GLARESHIELD');
+  set('ANNUN_HYD',hydAnn,'CAUTION',desc.system,'GLARESHIELD');
+  set('ANNUN_FLT_CONT',fltAnn,'CAUTION',desc.system,'GLARESHIELD');
+  set('ANNUN_OVHT_DET',activeSystem('OVHT/DET'),'CAUTION',desc.system,'GLARESHIELD');
+  // Electrical system status: bus state is NOT equivalent to bus-off
+  // bulb-feed logic; explicit uncertain until source schematic is audited.
+  set('ANNUN_ELEC',null,'CAUTION',ref('6.20.1-19,15.20.3',[1150,1168,1907]),'GLARESHIELD');
+  for(const [id,pump] of Object.entries(view.pumps.fuel))
+    set('FUEL_'+id+'_LOW',pump.lowPressureLampDemand,'CAUTION',desc.fuel,'FUEL_PANEL');
+  for(const [system,p] of Object.entries(view.pumps.hydraulic)){
+    set('HYD_'+system+'_ELEC_LOW',p.electric.lowPressureLampDemand,'CAUTION',desc.hydraulic,'HYD_PANEL');
+    set('HYD_'+system+'_ENG_LOW',p.engineDriven.lowPressureLampDemand,'CAUTION',desc.hydraulic,'HYD_PANEL');
+    set('FLT_CONT_'+system+'_LOW',p.flightControlLowPressureLampDemand,'CAUTION',desc.hydraulic,'FLT_CONT_PANEL');
+  }
+  // Fire section: these are DETECTOR outputs, not actual thermodynamic fire.
+  // MASTER FIRE WARN is separate from MASTER CAUTION and has a separate
+  // acknowledgement/cutout (FCOM §15.20.2).
+  set('ENG1_FIRE_SWITCH',fire.alerts.engFireSwitch,'WARNING',desc.fire,'FIRE_PANEL');
+  set('ENG1_OVHT',fire.alerts.engOverheat,'CAUTION',desc.fire,'FIRE_PANEL');
+  set('MASTER_FIRE_WARN_CAPT',fire.alerts.masterFireWarn,'WARNING',desc.fire,'GLARESHIELD');
+  set('MASTER_FIRE_WARN_FO',fire.alerts.masterFireWarn,'WARNING',desc.fire,'GLARESHIELD');
+  const sound=fire.alerts.fireBell;
+  const audio={
+    activeKeys:sound===true?['fireBell']:[],
+    unresolvedKeys:sound===null?['fireBell']:[],
+    rules:{
+      fireBell:{
+        condition:sound===null?'UNKNOWN':sound?'ACTIVE':'INACTIVE',
+        key:'fireBell',priority:95,
+        auralModulePower:'UNVERIFIED',
+        sampleCandidate:'fire-alarm.mp3',
+        physicalPlayer:'NOT_CONNECTED_BY_THIS_PURE_FUNCTION',
+        source:desc.fire
+      },
+      masterCaution:{
+        condition:'NO_GENERAL_AURAL_IN_FCOM_CASE',
+        key:null,
+        source:desc.masterCaution
+      }
+    }
+  };
+  return {
+    schema:'b737cl-annunciation-isn05-v0.1',
+    lamps,audio,
+    confirmedLogicPower:panelPower,
+    panelProjectionQuality:warning.displayQuality,
+    warningCauseIds:[...warning.causeIds],
+    simpleRecallIds:[...warning.simpleRecallIds],
+    unresolvedIndications:[...warning.unresolvedCauses],
+    unresolvedPhysical:['Individual lamp supply and electrical warning relay WDM/SSM',
+      'Master fire lamp feed and aural module supply',
+      'Graphic panel coordinates pending cockpit artwork reference calibration'],
+    provenance:desc
+  };
+}
+function compareAnnunciation(before,after){
+  if(!before||!after)throw new TypeError('annunciation snapshots required');
+  const changes=Object.keys(after.lamps).filter(id=>{
+    const a=before.lamps[id],b=after.lamps[id];
+    return !a||a.logicalDemand!==b.logicalDemand||
+      a.projectedVisibility!==b.projectedVisibility;
+  }).map(id=>({
+    id,from:before.lamps[id]?.logicalDemand||'UNKNOWN',
+    to:after.lamps[id].logicalDemand,
+    projectedVisibility:after.lamps[id].projectedVisibility
+  }));
+  const oldKeys=new Set(before.audio.activeKeys),newKeys=new Set(after.audio.activeKeys);
+  const start=[...newKeys].filter(k=>!oldKeys.has(k));
+  const stop=[...oldKeys].filter(k=>!newKeys.has(k));
+  return {lamps:changes,audio:{
+    start:start.map(key=>({key,command:'START',source:'FIRE_DETECTOR_CONDITION'})),
+    stop:stop.map(key=>({key,command:'STOP',source:'CLEARED_OR_ACKNOWLEDGED'})),
+    keep:[...newKeys].filter(k=>oldKeys.has(k)).map(key=>({key,command:'HOLD'}))
+  }};
+}
+module.exports={projectAnnunciation,compareAnnunciation};
+return module.exports;})();
+const kernel=(function(){const module={exports:{}};const exports=module.exports;const require=(p)=>{if(p==='./electrical-power-pilot.cjs')return electrical;if(p==='./electrical-feeder-audit.v0.2.cjs')return feederAudit;if(p==='./pump-sensor-warning-engine.cjs')return consumers;if(p==='./pressure-distribution.v0.2.cjs')return pressurePhysics;if(p==='./electrical-consumer-feeders.cjs')return feederMap;if(p==='./fluid-pressure-engine.cjs')return fluidObservations;if(p==='./sensor-failure-engine.cjs')return sensorEngine;if(p==='./fire-detection-pilot.cjs')return firePilot;if(p==='./annunciation-output-engine.cjs')return annunciator;throw new Error('Unknown browser module '+p);};
 'use strict';
 
 /**
@@ -980,6 +1227,10 @@ const {initialSensorConfig,validateId:validateSensorId,
   validateMode:validateSensorMode,validateSample:validateSensorSample,
   bindSensorSignals,applySystemValveInhibit,compareSensorSignals}=
     require('./sensor-failure-engine.cjs');
+
+const {evaluateEngineFireDetection}=require('./fire-detection-pilot.cjs');
+const {projectAnnunciation,compareAnnunciation}=
+  require('./annunciation-output-engine.cjs');
 
 const clone = x => JSON.parse(JSON.stringify(x));
 const bool = (v,n) => {if(typeof v !== 'boolean') throw new TypeError(n+' must be boolean');};
@@ -1020,6 +1271,9 @@ function initialAircraftState() {
       }
     },
     sensors:initialSensorConfig(),
+    fire:{selector:'NORMAL',acknowledged:false,
+      loops:{A:{healthy:true,overheat:false,fire:false},
+        B:{healthy:true,overheat:false,fire:false}}},
     warning:{acknowledged:[],activeCauseIds:[],recallPressed:false}
   };
 }
@@ -1037,10 +1291,29 @@ function deriveAircraftState(snapshot) {
     snapshot.pumps);
   const network=observed.network;
   const electricalFeeders=evaluateAllFeeders(electrical);
+  const fireDetection=evaluateEngineFireDetection({
+    selector:snapshot.fire.selector,
+    power:electrical.fireDetectionPower,
+    loops:snapshot.fire.loops,
+    fireWarnAcknowledged:snapshot.fire.acknowledged
+  });
   const causes=evaluateWarningCauses(network);
+  if(fireDetection.overheatDetected===true){
+    causes.active.push({
+      id:'OVHT_DET.ENG1_OVERHEAT',system:'OVHT/DET',
+      source:{sourceId:'FCOM-SEPEHRAN-1937',section:'8.20.1-2,15.20.3',
+        pdfPages:[1234,1235,1907]}
+    });
+  }else if(fireDetection.overheatDetected===null){
+    causes.unresolved.push('OVHT_DET.ENG1_DETECTOR_UNPOWERED');
+  }
   const warnings=projectWarnings(network,causes,electrical,snapshot.warning);
+  const announInput={warnings,pumps:network,electrical,warningCauses:causes,
+    warningControl:snapshot.warning};
+  const annunciation=projectAnnunciation(announInput,fireDetection);
   return {step:snapshot.step,electrical,electricalFeeders,pressurePhysics,
     pumps:network,sensors:observed.sensors,warnings,warningCauses:causes,
+    fireDetection,annunciation,
     sourceModel:'FCOM_REFERENCED_PRESSURE_AND_FEEDER_V0.2_PILOT'};
 }
 
@@ -1108,12 +1381,34 @@ function transitionAircraftState(previous,action) {
     case 'SET_SENSOR_SETTLING':
       validateSensorId(p.sensor);validateBoolean();
       state.sensors[p.sensor].settling=p.value;break;
+    case 'SET_FIRE_LOOP':
+      pick(p.loop,['A','B'],'loop');
+      pick(p.field,['healthy','overheat','fire'],'field');
+      validateBoolean();
+      state.fire.loops[p.loop][p.field]=p.value;break;
+    case 'SET_FIRE_SELECTOR':
+      pick(p.value,['NORMAL','A','B'],'value');
+      state.fire.selector=p.value;break;
+    case 'ACK_FIRE_WARN':
+      state.fire.acknowledged=true;break;
     case 'ACK_MASTER_CAUTION':break;
     case 'SET_WARNING_RECALL':
       validateBoolean();state.warning.recallPressed=p.value;break;
     default:throw new TypeError('Unknown action '+String(p.type));
   }
-  const afterNoLatch=deriveAircraftState(state);
+  let afterNoLatch=deriveAircraftState(state);
+  // Fire cutout remains until fire condition clears or a fresh detector
+  // transition occurs. This is a discrete event model, not fire heat physics.
+  if(p.type!=='ACK_FIRE_WARN' &&
+     afterNoLatch.fireDetection.fireDetected===true &&
+     before.fireDetection.fireDetected!==true) {
+    state.fire.acknowledged=false;
+    afterNoLatch=deriveAircraftState(state);
+  }
+  if(afterNoLatch.fireDetection.fireDetected===false){
+    state.fire.acknowledged=false;
+    afterNoLatch=deriveAircraftState(state);
+  }
   const active=afterNoLatch.warningCauses.active.map(x=>x.id);
   const keepOld = state.warning.acknowledged.filter(id=>active.includes(id));
   state.warning.acknowledged = p.type==='ACK_MASTER_CAUTION' ?
@@ -1147,6 +1442,7 @@ function transitionAircraftState(previous,action) {
     pressureChanges:comparePressureTransitions(before.pressurePhysics,after.pressurePhysics),
     sensorChanges,
     sensorSignalChanges:compareSensorSignals(before.sensors,after.sensors),
+    annunciationChanges:compareAnnunciation(before.annunciation,after.annunciation),
     activatedWarnings:after.warnings.causeIds.filter(x=>!before.warnings.causeIds.includes(x)),
     clearedWarnings:before.warnings.causeIds.filter(x=>!after.warnings.causeIds.includes(x)),
     masterCautionBefore:before.warnings.masterCaution.logicalDemand,
