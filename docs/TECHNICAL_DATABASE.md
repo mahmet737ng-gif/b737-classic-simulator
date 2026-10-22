@@ -37,3 +37,31 @@ The **private** Technical Database in user Library now includes the following th
 Private base location: `/Technical Database/Sources/<source_id>/`. Each folder contains `ORIGINAL_SOURCE.pdf`, `PRIVATE_FULL_ARCHIVE.zip`, `SEARCHABLE_FULL_TEXT.txt`, `TECHNICAL_INDEX.sqlite`, `TOPIC_MAP.jsonl`, `STRUCTURED_CANDIDATES.jsonl`, `QA_BACKLOG.json` and `manifest.json`. Unified private search: `/Technical Database/B737_QRH_WBM_FPPM_SEARCH_DATABASE_PRIVATE.sqlite`. Registry: `/Technical Database/SOURCE_REGISTRY.json`, which also includes the existing AFM, FCOM, MRG and two FCTM sources.
 
 All **1,040 new PDF pages** are machine-archived with provenance and full-text search; **zero** pages have human semantic sign-off. Candidate table parsing and keyword topic tags are **not approved simulator rules**. Do not apply WBM 737-300 load limits or FPPM 22K engine performance to a different aircraft/serial/rating. Flight safety, applicability, primary approved AFM and configured FCOM/QRH precedence must be maintained.
+
+## Semantic Index V1 (2026-10-23)
+
+**Private Library database is now present and verified at** `/Technical Database/Semantic-Index-V1/`.
+
+- Bundle: `B737_SEMANTIC_PRIVATE_BUNDLE.zip` (private, includes the source-text-bearing SQLite index).
+- Query DB: `B737_TECHNICAL_SEMANTIC_INDEX.sqlite` (SQLite + FTS5).
+- Accompanying files: `query_technical_db.py`, `README_FA.md`, `SEMANTIC_AUDIT.json`, `ONTOLOGY_AUDIT.json`, `manifest.json`.
+- Global private source registry: `/Technical Database/SOURCE_REGISTRY.json`.
+
+| Machine ingestion criterion | Verified count |
+|---|---:|
+| Source manuals | 8 |
+| Distinct source pages indexed | 5,067 |
+| Section keys / inferred groups | 1,274 |
+| Paragraph/segment records | 33,767 |
+| Structured semantic candidates | 7,503 |
+| Domain ontology concepts | 26 |
+| Lexical system-concept mentions | 16,817 |
+| Candidate tables (NOT independently cell-verified) | 206 |
+| QRH branch expression candidates | 371 |
+| Additional in-text condition candidates | 1,339 |
+| Open prioritized QA issues | 1,019 |
+| Engineer-approved rules / source-page signoffs | **0** |
+
+**Crucial qualification:** All-source **page coverage** and machine **semantic categorization** are complete, but the interpretation is **not validated**. The database is not a finished control-law, sensor graph, FMC performance table, or executable QRH fault/warning engine. Source-passage tags and detected conditions must be checked against the correct printed folio, model, serial/configuration, original page, notes, and figures. The AFM's explicit user-confirmed conversion erratum (page 18, 105000 lb / 47627 kg versus raw 7627 kg) is a separate non-approved overlay; it must not overwrite the original AFM. The FCOM source also contains an invalid calendar date on its first-page extraction, flagged for verification.
+
+**Agent retrieval policy:** Search the user's **private Library** by the exact path `/Technical Database/Semantic-Index-V1` or materialize its SQLite/bundle for machine queries. The GitHub repository does **not** contain or expose the Boeing-proprietary source text. Distinguish `pdf_page` (local indexed position) from `original_pdf_page` (physical page; MRG maps 1..390 to 9..398). Never claim that every future chat has direct access unless the private Library is accessible in that session.
