@@ -39,6 +39,10 @@ const {initChecklistState,deriveChecklists,performChecklistAction}=
 const {TRAINING_SCENARIO_IDS,trainingScenarioActions}=
   require('./qrh-training-scenarios.cjs');
 
+const {initializeIndications,evaluateIndications,instrumentAction,panelButton,
+  advanceIndications,INSTRUMENT_COMMANDS}=
+  require('./engine-indication-eis.cjs');
+
 const clone = x => JSON.parse(JSON.stringify(x));
 const bool = (v,n) => {if(typeof v !== 'boolean') throw new TypeError(n+' must be boolean');};
 const pick = (v,allowed,name) => {
@@ -80,6 +84,7 @@ function initialAircraftState() {
     sensors:initialSensorConfig(),
     propulsion:initPropulsion(),
     checklist:initChecklistState(),
+    indications:initializeIndications(),
     fire:{selector:'NORMAL',acknowledged:false,
       loops:{A:{healthy:true,overheat:false,fire:false},
         B:{healthy:true,overheat:false,fire:false}}},
@@ -122,10 +127,11 @@ function deriveAircraftState(snapshot) {
   const announInput={warnings,pumps:network,electrical,warningCauses:causes,
     warningControl:snapshot.warning};
   const annunciation=projectAnnunciation(announInput,fireDetection,propulsion);
+  const indications=evaluateIndications(snapshot.indications,propulsion,snapshot.electrical.phase);
   const checklists=deriveChecklists(snapshot,{propulsion,fireDetection,annunciation});
   return {step:snapshot.step,electrical,electricalFeeders,pressurePhysics,
     pumps:network,sensors:observed.sensors,warnings,warningCauses:causes,
-    fireDetection,annunciation,propulsion,checklists,
+    fireDetection,annunciation,propulsion,checklists,indications,
     sourceModel:'FCOM_REFERENCED_PRESSURE_AND_FEEDER_V0.2_PILOT'};
 }
 
@@ -199,6 +205,7 @@ function transitionAircraftState(previous,action) {
       state.sensors[p.sensor].settling=p.value;break;
     case 'ENTER_COLD_DARK':
       state.checklist=initChecklistState();
+      state.indications=initializeIndications();
       state.propulsion=initPropulsion();
       state.propulsion.mode='INTEGRATED';
       e.phase='GROUND';
@@ -226,7 +233,13 @@ function transitionAircraftState(previous,action) {
     case 'SET_WARNING_RECALL':
       validateBoolean();state.warning.recallPressed=p.value;break;
     default:
-      if(PROTECTION_COMMANDS.has(p.type))applyProtectionAction(state.propulsion,p);
+      if(INSTRUMENT_COMMANDS.has(p.type)){
+        if(state.propulsion.mode!=='INTEGRATED')throw new Error('EIS requires integrated propulsion mode');
+        if(['SET_ENGINE_INDICATION','SET_INSTRUMENT_SIGNAL'].includes(p.type))
+          instrumentAction(state.indications,p);
+        else panelButton(state.indications,p);
+      }
+      else if(PROTECTION_COMMANDS.has(p.type))applyProtectionAction(state.propulsion,p);
       else if(PROPULSION_COMMANDS.has(p.type))
         applyPropulsionAction(state.propulsion,p,{
           electrical:before.electrical,
@@ -239,7 +252,10 @@ function transitionAircraftState(previous,action) {
   if(state.propulsion?.mode==='INTEGRATED') {
     if(previous.propulsion.mode==='INTEGRATED')
       reconcileStarterEdges(state.propulsion,previous.propulsion);
-    if(p.type==='ADVANCE_SECONDS')tickProtection(state.propulsion,p.value);
+    if(p.type==='ADVANCE_SECONDS'){
+      tickProtection(state.propulsion,p.value);
+      advanceIndications(state.indications,p.value,state.propulsion);
+    }
     reconcileApuProtections(state.propulsion);
   }
   // FCOM §7.30.2 ground battery-switch OFF shuts down the APU.
@@ -295,6 +311,11 @@ function transitionAircraftState(previous,action) {
     pressureChanges:comparePressureTransitions(before.pressurePhysics,after.pressurePhysics),
     sensorChanges,
     sensorSignalChanges:compareSensorSignals(before.sensors,after.sensors),
+    indicationChanges:before.indications.mode==='INTEGRATED'||after.indications.mode==='INTEGRATED'?
+      {engines:Object.fromEntries(['1','2'].map(id=>[id,{
+        prior:before.indications.engines[id]||null,
+        current:after.indications.engines[id]||null
+      }]))}:null,
     checklistChanges:{
       activated:after.checklists.activeCaseIds.filter(id=>!before.checklists.activeCaseIds.includes(id)),
       resolved:before.checklists.activeCaseIds.filter(id=>!after.checklists.activeCaseIds.includes(id)),
