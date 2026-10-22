@@ -2,6 +2,9 @@
 (() => {
   "use strict";
   const { WarningEngine, AUDIO } = window.B737WarningEngine;
+  const { RealAudioBank, keyFor, suggestKey, validAudioFile } = window.B737RealAudioBank;
+  const realBank = new RealAudioBank();
+  let realReady = false;
   let model = new WarningEngine({ variant: "737-300" });
   let audioContext = null;
   let master = null;
@@ -25,7 +28,28 @@
     ["gpws", "EGPWS · TOO LOW GEAR", "Placeholder voice", "TOO LOW GEAR"],
     ["tcas", "TCAS · TRAFFIC", "Placeholder voice", "TRAFFIC TRAFFIC"],
     ["radioAltitude", "RA · FIVE HUNDRED", "Placeholder voice", "FIVE HUNDRED"],
-    ["minimums", "Minimums", "Placeholder voice", "APPROACHING MINIMUMS"]
+    ["minimums", "Minimums", "Placeholder voice", "APPROACHING MINIMUMS"],
+    ["minimums", "MINIMUMS", "Radio minima", "MINIMUMS"],
+    ["gpws", "GPWS · TERRAIN", "Terrain closure", "TERRAIN"],
+    ["gpws", "GPWS · TERRAIN AHEAD", "Terrain ahead", "TERRAIN AHEAD"],
+    ["gpws", "GPWS · CAUTION TERRAIN", "Caution terrain", "CAUTION TERRAIN"],
+    ["gpws", "GPWS · DON'T SINK", "Altitude loss", "DON'T SINK"],
+    ["gpws", "GPWS · TOO LOW FLAPS", "Unsafe flap configuration", "TOO LOW FLAPS"],
+    ["gpws", "GPWS · TOO LOW TERRAIN", "Unsafe clearance", "TOO LOW TERRAIN"],
+    ["gpws", "GPWS · BANK ANGLE", "Excessive bank", "BANK ANGLE"],
+    ["gpws", "GPWS · GLIDESLOPE", "Deviation", "GLIDESLOPE"],
+    ["tcas", "TCAS · CLIMB", "TCAS advisory", "CLIMB"],
+    ["tcas", "TCAS · DESCEND", "TCAS advisory", "DESCEND"],
+    ["tcas", "TCAS · MAINTAIN VERTICAL SPEED", "TCAS advisory", "MAINTAIN VERTICAL SPEED"],
+    ["tcas", "TCAS · CLEAR OF CONFLICT", "TCAS advisory", "CLEAR OF CONFLICT"],
+    ["radioAltitude", "RA · 2500", "EGPWS radio-altitude", "TWO THOUSAND FIVE HUNDRED"],
+    ["radioAltitude", "RA · 1000", "EGPWS radio-altitude", "ONE THOUSAND"],
+    ["radioAltitude", "RA · 100", "EGPWS radio-altitude", "100"],
+    ["radioAltitude", "RA · 50", "EGPWS radio-altitude", "50"],
+    ["radioAltitude", "RA · 40", "EGPWS radio-altitude", "40"],
+    ["radioAltitude", "RA · 30", "EGPWS radio-altitude", "30"],
+    ["radioAltitude", "RA · 20", "EGPWS radio-altitude", "20"],
+    ["radioAltitude", "RA · 10", "EGPWS radio-altitude", "10"]
   ];
   const matrix = byId("soundMatrix");
   for (const [id, label, desc, phrase] of SOUND_TESTS) {
@@ -51,6 +75,7 @@
     return true;
   }
   function clearSound() {
+    realBank.stop();
     for (const src of currentSamples) { try { src.stop(); } catch (_) {} }
     for (const osc of currentNodes) { try { osc.stop(); } catch (_) {} }
     currentNodes = [];
@@ -95,6 +120,14 @@
     speechSynthesis.speak(utterance);
   }
   function play(kind, message) {
+    const soundKey = keyFor(kind, message);
+    if (realReady && realBank.has(soundKey)) {
+      clearSound();
+      realBank.play(soundKey, Number(byId("reviewVolume").value) / 100).catch(err => {
+        byId("realImportStatus").textContent = "خطا در پخش فایل واقعی: " + err.message;
+      });
+      return;
+    }
     if (!ensureAudio()) return;
     clearSound();
     const t = audioContext.currentTime + .035;
@@ -198,7 +231,11 @@
     byId("reviewCounter").textContent = (reviewIndex + 1) + " / " + SOUND_TESTS.length;
     byId("reviewNumber").textContent = String(reviewIndex + 1).padStart(2, "0");
     byId("reviewTitle").textContent = title;
-    byId("reviewDescription").textContent = desc;
+    const liveKey = keyFor(id,SOUND_TESTS[reviewIndex][3]);
+    byId("reviewDescription").textContent = desc +
+       (realReady && realBank.has(liveKey) ? " · فایل واردشده: " + realBank.getSummary(liveKey).name
+         : " · صدای اصلی بارگذاری نشده (نسخه مصنوعی)");
+
     byId("reviewNote").value = curReview().note || "";
     byId("reviewProgressFill").style.width = (100 * complete / SOUND_TESTS.length) + "%";
     byId("reviewSummary").textContent = "ارزیابی‌شده: " + complete + " از " + SOUND_TESTS.length +
@@ -222,7 +259,9 @@
       const entry = review[i] || { status:"untested", note:"" };
       return { no:i+1,id,label,description:desc,status:entry.status || "untested",notes:entry.note || "" };
     });
-    return { project:"B737 Classic Audio Warning Lab",version:"0.1",sampleAuthenticity:"placeholder synthesis and TTS",results:rows };
+    return { project:"B737 Classic Audio Warning Lab",version:"0.2",
+      provenance:"User-imported files are local to this browser; fallback is synthetic/TTS.",
+      results:rows.map((r,i)=>({...r,audioFile:realReady?realBank.getSummary(keyFor(SOUND_TESTS[i][0],SOUND_TESTS[i][3])):null})) };
   }
   byId("reviewPlay").addEventListener("click", () => {
     const s = SOUND_TESTS[reviewIndex]; play(s[0],s[3]);
@@ -266,5 +305,79 @@
     if (!confirm("تمام نتایج تست صدا پاک شوند؟")) return;
     review = []; reviewIndex = 0; saveReview(); clearSound(); renderReview();
   });
+
+  // Source-file import: non-destructive, never publishes third-party recordings.
+  const optionKeys = new Set();
+  for (const [kind,title,desc,message] of SOUND_TESTS){
+    const k = keyFor(kind,message);
+    if(optionKeys.has(k))continue;
+    optionKeys.add(k);
+    const opt=document.createElement("option");
+    opt.value=k;opt.textContent=title;
+    byId("realTarget").appendChild(opt);
+  }
+  function refreshImportUI(){
+    const key=byId("realTarget").value;
+    const entry=realReady?realBank.getSummary(key):null;
+    byId("realImportStatus").textContent = realReady
+      ? "فایل‌های واقعی واردشده در این مرورگر: "+realBank.count+" / "+optionKeys.size+
+      " | بقیه هشدارها صدای آزمایشی دارند."
+      : "IndexedDB در دسترس نیست؛ می‌توان صداها را به صورت مصنوعی تست کرد.";
+    byId("realCurrentClip").textContent = entry
+      ? "فایل انتخابی: "+entry.name+" ("+Math.round(entry.bytes/1024)+" KB)"
+      : "برای این هشدار هنوز فایل واقعی وارد نشده است.";
+    renderReview();
+  }
+  const persistOne=async(key,file)=>{
+    if(!realReady)throw Error("Browser database not ready");
+    if(!validAudioFile(file))throw Error("فرمت فایل نامعتبر است یا حجم آن بیش از ۴۰ مگابایت است.");
+    // Decode before saving to catch invalid WAV/MP3. Decode also acts as a playback integrity check.
+    const AC=window.AudioContext||window.webkitAudioContext;
+    if(!AC)throw Error("No audio decoder supported");
+    const ctx=new AC();
+    let decoded;
+    try{
+      const arrayBuffer=await file.arrayBuffer();
+      decoded=await ctx.decodeAudioData(arrayBuffer);
+      if(!decoded||decoded.duration<=0||!Number.isFinite(decoded.duration))throw Error("Invalid audio duration");
+    }finally{await ctx.close().catch(()=>{});}
+    await realBank.add(key,file);
+    return decoded.duration.toFixed(2)+"s";
+  };
+  byId("realTarget").addEventListener("change",refreshImportUI);
+  byId("importOne").addEventListener("click",()=>byId("realSingleFile").click());
+  byId("importMany").addEventListener("click",()=>byId("realMultipleFiles").click());
+  byId("realSingleFile").addEventListener("change",async()=>{
+    const input=byId("realSingleFile"),file=input.files&&input.files[0];
+    if(!file)return;
+    try{
+      const duration=await persistOne(byId("realTarget").value,file);
+      byId("realImportStatus").textContent = "بارگذاری و دیکد موفق: "+file.name+" ("+duration+")";
+      refreshImportUI();
+    }catch(e){byId("realImportStatus").textContent="خطا: "+e.message;}
+    input.value="";
+  });
+  byId("realMultipleFiles").addEventListener("change",async()=>{
+    const input=byId("realMultipleFiles");
+    const files=[...(input.files||[])];let success=0;
+    const failed=[];
+    for(const file of files){
+      const key=suggestKey(file.name,SOUND_TESTS);
+      if(!key||!optionKeys.has(key)){failed.push(file.name+": نام قابل تطبیق نیست");continue;}
+      try{await persistOne(key,file);success++;}catch(e){failed.push(file.name+": "+e.message);}
+    }
+    refreshImportUI();
+    byId("realImportStatus").textContent="ورود دسته‌جمعی: "+success+" فایل ثبت شد. "+(failed.length? "موارد ناموفق: "+failed.join(" | "):"");
+    input.value="";
+  });
+  byId("deleteCurrent").addEventListener("click",async()=>{
+    if(!realReady)return;
+    try{await realBank.remove(byId("realTarget").value);refreshImportUI();}
+    catch(e){byId("realImportStatus").textContent="خطا: "+e.message;}
+  });
+  realBank.init().then(()=>{realReady=true;refreshImportUI();})
+    .catch((e)=>{realReady=false;refreshImportUI();
+      byId("realImportStatus").textContent="Storage unavailable: "+e.message;});
+
   renderReview();
 })();
