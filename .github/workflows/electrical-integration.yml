@@ -28,6 +28,11 @@ jobs:
           node --check engine/network/fluid-pressure-engine.cjs
           node --check tests/feeder-pressure-stages.test.cjs
           node --check tests/pump-warning-network.test.cjs
+          node --check engine/network/electrical-feeder-audit.v0.2.cjs
+          node --check engine/network/pressure-distribution.v0.2.cjs
+          node --check engine/network/electrical-consumer-feeders.cjs
+          node --check engine/network/fluid-pressure-engine.cjs
+          node --check tests/electrical-pressure-stage12.test.cjs
           node --check tools/build-power-consumers-lab.cjs
           node --check power-consumers-lab/runtime.js
           node --check tests/power-consumers-browser.test.cjs
@@ -37,6 +42,8 @@ jobs:
         run: node tests/electrical-integration.test.cjs
       - name: Verify real pump-state, discrete sensor and warning derivation
         run: node tests/pump-warning-network.test.cjs
+      - name: Verify source-audited pump feeders and qualitative fuel hydraulic pressure stage 1+2
+        run: node tests/electrical-pressure-stage12.test.cjs
       - name: Verify stage 1 electrical feeder maps and stage 2 hydraulic fuel pressure
         run: node tests/feeder-pressure-stages.test.cjs
       - name: Assert generated browser engine matches shared Node source
