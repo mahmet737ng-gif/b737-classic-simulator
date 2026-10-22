@@ -8,6 +8,7 @@ on:
       - 'tests/afm-epfsi-n1-v10.test.cjs'
       - 'tests/n1-interpolation-guard-v11.test.cjs'
       - 'tests/afm-epfsi-n1-conditions-v12.test.cjs'
+      - 'tests/afm-epfsi-mct-v13.test.cjs'
       - 'package.json'
       - '.github/workflows/epfsi-n1-v10-tests.yml'
   workflow_dispatch:
@@ -30,6 +31,8 @@ jobs:
           node tests/n1-interpolation-guard-v11.test.cjs
           node --check engine/fmc/performance/afm-epfsi-n1-conditions-v12.cjs
           node tests/afm-epfsi-n1-conditions-v12.test.cjs
+          node --check engine/fmc/performance/afm-epfsi-mct-v13.cjs
+          node tests/afm-epfsi-mct-v13.test.cjs
       - name: Standalone CDU headless state and compatibility
         run: |
           node cdu-standalone/tests/smoke.test.cjs
