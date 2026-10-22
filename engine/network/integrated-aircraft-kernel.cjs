@@ -110,7 +110,7 @@ function deriveAircraftState(snapshot) {
   const warnings=projectWarnings(network,causes,electrical,snapshot.warning);
   const announInput={warnings,pumps:network,electrical,warningCauses:causes,
     warningControl:snapshot.warning};
-  const annunciation=projectAnnunciation(announInput,fireDetection);
+  const annunciation=projectAnnunciation(announInput,fireDetection,propulsion);
   return {step:snapshot.step,electrical,electricalFeeders,pressurePhysics,
     pumps:network,sensors:observed.sensors,warnings,warningCauses:causes,
     fireDetection,annunciation,propulsion,
