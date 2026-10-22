@@ -12,6 +12,7 @@ const modules=[
  ['sensorEngine','sensor-failure-engine.cjs'],
  ['firePilot','fire-detection-pilot.cjs'],
  ['annunciator','annunciation-output-engine.cjs'],
+ ['safetyEngine','pneumatic-start-protection.cjs'],
  ['propulsionEngine','engine-apu-integration.cjs'],
  ['kernel','integrated-aircraft-kernel.cjs']
 ];
@@ -28,10 +29,11 @@ function makeBrowserRuntime(){
  "if(p==='./fire-detection-pilot.cjs')return firePilot;"+
  "if(p==='./annunciation-output-engine.cjs')return annunciator;"+
  "if(p==='./engine-apu-integration.cjs')return propulsionEngine;"+
+ "if(p==='./pneumatic-start-protection.cjs')return safetyEngine;"+
  "throw new Error('Unknown browser module '+p);};";
  return "(function(){'use strict';\n"+bodies.map(([name,body])=>
    'const '+name+'=(function(){const module={exports:{}};const exports=module.exports;'+
-   (name==='consumers'||name==='kernel'?requireBlock:'')+'\n'+body+
+   (name==='consumers'||name==='kernel'||name==='propulsionEngine'?requireBlock:'')+'\n'+body+
    '\nreturn module.exports;})();\n').join('')+
    'globalThis.B737PowerNetwork=Object.freeze(kernel);\n})();\n';
 }
