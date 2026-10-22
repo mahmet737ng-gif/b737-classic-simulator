@@ -52,7 +52,8 @@ function update(){
  for(const c of data.controls){const el=controlEls.get(c.id);if(!el)continue; const on=(c.id==='WXR'&&state.wxr)||(c.id==='TFC'&&state.tfc)||(c.id in state.switches && state.switches[c.id]);el.classList.toggle('chosen',Boolean(on));el.classList.toggle('current',state.selected===c.id)}
  for(const x of q('lights').children){const id=x.dataset.light;x.classList.toggle('visible',id==='WXR'?state.wxr:!!state.switches[id]);}
  const turnValues={DH_REF_SELECTOR:state.dhTurn,EADI_BRT:state.brightnessTurns.EADI_BRT,EHSI_MODE:EF.MODE.indexOf(state.mode),EHSI_RANGE:EF.RANGE.indexOf(state.range),EHSI_BRT_OUTER:state.brightnessTurns.EHSI_BRT_OUTER,WXR_BRT_INNER:state.brightnessTurns.WXR_BRT_INNER};
- for(const [id,img] of knobEls)img.style.transform=`rotate(${turnValues[id]*12}deg)`; // illustrative physical rotation of original FCOM knob image; angular calibration not claimed
+ // Knob source pixels remain unchanged: exact rotational angles are not specified in the cited FCOM pages.
+ for(const [id,img] of knobEls)img.style.transform='none';
  q('dh-overlay').textContent=String(state.selectedDH);
  q('source-preview').src=previewFile(state.mode);
  q('source-heading').textContent=state.mode.replaceAll('_',' ')+' · FCOM Chapter 10 §10.31';

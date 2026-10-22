@@ -19,5 +19,6 @@
     "Connect EFIS control events to FCOM-based EHSI symbol generator",
     "Validate mode-specific annunciations and failure logic against rest of Chapter 10"
   ],
-  "privacy": "Proprietary source figures not uploaded to public repository"
+  "privacy": "Proprietary source figures not uploaded to public repository",
+  "mechanical_animation": "Not implemented; rotary angular positions not specified in cited source"
 }

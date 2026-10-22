@@ -28,7 +28,7 @@ Sepehran Airlines Boeing 737CL FCOM, Volume 2, Chapter 10.
 - `node tests/dom.test.cjs`
 - Browser screenshot automation is blocked by sandbox policy; visual QA awaits testing in user's Edge.
 - No FSA TERR selector is added to the selected EP-FSI figure.
-- No numeric dimmer ranges or rotary detent angles are asserted as documented FCOM hardware specifications.
+- No numeric dimmer ranges or rotary detent angles are asserted as documented FCOM hardware specifications. Original knob pixels remain unrotated until exact source-backed mechanical angles can be validated.
 
 ## Provenance
 The FCOM figure is Boeing proprietary. Source illustrations remain inside the private user ZIP/Technical Database only, not in the public GitHub repo.
