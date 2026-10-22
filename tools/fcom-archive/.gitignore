@@ -1,0 +1,5 @@
+FCOM_EXTRACTED/
+*.pdf
+__pycache__/
+*.sqlite
+*.db

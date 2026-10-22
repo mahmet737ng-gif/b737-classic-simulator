@@ -1,0 +1,9 @@
+# FCOM archive extraction status — 2026-10-22
+
+- Public repo `mahmet737ng-gif/b737-classic-simulator` is **public**; Boeing FCOM is labeled proprietary/export-controlled. This commit includes only original extraction software, documentation and synthetic tests — **no full Boeing manual text, images or charts.**
+- Owner's previously uploaded file `SEPEHRAN AIRLINES 737CL FCOM_241021_135227.pdf` is indexed by the file service: **1,937 PDF pages; 82,930,281 bytes.** Authorized raw-byte materialization failed. A partial text materialization returned only the first 27 pages; it cannot replace the source for complete extraction.
+- The source PDF must be attached as a mountable file in the active conversation or supplied to this tool locally to run a complete corpus conversion.
+- The extractor (`extract_fcom.py`) supports per-page text+layout blocks, image object extraction, full-page PNG preserving vector schematic visuals, heuristic tables with CSV and visual crop, FTS5 SQLite search index, resumable batches, SHA-256 provenance, audit manifest and a localhost page viewer.
+- Tests **passed on a synthetic three-page PDF** with digital text, vector drawing, a vector-drawn table and embedded image; FTS search, page coverage and resume tested. Local HTTP viewer API tested separately with a synthetic manual.
+- The 1,937-page real manual **has not been processed**, no original figures transferred, no Boeing tables audited, and no full corpus uploaded. Do not label ENG-004 completed until actual manifest reports full_document_complete=true, media counts and human QA checks pass.
+- Permission to distribute the complete manual must be confirmed before placing any full source-derived corpus in a GitHub repository, even if the target is made private. GitHub Pages should not publicly serve it.
