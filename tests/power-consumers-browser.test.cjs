@@ -51,6 +51,13 @@ assert.match(html,/data-action="injectSensor"/);
 assert.match(html,/id="sensorTable"/);
 assert.match(html,/STUCK_NORMAL/);
 assert.match(html,/data-action="sampleDrop"/);
+assert.match(html,/data-fireloop="A"/);
+assert.match(html,/data-fireloop="B"/);
+assert.match(html,/data-action="fireAck"/);
+assert.match(html,/data-action="enableAudio"/);
+assert.match(html,/id="annunciatorLamps"/);
+assert.match(html,/<script src="\.\.\/audio\/policy\/phrase-selector-v4\.js"><\/script>/);
+
 const inline=/\<script\>([\s\S]*?)\<\/script\>\s*\<\/body\>/m.exec(html);
 assert.ok(inline,'interactive inline script missing');
 new vm.Script(inline[1],{filename:'power-consumers-lab/index.html:inline'});
