@@ -98,3 +98,19 @@ Branch: `design/integrated-systems-network-v01` (NOT merged to main / NOT deploy
 | ENG-030 Full 200-leaf sensor/wiring/actuator coverage | NOT STARTED | Existing 200 leaf categories are taxonomy, not verified circuit/sensor implementations; requires aircraft-specific equipment effectivity and reviewed WDM/AMM/SSM where FCOM not sufficient. |
 
 Next: validate the prototype independently, reconcile graph edges with aircraft options, model signal quality/known vs unknown, then only in a separate preview connect network outputs to panels and audio. No existing web/iPad/Android code was changed.
+
+## 2026-10-23 — Electrical network integration pilot #01 (branch only)
+
+**Verified source context:** Sepehran 737CL FCOM Vol. 2 §6.20.1-19, PDF pages 1150–1168; fire §8.20.1 PDF p1234. Public code includes source references and paraphrased engineering logic only. Current Library includes AFM, FCTM, QRH, WBM, FPPM and MRG; no AFM numerical performance rule is enabled here.
+
+| Task | Status | Evidence / known limitation |
+| --- | --- | --- |
+| ENG-028 Graph integrity + fire loop regression | DONE (AUTOMATED TEST ONLY) | `node tests/system-network.test.cjs` passed in GitHub Actions run [39859470764](https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/39859470764). This does not validate physical aircraft wiring. |
+| ENG-031 Electrical source, main/transfer bus logic | DONE (STANDALONE PILOT) | `engine/network/electrical-power-pilot.cjs` §6.20.1–4; GEN1/GEN2 failure and AUTO vs OFF transfers. No physical GCU transient, breaker, or generator load simulation. |
+| ENG-032 TR, DC bus and standby behavior | DONE (BOUNDED PILOT) | §6.20.8–12; TR1/2/3 source and glideslope DC bus isolation, AUTO ground inhibit, manual BAT, flight battery/inverter fallback. Degraded TR3 backup relay route and partial-ground standby remain **UNRESOLVED** rather than guessed. |
+| ENG-033 Cross-system equipment loss and fire detector power | DONE (CONDITIONAL TEST MAPPING ONLY) | §6.20.18–19 + §8.20.1. Fuel/hydraulic load failures applied only when documented one-generator-in-flight/normal-transfer preconditions hold; bus output drives existing fire-loop pilot power input. Does not compute hydraulic/fuel pressure, bus warning lights, or full detector annunciation physical power. |
+| ENG-034 Electrical integration regression suite | DONE (NODE CI) | `tests/electrical-integration.test.cjs`; `.github/workflows/electrical-integration.yml`; run [39859470764](https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/39859470764) conclusion `success`. An isolated JS shim previously passed 86 assertions. |
+| ENG-008 Full electrical physical model | **IN PROGRESS; NOT COMPLETE** | Pilot above does **not** meet full ENG-008 acceptance criteria. Need source-transfer events, live state kernel, real quality/voltage/relays, fault propagation to all consumers, variant audit and independent visual QA. |
+| ENG-035 Full cross-system aircraft kernel | NOT STARTED | Isolated pure-function outputs are not yet connected to live cockpit, CDU/EHSI, fuel/hydraulic actuators, master warning or flight dynamics. |
+
+Companion report: `docs/ELECTRICAL_INTEGRATION_TEST_01.md`. **Do not merge or deploy to main without separate review**; main may contain newer CDU/EHSI/AFM files that must not be overwritten.
