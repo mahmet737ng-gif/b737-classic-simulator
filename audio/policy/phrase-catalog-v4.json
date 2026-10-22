@@ -1,0 +1,412 @@
+{
+  "version": 4,
+  "aircraft": "737 Classic (-300/-400/-500)",
+  "sourceNote": "Sepehran FCOM and B737 MRG IV.15. This is a system contract, not licensed audio media.",
+  "safePlayback": {
+    "forbidCompiledOriginals": [
+      "a.mp3",
+      "c.mp3"
+    ],
+    "requiresUserConfirmedSegment": true,
+    "missingClip": "NO PLAYBACK; report missing",
+    "terrainComputerRequired": true
+  },
+  "phrases": [
+    {
+      "id": "fireBell",
+      "when": "Valid engine/APU/wheel-well/installed-cargo fire detector discrete",
+      "repeat": "bell while active, not one per sensor",
+      "stop": "FIRE WARN/BELL CUTOUT or warning clears",
+      "reference": "8.10 / 15.20.1–2",
+      "lane": "aural-module",
+      "level": 95
+    },
+    {
+      "id": "intermittentHorn",
+      "when": "Cabin altitude >10,000 ft OR on-ground takeoff-thrust + invalid flap/LE/speedbrake/parking brake/stabilizer trim",
+      "repeat": "shared intermittent horn; one voice even if both inputs active",
+      "stop": "Cabin ALT HORN CUTOUT for cabin source, or clear underlying takeoff-config condition",
+      "reference": "15.20.4–5 / MRG IV.15 p373–374",
+      "lane": "aural-module",
+      "level": 79
+    },
+    {
+      "id": "gearHorn",
+      "when": "Gear not down locked + flap/thrust/RA based landing-configuration logic (FCOM Classic variant)",
+      "repeat": "steady horn while eligible",
+      "stop": "gear/config safe or gear horn cutout when permitted",
+      "reference": "15.20.5–6 / MRG IV.15 p375",
+      "lane": "aural-module",
+      "level": 76
+    },
+    {
+      "id": "overspeed",
+      "when": "IAS>configured VMO or Mach>configured MMO",
+      "repeat": "repeat clacker while beyond limit",
+      "stop": "return below limiting speed",
+      "reference": "15.20.6",
+      "lane": "aural-module",
+      "level": 89
+    },
+    {
+      "id": "shaker",
+      "when": "Stall warning computer output in flight, or valid ground stall warning test",
+      "repeat": "continuous mechanical vibration",
+      "stop": "stall command/test stops",
+      "reference": "15.20.7 / MRG IV.15 p372",
+      "lane": "mechanical",
+      "level": 93
+    },
+    {
+      "id": "apDisconnect",
+      "when": "A/P engaged -> disengaged",
+      "repeat": "wailer at least 2 seconds and until acknowledged",
+      "stop": "A/P warning reset after minimum duration",
+      "reference": "4.10.20–21",
+      "lane": "aural-module",
+      "level": 83
+    },
+    {
+      "id": "altitude",
+      "when": "MCP-altitude acquisition within 900 ft or deviation >300 ft after capture; inhibit at flaps>=25 or G/S capture",
+      "repeat": "single momentary tone per event",
+      "stop": "tone completes",
+      "reference": "15.20.8 / MRG IV.15 p369",
+      "lane": "aural-module",
+      "level": 48
+    },
+    {
+      "id": "trimMotor",
+      "when": "Trim actuator physically moves",
+      "repeat": "mechanical noise while moving",
+      "stop": "trim motor stopped",
+      "reference": "Flight Controls",
+      "lane": "mechanical",
+      "level": 12
+    },
+    {
+      "id": "radioAltitude|TWO THOUSAND FIVE HUNDRED",
+      "when": "Valid EGPWS and Radio Altimeter approach descent crosses 2500 ft RA",
+      "repeat": "single callout per descent crossing; rearm on new approach",
+      "stop": "after callout",
+      "reference": "15.20.27",
+      "lane": "egpws",
+      "level": 26
+    },
+    {
+      "id": "radioAltitude|ONE THOUSAND",
+      "when": "Valid EGPWS and Radio Altimeter approach descent crosses 1000 ft RA",
+      "repeat": "single callout per descent crossing; rearm on new approach",
+      "stop": "after callout",
+      "reference": "15.20.27",
+      "lane": "egpws",
+      "level": 26
+    },
+    {
+      "id": "radioAltitude|FIVE HUNDRED",
+      "when": "Valid EGPWS and Radio Altimeter approach descent crosses 500 ft RA",
+      "repeat": "single callout per descent crossing; rearm on new approach",
+      "stop": "after callout",
+      "reference": "15.20.27",
+      "lane": "egpws",
+      "level": 26
+    },
+    {
+      "id": "radioAltitude|ONE HUNDRED",
+      "when": "Valid EGPWS and Radio Altimeter approach descent crosses 100 ft RA",
+      "repeat": "single callout per descent crossing; rearm on new approach",
+      "stop": "after callout",
+      "reference": "15.20.27",
+      "lane": "egpws",
+      "level": 26
+    },
+    {
+      "id": "radioAltitude|FIFTY",
+      "when": "Valid EGPWS and Radio Altimeter approach descent crosses 50 ft RA",
+      "repeat": "single callout per descent crossing; rearm on new approach",
+      "stop": "after callout",
+      "reference": "15.20.27",
+      "lane": "egpws",
+      "level": 26
+    },
+    {
+      "id": "radioAltitude|FORTY",
+      "when": "Valid EGPWS and Radio Altimeter approach descent crosses 40 ft RA",
+      "repeat": "single callout per descent crossing; rearm on new approach",
+      "stop": "after callout",
+      "reference": "15.20.27",
+      "lane": "egpws",
+      "level": 26
+    },
+    {
+      "id": "radioAltitude|THIRTY",
+      "when": "Valid EGPWS and Radio Altimeter approach descent crosses 30 ft RA",
+      "repeat": "single callout per descent crossing; rearm on new approach",
+      "stop": "after callout",
+      "reference": "15.20.27",
+      "lane": "egpws",
+      "level": 26
+    },
+    {
+      "id": "radioAltitude|TWENTY",
+      "when": "Valid EGPWS and Radio Altimeter approach descent crosses 20 ft RA",
+      "repeat": "single callout per descent crossing; rearm on new approach",
+      "stop": "after callout",
+      "reference": "15.20.27",
+      "lane": "egpws",
+      "level": 26
+    },
+    {
+      "id": "radioAltitude|TEN",
+      "when": "Valid EGPWS and Radio Altimeter approach descent crosses 10 ft RA",
+      "repeat": "single callout per descent crossing; rearm on new approach",
+      "stop": "after callout",
+      "reference": "15.20.27",
+      "lane": "egpws",
+      "level": 26
+    },
+    {
+      "id": "minimums|APPROACHING MINIMUMS",
+      "when": "RA descending across Capt minimums + 80 ft",
+      "repeat": "single announcement",
+      "stop": "after callout",
+      "reference": "15.20.28",
+      "lane": "egpws",
+      "level": 36
+    },
+    {
+      "id": "minimums|MINIMUMS",
+      "when": "RA descending across Capt minimums + 0 ft",
+      "repeat": "single announcement",
+      "stop": "after callout",
+      "reference": "15.20.28",
+      "lane": "egpws",
+      "level": 36
+    },
+    {
+      "id": "gpws|PULL UP",
+      "when": "PULL UP severity output from validated EGPWS Mode 1/2/look-ahead detector",
+      "repeat": "repeat on EGPWS-provided phrase pulses; do not guess fixed warning cadence",
+      "stop": "valid GPWS inhibits/clears/replaces the phrase",
+      "reference": "15.20.11–25",
+      "lane": "egpws",
+      "level": 100
+    },
+    {
+      "id": "gpws|SINK RATE",
+      "when": "validated EGPWS Mode 1 excessive descent-rate caution",
+      "repeat": "repeat on EGPWS-provided phrase pulses; do not guess fixed warning cadence",
+      "stop": "valid GPWS inhibits/clears/replaces the phrase",
+      "reference": "15.20.11–25",
+      "lane": "egpws",
+      "level": 79
+    },
+    {
+      "id": "gpws|TERRAIN",
+      "when": "validated EGPWS terrain-closure warning",
+      "repeat": "repeat on EGPWS-provided phrase pulses; do not guess fixed warning cadence",
+      "stop": "valid GPWS inhibits/clears/replaces the phrase",
+      "reference": "15.20.11–25",
+      "lane": "egpws",
+      "level": 85
+    },
+    {
+      "id": "gpws|TERRAIN AHEAD",
+      "when": "valid forward-looking terrain warning",
+      "repeat": "repeat on EGPWS-provided phrase pulses; do not guess fixed warning cadence",
+      "stop": "valid GPWS inhibits/clears/replaces the phrase",
+      "reference": "15.20.11–25",
+      "lane": "egpws",
+      "level": 97
+    },
+    {
+      "id": "gpws|CAUTION TERRAIN",
+      "when": "valid forward-looking terrain caution",
+      "repeat": "repeat on EGPWS-provided phrase pulses; do not guess fixed warning cadence",
+      "stop": "valid GPWS inhibits/clears/replaces the phrase",
+      "reference": "15.20.11–25",
+      "lane": "egpws",
+      "level": 76
+    },
+    {
+      "id": "gpws|DON'T SINK",
+      "when": "EGPWS Mode 3 excessive post-takeoff/go-around altitude loss",
+      "repeat": "repeat on EGPWS-provided phrase pulses; do not guess fixed warning cadence",
+      "stop": "valid GPWS inhibits/clears/replaces the phrase",
+      "reference": "15.20.11–25",
+      "lane": "egpws",
+      "level": 79
+    },
+    {
+      "id": "gpws|TOO LOW GEAR",
+      "when": "EGPWS Mode 4 unsafe low terrain clearance with gear not down",
+      "repeat": "repeat on EGPWS-provided phrase pulses; do not guess fixed warning cadence",
+      "stop": "valid GPWS inhibits/clears/replaces the phrase",
+      "reference": "15.20.11–25",
+      "lane": "egpws",
+      "level": 83
+    },
+    {
+      "id": "gpws|TOO LOW FLAPS",
+      "when": "EGPWS Mode 4 unsafe low terrain clearance with landing flaps not set",
+      "repeat": "repeat on EGPWS-provided phrase pulses; do not guess fixed warning cadence",
+      "stop": "valid GPWS inhibits/clears/replaces the phrase",
+      "reference": "15.20.11–25",
+      "lane": "egpws",
+      "level": 83
+    },
+    {
+      "id": "gpws|TOO LOW TERRAIN",
+      "when": "EGPWS Mode 4 unsafe terrain clearance at high speed/outside landing config",
+      "repeat": "repeat on EGPWS-provided phrase pulses; do not guess fixed warning cadence",
+      "stop": "valid GPWS inhibits/clears/replaces the phrase",
+      "reference": "15.20.11–25",
+      "lane": "egpws",
+      "level": 88
+    },
+    {
+      "id": "gpws|GLIDESLOPE",
+      "when": "EGPWS Mode 5 excessive deviation below glide slope, subject to installed G/S inhibit",
+      "repeat": "repeat on EGPWS-provided phrase pulses; do not guess fixed warning cadence",
+      "stop": "valid GPWS inhibits/clears/replaces the phrase",
+      "reference": "15.20.11–25",
+      "lane": "egpws",
+      "level": 67
+    },
+    {
+      "id": "gpws|WINDSHEAR",
+      "when": "reactive GPWS windshear warning computer output, valid takeoff/approach/landing",
+      "repeat": "repeat on EGPWS-provided phrase pulses; do not guess fixed warning cadence",
+      "stop": "valid GPWS inhibits/clears/replaces the phrase",
+      "reference": "15.20.11–25",
+      "lane": "egpws",
+      "level": 100
+    },
+    {
+      "id": "gpws|WINDSHEAR AHEAD",
+      "when": "predictive weather-radar windshear warning from detector with phase inhibits",
+      "repeat": "repeat on EGPWS-provided phrase pulses; do not guess fixed warning cadence",
+      "stop": "valid GPWS inhibits/clears/replaces the phrase",
+      "reference": "15.20.11–25",
+      "lane": "egpws",
+      "level": 99
+    },
+    {
+      "id": "gpws|GO AROUND WINDSHEAR AHEAD",
+      "when": "installed predictive windshear warning during approach, below 1200 ft RA",
+      "repeat": "repeat on EGPWS-provided phrase pulses; do not guess fixed warning cadence",
+      "stop": "valid GPWS inhibits/clears/replaces the phrase",
+      "reference": "15.20.11–25",
+      "lane": "egpws",
+      "level": 99
+    },
+    {
+      "id": "gpws|BANK ANGLE",
+      "when": "EGPWS bank angle crosses 35/40/45 deg, rearmed only at <=30 deg",
+      "repeat": "one per bank threshold",
+      "stop": "valid GPWS inhibits/clears/replaces the phrase",
+      "reference": "15.20.26",
+      "lane": "egpws",
+      "level": 74
+    },
+    {
+      "id": "gpws|CAUTION OBSTACLE",
+      "when": "forward-looking obstacle caution, if installed",
+      "repeat": "repeat on EGPWS-provided phrase pulses; do not guess fixed warning cadence",
+      "stop": "valid GPWS inhibits/clears/replaces the phrase",
+      "reference": "15.20.11–25",
+      "lane": "egpws",
+      "level": 80
+    },
+    {
+      "id": "gpws|OBSTACLE AHEAD",
+      "when": "forward-looking obstacle warning, if installed",
+      "repeat": "repeat on EGPWS-provided phrase pulses; do not guess fixed warning cadence",
+      "stop": "valid GPWS inhibits/clears/replaces the phrase",
+      "reference": "15.20.11–25",
+      "lane": "egpws",
+      "level": 96
+    },
+    {
+      "id": "gpws|TOO LOW",
+      "when": "terrain-clearance-floor caution where installed phrase matches",
+      "repeat": "repeat on EGPWS-provided phrase pulses; do not guess fixed warning cadence",
+      "stop": "valid GPWS inhibits/clears/replaces the phrase",
+      "reference": "15.20.11–25",
+      "lane": "egpws",
+      "level": 73
+    },
+    {
+      "id": "tcas|TRAFFIC TRAFFIC",
+      "when": "New Traffic Advisory output from TCAS TA logic; TCAS voice inhibited below approx 500 ft RA; GPWS/windshear warnings override",
+      "repeat": "once per TCAS source event",
+      "stop": "advisory ends/superseded",
+      "reference": "15.20.29–31",
+      "lane": "tcas",
+      "level": 58
+    },
+    {
+      "id": "tcas|CLIMB",
+      "when": "TCAS resolution advisory commands climb; TCAS voice inhibited below approx 500 ft RA; GPWS/windshear warnings override",
+      "repeat": "once per TCAS source event",
+      "stop": "advisory ends/superseded",
+      "reference": "15.20.29–31",
+      "lane": "tcas",
+      "level": 82
+    },
+    {
+      "id": "tcas|DESCEND",
+      "when": "TCAS RA commands descent; <1100 ft inhibitions apply; TCAS voice inhibited below approx 500 ft RA; GPWS/windshear warnings override",
+      "repeat": "once per TCAS source event",
+      "stop": "advisory ends/superseded",
+      "reference": "15.20.29–31",
+      "lane": "tcas",
+      "level": 82
+    },
+    {
+      "id": "tcas|INCREASE CLIMB",
+      "when": "TCAS stronger climb RA; TCAS voice inhibited below approx 500 ft RA; GPWS/windshear warnings override",
+      "repeat": "once per TCAS source event",
+      "stop": "advisory ends/superseded",
+      "reference": "15.20.29–31",
+      "lane": "tcas",
+      "level": 90
+    },
+    {
+      "id": "tcas|INCREASE DESCENT",
+      "when": "TCAS stronger descent RA; <1500 ft inhibit; TCAS voice inhibited below approx 500 ft RA; GPWS/windshear warnings override",
+      "repeat": "once per TCAS source event",
+      "stop": "advisory ends/superseded",
+      "reference": "15.20.29–31",
+      "lane": "tcas",
+      "level": 90
+    },
+    {
+      "id": "tcas|MAINTAIN VERTICAL SPEED",
+      "when": "Installed TCAS selected-phrase RA; TCAS voice inhibited below approx 500 ft RA; GPWS/windshear warnings override",
+      "repeat": "once per TCAS source event",
+      "stop": "advisory ends/superseded",
+      "reference": "15.20.29–31",
+      "lane": "tcas",
+      "level": 79
+    },
+    {
+      "id": "tcas|MONITOR VERTICAL SPEED",
+      "when": "Installed TCAS selected-phrase RA; TCAS voice inhibited below approx 500 ft RA; GPWS/windshear warnings override",
+      "repeat": "once per TCAS source event",
+      "stop": "advisory ends/superseded",
+      "reference": "15.20.29–31",
+      "lane": "tcas",
+      "level": 77
+    },
+    {
+      "id": "tcas|CLEAR OF CONFLICT",
+      "when": "TCAS reports conflict resolved; TCAS voice inhibited below approx 500 ft RA; GPWS/windshear warnings override",
+      "repeat": "once per TCAS source event",
+      "stop": "advisory ends/superseded",
+      "reference": "15.20.29–31",
+      "lane": "tcas",
+      "level": 61
+    }
+  ]
+}
