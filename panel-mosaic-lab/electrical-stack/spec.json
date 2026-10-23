@@ -1,8 +1,8 @@
 {
   "schema": "b737-electrical-mosaic.v1",
   "version": "UPD-0003",
-  "stage": "binary-assets-awaiting-upload",
-  "notes": "Physical vertical stack OH-10 > OH-11 > OH-12. Source plates remain independent. No bounding-box substitution, no distortion. OH-10 is already present; OH-11 and OH-12 are only made active after their SHA-256 matches.",
+  "stage": "published-verified",
+  "notes": "Source images verified by GitHub Actions SHA-256 and original Git blob. Physical seam alignment is provisional.",
   "panels": [
     {
       "id": "OH-10",
@@ -14,27 +14,19 @@
     {
       "id": "OH-11",
       "title": "STANDBY POWER / DRIVE TEMP",
-      "path": "../assets/locked/2026-10-23/OH11-STANDBY-29a8492356fc.png",
-      "sha256": "29a8492356fca12afe4763c374d12a82b9a1dc416b5dc0305cdb02f2049a48a9",
-      "bytes": 3178802,
-      "dimensions": [
-        1203,
-        1308
-      ],
-      "state": "pending-binary",
+      "path": "../assets/locked/2026-10-23/OH11-STANDBY-8b7d36ff3182.png",
+      "sha256": "86cf2f1de81146756adf694b1fe01067a271c32990c1fda7752eb913442a6708",
+      "bytes": 2412956,
+      "state": "published-locked",
       "layoutOrder": 1
     },
     {
       "id": "OH-12",
       "title": "BUS TRANS / APU GEN",
-      "path": "../assets/locked/2026-10-23/OH12-BUS-TRANS-7ba5963db09c.png",
-      "sha256": "7ba5963db09c176da718d2a2e2e36bba403c7de37039602aa1689b81a0d9117f",
-      "bytes": 3315509,
-      "dimensions": [
-        1024,
-        1536
-      ],
-      "state": "pending-binary",
+      "path": "../assets/locked/2026-10-23/OH12-BUS-TRANS-09319c17e7d0.png",
+      "sha256": "709cb15a86f9038ca082136c4db59af83c7800107dfe320182bf7f4c56837e9f",
+      "bytes": 2593979,
+      "state": "published-locked",
       "layoutOrder": 2
     }
   ]
