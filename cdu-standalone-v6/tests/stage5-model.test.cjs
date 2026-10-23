@@ -27,10 +27,11 @@ const active=clone(route);active.fmc_legs_activated=1;assert.throws(()=>m.valida
 const erased=clone(route);erased.items.splice(2,1);assert.throws(()=>m.validate(erased));
 const jump=clone(route);jump.items[4].reference_leg_distance_nm=12;assert.equal(m.safeReferenceLines(jump).length,0);
 const broken=clone(route);broken.items.splice(4,0,{type:'DISCONTINUITY',label:'ROUTE DISCONTINUITY',required_action:'EXPLICIT_VERIFY_AND_RESOLVE',fmc_status:'NOT_EXECUTABLE'});broken.qa.discontinuity_count=2;assert.equal(m.safeReferenceLines(broken).length,0);
-const map=require('../stage5-map.js');const st={stage5Committed:route,ehsi:{mode:'PLAN'}};
+const map=require('../stage5-map.js');const st={stage5Committed:route,active:{ORIGIN:'ZZAA',DEST:'ZZBB'},pending:{},stagedRoute:{},ehsi:{mode:'PLAN'}};
 assert.equal(map.accepted(st),true);
 assert.equal(map.project(m.safeReferenceLines(route))[0].length,2);
 st.ehsi.mode='MAP';assert.equal(map.accepted(st),false);
+st.ehsi.mode='PLAN';st.pending={DEST:'ZZCC'};assert.equal(map.accepted(st),false);st.pending={};
 const factory=require('../stage5-adapter.js');
 let updates=0;
 const s={page:'RTE',active:{ORIGIN:'',DEST:''},pending:{},stagedRoute:{},message:''};
@@ -44,5 +45,6 @@ s.pending={ORIGIN:'ZZAA',DEST:'ZZBB'};s.stagedRoute={};s.page='ACTIVATE';adapter
 assert.equal(s.stage5AwaitingExec,true);assert.equal(adapter.beforeKey('CDU_CAPT_EXEC'),false);
 s.active={ORIGIN:'ZZAA',DEST:'ZZBB'};s.pending={};adapter.afterKey('CDU_CAPT_EXEC','ACTIVATE');
 assert.equal(adapter.snapshot().stage,'ACT_REFERENCE_ONLY');assert.equal(adapter.snapshot().routeGuidance,false);assert.equal(updates,1);
+s.pending={DEST:'ZZCC'};assert.equal(adapter.snapshot().stage,'NONE');s.pending={};
 assert.throws(()=>adapter.stagePlan(route));
 console.log('PASS stage5 model, discontinuities, fail-closed MOD/EXEC, EHSI map');
