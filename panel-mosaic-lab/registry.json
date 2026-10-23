@@ -1,6 +1,6 @@
 {
   "schema": "b737-mosaic-atlas.v1",
-  "version": "2026-10-24.2",
+  "version": "2026-10-24.3",
   "source": "Owner supplied one-page PDF composite (2026-10-23). Initial reference atlas, boundaries provisional.",
   "panels": [
     {
@@ -261,51 +261,79 @@
     },
     {
       "id": "OH-15",
-      "title": "WINDOW HEAT",
+      "title": "WINDOW / PITOT HEAT",
       "x": 429,
       "y": 350,
       "w": 161,
       "h": 190,
       "group": "ICE",
-      "status": "mapped",
+      "status": "artwork",
       "artwork": null,
-      "geometryStatus": "rejected"
+      "geometryStatus": "source image verified; historical ROI rejected; plate seams not approved",
+      "originalAtlasTitle": "WINDOW HEAT",
+      "placement": {
+        "source": "assets/locked/2026-10-23/OH15-WINDOW-PITOT-4ecfdc65f71b.png",
+        "sha256": "b8c4ca3047fe5028093fb1f1f9e5d70eaa292f7d4d95ce664ef64f150fd1db96",
+        "stageUrl": "oh15-18/",
+        "status": "image-verified-subsystem-inferred-from-filename"
+      }
     },
     {
       "id": "OH-16",
-      "title": "ANTI ICE",
+      "title": "ANTI-ICE CONTROL",
       "x": 429,
       "y": 540,
       "w": 161,
       "h": 130,
       "group": "ICE",
-      "status": "mapped",
+      "status": "artwork",
       "artwork": null,
-      "geometryStatus": "rejected"
+      "geometryStatus": "source image verified; historical ROI rejected; plate seams not approved",
+      "originalAtlasTitle": "ANTI ICE",
+      "placement": {
+        "source": "assets/locked/2026-10-23/OH16-ANTI-ICE-f59889e4efd2.png",
+        "sha256": "6009e9eba2bd5ea6e4fc8c56dbe1a6454c2f9fbce8513d2d32d84703018d56e9",
+        "stageUrl": "oh15-18/",
+        "status": "image-verified-subsystem-inferred-from-filename"
+      }
     },
     {
       "id": "OH-17",
-      "title": "HYDRAULICS",
+      "title": "HYDRAULIC PUMP",
       "x": 429,
       "y": 670,
       "w": 161,
       "h": 130,
       "group": "HYD",
-      "status": "mapped",
+      "status": "artwork",
       "artwork": null,
-      "geometryStatus": "rejected"
+      "geometryStatus": "source image verified; historical ROI rejected; plate seams not approved",
+      "originalAtlasTitle": "HYDRAULICS",
+      "placement": {
+        "source": "assets/locked/2026-10-23/OH17-HYDRAULIC-f149122d1f5c.png",
+        "sha256": "96c08c4f331d5c375cb73bbc16f10cc6172433abd5e7b0a84e2826f08a2d68f8",
+        "stageUrl": "oh15-18/",
+        "status": "image-verified-subsystem-inferred-from-filename"
+      }
     },
     {
       "id": "OH-18",
-      "title": "DOORS",
+      "title": "EMPTY CUTOUTS / SYSTEM UNCONFIRMED",
       "x": 429,
       "y": 800,
       "w": 161,
       "h": 100,
-      "group": "DOORS",
-      "status": "mapped",
+      "group": "PENDING IDENTIFICATION",
+      "status": "artwork",
       "artwork": null,
-      "geometryStatus": "rejected"
+      "geometryStatus": "source image verified; historical ROI rejected; plate seams not approved",
+      "originalAtlasTitle": "DOORS",
+      "placement": {
+        "source": "assets/locked/2026-10-23/OH18-UNCLASSIFIED-5af4fdc5284b.png",
+        "sha256": "939e9f6ed14cbe2a8a6182684fcef790607e7dba10a1bfe002a062457f83e5ee",
+        "stageUrl": "oh15-18/",
+        "status": "image-verified-subsystem-unclassified"
+      }
     },
     {
       "id": "OH-19",
@@ -802,7 +830,7 @@
   ],
   "validation": {
     "status": "rejected",
-    "reason": "Old 59 rectangular regions remain rejected. Validated image sources for OH01..06, OH11..12 and OH13..14 are tracked in separate modules; don't interpret old ROI rectangles as approved outlines.",
+    "reason": "Historic rectangular atlas boxes remain invalid. OH01..06, OH11..12, OH13..14, and OH15..18 images have separate source previews. Do not use historical box coordinates for final placement.",
     "next": "Re-trace each individual physical screw-defined plate on the actual owner PDF; independently QA 3 assemblies."
   },
   "previousVersion": "2026-10-23.3-REJECTED",
@@ -847,5 +875,17 @@
     ],
     "sourcesVerified": true,
     "physicalLayoutStatus": "awaiting visual border trace"
+  },
+  "oh15_18": {
+    "update": "UPD-0005",
+    "stageUrl": "oh15-18/",
+    "panelIds": [
+      "OH-15",
+      "OH-16",
+      "OH-17",
+      "OH-18"
+    ],
+    "classificationStatus": "OH15..OH17 from filenames; OH18 provisional",
+    "seamGeometryStatus": "pending-visual-qa"
   }
 }
