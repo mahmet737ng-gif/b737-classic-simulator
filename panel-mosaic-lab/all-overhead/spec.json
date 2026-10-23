@@ -1,9 +1,9 @@
 {
   "schema": "b737.overhead-all-source-assembly.v1",
-  "version": "UPD-0009-atlas-absolute",
+  "version": "UPD-0010-safe-content-fit",
   "date": "2026-10-24",
   "purpose": "Interactive source-pixel-preserving preview of all currently uploaded OH01-OH18 sources, not a geometry-accurate final cockpit.",
-  "geometryNotice": "Position and sizes for each of 18 source photos are fixed at the original 2220×3525 atlas coordinates in atlas-layout.json. All column lower edges at y=3276; the entire shared OH23-25 bottom strip starts at y=3281. Source photos keep intrinsic aspect via object-fit:cover, cropping only in viewport; source originals are immutable. Panel content splits in the narrow center third column remain visually approximated.",
+  "geometryNotice": "UPD0010 fixes unacceptable image cropping of UPD0009. Each of 18 source images is now drawn entirely inside its atlas reference rectangle with original aspect ratio, using measured natural dimensions. Known white padding on OH13 left/right and OH23-25 top/bottom is excluded from the bounding content in presentation only. Atlas plate rectangles remain fixed and all five columns still terminate at y3276. Empty areas show neutral slate because imagery aspect ratios do not match physically accurate atlas slots.",
   "header": {
     "id": "UPPER",
     "geometry": "../upper-oh/geometry.json",
@@ -407,7 +407,10 @@
     "classificationOf4NewImages": "verified by source thumbnails against owner overhead atlas reference",
     "commonLowerEdgeY": 3276,
     "layoutModel": "atlas-x-y-w-h absolute positioned; 2220x3525 scaled with one factor",
-    "physicalSeams": "native atlas rect outlines traced; component splits within OH13/14/18 approximate; owner visual QA pending"
+    "physicalSeams": "ATLAS BOXES VERIFIED, PHOTOGRAPHIC FIT NOT COMPLETE",
+    "sourceVisibility": "full-visible artwork with original proportions",
+    "sourceAspectMismatch": "verified 18 measured input-image ratios; several source photos cannot fill their atlas rectangle without cropping or reauthoring",
+    "finalArtwork": "not approved; atlas-aligned panel background/side padding remains to be reconstructed"
   },
   "confirmedBytes": 46341071,
   "loadedSources": 18,
