@@ -1,6 +1,6 @@
 {
   "schema": "b737-panel-assets-immutable-v2",
-  "version": "UPD-0009",
+  "version": "UPD-0011",
   "status": "GITHUB_BINARY_VERIFIED",
   "lockPolicy": "append-only files under panel-mosaic-lab/assets/locked; SHA-256 and Git object hash checked by CI. Repository admins may still override unless branch/ruleset protection configured.",
   "assets": [
@@ -557,6 +557,24 @@
       "sourceGeometry": "panel-mosaic-lab/all-overhead/atlas-layout.json",
       "qa": "native atlas 2220x3525, shared lower boundary y3276, lower strip starts y3281, aspect-preserving viewport fitting",
       "notes": "Presentation geometry changed; locked PNG bytes did not change. Some thin central strip content subdivisions still approximate pending owner visual inspection."
+    },
+    {
+      "version": "UPD-0011-photo-atlas-reorder",
+      "date": "2026-10-24",
+      "assetIds": [],
+      "panels": [
+        "OH-07",
+        "OH-08",
+        "OH-09",
+        "OH-13",
+        "OH-14",
+        "OH-18",
+        "OH-19"
+      ],
+      "status": "reference-photo-based-corrective-remapping",
+      "reference": "B737_Mosaic_Atlas_OH_v2.jpg",
+      "geometry": "panel-mosaic-lab/all-overhead/atlas-layout.json",
+      "notes": "19 display plate placements from 18 original immutable images. Separate OH07 & OH08 from one source file. True original atlas OH18 is Voice Recorder, atlas OH19 is differential/altitude horn, historical OH18-GROUND-CALL source is part of center OH14. Native images untouched; rendered art-fit for each atlas slot pending owner confirmation."
     }
   ],
   "lastStagedVersion": "UPD-0003",
