@@ -25,10 +25,15 @@ jobs:
         run: node engine/ch11/tests/fmc-runtime-v2.test.cjs
       - name: Preserve previous Chapter11 baseline tests
         run: node engine/ch11/tests/ch11-engine.test.cjs
+      - name: Ensure approved CDU original assets are byte-identical
+        run: node engine/ch11/tests/approved-cdu-assets.test.cjs
+      - name: Test physical CDU 70 exact hitboxes and Chapter11 v2 events
+        run: node engine/ch11/tests/physical-cdu-v2.test.cjs
       - name: Validate runtime and Pages lab syntax
         run: |
           node --check engine/ch11/fmc-runtime-v2.js
           node --check engine/ch11/lab-v2/app.js
+          node --check engine/ch11/physical-cdu/app.js
       - name: Prohibit proprietary original FCOM artifacts in public runtime files
         run: |
           if find engine/ch11 -type f \( -name '*.pdf' -o -name '*.sqlite' \) | grep .; then
