@@ -93,7 +93,33 @@
   "integration": {
     "navigation_source_selection": "registry",
     "source_merge_behavior": "explicit_source_selection_only",
-    "fmc_gate": "verified ARINC/PMDG procedure semantics (including transitions, runway applicability, altitude/speed constraints and holds); source cycle and aircraft adapter tests required; ZYYJ incomplete file blocked",
-    "simulator_training_only": true
+    "fmc_gate": "NPE decoded AST is NOT flyable legs; verify source semantics, coordinate disambiguation, path geometry and EP-FSI FMC adapter; never activate incomplete ZYYJ or data prior to exact per-file AIRAC marker",
+    "simulator_training_only": true,
+    "procedure_decoder": {
+      "id": "NPE_STAGE1_v1",
+      "input_source_id": "PMDG_WORLD_2610_WITH_PROCEDURES_R1",
+      "source_marker": "//AIRAC Cycle : 2610 (01/OCT/2026 - 29/OCT/2026) - Ver.1",
+      "code_path": "navigation/procedure_decoder.py",
+      "reader_path": "navigation/npe_reader.py",
+      "docs_path": "navigation/NPE_STAGE1.md",
+      "private_archive": "/B737/NAVDB/NPE_STAGE1/B737_NAVDB_WORLD_AIRAC2610_NPE_STAGE1_PRIVATE.zip",
+      "private_report": "/B737/NAVDB/NPE_STAGE1/decode_report.json",
+      "private_manifest": "/B737/NAVDB/NPE_STAGE1/manifest.json",
+      "normalized_sqlite_filename": "B737_NAVDB_WORLD_AIRAC2610_NPE_STAGE1.sqlite",
+      "normalized_sqlite_sha256": "9f8a491a7bce9fc4709a15e7576b0bc990cc4fa4b5d483074f7ce4d4ceb5520e",
+      "imported_procedures": 100562,
+      "source_segments": 236879,
+      "procedures_structure_ok": 100525,
+      "unresolved_grammar_nodes": 0,
+      "quarantined_files": [
+        "SidStars/ZYYJ.txt"
+      ],
+      "quarantined_procedures": 37,
+      "status": "SOURCE_AST_DECODED_NOT_EXECUTABLE",
+      "ready_for_fmc": false,
+      "flight_legs_generated": 0,
+      "tests_passed": 15,
+      "qa": "SQLITE_INTEGRITY_OK_TOKEN_RECONSTRUCTION_SHA256_OK"
+    }
   }
 }
