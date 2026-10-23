@@ -25,7 +25,7 @@ for(const item of spec.images){
  assert.ok(full.startsWith(path.resolve(root,'../assets/locked/')),'all sources must be locked');
  const bytes=fs.readFileSync(full);
  assert.equal(bytes.length,item.bytes,'size: '+item.filename);
- const git=crypto.createHash('sha1').update(Buffer.concat([Buffer.from('blob '+bytes.length+'\\0'),bytes])).digest('hex');
+ const git=crypto.createHash('sha1').update(Buffer.concat([Buffer.from('blob '+bytes.length+String.fromCharCode(0)),bytes])).digest('hex');
  assert.equal(git,item.gitBlobSha,'Git blob identity: '+item.filename);
  if(item.sha256)assert.equal(crypto.createHash('sha256').update(bytes).digest('hex'),item.sha256,'SHA-256: '+item.filename);
  count+=bytes.length;
