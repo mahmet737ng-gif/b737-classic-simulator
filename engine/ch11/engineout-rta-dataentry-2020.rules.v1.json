@@ -1,0 +1,1153 @@
+{
+  "schema": "b737-classic-ch11-engineout-rta-entry-syntax/1.0",
+  "record_id": "B737-CLASSIC-CDU-CH11-ENGINEOUT-RTA-DATAENTRY-2020",
+  "source": {
+    "family": "Boeing 737 Flight Crew Operations Manual",
+    "section": "FMS Operation",
+    "document_number": "D6-27370-300/400/500-SHI",
+    "version_date": "2020-10-15",
+    "medium": "FIVE_USER_UPLOADED_PNG_SCREENSHOTS",
+    "pages": [
+      {
+        "pdf": 1536,
+        "folio": "11.31.47",
+        "date": "2020-10-15",
+        "name": "image(20261023-184035).png",
+        "sha": "2cc8ad54ae1e88e84e35021452dcec5f7b4f2e77651c47e58c86926fde0a8970",
+        "theme": "VNAV Cruise engine-out above max engine-out altitude diagram, variant A"
+      },
+      {
+        "pdf": 1537,
+        "folio": "11.31.48",
+        "date": "2020-10-15",
+        "name": "image(20261023-184042).png",
+        "sha": "30cf92d82cf9af68e7e3696e305569394b3dd06bb51730826d999bb9c17f7e55",
+        "theme": "VNAV Cruise engine-out above max engine-out altitude diagram, variant B"
+      },
+      {
+        "pdf": 1538,
+        "folio": "11.31.49",
+        "date": "2020-10-15",
+        "name": "image(20261023-184051).png",
+        "sha": "339631fe0e59464ef16f3c51a408d2140e9149b059f4fa2eb1b777a16a18f6e1",
+        "theme": "Engine Out Modification, Drift Down Execution, Engine Out Cruise, RTA"
+      },
+      {
+        "pdf": 1539,
+        "folio": "11.31.50",
+        "date": "2020-10-15",
+        "name": "image(20261023-184057).png",
+        "sha": "a336e5d906108c3a62f057e64117a6dc2aa0db636ba99fc5d212c606e0d05e54",
+        "theme": "Altitude Entry and beginning of Airspeed Entry"
+      },
+      {
+        "pdf": 1540,
+        "folio": "11.31.51",
+        "date": "2020-10-15",
+        "name": "image(20261023-184106).png",
+        "sha": "c1ab7e9eb42efcba3cd863dd7584a776b110f9c2e7a9c44e0967a358e3553efa",
+        "theme": "Data Pairs, Bearing Entry and Plus/Minus"
+      }
+    ],
+    "source_capture": "PAGE_CONTENT_VISUALLY_REVIEWED",
+    "copyright_policy": "ONLY_INDEPENDENTLY_PARAPHRASED_CONTRACTS_NO_ORIGINAL_PAGES_COMMITTED"
+  },
+  "context": {
+    "aircraft": "B737 Classic EP-FSI",
+    "engine": "CFM56-3B-1 (20K, project configuration)",
+    "installed_fmc_variant": "UNCONFIRMED_FROM_USER_SCREENSHOTS",
+    "ep_fsi_actual_engine_out_performance": "NOT_DETERMINABLE_FROM_FIGURE",
+    "software_dependency": "standalone_not_MSFS_XPLANE_FSX"
+  },
+  "completeness": {
+    "requirements": 56,
+    "source_pages": [
+      1536,
+      1537,
+      1538,
+      1539,
+      1540
+    ],
+    "engine_out_diagram_variants": 2,
+    "missing": "Printed FCOM narrative and screenshots of some adjacent pages; exact model/effectivity; numeric drift-down tables",
+    "status": "SOURCE_EXTRACTED_NOT_RUNTIME_CONNECTED"
+  },
+  "guards": [
+    "ALTITUDE_FOOT_VALUES_ARE_NOT_AUTO_CERTIFIED_PERFORMANCE",
+    "CREW_ACTIONS_MUST_NOT_TRIGGER_AUTOMATIC_MCP_OR_AUTOTHROTTLE_OPERATION_FROM_ENG_OUT_PAGE",
+    "CONSERVE_SOURCE_VARIANTS_ENG_OUT_SPD_VS_TGT_SPD_AND_LRC_CRUISE_START",
+    "NO_ENGINE_OUT_N1_MAX_ALT_CAS_HARDCODED_FROM_GRAPHICS",
+    "NO_NEW_HITBOXES_OR_PANEL_REDESIGN",
+    "KEEP_BoeingCDU-Large.ttf_AND_BoeingCDU-Small.ttf_UNMODIFIED",
+    "FIELD_SCHEMA_OVERRIDES_GENERIC_ENTRY_PARSER"
+  ],
+  "data_examples": {
+    "altitude_3_digit_with_transition_alt_ft_10000": [
+      {
+        "typed": "008",
+        "shown": "800",
+        "feet": 800
+      },
+      {
+        "typed": "015",
+        "shown": "1500",
+        "feet": 1500
+      },
+      {
+        "typed": "115",
+        "shown": "FL115",
+        "feet": 11500
+      },
+      {
+        "typed": "250",
+        "shown": "FL250",
+        "feet": 25000
+      }
+    ],
+    "altitude_4_digit_with_transition_alt_ft_18000": [
+      {
+        "typed": "0050",
+        "shown": "50"
+      },
+      {
+        "typed": "0835",
+        "shown": "840"
+      },
+      {
+        "typed": "1500",
+        "shown": "1500"
+      },
+      {
+        "typed": "8500",
+        "shown": "8500"
+      },
+      {
+        "typed": "9994",
+        "shown": "9990"
+      }
+    ],
+    "altitude_5_digit_with_transition_alt_ft_4000": [
+      {
+        "typed": "00050",
+        "shown": "50"
+      },
+      {
+        "typed": "00835",
+        "shown": "840"
+      },
+      {
+        "typed": "01500",
+        "shown": "1500"
+      },
+      {
+        "typed": "08500",
+        "shown": "FL085"
+      },
+      {
+        "typed": "09995",
+        "shown": "FL100"
+      },
+      {
+        "typed": "11500",
+        "shown": "FL115"
+      },
+      {
+        "typed": "25000",
+        "shown": "FL250"
+      }
+    ],
+    "bearing": [
+      {
+        "typed": "090",
+        "shown": "090"
+      },
+      {
+        "typed": "360",
+        "shown": "000"
+      }
+    ],
+    "engine_out_diagram_constants_are_illustrative": {
+      "max_alt_example": "FL187",
+      "n1_example_percent": 97.9,
+      "not_approved_for_ep_fsi": true
+    },
+    "rta_failure_scratchpad": "RTA UNACHIEVABLE"
+  },
+  "variants": [
+    {
+      "id": "ENG_OUT_CRZ_DIAGRAM",
+      "branches": [
+        "1536_EVALUATE_AND_BEGIN_ENGINE_OUT_CRUISE",
+        "1537_LRC_SELECT_TO_BEGIN_ENGINE_OUT_CRUISE"
+      ],
+      "effectivity": "NOT_VERIFIED_FOR_EP_FSI"
+    },
+    {
+      "id": "DRIFTDOWN_SPEED_PROMPT",
+      "branches": [
+        "ENG_OUT_SPD",
+        "TGT_SPD"
+      ],
+      "effectivity": "NOT_VERIFIED_FOR_EP_FSI"
+    },
+    {
+      "id": "MANUAL_VS_FMC_COMMAND",
+      "branches": [
+        "FMC_ADVISORY_AND_PERFORMANCE",
+        "CREW_MANUAL_MCP_A_T_ACTION"
+      ],
+      "effectivity": "SEPARATE_ROLES_NOT_AUTOMATED"
+    }
+  ],
+  "rules": [
+    {
+      "id": "EO-001",
+      "category": "cruise_engine_out",
+      "source": {
+        "pdf_viewer_page": 1536,
+        "printed_folio": "11.31.47",
+        "original_image_sha256": "2cc8ad54ae1e88e84e35021452dcec5f7b4f2e77651c47e58c86926fde0a8970"
+      },
+      "when": "ENGINE_FAILURE_IN_CRUISE",
+      "expect": "ENGINE_OUT_WORKFLOW_AVAILABLE",
+      "variant": "ENGINE_OUT_CRUISE_OPTION",
+      "processing": "REFERENCE_CONTRACT_NOT_ACTIVE_CODE",
+      "consumer_tags": [
+        "FMC_CRZ",
+        "ENGINE_STATE"
+      ]
+    },
+    {
+      "id": "EO-002",
+      "category": "cdu_pages",
+      "source": {
+        "pdf_viewer_page": 1536,
+        "printed_folio": "11.31.47",
+        "original_image_sha256": "2cc8ad54ae1e88e84e35021452dcec5f7b4f2e77651c47e58c86926fde0a8970"
+      },
+      "when": "CREW_SELECTS_ENG_OUT_PROMPT_FROM_CRZ",
+      "expect": "ENG_OUT_CRZ_PAGE_SHOWN",
+      "variant": "ENGINE_OUT_CRUISE_OPTION",
+      "processing": "REFERENCE_CONTRACT_NOT_ACTIVE_CODE",
+      "consumer_tags": [
+        "CDU_CRZ",
+        "CDU_ENG_OUT_CRZ"
+      ]
+    },
+    {
+      "id": "EO-003",
+      "category": "drift_down",
+      "source": {
+        "pdf_viewer_page": 1536,
+        "printed_folio": "11.31.47",
+        "original_image_sha256": "2cc8ad54ae1e88e84e35021452dcec5f7b4f2e77651c47e58c86926fde0a8970"
+      },
+      "when": "CREW_SELECTS_ENG_OUT_AND_VALID_PERFORMANCE_ESTIMATE",
+      "expect": "SHOW_MAX_ENGINE_OUT_ALTITUDE_AND_DRIFTDOWN_REFERENCE",
+      "variant": "ENGINE_OUT_CRUISE_VARIANT_A",
+      "processing": "REFERENCE_CONTRACT_NOT_ACTIVE_CODE",
+      "consumer_tags": [
+        "FMC_PERFORMANCE"
+      ]
+    },
+    {
+      "id": "EO-004",
+      "category": "drift_down",
+      "source": {
+        "pdf_viewer_page": 1536,
+        "printed_folio": "11.31.47",
+        "original_image_sha256": "2cc8ad54ae1e88e84e35021452dcec5f7b4f2e77651c47e58c86926fde0a8970"
+      },
+      "when": "AIRCRAFT_CRUISE_ALTITUDE_ABOVE_MAX_ENGINE_OUT_ALTITUDE",
+      "expect": "DRIFT_DOWN_PROFILE_TOWARD_MAX_ENGINE_OUT_ALTITUDE",
+      "variant": "ENGINE_OUT_CRUISE_VARIANT_A",
+      "processing": "REFERENCE_CONTRACT_NOT_ACTIVE_CODE",
+      "consumer_tags": [
+        "FMC_VERTICAL_PROFILE"
+      ]
+    },
+    {
+      "id": "EO-005",
+      "category": "flight_phase",
+      "source": {
+        "pdf_viewer_page": 1536,
+        "printed_folio": "11.31.47",
+        "original_image_sha256": "2cc8ad54ae1e88e84e35021452dcec5f7b4f2e77651c47e58c86926fde0a8970"
+      },
+      "when": "AIRCRAFT_REACHES_MAX_ENGINE_OUT_ALTITUDE_IN_ILLUSTRATION",
+      "expect": "BEGIN_ENGINE_OUT_CRUISE_PHASE",
+      "variant": "ENGINE_OUT_CRUISE_VARIANT_A",
+      "processing": "REFERENCE_CONTRACT_NOT_ACTIVE_CODE",
+      "consumer_tags": [
+        "FMS_PHASE"
+      ]
+    },
+    {
+      "id": "EO-006",
+      "category": "figure_values",
+      "source": {
+        "pdf_viewer_page": 1536,
+        "printed_folio": "11.31.47",
+        "original_image_sha256": "2cc8ad54ae1e88e84e35021452dcec5f7b4f2e77651c47e58c86926fde0a8970"
+      },
+      "when": "ILLUSTRATION_ENGINE_OUT_CRZ_MAX_ALT_FL187",
+      "expect": "DO_NOT_HARDCODE_FL187_234KT_OR_CON_N1_97_9_PERCENT",
+      "variant": "FIGURE_EXAMPLE_NOT_AIRCRAFT_PERFORMANCE_CONSTANT",
+      "processing": "REFERENCE_CONTRACT_NOT_ACTIVE_CODE",
+      "consumer_tags": [
+        "QA"
+      ]
+    },
+    {
+      "id": "EO-007",
+      "category": "cdu_pages",
+      "source": {
+        "pdf_viewer_page": 1537,
+        "printed_folio": "11.31.48",
+        "original_image_sha256": "30cf92d82cf9af68e7e3696e305569394b3dd06bb51730826d999bb9c17f7e55"
+      },
+      "when": "CREW_SELECTS_ENG_OUT_PROMPT_FROM_CRZ",
+      "expect": "ENG_OUT_CRZ_PAGE_SHOWN",
+      "variant": "ENGINE_OUT_CRUISE_VARIANT_B",
+      "processing": "REFERENCE_CONTRACT_NOT_ACTIVE_CODE",
+      "consumer_tags": [
+        "CDU_CRZ"
+      ]
+    },
+    {
+      "id": "EO-008",
+      "category": "performance_prediction",
+      "source": {
+        "pdf_viewer_page": 1537,
+        "printed_folio": "11.31.48",
+        "original_image_sha256": "30cf92d82cf9af68e7e3696e305569394b3dd06bb51730826d999bb9c17f7e55"
+      },
+      "when": "ENGINE_OUT_CRZ_PAGE_SELECTED",
+      "expect": "ADVISE_DRIFTDOWN_AND_ENGINE_OUT_MAX_ALTITUDE",
+      "variant": "ENGINE_OUT_CRUISE_VARIANT_B",
+      "processing": "REFERENCE_CONTRACT_NOT_ACTIVE_CODE",
+      "consumer_tags": [
+        "FMC_PERFORMANCE"
+      ]
+    },
+    {
+      "id": "EO-009",
+      "category": "drift_down",
+      "source": {
+        "pdf_viewer_page": 1537,
+        "printed_folio": "11.31.48",
+        "original_image_sha256": "30cf92d82cf9af68e7e3696e305569394b3dd06bb51730826d999bb9c17f7e55"
+      },
+      "when": "AIRCRAFT_ABOVE_MAX_ENGINE_OUT_ALTITUDE",
+      "expect": "DRIFT_DOWN_TOWARD_ENGINE_OUT_MAX_ALTITUDE",
+      "variant": "ENGINE_OUT_CRUISE_VARIANT_B",
+      "processing": "REFERENCE_CONTRACT_NOT_ACTIVE_CODE",
+      "consumer_tags": [
+        "FMC_VERTICAL_PROFILE"
+      ]
+    },
+    {
+      "id": "EO-010",
+      "category": "engine_out_cruise",
+      "source": {
+        "pdf_viewer_page": 1537,
+        "printed_folio": "11.31.48",
+        "original_image_sha256": "30cf92d82cf9af68e7e3696e305569394b3dd06bb51730826d999bb9c17f7e55"
+      },
+      "when": "AT_ENGINE_OUT_MAX_ALTITUDE_AFTER_DRIFTDOWN",
+      "expect": "CREW_SELECTS_ENGINE_INOPERATIVE_LRC_SPEED_TO_BEGIN_ENGINE_OUT_CRUISE",
+      "variant": "ENGINE_OUT_CRUISE_VARIANT_B",
+      "processing": "REFERENCE_CONTRACT_NOT_ACTIVE_CODE",
+      "consumer_tags": [
+        "CDU_ENG_OUT_CRZ"
+      ]
+    },
+    {
+      "id": "EO-011",
+      "category": "effectivity",
+      "source": {
+        "pdf_viewer_page": 1537,
+        "printed_folio": "11.31.48",
+        "original_image_sha256": "30cf92d82cf9af68e7e3696e305569394b3dd06bb51730826d999bb9c17f7e55"
+      },
+      "when": "ALTERNATIVE_FCOM_DIAGRAMS_1536_AND_1537",
+      "expect": "RETAIN_VARIANTS_SEPARATELY_UNTIL_EP_FSI_CONFIGURATION_VERIFIED",
+      "variant": "EFFECTIVITY_GUARD",
+      "processing": "REFERENCE_CONTRACT_NOT_ACTIVE_CODE",
+      "consumer_tags": [
+        "CONFIG"
+      ]
+    },
+    {
+      "id": "EO-012",
+      "category": "engine_out_performance",
+      "source": {
+        "pdf_viewer_page": 1538,
+        "printed_folio": "11.31.49",
+        "original_image_sha256": "339631fe0e59464ef16f3c51a408d2140e9149b059f4fa2eb1b777a16a18f6e1"
+      },
+      "when": "ENG_OUT_SELECTED_ON_CRZ",
+      "expect": "DISPLAY_ENGINE_OUT_DRIFTDOWN_PERFORMANCE_AND_MAXIMUM_ALTITUDE",
+      "variant": "SOURCE_TEXT",
+      "processing": "REFERENCE_CONTRACT_NOT_ACTIVE_CODE",
+      "consumer_tags": [
+        "FMC_PERFORMANCE",
+        "CDU_ENG_OUT_CRZ"
+      ]
+    },
+    {
+      "id": "EO-013",
+      "category": "engine_out_lateral",
+      "source": {
+        "pdf_viewer_page": 1538,
+        "printed_folio": "11.31.49",
+        "original_image_sha256": "339631fe0e59464ef16f3c51a408d2140e9149b059f4fa2eb1b777a16a18f6e1"
+      },
+      "when": "LEFT_OR_RIGHT_ENGINE_OUT_MODE_CHOSEN",
+      "expect": "USE_SELECTED_FAILED_ENGINE_FOR_PERFORMANCE_CONTEXT",
+      "variant": "SOURCE_TEXT",
+      "processing": "REFERENCE_CONTRACT_NOT_ACTIVE_CODE",
+      "consumer_tags": [
+        "ENGINE_STATE",
+        "FMC_PERFORMANCE"
+      ]
+    },
+    {
+      "id": "EO-014",
+      "category": "crew_action",
+      "source": {
+        "pdf_viewer_page": 1538,
+        "printed_folio": "11.31.49",
+        "original_image_sha256": "339631fe0e59464ef16f3c51a408d2140e9149b059f4fa2eb1b777a16a18f6e1"
+      },
+      "when": "ENGINE_OUT_DRIFTDOWN_PROCEDURE_IN_TEXT",
+      "expect": "CREW_ACTION_DISCONNECT_AUTOTHROTTLE_NOT_AUTOMATIC_CDU_SWITCHING",
+      "variant": "SOURCE_TEXT",
+      "processing": "REFERENCE_CONTRACT_NOT_ACTIVE_CODE",
+      "consumer_tags": [
+        "PROCEDURE_REFERENCE_ONLY"
+      ]
+    },
+    {
+      "id": "EO-015",
+      "category": "crew_action",
+      "source": {
+        "pdf_viewer_page": 1538,
+        "printed_folio": "11.31.49",
+        "original_image_sha256": "339631fe0e59464ef16f3c51a408d2140e9149b059f4fa2eb1b777a16a18f6e1"
+      },
+      "when": "ENGINE_OUT_DRIFTDOWN_PROCEDURE_IN_TEXT",
+      "expect": "CREW_ACTION_SET_MAXIMUM_CONTINUOUS_THRUST_CON_ON_OPERATING_ENGINE",
+      "variant": "SOURCE_TEXT",
+      "processing": "REFERENCE_CONTRACT_NOT_ACTIVE_CODE",
+      "consumer_tags": [
+        "PROCEDURE_REFERENCE_ONLY"
+      ]
+    },
+    {
+      "id": "EO-016",
+      "category": "crew_action",
+      "source": {
+        "pdf_viewer_page": 1538,
+        "printed_folio": "11.31.49",
+        "original_image_sha256": "339631fe0e59464ef16f3c51a408d2140e9149b059f4fa2eb1b777a16a18f6e1"
+      },
+      "when": "ENG_OUT_SPEED_TARGET_DISPLAYED",
+      "expect": "CREW_SETS_MCP_SPEED_TO_ENG_OUT_SPD",
+      "variant": "ENG_OUT_SPD_OPTION",
+      "processing": "REFERENCE_CONTRACT_NOT_ACTIVE_CODE",
+      "consumer_tags": [
+        "MCP",
+        "CREW_PROCEDURE"
+      ]
+    },
+    {
+      "id": "EO-017",
+      "category": "crew_action",
+      "source": {
+        "pdf_viewer_page": 1538,
+        "printed_folio": "11.31.49",
+        "original_image_sha256": "339631fe0e59464ef16f3c51a408d2140e9149b059f4fa2eb1b777a16a18f6e1"
+      },
+      "when": "TGT_SPEED_TARGET_DISPLAYED",
+      "expect": "CREW_SETS_MCP_SPEED_TO_TGT_SPD",
+      "variant": "TGT_SPD_OPTION",
+      "processing": "REFERENCE_CONTRACT_NOT_ACTIVE_CODE",
+      "consumer_tags": [
+        "MCP",
+        "CREW_PROCEDURE"
+      ]
+    },
+    {
+      "id": "EO-018",
+      "category": "crew_action",
+      "source": {
+        "pdf_viewer_page": 1538,
+        "printed_folio": "11.31.49",
+        "original_image_sha256": "339631fe0e59464ef16f3c51a408d2140e9149b059f4fa2eb1b777a16a18f6e1"
+      },
+      "when": "ENGINE_OUT_MAX_ALT_OR_LOWER_CLEARED_ALTITUDE_ESTABLISHED",
+      "expect": "CREW_SETS_MCP_ALTITUDE_AS_REQUIRED",
+      "variant": "SOURCE_TEXT",
+      "processing": "REFERENCE_CONTRACT_NOT_ACTIVE_CODE",
+      "consumer_tags": [
+        "MCP",
+        "CREW_PROCEDURE"
+      ]
+    },
+    {
+      "id": "EO-019",
+      "category": "crew_action",
+      "source": {
+        "pdf_viewer_page": 1538,
+        "printed_folio": "11.31.49",
+        "original_image_sha256": "339631fe0e59464ef16f3c51a408d2140e9149b059f4fa2eb1b777a16a18f6e1"
+      },
+      "when": "ENGINE_OUT_DRIFTDOWN_PROCEDURE_IN_TEXT",
+      "expect": "CREW_SELECTS_LEVEL_CHANGE",
+      "variant": "SOURCE_TEXT",
+      "processing": "REFERENCE_CONTRACT_NOT_ACTIVE_CODE",
+      "consumer_tags": [
+        "MCP",
+        "CREW_PROCEDURE"
+      ]
+    },
+    {
+      "id": "EO-020",
+      "category": "drift_down",
+      "source": {
+        "pdf_viewer_page": 1538,
+        "printed_folio": "11.31.49",
+        "original_image_sha256": "339631fe0e59464ef16f3c51a408d2140e9149b059f4fa2eb1b777a16a18f6e1"
+      },
+      "when": "CON_THRUST_AND_ENGINE_OUT_DRIFTDOWN_SPEED_ESTABLISHED",
+      "expect": "AIRCRAFT_DESCENDS_TOWARD_ENGINE_OUT_MAX_ALTITUDE_AS_DESCRIBED",
+      "variant": "SOURCE_TEXT",
+      "processing": "REFERENCE_CONTRACT_NOT_ACTIVE_CODE",
+      "consumer_tags": [
+        "FMC_VERTICAL_PROFILE"
+      ]
+    },
+    {
+      "id": "EO-021",
+      "category": "engine_out_max_alt",
+      "source": {
+        "pdf_viewer_page": 1538,
+        "printed_folio": "11.31.49",
+        "original_image_sha256": "339631fe0e59464ef16f3c51a408d2140e9149b059f4fa2eb1b777a16a18f6e1"
+      },
+      "when": "GROSS_WEIGHT_DECREASES_DURING_ENGINE_OUT_DRIFT_DOWN",
+      "expect": "MAX_ENGINE_OUT_ALTITUDE_MAY_INCREASE",
+      "variant": "SOURCE_TEXT",
+      "processing": "REFERENCE_CONTRACT_NOT_ACTIVE_CODE",
+      "consumer_tags": [
+        "FMC_PERFORMANCE"
+      ]
+    },
+    {
+      "id": "EO-022",
+      "category": "performance_presentation",
+      "source": {
+        "pdf_viewer_page": 1538,
+        "printed_folio": "11.31.49",
+        "original_image_sha256": "339631fe0e59464ef16f3c51a408d2140e9149b059f4fa2eb1b777a16a18f6e1"
+      },
+      "when": "ENG_OUT_CRZ_PAGE_SHOWN",
+      "expect": "ENGINE_OUT_DATA_ARE_ADVISORY_NOT_DIRECT_FLIGHT_CONTROL_COMMANDS",
+      "variant": "SOURCE_TEXT",
+      "processing": "REFERENCE_CONTRACT_NOT_ACTIVE_CODE",
+      "consumer_tags": [
+        "FMC_PERFORMANCE"
+      ]
+    },
+    {
+      "id": "EO-023",
+      "category": "engine_out_cruise",
+      "source": {
+        "pdf_viewer_page": 1538,
+        "printed_folio": "11.31.49",
+        "original_image_sha256": "339631fe0e59464ef16f3c51a408d2140e9149b059f4fa2eb1b777a16a18f6e1"
+      },
+      "when": "ENGINE_OUT_CRUISE_REACHED",
+      "expect": "USE_ENGINE_OUT_CRUISE_SPEED_WITH_CONTINUOUS_THRUST_REFERENCE",
+      "variant": "SOURCE_TEXT",
+      "processing": "REFERENCE_CONTRACT_NOT_ACTIVE_CODE",
+      "consumer_tags": [
+        "FMC_CRZ"
+      ]
+    },
+    {
+      "id": "EO-024",
+      "category": "engine_out_lrc",
+      "source": {
+        "pdf_viewer_page": 1538,
+        "printed_folio": "11.31.49",
+        "original_image_sha256": "339631fe0e59464ef16f3c51a408d2140e9149b059f4fa2eb1b777a16a18f6e1"
+      },
+      "when": "RANGE_IS_IMPORTANT_IN_ENGINE_OUT_CRUISE",
+      "expect": "SUGGEST_ENGINE_INOPERATIVE_LRC_FROM_QRH_REFERENCE_BUT_DO_NOT_INVENT_VALUE",
+      "variant": "ENG_OUT_LRC_VARIANT",
+      "processing": "REFERENCE_CONTRACT_NOT_ACTIVE_CODE",
+      "consumer_tags": [
+        "FMC_PERFORMANCE"
+      ]
+    },
+    {
+      "id": "RTA-001",
+      "category": "rta",
+      "source": {
+        "pdf_viewer_page": 1538,
+        "printed_folio": "11.31.49",
+        "original_image_sha256": "339631fe0e59464ef16f3c51a408d2140e9149b059f4fa2eb1b777a16a18f6e1"
+      },
+      "when": "FLIGHT_CREW_ENTERS_WAYPOINT_AND_REQUIRED_ARRIVAL_TIME",
+      "expect": "COMPUTE_CRUISE_SPEED_TARGET_TO_MEET_RTA",
+      "variant": "SOURCE_TEXT",
+      "processing": "REFERENCE_CONTRACT_NOT_ACTIVE_CODE",
+      "consumer_tags": [
+        "CDU_RTA",
+        "FMC_SPEED_TARGET"
+      ]
+    },
+    {
+      "id": "RTA-002",
+      "category": "rta",
+      "source": {
+        "pdf_viewer_page": 1538,
+        "printed_folio": "11.31.49",
+        "original_image_sha256": "339631fe0e59464ef16f3c51a408d2140e9149b059f4fa2eb1b777a16a18f6e1"
+      },
+      "when": "RTA_SELECTED_AND_FLIGHT_PLAN_AVAILABLE",
+      "expect": "UPDATE_SPEED_AND_PROGRESS_PREDICTIONS",
+      "variant": "SOURCE_TEXT",
+      "processing": "REFERENCE_CONTRACT_NOT_ACTIVE_CODE",
+      "consumer_tags": [
+        "FMC_PREDICTIONS",
+        "CDU_PROGRESS"
+      ]
+    },
+    {
+      "id": "RTA-003",
+      "category": "rta",
+      "source": {
+        "pdf_viewer_page": 1538,
+        "printed_folio": "11.31.49",
+        "original_image_sha256": "339631fe0e59464ef16f3c51a408d2140e9149b059f4fa2eb1b777a16a18f6e1"
+      },
+      "when": "RTA_NOT_PREDICTED_ACHIEVABLE",
+      "expect": "DISPLAY_SCRATCHPAD_RTA_UNACHIEVABLE",
+      "variant": "SOURCE_TEXT",
+      "processing": "REFERENCE_CONTRACT_NOT_ACTIVE_CODE",
+      "consumer_tags": [
+        "CDU_SCRATCHPAD"
+      ]
+    },
+    {
+      "id": "RTA-004",
+      "category": "rta",
+      "source": {
+        "pdf_viewer_page": 1538,
+        "printed_folio": "11.31.49",
+        "original_image_sha256": "339631fe0e59464ef16f3c51a408d2140e9149b059f4fa2eb1b777a16a18f6e1"
+      },
+      "when": "RTA_VALIDATED_INPUT_PRESENT",
+      "expect": "INFLUENCE_CRUISE_SPEED_PLAN_NOT_UNRELATED_TAKEOFF_PERFORMANCE",
+      "variant": "SOURCE_TEXT",
+      "processing": "REFERENCE_CONTRACT_NOT_ACTIVE_CODE",
+      "consumer_tags": [
+        "FMC_CRZ"
+      ]
+    },
+    {
+      "id": "ALT-001",
+      "category": "data_entry",
+      "source": {
+        "pdf_viewer_page": 1539,
+        "printed_folio": "11.31.50",
+        "original_image_sha256": "a336e5d906108c3a62f057e64117a6dc2aa0db636ba99fc5d212c606e0d05e54"
+      },
+      "when": "ALTITUDE_ENTERED_AS_THREE_DIGIT_STRING",
+      "expect": "INTERPRET_IN_100FT_INCREMENTS",
+      "variant": "SOURCE_TEXT",
+      "processing": "REFERENCE_CONTRACT_NOT_ACTIVE_CODE",
+      "consumer_tags": [
+        "CDU_PARSER"
+      ]
+    },
+    {
+      "id": "ALT-002",
+      "category": "data_entry",
+      "source": {
+        "pdf_viewer_page": 1539,
+        "printed_folio": "11.31.50",
+        "original_image_sha256": "a336e5d906108c3a62f057e64117a6dc2aa0db636ba99fc5d212c606e0d05e54"
+      },
+      "when": "ALTITUDE_ENTERED_AS_FLXXX",
+      "expect": "INTERPRET_AS_FLIGHT_LEVEL_IN_100FT_INCREMENTS",
+      "variant": "SOURCE_TEXT",
+      "processing": "REFERENCE_CONTRACT_NOT_ACTIVE_CODE",
+      "consumer_tags": [
+        "CDU_PARSER"
+      ]
+    },
+    {
+      "id": "ALT-003",
+      "category": "data_entry",
+      "source": {
+        "pdf_viewer_page": 1539,
+        "printed_folio": "11.31.50",
+        "original_image_sha256": "a336e5d906108c3a62f057e64117a6dc2aa0db636ba99fc5d212c606e0d05e54"
+      },
+      "when": "THREE_DIGIT_ALTITUDE_USED",
+      "expect": "ENFORCE_LEADING_ZEROES",
+      "variant": "SOURCE_TEXT",
+      "processing": "REFERENCE_CONTRACT_NOT_ACTIVE_CODE",
+      "consumer_tags": [
+        "CDU_PARSER"
+      ]
+    },
+    {
+      "id": "ALT-004",
+      "category": "data_entry",
+      "source": {
+        "pdf_viewer_page": 1539,
+        "printed_folio": "11.31.50",
+        "original_image_sha256": "a336e5d906108c3a62f057e64117a6dc2aa0db636ba99fc5d212c606e0d05e54"
+      },
+      "when": "ALTITUDE_4_OR_5_DIGITS",
+      "expect": "TREAT_AS_FEET_AND_ROUND_TO_NEAREST_10FT",
+      "variant": "SOURCE_TEXT",
+      "processing": "REFERENCE_CONTRACT_NOT_ACTIVE_CODE",
+      "consumer_tags": [
+        "CDU_PARSER"
+      ]
+    },
+    {
+      "id": "ALT-005",
+      "category": "data_entry",
+      "source": {
+        "pdf_viewer_page": 1539,
+        "printed_folio": "11.31.50",
+        "original_image_sha256": "a336e5d906108c3a62f057e64117a6dc2aa0db636ba99fc5d212c606e0d05e54"
+      },
+      "when": "ALTITUDE_FEET_WITH_EXPLICIT_FL_OPTION",
+      "expect": "DISPLAY_AS_ALTITUDE_OR_FL_BASED_ON_TRANSITION_ALTITUDE",
+      "variant": "SOURCE_TEXT",
+      "processing": "REFERENCE_CONTRACT_NOT_ACTIVE_CODE",
+      "consumer_tags": [
+        "CDU_FORMATTER"
+      ]
+    },
+    {
+      "id": "ALT-006",
+      "category": "data_entry",
+      "source": {
+        "pdf_viewer_page": 1539,
+        "printed_folio": "11.31.50",
+        "original_image_sha256": "a336e5d906108c3a62f057e64117a6dc2aa0db636ba99fc5d212c606e0d05e54"
+      },
+      "when": "CDU_SPECIFIC_FIELD_HAS_EXTRA_LIMITATIONS",
+      "expect": "FIELD_VALIDATION_OVERRIDES_GENERAL_ALTITUDE_PARSER",
+      "variant": "SOURCE_TEXT",
+      "processing": "REFERENCE_CONTRACT_NOT_ACTIVE_CODE",
+      "consumer_tags": [
+        "CDU_FIELD_SCHEMAS"
+      ]
+    },
+    {
+      "id": "ALT-007",
+      "category": "data_entry_example",
+      "source": {
+        "pdf_viewer_page": 1539,
+        "printed_folio": "11.31.50",
+        "original_image_sha256": "a336e5d906108c3a62f057e64117a6dc2aa0db636ba99fc5d212c606e0d05e54"
+      },
+      "when": "TRANSITION_ALT_10000_FEET_AND_INPUT_008",
+      "expect": "DISPLAY_800_FEET",
+      "variant": "FIGURE_EXAMPLE_NOT_AIRCRAFT_PERFORMANCE_CONSTANT",
+      "processing": "REFERENCE_CONTRACT_NOT_ACTIVE_CODE",
+      "consumer_tags": [
+        "CDU_TEST_VECTOR"
+      ]
+    },
+    {
+      "id": "ALT-008",
+      "category": "data_entry_example",
+      "source": {
+        "pdf_viewer_page": 1539,
+        "printed_folio": "11.31.50",
+        "original_image_sha256": "a336e5d906108c3a62f057e64117a6dc2aa0db636ba99fc5d212c606e0d05e54"
+      },
+      "when": "TRANSITION_ALT_10000_FEET_AND_INPUT_015",
+      "expect": "DISPLAY_1500_FEET",
+      "variant": "FIGURE_EXAMPLE_NOT_AIRCRAFT_PERFORMANCE_CONSTANT",
+      "processing": "REFERENCE_CONTRACT_NOT_ACTIVE_CODE",
+      "consumer_tags": [
+        "CDU_TEST_VECTOR"
+      ]
+    },
+    {
+      "id": "ALT-009",
+      "category": "data_entry_example",
+      "source": {
+        "pdf_viewer_page": 1539,
+        "printed_folio": "11.31.50",
+        "original_image_sha256": "a336e5d906108c3a62f057e64117a6dc2aa0db636ba99fc5d212c606e0d05e54"
+      },
+      "when": "TRANSITION_ALT_10000_FEET_AND_INPUT_115",
+      "expect": "DISPLAY_FL115",
+      "variant": "FIGURE_EXAMPLE_NOT_AIRCRAFT_PERFORMANCE_CONSTANT",
+      "processing": "REFERENCE_CONTRACT_NOT_ACTIVE_CODE",
+      "consumer_tags": [
+        "CDU_TEST_VECTOR"
+      ]
+    },
+    {
+      "id": "ALT-010",
+      "category": "data_entry_example",
+      "source": {
+        "pdf_viewer_page": 1539,
+        "printed_folio": "11.31.50",
+        "original_image_sha256": "a336e5d906108c3a62f057e64117a6dc2aa0db636ba99fc5d212c606e0d05e54"
+      },
+      "when": "TRANSITION_ALT_10000_FEET_AND_INPUT_250",
+      "expect": "DISPLAY_FL250",
+      "variant": "FIGURE_EXAMPLE_NOT_AIRCRAFT_PERFORMANCE_CONSTANT",
+      "processing": "REFERENCE_CONTRACT_NOT_ACTIVE_CODE",
+      "consumer_tags": [
+        "CDU_TEST_VECTOR"
+      ]
+    },
+    {
+      "id": "ALT-011",
+      "category": "data_entry_example",
+      "source": {
+        "pdf_viewer_page": 1539,
+        "printed_folio": "11.31.50",
+        "original_image_sha256": "a336e5d906108c3a62f057e64117a6dc2aa0db636ba99fc5d212c606e0d05e54"
+      },
+      "when": "INPUT_0835_AS_FOUR_DIGITS",
+      "expect": "DISPLAY_840_FEET_AFTER_ROUNDING",
+      "variant": "FIGURE_EXAMPLE_NOT_AIRCRAFT_PERFORMANCE_CONSTANT",
+      "processing": "REFERENCE_CONTRACT_NOT_ACTIVE_CODE",
+      "consumer_tags": [
+        "CDU_TEST_VECTOR"
+      ]
+    },
+    {
+      "id": "ALT-012",
+      "category": "data_entry_example",
+      "source": {
+        "pdf_viewer_page": 1539,
+        "printed_folio": "11.31.50",
+        "original_image_sha256": "a336e5d906108c3a62f057e64117a6dc2aa0db636ba99fc5d212c606e0d05e54"
+      },
+      "when": "INPUT_9994_AS_FOUR_DIGITS",
+      "expect": "DISPLAY_9990_FEET_AFTER_ROUNDING",
+      "variant": "FIGURE_EXAMPLE_NOT_AIRCRAFT_PERFORMANCE_CONSTANT",
+      "processing": "REFERENCE_CONTRACT_NOT_ACTIVE_CODE",
+      "consumer_tags": [
+        "CDU_TEST_VECTOR"
+      ]
+    },
+    {
+      "id": "ALT-013",
+      "category": "data_entry_example",
+      "source": {
+        "pdf_viewer_page": 1539,
+        "printed_folio": "11.31.50",
+        "original_image_sha256": "a336e5d906108c3a62f057e64117a6dc2aa0db636ba99fc5d212c606e0d05e54"
+      },
+      "when": "TRANSITION_ALT_4000_FEET_AND_INPUT_08500_AS_FIVE_DIGITS",
+      "expect": "DISPLAY_FL085",
+      "variant": "FIGURE_EXAMPLE_NOT_AIRCRAFT_PERFORMANCE_CONSTANT",
+      "processing": "REFERENCE_CONTRACT_NOT_ACTIVE_CODE",
+      "consumer_tags": [
+        "CDU_TEST_VECTOR"
+      ]
+    },
+    {
+      "id": "ALT-014",
+      "category": "data_entry_example",
+      "source": {
+        "pdf_viewer_page": 1539,
+        "printed_folio": "11.31.50",
+        "original_image_sha256": "a336e5d906108c3a62f057e64117a6dc2aa0db636ba99fc5d212c606e0d05e54"
+      },
+      "when": "TRANSITION_ALT_4000_FEET_AND_INPUT_09995_AS_FIVE_DIGITS",
+      "expect": "DISPLAY_FL100",
+      "variant": "FIGURE_EXAMPLE_NOT_AIRCRAFT_PERFORMANCE_CONSTANT",
+      "processing": "REFERENCE_CONTRACT_NOT_ACTIVE_CODE",
+      "consumer_tags": [
+        "CDU_TEST_VECTOR"
+      ]
+    },
+    {
+      "id": "ALT-015",
+      "category": "data_entry",
+      "source": {
+        "pdf_viewer_page": 1539,
+        "printed_folio": "11.31.50",
+        "original_image_sha256": "a336e5d906108c3a62f057e64117a6dc2aa0db636ba99fc5d212c606e0d05e54"
+      },
+      "when": "NEGATIVE_ALTITUDE_ENTRY_TO_MINUS_1000FT",
+      "expect": "NEGATIVE_ALTITUDE_FORMAT_ACCEPTED_SUBJECT_TO_FIELD_RULES",
+      "variant": "SOURCE_TEXT",
+      "processing": "REFERENCE_CONTRACT_NOT_ACTIVE_CODE",
+      "consumer_tags": [
+        "CDU_PARSER"
+      ]
+    },
+    {
+      "id": "SPD-001",
+      "category": "data_entry",
+      "source": {
+        "pdf_viewer_page": 1539,
+        "printed_folio": "11.31.50",
+        "original_image_sha256": "a336e5d906108c3a62f057e64117a6dc2aa0db636ba99fc5d212c606e0d05e54"
+      },
+      "when": "AIRSPEED_ENTRY_THREE_DIGITS",
+      "expect": "CALIBRATED_AIRSPEED_KNOTS",
+      "variant": "SOURCE_TEXT",
+      "processing": "REFERENCE_CONTRACT_NOT_ACTIVE_CODE",
+      "consumer_tags": [
+        "CDU_PARSER"
+      ]
+    },
+    {
+      "id": "SPD-002",
+      "category": "data_entry",
+      "source": {
+        "pdf_viewer_page": 1539,
+        "printed_folio": "11.31.50",
+        "original_image_sha256": "a336e5d906108c3a62f057e64117a6dc2aa0db636ba99fc5d212c606e0d05e54"
+      },
+      "when": "MACH_ENTRY_WITH_DECIMAL_POINT",
+      "expect": "ONE_TWO_OR_THREE_DIGITS_FOLLOW_DECIMAL",
+      "variant": "SOURCE_TEXT",
+      "processing": "REFERENCE_CONTRACT_NOT_ACTIVE_CODE",
+      "consumer_tags": [
+        "CDU_PARSER"
+      ]
+    },
+    {
+      "id": "PAIR-001",
+      "category": "data_entry",
+      "source": {
+        "pdf_viewer_page": 1540,
+        "printed_folio": "11.31.51",
+        "original_image_sha256": "c1ab7e9eb42efcba3cd863dd7584a776b110f9c2e7a9c44e0967a358e3553efa"
+      },
+      "when": "PAIRED_DATA_TYPE_SUCH_AS_WIND_DIRECTION_SPEED_OR_WPT_SPEED_ALT",
+      "expect": "PARSE_LEADING_VALUE_AND_TRAILING_VALUE_AS_PAIR",
+      "variant": "SOURCE_TEXT",
+      "processing": "REFERENCE_CONTRACT_NOT_ACTIVE_CODE",
+      "consumer_tags": [
+        "CDU_PARSER"
+      ]
+    },
+    {
+      "id": "PAIR-002",
+      "category": "data_entry",
+      "source": {
+        "pdf_viewer_page": 1540,
+        "printed_folio": "11.31.51",
+        "original_image_sha256": "c1ab7e9eb42efcba3cd863dd7584a776b110f9c2e7a9c44e0967a358e3553efa"
+      },
+      "when": "BOTH_VALUES_OF_PAIR_ENTERED",
+      "expect": "REQUIRE_SLASH_BETWEEN_VALUES",
+      "variant": "SOURCE_TEXT",
+      "processing": "REFERENCE_CONTRACT_NOT_ACTIVE_CODE",
+      "consumer_tags": [
+        "CDU_PARSER"
+      ]
+    },
+    {
+      "id": "PAIR-003",
+      "category": "data_entry",
+      "source": {
+        "pdf_viewer_page": 1540,
+        "printed_folio": "11.31.51",
+        "original_image_sha256": "c1ab7e9eb42efcba3cd863dd7584a776b110f9c2e7a9c44e0967a358e3553efa"
+      },
+      "when": "SINGLE_VALUE_IN_PAIR_ENTRY",
+      "expect": "SLASH_MAY_BE_OMITTED_WHEN_FIELD_ALLOWS",
+      "variant": "SOURCE_TEXT",
+      "processing": "REFERENCE_CONTRACT_NOT_ACTIVE_CODE",
+      "consumer_tags": [
+        "CDU_PARSER"
+      ]
+    },
+    {
+      "id": "PAIR-004",
+      "category": "data_entry",
+      "source": {
+        "pdf_viewer_page": 1540,
+        "printed_folio": "11.31.51",
+        "original_image_sha256": "c1ab7e9eb42efcba3cd863dd7584a776b110f9c2e7a9c44e0967a358e3553efa"
+      },
+      "when": "ONLY_OUTBOARD_VALUE_ENTERED",
+      "expect": "OPTIONAL_LEADING_OR_TRAILING_SLASH_ALLOWED",
+      "variant": "SOURCE_TEXT",
+      "processing": "REFERENCE_CONTRACT_NOT_ACTIVE_CODE",
+      "consumer_tags": [
+        "CDU_PARSER"
+      ]
+    },
+    {
+      "id": "PAIR-005",
+      "category": "data_entry",
+      "source": {
+        "pdf_viewer_page": 1540,
+        "printed_folio": "11.31.51",
+        "original_image_sha256": "c1ab7e9eb42efcba3cd863dd7584a776b110f9c2e7a9c44e0967a358e3553efa"
+      },
+      "when": "INBOARD_VALUE_ONLY_ENTERED",
+      "expect": "REQUIRE_SLASH_WITHOUT_OTHERWISE_VALID_SYNTAX",
+      "variant": "SOURCE_TEXT",
+      "processing": "REFERENCE_CONTRACT_NOT_ACTIVE_CODE",
+      "consumer_tags": [
+        "CDU_PARSER"
+      ]
+    },
+    {
+      "id": "PAIR-006",
+      "category": "cdu_warning",
+      "source": {
+        "pdf_viewer_page": 1540,
+        "printed_folio": "11.31.51",
+        "original_image_sha256": "c1ab7e9eb42efcba3cd863dd7584a776b110f9c2e7a9c44e0967a358e3553efa"
+      },
+      "when": "REQUIRED_SLASH_MISSING_IN_PAIR_INPUT",
+      "expect": "DISPLAY_INVALID_ENTRY_MESSAGE",
+      "variant": "SOURCE_TEXT",
+      "processing": "REFERENCE_CONTRACT_NOT_ACTIVE_CODE",
+      "consumer_tags": [
+        "CDU_SCRATCHPAD"
+      ]
+    },
+    {
+      "id": "BRG-001",
+      "category": "data_entry",
+      "source": {
+        "pdf_viewer_page": 1540,
+        "printed_folio": "11.31.51",
+        "original_image_sha256": "c1ab7e9eb42efcba3cd863dd7584a776b110f9c2e7a9c44e0967a358e3553efa"
+      },
+      "when": "BEARING_ENTERED",
+      "expect": "REQUIRE_THREE_DIGIT_BEARING_STRING",
+      "variant": "SOURCE_TEXT",
+      "processing": "REFERENCE_CONTRACT_NOT_ACTIVE_CODE",
+      "consumer_tags": [
+        "CDU_PARSER"
+      ]
+    },
+    {
+      "id": "BRG-002",
+      "category": "data_entry",
+      "source": {
+        "pdf_viewer_page": 1540,
+        "printed_folio": "11.31.51",
+        "original_image_sha256": "c1ab7e9eb42efcba3cd863dd7584a776b110f9c2e7a9c44e0967a358e3553efa"
+      },
+      "when": "BEARING_INPUT_090",
+      "expect": "INTERPRET_90_DEGREES",
+      "variant": "SOURCE_TEXT",
+      "processing": "REFERENCE_CONTRACT_NOT_ACTIVE_CODE",
+      "consumer_tags": [
+        "CDU_TEST_VECTOR"
+      ]
+    },
+    {
+      "id": "BRG-003",
+      "category": "data_entry",
+      "source": {
+        "pdf_viewer_page": 1540,
+        "printed_folio": "11.31.51",
+        "original_image_sha256": "c1ab7e9eb42efcba3cd863dd7584a776b110f9c2e7a9c44e0967a358e3553efa"
+      },
+      "when": "BEARING_INPUT_360",
+      "expect": "DISPLAY_000",
+      "variant": "SOURCE_TEXT",
+      "processing": "REFERENCE_CONTRACT_NOT_ACTIVE_CODE",
+      "consumer_tags": [
+        "CDU_TEST_VECTOR"
+      ]
+    },
+    {
+      "id": "SIGN-001",
+      "category": "data_entry",
+      "source": {
+        "pdf_viewer_page": 1540,
+        "printed_folio": "11.31.51",
+        "original_image_sha256": "c1ab7e9eb42efcba3cd863dd7584a776b110f9c2e7a9c44e0967a358e3553efa"
+      },
+      "when": "TEMPERATURE_OR_ALONG_TRACK_DISPLACEMENT_ENTERED_WITHOUT_SIGN",
+      "expect": "INFER_POSITIVE_VALUE",
+      "variant": "SOURCE_TEXT",
+      "processing": "REFERENCE_CONTRACT_NOT_ACTIVE_CODE",
+      "consumer_tags": [
+        "CDU_PARSER"
+      ]
+    },
+    {
+      "id": "SIGN-002",
+      "category": "data_entry",
+      "source": {
+        "pdf_viewer_page": 1540,
+        "printed_folio": "11.31.51",
+        "original_image_sha256": "c1ab7e9eb42efcba3cd863dd7584a776b110f9c2e7a9c44e0967a358e3553efa"
+      },
+      "when": "NEGATIVE_TEMPERATURE_OR_ALONG_TRACK_DISPLACEMENT",
+      "expect": "REQUIRE_EXPLICIT_MINUS_SIGN",
+      "variant": "SOURCE_TEXT",
+      "processing": "REFERENCE_CONTRACT_NOT_ACTIVE_CODE",
+      "consumer_tags": [
+        "CDU_PARSER"
+      ]
+    }
+  ],
+  "consumers": {
+    "required": [
+      "ENGINE_OUT_PERFORMANCE_CALCULATOR",
+      "FMC_CRZ_PAGE",
+      "FMC_ENG_OUT_CRZ_PAGE",
+      "AIRCRAFT_ENGINE_FAILURE_EVENT",
+      "FMC_DRIFTDOWN_REFERENCE",
+      "FMC_RTA_SPEED_PREDICTION",
+      "CDU_ENTRY_PARSER",
+      "CDU_SCRATCHPAD_ERROR",
+      "CDU_FIELD_SCHEMA_VALIDATION",
+      "CDU_ALTITUDE_FORMATTER"
+    ],
+    "read": [
+      "ENGINE_FAILED_LEFT_OR_RIGHT",
+      "AIRCRAFT_GROSS_WEIGHT",
+      "AIRCRAFT_ALTITUDE",
+      "ENGINE_CONTINUOUS_N1",
+      "AIRCRAFT_TEMPERATURE_IF_PERFORMANCE_TABLE_SPECIFIES",
+      "FLIGHT_PLAN_ETA",
+      "RTA_WAYPOINT_AND_TIME",
+      "TRANSITION_ALTITUDE",
+      "SCRATCHPAD_VALUE",
+      "CDU_ACTIVE_FIELD",
+      "MCP_VALUES_OBSERVED_ONLY"
+    ],
+    "write": [
+      "ENGINE_OUT_CRZ_ADVISORY_SPEED_AND_MAX_ALT",
+      "MAX_ALT_DEPENDENCY_ON_WEIGHT",
+      "ENGINE_OUT_LRC_REFERENCE_OPTIONAL",
+      "RTA_REQUIRED_SPEED_AND_ACHIEVABILITY",
+      "CDU_ENTRY_NORMALIZED_VALUE",
+      "CDU_INVALID_ENTRY_SCRATCHPAD_MESSAGE"
+    ],
+    "rule_activation": "DO_NOT_ACTIVATE_UNTIL_VARIANT_AND_VALIDATION_TESTS",
+    "flight_control_authority": false
+  },
+  "quality": {
+    "all_five_image_sha256_verified_locally": true,
+    "runtime_changed": false,
+    "code_bezel_and_fonts_untouched": true,
+    "source_does_not_include_engine_out_performance_tables": true
+  }
+}

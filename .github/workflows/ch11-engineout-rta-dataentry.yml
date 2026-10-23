@@ -1,0 +1,16 @@
+name: FCOM Chapter 11 Engine Out RTA Data Entry source QA
+on:
+  push:
+  pull_request:
+jobs:
+  source-contract-qa:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate Engine Out RTA and common CDU data entry rules
+        run: node engine/ch11/tests/engineout-rta-dataentry-2020.test.cjs
+      - name: CDU invariant checks
+        run: node tests/cdu-font-lock.test.cjs && node tests/cdu-ident-startup.test.cjs

@@ -38,3 +38,7 @@ Source-only extraction: **42 requirements**, 5 user-provided screenshots (PDF pa
 ## VNAV Speed Descent, Early Descent, Vertical Angle, Approach and Go-Around (FCOM 2020/2022)
 
 Source-only extraction from 8 screenshots of PDF viewer pages 1527–1529 and 1531–1535. **Viewer page 1530 not provided**. 69 conditions/effects with variant/effectivity gates, including DES NOW/CAPTURE, vertical angle legs, approach logic and missed-approach FMC state updates. [Persian source review](CDU_VNAV_SPEED_APPROACH_GOAROUND_2020_FA.md) · [machine-readable contracts](../engine/ch11/vnav-speed-approach-goaround-2020.rules.v1.json). **No runtime VNAV commands were implemented; physical CDU and approved font bytes remain locked.**
+
+## FCOM 2020 Engine Out Cruise, RTA and shared CDU data-entry rules
+
+Screenshots PDF viewer **1536–1540** / printed pages **11.31.47–11.31.51** reviewed: 56 source-only input/condition/output contracts. Covers CRZ→ENG OUT CRZ, advisory drift-down, alternate speed branches, crew MCP/A/T actions kept independent, RTA target/unachievable advisory, common ALT/IAS/MACH/slash/bearing/signed-entry grammars with example test vectors. Refer to [review](CDU_ENGINEOUT_RTA_DATAENTRY_2020_FA.md) and [machine-readable contract](../engine/ch11/engineout-rta-dataentry-2020.rules.v1.json). Performance equations and aircraft option effectivity remain unverified; no executable FMC or font/bezel changes performed.
