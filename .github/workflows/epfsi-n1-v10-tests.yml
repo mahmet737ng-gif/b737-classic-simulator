@@ -14,6 +14,7 @@ on:
       - 'tests/afm-epfsi-pmc-off-v16.test.cjs'
       - 'tests/epfsi-scenario-defaults-v17.test.cjs'
       - 'tests/epfsi-present-n1-v18.test.cjs'
+      - 'tests/epfsi-simulated-n1-v19.test.cjs'
       - 'package.json'
       - '.github/workflows/epfsi-n1-v10-tests.yml'
   workflow_dispatch:
@@ -46,9 +47,12 @@ jobs:
           node tests/epfsi-scenario-defaults-v17.test.cjs
           node --check engine/fmc/indications/present-n1-bridge-v18.cjs
           node tests/epfsi-present-n1-v18.test.cjs
+          node --check engine/fmc/performance/epfsi-simulated-n1-v19.cjs
+          node tests/epfsi-simulated-n1-v19.test.cjs
       - name: Standalone CDU headless state and compatibility
         run: |
           node cdu-standalone/tests/smoke.test.cjs
           node cdu-standalone/tests/n1-v10-integration.test.cjs
           node cdu-standalone/tests/defaults-v17-integration.test.cjs
           node cdu-standalone/tests/present-n1-v18-integration.test.cjs
+          node cdu-standalone/tests/estimated-n1-v19-integration.test.cjs
