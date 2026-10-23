@@ -219,6 +219,10 @@ function initializeN1Inputs(){
  syncN1Inputs();
 }
 async function boot(){let map=window.CDU_MAP;if(!map)throw Error('CDU map not found');makeControls(map);initializeN1Inputs();initializePresentN1();render();$('reset').onclick=()=>{sim.page='CRZ';sim.scratch='';sim.message='';sim.pending={};sim.n1=initialN1State();syncN1Inputs();if(presentN1Store)presentN1Store.selectSource('ENGINE_CORE');sim.call=sim.fail=sim.offset=false;sim.brightness=1;sim.last='—';for(const id of ['call-test','fault-test','offset-test'])$(id).checked=false;render()};$('overlay-toggle').onclick=()=>{$('cdu-stage').classList.toggle('debug')};$('info-toggle').onclick=()=>{$('qa').hidden=!$('qa').hidden};for(const [id,key] of [['call-test','call'],['fault-test','fail'],['offset-test','offset']])$(id).addEventListener('change',e=>{sim[key]=e.target.checked;render()});$('test-message').onclick=()=>setMessage('CHECK FMC DATA');document.addEventListener('keydown',e=>{if(e.ctrlKey||e.metaKey||e.altKey)return;let id=null;if(e.key==='Backspace')id='KEY_CLR';else if(e.key==='Enter')id='EXEC';else if(e.key===' ')id='KEY_SP';else if(e.key==='.')id='KEY_DOT';else if(e.key==='/')id='KEY_SLASH';else if(/^[a-z0-9]$/i.test(e.key))id='KEY_'+e.key.toUpperCase();if(id){e.preventDefault();press('CDU_CAPT_'+id)}})}
+// Expire stale N1 on the rendered CDU even if no new telemetry arrives.
+if(typeof setInterval==='function'){
+ setInterval(()=>{if(sim.page==='CRZ'||sim.page==='N1_LIMIT')render();},500);
+}
 boot().catch(e=>{console.error(e);$('page-now').textContent='Data load failed — unzip ALL files and open using local server or Chromium with local file access';});
 // Read-only integration test bridge. Does not alter CDU inputs, EXEC or navigation laws.
 window.CDU_TEST_BRIDGE=Object.freeze({snapshot:()=>({page:sim.page,active:{...sim.active},pending:{...sim.pending},pendingCount:pendingCount(),message:sim.message,scratch:sim.scratch,lastKey:sim.last})});
