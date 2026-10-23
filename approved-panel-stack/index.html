@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#101316">
+<title>B737 Classic — Approved Flight Controls above Fuel Panel</title>
+<style>
+:root{color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;min-height:100%;background:#111519}
+body{display:flex;justify-content:center;align-items:flex-start;overflow-x:hidden}
+.stack{width:min(100%,730px);padding:0;margin:0;display:flex;flex-direction:column;align-items:stretch;gap:0}
+.panel-slot{width:100%;overflow:hidden;position:relative;margin:0;padding:0;line-height:0;background:#111519}
+.panel-slot iframe{border:0;display:block;position:absolute;top:0;left:0;transform-origin:0 0;background:transparent}
+.slot-flight{aspect-ratio:893/1761}
+.slot-fuel{aspect-ratio:1012/1554}
+.gasket{height:2px;flex:none;background:#101417}
+.loading{position:absolute;inset:0;display:grid;place-items:center;color:#96a4ae;font:500 13px/1.4 system-ui,sans-serif;z-index:0}
+.panel-slot iframe{z-index:1}
+@media (min-width:750px){.stack{margin:18px 0 26px}}
+</style>
+</head>
+<body>
+<!-- EXACT composition of the two pre-existing, unchanged interactive pages.
+     No recreated cockpit, generated illustration, new controls, or new panel positions. -->
+<main class="stack" aria-label="B737 Classic: Flight Controls and NAV Transfer above Fuel">
+  <section class="panel-slot slot-flight" data-w="893" data-h="1761" aria-label="Original Flight Controls and NAV Transfer, upper panel">
+    <div class="loading">Flight Controls / NAV Transfer</div>
+    <iframe title="Original approved Flight Controls / NAV Transfer" src="../flight-controls-panel/" loading="eager" scrolling="no"></iframe>
+  </section>
+  <div class="gasket" aria-hidden="true"></div>
+  <section class="panel-slot slot-fuel" data-w="1012" data-h="1554" aria-label="Original Fuel Panel, lower panel">
+    <div class="loading">Fuel Panel</div>
+    <iframe title="Original approved Fuel Panel" src="../fuel-panel/" loading="eager" scrolling="no"></iframe>
+  </section>
+</main>
+<script>
+(function(){
+  'use strict';
+  const slots=[...document.querySelectorAll('.panel-slot')];
+  function layout(){
+    for(const slot of slots){
+      const nativeWidth=Number(slot.dataset.w),nativeHeight=Number(slot.dataset.h);
+      const w=slot.getBoundingClientRect().width;
+      const scale=w/nativeWidth;
+      slot.style.height=(nativeHeight*scale)+'px';
+      const frame=slot.querySelector('iframe');
+      frame.style.width=nativeWidth+'px';
+      frame.style.height=nativeHeight+'px';
+      frame.style.transform='scale('+scale+')';
+    }
+  }
+  function styleChild(frame,slot){
+    try{
+      // Both pages are on the same GitHub Pages origin. This only conceals
+      // their TEST RACKS and outside backgrounds for an exact edge-to-edge
+      // view; the original control objects, sprites, state and events stay intact.
+      const doc=frame.contentDocument;
+      if(!doc||!doc.head) return;
+      const fuel=slot.classList.contains('slot-fuel');
+      const sheet=doc.createElement('style');
+      sheet.textContent=fuel
+      ? `html,body{width:1012px!important;height:1554px!important;min-height:0!important;margin:0!important;padding:0!important;overflow:hidden!important;background:transparent!important}
+          .app-shell{display:block!important;width:1012px!important;height:1554px!important;min-height:0!important;margin:0!important;padding:0!important}
+          .panel-wrap{display:block!important;width:1012px!important;max-width:none!important;margin:0!important;filter:none!important}
+          .panel{width:1012px!important;height:1554px!important;max-width:none!important;margin:0!important;border-radius:0!important}
+          .test-rack{display:none!important}`
+      : `html,body{width:893px!important;height:1761px!important;min-height:0!important;margin:0!important;padding:0!important;overflow:hidden!important;background:transparent!important;display:block!important}
+          .sim{width:893px!important;height:1761px!important;min-height:0!important;margin:0!important;padding:0!important;gap:0!important;display:block!important}
+          .panel-wrap{width:893px!important;height:1761px!important;display:block!important;margin:0!important}
+          .panel{width:893px!important;height:1761px!important;max-width:none!important;margin:0!important;filter:none!important}
+          .test-rack{display:none!important}`;
+      doc.head.appendChild(sheet);
+    }catch(e){
+      // The unmodified framed panel still renders even without style injection.
+    }
+    layout();
+  }
+  slots.forEach(slot=>{
+    const frame=slot.querySelector('iframe');
+    frame.addEventListener('load',()=>styleChild(frame,slot));
+  });
+  if(typeof ResizeObserver!=='undefined'){
+    const ro=new ResizeObserver(layout);
+    ro.observe(document.querySelector('.stack'));
+  }
+  window.addEventListener('resize',layout);
+  layout();
+})();
+</script>
+</body>
+</html>
