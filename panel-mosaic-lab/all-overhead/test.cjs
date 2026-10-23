@@ -30,7 +30,8 @@ assert.equal(spec.columns[3].items[4],'OH19-DIFF','OH19 press diff immediately a
 assert.equal(spec.images.find(x=>x.id==='OH19-VOICE').atlasSizing.widthMode,'fill-column-natural-aspect');
 assert.equal(geometry.parts.length,6);
 assert.equal(spec.header.height,909);
-assert.deepEqual(spec.correctedMappings.map(x=>x.id),['OH13','OH14','OH18']);
+assert.deepEqual(spec.correctedMappings.slice(0,3).map(x=>x.id),['OH13','OH14','OH18']);
+for(const id of ['OH19-VOICE','OH19-DIFF','OH22','OH23-25'])assert.ok(spec.correctedMappings.some(x=>x.id===id),'atlas correction recorded: '+id);
 assert.equal(spec.columns[2].items[2],'OH18','OH18 must be directly beneath OH14 in center strip');
 assert.ok(spec.images.find(x=>x.id==='OH13').display.cropLeftPct>10,'OH13 light side gutters are cropped in presentation only');
 assert.match(spec.images.find(x=>x.id==='OH18').title,/GROUND|GRD CALL/,'source identification comes from atlas photo');
