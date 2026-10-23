@@ -26,17 +26,20 @@ jobs:
           srcs={x['id']:x for x in spec['images']}
           canvas=Image.new('RGB',(2220,3525),'#4a6170')
           for pos in layout['placements']:
-              asset=srcs[pos['id']]
+              asset=srcs[pos.get('sourceId',pos['id'])]
               im=Image.open(root/asset['url']).convert('RGB')
+              rect=pos.get('sourceRect',dict(x=0,y=0,w=im.width,h=im.height))
+              im=im.crop((rect['x'],rect['y'],rect['x']+rect['w'],rect['y']+rect['h']))
               crop=pos['contentCrop']
               im=im.crop((crop['left'],crop['top'],im.width-crop['right'],im.height-crop['bottom']))
-              scale=min(pos['w']/im.width,pos['h']/im.height)
-              w=max(1,round(im.width*scale));h=max(1,round(im.height*scale))
-              resized=im.resize((w,h),Image.Resampling.LANCZOS)
-              y=pos['y']+(0 if pos['imageAnchor']=='top' else (pos['h']-h)//2 if pos['imageAnchor']=='center' else pos['h']-h)
-              x=pos['x']+(pos['w']-w)//2
-              canvas.paste(resized,(x,y))
-              print('PLACED',pos['id'],x,y,w,h,'FULL_SOURCE_VISIBLE')
+              inset=pos.get('artInset',{})
+              left=inset.get('left',0);top=inset.get('top',0);right=inset.get('right',0);bottom=inset.get('bottom',0)
+              dest_w=pos['w']-left-right;dest_h=pos['h']-top-bottom
+              if dest_w<=0 or dest_h<=0:raise ValueError('Invalid art area '+pos['id'])
+              im=im.resize((dest_w,dest_h),Image.Resampling.LANCZOS)
+              x=pos['x']+left;y=pos['y']+top
+              canvas.paste(im,(x,y))
+              print('PLACED',pos['id'],'AS',','.join(pos.get('atlasPanelIds',[])),'SOURCE',pos.get('sourceId',pos['id']),x,y,dest_w,dest_h)
           canvas.thumbnail((680,1150),Image.Resampling.LANCZOS)
           b=io.BytesIO();canvas.save(b,format='JPEG',quality=44,optimize=True,progressive=True)
           print('COMPOSITE_START')
