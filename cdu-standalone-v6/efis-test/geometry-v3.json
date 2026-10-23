@@ -1,0 +1,107 @@
+{
+  "image": {
+    "width": 1448,
+    "height": 1086,
+    "provenance": "approved orthographic EFIS image",
+    "scope": "Captain EFIS CP QA"
+  },
+  "modesClockwise": [
+    "FULL_NAV",
+    "FULL_VOR_ILS",
+    "EXP_NAV",
+    "EXP_VOR_ILS",
+    "MAP",
+    "CTR_MAP",
+    "PLAN"
+  ],
+  "modeAnglesRelativeToMAPDegrees": {
+    "FULL_NAV": -180,
+    "FULL_VOR_ILS": -135,
+    "EXP_NAV": -86,
+    "EXP_VOR_ILS": -42,
+    "MAP": 0,
+    "CTR_MAP": 47,
+    "PLAN": 100
+  },
+  "knobCentersPx": {
+    "DH_REF": {
+      "x": 296.5,
+      "y": 500.5,
+      "r": 84
+    },
+    "ADI_BRT": {
+      "x": 292.5,
+      "y": 892.5,
+      "r": 72
+    },
+    "HSI_MODE": {
+      "x": 777.5,
+      "y": 316.5,
+      "r": 108
+    },
+    "HSI_BRT_OUTER": {
+      "x": 560.5,
+      "y": 587,
+      "r": 102
+    },
+    "WXR_BRT_INNER": {
+      "x": 570,
+      "y": 589,
+      "r": 58
+    },
+    "RANGE": {
+      "x": 1190,
+      "y": 311,
+      "r": 112
+    }
+  },
+  "buttonsPx": {
+    "RST": [
+      250,
+      666,
+      320,
+      729
+    ],
+    "WXR": [
+      1079,
+      495,
+      1244,
+      661
+    ],
+    "VOR_ADF": [
+      469,
+      805,
+      609,
+      970
+    ],
+    "NAV_AID": [
+      637,
+      805,
+      780,
+      970
+    ],
+    "ARPT": [
+      809,
+      805,
+      951,
+      970
+    ],
+    "RTE_DATA": [
+      979,
+      805,
+      1127,
+      970
+    ],
+    "WPT": [
+      1151,
+      805,
+      1294,
+      970
+    ]
+  },
+  "qa": {
+    "visual": "pixel calibrated against approved photo; pending owner sign-off",
+    "browser": "Chromium click/range/physical input checks passed",
+    "livePages": "not externally confirmed"
+  }
+}
