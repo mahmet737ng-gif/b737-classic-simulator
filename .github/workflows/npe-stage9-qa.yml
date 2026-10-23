@@ -1,0 +1,45 @@
+name: NPE Stage 9 - simulator guidance safety QA
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'navigation/npe_stage9_*.py'
+      - 'navigation/npe-stage9/**'
+      - 'navigation/tests/test_npe_stage9*.py'
+      - 'cdu-standalone-v6/stage9-advisory.js'
+      - 'cdu-standalone-v6/tests/stage9-advisory.test.cjs'
+      - '.github/workflows/npe-stage9-qa.yml'
+  pull_request:
+    paths:
+      - 'navigation/npe_stage9_*.py'
+      - 'navigation/npe-stage9/**'
+      - 'navigation/tests/test_npe_stage9*.py'
+      - 'cdu-standalone-v6/stage9-advisory.js'
+      - 'cdu-standalone-v6/tests/stage9-advisory.test.cjs'
+jobs:
+  guidance-safety:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Pure synthetic simulator reference guidance tests
+        run: python -m unittest discover -s navigation/tests -p 'test_npe_stage9*.py' -v
+      - name: Approved EHSI safe read-only telemetry tests
+        run: node cdu-standalone-v6/tests/stage9-advisory.test.cjs
+      - name: Source JavaScript syntax
+        run: |
+          node --check navigation/npe-stage9/app.js
+          node --check cdu-standalone-v6/stage9-advisory.js
+      - name: Fail if proprietary SQLite stored in public repo
+        run: |
+          if find navigation -type f \( -name '*.sqlite' -o -name '*.db' \) | grep .; then
+            echo 'No private AIRAC source database may enter public GitHub'
+            exit 1
+          fi
