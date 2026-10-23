@@ -10,7 +10,17 @@ function card(asset,style){const a=el('article','piece');a.tabIndex=0;a.dataset.
  const img=el('img');img.src=asset.url;img.alt=asset.title;img.loading='eager';img.decoding='async';img.draggable=false;
  img.addEventListener('load',()=>{loaded.add(asset.id);a.classList.remove('bad');summary();updateDimensions();if(selected===asset.id)showDetails();});
  img.addEventListener('error',()=>{errored.add(asset.id);loaded.delete(asset.id);a.classList.add('bad');img.remove();a.append(el('div','empty-image','⚠ بارگذاری تصویر ناموفق بود'));summary();updateDimensions();});
- if(style==='mosaic' && asset.display?.cropLeftPct){const cropped=el('div','crop-window');cropped.append(img);a.append(cropped);}else{a.append(img);}
+ if(style==='mosaic' && asset.display?.cropTopPx!=null){
+ const cropped=el('div','crop-window');const d=asset.display;
+ const visible=d.contentHeightPx||Math.max(1,asset.originalDimensions?.[1]-d.cropTopPx-(d.cropBottomPx||0));
+ const naturalWidth=d.contentWidthPx||asset.originalDimensions?.[0];
+ cropped.style.aspectRatio=naturalWidth+' / '+visible;
+ img.style.width='100%';img.style.height='auto';img.style.maxWidth='none';
+ img.style.marginTop=(-100*d.cropTopPx/naturalWidth)+'%';
+ cropped.append(img);a.append(cropped);
+ }else if(style==='mosaic' && asset.display?.cropLeftPct){
+ const cropped=el('div','crop-window');cropped.append(img);a.append(cropped);
+ }else{a.append(img);}
  a.onclick=()=>{if(!dragged)pick(asset.id);};a.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();pick(asset.id);}};
  return a;}
 function placeholder(ids){const d=el('div','placeholder');d.append(el('strong','',ids.join(' / ')),el('span','','تصویر هنوز در دیتابیس موجود نیست'));return d;}
@@ -28,7 +38,7 @@ function populateAssembly(){populateUpper();const columns=$('columns');columns.r
  for(const id of section.items)col.append(card(assetById(id),'mosaic'));
  for(const id of section.missing||[])col.append(placeholder([id]));
  columns.append(col)}
- const bottom=$('bottom');bottom.replaceChildren(...spec.bottomMissing.map(id=>placeholder([id])));}
+ const bottom=$('bottom');bottom.replaceChildren();for(const id of spec.bottomItems||[])bottom.append(card(assetById(id),'mosaic'));for(const id of spec.bottomMissing||[])bottom.append(placeholder([id]));}
 function populateGallery(){const gallery=$('gallery');gallery.replaceChildren();for(const a of spec.images)gallery.append(card(a,'gallery'));}
 function fillList(){const term=$('search').value.trim().toLowerCase(),list=$('pieces');list.replaceChildren();
  const buttons=[];
@@ -62,7 +72,7 @@ async function start(){
  if(!Array.isArray(spec.images)||!spec.images.length||!Array.isArray(spec.columns)||!Array.isArray(geometry.parts)||!geometry.parts.length)throw Error('اطلاعات اطلس ناقص است');
  const available=new Set(spec.images.map(x=>x.id));for(const section of spec.columns){for(const id of section.items){if(!available.has(id))throw Error('فایل موزاییک تعریف نشده: '+id);}}
  populateAssembly();fillList();summary();showDetails();
- $('status').textContent=spec.images.length+' تصویر منبع برای '+new Set(spec.images.flatMap(x=>x.panelIds)).size+' شناسهٔ پنل — نسخهٔ '+spec.version+' — منطبق با مرجع اطلس';
+ $('status').textContent=spec.images.length+' تصویر منبع برای '+new Set(spec.images.flatMap(x=>x.panelIds)).size+' شناسهٔ پنل — نسخهٔ '+spec.version+' — چیدمان تصحیح‌شدهٔ اطلس';
  fit();mode('mosaic');if('ResizeObserver'in window){new ResizeObserver(()=>updateDimensions()).observe($('board'));}
  }catch(e){console.error('Overhead mosaic initialization error:',e);$('status').textContent='خطای بارگذاری داده‌های تست: '+e.message;$('status').setAttribute('role','alert');}
 }
