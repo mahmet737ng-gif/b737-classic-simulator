@@ -93,7 +93,7 @@
   "integration": {
     "navigation_source_selection": "registry",
     "source_merge_behavior": "explicit_source_selection_only",
-    "fmc_gate": "NPE Stage9 provides simulator-only reference track + synthetic bank preview and local closed-loop QA. It is NOT the certified/fitted EP-FSI FMC or AFDS. No actual LNAV/VNAV/AP servo output. Source-coded terminal path terminators and sensor/Aircraft coupling must be separately verified.",
+    "fmc_gate": "Stage10 is a simulator-only explicit telemetry bus + reference lateral navigation bench, plus a read-only EHSI overlay and always-denied AFDS engagement boundary. Missing real simulator adapter, approved EP-FSI-specific AFDS model, and coded path terminators forbid operational LNAV/VNAV or servo commands.",
     "simulator_training_only": true,
     "procedure_decoder": {
       "id": "NPE_STAGE1_v1",
@@ -576,6 +576,103 @@
       "vnav_mode_active": false,
       "private_data_remains_in_library": true,
       "vertical_constraint_gate": "EXACT_AIRAC_2610_POST_MARKER_MANDATORY"
+    },
+    "npe_stage10": {
+      "id": "NPE_STAGE10_AIRCRAFT_STATE_BUS_LIVE_REFERENCE_v1",
+      "airac": "2610",
+      "revision": 1,
+      "source_id": "PMDG_WORLD_2610_WITH_PROCEDURES_R1",
+      "exact_source_marker": "//AIRAC Cycle : 2610 (01/OCT/2026 - 29/OCT/2026) - Ver.1",
+      "dependencies": [
+        "NPE_STAGE4_FLIGHT_PLAN_DRAFT_v1",
+        "NPE_STAGE8_EVIDENCE_AND_REFERENCE_SEQUENCER_v1",
+        "NPE_STAGE9_SIMULATOR_REFERENCE_GUIDANCE_v1"
+      ],
+      "private_archive": "/B737/NAVDB/NPE_STAGE10/B737_NAVDB_AIRAC2610_NPE_STAGE10_PRIVATE.zip",
+      "private_archive_sha256": "b0c02eb226582deccf1f56de72b1291535aca4a95ab860d5e8a54ac874baefe0",
+      "private_manifest": "/B737/NAVDB/NPE_STAGE10/manifest.json",
+      "qa_visual": "/B737/NAVDB/NPE_STAGE10/stage10-browser-dom-mocked.png",
+      "source_code": [
+        "navigation/npe_stage10_bus.py",
+        "navigation/npe_stage10_live.py",
+        "navigation/npe_stage10_server.py",
+        "navigation/npe-stage10/index.html",
+        "navigation/npe-stage10/app.js",
+        "cdu-standalone-v6/stage10-advisory.js"
+      ],
+      "docs": "navigation/NPE_STAGE10.md",
+      "stage1_aircraft_state_bus": {
+        "status": "TESTED_EXPLICIT_TELEMETRY_SCHEMA",
+        "fields": [
+          "WGS84 position",
+          "explicit IRS/GPS source and health",
+          "true/magnetic heading",
+          "magnetic variation",
+          "true ground track",
+          "ground speed",
+          "pressure altitude",
+          "vertical speed",
+          "pitch",
+          "bank",
+          "simulation timestamp"
+        ],
+        "validation": [
+          "strict source adapter ID",
+          "non-NaN coordinates",
+          "true/magnetic consistency",
+          "monotonic simulator time",
+          "host sample freshness <=2s",
+          "fail closed on source loss"
+        ],
+        "dedicated_real_simulator_bridge": "NOT_CONNECTED"
+      },
+      "stage2_live_navigation": {
+        "status": "TESTED_SOURCE_REFERENCE_ONLY",
+        "guidance": "operator-armed Stage9 true-track / XTK / DTG / bank preview",
+        "auto_sequence": "WITHIN_DOCUMENTED_STAGE4_ENROUTE_GROUP_ONLY",
+        "source_discontinuity_crossing": "PROHIBITED",
+        "active_lnav": false,
+        "active_vnav": false
+      },
+      "stage3_cdu_ehsi": {
+        "status": "SOURCE-VALIDATED_READ_ONLY_PLAN_OVERLAY",
+        "integration": "approved CDU/EHSI v6 PLAN, same-origin origin-checked message",
+        "locked_visual_assets_modified": false,
+        "browser_test": "PASS_WITH_NETWORK_MOCK_ONLY",
+        "on_device_acceptance": "NOT_VERIFIED"
+      },
+      "stage4_fd_afds_interface": {
+        "status": "OBSERVATION_PORT_ONLY",
+        "fd_bank_preview": "NO_FLIGHT_DIRECTOR_AUTHORITY",
+        "engage_requests": "ALWAYS_DENIED_UNVERIFIED_EP_FSI_AFDS",
+        "physical_servo_commands": 0,
+        "lnav_guidance_output": false,
+        "vnav_guidance_output": false,
+        "aircraft_flight_director_actuation": false
+      },
+      "api_base": "http://127.0.0.1:8770/api/stage10/",
+      "security": "loopback bound, strict Host/Origin, session tokens, no cross-origin API, no licensed SQLite in public repository",
+      "qa": {
+        "python_with_private_source": 23,
+        "python_public_synthetic_pass": 22,
+        "python_public_private_only_skip": 1,
+        "node_safety_checks": 7,
+        "chromium_dom": "PASS_WITH_REAL_PRIVATE_SOURCE_FIXTURE_AND_MOCKED_HTTP",
+        "direct_localhost_chromium": "BLOCKED_BY_EXECUTION_ENVIRONMENT",
+        "packaged_local_http_smoke": "PASS",
+        "github_actions_result": "NOT_VERIFIED"
+      },
+      "required_for_real_aircraft_simulator_control": [
+        "Implement and verify named simulator telemetry bridge, not only an input schema",
+        "Obtain explicit source-coded ARINC 424 terminal legs, including terminators/holds",
+        "Validate EP-FSI-specific FMC/AFDS control laws and interface semantics",
+        "Full sensor failure and flight dynamics tests on Windows/actual user simulator",
+        "Only after verification add optional actuator-authority adapter"
+      ],
+      "status": "BENCH_LEVEL_STAGES_1_2_3_4_COMPLETED; REAL_AFDS_BLOCKED",
+      "fmc_procedure_legs_executable": 0,
+      "afds_actuator_connected": false,
+      "restricted_navdata_private": true
     }
   }
 }
