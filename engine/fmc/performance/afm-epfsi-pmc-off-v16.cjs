@@ -45,7 +45,7 @@ function evaluate(c,d){
  return {base,bleed,precap,cap,final,capBinding:precap>cap};
 }
 function signedSource(d){
- if(!d||d.sourcePage!==756||d.sourceDocSha!==SOURCE.sha256||!d.qa)return false;
+ if(!d||d.syntheticFixtureOnly===true||d.sourcePage!==756||d.sourceDocSha!==SOURCE.sha256||!d.qa)return false;
  const q=d.qa;
  if(!q.completeCurves||!q.bleedCorrectionsVerified||!q.capCurveVerified||!q.goldenCasesPassed||!q.sourceEffectivityConfirmed)return false;
  if(!Array.isArray(q.independentReviewers)||q.independentReviewers.length<2)return false;
