@@ -9,7 +9,10 @@ function project(groups){const all=groups.flat();if(!all.length)return [];
  const scale=Math.min(246/Math.max(0.0001,maxX-minX),246/Math.max(0.0001,maxY-minY));const cx=(minX+maxX)/2,cy=(minY+maxY)/2;
  let i=0;return groups.map(g=>g.map(_=>{const p=world[i++];return {x:220+(p.x-cx)*scale,y:210-(p.y-cy)*scale,ident:p.ident}}));
 }
-function accepted(state){return !!state?.stage5Committed&&state.ehsi?.mode==='PLAN'&&model.validate(state.stage5Committed).executable===false;}
+function accepted(state){return !!state?.stage5Committed&&state.ehsi?.mode==='PLAN'&&
+ state.active?.ORIGIN===state.stage5Committed.origin&&state.active?.DEST===state.stage5Committed.destination&&
+ !Object.keys(state.pending||{}).some(k=>['ORIGIN','DEST','RUNWAY','CO_ROUTE'].includes(k))&&
+ !Object.keys(state.stagedRoute||{}).length&&model.validate(state.stage5Committed).executable===false;}
 function render(state,svg){
  if(!svg)return {displayed:false};svg.querySelector?.('[data-npe-stage5]')?.remove?.();
  if(!accepted(state))return {displayed:false,reason:'NO_COMMITTED_REFERENCE_PLAN'};
