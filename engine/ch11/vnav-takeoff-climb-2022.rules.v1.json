@@ -1,0 +1,531 @@
+{
+  "schema": "b737-ch11-takeoff-climb-vnav-reference/1.0",
+  "record_id": "B737-CLASSIC-CDU-CH11-TAKEOFF-CLIMB-VNAV-2022",
+  "status": "SOURCE_EXCERPT_INDEXED_OPTION_EFFECTIVITY_PENDING_RUNTIME_NOT_MODIFIED",
+  "source": {
+    "type": "USER_PROVIDED_FCOM_SCREENSHOT_AND_TRANSCRIBED_EXCERPT",
+    "manual": "737 Flight Crew Operations Manual, Flight Management, Navigation - Flight Management System Operation",
+    "document_code": "D6-27370-300/400/500-SHI",
+    "explicit_text_footer_printed_folio": "11.31.25",
+    "explicit_text_revision_date": "2022-12-15",
+    "screenshot_pdf_viewer_page": 1513,
+    "screenshot_filename": "image(20261023-181802).png",
+    "screenshot_sha256": "ff9dbc09c31294c3460c9319307616accad22bee78d55f232cda3f5fbb948992",
+    "screenshot_printed_folio": "NOT_VISIBLE_IN_SCREENSHOT",
+    "excerpt_source": "USER_CHAT_MESSAGE_TEXT_AFTER_IMAGE",
+    "option_markers_preserved": false,
+    "public_copyright_policy": "INDEPENDENT_PARAPHRASE_ONLY_NO_SOURCE_IMAGE_OR_MANUAL_TEXT"
+  },
+  "figure": {
+    "figure_name": "TAKEOFF_AND_CLIMB",
+    "source_pdf_viewer_page": 1513,
+    "is_operational_geometry": false,
+    "aircraft_path": "ILLUSTRATIVE_VERTICAL_PROFILE_NOT_COORDINATE_ROUTE",
+    "numbered_milestones": [
+      {
+        "number": 1,
+        "key": "THRUST_REDUCTION",
+        "visual_climb_reference": "V2+15 before speed increase"
+      },
+      {
+        "number": 2,
+        "key": "VNAV_ENGAGEMENT",
+        "visual_climb_reference": "Initial acceleration region"
+      },
+      {
+        "number": 3,
+        "key": "VNAV_SPD",
+        "visual_climb_reference": "250 KTS and climbing"
+      },
+      {
+        "number": 4,
+        "key": "VNAV_PTH",
+        "visual_climb_reference": "Restriction-controlled section around ABC/BCD"
+      },
+      {
+        "number": 5,
+        "key": "TOP_OF_CLIMB",
+        "visual_climb_reference": "T/C at entry to ECON CRZ SPD"
+      }
+    ],
+    "example_waypoint_constraints": [
+      {
+        "waypoint": "ABC",
+        "type": "ALTITUDE_AT_OR_ABOVE",
+        "altitude_ft": 4000,
+        "comparison": ">="
+      },
+      {
+        "waypoint": "BCD",
+        "type": "ALTITUDE_AT",
+        "altitude_ft": 6000,
+        "comparison": "="
+      },
+      {
+        "waypoint": "CDE",
+        "type": "ALTITUDE_AT_OR_ABOVE",
+        "altitude_ft": 18000,
+        "comparison": ">="
+      }
+    ],
+    "speed_annotations": [
+      "V2+15",
+      "250 KTS",
+      "ECON CLB SPD",
+      "ECON CRZ SPD"
+    ],
+    "altitude_annotation_ft": 10000,
+    "map_symbol": {
+      "symbol": "GREEN_OPEN_CIRCLE",
+      "label": "T/C",
+      "effective_variant": "UNVERIFIED"
+    }
+  },
+  "requirements": [
+    {
+      "id": "TC-001",
+      "domain": "thrust_reduction",
+      "source_anchor": "Text: 1 Thrust Reduction",
+      "requirement": "Climb thrust is selected when crew presses N1.",
+      "inputs": [
+        "N1_SWITCH_PRESSED",
+        "takeoff_phase"
+      ],
+      "outputs": [
+        "climb_thrust_selected"
+      ],
+      "option_scope": "MANUAL_N1_SELECTION_VARIANT",
+      "status": "DESIGNED_NOT_IMPLEMENTED",
+      "verification": "SOURCE_TEXT_OR_FIGURE_REVIEWED_EP_FSI_EFFECTIVITY_PENDING"
+    },
+    {
+      "id": "TC-002",
+      "domain": "thrust_reduction",
+      "source_anchor": "Text: 1 alternate variant",
+      "requirement": "Alternate equipment can select climb thrust automatically at its configured thrust-reduction altitude.",
+      "inputs": [
+        "aircraft_altitude",
+        "configured_thrust_reduction_altitude",
+        "installed_automatic_thrust_option"
+      ],
+      "outputs": [
+        "climb_thrust_selected"
+      ],
+      "option_scope": "AUTOMATIC_AT_THRUST_REDUCTION_ALTITUDE_VARIANT",
+      "status": "DESIGNED_NOT_IMPLEMENTED",
+      "verification": "SOURCE_TEXT_OR_FIGURE_REVIEWED_EP_FSI_EFFECTIVITY_PENDING"
+    },
+    {
+      "id": "TC-003",
+      "domain": "flight_phase",
+      "source_anchor": "Figure: point 1 plus prior FCOM 11.31.2",
+      "requirement": "The pre-existing takeoff phase ends and climb phase begins at the thrust-reduction altitude.",
+      "inputs": [
+        "flight_phase",
+        "altitude_vs_thrust_reduction"
+      ],
+      "outputs": [
+        "flight_phase_CLIMB"
+      ],
+      "option_scope": "PHASE_CONTEXT_FROM_PREVIOUS_SOURCE",
+      "status": "DESIGNED_NOT_IMPLEMENTED",
+      "verification": "SOURCE_TEXT_OR_FIGURE_REVIEWED_EP_FSI_EFFECTIVITY_PENDING"
+    },
+    {
+      "id": "TC-004",
+      "domain": "vnav_engagement",
+      "source_anchor": "Text: 2 VNAV Engagement",
+      "requirement": "VNAV commands acceleration from takeoff reference speed toward planned climb speed as constrained by aircraft configuration.",
+      "inputs": [
+        "vnav_selected",
+        "vnav_engaged",
+        "configuration_limits",
+        "climb_target_speed"
+      ],
+      "outputs": [
+        "commanded_climb_speed_profile"
+      ],
+      "option_scope": "ALL_CONFIRMED_VARIANTS",
+      "status": "DESIGNED_NOT_IMPLEMENTED",
+      "verification": "SOURCE_TEXT_OR_FIGURE_REVIEWED_EP_FSI_EFFECTIVITY_PENDING"
+    },
+    {
+      "id": "TC-005",
+      "domain": "vnav_speed",
+      "source_anchor": "Text: 3 VNAV Climb",
+      "requirement": "Nominal climb runs in VNAV SPD using default or pilot-selected climb speed.",
+      "inputs": [
+        "vnav_climb_enabled",
+        "default_climb_speed",
+        "pilot_climb_speed_override"
+      ],
+      "outputs": [
+        "vertical_mode_VNAV_SPD",
+        "climb_speed_reference"
+      ],
+      "option_scope": "ALL_CONFIRMED_VARIANTS",
+      "status": "DESIGNED_NOT_IMPLEMENTED",
+      "verification": "SOURCE_TEXT_OR_FIGURE_REVIEWED_EP_FSI_EFFECTIVITY_PENDING"
+    },
+    {
+      "id": "TC-006",
+      "domain": "vnav_speed",
+      "source_anchor": "Text: 3 VNAV Climb",
+      "requirement": "VNAV climb speed planning respects speed and altitude restrictions of the SID in the active route.",
+      "inputs": [
+        "active_route_sid",
+        "speed_constraints",
+        "altitude_constraints",
+        "predicted_climb"
+      ],
+      "outputs": [
+        "constraint_aware_speed_profile"
+      ],
+      "option_scope": "ALL_CONFIRMED_VARIANTS",
+      "status": "DESIGNED_NOT_IMPLEMENTED",
+      "verification": "SOURCE_TEXT_OR_FIGURE_REVIEWED_EP_FSI_EFFECTIVITY_PENDING"
+    },
+    {
+      "id": "TC-007",
+      "domain": "autothrottle",
+      "source_anchor": "Text: 3 VNAV Climb",
+      "requirement": "The autothrottle climb phase references the selected climb thrust limit.",
+      "inputs": [
+        "autothrottle_mode",
+        "selected_climb_thrust_limit"
+      ],
+      "outputs": [
+        "autothrottle_climb_thrust_reference"
+      ],
+      "option_scope": "AUTOTHROTTLE_CONFIG_PENDING",
+      "status": "DESIGNED_NOT_IMPLEMENTED",
+      "verification": "SOURCE_TEXT_OR_FIGURE_REVIEWED_EP_FSI_EFFECTIVITY_PENDING"
+    },
+    {
+      "id": "TC-008",
+      "domain": "clb_eng_out",
+      "source_anchor": "Text: 3 ENG OUT note version A",
+      "requirement": "Selecting ENG OUT on CLB can show advisory engine-out performance.",
+      "inputs": [
+        "CLB_ENG_OUT_SELECTED"
+      ],
+      "outputs": [
+        "eng_out_advisory_performance"
+      ],
+      "option_scope": "ENG_OUT_ADVISORY_ONLY_TEXT_VARIANT",
+      "status": "DESIGNED_NOT_IMPLEMENTED",
+      "verification": "SOURCE_TEXT_OR_FIGURE_REVIEWED_EP_FSI_EFFECTIVITY_PENDING"
+    },
+    {
+      "id": "TC-009",
+      "domain": "clb_eng_out",
+      "source_anchor": "Text: 3 ENG OUT note version B",
+      "requirement": "In an alternate version, selecting ENG OUT blanks following performance predictions and VNAV becomes unavailable until another CLB page is selected.",
+      "inputs": [
+        "CLB_ENG_OUT_SELECTED",
+        "CLB_PAGE_OTHER_THAN_ENG_OUT_SELECTED"
+      ],
+      "outputs": [
+        "vnav_availability",
+        "prediction_visibility"
+      ],
+      "option_scope": "ENG_OUT_SUPPRESSION_TEXT_VARIANT",
+      "status": "DESIGNED_NOT_IMPLEMENTED",
+      "verification": "SOURCE_TEXT_OR_FIGURE_REVIEWED_EP_FSI_EFFECTIVITY_PENDING"
+    },
+    {
+      "id": "TC-010",
+      "domain": "altitude_infeasibility",
+      "source_anchor": "Text: after 3 VNAV Climb",
+      "requirement": "An unreachable next crossing-altitude constraint yields the CDU scratchpad message UNABLE NEXT ALTITUDE.",
+      "inputs": [
+        "next_altitude_restriction",
+        "predicted_altitude_at_fix",
+        "constraint_feasibility"
+      ],
+      "outputs": [
+        "CDU_MESSAGE_UNABLE_NEXT_ALTITUDE"
+      ],
+      "option_scope": "ALL_CONFIRMED_VARIANTS",
+      "status": "DESIGNED_NOT_IMPLEMENTED",
+      "verification": "SOURCE_TEXT_OR_FIGURE_REVIEWED_EP_FSI_EFFECTIVITY_PENDING"
+    },
+    {
+      "id": "TC-011",
+      "domain": "vnav_path",
+      "source_anchor": "Text: 4 Climb Restrictions",
+      "requirement": "VNAV can shift to VNAV PTH to remain within applicable departure/waypoint restrictions.",
+      "inputs": [
+        "speed_or_altitude_constraint",
+        "restriction_active",
+        "predicted_vertical_path"
+      ],
+      "outputs": [
+        "vertical_mode_VNAV_PTH"
+      ],
+      "option_scope": "ALL_CONFIRMED_VARIANTS",
+      "status": "DESIGNED_NOT_IMPLEMENTED",
+      "verification": "SOURCE_TEXT_OR_FIGURE_REVIEWED_EP_FSI_EFFECTIVITY_PENDING"
+    },
+    {
+      "id": "TC-012",
+      "domain": "speed_priority",
+      "source_anchor": "Text: 4 Climb Restrictions",
+      "requirement": "Speed references in a constrained climb can originate from published procedure, waypoint constraint, default climb schedule or crew climb-speed entry.",
+      "inputs": [
+        "procedure_speed",
+        "waypoint_speed",
+        "default_climb_speed",
+        "pilot_climb_speed_override"
+      ],
+      "outputs": [
+        "active_climb_speed_reference"
+      ],
+      "option_scope": "ALL_CONFIRMED_VARIANTS",
+      "status": "DESIGNED_NOT_IMPLEMENTED",
+      "verification": "SOURCE_TEXT_OR_FIGURE_REVIEWED_EP_FSI_EFFECTIVITY_PENDING"
+    },
+    {
+      "id": "TC-013",
+      "domain": "speed_priority",
+      "source_anchor": "Figure: 250 KTS/10,000 ft depiction",
+      "requirement": "The illustrative speed/height markers are example scenario inputs, not universal aircraft speed limits.",
+      "inputs": [
+        "illustrative_speed_constraint",
+        "illustrative_altitude_threshold"
+      ],
+      "outputs": [
+        "example_display_only"
+      ],
+      "option_scope": "FIGURE_ONLY",
+      "status": "DESIGNED_NOT_IMPLEMENTED",
+      "verification": "SOURCE_TEXT_OR_FIGURE_REVIEWED_EP_FSI_EFFECTIVITY_PENDING"
+    },
+    {
+      "id": "TC-014",
+      "domain": "top_of_climb",
+      "source_anchor": "Text: 5 Top of Climb",
+      "requirement": "T/C is where the computed climb path meets its cruise altitude and the FMS transitions from climb phase toward cruise phase.",
+      "inputs": [
+        "selected_cruise_altitude",
+        "computed_climb_trajectory",
+        "position_along_route"
+      ],
+      "outputs": [
+        "top_of_climb_location",
+        "flight_phase_CRUISE"
+      ],
+      "option_scope": "ALL_CONFIRMED_VARIANTS",
+      "status": "DESIGNED_NOT_IMPLEMENTED",
+      "verification": "SOURCE_TEXT_OR_FIGURE_REVIEWED_EP_FSI_EFFECTIVITY_PENDING"
+    },
+    {
+      "id": "TC-015",
+      "domain": "top_of_climb",
+      "source_anchor": "Text: 5 Top of Climb",
+      "requirement": "FMC recomputes/displays a climb-to-cruise transition point, including where later step climbs create another T/C.",
+      "inputs": [
+        "step_climb_planned",
+        "new_cruise_altitude",
+        "recomputed_vertical_profile"
+      ],
+      "outputs": [
+        "updated_top_of_climb_fix"
+      ],
+      "option_scope": "ALL_CONFIRMED_VARIANTS",
+      "status": "DESIGNED_NOT_IMPLEMENTED",
+      "verification": "SOURCE_TEXT_OR_FIGURE_REVIEWED_EP_FSI_EFFECTIVITY_PENDING"
+    },
+    {
+      "id": "TC-016",
+      "domain": "map_symbol",
+      "source_anchor": "Text: map T/C indicator",
+      "requirement": "The relevant map presentation shows top of climb with a green unfilled circle and label T/C.",
+      "inputs": [
+        "top_of_climb_location",
+        "map_mode_supported"
+      ],
+      "outputs": [
+        "green_open_T_C_map_marker"
+      ],
+      "option_scope": "MAP_DISPLAY_VARIANT_REVIEW_PENDING",
+      "status": "DESIGNED_NOT_IMPLEMENTED",
+      "verification": "SOURCE_TEXT_OR_FIGURE_REVIEWED_EP_FSI_EFFECTIVITY_PENDING"
+    },
+    {
+      "id": "TC-017",
+      "domain": "figure_altitude",
+      "source_anchor": "Figure: ABC",
+      "requirement": "Example waypoint ABC has an at-or-above 4000 ft crossing requirement.",
+      "inputs": [
+        "ABC_crossing_altitude"
+      ],
+      "outputs": [
+        "constraint_ABC_GE_4000_FT"
+      ],
+      "option_scope": "FIGURE_ONLY",
+      "status": "DESIGNED_NOT_IMPLEMENTED",
+      "verification": "SOURCE_TEXT_OR_FIGURE_REVIEWED_EP_FSI_EFFECTIVITY_PENDING"
+    },
+    {
+      "id": "TC-018",
+      "domain": "figure_altitude",
+      "source_anchor": "Figure: BCD",
+      "requirement": "Example waypoint BCD has an at 6000 ft crossing requirement.",
+      "inputs": [
+        "BCD_crossing_altitude"
+      ],
+      "outputs": [
+        "constraint_BCD_EQ_6000_FT"
+      ],
+      "option_scope": "FIGURE_ONLY",
+      "status": "DESIGNED_NOT_IMPLEMENTED",
+      "verification": "SOURCE_TEXT_OR_FIGURE_REVIEWED_EP_FSI_EFFECTIVITY_PENDING"
+    },
+    {
+      "id": "TC-019",
+      "domain": "figure_altitude",
+      "source_anchor": "Figure: CDE",
+      "requirement": "Example waypoint CDE has an at-or-above 18000 ft crossing requirement.",
+      "inputs": [
+        "CDE_crossing_altitude"
+      ],
+      "outputs": [
+        "constraint_CDE_GE_18000_FT"
+      ],
+      "option_scope": "FIGURE_ONLY",
+      "status": "DESIGNED_NOT_IMPLEMENTED",
+      "verification": "SOURCE_TEXT_OR_FIGURE_REVIEWED_EP_FSI_EFFECTIVITY_PENDING"
+    },
+    {
+      "id": "TC-020",
+      "domain": "figure_speed",
+      "source_anchor": "Figure: takeoff beginning",
+      "requirement": "A diagrammatic takeoff climb starts with a V2+15 speed marker before acceleration.",
+      "inputs": [
+        "illustrative_takeoff_speed"
+      ],
+      "outputs": [
+        "figure_marker_V2_PLUS_15"
+      ],
+      "option_scope": "FIGURE_ONLY",
+      "status": "DESIGNED_NOT_IMPLEMENTED",
+      "verification": "SOURCE_TEXT_OR_FIGURE_REVIEWED_EP_FSI_EFFECTIVITY_PENDING"
+    },
+    {
+      "id": "TC-021",
+      "domain": "figure_speed",
+      "source_anchor": "Figure: level/restriction segment",
+      "requirement": "The diagram includes 250 KTS segments, acceleration to ECON CLB SPD, and ECON CRZ SPD near T/C.",
+      "inputs": [
+        "illustrative_climb_speed_schedule"
+      ],
+      "outputs": [
+        "figure_mode_and_speed_annotations"
+      ],
+      "option_scope": "FIGURE_ONLY",
+      "status": "DESIGNED_NOT_IMPLEMENTED",
+      "verification": "SOURCE_TEXT_OR_FIGURE_REVIEWED_EP_FSI_EFFECTIVITY_PENDING"
+    },
+    {
+      "id": "TC-022",
+      "domain": "transition_semantics",
+      "source_anchor": "Text: 1–5 and figure",
+      "requirement": "The five numbered annotations are milestones within a continuous vertical profile, not five independent CDU pages.",
+      "inputs": [
+        "takeoff_climb_vertical_state"
+      ],
+      "outputs": [
+        "phase_substate_or_flight_event"
+      ],
+      "option_scope": "ALL_CONFIRMED_VARIANTS",
+      "status": "DESIGNED_NOT_IMPLEMENTED",
+      "verification": "SOURCE_TEXT_OR_FIGURE_REVIEWED_EP_FSI_EFFECTIVITY_PENDING"
+    },
+    {
+      "id": "TC-023",
+      "domain": "data_boundary",
+      "source_anchor": "Text: multiple option alternatives",
+      "requirement": "N1/manual versus automatic thrust transition and ENG OUT effects cannot be bound to EP-FSI without installed-equipment/effectivity evidence.",
+      "inputs": [
+        "variant_configuration_provenance"
+      ],
+      "outputs": [
+        "allowed_active_transition_rules"
+      ],
+      "option_scope": "EFFECTIVITY_GATED",
+      "status": "DESIGNED_NOT_IMPLEMENTED",
+      "verification": "SOURCE_TEXT_OR_FIGURE_REVIEWED_EP_FSI_EFFECTIVITY_PENDING"
+    },
+    {
+      "id": "TC-024",
+      "domain": "implementation_gate",
+      "source_anchor": "Chapter 11 source-only import",
+      "requirement": "Do not activate real VNAV, autopilot, or flight guidance authority from figure-only information or unverified aircraft configuration.",
+      "inputs": [
+        "source_verification",
+        "geometry_verification",
+        "aircraft_configuration_verified"
+      ],
+      "outputs": [
+        "no_auto_guidance_authority"
+      ],
+      "option_scope": "ENGINE_GUARDRAIL",
+      "status": "DESIGNED_NOT_IMPLEMENTED",
+      "verification": "SOURCE_TEXT_OR_FIGURE_REVIEWED_EP_FSI_EFFECTIVITY_PENDING"
+    }
+  ],
+  "integration_contract": {
+    "requirement_count": 24,
+    "engines_to_consume": [
+      "engine/ch11/fmc-runtime-v2.js",
+      "engine/fmc/ch11/fmc-core.cjs",
+      "cdu-standalone-v6/engine/cdu-engine.js",
+      "cdu-standalone-v6/ehsi/ehsi-engine.js"
+    ],
+    "expected_inputs": [
+      "FMS_PHASE",
+      "TOGA_SELECTED",
+      "N1_SWITCH_PRESSED",
+      "CURRENT_ALTITUDE_FT",
+      "THRUST_REDUCTION_ALTITUDE_FT",
+      "AIRCRAFT_CONFIG_VARIANT",
+      "VNAV_ENGAGED",
+      "SID_SPEED_AND_ALTITUDE_CONSTRAINTS",
+      "SELECTED_CLIMB_SPEED",
+      "CLIMB_THRUST_LIMIT",
+      "CRUISE_ALTITUDE_FT",
+      "PREDICTED_WAYPOINT_ALTITUDE",
+      "CLB_ENG_OUT_PAGE_SELECTED"
+    ],
+    "expected_outputs": [
+      "FMS_PHASE",
+      "THRUST_REDUCTION_EVENT",
+      "VNAV_SPD_OR_PTH_MODE",
+      "CLIMB_SPEED_REFERENCE",
+      "CLIMB_THRUST_LIMIT_REFERENCE",
+      "UNABLE_NEXT_ALTITUDE_MESSAGE",
+      "CLB_ENG_OUT_EFFECT",
+      "TOP_OF_CLIMB_LOCATION",
+      "EHSI_TC_GREEN_OPEN_CIRCLE"
+    ],
+    "unresolved": [
+      "EP-FSI automatic thrust-reduction option",
+      "EP-FSI ENG OUT variant effect",
+      "VNAV mode transition numeric thresholds",
+      "Crossing constraint feasibility algorithm",
+      "Actual FMC/autothrottle bus protocol",
+      "Precise source diagram printed folio",
+      "Whether T/C display symbol rule is option-specific"
+    ],
+    "runtime_activation": "NOT_IN_THIS_COMMIT"
+  },
+  "policy": {
+    "independent_standalone_cdu": true,
+    "preserve_approved_cdu_panel": true,
+    "preserve_all_70_button_hitboxes": true,
+    "preserve_boeing_cdu_large_and_small_fonts": true,
+    "avoid_reproducing_original_technical_diagram_in_public_repo": true,
+    "do_not_enable_unverified_flight_guidance": true
+  }
+}

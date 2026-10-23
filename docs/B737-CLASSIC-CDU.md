@@ -22,3 +22,7 @@ Font acceptance test: `node tests/cdu-font-lock.test.cjs`.
 On startup or reset, the CDU initially displays **IDENT**; the FMS flight phase is separately **PREFLIGHT**. The INIT/REF key opens the INDEX page, where IDENT is selectable; IDENT R6 offers POS INIT. Page navigation does not itself change the flight phase.
 
 The existing IDENT fields are **provisional**. Their exact positions and values require page-by-page comparison against FCOM Chapter 11; they are not approved final text. The approved front-panel bitmap, 70 control hitboxes and locked BoeingCDU Large/Small fonts are unchanged.
+
+## VNAV takeoff/climb behavior (FCOM 2022)
+
+Source-indexed design: [CDU_VNAV_TAKEOFF_CLIMB_2022.md](CDU_VNAV_TAKEOFF_CLIMB_2022.md) and [source requirements](../engine/ch11/vnav-takeoff-climb-2022.rules.v1.json). Five vertical-profile milestones, constraints ABC/BCD/CDE, N1/automatic variant separation, VNAV SPD/PTH, ENG OUT restrictions, T/C display, and UNABLE NEXT ALTITUDE warning are recorded as **requirements only**. Do not claim completed flight guidance based on source ingestion.
