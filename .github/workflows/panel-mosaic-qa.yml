@@ -16,3 +16,5 @@ jobs:
         run: node panel-mosaic-lab/test.cjs
       - name: Verify immutable OH01-06 original SHA256 and polygons
         run: node panel-mosaic-lab/upper-oh/test.cjs
+      - name: Verify entire OH01-18 preview sources and stage syntax
+        run: node panel-mosaic-lab/all-overhead/test.cjs
