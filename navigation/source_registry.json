@@ -93,7 +93,7 @@
   "integration": {
     "navigation_source_selection": "registry",
     "source_merge_behavior": "explicit_source_selection_only",
-    "fmc_gate": "Stage 2 geometry is reference-only. Verify magnetic variation, verified leg path terminators, turn/intercept/hold logic, source runway/transition semantics, charts and EP-FSI FMC adapter before enabling active guidance.",
+    "fmc_gate": "No active guidance. Stage3 math is laboratory preview only; magnetic reference, event terminators, variation source, hold entry/exit, approved aircraft speed-bank-wind model, source/chart-specific procedural sequencing and EP-FSI FMC features require validation.",
     "simulator_training_only": true,
     "procedure_decoder": {
       "id": "NPE_STAGE1_v1",
@@ -156,6 +156,56 @@
       "engine": "navigation/route_geometry.py",
       "qa": "navigation/qa_geometry.py",
       "docs": "navigation/NPE_STAGE2.md",
+      "fmc_active": false
+    },
+    "flight_leg_geometry": {
+      "id": "NPE_STAGE3_v1",
+      "airac": "2610",
+      "source_id": "PMDG_WORLD_2610_WITH_PROCEDURES_R1",
+      "geometry_status": "LAB_PARAMETRIC_MATH_ONLY",
+      "airac_required_marker": "//AIRAC Cycle : 2610 (01/OCT/2026 - 29/OCT/2026) - Ver.1",
+      "private_archive": "/B737/NAVDB/NPE_STAGE3/B737_NAVDB_WORLD_AIRAC2610_NPE_STAGE3_PRIVATE.zip",
+      "private_manifest": "/B737/NAVDB/NPE_STAGE3/manifest.json",
+      "private_import_report": "/B737/NAVDB/NPE_STAGE3/import_report.json",
+      "private_qa_report": "/B737/NAVDB/NPE_STAGE3/qa_report.json",
+      "private_archive_sha256": "21a4e0029b7689a0d4249fd0b86fda9bf8bfb06e3626c556a42298e3a37eef50",
+      "stage3_overlay_sha256": "a9b19c032bc035936ec4d0436cf2aced58b424e3484976c4d9cbea6b5a8b8c50",
+      "parent_stage1_sha256": "9f8a491a7bce9fc4709a15e7576b0bc990cc4fa4b5d483074f7ce4d4ceb5520e",
+      "parent_stage2_sha256": "264e596b245cc7efd816c9dd9aa997137af1460ac23d4178f2937e8db8ddd655",
+      "source_intent_count": 189226,
+      "breakdown": {
+        "TRACK": 68143,
+        "HEADING": 25625,
+        "TURN_DIRECT": 36077,
+        "HOLD": 33680,
+        "RADIAL_INTERCEPT": 14310,
+        "ATC_VECTORS": 11391
+      },
+      "quarantined_source_intents": 50,
+      "unresolved_bearing_reference_by_source": true,
+      "automated_tests_passed": 21,
+      "fmc_legs_generated": 0,
+      "autopilot_guidance_enabled": false,
+      "complete_source_event_identity_qa": "PASS",
+      "capabilities": [
+        "explicit true magnetic bearing conversion",
+        "heading vs track wind vector",
+        "mathematical spherical ray intercept",
+        "parameterized turn radius and sampled arcs",
+        "one experimental established hold circuit"
+      ],
+      "source_data_redistribution": "RESTRICTED_PRIVATE_LIBRARY_ONLY",
+      "no_assumptions": [
+        "no country-wide magvar default",
+        "no default TAS/bank/wind",
+        "no automatic transition joining",
+        "no unsupported FMC leg terminators"
+      ],
+      "engine": "navigation/flight_leg_math.py",
+      "import_code": "navigation/leg_intent_overlay.py",
+      "reader_api": "navigation/leg_preview_reader.py",
+      "qa": "navigation/qa_stage3.py",
+      "docs": "navigation/NPE_STAGE3.md",
       "fmc_active": false
     }
   }
