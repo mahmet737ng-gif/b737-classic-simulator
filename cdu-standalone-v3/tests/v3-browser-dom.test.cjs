@@ -9,7 +9,7 @@ const nodes={},document={getElementById:n=>nodes[n]??(nodes[n]=new E()),createEl
 const window={CDU_MAP:map,CDU_PAGES:pages,CDU_ENGINE:core};
 const sandbox={document,window,MutationObserver:class{observe(){}},console,setTimeout,clearTimeout};vm.createContext(sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'app.js'),'utf8'),sandbox);
-assert.equal(nodes.clickmap.children.length,70);assert.equal(nodes.annunciators.children.length,5);assert.equal(nodes['fmc-lines'].children.length,14);assert.equal(nodes['page-now'].textContent,'INDEX');
+assert.equal(nodes.clickmap.children.length,70);assert.equal(nodes.annunciators.children.length,5);assert.equal(nodes['fmc-lines'].children.length,14);assert.equal(nodes['page-now'].textContent,'IDENT');
 let send=k=>vm.runInContext(`send('CDU_CAPT_${k}')`,sandbox);
 send('RTE');for(const k of 'OIII')send('KEY_'+k);send('LSK_L1');assert.equal(nodes['pending-now'].textContent,1);assert(nodes['annunciators'].children.find(x=>x.id==='CDU_CAPT_EXEC_LIGHT').classList.contains('on'));
 send('EXEC');assert.equal(nodes['pending-now'].textContent,0);assert(!nodes['annunciators'].children.find(x=>x.id==='CDU_CAPT_EXEC_LIGHT').classList.contains('on'));

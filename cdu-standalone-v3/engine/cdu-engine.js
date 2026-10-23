@@ -3,7 +3,7 @@
 'use strict';
 const EMPTY={};
 const SAMPLE={ORIGIN:'',DEST:'',FLIGHT:'',CRZ_ALT:'',CRZ_SPEED:'',CI:'',FLAPS:'',RUNWAY:'',WPT1:'',WPT2:'',OFFSET:''};
-function makeState(start='INDEX') {return {page:start,active:{...SAMPLE},pending:{},scratch:'',message:'',history:[],call:false,fail:false,offsetGuidance:false,brightness:1,lastKey:'',lastLSK:'',subpage:1,events:[]};}
+function makeState(start='IDENT') {return {page:start,active:{...SAMPLE},pending:{},scratch:'',message:'',history:[],call:false,fail:false,offsetGuidance:false,brightness:1,lastKey:'',lastLSK:'',subpage:1,events:[]};}
 function clean(value){return String(value??'').trim().toUpperCase();}
 function validate(type,value){const s=clean(value);switch(type){
 case 'ICAO':return /^[A-Z]{4}$/.test(s);

@@ -17,7 +17,7 @@ async function go(){await new Promise(r=>setTimeout(r,15));
  assert.equal(nodes['clickmap'].children.length,70);assert.equal(nodes['annunciators'].children.length,5);
  const run=js=>vm.runInContext(js,context);
  const page=()=>nodes['page-now'].textContent;
- assert.equal(page(),'CRZ');
+ assert.equal(page(),'IDENT');
  run("press('CDU_CAPT_RTE')");assert.equal(page(),'RTE');
  for(let c of 'EDDF')run(`press('CDU_CAPT_KEY_${c}')`);
  run("press('CDU_CAPT_LSK_L1')");assert.equal(nodes['pending-now'].textContent,1);assert.ok(run("byId['CDU_CAPT_EXEC_LIGHT'].classList.contains('on')"));
