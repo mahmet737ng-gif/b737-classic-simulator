@@ -47,8 +47,10 @@ function update(){const box=$('fmc-lines'); box.replaceChildren();
  box.appendChild(makePairRow(((565-screenTop)/screenHeight*100), state.message||state.scratch||'', '', true));
  if(window.CDU_NAV_API?.paint)window.CDU_NAV_API.paint(box);
  if(window.CDU_STAGE5_API?.paint)window.CDU_STAGE5_API.paint(box);
+ if(window.CDU_STAGE6_API?.paint)window.CDU_STAGE6_API.paint(box);
  box.style.opacity=state.brightness;
- const all=core.lights(state);for(const [l,on] of Object.entries(all)){const el=byId['CDU_CAPT_'+l+'_LIGHT'];if(el)el.classList.toggle('on',on)}
+ const all=core.lights(state);if(state.stage6AwaitingExec)all.EXEC=true;
+ for(const [l,on] of Object.entries(all)){const el=byId['CDU_CAPT_'+l+'_LIGHT'];if(el)el.classList.toggle('on',on)}
  $('page-now').textContent=state.page;$('scratch-now').textContent=state.message||state.scratch||'—';$('pending-now').textContent=core.pendingCount(state);$('key-now').textContent=state.lastKey;
  const ref=pages[state.page].source_ref;$('current-reference').textContent=`FCOM ${ref.folio_family} (near PDF p. ${ref.pdf_page_near}); field-by-field verification pending`;
  $('current-status').textContent=pages[state.page].source_status;
@@ -58,9 +60,11 @@ function update(){const box=$('fmc-lines'); box.replaceChildren();
  updateEHSI();
 }
 function send(k){const before=state.page;
+ if(window.CDU_STAGE6_API?.beforeKey?.(k)){update();return;}
  if(window.CDU_STAGE5_API?.beforeKey?.(k)){update();return;}
  core.press(state,pages,k);window.CDU_NAV_API?.afterPage?.(k);window.CDU_NAV_API?.afterKey?.(k);
- window.CDU_STAGE5_API?.afterPage?.(k);window.CDU_STAGE5_API?.afterKey?.(k,before);update()}
+ window.CDU_STAGE5_API?.afterPage?.(k);window.CDU_STAGE5_API?.afterKey?.(k,before);
+ window.CDU_STAGE6_API?.afterPage?.(k);window.CDU_STAGE6_API?.afterKey?.(k,before);update()}
 function reset(){const fresh=core.makeState('INDEX');Object.keys(state).forEach(k=>delete state[k]);Object.assign(state,fresh);['call-test','fault-test','offset-test'].forEach(k=>$(k).checked=false);window.EHSI_ENGINE?.syncPanel(state,document);update()}
 function init(){if(!map||!pages||!core)throw Error('CDU data is missing');makeControls();update();$('reset').onclick=reset;$('overlay-toggle').onclick=()=>$('cdu-stage').classList.toggle('debug');$('info-toggle').onclick=()=>$('qa').hidden=!$('qa').hidden;
  for(const [el,k] of [['call-test','call'],['fault-test','fail'],['offset-test','offsetGuidance']])$(el).addEventListener('change',e=>{state[k]=e.target.checked;update()});
