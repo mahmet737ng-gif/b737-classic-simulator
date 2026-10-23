@@ -1,0 +1,32 @@
+{
+  "schema": "b737.panel-mosaic.staged-update.v1",
+  "version": "UPD-0003",
+  "date": "2026-10-24",
+  "status": "PENDING_BINARY_UPLOAD",
+  "viewUrl": "https://mahmet737ng-gif.github.io/b737-classic-simulator/panel-mosaic-lab/electrical-stack/",
+  "sourceOfTruth": "panel-mosaic-lab/immutable-manifest.json",
+  "notes": "Do not mark as published/locked until two exact PNG bytes exist at specified GitHub paths. Online staging viewer verifies SHA-256 and displays images only when available. Previous assets untouched.",
+  "physicalPlacement": [
+    "OH-10",
+    "OH-11",
+    "OH-12"
+  ],
+  "assets": [
+    {
+      "panel": "OH-11",
+      "title": "STANDBY POWER / DRIVE TEMP",
+      "lockedPath": "panel-mosaic-lab/assets/locked/2026-10-23/OH11-STANDBY-29a8492356fc.png",
+      "size": 3178802,
+      "sha256": "29a8492356fca12afe4763c374d12a82b9a1dc416b5dc0305cdb02f2049a48a9",
+      "state": "awaiting-upload"
+    },
+    {
+      "panel": "OH-12",
+      "title": "BUS TRANS / APU GEN",
+      "lockedPath": "panel-mosaic-lab/assets/locked/2026-10-23/OH12-BUS-TRANS-7ba5963db09c.png",
+      "size": 3315509,
+      "sha256": "7ba5963db09c176da718d2a2e2e36bba403c7de37039602aa1689b81a0d9117f",
+      "state": "awaiting-upload"
+    }
+  ]
+}
