@@ -10,7 +10,7 @@ function card(asset,style){const a=el('article','piece');a.tabIndex=0;a.dataset.
  const img=el('img');img.src=asset.url;img.alt=asset.title;img.loading='eager';img.decoding='async';img.draggable=false;
  img.addEventListener('load',()=>{loaded.add(asset.id);a.classList.remove('bad');summary();updateDimensions();if(selected===asset.id)showDetails();});
  img.addEventListener('error',()=>{errored.add(asset.id);loaded.delete(asset.id);a.classList.add('bad');img.remove();a.append(el('div','empty-image','⚠ بارگذاری تصویر ناموفق بود'));summary();updateDimensions();});
- if(asset.display?.cropLeftPct){const cropped=el('div','crop-window');cropped.append(img);a.append(cropped);}else{a.append(img);}
+ if(style==='mosaic' && asset.display?.cropLeftPct){const cropped=el('div','crop-window');cropped.append(img);a.append(cropped);}else{a.append(img);}
  a.onclick=()=>{if(!dragged)pick(asset.id);};a.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();pick(asset.id);}};
  return a;}
 function placeholder(ids){const d=el('div','placeholder');d.append(el('strong','',ids.join(' / ')),el('span','','تصویر هنوز در دیتابیس موجود نیست'));return d;}
