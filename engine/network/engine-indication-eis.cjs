@@ -78,7 +78,7 @@ function panelButton(state,action){
    s.displayMode='RESET_PREVIEW';s.modeRemainingSeconds=1;
  }else throw new TypeError('invalid FF/FU control');
 }
-function advanceIndications(state,seconds,propulsion){
+function advanceIndications(state,seconds,propulsion,fuelBurnOverrides={}){
  if(typeof seconds!=='number'||!Number.isFinite(seconds)||seconds<0||seconds>3600)throw new TypeError('invalid elapsed seconds');
  if(propulsion.mode!=='INTEGRATED')return;
  for(const side of ENGINE_IDS){
@@ -91,7 +91,9 @@ function advanceIndications(state,seconds,propulsion){
    // Fuel USED is an integration of VERIFIED FUEL FLOW observations,
    // not predicted from N2 or inferred pump source.
    if(s.fuelUsedKg!==null){
-     s.fuelUsedKg=valid?s.fuelUsedKg+flow.value*seconds/3600:null;
+     const mass=Object.prototype.hasOwnProperty.call(fuelBurnOverrides,side)?
+       fuelBurnOverrides[side]:flow.value*seconds/3600;
+     s.fuelUsedKg=valid&&Number.isFinite(mass)&&mass>=0?s.fuelUsedKg+mass:null;
    }
    const oil=s.channels.oilTempC;
    if(oil.signal==='VALID'&&oil.value!==null){
