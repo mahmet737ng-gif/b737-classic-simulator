@@ -31,6 +31,14 @@ main{max-width:1260px;margin:auto;padding:18px}.controls{display:flex;align-item
 .actions{display:flex;justify-content:center;gap:7px;margin-top:9px;flex-wrap:wrap;min-height:35px}
 .actions button{min-width:80px;padding:5px 10px;font-size:11px}.actions button:disabled{opacity:.5;cursor:default}
 .guard-assembly{width:126px;height:170px;position:relative;perspective:380px}
+/* Existing Flight Controls black guarded-paddle geometry, adapted to standalone scale. */
+.paddle-control{position:absolute;inset:0;padding:0;border:0;background:transparent;cursor:pointer;perspective:300px;clip-path:polygon(8% 0,92% 0,100% 7%,100% 93%,92% 100%,8% 100%,0 93%,0 7%)}
+.paddle-control i{position:absolute;left:7%;top:2%;width:86%;height:56%;border-radius:22% 22% 15% 15%;background:linear-gradient(95deg,#090b0b 0%,#161a1a 38%,#050606 74%,#202322 100%);box-shadow:inset 3px 2px 6px #343a3860,inset -3px -3px 6px #000,0 5px 7px #000b;transform-origin:50% 92%;transition:transform 240ms cubic-bezier(.2,.9,.25,1),filter 240ms}
+.paddle-control i:before{content:"";position:absolute;left:12%;right:12%;bottom:8%;height:4%;border-radius:999px;background:linear-gradient(90deg,#a7aca8,#fff 45%,#737b77)}
+.paddle-control[data-position="stby"] i{transform:translateY(0) rotateX(-15deg)}
+.paddle-control[data-position="off"] i{transform:translateY(38%) rotateX(0deg)}
+.paddle-control[data-position="on"] i{transform:translateY(79%) rotateX(14deg)}
+
 .guard-assembly .sprite{position:absolute;inset:8px 0 0;width:126px;height:158px;z-index:1}
 .guard-lid{position:absolute;inset:16px 8px 14px;background:transparent;border:0;padding:0;z-index:3;transform-origin:50% 0%;transition:transform 350ms cubic-bezier(.2,.8,.2,1.1),filter 180ms;transform-style:preserve-3d}
 .guard-lid i{position:absolute;inset:0;background:linear-gradient(100deg,#283034d0,#9daab74d 30%,#d3dce15e 51%,#263037dd);border:3px solid #68787d;border-radius:15px 15px 18px 18px;box-shadow:inset 3px 3px 7px #e7f3f454,inset -3px -3px 7px #10161b,5px 5px 12px #0008}
@@ -92,7 +100,8 @@ function guardAction(c,action,value){
 }
 function frames(type,c){
  let pictures=[];
- if(type==="toggle-2"||type==="guarded")pictures=[["off",asset("vertical_off")],["on",asset("vertical_on")]];
+ if(type==="guarded")return '<button class="paddle-control three" data-position="on" id="control-'+c.id+'" aria-label="'+c.label+'"><i></i></button>';
+ if(type==="toggle-2")pictures=[["off",asset("vertical_off")],["on",asset("vertical_on")]];
  if(type==="toggle-spring")pictures=[["up",asset("vertical_on")],["off",asset("vertical_center")],["down",asset("vertical_off")]];
  if(type==="toggle-3-horizontal")pictures=[["left",asset("horizontal_left")],["normal",asset("horizontal_center")],["right",asset("horizontal_right")]];
  return '<button class="sprite '+(type==="toggle-3-horizontal"?"nav":type==="toggle-spring"?"spring":"")+'" id="control-'+c.id+'" aria-label="'+c.label+'">'+pictures.map(([p,src])=>'<img data-pos="'+p+'" src="'+src+'" draggable="false" alt="">').join("")+'</button>';
@@ -110,6 +119,7 @@ function render(){
   if(!card)return;
   card.querySelector(".state b").textContent=label[current]||current.toUpperCase();
   if(c.type==="guarded"){
+   document.getElementById("control-"+c.id).dataset.position=current;
    card.querySelector(".state small").textContent="GUARD: "+v.guard.toUpperCase();
    const lid=document.getElementById("lid-"+c.id);
    lid.classList.toggle("open",v.guard==="open");
