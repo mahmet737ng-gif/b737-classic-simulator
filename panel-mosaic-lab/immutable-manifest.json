@@ -1,6 +1,6 @@
 {
   "schema": "b737-panel-assets-immutable-v2",
-  "version": "UPD-0007",
+  "version": "UPD-0008",
   "status": "GITHUB_BINARY_VERIFIED",
   "lockPolicy": "append-only files under panel-mosaic-lab/assets/locked; SHA-256 and Git object hash checked by CI. Repository admins may still override unless branch/ruleset protection configured.",
   "assets": [
@@ -250,6 +250,38 @@
       "status": "uploaded",
       "immutable": true,
       "sourceMethod": "Identical Git blob alias; source pixels preserved."
+    },
+    {
+      "id": "OH-22-CABIN-PRESS-SOURCE-UPD-0008",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/OH22-CABIN-PRESSURIZATION-d1c6c39b6b33.png",
+      "sha256": "0756878f35a9b3e4bc9ce03e98a644927edbead65d4e61f3ae4b9e0a649a2a41",
+      "gitBlobSha1": "d1c6c39b6b331c6f927f575bad87d0295b785df3",
+      "bytes": 2288696,
+      "panelIds": [
+        "OH-22"
+      ],
+      "originalUploadedPath": "panel-mosaic-lab/assets/locked/2026-10-23/Blanked Aircraft Avionics Control Panel.png",
+      "immutable": true,
+      "status": "uploaded",
+      "sourceMethod": "Canonical exact-byte alias to user-uploaded Git blob. No re-encode.",
+      "displayProcessing": null
+    },
+    {
+      "id": "OH-23-25-SOURCE-UPD-0008",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/OH23-25-LOWER-CONTROLS-fad696c845df.png",
+      "sha256": "80cb82375dccc9a127919e73cb13ebadfef198572fcbdce2ea9be8b7d7ba7f2a",
+      "gitBlobSha1": "fad696c845df3236286e8861d67c27a5d97d9c2d",
+      "bytes": 1552065,
+      "panelIds": [
+        "OH-23",
+        "OH-24",
+        "OH-25"
+      ],
+      "originalUploadedPath": "panel-mosaic-lab/assets/locked/2026-10-23/Empty Aircraft Cockpit Control Panel.png",
+      "immutable": true,
+      "status": "uploaded",
+      "sourceMethod": "Canonical exact-byte alias to user-uploaded Git blob. No re-encode.",
+      "displayProcessing": "Viewer-only trim of white background: top=212px, bottom=216px"
     }
   ],
   "panelAssignments": [
@@ -369,6 +401,24 @@
       ],
       "view": "panel-mosaic-lab/all-overhead/",
       "status": "atlas-source-identity-verified; seam boundaries provisional"
+    },
+    {
+      "assetId": "OH-22-CABIN-PRESS-SOURCE-UPD-0008",
+      "panels": [
+        "OH-22"
+      ],
+      "view": "panel-mosaic-lab/all-overhead/",
+      "status": "atlas-source-verified, visual seams provisional"
+    },
+    {
+      "assetId": "OH-23-25-SOURCE-UPD-0008",
+      "panels": [
+        "OH-23",
+        "OH-24",
+        "OH-25"
+      ],
+      "view": "panel-mosaic-lab/all-overhead/",
+      "status": "atlas-source-verified, visual seams provisional"
     }
   ],
   "updateHistory": [
@@ -478,6 +528,23 @@
         "OH-25"
       ],
       "notes": "Original filenames did not correspond to atlas systems. OH19 includes separate voice recorder and pressure differential / altitude horn plates; OH20 air conditioning, OH21 bleed air."
+    },
+    {
+      "version": "UPD-0008",
+      "date": "2026-10-24",
+      "assetIds": [
+        "OH-22-CABIN-PRESS-SOURCE-UPD-0008",
+        "OH-23-25-SOURCE-UPD-0008"
+      ],
+      "panels": [
+        "OH-19",
+        "OH-22",
+        "OH-23",
+        "OH-24",
+        "OH-25"
+      ],
+      "status": "full-overhead-images-placed",
+      "notes": "OH19 moved below OH17 to wide fourth atlas column preserving native aspect. OH22 pressurization from actual uploaded panel image. One full-width source spans OH23-25 and white PNG canvas is removed only for preview. Original files untouched."
     }
   ],
   "lastStagedVersion": "UPD-0003",
