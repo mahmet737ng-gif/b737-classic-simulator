@@ -1,6 +1,6 @@
 {
   "schema": "b737.overhead.atlas-coordinate-layout.v1",
-  "version": "UPD-0009-atlas-bottom-alignment",
+  "version": "UPD-0010-safe-fit",
   "date": "2026-10-24",
   "reference": {
     "image": "../../assets/overhead.webp",
@@ -39,12 +39,12 @@
   "lowerSharedEdgeY": 3276,
   "bottomStripTopY": 3281,
   "layoutPrinciples": [
-    "all artboard coordinates are atlas pixels, independent of source PNG dimensions",
-    "all five columns terminate at y=3276; bottom shared image spans x=3..2217 from y=3281..3522",
-    "one common zoom factor scales entire 2220x3525 layout; never stack by image natural height",
-    "use aspect-preserving object-fit:cover inside fixed plate bounding rectangles; overflow clipped but original binary preserved",
-    "top OH01-06 and shared OH23-25 are single image files across several atlas IDs",
-    "OH13/OH14/OH18 content-based center-strip splits are visual approximations within one long atlas panel; physical seam not independently shown in atlas"
+    "Every original source photo has measured natural dimensions, and visible artwork is never stretched or auto-cropped to cover a mismatched atlas rectangle",
+    "Presentation crops ONLY known blank white padding on OH13 side gutters and OH23-25 exterior white top/bottom canvas",
+    "Artwork visible dimensions are scaled with Math.min(w/contentWidth,h/contentHeight), then aligned to the named atlas plate region, with no cut-off lettering or instruments",
+    "Fixed atlas box geometry from the original reference is retained; any uncovered margins indicate the source asset was made with a different aspect ratio and needs per-plate artwork rework",
+    "All five columns have fixed y=3276 bottom outline; actual source art may not fill some of those boxes",
+    "Use one zoom factor for the entire layout, preserving each source's aspect ratio"
   ],
   "placements": [
     {
@@ -56,7 +56,24 @@
       "note": "upper shared overhead source OH01-06",
       "alignment": "atlas-boundary",
       "zIndex": 1,
-      "visualFit": "cover"
+      "visualFit": "cover",
+      "sourceDimensions": [
+        1731,
+        909
+      ],
+      "displayMode": "fit-visible-content-without-distortion",
+      "contentCrop": {
+        "left": 0,
+        "top": 0,
+        "right": 0,
+        "bottom": 0
+      },
+      "visibleSourceDimensions": [
+        1731,
+        909
+      ],
+      "auditCoverCropRatio": 0.124,
+      "imageAnchor": "top"
     },
     {
       "id": "OH07-08",
@@ -67,7 +84,24 @@
       "note": "original left flight control and NAV selectors combined",
       "alignment": "atlas-boundary",
       "zIndex": 2,
-      "visualFit": "cover"
+      "visualFit": "cover",
+      "sourceDimensions": [
+        913,
+        1723
+      ],
+      "displayMode": "fit-visible-content-without-distortion",
+      "contentCrop": {
+        "left": 0,
+        "top": 0,
+        "right": 0,
+        "bottom": 0
+      },
+      "visibleSourceDimensions": [
+        913,
+        1723
+      ],
+      "auditCoverCropRatio": 0.364,
+      "imageAnchor": "bottom"
     },
     {
       "id": "OH09",
@@ -78,7 +112,24 @@
       "note": "fuel left, lower edge y3276",
       "alignment": "atlas-boundary",
       "zIndex": 2,
-      "visualFit": "cover"
+      "visualFit": "cover",
+      "sourceDimensions": [
+        1012,
+        1555
+      ],
+      "displayMode": "fit-visible-content-without-distortion",
+      "contentCrop": {
+        "left": 0,
+        "top": 0,
+        "right": 0,
+        "bottom": 0
+      },
+      "visibleSourceDimensions": [
+        1012,
+        1555
+      ],
+      "auditCoverCropRatio": 0.279,
+      "imageAnchor": "bottom"
     },
     {
       "id": "OH10",
@@ -89,7 +140,24 @@
       "note": "electrical DC AC",
       "alignment": "atlas-boundary",
       "zIndex": 2,
-      "visualFit": "cover"
+      "visualFit": "cover",
+      "sourceDimensions": [
+        1095,
+        1436
+      ],
+      "displayMode": "fit-visible-content-without-distortion",
+      "contentCrop": {
+        "left": 0,
+        "top": 0,
+        "right": 0,
+        "bottom": 0
+      },
+      "visibleSourceDimensions": [
+        1095,
+        1436
+      ],
+      "auditCoverCropRatio": 0.343,
+      "imageAnchor": "bottom"
     },
     {
       "id": "OH11",
@@ -100,7 +168,24 @@
       "note": "standby electrical",
       "alignment": "atlas-boundary",
       "zIndex": 2,
-      "visualFit": "cover"
+      "visualFit": "cover",
+      "sourceDimensions": [
+        1203,
+        1308
+      ],
+      "displayMode": "fit-visible-content-without-distortion",
+      "contentCrop": {
+        "left": 0,
+        "top": 0,
+        "right": 0,
+        "bottom": 0
+      },
+      "visibleSourceDimensions": [
+        1203,
+        1308
+      ],
+      "auditCoverCropRatio": 0.299,
+      "imageAnchor": "bottom"
     },
     {
       "id": "OH12",
@@ -111,7 +196,24 @@
       "note": "bus transfer, lower edge y3276",
       "alignment": "atlas-boundary",
       "zIndex": 2,
-      "visualFit": "cover"
+      "visualFit": "cover",
+      "sourceDimensions": [
+        1024,
+        1536
+      ],
+      "displayMode": "fit-visible-content-without-distortion",
+      "contentCrop": {
+        "left": 0,
+        "top": 0,
+        "right": 0,
+        "bottom": 0
+      },
+      "visibleSourceDimensions": [
+        1024,
+        1536
+      ],
+      "auditCoverCropRatio": 0.132,
+      "imageAnchor": "bottom"
     },
     {
       "id": "OH13",
@@ -122,7 +224,24 @@
       "note": "circuit breaker plus equipment cooling physically joined center strip",
       "alignment": "atlas-boundary",
       "zIndex": 2,
-      "visualFit": "crop-white-side-gutters-and-cover"
+      "visualFit": "crop-white-side-gutters-and-cover",
+      "sourceDimensions": [
+        724,
+        2172
+      ],
+      "displayMode": "fit-visible-content-without-distortion",
+      "contentCrop": {
+        "left": 121,
+        "top": 0,
+        "right": 121,
+        "bottom": 0
+      },
+      "visibleSourceDimensions": [
+        482,
+        2172
+      ],
+      "auditCoverCropRatio": 0.117,
+      "imageAnchor": "bottom"
     },
     {
       "id": "OH14",
@@ -133,7 +252,24 @@
       "note": "emergency exit lights, no smoking and fasten belts in center strip",
       "alignment": "atlas-boundary",
       "zIndex": 2,
-      "visualFit": "cover"
+      "visualFit": "cover",
+      "sourceDimensions": [
+        1074,
+        1464
+      ],
+      "displayMode": "fit-visible-content-without-distortion",
+      "contentCrop": {
+        "left": 0,
+        "top": 0,
+        "right": 0,
+        "bottom": 0
+      },
+      "visibleSourceDimensions": [
+        1074,
+        1464
+      ],
+      "auditCoverCropRatio": 0.399,
+      "imageAnchor": "bottom"
     },
     {
       "id": "OH18",
@@ -144,7 +280,24 @@
       "note": "attend/ground call/wiper in center strip, lower edge y3276",
       "alignment": "atlas-boundary",
       "zIndex": 2,
-      "visualFit": "cover"
+      "visualFit": "cover",
+      "sourceDimensions": [
+        816,
+        1926
+      ],
+      "displayMode": "fit-visible-content-without-distortion",
+      "contentCrop": {
+        "left": 0,
+        "top": 0,
+        "right": 0,
+        "bottom": 0
+      },
+      "visibleSourceDimensions": [
+        816,
+        1926
+      ],
+      "auditCoverCropRatio": 0.271,
+      "imageAnchor": "bottom"
     },
     {
       "id": "OH15",
@@ -155,7 +308,24 @@
       "note": "window heat, 4th column",
       "alignment": "atlas-boundary",
       "zIndex": 2,
-      "visualFit": "cover"
+      "visualFit": "cover",
+      "sourceDimensions": [
+        1280,
+        1229
+      ],
+      "displayMode": "fit-visible-content-without-distortion",
+      "contentCrop": {
+        "left": 0,
+        "top": 0,
+        "right": 0,
+        "bottom": 0
+      },
+      "visibleSourceDimensions": [
+        1280,
+        1229
+      ],
+      "auditCoverCropRatio": 0.179,
+      "imageAnchor": "bottom"
     },
     {
       "id": "OH16",
@@ -166,7 +336,24 @@
       "note": "anti-ice, 4th column",
       "alignment": "atlas-boundary",
       "zIndex": 2,
-      "visualFit": "cover"
+      "visualFit": "cover",
+      "sourceDimensions": [
+        1639,
+        960
+      ],
+      "displayMode": "fit-visible-content-without-distortion",
+      "contentCrop": {
+        "left": 0,
+        "top": 0,
+        "right": 0,
+        "bottom": 0
+      },
+      "visibleSourceDimensions": [
+        1639,
+        960
+      ],
+      "auditCoverCropRatio": 0.265,
+      "imageAnchor": "bottom"
     },
     {
       "id": "OH17",
@@ -177,7 +364,24 @@
       "note": "hydraulic pumps, 4th column",
       "alignment": "atlas-boundary",
       "zIndex": 2,
-      "visualFit": "cover"
+      "visualFit": "cover",
+      "sourceDimensions": [
+        1672,
+        941
+      ],
+      "displayMode": "fit-visible-content-without-distortion",
+      "contentCrop": {
+        "left": 0,
+        "top": 0,
+        "right": 0,
+        "bottom": 0
+      },
+      "visibleSourceDimensions": [
+        1672,
+        941
+      ],
+      "auditCoverCropRatio": 0.292,
+      "imageAnchor": "bottom"
     },
     {
       "id": "OH19-VOICE",
@@ -188,7 +392,24 @@
       "note": "voice recorder, immediately below hydraulic; actual atlas OH18 identity",
       "alignment": "atlas-boundary",
       "zIndex": 2,
-      "visualFit": "cover"
+      "visualFit": "cover",
+      "sourceDimensions": [
+        1593,
+        987
+      ],
+      "displayMode": "fit-visible-content-without-distortion",
+      "contentCrop": {
+        "left": 0,
+        "top": 0,
+        "right": 0,
+        "bottom": 0
+      },
+      "visibleSourceDimensions": [
+        1593,
+        987
+      ],
+      "auditCoverCropRatio": 0.014,
+      "imageAnchor": "bottom"
     },
     {
       "id": "OH19-DIFF",
@@ -199,7 +420,24 @@
       "note": "pressure differential and alt horn immediately below recorder, lower edge y3276",
       "alignment": "atlas-boundary",
       "zIndex": 2,
-      "visualFit": "cover"
+      "visualFit": "cover",
+      "sourceDimensions": [
+        1267,
+        1241
+      ],
+      "displayMode": "fit-visible-content-without-distortion",
+      "contentCrop": {
+        "left": 0,
+        "top": 0,
+        "right": 0,
+        "bottom": 0
+      },
+      "visibleSourceDimensions": [
+        1267,
+        1241
+      ],
+      "auditCoverCropRatio": 0.263,
+      "imageAnchor": "bottom"
     },
     {
       "id": "OH20",
@@ -210,7 +448,24 @@
       "note": "air conditioning, rightmost",
       "alignment": "atlas-boundary",
       "zIndex": 2,
-      "visualFit": "cover"
+      "visualFit": "cover",
+      "sourceDimensions": [
+        1254,
+        1254
+      ],
+      "displayMode": "fit-visible-content-without-distortion",
+      "contentCrop": {
+        "left": 0,
+        "top": 0,
+        "right": 0,
+        "bottom": 0
+      },
+      "visibleSourceDimensions": [
+        1254,
+        1254
+      ],
+      "auditCoverCropRatio": 0.365,
+      "imageAnchor": "bottom"
     },
     {
       "id": "OH21",
@@ -221,7 +476,24 @@
       "note": "bleed air, rightmost",
       "alignment": "atlas-boundary",
       "zIndex": 2,
-      "visualFit": "cover"
+      "visualFit": "cover",
+      "sourceDimensions": [
+        1122,
+        1402
+      ],
+      "displayMode": "fit-visible-content-without-distortion",
+      "contentCrop": {
+        "left": 0,
+        "top": 0,
+        "right": 0,
+        "bottom": 0
+      },
+      "visibleSourceDimensions": [
+        1122,
+        1402
+      ],
+      "auditCoverCropRatio": 0.118,
+      "imageAnchor": "bottom"
     },
     {
       "id": "OH22",
@@ -232,7 +504,24 @@
       "note": "cabin pressurization, lower edge y3276",
       "alignment": "atlas-boundary",
       "zIndex": 2,
-      "visualFit": "cover"
+      "visualFit": "cover",
+      "sourceDimensions": [
+        1167,
+        1347
+      ],
+      "displayMode": "fit-visible-content-without-distortion",
+      "contentCrop": {
+        "left": 0,
+        "top": 0,
+        "right": 0,
+        "bottom": 0
+      },
+      "visibleSourceDimensions": [
+        1167,
+        1347
+      ],
+      "auditCoverCropRatio": 0.463,
+      "imageAnchor": "bottom"
     },
     {
       "id": "OH23-25",
@@ -243,11 +532,31 @@
       "note": "one continuous full-width lower switch strip for OH23-OH25",
       "alignment": "atlas-boundary",
       "zIndex": 2,
-      "visualFit": "trim-exterior-white-canvas-and-cover"
+      "visualFit": "trim-exterior-white-canvas-and-cover",
+      "sourceDimensions": [
+        2170,
+        725
+      ],
+      "displayMode": "fit-visible-content-without-distortion",
+      "contentCrop": {
+        "left": 0,
+        "top": 212,
+        "right": 0,
+        "bottom": 216
+      },
+      "visibleSourceDimensions": [
+        2170,
+        297
+      ],
+      "auditCoverCropRatio": 0.205,
+      "imageAnchor": "center"
     }
   ],
   "qa": {
     "panelSeams": "visual atlas trace; 5-pixel inter-panel gutters respected; source plate boundaries not independently confirmed for center-strip component segmentation",
-    "lockedSources": "never overwrite assets/locked"
+    "lockedSources": "never overwrite assets/locked",
+    "photoFit": "non-destructive fit of content bounding boxes",
+    "contentWhitespaces": "rendered empty in slate panel matching color, never replaced with original switch-filled atlas image",
+    "visualStatus": "layout safe but artwork source proportions differ from atlas; physical seams not yet approved"
   }
 }
