@@ -1,0 +1,22 @@
+name: Flight controls FCOM guard and selector checks
+on:
+  push:
+    paths:
+      - 'flight-controls-panel/**'
+      - 'tests/fcom-guard-control.test.cjs'
+      - '.github/workflows/flight-control-guards.yml'
+  pull_request:
+    paths:
+      - 'flight-controls-panel/**'
+      - 'tests/fcom-guard-control.test.cjs'
+      - '.github/workflows/flight-control-guards.yml'
+  workflow_dispatch:
+jobs:
+  guard-selector-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --test tests/fcom-guard-control.test.cjs
