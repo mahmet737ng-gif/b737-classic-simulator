@@ -49,6 +49,6 @@ const html=fs.readFileSync(path.join(dir,'index.html'),'utf8'),js=fs.readFileSyn
 assert.ok(html.includes('../assets/cdu-approved-unlit.png'));
 assert.ok(html.includes('../../../assets/fonts/boeing-cdu/cdu-screen.css'));
 assert.ok(html.includes('../data/cdu-map.js'));
-assert.ok(html.includes('fcom-preflight-test'));
+assert.ok(html.includes('CDU FCOM Preflight Live Test'));
 assert.ok(js.includes('map.controls?.length!==70'));
 console.log('PASS: original CDU visual/map, 46 FCOM rules, IDENT/RTE/EXEC, CI, ZFW/GW, PERF LIMITS variants, ACARS blocking, simulated N1 and LSK routing');
