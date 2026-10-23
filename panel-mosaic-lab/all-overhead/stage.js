@@ -63,25 +63,31 @@ function populateAssembly(){
    const photo=el('img','atlas-photo');
    photo.src=asset.url;photo.alt=asset.title;photo.decoding='async';
    photo.loading='eager';photo.draggable=false;
-   if(place.visualFit==='trim-exterior-white-canvas-and-cover' && asset.display?.cropTopPx!=null){
-      const d=asset.display,W=asset.originalDimensions[0],H=asset.originalDimensions[1];
-      const contentH=d.contentHeightPx||H-d.cropTopPx-(d.cropBottomPx||0);
-      const scale=Math.max(place.w/W,place.h/contentH);
-      const displayedW=W*scale,displayedH=H*scale;
-      const visibleSourceH=place.h/scale;
-      const insetTop=(contentH-visibleSourceH)/2;
-      Object.assign(photo.style,{
-         position:'absolute',width:displayedW+'px',height:displayedH+'px',
-         maxWidth:'none',left:((place.w-displayedW)/2)+'px',
-         top:(-scale*(d.cropTopPx+insetTop))+'px',objectFit:'fill'
-      });
-   } else {
-      Object.assign(photo.style,{width:'100%',height:'100%',objectFit:'cover',objectPosition:'center center'});
-      if(place.visualFit==='crop-white-side-gutters-and-cover'){
-         photo.style.transform='scale(1.47)';
-         photo.style.transformOrigin='center center';
-      }
-   }
+
+   // Fit the actual artwork, not the PNG canvas or the atlas box aspect.
+   // This is a lossless viewport transform: no artificial stretching or cover cropping.
+   const source=place.sourceDimensions;
+   if(!source||source.length!==2)throw Error('ابعاد تصویر در اطلس ثبت نشده: '+asset.id);
+   const crop=place.contentCrop||{left:0,top:0,right:0,bottom:0};
+   const contentW=source[0]-crop.left-crop.right;
+   const contentH=source[1]-crop.top-crop.bottom;
+   if(contentW<=0||contentH<=0)throw Error('محدودهٔ تصویر نامعتبر: '+asset.id);
+   const scale=Math.min(place.w/contentW,place.h/contentH);
+   const scaledW=source[0]*scale,scaledH=source[1]*scale;
+   const insetX=(place.w-contentW*scale)/2;
+   const insetY=place.imageAnchor==='top'?0:
+       place.imageAnchor==='center'?(place.h-contentH*scale)/2:
+       place.h-contentH*scale;
+   Object.assign(photo.style,{
+      position:'absolute',
+      width:scaledW+'px',height:scaledH+'px',maxWidth:'none',
+      left:(insetX-crop.left*scale)+'px',
+      top:(insetY-crop.top*scale)+'px',
+      objectFit:'fill',transform:'none'
+   });
+   frame.dataset.sourceAspect=(contentW/contentH).toFixed(3);
+   frame.dataset.atlasAspect=(place.w/place.h).toFixed(3);
+   frame.dataset.contentFit=place.displayMode||'fit-visible-content-without-distortion';
    photo.addEventListener('load',()=>{loaded.add(asset.id);errored.delete(asset.id);summary();if(selected===asset.id)showDetails()});
    photo.addEventListener('error',()=>{errored.add(asset.id);loaded.delete(asset.id);visible.append(el('div','atlas-missing','تصویر بارگذاری نشد'));summary()});
    visible.append(photo);frame.append(visible);
@@ -91,7 +97,7 @@ function populateAssembly(){
    frame.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();pick(asset.id,true)}};
    root.append(frame);
  }
- const stamp=el('div','atlas-geometry-stamp','2220 × 3525 · ATLAS COORDINATES · UPD-0009');
+ const stamp=el('div','atlas-geometry-stamp','2220 × 3525 · FULL SOURCE VISIBLE · UPD-0010');
  root.append(stamp);
  updateDimensions();
 }
