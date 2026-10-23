@@ -1,0 +1,55 @@
+{
+  "schema": "b737-classic-afm-performance-source-gate-v13",
+  "date": "2026-10-23",
+  "source": {
+    "id": "AFM-73733V-D6-8730.33V-R32-20180214",
+    "revision": 32,
+    "pdfSha256": "3c7002212482f0c47a1735c2302ee304ef41ef4ca270591281b72f5f2a714105",
+    "aircraft": "EP-FSI",
+    "msn": 29340,
+    "engine": "CFM56-3B-1",
+    "ratingLbf": 20000,
+    "ratingEvidence": "USER_DECLARED_NOT_ENGINE_DATA_PLATE"
+  },
+  "technicalDatabase": {
+    "version": 13,
+    "privateDbSha256": "4ae7ccb80425ed337499a1b6303ec929f4ce86c171f1491bcaa81bc572d5d37c",
+    "afmMctChartSourcePages": [
+      130,
+      756
+    ],
+    "v11ProvisionalSamples": 104,
+    "v12ProvisionalBleedSamples": 16,
+    "v13UnassignedCurveSegments": 46,
+    "qa": "PROVISIONAL_SINGLE_VISUAL_PASS",
+    "humanIndependentQA": false,
+    "approvedFinalN1Points": 0,
+    "n1RuntimeEnabled": false,
+    "releaseGatesActive": 0,
+    "openReleaseBlockers": 9
+  },
+  "functions": {
+    "takeoffN1": "BLOCKED_INCOMPLETE_SOURCE_QA",
+    "maximumContinuousThrustN1": "BLOCKED_INCOMPLETE_SOURCE_QA",
+    "pmcOffN1": "BLOCKED_PMC_OPTION_AND_CURVE_QA",
+    "reducedThrust": "CONDITIONAL_NOT_VALIDATED",
+    "n1N2EGTFuelFlowTransient": "EXTERNAL_OBSERVED_REPLAY_ONLY",
+    "thrustCommand": "RECORD_ONLY_NO_VERIFIED_GAIN"
+  },
+  "inputPolicies": {
+    "serialEffectivityStrict": true,
+    "approvedAFMCurvesRequired": true,
+    "noExtrapolation": true,
+    "unverifiedTelemetryMustBeLabelled": true,
+    "syntheticTestFixtureRequiresOptIn": true,
+    "actualFMCAutothrottleNumericLink": false
+  },
+  "excluded": "No source graph curve or private AFM material copied into public GitHub",
+  "nextRequired": [
+    "independent human chart verification",
+    "full N1 graph envelope and breakpoints",
+    "approved bleed/anti-ice/PMC corrections",
+    "thrust response empirical transient dataset or approved physics model",
+    "authoritative FMC performance integration gate"
+  ]
+}
