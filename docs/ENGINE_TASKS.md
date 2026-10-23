@@ -237,3 +237,13 @@ Engineering design and source boundaries: `docs/ENGINE_PERFORMANCE_DYNAMICS_ISN1
 - **ENG-087 BLOCKED:** Complete altitude-to-curve hot-side assignment for 128/129/756, bleed/cowl/wing anti-ice correction branches, all MCT nomogram stages, installed PMC effectivity, independent human numeric signoff and verified golden vectors. **Do not claim full N1 curves complete** or issue FMC numeric N1 from single-source provisional readings.
 
 Source audit: `docs/AFM_N1_V16_DIGITIZATION_STATUS.md`. `main` and hosted cockpit not changed.
+
+## N1 curve role mapping + first numeric research preview (v17, 2026-10-23)
+
+- **ENG-088 DONE:** Source-preserving geometric role classification of 301 line fragments across original AFM pages 128, 129, 130 and 756; 19 MCT pressure, 21 temperature, 60 final nomogram fragments remain isolated by panel.
+- **ENG-089 DONE (ALTITUDE LEADER IDENTIFICATION):** 30 unambiguously matched label-leader fragments on p128/129; 10 altitude labels + 18 matching leader continuations on p756; 36 labelled altitude branch records in private sqlite.
+- **ENG-090 IMPORTANT SOURCE CORRECTION:** All 104 previous v11 single-pass “N1” cold samples are from descending altitude-label leaders; retained for provenance but explicitly marked `NOT_OPERATIVE_N1_CURVE` and barred from numeric N1.
+- **ENG-091 DONE (RESEARCH ONLY):** p756 five-sample MAXIMUM N1 cap bounded experimental interpolator in private `n1_numeric_preview.py`, with strict PMC OFF, EP-FSI 20K, source bounds, and `approved_for_fmc=false`. Generic GitHub `afm-n1-research-preview.cjs` accepts private knots but cannot provide final takeoff target; tests added.
+- **ENG-092 OPEN/BLOCKING:** Connect each printed leader to continuous N1 rising/peak/falling branch, resolve corrections and p130 multistage nomogram, verify PMC effectivity, second-reader golden vectors. Still 0 approved final Takeoff/MCT N1 curves, `main` untouched.
+
+Private Library `Technical Database/Sources/AFM-737-33V-D6-8730-R32/EP-FSI-ASN29340/v17/`; report `docs/AFM_N1_V17_CURVE_ROLE_MAPPING.md`.
