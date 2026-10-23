@@ -1,0 +1,16 @@
+name: FCOM Ch11 POS INIT POS REF source QA
+on:
+  push:
+  pull_request:
+jobs:
+  source-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check POS INIT POS REF source rules and variants
+        run: node engine/ch11/tests/fmc-preflight-posinit-posref-2013-2020.test.cjs
+      - name: Preserve original CDU IDENT and font assets
+        run: node tests/cdu-ident-startup.test.cjs && node tests/cdu-font-lock.test.cjs
