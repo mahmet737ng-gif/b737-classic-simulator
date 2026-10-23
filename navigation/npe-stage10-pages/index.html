@@ -19,7 +19,7 @@ footer{font-size:12px;text-align:center;padding:17px;color:#8eabbc}@media(max-wi
 </style></head>
 <body>
 <header><div class="eyebrow">B737 CLASSIC · NAVIGATION ENGINE · STAGE 10</div><h1>Live Aircraft State + Navigation Test</h1>
-<div class="top"><p>Runs entirely on GitHub Pages — no Python or private database required</p><span class="flag">PUBLIC SYNTHETIC DEMO</span></div></header>
+<div class="top"><p>Independent B737 cockpit demo — no X-Plane, MSFS, FSX or other simulator required</p><span class="flag">PUBLIC SYNTHETIC DEMO</span></div></header>
 <main><div>
 <section class="panel"><div class="top"><h2>Aircraft & guidance simulator</h2><span class="status" id="mode">READY</span></div>
 <p>Click <b>Start</b> for synthetic live telemetry and Leg sequencing. In the CDU/EHSI at right, move the existing EFIS MODE selector to <b>PLAN</b> to see the public-demo readout.</p>
@@ -33,9 +33,9 @@ footer{font-size:12px;text-align:center;padding:17px;color:#8eabbc}@media(max-wi
 </div><p class="warning" id="notice" role="status">No aircraft autopilot, AFDS, LNAV or VNAV commands are issued.</p></section>
 <section class="panel"><h2>Fictional route and protected gap</h2><svg id="map" viewBox="0 0 650 340" aria-label="Synthetic waypoint course with a route discontinuity" role="img"></svg>
 <p class="muted">All positions and TSTA–TSTE identifiers are invented. The orange dashed gap is a <b>ROUTE DISCONTINUITY</b>; sequencing must stop there.</p></section>
-<section class="panel"><h2>Test status</h2><p id="diagnostics">No telemetry.</p><p>For the source-connected engine, continue using the private Stage 10 local server. This public page intentionally contains no AIRAC navigation records and no operational guidance.</p></section>
-</div><div><section class="panel"><div class="top"><h2>Existing CDU & EHSI v6</h2><span class="status">APPROVED ARTWORK UNCHANGED</span></div>
-<p>Original cockpit buttons and rotary controls remain interactive. Select <b>PLAN</b> on EFIS for the clearly marked <b>PUBLIC DEMO</b> telemetry. This is not a real flight director.</p>
+<section class="panel"><h2>Test status</h2><p id="diagnostics">No telemetry.</p><p>The CDU is independent of external simulators. For the licensed AIRAC navigation database, use the private Stage 10 backend; this public page intentionally contains only fictional route data.</p></section>
+</div><div><section class="panel"><div class="top"><h2>Standalone B737 CDU & EHSI v6</h2><span class="status">APPROVED ARTWORK UNCHANGED</span></div>
+<p>This CDU and EHSI belong to the standalone B737 Classic project, not X-Plane or MSFS. All approved buttons and rotary controls remain interactive. Select <b>PLAN</b> on EFIS to show the fictional <b>PUBLIC DEMO</b> data. The private NAVDATA backend is optional and not available on this static test page.</p>
 <iframe id="cdu" title="Approved Boeing 737 Classic CDU and EHSI" src="../../cdu-standalone-v6/index.html"></iframe>
 </section></div></main>
 <footer>PUBLIC STATIC ENGINEERING DEMO · NOT FOR FLIGHT OR REAL-WORLD NAVIGATION · ZERO ACTUATOR AUTHORITY</footer>
