@@ -4,7 +4,7 @@ const map=window.CDU_MAP, pages=window.CDU_PAGES, core=window.CDU_ENGINE;
 const state=core.makeState('INDEX');
 const byId={};
 function position(el,box){const [x1,y1,x2,y2]=box;Object.assign(el.style,{left:x1/1199*100+'%',top:y1/1312*100+'%',width:(x2-x1)/1199*100+'%',height:(y2-y1)/1312*100+'%'});}
-function makeControls(){const click=$('clickmap');for(const c of map.controls){let el=document.createElement('button');el.type='button';el.className='hotspot '+c.shape;position(el,c.bbox_px);el.title=c.label+' — '+c.id;el.dataset.short=c.label;el.setAttribute('aria-label',c.label);let handled=false,timer;el.addEventListener('pointerdown',()=>{if(c.id.endsWith('KEY_CLR')){handled=false;timer=setTimeout(()=>{handled=true;core.press(state,pages,c.id,{longPress:true});update()},700)}});el.addEventListener('pointerup',()=>clearTimeout(timer));el.addEventListener('pointerleave',()=>clearTimeout(timer));el.addEventListener('pointercancel',()=>clearTimeout(timer));el.addEventListener('click',()=>{if(!handled){core.press(state,pages,c.id);update()}else handled=false});el.addEventListener('focus',()=>{if($('selected-code'))$('selected-code').textContent=JSON.stringify(c,null,2)});click.appendChild(el);byId[c.id]=el;}
+function makeControls(){const click=$('clickmap');for(const c of map.controls){let el=document.createElement('button');el.type='button';el.className='hotspot '+c.shape;position(el,c.bbox_px);el.title=c.label+' — '+c.id;el.dataset.short=c.label;el.setAttribute('aria-label',c.label);let handled=false,timer;el.addEventListener('pointerdown',()=>{if(c.id.endsWith('KEY_CLR')){handled=false;timer=setTimeout(()=>{handled=true;core.press(state,pages,c.id,{longPress:true});update()},700)}});el.addEventListener('pointerup',()=>clearTimeout(timer));el.addEventListener('pointerleave',()=>clearTimeout(timer));el.addEventListener('pointercancel',()=>clearTimeout(timer));el.addEventListener('click',()=>{if(!handled){send(c.id)}else handled=false});el.addEventListener('focus',()=>{if($('selected-code'))$('selected-code').textContent=JSON.stringify(c,null,2)});click.appendChild(el);byId[c.id]=el;}
  const outputs=$('annunciators');for(const a of map.outputs){const el=document.createElement('div');el.id=a.id;el.className='annunciator '+a.color+(a.label==='EXEC'?' exec':'');let b=a.sprite_bbox_px;position(el,b);if(a.illuminated_sprite){const pic=document.createElement('img');pic.className='light-glyph';pic.src=a.illuminated_sprite;el.appendChild(pic);}outputs.appendChild(el);byId[a.id]=el;}}
 function updateEHSI(){ if(window.EHSI_ENGINE) window.EHSI_ENGINE.renderToDom(state,core,$('ehsi-svg'),document); }
 const TITLE_PLAIN=new Set(['MENU','INDEX','IDENT','POS_INIT','MESSAGES','MSG_RECALL','NAV_DATA','NAV_OPTIONS','SUPP_NAV','POS_REF','FIX','PROG','PROG2','HOLD','DEP_ARR','DEPARTURES','ARRIVALS']);
@@ -23,6 +23,7 @@ function update(){const box=$('fmc-lines'); box.replaceChildren();
    box.appendChild(makePairRow(valueTop, displayCell(pair?.[0]), displayCell(pair?.[1])));
  }
  box.appendChild(makePairRow(((565-screenTop)/screenHeight*100), state.message||state.scratch||'', '', true));
+ if(window.CDU_NAV_API?.paint)window.CDU_NAV_API.paint(box);
  box.style.opacity=state.brightness;
  const all=core.lights(state);for(const [l,on] of Object.entries(all)){const el=byId['CDU_CAPT_'+l+'_LIGHT'];if(el)el.classList.toggle('on',on)}
  $('page-now').textContent=state.page;$('scratch-now').textContent=state.message||state.scratch||'—';$('pending-now').textContent=core.pendingCount(state);$('key-now').textContent=state.lastKey;
@@ -30,7 +31,7 @@ function update(){const box=$('fmc-lines'); box.replaceChildren();
  $('current-status').textContent=pages[state.page].source_status;
  updateEHSI();
 }
-function send(k){core.press(state,pages,k);update()}
+function send(k){core.press(state,pages,k);window.CDU_NAV_API?.afterPage?.(k);window.CDU_NAV_API?.afterKey?.(k);update()}
 function reset(){const fresh=core.makeState('INDEX');Object.keys(state).forEach(k=>delete state[k]);Object.assign(state,fresh);['call-test','fault-test','offset-test'].forEach(k=>$(k).checked=false);window.EHSI_ENGINE?.syncPanel(state,document);update()}
 function init(){if(!map||!pages||!core)throw Error('CDU data is missing');makeControls();update();$('reset').onclick=reset;$('overlay-toggle').onclick=()=>$('cdu-stage').classList.toggle('debug');$('info-toggle').onclick=()=>$('qa').hidden=!$('qa').hidden;
  for(const [el,k] of [['call-test','call'],['fault-test','fail'],['offset-test','offsetGuidance']])$(el).addEventListener('change',e=>{state[k]=e.target.checked;update()});
