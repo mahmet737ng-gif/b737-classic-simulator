@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="fa" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>B737 Classic · CDU FCOM Preflight Live Test</title>
+<link rel="stylesheet" href="../physical-cdu/style.css">
+<link rel="stylesheet" href="../../../assets/fonts/boeing-cdu/cdu-screen.css">
+<style>
+body{color-scheme:dark}header .tag{color:#a4eeaa}aside section{line-height:1.7}
+select{background:#071c2a;color:white;border:1px solid #568fa3;border-radius:6px;padding:8px;max-width:100%;width:100%;margin:6px 0 13px}
+label{display:block; font-size:13px;color:#cae5ee}
+.actions button{background:#25627a}
+button.test-link{background:#214b60}
+#cdu{max-width:730px}
+.fmc-screen .fmc-lines{font-weight:400;letter-spacing:-.02em}
+.fmc-screen .fmc-lines .fmc-line.heading{font-family:"BoeingCDULarge"!important}
+#last-status{font-family:monospace;white-space:pre-wrap}
+.mini{font-size:12px;opacity:.9}
+</style></head>
+<body>
+<header><div><small class="tag">B737 CLASSIC · EP-FSI · FCOM §11.40 · DEMO</small>
+<h1>CDU — تست تعاملی صفحات Preflight</h1>
+<p>تصویر اصلی قفل‌شده + همان ۷۰ باکس کلید + دو فونت اصلی. محاسبهٔ N1 فقط شبیه‌سازی است.</p></div>
+<div><a href="../physical-cdu/">CDU Engine v2</a><a href="../../../cdu-standalone-v6/">CDU v6</a><a href="../../../../index.html">خانهٔ مخزن</a></div></header>
+<main><section class="panel"><div class="cdu" id="cdu">
+<img class="base" src="../assets/cdu-approved-unlit.png" draggable="false" alt="Approved Boeing Classic CDU original image">
+<div class="fmc-screen"><div class="fmc-lines" id="fmc-lines"></div></div>
+<div id="annunciators"></div><div id="clickmap"></div>
+</div></section>
+<aside>
+<section><h2>تست صفحه‌ها</h2>
+<div class="actions"><button data-page="IDENT">IDENT</button><button data-page="RTE">RTE</button><button data-page="DEP_ARR">DEP/ARR</button><button data-page="DEPARTURES">DEPARTURES</button><button data-page="PERF_INIT">PERF INIT</button><button data-page="PERF_LIMITS">PERF LIMITS</button><button data-page="N1_LIMIT">N1 LIMIT</button><button data-page="TAKEOFF">TAKEOFF REF</button></div>
+<p class="mini">تمام دکمه‌های روی CDU قابل کلیک هستند. برای ورود مقدار: با کیبورد خود CDU تایپ و LSK مناسب را فشار بده؛ با NEXT PAGE از PERF INIT به PERF LIMITS برو.</p></section>
+<section><h2>گزینه‌های مستند FCOM</h2>
+<label for="variant">گونهٔ نمایش PERF INIT — صرفاً برای تست، نصب واقعی EP-FSI تأیید نشده</label>
+<select id="variant"><option value="FUEL_N1_LIMIT">FUEL / N1 LIMIT — FCOM 11.40.37</option><option value="PLAN_FUEL_N1_LIMIT_ACARS">PLAN/FUEL / ACARS — 11.40.38</option><option value="FUEL_TAKEOFF">FUEL / TAKEOFF — 11.40.39</option></select>
+<label for="tolerance">گونهٔ PERF LIMITS و TIME ERROR TOLERANCE</label>
+<select id="tolerance"><option value="DEFAULT_30S">۳۰ ثانیه پیش‌فرض، ورودی ۵–۳۰</option><option value="OPTION_15S_ACARS">۱۵ ثانیه پیش‌فرض، ورودی ۶–۳۰، ACARS</option></select>
+<p class="mini">نمایش <strong>20K N1 SIM EST</strong> به محاسبهٔ تقریبی نسخهٔ V19 متصل است، نه جدول تأییدشدهٔ AFM. انتخاب TO-1/TO-2 فقط حالت تست است.</p></section>
+<section><h2>وضعیت و کنترل</h2>
+<p id="last-status"></p>
+<button id="reset">Reset / IDENT</button><button id="debug">نمایش محدودهٔ ۷۰ کلید</button>
+<pre id="state-output"></pre></section>
+<section><h2>ارجاع به سند</h2>
+<p>منابع: FCOM 11.40.34–35، 11.40.37–45 و 11.40.47–48. صفحه‌های دیده‌نشده از روی حدس تکمیل نشده‌اند. اتصال NAV DB/SID، ACARS، IRS و عملکرد هدایت واقعی در این آزمایش فعال نیست.</p>
+<a href="../fmc-preflight-perflimits-n1limit-2023.rules.v1.json">قوانین جدید N1 و PERF LIMITS</a></section>
+</aside></main>
+<footer>FOR SIMULATION TRAINING ONLY · NOT FOR REAL FLIGHT · ORIGINAL APPROVED BITMAP / 70 HITBOXES / BOEING CDU FONTS UNCHANGED</footer>
+<script src="../data/cdu-map.js"></script>
+<script src="../../../cdu-standalone-v6/data/epfsi-simulated-n1-v19.js"></script>
+<script src="model.js?v=20261023-fcom-preflight-1"></script>
+<script src="app.js?v=20261023-fcom-preflight-1"></script>
+</body></html>
