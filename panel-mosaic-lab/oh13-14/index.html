@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>B737 Classic · OH13 / OH14 Source Mosaic</title>
+<style>
+*{box-sizing:border-box}
+body{background:#0a141f;color:#ecf5fb;font:14px system-ui,Tahoma,"Segoe UI",sans-serif;margin:0}
+a{color:#9bdbff}button{font:inherit;cursor:pointer;border-radius:9px;padding:9px 14px;color:#e7f6ff;background:#264255;border:1px solid #47718a}
+header{background:#172a3b;padding:17px max(18px,calc((100vw - 1460px)/2));border-bottom:1px solid #3b566a;display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}
+header strong{font:700 16px system-ui;letter-spacing:.2px}header small{display:block;font-size:12px;color:#b4c7d4;margin-top:4px}
+.links{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+main{max-width:1460px;margin:auto;padding:24px 17px 40px}
+h1{font-size:26px;margin:0 0 10px}p{line-height:1.85;color:#b7cbd7;margin:0 0 15px}
+.status{padding:11px 14px;background:#152939;border:1px solid #416278;border-radius:9px;margin:16px 0}
+.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.card{background:#112334;border:1px solid #3e6177;border-radius:13px;overflow:hidden}
+.title{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;flex-wrap:wrap}
+.title strong{direction:ltr;font:700 18px monospace;color:#bdefff}.title span{color:#cfdfec;font-size:13px}
+.visual{padding:13px;background:#0b1824;min-height:300px;display:flex;align-items:center;justify-content:center;overflow:auto}
+.visual img{width:100%;height:auto;max-height:73vh;object-fit:contain}
+.record{border-top:1px solid #375266;padding:12px 15px;font-size:12px;color:#c8dce9;line-height:2}
+.record code{display:block;direction:ltr;text-align:left;overflow-wrap:anywhere;color:#9fdced;font-size:10px}
+.ok{color:#91e7bc}.fail{color:#ffd38d}
+footer{padding:18px 0;color:#8ba9b9;line-height:1.9;font-size:12px}
+@media(max-width:780px){.cards{grid-template-columns:1fr}.visual img{max-height:65vh}}
+</style></head>
+<body>
+<header><div><strong>B737 CLASSIC · OH-13 / OH-14</strong><small>Permanent Panel Mosaic Lab · UPD-0004</small></div><div class="links"><button id="refresh">↻ بررسی فایل‌ها</button><a href="../">بازگشت به اطلس</a></div></header>
+<main>
+<h1>پنل‌های OH-13 و OH-14</h1>
+<p>نسخه‌های اصلی بارگذاری‌شده در GitHub حفظ شده‌اند؛ تصویرهای زیر فقط از نام‌های استانداردِ متصل به همان داده‌ها خوانده می‌شوند. هماهنگی دقیق مرز موزاییک با اتصالات مجاور هنوز نیازمند بازبینی تصویری است.</p>
+<div class="status" id="summary">در حال تأیید دو فایل…</div>
+<div class="cards" id="cards"></div>
+<footer>SHA-256 و تعداد بایت‌ها برای هر تصویر در مرورگر کنترل می‌شود. نام‌گذاری تصویر به معنی تأیید هندسهٔ قدیمی اطلس نیست؛ فایل‌های اولیه و قبلی بازنویسی نشده‌اند.</footer>
+</main>
+<script>
+'use strict';
+const $=id=>document.getElementById(id);
+function node(tag,className,text){let n=document.createElement(tag);if(className)n.className=className;if(text!==undefined)n.textContent=text;return n;}
+function hashText(bytes){return [...new Uint8Array(bytes)].map(x=>x.toString(16).padStart(2,'0')).join('')}
+async function render(){
+$('summary').textContent='در حال بررسی…';$('cards').replaceChildren();
+let good=0;try{
+let response=await fetch('spec.json?t='+Date.now(),{cache:'no-store'});if(!response.ok)throw Error('spec HTTP '+response.status);
+let spec=await response.json();
+for(const item of spec.tiles){
+let card=node('article','card'),title=node('div','title'),visual=node('div','visual'),info=node('div','record');
+title.append(node('strong','',item.id),node('span','',item.title));
+card.append(title,visual,info);$('cards').append(card);
+try{
+let response=await fetch(item.path+'?t='+Date.now(),{cache:'no-store'});
+if(!response.ok)throw Error('image HTTP '+response.status);
+let bytes=await response.arrayBuffer();
+if(bytes.byteLength!==item.bytes)throw Error('size mismatch');
+if(!crypto.subtle)throw Error('SHA-256 browser support missing');
+let digest=hashText(await crypto.subtle.digest('SHA-256',bytes));
+if(digest!==item.sha256)throw Error('SHA-256 mismatch');
+let url=URL.createObjectURL(new Blob([bytes],{type:'image/png'})),img=node('img');
+img.src=url;img.alt=item.id+' '+item.title;img.onload=()=>URL.revokeObjectURL(url);visual.append(img);
+info.append(node('div','ok','✓ فایل قفل‌شده موجود و SHA-256 تأیید شد'));
+good++;
+}catch(e){visual.append(node('p','fail','در انتظار فایل صحیح: '+e.message));info.append(node('div','fail','فایل معتبر نمایش داده نشد'))}
+info.append(node('div','','فایل اولیه: '+item.original),node('code','',item.path),node('code','',item.sha256));
+let link=node('a','','نمایش فایل در GitHub ↗');link.href=item.path;link.target='_blank';link.rel='noopener';info.append(link);
+}
+$('summary').textContent=good+' از '+spec.tiles.length+' تصویر با SHA-256 تأیید و آمادهٔ نمایش است';
+}catch(e){$('summary').textContent='خطای بارگذاری: '+e.message}
+}
+$('refresh').onclick=render;render();
+</script>
+</body></html>
