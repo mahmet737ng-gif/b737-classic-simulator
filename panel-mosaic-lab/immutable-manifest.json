@@ -1,6 +1,6 @@
 {
   "schema": "b737-panel-assets-immutable-v2",
-  "version": "UPD-0008",
+  "version": "UPD-0009",
   "status": "GITHUB_BINARY_VERIFIED",
   "lockPolicy": "append-only files under panel-mosaic-lab/assets/locked; SHA-256 and Git object hash checked by CI. Repository admins may still override unless branch/ruleset protection configured.",
   "assets": [
@@ -545,6 +545,18 @@
       ],
       "status": "full-overhead-images-placed",
       "notes": "OH19 moved below OH17 to wide fourth atlas column preserving native aspect. OH22 pressurization from actual uploaded panel image. One full-width source spans OH23-25 and white PNG canvas is removed only for preview. Original files untouched."
+    },
+    {
+      "version": "UPD-0009-atlas-absolute",
+      "date": "2026-10-24",
+      "panels": [
+        "OH-01..OH-25"
+      ],
+      "assetIds": [],
+      "status": "all-five-atlas-column-baselines-verified",
+      "sourceGeometry": "panel-mosaic-lab/all-overhead/atlas-layout.json",
+      "qa": "native atlas 2220x3525, shared lower boundary y3276, lower strip starts y3281, aspect-preserving viewport fitting",
+      "notes": "Presentation geometry changed; locked PNG bytes did not change. Some thin central strip content subdivisions still approximate pending owner visual inspection."
     }
   ],
   "lastStagedVersion": "UPD-0003",
