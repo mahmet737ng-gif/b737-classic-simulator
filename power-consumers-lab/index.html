@@ -429,6 +429,30 @@ const onOff=v=>v===true?'ON':v===false?'OFF':'UNKNOWN';
 function render(){
   const d=kernel.deriveAircraftState(state);
   const b=d.electrical.buses;
+  const performancePanel=el('performanceState');
+  performancePanel.replaceChildren();
+  const perf=d.performance;
+  for(const id of ['1','2']){
+    const p=perf.engines[id],face=document.createElement('div');
+    face.className='lamp-face';
+    face.dataset.state=p.mode==='REPLAY_ACTIVE'?'ON':'OFF';
+    face.dataset.kind='CAUTION';
+    const title=document.createElement('strong');
+    title.textContent='ENGINE '+id+' · '+p.mode;
+    const detail=document.createElement('small');
+    detail.textContent='time '+p.elapsedSec+'s | '+p.coverage+
+       ' | '+p.traceQuality+' | throttle '+(p.commandedLeverPct??'UNKNOWN')+
+       '% | AFM N1 '+p.afmAuthority;
+    face.append(title,detail);performancePanel.append(face);
+  }
+  const gate=document.createElement('div');gate.className='lamp-face';
+  gate.dataset.state='UNKNOWN';
+  const g=document.createElement('strong');g.textContent='AFM N1 QUALITY GATE: BLOCKED';
+  const dsc=document.createElement('small');
+  dsc.textContent='approved final points '+perf.afmN1.approvedFinalN1Points+
+    ' | human QA '+perf.afmN1.independentHumanQA+
+    ' | PMC option unverified';
+  gate.append(g,dsc);performancePanel.append(gate);
   const n1=state.indications.n1Reference;
   el('eisN1Mode').value=n1.mode;
   const set=n1.manualTargetPct;
