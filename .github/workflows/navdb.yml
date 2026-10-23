@@ -1,4 +1,4 @@
-name: NAVDB public-source import and QA
+name: NAVDB Iran-only import and QA
 on:
   workflow_dispatch:
   push:
@@ -20,28 +20,33 @@ jobs:
           python-version: '3.12'
       - name: Unit tests on synthetic fixtures
         run: python -m unittest discover -s navigation/tests -v
-      - name: Download world airports and navaids, build SQLite
-        run: python navigation/navdb.py build --download --data-dir navigation/data --db navigation/navdb.sqlite > navigation/build-report.json
-      - name: Verify and export Iran sample airports (community data only)
+      - name: Download sources and create Iran-only SQLite
+        run: python navigation/navdb.py build --download --data-dir navigation/data --db navigation/navdb-iran.sqlite > navigation/build-report.json
+      - name: Verify Iran-only scope and export samples
         run: |
-          python navigation/navdb.py summary --db navigation/navdb.sqlite > navigation/summary.json
-          python navigation/navdb.py export OIII OIIE OIMM --db navigation/navdb.sqlite --output navigation/iran-airports.json > /dev/null
+          python navigation/navdb.py summary --db navigation/navdb-iran.sqlite > navigation/summary.json
+          python navigation/navdb.py export OIII OIIE OIMM --db navigation/navdb-iran.sqlite --output navigation/iran-airports.json > /dev/null
           python - <<'PY'
           import json
-          report=json.load(open('navigation/summary.json'))
+          import sqlite3
+          report=json.load(open('navigation/summary.json',encoding='utf-8'))
           counts=report['counts']
-          print('NAVDB counts:', counts)
-          assert counts['airports'] > 50000 and counts['navaids'] > 5000
-          assert counts['procedures'] == 0, 'Procedure activation is not validated'
-          sample=json.load(open('navigation/iran-airports.json'))
+          assert report['scope']=={'iso_country':'IR','scope':'IRAN_ONLY'}, report['scope']
+          assert all(counts[t]>0 for t in ('airports','runways','navaids','frequencies')), counts
+          assert all(counts[t]==0 for t in ('faa_raw','waypoints','airways','procedures','procedure_legs')), counts
+          with sqlite3.connect('navigation/navdb-iran.sqlite') as con:
+              assert con.execute("SELECT COUNT(*) FROM airports WHERE country != 'IR' OR country IS NULL").fetchone()[0]==0
+              assert con.execute('PRAGMA foreign_key_check').fetchall()==[]
+          sample=json.load(open('navigation/iran-airports.json',encoding='utf-8'))
           for icao in ('OIII','OIIE','OIMM'):
-              print(icao, 'found' if sample[icao] else 'not present in this community snapshot')
+              print(icao, 'found' if sample[icao] else 'not available in this community snapshot')
+          print('Iran-only NAVDB counts:', counts)
           PY
       - uses: actions/upload-artifact@v4
         with:
-          name: navdb-world-${{ github.run_number }}
+          name: navdb-iran-${{ github.run_number }}
           path: |
-            navigation/navdb.sqlite
+            navigation/navdb-iran.sqlite
             navigation/build-report.json
             navigation/summary.json
             navigation/iran-airports.json
