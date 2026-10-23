@@ -1,6 +1,6 @@
 {
   "schema": "b737.overhead.atlas-coordinate-layout.v1",
-  "version": "UPD-0010-safe-fit",
+  "version": "UPD-0011-visual-atlas-mapping",
   "date": "2026-10-24",
   "reference": {
     "image": "../../assets/overhead.webp",
@@ -15,23 +15,50 @@
   "physicalColumns": [
     {
       "x": 3,
-      "width": 550
+      "width": 550,
+      "ids": [
+        "OH07",
+        "OH08",
+        "OH09"
+      ]
     },
     {
       "x": 558,
-      "width": 461
+      "width": 461,
+      "ids": [
+        "OH10",
+        "OH11",
+        "OH12"
+      ]
     },
     {
       "x": 1024,
-      "width": 247
+      "width": 247,
+      "ids": [
+        "OH13",
+        "OH14",
+        "OH18"
+      ]
     },
     {
       "x": 1276,
-      "width": 473
+      "width": 473,
+      "ids": [
+        "OH15",
+        "OH16",
+        "OH17",
+        "OH19-VOICE",
+        "OH19-DIFF"
+      ]
     },
     {
       "x": 1754,
-      "width": 463
+      "width": 463,
+      "ids": [
+        "OH20",
+        "OH21",
+        "OH22"
+      ]
     }
   ],
   "upperToLowerBoundaryY": 1026,
@@ -39,12 +66,13 @@
   "lowerSharedEdgeY": 3276,
   "bottomStripTopY": 3281,
   "layoutPrinciples": [
-    "Every original source photo has measured natural dimensions, and visible artwork is never stretched or auto-cropped to cover a mismatched atlas rectangle",
-    "Presentation crops ONLY known blank white padding on OH13 side gutters and OH23-25 exterior white top/bottom canvas",
-    "Artwork visible dimensions are scaled with Math.min(w/contentWidth,h/contentHeight), then aligned to the named atlas plate region, with no cut-off lettering or instruments",
-    "Fixed atlas box geometry from the original reference is retained; any uncovered margins indicate the source asset was made with a different aspect ratio and needs per-plate artwork rework",
-    "All five columns have fixed y=3276 bottom outline; actual source art may not fill some of those boxes",
-    "Use one zoom factor for the entire layout, preserving each source's aspect ratio"
+    "Original Atlas V2 cyan borders define five fixed lower columns: left [OH07,OH08,OH09], electric [OH10,11,12], center [circuit / emergency / ground-wiper], fourth [OH15,16,17, voice REC atlas OH18, press-diff atlas OH19], right [OH20,21,22].",
+    "The previous duplicate/misleading source filenames do not define atlas IDs: OH18-GROUND-CALL image belongs to the lower center OH14 area, while OH19-VOICE image represents real atlas OH18.",
+    "One OH07-08 immutable source image is separated visually into two crops at image row 1216; same PNG remains unchanged.",
+    "Artwork scales to intended plate region without clipping letters; fill intentionally permits anisotropic fit where original aspect ratio was reconstructed incorrectly. The user can compare against unchanged Atlas View.",
+    "Footer OH23-25 shares a single original image; only documented white canvas margins are excluded in view.",
+    "All five columns finish y=3276, bottom strip begins y=3281.",
+    "No original locked image files renamed, overwritten, or deleted."
   ],
   "placements": [
     {
@@ -61,7 +89,7 @@
         1731,
         909
       ],
-      "displayMode": "fit-visible-content-without-distortion",
+      "displayMode": "atlas-registered-panel",
       "contentCrop": {
         "left": 0,
         "top": 0,
@@ -73,15 +101,25 @@
         909
       ],
       "auditCoverCropRatio": 0.124,
-      "imageAnchor": "top"
+      "imageAnchor": "center",
+      "sourceId": "UPPER",
+      "atlasPanelIds": [
+        "OH-01",
+        "OH-02",
+        "OH-03",
+        "OH-04",
+        "OH-05",
+        "OH-06"
+      ],
+      "fitMode": "fill"
     },
     {
-      "id": "OH07-08",
+      "id": "OH07",
       "x": 3,
       "y": 1031,
       "w": 550,
-      "h": 1631,
-      "note": "original left flight control and NAV selectors combined",
+      "h": 1244,
+      "note": "OH07 flight controls only; atlas has tall empty margin above switches",
       "alignment": "atlas-boundary",
       "zIndex": 2,
       "visualFit": "cover",
@@ -89,7 +127,7 @@
         913,
         1723
       ],
-      "displayMode": "fit-visible-content-without-distortion",
+      "displayMode": "atlas-registered-panel",
       "contentCrop": {
         "left": 0,
         "top": 0,
@@ -101,14 +139,70 @@
         1723
       ],
       "auditCoverCropRatio": 0.364,
-      "imageAnchor": "bottom"
+      "imageAnchor": "center",
+      "sourceId": "OH07-08",
+      "atlasPanelIds": [
+        "OH-07"
+      ],
+      "sourceRect": {
+        "x": 0,
+        "y": 0,
+        "w": 913,
+        "h": 1216
+      },
+      "artInset": {
+        "top": 380,
+        "bottom": 0,
+        "left": 0,
+        "right": 0
+      },
+      "fitMode": "fill"
+    },
+    {
+      "id": "OH08",
+      "x": 3,
+      "y": 2280,
+      "w": 550,
+      "h": 244,
+      "note": "OH08 navigation selectors cut from lower portion of SAME immutable source",
+      "alignment": "atlas-boundary",
+      "zIndex": 2,
+      "visualFit": "cover",
+      "sourceDimensions": [
+        913,
+        1723
+      ],
+      "displayMode": "atlas-registered-panel",
+      "contentCrop": {
+        "left": 0,
+        "top": 0,
+        "right": 0,
+        "bottom": 0
+      },
+      "visibleSourceDimensions": [
+        913,
+        1723
+      ],
+      "auditCoverCropRatio": 0.364,
+      "imageAnchor": "center",
+      "sourceId": "OH07-08",
+      "atlasPanelIds": [
+        "OH-08"
+      ],
+      "sourceRect": {
+        "x": 0,
+        "y": 1216,
+        "w": 913,
+        "h": 507
+      },
+      "fitMode": "fill"
     },
     {
       "id": "OH09",
       "x": 3,
-      "y": 2667,
+      "y": 2529,
       "w": 550,
-      "h": 609,
+      "h": 747,
       "note": "fuel left, lower edge y3276",
       "alignment": "atlas-boundary",
       "zIndex": 2,
@@ -117,7 +211,7 @@
         1012,
         1555
       ],
-      "displayMode": "fit-visible-content-without-distortion",
+      "displayMode": "atlas-registered-panel",
       "contentCrop": {
         "left": 0,
         "top": 0,
@@ -129,7 +223,12 @@
         1555
       ],
       "auditCoverCropRatio": 0.279,
-      "imageAnchor": "bottom"
+      "imageAnchor": "center",
+      "sourceId": "OH09",
+      "atlasPanelIds": [
+        "OH-09"
+      ],
+      "fitMode": "fill"
     },
     {
       "id": "OH10",
@@ -145,7 +244,7 @@
         1095,
         1436
       ],
-      "displayMode": "fit-visible-content-without-distortion",
+      "displayMode": "atlas-registered-panel",
       "contentCrop": {
         "left": 0,
         "top": 0,
@@ -157,7 +256,18 @@
         1436
       ],
       "auditCoverCropRatio": 0.343,
-      "imageAnchor": "bottom"
+      "imageAnchor": "center",
+      "sourceId": "OH10",
+      "atlasPanelIds": [
+        "OH-10"
+      ],
+      "artInset": {
+        "top": 170,
+        "bottom": 0,
+        "left": 0,
+        "right": 0
+      },
+      "fitMode": "fill"
     },
     {
       "id": "OH11",
@@ -173,7 +283,7 @@
         1203,
         1308
       ],
-      "displayMode": "fit-visible-content-without-distortion",
+      "displayMode": "atlas-registered-panel",
       "contentCrop": {
         "left": 0,
         "top": 0,
@@ -185,7 +295,12 @@
         1308
       ],
       "auditCoverCropRatio": 0.299,
-      "imageAnchor": "bottom"
+      "imageAnchor": "center",
+      "sourceId": "OH11",
+      "atlasPanelIds": [
+        "OH-11"
+      ],
+      "fitMode": "fill"
     },
     {
       "id": "OH12",
@@ -201,7 +316,7 @@
         1024,
         1536
       ],
-      "displayMode": "fit-visible-content-without-distortion",
+      "displayMode": "atlas-registered-panel",
       "contentCrop": {
         "left": 0,
         "top": 0,
@@ -213,15 +328,20 @@
         1536
       ],
       "auditCoverCropRatio": 0.132,
-      "imageAnchor": "bottom"
+      "imageAnchor": "center",
+      "sourceId": "OH12",
+      "atlasPanelIds": [
+        "OH-12"
+      ],
+      "fitMode": "fill"
     },
     {
       "id": "OH13",
       "x": 1024,
       "y": 1031,
       "w": 247,
-      "h": 1260,
-      "note": "circuit breaker plus equipment cooling physically joined center strip",
+      "h": 1169,
+      "note": "Circuit breaker and equipment cooling share long continuous source artwork",
       "alignment": "atlas-boundary",
       "zIndex": 2,
       "visualFit": "crop-white-side-gutters-and-cover",
@@ -229,7 +349,7 @@
         724,
         2172
       ],
-      "displayMode": "fit-visible-content-without-distortion",
+      "displayMode": "atlas-registered-panel",
       "contentCrop": {
         "left": 121,
         "top": 0,
@@ -241,15 +361,20 @@
         2172
       ],
       "auditCoverCropRatio": 0.117,
-      "imageAnchor": "bottom"
+      "imageAnchor": "center",
+      "sourceId": "OH13",
+      "atlasPanelIds": [
+        "OH-13"
+      ],
+      "fitMode": "fill"
     },
     {
       "id": "OH14",
       "x": 1024,
-      "y": 2291,
+      "y": 2205,
       "w": 247,
-      "h": 560,
-      "note": "emergency exit lights, no smoking and fasten belts in center strip",
+      "h": 501,
+      "note": "Emergency exit lights and cabin signs; atlas OH14 overall center below circuit breaker",
       "alignment": "atlas-boundary",
       "zIndex": 2,
       "visualFit": "cover",
@@ -257,7 +382,7 @@
         1074,
         1464
       ],
-      "displayMode": "fit-visible-content-without-distortion",
+      "displayMode": "atlas-registered-panel",
       "contentCrop": {
         "left": 0,
         "top": 0,
@@ -269,15 +394,20 @@
         1464
       ],
       "auditCoverCropRatio": 0.399,
-      "imageAnchor": "bottom"
+      "imageAnchor": "center",
+      "sourceId": "OH14",
+      "atlasPanelIds": [
+        "OH-14"
+      ],
+      "fitMode": "fill"
     },
     {
       "id": "OH18",
       "x": 1024,
-      "y": 2851,
+      "y": 2711,
       "w": 247,
-      "h": 425,
-      "note": "attend/ground call/wiper in center strip, lower edge y3276",
+      "h": 565,
+      "note": "File historically named OH18 but actually belongs to center OH14 Ground Call / Rain Repellent / Wiper. This is NOT atlas OH18.",
       "alignment": "atlas-boundary",
       "zIndex": 2,
       "visualFit": "cover",
@@ -285,7 +415,7 @@
         816,
         1926
       ],
-      "displayMode": "fit-visible-content-without-distortion",
+      "displayMode": "atlas-registered-panel",
       "contentCrop": {
         "left": 0,
         "top": 0,
@@ -297,7 +427,13 @@
         1926
       ],
       "auditCoverCropRatio": 0.271,
-      "imageAnchor": "bottom"
+      "imageAnchor": "center",
+      "sourceId": "OH18",
+      "atlasPanelIds": [
+        "OH-14"
+      ],
+      "fitMode": "fill",
+      "displayLabel": "OH-14 • GRD / WIPER"
     },
     {
       "id": "OH15",
@@ -313,7 +449,7 @@
         1280,
         1229
       ],
-      "displayMode": "fit-visible-content-without-distortion",
+      "displayMode": "atlas-registered-panel",
       "contentCrop": {
         "left": 0,
         "top": 0,
@@ -325,7 +461,12 @@
         1229
       ],
       "auditCoverCropRatio": 0.179,
-      "imageAnchor": "bottom"
+      "imageAnchor": "center",
+      "sourceId": "OH15",
+      "atlasPanelIds": [
+        "OH-15"
+      ],
+      "fitMode": "fill"
     },
     {
       "id": "OH16",
@@ -341,7 +482,7 @@
         1639,
         960
       ],
-      "displayMode": "fit-visible-content-without-distortion",
+      "displayMode": "atlas-registered-panel",
       "contentCrop": {
         "left": 0,
         "top": 0,
@@ -353,7 +494,12 @@
         960
       ],
       "auditCoverCropRatio": 0.265,
-      "imageAnchor": "bottom"
+      "imageAnchor": "center",
+      "sourceId": "OH16",
+      "atlasPanelIds": [
+        "OH-16"
+      ],
+      "fitMode": "fill"
     },
     {
       "id": "OH17",
@@ -369,7 +515,7 @@
         1672,
         941
       ],
-      "displayMode": "fit-visible-content-without-distortion",
+      "displayMode": "atlas-registered-panel",
       "contentCrop": {
         "left": 0,
         "top": 0,
@@ -381,7 +527,12 @@
         941
       ],
       "auditCoverCropRatio": 0.292,
-      "imageAnchor": "bottom"
+      "imageAnchor": "center",
+      "sourceId": "OH17",
+      "atlasPanelIds": [
+        "OH-17"
+      ],
+      "fitMode": "fill"
     },
     {
       "id": "OH19-VOICE",
@@ -389,7 +540,7 @@
       "y": 2353,
       "w": 473,
       "h": 289,
-      "note": "voice recorder, immediately below hydraulic; actual atlas OH18 identity",
+      "note": "True atlas OH18, uploaded under older OH19-VOICE filename",
       "alignment": "atlas-boundary",
       "zIndex": 2,
       "visualFit": "cover",
@@ -397,7 +548,7 @@
         1593,
         987
       ],
-      "displayMode": "fit-visible-content-without-distortion",
+      "displayMode": "atlas-registered-panel",
       "contentCrop": {
         "left": 0,
         "top": 0,
@@ -409,7 +560,13 @@
         987
       ],
       "auditCoverCropRatio": 0.014,
-      "imageAnchor": "bottom"
+      "imageAnchor": "center",
+      "sourceId": "OH19-VOICE",
+      "atlasPanelIds": [
+        "OH-18"
+      ],
+      "fitMode": "fill",
+      "displayLabel": "OH-18 • VOICE REC"
     },
     {
       "id": "OH19-DIFF",
@@ -417,7 +574,7 @@
       "y": 2647,
       "w": 473,
       "h": 629,
-      "note": "pressure differential and alt horn immediately below recorder, lower edge y3276",
+      "note": "True atlas OH19 pressure-differential instrumentation",
       "alignment": "atlas-boundary",
       "zIndex": 2,
       "visualFit": "cover",
@@ -425,7 +582,7 @@
         1267,
         1241
       ],
-      "displayMode": "fit-visible-content-without-distortion",
+      "displayMode": "atlas-registered-panel",
       "contentCrop": {
         "left": 0,
         "top": 0,
@@ -437,7 +594,12 @@
         1241
       ],
       "auditCoverCropRatio": 0.263,
-      "imageAnchor": "bottom"
+      "imageAnchor": "center",
+      "sourceId": "OH19-DIFF",
+      "atlasPanelIds": [
+        "OH-19"
+      ],
+      "fitMode": "fill"
     },
     {
       "id": "OH20",
@@ -453,7 +615,7 @@
         1254,
         1254
       ],
-      "displayMode": "fit-visible-content-without-distortion",
+      "displayMode": "atlas-registered-panel",
       "contentCrop": {
         "left": 0,
         "top": 0,
@@ -465,7 +627,18 @@
         1254
       ],
       "auditCoverCropRatio": 0.365,
-      "imageAnchor": "bottom"
+      "imageAnchor": "center",
+      "sourceId": "OH20",
+      "atlasPanelIds": [
+        "OH-20"
+      ],
+      "artInset": {
+        "top": 155,
+        "bottom": 0,
+        "left": 0,
+        "right": 0
+      },
+      "fitMode": "fill"
     },
     {
       "id": "OH21",
@@ -481,7 +654,7 @@
         1122,
         1402
       ],
-      "displayMode": "fit-visible-content-without-distortion",
+      "displayMode": "atlas-registered-panel",
       "contentCrop": {
         "left": 0,
         "top": 0,
@@ -493,7 +666,12 @@
         1402
       ],
       "auditCoverCropRatio": 0.118,
-      "imageAnchor": "bottom"
+      "imageAnchor": "center",
+      "sourceId": "OH21",
+      "atlasPanelIds": [
+        "OH-21"
+      ],
+      "fitMode": "fill"
     },
     {
       "id": "OH22",
@@ -509,7 +687,7 @@
         1167,
         1347
       ],
-      "displayMode": "fit-visible-content-without-distortion",
+      "displayMode": "atlas-registered-panel",
       "contentCrop": {
         "left": 0,
         "top": 0,
@@ -521,7 +699,18 @@
         1347
       ],
       "auditCoverCropRatio": 0.463,
-      "imageAnchor": "bottom"
+      "imageAnchor": "center",
+      "sourceId": "OH22",
+      "atlasPanelIds": [
+        "OH-22"
+      ],
+      "artInset": {
+        "top": 200,
+        "bottom": 0,
+        "left": 0,
+        "right": 0
+      },
+      "fitMode": "fill"
     },
     {
       "id": "OH23-25",
@@ -537,7 +726,7 @@
         2170,
         725
       ],
-      "displayMode": "fit-visible-content-without-distortion",
+      "displayMode": "atlas-registered-panel",
       "contentCrop": {
         "left": 0,
         "top": 212,
@@ -549,7 +738,14 @@
         297
       ],
       "auditCoverCropRatio": 0.205,
-      "imageAnchor": "center"
+      "imageAnchor": "center",
+      "sourceId": "OH23-25",
+      "atlasPanelIds": [
+        "OH-23",
+        "OH-24",
+        "OH-25"
+      ],
+      "fitMode": "fill"
     }
   ],
   "qa": {
@@ -557,6 +753,16 @@
     "lockedSources": "never overwrite assets/locked",
     "photoFit": "non-destructive fit of content bounding boxes",
     "contentWhitespaces": "rendered empty in slate panel matching color, never replaced with original switch-filled atlas image",
-    "visualStatus": "layout safe but artwork source proportions differ from atlas; physical seams not yet approved"
-  }
+    "visualStatus": "layout safe but artwork source proportions differ from atlas; physical seams not yet approved",
+    "version": "UPD-0011",
+    "atlasMapping": "corrected by comparing against supplied full actual photographed overhead panel",
+    "visualReview": "needs user confirmation; asset images' non-uniform scale due to original wrong reconstruction proportions"
+  },
+  "sourceAssetCount": 18,
+  "renderedPieceCount": 19,
+  "bottomSharedAtlasIds": [
+    "OH-23",
+    "OH-24",
+    "OH-25"
+  ]
 }
