@@ -1,0 +1,492 @@
+{
+  "schema": "b737-classic-fcom-ch11-perflimits-n1limit-appendix/1.0",
+  "project": {
+    "repo": "mahmet737ng-gif/b737-classic-simulator",
+    "component": "B737-CLASSIC-CDU",
+    "user_locked_assets": [
+      "assets/fonts/boeing-cdu/BoeingCDU-Large.ttf",
+      "assets/fonts/boeing-cdu/BoeingCDU-Small.ttf",
+      "engine/ch11/assets/cdu-approved-unlit.png",
+      "engine/ch11/data/cdu-map.json"
+    ]
+  },
+  "source": {
+    "manual": "737 Flight Crew Operations Manual",
+    "document_id": "D6-27370-300/400/500-SHI",
+    "scope": "FOUR_CONVERSATION_SCREENSHOTS_ONLY",
+    "images": [
+      {
+        "id": "img1596",
+        "pdf_page": 1596,
+        "printed_folio": "11.40.44",
+        "revision": "2023-06-15",
+        "sha256": "088e8afb2720971bc505c9fda3020c5ed84c65ccab005952700b1e96a9a58634",
+        "filename": "image(20261023-195950).png"
+      },
+      {
+        "id": "img1597",
+        "pdf_page": 1597,
+        "printed_folio": "11.40.45",
+        "revision": "2023-06-15",
+        "sha256": "68be401db969f2657635ae0f580f624528707aa30fdc575b4beed2699b6f4c22",
+        "filename": "image(20261023-195957).png"
+      },
+      {
+        "id": "img1599",
+        "pdf_page": 1599,
+        "printed_folio": "11.40.47",
+        "revision": "2023-06-15",
+        "sha256": "4f620c316f935fc3375f05153dec3d9db6692539824d9e57f50489da760e186c",
+        "filename": "image(20261023-200018).png"
+      },
+      {
+        "id": "img1600",
+        "pdf_page": 1600,
+        "printed_folio": "11.40.48",
+        "revision": "2023-06-15",
+        "sha256": "f2762f0a5aea38cc620b95bad816933c48f56b006c6afe509a42f538495189d0",
+        "filename": "image(20261023-200023).png"
+      }
+    ],
+    "known_gap_pdf_viewer_1598": true,
+    "content_is_paraphrased": true
+  },
+  "variant_caveats": {
+    "rta_time_tolerance_default_seconds": "30 OR 15 depending on variant: installed EP-FSI option unverified",
+    "rta_time_tolerance_min_seconds": "5 OR 6 depending on variant",
+    "perflimits_report_request": "ACARS EQUIPPED OPTION ONLY",
+    "to_1_to_2_certified_ratings": "DO NOT CLAIM EP-FSI HAS DERATE TABLE WITHOUT INSTALLED AFM",
+    "source_display_defaults_vs_airframe_defaults": "FCOM illustration may specify a variant default, not verified EP-FSI aircraft database"
+  },
+  "simulation": {
+    "aircraft": "EP-FSI",
+    "engine": "CFM56-3B-1",
+    "rating": "20K",
+    "weather": "ISA",
+    "anti_ice": "OFF",
+    "bleed": "ON",
+    "n1_reference": "EPFSI_SIM_ESTIMATE_V19",
+    "n1_not_afm": "SIM EST"
+  },
+  "rules": [
+    {
+      "id": "PLX-001",
+      "source_image_id": "img1596",
+      "field": "PERF_LIMITS.PAGE",
+      "condition": "OPEN",
+      "effect": "DISPLAY_PERF_LIMITS_2_OF_2",
+      "scope": "SOURCE_FACT",
+      "status": "SOURCE_GROUNDED_NOT_FULL_RUNTIME_VERIFIED"
+    },
+    {
+      "id": "PLX-002",
+      "source_image_id": "img1596",
+      "field": "TIME_ERROR_TOLERANCE",
+      "condition": "RTA_MODE",
+      "effect": "CONSTRAIN_COMPUTED_SPEEDS",
+      "scope": "SOURCE_FACT",
+      "status": "SOURCE_GROUNDED_NOT_FULL_RUNTIME_VERIFIED"
+    },
+    {
+      "id": "PLX-003",
+      "source_image_id": "img1596",
+      "field": "TIME_ERROR_TOLERANCE",
+      "condition": "VARIANT_A",
+      "effect": "VALID_RANGE_5_TO_30_SECONDS",
+      "scope": "SOURCE_FACT",
+      "status": "SOURCE_GROUNDED_NOT_FULL_RUNTIME_VERIFIED"
+    },
+    {
+      "id": "PLX-004",
+      "source_image_id": "img1596",
+      "field": "TIME_ERROR_TOLERANCE",
+      "condition": "VARIANT_B",
+      "effect": "VALID_RANGE_6_TO_30_SECONDS",
+      "scope": "SOURCE_FACT",
+      "status": "SOURCE_GROUNDED_NOT_FULL_RUNTIME_VERIFIED"
+    },
+    {
+      "id": "PLX-005",
+      "source_image_id": "img1596",
+      "field": "TIME_ERROR_TOLERANCE",
+      "condition": "VARIANT_A",
+      "effect": "DEFAULT_30_SECONDS_SMALL_FONT",
+      "scope": "SOURCE_FACT",
+      "status": "SOURCE_GROUNDED_NOT_FULL_RUNTIME_VERIFIED"
+    },
+    {
+      "id": "PLX-006",
+      "source_image_id": "img1596",
+      "field": "TIME_ERROR_TOLERANCE",
+      "condition": "VARIANT_B",
+      "effect": "DEFAULT_15_SECONDS_SMALL_FONT",
+      "scope": "SOURCE_FACT",
+      "status": "SOURCE_GROUNDED_NOT_FULL_RUNTIME_VERIFIED"
+    },
+    {
+      "id": "PLX-007",
+      "source_image_id": "img1596",
+      "field": "MIN_MAX_SPEED",
+      "condition": "EACH_PHASE",
+      "effect": "ENFORCE_MINIMUM_AND_MAXIMUM_SPEED",
+      "scope": "SOURCE_FACT",
+      "status": "SOURCE_GROUNDED_NOT_FULL_RUNTIME_VERIFIED"
+    },
+    {
+      "id": "PLX-008",
+      "source_image_id": "img1596",
+      "field": "MIN_MAX_SPEED",
+      "condition": "ENTER_INPUT",
+      "effect": "CAS_OR_MACH_ALLOWED",
+      "scope": "SOURCE_FACT",
+      "status": "SOURCE_GROUNDED_NOT_FULL_RUNTIME_VERIFIED"
+    },
+    {
+      "id": "PLX-009",
+      "source_image_id": "img1596",
+      "field": "CLB",
+      "condition": "DISPLAY",
+      "effect": "TWO_LIMITS_MIN_AND_MAX_AS_IAS_MACH",
+      "scope": "SOURCE_FACT",
+      "status": "SOURCE_GROUNDED_NOT_FULL_RUNTIME_VERIFIED"
+    },
+    {
+      "id": "PLX-010",
+      "source_image_id": "img1596",
+      "field": "CRZ",
+      "condition": "DISPLAY",
+      "effect": "TWO_LIMITS_MIN_AND_MAX_AS_IAS_MACH",
+      "scope": "SOURCE_FACT",
+      "status": "SOURCE_GROUNDED_NOT_FULL_RUNTIME_VERIFIED"
+    },
+    {
+      "id": "PLX-011",
+      "source_image_id": "img1596",
+      "field": "DES",
+      "condition": "DISPLAY",
+      "effect": "TWO_LIMITS_MIN_AND_MAX_AS_IAS_MACH",
+      "scope": "SOURCE_FACT",
+      "status": "SOURCE_GROUNDED_NOT_FULL_RUNTIME_VERIFIED"
+    },
+    {
+      "id": "PLX-012",
+      "source_image_id": "img1596",
+      "field": "CLB",
+      "condition": "ILLUSTRATED_DEFAULT_PAIR",
+      "effect": "MIN_210_KT_M40_AND_MAX_340_KT_M820",
+      "scope": "ILLUSTRATED_AIRCRAFT_VARIANT_DEFAULT_NOT_EPFSI_CERTIFIED",
+      "status": "SOURCE_GROUNDED_NOT_FULL_RUNTIME_VERIFIED"
+    },
+    {
+      "id": "PLX-013",
+      "source_image_id": "img1596",
+      "field": "INDEX",
+      "condition": "SELECT_L6",
+      "effect": "OPEN_INIT_REF_INDEX",
+      "scope": "SOURCE_FACT",
+      "status": "SOURCE_GROUNDED_NOT_FULL_RUNTIME_VERIFIED"
+    },
+    {
+      "id": "PLX-014",
+      "source_image_id": "img1596",
+      "field": "RTA",
+      "condition": "SELECT_R6",
+      "effect": "OPEN_RTA_PROGRESS",
+      "scope": "SOURCE_FACT",
+      "status": "SOURCE_GROUNDED_NOT_FULL_RUNTIME_VERIFIED"
+    },
+    {
+      "id": "PLX-015",
+      "source_image_id": "img1596",
+      "field": "PERF_LIM_REPORT",
+      "condition": "ACARS_VARIANT_L5",
+      "effect": "TRANSMIT_DISPLAYED_PERF_LIMITS_TO_GROUND",
+      "scope": "SOURCE_FACT",
+      "status": "SOURCE_GROUNDED_NOT_FULL_RUNTIME_VERIFIED"
+    },
+    {
+      "id": "PLX-016",
+      "source_image_id": "img1596",
+      "field": "PERF_LIM_REQUEST",
+      "condition": "ACARS_VARIANT_R5",
+      "effect": "REQUEST_PERF_LIMITS_UPLINK",
+      "scope": "SOURCE_FACT",
+      "status": "SOURCE_GROUNDED_NOT_FULL_RUNTIME_VERIFIED"
+    },
+    {
+      "id": "PLX-017",
+      "source_image_id": "img1597",
+      "field": "PERF_LIMITS",
+      "condition": "IN_FLIGHT",
+      "effect": "LIMIT_RTA_AND_ECON_MODES",
+      "scope": "SOURCE_FACT",
+      "status": "SOURCE_GROUNDED_NOT_FULL_RUNTIME_VERIFIED"
+    },
+    {
+      "id": "PLX-018",
+      "source_image_id": "img1597",
+      "field": "PERF_LIM_REPORT",
+      "condition": "SELECT",
+      "effect": "TRANSMIT_DISPLAYED_LIMITS_TO_GROUND_ONLY_IF_ACARS_AVAILABLE",
+      "scope": "SOURCE_FACT",
+      "status": "SOURCE_GROUNDED_NOT_FULL_RUNTIME_VERIFIED"
+    },
+    {
+      "id": "PLX-019",
+      "source_image_id": "img1597",
+      "field": "PERF_LIM_REQUEST",
+      "condition": "SELECT",
+      "effect": "TRANSMIT_ACARS_UPLINK_REQUEST_ONLY_IF_BACKEND_AVAILABLE",
+      "scope": "SOURCE_FACT",
+      "status": "SOURCE_GROUNDED_NOT_FULL_RUNTIME_VERIFIED"
+    },
+    {
+      "id": "PLX-020",
+      "source_image_id": "img1597",
+      "field": "RTA",
+      "condition": "SELECT",
+      "effect": "OPEN_RTA_PROGRESS",
+      "scope": "SOURCE_FACT",
+      "status": "SOURCE_GROUNDED_NOT_FULL_RUNTIME_VERIFIED"
+    },
+    {
+      "id": "N1X-001",
+      "source_image_id": "img1599",
+      "field": "N1_LIMIT.PAGE",
+      "condition": "OPEN",
+      "effect": "DISPLAY_N1_LIMIT_1_OF_1",
+      "scope": "SOURCE_FACT",
+      "status": "SOURCE_GROUNDED_NOT_FULL_RUNTIME_VERIFIED"
+    },
+    {
+      "id": "N1X-002",
+      "source_image_id": "img1599",
+      "field": "N1_LIMIT.NAV",
+      "condition": "PERF_INIT_R6_SELECT_IN_N1_VARIANT",
+      "effect": "OPEN_N1_LIMIT_PAGE",
+      "scope": "SOURCE_FACT",
+      "status": "SOURCE_GROUNDED_NOT_FULL_RUNTIME_VERIFIED"
+    },
+    {
+      "id": "N1X-003",
+      "source_image_id": "img1599",
+      "field": "N1_LIMIT",
+      "condition": "ON_GROUND",
+      "effect": "DISPLAY_TO_TO_DERATE_AND_CLB_SELECTIONS",
+      "scope": "SOURCE_FACT",
+      "status": "SOURCE_GROUNDED_NOT_FULL_RUNTIME_VERIFIED"
+    },
+    {
+      "id": "N1X-004",
+      "source_image_id": "img1599",
+      "field": "SEL",
+      "condition": "ENTER_L1",
+      "effect": "CALCULATE_REDUCED_TAKEOFF_N1_BY_ASSUMED_TEMPERATURE",
+      "scope": "SOURCE_FACT",
+      "status": "SOURCE_GROUNDED_NOT_FULL_RUNTIME_VERIFIED"
+    },
+    {
+      "id": "N1X-005",
+      "source_image_id": "img1599",
+      "field": "SEL",
+      "condition": "ENTRY",
+      "effect": "CELSIUS_OR_FAHRENHEIT",
+      "scope": "SOURCE_FACT",
+      "status": "SOURCE_GROUNDED_NOT_FULL_RUNTIME_VERIFIED"
+    },
+    {
+      "id": "N1X-006",
+      "source_image_id": "img1599",
+      "field": "OAT",
+      "condition": "ENTER_L2",
+      "effect": "USE_ACTUAL_TAKEOFF_OAT_FOR_N1_LIMIT_CALCULATION",
+      "scope": "SOURCE_FACT",
+      "status": "SOURCE_GROUNDED_NOT_FULL_RUNTIME_VERIFIED"
+    },
+    {
+      "id": "N1X-007",
+      "source_image_id": "img1599",
+      "field": "OAT",
+      "condition": "SENSED_VS_MANUAL",
+      "effect": "MANUAL_LARGE_AND_SENSED_SMALL_FONT",
+      "scope": "SOURCE_FACT",
+      "status": "SOURCE_GROUNDED_NOT_FULL_RUNTIME_VERIFIED"
+    },
+    {
+      "id": "N1X-008",
+      "source_image_id": "img1599",
+      "field": "TO",
+      "condition": "SELECT_L3",
+      "effect": "SELECT_FULL_RATED_TAKEOFF",
+      "scope": "SOURCE_FACT",
+      "status": "SOURCE_GROUNDED_NOT_FULL_RUNTIME_VERIFIED"
+    },
+    {
+      "id": "N1X-009",
+      "source_image_id": "img1599",
+      "field": "TO_DERATE",
+      "condition": "SELECT_L4_OPTIONS",
+      "effect": "SELECT_TO1_OR_TO2_IF_CERTIFIED_IN_PERFORMANCE_DB",
+      "scope": "SOURCE_FACT",
+      "status": "SOURCE_GROUNDED_NOT_FULL_RUNTIME_VERIFIED"
+    },
+    {
+      "id": "N1X-010",
+      "source_image_id": "img1599",
+      "field": "N1",
+      "condition": "DISPLAY_R1",
+      "effect": "SHOW_FMC_CALCULATED_TAKEOFF_N1",
+      "scope": "SOURCE_FACT",
+      "status": "SOURCE_GROUNDED_NOT_FULL_RUNTIME_VERIFIED"
+    },
+    {
+      "id": "N1X-011",
+      "source_image_id": "img1599",
+      "field": "CLB",
+      "condition": "SELECT_R2",
+      "effect": "SELECT_NORMAL_CLIMB_THRUST",
+      "scope": "SOURCE_FACT",
+      "status": "SOURCE_GROUNDED_NOT_FULL_RUNTIME_VERIFIED"
+    },
+    {
+      "id": "N1X-012",
+      "source_image_id": "img1599",
+      "field": "CLB_1",
+      "condition": "SELECT_R3",
+      "effect": "SELECT_FIRST_REDUCED_CLIMB_THRUST_IF_AVAILABLE",
+      "scope": "SOURCE_FACT",
+      "status": "SOURCE_GROUNDED_NOT_FULL_RUNTIME_VERIFIED"
+    },
+    {
+      "id": "N1X-013",
+      "source_image_id": "img1599",
+      "field": "CLB_2",
+      "condition": "SELECT_R4",
+      "effect": "SELECT_SECOND_REDUCED_CLIMB_THRUST_IF_AVAILABLE",
+      "scope": "SOURCE_FACT",
+      "status": "SOURCE_GROUNDED_NOT_FULL_RUNTIME_VERIFIED"
+    },
+    {
+      "id": "N1X-014",
+      "source_image_id": "img1599",
+      "field": "PERF_INIT",
+      "condition": "SELECT_L5",
+      "effect": "RETURN_PERF_INIT",
+      "scope": "SOURCE_FACT",
+      "status": "SOURCE_GROUNDED_NOT_FULL_RUNTIME_VERIFIED"
+    },
+    {
+      "id": "N1X-015",
+      "source_image_id": "img1599",
+      "field": "TAKEOFF",
+      "condition": "SELECT_R5",
+      "effect": "OPEN_TAKEOFF_REF",
+      "scope": "SOURCE_FACT",
+      "status": "SOURCE_GROUNDED_NOT_FULL_RUNTIME_VERIFIED"
+    },
+    {
+      "id": "N1X-016",
+      "source_image_id": "img1600",
+      "field": "TO_FULL_RATING",
+      "condition": "SELECT",
+      "effect": "SHOW_RATING_BASED_FULL_TAKEOFF_LIMIT",
+      "scope": "SOURCE_FACT",
+      "status": "SOURCE_GROUNDED_NOT_FULL_RUNTIME_VERIFIED"
+    },
+    {
+      "id": "N1X-017",
+      "source_image_id": "img1600",
+      "field": "TO_NEW_RATING",
+      "condition": "AFTER_V_SPEEDS_SELECTED",
+      "effect": "MARK_V_SPEEDS_SMALL_FONT",
+      "scope": "SOURCE_FACT",
+      "status": "SOURCE_GROUNDED_NOT_FULL_RUNTIME_VERIFIED"
+    },
+    {
+      "id": "N1X-018",
+      "source_image_id": "img1600",
+      "field": "TO1",
+      "condition": "SELECT",
+      "effect": "AUTOMATICALLY_ARM_CLB1_IN_APPLICABLE_OPTION",
+      "scope": "SOURCE_FACT",
+      "status": "SOURCE_GROUNDED_NOT_FULL_RUNTIME_VERIFIED"
+    },
+    {
+      "id": "N1X-019",
+      "source_image_id": "img1600",
+      "field": "TO2",
+      "condition": "SELECT",
+      "effect": "AUTOMATICALLY_ARM_CLB2_IN_APPLICABLE_OPTION",
+      "scope": "SOURCE_FACT",
+      "status": "SOURCE_GROUNDED_NOT_FULL_RUNTIME_VERIFIED"
+    },
+    {
+      "id": "N1X-020",
+      "source_image_id": "img1600",
+      "field": "REDUCED_THRUST",
+      "condition": "CLB_N1_LARGER_THAN_TO_LIMIT",
+      "effect": "OPTION_MAY_AUTOMATICALLY_SPECIFY_CLB1_OR_CLB2",
+      "scope": "SOURCE_FACT",
+      "status": "SOURCE_GROUNDED_NOT_FULL_RUNTIME_VERIFIED"
+    },
+    {
+      "id": "N1X-021",
+      "source_image_id": "img1600",
+      "field": "TO_LIMIT",
+      "condition": "ASSUMED_TEMP_REDUCTION",
+      "effect": "SHOW_RED_XXX_N1_LABEL",
+      "scope": "SOURCE_FACT",
+      "status": "SOURCE_GROUNDED_NOT_FULL_RUNTIME_VERIFIED"
+    },
+    {
+      "id": "N1X-022",
+      "source_image_id": "img1600",
+      "field": "TO_LIMIT",
+      "condition": "ASSUMED_TEMP_AND_DERATE",
+      "effect": "SHOW_RED_TO_DERATE_N1_LABEL_ADDITIVE_EFFECT",
+      "scope": "SOURCE_FACT",
+      "status": "SOURCE_GROUNDED_NOT_FULL_RUNTIME_VERIFIED"
+    },
+    {
+      "id": "N1X-023",
+      "source_image_id": "img1600",
+      "field": "REFERENCE_N1_BUGS",
+      "condition": "REDUCED_N1_SELECTED",
+      "effect": "SHOW_FULL_RATED_OR_SELECTED_THRUST_REFERENCES",
+      "scope": "SOURCE_FACT",
+      "status": "SOURCE_GROUNDED_NOT_FULL_RUNTIME_VERIFIED"
+    },
+    {
+      "id": "N1X-024",
+      "source_image_id": "img1600",
+      "field": "PERF_INIT",
+      "condition": "SELECT_L5",
+      "effect": "RETURN_PERF_INIT",
+      "scope": "SOURCE_FACT",
+      "status": "SOURCE_GROUNDED_NOT_FULL_RUNTIME_VERIFIED"
+    },
+    {
+      "id": "N1X-025",
+      "source_image_id": "img1600",
+      "field": "TAKEOFF",
+      "condition": "SELECT_R5",
+      "effect": "OPEN_TAKEOFF_REF",
+      "scope": "SOURCE_FACT",
+      "status": "SOURCE_GROUNDED_NOT_FULL_RUNTIME_VERIFIED"
+    },
+    {
+      "id": "N1X-026",
+      "source_image_id": "img1600",
+      "field": "N1_LIMIT",
+      "condition": "COMPUTED",
+      "effect": "PROVIDE_DISPLAY_VALUE_NOT_APPROVAL_FOR_REAL_NAVIGATION",
+      "scope": "SOURCE_FACT",
+      "status": "SOURCE_GROUNDED_NOT_FULL_RUNTIME_VERIFIED"
+    }
+  ],
+  "qa": {
+    "count": 46,
+    "images": 4,
+    "unchanged_binary_assets": true
+  }
+}
