@@ -2619,7 +2619,8 @@ function transitionAircraftState(previous,action) {
     case 'SET_ENGINE_EGT_C':
       if(performanceAuthority(state.performance,p.engine))
         throw new Error('Sensor owned by active engine performance replay; stop replay before manual override');
-      applyPropulsionAction(state.propulsion,p,{
+      if(p.type==='SET_ENGINE_EGT_C')applyProtectionAction(state.propulsion,p);
+      else applyPropulsionAction(state.propulsion,p,{
         electrical:before.electrical,propulsion:before.propulsion,
         fuelAtInlet:state.pumps.fuel.fuelAtInlet
       });
