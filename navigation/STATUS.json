@@ -76,7 +76,7 @@
     "real_device_acceptance": "NOT_TESTED"
   },
   "stage9_qa": {
-    "local_python_tests_passed": 28,
+    "local_python_tests_passed": 29,
     "advisory_js_tests": "PASS",
     "reference_enroute_chords": 10,
     "discontinuities": 4,
