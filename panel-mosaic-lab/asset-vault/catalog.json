@@ -12,7 +12,7 @@
       "size_bytes": 2283525,
       "sha256": "70e09f03a05df65c41f3c2e3daa5f3260361a0086a01a610983c7b0899edbdc7",
       "github_path": "panel-mosaic-lab/assets/locked/REF-0001/OH-ATLAS-0001.png",
-      "github_status": "awaiting_binary_upload",
+      "github_status": "uploaded_verified",
       "technical_database_library_path": "/Technical Database/Source Panels/Locked Reference Atlases/REF-0001/OH-ATLAS-0001.png",
       "library_status": "archived",
       "immutable": true
@@ -25,7 +25,7 @@
       "size_bytes": 2625653,
       "sha256": "82d8b5286248eb55ab5ac4a698c9d102197791ab14385112be498f546de73202",
       "github_path": "panel-mosaic-lab/assets/locked/REF-0001/MP-ATLAS-0001.png",
-      "github_status": "awaiting_binary_upload",
+      "github_status": "uploaded_verified",
       "technical_database_library_path": "/Technical Database/Source Panels/Locked Reference Atlases/REF-0001/MP-ATLAS-0001.png",
       "library_status": "archived",
       "immutable": true
@@ -38,7 +38,7 @@
       "size_bytes": 2748630,
       "sha256": "28891571250a88c9183c66c24907635d0aad1bb63d94927756eda30785d94bf7",
       "github_path": "panel-mosaic-lab/assets/locked/REF-0001/PD-ATLAS-0001.png",
-      "github_status": "awaiting_binary_upload",
+      "github_status": "uploaded_verified",
       "technical_database_library_path": "/Technical Database/Source Panels/Locked Reference Atlases/REF-0001/PD-ATLAS-0001.png",
       "library_status": "archived",
       "immutable": true
@@ -64,7 +64,7 @@
       "size_bytes": 1442085,
       "sha256": "1720033c48777c5ca3d8ae0065e8bf9a80c1f229be3ed1e488d6fbd6eab51265",
       "github_path": "panel-mosaic-lab/assets/locked/UPD-0002/OH01-06-MOSAIC-20261023-1720033c4877.png",
-      "github_status": "awaiting_binary_upload",
+      "github_status": "uploaded_verified",
       "technical_database_library_path": "/Technical Database/Source Panels/Locked Reference Atlases/UPD-0002/OH01-06-mosaic-1720033c4877.png",
       "library_status": "archived",
       "immutable": true

@@ -28,6 +28,18 @@
       "date": "2026-10-23",
       "description": "Opened append-only lock catalog and independent CI integrity and historical-mutation guards; no current existing simulator panel files modified.",
       "kind": "integrity_policy_enabled"
+    },
+    {
+      "version": "GITHUB-UPLOAD-0001",
+      "date": "2026-10-23",
+      "kind": "binary_upload_verified",
+      "description": "Four original immutable PNG assets (three reference atlases and OH01-06 derived mosaic) attached to repository at exact Git blob SHAs, without changing original image pixels.",
+      "ids": [
+        "OH-ATLAS-0001",
+        "MP-ATLAS-0001",
+        "PD-ATLAS-0001",
+        "OH01-06-MOSAIC-20261023-1720033c4877"
+      ]
     }
   ]
 }
