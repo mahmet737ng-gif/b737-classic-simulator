@@ -214,3 +214,16 @@ Active private database: `/Technical Database/Sources/AFM-737-33V-D6-8730-R32/EP
 | N1-FSI-23 Release computed N1 into CDU/Autothrottle | BLOCKED | Source readouts remain in private Technical Database; v10 guarded source adapter continues to return null. |
 
 Private active: `/Technical Database/Sources/AFM-737-33V-D6-8730-R32/EP-FSI-ASN29340/v15/epfsi_afm_scoped_v15.sqlite`. Source chart review `docs/AFM_EP_FSI_N1_V15.md`. QA 30 private tests PASS; source numeric golden N1 = 0. Preserve historical v14 and original AFM.
+
+## N1-FSI v16 source-equation implementation
+
+| Item | Status | Evidence |
+| --- | --- | --- |
+| PMC OFF p755 final N1 must not exceed MAXIMUM N1 | DONE — SOURCE CONFIRMED | Original AFM p755, Appendix 2UK 4.2/1; source rule saved in private v16 SQLite. |
+| Piecewise altitude/OAT interpolation and cap | DONE — ALGORITHM AND SYNTHETIC TESTS | `engine/fmc/performance/afm-epfsi-pmc-off-v16.cjs`, v16 tests, capped/uncapped test branches. |
+| A/C PACKS and COWL TAI selection | DONE — INPUT GATES, NUMERIC CORRECTIONS PENDING | No invented zero-bleed fallback; unknown or not-digitized case is BLOCKED. |
+| Reference final N1 vectors | 11 CASES CREATED, NUMERIC GOLDENS 0 | `v16_expected_final_n1_test_vectors` private table; source values pending independent QA. |
+| Full 10 altitude curve continuity and cap crossing | BLOCKED (GRAPH DIGITIZATION) | p756 original data, v14–15 candidates; ambiguous crossings not promoted. |
+| CDU/Autothrottle numeric computed N1 | BLOCKED (SOURCE QA) | Real input requires full curve family/bleed/cap and two independent numeric signoffs. |
+
+Active private source: `/Technical Database/Sources/AFM-737-33V-D6-8730-R32/EP-FSI-ASN29340/v16/epfsi_afm_scoped_v16.sqlite`. Synthetic QA and GitHub CI pass. Preserve proprietary source and all historic snapshots.
