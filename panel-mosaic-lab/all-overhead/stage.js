@@ -51,53 +51,59 @@ function populateAssembly(){
  root.style.height=atlasLayout.canvas.height+'px';
  const src=new Map(spec.images.map(asset=>[asset.id,asset]));
  for(const place of atlasLayout.placements){
-   const asset=src.get(place.id);
+   const asset=src.get(place.sourceId||place.id);
    if(!asset)throw Error('پنل تعریف نشده در اطلس: '+place.id);
    const frame=el('article','atlas-piece');
-   frame.dataset.key=asset.id;
+   frame.dataset.key=place.id;
    frame.tabIndex=0;
    frame.setAttribute('role','button');
-   frame.setAttribute('aria-label',asset.panelIds.join(', ')+' — '+asset.title);
+   frame.setAttribute('aria-label',(place.atlasPanelIds||asset.panelIds).join(', ')+' — '+asset.title);
    Object.assign(frame.style,{left:place.x+'px',top:place.y+'px',width:place.w+'px',height:place.h+'px',zIndex:String(place.zIndex||2)});
    const visible=el('div','atlas-image-window');
    const photo=el('img','atlas-photo');
    photo.src=asset.url;photo.alt=asset.title;photo.decoding='async';
    photo.loading='eager';photo.draggable=false;
 
-   // Fit the actual artwork, not the PNG canvas or the atlas box aspect.
-   // This is a lossless viewport transform: no artificial stretching or cover cropping.
-   const source=place.sourceDimensions;
-   if(!source||source.length!==2)throw Error('ابعاد تصویر در اطلس ثبت نشده: '+asset.id);
+
+   // Atlas-photo matching takes precedence over incorrect old file names.
+   // sourceRect crops are purely presentational subdivisions of the SAME locked binary.
+   const [sourceW,sourceH]=place.sourceDimensions;
+   const selected=place.sourceRect||{x:0,y:0,w:sourceW,h:sourceH};
    const crop=place.contentCrop||{left:0,top:0,right:0,bottom:0};
-   const contentW=source[0]-crop.left-crop.right;
-   const contentH=source[1]-crop.top-crop.bottom;
-   if(contentW<=0||contentH<=0)throw Error('محدودهٔ تصویر نامعتبر: '+asset.id);
-   const scale=Math.min(place.w/contentW,place.h/contentH);
-   const scaledW=source[0]*scale,scaledH=source[1]*scale;
-   const insetX=(place.w-contentW*scale)/2;
-   const insetY=place.imageAnchor==='top'?0:
-       place.imageAnchor==='center'?(place.h-contentH*scale)/2:
-       place.h-contentH*scale;
+   const inset=place.artInset||{left:0,top:0,right:0,bottom:0};
+   const leftInset=inset.left||0,rightInset=inset.right||0;
+   const topInset=inset.top||0,bottomInset=inset.bottom||0;
+   const contentW=selected.w-crop.left-crop.right;
+   const contentH=selected.h-crop.top-crop.bottom;
+   const innerW=place.w-leftInset-rightInset;
+   const innerH=place.h-topInset-bottomInset;
+   if(contentW<=0||contentH<=0||innerW<=0||innerH<=0)throw Error('محدودهٔ تصویر نامعتبر: '+place.id);
+   // Each physical plate's x/y/w/h is read from the photographed source atlas.
+   // Render the complete content crop into its art bounds, no controls removed.
+   // Some old reconstructed assets had wrong source aspect; their display correction is reversible.
+   const sx=innerW/contentW,sy=innerH/contentH;
    Object.assign(photo.style,{
-      position:'absolute',
-      width:scaledW+'px',height:scaledH+'px',maxWidth:'none',
-      left:(insetX-crop.left*scale)+'px',
-      top:(insetY-crop.top*scale)+'px',
+      position:'absolute',width:(sourceW*sx)+'px',height:(sourceH*sy)+'px',
+      maxWidth:'none',left:(leftInset-(selected.x+crop.left)*sx)+'px',
+      top:(topInset-(selected.y+crop.top)*sy)+'px',
       objectFit:'fill',transform:'none'
    });
+   frame.dataset.atlasId=(place.atlasPanelIds||[]).join(',');
    frame.dataset.sourceAspect=(contentW/contentH).toFixed(3);
-   frame.dataset.atlasAspect=(place.w/place.h).toFixed(3);
-   frame.dataset.contentFit=place.displayMode||'fit-visible-content-without-distortion';
+   frame.dataset.atlasAspect=(innerW/innerH).toFixed(3);
+   frame.dataset.fit='atlas-reconstructed-aspect';
+   frame.dataset.sourceSlice=selected.x+','+selected.y+','+selected.w+','+selected.h;
    photo.addEventListener('load',()=>{loaded.add(asset.id);errored.delete(asset.id);summary();if(selected===asset.id)showDetails()});
    photo.addEventListener('error',()=>{errored.add(asset.id);loaded.delete(asset.id);visible.append(el('div','atlas-missing','تصویر بارگذاری نشد'));summary()});
    visible.append(photo);frame.append(visible);
-   const tag=el('span','tag',asset.panelIds.length>1?asset.panelIds[0]+'–'+asset.panelIds.at(-1).slice(3):asset.panelIds[0]);
+   const tags=place.atlasPanelIds||asset.panelIds;
+   const tag=el('span','tag',place.displayLabel|| (tags.length>1?tags[0]+'–'+tags.at(-1).slice(3):tags[0]));
    frame.append(tag);
-   frame.onclick=()=>{if(!dragged)pick(asset.id)};
-   frame.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();pick(asset.id,true)}};
+   frame.onclick=()=>{if(!dragged)pick(place.id)};
+   frame.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();pick(place.id,true)}};
    root.append(frame);
  }
- const stamp=el('div','atlas-geometry-stamp','2220 × 3525 · FULL SOURCE VISIBLE · UPD-0010');
+ const stamp=el('div','atlas-geometry-stamp','ATLAS V2 · TRUE PLATE ORDER · UPD-0011');
  root.append(stamp);
  updateDimensions();
 }
@@ -109,14 +115,15 @@ function fillList(){const term=$('search').value.trim().toLowerCase(),list=$('pi
  const b=el('button');b.dataset.key=asset.id;b.append(el('code','',asset.panelIds.length>1?asset.panelIds[0]+'–'+asset.panelIds.at(-1).slice(3):asset.panelIds[0]),el('span','',asset.title));
  b.onclick=()=>pick(asset.id,true);buttons.push(b);}
  list.append(...buttons);if(!buttons.length)list.append(el('p','', 'نتیجه‌ای پیدا نشد'));highlight();}
-function resolveAsset(id){const exact=assetById(id);if(exact)return exact;return spec.images.find(a=>a.panelIds.includes(id));}
+function resolveAsset(id){const exact=assetById(id);if(exact)return exact;const mapped=atlasLayout?.placements?.find(p=>p.id===id);if(mapped)return assetById(mapped.sourceId||mapped.id);return spec.images.find(a=>a.panelIds.includes(id));}
 function showDetails(){if(!spec)return;const a=resolveAsset(selected)||assetById('UPPER'),detail=$('detail');detail.replaceChildren();
- const region=geometry.parts.find(p=>p.id===selected);detail.append(el('h3','',region?selected+' — '+region.name:a.panelIds.join('–')+' — '+a.title));
+ const region=geometry.parts.find(p=>p.id===selected);const physical=atlasLayout?.placements?.find(p=>p.id===selected);detail.append(el('h3','',region?selected+' — '+region.name:a.panelIds.join('–')+' — '+a.title));
  const detailRow=(title,value)=>{const d=el('div');d.append(el('b','',title+': '),document.createTextNode(value));detail.append(d)};
+ detailRow('شناسهٔ اطلس',physical?(physical.atlasPanelIds||[]).join(' / '):selected);
  detailRow('شناسهٔ تصویر',a.id);detailRow('نام فایل',a.filename);detailRow('اندازه',new Intl.NumberFormat('en-US').format(a.bytes)+' bytes');
  detailRow('وضعیت',errored.has(a.id)?'خطا در بارگذاری':loaded.has(a.id)?'تصویر بارگذاری شد':'در حال دریافت تصویر');
  if(region)detailRow('مرز این بخش','Polygon آزمایشی، هنوز تأیید نشده');
- if(selected==='OH18'||selected==='OH-18'||a.id==='OH18')detail.append(el('div','pending','OH-18 طبق اطلس زیر OH-14 قرار گرفت: GRD CALL / RAIN REPELLENT / WIPER.'));
+ if(physical&&physical.id!==physical.sourceId)detail.append(el('div','pending','نام اصلی فایل با شناسهٔ اطلس یکسان نیست؛ جایگذاری از روی مرجع تصویری انجام شده است.'));
  detail.append(el('code','',a.sha256?'SHA-256: '+a.sha256:'Git blob: '+a.gitBlobSha));
  const link=el('a','','باز کردن تصویر اصلی در GitHub ↗');link.href=a.url;link.target='_blank';link.rel='noopener';detail.append(link);
  const note=el('p','', 'جایگاه ستون‌ها برای ارزیابی اولیه است؛ هندسهٔ دقیق پیچ‌ها و درزهای پنل‌ها هنوز تأیید نشده.');note.style.fontSize='11px';detail.append(note);}
@@ -132,7 +139,7 @@ function mode(next){if(!['mosaic','gallery','atlas'].includes(next))return;if(!s
 async function start(){
  try{const [specResp,geoResp,atlasResp]=await Promise.all([fetch('./spec.json?ts='+Date.now(),{cache:'no-store'}),fetch('../upper-oh/geometry.json?ts='+Date.now(),{cache:'no-store'}),fetch('./atlas-layout.json?ts='+Date.now(),{cache:'no-store'})]);
  if(!specResp.ok||!geoResp.ok||!atlasResp.ok)throw Error('Atlas geometry/source metadata unavailable');spec=await specResp.json();geometry=await geoResp.json();atlasLayout=await atlasResp.json();
- if(!Array.isArray(spec.images)||!spec.images.length||!Array.isArray(spec.columns)||!Array.isArray(geometry.parts)||!geometry.parts.length||atlasLayout.canvas.width!==SOURCE_WIDTH||atlasLayout.placements.length!==spec.images.length)throw Error('مختصات یا تصاویر اطلس ناقص است');
+ if(!Array.isArray(spec.images)||!spec.images.length||!Array.isArray(spec.columns)||!Array.isArray(geometry.parts)||!geometry.parts.length||atlasLayout.canvas.width!==SOURCE_WIDTH||atlasLayout.placements.length<spec.images.length)throw Error('مختصات یا تصاویر اطلس ناقص است');
  const available=new Set(spec.images.map(x=>x.id));for(const section of spec.columns){for(const id of section.items){if(!available.has(id))throw Error('فایل موزاییک تعریف نشده: '+id);}}
  populateAssembly();fillList();summary();showDetails();
  $('status').textContent=spec.images.length+' تصویر منبع برای '+new Set(spec.images.flatMap(x=>x.panelIds)).size+' شناسهٔ پنل — نسخهٔ '+spec.version+' — چیدمان تصحیح‌شدهٔ اطلس';
