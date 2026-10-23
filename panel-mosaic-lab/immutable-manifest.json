@@ -1,60 +1,70 @@
 {
-  "schema": "b737-panel-assets-immutable-v1",
+  "schema": "b737-panel-assets-immutable-v2",
   "version": "UPD-0002",
-  "enforcement": "CI hash check; repository branch/ruleset protection requires admin configuration",
-  "status": "PENDING_BINARY_UPLOAD",
+  "status": "GITHUB_BINARY_VERIFIED",
+  "lockPolicy": "append-only files under panel-mosaic-lab/assets/locked; SHA-256 and Git object hash checked by CI. Repository admins may still override unless branch/ruleset protection configured.",
   "assets": [
     {
+      "id": "OH-01-06-SOURCE-UPD-0002",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/OH01-06-source-9d8ac0ac86bd.png",
+      "sha256": "9d8ac0ac86bdb92c040e9bdd97811ca381535d949bff94aa5b1a01e5de8e23df",
+      "gitBlobSha1": "426479e2f6868b15023d24818eb9388e52ea9457",
+      "bytes": 2995593,
+      "dimensions": [
+        1731,
+        909
+      ],
+      "status": "uploaded",
+      "immutable": true,
+      "panelIds": [
+        "OH-01",
+        "OH-02",
+        "OH-03",
+        "OH-04",
+        "OH-05",
+        "OH-06"
+      ]
+    },
+    {
       "id": "OH-ATLAS-0001",
-      "path": "panel-mosaic-lab/immutable/REF-0001/overhead_atlas_ref.png",
+      "path": "panel-mosaic-lab/assets/locked/REF-0001/OH-ATLAS-0001.png",
       "sha256": "70e09f03a05df65c41f3c2e3daa5f3260361a0086a01a610983c7b0899edbdc7",
+      "gitBlobSha1": "2aff0dc9d6343d5b73b8b5f7711a3d9b9a80dffa",
       "bytes": 2283525,
-      "status": "PENDING_BINARY_UPLOAD",
+      "status": "uploaded",
       "immutable": true
     },
     {
       "id": "MP-ATLAS-0001",
-      "path": "panel-mosaic-lab/immutable/REF-0001/main_panel_atlas_ref.png",
+      "path": "panel-mosaic-lab/assets/locked/REF-0001/MP-ATLAS-0001.png",
       "sha256": "82d8b5286248eb55ab5ac4a698c9d102197791ab14385112be498f546de73202",
+      "gitBlobSha1": "239c8122e132dd1f2981ef264a886d7c240549b2",
       "bytes": 2625653,
-      "status": "PENDING_BINARY_UPLOAD",
+      "status": "uploaded",
       "immutable": true
     },
     {
       "id": "PD-ATLAS-0001",
-      "path": "panel-mosaic-lab/immutable/REF-0001/pedestal_atlas_ref.png",
+      "path": "panel-mosaic-lab/assets/locked/REF-0001/PD-ATLAS-0001.png",
       "sha256": "28891571250a88c9183c66c24907635d0aad1bb63d94927756eda30785d94bf7",
+      "gitBlobSha1": "2249334dd739e3f0cfe8aea258324c37fd7a4749",
       "bytes": 2748630,
-      "status": "PENDING_BINARY_UPLOAD",
+      "status": "uploaded",
       "immutable": true
     },
     {
-      "id": "OH-01-06-SOURCE-UPD-0002",
-      "path": "panel-mosaic-lab/immutable/UPD-0002/OH01_to_OH06_original.png",
-      "sha256": "9d8ac0ac86bdb92c040e9bdd97811ca381535d949bff94aa5b1a01e5de8e23df",
-      "bytes": 2995593,
-      "status": "PENDING_BINARY_UPLOAD",
-      "immutable": true
-    },
-    {
-      "id": "OH-01-06-PIECE-UPD-0002",
-      "path": "panel-mosaic-lab/immutable/UPD-0002/OH01_to_OH06_mosaic_piece.png",
+      "id": "OH-01-06-MOSAIC-UPD-0002",
+      "path": "panel-mosaic-lab/assets/locked/UPD-0002/OH01-06-MOSAIC-20261023-1720033c4877.png",
       "sha256": "1720033c48777c5ca3d8ae0065e8bf9a80c1f229be3ed1e488d6fbd6eab51265",
+      "gitBlobSha1": "016f7f39e1ca6580387da22beeecb6003320a03e",
       "bytes": 1442085,
-      "status": "PENDING_BINARY_UPLOAD",
-      "immutable": true
-    },
-    {
-      "id": "OH-01-06-PREVIEW-UPD-0002",
-      "path": "panel-mosaic-lab/immutable/UPD-0002/overhead_UPD-0002_preview.png",
-      "sha256": "4a895d97c21177a42134dd95ab1e4c9a15561434d8022ccf91b3fd3e434aec28",
-      "bytes": 10306711,
-      "status": "PENDING_BINARY_UPLOAD",
+      "status": "uploaded",
       "immutable": true
     }
   ],
   "panelAssignments": [
     {
+      "assetId": "OH-01-06-SOURCE-UPD-0002",
       "panels": [
         "OH-01",
         "OH-02",
@@ -63,15 +73,14 @@
         "OH-05",
         "OH-06"
       ],
-      "sourceId": "OH-01-06-SOURCE-UPD-0002",
-      "pieceId": "OH-01-06-PIECE-UPD-0002",
-      "version": "UPD-0002"
+      "geometry": "panel-mosaic-lab/upper-oh/geometry.json",
+      "status": "source-placed; outline polygons awaiting user QA"
     }
   ],
   "updateHistory": [
     {
       "version": "REF-0001",
-      "assets": [
+      "assetIds": [
         "OH-ATLAS-0001",
         "MP-ATLAS-0001",
         "PD-ATLAS-0001"
@@ -79,10 +88,9 @@
     },
     {
       "version": "UPD-0002",
-      "assets": [
+      "assetIds": [
         "OH-01-06-SOURCE-UPD-0002",
-        "OH-01-06-PIECE-UPD-0002",
-        "OH-01-06-PREVIEW-UPD-0002"
+        "OH-01-06-MOSAIC-UPD-0002"
       ],
       "panels": [
         "OH-01",
