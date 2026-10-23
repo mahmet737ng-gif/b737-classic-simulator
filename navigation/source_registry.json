@@ -652,16 +652,17 @@
         "aircraft_flight_director_actuation": false
       },
       "api_base": "http://127.0.0.1:8770/api/stage10/",
-      "security": "loopback bound, strict Host/Origin, session tokens, no cross-origin API, no licensed SQLite in public repository",
+      "security": "loopback bound, strict Host/Origin, session tokens, no cross-origin API, no licensed SQLite in public repository; strict JSON Content-Type, sensor status expires on monotonic 2-second timeout",
       "qa": {
-        "python_with_private_source": 23,
-        "python_public_synthetic_pass": 22,
+        "python_with_private_source": 25,
+        "python_public_synthetic_pass": 24,
         "python_public_private_only_skip": 1,
         "node_safety_checks": 10,
         "chromium_dom": "PASS_WITH_REAL_PRIVATE_SOURCE_FIXTURE_AND_MOCKED_HTTP",
         "direct_localhost_chromium": "BLOCKED_BY_EXECUTION_ENVIRONMENT",
         "packaged_local_http_smoke": "PASS",
-        "github_actions_result": "NOT_VERIFIED"
+        "github_actions_result": "NOT_VERIFIED",
+        "local_retest": "PASS_25_PYTHON_AND_10_NODE_IN_THIS_CHAT"
       },
       "required_for_real_aircraft_simulator_control": [
         "Implement and verify named simulator telemetry bridge, not only an input schema",
@@ -673,7 +674,9 @@
       "status": "BENCH_LEVEL_STAGES_1_2_3_4_COMPLETED; REAL_AFDS_BLOCKED",
       "fmc_procedure_legs_executable": 0,
       "afds_actuator_connected": false,
-      "restricted_navdata_private": true
+      "restricted_navdata_private": true,
+      "private_verified_release": "/B737/NAVDB/NPE_STAGE10/B737_NAVDB_AIRAC2610_NPE_STAGE10_VERIFIED_25_TESTS.zip",
+      "private_verified_release_sha256": "4f5be9be94590506ec0e8a04709fc2a37615dd5124dc3cd2ece4167360c4a00a"
     }
   }
 }
