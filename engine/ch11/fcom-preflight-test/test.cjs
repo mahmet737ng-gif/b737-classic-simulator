@@ -58,4 +58,11 @@ assert.ok(js.includes('range.getBoundingClientRect().width'),'Measure true brows
 assert.ok(js.includes('ctx.measureText('),'Size text against approved font metrics');
 assert.ok(js.includes('document.fonts.ready'),'Re-fit after approved font faces load');
 assert.ok(js.includes('ResizeObserver'),'Re-fit on viewport/display resizing');
+assert.ok(js.includes("map.controls.find(x=>x.id==='CDU_CAPT_LSK_L'"),'Line text must follow locked LSK physical anchors');
+assert.ok(js.includes('KEY_CENTERS[i]-25'),'Each caption must appear above its own LSK line');
+assert.ok(js.includes('KEY_CENTERS[i]);'),'Each value must align with its own LSK key center');
+assert.ok(!js.includes('padEnd('),'Never manufacture visual spacing using space glyphs');
+assert.ok(js.includes("el.className='fmc-cell fmc-'"),'Left/right columns must be independent actual DOM cells');
+assert.ok(html.includes('width:50.8%'),'LCD clip must span original panel viewing aperture');
+assert.ok(html.includes('.fmc-line.heading .fmc-left'),'Page title must be centered independently of page counter');
 console.log('PASS: original CDU visual/map, 46 FCOM rules, IDENT/RTE/EXEC, CI, ZFW/GW, PERF LIMITS variants, ACARS blocking, simulated N1 and LSK routing');
