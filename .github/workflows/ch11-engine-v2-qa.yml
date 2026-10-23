@@ -1,0 +1,35 @@
+name: FCOM Chapter11 Source-Contract Engine v2
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'engine/ch11/**'
+      - '.github/workflows/ch11-engine-v2-qa.yml'
+  pull_request:
+    paths:
+      - 'engine/ch11/**'
+      - '.github/workflows/ch11-engine-v2-qa.yml'
+permissions:
+  contents: read
+jobs:
+  chapter11-provenance-and-engine:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Source page ledger and contract invariants
+        run: node engine/ch11/tests/source-ledger-v2.test.cjs
+      - name: FCOM-source-bound standalone runtime
+        run: node engine/ch11/tests/fmc-runtime-v2.test.cjs
+      - name: Preserve previous Chapter11 baseline tests
+        run: node engine/ch11/tests/ch11-engine.test.cjs
+      - name: Validate runtime syntax
+        run: node --check engine/ch11/fmc-runtime-v2.js
+      - name: Prohibit proprietary original FCOM artifacts in public runtime files
+        run: |
+          if find engine/ch11 -type f \( -name '*.pdf' -o -name '*.sqlite' \) | grep .; then
+            echo 'FCOM original or proprietary database must remain private'
+            exit 1
+          fi
