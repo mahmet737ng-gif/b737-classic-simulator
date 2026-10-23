@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#101820">
-<title>B737 Classic | Switch Design Lab 0.1</title>
+<title>B737 Classic | Switch Design Lab 0.1.1</title>
 <style>
 :root{color-scheme:dark;--bg:#0b1218;--panel:#20292e;--line:#3b4a51;--ink:#e8f1f4;--muted:#9fadb4;--accent:#74c9df;--amber:#f1be69}
 *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font:14px/1.6 system-ui,Tahoma,"Segoe UI",sans-serif}
@@ -56,12 +56,14 @@ main{max-width:1260px;margin:auto;padding:18px}.controls{display:flex;align-item
 #status{font-size:12px;color:#e5c590;min-height:30px}footer{font-size:11px;color:#8aa2ac;margin:18px 0 4px;line-height:1.9}
 @media(max-width:950px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:580px){header{padding:14px}header h1{font-size:18px}main{padding:10px}.grid{grid-template-columns:1fr;gap:10px}.stage{min-height:200px}.log{grid-template-columns:1fr}.version{margin:0}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{transition:none!important}}
+.dial.standard-asset{width:176px;height:176px;border:0;border-radius:0;padding:0;background:transparent;box-shadow:none;overflow:visible}
+.dial.standard-asset .knob-asset{width:100%;height:100%;object-fit:contain;transform:rotate(var(--angle,0deg));transform-origin:50% 44%;transition:transform 220ms cubic-bezier(.2,.85,.3,1);filter:drop-shadow(0 5px 5px rgba(0,0,0,.30));pointer-events:none;user-select:none}
 </style>
 </head>
 <body>
 <header><h1>B737 Classic — Switch Design Lab</h1><p>آزمایش مستقل سوییچ‌های کاکپیت، با استفاده از تصاویر و منطق موجود در مخزن؛ بدون تغییر پنل‌های قفل‌شده.</p></header>
 <main>
-<div class="controls"><button id="reset">بازنشانی همه</button><button id="copy">کپی وضعیت JSON</button><a href="../fuel-panel/" target="_blank" rel="noopener">پنل سوخت</a><a href="../flight-controls-panel/" target="_blank" rel="noopener">Flight Controls</a><a href="registry.json" target="_blank" rel="noopener">رجیستری سوییچ‌ها</a><span class="version">SWITCH LAB v0.1.0</span></div>
+<div class="controls"><button id="reset">بازنشانی همه</button><button id="copy">کپی وضعیت JSON</button><a href="../fuel-panel/" target="_blank" rel="noopener">پنل سوخت</a><a href="../flight-controls-panel/" target="_blank" rel="noopener">Flight Controls</a><a href="registry.json" target="_blank" rel="noopener">رجیستری سوییچ‌ها</a><span class="version">SWITCH LAB v0.1.1</span></div>
 <div class="grid" id="grid" aria-live="off"></div>
 <section class="log"><div><p>آخرین رویداد</p><div id="status" aria-live="polite">در حال بارگذاری رجیستری...</div><p>این آزمایشگاه صرفاً رفتار کنترل‌ها را آزمایش می‌کند؛ هنوز به مدل سیستم‌های هواپیما متصل نشده است.</p></div><div><p>وضعیت فعلی تمام سوییچ‌ها</p><pre id="stateView">{}</pre></div></section>
 <footer>عکس‌های تأییدشده از مسیرهای اصلی فراخوانی می‌شوند و هیچ فایلی از Fuel Panel، Flight Controls یا Vector Lab بازنویسی نمی‌شود. مدل روتاری و دکمه فشاری نمونه آزمایشی هستند، نه گرافیک نهایی مصوب. استفاده برای آموزش/توسعه شبیه‌ساز؛ نه ناوبری عملیاتی.</footer>
@@ -108,7 +110,7 @@ function frames(type,c){
 }
 function visual(c){
  if(c.type==="guarded")return '<div class="guard-assembly" id="assembly-'+c.id+'">'+frames("guarded",c)+'<button class="guard-lid" id="lid-'+c.id+'" aria-label="باز یا بسته کردن گارد"><i></i></button></div>';
- if(c.type==="rotary")return '<button class="dial" id="control-'+c.id+'" aria-label="Rotary selector"><span class="dial-core"></span></button>';
+ if(c.type==="rotary")return '<button class="dial standard-asset" id="control-'+c.id+'" aria-label="Rotary selector"><img class="knob-asset" src="'+asset("rotary_standard")+'" alt="" draggable="false"></button>';
  if(c.type==="momentary")return '<button class="pushbutton" id="control-'+c.id+'">PRESS<br>TEST</button>';
  return frames(c.type,c);
 }
@@ -134,7 +136,7 @@ function render(){
   });
   if(c.type==="rotary"){
    const idx=c.states.indexOf(v),angle=-125+idx*50;
-   card.querySelector(".dial-core").style.setProperty("--angle",angle+"deg");
+   card.querySelector(".knob-asset").style.setProperty("--angle",angle+"deg");
   }
   if(c.type==="momentary")card.querySelector(".pushbutton").classList.toggle("down",v==="pressed");
  });

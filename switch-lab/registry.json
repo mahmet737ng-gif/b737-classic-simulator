@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "library": "B737 Classic / Switch Design Lab",
-  "prototype_version": "0.1.0",
+  "prototype_version": "0.1.1",
   "scope": "standalone lab; approved panel artwork/geometry must not be overwritten",
   "source_assets": {
     "vertical_off": "../fuel-panel/assets/switches/b737-toggle-off.png",
@@ -10,7 +10,8 @@
     "horizontal_left": "../flight-controls-panel/assets/nav-transfer-left-v3.webp",
     "horizontal_center": "../flight-controls-panel/assets/nav-transfer-center-v3.webp",
     "horizontal_right": "../flight-controls-panel/assets/nav-transfer-right-v3.webp",
-    "guarded_engine": "../flight-controls-panel/fcom-control-mechanics.js"
+    "guarded_engine": "../flight-controls-panel/fcom-control-mechanics.js",
+    "rotary_standard": "assets/rotary-standard-v1.webp"
   },
   "locked_assets_unchanged": true,
   "controls": [
@@ -112,7 +113,8 @@
         "keyboard"
       ],
       "reference": "vector-lab rotary prototype",
-      "note": "Interaction study; artwork and detents are NOT approved for use on another selector"
+      "note": "User-approved standard rotary appearance; source graphic remains fixed while the entire knob rotates; detents belong to per-control logic.",
+      "asset_id": "B737-ROTARY-STANDARD-V1"
     },
     {
       "id": "LAB-MOM",
@@ -145,5 +147,18 @@
       "timestamp"
     ]
   },
-  "status": "prototype; no aircraft systems connected"
+  "status": "prototype; no aircraft systems connected",
+  "default_assets": {
+    "rotary_standard": "B737-ROTARY-STANDARD-V1"
+  },
+  "asset_library": [
+    {
+      "id": "B737-ROTARY-STANDARD-V1",
+      "type": "rotary",
+      "path": "assets/rotary-standard-v1.webp",
+      "status": "user-approved",
+      "lock_policy": "versioned: do not overwrite; create v2 for any edit",
+      "transparent_background": true
+    }
+  ]
 }
