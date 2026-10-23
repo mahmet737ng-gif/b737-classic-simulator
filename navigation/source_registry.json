@@ -430,7 +430,7 @@
       "revision": 1,
       "exact_per_file_marker": "//AIRAC Cycle : 2610 (01/OCT/2026 - 29/OCT/2026) - Ver.1",
       "private_archive": "/B737/NAVDB/NPE_STAGE8/B737_NAVDB_AIRAC2610_NPE_STAGE8_PRIVATE.zip",
-      "private_archive_sha256": "19f38a4b5b719181ec8955dbf0ae9bbf7885e49757d2890c6b691293b1ea129d",
+      "private_archive_sha256": "b957a8038bc78051c1acf6c79c9ea498711005253f60e46336dc710ca1c3b556",
       "private_manifest": "/B737/NAVDB/NPE_STAGE8/manifest.json",
       "private_audit": "/B737/NAVDB/NPE_STAGE8/stage8_audit.json",
       "visual_qa": "/B737/NAVDB/NPE_STAGE8/stage8-browser-dom-qa.png",
@@ -481,7 +481,8 @@
         "only independent explicit source-coded records may populate actual ARINC types",
         "no automatic bridging or instrument guidance",
         "no public licensed data"
-      ]
+      ],
+      "package_qa": "REPACKAGED_FROM_EXACT_COMMITTED_SOURCES_AND_RETESTED_25_OF_25"
     },
     "reference_progress_monitor": {
       "id": "NPE_REFERENCE_PROGRESS_EXTENSION_v1",
