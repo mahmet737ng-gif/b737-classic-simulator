@@ -1,10 +1,10 @@
 {
   "schema": "b737.panel-mosaic.oh15-18.v1",
-  "version": "UPD-0005",
+  "version": "UPD-0006.1-atlas-aligned",
   "date": "2026-10-24",
   "state": "verified-uploaded-originals",
   "verificationWorkflow": "https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/40033310161",
-  "note": "Exact-byte source image aliases. Numbering based on original atlas system names; OH18 designation and subsystem are provisional pending visual inspection of generic-named image. Old box geometry remains rejected.",
+  "note": "OH18 was originally provisional due to generic uploaded filename; source panel now identified by original owner overhead photo and mapped beneath OH14. Old physical bounding rectangles remain unapproved.",
   "panels": [
     {
       "id": "OH-15",
@@ -47,16 +47,17 @@
     },
     {
       "id": "OH-18",
-      "title": "UNCLASSIFIED EMPTY-CUTOUT PANEL",
-      "system": "PENDING VISUAL REVIEW",
-      "classification": "provisional",
+      "title": "ATTEND / GRD CALL / RAIN REPELLENT / WIPER",
+      "system": "CABIN SERVICES / EQUIPMENT",
+      "classification": "verified",
       "sourceOriginal": "Aircraft Cockpit Panel with Empty Cutouts.png",
-      "canonical": "OH18-UNCLASSIFIED-5af4fdc5284b.png",
+      "canonical": "OH18-GROUND-CALL-5af4fdc5284b.png",
       "gitBlobSha1": "5af4fdc5284b3897b425c6d0c765132e5604a269",
       "sha256": "939e9f6ed14cbe2a8a6182684fcef790607e7dba10a1bfe002a062457f83e5ee",
       "bytes": 2787751,
-      "path": "../assets/locked/2026-10-23/OH18-UNCLASSIFIED-5af4fdc5284b.png",
-      "physicalSeamStatus": "pending-QA"
+      "path": "../assets/locked/2026-10-23/OH18-GROUND-CALL-5af4fdc5284b.png",
+      "physicalSeamStatus": "pending-QA",
+      "atlasClassificationMethod": "Matched original owner full overhead atlas photo; source file had generic name"
     }
   ]
 }
