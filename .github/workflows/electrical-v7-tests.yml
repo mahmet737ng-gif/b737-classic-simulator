@@ -1,0 +1,28 @@
+name: ATA24 Electrical V7 Tests
+on:
+  push:
+    paths:
+      - 'engine/systems/electrical-v7.js'
+      - 'engine/systems/electrical-consumers-v7.js'
+      - 'tests/electrical-v7.test.cjs'
+      - 'electrical-lab/**'
+      - '.github/workflows/electrical-v7-tests.yml'
+  pull_request:
+    paths:
+      - 'engine/systems/electrical-v7.js'
+      - 'engine/systems/electrical-consumers-v7.js'
+      - 'tests/electrical-v7.test.cjs'
+      - 'electrical-lab/**'
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --check engine/systems/electrical-v7.js
+      - run: node --check engine/systems/electrical-consumers-v7.js
+      - run: node --check electrical-lab/app.js
+      - run: node tests/electrical-v7.test.cjs

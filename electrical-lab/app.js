@@ -1,0 +1,17 @@
+(function(){'use strict';const api=globalThis.B737ElectricalV7,consumers=globalThis.B737ElectricalConsumersV7;
+if(!api||!consumers)throw Error('Electrical V7 modules missing');
+let state=api.initialState();const el=id=>document.getElementById(id);
+const controlNames={onGround:'On ground',batterySwitch:'BATTERY ON',busTransferAuto:'BUS TRANS AUTO',groundPowerAttached:'Ground power attached',groundPowerQualityGood:'Ground power quality good',groundServiceSelected:'Ground service switch',apuRunning:'APU running',engine1Running:'Engine 1 running',engine2Running:'Engine 2 running',glideslopeCaptured:'Glideslope captured'};
+const pretty=k=>k.replaceAll(/([A-Z])/g,' $1').replaceAll('_',' ').trim();
+function command(cmd){try{state=api.apply(state,cmd);el('error').textContent='';render();}catch(err){el('error').textContent=err.message;}}
+function controlMarkup(){el('controls').innerHTML=Object.entries(controlNames).map(([key,label])=>`<label class="control"><span>${label}</span><input type="checkbox" data-control="${key}" ${state.config[key]?'checked':''}></label>`).join('')+`<label>STANDBY POWER<select id="standby">${['AUTO','OFF','BAT'].map(s=>`<option value="${s}" ${state.config.standbySelector===s?'selected':''}>${s}</option>`).join('')}</select></label>`;
+ el('controls').querySelectorAll('[data-control]').forEach(x=>x.addEventListener('change',()=>command({type:'CONTROL',key:x.dataset.control,value:x.checked})));
+ el('standby').addEventListener('change',e=>command({type:'CONTROL',key:'standbySelector',value:e.target.value}));}
+function faultMarkup(){el('faults').innerHTML=api.FAULTS.map(id=>`<label class="control"><span>${pretty(id)}</span><input type="checkbox" data-fault="${id}" ${state.faults[id]?'checked':''}></label>`).join('');el('faults').querySelectorAll('[data-fault]').forEach(x=>x.addEventListener('change',()=>command({type:'FAULT',id:x.dataset.fault,active:x.checked,instructor:true})));}
+function tiles(target,data){el(target).innerHTML=Object.entries(data).map(([key,val])=>{const on=typeof val==='boolean'?val:null,txt=on===null?'UNKNOWN':on?'POWERED':'OFF';return `<div class="tile ${on===null?'unknown':on?'on':'off'}"><strong>${pretty(key)}</strong><span>${txt}</span></div>`}).join('');}
+function render(){controlMarkup();faultMarkup();const result=api.evaluate(state,{groundAutoPolicy:el('policy').value});tiles('buses',result.bus);tiles('lamps',result.lamps);tiles('rectifiers',result.feed.tr);let live=consumers.project(result);tiles('consumers',Object.fromEntries(Object.entries(live).map(([id,v])=>[id,v.value])));
+ el('summary').textContent=`Generator 1: ${result.source[1]||'OFF'} · Generator 2: ${result.source[2]||'OFF'} · STANDBY: ${result.feed.standbyFeed} · TR tie: ${result.feed.tie?'CLOSED':'OPEN'}`;
+ el('qa').innerHTML=result.qa.map(x=>`<div class="issue"><strong>${x.id}</strong> — ${x.detail}</div>`).join('')||'<p class="hint">No currently triggered source-data warning. Equipment feeds still require airframe-specific verification.</p>';
+}
+el('connect').addEventListener('click',()=>command({type:'SELECT_SOURCE',side:Number(el('side').value),source:el('source').value}));el('reset').addEventListener('click',()=>{state=api.initialState();el('policy').value='UNKNOWN';el('error').textContent='';render();});el('policy').addEventListener('change',render);render();
+})();
