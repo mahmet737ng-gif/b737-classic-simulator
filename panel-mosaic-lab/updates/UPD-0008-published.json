@@ -1,0 +1,63 @@
+{
+  "schema": "b737.panel-mosaic.published-update.v1",
+  "version": "UPD-0008",
+  "date": "2026-10-24",
+  "status": "ATLAS_MOSAIC_IMAGES_REGISTERED",
+  "viewer": "https://mahmet737ng-gif.github.io/b737-classic-simulator/panel-mosaic-lab/all-overhead/",
+  "assets": [
+    {
+      "id": "OH-22",
+      "original": "Blanked Aircraft Avionics Control Panel.png",
+      "canonical": "OH22-CABIN-PRESSURIZATION-d1c6c39b6b33.png",
+      "sha256": "0756878f35a9b3e4bc9ce03e98a644927edbead65d4e61f3ae4b9e0a649a2a41",
+      "bytes": 2288696,
+      "gitBlobSha": "d1c6c39b6b331c6f927f575bad87d0295b785df3"
+    },
+    {
+      "id": "OH-23/24/25",
+      "original": "Empty Aircraft Cockpit Control Panel.png",
+      "canonical": "OH23-25-LOWER-CONTROLS-fad696c845df.png",
+      "sha256": "80cb82375dccc9a127919e73cb13ebadfef198572fcbdce2ea9be8b7d7ba7f2a",
+      "bytes": 1552065,
+      "gitBlobSha": "fad696c845df3236286e8861d67c27a5d97d9c2d",
+      "displayOnlyMaskPx": {
+        "top": 212,
+        "bottom": 216,
+        "originalSize": [
+          2170,
+          725
+        ],
+        "visibleSize": [
+          2170,
+          297
+        ]
+      }
+    }
+  ],
+  "atlasOrder": {
+    "fourthWideColumn": [
+      "OH15",
+      "OH16",
+      "OH17",
+      "OH19-VOICE",
+      "OH19-DIFF"
+    ],
+    "farRightColumn": [
+      "OH20",
+      "OH21",
+      "OH22"
+    ],
+    "bottomFullWidth": [
+      "OH23-25"
+    ],
+    "centerNarrowColumn": [
+      "OH13",
+      "OH14",
+      "OH18"
+    ]
+  },
+  "sourceIntegrity": "Original user uploads untouched, new canonical paths share exact Git blob hashes; original pixels preserved; browser-only cropping of white canvas",
+  "panelIdCount": 25,
+  "distinctImageCount": 18,
+  "physicalSeams": "provisional physical polygons; visual atlas layout only"
+}
