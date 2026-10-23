@@ -53,6 +53,19 @@ class HTTPTest(unittest.TestCase):
   self.assertFalse(blocked['accepted'])
   code,ended=self.call('stop',{'session':token});self.assertEqual(code,200)
   self.assertEqual(ended['mode'],'OFF')
+ def test_status_expires_when_sensor_stops(self):
+  _,new=self.call('new',{'plan_id':1})
+  token=new['session']
+  self.assertEqual(self.call('telemetry',{'session':token,'aircraft':sample()})[0],200)
+  self.assertTrue(self.call('status')[1]['telemetry_source_connected'])
+  self.srv.RequestHandlerClass.keywords['sessions'][token].bus.arrived_at-=15
+  self.assertFalse(self.call('status')[1]['telemetry_source_connected'])
+  self.call('stop',{'session':token})
+ def test_reject_non_json_post(self):
+  url=f'http://127.0.0.1:{self.port}/api/stage10/new'
+  req=urllib.request.Request(url,data=b'plan_id=1',headers={'Content-Type':'application/x-www-form-urlencoded'},method='POST')
+  with self.assertRaises(urllib.error.HTTPError) as e:urllib.request.urlopen(req,timeout=3)
+  self.assertEqual(e.exception.code,422)
  def test_bad_token(self):
   code,_=self.call('frame',{'session':'wrong'});self.assertEqual(code,422)
 if __name__=='__main__':unittest.main()
