@@ -1,0 +1,16 @@
+name: FCOM Ch11 RTE DEPARR source QA
+on:
+  push:
+  pull_request:
+jobs:
+  fcom-route-sources:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check RTE DEPARR FCOM source references and 96 rules
+        run: node engine/ch11/tests/fmc-preflight-rte-deparr-2020-2022.test.cjs
+      - name: Verify frozen CDU fonts and IDENT default boot
+        run: node tests/cdu-font-lock.test.cjs && node tests/cdu-ident-startup.test.cjs
