@@ -749,6 +749,25 @@ n1Knob.addEventListener('keydown',event=>{
     else adjustN1(['ArrowRight','ArrowUp'].includes(event.key)?0.5:-0.5);
   }
 });
+document.querySelectorAll('[data-perf-action]').forEach(button=>
+  button.addEventListener('click',()=>{
+    const action=button.dataset.perfAction;
+    const engine=el('performanceEngine').value;
+    try{
+      if(action==='cold')apply('ENTER_COLD_DARK');
+      else if(action==='lever')apply('SET_ENGINE_THRUST_COMMAND',{
+        engine,value:Number(el('performanceLever').value)});
+      else if(action==='load'){
+        const input=JSON.parse(el('performanceTrackInput').value);
+        apply('LOAD_ENGINE_OBSERVED_TRACK',{engine,track:input});
+        t(el('performanceFeedback'),'External trace accepted for training replay only — not AFM validated');
+      }else if(action==='tick1')apply('ADVANCE_SECONDS',{value:1});
+      else if(action==='tick5')apply('ADVANCE_SECONDS',{value:5});
+      else if(action==='stop')apply('STOP_ENGINE_OBSERVED_TRACK',{engine});
+    }catch(e){
+      t(el('performanceFeedback'),'ISN-10 input rejected: '+e.message);
+    }
+  }));
 document.querySelectorAll('[data-eis-action]').forEach(b=>b.addEventListener('click',()=>{
 const a=b.dataset.eisAction, engine=el('eisEngine').value, instrument=el('eisKey').value;
 const raw=el('eisValue').value, value=raw===''?null:Number(raw);
