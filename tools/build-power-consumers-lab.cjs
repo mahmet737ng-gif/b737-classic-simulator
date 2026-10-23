@@ -17,6 +17,7 @@ const modules=[
  ['checklistRouter','qrh-checklist-router.cjs'],
  ['scenarioRegistry','qrh-training-scenarios.cjs'],
  ['eisEngine','engine-indication-eis.cjs'],
+ ['performanceEngine','engine-performance-dynamics.cjs'],
  ['kernel','integrated-aircraft-kernel.cjs']
 ];
 function makeBrowserRuntime(){
@@ -36,6 +37,7 @@ function makeBrowserRuntime(){
  "if(p==='./qrh-checklist-router.cjs')return checklistRouter;"+
  "if(p==='./qrh-training-scenarios.cjs')return scenarioRegistry;"+
  "if(p==='./engine-indication-eis.cjs')return eisEngine;"+
+ "if(p==='./engine-performance-dynamics.cjs')return performanceEngine;"+
  "throw new Error('Unknown module '+p);};";
  return "(function(){'use strict';\n"+bodies.map(([name,body])=>
    'const '+name+'=(function(){const module={exports:{}};const exports=module.exports;'+
