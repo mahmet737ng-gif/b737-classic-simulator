@@ -172,3 +172,15 @@ Private active reference: `/Technical Database/Sources/AFM-737-33V-D6-8730-R32/E
 - **Isolated browser lab:** `systems-integration-lab/` provides 21 mapped command IDs, derived electrical/fuel/hydraulic indications, current warning engine fire/cabin/stall-instructor audio REQUESTS, DCPCS timed N1/N2 ground behavior and educational BUS OFF checklist progress. Original cockpit image/website root and deferred LAN networking unchanged.
 - **QA:** 26 private SQLite tests PASS and 40 local JavaScript contract/integration tests PASS (local WarningEngine-compatible stub). `npm test` now runs the actual repository WarningEngine module via CI; any CI failures must be addressed. Browser visual QA and real audio-asset playback not yet done.
 - **Outstanding:** full 737 component-by-component mapping, exact bus wiring, numerical Stall AOA law, exact QRH branching, cockpit photo hotspot mapping, MP3 phrase playback and end-user acceptance. Do not mark the six stages globally COMPLETE; this is a **partial working slice for each stage**.
+
+## N1-FSI v13 PMC OFF and MCT checkpoint
+
+| Task | Status | Evidence |
+| --- | --- | --- |
+| N1-FSI-09 PMC OFF chart source calibration | PARTIAL SOURCE EXTRACTION | Appendix 2UK PDF p756. Thirteen altitude traces and separate MAXIMUM N1 contour; 16 provisional axis tick pairs across p756/p130; 46 unassigned ink strokes. |
+| N1-FSI-10 MCT 6-stage source-typed computation | DONE (SYNTHETIC TEST MATH ONLY) | `engine/fmc/performance/afm-epfsi-mct-v13.cjs`, test `tests/afm-epfsi-mct-v13.test.cjs`. Intermediate corrected N1/sqrt(theta1) separate from final gauge N1. |
+| N1-FSI-11 Source-linked numeric readouts | PARTIAL / NOT APPROVED | 138 provisional coordinate readouts from unassigned line segments, plus previous 104+16 samples. Not valid altitude-specific N1. |
+| N1-FSI-12 Independent source curve labeling & reference vectors | BLOCKED | No independent signoff, 9 release conditions still blocked, no full/approved numerical N1. |
+| N1-FSI-13 Live performance N1 / A/T | BLOCKED | v10 CDU shows ---.- automatically, v13 synthetic diagnostic cannot connect to CDU. |
+
+Private v13 SQLite `/Technical Database/Sources/AFM-737-33V-D6-8730-R32/EP-FSI-ASN29340/v13/epfsi_afm_scoped_v13.sqlite`; full source and sampled graph data stay in private Library. Original AFM and previous source snapshots preserved.
