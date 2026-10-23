@@ -1,0 +1,31 @@
+name: Overhead source geometry audit
+on:
+  push:
+    paths:
+      - '.github/workflows/overhead-visual-dimensions.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  measure:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Print all original image dimensions and intended atlas aspect ratios
+        shell: bash
+        run: |
+          python -m pip install -q pillow
+          python - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+          import json
+          root=Path('panel-mosaic-lab/all-overhead')
+          spec=json.loads((root/'spec.json').read_text())
+          atlas=json.loads((root/'atlas-layout.json').read_text())
+          spots={a['id']:a for a in atlas['placements']}
+          for item in spec['images']:
+              p=(root/item['url']).resolve()
+              with Image.open(p) as im:
+                  box=spots[item['id']]
+                  print('PANEL',item['id'],'SOURCE',im.width,im.height,'TARGET',box['w'],box['h'],'SOURCE_ASPECT',round(im.width/im.height,3),'TARGET_ASPECT',round(box['w']/box['h'],3),'COVER_LOST_RATIO',round(1-min((box['w']/box['h'])/(im.width/im.height),(im.width/im.height)/(box['w']/box['h'])),3))
+          PY
