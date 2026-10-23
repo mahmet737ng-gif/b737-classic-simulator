@@ -1,0 +1,14 @@
+name: Chapter11 VNAV Speed Approach Go-Around source QA
+on:
+  push:
+  pull_request:
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node engine/ch11/tests/vnav-speed-approach-goaround-2020.test.cjs
+      - run: node tests/cdu-font-lock.test.cjs && node tests/cdu-ident-startup.test.cjs

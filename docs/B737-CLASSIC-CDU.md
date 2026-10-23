@@ -34,3 +34,7 @@ Source-indexed design: [CDU_VNAV_TAKEOFF_CLIMB_2022.md](CDU_VNAV_TAKEOFF_CLIMB_2
 ## VNAV geometric descent, approach and speed descent (FCOM 2020, 11.31.33–37)
 
 Source-only extraction: **42 requirements**, 5 user-provided screenshots (PDF pages 1522–1526), figure with seven numbered stages, option-dependent TO/GA behavior, E/D gate, LNAV independence for speed descent, SPEED/PATH CDU prompt routing, geometric thrust variant and path reversion caveats. Refer to [Persian page-by-page report](CDU_VNAV_GEOMETRIC_SPEED_DESCENT_2020_FA.md) and [machine-readable requirements](../engine/ch11/geometric-vnav-speed-descent-2020.rules.v1.json). No runtime code or approved physical CDU/font asset was changed.
+
+## VNAV Speed Descent, Early Descent, Vertical Angle, Approach and Go-Around (FCOM 2020/2022)
+
+Source-only extraction from 8 screenshots of PDF viewer pages 1527–1529 and 1531–1535. **Viewer page 1530 not provided**. 69 conditions/effects with variant/effectivity gates, including DES NOW/CAPTURE, vertical angle legs, approach logic and missed-approach FMC state updates. [Persian source review](CDU_VNAV_SPEED_APPROACH_GOAROUND_2020_FA.md) · [machine-readable contracts](../engine/ch11/vnav-speed-approach-goaround-2020.rules.v1.json). **No runtime VNAV commands were implemented; physical CDU and approved font bytes remain locked.**

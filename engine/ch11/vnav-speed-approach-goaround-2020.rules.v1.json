@@ -1,0 +1,1319 @@
+{
+  "schema": "b737-classic-ch11-vnav-speed-vertical-angle-approach-ga/1.0",
+  "id": "B737-CLASSIC-CDU-CH11-VNAV-SPEED-APPROACH-GA-2020-2022",
+  "timestamp": "2026-10-23",
+  "source": {
+    "manual": "737 Flight Crew Operations Manual — FMS Operation",
+    "reference": "D6-27370-300/400/500-SHI",
+    "source_type": "USER_UPLOADED_SCREENSHOTS_ONLY",
+    "capture_provenance": [
+      {
+        "pdf_viewer_page": 1527,
+        "printed_folio": "11.31.38",
+        "printed_revision_date": "2020-10-15",
+        "uploaded_filename": "image(20261023-182954).png",
+        "sha256": "6e721f29fc38c0a6c397aee3a9a8a5a762d4f1afb196e790e003931552279a58",
+        "topic": "VNAV speed descent non-precision profile diagram",
+        "folio_confidence": "VISIBLE_IN_SCREENSHOT"
+      },
+      {
+        "pdf_viewer_page": 1528,
+        "printed_folio": "11.31.39",
+        "printed_revision_date": "2020-10-15",
+        "uploaded_filename": "image(20261023-183012).png",
+        "sha256": "4769ee57f10f0ef73614a80f6a358820aa6930e74cde8cdf7855dac453f36a9f",
+        "topic": "Second VNAV speed descent profile, intermediate T/D",
+        "folio_confidence": "VISIBLE_IN_SCREENSHOT"
+      },
+      {
+        "pdf_viewer_page": 1529,
+        "printed_folio": "11.31.40",
+        "printed_revision_date": "2020-10-15",
+        "uploaded_filename": "image(20261023-183042).png",
+        "sha256": "8f66750a89fcbbe8d996fed99d95bd74005f0bb73cf9f457296ca201128140b9",
+        "topic": "Speed descent deceleration points figure",
+        "folio_confidence": "VISIBLE_IN_SCREENSHOT"
+      },
+      {
+        "pdf_viewer_page": 1531,
+        "printed_folio": "11.31.42",
+        "printed_revision_date": "2020-10-15",
+        "uploaded_filename": "image(20261023-183048).png",
+        "sha256": "e8821071e2afb0016e09017861a12b4b91d36fbb45df6941aced0622103f1a97",
+        "topic": "Vertical Angle and Early Descent; printed folio inferred",
+        "folio_confidence": "INFERRED_FROM_ADJACENT_FOLIOS"
+      },
+      {
+        "pdf_viewer_page": 1532,
+        "printed_folio": "11.31.43",
+        "printed_revision_date": "2020-10-15",
+        "uploaded_filename": "image(20261023-183052).png",
+        "sha256": "d8f35af3449840cde65c477978526f5b2449c3feed3e1951b9db56e2fb834591",
+        "topic": "DES NOW or CAPTURE, path versus speed options",
+        "folio_confidence": "VISIBLE_IN_SCREENSHOT"
+      },
+      {
+        "pdf_viewer_page": 1533,
+        "printed_folio": "11.31.44",
+        "printed_revision_date": "2020-10-15",
+        "uploaded_filename": "image(20261023-183058).png",
+        "sha256": "606c455f2f54d201da797e46766bdcdd2eb75187312dbe20c4e57f9b08a025b3",
+        "topic": "CAPTURE detail and on approach phase conditions",
+        "folio_confidence": "VISIBLE_IN_SCREENSHOT"
+      },
+      {
+        "pdf_viewer_page": 1534,
+        "printed_folio": "11.31.45",
+        "printed_revision_date": "2022-06-16",
+        "uploaded_filename": "image(20261023-183106).png",
+        "sha256": "5f84b16d5422e415fe1decb8c7b9279df578b1dcc17802c199735e1d9156ee15",
+        "topic": "Approach vertical leg, G/S, RNP, missed approach and go-around",
+        "folio_confidence": "VISIBLE_IN_SCREENSHOT"
+      },
+      {
+        "pdf_viewer_page": 1535,
+        "printed_folio": "11.31.46",
+        "printed_revision_date": "2022-06-16",
+        "uploaded_filename": "image(20261023-183111).png",
+        "sha256": "e0e17322d03678720ab9234c7b341ebd0d12a8c228669c97c8f127513653f66d",
+        "topic": "Go-around transition, limits, origin, CRZ ALT",
+        "folio_confidence": "VISIBLE_IN_SCREENSHOT"
+      }
+    ],
+    "missing_pdf_viewer_pages": [
+      1530
+    ],
+    "notes": [
+      "Missing viewer page 1530 was not provided; corresponding printed folio 11.31.41 has not been audited.",
+      "May include alternative equipment/software option text. No effectivity decision for EP-FSI has been made.",
+      "No original copyrighted pages or screenshot binaries have been committed."
+    ]
+  },
+  "summary": {
+    "requirement_count": 69,
+    "by_pdf_page": {
+      "1527": 6,
+      "1528": 5,
+      "1529": 4,
+      "1531": 11,
+      "1532": 7,
+      "1533": 11,
+      "1534": 14,
+      "1535": 11
+    },
+    "status": "SOURCE_RULES_IMPORTED_NOT_IMPLEMENTED"
+  },
+  "aircraft_context": {
+    "model": "Boeing 737 Classic EP-FSI",
+    "installed_option_effectivity": "UNVERIFIED",
+    "independent_fmc": true
+  },
+  "specification": {
+    "figure_phases": [
+      "CRUISE_BEFORE_TD",
+      "SPEED_DESCENT",
+      "SPEED_RESTRICTION_DECELERATION",
+      "ALTITUDE_CONSTRAINTS",
+      "FINAL_APPROACH",
+      "MISSED_APPROACH"
+    ],
+    "vertical_angle": {
+      "source": "NAV_DATABASE_VERTICAL_ANGLE",
+      "legs": [
+        "APPROACH",
+        "APPROACH_TRANSITION",
+        "STAR"
+      ],
+      "display": "ACT_RTE_LEGS_VERTICAL_ANGLE_ABOVE_WPT_SPEED_ALTITUDE",
+      "end_of_descent": "RWXXX_OR_MAXXX",
+      "tch_ft": "TYPICALLY_50_EXAMPLE_NOT_HARDCODED",
+      "eligible_automatic_change": "VNAV_SPD_TO_VNAV_PTH_FOR_ACTIVE_VERTICAL_ANGLE"
+    },
+    "early_descent": {
+      "before": "TOP_OF_DESCENT",
+      "prompts_variant_separated": [
+        "DES_NOW",
+        "CAPTURE",
+        "MCP_ALTITUDE_INTERVENTION"
+      ],
+      "path": {
+        "vertical_speed_fpm_approx": 1000,
+        "until": "CAPTURE_IDLE_PATH",
+        "pitch_mode": "VNAV_PTH",
+        "autothrottle_reference": "FMC_SPD"
+      },
+      "speed": {
+        "thrust_reference": "IDLE_FOLLOWED_BY_ARM",
+        "pitch_mode": "VNAV_SPD",
+        "automatic_path_capture": false
+      }
+    },
+    "approach": {
+      "entry_triggers_any": [
+        "WITHIN_2NM_FIRST_APPROACH_WPT",
+        "AIRCRAFT_ALTITUDE_AT_OR_BELOW_AIRPORT_ELEV_PLUS_2000FT"
+      ],
+      "whichever_occurs_first": true,
+      "vertical_path_200ft_below": {
+        "possible_control": "ZERO_VERTICAL_SPEED_UNTIL_PATH_INTERCEPT",
+        "effectivity": "UNVERIFIED"
+      },
+      "vertical_angle_xtk_disengage": {
+        "threshold": "GT_2_TIMES_RNP",
+        "lnav_condition": "NOT_ENGAGED",
+        "vertical_leg_required": true
+      },
+      "exit_conditions": [
+        "TOGA",
+        "LANDING",
+        "LEG_SEQUENCED_TO_MISSED_APPROACH",
+        "DIRECT_TO_IN_MISSED_APPROACH"
+      ]
+    },
+    "go_around": {
+      "ra_threshold_ft": 2000,
+      "climb_rate_trigger_fpm_gt": 600,
+      "flap_retraction_targets": [
+        15,
+        1
+      ],
+      "new_cruise_altitude_toga_candidates": [
+        "HIGHEST_MISSED_APP_CONSTRAINT",
+        "AIRPORT_ELEV_PLUS_1500FT",
+        "MCP_ALTITUDE"
+      ],
+      "new_cruise_altitude_direct_to_candidates": [
+        "HIGHEST_MISSED_APP_CONSTRAINT",
+        "AIRPORT_ELEV_PLUS_1500FT"
+      ],
+      "constraint_action": "DELETE_BELOW_AIRCRAFT_ALTITUDE_AND_REPLACE_WITH_PREDICTED",
+      "new_origin": "ORIGINAL_DESTINATION",
+      "lnav_engagement_altitude_ra_above_ft": 400,
+      "vnav_after_flaps_retraction": true
+    }
+  },
+  "variant_families": [
+    {
+      "id": "EARLY_DESCENT_INIT_PROMPT",
+      "choices": [
+        "DES_NOW",
+        "CAPTURE"
+      ],
+      "verification": "INSTALLATION_UNVERIFIED"
+    },
+    {
+      "id": "VERTICAL_ANGLE_DESCENT",
+      "choices": [
+        "OPTION_PRESENT",
+        "OPTION_ABSENT"
+      ],
+      "verification": "INSTALLATION_UNVERIFIED"
+    },
+    {
+      "id": "ILS_VERTICAL_ANGLE_GS_XXX",
+      "choices": [
+        "OPTION_PRESENT",
+        "OPTION_ABSENT"
+      ],
+      "verification": "INSTALLATION_UNVERIFIED"
+    },
+    {
+      "id": "GO_AROUND_LOGIC",
+      "choices": [
+        "FCOM_VARIANTS_APPLY_AS_CONFIGURED"
+      ],
+      "verification": "INSTALLATION_UNVERIFIED"
+    }
+  ],
+  "rules": [
+    {
+      "id": "SDS-001",
+      "domain": "speed_descent_diagram",
+      "source": {
+        "pdf_viewer_page": 1527,
+        "printed_folio": "11.31.38",
+        "specific_section": "speed_descent_diagram"
+      },
+      "condition_text": "CRUISE_BEFORE_TD",
+      "effect_text": "VNAV_PTH_CRUISE_MODE_ILLUSTRATION",
+      "effectivity": "ILLUSTRATIVE_FIGURE",
+      "implementation": "REFERENCE_ONLY",
+      "source_assurance": "USER_SCREENSHOT_VISUALLY_REVIEWED",
+      "numeric_status": "AS_LABELED"
+    },
+    {
+      "id": "SDS-002",
+      "domain": "speed_descent_diagram",
+      "source": {
+        "pdf_viewer_page": 1527,
+        "printed_folio": "11.31.38",
+        "specific_section": "speed_descent_diagram"
+      },
+      "condition_text": "TOP_OF_DESCENT_REACHED",
+      "effect_text": "VNAV_SPD_DESCENT_SEGMENT_IN_EXAMPLE",
+      "effectivity": "ILLUSTRATIVE_FIGURE",
+      "implementation": "REFERENCE_ONLY",
+      "source_assurance": "USER_SCREENSHOT_VISUALLY_REVIEWED",
+      "numeric_status": "AS_LABELED"
+    },
+    {
+      "id": "SDS-003",
+      "domain": "speed_descent_diagram",
+      "source": {
+        "pdf_viewer_page": 1527,
+        "printed_folio": "11.31.38",
+        "specific_section": "speed_descent_diagram"
+      },
+      "condition_text": "SPEED_RESTRICTION_APPROACHING",
+      "effect_text": "VNAV_SPD_DECEL_OR_LEVEL_SEGMENT_IN_EXAMPLE",
+      "effectivity": "ILLUSTRATIVE_FIGURE",
+      "implementation": "REFERENCE_ONLY",
+      "source_assurance": "USER_SCREENSHOT_VISUALLY_REVIEWED",
+      "numeric_status": "AS_LABELED"
+    },
+    {
+      "id": "SDS-004",
+      "domain": "speed_descent_diagram",
+      "source": {
+        "pdf_viewer_page": 1527,
+        "printed_folio": "11.31.38",
+        "specific_section": "speed_descent_diagram"
+      },
+      "condition_text": "ALTITUDE_CONSTRAINTS_MNO_EPG_FAF",
+      "effect_text": "SPEED_DESCENT_ATTEMPTS_TO_INTERCEPT_CONSTRAINTS",
+      "effectivity": "ILLUSTRATIVE_FIGURE",
+      "implementation": "REFERENCE_ONLY",
+      "source_assurance": "USER_SCREENSHOT_VISUALLY_REVIEWED",
+      "numeric_status": "AS_LABELED"
+    },
+    {
+      "id": "SDS-005",
+      "domain": "speed_descent_diagram",
+      "source": {
+        "pdf_viewer_page": 1527,
+        "printed_folio": "11.31.38",
+        "specific_section": "speed_descent_diagram"
+      },
+      "condition_text": "APPROACH_FINAL_PROFILE",
+      "effect_text": "VNAV_SPD_AND_PTH_SEGMENTS_AS_LABELED",
+      "effectivity": "ILLUSTRATIVE_FIGURE",
+      "implementation": "REFERENCE_ONLY",
+      "source_assurance": "USER_SCREENSHOT_VISUALLY_REVIEWED",
+      "numeric_status": "AS_LABELED"
+    },
+    {
+      "id": "SDS-006",
+      "domain": "speed_descent_diagram",
+      "source": {
+        "pdf_viewer_page": 1527,
+        "printed_folio": "11.31.38",
+        "specific_section": "speed_descent_diagram"
+      },
+      "condition_text": "MISSED_APPROACH_AFTER_ED",
+      "effect_text": "MISSED_APPROACH_PROFILE_CONTEXT_ONLY",
+      "effectivity": "ILLUSTRATIVE_FIGURE",
+      "implementation": "REFERENCE_ONLY",
+      "source_assurance": "USER_SCREENSHOT_VISUALLY_REVIEWED",
+      "numeric_status": "AS_LABELED"
+    },
+    {
+      "id": "SDS-007",
+      "domain": "speed_descent_diagram",
+      "source": {
+        "pdf_viewer_page": 1528,
+        "printed_folio": "11.31.39",
+        "specific_section": "speed_descent_diagram"
+      },
+      "condition_text": "PLANNED_INTERMEDIATE_LEVEL_7000FT",
+      "effect_text": "SHOW_INTERMEDIATE_TD_7000FT_EXAMPLE",
+      "effectivity": "ILLUSTRATIVE_FIGURE",
+      "implementation": "REFERENCE_ONLY",
+      "source_assurance": "USER_SCREENSHOT_VISUALLY_REVIEWED",
+      "numeric_status": "AS_LABELED"
+    },
+    {
+      "id": "SDS-008",
+      "domain": "speed_descent_diagram",
+      "source": {
+        "pdf_viewer_page": 1528,
+        "printed_folio": "11.31.39",
+        "specific_section": "speed_descent_diagram"
+      },
+      "condition_text": "AIRPORT_SPEED_RESTRICTION_AT_10000FT",
+      "effect_text": "PROFILE_MARKS_A_SPEED_RESTRICTION",
+      "effectivity": "ILLUSTRATIVE_FIGURE",
+      "implementation": "REFERENCE_ONLY",
+      "source_assurance": "USER_SCREENSHOT_VISUALLY_REVIEWED",
+      "numeric_status": "AS_LABELED"
+    },
+    {
+      "id": "SDS-009",
+      "domain": "speed_descent_diagram",
+      "source": {
+        "pdf_viewer_page": 1528,
+        "printed_folio": "11.31.39",
+        "specific_section": "speed_descent_diagram"
+      },
+      "condition_text": "MNO_EPG_FAF_ALTITUDE_RESTRICTIONS",
+      "effect_text": "COMPARE_SPEED_DESCENT_WITH_RESTRICTION_LOCATION",
+      "effectivity": "ILLUSTRATIVE_FIGURE",
+      "implementation": "REFERENCE_ONLY",
+      "source_assurance": "USER_SCREENSHOT_VISUALLY_REVIEWED",
+      "numeric_status": "AS_LABELED"
+    },
+    {
+      "id": "SDS-010",
+      "domain": "speed_descent_diagram",
+      "source": {
+        "pdf_viewer_page": 1528,
+        "printed_folio": "11.31.39",
+        "specific_section": "speed_descent_diagram"
+      },
+      "condition_text": "SPEED_DESCENT_INTERMEDIATE_LEVEL",
+      "effect_text": "DONOT_EQUATE_SPEED_DESCENT_WITH_UNINTERRUPTED_FIXED_ANGLE",
+      "effectivity": "ILLUSTRATIVE_FIGURE",
+      "implementation": "REFERENCE_ONLY",
+      "source_assurance": "USER_SCREENSHOT_VISUALLY_REVIEWED",
+      "numeric_status": "AS_LABELED"
+    },
+    {
+      "id": "SDS-011",
+      "domain": "speed_descent_diagram",
+      "source": {
+        "pdf_viewer_page": 1528,
+        "printed_folio": "11.31.39",
+        "specific_section": "speed_descent_diagram"
+      },
+      "condition_text": "ACTIVE_APPROACH_LEG_NEAR_ED",
+      "effect_text": "FINAL_SEGMENT_SHOWS_PITCH_MODE_TRANSITIONS",
+      "effectivity": "ILLUSTRATIVE_FIGURE",
+      "implementation": "REFERENCE_ONLY",
+      "source_assurance": "USER_SCREENSHOT_VISUALLY_REVIEWED",
+      "numeric_status": "AS_LABELED"
+    },
+    {
+      "id": "SDS-012",
+      "domain": "deceleration_diagram",
+      "source": {
+        "pdf_viewer_page": 1529,
+        "printed_folio": "11.31.40",
+        "specific_section": "deceleration_diagram"
+      },
+      "condition_text": "SPEED_DECEL_BEFORE_UPCOMING_CONSTRAINT",
+      "effect_text": "DECELERATION_SEGMENT_IN_VERTICAL_PROFILE",
+      "effectivity": "ILLUSTRATIVE_FIGURE",
+      "implementation": "REFERENCE_ONLY",
+      "source_assurance": "USER_SCREENSHOT_VISUALLY_REVIEWED",
+      "numeric_status": "AS_LABELED"
+    },
+    {
+      "id": "SDS-013",
+      "domain": "deceleration_diagram",
+      "source": {
+        "pdf_viewer_page": 1529,
+        "printed_folio": "11.31.40",
+        "specific_section": "deceleration_diagram"
+      },
+      "condition_text": "HOLD_OR_WAYPOINT_SPEED_CONSTRAINT",
+      "effect_text": "SPEED_REDUCTION_PLANNING_SEGMENT",
+      "effectivity": "ILLUSTRATIVE_FIGURE",
+      "implementation": "REFERENCE_ONLY",
+      "source_assurance": "USER_SCREENSHOT_VISUALLY_REVIEWED",
+      "numeric_status": "AS_LABELED"
+    },
+    {
+      "id": "SDS-014",
+      "domain": "deceleration_diagram",
+      "source": {
+        "pdf_viewer_page": 1529,
+        "printed_folio": "11.31.40",
+        "specific_section": "deceleration_diagram"
+      },
+      "condition_text": "FAF_SPEED_TARGET",
+      "effect_text": "FINAL_APPROACH_DECELERATION_BEFORE_FAF",
+      "effectivity": "ILLUSTRATIVE_FIGURE",
+      "implementation": "REFERENCE_ONLY",
+      "source_assurance": "USER_SCREENSHOT_VISUALLY_REVIEWED",
+      "numeric_status": "AS_LABELED"
+    },
+    {
+      "id": "SDS-015",
+      "domain": "deceleration_diagram",
+      "source": {
+        "pdf_viewer_page": 1529,
+        "printed_folio": "11.31.40",
+        "specific_section": "deceleration_diagram"
+      },
+      "condition_text": "PROFILE_POINT_MNO_AND_EPG_AND_FAF",
+      "effect_text": "SPEED_AND_ALTITUDE_ARE_SEPARATE_CONSTRAINT_DIMENSIONS",
+      "effectivity": "ILLUSTRATIVE_FIGURE",
+      "implementation": "REFERENCE_ONLY",
+      "source_assurance": "USER_SCREENSHOT_VISUALLY_REVIEWED",
+      "numeric_status": "AS_LABELED"
+    },
+    {
+      "id": "VA-001",
+      "domain": "vertical_angle",
+      "source": {
+        "pdf_viewer_page": 1531,
+        "printed_folio": "11.31.42",
+        "specific_section": "vertical_angle"
+      },
+      "condition_text": "DATABASE_VERTICAL_ANGLE_ATTACHED_TO_WAYPOINT",
+      "effect_text": "VERTICAL_PATH_FROM_PREVIOUS_WAYPOINT_TO_ANGLE_WAYPOINT",
+      "effectivity": "ALL_DOCUMENTED_CONFIGS",
+      "implementation": "REFERENCE_ONLY",
+      "source_assurance": "USER_SCREENSHOT_VISUALLY_REVIEWED",
+      "numeric_status": "AS_LABELED"
+    },
+    {
+      "id": "VA-002",
+      "domain": "vertical_angle",
+      "source": {
+        "pdf_viewer_page": 1531,
+        "printed_folio": "11.31.42",
+        "specific_section": "vertical_angle"
+      },
+      "condition_text": "STAR_OR_APPROACH_TRANSITION_OR_APPROACH_CONTAINS_VERTICAL_ANGLE",
+      "effect_text": "VERTICAL_ANGLE_LEG_CAN_BECOME_ACTIVE",
+      "effectivity": "ALL_DOCUMENTED_CONFIGS",
+      "implementation": "REFERENCE_ONLY",
+      "source_assurance": "USER_SCREENSHOT_VISUALLY_REVIEWED",
+      "numeric_status": "AS_LABELED"
+    },
+    {
+      "id": "VA-003",
+      "domain": "vertical_angle",
+      "source": {
+        "pdf_viewer_page": 1531,
+        "printed_folio": "11.31.42",
+        "specific_section": "vertical_angle"
+      },
+      "condition_text": "VERTICAL_ANGLE_PUBLISHED_ON_ACT_RTE_LEGS",
+      "effect_text": "DISPLAY_ANGLE_ABOVE_ASSOCIATED_WAYPOINT_SPEED_ALTITUDE",
+      "effectivity": "ALL_DOCUMENTED_CONFIGS",
+      "implementation": "REFERENCE_ONLY",
+      "source_assurance": "USER_SCREENSHOT_VISUALLY_REVIEWED",
+      "numeric_status": "AS_LABELED"
+    },
+    {
+      "id": "VA-004",
+      "domain": "vertical_angle",
+      "source": {
+        "pdf_viewer_page": 1531,
+        "printed_folio": "11.31.42",
+        "specific_section": "vertical_angle"
+      },
+      "condition_text": "APPROACH_ED_RWXXX_OR_MAXXX",
+      "effect_text": "ED_ALTITUDE_THRESHOLD_CROSSING_HEIGHT_OR_DESIGNATED_ALTITUDE",
+      "effectivity": "ALL_DOCUMENTED_CONFIGS",
+      "implementation": "REFERENCE_ONLY",
+      "source_assurance": "USER_SCREENSHOT_VISUALLY_REVIEWED",
+      "numeric_status": "AS_LABELED"
+    },
+    {
+      "id": "VA-005",
+      "domain": "vertical_angle",
+      "source": {
+        "pdf_viewer_page": 1531,
+        "printed_folio": "11.31.42",
+        "specific_section": "vertical_angle"
+      },
+      "condition_text": "ILS_GLIDEPATH_GEOMETRY_EXAMPLE",
+      "effect_text": "VERTICAL_ANGLE_APPROX_3_DEG_NOT_UNIVERSAL",
+      "effectivity": "EXAMPLE_ONLY",
+      "implementation": "REFERENCE_ONLY",
+      "source_assurance": "USER_SCREENSHOT_VISUALLY_REVIEWED",
+      "numeric_status": "AS_LABELED"
+    },
+    {
+      "id": "VA-006",
+      "domain": "vertical_angle",
+      "source": {
+        "pdf_viewer_page": 1531,
+        "printed_folio": "11.31.42",
+        "specific_section": "vertical_angle"
+      },
+      "condition_text": "VNAV_PTH_ACTIVE_AND_VERTICAL_ANGLE_LEG_BECOMES_ACTIVE",
+      "effect_text": "FOLLOW_DATABASE_VERTICAL_ANGLE_INSTEAD_OF_IDLE_THRUST_DESCENT_PATH",
+      "effectivity": "ALL_DOCUMENTED_CONFIGS",
+      "implementation": "REFERENCE_ONLY",
+      "source_assurance": "USER_SCREENSHOT_VISUALLY_REVIEWED",
+      "numeric_status": "AS_LABELED"
+    },
+    {
+      "id": "VA-007",
+      "domain": "vertical_angle",
+      "source": {
+        "pdf_viewer_page": 1531,
+        "printed_folio": "11.31.42",
+        "specific_section": "vertical_angle"
+      },
+      "condition_text": "VNAV_SPD_ACTIVE_AND_VERTICAL_ANGLE_LEG_BECOMES_ACTIVE",
+      "effect_text": "AUTOMATIC_SWITCH_TO_VNAV_PTH_AND_HIDE_SPEED_PROMPT",
+      "effectivity": "VERTICAL_ANGLE_AUTO_PATH_OPTION",
+      "implementation": "REFERENCE_ONLY",
+      "source_assurance": "USER_SCREENSHOT_VISUALLY_REVIEWED",
+      "numeric_status": "AS_LABELED"
+    },
+    {
+      "id": "EDES-001",
+      "domain": "early_descent",
+      "source": {
+        "pdf_viewer_page": 1531,
+        "printed_folio": "11.31.42",
+        "specific_section": "early_descent"
+      },
+      "condition_text": "VNAV_DESCENT_STARTED_BEFORE_TD",
+      "effect_text": "CLASSIFY_EARLY_DESCENT",
+      "effectivity": "ALL_DOCUMENTED_CONFIGS",
+      "implementation": "REFERENCE_ONLY",
+      "source_assurance": "USER_SCREENSHOT_VISUALLY_REVIEWED",
+      "numeric_status": "AS_LABELED"
+    },
+    {
+      "id": "EDES-002",
+      "domain": "early_descent",
+      "source": {
+        "pdf_viewer_page": 1531,
+        "printed_folio": "11.31.42",
+        "specific_section": "early_descent"
+      },
+      "condition_text": "PATH_DESCENT_PLANNED_AND_EARLY_DESCENT_INITIATED",
+      "effect_text": "COMMAND_APPROX_1000_FPM_UNTIL_IDLE_DESCENT_PATH_INTERCEPT",
+      "effectivity": "ALL_DOCUMENTED_CONFIGS",
+      "implementation": "REFERENCE_ONLY",
+      "source_assurance": "USER_SCREENSHOT_VISUALLY_REVIEWED",
+      "numeric_status": "AS_LABELED"
+    },
+    {
+      "id": "EDES-003",
+      "domain": "early_descent",
+      "source": {
+        "pdf_viewer_page": 1531,
+        "printed_folio": "11.31.42",
+        "specific_section": "early_descent"
+      },
+      "condition_text": "SPEED_DESCENT_PLANNED_AND_EARLY_DESCENT_INITIATED",
+      "effect_text": "COMMAND_IDLE_THRUST_SPEED_DESCENT",
+      "effectivity": "ALL_DOCUMENTED_CONFIGS",
+      "implementation": "REFERENCE_ONLY",
+      "source_assurance": "USER_SCREENSHOT_VISUALLY_REVIEWED",
+      "numeric_status": "AS_LABELED"
+    },
+    {
+      "id": "EDES-004",
+      "domain": "early_descent",
+      "source": {
+        "pdf_viewer_page": 1531,
+        "printed_folio": "11.31.42",
+        "specific_section": "early_descent"
+      },
+      "condition_text": "DES_PAGE_DES_NOW_PROMPT_SELECTED",
+      "effect_text": "REQUEST_EARLY_DESCENT",
+      "effectivity": "DES_NOW_VARIANT",
+      "implementation": "REFERENCE_ONLY",
+      "source_assurance": "USER_SCREENSHOT_VISUALLY_REVIEWED",
+      "numeric_status": "AS_LABELED"
+    },
+    {
+      "id": "EDES-005",
+      "domain": "early_descent",
+      "source": {
+        "pdf_viewer_page": 1532,
+        "printed_folio": "11.31.43",
+        "specific_section": "early_descent"
+      },
+      "condition_text": "DES_PAGE_CAPTURE_PROMPT_SELECTED",
+      "effect_text": "REQUEST_EARLY_DESCENT",
+      "effectivity": "CAPTURE_VARIANT",
+      "implementation": "REFERENCE_ONLY",
+      "source_assurance": "USER_SCREENSHOT_VISUALLY_REVIEWED",
+      "numeric_status": "AS_LABELED"
+    },
+    {
+      "id": "EDES-006",
+      "domain": "early_descent",
+      "source": {
+        "pdf_viewer_page": 1532,
+        "printed_folio": "11.31.43",
+        "specific_section": "early_descent"
+      },
+      "condition_text": "MCP_ALT_INTERVENTION_SWITCH_PUSHED_FOR_EARLY_DESCENT",
+      "effect_text": "REQUEST_EARLY_DESCENT",
+      "effectivity": "MCP_ALT_INTV_VARIANT",
+      "implementation": "REFERENCE_ONLY",
+      "source_assurance": "USER_SCREENSHOT_VISUALLY_REVIEWED",
+      "numeric_status": "AS_LABELED"
+    },
+    {
+      "id": "EDES-007",
+      "domain": "early_descent",
+      "source": {
+        "pdf_viewer_page": 1532,
+        "printed_folio": "11.31.43",
+        "specific_section": "early_descent"
+      },
+      "condition_text": "DES_NOW_AND_PATH_DESCENT_PLANNED",
+      "effect_text": "TARGET_INITIAL_APPROX_1000_FPM_AND_IDLE_PATH_CAPTURE",
+      "effectivity": "COMMON_VNAV_OPTION",
+      "implementation": "REFERENCE_ONLY",
+      "source_assurance": "USER_SCREENSHOT_VISUALLY_REVIEWED",
+      "numeric_status": "AS_LABELED"
+    },
+    {
+      "id": "EDES-008",
+      "domain": "early_descent",
+      "source": {
+        "pdf_viewer_page": 1532,
+        "printed_folio": "11.31.43",
+        "specific_section": "early_descent"
+      },
+      "condition_text": "DES_NOW_PATH_ACTIVE",
+      "effect_text": "AUTOTHROTTLE_FMC_SPD_AND_PITCH_VNAV_PTH",
+      "effectivity": "COMMON_VNAV_OPTION",
+      "implementation": "REFERENCE_ONLY",
+      "source_assurance": "USER_SCREENSHOT_VISUALLY_REVIEWED",
+      "numeric_status": "AS_LABELED"
+    },
+    {
+      "id": "EDES-009",
+      "domain": "early_descent",
+      "source": {
+        "pdf_viewer_page": 1532,
+        "printed_folio": "11.31.43",
+        "specific_section": "early_descent"
+      },
+      "condition_text": "DES_NOW_AND_SPEED_DESCENT_PLANNED",
+      "effect_text": "TARGET_IDLE_THRUST_WITHOUT_VNAV_PATH_CAPTURE",
+      "effectivity": "SPEED_DESCENT_VARIANT",
+      "implementation": "REFERENCE_ONLY",
+      "source_assurance": "USER_SCREENSHOT_VISUALLY_REVIEWED",
+      "numeric_status": "AS_LABELED"
+    },
+    {
+      "id": "EDES-010",
+      "domain": "early_descent",
+      "source": {
+        "pdf_viewer_page": 1532,
+        "printed_folio": "11.31.43",
+        "specific_section": "early_descent"
+      },
+      "condition_text": "DES_NOW_SPEED_ACTIVE",
+      "effect_text": "PITCH_VNAV_SPD_AND_AT_IDLE_FOLLOWED_BY_ARM",
+      "effectivity": "SPEED_DESCENT_VARIANT",
+      "implementation": "REFERENCE_ONLY",
+      "source_assurance": "USER_SCREENSHOT_VISUALLY_REVIEWED",
+      "numeric_status": "AS_LABELED"
+    },
+    {
+      "id": "EDES-011",
+      "domain": "early_descent",
+      "source": {
+        "pdf_viewer_page": 1532,
+        "printed_folio": "11.31.43",
+        "specific_section": "early_descent"
+      },
+      "condition_text": "DASHED_VERTICAL_PATH_SHOWN_IN_EARLY_DESCENT_FIGURE",
+      "effect_text": "DIAGRAM_ONLY_NOT_REAL_ROUTE_GEOMETRY",
+      "effectivity": "ILLUSTRATIVE_FIGURE",
+      "implementation": "REFERENCE_ONLY",
+      "source_assurance": "USER_SCREENSHOT_VISUALLY_REVIEWED",
+      "numeric_status": "AS_LABELED"
+    },
+    {
+      "id": "CAP-001",
+      "domain": "capture_approach",
+      "source": {
+        "pdf_viewer_page": 1533,
+        "printed_folio": "11.31.44",
+        "specific_section": "capture_approach"
+      },
+      "condition_text": "CAPTURE_SELECTED_AND_PATH_DESCENT_PLANNED",
+      "effect_text": "APPROX_1000_FPM_EARLY_DESCENT_TO_IDLE_PATH_INTERCEPT",
+      "effectivity": "CAPTURE_PATH_VARIANT",
+      "implementation": "REFERENCE_ONLY",
+      "source_assurance": "USER_SCREENSHOT_VISUALLY_REVIEWED",
+      "numeric_status": "AS_LABELED"
+    },
+    {
+      "id": "CAP-002",
+      "domain": "capture_approach",
+      "source": {
+        "pdf_viewer_page": 1533,
+        "printed_folio": "11.31.44",
+        "specific_section": "capture_approach"
+      },
+      "condition_text": "CAPTURE_PATH_ACTIVE",
+      "effect_text": "AUTOTHROTTLE_FMC_SPD_PITCH_VNAV_PTH",
+      "effectivity": "CAPTURE_PATH_VARIANT",
+      "implementation": "REFERENCE_ONLY",
+      "source_assurance": "USER_SCREENSHOT_VISUALLY_REVIEWED",
+      "numeric_status": "AS_LABELED"
+    },
+    {
+      "id": "CAP-003",
+      "domain": "capture_approach",
+      "source": {
+        "pdf_viewer_page": 1533,
+        "printed_folio": "11.31.44",
+        "specific_section": "capture_approach"
+      },
+      "condition_text": "CAPTURE_SELECTED_AND_SPEED_DESCENT_PLANNED",
+      "effect_text": "EARLY_IDLE_THRUST_SPEED_DESCENT_WITHOUT_PATH_CAPTURE",
+      "effectivity": "CAPTURE_SPEED_VARIANT",
+      "implementation": "REFERENCE_ONLY",
+      "source_assurance": "USER_SCREENSHOT_VISUALLY_REVIEWED",
+      "numeric_status": "AS_LABELED"
+    },
+    {
+      "id": "CAP-004",
+      "domain": "capture_approach",
+      "source": {
+        "pdf_viewer_page": 1533,
+        "printed_folio": "11.31.44",
+        "specific_section": "capture_approach"
+      },
+      "condition_text": "CAPTURE_SPEED_ACTIVE",
+      "effect_text": "PITCH_VNAV_SPD_AT_IDLE_THEN_ARM",
+      "effectivity": "CAPTURE_SPEED_VARIANT",
+      "implementation": "REFERENCE_ONLY",
+      "source_assurance": "USER_SCREENSHOT_VISUALLY_REVIEWED",
+      "numeric_status": "AS_LABELED"
+    },
+    {
+      "id": "APP-001",
+      "domain": "capture_approach",
+      "source": {
+        "pdf_viewer_page": 1533,
+        "printed_folio": "11.31.44",
+        "specific_section": "capture_approach"
+      },
+      "condition_text": "DISTANCE_TO_FIRST_APPROACH_FIX_LESS_THAN_OR_EQUAL_2NM",
+      "effect_text": "FMC_ON_APPROACH_ELIGIBLE",
+      "effectivity": "DOCUMENTED_APPROACH_OPTION",
+      "implementation": "REFERENCE_ONLY",
+      "source_assurance": "USER_SCREENSHOT_VISUALLY_REVIEWED",
+      "numeric_status": "AS_LABELED"
+    },
+    {
+      "id": "APP-002",
+      "domain": "capture_approach",
+      "source": {
+        "pdf_viewer_page": 1533,
+        "printed_folio": "11.31.44",
+        "specific_section": "capture_approach"
+      },
+      "condition_text": "ALTITUDE_AT_OR_BELOW_AIRPORT_ELEV_PLUS_2000FT",
+      "effect_text": "FMC_ON_APPROACH_ELIGIBLE",
+      "effectivity": "DOCUMENTED_APPROACH_OPTION",
+      "implementation": "REFERENCE_ONLY",
+      "source_assurance": "USER_SCREENSHOT_VISUALLY_REVIEWED",
+      "numeric_status": "AS_LABELED"
+    },
+    {
+      "id": "APP-003",
+      "domain": "capture_approach",
+      "source": {
+        "pdf_viewer_page": 1533,
+        "printed_folio": "11.31.44",
+        "specific_section": "capture_approach"
+      },
+      "condition_text": "EITHER_APPROACH_ENTRY_TRIGGER_FIRST",
+      "effect_text": "ENTER_ON_APPROACH_PHASE",
+      "effectivity": "DOCUMENTED_APPROACH_OPTION",
+      "implementation": "REFERENCE_ONLY",
+      "source_assurance": "USER_SCREENSHOT_VISUALLY_REVIEWED",
+      "numeric_status": "AS_LABELED"
+    },
+    {
+      "id": "APP-004",
+      "domain": "capture_approach",
+      "source": {
+        "pdf_viewer_page": 1533,
+        "printed_folio": "11.31.44",
+        "specific_section": "capture_approach"
+      },
+      "condition_text": "ON_APPROACH_PHASE_ACTIVE",
+      "effect_text": "USE_HIGHER_UNABLE_RNP_ALERT_LEVELS",
+      "effectivity": "OPTION_REQUIRES_NUMERICAL_CROSS_REFERENCE",
+      "implementation": "REFERENCE_ONLY",
+      "source_assurance": "USER_SCREENSHOT_VISUALLY_REVIEWED",
+      "numeric_status": "SOURCE_REFERENCES_THRESHOLD_BUT_NO_NUMERIC_VALUE"
+    },
+    {
+      "id": "APP-005",
+      "domain": "capture_approach",
+      "source": {
+        "pdf_viewer_page": 1533,
+        "printed_folio": "11.31.44",
+        "specific_section": "capture_approach"
+      },
+      "condition_text": "ON_APPROACH_AND_AIRCRAFT_MORE_THAN_200FT_BELOW_VERTICAL_PATH",
+      "effect_text": "COMMAND_ZERO_VERTICAL_SPEED_UNTIL_PATH_REINTERCEPT",
+      "effectivity": "DOCUMENTED_APPROACH_OPTION",
+      "implementation": "REFERENCE_ONLY",
+      "source_assurance": "USER_SCREENSHOT_VISUALLY_REVIEWED",
+      "numeric_status": "AS_LABELED"
+    },
+    {
+      "id": "APP-006",
+      "domain": "capture_approach",
+      "source": {
+        "pdf_viewer_page": 1533,
+        "printed_folio": "11.31.44",
+        "specific_section": "capture_approach"
+      },
+      "condition_text": "VERTICAL_ANGLE_LEG_IN_STAR",
+      "effect_text": "DISPLAY_SPECIFIED_ANGLE_ON_RTE_LEGS",
+      "effectivity": "ALL_DOCUMENTED_CONFIGS",
+      "implementation": "REFERENCE_ONLY",
+      "source_assurance": "USER_SCREENSHOT_VISUALLY_REVIEWED",
+      "numeric_status": "AS_LABELED"
+    },
+    {
+      "id": "APP-007",
+      "domain": "capture_approach",
+      "source": {
+        "pdf_viewer_page": 1533,
+        "printed_folio": "11.31.44",
+        "specific_section": "capture_approach"
+      },
+      "condition_text": "TOGA_SELECTED_OR_AIRCRAFT_LANDS_OR_MISSED_APPROACH_ROUTE_ENTRY_OR_DIRECT_TO_MISSED",
+      "effect_text": "EXIT_ON_APPROACH_PHASE",
+      "effectivity": "DOCUMENTED_APPROACH_OPTION",
+      "implementation": "REFERENCE_ONLY",
+      "source_assurance": "USER_SCREENSHOT_VISUALLY_REVIEWED",
+      "numeric_status": "AS_LABELED"
+    },
+    {
+      "id": "APP-008",
+      "domain": "approach_exception",
+      "source": {
+        "pdf_viewer_page": 1534,
+        "printed_folio": "11.31.45",
+        "specific_section": "approach_exception"
+      },
+      "condition_text": "SPEED_INTERVENTION_AND_PATH_DESCENT_IDLE_LEG_FLAPS_UP",
+      "effect_text": "TRANSITION_VNAV_PTH_TO_VNAV_SPD",
+      "effectivity": "SPEED_INTERVENTION_VARIANT",
+      "implementation": "REFERENCE_ONLY",
+      "source_assurance": "USER_SCREENSHOT_VISUALLY_REVIEWED",
+      "numeric_status": "AS_LABELED"
+    },
+    {
+      "id": "APP-009",
+      "domain": "approach_exception",
+      "source": {
+        "pdf_viewer_page": 1534,
+        "printed_folio": "11.31.45",
+        "specific_section": "approach_exception"
+      },
+      "condition_text": "SPEED_INTERVENTION_AND_FLAPS_DOWN",
+      "effect_text": "KEEP_VNAV_PTH",
+      "effectivity": "SPEED_INTERVENTION_VARIANT",
+      "implementation": "REFERENCE_ONLY",
+      "source_assurance": "USER_SCREENSHOT_VISUALLY_REVIEWED",
+      "numeric_status": "AS_LABELED"
+    },
+    {
+      "id": "APP-010",
+      "domain": "approach_exception",
+      "source": {
+        "pdf_viewer_page": 1534,
+        "printed_folio": "11.31.45",
+        "specific_section": "approach_exception"
+      },
+      "condition_text": "POINT_TO_POINT_GEOMETRIC_PATH_LEG_ACTIVE",
+      "effect_text": "KEEP_VNAV_PTH",
+      "effectivity": "GEOMETRIC_PATH_VARIANT",
+      "implementation": "REFERENCE_ONLY",
+      "source_assurance": "USER_SCREENSHOT_VISUALLY_REVIEWED",
+      "numeric_status": "AS_LABELED"
+    },
+    {
+      "id": "APP-011",
+      "domain": "approach_exception",
+      "source": {
+        "pdf_viewer_page": 1534,
+        "printed_folio": "11.31.45",
+        "specific_section": "approach_exception"
+      },
+      "condition_text": "VERTICAL_ANGLE_LEG_ACTIVE",
+      "effect_text": "KEEP_VNAV_PTH",
+      "effectivity": "VERTICAL_ANGLE_VARIANT",
+      "implementation": "REFERENCE_ONLY",
+      "source_assurance": "USER_SCREENSHOT_VISUALLY_REVIEWED",
+      "numeric_status": "AS_LABELED"
+    },
+    {
+      "id": "APP-012",
+      "domain": "approach_exception",
+      "source": {
+        "pdf_viewer_page": 1534,
+        "printed_folio": "11.31.45",
+        "specific_section": "approach_exception"
+      },
+      "condition_text": "VERTICAL_ANGLE_LEG_BECOMES_ACTIVE",
+      "effect_text": "AUTO_TRANSITION_VNAV_PTH_WITHOUT_PILOT_ACTION",
+      "effectivity": "VERTICAL_ANGLE_VARIANT",
+      "implementation": "REFERENCE_ONLY",
+      "source_assurance": "USER_SCREENSHOT_VISUALLY_REVIEWED",
+      "numeric_status": "AS_LABELED"
+    },
+    {
+      "id": "APP-013",
+      "domain": "approach_exception",
+      "source": {
+        "pdf_viewer_page": 1534,
+        "printed_folio": "11.31.45",
+        "specific_section": "approach_exception"
+      },
+      "condition_text": "VERTICAL_ANGLE_ACTIVE_AND_XTRACK_GREATER_THAN_2_TIMES_RNP_AND_LNAV_NOT_ENGAGED",
+      "effect_text": "VNAV_DISENGAGES",
+      "effectivity": "VERTICAL_ANGLE_VARIANT",
+      "implementation": "REFERENCE_ONLY",
+      "source_assurance": "USER_SCREENSHOT_VISUALLY_REVIEWED",
+      "numeric_status": "AS_LABELED"
+    },
+    {
+      "id": "APP-014",
+      "domain": "approach_exception",
+      "source": {
+        "pdf_viewer_page": 1534,
+        "printed_folio": "11.31.45",
+        "specific_section": "approach_exception"
+      },
+      "condition_text": "APPROACH_VERTICAL_ANGLE_ACTIVE_AND_VNAV_ELIGIBLE",
+      "effect_text": "VNAV_MAY_REMAIN_ENGAGED_AT_ALL_FLAP_SETTINGS",
+      "effectivity": "DOCUMENTED_APPROACH_OPTION",
+      "implementation": "REFERENCE_ONLY",
+      "source_assurance": "USER_SCREENSHOT_VISUALLY_REVIEWED",
+      "numeric_status": "AS_LABELED"
+    },
+    {
+      "id": "APP-015",
+      "domain": "approach_exception",
+      "source": {
+        "pdf_viewer_page": 1534,
+        "printed_folio": "11.31.45",
+        "specific_section": "approach_exception"
+      },
+      "condition_text": "APPROACH_REF_SPEED_SELECTED",
+      "effect_text": "SPEED_REFERENCE_AVAILABLE_FOR_FINAL_APPROACH",
+      "effectivity": "DOCUMENTED_APPROACH_OPTION",
+      "implementation": "REFERENCE_ONLY",
+      "source_assurance": "USER_SCREENSHOT_VISUALLY_REVIEWED",
+      "numeric_status": "AS_LABELED"
+    },
+    {
+      "id": "APP-016",
+      "domain": "approach_exception",
+      "source": {
+        "pdf_viewer_page": 1534,
+        "printed_folio": "11.31.45",
+        "specific_section": "approach_exception"
+      },
+      "condition_text": "ILS_VERTICAL_ANGLE_NAV_AND_GS_XXX_POINT_PASSED_WITH_GS_ARMED",
+      "effect_text": "VNAV_DISCONNECT_UNTIL_ELIGIBLE_REENGAGEMENT",
+      "effectivity": "ILS_VERTICAL_ANGLE_OPTION",
+      "implementation": "REFERENCE_ONLY",
+      "source_assurance": "USER_SCREENSHOT_VISUALLY_REVIEWED",
+      "numeric_status": "AS_LABELED"
+    },
+    {
+      "id": "APP-017",
+      "domain": "approach_exception",
+      "source": {
+        "pdf_viewer_page": 1534,
+        "printed_folio": "11.31.45",
+        "specific_section": "approach_exception"
+      },
+      "condition_text": "GS_XXX_POINT_DELETED",
+      "effect_text": "VNAV_CAN_REMAIN_ENGAGED_THROUGH_APPROACH",
+      "effectivity": "ILS_VERTICAL_ANGLE_OPTION",
+      "implementation": "REFERENCE_ONLY",
+      "source_assurance": "USER_SCREENSHOT_VISUALLY_REVIEWED",
+      "numeric_status": "AS_LABELED"
+    },
+    {
+      "id": "APP-018",
+      "domain": "approach_exception",
+      "source": {
+        "pdf_viewer_page": 1534,
+        "printed_folio": "11.31.45",
+        "specific_section": "approach_exception"
+      },
+      "condition_text": "APPROACH_HAS_NO_RUNWAY_WAYPOINT_ON_RTE_LEGS",
+      "effect_text": "VNAV_PATH_USES_MDA_OR_CALCULATED_MISSED_APPROACH_ALTITUDE",
+      "effectivity": "DOCUMENTED_APPROACH_OPTION",
+      "implementation": "REFERENCE_ONLY",
+      "source_assurance": "USER_SCREENSHOT_VISUALLY_REVIEWED",
+      "numeric_status": "AS_LABELED"
+    },
+    {
+      "id": "APP-019",
+      "domain": "approach_exception",
+      "source": {
+        "pdf_viewer_page": 1534,
+        "printed_folio": "11.31.45",
+        "specific_section": "approach_exception"
+      },
+      "condition_text": "CALCULATED_PATH_ALTITUDE_BELOW_PUBLISHED_MDA",
+      "effect_text": "FLAG_CREW_VISUAL_REFERENCE_AND_MINIMA_REQUIREMENTS_NOT_AUTOMATED_DESCENT_AUTHORIZATION",
+      "effectivity": "SAFETY_AND_SOURCE_NOTE",
+      "implementation": "REFERENCE_ONLY",
+      "source_assurance": "USER_SCREENSHOT_VISUALLY_REVIEWED",
+      "numeric_status": "AS_LABELED"
+    },
+    {
+      "id": "GA-001",
+      "domain": "go_around_trigger",
+      "source": {
+        "pdf_viewer_page": 1534,
+        "printed_folio": "11.31.45",
+        "specific_section": "go_around_trigger"
+      },
+      "condition_text": "RADIO_ALTITUDE_BELOW_2000FT_AND_TO_GA_SELECTED_DURING_DESCENT",
+      "effect_text": "GO_AROUND_LOGIC_TRIGGER",
+      "effectivity": "DOCUMENTED_APPROACH_TO_GA_OPTION",
+      "implementation": "REFERENCE_ONLY",
+      "source_assurance": "USER_SCREENSHOT_VISUALLY_REVIEWED",
+      "numeric_status": "AS_LABELED"
+    },
+    {
+      "id": "GA-002",
+      "domain": "go_around_trigger",
+      "source": {
+        "pdf_viewer_page": 1534,
+        "printed_folio": "11.31.45",
+        "specific_section": "go_around_trigger"
+      },
+      "condition_text": "RADIO_ALTITUDE_BELOW_2000FT_AND_DIRECT_TO_MISSED_APPROACH_WAYPOINT_OTHER_THAN_MAP",
+      "effect_text": "GO_AROUND_LOGIC_TRIGGER",
+      "effectivity": "DOCUMENTED_APPROACH_TO_GA_OPTION",
+      "implementation": "REFERENCE_ONLY",
+      "source_assurance": "USER_SCREENSHOT_VISUALLY_REVIEWED",
+      "numeric_status": "AS_LABELED"
+    },
+    {
+      "id": "GA-003",
+      "domain": "go_around_trigger",
+      "source": {
+        "pdf_viewer_page": 1535,
+        "printed_folio": "11.31.46",
+        "specific_section": "go_around_trigger"
+      },
+      "condition_text": "APPROACH_FINAL_WAYPOINT_SEQUENCED_TO_FIRST_MISSED_APPROACH_WAYPOINT_DURING_DESCENT",
+      "effect_text": "AUTO_GO_AROUND_LOGIC_TRIGGER",
+      "effectivity": "DOCUMENTED_APPROACH_TO_GA_OPTION",
+      "implementation": "REFERENCE_ONLY",
+      "source_assurance": "USER_SCREENSHOT_VISUALLY_REVIEWED",
+      "numeric_status": "AS_LABELED"
+    },
+    {
+      "id": "GA-004",
+      "domain": "go_around_trigger",
+      "source": {
+        "pdf_viewer_page": 1535,
+        "printed_folio": "11.31.46",
+        "specific_section": "go_around_trigger"
+      },
+      "condition_text": "CLIMB_RATE_MORE_THAN_600_FPM_AND_FLAPS_RETRACTING_FROM_LANDING_TO_15_OR_1",
+      "effect_text": "GO_AROUND_LOGIC_TRIGGER",
+      "effectivity": "DOCUMENTED_APPROACH_TO_GA_OPTION",
+      "implementation": "REFERENCE_ONLY",
+      "source_assurance": "USER_SCREENSHOT_VISUALLY_REVIEWED",
+      "numeric_status": "AS_LABELED"
+    },
+    {
+      "id": "GA-005",
+      "domain": "go_around_trigger",
+      "source": {
+        "pdf_viewer_page": 1535,
+        "printed_folio": "11.31.46",
+        "specific_section": "go_around_trigger"
+      },
+      "condition_text": "GO_AROUND_LOGIC_ESTABLISHED",
+      "effect_text": "FMC_ACTIVE_DESCENT_CHANGES_TO_ACTIVE_CLIMB",
+      "effectivity": "DOCUMENTED_APPROACH_TO_GA_OPTION",
+      "implementation": "REFERENCE_ONLY",
+      "source_assurance": "USER_SCREENSHOT_VISUALLY_REVIEWED",
+      "numeric_status": "AS_LABELED"
+    },
+    {
+      "id": "GA-006",
+      "domain": "go_around_trigger",
+      "source": {
+        "pdf_viewer_page": 1535,
+        "printed_folio": "11.31.46",
+        "specific_section": "go_around_trigger"
+      },
+      "condition_text": "GO_AROUND_LOGIC_ESTABLISHED",
+      "effect_text": "FMC_THRUST_REFERENCE_CHANGED_TO_GO_AROUND_THRUST",
+      "effectivity": "DOCUMENTED_APPROACH_TO_GA_OPTION",
+      "implementation": "REFERENCE_ONLY",
+      "source_assurance": "USER_SCREENSHOT_VISUALLY_REVIEWED",
+      "numeric_status": "AS_LABELED"
+    },
+    {
+      "id": "GA-007",
+      "domain": "go_around_trigger",
+      "source": {
+        "pdf_viewer_page": 1535,
+        "printed_folio": "11.31.46",
+        "specific_section": "go_around_trigger"
+      },
+      "condition_text": "GO_AROUND_LOGIC_ESTABLISHED",
+      "effect_text": "DELETE_DESCENT_ALTITUDE_RESTRICTIONS_BELOW_CURRENT_ALTITUDE_AND_REPLACE_WITH_PREDICTED_ALTITUDES",
+      "effectivity": "DOCUMENTED_APPROACH_TO_GA_OPTION",
+      "implementation": "REFERENCE_ONLY",
+      "source_assurance": "USER_SCREENSHOT_VISUALLY_REVIEWED",
+      "numeric_status": "AS_LABELED"
+    },
+    {
+      "id": "GA-008",
+      "domain": "go_around_trigger",
+      "source": {
+        "pdf_viewer_page": 1535,
+        "printed_folio": "11.31.46",
+        "specific_section": "go_around_trigger"
+      },
+      "condition_text": "GO_AROUND_LOGIC_ESTABLISHED",
+      "effect_text": "DESTINATION_AIRPORT_BECOMES_NEW_ORIGIN_TO_ALLOW_SID_SELECTION_IF_REQUIRED",
+      "effectivity": "DOCUMENTED_APPROACH_TO_GA_OPTION",
+      "implementation": "REFERENCE_ONLY",
+      "source_assurance": "USER_SCREENSHOT_VISUALLY_REVIEWED",
+      "numeric_status": "AS_LABELED"
+    },
+    {
+      "id": "GA-009",
+      "domain": "go_around_trigger",
+      "source": {
+        "pdf_viewer_page": 1535,
+        "printed_folio": "11.31.46",
+        "specific_section": "go_around_trigger"
+      },
+      "condition_text": "RADIO_ALTITUDE_ABOVE_400FT_DURING_GO_AROUND",
+      "effect_text": "LNAV_MAY_ENGAGE_IF_ELIGIBLE",
+      "effectivity": "DOCUMENTED_GO_AROUND_OPTION",
+      "implementation": "REFERENCE_ONLY",
+      "source_assurance": "USER_SCREENSHOT_VISUALLY_REVIEWED",
+      "numeric_status": "AS_LABELED"
+    },
+    {
+      "id": "GA-010",
+      "domain": "go_around_trigger",
+      "source": {
+        "pdf_viewer_page": 1535,
+        "printed_folio": "11.31.46",
+        "specific_section": "go_around_trigger"
+      },
+      "condition_text": "FLAPS_NOT_YET_RETRACTED_AFTER_GO_AROUND",
+      "effect_text": "VNAV_ENGAGEMENT_INHIBITED_UNTIL_FLAP_RETRACTION",
+      "effectivity": "DOCUMENTED_GO_AROUND_OPTION",
+      "implementation": "REFERENCE_ONLY",
+      "source_assurance": "USER_SCREENSHOT_VISUALLY_REVIEWED",
+      "numeric_status": "AS_LABELED"
+    },
+    {
+      "id": "GA-011",
+      "domain": "go_around_trigger",
+      "source": {
+        "pdf_viewer_page": 1535,
+        "printed_folio": "11.31.46",
+        "specific_section": "go_around_trigger"
+      },
+      "condition_text": "GO_AROUND_INITIATED_BY_TO_GA_OR_GO_AROUND_THRUST_SELECTION",
+      "effect_text": "SET_CRZ_ALT_TO_MAX_OF_MISSED_APPROACH_HIGH_CONSTRAINT_AIRPORT_ELEV_PLUS_1500FT_MCP_ALT",
+      "effectivity": "DOCUMENTED_GO_AROUND_OPTION",
+      "implementation": "REFERENCE_ONLY",
+      "source_assurance": "USER_SCREENSHOT_VISUALLY_REVIEWED",
+      "numeric_status": "AS_LABELED"
+    },
+    {
+      "id": "GA-012",
+      "domain": "go_around_trigger",
+      "source": {
+        "pdf_viewer_page": 1535,
+        "printed_folio": "11.31.46",
+        "specific_section": "go_around_trigger"
+      },
+      "condition_text": "MCP_ALTITUDE_LOWEST_OF_GO_AROUND_ALTITUDE_CANDIDATES_AND_AUTOPILOT_ENGAGED",
+      "effect_text": "AUTOPILOT_LEVEL_OFF_AT_MCP_ALTITUDE",
+      "effectivity": "DOCUMENTED_GO_AROUND_OPTION",
+      "implementation": "REFERENCE_ONLY",
+      "source_assurance": "USER_SCREENSHOT_VISUALLY_REVIEWED",
+      "numeric_status": "AS_LABELED"
+    },
+    {
+      "id": "GA-013",
+      "domain": "go_around_trigger",
+      "source": {
+        "pdf_viewer_page": 1535,
+        "printed_folio": "11.31.46",
+        "specific_section": "go_around_trigger"
+      },
+      "condition_text": "GO_AROUND_INITIATED_BY_DIRECT_TO_OR_WAYPOINT_SEQUENCING",
+      "effect_text": "SET_CRZ_ALT_TO_MAX_OF_MISSED_APPROACH_HIGH_CONSTRAINT_AIRPORT_ELEV_PLUS_1500FT",
+      "effectivity": "DOCUMENTED_GO_AROUND_OPTION",
+      "implementation": "REFERENCE_ONLY",
+      "source_assurance": "USER_SCREENSHOT_VISUALLY_REVIEWED",
+      "numeric_status": "AS_LABELED"
+    }
+  ],
+  "interfaces": {
+    "inputs": [
+      "FMS_PHASE",
+      "ACTIVE_VERTICAL_LEG",
+      "RNP_NM",
+      "LATERAL_CROSS_TRACK_NM",
+      "LNAV_ENGAGED",
+      "VNAV_SELECTED",
+      "VNAV_MODE",
+      "ALTITUDE_FT",
+      "RADIO_ALTITUDE_FT",
+      "AIRPORT_FIELD_ELEVATION_FT",
+      "VSI_FPM",
+      "FLAPS_SETTING",
+      "MCP_ALTITUDE_FT",
+      "TOGA_SWITCH",
+      "GO_AROUND_THRUST_SELECTED",
+      "E_D_POINT",
+      "MAP_OR_APPROACH_WAYPOINT_SEQUENCE",
+      "MISSED_APPROACH_CONSTRAINTS",
+      "DATABASE_APPROACH_VERTICAL_ANGLES",
+      "ACTIVE_SPEED_RESTRICTIONS",
+      "CDU_DES_PROMPTS",
+      "GS_ARMED",
+      "GS_XXX_FIX_PRESENT"
+    ],
+    "outputs": [
+      "VNAV_PTH_OR_SPD_MODE_REQUEST",
+      "FMC_APPROACH_OR_GO_AROUND_STATE",
+      "E_D_AND_VERTICAL_ANGLE_DISPLAY",
+      "EARLY_DESCENT_CAPTURING",
+      "CDU_DES_NOW_OR_CAPTURE_PROMPT",
+      "FMC_CRZ_ALT_UPDATE",
+      "FMC_ROUTE_ORIGIN_CHANGE",
+      "FMC_DESCENT_CONSTRAINT_REPLACEMENT",
+      "FMC_GO_AROUND_THRUST_REFERENCE",
+      "FMC_SAFETY_ALERTS"
+    ],
+    "consumers": [
+      "CDU_RTE_LEGS",
+      "CDU_DES_PATH_AND_SPEED",
+      "MCP_AND_AUTOTHROTTLE_REFERENCE",
+      "EHSI_MAP",
+      "FMC_STATE_MACHINE",
+      "FMC_NAV_AND_FLIGHT_PLAN_DATABASE"
+    ],
+    "live_guidance_integrated": false
+  },
+  "preservation": {
+    "font_files_unchanged": true,
+    "cdu_image_unchanged": true,
+    "cdu_hitboxes_unchanged": true,
+    "unverified_options_not_auto_selected": true
+  }
+}
