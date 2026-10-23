@@ -26,7 +26,7 @@ From the repository root, with Python 3.10+:
 python navigation/npe_stage10_server.py --stage4-zip "C:\Private\B737_NAVDB_AIRAC2610_NPE_STAGE10_PRIVATE.zip" --root . --port 8770
 ```
 
-Open `http://127.0.0.1:8770/navigation/npe-stage10/index.html`. Select a private plan, check **Simulator training only**, click **Create session**, then **Arm reference guidance**. The page can publish a manual frame or start the clearly labeled **synthetic telemetry demo**. The approved CDU/EHSI will show `SIM REF` in PLAN mode (display-only). The AFDS engagement button must return a blocked response.
+Open `http://127.0.0.1:8770/navigation/npe-stage10/index.html`. Select a private plan, check **Simulator training only**, click **Create session**, then **Arm reference guidance**. The page can publish a manual frame or start the clearly labeled **synthetic telemetry demo**. The approved CDU/EHSI will show `SIM REF` in EHSI PLAN mode and source-only active-leg / DTG / XTK rows on CDU LEGS (display-only). The AFDS engagement button must return a blocked response.
 
 ### External telemetry adapter contract
 
@@ -53,7 +53,7 @@ The producer must use strictly increasing simulation timestamps; the consumer mu
 ## Test coverage & source control
 
 - **23 local Python tests passed with private fixture**: 18 State Bus/Live Navigation, 4 localhost API end-to-end and 1 optional private-worldwide-source test (skips in public CI), including host rejection, source validation, duplicate/stale frame, discontinuity, and denied AFDS.
-- **7 Node checks passed**: same-origin-only, actuator-free EHSI read-only message validator and safer scalar presentation.
+- **10 Node checks passed**: same-origin-only, actuator-free EHSI read-only message validator and safer scalar presentation.
 - Chromium DOM integration passed with **mocked browser network**. The test can use the private Stage 4 reference fixture (when `NPE_STAGE10_PRIVATE_STAGE4_ZIP` is configured) or a clearly synthetic public fixture. Direct localhost browser navigation was blocked in the execution environment (`ERR_BLOCKED_BY_ADMINISTRATOR`). Full CDU/EHSI device acceptance **not performed**.
 - Prior Stage 9 local tests also passed in this environment (29 tests, six skipping unavailable optional private source paths).
 - The entire private Stage 4 SQLite remains excluded from public GitHub. The release ZIP contains it **only for local testing**, derived from the user-supplied private licensed source.
