@@ -11,7 +11,7 @@
  function valid(f){
   return !!f&&f.version===V&&f.mode==='SIM_REFERENCE_TRACK'&&
    f.reference_only===true&&f.fmc_executable===false&&f.session_authority==='SIM_REFERENCE_ONLY'&&
-   f.source==='AIRAC_2610_PRIVATE'&&
+   (f.source==='AIRAC_2610_PRIVATE'||(f.source==='PUBLIC_SYNTHETIC_DEMO'&&f.demo_marker==='FICTIONAL_ROUTE_NO_NAVDATA'))&&
    Array.isArray(f.afds_commands)&&f.afds_commands.length===0&&
    Array.isArray(f.servo_commands)&&f.servo_commands.length===0&&
    Array.isArray(f.lnav_commands)&&f.lnav_commands.length===0&&
@@ -35,7 +35,7 @@
    signed_cross_track_nm:f.signed_cross_track_nm,
    distance_to_fix_nm:f.distance_to_fix_nm,
    fd_bank_preview_deg:f.fd.bank_preview_deg,
-   telemetry_seq:f.telemetry_seq,guidance_authority:false});
+   telemetry_seq:f.telemetry_seq,public_demo:f.source==='PUBLIC_SYNTHETIC_DEMO',guidance_authority:false});
  }
  function render(st,svg){
   const old=svg?.querySelector?.('[data-stage10-advisory]');old?.remove?.();
@@ -44,7 +44,7 @@
   const g=d.createElementNS(ns,'g');g.setAttribute('data-stage10-advisory','READ_ONLY');svg.appendChild(g);
   function elem(t,at,txt){const e=d.createElementNS(ns,t);Object.entries(at).forEach(([k,v])=>e.setAttribute(k,String(v)));if(txt!==undefined)e.textContent=String(txt);g.appendChild(e);return e;}
   elem('rect',{x:48,y:333,width:344,height:80,rx:5,fill:'#081822',opacity:.97});
-  elem('text',{x:220,y:350,'text-anchor':'middle',fill:'#ffcf82','font-size':11},'LIVE SIM REF · NO AFDS AUTHORITY');
+  elem('text',{x:220,y:350,'text-anchor':'middle',fill:'#ffcf82','font-size':11},x.public_demo?'PUBLIC DEMO · NO AFDS AUTHORITY':'LIVE SIM REF · NO AFDS AUTHORITY');
   elem('text',{x:220,y:366,'text-anchor':'middle',fill:'#c9f6ff','font-size':11},
        `${x.to}  TRK ${x.desired_true_track_deg.toFixed(1)}  XTK ${x.signed_cross_track_nm.toFixed(2)}NM`);
   elem('text',{x:220,y:382,'text-anchor':'middle',fill:'#c9f6ff','font-size':11},
@@ -62,7 +62,7 @@
     row.append(l,r);box.appendChild(row);
   }
   // Two small read-only rows below the sixth LEGS row, above scratchpad.
-  line(84.5,'SIM REF '+x.to,'LEG '+String(x.leg_index));
+  line(84.5,(x.public_demo?'DEMO ':'SIM REF ')+x.to,'LEG '+String(x.leg_index));
   line(89,'DTG '+x.distance_to_fix_nm.toFixed(1)+'NM','XTK '+x.signed_cross_track_nm.toFixed(2));
   return {displayed:true,source:'STAGE10_SIM_REF',guidanceAuthority:false};
  }
