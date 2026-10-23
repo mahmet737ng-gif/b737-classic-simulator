@@ -42,3 +42,7 @@ Source-only extraction from 8 screenshots of PDF viewer pages 1527–1529 and 15
 ## FCOM 2020 Engine Out Cruise, RTA and shared CDU data-entry rules
 
 Screenshots PDF viewer **1536–1540** / printed pages **11.31.47–11.31.51** reviewed: 56 source-only input/condition/output contracts. Covers CRZ→ENG OUT CRZ, advisory drift-down, alternate speed branches, crew MCP/A/T actions kept independent, RTA target/unachievable advisory, common ALT/IAS/MACH/slash/bearing/signed-entry grammars with example test vectors. Refer to [review](CDU_ENGINEOUT_RTA_DATAENTRY_2020_FA.md) and [machine-readable contract](../engine/ch11/engineout-rta-dataentry-2020.rules.v1.json). Performance equations and aircraft option effectivity remain unverified; no executable FMC or font/bezel changes performed.
+
+## FCOM Chapter 11 Section 32 — FMC Databases, Thrust, Fuel and Failure Modes (2013–2023)
+
+Eight uploaded screenshots (PDF viewer pages **1542–1549**, printed folios **11.32.1–11.32.8**) indexed with page-specific revision provenance and 112 **reference-only** source rules. Scope: two 28-day nav cycles, temporary/supplemental capacity and lifecycle, N1 thrust reference, derates/reduced climb, fuel reserve/discrepancy messages, 10-second power interruption, dual FMC source select, U10.8A degraded exception recovery. [Persian report](CDU_FMC_DATABASES_THRUST_FUEL_FAILURES_2013_2023_FA.md) and [rule/source registry](../engine/ch11/fmc-databases-thrust-fuel-failures-2013-2023.rules.v1.json). Source ingestion is not runtime implementation. CDU image, hitboxes and font files unchanged.

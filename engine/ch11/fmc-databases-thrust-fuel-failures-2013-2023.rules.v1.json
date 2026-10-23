@@ -1,0 +1,1903 @@
+{
+  "schema": "b737-classic-fcom-ch11-fmc-databases-thrust-fuel-failures/1.0",
+  "record_id": "B737-CLASSIC-CDU-CH11-FMC-DB-THRUST-FUEL-FAILURE-2013-2023",
+  "source": {
+    "manual": "737 Flight Crew Operations Manual — Chapter 11, Section 32 Flight Management Computer",
+    "manual_ref": "D6-27370-300/400/500-SHI",
+    "type": "EIGHT_USER_SCREENSHOTS",
+    "images": [
+      {
+        "viewer_page": 1542,
+        "folio": "11.32.1",
+        "revision": "2013-12-06",
+        "revision_evidence": "VISIBLE",
+        "file": "image(20261023-184947).png",
+        "sha256": "7ece554f7abba3923e106825cd52edfd4bd48954bdfbbd87d7670d1e44612c4b",
+        "topic": "FMC Databases"
+      },
+      {
+        "viewer_page": 1543,
+        "folio": "11.32.2",
+        "revision": "2023-06-15",
+        "revision_evidence": "VISIBLE",
+        "file": "image(20261023-184953).png",
+        "sha256": "ae4e6cf3beb38af976a9285817cd7b6e7edc5a30c6ff0d21e7916d128aa3f842",
+        "topic": "Navigation database cycles and Thrust Management"
+      },
+      {
+        "viewer_page": 1544,
+        "folio": "11.32.3",
+        "revision": "2023-06-15",
+        "revision_evidence": "VISIBLE",
+        "file": "image(20261023-185015).png",
+        "sha256": "4f761d714ba0fe1010faea9c386ef6953a1a8300e41a1edc19ff6dfd21c15f46",
+        "topic": "Derate and Assumed Temperature"
+      },
+      {
+        "viewer_page": 1545,
+        "folio": "11.32.4",
+        "revision": "2023-06-15",
+        "revision_evidence": "VISIBLE",
+        "file": "image(20261023-185021).png",
+        "sha256": "05fb18acccdfc1b15822b5a5fec44cf79ed71e1a5dd1f0ea2ed67a70daa38fca",
+        "topic": "Reduced Climb and Fuel Monitoring"
+      },
+      {
+        "viewer_page": 1546,
+        "folio": "11.32.5",
+        "revision": "2023-06-15",
+        "revision_evidence": "VISIBLE",
+        "file": "image(20261023-185027).png",
+        "sha256": "06b016f19ee1760332ca5e7b09245ca13dc0d44047c53b54de87ef249cdb1fbc",
+        "topic": "Fuel warnings and FMC electrical power"
+      },
+      {
+        "viewer_page": 1547,
+        "folio": "11.32.6",
+        "folio_evidence": "INFERRED_ADJACENT_PAGES",
+        "revision": null,
+        "revision_evidence": "NOT_VISIBLE",
+        "file": "image(20261023-185055).png",
+        "sha256": "52c7eea18f9e863dcaa87eb5bc3f3d705363a35ad575867aa6ddfe99aaf46d7f",
+        "topic": "In-flight power interruption and generic FMC Failure"
+      },
+      {
+        "viewer_page": 1548,
+        "folio": "11.32.7",
+        "revision": "2020-10-15",
+        "revision_evidence": "VISIBLE",
+        "file": "image(20261023-185206).png",
+        "sha256": "f5ec552cff09e153eb6366716d9e4d2a21a377974939ed53e837d474ea80c152",
+        "topic": "Dual FMC source select and single/dual failure"
+      },
+      {
+        "viewer_page": 1549,
+        "folio": "11.32.8",
+        "revision": "2023-06-15",
+        "revision_evidence": "VISIBLE",
+        "file": "image(20261023-185209).png",
+        "sha256": "de6c6c817cf488244d0bc3ef081169b549e532d5614dfa7fa59f8d3b0619580e",
+        "topic": "FMC software exception handling"
+      }
+    ],
+    "notes": [
+      "The eight screenshots show PDF viewer pages 1542–1549, nominally printed pages 11.32.1–11.32.8.",
+      "Printed folio/date for 1547 not fully visible: folio inferred only; revision deliberately null.",
+      "Other source pages have different printed revisions (2013, 2020, 2023), retained separately.",
+      "Software/aircraft option hyphens and marks are not sufficient to establish the EP-FSI installed variant.",
+      "No proprietary screenshot, font file, or technical manual pages are committed to this source registry."
+    ]
+  },
+  "aircraft_scope": {
+    "type": "Boeing 737 Classic",
+    "reference_airframe": "EP-FSI",
+    "project": "B737-CLASSIC-CDU",
+    "performance_engine_reference": "CFM56-3B-1_20K_USER_PROJECT_CONTEXT",
+    "equipment_variants_verified": false,
+    "real_flight_use": false,
+    "scope": "SOURCE_SPECIFICATION_NOT_REAL_FLIGHT_CONTROL"
+  },
+  "counts": {
+    "rules": 112,
+    "per_page": {
+      "1542": 16,
+      "1543": 23,
+      "1544": 13,
+      "1545": 14,
+      "1546": 12,
+      "1547": 9,
+      "1548": 13,
+      "1549": 12
+    }
+  },
+  "constants": {
+    "navigation_cycle_days_per_set": 28,
+    "navigation_cycle_sets": 2,
+    "custom_database_capacity": {
+      "navaid_shared": 40,
+      "airports_shared": 6,
+      "waypoints_reserved_temporary": 20,
+      "waypoints_shared_extra": 20,
+      "waypoints_total_max": 40
+    },
+    "thrust_reduction_height_ft": {
+      "min": 800,
+      "max": 9999
+    },
+    "reduced_climb_reference": {
+      "clb1_n1_percent_reduction_approx": 3,
+      "clb1_thrust_percent_reduction_approx": 10,
+      "clb2_n1_percent_reduction_approx": 6,
+      "clb2_thrust_percent_reduction_approx": 20,
+      "returns_to_full_climb_thrust_by_ft_approx": 15000
+    },
+    "assumed_temperature_takeoff": {
+      "max_reduction_percent_of_certified_rating": 25,
+      "requires_afm_effectivity": true
+    },
+    "fuel_alerts_alternative_units": {
+      "insufficient_fuel_kg": 900,
+      "insufficient_fuel_lb": 2000,
+      "rapid_drop_kg": 675,
+      "rapid_drop_lb": 1500,
+      "drop_alert_delay_seconds": 120
+    },
+    "fmc_power": {
+      "short_gap_seconds": 10,
+      "ground_reset_at_least_seconds": 10,
+      "in_flight_restore_if_more_than_seconds": 10
+    },
+    "fmc_failure": {
+      "ehsi_fault_display_delay_seconds": {
+        "min": 25,
+        "max": 30
+      }
+    },
+    "software_exception": {
+      "legacy_shutdown_reset_count": 3,
+      "legacy_window_seconds": 60,
+      "software_generation": "U10.8A"
+    }
+  },
+  "required_messages": [
+    "VERIFY GW AND FUEL",
+    "INSUFFICIENT FUEL",
+    "USING RSV FUEL",
+    "CHECK FMC FUEL QUANTITY",
+    "SELECT ACTIVE WPT/LEG",
+    "SINGLE FMC OPERATION",
+    "DUAL FMC OP RESTORED",
+    "VNAV INVALID - PERF",
+    "INVALID MOD PLAN",
+    "INVALID INACTIVE PLAN"
+  ],
+  "effectivity_variants": [
+    {
+      "id": "NAV_CYCLE_AND_STORAGE",
+      "choices": [
+        "PERMANENT_ACTIVE",
+        "PERMANENT_INACTIVE",
+        "TEMPORARY",
+        "SUPPLEMENTAL"
+      ],
+      "resolution": "LIMITS_AS_DOCUMENTED_CONFIGURATION_REQUIRES_EFFECTIVITY"
+    },
+    {
+      "id": "TAKEOFF_DERATE_ENTRY",
+      "choices": [
+        "N1_LIMIT_PAGE",
+        "TAKEOFF_REF_PAGE_2"
+      ],
+      "resolution": "AIRCRAFT_VARIANT_PENDING"
+    },
+    {
+      "id": "CLIMB_THRUST_DERATE",
+      "choices": [
+        "CLB1_AND_CLB2",
+        "CLB1_ONLY"
+      ],
+      "resolution": "AIRCRAFT_VARIANT_PENDING"
+    },
+    {
+      "id": "FUEL_QTY_FLOW_FAILURE",
+      "choices": [
+        "FLOW_INVALID_ADVISORY_LAST_VALID",
+        "QTY_INVALID_BLANK_AND_VNAV_DISABLED"
+      ],
+      "resolution": "DETERMINE_SENSOR_AND_AVIONICS_VARIANT"
+    },
+    {
+      "id": "FUEL_LOW_THRESHOLD",
+      "choices": [
+        "900_KG",
+        "2000_LB"
+      ],
+      "resolution": "UNIT_OR_CONFIGURATION_DEPENDENT"
+    },
+    {
+      "id": "FUEL_DISCREPANCY_THRESHOLD",
+      "choices": [
+        "675_KG_AND_120_SECONDS",
+        "1500_LB_AND_120_SECONDS"
+      ],
+      "resolution": "UNIT_OR_CONFIGURATION_DEPENDENT"
+    },
+    {
+      "id": "FMC_FAILURE_CONFIGURATION",
+      "choices": [
+        "SINGLE_FMC",
+        "DUAL_LEFT_FAILURE",
+        "DUAL_RIGHT_FAILURE",
+        "DUAL_FAILURE",
+        "DUAL_DATA_MISMATCH"
+      ],
+      "resolution": "INSTALLED_SOURCE_SELECT_AND_AVIONICS_TOPOLOGY_PENDING"
+    },
+    {
+      "id": "SOFTWARE_RESET_POLICY",
+      "choices": [
+        "PRE_U10_8A",
+        "U10_8A_OR_LATER"
+      ],
+      "resolution": "INSTALLED_VERSION_UNKNOWN"
+    }
+  ],
+  "interfaces": {
+    "inputs": [
+      "FMC_POWER_AVAILABLE",
+      "FMC_POWER_LOSS_SECONDS",
+      "ON_GROUND",
+      "IN_FLIGHT",
+      "FAILED_FMC_LEFT",
+      "FAILED_FMC_RIGHT",
+      "FMC_SOURCE_SELECT_POSITION",
+      "FMC_SOFTWARE_VERSION",
+      "FMC_SOFTWARE_EXCEPTION_CONTEXT",
+      "ACTIVE_MOD_INACTIVE_PLAN_STATE",
+      "FMC_STORED_COST_INDEX",
+      "FUEL_SUMMATION_QUANTITY",
+      "FUEL_FLOW_VALID",
+      "FUEL_QUANTITY_VALID",
+      "FUEL_QUANTITY_DROP_DETECTED",
+      "FUEL_DROP_TIMER_SECONDS",
+      "FMC_PREDICTED_ARRIVAL_FUEL",
+      "PERF_INIT_RESERVE_FUEL",
+      "AIRCRAFT_GROSS_WEIGHT",
+      "AIRCRAFT_PRESSURE_ALTITUDE_FT",
+      "THRUST_REDUCTION_ALTITUDE_FT",
+      "N1_LIMIT_REFERENCE_SELECTED",
+      "CURRENT_FLIGHT_PHASE",
+      "ENGINE_RATING",
+      "NAV_DATABASE_CYCLE",
+      "FMC_TEMPSUPP_RECORDS",
+      "AIRPORT_RUNWAY_DATABASE"
+    ],
+    "outputs": [
+      "FMC_NAV_DATABASE_LOOKUP",
+      "FMC_PERFORMANCE_DATABASE_LOOKUP",
+      "FMC_ACTIVE_CYCLE_STATUS",
+      "FMC_THROTTLE_REFERENCE_N1_VALUE",
+      "FMC_THRUST_REFERENCE_MODE",
+      "CDU_N1_LIMIT_PAGE",
+      "CDU_TAKEOFF_REF_PAGE",
+      "CDU_PERF_INIT_FUEL",
+      "CDU_PROGRESS_FUEL",
+      "CDU_SCRATCHPAD_MESSAGES",
+      "FMC_FUEL_PREDICTIONS",
+      "FMC_VNAV_AVAILABLE",
+      "FMC_LNAV_AVAILABLE",
+      "FMC_RESTART_MODE",
+      "FMC_ROUTE_RESELECTION_REQUIRED",
+      "FMC_LEFT_RIGHT_SOURCE_STATUS",
+      "FMC_EHSI_VTK_AND_FAILURE_INDICATION",
+      "FMC_SOFTWARE_DEGRADE_REASON",
+      "FMC_COST_INDEX_REENTRY_REQUIRED",
+      "FMC_MOD_INACTIVE_ROUTE_DELETE",
+      "FMC_PREDICTION_VALIDITY"
+    ],
+    "consumers": [
+      "CDU_INIT_REF",
+      "CDU_N1_LIMIT",
+      "CDU_TAKEOFF_REF",
+      "CDU_PERF_INIT",
+      "CDU_PROGRESS",
+      "CDU_RTE_LEGS",
+      "ENGINE_PERFORMANCE_SUBSYSTEM",
+      "FUEL_QUANTITY_SYSTEM",
+      "FUEL_FLOW_SYSTEM",
+      "MCP_AND_AUTOTHROTTLE",
+      "FMC_LNAV_VNAV",
+      "FMC_ELECTRICAL_SYSTEM",
+      "WARNING_ENGINE",
+      "EHSI_DISPLAY",
+      "CDU_FMC_SOURCE_SELECTOR"
+    ],
+    "state": "REFERENCE_CONTRACT_ONLY_NOT_CONNECTED",
+    "unauthorized_changes": [
+      "FROZEN_CDU_PANEL",
+      "FROZEN_CDU_70_HITBOXES",
+      "BoeingCDU-Large.ttf",
+      "BoeingCDU-Small.ttf"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "DB-001",
+      "topic": "database_architecture",
+      "source": {
+        "viewer_page": 1542,
+        "printed_folio": "11.32.1",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "FMC_DATABASE_SCHEMA",
+      "documented_result": "TWO_LOGICAL_BANKS_PERFORMANCE_AND_NAVIGATION",
+      "variant_scope": "DOCUMENTED_SOURCE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "DB-002",
+      "topic": "performance_database",
+      "source": {
+        "viewer_page": 1542,
+        "printed_folio": "11.32.1",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "PERFORMANCE_CALCULATION",
+      "documented_result": "ACCESS_AIRPLANE_DRAG_AND_ENGINE_CHARACTERISTICS",
+      "variant_scope": "DOCUMENTED_SOURCE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "DB-003",
+      "topic": "performance_database",
+      "source": {
+        "viewer_page": 1542,
+        "printed_folio": "11.32.1",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "VERTICAL_OPTIMIZATION",
+      "documented_result": "ACCESS_MAXIMUM_AND_OPTIMUM_ALTITUDE_DATA",
+      "variant_scope": "DOCUMENTED_SOURCE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "DB-004",
+      "topic": "performance_database",
+      "source": {
+        "viewer_page": 1542,
+        "printed_folio": "11.32.1",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "SPEED_ENVELOPE",
+      "documented_result": "ACCESS_MAXIMUM_AND_MINIMUM_SPEED_DATA",
+      "variant_scope": "DOCUMENTED_SOURCE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "DB-005",
+      "topic": "performance_database",
+      "source": {
+        "viewer_page": 1542,
+        "printed_folio": "11.32.1",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "MAINTENANCE_CORRECTION_FACTOR_INPUT",
+      "documented_result": "OPTIONAL_ADJUSTMENT_FOR_DRAG_AND_FUEL_FLOW",
+      "variant_scope": "AIRCRAFT_SOFTWARE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "DB-006",
+      "topic": "navigation_database",
+      "source": {
+        "viewer_page": 1542,
+        "printed_folio": "11.32.1",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "NAV_DATABASE_QUERY",
+      "documented_result": "VHF_NAVAID_POSITIONS_AND_WAYPOINTS_AVAILABLE",
+      "variant_scope": "DOCUMENTED_SOURCE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "DB-007",
+      "topic": "navigation_database",
+      "source": {
+        "viewer_page": 1542,
+        "printed_folio": "11.32.1",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "AIRPORT_AND_RUNWAY_LOOKUP",
+      "documented_result": "AIRPORTS_AND_RUNWAYS_STORED",
+      "variant_scope": "DOCUMENTED_SOURCE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "DB-008",
+      "topic": "navigation_database",
+      "source": {
+        "viewer_page": 1542,
+        "printed_folio": "11.32.1",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "PROCEDURE_OR_COMPANY_ROUTE_LOOKUP",
+      "documented_result": "SID_STAR_APPROACH_AND_COMPANY_ROUTES_AVAILABLE_AS_INSTALLED",
+      "variant_scope": "DOCUMENTED_SOURCE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "DB-009",
+      "topic": "navigation_database",
+      "source": {
+        "viewer_page": 1542,
+        "printed_folio": "11.32.1",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "REQUIRED_FLIGHT_PLAN_DATA_NOT_IN_PERMANENT_DATABASE",
+      "documented_result": "CREW_CAN_DEFINE_ADDITIONAL_POINTS_AND_AIRPORTS_IN_TEMP_OR_SUPPLEMENTAL_DATABASE",
+      "variant_scope": "DOCUMENTED_SOURCE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "DB-010",
+      "topic": "database_retention",
+      "source": {
+        "viewer_page": 1542,
+        "printed_folio": "11.32.1",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "TEMPORARY_CREATED_NAV_RECORD",
+      "documented_result": "AUTOMATIC_CLEAR_ON_FLIGHT_COMPLETION",
+      "variant_scope": "DOCUMENTED_SOURCE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "DB-011",
+      "topic": "database_retention",
+      "source": {
+        "viewer_page": 1542,
+        "printed_folio": "11.32.1",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "SUPPLEMENTAL_NAV_RECORD",
+      "documented_result": "PERSISTS_UNTIL_EXPLICIT_CREW_DELETE",
+      "variant_scope": "DOCUMENTED_SOURCE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "DB-012",
+      "topic": "database_capacity",
+      "source": {
+        "viewer_page": 1542,
+        "printed_folio": "11.32.1",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "TEMP_OR_SUPPLEMENTAL_NAVAID_ENTRY",
+      "documented_result": "SHARED_40_NAVAIDS_CAPACITY_FIRST_COME_FIRST_SERVED",
+      "variant_scope": "DOCUMENTED_SOURCE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "DB-013",
+      "topic": "database_capacity",
+      "source": {
+        "viewer_page": 1542,
+        "printed_folio": "11.32.1",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "TEMP_OR_SUPPLEMENTAL_AIRPORT_ENTRY",
+      "documented_result": "SHARED_6_AIRPORTS_CAPACITY_FIRST_COME_FIRST_SERVED",
+      "variant_scope": "DOCUMENTED_SOURCE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "DB-014",
+      "topic": "database_capacity",
+      "source": {
+        "viewer_page": 1542,
+        "printed_folio": "11.32.1",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "TEMP_WAYPOINT_CREATED_IN_RTE_OR_RTE_LEGS",
+      "documented_result": "20_RESERVED_TEMP_WAYPOINT_SLOTS_INCLUDING_ROUTE_PAGE_CREATED_POINTS",
+      "variant_scope": "DOCUMENTED_SOURCE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "DB-015",
+      "topic": "database_capacity",
+      "source": {
+        "viewer_page": 1542,
+        "printed_folio": "11.32.1",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "ADDITIONAL_TEMP_OR_SUPPLEMENT_WAYPOINT",
+      "documented_result": "20_ADDITIONAL_SHARED_WAYPOINT_SLOTS_TOTAL_WAYPOINT_CAPACITY_40",
+      "variant_scope": "DOCUMENTED_SOURCE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "DB-016",
+      "topic": "database_capacity",
+      "source": {
+        "viewer_page": 1542,
+        "printed_folio": "11.32.1",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "ONE_CATEGORY_EXHAUSTS_CAPACITY",
+      "documented_result": "DO_NOT_SILENTLY_OVERWRITE_OTHER_CATEGORY",
+      "variant_scope": "DOCUMENTED_SOURCE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "DB-017",
+      "topic": "database_capacity",
+      "source": {
+        "viewer_page": 1543,
+        "printed_folio": "11.32.2",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "SHARED_DATABASE_STORAGE_FULL",
+      "documented_result": "CREW_MUST_DELETE_UNNEEDED_RECORDS_BEFORE_NEW_ENTRIES",
+      "variant_scope": "DOCUMENTED_SOURCE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "DB-018",
+      "topic": "database_capacity",
+      "source": {
+        "viewer_page": 1543,
+        "printed_folio": "11.32.2",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "CREATED_WAYPOINT_INPUT",
+      "documented_result": "MUST_NOT_STORE_IN_RUNWAY_CATEGORY",
+      "variant_scope": "DOCUMENTED_SOURCE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "DB-019",
+      "topic": "navigation_cycle",
+      "source": {
+        "viewer_page": 1543,
+        "printed_folio": "11.32.2",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "NAV_DATABASE_CYCLE_MODEL",
+      "documented_result": "TWO_NAV_DATA_SETS_EACH_VALID_28_DAYS",
+      "variant_scope": "DOCUMENTED_SOURCE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "DB-020",
+      "topic": "navigation_cycle",
+      "source": {
+        "viewer_page": 1543,
+        "printed_folio": "11.32.2",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "CURRENT_NAVIGATION_CALCULATION",
+      "documented_result": "USE_SELECTED_ACTIVE_DATABASE_SET",
+      "variant_scope": "DOCUMENTED_SOURCE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "DB-021",
+      "topic": "navigation_cycle",
+      "source": {
+        "viewer_page": 1543,
+        "printed_folio": "11.32.2",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "ACTIVE_SET_APPROACHES_EXPIRATION",
+      "documented_result": "LOAD_UPDATED_DATA_BEFORE_EXPIRATION_IN_FMC",
+      "variant_scope": "DOCUMENTED_SOURCE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "TH-001",
+      "topic": "thrust_management",
+      "source": {
+        "viewer_page": 1543,
+        "printed_folio": "11.32.2",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "AUTOTHROTTLE_REQUEST",
+      "documented_result": "FOLLOWS_MCP_SELECTED_MODE_OR_AUTOMATIC_FMC_COMMANDS_WHEN_VNAV_ENGAGED",
+      "variant_scope": "AIRCRAFT_SOFTWARE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "TH-002",
+      "topic": "thrust_management",
+      "source": {
+        "viewer_page": 1543,
+        "printed_folio": "11.32.2",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "N1_LIMIT_PAGE_SELECT",
+      "documented_result": "THRUST_REFERENCE_SELECTION_CAN_BE_DISPLAYED_AND_EDITED_WITHIN_EFFECTIVITY",
+      "variant_scope": "AIRCRAFT_SOFTWARE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "TH-003",
+      "topic": "thrust_management",
+      "source": {
+        "viewer_page": 1543,
+        "printed_folio": "11.32.2",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "REFERENCE_THRUST_CALCULATION",
+      "documented_result": "FMC_OUTPUT_REFERENCE_LIMIT_EXPRESSED_AS_N1",
+      "variant_scope": "DOCUMENTED_SOURCE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "TH-004",
+      "topic": "thrust_management",
+      "source": {
+        "viewer_page": 1543,
+        "printed_folio": "11.32.2",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "AUTOTHROTTLE_REFERENCE_USED",
+      "documented_result": "THRUST_LEVER_COMMAND_AND_POWER_MANAGEMENT_THRUST_EQUALIZATION_ARE_DESCRIBED",
+      "variant_scope": "AIRCRAFT_SOFTWARE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "TH-MODE-TO",
+      "topic": "thrust_reference_modes",
+      "source": {
+        "viewer_page": 1543,
+        "printed_folio": "11.32.2",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "FMC_THRUST_MODE_TAKEOFF",
+      "documented_result": "CALCULATE_REFERENCE_N1_FOR_TAKEOFF",
+      "variant_scope": "AIRCRAFT_SOFTWARE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "TH-MODE-D_TO",
+      "topic": "thrust_reference_modes",
+      "source": {
+        "viewer_page": 1543,
+        "printed_folio": "11.32.2",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "FMC_THRUST_MODE_DERATED_TAKEOFF",
+      "documented_result": "CALCULATE_REFERENCE_N1_FOR_DERATED_TAKEOFF",
+      "variant_scope": "AIRCRAFT_SOFTWARE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "TH-MODE-ATM_TO",
+      "topic": "thrust_reference_modes",
+      "source": {
+        "viewer_page": 1543,
+        "printed_folio": "11.32.2",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "FMC_THRUST_MODE_ASSUMED_TEMPERATURE_TAKEOFF",
+      "documented_result": "CALCULATE_REFERENCE_N1_FOR_ASSUMED_TEMPERATURE_TAKEOFF",
+      "variant_scope": "AIRCRAFT_SOFTWARE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "TH-MODE-CLB",
+      "topic": "thrust_reference_modes",
+      "source": {
+        "viewer_page": 1543,
+        "printed_folio": "11.32.2",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "FMC_THRUST_MODE_CLIMB",
+      "documented_result": "CALCULATE_REFERENCE_N1_FOR_CLIMB",
+      "variant_scope": "AIRCRAFT_SOFTWARE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "TH-MODE-CLB_RED",
+      "topic": "thrust_reference_modes",
+      "source": {
+        "viewer_page": 1543,
+        "printed_folio": "11.32.2",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "FMC_THRUST_MODE_REDUCED_CLIMB",
+      "documented_result": "CALCULATE_REFERENCE_N1_FOR_REDUCED_CLIMB",
+      "variant_scope": "AIRCRAFT_SOFTWARE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "TH-MODE-CRZ",
+      "topic": "thrust_reference_modes",
+      "source": {
+        "viewer_page": 1543,
+        "printed_folio": "11.32.2",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "FMC_THRUST_MODE_CRUISE",
+      "documented_result": "CALCULATE_REFERENCE_N1_FOR_CRUISE",
+      "variant_scope": "AIRCRAFT_SOFTWARE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "TH-MODE-CON",
+      "topic": "thrust_reference_modes",
+      "source": {
+        "viewer_page": 1543,
+        "printed_folio": "11.32.2",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "FMC_THRUST_MODE_CONTINUOUS",
+      "documented_result": "CALCULATE_REFERENCE_N1_FOR_CONTINUOUS",
+      "variant_scope": "AIRCRAFT_SOFTWARE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "TH-MODE-GA",
+      "topic": "thrust_reference_modes",
+      "source": {
+        "viewer_page": 1543,
+        "printed_folio": "11.32.2",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "FMC_THRUST_MODE_GO_AROUND",
+      "documented_result": "CALCULATE_REFERENCE_N1_FOR_GO_AROUND",
+      "variant_scope": "AIRCRAFT_SOFTWARE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "TH-005",
+      "topic": "thrust_reference_modes",
+      "source": {
+        "viewer_page": 1543,
+        "printed_folio": "11.32.2",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "PHASE_OF_FLIGHT_TRANSITION",
+      "documented_result": "REFERENCE_THRUST_MODE_AUTO_CHANGE_WHEN_INSTALLED",
+      "variant_scope": "AIRCRAFT_SOFTWARE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "TH-006",
+      "topic": "thrust_reference_modes",
+      "source": {
+        "viewer_page": 1543,
+        "printed_folio": "11.32.2",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "N1_LIMIT_PAGE_CREW_MANUAL_SELECTION",
+      "documented_result": "SELECT_REQUESTED_REFERENCE_THRUST_MODE",
+      "variant_scope": "DOCUMENTED_SOURCE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "TH-007",
+      "topic": "thrust_reference_modes",
+      "source": {
+        "viewer_page": 1543,
+        "printed_folio": "11.32.2",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "CURRENT_REFERENCE_THRUST_MODE",
+      "documented_result": "PRESENT_SELECTION_ON_THRUST_MODE_DISPLAY",
+      "variant_scope": "DOCUMENTED_SOURCE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "TH-008",
+      "topic": "thrust_reduction",
+      "source": {
+        "viewer_page": 1543,
+        "printed_folio": "11.32.2",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "TAKEOFF_REF_PAGE_2_THRUST_REDUCTION_HEIGHT_ENTRY",
+      "documented_result": "VALID_RANGE_800_TO_9999_FEET",
+      "variant_scope": "AIRCRAFT_SOFTWARE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "TH-009",
+      "topic": "thrust_reduction",
+      "source": {
+        "viewer_page": 1543,
+        "printed_folio": "11.32.2",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "CREW_THUST_REDUCTION_HEIGHT_NOT_ENTERED",
+      "documented_result": "USE_AIRLINE_MODEL_ENGINE_DATABASE_DEFAULT",
+      "variant_scope": "AIRCRAFT_SOFTWARE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "TH-010",
+      "topic": "reduced_thrust",
+      "source": {
+        "viewer_page": 1543,
+        "printed_folio": "11.32.2",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "REDUCED_TAKEOFF_LIMITS_PERMIT",
+      "documented_result": "LOWER_EGT_AND_ENGINE_WEAR_TRADEOFF_NOT_UNCONDITIONAL",
+      "variant_scope": "AIRCRAFT_SOFTWARE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "DR-001",
+      "topic": "fixed_derate",
+      "source": {
+        "viewer_page": 1544,
+        "printed_folio": "11.32.3",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "FIXED_DERATE_SELECTED",
+      "documented_result": "N1_LIMIT_PAGE_ENTRY",
+      "variant_scope": "DERATE_SELECTION_VIA_N1_LIMIT",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "DR-002",
+      "topic": "fixed_derate",
+      "source": {
+        "viewer_page": 1544,
+        "printed_folio": "11.32.3",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "FIXED_DERATE_SELECTED",
+      "documented_result": "TAKEOFF_REF_PAGE_2_OF_2_ENTRY",
+      "variant_scope": "DERATE_SELECTION_VIA_TAKEOFF_REF_2",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "DR-003",
+      "topic": "fixed_derate",
+      "source": {
+        "viewer_page": 1544,
+        "printed_folio": "11.32.3",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "FIXED_DERATE_PERFORMANCE_REQUIRED",
+      "documented_result": "EFFECTIVITY_SPECIFIC_AF_M_PERFORMANCE_DATA_REQUIRED",
+      "variant_scope": "DOCUMENTED_SOURCE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "DR-004",
+      "topic": "fixed_derate",
+      "source": {
+        "viewer_page": 1544,
+        "printed_folio": "11.32.3",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "DERATED_TAKEOFF_IN_PROGRESS",
+      "documented_result": "DERATE_N1_IS_TAKEOFF_LIMIT_CREW_SHOULD_NOT_ADVANCE_LEVERS_FURTHER_EXCEPT_EMERGENCY",
+      "variant_scope": "DOCUMENTED_SOURCE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "DR-005",
+      "topic": "fixed_derate",
+      "source": {
+        "viewer_page": 1544,
+        "printed_folio": "11.32.3",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "ENGINE_FAILURE_DURING_DERATED_TAKEOFF",
+      "documented_result": "ADDITIONAL_THRUST_CAN_CAUSE_DIRECTIONAL_CONTROL_LOSS_IN_SOURCE_CAUTION",
+      "variant_scope": "DOCUMENTED_SOURCE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "DR-006",
+      "topic": "fixed_derate",
+      "source": {
+        "viewer_page": 1544,
+        "printed_folio": "11.32.3",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "FIXED_DERATE_PLUS_ASSUMED_TEMPERATURE",
+      "documented_result": "COMBINED_REDUCTION_MAY_BE_AVAILABLE",
+      "variant_scope": "AIRCRAFT_SOFTWARE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "DR-007",
+      "topic": "takeoff_speeds",
+      "source": {
+        "viewer_page": 1544,
+        "printed_folio": "11.32.3",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "DERATE_OR_VARIABLE_RATING_USED",
+      "documented_result": "USE_PERFORMANCE_DATA_FOR_SELECTED_TAKEOFF_RATING_FROM_APPROVED_TABLES",
+      "variant_scope": "AIRCRAFT_SOFTWARE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "AT-001",
+      "topic": "assumed_temperature",
+      "source": {
+        "viewer_page": 1544,
+        "printed_folio": "11.32.3",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "ASSUMED_TEMPERATURE_ABOVE_ACTUAL_INPUT",
+      "documented_result": "REQUEST_REDUCED_TAKEOFF_N1",
+      "variant_scope": "AIRCRAFT_SOFTWARE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "AT-002",
+      "topic": "assumed_temperature",
+      "source": {
+        "viewer_page": 1544,
+        "printed_folio": "11.32.3",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "ASSUMED_TEMPERATURE_VALUE_ENTERED",
+      "documented_result": "ENTRY_VIA_N1_LIMIT_OR_TAKEOFF_REF_PAGE_DEPENDING_ON_VARIANT",
+      "variant_scope": "SEL_TEMP_CDU_ENTRY_VARIANTS",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "AT-003",
+      "topic": "assumed_temperature",
+      "source": {
+        "viewer_page": 1544,
+        "printed_folio": "11.32.3",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "ASSUMED_TEMPERATURE_REDUCTION_CHOSEN",
+      "documented_result": "REDUCTION_LIMIT_25_PERCENT_BELOW_CERTIFIED_RATING_AS_DESCRIBED",
+      "variant_scope": "AIRCRAFT_SOFTWARE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "AT-004",
+      "topic": "assumed_temperature",
+      "source": {
+        "viewer_page": 1544,
+        "printed_folio": "11.32.3",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "SLUSH_SNOW_ICE_OR_POTENTIAL_WINDSHEAR",
+      "documented_result": "ASSUMED_TEMPERATURE_REDUCTION_NOT_ALLOWED_IN_DESCRIBED_CONDITIONS",
+      "variant_scope": "AIRCRAFT_SOFTWARE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "AT-005",
+      "topic": "assumed_temperature",
+      "source": {
+        "viewer_page": 1544,
+        "printed_folio": "11.32.3",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "EMERGENCY_REQUIRES_FULL_THRUST",
+      "documented_result": "ASSUMED_TEMPERATURE_LIMIT_MAY_BE_REMOVED",
+      "variant_scope": "AIRCRAFT_SOFTWARE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "AT-006",
+      "topic": "assumed_temperature",
+      "source": {
+        "viewer_page": 1544,
+        "printed_folio": "11.32.3",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "ASSUMED_TEMPERATURE_VALUE_REQUESTED",
+      "documented_result": "APPROVED_SOURCE_REQUIRED_NOT_FROM_SINGLE_PAGE",
+      "variant_scope": "DOCUMENTED_SOURCE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "CLB-001",
+      "topic": "reduced_climb",
+      "source": {
+        "viewer_page": 1545,
+        "printed_folio": "11.32.4",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "CLB_1_SELECTED",
+      "documented_result": "REDUCE_CLIMB_N1_LIMIT_BY_APPROX_3_PERCENT_OR_APPROX_10_PERCENT_THRUST",
+      "variant_scope": "CLB1_CLB2_AVAILABLE",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "CLB-002",
+      "topic": "reduced_climb",
+      "source": {
+        "viewer_page": 1545,
+        "printed_folio": "11.32.4",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "CLB_2_SELECTED",
+      "documented_result": "REDUCE_CLIMB_N1_LIMIT_BY_APPROX_6_PERCENT_OR_APPROX_20_PERCENT_THRUST",
+      "variant_scope": "CLB1_CLB2_AVAILABLE",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "CLB-003",
+      "topic": "reduced_climb",
+      "source": {
+        "viewer_page": 1545,
+        "printed_folio": "11.32.4",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "CLB_1_SELECTED",
+      "documented_result": "ONLY_FIXED_3_PERCENT_N1_REDUCED_CLIMB_OPTION",
+      "variant_scope": "ONLY_CLB1_AVAILABLE",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "CLB-004",
+      "topic": "reduced_climb",
+      "source": {
+        "viewer_page": 1545,
+        "printed_folio": "11.32.4",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "REDUCED_CLIMB_ACTIVE_AND_HEIGHT_INCREASES",
+      "documented_result": "RAMP_REDUCED_REFERENCE_TOWARD_FULL_CLIMB_THRUST_BY_15000FT",
+      "variant_scope": "AIRCRAFT_SOFTWARE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "CLB-005",
+      "topic": "thrust_reference_modes",
+      "source": {
+        "viewer_page": 1545,
+        "printed_folio": "11.32.4",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "AIRCRAFT_ENTERS_CRUISE",
+      "documented_result": "AUTO_REFERENCE_MODE_CRZ",
+      "variant_scope": "AIRCRAFT_SOFTWARE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "CLB-006",
+      "topic": "thrust_reference_modes",
+      "source": {
+        "viewer_page": 1545,
+        "printed_folio": "11.32.4",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "CREW_CHANGES_REFERENCE_MODE_ON_N1_LIMIT",
+      "documented_result": "SUPPORT_MANUAL_THRUST_REFERENCE_OVERRIDE",
+      "variant_scope": "AIRCRAFT_SOFTWARE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "CLB-007",
+      "topic": "reduced_climb",
+      "source": {
+        "viewer_page": 1545,
+        "printed_folio": "11.32.4",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "ASSUMED_TEMPERATURE_OR_FIXED_DERATE_TAKEOFF",
+      "documented_result": "CAN_AFFECT_AUTO_SELECTED_REDUCED_CLIMB_N1",
+      "variant_scope": "AIRCRAFT_SOFTWARE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "CLB-008",
+      "topic": "reduced_climb",
+      "source": {
+        "viewer_page": 1545,
+        "printed_folio": "11.32.4",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "LOWER_THRUST_DURING_CLIMB",
+      "documented_result": "ENGINE_MAINTENANCE_COST_MAY_FALL_BUT_TOTAL_TRIP_FUEL_RISES",
+      "variant_scope": "DOCUMENTED_SOURCE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "FUEL-001",
+      "topic": "fuel_monitoring",
+      "source": {
+        "viewer_page": 1545,
+        "printed_folio": "11.32.4",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "FUEL_SUMMATION_UNIT_REPORTS_FUEL_QUANTITY",
+      "documented_result": "PERF_INIT_FUEL_QUANTITY_AND_PROGRESS_PAGE_1_FUEL_QTY_DISPLAY",
+      "variant_scope": "DOCUMENTED_SOURCE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "FUEL-002",
+      "topic": "fuel_monitoring",
+      "source": {
+        "viewer_page": 1545,
+        "printed_folio": "11.32.4",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "FUEL_SUMMATION_QUANTITY_VALID",
+      "documented_result": "USE_QUANTITY_FOR_FMC_PERFORMANCE_CALCULATIONS",
+      "variant_scope": "DOCUMENTED_SOURCE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "FUEL-003",
+      "topic": "fuel_monitoring",
+      "source": {
+        "viewer_page": 1545,
+        "printed_folio": "11.32.4",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "FUEL_FLOW_BECOMES_INVALID_AFTER_ENGINE_START",
+      "documented_result": "SCRATCHPAD_VERIFY_GW_AND_FUEL",
+      "variant_scope": "FLOW_LOSS_ADVISORY_BRANCH",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "FUEL-004",
+      "topic": "fuel_monitoring",
+      "source": {
+        "viewer_page": 1545,
+        "printed_folio": "11.32.4",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "FUEL_FLOW_INVALID_BUT_LAST_GOOD_FUEL_AVAILABLE",
+      "documented_result": "ALLOW_LAST_VALID_FUEL_FOR_PREDICTIONS_AND_CREW_ENTRY_OF_ESTIMATED_FUEL_WITH_PERIODIC_UPDATE",
+      "variant_scope": "FLOW_LOSS_ADVISORY_BRANCH",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "FUEL-005",
+      "topic": "fuel_monitoring",
+      "source": {
+        "viewer_page": 1545,
+        "printed_folio": "11.32.4",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "FUEL_QUANTITY_BECOMES_INVALID",
+      "documented_result": "BLANK_PERF_INIT_FUEL_AND_PROGRESS_PAGE_1_FUEL_AND_DISABLE_VNAV",
+      "variant_scope": "QTY_LOSS_VNAV_UNAVAILABLE_BRANCH",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "FUEL-006",
+      "topic": "fuel_monitoring",
+      "source": {
+        "viewer_page": 1545,
+        "printed_folio": "11.32.4",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "SOURCE_VARIANT_FLOW_INVALID_OR_QTY_INVALID",
+      "documented_result": "PRESERVE_DIFFERENT_CAUSES_AND_OUTCOMES_UNTIL_CONFIG_VERIFIED",
+      "variant_scope": "VARIANT_GUARD",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "FUEL-007",
+      "topic": "fuel_reserve_alert",
+      "source": {
+        "viewer_page": 1546,
+        "printed_folio": "11.32.5",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "PREDICTED_FUEL_AT_DESTINATION_LT_900KG",
+      "documented_result": "SCRATCHPAD_INSUFFICIENT_FUEL",
+      "variant_scope": "FUEL_WARNING_900KG_VARIANT",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "FUEL-008",
+      "topic": "fuel_reserve_alert",
+      "source": {
+        "viewer_page": 1546,
+        "printed_folio": "11.32.5",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "PREDICTED_FUEL_AT_DESTINATION_LT_2000LB",
+      "documented_result": "SCRATCHPAD_INSUFFICIENT_FUEL",
+      "variant_scope": "FUEL_WARNING_2000LB_VARIANT",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "FUEL-009",
+      "topic": "fuel_reserve_alert",
+      "source": {
+        "viewer_page": 1546,
+        "printed_folio": "11.32.5",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "PREDICTED_FUEL_AT_DESTINATION_LT_PERF_INIT_RESERVES",
+      "documented_result": "SCRATCHPAD_USING_RSV_FUEL",
+      "variant_scope": "AIRCRAFT_SOFTWARE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "FUEL-010",
+      "topic": "fuel_discrepancy",
+      "source": {
+        "viewer_page": 1546,
+        "printed_folio": "11.32.5",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "FMC_DETECTED_FUEL_DROP_GT_675KG_AND_ELAPSED_120_SECONDS",
+      "documented_result": "SCRATCHPAD_CHECK_FMC_FUEL_QUANTITY",
+      "variant_scope": "FUEL_CHECK_675KG_VARIANT",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "FUEL-011",
+      "topic": "fuel_discrepancy",
+      "source": {
+        "viewer_page": 1546,
+        "printed_folio": "11.32.5",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "FMC_DETECTED_FUEL_DROP_GT_1500LB_AND_ELAPSED_120_SECONDS",
+      "documented_result": "SCRATCHPAD_CHECK_FMC_FUEL_QUANTITY",
+      "variant_scope": "FUEL_CHECK_1500LB_VARIANT",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "FUEL-012",
+      "topic": "fuel_discrepancy",
+      "source": {
+        "viewer_page": 1546,
+        "printed_folio": "11.32.5",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "CHECK_FMC_FUEL_QUANTITY_REPORTED",
+      "documented_result": "CREW_MUST_RECALCULATE_FUEL_TO_DETERMINE_GROSS_WEIGHT_FOR_REST_OF_FLIGHT",
+      "variant_scope": "DOCUMENTED_SOURCE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "FUEL-013",
+      "topic": "fuel_prediction",
+      "source": {
+        "viewer_page": 1546,
+        "printed_folio": "11.32.5",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "FMC_FUEL_PREDICTIONS",
+      "documented_result": "ASSUME_GEAR_UP_AND_FLAPS_UP_DURING_CLIMB_CRUISE_DESCENT",
+      "variant_scope": "DOCUMENTED_SOURCE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "FUEL-014",
+      "topic": "fuel_prediction",
+      "source": {
+        "viewer_page": 1546,
+        "printed_folio": "11.32.5",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "EXTENDED_FLIGHT_WITH_GEAR_OR_FLAPS_EXTENDED",
+      "documented_result": "FUEL_REQUIREMENTS_INCREASE_PREDICTION_MAY_NO_LONGER_BE_CORRECT",
+      "variant_scope": "DOCUMENTED_SOURCE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "PWR-001",
+      "topic": "fmc_electrical",
+      "source": {
+        "viewer_page": 1546,
+        "printed_folio": "11.32.5",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "FMC_NORMAL_OPERATION",
+      "documented_result": "CONTINUOUS_ELECTRICAL_POWER_REQUIRED",
+      "variant_scope": "DOCUMENTED_SOURCE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "PWR-002",
+      "topic": "fmc_electrical",
+      "source": {
+        "viewer_page": 1546,
+        "printed_folio": "11.32.5",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "FMC_POWER_INTERRUPTED_LESS_THAN_10_SECONDS",
+      "documented_result": "LNAV_AND_VNAV_DISENGAGE_AND_DATA_RETAINED",
+      "variant_scope": "DOCUMENTED_SOURCE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "PWR-003",
+      "topic": "fmc_electrical",
+      "source": {
+        "viewer_page": 1546,
+        "printed_folio": "11.32.5",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "POWER_RESTORED_AFTER_LESS_THAN_10_SECONDS",
+      "documented_result": "FMC_RESUMES_NORMAL_OPERATION_WITH_STORED_DATA",
+      "variant_scope": "DOCUMENTED_SOURCE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "PWR-004",
+      "topic": "fmc_electrical",
+      "source": {
+        "viewer_page": 1546,
+        "printed_folio": "11.32.5",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "POWER_LOSS_AT_LEAST_10_SECONDS_ON_GROUND",
+      "documented_result": "PREFLIGHT_ENTRIES_AND_PROCEDURES_MUST_BE_DONE_AGAIN",
+      "variant_scope": "DOCUMENTED_SOURCE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "PWR-005",
+      "topic": "fmc_electrical",
+      "source": {
+        "viewer_page": 1547,
+        "printed_folio": "11.32.6",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "FMC_POWER_LOSS_MORE_THAN_10_SECONDS_IN_FLIGHT",
+      "documented_result": "LNAV_AND_VNAV_DISENGAGE_DATA_RETAINED_AND_MOD_RTE_LEGS_ON_RESTART",
+      "variant_scope": "DOCUMENTED_SOURCE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "PWR-006",
+      "topic": "cdu_advisory",
+      "source": {
+        "viewer_page": 1547,
+        "printed_folio": "11.32.6",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "FMC_POWER_RECOVERED_AFTER_FLIGHT_LOSS_GT_10_SECONDS",
+      "documented_result": "SCRATCHPAD_SELECT_ACTIVE_WPT_LEG",
+      "variant_scope": "DOCUMENTED_SOURCE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "PWR-007",
+      "topic": "route_recovery",
+      "source": {
+        "viewer_page": 1547,
+        "printed_folio": "11.32.6",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "AFTER_FMC_INFLIGHT_POWER_RECOVERY_BEFORE_LNAV",
+      "documented_result": "CREW_SELECTS_ACTIVE_WPT_AND_DIRECT_OR_INTERCEPT_ROUTE",
+      "variant_scope": "DOCUMENTED_SOURCE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "FAIL-001",
+      "topic": "fmc_failure",
+      "source": {
+        "viewer_page": 1547,
+        "printed_folio": "11.32.6",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "GENERAL_FMC_FAILURE",
+      "documented_result": "FMC_ALERT_LIGHT_ILLUMINATED",
+      "variant_scope": "AIRCRAFT_SOFTWARE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "FAIL-002",
+      "topic": "fmc_failure",
+      "source": {
+        "viewer_page": 1547,
+        "printed_folio": "11.32.6",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "GENERAL_FMC_FAILURE_WITH_TWO_CDUS",
+      "documented_result": "FMC_CDU_FAIL_LIGHTS_ON_BOTH_AND_FAILURE_MODES_DISPLAYED",
+      "variant_scope": "DUAL_CDU_SOFTWARE_VARIANT",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "FAIL-003",
+      "topic": "fmc_failure",
+      "source": {
+        "viewer_page": 1547,
+        "printed_folio": "11.32.6",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "FMC_FAILED",
+      "documented_result": "EHSI_VTK_ANNUNCIATION_AND_LNAV_VNAV_DISENGAGE",
+      "variant_scope": "AIRCRAFT_SOFTWARE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "FAIL-004",
+      "topic": "fmc_failure",
+      "source": {
+        "viewer_page": 1547,
+        "printed_folio": "11.32.6",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "FMC_FAILED_AND_EHSI_TIMEOUT_25_TO_30_SECONDS",
+      "documented_result": "EHSI_MAP_FAILURE_INFORMATION",
+      "variant_scope": "AIRCRAFT_SOFTWARE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "FAIL-005",
+      "topic": "fmc_failure",
+      "source": {
+        "viewer_page": 1547,
+        "printed_folio": "11.32.6",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "FMC_FAILURE_ALTERNATE_FMC_CDU_ARCHITECTURE",
+      "documented_result": "MENU_PAGE_OR_SUBSYSTEM_SELECTION_SHOWN",
+      "variant_scope": "MENU_SOFTWARE_VARIANT",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "FAIL-006",
+      "topic": "fmc_failure",
+      "source": {
+        "viewer_page": 1547,
+        "printed_folio": "11.32.6",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "FMC_SOFTWARE_RESTART",
+      "documented_result": "MAP_TRACK_CAN_TRANSIENTLY_SLEW_TO_0_DEGREES_AND_CORRECT",
+      "variant_scope": "DOCUMENTED_SOURCE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "DUAL-001",
+      "topic": "dual_fmc_failure",
+      "source": {
+        "viewer_page": 1548,
+        "printed_folio": "11.32.7",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "RIGHT_FMC_FAILED_AND_SOURCE_SELECT_NORMAL",
+      "documented_result": "FMC_ALERT_AND_FMC_MESSAGE_LIGHTS_AND_SCRATCHPAD_SINGLE_FMC_OPERATION",
+      "variant_scope": "DUAL_FMC_RIGHT_FAILED",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "DUAL-002",
+      "topic": "dual_fmc_failure",
+      "source": {
+        "viewer_page": 1548,
+        "printed_folio": "11.32.7",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "RIGHT_FMC_FAILED",
+      "documented_result": "RIGHT_EHSI_VTK_IN_MAP_OR_NAV",
+      "variant_scope": "DUAL_FMC_RIGHT_FAILED",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "DUAL-003",
+      "topic": "dual_fmc_failure",
+      "source": {
+        "viewer_page": 1548,
+        "printed_folio": "11.32.7",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "RIGHT_FMC_FAILED_AND_AUTOPILOT_B_SELECTED",
+      "documented_result": "LNAV_VNAV_DISENGAGE_MAY_REENGAGE_WITH_AUTOPILOT_A",
+      "variant_scope": "DUAL_FMC_RIGHT_FAILED",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "DUAL-004",
+      "topic": "dual_fmc_failure",
+      "source": {
+        "viewer_page": 1548,
+        "printed_folio": "11.32.7",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "RIGHT_FMC_FAILED_25_TO_30_SECONDS",
+      "documented_result": "RIGHT_EHSI_FAILURE_INDICATION",
+      "variant_scope": "DUAL_FMC_RIGHT_FAILED",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "DUAL-005",
+      "topic": "dual_fmc_failure",
+      "source": {
+        "viewer_page": 1548,
+        "printed_folio": "11.32.7",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "RIGHT_FMC_FAILED_AND_SOURCE_SELECT_BOTH_ON_L",
+      "documented_result": "RIGHT_EHSI_CAN_RECOVER_FROM_LEFT_FMC",
+      "variant_scope": "DUAL_FMC_RIGHT_FAILED",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "DUAL-006",
+      "topic": "fmc_source_mismatch",
+      "source": {
+        "viewer_page": 1548,
+        "printed_folio": "11.32.7",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "RIGHT_EHSI_FAILURE_WITHOUT_VTK",
+      "documented_result": "POSSIBLE_LEFT_RIGHT_FMC_DATA_DISAGREEMENT_CREW_SELECT_BOTH_ON_L_TO_RESYNCHRONIZE",
+      "variant_scope": "DUAL_FMC_SOURCE_MISMATCH",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "DUAL-007",
+      "topic": "fmc_source_mismatch",
+      "source": {
+        "viewer_page": 1548,
+        "printed_folio": "11.32.7",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "FMC_DATA_RESTORED_AFTER_RESYNC",
+      "documented_result": "RETURN_SOURCE_SWITCH_TO_NORMAL_WHEN_DUAL_FMC_OP_RESTORED",
+      "variant_scope": "DUAL_FMC_SOURCE_MISMATCH",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "DUAL-008",
+      "topic": "dual_fmc_failure",
+      "source": {
+        "viewer_page": 1548,
+        "printed_folio": "11.32.7",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "LEFT_FMC_FAILED_AND_SOURCE_SELECT_NORMAL",
+      "documented_result": "FMC_ALERT_FAIL_LIGHTS_BOTH_CDUS_LEFT_EHSI_VTK_AND_LNAV_VNAV_DISENGAGE",
+      "variant_scope": "DUAL_FMC_LEFT_FAILED",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "DUAL-009",
+      "topic": "dual_fmc_failure",
+      "source": {
+        "viewer_page": 1548,
+        "printed_folio": "11.32.7",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "LEFT_FMC_FAILED_AND_AUTOPILOT_B_AVAILABLE",
+      "documented_result": "LNAV_VNAV_MAY_REENGAGE_WHEN_B_SELECTED",
+      "variant_scope": "DUAL_FMC_LEFT_FAILED",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "DUAL-010",
+      "topic": "dual_fmc_failure",
+      "source": {
+        "viewer_page": 1548,
+        "printed_folio": "11.32.7",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "LEFT_FMC_FAILED_AND_SOURCE_SELECT_BOTH_ON_R",
+      "documented_result": "RESTORE_FULL_OPERATION_USING_RIGHT_FMC_CAPABILITY",
+      "variant_scope": "DUAL_FMC_LEFT_FAILED",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "DUAL-011",
+      "topic": "dual_fmc_failure",
+      "source": {
+        "viewer_page": 1548,
+        "printed_folio": "11.32.7",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "BOTH_FMCS_FAILED",
+      "documented_result": "BOTH_FMC_ALERT_CDU_FAIL_LIGHTS_VTK_AND_LNAV_VNAV_DISENGAGE",
+      "variant_scope": "DUAL_FMC_BOTH_FAILED",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "DUAL-012",
+      "topic": "dual_fmc_failure",
+      "source": {
+        "viewer_page": 1548,
+        "printed_folio": "11.32.7",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "DUAL_FMC_FAILURE_MENU_CAPABLE_CDU",
+      "documented_result": "DISPLAY_MENU_PAGE_SELECT_ALTERNATE_SUBSYSTEMS",
+      "variant_scope": "DUAL_FMC_BOTH_FAILED",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "DUAL-013",
+      "topic": "dual_fmc_failure",
+      "source": {
+        "viewer_page": 1548,
+        "printed_folio": "11.32.7",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "EHSI_AFTER_FMC_FAILURE_25_TO_30_SECONDS",
+      "documented_result": "BOTH_EHSI_MAPS_DISPLAY_FAILURE_INFORMATION",
+      "variant_scope": "DUAL_FMC_BOTH_FAILED",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "SW-001",
+      "topic": "software_exception",
+      "source": {
+        "viewer_page": 1549,
+        "printed_folio": "11.32.8",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "FMC_PROCESSING_UNSOLVABLE_OR_ABNORMAL_EVENT",
+      "documented_result": "HANDLE_AS_SOFTWARE_EXCEPTION_NOT_NECESSARILY_HARDWARE_FAILURE",
+      "variant_scope": "DOCUMENTED_SOURCE_EFFECTIVITY_PENDING",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "SW-002",
+      "topic": "software_exception",
+      "source": {
+        "viewer_page": 1549,
+        "printed_folio": "11.32.8",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "FMC_SOFTWARE_BEFORE_U10_8A_HAS_THREE_RESETS_WITHIN_60_SECONDS",
+      "documented_result": "SHUT_DOWN_FMC_SOFTWARE",
+      "variant_scope": "SOFTWARE_PRE_U10_8A",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "SW-003",
+      "topic": "software_exception",
+      "source": {
+        "viewer_page": 1549,
+        "printed_folio": "11.32.8",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "U10_8A_OR_REVISED_EXCEPTION_LOGIC",
+      "documented_result": "PREFER_RECOVERABLE_DEGRADED_FUNCTION_INSTEAD_OF_FULL_RESET_WHEN_POSSIBLE",
+      "variant_scope": "SOFTWARE_U10_8A",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "SW-004",
+      "topic": "software_exception",
+      "source": {
+        "viewer_page": 1549,
+        "printed_folio": "11.32.8",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "DEGRADED_MODE_ENTERED",
+      "documented_result": "KEEP_LNAV_AND_MAP",
+      "variant_scope": "SOFTWARE_U10_8A",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "SW-005",
+      "topic": "software_exception",
+      "source": {
+        "viewer_page": 1549,
+        "printed_folio": "11.32.8",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "DEGRADED_MODE_ENTERED",
+      "documented_result": "HALT_FMC_PREDICTIONS_AND_DISCONNECT_VNAV",
+      "variant_scope": "SOFTWARE_U10_8A",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "SW-006",
+      "topic": "software_exception",
+      "source": {
+        "viewer_page": 1549,
+        "printed_folio": "11.32.8",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "EXCEPTION_PROCESSING_ACTIVE_FLIGHT_PLAN",
+      "documented_result": "ALERT_VNAV_INVALID_PERF_AND_REQUIRE_COST_INDEX_REENTRY",
+      "variant_scope": "SOFTWARE_U10_8A",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "SW-007",
+      "topic": "software_exception",
+      "source": {
+        "viewer_page": 1549,
+        "printed_folio": "11.32.8",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "COST_INDEX_ENTERED_AFTER_ACTIVE_FLIGHT_PLAN_EXCEPTION_AND_EXEC_PRESSED",
+      "documented_result": "RESTART_PREDICTIONS_THEN_PERMIT_VNAV_REENGAGEMENT",
+      "variant_scope": "SOFTWARE_U10_8A",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "SW-008",
+      "topic": "software_exception",
+      "source": {
+        "viewer_page": 1549,
+        "printed_folio": "11.32.8",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "EXCEPTION_WHILE_MOD_PLAN_PROCESSING",
+      "documented_result": "DELETE_MOD_PLAN_AND_DISPLAY_INVALID_MOD_PLAN",
+      "variant_scope": "SOFTWARE_U10_8A",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "SW-009",
+      "topic": "software_exception",
+      "source": {
+        "viewer_page": 1549,
+        "printed_folio": "11.32.8",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "MOD_PLAN_EXCEPTION_HANDLED",
+      "documented_result": "LNAV_VNAV_REMAIN_ENGAGED_IN_THIS_CASE",
+      "variant_scope": "SOFTWARE_U10_8A",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "SW-010",
+      "topic": "software_exception",
+      "source": {
+        "viewer_page": 1549,
+        "printed_folio": "11.32.8",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "EXCEPTION_WHILE_INACTIVE_PLAN_PROCESSING",
+      "documented_result": "DELETE_INACTIVE_PLAN_AND_DISPLAY_INVALID_INACTIVE_PLAN",
+      "variant_scope": "SOFTWARE_U10_8A",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "SW-011",
+      "topic": "software_exception",
+      "source": {
+        "viewer_page": 1549,
+        "printed_folio": "11.32.8",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "INACTIVE_PLAN_EXCEPTION_HANDLED",
+      "documented_result": "CURRENT_OPERATION_NOT_CHANGED",
+      "variant_scope": "SOFTWARE_U10_8A",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    },
+    {
+      "id": "SW-012",
+      "topic": "software_exception",
+      "source": {
+        "viewer_page": 1549,
+        "printed_folio": "11.32.8",
+        "anchor": "SCREENSHOT_PARAGRAPH"
+      },
+      "input_or_event": "EXCEPTION_LEAVES_FMC_MEMORY_INCONSISTENT",
+      "documented_result": "DEGRADED_HANDLING_MAY_NOT_PREVENT_FULL_RESTART",
+      "variant_scope": "SOFTWARE_U10_8A",
+      "implementation": "SOURCE_REGISTRY_ONLY",
+      "aircraft_effectivity": "EP_FSI_NOT_VERIFIED_BY_THIS_PAGE"
+    }
+  ],
+  "guardrails": [
+    "DO_NOT_TREAT_PERFORMANCE_AND_NAVIGATION_DATABASE_AS_ONE_STORE",
+    "TEMPORARY_AND_SUPPLEMENTAL_STORAGE_SEMANTICS_DIFFER",
+    "NO_HARDCODED_N1_OR_THRUST_PERFORMANCE_WITHOUT_AF_M_DATA",
+    "ALL_FUEL_AND_ERROR_THRESHOLDS_ARE_EFFECTIVITY_GATED",
+    "DO_NOT_AUTOMATE_CREW_ONLY_ACTIONS_OR_REAL_FLIGHT_CONTROL",
+    "SOFTWARE_EXCEPTION_DEGRADATION_IS_NOT_EQUIVALENT_TO_HARDWARE_FMC_FAILURE",
+    "DO_NOT_COMMIT_PROPRIETARY_FCOM_PAGE_IMAGES_TO_PUBLIC_REPO",
+    "SOURCE_INGESTION_ALONE_IS_NOT_PROOF_OF_EXPORTED_RUNTIME_BEHAVIOR"
+  ]
+}

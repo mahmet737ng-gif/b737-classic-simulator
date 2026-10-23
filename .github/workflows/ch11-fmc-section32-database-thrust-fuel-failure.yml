@@ -1,0 +1,16 @@
+name: FCOM Chapter 11 Section 32 FMC system source QA
+on:
+  push:
+  pull_request:
+jobs:
+  section-32-source-qa:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate eight FCOM pages and failure-state variants
+        run: node engine/ch11/tests/fmc-databases-thrust-fuel-failures-2013-2023.test.cjs
+      - name: Maintain CDU font and startup invariants
+        run: node tests/cdu-font-lock.test.cjs && node tests/cdu-ident-startup.test.cjs
