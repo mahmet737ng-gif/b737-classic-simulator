@@ -34,8 +34,8 @@ assert.equal(variants.PLAN_FUEL_N1_LIMIT_ACARS.right.R6,'N1 LIMIT');
 assert.equal(variants.FUEL_TAKEOFF.right.R6,'TAKEOFF');
 assert.equal(perf.page_model.perf_init.do_not_merge_variants,true);
 assert.equal(perf.page_model.perf_limits.examples_not_defaults,true);
-assert.equal(perf.rules.find(x=>x.id==='PERF-035').outcome,'REJECT_INVALID_COST_INDEX');
-assert.equal(perf.rules.find(x=>x.id==='PERF-052').outcome,'DISPLAY_18000_FEET_DEFAULT');
+assert.equal(perf.rules.find(x=>x.id==='PERF-035').then,'REJECT_INVALID_COST_INDEX');
+assert.equal(perf.rules.find(x=>x.id==='PERF-052').then,'DISPLAY_18000_FEET_DEFAULT');
 assert.equal(perf.rules.find(x=>x.id==='PERF-055').variant,'ACARS_VARIANT');
 assert.equal(perf.rules.find(x=>x.id==='LIMIT-011').variant,'EXAMPLE_ONLY');
 for(const db of [dep,perf]){
