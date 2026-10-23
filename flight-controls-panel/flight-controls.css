@@ -38,10 +38,11 @@ button{font:inherit;color:inherit;-webkit-tap-highlight-color:transparent;touch-
 .arm-switch{position:absolute;left:16%;top:31%;width:68%;aspect-ratio:1;border:0;padding:0;background:transparent;cursor:pointer;clip-path:polygon(12% 8%,88% 8%,100% 30%,100% 78%,84% 100%,16% 100%,0 78%,0 30%)}
 .arm-switch img{position:absolute;inset:-20%;width:140%;height:auto;transition:transform var(--duration),filter var(--duration)}
 .alt-arm[data-armed="true"] .arm-switch img{content:url("assets/switches/b737-toggle-on.webp");transform:translateY(5%) rotateX(8deg)}
-.red-guard{position:absolute;inset:0;border:0;padding:0;background:transparent;cursor:pointer;transform-style:preserve-3d;transform-origin:8% 50%;transition:transform 340ms cubic-bezier(.2,.9,.25,1),filter 200ms;clip-path:polygon(12% 0,82% 0,100% 12%,100% 82%,82% 100%,12% 92%,0 76%,0 12%)}
+.red-guard{position:absolute;inset:0;border:0;padding:0;background:transparent;cursor:pointer;transform-style:preserve-3d;transform-origin:50% 4%;transition:transform 340ms cubic-bezier(.2,.9,.25,1),filter 200ms;clip-path:polygon(12% 0,82% 0,100% 12%,100% 82%,82% 100%,12% 92%,0 76%,0 12%)}
 .red-guard i{position:absolute;inset:0;border-radius:9% 15% 15% 7%;background:linear-gradient(95deg,#a21914 0%,#d9473e 20%,#b72720 52%,#6e0d0b 92%);border:.22cqw solid #6d0d0b;box-shadow:inset .5cqw .3cqw .8cqw #ff9a8a99,inset -.65cqw -.4cqw 1cqw #380000c0,.8cqw .8cqw 1cqw #000a}
 .red-guard i::before{content:"";position:absolute;width:9%;aspect-ratio:1;left:24%;top:8%;border-radius:50%;background:#171313;box-shadow:inset 0 0 .2cqw #000}
-.alt-arm[data-guard="open"] .red-guard{transform:rotateY(-72deg) translateX(-8%);filter:brightness(.86)}
+.alt-arm[data-guard="open"] .red-guard{transform:perspective(42cqw) rotateX(-116deg);filter:brightness(.83)}
+.red-guard i::after{content:"";position:absolute;left:14%;right:14%;top:0;height:7%;border-radius:3px;background:linear-gradient(#555b60,#171c20 45%,#8c9699);box-shadow:0 .2cqw .3cqw #0009}
 .red-guard:focus-visible{filter:drop-shadow(0 0 .8cqw #ffb13f)}
 
 .test-rack{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;padding:10px;border:1px solid #313a40;border-radius:12px;background:#151b1f;box-shadow:0 10px 28px #0008}
@@ -52,3 +53,29 @@ button{font:inherit;color:inherit;-webkit-tap-highlight-color:transparent;touch-
 .test-rack p{grid-column:1/-1;margin:0;color:#819098;font-size:10px;text-align:center}
 @media(max-width:520px){body{padding:0;background:#050708}.sim{gap:0}.panel{width:100%}.test-rack{border-radius:0;border-width:1px 0 0}.test-rack button{min-height:40px;padding:4px}.ann span{font-size:2.23cqw}}
 @media(prefers-reduced-motion:reduce){*{transition-duration:1ms!important;animation-duration:1ms!important}}
+
+/* Per-control top-hinged physical guards. Never move the approved base photograph. */
+.paddle-guard{position:absolute;left:var(--x);top:var(--y);width:var(--w);height:var(--h);padding:0;margin:0;border:0;background:transparent;cursor:pointer;z-index:10;perspective:45cqw;transform-style:preserve-3d;transform-origin:50% 3%;transition:transform 340ms cubic-bezier(.18,.9,.25,1.03),filter 200ms;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.paddle-guard .guard-plate{position:absolute;inset:1% 2% 2%;border-radius:12% 12% 17% 17%;border:.28cqw solid #5a6162;background:linear-gradient(90deg,#1f2325b8,#64727855 17%,#d4e1e132 51%,#69767566 83%,#181e20af);box-shadow:inset .42cqw .4cqw .65cqw #fffff03b,inset -.35cqw -.4cqw .5cqw #0007,0 .4cqw .6cqw #000b;pointer-events:none}
+.paddle-guard .guard-plate::after{content:"";position:absolute;left:17%;right:17%;top:13%;bottom:14%;border-radius:13%;border:.25cqw solid #79878b91;background:#03060718}
+.paddle-guard .hinge{position:absolute;left:7%;right:7%;top:0;height:13%;border-radius:28%;background:linear-gradient(#9ba6a8,#222729 40%,#747d81 63%,#1a1d1d);box-shadow:0 .3cqw .45cqw #000b;z-index:2;pointer-events:none}
+.paddle-guard[data-guard="open"]{transform:perspective(45cqw) rotateX(-113deg);filter:brightness(.88)}
+.paddle-guard:focus-visible{outline:0;filter:drop-shadow(0 0 .5cqw #d69b4a)}
+/* Independent LEFT/CENTER/RIGHT physical geometry, not rotated vertical sprites. */
+.toggle.selector{touch-action:pan-y;isolation:isolate;overflow:visible;clip-path:polygon(8% 4%,92% 4%,100% 23%,100% 80%,86% 100%,14% 100%,0 80%,0 23%)}
+.toggle.selector .h-state{position:absolute;inset:0;opacity:0;pointer-events:none;transform:scale(.95);transition:opacity 110ms linear,transform 270ms cubic-bezier(.2,.96,.22,1.1);transform-style:preserve-3d}
+.toggle.selector[data-position="left"] .h-left,
+.toggle.selector[data-position="normal"] .h-center,
+.toggle.selector[data-position="right"] .h-right{opacity:1;transform:scale(1)}
+.h-state .h-bezel{position:absolute;left:21%;top:22%;width:58%;height:57%;border-radius:50%;background:radial-gradient(ellipse at 33% 26%,#d5dddc,#737d7e 21%,#0c1011 55%,#242929 77%,#d0d8d5 92%,#383e40 100%);box-shadow:inset 0 -.4cqw .8cqw #000b,0 .35cqw .6cqw #000b}
+.h-state .h-pivot{position:absolute;left:38%;top:32%;width:24%;height:25%;border-radius:50%;background:radial-gradient(circle at 33% 25%,#e4ecec,#646c6c 36%,#101719 72%,#565e61 90%);box-shadow:0 .2cqw .4cqw #000a;z-index:2}
+.h-state .h-stem{position:absolute;left:45.5%;top:40%;height:26%;width:9%;border-radius:35% 35% 22% 22%;background:linear-gradient(90deg,#2d3535,#f0f3ee 42%,#667376 76%,#192022);box-shadow:.15cqw .2cqw .35cqw #000b;transform-origin:50% 5%;z-index:3}
+.h-state .h-grip{position:absolute;left:39%;top:59%;width:22%;height:21%;border-radius:26% 26% 34% 34%;background:linear-gradient(90deg,#8e9692 0%,#f7f7ed 25%,#fefff7 49%,#c5ccc6 75%,#737d7e 100%);box-shadow:inset -.35cqw -.25cqw .65cqw #383e3d79,0 .35cqw .6cqw #000c;transform-origin:50% -60%;z-index:4}
+.h-left .h-stem{transform:translateX(-25%) rotate(35deg)}
+.h-left .h-grip{transform:translateX(-72%) translateY(-12%) rotate(24deg)}
+.h-center .h-stem{transform:rotate(0)}
+.h-center .h-grip{transform:translateX(0)}
+.h-right .h-stem{transform:translateX(25%) rotate(-35deg)}
+.h-right .h-grip{transform:translateX(72%) translateY(-12%) rotate(-24deg)}
+.toggle.selector:active .h-state{filter:brightness(1.11)}
+.toggle.selector:focus-visible .h-bezel{box-shadow:0 0 .9cqw #ffad35,inset 0 -.4cqw .8cqw #000b}
