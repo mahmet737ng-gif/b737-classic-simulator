@@ -38,7 +38,11 @@
    for(const row of screen.children){
     const computed=getComputedStyle(row);
     ctx.font=computed.font||computed.fontSize+' '+computed.fontFamily;
-    widest=Math.max(widest,ctx.measureText(row.textContent||'').width);
+    const range=document.createRange();
+    range.selectNodeContents(row);
+    // Range uses the actual laid-out text, including fallback glyphs and
+    // the browser's CDU font rendering; canvas provides an independent check.
+    widest=Math.max(widest,ctx.measureText(row.textContent||'').width,range.getBoundingClientRect().width);
     tallest=Math.max(tallest,row.getBoundingClientRect().height);
    }
    const widthFit=widest?availableWidth*0.965/widest:1;
