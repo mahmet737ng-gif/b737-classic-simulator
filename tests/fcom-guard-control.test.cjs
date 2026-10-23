@@ -85,7 +85,7 @@ test('Photographed NAV mounts remain fixed, only 3 physical levers rotate',()=>{
   assert.equal((html.match(/<img class="nav-photo-lever" src="assets\/nav-transfer-lever-v2.svg"/g)||[]).length,3);
   assert.equal((html.match(/class="toggle selector"/g)||[]).length,3);
   assert.equal((html.match(/<span\b/g)||[]).length,(html.match(/<\/span>/g)||[]).length,'invalid dangling spans');
-  assert.ok(!html.includes('h-bezel') && !html.includes('h-state') && !html.includes('photo-lever'),'no fake mount or legacy state stacks');
+  assert.ok(!html.includes('h-bezel') && !html.includes('h-state') && !html.includes('class="photo-lever"'),'no fake mount or legacy state stacks');
   assert.ok(!css.includes('.h-bezel{') && !css.includes('slide track'),'no fake mount/rail');
   assert.match(svg,/viewBox="0 0 160 160"/);
   assert.match(svg,/Pivot is native 80\/80/);
