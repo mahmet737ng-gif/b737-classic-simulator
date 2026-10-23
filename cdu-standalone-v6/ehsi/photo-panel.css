@@ -37,3 +37,9 @@
 .photo-sim-row input{width:100%;accent-color:#a7e6ef}
 .photo-sim-controls p{color:#a4b6c6;margin:0 0 5px}
 @media(max-width:850px){.photo-dh-digits{font-size:clamp(11px,2.3vw,27px)}.photo-press.photo-latch .photo-key-lamp{font-size:clamp(5px,1vw,10px)}.photo-efis-feedback{font-size:10px}.efis-heading{font-size:12px}}
+
+/* Independent coaxial inner shaft; photo loading control stays outside original panel. */
+.photo-wxr-inner{pointer-events:auto;cursor:ns-resize;touch-action:none;z-index:4}
+.photo-wxr-inner:focus-visible{outline:2px solid #a5e8f8;outline-offset:2px}
+.photo-source-picker{display:flex;align-items:center;justify-content:flex-end;gap:7px;margin:6px 0;color:#a8c6cf;font:11px system-ui,sans-serif}
+.photo-source-picker input{color:#e1e7e8;font-size:11px;max-width:65%}
