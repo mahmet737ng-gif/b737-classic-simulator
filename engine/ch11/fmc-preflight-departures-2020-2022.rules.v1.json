@@ -1,0 +1,431 @@
+{
+  "schema": "b737-classic-fcom-ch11-fmc-departures-page/1.0",
+  "record_id": "B737-CLASSIC-CDU-FCOM-DEP-11.40.34-35",
+  "project": {
+    "repo": "mahmet737ng-gif/b737-classic-simulator",
+    "component": "B737-CLASSIC-CDU",
+    "reference_type": "FCOM_SOURCE_ONLY",
+    "locked_artwork": true,
+    "locked_cdu_hitboxes": true,
+    "locked_boeing_cdu_fonts": true
+  },
+  "source": {
+    "manual": "737 Flight Crew Operations Manual, Flight Management Navigation — FMC Preflight",
+    "document": "D6-27370-300/400/500-SHI",
+    "section": "11.40 Departures Page",
+    "screenshots": [
+      {
+        "id": "dep1586",
+        "filename": "image(20261023-194209).png",
+        "pdf_viewer_page": 1586,
+        "folio": "11.40.34",
+        "manual_revision": "2022-12-15",
+        "sha256": "289881b07d303421e365f0d00cc1acf62c5e052980244b7100fafb719fa79d56"
+      },
+      {
+        "id": "dep1587",
+        "filename": "image(20261023-194214).png",
+        "pdf_viewer_page": 1587,
+        "folio": "11.40.35",
+        "manual_revision": "2020-10-15",
+        "sha256": "bdbe3fe214a165f42b66bf54a24d80fac120c542db925b6cac612b5d343c2052"
+      }
+    ],
+    "scope": "ONLY_THE_TWO_USER_PROVIDED_SCREENSHOTS",
+    "gaps": "No missing page between printed 11.40.34 and 11.40.35",
+    "copyright_note": "Structured factual rules are paraphrased; FCOM page images are not rehosted."
+  },
+  "page_layout": {
+    "title_template": "{ORIGIN_ICAO} DEPARTURES {PAGE_NUMBER}/{TOTAL_PAGES}",
+    "left_columns": [
+      "SIDS",
+      "TRANSITIONS"
+    ],
+    "right_columns": [
+      "RUNWAYS"
+    ],
+    "bottom_left": "ERASE_IF_ROUTE_MOD_PENDING_ELSE_INDEX",
+    "bottom_right": "ROUTE",
+    "selection_markers": {
+      "selected_pending": "<SEL>",
+      "selected_executed": "<ACT>"
+    }
+  },
+  "entry_paths": [
+    "DEP_ARR_INDEX_ORIGIN_DEP",
+    "TAKEOFF_REF_DEPARTURE_PROMPT"
+  ],
+  "engine_model": {
+    "runway_sid_constraint_filtering": true,
+    "transition_filtering": true,
+    "route_modification_required": true,
+    "commit_only_on_EXEC": true,
+    "erase_undoes_modifications": true,
+    "sel_act_tracks_execution": true,
+    "example_airport_not_default": true
+  },
+  "rules": [
+    {
+      "id": "DEP-001",
+      "source_image_id": "dep1586",
+      "subsystem": "navigation",
+      "condition": "DEP_ARR_INDEX_ORIGIN_DEP_SELECTED",
+      "outcome": "OPEN_ORIGIN_DEPARTURES_PAGE",
+      "variant": "COMMON",
+      "note": "",
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "DEP-002",
+      "source_image_id": "dep1586",
+      "subsystem": "navigation",
+      "condition": "TAKEOFF_REF_DEPARTURE_PROMPT_SELECTED",
+      "outcome": "OPEN_DEPARTURES_PAGE",
+      "variant": "COMMON",
+      "note": "",
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "DEP-003",
+      "source_image_id": "dep1586",
+      "subsystem": "navigation",
+      "condition": "NO_ROUTE_ENTERED_AS_ILLUSTRATED",
+      "outcome": "DEPARTURES_PAGE_MAY_STILL_BE_ACCESSED",
+      "variant": "ILLUSTRATED_PATH",
+      "note": "The screenshot displays a NO ROUTE ENTERED intermediate box; no wider eligibility inference.",
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "DEP-004",
+      "source_image_id": "dep1586",
+      "subsystem": "page",
+      "condition": "DEPARTURES_OPEN",
+      "outcome": "TITLE_FORMAT_ICAO_DEPARTURES_PAGE_X_OF_Y",
+      "variant": "COMMON",
+      "note": "",
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "DEP-005",
+      "source_image_id": "dep1586",
+      "subsystem": "page",
+      "condition": "DEPARTURES_OPEN",
+      "outcome": "SID_RUNWAY_TRANSITION_SELECTION_FOR_ORIGIN",
+      "variant": "COMMON",
+      "note": "",
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "DEP-006",
+      "source_image_id": "dep1586",
+      "subsystem": "page",
+      "condition": "SID_LIST_RENDER",
+      "outcome": "SHOW_SIDS_IN_LEFT_COLUMN",
+      "variant": "COMMON",
+      "note": "",
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "DEP-007",
+      "source_image_id": "dep1586",
+      "subsystem": "page",
+      "condition": "RUNWAY_LIST_RENDER",
+      "outcome": "SHOW_RUNWAYS_IN_RIGHT_COLUMN",
+      "variant": "COMMON",
+      "note": "",
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "DEP-008",
+      "source_image_id": "dep1586",
+      "subsystem": "page",
+      "condition": "SID_LIST_SID_SELECTED",
+      "outcome": "SHOW_ASSOCIATED_SID_TRANSITIONS",
+      "variant": "COMMON",
+      "note": "",
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "DEP-009",
+      "source_image_id": "dep1586",
+      "subsystem": "lsk",
+      "condition": "SIDS_LIST_OPTION_SELECTED",
+      "outcome": "SID_LIST_ENTRIES_HAVE_LSK_SELECT",
+      "variant": "COMMON",
+      "note": "",
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "DEP-010",
+      "source_image_id": "dep1586",
+      "subsystem": "lsk",
+      "condition": "TRANS_LIST_OPTION_SELECTED",
+      "outcome": "TRANSITION_ENTRIES_HAVE_LSK_SELECT",
+      "variant": "COMMON",
+      "note": "",
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "DEP-011",
+      "source_image_id": "dep1586",
+      "subsystem": "lsk",
+      "condition": "RUNWAY_OPTION_SELECTED",
+      "outcome": "RUNWAY_LIST_ENTRIES_HAVE_LSK_SELECT",
+      "variant": "COMMON",
+      "note": "",
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "DEP-012",
+      "source_image_id": "dep1586",
+      "subsystem": "lsk",
+      "condition": "DEPARTURES_BOTTOM_LEFT_PENDING_MOD",
+      "outcome": "SHOW_ERASE",
+      "variant": "COMMON",
+      "note": "",
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "DEP-013",
+      "source_image_id": "dep1586",
+      "subsystem": "lsk",
+      "condition": "DEPARTURES_BOTTOM_RIGHT_ROUTE",
+      "outcome": "RETURN_TO_ROUTE_PAGE",
+      "variant": "COMMON",
+      "note": "",
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "DEP-014",
+      "source_image_id": "dep1586",
+      "subsystem": "sid",
+      "condition": "SID_LIST_AVAILABLE_FOR_AIRPORT_RUNWAY",
+      "outcome": "SHOW_COMPATIBLE_SIDS",
+      "variant": "COMMON",
+      "note": "",
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "DEP-015",
+      "source_image_id": "dep1586",
+      "subsystem": "sid",
+      "condition": "ENGINE_OUT_SID_VARIANT_PRESENT",
+      "outcome": "SHOW_ENGINE_OUT_SIDS_AFTER_LAST_REGULAR_SID",
+      "variant": "ENGINE_OUT_VARIANT",
+      "note": "If normal SID list empty, engine-out SIDs start at first line; explicit continuation captured on 1586.",
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "DEP-016",
+      "source_image_id": "dep1586",
+      "subsystem": "sid",
+      "condition": "NO_STANDARD_SIDS_FOR_AIRPORT_RUNWAY",
+      "outcome": "ENGINE_OUT_SIDS_IF_ANY_USE_FIRST_SID_LINE",
+      "variant": "ENGINE_OUT_VARIANT",
+      "note": "",
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "DEP-017",
+      "source_image_id": "dep1586",
+      "subsystem": "page",
+      "condition": "SAMPLE_KBFI_LACRE3_RUNWAY_13R",
+      "outcome": "EXAMPLE_IS_REFERENCE_ONLY_NOT_AUTO_SELECTED",
+      "variant": "EXAMPLE_ONLY",
+      "note": "",
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "DEP-018",
+      "source_image_id": "dep1587",
+      "subsystem": "filtering",
+      "condition": "NO_RUNWAY_SELECTED_ON_RTE",
+      "outcome": "INITIALLY_SHOW_ALL_AVAILABLE_RUNWAYS_AND_SIDS",
+      "variant": "COMMON",
+      "note": "",
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "DEP-019",
+      "source_image_id": "dep1587",
+      "subsystem": "filtering",
+      "condition": "RUNWAY_OR_SID_SELECTED",
+      "outcome": "FILTER_OUT_INCOMPATIBLE_RUNWAYS_AND_SIDS",
+      "variant": "COMMON",
+      "note": "",
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "DEP-020",
+      "source_image_id": "dep1587",
+      "subsystem": "filtering",
+      "condition": "SID_SELECTED",
+      "outcome": "DISPLAY_ONLY_TRANSITIONS_COMPATIBLE_WITH_SID",
+      "variant": "COMMON",
+      "note": "",
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "DEP-021",
+      "source_image_id": "dep1587",
+      "subsystem": "lsk",
+      "condition": "ROUTE_MOD_PENDING",
+      "outcome": "SHOW_ERASE_ON_BOTTOM_LEFT",
+      "variant": "COMMON",
+      "note": "",
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "DEP-022",
+      "source_image_id": "dep1587",
+      "subsystem": "lsk",
+      "condition": "NO_ROUTE_MOD_PENDING",
+      "outcome": "SHOW_INDEX_ON_BOTTOM_LEFT",
+      "variant": "COMMON",
+      "note": "",
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "DEP-023",
+      "source_image_id": "dep1587",
+      "subsystem": "route_mod",
+      "condition": "ERASE_SELECTED",
+      "outcome": "DISCARD_UNEXECUTED_ROUTE_MODS_AND_RESTORE_ORIGINAL_ROUTE",
+      "variant": "COMMON",
+      "note": "",
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "DEP-024",
+      "source_image_id": "dep1587",
+      "subsystem": "navigation",
+      "condition": "INDEX_SELECTED",
+      "outcome": "OPEN_DEP_ARR_INDEX",
+      "variant": "COMMON",
+      "note": "",
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "DEP-025",
+      "source_image_id": "dep1587",
+      "subsystem": "runway",
+      "condition": "DEPARTURES_OPEN",
+      "outcome": "DISPLAY_SELECTED_AIRPORT_RUNWAY_LIST",
+      "variant": "COMMON",
+      "note": "",
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "DEP-026",
+      "source_image_id": "dep1587",
+      "subsystem": "runway",
+      "condition": "RUNWAY_PREVIOUSLY_SELECTED_IN_RTE",
+      "outcome": "SHOW_SEL_OR_ACT_INBOARD_OF_RUNWAY",
+      "variant": "STATE_DEPENDENT",
+      "note": "",
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "DEP-027",
+      "source_image_id": "dep1587",
+      "subsystem": "navigation",
+      "condition": "ROUTE_SELECTED",
+      "outcome": "OPEN_RTE",
+      "variant": "COMMON",
+      "note": "",
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "DEP-028",
+      "source_image_id": "dep1587",
+      "subsystem": "selection",
+      "condition": "SID_OR_RUNWAY_OR_TRANS_SELECTED",
+      "outcome": "SHOW_SEL_INBOARD_OF_SELECTED_OPTION",
+      "variant": "COMMON",
+      "note": "",
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "DEP-029",
+      "source_image_id": "dep1587",
+      "subsystem": "selection",
+      "condition": "SID_OR_RUNWAY_OR_TRANS_SELECTED",
+      "outcome": "CREATE_ROUTE_MODIFICATION_PENDING_EXEC",
+      "variant": "COMMON",
+      "note": "",
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "DEP-030",
+      "source_image_id": "dep1587",
+      "subsystem": "selection",
+      "condition": "SELECTED_MODIFICATION_EXECUTED",
+      "outcome": "CHANGE_SELECTED_OPTION_MARKER_FROM_SEL_TO_ACT",
+      "variant": "COMMON",
+      "note": "",
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "DEP-031",
+      "source_image_id": "dep1587",
+      "subsystem": "selection",
+      "condition": "LEAVE_AND_REENTER_DEPARTURES",
+      "outcome": "PRESERVE_SEL_OR_ACT_VISUAL_MARKERS_BY_STATE",
+      "variant": "COMMON",
+      "note": "",
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "DEP-032",
+      "source_image_id": "dep1587",
+      "subsystem": "runway",
+      "condition": "RTE_RUNWAY_ALREADY_SELECTED",
+      "outcome": "REFLECT_RUNWAY_SELECTION_IN_DEPARTURES",
+      "variant": "COMMON",
+      "note": "",
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "DEP-033",
+      "source_image_id": "dep1587",
+      "subsystem": "route",
+      "condition": "DEP_SELECTIONS_CONFLICT_WITH_ROUTE",
+      "outcome": "REQUIRE_FMC_MOD_AND_EXEC_BEFORE_BECOMING_ACTIVE",
+      "variant": "COMMON",
+      "note": "",
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    }
+  ],
+  "interfaces": {
+    "input_events": [
+      "DEP_ARR_KEY",
+      "CDU_LSK",
+      "CURRENT_ORIGIN",
+      "RTE_SELECTED_RUNWAY",
+      "NAVDB_SIDS",
+      "NAVDB_SID_TRANSITIONS",
+      "NAVDB_RUNWAYS",
+      "ROUTE_MOD_STATE",
+      "EXEC_EVENT"
+    ],
+    "output_states": [
+      "DEPARTURES_PAGE",
+      "COMPATIBLE_SIDS_RUNWAYS_TRANSITIONS",
+      "PENDING_ROUTE_MODIFICATION",
+      "SEL_ACT_MARKERS",
+      "RTE_NAVIGATION"
+    ],
+    "consumers": [
+      "CDU_PAGE_ENGINE",
+      "NAV_DATABASE_PROCEDURES",
+      "ROUTE_ENGINE",
+      "PREFLIGHT_PAGE_ROUTER"
+    ],
+    "runtime_connected_by_this_change": false
+  },
+  "qa": {
+    "expected_count": 33,
+    "all_rules_source_grounded": true,
+    "reference_only": true
+  }
+}
