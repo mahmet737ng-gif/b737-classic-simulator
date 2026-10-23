@@ -23,3 +23,7 @@ Active airplane: Boeing 737-33V EP-FSI, MSN 29340, CFM56-3B-1 (20K). The private
 - Tests: `node tests/epfsi-simulated-n1-v19.test.cjs` and `node cdu-standalone/tests/estimated-n1-v19-integration.test.cjs`.
 
 The original approved physical CDU background image and controls are unchanged. This software may not be used for actual aircraft operations.
+
+## CDU v6 compatibility
+
+The newer `cdu-standalone-v6` also has a byte-for-byte copy of the v19 N1 estimate module and v17 ISA defaults. Its existing FCOM page layout is preserved: `N1 LIMIT` shows the approximate 20K N1 value and `TAKEOFF REF` shows `TO N1 EST`; a dedicated training side panel shows surrogate `PRESENT N1` for engines 1 and 2. Scenario phase, optional pressure altitude and throttle approximation are adjustable. EHSI artwork and physical CDU controls are not changed. The separate v6 regression `node cdu-standalone-v6/tests/est-n1-v19.test.cjs` passed in [GitHub CI](https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/39889087284). V6's engine telemetry is not connected; those values remain EST until a real publisher is integrated.
