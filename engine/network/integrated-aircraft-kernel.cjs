@@ -43,6 +43,10 @@ const {initializeIndications,evaluateIndications,instrumentAction,panelButton,
   advanceIndications,n1ReferenceAction,INSTRUMENT_COMMANDS}=
   require('./engine-indication-eis.cjs');
 
+const {initEnginePerformance,applyPerformanceAction,advancePerformance,
+ performanceAuthority,evaluatePerformance,PERFORMANCE_COMMANDS}=
+ require('./engine-performance-dynamics.cjs');
+
 const clone = x => JSON.parse(JSON.stringify(x));
 const bool = (v,n) => {if(typeof v !== 'boolean') throw new TypeError(n+' must be boolean');};
 const pick = (v,allowed,name) => {
@@ -85,6 +89,7 @@ function initialAircraftState() {
     propulsion:initPropulsion(),
     checklist:initChecklistState(),
     indications:initializeIndications(),
+    performance:initEnginePerformance(),
     fire:{selector:'NORMAL',acknowledged:false,
       loops:{A:{healthy:true,overheat:false,fire:false},
         B:{healthy:true,overheat:false,fire:false}}},
@@ -127,11 +132,12 @@ function deriveAircraftState(snapshot) {
   const announInput={warnings,pumps:network,electrical,warningCauses:causes,
     warningControl:snapshot.warning};
   const indications=evaluateIndications(snapshot.indications,propulsion,snapshot.electrical.phase);
+  const performance=evaluatePerformance(snapshot.performance);
   const annunciation=projectAnnunciation(announInput,fireDetection,propulsion,indications);
   const checklists=deriveChecklists(snapshot,{propulsion,fireDetection,annunciation});
   return {step:snapshot.step,electrical,electricalFeeders,pressurePhysics,
     pumps:network,sensors:observed.sensors,warnings,warningCauses:causes,
-    fireDetection,annunciation,propulsion,checklists,indications,
+    fireDetection,annunciation,propulsion,checklists,indications,performance,
     sourceModel:'FCOM_REFERENCED_PRESSURE_AND_FEEDER_V0.2_PILOT'};
 }
 
@@ -194,6 +200,15 @@ function transitionAircraftState(previous,action) {
       side();validateBoolean();h.fluidAvailable[p.system]=p.value;break;
     case 'SET_FLIGHT_CONTROL_VALVE':
       side();validateBoolean();h.flightControlValveOn[p.system]=p.value;break;
+    case 'SET_ENGINE_N2':
+    case 'SET_ENGINE_EGT_C':
+      if(performanceAuthority(state.performance,p.engine))
+        throw new Error('Sensor owned by active engine performance replay; stop replay before manual override');
+      applyPropulsionAction(state.propulsion,p,{
+        electrical:before.electrical,propulsion:before.propulsion,
+        fuelAtInlet:state.pumps.fuel.fuelAtInlet
+      });
+      break;
     case 'SET_SENSOR_MODE':
       validateSensorId(p.sensor);validateSensorMode(p.value);
       state.sensors[p.sensor].mode=p.value;break;
@@ -206,6 +221,7 @@ function transitionAircraftState(previous,action) {
     case 'ENTER_COLD_DARK':
       state.checklist=initChecklistState();
       state.indications=initializeIndications();
+      state.performance=initEnginePerformance();
       state.propulsion=initPropulsion();
       state.propulsion.mode='INTEGRATED';
       e.phase='GROUND';
@@ -233,8 +249,14 @@ function transitionAircraftState(previous,action) {
     case 'SET_WARNING_RECALL':
       validateBoolean();state.warning.recallPressed=p.value;break;
     default:
-      if(INSTRUMENT_COMMANDS.has(p.type)){
+      if(PERFORMANCE_COMMANDS.has(p.type))
+        applyPerformanceAction(state,p);
+      else if(INSTRUMENT_COMMANDS.has(p.type)){
         if(state.propulsion.mode!=='INTEGRATED')throw new Error('EIS requires integrated propulsion mode');
+        if(p.type==='SET_ENGINE_INDICATION'&&
+           ['n1Pct','fuelFlowKgHr'].includes(p.instrument)&&
+           performanceAuthority(state.performance,p.engine))
+          throw new Error('EIS input owned by active measured-track replay');
         if(['SET_ENGINE_INDICATION','SET_INSTRUMENT_SIGNAL'].includes(p.type))
           instrumentAction(state.indications,p);
         else if(p.type.startsWith('SET_N1_REFERENCE')||p.type==='SET_N1_MANUAL_REFERENCE'||
@@ -256,8 +278,10 @@ function transitionAircraftState(previous,action) {
     if(previous.propulsion.mode==='INTEGRATED')
       reconcileStarterEdges(state.propulsion,previous.propulsion);
     if(p.type==='ADVANCE_SECONDS'){
+      const trackEvents=advancePerformance(state,p.value);
       tickProtection(state.propulsion,p.value);
-      advanceIndications(state.indications,p.value,state.propulsion);
+      const massByEngine=Object.fromEntries(trackEvents.map(x=>[x.engine,x.fuelBurnKg]));
+      advanceIndications(state.indications,p.value,state.propulsion,massByEngine);
     }
     reconcileApuProtections(state.propulsion);
   }
@@ -314,6 +338,14 @@ function transitionAircraftState(previous,action) {
     pressureChanges:comparePressureTransitions(before.pressurePhysics,after.pressurePhysics),
     sensorChanges,
     sensorSignalChanges:compareSensorSignals(before.sensors,after.sensors),
+    performanceChanges:before.performance.engines['1'].mode!==after.performance.engines['1'].mode||
+      before.performance.engines['2'].mode!==after.performance.engines['2'].mode||
+      p.type==='ADVANCE_SECONDS'||PERFORMANCE_COMMANDS.has(p.type)?
+      {engines:Object.fromEntries(['1','2'].map(id=>[id,{
+        from:before.performance.engines[id].mode,to:after.performance.engines[id].mode,
+        elapsedSec:after.performance.engines[id].elapsedSec,
+        coverage:after.performance.engines[id].coverage
+      }]))}:null,
     indicationChanges:before.indications.mode==='INTEGRATED'||after.indications.mode==='INTEGRATED'?
       {engines:Object.fromEntries(['1','2'].map(id=>[id,{
         prior:before.indications.engines[id]||null,
