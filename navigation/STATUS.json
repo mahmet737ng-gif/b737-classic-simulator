@@ -1,6 +1,6 @@
 {
   "module": "NAVDB",
-  "version": "NPE_STAGE8_v1",
+  "version": "NPE_STAGE9_v1",
   "updated_utc_date": "2026-10-23",
   "aircraft": "B737 Classic, EP-FSI",
   "scope": "Simulator development only — NOT real flight navigation",
@@ -21,7 +21,8 @@
     "Stage5: source-only CDU RTE/DEP-ARR/LEGS and EHSI PLAN preview hooks",
     "Stage6: native CDU SID/STAR/APP selector, source-valid runway/transition + reference MOD/EXEC",
     "Stage7: safe airport-file local FIX resolution, AST-token QA, segmented reference preview geometry and private test viewer",
-    "Stage8: explicit coded-leg evidence gate, 10 source reference chords with protected discontinuities, manual XTK/DTG diagnostic, local viewer/API"
+    "Stage8: explicit coded-leg evidence gate, 10 source reference chords with protected discontinuities, manual XTK/DTG diagnostic, local viewer/API",
+    "Stage9: source-enroute simulator lateral reference controller, within-group automatic leg sequencing, hard-gap stop, synthetic roll/heading feedback model and read-only EHSI SIM REF"
   ],
   "stage7_qa": {
     "python_tests_passed": 13,
@@ -43,7 +44,10 @@
     "lnav_active": false,
     "vnav_active": false,
     "autopilot_afds_integration": false,
-    "automatic_leg_sequencing": false
+    "automatic_leg_sequencing": false,
+    "simulator_reference_guidance": "TRAINING_ADVISORY_ONLY",
+    "actual_fmc_lnav": false,
+    "actual_fmc_vnav": false
   },
   "remaining_work": [
     "Obtain licensed explicit ARINC424 path-terminator-coded source for AIRAC 2610; current narrative data has ZERO explicit coded legs",
@@ -53,9 +57,9 @@
     "Validate VNAV/AFDS against airframe-specific FCOM and system models",
     "Execute end-to-end acceptance on user's Windows and iPad hardware, including actual CDU and EFIS UI"
   ],
-  "next_priority": "Source-coded procedure legs and EP-FSI FMC equipment semantics must be provided/validated before active LNAV/VNAV/AFDS; Stage8 diagnostic tests can run now.",
-  "roadmap_document": "navigation/NPE_STAGE8.md",
-  "qa_private_artifact": "/B737/NAVDB/NPE_STAGE8/B737_NAVDB_AIRAC2610_NPE_STAGE8_PRIVATE.zip",
+  "next_priority": "Full AFDS/FMC coupling blocked pending verified AIRAC-coded procedure leg path terminators, actual EP-FSI FMC/AFDS interface and ownship/sensor bus.",
+  "roadmap_document": "navigation/NPE_STAGE9.md",
+  "qa_private_artifact": "/B737/NAVDB/NPE_STAGE9/B737_NAVDB_AIRAC2610_NPE_STAGE9_PRIVATE.zip",
   "older_ourairports_fallback": {
     "scope": "Iran-only",
     "code": "navigation/navdb.py",
@@ -70,5 +74,14 @@
     "hard_discontinuities": 4,
     "chromium_dom": "PASS_WITH_REAL_PRIVATE_SQL_RESPONSES_NETWORK_MOCKED",
     "real_device_acceptance": "NOT_TESTED"
+  },
+  "stage9_qa": {
+    "local_python_tests_passed": 28,
+    "advisory_js_tests": "PASS",
+    "reference_enroute_chords": 10,
+    "discontinuities": 4,
+    "chromium_dom": "PASS_WITH_SQL_DERIVED_API_MOCK",
+    "direct_localhost_chromium": "BLOCKED_BY_ADMINISTRATOR",
+    "real_device": "NOT_TESTED"
   }
 }
