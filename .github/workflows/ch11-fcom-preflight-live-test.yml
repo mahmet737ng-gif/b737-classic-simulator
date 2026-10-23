@@ -1,0 +1,18 @@
+name: FCOM CDU preflight live lab and source integrity
+on:
+  push:
+  pull_request:
+jobs:
+  fcom-preflight-demo:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate interactive FCOM trainer model and provenance
+        run: node engine/ch11/fcom-preflight-test/test.cjs
+      - name: Protect original CDU approved assets and font policy
+        run: node engine/ch11/tests/approved-cdu-assets.test.cjs && node tests/cdu-font-lock.test.cjs && node tests/cdu-ident-startup.test.cjs
+      - name: Syntax check interactive scripts
+        run: node --check engine/ch11/fcom-preflight-test/model.js && node --check engine/ch11/fcom-preflight-test/app.js
