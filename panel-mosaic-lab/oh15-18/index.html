@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0e1723">
+<title>B737 Classic · OH-15 through OH-18</title>
+<style>
+*{box-sizing:border-box}body{background:#0b1520;color:#eaf4fc;font:14px system-ui,Tahoma,Segoe UI,sans-serif;margin:0}
+a{color:#96ddfa}button{font:inherit;cursor:pointer;border-radius:8px;padding:9px 13px;color:#e9f5fb;background:#254359;border:1px solid #4a738b}
+header{display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap;background:#172a3c;border-bottom:1px solid #36566b;padding:17px max(16px,calc((100vw - 1480px)/2))}
+header strong{font-size:17px}header small{display:block;color:#acc2cf;font-size:12px;margin-top:5px}.links{display:flex;align-items:center;gap:12px}
+main{max-width:1480px;padding:24px 17px 40px;margin:auto}h1{margin:0 0 10px;font-size:clamp(24px,3vw,30px)}p{line-height:1.8;color:#a7c0d2}
+.status{padding:13px;border-radius:10px;border:1px solid #38657b;background:#152d40;margin:19px 0}
+.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.card{overflow:hidden;background:#122536;border-radius:12px;border:1px solid #44677c;min-width:0}
+.head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:13px 16px}
+.head code{color:#94e5f7;font-size:18px;font-weight:700}.head span{font-size:13px;color:#cfdfeb}
+.image{background:#0c1b28;min-height:240px;display:flex;align-items:center;justify-content:center;padding:12px}
+.image img{height:auto;width:100%;max-height:68vh;object-fit:contain}
+.info{border-top:1px solid #355368;padding:12px 15px;color:#abc5d5;font-size:12px;line-height:2}
+.info code{display:block;direction:ltr;text-align:left;overflow-wrap:anywhere;font:11px monospace;color:#a3dbf3}.ok{color:#8de9b5}.warn{color:#ffd296}
+.notice{padding:12px 15px;border-left:3px solid #f2bc70;background:#2b2c31;border-radius:8px;font-size:12px}
+footer{font-size:12px;color:#91abbc;padding-top:16px;line-height:1.85}
+@media(max-width:750px){.cards{grid-template-columns:1fr}.image img{max-height:64vh}}
+</style></head>
+<body><header><div><strong>B737 CLASSIC · OVERHEAD SOURCE PANELS</strong><small>OH-15 → OH-18 · UPD-0005 · مستندات موزاییکی</small></div><div class="links"><button id="reload">↻ بررسی فایل‌ها</button><a href="../">اطلس اصلی</a></div></header>
+<main><h1>پنل‌های ثبت‌شدهٔ OH-15 تا OH-18</h1>
+<p>تصاویر با همان بایت‌های آپلودشده در GitHub و نام‌های ثابت ثبت می‌شوند. هر تصویر قبل از نمایش با SHA-256 و تعداد بایت بررسی می‌شود. ساختار برش‌ها و اتصالات فیزیکی هنوز مرحلهٔ تأیید هندسی دارد.</p>
+<div id="status" class="status">در حال بررسی…</div><section class="cards" id="cards"></section>
+<footer>OH-18 به‌عنوان پنل عمومی دارای جای خالی کنترل‌ها موقتاً ثبت شده است؛ تعیین قطعی نوع سیستم نیازمند شناسایی تصویری مستقل است. این شماره‌گذاری نباید به معنی تأیید هندسهٔ مستطیلی قدیمی اطلس برداشت شود.</footer></main>
+<script>
+'use strict';
+const $=id=>document.getElementById(id);
+const el=(tag,cls,value)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(value!==undefined)n.textContent=value;return n};
+function toHex(b){return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join('')}
+async function display(){
+$('cards').replaceChildren();$('status').textContent='در حال تأیید فایل‌ها…';
+try{
+ const res=await fetch('spec.json?v='+Date.now(),{cache:'no-store'});if(!res.ok)throw Error('HTTP spec '+res.status);
+ const data=await res.json();let verified=0;
+ for(const item of data.panels){
+ const card=el('article','card'),head=el('div','head'),image=el('div','image'),info=el('div','info');
+ head.append(el('code','',item.id),el('span','',item.title));card.append(head,image,info);$('cards').append(card);
+ if(item.classification!=='verified')info.append(el('div','warn','طبقه‌بندی سیستم: موقت / نیازمند تأیید بصری'));
+ try{
+ const r=await fetch(item.path+'?v='+Date.now(),{cache:'no-store'});if(!r.ok)throw Error('HTTP image '+r.status);
+ const raw=await r.arrayBuffer();if(raw.byteLength!==item.bytes)throw Error('file size mismatch');
+ if(!crypto.subtle)throw Error('SHA-256 unavailable');const hash=toHex(await crypto.subtle.digest('SHA-256',raw));
+ if(hash!==item.sha256)throw Error('SHA-256 mismatch');
+ const obj=URL.createObjectURL(new Blob([raw],{type:'image/png'})),im=el('img');im.src=obj;im.alt=item.title;im.onload=()=>URL.revokeObjectURL(obj);image.append(im);
+ info.append(el('div','ok','✓ فایل اصلی بدون تغییر و با SHA-256 معتبر'));verified++;
+ }catch(e){image.append(el('p','warn','عدم نمایش: '+e.message))}
+ info.append(el('div','',item.sourceOriginal),el('code','',item.sha256));
+ const link=el('a','','مشاهدهٔ PNG در مخزن ↗');link.href=item.path;link.target='_blank';link.rel='noopener';info.append(link);
+ }
+ $('status').textContent=verified+' از '+data.panels.length+' تصویر با SHA-256 تأیید شده و قابل مشاهده است';
+}catch(e){$('status').textContent='خطا: '+e.message}
+}
+$('reload').onclick=display;display();
+</script></body></html>
