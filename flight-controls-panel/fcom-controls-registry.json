@@ -108,6 +108,27 @@
         "quoteKey": "OFF guarded position"
       },
       "mechanicalCloseSource": "inferred from guarded detent, not explicitly defined by FCOM"
+    },
+    {
+      "id": "emergencyExitLights",
+      "panel": "Forward Overhead / Emergency Lighting",
+      "label": "EMER EXIT LIGHTS",
+      "detents": [
+        "off",
+        "armed",
+        "on"
+      ],
+      "guardHinge": "top",
+      "guardedDetent": "armed",
+      "onClose": "force_armed",
+      "springLoaded": false,
+      "fcom": {
+        "folio": "1.30.9 and 1.40.5",
+        "pdfPage": 922,
+        "quoteKey": "guarded to ARMED position"
+      },
+      "mechanicalCloseSource": "guarded detent is FCOM-confirmed; mechanical actuation inferred, and hinge requires photo validation",
+      "uiIntegration": "not yet placed on interactive overhead artwork; logic and registry only"
     }
   ],
   "horizontalThreePosition": [
@@ -194,6 +215,6 @@
   ],
   "pending": [
     "Other cockpit guarded switches require exact FCOM family/variant and guard photo confirmation before close-policy assignment",
-    "No force_armed behavior assigned without an identified FCOM-supported control"
+    "EMER EXIT LIGHTS hardware guard sprite and mounting/hinge need overhead-panel pixel mapping"
   ]
 }
