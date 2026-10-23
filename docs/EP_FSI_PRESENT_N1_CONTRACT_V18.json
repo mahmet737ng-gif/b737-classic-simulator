@@ -1,0 +1,48 @@
+{
+  "schema": "b737-epfsi-present-n1-telemetry-contract-v18",
+  "aircraft": {
+    "registration": "EP-FSI",
+    "serial": 29340,
+    "engine": "CFM56-3B-1",
+    "ratingLbf": 20000
+  },
+  "sourceKinds": [
+    "ENGINE_CORE",
+    "EXTERNAL_SIM",
+    "INSTRUCTOR_TEST"
+  ],
+  "permittedEngineIds": [
+    1,
+    2
+  ],
+  "packet": {
+    "source": "ENGINE_CORE",
+    "registration": "EP-FSI",
+    "serial": 29340,
+    "engineId": 1,
+    "n1Pct": 85.4,
+    "seq": 1
+  },
+  "n1PercentBounds": [
+    0,
+    106
+  ],
+  "maxAgeMs": 2500,
+  "allowRepeatOrOldSeq": false,
+  "sourceSwitch": "flush both engine sample registers",
+  "zeroOnMissing": false,
+  "manualInput": "TEST_ONLY",
+  "actualCoreProducerStatus": "NOT_YET_IMPLEMENTED",
+  "transportStatus": "NOT_CONNECTED",
+  "maxN1Source": "AFM N1 curves private; not independently validated; N1 LIMIT blocked",
+  "antiIceDefault": "OFF",
+  "bleedDefault": "ON",
+  "weatherDefault": "ISA",
+  "cdu": "cdu-standalone/index.html",
+  "canonicalModule": "engine/fmc/indications/present-n1-bridge-v18.cjs",
+  "suite": [
+    "tests/epfsi-present-n1-v18.test.cjs",
+    "cdu-standalone/tests/present-n1-v18-integration.test.cjs"
+  ],
+  "useForActualFlight": false
+}
