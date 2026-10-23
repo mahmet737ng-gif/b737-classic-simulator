@@ -12,7 +12,7 @@ assert.deepEqual(atlas.canvas,{width:2220,height:3525});
 assert.equal(atlas.placements.length,spec.images.length,'exactly one absolute plate per source PNG');
 assert.equal(atlas.placements.length,18);
 assert.deepEqual(new Set(atlas.placements.map(x=>x.id)),new Set(spec.images.map(x=>x.id)));
-assert.equal(spec.version,'UPD-0009-atlas-absolute');
+assert.equal(spec.version,'UPD-0010-safe-content-fit');
 assert.equal(spec.coordinateLayout,'atlas-layout.json');
 const placements=new Map(atlas.placements.map(x=>[x.id,x]));
 assert.equal(placements.get('UPPER').y+placements.get('UPPER').h,1022);
