@@ -93,7 +93,7 @@
   "integration": {
     "navigation_source_selection": "registry",
     "source_merge_behavior": "explicit_source_selection_only",
-    "fmc_gate": "NPE Stage4 RTE/LEGS are draft/page-model only. Source procedure sequencing, transitions, named fix ambiguity, magnetic bearings and aircraft-specific FMC/EFIS/autopilot guidance remain unverified; no active navigation.",
+    "fmc_gate": "Stage5 EXEC commits a read-only flight-plan reference, not flyable FMC legs. Retain strict AIRAC 2610 marker, explicit discontinuities, source provenance; never connect to active AFDS/LNAV before aircraft-specific validation.",
     "simulator_training_only": true,
     "procedure_decoder": {
       "id": "NPE_STAGE1_v1",
@@ -256,6 +256,61 @@
         "All source files before per-file exact AIRAC header must be ignored",
         "No public redistribution of derived PMDG/Navigraph/Jeppesen data"
       ]
+    },
+    "cdu_preview_stage5": {
+      "id": "NPE_STAGE5_v1",
+      "source_id": "PMDG_WORLD_2610_WITH_PROCEDURES_R1",
+      "input_stage4_version": "NPE_STAGE4_FLIGHT_PLAN_DRAFT_v1",
+      "airac": "2610",
+      "revision": 1,
+      "exact_source_marker": "//AIRAC Cycle : 2610 (01/OCT/2026 - 29/OCT/2026) - Ver.1",
+      "status": "CDU_REFERENCE_ROUTE_PREVIEW_INTEGRATED",
+      "published_code": [
+        "navigation/npe_stage5_server.py",
+        "navigation/npe-stage5/index.html",
+        "navigation/npe-stage5/app.js",
+        "cdu-standalone-v6/stage5-model.js",
+        "cdu-standalone-v6/stage5-adapter.js",
+        "cdu-standalone-v6/stage5-map.js"
+      ],
+      "private_archive": "/B737/NAVDB/NPE_STAGE5/B737_NAVDB_AIRAC2610_NPE_STAGE5_PRIVATE.zip",
+      "private_manifest": "/B737/NAVDB/NPE_STAGE5/manifest.json",
+      "private_archive_sha256": "eda5d7f0d5375e75a2090347b616509594a01881c7cffe0f202a72a83c308989",
+      "backends": [
+        "GET /api/stage5/status",
+        "GET /api/stage5/plans",
+        "GET /api/stage5/plan?id=N",
+        "GET /api/stage5/procedures",
+        "POST /api/stage5/compose"
+      ],
+      "preview_pages": [
+        "RTE",
+        "DEP_ARR",
+        "DEPARTURES",
+        "ARRIVALS",
+        "LEGS"
+      ],
+      "transaction_model": "MOD->CDU LSK L5 ACTIVATE->EXEC->ACT REFERENCE ONLY",
+      "efis_mode": "PLAN_ONLY_SOURCE_REFERENCE_NO_DISCONTINUITY_CONNECTION",
+      "controls_preserved": true,
+      "test_results": {
+        "python_synthetic_passed": 3,
+        "javascript_synthetic_suite": "PASS",
+        "private_stage4_plan": "PASS",
+        "real_fixture_items": 20,
+        "real_fixture_discontinuities": 4,
+        "loopback_HTTP": "PASS",
+        "onsite_browser_acceptance": "NOT_VERIFIED"
+      },
+      "blockers": [
+        "SID_STAR_APP flyable leg path terminator sequencing unverified",
+        "no operational LNAV/VNAV",
+        "no AFDS commands",
+        "browser visual acceptance with actual Windows/iPad device unverified",
+        "private AIRAC data cannot be deployed on GitHub Pages"
+      ],
+      "fmc_active": false,
+      "simulator_training_only": true
     }
   }
 }
