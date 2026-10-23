@@ -32,7 +32,7 @@ for(const [name,phase,pmcMode,page,pressureAltitudeFt] of cases){
 }
 const wrong=n.requestN1({...a,serial:29339,phase:'TAKEOFF',pmcMode:'NORMAL'});
 assert.equal(wrong.reason,'WRONG_AIRCRAFT');
-assert.equal(n.requestN1({...a,phase:'TAKEOFF',pmcMode:'UNKNOWN'}).reason,'PMC_STATE_UNVERIFIED');
+assert.equal(n.requestN1({...a,phase:'TAKEOFF',pmcMode:'UNKNOWN'}).reason,'PMC_UNKNOWN');
 assert.equal(n.CHARTS['TAKEOFF:OFF'].pdfPage,756);
 assert.equal(m.STAGES.length,6);
 console.log('PASS v14: '+passed+' source-routed case templates, 0 certified numeric N1 and 0 A/T output');
