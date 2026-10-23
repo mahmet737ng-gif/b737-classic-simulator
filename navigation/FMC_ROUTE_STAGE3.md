@@ -16,6 +16,8 @@ Requirements: Python 3.10+, a local checkout/download of the `b737-classic-simul
 
 `/B737/NAVDB/NPE_STAGE2/B737_NAVDB_WORLD_AIRAC2610_NPE_STAGE2_PRIVATE.zip` from the user Library (146 MB ZIP; ~825 MB temporary extraction).
 
+You can also double-click `navigation/START_FMC_WINDOWS.cmd` and paste the private ZIP path.
+
 In PowerShell from the repository root:
 
 ```powershell
@@ -54,3 +56,6 @@ All data reads are local. `--private-zip` extracts only the two named SQLite fil
 - `node tests/cdu-nav-integration.test.cjs` tests RTE pending → EXEC commit → LEGS presentation, no early activation, source identity gate.
 - Real private Stage-1+Stage-2 runtime was checked with OIII / REVUR / OIIE and OIII SID listing; source SHA-256 of Stage-1 matched Stage-2 declared SHA-256.
 - Do not mark **complete real FMC guidance** until the full path-terminator grammar, equipment-specific FCOM variants, magnetic variation, manoeuvre geometry, LNAV/AFDS behavior and independent reference vectors are all verified.
+
+### Validation limit
+The API was exercised against the actual private Stage-1 and Stage-2 databases and public synthetic tests pass. The assistant execution environment blocks Chromium access to localhost (`ERR_BLOCKED_BY_ADMINISTRATOR`); full GUI acceptance on the user's Windows browser remains **not verified**. Never interpret a headless state-test pass as completed navigation-system testing.
