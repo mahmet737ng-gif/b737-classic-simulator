@@ -79,7 +79,11 @@
     "tests": [
       "tests/epfsi-simulated-n1-v19.test.cjs",
       "cdu-standalone/tests/estimated-n1-v19-integration.test.cjs"
-    ]
+    ],
+    "cduV6": "cdu-standalone-v6/app.js",
+    "cduV6SurrogateBundle": "cdu-standalone-v6/data/epfsi-simulated-n1-v19.js",
+    "cduV6Test": "cdu-standalone-v6/tests/est-n1-v19.test.cjs",
+    "accepted_ci_v6": "https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/39889087284"
   },
   "date": "2026-10-23"
 }
