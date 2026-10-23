@@ -15,3 +15,23 @@
 #bottom>.piece[data-key="OH23-25"]{grid-column:1/-1;min-height:0;border-bottom:0;overflow:hidden;background:#101b25}
 #bottom>.piece[data-key="OH23-25"] .crop-window{display:block;width:100%;position:relative;overflow:hidden;background:#101b25}
 #bottom>.piece[data-key="OH23-25"] .crop-window>img{display:block;user-select:none;pointer-events:none}
+
+/* UPD-0009: Atlas-coordinate mosaic, not automatic column flow.
+   Pixel regions traced directly from user's 2220x3525 original OH atlas. */
+#atlasAbsolute{position:relative;display:block;width:2220px;height:3525px;overflow:hidden;
+ background:#233540 url('../../assets/overhead.webp') center center/100% 100% no-repeat}
+.atlas-positioned #upper,.atlas-positioned #columns,.atlas-positioned #bottom{display:none!important}
+.atlas-piece{position:absolute;display:block;box-sizing:border-box;overflow:hidden;
+ background:#263746;cursor:pointer;outline:0 solid transparent;outline-offset:-4px}
+.atlas-image-window{display:block;position:absolute;inset:0;overflow:hidden;background:#273c4c}
+.atlas-photo{display:block;user-select:none;pointer-events:none}
+.atlas-piece:hover,.atlas-piece:focus-visible,.atlas-piece.selected{outline:6px solid #ffd18c;z-index:50!important}
+.atlas-piece .tag{position:absolute;z-index:3;top:8px;left:9px;max-width:calc(100% - 18px);white-space:nowrap;
+ overflow:hidden;text-overflow:ellipsis;background:#091a28d9;color:#e5f4ff;border:1px solid #91c5d8;
+ border-radius:6px;padding:5px 7px;font:700 14px/1.2 monospace;pointer-events:none}
+.hide-tags .atlas-piece .tag{display:none}
+.show-borders .atlas-piece{box-shadow:inset 0 0 0 3px #34e2fc}
+.atlas-missing{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+ color:#ffde91;font:bold 24px Tahoma,sans-serif;direction:rtl;background:#101923d9}
+.atlas-geometry-stamp{position:absolute;right:12px;top:12px;pointer-events:none;z-index:60;
+ background:#0b1826cd;color:#bce5ef;font:700 13px monospace;padding:7px 11px;border:1px solid #82abbd;border-radius:6px}
