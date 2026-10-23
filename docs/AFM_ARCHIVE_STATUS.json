@@ -124,9 +124,9 @@
     "registration": "EP-FSI",
     "registration_source": "USER_DECLARED",
     "status": "ONLY_ALLOWED_AFMPERFORMANCE_SOURCE_FOR_SIMULATOR",
-    "private_path": "/Technical Database/Sources/AFM-737-33V-D6-8730-R32/EP-FSI-ASN29340/v13/",
-    "private_database": "epfsi_afm_scoped_v13.sqlite",
-    "archive_version": "v13",
+    "private_path": "/Technical Database/Sources/AFM-737-33V-D6-8730-R32/EP-FSI-ASN29340/v14/",
+    "private_database": "epfsi_afm_scoped_v14.sqlite",
+    "archive_version": "v14",
     "rules": 110,
     "charts": 6,
     "cg_chart_pdf_page": 24,
@@ -136,17 +136,17 @@
     "numerical_n1_engine_ready": false,
     "runtime_connection": "v10 CDU reference only; v13 data QA pending",
     "public_registry_file": "docs/AFM_EP_FSI_ACTIVE_SCOPE.json",
-    "version": 13,
+    "version": 14,
     "installed_engine_rating": "20K",
     "installed_engine_rating_lbf": 20000,
     "rating_provenance": "USER_CONFIRMED_2026-10-23",
     "installed_engine_model": "CFM56-3B-1",
-    "previous_archive": "v12 preserved",
+    "previous_archive": "v13 preserved",
     "appendix_33": "MODEL_AND_RATING_MATCHED_20K__APPROVED_CONDITIONS_PENDING",
     "rating_22K_selected": false,
     "unit_tests_passed": 29,
     "scope_note": "Only EP-FSI ASN29340. Exact engine model CFM56-3B-1 and 20K rating reported by owner; no independent maintenance-record proof. Appendix conditions and numeric N1 curves still not validated.",
-    "private_db_sha256": "4ae7ccb80425ed337499a1b6303ec929f4ce86c171f1491bcaa81bc572d5d37c",
+    "private_db_sha256": "dcaf7ca1ce3a9dbccd9d5a469d9843249b54aab429ce25466e83be5db08b6306",
     "installed_engine_model_afm_spelling": "CFM56-3-B1",
     "installed_engine_model_source": "USER_CONFIRMATION_2026-10-23",
     "appendix_1UK": "REDUCED_TAKEOFF_CONDITIONAL",
@@ -170,9 +170,14 @@
     "numeric_n1_enabled": false,
     "unassigned_source_strokes": 46,
     "provisional_axis_mapped_readouts": 138,
-    "mct_stages": 6
+    "mct_stages": 6,
+    "pmc_off_printed_altitude_labels": 10,
+    "source_labelled_starter_leaders": 10,
+    "mct_pressure_limit_mach_legend_labels": 9,
+    "reference_case_templates": 8,
+    "numeric_goldens": 0
   },
-  "active_profile_instruction": "EP-FSI ASN29340 CFM56-3B-1/20K v13 private reference. PMC OFF p756 preliminary graph geometry, MCT p130 six-stage math isolated synthetic diagnostic. NEVER use unlabeled strokes for computed N1. Current CDU v10 numeric N1 blocked.",
+  "active_profile_instruction": "v14 private AFM is latest EP-FSI 29340 CFM56-3B-1/20K archive. Source label count for PMC OFF p756 is 10, not prior 13. Source cases contain no numeric golden values; CDU v10 guarded no auto-N1, no A/T.",
   "validation_batch_03": {
     "batch": "EPFSI_N1_SOURCE_V9",
     "private_library_path": "/Technical Database/Sources/AFM-737-33V-D6-8730-R32/EP-FSI-ASN29340/v9/",
@@ -290,5 +295,22 @@
     "synthetic_mct_code": "engine/fmc/performance/afm-epfsi-mct-v13.cjs",
     "private_db_tests_passed": 18,
     "status": "PARTIAL_SOURCE_DIGITIZATION_AND_MCT_MATH_TESTS; AUTO N1 BLOCKED"
+  },
+  "validation_batch_08": {
+    "batch_id": "EPFSI_PMC_OFF_LABEL_IDENTITY_V14",
+    "private_library_path": "/Technical Database/Sources/AFM-737-33V-D6-8730-R32/EP-FSI-ASN29340/v14/",
+    "source_pdf_pages": [
+      130,
+      756
+    ],
+    "source_image_pixel_identity_checks": 2,
+    "p756_distinct_printed_altitude_labels": 10,
+    "correction": "v13 incorrectly claimed 13 distinct labelled curves; only 10 left-side labelled starters directly observed",
+    "source_identified_starters": 10,
+    "mct_mach_label_count": 9,
+    "source_reference_case_templates": 8,
+    "independently_verified_final_n1_goldens": 0,
+    "private_regression_tests": "20 PASS",
+    "state": "VISUAL_LABEL_SEEDS_ONLY_NUMERIC_N1_BLOCKED"
   }
 }
