@@ -61,21 +61,42 @@ button{font:inherit;color:inherit;-webkit-tap-highlight-color:transparent;touch-
 .paddle-guard .hinge{position:absolute;left:7%;right:7%;top:0;height:13%;border-radius:28%;background:linear-gradient(#9ba6a8,#222729 40%,#747d81 63%,#1a1d1d);box-shadow:0 .3cqw .45cqw #000b;z-index:2;pointer-events:none}
 .paddle-guard[data-guard="open"]{transform:perspective(45cqw) rotateX(-113deg);filter:brightness(.88)}
 .paddle-guard:focus-visible{outline:0;filter:drop-shadow(0 0 .5cqw #d69b4a)}
-/* Independent LEFT/CENTER/RIGHT physical geometry, not rotated vertical sprites. */
-.toggle.selector{touch-action:pan-y;isolation:isolate;overflow:visible;clip-path:polygon(8% 4%,92% 4%,100% 23%,100% 80%,86% 100%,14% 100%,0 80%,0 23%)}
-.toggle.selector .h-state{position:absolute;inset:0;opacity:0;pointer-events:none;transform:scale(.95);transition:opacity 110ms linear,transform 270ms cubic-bezier(.2,.96,.22,1.1);transform-style:preserve-3d}
+/* Photo-calibrated NAV transfer toggle.
+   The original circular socket, hex nut and surrounding paint stay in the approved
+   panel photograph; this layer ONLY contains the moving metal shaft/white handle.
+   Pivot is at 50%/50% of each calibrated selector box. */
+.toggle.selector {
+  touch-action:pan-y;
+  isolation:isolate;
+  overflow:visible;
+  clip-path:none;
+  background:transparent;
+  transform:none;
+  perspective:55cqw;
+}
+.toggle.selector .h-state {
+  position:absolute;
+  inset:0;
+  opacity:0;
+  pointer-events:none;
+  transform:scale(.974);
+  transform-origin:50% 50%;
+  transition:opacity 100ms ease-in-out,transform 220ms cubic-bezier(.2,.95,.26,1.04);
+}
 .toggle.selector[data-position="left"] .h-left,
 .toggle.selector[data-position="normal"] .h-center,
-.toggle.selector[data-position="right"] .h-right{opacity:1;transform:scale(1)}
-.h-state .h-bezel{position:absolute;left:21%;top:22%;width:58%;height:57%;border-radius:50%;background:radial-gradient(ellipse at 33% 26%,#d5dddc,#737d7e 21%,#0c1011 55%,#242929 77%,#d0d8d5 92%,#383e40 100%);box-shadow:inset 0 -.4cqw .8cqw #000b,0 .35cqw .6cqw #000b}
-.h-state .h-pivot{position:absolute;left:38%;top:32%;width:24%;height:25%;border-radius:50%;background:radial-gradient(circle at 33% 25%,#e4ecec,#646c6c 36%,#101719 72%,#565e61 90%);box-shadow:0 .2cqw .4cqw #000a;z-index:2}
-.h-state .h-stem{position:absolute;left:45.5%;top:40%;height:26%;width:9%;border-radius:35% 35% 22% 22%;background:linear-gradient(90deg,#2d3535,#f0f3ee 42%,#667376 76%,#192022);box-shadow:.15cqw .2cqw .35cqw #000b;transform-origin:50% 5%;z-index:3}
-.h-state .h-grip{position:absolute;left:39%;top:59%;width:22%;height:21%;border-radius:26% 26% 34% 34%;background:linear-gradient(90deg,#8e9692 0%,#f7f7ed 25%,#fefff7 49%,#c5ccc6 75%,#737d7e 100%);box-shadow:inset -.35cqw -.25cqw .65cqw #383e3d79,0 .35cqw .6cqw #000c;transform-origin:50% -60%;z-index:4}
-.h-left .h-stem{transform:translateX(-25%) rotate(35deg)}
-.h-left .h-grip{transform:translateX(-72%) translateY(-12%) rotate(24deg)}
-.h-center .h-stem{transform:rotate(0)}
-.h-center .h-grip{transform:translateX(0)}
-.h-right .h-stem{transform:translateX(25%) rotate(-35deg)}
-.h-right .h-grip{transform:translateX(72%) translateY(-12%) rotate(-24deg)}
-.toggle.selector:active .h-state{filter:brightness(1.11)}
-.toggle.selector:focus-visible .h-bezel{box-shadow:0 0 .9cqw #ffad35,inset 0 -.4cqw .8cqw #000b}
+.toggle.selector[data-position="right"] .h-right {
+  opacity:1;
+  transform:scale(1);
+}
+.toggle.selector .photo-lever {
+  display:block;
+  width:100%;
+  height:100%;
+  overflow:visible;
+  filter:drop-shadow(0 .20cqw .24cqw #01030475);
+  backface-visibility:hidden;
+}
+.toggle.selector:active .photo-lever { filter:brightness(1.06) drop-shadow(0 .20cqw .28cqw #01030491); }
+.toggle.selector:focus-visible { outline:none; }
+/* No fake CSS bezel, slide track, rectangular focus ring, or rotated 2-position bitmap. */
