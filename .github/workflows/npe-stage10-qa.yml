@@ -1,0 +1,45 @@
+name: NPE Stage10 - Aircraft Bus and Live Advisory
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'navigation/npe_stage10_*.py'
+      - 'navigation/npe-stage10/**'
+      - 'navigation/tests/test_npe_stage10*.py'
+      - 'cdu-standalone-v6/stage10-advisory.js'
+      - 'cdu-standalone-v6/tests/stage10-advisory.test.cjs'
+      - '.github/workflows/npe-stage10-qa.yml'
+  pull_request:
+    paths:
+      - 'navigation/npe_stage10_*.py'
+      - 'navigation/npe-stage10/**'
+      - 'navigation/tests/test_npe_stage10*.py'
+      - 'cdu-standalone-v6/stage10-advisory.js'
+      - 'cdu-standalone-v6/tests/stage10-advisory.test.cjs'
+jobs:
+  synthetic-guidance:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Aircraft State Bus / Live Navigation / HTTP safety tests
+        run: python -m unittest discover -s navigation/tests -p 'test_npe_stage10*.py' -v
+      - name: Stage10 EHSI source/command safety contract
+        run: node cdu-standalone-v6/tests/stage10-advisory.test.cjs
+      - name: Browser JS syntax (no proprietary test data)
+        run: |
+          node --check cdu-standalone-v6/stage10-advisory.js
+          node --check navigation/npe-stage10/app.js
+      - name: Reject proprietary navigation DB copied into public source
+        run: |
+          if find navigation -type f \( -name '*.sqlite' -o -name '*.db' \) | grep .; then
+            echo 'Private navigation database forbidden in public GitHub'
+            exit 1
+          fi
