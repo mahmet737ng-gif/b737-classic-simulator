@@ -1,0 +1,965 @@
+{
+  "schema": "b737-classic-ch11-geometric-vnav-and-speed-descent/1.0",
+  "record_id": "B737-CLASSIC-CDU-GEOMETRIC-DESCENT-2020",
+  "source": {
+    "manual": "Boeing 737 Classic FCOM; Flight Management, Navigation — Flight Management System Operation",
+    "document_no": "D6-27370-300/400/500-SHI",
+    "revision": "2020-10-15",
+    "screenshots": [
+      {
+        "viewer_page": 1522,
+        "folio": "11.31.33",
+        "revision": "2020-10-15",
+        "filename": "image(20261023-182428).png",
+        "sha256": "b75c7ccf26545c3bc2157054bc94ea57080ab1ecd603d547fd15ddd5ebe7de0c",
+        "content": "GEOMETRIC_PATH_DESCENT_NON_PRECISION_APPROACH"
+      },
+      {
+        "viewer_page": 1523,
+        "folio": "11.31.34",
+        "revision": "2020-10-15",
+        "filename": "image(20261023-182438).png",
+        "sha256": "38a0b566c966a9b978b77754e0a6ee62416e1263d2e61f639ae9e4f8024d321e",
+        "content": "VNAV_PROFILE_WITH_INTERMEDIATE_TD_AND_ALTITUDE"
+      },
+      {
+        "viewer_page": 1524,
+        "folio": "11.31.35",
+        "revision": "2020-10-15",
+        "filename": "image(20261023-182441).png",
+        "sha256": "b16607de769d5a1220b05f7041365ab5454c7739fe2e251f130edc6334673026",
+        "content": "DECEL_POINTS_VNAV_PROFILE"
+      },
+      {
+        "viewer_page": 1525,
+        "folio": "11.31.36",
+        "revision": "2020-10-15",
+        "filename": "image(20261023-182518).png",
+        "sha256": "7a7f3c364a19c82f3078d10d616c208f7fd44494c0e26be509920d5edcfd8dec",
+        "content": "SEVEN_PROFILE_EVENT_DESCRIPTIONS"
+      },
+      {
+        "viewer_page": 1526,
+        "folio": "11.31.37",
+        "revision": "2020-10-15",
+        "filename": "image(20261023-182519).png",
+        "sha256": "c5fab666b264276924d1d7e9ec277005c799e9c215408453aa58dea9c840e6a8",
+        "content": "VNAV_SPEED_DESCENT"
+      }
+    ],
+    "source_scope": "USER_SUPPLIED_5_SCREENSHOTS",
+    "provenance_format": "SHA256_OVER_ORIGINAL_USER_IMAGE_BYTES",
+    "copyright": "Original Boeing diagrams omitted; source-reference and independent interpretations only."
+  },
+  "aircraft_scope": {
+    "aircraft": "EP-FSI_B737_CLASSIC",
+    "software_effectivity": "NOT_ESTABLISHED",
+    "navigation_authority": "TRAINING_ONLY",
+    "variant_marks": "IMPAIRED_IN_SOURCE_CAPTURE"
+  },
+  "figure_model": {
+    "profile_type": "NON_PRECISION_APPROACH_EXAMPLE",
+    "route_waypoint_identifiers": [
+      "MNO",
+      "EPG",
+      "FAF"
+    ],
+    "constraint_annotations": [
+      "10000FT",
+      "7000FT",
+      "4000FT",
+      "FAF_ALT",
+      "MISSED_APPROACH_ALTITUDE"
+    ],
+    "simulated_markers": [
+      "T/D",
+      "INTERMEDIATE_T/D_7000",
+      "DECEL",
+      "E/D"
+    ],
+    "numbered_steps": [
+      {
+        "num": 1,
+        "name": "CRUISE",
+        "mode": "VNAV_PTH_CRUISE_CONTEXT"
+      },
+      {
+        "num": 2,
+        "name": "DESCENT_AFTER_T_D",
+        "mode": "VNAV_PTH_ECON_DESCENT"
+      },
+      {
+        "num": 3,
+        "name": "SPEED_RESTRICTION_DECEL",
+        "mode": "VNAV_PTH_DECEL"
+      },
+      {
+        "num": 4,
+        "name": "ALTITUDE_CONSTRAINTS",
+        "mode": "VNAV_PTH_OR_GEOMETRIC_OPTION"
+      },
+      {
+        "num": 5,
+        "name": "APPROACH",
+        "mode": "VNAV_PTH_APPROACH"
+      },
+      {
+        "num": 6,
+        "name": "MISSED_APPROACH",
+        "mode": "VNAV_DISENGAGES_TO_GA_THEN_CREW_VNAV_RESELECTS_SPD"
+      },
+      {
+        "num": 7,
+        "name": "MISSED_APPROACH_LEVEL_OFF",
+        "mode": "VNAV_PTH_LEVEL_OFF"
+      }
+    ],
+    "toga_note": {
+      "radio_altitude_trigger": "BELOW_2000_FT_RA",
+      "events": [
+        "MISSED_APPROACH_START",
+        "REDUCED_GO_AROUND_THRUST_SET",
+        "FMC_CRUISE_ALTITUDE_RESET"
+      ],
+      "installed_software_effectivity": "UNVERIFIED"
+    },
+    "illustrative_only": true
+  },
+  "variants": [
+    {
+      "id": "ALTITUDE_RESTRICTION_PATH_BEHAVIOR",
+      "choices": [
+        "LEVEL_SEGMENTS_THEN_IDLE_PATH",
+        "GEOMETRIC_PATH_FMC_SPD_THRUST"
+      ],
+      "status": "MUTUALLY_ALTERNATIVE_UNVERIFIED"
+    },
+    {
+      "id": "SPEED_DESCENT_AUTO_REVERT",
+      "choices": [
+        "NO_AUTOMATIC_REVERT",
+        "AUTO_PATH_REVERT_IN_VERTICAL_ANGLE_STAR_APPROACH_LEGS"
+      ],
+      "status": "MUTUALLY_ALTERNATIVE_UNVERIFIED"
+    }
+  ],
+  "requirements": [
+    {
+      "rule_id": "GD-01-CRUISE-TD",
+      "source": {
+        "viewer_page": 1522,
+        "printed_folio": "11.31.33",
+        "figure_or_section": "figure_1_2"
+      },
+      "domain": "vertical_profile",
+      "inputs": [
+        "CRUISE_BEFORE_TOP_OF_DESCENT"
+      ],
+      "outputs": [
+        "PROFILE_TRANSITION_AT_TD"
+      ],
+      "effectivity": "REQUIRES_AIRCRAFT_OPTION_VERIFICATION",
+      "status": "SOURCE_EXTRACTED_RUNTIME_NOT_IMPLEMENTED",
+      "note": null
+    },
+    {
+      "rule_id": "GD-02-GEOMETRIC-LEVEL-SEGMENTS",
+      "source": {
+        "viewer_page": 1522,
+        "printed_folio": "11.31.33",
+        "figure_or_section": "figure_3_4_5"
+      },
+      "domain": "vertical_profile",
+      "inputs": [
+        "ALTITUDE_RESTRICTIONS_MNO_EPG_FAF"
+      ],
+      "outputs": [
+        "GEOMETRIC_LEVEL_AND_DESCENT_SEGMENTS"
+      ],
+      "effectivity": "GEOMETRIC_PATH_OPTION",
+      "status": "SOURCE_EXTRACTED_RUNTIME_NOT_IMPLEMENTED",
+      "note": null
+    },
+    {
+      "rule_id": "GD-03-FAF-E_D",
+      "source": {
+        "viewer_page": 1522,
+        "printed_folio": "11.31.33",
+        "figure_or_section": "figure_5_6"
+      },
+      "domain": "vertical_profile",
+      "inputs": [
+        "FAF_AND_END_OF_DESCENT_AVAILABLE"
+      ],
+      "outputs": [
+        "COMPUTED_APPROACH_SEGMENT_TO_ED"
+      ],
+      "effectivity": "REQUIRES_AIRCRAFT_OPTION_VERIFICATION",
+      "status": "SOURCE_EXTRACTED_RUNTIME_NOT_IMPLEMENTED",
+      "note": null
+    },
+    {
+      "rule_id": "GD-04-APP-MISSED-ALTITUDE",
+      "source": {
+        "viewer_page": 1522,
+        "printed_folio": "11.31.33",
+        "figure_or_section": "figure_7"
+      },
+      "domain": "missed_approach",
+      "inputs": [
+        "PUBLISHED_MISSED_APPROACH_ALTITUDE_IN_PROCEDURE"
+      ],
+      "outputs": [
+        "MISSED_APPROACH_LEVEL_OFF_REFERENCE"
+      ],
+      "effectivity": "REQUIRES_AIRCRAFT_OPTION_VERIFICATION",
+      "status": "SOURCE_EXTRACTED_RUNTIME_NOT_IMPLEMENTED",
+      "note": null
+    },
+    {
+      "rule_id": "GD-05-TOGA-BELOW-2000-RA",
+      "source": {
+        "viewer_page": 1522,
+        "printed_folio": "11.31.33",
+        "figure_or_section": "note_toga_below_2000ft_ra"
+      },
+      "domain": "missed_approach",
+      "inputs": [
+        "TOGA_PRESSED_AND_RADIO_ALTITUDE_BELOW_2000FT"
+      ],
+      "outputs": [
+        "MISSED_APPROACH_INITIATED"
+      ],
+      "effectivity": "FIGURE_CONFIG_NOT_VERIFIED",
+      "status": "SOURCE_EXTRACTED_RUNTIME_NOT_IMPLEMENTED",
+      "note": null
+    },
+    {
+      "rule_id": "GD-06-TOGA-REDUCED-GA",
+      "source": {
+        "viewer_page": 1522,
+        "printed_folio": "11.31.33",
+        "figure_or_section": "note_toga_below_2000ft_ra"
+      },
+      "domain": "thrust_request",
+      "inputs": [
+        "TOGA_BELOW_2000FT_RA_AND_APPLICABLE_OPTION"
+      ],
+      "outputs": [
+        "REDUCED_GO_AROUND_THRUST_REFERENCE"
+      ],
+      "effectivity": "FIGURE_CONFIG_NOT_VERIFIED",
+      "status": "SOURCE_EXTRACTED_RUNTIME_NOT_IMPLEMENTED",
+      "note": null
+    },
+    {
+      "rule_id": "GD-07-TOGA-RESET-CRZ",
+      "source": {
+        "viewer_page": 1522,
+        "printed_folio": "11.31.33",
+        "figure_or_section": "note_toga_below_2000ft_ra"
+      },
+      "domain": "fmc_state",
+      "inputs": [
+        "TOGA_BELOW_2000FT_RA_AND_APPLICABLE_OPTION"
+      ],
+      "outputs": [
+        "FMC_CRUISE_ALTITUDE_RESET"
+      ],
+      "effectivity": "FIGURE_CONFIG_NOT_VERIFIED",
+      "status": "SOURCE_EXTRACTED_RUNTIME_NOT_IMPLEMENTED",
+      "note": null
+    },
+    {
+      "rule_id": "GD-08-FIGURE-NONPRECISION",
+      "source": {
+        "viewer_page": 1522,
+        "printed_folio": "11.31.33",
+        "figure_or_section": "figure"
+      },
+      "domain": "source_scenario",
+      "inputs": [
+        "NON_PRECISION_APPROACH_FIGURE"
+      ],
+      "outputs": [
+        "ANNOTATION_ONLY_NOT_APPROVED_LNAV_VNAV_GEOMETRY"
+      ],
+      "effectivity": "ILLUSTRATIVE_ONLY",
+      "status": "SOURCE_EXTRACTED_RUNTIME_NOT_IMPLEMENTED",
+      "note": null
+    },
+    {
+      "rule_id": "GD-09-INTERMEDIATE-TD-7000",
+      "source": {
+        "viewer_page": 1523,
+        "printed_folio": "11.31.34",
+        "figure_or_section": "diagram_inset_TD_7000"
+      },
+      "domain": "vertical_profile",
+      "inputs": [
+        "LEVEL_AT_7000FT_BETWEEN_DESCENT_SEGMENTS"
+      ],
+      "outputs": [
+        "INTERMEDIATE_TD_7000_MARKER"
+      ],
+      "effectivity": "ILLUSTRATIVE_ONLY",
+      "status": "SOURCE_EXTRACTED_RUNTIME_NOT_IMPLEMENTED",
+      "note": null
+    },
+    {
+      "rule_id": "GD-10-CONSTRAINTS-MNO-EPG-FAF",
+      "source": {
+        "viewer_page": 1523,
+        "printed_folio": "11.31.34",
+        "figure_or_section": "diagram_altitude_restrictions"
+      },
+      "domain": "vertical_profile",
+      "inputs": [
+        "PUBLISHED_ALTITUDE_RESTRICTIONS"
+      ],
+      "outputs": [
+        "PATH_CONSTRAINED_AT_MNO_EPG_FAF"
+      ],
+      "effectivity": "REQUIRES_AIRCRAFT_OPTION_VERIFICATION",
+      "status": "SOURCE_EXTRACTED_RUNTIME_NOT_IMPLEMENTED",
+      "note": null
+    },
+    {
+      "rule_id": "GD-11-10000-SPEED-SEGMENT",
+      "source": {
+        "viewer_page": 1523,
+        "printed_folio": "11.31.34",
+        "figure_or_section": "diagram_10000ft"
+      },
+      "domain": "speed_profile",
+      "inputs": [
+        "EXAMPLE_10000FT_AIRPORT_SPEED_RESTRICTION"
+      ],
+      "outputs": [
+        "PLANNED_DECELERATION_BEFORE_CONSTRAINT"
+      ],
+      "effectivity": "ILLUSTRATIVE_ONLY",
+      "status": "SOURCE_EXTRACTED_RUNTIME_NOT_IMPLEMENTED",
+      "note": null
+    },
+    {
+      "rule_id": "GD-12-FAF-LEVEL-AND-PATH",
+      "source": {
+        "viewer_page": 1523,
+        "printed_folio": "11.31.34",
+        "figure_or_section": "figure_4_5"
+      },
+      "domain": "vertical_profile",
+      "inputs": [
+        "GEOMETRIC_PATH_OPTION"
+      ],
+      "outputs": [
+        "SPEED_CONTROL_AND_APPROACH_SEGMENT_COMBINATION"
+      ],
+      "effectivity": "GEOMETRIC_PATH_OPTION",
+      "status": "SOURCE_EXTRACTED_RUNTIME_NOT_IMPLEMENTED",
+      "note": null
+    },
+    {
+      "rule_id": "GD-13-POST_ED-GA",
+      "source": {
+        "viewer_page": 1523,
+        "printed_folio": "11.31.34",
+        "figure_or_section": "figure_6_7"
+      },
+      "domain": "missed_approach",
+      "inputs": [
+        "MISSED_APPROACH_BEYOND_ED"
+      ],
+      "outputs": [
+        "PUBLISHED_GA_LEVEL_OFF_CONTEXT"
+      ],
+      "effectivity": "ILLUSTRATIVE_ONLY",
+      "status": "SOURCE_EXTRACTED_RUNTIME_NOT_IMPLEMENTED",
+      "note": null
+    },
+    {
+      "rule_id": "GD-14-DECEL-PROFILE",
+      "source": {
+        "viewer_page": 1524,
+        "printed_folio": "11.31.35",
+        "figure_or_section": "DECEL_POINTS_FIGURE"
+      },
+      "domain": "deceleration",
+      "inputs": [
+        "SPEED_RESTRICTIONS_ON_DESCENT_ROUTE"
+      ],
+      "outputs": [
+        "COMPUTED_DECEL_SEGMENTS_ADDED_TO_VNAV_PROFILE"
+      ],
+      "effectivity": "REQUIRES_AIRCRAFT_OPTION_VERIFICATION",
+      "status": "SOURCE_EXTRACTED_RUNTIME_NOT_IMPLEMENTED",
+      "note": null
+    },
+    {
+      "rule_id": "GD-15-DECEL-NEAR-FAF",
+      "source": {
+        "viewer_page": 1524,
+        "printed_folio": "11.31.35",
+        "figure_or_section": "FAF_APPROACH_SEGMENT"
+      },
+      "domain": "deceleration",
+      "inputs": [
+        "APPROACH_SPEED_CONSTRAINT_NEAR_FAF"
+      ],
+      "outputs": [
+        "DECEL_FOR_APPROACH_SPEED_BEFORE_FAF"
+      ],
+      "effectivity": "REQUIRES_AIRCRAFT_OPTION_VERIFICATION",
+      "status": "SOURCE_EXTRACTED_RUNTIME_NOT_IMPLEMENTED",
+      "note": null
+    },
+    {
+      "rule_id": "GD-16-DECEL-BEFORE-POINT",
+      "source": {
+        "viewer_page": 1524,
+        "printed_folio": "11.31.35",
+        "figure_or_section": "DECEL_POINTS_FIGURE"
+      },
+      "domain": "deceleration",
+      "inputs": [
+        "SPEED_TARGET_LOWER_AT_UPCOMING_SEGMENT"
+      ],
+      "outputs": [
+        "SPEED_REDUCTION_BEGINS_AHEAD_OF_CONSTRAINT"
+      ],
+      "effectivity": "REQUIRES_AIRCRAFT_OPTION_VERIFICATION",
+      "status": "SOURCE_EXTRACTED_RUNTIME_NOT_IMPLEMENTED",
+      "note": null
+    },
+    {
+      "rule_id": "GD-17-NO-COORD-INFERENCE",
+      "source": {
+        "viewer_page": 1524,
+        "printed_folio": "11.31.35",
+        "figure_or_section": "figure"
+      },
+      "domain": "source_scenario",
+      "inputs": [
+        "ILLUSTRATIVE_GEOMETRY"
+      ],
+      "outputs": [
+        "DO_NOT_INFER_AIRPORT_ROUTE_DISTANCE_OR_REAL_COORDINATES"
+      ],
+      "effectivity": "ILLUSTRATIVE_ONLY",
+      "status": "SOURCE_EXTRACTED_RUNTIME_NOT_IMPLEMENTED",
+      "note": null
+    },
+    {
+      "rule_id": "GD-18-CRUISE-PHASE",
+      "source": {
+        "viewer_page": 1525,
+        "printed_folio": "11.31.36",
+        "figure_or_section": "paragraph_1_Cruise"
+      },
+      "domain": "flight_phase",
+      "inputs": [
+        "BEFORE_TOP_OF_DESCENT"
+      ],
+      "outputs": [
+        "FMC_CRUISE_AND_ECON_CRUISE_SPEED"
+      ],
+      "effectivity": "REQUIRES_AIRCRAFT_OPTION_VERIFICATION",
+      "status": "SOURCE_EXTRACTED_RUNTIME_NOT_IMPLEMENTED",
+      "note": null
+    },
+    {
+      "rule_id": "GD-19-CRUISE-PITCH",
+      "source": {
+        "viewer_page": 1525,
+        "printed_folio": "11.31.36",
+        "figure_or_section": "paragraph_1_Cruise"
+      },
+      "domain": "vnav_mode",
+      "inputs": [
+        "FMC_IN_CRUISE_PHASE"
+      ],
+      "outputs": [
+        "VNAV_PTH_REFERENCE_IN_SCENARIO"
+      ],
+      "effectivity": "DOCUMENTED_EXAMPLE_CONTEXT",
+      "status": "SOURCE_EXTRACTED_RUNTIME_NOT_IMPLEMENTED",
+      "note": null
+    },
+    {
+      "rule_id": "GD-20-TD-TO-DESCENT",
+      "source": {
+        "viewer_page": 1525,
+        "printed_folio": "11.31.36",
+        "figure_or_section": "paragraph_2_Descent"
+      },
+      "domain": "flight_phase",
+      "inputs": [
+        "AFTER_TOP_OF_DESCENT"
+      ],
+      "outputs": [
+        "FMC_DESCENT_PHASE"
+      ],
+      "effectivity": "REQUIRES_AIRCRAFT_OPTION_VERIFICATION",
+      "status": "SOURCE_EXTRACTED_RUNTIME_NOT_IMPLEMENTED",
+      "note": null
+    },
+    {
+      "rule_id": "GD-21-ECON-DES-PTH",
+      "source": {
+        "viewer_page": 1525,
+        "printed_folio": "11.31.36",
+        "figure_or_section": "paragraph_2_Descent"
+      },
+      "domain": "vnav_mode",
+      "inputs": [
+        "DESCENT_PHASE_IN_EXAMPLE"
+      ],
+      "outputs": [
+        "VNAV_PTH_ECON_DESCENT_SPEED_REFERENCE"
+      ],
+      "effectivity": "REQUIRES_AIRCRAFT_OPTION_VERIFICATION",
+      "status": "SOURCE_EXTRACTED_RUNTIME_NOT_IMPLEMENTED",
+      "note": null
+    },
+    {
+      "rule_id": "GD-22-SPEED-DECEL-BEFORE",
+      "source": {
+        "viewer_page": 1525,
+        "printed_folio": "11.31.36",
+        "figure_or_section": "paragraph_3_Speed_Restriction_Deceleration"
+      },
+      "domain": "vnav_speed",
+      "inputs": [
+        "APPROACHING_SPEED_RESTRICTION_ALTITUDE"
+      ],
+      "outputs": [
+        "COMMAND_DECELERATION_TO_RESTRICTED_SPEED_USING_VNAV_PTH"
+      ],
+      "effectivity": "REQUIRES_AIRCRAFT_OPTION_VERIFICATION",
+      "status": "SOURCE_EXTRACTED_RUNTIME_NOT_IMPLEMENTED",
+      "note": null
+    },
+    {
+      "rule_id": "GD-23-SPEED-DECEL-AFTER",
+      "source": {
+        "viewer_page": 1525,
+        "printed_folio": "11.31.36",
+        "figure_or_section": "paragraph_3_Speed_Restriction_Deceleration"
+      },
+      "domain": "vnav_speed",
+      "inputs": [
+        "TARGET_RESTRICTED_SPEED_REACHED"
+      ],
+      "outputs": [
+        "RESUME_PITCH_FOR_DESCENT_IN_VNAV_PTH"
+      ],
+      "effectivity": "REQUIRES_AIRCRAFT_OPTION_VERIFICATION",
+      "status": "SOURCE_EXTRACTED_RUNTIME_NOT_IMPLEMENTED",
+      "note": null
+    },
+    {
+      "rule_id": "GD-24-WAYPOINT-ALTITUDE",
+      "source": {
+        "viewer_page": 1525,
+        "printed_folio": "11.31.36",
+        "figure_or_section": "paragraph_4_Altitude_Restrictions"
+      },
+      "domain": "vertical_constraints",
+      "inputs": [
+        "APPROACH_DESCENT_PATH"
+      ],
+      "outputs": [
+        "MATCH_MNO_EPG_FAF_ALTITUDE_CONSTRAINTS"
+      ],
+      "effectivity": "REQUIRES_AIRCRAFT_OPTION_VERIFICATION",
+      "status": "SOURCE_EXTRACTED_RUNTIME_NOT_IMPLEMENTED",
+      "note": null
+    },
+    {
+      "rule_id": "GD-25-LEVEL-THEN-IDLE",
+      "source": {
+        "viewer_page": 1525,
+        "printed_folio": "11.31.36",
+        "figure_or_section": "paragraph_4_variant_1"
+      },
+      "domain": "vnav_mode",
+      "inputs": [
+        "INTERMEDIATE_LEVEL_SEGMENT_REQUIRED"
+      ],
+      "outputs": [
+        "HOLD_LEVEL_PATH_UNTIL_IDLE_THRUST_DESCENT_PATH_INTERCEPT"
+      ],
+      "effectivity": "BASIC_PATH_DESCENT_VARIANT",
+      "status": "SOURCE_EXTRACTED_RUNTIME_NOT_IMPLEMENTED",
+      "note": null
+    },
+    {
+      "rule_id": "GD-26-GEOMETRIC-THRUST",
+      "source": {
+        "viewer_page": 1525,
+        "printed_folio": "11.31.36",
+        "figure_or_section": "paragraph_4_variant_2"
+      },
+      "domain": "thrust_request",
+      "inputs": [
+        "GEOMETRIC_PATH_DESCENT_OPTION_AND_ALTITUDE_RESTRICTIONS"
+      ],
+      "outputs": [
+        "FMC_SPD_THRUST_MODE_AS_NEEDED_TO_HOLD_TARGET_SPEED"
+      ],
+      "effectivity": "GEOMETRIC_PATH_DESCENT_OPTION",
+      "status": "SOURCE_EXTRACTED_RUNTIME_NOT_IMPLEMENTED",
+      "note": null
+    },
+    {
+      "rule_id": "GD-27-APPROACH-PTH",
+      "source": {
+        "viewer_page": 1525,
+        "printed_folio": "11.31.36",
+        "figure_or_section": "paragraph_5_Approach"
+      },
+      "domain": "vnav_mode",
+      "inputs": [
+        "BEGIN_PUBLISHED_APPROACH_WITH_VNAV"
+      ],
+      "outputs": [
+        "VNAV_PTH_APPROACH_AT_COMMANDED_SPEED"
+      ],
+      "effectivity": "REQUIRES_AIRCRAFT_OPTION_VERIFICATION",
+      "status": "SOURCE_EXTRACTED_RUNTIME_NOT_IMPLEMENTED",
+      "note": null
+    },
+    {
+      "rule_id": "GD-28-TOGA-MISSED-DISCONNECT",
+      "source": {
+        "viewer_page": 1525,
+        "printed_folio": "11.31.36",
+        "figure_or_section": "paragraph_6_Missed_Approach"
+      },
+      "domain": "missed_approach",
+      "inputs": [
+        "TOGA_DURING_APPROACH_OR_CROSSING_MISSED_APPROACH_POINT"
+      ],
+      "outputs": [
+        "VNAV_DISENGAGES"
+      ],
+      "effectivity": "DOCUMENTED_APPROACH_OPTION",
+      "status": "SOURCE_EXTRACTED_RUNTIME_NOT_IMPLEMENTED",
+      "note": null
+    },
+    {
+      "rule_id": "GD-29-VNAV-RESELECT-MISSED",
+      "source": {
+        "viewer_page": 1525,
+        "printed_folio": "11.31.36",
+        "figure_or_section": "paragraph_6_Missed_Approach"
+      },
+      "domain": "missed_approach",
+      "inputs": [
+        "CREW_SELECTS_VNAV_DURING_MISSED_APPROACH"
+      ],
+      "outputs": [
+        "VNAV_ENGAGES_IN_VNAV_SPD"
+      ],
+      "effectivity": "DOCUMENTED_APPROACH_OPTION",
+      "status": "SOURCE_EXTRACTED_RUNTIME_NOT_IMPLEMENTED",
+      "note": null
+    },
+    {
+      "rule_id": "GD-30-MISSED-LEVEL-VNAV-PTH",
+      "source": {
+        "viewer_page": 1525,
+        "printed_folio": "11.31.36",
+        "figure_or_section": "paragraph_7_Missed_Approach_Level_Off"
+      },
+      "domain": "missed_approach",
+      "inputs": [
+        "MISSED_APPROACH_ALTITUDE_REACHED_WITH_VNAV_ENGAGED"
+      ],
+      "outputs": [
+        "VNAV_TRANSITIONS_TO_VNAV_PTH_LEVEL_OFF"
+      ],
+      "effectivity": "DOCUMENTED_APPROACH_OPTION",
+      "status": "SOURCE_EXTRACTED_RUNTIME_NOT_IMPLEMENTED",
+      "note": null
+    },
+    {
+      "rule_id": "SD-01-MANUAL-SPEED-PROMPT",
+      "source": {
+        "viewer_page": 1526,
+        "printed_folio": "11.31.37",
+        "figure_or_section": "VNAV_Speed_Descent"
+      },
+      "domain": "cdu_descent_pages",
+      "inputs": [
+        "SPEED_PROMPT_SELECTED_FROM_PATH_DES_PAGE"
+      ],
+      "outputs": [
+        "SELECT_VNAV_SPEED_DESCENT"
+      ],
+      "effectivity": "REQUIRES_AIRCRAFT_OPTION_VERIFICATION",
+      "status": "SOURCE_EXTRACTED_RUNTIME_NOT_IMPLEMENTED",
+      "note": null
+    },
+    {
+      "rule_id": "SD-02-NO-ED-ONLY-SPEED",
+      "source": {
+        "viewer_page": 1526,
+        "printed_folio": "11.31.37",
+        "figure_or_section": "VNAV_Speed_Descent"
+      },
+      "domain": "cdu_descent_pages",
+      "inputs": [
+        "NO_END_OF_DESCENT_POINT"
+      ],
+      "outputs": [
+        "ONLY_SPEED_DESCENT_AVAILABLE"
+      ],
+      "effectivity": "REQUIRES_AIRCRAFT_OPTION_VERIFICATION",
+      "status": "SOURCE_EXTRACTED_RUNTIME_NOT_IMPLEMENTED",
+      "note": null
+    },
+    {
+      "rule_id": "SD-03-SPEED-PRIORITY",
+      "source": {
+        "viewer_page": 1526,
+        "printed_folio": "11.31.37",
+        "figure_or_section": "VNAV_Speed_Descent"
+      },
+      "domain": "vnav_mode",
+      "inputs": [
+        "SPEED_DESCENT_ACTIVE"
+      ],
+      "outputs": [
+        "PITCH_FOLLOWS_SELECTED_SPEED_REFERENCE"
+      ],
+      "effectivity": "REQUIRES_AIRCRAFT_OPTION_VERIFICATION",
+      "status": "SOURCE_EXTRACTED_RUNTIME_NOT_IMPLEMENTED",
+      "note": null
+    },
+    {
+      "rule_id": "SD-04-ECON-ABOVE-SPEED-ALT",
+      "source": {
+        "viewer_page": 1526,
+        "printed_folio": "11.31.37",
+        "figure_or_section": "VNAV_Speed_Descent"
+      },
+      "domain": "vnav_speed",
+      "inputs": [
+        "ABOVE_SPEED_RESTRICTION_ALTITUDE"
+      ],
+      "outputs": [
+        "ECON_SPEED_REFERENCE"
+      ],
+      "effectivity": "REQUIRES_AIRCRAFT_OPTION_VERIFICATION",
+      "status": "SOURCE_EXTRACTED_RUNTIME_NOT_IMPLEMENTED",
+      "note": null
+    },
+    {
+      "rule_id": "SD-05-240-BELOW-SPEED-ALT",
+      "source": {
+        "viewer_page": 1526,
+        "printed_folio": "11.31.37",
+        "figure_or_section": "VNAV_Speed_Descent"
+      },
+      "domain": "vnav_speed",
+      "inputs": [
+        "BELOW_SPECIFIED_AIRPORT_SPEED_RESTRICTION_ALTITUDE"
+      ],
+      "outputs": [
+        "DOCUMENTED_TARGET_240_KTS"
+      ],
+      "effectivity": "FCOM_VARIANT_AND_PROCEDURE_PENDING",
+      "status": "SOURCE_EXTRACTED_RUNTIME_NOT_IMPLEMENTED",
+      "note": "Do not universally assign 240 KTS regardless of speed restrictions."
+    },
+    {
+      "rule_id": "SD-06-NO-DESCENT-BEFORE-SLOW",
+      "source": {
+        "viewer_page": 1526,
+        "printed_folio": "11.31.37",
+        "figure_or_section": "VNAV_Speed_Descent"
+      },
+      "domain": "vertical_constraints",
+      "inputs": [
+        "AIRSPEED_ABOVE_SPEED_RESTRICTION"
+      ],
+      "outputs": [
+        "DO_NOT_PERMIT_DESCENT_BELOW_SPEED_RESTRICTION_ALTITUDE_UNTIL_COMPLIANT"
+      ],
+      "effectivity": "REQUIRES_AIRCRAFT_OPTION_VERIFICATION",
+      "status": "SOURCE_EXTRACTED_RUNTIME_NOT_IMPLEMENTED",
+      "note": null
+    },
+    {
+      "rule_id": "SD-07-AUTO-START-TD",
+      "source": {
+        "viewer_page": 1526,
+        "printed_folio": "11.31.37",
+        "figure_or_section": "VNAV_Speed_Descent"
+      },
+      "domain": "vnav_mode",
+      "inputs": [
+        "CALCULATED_TOP_OF_DESCENT_REACHED",
+        "MCP_ALTITUDE_RESET_FOR_DESCENT"
+      ],
+      "outputs": [
+        "AUTOMATIC_VNAV_SPEED_DESCENT_START"
+      ],
+      "effectivity": "REQUIRES_AIRCRAFT_OPTION_VERIFICATION",
+      "status": "SOURCE_EXTRACTED_RUNTIME_NOT_IMPLEMENTED",
+      "note": null
+    },
+    {
+      "rule_id": "SD-08-LNAV-NOT-REQUIRED",
+      "source": {
+        "viewer_page": 1526,
+        "printed_folio": "11.31.37",
+        "figure_or_section": "VNAV_Speed_Descent"
+      },
+      "domain": "lnav_vnav_coupling",
+      "inputs": [
+        "VNAV_SPEED_DESCENT_SELECTED"
+      ],
+      "outputs": [
+        "LNAV_ENGAGEMENT_NOT_REQUIRED"
+      ],
+      "effectivity": "REQUIRES_AIRCRAFT_OPTION_VERIFICATION",
+      "status": "SOURCE_EXTRACTED_RUNTIME_NOT_IMPLEMENTED",
+      "note": null
+    },
+    {
+      "rule_id": "SD-09-NO-AUTO-REVERT-BASIC",
+      "source": {
+        "viewer_page": 1526,
+        "printed_folio": "11.31.37",
+        "figure_or_section": "PATH_DES_selection_variant_1"
+      },
+      "domain": "vnav_mode",
+      "inputs": [
+        "SPEED_DESCENT_ACTIVE"
+      ],
+      "outputs": [
+        "DO_NOT_AUTOMATICALLY_REVERT_TO_PATH_DESCENT"
+      ],
+      "effectivity": "NO_AUTOMATIC_PATH_REVERT",
+      "status": "SOURCE_EXTRACTED_RUNTIME_NOT_IMPLEMENTED",
+      "note": null
+    },
+    {
+      "rule_id": "SD-10-AUTO-REVERT-VERTICAL-ANGLE",
+      "source": {
+        "viewer_page": 1526,
+        "printed_folio": "11.31.37",
+        "figure_or_section": "PATH_DES_selection_variant_2"
+      },
+      "domain": "vnav_mode",
+      "inputs": [
+        "STAR_OR_APPROACH_TRANSITION_OR_APPROACH_LEG_WITH_VERTICAL_ANGLE"
+      ],
+      "outputs": [
+        "AUTOMATIC_PATH_REVERSION_MAY_OCCUR"
+      ],
+      "effectivity": "VERTICAL_ANGLE_EXCEPTION_VARIANT",
+      "status": "SOURCE_EXTRACTED_RUNTIME_NOT_IMPLEMENTED",
+      "note": null
+    },
+    {
+      "rule_id": "SD-11-MANUAL-PATH-PROMPT",
+      "source": {
+        "viewer_page": 1526,
+        "printed_folio": "11.31.37",
+        "figure_or_section": "PATH_prompt"
+      },
+      "domain": "cdu_descent_pages",
+      "inputs": [
+        "PATH_DESCENT_PARAMETERS_COMPLETE",
+        "CREW_SELECTS_PATH_PROMPT_ON_SPEED_DESCENT_PAGE"
+      ],
+      "outputs": [
+        "SELECT_VNAV_PATH_DESCENT"
+      ],
+      "effectivity": "REQUIRES_AIRCRAFT_OPTION_VERIFICATION",
+      "status": "SOURCE_EXTRACTED_RUNTIME_NOT_IMPLEMENTED",
+      "note": null
+    },
+    {
+      "rule_id": "SD-12-CONSTRAINT-EFFORT-NOT-GUARANTEE",
+      "source": {
+        "viewer_page": 1526,
+        "printed_folio": "11.31.37",
+        "figure_or_section": "VNAV_Speed_Descent"
+      },
+      "domain": "vertical_constraints",
+      "inputs": [
+        "SPEED_DESCENT_ACTIVE_AND_WAYPOINT_ALTITUDE_CONSTRAINTS"
+      ],
+      "outputs": [
+        "ATTEMPT_COMPLIANCE_BUT_NO_GUARANTEE_AT_WAYPOINT"
+      ],
+      "effectivity": "REQUIRES_AIRCRAFT_OPTION_VERIFICATION",
+      "status": "SOURCE_EXTRACTED_RUNTIME_NOT_IMPLEMENTED",
+      "note": null
+    }
+  ],
+  "data_interface": {
+    "read": [
+      "FMC_FLIGHT_PHASE",
+      "VNAV_SELECTED_AND_VERTICAL_MODE",
+      "LNAV_ENGAGED",
+      "MCP_SELECTED_ALTITUDE_FT",
+      "MCP_ALTITUDE_RESET_FOR_DESCENT",
+      "TRUE_AND_BARO_ALTITUDE_FT",
+      "RADIO_ALTITUDE_FT",
+      "TOGA_PUSH_EVENT",
+      "CRUISE_ALTITUDE_FT",
+      "ACTIVE_ROUTE_CONSTRAINTS",
+      "RTE_LEGS_WAYPOINT_COORDINATES_AND_DISTANCE",
+      "APPROACH_OR_MISSED_APPROACH_PHASE",
+      "E_D_POINT_VALID",
+      "SPEED_RESTRICTION_ALTITUDE",
+      "CURRENT_IAS_KTS",
+      "FMC_SPEED_PLAN",
+      "PATH_REVERSION_OPTION",
+      "GEOMETRIC_DESCENT_OPTION"
+    ],
+    "write": [
+      "FMC_VERTICAL_MODE_REQUEST",
+      "FMC_DESCENT_SPEED_REFERENCE",
+      "FMC_E_D_AVAILABLE_FLAG",
+      "FMC_PATH_FEASIBILITY_STATUS",
+      "FMC_CONSTRAINT_PLANNER_OUTPUT",
+      "FMC_T_D_E_D_DECEL_MARKERS",
+      "FMC_THRUST_MODE_REQUEST_REFERENCE",
+      "MISSED_APPROACH_TRANSITION_STATE",
+      "CDU_SPEED_AND_PATH_PROMPTS",
+      "FMC_CRUISE_ALTITUDE_RESET_REFERENCE"
+    ],
+    "downstream": [
+      "CDU_DES_PAGE",
+      "CDU_RTE_LEGS",
+      "FMC_VNAV_SUPERVISOR",
+      "MCP_INTERFACE",
+      "EHSI_MAP_LAYER",
+      "AUTOTHROTTLE_REFERENCE",
+      "FMC_FLIGHT_PHASE"
+    ],
+    "guidance_connected": false
+  },
+  "qa": {
+    "rules_total": 42,
+    "by_viewer_page": {
+      "1522": 8,
+      "1523": 5,
+      "1524": 4,
+      "1525": 13,
+      "1526": 12
+    },
+    "source_not_full_manual": true,
+    "aircraft_options_verified": false,
+    "runtime_changed": false,
+    "locked_cdu_image_and_hitboxes_preserved": true,
+    "locked_boeing_cdu_font_files_preserved": true
+  }
+}

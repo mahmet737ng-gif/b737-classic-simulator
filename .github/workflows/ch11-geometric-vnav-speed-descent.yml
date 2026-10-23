@@ -1,0 +1,16 @@
+name: Chapter11 VNAV geometric and speed descent source QA
+on:
+  push:
+  pull_request:
+jobs:
+  verify-descent-source:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate source and options contract
+        run: node engine/ch11/tests/geometric-vnav-speed-descent-2020.test.cjs
+      - name: Verify locked CDU fonts and IDENT startup
+        run: node tests/cdu-font-lock.test.cjs && node tests/cdu-ident-startup.test.cjs

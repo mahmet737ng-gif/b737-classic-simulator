@@ -30,3 +30,7 @@ Source-indexed design: [CDU_VNAV_TAKEOFF_CLIMB_2022.md](CDU_VNAV_TAKEOFF_CLIMB_2
 ## MCP interventions, cruise and VNAV descent (FCOM pp. 11.31.26–11.31.32)
 
 2026-10-23 source ingestion: 76 source-backed *requirements only*, variants gated for EP-FSI. Scope: MCP ALT/Speed Intervention, CRZ/STEP/ECON, T/D/E/D, DES PTH/SPD, deceleration points, LNAV cross-track relationship, warnings. See [the Persian source review](CDU_FMC_MCP_CRUISE_DESCENT_VNAV_2022_FA.md) and [the structured interface contract](../engine/ch11/vnav-mcp-cruise-descent-2022.rules.v1.json). These records do not activate an unverified VNAV/AFDS implementation.
+
+## VNAV geometric descent, approach and speed descent (FCOM 2020, 11.31.33–37)
+
+Source-only extraction: **42 requirements**, 5 user-provided screenshots (PDF pages 1522–1526), figure with seven numbered stages, option-dependent TO/GA behavior, E/D gate, LNAV independence for speed descent, SPEED/PATH CDU prompt routing, geometric thrust variant and path reversion caveats. Refer to [Persian page-by-page report](CDU_VNAV_GEOMETRIC_SPEED_DESCENT_2020_FA.md) and [machine-readable requirements](../engine/ch11/geometric-vnav-speed-descent-2020.rules.v1.json). No runtime code or approved physical CDU/font asset was changed.
