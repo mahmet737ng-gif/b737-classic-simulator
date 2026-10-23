@@ -279,3 +279,7 @@ The owner explicitly authorized APPROXIMATE N1 88–95% for Takeoff/Go-Around an
 | Independently validated Boeing AFM numerical N1 | STILL BLOCKED | v16 AFM private source with zero approved numeric Golden vectors. v19 does not certify these. |
 
 GitHub CI: [successful v19 N1 source + CDU integration run 39888361177](https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/39888361177). User-approved estimated N1 is shown by default, with optional trained throttle estimate, no change to approved CDU artwork.
+
+### CDU v6 N1 estimate parity — v19
+
+Also committed the same user-accepted visual N1 estimator to `cdu-standalone-v6/data/epfsi-simulated-n1-v19.js`, with ISA scenario defaults. `cdu-standalone-v6/app.js` displays approximate N1 LIMIT (R1) and TAKEOFF REF TO N1 (L3) with `EST` labels, plus both PRESENT N1 estimates in the separate training sidebar. Physical controls and EHSI imagery unchanged. Acceptance test `cdu-standalone-v6/tests/est-n1-v19.test.cjs` and [GitHub CI 39889087284](https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/39889087284) successful. V6 does NOT yet receive external live engine telemetry; numbers remain simulated visual outputs. The separate AFM numeric release remains blocked and is not overridden by this policy.
