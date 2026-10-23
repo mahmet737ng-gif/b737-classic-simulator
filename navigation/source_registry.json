@@ -93,7 +93,7 @@
   "integration": {
     "navigation_source_selection": "registry",
     "source_merge_behavior": "explicit_source_selection_only",
-    "fmc_gate": "No active guidance. Stage3 math is laboratory preview only; magnetic reference, event terminators, variation source, hold entry/exit, approved aircraft speed-bank-wind model, source/chart-specific procedural sequencing and EP-FSI FMC features require validation.",
+    "fmc_gate": "NPE Stage4 RTE/LEGS are draft/page-model only. Source procedure sequencing, transitions, named fix ambiguity, magnetic bearings and aircraft-specific FMC/EFIS/autopilot guidance remain unverified; no active navigation.",
     "simulator_training_only": true,
     "procedure_decoder": {
       "id": "NPE_STAGE1_v1",
@@ -207,6 +207,55 @@
       "qa": "navigation/qa_stage3.py",
       "docs": "navigation/NPE_STAGE3.md",
       "fmc_active": false
+    },
+    "flight_plan_engine": {
+      "id": "NPE_STAGE4_v1",
+      "airac": "2610",
+      "revision": 1,
+      "status": "DRAFT_FLIGHT_PLAN_WITH_HARD_DISCONTINUITIES",
+      "source_id": "PMDG_WORLD_2610_WITH_PROCEDURES_R1",
+      "input_private_stages": [
+        "/B737/NAVDB/NPE_STAGE1/",
+        "/B737/NAVDB/NPE_STAGE2/",
+        "/B737/NAVDB/NPE_STAGE3/"
+      ],
+      "private_archive": "/B737/NAVDB/NPE_STAGE4/B737_NAVDB_AIRAC2610_NPE_STAGE4_PRIVATE.zip",
+      "private_manifest": "/B737/NAVDB/NPE_STAGE4/manifest.json",
+      "private_qa": "/B737/NAVDB/NPE_STAGE4/qa_report.json",
+      "archive_sha256": "00b596fff8b9430431af20ee05a50b0390e4c63b268b040c439a3151edabd164",
+      "stage4_overlay_sha256": "ab9e22cf04fb055faca51639ebc185cfbc2b44f8473da0f6103dd420ecd86ca7",
+      "code_engine": "navigation/flight_plan_engine.py",
+      "code_reader": "navigation/flight_plan_reader.py",
+      "qa": "SOURCE_ROWS_VERIFIED_SQLITE_INTEGRITY_PASS",
+      "docs": "navigation/NPE_STAGE4.md",
+      "strictly_requires_marker": "//AIRAC Cycle : 2610 (01/OCT/2026 - 29/OCT/2026) - Ver.1",
+      "coverage": [
+        "explicit SID STAR APP source identity, runway and transition selection",
+        "enroute directed AIRWAY entry/exit lookup with ambiguity checks",
+        "exact ID-selected DCT waypoint route references",
+        "mandatory unverified junction discontinuities",
+        "read-only CDU RTE and LEGS page models",
+        "atomic private SQLite draft store and QA source row cross-check"
+      ],
+      "sample_integration": {
+        "origin": "OIII",
+        "destination": "OIMM",
+        "enroute_reference_fixes": 11,
+        "intentional_discontinuities": 4,
+        "airway_junction_shared_fix_count": 1,
+        "sample_status": "NON_OPERATIONAL_INTEGRATION_DEMO"
+      },
+      "synthetic_tests_passed": 17,
+      "private_real_data_tests_passed": 8,
+      "fmc_active": false,
+      "autopilot_guidance_enabled": false,
+      "fmc_legs_generated": 0,
+      "restrictions": [
+        "Never activate guidance from draft",
+        "Procedure segments not presumed connected",
+        "All source files before per-file exact AIRAC header must be ignored",
+        "No public redistribution of derived PMDG/Navigraph/Jeppesen data"
+      ]
     }
   }
 }
