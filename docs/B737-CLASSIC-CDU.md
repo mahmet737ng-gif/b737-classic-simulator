@@ -17,3 +17,8 @@ Before developing or changing the CDU, inspect the repository's current code and
 
 Direct test entry point: `cdu-standalone-v6/index.html`.  
 Font acceptance test: `node tests/cdu-font-lock.test.cjs`.
+
+## IDENT startup and preflight policy — FCOM 11.31.2 (23 October 2026)
+On startup or reset, the CDU initially displays **IDENT**; the FMS flight phase is separately **PREFLIGHT**. The INIT/REF key opens the INDEX page, where IDENT is selectable; IDENT R6 offers POS INIT. Page navigation does not itself change the flight phase.
+
+The existing IDENT fields are **provisional**. Their exact positions and values require page-by-page comparison against FCOM Chapter 11; they are not approved final text. The approved front-panel bitmap, 70 control hitboxes and locked BoeingCDU Large/Small fonts are unchanged.

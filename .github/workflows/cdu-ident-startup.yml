@@ -1,0 +1,20 @@
+name: CDU IDENT preflight startup
+on:
+  push:
+  pull_request:
+jobs:
+  ident-preflight-regression:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Initial page and reset policy
+        run: node tests/cdu-ident-startup.test.cjs
+      - name: Chapter 11 FMC and physical CDU
+        run: node engine/ch11/tests/fmc-runtime-v2.test.cjs && node engine/ch11/tests/physical-cdu-v2.test.cjs
+      - name: CDU legacy smoke checks
+        run: node cdu-standalone-v3/tests/v3-browser-dom.test.cjs && node cdu-standalone-v5/tests/v3-browser-dom.test.cjs && node cdu-standalone/tests/smoke.test.cjs
+      - name: Typography lock
+        run: node tests/cdu-font-lock.test.cjs
