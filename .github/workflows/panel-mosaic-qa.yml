@@ -1,0 +1,16 @@
+name: Panel Mosaic Atlas QA
+on:
+  push:
+    paths:
+      - 'panel-mosaic-lab/**'
+      - '.github/workflows/panel-mosaic-qa.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify tile numbers, bounds, source images and JavaScript
+        run: node panel-mosaic-lab/test.cjs
