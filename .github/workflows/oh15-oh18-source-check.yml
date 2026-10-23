@@ -1,0 +1,38 @@
+name: Verify OH15 through OH18 source image aliases
+on:
+  push:
+    paths:
+      - 'panel-mosaic-lab/assets/locked/2026-10-23/OH15-*'
+      - 'panel-mosaic-lab/assets/locked/2026-10-23/OH16-*'
+      - 'panel-mosaic-lab/assets/locked/2026-10-23/OH17-*'
+      - 'panel-mosaic-lab/assets/locked/2026-10-23/OH18-*'
+      - '.github/workflows/oh15-oh18-source-check.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify uploaded files by original Git blob identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          path='panel-mosaic-lab/assets/locked/2026-10-23/OH15-WINDOW-PITOT-4ecfdc65f71b.png'
+          test "$(git hash-object "$path")" = '4ecfdc65f71b346902af8c29a73008f0f9d390c1'
+          test "$(wc -c < "$path" | tr -d ' ')" = '2341811'
+          sha256sum "$path"
+          path='panel-mosaic-lab/assets/locked/2026-10-23/OH16-ANTI-ICE-f59889e4efd2.png'
+          test "$(git hash-object "$path")" = 'f59889e4efd22b39c2fba389a0bb51afd9874f61'
+          test "$(wc -c < "$path" | tr -d ' ')" = '2616368'
+          sha256sum "$path"
+          path='panel-mosaic-lab/assets/locked/2026-10-23/OH17-HYDRAULIC-f149122d1f5c.png'
+          test "$(git hash-object "$path")" = 'f149122d1f5cf8f74c612fad24b5932094bb2cba'
+          test "$(wc -c < "$path" | tr -d ' ')" = '2697606'
+          sha256sum "$path"
+          path='panel-mosaic-lab/assets/locked/2026-10-23/OH18-UNCLASSIFIED-5af4fdc5284b.png'
+          test "$(git hash-object "$path")" = '5af4fdc5284b3897b425c6d0c765132e5604a269'
+          test "$(wc -c < "$path" | tr -d ' ')" = '2787751'
+          sha256sum "$path"
+          echo "All four source images byte-identical to original uploads."
