@@ -1,0 +1,22 @@
+{
+  "schema": "b737.panel-image-history.v1",
+  "current": "2026-10-23.4",
+  "events": [
+    {
+      "version": "2026-10-23.3",
+      "date": "2026-10-23",
+      "description": "نقشهٔ اولیهٔ مستطیلی ۵۹ قطعه رد و نمایش مختصات قدیمی غیرفعال شد.",
+      "kind": "rejected-atlas"
+    },
+    {
+      "version": "2026-10-23.4",
+      "date": "2026-10-23",
+      "description": "تصویر کامل بدون سوییچ برای OH-01 تا OH-06 عیناً با SHA256 ثبت شد؛ پیش‌نمایش مونتاژ و هندسهٔ انتخاب قطعه فعال شد.",
+      "kind": "append-only-addition",
+      "assetId": "OH01-06-SOURCE-20261023-9d8ac0ac86bd",
+      "sha256": "9d8ac0ac86bdb92c040e9bdd97811ca381535d949bff94aa5b1a01e5de8e23df",
+      "sourceGeometry": "upper-oh/geometry.json",
+      "affected": ["OH-01","OH-02","OH-03","OH-04","OH-05","OH-06"]
+    }
+  ]
+}

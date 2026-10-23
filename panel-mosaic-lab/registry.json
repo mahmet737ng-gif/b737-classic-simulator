@@ -1,6 +1,6 @@
 {
   "schema": "b737-mosaic-atlas.v1",
-  "version": "2026-10-23.3-REJECTED",
+  "version": "2026-10-23.4",
   "source": "Owner supplied one-page PDF composite (2026-10-23). Initial reference atlas, boundaries provisional.",
   "panels": [
     {
@@ -40,9 +40,14 @@
       "w": 187,
       "h": 350,
       "group": "FLIGHT CONTROLS",
-      "status": "mapped",
+      "status": "artwork",
       "artwork": null,
-      "geometryStatus": "rejected"
+      "geometryStatus": "polygons-provisional",
+      "placement": {
+        "source": "assets/locked/2026-10-23/OH01-06-source-9d8ac0ac86bd.png",
+        "geometry": "upper-oh/geometry.json",
+        "status": "source-placed"
+      }
     },
     {
       "id": "OH-02",
@@ -52,9 +57,14 @@
       "w": 158,
       "h": 350,
       "group": "NAV",
-      "status": "mapped",
+      "status": "artwork",
       "artwork": null,
-      "geometryStatus": "rejected"
+      "geometryStatus": "polygons-provisional",
+      "placement": {
+        "source": "assets/locked/2026-10-23/OH01-06-source-9d8ac0ac86bd.png",
+        "geometry": "upper-oh/geometry.json",
+        "status": "source-placed"
+      }
     },
     {
       "id": "OH-03",
@@ -64,9 +74,14 @@
       "w": 85,
       "h": 350,
       "group": "CABIN",
-      "status": "mapped",
+      "status": "artwork",
       "artwork": null,
-      "geometryStatus": "rejected"
+      "geometryStatus": "polygons-provisional",
+      "placement": {
+        "source": "assets/locked/2026-10-23/OH01-06-source-9d8ac0ac86bd.png",
+        "geometry": "upper-oh/geometry.json",
+        "status": "source-placed"
+      }
     },
     {
       "id": "OH-04",
@@ -76,9 +91,14 @@
       "w": 161,
       "h": 195,
       "group": "AUDIO",
-      "status": "mapped",
+      "status": "artwork",
       "artwork": null,
-      "geometryStatus": "rejected"
+      "geometryStatus": "polygons-provisional",
+      "placement": {
+        "source": "assets/locked/2026-10-23/OH01-06-source-9d8ac0ac86bd.png",
+        "geometry": "upper-oh/geometry.json",
+        "status": "source-placed"
+      }
     },
     {
       "id": "OH-05",
@@ -88,9 +108,14 @@
       "w": 161,
       "h": 155,
       "group": "OXYGEN",
-      "status": "mapped",
+      "status": "artwork",
       "artwork": null,
-      "geometryStatus": "rejected"
+      "geometryStatus": "polygons-provisional",
+      "placement": {
+        "source": "assets/locked/2026-10-23/OH01-06-source-9d8ac0ac86bd.png",
+        "geometry": "upper-oh/geometry.json",
+        "status": "source-placed"
+      }
     },
     {
       "id": "OH-06",
@@ -100,9 +125,14 @@
       "w": 157,
       "h": 350,
       "group": "WARNING",
-      "status": "mapped",
+      "status": "artwork",
       "artwork": null,
-      "geometryStatus": "rejected"
+      "geometryStatus": "polygons-provisional",
+      "placement": {
+        "source": "assets/locked/2026-10-23/OH01-06-source-9d8ac0ac86bd.png",
+        "geometry": "upper-oh/geometry.json",
+        "status": "source-placed"
+      }
     },
     {
       "id": "OH-07",
@@ -746,7 +776,29 @@
   ],
   "validation": {
     "status": "rejected",
-    "reason": "Physical panel boundaries are not respected, and the backing artwork does not match the user-supplied PDF photo. Do not use old ROIs to build mosaic artwork.",
+    "reason": "Historical 59-rectangle geometry remains rejected. OH01–06 are separately replaced from the exact user-supplied PNG and drawn with draft polygons in upper-oh/. Remaining 53 old boxes stay disabled.",
     "next": "Re-trace each individual physical screw-defined plate on the actual owner PDF; independently QA 3 assemblies."
+  },
+  "previousVersion": "2026-10-23.3-REJECTED",
+  "partialReplacement": {
+    "id": "OH-01..OH-06",
+    "component": "overhead-upper",
+    "stageUrl": "upper-oh/",
+    "immutableAsset": "assets/locked/2026-10-23/OH01-06-source-9d8ac0ac86bd.png",
+    "sourceWidth": 1731,
+    "sourceHeight": 909,
+    "sizeBytes": 2995593,
+    "sha256": "9d8ac0ac86bdb92c040e9bdd97811ca381535d949bff94aa5b1a01e5de8e23df",
+    "gitBlobSha": "426479e2f6868b15023d24818eb9388e52ea9457",
+    "geometry": "upper-oh/geometry.json",
+    "geometryStatus": "draft",
+    "tileIds": [
+      "OH-01",
+      "OH-02",
+      "OH-03",
+      "OH-04",
+      "OH-05",
+      "OH-06"
+    ]
   }
 }

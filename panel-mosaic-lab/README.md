@@ -38,3 +38,7 @@ The current `mapped` status is **not** a claim that a clean image has been finis
 The original PDF is a layout reference; zoom-accurate labels and moving controls must be reconstructed from their authoritative high-quality masters and approved separately. The first iteration of tile boundaries is a **draft**, and physical ROI and procedure accuracy are not certified. The pre-existing root page remains untouched.
 
 **Educational development only; not for flight operations.**
+
+## Update 2026-10-23.4 — OH-01..06 immutable source
+
+The full original uploaded PNG is preserved byte-for-byte in `assets/locked/2026-10-23/OH01-06-source-9d8ac0ac86bd.png` (SHA256 `9d8ac0ac86bdb92c040e9bdd97811ca381535d949bff94aa5b1a01e5de8e23df`). Preview: [upper-oh/](upper-oh/). Six tile IDs are mapped via polygons in `upper-oh/geometry.json`; per-tile replacements later append a new asset path and a history event, without modifying the locked original. The previous 53 unaccepted regions remain disabled. Composite lower-overhead alignment is preview-only; never imply signed-off geometry.
