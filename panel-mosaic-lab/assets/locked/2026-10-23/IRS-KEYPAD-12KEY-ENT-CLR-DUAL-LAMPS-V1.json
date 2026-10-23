@@ -1,0 +1,75 @@
+{
+  "schema_version": "1.0.0",
+  "id": "IRS-KEYPAD-12KEY-ENT-CLR-DUAL-LAMPS-V1",
+  "label": "B737 Classic IRS Keypad - 12 keys with dual ENT and CLR indicator lamps",
+  "source_image": "panel-mosaic-lab/assets/locked/2026-10-23/IRS-KEYPAD-12KEY-ENT-CLR-DUAL-LAMPS-V1.png",
+  "image": {
+    "format": "PNG",
+    "width": 1289,
+    "height": 1221,
+    "mode": "RGBA",
+    "transparent_background": true,
+    "size_bytes": 2133468,
+    "sha256": "faeb3dc644a4761202d9f2cd58120969b55bf2ac2e6df41403f792aaa4131584",
+    "git_blob_sha": "ecc4c83dcc471b55fdb00bf8d5390495ac559172"
+  },
+  "approval": "user-approved",
+  "locked": true,
+  "change_policy": "append-only; never overwrite approved PNG; new revisions use a new filename and ID",
+  "lighting": {
+    "asset": "fixed photographic reference",
+    "color_tint_changes_allowed": false
+  },
+  "presentation": {
+    "only_buttons": true,
+    "front_facing": true,
+    "no_panel_background": true
+  },
+  "grid": {
+    "rows": 4,
+    "columns": 3,
+    "positions": [
+      [
+        "1",
+        "N/2",
+        "3"
+      ],
+      [
+        "W/4",
+        "H/5",
+        "E/6"
+      ],
+      [
+        "7",
+        "S/8",
+        "9"
+      ],
+      [
+        "ENT",
+        "0",
+        "CLR"
+      ]
+    ]
+  },
+  "indicators": {
+    "ENT": {
+      "count": 2,
+      "location": "on key below ENT text",
+      "rendering": "separate illuminated overlay if later needed"
+    },
+    "CLR": {
+      "count": 2,
+      "location": "on key below CLR text",
+      "rendering": "separate illuminated overlay if later needed"
+    }
+  },
+  "behavior": {
+    "key_states": [
+      "released",
+      "pressed"
+    ],
+    "indicator_state_control": "independent engine inputs",
+    "indicator_default": "unlit"
+  },
+  "notes": "This is a faithful image asset and metadata for later engine integration; it does not implement keypress electrical or navigation behavior."
+}

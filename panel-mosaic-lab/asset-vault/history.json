@@ -56,6 +56,15 @@
         "B737-BLACK-GUARDED-OPEN-CENTER-V1",
         "B737-BLACK-GUARDED-OPEN-DOWN-V1"
       ]
+    },
+    {
+      "version": "GITHUB-UPLOAD-IRS-KEYPAD-20261024",
+      "date": "2026-10-24",
+      "kind": "binary_upload_verified",
+      "description": "Uploaded original user-approved IRS keypad with two indicator lenses below ENT and two below CLR. Exact PNG image bytes preserved; 1289x1221 RGBA.",
+      "ids": [
+        "IRS-KEYPAD-12KEY-ENT-CLR-DUAL-LAMPS-V1"
+      ]
     }
   ]
 }

@@ -185,6 +185,19 @@
       "technical_database_library_path": "/Technical Database/Source Panels/Guarded Switches/2026-10-23/Black_Guarded_Open_DOWN.png",
       "library_status": "not_uploaded",
       "immutable": true
+    },
+    {
+      "asset_id": "IRS-KEYPAD-12KEY-ENT-CLR-DUAL-LAMPS-V1",
+      "section": "overhead",
+      "version": "2026-10-23",
+      "source_filename": "IRS-KEYPAD-12KEY-ENT-CLR-DUAL-LAMPS-V1.png",
+      "size_bytes": 2133468,
+      "sha256": "faeb3dc644a4761202d9f2cd58120969b55bf2ac2e6df41403f792aaa4131584",
+      "github_path": "panel-mosaic-lab/assets/locked/2026-10-23/IRS-KEYPAD-12KEY-ENT-CLR-DUAL-LAMPS-V1.png",
+      "github_status": "uploaded_verified",
+      "technical_database_library_path": "/Technical Database/Source Panels/IRS Keypad/2026-10-23/IRS-KEYPAD-12KEY-ENT-CLR-DUAL-LAMPS-V1.png",
+      "library_status": "not_uploaded",
+      "immutable": true
     }
   ]
 }
