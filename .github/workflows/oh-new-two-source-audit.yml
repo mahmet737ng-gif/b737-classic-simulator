@@ -25,9 +25,14 @@ jobs:
               raw=(root/name).read_bytes()
               im=Image.open(io.BytesIO(raw)).convert('RGB')
               print('SOURCE',i,name,'ORIGINAL_SIZE',im.size,'BYTES',len(raw),'SHA256',hashlib.sha256(raw).hexdigest())
-              im.thumbnail((310,375))
+              if i==1:
+                  from PIL import ImageChops
+                  diff=ImageChops.difference(im,Image.new('RGB',im.size,(255,255,255)))
+                  print('BOTTOM_NONWHITE_BBOX',diff.point(lambda value:255 if value>55 else 0).getbbox())
+                  im=im.crop((0,0,im.width,round(im.height*.65)))
+              im.thumbnail((1100,400))
               mem=io.BytesIO()
-              im.save(mem,'JPEG',quality=38,optimize=True)
+              im.save(mem,'JPEG',quality=44,optimize=True)
               print('PREVIEW_START_'+str(i))
               print(base64.b64encode(mem.getvalue()).decode('ascii'))
               print('PREVIEW_END_'+str(i))
