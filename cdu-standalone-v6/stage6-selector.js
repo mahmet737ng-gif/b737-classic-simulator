@@ -3,7 +3,12 @@
  * The EXEC action commits only an INACTIVE REFERENCE PLAN.
  */
 (function(root,factory){'use strict';if(typeof module==='object'&&module.exports)module.exports=factory;
- if(root&&root.NPE_STAGE5_MODEL&&typeof state!=='undefined'&&typeof core!=='undefined')
+ // Public GitHub Pages runs the STANDALONE B737 CDU. The Stage6 private-source
+ // adapter must only attach in a trusted local development host where the
+ // private Stage4/5 NAVDB service can exist. Never intercept native DEP/ARR
+ // in the public cockpit or demand that a saved Stage5 plan be executed.
+ const privateHost=!!root&&/^(127\.0\.0\.1|localhost|\[::1\])$/.test(root.location?.hostname||'');
+ if(privateHost&&root.NPE_STAGE5_MODEL&&typeof state!=='undefined'&&typeof core!=='undefined')
   root.CDU_STAGE6_API=factory(root.NPE_STAGE5_MODEL,state,core,root.CDU_PAGES,
     (url,options)=>fetch(url,{cache:'no-store',credentials:'same-origin',...options}),()=>root.updateStage5View?.());
 })(typeof window==='undefined'?null:window,function(model,state,core,pages,fetcher,refresh){
