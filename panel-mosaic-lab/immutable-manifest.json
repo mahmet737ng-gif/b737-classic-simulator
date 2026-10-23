@@ -1,6 +1,6 @@
 {
   "schema": "b737-panel-assets-immutable-v2",
-  "version": "UPD-0005",
+  "version": "UPD-0006.1",
   "status": "GITHUB_BINARY_VERIFIED",
   "lockPolicy": "append-only files under panel-mosaic-lab/assets/locked; SHA-256 and Git object hash checked by CI. Repository admins may still override unless branch/ruleset protection configured.",
   "assets": [
@@ -174,6 +174,22 @@
       "status": "uploaded",
       "immutable": true,
       "sourceMethod": "Same exact Git blob, no image reencode"
+    },
+    {
+      "id": "OH-18-ATLAS-RECLASSIFIED-UPD-0006",
+      "panelIds": [
+        "OH-18"
+      ],
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/OH18-GROUND-CALL-5af4fdc5284b.png",
+      "sha256": "939e9f6ed14cbe2a8a6182684fcef790607e7dba10a1bfe002a062457f83e5ee",
+      "gitBlobSha1": "5af4fdc5284b3897b425c6d0c765132e5604a269",
+      "bytes": 2787751,
+      "status": "uploaded",
+      "immutable": true,
+      "originalUploadedPath": "panel-mosaic-lab/assets/locked/Aircraft Cockpit Panel with Empty Cutouts.png",
+      "aliasOf": "OH-18-SOURCE-UPD-0005",
+      "atlasIdentifiedContent": "ATTEND / GRD CALL / RAIN REPELLENT / WIPER",
+      "notes": "Same Git binary blob; new path corrects descriptive system name; prior OH18-UNCLASSIFIED alias remains untouched."
     }
   ],
   "panelAssignments": [
@@ -253,6 +269,14 @@
       ],
       "view": "panel-mosaic-lab/oh15-18/",
       "status": "source verified; geometry unapproved"
+    },
+    {
+      "assetId": "OH-18-ATLAS-RECLASSIFIED-UPD-0006",
+      "panels": [
+        "OH-18"
+      ],
+      "view": "panel-mosaic-lab/all-overhead/",
+      "status": "mapped below OH-14 by owner original atlas; seam pending QA"
     }
   ],
   "updateHistory": [
@@ -325,6 +349,20 @@
       "status": "source-hashes-verified",
       "qa": "https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/40033310161",
       "notes": "Canonical aliases created for exact original source Git blobs; OH18 remains unclassified pending visual review"
+    },
+    {
+      "version": "UPD-0006.1-atlas-aligned",
+      "date": "2026-10-24",
+      "assetIds": [
+        "OH-18-ATLAS-RECLASSIFIED-UPD-0006"
+      ],
+      "panels": [
+        "OH-13",
+        "OH-14",
+        "OH-18"
+      ],
+      "status": "preview-geometry-corrected",
+      "notes": "OH13 light outer gutters masked only in viewer; OH18 moved into center strip below OH14. Immutable sources unchanged."
     }
   ],
   "lastStagedVersion": "UPD-0003",
