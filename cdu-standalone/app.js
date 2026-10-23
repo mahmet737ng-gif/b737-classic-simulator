@@ -113,7 +113,7 @@ function pageLines(){const mode=pendingCount()?'MOD':'ACT',a=Array(14).fill('');
  a[4]=left('PMC','AFM PAGE');
  a[5]=left(sim.n1.pmcMode,n.source?'PDF '+n.source.pdfPage:'---');
  const pn=presentN1Pair();
- a[6]=left('PRESENT N1 1 / 2',pn.source);
+ a[6]=left('PRES N1 1/2',pn.source);
  a[7]=left(pn.one,pn.two);
  a[8]=left('AFM SOURCE','NOT VERIFIED');
  const ctx=currentN1Context();
