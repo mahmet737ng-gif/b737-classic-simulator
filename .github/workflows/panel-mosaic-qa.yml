@@ -20,3 +20,5 @@ jobs:
         run: node panel-mosaic-lab/all-overhead/test.cjs
       - name: Exercise mosaic/gallery/atlas viewer mode controls
         run: node panel-mosaic-lab/all-overhead/runtime.test.cjs
+      - name: Verify pixel-perfect atlas baseline and absolute region geometry
+        run: node panel-mosaic-lab/all-overhead/atlas-layout.test.cjs
