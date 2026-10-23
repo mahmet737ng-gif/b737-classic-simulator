@@ -370,7 +370,7 @@
       "id": "N1X-014",
       "source_image_id": "img1599",
       "field": "PERF_INIT",
-      "condition": "SELECT_L5",
+      "condition": "SELECT_L6",
       "effect": "RETURN_PERF_INIT",
       "scope": "SOURCE_FACT",
       "status": "SOURCE_GROUNDED_NOT_FULL_RUNTIME_VERIFIED"
@@ -379,7 +379,7 @@
       "id": "N1X-015",
       "source_image_id": "img1599",
       "field": "TAKEOFF",
-      "condition": "SELECT_R5",
+      "condition": "SELECT_R6",
       "effect": "OPEN_TAKEOFF_REF",
       "scope": "SOURCE_FACT",
       "status": "SOURCE_GROUNDED_NOT_FULL_RUNTIME_VERIFIED"
@@ -460,7 +460,7 @@
       "id": "N1X-024",
       "source_image_id": "img1600",
       "field": "PERF_INIT",
-      "condition": "SELECT_L5",
+      "condition": "SELECT_L6",
       "effect": "RETURN_PERF_INIT",
       "scope": "SOURCE_FACT",
       "status": "SOURCE_GROUNDED_NOT_FULL_RUNTIME_VERIFIED"
@@ -469,7 +469,7 @@
       "id": "N1X-025",
       "source_image_id": "img1600",
       "field": "TAKEOFF",
-      "condition": "SELECT_R5",
+      "condition": "SELECT_R6",
       "effect": "OPEN_TAKEOFF_REF",
       "scope": "SOURCE_FACT",
       "status": "SOURCE_GROUNDED_NOT_FULL_RUNTIME_VERIFIED"
