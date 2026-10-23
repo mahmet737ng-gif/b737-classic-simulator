@@ -50,7 +50,11 @@ function signedSource(d){
  if(!q.completeCurves||!q.bleedCorrectionsVerified||!q.capCurveVerified||!q.goldenCasesPassed||!q.sourceEffectivityConfirmed)return false;
  if(!Array.isArray(q.independentReviewers)||q.independentReviewers.length<2)return false;
  if(new Set(q.independentReviewers.map(r=>r.id)).size<2||q.independentReviewers.some(r=>!r.id||!r.signedAt||!r.sha256||r.sha256!==d.releaseSha256))return false;
- return Array.isArray(q.goldens)&&q.goldens.length>=4&&q.goldens.every(v=>Number.isFinite(v.expectedN1Pct)&&v.signed===true);
+ if(!Array.isArray(q.goldens)||q.goldens.length<4||q.goldens.some(v=>!Number.isFinite(v.expectedN1Pct)||!v.signed||!v.input))return false;
+ if(new Set(q.goldens.map(v=>v.input.oatC)).size<2||new Set(q.goldens.map(v=>v.input.pressureAltitudeFt)).size<2)return false;
+ try{for(const g of q.goldens){if(Math.abs(evaluate(g.input,d).final-g.expectedN1Pct)>0.2)return false;}}
+ catch(e){if(e instanceof N1SourceError)return false;throw e;}
+ return true;
 }
 function calculate(c,d){
  try{
