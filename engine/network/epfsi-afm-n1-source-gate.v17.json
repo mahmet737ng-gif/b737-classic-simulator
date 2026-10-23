@@ -1,0 +1,50 @@
+{
+  "schema": "b737-afm-n1-semantic-mapping-v17",
+  "sourcePathPrivate": "/Technical Database/Sources/AFM-737-33V-D6-8730-R32/EP-FSI-ASN29340/v17/",
+  "sourceAFMSha256": "3c7002212482f0c47a1735c2302ee304ef41ef4ca270591281b72f5f2a714105",
+  "sourcePages": [
+    128,
+    129,
+    130,
+    756
+  ],
+  "aircraft": {
+    "registration": "EP-FSI",
+    "msn": 29340,
+    "engine": "CFM56-3B-1",
+    "ratingLbf": 20000
+  },
+  "v17": {
+    "totalLineFragments": 301,
+    "printedAltitudeLeaderFragmentsPreciselyMatched": 30,
+    "pmcOffAltitudeLeaderFragmentsMatched": 18,
+    "altitudeLabelFamiliesIndexed": 36,
+    "previousMisinterpretedLeaderSamplesExcluded": 104,
+    "p756ProvisionalCapKnots": 5,
+    "p756CapSourceInkSegmentsIdentified": 5,
+    "mctPressureChartFragments": 19,
+    "mctTemperatureChartFragments": 21,
+    "mctNomogramFragments": 60
+  },
+  "numericResearch": {
+    "maxN1CapPreview": "AVAILABLE_IN_PRIVATE_DB_AND_STANDALONE_GATED_HELPER",
+    "domainOatC": [
+      -20,
+      20
+    ],
+    "notATakeoffTarget": true,
+    "sourceStatus": "PROVISIONAL_NOT_INDEPENDENTLY_APPROVED"
+  },
+  "operational": {
+    "completeAltitudeOperatingN1Curves": 0,
+    "approvedFinalNumericN1Points": 0,
+    "fmcN1Allowed": false,
+    "sourceCurveTopologyFullyConnected": false
+  },
+  "remaining": [
+    "Connect source-labelled altitude guide to *continuous operative* cold/warm N1 envelope per altitude",
+    "Validate full 128/129/756 bleed/anti-ice corrections and PMC selection",
+    "Numerically complete all p130 MCT nomogram stages",
+    "Independent source numerical QA and golden vectors"
+  ]
+}
