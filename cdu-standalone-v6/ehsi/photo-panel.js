@@ -120,7 +120,11 @@ function init(st,core,doc,onchange){
   const b=button('knob-'+key,key,geom[key].title,{knob:key});
   sprite(b,geom[key]);
   if(key==='hsi'){
-   const inner=document.createElement('span');inner.className='photo-wxr-inner';inner.setAttribute('aria-label','Weather radar brightness inner shaft');b.append(inner);
+   const inner=document.createElement('span');inner.className='photo-wxr-inner';inner.setAttribute('role','button');inner.tabIndex=0;inner.title='WXR brightness inner shaft';inner.setAttribute('aria-label','Weather radar brightness inner shaft');
+   inner.addEventListener('click',e=>{e.stopPropagation();rotate(st,'wxInner',e.shiftKey?-1:1)});
+   inner.addEventListener('wheel',e=>{e.preventDefault();e.stopPropagation();rotate(st,'wxInner',e.deltaY<0?1:-1)},{passive:false});
+   inner.addEventListener('keydown',e=>{if(['ArrowUp','ArrowRight','ArrowDown','ArrowLeft','Enter',' '].includes(e.key)){e.preventDefault();e.stopPropagation();rotate(st,'wxInner',['ArrowUp','ArrowRight','Enter',' '].includes(e.key)?1:-1)}});
+   b.append(inner);
   }
   b.addEventListener('click',e=>{if(b.dataset.dragged==='1'){b.dataset.dragged='0';return}rotate(st,key,e.shiftKey?-1:1)});
   b.addEventListener('wheel',e=>{e.preventDefault();rotate(st,key,e.deltaY>0?-1:1)},{passive:false});
