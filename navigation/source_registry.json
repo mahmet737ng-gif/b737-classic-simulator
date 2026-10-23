@@ -93,7 +93,7 @@
   "integration": {
     "navigation_source_selection": "registry",
     "source_merge_behavior": "explicit_source_selection_only",
-    "fmc_gate": "NPE Stage6 SOURCE MOD/ACTIVATE/EXEC commits REFERENCE DATA ONLY. All ambiguous path terminators stay blocked; true FMC leg geometry and LNAV/VNAV/AFDS interfaces remain inactive pending verified EP-FSI aircraft-specific testing.",
+    "fmc_gate": "Stage7 geographic reference lines are NOT verified flyable ARINC path terminators. All aircraft guidance remains inactive; no AFDS, LNAV or VNAV output. Full certification requires explicit source path-terminator coding and EP-FSI FMC semantics.",
     "simulator_training_only": true,
     "procedure_decoder": {
       "id": "NPE_STAGE1_v1",
@@ -379,6 +379,49 @@
         "global user-owned navigation binary remains private",
         "local loopback browser test required to confirm device visuals"
       ]
+    },
+    "procedure_reference_stage7": {
+      "id": "NPE_STAGE7_v1",
+      "source_id": "PMDG_WORLD_2610_WITH_PROCEDURES_R1",
+      "airac": "2610",
+      "revision": 1,
+      "exact_per_file_marker": "//AIRAC Cycle : 2610 (01/OCT/2026 - 29/OCT/2026) - Ver.1",
+      "stage1_stage3_stage4_data": "USER_PRIVATE_NOT_PUBLIC_GITHUB",
+      "private_package": "/B737/NAVDB/NPE_STAGE7/B737_NAVDB_AIRAC2610_NPE_STAGE7_PRIVATE.zip",
+      "private_report": "/B737/NAVDB/NPE_STAGE7/qa-sample-report.json",
+      "private_visual_qa": "/B737/NAVDB/NPE_STAGE7/stage7-browser-qa.png",
+      "private_package_sha256": "da05d6e36c8100216dcb8b16b699aa9808cbc7e1e5f1299ac2a2b60f6e326506",
+      "source_code": [
+        "navigation/procedure_reference_leg_engine.py",
+        "navigation/npe_stage7_server.py",
+        "navigation/qa_sample_stage7.py"
+      ],
+      "browser_viewer": "navigation/npe-stage7/index.html",
+      "source_provenance": "exact marker and post-marker SHA; strict AST token range reconstruction and local-file fix lookup",
+      "geometry": "adjacent FIX_PASSAGE tokens within the same variant only; maximum 200NM; TRUE great-circle reference chords, never real TF/DF/CF",
+      "lab_status": "SOURCE_ONLY_REFERENCE_GEOMETRY",
+      "test_results": {
+        "python_test_count_passed": 13,
+        "private_worldwide_sample": 250,
+        "sampled_ast_nodes": 1771,
+        "sampled_local_fixes": 1120,
+        "sampled_reference_chords": 692,
+        "http_source_checks": 7,
+        "chromium_dom_test": "PASS_WITH_LOCAL_DATABASE_JSON_MOCKS",
+        "real_localhost_chromium_navigation": "BLOCKED_BY_ENVIRONMENT",
+        "real_device_acceptance": "NOT_TESTED"
+      },
+      "flyable_arinc_legs": 0,
+      "lnav_active": false,
+      "vnav_active": false,
+      "afds_active": false,
+      "terminal_blockers": [
+        "No verified exact source ARINC-424 path terminator coding for each narrative expression",
+        "Unverified magnetic frame and leg end conditions for track/heading/intercepts",
+        "Unverified speed/bank/hold and FMC EP-FSI implementation",
+        "Missing real-device CDU/EFIS browser acceptance"
+      ],
+      "redist_policy": "Private licensed source and derived data not committed to GitHub"
     }
   }
 }
