@@ -54,16 +54,17 @@ function pick(id,scroll){selected=id;highlight();showDetails();if(scroll){let pi
 function updateDimensions(){const board=$('board');const sizer=$('sizer');board.style.transform='scale('+zoom+')';sizer.style.width=Math.ceil(SOURCE_WIDTH*zoom)+'px';sizer.style.height=Math.ceil(board.offsetHeight*zoom)+'px';$('zoomLabel').textContent=Math.round(zoom*100)+'%';}
 function fit(){const viewport=$('viewport');zoom=Math.min(1,(viewport.clientWidth-34)/SOURCE_WIDTH);fitMode=true;updateDimensions();viewport.scrollTo({left:0,top:0,behavior:'instant'});}
 function setZoom(value){fitMode=false;zoom=Math.max(MIN_ZOOM,Math.min(MAX_ZOOM,value));updateDimensions();}
-function mode(next){if(view===next)return;view=next;$('assembly').classList.toggle('hidden',next!=='mosaic');$('gallery').classList.toggle('hidden',next!=='gallery');$('atlasView').classList.toggle('hidden',next!=='atlas');
- $('modeMosaic').classList.toggle('active',next==='mosaic');$('modeGallery').classList.toggle('active',next==='gallery');$('modeAtlas').classList.toggle('active',next==='atlas');if(next==='gallery'&&!$('gallery').children.length)populateGallery();highlight();updateDimensions();}
+function mode(next){if(!['mosaic','gallery','atlas'].includes(next))return;view=next;$('assembly').classList.toggle('hidden',next!=='mosaic');$('gallery').classList.toggle('hidden',next!=='gallery');$('atlasView').classList.toggle('hidden',next!=='atlas');
+ $('modeMosaic').classList.toggle('active',next==='mosaic');$('modeGallery').classList.toggle('active',next==='gallery');$('modeAtlas').classList.toggle('active',next==='atlas');if(next==='gallery'&&!$('gallery').children.length)populateGallery();if(next==='mosaic'&&!$('columns').children.length)populateAssembly();highlight();if(fitMode)fit();else{updateDimensions();$('viewport').scrollTo({left:0,top:0,behavior:'instant'});}const name={mosaic:'چیدمان یکپارچه',gallery:'تصاویر مستقل',atlas:'مرجع اطلس'}[next];$('viewModeStatus').textContent='حالت فعال: '+name+' · '+spec.images.length+' تصویر';}
 async function start(){
  try{const [specResp,geoResp]=await Promise.all([fetch('./spec.json?ts='+Date.now(),{cache:'no-store'}),fetch('../upper-oh/geometry.json?ts='+Date.now(),{cache:'no-store'})]);
  if(!specResp.ok||!geoResp.ok)throw Error('Source metadata unavailable');spec=await specResp.json();geometry=await geoResp.json();
- if(spec.images.length!==16||geometry.parts.length!==6)throw Error('Invalid source count');
+ if(!Array.isArray(spec.images)||!spec.images.length||!Array.isArray(spec.columns)||!Array.isArray(geometry.parts)||!geometry.parts.length)throw Error('اطلاعات اطلس ناقص است');
+ const available=new Set(spec.images.map(x=>x.id));for(const section of spec.columns){for(const id of section.items){if(!available.has(id))throw Error('فایل موزاییک تعریف نشده: '+id);}}
  populateAssembly();fillList();summary();showDetails();
  $('status').textContent=spec.images.length+' تصویر منبع برای '+new Set(spec.images.flatMap(x=>x.panelIds)).size+' شناسهٔ پنل — نسخهٔ '+spec.version+' — منطبق با مرجع اطلس';
- fit();if('ResizeObserver'in window){new ResizeObserver(()=>updateDimensions()).observe($('board'));}
- }catch(e){$('status').textContent='خطای بارگذاری داده‌های تست: '+e.message;}
+ fit();mode('mosaic');if('ResizeObserver'in window){new ResizeObserver(()=>updateDimensions()).observe($('board'));}
+ }catch(e){console.error('Overhead mosaic initialization error:',e);$('status').textContent='خطای بارگذاری داده‌های تست: '+e.message;$('status').setAttribute('role','alert');}
 }
 $('modeMosaic').onclick=()=>mode('mosaic');$('modeGallery').onclick=()=>mode('gallery');$('modeAtlas').onclick=()=>mode('atlas');
 $('fit').onclick=fit;$('plus').onclick=()=>setZoom(zoom*1.25);$('minus').onclick=()=>setZoom(zoom/1.25);
