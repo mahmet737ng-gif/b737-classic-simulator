@@ -33,8 +33,8 @@ vm.runInContext(withoutStart,ctx,{filename:'stage.js'});
 assert.ok(html.includes('stage.js?v=UPD-'),'browser script has cache-busting release version');
 assert.ok(html.includes('id="viewModeStatus"'),'visible mode indicator');
 assert.doesNotThrow(()=>node('modeGallery').onclick(),'clicking before metadata should not crash');
-vm.runInContext("spec={images:Array.from({length:16},()=>({id:'image'})),columns:[]};geometry={parts:[]};fitMode=false;highlight=()=>{};updateDimensions=()=>{};populateGallery=()=>document.getElementById('gallery').children.push({});",ctx);
-node('columns').children.push({}); // assembly was populated during the real page's start() before tabs were clicked
+vm.runInContext("spec={images:Array.from({length:16},()=>({id:'image'})),columns:[]};geometry={parts:[]};atlasLayout={canvas:{width:2220,height:3525},placements:[]};fitMode=false;highlight=()=>{};updateDimensions=()=>{};populateGallery=()=>document.getElementById('gallery').children.push({});",ctx);
+node('atlasAbsolute').children.push({}); // coordinate canvas exists after initial render, preventing a redundant full rebuild
 node('modeGallery').onclick();
 assert.equal(node('assembly').classList.contains('hidden'),true,'gallery hides mosaic');
 assert.equal(node('gallery').classList.contains('hidden'),false,'gallery visible');
