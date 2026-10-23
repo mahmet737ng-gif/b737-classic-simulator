@@ -1,6 +1,11 @@
 (() => {
   const $ = (selector, root = document) => root.querySelector(selector);
-  const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
+  const $ = (selector, root = document) => [...root.querySelectorAll(selector)];
+  const mechanics = window.B737ControlMechanics;
+  if (!mechanics) throw new Error('FCOM control mechanics must load before the panel');
+  const guardedIds = ['flightA', 'flightB', 'spoilerA', 'spoilerB'];
+  const guardedStateKey = id => id + 'Guard';
+  const isGuardOpen = id => state[guardedStateKey(id)] === 'open';
 
   const state = {
     power: true,
@@ -9,6 +14,10 @@
     flightB: 'on',
     spoilerA: 'on',
     spoilerB: 'on',
+    flightAGuard: 'closed',
+    flightBGuard: 'closed',
+    spoilerAGuard: 'closed',
+    spoilerBGuard: 'closed',
     altGuard: 'closed',
     altArmed: false,
     altPosition: 'off',
@@ -60,6 +69,12 @@
       }
     });
 
+    $('[data-guard-control]').forEach(guard => {
+      const id=guard.dataset.guardControl;
+      guard.dataset.guard = state[guardedStateKey(id)];
+      guard.setAttribute('aria-label', id + ' safety guard, ' + guard.dataset.guard);
+      guard.setAttribute('aria-pressed', String(isGuardOpen(id)));
+    });
     const alt = $('.alt-arm');
     alt.dataset.guard = state.altGuard;
     alt.dataset.armed = String(state.altArmed);
@@ -92,21 +107,80 @@
     render(`${key.toUpperCase()} — ${labels[key]?.[state[key]] || state[key].toUpperCase()}`);
   }
 
-  $$('.paddle-control').forEach(control => {
+  function guardAction(id, action, value) {
+    const isAlt = id === 'alternateFlapsArm';
+    const current = isAlt ? { value: state.altArmed ? 'arm':'off', guard:state.altGuard }
+      : { value:state[id], guard:state[guardedStateKey(id)] };
+    const result = mechanics.guardTransition(id, current, action, value);
+    if (!result.ok) { render(id.toUpperCase() + ' — ' + result.reason); return false; }
+    if (isAlt) {
+      state.altGuard=result.state.guard;
+      state.altArmed=result.state.value === 'arm';
+    } else {
+      state[id]=result.state.value;
+      state[guardedStateKey(id)]=result.state.guard;
+    }
+    render(id.toUpperCase() + ' — ' + result.state.value.toUpperCase() + ' / GUARD ' + result.state.guard.toUpperCase());
+    return true;
+  }
+  $('.paddle-guard').forEach(guard => {
+    guard.addEventListener('click', () => {
+      const id=guard.dataset.guardControl;
+      guardAction(id, isGuardOpen(id) ? 'close' : 'open');
+    });
+  });
+  $('.paddle-control').forEach(control => {
     control.addEventListener('click', () => {
-      const key = control.dataset.control;
-      cycle(key, control.classList.contains('three') ? ['on', 'off', 'stby'] : ['on', 'off']);
+      const key=control.dataset.control;
+      const detents=mechanics.definitions[key].detents;
+      const next=detents[(detents.indexOf(state[key])+1)%detents.length];
+      guardAction(key,'set',next);
     });
   });
 
-  $$('.selector').forEach(control => {
-    control.addEventListener('click', event => {
-      const rect = control.getBoundingClientRect();
-      const ratio = (event.clientX - rect.left) / rect.width;
-      const next = ratio < .36 ? 'left' : ratio > .64 ? 'right' : 'normal';
-      state[control.dataset.control] = next;
-      render(`${control.dataset.control.toUpperCase()} — ${labels[control.dataset.control][next]}`);
+  $('.selector').forEach(control => {
+    const id=control.dataset.control;
+    let start=null, skipClick=false;
+    function setPosition(value) {
+      const result=mechanics.horizontalTransition(id,state[id],'choose',value);
+      if (!result.ok) return;
+      state[id]=result.value;
+      render(id.toUpperCase() + ' — ' + labels[id][result.value]);
+    }
+    function positionFromX(clientX) {
+      const rect=control.getBoundingClientRect();
+      const ratio=(clientX-rect.left)/rect.width;
+      return ratio < .36 ? 'left' : ratio > .64 ? 'right' : 'normal';
+    }
+    control.addEventListener('pointerdown', event => { start={x:event.clientX, y:event.clientY}; skipClick=false; });
+    control.addEventListener('pointerup', event => {
+      if (!start) return;
+      const dx=event.clientX-start.x;
+      if (Math.abs(dx)>12) {
+        const result=mechanics.horizontalTransition(id,state[id],'step',dx>0?1:-1);
+        if (result.ok) setPosition(result.value);
+        skipClick=true;
+      }
+      start=null;
     });
+    control.addEventListener('pointercancel',()=>{start=null;});
+    control.addEventListener('click',event=>{
+      if (skipClick) { skipClick=false; return; }
+      setPosition(positionFromX(event.clientX));
+    });
+    control.addEventListener('keydown',event=>{
+      if (!['ArrowLeft','ArrowRight','Home'].includes(event.key)) return;
+      event.preventDefault();
+      const result=event.key === 'Home'
+        ? mechanics.horizontalTransition(id,state[id],'choose','normal')
+        : mechanics.horizontalTransition(id,state[id],'step',event.key==='ArrowRight'?1:-1);
+      if (result.ok) setPosition(result.value);
+    });
+    control.addEventListener('wheel',event=>{
+      event.preventDefault();
+      const result=mechanics.horizontalTransition(id,state[id],'step',event.deltaY>0?1:-1);
+      if(result.ok)setPosition(result.value);
+    },{passive:false});
   });
 
   $('.toggle[data-control="yawDamper"]').addEventListener('click', () => {
@@ -115,9 +189,7 @@
   });
 
   $('.red-guard').addEventListener('click', () => {
-    state.altGuard = state.altGuard === 'closed' ? 'open' : 'closed';
-    if (state.altGuard === 'closed' && state.altArmed) state.altArmed = false;
-    render(`ALTERNATE FLAPS GUARD — ${state.altGuard.toUpperCase()}`);
+    guardAction('alternateFlapsArm', state.altGuard === 'closed' ? 'open' : 'close');
   });
 
   $('.arm-switch').addEventListener('click', () => {
@@ -125,8 +197,7 @@
       render('OPEN THE RED GUARD BEFORE ARMING ALTERNATE FLAPS');
       return;
     }
-    state.altArmed = !state.altArmed;
-    render(`ALTERNATE FLAPS — ${state.altArmed ? 'ARMED' : 'OFF'}`);
+    guardAction('alternateFlapsArm','set',state.altArmed ? 'off':'arm');
   });
 
   const altPosition = $('.toggle[data-control="altPosition"]');
@@ -137,11 +208,12 @@
       render('ALTERNATE FLAPS POSITION SWITCH INHIBITED — ARM FIRST');
       return;
     }
-    state.altPosition = ratio < .5 ? 'up' : 'down';
+    state.altPosition = ratio < .34 ? 'up' : ratio > .66 ? 'down' : 'off';
     render(`ALTERNATE FLAPS — ${state.altPosition.toUpperCase()}`);
   });
   const releaseAlt = () => {
-    if (state.altPosition !== 'off') {
+    // FCOM 9.10.3 specifies DOWN is spring-loaded to OFF. UP is not.
+    if (state.altPosition === 'down') {
       state.altPosition = 'off';
       render('ALTERNATE FLAPS POSITION SWITCH — RETURNED TO OFF');
     }
@@ -180,6 +252,7 @@
   $('#reset').addEventListener('click', () => {
     Object.assign(state, {
       power: true, lampTest: false, flightA: 'on', flightB: 'on', spoilerA: 'on', spoilerB: 'on',
+      flightAGuard:'closed',flightBGuard:'closed',spoilerAGuard:'closed',spoilerBGuard:'closed',
       altGuard: 'closed', altArmed: false, altPosition: 'off', yawDamper: true,
       vhfNav: 'normal', irs: 'normal', efi: 'normal'
     });
@@ -189,6 +262,20 @@
 
   window.B737FlightControlsPanel = {
     getState: () => JSON.parse(JSON.stringify(state)),
+    setGuard(id,open) {
+      if (!mechanics.definitions[id]) throw new Error('Unknown guarded control: '+id);
+      return guardAction(id, open ? 'open':'close');
+    },
+    setGuardedSwitch(id,value) {
+      if (!mechanics.definitions[id]) throw new Error('Unknown guarded control: '+id);
+      return guardAction(id,'set',value);
+    },
+    setNavSource(id,value) {
+      if (!mechanics.horizontal[id]) throw new Error('Unknown nav selector: '+id);
+      const result=mechanics.horizontalTransition(id,state[id],'choose',value);
+      if (!result.ok) return false;
+      state[id]=result.value;render();return true;
+    },
     setFault(name, value = true) {
       if (!(name in state.faults)) throw new Error(`Unknown annunciator: ${name}`);
       state.faults[name] = Boolean(value); render();
