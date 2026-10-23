@@ -2,14 +2,23 @@
 const $=id=>document.getElementById(id);
 const byId = Object.create(null);
 const LOG=[];
-const sim={mode:'standalone',page:'CRZ',subpage:1,scratch:'',message:'',call:false,fail:false,offset:false,brightness:1,active:{ORIGIN:'KSEA',DEST:'KJFK',FLIGHT:'DAL123',CI:'25',CRZ_ALT:'FL350',CRZ_SPEED:'.780',WPT1:'SEA',WPT2:'BKE',POS:'KSEA',OFFSET:'',N1:''},n1:{phase:'TAKEOFF',pmcMode:'UNKNOWN',pressureAltitudeFt:null,oatC:null,tatC:null,mach:null,iasKts:null,bleedMode:null,antiIceMode:null},pending:{},last:'—'};
+function initialN1State(){
+ return {phase:'TAKEOFF',pmcMode:'UNKNOWN',pressureAltitudeFt:null,oatC:null,tatC:null,
+  mach:null,iasKts:null,weatherMode:'ISA',bleedMode:'ON',engineBleedMode:'ON',
+  acPacks:'AUTO',antiIceMode:'OFF'};
+}
+function currentN1Context(){
+ const api=window.EPFSI_SCENARIO_DEFAULTS;
+ return api?api.normalize(sim.n1):{...initialN1State(),...sim.n1};
+}
+const sim={mode:'standalone',page:'CRZ',subpage:1,scratch:'',message:'',call:false,fail:false,offset:false,brightness:1,active:{ORIGIN:'KSEA',DEST:'KJFK',FLIGHT:'DAL123',CI:'25',CRZ_ALT:'FL350',CRZ_SPEED:'.780',WPT1:'SEA',WPT2:'BKE',POS:'KSEA',OFFSET:'',N1:''},n1:initialN1State(),pending:{},last:'—'};
 function v(k){return Object.hasOwn(sim.pending,k)?sim.pending[k]:sim.active[k]||''}
 function pendingCount(){return Object.keys(sim.pending).length}
 function left(a='',b=''){let x=String(a).slice(0,24),y=String(b).slice(0,24);return (x+' '.repeat(Math.max(1,24-x.length-y.length))+y).slice(0,24)}
 function epfsiN1(){
  const factory=window.EPFSI_N1_ENGINE;
  if(!factory)return {display:'---.-',calculated:false,canDriveAutothrottle:false,source:null,reason:'SOURCE_ENGINE_NOT_LOADED'};
- return factory.cduAdapter({registration:'EP-FSI',serial:29340,engine:'CFM56-3B-1',ratingLbf:20000,...sim.n1});
+ return factory.cduAdapter({registration:'EP-FSI',serial:29340,engine:'CFM56-3B-1',ratingLbf:20000,...currentN1Context()});
 }
 function pageLines(){const mode=pendingCount()?'MOD':'ACT',a=Array(14).fill('');let p=sim.page;
  if(p==='CRZ'){
@@ -45,10 +54,11 @@ function pageLines(){const mode=pendingCount()?'MOD':'ACT',a=Array(14).fill('');
  a[5]=left(sim.n1.pmcMode,n.source?'PDF '+n.source.pdfPage:'---');
  a[7]=left('AFM AUTO N1','---.-');
  a[8]=left('SOURCE','NOT VERIFIED');
+ a[9]='ISA / BLD ON / A/I OFF';
  a[10]=left('MANUAL N1','TRAINING ONLY');
  a[13]=left('<INDEX','TAKEOFF>');
  }else if(p==='TAKEOFF'){
- a[0]=left('TAKEOFF REF','1/1');a[2]=left('FLAPS','V1');a[3]=left('5','---');a[4]=left('VR','V2');a[5]=left('---','---');a[7]=left('RUNWAY','N1 REF');a[8]=left('---',v('N1')?v('N1')+' MAN':'---.-');a[10]=left('AFM N1','NOT VERIFIED');a[13]=left('<INDEX','');
+ a[0]=left('TAKEOFF REF','1/1');a[2]=left('FLAPS','V1');a[3]=left('5','---');a[4]=left('VR','V2');a[5]=left('---','---');a[7]=left('RUNWAY','N1 REF');a[8]=left('---',v('N1')?v('N1')+' MAN':'---.-');a[10]=left('AFM N1','NOT VERIFIED');a[11]='ISA / BLD ON / A/I OFF';a[13]=left('<INDEX','');
  }else if(p==='PERF_INIT'){
  a[0]=left('PERF INIT','1/1');a[2]=left('GR WT','FUEL');a[3]=left('---.-','---.-');a[4]=left('COST INDEX','CRZ ALT');a[5]=left(v('CI'),v('CRZ_ALT'));a[13]=left('<INDEX','N1 LIMIT>');
  }else{a[0]=left(p,'1/1');a[13]=left('<INDEX','');}
@@ -112,19 +122,51 @@ function render(){let output=pageLines();if(sim.message)output[12]=sim.message;e
  }else row.textContent=output[i]||' ';
  wrap.appendChild(row)}$('fmc-screen').style.opacity=1; $('fmc-lines').style.opacity=sim.brightness;
  const states={CALL:sim.call,FAIL:sim.fail,MSG:!!sim.message,OFST:sim.offset,EXEC:pendingCount()>0};for(const [key,on] of Object.entries(states)){const el=byId['CDU_CAPT_'+key+'_LIGHT'];if(el)el.classList.toggle('on',on)}
- $('page-now').textContent=sim.page;$('scratch-now').textContent=sim.message||sim.scratch||'—';$('pending-now').textContent=pendingCount();$('key-now').textContent=sim.last.replace('CDU_CAPT_','');}
+ $('page-now').textContent=sim.page;$('scratch-now').textContent=sim.message||sim.scratch||'—';$('pending-now').textContent=pendingCount();$('key-now').textContent=sim.last.replace('CDU_CAPT_','');
+ const status=document.getElementById('n1-defaults-status');
+ if(status){const ctx=currentN1Context();
+  const oat=Number.isFinite(ctx.oatC)?ctx.oatC.toFixed(1)+'°C':'— (set pressure altitude)';
+  status.textContent='Weather '+ctx.weatherMode+' • OAT '+oat+
+   ' • Bleed '+ctx.engineBleedMode+' • PACK '+ctx.acPacks+' • A/I '+ctx.antiIceMode;
+ }
+}
+function syncN1Inputs(){
+ const ids={'n1-pmc-mode':'pmcMode','n1-phase':'phase','n1-pressure-alt':'pressureAltitudeFt',
+  'n1-oat':'oatC','n1-tat':'tatC','n1-mach':'mach','n1-ias':'iasKts',
+  'n1-weather-mode':'weatherMode','n1-bleed':'acPacks',
+  'n1-engine-bleed':'engineBleedMode','n1-anti-ice':'antiIceMode'};
+ for(const [id,k] of Object.entries(ids)){
+  const el=document.getElementById(id);if(!el)continue;
+  const value=sim.n1[k];el.value=value===null||value===undefined?'':String(value);
+ }
+}
 function initializeN1Inputs(){
- const fields={ 'n1-pmc-mode':'pmcMode','n1-phase':'phase','n1-pressure-alt':'pressureAltitudeFt','n1-oat':'oatC','n1-tat':'tatC','n1-mach':'mach','n1-ias':'iasKts','n1-bleed':'bleedMode','n1-anti-ice':'antiIceMode'};
- for(const [id,k] of Object.entries(fields)){
+ const ids={'n1-pmc-mode':'pmcMode','n1-phase':'phase','n1-pressure-alt':'pressureAltitudeFt',
+  'n1-oat':'oatC','n1-tat':'tatC','n1-mach':'mach','n1-ias':'iasKts',
+  'n1-weather-mode':'weatherMode','n1-bleed':'acPacks',
+  'n1-engine-bleed':'engineBleedMode','n1-anti-ice':'antiIceMode'};
+ const numbers=new Set(['pressureAltitudeFt','oatC','tatC','mach','iasKts']);
+ for(const [id,key] of Object.entries(ids)){
   const el=document.getElementById(id);if(!el)continue;
   el.addEventListener('change',()=>{
    const raw=String(el.value??'').trim();
-   sim.n1[k]=['pressureAltitudeFt','oatC','tatC','mach','iasKts'].includes(k)?(raw===''?null:Number(raw)):(raw===''?null:raw);
+   sim.n1[key]=numbers.has(key)?(raw===''?null:Number(raw)):(raw===''?null:raw);
+   if(key==='oatC'){
+    sim.n1.weatherMode=raw===''?'ISA':'CUSTOM';
+    const weather=document.getElementById('n1-weather-mode');
+    if(weather)weather.value=sim.n1.weatherMode;
+   }
+   if(key==='weatherMode'&&raw==='ISA'){
+    sim.n1.oatC=null;
+    const oat=document.getElementById('n1-oat');if(oat)oat.value='';
+   }
+   sim.n1.bleedMode=sim.n1.engineBleedMode;
    render();
   });
  }
+ syncN1Inputs();
 }
-async function boot(){let map=window.CDU_MAP;if(!map)throw Error('CDU map not found');makeControls(map);initializeN1Inputs();render();$('reset').onclick=()=>{sim.page='CRZ';sim.scratch='';sim.message='';sim.pending={};sim.call=sim.fail=sim.offset=false;sim.brightness=1;sim.last='—';for(const id of ['call-test','fault-test','offset-test'])$(id).checked=false;render()};$('overlay-toggle').onclick=()=>{$('cdu-stage').classList.toggle('debug')};$('info-toggle').onclick=()=>{$('qa').hidden=!$('qa').hidden};for(const [id,key] of [['call-test','call'],['fault-test','fail'],['offset-test','offset']])$(id).addEventListener('change',e=>{sim[key]=e.target.checked;render()});$('test-message').onclick=()=>setMessage('CHECK FMC DATA');document.addEventListener('keydown',e=>{if(e.ctrlKey||e.metaKey||e.altKey)return;let id=null;if(e.key==='Backspace')id='KEY_CLR';else if(e.key==='Enter')id='EXEC';else if(e.key===' ')id='KEY_SP';else if(e.key==='.')id='KEY_DOT';else if(e.key==='/')id='KEY_SLASH';else if(/^[a-z0-9]$/i.test(e.key))id='KEY_'+e.key.toUpperCase();if(id){e.preventDefault();press('CDU_CAPT_'+id)}})}
+async function boot(){let map=window.CDU_MAP;if(!map)throw Error('CDU map not found');makeControls(map);initializeN1Inputs();render();$('reset').onclick=()=>{sim.page='CRZ';sim.scratch='';sim.message='';sim.pending={};sim.n1=initialN1State();syncN1Inputs();sim.call=sim.fail=sim.offset=false;sim.brightness=1;sim.last='—';for(const id of ['call-test','fault-test','offset-test'])$(id).checked=false;render()};$('overlay-toggle').onclick=()=>{$('cdu-stage').classList.toggle('debug')};$('info-toggle').onclick=()=>{$('qa').hidden=!$('qa').hidden};for(const [id,key] of [['call-test','call'],['fault-test','fail'],['offset-test','offset']])$(id).addEventListener('change',e=>{sim[key]=e.target.checked;render()});$('test-message').onclick=()=>setMessage('CHECK FMC DATA');document.addEventListener('keydown',e=>{if(e.ctrlKey||e.metaKey||e.altKey)return;let id=null;if(e.key==='Backspace')id='KEY_CLR';else if(e.key==='Enter')id='EXEC';else if(e.key===' ')id='KEY_SP';else if(e.key==='.')id='KEY_DOT';else if(e.key==='/')id='KEY_SLASH';else if(/^[a-z0-9]$/i.test(e.key))id='KEY_'+e.key.toUpperCase();if(id){e.preventDefault();press('CDU_CAPT_'+id)}})}
 boot().catch(e=>{console.error(e);$('page-now').textContent='Data load failed — unzip ALL files and open using local server or Chromium with local file access';});
 // Read-only integration test bridge. Does not alter CDU inputs, EXEC or navigation laws.
 window.CDU_TEST_BRIDGE=Object.freeze({snapshot:()=>({page:sim.page,active:{...sim.active},pending:{...sim.pending},pendingCount:pendingCount(),message:sim.message,scratch:sim.scratch,lastKey:sim.last})});
