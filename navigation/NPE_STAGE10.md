@@ -52,10 +52,18 @@ The producer must use strictly increasing simulation timestamps; the consumer mu
 
 ## Test coverage & source control
 
-- **23 local Python tests passed with private fixture**: 18 State Bus/Live Navigation, 4 localhost API end-to-end and 1 optional private-worldwide-source test (skips in public CI), including host rejection, source validation, duplicate/stale frame, discontinuity, and denied AFDS.
+- **25 local Python tests passed with private fixture**: 18 State Bus/Live Navigation, 6 localhost API end-to-end and 1 optional private-worldwide-source test (skips in public CI), including host rejection, source validation, duplicate/stale frame, discontinuity, and denied AFDS.
 - **10 Node checks passed**: same-origin-only, actuator-free EHSI read-only message validator and safer scalar presentation.
 - Chromium DOM integration passed with **mocked browser network**. The test can use the private Stage 4 reference fixture (when `NPE_STAGE10_PRIVATE_STAGE4_ZIP` is configured) or a clearly synthetic public fixture. Direct localhost browser navigation was blocked in the execution environment (`ERR_BLOCKED_BY_ADMINISTRATOR`). Full CDU/EHSI device acceptance **not performed**.
 - Prior Stage 9 local tests also passed in this environment (29 tests, six skipping unavailable optional private source paths).
 - The entire private Stage 4 SQLite remains excluded from public GitHub. The release ZIP contains it **only for local testing**, derived from the user-supplied private licensed source.
 
 **Important: `Stage10` finishes the bench-level 1–4 interface work, NOT aircraft-certified/accurate LNAV-VNAV-AFDS implementation.**
+
+## Stage 10 verification addendum — 2026-10-23
+
+- Reran the private Stage-4 fixture and all Stage-10 test suites independently: **25/25 Python tests and 10 Node safety checks passed**.
+- API status now reports `telemetry_source_connected=false` as soon as the newest sensor frame exceeds its monotonic 2-second freshness budget; it does not continue showing a phantom connection.
+- API now rejects `POST` bodies without `application/json`. Regression tests cover both requirements.
+- **No simulator-specific live telemetry producer** was installed or tested on the user’s computer; manual/synthetic JSON input continues to be the only demonstrated producer.
+- **No AFDS, LNAV, VNAV or autopilot actuation** was introduced; the FD signal remains a non-commanding preview.
