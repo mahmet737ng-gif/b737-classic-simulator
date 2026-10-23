@@ -1,0 +1,1252 @@
+{
+  "schema": "b737-classic-fcom-ch11-fmc-preflight-route-deparr/1.0",
+  "record_id": "B737-CLASSIC-CDU-FCOM-RTE-DEPARR-2020-2022-PARTIAL",
+  "project": {
+    "repo": "mahmet737ng-gif/b737-classic-simulator",
+    "component": "B737-CLASSIC-CDU",
+    "aircraft": "B737 Classic EP-FSI",
+    "simulator_type": "standalone, no FSX/MSFS/X-Plane authority",
+    "status": "REFERENCE_ONLY",
+    "preserve_original_fonts": true,
+    "preserve_approved_cdu_image": true,
+    "preserve_exact_70_control_boxes": true
+  },
+  "source": {
+    "manual": "Sepehran 737 CL Flight Crew Operations Manual, Flight Management, Navigation — FMC Preflight",
+    "id": "D6-27370-300/400/500-SHI",
+    "screenshots": [
+      {
+        "id": "s1573",
+        "filename": "image(20261023-193522).png",
+        "pdf_viewer_page": 1573,
+        "folios_observed": [
+          "11.40.21"
+        ],
+        "sha256": "55c5edce9ad5d3c61f7714d1a0973137ff99b436b61e2940e5f91a609fd6cdcc"
+      },
+      {
+        "id": "s1576a",
+        "filename": "image(20261023-193547).png",
+        "pdf_viewer_page": 1576,
+        "folios_observed": [
+          "11.40.23",
+          "11.40.24"
+        ],
+        "sha256": "ac547145e690e74a972d057d5b76b1eab296f19a80a2909094f6f531cbfcb761"
+      },
+      {
+        "id": "s1576b",
+        "filename": "image(20261023-193608).png",
+        "pdf_viewer_page": 1576,
+        "folios_observed": [
+          "11.40.24",
+          "11.40.25"
+        ],
+        "sha256": "c9a747f54f63e90c458fd12ca6bd29d0c940017cac604106ec38c2d3cd203507"
+      },
+      {
+        "id": "s1579",
+        "filename": "image(20261023-193623).png",
+        "pdf_viewer_page": 1579,
+        "folios_observed": [
+          "11.40.26",
+          "11.40.27"
+        ],
+        "sha256": "6095a2e2305ed2bc6fc2b8018e8aff46c9560347ed71f889b3990be1b42acc6b"
+      },
+      {
+        "id": "s1581",
+        "filename": "image(20261023-193640).png",
+        "pdf_viewer_page": 1581,
+        "folios_observed": [
+          "11.40.28",
+          "11.40.29"
+        ],
+        "sha256": "ac696ad3fad17985ea1e7963cfbc75943d022c0d7adc466251053887cf809142"
+      },
+      {
+        "id": "s1582",
+        "filename": "image(20261023-193647).png",
+        "pdf_viewer_page": 1582,
+        "folios_observed": [
+          "11.40.29",
+          "11.40.30"
+        ],
+        "sha256": "d22763ba354f0031482ff44bc765cf13374c30bae4e13ce69e0ebb6dee8c8848"
+      },
+      {
+        "id": "s1583",
+        "filename": "image(20261023-193710).png",
+        "pdf_viewer_page": 1583,
+        "folios_observed": [
+          "11.40.30",
+          "11.40.31"
+        ],
+        "sha256": "a11039774c9ba2d2c475fb8f57c8014662849a9474d66f8bb79aa18ad5c6b9e5"
+      },
+      {
+        "id": "s1584",
+        "filename": "image(20261023-193732).png",
+        "pdf_viewer_page": 1584,
+        "folios_observed": [
+          "11.40.32"
+        ],
+        "sha256": "2d2c085b881c4fa7574fe68c8460a14e732f78ee9a79f3a975f032abe5fe28e5"
+      },
+      {
+        "id": "s1585",
+        "filename": "image(20261023-193739).png",
+        "pdf_viewer_page": 1585,
+        "folios_observed": [
+          "11.40.33"
+        ],
+        "sha256": "0bccb3557fe81a9f8b062638fb5eca1fe52658e9f895de9d3464b9e5c98b1bd6"
+      }
+    ],
+    "source_scope": "ONLY_USER_PROVIDED_SCREENCAPTURES_NOT_WHOLE_FCOM_PDF",
+    "missing_or_not_fully_visible": [
+      "11.40.22",
+      "11.40.23 earlier material not shown",
+      "11.40.25 only the beginning of continuing page shown",
+      "11.40.27 diagram captured without full adjacent prose",
+      "11.40.28 only partially visible",
+      "11.40.30 partly visible",
+      "other omitted pages not assumed reviewed"
+    ],
+    "copyright": "Only structured independently paraphrased facts stored; FCOM screenshot pixels not republished."
+  },
+  "rte_page_1": {
+    "title_modes": [
+      "RTE",
+      "ACT RTE",
+      "MOD RTE"
+    ],
+    "multi_page_indicator": true,
+    "fields": [
+      {
+        "lsk": "L1",
+        "field": "ORIGIN",
+        "required_for_activation": true,
+        "format": "ICAO_4_LETTER_IN_NAV_DATABASE"
+      },
+      {
+        "lsk": "R1",
+        "field": "DEST",
+        "required_for_activation": true,
+        "format": "ICAO_4_LETTER_IN_NAV_DATABASE"
+      },
+      {
+        "lsk": "L2",
+        "field": "CO ROUTE",
+        "required_for_activation": false,
+        "source": "COMPANY_ROUTE_NAV_DATABASE"
+      },
+      {
+        "lsk": "R2",
+        "field": "FLT NO.",
+        "required_for_activation": false,
+        "max_chars": 8
+      },
+      {
+        "lsk": "L3",
+        "field": "RUNWAY",
+        "required_for_activation": false,
+        "source": "ORIGIN_RUNWAY_NAV_DATABASE"
+      },
+      {
+        "lsk": "R6",
+        "field": "ACTIVATE",
+        "state": "INACTIVE_ROUTE"
+      },
+      {
+        "lsk": "L6",
+        "field": "ERASE",
+        "state": "MOD_PENDING"
+      }
+    ],
+    "examples_are_not_default_route": true
+  },
+  "rte_page_2": {
+    "title": "RTE",
+    "layout": {
+      "left_column": "VIA",
+      "right_column": "TO"
+    },
+    "conditions": {
+      "enter_airway_requires_previous_to_fix": true,
+      "airway_must_contain_next_to_fix": true,
+      "invalid_airway_message": "INVALID ENTRY",
+      "direct_waypoint_without_via": "DIRECT",
+      "sid_from_departures_creates_via_to_segments": true,
+      "route_discontinuity_if_segments_do_not_link": true
+    },
+    "sample_only": {
+      "SID": "LACRE3.VAMPS",
+      "waypoint": "VAMPS",
+      "airway_examples": [
+        "V2",
+        "V336"
+      ],
+      "to_examples": [
+        "ELN",
+        "EPH"
+      ]
+    }
+  },
+  "route_state_machine": {
+    "states": [
+      "INACTIVE",
+      "ACTIVATION_ARMED_EXEC_PENDING",
+      "ACTIVE",
+      "MOD_PENDING_EXEC"
+    ],
+    "activate_action": "ARM_AND_LIGHT_EXEC",
+    "execute_action": "COMMIT_ROUTE_AS_ACTIVE",
+    "modify_action": "TITLE_MOD_AND_ERASE_AT_L6",
+    "erase_action": "DISCARD_PENDING_MODS_NOT_ACTIVE_ROUTE",
+    "r6_after_activation_ground_perf_missing": "PERF INIT",
+    "r6_after_activation_ground_perf_complete": "TAKEOFF",
+    "r6_in_flight": "OFFSET"
+  },
+  "dep_arr_index": {
+    "title": "DEP/ARR INDEX",
+    "page": "1/1",
+    "fields": [
+      {
+        "lsk": "L1",
+        "field": "DEP_ORIGIN"
+      },
+      {
+        "lsk": "L6",
+        "field": "DEP_OTHER"
+      },
+      {
+        "lsk": "R1",
+        "field": "ARR_ORIGIN"
+      },
+      {
+        "lsk": "R2",
+        "field": "ARR_DESTINATION"
+      },
+      {
+        "lsk": "R6",
+        "field": "ARR_OTHER"
+      }
+    ],
+    "other_airport_lookups": "INFORMATION_ONLY_WHEN_AIRPORT_NOT_ON_ROUTE",
+    "arrival_origin": "TURNBACK_USE_CASE"
+  },
+  "rules": [
+    {
+      "id": "RTE-001",
+      "area": "navigation",
+      "source_image_id": "s1573",
+      "when": "POS_INIT_1_OF_3_R6_ROUTE_SELECTED",
+      "then": "OPEN_ROUTE_PAGE",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "RTE-002",
+      "area": "navigation",
+      "source_image_id": "s1573",
+      "when": "RTE_HARD_KEY_PRESSED",
+      "then": "OPEN_ROUTE_PAGE",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "RTE-003",
+      "area": "route_header",
+      "source_image_id": "s1573",
+      "when": "ROUTE_PAGE_DISPLAYED",
+      "then": "SHOW_RTE_AND_PAGE_SEQUENCE_NUMBER",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "RTE-004",
+      "area": "route_lsk",
+      "source_image_id": "s1573",
+      "when": "RTE_FIRST_PAGE",
+      "then": "MAP_L1_ORIGIN",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "RTE-005",
+      "area": "route_lsk",
+      "source_image_id": "s1573",
+      "when": "RTE_FIRST_PAGE",
+      "then": "MAP_R1_DEST",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "RTE-006",
+      "area": "route_lsk",
+      "source_image_id": "s1573",
+      "when": "RTE_FIRST_PAGE",
+      "then": "MAP_L2_CO_ROUTE",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "RTE-007",
+      "area": "route_lsk",
+      "source_image_id": "s1573",
+      "when": "RTE_FIRST_PAGE",
+      "then": "MAP_R2_FLT_NO",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "RTE-008",
+      "area": "route_lsk",
+      "source_image_id": "s1573",
+      "when": "RTE_FIRST_PAGE",
+      "then": "MAP_L3_RUNWAY",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "RTE-009",
+      "area": "route_lsk",
+      "source_image_id": "s1573",
+      "when": "RTE_FIRST_PAGE_UNACTIVATED",
+      "then": "SHOW_BOX_PROMPT_FOR_ORIGIN_AND_DEST",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "RTE-010",
+      "area": "page_variants",
+      "source_image_id": "s1573",
+      "when": "ROUTE_HAS_ONLY_ONE_PAGE",
+      "then": "DISPLAY_RTE_1_OF_1",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "RTE-011",
+      "area": "page_variants",
+      "source_image_id": "s1573",
+      "when": "ROUTE_HAS_MULTIPLE_PAGES",
+      "then": "DISPLAY_DYNAMIC_PAGE_SEQUENCE",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "RTE-012",
+      "area": "route_title",
+      "source_image_id": "s1576a",
+      "when": "ROUTE_ACTIVATED_AND_EXECUTED",
+      "then": "SHOW_ACT_TO_LEFT_OF_RTE_TITLE",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "RTE-013",
+      "area": "route_title",
+      "source_image_id": "s1576a",
+      "when": "ACTIVE_ROUTE_MODIFIED_NOT_EXECUTED",
+      "then": "SHOW_MOD_TO_LEFT_OF_RTE_TITLE",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "RTE-014",
+      "area": "route_title",
+      "source_image_id": "s1576a",
+      "when": "MULTIPLE_ROUTE_PAGES",
+      "then": "DISPLAY_PAGE_NUMBER_RIGHT_OF_TITLE",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "RTE-015",
+      "area": "origin",
+      "source_image_id": "s1576a",
+      "when": "ORIGIN_L1_VALID_FOUR_LETTER_ICAO",
+      "then": "ACCEPT_ONLY_AIRPORT_IN_NAV_DATABASE",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "RTE-016",
+      "area": "origin",
+      "source_image_id": "s1576a",
+      "when": "NO_ORIGIN_ENTERED",
+      "then": "ROUTE_ACTIVATION_REQUIRES_ORIGIN",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "RTE-017",
+      "area": "origin",
+      "source_image_id": "s1576a",
+      "when": "NEW_ORIGIN_ENTERED",
+      "then": "ERASE_PREVIOUS_ROUTE",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "RTE-018",
+      "area": "origin",
+      "source_image_id": "s1576a",
+      "when": "ACTIVE_ROUTE_NEW_ORIGIN_ENTERED_ON_GROUND",
+      "then": "SHOW_MOD_AND_STAGE_ORIGIN_CHANGE",
+      "variant": "GROUND_ONLY_ACTIVE_ROUTE_VARIANT",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "RTE-019",
+      "area": "origin",
+      "source_image_id": "s1576a",
+      "when": "ACTIVE_ROUTE_NEW_ORIGIN_ENTERED_IN_FLIGHT",
+      "then": "INHIBIT_ENTRY",
+      "variant": "GROUND_ONLY_ACTIVE_ROUTE_VARIANT",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "RTE-020",
+      "area": "origin",
+      "source_image_id": "s1576a",
+      "when": "ORIGIN_SET",
+      "then": "ENABLE_ORIGIN_DEPARTURE_AND_ARRIVAL_PROCEDURE_CHOICES",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "RTE-021",
+      "area": "origin",
+      "source_image_id": "s1576a",
+      "when": "VALID_COMPANY_ROUTE_LOADED",
+      "then": "ORIGIN_MAY_BE_AUTOMATICALLY_FILLED",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "RTE-022",
+      "area": "origin",
+      "source_image_id": "s1576a",
+      "when": "REFERENCE_TEXT_ENTRY_ALLOWED_ALL_FLIGHT_PHASES",
+      "then": "CAPTURE_AS_SEPARATE_DOCUMENTED_ENTRY_RULE_NOT_GLOBAL_BYPASS_OF_INFLIGHT_ACTIVE_ROUTE_INHIBIT",
+      "variant": "ORIGIN_ENTRY_EFFECTIVITY_VARIANT",
+      "notes": "11.40.23 text mentions all phases; continuation distinguishes active-route inflight inhibition.",
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "RTE-023",
+      "area": "company_route",
+      "source_image_id": "s1576a",
+      "when": "CO_ROUTE_IDENTIFIER_IN_NAV_DATABASE_ENTERED",
+      "then": "AUTO_POPULATE_AVAILABLE_ORIGIN_DEST_RUNWAY_SID_STAR_AND_LEGS",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "RTE-024",
+      "area": "company_route",
+      "source_image_id": "s1576a",
+      "when": "CO_ROUTE_IDENTIFIER_NOT_IN_NAV_DATABASE_ENTERED",
+      "then": "SCRATCHPAD_NOT_IN_DATABASE",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "RTE-025",
+      "area": "company_route",
+      "source_image_id": "s1576a",
+      "when": "NEW_COMPANY_ROUTE_ENTERED",
+      "then": "REPLACE_PREVIOUS_ROUTE",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "RTE-026",
+      "area": "company_route",
+      "source_image_id": "s1576a",
+      "when": "ACTIVE_ROUTE_COMPANY_ROUTE_ENTRY_IN_FLIGHT",
+      "then": "INHIBIT_ENTRY",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "RTE-027",
+      "area": "company_route",
+      "source_image_id": "s1576a",
+      "when": "CO_ROUTE_EMPTY",
+      "then": "DO_NOT_BLOCK_ROUTE_ACTIVATION_BASED_ON_CO_ROUTE_ALONE",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "RTE-028",
+      "area": "runway",
+      "source_image_id": "s1576b",
+      "when": "RUNWAY_L3_IN_NAV_DATABASE_FOR_ORIGIN",
+      "then": "ACCEPT_RUNWAY_AS_OPTIONAL_ROUTE_FIELD",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "RTE-029",
+      "area": "runway",
+      "source_image_id": "s1576b",
+      "when": "RUNWAY_NOT_ENTERED",
+      "then": "DO_NOT_BLOCK_ACTIVATION_BASED_ON_RUNWAY_ALONE",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "RTE-030",
+      "area": "runway",
+      "source_image_id": "s1576b",
+      "when": "ACTIVE_ROUTE_RUNWAY_CHANGE",
+      "then": "SHOW_MOD_TITLE",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "RTE-031",
+      "area": "runway",
+      "source_image_id": "s1576b",
+      "when": "RUNWAY_FROM_COMPANY_ROUTE",
+      "then": "SET_RUNWAY_FROM_COMPANY_ROUTE",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "RTE-032",
+      "area": "runway",
+      "source_image_id": "s1576b",
+      "when": "RUNWAY_SELECTED_ON_DEPARTURES_PAGE",
+      "then": "SET_ORIGIN_RUNWAY_IN_RTE",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "RTE-033",
+      "area": "runway",
+      "source_image_id": "s1576b",
+      "when": "AIRCRAFT_REACHES_FIRST_WAYPOINT",
+      "then": "REMOVE_RUNWAY_ENTRY",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "RTE-034",
+      "area": "destination",
+      "source_image_id": "s1576b",
+      "when": "DEST_R1_VALID_AIRPORT_IN_DATABASE",
+      "then": "ACCEPT_ICAO_AIRPORT",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "RTE-035",
+      "area": "destination",
+      "source_image_id": "s1576b",
+      "when": "DEST_NOT_ENTERED",
+      "then": "ROUTE_ACTIVATION_REQUIRES_DEST",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "RTE-036",
+      "area": "destination",
+      "source_image_id": "s1576b",
+      "when": "DEST_SET",
+      "then": "ENABLE_ARRIVAL_PROCEDURE_DIRECT_SELECTION",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "RTE-037",
+      "area": "destination",
+      "source_image_id": "s1576b",
+      "when": "DEST_FROM_VALID_COMPANY_ROUTE",
+      "then": "AUTOFILL_DESTINATION",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "RTE-038",
+      "area": "destination",
+      "source_image_id": "s1576b",
+      "when": "NEW_DESTINATION_ON_ACTIVE_ROUTE",
+      "then": "DISPLAY_MOD_TITLE",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "RTE-039",
+      "area": "destination",
+      "source_image_id": "s1576b",
+      "when": "EXECUTE_CHANGED_DESTINATION",
+      "then": "CLEAR_OLD_DEST_RUNWAY_AND_RUNWAY_DEPENDENT_APPROACH;IF_ACTIVE_LEG_IS_PART_OF_OLD_PROCEDURE_CLEAR_SUBSEQUENT_INACTIVE_LEGS",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "RTE-040",
+      "area": "flight_number",
+      "source_image_id": "s1576b",
+      "when": "FLT_NO_R2_ENTERED",
+      "then": "ACCEPT_OPTIONAL_CREW_ENTERED_FLIGHT_NUMBER_MAX_EIGHT_CHARACTERS",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "RTE-041",
+      "area": "flight_number",
+      "source_image_id": "s1576b",
+      "when": "FLT_NO_ENTERED",
+      "then": "INCLUDE_FLIGHT_NUMBER_IN_PROGRESS_PAGE_TITLE",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "RTE-042",
+      "area": "rte_pages",
+      "source_image_id": "s1579",
+      "when": "RTE_FIRST_PAGE_WITH_ROUTE_FIELDS",
+      "then": "SHOW_HEADER_FIELDS_ON_PAGE_1",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "RTE-043",
+      "area": "rte_pages",
+      "source_image_id": "s1579",
+      "when": "RTE_SECOND_PAGE",
+      "then": "SHOW_LEFT_VIA_AND_RIGHT_TO_COLUMNS",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "RTE-044",
+      "area": "rte_pages",
+      "source_image_id": "s1579",
+      "when": "RTE_SECOND_PAGE_WITH_SID_SELECTED",
+      "then": "DISPLAY_SID_SEGMENT_IN_VIA_TO",
+      "variant": "EXAMPLE_ONLY",
+      "notes": "Illustrated LACRE3.VAMPS to VAMPS is not a loaded route.",
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "RTE-045",
+      "area": "rte_pages",
+      "source_image_id": "s1579",
+      "when": "NEXT_AIRWAY_LEG_IN_EXAMPLE",
+      "then": "DISPLAY_AIRWAY_V2_TO_ELN",
+      "variant": "EXAMPLE_ONLY",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "RTE-046",
+      "area": "rte_pages",
+      "source_image_id": "s1579",
+      "when": "FURTHER_AIRWAY_LEG_IN_EXAMPLE",
+      "then": "DISPLAY_AIRWAY_V336_TO_EPH",
+      "variant": "EXAMPLE_ONLY",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "RTE-047",
+      "area": "route_activation",
+      "source_image_id": "s1579",
+      "when": "ROUTE_NOT_ACTIVE_RTE_PAGE_1_OR_2",
+      "then": "DISPLAY_ACTIVATE_PROMPT_AT_R6",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "VIA-001",
+      "area": "via_to",
+      "source_image_id": "s1581",
+      "when": "VIA_ROUTE_SEGMENT_ENTERED",
+      "then": "TO_COLUMN_DISPLAYS_DESTINATION_OR_REQUIRED_BOX_PROMPT",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "VIA-002",
+      "area": "via_to",
+      "source_image_id": "s1581",
+      "when": "NEW_AIRWAY_ENTERED_IN_VIA",
+      "then": "CREATE_BOX_PROMPT_IN_TO_FIELD",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "VIA-003",
+      "area": "via_to",
+      "source_image_id": "s1581",
+      "when": "VALID_VIA_AIRWAY_ROUTE",
+      "then": "AIRWAY_MUST_CONTAIN_PREVIOUS_TO_FIX_AND_NEW_TO_FIX",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "VIA-004",
+      "area": "via_to",
+      "source_image_id": "s1581",
+      "when": "UNKNOWN_AIRWAY_OR_COMPANY_ROUTE",
+      "then": "SCRATCHPAD_INVALID_ENTRY",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "VIA-005",
+      "area": "via_to",
+      "source_image_id": "s1581",
+      "when": "AIRWAY_DOES_NOT_CONTAIN_PREVIOUS_TO_WAYPOINT",
+      "then": "SCRATCHPAD_INVALID_ENTRY",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "VIA-006",
+      "area": "via_to",
+      "source_image_id": "s1581",
+      "when": "VIA_ENTERED",
+      "then": "ROUTE_SEGMENT_ORIGIN_SET_TO_PRIOR_TO_WAYPOINT",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "VIA-007",
+      "area": "via_to",
+      "source_image_id": "s1581",
+      "when": "NEW_TO_WAYPOINT_ENTERED",
+      "then": "USE_TO_WAYPOINT_AS_SEGMENT_TERMINATION",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "VIA-008",
+      "area": "via_to",
+      "source_image_id": "s1581",
+      "when": "PREVIOUS_SEGMENT_TO_DIFFERS_FROM_NEXT_SEGMENT_START",
+      "then": "INSERT_ROUTE_DISCONTINUITY",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "VIA-009",
+      "area": "via_to",
+      "source_image_id": "s1581",
+      "when": "SID_OR_TRANSITION_SELECTED_IN_DEP_ARR",
+      "then": "AUTOMATICALLY_ENTER_SID_SEGMENTS_IN_VIA_AND_TO",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "VIA-010",
+      "area": "via_to",
+      "source_image_id": "s1581",
+      "when": "SID_FINAL_WAYPOINT_MATCHES_NEXT_SEGMENT_START",
+      "then": "AUTO_LINK_SID_TO_NEXT_SEGMENT",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "VIA-011",
+      "area": "via_to",
+      "source_image_id": "s1581",
+      "when": "NO_AIRWAY_TYPED_BUT_WAYPOINT_ENTERED_IN_TO",
+      "then": "DISPLAY_DIRECT_IN_VIA",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "VIA-012",
+      "area": "via_to",
+      "source_image_id": "s1581",
+      "when": "NEXT_UNFILLED_VIA_ENTRY",
+      "then": "DISPLAY_DASH_PROMPT",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "VIA-013",
+      "area": "via_to",
+      "source_image_id": "s1581",
+      "when": "NEXT_UNFILLED_TO_ENTRY_FOR_AIRWAY",
+      "then": "DISPLAY_BOX_PROMPT",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "VIA-014",
+      "area": "via_to",
+      "source_image_id": "s1581",
+      "when": "PROCEDURE_VALID_AS_VIA",
+      "then": "ALLOW_PROCEDURE_VIA_DATA_USUALLY_FROM_DEP_ARR",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "VIA-015",
+      "area": "via_to",
+      "source_image_id": "s1581",
+      "when": "DIRECT_VALID_AS_VIA",
+      "then": "ALLOW_DIRECT_ROUTING",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "TO-001",
+      "area": "via_to",
+      "source_image_id": "s1582",
+      "when": "TO_WAYPOINT_WITHOUT_PREVIOUS_VIA",
+      "then": "AUTO_SET_VIA_DIRECT",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "TO-002",
+      "area": "via_to",
+      "source_image_id": "s1582",
+      "when": "TO_ENTRY_REQUIRED",
+      "then": "SHOW_BOX_PROMPT",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "TO-003",
+      "area": "via_to",
+      "source_image_id": "s1582",
+      "when": "DIRECT_TO_TARGET",
+      "then": "ALLOW_VALID_WAYPOINT_FIX_NAVAID_AIRPORT_OR_RUNWAY",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "TO-004",
+      "area": "via_to",
+      "source_image_id": "s1582",
+      "when": "AIRWAY_TO_TARGET",
+      "then": "ALLOW_ONLY_FIX_OR_WAYPOINT_ON_SELECTED_AIRWAY",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "TO-005",
+      "area": "via_to",
+      "source_image_id": "s1582",
+      "when": "END_OF_ROUTE_NEXT_TO",
+      "then": "SHOW_DASH_PROMPT",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "ACT-001",
+      "area": "route_activation",
+      "source_image_id": "s1582",
+      "when": "RTE_ACTIVATE_PROMPT_SELECTED",
+      "then": "ARM_ROUTE_FOR_EXECUTION_LIGHT_ON",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "ACT-002",
+      "area": "route_activation",
+      "source_image_id": "s1582",
+      "when": "EXEC_KEY_PUSHED_AFTER_ACTIVATE",
+      "then": "COMMIT_ACTIVE_ROUTE_REPLACE_ACTIVATE_WITH_NEXT_PREFLIGHT_PROMPT",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "ACT-003",
+      "area": "route_activation",
+      "source_image_id": "s1582",
+      "when": "ROUTE_NOT_YET_ACTIVATED",
+      "then": "DISPLAY_ACTIVATE_PROMPT_ON_INACTIVE_ROUTE_PAGES",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "ACT-004",
+      "area": "route_activation",
+      "source_image_id": "s1582",
+      "when": "ACTIVE_ROUTE_AND_REQUIRED_PERF_DATA_INCOMPLETE_ON_GROUND",
+      "then": "R6_SHOW_PERF_INIT",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "ACT-005",
+      "area": "route_activation",
+      "source_image_id": "s1582",
+      "when": "ACTIVE_ROUTE_AND_REQUIRED_PERF_DATA_COMPLETE_ON_GROUND",
+      "then": "R6_SHOW_TAKEOFF",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "MOD-001",
+      "area": "route_modification",
+      "source_image_id": "s1583",
+      "when": "ACTIVE_ROUTE_MODIFIED_NOT_EXECUTED",
+      "then": "SHOW_MOD_RTE_AND_L6_ERASE",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "MOD-002",
+      "area": "route_modification",
+      "source_image_id": "s1583",
+      "when": "L6_ERASE_PRESSED",
+      "then": "REMOVE_PENDING_MODIFICATIONS_KEEP_ACTIVE_ROUTE",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "MOD-003",
+      "area": "route_modification",
+      "source_image_id": "s1583",
+      "when": "RTE_PERF_INIT_PROMPT_PRESSED",
+      "then": "OPEN_PERF_INIT_PAGE",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "MOD-004",
+      "area": "route_modification",
+      "source_image_id": "s1583",
+      "when": "ON_GROUND_AND_REQUIRED_PERF_INIT_INCOMPLETE",
+      "then": "DISPLAY_PERF_INIT_PROMPT",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "MOD-005",
+      "area": "route_modification",
+      "source_image_id": "s1583",
+      "when": "RTE_TAKEOFF_PROMPT_PRESSED",
+      "then": "OPEN_TAKEOFF_REF_PAGE",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "MOD-006",
+      "area": "route_modification",
+      "source_image_id": "s1583",
+      "when": "ON_GROUND_AND_REQUIRED_PERF_INIT_COMPLETE",
+      "then": "DISPLAY_TAKEOFF_PROMPT",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "MOD-007",
+      "area": "route_modification",
+      "source_image_id": "s1583",
+      "when": "AIRBORNE_ACTIVE_ROUTE",
+      "then": "DISPLAY_OFFSET_PROMPT_TO_OPEN_LATERAL_OFFSET",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "MOD-008",
+      "area": "route_modification",
+      "source_image_id": "s1583",
+      "when": "GROUND_ACTIVE_ROUTE",
+      "then": "DO_NOT_DISPLAY_FLIGHT_ONLY_OFFSET_PROMPT",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "DEPARR-001",
+      "area": "dep_arr_navigation",
+      "source_image_id": "s1584",
+      "when": "DEP_ARR_KEY_PRESSED",
+      "then": "OPEN_DEP_ARR_INDEX",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "DEPARR-002",
+      "area": "dep_arr_navigation",
+      "source_image_id": "s1584",
+      "when": "DEP_ARR_INDEX_PAGE_OPEN",
+      "then": "TITLE_DEP_ARR_INDEX_1_OF_1",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "DEPARR-003",
+      "area": "dep_arr_navigation",
+      "source_image_id": "s1584",
+      "when": "DEP_ARR_INDEX_L1_DEP_SELECTED",
+      "then": "SHOW_DEPARTURES_FOR_ORIGIN_AIRPORT",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "DEPARR-004",
+      "area": "dep_arr_navigation",
+      "source_image_id": "s1584",
+      "when": "DEP_ARR_INDEX_L6_OTHER_DEP_SELECTED_WITH_AIRPORT_IN_SCRATCHPAD",
+      "then": "SHOW_DEPARTURES_FOR_OTHER_AIRPORT",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "DEPARR-005",
+      "area": "dep_arr_navigation",
+      "source_image_id": "s1584",
+      "when": "DEP_ARR_INDEX_R1_ARR_SELECTED",
+      "then": "SHOW_ARRIVALS_FOR_ORIGIN_AIRPORT",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "DEPARR-006",
+      "area": "dep_arr_navigation",
+      "source_image_id": "s1584",
+      "when": "DEP_ARR_INDEX_R2_ARR_SELECTED",
+      "then": "SHOW_ARRIVALS_FOR_DESTINATION_AIRPORT",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "DEPARR-007",
+      "area": "dep_arr_navigation",
+      "source_image_id": "s1584",
+      "when": "DEP_ARR_INDEX_R6_OTHER_ARR_SELECTED_WITH_AIRPORT_IN_SCRATCHPAD",
+      "then": "SHOW_ARRIVALS_FOR_OTHER_AIRPORT",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "DEPARR-008",
+      "area": "dep_arr_navigation",
+      "source_image_id": "s1584",
+      "when": "DEP_ARR_INDEX_OPEN",
+      "then": "SHOW_ORIGIN_DEPARTURE_AND_ARRIVAL_PROMPTS_AND_DEST_ARRIVAL_PROMPT",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "DEPARR-009",
+      "area": "dep_arr_navigation",
+      "source_image_id": "s1584",
+      "when": "DEP_ARR_INDEX_OTHER_AIRPORTS",
+      "then": "ALLOW_INFORMATION_LOOKUP_BEYOND_ORIGIN_AND_DESTINATION",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "DEPARR-010",
+      "area": "dep_arr_navigation",
+      "source_image_id": "s1584",
+      "when": "DEP_ARR_INDEX_L6_OR_R6_OTHER",
+      "then": "USE_SCRATCHPAD_TO_SELECT_OTHER_AIRPORT_FOR_VIEWING",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "DEPARR-011",
+      "area": "dep_arr_other",
+      "source_image_id": "s1585",
+      "when": "OTHER_AIRPORT_NOT_ON_ROUTE",
+      "then": "PROCEDURES_MAY_BE_DISPLAYED_BUT_CANNOT_BE_SELECTED_INTO_ACTIVE_ROUTE",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "DEPARR-012",
+      "area": "dep_arr_other",
+      "source_image_id": "s1585",
+      "when": "ARR_ORIGIN_SELECTED",
+      "then": "SHOW_ARRIVAL_PAGE_FOR_ORIGIN_AIRPORT",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "DEPARR-013",
+      "area": "dep_arr_other",
+      "source_image_id": "s1585",
+      "when": "ORIGIN_ARRIVAL_SELECTION",
+      "then": "APPLICABLE_DURING_TURNBACK",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "DEPARR-014",
+      "area": "dep_arr_other",
+      "source_image_id": "s1585",
+      "when": "ARR_DEST_SELECTED",
+      "then": "SHOW_ARRIVAL_PAGE_FOR_DESTINATION_AIRPORT",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "DEPARR-015",
+      "area": "dep_arr_other",
+      "source_image_id": "s1585",
+      "when": "ARR_OTHER_SELECTED_WITH_AIRPORT_IDENT",
+      "then": "SHOW_OTHER_AIRPORT_ARRIVAL_INFO_READ_ONLY_IF_NOT_ON_ROUTE",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    },
+    {
+      "id": "DEPARR-016",
+      "area": "dep_arr_other",
+      "source_image_id": "s1585",
+      "when": "DEP_OTHER_SELECTED_WITH_AIRPORT_IDENT",
+      "then": "SHOW_OTHER_AIRPORT_DEPARTURE_INFO_READ_ONLY_IF_NOT_ON_ROUTE",
+      "variant": "GENERAL",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_CONNECTED"
+    }
+  ],
+  "interfaces": {
+    "inputs": [
+      "FMC_ACTIVE_ROUTE",
+      "FMC_PENDING_ROUTE_MODS",
+      "CDU_LSK",
+      "CDU_EXEC",
+      "CDU_RTE_KEY",
+      "CDU_DEP_ARR_KEY",
+      "CDU_SCRATCHPAD",
+      "NAVDB_AIRPORTS_RUNWAYS_WAYPOINTS_AIRWAYS_COMPANY_ROUTES_SID_STAR",
+      "AIRCRAFT_GROUND_AIRBORNE",
+      "FMC_PREFLIGHT_PERF_INIT_STATUS"
+    ],
+    "outputs": [
+      "CDU_RTE_HEADER_AND_PAGING",
+      "FMC_DRAFT_ROUTE_FIELDS",
+      "FMC_VALIDATED_VIA_TO_SEGMENTS",
+      "ROUTE_ACTIVATION_EXEC_PENDING",
+      "CDU_EXEC_ANNUNCIATOR",
+      "CDU_MOD_ERASE_STATE",
+      "CDU_INVALID_ENTRY",
+      "CDU_NOT_IN_DATABASE",
+      "FMC_ACT_RTE",
+      "CDU_DEP_ARR_INDEX_AND_PROCEDURE_SELECTION"
+    ],
+    "consumers": [
+      "CDU_ROUTE_PAGE_RENDERER",
+      "FMC_ROUTE_STATE_MACHINE",
+      "AIRWAY_LEG_GRAPH",
+      "SID_STAR_PROCEDURE_SELECTOR",
+      "FLIGHT_PERFORMANCE_PREFLIGHT",
+      "CDU_SCRATCHPAD_MESSAGE_ENGINE",
+      "CDU_PAGE_NAVIGATION"
+    ],
+    "implementation_by_this_commit": false
+  },
+  "qa": {
+    "rule_count": 96,
+    "images": 9,
+    "distinct_pdf_viewer_pages": [
+      1573,
+      1576,
+      1579,
+      1581,
+      1582,
+      1583,
+      1584,
+      1585
+    ],
+    "lsk_reference_only": true
+  }
+}
