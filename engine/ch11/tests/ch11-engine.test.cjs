@@ -22,5 +22,5 @@ s=eng.dispatch(s,{type:'MESSAGE',text:'CHECK FMC DATA',severity:'alert'});s=eng.
 enter('AB');assert.equal(eng.annunciators(s).MSG,false,'visible scratch suppresses lower-priority advisory');key('KEY_CLR_LONG');assert.equal(eng.annunciators(s).MSG,true);
 const before=JSON.stringify(s);let s2=eng.dispatch(s,{type:'KEY',key:'CDU_CAPT_RTE'});assert.equal(JSON.stringify(s),before,'reducer mutates old state');assert.equal(s2.page,'RTE');
 for(const page of Object.keys(eng.PAGES)){let x=eng.dispatch(s2,{type:'NAVIGATE',page});assert.equal(eng.display(x).rows.length,14);assert(eng.display(x).rows.every(row=>row.length===24))}
-const originalArtwork=fs.readFileSync('/mnt/data/B737_CDU_Standalone_v2/assets/cdu-approved-unlit.png');assert(originalArtwork.length>1000000);
+const originalArtwork=fs.readFileSync(path.join(__dirname,'../../../cdu-standalone-v6/assets/cdu-approved-unlit.png'));assert(originalArtwork.length>1000000);
 console.log('PASS: 409-page source index, 46 FCOM-referenced rules, 24x14 display, 17 page IDs, LSK transaction + EXEC, entry errors/CLR/DEL, 3/4/5-digit altitude, speed, bearing, offset guidance, prioritized MSG, standalone independence, immutable dispatch.');
