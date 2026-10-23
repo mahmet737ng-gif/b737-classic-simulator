@@ -252,3 +252,16 @@ User specifies default ambient weather ISA, Anti-Ice OFF and engine bleed ON acr
 - Private source-linked graph `/Technical Database/Subsystems/PNEUMATICS-V6/PNEUMATICS_NETWORK_V6.sqlite` with 46 nodes, 126 ports, 63 functional edges (some deliberately route-unverified), 23 rules (18 executable teaching, 5 blocked), 11 page refs, 8 synthetic faults, 16 integration bindings and 12 unresolved gaps. 27 SQLite validation checks passed; original full V2 source corpus unchanged.
 - Covers: two engine bleed switches, APU bleed, isolation AUTO rules, DUAL BLEED, BLEED TRIP OFF / PACK TRIP OFF / DUCT OVERHEAT latches and trip reset, wing-body overheat test, AUTO/HIGH pack flow with flaps/ground inhibit, recirc fan logic and external pressure gauge sensor inputs.
 - **Still missing:** exact pressure/temp/mass-flow physics, AP U/external source side feed route, actual bus wiring and relay dynamics, pressure cabin coupling, full QRH and all original cockpit photo hotspots. LAN deferred, original root cockpit unchanged. Detailed source links in `docs/PNEUMATICS_SYSTEM_V6.md`.
+
+## EP-FSI Present N1 v18 data bridge — 2026-10-23
+
+| Deliverable | Status | Verification |
+| --- | --- | --- |
+| Present N1 engine 1 / 2 data contract | DONE (RECEIVE ADAPTER) | `engine/fmc/indications/present-n1-bridge-v18.cjs` tracks source, timestamp and sequence per engine, no fabricated rpm. |
+| Standalone CDU independent ENG1/ENG2 indication | DONE (WHEN TELEMETRY SUPPLIED) | `cdu-standalone/app.js` and `data/present-n1-bridge-v18.js`; TEST packets explicitly labeled TEST; the earlier CRZ demo 87.3% replaced with ---.- until measured. |
+| Out-of-order/stale/source switching guard | DONE (DETERMINISTIC CONTRACT) | 14 unit tests and standalone integration test. GitHub Actions run [39886987238](https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/39886987238) successful. |
+| Real calibrated Engine Core current N1 production | NOT IMPLEMENTED | Current repository engine/trainer core only has engineRunning Booleans and no N1 dynamics; must implement actual separate Engine Core and publish measured/derived N1. |
+| MAX N1 / N1 LIMIT certified numerical lookups | BLOCKED | AFM private version 16 N1 graph curves and independent signoffs incomplete, no numeric MAX N1 available. |
+| Present N1 → autothrottle | NOT CONNECTED | Telemetry is display-only. A/T targets may not use manual TEST data. |
+
+Default environment **ISA / engine bleed ON / anti-ice OFF / A/C PACKS AUTO** retained, PMC UNKNOWN. Contract: `docs/EP_FSI_PRESENT_N1_CONTRACT_V18.json`. This is an additional **indicator adapter release v18**, not AFM numerical database version 18. Original CDU-approved picture remains unchanged.
