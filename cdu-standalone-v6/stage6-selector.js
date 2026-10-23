@@ -108,6 +108,14 @@ function handlesStage6Key(k){
   return true;
  }
  if(state.page==='DEP_ARR'&&['LSK_L1','LSK_R1','LSK_R2'].includes(k)){
+  // A standalone CDU must not require a Stage 5 plan or private local API.
+  // Only hijack the approved CDU controls when the optional private-source
+  // laboratory has explicitly loaded and committed a matching saved plan.
+  const base=prior();
+  if(!base||!Number.isInteger(state.stage6BasePlanId)||
+     state.stage6BasePlanId<=0||
+     state.active?.ORIGIN!==base.origin||state.active?.DEST!==base.destination)
+    return false; // Let native CDU DEP/ARR navigation handle these LSKs.
   void openCatalog(({LSK_L1:'SID',LSK_R1:'STAR',LSK_R2:'APP'})[k]);return true;
  }
  const f=state.stage6View;
