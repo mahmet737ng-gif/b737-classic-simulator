@@ -2,6 +2,24 @@
 
 **B737 Classic EP-FSI simulator-development lab; AIRAC 2610 Rev.1, training only. Not for actual navigation.**
 
+## Standalone architecture — locked project requirement
+
+The B737 Classic trainer is an **independent simulator**. Its CDU, navigation engine,
+EHSI and aircraft-state network must function **without X-Plane, MSFS, FSX, P3D, or
+any third-party flight simulator**.
+
+- **Primary input**: the project's own Aircraft State Bus, fed by its internal
+  airframe/flight-dynamics/IRS/sensor models when those interfaces are implemented.
+- **Optional inputs**: adapters for external simulation platforms are optional
+  development tools only; they must not be required to operate the B737 trainer.
+- **Static GitHub Pages test**: uses a fictional embedded aircraft state and test
+  route, with no private AIRAC records and no server. Native CDU DEP/ARR keys
+  must not require a private Stage5 lab session just to navigate pages.
+- **Private AIRAC source**: remains in the project's private NAVDB and is distinct
+  from simulation-platform connectivity. The Pages demo does not redistribute it.
+
+The exact EP-FSI FMC/AFDS validation and operational guidance gates remain unchanged.
+
 ## What works
 
 1. `npe_stage10_bus.py` is an explicit, in-process Aircraft State Bus with a stable telemetry contract. Every sample supplies source, integrity, selected IRS/GPS position source and health, latitude/longitude, true and magnetic headings, magnetic variation, true track, groundspeed, pressure altitude, vertical speed, pitch/bank, and monotonically increasing simulator time. It validates numeric ranges and heading-frame agreement, rejects missing/invalid data, uses a host monotonic freshness clock (2 seconds default), and invalidates previous data after a corrupt sample.
