@@ -1,6 +1,6 @@
 {
   "schema": "b737-mosaic-atlas.v1",
-  "version": "2026-10-23.1",
+  "version": "2026-10-23.2",
   "source": "Owner supplied one-page PDF composite (2026-10-23). Initial reference atlas, boundaries provisional.",
   "panels": [
     {
@@ -34,7 +34,7 @@
   "tiles": [
     {
       "id": "OH-01",
-      "title": "LE DEVICES / ELT",
+      "title": "LE DEVICES / UPPER LEFT",
       "x": 0,
       "y": 0,
       "w": 187,
@@ -89,7 +89,7 @@
     },
     {
       "id": "OH-06",
-      "title": "RECORDER / STALL WARN",
+      "title": "ELT / RECORDER / STALL WARN",
       "x": 591,
       "y": 0,
       "w": 157,
@@ -116,7 +116,7 @@
       "x": 0,
       "y": 775,
       "w": 187,
-      "h": 132,
+      "h": 85,
       "group": "NAV",
       "status": "mapped",
       "artwork": null,
@@ -126,9 +126,9 @@
       "id": "OH-09",
       "title": "FUEL",
       "x": 0,
-      "y": 907,
+      "y": 860,
       "w": 187,
-      "h": 209,
+      "h": 256,
       "group": "FUEL",
       "status": "mapped",
       "artwork": null,
