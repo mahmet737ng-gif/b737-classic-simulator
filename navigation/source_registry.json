@@ -482,6 +482,44 @@
         "no automatic bridging or instrument guidance",
         "no public licensed data"
       ]
+    },
+    "reference_progress_monitor": {
+      "id": "NPE_REFERENCE_PROGRESS_EXTENSION_v1",
+      "airac": "2610",
+      "revision": 1,
+      "source_id": "PMDG_WORLD_2610_WITH_PROCEDURES_R1",
+      "exact_source_marker": "//AIRAC Cycle : 2610 (01/OCT/2026 - 29/OCT/2026) - Ver.1",
+      "code": "navigation/reference_progress.py",
+      "server": "navigation/reference_progress_server.py",
+      "browser": "navigation/reference-progress/index.html",
+      "cdu_adapter": "cdu-standalone-v6/reference-progress-advisory.js",
+      "docs": "navigation/REFERENCE_PROGRESS.md",
+      "private_package": "/B737/NAVDB/REFERENCE_PROGRESS/B737_NAVDB_AIRAC2610_REFERENCE_PROGRESS_EXTENSION.zip",
+      "offline_release_sha256": "183fd0bfa380a205096f4f167685a416d444776b87e6042837501b5740c8953e",
+      "source_requirement": "User-owned private Stage4 archive required at runtime",
+      "test_status": {
+        "python_tests_passed": 22,
+        "javascript_tests_passed": 8,
+        "http_synthetic_passed": 6,
+        "real_private_airac_plan": "PASS",
+        "real_private_reference_chords": 10,
+        "real_private_discontinuities": 4,
+        "actual_user_browser_acceptance": "NOT_VERIFIED"
+      },
+      "calculations": [
+        "true initial reference course",
+        "signed right-positive cross-track NM",
+        "along-track NM",
+        "direct distance to next source FIX NM",
+        "before/on/beyond span"
+      ],
+      "automatic_leg_sequencing": false,
+      "position_source": "MANUAL_TEST_INPUT",
+      "fmc_executable_legs": 0,
+      "lnav_enabled": false,
+      "vnav_enabled": false,
+      "afds_enabled": false,
+      "approved_cockpit_graphics_modified": false
     }
   }
 }
