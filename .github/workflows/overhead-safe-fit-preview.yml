@@ -1,0 +1,46 @@
+name: Render overhead safe-fit atlas preview
+on:
+  push:
+    paths:
+      - '.github/workflows/overhead-safe-fit-preview.yml'
+      - 'panel-mosaic-lab/all-overhead/atlas-layout.json'
+      - 'panel-mosaic-lab/all-overhead/stage.js'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Render panel-by-panel visual inspection composite
+        shell: bash
+        run: |
+          python -m pip install -q Pillow
+          python - <<'PY'
+          from PIL import Image,ImageDraw,ImageFont
+          import pathlib,json,base64,io,math
+          root=pathlib.Path('panel-mosaic-lab/all-overhead')
+          spec=json.loads((root/'spec.json').read_text())
+          layout=json.loads((root/'atlas-layout.json').read_text())
+          srcs={x['id']:x for x in spec['images']}
+          canvas=Image.new('RGB',(2220,3525),'#4a6170')
+          for pos in layout['placements']:
+              asset=srcs[pos['id']]
+              im=Image.open(root/asset['url']).convert('RGB')
+              crop=pos['contentCrop']
+              im=im.crop((crop['left'],crop['top'],im.width-crop['right'],im.height-crop['bottom']))
+              scale=min(pos['w']/im.width,pos['h']/im.height)
+              w=max(1,round(im.width*scale));h=max(1,round(im.height*scale))
+              resized=im.resize((w,h),Image.Resampling.LANCZOS)
+              y=pos['y']+(0 if pos['imageAnchor']=='top' else (pos['h']-h)//2 if pos['imageAnchor']=='center' else pos['h']-h)
+              x=pos['x']+(pos['w']-w)//2
+              canvas.paste(resized,(x,y))
+              print('PLACED',pos['id'],x,y,w,h,'FULL_SOURCE_VISIBLE')
+          canvas.thumbnail((680,1150),Image.Resampling.LANCZOS)
+          b=io.BytesIO();canvas.save(b,format='JPEG',quality=44,optimize=True,progressive=True)
+          print('COMPOSITE_START')
+          print(base64.b64encode(b.getvalue()).decode('ascii'))
+          print('COMPOSITE_END')
+          print('PREVIEW_DIMENSIONS',canvas.size,'BYTES',len(b.getvalue()))
+          PY
