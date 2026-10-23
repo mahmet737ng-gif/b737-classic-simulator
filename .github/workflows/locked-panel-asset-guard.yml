@@ -1,0 +1,25 @@
+name: Immutable Panel Asset Integrity
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'panel-mosaic-lab/**'
+      - '.github/workflows/locked-panel-asset-guard.yml'
+  pull_request:
+    paths:
+      - 'panel-mosaic-lab/**'
+      - '.github/workflows/locked-panel-asset-guard.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Verify immutable bytes and append-only catalog/history
+        env:
+          GITHUB_BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: node panel-mosaic-lab/asset-vault/check.cjs
