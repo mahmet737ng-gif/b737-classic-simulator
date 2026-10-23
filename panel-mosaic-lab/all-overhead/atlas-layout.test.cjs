@@ -53,7 +53,7 @@ assert.ok(fs.existsSync(path.resolve(root,atlas.reference.image)),'original atla
 assert.ok(html.includes('id="atlasAbsolute"'));
 assert.ok(html.includes('stage.js?v=UPD-0009-atlas-native-coordinates'));
 assert.ok(stage.includes("fetch('./atlas-layout.json?ts='"),'new renderer requires atlas geometry');
-assert.ok(stage.includes("style.height=place.h+'px'"),'source image natural height cannot change atlas plate height');
+assert.ok(stage.includes("height:place.h+'px'"),'source image natural height cannot change atlas plate height');
 assert.ok(stage.includes("style.height=atlasLayout.canvas.height+'px'"),'atlas board has fixed real pixel height');
 assert.ok(css.includes('.atlas-piece{position:absolute'),'no stacked column sizing');
 assert.ok(css.includes('object-fit:cover')||stage.includes("objectFit:'cover'"),'source photo proportions preserved');
