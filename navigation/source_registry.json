@@ -93,7 +93,7 @@
   "integration": {
     "navigation_source_selection": "registry",
     "source_merge_behavior": "explicit_source_selection_only",
-    "fmc_gate": "Stage7 geographic reference lines are NOT verified flyable ARINC path terminators. All aircraft guidance remains inactive; no AFDS, LNAV or VNAV output. Full certification requires explicit source path-terminator coding and EP-FSI FMC semantics.",
+    "fmc_gate": "Stage8 has a verified reference-path diagnostic and explicit coding evidence validator, NOT aircraft-certified FMC legs. ARINC-coded source absent in current narrative SIDSTAR; no LNAV/VNAV/AFDS commands. Device acceptance and EP-FSI aircraft semantics remain outstanding.",
     "simulator_training_only": true,
     "procedure_decoder": {
       "id": "NPE_STAGE1_v1",
@@ -422,6 +422,66 @@
         "Missing real-device CDU/EFIS browser acceptance"
       ],
       "redist_policy": "Private licensed source and derived data not committed to GitHub"
+    },
+    "npe_stage8": {
+      "id": "NPE_STAGE8_EVIDENCE_AND_REFERENCE_SEQUENCER_v1",
+      "source_id": "PMDG_WORLD_2610_WITH_PROCEDURES_R1",
+      "airac": "2610",
+      "revision": 1,
+      "exact_per_file_marker": "//AIRAC Cycle : 2610 (01/OCT/2026 - 29/OCT/2026) - Ver.1",
+      "private_archive": "/B737/NAVDB/NPE_STAGE8/B737_NAVDB_AIRAC2610_NPE_STAGE8_PRIVATE.zip",
+      "private_archive_sha256": "19f38a4b5b719181ec8955dbf0ae9bbf7885e49757d2890c6b691293b1ea129d",
+      "private_manifest": "/B737/NAVDB/NPE_STAGE8/manifest.json",
+      "private_audit": "/B737/NAVDB/NPE_STAGE8/stage8_audit.json",
+      "visual_qa": "/B737/NAVDB/NPE_STAGE8/stage8-browser-dom-qa.png",
+      "code": [
+        "navigation/npe_stage8.py",
+        "navigation/npe_stage8_server.py",
+        "navigation/qa_stage8.py",
+        "navigation/npe-stage8/index.html",
+        "navigation/npe-stage8/app.js"
+      ],
+      "docs": "navigation/NPE_STAGE8.md",
+      "validated_scopes": [
+        "explicit source-coded IF/TF/DF/CF evidence schema (no aircraft activation)",
+        "source-only airway FIX reference spans separated by hard discontinuities",
+        "manual chord-index reference cross-track/along-track/distance-to-fix",
+        "localhost-only HTTP and static read-only browser map"
+      ],
+      "evidence_scan": {
+        "procedures": 100562,
+        "segments": 236879,
+        "decoded_nodes": 866183,
+        "explicit_arinc_coded_legs": 0,
+        "narrative_ast_arinc_types": 0,
+        "unresolved_per_leg_coding": "EXPLICIT_ARINC_LEG_CODING_NOT_PRESENT_IN_CURRENT_INPUT"
+      },
+      "integration_example": {
+        "origin": "OIII",
+        "destination": "OIMM",
+        "reference_chords": 10,
+        "unbridged_discontinuities": 4
+      },
+      "qa": {
+        "python_tests_passed": 25,
+        "chromium_dom": "PASS_REAL_PRIVATE_SQL_RESPONSE_WITH_BROWSER_NETWORK_MOCKED",
+        "direct_localhost_chromium": "BLOCKED_BY_ENVIRONMENT",
+        "real_device_browser": "NOT_TESTED"
+      },
+      "guidance_state": {
+        "fmc_executable_legs": 0,
+        "automatic_leg_sequencing": false,
+        "lnav": false,
+        "vnav": false,
+        "afds": false
+      },
+      "constraints": [
+        "No pre-marker text",
+        "no SID STAR APP narrative-to-ARINC leg inference",
+        "only independent explicit source-coded records may populate actual ARINC types",
+        "no automatic bridging or instrument guidance",
+        "no public licensed data"
+      ]
     }
   }
 }
