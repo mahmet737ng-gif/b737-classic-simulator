@@ -1,0 +1,31 @@
+{
+  "schema": "b737-mosaic-oh13-oh14.v1",
+  "version": "UPD-0004",
+  "sourceOfTruth": "../immutable-manifest.json",
+  "note": "These are individual faceplate sources, not validated physical seam polygons. Original user-uploaded files remain in same locked directory.",
+  "tiles": [
+    {
+      "id": "OH-13",
+      "title": "CIRCUIT BREAKER PANEL",
+      "path": "../assets/locked/2026-10-23/OH13-CIRCUIT-BREAKER-efca1c6cec9e.png",
+      "original": "Aircraft Cockpit Circuit Breaker Panel.png",
+      "sha256": "8fef9e3d67fd78c794d0cceb31ab2806f82076bf7d6e987e3fbdcf5e2a1c76a4",
+      "gitBlobSha1": "efca1c6cec9ed3318cddc7a017e3144f9ab0994b",
+      "bytes": 2307600
+    },
+    {
+      "id": "OH-14",
+      "title": "EMER EXIT LIGHTS / NO SMOKING / FASTEN BELTS",
+      "path": "../assets/locked/2026-10-23/OH14-EMER-EXIT-795cc819a3b3.png",
+      "original": "Stripped Emergency Lighting Panel.png",
+      "sha256": "7a707630ada8d1ae84a7377dd92e61bda95e07ccc3e71c4759da0b3dd113b3d8",
+      "gitBlobSha1": "795cc819a3b3cea8f131f6da1b32918318c7747a",
+      "bytes": 2674410
+    }
+  ],
+  "verification": {
+    "gitBlobMatch": "passed",
+    "sha256ActionRun": 40030118117,
+    "geometry": "waiting-review"
+  }
+}
