@@ -121,6 +121,8 @@ function init(st,core,doc,onchange){
   sprite(b,geom[key]);
   if(key==='hsi'){
    const inner=document.createElement('span');inner.className='photo-wxr-inner';inner.setAttribute('role','button');inner.tabIndex=0;inner.title='WXR brightness inner shaft';inner.setAttribute('aria-label','Weather radar brightness inner shaft');
+   inner.addEventListener('pointerdown',e=>e.stopPropagation());
+   inner.addEventListener('pointerup',e=>e.stopPropagation());
    inner.addEventListener('click',e=>{e.stopPropagation();rotate(st,'wxInner',e.shiftKey?-1:1)});
    inner.addEventListener('wheel',e=>{e.preventDefault();e.stopPropagation();rotate(st,'wxInner',e.deltaY<0?1:-1)},{passive:false});
    inner.addEventListener('keydown',e=>{if(['ArrowUp','ArrowRight','ArrowDown','ArrowLeft','Enter',' '].includes(e.key)){e.preventDefault();e.stopPropagation();rotate(st,'wxInner',['ArrowUp','ArrowRight','Enter',' '].includes(e.key)?1:-1)}});
@@ -130,7 +132,7 @@ function init(st,core,doc,onchange){
   b.addEventListener('wheel',e=>{e.preventDefault();rotate(st,key,e.deltaY>0?-1:1)},{passive:false});
   b.addEventListener('keydown',e=>{if(['ArrowRight','ArrowUp','ArrowLeft','ArrowDown'].includes(e.key)){e.preventDefault();rotate(st,key,['ArrowRight','ArrowUp'].includes(e.key)?1:-1)}});
   let start=null;
-  b.addEventListener('pointerdown',e=>{start={x:e.clientX,y:e.clientY};b.setPointerCapture?.(e.pointerId)});
+  b.addEventListener('pointerdown',e=>{if(e.target.closest('.photo-wxr-inner'))return;start={x:e.clientX,y:e.clientY};b.setPointerCapture?.(e.pointerId)});
   b.addEventListener('pointerup',e=>{if(!start)return;let dist=e.clientX-start.x,dy=e.clientY-start.y;start=null;
    if(Math.max(Math.abs(dist),Math.abs(dy))>14){b.dataset.dragged='1';const sign=Math.abs(dist)>Math.abs(dy)?Math.sign(dist):-Math.sign(dy);rotate(st,key,sign);}});
   face.appendChild(b);
