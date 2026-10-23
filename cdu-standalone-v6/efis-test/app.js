@@ -91,6 +91,7 @@ function render(){
 }
 Object.entries(CONTROLS).forEach(([k,g])=>createKnob(k,g));Object.entries(BUTTONS).forEach(([k,b])=>createButton(k,b));
 const readout=document.createElement('div');readout.id='dh-digits';readout.className='dh-digits';Object.assign(readout.style,{left:pct(168,WIDTH),top:pct(201,HEIGHT),width:pct(216,WIDTH),height:pct(89,HEIGHT)});stage.append(readout);
+stage.classList.toggle('show-bounds',$('toggle-bounds').checked);
 $('toggle-bounds').addEventListener('change',e=>stage.classList.toggle('show-bounds',e.target.checked));
 $('reset').onclick=()=>{state.mode='MAP';state.range=10;state.dhRef=200;state.brightness={adi:.6,hsi:.6,wxInner:.6};Object.keys(state.options).forEach(k=>state.options[k]=false);Object.keys(rotations).forEach(k=>rotations[k]=0);lastInput='RESET';render()};
 $('copy').onclick=()=>navigator.clipboard?.writeText(JSON.stringify({state,geometry:{width:WIDTH,height:HEIGHT,knobs:CONTROLS,buttons:BUTTONS}},null,2));
