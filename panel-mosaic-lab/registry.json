@@ -1,6 +1,6 @@
 {
   "schema": "b737-mosaic-atlas.v1",
-  "version": "2026-10-24.4",
+  "version": "2026-10-24.5",
   "source": "Owner supplied one-page PDF composite (2026-10-23). Initial reference atlas, boundaries provisional.",
   "panels": [
     {
@@ -347,39 +347,60 @@
     },
     {
       "id": "OH-19",
-      "title": "VOICE RECORDER / EQUIP",
+      "title": "COCKPIT VOICE RECORDER + PRESS DIFF / ALT HORN",
       "x": 429,
       "y": 900,
       "w": 161,
       "h": 216,
-      "group": "EQUIPMENT",
-      "status": "mapped",
+      "group": "EQUIPMENT / PRESSURE INSTRUMENTS",
+      "status": "artwork",
       "artwork": null,
-      "geometryStatus": "rejected"
+      "geometryStatus": "2-original-plates-source-verified; historical-bounding-rect-rejected",
+      "placement": {
+        "sources": [
+          "assets/locked/2026-10-23/OH19-VOICE-RECORDER-2db6785ecddc.png",
+          "assets/locked/2026-10-23/OH19-PRESS-DIFF-ALT-HORN-d6719ce57cef.png"
+        ],
+        "stageUrl": "all-overhead/",
+        "physicalOrder": "below OH18: voice recorder, then press differential/cabin climb/alt horn",
+        "status": "atlas-source-placement-confirmed; seam QA pending"
+      }
     },
     {
       "id": "OH-20",
-      "title": "AIR CONDITIONING / PACKS",
+      "title": "AIR CONDITIONING / CABIN TEMPERATURE",
       "x": 590,
       "y": 350,
       "w": 158,
       "h": 250,
       "group": "AIR",
-      "status": "mapped",
+      "status": "artwork",
       "artwork": null,
-      "geometryStatus": "rejected"
+      "geometryStatus": "source-verified; physical-seam-pending",
+      "placement": {
+        "source": "assets/locked/2026-10-23/OH20-AIR-CONDITIONING-0734da6a7726.png",
+        "stageUrl": "all-overhead/",
+        "position": "rightmost column above bleed air",
+        "status": "source-placed-verified"
+      }
     },
     {
       "id": "OH-21",
-      "title": "BLEED AIR",
+      "title": "BLEED AIR / PACKS / ISOLATION VALVE",
       "x": 590,
       "y": 600,
       "w": 158,
       "h": 175,
       "group": "AIR",
-      "status": "mapped",
+      "status": "artwork",
       "artwork": null,
-      "geometryStatus": "rejected"
+      "geometryStatus": "source-verified; physical-seam-pending",
+      "placement": {
+        "source": "assets/locked/2026-10-23/OH21-BLEED-AIR-cc78219607a3.png",
+        "stageUrl": "all-overhead/",
+        "position": "rightmost column below air conditioning",
+        "status": "source-placed-verified"
+      }
     },
     {
       "id": "OH-22",
@@ -840,7 +861,7 @@
   ],
   "validation": {
     "status": "rejected",
-    "reason": "Historic rectangular atlas boxes remain invalid. OH01..06, OH11..12, OH13..14, and OH15..18 images have separate source previews. Do not use historical box coordinates for final placement.",
+    "reason": "Old fixed 59 rectangular mapping remains rejected. Sources OH01-21 placed by image content against original owner overhead reference, with two independent plates for combined OH19 region. Exact physical plate contours not yet QA approved.",
     "next": "Re-trace each individual physical screw-defined plate on the actual owner PDF; independently QA 3 assemblies."
   },
   "previousVersion": "2026-10-23.3-REJECTED",
@@ -908,5 +929,23 @@
       "Real source panel titles take precedence over historically inaccurate atlas labels"
     ],
     "status": "preview geometry awaiting physical QA"
+  },
+  "oh19_21": {
+    "update": "UPD-0007",
+    "stageUrl": "all-overhead/",
+    "status": "atlas-photo-matched-source-plates",
+    "images": [
+      "OH19-VOICE",
+      "OH19-DIFF",
+      "OH20",
+      "OH21"
+    ],
+    "missing": [
+      "OH-22",
+      "OH-23",
+      "OH-24",
+      "OH-25"
+    ],
+    "note": "OH19 has two physical plates, stored and displayed independently. The old atlas rectangular geometry is not approved."
   }
 }
