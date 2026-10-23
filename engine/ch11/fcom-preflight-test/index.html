@@ -10,8 +10,43 @@ label{display:block; font-size:13px;color:#cae5ee}
 .actions button{background:#25627a}
 button.test-link{background:#214b60}
 #cdu{max-width:730px}
-.fmc-screen .fmc-lines{font-weight:400;letter-spacing:-.02em}
-.fmc-screen .fmc-lines .fmc-line.heading{font-family:"BoeingCDULarge"!important}
+/* The approved photo's LCD opening is rounded; clip ONLY the live LCD overlay,
+   not the immutable bitmap, its physical frame, keys, or hitbox coordinates. */
+#cdu .fmc-screen{
+  border-radius:7.5% / 9.5%;
+  clip-path:inset(0 round 7.5% / 9.5%);
+  overflow:hidden;
+  background:#020402;
+}
+/* CDU is a strict 24-column, 14-row display. The script measures both of the
+   existing locked font faces and scales the lettering to fit this opening. */
+#cdu .fmc-screen .fmc-lines{
+  inset:5% 5.8% 5% 5.8%;
+  display:grid;
+  grid-template-rows:repeat(14,minmax(0,1fr));
+  font-weight:400;
+  font-size:12px;
+  line-height:1;
+  letter-spacing:0!important;
+  overflow:hidden;
+  direction:ltr;
+}
+#cdu .fmc-screen .fmc-line{
+  display:block;
+  width:100%;
+  min-width:0;
+  white-space:pre;
+  overflow:visible;
+  line-height:1;
+  letter-spacing:0!important;
+  text-align:left;
+  font-weight:400;
+  padding:0;
+  margin:0;
+  align-self:center;
+}
+#cdu .fmc-screen .fmc-line.fmc-small{font-size:78%}
+#cdu .fmc-screen .fmc-line.heading{font-family:"BoeingCDULarge"!important}
 #last-status{font-family:monospace;white-space:pre-wrap}
 .mini{font-size:12px;opacity:.9}
 </style></head>
