@@ -1,0 +1,1697 @@
+window.CDU_MAP = {
+  "schema": "cdu-control-map/2.0",
+  "artwork": "assets/cdu-approved-unlit.png",
+  "artwork_sha256": "2c60c534e6e9cd80afa721f2d82801d7bdbc54dce4bbd39b8adb3470f2df0237",
+  "artwork_pixels": [
+    1199,
+    1312
+  ],
+  "assembly": "CDU_CAPT",
+  "functional_region": "PEDESTAL-03",
+  "controls_count": 70,
+  "output_annunciators_count": 5,
+  "controls": [
+    {
+      "id": "CDU_CAPT_LSK_L1",
+      "label": "L1",
+      "bbox_px": [
+        143,
+        148,
+        212,
+        204
+      ],
+      "center_px": [
+        178,
+        176
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "line_select_key",
+      "shape": "rounded-rect",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.3-11.10.7",
+      "qa": "V5_2_PHOTOGRAPH_BOUNDARY",
+      "note": "V5.2 button contour from approved 1199x1312 photograph; awaiting user pixel QA."
+    },
+    {
+      "id": "CDU_CAPT_LSK_L2",
+      "label": "L2",
+      "bbox_px": [
+        143,
+        222,
+        211,
+        278
+      ],
+      "center_px": [
+        177,
+        250
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "line_select_key",
+      "shape": "rounded-rect",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.3-11.10.7",
+      "qa": "V5_2_PHOTOGRAPH_BOUNDARY",
+      "note": "V5.2 button contour from approved 1199x1312 photograph; awaiting user pixel QA."
+    },
+    {
+      "id": "CDU_CAPT_LSK_L3",
+      "label": "L3",
+      "bbox_px": [
+        143,
+        298,
+        211,
+        353
+      ],
+      "center_px": [
+        177,
+        326
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "line_select_key",
+      "shape": "rounded-rect",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.3-11.10.7",
+      "qa": "V5_2_PHOTOGRAPH_BOUNDARY",
+      "note": "V5.2 button contour from approved 1199x1312 photograph; awaiting user pixel QA."
+    },
+    {
+      "id": "CDU_CAPT_LSK_L4",
+      "label": "L4",
+      "bbox_px": [
+        143,
+        373,
+        211,
+        428
+      ],
+      "center_px": [
+        177,
+        400
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "line_select_key",
+      "shape": "rounded-rect",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.3-11.10.7",
+      "qa": "V5_2_PHOTOGRAPH_BOUNDARY",
+      "note": "V5.2 button contour from approved 1199x1312 photograph; awaiting user pixel QA."
+    },
+    {
+      "id": "CDU_CAPT_LSK_L5",
+      "label": "L5",
+      "bbox_px": [
+        143,
+        449,
+        211,
+        504
+      ],
+      "center_px": [
+        177,
+        476
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "line_select_key",
+      "shape": "rounded-rect",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.3-11.10.7",
+      "qa": "V5_2_PHOTOGRAPH_BOUNDARY",
+      "note": "V5.2 button contour from approved 1199x1312 photograph; awaiting user pixel QA."
+    },
+    {
+      "id": "CDU_CAPT_LSK_L6",
+      "label": "L6",
+      "bbox_px": [
+        143,
+        524,
+        211,
+        579
+      ],
+      "center_px": [
+        177,
+        552
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "line_select_key",
+      "shape": "rounded-rect",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.3-11.10.7",
+      "qa": "V5_2_PHOTOGRAPH_BOUNDARY",
+      "note": "V5.2 button contour from approved 1199x1312 photograph; awaiting user pixel QA."
+    },
+    {
+      "id": "CDU_CAPT_LSK_R1",
+      "label": "R1",
+      "bbox_px": [
+        881,
+        148,
+        952,
+        204
+      ],
+      "center_px": [
+        916,
+        176
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "line_select_key",
+      "shape": "rounded-rect",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.3-11.10.7",
+      "qa": "V5_2_PHOTOGRAPH_BOUNDARY",
+      "note": "V5.2 button contour from approved 1199x1312 photograph; awaiting user pixel QA."
+    },
+    {
+      "id": "CDU_CAPT_LSK_R2",
+      "label": "R2",
+      "bbox_px": [
+        881,
+        222,
+        951,
+        278
+      ],
+      "center_px": [
+        916,
+        250
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "line_select_key",
+      "shape": "rounded-rect",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.3-11.10.7",
+      "qa": "V5_2_PHOTOGRAPH_BOUNDARY",
+      "note": "V5.2 button contour from approved 1199x1312 photograph; awaiting user pixel QA."
+    },
+    {
+      "id": "CDU_CAPT_LSK_R3",
+      "label": "R3",
+      "bbox_px": [
+        881,
+        298,
+        951,
+        353
+      ],
+      "center_px": [
+        916,
+        326
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "line_select_key",
+      "shape": "rounded-rect",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.3-11.10.7",
+      "qa": "V5_2_PHOTOGRAPH_BOUNDARY",
+      "note": "V5.2 button contour from approved 1199x1312 photograph; awaiting user pixel QA."
+    },
+    {
+      "id": "CDU_CAPT_LSK_R4",
+      "label": "R4",
+      "bbox_px": [
+        882,
+        373,
+        951,
+        428
+      ],
+      "center_px": [
+        916,
+        400
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "line_select_key",
+      "shape": "rounded-rect",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.3-11.10.7",
+      "qa": "V5_2_PHOTOGRAPH_BOUNDARY",
+      "note": "V5.2 button contour from approved 1199x1312 photograph; awaiting user pixel QA."
+    },
+    {
+      "id": "CDU_CAPT_LSK_R5",
+      "label": "R5",
+      "bbox_px": [
+        881,
+        449,
+        951,
+        504
+      ],
+      "center_px": [
+        916,
+        476
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "line_select_key",
+      "shape": "rounded-rect",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.3-11.10.7",
+      "qa": "V5_2_PHOTOGRAPH_BOUNDARY",
+      "note": "V5.2 button contour from approved 1199x1312 photograph; awaiting user pixel QA."
+    },
+    {
+      "id": "CDU_CAPT_LSK_R6",
+      "label": "R6",
+      "bbox_px": [
+        881,
+        524,
+        951,
+        579
+      ],
+      "center_px": [
+        916,
+        552
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "line_select_key",
+      "shape": "rounded-rect",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.3-11.10.7",
+      "qa": "V5_2_PHOTOGRAPH_BOUNDARY",
+      "note": "V5.2 button contour from approved 1199x1312 photograph; awaiting user pixel QA."
+    },
+    {
+      "id": "CDU_CAPT_INIT_REF",
+      "label": "INIT REF",
+      "bbox_px": [
+        213,
+        642,
+        297,
+        688
+      ],
+      "center_px": [
+        255,
+        665
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "function_key",
+      "shape": "rounded-rect",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.4-11.10.6",
+      "qa": "FIRST_PASS_PIXEL_ALIGNED_PENDING_HUMAN_SIGNOFF",
+      "note": ""
+    },
+    {
+      "id": "CDU_CAPT_RTE",
+      "label": "RTE",
+      "bbox_px": [
+        326,
+        642,
+        410,
+        688
+      ],
+      "center_px": [
+        368,
+        665
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "function_key",
+      "shape": "rounded-rect",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.4-11.10.6",
+      "qa": "FIRST_PASS_PIXEL_ALIGNED_PENDING_HUMAN_SIGNOFF",
+      "note": ""
+    },
+    {
+      "id": "CDU_CAPT_CLB",
+      "label": "CLB",
+      "bbox_px": [
+        436,
+        642,
+        520,
+        688
+      ],
+      "center_px": [
+        478,
+        665
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "function_key",
+      "shape": "rounded-rect",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.4-11.10.6",
+      "qa": "FIRST_PASS_PIXEL_ALIGNED_PENDING_HUMAN_SIGNOFF",
+      "note": ""
+    },
+    {
+      "id": "CDU_CAPT_CRZ",
+      "label": "CRZ",
+      "bbox_px": [
+        547,
+        642,
+        631,
+        688
+      ],
+      "center_px": [
+        589,
+        665
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "function_key",
+      "shape": "rounded-rect",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.4-11.10.6",
+      "qa": "FIRST_PASS_PIXEL_ALIGNED_PENDING_HUMAN_SIGNOFF",
+      "note": ""
+    },
+    {
+      "id": "CDU_CAPT_DES",
+      "label": "DES",
+      "bbox_px": [
+        660,
+        642,
+        744,
+        688
+      ],
+      "center_px": [
+        702,
+        665
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "function_key",
+      "shape": "rounded-rect",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.4-11.10.6",
+      "qa": "FIRST_PASS_PIXEL_ALIGNED_PENDING_HUMAN_SIGNOFF",
+      "note": ""
+    },
+    {
+      "id": "CDU_CAPT_DIM_BRT",
+      "label": "DIM BRT",
+      "bbox_px": [
+        775,
+        642,
+        859,
+        688
+      ],
+      "center_px": [
+        817,
+        665
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "brightness_button",
+      "shape": "rounded-rect",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.4-11.10.6",
+      "qa": "FIRST_PASS_PIXEL_ALIGNED_PENDING_HUMAN_SIGNOFF",
+      "note": "Approved artwork shows DIM BRT as push key, but FCOM 11.10.4 specifies rotary BRT. Artwork interaction is a trainer adaptation."
+    },
+    {
+      "id": "CDU_CAPT_MENU",
+      "label": "MENU",
+      "bbox_px": [
+        213,
+        720,
+        297,
+        762
+      ],
+      "center_px": [
+        255,
+        741
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "function_key",
+      "shape": "rounded-rect",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.4-11.10.6",
+      "qa": "FIRST_PASS_PIXEL_ALIGNED_PENDING_HUMAN_SIGNOFF",
+      "note": ""
+    },
+    {
+      "id": "CDU_CAPT_LEGS",
+      "label": "LEGS",
+      "bbox_px": [
+        326,
+        720,
+        410,
+        762
+      ],
+      "center_px": [
+        368,
+        741
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "function_key",
+      "shape": "rounded-rect",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.4-11.10.6",
+      "qa": "FIRST_PASS_PIXEL_ALIGNED_PENDING_HUMAN_SIGNOFF",
+      "note": ""
+    },
+    {
+      "id": "CDU_CAPT_DEP_ARR",
+      "label": "DEP ARR",
+      "bbox_px": [
+        436,
+        720,
+        520,
+        762
+      ],
+      "center_px": [
+        478,
+        741
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "function_key",
+      "shape": "rounded-rect",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.4-11.10.6",
+      "qa": "FIRST_PASS_PIXEL_ALIGNED_PENDING_HUMAN_SIGNOFF",
+      "note": ""
+    },
+    {
+      "id": "CDU_CAPT_HOLD",
+      "label": "HOLD",
+      "bbox_px": [
+        547,
+        720,
+        631,
+        762
+      ],
+      "center_px": [
+        589,
+        741
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "function_key",
+      "shape": "rounded-rect",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.4-11.10.6",
+      "qa": "FIRST_PASS_PIXEL_ALIGNED_PENDING_HUMAN_SIGNOFF",
+      "note": ""
+    },
+    {
+      "id": "CDU_CAPT_PROG",
+      "label": "PROG",
+      "bbox_px": [
+        660,
+        720,
+        744,
+        762
+      ],
+      "center_px": [
+        702,
+        741
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "function_key",
+      "shape": "rounded-rect",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.4-11.10.6",
+      "qa": "FIRST_PASS_PIXEL_ALIGNED_PENDING_HUMAN_SIGNOFF",
+      "note": ""
+    },
+    {
+      "id": "CDU_CAPT_EXEC",
+      "label": "EXEC",
+      "bbox_px": [
+        775,
+        722,
+        859,
+        764
+      ],
+      "center_px": [
+        817,
+        743
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "execute_key",
+      "shape": "rounded-rect",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.4-11.10.6",
+      "qa": "FIRST_PASS_PIXEL_ALIGNED_PENDING_HUMAN_SIGNOFF",
+      "note": ""
+    },
+    {
+      "id": "CDU_CAPT_N1_LIMIT",
+      "label": "N1 LIMIT",
+      "bbox_px": [
+        212,
+        792,
+        297,
+        842
+      ],
+      "center_px": [
+        255,
+        817
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "function_key",
+      "shape": "rounded-rect",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.5-11.10.6",
+      "qa": "FIRST_PASS_PIXEL_ALIGNED_PENDING_HUMAN_SIGNOFF",
+      "note": ""
+    },
+    {
+      "id": "CDU_CAPT_FIX",
+      "label": "FIX",
+      "bbox_px": [
+        325,
+        792,
+        410,
+        842
+      ],
+      "center_px": [
+        368,
+        817
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "function_key",
+      "shape": "rounded-rect",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.5-11.10.6",
+      "qa": "FIRST_PASS_PIXEL_ALIGNED_PENDING_HUMAN_SIGNOFF",
+      "note": ""
+    },
+    {
+      "id": "CDU_CAPT_PREV_PAGE",
+      "label": "PREV PAGE",
+      "bbox_px": [
+        212,
+        865,
+        297,
+        915
+      ],
+      "center_px": [
+        255,
+        890
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "function_key",
+      "shape": "rounded-rect",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.5-11.10.6",
+      "qa": "FIRST_PASS_PIXEL_ALIGNED_PENDING_HUMAN_SIGNOFF",
+      "note": ""
+    },
+    {
+      "id": "CDU_CAPT_NEXT_PAGE",
+      "label": "NEXT PAGE",
+      "bbox_px": [
+        325,
+        865,
+        410,
+        915
+      ],
+      "center_px": [
+        368,
+        890
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "function_key",
+      "shape": "rounded-rect",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.5-11.10.6",
+      "qa": "FIRST_PASS_PIXEL_ALIGNED_PENDING_HUMAN_SIGNOFF",
+      "note": ""
+    },
+    {
+      "id": "CDU_CAPT_KEY_A",
+      "label": "A",
+      "bbox_px": [
+        459,
+        797,
+        514,
+        841
+      ],
+      "center_px": [
+        486,
+        819
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "alphabetic_key",
+      "shape": "rounded-rect",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.7",
+      "qa": "V2_SOURCE_PIXEL_REVIEW_PENDING_USER_SIGNOFF",
+      "note": " V2: bbox placed inside photograph key face (not bezel)."
+    },
+    {
+      "id": "CDU_CAPT_KEY_B",
+      "label": "B",
+      "bbox_px": [
+        547,
+        797,
+        602,
+        841
+      ],
+      "center_px": [
+        574,
+        819
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "alphabetic_key",
+      "shape": "rounded-rect",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.7",
+      "qa": "V2_SOURCE_PIXEL_REVIEW_PENDING_USER_SIGNOFF",
+      "note": " V2: bbox placed inside photograph key face (not bezel)."
+    },
+    {
+      "id": "CDU_CAPT_KEY_C",
+      "label": "C",
+      "bbox_px": [
+        636,
+        797,
+        691,
+        841
+      ],
+      "center_px": [
+        663,
+        819
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "alphabetic_key",
+      "shape": "rounded-rect",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.7",
+      "qa": "V2_SOURCE_PIXEL_REVIEW_PENDING_USER_SIGNOFF",
+      "note": " V2: bbox placed inside photograph key face (not bezel)."
+    },
+    {
+      "id": "CDU_CAPT_KEY_D",
+      "label": "D",
+      "bbox_px": [
+        727,
+        797,
+        782,
+        841
+      ],
+      "center_px": [
+        754,
+        819
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "alphabetic_key",
+      "shape": "rounded-rect",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.7",
+      "qa": "V2_SOURCE_PIXEL_REVIEW_PENDING_USER_SIGNOFF",
+      "note": " V2: bbox placed inside photograph key face (not bezel)."
+    },
+    {
+      "id": "CDU_CAPT_KEY_E",
+      "label": "E",
+      "bbox_px": [
+        805,
+        792,
+        872,
+        841
+      ],
+      "center_px": [
+        838,
+        816
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "alphabetic_key",
+      "shape": "rounded-rect",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.7",
+      "qa": "V2_SOURCE_PIXEL_REVIEW_PENDING_USER_SIGNOFF",
+      "note": " V2: bbox placed inside photograph key face (not bezel)."
+    },
+    {
+      "id": "CDU_CAPT_KEY_F",
+      "label": "F",
+      "bbox_px": [
+        459,
+        867,
+        514,
+        911
+      ],
+      "center_px": [
+        486,
+        889
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "alphabetic_key",
+      "shape": "rounded-rect",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.7",
+      "qa": "V2_SOURCE_PIXEL_REVIEW_PENDING_USER_SIGNOFF",
+      "note": " V2: bbox placed inside photograph key face (not bezel)."
+    },
+    {
+      "id": "CDU_CAPT_KEY_G",
+      "label": "G",
+      "bbox_px": [
+        547,
+        867,
+        602,
+        911
+      ],
+      "center_px": [
+        574,
+        889
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "alphabetic_key",
+      "shape": "rounded-rect",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.7",
+      "qa": "V2_SOURCE_PIXEL_REVIEW_PENDING_USER_SIGNOFF",
+      "note": " V2: bbox placed inside photograph key face (not bezel)."
+    },
+    {
+      "id": "CDU_CAPT_KEY_H",
+      "label": "H",
+      "bbox_px": [
+        636,
+        867,
+        691,
+        911
+      ],
+      "center_px": [
+        663,
+        889
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "alphabetic_key",
+      "shape": "rounded-rect",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.7",
+      "qa": "V2_SOURCE_PIXEL_REVIEW_PENDING_USER_SIGNOFF",
+      "note": " V2: bbox placed inside photograph key face (not bezel)."
+    },
+    {
+      "id": "CDU_CAPT_KEY_I",
+      "label": "I",
+      "bbox_px": [
+        727,
+        867,
+        782,
+        911
+      ],
+      "center_px": [
+        754,
+        889
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "alphabetic_key",
+      "shape": "rounded-rect",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.7",
+      "qa": "V2_SOURCE_PIXEL_REVIEW_PENDING_USER_SIGNOFF",
+      "note": " V2: bbox placed inside photograph key face (not bezel)."
+    },
+    {
+      "id": "CDU_CAPT_KEY_J",
+      "label": "J",
+      "bbox_px": [
+        805,
+        862,
+        872,
+        911
+      ],
+      "center_px": [
+        838,
+        886
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "alphabetic_key",
+      "shape": "rounded-rect",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.7",
+      "qa": "V2_SOURCE_PIXEL_REVIEW_PENDING_USER_SIGNOFF",
+      "note": " V2: bbox placed inside photograph key face (not bezel)."
+    },
+    {
+      "id": "CDU_CAPT_KEY_K",
+      "label": "K",
+      "bbox_px": [
+        459,
+        936,
+        514,
+        980
+      ],
+      "center_px": [
+        486,
+        958
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "alphabetic_key",
+      "shape": "rounded-rect",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.7",
+      "qa": "V2_SOURCE_PIXEL_REVIEW_PENDING_USER_SIGNOFF",
+      "note": " V2: bbox placed inside photograph key face (not bezel)."
+    },
+    {
+      "id": "CDU_CAPT_KEY_L",
+      "label": "L",
+      "bbox_px": [
+        547,
+        936,
+        602,
+        980
+      ],
+      "center_px": [
+        574,
+        958
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "alphabetic_key",
+      "shape": "rounded-rect",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.7",
+      "qa": "V2_SOURCE_PIXEL_REVIEW_PENDING_USER_SIGNOFF",
+      "note": " V2: bbox placed inside photograph key face (not bezel)."
+    },
+    {
+      "id": "CDU_CAPT_KEY_M",
+      "label": "M",
+      "bbox_px": [
+        636,
+        936,
+        691,
+        980
+      ],
+      "center_px": [
+        663,
+        958
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "alphabetic_key",
+      "shape": "rounded-rect",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.7",
+      "qa": "V2_SOURCE_PIXEL_REVIEW_PENDING_USER_SIGNOFF",
+      "note": " V2: bbox placed inside photograph key face (not bezel)."
+    },
+    {
+      "id": "CDU_CAPT_KEY_N",
+      "label": "N",
+      "bbox_px": [
+        727,
+        936,
+        782,
+        980
+      ],
+      "center_px": [
+        754,
+        958
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "alphabetic_key",
+      "shape": "rounded-rect",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.7",
+      "qa": "V2_SOURCE_PIXEL_REVIEW_PENDING_USER_SIGNOFF",
+      "note": " V2: bbox placed inside photograph key face (not bezel)."
+    },
+    {
+      "id": "CDU_CAPT_KEY_O",
+      "label": "O",
+      "bbox_px": [
+        805,
+        931,
+        872,
+        980
+      ],
+      "center_px": [
+        838,
+        955
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "alphabetic_key",
+      "shape": "rounded-rect",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.7",
+      "qa": "V2_SOURCE_PIXEL_REVIEW_PENDING_USER_SIGNOFF",
+      "note": " V2: bbox placed inside photograph key face (not bezel)."
+    },
+    {
+      "id": "CDU_CAPT_KEY_P",
+      "label": "P",
+      "bbox_px": [
+        459,
+        1005,
+        514,
+        1049
+      ],
+      "center_px": [
+        486,
+        1027
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "alphabetic_key",
+      "shape": "rounded-rect",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.7",
+      "qa": "V2_SOURCE_PIXEL_REVIEW_PENDING_USER_SIGNOFF",
+      "note": " V2: bbox placed inside photograph key face (not bezel)."
+    },
+    {
+      "id": "CDU_CAPT_KEY_Q",
+      "label": "Q",
+      "bbox_px": [
+        547,
+        1005,
+        602,
+        1049
+      ],
+      "center_px": [
+        574,
+        1027
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "alphabetic_key",
+      "shape": "rounded-rect",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.7",
+      "qa": "V2_SOURCE_PIXEL_REVIEW_PENDING_USER_SIGNOFF",
+      "note": " V2: bbox placed inside photograph key face (not bezel)."
+    },
+    {
+      "id": "CDU_CAPT_KEY_R",
+      "label": "R",
+      "bbox_px": [
+        636,
+        1005,
+        691,
+        1049
+      ],
+      "center_px": [
+        663,
+        1027
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "alphabetic_key",
+      "shape": "rounded-rect",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.7",
+      "qa": "V2_SOURCE_PIXEL_REVIEW_PENDING_USER_SIGNOFF",
+      "note": " V2: bbox placed inside photograph key face (not bezel)."
+    },
+    {
+      "id": "CDU_CAPT_KEY_S",
+      "label": "S",
+      "bbox_px": [
+        727,
+        1005,
+        782,
+        1049
+      ],
+      "center_px": [
+        754,
+        1027
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "alphabetic_key",
+      "shape": "rounded-rect",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.7",
+      "qa": "V2_SOURCE_PIXEL_REVIEW_PENDING_USER_SIGNOFF",
+      "note": " V2: bbox placed inside photograph key face (not bezel)."
+    },
+    {
+      "id": "CDU_CAPT_KEY_T",
+      "label": "T",
+      "bbox_px": [
+        805,
+        1000,
+        872,
+        1049
+      ],
+      "center_px": [
+        838,
+        1024
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "alphabetic_key",
+      "shape": "rounded-rect",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.7",
+      "qa": "V2_SOURCE_PIXEL_REVIEW_PENDING_USER_SIGNOFF",
+      "note": " V2: bbox placed inside photograph key face (not bezel)."
+    },
+    {
+      "id": "CDU_CAPT_KEY_U",
+      "label": "U",
+      "bbox_px": [
+        459,
+        1075,
+        514,
+        1119
+      ],
+      "center_px": [
+        486,
+        1097
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "alphabetic_key",
+      "shape": "rounded-rect",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.7",
+      "qa": "V2_SOURCE_PIXEL_REVIEW_PENDING_USER_SIGNOFF",
+      "note": " V2: bbox placed inside photograph key face (not bezel)."
+    },
+    {
+      "id": "CDU_CAPT_KEY_V",
+      "label": "V",
+      "bbox_px": [
+        547,
+        1075,
+        602,
+        1119
+      ],
+      "center_px": [
+        574,
+        1097
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "alphabetic_key",
+      "shape": "rounded-rect",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.7",
+      "qa": "V2_SOURCE_PIXEL_REVIEW_PENDING_USER_SIGNOFF",
+      "note": " V2: bbox placed inside photograph key face (not bezel)."
+    },
+    {
+      "id": "CDU_CAPT_KEY_W",
+      "label": "W",
+      "bbox_px": [
+        636,
+        1075,
+        691,
+        1119
+      ],
+      "center_px": [
+        663,
+        1097
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "alphabetic_key",
+      "shape": "rounded-rect",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.7",
+      "qa": "V2_SOURCE_PIXEL_REVIEW_PENDING_USER_SIGNOFF",
+      "note": " V2: bbox placed inside photograph key face (not bezel)."
+    },
+    {
+      "id": "CDU_CAPT_KEY_X",
+      "label": "X",
+      "bbox_px": [
+        727,
+        1075,
+        782,
+        1119
+      ],
+      "center_px": [
+        754,
+        1097
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "alphabetic_key",
+      "shape": "rounded-rect",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.7",
+      "qa": "V2_SOURCE_PIXEL_REVIEW_PENDING_USER_SIGNOFF",
+      "note": " V2: bbox placed inside photograph key face (not bezel)."
+    },
+    {
+      "id": "CDU_CAPT_KEY_Y",
+      "label": "Y",
+      "bbox_px": [
+        805,
+        1070,
+        872,
+        1119
+      ],
+      "center_px": [
+        838,
+        1094
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "alphabetic_key",
+      "shape": "rounded-rect",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.7",
+      "qa": "V2_SOURCE_PIXEL_REVIEW_PENDING_USER_SIGNOFF",
+      "note": " V2: bbox placed inside photograph key face (not bezel)."
+    },
+    {
+      "id": "CDU_CAPT_KEY_Z",
+      "label": "Z",
+      "bbox_px": [
+        459,
+        1147,
+        514,
+        1191
+      ],
+      "center_px": [
+        486,
+        1169
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "alphabetic_key",
+      "shape": "rounded-rect",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.7",
+      "qa": "V2_SOURCE_PIXEL_REVIEW_PENDING_USER_SIGNOFF",
+      "note": " V2: bbox placed inside photograph key face (not bezel)."
+    },
+    {
+      "id": "CDU_CAPT_KEY_1",
+      "label": "1",
+      "bbox_px": [
+        207,
+        954,
+        268,
+        1015
+      ],
+      "center_px": [
+        237,
+        984
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "numeric_key",
+      "shape": "circle",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.7",
+      "qa": "V5_2_PIXEL_CONTOUR_REVIEWED",
+      "note": "V5.2: bbox tightened to detected button face contour."
+    },
+    {
+      "id": "CDU_CAPT_KEY_2",
+      "label": "2",
+      "bbox_px": [
+        284,
+        954,
+        346,
+        1015
+      ],
+      "center_px": [
+        315,
+        984
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "numeric_key",
+      "shape": "circle",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.7",
+      "qa": "V5_2_PIXEL_CONTOUR_REVIEWED",
+      "note": "V5.2: bbox tightened to detected button face contour."
+    },
+    {
+      "id": "CDU_CAPT_KEY_3",
+      "label": "3",
+      "bbox_px": [
+        361,
+        954,
+        423,
+        1016
+      ],
+      "center_px": [
+        392,
+        985
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "numeric_key",
+      "shape": "circle",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.7",
+      "qa": "V5_2_PIXEL_CONTOUR_REVIEWED",
+      "note": "V5.2: bbox tightened to detected button face contour."
+    },
+    {
+      "id": "CDU_CAPT_KEY_4",
+      "label": "4",
+      "bbox_px": [
+        206,
+        1023,
+        268,
+        1084
+      ],
+      "center_px": [
+        237,
+        1053
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "numeric_key",
+      "shape": "circle",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.7",
+      "qa": "V5_2_PIXEL_CONTOUR_REVIEWED",
+      "note": "V5.2: bbox tightened to detected button face contour."
+    },
+    {
+      "id": "CDU_CAPT_KEY_5",
+      "label": "5",
+      "bbox_px": [
+        284,
+        1023,
+        346,
+        1085
+      ],
+      "center_px": [
+        315,
+        1054
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "numeric_key",
+      "shape": "circle",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.7",
+      "qa": "V5_2_PIXEL_CONTOUR_REVIEWED",
+      "note": "V5.2: bbox tightened to detected button face contour."
+    },
+    {
+      "id": "CDU_CAPT_KEY_6",
+      "label": "6",
+      "bbox_px": [
+        361,
+        1023,
+        422,
+        1084
+      ],
+      "center_px": [
+        391,
+        1053
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "numeric_key",
+      "shape": "circle",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.7",
+      "qa": "V5_2_PIXEL_CONTOUR_REVIEWED",
+      "note": "V5.2: bbox tightened to detected button face contour."
+    },
+    {
+      "id": "CDU_CAPT_KEY_7",
+      "label": "7",
+      "bbox_px": [
+        206,
+        1092,
+        268,
+        1153
+      ],
+      "center_px": [
+        237,
+        1122
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "numeric_key",
+      "shape": "circle",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.7",
+      "qa": "V5_2_PIXEL_CONTOUR_REVIEWED",
+      "note": "V5.2: bbox tightened to detected button face contour."
+    },
+    {
+      "id": "CDU_CAPT_KEY_8",
+      "label": "8",
+      "bbox_px": [
+        284,
+        1092,
+        346,
+        1154
+      ],
+      "center_px": [
+        315,
+        1123
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "numeric_key",
+      "shape": "circle",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.7",
+      "qa": "V5_2_PIXEL_CONTOUR_REVIEWED",
+      "note": "V5.2: bbox tightened to detected button face contour."
+    },
+    {
+      "id": "CDU_CAPT_KEY_9",
+      "label": "9",
+      "bbox_px": [
+        361,
+        1092,
+        423,
+        1154
+      ],
+      "center_px": [
+        392,
+        1123
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "numeric_key",
+      "shape": "circle",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.7",
+      "qa": "V5_2_PIXEL_CONTOUR_REVIEWED",
+      "note": "V5.2: bbox tightened to detected button face contour."
+    },
+    {
+      "id": "CDU_CAPT_KEY_DOT",
+      "label": ".",
+      "bbox_px": [
+        206,
+        1160,
+        268,
+        1222
+      ],
+      "center_px": [
+        237,
+        1191
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "numeric_key",
+      "shape": "circle",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.7",
+      "qa": "V5_2_PIXEL_CONTOUR_REVIEWED",
+      "note": "V5.2: bbox tightened to detected button face contour."
+    },
+    {
+      "id": "CDU_CAPT_KEY_0",
+      "label": "0",
+      "bbox_px": [
+        284,
+        1161,
+        346,
+        1223
+      ],
+      "center_px": [
+        315,
+        1192
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "numeric_key",
+      "shape": "circle",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.7",
+      "qa": "V5_2_PIXEL_CONTOUR_REVIEWED",
+      "note": "V5.2: bbox tightened to detected button face contour."
+    },
+    {
+      "id": "CDU_CAPT_KEY_PLUS_MINUS",
+      "label": "+/-",
+      "bbox_px": [
+        361,
+        1161,
+        423,
+        1222
+      ],
+      "center_px": [
+        392,
+        1191
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "numeric_key",
+      "shape": "circle",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.7",
+      "qa": "V5_2_PIXEL_CONTOUR_REVIEWED",
+      "note": "V5.2: bbox tightened to detected button face contour."
+    },
+    {
+      "id": "CDU_CAPT_KEY_SP",
+      "label": "SP",
+      "bbox_px": [
+        531,
+        1141,
+        605,
+        1193
+      ],
+      "center_px": [
+        568,
+        1167
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "edit_key",
+      "shape": "rounded-rect",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.7",
+      "qa": "V2_SOURCE_PIXEL_REVIEW_PENDING_USER_SIGNOFF",
+      "note": " V2: bbox placed inside photograph key face (not bezel)."
+    },
+    {
+      "id": "CDU_CAPT_KEY_DEL",
+      "label": "DEL",
+      "bbox_px": [
+        620,
+        1141,
+        694,
+        1193
+      ],
+      "center_px": [
+        657,
+        1167
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "edit_key",
+      "shape": "rounded-rect",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.7",
+      "qa": "V2_SOURCE_PIXEL_REVIEW_PENDING_USER_SIGNOFF",
+      "note": " V2: bbox placed inside photograph key face (not bezel)."
+    },
+    {
+      "id": "CDU_CAPT_KEY_SLASH",
+      "label": "/",
+      "bbox_px": [
+        709,
+        1141,
+        783,
+        1193
+      ],
+      "center_px": [
+        746,
+        1167
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "edit_key",
+      "shape": "rounded-rect",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.7",
+      "qa": "V2_SOURCE_PIXEL_REVIEW_PENDING_USER_SIGNOFF",
+      "note": " V2: bbox placed inside photograph key face (not bezel)."
+    },
+    {
+      "id": "CDU_CAPT_KEY_CLR",
+      "label": "CLR",
+      "bbox_px": [
+        798,
+        1141,
+        872,
+        1193
+      ],
+      "center_px": [
+        835,
+        1167
+      ],
+      "panel": "PEDESTAL",
+      "assembly": "CDU_CAPT",
+      "type": "edit_key",
+      "shape": "rounded-rect",
+      "mechanics": "momentary",
+      "fcom_folio": "11.10.7",
+      "qa": "V2_SOURCE_PIXEL_REVIEW_PENDING_USER_SIGNOFF",
+      "note": " V2: bbox placed inside photograph key face (not bezel)."
+    }
+  ],
+  "outputs": [
+    {
+      "id": "CDU_CAPT_CALL_LIGHT",
+      "label": "CALL",
+      "side": "LEFT",
+      "center_px": [
+        160,
+        929
+      ],
+      "rect_px": [
+        140,
+        866,
+        180,
+        972
+      ],
+      "color": "white",
+      "condition": "non_FMC_subsystem_requests_CDU",
+      "fcom_folio": "11.10.4",
+      "illuminated_sprite": "assets/annunciator-call-on.png",
+      "sprite_bbox_px": [
+        151,
+        885,
+        174,
+        987
+      ],
+      "condition_source": "FCOM 11.10.4"
+    },
+    {
+      "id": "CDU_CAPT_FAIL_LIGHT",
+      "label": "FAIL",
+      "side": "LEFT",
+      "center_px": [
+        160,
+        1059
+      ],
+      "rect_px": [
+        140,
+        1006,
+        180,
+        1111
+      ],
+      "color": "amber",
+      "condition": "CDU_selftest_failure_MENU_variant",
+      "fcom_folio": "11.10.4",
+      "illuminated_sprite": "assets/annunciator-fail-on.png",
+      "sprite_bbox_px": [
+        151,
+        1007,
+        174,
+        1133
+      ],
+      "condition_source": "FCOM 11.10.4"
+    },
+    {
+      "id": "CDU_CAPT_MSG_LIGHT",
+      "label": "MSG",
+      "side": "RIGHT",
+      "center_px": [
+        904,
+        932
+      ],
+      "rect_px": [
+        886,
+        876,
+        923,
+        977
+      ],
+      "color": "white",
+      "condition": "scratchpad_message_displayed",
+      "fcom_folio": "11.10.4",
+      "illuminated_sprite": "assets/annunciator-msg-on.png",
+      "sprite_bbox_px": [
+        914,
+        888,
+        936,
+        988
+      ],
+      "condition_source": "FCOM 11.10.4"
+    },
+    {
+      "id": "CDU_CAPT_OFST_LIGHT",
+      "label": "OFST",
+      "side": "RIGHT",
+      "center_px": [
+        904,
+        1060
+      ],
+      "rect_px": [
+        886,
+        1004,
+        923,
+        1110
+      ],
+      "color": "white",
+      "condition": "LNAV_lateral_offset_guidance",
+      "fcom_folio": "11.10.4",
+      "illuminated_sprite": "assets/annunciator-ofst-on.png",
+      "sprite_bbox_px": [
+        914,
+        1000,
+        936,
+        1130
+      ],
+      "condition_source": "FCOM 11.10.4"
+    },
+    {
+      "id": "CDU_CAPT_EXEC_LIGHT",
+      "label": "EXEC",
+      "side": "BELOW_DISPLAY",
+      "center_px": [
+        836,
+        717
+      ],
+      "rect_px": [
+        793,
+        695,
+        880,
+        739
+      ],
+      "color": "white",
+      "condition": "active_FMC_data_modified_not_executed",
+      "fcom_folio": "11.10.6",
+      "sprite_bbox_px": [
+        793,
+        695,
+        880,
+        739
+      ],
+      "condition_source": "FCOM 11.10.6",
+      "off_state_plate": "assets/exec-off-plate.png",
+      "display_logic": "off plate covers permanent source-image lit bar; when pending, reveal original centered strip"
+    }
+  ],
+  "status": "USER_REPORTED_HOTSPOT_CORRECTIONS_PENDING_IN_BROWSER_SIGNOFF",
+  "notes": [
+    "No image regeneration; user-approved PNG copied without modifications.",
+    "Interactive areas are inset inside visible control surfaces; circular keys use circular hit-testing.",
+    "Actual FCOM brightness BRT control is rotary, differs from approved DIM BRT key graphic.",
+    "Simulator-injected CALL, FAIL, OFST test triggers do not claim true FMC simulation."
+  ],
+  "version": "2.0",
+  "revision": "5.2-hotfix"
+};
