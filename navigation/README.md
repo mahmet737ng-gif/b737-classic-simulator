@@ -1,47 +1,43 @@
-# B737 Classic Navigation Database (NAVDB v0.1)
+# B737 Classic Iran-only Navigation Database (NAVDB IR v0.3)
 
 **Simulator training only — NOT for operational flight navigation.**
 
-Independent module; does not modify the existing cockpit UI. It will not feed FMC until ARINC decoding and the aircraft-specific adapter are verified.
+The importer accepts only `iso_country=IR` airports and navaids from the OurAirports public-domain CSVs. Runways and communications frequencies are accepted only when their `airport_ref` belongs to an imported Iranian airport. Airport inclusion is **not** defined by ICAO prefix, allowing any valid Iranian airport record (including local/unregistered codes). No non-Iran records appear in the SQLite file.
 
 ## Sources and provenance
-- [OurAirports](https://ourairports.com/data/): public-domain, worldwide community-maintained, **non-AIRAC** airport, runway, navaid and frequency records. The SHA-256 and retrieval timestamp of each input file are retained.
-- [FAA CIFP](https://www.faa.gov/air_traffic/flight_info/aeronav/digital_products/cifp/download/): official 28-day, primarily U.S. ARINC 424 v18 records. Fixed-width records can be staged and audited, but are **NOT** yet translated into live fixes, airways, SID, STAR or approaches.
-- Regional AIP/ARINC data for Iranian, Turkish and other procedures require verification and rights checks. No fabricated navigation legs or constraints.
+
+- [OurAirports](https://ourairports.com/data/): public-domain worldwide source CSV files (downloaded whole because provider offers bulk CSV), **filtered before SQLite import**; all source-file SHA-256 and retrieval timestamps are preserved. The raw worldwide CSVs are neither part of the release ZIP nor the GitHub Actions output artifact.
+- **No FAA CIFP staging** in Iran-only builds. Legacy `--faa-file` and `--faa-cycle` arguments deliberately fail closed.
+- Iranian waypoints, airways, SID, STAR, approaches, and their verified path terminators/constraints still need a rights-cleared Iranian AIP/ARINC source. Empty tables are not evidence of missing real-world procedures.
 
 ## Build and query
 
-Requires Python 3.10+ standard library only.
+Requires Python 3.10+ (standard library only):
 
-~~~bash
-# Online first build
-python navigation/navdb.py build --download --data-dir navigation/data --db navigation/navdb.sqlite
+```bash
+# Download source CSV files; filter IR before inserting into the DB
+python navigation/navdb.py build --download --data-dir navigation/data --db navigation/navdb-iran.sqlite
 
-# Offline rebuild from saved source CSVs
-python navigation/navdb.py build --data-dir navigation/data --db navigation/navdb.sqlite
+# Rebuild offline from source CSV cache
+python navigation/navdb.py build --data-dir navigation/data --db navigation/navdb-iran.sqlite
 
-# Optional FAA raw staging (not FMC active)
-python navigation/navdb.py build --data-dir navigation/data --db navigation/navdb.sqlite --faa-file navigation/data/CIFP_261001.zip --faa-cycle 261001
+# Inspect Iranian airports and QA metadata
+python navigation/navdb.py summary --db navigation/navdb-iran.sqlite
+python navigation/navdb.py airport OIII --db navigation/navdb-iran.sqlite
+python navigation/navdb.py export OIII OIIE OIMM --db navigation/navdb-iran.sqlite --output navigation/iran-airports.json
 
-# Query and JSON export
-python navigation/navdb.py summary --db navigation/navdb.sqlite
-python navigation/navdb.py airport OIII --db navigation/navdb.sqlite
-python navigation/navdb.py export OIII OIIE OIMM --db navigation/navdb.sqlite --output navigation/output/iran-airports.json
-
-# Unit tests
+# Unit tests (synthetic fixtures, not real navigation data)
 python -m unittest discover -s navigation/tests -v
-~~~
+```
 
-## Data model and FMC gates
+## QA and safety gates
 
-Imported: sources, airports, runways, navaids, frequencies, rejected, airac_cycles; optional raw FAA records in faa_raw. Deliberately **empty** pending validated ARINC field mapping: waypoints, airways, procedures, procedure_legs.
-
-Output carries data_status=COMMUNITY_UNVERIFIED_NOT_FMC_READY. Absence of a procedure does NOT imply an actual airport has no procedures.
-
-The import is atomic. On corruption or reference failure, the previously built SQLite output remains intact. Unresolvable references or invalid coordinates are reported under rejected. An FMC adapter must also disambiguate duplicate navaid/fix identifiers by geography, validate transitions and constraints, and conform to the documented EP-FSI FMC equipment.
+- Missing source-country columns fail closed. Non-Iran rows are counted separately as `skipped_outside_iran`, not invalid/rejected data.
+- The build is atomic; on download, parsing or validation failure the previous SQLite DB remains intact.
+- Source provenance and `metadata.iso_country=IR` are mandatory. No foreign airport, navaid or associated runway/frequency may enter the released DB.
+- This is a **source library**, not a verified FMC navigation cycle. `waypoints`, `airways`, `procedures` and `procedure_legs` remain empty until a validated Iran-specific importer is implemented. No auto-generation of fake legs/altitude constraints.
+- Cockpit UI, existing systems and active CDU/FMC data are unchanged.
 
 ## GitHub Actions
 
-The separate workflow under .github/workflows/navdb.yml tests the module, downloads global OurAirports CSVs, builds a worldwide SQLite file, exports OIII/OIIE/OIMM sample JSON, and uploads these as an artifact with 30-day retention. It does NOT change the existing cockpit or activate unverified navdata in CDU.
-
-Future gates: ARINC 424-18 record decoding, continuation handling, transitions, flight legs, cycle expiry, regional coverage and aircraft-specific integration tests.
+[.github/workflows/navdb.yml](../.github/workflows/navdb.yml) runs unit tests, downloads source CSVs, builds the **Iran-only** database, checks country isolation/integrity and exports Iranian sample airports. The artifact contains the SQLite database and reports only (no global CSVs). This workflow runs on pushes affecting navigation code, weekly, or manually.
