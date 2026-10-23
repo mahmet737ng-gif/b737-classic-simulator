@@ -10,42 +10,70 @@ label{display:block; font-size:13px;color:#cae5ee}
 .actions button{background:#25627a}
 button.test-link{background:#214b60}
 #cdu{max-width:730px}
-/* The approved photo's LCD opening is rounded; clip ONLY the live LCD overlay,
-   not the immutable bitmap, its physical frame, keys, or hitbox coordinates. */
+/* LCD GEOMETRY V3: position relative to approved 1199×1312 source photograph.
+   Change neither photo nor original 70-button hitbox map. Rounded LCD only. */
 #cdu .fmc-screen{
+  left:20.25%;
+  top:7.45%;
+  width:50.8%;
+  height:37.5%;
   border-radius:7.5% / 9.5%;
   clip-path:inset(0 round 7.5% / 9.5%);
   overflow:hidden;
   background:#020402;
 }
-/* CDU is a strict 24-column, 14-row display. The script measures both of the
-   existing locked font faces and scales the lettering to fit this opening. */
+/* Each FCOM LSK value line is anchored to the matching physical LSK y-center;
+   never distribute 14 rows evenly as the LSK key pitch is not the text pitch. */
 #cdu .fmc-screen .fmc-lines{
-  inset:5% 5.8% 5% 5.8%;
-  display:grid;
-  grid-template-rows:repeat(14,minmax(0,1fr));
-  font-weight:400;
-  font-size:12px;
+  position:absolute;
+  inset:0;
+  display:block;
+  font-size:22px;
   line-height:1;
-  letter-spacing:0!important;
+  font-weight:400;
+  letter-spacing:-.04em!important;
   overflow:hidden;
   direction:ltr;
+  text-align:left;
 }
 #cdu .fmc-screen .fmc-line{
-  display:block;
+  position:absolute;
+  left:0;
   width:100%;
-  min-width:0;
-  white-space:pre;
+  height:1px;
   overflow:visible;
+  white-space:nowrap;
   line-height:1;
-  letter-spacing:0!important;
-  text-align:left;
   font-weight:400;
+  letter-spacing:inherit!important;
   padding:0;
   margin:0;
-  align-self:center;
 }
-#cdu .fmc-screen .fmc-line.fmc-small{font-size:78%}
+#cdu .fmc-screen .fmc-cell{
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  width:max-content;
+  max-width:44%;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:clip;
+  line-height:1;
+  letter-spacing:inherit!important;
+  padding:0;
+  margin:0;
+}
+#cdu .fmc-screen .fmc-left{left:4%;text-align:left}
+#cdu .fmc-screen .fmc-right{right:4%;text-align:right}
+#cdu .fmc-screen .fmc-line.fmc-small{font-size:63%}
+#cdu .fmc-screen .fmc-line.heading .fmc-left{
+  left:15%;
+  max-width:70%;
+  width:70%;
+  text-align:center;
+}
+#cdu .fmc-screen .fmc-line.heading .fmc-right{max-width:14%;right:4%}
+#cdu .fmc-screen .fmc-line.scratch .fmc-left{max-width:92%}
 #cdu .fmc-screen .fmc-line.heading{font-family:"BoeingCDULarge"!important}
 #last-status{font-family:monospace;white-space:pre-wrap}
 .mini{font-size:12px;opacity:.9}
