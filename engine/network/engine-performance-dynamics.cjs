@@ -138,6 +138,9 @@ function advancePerformance(state,seconds){
  const results=[];
  for(const engine of ['1','2']){
    const p=state.performance.engines[engine];
+   if(p.mode==='REPLAY_ENDED'){
+     results.push({engine,event:'REPLAY_EXHAUSTED',fuelBurnKg:null});continue;
+   }
    if(p.mode!=='REPLAY_ACTIVE')continue;
    const target=p.elapsedSec+seconds;
    if(target>p.track.samples.at(-1).timeSec){
@@ -145,7 +148,7 @@ function advancePerformance(state,seconds){
      const t=p.track.samples.at(-1).timeSec;
      const last=sampleAt(p.track,t);
      p.elapsedSec=t;p.mode='REPLAY_ENDED';p.coverage='NO_EXTRAPOLATION_AT_END';
-     const fuelBurnKg=integratedFuelKg(p.track,p.elapsedSec,t);
+     const fuelBurnKg=null; // Remaining interval unobserved; do not extrapolate fuel used.
      p.lastSample=copy(last);applySample(state,engine,last.sample);
      results.push({engine,event:'REPLAY_ENDED',lastTimeSec:t,fuelBurnKg});
    }else{
@@ -171,7 +174,7 @@ function integratedFuelKg(track,fromSec,toSec){
  return mass;
 }
 function performanceAuthority(perf,engine){
- return perf?.engines[id(engine)]?.mode==='REPLAY_ACTIVE';
+ return ['REPLAY_ACTIVE','REPLAY_ENDED'].includes(perf?.engines[id(engine)]?.mode);
 }
 function getAFMTargetN1(request){
  if(!request||request.registration!==AIRCRAFT.registration||
