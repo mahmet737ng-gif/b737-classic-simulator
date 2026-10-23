@@ -1,0 +1,38 @@
+name: Render original B737 panels stacked
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'panels-stacked/index.html'
+      - '.github/scripts/render-stacked-panels.mjs'
+      - '.github/workflows/render-stacked-panels.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install screenshot browser
+        run: |
+          npm install --no-save --ignore-scripts playwright@1.58.2
+          npx playwright install chromium
+      - name: Capture original source panels
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 > /tmp/b737-panel-preview.log 2>&1 &
+          sleep 2
+          node .github/scripts/render-stacked-panels.mjs
+      - name: Save exact PNG composite
+        run: |
+          git add panels-stacked/composite.png
+          if git diff --cached --quiet; then exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "assets(preview): exact original flight and fuel composite [skip ci]"
+          git pull --rebase origin main
+          git push origin HEAD:main
