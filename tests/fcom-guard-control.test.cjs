@@ -93,7 +93,7 @@ test('Photographed NAV mounts remain fixed, only 3 physical levers rotate',()=>{
   assert.match(css,/data-position="left"\] \.nav-photo-lever \{transform:rotate\(-40deg\)/);
   assert.match(css,/data-position="normal"\] \.nav-photo-lever \{transform:rotate\(0deg\)/);
   assert.match(css,/data-position="right"\] \.nav-photo-lever \{transform:rotate\(40deg\)/);
-  assert.ok(!/\$\('[^']+'\)\.forEach/.test(js),'DOM loops must use NodeList selector $$');
+  assert.ok(!/(?<!\$)\$\('[^']+'\)\.forEach/.test(js),'DOM loops must use NodeList selector $');
   for(const id of ['vhfNav','irs','efi']){
     const meta=mapping.switches.find(s=>s.id===id);
     assert.ok(meta,'calibration missing for '+id);
