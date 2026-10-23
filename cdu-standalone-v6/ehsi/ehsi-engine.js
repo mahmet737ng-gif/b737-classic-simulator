@@ -19,7 +19,7 @@ function normalize(m={}){const d=defaultModel();const r={...d,...m,efis:{...d.ef
 function geometry(mode){return isArc(mode)?{cx:220,cy:376,radius:264,full:false}:{cx:220,cy:222,radius:176,full:true}}
 function computeDisplay(inp){const m=normalize(inp),ref=orientation(m.mode)==='TRUE_NORTH'?0:orientation(m.mode)==='HEADING_UP'?m.heading:m.track;
  const navAvail=m.nav.valid,wxEligible=['MAP','CTR_MAP','EXP_NAV','EXP_VOR_ILS'].includes(m.mode);
- return {mode:m.mode,range:m.range,reference:ref,orientation:orientation(m.mode),geometry:geometry(m.mode),navValid:navAvail,wxSelected:!!(m.options.wxr&&m.efis.remoteWxr),wxVisible:!!(wxEligible&&m.options.wxr&&m.efis.remoteWxr&&m.efis.wxrTransmitter),simRouteVisible:!!m.options.demoRoute&&m.route.points.length>0,showTfc:!!m.options.tfc,showTerr:!!m.options.terr,headingBug:norm(m.heading-ref),headingValid:!!m.efis.headingValid,trackValid:!!m.efis.trackValid,sgValid:!!m.efis.sgValid};}
+ return {mode:m.mode,range:m.range,reference:ref,orientation:orientation(m.mode),geometry:geometry(m.mode),navValid:navAvail,wxSelected:!!(m.options.wxr&&m.efis.remoteWxr),wxVisible:!!(wxEligible&&m.options.wxr&&m.efis.remoteWxr&&m.efis.wxrTransmitter),simRouteVisible:!!m.options.demoRoute&&m.route.points.length>0,showTfc:!!m.options.tfc,showTerr:!!m.options.terr,wptRequested:!!m.options.wpt,wptEligible:!!m.options.wpt&&m.range<=40,navAidRequested:!!m.options.navAid,arptRequested:!!m.options.arpt,rteDataRequested:!!m.options.rteData,vorAdfRequested:!!m.options.vorAdf,headingBug:norm(m.heading-ref),headingValid:!!m.efis.headingValid,trackValid:!!m.efis.trackValid,sgValid:!!m.efis.sgValid};}
 function el(tag,attrs={},body){const x=document.createElementNS(NS,tag);for(const [k,v] of Object.entries(attrs))if(v!=null)x.setAttribute(k,String(v));if(body!=null)x.textContent=String(body);return x}
 function put(p,tag,a={},text){const n=el(tag,a,text);p.appendChild(n);return n}
 function label(p,x,y,s,color=COLORS.white,size=14,anchor='start'){return put(p,'text',{x,y,fill:color,'font-family':'Lucida Console,monospace','font-size':size,'text-anchor':anchor,'font-weight':'normal','letter-spacing':'.25'},s)}
@@ -44,7 +44,7 @@ function routeGeometry(root,c,m,ref){const pts=getDemoPoints(m);if(!pts.length)r
  const p=pt=>{const dx=pt.x-m.aircraft.x,dy=pt.y-m.aircraft.y;return [c.cx+(dx*Math.cos(a)-dy*Math.sin(a))*scale,c.cy-(dx*Math.sin(a)+dy*Math.cos(a))*scale]};
  const xy=pts.map(p);put(g,'polyline',{points:xy.map(pt=>pt.join(',')).join(' '),fill:'none',stroke:COLORS.magenta,'stroke-width':3,'stroke-linejoin':'round'});
  pts.forEach((pt,i)=>{const q=xy[i];if(q[0]<26||q[0]>416||q[1]<40||q[1]>404)return;
- put(g,'rect',{x:q[0]-4,y:q[1]-4,width:8,height:8,fill:'none',stroke:i===m.route.activeIndex?COLORS.magenta:COLORS.cyan,'stroke-width':1.5,transform:`rotate(45 ${q[0]} ${q[1]})`});label(g,q[0]+8,q[1]-9,pt.name||'FIX',i===m.route.activeIndex?COLORS.magenta:COLORS.cyan,11)});
+ put(g,'rect',{x:q[0]-4,y:q[1]-4,width:8,height:8,fill:'none',stroke:i===m.route.activeIndex?COLORS.magenta:COLORS.cyan,'stroke-width':1.5,transform:`rotate(45 ${q[0]} ${q[1]})`});if(m.options.wpt&&m.range<=40)label(g,q[0]+8,q[1]-9,pt.name||'FIX',i===m.route.activeIndex?COLORS.magenta:COLORS.cyan,11)});
 }
 function render(svg,source){if(!svg)return;const m=normalize(source),status=computeDisplay(m),c=status.geometry,ref=status.reference;
  svg.replaceChildren();svg.setAttribute('viewBox','0 0 440 440');svg.style.background='#030506';
