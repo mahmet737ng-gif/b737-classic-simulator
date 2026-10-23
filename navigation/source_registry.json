@@ -589,7 +589,7 @@
         "NPE_STAGE9_SIMULATOR_REFERENCE_GUIDANCE_v1"
       ],
       "private_archive": "/B737/NAVDB/NPE_STAGE10/B737_NAVDB_AIRAC2610_NPE_STAGE10_PRIVATE.zip",
-      "private_archive_sha256": "b0c02eb226582deccf1f56de72b1291535aca4a95ab860d5e8a54ac874baefe0",
+      "private_archive_sha256": "0b1cf16a4c6b7641c2b3d5df2e59d7b640ab03a4f51eaa9598f63e548e33833d",
       "private_manifest": "/B737/NAVDB/NPE_STAGE10/manifest.json",
       "qa_visual": "/B737/NAVDB/NPE_STAGE10/stage10-browser-dom-mocked.png",
       "source_code": [
@@ -639,7 +639,8 @@
         "integration": "approved CDU/EHSI v6 PLAN, same-origin origin-checked message",
         "locked_visual_assets_modified": false,
         "browser_test": "PASS_WITH_NETWORK_MOCK_ONLY",
-        "on_device_acceptance": "NOT_VERIFIED"
+        "on_device_acceptance": "NOT_VERIFIED",
+        "live_cdu_legs_rows": "SIM REF LEG / XTK / DTG; TWO READ-ONLY LINES"
       },
       "stage4_fd_afds_interface": {
         "status": "OBSERVATION_PORT_ONLY",
@@ -656,7 +657,7 @@
         "python_with_private_source": 23,
         "python_public_synthetic_pass": 22,
         "python_public_private_only_skip": 1,
-        "node_safety_checks": 7,
+        "node_safety_checks": 10,
         "chromium_dom": "PASS_WITH_REAL_PRIVATE_SOURCE_FIXTURE_AND_MOCKED_HTTP",
         "direct_localhost_chromium": "BLOCKED_BY_EXECUTION_ENVIRONMENT",
         "packaged_local_http_smoke": "PASS",
