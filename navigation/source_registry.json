@@ -93,7 +93,7 @@
   "integration": {
     "navigation_source_selection": "registry",
     "source_merge_behavior": "explicit_source_selection_only",
-    "fmc_gate": "Stage5 EXEC commits a read-only flight-plan reference, not flyable FMC legs. Retain strict AIRAC 2610 marker, explicit discontinuities, source provenance; never connect to active AFDS/LNAV before aircraft-specific validation.",
+    "fmc_gate": "NPE Stage6 SOURCE MOD/ACTIVATE/EXEC commits REFERENCE DATA ONLY. All ambiguous path terminators stay blocked; true FMC leg geometry and LNAV/VNAV/AFDS interfaces remain inactive pending verified EP-FSI aircraft-specific testing.",
     "simulator_training_only": true,
     "procedure_decoder": {
       "id": "NPE_STAGE1_v1",
@@ -311,6 +311,74 @@
       ],
       "fmc_active": false,
       "simulator_training_only": true
+    },
+    "native_cdu_procedure_selection_stage6": {
+      "id": "NPE_STAGE6_v1",
+      "airac": "2610",
+      "revision": 1,
+      "source_id": "PMDG_WORLD_2610_WITH_PROCEDURES_R1",
+      "exact_post_marker": "//AIRAC Cycle : 2610 (01/OCT/2026 - 29/OCT/2026) - Ver.1",
+      "private_archive": "/B737/NAVDB/NPE_STAGE6/B737_NAVDB_AIRAC2610_NPE_STAGE6_PRIVATE.zip",
+      "private_archive_sha256": "a7d85a446c10ae0b0462685d51cdda1f9ea08a7e33e400ad43a1761b93fd9ca8",
+      "private_manifest": "/B737/NAVDB/NPE_STAGE6/manifest.json",
+      "private_qa_report": "/B737/NAVDB/NPE_STAGE6/qa_report.json",
+      "code": [
+        "navigation/npe_stage6_server.py",
+        "navigation/procedure_semantics.py",
+        "cdu-standalone-v6/stage6-selector.js"
+      ],
+      "docs": "navigation/NPE_STAGE6.md",
+      "existing_cdu_version": "cdu-standalone-v6",
+      "cdu_interfaces": [
+        "DEP_ARR",
+        "DEPARTURES",
+        "ARRIVALS",
+        "RTE",
+        "LEGS",
+        "ACTIVATE",
+        "EXEC"
+      ],
+      "interactions": "physical CDU LSK L1/R1/R2, NEXT/PREV, explicit runway and transition, RTE L5 ACTIVATE, EXEC, L5 ERASE",
+      "backend_contract": [
+        "GET /api/stage6/catalog",
+        "GET /api/stage6/semantics",
+        "POST /api/stage6/compose"
+      ],
+      "prerequisite_private_archives": [
+        "/B737/NAVDB/NPE_STAGE3/B737_NAVDB_WORLD_AIRAC2610_NPE_STAGE3_PRIVATE.zip",
+        "/B737/NAVDB/NPE_STAGE4/B737_NAVDB_AIRAC2610_NPE_STAGE4_PRIVATE.zip"
+      ],
+      "verified_examples": {
+        "departure": "OIII DAXI1A 29R -> DHN2C 29R",
+        "destination": "OIMM",
+        "source_enroute_fixes": 11,
+        "preserved_discontinuities": 4,
+        "source_sid_count_OIII": 33,
+        "source_star_count_OIMM": 38,
+        "source_app_count_OIMM": 13
+      },
+      "qa": {
+        "synthetic_python_tests_passed": 3,
+        "private_python_tests_passed": 7,
+        "javascript_tests_passed": 5,
+        "local_http_endpoints_passed": 3,
+        "unapproved_host_rejected": true,
+        "source_semantic_fmc_legs": 0,
+        "real_browser_visual_acceptance": "NOT_VERIFIED"
+      },
+      "state": "SOURCE_VALIDATED_SELECTION_AND_REFERENCE_DRAFT",
+      "fmc_legs_generated": 0,
+      "autopilot_guidance_enabled": false,
+      "lnav_active": false,
+      "vnav_active": false,
+      "source_data_restricted": true,
+      "cockpit_locked_visuals_modified": false,
+      "limitations": [
+        "saved Stage4 plan is required before native selector can recompose",
+        "source path terminators are classified, not treated as verified ARINC legs",
+        "global user-owned navigation binary remains private",
+        "local loopback browser test required to confirm device visuals"
+      ]
     }
   }
 }
