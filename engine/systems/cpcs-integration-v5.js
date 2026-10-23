@@ -1,0 +1,18 @@
+/* CPCS-V5 integration with existing B737WarningEngine. Separate from DCPCS-V4. */
+(function(root,factory){'use strict';const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;if(root)root.B737CPCSIntegrationV5=api;})(typeof globalThis!=='undefined'?globalThis:this,function(){'use strict';
+ class Session{
+  constructor({CPCS,WarningEngine}={}){if(!CPCS||typeof WarningEngine!=='function')throw Error('CPCS and existing WarningEngine required');this.CPCS=CPCS;this.WarningEngine=WarningEngine;this.reset();}
+  reset(){this.state=this.CPCS.initial();this.warning=new this.WarningEngine({variant:'737-300'});this.commands=[];this.qrhActive=false;this.qrhCabAltReviewed=false;this.observation={cabinControllable:null};return this.render();}
+  send(action){if(!action||typeof action.type!=='string')throw Error('Action required');if(action.type==='RESET')return this.reset();if(action.type==='CHECKLIST_OBSERVATION'){if(action.key!=='cabinControllable'||![true,false,null].includes(action.value))throw Error('Invalid checklist observation');this.observation.cabinControllable=action.value;this.commands.push(action);return this.render();}
+   if(action.type==='HORN_CUTOUT'){this.warning.cutoutCabin();this.commands.push({type:'HORN_CUTOUT'});return this.render();}
+   this.state=this.CPCS.apply(this.state,action);if(action.type==='ALTITUDE'&&action.key==='standbyCabinAltitudeFt')this.qrhCabAltReviewed=true;this.commands.push(JSON.parse(JSON.stringify(action)));return this.render();}
+  render(){const d=this.CPCS.derive(this.state),i=this.state.inputs;
+   if(d.lamps.autoFail)this.qrhActive=true;const qrh=this._checklist(d);
+   const audio=this.warning.update({onGround:i.onGround,cabinAltitudeFt:i.cabinAltitudeFt,gearDownLocked:true,flaps:0,pressureAltitudeFt:i.airplaneAltitudeFt,selectedAltitudeFt:0,leadingEdgeTakeoff:true,speedbrakeDown:true,parkingBrakeSet:false,stabilizerTrimTakeoff:true,takeoffThrust:false,thrustLever1Angle:45,thrustLever2Angle:45});
+   return {schema:'b737-cpcs-integration/5',checklist:qrh,seq:this.state.seq,clockMs:this.state.clockMs,cpcs:d,inputs:{...i},faults:{...this.state.faults},settings:{...this.state.settings},warning:{cabinAltitudeLamp:Boolean(audio.lamps.cabinAltitude),activeAudioRequests:audio.active.filter(x=>x.id==='intermittentHorn'),events:audio.events},commands:this.commands.length,
+    limitations:['CPCS_VARIANT_NOT_EP_FSI','CABIN_PRESSURE_PHYSICS_NOT_MODELED','NO_MOTOR_TIMING_OR_ACTUAL_VALVE_POSITION','ORIGINAL_COCKPIT_NOT_WIRED','NO_FULL_QRH_IMPLEMENTATION']};}
+  _checklist(d){if(!this.qrhActive)return {active:false,title:'AUTO FAIL / Unscheduled Pressurization — training',steps:[],branch:'NOT_STARTED',source:'QRH 2.4–2.6, DB pages 78–80'};const stby=d.selectedMode==='STBY',manual=d.selectedMode==='MAN_AC',c=this.observation.cabinControllable;return {active:true,title:'CPCS AUTO FAIL — original educational practice',steps:[{id:'stby',label:'Select standby controller',done:stby||manual},{id:'cabalt',label:'Review standby cabin altitude setting',done:this.qrhCabAltReviewed},{id:'observe',label:'Evaluate actual cabin controllability (instructor observation)',done:c!==null},{id:'fallback',label:'If standby not effective, use manual AC path',done:c===false?manual:true}],branch:c===true&&stby&&this.qrhCabAltReviewed?'STBY_CONTROLLABLE':c===false&&manual?'MAN_AC_MONITOR':c===false?'STBY_NOT_CONTROLLABLE':'ASSESS',complete:c===true&&stby&&this.qrhCabAltReviewed,limitation:'Educational paraphrase only. Complete QRH not reproduced and cabin controllability not computed.',source:'QRH 2.4–2.6, DB pages 78–80'};}
+  replay(actions){this.reset();for(const action of actions)this.send(action);return this.render();}
+ }
+ return Object.freeze({Session});
+});
