@@ -49,6 +49,6 @@ def readiness(db):
             'procedures','procedure_legs','faa_raw','rejected')}
     return {'counts':counts, 'fmc_active':False,
             'status':'NAVDB_SOURCE_LIBRARY_ONLY',
-            'reasons':['Non-AIRAC community data',
-                       'FAA CIFP staging is not ARINC leg decoding',
+            'reasons':['Iran-only OurAirports data are non-AIRAC',
+                       'Iranian SID/STAR/APP and airways still require verified import',
                        'EP-FSI FMC integration requires verification']}
