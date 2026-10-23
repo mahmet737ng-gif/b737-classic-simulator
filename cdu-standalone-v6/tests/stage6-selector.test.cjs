@@ -40,5 +40,18 @@ const tick=()=>new Promise(resolve=>setImmediate(resolve));
  {const {api,state}=setup();api.setBasePlanId(1);assert.equal(api.beforeKey('EXEC'),false);state.stage6PendingPlan=sample();assert.equal(api.beforeKey('EXEC'),true);assert.match(state.message,/ACTIVATE/);}
  {const {api,state}=setup();api.setBasePlanId(1);state.pending={CO_ROUTE:'BAD'};api.beforeKey('LSK_L1');await tick();await tick();assert.equal(state.stage6View.mode,'ERROR');}
  {const {api,state}=setup();api.setBasePlanId(1);state.stage6PendingPlan=sample();state.page='RTE';api.beforeKey('LSK_L5');assert.equal(state.page,'ACTIVATE');api.beforeKey('LSK_L5');assert.equal(state.stage6PendingPlan,undefined);}
- console.log('Stage6 selector: 5 tests PASS');
+ // Standalone CDU mode: private Stage5/Stage4 is optional, not an external simulator requirement.
+ {const {api,state,calls}=setup();delete state.stage5Committed;
+  assert.equal(api.beforeKey('CDU_CAPT_LSK_L1'),false);
+  assert.equal(api.beforeKey('CDU_CAPT_LSK_R1'),false);
+  assert.equal(api.beforeKey('CDU_CAPT_LSK_R2'),false);
+  assert.equal(state.message,'');assert.equal(calls.length,0);}
+ {const {api,state,calls}=setup();
+  // Even a source preview without an explicit saved Stage4 plan must not hijack DEP/ARR.
+  assert.equal(api.beforeKey('CDU_CAPT_LSK_L1'),false);
+  assert.equal(state.message,'');assert.equal(calls.length,0);}
+ {const {api,state,calls}=setup();api.setBasePlanId(1);state.active.DEST='ZZCC';
+  assert.equal(api.beforeKey('CDU_CAPT_LSK_L1'),false);
+  assert.equal(state.message,'');assert.equal(calls.length,0);}
+ console.log('Stage6 selector: 8 tests PASS');
 })().catch(e=>{console.error(e);process.exitCode=1});
