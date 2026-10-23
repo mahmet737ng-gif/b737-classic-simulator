@@ -1,9 +1,9 @@
 {
   "schema": "b737.overhead-all-source-assembly.v1",
-  "version": "UPD-0008-all-25-atlas-test",
+  "version": "UPD-0009-atlas-absolute",
   "date": "2026-10-24",
   "purpose": "Interactive source-pixel-preserving preview of all currently uploaded OH01-OH18 sources, not a geometry-accurate final cockpit.",
-  "geometryNotice": "Original owner atlas fixes: OH19 voice and press diff directly below OH17 in wide fourth column; OH22 cabin press below bleed in rightmost; a common lower OH23–25 strip spans all columns. Crop only white PNG canvas for bottom strip in preview, retaining untouched original source bytes. Physical seams remain provisional.",
+  "geometryNotice": "Position and sizes for each of 18 source photos are fixed at the original 2220×3525 atlas coordinates in atlas-layout.json. All column lower edges at y=3276; the entire shared OH23-25 bottom strip starts at y=3281. Source photos keep intrinsic aspect via object-fit:cover, cropping only in viewport; source originals are immutable. Panel content splits in the narrow center third column remain visually approximated.",
   "header": {
     "id": "UPPER",
     "geometry": "../upper-oh/geometry.json",
@@ -404,7 +404,10 @@
     "sourceAssets": "read-only-immutable",
     "assemblySeams": "atlas-informed approximate sizing; no final physical plate edge polygons",
     "OH18Subsystem": "recognized from owner atlas image (ground call / rain repellent / wiper)",
-    "classificationOf4NewImages": "verified by source thumbnails against owner overhead atlas reference"
+    "classificationOf4NewImages": "verified by source thumbnails against owner overhead atlas reference",
+    "commonLowerEdgeY": 3276,
+    "layoutModel": "atlas-x-y-w-h absolute positioned; 2220x3525 scaled with one factor",
+    "physicalSeams": "native atlas rect outlines traced; component splits within OH13/14/18 approximate; owner visual QA pending"
   },
   "confirmedBytes": 46341071,
   "loadedSources": 18,
@@ -493,9 +496,13 @@
     ],
     "bottomFullWidth": [
       "OH23-25"
-    ]
+    ],
+    "atlasBottomEdgeY": 3276,
+    "atlasBottomStripTopY": 3281,
+    "actualPanelBBoxes": "atlas-layout.json"
   },
   "bottomItems": [
     "OH23-25"
-  ]
+  ],
+  "coordinateLayout": "atlas-layout.json"
 }
