@@ -1,6 +1,6 @@
 {
   "schema": "b737-mosaic-atlas.v1",
-  "version": "2026-10-24.6",
+  "version": "2026-10-24.7",
   "source": "Owner supplied one-page PDF composite (2026-10-23). Initial reference atlas, boundaries provisional.",
   "panels": [
     {
@@ -145,7 +145,24 @@
       "status": "mapped",
       "artwork": null,
       "module": "../flight-controls-panel/",
-      "geometryStatus": "rejected"
+      "geometryStatus": "rejected",
+      "placement": {
+        "source": "assets/locked/2026-10-23/OH07-08-FLIGHT-NAV-c82458314584.png",
+        "sourceRect": {
+          "x": 0,
+          "y": 0,
+          "w": 913,
+          "h": 1216
+        },
+        "atlasBBox": {
+          "x": 3,
+          "y": 1031,
+          "w": 550,
+          "h": 1244
+        },
+        "stageUrl": "all-overhead/",
+        "status": "atlas-photo-position-verified; visual art QA pending"
+      }
     },
     {
       "id": "OH-08",
@@ -158,7 +175,24 @@
       "status": "mapped",
       "artwork": null,
       "module": "../flight-controls-panel/",
-      "geometryStatus": "rejected"
+      "geometryStatus": "rejected",
+      "placement": {
+        "source": "assets/locked/2026-10-23/OH07-08-FLIGHT-NAV-c82458314584.png",
+        "sourceRect": {
+          "x": 0,
+          "y": 1216,
+          "w": 913,
+          "h": 507
+        },
+        "atlasBBox": {
+          "x": 3,
+          "y": 2280,
+          "w": 550,
+          "h": 244
+        },
+        "stageUrl": "all-overhead/",
+        "status": "atlas-photo-position-verified; visual art QA pending"
+      }
     },
     {
       "id": "OH-09",
@@ -171,7 +205,18 @@
       "status": "mapped",
       "artwork": null,
       "module": "../fuel-panel/",
-      "geometryStatus": "rejected"
+      "geometryStatus": "rejected",
+      "placement": {
+        "source": "assets/locked/2026-10-23/OH09-FUEL-921977b56887.png",
+        "atlasBBox": {
+          "x": 3,
+          "y": 2529,
+          "w": 550,
+          "h": 747
+        },
+        "stageUrl": "all-overhead/",
+        "status": "atlas-photo-position-verified; visual art QA pending"
+      }
     },
     {
       "id": "OH-10",
@@ -249,7 +294,7 @@
     },
     {
       "id": "OH-14",
-      "title": "EMER EXIT LIGHTS / NO SMOKING / FASTEN BELTS",
+      "title": "EMER EXIT / CABIN SIGNS / GRD CALL / RAIN REPELLENT / WIPER",
       "x": 344,
       "y": 620,
       "w": 85,
@@ -260,10 +305,27 @@
       "geometryStatus": "historical-ROI-rejected; source-verified; physical-plate-seam-pending-QA",
       "originalAtlasTitle": "CABIN / WIPERS / EQUIPMENT",
       "placement": {
-        "source": "assets/locked/2026-10-23/OH14-EMER-EXIT-795cc819a3b3.png",
-        "stageUrl": "oh13-14/",
-        "sha256": "7a707630ada8d1ae84a7377dd92e61bda95e07ccc3e71c4759da0b3dd113b3d8",
-        "status": "published-source-verified; geometry-QA-pending"
+        "sources": [
+          "assets/locked/2026-10-23/OH14-EMER-EXIT-795cc819a3b3.png",
+          "assets/locked/2026-10-23/OH18-GROUND-CALL-5af4fdc5284b.png"
+        ],
+        "atlasBBoxes": [
+          {
+            "x": 1024,
+            "y": 2205,
+            "w": 247,
+            "h": 501
+          },
+          {
+            "x": 1024,
+            "y": 2711,
+            "w": 247,
+            "h": 565
+          }
+        ],
+        "historicAlias": "OH18-GROUND-CALL file is PHYSICALLY part of atlas OH14, not OH18.",
+        "stageUrl": "all-overhead/",
+        "status": "atlas-photo-content-matched; seam visual QA pending"
       }
     },
     {
@@ -325,7 +387,7 @@
     },
     {
       "id": "OH-18",
-      "title": "ATTEND / GRD CALL / RAIN REPELLENT / WIPER",
+      "title": "COCKPIT VOICE RECORDER / HEADSET",
       "x": 429,
       "y": 800,
       "w": 161,
@@ -336,18 +398,22 @@
       "geometryStatus": "source image verified; historical ROI rejected; plate seams not approved",
       "originalAtlasTitle": "DOORS",
       "placement": {
-        "source": "assets/locked/2026-10-23/OH18-GROUND-CALL-5af4fdc5284b.png",
-        "sha256": "939e9f6ed14cbe2a8a6182684fcef790607e7dba10a1bfe002a062457f83e5ee",
+        "source": "assets/locked/2026-10-23/OH19-VOICE-RECORDER-2db6785ecddc.png",
+        "atlasBBox": {
+          "x": 1276,
+          "y": 2353,
+          "w": 473,
+          "h": 289
+        },
+        "historicAlias": "The uploaded file is called OH19-VOICE but true photo atlas region is OH18",
         "stageUrl": "all-overhead/",
-        "status": "source-placed-atlas-aligned; physical seams pending QA",
-        "atlasColumnIndex": 2,
-        "physicalOrder": "beneath OH-14"
+        "status": "atlas-photo-content-matched; seam visual QA pending"
       },
       "atlasVerifiedContent": "ATTEND / GRD CALL / RAIN REPELLENT / WIPER"
     },
     {
       "id": "OH-19",
-      "title": "COCKPIT VOICE RECORDER / PRESS DIFF / ALT HORN",
+      "title": "PRESS DIFFERENTIAL / CABIN CLIMB / ALT HORN",
       "x": 429,
       "y": 900,
       "w": 161,
@@ -357,15 +423,15 @@
       "artwork": null,
       "geometryStatus": "atlas-placement-corrected; exact plate contours unapproved; historic rectangle rejected",
       "placement": {
-        "sources": [
-          "assets/locked/2026-10-23/OH19-VOICE-RECORDER-2db6785ecddc.png",
-          "assets/locked/2026-10-23/OH19-PRESS-DIFF-ALT-HORN-d6719ce57cef.png"
-        ],
+        "source": "assets/locked/2026-10-23/OH19-PRESS-DIFF-ALT-HORN-d6719ce57cef.png",
+        "atlasBBox": {
+          "x": 1276,
+          "y": 2647,
+          "w": 473,
+          "h": 629
+        },
         "stageUrl": "all-overhead/",
-        "physicalOrder": "fourth atlas column: immediately after OH-17 HYD PUMPS, Voice Recorder then Press Diff / Alt Horn",
-        "status": "source-verified-in-correct-column; physical seams awaiting QA",
-        "atlasColumnIndex": 3,
-        "displayWidth": "same as OH-17 and column 4; preserve each source image aspect ratio"
+        "status": "atlas-photo-content-matched; seam visual QA pending"
       }
     },
     {
@@ -924,7 +990,7 @@
   ],
   "validation": {
     "status": "rejected",
-    "reason": "Historic 59-rectangle bounds remain rejected. All 25 overhead atlas region IDs now have source imagery, with OH19 represented by 2 independent plates and OH23-25 by 1 shared full-width lower panel. Accurate physical seam polygons await QA.",
+    "reason": "Legacy 59 rectangles remain rejected. New 2220x3525 photo-atlas map supplies 19 actual artwork positions for 18 source images, including OH07/08 split; filenames OH18-GROUND and OH19-VOICE previously misassigned; panels now named according to true reference. Artistic aspect transforms still need owner visual QA.",
     "next": "Re-trace each individual physical screw-defined plate on the actual owner PDF; independently QA 3 assemblies."
   },
   "previousVersion": "2026-10-23.3-REJECTED",
@@ -1012,13 +1078,37 @@
     "note": "OH19 has two physical plates, stored and displayed independently. The old atlas rectangular geometry is not approved."
   },
   "fullOverhead": {
-    "revision": "UPD-0008-all-25-atlas-test",
+    "revision": "UPD-0011-atlas-photo-order",
     "sourceViewer": "all-overhead/",
     "fileCount": 18,
     "panelIds": 25,
     "missingImages": 0,
     "atlasAlignment": "OH19-VOICE and OH19-DIFF in fourth wide column immediately below OH17; OH22 in far-right column below OH21; shared OH23-25 lower panel spanning all columns",
     "physicalSeams": "not approved",
-    "imageMutations": "none"
+    "imageMutations": "none",
+    "atlasPixelSize": [
+      2220,
+      3525
+    ],
+    "displayedPieceCount": 19,
+    "originalImmutableImageCount": 18,
+    "baselineY": 3276,
+    "photoTruthOverridesFileIds": true,
+    "sourceSplits": [
+      {
+        "asset": "assets/locked/2026-10-23/OH07-08-FLIGHT-NAV-c82458314584.png",
+        "atlasPanels": [
+          "OH-07",
+          "OH-08"
+        ],
+        "splitRow": 1216
+      }
+    ],
+    "historicallyMisnamedSourceIds": {
+      "OH18-GROUND-CALL": "OH-14",
+      "OH19-VOICE": "OH-18",
+      "OH19-DIFF": "OH-19"
+    },
+    "visualAcceptance": "pending owner approval"
   }
 }
