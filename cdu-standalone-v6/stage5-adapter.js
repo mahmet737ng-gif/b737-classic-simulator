@@ -3,12 +3,16 @@
 (function(root,factory){'use strict';if(typeof module==='object'&&module.exports)module.exports=factory; if(root&&root.NPE_STAGE5_MODEL&&typeof state!=='undefined'&&typeof core!=='undefined')root.CDU_STAGE5_API=factory(root.NPE_STAGE5_MODEL,state,core,root.CDU_PAGES,()=>root.updateStage5View?.());})(typeof window==='undefined'?null:window,function(model,state,core,pages,refresh){
 'use strict';
 const clone=v=>JSON.parse(JSON.stringify(v));
-const data=()=>state.stage5Committed||state.stage5Pending;
-const committed=()=>!!state.stage5Committed;
+const committed=()=>!!state.stage5Committed&&
+ state.active?.ORIGIN===state.stage5Committed.origin&&
+ state.active?.DEST===state.stage5Committed.destination&&
+ !Object.keys(state.pending||{}).some(k=>['ORIGIN','DEST','RUNWAY','CO_ROUTE'].includes(k))&&
+ !core.hasStagedRoute(state);
+const data=()=>state.stage5Pending||(committed()?state.stage5Committed:null);
 const currentlyEditing=()=>Object.keys(state.pending||{}).length||core.hasStagedRoute(state)||state.navdbActive||state.navdbPending;
 function stagePlan(plan){
  const summary=model.validate(plan);
- if(currentlyEditing()||data())throw Error('Complete/clear current CDU modifications and existing route before staging Stage 5');
+ if(currentlyEditing()||state.stage5Committed||state.stage5Pending)throw Error('Complete/clear current CDU modifications and existing route before staging Stage 5');
  state.stage5Pending=clone(plan);state.stage5AwaitingExec=false;state.stage5Page=1;
  state.stagedRoute={ORIGIN:summary.origin,DEST:summary.destination};state.message='';
  core.choose(state,pages,'RTE');refresh?.();return {status:'MOD_REFERENCE_ONLY',...summary};
