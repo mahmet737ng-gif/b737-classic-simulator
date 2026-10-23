@@ -5,6 +5,7 @@ on:
     paths:
       - 'engine/fmc/performance/**'
       - 'cdu-standalone/**'
+      - 'cdu-standalone-v6/**'
       - 'tests/afm-epfsi-n1-v10.test.cjs'
       - 'tests/n1-interpolation-guard-v11.test.cjs'
       - 'tests/afm-epfsi-n1-conditions-v12.test.cjs'
@@ -56,3 +57,5 @@ jobs:
           node cdu-standalone/tests/defaults-v17-integration.test.cjs
           node cdu-standalone/tests/present-n1-v18-integration.test.cjs
           node cdu-standalone/tests/estimated-n1-v19-integration.test.cjs
+          node --check cdu-standalone-v6/app.js
+          node cdu-standalone-v6/tests/est-n1-v19.test.cjs
