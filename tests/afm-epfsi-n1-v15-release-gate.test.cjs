@@ -1,0 +1,12 @@
+'use strict';
+const assert=require('node:assert/strict');
+const n=require('../engine/fmc/performance/afm-epfsi-n1-v10.cjs');
+const m=require('../engine/fmc/performance/afm-epfsi-mct-v13.cjs');
+const f={registration:'EP-FSI',serial:29340,engine:'CFM56-3B-1',ratingLbf:20000,phase:'TAKEOFF',pmcMode:'OFF',pressureAltitudeFt:0,oatC:0,iasKts:50,bleedMode:'AUTO',antiIceMode:'OFF'};
+assert.equal(n.chartFor(f).chart.pdfPage,756);
+assert.equal(n.requestN1(f).n1Pct,null);
+assert.equal(n.cduAdapter(f).display,'---.-');
+assert.equal(n.requestN1({...f,pmcMode:'UNKNOWN'}).reason,'PMC_UNKNOWN');
+assert.equal(n.requestN1({...f,serial:29339}).reason,'WRONG_AIRCRAFT');
+assert.equal(m.requestMctN1({...f,phase:'MAX_CONTINUOUS'}).n1Pct,null);
+console.log('PASS v15: six release gates, 0 public Boeing numeric cap samples');
