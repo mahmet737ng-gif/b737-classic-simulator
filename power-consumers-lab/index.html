@@ -81,6 +81,26 @@
       <button data-action="recall">RECALL (hold / release)</button>
     </div>
   </section>
+  <section id="isn10Lab">
+    <h2>ISN-10 — Engine Performance &amp; Recorded-Dynamics Lab</h2>
+    <p class="sub">AFM R32 v13 / EP-FSI MSN 29340 / CFM56-3B-1 20K. No approved N1 performance curve is available, so automatic AFM N1 stays BLOCKED. Import an externally observed four-channel time series to replay measurements only.</p>
+    <div class="toolbar" style="align-items:center">
+      <label for="performanceEngine">Engine</label>
+      <select id="performanceEngine"><option value="1">ENGINE 1</option><option value="2">ENGINE 2</option></select>
+      <label for="performanceLever">Thrust command % (stored; no calibrated thrust effect)</label>
+      <input id="performanceLever" type="number" min="0" max="100" step="1" value="0" style="max-width:82px"/>
+      <button data-perf-action="lever">SET THRUST COMMAND</button>
+      <button data-perf-action="cold">COLD &amp; DARK</button>
+      <button data-perf-action="load">IMPORT OBSERVED TRACK</button>
+      <button data-perf-action="tick1">REPLAY +1s</button>
+      <button data-perf-action="tick5">REPLAY +5s</button>
+      <button data-perf-action="stop">STOP TRACK / MANUAL INPUT</button>
+    </div>
+    <p class="sub">Paste source-attributed telemetry JSON: aircraft identity, sourceType OBSERVED_TELEMETRY, sourceId, and 2–500 ordered samples from timeSec=0 with N1 %, N2 %, EGT °C and Fuel Flow kg/h. Data are treated as user-supplied and not independently AFM-validated.</p>
+    <textarea id="performanceTrackInput" rows="6" style="width:100%;background:#10171e;color:#e7eff4;border:1px solid #52626b;border-radius:7px;padding:10px;font:12px Consolas,monospace;direction:ltr" placeholder="&#123;&quot;aircraft&quot;:&#123;&quot;registration&quot;:&quot;EP-FSI&quot;,&quot;msn&quot;:29340,&quot;engine&quot;:&quot;CFM56-3B-1&quot;,&quot;ratingLbf&quot;:20000&#125;,&quot;sourceType&quot;:&quot;OBSERVED_TELEMETRY&quot;,&quot;sourceId&quot;:&quot;recording-identifier&quot;,&quot;samples&quot;:[]&#125;"></textarea>
+    <div id="performanceState" class="panel-lamps"></div>
+    <p class="note" id="performanceFeedback" role="status">No engine dynamics source loaded. Do not treat synthetic demonstration tracks as validated AFM data.</p>
+  </section>
   <section id="eisLab">
     <h2>ISN-09 — EP-FSI Engine Instrument System (EIS)</h2>
     <p class="sub">FCOM 7.10.3–11 | Two-engine FSI EIS training preview. Values come from engine sensors and direct measurements; no invented spool, oil or fuel-flow dynamics. Schematic presentation, not FCOM pixel-traced artwork.</p>
