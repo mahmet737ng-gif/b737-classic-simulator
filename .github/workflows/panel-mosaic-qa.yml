@@ -18,3 +18,5 @@ jobs:
         run: node panel-mosaic-lab/upper-oh/test.cjs
       - name: Verify entire OH01-18 preview sources and stage syntax
         run: node panel-mosaic-lab/all-overhead/test.cjs
+      - name: Exercise mosaic/gallery/atlas viewer mode controls
+        run: node panel-mosaic-lab/all-overhead/runtime.test.cjs
