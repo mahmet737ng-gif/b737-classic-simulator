@@ -92,7 +92,9 @@ test('NAV transfers use only photographed bezel and photo-calibrated articulated
     const match=html.match(new RegExp('<button class="toggle selector" data-control="'+id+'"[^>]*>'));
     assert.ok(match,'control missing: '+id);
     for(const [key,cssKey] of [['x','--x'],['y','--y'],['width','--w'],['height','--h']]){
-      assert.ok(match[0].includes(cssKey+':'+meta.boxPct[key]+'%'),'mismatched '+id+' '+key);
+      const value=match[0].match(new RegExp(cssKey+':([0-9.]+)%'));
+      assert.ok(value, 'missing '+id+' '+key);
+      assert.equal(Number(value[1]), meta.boxPct[key], 'mismatched '+id+' '+key);
     }
     assert.equal((html.match(new RegExp(id+'-normal-grip','g'))||[]).length>=1,true);
   }
