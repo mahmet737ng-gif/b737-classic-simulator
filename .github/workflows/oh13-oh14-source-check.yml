@@ -1,0 +1,26 @@
+name: Verify OH13 OH14 uploaded originals
+on:
+  push:
+    paths:
+      - 'panel-mosaic-lab/assets/locked/2026-10-23/OH13-CIRCUIT-BREAKER-efca1c6cec9e.png'
+      - 'panel-mosaic-lab/assets/locked/2026-10-23/OH14-EMER-EXIT-795cc819a3b3.png'
+      - '.github/workflows/oh13-oh14-source-check.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify exact Git blobs and print SHA-256
+        shell: bash
+        run: |
+          set -euo pipefail
+          a='panel-mosaic-lab/assets/locked/2026-10-23/OH13-CIRCUIT-BREAKER-efca1c6cec9e.png'
+          b='panel-mosaic-lab/assets/locked/2026-10-23/OH14-EMER-EXIT-795cc819a3b3.png'
+          test "$(git hash-object "$a")" = 'efca1c6cec9ed3318cddc7a017e3144f9ab0994b'
+          test "$(git hash-object "$b")" = '795cc819a3b3cea8f131f6da1b32918318c7747a'
+          sha256sum "$a" "$b"
+          wc -c "$a" "$b"
+          echo 'Verified canonical paths share exact original Git blob bytes.'
