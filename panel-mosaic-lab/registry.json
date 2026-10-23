@@ -1,6 +1,6 @@
 {
   "schema": "b737-mosaic-atlas.v1",
-  "version": "2026-10-24.3",
+  "version": "2026-10-24.4",
   "source": "Owner supplied one-page PDF composite (2026-10-23). Initial reference atlas, boundaries provisional.",
   "panels": [
     {
@@ -223,7 +223,7 @@
     },
     {
       "id": "OH-13",
-      "title": "CIRCUIT BREAKER PANEL",
+      "title": "CIRCUIT BREAKER / EQUIP COOLING",
       "x": 344,
       "y": 350,
       "w": 85,
@@ -235,10 +235,17 @@
       "originalAtlasTitle": "CIRCUIT BREAKER / LIGHTS",
       "placement": {
         "source": "assets/locked/2026-10-23/OH13-CIRCUIT-BREAKER-efca1c6cec9e.png",
-        "stageUrl": "oh13-14/",
+        "stageUrl": "all-overhead/",
         "sha256": "8fef9e3d67fd78c794d0cceb31ab2806f82076bf7d6e987e3fbdcf5e2a1c76a4",
-        "status": "published-source-verified; geometry-QA-pending"
-      }
+        "status": "published-source-verified; geometry-QA-pending",
+        "displayCrop": {
+          "leftPercent": 16.7,
+          "rightPercent": 16.7,
+          "viewOnly": true
+        },
+        "geometry": "reference-atlas-alignment-provisional"
+      },
+      "atlasVerifiedContent": "CIRCUIT BREAKER / EQUIPMENT COOLING SUPPLY EXHAUST"
     },
     {
       "id": "OH-14",
@@ -318,22 +325,25 @@
     },
     {
       "id": "OH-18",
-      "title": "EMPTY CUTOUTS / SYSTEM UNCONFIRMED",
+      "title": "ATTEND / GRD CALL / RAIN REPELLENT / WIPER",
       "x": 429,
       "y": 800,
       "w": 161,
       "h": 100,
-      "group": "PENDING IDENTIFICATION",
+      "group": "CABIN SERVICES / EQUIPMENT",
       "status": "artwork",
       "artwork": null,
       "geometryStatus": "source image verified; historical ROI rejected; plate seams not approved",
       "originalAtlasTitle": "DOORS",
       "placement": {
-        "source": "assets/locked/2026-10-23/OH18-UNCLASSIFIED-5af4fdc5284b.png",
+        "source": "assets/locked/2026-10-23/OH18-GROUND-CALL-5af4fdc5284b.png",
         "sha256": "939e9f6ed14cbe2a8a6182684fcef790607e7dba10a1bfe002a062457f83e5ee",
-        "stageUrl": "oh15-18/",
-        "status": "image-verified-subsystem-unclassified"
-      }
+        "stageUrl": "all-overhead/",
+        "status": "source-placed-atlas-aligned; physical seams pending QA",
+        "atlasColumnIndex": 2,
+        "physicalOrder": "beneath OH-14"
+      },
+      "atlasVerifiedContent": "ATTEND / GRD CALL / RAIN REPELLENT / WIPER"
     },
     {
       "id": "OH-19",
@@ -887,5 +897,16 @@
     ],
     "classificationStatus": "OH15..OH17 from filenames; OH18 provisional",
     "seamGeometryStatus": "pending-visual-qa"
+  },
+  "atlasCorrection": {
+    "revision": "UPD-0006.1-atlas-aligned",
+    "source": "Owner supplied original one-page overhead PDF and full overhead reference photo",
+    "changes": [
+      "OH-18 below OH-14 in narrow central services column",
+      "OH-13 UI-only edge gutter crop and enlarged appearance",
+      "OH-18 title reidentified as GROUND CALL / RAIN REPELLENT / WIPER",
+      "Real source panel titles take precedence over historically inaccurate atlas labels"
+    ],
+    "status": "preview geometry awaiting physical QA"
   }
 }
