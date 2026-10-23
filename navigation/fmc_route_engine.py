@@ -201,10 +201,48 @@ class NavigationEngine:
                          'sourceTable':point['source_table'],'sourceFile':point['source_file'],'sourceLine':point['source_line'],
                          'pathType':'REFERENCE_GEODESIC_ONLY'})
             prior=point
-        return {'origin':origin['icao'],'destination':dest['icao'],'airac':self.cycle,'sourceId':self.source_id,
+        return {'origin':origin['icao'],'destination':dest['icao'],'originPosition':{'lat':origin['lat'],'lon':origin['lon']},'airac':self.cycle,'sourceId':self.source_id,
                 'legs':legs,'totalDistanceNm':round(cumulative,3),
                 'verification':'REAL_SOURCE_COORDINATES_REFERENCE_GEODESIC_ONLY',
                 'fmcExecutable':False,'afdsCommands':False,
                 'disclaimers':['TRUE bearings only; magnetic variation not solved','Direct great-circle segments are not ARINC path terminators',
                                 'Procedure turns/holds/vectors and vertical guidance are not generated',
                                 'Position/IRS and flight-deck guidance have not been connected']}
+
+    def position_reference(self,route_request,position,active_leg=1):
+        """Great-circle relative geometry only: NOT LNAV control or auto leg sequencing.
+
+        The active leg must be supplied externally and is never inferred from
+        a synthetic ownship position (no turn anticipation / RNP logic).
+        """
+        route=self.route(route_request)
+        if not isinstance(position,dict):raise NavError('INVALID_POSITION','Position must be a coordinate object')
+        try:pt={'lat':float(position['lat']),'lon':float(position['lon'])}
+        except (KeyError,ValueError,TypeError):raise NavError('INVALID_POSITION','Missing numeric latitude/longitude') from None
+        if not all(math.isfinite(pt[k]) for k in ('lat','lon')) or not -90<=pt['lat']<=90 or not -180<=pt['lon']<=180:
+            raise NavError('INVALID_POSITION','Invalid latitude or longitude')
+        if not isinstance(active_leg,int) or not 1<=active_leg<=len(route['legs']):
+            raise NavError('INVALID_LEG','Active leg index is out of range')
+        leg=route['legs'][active_leg-1]
+        start=route['originPosition'] if active_leg==1 else route['legs'][active_leg-2]
+        end=leg
+        length,bearing=arc(start,end)
+        p_distance,theta13=arc(start,pt)
+        direct_fix,bearing_to_fix=arc(pt,end)
+        if bearing is None or theta13 is None:
+            lateral=0.0
+            along=0.0
+        else:
+            delta13=p_distance/EARTH_NM
+            delta_theta=math.radians(theta13-bearing)
+            lateral=math.asin(max(-1,min(1,math.sin(delta13)*math.sin(delta_theta))))*EARTH_NM
+            along=math.atan2(math.sin(delta13)*math.cos(delta_theta),math.cos(delta13))*EARTH_NM
+        return {
+            'airac':route['airac'],'sourceId':route['sourceId'],
+            'activeLegIndex':active_leg,'legFrom':leg['from'],'legTo':leg['to'],
+            'crossTrackNm':round(lateral,3),'crossTrackSign':'RIGHT' if lateral>0 else 'LEFT' if lateral<0 else 'ON_TRACK',
+            'alongTrackNm':round(along,3),'remainingAlongTrackNm':round(length-along,3),
+            'distanceToFixNm':direct_fix,'bearingToFixTrueDeg':bearing_to_fix,
+            'legInitialTrueCourseDeg':bearing,'sourcePosition':pt,
+            'status':'GEODESIC_REFERENCE_ONLY','lateralGuidanceValid':False,
+            'legSequencingAutomatic':False,'autopilotCommand':None}
