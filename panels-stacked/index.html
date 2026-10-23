@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#080b0d">
+<title>B737 Classic — Actual Finalized Panels, Vertical Placement</title>
+<style>
+:root{color-scheme:dark}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;background:#080b0d;min-height:100%;overflow-x:hidden}
+body{padding:0}
+#real-panels{width:min(100%,1012px);margin:0 auto;background:#090c10}
+.piece{position:relative;width:100%;overflow:hidden;margin:0;border:0;padding:0}
+.piece.flight{aspect-ratio:893/1761}
+.piece.fuel{aspect-ratio:1012/1554}
+.piece iframe{position:absolute;left:0;top:0;width:100%;height:100%;margin:0;padding:0;border:0;overflow:hidden;background:#0c1013}
+@media print{body{background:#fff}#real-panels{width:1012px;max-width:none}}
+</style>
+</head>
+<body>
+<main id="real-panels" aria-label="Original B737 Flight Controls and NAV Transfer panel on top; original Fuel panel directly below, sharing one vertical centerline">
+  <section class="piece flight" aria-label="Original Flight Controls and NAV Transfer panel">
+    <iframe title="Flight Controls and NAV Transfer, source panel unchanged" src="../flight-controls-panel/index.html" scrolling="no" loading="eager"></iframe>
+  </section>
+  <section class="piece fuel" aria-label="Original Fuel panel">
+    <iframe title="Fuel, source panel unchanged" src="../fuel-panel/index.html" scrolling="no" loading="eager"></iframe>
+  </section>
+</main>
+<script>
+'use strict';
+// Render the source applications in place. CSS is applied only to the iframe's
+// outer page layout. No control, texture, label or panel asset is modified.
+const overrides=`
+html,body{margin:0!important;padding:0!important;min-height:0!important;height:auto!important;display:block!important;overflow:hidden!important;background:#080b0d!important}
+.app-shell,.sim{width:100%!important;max-width:none!important;display:block!important;min-height:0!important;height:auto!important;max-height:none!important;padding:0!important;margin:0!important;transform:none!important}
+.panel-wrap{width:100%!important;max-width:none!important;display:block!important;filter:none!important;transform:none!important;padding:0!important;margin:0!important}
+.panel{width:100%!important;max-width:none!important;filter:none!important;transform:none!important;margin:0!important;border-radius:0!important}
+.test-rack{display:none!important}
+`;
+document.querySelectorAll('iframe').forEach((frame)=>{
+  frame.addEventListener('load',()=>{
+    try{
+      const doc=frame.contentDocument;
+      if(!doc || !doc.head) return;
+      const style=doc.createElement('style');
+      style.textContent=overrides;
+      doc.head.appendChild(style);
+      const panel=doc.querySelector('.panel');
+      if(panel) panel.dataset.stackedPreview='true';
+      frame.dataset.ready='true';
+    }catch(err){frame.dataset.ready='error';}
+  });
+});
+</script>
+</body>
+</html>
