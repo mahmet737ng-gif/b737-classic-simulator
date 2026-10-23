@@ -1,0 +1,13 @@
+'use strict';(()=>{
+const e=window.CH11_FMC_RUNTIME_V2;const $=id=>document.getElementById(id);if(!e){$('error').textContent='Runtime not loaded';return;}
+let state=e.createState(),entries=[];function dispatch(payload){try{const r=e.dispatch(state,payload);state=r.state;entries.unshift({event:payload.type,detail:payload.field||payload.name||payload.page||'',effects:r.effects});entries=entries.slice(0,20);$('error').textContent=state.last_error||'No errors';render();}catch(err){$('error').textContent=String(err.message||err);entries.unshift({error:String(err.message||err)});render();}}
+function text(id,value){$(id).textContent=value}
+function render(){const view=e.view(state,$('page').value),rte=e.view(state,'RTE');text('title',view.title);text('viewmode',rte.route_state);text('vieworigin',rte.ORIGIN);text('viewdest',rte.DEST);text('viewrunway',rte.RUNWAY);text('viewpage',view.page);text('viewphase',state.phase);text('viewmod',state.lights.EXEC?'MOD':'ACT');text('viewmsg',state.scratch||view.display_message||'—');text('pending',Object.keys(state.route.pending).length+' / '+(state.lights.EXEC?'ON':'OFF'));text('lightMsg',(state.lights.MSG?'ON':'OFF')+' / '+(state.lights.FMC_ALERT?'ON':'OFF'));text('isStandalone',state.standalone?'YES':'NO');text('indicator',state.last_error?'BLOCKED':state.lights.EXEC?'EXEC PENDING':'SOURCE ONLY');text('trace',JSON.stringify(entries,null,2));}
+$('page').onchange=render;$('stage').onclick=()=>{for(const [field,id] of [['ORIGIN','origin'],['DEST','dest'],['RUNWAY','runway']]){const value=$(id).value.trim();if(value)dispatch({type:'STAGE_ROUTE_FIELD',field,value});}render();};
+$('activate').onclick=()=>dispatch({type:'ACTIVATE_ROUTE'});$('execute').onclick=()=>dispatch({type:'EXECUTE'});$('erase').onclick=()=>dispatch({type:'ERASE_MOD'});
+$('chars').onclick=()=>{for(const character of $('scratch').value.slice(0,24))dispatch({type:'KEY_CHAR',character});$('scratch').value='';};
+$('clr').onclick=()=>dispatch({type:'KEY_CLR'});$('clrlong').onclick=()=>dispatch({type:'KEY_CLR',long_press:true});$('del').onclick=()=>dispatch({type:'KEY_DEL'});
+$('raise').onclick=()=>dispatch({type:'RAISE_MESSAGE',kind:$('priority').value,text:$('message').value,source_rule:'LAB_SYNTHETIC'});
+$('phasebtn').onclick=()=>dispatch({type:'AIRCRAFT_PHASE_EVENT',name:$('phaseEvent').value,bus_source:'INTERNAL_B737_AIRCRAFT_STATE_BUS',sensor_integrity:'VALID',confirmed:true});
+$('badguidance').onclick=()=>dispatch({type:'REQUEST_GUIDANCE'});$('reset').onclick=()=>{state=e.createState();entries=[];$('error').textContent='No errors';render()};render();
+})();
