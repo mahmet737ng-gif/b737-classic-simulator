@@ -1,0 +1,43 @@
+{
+  "schema": "b737-ch11-approved-cdu-artwork-lock/1",
+  "status": "EXACT_GIT_BLOB_COPIES_FROM_APPROVED_CDU_V6",
+  "source_dir": "cdu-standalone-v6",
+  "chapter11_dir": "engine/ch11",
+  "locked": true,
+  "require_user_permission_for_visual_or_geometry_changes": true,
+  "architecture": "STANDALONE_B737_NOT_XPLANE_MSFS_DEPENDENT",
+  "artwork": {
+    "source": "cdu-standalone-v6/assets/cdu-approved-unlit.png",
+    "chapter11": "engine/ch11/assets/cdu-approved-unlit.png",
+    "git_blob_sha": "e3a9b574f02d895edd03d237a79c4ca845763ef6",
+    "sha256": "2c60c534e6e9cd80afa721f2d82801d7bdbc54dce4bbd39b8adb3470f2df0237",
+    "width": 1199,
+    "height": 1312
+  },
+  "hitboxes": {
+    "source": "cdu-standalone-v6/data/cdu-map.json",
+    "chapter11": "engine/ch11/data/cdu-map.json",
+    "git_blob_sha": "b5b72016077c8ffa2b4ff8cfa276928c80387f53",
+    "controls": 70,
+    "js_source": "cdu-standalone-v6/data/cdu-map.js",
+    "js_chapter11": "engine/ch11/data/cdu-map.js",
+    "js_git_blob_sha": "1c0eb83afb365689ef02469d2f7afa30a7790128",
+    "csv_git_blob_sha": "ac89e62a5119657ec3cf6308d34f2cd1f7ba9d39"
+  },
+  "output_lamps": 5,
+  "imported_sprite_original_git_shas": {
+    "annunciator-call-on.png": "7c96ca2806800b2444298612ff94327d2e525222",
+    "annunciator-fail-on.png": "0f4021ddfb71a79bbffcc3596d77e68b66973992",
+    "annunciator-msg-on.png": "c4462d51907856fc245eb6318c2e4aafea02b1f8",
+    "annunciator-ofst-on.png": "68c852c863c4b69d163b73f8a03a289f5766b3c5",
+    "exec-off-plate.png": "90c47e253da7f8c5b90926aed35c2628a4e583b7"
+  },
+  "physical_lab": "engine/ch11/physical-cdu/index.html",
+  "backing_engine": "engine/ch11/fmc-runtime-v2.js",
+  "regression_tests": [
+    "engine/ch11/tests/approved-cdu-assets.test.cjs",
+    "engine/ch11/tests/physical-cdu-v2.test.cjs"
+  ],
+  "guaranteed": "Original Git blob references for duplicated binaries/JSON/maps. No image generation, no coordinate recalculation, no bitmap cropping; original CDU v6 files remain untouched.",
+  "engine_scope": "Tested physical input to Chapter 11 v2 state model. This is not a replacement of existing CDU v6 active engine nor aircraft AFDS."
+}
