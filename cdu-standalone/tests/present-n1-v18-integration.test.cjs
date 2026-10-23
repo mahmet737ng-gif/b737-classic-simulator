@@ -20,6 +20,9 @@ const js=s=>vm.runInContext(s,context);
 (async()=>{
  await new Promise(resolve=>setTimeout(resolve,20));
  assert.equal(nodes['clickmap'].children.length,70);
+ // IDENT is now the FCOM startup page: explicitly select CRZ before N1 checks.
+ assert.equal(js('sim.page'),'IDENT');
+ js("setPage('CRZ')");
  assert.match(js('pageLines()[6]'),/---.-/);
  assert.doesNotMatch(js('pageLines()[6]'),/87\.3/);
  js("press('CDU_CAPT_N1_LIMIT')");
@@ -45,6 +48,8 @@ const js=s=>vm.runInContext(s,context);
  assert.equal(pub.snapshot().engine1.status,'LIVE_OBSERVATION');
  assert.equal(js('epfsiN1().display'),'---.-');
  nodes.reset.onclick();
+ assert.equal(js('sim.page'),'IDENT');
+ js("setPage('CRZ')");
  assert.match(js("pageLines()[6]"),/---.-/);
  assert.equal(pub.snapshot().engine1.n1Pct,null);
  console.log('PASS CDU v18: no invented present values, two engines, TEST isolation, core input, reset and MAX N1 blocked');

@@ -23,6 +23,9 @@ const js=s=>vm.runInContext(s,ctx);
 (async()=>{
  await new Promise(r=>setTimeout(r,20));
  assert.equal(nodes.clickmap.children.length,70);
+ // Startup now obeys FCOM IDENT; N1 display assertions belong to CRZ.
+ assert.equal(js('sim.page'),'IDENT');
+ js("setPage('CRZ')");
  assert.match(js('pageLines()[6]'),/89\.5/);
  assert.match(js('pageLines()[6]'),/EST\/EST/);
  js("press('CDU_CAPT_N1_LIMIT')");
