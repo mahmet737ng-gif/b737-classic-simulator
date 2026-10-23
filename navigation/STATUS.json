@@ -60,7 +60,7 @@
     "Validate VNAV/AFDS against airframe-specific FCOM and system models",
     "Execute end-to-end acceptance on user's Windows and iPad hardware, including actual CDU and EFIS UI"
   ],
-  "next_priority": "Verify real simulator sensor adapter and EP-FSI AFDS source before any actuator output",
+  "next_priority": "Integrate internal B737 flight-dynamics/IRS/sensor network into Stage10 Aircraft State Bus and verify standalone CDU/EFIS navigation; external simulator bridges optional. Aircraft-specific AFDS authority remains gated.",
   "roadmap_document": "navigation/NPE_STAGE10.md",
   "qa_private_artifact": "/B737/NAVDB/NPE_STAGE10/B737_NAVDB_AIRAC2610_NPE_STAGE10_VERIFIED_25_TESTS.zip",
   "older_ourairports_fallback": {
@@ -98,5 +98,13 @@
     "local_independent_validation": "PASS_2026_10_23",
     "sensor_expiry_status_test": "PASS",
     "non_json_POST_rejected": "PASS"
+  },
+  "architecture_lock": {
+    "simulator": "STANDALONE_B737_CLASSIC",
+    "cdu": "NATIVE_STANDALONE_NOT_XPLANE_MSFS_DEPENDENT",
+    "primary_aircraft_state_source": "INTERNAL_B737_AIRCRAFT_STATE_BUS",
+    "external_simulator_connectors": "OPTIONAL_ONLY",
+    "navdb": "INTERNAL_PRIVATE_AIRAC_2610_SEPARATE_FROM_SIM_CONNECTION",
+    "static_pages": "PUBLIC_SYNTHETIC_DATA_NO_PRIVATE_STAGE5_REQUIRED_FOR_CDU_PAGE_NAVIGATION"
   }
 }
