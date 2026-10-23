@@ -1,0 +1,71 @@
+{
+  "schema": "b737.panel-mosaic.published-update.v1",
+  "version": "UPD-0007",
+  "date": "2026-10-24",
+  "state": "SOURCE_ASSETS_REGISTERED_AND_PAGES_DEPLOY_QUEUED",
+  "web": "https://mahmet737ng-gif.github.io/b737-classic-simulator/panel-mosaic-lab/all-overhead/",
+  "sources": [
+    {
+      "id": "OH-19-VOICE",
+      "panel": "OH-19",
+      "display": "COCKPIT VOICE RECORDER",
+      "from": "Blank Avionics Control Panel.png",
+      "file": "OH19-VOICE-RECORDER-2db6785ecddc.png",
+      "sha256": "2e012ed71ea7d656a058017494761bab7e42b3c9e102d9c22950494fd37c3358",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/OH19-VOICE-RECORDER-2db6785ecddc.png",
+      "originalUploadPath": "panel-mosaic-lab/assets/locked/2026-10-23/Blank Avionics Control Panel.png"
+    },
+    {
+      "id": "OH-19-DIFF",
+      "panel": "OH-19",
+      "display": "PRESS DIFF / CABIN CLIMB / ALT HORN",
+      "from": "Needleless Aircraft Cockpit Instrument Panel.png",
+      "file": "OH19-PRESS-DIFF-ALT-HORN-d6719ce57cef.png",
+      "sha256": "4c667d96ea7652e52784f5c06ee3cdde0879ca37631abf19969861afecc45fed",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/OH19-PRESS-DIFF-ALT-HORN-d6719ce57cef.png",
+      "originalUploadPath": "panel-mosaic-lab/assets/locked/2026-10-23/Needleless Aircraft Cockpit Instrument Panel.png"
+    },
+    {
+      "id": "OH-20",
+      "panel": "OH-20",
+      "display": "AIR CONDITIONING",
+      "from": "Aircraft Climate Control Panel Close-Up.png",
+      "file": "OH20-AIR-CONDITIONING-0734da6a7726.png",
+      "sha256": "94669d21f0be8aa538b2ff3b0684683409cadf6d9fc4b55390e7147abe506121",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/OH20-AIR-CONDITIONING-0734da6a7726.png",
+      "originalUploadPath": "panel-mosaic-lab/assets/locked/2026-10-23/Aircraft Climate Control Panel Close-Up.png"
+    },
+    {
+      "id": "OH-21",
+      "panel": "OH-21",
+      "display": "BLEED AIR",
+      "from": "Aircraft Bleed Air Control Panel.png",
+      "file": "OH21-BLEED-AIR-cc78219607a3.png",
+      "sha256": "4efe8c59579e8675825ed4dabf393648cfa7f11f6c09d831d137c23f70ecfe1e",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/OH21-BLEED-AIR-cc78219607a3.png",
+      "originalUploadPath": "panel-mosaic-lab/assets/locked/2026-10-23/Aircraft Bleed Air Control Panel.png"
+    }
+  ],
+  "atlasMapping": {
+    "centerColumn": [
+      "OH13",
+      "OH14",
+      "OH18",
+      "OH19-VOICE",
+      "OH19-DIFF"
+    ],
+    "rightColumn": [
+      "OH20",
+      "OH21",
+      "OH22 MISSING"
+    ],
+    "remainingMissing": [
+      "OH-22",
+      "OH-23",
+      "OH-24",
+      "OH-25"
+    ]
+  },
+  "preservation": "New canonical paths refer to existing GitHub blobs, originals have not been renamed, edited, or deleted.",
+  "geometryStatus": "Visual atlas alignment for layout, exact panel seam geometry remains unapproved"
+}
