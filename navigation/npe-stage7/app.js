@@ -1,0 +1,24 @@
+'use strict';
+const $=id=>document.getElementById(id);
+const marker='//AIRAC Cycle : 2610 (01/OCT/2026 - 29/OCT/2026) - Ver.1';
+const NS='http://www.w3.org/2000/svg';
+let catalog=[];
+function setStatus(s,error=false){$('status').textContent=s;$('status').className=error?'warning':'good'}
+async function api(path){const response=await fetch(path,{credentials:'same-origin',cache:'no-store'});const json=await response.json();if(!response.ok)throw Error(json.message||json.error||'NAVDB local service unavailable');return json;}
+function options(id,values,label){const select=$(id);select.replaceChildren();for(const v of values){const opt=document.createElement('option');opt.value=v;opt.textContent=v||label;select.append(opt)}}
+function picked(){const x=catalog.find(c=>c.ident===$('procedure').value);options('runway',['',...(x?.runways||[])],'UNSPECIFIED');options('transition',['',...(x?.transitions||[])],'NONE')}
+async function loadCatalog(){try{const airport=$('airport').value.toUpperCase().trim();const kind=$('kind').value;if(!/^[A-Z]{4}$/.test(airport))throw Error('Invalid ICAO');const result=await api('/api/stage6/catalog?airport='+encodeURIComponent(airport)+'&kind='+encodeURIComponent(kind));if(result.airac!=='2610'||result.fmc_executable!==false)throw Error('Wrong source AIRAC');catalog=result.items;options('procedure',catalog.map(x=>x.ident),'SELECT PROCEDURE');picked();setStatus(catalog.length+' published source procedures found.')}catch(e){setStatus(e.message,true)}}
+function textNode(svg,tag,attrs,value){const el=document.createElementNS(NS,tag);for(const [key,val] of Object.entries(attrs))el.setAttribute(key,String(val));if(value!=null)el.textContent=value;svg.append(el);return el;}
+function render(data){const svg=$('map');svg.replaceChildren();const chords=data.segments.flatMap(s=>s.reference_chords);const points=data.segments.flatMap(s=>s.events.map(e=>e.fix).filter(Boolean));const all=[...points,...chords.flatMap(c=>[c.from_position,c.to_position])];
+ textNode(svg,'text',{x:350,y:20,'text-anchor':'middle',fill:'#b7d5e1','font-size':15},data.airport+' '+data.ident+' · '+(data.runway||'NO RUNWAY'));
+ if(!all.length){textNode(svg,'text',{x:350,y:220,'text-anchor':'middle',fill:'#ffc17b'},'NO SOURCE-LOCATED FIX GEOMETRY');return}
+ const latMin=Math.min(...all.map(p=>p.lat)),latMax=Math.max(...all.map(p=>p.lat));const longitudes=[all[0].lon];for(let i=1;i<all.length;i++){let x=all[i].lon;while(x-longitudes[0]>180)x-=360;while(x-longitudes[0]<-180)x+=360;longitudes.push(x)}
+ const lonMin=Math.min(...longitudes),lonMax=Math.max(...longitudes);const centerLat=(latMin+latMax)/2,scaleLon=Math.max(.1,Math.cos(centerLat*Math.PI/180));const sx=(lonMax-lonMin)*scaleLon||0.001,sy=latMax-latMin||0.001;const scale=Math.min(575/sx,340/sy);const cx=(lonMax+lonMin)/2,cy=(latMax+latMin)/2;
+ function loc(p){let lon=p.lon;while(lon-longitudes[0]>180)lon-=360;while(lon-longitudes[0]<-180)lon+=360;return {x:350+(lon-cx)*scaleLon*scale,y:220-(p.lat-cy)*scale}}
+ for(const ch of chords){const a=loc(ch.from_position),b=loc(ch.to_position);textNode(svg,'line',{x1:a.x,y1:a.y,x2:b.x,y2:b.y,stroke:'#c069be','stroke-width':2,'stroke-dasharray':'7,5'})}
+ const unique=new Map();for(const p of points)unique.set(p.ident+':'+p.lat+':'+p.lon,p);
+ for(const p of unique.values()){const q=loc(p);textNode(svg,'circle',{cx:q.x,cy:q.y,r:3.8,fill:'#72d4e4'});textNode(svg,'text',{x:q.x+7,y:q.y-6,fill:'#c1edf2','font-size':12},p.ident)}
+ textNode(svg,'text',{x:350,y:416,'text-anchor':'middle',fill:'#ffc17b','font-size':12},'REFERENCE CHORDS ONLY · NOT ARINC LEGS · NO LNAV');
+}
+async function preview(){try{const params=new URLSearchParams({airport:$('airport').value.trim().toUpperCase(),kind:$('kind').value,ident:$('procedure').value});if($('runway').value)params.set('runway',$('runway').value);if($('transition').value)params.set('transition',$('transition').value);const data=await api('/api/stage7/procedure-reference?'+params);if(data.source_marker!==marker||data.fmc_executable!==false||data.status!=='SOURCE_REFERENCE_GEOMETRY_ONLY'||data.arinc_legs.length)throw Error('Unexpected executable NAVDATA');render(data);$('qa').textContent='AST nodes '+data.qa.ast_nodes+' | Located fixes '+data.qa.located_local_fix_refs+' | Independent straight chords '+data.qa.reference_chords;$('details').textContent=data.segments.map(s=>s.events.map(e=>e.kind+': '+e.raw+' ['+e.source.post_marker_line+']  '+e.blockers.join(', ')).join('\n')).join('\n--- SOURCE VARIANT ---\n');setStatus('Loaded from '+data.source_member+'. No active FMC legs.')}catch(e){setStatus(e.message,true)}}
+$('load').addEventListener('click',loadCatalog);$('show').addEventListener('click',preview);$('procedure').addEventListener('change',picked);$('kind').addEventListener('change',loadCatalog);loadCatalog();
