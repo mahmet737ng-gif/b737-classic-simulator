@@ -62,14 +62,14 @@ assert.equal(r.view.indications.engines['1'].primary.n1Pct.value,15);
 assert.equal(r.view.indications.engines['1'].primary.n2Pct.value,30);
 assert.equal(r.view.indications.engines['1'].primary.egtC.value,250);
 assert.equal(r.view.performance.engines['1'].coverage,'INTERPOLATED_BETWEEN_SUPPLIED_SAMPLES');
-assert.equal(r.view.indications.engines['1'].fuelUsedKg,1.25);
+assert.equal(r.view.indications.engines['1'].fuelUsedKg,1.2); // first second was reset-preview
 r=run(s,'ADVANCE_SECONDS',{value:5});s=r.state;
 assert.equal(r.view.indications.engines['1'].primary.n1Pct.value,25);
-assert.equal(r.view.indications.engines['1'].fuelUsedKg,5);
+assert.equal(r.view.indications.engines['1'].fuelUsedKg,4.95);
 assert.equal(r.view.indications.engines['1'].primary.ffDigital.value,3.6);
 r=run(s,'ADVANCE_SECONDS',{value:10});s=r.state;
 assert.equal(r.view.indications.engines['1'].primary.n1Pct.value,55);
-assert.equal(r.view.indications.engines['1'].fuelUsedKg,20);
+assert.equal(r.view.indications.engines['1'].fuelUsedKg,19.95);
 assert.equal(r.view.performance.engines['1'].elapsedSec,20);
 r=run(s,'ADVANCE_SECONDS',{value:1});s=r.state;
 assert.equal(r.view.performance.engines['1'].mode,'REPLAY_ENDED');
