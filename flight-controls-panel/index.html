@@ -24,9 +24,13 @@
         <button class="ann" data-light="yawDamper" style="--x:22.6%;--y:56.35%;--w:17.2%;--h:4.05%" aria-label="Yaw damper light"><span>YAW<br>DAMPER</span></button>
 
         <button class="paddle-control three" data-control="flightA" data-position="on" style="--x:15.7%;--y:8.15%;--w:11.2%;--h:13.05%" aria-label="Flight control A switch" aria-valuetext="ON"><i></i></button>
+        <button class="paddle-guard" data-guard-control="flightA" data-guard="closed" style="--x:15.7%;--y:8.15%;--w:11.2%;--h:13.05%" aria-label="flightA safety guard, closed" aria-pressed="false"><i class="hinge"></i><i class="guard-plate"></i></button>
         <button class="paddle-control three" data-control="flightB" data-position="on" style="--x:36.8%;--y:8.15%;--w:11.2%;--h:13.05%" aria-label="Flight control B switch" aria-valuetext="ON"><i></i></button>
+        <button class="paddle-guard" data-guard-control="flightB" data-guard="closed" style="--x:36.8%;--y:8.15%;--w:11.2%;--h:13.05%" aria-label="flightB safety guard, closed" aria-pressed="false"><i class="hinge"></i><i class="guard-plate"></i></button>
         <button class="paddle-control two" data-control="spoilerA" data-position="on" style="--x:18.2%;--y:36.3%;--w:12.2%;--h:14.35%" aria-label="Spoiler A switch" aria-valuetext="ON"><i></i></button>
+        <button class="paddle-guard" data-guard-control="spoilerA" data-guard="closed" style="--x:18.2%;--y:36.3%;--w:12.2%;--h:14.35%" aria-label="spoilerA safety guard, closed" aria-pressed="false"><i class="hinge"></i><i class="guard-plate"></i></button>
         <button class="paddle-control two" data-control="spoilerB" data-position="on" style="--x:34.1%;--y:36.3%;--w:12.2%;--h:14.35%" aria-label="Spoiler B switch" aria-valuetext="ON"><i></i></button>
+        <button class="paddle-guard" data-guard-control="spoilerB" data-guard="closed" style="--x:34.1%;--y:36.3%;--w:12.2%;--h:14.35%" aria-label="spoilerB safety guard, closed" aria-pressed="false"><i class="hinge"></i><i class="guard-plate"></i></button>
 
         <div class="alt-arm" data-guard="closed" data-armed="false" style="--x:54.6%;--y:22.05%;--w:14.1%;--h:17.2%">
           <button class="arm-switch" aria-label="Alternate flaps arm switch" aria-pressed="false">
@@ -47,19 +51,19 @@
         </button>
 
         <button class="toggle selector" data-control="vhfNav" data-position="normal" style="--x:22.8%;--y:75.0%;--w:16.2%;--h:8.1%" aria-label="VHF navigation transfer switch" aria-valuetext="NORMAL">
-          <img class="frame frame-off" src="assets/switches/b737-toggle-off.webp" alt="" draggable="false">
-          <img class="frame frame-center" src="assets/switches/b737-toggle-center.webp" alt="" draggable="false">
-          <img class="frame frame-on" src="assets/switches/b737-toggle-on.webp" alt="" draggable="false">
+          <span class="h-state h-left" aria-hidden="true"><span class="h-bezel"></span><span class="h-pivot"></span><span class="h-stem"></span><span class="h-grip"></span></span>
+          <span class="h-state h-center" aria-hidden="true"><span class="h-bezel"></span><span class="h-pivot"></span><span class="h-stem"></span><span class="h-grip"></span></span>
+          <span class="h-state h-right" aria-hidden="true"><span class="h-bezel"></span><span class="h-pivot"></span><span class="h-stem"></span><span class="h-grip"></span></span>
         </button>
         <button class="toggle selector" data-control="irs" data-position="normal" style="--x:63.6%;--y:75.0%;--w:16.2%;--h:8.1%" aria-label="IRS transfer switch" aria-valuetext="NORMAL">
-          <img class="frame frame-off" src="assets/switches/b737-toggle-off.webp" alt="" draggable="false">
-          <img class="frame frame-center" src="assets/switches/b737-toggle-center.webp" alt="" draggable="false">
-          <img class="frame frame-on" src="assets/switches/b737-toggle-on.webp" alt="" draggable="false">
+          <span class="h-state h-left" aria-hidden="true"><span class="h-bezel"></span><span class="h-pivot"></span><span class="h-stem"></span><span class="h-grip"></span></span>
+          <span class="h-state h-center" aria-hidden="true"><span class="h-bezel"></span><span class="h-pivot"></span><span class="h-stem"></span><span class="h-grip"></span></span>
+          <span class="h-state h-right" aria-hidden="true"><span class="h-bezel"></span><span class="h-pivot"></span><span class="h-stem"></span><span class="h-grip"></span></span>
         </button>
         <button class="toggle selector" data-control="efi" data-position="normal" style="--x:24.1%;--y:86.2%;--w:16.2%;--h:8.1%" aria-label="EFI transfer switch" aria-valuetext="NORMAL">
-          <img class="frame frame-off" src="assets/switches/b737-toggle-off.webp" alt="" draggable="false">
-          <img class="frame frame-center" src="assets/switches/b737-toggle-center.webp" alt="" draggable="false">
-          <img class="frame frame-on" src="assets/switches/b737-toggle-on.webp" alt="" draggable="false">
+          <span class="h-state h-left" aria-hidden="true"><span class="h-bezel"></span><span class="h-pivot"></span><span class="h-stem"></span><span class="h-grip"></span></span>
+          <span class="h-state h-center" aria-hidden="true"><span class="h-bezel"></span><span class="h-pivot"></span><span class="h-stem"></span><span class="h-grip"></span></span>
+          <span class="h-state h-right" aria-hidden="true"><span class="h-bezel"></span><span class="h-pivot"></span><span class="h-stem"></span><span class="h-grip"></span></span>
         </button>
       </div>
     </section>
@@ -73,6 +77,7 @@
       <p>Educational systems/animation prototype — not for aircraft operation.</p>
     </section>
   </main>
+  <script src="fcom-control-mechanics.js"></script>
   <script src="flight-controls.js"></script>
 </body>
 </html>
