@@ -127,6 +127,31 @@ const eisActions=[
 assert.deepEqual(
  snap(browser.replayAircraftActions(browser.initialAircraftState(),eisActions)),
  snap(source.replayAircraftActions(source.initialAircraftState(),eisActions)));
+// Performance input gate and bounded observed four-channel replay are identical
+// in the Node and browser builds, including stop/reclaim sensor authority.
+const sampleTrack={
+ aircraft:{registration:'EP-FSI',msn:29340,engine:'CFM56-3B-1',ratingLbf:20000},
+ sourceType:'OBSERVED_TELEMETRY',sourceId:'QA_TRACK_SOURCE_ONLY',
+ samples:[
+  {timeSec:0,n1Pct:5,n2Pct:20,egtC:100,fuelFlowKgHr:0},
+  {timeSec:10,n1Pct:25,n2Pct:40,egtC:400,fuelFlowKgHr:3600},
+  {timeSec:20,n1Pct:55,n2Pct:60,egtC:600,fuelFlowKgHr:7200}
+ ]
+};
+const performanceActions=[
+ {type:'ENTER_COLD_DARK'},
+ {type:'SET_ENGINE_THRUST_COMMAND',engine:1,value:50},
+ {type:'LOAD_ENGINE_OBSERVED_TRACK',engine:1,track:sampleTrack},
+ {type:'RESET_FUEL_USED',engine:1},
+ {type:'ADVANCE_SECONDS',value:1},
+ {type:'ADVANCE_SECONDS',value:9},
+ {type:'ADVANCE_SECONDS',value:10},
+ {type:'ADVANCE_SECONDS',value:1},
+ {type:'STOP_ENGINE_OBSERVED_TRACK',engine:1}
+];
+assert.deepEqual(
+ snap(browser.replayAircraftActions(browser.initialAircraftState(),performanceActions)),
+ snap(source.replayAircraftActions(source.initialAircraftState(),performanceActions)));
 const html=fs.readFileSync(path.join(root,'power-consumers-lab/index.html'),'utf8');
 assert.match(html,/<script src="\.\/runtime\.js"><\/script>/);
 assert.match(html,/data-scenario="gen1"/);
@@ -162,6 +187,11 @@ assert.match(html,/data-eis-action="used"/);
 assert.match(html,/data-eis-action="resetUsed"/);
 assert.match(html,/id="eisPanels"/);
 assert.match(html,/id="eisKnob"/);
+assert.match(html,/id="isn10Lab"/);
+assert.match(html,/data-perf-action="load"/);
+assert.match(html,/data-perf-action="tick5"/);
+assert.match(html,/data-perf-action="stop"/);
+assert.match(html,/id="performanceTrackInput"/);
 assert.match(html,/data-eis-action="n1Mode"/);
 assert.match(html,/data-eis-action="setFmcRef"/);
 assert.doesNotMatch(html,/data-protection="starterReset"/);
