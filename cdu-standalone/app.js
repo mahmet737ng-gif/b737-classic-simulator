@@ -55,11 +55,11 @@ function pageLines(){const mode=pendingCount()?'MOD':'ACT',a=Array(14).fill('');
  a[7]=left('AFM AUTO N1','---.-');
  a[8]=left('SOURCE','NOT VERIFIED');
  const ctx=currentN1Context();
- a[9]=[ctx.weatherMode,'BLD '+ctx.engineBleedMode,'A/I '+ctx.antiIceMode].join(' / ').slice(0,24);
+ a[9]=[ctx.weatherMode,'BLD:'+ctx.engineBleedMode,'AI:'+ctx.antiIceMode].join(' ').slice(0,24);
  a[10]=left('MANUAL N1','TRAINING ONLY');
  a[13]=left('<INDEX','TAKEOFF>');
  }else if(p==='TAKEOFF'){
- a[0]=left('TAKEOFF REF','1/1');a[2]=left('FLAPS','V1');a[3]=left('5','---');a[4]=left('VR','V2');a[5]=left('---','---');a[7]=left('RUNWAY','N1 REF');a[8]=left('---',v('N1')?v('N1')+' MAN':'---.-');a[10]=left('AFM N1','NOT VERIFIED');{const ctx=currentN1Context();a[11]=[ctx.weatherMode,'BLD '+ctx.engineBleedMode,'A/I '+ctx.antiIceMode].join(' / ').slice(0,24);}a[13]=left('<INDEX','');
+ a[0]=left('TAKEOFF REF','1/1');a[2]=left('FLAPS','V1');a[3]=left('5','---');a[4]=left('VR','V2');a[5]=left('---','---');a[7]=left('RUNWAY','N1 REF');a[8]=left('---',v('N1')?v('N1')+' MAN':'---.-');a[10]=left('AFM N1','NOT VERIFIED');{const ctx=currentN1Context();a[11]=[ctx.weatherMode,'BLD:'+ctx.engineBleedMode,'AI:'+ctx.antiIceMode].join(' ').slice(0,24);}a[13]=left('<INDEX','');
  }else if(p==='PERF_INIT'){
  a[0]=left('PERF INIT','1/1');a[2]=left('GR WT','FUEL');a[3]=left('---.-','---.-');a[4]=left('COST INDEX','CRZ ALT');a[5]=left(v('CI'),v('CRZ_ALT'));a[13]=left('<INDEX','N1 LIMIT>');
  }else{a[0]=left(p,'1/1');a[13]=left('<INDEX','');}
