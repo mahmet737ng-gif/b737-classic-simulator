@@ -1,6 +1,6 @@
 {
   "schema": "b737-panel-assets-immutable-v2",
-  "version": "UPD-0006.1",
+  "version": "UPD-0007",
   "status": "GITHUB_BINARY_VERIFIED",
   "lockPolicy": "append-only files under panel-mosaic-lab/assets/locked; SHA-256 and Git object hash checked by CI. Repository admins may still override unless branch/ruleset protection configured.",
   "assets": [
@@ -190,6 +190,66 @@
       "aliasOf": "OH-18-SOURCE-UPD-0005",
       "atlasIdentifiedContent": "ATTEND / GRD CALL / RAIN REPELLENT / WIPER",
       "notes": "Same Git binary blob; new path corrects descriptive system name; prior OH18-UNCLASSIFIED alias remains untouched."
+    },
+    {
+      "id": "OH-19-VOICE-SOURCE-UPD-0007",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/OH19-VOICE-RECORDER-2db6785ecddc.png",
+      "sha256": "2e012ed71ea7d656a058017494761bab7e42b3c9e102d9c22950494fd37c3358",
+      "gitBlobSha1": "2db6785ecddc8d481b0195f15ae57a72dd89601a",
+      "bytes": 2584859,
+      "panelIds": [
+        "OH-19"
+      ],
+      "subPlate": "voice-recorder",
+      "originalUploadedPath": "panel-mosaic-lab/assets/locked/2026-10-23/Blank Avionics Control Panel.png",
+      "status": "uploaded",
+      "immutable": true,
+      "sourceMethod": "Identical Git blob alias; source pixels preserved."
+    },
+    {
+      "id": "OH-19-PRESS-DIFF-SOURCE-UPD-0007",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/OH19-PRESS-DIFF-ALT-HORN-d6719ce57cef.png",
+      "sha256": "4c667d96ea7652e52784f5c06ee3cdde0879ca37631abf19969861afecc45fed",
+      "gitBlobSha1": "d6719ce57cef54bc869d2b55695231a000d297da",
+      "bytes": 2918832,
+      "panelIds": [
+        "OH-19"
+      ],
+      "subPlate": "press-differential-alt-horn",
+      "originalUploadedPath": "panel-mosaic-lab/assets/locked/2026-10-23/Needleless Aircraft Cockpit Instrument Panel.png",
+      "status": "uploaded",
+      "immutable": true,
+      "sourceMethod": "Identical Git blob alias; source pixels preserved."
+    },
+    {
+      "id": "OH-20-AIRCON-SOURCE-UPD-0007",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/OH20-AIR-CONDITIONING-0734da6a7726.png",
+      "sha256": "94669d21f0be8aa538b2ff3b0684683409cadf6d9fc4b55390e7147abe506121",
+      "gitBlobSha1": "0734da6a7726c8d0b3382fd120058805a8759aa0",
+      "bytes": 2733770,
+      "panelIds": [
+        "OH-20"
+      ],
+      "subPlate": null,
+      "originalUploadedPath": "panel-mosaic-lab/assets/locked/2026-10-23/Aircraft Climate Control Panel Close-Up.png",
+      "status": "uploaded",
+      "immutable": true,
+      "sourceMethod": "Identical Git blob alias; source pixels preserved."
+    },
+    {
+      "id": "OH-21-BLEED-SOURCE-UPD-0007",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/OH21-BLEED-AIR-cc78219607a3.png",
+      "sha256": "4efe8c59579e8675825ed4dabf393648cfa7f11f6c09d831d137c23f70ecfe1e",
+      "gitBlobSha1": "cc78219607a34b89b2384570a8d26210d55af29c",
+      "bytes": 2451832,
+      "panelIds": [
+        "OH-21"
+      ],
+      "subPlate": null,
+      "originalUploadedPath": "panel-mosaic-lab/assets/locked/2026-10-23/Aircraft Bleed Air Control Panel.png",
+      "status": "uploaded",
+      "immutable": true,
+      "sourceMethod": "Identical Git blob alias; source pixels preserved."
     }
   ],
   "panelAssignments": [
@@ -277,6 +337,38 @@
       ],
       "view": "panel-mosaic-lab/all-overhead/",
       "status": "mapped below OH-14 by owner original atlas; seam pending QA"
+    },
+    {
+      "assetId": "OH-19-VOICE-SOURCE-UPD-0007",
+      "panels": [
+        "OH-19"
+      ],
+      "view": "panel-mosaic-lab/all-overhead/",
+      "status": "atlas-source-identity-verified; seam boundaries provisional"
+    },
+    {
+      "assetId": "OH-19-PRESS-DIFF-SOURCE-UPD-0007",
+      "panels": [
+        "OH-19"
+      ],
+      "view": "panel-mosaic-lab/all-overhead/",
+      "status": "atlas-source-identity-verified; seam boundaries provisional"
+    },
+    {
+      "assetId": "OH-20-AIRCON-SOURCE-UPD-0007",
+      "panels": [
+        "OH-20"
+      ],
+      "view": "panel-mosaic-lab/all-overhead/",
+      "status": "atlas-source-identity-verified; seam boundaries provisional"
+    },
+    {
+      "assetId": "OH-21-BLEED-SOURCE-UPD-0007",
+      "panels": [
+        "OH-21"
+      ],
+      "view": "panel-mosaic-lab/all-overhead/",
+      "status": "atlas-source-identity-verified; seam boundaries provisional"
     }
   ],
   "updateHistory": [
@@ -363,6 +455,29 @@
       ],
       "status": "preview-geometry-corrected",
       "notes": "OH13 light outer gutters masked only in viewer; OH18 moved into center strip below OH14. Immutable sources unchanged."
+    },
+    {
+      "version": "UPD-0007",
+      "date": "2026-10-24",
+      "assetIds": [
+        "OH-19-VOICE-SOURCE-UPD-0007",
+        "OH-19-PRESS-DIFF-SOURCE-UPD-0007",
+        "OH-20-AIRCON-SOURCE-UPD-0007",
+        "OH-21-BLEED-SOURCE-UPD-0007"
+      ],
+      "panels": [
+        "OH-19",
+        "OH-20",
+        "OH-21"
+      ],
+      "status": "images-placed-by-visual-source-to-atlas-match",
+      "missing": [
+        "OH-22",
+        "OH-23",
+        "OH-24",
+        "OH-25"
+      ],
+      "notes": "Original filenames did not correspond to atlas systems. OH19 includes separate voice recorder and pressure differential / altitude horn plates; OH20 air conditioning, OH21 bleed air."
     }
   ],
   "lastStagedVersion": "UPD-0003",
