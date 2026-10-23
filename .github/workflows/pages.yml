@@ -20,6 +20,10 @@ jobs:
       - uses: actions/checkout@v4
       - name: Verify demo scripts and model
         run: npm test
+      - name: Protect standalone CDU from private Stage5/Stage6 routing
+        run: |
+          node cdu-standalone-v6/tests/stage6-selector.test.cjs
+          node cdu-standalone-v6/tests/stage6-public-isolation.test.cjs
       - name: Syntax-check animated panel
         run: node --check main-panel-lab/panel.js
       - uses: actions/configure-pages@v5
