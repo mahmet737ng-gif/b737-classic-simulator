@@ -91,7 +91,7 @@
     "python_private": 23,
     "python_public_pass": 22,
     "python_public_skip": 1,
-    "javascript_checks": 7,
+    "javascript_checks": 10,
     "dom_mock": "PASS",
     "localhost_chromium": "ENVIRONMENT_BLOCKED",
     "real_device": "NOT_TESTED"
