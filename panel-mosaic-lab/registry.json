@@ -1,6 +1,6 @@
 {
   "schema": "b737-mosaic-atlas.v1",
-  "version": "2026-10-24.1",
+  "version": "2026-10-24.2",
   "source": "Owner supplied one-page PDF composite (2026-10-23). Initial reference atlas, boundaries provisional.",
   "panels": [
     {
@@ -223,27 +223,41 @@
     },
     {
       "id": "OH-13",
-      "title": "CIRCUIT BREAKER / LIGHTS",
+      "title": "CIRCUIT BREAKER PANEL",
       "x": 344,
       "y": 350,
       "w": 85,
       "h": 270,
-      "group": "LIGHTS",
-      "status": "mapped",
+      "group": "CIRCUIT BREAKERS",
+      "status": "artwork",
       "artwork": null,
-      "geometryStatus": "rejected"
+      "geometryStatus": "historical-ROI-rejected; source-verified; physical-plate-seam-pending-QA",
+      "originalAtlasTitle": "CIRCUIT BREAKER / LIGHTS",
+      "placement": {
+        "source": "assets/locked/2026-10-23/OH13-CIRCUIT-BREAKER-efca1c6cec9e.png",
+        "stageUrl": "oh13-14/",
+        "sha256": "8fef9e3d67fd78c794d0cceb31ab2806f82076bf7d6e987e3fbdcf5e2a1c76a4",
+        "status": "published-source-verified; geometry-QA-pending"
+      }
     },
     {
       "id": "OH-14",
-      "title": "CABIN / WIPERS / EQUIPMENT",
+      "title": "EMER EXIT LIGHTS / NO SMOKING / FASTEN BELTS",
       "x": 344,
       "y": 620,
       "w": 85,
       "h": 496,
-      "group": "EQUIPMENT",
-      "status": "mapped",
+      "group": "CABIN LIGHTS",
+      "status": "artwork",
       "artwork": null,
-      "geometryStatus": "rejected"
+      "geometryStatus": "historical-ROI-rejected; source-verified; physical-plate-seam-pending-QA",
+      "originalAtlasTitle": "CABIN / WIPERS / EQUIPMENT",
+      "placement": {
+        "source": "assets/locked/2026-10-23/OH14-EMER-EXIT-795cc819a3b3.png",
+        "stageUrl": "oh13-14/",
+        "sha256": "7a707630ada8d1ae84a7377dd92e61bda95e07ccc3e71c4759da0b3dd113b3d8",
+        "status": "published-source-verified; geometry-QA-pending"
+      }
     },
     {
       "id": "OH-15",
@@ -788,7 +802,7 @@
   ],
   "validation": {
     "status": "rejected",
-    "reason": "Historical 59 rectangular boxes remain rejected. OH01..06 and OH10..12 are tracked in separate source-image modules; do not use old ROIs as approved panel outlines.",
+    "reason": "Old 59 rectangular regions remain rejected. Validated image sources for OH01..06, OH11..12 and OH13..14 are tracked in separate modules; don't interpret old ROI rectangles as approved outlines.",
     "next": "Re-trace each individual physical screw-defined plate on the actual owner PDF; independently QA 3 assemblies."
   },
   "previousVersion": "2026-10-23.3-REJECTED",
@@ -823,5 +837,15 @@
     ],
     "stage": "published-images-verified",
     "seamGeometry": "provisional"
+  },
+  "oh13_14": {
+    "update": "UPD-0004",
+    "stageUrl": "oh13-14/",
+    "panels": [
+      "OH-13",
+      "OH-14"
+    ],
+    "sourcesVerified": true,
+    "physicalLayoutStatus": "awaiting visual border trace"
   }
 }
