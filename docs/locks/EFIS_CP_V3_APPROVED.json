@@ -1,0 +1,83 @@
+{
+  "name": "B737 Classic EFIS CP v3 owner-approved lock",
+  "date": "2026-10-23",
+  "status": "OWNER_APPROVED_FROZEN",
+  "policy": "DO_NOT_MODIFY_WITHOUT_EXPLICIT_OWNER_APPROVAL",
+  "referenceBranch": "locked/efis-cp-v3-owner-approved",
+  "referenceCommit": "4b55a92843ca69345f6621fbf304794a34b8c94d",
+  "assetNativeSize": {
+    "width": 1448,
+    "height": 1086
+  },
+  "root": "cdu-standalone-v6/efis-test",
+  "files": {
+    "index.html": "5b7b241fafd6fa84197622f5700abd6b437b7901",
+    "app.js": "a0fea4f3ade411bfc88e1707e798119386b35526",
+    "style.css": "b1268d0a20980b15fa54bca51443498e4adb4310",
+    "images.js": "0bac0b5c3a2f3a7b25a154b2fbfc1ea9da937944",
+    "geometry-v3.json": "e5c5861cde257707989fd1f9d5729098bb079d4c"
+  },
+  "reuseContracts": {
+    "rotary": {
+      "visual": "rotate isolated alpha-masked sprite only, not backing panel/crop/wrapper",
+      "discrete": "one detent at a time; no free intermediate selection",
+      "continuous": "smooth brightness knobs",
+      "inputs": [
+        "click",
+        "shift+click reverse",
+        "wheel",
+        "pointer swipe/drag",
+        "keyboard arrow"
+      ],
+      "alignment": "photo-relative calibrated center + radius"
+    },
+    "mode": {
+      "detents": [
+        "FULL_NAV",
+        "FULL_VOR_ILS",
+        "EXP_NAV",
+        "EXP_VOR_ILS",
+        "MAP",
+        "CTR_MAP",
+        "PLAN"
+      ],
+      "start": "FULL_NAV",
+      "end": "PLAN"
+    },
+    "rangeNM": [
+      10,
+      20,
+      40,
+      80,
+      160,
+      320
+    ],
+    "decisionHeight": {
+      "initial": 200,
+      "min": -20,
+      "max": 999,
+      "step": 1
+    },
+    "concentric": {
+      "outer": "HSI brightness",
+      "inner": "WXR brightness",
+      "independent": true
+    },
+    "pushbuttons": {
+      "geometry": "physical dark face only",
+      "latching": [
+        "WXR",
+        "VOR_ADF",
+        "NAV_AID",
+        "ARPT",
+        "RTE_DATA",
+        "WPT"
+      ],
+      "momentary": [
+        "RST"
+      ]
+    }
+  },
+  "appliesTo": "EFIS CP v3 QA surface; future subsystem implementation may reference these contracts without altering these locked files",
+  "nextVersionPolicy": "Create separate new paths/branches for experiments; owner must explicitly approve unlocking v3"
+}
