@@ -1,0 +1,19 @@
+{
+  "schema": "b737.control-animation-registry/v1",
+  "panel": "flight-controls-and-nav-transfer",
+  "globalToggleStandard": "b737-cockpit-toggle-v1",
+  "controls": [
+    {"id":"flightA","type":"guarded-paddle","detents":["STBY_RUD","OFF","ON"],"durationMs":240},
+    {"id":"flightB","type":"guarded-paddle","detents":["STBY_RUD","OFF","ON"],"durationMs":240},
+    {"id":"spoilerA","type":"guarded-paddle","detents":["OFF","ON"],"durationMs":240},
+    {"id":"spoilerB","type":"guarded-paddle","detents":["OFF","ON"],"durationMs":240},
+    {"id":"alternateFlapsArm","type":"guarded-toggle","guardStates":["CLOSED","OPEN"],"toggleStates":["OFF","ARM"],"durationMs":340},
+    {"id":"alternateFlapsPosition","type":"spring-loaded-toggle","detents":["UP","OFF","DOWN"],"returnsTo":"OFF","returnDelayMs":240},
+    {"id":"yawDamper","type":"toggle","detents":["OFF","ON"],"assetStandard":"b737-cockpit-toggle-v1"},
+    {"id":"vhfNav","type":"three-position-toggle","detents":["BOTH_ON_1","NORMAL","BOTH_ON_2"],"assetStandard":"b737-cockpit-toggle-v1"},
+    {"id":"irs","type":"three-position-toggle","detents":["BOTH_ON_L","NORMAL","BOTH_ON_R"],"assetStandard":"b737-cockpit-toggle-v1"},
+    {"id":"efi","type":"three-position-toggle","detents":["BOTH_ON_1","NORMAL","BOTH_ON_2"],"assetStandard":"b737-cockpit-toggle-v1"}
+  ],
+  "selection": {"visibleBlueOutline":false,"hitShape":"control-silhouette-only","selectPanelText":false},
+  "annunciators": {"count":9,"calibration":"independent-lens-interior","externalGlow":false,"overflow":"clipped"}
+}
