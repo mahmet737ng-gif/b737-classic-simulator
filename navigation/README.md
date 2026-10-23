@@ -1,3 +1,5 @@
+> **WORLDWIDE DATA UPDATE (AIRAC 2610 R1):** The user-supplied PMDG/Navigraph/Jeppesen navigation dataset has been imported into a **private 491,889-row SQLite database** saved in ChatGPT Library `/B737/NAVDB/`. See [source registry](source_registry.json) and [worldwide private import notes](PMDG_WORLD_PRIVATE_IMPORT.md). The earlier OurAirports-based **Iran-only importer below remains a separate fallback**, not the active worldwide importer. No restricted binary data is in this public repo; FMC/CDU integration remains gated.
+
 # B737 Classic Iran-only Navigation Database (NAVDB IR v0.3)
 
 **Simulator training only — NOT for operational flight navigation.**
