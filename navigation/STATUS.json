@@ -1,49 +1,61 @@
 {
   "module": "NAVDB",
-  "version": "0.1.0",
-  "aircraft": "B737 Classic; EP-FSI",
-  "intent": "Simulator/training only. Never operational aviation.",
-  "current_source_data": {
-    "provider": "OurAirports public domain, community, NON_AIRAC",
-    "repository": "davidmegginson/ourairports-data",
-    "summary_record_counts": {
-      "airports": 86258,
-      "runways": 48345,
-      "navaids": 11008,
-      "frequencies": 30387
-    },
-    "scope": "SOURCE FILE RECORDS, not validated/activated FMC records",
-    "sha_evidence": "navigation/samples/iran-community-snapshot.json"
+  "version": "NPE_STAGE7_v1",
+  "updated_utc_date": "2026-10-23",
+  "aircraft": "B737 Classic, EP-FSI",
+  "scope": "Simulator development only — NOT real flight navigation",
+  "primary_private_source": {
+    "id": "PMDG_WORLD_2610_WITH_PROCEDURES_R1",
+    "cycle": "2610",
+    "revision": 1,
+    "worldwide": true,
+    "exact_header": "//AIRAC Cycle : 2610 (01/OCT/2026 - 29/OCT/2026) - Ver.1",
+    "storage": "Private ChatGPT Library /B737/NAVDB; no licensed data in public repo",
+    "source_registry": "navigation/source_registry.json"
   },
-  "completed": [
-    "Versioned SQLite schema for airport, runway, frequency, navaid, source and cycle provenance",
-    "Atomic importer with foreign-key/coordinate rejection and safe rollback",
-    "FAA ARINC 424 fixed-width raw record staging (NOT parsing/activation)",
-    "Read-only JSON query/export interface",
-    "Three locally passed synthetic unit tests",
-    "Real OurAirports source snapshot for OIII/OIIE/OIMM checked into repo",
-    "Weekly/on-push GitHub Actions build workflow installed"
+  "completed_stages": [
+    "Stage1: source-faithful SID/STAR/APP AST",
+    "Stage2: source-only geographic reference chords",
+    "Stage3: parameterized synthetic leg math + blockers",
+    "Stage4: flight-plan draft engine / RTE LEGS pagination / mandatory discontinuities",
+    "Stage5: source-only CDU RTE/DEP-ARR/LEGS and EHSI PLAN preview hooks",
+    "Stage6: native CDU SID/STAR/APP selector, source-valid runway/transition + reference MOD/EXEC",
+    "Stage7: safe airport-file local FIX resolution, AST-token QA, segmented reference preview geometry and private test viewer"
   ],
-  "verification": {
-    "local_synthetic_tests": "PASS_3",
-    "source_snapshot": "RETRIEVED_AND_COMMITTED",
-    "global_sqlite_build": "CI_RESULT_NOT_VERIFIED",
-    "github_actions_run": "NOT_INSPECTED",
-    "fmc_navigation_accuracy": "NOT_VERIFIED"
+  "stage7_qa": {
+    "python_tests_passed": 13,
+    "worldwide_procedures_sampled": 250,
+    "sampled_ast_nodes": 1771,
+    "located_source_fix_references": 1120,
+    "non_flyable_reference_chords": 692,
+    "http_checks_passed": 7,
+    "chromium_visual_qa": "PASS_WITH_MOCKED_REAL_SOURCE_RESPONSES",
+    "browser_loopback": "BLOCKED_BY_EXECUTION_ENVIRONMENT",
+    "real_device": "NOT_TESTED"
   },
-  "not_started": [
-    "Verified ARINC 424-18 typed parser and continuation records",
-    "Enroute waypoints and airway ordering",
-    "SID/STAR/APP procedures, legs, altitudes, speeds and conditional branches",
-    "AIRAC automatic source-effective/expiration date enforcement",
-    "Regional licensed navdata import for Iran and other non-US states",
-    "CDU route-leg entry/selection, FMS and EFIS integration against EP-FSI equipment manual"
+  "source_data_gates": {
+    "source_pre_airac_lines": "FORBIDDEN",
+    "unknown_terminators": "BLOCKED",
+    "strict_source_provenance": true,
+    "dont_cross_discontinuities": true,
+    "fmc_executable_legs": 0,
+    "lnav_active": false,
+    "vnav_active": false,
+    "autopilot_afds_integration": false
+  },
+  "remaining_work": [
+    "Obtain verified path-terminator coding and complete constraint/transition semantics from approved source and EP-FSI fitted FMC documentation",
+    "Validate magnetic variation and fixes with aircraft-specific equipment, named fixes, turns, intercepts, holds, missed approach",
+    "Implement and verify sensor-backed navigation and FMC active lateral sequencing before LNAV",
+    "Validate VNAV/AFDS against airframe-specific FCOM and system models",
+    "Execute end-to-end acceptance on user's Windows and iPad hardware, including actual CDU and EFIS UI"
   ],
-  "safeguards": [
-    "No invented navigation legs",
-    "No inferred source coverage",
-    "Empty procedure tables are NOT interpreted as no procedures",
-    "No unverified navdata connected to live trainer"
-  ],
-  "next_priority": "Inspect GitHub Actions worldwide build artifact; validate row counts and source version, then implement tested FAA ARINC parser."
+  "next_priority": "Acquire source-grounded ARINC 424 leg coding and fitted aircraft FMC details; do not automatically turn source text into active guidance.",
+  "roadmap_document": "navigation/NPE_STAGE7.md",
+  "qa_private_artifact": "/B737/NAVDB/NPE_STAGE7/B737_NAVDB_AIRAC2610_NPE_STAGE7_PRIVATE.zip",
+  "older_ourairports_fallback": {
+    "scope": "Iran-only",
+    "code": "navigation/navdb.py",
+    "automatic_merge": false
+  }
 }
