@@ -59,7 +59,7 @@
   }
 
   function render(message = '') {
-    $$('[data-control]').forEach(control => {
+    $$$('[data-control]').forEach(control => {
       const key = control.dataset.control;
       const value = key === 'yawDamper' ? (state.yawDamper ? 'on' : 'off') : state[key];
       control.dataset.position = value;
@@ -69,7 +69,7 @@
       }
     });
 
-    $('[data-guard-control]').forEach(guard => {
+    $$('[data-guard-control]').forEach(guard => {
       const id=guard.dataset.guardControl;
       guard.dataset.guard = state[guardedStateKey(id)];
       guard.setAttribute('aria-label', id + ' safety guard, ' + guard.dataset.guard);
@@ -83,7 +83,7 @@
     $('.arm-switch').setAttribute('aria-pressed', String(state.altArmed));
 
     const lights = effectiveLights();
-    $$('[data-light]').forEach(lamp => {
+    $$$('[data-light]').forEach(lamp => {
       const lit = Boolean(lights[lamp.dataset.light]);
       lamp.classList.toggle('lit', lit);
       lamp.setAttribute('aria-pressed', String(lit));
@@ -123,13 +123,13 @@
     render(id.toUpperCase() + ' — ' + result.state.value.toUpperCase() + ' / GUARD ' + result.state.guard.toUpperCase());
     return true;
   }
-  $('.paddle-guard').forEach(guard => {
+  $$('.paddle-guard').forEach(guard => {
     guard.addEventListener('click', () => {
       const id=guard.dataset.guardControl;
       guardAction(id, isGuardOpen(id) ? 'close' : 'open');
     });
   });
-  $('.paddle-control').forEach(control => {
+  $$('.paddle-control').forEach(control => {
     control.addEventListener('click', () => {
       const key=control.dataset.control;
       const detents=mechanics.definitions[key].detents;
@@ -138,7 +138,7 @@
     });
   });
 
-  $('.selector').forEach(control => {
+  $$('.selector').forEach(control => {
     const id=control.dataset.control;
     let start=null, skipClick=false;
     function setPosition(value) {
@@ -222,7 +222,7 @@
   altPosition.addEventListener('pointercancel', releaseAlt);
   altPosition.addEventListener('pointerleave', event => { if (event.buttons) releaseAlt(); });
 
-  $$('[data-light]').forEach(lamp => {
+  $$$('[data-light]').forEach(lamp => {
     lamp.addEventListener('click', () => {
       const key = lamp.dataset.light;
       state.faults[key] = !state.faults[key];
