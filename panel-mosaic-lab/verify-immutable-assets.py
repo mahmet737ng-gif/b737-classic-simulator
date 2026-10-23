@@ -54,6 +54,21 @@ for item in assets:
         issues.append("GIT BLOB CHANGED for " + ident)
     print("LOCKED", ident, len(data), actual_sha, rel)
 
+# Verify any future locked files as soon as users manually upload them.
+# Pending entries can be absent without failing a deployment; an incorrect
+# upload always fails both CI and the live SHA-gated viewer.
+for item in manifest.get("pendingUploads", []):
+    asset = repo / item["path"]
+    if not asset.exists():
+        print("AWAITING UPLOAD", item["id"], item["path"])
+        continue
+    content = asset.read_bytes()
+    actual = hashlib.sha256(content).hexdigest()
+    if len(content) != item["bytes"] or actual != item["sha256"]:
+        issues.append("PENDING IMAGE DOES NOT MATCH ORIGINAL: " + item["id"])
+    else:
+        print("PENDING ASSET VERIFIED", item["id"], len(content), actual)
+
 base = os.getenv("GITHUB_BASE_SHA", "").strip()
 if base and base != "0" * 40:
     head = git("rev-parse", "HEAD")
