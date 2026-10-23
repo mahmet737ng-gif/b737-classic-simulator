@@ -1,0 +1,62 @@
+{
+  "schema": "b737.panel-mosaic.oh15-18.v1",
+  "version": "UPD-0005",
+  "date": "2026-10-24",
+  "state": "verified-uploaded-originals",
+  "verificationWorkflow": "https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/40033310161",
+  "note": "Exact-byte source image aliases. Numbering based on original atlas system names; OH18 designation and subsystem are provisional pending visual inspection of generic-named image. Old box geometry remains rejected.",
+  "panels": [
+    {
+      "id": "OH-15",
+      "title": "WINDOW AND PITOT HEAT",
+      "system": "HEAT",
+      "classification": "verified",
+      "sourceOriginal": "Aircraft Window and Pitot Heat Panel.png",
+      "canonical": "OH15-WINDOW-PITOT-4ecfdc65f71b.png",
+      "gitBlobSha1": "4ecfdc65f71b346902af8c29a73008f0f9d390c1",
+      "sha256": "b8c4ca3047fe5028093fb1f1f9e5d70eaa292f7d4d95ce664ef64f150fd1db96",
+      "bytes": 2341811,
+      "path": "../assets/locked/2026-10-23/OH15-WINDOW-PITOT-4ecfdc65f71b.png",
+      "physicalSeamStatus": "pending-QA"
+    },
+    {
+      "id": "OH-16",
+      "title": "ANTI-ICE CONTROL",
+      "system": "ICE",
+      "classification": "verified",
+      "sourceOriginal": "Aircraft Anti-Ice Control Panel.png",
+      "canonical": "OH16-ANTI-ICE-f59889e4efd2.png",
+      "gitBlobSha1": "f59889e4efd22b39c2fba389a0bb51afd9874f61",
+      "sha256": "6009e9eba2bd5ea6e4fc8c56dbe1a6454c2f9fbce8513d2d32d84703018d56e9",
+      "bytes": 2616368,
+      "path": "../assets/locked/2026-10-23/OH16-ANTI-ICE-f59889e4efd2.png",
+      "physicalSeamStatus": "pending-QA"
+    },
+    {
+      "id": "OH-17",
+      "title": "HYDRAULIC PUMP",
+      "system": "HYD",
+      "classification": "verified",
+      "sourceOriginal": "Empty Aircraft Hydraulic Pump Panel.png",
+      "canonical": "OH17-HYDRAULIC-f149122d1f5c.png",
+      "gitBlobSha1": "f149122d1f5cf8f74c612fad24b5932094bb2cba",
+      "sha256": "96c08c4f331d5c375cb73bbc16f10cc6172433abd5e7b0a84e2826f08a2d68f8",
+      "bytes": 2697606,
+      "path": "../assets/locked/2026-10-23/OH17-HYDRAULIC-f149122d1f5c.png",
+      "physicalSeamStatus": "pending-QA"
+    },
+    {
+      "id": "OH-18",
+      "title": "UNCLASSIFIED EMPTY-CUTOUT PANEL",
+      "system": "PENDING VISUAL REVIEW",
+      "classification": "provisional",
+      "sourceOriginal": "Aircraft Cockpit Panel with Empty Cutouts.png",
+      "canonical": "OH18-UNCLASSIFIED-5af4fdc5284b.png",
+      "gitBlobSha1": "5af4fdc5284b3897b425c6d0c765132e5604a269",
+      "sha256": "939e9f6ed14cbe2a8a6182684fcef790607e7dba10a1bfe002a062457f83e5ee",
+      "bytes": 2787751,
+      "path": "../assets/locked/2026-10-23/OH18-UNCLASSIFIED-5af4fdc5284b.png",
+      "physicalSeamStatus": "pending-QA"
+    }
+  ]
+}
