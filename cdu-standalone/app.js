@@ -180,7 +180,7 @@ function makeControls(map){
   outer.appendChild(el);byId[a.id]=el;
  }
 }
-function render(){let output=pageLines();if(sim.message)output[12]=sim.message;else if(sim.scratch)output[12]=sim.scratch.slice(0,24);let wrap=$('fmc-lines');wrap.textContent='';for(let i=0;i<14;i++){let row=document.createElement('div');row.className='fmc-line'+(i===12&&sim.message?' error':'');if(i===0){
+function render(){let output=pageLines();if(sim.message)output[12]=sim.message;else if(sim.scratch)output[12]=sim.scratch.slice(0,24);let wrap=$('fmc-lines');wrap.textContent='';for(let i=0;i<14;i++){let row=document.createElement('div');row.className='fmc-line'+(i>0&&i<12&&i%2===1?' fmc-small':'')+(i===12&&sim.message?' error':'');if(i===0){
   const m=/^(.*?)\s+(\d+\/\d+)\s*$/.exec(output[0]||'');
   if(m){row.className+=' fmc-header';const title=document.createElement('span');title.className='page-title';title.textContent=m[1].trim();const count=document.createElement('span');count.className='page-count';count.textContent=m[2];row.appendChild(title);row.appendChild(count)}
   else row.textContent=output[i]||' ';

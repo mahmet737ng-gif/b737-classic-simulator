@@ -26,7 +26,7 @@ function updateEHSI(){ if(window.EHSI_ENGINE){ if((state.navdbActive||state.stag
 const TITLE_PLAIN=new Set(['MENU','INDEX','IDENT','POS_INIT','MESSAGES','MSG_RECALL','NAV_DATA','NAV_OPTIONS','SUPP_NAV','POS_REF','FIX','PROG','PROG2','HOLD','DEP_ARR','DEPARTURES','ARRIVALS']);
 function shown(val){return String(val??'').replace(/\{([A-Z_0-9]+)\}/g,(_,key)=>core.readValue(state,key,state.page)||'----');}
 function displayCell(cell){if(!cell)return ''; if(cell.field){const v=core.readValue(state,cell.field,state.page);return v||(cell.required?'□□□□':'-----');} return shown(cell.value||'');}
-function makePairRow(topPct,leftText,rightText,isScratch=false){const d=document.createElement('div'); d.className='fmc-line'+(isScratch?' scratch':'')+' fmc-pairline'; d.style.top=topPct+'%'; const l=document.createElement('span'); l.className='fmc-left'; l.textContent=leftText||''; const r=document.createElement('span'); r.className='fmc-right'; r.textContent=rightText||''; if(isScratch){l.classList.add('full'); r.remove(); d.appendChild(l);} else {d.appendChild(l); d.appendChild(r);} return d;}
+function makePairRow(topPct,leftText,rightText,isScratch=false,isSmall=false){const d=document.createElement('div'); d.className='fmc-line'+(isScratch?' scratch':'')+(isSmall?' fmc-small':'')+' fmc-pairline'; d.style.top=topPct+'%'; const l=document.createElement('span'); l.className='fmc-left'; l.textContent=leftText||''; const r=document.createElement('span'); r.className='fmc-right'; r.textContent=rightText||''; if(isScratch){l.classList.add('full'); r.remove(); d.appendChild(l);} else {d.appendChild(l); d.appendChild(r);} return d;}
 function v19SafeN1(){const r=n1EstimateV19();return r?.status==='SIM_ESTIMATE'?r:null;}
 function update(){const box=$('fmc-lines'); box.replaceChildren();
  const screenTop=1312*0.0765, screenHeight=1312*0.375;
@@ -41,7 +41,7 @@ function update(){const box=$('fmc-lines'); box.replaceChildren();
    let valueL=displayCell(pair?.[0]),valueR=displayCell(pair?.[1]);
    if(n1&&state.page==='N1_LIMIT'&&row===1){labelR='20K N1 EST';valueR=n1.maxN1Pct.toFixed(1)+'% EST';}
    if(n1&&state.page==='TAKEOFF'&&row===3){labelL='TO N1 EST';valueL=n1.maxN1Pct.toFixed(1)+'% EST';}
-   box.appendChild(makePairRow(labelTop,labelL,labelR));
+   box.appendChild(makePairRow(labelTop,labelL,labelR,false,true));
    box.appendChild(makePairRow(valueTop,valueL,valueR));
  }
  box.appendChild(makePairRow(((565-screenTop)/screenHeight*100), state.message||state.scratch||'', '', true));

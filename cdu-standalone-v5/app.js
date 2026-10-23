@@ -10,7 +10,7 @@ function updateEHSI(){ if(window.EHSI_ENGINE) window.EHSI_ENGINE.renderToDom(sta
 const TITLE_PLAIN=new Set(['MENU','INDEX','IDENT','POS_INIT','MESSAGES','MSG_RECALL','NAV_DATA','NAV_OPTIONS','SUPP_NAV','POS_REF','FIX','PROG','PROG2','HOLD','DEP_ARR','DEPARTURES','ARRIVALS']);
 function shown(val){return String(val??'').replace(/\{([A-Z_0-9]+)\}/g,(_,key)=>core.readValue(state,key,state.page)||'----');}
 function displayCell(cell){if(!cell)return ''; if(cell.field){const v=core.readValue(state,cell.field,state.page);return v||(cell.required?'□□□□':'-----');} return shown(cell.value||'');}
-function makePairRow(topPct,leftText,rightText,isScratch=false){const d=document.createElement('div'); d.className='fmc-line'+(isScratch?' scratch':'')+' fmc-pairline'; d.style.top=topPct+'%'; const l=document.createElement('span'); l.className='fmc-left'; l.textContent=leftText||''; const r=document.createElement('span'); r.className='fmc-right'; r.textContent=rightText||''; if(isScratch){l.classList.add('full'); r.remove(); d.appendChild(l);} else {d.appendChild(l); d.appendChild(r);} return d;}
+function makePairRow(topPct,leftText,rightText,isScratch=false,isSmall=false){const d=document.createElement('div'); d.className='fmc-line'+(isScratch?' scratch':'')+(isSmall?' fmc-small':'')+' fmc-pairline'; d.style.top=topPct+'%'; const l=document.createElement('span'); l.className='fmc-left'; l.textContent=leftText||''; const r=document.createElement('span'); r.className='fmc-right'; r.textContent=rightText||''; if(isScratch){l.classList.add('full'); r.remove(); d.appendChild(l);} else {d.appendChild(l); d.appendChild(r);} return d;}
 function update(){const box=$('fmc-lines'); box.replaceChildren();
  const screenTop=1312*0.0765, screenHeight=1312*0.375;
  const page=pages[state.page]; const tag=(core.pendingCount(state)>0)?'MOD ':'ACT ';
@@ -19,7 +19,7 @@ function update(){const box=$('fmc-lines'); box.replaceChildren();
  const hc=document.createElement('span'); hc.className='fmc-header-count'; hc.textContent='1/'+page.page_count; header.appendChild(ht); header.appendChild(hc); box.appendChild(header);
  for(let row=1;row<=6;row++){ const pair=page.rows[row-1]; const lsk=map.controls.find(c=>c.id==='CDU_CAPT_LSK_L'+row); const cy=(lsk.bbox_px[1]+lsk.bbox_px[3])/2;
    const labelTop=((cy-13-screenTop)/screenHeight*100); const valueTop=((cy+10-screenTop)/screenHeight*100);
-   box.appendChild(makePairRow(labelTop, pair?.[0]?.label||'', pair?.[1]?.label||''));
+   box.appendChild(makePairRow(labelTop, pair?.[0]?.label||'', pair?.[1]?.label||'',false,true));
    box.appendChild(makePairRow(valueTop, displayCell(pair?.[0]), displayCell(pair?.[1])));
  }
  box.appendChild(makePairRow(((565-screenTop)/screenHeight*100), state.message||state.scratch||'', '', true));
