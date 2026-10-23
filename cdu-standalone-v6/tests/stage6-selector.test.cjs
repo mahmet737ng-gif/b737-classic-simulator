@@ -1,7 +1,7 @@
 'use strict';
 const assert=require('node:assert/strict');
-const model=require('../ui/stage5-model.js');
-const make=require('../ui/stage6-selector.js');
+const model=require('../stage5-model.js');
+const make=require('../stage6-selector.js');
 const MARKER='//AIRAC Cycle : 2610 (01/OCT/2026 - 29/OCT/2026) - Ver.1';
 function sample(){
  return {engine:'NPE_STAGE4_FLIGHT_PLAN_DRAFT_v1',airac:'2610',source_marker:MARKER,
