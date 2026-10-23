@@ -1,0 +1,37 @@
+'use strict';
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const path=require('node:path');
+const crypto=require('node:crypto');
+const vm=require('node:vm');
+const root=__dirname;
+const spec=JSON.parse(fs.readFileSync(path.join(root,'spec.json'),'utf8'));
+const geometry=JSON.parse(fs.readFileSync(path.join(root,'../upper-oh/geometry.json'),'utf8'));
+assert.equal(spec.version,'UPD-0006-test');
+assert.equal(spec.images.length,12,'12 distinct original image files');
+assert.equal(new Set(spec.images.map(x=>x.filename)).size,12,'no duplicate image');
+assert.deepEqual(spec.images[0].panelIds,['OH-01','OH-02','OH-03','OH-04','OH-05','OH-06']);
+assert.deepEqual(spec.images[1].panelIds,['OH-07','OH-08']);
+const ids=spec.images.flatMap(x=>x.panelIds);
+assert.deepEqual(ids,Array.from({length:18},(_,i)=>'OH-'+String(i+1).padStart(2,'0')));
+assert.deepEqual(spec.columns.map(c=>c.items),[['OH07-08','OH09'],['OH10','OH11','OH12'],['OH13','OH14'],['OH15','OH16','OH17','OH18'],[]]);
+assert.equal(spec.columns.reduce((s,c)=>s+c.weight,0),748);
+assert.deepEqual(spec.bottomMissing,['OH-23','OH-24','OH-25']);
+assert.equal(geometry.parts.length,6);
+assert.equal(spec.header.height,909);
+let count=0;
+for(const item of spec.images){
+ const full=path.resolve(root,item.url);
+ assert.ok(full.startsWith(path.resolve(root,'../assets/locked/')),'all sources must be locked');
+ const bytes=fs.readFileSync(full);
+ assert.equal(bytes.length,item.bytes,'size: '+item.filename);
+ const git=crypto.createHash('sha1').update(Buffer.concat([Buffer.from('blob '+bytes.length+'\\0'),bytes])).digest('hex');
+ assert.equal(git,item.gitBlobSha,'Git blob identity: '+item.filename);
+ if(item.sha256)assert.equal(crypto.createHash('sha256').update(bytes).digest('hex'),item.sha256,'SHA-256: '+item.filename);
+ count+=bytes.length;
+}
+assert.equal(count,spec.confirmedBytes);
+new vm.Script(fs.readFileSync(path.join(root,'stage.js'),'utf8'),{filename:'stage.js'});
+const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
+for(const name of ['stage.js','style.css','spec.json','upper','columns','gallery','viewport','zoomLabel'])assert.ok(html.includes(name),'page missing '+name);
+console.log('PASS: Full overhead test: 18 panel IDs, 12 immutable-source images, 5 atlas-ordered columns, missing slots, JS syntax, files and hashes.');
