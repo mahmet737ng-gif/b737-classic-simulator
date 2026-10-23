@@ -160,5 +160,22 @@
       "lock_policy": "versioned: do not overwrite; create v2 for any edit",
       "transparent_background": true
     }
-  ]
+  ],
+  "reference_library": [
+    {
+      "id": "B737-GUARDED-BLACK-BOTTOM-HINGE-OPEN-V1",
+      "family": "guarded",
+      "guard_color": "black",
+      "hinge": "bottom",
+      "guard_position": "open",
+      "lighting": "fixed-reference",
+      "document": "references/B737-GUARDED-BLACK-BOTTOM-HINGE-OPEN-V1.json",
+      "master_image_sha256": "f8fd42e93e90b824e0700b3eb27ce3fc7a28dca07e5531190db803ead161df21",
+      "state": "approved visual reference",
+      "original_image_in_git": false
+    }
+  ],
+  "reference_selection_rules": {
+    "black_guarded_switch": "B737-GUARDED-BLACK-BOTTOM-HINGE-OPEN-V1"
+  }
 }
