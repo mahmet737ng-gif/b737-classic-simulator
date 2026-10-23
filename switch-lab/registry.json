@@ -1,0 +1,149 @@
+{
+  "schema_version": "1.0.0",
+  "library": "B737 Classic / Switch Design Lab",
+  "prototype_version": "0.1.0",
+  "scope": "standalone lab; approved panel artwork/geometry must not be overwritten",
+  "source_assets": {
+    "vertical_off": "../fuel-panel/assets/switches/b737-toggle-off.png",
+    "vertical_on": "../fuel-panel/assets/switches/b737-toggle-on.png",
+    "vertical_center": "../flight-controls-panel/assets/switches/b737-toggle-center.webp",
+    "horizontal_left": "../flight-controls-panel/assets/nav-transfer-left-v3.webp",
+    "horizontal_center": "../flight-controls-panel/assets/nav-transfer-center-v3.webp",
+    "horizontal_right": "../flight-controls-panel/assets/nav-transfer-right-v3.webp",
+    "guarded_engine": "../flight-controls-panel/fcom-control-mechanics.js"
+  },
+  "locked_assets_unchanged": true,
+  "controls": [
+    {
+      "id": "LAB-TGL-2",
+      "type": "toggle-2",
+      "label": "FUEL PUMP",
+      "states": [
+        "off",
+        "on"
+      ],
+      "default": "off",
+      "input": [
+        "tap",
+        "keyboard"
+      ],
+      "reference": "b737-cockpit-toggle-v1",
+      "geometry": "approved vertical toggle sprite"
+    },
+    {
+      "id": "LAB-TGL-3H",
+      "type": "toggle-3-horizontal",
+      "label": "VHF NAV TRANSFER",
+      "states": [
+        "left",
+        "normal",
+        "right"
+      ],
+      "default": "normal",
+      "input": [
+        "tap",
+        "drag",
+        "wheel",
+        "keyboard"
+      ],
+      "reference": "nav-transfer-v3",
+      "geometry": "fixed center pivot; horizontal detents; no slider"
+    },
+    {
+      "id": "LAB-TGL-SPR",
+      "type": "toggle-spring",
+      "label": "ALTERNATE FLAPS POSITION",
+      "states": [
+        "up",
+        "off",
+        "down"
+      ],
+      "default": "off",
+      "spring_return": [
+        "up",
+        "down"
+      ],
+      "input": [
+        "press-and-hold",
+        "release",
+        "keyboard"
+      ],
+      "reference": "existing vertical sprites",
+      "note": "Both directions return to OFF in this lab per user's requested interaction; compare with FCOM before aircraft-system integration"
+    },
+    {
+      "id": "LAB-GRD",
+      "type": "guarded",
+      "label": "FLIGHT CONTROL A",
+      "states": [
+        "stby",
+        "off",
+        "on"
+      ],
+      "default": "on",
+      "guard_default": "closed",
+      "guard_close": "force_on",
+      "input": [
+        "guard-open",
+        "set-position",
+        "guard-close"
+      ],
+      "mechanics_id": "flightA",
+      "reference": "B737ControlMechanics definitions.flightA",
+      "note": "Guard close sets ON for this specific control, not globally"
+    },
+    {
+      "id": "LAB-ROT",
+      "type": "rotary",
+      "label": "DC METER SELECTOR",
+      "states": [
+        "stby",
+        "bat_bus",
+        "bat",
+        "tr1",
+        "tr2",
+        "tr3"
+      ],
+      "default": "bat",
+      "input": [
+        "tap",
+        "drag",
+        "wheel",
+        "keyboard"
+      ],
+      "reference": "vector-lab rotary prototype",
+      "note": "Interaction study; artwork and detents are NOT approved for use on another selector"
+    },
+    {
+      "id": "LAB-MOM",
+      "type": "momentary",
+      "label": "TEST PUSHBUTTON",
+      "states": [
+        "released",
+        "pressed"
+      ],
+      "default": "released",
+      "spring_return": [
+        "pressed"
+      ],
+      "input": [
+        "hold",
+        "release",
+        "keyboard"
+      ],
+      "reference": "vector-lab button prototype",
+      "note": "Placeholder test-button appearance; not an approved cockpit panel replacement"
+    }
+  ],
+  "events": {
+    "format": "b737:switch-change",
+    "fields": [
+      "id",
+      "previous",
+      "next",
+      "reason",
+      "timestamp"
+    ]
+  },
+  "status": "prototype; no aircraft systems connected"
+}
