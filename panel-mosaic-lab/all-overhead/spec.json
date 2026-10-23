@@ -1,9 +1,9 @@
 {
   "schema": "b737.overhead-all-source-assembly.v1",
-  "version": "UPD-0006.1-atlas-aligned",
+  "version": "UPD-0007-atlas-matched",
   "date": "2026-10-24",
   "purpose": "Interactive source-pixel-preserving preview of all currently uploaded OH01-OH18 sources, not a geometry-accurate final cockpit.",
-  "geometryNotice": "Aligned by comparing the owner's original overhead atlas photo; historical region rectangles rejected. OH13 cropped only for UI to exclude light outer gutters, OH18 moved directly beneath OH14 at atlas center strip; all locked PNG bytes unchanged. Physical plate geometry still needs QA.",
+  "geometryNotice": "Atlas-based content identity: voice recorder and press-differential cluster occupy center service strip below OH18, air conditioning and bleed air occupy right-hand air-system strip. OH22 cabin pressurization is not supplied. No locked source bytes modified; plate seams provisional.",
   "header": {
     "id": "UPPER",
     "geometry": "../upper-oh/geometry.json",
@@ -33,7 +33,9 @@
       "items": [
         "OH13",
         "OH14",
-        "OH18"
+        "OH18",
+        "OH19-VOICE",
+        "OH19-DIFF"
       ]
     },
     {
@@ -44,17 +46,16 @@
         "OH16",
         "OH17"
       ],
-      "missing": [
-        "OH-19"
-      ]
+      "missing": []
     },
     {
       "name": "AIR SYSTEMS",
       "weight": 503,
-      "items": [],
+      "items": [
+        "OH20",
+        "OH21"
+      ],
       "missing": [
-        "OH-20",
-        "OH-21",
         "OH-22"
       ]
     }
@@ -246,6 +247,86 @@
       "geometryStatus": "atlas-content-matched-to-center-strip-after-OH14",
       "system": "EQUIPMENT / LIGHTING",
       "atlasIdentifiedName": "ATTEND / GRD CALL / RAIN REPELLENT / WIPER"
+    },
+    {
+      "id": "OH19-VOICE",
+      "panelIds": [
+        "OH-19"
+      ],
+      "title": "COCKPIT VOICE RECORDER / HEADSET",
+      "filename": "OH19-VOICE-RECORDER-2db6785ecddc.png",
+      "originalUploadedFilename": "Blank Avionics Control Panel.png",
+      "bytes": 2584859,
+      "gitBlobSha": "2db6785ecddc8d481b0195f15ae57a72dd89601a",
+      "sha256": "2e012ed71ea7d656a058017494761bab7e42b3c9e102d9c22950494fd37c3358",
+      "originalDimensions": [
+        1593,
+        987
+      ],
+      "physicalPlace": "Center services narrow column, directly beneath OH18; immediately above press differential instrument",
+      "url": "../assets/locked/2026-10-23/OH19-VOICE-RECORDER-2db6785ecddc.png",
+      "sourceStatus": "sha256-confirmed-from-original-GitHub-Actions-checkout",
+      "geometryStatus": "atlas-visual-source-position-matched; seams unapproved"
+    },
+    {
+      "id": "OH19-DIFF",
+      "panelIds": [
+        "OH-19"
+      ],
+      "title": "PRESS DIFF / CABIN CLIMB / ALT HORN",
+      "filename": "OH19-PRESS-DIFF-ALT-HORN-d6719ce57cef.png",
+      "originalUploadedFilename": "Needleless Aircraft Cockpit Instrument Panel.png",
+      "bytes": 2918832,
+      "gitBlobSha": "d6719ce57cef54bc869d2b55695231a000d297da",
+      "sha256": "4c667d96ea7652e52784f5c06ee3cdde0879ca37631abf19969861afecc45fed",
+      "originalDimensions": [
+        1267,
+        1241
+      ],
+      "physicalPlace": "Narrow center services column, directly below cockpit voice recorder",
+      "url": "../assets/locked/2026-10-23/OH19-PRESS-DIFF-ALT-HORN-d6719ce57cef.png",
+      "sourceStatus": "sha256-confirmed-from-original-GitHub-Actions-checkout",
+      "geometryStatus": "atlas-visual-source-position-matched; seams unapproved"
+    },
+    {
+      "id": "OH20",
+      "panelIds": [
+        "OH-20"
+      ],
+      "title": "AIR CONDITIONING / CABIN TEMPERATURE",
+      "filename": "OH20-AIR-CONDITIONING-0734da6a7726.png",
+      "originalUploadedFilename": "Aircraft Climate Control Panel Close-Up.png",
+      "bytes": 2733770,
+      "gitBlobSha": "0734da6a7726c8d0b3382fd120058805a8759aa0",
+      "sha256": "94669d21f0be8aa538b2ff3b0684683409cadf6d9fc4b55390e7147abe506121",
+      "originalDimensions": [
+        1254,
+        1254
+      ],
+      "physicalPlace": "Rightmost AIR SYSTEMS column, first of new uploads, top above BLEED AIR",
+      "url": "../assets/locked/2026-10-23/OH20-AIR-CONDITIONING-0734da6a7726.png",
+      "sourceStatus": "sha256-confirmed-from-original-GitHub-Actions-checkout",
+      "geometryStatus": "atlas-visual-source-position-matched; seams unapproved"
+    },
+    {
+      "id": "OH21",
+      "panelIds": [
+        "OH-21"
+      ],
+      "title": "BLEED AIR / PACKS / ISOLATION VALVE",
+      "filename": "OH21-BLEED-AIR-cc78219607a3.png",
+      "originalUploadedFilename": "Aircraft Bleed Air Control Panel.png",
+      "bytes": 2451832,
+      "gitBlobSha": "cc78219607a34b89b2384570a8d26210d55af29c",
+      "sha256": "4efe8c59579e8675825ed4dabf393648cfa7f11f6c09d831d137c23f70ecfe1e",
+      "originalDimensions": [
+        1122,
+        1402
+      ],
+      "physicalPlace": "Rightmost AIR SYSTEMS column, directly below air conditioning; above missing cabin pressurization",
+      "url": "../assets/locked/2026-10-23/OH21-BLEED-AIR-cc78219607a3.png",
+      "sourceStatus": "sha256-confirmed-from-original-GitHub-Actions-checkout",
+      "geometryStatus": "atlas-visual-source-position-matched; seams unapproved"
     }
   ],
   "provenance": {
@@ -255,11 +336,12 @@
   },
   "approval": {
     "sourceAssets": "read-only-immutable",
-    "assemblySeams": "atlas-informed provisional",
-    "OH18Subsystem": "recognized from owner atlas image (ground call / rain repellent / wiper)"
+    "assemblySeams": "atlas-content-matched but physical seam positions provisional",
+    "OH18Subsystem": "recognized from owner atlas image (ground call / rain repellent / wiper)",
+    "classificationOf4NewImages": "verified by source thumbnails against owner overhead atlas reference"
   },
-  "confirmedBytes": 31811017,
-  "loadedSources": 12,
+  "confirmedBytes": 42500310,
+  "loadedSources": 16,
   "atlasReference": {
     "image": "../../assets/overhead.webp",
     "source": "owner overhead atlas PDF/reference photo",
@@ -293,5 +375,26 @@
     242,
     460,
     503
-  ]
+  ],
+  "newMapping": {
+    "version": "UPD-0007",
+    "centralServiceStack": [
+      "OH13",
+      "OH14",
+      "OH18",
+      "OH19-VOICE",
+      "OH19-DIFF"
+    ],
+    "rightSystemStack": [
+      "OH20",
+      "OH21"
+    ],
+    "remainingImagesAbsent": [
+      "OH-22",
+      "OH-23",
+      "OH-24",
+      "OH-25"
+    ],
+    "legacyNumberingNote": "Both OH19 component images are parts of the original combined OH-19 atlas area; they are separate physical plates."
+  }
 }
