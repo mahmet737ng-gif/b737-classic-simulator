@@ -193,5 +193,22 @@
     "live_CDU_auto_N1": false,
     "autothrottle_auto_N1": false,
     "source_sha256": "3c7002212482f0c47a1735c2302ee304ef41ef4ca270591281b72f5f2a714105"
+  },
+  "simulator_environment_defaults": {
+    "release": "17",
+    "config": "docs/EP_FSI_DEFAULT_CONDITIONS.json",
+    "source": "USER_DIRECTIVE_2026-10-23",
+    "scope": "ALL_NEW_SIMULATION_SCENARIOS_AS_DEFAULT_NOT_AIRCRAFT_EQUIPMENT_FACT",
+    "weather": "ISA",
+    "isa_temp": "DERIVED_FROM_PRESSURE_ALTITUDE",
+    "engine_bleed": "ON",
+    "anti_ice": "OFF",
+    "ac_packs": "AUTO_SIMULATOR_NORMAL_CASE",
+    "pmc": "UNKNOWN_UNTIL_EXPLICITLY_SPECIFIED",
+    "library_profile": "/Technical Database/Configurations/EP-FSI-ASN29340/EP_FSI_DEFAULT_CONDITIONS_v17.json",
+    "runtime": "engine/fmc/performance/epfsi-scenario-defaults-v17.cjs",
+    "cdu": "cdu-standalone/data/epfsi-scenario-defaults-v17.js",
+    "override": "EXPLICIT_SCENARIO_CAN_OVERRIDE_DEFAULTS",
+    "source_n1_calculations": "STILL_BLOCKED_NUMERIC_AFMDIGITIZATION_NOT_APPROVED"
   }
 }
