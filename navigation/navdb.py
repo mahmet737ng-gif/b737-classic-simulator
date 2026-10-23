@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Versioned aviation navigation-data ingest and read-only simulator queries.
+"""Iran-only aviation NAVDB ingest and read-only simulator queries.
 
-OurAirports: globally available non-AIRAC community source.
-FAA CIFP: raw 132-char ARINC 424 records are STAGED, NOT decoded/activated.
+OurAirports global source files are filtered by ISO country IR before insertion.
+No FAA CIFP data, non-Iran airport/navaid, or unverified procedure is FMC-active.
 Not for real-world navigation.
 """
 import argparse
@@ -16,13 +16,20 @@ import shutil
 import sqlite3
 import tempfile
 import urllib.request
-import zipfile
 
 BASE_URL = 'https://davidmegginson.github.io/ourairports-data/'
+COUNTRY = 'IR'  # Iran-only immutable project scope
 FILES = {'airports.csv': 'airports', 'runways.csv': 'runways',
          'navaids.csv': 'navaids', 'airport-frequencies.csv': 'frequencies'}
+REQUIRED_FIELDS = {
+  'airports.csv': {'id','iso_country','name','latitude_deg','longitude_deg'},
+  'runways.csv': {'id','airport_ref'},
+  'navaids.csv': {'id','iso_country','latitude_deg','longitude_deg'},
+  'airport-frequencies.csv': {'id','airport_ref'},
+}
 SCHEMA = '''
 PRAGMA foreign_keys=ON;
+CREATE TABLE metadata (key TEXT PRIMARY KEY, value TEXT NOT NULL);
 CREATE TABLE sources (
   id INTEGER PRIMARY KEY, name TEXT NOT NULL, filename TEXT NOT NULL,
   retrieved_utc TEXT NOT NULL, sha256 TEXT NOT NULL, license TEXT NOT NULL,
@@ -102,49 +109,33 @@ def get_file(path, allow_network):
     if path.is_file(): return
     if not allow_network: raise FileNotFoundError(f'Missing offline input: {path}')
     path.parent.mkdir(parents=True, exist_ok=True)
-    with urllib.request.urlopen(BASE_URL+path.name, timeout=120) as response, path.open('wb') as out:
-        shutil.copyfileobj(response, out)
-
-def stage_faa(con, faa_path, cycle):
-    """Safely stage ARINC raw text; do NOT invent ARINC field decoding."""
-    if not cycle or len(cycle)!=6 or not cycle.isdigit():
-        raise ValueError('FAA cycle must be YYMMDD (e.g. 261001)')
-    if faa_path.suffix.lower()=='.zip':
-        with zipfile.ZipFile(faa_path) as archive:
-            entries=[n for n in archive.namelist() if Path(n).name.upper().startswith('FAACIFP') and not n.endswith('/')]
-            if len(entries)!=1: raise ValueError('FAA ZIP must have exactly one FAACIFP record file')
-            info=archive.getinfo(entries[0])
-            if info.file_size>250_000_000: raise ValueError('FAA data exceeds safety limit')
-            data=archive.read(info)
-    else:
-        data=faa_path.read_bytes()
-    if len(data)>250_000_000: raise ValueError('FAA data exceeds safety limit')
-    digest=hashlib.sha256(data).hexdigest()
-    source_id=con.execute('INSERT INTO sources(name,filename,retrieved_utc,sha256,license,cycle) VALUES(?,?,?,?,?,?)',
-        ('FAA CIFP',faa_path.name,datetime.now(timezone.utc).isoformat(),digest,'FAA public data; check provider terms',cycle)).lastrowid
-    count=0; rejected=0
-    for line_no, raw in enumerate(data.splitlines(),1):
-        record=raw.decode('latin-1')
-        if len(record)!=132 or record[0] not in ('S','T'):
-            con.execute('INSERT INTO rejected(filename,row_no,reason) VALUES(?,?,?)',('FAA CIFP',line_no,'invalid record width/type'))
-            rejected+=1; continue
-        # Preserve every record exactly; identifying fields require record-specific ARINC layouts.
-        con.execute('INSERT INTO faa_raw(source_id,line_no,section,subsection,raw_record) VALUES(?,?,?,?,?)',
-                    (source_id,line_no,None,None,record)); count+=1
-    con.execute('INSERT INTO airac_cycles VALUES(?,?,?,?,?)',('FAA CIFP',cycle,None,None,'STAGED_NOT_FMC_READY'))
-    return {'staged_faa_records':count, 'rejected_faa_records':rejected}
+    fd, temp_name=tempfile.mkstemp(prefix='.'+path.name+'-',dir=str(path.parent))
+    os.close(fd)
+    temp_path=Path(temp_name)
+    try:
+        with urllib.request.urlopen(BASE_URL+path.name, timeout=120) as response, temp_path.open('wb') as out:
+            shutil.copyfileobj(response,out)
+        if temp_path.stat().st_size==0: raise ValueError(f'Empty source download: {path.name}')
+        os.replace(temp_path,path)
+    finally:
+        if temp_path.exists(): temp_path.unlink()
 
 def build(data_dir, db_path, allow_network=False, faa_path=None, faa_cycle=None):
+    # Reject staging unrelated-country FAA records, even when caller uses legacy args.
+    if faa_path is not None or faa_cycle is not None:
+        raise ValueError('Iran-only NAVDB: FAA CIFP global/US staging disabled. Use verified Iranian AIP sources in a dedicated importer.')
     data_dir=Path(data_dir); db_path=Path(db_path)
     db_path.parent.mkdir(parents=True,exist_ok=True)
     fd, name=tempfile.mkstemp(prefix='.navdb-',suffix='.sqlite',dir=str(db_path.parent)); os.close(fd)
     tmp=Path(name)
-    stats={}; seen=set()
+    stats={}; seen=set(); iran_airport_ids=set()
     con=None
     try:
         con=sqlite3.connect(tmp)
         con.executescript(SCHEMA)
         con.execute('BEGIN')
+        con.execute('INSERT INTO metadata(key,value) VALUES(?,?)',('iso_country',COUNTRY))
+        con.execute('INSERT INTO metadata(key,value) VALUES(?,?)',('scope','IRAN_ONLY'))
         sid={}
         for filename in FILES:
             path=data_dir/filename
@@ -152,16 +143,28 @@ def build(data_dir, db_path, allow_network=False, faa_path=None, faa_cycle=None)
             sid[filename]=con.execute('INSERT INTO sources(name,filename,retrieved_utc,sha256,license,cycle) VALUES(?,?,?,?,?,?)',
                 ('OurAirports',filename,datetime.now(timezone.utc).isoformat(),hashlib.sha256(path.read_bytes()).hexdigest(),'Public Domain',None)).lastrowid
         for filename, table in FILES.items():
-            accepted=0; errors=0
+            accepted=0; errors=0; out_of_scope=0
             with (data_dir/filename).open(encoding='utf-8-sig',newline='') as fh:
                 reader=csv.DictReader(fh)
+                if not reader.fieldnames or not REQUIRED_FIELDS[filename].issubset(reader.fieldnames):
+                    raise ValueError(f'Incompatible source columns in {filename}; required: {sorted(REQUIRED_FIELDS[filename])}')
                 for line,row in enumerate(reader,2):
+                    # Skip unrelated rows; they are not bad data and must not appear in rejected.
+                    if table in ('airports','navaids'):
+                        in_scope=(row.get('iso_country') or '').strip().upper()==COUNTRY
+                    else:
+                        in_scope=whole(row.get('airport_ref')) in iran_airport_ids
+                    if not in_scope:
+                        out_of_scope+=1
+                        continue
+                    if table=='airports':
+                        iran_airport_ids.add(whole(row.get('id')))
                     try:
                         if table=='airports':
                             lat,lon=num(row.get('latitude_deg')),num(row.get('longitude_deg'))
                             if not valid_coord(lat,lon): raise ValueError('bad airport coordinates')
                             con.execute('INSERT INTO airports VALUES(?,?,?,?,?,?,?,?,?,?,?,?)',
-                                (whole(row['id']),sid[filename],row.get('ident'),row.get('icao_code'),row.get('iata_code'),row['name'],row.get('iso_country'),row.get('municipality'),lat,lon,num(row.get('elevation_ft')),row.get('type')))
+                                (whole(row['id']),sid[filename],row.get('ident'),row.get('icao_code'),row.get('iata_code'),row['name'],COUNTRY,row.get('municipality'),lat,lon,num(row.get('elevation_ft')),row.get('type')))
                             seen.add(whole(row['id']))
                         elif table=='runways':
                             airport_id=whole(row.get('airport_ref'))
@@ -182,15 +185,17 @@ def build(data_dir, db_path, allow_network=False, faa_path=None, faa_cycle=None)
                     except (ValueError,KeyError,sqlite3.IntegrityError) as ex:
                         con.execute('INSERT INTO rejected(filename,row_no,reason) VALUES(?,?,?)',(filename,line,str(ex)[:200]))
                         errors+=1
-            stats[table]={'accepted':accepted,'rejected':errors}
+            stats[table]={'accepted':accepted,'rejected':errors,'skipped_outside_iran':out_of_scope}
         con.execute('INSERT INTO airac_cycles VALUES(?,?,?,?,?)',('OurAirports',None,None,None,'NON_AIRAC_UNVERIFIED'))
-        if faa_path:
-            stats['faa']=stage_faa(con,Path(faa_path),faa_cycle)
         con.commit()
         bad=con.execute('PRAGMA foreign_key_check').fetchall()
         if bad: raise ValueError(f'Foreign key validation failure: {bad[:5]}')
-        if any(v['accepted']==0 for k,v in stats.items() if k!='faa'):
-            raise ValueError('Required OurAirports table unexpectedly empty')
+        if any(v['accepted']==0 for v in stats.values()):
+            raise ValueError('Iran NAVDB would have an empty required table; refuse to replace prior DB')
+        if con.execute("SELECT COUNT(*) FROM airports WHERE country<>? OR country IS NULL",(COUNTRY,)).fetchone()[0]:
+            raise ValueError('Non-Iran airport escaped source country filter')
+        if con.execute("SELECT COUNT(*) FROM faa_raw").fetchone()[0]:
+            raise ValueError('Foreign FAA data leaked into Iran-only NAVDB')
         con.close(); con=None
         os.replace(tmp,db_path)
         return stats
@@ -213,12 +218,13 @@ def airport(con, ident):
 def summary(con):
     counts={table:con.execute(f'SELECT COUNT(*) FROM {table}').fetchone()[0] for table in
             ('airports','runways','navaids','frequencies','faa_raw','waypoints','airways','procedures','procedure_legs','rejected')}
-    return {'counts':counts,'cycles':con.execute('SELECT * FROM airac_cycles').fetchall()}
+    scope=dict(con.execute('SELECT key,value FROM metadata').fetchall())
+    return {'scope':scope,'counts':counts,'cycles':con.execute('SELECT * FROM airac_cycles').fetchall()}
 
 def cli():
     parser=argparse.ArgumentParser(description=__doc__)
     sub=parser.add_subparsers(dest='cmd',required=True)
-    b=sub.add_parser('build'); b.add_argument('--data-dir',type=Path,default=Path('data')); b.add_argument('--db',type=Path,default=Path('navdb.sqlite')); b.add_argument('--download',action='store_true'); b.add_argument('--faa-file',type=Path); b.add_argument('--faa-cycle')
+    b=sub.add_parser('build'); b.add_argument('--data-dir',type=Path,default=Path('data')); b.add_argument('--db',type=Path,default=Path('navdb.sqlite')); b.add_argument('--download',action='store_true'); b.add_argument('--faa-file',type=Path,help='Legacy flag; forbidden in Iran-only builds'); b.add_argument('--faa-cycle',help='Legacy flag; forbidden in Iran-only builds')
     q=sub.add_parser('airport'); q.add_argument('ident'); q.add_argument('--db',type=Path,default=Path('navdb.sqlite'))
     s=sub.add_parser('summary'); s.add_argument('--db',type=Path,default=Path('navdb.sqlite'))
     e=sub.add_parser('export'); e.add_argument('ident',nargs='+'); e.add_argument('--db',type=Path,default=Path('navdb.sqlite')); e.add_argument('--output',type=Path,required=True)
