@@ -93,7 +93,7 @@
   "integration": {
     "navigation_source_selection": "registry",
     "source_merge_behavior": "explicit_source_selection_only",
-    "fmc_gate": "Stage8 has a verified reference-path diagnostic and explicit coding evidence validator, NOT aircraft-certified FMC legs. ARINC-coded source absent in current narrative SIDSTAR; no LNAV/VNAV/AFDS commands. Device acceptance and EP-FSI aircraft semantics remain outstanding.",
+    "fmc_gate": "NPE Stage9 provides simulator-only reference track + synthetic bank preview and local closed-loop QA. It is NOT the certified/fitted EP-FSI FMC or AFDS. No actual LNAV/VNAV/AP servo output. Source-coded terminal path terminators and sensor/Aircraft coupling must be separately verified.",
     "simulator_training_only": true,
     "procedure_decoder": {
       "id": "NPE_STAGE1_v1",
@@ -521,6 +521,60 @@
       "vnav_enabled": false,
       "afds_enabled": false,
       "approved_cockpit_graphics_modified": false
+    },
+    "npe_stage9": {
+      "id": "NPE_STAGE9_SIMULATOR_REFERENCE_GUIDANCE_v1",
+      "airac": "2610",
+      "revision": 1,
+      "source_id": "PMDG_WORLD_2610_WITH_PROCEDURES_R1",
+      "source_per_file_exact_header": "//AIRAC Cycle : 2610 (01/OCT/2026 - 29/OCT/2026) - Ver.1",
+      "depends_on": [
+        "NPE_STAGE4_FLIGHT_PLAN_DRAFT_v1",
+        "NPE_STAGE8_EVIDENCE_AND_REFERENCE_SEQUENCER_v1"
+      ],
+      "private_package": "/B737/NAVDB/NPE_STAGE9/B737_NAVDB_AIRAC2610_NPE_STAGE9_PRIVATE.zip",
+      "package_sha256": "c1b6ad6b77ac94b9c581b1c18db70c745e28f1813d8f1bf08c7176440eb06b77",
+      "source_code": [
+        "navigation/npe_stage9_guidance.py",
+        "navigation/npe_stage9_server.py",
+        "navigation/npe_stage9_training_aircraft.py",
+        "navigation/npe-stage9/index.html",
+        "navigation/npe-stage9/app.js",
+        "cdu-standalone-v6/stage9-advisory.js"
+      ],
+      "qa_report": {
+        "python_passed": 28,
+        "javascript_advisory_test": "PASS",
+        "private_iran_sample": "OIII-OIMM 10 consecutive Enroute chords, 4 hard gaps",
+        "chromium_dom": "PASS_WITH_PRIVATE_SQL_RESPONSES_AND_NETWORK_MOCK",
+        "chromium_direct_localhost": "BLOCKED_BY_ADMINISTRATOR",
+        "real_device_acceptance": "NOT_TESTED",
+        "github_actions_run": "NOT_VERIFIED"
+      },
+      "control_capabilities": [
+        "operator-armed simulator-only track reference",
+        "cross-track and along-track steering target from source true course",
+        "synthetic FD bank preview capped at 20 degrees, never sent to AFDS",
+        "automatic leg sequencing within one proven source group at fix",
+        "source discontinuity and group-end hard stop",
+        "sensor integrity, monotonic timestamp and capture envelope rejection",
+        "illustrative altitude/speed constraint preview with exact source provenance",
+        "standalone synthetic point-mass feedback loop",
+        "same-origin read-only EHSI PLAN overlay, original controls unchanged"
+      ],
+      "required_unimplemented": [
+        "verified source-coded SID/STAR/APP path terminators",
+        "validated fly-by trajectory RF/CF/DF/holds and approach missed approach",
+        "fitted EP-FSI FMC/AFDS LNAV VNAV flight-director authority",
+        "live sensor bus and aircraft kinematic/AFDS integration",
+        "real device and dynamic-aircraft flight acceptance"
+      ],
+      "mode": "SIMULATED_ADVISORY_ONLY",
+      "actual_fmc_legs_executable": 0,
+      "autopilot_actuator_output": false,
+      "lnav_mode_active": false,
+      "vnav_mode_active": false,
+      "private_data_remains_in_library": true
     }
   }
 }
