@@ -10,14 +10,17 @@
 <label>PMC mode <select id="n1-pmc-mode"><option value="UNKNOWN">Unknown</option><option value="NORMAL">NORMAL</option><option value="OFF">OFF</option></select></label>
 <label>Flight phase <select id="n1-phase"><option value="TAKEOFF">TAKEOFF</option><option value="GO_AROUND">GO-AROUND</option><option value="MAX_CONTINUOUS">MAX CONTINUOUS</option></select></label>
 <label>Pressure altitude (ft) <input id="n1-pressure-alt" type="number" min="-1000" max="37000" placeholder="Not supplied"></label>
-<label>OAT (°C) <input id="n1-oat" type="number" placeholder="Takeoff only"></label>
+<label>Weather <select id="n1-weather-mode"><option value="ISA" selected>ISA — default all phases</option><option value="CUSTOM">Custom OAT override</option></select></label>
+<label>OAT (°C) <input id="n1-oat" type="number" placeholder="Derived from ISA at pressure altitude"></label>
 <label>TAT (°C) <input id="n1-tat" type="number" placeholder="Go-around / MCT"></label>
 <label>Mach <input id="n1-mach" type="number" min="0" max="0.82" step="0.01" placeholder="Required for MCT"></label>
 <label>IAS (kt) <input id="n1-ias" type="number" min="0" max="340" placeholder="40–60 for TO ref"></label>
-<label>Bleed configuration <select id="n1-bleed"><option value="">Unknown</option><option value="AUTO">A/C AUTO</option><option value="OFF">A/C OFF</option><option value="HIGH">A/C HIGH</option></select></label>
-<label>Anti-ice <select id="n1-anti-ice"><option value="">Unknown</option><option value="OFF">OFF</option><option value="ENGINE">ENGINE</option><option value="WING">WING</option><option value="BOTH">BOTH</option></select></label>
+<label>Engine bleed <select id="n1-engine-bleed"><option value="ON" selected>ON — default</option><option value="OFF">OFF</option></select></label>
+<label>A/C PACKS <select id="n1-bleed"><option value="AUTO" selected>AUTO — normal default</option><option value="OFF">OFF</option><option value="HIGH">HIGH</option></select></label>
+<label>Anti-ice <select id="n1-anti-ice"><option value="OFF" selected>OFF — default</option><option value="ENGINE">ENGINE</option><option value="WING">WING</option><option value="BOTH">BOTH</option></select></label>
+<p id="n1-defaults-status" class="subtle" aria-live="polite">ISA / Bleed ON / Anti-ice OFF</p>
 <p class="subtle">Page N1 LIMIT shows PDF chart reference and ---.- until source curves are independently verified. No autothrottle commands are issued.</p>
 </section><section><h2>راهنمای اجرا</h2><p>روی <b>RTE</b> کلیک کن، فرودگاه چهارحرفی را با صفحه‌کلید CDU وارد کن و <b>LSK L1</b> را بزن. سپس مقصد را در <b>LSK R1</b> ثبت کن. چراغ EXEC روشن می‌شود؛ کلید EXEC را فشار بده.</p><p>فشردن <b>CLR</b> یک حرف را پاک می‌کند و نگه‌داشتن آن Scratchpad را خالی می‌کند. DIM BRT روشنایی تصویر را در حالت تمرینی تغییر می‌دهد.</p><p class="subtle">این نمونه شبیه‌ساز رفتار ورودی و صفحه‌ها است؛ هنوز ناوبری، محاسبات Performance یا مسیر واقعی هواپیما را انجام نمی‌دهد.</p></section>
 <section id="qa" hidden><h2>اطلاعات کنترل</h2><pre id="selected-code" dir="ltr"></pre><p>نقشهٔ اصلی: <a href="data/cdu-map.json">JSON 70 controls</a> | <a href="data/buttons.csv">CSV</a> | <a href="data/cdu-hotspot-audit-v2.jpg">QA overlay</a></p><p>فصل ۱۱: <a href="reference/chapter11-pages.json">409-page index</a></p></section></aside></main>
 <footer>Only for training, not for actual flight. FCOM references: 11.10.3–11.10.7; 11.40–11.43, 11.60. Artwork retains the original approved image byte-for-byte; display contents and lights are independent overlays.</footer>
-<script src="data/cdu-map.js"></script><script src="data/afm-epfsi-n1-v10.js"></script><script src="app.js"></script></body></html>
+<script src="data/cdu-map.js"></script><script src="data/epfsi-scenario-defaults-v17.js"></script><script src="data/afm-epfsi-n1-v10.js"></script><script src="app.js"></script></body></html>
