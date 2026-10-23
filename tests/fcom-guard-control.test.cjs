@@ -101,7 +101,10 @@ test('photo-matched three-position frames and actual JS source compile',()=>{
       assert.equal(buf.toString('ascii',8,12),'WEBP');
     }
     for(const [key,prefix] of [['x','--x'],['y','--y'],['width','--w'],['height','--h']]){
-      assert.ok(segment.includes(prefix+':'+meta.boxPct[key]+'%'),id+' '+key);
+      const begin=segment.indexOf(prefix+':');
+      assert.ok(begin>=0,id+' missing '+key);
+      const actual=parseFloat(segment.slice(begin+prefix.length+1));
+      assert.equal(actual,meta.boxPct[key],id+' '+key);
     }
   }
   assert.ok(css.includes('data-position="left"] .nav-left'));
