@@ -229,3 +229,11 @@ GitHub main and hosted cockpit were intentionally not changed. Source report: `d
 | ENG-083 Actual AFM N1 + validated engine physics | BLOCKED | Independent graph QA (v13 0 approved points), PMC and bleed correction validation, measured CFM56-3B-1 20K engine dynamics calibration data and acceptance are needed. |
 
 Engineering design and source boundaries: `docs/ENGINE_PERFORMANCE_DYNAMICS_ISN10.md`. The private AFM PDF and its graphs were NOT copied into the public GitHub source.
+
+## AFM N1 direct-source v16 merge — 2026-10-23
+- **ENG-084 DONE:** Read original 978-page AFM Rev32 PDF and verify SHA-256; scope exact N1 pages 128, 129, 130 and 756 for EP-FSI ASN29340 20K.
+- **ENG-085 DONE (SOURCE INVENTORY):** Union existing v15 MAXIMUM N1 cap/crossing proposals with 13 required diagram components, 45 source labels, 301 additional unassigned source-line proposals and all existing v11-v14 provisional data in private SQLite v16. Source pages/image overlays remain private in Library `Technical Database/Sources/AFM-737-33V-D6-8730-R32/EP-FSI-ASN29340/v16/`.
+- **ENG-086 DONE (QA GATE):** Runtime metadata `epfsi-afm-n1-source-gate.v16.json`, strict QA version 16 and automated `tests/afm-n1-v16-qa-gate.test.cjs`; `getAFMTargetN1` must remain blocked; 0 independently approved N1 points.
+- **ENG-087 BLOCKED:** Complete altitude-to-curve hot-side assignment for 128/129/756, bleed/cowl/wing anti-ice correction branches, all MCT nomogram stages, installed PMC effectivity, independent human numeric signoff and verified golden vectors. **Do not claim full N1 curves complete** or issue FMC numeric N1 from single-source provisional readings.
+
+Source audit: `docs/AFM_N1_V16_DIGITIZATION_STATUS.md`. `main` and hosted cockpit not changed.
