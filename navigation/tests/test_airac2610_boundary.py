@@ -1,4 +1,7 @@
 import unittest
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from airac2610_boundary import MARKER, post_airac_lines, post_airac_payload
 
 class HeaderBoundaryTests(unittest.TestCase):
