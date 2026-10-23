@@ -495,7 +495,7 @@
       "cdu_adapter": "cdu-standalone-v6/reference-progress-advisory.js",
       "docs": "navigation/REFERENCE_PROGRESS.md",
       "private_package": "/B737/NAVDB/REFERENCE_PROGRESS/B737_NAVDB_AIRAC2610_REFERENCE_PROGRESS_EXTENSION.zip",
-      "offline_release_sha256": "183fd0bfa380a205096f4f167685a416d444776b87e6042837501b5740c8953e",
+      "offline_release_sha256": "f1a4fca7eeca9c6ad8be4d84832398636ac068344958a6b23c14a649d0510ad4",
       "source_requirement": "User-owned private Stage4 archive required at runtime",
       "test_status": {
         "python_tests_passed": 22,
