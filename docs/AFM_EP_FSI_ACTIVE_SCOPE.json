@@ -210,5 +210,16 @@
     "cdu": "cdu-standalone/data/epfsi-scenario-defaults-v17.js",
     "override": "EXPLICIT_SCENARIO_CAN_OVERRIDE_DEFAULTS",
     "source_n1_calculations": "STILL_BLOCKED_NUMERIC_AFMDIGITIZATION_NOT_APPROVED"
+  },
+  "present_n1_v18": {
+    "release": "18_PRESENT_N1_RECEIVE_BRIDGE",
+    "module": "engine/fmc/indications/present-n1-bridge-v18.cjs",
+    "cdu_offline_bundle": "cdu-standalone/data/present-n1-bridge-v18.js",
+    "state": "CDU CAN READ PROVIDED N1_1_AND_N1_2; ENGINE_CORE_N1_PRODUCER_MISSING",
+    "external_sim_transport": "NOT_CONNECTED",
+    "source_test_measurements": "EXPLICITLY_TAGGED_TEST",
+    "real_engine_n1_inputs": "NOT_AVAILABLE_UNTIL_EXTERNAL_ENGINE_CORE_PUBLISHES",
+    "max_n1_calculation": "UNCHANGED_BLOCKED_AFM_CURVE_QA",
+    "status_note": "Telemetry adapter for actual present N1, not Boeing AFM computed MAX N1"
   }
 }
