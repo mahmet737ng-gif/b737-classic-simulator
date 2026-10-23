@@ -1,6 +1,6 @@
 {
   "schema": "b737-mosaic-atlas.v1",
-  "version": "2026-10-24.5",
+  "version": "2026-10-24.6",
   "source": "Owner supplied one-page PDF composite (2026-10-23). Initial reference atlas, boundaries provisional.",
   "panels": [
     {
@@ -347,7 +347,7 @@
     },
     {
       "id": "OH-19",
-      "title": "COCKPIT VOICE RECORDER + PRESS DIFF / ALT HORN",
+      "title": "COCKPIT VOICE RECORDER / PRESS DIFF / ALT HORN",
       "x": 429,
       "y": 900,
       "w": 161,
@@ -355,15 +355,17 @@
       "group": "EQUIPMENT / PRESSURE INSTRUMENTS",
       "status": "artwork",
       "artwork": null,
-      "geometryStatus": "2-original-plates-source-verified; historical-bounding-rect-rejected",
+      "geometryStatus": "atlas-placement-corrected; exact plate contours unapproved; historic rectangle rejected",
       "placement": {
         "sources": [
           "assets/locked/2026-10-23/OH19-VOICE-RECORDER-2db6785ecddc.png",
           "assets/locked/2026-10-23/OH19-PRESS-DIFF-ALT-HORN-d6719ce57cef.png"
         ],
         "stageUrl": "all-overhead/",
-        "physicalOrder": "below OH18: voice recorder, then press differential/cabin climb/alt horn",
-        "status": "atlas-source-placement-confirmed; seam QA pending"
+        "physicalOrder": "fourth atlas column: immediately after OH-17 HYD PUMPS, Voice Recorder then Press Diff / Alt Horn",
+        "status": "source-verified-in-correct-column; physical seams awaiting QA",
+        "atlasColumnIndex": 3,
+        "displayWidth": "same as OH-17 and column 4; preserve each source image aspect ratio"
       }
     },
     {
@@ -404,15 +406,22 @@
     },
     {
       "id": "OH-22",
-      "title": "CABIN PRESSURIZATION",
+      "title": "CABIN PRESSURIZATION / FLT ALT / LAND ALT",
       "x": 590,
       "y": 775,
       "w": 158,
       "h": 341,
       "group": "PRESS",
-      "status": "mapped",
+      "status": "artwork",
       "artwork": null,
-      "geometryStatus": "rejected"
+      "geometryStatus": "atlas-content-placed; physical plate border unapproved",
+      "placement": {
+        "source": "assets/locked/2026-10-23/OH22-CABIN-PRESSURIZATION-d1c6c39b6b33.png",
+        "stageUrl": "all-overhead/",
+        "sha256": "0756878f35a9b3e4bc9ce03e98a644927edbead65d4e61f3ae4b9e0a649a2a41",
+        "position": "fifth wide column, directly below OH-21 BLEED AIR",
+        "status": "source-verified-atlas-aligned"
+      }
     },
     {
       "id": "OH-23",
@@ -422,9 +431,27 @@
       "w": 343,
       "h": 84,
       "group": "LIGHTS",
-      "status": "mapped",
+      "status": "artwork",
       "artwork": null,
-      "geometryStatus": "rejected"
+      "geometryStatus": "one shared long lower-plate image OH23-25; historical separated boxes rejected",
+      "placement": {
+        "source": "assets/locked/2026-10-23/OH23-25-LOWER-CONTROLS-fad696c845df.png",
+        "sharedAssetId": "OH-23-25-SOURCE-UPD-0008",
+        "stageUrl": "all-overhead/",
+        "sha256": "80cb82375dccc9a127919e73cb13ebadfef198572fcbdce2ea9be8b7d7ba7f2a",
+        "displayCropOnly": {
+          "topPx": 212,
+          "bottomPx": 216,
+          "nonWhiteBoundsPx": [
+            4,
+            212,
+            2166,
+            509
+          ]
+        },
+        "position": "one uninterrupted full-width lower switching row beneath all five main columns",
+        "status": "source-verified-atlas-aligned"
+      }
     },
     {
       "id": "OH-24",
@@ -434,9 +461,27 @@
       "w": 238,
       "h": 84,
       "group": "ENGINE",
-      "status": "mapped",
+      "status": "artwork",
       "artwork": null,
-      "geometryStatus": "rejected"
+      "geometryStatus": "one shared long lower-plate image OH23-25; historical separated boxes rejected",
+      "placement": {
+        "source": "assets/locked/2026-10-23/OH23-25-LOWER-CONTROLS-fad696c845df.png",
+        "sharedAssetId": "OH-23-25-SOURCE-UPD-0008",
+        "stageUrl": "all-overhead/",
+        "sha256": "80cb82375dccc9a127919e73cb13ebadfef198572fcbdce2ea9be8b7d7ba7f2a",
+        "displayCropOnly": {
+          "topPx": 212,
+          "bottomPx": 216,
+          "nonWhiteBoundsPx": [
+            4,
+            212,
+            2166,
+            509
+          ]
+        },
+        "position": "one uninterrupted full-width lower switching row beneath all five main columns",
+        "status": "source-verified-atlas-aligned"
+      }
     },
     {
       "id": "OH-25",
@@ -446,9 +491,27 @@
       "w": 167,
       "h": 84,
       "group": "LIGHTS",
-      "status": "mapped",
+      "status": "artwork",
       "artwork": null,
-      "geometryStatus": "rejected"
+      "geometryStatus": "one shared long lower-plate image OH23-25; historical separated boxes rejected",
+      "placement": {
+        "source": "assets/locked/2026-10-23/OH23-25-LOWER-CONTROLS-fad696c845df.png",
+        "sharedAssetId": "OH-23-25-SOURCE-UPD-0008",
+        "stageUrl": "all-overhead/",
+        "sha256": "80cb82375dccc9a127919e73cb13ebadfef198572fcbdce2ea9be8b7d7ba7f2a",
+        "displayCropOnly": {
+          "topPx": 212,
+          "bottomPx": 216,
+          "nonWhiteBoundsPx": [
+            4,
+            212,
+            2166,
+            509
+          ]
+        },
+        "position": "one uninterrupted full-width lower switching row beneath all five main columns",
+        "status": "source-verified-atlas-aligned"
+      }
     },
     {
       "id": "MP-01",
@@ -861,7 +924,7 @@
   ],
   "validation": {
     "status": "rejected",
-    "reason": "Old fixed 59 rectangular mapping remains rejected. Sources OH01-21 placed by image content against original owner overhead reference, with two independent plates for combined OH19 region. Exact physical plate contours not yet QA approved.",
+    "reason": "Historic 59-rectangle bounds remain rejected. All 25 overhead atlas region IDs now have source imagery, with OH19 represented by 2 independent plates and OH23-25 by 1 shared full-width lower panel. Accurate physical seam polygons await QA.",
     "next": "Re-trace each individual physical screw-defined plate on the actual owner PDF; independently QA 3 assemblies."
   },
   "previousVersion": "2026-10-23.3-REJECTED",
@@ -947,5 +1010,15 @@
       "OH-25"
     ],
     "note": "OH19 has two physical plates, stored and displayed independently. The old atlas rectangular geometry is not approved."
+  },
+  "fullOverhead": {
+    "revision": "UPD-0008-all-25-atlas-test",
+    "sourceViewer": "all-overhead/",
+    "fileCount": 18,
+    "panelIds": 25,
+    "missingImages": 0,
+    "atlasAlignment": "OH19-VOICE and OH19-DIFF in fourth wide column immediately below OH17; OH22 in far-right column below OH21; shared OH23-25 lower panel spanning all columns",
+    "physicalSeams": "not approved",
+    "imageMutations": "none"
   }
 }
