@@ -37,10 +37,12 @@ class Handler(SimpleHTTPRequestHandler):
         if req.path=='/api/procedures':return self.engine.procedure_catalog(q.get('airport',''),q.get('kind'))
         if req.path=='/api/procedure-preview':
             return self.engine.procedure_preview(q.get('airport',''),q.get('kind',''),q.get('ident',''),q.get('runway'),q.get('transition'))
-        if req.path=='/api/route' and self.command=='POST':
+        if req.path in ('/api/route','/api/position') and self.command=='POST':
             length=int(self.headers.get('Content-Length','-1'))
             if length<1 or length>32768:raise NavError('INVALID_BODY','Request body exceeds 32 KB')
-            return self.engine.route(json.loads(self.rfile.read(length)))
+            payload=json.loads(self.rfile.read(length))
+            if req.path=='/api/route':return self.engine.route(payload)
+            return self.engine.position_reference(payload['route'],payload['position'],payload.get('activeLeg',1))
         raise NavError('UNSUPPORTED_ENDPOINT','Unsupported API request')
     def do_GET(self):
         if not self.path.startswith('/api/'):
@@ -49,7 +51,7 @@ class Handler(SimpleHTTPRequestHandler):
     def do_POST(self):
         self.api()
     def api(self):
-        if not self.path.startswith('/api/') or (self.command=='POST' and urlsplit(self.path).path!='/api/route'):
+        if not self.path.startswith('/api/') or (self.command=='POST' and urlsplit(self.path).path not in ('/api/route','/api/position')):
             return self.reply({'error':'UNSUPPORTED_ENDPOINT'},404)
         # No cross-origin Access-Control-Allow-Origin: requests are local same-origin only.
         try:
