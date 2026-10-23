@@ -1,0 +1,14 @@
+name: Chapter 11 RNP LNAV waypoint contracts
+on:
+  push:
+  pull_request:
+jobs:
+  source-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node engine/ch11/tests/rnp-lnav-waypoints-2020.test.cjs
+      - run: node tests/cdu-font-lock.test.cjs

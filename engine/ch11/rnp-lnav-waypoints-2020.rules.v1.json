@@ -1,0 +1,739 @@
+{
+  "schema": "b737-ch11-rnp-lnav-waypoint-contract/1",
+  "record_id": "B737-CLASSIC-CDU-LNAV-WAYPOINTS-2020-10-15",
+  "source": {
+    "file": "Pasted text(1).txt",
+    "file_sha256": "650361ce2a7fd1fd4754c0f348e9fb92402d43a4cc3a75fcd5337ce006bca4d5",
+    "image": "image(20261023-180750).png",
+    "image_sha256": "39dcfd81f36e3fbac3a2e0e2cdba21b19d8332b09a96d2cf326f3db0b05d03be",
+    "manual": "B737 Classic FCOM Flight Management System Operation",
+    "document_code": "D6-27370-300/400/500-SHI",
+    "printed_date": "2020-10-15",
+    "visible_folios": [
+      "11.31.16",
+      "11.31.17",
+      "11.31.18",
+      "11.31.19",
+      "11.31.20",
+      "11.31.21",
+      "11.31.22",
+      "11.31.23"
+    ],
+    "excerpt_end_missing_folio": true,
+    "image_reference": "PDF viewer page 1510 of 1937",
+    "public_repository_policy": "SOURCE MATERIAL NOT REPRODUCED: PARAPHRASED RULES AND SHORT IDENTIFIERS ONLY"
+  },
+  "status": "EXCERPT_INDEXED_FIGURE_REVIEWED_EFFECTIVITY_NOT_VERIFIED",
+  "source_scope": "User-supplied 415-line excerpt and screenshot; not full manual verification",
+  "requirements": [
+    {
+      "id": "RNP-DEFAULT-PRIORITY",
+      "domain": "rnp_anp",
+      "source_folio": "11.31.16",
+      "source_text_lines": "L1-L5",
+      "paraphrase": "RNP is environment-specific; database values and crew entries are possible.",
+      "installed_aircraft_effectivity": "UNCONFIRMED",
+      "implementation": "REQUIREMENT_ONLY"
+    },
+    {
+      "id": "RNP-ANP-COMPARISON",
+      "domain": "rnp_anp",
+      "source_folio": "11.31.16",
+      "source_text_lines": "L4-L12",
+      "paraphrase": "ANP greater than displayed RNP triggers alert after a configured continuous time.",
+      "installed_aircraft_effectivity": "UNCONFIRMED",
+      "implementation": "REQUIREMENT_ONLY"
+    },
+    {
+      "id": "RNP-ALERT-CDU",
+      "domain": "rnp_anp",
+      "source_folio": "11.31.16",
+      "source_text_lines": "L8-L20",
+      "paraphrase": "CDU scratchpad shows UNABLE REQD NAV PERF–RNP after the applicable timer.",
+      "installed_aircraft_effectivity": "UNCONFIRMED",
+      "implementation": "REQUIREMENT_ONLY"
+    },
+    {
+      "id": "RNP-MAP-ALERT-SCOPE",
+      "domain": "rnp_anp",
+      "source_folio": "11.31.16",
+      "source_text_lines": "L8-L21",
+      "paraphrase": "Two configurations differ: amber map message during all phases or only approach.",
+      "installed_aircraft_effectivity": "UNCONFIRMED",
+      "implementation": "REQUIREMENT_ONLY"
+    },
+    {
+      "id": "RNP-FMC-AMBER-LIGHTS",
+      "domain": "rnp_anp",
+      "source_folio": "11.31.16",
+      "source_text_lines": "L11-L20",
+      "paraphrase": "Instrument panel FMC amber indicator participates in the RNP alert.",
+      "installed_aircraft_effectivity": "UNCONFIRMED",
+      "implementation": "REQUIREMENT_ONLY"
+    },
+    {
+      "id": "RNP-DISPLAY-PAGES",
+      "domain": "rnp_anp",
+      "source_folio": "11.31.16",
+      "source_text_lines": "L13-L21",
+      "paraphrase": "RNP shown on POS SHIFT, RNP PROGRESS 4/4, and RTE LEGS.",
+      "installed_aircraft_effectivity": "UNCONFIRMED",
+      "implementation": "REQUIREMENT_ONLY"
+    },
+    {
+      "id": "LNAV-WITHIN-3NM",
+      "domain": "lnav_engagement",
+      "source_folio": "11.31.17",
+      "source_text_lines": "L39-L44",
+      "paraphrase": "LNAV engagement criterion includes lateral proximity within 3 NM of active leg.",
+      "installed_aircraft_effectivity": "UNCONFIRMED",
+      "implementation": "REQUIREMENT_ONLY"
+    },
+    {
+      "id": "LNAV-OUTSIDE-3NM-INTERCEPT",
+      "domain": "lnav_engagement",
+      "source_folio": "11.31.17",
+      "source_text_lines": "L40-L44",
+      "paraphrase": "If farther out, intercept heading <= 90 degrees and intercept before active waypoint are necessary.",
+      "installed_aircraft_effectivity": "UNCONFIRMED",
+      "implementation": "REQUIREMENT_ONLY"
+    },
+    {
+      "id": "LNAV-GREAT-CIRCLE",
+      "domain": "lnav_engagement",
+      "source_folio": "11.31.17",
+      "source_text_lines": "L44-L47",
+      "paraphrase": "Normal active leg guidance follows great-circle geometry.",
+      "installed_aircraft_effectivity": "UNCONFIRMED",
+      "implementation": "REQUIREMENT_ONLY"
+    },
+    {
+      "id": "LNAV-PROCEDURE-LEG-GEOMETRY",
+      "domain": "lnav_engagement",
+      "source_folio": "11.31.17",
+      "source_text_lines": "L45-L47",
+      "paraphrase": "Published procedures may require heading, track, or arc legs.",
+      "installed_aircraft_effectivity": "UNCONFIRMED",
+      "implementation": "REQUIREMENT_ONLY"
+    },
+    {
+      "id": "WPT-NOT-IN-DATABASE",
+      "domain": "waypoint_naming",
+      "source_folio": "11.31.17",
+      "source_text_lines": "L50-L55",
+      "paraphrase": "Unresolved identifier produces NOT IN DATA BASE; alternate coordinate/bearing entry exists.",
+      "installed_aircraft_effectivity": "UNCONFIRMED",
+      "implementation": "REQUIREMENT_ONLY"
+    },
+    {
+      "id": "WPT-VHF-IDENT",
+      "domain": "waypoint_naming",
+      "source_folio": "11.31.17",
+      "source_text_lines": "L56-L63",
+      "paraphrase": "VHF navigation fix identifiers reuse published 1–4 character navaid IDs.",
+      "installed_aircraft_effectivity": "UNCONFIRMED",
+      "implementation": "REQUIREMENT_ONLY"
+    },
+    {
+      "id": "WPT-NDB-IDENT",
+      "domain": "waypoint_naming",
+      "source_folio": "11.31.17",
+      "source_text_lines": "L64-L66",
+      "paraphrase": "NDB fix ident corresponds to the station ID.",
+      "installed_aircraft_effectivity": "UNCONFIRMED",
+      "implementation": "REQUIREMENT_ONLY"
+    },
+    {
+      "id": "WPT-SHORT-NAMED-FIX",
+      "domain": "waypoint_naming",
+      "source_folio": "11.31.17",
+      "source_text_lines": "L67-L72",
+      "paraphrase": "Single-word fix names of five or fewer characters remain unchanged.",
+      "installed_aircraft_effectivity": "UNCONFIRMED",
+      "implementation": "REQUIREMENT_ONLY"
+    },
+    {
+      "id": "WPT-DUPLICATE-LETTER-ABBREVIATION",
+      "domain": "waypoint_naming",
+      "source_folio": "11.31.18",
+      "source_text_lines": "L80-L85",
+      "paraphrase": "Remove repeated consecutive letters in a long waypoint name.",
+      "installed_aircraft_effectivity": "UNCONFIRMED",
+      "implementation": "REQUIREMENT_ONLY"
+    },
+    {
+      "id": "WPT-VOWEL-ABBREVIATION",
+      "domain": "waypoint_naming",
+      "source_folio": "11.31.18",
+      "source_text_lines": "L86-L90",
+      "paraphrase": "Keep first letter, first vowel, last letter and remove other vowels right to left.",
+      "installed_aircraft_effectivity": "UNCONFIRMED",
+      "implementation": "REQUIREMENT_ONLY"
+    },
+    {
+      "id": "WPT-CONSONANT-ABBREVIATION",
+      "domain": "waypoint_naming",
+      "source_folio": "11.31.18",
+      "source_text_lines": "L91-L94",
+      "paraphrase": "If still oversized, remove eligible consonants from right to left while retaining last letter.",
+      "installed_aircraft_effectivity": "UNCONFIRMED",
+      "implementation": "REQUIREMENT_ONLY"
+    },
+    {
+      "id": "WPT-MULTIWORD-ABBREVIATION",
+      "domain": "waypoint_naming",
+      "source_folio": "11.31.18",
+      "source_text_lines": "L95-L99",
+      "paraphrase": "Multiword fix uses first-word initial and abbreviated last word.",
+      "installed_aircraft_effectivity": "UNCONFIRMED",
+      "implementation": "REQUIREMENT_ONLY"
+    },
+    {
+      "id": "WPT-COLLOCATED-UNNAMED",
+      "domain": "waypoint_naming",
+      "source_folio": "11.31.18",
+      "source_text_lines": "L100-L107",
+      "paraphrase": "Unnamed collocated point may share existing established identifier.",
+      "installed_aircraft_effectivity": "UNCONFIRMED",
+      "implementation": "REQUIREMENT_ONLY"
+    },
+    {
+      "id": "WPT-NAVAID-DISTANCE-99",
+      "domain": "waypoint_naming",
+      "source_folio": "11.31.18",
+      "source_text_lines": "L108-L116",
+      "paraphrase": "Up to 99 NM: navaid identifier followed by distance.",
+      "installed_aircraft_effectivity": "UNCONFIRMED",
+      "implementation": "REQUIREMENT_ONLY"
+    },
+    {
+      "id": "WPT-NAVAID-DISTANCE-100",
+      "domain": "waypoint_naming",
+      "source_folio": "11.31.18",
+      "source_text_lines": "L108-L116",
+      "paraphrase": "At or above 100 NM: two final digits of distance placed before navaid identifier.",
+      "installed_aircraft_effectivity": "UNCONFIRMED",
+      "implementation": "REQUIREMENT_ONLY"
+    },
+    {
+      "id": "WPT-FIR-UIR-ID",
+      "domain": "waypoint_naming",
+      "source_folio": "11.31.19",
+      "source_text_lines": "L124-L127",
+      "paraphrase": "Unnamed airspace reporting point names encode airspace kind and two-digit sequence.",
+      "installed_aircraft_effectivity": "UNCONFIRMED",
+      "implementation": "REQUIREMENT_ONLY"
+    },
+    {
+      "id": "WPT-OCEANIC-HEMISPHERE",
+      "domain": "waypoint_naming",
+      "source_folio": "11.31.19",
+      "source_text_lines": "L128-L137",
+      "paraphrase": "Five-character oceanic fixes encode hemispheres and longitude with position-sensitive designator.",
+      "installed_aircraft_effectivity": "UNCONFIRMED",
+      "implementation": "REQUIREMENT_ONLY"
+    },
+    {
+      "id": "WPT-ARC-UP-TO-26",
+      "domain": "waypoint_naming",
+      "source_folio": "11.31.19",
+      "source_text_lines": "L138-L146",
+      "paraphrase": "Unnamed <=26-NM DME arc fix uses D + 3-digit radial + alphabetic radius letter.",
+      "installed_aircraft_effectivity": "UNCONFIRMED",
+      "implementation": "REQUIREMENT_ONLY"
+    },
+    {
+      "id": "WPT-ARC-OVER-26",
+      "domain": "waypoint_naming",
+      "source_folio": "11.31.19",
+      "source_text_lines": "L147-L157",
+      "paraphrase": "Greater-than-26-NM arcs use alternate navaid/distance naming; multiple points add sequence.",
+      "installed_aircraft_effectivity": "UNCONFIRMED",
+      "implementation": "REQUIREMENT_ONLY"
+    },
+    {
+      "id": "WPT-MARKER-BEACON-NAME",
+      "domain": "waypoint_naming",
+      "source_folio": "11.31.20",
+      "source_text_lines": "L173-L177",
+      "paraphrase": "Marker beacon fix ID includes marker type and runway identifier.",
+      "installed_aircraft_effectivity": "UNCONFIRMED",
+      "implementation": "REQUIREMENT_ONLY"
+    },
+    {
+      "id": "WPT-RUNWAY-RELATED-PREFIX",
+      "domain": "waypoint_naming",
+      "source_folio": "11.31.20",
+      "source_text_lines": "L178-L205",
+      "paraphrase": "Runway-related unnamed fixes have fix-role plus runway-based prefixes.",
+      "installed_aircraft_effectivity": "UNCONFIRMED",
+      "implementation": "REQUIREMENT_ONLY"
+    },
+    {
+      "id": "WPT-APPROACH-TYPE-PREFIX",
+      "domain": "waypoint_naming",
+      "source_folio": "11.31.20",
+      "source_text_lines": "L182-L226",
+      "paraphrase": "Duplicate runway-procedure fixes may use approach-type discriminator.",
+      "installed_aircraft_effectivity": "UNCONFIRMED",
+      "implementation": "REQUIREMENT_ONLY"
+    },
+    {
+      "id": "WPT-PROCEDURE-UNNAMED-TURN",
+      "domain": "waypoint_resolution",
+      "source_folio": "11.31.21",
+      "source_text_lines": "L234-L239",
+      "paraphrase": "Procedure-selected unnamed turns are coordinate-based unless conditional.",
+      "installed_aircraft_effectivity": "UNCONFIRMED",
+      "implementation": "REQUIREMENT_ONLY"
+    },
+    {
+      "id": "WPT-ARP-ICAO",
+      "domain": "waypoint_resolution",
+      "source_folio": "11.31.21",
+      "source_text_lines": "L240-L241",
+      "paraphrase": "Airport reference points use ICAO airport identifier.",
+      "installed_aircraft_effectivity": "UNCONFIRMED",
+      "implementation": "REQUIREMENT_ONLY"
+    },
+    {
+      "id": "WPT-SELECT-DESIRED-DUPLICATE",
+      "domain": "waypoint_resolution",
+      "source_folio": "11.31.21",
+      "source_text_lines": "L242-L254",
+      "paraphrase": "Duplicate identifier entry prompts selection between entries using coordinates/type.",
+      "installed_aircraft_effectivity": "UNCONFIRMED",
+      "implementation": "REQUIREMENT_ONLY"
+    },
+    {
+      "id": "WPT-DUPLICATE-ROUTE-FIRST",
+      "domain": "waypoint_resolution",
+      "source_folio": "11.31.21",
+      "source_text_lines": "L255-L261",
+      "paraphrase": "Some DIRECT TO/HOLD edits select first same-named route occurrence; later one requires removal of first.",
+      "installed_aircraft_effectivity": "UNCONFIRMED",
+      "implementation": "REQUIREMENT_ONLY"
+    },
+    {
+      "id": "COND-INSERT-FROM-PROCEDURE",
+      "domain": "conditional_leg",
+      "source_folio": "11.31.21",
+      "source_text_lines": "L262-L267",
+      "paraphrase": "Conditional points derive from chosen DEPARTURES/ARRIVALS procedure, not fixed coordinates.",
+      "installed_aircraft_effectivity": "UNCONFIRMED",
+      "implementation": "REQUIREMENT_ONLY"
+    },
+    {
+      "id": "COND-MANUAL-ENTRY-RESTRICTED",
+      "domain": "conditional_leg",
+      "source_folio": "11.31.21",
+      "source_text_lines": "L263-L266",
+      "paraphrase": "Normally cannot manually enter conditional points in RTE or RTE LEGS.",
+      "installed_aircraft_effectivity": "UNCONFIRMED",
+      "implementation": "REQUIREMENT_ONLY"
+    },
+    {
+      "id": "COND-ALTITUDE-EVENT",
+      "domain": "conditional_leg",
+      "source_folio": "11.31.21",
+      "source_text_lines": "L267-L269",
+      "paraphrase": "Altitude crossing defines a condition-terminated leg.",
+      "installed_aircraft_effectivity": "UNCONFIRMED",
+      "implementation": "REQUIREMENT_ONLY"
+    },
+    {
+      "id": "COND-HEADING-TO-RADIAL-DME",
+      "domain": "conditional_leg",
+      "source_folio": "11.31.21",
+      "source_text_lines": "L269-L270",
+      "paraphrase": "Heading to radial or DME distance defines a condition termination.",
+      "installed_aircraft_effectivity": "UNCONFIRMED",
+      "implementation": "REQUIREMENT_ONLY"
+    },
+    {
+      "id": "COND-COURSE-INTERCEPT",
+      "domain": "conditional_leg",
+      "source_folio": "11.31.21",
+      "source_text_lines": "L270-L271",
+      "paraphrase": "Course interception defines a condition termination.",
+      "installed_aircraft_effectivity": "UNCONFIRMED",
+      "implementation": "REQUIREMENT_ONLY"
+    },
+    {
+      "id": "COND-VECTORS",
+      "domain": "conditional_leg",
+      "source_folio": "11.31.21",
+      "source_text_lines": "L271-L272",
+      "paraphrase": "Vector heading toward course/fix defines a condition termination.",
+      "installed_aircraft_effectivity": "UNCONFIRMED",
+      "implementation": "REQUIREMENT_ONLY"
+    },
+    {
+      "id": "COND-PARENTHESES-IN-LEGS",
+      "domain": "conditional_leg",
+      "source_folio": "11.31.22",
+      "source_text_lines": "L281-L283",
+      "paraphrase": "Altitude and course-intercept conditional entries display inside parentheses.",
+      "installed_aircraft_effectivity": "UNCONFIRMED",
+      "implementation": "REQUIREMENT_ONLY"
+    },
+    {
+      "id": "VECTOR-LNAV-OFF-SEQUENCE",
+      "domain": "conditional_leg",
+      "source_folio": "11.31.22",
+      "source_text_lines": "L284-L286",
+      "paraphrase": "Without engaged LNAV, active VECTOR can auto-sequence within 3 NM of next leg.",
+      "installed_aircraft_effectivity": "UNCONFIRMED",
+      "implementation": "REQUIREMENT_ONLY"
+    },
+    {
+      "id": "VECTOR-LNAV-ON-HOLD",
+      "domain": "conditional_leg",
+      "source_folio": "11.31.22",
+      "source_text_lines": "L286-L289",
+      "paraphrase": "With LNAV engaged, active VECTOR must not auto-sequence; DIRECT TO/intercept-leg procedure followed by EXEC is required.",
+      "installed_aircraft_effectivity": "UNCONFIRMED",
+      "implementation": "REQUIREMENT_ONLY"
+    },
+    {
+      "id": "PILOT-LL-IDENT-FORMAT",
+      "domain": "user_waypoint",
+      "source_folio": "11.31.22",
+      "source_text_lines": "L290-L299",
+      "paraphrase": "Entered latitude/longitude waypoints use WPT plus two-digit generated ordinal.",
+      "installed_aircraft_effectivity": "UNCONFIRMED",
+      "implementation": "REQUIREMENT_ONLY"
+    },
+    {
+      "id": "PILOT-LL-ENTRY-CHARACTERS",
+      "domain": "user_waypoint",
+      "source_folio": "11.31.22",
+      "source_text_lines": "L293-L299",
+      "paraphrase": "Coordinate entry concatenates lat and lon with required leading zeros, no inserted spaces or slash.",
+      "installed_aircraft_effectivity": "UNCONFIRMED",
+      "implementation": "REQUIREMENT_ONLY"
+    },
+    {
+      "id": "PILOT-PBD-PBP-IDENT",
+      "domain": "user_waypoint",
+      "source_folio": "11.31.23",
+      "source_text_lines": "L345-L351",
+      "paraphrase": "Place-bearing/distance or place-bearing/place-bearing yields first three entry characters plus two-digit ordinal.",
+      "installed_aircraft_effectivity": "UNCONFIRMED",
+      "implementation": "REQUIREMENT_ONLY"
+    },
+    {
+      "id": "PILOT-ALONG-TRACK-NO-DISCO",
+      "domain": "user_waypoint",
+      "source_folio": "11.31.23",
+      "source_text_lines": "L352-L356",
+      "paraphrase": "Insert point on route along track without discontinuity.",
+      "installed_aircraft_effectivity": "UNCONFIRMED",
+      "implementation": "REQUIREMENT_ONLY"
+    },
+    {
+      "id": "PILOT-ALONG-TRACK-POS-NEG",
+      "domain": "user_waypoint",
+      "source_folio": "11.31.23",
+      "source_text_lines": "L357-L368",
+      "paraphrase": "Signed along-track offset means before or after fix; must remain within adjacent leg and cannot originate from lat/lon waypoint.",
+      "installed_aircraft_effectivity": "UNCONFIRMED",
+      "implementation": "REQUIREMENT_ONLY"
+    },
+    {
+      "id": "PILOT-ORDINAL-OVER-99",
+      "domain": "user_waypoint",
+      "source_folio": "11.31.23",
+      "source_text_lines": "L369-L375",
+      "paraphrase": "Numbered waypoints after 99 use first two characters and 3-digit ordinal starting at 100.",
+      "installed_aircraft_effectivity": "UNCONFIRMED",
+      "implementation": "REQUIREMENT_ONLY"
+    },
+    {
+      "id": "ROUTE-INACTIVE-CYAN-DASH",
+      "domain": "ehsi_route",
+      "source_folio": "11.31.23",
+      "source_text_lines": "L376-L382",
+      "paraphrase": "Inactive route and ACTIVATE-not-EXEC route appear cyan dashed in supported map modes.",
+      "installed_aircraft_effectivity": "UNCONFIRMED",
+      "implementation": "REQUIREMENT_ONLY"
+    },
+    {
+      "id": "ROUTE-ACTIVE-MAGENTA",
+      "domain": "ehsi_route",
+      "source_folio": "11.31.23",
+      "source_text_lines": "L378-L382",
+      "paraphrase": "Executed active route appears magenta.",
+      "installed_aircraft_effectivity": "UNCONFIRMED",
+      "implementation": "REQUIREMENT_ONLY"
+    },
+    {
+      "id": "ROUTE-MOD-WHITE",
+      "domain": "ehsi_route",
+      "source_folio": "UNCONFIRMED_NEXT_FOLIO",
+      "source_text_lines": "L390-L391",
+      "paraphrase": "MOD route shows white dashed line and modified fixes appear white.",
+      "installed_aircraft_effectivity": "UNCONFIRMED",
+      "implementation": "REQUIREMENT_ONLY"
+    },
+    {
+      "id": "ROUTE-OFFSET-MAGENTA-DOTDASH",
+      "domain": "ehsi_route",
+      "source_folio": "UNCONFIRMED_NEXT_FOLIO",
+      "source_text_lines": "L393",
+      "paraphrase": "Executed lateral offset shown as magenta dot-dash where option supports it.",
+      "installed_aircraft_effectivity": "UNCONFIRMED",
+      "implementation": "REQUIREMENT_ONLY"
+    },
+    {
+      "id": "ROUTE-MISSED-APP-CYAN",
+      "domain": "ehsi_route",
+      "source_folio": "UNCONFIRMED_NEXT_FOLIO",
+      "source_text_lines": "L394",
+      "paraphrase": "Missed approach route appears dashed cyan before becoming active.",
+      "installed_aircraft_effectivity": "UNCONFIRMED",
+      "implementation": "REQUIREMENT_ONLY"
+    },
+    {
+      "id": "VNAV-CLIMB-CRUISE-DESCENT",
+      "domain": "vnav_constraints",
+      "source_folio": "UNCONFIRMED_NEXT_FOLIO",
+      "source_text_lines": "L395-L401",
+      "paraphrase": "Vertical trajectory and speed profiles span climb, cruise, descent and LEGS constraints.",
+      "installed_aircraft_effectivity": "UNCONFIRMED",
+      "implementation": "REQUIREMENT_ONLY"
+    },
+    {
+      "id": "VNAV-ALTITUDE-BELOW-CRZ",
+      "domain": "vnav_constraints",
+      "source_folio": "UNCONFIRMED_NEXT_FOLIO",
+      "source_text_lines": "L399-L404",
+      "paraphrase": "Valid barometric crossing restriction must be below cruise altitude.",
+      "installed_aircraft_effectivity": "UNCONFIRMED",
+      "implementation": "REQUIREMENT_ONLY"
+    },
+    {
+      "id": "VNAV-PREDICTED-SMALL-FONT",
+      "domain": "vnav_constraints",
+      "source_folio": "UNCONFIRMED_NEXT_FOLIO",
+      "source_text_lines": "L402-L405",
+      "paraphrase": "FMC predicted values are not restrictions and use small CDU font.",
+      "installed_aircraft_effectivity": "UNCONFIRMED",
+      "implementation": "REQUIREMENT_ONLY"
+    },
+    {
+      "id": "VNAV-CONSTRAINT-LARGE-FONT",
+      "domain": "vnav_constraints",
+      "source_folio": "UNCONFIRMED_NEXT_FOLIO",
+      "source_text_lines": "L402-L405",
+      "paraphrase": "Crew-entered or procedure-published restrictions use large CDU font.",
+      "installed_aircraft_effectivity": "UNCONFIRMED",
+      "implementation": "REQUIREMENT_ONLY"
+    },
+    {
+      "id": "VNAV-SPEED-RESTRICTION-VARIANT",
+      "domain": "vnav_constraints",
+      "source_folio": "UNCONFIRMED_NEXT_FOLIO",
+      "source_text_lines": "L405-L408",
+      "paraphrase": "Airspeed restriction may be interpreted as AT or AT-OR-BELOW depending on configuration.",
+      "installed_aircraft_effectivity": "UNCONFIRMED",
+      "implementation": "REQUIREMENT_ONLY"
+    },
+    {
+      "id": "VNAV-ALTITUDE-SUFFIX-A-B",
+      "domain": "vnav_constraints",
+      "source_folio": "UNCONFIRMED_NEXT_FOLIO",
+      "source_text_lines": "L409-L415",
+      "paraphrase": "Altitude A suffix means >= limit; B means <= limit; mandatory altitude has no suffix; window combines both.",
+      "installed_aircraft_effectivity": "UNCONFIRMED",
+      "implementation": "REQUIREMENT_ONLY"
+    }
+  ],
+  "settings": {
+    "rnp_defaults_nm": {
+      "OCEANIC": 12,
+      "ENROUTE": 2,
+      "TERMINAL": 1,
+      "APPROACH": 0.5
+    },
+    "rnp_time_to_alert_options_seconds": [
+      {
+        "option": "UNRESOLVED_A",
+        "OCEANIC": 60,
+        "ENROUTE": 30,
+        "TERMINAL": 10,
+        "APPROACH": 10,
+        "amber_map_scope": "ALL_PHASES"
+      },
+      {
+        "option": "UNRESOLVED_B",
+        "OCEANIC": 80,
+        "ENROUTE": 80,
+        "TERMINAL": 60,
+        "APPROACH": 10,
+        "amber_map_scope": "APPROACH_ONLY"
+      }
+    ],
+    "lnav": {
+      "active_leg_lateral_engage_nm": 3,
+      "outer_intercept_heading_max_degrees": 90,
+      "outer_intercept_before_active_waypoint_required": true
+    },
+    "vector_without_lnav_autosequence_nm": 3,
+    "vnav_fonts": {
+      "entered_or_procedure_restrictions": "BoeingCDULarge",
+      "predicted_values": "BoeingCDUSmall"
+    },
+    "route_symbology": [
+      {
+        "route_status": "INACTIVE_OR_ACTIVATE_NOT_EXEC",
+        "color": "CYAN",
+        "pattern": "DASHED"
+      },
+      {
+        "route_status": "ACTIVE_EXECUTED",
+        "color": "MAGENTA",
+        "pattern": "SOLID"
+      },
+      {
+        "route_status": "MOD_UNEXECUTED",
+        "color": "WHITE",
+        "pattern": "DASHED"
+      },
+      {
+        "route_status": "EXECUTED_OFFSET",
+        "color": "MAGENTA",
+        "pattern": "DOT_DASH",
+        "effectivity": "VARIANT_UNRESOLVED"
+      },
+      {
+        "route_status": "MISSED_APPROACH_INACTIVE",
+        "color": "CYAN",
+        "pattern": "DASHED"
+      }
+    ]
+  },
+  "figure": {
+    "type": "CONDITIONAL_WAYPOINTS_RTE_LEGS_EXAMPLE",
+    "source_pdf_viewer_page": 1510,
+    "printed_folio_context": "11.31.22",
+    "rows": [
+      {
+        "name": "(1000)",
+        "kind": "ALTITUDE_CONDITIONAL",
+        "path_hint": "180 HDG UNTIL 1000 FT",
+        "fixed_coordinates": false
+      },
+      {
+        "name": "(ABC180)",
+        "kind": "RADIAL_CONDITIONAL",
+        "path_hint": "140 HDG UNTIL ABC R180",
+        "fixed_coordinates": false
+      },
+      {
+        "name": "(ABC-20)",
+        "kind": "DME_CONDITIONAL",
+        "path_hint": "090 HDG UNTIL ABC 20 DME",
+        "fixed_coordinates": false
+      },
+      {
+        "name": "(INTC)",
+        "kind": "COURSE_INTERCEPT_CONDITIONAL",
+        "path_hint": "020 HDG TO INTERCEPT 340 DEG COURSE TO BCD",
+        "fixed_coordinates": false
+      },
+      {
+        "name": "BCD",
+        "kind": "FIXED_POINT",
+        "path_hint": "FOLLOW INTERCEPTED LEG",
+        "fixed_coordinates": true
+      },
+      {
+        "name": "(VECTOR)",
+        "kind": "VECTOR_CONDITIONAL",
+        "path_hint": "280 HDG RADAR VECTORS TOWARD CDE",
+        "fixed_coordinates": false
+      },
+      {
+        "name": "CDE",
+        "kind": "FIXED_POINT",
+        "path_hint": "POST-VECTOR NEXT FIX",
+        "fixed_coordinates": true
+      }
+    ],
+    "diagram_is_explanation_not_flyable_route": true
+  },
+  "examples": {
+    "long_waypoint_names": {
+      "KIMMEL": "KIMEL",
+      "COTTON": "COTON",
+      "RABBITT": "RABIT",
+      "ADOLPH": "ADLPH",
+      "BAILEY": "BAILY",
+      "BURWELL": "BURWL",
+      "ANDREWS": "ANDRS",
+      "BRIDGEPORT": "BRIDT",
+      "HORSBA": "HORSA",
+      "CLEAR LAKE": "CLAKE",
+      "ROUGH ROAD": "RROAD"
+    },
+    "navaid_distance": {
+      "INW18": "INW18",
+      "CSN106": "06CSN",
+      "TCS89": "TCS89"
+    },
+    "oceanic": {
+      "N50 W040": "5040N",
+      "N75 W170": "75N70",
+      "N50 E020": "5020E",
+      "N06 E110": "06E10",
+      "S52 W075": "5275W",
+      "S07 W120": "07W20",
+      "S50 E020": "5020S",
+      "S06 E110": "06S10"
+    },
+    "arc": {
+      "EPH252/24": "D252X",
+      "EPH145/24": "D145X",
+      "GEG006/20": "D006T",
+      "CPR338/29": "CPR29",
+      "GEG079/30": "GEG30",
+      "CPR134/29": "CP29A",
+      "CPR190/29": "CP29B",
+      "CPR201/29": "CP29C"
+    },
+    "crew_defined": {
+      "N47W008": "WPT01",
+      "N4715.4W00803.4": "WPT02",
+      "SEA330/10": "SEA01",
+      "SEA330/OLM020": "SEA02",
+      "VAMPS/25": "VAM01",
+      "ELN/-30": "ELN01",
+      "SEA104/74": "SE100",
+      "SEA104/OLM064": "SE101"
+    },
+    "altitude_constraints": [
+      "220A",
+      "240B",
+      "270/",
+      "220A240B"
+    ]
+  },
+  "impacted_components": [
+    "FMC_RNP_MONITOR",
+    "FMC_LNAV_ENGAGEMENT",
+    "CDU_RTE_LEGS",
+    "CDU_SELECT_DESIRED_WPT",
+    "WAYPOINT_NAMER",
+    "LEG_CONDITION_TERMINATORS",
+    "EHSI_ROUTE_LAYER",
+    "FMC_VNAV_CONSTRAINTS"
+  ],
+  "guardrails": [
+    "EP-FSI hardware/option selection remains unknown",
+    "No operational LNAV, VNAV, AFDS output activated by this registry",
+    "Do not commit the original PDF, screenshot, or pasted Boeing text to a public repo",
+    "The screenshot is an illustrative schematic and is not an executable route",
+    "Preserve approved CDU imagery, key hitboxes, and BoeingCDU font binaries"
+  ]
+}
