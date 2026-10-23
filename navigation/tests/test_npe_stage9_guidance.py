@@ -85,11 +85,16 @@ class SimGuidance(unittest.TestCase):
     self.assertFalse(vertical_constraint_preview(distance_nm_to_fix=8)['fmc_vnav_active'])
  def test_verified_constraint_preview_no_actuation(self):
     x=vertical_constraint_preview(distance_nm_to_fix=10, current_alt_ft=12000,
-      constraint={'evidence':'VERIFIED_EXPLICIT_SOURCE','kind':'AT','altitude_ft':5000,
+      constraint={'evidence':'VERIFIED_EXPLICIT_SOURCE','airac':'2610','source_marker':'//AIRAC Cycle : 2610 (01/OCT/2026 - 29/OCT/2026) - Ver.1','kind':'AT','altitude_ft':5000,
                   'source':{'file':'fixture','line':2},'speed_max_kt':250})
     self.assertEqual(x['state'],'SIMULATOR_CONSTRAINT_PREVIEW_ONLY')
     self.assertAlmostEqual(x['illustrative_three_degree_descent_altitude_ft'],8184,delta=8)
     self.assertIsNone(x['pitch_command_deg'])
+ def test_rejects_wrong_cycle_vertical_constraint(self):
+    with self.assertRaises(Stage8Error):
+      vertical_constraint_preview(distance_nm_to_fix=10,current_alt_ft=12000,
+       constraint={'evidence':'VERIFIED_EXPLICIT_SOURCE','airac':'2609','source_marker':'OLD',
+                   'kind':'AT','altitude_ft':5000,'source':{'file':'old','line':2}})
  def test_unapproved_actuation_never_available(self):
     g=ReferenceGuidance(make_ref());g.arm(True)
     for i in range(1,6):
