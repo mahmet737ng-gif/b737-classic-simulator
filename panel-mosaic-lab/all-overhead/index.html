@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="fa" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#111d29">
+<title>B737 Classic — Full Overhead Mosaic Test (OH01–OH18)</title>
+<link rel="stylesheet" href="./style.css">
+</head><body>
+<header>
+<div><strong>B737 CLASSIC · OVERHEAD MOSAIC TEST</strong><small>ترکیب تمام تصاویر تأییدشدهٔ OH-01 تا OH-18 · بدون تغییر کیفیت منبع</small></div>
+<div class="head-actions"><a href="../">اطلس اصلی</a><a href="../upper-oh/">تست شش پنل بالایی</a><button id="reload">↻ به‌روزرسانی</button></div>
+</header>
+<main>
+<div class="notice"><strong>نسخهٔ آزمایشی چیدمان (نه هندسهٔ نهایی)</strong> — تصویر بالایی اصلی است و پنل‌های بعدی به‌ترتیب تقریبی ستون‌های اطلس کنار هم قرار گرفته‌اند. قاب‌ها و فاصله‌های واقعی پیچ‌ها هنوز تأیید نشده‌اند؛ هیچ تصویری برش اجباری، کشیدگی یا کاهش کیفیت نشده است. جای خالی پنل‌های OH-19 تا OH-25 عمداً مشخص است.</div>
+<div class="workspace">
+<section class="work-main">
+<div class="controls">
+<div class="control-group"><button class="active" id="modeMosaic">چیدمان یکپارچه</button><button id="modeGallery">تصاویر مستقل</button><label><input id="borders" type="checkbox"> مرزهای آزمایشی بالا</label><label><input id="tags" type="checkbox" checked> شمارهٔ پنل‌ها</label></div>
+<div class="control-group"><button id="minus" aria-label="Zoom out">−</button><output id="zoomLabel">100%</output><button id="plus" aria-label="Zoom in">+</button><button id="fit">FIT</button></div>
+</div>
+<div class="viewport" id="viewport" role="region" aria-label="Full overhead mosaic viewer">
+<div id="sizer" class="sizer"><div id="board" class="board">
+<div id="assembly">
+<div id="upper"></div>
+<div id="columns" class="columns"></div>
+<div id="bottom" class="bottom-placeholders"></div>
+</div>
+<div id="gallery" class="gallery hidden"></div>
+</div></div></div>
+<div class="caption">برای زوم از دکمه‌های + و −، روی کامپیوتر از Ctrl + چرخ ماوس و روی موبایل از دو انگشت استفاده کن. تصویر را جابه‌جا کن و روی هر پنل بزن تا شناسه و فایل اصلی آن نمایش داده شود. OH-07 و OH-08 یک فایل تصویری مشترک دارند.</div>
+</section>
+<aside class="inspector">
+<h2>وضعیت مونتاژ</h2>
+<div class="summary"><div class="metric"><b id="panelCount">—</b><small>شناسهٔ پنل با تصویر</small></div><div class="metric"><b id="sourceCount">—</b><small>فایل تصویری مستقل</small></div><div class="metric"><b id="loadedCount">—</b><small>تصویر بارگذاری‌شده</small></div><div class="metric"><b id="missingCount">۷</b><small>پنل بدون منبع (OH19–25)</small></div></div>
+<div class="status" id="status">در حال خواندن دیتابیس…</div>
+<div style="margin-top:12px"><input id="search" type="search" placeholder="جست‌وجوی شمارهٔ پنل یا سیستم…" autocomplete="off"></div>
+<div class="piece-list" id="pieces"></div>
+<div id="detail" class="detail">یک پنل را انتخاب کن.</div>
+</aside></div>
+<footer>منابع: <code>panel-mosaic-lab/assets/locked/2026-10-23/</code> · مشخصات این تست: <a href="./spec.json">spec.json</a> · تغییرات این صفحه فقط روی پیش‌نمایش است و فایل‌های اصلی Locked تغییر نمی‌کنند. نام OH-18 و مرزهای فیزیکی هنوز منتظر تأیید هستند.</footer>
+</main><script src="./stage.js" defer></script></body></html>
