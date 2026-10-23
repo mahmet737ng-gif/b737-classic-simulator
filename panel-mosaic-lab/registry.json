@@ -1,6 +1,6 @@
 {
   "schema": "b737-mosaic-atlas.v1",
-  "version": "2026-10-23.4",
+  "version": "2026-10-24.1",
   "source": "Owner supplied one-page PDF composite (2026-10-23). Initial reference atlas, boundaries provisional.",
   "panels": [
     {
@@ -193,9 +193,15 @@
       "w": 157,
       "h": 245,
       "group": "ELEC",
-      "status": "mapped",
+      "status": "artwork",
       "artwork": null,
-      "geometryStatus": "rejected"
+      "geometryStatus": "unverified-plate-seam; historical box rejected",
+      "placement": {
+        "source": "assets/locked/2026-10-23/OH11-STANDBY-8b7d36ff3182.png",
+        "stageUrl": "electrical-stack/",
+        "sha256": "86cf2f1de81146756adf694b1fe01067a271c32990c1fda7752eb913442a6708",
+        "status": "published-image-locked; geometry-QA-pending"
+      }
     },
     {
       "id": "OH-12",
@@ -205,9 +211,15 @@
       "w": 157,
       "h": 206,
       "group": "ELEC",
-      "status": "mapped",
+      "status": "artwork",
       "artwork": null,
-      "geometryStatus": "rejected"
+      "geometryStatus": "unverified-plate-seam; historical box rejected",
+      "placement": {
+        "source": "assets/locked/2026-10-23/OH12-BUS-TRANS-09319c17e7d0.png",
+        "stageUrl": "electrical-stack/",
+        "sha256": "709cb15a86f9038ca082136c4db59af83c7800107dfe320182bf7f4c56837e9f",
+        "status": "published-image-locked; geometry-QA-pending"
+      }
     },
     {
       "id": "OH-13",
@@ -776,7 +788,7 @@
   ],
   "validation": {
     "status": "rejected",
-    "reason": "Historical 59-rectangle geometry remains rejected. OH01–06 are separately replaced from the exact user-supplied PNG and drawn with draft polygons in upper-oh/. Remaining 53 old boxes stay disabled.",
+    "reason": "Historical 59 rectangular boxes remain rejected. OH01..06 and OH10..12 are tracked in separate source-image modules; do not use old ROIs as approved panel outlines.",
     "next": "Re-trace each individual physical screw-defined plate on the actual owner PDF; independently QA 3 assemblies."
   },
   "previousVersion": "2026-10-23.3-REJECTED",
@@ -800,5 +812,16 @@
       "OH-05",
       "OH-06"
     ]
+  },
+  "electricalStack": {
+    "update": "UPD-0003",
+    "view": "electrical-stack/",
+    "order": [
+      "OH-10",
+      "OH-11",
+      "OH-12"
+    ],
+    "stage": "published-images-verified",
+    "seamGeometry": "provisional"
   }
 }
