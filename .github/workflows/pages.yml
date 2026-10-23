@@ -24,6 +24,7 @@ jobs:
         run: |
           node cdu-standalone-v6/tests/stage6-selector.test.cjs
           node cdu-standalone-v6/tests/stage6-public-isolation.test.cjs
+          node cdu-standalone-v6/tests/route-field-consistency.test.cjs
       - name: Syntax-check animated panel
         run: node --check main-panel-lab/panel.js
       - uses: actions/configure-pages@v5
