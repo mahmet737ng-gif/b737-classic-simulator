@@ -14,7 +14,7 @@ const MAP_OPTIONS=['vorAdf','navAid','arpt','rteData','wpt'];
 function norm(a){return ((Number(a)%360)+360)%360}
 function orientation(mode){return mode==='PLAN'?'TRUE_NORTH':mode.includes('VOR_ILS')?'HEADING_UP':'TRACK_UP'}
 function isArc(mode){return ['MAP','EXP_NAV','EXP_VOR_ILS'].includes(mode)}
-function defaultModel(){return {mode:'MAP',range:40,heading:0,track:0,course:0,aircraft:{x:0,y:0},nav:{valid:false,source:'VOR1',cdi:0,dme:null,toFrom:'',ident:'',frequency:''},route:{source:'none',points:[],activeIndex:0},options:{vorAdf:false,navAid:false,arpt:false,rteData:false,wpt:false,wxr:false,tfc:false,terr:false,demoRoute:false},efis:{headingValid:true,trackValid:true,sgValid:true,brightness:1,wxBrightness:1,eadiBrightness:1,dh:150,dhAlert:false,remoteWxr:false,wxrTransmitter:false}}}
+function defaultModel(){return {mode:'MAP',range:40,heading:0,track:0,course:0,aircraft:{x:0,y:0},nav:{valid:false,source:'VOR1',cdi:0,dme:null,toFrom:'',ident:'',frequency:''},route:{source:'none',points:[],activeIndex:0},options:{vorAdf:false,navAid:false,arpt:false,rteData:false,wpt:false,wxr:false,tfc:false,terr:false,demoRoute:false},efis:{headingValid:true,trackValid:true,sgValid:true,brightness:1,wxBrightness:1,eadiBrightness:1,dh:200,dhAlert:false,remoteWxr:false,wxrTransmitter:false}}}
 function normalize(m={}){const d=defaultModel();const r={...d,...m,efis:{...d.efis,...m.efis},options:{...d.options,...m.options},nav:{...d.nav,...m.nav},route:{...d.route,...m.route}};r.mode=MODES.includes(r.mode)?r.mode:'MAP';r.range=RANGES.includes(Number(r.range))?Number(r.range):40;for(const key of ['heading','track','course'])r[key]=norm(r[key]);return r}
 function geometry(mode){return isArc(mode)?{cx:220,cy:376,radius:264,full:false}:{cx:220,cy:222,radius:176,full:true}}
 function computeDisplay(inp){const m=normalize(inp),ref=orientation(m.mode)==='TRUE_NORTH'?0:orientation(m.mode)==='HEADING_UP'?m.heading:m.track;
@@ -105,7 +105,7 @@ function syncPanel(st,doc){const m=normalize(st.ehsi);const root=doc.getElementB
 function step(st,type,delta){const m=modelFor(st);
  if(type==='mode'){const i=MODES.indexOf(m.mode);m.mode=MODES[Math.max(0,Math.min(MODES.length-1,i+delta))]}
  else if(type==='range'){const i=RANGES.indexOf(m.range);m.range=RANGES[Math.max(0,Math.min(RANGES.length-1,i+delta))]}
- else if(type==='dh'){m.efis.dh=Math.max(-20,Math.min(999,m.efis.dh+delta*10))}
+ else if(type==='dh'){m.efis.dh=Math.max(-20,Math.min(999,(m.efis.dh===null?200:m.efis.dh)+delta))}
  else if(type==='eadiBrightness'||type==='brightness'||type==='wxBrightness'){m.efis[type]=Math.max(.12,Math.min(1,Math.round((m.efis[type]+delta*.08)*100)/100))}
  else if(type==='heading'||type==='track'||type==='course')m[type]=norm(m[type]+delta);
  return m;
