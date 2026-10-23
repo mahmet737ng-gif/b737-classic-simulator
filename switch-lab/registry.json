@@ -11,7 +11,15 @@
     "horizontal_center": "../flight-controls-panel/assets/nav-transfer-center-v3.webp",
     "horizontal_right": "../flight-controls-panel/assets/nav-transfer-right-v3.webp",
     "guarded_engine": "../flight-controls-panel/fcom-control-mechanics.js",
-    "rotary_standard": "assets/rotary-standard-v1.webp"
+    "rotary_standard": "assets/rotary-standard-v1.webp",
+    "guarded_red_closed": "../panel-mosaic-lab/assets/locked/2026-10-23/Red_Guarded_CLOSED.png",
+    "guarded_red_open_up": "../panel-mosaic-lab/assets/locked/2026-10-23/Red_Guarded_Open_UP.png",
+    "guarded_red_open_center": "../panel-mosaic-lab/assets/locked/2026-10-23/Red_Guarded_Open_CENTER.png",
+    "guarded_red_open_down": "../panel-mosaic-lab/assets/locked/2026-10-23/Red_Guarded_Open_DOWN.png",
+    "guarded_black_closed": "../panel-mosaic-lab/assets/locked/2026-10-23/Black_Guarded_CLOSED.png",
+    "guarded_black_open_up": "../panel-mosaic-lab/assets/locked/2026-10-23/Black_Guarded_Open_UP.png",
+    "guarded_black_open_center": "../panel-mosaic-lab/assets/locked/2026-10-23/Black_Guarded_Open_CENTER.png",
+    "guarded_black_open_down": "../panel-mosaic-lab/assets/locked/2026-10-23/Black_Guarded_Open_DOWN.png"
   },
   "locked_assets_unchanged": true,
   "controls": [
@@ -159,6 +167,94 @@
       "status": "user-approved",
       "lock_policy": "versioned: do not overwrite; create v2 for any edit",
       "transparent_background": true
+    },
+    {
+      "id": "B737-RED-GUARDED-CLOSED-V1",
+      "type": "guarded-toggle",
+      "path": "../panel-mosaic-lab/assets/locked/2026-10-23/Red_Guarded_CLOSED.png",
+      "guard_color": "red",
+      "guard_state": "closed",
+      "switch_position": null,
+      "status": "user-approved",
+      "locked": true,
+      "sha256": "554334563caa4981b0595d04fbd4f38bd7d3f81ddac117dde06d3f2d0174a79b"
+    },
+    {
+      "id": "B737-RED-GUARDED-OPEN-UP-V1",
+      "type": "guarded-toggle",
+      "path": "../panel-mosaic-lab/assets/locked/2026-10-23/Red_Guarded_Open_UP.png",
+      "guard_color": "red",
+      "guard_state": "open",
+      "switch_position": "up",
+      "status": "user-approved",
+      "locked": true,
+      "sha256": "d8b07ca446ed83ea831b9b70f16dbd048dad58631f8d187ff29de33e00bccaa7"
+    },
+    {
+      "id": "B737-RED-GUARDED-OPEN-CENTER-V1",
+      "type": "guarded-toggle",
+      "path": "../panel-mosaic-lab/assets/locked/2026-10-23/Red_Guarded_Open_CENTER.png",
+      "guard_color": "red",
+      "guard_state": "open",
+      "switch_position": "center",
+      "status": "user-approved",
+      "locked": true,
+      "sha256": "53d53dbe3b496061555f71d86d18c7b66ab34624af007607db872f1ef6c39c55"
+    },
+    {
+      "id": "B737-RED-GUARDED-OPEN-DOWN-V1",
+      "type": "guarded-toggle",
+      "path": "../panel-mosaic-lab/assets/locked/2026-10-23/Red_Guarded_Open_DOWN.png",
+      "guard_color": "red",
+      "guard_state": "open",
+      "switch_position": "down",
+      "status": "user-approved",
+      "locked": true,
+      "sha256": "e59af36c10954b16c7b950e2957b85dbcca62a6b708dada37f16f06142ac7e07"
+    },
+    {
+      "id": "B737-BLACK-GUARDED-CLOSED-V1",
+      "type": "guarded-toggle",
+      "path": "../panel-mosaic-lab/assets/locked/2026-10-23/Black_Guarded_CLOSED.png",
+      "guard_color": "black",
+      "guard_state": "closed",
+      "switch_position": null,
+      "status": "user-approved",
+      "locked": true,
+      "sha256": "b45a6d74fbf052ab82baadf820cc79d94fce5055584442946fa15c4e3b760d6e"
+    },
+    {
+      "id": "B737-BLACK-GUARDED-OPEN-UP-V1",
+      "type": "guarded-toggle",
+      "path": "../panel-mosaic-lab/assets/locked/2026-10-23/Black_Guarded_Open_UP.png",
+      "guard_color": "black",
+      "guard_state": "open",
+      "switch_position": "up",
+      "status": "user-approved",
+      "locked": true,
+      "sha256": "b778402772007645ec9284fbbc33e01f7641d77760877bb2a11e91cb2d57b506"
+    },
+    {
+      "id": "B737-BLACK-GUARDED-OPEN-CENTER-V1",
+      "type": "guarded-toggle",
+      "path": "../panel-mosaic-lab/assets/locked/2026-10-23/Black_Guarded_Open_CENTER.png",
+      "guard_color": "black",
+      "guard_state": "open",
+      "switch_position": "center",
+      "status": "user-approved",
+      "locked": true,
+      "sha256": "d0b2d4937d587dd22e58ea1a0987c69f7b5f77223c3537b5c84b24e43a21bdc4"
+    },
+    {
+      "id": "B737-BLACK-GUARDED-OPEN-DOWN-V1",
+      "type": "guarded-toggle",
+      "path": "../panel-mosaic-lab/assets/locked/2026-10-23/Black_Guarded_Open_DOWN.png",
+      "guard_color": "black",
+      "guard_state": "open",
+      "switch_position": "down",
+      "status": "user-approved",
+      "locked": true,
+      "sha256": "ed4d782015ec8efe388a74923a037d4103a64f9dba26ee90366ed8ebe1cd546f"
     }
   ],
   "reference_library": [
@@ -177,5 +273,65 @@
   ],
   "reference_selection_rules": {
     "black_guarded_switch": "B737-GUARDED-BLACK-BOTTOM-HINGE-OPEN-V1"
+  },
+  "guard_switch_catalog": {
+    "version": 1,
+    "master_manifest": "../panel-mosaic-lab/assets/locked/2026-10-23/guarded-switches.manifest.v2.json",
+    "default_visual_style": "original-approved",
+    "selection_keys": [
+      "guard_color",
+      "guard_state",
+      "switch_position"
+    ],
+    "assets": [
+      {
+        "id": "B737-RED-GUARDED-CLOSED-V1",
+        "path": "../panel-mosaic-lab/assets/locked/2026-10-23/Red_Guarded_CLOSED.png",
+        "sha256": "554334563caa4981b0595d04fbd4f38bd7d3f81ddac117dde06d3f2d0174a79b",
+        "git_blob_sha": "98f78191a04dc71515702d5fbdf2ca606e4eab05"
+      },
+      {
+        "id": "B737-RED-GUARDED-OPEN-UP-V1",
+        "path": "../panel-mosaic-lab/assets/locked/2026-10-23/Red_Guarded_Open_UP.png",
+        "sha256": "d8b07ca446ed83ea831b9b70f16dbd048dad58631f8d187ff29de33e00bccaa7",
+        "git_blob_sha": "1e975ba06292ebe057ba9aaa464118b48e68fe76"
+      },
+      {
+        "id": "B737-RED-GUARDED-OPEN-CENTER-V1",
+        "path": "../panel-mosaic-lab/assets/locked/2026-10-23/Red_Guarded_Open_CENTER.png",
+        "sha256": "53d53dbe3b496061555f71d86d18c7b66ab34624af007607db872f1ef6c39c55",
+        "git_blob_sha": "a8e9ad3d4afbacb3ee4df63f53269b8ba41c5409"
+      },
+      {
+        "id": "B737-RED-GUARDED-OPEN-DOWN-V1",
+        "path": "../panel-mosaic-lab/assets/locked/2026-10-23/Red_Guarded_Open_DOWN.png",
+        "sha256": "e59af36c10954b16c7b950e2957b85dbcca62a6b708dada37f16f06142ac7e07",
+        "git_blob_sha": "a946128f8b5899f726a6ade4bc0fd0bbf923561c"
+      },
+      {
+        "id": "B737-BLACK-GUARDED-CLOSED-V1",
+        "path": "../panel-mosaic-lab/assets/locked/2026-10-23/Black_Guarded_CLOSED.png",
+        "sha256": "b45a6d74fbf052ab82baadf820cc79d94fce5055584442946fa15c4e3b760d6e",
+        "git_blob_sha": "7bcf7e68812631a77cbfe8875d62534a911aea28"
+      },
+      {
+        "id": "B737-BLACK-GUARDED-OPEN-UP-V1",
+        "path": "../panel-mosaic-lab/assets/locked/2026-10-23/Black_Guarded_Open_UP.png",
+        "sha256": "b778402772007645ec9284fbbc33e01f7641d77760877bb2a11e91cb2d57b506",
+        "git_blob_sha": "b6e17fc9a6b1b910c93c6fa34355735574a97c86"
+      },
+      {
+        "id": "B737-BLACK-GUARDED-OPEN-CENTER-V1",
+        "path": "../panel-mosaic-lab/assets/locked/2026-10-23/Black_Guarded_Open_CENTER.png",
+        "sha256": "d0b2d4937d587dd22e58ea1a0987c69f7b5f77223c3537b5c84b24e43a21bdc4",
+        "git_blob_sha": "3f5780a46d0a35c42dacbbfd7a084f25e540aa16"
+      },
+      {
+        "id": "B737-BLACK-GUARDED-OPEN-DOWN-V1",
+        "path": "../panel-mosaic-lab/assets/locked/2026-10-23/Black_Guarded_Open_DOWN.png",
+        "sha256": "ed4d782015ec8efe388a74923a037d4103a64f9dba26ee90366ed8ebe1cd546f",
+        "git_blob_sha": "8a2e31185650ed4b2ff2624986544a9c93fb838a"
+      }
+    ]
   }
 }

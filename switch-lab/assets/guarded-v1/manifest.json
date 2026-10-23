@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "collection": "B737 Classic Guarded Switch — 8 approved reference crops",
-  "status": "binary-files-pending-upload",
+  "status": "uploaded-and-verified",
   "source": "single user-approved 1536x1024 RGBA composite; exact pixel crops; no recoloring or regeneration",
   "hinge": "bottom",
   "lighting": "unchanged",
@@ -19,9 +19,11 @@
         261,
         354
       ],
-      "desired_repo_path": "switch-lab/assets/guarded-v1/Red_Guarded_CLOSED.png",
+      "desired_repo_path": "panel-mosaic-lab/assets/locked/2026-10-23/Red_Guarded_CLOSED.png",
       "local_original_png": true,
-      "github_blob_verified": false
+      "github_blob_verified": true,
+      "github_blob_sha": "98f78191a04dc71515702d5fbdf2ca606e4eab05",
+      "actual_repo_path": "panel-mosaic-lab/assets/locked/2026-10-23/Red_Guarded_CLOSED.png"
     },
     {
       "id": "B737-RED-GUARDED-OPEN-UP-V1",
@@ -35,9 +37,11 @@
         254,
         466
       ],
-      "desired_repo_path": "switch-lab/assets/guarded-v1/Red_Guarded_Open_UP.png",
+      "desired_repo_path": "panel-mosaic-lab/assets/locked/2026-10-23/Red_Guarded_Open_UP.png",
       "local_original_png": true,
-      "github_blob_verified": false
+      "github_blob_verified": true,
+      "github_blob_sha": "1e975ba06292ebe057ba9aaa464118b48e68fe76",
+      "actual_repo_path": "panel-mosaic-lab/assets/locked/2026-10-23/Red_Guarded_Open_UP.png"
     },
     {
       "id": "B737-RED-GUARDED-OPEN-CENTER-V1",
@@ -51,9 +55,11 @@
         254,
         467
       ],
-      "desired_repo_path": "switch-lab/assets/guarded-v1/Red_Guarded_Open_CENTER.png",
+      "desired_repo_path": "panel-mosaic-lab/assets/locked/2026-10-23/Red_Guarded_Open_CENTER.png",
       "local_original_png": true,
-      "github_blob_verified": false
+      "github_blob_verified": true,
+      "github_blob_sha": "a8e9ad3d4afbacb3ee4df63f53269b8ba41c5409",
+      "actual_repo_path": "panel-mosaic-lab/assets/locked/2026-10-23/Red_Guarded_Open_CENTER.png"
     },
     {
       "id": "B737-RED-GUARDED-OPEN-DOWN-V1",
@@ -67,9 +73,11 @@
         253,
         468
       ],
-      "desired_repo_path": "switch-lab/assets/guarded-v1/Red_Guarded_Open_DOWN.png",
+      "desired_repo_path": "panel-mosaic-lab/assets/locked/2026-10-23/Red_Guarded_Open_DOWN.png",
       "local_original_png": true,
-      "github_blob_verified": false
+      "github_blob_verified": true,
+      "github_blob_sha": "a946128f8b5899f726a6ade4bc0fd0bbf923561c",
+      "actual_repo_path": "panel-mosaic-lab/assets/locked/2026-10-23/Red_Guarded_Open_DOWN.png"
     },
     {
       "id": "B737-BLACK-GUARDED-CLOSED-V1",
@@ -83,9 +91,11 @@
         261,
         359
       ],
-      "desired_repo_path": "switch-lab/assets/guarded-v1/Black_Guarded_CLOSED.png",
+      "desired_repo_path": "panel-mosaic-lab/assets/locked/2026-10-23/Black_Guarded_CLOSED.png",
       "local_original_png": true,
-      "github_blob_verified": false
+      "github_blob_verified": true,
+      "github_blob_sha": "7bcf7e68812631a77cbfe8875d62534a911aea28",
+      "actual_repo_path": "panel-mosaic-lab/assets/locked/2026-10-23/Black_Guarded_CLOSED.png"
     },
     {
       "id": "B737-BLACK-GUARDED-OPEN-UP-V1",
@@ -99,9 +109,11 @@
         256,
         470
       ],
-      "desired_repo_path": "switch-lab/assets/guarded-v1/Black_Guarded_Open_UP.png",
+      "desired_repo_path": "panel-mosaic-lab/assets/locked/2026-10-23/Black_Guarded_Open_UP.png",
       "local_original_png": true,
-      "github_blob_verified": false
+      "github_blob_verified": true,
+      "github_blob_sha": "b6e17fc9a6b1b910c93c6fa34355735574a97c86",
+      "actual_repo_path": "panel-mosaic-lab/assets/locked/2026-10-23/Black_Guarded_Open_UP.png"
     },
     {
       "id": "B737-BLACK-GUARDED-OPEN-CENTER-V1",
@@ -115,9 +127,11 @@
         254,
         469
       ],
-      "desired_repo_path": "switch-lab/assets/guarded-v1/Black_Guarded_Open_CENTER.png",
+      "desired_repo_path": "panel-mosaic-lab/assets/locked/2026-10-23/Black_Guarded_Open_CENTER.png",
       "local_original_png": true,
-      "github_blob_verified": false
+      "github_blob_verified": true,
+      "github_blob_sha": "3f5780a46d0a35c42dacbbfd7a084f25e540aa16",
+      "actual_repo_path": "panel-mosaic-lab/assets/locked/2026-10-23/Black_Guarded_Open_CENTER.png"
     },
     {
       "id": "B737-BLACK-GUARDED-OPEN-DOWN-V1",
@@ -131,9 +145,12 @@
         256,
         471
       ],
-      "desired_repo_path": "switch-lab/assets/guarded-v1/Black_Guarded_Open_DOWN.png",
+      "desired_repo_path": "panel-mosaic-lab/assets/locked/2026-10-23/Black_Guarded_Open_DOWN.png",
       "local_original_png": true,
-      "github_blob_verified": false
+      "github_blob_verified": true,
+      "github_blob_sha": "8a2e31185650ed4b2ff2624986544a9c93fb838a",
+      "actual_repo_path": "panel-mosaic-lab/assets/locked/2026-10-23/Black_Guarded_Open_DOWN.png"
     }
-  ]
+  ],
+  "published_repository_path": "panel-mosaic-lab/assets/locked/2026-10-23/"
 }

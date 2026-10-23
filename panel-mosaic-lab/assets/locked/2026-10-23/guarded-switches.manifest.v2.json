@@ -1,0 +1,59 @@
+{
+  "version": 2,
+  "locked": true,
+  "source": "8 unchanged pixel-exact PNG crops from approved image",
+  "hinge": "bottom",
+  "lighting": "unchanged",
+  "assets": [
+    {
+      "file": "Red_Guarded_CLOSED.png",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/Red_Guarded_CLOSED.png",
+      "blob_sha": "98f78191a04dc71515702d5fbdf2ca606e4eab05",
+      "sha256": "554334563caa4981b0595d04fbd4f38bd7d3f81ddac117dde06d3f2d0174a79b"
+    },
+    {
+      "file": "Red_Guarded_Open_UP.png",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/Red_Guarded_Open_UP.png",
+      "blob_sha": "1e975ba06292ebe057ba9aaa464118b48e68fe76",
+      "sha256": "d8b07ca446ed83ea831b9b70f16dbd048dad58631f8d187ff29de33e00bccaa7"
+    },
+    {
+      "file": "Red_Guarded_Open_CENTER.png",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/Red_Guarded_Open_CENTER.png",
+      "blob_sha": "a8e9ad3d4afbacb3ee4df63f53269b8ba41c5409",
+      "sha256": "53d53dbe3b496061555f71d86d18c7b66ab34624af007607db872f1ef6c39c55"
+    },
+    {
+      "file": "Red_Guarded_Open_DOWN.png",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/Red_Guarded_Open_DOWN.png",
+      "blob_sha": "a946128f8b5899f726a6ade4bc0fd0bbf923561c",
+      "sha256": "e59af36c10954b16c7b950e2957b85dbcca62a6b708dada37f16f06142ac7e07"
+    },
+    {
+      "file": "Black_Guarded_CLOSED.png",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/Black_Guarded_CLOSED.png",
+      "blob_sha": "7bcf7e68812631a77cbfe8875d62534a911aea28",
+      "sha256": "b45a6d74fbf052ab82baadf820cc79d94fce5055584442946fa15c4e3b760d6e"
+    },
+    {
+      "file": "Black_Guarded_Open_UP.png",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/Black_Guarded_Open_UP.png",
+      "blob_sha": "b6e17fc9a6b1b910c93c6fa34355735574a97c86",
+      "sha256": "b778402772007645ec9284fbbc33e01f7641d77760877bb2a11e91cb2d57b506"
+    },
+    {
+      "file": "Black_Guarded_Open_CENTER.png",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/Black_Guarded_Open_CENTER.png",
+      "blob_sha": "3f5780a46d0a35c42dacbbfd7a084f25e540aa16",
+      "sha256": "d0b2d4937d587dd22e58ea1a0987c69f7b5f77223c3537b5c84b24e43a21bdc4"
+    },
+    {
+      "file": "Black_Guarded_Open_DOWN.png",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/Black_Guarded_Open_DOWN.png",
+      "blob_sha": "8a2e31185650ed4b2ff2624986544a9c93fb838a",
+      "sha256": "ed4d782015ec8efe388a74923a037d4103a64f9dba26ee90366ed8ebe1cd546f"
+    }
+  ],
+  "supersedes": "panel-mosaic-lab/assets/locked/2026-10-23/guarded-switches.manifest.json",
+  "amendment": "Corrected the SHA-256 transcription for Black_Guarded_Open_DOWN.png only; image binaries were NOT modified"
+}

@@ -40,6 +40,22 @@
         "PD-ATLAS-0001",
         "OH01-06-MOSAIC-20261023-1720033c4877"
       ]
+    },
+    {
+      "version": "GITHUB-UPLOAD-GUARDED-20261024",
+      "date": "2026-10-24",
+      "kind": "binary_upload_verified",
+      "description": "Eight pixel-exact approved red and black guarded-switch PNG assets added to locked path with full SHA-256 preservation. Addendum v2 corrects a checksum transcription in initial JSON; source images unchanged.",
+      "ids": [
+        "B737-RED-GUARDED-CLOSED-V1",
+        "B737-RED-GUARDED-OPEN-UP-V1",
+        "B737-RED-GUARDED-OPEN-CENTER-V1",
+        "B737-RED-GUARDED-OPEN-DOWN-V1",
+        "B737-BLACK-GUARDED-CLOSED-V1",
+        "B737-BLACK-GUARDED-OPEN-UP-V1",
+        "B737-BLACK-GUARDED-OPEN-CENTER-V1",
+        "B737-BLACK-GUARDED-OPEN-DOWN-V1"
+      ]
     }
   ]
 }
