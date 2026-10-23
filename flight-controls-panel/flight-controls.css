@@ -61,10 +61,10 @@ button{font:inherit;color:inherit;-webkit-tap-highlight-color:transparent;touch-
 .paddle-guard .hinge{position:absolute;left:7%;right:7%;top:0;height:13%;border-radius:28%;background:linear-gradient(#9ba6a8,#222729 40%,#747d81 63%,#1a1d1d);box-shadow:0 .3cqw .45cqw #000b;z-index:2;pointer-events:none}
 .paddle-guard[data-guard="open"]{transform:perspective(45cqw) rotateX(-113deg);filter:brightness(.88)}
 .paddle-guard:focus-visible{outline:0;filter:drop-shadow(0 0 .5cqw #d69b4a)}
-/* Photo-calibrated NAV transfer toggle.
-   The original circular socket, hex nut and surrounding paint stay in the approved
-   panel photograph; this layer ONLY contains the moving metal shaft/white handle.
-   Pivot is at 50%/50% of each calibrated selector box. */
+/* Photo-matched VHF NAV / IRS / EFI three-position lever.
+   The approved original front photograph supplies the complete fixed hex-nut
+   and socket. Only a transparent stem/grip layer is animated about its pivot.
+   Native reference: 893 × 1761; each calibrated box is centered on socket. */
 .toggle.selector {
   touch-action:pan-y;
   isolation:isolate;
@@ -72,31 +72,35 @@ button{font:inherit;color:inherit;-webkit-tap-highlight-color:transparent;touch-
   clip-path:none;
   background:transparent;
   transform:none;
-  perspective:55cqw;
 }
-.toggle.selector .h-state {
+.toggle.selector .nav-photo-lever {
+  display:block;
   position:absolute;
   inset:0;
-  opacity:0;
-  pointer-events:none;
-  transform:scale(.974);
-  transform-origin:50% 50%;
-  transition:opacity 100ms ease-in-out,transform 220ms cubic-bezier(.2,.95,.26,1.04);
-}
-.toggle.selector[data-position="left"] .h-left,
-.toggle.selector[data-position="normal"] .h-center,
-.toggle.selector[data-position="right"] .h-right {
-  opacity:1;
-  transform:scale(1);
-}
-.toggle.selector .photo-lever {
-  display:block;
   width:100%;
   height:100%;
-  overflow:visible;
-  filter:drop-shadow(0 .20cqw .24cqw #01030475);
+  object-fit:contain;
+  pointer-events:none;
+  user-select:none;
+  transform-box:border-box;
+  transform-origin:50% 50%;
+  transform:rotate(0deg);
+  transition:transform 260ms cubic-bezier(.22,.9,.2,1.05),filter 170ms ease;
+  filter:drop-shadow(0 .16cqw .24cqw rgba(1,4,5,.55));
   backface-visibility:hidden;
+  will-change:transform;
 }
-.toggle.selector:active .photo-lever { filter:brightness(1.06) drop-shadow(0 .20cqw .28cqw #01030491); }
-.toggle.selector:focus-visible { outline:none; }
-/* No fake CSS bezel, slide track, rectangular focus ring, or rotated 2-position bitmap. */
+.toggle.selector[data-position="left"] .nav-photo-lever {transform:rotate(-40deg);}
+.toggle.selector[data-position="normal"] .nav-photo-lever {transform:rotate(0deg);}
+.toggle.selector[data-position="right"] .nav-photo-lever {transform:rotate(40deg);}
+.toggle.selector:active .nav-photo-lever {
+  filter:brightness(1.06) drop-shadow(0 .18cqw .25cqw rgba(1,4,5,.57));
+}
+.toggle.selector:focus-visible {outline:none;}
+.toggle.selector:focus-visible .nav-photo-lever {
+  filter:drop-shadow(0 0 .23cqw rgba(255,220,155,.48));
+}
+@media(prefers-reduced-motion:reduce){
+  .toggle.selector .nav-photo-lever {transition-duration:1ms;}
+}
+/* No replacement bezel, rail, color ring, or moving panel art. */
