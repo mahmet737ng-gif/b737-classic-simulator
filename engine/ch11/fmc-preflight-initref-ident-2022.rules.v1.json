@@ -1,0 +1,1031 @@
+{
+  "schema": "b737-classic-fcom-ch11-section40-initref-ident-pages/1.0",
+  "record_id": "B737-CLASSIC-CDU-CH11-PREFLIGHT-INITREF-IDENT-2022",
+  "source": {
+    "manual": "Boeing 737 Flight Crew Operations Manual",
+    "document_number": "D6-27370-300/400/500-SHI",
+    "heading": "Flight Management, Navigation — FMC Preflight",
+    "section": "11.40",
+    "material": "FOUR_USER_SCREENSHOTS",
+    "screenshots": [
+      {
+        "pdf_viewer_page": 1558,
+        "printed_folio": "11.40.6",
+        "revision": "2022-12-15",
+        "file": "image(20261023-191030).png",
+        "sha256": "2f3dcdb486b5c501b80803e3506cd218ee362221993685e71c98c6fd36f2bfa8",
+        "topic": "INIT/REF INDEX diagram, first two LSK explanations"
+      },
+      {
+        "pdf_viewer_page": 1559,
+        "printed_folio": "11.40.7",
+        "revision": "2022-12-15",
+        "file": "image(20261023-191037).png",
+        "sha256": "9dfecdfc89f4696d57cd23a686049b631baa9eb98b4b3e5fbe6a4586ac177b8c",
+        "topic": "Remaining INIT/REF INDEX LSK descriptions, conditional OFFSET and MAINT/NAV STATUS"
+      },
+      {
+        "pdf_viewer_page": 1560,
+        "printed_folio": "11.40.8",
+        "revision": "2022-12-15",
+        "file": "image(20261023-191043).png",
+        "sha256": "4cc2a478db32cbc82eeb90e44b038885720c64b1d6ab2d0e1df31ed5f3f7bb43",
+        "topic": "IDENT page illustration, model/nav data/software fields"
+      },
+      {
+        "pdf_viewer_page": 1561,
+        "printed_folio": "11.40.9",
+        "revision": "2022-12-15",
+        "file": "image(20261023-191057).png",
+        "sha256": "d8b3d81f7fe0d76ff2741c6801e8924ac746f6b2fa2304f86229cedcf1a0d468",
+        "topic": "IDENT page rating/date activation/ground restriction and POS INIT prompt"
+      }
+    ],
+    "unreviewed_adjacent_page": "11.40.5 — no screenshot provided in this batch",
+    "provenance": "SHA256 of original screenshot bytes (checked locally)",
+    "copyright": "Only reinterpreted mappings and rules; no proprietary page images committed"
+  },
+  "index_page": {
+    "title": "INIT/REF INDEX",
+    "page_indicator": "1/1",
+    "figure_page": 1558,
+    "source_text_page": 1559,
+    "lsks": [
+      {
+        "lsk": "L1",
+        "literal": "<IDENT",
+        "target": "IDENT",
+        "page": 1558,
+        "status": "SHOWN_FIGURE"
+      },
+      {
+        "lsk": "L2",
+        "literal": "<POS",
+        "target": "POS_INIT",
+        "page": 1558,
+        "status": "SHOWN_FIGURE"
+      },
+      {
+        "lsk": "L3",
+        "literal": "<PERF",
+        "target": "PERF_INIT",
+        "page": 1558,
+        "status": "SHOWN_FIGURE"
+      },
+      {
+        "lsk": "L4",
+        "literal": "<TAKEOFF",
+        "target": "TAKEOFF_REF",
+        "page": 1558,
+        "status": "SHOWN_FIGURE"
+      },
+      {
+        "lsk": "L5",
+        "literal": "<APPROACH",
+        "target": "APPROACH_REF",
+        "page": 1558,
+        "status": "SHOWN_FIGURE"
+      },
+      {
+        "lsk": "L6",
+        "literal": "<OFFSET",
+        "target": "LATERAL_OFFSET",
+        "page": 1559,
+        "status": "DESCRIBED_NOT_SHOWN_IN_1558_FIGURE_OPTIONAL"
+      },
+      {
+        "lsk": "R1",
+        "literal": "NAV DATA>",
+        "target": "REF_NAV_DATA",
+        "page": 1558,
+        "status": "SHOWN_FIGURE"
+      },
+      {
+        "lsk": "R6",
+        "literal": "MAINT>",
+        "target": "MAINTENANCE_ON_GROUND",
+        "page": 1558,
+        "status": "SHOWN_FIGURE",
+        "flight_alternative": {
+          "literal": "NAV STATUS>",
+          "target": "NAV_STATUS_IN_FLIGHT"
+        }
+      }
+    ],
+    "airborne_r6_change": {
+      "ground_label": "MAINT>",
+      "airborne_label": "NAV STATUS>",
+      "airborne_target": "NAV_STATUS"
+    },
+    "r1_supp_data": {
+      "requires_ground": true,
+      "scratchpad_exact": "SUPP",
+      "on_select": "SUPP_NAV_DATA"
+    },
+    "l6_offset": {
+      "appears_in_diagram": false,
+      "described_in_following_page": true,
+      "variant_pending": true
+    },
+    "empty_lsks": [
+      "R2",
+      "R3",
+      "R4",
+      "R5"
+    ]
+  },
+  "ident_page": {
+    "title": "IDENT",
+    "page_indicator_in_figure": "1/X",
+    "lsks": [
+      {
+        "lsk": "L1",
+        "field": "MODEL",
+        "kind": "READ_ONLY",
+        "data_source": "FMC_PERFORMANCE_DB_AIRCRAFT_MODEL",
+        "page": 1560
+      },
+      {
+        "lsk": "L2",
+        "field": "NAV DATA",
+        "kind": "READ_ONLY",
+        "data_source": "NAV_DB_IDENTIFIER",
+        "page": 1560
+      },
+      {
+        "lsk": "L4",
+        "field": "OP PROGRAM",
+        "kind": "READ_ONLY",
+        "data_source": "FMC_SW_PART_NUMBER_AND_UPDATE",
+        "page": 1560
+      },
+      {
+        "lsk": "L6",
+        "field": "INDEX",
+        "kind": "PAGE_LINK",
+        "target": "INIT_REF_INDEX",
+        "page": 1561
+      },
+      {
+        "lsk": "R1",
+        "field": "ENG RATING",
+        "kind": "READ_ONLY",
+        "data_source": "FMC_PERFORMANCE_DB_ENGINE_THRUST_RATING",
+        "page": 1561
+      },
+      {
+        "lsk": "R2",
+        "field": "ACTIVE",
+        "kind": "DATE_RANGE_AND_SELECT",
+        "data_source": "ACTIVE_NAV_DB_EFFECTIVITY_RANGE",
+        "page": 1561
+      },
+      {
+        "lsk": "R3",
+        "field": "INACTIVE_DATE_RANGE",
+        "kind": "DATE_RANGE_AND_COPY_TO_SCRATCHPAD",
+        "data_source": "INACTIVE_NAV_DB_EFFECTIVITY_RANGE",
+        "page": 1561
+      },
+      {
+        "lsk": "R5",
+        "field": "SUPP DATA",
+        "kind": "READ_ONLY",
+        "data_source": "SUPPLEMENTAL_NAV_DB_EFFECTIVITY_DATE_OR_EMPTY",
+        "page": 1561
+      },
+      {
+        "lsk": "R6",
+        "field": "POS INIT",
+        "kind": "PAGE_LINK",
+        "target": "POS_INIT",
+        "page": 1561
+      }
+    ],
+    "nav_database_active_selection": {
+      "ground_only": true,
+      "copy_selected_range_to_scratchpad": true,
+      "transfer_to_active_r2": true,
+      "previous_active_moves_to_inactive_r3": true,
+      "clears_prior_route_data": true,
+      "no_automatic_swap_at_expiration_in_flight": true
+    },
+    "sample_only": {
+      "sample_model": "737-XXX",
+      "sample_engine_rating": "XXX",
+      "nav_cycles_year": 1997,
+      "software_update": "UXX.X",
+      "must_not_hardcode": true
+    },
+    "project_engine_rating": {
+      "value": "20K",
+      "reason": "USER_CONFIGURED_EP_FSI_CFM56_3B_1_ENGINE_RATING",
+      "not_from_sample_figures": true
+    },
+    "software_version_examples": [
+      "U5",
+      "U10.5A",
+      "U10.7",
+      "U10.8A"
+    ],
+    "unassigned_lsks": [
+      "L3",
+      "L5",
+      "R4"
+    ]
+  },
+  "interfaces": {
+    "input": [
+      "INIT_REF_BUTTON",
+      "LSK_L1_L2_L3_L4_L5_L6_R1_R2_R3_R4_R5_R6",
+      "FMC_PREFLIGHT_STATE",
+      "AIRCRAFT_ON_GROUND",
+      "FMC_PERFORMANCE_DB_AIRCRAFT_MODEL",
+      "FMC_PERFORMANCE_DB_ENGINE_RATING",
+      "NAVDB_ID",
+      "NAVDB_ACTIVE_EFFECTIVITY_DATE_RANGE",
+      "NAVDB_INACTIVE_EFFECTIVITY_DATE_RANGE",
+      "NAVDB_SUPPLEMENTAL_EFFECTIVITY_DATE",
+      "CDU_SCRATCHPAD_TEXT",
+      "FMC_SOFTWARE_PART_NUMBER",
+      "FMC_SOFTWARE_UPDATE_VERSION",
+      "IRS_ATT_MODE"
+    ],
+    "output": [
+      "INIT_REF_INDEX_MENU_LABELS",
+      "INIT_REF_INDEX_SELECTED_TARGET_PAGE",
+      "IDENT_PAGE_DATA_FIELDS",
+      "IDENT_ACTIVE_NAVDB_SELECTION_REQUEST",
+      "NAVDB_ACTIVE_INACTIVE_SWAP",
+      "ROUTE_DATA_INVALIDATION_ON_DB_SWITCH",
+      "CDU_NEXT_PAGE_POS_INIT",
+      "FMC_MAINT_VS_NAV_STATUS_CONTEXT",
+      "SCRATCHPAD_SOURCE_DATE_COPY"
+    ],
+    "safety": {
+      "flight_control_authority": false,
+      "source_only": true,
+      "do_not_overwrite_approved_cdu_artwork": true,
+      "do_not_modify_70_button_hitboxes": true,
+      "locked_font_files": [
+        "BoeingCDU-Large.ttf",
+        "BoeingCDU-Small.ttf"
+      ]
+    },
+    "integration_status": "SOURCE_ONLY_NEW_LAYOUT_NOT_YET_APPLIED_TO_RUNTIME",
+    "current_runtime_gap": [
+      "Existing physical-cdu INDEX displayed RTE and LEGS slots where FCOM 11.40.6 documents PREFLIGHT references; runtime layout not modified in this source-only commit.",
+      "Existing physical-cdu IDENT fields are preliminary, missing ACTIVE/INACTIVE cycle/SUPP DATA and model value is hardcoded 737-300; runtime not changed in this source-only commit."
+    ]
+  },
+  "rules": [
+    {
+      "id": "IX-001",
+      "source": {
+        "pdf_viewer_page": 1558,
+        "printed_folio": "11.40.6",
+        "section": "display"
+      },
+      "domain": "display",
+      "condition": [
+        "INIT_REF_SELECTED"
+      ],
+      "result": [
+        "TITLE_INIT_REF_INDEX_PAGE_1_OF_1"
+      ],
+      "effectivity": "FCOM_PAGE_DOCUMENTED",
+      "implementation": "SOURCE_MODEL_ONLY_NOT_APPLIED_TO_APP"
+    },
+    {
+      "id": "IX-002",
+      "source": {
+        "pdf_viewer_page": 1558,
+        "printed_folio": "11.40.6",
+        "section": "layout"
+      },
+      "domain": "layout",
+      "condition": [
+        "INIT_REF_INDEX_OPEN"
+      ],
+      "result": [
+        "LSK_L1_IDENT_ROUTE_TO_IDENT"
+      ],
+      "effectivity": "FCOM_PAGE_DOCUMENTED",
+      "implementation": "SOURCE_MODEL_ONLY_NOT_APPLIED_TO_APP"
+    },
+    {
+      "id": "IX-003",
+      "source": {
+        "pdf_viewer_page": 1558,
+        "printed_folio": "11.40.6",
+        "section": "layout"
+      },
+      "domain": "layout",
+      "condition": [
+        "INIT_REF_INDEX_OPEN"
+      ],
+      "result": [
+        "LSK_L2_POS_ROUTE_TO_POS_INIT"
+      ],
+      "effectivity": "FCOM_PAGE_DOCUMENTED",
+      "implementation": "SOURCE_MODEL_ONLY_NOT_APPLIED_TO_APP"
+    },
+    {
+      "id": "IX-004",
+      "source": {
+        "pdf_viewer_page": 1558,
+        "printed_folio": "11.40.6",
+        "section": "layout"
+      },
+      "domain": "layout",
+      "condition": [
+        "INIT_REF_INDEX_OPEN"
+      ],
+      "result": [
+        "LSK_L3_PERF_ROUTE_TO_PERF_INIT"
+      ],
+      "effectivity": "FCOM_PAGE_DOCUMENTED",
+      "implementation": "SOURCE_MODEL_ONLY_NOT_APPLIED_TO_APP"
+    },
+    {
+      "id": "IX-005",
+      "source": {
+        "pdf_viewer_page": 1558,
+        "printed_folio": "11.40.6",
+        "section": "layout"
+      },
+      "domain": "layout",
+      "condition": [
+        "INIT_REF_INDEX_OPEN"
+      ],
+      "result": [
+        "LSK_L4_TAKEOFF_ROUTE_TO_TAKEOFF_REF"
+      ],
+      "effectivity": "FCOM_PAGE_DOCUMENTED",
+      "implementation": "SOURCE_MODEL_ONLY_NOT_APPLIED_TO_APP"
+    },
+    {
+      "id": "IX-006",
+      "source": {
+        "pdf_viewer_page": 1558,
+        "printed_folio": "11.40.6",
+        "section": "layout"
+      },
+      "domain": "layout",
+      "condition": [
+        "INIT_REF_INDEX_OPEN"
+      ],
+      "result": [
+        "LSK_L5_APPROACH_ROUTE_TO_APPROACH_REF"
+      ],
+      "effectivity": "FCOM_PAGE_DOCUMENTED",
+      "implementation": "SOURCE_MODEL_ONLY_NOT_APPLIED_TO_APP"
+    },
+    {
+      "id": "IX-007",
+      "source": {
+        "pdf_viewer_page": 1558,
+        "printed_folio": "11.40.6",
+        "section": "layout"
+      },
+      "domain": "layout",
+      "condition": [
+        "INIT_REF_INDEX_OPEN"
+      ],
+      "result": [
+        "LSK_R1_NAV_DATA_PROMPT"
+      ],
+      "effectivity": "FCOM_PAGE_DOCUMENTED",
+      "implementation": "SOURCE_MODEL_ONLY_NOT_APPLIED_TO_APP"
+    },
+    {
+      "id": "IX-008",
+      "source": {
+        "pdf_viewer_page": 1558,
+        "printed_folio": "11.40.6",
+        "section": "layout"
+      },
+      "domain": "layout",
+      "condition": [
+        "INIT_REF_INDEX_OPEN_AND_ON_GROUND"
+      ],
+      "result": [
+        "LSK_R6_MAINT_PROMPT"
+      ],
+      "effectivity": "FCOM_PAGE_DOCUMENTED",
+      "implementation": "SOURCE_MODEL_ONLY_NOT_APPLIED_TO_APP"
+    },
+    {
+      "id": "IX-009",
+      "source": {
+        "pdf_viewer_page": 1558,
+        "printed_folio": "11.40.6",
+        "section": "position"
+      },
+      "domain": "position",
+      "condition": [
+        "IRS_IN_ATT_MODE_AND_POS_INIT_SELECTED"
+      ],
+      "result": [
+        "ALLOW_ATT_MODE_MAGNETIC_HEADING_ENTRY_VIA_POS_INIT"
+      ],
+      "effectivity": "FCOM_PAGE_DOCUMENTED",
+      "implementation": "SOURCE_MODEL_ONLY_NOT_APPLIED_TO_APP"
+    },
+    {
+      "id": "IX-010",
+      "source": {
+        "pdf_viewer_page": 1558,
+        "printed_folio": "11.40.6",
+        "section": "source_boundary"
+      },
+      "domain": "source_boundary",
+      "condition": [
+        "INDEX_LEGACY_PROMPT_SCREEN_IS_REFERENCE"
+      ],
+      "result": [
+        "DO_NOT_PRESENT_RTE_LEGS_AS_FCOM_INDEX_LSK_MAPPING_UNLESS_SEPARATELY_SOURCED"
+      ],
+      "effectivity": "REFERENCE_LAYOUT_ONLY",
+      "implementation": "SOURCE_MODEL_ONLY_NOT_APPLIED_TO_APP"
+    },
+    {
+      "id": "IX-011",
+      "source": {
+        "pdf_viewer_page": 1559,
+        "printed_folio": "11.40.7",
+        "section": "page_navigation"
+      },
+      "domain": "page_navigation",
+      "condition": [
+        "LSK_L3_PERF_SELECTED"
+      ],
+      "result": [
+        "DISPLAY_PERF_INIT"
+      ],
+      "effectivity": "FCOM_PAGE_DOCUMENTED",
+      "implementation": "SOURCE_MODEL_ONLY_NOT_APPLIED_TO_APP"
+    },
+    {
+      "id": "IX-012",
+      "source": {
+        "pdf_viewer_page": 1559,
+        "printed_folio": "11.40.7",
+        "section": "page_navigation"
+      },
+      "domain": "page_navigation",
+      "condition": [
+        "LSK_L4_TAKEOFF_SELECTED"
+      ],
+      "result": [
+        "DISPLAY_TAKEOFF_REF_WITH_V_SPEED_INPUTS"
+      ],
+      "effectivity": "FCOM_PAGE_DOCUMENTED",
+      "implementation": "SOURCE_MODEL_ONLY_NOT_APPLIED_TO_APP"
+    },
+    {
+      "id": "IX-013",
+      "source": {
+        "pdf_viewer_page": 1559,
+        "printed_folio": "11.40.7",
+        "section": "page_navigation"
+      },
+      "domain": "page_navigation",
+      "condition": [
+        "LSK_L5_APPROACH_SELECTED"
+      ],
+      "result": [
+        "DISPLAY_APPROACH_REF_FOR_VREF_INPUT"
+      ],
+      "effectivity": "FCOM_PAGE_DOCUMENTED",
+      "implementation": "SOURCE_MODEL_ONLY_NOT_APPLIED_TO_APP"
+    },
+    {
+      "id": "IX-014",
+      "source": {
+        "pdf_viewer_page": 1559,
+        "printed_folio": "11.40.7",
+        "section": "page_navigation"
+      },
+      "domain": "page_navigation",
+      "condition": [
+        "LSK_L6_OFFSET_SELECTED"
+      ],
+      "result": [
+        "DISPLAY_LATERAL_OFFSET_PAGE"
+      ],
+      "effectivity": "OPTIONAL_L6_OFFSET_NOT_IN_PRIOR_FIGURE",
+      "implementation": "SOURCE_MODEL_ONLY_NOT_APPLIED_TO_APP"
+    },
+    {
+      "id": "IX-015",
+      "source": {
+        "pdf_viewer_page": 1559,
+        "printed_folio": "11.40.7",
+        "section": "page_navigation"
+      },
+      "domain": "page_navigation",
+      "condition": [
+        "LSK_R1_NAV_DATA_SELECTED_WITHOUT_SUPP_SCRATCHPAD"
+      ],
+      "result": [
+        "DISPLAY_REF_NAV_DATA_FOR_WPTS_NAVAIDS_AIRPORTS_RUNWAYS"
+      ],
+      "effectivity": "FCOM_PAGE_DOCUMENTED",
+      "implementation": "SOURCE_MODEL_ONLY_NOT_APPLIED_TO_APP"
+    },
+    {
+      "id": "IX-016",
+      "source": {
+        "pdf_viewer_page": 1559,
+        "printed_folio": "11.40.7",
+        "section": "page_navigation"
+      },
+      "domain": "page_navigation",
+      "condition": [
+        "AIRCRAFT_ON_GROUND",
+        "SCRATCHPAD_EXACT_SUPP",
+        "LSK_R1_NAV_DATA_SELECTED"
+      ],
+      "result": [
+        "DISPLAY_SUPP_NAV_DATA"
+      ],
+      "effectivity": "FCOM_PAGE_DOCUMENTED",
+      "implementation": "SOURCE_MODEL_ONLY_NOT_APPLIED_TO_APP"
+    },
+    {
+      "id": "IX-017",
+      "source": {
+        "pdf_viewer_page": 1559,
+        "printed_folio": "11.40.7",
+        "section": "page_navigation"
+      },
+      "domain": "page_navigation",
+      "condition": [
+        "IN_FLIGHT_AND_LSK_R1_NAV_DATA_SELECTED_WITH_SUPP"
+      ],
+      "result": [
+        "DO_NOT_ASSERT_SUPP_PATH_AVAILABLE_IN_FLIGHT"
+      ],
+      "effectivity": "GROUND_ONLY_DOCUMENTED",
+      "implementation": "SOURCE_MODEL_ONLY_NOT_APPLIED_TO_APP"
+    },
+    {
+      "id": "IX-018",
+      "source": {
+        "pdf_viewer_page": 1559,
+        "printed_folio": "11.40.7",
+        "section": "maintenance"
+      },
+      "domain": "maintenance",
+      "condition": [
+        "AIRCRAFT_ON_GROUND_AND_R6_SELECTED"
+      ],
+      "result": [
+        "OPEN_MAINTENANCE_PAGES"
+      ],
+      "effectivity": "GROUND_ONLY",
+      "implementation": "SOURCE_MODEL_ONLY_NOT_APPLIED_TO_APP"
+    },
+    {
+      "id": "IX-019",
+      "source": {
+        "pdf_viewer_page": 1559,
+        "printed_folio": "11.40.7",
+        "section": "maintenance"
+      },
+      "domain": "maintenance",
+      "condition": [
+        "AIRCRAFT_IN_FLIGHT"
+      ],
+      "result": [
+        "REPLACE_R6_MAINT_PROMPT_WITH_NAV_STATUS"
+      ],
+      "effectivity": "FCOM_PAGE_DOCUMENTED",
+      "implementation": "SOURCE_MODEL_ONLY_NOT_APPLIED_TO_APP"
+    },
+    {
+      "id": "IX-020",
+      "source": {
+        "pdf_viewer_page": 1559,
+        "printed_folio": "11.40.7",
+        "section": "nav_status"
+      },
+      "domain": "nav_status",
+      "condition": [
+        "AIRCRAFT_IN_FLIGHT_AND_R6_NAV_STATUS_SELECTED"
+      ],
+      "result": [
+        "SHOW_FMC_TUNED_NAVAID_STATUS"
+      ],
+      "effectivity": "FCOM_PAGE_DOCUMENTED",
+      "implementation": "SOURCE_MODEL_ONLY_NOT_APPLIED_TO_APP"
+    },
+    {
+      "id": "IX-021",
+      "source": {
+        "pdf_viewer_page": 1559,
+        "printed_folio": "11.40.7",
+        "section": "source_boundary"
+      },
+      "domain": "source_boundary",
+      "condition": [
+        "NO_SOURCE_MAPPING_FOR_INDEX_R2_TO_R5"
+      ],
+      "result": [
+        "LEAVE_INDEX_R2_R3_R4_R5_UNASSIGNED_IN_REFERENCE_LAYOUT"
+      ],
+      "effectivity": "FCOM_PAGE_DOCUMENTED",
+      "implementation": "SOURCE_MODEL_ONLY_NOT_APPLIED_TO_APP"
+    },
+    {
+      "id": "ID-001",
+      "source": {
+        "pdf_viewer_page": 1560,
+        "printed_folio": "11.40.8",
+        "section": "startup"
+      },
+      "domain": "startup",
+      "condition": [
+        "CDU_POWERED_FOR_PREFLIGHT"
+      ],
+      "result": [
+        "OPEN_IDENT_FIRST_PAGE"
+      ],
+      "effectivity": "FCOM_PAGE_DOCUMENTED",
+      "implementation": "SOURCE_MODEL_ONLY_NOT_APPLIED_TO_APP"
+    },
+    {
+      "id": "ID-002",
+      "source": {
+        "pdf_viewer_page": 1560,
+        "printed_folio": "11.40.8",
+        "section": "crew_verification"
+      },
+      "domain": "crew_verification",
+      "condition": [
+        "IDENT_OPEN"
+      ],
+      "result": [
+        "SHOW_FMC_DATA_FOR_CREW_VERIFICATION"
+      ],
+      "effectivity": "FCOM_PAGE_DOCUMENTED",
+      "implementation": "SOURCE_MODEL_ONLY_NOT_APPLIED_TO_APP"
+    },
+    {
+      "id": "ID-003",
+      "source": {
+        "pdf_viewer_page": 1560,
+        "printed_folio": "11.40.8",
+        "section": "data_input"
+      },
+      "domain": "data_input",
+      "condition": [
+        "IDENT_OPEN"
+      ],
+      "result": [
+        "ALLOW_DOCUMENTED_ACTIVE_NAV_DB_AND_SUPPLEMENTAL_DB_MANUAL_ENTRIES_ONLY_AS_APPLICABLE"
+      ],
+      "effectivity": "FCOM_PAGE_DOCUMENTED",
+      "implementation": "SOURCE_MODEL_ONLY_NOT_APPLIED_TO_APP"
+    },
+    {
+      "id": "ID-004",
+      "source": {
+        "pdf_viewer_page": 1560,
+        "printed_folio": "11.40.8",
+        "section": "page_layout"
+      },
+      "domain": "page_layout",
+      "condition": [
+        "IDENT_OPEN"
+      ],
+      "result": [
+        "DISPLAY_IDENT_TITLE_AND_VARIANT_PAGE_NUMBER_1_OF_X"
+      ],
+      "effectivity": "FCOM_PAGE_DOCUMENTED",
+      "implementation": "SOURCE_MODEL_ONLY_NOT_APPLIED_TO_APP"
+    },
+    {
+      "id": "ID-005",
+      "source": {
+        "pdf_viewer_page": 1560,
+        "printed_folio": "11.40.8",
+        "section": "field_L1"
+      },
+      "domain": "field_L1",
+      "condition": [
+        "IDENT_OPEN"
+      ],
+      "result": [
+        "READ_MODEL_FROM_FMC_PERFORMANCE_DATABASE"
+      ],
+      "effectivity": "FCOM_PAGE_DOCUMENTED",
+      "implementation": "SOURCE_MODEL_ONLY_NOT_APPLIED_TO_APP"
+    },
+    {
+      "id": "ID-006",
+      "source": {
+        "pdf_viewer_page": 1560,
+        "printed_folio": "11.40.8",
+        "section": "field_L2"
+      },
+      "domain": "field_L2",
+      "condition": [
+        "IDENT_OPEN"
+      ],
+      "result": [
+        "READ_NAV_DATA_IDENTIFIER_FROM_DATABASE"
+      ],
+      "effectivity": "FCOM_PAGE_DOCUMENTED",
+      "implementation": "SOURCE_MODEL_ONLY_NOT_APPLIED_TO_APP"
+    },
+    {
+      "id": "ID-007",
+      "source": {
+        "pdf_viewer_page": 1560,
+        "printed_folio": "11.40.8",
+        "section": "field_L4"
+      },
+      "domain": "field_L4",
+      "condition": [
+        "IDENT_OPEN"
+      ],
+      "result": [
+        "SHOW_B0EING_FMC_SOFTWARE_PART_NUMBER_AND_UPDATE_VERSION"
+      ],
+      "effectivity": "FCOM_PAGE_DOCUMENTED",
+      "implementation": "SOURCE_MODEL_ONLY_NOT_APPLIED_TO_APP"
+    },
+    {
+      "id": "ID-008",
+      "source": {
+        "pdf_viewer_page": 1560,
+        "printed_folio": "11.40.8",
+        "section": "op_program_variants"
+      },
+      "domain": "op_program_variants",
+      "condition": [
+        "OP_PROGRAM_SOURCE_TEXT_EXAMPLES"
+      ],
+      "result": [
+        "KEEP_U5_U10_5A_U10_7_U10_8A_AS_EXAMPLES_NOT_INSTALLED_SW"
+      ],
+      "effectivity": "SOFTWARE_VERSION_EXAMPLES",
+      "implementation": "SOURCE_MODEL_ONLY_NOT_APPLIED_TO_APP"
+    },
+    {
+      "id": "ID-009",
+      "source": {
+        "pdf_viewer_page": 1560,
+        "printed_folio": "11.40.8",
+        "section": "source_boundary"
+      },
+      "domain": "source_boundary",
+      "condition": [
+        "SCREENSHOT_EXAMPLE_CONTAINS_1997_DATES_AND_737_XXX"
+      ],
+      "result": [
+        "DO_NOT_HARDCODE_SAMPLE_DATES_MODEL_NUMBER_OR_XXX_RATING"
+      ],
+      "effectivity": "FCOM_PAGE_DOCUMENTED",
+      "implementation": "SOURCE_MODEL_ONLY_NOT_APPLIED_TO_APP"
+    },
+    {
+      "id": "ID-010",
+      "source": {
+        "pdf_viewer_page": 1561,
+        "printed_folio": "11.40.9",
+        "section": "navigation"
+      },
+      "domain": "navigation",
+      "condition": [
+        "IDENT_L6_INDEX_SELECTED"
+      ],
+      "result": [
+        "OPEN_INIT_REF_INDEX"
+      ],
+      "effectivity": "FCOM_PAGE_DOCUMENTED",
+      "implementation": "SOURCE_MODEL_ONLY_NOT_APPLIED_TO_APP"
+    },
+    {
+      "id": "ID-011",
+      "source": {
+        "pdf_viewer_page": 1561,
+        "printed_folio": "11.40.9",
+        "section": "field_R1"
+      },
+      "domain": "field_R1",
+      "condition": [
+        "IDENT_OPEN"
+      ],
+      "result": [
+        "SHOW_ENGINE_THRUST_RATING_FROM_PERFORMANCE_DATABASE"
+      ],
+      "effectivity": "FCOM_PAGE_DOCUMENTED",
+      "implementation": "SOURCE_MODEL_ONLY_NOT_APPLIED_TO_APP"
+    },
+    {
+      "id": "ID-012",
+      "source": {
+        "pdf_viewer_page": 1561,
+        "printed_folio": "11.40.9",
+        "section": "aircraft_config"
+      },
+      "domain": "aircraft_config",
+      "condition": [
+        "EP_FSI_PROJECT_RATING_20K"
+      ],
+      "result": [
+        "SHOW_20K_AS_ENGINE_RATING_IF_CONFIGURATION_CONFIRMED"
+      ],
+      "effectivity": "USER_PROVIDED_PROJECT_CONFIGURATION_NOT_FCOM_EXAMPLE",
+      "implementation": "SOURCE_MODEL_ONLY_NOT_APPLIED_TO_APP"
+    },
+    {
+      "id": "ID-013",
+      "source": {
+        "pdf_viewer_page": 1561,
+        "printed_folio": "11.40.9",
+        "section": "field_R2"
+      },
+      "domain": "field_R2",
+      "condition": [
+        "IDENT_OPEN"
+      ],
+      "result": [
+        "SHOW_ACTIVE_NAV_DB_EFFECTIVITY_RANGE_WITH_ACTIVE_LABEL"
+      ],
+      "effectivity": "FCOM_PAGE_DOCUMENTED",
+      "implementation": "SOURCE_MODEL_ONLY_NOT_APPLIED_TO_APP"
+    },
+    {
+      "id": "ID-014",
+      "source": {
+        "pdf_viewer_page": 1561,
+        "printed_folio": "11.40.9",
+        "section": "field_R3"
+      },
+      "domain": "field_R3",
+      "condition": [
+        "IDENT_OPEN"
+      ],
+      "result": [
+        "SHOW_INACTIVE_NAV_DB_EFFECTIVITY_RANGE_WITHOUT_ACTIVE_LABEL"
+      ],
+      "effectivity": "FCOM_PAGE_DOCUMENTED",
+      "implementation": "SOURCE_MODEL_ONLY_NOT_APPLIED_TO_APP"
+    },
+    {
+      "id": "ID-015",
+      "source": {
+        "pdf_viewer_page": 1561,
+        "printed_folio": "11.40.9",
+        "section": "nav_db_activation"
+      },
+      "domain": "nav_db_activation",
+      "condition": [
+        "CREW_SELECTS_SOURCE_DATE_RANGE_PROMPT"
+      ],
+      "result": [
+        "COPY_SELECTED_DB_DATE_RANGE_TO_SCRATCHPAD"
+      ],
+      "effectivity": "FCOM_PAGE_DOCUMENTED",
+      "implementation": "SOURCE_MODEL_ONLY_NOT_APPLIED_TO_APP"
+    },
+    {
+      "id": "ID-016",
+      "source": {
+        "pdf_viewer_page": 1561,
+        "printed_folio": "11.40.9",
+        "section": "nav_db_activation"
+      },
+      "domain": "nav_db_activation",
+      "condition": [
+        "AIRCRAFT_ON_GROUND",
+        "SCRATCHPAD_CONTAINS_VALID_SELECTED_NAV_DB_RANGE",
+        "CREW_TRANSFERS_RANGE_TO_ACTIVE_FIELD_R2"
+      ],
+      "result": [
+        "SWITCH_ACTIVE_NAV_DB_SET",
+        "MOVE_PREVIOUS_ACTIVE_SET_TO_INACTIVE_DATE_LINE",
+        "ERASE_PREVIOUSLY_ENTERED_ROUTE_DATA"
+      ],
+      "effectivity": "FCOM_PAGE_DOCUMENTED",
+      "implementation": "SOURCE_MODEL_ONLY_NOT_APPLIED_TO_APP"
+    },
+    {
+      "id": "ID-017",
+      "source": {
+        "pdf_viewer_page": 1561,
+        "printed_folio": "11.40.9",
+        "section": "nav_db_activation"
+      },
+      "domain": "nav_db_activation",
+      "condition": [
+        "AIRCRAFT_IN_FLIGHT_AND_CREW_ATTEMPTS_DATABASE_SWITCH"
+      ],
+      "result": [
+        "PREVENT_ACTIVE_DATABASE_CHANGE"
+      ],
+      "effectivity": "FCOM_PAGE_DOCUMENTED",
+      "implementation": "SOURCE_MODEL_ONLY_NOT_APPLIED_TO_APP"
+    },
+    {
+      "id": "ID-018",
+      "source": {
+        "pdf_viewer_page": 1561,
+        "printed_folio": "11.40.9",
+        "section": "nav_db_expiration"
+      },
+      "domain": "nav_db_expiration",
+      "condition": [
+        "ACTIVE_NAV_DATABASE_EXPIRES_DURING_FLIGHT"
+      ],
+      "result": [
+        "CONTINUE_USE_OF_EXPIRED_ACTIVE_SET_UNTIL_CHANGED_AFTER_LANDING"
+      ],
+      "effectivity": "FCOM_PAGE_DOCUMENTED",
+      "implementation": "SOURCE_MODEL_ONLY_NOT_APPLIED_TO_APP"
+    },
+    {
+      "id": "ID-019",
+      "source": {
+        "pdf_viewer_page": 1561,
+        "printed_folio": "11.40.9",
+        "section": "field_R5"
+      },
+      "domain": "field_R5",
+      "condition": [
+        "SUPPLEMENTAL_DATABASE_VALID"
+      ],
+      "result": [
+        "SHOW_SUPP_DATA_EFFECTIVE_DATE"
+      ],
+      "effectivity": "FCOM_PAGE_DOCUMENTED",
+      "implementation": "SOURCE_MODEL_ONLY_NOT_APPLIED_TO_APP"
+    },
+    {
+      "id": "ID-020",
+      "source": {
+        "pdf_viewer_page": 1561,
+        "printed_folio": "11.40.9",
+        "section": "field_R5"
+      },
+      "domain": "field_R5",
+      "condition": [
+        "SUPPLEMENTAL_DATABASE_EMPTY"
+      ],
+      "result": [
+        "DISPLAY_BLANK_SUPP_DATA_DATE"
+      ],
+      "effectivity": "FCOM_PAGE_DOCUMENTED",
+      "implementation": "SOURCE_MODEL_ONLY_NOT_APPLIED_TO_APP"
+    },
+    {
+      "id": "ID-021",
+      "source": {
+        "pdf_viewer_page": 1561,
+        "printed_folio": "11.40.9",
+        "section": "navigation"
+      },
+      "domain": "navigation",
+      "condition": [
+        "IDENT_R6_POS_INIT_SELECTED"
+      ],
+      "result": [
+        "OPEN_POS_INIT"
+      ],
+      "effectivity": "FCOM_PAGE_DOCUMENTED",
+      "implementation": "SOURCE_MODEL_ONLY_NOT_APPLIED_TO_APP"
+    },
+    {
+      "id": "ID-022",
+      "source": {
+        "pdf_viewer_page": 1561,
+        "printed_folio": "11.40.9",
+        "section": "source_boundary"
+      },
+      "domain": "source_boundary",
+      "condition": [
+        "NO_FCOM_IDENT_L3_L5_R4_PROMPTS_IN_ILLUSTRATION"
+      ],
+      "result": [
+        "DO_NOT_INVENT_L3_L5_R4_FUNCTIONS"
+      ],
+      "effectivity": "FCOM_PAGE_DOCUMENTED",
+      "implementation": "SOURCE_MODEL_ONLY_NOT_APPLIED_TO_APP"
+    }
+  ],
+  "qa": {
+    "total_rules": 43,
+    "per_viewer_page": {
+      "1558": 10,
+      "1559": 11,
+      "1560": 9,
+      "1561": 13
+    },
+    "locked_font_binary_changed": false,
+    "layout_runtime_changed": false
+  }
+}

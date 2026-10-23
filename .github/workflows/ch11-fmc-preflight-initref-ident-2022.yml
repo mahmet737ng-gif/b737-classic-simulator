@@ -1,0 +1,16 @@
+name: Chapter 11 FMC Preflight INDEX IDENT detail source QA
+on:
+  push:
+  pull_request:
+jobs:
+  source-contract-index-ident:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate LSK layout and nav database activation
+        run: node engine/ch11/tests/fmc-preflight-initref-ident-2022.test.cjs
+      - name: Preserve IDENT startup and Boeing fonts
+        run: node tests/cdu-ident-startup.test.cjs && node tests/cdu-font-lock.test.cjs
