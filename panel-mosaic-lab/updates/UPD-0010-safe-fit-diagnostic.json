@@ -1,0 +1,34 @@
+{
+  "schema": "b737.overhead.visual-qa.v1",
+  "version": "UPD-0010-safe-content-fit",
+  "date": "2026-10-24",
+  "state": "DIAGNOSTIC_ONLY_NOT_FINAL",
+  "reasonForRollbackOfCrop": "User correctly observed that atlas-box object-fit:cover removed significant panel details and enlarged typography/switch cavities.",
+  "sourceAudit": {
+    "files": 18,
+    "zeroBinaryChanges": true,
+    "measuredDimensionsRecorded": "panel-mosaic-lab/all-overhead/atlas-layout.json",
+    "maxSourceLossWithFormerCover": 0.463,
+    "largestMismatchPanels": [
+      "OH-22 cabin pressurization",
+      "OH-14 emergency exit and signs",
+      "OH-07/08 flight controls",
+      "OH-20 air conditioning",
+      "OH-10 electrical"
+    ],
+    "methodNow": "Per-asset Math.min atlas box vs content bounding dimensions, no cover crop or stretch; original source photos unmodified.",
+    "exception": "Only exterior white canvas pixels are excluded in presentation for OH13 and OH23-25; the original sources are available intact via Independent Images."
+  },
+  "fixedGeometry": {
+    "source": "B737_Mosaic_Atlas_OH_v1.jpg",
+    "canvas": [
+      2220,
+      3525
+    ],
+    "columns": 5,
+    "commonBottomY": 3276,
+    "lowerBarTopY": 3281
+  },
+  "outstanding": "The aspect ratios of several supplied plate images fundamentally differ from their physical atlas rectangles, so letterboxing gaps remain. Rebuild or generate individual plate artwork with atlas-native aspect ratios before claiming finished seamless overhead.",
+  "website": "https://mahmet737ng-gif.github.io/b737-classic-simulator/panel-mosaic-lab/all-overhead/"
+}
