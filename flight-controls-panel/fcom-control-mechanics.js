@@ -14,7 +14,7 @@
     flightB: { detents:['stby','off','on'], guarded:'on', close:'force_on', fcom:'9.10.1' },
     spoilerA: { detents:['off','on'], guarded:'on', close:'force_on', fcom:'9.10.2' },
     spoilerB: { detents:['off','on'], guarded:'on', close:'force_on', fcom:'9.10.2' },
-    alternateFlapsArm: { detents:['off','arm'], guarded:'off', close:'force_off', fcom:'9.10.2-3' ,
+    alternateFlapsArm: { detents:['off','arm'], guarded:'off', close:'force_off', fcom:'9.10.2-3' },
     emergencyExitLights: { detents:['off','armed','on'], guarded:'armed', close:'force_armed', fcom:'1.30.9 / 1.40.5' }
   });
   const horizontal = Object.freeze({
