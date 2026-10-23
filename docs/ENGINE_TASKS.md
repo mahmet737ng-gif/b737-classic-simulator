@@ -196,3 +196,9 @@ Private v13 SQLite `/Technical Database/Sources/AFM-737-33V-D6-8730-R32/EP-FSI-A
 | N1-FSI-18 Independent N1 numerical signoff and CDU enablement | BLOCKED | 0 verified final values; v10 CDU source-status only, no auto calculated N1/A/T. |
 
 Active private database: `/Technical Database/Sources/AFM-737-33V-D6-8730-R32/EP-FSI-ASN29340/v14/epfsi_afm_scoped_v14.sqlite`. Source is confidential, preserve original full AFM and prior records. Python source/image suite 20 PASS. See `docs/AFM_EP_FSI_N1_V14.md`.
+
+
+## DCPCS subsystem V4 — 2026-10-23
+- Separate DCPCS dual-controller trainer, 37 Node integration tests passing, and GitHub Pages deployment completed. Module: `engine/systems/dcpcs-v4.js`; UI: `dcpcs-lab/`.
+- Private data: `/Technical Database/Subsystems/DCPCS-V4/DCPCS_NETWORK_V4.sqlite` (33 nodes, 52 ports, 25 links, 18 rules, 9 open gaps).
+- Existing source corpus preserved. Exact bus wiring, cabin airflow physics, servo timing, and complete QRH behavior remain open. Main cockpit and LAN code unchanged.
