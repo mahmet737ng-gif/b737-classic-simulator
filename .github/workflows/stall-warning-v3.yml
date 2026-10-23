@@ -1,0 +1,18 @@
+name: Stall Warning V3 Tests
+on:
+  push:
+    paths:
+      - "engine/systems/stall-warning-v3.js"
+      - "engine/systems/stall-warning-integration-v3.js"
+      - "tests/stall-warning-v3.test.cjs"
+      - "package.json"
+  workflow_dispatch:
+jobs:
+  stall-warning:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node tests/stall-warning-v3.test.cjs
