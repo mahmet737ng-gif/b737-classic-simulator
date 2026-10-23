@@ -1,0 +1,24 @@
+{
+  "version": "UPD-0002",
+  "status": "SOURCE_UPLOADED_VERIFIED",
+  "originalFilename": "Stripped Gray-Blue Aircraft Avionics Panel(1).png",
+  "assetId": "OH-01-06-SOURCE-UPD-0002",
+  "githubPath": "panel-mosaic-lab/assets/locked/2026-10-23/OH01-06-source-9d8ac0ac86bd.png",
+  "originalBytes": 2995593,
+  "originalDimensions": [
+    1731,
+    909
+  ],
+  "sha256": "9d8ac0ac86bdb92c040e9bdd97811ca381535d949bff94aa5b1a01e5de8e23df",
+  "gitBlobSha1": "426479e2f6868b15023d24818eb9388e52ea9457",
+  "sharedPanels": [
+    "OH-01",
+    "OH-02",
+    "OH-03",
+    "OH-04",
+    "OH-05",
+    "OH-06"
+  ],
+  "viewer": "panel-mosaic-lab/upper-oh/",
+  "notes": "Single original image shared by six panels. Pixel data matches uploader copy. Physical selection polygons still require user QA. Previous image paths remain immutable; later replacements use new paths and append history."
+}
