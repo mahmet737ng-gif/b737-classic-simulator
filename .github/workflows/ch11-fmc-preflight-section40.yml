@@ -1,0 +1,16 @@
+name: Chapter 11 FMC Preflight Section 40 source QA
+on:
+  push:
+  pull_request:
+jobs:
+  verify-fcom-preflight:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify Section 40 rule data and variants
+        run: node engine/ch11/tests/fmc-preflight-section40-2020.test.cjs
+      - name: Verify CDU startup and frozen typography
+        run: node tests/cdu-ident-startup.test.cjs && node tests/cdu-font-lock.test.cjs

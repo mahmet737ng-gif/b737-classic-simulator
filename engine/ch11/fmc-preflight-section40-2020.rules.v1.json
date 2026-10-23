@@ -1,0 +1,1022 @@
+{
+  "schema": "b737-classic-ch11-fmc-preflight-section40/1.0",
+  "record_id": "B737-CLASSIC-CDU-CH11-FMC-PREFLIGHT-2020",
+  "source": {
+    "manual": "737 Flight Crew Operations Manual, Flight Management, Navigation — FMC Preflight",
+    "section": "Chapter 11 Section 40",
+    "reference": "D6-27370-300/400/500-SHI",
+    "medium": "FOUR_USER_PROVIDED_SCREENSHOTS",
+    "images": [
+      {
+        "pdf_viewer": 1553,
+        "folio": "11.40.1",
+        "date": "2020-10-15",
+        "sha256": "4375e1fdde02ce1b8426b62265f9f0a21d89fa6859e36d7097d208121ec59574",
+        "name": "image(20261023-190935).png",
+        "topic": "FMC Preflight introduction / flow diagram with N1 LIMIT"
+      },
+      {
+        "pdf_viewer": 1554,
+        "folio": "11.40.2",
+        "date": "2020-10-15",
+        "sha256": "60c16d2044a094637682df26410d81a38a58fde418417b6fe7ca8d5168d4c024",
+        "name": "image(20261023-190945).png",
+        "topic": "Flow diagram without N1 LIMIT, sequence and minimum preflight items"
+      },
+      {
+        "pdf_viewer": 1555,
+        "folio": "11.40.3",
+        "date": "2011-08-12",
+        "sha256": "d4677dc239ffe965b10f29dab9e5095dc30a8cf043c1cc93c200cda993627b59",
+        "name": "image(20261023-190947).png",
+        "topic": "Page prompts, supplemental pages, forecasts and crew navigation edits"
+      },
+      {
+        "pdf_viewer": 1556,
+        "folio": "11.40.4",
+        "date": "2017-12-15",
+        "sha256": "829b893157a8da83f1b4b89edfe7486b4a830ffb24416744614581cb6c7be18c",
+        "name": "image(20261023-190954).png",
+        "topic": "INIT/REF INDEX manual page access"
+      }
+    ],
+    "notes": [
+      "Source text directly visible in four attached screenshots, not the full PDF.",
+      "Printed page revisions differ across screenshot sequence (2020, 2011, 2017) and are retained per page.",
+      "Original FCOM figures and images have not been committed.",
+      "Actual IDENT, POS INIT, RTE, PERF INIT, TAKEOFF REF line layouts and LSK field maps are not supplied by these four pages."
+    ]
+  },
+  "project": {
+    "repo": "mahmet737ng-gif/b737-classic-simulator",
+    "project_id": "B737-CLASSIC-CDU",
+    "aircraft": "EP-FSI",
+    "independent_cdu": true,
+    "fonts": [
+      "BoeingCDU-Large.ttf",
+      "BoeingCDU-Small.ttf"
+    ],
+    "font_binary_changes": false,
+    "physical_cdu_changes": false,
+    "flight_control_connected": false
+  },
+  "requirements": [
+    {
+      "id": "PRE-001",
+      "category": "preflight_completion",
+      "source": {
+        "pdf_viewer_page": 1553,
+        "printed_folio": "11.40.1",
+        "revision_date": "2020-10-15",
+        "anchor": "Introduction"
+      },
+      "conditions": [
+        "PREFLIGHT_STARTED"
+      ],
+      "expected_behaviors": [
+        "COMPLETION_REQUIRES_ALL_MINIMUM_REQUIRED_DATA_LOCATIONS"
+      ],
+      "variant_scope": "APPLIES_WHEN_INSTALLED",
+      "status": "SOURCE_CONTRACT_NOT_RUNTIME_CONNECTED",
+      "notes": null
+    },
+    {
+      "id": "PRE-002",
+      "category": "preflight_completion",
+      "source": {
+        "pdf_viewer_page": 1553,
+        "printed_folio": "11.40.1",
+        "revision_date": "2020-10-15",
+        "anchor": "Introduction"
+      },
+      "conditions": [
+        "OPTIONAL_AND_REQUIRED_PREFLIGHT_DATA_ENTERED"
+      ],
+      "expected_behaviors": [
+        "IMPROVES_PERFORMANCE_PREDICTION_INFORMATION_AVAILABILITY"
+      ],
+      "variant_scope": "APPLIES_WHEN_INSTALLED",
+      "status": "SOURCE_CONTRACT_NOT_RUNTIME_CONNECTED",
+      "notes": null
+    },
+    {
+      "id": "PRE-003",
+      "category": "acars_input",
+      "source": {
+        "pdf_viewer_page": 1553,
+        "printed_folio": "11.40.1",
+        "revision_date": "2020-10-15",
+        "anchor": "Introduction"
+      },
+      "conditions": [
+        "VALID_ACARS_PREFLIGHT_MESSAGE_RECEIVED"
+      ],
+      "expected_behaviors": [
+        "PREFLIGHT_DATA_CAN_BE_LOADED_FROM_AIRLINE_GROUND_STATION"
+      ],
+      "variant_scope": "ACARS_OPTION",
+      "status": "SOURCE_CONTRACT_NOT_RUNTIME_CONNECTED",
+      "notes": null
+    },
+    {
+      "id": "PRE-004",
+      "category": "data_override",
+      "source": {
+        "pdf_viewer_page": 1553,
+        "printed_folio": "11.40.1",
+        "revision_date": "2020-10-15",
+        "anchor": "Introduction"
+      },
+      "conditions": [
+        "CREW_MANUAL_ENTRY_FOR_FIELD_PREVIOUSLY_LOADED_BY_ACARS"
+      ],
+      "expected_behaviors": [
+        "MANUAL_FIELD_VALUE_REPLACES_EXISTING_LOADED_VALUE"
+      ],
+      "variant_scope": "ACARS_OPTION",
+      "status": "SOURCE_CONTRACT_NOT_RUNTIME_CONNECTED",
+      "notes": null
+    },
+    {
+      "id": "PRE-005",
+      "category": "acars_takeoff",
+      "source": {
+        "pdf_viewer_page": 1553,
+        "printed_folio": "11.40.1",
+        "revision_date": "2020-10-15",
+        "anchor": "Introduction"
+      },
+      "conditions": [
+        "ACARS_TAKEOFF_DATA_AVAILABLE"
+      ],
+      "expected_behaviors": [
+        "ALLOW_TAKEOFF_DATA_POPULATION_ON_TAKEOFF_REF_PAGES"
+      ],
+      "variant_scope": "ACARS_OPTION",
+      "status": "SOURCE_CONTRACT_NOT_RUNTIME_CONNECTED",
+      "notes": null
+    },
+    {
+      "id": "SEQ-001",
+      "category": "preflight_sequence",
+      "source": {
+        "pdf_viewer_page": 1553,
+        "printed_folio": "11.40.1",
+        "revision_date": "2020-10-15",
+        "anchor": "Preflight Page Sequence"
+      },
+      "conditions": [
+        "FMC_NORMAL_POWER_UP"
+      ],
+      "expected_behaviors": [
+        "INITIAL_CDU_PAGE_IDENT"
+      ],
+      "variant_scope": "APPLIES_WHEN_INSTALLED",
+      "status": "SOURCE_CONTRACT_NOT_RUNTIME_CONNECTED",
+      "notes": null
+    },
+    {
+      "id": "SEQ-002",
+      "category": "preflight_sequence",
+      "source": {
+        "pdf_viewer_page": 1553,
+        "printed_folio": "11.40.1",
+        "revision_date": "2020-10-15",
+        "anchor": "Preflight Page Sequence diagram"
+      },
+      "conditions": [
+        "IDENT_R6_POS_INIT_PROMPT_SELECTED"
+      ],
+      "expected_behaviors": [
+        "NAVIGATE_POS_INIT"
+      ],
+      "variant_scope": "APPLIES_WHEN_INSTALLED",
+      "status": "SOURCE_CONTRACT_NOT_RUNTIME_CONNECTED",
+      "notes": null
+    },
+    {
+      "id": "SEQ-003",
+      "category": "preflight_sequence",
+      "source": {
+        "pdf_viewer_page": 1553,
+        "printed_folio": "11.40.1",
+        "revision_date": "2020-10-15",
+        "anchor": "Preflight Page Sequence diagram"
+      },
+      "conditions": [
+        "POS_INIT_R6_ROUTE_PROMPT_SELECTED"
+      ],
+      "expected_behaviors": [
+        "NAVIGATE_RTE"
+      ],
+      "variant_scope": "APPLIES_WHEN_INSTALLED",
+      "status": "SOURCE_CONTRACT_NOT_RUNTIME_CONNECTED",
+      "notes": null
+    },
+    {
+      "id": "SEQ-004",
+      "category": "route_activation",
+      "source": {
+        "pdf_viewer_page": 1553,
+        "printed_folio": "11.40.1",
+        "revision_date": "2020-10-15",
+        "anchor": "Preflight Page Sequence diagram"
+      },
+      "conditions": [
+        "RTE_COMPLETE_AND_ACTIVATE_PROMPT_SELECTED"
+      ],
+      "expected_behaviors": [
+        "ARM_EXEC_AND_ROUTE_ACTIVATION_PENDING"
+      ],
+      "variant_scope": "APPLIES_WHEN_INSTALLED",
+      "status": "SOURCE_CONTRACT_NOT_RUNTIME_CONNECTED",
+      "notes": null
+    },
+    {
+      "id": "SEQ-005",
+      "category": "route_activation",
+      "source": {
+        "pdf_viewer_page": 1553,
+        "printed_folio": "11.40.1",
+        "revision_date": "2020-10-15",
+        "anchor": "Preflight Page Sequence diagram"
+      },
+      "conditions": [
+        "ROUTE_ACTIVATE_PENDING_AND_EXEC_KEY_PRESSED"
+      ],
+      "expected_behaviors": [
+        "ROUTE_BECOMES_ACTIVE_ACT_RTE"
+      ],
+      "variant_scope": "APPLIES_WHEN_INSTALLED",
+      "status": "SOURCE_CONTRACT_NOT_RUNTIME_CONNECTED",
+      "notes": null
+    },
+    {
+      "id": "SEQ-006",
+      "category": "preflight_sequence",
+      "source": {
+        "pdf_viewer_page": 1553,
+        "printed_folio": "11.40.1",
+        "revision_date": "2020-10-15",
+        "anchor": "Preflight Page Sequence diagram"
+      },
+      "conditions": [
+        "ACT_RTE_PERF_INIT_PROMPT_SELECTED"
+      ],
+      "expected_behaviors": [
+        "NAVIGATE_PERF_INIT"
+      ],
+      "variant_scope": "APPLIES_WHEN_INSTALLED",
+      "status": "SOURCE_CONTRACT_NOT_RUNTIME_CONNECTED",
+      "notes": null
+    },
+    {
+      "id": "SEQ-007",
+      "category": "preflight_sequence",
+      "source": {
+        "pdf_viewer_page": 1553,
+        "printed_folio": "11.40.1",
+        "revision_date": "2020-10-15",
+        "anchor": "Preflight Page Sequence diagram"
+      },
+      "conditions": [
+        "PERF_INIT_TO_N1_LIMIT_PROMPT_SELECTED"
+      ],
+      "expected_behaviors": [
+        "NAVIGATE_N1_LIMIT"
+      ],
+      "variant_scope": "PREFLIGHT_WITH_N1_LIMIT_PROMPT",
+      "status": "SOURCE_CONTRACT_NOT_RUNTIME_CONNECTED",
+      "notes": null
+    },
+    {
+      "id": "SEQ-008",
+      "category": "preflight_sequence",
+      "source": {
+        "pdf_viewer_page": 1553,
+        "printed_folio": "11.40.1",
+        "revision_date": "2020-10-15",
+        "anchor": "Preflight Page Sequence diagram"
+      },
+      "conditions": [
+        "N1_LIMIT_TAKEOFF_PROMPT_SELECTED"
+      ],
+      "expected_behaviors": [
+        "NAVIGATE_TAKEOFF_REF"
+      ],
+      "variant_scope": "PREFLIGHT_WITH_N1_LIMIT_PROMPT",
+      "status": "SOURCE_CONTRACT_NOT_RUNTIME_CONNECTED",
+      "notes": null
+    },
+    {
+      "id": "SEQ-009",
+      "category": "preflight_sequence",
+      "source": {
+        "pdf_viewer_page": 1554,
+        "printed_folio": "11.40.2",
+        "revision_date": "2020-10-15",
+        "anchor": "Preflight Page Sequence alternative diagram"
+      },
+      "conditions": [
+        "PERF_INIT_TAKEOFF_PROMPT_SELECTED"
+      ],
+      "expected_behaviors": [
+        "NAVIGATE_DIRECTLY_TO_TAKEOFF_REF"
+      ],
+      "variant_scope": "PREFLIGHT_DIRECT_TAKEOFF_FROM_PERF_INIT",
+      "status": "SOURCE_CONTRACT_NOT_RUNTIME_CONNECTED",
+      "notes": null
+    },
+    {
+      "id": "SEQ-010",
+      "category": "preflight_sequence",
+      "source": {
+        "pdf_viewer_page": 1554,
+        "printed_folio": "11.40.2",
+        "revision_date": "2020-10-15",
+        "anchor": "Preflight Page Sequence"
+      },
+      "conditions": [
+        "NORMAL_PREFLIGHT_WORKFLOW"
+      ],
+      "expected_behaviors": [
+        "IDENT_POS_INIT_RTE_ACTIVATE_EXEC_PERF_INIT_TAKEOFF_REF_WITH_VARIANT_N1_LIMIT"
+      ],
+      "variant_scope": "APPLIES_WHEN_INSTALLED",
+      "status": "SOURCE_CONTRACT_NOT_RUNTIME_CONNECTED",
+      "notes": null
+    },
+    {
+      "id": "SEQ-011",
+      "category": "preflight_sequence",
+      "source": {
+        "pdf_viewer_page": 1554,
+        "printed_folio": "11.40.2",
+        "revision_date": "2020-10-15",
+        "anchor": "Preflight sequence page list"
+      },
+      "conditions": [
+        "SID_OR_STAR_SELECTION_NEEDED"
+      ],
+      "expected_behaviors": [
+        "MANUALLY_OPEN_DEP_ARR_NO_AUTOMATIC_PROMPT"
+      ],
+      "variant_scope": "APPLIES_WHEN_INSTALLED",
+      "status": "SOURCE_CONTRACT_NOT_RUNTIME_CONNECTED",
+      "notes": null
+    },
+    {
+      "id": "DATA-001",
+      "category": "position_requirement",
+      "source": {
+        "pdf_viewer_page": 1554,
+        "printed_folio": "11.40.2",
+        "revision_date": "2020-10-15",
+        "anchor": "Preflight required data"
+      },
+      "conditions": [
+        "FMC_PREFLIGHT_VALIDATION"
+      ],
+      "expected_behaviors": [
+        "INERTIAL_POSITION_REQUIRED_FOR_PREFLIGHT_AND_FLIGHT_INSTRUMENT_OPERATION"
+      ],
+      "variant_scope": "APPLIES_WHEN_INSTALLED",
+      "status": "SOURCE_CONTRACT_NOT_RUNTIME_CONNECTED",
+      "notes": null
+    },
+    {
+      "id": "DATA-002",
+      "category": "route_requirement",
+      "source": {
+        "pdf_viewer_page": 1554,
+        "printed_folio": "11.40.2",
+        "revision_date": "2020-10-15",
+        "anchor": "Preflight required data"
+      },
+      "conditions": [
+        "RTE_PREFLIGHT_VALIDATION"
+      ],
+      "expected_behaviors": [
+        "ORIGIN_AIRPORT_REQUIRED"
+      ],
+      "variant_scope": "APPLIES_WHEN_INSTALLED",
+      "status": "SOURCE_CONTRACT_NOT_RUNTIME_CONNECTED",
+      "notes": null
+    },
+    {
+      "id": "DATA-003",
+      "category": "route_requirement",
+      "source": {
+        "pdf_viewer_page": 1554,
+        "printed_folio": "11.40.2",
+        "revision_date": "2020-10-15",
+        "anchor": "Preflight required data"
+      },
+      "conditions": [
+        "RTE_PREFLIGHT_VALIDATION"
+      ],
+      "expected_behaviors": [
+        "DESTINATION_AIRPORT_REQUIRED"
+      ],
+      "variant_scope": "APPLIES_WHEN_INSTALLED",
+      "status": "SOURCE_CONTRACT_NOT_RUNTIME_CONNECTED",
+      "notes": null
+    },
+    {
+      "id": "DATA-004",
+      "category": "route_requirement",
+      "source": {
+        "pdf_viewer_page": 1554,
+        "printed_folio": "11.40.2",
+        "revision_date": "2020-10-15",
+        "anchor": "Preflight required data"
+      },
+      "conditions": [
+        "RTE_PREFLIGHT_VALIDATION"
+      ],
+      "expected_behaviors": [
+        "AT_LEAST_ONE_ROUTE_LEG_REQUIRED"
+      ],
+      "variant_scope": "APPLIES_WHEN_INSTALLED",
+      "status": "SOURCE_CONTRACT_NOT_RUNTIME_CONNECTED",
+      "notes": null
+    },
+    {
+      "id": "DATA-005",
+      "category": "route_requirement",
+      "source": {
+        "pdf_viewer_page": 1554,
+        "printed_folio": "11.40.2",
+        "revision_date": "2020-10-15",
+        "anchor": "Preflight required data"
+      },
+      "conditions": [
+        "RTE_ENTERED_WITH_REQUIRED_FIELDS"
+      ],
+      "expected_behaviors": [
+        "ROUTE_MUST_BE_ACTIVATED"
+      ],
+      "variant_scope": "APPLIES_WHEN_INSTALLED",
+      "status": "SOURCE_CONTRACT_NOT_RUNTIME_CONNECTED",
+      "notes": null
+    },
+    {
+      "id": "DATA-006",
+      "category": "performance_requirement",
+      "source": {
+        "pdf_viewer_page": 1554,
+        "printed_folio": "11.40.2",
+        "revision_date": "2020-10-15",
+        "anchor": "Preflight required data"
+      },
+      "conditions": [
+        "PERF_INIT_PREFLIGHT_VALIDATION"
+      ],
+      "expected_behaviors": [
+        "AIRPLANE_WEIGHT_REQUIRED"
+      ],
+      "variant_scope": "APPLIES_WHEN_INSTALLED",
+      "status": "SOURCE_CONTRACT_NOT_RUNTIME_CONNECTED",
+      "notes": null
+    },
+    {
+      "id": "DATA-007",
+      "category": "performance_requirement",
+      "source": {
+        "pdf_viewer_page": 1554,
+        "printed_folio": "11.40.2",
+        "revision_date": "2020-10-15",
+        "anchor": "Preflight required data"
+      },
+      "conditions": [
+        "PERF_INIT_PREFLIGHT_VALIDATION"
+      ],
+      "expected_behaviors": [
+        "CRUISE_ALTITUDE_REQUIRED"
+      ],
+      "variant_scope": "APPLIES_WHEN_INSTALLED",
+      "status": "SOURCE_CONTRACT_NOT_RUNTIME_CONNECTED",
+      "notes": null
+    },
+    {
+      "id": "DATA-008",
+      "category": "page_lifecycle",
+      "source": {
+        "pdf_viewer_page": 1554,
+        "printed_folio": "11.40.2",
+        "revision_date": "2020-10-15",
+        "anchor": "Preflight description"
+      },
+      "conditions": [
+        "PREFLIGHT_NORMAL_SEQUENCE"
+      ],
+      "expected_behaviors": [
+        "SOME_PREFLIGHT_PAGES_MAY_ALSO_BE_USED_IN_FLIGHT"
+      ],
+      "variant_scope": "APPLIES_WHEN_INSTALLED",
+      "status": "SOURCE_CONTRACT_NOT_RUNTIME_CONNECTED",
+      "notes": null
+    },
+    {
+      "id": "NAV-001",
+      "category": "next_page_prompt",
+      "source": {
+        "pdf_viewer_page": 1555,
+        "printed_folio": "11.40.3",
+        "revision_date": "2011-08-12",
+        "anchor": "Page Entries and Sequence"
+      },
+      "conditions": [
+        "PREFLIGHT_PAGE_HAS_LOWER_RIGHT_PROMPT"
+      ],
+      "expected_behaviors": [
+        "NEXT_PAGE_PROMPT_GUIDES_PILOT_THROUGH_MINIMUM_REQUIREMENTS"
+      ],
+      "variant_scope": "APPLIES_WHEN_INSTALLED",
+      "status": "SOURCE_CONTRACT_NOT_RUNTIME_CONNECTED",
+      "notes": null
+    },
+    {
+      "id": "NAV-002",
+      "category": "next_page_prompt",
+      "source": {
+        "pdf_viewer_page": 1555,
+        "printed_folio": "11.40.3",
+        "revision_date": "2011-08-12",
+        "anchor": "Page Entries and Sequence"
+      },
+      "conditions": [
+        "NEXT_PAGE_PROMPT_KEY_SELECTED"
+      ],
+      "expected_behaviors": [
+        "NAVIGATE_AND_DISPLAY_SUBSEQUENT_PREFLIGHT_DATA_REQUIREMENTS"
+      ],
+      "variant_scope": "APPLIES_WHEN_INSTALLED",
+      "status": "SOURCE_CONTRACT_NOT_RUNTIME_CONNECTED",
+      "notes": null
+    },
+    {
+      "id": "NAV-003",
+      "category": "performance_route_refine",
+      "source": {
+        "pdf_viewer_page": 1555,
+        "printed_folio": "11.40.3",
+        "revision_date": "2011-08-12",
+        "anchor": "Page Entries and Sequence"
+      },
+      "conditions": [
+        "OPTIONAL_ADDITIONAL_PERF_OR_ROUTE_ENTRY"
+      ],
+      "expected_behaviors": [
+        "RECOMPUTE_PERFORMANCE_AND_ROUTE_INFORMATION"
+      ],
+      "variant_scope": "APPLIES_WHEN_INSTALLED",
+      "status": "SOURCE_CONTRACT_NOT_RUNTIME_CONNECTED",
+      "notes": null
+    },
+    {
+      "id": "NAV-004",
+      "category": "missing_required_entry",
+      "source": {
+        "pdf_viewer_page": 1555,
+        "printed_folio": "11.40.3",
+        "revision_date": "2011-08-12",
+        "anchor": "Page Entries and Sequence"
+      },
+      "conditions": [
+        "TAKEOFF_PAGE_OPENED_AND_REQUIRED_DATA_MISSING"
+      ],
+      "expected_behaviors": [
+        "PRESENT_PROMPT_RETURNING_TO_PREFLIGHT_PAGE_WITH_MISSING_DATA"
+      ],
+      "variant_scope": "APPLIES_WHEN_INSTALLED",
+      "status": "SOURCE_CONTRACT_NOT_RUNTIME_CONNECTED",
+      "notes": null
+    },
+    {
+      "id": "NAV-005",
+      "category": "supplemental_manual",
+      "source": {
+        "pdf_viewer_page": 1555,
+        "printed_folio": "11.40.3",
+        "revision_date": "2011-08-12",
+        "anchor": "Supplementary Pages"
+      },
+      "conditions": [
+        "CREW_REQUIRES_SUPPLEMENTARY_PAGE"
+      ],
+      "expected_behaviors": [
+        "PAGE_SELECTED_MANUALLY"
+      ],
+      "variant_scope": "APPLIES_WHEN_INSTALLED",
+      "status": "SOURCE_CONTRACT_NOT_RUNTIME_CONNECTED",
+      "notes": null
+    },
+    {
+      "id": "NAV-006",
+      "category": "supplemental_manual",
+      "source": {
+        "pdf_viewer_page": 1555,
+        "printed_folio": "11.40.3",
+        "revision_date": "2011-08-12",
+        "anchor": "Supplementary Pages"
+      },
+      "conditions": [
+        "SUPPLEMENTAL_PAGE_SELECTED_DURING_AUTOMATIC_PREFLIGHT_SEQUENCE"
+      ],
+      "expected_behaviors": [
+        "INTERRUPT_NORMAL_PROMPT_SEQUENCE_WITHOUT_IMPLYING_LOST_INPUTS"
+      ],
+      "variant_scope": "APPLIES_WHEN_INSTALLED",
+      "status": "SOURCE_CONTRACT_NOT_RUNTIME_CONNECTED",
+      "notes": null
+    },
+    {
+      "id": "NAV-007",
+      "category": "procedures",
+      "source": {
+        "pdf_viewer_page": 1555,
+        "printed_folio": "11.40.3",
+        "revision_date": "2011-08-12",
+        "anchor": "Supplementary Pages"
+      },
+      "conditions": [
+        "CREW_WANTS_SID_OR_STAR_DURING_PREFLIGHT"
+      ],
+      "expected_behaviors": [
+        "USE_DEPARTURES_OR_ARRIVALS_MANUALLY"
+      ],
+      "variant_scope": "APPLIES_WHEN_INSTALLED",
+      "status": "SOURCE_CONTRACT_NOT_RUNTIME_CONNECTED",
+      "notes": null
+    },
+    {
+      "id": "NAV-008",
+      "category": "route_changes",
+      "source": {
+        "pdf_viewer_page": 1555,
+        "printed_folio": "11.40.3",
+        "revision_date": "2011-08-12",
+        "anchor": "Supplementary Pages"
+      },
+      "conditions": [
+        "ROUTE_CONTAINS_DISCONTINUITY_OR_RESTRICTIONS"
+      ],
+      "expected_behaviors": [
+        "CREW_EDITS_DISCONTINUITIES_ROUTE_MODIFICATION_SPEED_ALT_ON_RTE_LEGS"
+      ],
+      "variant_scope": "APPLIES_WHEN_INSTALLED",
+      "status": "SOURCE_CONTRACT_NOT_RUNTIME_CONNECTED",
+      "notes": null
+    },
+    {
+      "id": "NAV-009",
+      "category": "nav_query",
+      "source": {
+        "pdf_viewer_page": 1555,
+        "printed_folio": "11.40.3",
+        "revision_date": "2011-08-12",
+        "anchor": "Supplementary Pages"
+      },
+      "conditions": [
+        "CREW_REQUESTS_WAYPOINT_NAVAID_AIRPORT_RUNWAY_REFERENCE"
+      ],
+      "expected_behaviors": [
+        "USE_REF_NAV_DATA_OR_SUPP_NAV_DATA_AS_AVAILABLE"
+      ],
+      "variant_scope": "APPLIES_WHEN_INSTALLED",
+      "status": "SOURCE_CONTRACT_NOT_RUNTIME_CONNECTED",
+      "notes": null
+    },
+    {
+      "id": "WX-001",
+      "category": "preflight_forecasts",
+      "source": {
+        "pdf_viewer_page": 1555,
+        "printed_folio": "11.40.3",
+        "revision_date": "2011-08-12",
+        "anchor": "Supplementary Pages"
+      },
+      "conditions": [
+        "CREW_ENTERS_FORECAST_WIND_AND_TEMPERATURE"
+      ],
+      "expected_behaviors": [
+        "SUPPORT_IMPROVED_VNAV_PERFORMANCE_PREDICTIONS"
+      ],
+      "variant_scope": "APPLIES_WHEN_INSTALLED",
+      "status": "SOURCE_CONTRACT_NOT_RUNTIME_CONNECTED",
+      "notes": null
+    },
+    {
+      "id": "WX-002",
+      "category": "cruise_forecasts",
+      "source": {
+        "pdf_viewer_page": 1555,
+        "printed_folio": "11.40.3",
+        "revision_date": "2011-08-12",
+        "anchor": "Supplementary Pages"
+      },
+      "conditions": [
+        "CREW_ENTERS_SINGLE_CRUISE_WIND_AND_TEMPERATURE"
+      ],
+      "expected_behaviors": [
+        "PERF_INIT_CRUISE_WIND_TEMPERATURE_FIELDS"
+      ],
+      "variant_scope": "APPLIES_WHEN_INSTALLED",
+      "status": "SOURCE_CONTRACT_NOT_RUNTIME_CONNECTED",
+      "notes": null
+    },
+    {
+      "id": "WX-003",
+      "category": "route_wind_forecasts",
+      "source": {
+        "pdf_viewer_page": 1555,
+        "printed_folio": "11.40.3",
+        "revision_date": "2011-08-12",
+        "anchor": "Supplementary Pages"
+      },
+      "conditions": [
+        "CREW_ENTERS_WAYPOINT_SPECIFIC_CRUISE_WINDS_AND_TEMPERATURES"
+      ],
+      "expected_behaviors": [
+        "RTE_DATA_CRUISE_POINT_FORECASTS"
+      ],
+      "variant_scope": "APPLIES_WHEN_INSTALLED",
+      "status": "SOURCE_CONTRACT_NOT_RUNTIME_CONNECTED",
+      "notes": null
+    },
+    {
+      "id": "WX-004",
+      "category": "descent_forecasts",
+      "source": {
+        "pdf_viewer_page": 1555,
+        "printed_folio": "11.40.3",
+        "revision_date": "2011-08-12",
+        "anchor": "Supplementary Pages"
+      },
+      "conditions": [
+        "CREW_ENTERS_DESCENT_WIND_AND_TEMPERATURE"
+      ],
+      "expected_behaviors": [
+        "DES_FORECASTS_PAGE_ENTRIES"
+      ],
+      "variant_scope": "APPLIES_WHEN_INSTALLED",
+      "status": "SOURCE_CONTRACT_NOT_RUNTIME_CONNECTED",
+      "notes": null
+    },
+    {
+      "id": "INDEX-001",
+      "category": "init_ref_index",
+      "source": {
+        "pdf_viewer_page": 1556,
+        "printed_folio": "11.40.4",
+        "revision_date": "2017-12-15",
+        "anchor": "Initialization/Reference Index Page"
+      },
+      "conditions": [
+        "CREW_SELECTS_INIT_REF_INDEX"
+      ],
+      "expected_behaviors": [
+        "DISPLAY_MANUAL_FMC_PAGE_ACCESS_INDEX"
+      ],
+      "variant_scope": "APPLIES_WHEN_INSTALLED",
+      "status": "SOURCE_CONTRACT_NOT_RUNTIME_CONNECTED",
+      "notes": null
+    },
+    {
+      "id": "INDEX-002",
+      "category": "init_ref_index",
+      "source": {
+        "pdf_viewer_page": 1556,
+        "printed_folio": "11.40.4",
+        "revision_date": "2017-12-15",
+        "anchor": "Initialization/Reference Index Page"
+      },
+      "conditions": [
+        "PREFLIGHT_PAGE_NOT_REACHED_BY_AUTOMATIC_SEQUENCE"
+      ],
+      "expected_behaviors": [
+        "CREW_CAN_MANUALLY_OPEN_PAGE_VIA_INIT_REF_INDEX"
+      ],
+      "variant_scope": "APPLIES_WHEN_INSTALLED",
+      "status": "SOURCE_CONTRACT_NOT_RUNTIME_CONNECTED",
+      "notes": null
+    },
+    {
+      "id": "INDEX-003",
+      "category": "init_ref_index",
+      "source": {
+        "pdf_viewer_page": 1556,
+        "printed_folio": "11.40.4",
+        "revision_date": "2017-12-15",
+        "anchor": "Initialization/Reference Index Page"
+      },
+      "conditions": [
+        "AIRCRAFT_IN_FLIGHT_AND_PAGE_SELECTION_REQUESTED"
+      ],
+      "expected_behaviors": [
+        "INIT_REF_INDEX_GIVES_ACCESS_TO_PAGES_NOT_NORMALLY_USED_IN_FLIGHT"
+      ],
+      "variant_scope": "APPLIES_WHEN_INSTALLED",
+      "status": "SOURCE_CONTRACT_NOT_RUNTIME_CONNECTED",
+      "notes": null
+    },
+    {
+      "id": "INDEX-004",
+      "category": "source_boundary",
+      "source": {
+        "pdf_viewer_page": 1556,
+        "printed_folio": "11.40.4",
+        "revision_date": "2017-12-15",
+        "anchor": "Initialization/Reference Index Page"
+      },
+      "conditions": [
+        "ONLY_INIT_REF_INDEX_INTRODUCTION_PROVIDED"
+      ],
+      "expected_behaviors": [
+        "DO_NOT_INFER_EXACT_LSK_ASSIGNMENTS_OR_SCREEN_TEXT_FROM_THIS_PAGE"
+      ],
+      "variant_scope": "DOCUMENTATION_LIMIT",
+      "status": "SOURCE_CONTRACT_NOT_RUNTIME_CONNECTED",
+      "notes": null
+    }
+  ],
+  "required_preflight": {
+    "initial_position": {
+      "required": true,
+      "why": "INERTIAL_INITIAL_POSITION",
+      "source_folio": "11.40.2"
+    },
+    "route": {
+      "required": true,
+      "fields": [
+        "ORIGIN",
+        "DESTINATION",
+        "AT_LEAST_ONE_ROUTE_LEG"
+      ],
+      "activation": [
+        "RTE_ACTIVATE",
+        "EXEC"
+      ],
+      "source_folio": "11.40.2"
+    },
+    "performance": {
+      "required": true,
+      "fields": [
+        "AIRPLANE_WEIGHT",
+        "CRUISE_ALTITUDE"
+      ],
+      "source_folio": "11.40.2"
+    },
+    "takeoff": {
+      "required": true,
+      "fields": "TAKEOFF_DATA_REQUIRED_BUT_EXACT_FIELD_LIST_NOT_SHOWN_IN_11_40_1_TO_11_40_4",
+      "source_folios": [
+        "11.40.1",
+        "11.40.3"
+      ]
+    }
+  },
+  "page_sequences": [
+    {
+      "id": "WITH_N1_LIMIT",
+      "sequence": [
+        "IDENT",
+        "POS_INIT",
+        "RTE",
+        "ACTIVATE",
+        "EXEC",
+        "ACT_RTE",
+        "PERF_INIT",
+        "N1_LIMIT",
+        "TAKEOFF_REF"
+      ],
+      "effectivity": "FCOM_DIAGRAM_11_40_1_NOT_INSTALLED_VARIANT_PROVEN"
+    },
+    {
+      "id": "DIRECT_TAKEOFF",
+      "sequence": [
+        "IDENT",
+        "POS_INIT",
+        "RTE",
+        "ACTIVATE",
+        "EXEC",
+        "ACT_RTE",
+        "PERF_INIT",
+        "TAKEOFF_REF"
+      ],
+      "effectivity": "FCOM_DIAGRAM_11_40_2_NOT_INSTALLED_VARIANT_PROVEN"
+    }
+  ],
+  "supplemental_pages": {
+    "manual_selection_only": true,
+    "dep_arr": {
+      "automatic_prompt": false
+    },
+    "pages": [
+      "DEP_ARR",
+      "DEPARTURES",
+      "ARRIVALS",
+      "RTE_LEGS",
+      "REF_NAV_DATA",
+      "SUPP_NAV_DATA",
+      "RTE_DATA",
+      "DES_FORECASTS",
+      "INIT_REF_INDEX"
+    ]
+  },
+  "interaction_contract": {
+    "next_page_prompt": "LOWER_RIGHT_LINE_SELECT_KEY_WHERE_PROMPTED",
+    "route_activate_requires_exec": true,
+    "missing_data_indicators": "TAKEOFF_REF_PAGE_PROMPTS_FOR_INCOMPLETE_REQUIREMENTS",
+    "manual_page_selection_interrupts_auto_prompt_sequence": true,
+    "acars": {
+      "optional": true,
+      "manual_entry_overrides_loaded_data": true,
+      "may_load_takeoff_ref": true
+    },
+    "wind_forecast_consumers": [
+      "PERF_INIT_CRUISE_SINGLE_WIND_TEMP",
+      "RTE_DATA_WAYPOINT_WINDS_TEMPS",
+      "DES_FORECASTS_DESCENT_WINDS_TEMPS"
+    ]
+  },
+  "variant_families": [
+    {
+      "name": "PREFLIGHT_N1_LIMIT_PROMPT",
+      "branches": [
+        "WITH_N1_LIMIT",
+        "DIRECT_TAKEOFF"
+      ],
+      "status": "NOT_RESOLVED_FROM_SCREENSHOTS"
+    },
+    {
+      "name": "ACARS",
+      "branches": [
+        "ACARS_AVAILABLE",
+        "MANUAL_ENTRIES_ONLY"
+      ],
+      "status": "AVIONICS_OPTION_TO_VERIFY"
+    }
+  ],
+  "interfaces": {
+    "inputs": [
+      "FMC_POWER_UP_EVENT",
+      "FMC_PREFLIGHT_ACTIVE",
+      "FMC_INERTIAL_POSITION_INITIALIZED",
+      "CDU_ROUTE_ORIGIN",
+      "CDU_ROUTE_DESTINATION",
+      "FMC_ROUTE_LEG_COUNT",
+      "CDU_RTE_ACTIVATE_EVENT",
+      "CDU_EXEC_KEY_EVENT",
+      "AIRCRAFT_GROSS_WEIGHT",
+      "FMC_CRUISE_ALTITUDE",
+      "TAKEOFF_REQUIRED_DATA_VALID",
+      "CREW_LINE_SELECT_KEY",
+      "PAGE_SELECTION_EVENT",
+      "SELECTED_PAGE",
+      "ACARS_LOADED_DATA",
+      "ROUTE_DISCONTINUITIES",
+      "ACTIVE_SID_STAR",
+      "FORECAST_WINDS_TEMPS",
+      "PREFLIGHT_PROMPT_VARIANT"
+    ],
+    "outputs": [
+      "CDU_STARTUP_PAGE_IDENT",
+      "FMC_REQUIRED_DATA_COMPLETENESS",
+      "FMC_ROUTE_ACTIVATED_STATUS",
+      "CDU_NEXT_PAGE_PROMPT",
+      "CDU_MISSING_DATA_PAGE_PROMPT",
+      "CDU_N1_LIMIT_OPTIONAL_PAGE_TRANSITION",
+      "CDU_TAKEOFF_REF_ENTRY_ELIGIBILITY",
+      "CDU_INIT_REF_INDEX_MANUAL_ACCESS",
+      "FMC_ROUTE_AND_PERFORMANCE_RECOMPUTE"
+    ],
+    "consumers": [
+      "FMC_RUNTIME_PREFLIGHT_STATE",
+      "CDU_IDENT",
+      "CDU_POS_INIT",
+      "CDU_RTE",
+      "CDU_PERF_INIT",
+      "CDU_N1_LIMIT",
+      "CDU_TAKEOFF_REF",
+      "CDU_INIT_REF_INDEX",
+      "FMC_ROUTE_ACTIVE_MODEL",
+      "FMC_NAV_DATABASE",
+      "FMC_PERFORMANCE_ENGINE"
+    ],
+    "status": "REFERENCE_ONLY_NOT_RUNTIME_IMPLEMENTATION"
+  },
+  "qa": {
+    "requirement_count": 41,
+    "by_page": {
+      "1553": 13,
+      "1554": 11,
+      "1555": 13,
+      "1556": 4
+    },
+    "preserve_startup_ident": true,
+    "preserve_physical_cdu": true,
+    "preserve_boeing_fonts": true
+  }
+}
