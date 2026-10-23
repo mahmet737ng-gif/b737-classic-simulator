@@ -2,6 +2,49 @@
 const $=id=>document.getElementById(id);
 const byId = Object.create(null);
 const LOG=[];
+const presentN1Store=window.EPFSI_PRESENT_N1_V18?.createStore?.()||null;
+const presentN1Seq={1:0,2:0};
+function presentN1Snapshot(){
+ return presentN1Store?presentN1Store.snapshot(Date.now()):{
+  sourceLabel:'ENGINE',engine1:{display:'---.-',status:'NO_BRIDGE'},engine2:{display:'---.-',status:'NO_BRIDGE'}};
+}
+function presentN1Pair(){const p=presentN1Snapshot();
+ return {one:p.engine1.display,two:p.engine2.display,source:p.sourceLabel};}
+function initializePresentN1(){
+ const one=document.getElementById('present-n1-eng1');
+ const two=document.getElementById('present-n1-eng2');
+ const send=document.getElementById('present-n1-inject');
+ const clear=document.getElementById('present-n1-clear');
+ if(send)send.addEventListener('click',()=>{
+  if(!presentN1Store)return;
+  if(presentN1Store.getSource()!=='INSTRUCTOR_TEST')presentN1Store.selectSource('INSTRUCTOR_TEST');
+  const receivedAtMs=Date.now();
+  for(const [id,element] of [[1,one],[2,two]]){
+   if(!element||String(element.value).trim()==='')continue;
+   const n1Pct=Number(element.value);
+   // A failed input is rejected by bridge, and never silently converted to N1=0.
+   presentN1Store.ingest({registration:'EP-FSI',serial:29340,source:'INSTRUCTOR_TEST',
+    engineId:id,n1Pct,seq:++presentN1Seq[id]},receivedAtMs);
+  }
+  render();
+ });
+ if(clear)clear.addEventListener('click',()=>{
+  if(presentN1Store)presentN1Store.selectSource('ENGINE_CORE');
+  for(const el of [one,two])if(el)el.value='';
+  render();
+ });
+}
+if(presentN1Store){
+ // Explicit adapter for a future authoritative engine state publisher.
+ // No engine physics or external simulator transport is claimed here.
+ window.EPFSI_PRESENT_N1_INPUT=Object.freeze({
+  selectSource:source=>{const result=presentN1Store.selectSource(source);render();return result;},
+  publish:(packet,receivedAtMs=Date.now())=>{
+   const result=presentN1Store.ingest(packet,receivedAtMs);render();return result;},
+  snapshot:()=>presentN1Snapshot(),
+  reset:()=>{presentN1Store.reset();render();}
+ });
+}
 function initialN1State(){
  return {phase:'TAKEOFF',pmcMode:'UNKNOWN',pressureAltitudeFt:null,oatC:null,tatC:null,
   mach:null,iasKts:null,weatherMode:'ISA',bleedMode:'ON',engineBleedMode:'ON',
@@ -22,7 +65,7 @@ function epfsiN1(){
 }
 function pageLines(){const mode=pendingCount()?'MOD':'ACT',a=Array(14).fill('');let p=sim.page;
  if(p==='CRZ'){
- a[0]=left(mode+' ECON CRZ','1/1');a[1]=left('CRZ ALT','OPT/MAX');a[2]=left(v('CRZ_ALT'),'FL340/361');a[3]=left('TGT SPD','TO T/D');a[4]=left(v('CRZ_SPEED'),'2004.5Z/100NM');a[5]=left('TURB N1','ACTUAL WIND');a[6]=left('87.3/ 87.3%','129/ 14');a[7]='FUEL AT KATL';a[8]='         12.5';a[10]='------------------------';a[11]=left('','ENG OUT>');a[13]=left('<LRC','RTA>');
+ a[0]=left(mode+' ECON CRZ','1/1');a[1]=left('CRZ ALT','OPT/MAX');a[2]=left(v('CRZ_ALT'),'FL340/361');a[3]=left('TGT SPD','TO T/D');a[4]=left(v('CRZ_SPEED'),'2004.5Z/100NM');a[5]=left('PRESENT N1 1 / 2','SOURCE');{const p=presentN1Pair();a[6]=left(p.one+' / '+p.two,p.source);}a[7]='FUEL AT KATL';a[8]='         12.5';a[10]='------------------------';a[11]=left('','ENG OUT>');a[13]=left('<LRC','RTA>');
  }else if(p==='RTE'){
  a[0]=left(mode+' RTE','1/2');a[1]=left('ORIGIN','DEST');a[2]=left(v('ORIGIN'),v('DEST'));a[3]=left('CO ROUTE','FLT NO');a[4]=left('—',v('FLIGHT'));a[5]=left('RUNWAY','ROUTE');a[6]=left('—','—');a[8]=left('','ACTIVATE>');a[11]=left('','<RTE LEGS');a[13]=left('<INDEX','LEGS>');
  }else if(p==='MENU'){
@@ -52,11 +95,14 @@ function pageLines(){const mode=pendingCount()?'MOD':'ACT',a=Array(14).fill('');
  a[3]=left(v('N1')?v('N1')+'% MAN':n.display,'3B-1 / 20K');
  a[4]=left('PMC','AFM PAGE');
  a[5]=left(sim.n1.pmcMode,n.source?'PDF '+n.source.pdfPage:'---');
- a[7]=left('AFM AUTO N1','---.-');
+ const pn=presentN1Pair();
+ a[6]=left('PRESENT N1 1 / 2',pn.source);
+ a[7]=left(pn.one,pn.two);
  a[8]=left('SOURCE','NOT VERIFIED');
  const ctx=currentN1Context();
  a[9]=[ctx.weatherMode,'BLD:'+ctx.engineBleedMode,'AI:'+ctx.antiIceMode].join(' ').slice(0,24);
- a[10]=left('MANUAL N1','TRAINING ONLY');
+ a[10]=left('MAX N1','---.-');
+ a[11]=left('MANUAL N1','TRAINING ONLY');
  a[13]=left('<INDEX','TAKEOFF>');
  }else if(p==='TAKEOFF'){
  a[0]=left('TAKEOFF REF','1/1');a[2]=left('FLAPS','V1');a[3]=left('5','---');a[4]=left('VR','V2');a[5]=left('---','---');a[7]=left('RUNWAY','N1 REF');a[8]=left('---',v('N1')?v('N1')+' MAN':'---.-');a[10]=left('AFM N1','NOT VERIFIED');{const ctx=currentN1Context();a[11]=[ctx.weatherMode,'BLD:'+ctx.engineBleedMode,'AI:'+ctx.antiIceMode].join(' ').slice(0,24);}a[13]=left('<INDEX','');
@@ -125,6 +171,11 @@ function render(){let output=pageLines();if(sim.message)output[12]=sim.message;e
  const states={CALL:sim.call,FAIL:sim.fail,MSG:!!sim.message,OFST:sim.offset,EXEC:pendingCount()>0};for(const [key,on] of Object.entries(states)){const el=byId['CDU_CAPT_'+key+'_LIGHT'];if(el)el.classList.toggle('on',on)}
  $('page-now').textContent=sim.page;$('scratch-now').textContent=sim.message||sim.scratch||'—';$('pending-now').textContent=pendingCount();$('key-now').textContent=sim.last.replace('CDU_CAPT_','');
  const status=document.getElementById('n1-defaults-status');
+ const presentStatus=document.getElementById('present-n1-status');
+ if(presentStatus){const r=presentN1Snapshot();
+  presentStatus.textContent='SOURCE '+r.sourceLabel+' — ENG1 '+r.engine1.display+
+   ' ('+r.engine1.status+') / ENG2 '+r.engine2.display+' ('+r.engine2.status+')';
+ }
  if(status){const ctx=currentN1Context();
   const oat=Number.isFinite(ctx.oatC)?ctx.oatC.toFixed(1)+'°C':'— (set pressure altitude)';
   status.textContent='Weather '+ctx.weatherMode+' • OAT '+oat+
@@ -167,7 +218,7 @@ function initializeN1Inputs(){
  }
  syncN1Inputs();
 }
-async function boot(){let map=window.CDU_MAP;if(!map)throw Error('CDU map not found');makeControls(map);initializeN1Inputs();render();$('reset').onclick=()=>{sim.page='CRZ';sim.scratch='';sim.message='';sim.pending={};sim.n1=initialN1State();syncN1Inputs();sim.call=sim.fail=sim.offset=false;sim.brightness=1;sim.last='—';for(const id of ['call-test','fault-test','offset-test'])$(id).checked=false;render()};$('overlay-toggle').onclick=()=>{$('cdu-stage').classList.toggle('debug')};$('info-toggle').onclick=()=>{$('qa').hidden=!$('qa').hidden};for(const [id,key] of [['call-test','call'],['fault-test','fail'],['offset-test','offset']])$(id).addEventListener('change',e=>{sim[key]=e.target.checked;render()});$('test-message').onclick=()=>setMessage('CHECK FMC DATA');document.addEventListener('keydown',e=>{if(e.ctrlKey||e.metaKey||e.altKey)return;let id=null;if(e.key==='Backspace')id='KEY_CLR';else if(e.key==='Enter')id='EXEC';else if(e.key===' ')id='KEY_SP';else if(e.key==='.')id='KEY_DOT';else if(e.key==='/')id='KEY_SLASH';else if(/^[a-z0-9]$/i.test(e.key))id='KEY_'+e.key.toUpperCase();if(id){e.preventDefault();press('CDU_CAPT_'+id)}})}
+async function boot(){let map=window.CDU_MAP;if(!map)throw Error('CDU map not found');makeControls(map);initializeN1Inputs();initializePresentN1();render();$('reset').onclick=()=>{sim.page='CRZ';sim.scratch='';sim.message='';sim.pending={};sim.n1=initialN1State();syncN1Inputs();if(presentN1Store)presentN1Store.selectSource('ENGINE_CORE');sim.call=sim.fail=sim.offset=false;sim.brightness=1;sim.last='—';for(const id of ['call-test','fault-test','offset-test'])$(id).checked=false;render()};$('overlay-toggle').onclick=()=>{$('cdu-stage').classList.toggle('debug')};$('info-toggle').onclick=()=>{$('qa').hidden=!$('qa').hidden};for(const [id,key] of [['call-test','call'],['fault-test','fail'],['offset-test','offset']])$(id).addEventListener('change',e=>{sim[key]=e.target.checked;render()});$('test-message').onclick=()=>setMessage('CHECK FMC DATA');document.addEventListener('keydown',e=>{if(e.ctrlKey||e.metaKey||e.altKey)return;let id=null;if(e.key==='Backspace')id='KEY_CLR';else if(e.key==='Enter')id='EXEC';else if(e.key===' ')id='KEY_SP';else if(e.key==='.')id='KEY_DOT';else if(e.key==='/')id='KEY_SLASH';else if(/^[a-z0-9]$/i.test(e.key))id='KEY_'+e.key.toUpperCase();if(id){e.preventDefault();press('CDU_CAPT_'+id)}})}
 boot().catch(e=>{console.error(e);$('page-now').textContent='Data load failed — unzip ALL files and open using local server or Chromium with local file access';});
 // Read-only integration test bridge. Does not alter CDU inputs, EXEC or navigation laws.
 window.CDU_TEST_BRIDGE=Object.freeze({snapshot:()=>({page:sim.page,active:{...sim.active},pending:{...sim.pending},pendingCount:pendingCount(),message:sim.message,scratch:sim.scratch,lastKey:sim.last})});
