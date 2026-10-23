@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0b1724"><title>B737 Classic — Stage 10 Live Browser Test</title>
+<style>
+:root{color-scheme:dark;font-family:system-ui,-apple-system,Segoe UI,Arial,sans-serif;color:#e8f3fa;background:#081621}*{box-sizing:border-box}body{margin:0}
+header{padding:22px clamp(16px,3vw,38px);border-bottom:1px solid #34556a;background:linear-gradient(115deg,#173347,#09141f)}
+h1{font-size:clamp(19px,3vw,30px);margin:7px 0 4px}h2{font-size:16px;margin:0 0 10px}p{color:#a9c5d5;font-size:13px;line-height:1.6;margin:6px 0}
+.eyebrow{font:600 11px monospace;letter-spacing:.16em;color:#7bddf4}main{max-width:1580px;margin:auto;padding:16px;display:grid;grid-template-columns:minmax(310px,.88fr) minmax(470px,1.12fr);gap:15px}
+.panel{background:#132635;border:1px solid #37576d;border-radius:10px;padding:15px;margin-bottom:13px}.top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.flag{color:#ffcd8e;border:1px solid #96754d;border-radius:50px;padding:5px 9px;font:700 10px monospace}
+button{cursor:pointer;background:#205f76;border:1px solid #68b1cb;color:white;border-radius:6px;padding:10px 12px;margin:3px;font:inherit}button:disabled{opacity:.38;cursor:not-allowed}button:focus-visible{outline:3px solid #92dff2}.fault{background:#59332e;border-color:#bb7b6b}
+.controls{display:flex;flex-wrap:wrap;margin:12px 0}label{display:flex;align-items:center;gap:12px;font-size:12px;color:#b9d2df;margin:12px 0}input[type=range]{flex:1;min-width:90px}output{min-width:50px;text-align:right;font-family:monospace}
+.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.metric{padding:10px 9px;border-radius:7px;background:#0c1d29;border:1px solid #345065}
+.metric small{display:block;font:10px monospace;color:#98b9cd}.metric strong{display:block;font:600 clamp(15px,2vw,23px) monospace;color:#e9faff;margin-top:7px}
+#map{display:block;width:100%;height:auto;border-radius:8px;border:1px solid #3c5668;background:#081824}
+#map text{fill:#ccdeec;font:12px monospace}.warning{color:#ffbb95}.positive{color:#9de9c8}.muted{color:#a4bfce}.status{font:700 12px monospace;color:#a9dbed}
+iframe{display:block;width:100%;height:1000px;max-height:1200px;border:1px solid #496c82;border-radius:8px;background:#09151d}
+footer{font-size:12px;text-align:center;padding:17px;color:#8eabbc}@media(max-width:990px){main{grid-template-columns:1fr}iframe{height:950px}}@media(max-width:550px){.metrics{grid-template-columns:repeat(2,1fr)}.panel{padding:11px}iframe{height:790px}}
+</style></head>
+<body>
+<header><div class="eyebrow">B737 CLASSIC · NAVIGATION ENGINE · STAGE 10</div><h1>Live Aircraft State + Navigation Test</h1>
+<div class="top"><p>Runs entirely on GitHub Pages — no Python or private database required</p><span class="flag">PUBLIC SYNTHETIC DEMO</span></div></header>
+<main><div>
+<section class="panel"><div class="top"><h2>Aircraft & guidance simulator</h2><span class="status" id="mode">READY</span></div>
+<p>Click <b>Start</b> for synthetic live telemetry and Leg sequencing. In the CDU/EHSI at right, move the existing EFIS MODE selector to <b>PLAN</b> to see the public-demo readout.</p>
+<div class="controls"><button id="start">Start</button><button id="pause" disabled>Pause</button><button id="step">Step +1 s</button><button id="reset">Reset</button><button class="fault" id="fail">Simulate sensor failure</button></div>
+<label>Groundspeed <input type="range" id="speed" min="120" max="550" step="10" value="210"><output id="speedout">210 kt</output></label>
+<label>Simulation speed <input type="range" id="rate" min="1" max="120" value="40"><output id="rateout">40×</output></label>
+<div class="metrics">
+<div class="metric"><small>ACTIVE LEG</small><strong id="leg">0</strong></div><div class="metric"><small>TO FIX</small><strong id="to">TSTB</strong></div>
+<div class="metric"><small>DTG</small><strong id="dtg">—</strong></div><div class="metric"><small>XTK</small><strong id="xtk">—</strong></div>
+<div class="metric"><small>TRUE COURSE</small><strong id="course">—</strong></div><div class="metric"><small>FD BANK DEMO</small><strong id="bank">—</strong></div>
+</div><p class="warning" id="notice" role="status">No aircraft autopilot, AFDS, LNAV or VNAV commands are issued.</p></section>
+<section class="panel"><h2>Fictional route and protected gap</h2><svg id="map" viewBox="0 0 650 340" aria-label="Synthetic waypoint course with a route discontinuity" role="img"></svg>
+<p class="muted">All positions and TSTA–TSTE identifiers are invented. The orange dashed gap is a <b>ROUTE DISCONTINUITY</b>; sequencing must stop there.</p></section>
+<section class="panel"><h2>Test status</h2><p id="diagnostics">No telemetry.</p><p>For the source-connected engine, continue using the private Stage 10 local server. This public page intentionally contains no AIRAC navigation records and no operational guidance.</p></section>
+</div><div><section class="panel"><div class="top"><h2>Existing CDU & EHSI v6</h2><span class="status">APPROVED ARTWORK UNCHANGED</span></div>
+<p>Original cockpit buttons and rotary controls remain interactive. Select <b>PLAN</b> on EFIS for the clearly marked <b>PUBLIC DEMO</b> telemetry. This is not a real flight director.</p>
+<iframe id="cdu" title="Approved Boeing 737 Classic CDU and EHSI" src="../../cdu-standalone-v6/index.html"></iframe>
+</section></div></main>
+<footer>PUBLIC STATIC ENGINEERING DEMO · NOT FOR FLIGHT OR REAL-WORLD NAVIGATION · ZERO ACTUATOR AUTHORITY</footer>
+<script>
+(function(){
+"use strict";
+var d=Math.PI/180,R=3440.065;
+var groups=[
+ [{id:"TSTA",lat:35.00,lon:51.00},{id:"TSTB",lat:35.15,lon:51.17},{id:"TSTC",lat:35.32,lon:51.33}],
+ [{id:"TSTD",lat:35.59,lon:51.63},{id:"TSTE",lat:35.73,lon:51.81}]
+];
+function dist(a,b){var p1=a.lat*d,p2=b.lat*d,z=Math.sin((b.lat-a.lat)*d/2)**2+Math.cos(p1)*Math.cos(p2)*Math.sin((b.lon-a.lon)*d/2)**2;return 2*R*Math.asin(Math.min(1,Math.sqrt(z)))}
+function course(a,b){var p1=a.lat*d,p2=b.lat*d,dl=(b.lon-a.lon)*d;return (Math.atan2(Math.sin(dl)*Math.cos(p2),Math.cos(p1)*Math.sin(p2)-Math.sin(p1)*Math.cos(p2)*Math.cos(dl))/d+360)%360}
+function xtk(a,b,p){return Math.asin(Math.max(-1,Math.min(1,Math.sin(dist(a,p)/R)*Math.sin((course(a,p)-course(a,b))*d))))*R}
+function clamp(v,a,b){return Math.max(a,Math.min(b,v))}
+var legs=[];groups.forEach(function(g,n){for(var i=1;i<g.length;i++)legs.push({from:g[i-1],to:g[i],group:n,course:course(g[i-1],g[i]),length:dist(g[i-1],g[i])})});
+var $=function(x){return document.getElementById(x)},svg=$("map"),tickTimer=null,ready=false;
+var st;function initial(){return {mode:"READY",leg:0,progress:0,position:legs[0].from,gs:210,clock:0,seq:0,message:"Press Start to begin fictional telemetry."}}
+function xy(p){return [60+(p.lon-50.9)*590,305-(p.lat-34.9)*300]}
+function tag(t,a,text){var e=document.createElementNS("http://www.w3.org/2000/svg",t);Object.keys(a||{}).forEach(function(k){e.setAttribute(k,a[k])});if(text!==undefined)e.textContent=text;return e}
+function drawRoute(){for(var y=0;y<=340;y+=40)svg.append(tag("path",{d:"M 0 "+y+" H 650",stroke:"#1c3749","stroke-width":".8"}));
+ groups.forEach(function(g){svg.append(tag("polyline",{points:g.map(function(p){return xy(p).join(",")}).join(" "),fill:"none",stroke:"#e676de","stroke-width":3}));g.forEach(function(p){var a=xy(p);svg.append(tag("circle",{cx:a[0],cy:a[1],r:5,fill:"#0d2d3c",stroke:"#9ce8f2","stroke-width":2}));svg.append(tag("text",{x:a[0]+9,y:a[1]-11},p.id))})});
+ var a=xy(groups[0][2]),b=xy(groups[1][0]);svg.append(tag("line",{x1:a[0],y1:a[1],x2:b[0],y2:b[1],stroke:"#ffae86","stroke-width":2,"stroke-dasharray":"6 9"}));
+ svg.append(tag("text",{x:298,y:75}, "DISCONTINUITY"));
+ var marker=tag("g",{id:"planeMarker"});marker.append(tag("path",{d:"M 0 -16 L 8 9 L 0 4 L -8 9 Z",fill:"#edfbff",stroke:"#08141b","stroke-width":2}));svg.append(marker)
+}
+function stop(){if(tickTimer!==null){clearInterval(tickTimer);tickTimer=null}}
+function send(f){if(!ready)return;$("cdu").contentWindow.postMessage(f?{type:"B737_STAGE10_LIVE_REFERENCE",payload:f}:{type:"B737_STAGE10_STOP"},window.location.origin)}
+function report(){var leg=legs[st.leg],remaining=Math.max(0,leg.length-st.progress),error=xtk(leg.from,leg.to,st.position),bank=clamp(-error*4,-12,12);
+ $("mode").textContent=st.mode;$("mode").style.color=st.mode==="TRACK"?"#9ce9ca":st.mode==="SENSOR_FAIL"||st.mode==="GAP"?"#ffb58a":"#9cc6d8";
+ $("leg").textContent=String(st.leg+1);$("to").textContent=leg.to.id;$("dtg").textContent=remaining.toFixed(1)+" NM";$("xtk").textContent=error.toFixed(2)+" NM";$("course").textContent=leg.course.toFixed(1)+"°";$("bank").textContent=bank.toFixed(1)+"°";
+ $("notice").textContent=st.message;$("diagnostics").textContent="Synthetic time "+st.clock.toFixed(1)+" s · Frame "+st.seq+" · AFDS commands 0 · Sensor status "+(st.mode==="SENSOR_FAIL"?"FAILED":"TEST");
+ var p=xy(st.position);$("planeMarker").setAttribute("transform","translate("+p.join(" ")+") rotate("+leg.course.toFixed(2)+")");
+ $("start").disabled=st.mode==="GAP"||st.mode==="COMPLETE"||st.mode==="SENSOR_FAIL";$("pause").disabled=st.mode!=="TRACK";
+ var valid=st.mode==="TRACK"&&st.seq>0;var f=valid?{
+ version:"STAGE10_LIVE_REFERENCE_NAV_v1",source:"PUBLIC_SYNTHETIC_DEMO",demo_marker:"FICTIONAL_ROUTE_NO_NAVDATA",
+ mode:"SIM_REFERENCE_TRACK",reference_only:true,fmc_executable:false,session_authority:"SIM_REFERENCE_ONLY",
+ telemetry_seq:st.seq,leg_index:st.leg,from:leg.from.id,to:leg.to.id,
+ desired_true_track_deg:leg.course,signed_cross_track_nm:error,distance_to_fix_nm:remaining,
+ aircraft:{lat:st.position.lat,lon:st.position.lon,heading_true_deg:leg.course,pressure_alt_ft:12000},
+ fd:{mode:"SIM_REF_FD_PREVIEW",bank_preview_deg:bank,flight_director_authority:false,autopilot_engaged:false},
+ afds_commands:[],servo_commands:[],lnav_commands:[],vnav_commands:[],aircraft_actuator_commands:[]
+ }:null;send(f)
+}
+function step(seconds){if(st.mode!=="TRACK")return;
+ if(!(seconds>0&&seconds<=10)){sensorFault();return}
+ st.clock+=seconds;st.seq++;var leg=legs[st.leg];st.progress+=st.gs*seconds/3600;
+ if(st.progress>=leg.length){st.position=leg.to;st.progress=leg.length;var next=legs[st.leg+1];
+ if(!next){st.mode="COMPLETE";st.message="Last simulated fix reached. Guidance stopped.";stop()}
+ else if(next.group!==leg.group){st.mode="GAP";st.message="ROUTE DISCONTINUITY — automatic sequencing blocked";stop()}
+ else {st.leg++;st.progress=0;st.position=next.from}}
+ else {var f=st.progress/leg.length,offset=.0025*Math.sin(f*Math.PI*2);st.position={lat:leg.from.lat+(leg.to.lat-leg.from.lat)*f+offset,lon:leg.from.lon+(leg.to.lon-leg.from.lon)*f-offset}}
+ report()
+}
+function sensorFault(){stop();st.mode="SENSOR_FAIL";st.message="SENSOR LOSS — reference guidance stopped; Reset required.";report()}
+function start(){if(st.mode==="GAP"||st.mode==="SENSOR_FAIL"||st.mode==="COMPLETE")return;st.mode="TRACK";st.message="Synthetic sensor stream active — no aircraft control.";report();if(tickTimer===null)tickTimer=setInterval(function(){step(Math.min(10,Number($("rate").value)*.05))},50)}
+$("start").onclick=start;$("pause").onclick=function(){stop();st.mode="PAUSED";st.message="Paused; EHSI reference removed";report()};
+$("step").onclick=function(){if(st.mode==="GAP"||st.mode==="SENSOR_FAIL"||st.mode==="COMPLETE")return;if(st.mode!=="TRACK")st.mode="TRACK";step(1)};
+$("reset").onclick=function(){stop();st=initial();report()};$("fail").onclick=sensorFault;
+$("speed").oninput=function(){st.gs=Number(this.value);$("speedout").textContent=st.gs+" kt"};
+$("rate").oninput=function(){$("rateout").textContent=this.value+"×"};
+$("cdu").addEventListener("load",function(){ready=true;report()});
+document.addEventListener("visibilitychange",function(){if(document.hidden&&st.mode==="TRACK"){stop();st.mode="PAUSED";st.message="Paused while tab hidden";report()}});
+window.addEventListener("pagehide",function(){stop();send(null)});
+st=initial();drawRoute();report();
+})();
+</script></body></html>
