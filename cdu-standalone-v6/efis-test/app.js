@@ -2,12 +2,30 @@
 (()=>{'use strict';
 const $=id=>document.getElementById(id);
 const WIDTH=1448,HEIGHT=1086;
-const MODES=['EXP_NAV','EXP_VOR_ILS','MAP','CTR_MAP','PLAN','FULL_NAV','FULL_VOR_ILS'];
-const MODE_DEG={EXP_NAV:-110,EXP_VOR_ILS:-66,MAP:0,CTR_MAP:48,PLAN:98,FULL_NAV:171,FULL_VOR_ILS:221};
+const MODES=['FULL_NAV','FULL_VOR_ILS','EXP_NAV','EXP_VOR_ILS','MAP','CTR_MAP','PLAN'];
+const MODE_DEG={FULL_NAV:-180,FULL_VOR_ILS:-135,EXP_NAV:-86,EXP_VOR_ILS:-42,MAP:0,CTR_MAP:47,PLAN:100};
 const RANGES=[10,20,40,80,160,320];
 const RANGE_DEG={10:0,20:32,40:65,80:97,160:127,320:159};
-const CONTROLS={dh:{cx:284,cy:491,rx:82,ry:85},adi:{cx:283,cy:871,rx:73,ry:74},mode:{cx:762,cy:304,rx:109,ry:101},hsi:{cx:548,cy:578,rx:98,ry:101},wxInner:{cx:561,cy:578,rx:62,ry:61},range:{cx:1156,cy:306,rx:113,ry:98}};
-const BUTTONS={rst:[250,663,316,737],wxr:[1049,484,1241,662],vorAdf:[442,780,603,945],navAid:[614,780,765,946],arpt:[789,780,932,944],rteData:[953,780,1109,944],wpt:[1129,780,1282,945]};
+// Physical rotor circles; centers/radii calibrated against approved 1448x1086 image.
+// Only the alpha-masked mechanical component is rotated. Surrounding legend and markings never rotate.
+const CONTROLS={
+ dh:{cx:296.5,cy:500.5,r:84},
+ adi:{cx:292.5,cy:892.5,r:72},
+ mode:{cx:777.5,cy:316.5,r:108},
+ hsi:{cx:560.5,cy:587,r:102},
+ wxInner:{cx:570,cy:589,r:58},
+ range:{cx:1190,cy:311,r:112}
+};
+// Click targets cover the dark central faces of the pushbuttons — not adjacent panel/labels.
+const BUTTONS={
+ rst:[250,666,320,729],
+ wxr:[1079,495,1244,661],
+ vorAdf:[469,805,609,970],
+ navAid:[637,805,780,970],
+ arpt:[809,805,951,970],
+ rteData:[979,805,1127,970],
+ wpt:[1151,805,1294,970]
+};
 const LABELS={rst:'RST',wxr:'WXR',vorAdf:'VOR/ADF',navAid:'NAV AID',arpt:'ARPT',rteData:'RTE DATA',wpt:'WPT'};
 const state={mode:'MAP',range:10,dhRef:200,brightness:{adi:.6,hsi:.6,wxInner:.6},options:{wxr:false,vorAdf:false,navAid:false,arpt:false,rteData:false,wpt:false}};
 const rotations={dh:0,adi:0,hsi:0,wxInner:0,mode:0,range:0};
@@ -19,7 +37,7 @@ if(images['efis-plate.webp'])stage.querySelector('.plate').src=images['efis-plat
 let lastInput='Ready';
 function createKnob(key,g){
  const b=document.createElement('button');b.type='button';b.className='knob knob-'+key;b.title=key+' — click, scroll, swipe, or arrows';b.setAttribute('aria-label',key+' rotary selector');b.dataset.knob=key;
- let pad=6,x=g.cx-g.rx-pad,y=g.cy-g.ry-pad,w=(g.rx+pad)*2+1,h=(g.ry+pad)*2+1;
+ const x=g.cx-g.r,y=g.cy-g.r,w=g.r*2,h=g.r*2;
  Object.assign(b.style,{left:pct(x,WIDTH),top:pct(y,HEIGHT),width:pct(w,WIDTH),height:pct(h,HEIGHT)});
  const art=document.createElement('img');art.className='rotor';art.src=window.EFIS_TEST_IMAGES?.['knob-'+key+'.webp']||'assets/knob-'+key+'.webp';art.alt='';art.draggable=false;b.append(art);
  bindRotary(b,key);
@@ -94,7 +112,9 @@ const readout=document.createElement('div');readout.id='dh-digits';readout.class
 stage.classList.toggle('show-bounds',$('toggle-bounds').checked);
 $('toggle-bounds').addEventListener('change',e=>stage.classList.toggle('show-bounds',e.target.checked));
 $('reset').onclick=()=>{state.mode='MAP';state.range=10;state.dhRef=200;state.brightness={adi:.6,hsi:.6,wxInner:.6};Object.keys(state.options).forEach(k=>state.options[k]=false);Object.keys(rotations).forEach(k=>rotations[k]=0);lastInput='RESET';render()};
-$('copy').onclick=()=>navigator.clipboard?.writeText(JSON.stringify({state,geometry:{width:WIDTH,height:HEIGHT,knobs:CONTROLS,buttons:BUTTONS}},null,2));
+$('copy').onclick=()=>navigator.clipboard?.writeText(JSON.stringify({state,geometry:{width:WIDTH,height:HEIGHT,knobs:CONTROLS,buttons:BUTTONS,modeOrder:MODES}},null,2));
 $('show-original').onclick=()=>stage.classList.toggle('original');
 render();
+// Expose QA read-only geometry to automated integration tests without impacting interactions.
+window.EFIS_QA=Object.freeze({modeOrder:[...MODES],controls:CONTROLS,buttons:BUTTONS,getState:()=>JSON.parse(JSON.stringify(state))});
 })();
