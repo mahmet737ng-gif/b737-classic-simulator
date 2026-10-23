@@ -19,7 +19,7 @@ vm.runInNewContext(fs.readFileSync(path.join(base,'cdu-standalone-v6/ehsi/photo-
 assert.equal(win.EHSI_ENGINE.photo.dhRange.min,-20);
 assert.equal(win.EHSI_ENGINE.photo.dhRange.max,999);
 assert.equal(win.EHSI_ENGINE.photo.geometry.wxr.title,'WXR pushbutton');
-assert.equal(Object.keys(win.EHSI_ENGINE.photo.geometry).length,13);
+assert.equal(Object.keys(win.EHSI_ENGINE.photo.geometry).length,12);
 const photo=win.EHSI_ENGINE.photo;
 assert.deepEqual(Array.from(photo.modeClockwise),['EXP_NAV','EXP_VOR_ILS','MAP','CTR_MAP','PLAN','FULL_NAV','FULL_VOR_ILS']);
 assert.deepEqual(Object.keys(photo.rangeAngle).map(Number),[10,20,40,80,160,320]);
