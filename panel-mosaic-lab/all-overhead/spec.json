@@ -1,9 +1,9 @@
 {
   "schema": "b737.overhead-all-source-assembly.v1",
-  "version": "UPD-0010-safe-content-fit",
+  "version": "UPD-0011-atlas-photo-order",
   "date": "2026-10-24",
   "purpose": "Interactive source-pixel-preserving preview of all currently uploaded OH01-OH18 sources, not a geometry-accurate final cockpit.",
-  "geometryNotice": "UPD0010 fixes unacceptable image cropping of UPD0009. Each of 18 source images is now drawn entirely inside its atlas reference rectangle with original aspect ratio, using measured natural dimensions. Known white padding on OH13 left/right and OH23-25 top/bottom is excluded from the bounding content in presentation only. Atlas plate rectangles remain fixed and all five columns still terminate at y3276. Empty areas show neutral slate because imagery aspect ratios do not match physically accurate atlas slots.",
+  "geometryNotice": "Atlas PHOTO determines real positions, not mistaken past asset filenames: left OH07 Flight Control, OH08 NAV Source selectors (split same original 913x1723 image), OH09 Fuel. Center OH13 breaker and OH14 emergency, cabin signs and GRD CALL/WIPER assembled from historically OH14 and OH18-named pictures. Actual atlas OH18 is cockpit voice recorder (old asset OH19-VOICE); atlas OH19 is cabin pressure-differential instrument (old asset OH19-DIFF). All art placed using original v2 cyan photo boundaries. This is an interactive preview; original locked binaries unchanged.",
   "header": {
     "id": "UPPER",
     "geometry": "../upper-oh/geometry.json",
@@ -230,7 +230,7 @@
     {
       "id": "OH18",
       "panelIds": [
-        "OH-18"
+        "OH-14"
       ],
       "filename": "OH18-GROUND-CALL-5af4fdc5284b.png",
       "title": "ATTEND / GRD CALL / RAIN REPELLENT / WIPER",
@@ -241,12 +241,14 @@
       "sourceStatus": "sha256-registered; alias points to original Git blob",
       "geometryStatus": "atlas-content-matched-to-center-strip-after-OH14",
       "system": "EQUIPMENT / LIGHTING",
-      "atlasIdentifiedName": "ATTEND / GRD CALL / RAIN REPELLENT / WIPER"
+      "atlasIdentifiedName": "ATTEND / GRD CALL / RAIN REPELLENT / WIPER",
+      "atlasActualPanel": "OH-14 / GROUND CALL / WIPER",
+      "historicalSourceId": "OH18"
     },
     {
       "id": "OH19-VOICE",
       "panelIds": [
-        "OH-19"
+        "OH-18"
       ],
       "title": "COCKPIT VOICE RECORDER / HEADSET",
       "filename": "OH19-VOICE-RECORDER-2db6785ecddc.png",
@@ -272,7 +274,9 @@
           "bottom": 880
         },
         "preserveImageAspect": true
-      }
+      },
+      "atlasActualPanel": "OH-18 / COCKPIT VOICE RECORDER",
+      "historicalSourceId": "OH19-VOICE"
     },
     {
       "id": "OH19-DIFF",
@@ -303,7 +307,8 @@
           "bottom": 1167
         },
         "preserveImageAspect": true
-      }
+      },
+      "atlasActualPanel": "OH-19 / CABIN DIFF PRESSURE / ALT HORN"
     },
     {
       "id": "OH20",
@@ -407,10 +412,14 @@
     "classificationOf4NewImages": "verified by source thumbnails against owner overhead atlas reference",
     "commonLowerEdgeY": 3276,
     "layoutModel": "atlas-x-y-w-h absolute positioned; 2220x3525 scaled with one factor",
-    "physicalSeams": "ATLAS BOXES VERIFIED, PHOTOGRAPHIC FIT NOT COMPLETE",
+    "physicalSeams": "matching cyan atlas borders for OH07/OH08/OH09 and columns; small component segments are approximate",
     "sourceVisibility": "full-visible artwork with original proportions",
     "sourceAspectMismatch": "verified 18 measured input-image ratios; several source photos cannot fill their atlas rectangle without cropping or reauthoring",
-    "finalArtwork": "not approved; atlas-aligned panel background/side padding remains to be reconstructed"
+    "finalArtwork": "not approved; atlas-aligned panel background/side padding remains to be reconstructed",
+    "trueAtlasIdsFromOriginal": "corrected",
+    "pixelCanvas": "2220x3525",
+    "visualFit": "all source content allocated to atlas slots, some reconstructed proportions differ from actual and may appear stretched",
+    "publishIntent": "TEST ONLY"
   },
   "confirmedBytes": 46341071,
   "loadedSources": 18,
@@ -477,7 +486,7 @@
     503
   ],
   "newMapping": {
-    "version": "UPD-0008",
+    "version": "UPD-0011",
     "centralServiceStack": [
       "OH13",
       "OH14",
@@ -502,7 +511,33 @@
     ],
     "atlasBottomEdgeY": 3276,
     "atlasBottomStripTopY": 3281,
-    "actualPanelBBoxes": "atlas-layout.json"
+    "actualPanelBBoxes": "atlas-layout.json",
+    "atlasLeftColumn": [
+      "OH07-FLIGHT (upper OH07-08 source crop)",
+      "OH08-NAV (lower OH07-08 source crop)",
+      "OH09-FUEL"
+    ],
+    "atlasCenter": [
+      "OH13-CIRCUIT/COOL",
+      "OH14-EMER/NO-SMOKING/FASTEN",
+      "OH14-GROUND/WIPER (historic filename OH18)"
+    ],
+    "atlasFourth": [
+      "OH15-WINDOW",
+      "OH16-ANTI-ICE",
+      "OH17-HYDRAULIC",
+      "OH18-VOICE (historic filename OH19-VOICE)",
+      "OH19-PRESS-DIFF (historic filename OH19-DIFF)"
+    ],
+    "atlasRight": [
+      "OH20-AIRCON",
+      "OH21-BLEED",
+      "OH22-CABIN-PRESS"
+    ],
+    "atlasBottom": [
+      "OH23-25"
+    ],
+    "mappingStatus": "PHOTO-CONTENT-MATCHED; original files not changed; some sourced image aspect still requires user visual QA"
   },
   "bottomItems": [
     "OH23-25"
