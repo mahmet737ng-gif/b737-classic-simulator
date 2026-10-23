@@ -1,0 +1,845 @@
+{
+  "schema": "b737-classic-fcom-ch11-section40-posinit-posref/1.0",
+  "project": "B737-CLASSIC-CDU",
+  "aircraft_context": "EP-FSI_STANDALONE_SIMULATOR",
+  "source": {
+    "manual": "Boeing 737 FCOM D6-27370-300/400/500-SHI, FMC Preflight",
+    "screenshots": [
+      {
+        "viewer": 1563,
+        "folio": "11.40.11",
+        "date": "2013-12-06",
+        "file": "image(20261023-191500).png",
+        "sha256": "deeb2f0251615315c10494a11a33b1bfb83682fbd17e5a3b65b9c9a8f26f2fbd"
+      },
+      {
+        "viewer": 1564,
+        "folio": "11.40.12",
+        "date": "2020-10-15",
+        "file": "image(20261023-191503).png",
+        "sha256": "2d65fa8c2cb44d452833a933dcd5f7e4ad0a9d7caa6717c886c6cff75b8f79aa"
+      },
+      {
+        "viewer": 1565,
+        "folio": "11.40.13",
+        "date": "2020-10-15",
+        "file": "image(20261023-191508).png",
+        "sha256": "6108814c830033b267951132f770d63271bd9b911a4eb4537769942c105fcc66"
+      },
+      {
+        "viewer": 1566,
+        "folio": "11.40.14",
+        "date": "2020-10-15",
+        "file": "image(20261023-191516).png",
+        "sha256": "03e03d5e0c318bbd4868652e455a3d1cf968b42c7d7327f6a705f244bda09c88"
+      },
+      {
+        "viewer": 1568,
+        "folio": "11.40.16",
+        "date": "2020-10-15",
+        "file": "image(20261023-191618).png",
+        "sha256": "101fa59ebdaa8c0124f43231bb4d4fbeb4026f7b3398c8e26c046e8447e68682"
+      },
+      {
+        "viewer": 1569,
+        "folio": "11.40.17",
+        "date": "2020-10-15",
+        "file": "image(20261023-191624).png",
+        "sha256": "1cfc361d1b93d0bb3a197506490fae537fdc2dc8af7974b5c41d187ee70110d0"
+      }
+    ],
+    "missing_pdf_page": 1567,
+    "missing_printed_folio": "11.40.15",
+    "notes": [
+      "No original copyrighted FCOM pages copied into repository.",
+      "Different POS REF LSK placements from FCOM 11.40.14 and 11.40.16 retained as variants.",
+      "Example coordinates from the diagrams are not calibrated aircraft coordinates."
+    ]
+  },
+  "pos_init": {
+    "title": "POS INIT",
+    "page_indicator": "1/3",
+    "lsk_fields": [
+      [
+        "R1",
+        "LAST POS"
+      ],
+      [
+        "L2",
+        "REF AIRPORT"
+      ],
+      [
+        "L3",
+        "GATE"
+      ],
+      [
+        "R4",
+        "SET IRS POS"
+      ],
+      [
+        "L5",
+        "GMT-MON/DY"
+      ],
+      [
+        "R5",
+        "SET IRS HDG"
+      ],
+      [
+        "L6",
+        "INDEX"
+      ],
+      [
+        "R6",
+        "ROUTE"
+      ]
+    ],
+    "ref_airport": {
+      "optional": true,
+      "requires_icao_four_letters": true,
+      "clears_gate_on_change": true,
+      "clears_on_lift_off": true
+    },
+    "gate": {
+      "optional": true,
+      "requires_reference_airport": true,
+      "clears_on_lift_off": true
+    },
+    "set_irs_pos": {
+      "required": true,
+      "warning_missing_or_check_failed": "ENTER IRS POS",
+      "verification_distance_nm_gt": 4,
+      "verification_reference": "ORIGIN_AIRPORT",
+      "warning_distance": "VERIFY POSITION",
+      "box_prompt": "ALIGN_NO_PRESENT_POSITION",
+      "blank_when": "ALIGN_TO_NAV"
+    },
+    "set_irs_hdg": {
+      "allowed_when": "IRS_ATT_MODE",
+      "blank_when": "NOT_ATT_MODE"
+    },
+    "gmt_clock": {
+      "options": [
+        "CAPTAIN_CLOCK",
+        "FIRST_OFFICER_CLOCK"
+      ],
+      "invalid_start": "0000.0Z",
+      "invalid_month_day": "BLANK",
+      "allow_manual_correction": true
+    },
+    "last_pos": "LAST_FMC_COMPUTED_POSITION"
+  },
+  "pos_ref": {
+    "title": "POS REF",
+    "page_indicator": "2/3",
+    "layouts": [
+      {
+        "id": "GPS_EQUIPPED",
+        "fcom_page": "11.40.14",
+        "lsk_fields": [
+          [
+            "L1",
+            "FMC POS"
+          ],
+          [
+            "L2",
+            "IRS L"
+          ],
+          [
+            "L3",
+            "IRS R"
+          ],
+          [
+            "L4",
+            "GPS L"
+          ],
+          [
+            "L5",
+            "GPS R"
+          ],
+          [
+            "L6",
+            "RADIO"
+          ]
+        ]
+      },
+      {
+        "id": "ALTERNATE_IRS_R_L4",
+        "fcom_page": "11.40.16",
+        "lsk_fields": [
+          [
+            "L1",
+            "FMC POS"
+          ],
+          [
+            "L2",
+            "IRS L"
+          ],
+          [
+            "L4",
+            "IRS R"
+          ],
+          [
+            "L6",
+            "RADIO"
+          ]
+        ]
+      }
+    ],
+    "source_validity": {
+      "IRS L": "BLANK_IF_INVALID",
+      "IRS R": "BLANK_IF_INVALID",
+      "GPS L": "BLANK_IF_INVALID",
+      "GPS R": "BLANK_IF_INVALID",
+      "RADIO": "BLANK_ON_GROUND_OR_INVALID_IN_FLIGHT",
+      "FMC POS": "BLANK_IF_IRS_PRESENT_POSITION_VALIDITY_REQUIREMENT_NOT_MET"
+    },
+    "ground_speed": {
+      "units": "KT",
+      "sources": [
+        "FMC",
+        "IRS L",
+        "IRS R"
+      ],
+      "invalid": "BLANK_RELATED_VALUE"
+    },
+    "position_coordinates": "ACTUAL_PER_SYSTEM_LATITUDE_LONGITUDE_NOT_SINGLE_PLACEHOLDER"
+  },
+  "interfaces": {
+    "inputs": [
+      "PAGE_AND_LSK_EVENTS",
+      "AIRCRAFT_ON_GROUND",
+      "LIFTOFF",
+      "NAVDB_AIRPORTS_AND_GATES",
+      "ORIGIN_AIRPORT_LAT_LON",
+      "FMC_LAST_POS",
+      "FMC_COMPUTED_POS",
+      "IRS_LEFT_AND_RIGHT_POS_VALIDITY",
+      "IRS_ALIGNMENT_AND_ATT_MODE",
+      "IRS_INTERNAL_POSITION_CHECK",
+      "CLOCK_DATA_AND_VALIDITY",
+      "GPS_LEFT_RIGHT_POSITION_AND_VALIDITY",
+      "RADIO_POSITION_VALIDITY",
+      "FMC_IRS_GROUND_SPEED_VALIDITY"
+    ],
+    "outputs": [
+      "CDU_POS_INIT_FIELDS",
+      "CDU_POS_REF_FIELDS",
+      "ENTER_IRS_POS_MESSAGE",
+      "VERIFY_POSITION_MESSAGE",
+      "REF_AIRPORT_GATE_CLEAR_EVENT",
+      "IRS_INITIAL_ALIGNMENT_DATA",
+      "POS_REF_POSITION_AND_GS_VALIDITY",
+      "POS_INIT_TO_ROUTE_NAV"
+    ],
+    "consumers": [
+      "CDU_RENDERER",
+      "FMC_POSITION_ESTIMATOR",
+      "IRS_LEFT_RIGHT",
+      "NAV_DATABASE",
+      "SIM_AIRCRAFT_STATE",
+      "SCRATCHPAD_WARNING_ENGINE",
+      "GPS_IF_INSTALLED",
+      "RADIO_NAV_RECEIVERS"
+    ],
+    "runtime_wired_by_this_commit": false,
+    "approved_cdu_artwork_changed": false,
+    "approved_70_hitboxes_changed": false,
+    "boeing_cdu_font_binaries_changed": false
+  },
+  "rules": [
+    {
+      "id": "POS-001",
+      "when": "POS_INIT_FROM_IDENT_R6_OR_INDEX_L2",
+      "effect": "OPEN_POS_INIT_1_OF_3",
+      "source": {
+        "pdf_viewer_page": 1563,
+        "printed_folio": "11.40.11"
+      },
+      "variant": "DOCUMENTED_SOURCE_ONLY",
+      "implementation": "REFERENCE_ONLY"
+    },
+    {
+      "id": "POS-002",
+      "when": "POS_INIT_NEXT_PAGE",
+      "effect": "OPEN_POS_REF_2_OF_3",
+      "source": {
+        "pdf_viewer_page": 1563,
+        "printed_folio": "11.40.11"
+      },
+      "variant": "DOCUMENTED_SOURCE_ONLY",
+      "implementation": "REFERENCE_ONLY"
+    },
+    {
+      "id": "POS-003",
+      "when": "POS_REF_NEXT_PAGE",
+      "effect": "OPEN_POS_SHIFT_3_OF_3",
+      "source": {
+        "pdf_viewer_page": 1563,
+        "printed_folio": "11.40.11"
+      },
+      "variant": "DOCUMENTED_SOURCE_ONLY",
+      "implementation": "REFERENCE_ONLY"
+    },
+    {
+      "id": "POS-004",
+      "when": "POS_SHIFT_PREV_PAGE",
+      "effect": "OPEN_POS_REF_2_OF_3",
+      "source": {
+        "pdf_viewer_page": 1563,
+        "printed_folio": "11.40.11"
+      },
+      "variant": "DOCUMENTED_SOURCE_ONLY",
+      "implementation": "REFERENCE_ONLY"
+    },
+    {
+      "id": "POS-005",
+      "when": "POS_INIT_PAGE_ACTIVE",
+      "effect": "OFFER_IRS_POSITION_ENTRY_FOR_ALIGNMENT_AND_FMC_INITIALIZATION",
+      "source": {
+        "pdf_viewer_page": 1563,
+        "printed_folio": "11.40.11"
+      },
+      "variant": "DOCUMENTED_SOURCE_ONLY",
+      "implementation": "REFERENCE_ONLY"
+    },
+    {
+      "id": "POS-006",
+      "when": "IRS_IN_ATT_MODE",
+      "effect": "POS_INIT_CAN_ACCEPT_MAGNETIC_HEADING",
+      "source": {
+        "pdf_viewer_page": 1563,
+        "printed_folio": "11.40.11"
+      },
+      "variant": "DOCUMENTED_SOURCE_ONLY",
+      "implementation": "REFERENCE_ONLY"
+    },
+    {
+      "id": "POS-007",
+      "when": "EXAMPLE_47N_122W_POSITION_IN_FIGURE",
+      "effect": "DO_NOT_TREAT_AS_EP_FSI_OR_LIVE_AIRCRAFT_POSITION",
+      "source": {
+        "pdf_viewer_page": 1563,
+        "printed_folio": "11.40.11"
+      },
+      "variant": "DOCUMENTED_SOURCE_ONLY",
+      "implementation": "REFERENCE_ONLY"
+    },
+    {
+      "id": "AIR-001",
+      "when": "VALID_REF_AIRPORT_ICAO_4_LETTER_IN_L2",
+      "effect": "DISPLAY_AIRPORT_LAT_LON_FROM_NAV_DATABASE",
+      "source": {
+        "pdf_viewer_page": 1564,
+        "printed_folio": "11.40.12"
+      },
+      "variant": "DOCUMENTED_SOURCE_ONLY",
+      "implementation": "REFERENCE_ONLY"
+    },
+    {
+      "id": "AIR-002",
+      "when": "NEW_REF_AIRPORT_ENTERED",
+      "effect": "CLEAR_PREVIOUS_GATE_ENTRY",
+      "source": {
+        "pdf_viewer_page": 1564,
+        "printed_folio": "11.40.12"
+      },
+      "variant": "DOCUMENTED_SOURCE_ONLY",
+      "implementation": "REFERENCE_ONLY"
+    },
+    {
+      "id": "AIR-003",
+      "when": "AIRCRAFT_LIFTOFF",
+      "effect": "REF_AIRPORT_ENTRY_GOES_BLANK",
+      "source": {
+        "pdf_viewer_page": 1564,
+        "printed_folio": "11.40.12"
+      },
+      "variant": "DOCUMENTED_SOURCE_ONLY",
+      "implementation": "REFERENCE_ONLY"
+    },
+    {
+      "id": "GATE-001",
+      "when": "REF_AIRPORT_ENTERED_AND_GATE_NUMBER_AT_L3",
+      "effect": "DISPLAY_GATE_LAT_LON_FROM_NAV_DATABASE",
+      "source": {
+        "pdf_viewer_page": 1564,
+        "printed_folio": "11.40.12"
+      },
+      "variant": "DOCUMENTED_SOURCE_ONLY",
+      "implementation": "REFERENCE_ONLY"
+    },
+    {
+      "id": "GATE-002",
+      "when": "NEW_REF_AIRPORT_ENTERED",
+      "effect": "GATE_DISPLAY_RETURNS_TO_DASHES",
+      "source": {
+        "pdf_viewer_page": 1564,
+        "printed_folio": "11.40.12"
+      },
+      "variant": "DOCUMENTED_SOURCE_ONLY",
+      "implementation": "REFERENCE_ONLY"
+    },
+    {
+      "id": "GATE-003",
+      "when": "AIRCRAFT_LIFTOFF",
+      "effect": "GATE_ENTRY_GOES_BLANK",
+      "source": {
+        "pdf_viewer_page": 1564,
+        "printed_folio": "11.40.12"
+      },
+      "variant": "DOCUMENTED_SOURCE_ONLY",
+      "implementation": "REFERENCE_ONLY"
+    },
+    {
+      "id": "GMT-001",
+      "when": "FMC_CLOCK_VALID",
+      "effect": "SHOW_GMT_AND_MONTH_DAY",
+      "source": {
+        "pdf_viewer_page": 1564,
+        "printed_folio": "11.40.12"
+      },
+      "variant": "DOCUMENTED_SOURCE_ONLY",
+      "implementation": "REFERENCE_ONLY"
+    },
+    {
+      "id": "GMT-002",
+      "when": "CAPTAIN_CLOCK_INVALID_AT_FMC_FIRST_POWER",
+      "effect": "START_GMT_0000_0Z_AND_BLANK_MONTH_DAY",
+      "source": {
+        "pdf_viewer_page": 1564,
+        "printed_folio": "11.40.12"
+      },
+      "variant": "CAPTAIN_CLOCK",
+      "implementation": "REFERENCE_ONLY"
+    },
+    {
+      "id": "GMT-003",
+      "when": "FIRST_OFFICER_CLOCK_INVALID_AT_FMC_FIRST_POWER",
+      "effect": "START_GMT_0000_0Z_AND_BLANK_MONTH_DAY",
+      "source": {
+        "pdf_viewer_page": 1564,
+        "printed_folio": "11.40.12"
+      },
+      "variant": "FIRST_OFFICER_CLOCK",
+      "implementation": "REFERENCE_ONLY"
+    },
+    {
+      "id": "GMT-004",
+      "when": "GMT_INVALID",
+      "effect": "ALLOW_MANUAL_CORRECT_GMT_INPUT",
+      "source": {
+        "pdf_viewer_page": 1564,
+        "printed_folio": "11.40.12"
+      },
+      "variant": "DOCUMENTED_SOURCE_ONLY",
+      "implementation": "REFERENCE_ONLY"
+    },
+    {
+      "id": "LAST-001",
+      "when": "POS_INIT_R1",
+      "effect": "DISPLAY_LAST_FMC_CALCULATED_POSITION",
+      "source": {
+        "pdf_viewer_page": 1564,
+        "printed_folio": "11.40.12"
+      },
+      "variant": "DOCUMENTED_SOURCE_ONLY",
+      "implementation": "REFERENCE_ONLY"
+    },
+    {
+      "id": "IRS-001",
+      "when": "IRS_INITIAL_ALIGNMENT",
+      "effect": "REQUIRE_SET_IRS_POSITION_ENTRY",
+      "source": {
+        "pdf_viewer_page": 1565,
+        "printed_folio": "11.40.13"
+      },
+      "variant": "DOCUMENTED_SOURCE_ONLY",
+      "implementation": "REFERENCE_ONLY"
+    },
+    {
+      "id": "IRS-002",
+      "when": "CREW_SELECTS_DISPLAYED_VALID_COORDINATES",
+      "effect": "COPY_FOR_IRS_INITIALIZATION",
+      "source": {
+        "pdf_viewer_page": 1565,
+        "printed_folio": "11.40.13"
+      },
+      "variant": "DOCUMENTED_SOURCE_ONLY",
+      "implementation": "REFERENCE_ONLY"
+    },
+    {
+      "id": "IRS-003",
+      "when": "CREW_ENTERS_MANUAL_LAT_LONG",
+      "effect": "VALIDATE_AND_PASS_POSITION_TO_IRS",
+      "source": {
+        "pdf_viewer_page": 1565,
+        "printed_folio": "11.40.13"
+      },
+      "variant": "DOCUMENTED_SOURCE_ONLY",
+      "implementation": "REFERENCE_ONLY"
+    },
+    {
+      "id": "IRS-004",
+      "when": "IRS_ALIGNMENT_FINISHED_WITHOUT_POSITION",
+      "effect": "SCRATCHPAD_ENTER_IRS_POS",
+      "source": {
+        "pdf_viewer_page": 1565,
+        "printed_folio": "11.40.13"
+      },
+      "variant": "DOCUMENTED_SOURCE_ONLY",
+      "implementation": "REFERENCE_ONLY"
+    },
+    {
+      "id": "IRS-005",
+      "when": "MANUAL_COORDINATES_FAIL_IRS_INTERNAL_CHECK",
+      "effect": "SCRATCHPAD_ENTER_IRS_POS",
+      "source": {
+        "pdf_viewer_page": 1565,
+        "printed_folio": "11.40.13"
+      },
+      "variant": "DOCUMENTED_SOURCE_ONLY",
+      "implementation": "REFERENCE_ONLY"
+    },
+    {
+      "id": "IRS-006",
+      "when": "ENTERED_LAT_LONG_GT_4_NM_FROM_ORIGIN_AIRPORT",
+      "effect": "SCRATCHPAD_VERIFY_POSITION",
+      "source": {
+        "pdf_viewer_page": 1565,
+        "printed_folio": "11.40.13"
+      },
+      "variant": "DOCUMENTED_SOURCE_ONLY",
+      "implementation": "REFERENCE_ONLY"
+    },
+    {
+      "id": "IRS-007",
+      "when": "IRS_ALIGN_AND_NO_PRESENT_POSITION_ENTERED",
+      "effect": "SHOW_SET_IRS_POS_BOX_PROMPTS",
+      "source": {
+        "pdf_viewer_page": 1565,
+        "printed_folio": "11.40.13"
+      },
+      "variant": "DOCUMENTED_SOURCE_ONLY",
+      "implementation": "REFERENCE_ONLY"
+    },
+    {
+      "id": "IRS-008",
+      "when": "IRS_TRANSITION_ALIGN_TO_NAV",
+      "effect": "BLANK_SET_IRS_POS_ENTRY",
+      "source": {
+        "pdf_viewer_page": 1565,
+        "printed_folio": "11.40.13"
+      },
+      "variant": "DOCUMENTED_SOURCE_ONLY",
+      "implementation": "REFERENCE_ONLY"
+    },
+    {
+      "id": "IRS-009",
+      "when": "IRS_IN_ATT_MODE_AND_R5_SELECTED",
+      "effect": "ALLOW_SET_IRS_HDG_MAGNETIC_HEADING",
+      "source": {
+        "pdf_viewer_page": 1565,
+        "printed_folio": "11.40.13"
+      },
+      "variant": "DOCUMENTED_SOURCE_ONLY",
+      "implementation": "REFERENCE_ONLY"
+    },
+    {
+      "id": "IRS-010",
+      "when": "IRS_NOT_IN_ATT_MODE",
+      "effect": "BLANK_SET_IRS_HDG_ENTRY",
+      "source": {
+        "pdf_viewer_page": 1565,
+        "printed_folio": "11.40.13"
+      },
+      "variant": "DOCUMENTED_SOURCE_ONLY",
+      "implementation": "REFERENCE_ONLY"
+    },
+    {
+      "id": "POS-008",
+      "when": "POS_INIT_L6_SELECTED",
+      "effect": "OPEN_INIT_REF_INDEX",
+      "source": {
+        "pdf_viewer_page": 1565,
+        "printed_folio": "11.40.13"
+      },
+      "variant": "DOCUMENTED_SOURCE_ONLY",
+      "implementation": "REFERENCE_ONLY"
+    },
+    {
+      "id": "POS-009",
+      "when": "POS_INIT_R6_SELECTED",
+      "effect": "OPEN_ROUTE",
+      "source": {
+        "pdf_viewer_page": 1565,
+        "printed_folio": "11.40.13"
+      },
+      "variant": "DOCUMENTED_SOURCE_ONLY",
+      "implementation": "REFERENCE_ONLY"
+    },
+    {
+      "id": "POS-010",
+      "when": "POS_REF_SELECTED",
+      "effect": "SHOW_FMC_IRS_AND_RADIO_NAV_POSITION_ESTIMATES",
+      "source": {
+        "pdf_viewer_page": 1565,
+        "printed_folio": "11.40.13"
+      },
+      "variant": "DOCUMENTED_SOURCE_ONLY",
+      "implementation": "REFERENCE_ONLY"
+    },
+    {
+      "id": "REF-001",
+      "when": "POS_REF_PAGE_ACTIVE",
+      "effect": "DISPLAY_2_OF_3",
+      "source": {
+        "pdf_viewer_page": 1566,
+        "printed_folio": "11.40.14"
+      },
+      "variant": "DOCUMENTED_SOURCE_ONLY",
+      "implementation": "REFERENCE_ONLY"
+    },
+    {
+      "id": "REF-002",
+      "when": "SIX_SOURCE_GPS_OPTION",
+      "effect": "L1_FMC_L2_IRS_L_L3_IRS_R_L4_GPS_L_L5_GPS_R_L6_RADIO",
+      "source": {
+        "pdf_viewer_page": 1566,
+        "printed_folio": "11.40.14"
+      },
+      "variant": "SIX_SOURCE_WITH_GPS",
+      "implementation": "REFERENCE_ONLY"
+    },
+    {
+      "id": "REF-003",
+      "when": "FMC_POS_VALID",
+      "effect": "SHOW_FMC_COMPUTED_ACTUAL_LAT_LON",
+      "source": {
+        "pdf_viewer_page": 1566,
+        "printed_folio": "11.40.14"
+      },
+      "variant": "DOCUMENTED_SOURCE_ONLY",
+      "implementation": "REFERENCE_ONLY"
+    },
+    {
+      "id": "REF-004",
+      "when": "IRS_LEFT_VALID",
+      "effect": "SHOW_IRS_LEFT_ACTUAL_LAT_LON",
+      "source": {
+        "pdf_viewer_page": 1566,
+        "printed_folio": "11.40.14"
+      },
+      "variant": "DOCUMENTED_SOURCE_ONLY",
+      "implementation": "REFERENCE_ONLY"
+    },
+    {
+      "id": "REF-005",
+      "when": "IRS_RIGHT_VALID",
+      "effect": "SHOW_IRS_RIGHT_ACTUAL_LAT_LON",
+      "source": {
+        "pdf_viewer_page": 1566,
+        "printed_folio": "11.40.14"
+      },
+      "variant": "DOCUMENTED_SOURCE_ONLY",
+      "implementation": "REFERENCE_ONLY"
+    },
+    {
+      "id": "REF-006",
+      "when": "GPS_LEFT_INSTALLED_VALID",
+      "effect": "SHOW_GPS_LEFT_ACTUAL_LAT_LON",
+      "source": {
+        "pdf_viewer_page": 1566,
+        "printed_folio": "11.40.14"
+      },
+      "variant": "DOCUMENTED_SOURCE_ONLY",
+      "implementation": "REFERENCE_ONLY"
+    },
+    {
+      "id": "REF-007",
+      "when": "GPS_RIGHT_INSTALLED_VALID",
+      "effect": "SHOW_GPS_RIGHT_ACTUAL_LAT_LON",
+      "source": {
+        "pdf_viewer_page": 1566,
+        "printed_folio": "11.40.14"
+      },
+      "variant": "DOCUMENTED_SOURCE_ONLY",
+      "implementation": "REFERENCE_ONLY"
+    },
+    {
+      "id": "REF-008",
+      "when": "RADIO_POSITION_VALID_IN_FLIGHT",
+      "effect": "SHOW_RADIO_DERIVED_ACTUAL_LAT_LON",
+      "source": {
+        "pdf_viewer_page": 1566,
+        "printed_folio": "11.40.14"
+      },
+      "variant": "DOCUMENTED_SOURCE_ONLY",
+      "implementation": "REFERENCE_ONLY"
+    },
+    {
+      "id": "REF-009",
+      "when": "FMC_AND_IRS_SPEED_VALID",
+      "effect": "SHOW_RELATED_GROUND_SPEED_ON_RIGHT_IN_KT",
+      "source": {
+        "pdf_viewer_page": 1566,
+        "printed_folio": "11.40.14"
+      },
+      "variant": "DOCUMENTED_SOURCE_ONLY",
+      "implementation": "REFERENCE_ONLY"
+    },
+    {
+      "id": "REF-010",
+      "when": "POSITION_SOURCES_DIFFER",
+      "effect": "PRESERVE_SEPARATE_ESTIMATES_NOT_SHARED_PLACEHOLDER",
+      "source": {
+        "pdf_viewer_page": 1566,
+        "printed_folio": "11.40.14"
+      },
+      "variant": "DOCUMENTED_SOURCE_ONLY",
+      "implementation": "REFERENCE_ONLY"
+    },
+    {
+      "id": "REF-011",
+      "when": "FMC_HAS_NO_VALID_IRS_PRESENT_POSITION_AS_DESCRIBED",
+      "effect": "BLANK_FMC_POS",
+      "source": {
+        "pdf_viewer_page": 1568,
+        "printed_folio": "11.40.16"
+      },
+      "variant": "DOCUMENTED_SOURCE_ONLY",
+      "implementation": "REFERENCE_ONLY"
+    },
+    {
+      "id": "REF-012",
+      "when": "IRS_LEFT_INVALID",
+      "effect": "BLANK_IRS_LEFT_POSITION",
+      "source": {
+        "pdf_viewer_page": 1568,
+        "printed_folio": "11.40.16"
+      },
+      "variant": "DOCUMENTED_SOURCE_ONLY",
+      "implementation": "REFERENCE_ONLY"
+    },
+    {
+      "id": "REF-013",
+      "when": "IRS_RIGHT_INVALID",
+      "effect": "BLANK_IRS_RIGHT_POSITION",
+      "source": {
+        "pdf_viewer_page": 1568,
+        "printed_folio": "11.40.16"
+      },
+      "variant": "DOCUMENTED_SOURCE_ONLY",
+      "implementation": "REFERENCE_ONLY"
+    },
+    {
+      "id": "REF-014",
+      "when": "ALTERNATE_POS_REF_FIGURE",
+      "effect": "L1_FMC_L2_IRS_L_L4_IRS_R_L6_RADIO",
+      "source": {
+        "pdf_viewer_page": 1568,
+        "printed_folio": "11.40.16"
+      },
+      "variant": "FOUR_SOURCE_WITH_IRS_R_L4",
+      "implementation": "REFERENCE_ONLY"
+    },
+    {
+      "id": "REF-015",
+      "when": "IRS_RIGHT_LSK_L3_VS_L4_VARIANTS",
+      "effect": "DO_NOT_MERGE_WITHOUT_AIRCRAFT_OPTION_VERIFICATION",
+      "source": {
+        "pdf_viewer_page": 1568,
+        "printed_folio": "11.40.16"
+      },
+      "variant": "UNRESOLVED_VARIANT",
+      "implementation": "REFERENCE_ONLY"
+    },
+    {
+      "id": "REF-016",
+      "when": "GPS_LEFT_INVALID",
+      "effect": "BLANK_GPS_LEFT_POSITION",
+      "source": {
+        "pdf_viewer_page": 1569,
+        "printed_folio": "11.40.17"
+      },
+      "variant": "DOCUMENTED_SOURCE_ONLY",
+      "implementation": "REFERENCE_ONLY"
+    },
+    {
+      "id": "REF-017",
+      "when": "GPS_RIGHT_INVALID",
+      "effect": "BLANK_GPS_RIGHT_POSITION",
+      "source": {
+        "pdf_viewer_page": 1569,
+        "printed_folio": "11.40.17"
+      },
+      "variant": "DOCUMENTED_SOURCE_ONLY",
+      "implementation": "REFERENCE_ONLY"
+    },
+    {
+      "id": "REF-018",
+      "when": "AIRCRAFT_ON_GROUND",
+      "effect": "BLANK_RADIO_POSITION",
+      "source": {
+        "pdf_viewer_page": 1569,
+        "printed_folio": "11.40.17"
+      },
+      "variant": "DOCUMENTED_SOURCE_ONLY",
+      "implementation": "REFERENCE_ONLY"
+    },
+    {
+      "id": "REF-019",
+      "when": "RADIO_POSITION_INVALID_IN_FLIGHT",
+      "effect": "BLANK_RADIO_POSITION",
+      "source": {
+        "pdf_viewer_page": 1569,
+        "printed_folio": "11.40.17"
+      },
+      "variant": "DOCUMENTED_SOURCE_ONLY",
+      "implementation": "REFERENCE_ONLY"
+    },
+    {
+      "id": "REF-020",
+      "when": "SOURCE_RELATED_GROUND_SPEED_INVALID",
+      "effect": "BLANK_RELATED_GS",
+      "source": {
+        "pdf_viewer_page": 1569,
+        "printed_folio": "11.40.17"
+      },
+      "variant": "DOCUMENTED_SOURCE_ONLY",
+      "implementation": "REFERENCE_ONLY"
+    },
+    {
+      "id": "REF-021",
+      "when": "SOURCE_RELATED_GROUND_SPEED_VALID",
+      "effect": "DISPLAY_RELATED_GS_IN_KT",
+      "source": {
+        "pdf_viewer_page": 1569,
+        "printed_folio": "11.40.17"
+      },
+      "variant": "DOCUMENTED_SOURCE_ONLY",
+      "implementation": "REFERENCE_ONLY"
+    },
+    {
+      "id": "REF-022",
+      "when": "GPS_EQUIPPED_FIGURE",
+      "effect": "GPS_LEFT_AT_L4_AND_GPS_RIGHT_AT_L5",
+      "source": {
+        "pdf_viewer_page": 1569,
+        "printed_folio": "11.40.17"
+      },
+      "variant": "DOCUMENTED_SOURCE_ONLY",
+      "implementation": "REFERENCE_ONLY"
+    }
+  ],
+  "summary": {
+    "rule_count": 53,
+    "per_page": {
+      "1563": 7,
+      "1564": 11,
+      "1565": 13,
+      "1566": 10,
+      "1568": 5,
+      "1569": 7
+    }
+  }
+}
