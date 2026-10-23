@@ -1,0 +1,199 @@
+{
+  "schema": "b737.guard-switch-registry/v2",
+  "aircraft": "B737 Classic 300/400/500",
+  "basis": "Sepehran FCOM D6-27370-300/400/500-SHI",
+  "validation": "Documented guarded detents; physical actuation by the guard is an explicit simulator approximation pending hardware confirmation",
+  "graphics": {
+    "baseline": "b737-cockpit-toggle-v1",
+    "horizontalVariant": "horizontal independent 3D geometry, not rotated vertical imagery",
+    "topHingeGuard": {
+      "pivot": "top center",
+      "separateGuardAndLever": true
+    }
+  },
+  "guarded": [
+    {
+      "id": "flightA",
+      "panel": "Flight Controls",
+      "label": "FLT CONTROL A",
+      "detents": [
+        "stby",
+        "off",
+        "on"
+      ],
+      "guardHinge": "top",
+      "guardedDetent": "on",
+      "onClose": "force_on",
+      "springLoaded": false,
+      "fcom": {
+        "folio": "9.10.1",
+        "pdfPage": 1246,
+        "quoteKey": "ON guarded position"
+      },
+      "mechanicalCloseSource": "inferred from guarded detent, not explicitly defined by FCOM"
+    },
+    {
+      "id": "flightB",
+      "panel": "Flight Controls",
+      "label": "FLT CONTROL B",
+      "detents": [
+        "stby",
+        "off",
+        "on"
+      ],
+      "guardHinge": "top",
+      "guardedDetent": "on",
+      "onClose": "force_on",
+      "springLoaded": false,
+      "fcom": {
+        "folio": "9.10.1",
+        "pdfPage": 1246,
+        "quoteKey": "ON guarded position"
+      },
+      "mechanicalCloseSource": "inferred from guarded detent, not explicitly defined by FCOM"
+    },
+    {
+      "id": "spoilerA",
+      "panel": "Flight Controls",
+      "label": "FLT SPOILER A",
+      "detents": [
+        "off",
+        "on"
+      ],
+      "guardHinge": "top",
+      "guardedDetent": "on",
+      "onClose": "force_on",
+      "springLoaded": false,
+      "fcom": {
+        "folio": "9.10.2",
+        "pdfPage": 1247,
+        "quoteKey": "guarded to ON"
+      },
+      "mechanicalCloseSource": "inferred from guarded detent, not explicitly defined by FCOM"
+    },
+    {
+      "id": "spoilerB",
+      "panel": "Flight Controls",
+      "label": "FLT SPOILER B",
+      "detents": [
+        "off",
+        "on"
+      ],
+      "guardHinge": "top",
+      "guardedDetent": "on",
+      "onClose": "force_on",
+      "springLoaded": false,
+      "fcom": {
+        "folio": "9.10.2",
+        "pdfPage": 1247,
+        "quoteKey": "guarded to ON"
+      },
+      "mechanicalCloseSource": "inferred from guarded detent, not explicitly defined by FCOM"
+    },
+    {
+      "id": "alternateFlapsArm",
+      "panel": "Flight Controls",
+      "label": "ALTERNATE FLAPS Master",
+      "detents": [
+        "off",
+        "arm"
+      ],
+      "guardHinge": "top",
+      "guardedDetent": "off",
+      "onClose": "force_off",
+      "springLoaded": false,
+      "fcom": {
+        "folio": "9.10.2–9.10.3",
+        "pdfPage": 1247,
+        "quoteKey": "OFF guarded position"
+      },
+      "mechanicalCloseSource": "inferred from guarded detent, not explicitly defined by FCOM"
+    }
+  ],
+  "horizontalThreePosition": [
+    {
+      "id": "vhfNav",
+      "panel": "Navigation Transfer",
+      "label": "VHF NAV",
+      "detents": [
+        "left",
+        "normal",
+        "right"
+      ],
+      "detentLabels": [
+        "BOTH ON 1",
+        "NORMAL",
+        "BOTH ON 2"
+      ],
+      "springLoaded": false,
+      "fcom": {
+        "folio": "11.10.25–11.10.26",
+        "pdfPage": 1447
+      }
+    },
+    {
+      "id": "irs",
+      "panel": "Navigation Transfer",
+      "label": "IRS",
+      "detents": [
+        "left",
+        "normal",
+        "right"
+      ],
+      "detentLabels": [
+        "BOTH ON L",
+        "NORMAL",
+        "BOTH ON R"
+      ],
+      "springLoaded": false,
+      "fcom": {
+        "folio": "10.40.13",
+        "source": "EFI/IRS instrument transfer system"
+      }
+    },
+    {
+      "id": "efi",
+      "panel": "Navigation Transfer",
+      "label": "EFI",
+      "detents": [
+        "left",
+        "normal",
+        "right"
+      ],
+      "detentLabels": [
+        "BOTH ON 1",
+        "NORMAL",
+        "BOTH ON 2"
+      ],
+      "springLoaded": false,
+      "fcom": {
+        "folio": "10.40.13",
+        "source": "EFI/IRS instrument transfer system"
+      }
+    }
+  ],
+  "other": [
+    {
+      "id": "altPosition",
+      "label": "ALTERNATE FLAPS position",
+      "detents": [
+        "up",
+        "off",
+        "down"
+      ],
+      "springReturn": {
+        "down": "off",
+        "up": null
+      },
+      "enabledWhen": "alternateFlapsArm=arm",
+      "fcom": {
+        "folio": "9.10.3",
+        "pdfPage": 1248
+      }
+    }
+  ],
+  "pending": [
+    "Other cockpit guarded switches require exact FCOM family/variant and guard photo confirmation before close-policy assignment",
+    "No force_armed behavior assigned without an identified FCOM-supported control"
+  ]
+}
