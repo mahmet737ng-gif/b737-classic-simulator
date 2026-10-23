@@ -1,0 +1,16 @@
+name: FCOM Ch11 DEPARTURES PERF INIT source QA
+on:
+  push:
+  pull_request:
+jobs:
+  source-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify DEPARTURES and PERF INIT/PERF LIMITS source rules
+        run: node engine/ch11/tests/fmc-preflight-departures-perfinit-limits.test.cjs
+      - name: Preserve approved fonts, IDENT startup, and control map
+        run: node tests/cdu-font-lock.test.cjs && node tests/cdu-ident-startup.test.cjs && node engine/ch11/tests/approved-cdu-assets.test.cjs
