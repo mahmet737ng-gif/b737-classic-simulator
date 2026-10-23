@@ -10,7 +10,8 @@ function card(asset,style){const a=el('article','piece');a.tabIndex=0;a.dataset.
  const img=el('img');img.src=asset.url;img.alt=asset.title;img.loading='eager';img.decoding='async';img.draggable=false;
  img.addEventListener('load',()=>{loaded.add(asset.id);a.classList.remove('bad');summary();updateDimensions();if(selected===asset.id)showDetails();});
  img.addEventListener('error',()=>{errored.add(asset.id);loaded.delete(asset.id);a.classList.add('bad');img.remove();a.append(el('div','empty-image','⚠ بارگذاری تصویر ناموفق بود'));summary();updateDimensions();});
- a.append(img);a.onclick=()=>{if(!dragged)pick(asset.id);};a.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();pick(asset.id);}};
+ if(asset.display?.cropLeftPct){const cropped=el('div','crop-window');cropped.append(img);a.append(cropped);}else{a.append(img);}
+ a.onclick=()=>{if(!dragged)pick(asset.id);};a.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();pick(asset.id);}};
  return a;}
 function placeholder(ids){const d=el('div','placeholder');d.append(el('strong','',ids.join(' / ')),el('span','','تصویر هنوز در دیتابیس موجود نیست'));return d;}
 function populateUpper(){const root=$('upper');root.replaceChildren();
@@ -42,7 +43,7 @@ function showDetails(){if(!spec)return;const a=resolveAsset(selected)||assetById
  detailRow('شناسهٔ تصویر',a.id);detailRow('نام فایل',a.filename);detailRow('اندازه',new Intl.NumberFormat('en-US').format(a.bytes)+' bytes');
  detailRow('وضعیت',errored.has(a.id)?'خطا در بارگذاری':loaded.has(a.id)?'تصویر بارگذاری شد':'در حال دریافت تصویر');
  if(region)detailRow('مرز این بخش','Polygon آزمایشی، هنوز تأیید نشده');
- if(selected==='OH18'||selected==='OH-18'||a.id==='OH18')detail.append(el('div','pending','نوع سیستم OH-18 هنوز قطعی نشده است.'));
+ if(selected==='OH18'||selected==='OH-18'||a.id==='OH18')detail.append(el('div','pending','OH-18 طبق اطلس زیر OH-14 قرار گرفت: GRD CALL / RAIN REPELLENT / WIPER.'));
  detail.append(el('code','',a.sha256?'SHA-256: '+a.sha256:'Git blob: '+a.gitBlobSha));
  const link=el('a','','باز کردن تصویر اصلی در GitHub ↗');link.href=a.url;link.target='_blank';link.rel='noopener';detail.append(link);
  const note=el('p','', 'جایگاه ستون‌ها برای ارزیابی اولیه است؛ هندسهٔ دقیق پیچ‌ها و درزهای پنل‌ها هنوز تأیید نشده.');note.style.fontSize='11px';detail.append(note);}
@@ -53,18 +54,18 @@ function pick(id,scroll){selected=id;highlight();showDetails();if(scroll){let pi
 function updateDimensions(){const board=$('board');const sizer=$('sizer');board.style.transform='scale('+zoom+')';sizer.style.width=Math.ceil(SOURCE_WIDTH*zoom)+'px';sizer.style.height=Math.ceil(board.offsetHeight*zoom)+'px';$('zoomLabel').textContent=Math.round(zoom*100)+'%';}
 function fit(){const viewport=$('viewport');zoom=Math.min(1,(viewport.clientWidth-34)/SOURCE_WIDTH);fitMode=true;updateDimensions();viewport.scrollTo({left:0,top:0,behavior:'instant'});}
 function setZoom(value){fitMode=false;zoom=Math.max(MIN_ZOOM,Math.min(MAX_ZOOM,value));updateDimensions();}
-function mode(next){if(view===next)return;view=next;$('assembly').classList.toggle('hidden',next!=='mosaic');$('gallery').classList.toggle('hidden',next!=='gallery');
- $('modeMosaic').classList.toggle('active',next==='mosaic');$('modeGallery').classList.toggle('active',next==='gallery');if(next==='gallery'&&!$('gallery').children.length)populateGallery();highlight();updateDimensions();}
+function mode(next){if(view===next)return;view=next;$('assembly').classList.toggle('hidden',next!=='mosaic');$('gallery').classList.toggle('hidden',next!=='gallery');$('atlasView').classList.toggle('hidden',next!=='atlas');
+ $('modeMosaic').classList.toggle('active',next==='mosaic');$('modeGallery').classList.toggle('active',next==='gallery');$('modeAtlas').classList.toggle('active',next==='atlas');if(next==='gallery'&&!$('gallery').children.length)populateGallery();highlight();updateDimensions();}
 async function start(){
  try{const [specResp,geoResp]=await Promise.all([fetch('./spec.json?ts='+Date.now(),{cache:'no-store'}),fetch('../upper-oh/geometry.json?ts='+Date.now(),{cache:'no-store'})]);
  if(!specResp.ok||!geoResp.ok)throw Error('Source metadata unavailable');spec=await specResp.json();geometry=await geoResp.json();
  if(spec.images.length!==12||geometry.parts.length!==6)throw Error('Invalid source count');
  populateAssembly();fillList();summary();showDetails();
- $('status').textContent='۱۲ تصویر منبع برای ۱۸ شناسهٔ پنل — نسخهٔ '+spec.version+' — جای‌گذاری آزمایشی';
+ $('status').textContent='۱۲ تصویر منبع برای ۱۸ شناسهٔ پنل — نسخهٔ '+spec.version+' — اصلاح جانمایی با مرجع اطلس';
  fit();if('ResizeObserver'in window){new ResizeObserver(()=>updateDimensions()).observe($('board'));}
  }catch(e){$('status').textContent='خطای بارگذاری داده‌های تست: '+e.message;}
 }
-$('modeMosaic').onclick=()=>mode('mosaic');$('modeGallery').onclick=()=>mode('gallery');
+$('modeMosaic').onclick=()=>mode('mosaic');$('modeGallery').onclick=()=>mode('gallery');$('modeAtlas').onclick=()=>mode('atlas');
 $('fit').onclick=fit;$('plus').onclick=()=>setZoom(zoom*1.25);$('minus').onclick=()=>setZoom(zoom/1.25);
 $('borders').onchange=e=>$('board').classList.toggle('show-borders',e.target.checked);
 $('tags').onchange=e=>$('board').classList.toggle('hide-tags',!e.target.checked);
