@@ -1,3 +1,5 @@
+> **v14 correction (2026-10-23):** Later examination of the original p756 chart established 10 explicitly printed pressure-altitude starter labels, rather than the 13 claimed in this historical v13 report. The v13 automatic stroke dataset is still unassigned, and does not prove 13 distinct source curves. See [v14 review](AFM_EP_FSI_N1_V14.md).
+
 # EP-FSI AFM N1 — v13 / PMC OFF and MCT diagram QA
 
 Aircraft scope: **EP-FSI, Boeing 737-33V ASN 29340, CFM56-3B-1 20K**. Source: private AFM D6-8730.33V R32.
