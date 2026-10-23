@@ -1,9 +1,9 @@
 {
   "schema": "b737.overhead-all-source-assembly.v1",
-  "version": "UPD-0008-atlas-mosaic-test",
+  "version": "UPD-0008-all-25-atlas-test",
   "date": "2026-10-24",
   "purpose": "Interactive source-pixel-preserving preview of all currently uploaded OH01-OH18 sources, not a geometry-accurate final cockpit.",
-  "geometryNotice": "Owner atlas reference: OH19-VOICE and OH19-DIFF are separate panels directly below OH17 HYDRAULIC in the fourth physical overhead column, sized at the same physical column width. They are NOT below OH18 in narrow service strip. OH13/14/18 alone occupy narrow service strip. Two more uploaded images pending identity matching. All source binaries remain immutable.",
+  "geometryNotice": "Original owner atlas fixes: OH19 voice and press diff directly below OH17 in wide fourth column; OH22 cabin press below bleed in rightmost; a common lower OH23–25 strip spans all columns. Crop only white PNG canvas for bottom strip in preview, retaining untouched original source bytes. Physical seams remain provisional.",
   "header": {
     "id": "UPPER",
     "geometry": "../upper-oh/geometry.json",
@@ -53,18 +53,13 @@
       "weight": 503,
       "items": [
         "OH20",
-        "OH21"
+        "OH21",
+        "OH22"
       ],
-      "missing": [
-        "OH-22"
-      ]
+      "missing": []
     }
   ],
-  "bottomMissing": [
-    "OH-23",
-    "OH-24",
-    "OH-25"
-  ],
+  "bottomMissing": [],
   "images": [
     {
       "id": "UPPER",
@@ -349,6 +344,55 @@
       "url": "../assets/locked/2026-10-23/OH21-BLEED-AIR-cc78219607a3.png",
       "sourceStatus": "sha256-confirmed-from-original-GitHub-Actions-checkout",
       "geometryStatus": "atlas-visual-source-position-matched; seams unapproved"
+    },
+    {
+      "id": "OH22",
+      "panelIds": [
+        "OH-22"
+      ],
+      "title": "CABIN PRESSURIZATION / FLT ALT / LAND ALT",
+      "filename": "OH22-CABIN-PRESSURIZATION-d1c6c39b6b33.png",
+      "originalUploadedFilename": "Blanked Aircraft Avionics Control Panel.png",
+      "bytes": 2288696,
+      "gitBlobSha": "d1c6c39b6b331c6f927f575bad87d0295b785df3",
+      "sha256": "0756878f35a9b3e4bc9ce03e98a644927edbead65d4e61f3ae4b9e0a649a2a41",
+      "originalDimensions": [
+        1167,
+        1347
+      ],
+      "physicalPlace": "Far right AIR SYSTEMS stack, directly beneath OH21 BLEED AIR, as in the original owner overhead atlas.",
+      "geometryStatus": "source-identification-confirmed-atlas; physical-seam-pending",
+      "url": "../assets/locked/2026-10-23/OH22-CABIN-PRESSURIZATION-d1c6c39b6b33.png",
+      "sourceStatus": "sha256-confirmed-from-actual-upload-on-GitHub-Actions-checkout"
+    },
+    {
+      "id": "OH23-25",
+      "panelIds": [
+        "OH-23",
+        "OH-24",
+        "OH-25"
+      ],
+      "title": "BOTTOM OVERHEAD: EXTERIOR LIGHTS / ENGINE START / APU / TAXI & RUNWAY LIGHTS",
+      "filename": "OH23-25-LOWER-CONTROLS-fad696c845df.png",
+      "originalUploadedFilename": "Empty Aircraft Cockpit Control Panel.png",
+      "bytes": 1552065,
+      "gitBlobSha": "fad696c845df3236286e8861d67c27a5d97d9c2d",
+      "sha256": "80cb82375dccc9a127919e73cb13ebadfef198572fcbdce2ea9be8b7d7ba7f2a",
+      "originalDimensions": [
+        2170,
+        725
+      ],
+      "display": {
+        "cropTopPx": 212,
+        "cropBottomPx": 216,
+        "contentHeightPx": 297,
+        "contentWidthPx": 2170,
+        "reason": "Source has white top/bottom canvas; crop to nonwhite atlas plate boundaries only in viewer, never mutate locked image."
+      },
+      "physicalPlace": "One shared full-width lower overhead strip beneath all five vertical columns, from RUNWAY TURNOFF / TAXI through APU / ENGINE START to POSITION / ANTI COLLISION / WING / WHEEL WELL.",
+      "geometryStatus": "source-identity-confirmed-for-three-bottom-groups; physical-seam-pending",
+      "url": "../assets/locked/2026-10-23/OH23-25-LOWER-CONTROLS-fad696c845df.png",
+      "sourceStatus": "sha256-confirmed-from-actual-upload-on-GitHub-Actions-checkout"
     }
   ],
   "provenance": {
@@ -358,12 +402,12 @@
   },
   "approval": {
     "sourceAssets": "read-only-immutable",
-    "assemblySeams": "physical atlas column widths traced approximately; plate seam polygons not approved",
+    "assemblySeams": "atlas-informed approximate sizing; no final physical plate edge polygons",
     "OH18Subsystem": "recognized from owner atlas image (ground call / rain repellent / wiper)",
     "classificationOf4NewImages": "verified by source thumbnails against owner overhead atlas reference"
   },
-  "confirmedBytes": 42500310,
-  "loadedSources": 16,
+  "confirmedBytes": 46341071,
+  "loadedSources": 18,
   "atlasReference": {
     "image": "../../assets/overhead.webp",
     "source": "owner overhead atlas PDF/reference photo",
@@ -405,6 +449,18 @@
       "position": 4,
       "prior": "wrongly in narrow third column",
       "display": "same physical width as hydraulic, intrinsic aspect ratio"
+    },
+    {
+      "id": "OH22",
+      "atlasPanel": "CABIN PRESSURIZATION",
+      "columnIndex": 4,
+      "position": 2
+    },
+    {
+      "id": "OH23-25",
+      "atlasPanel": "BOTTOM OVERHEAD SWITCHING ROW",
+      "placement": "full-width under all five vertical stacks",
+      "display": "exclude white canvas gutters only in browser UI"
     }
   ],
   "atlasColumnWidths": [
@@ -423,21 +479,23 @@
     ],
     "rightSystemStack": [
       "OH20",
-      "OH21"
+      "OH21",
+      "OH22"
     ],
-    "remainingImagesAbsent": [
-      "OH-22",
-      "OH-23",
-      "OH-24",
-      "OH-25"
-    ],
-    "legacyNumberingNote": "OH19 voice recorder and press diff are distinct plates in wide fourth column below Hydraulic. Do not use numeric ID sequence to infer physical columns.",
+    "remainingImagesAbsent": [],
+    "legacyNumberingNote": "OH19 is two separate plates under OH17; OH23-25 share one long physical lower panel PNG.",
     "hydraulicAndInstrumentsStack": [
       "OH15",
       "OH16",
       "OH17",
       "OH19-VOICE",
       "OH19-DIFF"
+    ],
+    "bottomFullWidth": [
+      "OH23-25"
     ]
-  }
+  },
+  "bottomItems": [
+    "OH23-25"
+  ]
 }
