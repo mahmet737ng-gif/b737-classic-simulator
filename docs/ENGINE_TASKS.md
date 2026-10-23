@@ -184,3 +184,15 @@ Private active reference: `/Technical Database/Sources/AFM-737-33V-D6-8730-R32/E
 | N1-FSI-13 Live performance N1 / A/T | BLOCKED | v10 CDU shows ---.- automatically, v13 synthetic diagnostic cannot connect to CDU. |
 
 Private v13 SQLite `/Technical Database/Sources/AFM-737-33V-D6-8730-R32/EP-FSI-ASN29340/v13/epfsi_afm_scoped_v13.sqlite`; full source and sampled graph data stay in private Library. Original AFM and previous source snapshots preserved.
+
+## EP-FSI v14 source-label and golden-vector checkpoint
+
+| Task | Status | Evidence |
+| --- | --- | --- |
+| N1-FSI-14 p756 printed pressure-altitude label identity | DONE (FIRST-PASS SOURCE ANCHORS) | Exactly **10** source labels identified on p756: -2,-1,0,1,2,3,4,6,8,10 thousands of ft. Historical v13 13-curve claim superseded. 10 labelled leader anchors retained privately. |
+| N1-FSI-15 Full p756 curve continuation and MAXIMUM N1 intersection | BLOCKED | Horizontal starter labels verified by one visual pass, full branches and intersections still unresolved. |
+| N1-FSI-16 MCT pressure-limit legend indexing | DONE (FIRST-PASS LABELS) | 9 Mach legend labels indexed from p130, no approved corrected N1 numbers. |
+| N1-FSI-17 AFM source reference-case templates | DONE (ROUTING TEMPLATES ONLY) | 8 linked reference cases and expected source pages, no approved golden numeric expected outputs. |
+| N1-FSI-18 Independent N1 numerical signoff and CDU enablement | BLOCKED | 0 verified final values; v10 CDU source-status only, no auto calculated N1/A/T. |
+
+Active private database: `/Technical Database/Sources/AFM-737-33V-D6-8730-R32/EP-FSI-ASN29340/v14/epfsi_afm_scoped_v14.sqlite`. Source is confidential, preserve original full AFM and prior records. Python source/image suite 20 PASS. See `docs/AFM_EP_FSI_N1_V14.md`.
