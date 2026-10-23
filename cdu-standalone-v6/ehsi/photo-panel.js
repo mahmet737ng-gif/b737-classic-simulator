@@ -13,6 +13,9 @@ const MODE_DEG={EXP_NAV:-110,EXP_VOR_ILS:-66,MAP:-20,CTR_MAP:26,PLAN:74,FULL_NAV
 const RANGES=[10,20,40,80,160,320];
 const RANGE_DEG={10:148,20:180,40:211,80:243,160:270,320:297};
 const PHOTO='assets/efis-cp-reference.webp';
+const CACHE_KEY='b737_efis_uploaded_photo_v1';
+let activePhoto=PHOTO;
+try{const src=localStorage.getItem(CACHE_KEY);if(src?.startsWith('data:image/'))activePhoto=src}catch{}
 const geom={
  dh:{x:245,y:394,w:183,h:158,title:'DH REF selector'},
  adi:{x:258,y:787,w:139,h:125,title:'ADI brightness'},
@@ -42,7 +45,7 @@ function sprite(btn,g){
  const el=document.createElement('span');el.className='photo-sprite';
  // Percentage background size/position remains registered when panel scales.
  Object.assign(el.style,{
-  backgroundImage:'url("'+PHOTO+'")',
+  backgroundImage:'url("'+activePhoto+'")',
   backgroundSize:(W/g.w*100)+'% '+(H/g.h*100)+'%',
   backgroundPosition:(g.x/(W-g.w)*100)+'% '+(g.y/(H-g.h)*100)+'%'
  });
@@ -107,7 +110,7 @@ function init(st,core,doc,onchange){
  const box=doc.getElementById('efis-control-panel');if(!box)return;
  refresh=onchange;box.replaceChildren();box.classList.add('photo-efis-root');
  const face=document.createElement('div');face.className='photo-face';
- const img=document.createElement('img');img.src=PHOTO;img.className='photo-base';img.alt='Captain EFIS Control Panel — owner supplied original photograph';img.draggable=false;
+ const img=document.createElement('img');img.src=activePhoto;img.className='photo-base';img.alt='Captain EFIS Control Panel — owner supplied original photograph';img.draggable=false;
  img.onerror=()=>{face.classList.add('missing-photo');document.getElementById('efis-photo-alert').hidden=false};
  face.append(img);
  const dh=document.createElement('div');dh.className='photo-dh-digits';dh.setAttribute('role','status');dh.setAttribute('aria-label','Decision height reference display');
@@ -146,6 +149,23 @@ function init(st,core,doc,onchange){
   });face.append(b);
  }
  box.append(face);
+ const filePanel=document.createElement('label');filePanel.className='photo-source-picker';
+ filePanel.textContent='Original photo: ';
+ const fileField=document.createElement('input');fileField.type='file';fileField.accept='image/jpeg,image/png,image/webp';
+ fileField.setAttribute('aria-label','Load approved EFIS panel photograph');
+ filePanel.appendChild(fileField);box.append(filePanel);
+ fileField.addEventListener('change',()=>{
+  const file=fileField.files?.[0];if(!file)return;
+  if(!['image/jpeg','image/png','image/webp'].includes(file.type)||file.size>8*1024*1024){alert('Please select the original EFIS JPG, PNG or WebP under 8 MB.');return}
+  const reader=new FileReader();
+  reader.onload=()=>{if(typeof reader.result!=='string')return;activePhoto=reader.result;
+   img.src=activePhoto;face.classList.remove('missing-photo');
+   const alert=doc.getElementById('efis-photo-alert');if(alert)alert.hidden=true;
+   face.querySelectorAll('.photo-sprite').forEach(el=>el.style.backgroundImage='url("'+activePhoto+'")');
+   try{localStorage.setItem(CACHE_KEY,activePhoto)}catch(e){filePanel.title='Photo loaded for this session (browser storage full)'}
+  };
+  reader.readAsDataURL(file);
+ });
  const strip=document.createElement('div');strip.className='photo-efis-feedback';
  strip.innerHTML='<output class="photo-state-line"></output><span>Click / wheel / drag / touch knobs • Shift+click to reverse • keyboard arrows</span>';
  box.append(strip);
