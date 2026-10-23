@@ -1,6 +1,6 @@
 {
   "schema": "b737-panel-assets-immutable-v2",
-  "version": "UPD-0003",
+  "version": "UPD-0004",
   "status": "GITHUB_BINARY_VERIFIED",
   "lockPolicy": "append-only files under panel-mosaic-lab/assets/locked; SHA-256 and Git object hash checked by CI. Repository admins may still override unless branch/ruleset protection configured.",
   "assets": [
@@ -86,6 +86,34 @@
         "OH-12"
       ],
       "uploadedOriginal": "panel-mosaic-lab/assets/locked/2026-10-23/Aircraft Electrical Panel Blueprint.png"
+    },
+    {
+      "id": "OH-13-SOURCE-UPD-0004",
+      "panelIds": [
+        "OH-13"
+      ],
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/OH13-CIRCUIT-BREAKER-efca1c6cec9e.png",
+      "sha256": "8fef9e3d67fd78c794d0cceb31ab2806f82076bf7d6e987e3fbdcf5e2a1c76a4",
+      "gitBlobSha1": "efca1c6cec9ed3318cddc7a017e3144f9ab0994b",
+      "bytes": 2307600,
+      "uploadedOriginal": "panel-mosaic-lab/assets/locked/2026-10-23/Aircraft Cockpit Circuit Breaker Panel.png",
+      "status": "uploaded",
+      "immutable": true,
+      "sourceMethod": "GitHub exact git tree blob alias; binary preserved"
+    },
+    {
+      "id": "OH-14-SOURCE-UPD-0004",
+      "panelIds": [
+        "OH-14"
+      ],
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/OH14-EMER-EXIT-795cc819a3b3.png",
+      "sha256": "7a707630ada8d1ae84a7377dd92e61bda95e07ccc3e71c4759da0b3dd113b3d8",
+      "gitBlobSha1": "795cc819a3b3cea8f131f6da1b32918318c7747a",
+      "bytes": 2674410,
+      "uploadedOriginal": "panel-mosaic-lab/assets/locked/2026-10-23/Stripped Emergency Lighting Panel.png",
+      "status": "uploaded",
+      "immutable": true,
+      "sourceMethod": "GitHub exact git tree blob alias; binary preserved"
     }
   ],
   "panelAssignments": [
@@ -117,6 +145,22 @@
       ],
       "view": "panel-mosaic-lab/electrical-stack/",
       "status": "source verified; assembly seams provisional"
+    },
+    {
+      "assetId": "OH-13-SOURCE-UPD-0004",
+      "panels": [
+        "OH-13"
+      ],
+      "view": "panel-mosaic-lab/oh13-14/",
+      "status": "source-placed; physical atlas plate perimeter unverified"
+    },
+    {
+      "assetId": "OH-14-SOURCE-UPD-0004",
+      "panels": [
+        "OH-14"
+      ],
+      "view": "panel-mosaic-lab/oh13-14/",
+      "status": "source-placed; physical atlas plate perimeter unverified"
     }
   ],
   "updateHistory": [
@@ -156,6 +200,20 @@
       ],
       "status": "published-from-github-upload",
       "note": "Original uploads preserved, canonical aliases share exact Git blob bytes; checksums verified by action"
+    },
+    {
+      "version": "UPD-0004",
+      "date": "2026-10-24",
+      "assetIds": [
+        "OH-13-SOURCE-UPD-0004",
+        "OH-14-SOURCE-UPD-0004"
+      ],
+      "panels": [
+        "OH-13",
+        "OH-14"
+      ],
+      "status": "sources-published-hash-verified",
+      "notes": "Both original uploads kept intact. Each canonical name refers to same Git blob; physical mosaic geometry requires QA."
     }
   ],
   "lastStagedVersion": "UPD-0003",
