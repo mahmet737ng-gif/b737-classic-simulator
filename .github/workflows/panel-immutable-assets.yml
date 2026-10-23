@@ -1,0 +1,23 @@
+name: B737 Locked Panel Images — SHA-256 Audit
+on:
+  push:
+    paths:
+      - 'panel-mosaic-lab/immutable/**'
+      - 'panel-mosaic-lab/immutable-manifest.json'
+      - 'panel-mosaic-lab/verify-immutable-assets.py'
+      - '.github/workflows/panel-immutable-assets.yml'
+  pull_request:
+    paths:
+      - 'panel-mosaic-lab/immutable/**'
+      - 'panel-mosaic-lab/immutable-manifest.json'
+      - 'panel-mosaic-lab/verify-immutable-assets.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  integrity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify image SHA-256 and byte lengths
+        run: python3 panel-mosaic-lab/verify-immutable-assets.py
