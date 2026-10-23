@@ -52,7 +52,21 @@
   elem('text',{x:220,y:399,'text-anchor':'middle',fill:'#ffbd7a','font-size':10},'REFERENCE ONLY / NOT LNAV, VNAV OR AUTOPILOT');
   return {displayed:true,commandOutputs:0,stage10:true};
  }
- return Object.freeze({valid,safe,render});
+ function paint(box,st){
+  if(!box||st?.page!=='LEGS'||!st.stage10Advisory)return {displayed:false};
+  const x=st.stage10Advisory,doc=box.ownerDocument||document;
+  function line(y,left,right){
+    const row=doc.createElement('div');row.className='fmc-line fmc-pairline';row.style.top=y+'%';
+    const l=doc.createElement('span');l.className='fmc-left';l.textContent=left;
+    const r=doc.createElement('span');r.className='fmc-right';r.textContent=right;
+    row.append(l,r);box.appendChild(row);
+  }
+  // Two small read-only rows below the sixth LEGS row, above scratchpad.
+  line(84.5,'SIM REF '+x.to,'LEG '+String(x.leg_index));
+  line(89,'DTG '+x.distance_to_fix_nm.toFixed(1)+'NM','XTK '+x.signed_cross_track_nm.toFixed(2));
+  return {displayed:true,source:'STAGE10_SIM_REF',guidanceAuthority:false};
+ }
+ return Object.freeze({valid,safe,render,paint});
 });
 if(typeof window!=='undefined'&&typeof window.addEventListener==='function'){
  window.addEventListener('message',event=>{
