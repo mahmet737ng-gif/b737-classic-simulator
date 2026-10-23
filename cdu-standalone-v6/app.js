@@ -48,6 +48,7 @@ function update(){const box=$('fmc-lines'); box.replaceChildren();
  if(window.CDU_NAV_API?.paint)window.CDU_NAV_API.paint(box);
  if(window.CDU_STAGE5_API?.paint)window.CDU_STAGE5_API.paint(box);
  if(window.CDU_STAGE6_API?.paint)window.CDU_STAGE6_API.paint(box);
+ if(window.CDU_REFERENCE_PROGRESS_API?.paint)window.CDU_REFERENCE_PROGRESS_API.paint(box);
  box.style.opacity=state.brightness;
  const all=core.lights(state);if(state.stage6AwaitingExec)all.EXEC=true;
  for(const [l,on] of Object.entries(all)){const el=byId['CDU_CAPT_'+l+'_LIGHT'];if(el)el.classList.toggle('on',on)}
