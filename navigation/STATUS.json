@@ -62,7 +62,7 @@
   ],
   "next_priority": "Verify real simulator sensor adapter and EP-FSI AFDS source before any actuator output",
   "roadmap_document": "navigation/NPE_STAGE10.md",
-  "qa_private_artifact": "/B737/NAVDB/NPE_STAGE10/B737_NAVDB_AIRAC2610_NPE_STAGE10_PRIVATE.zip",
+  "qa_private_artifact": "/B737/NAVDB/NPE_STAGE10/B737_NAVDB_AIRAC2610_NPE_STAGE10_VERIFIED_25_TESTS.zip",
   "older_ourairports_fallback": {
     "scope": "Iran-only",
     "code": "navigation/navdb.py",
@@ -88,12 +88,15 @@
     "real_device": "NOT_TESTED"
   },
   "stage10_qa": {
-    "python_private": 23,
-    "python_public_pass": 22,
+    "python_private": 25,
+    "python_public_pass": 24,
     "python_public_skip": 1,
     "javascript_checks": 10,
     "dom_mock": "PASS",
     "localhost_chromium": "ENVIRONMENT_BLOCKED",
-    "real_device": "NOT_TESTED"
+    "real_device": "NOT_TESTED",
+    "local_independent_validation": "PASS_2026_10_23",
+    "sensor_expiry_status_test": "PASS",
+    "non_json_POST_rejected": "PASS"
   }
 }
