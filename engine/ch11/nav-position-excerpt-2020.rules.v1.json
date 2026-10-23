@@ -1,0 +1,823 @@
+{
+  "schema": "b737-classic-ch11-navigation-position-excerpt/1.0",
+  "record_id": "B737-CLASSIC-CDU-NAVPOSITION-2020-11.31.7-PLUS",
+  "source": {
+    "origin": "user_shared_excerpt",
+    "title": "737 Flight Crew Operations Manual — Flight Management System Operation",
+    "manual_family": "D6-27370-300/400/500-SHI",
+    "printed_revision_date": "2020-12-15",
+    "printed_folios_explicit": [
+      "11.31.7",
+      "11.31.8",
+      "11.31.9",
+      "11.31.10"
+    ],
+    "source_sha256": "51070db4b1b479e906f9a2ac7a698e6165cca36137f869bbd88027725aadf294",
+    "source_filename": "Pasted text.txt",
+    "source_type": "pasted_text_not_source_pdf",
+    "copyright_note": "Source text not reproduced in this public repository; rules are independently paraphrased summaries."
+  },
+  "quality": {
+    "status": "SOURCE_TEXT_INGESTED_EFFECTIVITY_PENDING",
+    "markers_lost": true,
+    "foliation_end_incomplete": true,
+    "rendered_cdu_images_unreliable": true,
+    "installed_aircraft_variant": "EP-FSI_CONFIG_NOT_VERIFIED_BY_THIS_EXCERPT",
+    "caveats": [
+      "Alternative GPS/non-GPS paragraphs are not simultaneous universal rules.",
+      "Alternative CDU page references are effectivity-dependent.",
+      "The rendered MAINT BIT/INIT-REF index specimen is garbled in the paste and must not be reconstructed from its characters.",
+      "Final portion lacks a visible printed folio footer; source folio must be reconciled against original PDF before acceptance.",
+      "Technical requirements are not evidence of implemented runtime navigation or live sensor input."
+    ]
+  },
+  "links": {
+    "domains": [
+      "FMC_POSITION",
+      "IRS",
+      "GPS_OPTIONAL",
+      "DME",
+      "VOR",
+      "LOC",
+      "CDU_POS_REF",
+      "CDU_NAV_STATUS",
+      "CDU_POS_SHIFT",
+      "CDU_RTE_LEGS",
+      "CDU_TAKEOFF_REF",
+      "EHSI_MAP",
+      "LNAV_REFERENCE_ONLY"
+    ],
+    "existing_project": [
+      "engine/ch11/fmc-runtime-v2.js",
+      "engine/ch11/functional-contract.v2.json",
+      "engine/ch11/source-page-ledger.v2.json",
+      "cdu-standalone-v6/engine/cdu-engine.js",
+      "cdu-standalone-v6/ehsi/ehsi-engine.js"
+    ]
+  },
+  "rules": [
+    {
+      "id": "POS-SOURCE-IRS-RADIO",
+      "source": {
+        "printed_folio": "11.31.7",
+        "uploaded_text_lines": [
+          3,
+          5
+        ]
+      },
+      "area": "navigation_position",
+      "summary": "FMC position is estimated from inertial and radio sources for lateral steering along a selected active leg.",
+      "inputs": [
+        "irs_position",
+        "radio_fix",
+        "active_leg"
+      ],
+      "output": [
+        "fmc_estimated_position",
+        "lateral_path_reference"
+      ],
+      "variant": "NO_GPS_OR_GPS_NOT_INSTALLED",
+      "status": "EXTRACTED_OPTION_EFFECTIVITY_UNVERIFIED"
+    },
+    {
+      "id": "POS-SOURCE-GPS-IRS-RADIO",
+      "source": {
+        "printed_folio": "11.31.7",
+        "uploaded_text_lines": [
+          7,
+          9
+        ]
+      },
+      "area": "navigation_position",
+      "summary": "GPS is an additional position input when the option is available; steering uses the computed FMC position.",
+      "inputs": [
+        "gps_position",
+        "irs_position",
+        "radio_fix",
+        "active_leg"
+      ],
+      "output": [
+        "fmc_estimated_position",
+        "lateral_path_reference"
+      ],
+      "variant": "GPS_CAPABLE",
+      "status": "EXTRACTED_OPTION_EFFECTIVITY_UNVERIFIED"
+    },
+    {
+      "id": "GPS-UPDATE-REASONABLENESS",
+      "source": {
+        "printed_folio": "11.31.7",
+        "uploaded_text_lines": [
+          11,
+          12
+        ]
+      },
+      "area": "navigation_position",
+      "summary": "Stop updating FMC position from GPS when a GPS correction exceeds reasonableness criteria; resume only after it becomes reasonable.",
+      "inputs": [
+        "gps_fix",
+        "gps_update_deviation",
+        "reasonableness_gate"
+      ],
+      "output": [
+        "gps_update_suspended",
+        "gps_update_accepted"
+      ],
+      "variant": "GPS_CAPABLE",
+      "status": "EXTRACTED_OPTION_EFFECTIVITY_UNVERIFIED"
+    },
+    {
+      "id": "GROUND-IRS-ONLY",
+      "source": {
+        "printed_folio": "11.31.8",
+        "uploaded_text_lines": [
+          33,
+          33
+        ]
+      },
+      "area": "ground_update",
+      "summary": "Ground FMC position comes from IRS for the documented non-GPS configuration.",
+      "inputs": [
+        "ground_state",
+        "irs_position"
+      ],
+      "output": [
+        "fmc_estimated_position"
+      ],
+      "variant": "NO_GPS_OR_GPS_NOT_INSTALLED",
+      "status": "EXTRACTED_OPTION_EFFECTIVITY_UNVERIFIED"
+    },
+    {
+      "id": "GROUND-GPS-FALLBACK-IRS",
+      "source": {
+        "printed_folio": "11.31.8",
+        "uploaded_text_lines": [
+          35,
+          36
+        ]
+      },
+      "area": "ground_update",
+      "summary": "On ground, use GPS when valid, otherwise the IRS position, for GPS-configured aircraft.",
+      "inputs": [
+        "ground_state",
+        "gps_valid",
+        "gps_position",
+        "irs_position"
+      ],
+      "output": [
+        "fmc_estimated_position",
+        "selected_source"
+      ],
+      "variant": "GPS_CAPABLE",
+      "status": "EXTRACTED_OPTION_EFFECTIVITY_UNVERIFIED"
+    },
+    {
+      "id": "TAKEOFF-REF-RWY-THRESHOLD-MANUAL",
+      "source": {
+        "printed_folio": "11.31.8",
+        "uploaded_text_lines": [
+          37,
+          38
+        ]
+      },
+      "area": "takeoff_update",
+      "summary": "A ground pre-takeoff position update to the runway threshold can be initiated from TAKEOFF REF.",
+      "inputs": [
+        "runway_threshold_coordinates",
+        "crew_takeoff_ref_selection"
+      ],
+      "output": [
+        "fmc_position_update"
+      ],
+      "variant": "FMC_TAKEOFF_UPDATE_OPTION_UNRESOLVED",
+      "status": "EXTRACTED_OPTION_EFFECTIVITY_UNVERIFIED"
+    },
+    {
+      "id": "TAKEOFF-TOGA-AUTO-POS-UPDATE",
+      "source": {
+        "printed_folio": "11.31.8",
+        "uploaded_text_lines": [
+          40,
+          45
+        ]
+      },
+      "area": "takeoff_update",
+      "summary": "If TO/GA position update is installed, TO/GA may initialize the FMC position to the runway threshold automatically.",
+      "inputs": [
+        "toga_command",
+        "runway_threshold_coordinates",
+        "option_toga_position_update"
+      ],
+      "output": [
+        "fmc_position_update"
+      ],
+      "variant": "TOGA_POSITION_UPDATE_INSTALLED",
+      "status": "EXTRACTED_OPTION_EFFECTIVITY_UNVERIFIED"
+    },
+    {
+      "id": "INTERSECTION-DISPLACEMENT",
+      "source": {
+        "printed_folio": "11.31.8",
+        "uploaded_text_lines": [
+          44,
+          45
+        ]
+      },
+      "area": "takeoff_update",
+      "summary": "Intersection departures under TO/GA position update require threshold-to-intersection displacement to be entered on TAKEOFF REF.",
+      "inputs": [
+        "intersection_departure",
+        "intersection_displacement"
+      ],
+      "output": [
+        "corrected_takeoff_position"
+      ],
+      "variant": "TOGA_POSITION_UPDATE_INSTALLED",
+      "status": "EXTRACTED_OPTION_EFFECTIVITY_UNVERIFIED"
+    },
+    {
+      "id": "AIRBORNE-CONTINUOUS-FUSION-NO-GPS",
+      "source": {
+        "printed_folio": "11.31.8",
+        "uploaded_text_lines": [
+          48,
+          50
+        ]
+      },
+      "area": "inflight_update",
+      "summary": "In flight, apply ongoing IRS and radio updates when sensor measurements meet validity conditions.",
+      "inputs": [
+        "flight_state",
+        "irs_position",
+        "radio_fix"
+      ],
+      "output": [
+        "fmc_estimated_position"
+      ],
+      "variant": "NO_GPS_OR_GPS_NOT_INSTALLED",
+      "status": "EXTRACTED_OPTION_EFFECTIVITY_UNVERIFIED"
+    },
+    {
+      "id": "AIRBORNE-CONTINUOUS-FUSION-WITH-GPS",
+      "source": {
+        "printed_folio": "11.31.8",
+        "uploaded_text_lines": [
+          52,
+          54
+        ]
+      },
+      "area": "inflight_update",
+      "summary": "In flight, GPS, IRS and radio measurements may update the position depending on validity and installed equipment.",
+      "inputs": [
+        "flight_state",
+        "gps_position",
+        "irs_position",
+        "radio_fix"
+      ],
+      "output": [
+        "fmc_estimated_position"
+      ],
+      "variant": "GPS_CAPABLE",
+      "status": "EXTRACTED_OPTION_EFFECTIVITY_UNVERIFIED"
+    },
+    {
+      "id": "ESTIMATE-NOT-TRUTH",
+      "source": {
+        "printed_folio": "11.31.8",
+        "uploaded_text_lines": [
+          56,
+          59
+        ]
+      },
+      "area": "fusion_model",
+      "summary": "The computed FMC position is an estimate whose quality depends on source accuracy, and must be separate from simulation truth.",
+      "inputs": [
+        "navigation_sensor_positions",
+        "sensor_quality"
+      ],
+      "output": [
+        "fmc_estimated_position",
+        "position_quality"
+      ],
+      "variant": "ALL_DOCUMENTED_CONFIGS",
+      "status": "EXTRACTED_NOT_IMPLEMENTED"
+    },
+    {
+      "id": "UPDATE-PRIORITY-ORDER",
+      "source": {
+        "printed_folio": "11.31.8",
+        "uploaded_text_lines": [
+          60,
+          67
+        ]
+      },
+      "area": "source_priority",
+      "summary": "Where GPS/radio updating is supported, source priority is GPS; two or more DME; colocated VOR/DME; colocated localizer/DME; localizer.",
+      "inputs": [
+        "source_validity",
+        "gps",
+        "dme_pair",
+        "vor_dme",
+        "loc_dme",
+        "loc"
+      ],
+      "output": [
+        "preferred_radio_position_source"
+      ],
+      "variant": "SOURCE_PRIORITY_CONFIG_EFFECTIVITY_UNRESOLVED",
+      "status": "EXTRACTED_OPTION_EFFECTIVITY_UNVERIFIED"
+    },
+    {
+      "id": "NAV-AID-DISPLAY-NAV-STATUS",
+      "source": {
+        "printed_folio": "11.31.9",
+        "uploaded_text_lines": [
+          76,
+          77
+        ]
+      },
+      "area": "cdu_indications",
+      "summary": "One option displays tuned navaid identifiers and frequencies on NAV STATUS page 1/2.",
+      "inputs": [
+        "tuned_navaids"
+      ],
+      "output": [
+        "nav_status_page_1_2"
+      ],
+      "variant": "OPTION_NAV_STATUS_DISPLAY",
+      "status": "EXTRACTED_OPTION_EFFECTIVITY_UNVERIFIED"
+    },
+    {
+      "id": "NAV-AID-DISPLAY-PROG-POS-SHIFT",
+      "source": {
+        "printed_folio": "11.31.9",
+        "uploaded_text_lines": [
+          79,
+          80
+        ]
+      },
+      "area": "cdu_indications",
+      "summary": "An alternate option displays tuned navaid identifiers/frequencies on PROGRESS and POS SHIFT.",
+      "inputs": [
+        "tuned_navaids"
+      ],
+      "output": [
+        "progress_page",
+        "pos_shift_page"
+      ],
+      "variant": "OPTION_PROGRESS_POS_SHIFT_DISPLAY",
+      "status": "EXTRACTED_OPTION_EFFECTIVITY_UNVERIFIED"
+    },
+    {
+      "id": "GPS-PRIMARY-FALLBACK",
+      "source": {
+        "printed_folio": "11.31.9",
+        "uploaded_text_lines": [
+          82,
+          83
+        ]
+      },
+      "area": "source_priority",
+      "summary": "For GPS-equipped configurations prefer acceptable GPS updates; when unavailable, fall back to radio or IRS.",
+      "inputs": [
+        "gps_valid",
+        "radio_available",
+        "irs_available"
+      ],
+      "output": [
+        "selected_position_source"
+      ],
+      "variant": "GPS_CAPABLE",
+      "status": "EXTRACTED_OPTION_EFFECTIVITY_UNVERIFIED"
+    },
+    {
+      "id": "AUTO-DME-STATION-QUALITY",
+      "source": {
+        "printed_folio": "11.31.9",
+        "uploaded_text_lines": [
+          85,
+          88
+        ]
+      },
+      "area": "radio_autotune",
+      "summary": "Automatic DME tuning selects stations for useful signal geometry/strength; a two-range intersection is used for radio positioning.",
+      "inputs": [
+        "dme_station_catalog",
+        "station_geometry",
+        "received_signal_quality",
+        "auto_tune"
+      ],
+      "output": [
+        "auto_tune_candidates",
+        "radio_fix"
+      ],
+      "variant": "AUTO_DME_AVAILABLE",
+      "status": "EXTRACTED_OPTION_EFFECTIVITY_UNVERIFIED"
+    },
+    {
+      "id": "DUAL-FREQ-SCANNING",
+      "source": {
+        "printed_folio": "11.31.9",
+        "uploaded_text_lines": [
+          89,
+          93
+        ]
+      },
+      "area": "radio_autotune",
+      "summary": "A dual-frequency scanning configuration can auto-select stations, subject to a required flight-plan station.",
+      "inputs": [
+        "dual_dme",
+        "flight_plan_required_navaid",
+        "signal_geometry"
+      ],
+      "output": [
+        "auto_tune_targets"
+      ],
+      "variant": "DUAL_DME_SCAN_OPTION",
+      "status": "EXTRACTED_OPTION_EFFECTIVITY_UNVERIFIED"
+    },
+    {
+      "id": "DME-AGILITY-TUNING",
+      "source": {
+        "printed_folio": "11.31.9",
+        "uploaded_text_lines": [
+          95,
+          98
+        ]
+      },
+      "area": "radio_autotune",
+      "summary": "On configurations supporting agility tuning, a single radio may alternate between two DME stations when needed.",
+      "inputs": [
+        "single_dme_available",
+        "two_dme_candidates"
+      ],
+      "output": [
+        "alternate_station_tuning"
+      ],
+      "variant": "AGILITY_TUNING_CAPABLE",
+      "status": "EXTRACTED_OPTION_EFFECTIVITY_UNVERIFIED"
+    },
+    {
+      "id": "AUTO-TUNE-PRIORITY",
+      "source": {
+        "printed_folio": "11.31.9",
+        "uploaded_text_lines": [
+          95,
+          102
+        ]
+      },
+      "area": "radio_autotune",
+      "summary": "Prefer different DME-capable stations; a single VOR/DME pair has the lowest described priority.",
+      "inputs": [
+        "available_dme_stations",
+        "geometry"
+      ],
+      "output": [
+        "tuning_mode"
+      ],
+      "variant": "AUTO_DME_AVAILABLE",
+      "status": "EXTRACTED_OPTION_EFFECTIVITY_UNVERIFIED"
+    },
+    {
+      "id": "VOR-BEARING-25NM-LIMIT",
+      "source": {
+        "printed_folio": "11.31.9",
+        "uploaded_text_lines": [
+          99,
+          103
+        ]
+      },
+      "area": "radio_update",
+      "summary": "VOR bearing information cannot be used for FMC position updates beyond the stated 25 NM limit.",
+      "inputs": [
+        "vor_distance_nm",
+        "vor_bearing"
+      ],
+      "output": [
+        "vor_update_eligible"
+      ],
+      "variant": "VOR_UPDATING_INSTALLED",
+      "status": "EXTRACTED_OPTION_EFFECTIVITY_UNVERIFIED"
+    },
+    {
+      "id": "UNRELIABLE-RADIO-REJECT-1080",
+      "source": {
+        "printed_folio": "11.31.9/11.31.10",
+        "uploaded_text_lines": [
+          105,
+          119
+        ]
+      },
+      "area": "radio_autotune",
+      "summary": "When automatic tuning rejects an unreliable navigation radio, the indicated auto frequency may become 108.0.",
+      "inputs": [
+        "radio_reliability",
+        "auto_tune_mode"
+      ],
+      "output": [
+        "radio_deselected",
+        "display_frequency_mhz"
+      ],
+      "variant": "AUTO_TUNE_VARIANT_EFFECTIVITY_UNRESOLVED",
+      "status": "EXTRACTED_OPTION_EFFECTIVITY_UNVERIFIED"
+    },
+    {
+      "id": "MANUAL-RADIO-UPDATES",
+      "source": {
+        "printed_folio": "11.31.10",
+        "uploaded_text_lines": [
+          121,
+          123
+        ]
+      },
+      "area": "manual_tune",
+      "summary": "Manual tuned DME or VOR/DME can supply position updates only if updating requirements are met.",
+      "inputs": [
+        "manual_tuned_station",
+        "signal_quality",
+        "position_update_criteria"
+      ],
+      "output": [
+        "radio_update_eligible"
+      ],
+      "variant": "RADIO_MANUAL_MODE",
+      "status": "EXTRACTED_OPTION_EFFECTIVITY_UNVERIFIED"
+    },
+    {
+      "id": "ILS-FREQ-MANUAL-ASSOCIATED-DME",
+      "source": {
+        "printed_folio": "11.31.10",
+        "uploaded_text_lines": [
+          123,
+          124
+        ]
+      },
+      "area": "manual_tune",
+      "summary": "ILS frequencies require manual tuning in this configuration; associated DME may be tuned with it.",
+      "inputs": [
+        "manual_ils_frequency",
+        "associated_dme"
+      ],
+      "output": [
+        "localizer_source",
+        "dme_source"
+      ],
+      "variant": "RADIO_MANUAL_MODE",
+      "status": "EXTRACTED_OPTION_EFFECTIVITY_UNVERIFIED"
+    },
+    {
+      "id": "DME-DME-PREFERRED-ACCURACY",
+      "source": {
+        "printed_folio": "11.31.10",
+        "uploaded_text_lines": [
+          126,
+          130
+        ]
+      },
+      "area": "radio_position_accuracy",
+      "summary": "Favor automatically selected DME/DME geometry over VOR-bearing-derived fixes because bearing errors can reduce accuracy.",
+      "inputs": [
+        "dme_pairs",
+        "geometry_score",
+        "vor_bearing_quality"
+      ],
+      "output": [
+        "radio_fix_quality"
+      ],
+      "variant": "AUTO_DME_AVAILABLE",
+      "status": "EXTRACTED_OPTION_EFFECTIVITY_UNVERIFIED"
+    },
+    {
+      "id": "NAVAID-INHIBIT",
+      "source": {
+        "printed_folio": "11.31.10",
+        "uploaded_text_lines": [
+          129,
+          131
+        ]
+      },
+      "area": "radio_filtering",
+      "summary": "Crew can inhibit the VOR bearing component or DME component of a designated station.",
+      "inputs": [
+        "crew_inhibit_station",
+        "inhibited_component"
+      ],
+      "output": [
+        "eligible_radio_measurements"
+      ],
+      "variant": "INHIBIT_OPTION_UNCONFIRMED",
+      "status": "EXTRACTED_OPTION_EFFECTIVITY_UNVERIFIED"
+    },
+    {
+      "id": "DME-UNAVAILABLE-IRS-NAV-ONLY",
+      "source": {
+        "printed_folio": "11.31.10",
+        "uploaded_text_lines": [
+          132,
+          135
+        ]
+      },
+      "area": "degraded_navigation",
+      "summary": "When DME failures or insufficient DME prevent adequate updating, FMC navigation may revert to IRS-only updating.",
+      "inputs": [
+        "dme_available",
+        "irs_available"
+      ],
+      "output": [
+        "nav_only_irs",
+        "selected_position_source"
+      ],
+      "variant": "RADIO_UPDATING_CONFIG",
+      "status": "EXTRACTED_OPTION_EFFECTIVITY_UNVERIFIED"
+    },
+    {
+      "id": "ILS-LOCALIZER-UPDATING",
+      "source": {
+        "printed_folio": "11.31.10",
+        "uploaded_text_lines": [
+          132,
+          135
+        ]
+      },
+      "area": "approach_navigation",
+      "summary": "VHF navigation receivers contribute localizer information during an ILS approach and remain available for crew monitoring.",
+      "inputs": [
+        "ils_approach_selected",
+        "localizer_valid"
+      ],
+      "output": [
+        "approach_localizer_update",
+        "monitoring_information"
+      ],
+      "variant": "ILS_UPDATE_INSTALLED",
+      "status": "EXTRACTED_OPTION_EFFECTIVITY_UNVERIFIED"
+    },
+    {
+      "id": "UNRELIABLE-NAVAID-REASONABLENESS",
+      "source": {
+        "printed_folio": "11.31.10",
+        "uploaded_text_lines": [
+          137,
+          155
+        ]
+      },
+      "area": "radio_sanity",
+      "summary": "Reasonableness filtering rejects invalid navaid measurements but is not infallible; a bad radio update after takeoff can produce an apparent navigation shift.",
+      "inputs": [
+        "radio_measurement",
+        "innovation_check",
+        "flight_phase"
+      ],
+      "output": [
+        "radio_fix_accepted",
+        "position_discrepancy_event"
+      ],
+      "variant": "ALL_DOCUMENTED_CONFIGS",
+      "status": "EXTRACTED_NOT_IMPLEMENTED"
+    },
+    {
+      "id": "POST-TAKEOFF-MAP-SHIFT",
+      "source": {
+        "printed_folio": "11.31.10",
+        "uploaded_text_lines": [
+          138,
+          155
+        ]
+      },
+      "area": "map_shift",
+      "summary": "A misleading radio correction after takeoff may cause a sudden desired-track/runway-symbol movement after LNAV engagement.",
+      "inputs": [
+        "radio_position_jump",
+        "fmc_position_delta",
+        "lnav_state"
+      ],
+      "output": [
+        "ehsi_map_shift_event"
+      ],
+      "variant": "ALL_DOCUMENTED_CONFIGS",
+      "status": "EXTRACTED_NOT_IMPLEMENTED"
+    },
+    {
+      "id": "MAP-SHIFT-2D-SAFETY",
+      "source": {
+        "printed_folio": "CONTINUATION_AFTER_11.31.10",
+        "uploaded_text_lines": [
+          166,
+          174
+        ]
+      },
+      "area": "map_shift",
+      "summary": "EHSI display positions may shift along or across track when FMC positioning is inaccurate; both dimensions affect path monitoring.",
+      "inputs": [
+        "true_position",
+        "fmc_estimated_position",
+        "route_geometry"
+      ],
+      "output": [
+        "along_track_shift",
+        "cross_track_shift",
+        "ehsi_map_offset"
+      ],
+      "variant": "PAGE_FOLIO_RECHECK_REQUIRED",
+      "status": "EXTRACTED_OPTION_EFFECTIVITY_UNVERIFIED"
+    },
+    {
+      "id": "EHSI-MAP-CROSSCHECK",
+      "source": {
+        "printed_folio": "CONTINUATION_AFTER_11.31.10",
+        "uploaded_text_lines": [
+          176,
+          177
+        ]
+      },
+      "area": "map_shift",
+      "summary": "Crew can compare EHSI indications against independent ILS, VOR, DME and ADF indications to detect shifts.",
+      "inputs": [
+        "ehsi_position",
+        "ils",
+        "vor",
+        "dme",
+        "adf"
+      ],
+      "output": [
+        "crosscheck_discrepancy"
+      ],
+      "variant": "ALL_DOCUMENTED_CONFIGS",
+      "status": "EXTRACTED_NOT_IMPLEMENTED"
+    },
+    {
+      "id": "POS-REF-DISPLAYS-FMC-POS",
+      "source": {
+        "printed_folio": "CONTINUATION_AFTER_11.31.10",
+        "uploaded_text_lines": [
+          178,
+          182
+        ]
+      },
+      "area": "cdu_indications",
+      "summary": "A documented variant puts FMC present position on POS REF page 2/3, line 1.",
+      "inputs": [
+        "fmc_estimated_position"
+      ],
+      "output": [
+        "pos_ref_page_2_3_line_1"
+      ],
+      "variant": "OPTION_POS_REF_DISPLAY",
+      "status": "EXTRACTED_OPTION_EFFECTIVITY_UNVERIFIED"
+    },
+    {
+      "id": "ANP-FROM-SENSOR-QUALITY",
+      "source": {
+        "printed_folio": "CONTINUATION_AFTER_11.31.10",
+        "uploaded_text_lines": [
+          193,
+          199
+        ]
+      },
+      "area": "navigation_performance",
+      "summary": "ANP expresses a 95-percent confidence radius around the FMC estimated position; lower ANP indicates higher estimated confidence.",
+      "inputs": [
+        "fmc_position_covariance_or_quality"
+      ],
+      "output": [
+        "anp_radius"
+      ],
+      "variant": "ANP_SUPPORTED_CONFIGURATION",
+      "status": "EXTRACTED_OPTION_EFFECTIVITY_UNVERIFIED"
+    },
+    {
+      "id": "ANP-INDICATIONS",
+      "source": {
+        "printed_folio": "CONTINUATION_AFTER_11.31.10",
+        "uploaded_text_lines": [
+          193,
+          196
+        ]
+      },
+      "area": "cdu_indications",
+      "summary": "ANP is indicated on POS SHIFT page 3/3 and RTE LEGS in the documented configuration.",
+      "inputs": [
+        "anp_radius"
+      ],
+      "output": [
+        "pos_shift_page_3_3",
+        "rte_legs_anp"
+      ],
+      "variant": "ANP_SUPPORTED_CONFIGURATION",
+      "status": "EXTRACTED_OPTION_EFFECTIVITY_UNVERIFIED"
+    }
+  ],
+  "implementation_policy": {
+    "hardware_effectivity_required_before_activation": true,
+    "keep_true_aircraft_position_separate_from_fmc_position": true,
+    "no_external_sim_dependency": true,
+    "no_real_navigation_claims": true,
+    "no_runtime_code_activated_by_this_import": true,
+    "no_proprietary_manual_body_committed": true
+  },
+  "completeness": {
+    "paraphrased_requirements": 34,
+    "source_scope": "uploaded_extracted_text_only",
+    "not_full_manual_audit": true
+  }
+}

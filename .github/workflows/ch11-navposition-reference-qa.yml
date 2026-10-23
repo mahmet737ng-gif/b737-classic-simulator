@@ -1,0 +1,13 @@
+name: Chapter 11 Navigation Position source contract
+on:
+  push:
+  pull_request:
+jobs:
+  provenance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node engine/ch11/tests/nav-position-excerpt-2020.test.cjs
