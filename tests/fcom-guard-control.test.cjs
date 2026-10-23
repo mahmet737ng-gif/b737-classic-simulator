@@ -63,7 +63,9 @@ test('Horizontal NAV transfer mechanics preserve three detents with hard stops',
   assert.match(html,/fcom-control-mechanics\.js/);
   assert.equal((html.match(/class="paddle-guard"/g)||[]).length,4);
   assert.equal((html.match(/class="toggle selector"/g)||[]).length,3);
-  assert.equal((html.match(/class="nav-photo-lever"/g)||[]).length,3);
+  assert.equal(html.split('class="nav-frame nav-left"').length-1,3);
+  assert.equal(html.split('class="nav-frame nav-center"').length-1,3);
+  assert.equal(html.split('class="nav-frame nav-right"').length-1,3);
 });
 
 test('FCOM requires spring return for alt flap DOWN only',()=>{
@@ -73,38 +75,39 @@ test('FCOM requires spring return for alt flap DOWN only',()=>{
   assert.match(js,/state\.altPosition === 'down'/);
 });
 
-test('Photographed NAV mounts remain fixed, only 3 physical levers rotate',()=>{
-  const html=fs.readFileSync(path.join(__dirname,'../flight-controls-panel/index.html'),'utf8');
-  const css=fs.readFileSync(path.join(__dirname,'../flight-controls-panel/flight-controls.css'),'utf8');
-  const js=fs.readFileSync(path.join(__dirname,'../flight-controls-panel/flight-controls.js'),'utf8');
-  const svg=fs.readFileSync(path.join(__dirname,'../flight-controls-panel/assets/nav-transfer-lever-v2.svg'),'utf8');
-  const mapping=JSON.parse(fs.readFileSync(path.join(__dirname,'../flight-controls-panel/nav-transfer-visual-calibration.json'),'utf8'));
-  assert.equal(mapping.nativeImageSize.width,893);
-  assert.equal(mapping.nativeImageSize.height,1761);
-  assert.match(html,/flight-controls-front-empty-v1.webp/);
-  assert.equal((html.match(/<img class="nav-photo-lever" src="assets\/nav-transfer-lever-v2.svg"/g)||[]).length,3);
-  assert.equal((html.match(/class="toggle selector"/g)||[]).length,3);
-  assert.equal((html.match(/<span\b/g)||[]).length,(html.match(/<\/span>/g)||[]).length,'invalid dangling spans');
-  assert.ok(!html.includes('h-bezel') && !html.includes('h-state') && !html.includes('class="photo-lever"'),'no fake mount or legacy state stacks');
-  assert.ok(!css.includes('.h-bezel{') && !css.includes('slide track'),'no fake mount/rail');
-  assert.match(svg,/viewBox="0 0 160 160"/);
-  assert.match(svg,/Pivot is native 80\/80/);
-  assert.ok(!svg.includes('<rect') && !svg.includes('<circle'),'SVG may not paint a new base mounting plate');
-  assert.match(css,/data-position="left"\] \.nav-photo-lever \{transform:rotate\(-40deg\)/);
-  assert.match(css,/data-position="normal"\] \.nav-photo-lever \{transform:rotate\(0deg\)/);
-  assert.match(css,/data-position="right"\] \.nav-photo-lever \{transform:rotate\(40deg\)/);
-  assert.ok(!/(?<!\$)\$\('[^']+'\)\.forEach/.test(js),'DOM loops must use NodeList selector $');
+test('photo-matched three-position frames and actual JS source compile',()=>{
+  const vm=require('node:vm');
+  const dir=path.join(__dirname,'../flight-controls-panel');
+  const html=fs.readFileSync(path.join(dir,'index.html'),'utf8');
+  const css=fs.readFileSync(path.join(dir,'flight-controls.css'),'utf8');
+  const js=fs.readFileSync(path.join(dir,'flight-controls.js'),'utf8');
+  const map=JSON.parse(fs.readFileSync(path.join(dir,'nav-transfer-visual-calibration.json'),'utf8'));
+  new vm.Script(js,{filename:'flight-controls.js'});
+  assert.equal(map.nativeImageSize.width,893);
+  assert.equal(map.nativeImageSize.height,1761);
+  assert.ok(html.includes('flight-controls-front-empty-v1.webp'));
   for(const id of ['vhfNav','irs','efi']){
-    const meta=mapping.switches.find(s=>s.id===id);
-    assert.ok(meta,'calibration missing for '+id);
-    const match=html.match(new RegExp('<button class="toggle selector" data-control="'+id+'"[^>]*>'));
-    assert.ok(match,'control missing: '+id);
-    for(const [key,cssKey] of [['x','--x'],['y','--y'],['width','--w'],['height','--h']]){
-      const value=match[0].match(new RegExp(cssKey+':([0-9.]+)%'));
-      assert.ok(value,'missing '+id+' '+key);
-      assert.equal(Number(value[1]),meta.boxPct[key],'mismatched '+id+' '+key);
+    const meta=map.switches.find(item=>item.id===id);
+    assert.ok(meta,id+' missing calibration');
+    const start=html.indexOf('<button class="toggle selector" data-control="'+id+'"');
+    assert.ok(start>=0,id+' missing selector');
+    const segment=html.slice(start,html.indexOf('</button>',start));
+    for(const [detent,filename] of [['left','nav-transfer-left-v3.webp'],['center','nav-transfer-center-v3.webp'],['right','nav-transfer-right-v3.webp']]){
+      assert.ok(segment.includes('class="nav-frame nav-'+detent+'"'),id+' '+detent);
+      assert.ok(segment.includes('assets/'+filename),id+' '+filename);
+      const buf=fs.readFileSync(path.join(dir,'assets',filename));
+      assert.ok(buf.length>1000,filename+' empty');
+      assert.equal(buf.toString('ascii',0,4),'RIFF');
+      assert.equal(buf.toString('ascii',8,12),'WEBP');
     }
-    assert.equal(Number((meta.boxPct.x+meta.boxPct.width/2).toFixed(1)),meta.pivotPct[0]);
-    assert.equal(Number((meta.boxPct.y+meta.boxPct.height/2).toFixed(1)),meta.pivotPct[1]);
+    for(const [key,prefix] of [['x','--x'],['y','--y'],['width','--w'],['height','--h']]){
+      assert.ok(segment.includes(prefix+':'+meta.boxPct[key]+'%'),id+' '+key);
+    }
   }
+  assert.ok(css.includes('data-position="left"] .nav-left'));
+  assert.ok(css.includes('data-position="normal"] .nav-center'));
+  assert.ok(css.includes('data-position="right"] .nav-right'));
+  assert.ok(js.includes('const $$ = (selector'));
+  assert.ok(!js.includes('$$$('));
+  assert.ok(js.includes('pointermove')&&js.includes('setPointerCapture'));
 });

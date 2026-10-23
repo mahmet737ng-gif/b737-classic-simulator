@@ -1,6 +1,6 @@
 (() => {
   const $ = (selector, root = document) => root.querySelector(selector);
-  const $ = (selector, root = document) => [...root.querySelectorAll(selector)];
+  const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
   const mechanics = window.B737ControlMechanics;
   if (!mechanics) throw new Error('FCOM control mechanics must load before the panel');
   const guardedIds = ['flightA', 'flightB', 'spoilerA', 'spoilerB'];
@@ -59,7 +59,7 @@
   }
 
   function render(message = '') {
-    $$$('[data-control]').forEach(control => {
+    $$('[data-control]').forEach(control => {
       const key = control.dataset.control;
       const value = key === 'yawDamper' ? (state.yawDamper ? 'on' : 'off') : state[key];
       control.dataset.position = value;
@@ -83,7 +83,7 @@
     $('.arm-switch').setAttribute('aria-pressed', String(state.altArmed));
 
     const lights = effectiveLights();
-    $$$('[data-light]').forEach(lamp => {
+    $$('[data-light]').forEach(lamp => {
       const lit = Boolean(lights[lamp.dataset.light]);
       lamp.classList.toggle('lit', lit);
       lamp.setAttribute('aria-pressed', String(lit));
@@ -138,48 +138,68 @@
     });
   });
 
+  // User-approved three-frame switch. The bezel stays at its fixed panel pivot.
   $$('.selector').forEach(control => {
-    const id=control.dataset.control;
-    let start=null, skipClick=false;
+    const id = control.dataset.control;
+    const positions = mechanics.horizontal[id];
+    let drag = null;
     function setPosition(value) {
+      if(value===state[id]) return;
       const result=mechanics.horizontalTransition(id,state[id],'choose',value);
-      if (!result.ok) return;
+      if(!result.ok) return;
       state[id]=result.value;
-      render(id.toUpperCase() + ' — ' + labels[id][result.value]);
+      render(id.toUpperCase()+' — '+labels[id][result.value]);
     }
-    function positionFromX(clientX) {
+    function tapDetent(x) {
       const rect=control.getBoundingClientRect();
-      const ratio=(clientX-rect.left)/rect.width;
-      return ratio < .36 ? 'left' : ratio > .64 ? 'right' : 'normal';
+      const u=(x-rect.left)/rect.width;
+      return u<1/3 ? 'left' : u>2/3 ? 'right' : 'normal';
     }
-    control.addEventListener('pointerdown', event => { start={x:event.clientX, y:event.clientY}; skipClick=false; });
-    control.addEventListener('pointerup', event => {
-      if (!start) return;
-      const dx=event.clientX-start.x;
-      if (Math.abs(dx)>12) {
-        const result=mechanics.horizontalTransition(id,state[id],'step',dx>0?1:-1);
-        if (result.ok) setPosition(result.value);
-        skipClick=true;
+    control.addEventListener('pointerdown',event=>{
+      if(event.button!==undefined && event.button!==0) return;
+      drag={pointerId:event.pointerId,startX:event.clientX,startPosition:positions.indexOf(state[id])};
+      control.setPointerCapture?.(event.pointerId);
+    });
+    control.addEventListener('pointermove',event=>{
+      if(!drag || drag.pointerId!==event.pointerId) return;
+      const length=control.getBoundingClientRect().width;
+      const step=Math.round((event.clientX-drag.startX)/Math.max(15,length*.28));
+      setPosition(positions[Math.max(0,Math.min(2,drag.startPosition+step))]);
+    });
+    control.addEventListener('pointerup',event=>{
+      if(!drag || drag.pointerId!==event.pointerId) return;
+      const dx=event.clientX-drag.startX;
+      if(Math.abs(dx)<10) setPosition(tapDetent(event.clientX));
+      else {
+        const length=control.getBoundingClientRect().width;
+        const step=Math.round(dx/Math.max(15,length*.28)) || Math.sign(dx);
+        setPosition(positions[Math.max(0,Math.min(2,drag.startPosition+step))]);
       }
-      start=null;
+      drag=null;
+      if(control.hasPointerCapture?.(event.pointerId)) control.releasePointerCapture(event.pointerId);
     });
-    control.addEventListener('pointercancel',()=>{start=null;});
-    control.addEventListener('click',event=>{
-      if (skipClick) { skipClick=false; return; }
-      setPosition(positionFromX(event.clientX));
-    });
+    control.addEventListener('pointercancel',()=>{drag=null;});
+    control.addEventListener('lostpointercapture',()=>{drag=null;});
     control.addEventListener('keydown',event=>{
-      if (!['ArrowLeft','ArrowRight','Home'].includes(event.key)) return;
+      if(!['ArrowLeft','ArrowRight','Home','End'].includes(event.key)) return;
       event.preventDefault();
-      const result=event.key === 'Home'
-        ? mechanics.horizontalTransition(id,state[id],'choose','normal')
-        : mechanics.horizontalTransition(id,state[id],'step',event.key==='ArrowRight'?1:-1);
-      if (result.ok) setPosition(result.value);
+      if(event.key==='Home') {setPosition('normal');return;}
+      if(event.key==='End') {setPosition('right');return;}
+      const result=mechanics.horizontalTransition(id,state[id],'step',event.key==='ArrowLeft'?-1:1);
+      if(result.ok) setPosition(result.value);
+    });
+    control.addEventListener('click',event=>{
+      // Genuine pointer clicks were already handled on pointerup; synthetic keyboard
+      // and assistive input may report detail=0.
+      if(event.detail===0 && !drag){
+        const result=mechanics.horizontalTransition(id,state[id],'step',1);
+        if(result.ok) setPosition(result.value);
+      }
     });
     control.addEventListener('wheel',event=>{
       event.preventDefault();
       const result=mechanics.horizontalTransition(id,state[id],'step',event.deltaY>0?1:-1);
-      if(result.ok)setPosition(result.value);
+      if(result.ok) setPosition(result.value);
     },{passive:false});
   });
 
@@ -222,7 +242,7 @@
   altPosition.addEventListener('pointercancel', releaseAlt);
   altPosition.addEventListener('pointerleave', event => { if (event.buttons) releaseAlt(); });
 
-  $$$('[data-light]').forEach(lamp => {
+  $$('[data-light]').forEach(lamp => {
     lamp.addEventListener('click', () => {
       const key = lamp.dataset.light;
       state.faults[key] = !state.faults[key];

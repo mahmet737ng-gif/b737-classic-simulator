@@ -1,6 +1,6 @@
 {
-  "schema": "b737.photo-matched-horizontal-selector/v2",
-  "status": "implemented-ci-tested-pending-owner-pixel-approval",
+  "schema": "b737.photo-matched-horizontal-selector/v3",
+  "status": "photographic-three-frame-mounted-awaiting-user-visual-approval",
   "approvedOriginalPanel": "flight-controls-panel/assets/flight-controls-front-empty-v1.webp",
   "nativeImageSize": {
     "width": 893,
@@ -13,21 +13,22 @@
   ],
   "sourceRule": "Keep exact original panel photograph and visible chrome nut; do not draw a replacement circular mount or rail.",
   "mechanism": {
-    "type": "fixed-photo-bezel-with-articulated-lever",
-    "rotationPlane": "left-center-right lateral",
-    "pivot": "native source photographed socket center (lever asset 80/80)",
+    "type": "three-approved-photographic-states",
     "states": [
       "left",
       "normal",
       "right"
     ],
-    "leverOnlyOverlay": true,
-    "assets": [
-      "flight-controls-panel/assets/nav-transfer-lever-v2.svg"
-    ],
-    "visualSource": "photo original fixed socket + approved white metal toggle family; white grip is drawn to match family because source image is a photograph with levers removed",
-    "animation": "single transparent lever rotates smoothly -40/0/+40 degrees about the photographed pivot; no fade, no mount movement",
-    "interaction": "existing FCOM-verified choose/step detents unchanged"
+    "photos": {
+      "left": "assets/nav-transfer-left-v3.webp",
+      "normal": "assets/nav-transfer-center-v3.webp",
+      "right": "assets/nav-transfer-right-v3.webp"
+    },
+    "source": "User center image and user-approved left/right renders",
+    "canvas": "aligned transparent 220x220 WebP per state",
+    "pivot": "fixed panel socket positions from calibrated VHF NAV IRS EFI buttons",
+    "animation": "140ms crossfade between authentic left center right photos",
+    "control": "horizontal pointer drag with three snap detents; tap mousewheel keyboard"
   },
   "switches": [
     {
@@ -84,5 +85,5 @@
     "Original two-position toggle assets and guard logic are unchanged.",
     "Test on iPad for touch taps and gestures; screen/photo alignment must still be approved by owner."
   ],
-  "verification": "Static node CI checks + project source-image coordinate calibration. Pixel-perfect screenshot/owner approval not yet established."
+  "verification": "Node syntax/FCOM regression check and GitHub Pages deploy; device screenshot user sign-off pending."
 }
