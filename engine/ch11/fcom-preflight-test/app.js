@@ -16,47 +16,69 @@
   else if(c.off_state_plate){const img=document.createElement('img');img.src='../'+c.off_state_plate;img.alt='';lamp.appendChild(img);lamp.classList.add('offplate');}
   $('annunciators').appendChild(lamp);lamps[c.label]=lamp;
  }
- function aligned(left,right){let a=String(left??'').slice(0,12),b=String(right??'').slice(0,11);
-  return (a.padEnd(24-b.length,' ')+b).slice(0,24);
+ // Source-photo pixel coordinates — explicitly derived from the locked LSK map.
+ // LSK centers on the original 1199×1312 artwork: 176, 250, 326, 400, 476, 552.
+ const KEY_CENTERS=Array.from({length:6},(_,i)=>{
+  const c=map.controls.find(x=>x.id==='CDU_CAPT_LSK_L'+(i+1));
+  if(!c)throw Error('LOCKED LSK MAP INCOMPLETE');
+  return c.center_px[1];
+ });
+ const LCD_TOP=1312*0.0745,LCD_HEIGHT=1312*0.375;
+ function addRow(left,right,kind,y){
+  const row=document.createElement('div');
+  row.className='fmc-line '+(kind||'');
+  row.style.top=((y-LCD_TOP)/LCD_HEIGHT*100).toFixed(4)+'%';
+  for(const [side,value] of [['left',left],['right',right]]){
+   if(value===null||value===undefined||String(value)==='')continue;
+   const el=document.createElement('span');
+   el.className='fmc-cell fmc-'+side;
+   el.textContent=String(value);
+   row.appendChild(el);
+  }
+  $('fmc-lines').appendChild(row);
  }
- function addRow(text,css){const el=document.createElement('div');el.className='fmc-line'+(css?' '+css:'');el.textContent=String(text);$('fmc-lines').appendChild(el);}
- // Measure the *actual* approved CDU glyphs (not an assumed monospace width).
- // 24 columns / 14 rows always fit inside the rounded screen, including after
- // asynchronous font loading and responsive viewport changes.
+ // No padded spaces: the Boeing screen-font's advance widths are not a
+ // substitute for two independently positioned FCOM text columns.
  function fitScreenText(){
   const screen=$('fmc-lines');
   if(!screen||!screen.clientWidth||!screen.clientHeight||!screen.children.length)return;
-  const availableWidth=screen.clientWidth;
-  const lineHeight=screen.clientHeight/14;
-  const canvas=document.createElement('canvas');
-  const ctx=canvas.getContext('2d');
-  if(!ctx)return;
-  let px=Math.min(lineHeight*0.90,availableWidth/(24*0.70));
-  for(let n=0;n<6;n++){
+  const ctx=document.createElement('canvas').getContext('2d');
+  const available=screen.clientWidth;
+  const lskPitch=(KEY_CENTERS[5]-KEY_CENTERS[0])/5/LCD_HEIGHT*screen.clientHeight;
+  let px=Math.min(32,available*0.055,lskPitch*.47);
+  for(let n=0;n<12;n++){
    screen.style.fontSize=px.toFixed(3)+'px';
-   let widest=0,tallest=0;
-   for(const row of screen.children){
-    const computed=getComputedStyle(row);
-    ctx.font=computed.font||computed.fontSize+' '+computed.fontFamily;
+   let fit=1;
+   for(const cell of screen.querySelectorAll('.fmc-cell')){
+    const cs=getComputedStyle(cell);
     const range=document.createRange();
-    range.selectNodeContents(row);
-    // Range uses the actual laid-out text, including fallback glyphs and
-    // the browser's CDU font rendering; canvas provides an independent check.
-    widest=Math.max(widest,ctx.measureText(row.textContent||'').width,range.getBoundingClientRect().width);
-    tallest=Math.max(tallest,row.getBoundingClientRect().height);
+    range.selectNodeContents(cell);
+    if(ctx)ctx.font=cs.font||cs.fontSize+' '+cs.fontFamily;
+    const width=Math.max(range.getBoundingClientRect().width,ctx?ctx.measureText(cell.textContent||'').width:0);
+    const row=cell.parentElement;
+    // FCOM heading uses 70% of LCD, paired data each has 44%.
+    const ratio=row.classList.contains('heading')?
+      (cell.classList.contains('fmc-left')?.70:.14):
+      (row.classList.contains('scratch')?.92:.44);
+    const maxWidth=available*ratio*.93;
+    if(width>maxWidth)fit=Math.min(fit,maxWidth/width);
+    const maxHeight=lskPitch*(row.classList.contains('fmc-small')?.32:.52);
+    const h=range.getBoundingClientRect().height;
+    if(h>maxHeight)fit=Math.min(fit,maxHeight/h);
    }
-   const widthFit=widest?availableWidth*0.965/widest:1;
-   const heightFit=tallest?lineHeight*0.94/tallest:1;
-   const fit=Math.min(1,widthFit,heightFit);
-   if(fit>=0.996)break;
-   px=Math.max(3,px*fit*0.99);
+   if(fit>=0.992)break;
+   px=Math.max(4,px*fit*.99);
   }
  }
  function render(){
   const v=logic.view(s,estimate);const container=$('fmc-lines');container.replaceChildren();
-  addRow(aligned(v.title,v.count),'heading');
-  for(const r of v.rows){addRow(aligned(r[0],r[2]),'fmc-small');addRow(aligned(r[1],r[3]),'');}
-  addRow(v.scratch);
+  addRow(v.title,v.count,'heading',119);
+  for(let i=0;i<6;i++){
+   const r=v.rows[i];
+   addRow(r[0],r[2],'fmc-small',KEY_CENTERS[i]-25);
+   addRow(r[1],r[3],'',KEY_CENTERS[i]);
+  }
+  addRow(v.scratch,'','scratch',576);
   fitScreenText();
   if(lamps.EXEC)lamps.EXEC.classList.toggle('active',Boolean(v.exec));
   if(lamps.MSG)lamps.MSG.classList.toggle('active',Boolean(s.message)&&s.message!=='ROUTE ACTIVE');
