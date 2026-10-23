@@ -71,6 +71,18 @@ class TestRouteEngine(unittest.TestCase):
         with self.assertRaises(NavError) as cm:NavigationEngine(self.path)
         self.assertEqual(cm.exception.code,'AIRAC_PROVENANCE')
         self.engine=NavigationEngine.__new__(NavigationEngine);self.engine.db=sqlite3.connect(':memory:');self.engine.geo=None
+    def test_position_reference_math(self):
+        req={'origin':'AAAA','destination':'BBBB','via':[{'type':'DCT','to':'FIXA'}]}
+        on=self.engine.position_reference(req,{'lat':0,'lon':0.5},1)
+        self.assertAlmostEqual(on['crossTrackNm'],0,delta=.005)
+        self.assertAlmostEqual(on['remainingAlongTrackNm'],30.02,delta=.05)
+        north=self.engine.position_reference(req,{'lat':0.1,'lon':0.5},1)
+        self.assertLess(north['crossTrackNm'],0)
+        self.assertFalse(north['lateralGuidanceValid'])
+        self.assertIsNone(north['autopilotCommand'])
+        with self.assertRaises(NavError):self.engine.position_reference(req,{'lat':99,'lon':0},1)
+        with self.assertRaises(NavError):self.engine.position_reference(req,{'lat':0,'lon':0},3)
+
     def test_empty_route(self):
         with self.assertRaises(NavError):self.engine.route({'origin':'AAAA','destination':'BBBB','via':[]})
 
