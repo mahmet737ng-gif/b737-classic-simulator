@@ -26,6 +26,8 @@ class Handler(Stage8Handler):
         length=self.headers.get('Content-Length','')
         if not length.isdecimal() or not 2<=int(length)<=8192:
             raise Stage8Error('Request JSON length invalid')
+        if self.headers.get('Content-Type','').split(';',1)[0].strip().lower()!='application/json':
+            raise Stage8Error('JSON content type required')
         v=json.loads(self.rfile.read(int(length)))
         if type(v) is not dict:raise Stage8Error('Expected JSON object')
         return v
@@ -40,7 +42,10 @@ class Handler(Stage8Handler):
         path=urlsplit(self.path).path
         if self.command=='GET' and path=='/api/stage10/status':
             return {'version':VERSION,'airac':'2610','private_plan_count':len(self.store.plans()),
-                    'telemetry_source_connected':any(v.bus.frame is not None for v in self.sessions.values()),
+                    'telemetry_source_connected':any(
+                        v.bus.frame is not None and v.bus.arrived_at is not None
+                        and 0 <= v.bus.clock()-v.bus.arrived_at <= v.bus.max_age_s
+                        for v in self.sessions.values()),
                     'real_simulator_bridge_connected':False,
                     'sensor_input_contract':'EXPLICIT_SIMULATOR_TELEMETRY_V1',
                     'active_sessions':len(self.sessions),'afds_connected':False,
