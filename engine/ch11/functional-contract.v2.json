@@ -1,0 +1,427 @@
+{
+  "schema": "b737-classic-ch11-functional-contract/2",
+  "source": "FCOM Sepehran B737CL Vol2 Ch11 D6-27370-300/400/500-SHI",
+  "manual_revision": "September 2024 (as printed; dates in source require review)",
+  "aircraft": "EP-FSI Boeing 737 Classic",
+  "effectivity": "VARIANT_AND_OPTION_GATED",
+  "status": "SOURCE_REVIEW_IN_PROGRESS_NOT_FULL_FMC",
+  "standalone_primary": true,
+  "external_sim_connections": "OPTIONAL",
+  "key_constraints": [
+    "No edits to approved CDU/EFIS artwork or hitboxes",
+    "No operational LNAV/VNAV or AFDS based on narrative-only leg data",
+    "No fabricated IRS/GPS signals",
+    "No unsafe automatic joining over route discontinuities",
+    "Never publish Boeing original text or tables in public repository"
+  ],
+  "rule_catalog": [
+    {
+      "rule_id": "CDU_LSK_TRANSFER",
+      "source": {
+        "printed_folio": "11.10.3",
+        "pdf_page": 1424
+      },
+      "domain": "cdu_controls",
+      "input_event": "LINE_SELECT",
+      "rule_intent": "Scratchpad <-> selected field; prompts and delete context",
+      "implementation": "implemented_initial",
+      "verification": "SOURCE_FOLIO_AND_PAGE_LOCATED_ENGINE_RULE_REQUIRES_OPTION_VARIANT_QA"
+    },
+    {
+      "rule_id": "CDU_FUNCTION_KEYS",
+      "source": {
+        "printed_folio": "11.10.5",
+        "pdf_page": 1426
+      },
+      "domain": "cdu_controls",
+      "input_event": "PAGE_KEY",
+      "rule_intent": "Page router selected by labelled function key",
+      "implementation": "implemented_initial",
+      "verification": "SOURCE_FOLIO_AND_PAGE_LOCATED_ENGINE_RULE_REQUIRES_OPTION_VARIANT_QA"
+    },
+    {
+      "rule_id": "CDU_EXEC_GATE",
+      "source": {
+        "printed_folio": "11.10.6",
+        "pdf_page": 1427
+      },
+      "domain": "transactions",
+      "input_event": "EXEC",
+      "rule_intent": "Pending eligible modifications committed only after activation when route entry",
+      "implementation": "implemented_v2",
+      "verification": "SOURCE_FOLIO_AND_PAGE_LOCATED_ENGINE_RULE_REQUIRES_OPTION_VARIANT_QA"
+    },
+    {
+      "rule_id": "CDU_KEY_SCRATCHPAD",
+      "source": {
+        "printed_folio": "11.10.7",
+        "pdf_page": 1428
+      },
+      "domain": "cdu_controls",
+      "input_event": "CHARACTER",
+      "rule_intent": "Alpha/numeric, slash, sign, delete and clear semantics",
+      "implementation": "implemented_v2",
+      "verification": "SOURCE_FOLIO_AND_PAGE_LOCATED_ENGINE_RULE_REQUIRES_OPTION_VARIANT_QA"
+    },
+    {
+      "rule_id": "CDU_PAGE_PROMPTS",
+      "source": {
+        "printed_folio": "11.10.9",
+        "pdf_page": 1430
+      },
+      "domain": "page_renderer",
+      "input_event": "RENDER",
+      "rule_intent": "Page title, mandatory boxes, optional dashes, arrows, scratchpad",
+      "implementation": "contract_ready",
+      "verification": "SOURCE_FOLIO_AND_PAGE_LOCATED_ENGINE_RULE_REQUIRES_OPTION_VARIANT_QA"
+    },
+    {
+      "rule_id": "FMC_SOURCE_SELECT",
+      "source": {
+        "printed_folio": "11.10.9",
+        "pdf_page": 1430
+      },
+      "domain": "fmc_electrical",
+      "input_event": "SOURCE_SELECTOR",
+      "rule_intent": "FMC source selection by explicitly installed architecture",
+      "implementation": "blocked_option_specific",
+      "verification": "SOURCE_FOLIO_AND_PAGE_LOCATED_ENGINE_RULE_REQUIRES_OPTION_VARIANT_QA"
+    },
+    {
+      "rule_id": "GPS_IRS_VOR_SYSTEMS",
+      "source": {
+        "printed_folio": "11.20.1",
+        "pdf_page": 1466
+      },
+      "domain": "navigation_sources",
+      "input_event": "SENSOR_UPDATE",
+      "rule_intent": "Separate sensor inputs, do not fabricate position from display labels",
+      "implementation": "contract_ready",
+      "verification": "SOURCE_FOLIO_AND_PAGE_LOCATED_ENGINE_RULE_REQUIRES_OPTION_VARIANT_QA"
+    },
+    {
+      "rule_id": "FMS_ARCHITECTURE",
+      "source": {
+        "printed_folio": "11.30.1",
+        "pdf_page": 1486
+      },
+      "domain": "fmc_network",
+      "input_event": "INITIALIZE",
+      "rule_intent": "FMC/CDU depends on installed options and sensor network",
+      "implementation": "contract_ready",
+      "verification": "SOURCE_FOLIO_AND_PAGE_LOCATED_ENGINE_RULE_REQUIRES_OPTION_VARIANT_QA"
+    },
+    {
+      "rule_id": "FMS_PREFLIGHT_REQUIREMENTS",
+      "source": {
+        "printed_folio": "11.31.1",
+        "pdf_page": 1490
+      },
+      "domain": "phase_and_preflight",
+      "input_event": "PREFLIGHT",
+      "rule_intent": "Initial position, route, performance and takeoff required",
+      "implementation": "implemented_v2",
+      "verification": "SOURCE_FOLIO_AND_PAGE_LOCATED_ENGINE_RULE_REQUIRES_OPTION_VARIANT_QA"
+    },
+    {
+      "rule_id": "FMS_PHASES",
+      "source": {
+        "printed_folio": "11.31.2",
+        "pdf_page": 1491
+      },
+      "domain": "phase_and_preflight",
+      "input_event": "PHASE_EVENT",
+      "rule_intent": "Preflight > takeoff > climb > cruise > descent > approach > flight complete",
+      "implementation": "implemented_v2_lab",
+      "verification": "SOURCE_FOLIO_AND_PAGE_LOCATED_ENGINE_RULE_REQUIRES_OPTION_VARIANT_QA"
+    },
+    {
+      "rule_id": "FMS_TRANSACTION_TERMS",
+      "source": {
+        "printed_folio": "11.31.2",
+        "pdf_page": 1491
+      },
+      "domain": "transactions",
+      "input_event": "ACTIVATE_ROUTE",
+      "rule_intent": "Activation two-step; route modification distinct from active data",
+      "implementation": "implemented_v2",
+      "verification": "SOURCE_FOLIO_AND_PAGE_LOCATED_ENGINE_RULE_REQUIRES_OPTION_VARIANT_QA"
+    },
+    {
+      "rule_id": "FMS_NAV_POSITION",
+      "source": {
+        "printed_folio": "11.31.7",
+        "pdf_page": 1496
+      },
+      "domain": "navigation_sources",
+      "input_event": "POSITION_UPDATE",
+      "rule_intent": "GPS/Radio/IRS selection requires validity and option gates",
+      "implementation": "blocked_option_specific",
+      "verification": "SOURCE_FOLIO_AND_PAGE_LOCATED_ENGINE_RULE_REQUIRES_OPTION_VARIANT_QA"
+    },
+    {
+      "rule_id": "FMS_LNAV",
+      "source": {
+        "printed_folio": "11.31.16",
+        "pdf_page": 1505
+      },
+      "domain": "lateral_guidance",
+      "input_event": "ACTIVATE_LNAV",
+      "rule_intent": "Requires verified procedural legs and sensor integrity",
+      "implementation": "blocked_source_data",
+      "verification": "SOURCE_FOLIO_AND_PAGE_LOCATED_ENGINE_RULE_REQUIRES_OPTION_VARIANT_QA"
+    },
+    {
+      "rule_id": "FMS_VNAV",
+      "source": {
+        "printed_folio": "11.31.23",
+        "pdf_page": 1512
+      },
+      "domain": "vertical_guidance",
+      "input_event": "ACTIVATE_VNAV",
+      "rule_intent": "Requires verified constraints and performance calculations",
+      "implementation": "blocked_source_data",
+      "verification": "SOURCE_FOLIO_AND_PAGE_LOCATED_ENGINE_RULE_REQUIRES_OPTION_VARIANT_QA"
+    },
+    {
+      "rule_id": "FMS_DATA_ENTRY",
+      "source": {
+        "printed_folio": "11.31.50",
+        "pdf_page": 1539
+      },
+      "domain": "data_entry",
+      "input_event": "VALIDATE",
+      "rule_intent": "Data type-dependent validation including altitude and speed",
+      "implementation": "contract_ready",
+      "verification": "SOURCE_FOLIO_AND_PAGE_LOCATED_ENGINE_RULE_REQUIRES_OPTION_VARIANT_QA"
+    },
+    {
+      "rule_id": "FMC_DATABASES",
+      "source": {
+        "printed_folio": "11.32.1",
+        "pdf_page": 1542
+      },
+      "domain": "navdb",
+      "input_event": "SELECT_SOURCE",
+      "rule_intent": "Separate active AIRAC source/validity, no automatic merging",
+      "implementation": "implemented_v2_gate",
+      "verification": "SOURCE_FOLIO_AND_PAGE_LOCATED_ENGINE_RULE_REQUIRES_OPTION_VARIANT_QA"
+    },
+    {
+      "rule_id": "FMC_THRUST",
+      "source": {
+        "printed_folio": "11.32.2",
+        "pdf_page": 1543
+      },
+      "domain": "performance",
+      "input_event": "N1_REQUEST",
+      "rule_intent": "Performance engine provides estimate independently, subject to variant",
+      "implementation": "interface_only",
+      "verification": "SOURCE_FOLIO_AND_PAGE_LOCATED_ENGINE_RULE_REQUIRES_OPTION_VARIANT_QA"
+    },
+    {
+      "rule_id": "FMC_FUEL_MONITOR",
+      "source": {
+        "printed_folio": "11.32.4",
+        "pdf_page": 1545
+      },
+      "domain": "performance",
+      "input_event": "FUEL_UPDATE",
+      "rule_intent": "Fuel summation input quality distinct from manual estimate",
+      "implementation": "interface_only",
+      "verification": "SOURCE_FOLIO_AND_PAGE_LOCATED_ENGINE_RULE_REQUIRES_OPTION_VARIANT_QA"
+    },
+    {
+      "rule_id": "FMC_FAILURE",
+      "source": {
+        "printed_folio": "11.32.6",
+        "pdf_page": 1547
+      },
+      "domain": "failure_manager",
+      "input_event": "FMC_FAILURE",
+      "rule_intent": "Power and selected installed FMC count affect CDU/source behaviour",
+      "implementation": "blocked_option_specific",
+      "verification": "SOURCE_FOLIO_AND_PAGE_LOCATED_ENGINE_RULE_REQUIRES_OPTION_VARIANT_QA"
+    },
+    {
+      "rule_id": "ACARS_LINK",
+      "source": {
+        "printed_folio": "11.33.1",
+        "pdf_page": 1550
+      },
+      "domain": "datalink",
+      "input_event": "ACARS_REQUEST",
+      "rule_intent": "Only if configured/installed",
+      "implementation": "disabled_without_option",
+      "verification": "SOURCE_FOLIO_AND_PAGE_LOCATED_ENGINE_RULE_REQUIRES_OPTION_VARIANT_QA"
+    },
+    {
+      "rule_id": "FMC_PREFLIGHT_PAGES",
+      "source": {
+        "printed_folio": "11.40.1",
+        "pdf_page": 1553
+      },
+      "domain": "page_registry",
+      "input_event": "PAGE_NAVIGATE",
+      "rule_intent": "Preflight page sequence and required fields",
+      "implementation": "contract_ready",
+      "verification": "SOURCE_FOLIO_AND_PAGE_LOCATED_ENGINE_RULE_REQUIRES_OPTION_VARIANT_QA"
+    },
+    {
+      "rule_id": "RTE_PAGE",
+      "source": {
+        "printed_folio": "11.40.22",
+        "pdf_page": 1574
+      },
+      "domain": "page_registry",
+      "input_event": "RTE_UPDATE",
+      "rule_intent": "Origin/destination/route and ACTIVATE transaction",
+      "implementation": "implemented_v2",
+      "verification": "SOURCE_FOLIO_AND_PAGE_LOCATED_ENGINE_RULE_REQUIRES_OPTION_VARIANT_QA"
+    },
+    {
+      "rule_id": "DEP_ARR_PAGE",
+      "source": {
+        "printed_folio": "11.40.32",
+        "pdf_page": 1584
+      },
+      "domain": "page_registry",
+      "input_event": "DEP_ARR_SELECT",
+      "rule_intent": "Preflight route context must be coherent across pages",
+      "implementation": "implemented_v2",
+      "verification": "SOURCE_FOLIO_AND_PAGE_LOCATED_ENGINE_RULE_REQUIRES_OPTION_VARIANT_QA"
+    },
+    {
+      "rule_id": "PERF_INIT_PAGE",
+      "source": {
+        "printed_folio": "11.40.37",
+        "pdf_page": 1589
+      },
+      "domain": "page_registry",
+      "input_event": "PERF_INIT",
+      "rule_intent": "ZFW/fuel/weight and cost index source-of-truth",
+      "implementation": "interface_only",
+      "verification": "SOURCE_FOLIO_AND_PAGE_LOCATED_ENGINE_RULE_REQUIRES_OPTION_VARIANT_QA"
+    },
+    {
+      "rule_id": "N1_LIMIT_PAGE",
+      "source": {
+        "printed_folio": "11.40.46",
+        "pdf_page": 1598
+      },
+      "domain": "performance",
+      "input_event": "N1_LIMIT",
+      "rule_intent": "Installed 20K EP-FSI rating policy from AFM/FCOM",
+      "implementation": "interface_only",
+      "verification": "SOURCE_FOLIO_AND_PAGE_LOCATED_ENGINE_RULE_REQUIRES_OPTION_VARIANT_QA"
+    },
+    {
+      "rule_id": "FMC_TAKEOFF_CLIMB",
+      "source": {
+        "printed_folio": "11.41.1",
+        "pdf_page": 1625
+      },
+      "domain": "phase_and_preflight",
+      "input_event": "TOGA",
+      "rule_intent": "Phase movement after verified aircraft event",
+      "implementation": "implemented_v2_lab",
+      "verification": "SOURCE_FOLIO_AND_PAGE_LOCATED_ENGINE_RULE_REQUIRES_OPTION_VARIANT_QA"
+    },
+    {
+      "rule_id": "RTE_LEGS_PAGE",
+      "source": {
+        "printed_folio": "11.41.9",
+        "pdf_page": 1633
+      },
+      "domain": "page_registry",
+      "input_event": "LEGS_PAGE",
+      "rule_intent": "Active or modified leg presentation and source restrictions",
+      "implementation": "contract_ready",
+      "verification": "SOURCE_FOLIO_AND_PAGE_LOCATED_ENGINE_RULE_REQUIRES_OPTION_VARIANT_QA"
+    },
+    {
+      "rule_id": "FMC_CRUISE",
+      "source": {
+        "printed_folio": "11.42.1",
+        "pdf_page": 1675
+      },
+      "domain": "phase_and_preflight",
+      "input_event": "TOP_OF_CLIMB",
+      "rule_intent": "Climb to cruise transition based on verified event",
+      "implementation": "implemented_v2_lab",
+      "verification": "SOURCE_FOLIO_AND_PAGE_LOCATED_ENGINE_RULE_REQUIRES_OPTION_VARIANT_QA"
+    },
+    {
+      "rule_id": "ROUTE_DISCONTINUITY",
+      "source": {
+        "printed_folio": "11.42.11",
+        "pdf_page": 1685
+      },
+      "domain": "flight_plan",
+      "input_event": "ROUTE_DISCONTINUITY",
+      "rule_intent": "Explicit crew action needed to join separated route segments",
+      "implementation": "implemented_v2_gate",
+      "verification": "SOURCE_FOLIO_AND_PAGE_LOCATED_ENGINE_RULE_REQUIRES_OPTION_VARIANT_QA"
+    },
+    {
+      "rule_id": "DISCO_RESOLUTION",
+      "source": {
+        "printed_folio": "11.42.12",
+        "pdf_page": 1686
+      },
+      "domain": "flight_plan",
+      "input_event": "RESOLVE_DISCO",
+      "rule_intent": "Crew LSK action is not automatic path geometry",
+      "implementation": "blocked_until_leg_verified",
+      "verification": "SOURCE_FOLIO_AND_PAGE_LOCATED_ENGINE_RULE_REQUIRES_OPTION_VARIANT_QA"
+    },
+    {
+      "rule_id": "FMC_DESCENT_APPROACH",
+      "source": {
+        "printed_folio": "11.43.1",
+        "pdf_page": 1755
+      },
+      "domain": "phase_and_preflight",
+      "input_event": "TOP_OF_DESCENT",
+      "rule_intent": "Descent and approach phases require verified condition",
+      "implementation": "implemented_v2_lab",
+      "verification": "SOURCE_FOLIO_AND_PAGE_LOCATED_ENGINE_RULE_REQUIRES_OPTION_VARIANT_QA"
+    },
+    {
+      "rule_id": "FMC_MESSAGES_PRIORITY",
+      "source": {
+        "printed_folio": "11.60.1",
+        "pdf_page": 1801
+      },
+      "domain": "message_manager",
+      "input_event": "MESSAGE",
+      "rule_intent": "Alert > entry error > advisory; config-dependent messages",
+      "implementation": "implemented_v2",
+      "verification": "SOURCE_FOLIO_AND_PAGE_LOCATED_ENGINE_RULE_REQUIRES_OPTION_VARIANT_QA"
+    },
+    {
+      "rule_id": "FMC_ALERT_MESSAGES",
+      "source": {
+        "printed_folio": "11.60.2",
+        "pdf_page": 1802
+      },
+      "domain": "message_manager",
+      "input_event": "ALERT",
+      "rule_intent": "Alert illumination and CLR/condition behavior",
+      "implementation": "implemented_v2",
+      "verification": "SOURCE_FOLIO_AND_PAGE_LOCATED_ENGINE_RULE_REQUIRES_OPTION_VARIANT_QA"
+    },
+    {
+      "rule_id": "FMC_ADVISORY",
+      "source": {
+        "printed_folio": "11.60.17",
+        "pdf_page": 1817
+      },
+      "domain": "message_manager",
+      "input_event": "ADVISORY",
+      "rule_intent": "Advisory return after scratchpad cleared",
+      "implementation": "implemented_v2",
+      "verification": "SOURCE_FOLIO_AND_PAGE_LOCATED_ENGINE_RULE_REQUIRES_OPTION_VARIANT_QA"
+    }
+  ]
+}
