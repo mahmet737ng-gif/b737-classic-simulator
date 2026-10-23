@@ -2200,7 +2200,7 @@ const performanceEngine=(function(){const module={exports:{}};const exports=modu
  * ISN-10 — deliberately bounded Performance/Dynamics adapter for
  * B737-33V EP-FSI MSN29340 / CFM56-3B-1 20K.
  *
- * NOT a CFM56 thermodynamic model. The AFM v13 QA has zero independently
+ * NOT a CFM56 thermodynamic model. The merged private AFM v16 QA has zero independently
  * approved final N1 points, so there is no operational N1 interpolation.
  * Accepted time-series are external measured training telemetry and are
  * labelled unverified; interpolated only between supplied observations.
@@ -2212,7 +2212,7 @@ const AIRCRAFT=Object.freeze({
 const AFM_GATE=Object.freeze({
  sourceId:'AFM-73733V-D6-8730.33V-R32-20180214',
  sourcePdfSha256:'3c7002212482f0c47a1735c2302ee304ef41ef4ca270591281b72f5f2a714105',
- qaVersion:13,approvedFinalN1Points:0,
+ qaVersion:16,approvedFinalN1Points:0,
  independentHumanQA:false,releaseGatesActive:0,
  numericN1Enabled:false,quality:'BLOCKED_SOURCE_CURVE_QA',
  blockedReasons:[
