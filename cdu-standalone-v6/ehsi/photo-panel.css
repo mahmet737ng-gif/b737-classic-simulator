@@ -1,0 +1,39 @@
+
+/* B737-300/400/500 photo-derived EFIS overlay; 1536x977 supplied photograph.
+   Device-control positions are relative to pixels in that same photograph.
+   Do not substitute a generic EFIS design. */
+.ehsi-panel{max-width:1180px!important}
+#efis-control-panel.photo-efis-root{width:100%;min-width:0}
+.photo-face{position:relative;width:100%;aspect-ratio:1536 / 977;touch-action:pan-y;isolation:isolate;overflow:hidden;background:#343a3f;border-radius:2.2%;box-shadow:0 5px 22px #000b,0 0 0 1px #829095}
+.photo-base{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;user-select:none;pointer-events:none}
+.photo-face.missing-photo{background:#4b5054}
+.photo-face.missing-photo::after{content:'Source photograph unavailable. Contact project maintainer for approved original asset.';position:absolute;left:8%;top:35%;padding:15px;background:#000a;color:white;font:1.2rem system-ui}
+.photo-hotspot{position:absolute;z-index:2;display:block;margin:0;padding:0!important;border:0!important;border-radius:0;background:transparent!important;color:inherit;cursor:pointer;appearance:none;-webkit-appearance:none;-webkit-tap-highlight-color:transparent;touch-action:none;box-shadow:none!important;line-height:1;outline-offset:0}
+.photo-hotspot:focus-visible{outline:2px solid #b7ebf6;outline-offset:3px}
+.photo-hotspot[class*="knob-"]{z-index:3;border-radius:50%}
+.photo-hotspot[class*="knob-"]::before{content:"";position:absolute;inset:1%;border-radius:50%;background:radial-gradient(ellipse,#656867 0%,#606363 64%,#404548 100%);box-shadow:0 2px 6px #1119}
+.photo-sprite{position:absolute;inset:0;display:block;pointer-events:none;border-radius:50%;mask-image:radial-gradient(ellipse closest-side,#000 89%,transparent 100%);-webkit-mask-image:radial-gradient(ellipse closest-side,#000 89%,transparent 100%);background-repeat:no-repeat;transform-origin:50% 50%;transition:transform 145ms cubic-bezier(.16,.66,.25,1)}
+.knob-dh .photo-sprite,.knob-adi .photo-sprite{mask-image:radial-gradient(ellipse closest-side,#000 83%,transparent 100%);-webkit-mask-image:radial-gradient(ellipse closest-side,#000 83%,transparent 100%)}
+.knob-hsi .photo-sprite{mask-image:radial-gradient(ellipse closest-side,#000 89%,transparent 100%);-webkit-mask-image:radial-gradient(ellipse closest-side,#000 89%,transparent 100%)}
+.photo-wxr-inner{position:absolute;left:31%;top:27%;width:38%;height:44%;border-radius:50%;pointer-events:none;background:radial-gradient(circle at 38% 30%,#e5e5e2,#b5b9ba 68%,#656c73);box-shadow:inset 0 0 2px #fff,0 1px 3px #181b1c7a;transition:transform 145ms ease-out}
+.photo-wxr-inner:after{content:'';position:absolute;width:14%;height:16%;border-radius:3px;background:#d1d1cd;left:43%;top:12%}
+.photo-press{transition:filter 100ms ease,transform 90ms ease;background:transparent!important;border:none!important;border-radius:8%!important;box-shadow:none!important}
+.photo-press.held{transform:translateY(.18%);filter:brightness(.77)}
+.photo-press.photo-latch{z-index:2}
+.photo-press.photo-latch .photo-key-lamp{position:absolute;inset:12% 9% 16%;display:grid;place-items:center;font:700 clamp(6px,.72vw,13px)/1.2 "Arial Narrow",Arial,sans-serif;letter-spacing:.03em;color:transparent;text-shadow:none;pointer-events:none;border-radius:4px;transition:all 100ms ease;user-select:none}
+.photo-press.photo-latch.lit .photo-key-lamp{color:#edfff9;background:radial-gradient(ellipse at center,rgba(229,243,231,.20),rgba(204,233,211,.10) 45%,transparent 75%);text-shadow:0 0 4px #fcfff3,0 0 8px #d7e9d1;box-shadow:inset 0 0 3px 1px #eef8d822}
+.photo-press.photo-wxr .photo-key-lamp{font-size:clamp(8px,1.3vw,19px);inset:12% 10%}
+.photo-press.photo-rst{border-radius:50%!important}
+.photo-dh-digits{position:absolute;z-index:1;display:flex;align-items:center;justify-content:center;background:linear-gradient(90deg,#230b09c7,#370e0ece 50%,#250b08e2);border:1px solid #531b1c77;border-radius:4%;font:800 clamp(12px,2.85vw,40px)/1 "Courier New",monospace;letter-spacing:.065em;font-variant-numeric:tabular-nums;color:#fc3531;text-shadow:0 0 4px #f51c14,0 0 12px #c40b0e;box-shadow:inset 0 0 14px #100400;pointer-events:none}
+.photo-dh-digits.blank{color:transparent}
+.photo-efis-feedback{display:flex;justify-content:space-between;flex-wrap:wrap;align-items:center;gap:10px;margin:10px auto;font:12px system-ui,sans-serif;color:#9fb6c1}
+.photo-state-line{color:#dff1f6;font:600 13px ui-monospace,monospace;letter-spacing:.01em}
+.photo-sim-controls{background:#0e1721;border:1px solid #304353;border-radius:8px;margin-top:10px;padding:10px 13px;color:#dbe3ea;font:12px system-ui,sans-serif}
+.photo-sim-controls summary{cursor:pointer;user-select:none;color:#a4c5d6;font-weight:700}
+.photo-sim-row{display:flex;flex-wrap:wrap;gap:7px;align-items:center;margin:10px 0}
+.photo-sim-row button{border-radius:5px;background:#1d2e3b;border:1px solid #495f6f;padding:7px 11px;color:white;font-weight:700}
+.photo-sim-row button.selected{box-shadow:0 0 6px #c8fdff6b;border-color:#b4e5eb}
+.photo-sim-row label{display:flex;gap:8px;align-items:center;min-width:130px;flex:1}
+.photo-sim-row input{width:100%;accent-color:#a7e6ef}
+.photo-sim-controls p{color:#a4b6c6;margin:0 0 5px}
+@media(max-width:850px){.photo-dh-digits{font-size:clamp(11px,2.3vw,27px)}.photo-press.photo-latch .photo-key-lamp{font-size:clamp(5px,1vw,10px)}.photo-efis-feedback{font-size:10px}.efis-heading{font-size:12px}}
