@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>B737 Classic CDU Font Test</title>
+  <style>
+    @font-face {
+      font-family: "BoeingCDULarge";
+      src: url("../assets/fonts/boeing-cdu/BoeingCDU-Large.ttf") format("truetype");
+      font-style: normal;
+      font-weight: 400;
+      font-display: block;
+    }
+    @font-face {
+      font-family: "BoeingCDUSmall";
+      src: url("../assets/fonts/boeing-cdu/BoeingCDU-Small.ttf") format("truetype");
+      font-style: normal;
+      font-weight: 400;
+      font-display: block;
+    }
+    :root {
+      color-scheme: dark;
+      --panel: #26282a;
+      --bezel: #141617;
+      --screen: #010503;
+      --white: #eaf8ec;
+      --green: #7cff92;
+      --cyan: #51e8ee;
+      --magenta: #ff67e8;
+      --amber: #ffd064;
+    }
+    * { box-sizing: border-box; }
+    html, body { min-height: 100%; }
+    body {
+      margin: 0;
+      padding: 22px 14px 34px;
+      background: radial-gradient(circle at 50% -10%, #30363a 0, #131719 45%, #070909 100%);
+      color: #e8ecee;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+    main { width: min(760px, 100%); margin: 0 auto; }
+    header { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin: 0 auto 13px; }
+    h1 { margin: 0; font-size: clamp(17px, 4vw, 23px); letter-spacing: .04em; }
+    .status {
+      flex: 0 0 auto;
+      padding: 7px 10px;
+      border: 1px solid #5a6468;
+      border-radius: 999px;
+      color: #c6ced1;
+      background: #171b1d;
+      font-size: 12px;
+    }
+    .status.ready { color: #9dffad; border-color: #347a44; }
+    .cdu {
+      padding: clamp(14px, 3.6vw, 26px);
+      border: 1px solid #555b5e;
+      border-radius: 18px;
+      background:
+        linear-gradient(115deg, rgba(255,255,255,.08), transparent 22%),
+        linear-gradient(#303436, #202325);
+      box-shadow: 0 22px 60px rgba(0,0,0,.55), inset 0 1px rgba(255,255,255,.13);
+    }
+    .bezel {
+      padding: clamp(13px, 3vw, 22px);
+      border: 2px solid #050606;
+      border-radius: 11px;
+      background: linear-gradient(145deg, #050606, #1b1e20 48%, #080909);
+      box-shadow: inset 0 0 0 2px #363a3c, inset 0 0 25px #000, 0 4px 10px #000;
+    }
+    .screen {
+      width: 100%;
+      aspect-ratio: 1.28 / 1;
+      display: grid;
+      grid-template-rows: repeat(14, 1fr);
+      overflow: hidden;
+      padding: 3.5% 4.2%;
+      border: 1px solid #25382d;
+      border-radius: 3px;
+      background:
+        repeating-linear-gradient(0deg, rgba(130,255,160,.017) 0 1px, transparent 1px 3px),
+        radial-gradient(ellipse at center, #07120b 0%, var(--screen) 70%);
+      box-shadow: inset 0 0 32px #000, 0 0 13px rgba(79,255,117,.07);
+      font-size: clamp(16px, 4.3vw, 30px);
+    }
+    .line {
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--white);
+      line-height: 1;
+      white-space: pre;
+      text-shadow: 0 0 6px currentColor;
+    }
+    .line.center { justify-content: center; }
+    .line.large { font-family: "BoeingCDULarge", monospace; }
+    .line.small {
+      padding-top: .11em;
+      font-family: "BoeingCDUSmall", monospace;
+      font-size: .68em;
+      align-items: end;
+      opacity: .93;
+    }
+    .line.blank { text-shadow: none; }
+    .green { color: var(--green); }
+    .cyan { color: var(--cyan); }
+    .magenta { color: var(--magenta); }
+    .amber { color: var(--amber); }
+    .white { color: var(--white); }
+    .controls {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 9px;
+      margin-top: 17px;
+    }
+    button {
+      min-height: 46px;
+      border: 1px solid #687075;
+      border-radius: 7px;
+      background: linear-gradient(#393e41, #202427);
+      color: #e9edef;
+      font: 700 13px/1 Arial, sans-serif;
+      letter-spacing: .07em;
+      cursor: pointer;
+      box-shadow: inset 0 1px rgba(255,255,255,.12), 0 2px 4px #000;
+    }
+    button:active { transform: translateY(1px); }
+    button.active { color: #101611; background: #a8f6b3; border-color: #d8ffdd; box-shadow: 0 0 14px rgba(124,255,146,.24); }
+    .specimen {
+      margin-top: 14px;
+      padding: 14px 16px;
+      overflow-x: auto;
+      border: 1px solid #343a3d;
+      border-radius: 10px;
+      background: #0b0e0f;
+    }
+    .specimen-label { margin-bottom: 7px; color: #929da2; font-size: 11px; letter-spacing: .09em; }
+    .specimen-large, .specimen-small { min-width: max-content; color: var(--green); text-shadow: 0 0 5px rgba(124,255,146,.5); white-space: nowrap; }
+    .specimen-large { font: 25px/1.35 "BoeingCDULarge", monospace; }
+    .specimen-small { font: 18px/1.35 "BoeingCDUSmall", monospace; }
+    footer { margin-top: 12px; color: #8e989d; font-size: 12px; line-height: 1.5; text-align: center; }
+    @media (max-width: 480px) {
+      body { padding: 14px 8px 24px; }
+      .cdu { padding: 10px; border-radius: 12px; }
+      .bezel { padding: 10px; }
+      .screen { font-size: clamp(14px, 4.5vw, 19px); padding-inline: 3.4%; }
+      .controls { gap: 6px; }
+      button { min-height: 43px; font-size: 11px; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>B737 CLASSIC CDU FONT TEST</h1>
+      <div class="status" id="status">LOADING FONTS</div>
+    </header>
+
+    <section class="cdu" aria-label="Interactive CDU font specimen">
+      <div class="bezel">
+        <div class="screen" id="screen"></div>
+      </div>
+      <nav class="controls" aria-label="CDU sample pages">
+        <button type="button" class="active" data-page="ident">IDENT</button>
+        <button type="button" data-page="legs">LEGS</button>
+        <button type="button" data-page="prog">PROGRESS</button>
+      </nav>
+    </section>
+
+    <section class="specimen" aria-label="Font character specimens">
+      <div class="specimen-label">BOEINGCDU LARGE</div>
+      <div class="specimen-large">ABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789</div>
+      <div class="specimen-label" style="margin-top:9px">BOEINGCDU SMALL</div>
+      <div class="specimen-small">ABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789</div>
+    </section>
+
+    <footer>FlightGear recreation fonts · Large and Small rendered directly from the repository</footer>
+  </main>
+
+  <script>
+    const pages = {
+      ident: [
+        ['small center white', 'IDENT'],
+        ['small white', 'MODEL', 'ENGINES'],
+        ['large green', '737-300', 'CFM56-3B1'],
+        ['small white', 'NAV DATA', 'ACTIVE'],
+        ['large cyan', 'AIRAC 2622', '23OCT05NOV'],
+        ['small white', 'OP PROGRAM', 'DRAG/FF'],
+        ['large green', 'U10.8A', '+0.0/+0.0'],
+        ['small white', 'CO DATA', 'POS INIT>'],
+        ['large green', 'EP-FSI', ''],
+        ['small blank', '', ''],
+        ['large blank', '', ''],
+        ['small white', '', 'INDEX>'],
+        ['large white', '<INIT REF', ''],
+        ['large white', '', '']
+      ],
+      legs: [
+        ['small center white', 'ACT RTE 1 LEGS 1/2'],
+        ['small white', '250KT', '2140FT'],
+        ['large magenta', 'KARAN', '6.4NM'],
+        ['small white', '090 DEG', 'FL120'],
+        ['large green', 'DAXIL', '18NM'],
+        ['small white', '120 DEG', 'FL180'],
+        ['large green', 'RUS', '24NM'],
+        ['small white', '145 DEG', 'FL240'],
+        ['large green', 'MODIL', '31NM'],
+        ['small white', '170 DEG', 'FL310'],
+        ['large green', 'REVUR', '42NM'],
+        ['small white', 'RTE DATA', 'STEP>'],
+        ['large white', '<RTE 2 LEGS', ''],
+        ['large white', 'SELECT DESIRED WPT', '']
+      ],
+      prog: [
+        ['small center white', 'PROGRESS 1/3'],
+        ['small white', 'FROM', 'ALT'],
+        ['large green', 'OIII', '8200'],
+        ['small white', 'TO', 'DTG'],
+        ['large magenta', 'KARAN', '36NM'],
+        ['small white', 'NEXT', 'ETA'],
+        ['large green', 'DAXIL', '1428Z'],
+        ['small white', 'FUEL', 'WIND'],
+        ['large cyan', '5.8', '270/18'],
+        ['small white', 'XTK ERROR', 'TAS'],
+        ['large green', '0.0NM', '286KT'],
+        ['small white', 'POS REPORT', 'RNP/ANP'],
+        ['large white', '<REPORT', '1.0/0.2'],
+        ['large white', '', '']
+      ]
+    };
+
+    const screen = document.getElementById('screen');
+    const status = document.getElementById('status');
+
+    function render(page) {
+      screen.replaceChildren(...pages[page].map(([classes, left = '', right = '']) => {
+        const line = document.createElement('div');
+        line.className = `line ${classes}`;
+        if (classes.includes('center')) {
+          line.textContent = left;
+        } else {
+          const a = document.createElement('span');
+          const b = document.createElement('span');
+          a.textContent = left;
+          b.textContent = right;
+          line.append(a, b);
+        }
+        return line;
+      }));
+    }
+
+    document.querySelectorAll('button[data-page]').forEach(button => {
+      button.addEventListener('click', () => {
+        document.querySelectorAll('button[data-page]').forEach(item => item.classList.toggle('active', item === button));
+        render(button.dataset.page);
+      });
+    });
+
+    Promise.all([
+      document.fonts.load('24px BoeingCDULarge'),
+      document.fonts.load('18px BoeingCDUSmall')
+    ]).then(() => {
+      status.textContent = '2 FONTS READY';
+      status.classList.add('ready');
+    }).catch(() => {
+      status.textContent = 'FONT LOAD ERROR';
+    });
+
+    render('ident');
+  </script>
+</body>
+</html>
