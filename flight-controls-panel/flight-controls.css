@@ -37,7 +37,7 @@ button{font:inherit;color:inherit;-webkit-tap-highlight-color:transparent;touch-
 .alt-arm{position:absolute;left:var(--x);top:var(--y);width:var(--w);height:var(--h);z-index:9;perspective:55cqw;transform-style:preserve-3d}
 .arm-switch{position:absolute;left:16%;top:31%;width:68%;aspect-ratio:1;border:0;padding:0;background:transparent;cursor:pointer;clip-path:polygon(12% 8%,88% 8%,100% 30%,100% 78%,84% 100%,16% 100%,0 78%,0 30%)}
 .arm-switch img{position:absolute;inset:-20%;width:140%;height:auto;transition:transform var(--duration),filter var(--duration)}
-.alt-arm[data-armed="true"] .arm-switch img{content:url("assets/switches/b737-toggle-on.png");transform:translateY(5%) rotateX(8deg)}
+.alt-arm[data-armed="true"] .arm-switch img{content:url("assets/switches/b737-toggle-on.webp");transform:translateY(5%) rotateX(8deg)}
 .red-guard{position:absolute;inset:0;border:0;padding:0;background:transparent;cursor:pointer;transform-style:preserve-3d;transform-origin:8% 50%;transition:transform 340ms cubic-bezier(.2,.9,.25,1),filter 200ms;clip-path:polygon(12% 0,82% 0,100% 12%,100% 82%,82% 100%,12% 92%,0 76%,0 12%)}
 .red-guard i{position:absolute;inset:0;border-radius:9% 15% 15% 7%;background:linear-gradient(95deg,#a21914 0%,#d9473e 20%,#b72720 52%,#6e0d0b 92%);border:.22cqw solid #6d0d0b;box-shadow:inset .5cqw .3cqw .8cqw #ff9a8a99,inset -.65cqw -.4cqw 1cqw #380000c0,.8cqw .8cqw 1cqw #000a}
 .red-guard i::before{content:"";position:absolute;width:9%;aspect-ratio:1;left:24%;top:8%;border-radius:50%;background:#171313;box-shadow:inset 0 0 .2cqw #000}

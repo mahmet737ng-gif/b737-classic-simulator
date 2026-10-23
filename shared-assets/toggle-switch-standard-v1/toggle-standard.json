@@ -13,9 +13,9 @@
   ],
   "visualFamily": "B737 Classic white-handle metal-bezel toggle",
   "states": {
-    "off": "b737-toggle-off.png",
-    "center": "b737-toggle-center.png",
-    "on": "b737-toggle-on.png"
+    "off": "b737-toggle-off.webp",
+    "center": "b737-toggle-center.webp",
+    "on": "b737-toggle-on.webp"
   },
   "transition": {
     "method": "two-frame-crossfade-with-3d-snap",
@@ -25,7 +25,7 @@
   },
   "reuseRule": "Mandatory global cockpit standard: use this exact visual family and OFF/ON asset pair for every toggle switch anywhere in the entire cockpit and all overhead panels. Do not regenerate, redraw, recolor, translate a single frame, or substitute it. Only the system logic and required number of detents may differ.",
   "variants": {
-    "threePosition": "same visual family with the locked b737-toggle-center.png center-state frame",
+    "threePosition": "same visual family with the locked b737-toggle-center.webp center-state frame",
     "springLoaded": "same visual family with automatic return timing",
     "guarded": "same toggle asset plus a separately approved guard asset"
   }
