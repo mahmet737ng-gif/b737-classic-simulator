@@ -202,3 +202,15 @@ Active private database: `/Technical Database/Sources/AFM-737-33V-D6-8730-R32/EP
 - Separate DCPCS dual-controller trainer, 37 Node integration tests passing, and GitHub Pages deployment completed. Module: `engine/systems/dcpcs-v4.js`; UI: `dcpcs-lab/`.
 - Private data: `/Technical Database/Subsystems/DCPCS-V4/DCPCS_NETWORK_V4.sqlite` (33 nodes, 52 ports, 25 links, 18 rules, 9 open gaps).
 - Existing source corpus preserved. Exact bus wiring, cabin airflow physics, servo timing, and complete QRH behavior remain open. Main cockpit and LAN code unchanged.
+
+## EP-FSI v15 preliminary MAXIMUM N1 source limit checkpoint
+
+| Task | Status | Acceptance evidence |
+| --- | --- | --- |
+| N1-FSI-19 Read bold MAXIMUM N1 component in PMC OFF p756 | DONE (FIRST PASS, NOT APPROVED) | 22 original chart axis tick calibrations and **5 private numeric limit candidates** at documented OAT points. Source pixel centers checked against line fit; approximately 0.2 N1%-point readout uncertainty. Not final takeoff N1. |
+| N1-FSI-20 Continue pressure-altitude leader traces | PARTIAL | 10 known source altitude starters, 9 candidate diagonal matches, 1 ambiguous, 6 geometric candidate intersections within imaged segments; 3 extrapolated must not be used. |
+| N1-FSI-21 Approve final PMC OFF takeoff N1 and golden vectors | BLOCKED | No complete validated altitude-to-thrust branch, bleed correction and MAX N1 cap combination; no independent numeric signoff. |
+| N1-FSI-22 Complete Maximum Continuous p130 nomogram | BLOCKED | Mathematical stages tested synthetically only; source numerical nomogram still incomplete. |
+| N1-FSI-23 Release computed N1 into CDU/Autothrottle | BLOCKED | Source readouts remain in private Technical Database; v10 guarded source adapter continues to return null. |
+
+Private active: `/Technical Database/Sources/AFM-737-33V-D6-8730-R32/EP-FSI-ASN29340/v15/epfsi_afm_scoped_v15.sqlite`. Source chart review `docs/AFM_EP_FSI_N1_V15.md`. QA 30 private tests PASS; source numeric golden N1 = 0. Preserve historical v14 and original AFM.
