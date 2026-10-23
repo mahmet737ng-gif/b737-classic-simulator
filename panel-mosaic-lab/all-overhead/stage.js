@@ -4,7 +4,7 @@ const SOURCE_WIDTH=1731,MIN_ZOOM=.25,MAX_ZOOM=4.5;
 let spec=null,geometry=null,zoom=1,fitMode=true,view='mosaic',selected='UPPER',loaded=new Set(),errored=new Set(),dragged=false;
 const assetById=id=>spec.images.find(x=>x.id===id);
 function el(tag,cls,txt){const n=document.createElement(tag);if(cls)n.className=cls;if(txt!=null)n.textContent=txt;return n;}
-function summary(){$('sourceCount').textContent=spec?spec.images.length:'—';$('panelCount').textContent=spec?new Set(spec.images.flatMap(x=>x.panelIds)).size:'—';$('loadedCount').textContent=loaded.size+'/'+(spec?spec.images.length:0);$('missingCount').textContent='7';}
+function summary(){$('sourceCount').textContent=spec?spec.images.length:'—';$('panelCount').textContent=spec?new Set(spec.images.flatMap(x=>x.panelIds)).size:'—';$('loadedCount').textContent=loaded.size+'/'+(spec?spec.images.length:0);$('missingCount').textContent=spec?(spec.columns.reduce((n,c)=>n+(c.missing||[]).length,0)+spec.bottomMissing.length):'—';}
 function card(asset,style){const a=el('article','piece');a.tabIndex=0;a.dataset.key=asset.id;a.setAttribute('aria-label',asset.panelIds.join(', ')+' '+asset.title);
  const span=el('span','tag',asset.panelIds.length>1?asset.panelIds[0]+'–'+asset.panelIds.at(-1).slice(3):asset.panelIds[0]);a.append(span);
  const img=el('img');img.src=asset.url;img.alt=asset.title;img.loading='eager';img.decoding='async';img.draggable=false;
@@ -59,9 +59,9 @@ function mode(next){if(view===next)return;view=next;$('assembly').classList.togg
 async function start(){
  try{const [specResp,geoResp]=await Promise.all([fetch('./spec.json?ts='+Date.now(),{cache:'no-store'}),fetch('../upper-oh/geometry.json?ts='+Date.now(),{cache:'no-store'})]);
  if(!specResp.ok||!geoResp.ok)throw Error('Source metadata unavailable');spec=await specResp.json();geometry=await geoResp.json();
- if(spec.images.length!==12||geometry.parts.length!==6)throw Error('Invalid source count');
+ if(spec.images.length!==16||geometry.parts.length!==6)throw Error('Invalid source count');
  populateAssembly();fillList();summary();showDetails();
- $('status').textContent='۱۲ تصویر منبع برای ۱۸ شناسهٔ پنل — نسخهٔ '+spec.version+' — اصلاح جانمایی با مرجع اطلس';
+ $('status').textContent=spec.images.length+' تصویر منبع برای '+new Set(spec.images.flatMap(x=>x.panelIds)).size+' شناسهٔ پنل — نسخهٔ '+spec.version+' — منطبق با مرجع اطلس';
  fit();if('ResizeObserver'in window){new ResizeObserver(()=>updateDimensions()).observe($('board'));}
  }catch(e){$('status').textContent='خطای بارگذاری داده‌های تست: '+e.message;}
 }
