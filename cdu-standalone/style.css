@@ -20,3 +20,7 @@
 .fmc-lines{letter-spacing:.18em}
 .fmc-line.fmc-header{position:relative;display:flex;align-items:center;justify-content:center;letter-spacing:.12em}
 .fmc-header .page-count{position:absolute;right:0;top:0;letter-spacing:0}
+/* PRESENT N1 v18 test input readability. Approved cockpit artwork unchanged. */
+#present-n1-test input[type="number"],#n1-source-test input[type="number"]{width:120px;min-width:0;height:32px;padding:5px 8px;background:#101a22;border:1px solid #667686;border-radius:5px;color:#f0f7ff;font:inherit}
+#present-n1-test button{margin:4px 4px 4px 0;font-size:.84rem}
+#present-n1-status{overflow-wrap:anywhere}
