@@ -1,0 +1,16 @@
+name: Chapter 11 MCP Cruise Descent source QA
+on:
+  push:
+  pull_request:
+jobs:
+  source-provenance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate source mapping and variant separation
+        run: node engine/ch11/tests/vnav-mcp-cruise-descent-2022.test.cjs
+      - name: Ensure approved font integrity and CDU startup
+        run: node tests/cdu-font-lock.test.cjs && node tests/cdu-ident-startup.test.cjs

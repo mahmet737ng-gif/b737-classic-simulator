@@ -26,3 +26,7 @@ The existing IDENT fields are **provisional**. Their exact positions and values 
 ## VNAV takeoff/climb behavior (FCOM 2022)
 
 Source-indexed design: [CDU_VNAV_TAKEOFF_CLIMB_2022.md](CDU_VNAV_TAKEOFF_CLIMB_2022.md) and [source requirements](../engine/ch11/vnav-takeoff-climb-2022.rules.v1.json). Five vertical-profile milestones, constraints ABC/BCD/CDE, N1/automatic variant separation, VNAV SPD/PTH, ENG OUT restrictions, T/C display, and UNABLE NEXT ALTITUDE warning are recorded as **requirements only**. Do not claim completed flight guidance based on source ingestion.
+
+## MCP interventions, cruise and VNAV descent (FCOM pp. 11.31.26–11.31.32)
+
+2026-10-23 source ingestion: 76 source-backed *requirements only*, variants gated for EP-FSI. Scope: MCP ALT/Speed Intervention, CRZ/STEP/ECON, T/D/E/D, DES PTH/SPD, deceleration points, LNAV cross-track relationship, warnings. See [the Persian source review](CDU_FMC_MCP_CRUISE_DESCENT_VNAV_2022_FA.md) and [the structured interface contract](../engine/ch11/vnav-mcp-cruise-descent-2022.rules.v1.json). These records do not activate an unverified VNAV/AFDS implementation.
