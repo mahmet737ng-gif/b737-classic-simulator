@@ -1,0 +1,46 @@
+{
+  "schema": "b737.animation-spec-registry/v1",
+  "panel": "fuel_control_panel",
+  "referenceResolution": { "width": 1012, "height": 1554 },
+  "interactionPolicy": {
+    "hitArea": "exact-control-silhouette",
+    "rectangularHotspots": false,
+    "selectionFeedback": "none-visible",
+    "pointer": true,
+    "touch": true,
+    "keyboard": true
+  },
+  "controls": {
+    "fuelTemperatureIndicator": {
+      "type": "analog-needle",
+      "rangeCelsius": [-40, 40],
+      "angleRangeDeg": [-70, 70],
+      "defaultCelsius": 10,
+      "durationMs": 320,
+      "input": ["drag", "touch", "keyboard", "external-state"]
+    },
+    "crossfeed": {
+      "type": "rotary-selector",
+      "states": ["closed", "transit", "open"],
+      "anglesDeg": { "closed": 0, "open": 90 },
+      "durationMs": 580,
+      "valveTravelMs": 820,
+      "annunciator": {
+        "closed": "off",
+        "transitOrDisagree": "bright",
+        "open": "dim"
+      }
+    },
+    "ctrL": { "type": "toggle", "assetStandard": "b737-cockpit-toggle-v1", "system": "center_tank_left_pump", "throwMs": 270, "pressureBuildMs": 720 },
+    "ctrR": { "type": "toggle", "assetStandard": "b737-cockpit-toggle-v1", "system": "center_tank_right_pump", "throwMs": 270, "pressureBuildMs": 720 },
+    "tank1Aft": { "type": "toggle", "assetStandard": "b737-cockpit-toggle-v1", "system": "tank_1_aft_pump", "throwMs": 270, "pressureBuildMs": 720 },
+    "tank1Fwd": { "type": "toggle", "assetStandard": "b737-cockpit-toggle-v1", "system": "tank_1_forward_pump", "throwMs": 270, "pressureBuildMs": 720 },
+    "tank2Fwd": { "type": "toggle", "assetStandard": "b737-cockpit-toggle-v1", "system": "tank_2_forward_pump", "throwMs": 270, "pressureBuildMs": 720 },
+    "tank2Aft": { "type": "toggle", "assetStandard": "b737-cockpit-toggle-v1", "system": "tank_2_aft_pump", "throwMs": 270, "pressureBuildMs": 720 }
+  },
+  "events": {
+    "stateChange": "b737:fuel-panel-change",
+    "globalState": "window.B737FuelPanelState",
+    "api": "window.B737FuelPanel"
+  }
+}
