@@ -1,0 +1,39 @@
+name: Capture approved two-panel layout
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'approved-panel-stack/index.html'
+      - '.github/workflows/capture-approved-panel-stack.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  screenshot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Capture exact approved panels without reconstruction
+        shell: bash
+        run: |
+          set -euxo pipefail
+          python3 -m http.server 8765 --bind 127.0.0.1 > /tmp/panel-stack-server.log 2>&1 &
+          sleep 2
+          BROWSER="$(command -v google-chrome || command -v chromium || command -v chromium-browser)"
+          "$BROWSER" --headless=new --disable-gpu --no-sandbox --hide-scrollbars --disable-dev-shm-usage --virtual-time-budget=8000 --window-size=760,2680 --screenshot=approved-panel-stack/preview.png http://127.0.0.1:8765/approved-panel-stack/ || true
+          test -s approved-panel-stack/preview.png
+          file approved-panel-stack/preview.png
+      - name: Publish exact screenshot
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add approved-panel-stack/preview.png
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'docs(cockpit): screenshot of existing Flight Controls over Fuel'
+          for attempt in 1 2 3 4 5; do
+            git pull --rebase origin main
+            if git push origin HEAD:main; then exit 0; fi
+            sleep 2
+          done
+          exit 1
