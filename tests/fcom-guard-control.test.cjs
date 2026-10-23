@@ -6,7 +6,7 @@ const path=require('node:path');
 const mechanics=require('../flight-controls-panel/fcom-control-mechanics.js');
 const registry=JSON.parse(fs.readFileSync(path.join(__dirname,'../flight-controls-panel/fcom-controls-registry.json'),'utf8'));
 test('Every current guarded control matches the FCOM registry',()=>{
-  assert.equal(registry.guarded.length,5);
+  assert.equal(registry.guarded.length,6);
   for(const item of registry.guarded){
     const definition=mechanics.definitions[item.id];
     assert.ok(definition,item.id);
@@ -40,6 +40,9 @@ test('Closing guard moves only to FCOM guarded position',()=>{
 });
 test('Alt flaps OFF on guard close, other flight/spoiler controls ON',()=>{
   assert.equal(mechanics.definitions.alternateFlapsArm.guarded,'off');
+  assert.equal(mechanics.definitions.emergencyExitLights.guarded,'armed');
+  const light=mechanics.guardTransition('emergencyExitLights',{value:'on',guard:'open'},'close');
+  assert.deepEqual(light.state,{value:'armed',guard:'closed'});
   for(const id of ['flightA','flightB','spoilerA','spoilerB'])assert.equal(mechanics.definitions[id].guarded,'on');
 });
 test('Unknown guard action and invalid detent fail closed',()=>{
