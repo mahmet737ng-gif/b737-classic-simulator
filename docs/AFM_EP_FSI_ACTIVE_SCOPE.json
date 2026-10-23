@@ -247,6 +247,12 @@
     "test_suite": "tests/epfsi-simulated-n1-v19.test.cjs",
     "cdu_smoke": "cdu-standalone/tests/estimated-n1-v19-integration.test.cjs",
     "ci_run": "https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/39888361177",
-    "note": "DISPLAY-ONLY USER APPROVED SURROGATE; NOT REAL MEASURED N1 OR AFM CALCULATION"
+    "note": "DISPLAY-ONLY USER APPROVED SURROGATE; NOT REAL MEASURED N1 OR AFM CALCULATION",
+    "cduV6": {
+      "status": "SIM_ESTIMATE_SHOWN",
+      "ui": "cdu-standalone-v6/app.js",
+      "tests": "cdu-standalone-v6/tests/est-n1-v19.test.cjs",
+      "ci": "https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/39889087284"
+    }
   }
 }
