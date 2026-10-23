@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#090b0d">
+  <title>B737 Classic — Original Overhead Panel Stack</title>
+  <style>
+    *{box-sizing:border-box}
+    html,body{margin:0;background:#090b0d;color:#ccd5d9;min-height:100%}
+    body{font-family:Arial,system-ui,sans-serif}
+    .stack{width:min(100%,720px);margin:0 auto;padding:0;display:flex;flex-direction:column;align-items:stretch;gap:0}
+    .source-panel{display:block;position:relative;width:100%;margin:0;padding:0;overflow:hidden;background:#57636a;line-height:0}
+    .flight{aspect-ratio:893/1761}
+    .fuel{aspect-ratio:1012/1554}
+    iframe{display:block;position:absolute;inset:0;width:100%;height:100%;border:0;overflow:hidden;background:transparent;pointer-events:none}
+    html.interactive iframe{pointer-events:auto}
+    .seam{height:3px;flex:0 0 3px;background:#171d21;box-shadow:inset 0 1px #303639,inset 0 -1px #07090a}
+    .status{display:none}
+    @media(min-width:800px){.stack{margin:8px auto;box-shadow:0 0 40px #000}}
+  </style>
+</head>
+<body>
+  <!-- Exactly two existing project panel implementations. No new cockpit art. -->
+  <main class="stack" aria-label="Flight Controls directly above Fuel, centered on the same vertical axis">
+    <section class="source-panel flight" aria-label="Flight Controls and NAV Transfer — top">
+      <iframe title="Flight Controls and NAV Transfer" id="flight" src="../flight-controls-panel/" scrolling="no" loading="eager"></iframe>
+    </section>
+    <div class="seam" aria-hidden="true"></div>
+    <section class="source-panel fuel" aria-label="Fuel Panel — bottom">
+      <iframe title="Fuel Panel" id="fuel" src="../fuel-panel/" scrolling="no" loading="eager"></iframe>
+    </section>
+  </main>
+  <script>
+    // Both iframe documents are same-origin GitHub Pages. We reuse their exact
+    // markup, sprites, lamps and control handlers, hiding only separate lab UI.
+    const fix = `
+      html,body{margin:0!important;padding:0!important;min-width:0!important;min-height:0!important;
+        width:100%!important;height:auto!important;overflow:hidden!important;
+        background:transparent!important;display:block!important}
+      main,.sim,.app-shell{display:block!important;min-height:0!important;max-width:none!important;
+        width:100%!important;margin:0!important;padding:0!important;gap:0!important}
+      .panel-wrap{display:block!important;width:100%!important;max-width:none!important;
+        margin:0!important;padding:0!important;filter:none!important}
+      .panel{display:block!important;position:relative!important;max-width:none!important;
+        width:100%!important;margin:0!important;box-shadow:none!important;filter:none!important}
+      .test-rack{display:none!important}
+    `;
+    for(const id of ['flight','fuel']){
+      const frame=document.getElementById(id);
+      frame.addEventListener('load',()=>{
+        try{
+          const doc=frame.contentDocument;
+          const style=doc.createElement('style');
+          style.textContent=fix;
+          doc.head.appendChild(style);
+          frame.dataset.ready='true';
+        }catch(err){
+          console.warn('Same-origin overlay normalization was unavailable',err);
+        }
+      });
+    }
+    // Preview is scroll-friendly by default. ?interactive=1 enables switches.
+    if(new URLSearchParams(location.search).get('interactive')==='1'){
+      document.documentElement.classList.add('interactive');
+    }
+  </script>
+</body>
+</html>
