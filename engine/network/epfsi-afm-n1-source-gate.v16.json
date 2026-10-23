@@ -1,0 +1,47 @@
+{
+  "schema": "b737-classic-afm-n1-source-qa-v16",
+  "date": "2026-10-23",
+  "aircraft": {
+    "registration": "EP-FSI",
+    "msn": 29340,
+    "engine": "CFM56-3B-1",
+    "ratingLbf": 20000
+  },
+  "source": {
+    "id": "AFM-73733V-D6-8730.33V-R32-20180214",
+    "sha256": "3c7002212482f0c47a1735c2302ee304ef41ef4ca270591281b72f5f2a714105",
+    "scopedPages": [
+      128,
+      129,
+      130,
+      756
+    ]
+  },
+  "privateDatabaseLibraryPath": "/Technical Database/Sources/AFM-737-33V-D6-8730-R32/EP-FSI-ASN29340/v16/",
+  "privatePackageSha256": "1a8dc6e72935d0c493ab15c3aa4477ac125821302369c36952919eaa82ac0b64",
+  "components": 13,
+  "sourceLabels": 45,
+  "candidateLineSegmentsUnassigned": 301,
+  "inheritedSingleSourceProvisional": {
+    "v11ColdSamplePoints": 104,
+    "v12BleedSamples": 16,
+    "v13UnassignedReadouts": 138,
+    "v15MaximumN1CapCandidates": 5,
+    "v15StarterCrossings": 10
+  },
+  "machineSourceTraceChecked": true,
+  "independentlyApprovedFinalNumericN1Points": 0,
+  "fullCurveContourAssignmentComplete": false,
+  "mctMultistageSignedOff": false,
+  "pmcOptionVerified": false,
+  "humanIndependentNumericalSignoffs": 0,
+  "afmEngineOutputAllowed": false,
+  "condition": "DO_NOT_RELEASE_N1_TO_FMC",
+  "qaReason": "Chart altitude/temperature graph crossovers, bleed and anti-ice corrections, PMC effectivity and MCT nomogram remain unsigned. Source image proposals are NOT numeric performance curves.",
+  "nextQaTasks": [
+    "Map every source altitude label to its complete base N1 curve, including corner and hot side.",
+    "Complete 128/129/756 correction curve families and 130 multistage nomogram.",
+    "Independently read and sign off golden numerical vectors.",
+    "Verify EP-FSI PMC configuration and 20K engine effectivity."
+  ]
+}
