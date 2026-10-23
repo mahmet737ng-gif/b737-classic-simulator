@@ -265,3 +265,17 @@ User specifies default ambient weather ISA, Anti-Ice OFF and engine bleed ON acr
 | Present N1 → autothrottle | NOT CONNECTED | Telemetry is display-only. A/T targets may not use manual TEST data. |
 
 Default environment **ISA / engine bleed ON / anti-ice OFF / A/C PACKS AUTO** retained, PMC UNKNOWN. Contract: `docs/EP_FSI_PRESENT_N1_CONTRACT_V18.json`. This is an additional **indicator adapter release v18**, not AFM numerical database version 18. Original CDU-approved picture remains unchanged.
+
+## EP-FSI N1 v19 user-accepted display estimates — 2026-10-23
+
+The owner explicitly authorized APPROXIMATE N1 88–95% for Takeoff/Go-Around and prioritizes visible data over complete AFM performance tables. Implemented separate surrogate without editing private AFM source records.
+
+| Deliverable | Status | Evidence |
+| --- | --- | --- |
+| Surrogate MAX N1/LIMIT for Takeoff and Go-Around | DONE — DISPLAY ESTIMATE ONLY | `engine/fmc/performance/epfsi-simulated-n1-v19.cjs`: ~91.7% TO, ~93.7% GA under ISA + Bleed ON + Anti-Ice OFF display defaults; no AFM numeric source claim. |
+| Surrogate independent PRESENT N1 Engine 1 and 2 | DONE — DISPLAY ESTIMATE ONLY | CDU `app.js` prioritizes LIVE sensor > explicit TEST packet > EST fallback, updates with thrust lever phase, never feeds A/T. |
+| Surrogate source/provenance label | DONE | CDU shows EST for estimated values and MAN for direct user overrides. `docs/EP_FSI_N1_ESTIMATION_POLICY_V19.json` defines policy. |
+| Real engine physics, actual engine N1 producer | STILL NOT IMPLEMENTED | Existing v18 telemetry reader works if real data is published; fallback EST remains nonphysical visual aid. |
+| Independently validated Boeing AFM numerical N1 | STILL BLOCKED | v16 AFM private source with zero approved numeric Golden vectors. v19 does not certify these. |
+
+GitHub CI: [successful v19 N1 source + CDU integration run 39888361177](https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/39888361177). User-approved estimated N1 is shown by default, with optional trained throttle estimate, no change to approved CDU artwork.
