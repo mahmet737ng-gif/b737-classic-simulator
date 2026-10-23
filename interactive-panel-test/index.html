@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>B737 Classic — Fuel/Flight Controls Test</title>
+<style>
+  :root {
+    --bg:#101418;
+    --panel-bg:#0d1114;
+    --card:#151b20;
+    --line:#24303a;
+    --text:#d6dde3;
+    --muted:#8ea0ae;
+    --blue:#66c7ff;
+    --amber:#ffb44d;
+    --offText: rgba(255,255,255,.10);
+  }
+  * { box-sizing:border-box; }
+  body {
+    margin:0; background:var(--bg); color:var(--text);
+    font-family: system-ui, -apple-system, "Segoe UI", Tahoma, sans-serif;
+  }
+  .wrap {
+    max-width: 900px; margin: 0 auto; padding: 14px;
+  }
+  .toolbar {
+    position: sticky; top:0; z-index:10;
+    display:flex; gap:8px; flex-wrap:wrap; align-items:center;
+    background:rgba(16,20,24,.93); backdrop-filter: blur(8px);
+    padding:10px; border:1px solid var(--line); border-radius:12px;
+    margin-bottom:12px;
+  }
+  .toolbar button {
+    border:1px solid #31424f; background:#1a232b; color:#e7edf2;
+    padding:10px 12px; border-radius:10px; cursor:pointer; font-size:14px;
+  }
+  .toolbar button:hover { background:#22303a; }
+  .hint { color:var(--muted); font-size:13px; margin-right:auto; }
+  .stack {
+    display:flex; flex-direction:column; gap:0; align-items:center;
+    background:#0b0f12; border:1px solid var(--line); border-radius:14px; overflow:hidden;
+  }
+  .panel {
+    width:min(100%,760px); position:relative; background:#0b0f12;
+    line-height:0;
+  }
+  .panel img { width:100%; display:block; }
+  .seam { width:min(100%,760px); height:2px; background:#0b0f12; box-shadow: inset 0 1px #28333d, inset 0 -1px #060809; }
+  .hotspot {
+    position:absolute; cursor:pointer; border-radius:8px;
+    background:transparent; border:1px solid transparent;
+  }
+  .hotspot:hover { border-color: rgba(255,255,255,.18); }
+  .lamp {
+    position:absolute;
+    display:flex; align-items:center; justify-content:center;
+    text-align:center; font-weight:700; line-height:1.0;
+    border-radius:8px;
+    background: rgba(0,0,0,.88);
+    box-shadow:
+      inset 0 0 0 1px rgba(255,255,255,.05),
+      inset 0 0 18px rgba(255,255,255,.04);
+    user-select:none;
+    pointer-events:none;
+    letter-spacing:.2px;
+  }
+  .lamp.small { font-size: clamp(8px,1.45vw,13px); }
+  .lamp.medium { font-size: clamp(10px,1.95vw,18px); }
+  .lamp .txt {
+    color: var(--offText);
+    text-shadow: none;
+    transition: color .24s ease, text-shadow .32s ease, opacity .24s ease;
+    opacity:.72;
+    white-space: pre-line;
+  }
+  .lamp.on .txt { opacity:1; }
+  .lamp.amber.on .txt {
+    color: var(--amber);
+    text-shadow:
+      0 0 2px rgba(255,165,60,.9),
+      0 0 8px rgba(255,165,60,.55),
+      0 0 16px rgba(255,130,30,.28);
+  }
+  .lamp.blue.on .txt {
+    color: var(--blue);
+    text-shadow:
+      0 0 2px rgba(115,210,255,.95),
+      0 0 8px rgba(70,170,255,.58),
+      0 0 16px rgba(50,150,255,.28);
+  }
+  .status {
+    margin-top:12px; border:1px solid var(--line); border-radius:12px;
+    background:var(--panel-bg); padding:12px 14px; color:#dfe8ee; font-size:14px;
+  }
+  .status b { color:white; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="toolbar">
+    <button id="resetBtn">Reset defaults</button>
+    <button id="leftValveBtn">Left shutoff valve</button>
+    <button id="rightValveBtn">Right shutoff valve</button>
+    <button id="crossfeedBtn">Crossfeed valve</button>
+    <button id="leftBypassBtn">Left filter bypass</button>
+    <button id="rightBypassBtn">Right filter bypass</button>
+    <div class="hint">تست سریع: روی خود چراغ‌ها یا ولوم کراس‌فید هم می‌توانی کلیک کنی.</div>
+  </div>
+
+  <div class="stack">
+    <div class="panel" id="flightPanel">
+      <img alt="Flight controls panel" src="assets/flight.webp">
+    </div>
+    <div class="seam"></div>
+    <div class="panel" id="fuelPanel">
+      <img alt="Fuel panel" src="assets/fuel.webp">
+      <!-- Functional lamps -->
+      <div id="fuelValveLeftLamp" class="lamp blue medium" style="left:12.15%; top:2.40%; width:18.0%; height:6.4%;">
+        <div class="txt">FUEL VALVE&#10;CLOSED</div>
+      </div>
+      <div id="fuelValveRightLamp" class="lamp blue medium" style="left:69.85%; top:2.40%; width:18.0%; height:6.4%;">
+        <div class="txt">FUEL VALVE&#10;CLOSED</div>
+      </div>
+
+      <div id="filterBypassLeftLamp" class="lamp amber medium" style="left:12.45%; top:27.95%; width:18.6%; height:6.65%;">
+        <div class="txt">FILTER&#10;BY PASS</div>
+      </div>
+      <div id="valveOpenLamp" class="lamp blue medium" style="left:40.55%; top:28.10%; width:18.9%; height:6.35%;">
+        <div class="txt">VALVE&#10;OPEN</div>
+      </div>
+      <div id="filterBypassRightLamp" class="lamp amber medium" style="left:69.85%; top:27.95%; width:18.6%; height:6.65%;">
+        <div class="txt">FILTER&#10;BY PASS</div>
+      </div>
+
+      <!-- Hotspots -->
+      <button class="hotspot" id="fuelValveLeftHot" title="Toggle left shutoff valve" style="left:12.15%; top:2.40%; width:18.0%; height:6.4%;"></button>
+      <button class="hotspot" id="fuelValveRightHot" title="Toggle right shutoff valve" style="left:69.85%; top:2.40%; width:18.0%; height:6.4%;"></button>
+
+      <button class="hotspot" id="filterBypassLeftHot" title="Toggle left filter bypass" style="left:12.45%; top:27.95%; width:18.6%; height:6.65%;"></button>
+      <button class="hotspot" id="filterBypassRightHot" title="Toggle right filter bypass" style="left:69.85%; top:27.95%; width:18.6%; height:6.65%;"></button>
+
+      <button class="hotspot" id="crossfeedHot" title="Toggle crossfeed valve" style="left:41.0%; top:35.0%; width:18.8%; height:15.0%; border-radius:50%;"></button>
+      <button class="hotspot" id="valveOpenHot" title="Toggle crossfeed valve" style="left:40.55%; top:28.10%; width:18.9%; height:6.35%;"></button>
+    </div>
+  </div>
+
+  <div class="status" id="statusBox"></div>
+</div>
+
+<script>
+const state = {
+  leftShutoffClosed: false,
+  rightShutoffClosed: false,
+  leftFilterBypass: false,
+  rightFilterBypass: false,
+  crossfeedOpen: true
+};
+
+const $ = (id) => document.getElementById(id);
+
+function setLamp(id, on) {
+  $(id).classList.toggle('on', !!on);
+}
+
+function render() {
+  // Default logic requested by user:
+  // - FILTER BY PASS lamps default OFF
+  // - FUEL VALVE CLOSED lamps follow shutoff valve closed/open state
+  setLamp('fuelValveLeftLamp', state.leftShutoffClosed);
+  setLamp('fuelValveRightLamp', state.rightShutoffClosed);
+  setLamp('filterBypassLeftLamp', state.leftFilterBypass);
+  setLamp('filterBypassRightLamp', state.rightFilterBypass);
+  setLamp('valveOpenLamp', state.crossfeedOpen);
+
+  $('statusBox').innerHTML = `
+    <b>Fuel test status</b><br>
+    Left shutoff valve: <b>${state.leftShutoffClosed ? 'CLOSED' : 'OPEN'}</b> |
+    Right shutoff valve: <b>${state.rightShutoffClosed ? 'CLOSED' : 'OPEN'}</b><br>
+    Crossfeed valve: <b>${state.crossfeedOpen ? 'OPEN' : 'CLOSED'}</b><br>
+    Left filter bypass: <b>${state.leftFilterBypass ? 'ON' : 'OFF'}</b> |
+    Right filter bypass: <b>${state.rightFilterBypass ? 'ON' : 'OFF'}</b>
+  `;
+}
+
+function resetDefaults() {
+  state.leftShutoffClosed = false;
+  state.rightShutoffClosed = false;
+  state.leftFilterBypass = false;
+  state.rightFilterBypass = false;
+  state.crossfeedOpen = true;
+  render();
+}
+
+$('resetBtn').onclick = resetDefaults;
+
+$('leftValveBtn').onclick = () => { state.leftShutoffClosed = !state.leftShutoffClosed; render(); };
+$('rightValveBtn').onclick = () => { state.rightShutoffClosed = !state.rightShutoffClosed; render(); };
+$('crossfeedBtn').onclick = () => { state.crossfeedOpen = !state.crossfeedOpen; render(); };
+$('leftBypassBtn').onclick = () => { state.leftFilterBypass = !state.leftFilterBypass; render(); };
+$('rightBypassBtn').onclick = () => { state.rightFilterBypass = !state.rightFilterBypass; render(); };
+
+$('fuelValveLeftHot').onclick = () => $('leftValveBtn').click();
+$('fuelValveRightHot').onclick = () => $('rightValveBtn').click();
+$('filterBypassLeftHot').onclick = () => $('leftBypassBtn').click();
+$('filterBypassRightHot').onclick = () => $('rightBypassBtn').click();
+$('crossfeedHot').onclick = () => $('crossfeedBtn').click();
+$('valveOpenHot').onclick = () => $('crossfeedBtn').click();
+
+resetDefaults();
+</script>
+</body>
+</html>
