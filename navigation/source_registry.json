@@ -93,7 +93,7 @@
   "integration": {
     "navigation_source_selection": "registry",
     "source_merge_behavior": "explicit_source_selection_only",
-    "fmc_gate": "NPE decoded AST is NOT flyable legs; verify source semantics, coordinate disambiguation, path geometry and EP-FSI FMC adapter; never activate incomplete ZYYJ or data prior to exact per-file AIRAC marker",
+    "fmc_gate": "Stage 2 geometry is reference-only. Verify magnetic variation, verified leg path terminators, turn/intercept/hold logic, source runway/transition semantics, charts and EP-FSI FMC adapter before enabling active guidance.",
     "simulator_training_only": true,
     "procedure_decoder": {
       "id": "NPE_STAGE1_v1",
@@ -120,6 +120,43 @@
       "flight_legs_generated": 0,
       "tests_passed": 15,
       "qa": "SQLITE_INTEGRITY_OK_TOKEN_RECONSTRUCTION_SHA256_OK"
+    },
+    "route_geometry": {
+      "id": "NPE_GEOMETRY_STAGE2_v1",
+      "status": "REFERENCE_CHORDS_NON_EXECUTABLE",
+      "source_id": "PMDG_WORLD_2610_WITH_PROCEDURES_R1",
+      "source_stage1_archive": "/B737/NAVDB/NPE_STAGE1/B737_NAVDB_WORLD_AIRAC2610_NPE_STAGE1_PRIVATE.zip",
+      "geometry_private_archive": "/B737/NAVDB/NPE_STAGE2/B737_NAVDB_WORLD_AIRAC2610_NPE_STAGE2_PRIVATE.zip",
+      "geometry_private_manifest": "/B737/NAVDB/NPE_STAGE2/manifest.json",
+      "geometry_private_qa": "/B737/NAVDB/NPE_STAGE2/qa_report.json",
+      "stage1_sqlite_sha256": "9f8a491a7bce9fc4709a15e7576b0bc990cc4fa4b5d483074f7ce4d4ceb5520e",
+      "geometry_overlay_sha256": "264e596b245cc7efd816c9dd9aa997137af1460ac23d4178f2937e8db8ddd655",
+      "airac": "2610",
+      "revision": 1,
+      "strict_marker": "//AIRAC Cycle : 2610 (01/OCT/2026 - 29/OCT/2026) - Ver.1",
+      "geo_file_name": "B737_NAVDB_WORLD_AIRAC2610_NPE_STAGE2_GEOMETRY.sqlite",
+      "source_segments": 236879,
+      "explicit_point_references": 756736,
+      "positioned_points": 756524,
+      "quarantined_source_points": 212,
+      "reference_chords": 360425,
+      "non_executable_events": 189226,
+      "chords_over_200_nm_for_manual_review": 187,
+      "synthetic_unit_tests_passed": 13,
+      "quality": "SQLITE_INTEGRITY_FOREIGN_KEYS_ALL_CHORDS_RECHECKED",
+      "geometry_method": "Spherical great-circle reference distance and TRUE initial/final course, not magnetic or ARINC leg path",
+      "hard_gates": [
+        "No multi-segment path inference",
+        "ZYYJ blocked",
+        "No true-to-magnetic bearing conversion",
+        "No turns holds intercepts encoded as flyable arcs",
+        "No active FMC legs"
+      ],
+      "reader_api": "navigation/geometry_reader.py",
+      "engine": "navigation/route_geometry.py",
+      "qa": "navigation/qa_geometry.py",
+      "docs": "navigation/NPE_STAGE2.md",
+      "fmc_active": false
     }
   }
 }
