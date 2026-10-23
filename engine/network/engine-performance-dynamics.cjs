@@ -145,16 +145,30 @@ function advancePerformance(state,seconds){
      const t=p.track.samples.at(-1).timeSec;
      const last=sampleAt(p.track,t);
      p.elapsedSec=t;p.mode='REPLAY_ENDED';p.coverage='NO_EXTRAPOLATION_AT_END';
+     const fuelBurnKg=integratedFuelKg(p.track,p.elapsedSec,t);
      p.lastSample=copy(last);applySample(state,engine,last.sample);
-     results.push({engine,event:'REPLAY_ENDED',lastTimeSec:t});
+     results.push({engine,event:'REPLAY_ENDED',lastTimeSec:t,fuelBurnKg});
    }else{
      const next=sampleAt(p.track,target);
+     const fuelBurnKg=integratedFuelKg(p.track,p.elapsedSec,target);
      p.elapsedSec=target;p.coverage=next.kind;p.lastSample=copy(next);
      applySample(state,engine,next.sample);
-     results.push({engine,event:next.kind,timeSec:target});
+     results.push({engine,event:next.kind,timeSec:target,fuelBurnKg});
    }
  }
  return results;
+}
+function integratedFuelKg(track,fromSec,toSec){
+ if(!track||toSec<=fromSec)return 0;
+ const samples=track.samples;
+ const points=[fromSec,...samples.map(x=>x.timeSec).filter(t=>t>fromSec&&t<toSec),toSec];
+ let mass=0;
+ for(let i=1;i<points.length;i++){
+   const a=sampleAt(track,points[i-1]).sample.fuelFlowKgHr;
+   const b=sampleAt(track,points[i]).sample.fuelFlowKgHr;
+   mass+=(a+b)/2*(points[i]-points[i-1])/3600;
+ }
+ return mass;
 }
 function performanceAuthority(perf,engine){
  return perf?.engines[id(engine)]?.mode==='REPLAY_ACTIVE';
@@ -195,5 +209,5 @@ function evaluatePerformance(state){
 const PERFORMANCE_COMMANDS=new Set(['SET_ENGINE_THRUST_COMMAND',
  'LOAD_ENGINE_OBSERVED_TRACK','STOP_ENGINE_OBSERVED_TRACK']);
 module.exports={AIRCRAFT,AFM_GATE,CHANNELS,initEnginePerformance,
- validateTrack,sampleAt,applyPerformanceAction,advancePerformance,
+ validateTrack,sampleAt,integratedFuelKg,applyPerformanceAction,advancePerformance,
  performanceAuthority,evaluatePerformance,getAFMTargetN1,PERFORMANCE_COMMANDS};
