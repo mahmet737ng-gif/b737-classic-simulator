@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="fa" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>B737 Classic CDU | Standalone Trainer v6</title><link rel="stylesheet" href="style.css"></head>
+<html lang="fa" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>B737 Classic CDU | Standalone Trainer v6</title><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="ehsi/photo-panel.css"></head>
 <body>
 <header><div><h1>737 Classic • CDU Standalone Trainer</h1><p>آزمایش CDU بدون برق هواپیما — تصویر اصلی تأییدشده، باکس‌بندی مستقل هر دکمه</p></div><div class="actions"><button id="efis-jump" type="button" onclick="document.getElementById('ehsi-anchor').scrollIntoView({behavior:'smooth',block:'start'})">EHSI / EFIS</button><button id="reset" type="button">بازنشانی CDU</button><button id="overlay-toggle" type="button">نمایش باکس‌ها</button><button id="info-toggle" type="button">راهنمای کلیدها</button></div></header>
 <main><div class="cockpit-stack"><div class="cockpit"><div class="cdu-stage" id="cdu-stage" dir="ltr" aria-label="Interactive Boeing 737 Classic CDU"><img class="base" src="assets/cdu-approved-unlit.png" draggable="false" alt="CDU approved unlit front panel"><div class="fmc-screen" id="fmc-screen" aria-label="FMC CDU screen"><div class="fmc-lines" id="fmc-lines"></div></div><div id="annunciators" aria-live="polite"></div><div id="clickmap"></div></div></div>
@@ -18,7 +18,7 @@
   </section>
   <section class="efis-assembly" aria-label="Interactive Boeing 737 Classic EFIS control panel">
     <div class="efis-heading"><span>CAPTAIN EFIS CONTROL PANEL</span><small>FCOM VOL 2 • 10.30.2–10.30.5</small></div>
-    <div id="efis-control-panel"></div>
+    <div id="efis-control-panel"></div><p id="efis-photo-alert" hidden style="color:#ffbc85">The approved photo asset is missing; controls may be invisible.</p>
   </section>
 </div></div>
 <aside class="sidebar"><section><h2>حالت مستقل</h2><p>CDU همیشه در دسترس است؛ برای تمرین به برق، IRS یا اتصال به شبیه‌ساز نیازی ندارد.</p><dl><dt>صفحهٔ فعلی</dt><dd id="page-now">CRZ</dd><dt>ورودی Scratchpad</dt><dd dir="ltr" id="scratch-now">—</dd><dt>تغییرات آمادهٔ EXEC</dt><dd id="pending-now">0</dd><dt>آخرین کلید</dt><dd id="key-now">—</dd></dl></section>
@@ -26,4 +26,4 @@
 <section><h2>راهنمای اجرا</h2><p>روی <b>RTE</b> کلیک کن، فرودگاه چهارحرفی را با صفحه‌کلید CDU وارد کن و <b>LSK L1</b> را بزن. سپس مقصد را در <b>LSK R1</b> ثبت کن. تا قبل از زدن <b>&lt;ACTIVATE</b> چراغ EXEC روشن نمی‌شود. پس از زدن ACTIVATE، کلید EXEC را فشار بده.</p><p>فشردن <b>CLR</b> یک حرف را پاک می‌کند و نگه‌داشتن آن Scratchpad را خالی می‌کند. DIM BRT روشنایی تصویر را در حالت تمرینی تغییر می‌دهد.</p><p class="subtle">این نمونه شبیه‌ساز رفتار ورودی و صفحه‌ها است؛ هنوز ناوبری، محاسبات Performance یا مسیر واقعی هواپیما را انجام نمی‌دهد.</p></section>
 <section id="qa" hidden><h2>اطلاعات کنترل</h2><pre id="selected-code" dir="ltr"></pre><p>نقشهٔ اصلی: <a href="data/cdu-map.json">JSON 70 controls</a> | <a href="data/buttons.csv">CSV</a> | <a href="data/cdu-hotspot-audit-v2.jpg">QA overlay</a></p><p>فصل ۱۱: <a href="reference/chapter11-pages.json">409-page index</a></p></section></aside></main>
 <footer>Only for training, not for actual flight. FCOM references: 11.10.3–11.10.7; 11.40–11.43, 11.60. Artwork retains the original approved image byte-for-byte; display contents and lights are independent overlays.</footer>
-<script src="data/cdu-map.js"></script><script src="data/page-definitions.js"></script><script src="engine/cdu-engine.js"></script><script src="ehsi/ehsi-engine.js"></script><script src="app.js"></script></body></html>
+<script src="data/cdu-map.js"></script><script src="data/page-definitions.js"></script><script src="engine/cdu-engine.js"></script><script src="ehsi/ehsi-engine.js"></script><script src="ehsi/photo-panel.js"></script><script src="app.js"></script></body></html>
