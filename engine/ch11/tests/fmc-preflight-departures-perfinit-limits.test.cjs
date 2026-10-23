@@ -1,0 +1,52 @@
+'use strict';
+const assert=require('node:assert/strict');
+const dep=require('../fmc-preflight-departures-2020-2022.rules.v1.json');
+const perf=require('../fmc-preflight-perfinit-limits-2020-2023.rules.v1.json');
+assert.equal(dep.schema,'b737-classic-fcom-ch11-fmc-departures-page/1.0');
+assert.deepEqual(dep.source.screenshots.map(s=>s.pdf_viewer_page),[1586,1587]);
+assert.deepEqual(dep.source.screenshots.map(s=>s.folio),['11.40.34','11.40.35']);
+assert.equal(dep.source.screenshots[0].sha256,'289881b07d303421e365f0d00cc1acf62c5e052980244b7100fafb719fa79d56');
+assert.equal(dep.qa.expected_count,33);
+assert.equal(dep.rules.length,33);
+assert.equal(new Set(dep.rules.map(r=>r.id)).size,33);
+assert.equal(dep.page_layout.bottom_left,'ERASE_IF_ROUTE_MOD_PENDING_ELSE_INDEX');
+assert.equal(dep.page_layout.bottom_right,'ROUTE');
+assert.deepEqual(dep.page_layout.selection_markers,{selected_pending:'<SEL>',selected_executed:'<ACT>'});
+assert.equal(dep.engine_model.commit_only_on_EXEC,true);
+assert.equal(dep.engine_model.runway_sid_constraint_filtering,true);
+assert.equal(dep.engine_model.sel_act_tracks_execution,true);
+assert.equal(dep.rules.find(x=>x.id==='DEP-028').outcome,'SHOW_SEL_INBOARD_OF_SELECTED_OPTION');
+assert.equal(dep.rules.find(x=>x.id==='DEP-030').outcome,'CHANGE_SELECTED_OPTION_MARKER_FROM_SEL_TO_ACT');
+assert.equal(perf.schema,'b737-classic-fcom-ch11-fmc-perfinit-limits/1.0');
+assert.deepEqual(perf.source.screenshots.map(s=>s.pdf_viewer_page),[1589,1590,1591,1592,1593,1594,1595]);
+assert.equal(perf.source.screenshots[6].sha256,'36c5399b562717329fe081b4458cc9c1a217134876b3db421b522d5b8a2c4671');
+assert.equal(perf.qa.rule_count,70);
+assert.equal(perf.rules.length,70);
+assert.equal(new Set(perf.rules.map(r=>r.id)).size,70);
+assert.equal(perf.qa.variant_count,3);
+const variants=Object.fromEntries(perf.page_model.perf_init.variants.map(v=>[v.id,v]));
+assert.deepEqual(Object.keys(variants),['FUEL_N1_LIMIT','PLAN_FUEL_N1_LIMIT_ACARS','FUEL_TAKEOFF']);
+assert.equal(variants.FUEL_N1_LIMIT.right.R3,'ISA DEV');
+assert.equal(variants.FUEL_N1_LIMIT.right.R6,'N1 LIMIT');
+assert.equal(variants.PLAN_FUEL_N1_LIMIT_ACARS.left.L2,'PLAN/FUEL');
+assert.equal(variants.PLAN_FUEL_N1_LIMIT_ACARS.right.R5,'PERF INIT REQUEST');
+assert.equal(variants.PLAN_FUEL_N1_LIMIT_ACARS.right.R6,'N1 LIMIT');
+assert.equal(variants.FUEL_TAKEOFF.right.R6,'TAKEOFF');
+assert.equal(perf.page_model.perf_init.do_not_merge_variants,true);
+assert.equal(perf.page_model.perf_limits.examples_not_defaults,true);
+assert.equal(perf.rules.find(x=>x.id==='PERF-035').outcome,'REJECT_INVALID_COST_INDEX');
+assert.equal(perf.rules.find(x=>x.id==='PERF-052').outcome,'DISPLAY_18000_FEET_DEFAULT');
+assert.equal(perf.rules.find(x=>x.id==='PERF-055').variant,'ACARS_VARIANT');
+assert.equal(perf.rules.find(x=>x.id==='LIMIT-011').variant,'EXAMPLE_ONLY');
+for(const db of [dep,perf]){
+ for(const r of db.rules){
+  assert.equal(r.implementation,'SOURCE_ONLY_NOT_WIRED');
+  assert.ok(db.source.screenshots.some(s=>s.id===r.source_image_id),'Unknown provenance '+r.id);
+ }
+ assert.equal(db.interfaces.runtime_connected_by_this_change??db.interfaces.implementation_by_this_commit,false);
+}
+assert.equal(dep.project.locked_artwork,true);
+assert.equal(dep.project.locked_boeing_cdu_fonts,true);
+assert.equal(perf.project.locked_cdu_image,true);
+assert.equal(perf.project.locked_hitboxes,true);
+console.log('PASS: 103 FCOM source rules; 9 screenshot SHA records; DEP compatibility, MOD/EXEC; PERF INIT variants and PERF LIMITS; approved CDU unchanged.');
