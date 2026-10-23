@@ -19,7 +19,13 @@
     "guarded_black_closed": "../panel-mosaic-lab/assets/locked/2026-10-23/Black_Guarded_CLOSED.png",
     "guarded_black_open_up": "../panel-mosaic-lab/assets/locked/2026-10-23/Black_Guarded_Open_UP.png",
     "guarded_black_open_center": "../panel-mosaic-lab/assets/locked/2026-10-23/Black_Guarded_Open_CENTER.png",
-    "guarded_black_open_down": "../panel-mosaic-lab/assets/locked/2026-10-23/Black_Guarded_Open_DOWN.png"
+    "guarded_black_open_down": "../panel-mosaic-lab/assets/locked/2026-10-23/Black_Guarded_Open_DOWN.png",
+    "fire_handle_apu_on": "../panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_APU_ON.webp",
+    "fire_handle_apu_off": "../panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_APU_OFF.webp",
+    "fire_handle_eng1_on": "../panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_ENG1_ON.webp",
+    "fire_handle_eng1_off": "../panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_ENG1_OFF.webp",
+    "fire_handle_eng2_on": "../panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_ENG2_ON.webp",
+    "fire_handle_eng2_off": "../panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_ENG2_OFF.webp"
   },
   "locked_assets_unchanged": true,
   "controls": [
@@ -255,6 +261,72 @@
       "status": "user-approved",
       "locked": true,
       "sha256": "ed4d782015ec8efe388a74923a037d4103a64f9dba26ee90366ed8ebe1cd546f"
+    },
+    {
+      "id": "B737-FIRE-HANDEL-APU-ON-V1",
+      "type": "fire-handle",
+      "path": "../panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_APU_ON.webp",
+      "unit": "APU",
+      "light_state": "ON",
+      "handle_position": "IN",
+      "status": "user-approved",
+      "locked": true,
+      "sha256": "3802fb498ed61d6d455c7a0f4d66fe83b7b1e004056f43a66ae61db5f833221f"
+    },
+    {
+      "id": "B737-FIRE-HANDEL-APU-OFF-V1",
+      "type": "fire-handle",
+      "path": "../panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_APU_OFF.webp",
+      "unit": "APU",
+      "light_state": "OFF",
+      "handle_position": "IN",
+      "status": "user-approved",
+      "locked": true,
+      "sha256": "a5ee96933c71f39af1a15e40d89b5d784b28711ba7a2c2eda20dc1efa1f5b8f6"
+    },
+    {
+      "id": "B737-FIRE-HANDEL-ENG1-ON-V1",
+      "type": "fire-handle",
+      "path": "../panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_ENG1_ON.webp",
+      "unit": "ENG1",
+      "light_state": "ON",
+      "handle_position": "IN",
+      "status": "user-approved",
+      "locked": true,
+      "sha256": "1446c0acaad89b8669e90da0e7eabceb6fcde0bc7acfa17474336201426d645f"
+    },
+    {
+      "id": "B737-FIRE-HANDEL-ENG1-OFF-V1",
+      "type": "fire-handle",
+      "path": "../panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_ENG1_OFF.webp",
+      "unit": "ENG1",
+      "light_state": "OFF",
+      "handle_position": "IN",
+      "status": "user-approved",
+      "locked": true,
+      "sha256": "25e6f1dba39bc0bdfc18ad748afa4332327166cad95c8cc6a523cb07a673e483"
+    },
+    {
+      "id": "B737-FIRE-HANDEL-ENG2-ON-V1",
+      "type": "fire-handle",
+      "path": "../panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_ENG2_ON.webp",
+      "unit": "ENG2",
+      "light_state": "ON",
+      "handle_position": "IN",
+      "status": "user-approved",
+      "locked": true,
+      "sha256": "dd5f67fd50955623a52da44197d59e4e0fd39a910575341938060f480f5703bb"
+    },
+    {
+      "id": "B737-FIRE-HANDEL-ENG2-OFF-V1",
+      "type": "fire-handle",
+      "path": "../panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_ENG2_OFF.webp",
+      "unit": "ENG2",
+      "light_state": "OFF",
+      "handle_position": "IN",
+      "status": "user-approved",
+      "locked": true,
+      "sha256": "d1a2676302a026cc141244b489521163597ae6b13d80e08395cb5483e2c26252"
     }
   ],
   "reference_library": [
@@ -331,6 +403,69 @@
         "path": "../panel-mosaic-lab/assets/locked/2026-10-23/Black_Guarded_Open_DOWN.png",
         "sha256": "ed4d782015ec8efe388a74923a037d4103a64f9dba26ee90366ed8ebe1cd546f",
         "git_blob_sha": "8a2e31185650ed4b2ff2624986544a9c93fb838a"
+      }
+    ]
+  },
+  "fire_handle_catalog": {
+    "version": 1,
+    "manifest": "../panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_manifest.json",
+    "states": [
+      "ON",
+      "OFF"
+    ],
+    "units": [
+      "APU",
+      "ENG1",
+      "ENG2"
+    ],
+    "selector": {
+      "unit": "APU|ENG1|ENG2",
+      "light": "ON|OFF",
+      "handle_position": "IN"
+    },
+    "status": "user-approved reference visual; aircraft system logic stays separate",
+    "assets": [
+      {
+        "id": "B737-FIRE-HANDEL-APU-ON-V1",
+        "unit": "APU",
+        "light": "ON",
+        "asset_path": "../panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_APU_ON.webp",
+        "sha256": "3802fb498ed61d6d455c7a0f4d66fe83b7b1e004056f43a66ae61db5f833221f"
+      },
+      {
+        "id": "B737-FIRE-HANDEL-APU-OFF-V1",
+        "unit": "APU",
+        "light": "OFF",
+        "asset_path": "../panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_APU_OFF.webp",
+        "sha256": "a5ee96933c71f39af1a15e40d89b5d784b28711ba7a2c2eda20dc1efa1f5b8f6"
+      },
+      {
+        "id": "B737-FIRE-HANDEL-ENG1-ON-V1",
+        "unit": "ENG1",
+        "light": "ON",
+        "asset_path": "../panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_ENG1_ON.webp",
+        "sha256": "1446c0acaad89b8669e90da0e7eabceb6fcde0bc7acfa17474336201426d645f"
+      },
+      {
+        "id": "B737-FIRE-HANDEL-ENG1-OFF-V1",
+        "unit": "ENG1",
+        "light": "OFF",
+        "asset_path": "../panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_ENG1_OFF.webp",
+        "sha256": "25e6f1dba39bc0bdfc18ad748afa4332327166cad95c8cc6a523cb07a673e483"
+      },
+      {
+        "id": "B737-FIRE-HANDEL-ENG2-ON-V1",
+        "unit": "ENG2",
+        "light": "ON",
+        "asset_path": "../panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_ENG2_ON.webp",
+        "sha256": "dd5f67fd50955623a52da44197d59e4e0fd39a910575341938060f480f5703bb"
+      },
+      {
+        "id": "B737-FIRE-HANDEL-ENG2-OFF-V1",
+        "unit": "ENG2",
+        "light": "OFF",
+        "asset_path": "../panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_ENG2_OFF.webp",
+        "sha256": "d1a2676302a026cc141244b489521163597ae6b13d80e08395cb5483e2c26252"
       }
     ]
   }

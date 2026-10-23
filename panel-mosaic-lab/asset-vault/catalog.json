@@ -198,6 +198,84 @@
       "technical_database_library_path": "/Technical Database/Source Panels/IRS Keypad/2026-10-23/IRS-KEYPAD-12KEY-ENT-CLR-DUAL-LAMPS-V1.png",
       "library_status": "not_uploaded",
       "immutable": true
+    },
+    {
+      "asset_id": "B737-FIRE-HANDEL-APU-ON-V1",
+      "section": "pedestal",
+      "version": "2026-10-23",
+      "source_filename": "FIRE_HANDEL_APU_ON.webp",
+      "size_bytes": 1015896,
+      "sha256": "3802fb498ed61d6d455c7a0f4d66fe83b7b1e004056f43a66ae61db5f833221f",
+      "github_path": "panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_APU_ON.webp",
+      "github_status": "uploaded_verified",
+      "technical_database_library_path": "/Technical Database/Source Panels/Fire Handles/2026-10-23/FIRE_HANDEL_APU_ON.webp",
+      "library_status": "not_uploaded",
+      "immutable": true
+    },
+    {
+      "asset_id": "B737-FIRE-HANDEL-APU-OFF-V1",
+      "section": "pedestal",
+      "version": "2026-10-23",
+      "source_filename": "FIRE_HANDEL_APU_OFF.webp",
+      "size_bytes": 956876,
+      "sha256": "a5ee96933c71f39af1a15e40d89b5d784b28711ba7a2c2eda20dc1efa1f5b8f6",
+      "github_path": "panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_APU_OFF.webp",
+      "github_status": "uploaded_verified",
+      "technical_database_library_path": "/Technical Database/Source Panels/Fire Handles/2026-10-23/FIRE_HANDEL_APU_OFF.webp",
+      "library_status": "not_uploaded",
+      "immutable": true
+    },
+    {
+      "asset_id": "B737-FIRE-HANDEL-ENG1-ON-V1",
+      "section": "pedestal",
+      "version": "2026-10-23",
+      "source_filename": "FIRE_HANDEL_ENG1_ON.webp",
+      "size_bytes": 1042392,
+      "sha256": "1446c0acaad89b8669e90da0e7eabceb6fcde0bc7acfa17474336201426d645f",
+      "github_path": "panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_ENG1_ON.webp",
+      "github_status": "uploaded_verified",
+      "technical_database_library_path": "/Technical Database/Source Panels/Fire Handles/2026-10-23/FIRE_HANDEL_ENG1_ON.webp",
+      "library_status": "not_uploaded",
+      "immutable": true
+    },
+    {
+      "asset_id": "B737-FIRE-HANDEL-ENG1-OFF-V1",
+      "section": "pedestal",
+      "version": "2026-10-23",
+      "source_filename": "FIRE_HANDEL_ENG1_OFF.webp",
+      "size_bytes": 998418,
+      "sha256": "25e6f1dba39bc0bdfc18ad748afa4332327166cad95c8cc6a523cb07a673e483",
+      "github_path": "panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_ENG1_OFF.webp",
+      "github_status": "uploaded_verified",
+      "technical_database_library_path": "/Technical Database/Source Panels/Fire Handles/2026-10-23/FIRE_HANDEL_ENG1_OFF.webp",
+      "library_status": "not_uploaded",
+      "immutable": true
+    },
+    {
+      "asset_id": "B737-FIRE-HANDEL-ENG2-ON-V1",
+      "section": "pedestal",
+      "version": "2026-10-23",
+      "source_filename": "FIRE_HANDEL_ENG2_ON.webp",
+      "size_bytes": 836022,
+      "sha256": "dd5f67fd50955623a52da44197d59e4e0fd39a910575341938060f480f5703bb",
+      "github_path": "panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_ENG2_ON.webp",
+      "github_status": "uploaded_verified",
+      "technical_database_library_path": "/Technical Database/Source Panels/Fire Handles/2026-10-23/FIRE_HANDEL_ENG2_ON.webp",
+      "library_status": "not_uploaded",
+      "immutable": true
+    },
+    {
+      "asset_id": "B737-FIRE-HANDEL-ENG2-OFF-V1",
+      "section": "pedestal",
+      "version": "2026-10-23",
+      "source_filename": "FIRE_HANDEL_ENG2_OFF.webp",
+      "size_bytes": 971974,
+      "sha256": "d1a2676302a026cc141244b489521163597ae6b13d80e08395cb5483e2c26252",
+      "github_path": "panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_ENG2_OFF.webp",
+      "github_status": "uploaded_verified",
+      "technical_database_library_path": "/Technical Database/Source Panels/Fire Handles/2026-10-23/FIRE_HANDEL_ENG2_OFF.webp",
+      "library_status": "not_uploaded",
+      "immutable": true
     }
   ]
 }

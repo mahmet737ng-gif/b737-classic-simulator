@@ -65,6 +65,20 @@
       "ids": [
         "IRS-KEYPAD-12KEY-ENT-CLR-DUAL-LAMPS-V1"
       ]
+    },
+    {
+      "version": "GITHUB-UPLOAD-FIRE-HANDLE-20261024",
+      "date": "2026-10-24",
+      "kind": "binary_upload_verified",
+      "description": "Six user-approved retract-position B737 fire handle images (APU/ENG1/ENG2 x light ON/OFF), deployed as lossless WebP with original visible pixels and lighting preserved; append-only locked GitHub assets.",
+      "ids": [
+        "B737-FIRE-HANDEL-APU-ON-V1",
+        "B737-FIRE-HANDEL-APU-OFF-V1",
+        "B737-FIRE-HANDEL-ENG1-ON-V1",
+        "B737-FIRE-HANDEL-ENG1-OFF-V1",
+        "B737-FIRE-HANDEL-ENG2-ON-V1",
+        "B737-FIRE-HANDEL-ENG2-OFF-V1"
+      ]
     }
   ]
 }
