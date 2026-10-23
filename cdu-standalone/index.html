@@ -6,16 +6,17 @@
 <aside class="sidebar"><section><h2>حالت مستقل</h2><p>CDU همیشه در دسترس است؛ برای تمرین به برق، IRS یا اتصال به شبیه‌ساز نیازی ندارد.</p><dl><dt>صفحهٔ فعلی</dt><dd id="page-now">CRZ</dd><dt>ورودی Scratchpad</dt><dd dir="ltr" id="scratch-now">—</dd><dt>تغییرات آمادهٔ EXEC</dt><dd id="pending-now">0</dd><dt>آخرین کلید</dt><dd id="key-now">—</dd></dl></section>
 <section><h2>آزمایش اعلان‌ها</h2><label><input type="checkbox" id="call-test"> درخواست کنترل از سیستم مجازی (CALL)</label><label><input type="checkbox" id="fault-test"> خطای Self-Test (FAIL)</label><label><input type="checkbox" id="offset-test"> هدایت Offset آزمایشی (OFST)</label><p class="subtle">MSG از پیام Scratchpad و EXEC از تغییرات تأییدنشده به‌طور خودکار کنترل می‌شوند.</p><button id="test-message" type="button">نمایش پیام نمونهٔ CDU</button></section>
 <section id="present-n1-test"><h2>PRESENT N1 — Engine 1 / Engine 2</h2>
-<p class="subtle">Engine telemetry adapter only. There is currently no aircraft engine N1 physics feeding this standalone page. Entered values are explicitly TEST telemetry, never actual simulator engine output, MAX N1 or AFM-calculated N1.</p>
+<p class="subtle">Default display uses SIM EST estimates when measured N1 is unavailable. Live engine telemetry overrides EST when provided. Manually injected values are marked TEST; none are AFM-validated or real flight data.</p>
 <label>ENG 1 N1 (%) <input id="present-n1-eng1" type="number" min="0" max="106" step="0.1" placeholder="No measurement"></label>
 <label>ENG 2 N1 (%) <input id="present-n1-eng2" type="number" min="0" max="106" step="0.1" placeholder="No measurement"></label>
+<label>Estimated thrust lever (%) <select id="n1-thrust-lever"><option value="" selected>By flight phase (estimated)</option><option value="0">0%</option><option value="25">25%</option><option value="50">50%</option><option value="75">75%</option><option value="90">90%</option><option value="95">95%</option><option value="97">97%</option><option value="98">98%</option><option value="100">100%</option></select></label>
 <button id="present-n1-inject" type="button">Inject TEST N1 readings</button>
 <button id="present-n1-clear" type="button">Clear telemetry</button>
-<p id="present-n1-status" class="subtle">ENGINE: no N1 data</p>
-<p class="subtle">Live source integration requires a separate Engine Core or simulator bridge. Readings expire automatically if updates stop.</p>
+<p id="present-n1-status" class="subtle">ENG1/ENG2 estimated N1 values appear when live data is absent.</p>
+<p class="subtle">Live source integration requires a separate Engine Core or simulator bridge. Readings expire automatically if updates stop; estimated values then return with the EST label.</p>
 </section>
 <section id="n1-source-test"><h2>EP-FSI — AFM N1 Source / Training</h2>
-<p class="subtle">Source-selection and page routing only; numeric N1 curves have not passed independent QA. Manual N1 entry is a training input, not an AFM calculation.</p>
+<p class="subtle">MAX N1 / TAKEOFF REF display an approximate SIM EST value for training (TO/GA generally 88–95%). These are NOT approved AFM performance values. Manual N1 input remains MAN.</p>
 <label>PMC mode <select id="n1-pmc-mode"><option value="UNKNOWN">Unknown</option><option value="NORMAL">NORMAL</option><option value="OFF">OFF</option></select></label>
 <label>Flight phase <select id="n1-phase"><option value="TAKEOFF">TAKEOFF</option><option value="GO_AROUND">GO-AROUND</option><option value="MAX_CONTINUOUS">MAX CONTINUOUS</option></select></label>
 <label>Pressure altitude (ft) <input id="n1-pressure-alt" type="number" min="-1000" max="37000" placeholder="Not supplied"></label>
@@ -28,8 +29,8 @@
 <label>A/C PACKS <select id="n1-bleed"><option value="AUTO" selected>AUTO — normal default</option><option value="OFF">OFF</option><option value="HIGH">HIGH</option></select></label>
 <label>Anti-ice <select id="n1-anti-ice"><option value="OFF" selected>OFF — default</option><option value="ENGINE">ENGINE</option><option value="WING">WING</option><option value="BOTH">BOTH</option></select></label>
 <p id="n1-defaults-status" class="subtle" aria-live="polite">ISA / Bleed ON / Anti-ice OFF</p>
-<p class="subtle">Page N1 LIMIT shows PDF chart reference and ---.- until source curves are independently verified. No autothrottle commands are issued.</p>
+<p class="subtle">Page N1 LIMIT shows EST values even without verified AFM tables; true AFM calculation remains unverified. No autothrottle commands are issued.</p>
 </section><section><h2>راهنمای اجرا</h2><p>روی <b>RTE</b> کلیک کن، فرودگاه چهارحرفی را با صفحه‌کلید CDU وارد کن و <b>LSK L1</b> را بزن. سپس مقصد را در <b>LSK R1</b> ثبت کن. چراغ EXEC روشن می‌شود؛ کلید EXEC را فشار بده.</p><p>فشردن <b>CLR</b> یک حرف را پاک می‌کند و نگه‌داشتن آن Scratchpad را خالی می‌کند. DIM BRT روشنایی تصویر را در حالت تمرینی تغییر می‌دهد.</p><p class="subtle">این نمونه شبیه‌ساز رفتار ورودی و صفحه‌ها است؛ هنوز ناوبری، محاسبات Performance یا مسیر واقعی هواپیما را انجام نمی‌دهد.</p></section>
 <section id="qa" hidden><h2>اطلاعات کنترل</h2><pre id="selected-code" dir="ltr"></pre><p>نقشهٔ اصلی: <a href="data/cdu-map.json">JSON 70 controls</a> | <a href="data/buttons.csv">CSV</a> | <a href="data/cdu-hotspot-audit-v2.jpg">QA overlay</a></p><p>فصل ۱۱: <a href="reference/chapter11-pages.json">409-page index</a></p></section></aside></main>
 <footer>Only for training, not for actual flight. FCOM references: 11.10.3–11.10.7; 11.40–11.43, 11.60. Artwork retains the original approved image byte-for-byte; display contents and lights are independent overlays.</footer>
-<script src="data/cdu-map.js"></script><script src="data/epfsi-scenario-defaults-v17.js"></script><script src="data/afm-epfsi-n1-v10.js"></script><script src="data/present-n1-bridge-v18.js"></script><script src="app.js"></script></body></html>
+<script src="data/cdu-map.js"></script><script src="data/epfsi-scenario-defaults-v17.js"></script><script src="data/afm-epfsi-n1-v10.js"></script><script src="data/present-n1-bridge-v18.js"></script><script src="data/epfsi-simulated-n1-v19.js"></script><script src="app.js"></script></body></html>
