@@ -1,0 +1,912 @@
+{
+  "schema": "b737-classic-fcom-ch11-fmc-perfinit-limits/1.0",
+  "record_id": "B737-CLASSIC-CDU-FCOM-PERF-11.40.37-43-2020-2023",
+  "project": {
+    "repo": "mahmet737ng-gif/b737-classic-simulator",
+    "component": "B737-CLASSIC-CDU",
+    "status": "SOURCE_ONLY",
+    "locked_cdu_image": true,
+    "locked_hitboxes": true,
+    "locked_font_files": [
+      "BoeingCDU-Large.ttf",
+      "BoeingCDU-Small.ttf"
+    ]
+  },
+  "source": {
+    "manual": "737 Flight Crew Operations Manual — FMC Preflight Performance",
+    "document_id": "D6-27370-300/400/500-SHI",
+    "screenshots": [
+      {
+        "id": "perf1589",
+        "filename": "image(20261023-194221).png",
+        "pdf_viewer_page": 1589,
+        "folio": "11.40.37",
+        "manual_revision": "2020-10-15",
+        "sha256": "c62429c4d5efd749d381af5b26c370c93ef2a354d8969523ec10beb8165a714a"
+      },
+      {
+        "id": "perf1590",
+        "filename": "image(20261023-194226).png",
+        "pdf_viewer_page": 1590,
+        "folio": "11.40.38",
+        "manual_revision": "2023-06-15",
+        "sha256": "a2f6349bb5c406df4dac387f823b0b2ec92630ba05ab6593583ef860ef9e96e7"
+      },
+      {
+        "id": "perf1591",
+        "filename": "image(20261023-194230).png",
+        "pdf_viewer_page": 1591,
+        "folio": "11.40.39",
+        "manual_revision": "2020-10-15",
+        "sha256": "bb6872bd22d5cae4cd4f68f2746f76dbf9ba1ceaf47895523499973e1aed9ffa"
+      },
+      {
+        "id": "perf1592",
+        "filename": "image(20261023-194238).png",
+        "pdf_viewer_page": 1592,
+        "folio": "11.40.40",
+        "manual_revision": "2023-06-15",
+        "sha256": "489e42f5dc2b9c1c536555ddad914ec9ead676d9f07bf9ea1c3d0658eafcc975"
+      },
+      {
+        "id": "perf1593",
+        "filename": "image(20261023-194244).png",
+        "pdf_viewer_page": 1593,
+        "folio": "11.40.41",
+        "manual_revision": "2023-06-15",
+        "sha256": "04f8e070314ca5edd34ccaccb95a12c2ab141cefac7464c2765638fbc696983b"
+      },
+      {
+        "id": "perf1594",
+        "filename": "image(20261023-194300).png",
+        "pdf_viewer_page": 1594,
+        "folio": "11.40.42",
+        "manual_revision": "2023-06-15",
+        "sha256": "62f47242538dfeac7a99b1805f9a497f81587498c53b002f434d10c162d7dc0e"
+      },
+      {
+        "id": "perf1595",
+        "filename": "image(20261023-194307).png",
+        "pdf_viewer_page": 1595,
+        "folio": "11.40.43",
+        "manual_revision": "2023-06-15",
+        "sha256": "36c5399b562717329fe081b4458cc9c1a217134876b3db421b522d5b8a2c4671"
+      }
+    ],
+    "source_scope": "SEVEN_USER_UPLOADED_SCREENSHOTS_ONLY",
+    "known_missing_page": "11.40.36 is not in this user upload",
+    "manual_dates_vary_across_pages": true,
+    "copyright_note": "Only independently paraphrased facts and page positions; illustrations not redistributed."
+  },
+  "page_model": {
+    "perf_init": {
+      "page": "1/2",
+      "variant_selection_required": true,
+      "do_not_merge_variants": true,
+      "variants": [
+        {
+          "id": "FUEL_N1_LIMIT",
+          "source_image_id": "perf1589",
+          "left": {
+            "L1": "GW/CRZ CG",
+            "L2": "FUEL",
+            "L3": "ZFW",
+            "L4": "RESERVES",
+            "L5": "COST INDEX",
+            "L6": "INDEX"
+          },
+          "right": {
+            "R1": "TRIP/CRZ ALT",
+            "R2": "CRZ WIND",
+            "R3": "ISA DEV",
+            "R4": "T/C OAT",
+            "R5": "TRANS ALT",
+            "R6": "N1 LIMIT"
+          }
+        },
+        {
+          "id": "PLAN_FUEL_N1_LIMIT_ACARS",
+          "source_image_id": "perf1590",
+          "left": {
+            "L1": "GW/CRZ CG",
+            "L2": "PLAN/FUEL",
+            "L3": "ZFW",
+            "L4": "RESERVES",
+            "L5": "COST INDEX",
+            "L6": "INDEX"
+          },
+          "right": {
+            "R1": "TRIP/CRZ ALT",
+            "R2": "CRZ WIND",
+            "R3": "T/C OAT",
+            "R4": "TRANS ALT",
+            "R5": "PERF INIT REQUEST",
+            "R6": "N1 LIMIT"
+          }
+        },
+        {
+          "id": "FUEL_TAKEOFF",
+          "source_image_id": "perf1591",
+          "left": {
+            "L1": "GW/CRZ CG",
+            "L2": "FUEL",
+            "L3": "ZFW",
+            "L4": "RESERVES",
+            "L5": "COST INDEX",
+            "L6": "INDEX"
+          },
+          "right": {
+            "R1": "TRIP/CRZ ALT",
+            "R2": "CRZ WIND",
+            "R3": "ISA DEV",
+            "R4": "T/C OAT",
+            "R5": "TRANS ALT",
+            "R6": "TAKEOFF"
+          }
+        }
+      ],
+      "required_for_vnav": [
+        "GROSS_WEIGHT_OR_VALID_ZFW_PLUS_FUEL",
+        "FUEL_RESERVES",
+        "COST_INDEX",
+        "CRUISE_ALTITUDE"
+      ],
+      "conditional_pilot_entry": "GW may auto calculate after entering ZFW when valid fuel; ZFW may auto calculate after GW when valid fuel",
+      "preferred_data_source": "FMC fuel quantity summation unit unless invalid",
+      "example_values_not_defaults": true
+    },
+    "perf_limits": {
+      "page": "2/2",
+      "field_groups": [
+        "CLB",
+        "CRZ",
+        "DES"
+      ],
+      "speed_min_max_pair_format": "IAS_KNOTS/MACH",
+      "rta_time_error_tolerance": true,
+      "navigation_to": "RTA_PROGRESS",
+      "examples_not_defaults": true
+    }
+  },
+  "rules": [
+    {
+      "id": "PERF-001",
+      "source_image_id": "perf1589",
+      "area": "preflight",
+      "when": "PERF_INIT_OPEN",
+      "then": "INITIALIZE_REQUIRED_PERFORMANCE_AND_VNAV_DATA",
+      "variant": "COMMON",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "PERF-002",
+      "source_image_id": "perf1589",
+      "area": "navigation",
+      "when": "INIT_REF_INDEX_PERF_SELECTED",
+      "then": "OPEN_PERF_INIT_1_OF_2",
+      "variant": "COMMON",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "PERF-003",
+      "source_image_id": "perf1589",
+      "area": "navigation",
+      "when": "RTE_PERF_INIT_PROMPT_SELECTED_ON_GROUND_WHEN_INCOMPLETE",
+      "then": "OPEN_PERF_INIT_1_OF_2",
+      "variant": "COMMON",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "PERF-004",
+      "source_image_id": "perf1589",
+      "area": "navigation",
+      "when": "TAKEOFF_REF_PERF_INIT_PROMPT_SELECTED_ON_GROUND_WHEN_INCOMPLETE",
+      "then": "OPEN_PERF_INIT_1_OF_2",
+      "variant": "COMMON",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "PERF-005",
+      "source_image_id": "perf1589",
+      "area": "navigation",
+      "when": "NEXT_PAGE_ON_PERF_INIT_1_OF_2",
+      "then": "OPEN_PERF_LIMITS_2_OF_2",
+      "variant": "COMMON",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "PERF-006",
+      "source_image_id": "perf1589",
+      "area": "screen",
+      "when": "PERF_INIT_2020_FUEL_VARIANT",
+      "then": "L1_GW_CRZ_CG_L2_FUEL_L3_ZFW_L4_RESERVES_L5_COST_INDEX_L6_INDEX",
+      "variant": "FUEL_VARIANT_2020",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "PERF-007",
+      "source_image_id": "perf1589",
+      "area": "screen",
+      "when": "PERF_INIT_2020_FUEL_VARIANT",
+      "then": "R1_TRIP_CRZ_ALT_R2_CRZ_WIND_R3_ISA_DEV_R4_TC_OAT_R5_TRANS_ALT_R6_N1_LIMIT",
+      "variant": "FUEL_VARIANT_2020",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "PERF-008",
+      "source_image_id": "perf1589",
+      "area": "screen",
+      "when": "PICTURED_GW_CRZ_CG_AND_CRZ_ALT_VALUES",
+      "then": "ILLUSTRATION_VALUES_NOT_AIRCRAFT_DEFAULTS",
+      "variant": "EXAMPLE_ONLY",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "PERF-009",
+      "source_image_id": "perf1590",
+      "area": "screen",
+      "when": "PERF_INIT_2023_PLAN_FUEL_VARIANT",
+      "then": "L1_GW_CRZ_CG_L2_PLAN_FUEL_L3_ZFW_L4_RESERVES_L5_COST_INDEX_L6_INDEX",
+      "variant": "PLAN_FUEL_REQUEST_VARIANT_2023",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "PERF-010",
+      "source_image_id": "perf1590",
+      "area": "screen",
+      "when": "PERF_INIT_2023_PLAN_FUEL_VARIANT",
+      "then": "R1_TRIP_CRZ_ALT_R2_CRZ_WIND_R3_TC_OAT_R4_TRANS_ALT_R5_PERF_INIT_REQUEST_R6_N1_LIMIT",
+      "variant": "PLAN_FUEL_REQUEST_VARIANT_2023",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "PERF-011",
+      "source_image_id": "perf1590",
+      "area": "screen",
+      "when": "PERF_INIT_2023_PLAN_FUEL_VARIANT",
+      "then": "OPTIONAL_ACARS_PERF_INIT_REQUEST_DISPLAYED",
+      "variant": "PLAN_FUEL_REQUEST_VARIANT_2023",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "PERF-012",
+      "source_image_id": "perf1590",
+      "area": "page",
+      "when": "GW_CRZ_CG_DISPLAYED_WITH_SLASH",
+      "then": "LEFT_WEIGHT_AND_RIGHT_CG_PERCENT_SEPARATED_BY_SLASH",
+      "variant": "COMMON",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "PERF-013",
+      "source_image_id": "perf1590",
+      "area": "page",
+      "when": "PLAN_FUEL_DISPLAYED",
+      "then": "TWO_PART_PLAN_FUEL_FORMAT",
+      "variant": "COMMON",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "PERF-014",
+      "source_image_id": "perf1591",
+      "area": "screen",
+      "when": "PERF_INIT_2020_TAKEOFF_PROMPT_VARIANT",
+      "then": "L1_GW_CRZ_CG_L2_FUEL_L3_ZFW_L4_RESERVES_L5_COST_INDEX_L6_INDEX",
+      "variant": "FUEL_TAKEOFF_VARIANT_2020",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "PERF-015",
+      "source_image_id": "perf1591",
+      "area": "screen",
+      "when": "PERF_INIT_2020_TAKEOFF_PROMPT_VARIANT",
+      "then": "R1_TRIP_CRZ_ALT_R2_CRZ_WIND_R3_ISA_DEV_R4_TC_OAT_R5_TRANS_ALT_R6_TAKEOFF",
+      "variant": "FUEL_TAKEOFF_VARIANT_2020",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "PERF-016",
+      "source_image_id": "perf1591",
+      "area": "navigation",
+      "when": "PERF_INIT_COMPLETE_AND_PROMPT_TAKEOFF_SHOWN",
+      "then": "R6_TAKEOFF_REF",
+      "variant": "COMMON",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "PERF-017",
+      "source_image_id": "perf1591",
+      "area": "preflight",
+      "when": "REQUIRED_PERF_INIT_DATA_NOT_COMPLETE",
+      "then": "SHOW_PERF_INIT_INCOMPLETE_STATUS_ON_GROUND",
+      "variant": "COMMON",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "PERF-018",
+      "source_image_id": "perf1591",
+      "area": "preflight",
+      "when": "REQUIRED_PERF_INIT_DATA_COMPLETE",
+      "then": "ALLOW_NEXT_PREFLIGHT_PROMPT",
+      "variant": "COMMON",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "PERF-019",
+      "source_image_id": "perf1592",
+      "area": "weight",
+      "when": "L1_GW_ENTERED",
+      "then": "ACCEPT_GROSS_WEIGHT_FORMAT_XXX_OR_XXX_DOT_X",
+      "variant": "COMMON",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "PERF-020",
+      "source_image_id": "perf1592",
+      "area": "weight",
+      "when": "ZERO_FUEL_WEIGHT_ENTERED_FIRST_WITH_VALID_FUEL",
+      "then": "AUTO_COMPUTE_GROSS_WEIGHT",
+      "variant": "COMMON",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "PERF-021",
+      "source_image_id": "perf1592",
+      "area": "weight",
+      "when": "CRUISE_CG_FIELD",
+      "then": "DISPLAY_DEFAULT_OR_MANUALLY_ENTERED_CRUISE_CG",
+      "variant": "COMMON",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "PERF-022",
+      "source_image_id": "perf1592",
+      "area": "weight",
+      "when": "ACTUAL_CRUISE_CG_ENTERED",
+      "then": "USE_FOR_MAX_ALTITUDE_CAPABILITY_PREDICTION",
+      "variant": "COMMON",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "PERF-023",
+      "source_image_id": "perf1592",
+      "area": "fuel",
+      "when": "FMC_RECEIVES_VALID_FUEL_SUMMATION_UNIT_DATA",
+      "then": "DISPLAY_FUEL_ON_BOARD",
+      "variant": "COMMON",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "PERF-024",
+      "source_image_id": "perf1592",
+      "area": "fuel",
+      "when": "FMC_DOES_NOT_RECEIVE_REQUIRED_FUEL_DATA",
+      "then": "BLANK_FUEL_DISPLAY",
+      "variant": "COMMON",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "PERF-025",
+      "source_image_id": "perf1592",
+      "area": "fuel",
+      "when": "IN_FLIGHT_INVALID_FUEL_DATA",
+      "then": "DISPLAY_DASHES_AND_PERMIT_MANUAL_FUEL_WEIGHT",
+      "variant": "MANUAL_FUEL_VARIANT",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "PERF-026",
+      "source_image_id": "perf1592",
+      "area": "fuel",
+      "when": "MANUAL_FUEL_WEIGHT_ENTERED",
+      "then": "DISPLAY_MAN_AND_REQUIRE_PERIODIC_UPDATES_TO_KEEP_GROSS_WEIGHT_CURRENT",
+      "variant": "MANUAL_FUEL_VARIANT",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "PERF-027",
+      "source_image_id": "perf1592",
+      "area": "fuel",
+      "when": "PLAN_FUEL_VARIANT",
+      "then": "PERMIT_FUEL_PREDICTIONS_BEFORE_ACTUAL_FUEL_KNOWN",
+      "variant": "PLAN_FUEL_VARIANT",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "PERF-028",
+      "source_image_id": "perf1592",
+      "area": "fuel",
+      "when": "PLAN_FUEL_NOT_ELIGIBLE",
+      "then": "BLANK_PLAN_FUEL_WHEN_FLAPS_EXTENDED_OR_BOTH_PACKS_ON_OR_IN_FLIGHT",
+      "variant": "PLAN_FUEL_VARIANT",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "PERF-029",
+      "source_image_id": "perf1592",
+      "area": "weight",
+      "when": "L3_ZFW_ENTERED",
+      "then": "ACCEPT_ZFW_FORMAT_XXX_OR_XXX_DOT_X",
+      "variant": "COMMON",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "PERF-030",
+      "source_image_id": "perf1592",
+      "area": "weight",
+      "when": "L3_ZFW_ENTERED_AFTER_GW_WITH_VALID_FUEL",
+      "then": "AUTO_COMPUTE_ZFW",
+      "variant": "COMMON",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "PERF-031",
+      "source_image_id": "perf1592",
+      "area": "weight",
+      "when": "ZFW_OR_GW_REQUIRED",
+      "then": "REQUIRE_WEIGHT_DATA_TO_COMPLETE_PERF_INIT",
+      "variant": "COMMON",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "PERF-032",
+      "source_image_id": "perf1592",
+      "area": "reserves",
+      "when": "L4_RESERVES_ENTERED",
+      "then": "REQUIRE_RESERVE_FUEL_FOR_PREFLIGHT_COMPLETION",
+      "variant": "COMMON",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "PERF-033",
+      "source_image_id": "perf1592",
+      "area": "reserves",
+      "when": "L4_RESERVES_ENTRY_FORMAT",
+      "then": "ACCEPT_XX_OR_XX_DOT_X",
+      "variant": "COMMON",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "PERF-034",
+      "source_image_id": "perf1593",
+      "area": "cost_index",
+      "when": "L5_COST_INDEX_ENTERED",
+      "then": "REQUIRE_FOR_ECON_VNAV_CALCULATIONS",
+      "variant": "COMMON",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "PERF-035",
+      "source_image_id": "perf1593",
+      "area": "cost_index",
+      "when": "COST_INDEX_OUTSIDE_0_TO_200",
+      "then": "REJECT_INVALID_COST_INDEX",
+      "variant": "COMMON",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "PERF-036",
+      "source_image_id": "perf1593",
+      "area": "cost_index",
+      "when": "COST_INDEX_ZERO",
+      "then": "SET_ECON_SPEED_REFERENCE_TO_MAX_RANGE",
+      "variant": "COMMON",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "PERF-037",
+      "source_image_id": "perf1593",
+      "area": "cost_index",
+      "when": "COST_INDEX_200",
+      "then": "SET_ECON_SPEED_REFERENCE_TO_MINIMUM_TIME",
+      "variant": "COMMON",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "PERF-038",
+      "source_image_id": "perf1593",
+      "area": "cost_index",
+      "when": "VALID_COMPANY_ROUTE_CI_PRESENT",
+      "then": "AUTO_DISPLAY_STORED_CI_UNLESS_MANUAL_OVERRIDDEN",
+      "variant": "COMMON",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "PERF-039",
+      "source_image_id": "perf1593",
+      "area": "cost_index",
+      "when": "MANUAL_CI_ENTERED",
+      "then": "MANUAL_CI_HAS_PRIORITY_OVER_COMPANY_ROUTE",
+      "variant": "COMMON",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "PERF-040",
+      "source_image_id": "perf1593",
+      "area": "navigation",
+      "when": "L6_INDEX_SELECTED",
+      "then": "OPEN_INIT_REF_INDEX",
+      "variant": "COMMON",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "PERF-041",
+      "source_image_id": "perf1593",
+      "area": "crz_alt",
+      "when": "ORIGIN_DEST_GROSS_WEIGHT_COST_INDEX_AVAILABLE",
+      "then": "COMPUTE_AND_DISPLAY_ADVISORY_TRIP_ALTITUDE",
+      "variant": "PREDICTION",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "PERF-042",
+      "source_image_id": "perf1593",
+      "area": "crz_alt",
+      "when": "REQUIRED_CRUISE_ALT_NOT_ENTERED",
+      "then": "MARK_PERF_INIT_INCOMPLETE",
+      "variant": "COMMON",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "PERF-043",
+      "source_image_id": "perf1593",
+      "area": "crz_alt",
+      "when": "R1_CRZ_ALT_ENTERED",
+      "then": "STORE_CRUISE_ALTITUDE_IN_FLIGHT_PLAN",
+      "variant": "COMMON",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "PERF-044",
+      "source_image_id": "perf1593",
+      "area": "crz_alt",
+      "when": "CRZ_ALT_CHANGED",
+      "then": "PROPAGATE_TO_CLB_CRZ_RTE_LEGS_PAGES",
+      "variant": "COMMON",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "PERF-045",
+      "source_image_id": "perf1593",
+      "area": "crz_wind",
+      "when": "R2_CRZ_WIND_ENTERED",
+      "then": "USE_FORECAST_CRUISE_WIND_FOR_FMC_CALCULATIONS",
+      "variant": "COMMON",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "PERF-046",
+      "source_image_id": "perf1593",
+      "area": "crz_wind",
+      "when": "CRZ_WIND_ENTERED",
+      "then": "PROPAGATE_TO_RTE_DATA",
+      "variant": "COMMON",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "PERF-047",
+      "source_image_id": "perf1593",
+      "area": "crz_wind",
+      "when": "CRZ_WIND_NOT_ENTERED",
+      "then": "ASSUME_ZERO_WIND_FOR_PREFLIGHT_PREDICTIONS",
+      "variant": "COMMON",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "PERF-048",
+      "source_image_id": "perf1593",
+      "area": "temperature",
+      "when": "R3_ISA_DEV_ENTERED",
+      "then": "USE_TOP_OF_CLIMB_ISA_DEVIATION_TO_COMPUTE_TC_OAT",
+      "variant": "ISA_DEV_VARIANT",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "PERF-049",
+      "source_image_id": "perf1593",
+      "area": "temperature",
+      "when": "R3_ISA_DEV_BLANK",
+      "then": "DEFAULT_ISA_DEVIATION_ZERO",
+      "variant": "ISA_DEV_VARIANT",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "PERF-050",
+      "source_image_id": "perf1594",
+      "area": "temperature",
+      "when": "TC_OAT_ENTERED",
+      "then": "USE_OUTSIDE_AIR_TEMP_AT_TOP_OF_CLIMB_AND_COMPUTE_ISA_DEV",
+      "variant": "COMMON",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "PERF-051",
+      "source_image_id": "perf1594",
+      "area": "temperature",
+      "when": "TC_OAT_BLANK",
+      "then": "ASSUME_ISA_TEMPERATURE_AT_TOP_OF_CLIMB",
+      "variant": "COMMON",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "PERF-052",
+      "source_image_id": "perf1594",
+      "area": "transition_alt",
+      "when": "TRANS_ALT_AT_FMC_START",
+      "then": "DISPLAY_18000_FEET_DEFAULT",
+      "variant": "COMMON",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "PERF-053",
+      "source_image_id": "perf1594",
+      "area": "transition_alt",
+      "when": "SID_WITH_DIFFERENT_TRANS_ALT_SELECTED",
+      "then": "AUTOMATICALLY_UPDATE_TRANS_ALT",
+      "variant": "COMMON",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "PERF-054",
+      "source_image_id": "perf1594",
+      "area": "transition_alt",
+      "when": "MANUAL_TRANS_ALT_ENTERED",
+      "then": "MANUAL_ENTRY_TAKES_PRIORITY",
+      "variant": "COMMON",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "PERF-055",
+      "source_image_id": "perf1594",
+      "area": "navigation",
+      "when": "PERF_INIT_REQUEST_PROMPT_SELECTED",
+      "then": "ISSUE_ACARS_PERF_INIT_UPLINK_REQUEST_ONLY_WHEN_ACARS_IMPLEMENTED",
+      "variant": "ACARS_VARIANT",
+      "notes": "Do not simulate success or enable external ACARS absent backend.",
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "PERF-056",
+      "source_image_id": "perf1594",
+      "area": "navigation",
+      "when": "N1_LIMIT_PROMPT_SELECTED",
+      "then": "OPEN_N1_LIMIT_PAGE",
+      "variant": "N1_LIMIT_VARIANT",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "PERF-057",
+      "source_image_id": "perf1594",
+      "area": "navigation",
+      "when": "TAKEOFF_PROMPT_SELECTED",
+      "then": "OPEN_TAKEOFF_REF_PAGE",
+      "variant": "TAKEOFF_VARIANT",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "LIMIT-001",
+      "source_image_id": "perf1595",
+      "area": "page",
+      "when": "PERF_LIMITS_OPEN",
+      "then": "TITLE_PERF_LIMITS_2_OF_2",
+      "variant": "COMMON",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "LIMIT-002",
+      "source_image_id": "perf1595",
+      "area": "navigation",
+      "when": "NEXT_PAGE_FROM_PERF_INIT",
+      "then": "NAVIGATE_PERF_LIMITS_2_OF_2",
+      "variant": "COMMON",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "LIMIT-003",
+      "source_image_id": "perf1595",
+      "area": "navigation",
+      "when": "L6_INDEX_SELECTED",
+      "then": "OPEN_INIT_REF_INDEX",
+      "variant": "COMMON",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "LIMIT-004",
+      "source_image_id": "perf1595",
+      "area": "navigation",
+      "when": "R6_RTA_SELECTED",
+      "then": "NAVIGATE_RTA_PROGRESS",
+      "variant": "COMMON",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "LIMIT-005",
+      "source_image_id": "perf1595",
+      "area": "limits",
+      "when": "PERF_LIMITS_OPEN",
+      "then": "ALLOW_MINIMUM_SPEED_AND_MAXIMUM_SPEED_ENTRY_FOR_CLB_CRZ_DES",
+      "variant": "COMMON",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "LIMIT-006",
+      "source_image_id": "perf1595",
+      "area": "limits",
+      "when": "CLB_SPEED_LIMIT_PAIR",
+      "then": "USE_IAS_AND_MACH_FORMAT",
+      "variant": "CLIMB",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "LIMIT-007",
+      "source_image_id": "perf1595",
+      "area": "limits",
+      "when": "CRZ_SPEED_LIMIT_PAIR",
+      "then": "USE_IAS_AND_MACH_FORMAT",
+      "variant": "CRUISE",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "LIMIT-008",
+      "source_image_id": "perf1595",
+      "area": "limits",
+      "when": "DES_SPEED_LIMIT_PAIR",
+      "then": "USE_IAS_AND_MACH_FORMAT",
+      "variant": "DESCENT",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "LIMIT-009",
+      "source_image_id": "perf1595",
+      "area": "limits",
+      "when": "TIME_ERROR_TOLERANCE",
+      "then": "PERF_LIMITS_AFFECT_RTA_CALCULATIONS",
+      "variant": "COMMON",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "LIMIT-010",
+      "source_image_id": "perf1595",
+      "area": "limits",
+      "when": "ECON_LIMITS_ENTERED",
+      "then": "PERF_LIMITS_AFFECT_ECON_CALCULATIONS",
+      "variant": "COMMON",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "LIMIT-011",
+      "source_image_id": "perf1595",
+      "area": "limits",
+      "when": "ILLUSTRATED_210_DOT_400_ETC",
+      "then": "DO_NOT_USE_FCOM_ILLUSTRATION_AS_CONFIGURED_AIRCRAFT_DEFAULT_SPEED_LIMITS",
+      "variant": "EXAMPLE_ONLY",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "LIMIT-012",
+      "source_image_id": "perf1595",
+      "area": "limits",
+      "when": "PERF_LIMITS_PAGE_2_OF_2",
+      "then": "KEEP_CLB_CRZ_DES_PAIRS_DISTINCT",
+      "variant": "COMMON",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    },
+    {
+      "id": "LIMIT-013",
+      "source_image_id": "perf1595",
+      "area": "limits",
+      "when": "PERF_LIMITS_FROM_RTA_PROGRESS",
+      "then": "L1_LIMITS_PROMPT_RETURNS_TO_LIMITS_PAGE",
+      "variant": "COMMON",
+      "notes": null,
+      "implementation": "SOURCE_ONLY_NOT_WIRED"
+    }
+  ],
+  "interfaces": {
+    "inputs": [
+      "GW_OR_ZFW",
+      "FUEL_SUMMATION_DATA",
+      "PERF_INIT_LSK",
+      "CRUISE_ALT",
+      "COST_INDEX",
+      "CRUISE_WIND",
+      "ISA_DEV_OR_TC_OAT",
+      "TRANS_ALT_FROM_SID",
+      "PAGE_VARIANT_CONFIG",
+      "NAVDB_AND_ROUTE_ORIGIN_DEST"
+    ],
+    "outputs": [
+      "PERF_INIT_COMPLETENESS",
+      "WEIGHT_ESTIMATE",
+      "FUEL_STATUS_MANUAL_FLAG",
+      "CRZ_ALT_FOR_CLB_CRZ_LEGS",
+      "ECON_COST_INDEX",
+      "TRANS_ALT",
+      "PERF_LIMIT_SPEED_PAIRS",
+      "RTA_COST_SPEED_LIMITS"
+    ],
+    "consumers": [
+      "FMC_PERFORMANCE_ENGINE",
+      "CDU_RENDERER",
+      "VNAV_PREDICTION",
+      "RTA_CALCULATOR",
+      "ROUTE_PAGE",
+      "N1_LIMIT_PAGE"
+    ],
+    "implementation_by_this_commit": false
+  },
+  "qa": {
+    "rule_count": 70,
+    "source_image_count": 7,
+    "variant_count": 3,
+    "source_only": true
+  }
+}
