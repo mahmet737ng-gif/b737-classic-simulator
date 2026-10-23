@@ -234,3 +234,15 @@ Active private source: `/Technical Database/Sources/AFM-737-33V-D6-8730-R32/EP-F
 - Executable trainer: `engine/systems/cpcs-v5.js`, `engine/systems/cpcs-integration-v5.js`, isolated `cpcs-lab/`, and tests `tests/cpcs-v5.test.cjs`.
 - Private Technical Database: `/Technical Database/Subsystems/CPCS-V5/CPCS_NETWORK_V5.sqlite`; 38 nodes, 68 ports, 42 functional links, 29 rule records (23 evaluable templates), 8 synthetic faults, 12 open gaps.
 - 54 local scenario tests (warning contract stub) and 25 private graph tests passed. Public GitHub Pages `npm test` also passed after adding CPCS test against real existing warning engine. No complete cabin pressure physics, exact relay wiring, or production cockpit hotspot mapping is claimed. LAN mode remains deferred.
+
+## EP-FSI global ISA and bleed defaults v17 — 2026-10-23
+
+User specifies default ambient weather ISA, Anti-Ice OFF and engine bleed ON across simulator conditions. Standalone CDU N1 scenario controls also default A/C packs AUTO (explicit simulator normal-case mapping, not documented aircraft hardware). ISA OAT/SAT temperature derives from pressure altitude; pressure altitude missing is NOT sea level; ISA OAT is NOT TAT. PMC remains UNKNOWN.
+
+| Scope | Status | Evidence |
+| --- | --- | --- |
+| Central default scenario resolver | DONE | `engine/fmc/performance/epfsi-scenario-defaults-v17.cjs` and `docs/EP_FSI_DEFAULT_CONDITIONS.json`. |
+| Standalone CDU N1 defaults & reset | DONE | `cdu-standalone/data/epfsi-scenario-defaults-v17.js`, `app.js`, `index.html`. |
+| Explicit scenario override support | DONE | Weather CUSTOM, engine bleed OFF and Anti-Ice selector in CDU test UI. |
+| Other independent simulator modules | ADOPTION PENDING | Consume same profile when integrated; no claim every subsystem is already wired. |
+| Automatic calculated N1 | STILL BLOCKED | Missing independently verified AFM curve family and golden N1 values; scenario defaults do not fix missing chart data. |
