@@ -51,10 +51,22 @@ for(const p of atlas.placements){
 }
 assert.ok(fs.existsSync(path.resolve(root,atlas.reference.image)),'original atlas referenced by viewer exists');
 assert.ok(html.includes('id="atlasAbsolute"'));
-assert.ok(html.includes('stage.js?v=UPD-0009-atlas-native-coordinates'));
+assert.ok(html.includes('stage.js?v=UPD-0010-safe-content-fit'));
 assert.ok(stage.includes("fetch('./atlas-layout.json?ts='"),'new renderer requires atlas geometry');
 assert.ok(stage.includes("height:place.h+'px'"),'source image natural height cannot change atlas plate height');
 assert.ok(stage.includes("style.height=atlasLayout.canvas.height+'px'"),'atlas board has fixed real pixel height');
 assert.ok(css.includes('.atlas-piece{position:absolute'),'no stacked column sizing');
-assert.ok(css.includes('object-fit:cover')||stage.includes("objectFit:'cover'"),'source photo proportions preserved');
-console.log('PASS: 18 source photos all absolute in 2220x3525 atlas, 5 exactly matching baseline edges y=3276, shared bottom strip y=3281, no overlaps, no legacy stacked layout.');
+assert.ok(stage.includes('Math.min(place.w/contentW,place.h/contentH)'),'source photos must be fully visible without forced crop');
+assert.ok(!stage.includes("objectFit:'cover'"),'cover cropping must not return');
+for(const region of atlas.placements){
+ const [w,h]=region.sourceDimensions;
+ const {left,top,right,bottom}=region.contentCrop;
+ const cw=w-left-right,ch=h-top-bottom;
+ const scale=Math.min(region.w/cw,region.h/ch);
+ const renderedW=cw*scale,renderedH=ch*scale;
+ assert.ok(renderedW<=region.w+1e-7&&renderedH<=region.h+1e-7,'no crop for '+region.id);
+ assert.ok(renderedW>0&&renderedH>0,'content remains visible for '+region.id);
+ assert.equal(region.displayMode,'fit-visible-content-without-distortion');
+}
+assert.ok(!css.includes("url('../../assets/overhead.webp') center center/100% 100% no-repeat"),'filler must not show original switch-filled atlas underneath artwork');
+console.log('PASS: 18 photos use native ratios with zero forced clipping; all five atlas columns end at y=3276, shared strip starts y=3281.');
