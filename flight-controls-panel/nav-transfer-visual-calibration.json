@@ -1,0 +1,83 @@
+{
+  "schema": "b737.photo-matched-horizontal-selector/v1",
+  "status": "implemented-unapproved-visual",
+  "approvedOriginalPanel": "flight-controls-panel/assets/flight-controls-front-empty-v1.webp",
+  "nativeImageSize": {
+    "width": 893,
+    "height": 1761
+  },
+  "protectedReferences": [
+    "shared-assets/toggle-switch-standard-v1/b737-toggle-off.webp",
+    "shared-assets/toggle-switch-standard-v1/b737-toggle-center.webp",
+    "shared-assets/toggle-switch-standard-v1/b737-toggle-on.webp"
+  ],
+  "sourceRule": "Keep exact original panel photograph and visible chrome nut; do not draw a replacement circular mount or rail.",
+  "mechanism": {
+    "type": "lever",
+    "rotationPlane": "lateral left-neutral-right",
+    "pivot": "inside existing photographed circular mount",
+    "states": [
+      "left",
+      "normal",
+      "right"
+    ],
+    "leverOnlyOverlay": true,
+    "appearance": "ivory rounded handle, brushed metal stem, dark pivot collar; retain approved v1 color/material family",
+    "animation": "discrete frames with 220ms short snap; no translation of mount"
+  },
+  "switches": [
+    {
+      "id": "vhfNav",
+      "pivotPct": [
+        30,
+        78
+      ],
+      "boxPct": {
+        "x": 23.5,
+        "y": 74.7,
+        "width": 13,
+        "height": 6.6
+      },
+      "fcom": "11.10.25–26",
+      "ref": "BOTH ON 1 / NORMAL / BOTH ON 2"
+    },
+    {
+      "id": "irs",
+      "pivotPct": [
+        72,
+        78
+      ],
+      "boxPct": {
+        "x": 65.5,
+        "y": 74.7,
+        "width": 13,
+        "height": 6.6
+      },
+      "fcom": "10.40.13",
+      "ref": "BOTH ON L / NORMAL / BOTH ON R"
+    },
+    {
+      "id": "efi",
+      "pivotPct": [
+        31.6,
+        89.5
+      ],
+      "boxPct": {
+        "x": 25.1,
+        "y": 86.2,
+        "width": 13,
+        "height": 6.6
+      },
+      "fcom": "10.40.13",
+      "ref": "BOTH ON 1 / NORMAL / BOTH ON 2"
+    }
+  ],
+  "acceptance": [
+    "The chrome hex bezel must remain photo pixels visible in all detents",
+    "Photo-matched lever overlays use nine independently authored vector views",
+    "Changing detents never translates or rotates the mount or photo",
+    "Original 2-position user-approved image assets unchanged",
+    "Touch, mouse, and keyboard must retain current state-change logic"
+  ],
+  "verification": "coordinate candidate by inspection of source panel and source native aspect ratio; screenshot QA and user sign-off pending"
+}
