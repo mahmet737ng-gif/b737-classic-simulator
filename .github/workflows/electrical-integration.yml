@@ -42,6 +42,8 @@ jobs:
           node --check engine/network/engine-performance-dynamics.cjs
           node --check tests/engine-performance-isn10.test.cjs
           node --check tests/afm-n1-v16-qa-gate.test.cjs
+          node --check engine/network/afm-n1-research-preview.cjs
+          node --check tests/afm-n1-v17-preview.test.cjs
           node --check tests/sensor-failure-network.test.cjs
           node --check tests/pump-warning-network.test.cjs
           node --check engine/network/electrical-feeder-audit.v0.2.cjs
@@ -78,6 +80,8 @@ jobs:
         run: node tests/engine-performance-isn10.test.cjs
       - name: Verify AFM v16 source audit gate and zero approved N1 curves
         run: node tests/afm-n1-v16-qa-gate.test.cjs
+      - name: Verify AFM v17 bounded MAX N1 research and FMC lock
+        run: node tests/afm-n1-v17-preview.test.cjs
       - name: Assert generated browser engine matches shared Node source
         run: node tools/build-power-consumers-lab.cjs --check
       - name: Browser runtime parity and deterministic events
