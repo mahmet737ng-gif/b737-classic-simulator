@@ -1,0 +1,85 @@
+{
+  "schema": "epfsi-n1-surrogate-estimate-v19",
+  "aircraft": {
+    "registration": "EP-FSI",
+    "model": "737-33V",
+    "serial": 29340,
+    "engine": "CFM56-3B-1",
+    "rated_thrust_lbf": 20000
+  },
+  "status": "SIMULATED_ESTIMATES_ENABLED_FOR_CDU_DISPLAY_ONLY",
+  "reason": "USER_APPROVED_PLAUSIBLE_VALUES_OVER_COMPLETE_AFM_DIGITIZATION",
+  "example_target_n1_percent_range": {
+    "takeoff": [
+      88,
+      95
+    ],
+    "go_around": [
+      88,
+      95
+    ]
+  },
+  "base_simulator_values": {
+    "TAKEOFF": 92,
+    "GO_AROUND": 94,
+    "MAX_CONTINUOUS": 90
+  },
+  "assumptions": {
+    "weather": "ISA",
+    "antiIce": "OFF",
+    "engineBleed": "ON",
+    "packs": "AUTO",
+    "default_thrust_lever_pct": {
+      "TAKEOFF": 97,
+      "GO_AROUND": 98,
+      "MAX_CONTINUOUS": 82
+    },
+    "missing_altitude_ft": "REFERENCE_0_FT_ASSUMED_FOR_DISPLAY_ONLY",
+    "missing_oat_c": "REFERENCE_15C_ASSUMED_FOR_DISPLAY_ONLY",
+    "pmc": "UNKNOWN_ALLOWED_FOR_DISPLAY_ESTIMATE"
+  },
+  "heuristic": {
+    "source": "PROJECT_SURROGATE_NOT_BOEING_AFM",
+    "rule": "base - bounded altitude display adjustment - bounded temperature display adjustment - 0.3 for bleed ON - 0.2 if packs HIGH - 0.4 if anti ice not OFF; Takeoff/Go-Around clamp to 88...95%",
+    "presentN1": "20 + (estimated limit - 20) * estimated thrust lever /100; second engine 0.3 percentage points lower purely for demo visualization",
+    "precision": "ONE_DECIMAL_VISUAL_ONLY_NO_ENGINEERING_ACCURACY_CLAIM",
+    "flight_phase_selectable": [
+      "TAKEOFF",
+      "GO_AROUND",
+      "MAX_CONTINUOUS"
+    ],
+    "sim_reference": [
+      "TAKEOFF",
+      "GO_AROUND"
+    ]
+  },
+  "priority": "LIVE_ENGINE_OR_EXTERNAL_SENSOR > EXPLICIT_TEST_PACKET > LABELED_EST_FALLBACK",
+  "labels": [
+    "EST",
+    "LIVE",
+    "TEST",
+    "MAN"
+  ],
+  "limits": {
+    "not_aircraft_real_performance": true,
+    "not_afm_validated": true,
+    "autothrottle_disallowed": true,
+    "actual_n1_certified_false": true
+  },
+  "status_distinction": {
+    "afm_active_db_version": 16,
+    "afm_numerical_n1_enabled": false,
+    "ui_surrogate_n1_enabled": true,
+    "physical_engine_n1_model_ready": false
+  },
+  "implementation": {
+    "canonical": "engine/fmc/performance/epfsi-simulated-n1-v19.cjs",
+    "browser": "cdu-standalone/data/epfsi-simulated-n1-v19.js",
+    "ui": "cdu-standalone/app.js",
+    "tests": [
+      "tests/epfsi-simulated-n1-v19.test.cjs",
+      "cdu-standalone/tests/estimated-n1-v19-integration.test.cjs"
+    ]
+  },
+  "date": "2026-10-23"
+}
