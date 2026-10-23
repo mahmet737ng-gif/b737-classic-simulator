@@ -1,9 +1,9 @@
 {
   "schema": "b737.overhead-all-source-assembly.v1",
-  "version": "UPD-0006-test",
+  "version": "UPD-0006.1-atlas-aligned",
   "date": "2026-10-24",
   "purpose": "Interactive source-pixel-preserving preview of all currently uploaded OH01-OH18 sources, not a geometry-accurate final cockpit.",
-  "geometryNotice": "Legacy 59-rectangle geometry rejected. Column order from atlas only; physical plate outlines and relative scaling not approved.",
+  "geometryNotice": "Aligned by comparing the owner's original overhead atlas photo; historical region rectangles rejected. OH13 cropped only for UI to exclude light outer gutters, OH18 moved directly beneath OH14 at atlas center strip; all locked PNG bytes unchanged. Physical plate geometry still needs QA.",
   "header": {
     "id": "UPPER",
     "geometry": "../upper-oh/geometry.json",
@@ -12,7 +12,7 @@
   "columns": [
     {
       "name": "FLIGHT CONTROLS / FUEL",
-      "weight": 187,
+      "weight": 508,
       "items": [
         "OH07-08",
         "OH09"
@@ -20,7 +20,7 @@
     },
     {
       "name": "ELECTRICAL",
-      "weight": 157,
+      "weight": 507,
       "items": [
         "OH10",
         "OH11",
@@ -28,21 +28,21 @@
       ]
     },
     {
-      "name": "CABIN / SERVICES",
-      "weight": 85,
+      "name": "CIRCUIT BREAKER / EMER EXIT / GROUND CALL",
+      "weight": 242,
       "items": [
         "OH13",
-        "OH14"
+        "OH14",
+        "OH18"
       ]
     },
     {
       "name": "HEAT / HYDRAULICS",
-      "weight": 161,
+      "weight": 460,
       "items": [
         "OH15",
         "OH16",
-        "OH17",
-        "OH18"
+        "OH17"
       ],
       "missing": [
         "OH-19"
@@ -50,7 +50,7 @@
     },
     {
       "name": "AIR SYSTEMS",
-      "weight": 158,
+      "weight": 503,
       "items": [],
       "missing": [
         "OH-20",
@@ -161,13 +161,19 @@
         "OH-13"
       ],
       "filename": "OH13-CIRCUIT-BREAKER-efca1c6cec9e.png",
-      "title": "CIRCUIT BREAKER",
+      "title": "CIRCUIT BREAKER / EQUIP COOLING",
       "url": "../assets/locked/2026-10-23/OH13-CIRCUIT-BREAKER-efca1c6cec9e.png",
       "bytes": 2307600,
       "gitBlobSha": "efca1c6cec9ed3318cddc7a017e3144f9ab0994b",
       "sha256": "8fef9e3d67fd78c794d0cceb31ab2806f82076bf7d6e987e3fbdcf5e2a1c76a4",
       "sourceStatus": "sha256-registered",
-      "geometryStatus": "source-only-not-aligned"
+      "geometryStatus": "source-only-not-aligned",
+      "display": {
+        "cropLeftPct": 16.7,
+        "cropRightPct": 16.7,
+        "reason": "Uploaded OH13 image has light edge gutters; trim in viewer only (CSS viewport, no source edits)",
+        "magnification": 1.5
+      }
     },
     {
       "id": "OH14",
@@ -231,13 +237,14 @@
         "OH-18"
       ],
       "filename": "OH18-UNCLASSIFIED-5af4fdc5284b.png",
-      "title": "UNCLASSIFIED / EMPTY CUTOUTS",
+      "title": "ATTEND / GRD CALL / RAIN REPELLENT / WIPER",
       "url": "../assets/locked/2026-10-23/OH18-UNCLASSIFIED-5af4fdc5284b.png",
       "bytes": 2787751,
       "gitBlobSha": "5af4fdc5284b3897b425c6d0c765132e5604a269",
       "sha256": "939e9f6ed14cbe2a8a6182684fcef790607e7dba10a1bfe002a062457f83e5ee",
       "sourceStatus": "sha256-registered",
-      "geometryStatus": "source-only-not-aligned"
+      "geometryStatus": "atlas-content-matched-to-center-strip-after-OH14",
+      "system": "EQUIPMENT / LIGHTING"
     }
   ],
   "provenance": {
@@ -247,9 +254,43 @@
   },
   "approval": {
     "sourceAssets": "read-only-immutable",
-    "assemblySeams": "provisional",
-    "OH18Subsystem": "unclassified"
+    "assemblySeams": "atlas-informed provisional",
+    "OH18Subsystem": "recognized from owner atlas image (ground call / rain repellent / wiper)"
   },
   "confirmedBytes": 31811017,
-  "loadedSources": 12
+  "loadedSources": 12,
+  "atlasReference": {
+    "image": "../../assets/overhead.webp",
+    "source": "owner overhead atlas PDF/reference photo",
+    "note": "Use for physical column and visual system matching; asset ID and legacy box positions are not definitive"
+  },
+  "correctedMappings": [
+    {
+      "id": "OH13",
+      "atlasPanel": "CIRCUIT BREAKER / EQUIP COOLING",
+      "columnIndex": 2,
+      "position": 0,
+      "display": "crop light outer gutters; larger inner panel without distortion"
+    },
+    {
+      "id": "OH14",
+      "atlasPanel": "EMER EXIT LIGHTS / NO SMOKING / FASTEN BELTS",
+      "columnIndex": 2,
+      "position": 1
+    },
+    {
+      "id": "OH18",
+      "atlasPanel": "ATTEND / GRD CALL / RAIN REPELLENT / WIPER",
+      "columnIndex": 2,
+      "position": 2,
+      "prior": "wrongly in HEAT / HYDRAULICS column"
+    }
+  ],
+  "atlasColumnWidths": [
+    508,
+    507,
+    242,
+    460,
+    503
+  ]
 }
