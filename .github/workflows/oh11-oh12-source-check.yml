@@ -1,0 +1,27 @@
+name: Verify OH11 OH12 uploaded originals
+on:
+  push:
+    paths:
+      - 'panel-mosaic-lab/assets/locked/2026-10-23/OH11-STANDBY-8b7d36ff3182.png'
+      - 'panel-mosaic-lab/assets/locked/2026-10-23/OH12-BUS-TRANS-09319c17e7d0.png'
+      - '.github/workflows/oh11-oh12-source-check.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify exact Git blobs and show SHA-256 values
+        shell: bash
+        run: |
+          set -euo pipefail
+          a='panel-mosaic-lab/assets/locked/2026-10-23/OH11-STANDBY-8b7d36ff3182.png'
+          b='panel-mosaic-lab/assets/locked/2026-10-23/OH12-BUS-TRANS-09319c17e7d0.png'
+          test "$(git hash-object "$a")" = '8b7d36ff3182c983aa2852791b271fc2588d91e4'
+          test "$(git hash-object "$b")" = '09319c17e7d0211939b5f0274aa0d6aa35e32b9b'
+          echo '== VERIFIED UPLOADED IMAGES / SHA-256 =='
+          sha256sum "$a" "$b"
+          wc -c "$a" "$b"
+          echo 'Both original uploaded Git blobs preserved without recompression.'
