@@ -42,7 +42,7 @@
   },
   "original_full_archive": "IMMUTABLE_HISTORY_ONLY",
   "other_serials": "DO_NOT_USE_FOR_THIS_SIMULATOR_AIRCRAFT",
-  "runtime_integration": "Read-only N1 source routing in CDU v10; v16 math engine not fed unverified numeric Boeing tables",
+  "runtime_integration": "v19 displays EST N1 plus genuine LIVE/TEST priority. AFM numerically validated N1 remains BLOCKED.",
   "certified_performance_values": "NONE",
   "note": "A single airplane-specific reference scope; the underlying full source archive is preserved as private historical evidence and does not authorize calculations for other aircraft.",
   "supersedes": "EP-FSI-ASN29340/v15/epfsi_afm_scoped_v15.sqlite",
@@ -221,5 +221,32 @@
     "real_engine_n1_inputs": "NOT_AVAILABLE_UNTIL_EXTERNAL_ENGINE_CORE_PUBLISHES",
     "max_n1_calculation": "UNCHANGED_BLOCKED_AFM_CURVE_QA",
     "status_note": "Telemetry adapter for actual present N1, not Boeing AFM computed MAX N1"
+  },
+  "simulator_estimate_n1_v19": {
+    "status": "ENABLED_FOR_CDUs_WITH_CLEAR_EST_TAG",
+    "request_source": "USER_EXPLICIT_ACCEPTANCE_OF_ESTIMATED_N1",
+    "display_estimated_n1": true,
+    "takeoff_estimated_max_n1_default_pct": 91.7,
+    "go_around_estimated_max_n1_default_pct": 93.7,
+    "takeoff_approx_n1_user_range_pct": [
+      88,
+      95
+    ],
+    "go_around_approx_n1_user_range_pct": [
+      88,
+      95
+    ],
+    "present_n1_both_engines": "SURROGATE_WHEN_LIVE_TELEMETRY_MISSING",
+    "source_priority": "LIVE > TEST > EST",
+    "weather_default": "ISA",
+    "engine_bleed_default": "ON",
+    "anti_ice_default": "OFF",
+    "module": "engine/fmc/performance/epfsi-simulated-n1-v19.cjs",
+    "offline_bundle": "cdu-standalone/data/epfsi-simulated-n1-v19.js",
+    "policy": "docs/EP_FSI_N1_ESTIMATION_POLICY_V19.json",
+    "test_suite": "tests/epfsi-simulated-n1-v19.test.cjs",
+    "cdu_smoke": "cdu-standalone/tests/estimated-n1-v19-integration.test.cjs",
+    "ci_run": "https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/39888361177",
+    "note": "DISPLAY-ONLY USER APPROVED SURROGATE; NOT REAL MEASURED N1 OR AFM CALCULATION"
   }
 }
