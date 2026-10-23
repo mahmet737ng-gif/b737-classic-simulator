@@ -2,3 +2,9 @@
 
 .show-bounds .knob::after,.show-bounds .push::after{content:attr(data-knob) attr(data-switch);position:absolute;left:0;top:0;z-index:9;padding:1px 3px;background:#0c1018d8;color:#f2ffff;border:1px solid #52c1eea0;border-radius:3px;font:600 clamp(7px,.75vw,12px)/1.15 Arial,sans-serif;pointer-events:none;text-transform:uppercase}
 .panel.original .knob .rotor{opacity:0}
+
+/* Pixel-calibrated alpha sprites: never rotate plate/legend/background pixels. */
+.knob{background:none!important;box-shadow:none!important;overflow:visible;border-radius:50%}
+.knob .rotor{object-fit:fill;image-rendering:auto;clip-path:none}
+.show-bounds .knob{outline:2px solid #14bdff;outline-offset:0;border-radius:50%}
+.show-bounds .push{outline:2px solid #24ffa3;outline-offset:0}
