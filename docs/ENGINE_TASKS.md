@@ -216,3 +216,16 @@ See `docs/QRH_CHECKLIST_INTEGRATION_ISN08.md`. **No modifications to main or dep
 ENG-077: N1 MAN SET/FMC reference with touch/mouse wheel/keyboard pilot controls — DONE (source §7.10.3–4). The manual reference bug changes without modifying measured N1 or A/T; FMC numerical limit calculation remains BLOCKED pending FMC/Performance Engine connection.
 
 GitHub main and hosted cockpit were intentionally not changed. Source report: `docs/ENGINE_INDICATIONS_EIS_ISN09.md`.
+
+## ISN-10 — EP-FSI AFM Performance QA and measured engine dynamics (2026-10-23)
+
+| Task | Status | Evidence |
+| --- | --- | --- |
+| ENG-078 Source gate for AFM v13 / ASN29340 / 20K | DONE (FAIL-CLOSED) | `engine/network/epfsi-performance-source-gate.v13.json` and `engine-performance-dynamics.cjs`: 0 final approved N1 points, no AFM numeric N1 allowed; QA blocker retained. |
+| ENG-079 Source-traced engine transient replay | DONE (BOUNDED TRAINING PILOT) | Per-engine user-supplied telemetry records N1/N2/EGT/FF; only interpolate within recorded points; never certify/guess a turbine response model. |
+| ENG-080 Thrust-command interface with no fake N1 response | DONE (INPUT ONLY) | Normalized lever command stored with `NO_VERIFIED_THRUST_TO_N1_MAP`; physical gain blocked. |
+| ENG-081 EIS / fuel used / generator independence integration | DONE (TESTED PILOT) | Shared N2/EGT ownership, replayed N1/FF and trapezoidal fuel-use over observed interval; out-of-range or data exhausted -> no extrapolated burn. |
+| ENG-082 Browser lab / source parity / automated regression | DONE (AUTOMATED) | Imported trace JSON, replay clock, two-engine display, new ISN-10 tests and existing ISN CI. No live cockpit deployment or verified pixel-art UI. |
+| ENG-083 Actual AFM N1 + validated engine physics | BLOCKED | Independent graph QA (v13 0 approved points), PMC and bleed correction validation, measured CFM56-3B-1 20K engine dynamics calibration data and acceptance are needed. |
+
+Engineering design and source boundaries: `docs/ENGINE_PERFORMANCE_DYNAMICS_ISN10.md`. The private AFM PDF and its graphs were NOT copied into the public GitHub source.
