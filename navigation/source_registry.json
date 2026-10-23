@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "default_source_id": "PMDG_WORLD_2610_R1",
+  "sources": [
+    {
+      "source_id": "PMDG_WORLD_2610_R1",
+      "name": "User-supplied PMDG NAVDATA (Navigraph/Jeppesen)",
+      "scope": "worldwide",
+      "airac": "2610",
+      "revision": 1,
+      "effective_start": "2026-10-01",
+      "effective_end_exclusive": "2026-10-29",
+      "source_zip_sha256": "7b156e92b0d6ec65b9ff65ac78d928ed7bf759f26bf0102f2540fdf1b41853a3",
+      "normalized_sqlite_filename": "B737_NAVDB_WORLD_AIRAC2610.sqlite",
+      "personal_library_private_archive": "/B737/NAVDB/B737_NAVDB_WORLD_AIRAC2610_PRIVATE.zip",
+      "personal_library_private_manifest": "/B737/NAVDB/B737_NAVDB_WORLD_AIRAC2610_manifest.json",
+      "expected_counts": {
+        "airports": 17214,
+        "runways": 42644,
+        "navaids": 15800,
+        "waypoints": 310806,
+        "airways": 105425
+      },
+      "total_source_records": 491889,
+      "rejected_records": 0,
+      "import_state": "VERIFIED_SQLITE_PRIVATE_LIBRARY",
+      "fmc_activation_state": "NOT_CONNECTED_OR_VERIFIED",
+      "procedures_state": "ABSENT_FROM_UPLOADED_ARCHIVE",
+      "redistribution": "RESTRICTED: private user data; never commit binary source/derived DB to public GitHub"
+    },
+    {
+      "source_id": "OURAIRPORTS_IR",
+      "name": "OurAirports IR-only source importer",
+      "scope": "Iran",
+      "import_code_path": "navigation/navdb.py",
+      "output_filename": "navdb-iran.sqlite",
+      "precedence": "fallback_only_not_automatically_merged",
+      "fmc_activation_state": "NOT_CONNECTED_OR_VERIFIED"
+    }
+  ],
+  "integration": {
+    "navigation_source_selection": "registry",
+    "source_merge_behavior": "explicit_source_selection_only",
+    "fmc_gate": "verified_procedures_and_aircraft_adapter_required",
+    "simulator_training_only": true
+  }
+}
