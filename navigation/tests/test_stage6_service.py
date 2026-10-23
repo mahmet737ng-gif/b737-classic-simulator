@@ -4,7 +4,7 @@ import os
 from pathlib import Path
 import sys
 import unittest
-sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'navigation'))
+sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 from procedure_semantics import RISKS, ProcedureGateError, catalog
 from npe_stage6_server import Stage6Service,STAGE3_MEMBERS, safe_extract_known
 
