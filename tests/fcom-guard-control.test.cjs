@@ -72,3 +72,28 @@ test('FCOM requires spring return for alt flap DOWN only',()=>{
   const js=fs.readFileSync(path.join(__dirname,'../flight-controls-panel/flight-controls.js'),'utf8');
   assert.match(js,/state\.altPosition === 'down'/);
 });
+
+test('NAV transfers use only photographed bezel and photo-calibrated articulated levers',()=>{
+  const html=fs.readFileSync(path.join(__dirname,'../flight-controls-panel/index.html'),'utf8');
+  const css=fs.readFileSync(path.join(__dirname,'../flight-controls-panel/flight-controls.css'),'utf8');
+  const mapping=JSON.parse(fs.readFileSync(path.join(__dirname,'../flight-controls-panel/nav-transfer-visual-calibration.json'),'utf8'));
+  assert.equal(mapping.nativeImageSize.width,893);
+  assert.equal(mapping.nativeImageSize.height,1761);
+  assert.equal((html.match(/class="photo-lever"/g)||[]).length,9);
+  assert.equal((html.match(/class="h-state h-left"/g)||[]).length,3);
+  assert.equal((html.match(/class="h-state h-center"/g)||[]).length,3);
+  assert.equal((html.match(/class="h-state h-right"/g)||[]).length,3);
+  assert.ok(!html.includes('h-bezel'), 'extra artificial mounts are forbidden');
+  assert.ok(!css.includes('.h-bezel{'), 'no fake base hardware should cover the photograph');
+  assert.match(css,/\.toggle\.selector\s*\{[^}]*overflow:visible/);
+  for(const id of ['vhfNav','irs','efi']){
+    const meta=mapping.switches.find(s=>s.id===id);
+    assert.ok(meta,'calibration missing for '+id);
+    const match=html.match(new RegExp('<button class="toggle selector" data-control="'+id+'"[^>]*>'));
+    assert.ok(match,'control missing: '+id);
+    for(const [key,cssKey] of [['x','--x'],['y','--y'],['width','--w'],['height','--h']]){
+      assert.ok(match[0].includes(cssKey+':'+meta.boxPct[key]+'%'),'mismatched '+id+' '+key);
+    }
+    assert.equal((html.match(new RegExp(id+'-normal-grip','g'))||[]).length>=1,true);
+  }
+});
