@@ -11,6 +11,7 @@ on:
       - 'tests/afm-epfsi-mct-v13.test.cjs'
       - 'tests/afm-epfsi-source-vectors-v14.test.cjs'
       - 'tests/afm-epfsi-n1-v15-release-gate.test.cjs'
+      - 'tests/afm-epfsi-pmc-off-v16.test.cjs'
       - 'package.json'
       - '.github/workflows/epfsi-n1-v10-tests.yml'
   workflow_dispatch:
@@ -37,6 +38,8 @@ jobs:
           node tests/afm-epfsi-mct-v13.test.cjs
           node tests/afm-epfsi-source-vectors-v14.test.cjs
           node tests/afm-epfsi-n1-v15-release-gate.test.cjs
+          node --check engine/fmc/performance/afm-epfsi-pmc-off-v16.cjs
+          node tests/afm-epfsi-pmc-off-v16.test.cjs
       - name: Standalone CDU headless state and compatibility
         run: |
           node cdu-standalone/tests/smoke.test.cjs
