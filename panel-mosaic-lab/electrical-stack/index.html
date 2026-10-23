@@ -1,0 +1,46 @@
+<!doctype html><html lang="fa" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b1420"><title>B737 Electrical Mosaic · OH-10 / 11 / 12</title><style>
+*{box-sizing:border-box}body{margin:0;background:#0b121d;color:#e7f0f7;font:14px system-ui,Tahoma,"Segoe UI",sans-serif}button{font:inherit;cursor:pointer;color:#eef7ff;background:#234253;border:1px solid #47738a;border-radius:9px;padding:9px 14px}button:hover{background:#2c5b71}a{color:#8be0ff}header{background:#122131;border-bottom:1px solid #2e475c;padding:18px max(18px,calc((100vw - 1360px)/2));display:flex;justify-content:space-between;align-items:center;gap:15px}header strong{direction:ltr;display:block;text-align:right;font-size:16px;letter-spacing:.8px}header small{color:#a6bcca;font-size:12px;display:block;margin-top:4px}.actions{display:flex;gap:9px;flex-wrap:wrap;align-items:center}.v{font:700 12px monospace;color:#81d7ef}.wrap{max-width:1360px;margin:auto;padding:22px 18px 45px}.intro{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;margin-bottom:20px}.intro h1{margin:0 0 8px;font-size:clamp(22px,3vw,32px)}.intro p{color:#a9bdcc;line-height:1.9;max-width:790px;margin:0}.status{border:1px solid #405566;background:#192b39;border-radius:12px;padding:13px 16px;line-height:1.8}.status b{color:#d5edff}.workspace{display:grid;grid-template-columns:minmax(0,1fr) 315px;border:1px solid #365063;background:#111e2b;border-radius:14px;overflow:hidden}.viewer{padding:20px;min-width:0;overflow:auto;max-height:85vh;background:radial-gradient(#244055 1px,transparent 1px) 0 0/22px 22px,#0b1621}.stack{width:min(100%,630px);margin:auto;display:flex;flex-direction:column;gap:7px}.piece{border:1px solid #58748a;background:#182836;border-radius:9px;padding:8px;overflow:hidden}.piece-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:2px 2px 9px}.piece-head b{direction:ltr;font:700 13px monospace;color:#b1ebfb}.piece-head span{font-size:11px;color:#b4cad8}.piece img{display:block;width:100%;height:auto;border-radius:4px;background:#07131e}.pending{min-height:185px;border:1px dashed #7792a4;border-radius:8px;padding:30px 17px;text-align:center;color:#ffe0a3;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px}.pending strong{font-size:17px;direction:ltr}.pending small{color:#9ab1c1;word-break:break-all}.details{padding:18px;border-right:1px solid #385466}.details h2{margin:0 0 10px;font-size:17px}.record{border:1px solid #324f66;border-radius:10px;background:#152838;padding:11px;margin:8px 0;line-height:1.8}.record strong{display:block;font-family:monospace;direction:ltr;text-align:right}.record span{font-size:12px;color:#a8bdcb}.record .check{color:#8fe9b7}.record .warn{color:#ffd18e}.record code{font:11px monospace;color:#8ddbf1;word-break:break-all;display:block;margin:7px 0}.history{border:1px solid #315066;border-radius:10px;padding:13px;margin-top:18px;background:#122333}.history p{margin:7px 0;color:#9fbccb;line-height:1.75}footer{padding-top:16px;color:#7893a4;line-height:1.85;font-size:11px}@media(max-width:850px){.workspace{grid-template-columns:1fr}.viewer{max-height:70vh}.details{border-right:0;border-top:1px solid #385466}}@media(max-width:480px){header{padding:13px}.wrap{padding:12px}.viewer{padding:8px}.status{padding:10px}}
+</style></head><body>
+<header><div><strong>B737 CLASSIC · ELECTRICAL MOSAIC</strong><small>مونتاژ واقعی پنل‌های OH-10، OH-11 و OH-12</small></div><div class="actions"><span class="v" id="version">UPD-0003</span><button id="reload">↻ بررسی تصاویر</button><a href="../upper-oh/">بالای اورهد</a></div></header>
+<main class="wrap"><div class="intro"><div><h1>Electrical Panel Stack</h1><p>سه قطعهٔ مستقل به‌ترتیب فیزیکی از بالا به پایین، بدون کشیدگی تصویر. تصاویر تازه تنها پس از بررسی اندازه و SHA-256 فعال می‌شوند. فایل اصلی قبلی هرگز بازنویسی نمی‌شود.</p></div><div class="status" id="summary"><b>وضعیت فایل‌ها:</b> در حال بررسی…</div></div>
+<div class="workspace"><section class="viewer"><div id="stack" class="stack"></div></section><aside class="details"><h2>رجیستری پنل‌ها</h2><div id="records"></div><div class="history"><strong>تاریخچهٔ نسخه‌ها</strong><p>REF-0001 — تصاویر مرجع اولیه</p><p>UPD-0002 — تصویر مشترک OH-01 تا OH-06</p><p>UPD-0003 — تصاویر مستقل OH-11 و OH-12، پس از آپلود و تأیید هش فعال می‌شوند</p></div></aside></div>
+<footer>این صفحه به تصویرهای قفل‌شدهٔ موجود در مخزن متصل است. اگر فایل آپلود نشده یا هش با فایل اصلی متفاوت باشد، تصویر فعال نمی‌شود و جایگاه آن «در انتظار» نشان داده می‌شود. حفاظت مدیریتی مخزن (Ruleset) مستقل از کنترل هش لازم است.</footer></main>
+<script>
+'use strict';
+const $=id=>document.getElementById(id);
+const make=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!=null)n.textContent=text;return n};
+function hex(buf){return [...new Uint8Array(buf)].map(v=>v.toString(16).padStart(2,'0')).join('')}
+async function draw(){
+ $('stack').replaceChildren();$('records').replaceChildren();$('summary').textContent='در حال بررسی…';
+ try{
+ const resp=await fetch('spec.json?ts='+Date.now(),{cache:'no-store'});
+ if(!resp.ok)throw Error('Spec HTTP '+resp.status);
+ const spec=await resp.json();$('version').textContent=spec.version;let ready=0;
+ for(const item of spec.panels){
+ const article=make('article','piece');const head=make('div','piece-head');head.append(make('b','',item.id),make('span','',item.title));article.append(head);
+ const record=make('section','record');record.append(make('strong','',item.id+' — '+item.title));const status=make('span','warn','در انتظار بررسی فایل');record.append(status);
+ try{
+  const asset=await fetch(item.path+'?ts='+Date.now(),{cache:'no-store'});
+  if(!asset.ok)throw Error(asset.status===404?'فایل هنوز به GitHub آپلود نشده':'HTTP '+asset.status);
+  const b=await asset.arrayBuffer();
+  if(item.bytes&&b.byteLength!==item.bytes)throw Error('اندازه با تصویر قفل‌شده متفاوت است');
+  if(item.sha256){
+    if(!crypto.subtle)throw Error('مرورگر از اعتبارسنجی SHA-256 پشتیبانی نمی‌کند');
+    const h=hex(await crypto.subtle.digest('SHA-256',b));
+    if(h!==item.sha256)throw Error('SHA-256 متفاوت؛ تصویر رد شد');
+  }
+  const img=make('img');img.alt=item.id+' '+item.title;img.src=URL.createObjectURL(new Blob([b],{type:'image/png'}));img.onload=()=>URL.revokeObjectURL(img.src);article.append(img);
+  status.textContent='✓ فایل موجود'+(item.sha256?' و هش تأیید شد':' (مرجع قبلی)');status.className='check';ready++;
+  const link=make('a','','باز کردن تصویر در GitHub ↗');link.href=item.path;link.target='_blank';link.rel='noopener';record.append(link);
+ }catch(e){
+  const pending=make('div','pending');pending.append(make('strong','',item.id+' / UPLOAD PENDING'),make('div','',String(e.message)),make('small','',item.path));article.append(pending);
+  status.textContent='در انتظار آپلود / تأیید هش';status.className='warn';
+ }
+ if(item.sha256)record.append(make('code','',item.sha256));
+ $('stack').append(article);$('records').append(record);
+ }
+ $('summary').textContent=ready+' از '+spec.panels.length+' تصویر در مخزن در دسترس و قابل نمایش است';
+ }catch(e){$('summary').textContent='خطا: '+e.message;}
+}
+$('reload').onclick=draw;draw();setInterval(()=>{if(!document.hidden)draw()},90000);
+</script></body></html>
