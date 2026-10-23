@@ -1,9 +1,9 @@
 {
   "schema": "b737.overhead-all-source-assembly.v1",
-  "version": "UPD-0007-atlas-matched",
+  "version": "UPD-0008-atlas-mosaic-test",
   "date": "2026-10-24",
   "purpose": "Interactive source-pixel-preserving preview of all currently uploaded OH01-OH18 sources, not a geometry-accurate final cockpit.",
-  "geometryNotice": "Atlas-based content identity: voice recorder and press-differential cluster occupy center service strip below OH18, air conditioning and bleed air occupy right-hand air-system strip. OH22 cabin pressurization is not supplied. No locked source bytes modified; plate seams provisional.",
+  "geometryNotice": "Owner atlas reference: OH19-VOICE and OH19-DIFF are separate panels directly below OH17 HYDRAULIC in the fourth physical overhead column, sized at the same physical column width. They are NOT below OH18 in narrow service strip. OH13/14/18 alone occupy narrow service strip. Two more uploaded images pending identity matching. All source binaries remain immutable.",
   "header": {
     "id": "UPPER",
     "geometry": "../upper-oh/geometry.json",
@@ -33,18 +33,18 @@
       "items": [
         "OH13",
         "OH14",
-        "OH18",
-        "OH19-VOICE",
-        "OH19-DIFF"
+        "OH18"
       ]
     },
     {
-      "name": "HEAT / HYDRAULICS",
+      "name": "WINDOW HEAT / ANTI-ICE / HYDRAULICS / VOICE RECORDER / PRESS DIFF",
       "weight": 460,
       "items": [
         "OH15",
         "OH16",
-        "OH17"
+        "OH17",
+        "OH19-VOICE",
+        "OH19-DIFF"
       ],
       "missing": []
     },
@@ -263,10 +263,21 @@
         1593,
         987
       ],
-      "physicalPlace": "Center services narrow column, directly beneath OH18; immediately above press differential instrument",
+      "physicalPlace": "FOURTH wide vertical physical column directly below OH17 HYDRAULIC; original atlas row below HYD PUMPS.",
       "url": "../assets/locked/2026-10-23/OH19-VOICE-RECORDER-2db6785ecddc.png",
       "sourceStatus": "sha256-confirmed-from-original-GitHub-Actions-checkout",
-      "geometryStatus": "atlas-visual-source-position-matched; seams unapproved"
+      "geometryStatus": "atlas-corrected wide fourth column, native aspect ratio (1593/987); physical border contour provisional",
+      "atlasSizing": {
+        "columnIndex": 3,
+        "widthMode": "fill-column-natural-aspect",
+        "referenceAtlasBoundsApprox": {
+          "left": 691,
+          "right": 960,
+          "top": 703,
+          "bottom": 880
+        },
+        "preserveImageAspect": true
+      }
     },
     {
       "id": "OH19-DIFF",
@@ -283,10 +294,21 @@
         1267,
         1241
       ],
-      "physicalPlace": "Narrow center services column, directly below cockpit voice recorder",
+      "physicalPlace": "FOURTH wide vertical physical column, immediately below OH19-VOICE, at same width as OH17 HYDRAULIC.",
       "url": "../assets/locked/2026-10-23/OH19-PRESS-DIFF-ALT-HORN-d6719ce57cef.png",
       "sourceStatus": "sha256-confirmed-from-original-GitHub-Actions-checkout",
-      "geometryStatus": "atlas-visual-source-position-matched; seams unapproved"
+      "geometryStatus": "atlas-corrected wide fourth column, native aspect ratio (1267/1241); physical border contour provisional",
+      "atlasSizing": {
+        "columnIndex": 3,
+        "widthMode": "fill-column-natural-aspect",
+        "referenceAtlasBoundsApprox": {
+          "left": 691,
+          "right": 960,
+          "top": 880,
+          "bottom": 1167
+        },
+        "preserveImageAspect": true
+      }
     },
     {
       "id": "OH20",
@@ -336,7 +358,7 @@
   },
   "approval": {
     "sourceAssets": "read-only-immutable",
-    "assemblySeams": "atlas-content-matched but physical seam positions provisional",
+    "assemblySeams": "physical atlas column widths traced approximately; plate seam polygons not approved",
     "OH18Subsystem": "recognized from owner atlas image (ground call / rain repellent / wiper)",
     "classificationOf4NewImages": "verified by source thumbnails against owner overhead atlas reference"
   },
@@ -367,6 +389,22 @@
       "columnIndex": 2,
       "position": 2,
       "prior": "wrongly in HEAT / HYDRAULICS column"
+    },
+    {
+      "id": "OH19-VOICE",
+      "atlasPanel": "COCKPIT VOICE RECORDER",
+      "columnIndex": 3,
+      "position": 3,
+      "prior": "wrongly in narrow third column",
+      "display": "full width of fourth atlas physical column, intrinsic aspect ratio"
+    },
+    {
+      "id": "OH19-DIFF",
+      "atlasPanel": "PRESS DIFF / CABIN CLIMB / ALT HORN",
+      "columnIndex": 3,
+      "position": 4,
+      "prior": "wrongly in narrow third column",
+      "display": "same physical width as hydraulic, intrinsic aspect ratio"
     }
   ],
   "atlasColumnWidths": [
@@ -377,13 +415,11 @@
     503
   ],
   "newMapping": {
-    "version": "UPD-0007",
+    "version": "UPD-0008",
     "centralServiceStack": [
       "OH13",
       "OH14",
-      "OH18",
-      "OH19-VOICE",
-      "OH19-DIFF"
+      "OH18"
     ],
     "rightSystemStack": [
       "OH20",
@@ -395,6 +431,13 @@
       "OH-24",
       "OH-25"
     ],
-    "legacyNumberingNote": "Both OH19 component images are parts of the original combined OH-19 atlas area; they are separate physical plates."
+    "legacyNumberingNote": "OH19 voice recorder and press diff are distinct plates in wide fourth column below Hydraulic. Do not use numeric ID sequence to infer physical columns.",
+    "hydraulicAndInstrumentsStack": [
+      "OH15",
+      "OH16",
+      "OH17",
+      "OH19-VOICE",
+      "OH19-DIFF"
+    ]
   }
 }
