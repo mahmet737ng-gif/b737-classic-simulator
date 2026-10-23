@@ -1,0 +1,34 @@
+{
+  "schema": "b737.panel-mosaic.geometry-lock.v1",
+  "version": "UPD-0009-atlas-absolute",
+  "date": "2026-10-24",
+  "reference": "B737_Mosaic_Atlas_OH_v1.jpg",
+  "referenceDimensions": [
+    2220,
+    3525
+  ],
+  "data": "panel-mosaic-lab/all-overhead/atlas-layout.json",
+  "viewer": "https://mahmet737ng-gif.github.io/b737-classic-simulator/panel-mosaic-lab/all-overhead/",
+  "properties": {
+    "panels": 25,
+    "distinctSourceImages": 18,
+    "physicalColumns": 5,
+    "rendering": "position:absolute from per-source atlas x/y/w/h",
+    "unifiedZoom": true,
+    "lowerEdgeY": 3276,
+    "sharedLowerStripStartsAtY": 3281,
+    "sharedLowerStripEndsAtY": 3522,
+    "noColumnHeightAutoStacking": true,
+    "sourcePhotoAspectPreserved": true,
+    "nonDestructiveCrop": true,
+    "lockedSourceReplacements": 0,
+    "minorAtlasAreas": "OH13 / OH14 / OH18 sub-plate divisions are content-defined approximations within an original vertical atlas strip"
+  },
+  "qa": [
+    "panel-mosaic-lab/all-overhead/test.cjs",
+    "panel-mosaic-lab/all-overhead/runtime.test.cjs",
+    "panel-mosaic-lab/all-overhead/atlas-layout.test.cjs",
+    "panel-mosaic-lab/verify-immutable-assets.py"
+  ],
+  "state": "GEOMETRY_BASELINE_MATCHED_ATLAS; SOURCE_PIXEL_CLIP_VISUAL_QA_PENDING"
+}
