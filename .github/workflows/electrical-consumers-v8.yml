@@ -1,0 +1,26 @@
+name: Electrical Consumer Trace V8
+on:
+  push:
+    paths:
+      - 'engine/systems/electrical-v7.js'
+      - 'engine/systems/stall-warning-v3.js'
+      - 'engine/systems/electrical-loads-v8.js'
+      - 'engine/systems/electrical-integration-v8.js'
+      - 'tests/electrical-loads-v8.test.cjs'
+      - '.github/workflows/electrical-consumers-v8.yml'
+  workflow_dispatch:
+jobs:
+  source-gated-consumers:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check isolated code
+        run: |
+          node --check engine/systems/electrical-loads-v8.js
+          node --check engine/systems/electrical-integration-v8.js
+          node --check electrical-load-lab/app.js
+      - name: Verify three-valued consumer trace and cross-system safety
+        run: node tests/electrical-loads-v8.test.cjs
