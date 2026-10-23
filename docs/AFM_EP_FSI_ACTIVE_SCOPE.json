@@ -1,6 +1,6 @@
 {
   "schema": "b737-afm-aircraft-scope-v1",
-  "status": "PRIVATE_AFM_V13_PMC_OFF_AND_MCT_CALIBRATION_PROVISIONAL__AUTO_N1_BLOCKED",
+  "status": "AFM_SOURCE_ANCHOR_QA_V14_NUMERIC_N1_STILL_BLOCKED",
   "source_id": "AFM-73733V-D6-8730.33V-R32-20180214",
   "active_aircraft": {
     "model": "737-33V",
@@ -17,8 +17,8 @@
     "installed_engine_independently_verified": false
   },
   "source_pdf_sha256": "3c7002212482f0c47a1735c2302ee304ef41ef4ca270591281b72f5f2a714105",
-  "private_library_path": "/Technical Database/Sources/AFM-737-33V-D6-8730-R32/EP-FSI-ASN29340/v13/",
-  "private_db_filename": "epfsi_afm_scoped_v13.sqlite",
+  "private_library_path": "/Technical Database/Sources/AFM-737-33V-D6-8730-R32/EP-FSI-ASN29340/v14/",
+  "private_db_filename": "epfsi_afm_scoped_v14.sqlite",
   "source_pdf_stored_separately": "/Technical Database/Sources/AFM-737-33V-D6-8730-R32/AFM_R32_original.pdf",
   "linked_tables": {
     "scoped_rules": 110,
@@ -42,15 +42,15 @@
   },
   "original_full_archive": "IMMUTABLE_HISTORY_ONLY",
   "other_serials": "DO_NOT_USE_FOR_THIS_SIMULATOR_AIRCRAFT",
-  "runtime_integration": "v10 CDU source routing only; v13 MCT synthetic diagnostic never passed to CDU/AUTOTHROTTLE",
+  "runtime_integration": "v10 CDU source routing only; private v14 anchors are NOT runtime numeric N1",
   "certified_performance_values": "NONE",
   "note": "A single airplane-specific reference scope; the underlying full source archive is preserved as private historical evidence and does not authorize calculations for other aircraft.",
-  "supersedes": "EP-FSI-ASN29340/v12/epfsi_afm_scoped_v12.sqlite",
+  "supersedes": "EP-FSI-ASN29340/v13/epfsi_afm_scoped_v13.sqlite",
   "numerical_n1_computations_enabled": false,
   "reader_tests_passed": 24,
-  "version": 13,
+  "version": 14,
   "audit_note": "EP-FSI 29340 CFM56-3B-1 20K user-provided configuration; v10 source guards and CDU read-only adapter wired, graphics source private. No calculated N1 values until complete reliable digitization and QA.",
-  "private_db_sha256": "4ae7ccb80425ed337499a1b6303ec929f4ce86c171f1491bcaa81bc572d5d37c",
+  "private_db_sha256": "dcaf7ca1ce3a9dbccd9d5a469d9843249b54aab429ce25466e83be5db08b6306",
   "pmc_option": "UNKNOWN_BY_DEFAULT__NORMAL_OR_OFF_TRAINING_SCENARIO_SELECTABLE",
   "n1_source_charts": {
     "takeoff_normal": 128,
@@ -61,7 +61,7 @@
   "n1_selection_rule_count": 11,
   "n1_numeric_points_independently_verified": 0,
   "n1_cdu_staging_adapter": "engine/fmc/performance/afm-epfsi-n1-v10.cjs",
-  "n1_numerical_enabling_state": "BLOCKED_PENDING_CURVE_FAMILY_ASSIGNMENT_AND_INDEPENDENT_N1_QA",
+  "n1_numerical_enabling_state": "BLOCKED_PENDING_COMPLETE_CURVE_ASSOCIATION_AND_NUMERIC_GOLDEN_VECTORS",
   "n1_source_chart_modes": 6,
   "n1_chart_components_to_validate": 14,
   "n1_axis_ticks_preliminary": 15,
@@ -137,5 +137,24 @@
     "human_independent_curve_signoff": 0
   },
   "current_mct_pipeline": "engine/fmc/performance/afm-epfsi-mct-v13.cjs",
-  "cdu_numeric_n1_release": false
+  "cdu_numeric_n1_release": false,
+  "n1_v14_identity_review": {
+    "pdf_original_render_exact_pixel_matches": [
+      130,
+      756
+    ],
+    "pmc_off_source_explicit_altitude_label_count": 10,
+    "pmc_off_source_explicit_altitude_label_unit": "1000_FT",
+    "prior_v13_unsubstantiated_13_curve_claim": "SUPERSEDED",
+    "source_labelled_horizontal_starter_anchors": 10,
+    "mach_legend_labels_mct_pressure_limit": 9,
+    "source_reference_case_templates": 8,
+    "expected_golden_n1_numeric_vectors": 0,
+    "approval": "SOURCE_VISUAL_FIRST_PASS_ONLY_NEEDS_INDEPENDENT_CURVE_SIGNOFF",
+    "sqlite_integrity": "ok",
+    "private_python_tests_passed": 20,
+    "complete_curves_assigned": 0,
+    "source_graph_points_eligible_for_numeric_N1": 0
+  },
+  "n1_numeric_golden_vector_count": 0
 }
