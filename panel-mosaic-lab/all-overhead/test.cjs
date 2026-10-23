@@ -9,7 +9,7 @@ const spec=JSON.parse(fs.readFileSync(path.join(root,'spec.json'),'utf8'));
 const geometry=JSON.parse(fs.readFileSync(path.join(root,'../upper-oh/geometry.json'),'utf8'));
 assert.equal(spec.version,'UPD-0007-atlas-matched');
 assert.equal(spec.images.length,16,'16 distinct image sources');
-assert.equal(new Set(spec.images.map(x=>x.filename)).size,12,'no duplicate image');
+assert.equal(new Set(spec.images.map(x=>x.filename)).size,16,'no duplicate image');
 assert.deepEqual(spec.images[0].panelIds,['OH-01','OH-02','OH-03','OH-04','OH-05','OH-06']);
 assert.deepEqual(spec.images[1].panelIds,['OH-07','OH-08']);
 const ids=spec.images.flatMap(x=>x.panelIds);
@@ -24,7 +24,7 @@ assert.equal(spec.columns[2].items.indexOf('OH19-DIFF'),4,'press diff located be
 assert.equal(geometry.parts.length,6);
 assert.equal(spec.header.height,909);
 assert.deepEqual(spec.correctedMappings.map(x=>x.id),['OH13','OH14','OH18']);
-assert.equal(spec.columns[2].items.at(-1),'OH18','OH18 must be beneath OH14 in center strip');
+assert.equal(spec.columns[2].items[2],'OH18','OH18 must be directly beneath OH14 in center strip');
 assert.ok(spec.images.find(x=>x.id==='OH13').display.cropLeftPct>10,'OH13 light side gutters are cropped in presentation only');
 assert.match(spec.images.find(x=>x.id==='OH18').title,/GROUND|GRD CALL/,'source identification comes from atlas photo');
 assert.ok(fs.existsSync(path.resolve(root,spec.atlasReference.image)),'source overhead atlas must exist');
