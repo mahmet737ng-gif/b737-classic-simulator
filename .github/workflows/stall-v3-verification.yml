@@ -1,0 +1,8 @@
+name: Stall V3 CI Verification
+on: [push, workflow_dispatch]
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: node tests/stall-warning-v3.test.cjs
