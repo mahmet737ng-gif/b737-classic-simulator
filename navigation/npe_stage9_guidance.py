@@ -179,6 +179,8 @@ def vertical_constraint_preview(*, distance_nm_to_fix, constraint=None, current_
     dist=_num(distance_nm_to_fix,'distance',0,500)
     if not isinstance(constraint,dict) or constraint.get('evidence')!='VERIFIED_EXPLICIT_SOURCE':
         return {'state':'BLOCKED_NO_VERIFIED_VERTICAL_CONSTRAINT','fmc_vnav_active':False,'pitch_command_deg':None}
+    if constraint.get('airac')!=AIRAC or constraint.get('source_marker')!=AIRAC_MARKER:
+        raise Stage8Error('Explicit vertical constraint has wrong AIRAC cycle or post-marker provenance')
     if (not isinstance(constraint.get('source'),dict) or not constraint['source'].get('file') or
         type(constraint['source'].get('line')) is not int or constraint['source']['line']<=0):
         raise Stage8Error('Explicit vertical constraint provenance required')
