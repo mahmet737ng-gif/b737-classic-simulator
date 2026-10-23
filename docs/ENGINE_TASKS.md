@@ -227,3 +227,10 @@ Private active: `/Technical Database/Sources/AFM-737-33V-D6-8730-R32/EP-FSI-ASN2
 | CDU/Autothrottle numeric computed N1 | BLOCKED (SOURCE QA) | Real input requires full curve family/bleed/cap and two independent numeric signoffs. |
 
 Active private source: `/Technical Database/Sources/AFM-737-33V-D6-8730-R32/EP-FSI-ASN29340/v16/epfsi_afm_scoped_v16.sqlite`. Synthetic QA and GitHub CI pass. Preserve proprietary source and all historic snapshots.
+
+## System-by-system #03 CPCS V5
+
+- Classic CPCS is modeled separately from DCPCS. User's EP-FSI/F SI effectivity in indexed FCOM maps to DCPCS, not CPCS. See `docs/CPCS_SYSTEM_V5.md`.
+- Executable trainer: `engine/systems/cpcs-v5.js`, `engine/systems/cpcs-integration-v5.js`, isolated `cpcs-lab/`, and tests `tests/cpcs-v5.test.cjs`.
+- Private Technical Database: `/Technical Database/Subsystems/CPCS-V5/CPCS_NETWORK_V5.sqlite`; 38 nodes, 68 ports, 42 functional links, 29 rule records (23 evaluable templates), 8 synthetic faults, 12 open gaps.
+- 54 local scenario tests (warning contract stub) and 25 private graph tests passed. Public GitHub Pages `npm test` also passed after adding CPCS test against real existing warning engine. No complete cabin pressure physics, exact relay wiring, or production cockpit hotspot mapping is claimed. LAN mode remains deferred.
