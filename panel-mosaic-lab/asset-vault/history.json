@@ -1,0 +1,33 @@
+{
+  "schema": "b737-classic.panel-assets-history.v1",
+  "events": [
+    {
+      "version": "REF-0001",
+      "date": "2026-10-23",
+      "description": "Archived three exact generated atlas reference images, not yet imported to GitHub as binaries.",
+      "ids": [
+        "OH-ATLAS-0001",
+        "MP-ATLAS-0001",
+        "PD-ATLAS-0001"
+      ],
+      "kind": "archive_reference"
+    },
+    {
+      "version": "UPD-0002",
+      "date": "2026-10-23",
+      "description": "Exact OH01-06 user PNG verified byte-for-byte in GitHub; derived mosaic + preview archived in Technical Database only, pending binary transfer to GitHub.",
+      "ids": [
+        "OH01-06-SOURCE-20261023-9d8ac0ac86bd",
+        "OH01-06-MOSAIC-20261023-1720033c4877",
+        "OH-UPD0002-PREVIEW-4a895d97c211"
+      ],
+      "kind": "source_integrity_checked"
+    },
+    {
+      "version": "VAULT-0001",
+      "date": "2026-10-23",
+      "description": "Opened append-only lock catalog and independent CI integrity and historical-mutation guards; no current existing simulator panel files modified.",
+      "kind": "integrity_policy_enabled"
+    }
+  ]
+}
