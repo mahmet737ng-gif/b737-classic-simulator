@@ -1,0 +1,52 @@
+{
+  "schema": "b737-simulator-default-conditions-v1",
+  "airframe": {
+    "registration": "EP-FSI",
+    "model": "737-33V",
+    "serial_number": 29340,
+    "engine": "CFM56-3B-1",
+    "rating_lbf": 20000
+  },
+  "profile_version": "17-default-environment",
+  "effective_date": "2026-10-23",
+  "provenance": "USER_EXPLICIT_DEFAULTS",
+  "applies_to": [
+    "all simulator scenarios",
+    "Performance Engine input environment",
+    "CDU N1 LIMIT and TAKEOFF REF source-context testing"
+  ],
+  "defaults": {
+    "weather": "ISA",
+    "ambient_oat_c": "ISA_FROM_PRESSURE_ALTITUDE",
+    "anti_ice": "OFF",
+    "engine_bleed": "ON",
+    "ac_packs": "AUTO",
+    "ac_packs_status": "SIMULATOR_NORMAL_CONFIGURATION_ASSUMPTION_NOT_A_USER_CONFIRMED_AIRCRAFT_HARDWARE_SETTING"
+  },
+  "temperature_model": {
+    "sea_level_c": 15,
+    "tropospheric_lapse_c_per_km": -6.5,
+    "tropopause_km": 11,
+    "isothermal_c_above_tropopause_to_20km": -56.5,
+    "applicability": "ISA air temperature (SAT/OAT) by pressure altitude; NOT TAT or a pressure-altitude substitute",
+    "no_altitude": "OAT_UNAVAILABLE_UNTIL_ALTITUDE_SUPPLIED"
+  },
+  "preserved_independent_conditions": {
+    "pmc": "UNKNOWN_UNTIL_EXPLICITLY_SET_OR_DOCUMENTED",
+    "tat": "REQUIRES_TAT_OR_MACH_WITH_DOCUMENTED_CORRECTION",
+    "mach": "DO_NOT_INVENT",
+    "indicated_airspeed": "DO_NOT_INVENT",
+    "aircraft_equipment_options": "DO_NOT_ASSERT_FROM_DEFAULT_SCENARIO"
+  },
+  "overrides": "Default values apply only absent explicit scenario inputs; explicit simulator controls override with source label.",
+  "safe_source_policy": "Defaults do not validate AFM digitization. Automatic N1 remains blocked until complete independently verified curves and golden vectors.",
+  "implementation": {
+    "runtime_module": "engine/fmc/performance/epfsi-scenario-defaults-v17.cjs",
+    "offline_browser_bundle": "cdu-standalone/data/epfsi-scenario-defaults-v17.js",
+    "cdu": "cdu-standalone/app.js",
+    "tests": [
+      "tests/epfsi-scenario-defaults-v17.test.cjs",
+      "cdu-standalone/tests/defaults-v17-integration.test.cjs"
+    ]
+  }
+}
