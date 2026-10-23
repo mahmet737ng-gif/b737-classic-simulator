@@ -1,0 +1,32 @@
+{
+  "schema": "b737.panel-mosaic.published-update.v1",
+  "version": "UPD-0004",
+  "date": "2026-10-24",
+  "status": "SOURCE_PUBLISHED_VERIFIED",
+  "viewer": "https://mahmet737ng-gif.github.io/b737-classic-simulator/panel-mosaic-lab/oh13-14/",
+  "sourceOfTruth": "panel-mosaic-lab/immutable-manifest.json",
+  "assets": [
+    {
+      "panel": "OH-13",
+      "sourceOriginal": "Aircraft Cockpit Circuit Breaker Panel.png",
+      "canonical": "OH13-CIRCUIT-BREAKER-efca1c6cec9e.png",
+      "blobSha1": "efca1c6cec9ed3318cddc7a017e3144f9ab0994b",
+      "sha256": "8fef9e3d67fd78c794d0cceb31ab2806f82076bf7d6e987e3fbdcf5e2a1c76a4",
+      "bytes": 2307600
+    },
+    {
+      "panel": "OH-14",
+      "sourceOriginal": "Stripped Emergency Lighting Panel.png",
+      "canonical": "OH14-EMER-EXIT-795cc819a3b3.png",
+      "blobSha1": "795cc819a3b3cea8f131f6da1b32918318c7747a",
+      "sha256": "7a707630ada8d1ae84a7377dd92e61bda95e07ccc3e71c4759da0b3dd113b3d8",
+      "bytes": 2674410
+    }
+  ],
+  "audit": {
+    "githubAction": "https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/40030118117",
+    "result": "success",
+    "method": "git hash-object + sha256sum"
+  },
+  "notes": "Original uploads preserved unchanged; same Git blobs added at standard paths. Historical physical geometry remains rejected, current image-source mapping is valid."
+}
