@@ -1,7 +1,59 @@
 {
   "schema_version": 1,
-  "default_source_id": "PMDG_WORLD_2610_R1",
+  "default_source_id": "PMDG_WORLD_2610_WITH_PROCEDURES_R1",
   "sources": [
+    {
+      "source_id": "PMDG_WORLD_2610_WITH_PROCEDURES_R1",
+      "name": "Combined private user-supplied PMDG Global NAVDATA + SIDSTAR source",
+      "scope": "worldwide",
+      "airac": "2610",
+      "revision": 1,
+      "effective_start": "2026-10-01",
+      "effective_end_exclusive": "2026-10-29",
+      "parent_source_id": "PMDG_WORLD_2610_R1",
+      "sidstar_archive_sha256": "820ac055895bef860a1bbda43de3b69f6d4eaa7582679f2acbba91552c069597",
+      "airac_required_marker": "//AIRAC Cycle : 2610 (01/OCT/2026 - 29/OCT/2026) - Ver.1",
+      "marker_policy": "STRICT_PER_FILE; ignore every byte before marker; reject missing marker",
+      "source_files": 7319,
+      "counts": {
+        "airports": 17214,
+        "runways": 42644,
+        "navaids": 15800,
+        "waypoints": 310806,
+        "airways": 105425,
+        "SID": 36231,
+        "STAR": 31107,
+        "APP": 33224,
+        "procedures": 100562,
+        "local_fixes": 246376,
+        "local_runways": 20299,
+        "gate_positions": 57073,
+        "transition_statements": 91267,
+        "runway_clauses": 45050,
+        "procedure_segments": 236879
+      },
+      "qa": {
+        "sqlite_integrity": "ok",
+        "rejected_files_missing_airac_marker": 0,
+        "files_with_structural_issues": 1,
+        "file_issues": [
+          {
+            "airport": "ZYYJ",
+            "archive_member": "SidStars/ZYYJ.txt",
+            "issue": "truncated source ends with TRANSI",
+            "status": "SOURCE_INCOMPLETE"
+          }
+        ]
+      },
+      "sqlite_filename": "B737_NAVDB_WORLD_AIRAC2610_WITH_PROCEDURES.sqlite",
+      "personal_library_private_archive": "/B737/NAVDB/B737_NAVDB_WORLD_AIRAC2610_WITH_SID_STAR_APP_PRIVATE.zip",
+      "personal_library_import_report": "/B737/NAVDB/B737_NAVDB_WORLD_AIRAC2610_SIDSTAR_IMPORT_REPORT.json",
+      "importer_filename_in_private_package": "import_sidstars.py",
+      "import_state": "IMPORTED_RAW_PROCEDURES_PRIVATE_SQLITE",
+      "procedure_semantics": "SOURCE_EXPRESSIONS_ONLY_NOT_ARINC_FMC_LEGS",
+      "fmc_activation_state": "NOT_CONNECTED_OR_VERIFIED",
+      "redistribution": "RESTRICTED; DO NOT commit source or derived DB to public repository"
+    },
     {
       "source_id": "PMDG_WORLD_2610_R1",
       "name": "User-supplied PMDG NAVDATA (Navigraph/Jeppesen)",
@@ -41,7 +93,7 @@
   "integration": {
     "navigation_source_selection": "registry",
     "source_merge_behavior": "explicit_source_selection_only",
-    "fmc_gate": "verified_procedures_and_aircraft_adapter_required",
+    "fmc_gate": "verified ARINC/PMDG procedure semantics (including transitions, runway applicability, altitude/speed constraints and holds); source cycle and aircraft adapter tests required; ZYYJ incomplete file blocked",
     "simulator_training_only": true
   }
 }
