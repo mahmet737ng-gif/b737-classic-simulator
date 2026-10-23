@@ -1,0 +1,39 @@
+name: Audit new OH image plates
+on:
+  push:
+    paths:
+      - '.github/workflows/overhead-new-source-audit.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check image files and produce small review snapshots
+        shell: bash
+        run: |
+          python -m pip install -q Pillow
+          python - <<'PY'
+          from PIL import Image
+          import io,base64,hashlib,pathlib
+          root=pathlib.Path('panel-mosaic-lab/assets/locked/2026-10-23')
+          files={
+            'A':'Needleless Aircraft Cockpit Instrument Panel.png',
+            'B':'Blank Avionics Control Panel.png',
+            'C':'Aircraft Climate Control Panel Close-Up.png',
+            'D':'Aircraft Bleed Air Control Panel.png'
+          }
+          for id,name in files.items():
+              p=root/name
+              raw=p.read_bytes()
+              im=Image.open(io.BytesIO(raw)).convert('RGB')
+              print('SOURCE',id,name,'SIZE',im.size,'BYTES',len(raw),'SHA256',hashlib.sha256(raw).hexdigest())
+              im.thumbnail((480,640))
+              out=io.BytesIO()
+              im.save(out,'JPEG',quality=65,optimize=True)
+              print('PREVIEW_START_'+id)
+              print(base64.b64encode(out.getvalue()).decode('ascii'))
+              print('PREVIEW_END_'+id)
+          PY
