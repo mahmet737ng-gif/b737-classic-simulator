@@ -13,6 +13,7 @@ Stage 9 adds a *stateful* guidance training model on top of the private Stage-4 
 No text before this marker participates in NAVDB import, route construction, or guidance.
 
 - `navigation/npe_stage9_guidance.py`: validates source-only WGS84 chord chains, calculates true-track target, signed cross-track, along-track/DTG, heading/track error and capped **simulated flight-director bank preview**. Automatic leg sequencing is **only** within the same proven source group and only when the aircraft reaches the selected fix. No early fly-by turns without verified waypoint semantics. Invalid/stale simulator sensors, out-of-capture positions and group ends suspend guidance.
+- `navigation/npe_stage9_training_aircraft.py`: an optional independent point-mass physics sandbox uses the Stage9 bank preview to close the lateral training feedback loop; it **never** connects to the actual simulator or AFDS. The simulated heading/position dynamic model is NOT from the EP-FSI AFM.
 - `navigation/npe_stage9_server.py`: isolated private loopback service with explicit arm/disengage, opaque sessions, and `SIMULATOR_INTERNAL` position samples. No real aircraft adapter, no actuator endpoint. Private SQLite is extracted only to an OS temporary directory.
 - `navigation/npe-stage9/`: browser lab for a simulated ownship, route segments, gaps and guidance readout. It embeds the existing approved CDU/EHSI without changing its photo assets, EFIS controls, hitboxes, or knob animation.
 - `cdu-standalone-v6/stage9-advisory.js`: same-origin, read-only **SIM REF** annotation on EHSI PLAN; no control input or flight mode updates.
@@ -29,6 +30,7 @@ No text before this marker participates in NAVDB import, route construction, or 
 | No crossing SID/STAR/APP or ROUTE DISCONTINUITY | **Enforced** |
 | Invalid GPS/IRS, stale sensor, out of route | **Suspends** |
 | Synthetic vertical target for an explicit verified altitude | **Advisory only** |
+| Optional sandbox closed-loop lateral capture | **Implemented in a synthetic, deliberately non-aircraft-specific kinematic model** |
 | Actual sourced ARINC-coded SID/STAR/APP flyable legs | **Blocked: absent from supplied narrative** |
 | True VNAV / autothrottle / thrust integration | **Not implemented** |
 | AFDS/AP servo actuation or real LNAV coupling | **Not connected** |
@@ -64,4 +66,4 @@ python -m unittest discover -s navigation/tests -p 'test_npe_stage9*.py' -v
 node cdu-standalone-v6/tests/stage9-advisory.test.cjs
 ```
 
-Private integration tests need the Stage4 SQLite path in `NPE_STAGE9_PRIVATE_STAGE4`. All 25 Python tests (19 synthetic, one real database, five live HTTP cases), plus read-only JS tests, passed locally at the time of this release. Chromium direct `localhost` was `ERR_BLOCKED_BY_ADMINISTRATOR` in the authoring sandbox; no claim of real-device browser acceptance is made.
+Private integration tests need the Stage4 SQLite path in `NPE_STAGE9_PRIVATE_STAGE4`. All **28 Python tests** (22 synthetic including synthetic point-mass model, one real private database test, five live HTTP cases), plus read-only JS tests, passed locally at the time of this release. Chromium DOM QA passed with database-derived mock API responses; browser direct localhost was blocked. Chromium direct `localhost` was `ERR_BLOCKED_BY_ADMINISTRATOR` in the authoring sandbox; no claim of real-device browser acceptance is made.
