@@ -8,3 +8,10 @@
 #atlasView img{display:block;width:100%;height:auto;user-select:none;pointer-events:none}
 /* The gallery shows the full uncropped source for QA. */
 #gallery .piece[data-key="OH13"]>img{width:100%;height:auto}
+
+/* Full-width, shared lower cockpit switch strip OH23–25.
+   Crop only the photographed panel's white outer source canvas at presentation time.
+   Retain locked PNG source unchanged and accessible in Independent Images mode. */
+#bottom>.piece[data-key="OH23-25"]{grid-column:1/-1;min-height:0;border-bottom:0;overflow:hidden;background:#101b25}
+#bottom>.piece[data-key="OH23-25"] .crop-window{display:block;width:100%;position:relative;overflow:hidden;background:#101b25}
+#bottom>.piece[data-key="OH23-25"] .crop-window>img{display:block;user-select:none;pointer-events:none}
