@@ -30,7 +30,7 @@ const ctx=vm.createContext({document,window,console,location:{reload(){}},setTim
 const withoutStart=source.replace(/\nstart\(\);\s*$/,'\n');
 assert.notEqual(withoutStart,source,'remove auto-start solely for isolated tab unit test');
 vm.runInContext(withoutStart,ctx,{filename:'stage.js'});
-assert.match(html,/stage\\.js\\?v=UPD-[A-Za-z0-9-]+/,'versioned browser JS loads current mosaic files, not stale cache');
+assert.ok(html.includes('stage.js?v=UPD-'),'browser script has cache-busting release version');
 assert.ok(html.includes('id="viewModeStatus"'),'visible mode indicator');
 assert.doesNotThrow(()=>node('modeGallery').onclick(),'clicking before metadata should not crash');
 vm.runInContext("spec={images:Array.from({length:16},()=>({id:'image'})),columns:[]};geometry={parts:[]};fitMode=false;highlight=()=>{};updateDimensions=()=>{};populateGallery=()=>document.getElementById('gallery').children.push({});",ctx);
