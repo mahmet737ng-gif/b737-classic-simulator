@@ -1,0 +1,38 @@
+name: NPE Stage 8 - source evidence and reference safety
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'navigation/npe_stage8.py'
+      - 'navigation/npe_stage8_server.py'
+      - 'navigation/qa_stage8.py'
+      - 'navigation/npe-stage8/**'
+      - 'navigation/tests/test_npe_stage8*.py'
+      - '.github/workflows/npe-stage8-qa.yml'
+  pull_request:
+    paths:
+      - 'navigation/npe_stage8.py'
+      - 'navigation/npe_stage8_server.py'
+      - 'navigation/qa_stage8.py'
+      - 'navigation/npe-stage8/**'
+      - 'navigation/tests/test_npe_stage8*.py'
+jobs:
+  synthetic-python-qa:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Stage 8 synthetic and fail-closed tests
+        run: python -m unittest discover -s navigation/tests -p 'test_npe_stage8*.py' -v
+      - name: Verify browser JS syntax (no private data)
+        run: node --check navigation/npe-stage8/app.js
+      - name: Enforce no licensed SQLite accidentally checked in
+        run: |
+          if find navigation -type f \( -name '*.sqlite' -o -name '*.db' \) | grep .; then
+            echo 'Private navigation database must not be committed'
+            exit 1
+          fi
