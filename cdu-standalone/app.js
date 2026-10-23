@@ -8,8 +8,24 @@ function presentN1Snapshot(){
  return presentN1Store?presentN1Store.snapshot(Date.now()):{
   sourceLabel:'ENGINE',engine1:{display:'---.-',status:'NO_BRIDGE'},engine2:{display:'---.-',status:'NO_BRIDGE'}};
 }
-function presentN1Pair(){const p=presentN1Snapshot();
- return {one:p.engine1.display,two:p.engine2.display,source:p.sourceLabel};}
+function estimatedN1(){
+ const surrogate=window.EPFSI_ESTIMATED_N1_V19;
+ if(!surrogate)return {status:'NO_SURROGATE',maxN1Pct:null,presentN1Pct:null,sourceLabel:'NONE'};
+ return surrogate.estimate({registration:'EP-FSI',serial:29340,engine:'CFM56-3B-1',
+   ratingLbf:20000,...currentN1Context()});
+}
+function presentN1Pair(){
+ const p=presentN1Snapshot(),e=estimatedN1();
+ const value=(sensor,id)=>{
+  if(Number.isFinite(sensor.n1Pct)&&['LIVE_OBSERVATION','TEST_ONLY'].includes(sensor.status))
+   return {display:sensor.display,tag:sensor.status==='TEST_ONLY'?'TEST':'LIVE'};
+  const guessed=e.presentN1Pct&&e.presentN1Pct[id];
+  return {display:Number.isFinite(guessed)?guessed.toFixed(1):'---.-',tag:'EST'};
+ };
+ const one=value(p.engine1,1),two=value(p.engine2,2);
+ return {one:one.display,two:two.display,oneTag:one.tag,twoTag:two.tag,
+  source:one.tag+'/'+two.tag,estimate:e};
+}
 function initializePresentN1(){
  const one=document.getElementById('present-n1-eng1');
  const two=document.getElementById('present-n1-eng2');
@@ -48,7 +64,7 @@ if(presentN1Store){
 function initialN1State(){
  return {phase:'TAKEOFF',pmcMode:'UNKNOWN',pressureAltitudeFt:null,oatC:null,tatC:null,
   mach:null,iasKts:null,weatherMode:'ISA',bleedMode:'ON',engineBleedMode:'ON',
-  acPacks:'AUTO',antiIceMode:'OFF'};
+  acPacks:'AUTO',antiIceMode:'OFF',thrustLeverPct:null};
 }
 function currentN1Context(){
  const api=window.EPFSI_SCENARIO_DEFAULTS;
@@ -92,20 +108,22 @@ function pageLines(){const mode=pendingCount()?'MOD':'ACT',a=Array(14).fill('');
  const n=epfsiN1();
  a[0]=left('N1 LIMIT','1/1');
  a[2]=left('TO N1','ENGINE');
- a[3]=left(v('N1')?v('N1')+'% MAN':n.display,'3B-1 / 20K');
+ const est=estimatedN1();
+ a[3]=left(v('N1')?v('N1')+'% MAN':(Number.isFinite(est.maxN1Pct)?est.maxN1Pct.toFixed(1)+'% EST':n.display),'3B-1/20K');
  a[4]=left('PMC','AFM PAGE');
  a[5]=left(sim.n1.pmcMode,n.source?'PDF '+n.source.pdfPage:'---');
  const pn=presentN1Pair();
  a[6]=left('PRESENT N1 1 / 2',pn.source);
  a[7]=left(pn.one,pn.two);
- a[8]=left('SOURCE','NOT VERIFIED');
+ a[8]=left('AFM SOURCE','NOT VERIFIED');
  const ctx=currentN1Context();
  a[9]=[ctx.weatherMode,'BLD:'+ctx.engineBleedMode,'AI:'+ctx.antiIceMode].join(' ').slice(0,24);
- a[10]=left('MAX N1','---.-');
+ a[10]=left('MAX N1 EST',Number.isFinite(est.maxN1Pct)?est.maxN1Pct.toFixed(1)+'% EST':'---.-');
  a[11]=left('MANUAL N1','TRAINING ONLY');
  a[13]=left('<INDEX','TAKEOFF>');
  }else if(p==='TAKEOFF'){
- a[0]=left('TAKEOFF REF','1/1');a[2]=left('FLAPS','V1');a[3]=left('5','---');a[4]=left('VR','V2');a[5]=left('---','---');a[7]=left('RUNWAY','N1 REF');a[8]=left('---',v('N1')?v('N1')+' MAN':'---.-');a[10]=left('AFM N1','NOT VERIFIED');{const ctx=currentN1Context();a[11]=[ctx.weatherMode,'BLD:'+ctx.engineBleedMode,'AI:'+ctx.antiIceMode].join(' ').slice(0,24);}a[13]=left('<INDEX','');
+ a[0]=left('TAKEOFF REF','1/1');a[2]=left('FLAPS','V1');a[3]=left('5','---');a[4]=left('VR','V2');a[5]=left('---','---');a[7]=left('RUNWAY','N1 REF');{const est=estimatedN1();
+ a[8]=left('---',v('N1')?v('N1')+' MAN':(Number.isFinite(est.maxN1Pct)?est.maxN1Pct.toFixed(1)+' EST':'---.-'));}a[10]=left('AFM N1','NOT VERIFIED');{const ctx=currentN1Context();a[11]=[ctx.weatherMode,'BLD:'+ctx.engineBleedMode,'AI:'+ctx.antiIceMode].join(' ').slice(0,24);}a[13]=left('<INDEX','');
  }else if(p==='PERF_INIT'){
  a[0]=left('PERF INIT','1/1');a[2]=left('GR WT','FUEL');a[3]=left('---.-','---.-');a[4]=left('COST INDEX','CRZ ALT');a[5]=left(v('CI'),v('CRZ_ALT'));a[13]=left('<INDEX','N1 LIMIT>');
  }else{a[0]=left(p,'1/1');a[13]=left('<INDEX','');}
@@ -172,9 +190,9 @@ function render(){let output=pageLines();if(sim.message)output[12]=sim.message;e
  $('page-now').textContent=sim.page;$('scratch-now').textContent=sim.message||sim.scratch||'—';$('pending-now').textContent=pendingCount();$('key-now').textContent=sim.last.replace('CDU_CAPT_','');
  const status=document.getElementById('n1-defaults-status');
  const presentStatus=document.getElementById('present-n1-status');
- if(presentStatus){const r=presentN1Snapshot();
-  presentStatus.textContent='SOURCE '+r.sourceLabel+' — ENG1 '+r.engine1.display+
-   ' ('+r.engine1.status+') / ENG2 '+r.engine2.display+' ('+r.engine2.status+')';
+ if(presentStatus){const r=presentN1Pair();
+  presentStatus.textContent='ENG1 '+r.one+'% ('+r.oneTag+') / ENG2 '+r.two+'% ('+r.twoTag+')'+
+   ' — surrogate EST values replace missing telemetry; never actual N1.';
  }
  if(status){const ctx=currentN1Context();
   const oat=Number.isFinite(ctx.oatC)?ctx.oatC.toFixed(1)+'°C':'— (set pressure altitude)';
@@ -186,7 +204,8 @@ function syncN1Inputs(){
  const ids={'n1-pmc-mode':'pmcMode','n1-phase':'phase','n1-pressure-alt':'pressureAltitudeFt',
   'n1-oat':'oatC','n1-tat':'tatC','n1-mach':'mach','n1-ias':'iasKts',
   'n1-weather-mode':'weatherMode','n1-bleed':'acPacks',
-  'n1-engine-bleed':'engineBleedMode','n1-anti-ice':'antiIceMode'};
+  'n1-engine-bleed':'engineBleedMode','n1-anti-ice':'antiIceMode',
+  'n1-thrust-lever':'thrustLeverPct'};
  for(const [id,k] of Object.entries(ids)){
   const el=document.getElementById(id);if(!el)continue;
   const value=sim.n1[k];el.value=value===null||value===undefined?'':String(value);
@@ -196,8 +215,9 @@ function initializeN1Inputs(){
  const ids={'n1-pmc-mode':'pmcMode','n1-phase':'phase','n1-pressure-alt':'pressureAltitudeFt',
   'n1-oat':'oatC','n1-tat':'tatC','n1-mach':'mach','n1-ias':'iasKts',
   'n1-weather-mode':'weatherMode','n1-bleed':'acPacks',
-  'n1-engine-bleed':'engineBleedMode','n1-anti-ice':'antiIceMode'};
- const numbers=new Set(['pressureAltitudeFt','oatC','tatC','mach','iasKts']);
+  'n1-engine-bleed':'engineBleedMode','n1-anti-ice':'antiIceMode',
+  'n1-thrust-lever':'thrustLeverPct'};
+ const numbers=new Set(['pressureAltitudeFt','oatC','tatC','mach','iasKts','thrustLeverPct']);
  for(const [id,key] of Object.entries(ids)){
   const el=document.getElementById(id);if(!el)continue;
   el.addEventListener('change',()=>{
