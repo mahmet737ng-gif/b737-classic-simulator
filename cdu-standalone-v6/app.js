@@ -1,7 +1,7 @@
 'use strict';
 const $=id=>document.getElementById(id);
 const map=window.CDU_MAP, pages=window.CDU_PAGES, core=window.CDU_ENGINE;
-const state=core.makeState('INDEX');
+const state=core.makeState('IDENT');
 const byId={};
 function n1EstimateV19(){
  const engine=window.EPFSI_ESTIMATED_N1_V19;
@@ -67,7 +67,7 @@ function send(k){const before=state.page;
  core.press(state,pages,k);window.CDU_NAV_API?.afterPage?.(k);window.CDU_NAV_API?.afterKey?.(k);
  window.CDU_STAGE5_API?.afterPage?.(k);window.CDU_STAGE5_API?.afterKey?.(k,before);
  window.CDU_STAGE6_API?.afterPage?.(k);window.CDU_STAGE6_API?.afterKey?.(k,before);update()}
-function reset(){const fresh=core.makeState('INDEX');Object.keys(state).forEach(k=>delete state[k]);Object.assign(state,fresh);['call-test','fault-test','offset-test'].forEach(k=>$(k).checked=false);window.EHSI_ENGINE?.syncPanel(state,document);update()}
+function reset(){const fresh=core.makeState('IDENT');Object.keys(state).forEach(k=>delete state[k]);Object.assign(state,fresh);['call-test','fault-test','offset-test'].forEach(k=>$(k).checked=false);window.EHSI_ENGINE?.syncPanel(state,document);update()}
 function init(){if(!map||!pages||!core)throw Error('CDU data is missing');makeControls();update();$('reset').onclick=reset;$('overlay-toggle').onclick=()=>$('cdu-stage').classList.toggle('debug');$('info-toggle').onclick=()=>$('qa').hidden=!$('qa').hidden;
  for(const [el,k] of [['call-test','call'],['fault-test','fail'],['offset-test','offsetGuidance']])$(el).addEventListener('change',e=>{state[k]=e.target.checked;update()});
  $('test-message').onclick=()=>{state.message='CHECK FMC DATA';update()};

@@ -5,7 +5,7 @@ const EMPTY={};
 const SAMPLE={ORIGIN:'',DEST:'',CO_ROUTE:'',FLIGHT:'',CRZ_ALT:'',CRZ_SPEED:'',CI:'',FLAPS:'',RUNWAY:'',WPT1:'',WPT2:'',OFFSET:'',HDG_SEL:'000',CRS_SEL:'000'};
 const ROUTE_FIELDS=new Set(['ORIGIN','DEST','CO_ROUTE','FLIGHT','RUNWAY']);
 const ROUTE_PAGES=new Set(['RTE','ACTIVATE','FLIGHT_PLAN','LEGS']);
-function makeState(start='INDEX') {return {page:start,active:{...SAMPLE},pending:{},stagedRoute:{},scratch:'',message:'',history:[],call:false,fail:false,offsetGuidance:false,brightness:1,lastKey:'',lastLSK:'',subpage:1,events:[],ehsi:{mode:'MAP',range:10,heading:0,course:0}};}
+function makeState(start='IDENT') {return {page:start,active:{...SAMPLE},pending:{},stagedRoute:{},scratch:'',message:'',history:[],call:false,fail:false,offsetGuidance:false,brightness:1,lastKey:'',lastLSK:'',subpage:1,events:[],ehsi:{mode:'MAP',range:10,heading:0,course:0}};}
 function clean(value){return String(value??'').trim().toUpperCase();}
 function validate(type,value){const s=clean(value);switch(type){
 case 'ICAO':return /^[A-Z]{4}$/.test(s);

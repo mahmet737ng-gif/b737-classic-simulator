@@ -20,6 +20,7 @@
  function page(name){dispatch({type:'PAGE',page:name})}
  function routeLSK(id){
   if(state.page==='INDEX'){if(id==='L2')return page('RTE');if(id==='L1')return page('IDENT');}
+  if(state.page==='IDENT'&&id==='R6')return page('POS_INIT');
   if(state.page==='DEP_ARR'){if(id==='L1')return page('DEPARTURES');if(id==='R1')return page('ARRIVALS');}
   if(id==='L6'&&state.page!=='RTE')return page('INDEX');
   if(state.page==='RTE'&&id==='R6')return dispatch({type:'ACTIVATE_ROUTE'});
@@ -83,6 +84,14 @@
   const rows=Array(14).fill(' '.repeat(24));const put=(i,a,b)=>{rows[i]=line(a,b)};
   put(0,(page==='RTE'?rte.route_state+' ':'')+page,'1/1');
   if(page==='INDEX'){put(2,'<IDENT','POS INIT>');put(4,'<RTE','PERF INIT>');put(6,'<LEGS','TAKEOFF>');}
+  else if(page==='IDENT'){
+   // Initial PREFLIGHT display; exact fields pending page-by-page FCOM validation.
+   put(1,'MODEL','ENG RATING');
+   put(2,'737-300','CFM56-3B-1');
+   put(5,'NAV DATA','STATUS');
+   put(6,'-------',state.navdb.source_status);
+   put(11,'<INDEX','POS INIT>');
+  }
   else if(page==='RTE'){
    put(1,'ORIGIN','DEST');put(2,rte.ORIGIN,rte.DEST);
    put(3,'CO ROUTE','FLIGHT');

@@ -21,7 +21,7 @@ function createState(config={}){
  return {schema:SCHEMA,aircraft,source:'SEPEHRAN_737CL_FCOM_VOL2_CH11',standalone:true,
   external_simulator_required:false,mode:'TRAINER_NO_GUIDANCE_AUTHORITY',
   aircraft_config:{variant:'737_CLASSIC_EP-FSI',fmc_installation:'UNVERIFIED',software_option:'UNVERIFIED'},
-  page:'INDEX',phase:'PREFLIGHT',scratch:'',saved_scratch:'',messages:[],message_seq:0,
+  page:'IDENT',phase:'PREFLIGHT',scratch:'',saved_scratch:'',messages:[],message_seq:0,
   route:{active:{ORIGIN:'',DEST:'',RUNWAY:'',CO_ROUTE:'',FLIGHT:''},draft:{},pending:{},activation_requested:false,discontinuities:[],source_procedure_status:'UNVERIFIED'},
   preflight:{position_verified:false,route_active:false,performance_verified:false,takeoff_verified:false},
   navdb:{airac:null,marker:null,source_status:'UNAVAILABLE',licensed_private:true},

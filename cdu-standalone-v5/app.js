@@ -1,7 +1,7 @@
 'use strict';
 const $=id=>document.getElementById(id);
 const map=window.CDU_MAP, pages=window.CDU_PAGES, core=window.CDU_ENGINE;
-const state=core.makeState('INDEX');
+const state=core.makeState('IDENT');
 const byId={};
 function position(el,box){const [x1,y1,x2,y2]=box;Object.assign(el.style,{left:x1/1199*100+'%',top:y1/1312*100+'%',width:(x2-x1)/1199*100+'%',height:(y2-y1)/1312*100+'%'});}
 function makeControls(){const click=$('clickmap');for(const c of map.controls){let el=document.createElement('button');el.type='button';el.className='hotspot '+c.shape;position(el,c.bbox_px);el.title=c.label+' — '+c.id;el.dataset.short=c.label;el.setAttribute('aria-label',c.label);let handled=false,timer;el.addEventListener('pointerdown',()=>{if(c.id.endsWith('KEY_CLR')){handled=false;timer=setTimeout(()=>{handled=true;core.press(state,pages,c.id,{longPress:true});update()},700)}});el.addEventListener('pointerup',()=>clearTimeout(timer));el.addEventListener('pointerleave',()=>clearTimeout(timer));el.addEventListener('pointercancel',()=>clearTimeout(timer));el.addEventListener('click',()=>{if(!handled){core.press(state,pages,c.id);update()}else handled=false});el.addEventListener('focus',()=>{if($('selected-code'))$('selected-code').textContent=JSON.stringify(c,null,2)});click.appendChild(el);byId[c.id]=el;}
@@ -31,7 +31,7 @@ function update(){const box=$('fmc-lines'); box.replaceChildren();
  updateEHSI();
 }
 function send(k){core.press(state,pages,k);update()}
-function reset(){const fresh=core.makeState('INDEX');Object.keys(state).forEach(k=>delete state[k]);Object.assign(state,fresh);['call-test','fault-test','offset-test'].forEach(k=>$(k).checked=false);$('ehsi-heading').value=0;$('ehsi-course').value=0;$('ehsi-range').value=10;$('ehsi-mode').value='MAP';update()}
+function reset(){const fresh=core.makeState('IDENT');Object.keys(state).forEach(k=>delete state[k]);Object.assign(state,fresh);['call-test','fault-test','offset-test'].forEach(k=>$(k).checked=false);$('ehsi-heading').value=0;$('ehsi-course').value=0;$('ehsi-range').value=10;$('ehsi-mode').value='MAP';update()}
 function init(){if(!map||!pages||!core)throw Error('CDU data is missing');makeControls();update();$('reset').onclick=reset;$('overlay-toggle').onclick=()=>$('cdu-stage').classList.toggle('debug');$('info-toggle').onclick=()=>$('qa').hidden=!$('qa').hidden;
  for(const [el,k] of [['call-test','call'],['fault-test','fail'],['offset-test','offsetGuidance']])$(el).addEventListener('change',e=>{state[k]=e.target.checked;update()});
  $('test-message').onclick=()=>{state.message='CHECK FMC DATA';update()};
