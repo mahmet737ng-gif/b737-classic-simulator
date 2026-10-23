@@ -1,0 +1,253 @@
+{
+  "schema": "b737.overhead.atlas-coordinate-layout.v1",
+  "version": "UPD-0009-atlas-bottom-alignment",
+  "date": "2026-10-24",
+  "reference": {
+    "image": "../../assets/overhead.webp",
+    "traceSource": "B737_Mosaic_Atlas_OH_v1.jpg (2220 × 3525), original user-uploaded atlas; cyan plate outlines sampled at column and row seams",
+    "referenceWidth": 2220,
+    "referenceHeight": 3525
+  },
+  "canvas": {
+    "width": 2220,
+    "height": 3525
+  },
+  "physicalColumns": [
+    {
+      "x": 3,
+      "width": 550
+    },
+    {
+      "x": 558,
+      "width": 461
+    },
+    {
+      "x": 1024,
+      "width": 247
+    },
+    {
+      "x": 1276,
+      "width": 473
+    },
+    {
+      "x": 1754,
+      "width": 463
+    }
+  ],
+  "upperToLowerBoundaryY": 1026,
+  "firstLowerRowY": 1031,
+  "lowerSharedEdgeY": 3276,
+  "bottomStripTopY": 3281,
+  "layoutPrinciples": [
+    "all artboard coordinates are atlas pixels, independent of source PNG dimensions",
+    "all five columns terminate at y=3276; bottom shared image spans x=3..2217 from y=3281..3522",
+    "one common zoom factor scales entire 2220x3525 layout; never stack by image natural height",
+    "use aspect-preserving object-fit:cover inside fixed plate bounding rectangles; overflow clipped but original binary preserved",
+    "top OH01-06 and shared OH23-25 are single image files across several atlas IDs",
+    "OH13/OH14/OH18 content-based center-strip splits are visual approximations within one long atlas panel; physical seam not independently shown in atlas"
+  ],
+  "placements": [
+    {
+      "id": "UPPER",
+      "x": 3,
+      "y": 3,
+      "w": 2214,
+      "h": 1019,
+      "note": "upper shared overhead source OH01-06",
+      "alignment": "atlas-boundary",
+      "zIndex": 1,
+      "visualFit": "cover"
+    },
+    {
+      "id": "OH07-08",
+      "x": 3,
+      "y": 1031,
+      "w": 550,
+      "h": 1631,
+      "note": "original left flight control and NAV selectors combined",
+      "alignment": "atlas-boundary",
+      "zIndex": 2,
+      "visualFit": "cover"
+    },
+    {
+      "id": "OH09",
+      "x": 3,
+      "y": 2667,
+      "w": 550,
+      "h": 609,
+      "note": "fuel left, lower edge y3276",
+      "alignment": "atlas-boundary",
+      "zIndex": 2,
+      "visualFit": "cover"
+    },
+    {
+      "id": "OH10",
+      "x": 558,
+      "y": 1031,
+      "w": 461,
+      "h": 920,
+      "note": "electrical DC AC",
+      "alignment": "atlas-boundary",
+      "zIndex": 2,
+      "visualFit": "cover"
+    },
+    {
+      "id": "OH11",
+      "x": 558,
+      "y": 1956,
+      "w": 461,
+      "h": 715,
+      "note": "standby electrical",
+      "alignment": "atlas-boundary",
+      "zIndex": 2,
+      "visualFit": "cover"
+    },
+    {
+      "id": "OH12",
+      "x": 558,
+      "y": 2676,
+      "w": 461,
+      "h": 600,
+      "note": "bus transfer, lower edge y3276",
+      "alignment": "atlas-boundary",
+      "zIndex": 2,
+      "visualFit": "cover"
+    },
+    {
+      "id": "OH13",
+      "x": 1024,
+      "y": 1031,
+      "w": 247,
+      "h": 1260,
+      "note": "circuit breaker plus equipment cooling physically joined center strip",
+      "alignment": "atlas-boundary",
+      "zIndex": 2,
+      "visualFit": "crop-white-side-gutters-and-cover"
+    },
+    {
+      "id": "OH14",
+      "x": 1024,
+      "y": 2291,
+      "w": 247,
+      "h": 560,
+      "note": "emergency exit lights, no smoking and fasten belts in center strip",
+      "alignment": "atlas-boundary",
+      "zIndex": 2,
+      "visualFit": "cover"
+    },
+    {
+      "id": "OH18",
+      "x": 1024,
+      "y": 2851,
+      "w": 247,
+      "h": 425,
+      "note": "attend/ground call/wiper in center strip, lower edge y3276",
+      "alignment": "atlas-boundary",
+      "zIndex": 2,
+      "visualFit": "cover"
+    },
+    {
+      "id": "OH15",
+      "x": 1276,
+      "y": 1031,
+      "w": 473,
+      "h": 553,
+      "note": "window heat, 4th column",
+      "alignment": "atlas-boundary",
+      "zIndex": 2,
+      "visualFit": "cover"
+    },
+    {
+      "id": "OH16",
+      "x": 1276,
+      "y": 1589,
+      "w": 473,
+      "h": 377,
+      "note": "anti-ice, 4th column",
+      "alignment": "atlas-boundary",
+      "zIndex": 2,
+      "visualFit": "cover"
+    },
+    {
+      "id": "OH17",
+      "x": 1276,
+      "y": 1971,
+      "w": 473,
+      "h": 376,
+      "note": "hydraulic pumps, 4th column",
+      "alignment": "atlas-boundary",
+      "zIndex": 2,
+      "visualFit": "cover"
+    },
+    {
+      "id": "OH19-VOICE",
+      "x": 1276,
+      "y": 2353,
+      "w": 473,
+      "h": 289,
+      "note": "voice recorder, immediately below hydraulic; actual atlas OH18 identity",
+      "alignment": "atlas-boundary",
+      "zIndex": 2,
+      "visualFit": "cover"
+    },
+    {
+      "id": "OH19-DIFF",
+      "x": 1276,
+      "y": 2647,
+      "w": 473,
+      "h": 629,
+      "note": "pressure differential and alt horn immediately below recorder, lower edge y3276",
+      "alignment": "atlas-boundary",
+      "zIndex": 2,
+      "visualFit": "cover"
+    },
+    {
+      "id": "OH20",
+      "x": 1754,
+      "y": 1031,
+      "w": 463,
+      "h": 729,
+      "note": "air conditioning, rightmost",
+      "alignment": "atlas-boundary",
+      "zIndex": 2,
+      "visualFit": "cover"
+    },
+    {
+      "id": "OH21",
+      "x": 1754,
+      "y": 1765,
+      "w": 463,
+      "h": 510,
+      "note": "bleed air, rightmost",
+      "alignment": "atlas-boundary",
+      "zIndex": 2,
+      "visualFit": "cover"
+    },
+    {
+      "id": "OH22",
+      "x": 1754,
+      "y": 2280,
+      "w": 463,
+      "h": 996,
+      "note": "cabin pressurization, lower edge y3276",
+      "alignment": "atlas-boundary",
+      "zIndex": 2,
+      "visualFit": "cover"
+    },
+    {
+      "id": "OH23-25",
+      "x": 3,
+      "y": 3281,
+      "w": 2214,
+      "h": 241,
+      "note": "one continuous full-width lower switch strip for OH23-OH25",
+      "alignment": "atlas-boundary",
+      "zIndex": 2,
+      "visualFit": "trim-exterior-white-canvas-and-cover"
+    }
+  ],
+  "qa": {
+    "panelSeams": "visual atlas trace; 5-pixel inter-panel gutters respected; source plate boundaries not independently confirmed for center-strip component segmentation",
+    "lockedSources": "never overwrite assets/locked"
+  }
+}
