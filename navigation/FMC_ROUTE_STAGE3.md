@@ -5,8 +5,8 @@
 ## What has been built
 
 - `fmc_route_engine.py`: read-only SQLite Stage-1 importer access, exact AIRAC 2610 marker check, optional Stage-2 SHA-256 source linkage and integrity gate, typed DCT/AIRWAY route parser, FIX coordinate resolution with source line provenance and fail-closed ambiguity handling, airway-sequence walk with gap rejection, true geodesic distance and initial course, airport and procedure catalogue and source-segment preview.
-- `fmc_server.py`: Python standard-library HTTP service *only* on `127.0.0.1`, with 32 KiB JSON request limit and Origin check. It never serves the private source outside the local machine. No data uploaded to GitHub.
-- `fmc-lab`: a separate route-builder UI with local source status, DCT/AIRWAY input, true-coordinate reference visualization, read-only SID/STAR/APP source preview, and real CDU v6 iframe.
+- `fmc_server.py`: Python standard-library HTTP service *only* on `127.0.0.1`, with 32 KiB JSON request limit and Origin check. The `/api/position` endpoint calculates **reference** cross-track/along-track from an explicitly supplied position and leg index; neither automatic sequencing nor LNAV guidance is enabled. No data uploaded to GitHub.
+- `fmc-lab`: a separate route-builder UI with local source status, DCT/AIRWAY input, true-coordinate reference visualization, read-only SID/STAR/APP source preview, **diagnostic ownship-to-great-circle geometry** (explicit selected leg, cross-track and distance), and real CDU v6 iframe.
 - `../cdu-standalone-v6/nav-route-adapter.js`: stage source-qualified route into existing RTE (pending); pilot manually presses RTE `<ACTIVATE` then `EXEC`; source-qualified reference legs appear in CDU LEGS. A staged route cannot silently replace an existing route. Distinct MOD/ACT states and `REF ONLY / NO LNAV` label.
 - Isolated synthetic tests and real private AIRAC 2610 integration checks. Source simulator art and **EFIS CP v3 locked assets are untouched**.
 
@@ -50,7 +50,7 @@ All data reads are local. `--private-zip` extracts only the two named SQLite fil
 
 ## Acceptance test evidence
 
-- `python tests/fmc-route-engine.test.py` tests synthetic valid DCT/airway, non-existent airway connection, source marker, procedure identity and source read-only protection.
+- `python tests/fmc-route-engine.test.py` tests synthetic valid DCT/airway, non-existent airway connection, source marker, procedure identity, source read-only protection and cross-track geometry without enabling steering.
 - `node tests/cdu-nav-integration.test.cjs` tests RTE pending → EXEC commit → LEGS presentation, no early activation, source identity gate.
 - Real private Stage-1+Stage-2 runtime was checked with OIII / REVUR / OIIE and OIII SID listing; source SHA-256 of Stage-1 matched Stage-2 declared SHA-256.
 - Do not mark **complete real FMC guidance** until the full path-terminator grammar, equipment-specific FCOM variants, magnetic variation, manoeuvre geometry, LNAV/AFDS behavior and independent reference vectors are all verified.
