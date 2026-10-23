@@ -67,6 +67,44 @@ function afterPage(key){
   if(state.message==='END OF PAGES')state.message='';
  }
 }
+// Read user-entered CDU RTE and FLIGHT PLAN fields. No synthetic fixes.
+function draft(){
+ const origin=String(core.readValue(state,'ORIGIN','RTE')||'').trim().toUpperCase();
+ const destination=String(core.readValue(state,'DEST','RTE')||'').trim().toUpperCase();
+ if(!/^[A-Z0-9]{4}$/.test(origin)||!/^[A-Z0-9]{4}$/.test(destination))
+   throw Error('Enter ORIGIN and DEST into CDU RTE before building.');
+ const via=[];let blankEncountered=false;
+ for(let n=1;n<=4;n++){
+  const airway=String(core.readValue(state,'VIA'+n,'FLIGHT_PLAN')||'').trim().toUpperCase();
+  const fix=String(core.readValue(state,'TO'+n,'FLIGHT_PLAN')||'').trim().toUpperCase();
+  if(!airway&&!fix){blankEncountered=true;continue}
+  if(blankEncountered)throw Error('CDU route rows must be entered in sequence');
+  if(!fix||!/^[A-Z0-9]{2,8}$/.test(fix))throw Error('Missing or invalid TO fix on row '+n);
+  if(airway&&airway!=='DCT'&&!/^[A-Z0-9]{2,8}$/.test(airway))
+    throw Error('Invalid VIA/AIRWAY on row '+n);
+  via.push(airway&&airway!=='DCT'?{type:'AIRWAY',airway,to:fix}:{type:'DCT',to:fix});
+ }
+ if(!via.length)throw Error('Enter at least one TO fix in CDU FLIGHT PLAN');
+ return {origin,destination,via};
+}
+function stageFromDraft(route,confirmedRequest){
+ const current=draft();
+ if(JSON.stringify(current)!==JSON.stringify(confirmedRequest))
+   throw Error('CDU route changed since database verification; rebuild it');
+ if(!goodRoute(route)||route.origin!==current.origin||route.destination!==current.destination)
+   throw Error('Source route does not match CDU ORIGIN/DEST');
+ if(state.navdbActive||state.navdbPending)throw Error('Finish or reset existing NAVDB route first');
+ const allowed=new Set(Array.from({length:4},(_,i)=>['VIA'+(i+1),'TO'+(i+1)]).flat());
+ if(Object.keys(state.pending||{}).some(k=>!allowed.has(k)))
+   throw Error('Unrelated CDU pending changes must be EXEC or ERASE first');
+ if(Object.keys(state.stagedRoute||{}).some(k=>!['ORIGIN','DEST'].includes(k)))
+   throw Error('Unsupported staged RTE fields present; finish those first');
+ const oldPending=structuredClone(state.pending||{}),oldStage=structuredClone(state.stagedRoute||{});
+ try{
+  state.pending={};state.stagedRoute={};
+  return stage(route);
+ }catch(err){state.pending=oldPending;state.stagedRoute=oldStage;throw err}
+}
 function snapshot(){return {stage:state.navdbStage||'NONE',pending:state.navdbPending?.legs.length||0,committed:state.navdbActive?.legs.length||0,page:state.page,origin:state.active.ORIGIN,dest:state.active.DEST,guidance:false}}
-window.CDU_NAV_API=Object.freeze({stage,afterKey,afterPage,paint,snapshot});
+window.CDU_NAV_API=Object.freeze({stage,stageFromDraft,draft,afterKey,afterPage,paint,snapshot});
 })();
