@@ -117,7 +117,7 @@ const measuredText = JSON.parse(execFileSync('python3',['-c',
 ],{input:JSON.stringify(unique(registry.lights.flatMap(linesFor)))}).toString());
 const overhead = read('interactive-overhead/lights.json');
 const main = read('cockpit/lights.json');
-const manifest = {schema:'B737-LIGHTS-UNIFIED-V2',version:'LGT-0015',source:'LIGHTS unique active legend registry',reference:['LOW_PRESSURE_AMBER_REF','R_ELEV_PITOT_AMBER_REF','ALIGN_WHITE'],palette:palettes,lamps:[]};
+const manifest = {schema:'B737-LIGHTS-UNIFIED-V2',version:'LGT-0016',source:'LIGHTS unique active legend registry',reference:['LOW_PRESSURE_AMBER_REF','R_ELEV_PITOT_AMBER_REF','ALIGN_WHITE','A_T_LIM_WHITE'],palette:palettes,lamps:[]};
 let counts={},errors=[];
 for(const l of registry.lights) {
  const color=paletteFor(l);const texts=linesFor(l);
@@ -125,7 +125,7 @@ for(const l of registry.lights) {
  for(const state of l.states){
   const newName=`unified-v2/${l.id}_${state}.svg`;
   // Preserve owner-approved faces byte-for-byte, including ALIGN's neutral black/white lens.
-  const trusted=(l.id==='LOW_PRESSURE'||l.id==='R_ELEV_PITOT'||l.id==='ALIGN_WHITE') ? fs.readFileSync(path.join(folder,l.assets[state]),'utf8') : null;
+  const trusted=(l.id==='LOW_PRESSURE'||l.id==='R_ELEV_PITOT'||l.id==='ALIGN_WHITE'||l.id==='A_T_LIM_WHITE') ? fs.readFileSync(path.join(folder,l.assets[state]),'utf8') : null;
   const svg=trusted||lampFace(l,state,texts,palettes[color]);
   write(path.join(folder,newName),svg);
   l.assets[state]=newName;
@@ -137,7 +137,7 @@ for(const l of registry.lights) {
  }
  manifest.lamps.push(lampInfo);
 }
-registry.version='LGT-0015';if(overhead.version!=='LGT-0004')overhead.previousVersion=overhead.version;overhead.version='LGT-0004';main.version='LGT-0008';
+registry.version='LGT-0016';if(overhead.version!=='LGT-0004')overhead.previousVersion=overhead.version;overhead.version='LGT-0004';main.version='LGT-0008';
 write(path.join(root,'lights-test/registry.json'),JSON.stringify(registry,null,2)+'\n');
 write(path.join(root,'interactive-overhead/lights.json'),JSON.stringify(overhead,null,2)+'\n');
 write(path.join(root,'cockpit/lights.json'),JSON.stringify(main,null,2)+'\n');
