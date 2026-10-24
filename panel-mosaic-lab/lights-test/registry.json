@@ -1,0 +1,422 @@
+{
+  "schema": "b737-annunciator-assets.v1",
+  "version": "2026-10-24.1",
+  "assetDirectory": "../assets/locked/2026-10-23/LIGHTS/",
+  "testMode": "manual-asset-visual-qa",
+  "note": "Stable IDs for the owner-approved light designs. This registry does not assign physical coordinates or certify aircraft logic.",
+  "lights": [
+    {
+      "id": "LOW_PRESSURE",
+      "lines": [
+        "LOW",
+        "PRESSURE"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null
+    },
+    {
+      "id": "LOW_OIL_PRESSURE",
+      "lines": [
+        "LOW OIL",
+        "PRESSURE"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null
+    },
+    {
+      "id": "YAW_DAMPER",
+      "lines": [
+        "YAW",
+        "DAMPER"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null
+    },
+    {
+      "id": "FILTER_BYPASS",
+      "lines": [
+        "FILTER",
+        "BYPASS"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null
+    },
+    {
+      "id": "FEEL_DIFF_PRESS",
+      "lines": [
+        "FEEL",
+        "DIFF PRESS"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null
+    },
+    {
+      "id": "SPEED_TRIM_FAIL",
+      "lines": [
+        "SPEED TRIM",
+        "FAIL"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null
+    },
+    {
+      "id": "MACH_TRIM_FAIL",
+      "lines": [
+        "MACH TRIM",
+        "FAIL"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null
+    },
+    {
+      "id": "AUTO_SLAT_FAIL",
+      "lines": [
+        "AUTO SLAT",
+        "FAIL"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null
+    },
+    {
+      "id": "LOW_QUANTITY",
+      "lines": [
+        "LOW",
+        "QUANTITY"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null
+    },
+    {
+      "id": "STBY_RUD_ON_LAMP",
+      "lines": [
+        "STBY",
+        "RUD ON"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null
+    },
+    {
+      "id": "REVERSER",
+      "lines": [
+        "REVERSER"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null
+    },
+    {
+      "id": "LOW_IDLE",
+      "lines": [
+        "LOW IDLE"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null
+    },
+    {
+      "id": "PASS_OXY_ON_LAMP",
+      "lines": [
+        "PASS OXY",
+        "ON"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null
+    },
+    {
+      "id": "OFF_LAMP",
+      "lines": [
+        "OFF"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null
+    },
+    {
+      "id": "OVERHEAT",
+      "lines": [
+        "OVERHEAT"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null
+    },
+    {
+      "id": "ON_DC_LAMP",
+      "lines": [
+        "ON DC"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null
+    },
+    {
+      "id": "DC_FAIL",
+      "lines": [
+        "DC FAIL"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null
+    },
+    {
+      "id": "FAULT",
+      "lines": [
+        "FAULT"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null
+    },
+    {
+      "id": "STANDBY_PWR_OFF_LAMP",
+      "lines": [
+        "STANDBY",
+        "PWR OFF"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null
+    },
+    {
+      "id": "HIGH_OIL_TEMP",
+      "lines": [
+        "HIGH OIL",
+        "TEMP"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null
+    },
+    {
+      "id": "TRANSFER_BUS_OFF_LAMP",
+      "lines": [
+        "TRANSFER",
+        "BUS OFF"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null
+    },
+    {
+      "id": "BUS_OFF_LAMP",
+      "lines": [
+        "BUS",
+        "OFF"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null
+    },
+    {
+      "id": "OVER_SPEED",
+      "lines": [
+        "OVER",
+        "SPEED"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null
+    },
+    {
+      "id": "NOT_ARMED_VERTICAL",
+      "lines": [
+        "NOT",
+        "ARMED"
+      ],
+      "orientation": "portrait",
+      "face": {
+        "width": 300,
+        "height": 600
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null
+    },
+    {
+      "id": "CAPT_PS_1_AUX_STATIC",
+      "lines": [
+        "CAPT P/S",
+        "1 AUX STATIC"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null
+    },
+    {
+      "id": "FO_STATIC_2_AUX_PS",
+      "lines": [
+        "F/O STATIC",
+        "2 AUX P/S"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null
+    },
+    {
+      "id": "L_ELEV_PITOT",
+      "lines": [
+        "L ELEV",
+        "PITOT"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null
+    },
+    {
+      "id": "L_ALPHA_VANE",
+      "lines": [
+        "L ALPHA",
+        "VANE"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null
+    }
+  ]
+}
