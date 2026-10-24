@@ -1,4 +1,4 @@
-# Unified cockpit — CKP-0011
+# Unified cockpit — CKP-0012
 
 ## CKP-0005 / LGT-0007 — STAB socket fit and SPEED BRAKE mounting
 
@@ -210,3 +210,14 @@ The Pedestal and overall canvas heights increase to accommodate this without
 covering or deforming any neighboring panel. Lever mechanisms are not baked into
 the blank source and will be installed independently in the interactive stage.
 Frozen UPD-0012 overhead artwork and main-panel/CDU geometry are unaffected.
+
+## CKP-0012 — owner-reference proportion and white-border correction
+
+The throttle's original locked 1145×1373 RGB image is preserved byte-for-byte.
+In the Unified presentation only, a 1055×1290 source-window crop trims the
+blank outer margin and a measured silhouette polygon masks remaining white
+corners around the metal body. The throttle core now occupies 606 native pedestal
+units, centered in the original 1150-unit assembly, rather than stretching across
+the full pedestal width. Fire follows at y=740.986 and radio at y=911.089,
+restoring the original reference's proportions. Model validation and source
+fingerprint checks prevent accidental image stretching or mutation.

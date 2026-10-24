@@ -1,9 +1,9 @@
 {
   "schema": "b737.shared-cockpit-mosaic.v1",
-  "version": "CKP-0011-THROTTLE",
+  "version": "CKP-0012-THROTTLE-FIT",
   "canvas": {
     "width": 4400,
-    "height": 8750
+    "height": 8100
   },
   "assets": {
     "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png": {
@@ -195,27 +195,38 @@
       "x": 1596,
       "y": 5590,
       "w": 1207.5,
-      "h": 3056.55,
+      "h": 2386.65,
       "nativeWidth": 1150,
-      "nativeHeight": 2911,
+      "nativeHeight": 2273,
       "placements": [
         {
           "id": "throttle-quadrant",
           "label": "THROTTLE QUADRANT — BLANK CONTROL PLATE",
           "asset": "panel-mosaic-lab/assets/locked/2026-10-23/Aircraft Throttle Quadrant Control Panel.png",
-          "x": 0,
+          "x": 272,
           "y": 0,
-          "w": 1150,
-          "h": 1378.995633187773,
-          "presentation": "Full owner-uploaded 1145×1373 blank throttle quadrant, uniform scaling; no crop or pixel edits",
-          "layoutStatus": "installed for owner visual review; mechanical lever overlays are not yet mounted"
+          "w": 606,
+          "h": 740.9857819905213,
+          "sourceWindow": {"x": 20, "y": 30, "w": 1055, "h": 1290},
+          "maskPolygon": [
+            [72, 34], [65, 40], [62, 60], [61, 120], [54, 150], [58, 180],
+            [50, 350], [43, 450], [39, 550], [34, 700], [31, 850], [25, 990],
+            [33, 1020], [34, 1110], [38, 1140], [91, 1150], [92, 1290],
+            [97, 1310], [104, 1314], [993, 1314], [999, 1310], [1003, 1290],
+            [1002, 1150], [1057, 1140], [1060, 1110], [1062, 1020],
+            [1069, 990], [1063, 850], [1060, 700], [1053, 550],
+            [1050, 450], [1044, 350], [1035, 180], [1038, 150],
+            [1031, 120], [1028, 60], [1025, 40], [1018, 34]
+          ],
+          "presentation": "Owner original PNG remains unmodified. Display-only source crop and silhouette mask remove white exterior; 606-unit width aligns the throttle core centrally against the full pedestal reference.",
+          "layoutStatus": "calibrated against owner cockpit reference screenshot; mechanical lever overlays remain a separate stage"
         },
         {
           "id": "fire-protection",
           "label": "FIRE PROTECTION — BELOW THROTTLE QUADRANT",
           "asset": "panel-mosaic-lab/assets/locked/2026-10-23/Fire_Protection_Panel_Blank_With_Buttons.png",
           "x": 244,
-          "y": 1378.995633187773,
+          "y": 740.9857819905213,
           "w": 685,
           "h": 170.10287081339712,
           "sourceWindow": {
@@ -232,7 +243,7 @@
           "label": "RADIO / NAV / AUDIO / TRIM",
           "asset": "panel-mosaic-lab/assets/locked/2026-10-23/PD-RADIO-AVIONICS-7a41044771fa.png",
           "x": 35,
-          "y": 1549.09850400117,
+          "y": 911.0886528039184,
           "w": 1080,
           "h": 1349.51871657754,
           "library_file_id": "libfile_5aeb51496eb88191be12ff3d6b903a27",
@@ -245,7 +256,7 @@
   "notes": [
     "All three regions are visible on one shared pan/zoom canvas. Region buttons change only the view, never navigate away or reload the overhead.",
     "Overhead switches and lights remain interactive. Main and newly imported pedestal artwork are connected as base images; new actuator/system overlays are a separate stage.",
-    "CKP-0011: Owner-uploaded blank Throttle Quadrant replaces the historic live throttle reference at the top of the pedestal, unmodified and uncropped. Fire Protection and RADIO/NAV/Audio blocks follow beneath it without overlap. The historical pedestal image remains available in Reference mode."
+    "CKP-0011-FIT: Blank Throttle Quadrant is now proportional to the actual central throttle section, centered above Fire and RADIO/NAV. Source is byte-identical; a display crop and outer silhouette mask hide the photograph's white canvas. The historical pedestal image remains available in Reference mode."
   ],
   "lightVersion": "LGT-0007",
   "embeddedInstruments": [
