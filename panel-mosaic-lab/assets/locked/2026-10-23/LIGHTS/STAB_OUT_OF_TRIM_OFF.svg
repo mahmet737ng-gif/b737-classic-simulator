@@ -1,9 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300" role="img" aria-label="STAB OUT OF TRIM yellow annunciator, off">
-  <!-- Lens only; the source photograph already includes the metal bezel. -->
-  <rect width="300" height="300" fill="#050505"/>
+  <rect x="2" y="2" width="296" height="296" rx="18" fill="#151618" stroke="#282a2b" stroke-width="4"/>
+  <rect x="10" y="10" width="280" height="280" rx="12" fill="#040404"/>
   <g fill="#0b0a08" font-family="Nimbus Sans Narrow, DejaVu Sans Condensed, sans-serif" font-weight="700" text-anchor="middle">
-    <text x="150" y="97" font-size="83" textLength="195" lengthAdjust="spacingAndGlyphs">STAB</text>
-    <text x="150" y="178" font-size="73" textLength="255" lengthAdjust="spacingAndGlyphs">OUT OF</text>
-    <text x="150" y="258" font-size="83" textLength="195" lengthAdjust="spacingAndGlyphs">TRIM</text>
+    <text x="150" y="98" font-size="80" textLength="180" lengthAdjust="spacingAndGlyphs">STAB</text>
+    <text x="150" y="176" font-size="74" textLength="230" lengthAdjust="spacingAndGlyphs">OUT OF</text>
+    <text x="150" y="254" font-size="80" textLength="176" lengthAdjust="spacingAndGlyphs">TRIM</text>
   </g>
 </svg>

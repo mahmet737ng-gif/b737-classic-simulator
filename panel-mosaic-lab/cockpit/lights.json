@@ -189,12 +189,12 @@
     },
     "STAB_OUT_OF_TRIM": {
       "OFF": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/STAB_OUT_OF_TRIM_OFF.svg",
-        "sha256": "b44540436b639d27dc4670880ece962478370b6ec010e5e32ea4a6ae06201f94"
+        "url": "../assets/locked/2026-10-23/LIGHTS/STAB_OUT_OF_TRIM_FIT_OFF.svg",
+        "sha256": "4e37df5e5733aa663c2ee5e5ee55e54409cef48fa43105cbf2da17c383bd0262"
       },
       "ON": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/STAB_OUT_OF_TRIM_ON.svg",
-        "sha256": "01011d7cce12f8d8170688d9da3743219eef809893f5b38aba1908156ab89e57"
+        "url": "../assets/locked/2026-10-23/LIGHTS/STAB_OUT_OF_TRIM_FIT_ON.svg",
+        "sha256": "1adb3a6edce108f360a4ee7e2fa1606bebd67295632405bee9587802c94f0c09"
       }
     },
     "SPEED_BRAKE_DO_NOT_ARMED_AMBER": {

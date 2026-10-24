@@ -11,6 +11,9 @@ const assetModel=require('../lights-test/asset-model'),gallery=JSON.parse(fs.rea
 assert.ok(gallery.lights.length>=85,'Unified must load the expanding LIGHTS catalogue');
 for(const id of ['SPEED_BRAKE_ARMED_GREEN','SPEED_BRAKE_DO_NOT_ARMED_AMBER'])assert.ok(gallery.lights.some(c=>c.id===id),id);
 const stab=gallery.lights.find(c=>c.id==='STAB_OUT_OF_TRIM');assert.deepEqual(stab.face,{width:300,height:300});
+assert.equal(stab.assets.ON,'STAB_OUT_OF_TRIM_FIT_ON.svg');
+const fakeListing=['STAB_OUT_OF_TRIM_OFF.svg','STAB_OUT_OF_TRIM_ON.svg','STAB_OUT_OF_TRIM_FIT_OFF.svg','STAB_OUT_OF_TRIM_FIT_ON.svg'].map(name=>({name,type:'file'}));
+const mergedGallery=assetModel.merge(gallery,fakeListing);assert.equal(mergedGallery.length,gallery.lights.length,'Replacement faces must not create duplicate STAB lights');assert.equal(mergedGallery.find(c=>c.id==='STAB_OUT_OF_TRIM').assets.ON,'STAB_OUT_OF_TRIM_FIT_ON.svg','Registered revision must override older discovered face');
 for(const [asset,id] of [['SPEED_BRAKE_ARMED_GREEN','main-speed-brake-armed'],['SPEED_BRAKE_DO_NOT_ARMED_AMBER','main-speed-brake-do-not-arm']])assert.ok(gallery.lights.find(c=>c.id===asset)?.mountedCockpitInstances.includes(id),asset+' mounted on Unified');
 assert.equal(assetModel.normalize(gallery.lights.find(c=>c.id==='VALVE_OPEN'),'DIM_BLUE'),'DIM_BLUE');
 for(const light of gallery.lights)for(const state of light.states)assert.ok(fs.existsSync(path.join(__dirname,'../assets/locked/2026-10-23/LIGHTS',light.assets[state])),light.id+' '+state);

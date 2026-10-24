@@ -10,12 +10,14 @@ independent explicit annunciator signals. These are *visual-test inputs*, not
 claims that the automatic speed-brake control-law implementation is complete.
 The underlying panel images are not edited.
 
-`STAB_OUT_OF_TRIM` retains its requested 300×300 SVG face and yellow wording,
-but the artwork is now lens-only (no duplicate bezel), and its overlay rect is
+`STAB_OUT_OF_TRIM` retains its requested 300×300 SVG face and yellow wording.
+The replacement `STAB_OUT_OF_TRIM_FIT_OFF/ON.svg` is an additive revision in
+`LIGHTS` because the original `STAB_OUT_OF_TRIM_OFF/ON.svg` files are immutable.
+The registered artwork is lens-only (no duplicate bezel), and its overlay rect is
 remeasured to source coordinates `[255,740,88,59]` on the engine/standby image,
 filling the original black socket. The former overlay covered only 51 pixels
 of the available lens width. Both mounted and gallery SVG image URLs are
-versioned so GitHub Pages/browser caches cannot keep the replaced old face.
+versioned so GitHub Pages/browser caches cannot keep showing the older face.
 
 29 main-panel lights are now physically mounted, versus 27 previously. The
 110 approved overhead lights and the frozen `UPD-0012` overhead montage remain

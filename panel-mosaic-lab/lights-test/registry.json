@@ -1757,8 +1757,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "STAB_OUT_OF_TRIM_OFF.svg",
-        "ON": "STAB_OUT_OF_TRIM_ON.svg"
+        "OFF": "STAB_OUT_OF_TRIM_FIT_OFF.svg",
+        "ON": "STAB_OUT_OF_TRIM_FIT_ON.svg"
       },
       "scope": "ASSET_TEST_ONLY",
       "mountedCockpitInstances": [
