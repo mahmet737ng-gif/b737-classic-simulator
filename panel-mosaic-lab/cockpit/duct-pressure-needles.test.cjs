@@ -17,13 +17,15 @@ const pos=model.placement(oh21);assert.ok(pos.x>oh21.x&&pos.x<oh21.x+oh21.w);ass
 for(const needle of model.needles){
  const asset=fs.readFileSync(path.join(__dirname,needle.asset),'utf8');
  assert.match(asset,/viewBox="0 0 512 512"/);assert.match(asset,new RegExp('DUCT PRESSURE '+needle.id));
- assert.match(asset,/fill="#101111"/);assert.match(asset,/whiteFace/);assert.doesNotMatch(asset,/<image/);
+ assert.match(asset,/fill="#17191a"/);assert.match(asset,/fill="#f8f7f1"/);assert.doesNotMatch(asset,/<image|<circle|linearGradient/);
 }
+const shapes=model.needles.map(needle=>[...fs.readFileSync(path.join(__dirname,needle.asset),'utf8').matchAll(/<path d="([^"]+)"/g)].map(match=>match[1]));
+assert.deepEqual(shapes[0],shapes[1]);
 const ui=fs.readFileSync(path.join(__dirname,'duct-pressure-needles-unified.js'),'utf8');
 assert.ok(ui.includes('for(const needle of model.needles)'));
 assert.ok(ui.includes('window.B737UnifiedDuctPressureNeedles'));
 assert.ok(ui.includes('model.bearing(id,state[id])'));
 const html=fs.readFileSync(path.join(__dirname,'index.html'),'utf8');
 assert.ok(html.includes('duct-pressure-needles-model.js?v=DPN-0001'));
-assert.ok(html.includes('duct-pressure-needles-unified.js?v=DPN-0001'));
-console.log('PASS: OH21 DUCT PRESSURE has independent R-under-L pointers, black labeled tails and white forward blades.');
+assert.ok(html.includes('duct-pressure-needles-unified.js?v=DPN-0002'));
+console.log('PASS: OH21 DUCT PRESSURE L/R share the reference-traced blade, proximal label section, and no invented rear counterweight.');

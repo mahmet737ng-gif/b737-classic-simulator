@@ -404,9 +404,18 @@ signal is connected. Regression:
 
 The OH21 pressure indicator has independent R and L pointers sharing the
 locked source-image pivot (544, 439). Both have a thick white forward blade
-and a black labeled counterweight behind the pivot. R is drawn first, L above
+and a black labeled root near the pivot. R is drawn first, L above
 it. Both initially indicate zero and fully overlap there; separate visual-test
 sliders can reveal either pointer. The 0–100 PSI angular mapping follows the
 printed dial and is not yet connected to the bleed-air system. The OH21 source
 artwork remains unchanged. Regression:
 `node panel-mosaic-lab/cockpit/duct-pressure-needles.test.cjs`.
+
+## DPN-0002 — owner screenshot shape correction
+
+The owner-supplied screenshot supersedes the earlier generic pointer drawing.
+The proximal black section and its white L/R character are on the pointing
+side of the original pivot; the broad white blade continues outward to the
+tip. The unsupported rear counterweight, invented hub and gradient are gone.
+Both assets have the same traced silhouette; only the character differs.
+The locked OH21 background is still byte-for-byte unchanged.
