@@ -85,12 +85,12 @@
     },
     "LOW_PRESSURE": {
       "ON": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/LOW_PRESSURE_ON.svg",
-        "sha256": "e36c79bbad556da6efd6c1defec8a2e645e2f149f2c2b3640da2683a59ce3c57"
+        "url": "../assets/locked/2026-10-23/LIGHTS/LOW_PRESSURE_AMBER_REF_ON.svg",
+        "sha256": "1b09d6a09d4abc3b9a002279b41a2e1567ff63121ae03fbef6da8c9d84c659a1"
       },
       "OFF": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/LOW_PRESSURE_OFF.svg",
-        "sha256": "5ce614dbff25d19b3e7c0075aa398accc3eb14944e5479b39cf65803e6ec22b0"
+        "url": "../assets/locked/2026-10-23/LIGHTS/LOW_PRESSURE_AMBER_REF_OFF.svg",
+        "sha256": "6dc06328cdf32f9c966d3c7d13e0f55502716d080a4b08a81a1e49e2bd293c42"
       }
     },
     "STBY_RUD_ON_LAMP": {
@@ -315,12 +315,12 @@
     },
     "R_ELEV_PITOT": {
       "ON": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/R_ELEV_PITOT_ON.png",
-        "sha256": "fa059a1d45a6a60ac9183e190ecef828b8a3a44bdac8eae0958b98c53fdf9002"
+        "url": "../assets/locked/2026-10-23/LIGHTS/R_ELEV_PITOT_AMBER_REF_ON.svg",
+        "sha256": "215c8fb95ea8f2432c4b55ad2a5cda10c7f34ada4936a78fec6bff6fa8442660"
       },
       "OFF": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/R_ELEV_PITOT_OFF.png",
-        "sha256": "6af3c8b7504bfd2a5d1e286213a6af1067afd0f68c51eccddb53de2fffdeb293"
+        "url": "../assets/locked/2026-10-23/LIGHTS/R_ELEV_PITOT_AMBER_REF_OFF.svg",
+        "sha256": "47aa13f1c75a4f6f0f8c44bde8189143891e04186468bea15579f221881267c1"
       }
     },
     "R_ALPHA_VANE": {
