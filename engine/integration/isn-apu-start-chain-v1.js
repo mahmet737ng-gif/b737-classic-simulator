@@ -8,6 +8,8 @@
  if(!Dynamics?.sample)throw Error('ISN engine start dynamics dependency required');
  const ORIGIN='TRAINING_SEQUENCE_SIMULATED';
  const CONTROLS=Object.freeze({'apu-start':'apu','engine-start-1':'engine1','engine-start-2':'engine2'});
+ const FAULT_KEYS=Object.freeze(['n2Stall','egtHigh','noLightOff','hungStart','earlyCutout','flameOut']);
+ const FAULT_TIMING=Object.freeze({earlyCutoutMs:650,flameOutAfterRunningMs:700});
  const copy=v=>JSON.parse(JSON.stringify(v));
  // The fault is a classroom curve. Queue its crossing before the normal
  // completion checkpoint so a large advance() cannot skip the 725°C gate.
@@ -21,7 +23,8 @@
    this.start=start;this.time=0;this.jobs=[];this.phase={apu:'OFF',engine1:'OFF',engine2:'OFF'};
    this.effects=[];this.lastError='';this.controls={};this.guards={};this.started={engine1:false,engine2:false};
    this.dynamic={engine1:null,engine2:null};
-   this.trainingFaults={engine1:{n2Stall:false,egtHigh:false},engine2:{n2Stall:false,egtHigh:false}};
+   this.trainingFaults=Object.fromEntries(['engine1','engine2'].map(device=>
+    [device,Object.fromEntries(FAULT_KEYS.map(key=>[key,false]))]));
    for(const device of ['engine1','engine2','apu'])this.obs(device,false);
    this.feedback('apu','cockpitFireHandleIn',true);
    this.feedback('apu','groundFireHandleIn',true);
@@ -53,10 +56,12 @@
    }
   }}
   setTrainingFault(device,key,active){
-   if(!['engine1','engine2'].includes(device)||!['n2Stall','egtHigh'].includes(key)||typeof active!=='boolean')
+   if(!['engine1','engine2'].includes(device)||!FAULT_KEYS.includes(key)||typeof active!=='boolean')
     throw Error('Invalid instructor start fault');
    if(!['OFF','BLOCKED'].includes(this.phase[device]))
     throw Error('Set instructor start fault before ENGINE START GRD');
+   // Only one injected failure per engine; the other engine remains independent.
+   if(active)for(const other of FAULT_KEYS)if(other!==key)this.trainingFaults[device][other]=false;
    this.trainingFaults[device][key]=active;return this.get();
   }
   syncPower(){const p=this.start.core.pack;
@@ -70,7 +75,7 @@
     this.cancel('apu');this.phase.apu='STOPPING';this.lastError='APU start/operation inhibited: battery or fire handle prerequisite lost';
     this.schedule('apu',250,()=>{this.obs('apu',false);this.feedback('apu','genOffBusLight',false);this.phase.apu='OFF';});
    }
-   for(const device of ['engine1','engine2'])if(['MOTORING','N2_STALLED','AWAIT_FUEL_LEVER_IDLE','LIGHT_OFF_SEQUENCE','ABNORMAL_EGT'].includes(this.phase[device])){
+   for(const device of ['engine1','engine2'])if(['MOTORING','N2_STALLED','AWAIT_FUEL_LEVER_IDLE','LIGHT_OFF_SEQUENCE','ABNORMAL_EGT','NO_LIGHT_OFF','HUNG_START'].includes(this.phase[device])){
     const reason=this.canStartEngine(device);
     if(reason){this.abortEngine(device);this.lastError=device.toUpperCase()+': start aborted — '+reason;}
    }
@@ -166,6 +171,17 @@
    this.feedback(device,'starterEngaged',true);
    this.phase[device]='MOTORING';
    this.dynamic[device]={phase:'MOTORING',since:this.time};
+   if(this.trainingFaults[device].earlyCutout)this.schedule(device,FAULT_TIMING.earlyCutoutMs,()=>{
+    if(this.phase[device]!=='MOTORING')return;
+    this.cancel(device);this.dynamic[device]=null;
+    this.feedback(device,'startValveOpen',false);this.feedback(device,'startAirAvailable',false);
+    this.feedback(device,'starterEngaged',false);
+    this.command({type:'ENGINE_START_SWITCH',device,position:'OFF'});
+    this.command({type:'SOURCE_REQUEST',device,request:'SHUTDOWN'});
+    this.phase[device]='EARLY_STARTER_CUTOUT';
+    this.lastError=device.toUpperCase()+': INJECTED EARLY STARTER CUTOUT — confirm START LEVER CUTOFF';
+    this.effects.push({type:'ROTARY_RELEASE',id:device==='engine1'?'engine-start-1':'engine-start-2',position:'OFF'});
+   });
    this.schedule(device,850,()=>{if(this.phase[device]!=='MOTORING')return;
     if(this.trainingFaults[device].n2Stall){this.dynamic[device]=null;this.phase[device]='N2_STALLED';
      this.lastError=device.toUpperCase()+': TRAINING N2 STALL — START LEVER remains CUTOFF';return;}
@@ -174,6 +190,7 @@
   }
   lever(device,position){if(!['engine1','engine2'].includes(device)||!['IDLE','CUTOFF'].includes(position))throw Error('Invalid start lever');
    if(position==='CUTOFF'){this.feedback(device,'fuelStartLever','CUTOFF');if(this.phase[device]!=='RUNNING')this.abortEngine(device);else{
+    this.cancel(device);this.dynamic[device]=null;
     this.feedback(device,'fuelFlowKgHr',0);this.feedback(device,'n2Percent',null);
     this.feedback(device,'egtC',null);this.command({type:'SOURCE_REQUEST',device,request:'SHUTDOWN'});
     this.obs(device,false);this.started[device]=false;this.phase[device]='OFF';}
@@ -189,10 +206,23 @@
    if(this.trainingFaults[device].egtHigh)this.schedule(device,HIGH_EGT_THRESHOLD_MS,()=>{});
    this.schedule(device,1000,()=>{if(this.phase[device]!=='LIGHT_OFF_SEQUENCE')return;
     this.dynamic[device]=null;
+    if(this.trainingFaults[device].noLightOff||this.trainingFaults[device].hungStart){
+     this.phase[device]=this.trainingFaults[device].noLightOff?'NO_LIGHT_OFF':'HUNG_START';
+     this.lastError=device.toUpperCase()+': INJECTED '+this.phase[device]+' — move START LEVER to CUTOFF';
+     return;
+    }
     this.feedback(device,'n2Percent',46);this.feedback(device,'startValveOpen',false);
     this.feedback(device,'startAirAvailable',false);this.feedback(device,'starterEngaged',false);
     this.feedback(device,'fuelFlowKgHr',350);this.obs(device,true);this.phase[device]='RUNNING';
     this.started[device]=true;this.effects.push({type:'ROTARY_RELEASE',id:device==='engine1'?'engine-start-1':'engine-start-2',position:'OFF'});
+    if(this.trainingFaults[device].flameOut)this.schedule(device,FAULT_TIMING.flameOutAfterRunningMs,()=>{
+     if(this.phase[device]!=='RUNNING')return;
+     this.obs(device,false);this.feedback(device,'fuelFlowKgHr',null);
+     this.feedback(device,'n2Percent',null);this.feedback(device,'egtC',null);
+     this.command({type:'SOURCE_REQUEST',device,request:'SHUTDOWN'});
+     this.started[device]=false;this.phase[device]='FLAMEOUT';
+     this.lastError=device.toUpperCase()+': INJECTED FLAMEOUT — move START LEVER to CUTOFF before retry';
+    });
    });return this.get();
   }
   abortEngine(device){this.cancel(device);this.dynamic[device]=null;
@@ -211,20 +241,31 @@
   }
   consumeEffects(){const effects=copy(this.effects);this.effects=[];return effects;}
   get(){const engine=this.start.get(),pack=this.start.core.pack.get(),apu=engine.observation.apu;
-   const projected={};for(const device of ['engine1','engine2']){
+   const projected={},faultStatus={};for(const device of ['engine1','engine2']){
     const n=Number(device.at(-1)),r=engine.observation[device].rules;
     projected['mainStartValve'+n]=r.starter.startValveOpenObserved===true &&
       engine.observation[device].feedback.startAirAvailable.value===true;
+    const feedback=engine.observation[device].feedback,selected=FAULT_KEYS.find(key=>this.trainingFaults[device][key])||null;
+    const fuelCutoff=feedback.fuelStartLever.value==='CUTOFF';
+    const phaseReady=['OFF','BLOCKED'].includes(this.phase[device]);
+    faultStatus[device]={selected,origin:selected?ORIGIN:null,phase:this.phase[device],
+     observed:{n2Percent:feedback.n2Percent.value,egtC:feedback.egtC.value,
+      fuelFlowKgHr:feedback.fuelFlowKgHr.value,startValveOpen:feedback.startValveOpen.value,
+      fuelStartLever:feedback.fuelStartLever.value,running:engine.observation[device].running},
+     requiredAction:!fuelCutoff&&['ABNORMAL_EGT','NO_LIGHT_OFF','HUNG_START','FLAMEOUT','AWAIT_FUEL_CUTOFF'].includes(this.phase[device])?
+      'MOVE_START_LEVER_TO_CUTOFF':null,
+     retryAllowed:phaseReady&&fuelCutoff&&this.canStartEngine(device)===null};
    }
    const apuConnected=Object.values(pack.electrical.source).includes('APU');
    projected['apu-gen-off-bus']=apu.running===true&&!apuConnected;
    projected['apu-low-pressure']=['INLET_DOOR','STARTING'].includes(this.phase.apu);
    return {clockMs:this.time,phase:copy(this.phase),lastError:this.lastError,trainingFaults:copy(this.trainingFaults),
+    faultStatus:copy(faultStatus),
     sources:copy(engine.network.source),electrical:copy(pack.electrical.bus),
     selectedSources:copy(pack.electrical.source),bleed:copy(this.start.core.Pneumatics.derive(this.start.core.pneumaticState).bleed),
     controls:copy(this.controls),projected,observations:copy(engine.observation),
     trainingNotice:'TRAINING_SEQUENCE_SIMULATED: continuous classroom interpolation between compressed checkpoints; NOT calibrated engine/APU performance or sensor evidence'};
   }
  }
- return Object.freeze({ORIGIN,CONTROLS,Chain});
+ return Object.freeze({ORIGIN,CONTROLS,FAULT_KEYS,FAULT_TIMING,Chain});
 });

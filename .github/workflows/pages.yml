@@ -57,6 +57,7 @@ jobs:
           node tests/isn-apu-start-chain-v1.test.cjs
           node tests/isn-engine-start-dynamics-v1.test.cjs
           node tests/isn-start-abnormal-scenarios-v1.test.cjs
+          node tests/isn-start-abnormal-scenarios-v2.test.cjs
           node tests/isn-start-indications-v1.test.cjs
           node tests/isn-cold-dark-two-engine.e2e.test.cjs
           node panel-mosaic-lab/cockpit/engine-start-levers.test.cjs
