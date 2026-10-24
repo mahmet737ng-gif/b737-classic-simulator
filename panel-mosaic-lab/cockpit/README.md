@@ -380,3 +380,12 @@ Controlled cold-URL browser measurement: **77.85 MB -> 1.51 MB** initial transfe
 resources (98.06% less); 367 -> 192 request entries. These are local preview results,
 not a guaranteed Internet load time. See `docs/UNIFIED_PERFORMANCE_PERF0001.md` for
 measurement conditions, delivery rules, rebuild instructions and validation.
+
+## CRN-0001 — lower cabin climb-rate needle
+
+The OH19-DIFF lower CABIN CLIMB gauge has an independent transparent SVG pointer
+mounted over the immutable panel. Its source-image pivot is (520, 950); at
+offset 0 the pointer points left to the printed zero tick. The visual-test
+offset control and reset are independent of the upper PRESS/CAB ALT needles.
+No cabin-rate system signal or value-to-angle calibration is claimed yet.
+Regression: `node panel-mosaic-lab/cockpit/cabin-rate-needle.test.cjs`.
