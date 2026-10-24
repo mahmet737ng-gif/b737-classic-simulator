@@ -1,0 +1,861 @@
+{
+  "schema": "b737.overhead-rotary-guard-overlay.v1",
+  "version": "RG-0001",
+  "baseVersion": "UPD-0012-OVH-measured-seams",
+  "assets": {
+    "rotary-standard": {
+      "url": "../../switch-lab/assets/rotary-standard-v1.webp",
+      "sha256": "f42c72234dd53005d7b286f18d58da140bb89ef64f0671f1c6530b38a7c686e8"
+    },
+    "black-CLOSED": {
+      "url": "../../panel-mosaic-lab/assets/locked/2026-10-23/Black_Guarded_CLOSED.png",
+      "sha256": "b45a6d74fbf052ab82baadf820cc79d94fce5055584442946fa15c4e3b760d6e"
+    },
+    "black-Open_UP": {
+      "url": "../../panel-mosaic-lab/assets/locked/2026-10-23/Black_Guarded_Open_UP.png",
+      "sha256": "b778402772007645ec9284fbbc33e01f7641d77760877bb2a11e91cb2d57b506"
+    },
+    "black-Open_CENTER": {
+      "url": "../../panel-mosaic-lab/assets/locked/2026-10-23/Black_Guarded_Open_CENTER.png",
+      "sha256": "d0b2d4937d587dd22e58ea1a0987c69f7b5f77223c3537b5c84b24e43a21bdc4"
+    },
+    "black-Open_DOWN": {
+      "url": "../../panel-mosaic-lab/assets/locked/2026-10-23/Black_Guarded_Open_DOWN.png",
+      "sha256": "ed4d782015ec8efe388a74923a037d4103a64f9dba26ee90366ed8ebe1cd546f"
+    },
+    "red-CLOSED": {
+      "url": "../../panel-mosaic-lab/assets/locked/2026-10-23/Red_Guarded_CLOSED.png",
+      "sha256": "554334563caa4981b0595d04fbd4f38bd7d3f81ddac117dde06d3f2d0174a79b"
+    },
+    "red-Open_UP": {
+      "url": "../../panel-mosaic-lab/assets/locked/2026-10-23/Red_Guarded_Open_UP.png",
+      "sha256": "d8b07ca446ed83ea831b9b70f16dbd048dad58631f8d187ff29de33e00bccaa7"
+    },
+    "red-Open_CENTER": {
+      "url": "../../panel-mosaic-lab/assets/locked/2026-10-23/Red_Guarded_Open_CENTER.png",
+      "sha256": "53d53dbe3b496061555f71d86d18c7b66ab34624af007607db872f1ef6c39c55"
+    },
+    "red-Open_DOWN": {
+      "url": "../../panel-mosaic-lab/assets/locked/2026-10-23/Red_Guarded_Open_DOWN.png",
+      "sha256": "e59af36c10954b16c7b950e2957b85dbcca62a6b708dada37f16f06142ac7e07"
+    }
+  },
+  "rotaries": [
+    {
+      "id": "dc-meter",
+      "label": "DC METER SELECTOR",
+      "placementId": "OH10",
+      "sourcePoint": [
+        262.8,
+        990.84
+      ],
+      "bezelSourceDiameter": 220,
+      "kind": "rotary",
+      "mode": "detent",
+      "asset": "rotary-standard",
+      "pivot": [
+        0.5,
+        0.44
+      ],
+      "states": [
+        "STBY PWR",
+        "BAT BUS",
+        "BAT",
+        "APU BAT",
+        "TR1",
+        "TR2",
+        "TR3",
+        "TEST"
+      ],
+      "angles": [
+        -135,
+        -90,
+        -45,
+        0,
+        45,
+        90,
+        135,
+        180
+      ],
+      "default": "APU BAT"
+    },
+    {
+      "id": "ac-meter",
+      "label": "AC METER SELECTOR",
+      "placementId": "OH10",
+      "sourcePoint": [
+        813.59,
+        990.84
+      ],
+      "bezelSourceDiameter": 220,
+      "kind": "rotary",
+      "mode": "detent",
+      "asset": "rotary-standard",
+      "pivot": [
+        0.5,
+        0.44
+      ],
+      "states": [
+        "GALLEY",
+        "STBY PWR",
+        "GRD PWR",
+        "GEN 1",
+        "APU GEN",
+        "GEN 2",
+        "INV",
+        "TEST",
+        "RESID VOLTS"
+      ],
+      "angles": [
+        -150,
+        -120,
+        -90,
+        -45,
+        0,
+        45,
+        90,
+        120,
+        150
+      ],
+      "default": "APU GEN"
+    },
+    {
+      "id": "circuit-brightness",
+      "label": "CIRCUIT BREAKER BRIGHTNESS",
+      "placementId": "OH13",
+      "sourcePoint": [
+        362.0,
+        860.11
+      ],
+      "bezelSourceDiameter": 190,
+      "kind": "rotary",
+      "mode": "continuous",
+      "asset": "rotary-standard",
+      "pivot": [
+        0.5,
+        0.44
+      ],
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "angleMin": -130,
+      "angleMax": 130,
+      "default": 50
+    },
+    {
+      "id": "panel-brightness",
+      "label": "PANEL BRIGHTNESS",
+      "placementId": "OH13",
+      "sourcePoint": [
+        362.0,
+        1246.73
+      ],
+      "bezelSourceDiameter": 190,
+      "kind": "rotary",
+      "mode": "continuous",
+      "asset": "rotary-standard",
+      "pivot": [
+        0.5,
+        0.44
+      ],
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "angleMin": -130,
+      "angleMax": 130,
+      "default": 50
+    },
+    {
+      "id": "crossfeed",
+      "label": "FUEL CROSSFEED",
+      "placementId": "OH09",
+      "sourcePoint": [
+        506.0,
+        598.68
+      ],
+      "bezelSourceDiameter": 186,
+      "kind": "rotary",
+      "mode": "detent",
+      "asset": "rotary-standard",
+      "pivot": [
+        0.5,
+        0.44
+      ],
+      "states": [
+        "CLOSED",
+        "OPEN"
+      ],
+      "angles": [
+        0,
+        90
+      ],
+      "default": "CLOSED"
+    },
+    {
+      "id": "wiper",
+      "label": "WIPER",
+      "placementId": "OH18",
+      "sourcePoint": [
+        406.37,
+        1571.62
+      ],
+      "bezelSourceDiameter": 330,
+      "kind": "rotary",
+      "mode": "detent",
+      "asset": "rotary-standard",
+      "pivot": [
+        0.5,
+        0.44
+      ],
+      "states": [
+        "PARK",
+        "OFF",
+        "LOW",
+        "HIGH"
+      ],
+      "angles": [
+        -45,
+        0,
+        45,
+        90
+      ],
+      "default": "OFF"
+    },
+    {
+      "id": "temperature-source",
+      "label": "CABIN TEMPERATURE SOURCE",
+      "placementId": "OH20",
+      "sourcePoint": [
+        627.0,
+        324.79
+      ],
+      "bezelSourceDiameter": 240,
+      "kind": "rotary",
+      "mode": "detent",
+      "asset": "rotary-standard",
+      "pivot": [
+        0.5,
+        0.44
+      ],
+      "states": [
+        "CONT CABIN",
+        "SUPPLY DUCT",
+        "PASS CABIN"
+      ],
+      "angles": [
+        -60,
+        0,
+        60
+      ],
+      "default": "SUPPLY DUCT"
+    },
+    {
+      "id": "control-cabin-temp",
+      "label": "CONTROL CABIN TEMPERATURE",
+      "placementId": "OH20",
+      "sourcePoint": [
+        362.41,
+        1019.5
+      ],
+      "bezelSourceDiameter": 180,
+      "kind": "rotary",
+      "mode": "detent",
+      "asset": "rotary-standard",
+      "pivot": [
+        0.5,
+        0.44
+      ],
+      "states": [
+        "MANUAL COOL",
+        "AUTO COOL",
+        "AUTO NORM",
+        "AUTO WARM",
+        "MANUAL WARM"
+      ],
+      "angles": [
+        -130,
+        -50,
+        0,
+        50,
+        130
+      ],
+      "default": "AUTO NORM"
+    },
+    {
+      "id": "pass-cabin-temp",
+      "label": "PASS CABIN TEMPERATURE",
+      "placementId": "OH20",
+      "sourcePoint": [
+        879.05,
+        1019.5
+      ],
+      "bezelSourceDiameter": 180,
+      "kind": "rotary",
+      "mode": "detent",
+      "asset": "rotary-standard",
+      "pivot": [
+        0.5,
+        0.44
+      ],
+      "states": [
+        "MANUAL COOL",
+        "AUTO COOL",
+        "AUTO NORM",
+        "AUTO WARM",
+        "MANUAL WARM"
+      ],
+      "angles": [
+        -130,
+        -50,
+        0,
+        50,
+        130
+      ],
+      "default": "AUTO NORM"
+    },
+    {
+      "id": "flight-alt",
+      "label": "FLIGHT ALTITUDE",
+      "placementId": "OH22",
+      "sourcePoint": [
+        336.1,
+        577.86
+      ],
+      "bezelSourceDiameter": 190,
+      "kind": "rotary",
+      "mode": "continuous",
+      "asset": "rotary-standard",
+      "pivot": [
+        0.5,
+        0.44
+      ],
+      "min": 0,
+      "max": 355,
+      "step": 5,
+      "angleMin": 0,
+      "angleMax": 355,
+      "default": 0,
+      "wrap": true,
+      "unit": "deg"
+    },
+    {
+      "id": "cabin-alt",
+      "label": "CABIN ALTITUDE",
+      "placementId": "OH22",
+      "sourcePoint": [
+        681.53,
+        805.51
+      ],
+      "bezelSourceDiameter": 180,
+      "kind": "rotary",
+      "mode": "continuous",
+      "asset": "rotary-standard",
+      "pivot": [
+        0.5,
+        0.44
+      ],
+      "min": 0,
+      "max": 355,
+      "step": 5,
+      "angleMin": 0,
+      "angleMax": 355,
+      "default": 0,
+      "wrap": true,
+      "unit": "deg"
+    },
+    {
+      "id": "landing-alt",
+      "label": "LANDING ALTITUDE",
+      "placementId": "OH22",
+      "sourcePoint": [
+        333.76,
+        981.96
+      ],
+      "bezelSourceDiameter": 190,
+      "kind": "rotary",
+      "mode": "continuous",
+      "asset": "rotary-standard",
+      "pivot": [
+        0.5,
+        0.44
+      ],
+      "min": 0,
+      "max": 355,
+      "step": 5,
+      "angleMin": 0,
+      "angleMax": 355,
+      "default": 0,
+      "wrap": true,
+      "unit": "deg"
+    },
+    {
+      "id": "cabin-rate",
+      "label": "CABIN RATE",
+      "placementId": "OH22",
+      "sourcePoint": [
+        645.35,
+        363.69
+      ],
+      "bezelSourceDiameter": 198,
+      "kind": "rotary",
+      "mode": "continuous",
+      "asset": "rotary-standard",
+      "pivot": [
+        0.5,
+        0.44
+      ],
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "angleMin": -130,
+      "angleMax": 130,
+      "default": 50
+    },
+    {
+      "id": "pressurization-mode",
+      "label": "PRESSURIZATION MODE",
+      "placementId": "OH22",
+      "sourcePoint": [
+        941.77,
+        394.67
+      ],
+      "bezelSourceDiameter": 224,
+      "kind": "rotary",
+      "mode": "detent",
+      "asset": "rotary-standard",
+      "pivot": [
+        0.5,
+        0.44
+      ],
+      "states": [
+        "AUTO",
+        "STANDBY",
+        "MANUAL"
+      ],
+      "angles": [
+        -45,
+        0,
+        45
+      ],
+      "default": "AUTO"
+    },
+    {
+      "id": "pressurization-check",
+      "label": "PRESSURIZATION CHECK",
+      "placementId": "OH22",
+      "sourcePoint": [
+        941.77,
+        967.15
+      ],
+      "bezelSourceDiameter": 205,
+      "kind": "rotary",
+      "mode": "detent",
+      "asset": "rotary-standard",
+      "pivot": [
+        0.5,
+        0.44
+      ],
+      "states": [
+        "AUTO",
+        "STBY",
+        "AC",
+        "MAN",
+        "DC",
+        "CHECK"
+      ],
+      "angles": [
+        -90,
+        -45,
+        0,
+        45,
+        90,
+        135
+      ],
+      "default": "AUTO"
+    },
+    {
+      "id": "engine-start-1",
+      "label": "ENGINE START 1",
+      "placementId": "OH23-25",
+      "sourcePoint": [
+        1022,
+        345
+      ],
+      "bezelSourceDiameter": 118,
+      "kind": "rotary",
+      "mode": "detent",
+      "asset": "rotary-standard",
+      "pivot": [
+        0.5,
+        0.44
+      ],
+      "states": [
+        "GRD",
+        "OFF",
+        "CONT",
+        "FLT"
+      ],
+      "angles": [
+        -45,
+        0,
+        45,
+        90
+      ],
+      "default": "OFF"
+    },
+    {
+      "id": "engine-start-2",
+      "label": "ENGINE START 2",
+      "placementId": "OH23-25",
+      "sourcePoint": [
+        1370,
+        345
+      ],
+      "bezelSourceDiameter": 118,
+      "kind": "rotary",
+      "mode": "detent",
+      "asset": "rotary-standard",
+      "pivot": [
+        0.5,
+        0.44
+      ],
+      "states": [
+        "GRD",
+        "OFF",
+        "CONT",
+        "FLT"
+      ],
+      "angles": [
+        -45,
+        0,
+        45,
+        90
+      ],
+      "default": "OFF"
+    },
+    {
+      "id": "ignition-source",
+      "label": "IGNITION SOURCE",
+      "placementId": "OH23-25",
+      "sourcePoint": [
+        1193,
+        323
+      ],
+      "bezelSourceDiameter": 56,
+      "kind": "rotary",
+      "mode": "detent",
+      "asset": "rotary-standard",
+      "pivot": [
+        0.5,
+        0.44
+      ],
+      "states": [
+        "IGN L",
+        "BOTH",
+        "IGN R"
+      ],
+      "angles": [
+        -45,
+        0,
+        45
+      ],
+      "default": "BOTH"
+    }
+  ],
+  "guards": [
+    {
+      "id": "flight-control-a",
+      "label": "FLT CONTROL A",
+      "kind": "guarded",
+      "placementId": "OH07",
+      "sourcePoint": [
+        196.29,
+        227.44
+      ],
+      "bezelSourceDiameter": 180,
+      "color": "black",
+      "states": [
+        "stby",
+        "off",
+        "on"
+      ],
+      "default": {
+        "value": "on",
+        "guard": "closed"
+      },
+      "closePolicy": {
+        "force": "on"
+      },
+      "rotation": 0,
+      "axis": "vertical",
+      "assetFamily": "original-approved-guarded-v2",
+      "hinge": "bottom per approved asset manifest",
+      "mechanicsId": "flightA"
+    },
+    {
+      "id": "flight-control-b",
+      "label": "FLT CONTROL B",
+      "kind": "guarded",
+      "placementId": "OH07",
+      "sourcePoint": [
+        388.02,
+        227.44
+      ],
+      "bezelSourceDiameter": 180,
+      "color": "black",
+      "states": [
+        "stby",
+        "off",
+        "on"
+      ],
+      "default": {
+        "value": "on",
+        "guard": "closed"
+      },
+      "closePolicy": {
+        "force": "on"
+      },
+      "rotation": 0,
+      "axis": "vertical",
+      "assetFamily": "original-approved-guarded-v2",
+      "hinge": "bottom per approved asset manifest",
+      "mechanicsId": "flightB"
+    },
+    {
+      "id": "spoiler-a",
+      "label": "FLIGHT SPOILER A",
+      "kind": "guarded",
+      "placementId": "OH07",
+      "sourcePoint": [
+        196.29,
+        783.97
+      ],
+      "bezelSourceDiameter": 180,
+      "color": "black",
+      "states": [
+        "off",
+        "on"
+      ],
+      "default": {
+        "value": "on",
+        "guard": "closed"
+      },
+      "closePolicy": {
+        "force": "on"
+      },
+      "rotation": 0,
+      "axis": "vertical",
+      "assetFamily": "original-approved-guarded-v2",
+      "hinge": "bottom per approved asset manifest",
+      "mechanicsId": "spoilerA"
+    },
+    {
+      "id": "spoiler-b",
+      "label": "FLIGHT SPOILER B",
+      "kind": "guarded",
+      "placementId": "OH07",
+      "sourcePoint": [
+        388.02,
+        783.97
+      ],
+      "bezelSourceDiameter": 180,
+      "color": "black",
+      "states": [
+        "off",
+        "on"
+      ],
+      "default": {
+        "value": "on",
+        "guard": "closed"
+      },
+      "closePolicy": {
+        "force": "on"
+      },
+      "rotation": 0,
+      "axis": "vertical",
+      "assetFamily": "original-approved-guarded-v2",
+      "hinge": "bottom per approved asset manifest",
+      "mechanicsId": "spoilerB"
+    },
+    {
+      "id": "alternate-flaps-master",
+      "label": "ALTERNATE FLAPS MASTER",
+      "kind": "guarded",
+      "placementId": "OH07",
+      "sourcePoint": [
+        588.88,
+        534.13
+      ],
+      "bezelSourceDiameter": 148,
+      "color": "red",
+      "states": [
+        "off",
+        "arm"
+      ],
+      "default": {
+        "value": "off",
+        "guard": "closed"
+      },
+      "closePolicy": {
+        "force": "off"
+      },
+      "rotation": 0,
+      "axis": "vertical",
+      "assetFamily": "original-approved-guarded-v2",
+      "hinge": "bottom per approved asset manifest",
+      "mechanicsId": "alternateFlapsArm"
+    },
+    {
+      "id": "battery-master",
+      "label": "BATTERY",
+      "kind": "guarded",
+      "placementId": "OH10",
+      "sourcePoint": [
+        260.61,
+        1246.45
+      ],
+      "bezelSourceDiameter": 112,
+      "color": "black",
+      "states": [
+        "off",
+        "on"
+      ],
+      "default": {
+        "value": "on",
+        "guard": "closed"
+      },
+      "closePolicy": {
+        "force": "on"
+      },
+      "rotation": 0,
+      "axis": "vertical",
+      "assetFamily": "original-approved-guarded-v2",
+      "hinge": "bottom per approved asset manifest"
+    },
+    {
+      "id": "generator-disconnect-1",
+      "label": "GEN 1 DRIVE DISCONNECT",
+      "kind": "guarded",
+      "placementId": "OH11",
+      "sourcePoint": [
+        253.83,
+        542.82
+      ],
+      "bezelSourceDiameter": 200,
+      "color": "red",
+      "states": [
+        "normal",
+        "disconnect"
+      ],
+      "default": {
+        "value": "normal",
+        "guard": "closed"
+      },
+      "closePolicy": {
+        "preserve": true
+      },
+      "rotation": 0,
+      "axis": "vertical",
+      "assetFamily": "original-approved-guarded-v2",
+      "hinge": "bottom per approved asset manifest"
+    },
+    {
+      "id": "generator-disconnect-2",
+      "label": "GEN 2 DRIVE DISCONNECT",
+      "kind": "guarded",
+      "placementId": "OH11",
+      "sourcePoint": [
+        946.76,
+        542.82
+      ],
+      "bezelSourceDiameter": 200,
+      "color": "red",
+      "states": [
+        "normal",
+        "disconnect"
+      ],
+      "default": {
+        "value": "normal",
+        "guard": "closed"
+      },
+      "closePolicy": {
+        "preserve": true
+      },
+      "rotation": 0,
+      "axis": "vertical",
+      "assetFamily": "original-approved-guarded-v2",
+      "hinge": "bottom per approved asset manifest"
+    },
+    {
+      "id": "standby-power",
+      "label": "STANDBY POWER",
+      "kind": "guarded",
+      "placementId": "OH11",
+      "sourcePoint": [
+        601.5,
+        324.38
+      ],
+      "bezelSourceDiameter": 180,
+      "color": "black",
+      "states": [
+        "bat",
+        "off",
+        "auto"
+      ],
+      "default": {
+        "value": "auto",
+        "guard": "closed"
+      },
+      "closePolicy": {
+        "force": "auto"
+      },
+      "rotation": -90,
+      "axis": "horizontal",
+      "assetFamily": "original-approved-guarded-v2",
+      "hinge": "bottom per approved asset manifest"
+    },
+    {
+      "id": "emergency-exit-lights",
+      "label": "EMER EXIT LIGHTS",
+      "kind": "guarded",
+      "placementId": "OH14",
+      "sourcePoint": [
+        597.14,
+        518.26
+      ],
+      "bezelSourceDiameter": 400,
+      "color": "black",
+      "states": [
+        "off",
+        "armed",
+        "on"
+      ],
+      "default": {
+        "value": "armed",
+        "guard": "closed"
+      },
+      "closePolicy": {
+        "force": "armed"
+      },
+      "rotation": 0,
+      "axis": "vertical",
+      "assetFamily": "original-approved-guarded-v2",
+      "hinge": "bottom per approved asset manifest",
+      "mechanicsId": "emergencyExitLights"
+    }
+  ],
+  "interlocks": [
+    {
+      "sourceGuard": "alternate-flaps-master",
+      "enabledValue": "arm",
+      "targetToggle": "alternate-flaps-position"
+    }
+  ],
+  "provenance": {
+    "rotary": "B737-ROTARY-STANDARD-V1; original approved transparent knob, fixed pivot 50% 44%",
+    "guards": "guarded-switches.manifest.v2.json; 8 unmodified approved original PNGs",
+    "guideLibraryFileId": "libfile_555402960f948191b6501fa77d2b8246",
+    "placement": "existing holes and panel labels in frozen UPD-0012 source images",
+    "mechanics": "Six flight/lighting guarded controls reuse flight-controls-panel/fcom-control-mechanics.js. Other close policies and rotary detents are explicit simulator interaction assignments; no aircraft-system effects added."
+  }
+}
