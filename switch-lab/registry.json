@@ -25,7 +25,11 @@
     "fire_handle_eng1_on": "../panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_ENG1_ON.webp",
     "fire_handle_eng1_off": "../panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_ENG1_OFF.webp",
     "fire_handle_eng2_on": "../panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_ENG2_ON.webp",
-    "fire_handle_eng2_off": "../panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_ENG2_OFF.webp"
+    "fire_handle_eng2_off": "../panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_ENG2_OFF.webp",
+    "fire_handle_apu_left45_on": "../panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_APU_LEFT45_ON.png",
+    "fire_handle_apu_left45_off": "../panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_APU_LEFT45_OFF.png",
+    "fire_handle_apu_right45_on": "../panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_APU_RIGHT45_ON.png",
+    "fire_handle_apu_right45_off": "../panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_APU_RIGHT45_OFF.png"
   },
   "locked_assets_unchanged": true,
   "controls": [
@@ -327,6 +331,54 @@
       "status": "user-approved",
       "locked": true,
       "sha256": "d1a2676302a026cc141244b489521163597ae6b13d80e08395cb5483e2c26252"
+    },
+    {
+      "id": "B737-FIRE-HANDEL-APU-LEFT45-ON-V1",
+      "type": "fire-handle",
+      "path": "../panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_APU_LEFT45_ON.png",
+      "unit": "APU",
+      "angle_deg": -45,
+      "light_state": "ON",
+      "handle_position": "IN",
+      "status": "user-approved",
+      "locked": true,
+      "sha256": "6061c9cfd40642f7c681739fa9d62c77449c9dd1e88a802df723fd74e1600a90"
+    },
+    {
+      "id": "B737-FIRE-HANDEL-APU-LEFT45-OFF-V1",
+      "type": "fire-handle",
+      "path": "../panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_APU_LEFT45_OFF.png",
+      "unit": "APU",
+      "angle_deg": -45,
+      "light_state": "OFF",
+      "handle_position": "IN",
+      "status": "user-approved",
+      "locked": true,
+      "sha256": "122e7313efd178745300aa8cbb792dc09ec036c6f9f91ed1d1dc99ce3bf13ff6"
+    },
+    {
+      "id": "B737-FIRE-HANDEL-APU-RIGHT45-ON-V1",
+      "type": "fire-handle",
+      "path": "../panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_APU_RIGHT45_ON.png",
+      "unit": "APU",
+      "angle_deg": 45,
+      "light_state": "ON",
+      "handle_position": "IN",
+      "status": "user-approved",
+      "locked": true,
+      "sha256": "8f5cee20ea2682725603abd83b94742dbb79bfe3fb84213df07d05f6b49ef4b3"
+    },
+    {
+      "id": "B737-FIRE-HANDEL-APU-RIGHT45-OFF-V1",
+      "type": "fire-handle",
+      "path": "../panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_APU_RIGHT45_OFF.png",
+      "unit": "APU",
+      "angle_deg": 45,
+      "light_state": "OFF",
+      "handle_position": "IN",
+      "status": "user-approved",
+      "locked": true,
+      "sha256": "7b7371d446197579c98577185299b22c22fdc6963b62867d9bf7fc6f74f9a881"
     }
   ],
   "reference_library": [

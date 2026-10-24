@@ -276,6 +276,58 @@
       "technical_database_library_path": "/Technical Database/Source Panels/Fire Handles/2026-10-23/FIRE_HANDEL_ENG2_OFF.webp",
       "library_status": "not_uploaded",
       "immutable": true
+    },
+    {
+      "asset_id": "B737-FIRE-HANDEL-APU-LEFT45-ON-V1",
+      "section": "pedestal",
+      "version": "2026-10-23",
+      "source_filename": "FIRE_HANDEL_APU_LEFT45_ON.png",
+      "size_bytes": 1341080,
+      "sha256": "6061c9cfd40642f7c681739fa9d62c77449c9dd1e88a802df723fd74e1600a90",
+      "github_path": "panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_APU_LEFT45_ON.png",
+      "github_status": "uploaded_verified",
+      "technical_database_library_path": "/Technical Database/Source Panels/Fire Handles/2026-10-23/FIRE_HANDEL_APU_LEFT45_ON.png",
+      "library_status": "not_uploaded",
+      "immutable": true
+    },
+    {
+      "asset_id": "B737-FIRE-HANDEL-APU-LEFT45-OFF-V1",
+      "section": "pedestal",
+      "version": "2026-10-23",
+      "source_filename": "FIRE_HANDEL_APU_LEFT45_OFF.png",
+      "size_bytes": 1324229,
+      "sha256": "122e7313efd178745300aa8cbb792dc09ec036c6f9f91ed1d1dc99ce3bf13ff6",
+      "github_path": "panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_APU_LEFT45_OFF.png",
+      "github_status": "uploaded_verified",
+      "technical_database_library_path": "/Technical Database/Source Panels/Fire Handles/2026-10-23/FIRE_HANDEL_APU_LEFT45_OFF.png",
+      "library_status": "not_uploaded",
+      "immutable": true
+    },
+    {
+      "asset_id": "B737-FIRE-HANDEL-APU-RIGHT45-ON-V1",
+      "section": "pedestal",
+      "version": "2026-10-23",
+      "source_filename": "FIRE_HANDEL_APU_RIGHT45_ON.png",
+      "size_bytes": 1367662,
+      "sha256": "8f5cee20ea2682725603abd83b94742dbb79bfe3fb84213df07d05f6b49ef4b3",
+      "github_path": "panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_APU_RIGHT45_ON.png",
+      "github_status": "uploaded_verified",
+      "technical_database_library_path": "/Technical Database/Source Panels/Fire Handles/2026-10-23/FIRE_HANDEL_APU_RIGHT45_ON.png",
+      "library_status": "not_uploaded",
+      "immutable": true
+    },
+    {
+      "asset_id": "B737-FIRE-HANDEL-APU-RIGHT45-OFF-V1",
+      "section": "pedestal",
+      "version": "2026-10-23",
+      "source_filename": "FIRE_HANDEL_APU_RIGHT45_OFF.png",
+      "size_bytes": 1369807,
+      "sha256": "7b7371d446197579c98577185299b22c22fdc6963b62867d9bf7fc6f74f9a881",
+      "github_path": "panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_APU_RIGHT45_OFF.png",
+      "github_status": "uploaded_verified",
+      "technical_database_library_path": "/Technical Database/Source Panels/Fire Handles/2026-10-23/FIRE_HANDEL_APU_RIGHT45_OFF.png",
+      "library_status": "not_uploaded",
+      "immutable": true
     }
   ]
 }

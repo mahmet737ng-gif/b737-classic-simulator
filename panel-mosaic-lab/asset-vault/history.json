@@ -79,6 +79,18 @@
         "B737-FIRE-HANDEL-ENG2-ON-V1",
         "B737-FIRE-HANDEL-ENG2-OFF-V1"
       ]
+    },
+    {
+      "version": "GITHUB-UPLOAD-APU-FIRE-HANDLE-45-20261024",
+      "date": "2026-10-24",
+      "kind": "binary_upload_verified",
+      "description": "Four exact user-approved APU fire handle tilted ±45-degree PNG sprites in light ON/OFF, source files unchanged and previous assets preserved.",
+      "ids": [
+        "B737-FIRE-HANDEL-APU-LEFT45-ON-V1",
+        "B737-FIRE-HANDEL-APU-LEFT45-OFF-V1",
+        "B737-FIRE-HANDEL-APU-RIGHT45-ON-V1",
+        "B737-FIRE-HANDEL-APU-RIGHT45-OFF-V1"
+      ]
     }
   ]
 }
