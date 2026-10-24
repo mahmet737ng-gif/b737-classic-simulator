@@ -1,0 +1,6 @@
+/* Crop the duplicate artwork bezel inside already-framed overhead sockets. */
+.mounted-light .light-face[src*="LOW_PRESSURE_AMBER_REF_"],
+.mounted-light .light-face[src*="R_ELEV_PITOT_AMBER_REF_"] {
+  transform: scale(1.2);
+  transform-origin: center center;
+}
