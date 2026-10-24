@@ -23,6 +23,23 @@ Regression tests: `node tests/isn-apu-start-chain-v1.test.cjs` and
 This is a cockpit-system training beta; flight dynamics, actual N2/EGT
 physics and comprehensive FCOM validation are not claimed.
 
+## MET-0001 — one AC/DC metering needle shared by four OH10 gauges
+
+The owner-supplied photo of the AC/DC metering panel is the shape reference
+for a single slender, ivory-white vector pointer with a tapered tip. The
+one transparent `ac-dc-metering-needle.svg` asset is reused in four separate
+SVG instances on the Unified cockpit's embedded OH10 panel: DC AMPS, CPS,
+DC VOLTS and A.C. Each instance has its own measured source-image pivot and
+reference-photo starting angle. Its root is hidden behind the original
+lower grey gauge cover while the visible part remains over the black dial.
+
+The Unified inspector offers four independent angle-only visual tests and a
+reference-position reset. `B737UnifiedAcDcMetering.setAngle(id, degrees)` or
+`setAngles({dcAmps,cps,dcVolts,acVolts})` can later receive verified system
+outputs. The display does not invent DC/AC electrical values or warning
+thresholds. The approved OH10 source image and frozen all-overhead mosaic
+remain unchanged; this is an additive overlay only.
+
 ## FTN-0001 — approved white Fuel Temperature needle mounted on Unified
 
 The isolated, sharp-tipped white vector needle approved by the owner is
