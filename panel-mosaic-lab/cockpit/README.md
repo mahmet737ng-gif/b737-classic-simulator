@@ -389,3 +389,13 @@ offset 0 the pointer points left to the printed zero tick. The visual-test
 offset control and reset are independent of the upper PRESS/CAB ALT needles.
 No cabin-rate system signal or value-to-angle calibration is claimed yet.
 Regression: `node panel-mosaic-lab/cockpit/cabin-rate-needle.test.cjs`.
+
+## CTN-0001 — cabin temperature needle
+
+The OH20 temperature gauge reuses the exact `cabin-rate-needle.svg` asset,
+without creating a second needle sprite. Its independent pivot is (618, 681)
+in the locked source image. The overlay follows the atlas artInset rather than
+the whole panel box. Default visual indication is 20°C. The six printed
+temperature marks define a visual interpolation only; no aircraft temperature
+signal is connected. Regression:
+`node panel-mosaic-lab/cockpit/cabin-temperature-needle.test.cjs`.
