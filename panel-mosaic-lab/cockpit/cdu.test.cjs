@@ -14,3 +14,17 @@ const invalid=structuredClone(assembly);invalid.embeddedInstruments[1].x=2100;as
 console.log('PASS: two correctly sided CDU frames; unchanged approved 1199×1312 art / 70 keys / five outputs / locked fonts; original v6 imports; independent pages, scratchpads and route fields; no lamp overlap.');
 
 const group=view.target(assembly,'cdu-both');for(const i of items){const box=view.target(assembly,i.id);assert.ok(group.x<=box.x&&group.y<=box.y&&group.x+group.w>=box.x+box.w&&group.y+group.h>=box.y+box.h);}
+
+// Owner screenshot registration measures the actual bezel, not the surrounding black bitmap.
+const calibration=JSON.parse(read('panel-mosaic-lab/cockpit/cdu-size-reference.json')),anchor=region.placements.find(p=>p.id===calibration.anchor.pieceId),nativeRatio=anchor.w/assembly.assets[anchor.asset].dimensions[0],registration=calibration.anchor.sourceToReference;
+for(const i of items){
+ assert.equal(i.presentation,'reference-frame-fit');assert.deepEqual(i.sourceWindow,calibration.sourceVisibleFrame);
+ const p=view.instrumentPresentation(i),window=i.sourceWindow;
+ assert.ok(Math.abs(p.left+window.x*p.scaleX)<1e-8);assert.ok(Math.abs(p.top+window.y*p.scaleY)<1e-8);
+ assert.ok(Math.abs(p.left+(window.x+window.w)*p.scaleX-i.w)<1e-8);assert.ok(Math.abs(p.top+(window.y+window.h)*p.scaleY-i.h)<1e-8);
+ for(const control of map.controls){const [l,t,r,b]=control.bbox_px;assert.ok(l>=window.x&&t>=window.y&&r<=window.x+window.w&&b<=window.y+window.h,'Visible source crop removes key '+control.id);}
+ const projected=[registration.offsetX+(i.x-anchor.x)/nativeRatio*registration.scale,registration.offsetY+(i.y-anchor.y)/nativeRatio*registration.scale,registration.offsetX+(i.x+i.w-anchor.x)/nativeRatio*registration.scale,registration.offsetY+(i.y+i.h-anchor.y)/nativeRatio*registration.scale];
+ const expected=calibration.referenceFrames[i.seat];for(let n=0;n<4;n++)assert.ok(Math.abs(projected[n]-expected[n])<.001,'Visible CDU bezel differs from owner screenshot: '+i.seat);
+}
+const wrongCrop=structuredClone(assembly);wrongCrop.embeddedInstruments[0].sourceWindow.w=1300;assert.throws(()=>view.validateInstruments(wrongCrop));
+console.log('PASS: bezel-to-reference corner registration; original black padding excluded; all 140 original key hitboxes remain visible and share the artwork transform.');

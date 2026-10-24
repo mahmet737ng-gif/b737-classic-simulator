@@ -1,0 +1,49 @@
+{
+  "schema": "b737.cdu-owner-reference-fit.v1",
+  "reference": {
+    "filename": "image(20261024-180813).png",
+    "sha256": "961097e1fd9a225d1ab9d7c07e1ccbeb2a3f56be399078b2253208b71dfa65fa",
+    "dimensions": [
+      1920,
+      1080
+    ],
+    "note": "Owner screenshot used only for measurement; screenshot pixels and desktop UI are not published."
+  },
+  "anchor": {
+    "pieceId": "engine",
+    "sourcePatch": [
+      400,
+      500,
+      864,
+      1230
+    ],
+    "sourceToReference": {
+      "scale": 0.433,
+      "offsetX": 478.8,
+      "offsetY": -90.5
+    },
+    "normalizedCrossCorrelation": 0.9166468395250589,
+    "measurement": "Normalized correlation of unchanged engine-panel artwork; native source image mapped into screenshot pixels."
+  },
+  "sourceVisibleFrame": {
+    "x": 111,
+    "y": 21,
+    "w": 866,
+    "h": 1277
+  },
+  "referenceFrames": {
+    "CAPT": [
+      451,
+      451,
+      688,
+      821
+    ],
+    "FO": [
+      956,
+      450,
+      1201,
+      823
+    ]
+  },
+  "presentation": "Fit original visible bezel and all native overlays together to each owner-reference frame, excluding surrounding black bitmap padding. Native artwork and 70 source hitboxes are unchanged."
+}

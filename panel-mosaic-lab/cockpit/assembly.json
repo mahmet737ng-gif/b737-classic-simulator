@@ -1,6 +1,6 @@
 {
   "schema": "b737.shared-cockpit-mosaic.v1",
-  "version": "CKP-0008",
+  "version": "CKP-0009",
   "canvas": {
     "width": 4400,
     "height": 8100
@@ -268,26 +268,52 @@
       "label": "CAPTAIN CDU",
       "seat": "CAPT",
       "regionId": "main",
-      "x": 770,
-      "y": 615,
-      "w": 180,
-      "h": 196.96413678065053,
+      "x": 737.034259,
+      "y": 593.81471,
+      "w": 204.312255,
+      "h": 318.9685,
       "nativeWidth": 1199,
       "nativeHeight": 1312,
-      "embeddedUrl": "./cdu-stage.html?seat=CAPT&v=CDU-U1"
+      "embeddedUrl": "./cdu-stage.html?seat=CAPT&v=CDU-U2",
+      "sourceWindow": {
+        "x": 111,
+        "y": 21,
+        "w": 866,
+        "h": 1277
+      },
+      "presentation": "reference-frame-fit",
+      "referenceBBox": [
+        451,
+        451,
+        688,
+        821
+      ]
     },
     {
       "id": "cdu-first-officer",
       "label": "FIRST OFFICER CDU",
       "seat": "FO",
       "regionId": "main",
-      "x": 1225,
-      "y": 615,
-      "w": 180,
-      "h": 196.96413678065053,
+      "x": 1172.383157,
+      "y": 592.952633,
+      "w": 211.208871,
+      "h": 321.554731,
       "nativeWidth": 1199,
       "nativeHeight": 1312,
-      "embeddedUrl": "./cdu-stage.html?seat=FO&v=CDU-U1"
+      "embeddedUrl": "./cdu-stage.html?seat=FO&v=CDU-U2",
+      "sourceWindow": {
+        "x": 111,
+        "y": 21,
+        "w": 866,
+        "h": 1277
+      },
+      "presentation": "reference-frame-fit",
+      "referenceBBox": [
+        956,
+        450,
+        1201,
+        823
+      ]
     }
   ],
   "cduSource": {
@@ -298,6 +324,8 @@
     "controlMapSha256": "42d7b9d8b3353c6cacd9237582b3712aeee84fe532c573c0010997d118b64a8b",
     "fontStylesheet": "assets/fonts/boeing-cdu/cdu-screen.css",
     "controlsPerSeat": 70,
-    "statePolicy": "Independent per-seat v6 engine and DOM; no shared scratchpad, route modifications or reset. Existing engine limitations retained."
+    "statePolicy": "Independent per-seat v6 engine and DOM; no shared scratchpad, route modifications or reset. Existing engine limitations retained.",
+    "sizeReference": "cdu-size-reference.json",
+    "sizePolicy": "Owner screenshot visible-frame dimensions; source black padding is excluded from fit. Width/height registration transforms artwork and original hitboxes as one unit."
   }
 }

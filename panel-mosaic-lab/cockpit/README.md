@@ -1,4 +1,4 @@
-# Unified cockpit — CKP-0002
+# Unified cockpit — CKP-0009
 
 ## CKP-0005 / LGT-0007 — STAB socket fit and SPEED BRAKE mounting
 
@@ -157,3 +157,27 @@ reporting readiness or sending a seat-specific reset.
 Use the stable /panel-mosaic-lab/cockpit/ URL and refresh for current updates.
 Regression: node panel-mosaic-lab/cockpit/cdu.test.cjs plus existing CDU font,
 asset, public-routing and frozen-overhead guards.
+
+
+## CKP-0009: owner-reference CDU size correction
+
+Supersedes CDU-U1's 180-pixel full-bitmap placement. The owner's screenshot
+`image(20261024-180813).png` defines the visible captain and F/O bezel frames.
+The original source PNG includes large black side margins; its actual visible
+bezel is source rectangle x=111, y=21, width=866, height=1277. A parent frame
+window excludes only this padding. Source image pixels, 1199×1312 internal
+viewport, 70-key map, five outputs, v6 engine and locked font files are unchanged.
+
+`cdu-size-reference.json` stores the screenshot fingerprint, measured frames,
+unchanged engine-panel anchor and normalized-correlation registration. The
+screenshot and its desktop UI are not published. Independent horizontal and
+vertical presentation scales fit each photographed reference frame; the image,
+display and all hitboxes are transformed together. Captain's visible bezel is
+204.312255×318.968500 native main-panel units; F/O is
+211.208871×321.554731. Both are positioned by the same engine-panel anchor.
+This is a pixel-reference match, not an assertion of millimeter measurements.
+
+The same fixed Unified URL, independent seat states, focus/reset commands and
+existing panel/light geometry are retained. CDU tests project all four bezel
+corners back into the owner screenshot and check that all original key hitboxes
+remain inside the visible source window.
