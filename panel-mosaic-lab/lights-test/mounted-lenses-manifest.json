@@ -1,7 +1,7 @@
 {
   "schema": "B737-mounted-annunciator-lens.v1",
-  "galleryVersion": "LGT-0013",
-  "version": "LGT-0014",
+  "galleryVersion": "LGT-0015",
+  "version": "LGT-0015",
   "reference": "B737 approved LIGHTS unified-v2; no plate, bezel, or second housing on mounted sockets",
   "sourceRectCorrections": {
     "main": 7,
@@ -14,7 +14,7 @@
       "palette": "white",
       "state": "OFF",
       "asset": "unified-mounted-v1/ALIGN_WHITE_OFF.svg",
-      "sha256": "af0fa99935785bc19e66f04a349836820b09194143b5a65c3a16b4393d14ae40",
+      "sha256": "82ee529e8a2786fa49be85b4c6b19a1cb9a230fde718831f12d034f9cbc5d30b",
       "face": {
         "width": 600,
         "height": 300
@@ -25,7 +25,7 @@
       "palette": "white",
       "state": "ON",
       "asset": "unified-mounted-v1/ALIGN_WHITE_ON.svg",
-      "sha256": "771abb95dde46b5e34723c1cf303df3c2a1244ce971779c1944965dad9c8ad9e",
+      "sha256": "9a3db74bb9e16ff5345deaf318053ce716d59b013bb90c68004fa4d38a2897a9",
       "face": {
         "width": 600,
         "height": 300

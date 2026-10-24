@@ -6,8 +6,8 @@
  </defs>
  <rect x="2" y="2" width="596" height="296" rx="18" fill="#080909" stroke="#1c1f20" stroke-width="4"/>
      <rect x="4" y="4" width="592" height="292" rx="15" fill="url(#metal)" stroke="#07090a" stroke-width="3"/>
-     <rect x="12" y="11" width="576" height="278" rx="10" fill="#473a39" stroke="#0b0b0c" stroke-width="4"/>
-     <rect x="19" y="17" width="562" height="266" rx="6" fill="#0c0b0c" stroke="#4a3934" stroke-width="2.6"/>
-     <path d="M23 24H577" stroke="#715a4f" stroke-width="2.5" opacity="0.23"/>
- <g font-family="Arial, Liberation Sans, Helvetica, sans-serif" font-weight="700" text-anchor="middle" fill="#1e2529" opacity=".47"><text x="300" y="206.4" font-size="150">ALIGN</text></g>
+     <rect x="12" y="11" width="576" height="278" rx="10" fill="#333333" stroke="#0b0b0c" stroke-width="4"/>
+     <rect x="19" y="17" width="562" height="266" rx="6" fill="#050505" stroke="#282828" stroke-width="2.6"/>
+     <path d="M23 24H577" stroke="#555555" stroke-width="2.5" opacity="0.23"/>
+ <g font-family="Arial, Liberation Sans, Helvetica, sans-serif" font-weight="700" text-anchor="middle" fill="#303030"><text x="300" y="206.4" font-size="150">ALIGN</text></g>
  </svg>

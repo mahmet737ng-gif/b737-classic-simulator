@@ -20,7 +20,7 @@ const paletteColors={
  amber:'#260f09',white:'#101217',red:'#20080d',green:'#071b0e',
  yellow:'#050505',blue:'#18569e'
 };
-const manifest={schema:'B737-mounted-annunciator-lens.v1',galleryVersion:gallery.version,version:'LGT-0014',
+const manifest={schema:'B737-mounted-annunciator-lens.v1',galleryVersion:gallery.version,version:'LGT-0015',
  reference:'B737 approved LIGHTS unified-v2; no plate, bezel, or second housing on mounted sockets',
  sourceRectCorrections:{main:Object.keys(overrides.main).length,overhead:Object.keys(overrides.overhead).length},
  types:gallery.lights.length,states:[],visualMode:'aperture-edge-to-edge'};
@@ -35,7 +35,7 @@ for(const lamp of gallery.lights){
   const firstText=rest.indexOf('<g ');
   if(firstText<0)throw Error('No legend '+lamp.id+' '+state);
   const text=rest.slice(firstText).replace(/<\/svg>\s*$/,'').trim();
-  const fill=state==='OFF'?(color==='yellow'?'#050505':'#0c0b0c')
+  const fill=lamp.id==='ALIGN_WHITE'?'#050505':state==='OFF'?(color==='yellow'?'#050505':'#0c0b0c')
     :color==='blue'&&state==='DIM_BLUE'?'#112f55':paletteColors[color];
   const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="img" aria-label="${lamp.id} mounted ${state}">\n${defs}\n<rect width="${w}" height="${h}" fill="${fill}"/>\n${text}\n</svg>\n`;
   const rel=`unified-mounted-v1/${lamp.id}_${state}.svg`;
