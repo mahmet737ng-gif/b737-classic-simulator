@@ -6,7 +6,7 @@ const zoom=m.zoomAnchor(.25,.5,100,200,300,250);assert.equal((100+300)/.25,(zoom
 const centered=m.zoomAnchor(.1,.2,0,0,500,200,{x:300,y:20},{x:100,y:0});assert.equal((500-300)/.1,(centered.left+500-100)/.2);assert.equal((200-20)/.1,(centered.top+200)/.2);
 const html=fs.readFileSync(path.join(__dirname,'overhead-stage.html'),'utf8');for(const src of ['stage.js?v=UPD-0012','app.js?v=RG-0001','rotary-guards.js?v=LGT-0003','lights.js?v=LGT-0003'])assert.ok(html.includes(src),src);assert.ok(!html.includes('data-cockpit-entry'));
 const unified=fs.readFileSync(path.join(__dirname,'index.html'),'utf8');
-for(const marker of ['id="unifiedLightsOpen"','id="unifiedLightsDialog"','id="unifiedLightSearch"','unified-lights.js?v=CKP-0005','../lights-test/asset-model.js?v=LGT-0007'])assert.ok(unified.includes(marker),'Unified annunciator testing: '+marker);
+for(const marker of ['id="unifiedLightsOpen"','id="unifiedLightsDialog"','id="unifiedLightSearch"','unified-lights.js?v=CKP-0007','../lights-test/asset-model.js?v=LGT-0007'])assert.ok(unified.includes(marker),'Unified annunciator testing: '+marker);
 const assetModel=require('../lights-test/asset-model'),gallery=JSON.parse(fs.readFileSync(path.join(__dirname,'../lights-test/registry.json')));
 assert.ok(gallery.lights.length>=86,'Unified must load the expanding LIGHTS catalogue');
 const atLim=gallery.lights.find(c=>c.id==='A_T_LIM_WHITE');assert.deepEqual(atLim?.lines,['A/T LIM']);assert.deepEqual(atLim.states,['OFF','ON']);assert.deepEqual(atLim.face,{width:600,height:300});
