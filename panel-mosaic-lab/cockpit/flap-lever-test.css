@@ -2,7 +2,7 @@
 .flap-bmp-overlay{position:absolute;z-index:16;overflow:hidden;display:block;pointer-events:auto;touch-action:none;cursor:ns-resize;border:0;background:transparent;image-rendering:auto;user-select:none;outline-offset:2px}
 .flap-bmp-overlay:focus-visible{outline:2px solid #ffda82}
 .flap-bmp-sprite{position:absolute;left:0;top:0;max-width:none!important;pointer-events:none;user-select:none;object-fit:fill}
-.flap-detent-hit{position:absolute!important;z-index:17;border:0!important;border-radius:2px!important;padding:0!important;background:transparent!important;cursor:pointer;touch-action:manipulation}
+.flap-detent-hit{position:absolute!important;z-index:15;border:0!important;border-radius:2px!important;padding:0!important;background:transparent!important;cursor:pointer;touch-action:manipulation}
 .flap-detent-hit:hover,.flap-detent-hit:focus-visible{outline:2px solid #fbd486!important;outline-offset:1px;background:#ecc65c24!important}
 .flap-test-controls{display:flex;gap:4px;align-items:center;white-space:nowrap;padding:2px 5px;border:1px solid #5b8293;border-radius:7px;background:#122c38;flex-shrink:0}
 .flap-test-controls button{min-width:28px;padding:4px 7px;font-size:12px}
