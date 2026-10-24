@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="600" viewBox="0 0 300 600" role="img" aria-label="NOT ARMED vertical annunciator, on">
+  <rect x="2" y="2" width="296" height="596" rx="23" fill="#151618" stroke="#282a2b" stroke-width="4"/>
+  <rect x="12" y="12" width="276" height="576" rx="14" fill="#040404"/>
+  <g fill="#ffb629" font-family="Nimbus Sans Narrow, DejaVu Sans Condensed, sans-serif" font-weight="700" font-size="90" text-anchor="middle">
+    <text x="210" y="123">A</text>
+    <text x="90" y="225">N</text><text x="210" y="225">R</text>
+    <text x="90" y="327">O</text><text x="210" y="327">M</text>
+    <text x="90" y="429">T</text><text x="210" y="429">E</text>
+    <text x="210" y="531">D</text>
+  </g>
+</svg>
