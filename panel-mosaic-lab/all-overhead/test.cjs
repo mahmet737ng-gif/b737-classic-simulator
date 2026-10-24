@@ -7,7 +7,7 @@ const vm=require('node:vm');
 const root=__dirname;
 const spec=JSON.parse(fs.readFileSync(path.join(root,'spec.json'),'utf8'));
 const geometry=JSON.parse(fs.readFileSync(path.join(root,'../upper-oh/geometry.json'),'utf8'));
-assert.equal(spec.version,'UPD-0011-atlas-photo-order');
+assert.equal(spec.version,'UPD-0012-OVH-measured-seams');
 assert.equal(spec.images.length,18,'18 distinct image sources');
 assert.equal(new Set(spec.images.map(x=>x.filename)).size,18,'no duplicate image');
 assert.deepEqual(spec.images[0].panelIds,['OH-01','OH-02','OH-03','OH-04','OH-05','OH-06']);
