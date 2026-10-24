@@ -5,6 +5,10 @@
 .mounted-rotary.dragging .rotary-picture{transition:none}
 .mounted-rotary.detent-motion .rotary-picture,.mounted-rotary.detent-motion.dragging .rotary-picture{transition:transform 110ms cubic-bezier(.2,.85,.3,1)}
 .mounted-rotary:focus-visible{outline:2px solid #e6ce9c;outline-offset:3px}
+.rg-detent-hit{position:absolute;display:block;margin:0!important;padding:0!important;border:0!important;outline:0;background:transparent!important;box-shadow:none!important;pointer-events:auto;touch-action:manipulation;cursor:pointer;z-index:5}
+.rg-detent-hit:hover{background:rgba(247,213,134,.13)!important}
+.rg-detent-hit:focus-visible{background:rgba(247,213,134,.24)!important;outline:2px solid #ffd990}
+.rg-layer[data-debug-detents="true"] .rg-detent-hit{background:rgba(0,255,192,.18)!important;outline:1px solid rgba(0,255,192,.8)}
 .guard-node{position:absolute;width:0;height:0;pointer-events:none;overflow:visible;transform-origin:0 0}
 .guard-picture{position:absolute;display:block;max-width:none!important;max-height:none!important;pointer-events:none;user-select:none;opacity:0;transition:opacity 210ms ease}
 .guard-picture.active{opacity:1}

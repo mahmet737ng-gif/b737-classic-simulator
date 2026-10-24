@@ -36,7 +36,7 @@
   report();
  });
  document.addEventListener('click',e=>{const node=e.target.closest('[data-light]');if(node)send({kind:'selected-light',id:node.dataset.light});});
- const isControl=e=>e.target.closest('.mounted-toggle,.mounted-rotary,.guard-node,.mounted-light');let drag=null;
+ const isControl=e=>e.target.closest('.mounted-toggle,.mounted-rotary,.rg-detent-hit,.guard-node,.mounted-light');let drag=null;
  document.addEventListener('pointerdown',e=>{if(e.button!==0||isControl(e))return;drag=e.pointerId;send({kind:'pan-start',screenX:e.screenX,screenY:e.screenY});});
  document.addEventListener('pointermove',e=>{if(drag===e.pointerId)send({kind:'pan-move',screenX:e.screenX,screenY:e.screenY});});
  for(const type of ['pointerup','pointercancel'])document.addEventListener(type,()=>{if(drag!==null)send({kind:'pan-end'});drag=null;});

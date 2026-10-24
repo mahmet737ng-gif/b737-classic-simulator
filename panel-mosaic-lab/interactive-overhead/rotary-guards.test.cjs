@@ -4,16 +4,31 @@ const m=require('./rotary-guards-model.js'),toggles=require('./model.js'),mechan
 const read=p=>JSON.parse(fs.readFileSync(path.join(__dirname,p),'utf8')),reg=read('rotary-guards.json'),layout=read('../all-overhead/atlas-layout.json');
 assert.equal(m.validate(reg,layout,toggles.mapPoint),true);assert.equal(reg.rotaries.length,18);assert.equal(reg.guards.length,10);
 const events=[],e=m.controller(reg,{},v=>events.push(v),mechanics);
-for(const id of ['wiper','engine-start-1','engine-start-2']){
+for(const id of ['dc-meter','ac-meter','wiper','engine-start-1','engine-start-2']){
  const c=reg.rotaries.find(r=>r.id===id);assert.ok(c?.panelPivot&&c.panelMarks,id+' calibrated on actual legends');
  const rays=m.detentAngles(c);assert.equal(rays.length,c.states.length);
  for(let i=0;i<rays.length;i++)assert.ok(Math.abs(rays[i]-c.angles[i])<.002,id+' detent '+c.states[i]);
 }
+const ac=reg.rotaries.find(r=>r.id==='ac-meter');
+assert.deepEqual(ac.states,['STBY PWR','GRD PWR','GEN 1','APU GEN','GEN 2','INV','TEST'],'GALLEY and RESID VOLTS are separate controls, not AC selector detents');
+for(const id of ['dc-meter','ac-meter','wiper','engine-start-1','engine-start-2']){
+ const c=reg.rotaries.find(r=>r.id===id),slot=layout.placements.find(p=>p.id===c.placementId);
+ const areas=m.legendHotspots(c,slot,toggles.mapPoint);
+ assert.deepEqual(areas.map(v=>v.state),c.states,id+' individually mapped legends');
+ for(let i=0;i<areas.length;i++){
+  assert.ok(areas[i].width>1&&areas[i].height>1&&areas[i].clipPath.startsWith('polygon('),id+' responsive polygon');
+  for(let j=i+1;j<areas.length;j++)assert.equal(m.outlinesOverlap(areas[i].points,areas[j].points),false,id+' '+areas[i].state+' / '+areas[j].state+' hitboxes never overlap');
+ }
+}
+const bad=JSON.parse(JSON.stringify(reg));bad.rotaries.find(r=>r.id==='ac-meter').legendAreas.TEST=bad.rotaries.find(r=>r.id==='ac-meter').legendAreas.INV;
+assert.throws(()=>m.validate(bad,layout,toggles.mapPoint),/Overlapping legend hitboxes/,'Never silently accept competing click regions');
 assert.equal(reg.rotaries.find(r=>r.id==='crossfeed').asset,'rotary-crossfeed','Use approved front-on crossfeed artwork');
 e.setRotary('engine-start-1','FLT');assert.equal(e.stepRotary('engine-start-1',1),false,'FLT is the right-hand hard stop');
 e.setRotary('engine-start-1','GRD');assert.equal(e.stepRotary('engine-start-1',-1),false,'GRD is the left-hand hard stop');
 e.setRotary('engine-start-1','OFF');
-e.stepRotary('dc-meter',1);assert.equal(e.rotary('dc-meter'),'TR1');assert.equal(e.angle('dc-meter'),45);
+e.stepRotary('dc-meter',1);assert.equal(e.rotary('dc-meter'),'TR1');assert.ok(Math.abs(e.angle('dc-meter')-46.488)<.002);
+e.setRotary('ac-meter','TEST','legend-tap');assert.equal(e.rotary('ac-meter'),'TEST');assert.ok(Math.abs(e.angle('ac-meter')-132.852)<.002);
+e.setRotary('ac-meter','GRD PWR','legend-tap');assert.equal(e.rotary('ac-meter'),'GRD PWR');assert.ok(Math.abs(e.angle('ac-meter')+89.449)<.002);assert.equal(events.at(-1).reason,'legend-tap');
 e.turnRotary('crossfeed',85);assert.equal(e.rotary('crossfeed'),'OPEN');e.turnRotary('crossfeed',-200);assert.equal(e.rotary('crossfeed'),'CLOSED');
 e.setRotary('panel-brightness',1000);assert.equal(e.rotary('panel-brightness'),100);e.stepRotary('panel-brightness',1);assert.equal(e.rotary('panel-brightness'),100);
 e.setRotary('flight-alt',355);e.stepRotary('flight-alt',1);assert.equal(e.rotary('flight-alt'),0);e.stepRotary('flight-alt',-1);assert.equal(e.rotary('flight-alt'),355);

@@ -22,6 +22,16 @@ renderer and mounts controls over the measured sockets.
   continuous ranges and provenance are recorded in the two registries.
 - States persist separately; saved closed guards normalize to their protected
   detents. Reset and visibility controls act on all installed controls.
+- RM-0003 direct legend selection: native-pixel polygon hitboxes are registered
+  for every detent of both AC/DC meter selectors, the four WIPER detents, and
+  both ENGINE START switches. Tapping the printed legend selects that exact
+  target with a smooth 110 ms stop; rotary dragging still steps one detent at
+  a time. Geometry is mapped through the frozen atlas transforms, validated
+  for collisions, and invisible until hovered or keyboard-focused. Use
+  `?debugDetents=1` on the embedded overhead page to audit the polygons.
+  GALLEY and RESID VOLTS are *not* AC selector detents and were removed from
+  that rotary state list. Other rotary legends require their own measured
+  source-pixel outlines before enabling direct label taps.
 
 Checks:
 

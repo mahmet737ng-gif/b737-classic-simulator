@@ -4,7 +4,7 @@
  const model=window.B737RotaryGuardModel,points=window.B737OverheadToggleModel,motion=window.B737RotaryMotionRM0002;
  const STORAGE='b737-overhead-rotary-guards-RG-0001',byId=id=>document.getElementById(id);
  let registry,engine,layer,selected=null;
- const widgets=new Map(),angles=new Map();
+ const widgets=new Map(),angles=new Map(),legendWidgets=new Map();
  const persist=()=>{try{localStorage.setItem(STORAGE,JSON.stringify(engine.snapshot()));}catch{}};
  const name=value=>String(value).toUpperCase();
  function interlocks(){
@@ -32,6 +32,7 @@
    const img=widget.querySelector('img');img.style.transform='rotate('+a+'deg)';
    const value=engine.rotary(c.id),index=c.mode==='continuous'?value:c.states.indexOf(value);
    widget.dataset.value=String(value);widget.setAttribute('aria-valuenow',String(index));widget.setAttribute('aria-valuetext',String(value));widget.setAttribute('aria-label',c.label+' — '+value);
+   for(const target of legendWidgets.get(c.id)||[])target.setAttribute('aria-pressed',String(target.dataset.detent===String(value)));
   }else{
    const current=engine.guard(c.id),index=c.states.indexOf(current.value),frame=current.guard==='closed'?'CLOSED':index===0?'Open_UP':index===c.states.length-1?'Open_DOWN':'Open_CENTER';
    widget.dataset.guard=current.guard;widget.dataset.value=current.value;
@@ -90,6 +91,21 @@
   const pivot=c.visualPivot||[.5,.44];
   Object.assign(pic.style,{left:'calc(50% - '+(w*pivot[0])+'px)',top:'calc(50% - '+(h*pivot[1])+'px)',width:w+'px',height:h+'px',transformOrigin:(pivot[0]*100)+'% '+(pivot[1]*100)+'%'});
   b.append(pic);rotaryInput(c,b,pic);return b;
+ }
+ function mountLegendTargets(c,placement){
+  const targets=[];
+  for(const hit of model.legendHotspots(c,placement,points.mapPoint)){
+   const button=document.createElement('button');button.type='button';button.className='rg-detent-hit';
+   button.dataset.control=c.id;button.dataset.detent=hit.state;
+   button.setAttribute('aria-label',c.label+' → '+hit.state);
+   button.setAttribute('aria-pressed',String(engine.rotary(c.id)===hit.state));
+   button.title=c.label+' · '+hit.state;
+   Object.assign(button.style,{left:hit.left+'px',top:hit.top+'px',width:hit.width+'px',height:hit.height+'px',clipPath:hit.clipPath});
+   button.addEventListener('pointerdown',event=>event.stopPropagation());
+   button.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();choose(c);engine.setRotary(c.id,hit.state,'legend-tap');});
+   layer.append(button);targets.push(button);
+  }
+  legendWidgets.set(c.id,targets);
  }
  function guarded(c,p){
   const group=document.createElement('div');group.className='guard-node';group.dataset.control=c.id;
@@ -151,7 +167,9 @@
   byId('toggleInspector').after(section);
   mountEngineStartLabelCorrection(layout);
   layer=document.createElement('div');layer.className='rg-layer';layer.id='rotaryGuardLayer';const placements=new Map(layout.placements.map(p=>[p.id,p]));
+  layer.dataset.debugDetents=String(new URLSearchParams(location.search).get('debugDetents')==='1');
   for(const c of [...registry.rotaries,...registry.guards]){const p=points.mapPoint(c,placements.get(c.placementId)),node=c.kind==='rotary'?rotary(c,p):guarded(c,p);widgets.set(c.id,node);layer.append(node);render(c);}
+  for(const c of registry.rotaries)if(c.legendAreas)mountLegendTargets(c,placements.get(c.placementId));
   layer.classList.toggle('hidden',!byId('toggleVisibility').checked);byId('atlasAbsolute').append(layer);interlocks();
   byId('resetToggles').addEventListener('click',()=>{engine.reset();interlocks();persist();});
   byId('toggleVisibility').addEventListener('change',e=>layer.classList.toggle('hidden',!e.target.checked));

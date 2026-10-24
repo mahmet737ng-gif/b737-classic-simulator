@@ -8,6 +8,29 @@
  }
  function angle(c,value){return c.mode==='continuous'?c.angleMin+(value-c.min)/(c.max-c.min)*(c.angleMax-c.angleMin):detentAngles(c)[c.states.indexOf(value)];}
  function nearest(c,degrees){const a=detentAngles(c);let index=0;for(let i=1;i<a.length;i++)if(Math.abs(a[i]-degrees)<Math.abs(a[index]-degrees))index=i;return c.states[index];}
+ // Legend outlines are defined in immutable source-image pixels, not viewport CSS pixels.
+ // Map every vertex through the same locked atlas placement transform as the knob.
+ function legendHotspots(c,placement,mapPoint){
+  return Object.entries(c.legendAreas||{}).map(([state,outline])=>{
+   const points=outline.map(sourcePoint=>{const {x,y}=mapPoint({...c,sourcePoint,bezelSourceDiameter:0},placement);return [x,y];});
+   const xs=points.map(p=>p[0]),ys=points.map(p=>p[1]);
+   const left=Math.min(...xs),top=Math.min(...ys),width=Math.max(...xs)-left,height=Math.max(...ys)-top;
+   return {control:c.id,state,points,left,top,width,height,
+    clipPath:'polygon('+points.map(([x,y])=>((x-left)/width*100).toFixed(4)+'% '+((y-top)/height*100).toFixed(4)+'%').join(',')+')'};
+  });
+ }
+ function outlinesOverlap(a,b){
+  const xs=p=>p.map(v=>v[0]),ys=p=>p.map(v=>v[1]);
+  if(Math.max(...xs(a))<Math.min(...xs(b))||Math.max(...xs(b))<Math.min(...xs(a))||Math.max(...ys(a))<Math.min(...ys(b))||Math.max(...ys(b))<Math.min(...ys(a)))return false;
+  const cross=(p,q,r)=>(q[0]-p[0])*(r[1]-p[1])-(q[1]-p[1])*(r[0]-p[0]);
+  const on=(p,q,r)=>Math.abs(cross(p,q,r))<1e-7&&r[0]>=Math.min(p[0],q[0])&&r[0]<=Math.max(p[0],q[0])&&r[1]>=Math.min(p[1],q[1])&&r[1]<=Math.max(p[1],q[1]);
+  for(let i=0;i<a.length;i++)for(let j=0;j<b.length;j++){
+   const p=a[i],q=a[(i+1)%a.length],r=b[j],s=b[(j+1)%b.length],c1=cross(p,q,r),c2=cross(p,q,s),c3=cross(r,s,p),c4=cross(r,s,q);
+   if(c1*c2<0&&c3*c4<0||on(p,q,r)||on(p,q,s)||on(r,s,p)||on(r,s,q))return true;
+  }
+  const inside=(point,outline)=>outline.reduce((hit,p,i)=>{const q=outline[(i+outline.length-1)%outline.length];return ((p[1]>point[1])!==(q[1]>point[1]))&&point[0]<(q[0]-p[0])*(point[1]-p[1])/(q[1]-p[1])+p[0]?!hit:hit;},false);
+  return inside(a[0],b)||inside(b[0],a);
+ }
  function normalize(c,value){
   if(c.mode!=='continuous')return c.states.includes(value)?value:c.default;
   if(typeof value!=='number'||!Number.isFinite(value))return c.default;
@@ -16,6 +39,7 @@
  }
  function validate(registry,layout,mapPoint){
   const ids=new Set(),slots=new Map(layout.placements.map(p=>[p.id,p]));
+  const hitAreasByPanel=new Map();
   for(const c of [...registry.rotaries,...registry.guards]){
    if(ids.has(c.id))throw Error('Duplicate rotary/guard: '+c.id);ids.add(c.id);
    if(!slots.has(c.placementId))throw Error('Unknown plate: '+c.id);mapPoint(c,slots.get(c.placementId));
@@ -26,6 +50,21 @@
      if(!c.states.includes(c.default)||c.states.length!==a.length||a.some((v,i)=>!Number.isFinite(v)||(i&&v<=a[i-1])))throw Error('Invalid rotary detents: '+c.id);
      if(c.panelMarks&&(!Array.isArray(c.panelPivot)||c.panelPivot.length!==2||c.panelPivot.some(v=>!Number.isFinite(v))||c.panelMarks.some(p=>!Array.isArray(p)||p.length!==2||p.some(v=>!Number.isFinite(v)))))throw Error('Invalid calibration marks: '+c.id);
      if(c.panelMarks&&c.angles.some((v,i)=>Math.abs(v-a[i])>.6))throw Error('Stale detent calibration: '+c.id);
+    }
+    if(c.legendAreas){
+     if(c.mode!=='detent'||Object.keys(c.legendAreas).length!==c.states.length||c.states.some(s=>!Object.hasOwn(c.legendAreas,s)))throw Error('Unmapped legend detents: '+c.id);
+     const [sw,sh]=slots.get(c.placementId).sourceDimensions;
+     for(const [state,polygon] of Object.entries(c.legendAreas)){
+      if(!Array.isArray(polygon)||polygon.length<3||polygon.length>16||polygon.some(v=>!Array.isArray(v)||v.length!==2||v.some(n=>!Number.isFinite(n)))||polygon.some(([x,y])=>x<0||y<0||x>sw||y>sh))throw Error('Invalid legend outline: '+c.id+' / '+state);
+      const area=Math.abs(polygon.reduce((total,[x,y],i)=>{const [nx,ny]=polygon[(i+1)%polygon.length];return total+x*ny-nx*y;},0)/2);
+      if(area<25)throw Error('Degenerate legend outline: '+c.id+' / '+state);
+     }
+     const collection=hitAreasByPanel.get(c.placementId)||[];
+     for(const hit of legendHotspots(c,slots.get(c.placementId),mapPoint)){
+      if(hit.width<=0||hit.height<=0||collection.some(previous=>outlinesOverlap(previous.points,hit.points)))throw Error('Overlapping legend hitboxes: '+c.id+' / '+hit.state);
+      collection.push(hit);
+     }
+     hitAreasByPanel.set(c.placementId,collection);
     }
    }else if(!c.states.includes(c.default.value)||(!c.closePolicy.preserve&&!c.states.includes(c.closePolicy.force)))throw Error('Missing per-control guard policy: '+c.id);
   }
@@ -78,5 +117,5 @@
   }
   return {setRotary,stepRotary,turnRotary,cycleRotary,guardAction,reset,rotary:id=>state.rotaries[id],guard:id=>copy(state.guards[id]),angle:id=>angle(rotaries.get(id),state.rotaries[id]),snapshot:()=>copy(state)};
  }
- return Object.freeze({angle,detentAngles,nearest,normalize,validate,controller});
+ return Object.freeze({angle,detentAngles,nearest,legendHotspots,outlinesOverlap,normalize,validate,controller});
 });
