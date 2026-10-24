@@ -1,12 +1,10 @@
 {
   "schema": "B737-LIGHTS-UNIFIED-V2",
-  "version": "LGT-0016",
+  "version": "LGT-0013",
   "source": "LIGHTS unique active legend registry",
   "reference": [
     "LOW_PRESSURE_AMBER_REF",
-    "R_ELEV_PITOT_AMBER_REF",
-    "ALIGN_WHITE",
-    "A_T_LIM_WHITE"
+    "R_ELEV_PITOT_AMBER_REF"
   ],
   "palette": {
     "amber": {
