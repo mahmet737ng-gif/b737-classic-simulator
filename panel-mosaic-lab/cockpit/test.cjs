@@ -8,8 +8,9 @@ const html=fs.readFileSync(path.join(__dirname,'overhead-stage.html'),'utf8');fo
 const unified=fs.readFileSync(path.join(__dirname,'index.html'),'utf8');
 for(const marker of ['id="unifiedLightsOpen"','id="unifiedLightsDialog"','id="unifiedLightSearch"','unified-lights.js?v=CKP-0007','../lights-test/asset-model.js?v=LGT-0007'])assert.ok(unified.includes(marker),'Unified annunciator testing: '+marker);
 const assetModel=require('../lights-test/asset-model'),gallery=JSON.parse(fs.readFileSync(path.join(__dirname,'../lights-test/registry.json')));
-assert.ok(gallery.lights.length>=86,'Unified must load the expanding LIGHTS catalogue');
+assert.ok(gallery.lights.length>=87,'Unified must load the expanding LIGHTS catalogue');
 const atLim=gallery.lights.find(c=>c.id==='A_T_LIM_WHITE');assert.deepEqual(atLim?.lines,['A/T LIM']);assert.deepEqual(atLim.states,['OFF','ON']);assert.deepEqual(atLim.face,{width:600,height:300});
+const align=gallery.lights.find(c=>c.id==='ALIGN_WHITE');assert.deepEqual(align?.lines,['ALIGN']);assert.deepEqual(align.states,['OFF','ON']);assert.deepEqual(align.face,{width:600,height:300});assert.equal(align.assets.ON,'ALIGN_WHITE_ON.svg');
 for(const id of ['SPEED_BRAKE_ARMED_GREEN','SPEED_BRAKE_DO_NOT_ARMED_AMBER'])assert.ok(gallery.lights.some(c=>c.id===id),id);
 const stab=gallery.lights.find(c=>c.id==='STAB_OUT_OF_TRIM');assert.deepEqual(stab.face,{width:300,height:300});
 assert.equal(stab.assets.ON,'STAB_OUT_OF_TRIM_FIT_ON.svg');

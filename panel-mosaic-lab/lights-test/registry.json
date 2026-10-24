@@ -1,10 +1,31 @@
 {
   "schema": "b737-annunciator-assets.v1",
-  "version": "LGT-0008",
+  "version": "LGT-0009",
   "assetDirectory": "../assets/locked/2026-10-23/LIGHTS/",
   "testMode": "manual-asset-visual-qa",
   "note": "Stable IDs for the owner-approved light designs. This registry does not assign physical coordinates or certify aircraft logic.",
   "lights": [
+    {
+      "id": "ALIGN_WHITE",
+      "lines": [
+        "ALIGN"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "ALIGN_WHITE_OFF.svg",
+        "ON": "ALIGN_WHITE_ON.svg"
+      },
+      "scope": "ASSET_TEST_ONLY"
+    },
     {
       "id": "A_T_LIM_WHITE",
       "lines": [
