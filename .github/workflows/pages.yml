@@ -44,6 +44,7 @@ jobs:
           node panel-mosaic-lab/cockpit/cabin-dual-needles.test.cjs
           node panel-mosaic-lab/cockpit/cabin-rate-needle.test.cjs
           node panel-mosaic-lab/cockpit/cabin-temperature-needle.test.cjs
+          node panel-mosaic-lab/cockpit/duct-pressure-needles.test.cjs
           node panel-mosaic-lab/cockpit/flap-needles.test.cjs
           node panel-mosaic-lab/cockpit/fuel-temperature-needle.test.cjs
           node panel-mosaic-lab/cockpit/performance.test.cjs

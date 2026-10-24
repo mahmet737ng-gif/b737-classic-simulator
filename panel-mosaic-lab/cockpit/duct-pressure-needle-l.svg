@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="Left duct pressure needle, upper layer">
+  <title>DUCT PRESSURE L</title>
+  <desc>Thick white forward pointer and black labeled counterweight behind the common pivot.</desc>
+  <defs><linearGradient id="whiteFaceL" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#a8a8a2"/><stop offset=".18" stop-color="#fffefa"/><stop offset=".72" stop-color="#f3f2eb"/><stop offset="1" stop-color="#a5a49d"/></linearGradient></defs>
+  <path d="M245 250 L267 250 L276 285 L273 340 Q270 356 256 359 Q242 356 239 340 L236 285 Z" fill="#101111" stroke="#deddd5" stroke-width="2.4" stroke-linejoin="round"/>
+  <path d="M253 36 L259 36 L264 104 L269 173 L274 234 Q275 248 266 257 L246 257 Q237 248 238 234 L243 173 L248 104 Z" fill="url(#whiteFaceL)" stroke="#252522" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M250 92 L245 226" stroke="#ffffff" stroke-width="1.5" opacity=".7"/>
+  <circle cx="256" cy="256" r="14" fill="#151616" stroke="#f1f0e8" stroke-width="2.5"/>
+  <text x="256" y="322" fill="#f7f6ef" font-family="Arial, sans-serif" font-size="48" font-weight="900" text-anchor="middle">L</text>
+</svg>

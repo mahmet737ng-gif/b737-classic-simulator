@@ -399,3 +399,14 @@ the whole panel box. Default visual indication is 20°C. The six printed
 temperature marks define a visual interpolation only; no aircraft temperature
 signal is connected. Regression:
 `node panel-mosaic-lab/cockpit/cabin-temperature-needle.test.cjs`.
+
+## DPN-0001 — two duct-pressure pointers
+
+The OH21 pressure indicator has independent R and L pointers sharing the
+locked source-image pivot (544, 439). Both have a thick white forward blade
+and a black labeled counterweight behind the pivot. R is drawn first, L above
+it. Both initially indicate zero and fully overlap there; separate visual-test
+sliders can reveal either pointer. The 0–100 PSI angular mapping follows the
+printed dial and is not yet connected to the bleed-air system. The OH21 source
+artwork remains unchanged. Regression:
+`node panel-mosaic-lab/cockpit/duct-pressure-needles.test.cjs`.

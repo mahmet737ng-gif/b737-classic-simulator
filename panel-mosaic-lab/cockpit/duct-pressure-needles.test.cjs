@@ -1,0 +1,29 @@
+'use strict';
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const path=require('node:path');
+const model=require('./duct-pressure-needles-model');
+const atlas=JSON.parse(fs.readFileSync(path.join(__dirname,'../all-overhead/atlas-layout.json'),'utf8'));
+const oh21=atlas.placements.find(piece=>piece.id===model.source.piece);
+assert.ok(oh21);assert.deepEqual(oh21.sourceDimensions,[model.source.width,model.source.height]);
+assert.deepEqual(model.pivot,{x:544,y:439});
+assert.deepEqual(model.needles.map(needle=>needle.id),['R','L']);
+assert.deepEqual(model.needles.map(needle=>needle.layer),[0,1]);
+assert.deepEqual(model.needles.map(needle=>needle.initialPsi),[0,0]);
+assert.equal(model.bearing('L',0),-150);assert.equal(model.bearing('R',100),150);
+assert.equal(model.psi('L',200),100);assert.equal(model.psi('R',-10),0);
+assert.throws(()=>model.psi('X',30));assert.throws(()=>model.psi('L',NaN));
+const pos=model.placement(oh21);assert.ok(pos.x>oh21.x&&pos.x<oh21.x+oh21.w);assert.ok(pos.y>oh21.y&&pos.y<oh21.y+oh21.h);
+for(const needle of model.needles){
+ const asset=fs.readFileSync(path.join(__dirname,needle.asset),'utf8');
+ assert.match(asset,/viewBox="0 0 512 512"/);assert.match(asset,new RegExp('DUCT PRESSURE '+needle.id));
+ assert.match(asset,/fill="#101111"/);assert.match(asset,/whiteFace/);assert.doesNotMatch(asset,/<image/);
+}
+const ui=fs.readFileSync(path.join(__dirname,'duct-pressure-needles-unified.js'),'utf8');
+assert.ok(ui.includes('for(const needle of model.needles)'));
+assert.ok(ui.includes('window.B737UnifiedDuctPressureNeedles'));
+assert.ok(ui.includes('model.bearing(id,state[id])'));
+const html=fs.readFileSync(path.join(__dirname,'index.html'),'utf8');
+assert.ok(html.includes('duct-pressure-needles-model.js?v=DPN-0001'));
+assert.ok(html.includes('duct-pressure-needles-unified.js?v=DPN-0001'));
+console.log('PASS: OH21 DUCT PRESSURE has independent R-under-L pointers, black labeled tails and white forward blades.');
