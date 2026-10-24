@@ -1,5 +1,27 @@
 # Unified cockpit — CKP-0012
 
+## FLP-0001 — approved double flap needle in Unified
+
+The Boeing 737 Classic F/O inner/gear panel's existing blank FLAPS gauge now
+receives an independent SVG needle pair, mounted over the unchanged approved
+panel source. Both needles pivot on the same precisely anchored location.
+The **R needle is always underneath L** in SVG paint order; when both angles
+are equal, R is fully hidden, including the R legend. When independent
+positions differ, the underlying R needle becomes visible. The vector
+calibration uses the gauge's UP/1/2/5/10/15/25/30/40 marks, and smoothly
+interpolates between them without changing the panel background.
+
+Normal operation mirrors the existing `trailingFlaps` common sensor input to
+both needles. The Unified inspector exposes independent L/R visual tests,
+plus a button to restore common-sensor following. External simulator systems
+can deliver independently measured values via the `b737:flap-positions`
+event or `B737FlapNeedles.setPositions({left,right})`. The overlay does not
+invent or activate an operational FLAP SPLIT warning threshold; this remains
+the responsibility of the documented flap-sensing system. `flap-needles.test.cjs`
+verifies the renderer's ordering contract, position mapping and integration.
+
+No frozen `all-overhead` image, source, lock or layout file was modified.
+
 ## CKP-0005 / LGT-0007 — STAB socket fit and SPEED BRAKE mounting
 
 The owner's Unified route now mounts the two already-existing SVG speed-brake
