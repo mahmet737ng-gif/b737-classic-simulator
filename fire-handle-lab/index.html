@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#101920">
+<title>B737 Classic | FIRE HANDLE Rotation Lab</title>
+<style>
+:root{--bg:#10161c;--panel:#1d2831;--edge:#3d505a;--ink:#e8f2f4;--muted:#adc0c8;--cyan:#74bfd1}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:var(--bg);color:var(--ink);font:14px/1.65 Tahoma,'Segoe UI',system-ui,sans-serif}
+header{padding:18px max(15px,calc((100vw - 1230px)/2));border-bottom:1px solid var(--edge);background:#152029}
+h1{margin:0;font-size:22px}header p{margin:4px 0 0;color:var(--muted);font-size:12px}main{max-width:1260px;margin:auto;padding:16px}
+.toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-bottom:16px;font-size:12px}.toolbar a{color:#a3d9e6}.toolbar span{margin-inline-start:auto;color:#9db5be}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.card{background:var(--panel);border:1px solid var(--edge);border-radius:12px;padding:14px;min-width:0;overflow:hidden}
+.card h2{margin:0;font:800 20px/1.3 system-ui,Tahoma,sans-serif;direction:ltr;text-align:center}.card .sub{text-align:center;color:var(--muted);font:11px/1.6 ui-monospace,Consolas,monospace;direction:ltr}
+.stage{height:340px;border:1px solid #46515a;border-radius:10px;margin:12px auto;background:radial-gradient(ellipse at center,#4b4e53,#303b44 50%,#1a252e 95%);display:grid;place-items:center;overflow:hidden;touch-action:pan-y;position:relative}
+.rotor{width:145px;height:217.5px;position:relative;transform:rotate(var(--rotation,0deg));transform-origin:50% 50%;transition:transform 330ms cubic-bezier(.18,.75,.24,1);will-change:transform;touch-action:none;cursor:grab;user-select:none}
+.rotor img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;pointer-events:none;user-select:none;opacity:0;transition:opacity 180ms ease;image-rendering:auto;filter:drop-shadow(0 6px 5px #07090966)}.rotor img.active{opacity:1}
+.stage .angle{position:absolute;bottom:11px;left:12px;color:#dbf0f6;background:#14222aab;border:1px solid #556770;padding:2px 8px;border-radius:7px;font:12px ui-monospace,Consolas,monospace;direction:ltr}
+.controls{display:grid;gap:8px}.controls .group{display:flex;justify-content:center;gap:6px;flex-wrap:wrap}button{color:var(--ink);background:#273640;border:1px solid #56707b;border-radius:6px;padding:9px 12px;cursor:pointer;font:600 12px Tahoma,system-ui,sans-serif;min-height:40px;min-width:72px}
+button:hover{background:#34505d}button[aria-pressed="true"]{background:#176781;border-color:#83d9f1;box-shadow:inset 0 0 0 1px #8ee8fd;color:#fff}button:focus-visible{outline:2px solid #ffe39e;outline-offset:2px}
+.light-button[data-on="ON"]{border-color:#f25e4a;color:#ffdcce;background:#7d2426}.light-button[data-on="OFF"]{border-color:#65777f}
+.caption{font-size:11px;color:#aec3cc;text-align:center;margin:10px 0 0}.foot{border-top:1px solid var(--edge);padding-top:12px;color:#afc6d0;margin-top:16px;font-size:12px}
+.foot code{direction:ltr;unicode-bidi:embed;color:#c0e2cc}.api{background:#09161f;border-radius:7px;padding:12px;color:#a8e5be;direction:ltr;text-align:left;overflow:auto;white-space:pre-wrap;font:11px/1.6 Consolas,monospace;max-height:180px}
+@media(max-width:850px){.grid{grid-template-columns:1fr}.stage{height:320px}.rotor{width:145px;height:217.5px}.card{max-width:470px;width:100%;margin:auto}}@media(prefers-reduced-motion:reduce){.rotor,.rotor img{transition:none}}
+</style>
+</head>
+<body>
+<header><h1>FIRE HANDLE · Rotation Test</h1><p>سه هندل مستقل B737 Classic؛ ۴۵ درجه چپ، مستقیم، ۴۵ درجه راست؛ تغییر نور ON/OFF بدون تغییر تصویر اصلی.</p></header>
+<main>
+<div class="toolbar"><a href="../panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_manifest.json" target="_blank" rel="noopener">مشاهده فایل‌های اصلی و شناسه‌ها</a><a href="./rotation-manifest.json" target="_blank" rel="noopener">مشخصات ۱۸ حالت</a><button type="button" id="reset-all">بازنشانی هر سه</button><span>Visual preview only · v1.0</span></div>
+<div class="grid" id="cards"></div>
+<section class="foot"><p><strong>مکانیزم:</strong> چرخش دقیق و انیمیشن روان حول مرکز هندل؛ تصویر و هاله نور اصلی دست‌نخورده می‌مانند. این تست فقط ظاهر را تغییر می‌دهد و هیچ فرمانی برای فعال‌سازی اطفای حریق ارسال نمی‌کند.</p>
+<p>برای توسعهٔ آینده، هر تغییر با رویداد <code>b737:fire-handle-visual-change</code> منتشر می‌شود. وضعیت هندل فعلاً <code>IN</code> است؛ مکانیزم بیرون‌کشیدن و اینترلاک سیستم جدا تعریف می‌شود.</p>
+<div class="api" id="state-dump" aria-live="polite">Loading 18 visual states…</div></section>
+</main>
+<script src="./engine.js"></script>
+<script>
+(function(){
+'use strict';
+const api=window.B737FireHandleRotation;
+if(!api){document.querySelector('#state-dump').textContent='Engine failed to load';return;}
+const handles=new Map(), cards=document.getElementById('cards');
+function render(unit){
+ const obj=handles.get(unit),s=obj.controller.getState(),el=obj.element;
+ el.querySelector('.rotor').style.setProperty('--rotation',s.angle_deg+'deg');
+ for(const light of api.LIGHTS)el.querySelector('img[data-light="'+light+'"]').classList.toggle('active',s.light===light);
+ el.querySelector('.angle').textContent=(s.angle_deg>0?'+':'')+s.angle_deg+'°  /  '+s.light;
+ el.querySelectorAll('[data-angle]').forEach(x=>x.setAttribute('aria-pressed',String(Number(x.dataset.angle)===s.angle_deg)));
+ const lamp=el.querySelector('.light-button');lamp.dataset.on=s.light;lamp.setAttribute('aria-pressed',String(s.light==='ON'));lamp.textContent='LIGHT: '+s.light;
+ const states=Array.from(handles.values()).map(x=>x.controller.getState());
+ document.getElementById('state-dump').textContent=JSON.stringify(states.map(x=>({unit:x.unit,angle_deg:x.angle_deg,light:x.light,handle_position:x.handle_position,discharge_command:x.discharge_command})),null,2);
+}
+for(const unit of api.UNITS){
+ const node=document.createElement('article');node.className='card';node.setAttribute('data-unit',unit);
+ node.innerHTML='<h2>'+unit+'</h2><div class="sub">FIRE HANDEL · IN</div><div class="stage"><div class="rotor" tabindex="0" role="group" aria-label="Rotate '+unit+' handle">'+
+ api.LIGHTS.map(light=>'<img data-light="'+light+'" src="'+api.selectAsset(unit,light)+'" alt="" draggable="false">').join('')+
+ '</div><span class="angle">0° / OFF</span></div><div class="controls"><div class="group"><button data-angle="-45" aria-pressed="false" type="button">↶ LEFT −45°</button><button data-angle="0" aria-pressed="true" type="button">CENTER 0°</button><button data-angle="45" aria-pressed="false" type="button">RIGHT +45° ↷</button></div><div class="group"><button type="button" class="light-button" data-on="OFF" aria-pressed="false">LIGHT: OFF</button></div></div><p class="caption">Use buttons, drag the handle, or keyboard arrow keys</p>';
+ cards.appendChild(node);
+ const ctl=api.controller(unit,{light:'OFF',angle_deg:0});handles.set(unit,{element:node,controller:ctl});
+ ctl.subscribe(()=>render(unit));
+ node.querySelectorAll('[data-angle]').forEach(b=>b.addEventListener('click',()=>ctl.setAngle(Number(b.dataset.angle))));
+ node.querySelector('.light-button').addEventListener('click',()=>ctl.setLight(ctl.getState().light==='ON'?'OFF':'ON'));
+ const rotor=node.querySelector('.rotor');let start=null;
+ rotor.addEventListener('pointerdown',e=>{start={x:e.clientX};rotor.setPointerCapture(e.pointerId)});
+ rotor.addEventListener('pointerup',e=>{if(!start)return;const dx=e.clientX-start.x;if(Math.abs(dx)>18)ctl.setAngle(dx>0?45:-45);start=null});
+ rotor.addEventListener('pointercancel',()=>start=null);
+ rotor.addEventListener('keydown',e=>{const current=ctl.getState().angle_deg;if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();const k=api.ANGLES.indexOf(current)+(e.key==='ArrowRight'?1:-1);ctl.setAngle(api.ANGLES[Math.max(0,Math.min(2,k))]);} else if(e.key==='Home'){e.preventDefault();ctl.setAngle(0)} else if(e.key==='Enter'||e.key===' '){e.preventDefault();ctl.setLight(ctl.getState().light==='ON'?'OFF':'ON')}});
+ render(unit);
+}
+document.getElementById('reset-all').onclick=()=>{handles.forEach(h=>h.controller.reset());handles.forEach((_,key)=>render(key))};
+window.B737FireHandleLab={all:()=>Array.from(handles.values()).map(v=>v.controller.getState()),handles};
+})();
+</script>
+</body></html>

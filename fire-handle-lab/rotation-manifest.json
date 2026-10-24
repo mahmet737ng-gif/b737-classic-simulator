@@ -1,0 +1,78 @@
+{
+  "schema_version": "1.0.0",
+  "id": "B737-FIRE-HANDLE-ROTATION-V1",
+  "purpose": "18 visual fire-handle states from six immutable accepted image assets",
+  "source_assets": [
+    {
+      "unit": "APU",
+      "light": "ON",
+      "source_asset": "../panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_APU_ON.webp",
+      "source_sha256": "3802fb498ed61d6d455c7a0f4d66fe83b7b1e004056f43a66ae61db5f833221f"
+    },
+    {
+      "unit": "APU",
+      "light": "OFF",
+      "source_asset": "../panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_APU_OFF.webp",
+      "source_sha256": "a5ee96933c71f39af1a15e40d89b5d784b28711ba7a2c2eda20dc1efa1f5b8f6"
+    },
+    {
+      "unit": "ENG1",
+      "light": "ON",
+      "source_asset": "../panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_ENG1_ON.webp",
+      "source_sha256": "1446c0acaad89b8669e90da0e7eabceb6fcde0bc7acfa17474336201426d645f"
+    },
+    {
+      "unit": "ENG1",
+      "light": "OFF",
+      "source_asset": "../panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_ENG1_OFF.webp",
+      "source_sha256": "25e6f1dba39bc0bdfc18ad748afa4332327166cad95c8cc6a523cb07a673e483"
+    },
+    {
+      "unit": "ENG2",
+      "light": "ON",
+      "source_asset": "../panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_ENG2_ON.webp",
+      "source_sha256": "dd5f67fd50955623a52da44197d59e4e0fd39a910575341938060f480f5703bb"
+    },
+    {
+      "unit": "ENG2",
+      "light": "OFF",
+      "source_asset": "../panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_ENG2_OFF.webp",
+      "source_sha256": "d1a2676302a026cc141244b489521163597ae6b13d80e08395cb5483e2c26252"
+    }
+  ],
+  "axis": {
+    "css_transform_origin": "50% 50%",
+    "description": "center of the normalized 1024x1536 transparent source canvas"
+  },
+  "detents": [
+    {
+      "key": "LEFT",
+      "degrees": -45
+    },
+    {
+      "key": "CENTER",
+      "degrees": 0
+    },
+    {
+      "key": "RIGHT",
+      "degrees": 45
+    }
+  ],
+  "rendering": {
+    "image_transform": "rotate(<degrees>deg)",
+    "no_distortion": true,
+    "animation_duration_ms": 330,
+    "light_mode": "select the approved ON or OFF source image before applying rotation",
+    "do_not_bake_duplicate_rotated_images": true
+  },
+  "logic": {
+    "mode": "visual-test-only",
+    "handle_position": "IN",
+    "external_fire_system_commands": false,
+    "pull_interlock_not_yet_implemented": true
+  },
+  "engine": "./engine.js",
+  "test_page": "./index.html",
+  "automated_tests": "./tests/engine.test.cjs",
+  "version": "1.0.0"
+}
