@@ -12,15 +12,16 @@
   'horizontal-right':{w:220,h:220,x:114,y:121,diameter:144}
  };
  let registry,engine,active=null,layer;
- const nodes=new Map();
+ const nodes=new Map(),interlocks=new Map();
  function persist(){try{localStorage.setItem(STORAGE,JSON.stringify(engine.snapshot()));}catch{}}
  function frameKeys(c){return c.axis==='horizontal'?['horizontal-left','horizontal-center','horizontal-right']:c.states.length===2?['vertical-off','vertical-on']:['vertical-off','vertical-center','vertical-on'];}
  function refreshOne(c){
   const button=nodes.get(c.id);if(!button)return;
   const value=engine.get(c.id),index=c.states.indexOf(value);
+  button.setAttribute('aria-disabled',String(interlocks.get(c.id)===false));
   button.dataset.state=value;button.setAttribute('aria-valuenow',String(index));button.setAttribute('aria-valuetext',value);button.setAttribute('aria-label',c.label+' — '+value);
   button.querySelectorAll('.toggle-frame').forEach((img,i)=>img.classList.toggle('active',i===index));
-  if(active===c.id){byId('toggleState').textContent=value;for(const b of byId('toggleStates').children)b.classList.toggle('active',b.dataset.state===value);}
+  if(active===c.id){byId('toggleState').textContent=value;for(const b of byId('toggleStates').children){b.classList.toggle('active',b.dataset.state===value);b.disabled=interlocks.get(c.id)===false;}}
  }
  function select(c){
   if(active===c.id)return;
@@ -97,7 +98,7 @@
   byId('resetToggles').onclick=()=>{engine.releaseAll();engine.reset();persist();byId('toggleState').textContent='RESET';};
   select(registry.controls.find(c=>c.id==='vhf-nav'));
   persist();
-  window.B737OverheadToggles=Object.freeze({getState:()=>engine.snapshot(),getRegistry:()=>JSON.parse(JSON.stringify(registry)),baseVersion:registry.baseVersion});
+  window.B737OverheadToggles=Object.freeze({getState:()=>engine.snapshot(),getRegistry:()=>JSON.parse(JSON.stringify(registry)),baseVersion:registry.baseVersion,setInterlock:(id,enabled)=>{interlocks.set(id,!!enabled);if(!enabled)engine.release(id);const c=registry.controls.find(c=>c.id===id);if(c)refreshOne(c);}});
   window.addEventListener('blur',()=>engine.releaseAll());
   document.addEventListener('visibilitychange',()=>{if(document.hidden)engine.releaseAll();});
   requestAnimationFrame(()=>{const scale=byId('board').getBoundingClientRect().width/layout.canvas.width;byId('viewport').scrollTop=layout.firstLowerRowY*scale;});
@@ -107,7 +108,7 @@
    const [rr,lr]=await Promise.all([fetch(localURL('registry.json'),{cache:'no-store'}),fetch(localURL('../all-overhead/atlas-layout.json'),{cache:'no-store'})]);
    if(!rr.ok||!lr.ok)throw Error('Toggle metadata unavailable');registry=await rr.json();const layout=await lr.json();model.validate(registry,layout);
    let saved={};try{saved=JSON.parse(localStorage.getItem(STORAGE)||'{}')||{};}catch{}
-   engine=model.controller(registry,saved,event=>{const c=registry.controls.find(c=>c.id===event.id);refreshOne(c);persist();window.dispatchEvent(new CustomEvent('b737:switch-change',{detail:{...event,timestamp:new Date().toISOString()}}));});
+   engine=model.controller(registry,saved,event=>{const c=registry.controls.find(c=>c.id===event.id);refreshOne(c);persist();window.dispatchEvent(new CustomEvent('b737:switch-change',{detail:{...event,timestamp:new Date().toISOString()}}));},id=>interlocks.get(id)!==false);
    const root=byId('atlasAbsolute');
    if(root.querySelector('.atlas-piece'))mount(layout);
    else{const observer=new MutationObserver(()=>{if(root.querySelector('.atlas-piece')){observer.disconnect();mount(layout);}});observer.observe(root,{childList:true});}
