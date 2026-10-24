@@ -65,6 +65,6 @@ const flapManifest=JSON.parse(fs.readFileSync(path.join(__dirname,'flap-lever-te
 assert.deepEqual(flapManifest.detents.map(d=>d.value),[0,1,2,5,10,15,25,30,40]);
 assert.equal(flapManifest.image.frameWidth*flapManifest.image.frameCount,flapManifest.image.width);
 assert.equal(flapManifest.controls.mode,'visual-test-only','No unverified physical flap motion coupling');
-assert.ok(unified.includes('flap-lever-test.js?v=FLAP-BMP-0001'));
-assert.ok(unified.includes('flap-lever-test.css?v=FLAP-BMP-0001'));
+assert.ok(unified.includes('flap-lever-test.js?v=FLAP-BMP-0003'));
+assert.ok(unified.includes('flap-lever-test.css?v=FLAP-BMP-0003'));
 console.log('PASS: exact owner nine-BMP flap sprite archived and visual-only nine-detent Unified overlay registered.');
