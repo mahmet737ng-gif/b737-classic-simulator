@@ -37,6 +37,15 @@ jobs:
         run: |
           node panel-mosaic-lab/cockpit/test.cjs
           node panel-mosaic-lab/cockpit/lights.test.cjs
+          node tests/aircraft-profile-v1.test.cjs
+          node tests/isn-electrical-pack-v1.test.cjs
+          node tests/isn-cockpit-bridge-v1.test.cjs
+          node tests/isn-overhead-transport-v1.test.cjs
+          node --check panel-mosaic-lab/cockpit/isn-cockpit.js
+          node --check panel-mosaic-lab/cockpit/overhead-bridge.js
+          node --check isn-electrical-pack-lab/app.js
+          node tools/build-isn-standalone.mjs
+          git diff --exit-code -- isn-electrical-pack-lab/standalone.html
           node panel-mosaic-lab/cockpit/cdu.test.cjs
       - name: Verify demo scripts and model
         run: npm test

@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>B737 Classic · ISN Pack 01 · Electrical Consumers</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <header>
+    <div><small>INTEGRATED SYSTEMS NETWORK · PACK 01</small><h1>Electrical <span>→</span> Fuel / Hydraulic / Warning</h1><p>شبکه اجرایی آموزشی با منشأ هر ارتباط، وضعیت UNKNOWN و ردگیری تغییرات</p></div>
+    <div class="head-actions"><a href="../panel-mosaic-lab/cockpit/">↩ بازگشت به Unified</a><button id="reset">بازنشانی</button></div>
+  </header>
+  <div class="notice"><b>مرز اعتبارسنجی:</b> اتصال دقیق پمپ‌ها به Bus هنوز مستند نیست. حالت Source-Gated رابطه‌ای را حدس نمی‌زند. حالت Surrogate فقط برای تست زنجیره آموزشی است و هر خروجی آن علامت‌گذاری می‌شود.</div>
+  <main>
+    <section class="card power">
+      <h2>۱. منابع برق و خطاها</h2>
+      <div class="actions"><button id="mode" class="mode" aria-pressed="false">فعال‌سازی نگاشت آموزشی Surrogate</button><b id="modeBadge">SOURCE-GATED</b></div>
+      <p class="help">تا زمانی که منبع مدار هر پمپ تأیید نشده، نتیجهٔ تغذیه آن UNKNOWN می‌ماند.</p>
+      <div class="buttons"><label><input id="busTransfer" type="checkbox" checked> BUS TRANSFER AUTO</label><label><input id="gen1Fault" type="checkbox"> GEN 1 FAILED</label><label><input id="gen2Fault" type="checkbox"> GEN 2 FAILED</label></div>
+      <h3>وضعیت Busها</h3><div id="buses" class="bus-grid"></div>
+      <p id="powerQa" class="help"></p>
+    </section>
+    <section class="card consumers">
+      <h2>۲. Fuel Pumps و Hydraulic Electric Pumps</h2>
+      <div class="scroll-table"><table><thead><tr><th>مصرف‌کننده</th><th>سوییچ</th><th>خرابی آموزشی</th><th>تغذیه مشاهده‌شده</th><th>عملکرد</th><th>LOW PRESSURE</th><th>منشأ اتصال</th></tr></thead><tbody id="pumps"></tbody></table></div>
+      <p class="help">مشاهدهٔ تغذیه، ورودی مستقل مدرس است و اثبات اتصال به Bus نیست. LOW PRESSURE در این بسته وضعیت گسستهٔ آموزشی است؛ فشار واقعی محاسبه نمی‌شود.</p>
+    </section>
+    <section class="card warnings">
+      <h2>۳. Warning System</h2>
+      <div class="warning-controls"><label><input id="fire1" type="checkbox"> Engine 1 Fire · تست ورودی هشدار</label><label><input id="highCabin" type="checkbox"> Cabin Altitude = 12,000 ft</label><button id="cutoutCabin">CAB ALT HORN CUTOUT</button><button id="ackFire">FIRE BELL CUTOUT</button></div>
+      <div id="warningSummary" class="warning-grid"></div><p id="warningNote" class="help"></p>
+    </section>
+    <section class="card trace">
+      <h2>۴. Event Trace · ورودی → خروجی</h2>
+      <div id="eventTrace" class="events" aria-live="polite"></div>
+    </section>
+  </main>
+  <footer>FCOM refs: Electrical 6.20.1–9 · Fuel 12.10.2–3 · Hydraulic 13.10.1 · Warning 15.20. آموزشی؛ نه برای عملیات پروازی.</footer>
+  <script src="../engine/systems/electrical-v7.js" defer></script>
+  <script src="../engine/systems/electrical-loads-v8.js" defer></script>
+  <script src="../engine/trainer/core.js" defer></script>
+  <script src="../audio/warning-engine.js" defer></script>
+  <script src="../engine/integration/isn-electrical-pack-v1.js" defer></script>
+  <script src="./app.js" defer></script>
+</body>
+</html>

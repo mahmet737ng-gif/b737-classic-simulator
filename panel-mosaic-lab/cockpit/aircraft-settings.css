@@ -1,0 +1,31 @@
+.header-settings{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.aircraft-profile-header{font:600 11px/1.4 ui-monospace,Consolas,monospace;color:#a9f1db;background:#173c41;border:1px solid #3b8381;border-radius:6px;padding:8px;white-space:nowrap}
+#aircraftSettingsOpen{border-color:#4c9c91;background:#20534f;color:#e2fff5;font-weight:650}
+.aircraft-profile-summary dl{display:grid;grid-template-columns:minmax(65px,1fr) auto;gap:7px 8px;margin:10px 0}
+.aircraft-profile-summary dt{color:var(--muted)}
+.aircraft-profile-summary dd{margin:0;direction:ltr;text-align:left;font-size:11px;font-weight:700;color:#bcefe3}
+.aircraft-profile-summary .muted{font-size:11px}
+.aircraft-profile-summary .isn-pack-link{display:block;padding:8px 10px;border:1px solid #397e78;border-radius:7px;background:#163e41;color:#b8f4e6;text-align:center;font-weight:650}
+.aircraft-settings-dialog{width:min(700px,94vw);max-height:min(90vh,850px);padding:22px;direction:rtl}
+.aircraft-settings-dialog .dialog-head{align-items:flex-start}
+.aircraft-settings-dialog .dialog-head h2{font-size:20px}
+.aircraft-settings-dialog .dialog-head p,.selected-pressure-dialog .dialog-head p{margin:2px 0 10px;color:var(--muted);font-size:12px}
+.aircraft-settings-dialog fieldset{border:1px solid #35576a;border-radius:10px;padding:12px;margin:12px 0}
+.aircraft-settings-dialog legend{padding:0 8px;color:#d7eaf6;font-weight:700}
+.profile-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.profile-options label{cursor:pointer;display:flex;align-items:center;gap:10px;border:1px solid #3d5d6f;background:#162d3c;padding:14px;border-radius:9px;min-width:0}
+.profile-options label:has(input:checked){border-color:#68e1c8;background:#214c50;box-shadow:0 0 0 1px #68e1c8 inset}
+.profile-options input{accent-color:#64e0c5;width:17px;height:17px;flex-shrink:0}
+.profile-options span{display:flex;flex-direction:column;gap:4px;min-width:0}
+.profile-options b{direction:ltr;text-align:right;unicode-bidi:plaintext;font-size:13px}
+.profile-options small{font-size:11px;color:#a6c6d2;direction:ltr;text-align:right;unicode-bidi:plaintext}
+.profile-help{font-size:12px;color:#b6c8d3;background:#152c37;border-right:3px solid #5dc6be;padding:9px 12px;border-radius:6px}
+.profile-actions{display:flex;justify-content:flex-end;gap:10px;padding-top:10px}
+.profile-actions button{padding:10px 20px}
+.profile-primary{background:#1f695e;color:white;border-color:#6cd8c2;font-weight:700}
+.profile-error{color:#ffc4b2}
+.selected-pressure-dialog{width:min(1180px,97vw);height:min(92vh,900px);padding:12px;direction:rtl;overflow:hidden}
+.selected-pressure-dialog .dialog-head{margin-bottom:8px}
+.selected-pressure-dialog iframe{border:1px solid #375a6e;background:#0c1420;border-radius:7px;width:100%;height:calc(100% - 70px)}
+@media(max-width:1000px){.header-settings{margin-inline-start:auto}header nav{order:4}.aircraft-profile-header{display:none}}
+@media(max-width:540px){.profile-options{grid-template-columns:1fr}.aircraft-settings-dialog{padding:13px}.aircraft-settings-dialog fieldset{padding:9px}.header-settings button{padding:5px 9px}}

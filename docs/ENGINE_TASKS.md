@@ -1,5 +1,7 @@
 # B737 Engine Delivery Register — 2026-10-22
 
+> **ISN 2026-10-24 checkpoint:** A later, separately versioned ISN Pack 01 has user acceptance for its *standalone training preview* only. It does not mean all ENG-008/009/010 system tasks below are DONE. See [`ISN_CHECKPOINTS.md`](ISN_CHECKPOINTS.md) for the exact tested modules, unverified wiring, unpublished state and the ISN-02 next step.
+
 This ledger is used by future developers or AI agents to resume work. DO NOT mark a rule 'DONE' without commit SHA, automated test and validation evidence. Only architecture work is newly completed here.
 
 | Task | Priority | Status | Completion / acceptance evidence |

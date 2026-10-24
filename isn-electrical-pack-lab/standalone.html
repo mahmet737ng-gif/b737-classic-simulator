@@ -1,0 +1,853 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>B737 Classic · ISN Pack 01 · Electrical Consumers</title>
+  <style>
+:root{--bg:#0b141c;--panel:#152633;--line:#345363;--ink:#e1ecf3;--muted:#a0b8c9;--green:#90ead0}*{box-sizing:border-box}body{margin:0;min-height:100vh;background:var(--bg);color:var(--ink);font:14px/1.65 system-ui,Tahoma,sans-serif}button,input,select{font:inherit}button{padding:8px 12px;border:1px solid #507186;background:#254255;color:var(--ink);border-radius:7px;cursor:pointer}button:hover{background:#31596c}a{color:#a0dfec;text-decoration:none}header{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:20px 28px;background:#132732;border-bottom:1px solid var(--line)}header small{color:#78d9cc;letter-spacing:2px}header h1{font-size:23px;margin:4px 0}header h1 span{color:var(--green)}header p{margin:0;color:var(--muted)}.head-actions{display:flex;gap:12px;align-items:center}.notice{margin:18px 22px 0;border:1px solid #8b7048;background:#34291d;color:#f4d7a2;padding:12px 16px;border-radius:8px}main{padding:18px 22px;display:grid;grid-template-columns:minmax(280px,1fr) minmax(280px,1fr);gap:14px}.card{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:17px;min-width:0}.card h2{font-size:17px;margin:0 0 12px}.card h3{font-size:13px;color:var(--muted);margin:16px 0 9px}.help{color:var(--muted);font-size:12px}.power,.warnings{grid-column:auto}.consumers,.trace{grid-column:1/-1}.actions,.buttons,.warning-controls{display:flex;flex-wrap:wrap;gap:12px;align-items:center}.buttons label,.warning-controls label{display:flex;align-items:center;gap:8px;background:#1e394a;padding:8px 11px;border:1px solid #365b6b;border-radius:7px}input[type=checkbox]{accent-color:#82e5d2;width:16px;height:16px}.mode{border-color:#53bcb4}.mode[aria-pressed=true]{background:#5d3e28;color:#ffe2ae;border-color:#bc9254}#modeBadge{font:700 11px monospace;direction:ltr;color:#80edce}#modeBadge.surrogate{color:#f8bf72}.bus-grid,.warning-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}.bus-grid>div,.warning-grid>div{background:#0f202c;border:1px solid #335061;border-radius:7px;padding:10px;display:flex;flex-direction:column;gap:7px}.bus-grid small,.warning-grid small{font-size:11px;color:var(--muted);direction:ltr;text-align:right}.state{font:700 12px/1.5 Consolas,monospace;direction:ltr;display:inline-flex;width:fit-content;padding:3px 8px;border:1px solid;border-radius:5px}.state.on{color:#8cf1cd;border-color:#397d66;background:#1b4037}.state.off{color:#f5b8af;border-color:#835148;background:#4a2723}.state.unknown{color:#f6cf8e;border-color:#876d3f;background:#453823}.scroll-table{overflow-x:auto}table{border-collapse:collapse;width:100%;min-width:960px}th,td{padding:10px 11px;border-bottom:1px solid #2b4b5a;text-align:right;font-size:12px}th{background:#1b3946;color:#aee3ef;white-space:nowrap}td small{display:block;color:#839eac;direction:ltr;text-align:right}td[data-out=evidence]{color:#a6bec8;direction:ltr;font:10px/1.6 Consolas,monospace;overflow-wrap:anywhere}td select{background:#112c38;border:1px solid #416477;border-radius:5px;color:var(--ink);padding:5px;max-width:105px}.warning-grid{grid-template-columns:repeat(3,minmax(0,1fr));margin-top:15px}.events{max-height:430px;overflow:auto;display:grid;gap:8px}.event{background:#0f202c;border:1px solid #315362;border-radius:7px;padding:10px}.event>b{color:#b2e7ec}.event p{margin:5px 0 0;word-break:break-word;font:11px/1.5 Consolas,monospace;color:#becbd1}.event small{display:block;color:var(--muted)}footer{padding:16px 25px;color:var(--muted);border-top:1px solid var(--line);font-size:12px}@media(max-width:1000px){main{grid-template-columns:1fr}.bus-grid,.warning-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:600px){header{flex-direction:column;align-items:flex-start;padding:16px}header h1{font-size:18px}.notice{margin:10px 10px 0}.card{padding:12px}main{padding:10px}.bus-grid,.warning-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+</style>
+</head>
+<body>
+  <header>
+    <div><small>INTEGRATED SYSTEMS NETWORK · PACK 01</small><h1>Electrical <span>→</span> Fuel / Hydraulic / Warning</h1><p>شبکه اجرایی آموزشی با منشأ هر ارتباط، وضعیت UNKNOWN و ردگیری تغییرات</p></div>
+    <div class="head-actions"><span class="offline-label">نسخهٔ آزمایشی مستقل · بدون نیاز به سرور</span><button id="reset">بازنشانی</button></div>
+  </header>
+  <div class="notice"><b>مرز اعتبارسنجی:</b> اتصال دقیق پمپ‌ها به Bus هنوز مستند نیست. حالت Source-Gated رابطه‌ای را حدس نمی‌زند. حالت Surrogate فقط برای تست زنجیره آموزشی است و هر خروجی آن علامت‌گذاری می‌شود.</div>
+  <p class="notice">این فایل به‌صورت مستقل در مرورگر اجرا می‌شود و اتصال آنلاین به GitHub Pages نیاز ندارد. منطق همان ISN Pack 01 است؛ تغییرات فقط در این صفحه باقی می‌مانند.</p><main>
+    <section class="card power">
+      <h2>۱. منابع برق و خطاها</h2>
+      <div class="actions"><button id="mode" class="mode" aria-pressed="false">فعال‌سازی نگاشت آموزشی Surrogate</button><b id="modeBadge">SOURCE-GATED</b></div>
+      <p class="help">تا زمانی که منبع مدار هر پمپ تأیید نشده، نتیجهٔ تغذیه آن UNKNOWN می‌ماند.</p>
+      <div class="buttons"><label><input id="busTransfer" type="checkbox" checked> BUS TRANSFER AUTO</label><label><input id="gen1Fault" type="checkbox"> GEN 1 FAILED</label><label><input id="gen2Fault" type="checkbox"> GEN 2 FAILED</label></div>
+      <h3>وضعیت Busها</h3><div id="buses" class="bus-grid"></div>
+      <p id="powerQa" class="help"></p>
+    </section>
+    <section class="card consumers">
+      <h2>۲. Fuel Pumps و Hydraulic Electric Pumps</h2>
+      <div class="scroll-table"><table><thead><tr><th>مصرف‌کننده</th><th>سوییچ</th><th>خرابی آموزشی</th><th>تغذیه مشاهده‌شده</th><th>عملکرد</th><th>LOW PRESSURE</th><th>منشأ اتصال</th></tr></thead><tbody id="pumps"></tbody></table></div>
+      <p class="help">مشاهدهٔ تغذیه، ورودی مستقل مدرس است و اثبات اتصال به Bus نیست. LOW PRESSURE در این بسته وضعیت گسستهٔ آموزشی است؛ فشار واقعی محاسبه نمی‌شود.</p>
+    </section>
+    <section class="card warnings">
+      <h2>۳. Warning System</h2>
+      <div class="warning-controls"><label><input id="fire1" type="checkbox"> Engine 1 Fire · تست ورودی هشدار</label><label><input id="highCabin" type="checkbox"> Cabin Altitude = 12,000 ft</label><button id="cutoutCabin">CAB ALT HORN CUTOUT</button><button id="ackFire">FIRE BELL CUTOUT</button></div>
+      <div id="warningSummary" class="warning-grid"></div><p id="warningNote" class="help"></p>
+    </section>
+    <section class="card trace">
+      <h2>۴. Event Trace · ورودی → خروجی</h2>
+      <div id="eventTrace" class="events" aria-live="polite"></div>
+    </section>
+  </main>
+  <footer>FCOM refs: Electrical 6.20.1–9 · Fuel 12.10.2–3 · Hydraulic 13.10.1 · Warning 15.20. آموزشی؛ نه برای عملیات پروازی.</footer>
+  <script>
+/* Embedded: ../engine/systems/electrical-v7.js */
+/* Source-located B737 Classic Electrical power trainer V7.
+ * References: Private Technical Database FCOM chapter 6 folios 6.10.6–9,
+ * 6.20.1–4,6.20.8–12. Not a certified load schedule or aircraft wiring map.
+ * Avoid conflating source-described bus connectivity with device-specific feeds.
+ */
+(function(root,factory){'use strict';const a=factory();if(typeof module==='object'&&module.exports)module.exports=a;if(root)root.B737ElectricalV7=a;})(typeof globalThis!=='undefined'?globalThis:this,function(){'use strict';
+ const REF=Object.freeze({ac:'FCOM 6.20.1-4 (private DB 1150-1153)',dc:'FCOM 6.20.8-10 (private DB 1157-1159)',standby:'FCOM 6.10.7 / 6.20.11-12 (private DB 1146,1160-1161)',lamps:'FCOM 6.10.8-9 (private DB 1147-1148)',ground:'FCOM 6.20.2 (private DB 1151)'});
+ const FAULTS=Object.freeze(['GEN1_FAILED','GEN2_FAILED','APU_FAILED','TR1_FAILED','TR2_FAILED','TR3_FAILED','BATTERY_DEPLETED','STATIC_INVERTER_FAILED','TRANSFER1_RELAY_FAILED','TRANSFER2_RELAY_FAILED']);
+ const CONTROL_KEYS=Object.freeze({onGround:'boolean',batterySwitch:'boolean',busTransferAuto:'boolean',groundPowerAttached:'boolean',groundPowerQualityGood:'boolean',groundServiceSelected:'boolean',apuRunning:'boolean',engine1Running:'boolean',engine2Running:'boolean',glideslopeCaptured:'boolean',standbySelector:['AUTO','OFF','BAT']});
+ const cpy=s=>JSON.parse(JSON.stringify(s));const trit=b=>b===null?null:Boolean(b);
+ function initialState(){return {schema:'b737-electrical/7',rev:0,config:{onGround:true,batterySwitch:true,busTransferAuto:true,groundPowerAttached:false,groundPowerQualityGood:true,groundServiceSelected:false,apuRunning:false,engine1Running:true,engine2Running:true,glideslopeCaptured:false,standbySelector:'AUTO'},source:{1:'GEN1',2:'GEN2'},faults:Object.fromEntries(FAULTS.map(k=>[k,false])),events:[]};}
+ function apply(s,cmd){if(!s||s.schema!=='b737-electrical/7')throw Error('Invalid Electrical V7 state');if(!cmd||typeof cmd.type!=='string')throw Error('Command required');if(cmd.type==='RESET')return initialState();const n=cpy(s),k=cmd.key,v=cmd.value;
+   if(cmd.type==='CONTROL'){if(!Object.hasOwn(CONTROL_KEYS,k))throw Error('Unknown electrical control');const type=CONTROL_KEYS[k];if((type==='boolean'&&typeof v!=='boolean')||(Array.isArray(type)&&!type.includes(v)))throw Error('Invalid electrical control value');n.config[k]=v;if(k==='batterySwitch'&&!v){n.source[1]=n.source[1]==='EXT'?null:n.source[1];n.source[2]=n.source[2]==='EXT'?null:n.source[2];}}
+   else if(cmd.type==='SELECT_SOURCE'){
+     if(!['GEN1','GEN2','APU','EXT','OFF'].includes(cmd.source))throw Error('Unknown source');
+     if(![1,2].includes(cmd.side))throw Error('Invalid source side');
+     if((cmd.source==='GEN1'&&cmd.side!==1)||(cmd.source==='GEN2'&&cmd.side!==2))throw Error('Generator-side mismatch');
+     const cfg=n.config;
+     if(cmd.source==='EXT'){
+       if(!cfg.onGround||!cfg.batterySwitch||!cfg.groundPowerAttached||!cfg.groundPowerQualityGood)throw Error('External AC connection conditions not met');
+       n.source[1]='EXT';n.source[2]='EXT';n.config.groundServiceSelected=false;
+     }else if(cmd.source==='APU'){
+       if(!cfg.apuRunning||n.faults.APU_FAILED)throw Error('APU source not ready');
+       if(!cfg.onGround){const other=cmd.side===1?2:1;if(n.source[other]==='APU')n.source[other]=null;}// Flight: one bus only; selection priority is a trainer policy.
+       n.source[cmd.side]='APU';
+     }else if(cmd.source==='GEN1'||cmd.source==='GEN2'){
+       const num=cmd.source==='GEN1'?1:2;
+       if(!cfg['engine'+num+'Running']||n.faults['GEN'+num+'_FAILED'])throw Error('Engine generator not ready');
+       n.source[cmd.side]=cmd.source;
+     }else n.source[cmd.side]=null;
+   }else if(cmd.type==='FAULT'){
+     if(!FAULTS.includes(cmd.id)||typeof cmd.active!=='boolean'||cmd.instructor!==true)throw Error('Instructor-only listed fault required');n.faults[cmd.id]=cmd.active;
+   }else throw Error('Unknown electrical command');
+   n.rev++;n.events.push({rev:n.rev,cmd:cpy(cmd)});if(n.events.length>250)n.events.shift();return n;
+ }
+ function evaluate(s,{groundAutoPolicy='UNKNOWN'}={}){
+  if(!s||s.schema!=='b737-electrical/7')throw Error('Invalid Electrical V7 state');
+  if(!['UNKNOWN','INHIBIT_6_20_11','TRANSFER_6_10_7'].includes(groundAutoPolicy))throw Error('Invalid source-conflict policy');
+  const c=s.config,f=s.faults;
+  const ready={GEN1:c.engine1Running&&!f.GEN1_FAILED,GEN2:c.engine2Running&&!f.GEN2_FAILED,APU:c.apuRunning&&!f.APU_FAILED,EXT:c.onGround&&c.batterySwitch&&c.groundPowerAttached&&c.groundPowerQualityGood};
+  const powered={};for(const side of [1,2]){const source=s.source[side];powered[side]=source&&ready[source]?source:null;}
+  // No AC paralleling; each generator bus has at most one source.
+  const gen={1:powered[1]!==null,2:powered[2]!==null};
+  const transfer={};const transferSource={};
+  for(const side of [1,2]){
+    const other=side===1?2:1;const relayFault=f['TRANSFER'+side+'_RELAY_FAILED'];
+    const feed=gen[side]?side:(c.busTransferAuto&&gen[other]&&!relayFault?other:null);
+    transfer[side]=feed!==null;transferSource[side]=feed===null?null:'GENERATOR_BUS_'+feed;
+  }
+  const main={1:gen[1],2:gen[2]};
+  const tr={TR1:transfer[1]&&!f.TR1_FAILED,TR2:transfer[2]&&!f.TR2_FAILED,TR3:main[2]&&!f.TR3_FAILED};
+  const tie=!c.glideslopeCaptured&&c.busTransferAuto;
+  const dc1=tie?(tr.TR1||tr.TR2):tr.TR1;
+  const dc2=tie?(tr.TR1||tr.TR2):tr.TR2;
+  const batteryHealthy=!f.BATTERY_DEPLETED;
+  const hotBattery=batteryHealthy,switchedHotBattery=batteryHealthy&&c.batterySwitch;
+  const batteryBus=tr.TR3||(batteryHealthy&&c.batterySwitch);
+  const serviceBus=Boolean((c.onGround&&c.groundServiceSelected&&c.groundPowerAttached&&c.groundPowerQualityGood)||gen[1]);
+  // TR3 is a described backup source; exact automatic backfeed routing is not validated here.
+  const dcTr3BackupUnknown=tr.TR3&&!(tr.TR1||tr.TR2);
+  let acStandby=false,dcStandby=false,standbyFeed='OFF',standbyGap=null;
+  const batteryStandby=batteryHealthy&&batteryBus&&!f.STATIC_INVERTER_FAILED;
+  if(c.standbySelector==='BAT'){
+    // BAT bypasses battery-switch position for the standby battery path.
+    acStandby=batteryHealthy&&!f.STATIC_INVERTER_FAILED;dcStandby=batteryHealthy;standbyFeed='BATTERY_SELECTOR';
+  }else if(c.standbySelector==='AUTO'){
+    if(transfer[1]&&dc1&&c.batterySwitch){acStandby=true;dcStandby=true;standbyFeed='TRANSFER1_DC1';}
+    else if(!c.onGround){acStandby=c.batterySwitch&&batteryStandby;dcStandby=c.batterySwitch&&batteryHealthy;standbyFeed='BATTERY_AUTO_AIR';}
+    else if(!gen[1]&&!gen[2]){
+      standbyGap='FCOM 6.10.7 versus 6.20.11: ground all-AC-loss AUTO contradiction';
+      if(groundAutoPolicy==='UNKNOWN'){acStandby=null;dcStandby=null;standbyFeed='UNKNOWN_SOURCE_CONFLICT';}
+      else if(groundAutoPolicy==='INHIBIT_6_20_11'){acStandby=false;dcStandby=false;standbyFeed='GROUND_INHIBITED';}
+      else {acStandby=c.batterySwitch&&batteryStandby;dcStandby=c.batterySwitch&&batteryHealthy;standbyFeed='GROUND_BATTERY_FCOM_6_10_7';}
+    }else {acStandby=null;dcStandby=null;standbyFeed='GROUND_PARTIAL_LOSS_UNVERIFIED';standbyGap='Ground AUTO partial loss not resolved';}
+  }
+  // Essential output status preserves UNKNOWN rather than falsely resolving undocumented routes.
+  const bus={generator1:gen[1],generator2:gen[2],transfer1:transfer[1],transfer2:transfer[2],main1:main[1],main2:main[2],dc1:dcTr3BackupUnknown?null:dc1,dc2:dcTr3BackupUnknown?null:dc2,battery:batteryBus,hotBattery,switchedHotBattery,acStandby:trit(acStandby),dcStandby:trit(dcStandby),groundService:serviceBus};
+  const lamps={busOff1:!gen[1],busOff2:!gen[2],transferBusOff1:!transfer[1],transferBusOff2:!transfer[2],genOffBus1:powered[1]!=='GEN1',genOffBus2:powered[2]!=='GEN2',groundPowerAvailable:c.groundPowerAttached&&c.groundPowerQualityGood,standbyPowerOff:acStandby===null?null:!acStandby};
+  const distinctSources=new Set(Object.values(powered).filter(Boolean));
+  const galleyShed=c.onGround?false:distinctSources.size===1;
+  const qa=[];
+  if(standbyGap)qa.push({id:'STANDBY_GROUND_AUTO_CONFLICT',detail:standbyGap,level:'SOURCE_CONFLICT'});
+  if(dcTr3BackupUnknown)qa.push({id:'TR3_BACKUP_ROUTE',detail:'TR3 supply to DC 1/2 needs installation wiring QA',level:'UNKNOWN'});
+  if(!c.onGround&&s.source[1]==='APU'&&s.source[2]==='APU')qa.push({id:'APU_FLIGHT_DUAL_FEED',detail:'APU dual flight buses not supported; reconnect by selection',level:'INVALID'});
+  return {schema:'B737_ELECTRICAL_V7_RESULT',revision:s.rev,source:{...powered},bus,feed:{transferSource,tie,tr,standbyFeed},lamps,galleyShed,qa,trace:{...REF},accuracy:{equipmentBusMap:'NOT_VERIFIED_FOR_EP_FSI',standbyGroundAuto:'CONFLICT_REQUIRES_REVIEW',tr3AutomaticFeed:'INCOMPLETE',model:'EDUCATIONAL_DISCRETE_ONLY'}};
+ }
+ function execute(commands){let s=initialState();for(const c of commands)s=apply(s,c);return evaluate(s);}
+ return Object.freeze({REF,FAULTS,CONTROL_KEYS,initialState,apply,evaluate,execute});
+});
+</script>
+  <script>
+/* Embedded: ../engine/systems/electrical-loads-v8.js */
+/* ATA24 electrical-to-consumer traceability bridge. No airframe wiring inferred.
+   Only the FCOM-described TR incoming feeds are automatically bound.
+   Private source archive references: FCOM 6.20.9 (DB 1158), 15.10.3 (DB 1880),
+   2.40.1-2 (DB 1014-15), 12.10.2 (DB 1826), 13.10.1 (DB 1842).
+   Educational trainer only: not a load schedule, MEL, or flight tool. */
+(function(root,factory){'use strict';const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;if(root)root.B737ElectricalLoadsV8=api;})
+(typeof globalThis!=='undefined'?globalThis:this,function(){'use strict';
+ const VERIFIED=Object.freeze([
+  Object.freeze({id:'elec.TR1.input',upstream:'transfer1',source:'FCOM-SEPEHRAN-1937',pdfPage:1158,folio:'6.20.9'}),
+  Object.freeze({id:'elec.TR2.input',upstream:'transfer2',source:'FCOM-SEPEHRAN-1937',pdfPage:1158,folio:'6.20.9'}),
+  Object.freeze({id:'elec.TR3.input',upstream:'main2',source:'FCOM-SEPEHRAN-1937',pdfPage:1158,folio:'6.20.9'})
+ ]);
+ const LOADS=Object.freeze([
+  ['stall.test115vac','STALL','AC115',1880,'15.10.3','115VAC needed for ground test; exact supply bus undocumented'],
+  ['stall.computer1','STALL',null,1911,'15.20.7','computer channel power bus and installed feed undocumented'],
+  ['stall.computer2','STALL',null,1911,'15.20.7','computer channel power bus and installed feed undocumented'],
+  ['dcpcs.controller1','DCPCS',null,1015,'2.40.2','controller feed not identified'],
+  ['dcpcs.controller2','DCPCS',null,1015,'2.40.2','controller feed not identified'],
+  ['dcpcs.autoOutflowMotor','DCPCS','DC',1015,'2.40.2','brushless DC motor; exact bus not specified'],
+  ['cpcs.autoOutflowMotor','CPCS','AC',1014,'2.40.1','AC motor; not applicable to EP-FSI DCPCS config'],
+  ['cpcs.standbyOutflowMotor','CPCS','DC',1014,'2.40.1','DC motor; not applicable to EP-FSI DCPCS config'],
+  ['fuel.main1FwdPump','FUEL',null,1826,'12.10.2','pump ON function verified; supply bus not identified'],
+  ['fuel.main1AftPump','FUEL',null,1826,'12.10.2','pump ON function verified; supply bus not identified'],
+  ['fuel.main2FwdPump','FUEL',null,1826,'12.10.2','pump ON function verified; supply bus not identified'],
+  ['fuel.main2AftPump','FUEL',null,1826,'12.10.2','pump ON function verified; supply bus not identified'],
+  ['fuel.centerLeftPump','FUEL',null,1826,'12.10.2','pump ON function verified; supply bus not identified'],
+  ['fuel.centerRightPump','FUEL',null,1826,'12.10.2','pump ON function verified; supply bus not identified'],
+  ['hyd.electricPumpA','HYDRAULIC',null,1842,'13.10.1','electrically powered, AC/DC class and bus not identified'],
+  ['hyd.electricPumpB','HYDRAULIC',null,1842,'13.10.1','electrically powered, AC/DC class and bus not identified']
+ ].map(([id,system,electricClass,page,folio,limitation])=>Object.freeze({id,system,electricClass,source:'FCOM-SEPEHRAN-1937',pdfPage:page,folio,limitation})));
+ const AC_BUSES=Object.freeze(['generator1','generator2','main1','main2','transfer1','transfer2','acStandby','groundService']);
+ const DC_BUSES=Object.freeze(['dc1','dc2','battery','hotBattery','switchedHotBattery','dcStandby']);
+ const classes=Object.freeze({AC115:AC_BUSES,AC:AC_BUSES,DC:DC_BUSES});
+ function tri(v){if(v===true||v===false||v===null)return v;throw Error('Electrical bus value must be true / false / null');}
+ function electricalInput(e){if(!e||e.schema!=='B737_ELECTRICAL_V7_RESULT'||!e.bus||!e.feed?.tr)throw Error('Electrical V7 evaluated output required');return e;}
+ function possibleClass(e,type){
+  const names=classes[type];if(!names)return {couldBeAvailable:null,buses:[],reason:'NO_DOCUMENTED_VOLTAGE_CLASS'};
+  const values=names.map(bus=>({bus,value:tri(e.bus[bus])}));
+  // Global absence is the only definite conclusion; any energized source does NOT prove an LRU feed.
+  const impossible=values.every(x=>x.value===false);
+  return {couldBeAvailable:impossible?false:null,buses:values,reason:impossible?'ALL_POSSIBLE_CLASS_BUSES_OFF':'BUS_TO_EQUIPMENT_WIRING_NOT_VERIFIED'};
+ }
+ function project(electrical){const e=electricalInput(electrical);
+  const upstream=Object.fromEntries(VERIFIED.map(item=>{
+   const energized=tri(e.bus[item.upstream]);
+   const key='TR'+item.id.match(/TR([123])/)[1];
+   const enabled=Boolean(e.feed.tr[key]);
+   // An upstream AC source cannot prove the TR is operating: the TR may itself fail.
+   return [item.id,{...item,acBusAvailable:energized,powerConversionOperating:energized===false?false:enabled,qa:'VERIFIED_UPSTREAM_FEED_AND_FAULT_MODEL'}];
+  }));
+  const loads=Object.fromEntries(LOADS.map(load=>{
+   const possibility=possibleClass(e,load.electricClass);
+   return [load.id,{...load,assignedBus:null,powered:possibility.couldBeAvailable===false?false:null,
+    status:possibility.couldBeAvailable===false?'PROVEN_GLOBAL_CLASS_POWER_LOSS':'UNVERIFIED_EQUIPMENT_FEED',
+    reason:possibility.reason,provenance:'SOURCE_FUNCTION_ONLY_NO_EP_FSI_WIRING',powerBusCandidateCount:possibility.buses.length}];
+  }));
+  return {schema:'B737_ELECTRICAL_LOADS_V8',electricalRevision:e.revision,upstream,loads,
+   classEvidence:{AC115:possibleClass(e,'AC115'),DC:possibleClass(e,'DC')},
+   coverage:{verifiedUpstream:VERIFIED.length,loadsKnownBus:0,loadsPending:LOADS.length},
+   qa:['EP_FSI_WIRING_SCHEDULE_NOT_IN_INDEX','NO_AUTOMATIC_LRU_POWER_TRUE','CPCS_NON_FSI_CONFIGURATION','CROSS_SYSTEM_MUTATION_BLOCKED_WHEN_FEED_UNKNOWN']};
+ }
+ function handoff(loadsResult){if(!loadsResult||loadsResult.schema!=='B737_ELECTRICAL_LOADS_V8')throw Error('V8 projected loads required');
+  const load=(id)=>loadsResult.loads[id];
+  // Downstream contracts: false only for globally demonstrated loss of a required voltage class.
+  // Never turn null into false or invent which source feeds an individual device.
+  const stall=load('stall.test115vac');
+  return {schema:'B737_ELECTRICAL_HANDOFF_V8',
+   stallGroundTest:{ac115Available:stall.powered===false?false:null,applyAutomatically:stall.powered===false,
+    annotation:stall.powered===false?'GLOBAL_115VAC_UNAVAILABLE':'REQUIRES_INDEPENDENT_VERIFIED_FEED_OR_INSTRUCTOR_INPUT'},
+   dcpcs:{dcPowerAvailable:null,applyAutomatically:false,annotation:'CONTROLLER_DC_BUS_NOT_VERIFIED'},
+   fuelPumps:{applyAutomatically:false,annotation:'CONFIG_LOAD_BUS_IS_TRAINING_SURROGATE_NOT_VERIFIED'},
+   hydraulicPumps:{applyAutomatically:false,annotation:'CONFIG_LOAD_BUS_IS_TRAINING_SURROGATE_NOT_VERIFIED'},
+   policy:'DO_NOT_MODIFY_SUBSYSTEM_STATE_FROM_UNKNOWN_FEED'};
+ }
+ return Object.freeze({VERIFIED,LOADS,AC_BUSES,DC_BUSES,project,handoff});
+});
+</script>
+  <script>
+/* Embedded: ../engine/trainer/core.js */
+/* B737 Classic switch/fault/checklist trainer v0.1.
+ * Pure, deterministic, offline-capable. All outputs are TRAINING-ONLY.
+ * Copyright-free software implementation; no manual wording copied.
+ * Provenance: Sepehran FCOM 6.10.8-9, 6.20.1-4, 12.10.1-3,
+ * 13.10.1-2; Sepehran QRH 6.1-6.4; in-scope generalizations
+ * and explicitly labeled surrogate equipment-to-transfer-bus mappings.
+ */
+(function (root, factory) {
+  'use strict';
+  const api=factory();
+  if(typeof module==='object'&&module.exports) module.exports=api;
+  if(root) root.B737TrainerCore=api;
+})(typeof globalThis!=='undefined'?globalThis:this,function(){
+  'use strict';
+  const FUEL=['leftFwd','leftAft','rightFwd','rightAft','centerLeft','centerRight'];
+  const HYD=['elecA','elecB'];
+  const CONFIG=Object.freeze({
+    // These downstream bus assignments are TRAINING ASSUMPTIONS, not asserted as
+    // exact installed circuit wiring. Requires configuration-specific electrical load schedule.
+    loadBus:Object.freeze({leftFwd:1,leftAft:1,rightFwd:2,rightAft:2,centerLeft:1,centerRight:2,elecA:2,elecB:1}),
+    loadBusStatus:'TRAINING_SURROGATE_NOT_FCOM_WIRING_VERIFIED'
+  });
+  const FAULTS=Object.freeze(['gen1Failed','gen2Failed','apuGeneratorFailed','externalPowerFailed','transfer1Failed','transfer2Failed','elecAFailed','elecBFailed','elecAOverheat','elecBOverheat',...FUEL.map(x=>'fuel_'+x+'_Failed')]);
+  const LABELS=Object.freeze({
+    gen1Failed:'GEN 1 unavailable',gen2Failed:'GEN 2 unavailable',apuGeneratorFailed:'APU generator failed',externalPowerFailed:'External AC failed',
+    transfer1Failed:'AC transfer bus 1 fault',transfer2Failed:'AC transfer bus 2 fault',
+    elecAFailed:'Electric hydraulic pump A failed',elecBFailed:'Electric hydraulic pump B failed',
+    elecAOverheat:'Hydraulic pump A overheat',elecBOverheat:'Hydraulic pump B overheat',
+    leftFwd:'MAIN 1 FWD',leftAft:'MAIN 1 AFT',rightFwd:'MAIN 2 FWD',rightAft:'MAIN 2 AFT',centerLeft:'CENTER LEFT',centerRight:'CENTER RIGHT',elecA:'ELEC 2 / SYS A',elecB:'ELEC 1 / SYS B'
+  });
+  function clone(v){return JSON.parse(JSON.stringify(v));}
+  function isKey(o,k){return Object.prototype.hasOwnProperty.call(o,k);}
+  function initialState(){return {
+    version:'b737-cl-trainer/1',seq:0,controls:{battery:true,busTransferAuto:true,externalAvailable:true,externalConnected:false,
+      engine1Running:true,engine2Running:true,gen1Connected:true,gen2Connected:true,apuRunning:false,apuGen1Connected:false,apuGen2Connected:false,
+      fuel:{leftFwd:true,leftAft:true,rightFwd:true,rightAft:true,centerLeft:false,centerRight:false},
+      hyd:{elecA:true,elecB:true},
+      // Engine-driven hydraulic pumps remain available even if electric motor pumps fail.
+      engineHyd:{A:true,B:true}},
+    faults:Object.fromEntries(FAULTS.map(f=>[f,false])),instructor:{scenario:'none'},events:[]};}
+  function validBool(value){if(typeof value!=='boolean')throw new Error('Expected boolean');}
+  function normalize(s){
+    if(!s||s.version!=='b737-cl-trainer/1'||!s.controls||!s.faults||!Array.isArray(s.events))throw new Error('Invalid trainer state');
+    return s;
+  }
+  function setPath(o,path,value){const p=path.split('.');let target=o;for(const part of p.slice(0,-1)){if(!target||!isKey(target,part))throw new Error('Unknown control '+path);target=target[part];}const key=p[p.length-1];if(!target||!isKey(target,key))throw new Error('Unknown control '+path);validBool(value);target[key]=value;}
+  function apply(state,command){
+    normalize(state);
+    if(!command||typeof command.type!=='string')throw new Error('Invalid command');
+    if(command.type==='RESET')return initialState();
+    const next=clone(state);
+    switch(command.type){
+      case 'CONTROL':
+        setPath(next.controls,command.path,command.value);
+        // Source selection is exclusive per generator bus (FCOM 6.20.1-4).
+        if(command.value===true){
+          if(command.path==='apuGen1Connected'){next.controls.gen1Connected=false;next.controls.externalConnected=false;}
+          if(command.path==='apuGen2Connected'){next.controls.gen2Connected=false;next.controls.externalConnected=false;}
+          if(command.path==='gen1Connected'){next.controls.apuGen1Connected=false;next.controls.externalConnected=false;}
+          if(command.path==='gen2Connected'){next.controls.apuGen2Connected=false;next.controls.externalConnected=false;}
+          if(command.path==='externalConnected'){
+            if(!next.controls.battery)throw new Error('Ground power connection requires BATTERY ON (FCOM 6.20.2)');
+            next.controls.gen1Connected=false;next.controls.gen2Connected=false;
+            next.controls.apuGen1Connected=false;next.controls.apuGen2Connected=false;
+          }
+        }
+        if(command.path==='battery'&&command.value===false)next.controls.externalConnected=false;
+        break;
+      case 'FAULT': if(!isKey(next.faults,command.id))throw new Error('Unknown fault '+command.id);validBool(command.active);next.faults[command.id]=command.active;break;
+      case 'SCENARIO': if(command.id!=='bus1'&&command.id!=='bus2'&&command.id!=='none')throw new Error('Unknown scenario');
+        next.instructor.scenario=command.id;break;
+      default:throw new Error('Unknown command type '+command.type);
+    }
+    next.seq++;
+    next.events.push({seq:next.seq,command:clone(command)});
+    if(next.events.length>400)next.events.shift();
+    return next;
+  }
+  function derive(s){
+    normalize(s);const c=s.controls,f=s.faults;
+    const src={gen1:c.gen1Connected&&c.engine1Running&&!f.gen1Failed,
+      gen2:c.gen2Connected&&c.engine2Running&&!f.gen2Failed,
+      apu:c.apuRunning&&!f.apuGeneratorFailed,
+      external:c.externalAvailable&&c.battery&&!f.externalPowerFailed};
+    // Each AC generator bus has a single connected source. Source selection never parallels.
+    // Instructor can explicitly select GND/APU/gen with switches; preferred generator for a side
+    // is an original training simplification of automatic source arbitration.
+    const bus=(side)=>{
+      if(side===1&&src.gen1)return 'GEN 1';
+      if(side===2&&src.gen2)return 'GEN 2';
+      if(src.apu&&(side===1?c.apuGen1Connected:c.apuGen2Connected))return 'APU';
+      if(src.external&&c.externalConnected)return 'EXTERNAL';
+      return null;
+    };
+    const generatorBus={1:bus(1),2:bus(2)};
+    const transferBus={1:Boolean((generatorBus[1]||(c.busTransferAuto&&generatorBus[2]))&&!f.transfer1Failed),
+      2:Boolean((generatorBus[2]||(c.busTransferAuto&&generatorBus[1]))&&!f.transfer2Failed)};
+    const mainBus={1:Boolean(generatorBus[1]),2:Boolean(generatorBus[2])};
+    const acStandby=transferBus[1]||c.battery; // static inverter / battery standby simplified.
+    const dc={bus1:transferBus[1],bus2:transferBus[2],battery:c.battery,standby:c.battery||transferBus[1]};
+    const fuel={};
+    for(const id of FUEL){const selected=c.fuel[id];const hasPower=transferBus[CONFIG.loadBus[id]];
+      const operational=selected&&hasPower&&!f['fuel_'+id+'_Failed'];
+      const center=id.startsWith('center');
+      fuel[id]={switchOn:selected,powered:hasPower,operational,
+        // FCOM 12.10.2-3: CENTER annunciates low pressure only with switch ON;
+        // MAIN annunciates with switch OFF or low output pressure.
+        lowPressure:center?selected&&!operational:!operational};
+    }
+    const hyd={};for(const id of HYD){const hasPower=transferBus[CONFIG.loadBus[id]];
+      const operating=c.hyd[id]&&hasPower&&!f[id+'Failed']&&!f[id+'Overheat'];
+      hyd[id]={switchOn:c.hyd[id],powered:hasPower,operating,lowPressure:!operating,overheat:f[id+'Overheat']};
+    }
+    const systemHyd={A:c.engineHyd.A&&c.engine1Running||hyd.elecA.operating,
+      B:c.engineHyd.B&&c.engine2Running||hyd.elecB.operating};
+    const fuelMainCaution=[['leftFwd','leftAft'],['rightFwd','rightAft']].some(pair=>pair.every(k=>fuel[k].lowPressure));
+    const ctrFuelCaution=Object.keys(fuel).filter(k=>k.startsWith('center')).some(k=>fuel[k].lowPressure)&&
+      (c.fuel.centerLeft||c.fuel.centerRight); // simplified: verifies one center low with either CTR switch active
+    const indicators={
+      busOff1:!mainBus[1],busOff2:!mainBus[2],transferBusOff1:!transferBus[1],transferBusOff2:!transferBus[2],
+      genOffBus1:!generatorBus[1]||generatorBus[1]!=='GEN 1',genOffBus2:!generatorBus[2]||generatorBus[2]!=='GEN 2',
+      groundPowerAvailable:src.external,
+      masterCautionFuel:fuelMainCaution||ctrFuelCaution,
+      masterCautionHyd:false, // Non-Normal/MASTER CAUTION logic NOT yet validated from FCOM
+      systemAnnunciatorFuel:fuelMainCaution||ctrFuelCaution
+    };
+    return {sourceAvailable:src,generatorBus,transferBus,mainBus,acStandby,dc,fuel,hyd,systemHyd,indicators,
+      qa:{loadRouting:CONFIG.loadBusStatus,masterCautionHyd:'NOT_MODELED',
+        scope:'TRAINER_ONLY',sourceLocations:['FCOM 6.10.8-9 PDF1147-1148','FCOM 6.20.1-4 PDF1150-1153','FCOM 12.10.2-3 PDF1826-1827','FCOM 13.10.1 PDF1842']}};
+  }
+  function checklist(s){
+    const d=derive(s),side=s.instructor.scenario==='bus2'?2:1;
+    if(s.instructor.scenario==='none')return {id:'none',title:'Select a training scenario',steps:[],complete:false};
+    const other=side===1?2:1;
+    const stepData=[
+      {id:'diagnose',title:'Identify the affected generator bus',done:d.indicators['busOff'+side],detail:'QRH condition, BUS OFF single, section 6.1; training cue'},
+      {id:'isolation',title:'Confirm opposite generator bus remains available',done:Boolean(d.generatorBus[other]),detail:'Transfer bus status and source indication'},
+      {id:'retry',title:'Attempt engine generator reconnect (if source healthy)',done:Boolean(d.generatorBus[side]),detail:'QRH branch: recovery can stop here; when fault persists proceed with alternate source'},
+      {id:'alternate',title:'Restore affected bus using APU or external source',done:Boolean(d.generatorBus[side]),detail:'On this ground trainer, APU or external power can supply bus; route availability is simulated'},
+      {id:'outcome',title:'Confirm BUS OFF extinguished and load state recalculated',done:!d.indicators['busOff'+side],detail:'Recheck fuel/hydraulic derived pump and warning states'}
+    ];
+    // Retry and alternate are alternative educational paths, not sequential checklist commands.
+    const recovered=!d.indicators['busOff'+side];
+    return {id:'bus-off-'+side,title:'BUS OFF ('+side+') — instructor-guided trainer',steps:stepData,
+      complete:recovered,branch:recovered?'BUS RESTORED':'BUS STILL OFF',
+      limitation:'Paraphrased training flow; not the actual QRH checklist. Original QRH 6.1-6.4 PDF 133-136.'};
+  }
+  function replay(commands){let s=initialState();for(const cmd of commands)s=apply(s,cmd);return s;}
+  return Object.freeze({FUEL,HYD,FAULTS,LABELS,CONFIG,initialState,apply,derive,checklist,replay});
+});
+</script>
+  <script>
+/* Embedded: ../audio/warning-engine.js */
+/* B737 Classic Audio Warning Engine — logic prototype v0.1
+ * Training simulator only. Audible timbres are placeholders, not aircraft recordings.
+ * Grounded in owner-provided Sepehran 737-300/400/500 FCOM Ch 15.
+ * All measurements in ft/kt; thrust lever angles in approximate degrees.
+ */
+(function (root, factory) {
+  const api = factory();
+  if (typeof module === "object" && module.exports) module.exports = api;
+  root.B737WarningEngine = api;
+})(typeof globalThis !== "undefined" ? globalThis : this, function () {
+  "use strict";
+  const RADIO_CALLOUTS = [2500, 1000, 500, 100, 50, 40, 30, 20, 10];
+  const GPWS = new Set([
+    "PULL UP", "SINK RATE", "TERRAIN", "TERRAIN AHEAD",
+    "CAUTION TERRAIN", "DON'T SINK", "TOO LOW GEAR",
+    "TOO LOW FLAPS", "TOO LOW TERRAIN", "GLIDESLOPE",
+    "WINDSHEAR", "BANK ANGLE"
+  ]);
+  const AUDIO = Object.freeze({
+    altitude: { asset: "altitude-tone", group: "tone", priority: 35 },
+    intermittentHorn: { asset: "intermittent-horn", group: "alarm", priority: 70 },
+    gearHorn: { asset: "landing-gear-horn", group: "alarm", priority: 65 },
+    fireBell: { asset: "fire-bell", group: "alarm", priority: 95 },
+    overspeed: { asset: "overspeed-clacker", group: "alarm", priority: 82 },
+    shaker: { asset: "stick-shaker", group: "alarm", priority: 86 },
+    apDisconnect: { asset: "autopilot-disconnect", group: "tone", priority: 55 },
+    atDisconnect: { asset: "autothrottle-disconnect", group: "tone", priority: 40 },
+    gpws: { asset: "egpws-voice", group: "voice", priority: 100 },
+    tcas: { asset: "tcas-voice", group: "voice", priority: 80 },
+    radioAltitude: { asset: "radio-altitude-voice", group: "voice", priority: 15 },
+    minimums: { asset: "minimums-voice", group: "voice", priority: 30 }
+  });
+  const finite = (v) => typeof v === "number" && Number.isFinite(v);
+  const truth = (v) => v === true;
+  const normalize = (s) => typeof s === "string" ? s.trim().toUpperCase() : "";
+
+  class WarningEngine {
+    constructor(options) {
+      const opt = options || {};
+      this.variant = opt.variant || "737-300";
+      this.takeoffFlapMinimum = this.variant === "737-500" ? 5 : this.variant === "737-300" ? 1 : null;
+      this.reset();
+    }
+    reset() {
+      this.previous = null;
+      this.cabinCutout = false;
+      this.gearCutout = false;
+      this.fireAcknowledged = false;
+      this.altitudeDeviationArmed = false;
+      this.deviationActive = false;
+      this.bankTriggered = new Set();
+      this.radioCalled = new Set();
+    }
+    cutoutCabin() { this.cabinCutout = true; }
+    cutoutGear() { if (this.lastGearCutoutEligible) this.gearCutout = true; }
+    acknowledgeFire() { this.fireAcknowledged = true; }
+
+    update(input) {
+      const s = { ...input };
+      const p = this.previous;
+      const events = [];
+      const active = [];
+      const lamps = {};
+      const push = (id, message) => events.push({ id, message: message || id, ...AUDIO[id] });
+      const flag = (id) => active.push({ id, ...AUDIO[id] });
+      const gearDown = truth(s.gearDownLocked);
+      const ground = truth(s.onGround);
+      const flap = finite(s.flaps) ? s.flaps : 0;
+      const lever1 = finite(s.thrustLever1Angle) ? s.thrustLever1Angle : 45;
+      const lever2 = finite(s.thrustLever2Angle) ? s.thrustLever2Angle : 45;
+
+      // Cabin altitude uses exactly the same audible intermittent horn as T/O configuration.
+      const cabinHigh = finite(s.cabinAltitudeFt) && s.cabinAltitudeFt > 10000;
+      if (!cabinHigh) this.cabinCutout = false;
+      lamps.cabinAltitude = cabinHigh;
+
+      // Takeoff configuration evaluation is only valid with actual discrete inputs.
+      // 737-400 flap-minimum remains configuration-dependent until its variant documentation is verified.
+      const tcfg = this.takeoffFlapMinimum !== null &&
+        [s.leadingEdgeTakeoff, s.speedbrakeDown, s.parkingBrakeSet, s.stabilizerTrimTakeoff].every(v => typeof v === "boolean");
+      const min = this.takeoffFlapMinimum;
+      const badConfig = tcfg && (
+        flap < min || flap > 15 || !s.leadingEdgeTakeoff ||
+        !s.speedbrakeDown || s.parkingBrakeSet || !s.stabilizerTrimTakeoff
+      );
+      const takeoffConfig = ground && truth(s.takeoffThrust) && badConfig;
+      lamps.takeoffConfig = takeoffConfig;
+      if ((cabinHigh && !this.cabinCutout) || takeoffConfig) flag("intermittentHorn");
+
+      // Landing gear horn from FCOM 15.20.5-6; different silencing rules by flap setting.
+      let gearAlert = false;
+      let cutoutEligible = false;
+      if (!ground && !gearDown) {
+        if (flap >= 1 && flap <= 10 && (lever1 <= 10 || lever2 <= 10)) {
+          gearAlert = true; cutoutEligible = true;
+        } else if (flap === 15) {
+          const asymmetric = finite(s.radioAltitudeFt) && s.radioAltitudeFt < 1000 &&
+            ((lever1 <= 10 && lever2 > 30) || (lever2 <= 10 && lever1 > 30));
+          const bothLow = lever1 < 30 && lever2 < 30;
+          gearAlert = asymmetric || bothLow;
+          cutoutEligible = asymmetric && !bothLow;
+        } else if (flap > 15) gearAlert = true;
+      }
+      if (!gearAlert || !cutoutEligible) this.gearCutout = false;
+      this.lastGearCutoutEligible = cutoutEligible;
+      lamps.gearUnsafe = gearAlert;
+      if (gearAlert && !(cutoutEligible && this.gearCutout)) flag("gearHorn");
+
+      // Each separate fire condition can re-arm master FIRE WARN after previous cutout.
+      const fireKeys = ["engine1Fire", "engine2Fire", "apuFire", "wheelWellFire", "cargoFire"];
+      const fireNow = fireKeys.filter(k => truth(s[k]));
+      const fireBefore = p ? fireKeys.filter(k => truth(p[k])) : [];
+      if (fireNow.some(k => !fireBefore.includes(k))) this.fireAcknowledged = false;
+      if (!fireNow.length) this.fireAcknowledged = false;
+      lamps.fireWarn = fireNow.length > 0 && !this.fireAcknowledged;
+      if (lamps.fireWarn) flag("fireBell");
+      // External APU fire horn is not mixed into cockpit sound.
+      lamps.remoteApuFireHorn = truth(s.apuFire) && ground && !this.fireAcknowledged;
+
+      // Vmo/Mmo are model/condition inputs; no guessed constants.
+      const overspeed = (finite(s.iasKt) && finite(s.vmoKt) && s.iasKt > s.vmoKt) ||
+        (finite(s.mach) && finite(s.mmo) && s.mach > s.mmo);
+      if (overspeed) flag("overspeed");
+      if (!ground && truth(s.stallWarning)) flag("shaker");
+
+      // Altitude capture/deviation. Both alerts inhibited at flaps >= 25 or G/S capture.
+      const altValid = finite(s.pressureAltitudeFt) && finite(s.selectedAltitudeFt);
+      const altInhibit = flap >= 25 || truth(s.glideslopeCaptured);
+      const d = altValid ? Math.abs(s.pressureAltitudeFt - s.selectedAltitudeFt) : Infinity;
+      const pd = p && finite(p.pressureAltitudeFt) && finite(p.selectedAltitudeFt)
+        ? Math.abs(p.pressureAltitudeFt - p.selectedAltitudeFt) : Infinity;
+      const selectedChanged = !!p && s.selectedAltitudeFt !== p.selectedAltitudeFt;
+      if (selectedChanged || altInhibit) {
+        this.altitudeDeviationArmed = false;
+        this.deviationActive = false;
+      }
+      if (!altInhibit && altValid) {
+        if (p && !selectedChanged && pd > 900 && d <= 900 && d > 300) push("altitude", "ALTITUDE ACQUISITION");
+        if (d <= 300) { this.altitudeDeviationArmed = true; this.deviationActive = false; }
+        if (this.altitudeDeviationArmed && !this.deviationActive && d > 300 && d <= 900) {
+          this.deviationActive = true;
+          push("altitude", "ALTITUDE DEVIATION");
+        }
+        if (d > 900) { this.altitudeDeviationArmed = false; this.deviationActive = false; }
+      }
+      lamps.altitudeSteady = !altInhibit && altValid && d <= 900 && d > 300 && !this.deviationActive;
+      lamps.altitudeFlashing = !altInhibit && this.deviationActive;
+
+      // External GPWS/TCAS systems supply their evaluated alert, not invented terrain logic.
+      const gpws = normalize(s.egpwsMessage);
+      const tcas = normalize(s.tcasMessage);
+      if (gpws && GPWS.has(gpws) && (!p || gpws !== normalize(p.egpwsMessage))) push("gpws", gpws);
+      if (tcas && (!p || tcas !== normalize(p.tcasMessage))) push("tcas", tcas);
+      if (p && truth(p.autopilotEngaged) && s.autopilotEngaged === false) push("apDisconnect");
+      if (p && truth(p.autothrottleEngaged) && s.autothrottleEngaged === false) push("atDisconnect");
+
+      // Altitude callouts require a prior valid sample and a downward crossing.
+      const ra = s.radioAltitudeFt;
+      const pra = p && p.radioAltitudeFt;
+      if (!finite(ra) || !finite(pra) || ra > pra + 50 || ground) this.radioCalled.clear();
+      if (truth(s.approachActive) && !ground && finite(ra) && finite(pra) && ra < pra) {
+        for (const threshold of RADIO_CALLOUTS) {
+          if (pra > threshold && ra <= threshold && !this.radioCalled.has(threshold)) {
+            this.radioCalled.add(threshold);
+            push("radioAltitude", threshold === 2500 ? "TWO THOUSAND FIVE HUNDRED" :
+              threshold === 1000 ? "ONE THOUSAND" : String(threshold));
+          }
+        }
+      }
+      const dh = s.minimumsRadioFt;
+      if (truth(s.approachActive) && !ground && finite(dh) && finite(ra) && finite(pra) && ra < pra) {
+        if (pra > dh + 80 && ra <= dh + 80) push("minimums", "APPROACHING MINIMUMS");
+        if (pra > dh && ra <= dh) push("minimums", "MINIMUMS");
+      }
+
+      const bank = Math.abs(s.bankAngleDeg || 0);
+      if (bank <= 30) this.bankTriggered.clear();
+      for (const n of [35, 40, 45]) {
+        if (bank > n && !this.bankTriggered.has(n)) {
+          this.bankTriggered.add(n);
+          push("gpws", "BANK ANGLE");
+        }
+      }
+      this.previous = s;
+      return { active, events, lamps, status: { takeoffConfigEvaluated: tcfg, altitudeInhibited: altInhibit } };
+    }
+  }
+  return { WarningEngine, AUDIO, RADIO_CALLOUTS };
+});
+
+</script>
+  <script>
+/* Embedded: ../engine/integration/isn-electrical-pack-v1.js */
+/* ISN Pack 01 — Electrical V7 -> Loads V8 -> Fuel/Hyd electric pump states
+ * -> source-labeled warning indications. Educational/discrete only.
+ * Never converts the trainer's assumed pump-to-transfer-bus map into verified
+ * aircraft wiring. Source-gated mode is the default; UNKNOWN stays UNKNOWN.
+ */
+(function(root, factory) {
+  'use strict';
+  const api = factory();
+  if (typeof module === 'object' && module.exports) module.exports = api;
+  if (root) root.B737ISNElectricalPackV1 = api;
+})(typeof globalThis !== 'undefined' ? globalThis : null, function() {
+  'use strict';
+  const SCHEMA = 'b737-isn-electrical-pack/1';
+  const MODES = Object.freeze(['SOURCE_GATED', 'TRAINING_SURROGATE']);
+  const PUMP_REGISTRY = Object.freeze([
+    ['fuel.main1FwdPump', 'leftFwd', 'FUEL', 'MAIN 1 FWD', 'MAIN'],
+    ['fuel.main1AftPump', 'leftAft', 'FUEL', 'MAIN 1 AFT', 'MAIN'],
+    ['fuel.main2FwdPump', 'rightFwd', 'FUEL', 'MAIN 2 FWD', 'MAIN'],
+    ['fuel.main2AftPump', 'rightAft', 'FUEL', 'MAIN 2 AFT', 'MAIN'],
+    ['fuel.centerLeftPump', 'centerLeft', 'FUEL', 'CENTER LEFT', 'CENTER'],
+    ['fuel.centerRightPump', 'centerRight', 'FUEL', 'CENTER RIGHT', 'CENTER'],
+    ['hyd.electricPumpA', 'elecA', 'HYDRAULIC', 'HYD ELEC A', 'ELECTRIC'],
+    ['hyd.electricPumpB', 'elecB', 'HYDRAULIC', 'HYD ELEC B', 'ELECTRIC']
+  ].map(([id, legacyId, system, label, group]) => Object.freeze({id, legacyId, system, label, group,
+    source: 'FCOM-SEPEHRAN-1937', pdfPage: system === 'FUEL' ? 1826 : 1842,
+    folio: system === 'FUEL' ? '12.10.2-3' : '13.10.1'})));
+  const BY_ID = Object.freeze(Object.fromEntries(PUMP_REGISTRY.map(entry => [entry.id, entry])));
+  const copy = value => JSON.parse(JSON.stringify(value));
+  const tri = value => value === true || value === false || value === null;
+  function tAnd(values) { if (values.includes(false)) return false; if (values.includes(null)) return null; return true; }
+  function tOr(values) { if (values.includes(true)) return true; if (values.includes(null)) return null; return false; }
+  function pressureWarning(pump, operating) {
+    if (pump.group === 'CENTER' && !pump.switchOn) return false;
+    if ((pump.group === 'MAIN' || pump.group === 'ELECTRIC') && !pump.switchOn) return true;
+    return operating === null ? null : !operating;
+  }
+  function warningInputs() { return {
+    onGround: true, flaps: 5, gearDownLocked: true, leadingEdgeTakeoff: true,
+    speedbrakeDown: true, parkingBrakeSet: false, stabilizerTrimTakeoff: true,
+    takeoffThrust: false, thrustLever1Angle: 45, thrustLever2Angle: 45,
+    cabinAltitudeFt: 0, engine1Fire: false, engine2Fire: false, apuFire: false
+  }; }
+  const SENSOR_FIELDS = Object.freeze({onGround: 'boolean', cabinAltitudeFt: 'number',
+    engine1Fire: 'boolean', engine2Fire: 'boolean', apuFire: 'boolean'});
+
+  class Session {
+    constructor({Electrical, Loads, TrainerCore, WarningEngine} = {}) {
+      if (!Electrical?.initialState || !Electrical?.apply || !Electrical?.evaluate ||
+          !Loads?.project || !TrainerCore?.CONFIG?.loadBus || !TrainerCore?.FUEL || !TrainerCore?.HYD ||
+          typeof WarningEngine !== 'function') throw Error('Electrical V7, Loads V8, Trainer Core and WarningEngine required');
+      this.Electrical = Electrical;
+      this.Loads = Loads;
+      this.TrainerCore = TrainerCore;
+      this.WarningEngine = WarningEngine;
+      this.reset();
+    }
+    reset() {
+      this.mode = 'SOURCE_GATED';
+      this.electricalState = this.Electrical.initialState();
+      this.pumps = Object.fromEntries(PUMP_REGISTRY.map(p => [p.id, {switchOn: false, failed: false, overheat: false, observedPower: null}]));
+      this.sensors = warningInputs();
+      // 737-400 suppresses an unverified takeoff-flap threshold; fire and cabin
+      // alerts have separate, source-located behavior in the existing engine.
+      this.warningEngine = new this.WarningEngine({variant: '737-400'});
+      this.seq = 0;
+      this.events = [];
+      this.snapshot = this.compute(null);
+      return this.get();
+    }
+    send(command) {
+      if (!command || typeof command.type !== 'string') throw Error('ISN command required');
+      if (command.type === 'RESET') return this.reset();
+      if (command.type === 'ELECTRICAL') {
+        this.electricalState = this.Electrical.apply(this.electricalState, command.action);
+      } else if (command.type === 'MODE') {
+        if (!MODES.includes(command.value) || command.instructor !== true) throw Error('Explicit instructor mode selection required');
+        this.mode = command.value;
+      } else if (['PUMP_SWITCH', 'PUMP_FAULT', 'PUMP_OVERHEAT', 'OBSERVED_POWER'].includes(command.type)) {
+        const pump = this.pumps[command.id];
+        if (!pump || !tri(command.value)) throw Error('Unknown pump or invalid three-valued input');
+        if (command.type === 'PUMP_SWITCH') {
+          if (typeof command.value !== 'boolean') throw Error('Pump switch requires boolean');
+          pump.switchOn = command.value;
+        } else if (command.type === 'OBSERVED_POWER') {
+          if (command.instructor !== true) throw Error('Observed pump power is an instructor/sensor input');
+          pump.observedPower = command.value;
+        } else {
+          if (typeof command.value !== 'boolean' || command.instructor !== true) throw Error('Instructor-only pump failure/overheat');
+          if (command.type === 'PUMP_FAULT') pump.failed = command.value;
+          else {
+            if (!command.id.startsWith('hyd.')) throw Error('Overheat training input is only defined for hydraulic electric pumps');
+            pump.overheat = command.value;
+          }
+        }
+      } else if (command.type === 'WARNING_SENSOR') {
+        const kind = SENSOR_FIELDS[command.key];
+        if (!kind || typeof command.value !== kind || (kind === 'number' && !Number.isFinite(command.value))) throw Error('Unrecognized warning sensor');
+        this.sensors[command.key] = command.value;
+      } else if (command.type === 'CUTOUT_CABIN') {
+        this.warningEngine.cutoutCabin();
+      } else if (command.type === 'ACK_FIRE') {
+        this.warningEngine.acknowledgeFire();
+      } else throw Error('Unknown ISN command ' + command.type);
+
+      this.seq++;
+      const previous = this.snapshot;
+      this.snapshot = this.compute(command);
+      const changes = this.diff(previous, this.snapshot);
+      this.events.push({seq: this.seq, command: copy(command), changes});
+      if (this.events.length > 250) this.events.shift();
+      return this.get();
+    }
+    compute(command) {
+      const electrical = this.Electrical.evaluate(this.electricalState);
+      const loads = this.Loads.project(electrical);
+      const pumps = {};
+      for (const spec of PUMP_REGISTRY) {
+        const input = this.pumps[spec.id];
+        const projected = loads.loads[spec.id];
+        let power = projected.powered;
+        let powerEvidence = projected.powered === false ? 'GLOBAL_CLASS_POWER_ABSENT' : 'UNKNOWN_EQUIPMENT_FEED';
+        let sourceBus = null;
+        if (this.mode === 'TRAINING_SURROGATE') {
+          sourceBus = 'transfer' + this.TrainerCore.CONFIG.loadBus[spec.legacyId];
+          power = electrical.bus[sourceBus];
+          powerEvidence = 'TRAINING_SURROGATE_UNVERIFIED_BUS_ASSIGNMENT';
+        } else if (projected.powered !== false && input.observedPower !== null) {
+          // This is independently observed/instructor-provided, NOT a guessed
+          // electrical bus mapping. It never mutates the original V8 results.
+          power = input.observedPower;
+          powerEvidence = 'INDEPENDENT_INSTRUCTOR_SENSOR';
+        }
+        let operating = !input.switchOn || input.failed || input.overheat ? false : power;
+        if (input.switchOn && !input.failed && !input.overheat && power === true) operating = true;
+        const lowPressure = pressureWarning({...spec, ...input}, operating);
+        pumps[spec.id] = {...spec, ...input, powered: power, operating, lowPressure,
+          sourceBus, powerEvidence, powerQuality: this.mode === 'TRAINING_SURROGATE' ? 'EDUCATIONAL_ASSUMPTION' :
+            input.observedPower !== null ? 'OBSERVED_NOT_BUS_VERIFIED' : 'UNRESOLVED',
+          qa: 'TRAINER_DISCRETE_INDICATION_NOT_MEASURED_PRESSURE'};
+      }
+      const low = id => pumps[id].lowPressure;
+      const main1 = tAnd([low('fuel.main1FwdPump'), low('fuel.main1AftPump')]);
+      const main2 = tAnd([low('fuel.main2FwdPump'), low('fuel.main2AftPump')]);
+      const center = tOr(['fuel.centerLeftPump', 'fuel.centerRightPump']
+        .filter(id => pumps[id].switchOn).map(low));
+      const fuelCautionCandidate = tOr([main1, main2, center]);
+      const warning = this.warningEngine.update(this.sensors);
+      return {schema: SCHEMA, seq: this.seq, mode: this.mode, electrical, loads, pumps,
+        warnings: {
+          fuelSystemAnnunciatorCandidate: fuelCautionCandidate,
+          masterCautionFuelCandidate: fuelCautionCandidate,
+          masterCautionHyd: null,
+          lowPressureLights: Object.fromEntries(PUMP_REGISTRY.map(p => [p.id, pumps[p.id].lowPressure])),
+          audio: {active: warning.active, events: warning.events, lamps: warning.lamps},
+          qa: {fuelCaution: 'TRAINER_CORE_CANDIDATE_NOT_SOURCE_APPROVED_MASTER_CAUTION',
+            hydraulicMasterCaution: 'NOT_MODELED', fuelHydAuralWarning: 'NOT_DOCUMENTED_NOT_SYNTHESIZED'}
+        },
+        sensors: {...this.sensors},
+        limitations: ['NO_FUEL_HYD_INSTALLED_BUS_MAP', 'UNKNOWN_IS_NOT_FALSE',
+          'NO_SYNTHETIC_FUEL_HYD_AURAL_ALARM', 'NO_MEASURED_PRESSURE_OR_FLOW_PHYSICS',
+          'TRAINING_SURROGATE_NEVER_PROMOTED_TO_VERIFIED']};
+    }
+    diff(before, after) {
+      if (!before) return [];
+      const changes = [];
+      const check = (path, oldValue, newValue, evidence) => {
+        if (oldValue !== newValue) changes.push({path, from: oldValue, to: newValue, evidence});
+      };
+      for (const [bus, state] of Object.entries(after.electrical.bus)) {
+        check('elec.bus.' + bus, before.electrical.bus[bus], state, 'ELECTRICAL_V7_SOURCE_LOCATED');
+      }
+      for (const [id, pump] of Object.entries(after.pumps)) {
+        for (const key of ['switchOn', 'powered', 'operating', 'lowPressure']) {
+          check(id + '.' + key, before.pumps[id][key], pump[key], pump.powerEvidence);
+        }
+      }
+      check('warnings.masterCautionFuelCandidate', before.warnings.masterCautionFuelCandidate,
+        after.warnings.masterCautionFuelCandidate, 'TRAINER_CANDIDATE');
+      for (const kind of ['fireBell', 'intermittentHorn']) {
+        const old = before.warnings.audio.active.some(a => a.id === kind);
+        const now = after.warnings.audio.active.some(a => a.id === kind);
+        check('warnings.audio.' + kind, old, now, 'WARNING_ENGINE');
+      }
+      return changes;
+    }
+    get() { return {...copy(this.snapshot), recentEvents: copy(this.events)}; }
+    replay(commands) { this.reset(); for (const action of commands) this.send(action); return this.get(); }
+  }
+  return Object.freeze({SCHEMA, MODES, PUMP_REGISTRY, tAnd, tOr, Session});
+});
+
+</script>
+  <script>
+/* Embedded: ./app.js */
+(function() {
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const root = window;
+  const session = new root.B737ISNElectricalPackV1.Session({
+    Electrical: root.B737ElectricalV7,
+    Loads: root.B737ElectricalLoadsV8,
+    TrainerCore: root.B737TrainerCore,
+    WarningEngine: root.B737WarningEngine.WarningEngine
+  });
+  const PUMPS = root.B737ISNElectricalPackV1.PUMP_REGISTRY;
+  const status = value => value === null ? 'UNKNOWN' : value ? 'ON' : 'OFF';
+  const colored = value => '<span class="state ' + (value === null ? 'unknown' : value ? 'on' : 'off') + '">' + status(value) + '</span>';
+  const escape = text => String(text).replace(/[&<>"']/g, chr => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[chr]));
+  function command(value) { session.send(value); render(); }
+
+  $('mode').onclick = () => command({type: 'MODE', value: session.get().mode === 'SOURCE_GATED' ? 'TRAINING_SURROGATE' : 'SOURCE_GATED', instructor: true});
+  $('reset').onclick = () => { session.reset(); render(); };
+  $('busTransfer').onchange = e => command({type: 'ELECTRICAL', action: {type: 'CONTROL', key: 'busTransferAuto', value: e.target.checked}});
+  for (const [element, fault] of [['gen1Fault', 'GEN1_FAILED'], ['gen2Fault', 'GEN2_FAILED']]) {
+    $(element).onchange = e => command({type: 'ELECTRICAL', action: {type: 'FAULT', id: fault, active: e.target.checked, instructor: true}});
+  }
+  $('fire1').onchange = e => command({type: 'WARNING_SENSOR', key: 'engine1Fire', value: e.target.checked});
+  $('highCabin').onchange = e => command({type: 'WARNING_SENSOR', key: 'cabinAltitudeFt', value: e.target.checked ? 12000 : 0});
+  $('cutoutCabin').onclick = () => command({type: 'CUTOUT_CABIN'});
+  $('ackFire').onclick = () => command({type: 'ACK_FIRE'});
+
+  const pumpBody = $('pumps');
+  for (const pump of PUMPS) {
+    const row = document.createElement('tr');
+    row.dataset.pump = pump.id;
+    row.innerHTML = '<td><strong>' + escape(pump.label) + '</strong><small>' + escape(pump.id) + '</small></td>' +
+      '<td><input type="checkbox" data-action="switch" aria-label="' + escape(pump.label) + ' switch"></td>' +
+      '<td><input type="checkbox" data-action="fault" aria-label="' + escape(pump.label) + ' instructor failure"></td>' +
+      '<td><select data-action="observed" aria-label="Observed power ' + escape(pump.label) + '"><option value="unknown">UNKNOWN</option><option value="true">ON</option><option value="false">OFF</option></select></td>' +
+      '<td data-out="operating">—</td><td data-out="lowPressure">—</td><td data-out="evidence">—</td>';
+    pumpBody.append(row);
+    row.querySelector('[data-action="switch"]').onchange = e => command({type: 'PUMP_SWITCH', id: pump.id, value: e.target.checked});
+    row.querySelector('[data-action="fault"]').onchange = e => command({type: 'PUMP_FAULT', id: pump.id, value: e.target.checked, instructor: true});
+    row.querySelector('[data-action="observed"]').onchange = e => command({type: 'OBSERVED_POWER', id: pump.id,
+      value: e.target.value === 'unknown' ? null : e.target.value === 'true', instructor: true});
+  }
+  function render() {
+    const state = session.get(), sur = state.mode === 'TRAINING_SURROGATE';
+    $('mode').setAttribute('aria-pressed', String(sur));
+    $('mode').textContent = sur ? 'بازگشت به Source-Gated' : 'فعال‌سازی نگاشت آموزشی Surrogate';
+    $('modeBadge').textContent = state.mode;
+    $('modeBadge').className = sur ? 'surrogate' : '';
+    $('busTransfer').checked = session.electricalState.config.busTransferAuto;
+    $('gen1Fault').checked = session.electricalState.faults.GEN1_FAILED;
+    $('gen2Fault').checked = session.electricalState.faults.GEN2_FAILED;
+    $('fire1').checked = state.sensors.engine1Fire;
+    $('highCabin').checked = state.sensors.cabinAltitudeFt > 10000;
+    $('buses').innerHTML = ['generator1','generator2','transfer1','transfer2','main1','main2','dc1','dc2']
+      .map(bus => '<div><small>' + escape(bus.toUpperCase()) + '</small>' + colored(state.electrical.bus[bus]) + '</div>').join('');
+    $('powerQa').textContent = state.electrical.qa.map(item => item.id).join(' · ') || 'Electrical V7 · منبع‌های AC و DC در مدل گسسته محاسبه شدند.';
+    for (const p of PUMPS) {
+      const row = pumpBody.querySelector('[data-pump="' + p.id + '"]');
+      const item = state.pumps[p.id];
+      row.querySelector('[data-action="switch"]').checked = item.switchOn;
+      row.querySelector('[data-action="fault"]').checked = item.failed;
+      row.querySelector('[data-action="observed"]').value = item.observedPower === null ? 'unknown' : String(item.observedPower);
+      row.querySelector('[data-out="operating"]').innerHTML = colored(item.operating);
+      row.querySelector('[data-out="lowPressure"]').innerHTML = colored(item.lowPressure);
+      row.querySelector('[data-out="evidence"]').textContent = (item.sourceBus ? item.sourceBus + ' · ' : '') + item.powerEvidence;
+    }
+    const w = state.warnings;
+    const summary = [
+      ['FUEL ANNUNCIATOR · candidate', w.fuelSystemAnnunciatorCandidate],
+      ['MASTER CAUTION FUEL · candidate', w.masterCautionFuelCandidate],
+      ['MASTER CAUTION HYD · unverified', w.masterCautionHyd],
+      ['FIRE BELL · WarningEngine', w.audio.active.some(a => a.id === 'fireBell')],
+      ['CABIN HORN · WarningEngine', w.audio.active.some(a => a.id === 'intermittentHorn')]
+    ];
+    $('warningSummary').innerHTML = summary.map(([name,value]) => '<div><small>' + escape(name) + '</small>' + colored(value) + '</div>').join('');
+    $('warningNote').textContent = 'Fuel caution یک خروجی آموزشی کاندید است؛ Hydraulic Master Caution و تغذیه دقیق پمپ‌ها تا دریافت مدرک معتبر UNKNOWN می‌مانند.';
+    $('eventTrace').replaceChildren();
+    for (const event of [...state.recentEvents].reverse().slice(0,25)) {
+      const item = document.createElement('div'); item.className = 'event';
+      const top = document.createElement('b');top.textContent = '#' + event.seq + ' · ' + event.command.type;
+      item.append(top);
+      if (!event.changes.length) { const none = document.createElement('small'); none.textContent = 'بدون تغییر خروجی'; item.append(none); }
+      for (const change of event.changes) {
+        const p = document.createElement('p');p.dir = 'ltr';
+        p.textContent = change.path + ': ' + status(change.from) + ' → ' + status(change.to) + ' [' + change.evidence + ']';
+        item.append(p);
+      }
+      $('eventTrace').append(item);
+    }
+    if (!state.recentEvents.length) $('eventTrace').textContent = 'هنوز رویدادی ثبت نشده است.';
+  }
+  root.B737ISNPack01Session = session;
+  render();
+})();
+
+</script>
+</body>
+</html>
