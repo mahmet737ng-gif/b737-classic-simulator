@@ -91,6 +91,22 @@
         "B737-FIRE-HANDEL-APU-RIGHT45-ON-V1",
         "B737-FIRE-HANDEL-APU-RIGHT45-OFF-V1"
       ]
+    },
+    {
+      "version": "GITHUB-UPLOAD-ENGINE-FIRE-HANDLE-45-20261024",
+      "date": "2026-10-24",
+      "kind": "binary_upload_verified",
+      "description": "Eight exact original user-approved ENG1 and ENG2 angled fire handle PNG images (LEFT45/RIGHT45 x ON/OFF) committed append-only with SHA-256 verification. Four previous APU angle images and all center originals unchanged.",
+      "ids": [
+        "B737-FIRE-HANDEL-ENG1-LEFT45-ON-V1",
+        "B737-FIRE-HANDEL-ENG1-LEFT45-OFF-V1",
+        "B737-FIRE-HANDEL-ENG1-RIGHT45-ON-V1",
+        "B737-FIRE-HANDEL-ENG1-RIGHT45-OFF-V1",
+        "B737-FIRE-HANDEL-ENG2-LEFT45-ON-V1",
+        "B737-FIRE-HANDEL-ENG2-LEFT45-OFF-V1",
+        "B737-FIRE-HANDEL-ENG2-RIGHT45-ON-V1",
+        "B737-FIRE-HANDEL-ENG2-RIGHT45-OFF-V1"
+      ]
     }
   ]
 }
