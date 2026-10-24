@@ -1,5 +1,16 @@
 # Technical Database — Boeing 737 sources
 
+## General chart, table and text reader V1 (2026-10-25)
+
+Reusable reading/calculation infrastructure is in `engine/technical_reader_v1/`.
+It preserves source revisions/pages, OCR/native evidence, table cells, explicit
+axis/branch mappings, piecewise curves, multidimensional grids, formula plans
+and numerical/text output. Private additive storage:
+`/Technical Database/Engines/Chart-Table-Reader-V1/`. Source registry entry:
+`chart_table_reader_v1`. See [CHART_TABLE_READER_V1.md](CHART_TABLE_READER_V1.md).
+Automatic readings remain candidates; named curve branches require explicit
+mapping. Existing source corpus and cockpit/N1 runtime are retained.
+
 ## Current product scope — Cockpit Systems & Procedures Trainer (2026-10-23)
 
 The **active product goal** is interactive 737 Classic cockpit switching, system responses, injected faults/emergencies, indicators/audio, and state-aware Normal/Non-Normal checklist practice, **not** full-flight simulation. See [TRAINER_SCOPE.md](TRAINER_SCOPE.md).

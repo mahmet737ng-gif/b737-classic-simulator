@@ -1,0 +1,19 @@
+{
+  "engine_id": "TD-CHART-TABLE-READER",
+  "version": "1.0.0",
+  "schema": "TD-CHART-TABLE-READER/1",
+  "python_entry": "engine.technical_reader_v1",
+  "private_database": "/Technical Database/Engines/Chart-Table-Reader-V1/CHART_TABLE_READER_V1.sqlite",
+  "parent_database": "/Technical Database/Technical-Network-V2/B737_TECHNICAL_NETWORK_V2.sqlite",
+  "storage_policy": "additive namespace ctr_ and explicit parent references; preserve existing corpus",
+  "input_formats": ["pdf", "png", "jpg", "jpeg", "tif", "tiff", "bmp", "webp", "csv", "tsv", "xlsx", "txt", "md"],
+  "model_kinds": ["curve", "family", "grid", "lookup", "formula"],
+  "outputs": ["SQLite", "JSON", "piecewise numerical rows", "CSV", "source text", "calculation explanation"],
+  "quality_states": ["candidate", "traced", "validated", "simulation_approx", "rejected"],
+  "simulation_policy": "Explicit traced/approximate mode available; source provenance and conditions retained",
+  "automatic_extraction_is_source_validation": false,
+  "automatic_curve_branch_assignment": false,
+  "automatic_full_corpus_processing": false,
+  "cockpit_runtime_wiring": "not_changed",
+  "source_material_in_public_repository": false
+}

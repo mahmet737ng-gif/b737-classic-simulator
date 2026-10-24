@@ -1,0 +1,5 @@
+# Extraction adapters; numerical models and SQLite use Python standard library.
+PyMuPDF==1.26.6
+Pillow==12.3.0
+openpyxl==3.1.5
+# System OCR dependency: Tesseract with the requested language data.
