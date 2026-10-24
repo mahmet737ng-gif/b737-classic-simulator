@@ -16,13 +16,21 @@
     return marks.map(p => Math.atan2(p[0] - pivot[0], pivot[1] - p[1]) * 180 / Math.PI - pointerZero);
   };
 
-  function createDetentGesture(onStep, { firstThreshold = 4, nextThreshold = 18 } = {}) {
-    if (typeof onStep !== 'function' || !(firstThreshold > 0 && nextThreshold > 0)) {
+  function createDetentGesture(onStep, { firstThreshold = 4, nextThreshold = 18, minTravelPixels = 0 } = {}) {
+    if (typeof onStep !== 'function' || !(firstThreshold > 0 && nextThreshold > 0 && minTravelPixels >= 0)) {
       throw new Error('Invalid detent gesture');
     }
-    let direction = 0, travel = 0, stepped = false;
-    function feed(deltaDegrees) {
-      if (!Number.isFinite(deltaDegrees) || !deltaDegrees) return 0;
+    let direction = 0, travel = 0, stepped = false, pixels = 0, pendingDegrees = 0;
+    function feed(deltaDegrees, deltaPixels = 0) {
+      if (!Number.isFinite(deltaDegrees) || !Number.isFinite(deltaPixels) || deltaPixels < 0) return 0;
+      if (minTravelPixels && pixels < minTravelPixels) {
+        pixels += deltaPixels;
+        pendingDegrees += deltaDegrees;
+        if (pixels < minTravelPixels) return 0;
+        deltaDegrees = pendingDegrees;
+        pendingDegrees = 0;
+      }
+      if (!deltaDegrees) return 0;
       const sign = Math.sign(deltaDegrees);
       if (sign !== direction) { direction = sign; travel = 0; stepped = false; }
       travel += Math.abs(deltaDegrees);
@@ -35,7 +43,7 @@
       }
       return count;
     }
-    function reset() { direction = 0; travel = 0; stepped = false; }
+    function reset() { direction = 0; travel = 0; stepped = false; pixels = 0; pendingDegrees = 0; }
     return { feed, reset, snapshot: () => ({ direction, travel, stepped }) };
   }
   return Object.freeze({ deltaAngle, anglesFromMarks, createDetentGesture });

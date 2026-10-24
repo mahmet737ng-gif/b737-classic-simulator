@@ -3,6 +3,7 @@
  const scriptURL=document.currentScript.src,url=p=>new URL(p,scriptURL).href;
  const model=window.B737RotaryGuardModel,points=window.B737OverheadToggleModel,motion=window.B737RotaryMotionRM0002;
  const STORAGE='b737-overhead-rotary-guards-RG-0001',byId=id=>document.getElementById(id);
+ const SWIPE={firstThreshold:12,nextThreshold:28,minTravelPixels:9,tapSlopPixels:2.5};
  let registry,engine,layer,selected=null;
  const widgets=new Map(),angles=new Map(),legendWidgets=new Map();
  const persist=()=>{try{localStorage.setItem(STORAGE,JSON.stringify(engine.snapshot()));}catch{}};
@@ -50,17 +51,17 @@
   button.addEventListener('pointerdown',e=>{
    if(e.button!==0)return;e.preventDefault();e.stopPropagation();choose(c);button.focus({preventScroll:true});button.setPointerCapture(e.pointerId);
    const b=button.getBoundingClientRect(),radius=Math.hypot(e.clientX-(b.left+b.width/2),e.clientY-(b.top+b.height/2));
-   drag={id:e.pointerId,x:e.clientX,y:e.clientY,previousX:e.clientX,last:pointerAngle(e),angle:engine.angle(c.id),start:engine.rotary(c.id),moved:false,
+   drag={id:e.pointerId,x:e.clientX,y:e.clientY,previousX:e.clientX,previousY:e.clientY,last:pointerAngle(e),angle:engine.angle(c.id),start:engine.rotary(c.id),moved:false,
     radial:radius>=Math.min(b.width,b.height)*.19,
-    gesture:c.mode==='detent'?motion.createDetentGesture(direction=>engine.stepRotary(c.id,direction,'detent-drag')):null};
+    gesture:c.mode==='detent'?motion.createDetentGesture(direction=>engine.stepRotary(c.id,direction,'detent-drag'),SWIPE):null};
    button.classList.add('dragging');
   });
   button.addEventListener('pointermove',e=>{
-   if(!drag||drag.id!==e.pointerId)return;e.stopPropagation();const a=pointerAngle(e),delta=drag.radial?motion.deltaAngle(drag.last,a):(e.clientX-drag.previousX)*.85;
-   drag.last=a;drag.previousX=e.clientX;
+   if(!drag||drag.id!==e.pointerId)return;e.stopPropagation();const a=pointerAngle(e),dx=e.clientX-drag.previousX,dy=e.clientY-drag.previousY,delta=drag.radial?motion.deltaAngle(drag.last,a):dx*.85;
+   drag.last=a;drag.previousX=e.clientX;drag.previousY=e.clientY;
    if(Math.hypot(e.clientX-drag.x,e.clientY-drag.y)>4)drag.moved=true;
    if(!drag.moved)return;
-   if(c.mode==='detent'){drag.gesture.feed(delta);return;}
+   if(c.mode==='detent'){drag.gesture.feed(delta,Math.hypot(dx,dy));return;}
    drag.angle+=delta;
    if(!c.wrap)drag.angle=Math.max(c.mode==='continuous'?c.angleMin:c.angles[0],Math.min(c.mode==='continuous'?c.angleMax:c.angles.at(-1),drag.angle));
    engine.turnRotary(c.id,drag.angle);angles.set(c.id,drag.angle);img.style.transform='rotate('+drag.angle+'deg)';
@@ -68,7 +69,7 @@
   const finish=(e,cancel)=>{
    if(!drag||drag.id!==e.pointerId)return;e.stopPropagation();
    if(cancel&&c.mode==='detent')engine.setRotary(c.id,drag.start,'cancel-drag');
-   else if(!cancel&&!drag.moved){
+   else if(!cancel&&!drag.moved&&Math.hypot(e.clientX-drag.x,e.clientY-drag.y)<=SWIPE.tapSlopPixels){
     const b=button.getBoundingClientRect(),relativeX=e.clientX-(b.left+b.width/2);
     engine.stepRotary(c.id,relativeX<-(b.width*.12)?-1:1,'tap');
    }

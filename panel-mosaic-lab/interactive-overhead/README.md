@@ -32,6 +32,12 @@ renderer and mounts controls over the measured sockets.
   GALLEY and RESID VOLTS are *not* AC selector detents and were removed from
   that rotary state list. Other rotary legends require their own measured
   source-pixel outlines before enabling direct label taps.
+- RM-0004 touch tuning: mounted detent knobs now need 9 px of pointer travel
+  **and** 12° of accumulated rotation before the first swipe step; subsequent
+  steps need another 28°. Tiny releases beyond 2.5 px are not treated as knob
+  taps. Clicking a calibrated legend or deliberately clicking the knob remains
+  immediately responsive. Original detent angles and 110 ms animation are
+  unchanged.
 
 Checks:
 
