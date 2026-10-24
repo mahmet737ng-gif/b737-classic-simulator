@@ -419,3 +419,12 @@ side of the original pivot; the broad white blade continues outward to the
 tip. The unsupported rear counterweight, invented hub and gradient are gone.
 Both assets have the same traced silhouette; only the character differs.
 The locked OH21 background is still byte-for-byte unchanged.
+
+## DPN-0003 — reuse the Cabin Rate needle
+
+The earlier DUCT PRESSURE-specific L/R sprites are superseded. Both OH21
+pointers now load the exact, unmodified `cabin-rate-needle.svg` used by the
+Cabin Rate gauge. Only the installation scale changes: the tip radius is 148
+OH21 source pixels, matching the printed dial. R remains below L at the same
+pivot, and each moves independently. The shared asset has no L/R lettering;
+none is drawn onto it. The locked background and the source SVG are unchanged.

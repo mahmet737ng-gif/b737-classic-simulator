@@ -16,16 +16,18 @@ assert.throws(()=>model.psi('X',30));assert.throws(()=>model.psi('L',NaN));
 const pos=model.placement(oh21);assert.ok(pos.x>oh21.x&&pos.x<oh21.x+oh21.w);assert.ok(pos.y>oh21.y&&pos.y<oh21.y+oh21.h);
 for(const needle of model.needles){
  const asset=fs.readFileSync(path.join(__dirname,needle.asset),'utf8');
- assert.match(asset,/viewBox="0 0 512 512"/);assert.match(asset,new RegExp('DUCT PRESSURE '+needle.id));
- assert.match(asset,/fill="#17191a"/);assert.match(asset,/fill="#f8f7f1"/);assert.doesNotMatch(asset,/<image|<circle|linearGradient/);
+ assert.equal(needle.asset,'cabin-rate-needle.svg');
+ assert.equal(needle.tipRadius,148);
+ assert.match(asset,/viewBox="0 0 512 512"/);
+ assert.match(asset,/<title>CABIN CLIMB — cabin rate<\/title>/);
 }
-const shapes=model.needles.map(needle=>[...fs.readFileSync(path.join(__dirname,needle.asset),'utf8').matchAll(/<path d="([^"]+)"/g)].map(match=>match[1]));
-assert.deepEqual(shapes[0],shapes[1]);
+assert.equal(model.needles[0].asset,model.needles[1].asset);
 const ui=fs.readFileSync(path.join(__dirname,'duct-pressure-needles-unified.js'),'utf8');
 assert.ok(ui.includes('for(const needle of model.needles)'));
 assert.ok(ui.includes('window.B737UnifiedDuctPressureNeedles'));
 assert.ok(ui.includes('model.bearing(id,state[id])'));
+assert.ok(ui.includes("?v=CRN-0001"));
 const html=fs.readFileSync(path.join(__dirname,'index.html'),'utf8');
-assert.ok(html.includes('duct-pressure-needles-model.js?v=DPN-0001'));
-assert.ok(html.includes('duct-pressure-needles-unified.js?v=DPN-0002'));
-console.log('PASS: OH21 DUCT PRESSURE L/R share the reference-traced blade, proximal label section, and no invented rear counterweight.');
+assert.ok(html.includes('duct-pressure-needles-model.js?v=DPN-0003'));
+assert.ok(html.includes('duct-pressure-needles-unified.js?v=DPN-0003'));
+console.log('PASS: OH21 DUCT PRESSURE L/R both reuse the unmodified Cabin Rate needle at the OH21 dial scale.');
