@@ -1,5 +1,26 @@
 # Unified cockpit — CKP-0002
 
+## CKP-0005 / LGT-0007 — STAB socket fit and SPEED BRAKE mounting
+
+The owner's Unified route now mounts the two already-existing SVG speed-brake
+legends on the **upper/lower stacked center-panel black sockets**, top amber
+`SPEED_BRAKE_DO_NOT_ARMED_AMBER`, bottom green `SPEED_BRAKE_ARMED_GREEN`.
+Both remain testable through the in-page light inspector and gallery, with
+independent explicit annunciator signals. These are *visual-test inputs*, not
+claims that the automatic speed-brake control-law implementation is complete.
+The underlying panel images are not edited.
+
+`STAB_OUT_OF_TRIM` retains its requested 300×300 SVG face and yellow wording,
+but the artwork is now lens-only (no duplicate bezel), and its overlay rect is
+remeasured to source coordinates `[255,740,88,59]` on the engine/standby image,
+filling the original black socket. The former overlay covered only 51 pixels
+of the available lens width. Both mounted and gallery SVG image URLs are
+versioned so GitHub Pages/browser caches cannot keep the replaced old face.
+
+29 main-panel lights are now physically mounted, versus 27 previously. The
+110 approved overhead lights and the frozen `UPD-0012` overhead montage remain
+intact. Physical registration for this new fit awaits owner's visual check.
+
 ## Owner naming and upload destination — CKP-0004
 
 **«یونیفاید» (Unified) means this route:**

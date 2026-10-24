@@ -6,7 +6,7 @@
  const assetRoot='../assets/locked/2026-10-23/LIGHTS/';
  const githubApi='https://api.github.com/repos/mahmet737ng-gif/b737-classic-simulator/contents/panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS';
  const states=new Map(),cards=new Map();
- let lights=[],version='LGT-0006',registered=new Set();
+ let lights=[],version='LGT-0007',registered=new Set();
 
  function update(c){
   const card=cards.get(c.id);if(!card)return;

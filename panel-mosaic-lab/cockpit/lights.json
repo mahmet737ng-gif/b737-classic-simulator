@@ -1,6 +1,6 @@
 {
   "schema": "b737.cockpit-annunciators.v1",
-  "version": "LGT-0005",
+  "version": "LGT-0007",
   "sourceDatabase": {
     "name": "B737_TECHNICAL_NETWORK_V2",
     "sourceId": "FCOM-SEPEHRAN-1937",
@@ -190,11 +190,31 @@
     "STAB_OUT_OF_TRIM": {
       "OFF": {
         "url": "../assets/locked/2026-10-23/LIGHTS/STAB_OUT_OF_TRIM_OFF.svg",
-        "sha256": "b300eb85336f1cb741c79e11e9c47105954c3a24450cb24a32934325416be463"
+        "sha256": "b44540436b639d27dc4670880ece962478370b6ec010e5e32ea4a6ae06201f94"
       },
       "ON": {
         "url": "../assets/locked/2026-10-23/LIGHTS/STAB_OUT_OF_TRIM_ON.svg",
-        "sha256": "52bcc0b63b943df14bd4bb933a22093ce66b7933176ccc94cb6a4ca1210972c6"
+        "sha256": "01011d7cce12f8d8170688d9da3743219eef809893f5b38aba1908156ab89e57"
+      }
+    },
+    "SPEED_BRAKE_DO_NOT_ARMED_AMBER": {
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/SPEED_BRAKE_DO_NOT_ARMED_AMBER_OFF.svg",
+        "sha256": "d44de285fb0cf3d2bcd31497c9e3bdda4f38662fb61ffe6abec3cb1dfc008cb8"
+      },
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/SPEED_BRAKE_DO_NOT_ARMED_AMBER_ON.svg",
+        "sha256": "a87f320847768f39686b1b3b451b5025ff66dec992f31e714274a65b367950ba"
+      }
+    },
+    "SPEED_BRAKE_ARMED_GREEN": {
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/SPEED_BRAKE_ARMED_GREEN_OFF.svg",
+        "sha256": "5c1de0d2bee004f8ad8d012ab1789a5c083339c23930b8b4de849df0170c1786"
+      },
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/SPEED_BRAKE_ARMED_GREEN_ON.svg",
+        "sha256": "fb49af2a8d4707827f287b3f6d25d663c7597307d6a941021f32932d275494ed"
       }
     },
     "INOP": {
@@ -823,10 +843,10 @@
       "asset": "STAB_OUT_OF_TRIM",
       "pieceId": "engine",
       "sourceRect": [
-        256,
-        741,
-        51,
-        55
+        255,
+        740,
+        88,
+        59
       ],
       "rule": "stab-trim",
       "inputs": [
@@ -839,7 +859,53 @@
         "printedFolio": "4.10.23",
         "status": "SOURCE_CONDITION_SENSOR_INPUT",
         "condition": "Autopilot engaged and not trimming stabilizer properly; extinguished with autopilot disengaged.",
-        "placementStatus": "MEASURED_SOURCE_SOCKET_PENDING_OWNER_VISUAL_ACCEPTANCE"
+        "placementStatus": "REMEASURED_FULL_LENS_RECT_255_740_88_59_PENDING_OWNER_VISUAL_ACCEPTANCE"
+      }
+    },
+    {
+      "id": "main-speed-brake-do-not-arm",
+      "asset": "SPEED_BRAKE_DO_NOT_ARMED_AMBER",
+      "pieceId": "engine",
+      "sourceRect": [
+        22,
+        740,
+        94,
+        39
+      ],
+      "rule": "signal",
+      "inputs": [
+        "speedBrakeDoNotArmIndication"
+      ],
+      "provenance": {
+        "sourceId": null,
+        "physicalPdfPage": null,
+        "printedFolio": null,
+        "status": "VISUAL_TEST_ONLY",
+        "condition": "Direct input from the speed-brake system indicating invalid automatic arming conditions; suppressed by the upstream controller when lever is DOWN. Simulator integration pending.",
+        "placementStatus": "MEASURED_UPPER_STACKED_CENTER_PANEL_LENS_PENDING_OWNER_VISUAL_ACCEPTANCE"
+      }
+    },
+    {
+      "id": "main-speed-brake-armed",
+      "asset": "SPEED_BRAKE_ARMED_GREEN",
+      "pieceId": "engine",
+      "sourceRect": [
+        22,
+        789,
+        94,
+        39
+      ],
+      "rule": "signal",
+      "inputs": [
+        "speedBrakeArmedIndication"
+      ],
+      "provenance": {
+        "sourceId": null,
+        "physicalPdfPage": null,
+        "printedFolio": null,
+        "status": "VISUAL_TEST_ONLY",
+        "condition": "Direct input from the speed-brake system when automatic speed-brake arming is valid; suppressed by the upstream controller when lever is DOWN. Simulator integration pending.",
+        "placementStatus": "MEASURED_LOWER_STACKED_CENTER_PANEL_LENS_PENDING_OWNER_VISUAL_ACCEPTANCE"
       }
     },
     {

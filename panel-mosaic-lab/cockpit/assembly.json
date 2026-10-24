@@ -216,5 +216,5 @@
     "Overhead switches and lights remain interactive. Main and newly imported pedestal artwork are connected as base images; new actuator/system overlays are a separate stage.",
     "Pedestal throttle/fire upper area uses the explicitly identified existing reference until a replacement is selected."
   ],
-  "lightVersion": "LGT-0005"
+  "lightVersion": "LGT-0007"
 }
