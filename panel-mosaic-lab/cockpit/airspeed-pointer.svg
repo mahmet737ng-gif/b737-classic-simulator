@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024" role="img" aria-label="Airspeed indicator pointer, dark shaft and white tip">
+ <title>AIRSPEED pointer</title>
+ <path d="M499 514 L525 514 L525 158 L521 143 L503 143 L499 158 Z" fill="#121414" stroke="#555650" stroke-width="3" stroke-linejoin="round"/>
+ <path d="M503 150 L498 104 L501 55 Q512 49 523 55 L526 104 L521 150 Q512 158 503 150 Z" fill="#f5f4eb" stroke="#191a17" stroke-width="3" stroke-linejoin="round"/>
+ <path d="M506 62 L506 132" stroke="#ffffff" stroke-width="2" opacity=".65"/>
+</svg>

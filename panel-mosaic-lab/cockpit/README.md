@@ -442,3 +442,16 @@ oxygen-system contract is asserted. B737UnifiedOxygenPressureGauge exposes
 setPressurePsi and receives b737:oxygen-pressure-value with a psi field. The
 locked UPPER source and atlas renderer remain unchanged. Regression:
 node panel-mosaic-lab/cockpit/oxygen-pressure-gauge.test.cjs.
+
+## ASP-0001 — captain airspeed and VMO/MMO pointers
+
+The captain IAS/Mach gauge in the frozen main-panel photograph receives two
+separate vector overlays. The airspeed pointer has a dark shaft and white tip;
+the VMO/MMO barber-pole pointer has diagonal red/white bands. Both share the
+source-image pivot (1108, 973), but move independently. The initial visual
+positions follow the owner screenshot: 60 KT airspeed and approximately 340 KT
+VMO/MMO. Visible printed marks from 60 to 400 KT define a provisional visual
+interpolation. This is not a verified airspeed-system calibration or an AFM
+operating limit; it is not yet connected to an aircraft speed source. The
+original captain-panel bitmap remains unchanged. Regression:
+node panel-mosaic-lab/cockpit/airspeed-pointers.test.cjs.
