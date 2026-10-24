@@ -18,7 +18,7 @@ for(const asset of Object.values(a.assets)){const bytes=fs.readFileSync(path.res
 const zoom=m.zoomAnchor(.25,.5,100,200,300,250);assert.equal((100+300)/.25,(zoom.left+300)/.5);assert.equal((200+250)/.25,(zoom.top+250)/.5);assert.ok(m.fit({w:4400,h:8100},390,600)>=.04);
 const centered=m.zoomAnchor(.1,.2,0,0,500,200,{x:300,y:20},{x:100,y:0});assert.equal((500-300)/.1,(centered.left+500-100)/.2);assert.equal((200-20)/.1,(centered.top+200)/.2);
 const html=fs.readFileSync(path.join(__dirname,'overhead-stage.html'),'utf8');for(const src of ['performance/overhead-renderer.js?v=PERF-0001','app.js?v=RG-0001','rotary-motion-rm0002.js?v=RM-0004','rotary-guards.js?v=ISN-0003','rotary-guards-model.js?v=RM-0003','overhead-bridge.js?v=ISN-0003','lights.js?v=LGT-0006'])assert.ok(html.includes(src),src);assert.ok(!html.includes('data-cockpit-entry'));
-assert.equal(a.regions.find(r=>r.id==='overhead').embeddedUrl,'./overhead-stage.html?v=ISN-0003-PERF-0001','Unified must reload current overhead bridge and start cutout handling');
+assert.equal(a.regions.find(r=>r.id==='overhead').embeddedUrl,'./overhead-stage.html?v=ISN-0003-PERF-0001-LGT-0006','Unified must reload current overhead bridge and start cutout handling');
 const interactive=fs.readFileSync(path.join(__dirname,'../interactive-overhead/rotary-guards.js'),'utf8');
 assert.ok(interactive.includes('mountEngineStartLabelCorrection(layout)'),'Unified corrects FLT spacing without changing the locked atlas image');
 assert.ok(interactive.includes('motion.createDetentGesture'),'Unified uses event-triggered hard-stop detents');
