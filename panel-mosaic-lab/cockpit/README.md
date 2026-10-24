@@ -1,5 +1,16 @@
 # Unified cockpit — CKP-0012
 
+## CDN-0001 — independent cabin PRESS and CAB ALT needles on OH19
+
+The original OH19 pressure gauge image is unchanged. A long ivory `PRESS`
+pointer reads the outer differential-pressure PSI scale, while a shorter,
+thicker `CAB ALT` pointer reads the inner cabin-altitude x1000 FT scale.
+Both are transparent SVG overlays on the same measured source-image pivot
+at `(489,365)`. The shorter pointer is rendered beneath the long pointer.
+The Unified inspector can rotate them independently or reset both to the
+reference pose. The controls are visual tests only; no cabin-pressure-system
+values are inferred from pointer angles.
+
 ## DAN-0002 / EGT-0002 — APU's right and left gauges
 
 The right-hand APU A.C. AMPS gauge on OH12 reuses the already-approved white
