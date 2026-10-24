@@ -468,5 +468,32 @@
         "sha256": "d1a2676302a026cc141244b489521163597ae6b13d80e08395cb5483e2c26252"
       }
     ]
+  },
+  "fire_handle_rotation": {
+    "id": "B737-FIRE-HANDLE-ROTATION-V1",
+    "version": "1.0.0",
+    "source_images": "six user-approved, locked FIRE_HANDEL unit ON/OFF WebP files",
+    "visual_states": 18,
+    "units": [
+      "APU",
+      "ENG1",
+      "ENG2"
+    ],
+    "detents_deg": [
+      -45,
+      0,
+      45
+    ],
+    "light_states": [
+      "ON",
+      "OFF"
+    ],
+    "engine": "../fire-handle-lab/engine.js",
+    "manifest": "../fire-handle-lab/rotation-manifest.json",
+    "test_page": "../fire-handle-lab/index.html",
+    "rotation_origin": "center 50% 50%",
+    "discharge_command": false,
+    "handle_position": "IN",
+    "status": "published visual test"
   }
 }
