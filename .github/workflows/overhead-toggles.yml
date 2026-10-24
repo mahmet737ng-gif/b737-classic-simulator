@@ -5,6 +5,9 @@ on:
       - 'panel-mosaic-lab/interactive-overhead/**'
       - 'panel-mosaic-lab/all-overhead/**'
       - 'shared-assets/toggle-switch-standard-v1/**'
+      - 'switch-lab/assets/rotary-standard-v1.webp'
+      - 'panel-mosaic-lab/assets/locked/2026-10-23/*Guarded*.png'
+      - 'flight-controls-panel/fcom-control-mechanics.js'
       - 'flight-controls-panel/assets/nav-transfer-*-v3.webp'
       - '.github/workflows/overhead-toggles.yml'
   pull_request:
@@ -12,6 +15,9 @@ on:
       - 'panel-mosaic-lab/interactive-overhead/**'
       - 'panel-mosaic-lab/all-overhead/**'
       - 'shared-assets/toggle-switch-standard-v1/**'
+      - 'switch-lab/assets/rotary-standard-v1.webp'
+      - 'panel-mosaic-lab/assets/locked/2026-10-23/*Guarded*.png'
+      - 'flight-controls-panel/fcom-control-mechanics.js'
       - 'flight-controls-panel/assets/nav-transfer-*-v3.webp'
       - '.github/workflows/overhead-toggles.yml'
 permissions:
@@ -24,8 +30,13 @@ jobs:
       - name: Preserve final mosaic
         run: python3 panel-mosaic-lab/verify-final-overhead.py
       - name: Verify toggle state logic and approved frame hashes
-        run: node panel-mosaic-lab/interactive-overhead/test.cjs
+        run: |
+          node panel-mosaic-lab/interactive-overhead/test.cjs
+          node panel-mosaic-lab/interactive-overhead/rotary-guards.test.cjs
       - name: Check browser scripts
         run: |
           node --check panel-mosaic-lab/interactive-overhead/app.js
           node --check panel-mosaic-lab/interactive-overhead/model.js
+
+          node --check panel-mosaic-lab/interactive-overhead/rotary-guards.js
+          node --check panel-mosaic-lab/interactive-overhead/rotary-guards-model.js
