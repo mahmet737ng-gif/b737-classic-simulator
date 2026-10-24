@@ -1,21 +1,31 @@
 {
   "schema": "b737.overhead.atlas-coordinate-layout.v1",
-  "version": "UPD-0011-visual-atlas-mapping",
+  "version": "UPD-0012-OVH-measured-seams",
   "date": "2026-10-24",
   "reference": {
     "image": "../../assets/overhead.webp",
-    "traceSource": "B737_Mosaic_Atlas_OH_v1.jpg (2220 × 3525), original user-uploaded atlas; cyan plate outlines sampled at column and row seams",
-    "referenceWidth": 2220,
-    "referenceHeight": 3525
+    "traceSource": "Owner supplied OVH.png, 1920x1080; physical seams measured separately from red alignment strokes.",
+    "referenceWidth": 1920,
+    "referenceHeight": 1080,
+    "lowerPhotoBounds": {
+      "x": 394,
+      "y": 0,
+      "w": 1150,
+      "h": 1026
+    },
+    "uniformScale": 1.9252173913043478,
+    "preservedUpperVersion": "UPD-0011",
+    "upperPlacementUnchanged": true,
+    "measurementToleranceReferencePx": 2
   },
   "canvas": {
     "width": 2220,
-    "height": 3525
+    "height": 3312
   },
   "physicalColumns": [
     {
       "x": 3,
-      "width": 550,
+      "width": 497,
       "ids": [
         "OH07",
         "OH08",
@@ -23,8 +33,8 @@
       ]
     },
     {
-      "x": 558,
-      "width": 461,
+      "x": 500,
+      "width": 496,
       "ids": [
         "OH10",
         "OH11",
@@ -32,8 +42,8 @@
       ]
     },
     {
-      "x": 1024,
-      "width": 247,
+      "x": 996,
+      "width": 235,
       "ids": [
         "OH13",
         "OH14",
@@ -41,8 +51,8 @@
       ]
     },
     {
-      "x": 1276,
-      "width": 473,
+      "x": 1231,
+      "width": 493,
       "ids": [
         "OH15",
         "OH16",
@@ -52,8 +62,8 @@
       ]
     },
     {
-      "x": 1754,
-      "width": 463,
+      "x": 1724,
+      "width": 493,
       "ids": [
         "OH20",
         "OH21",
@@ -63,16 +73,18 @@
   ],
   "upperToLowerBoundaryY": 1026,
   "firstLowerRowY": 1031,
-  "lowerSharedEdgeY": 3276,
-  "bottomStripTopY": 3281,
+  "lowerSharedEdgeY": 3006,
+  "bottomStripTopY": 3006,
   "layoutPrinciples": [
-    "Original Atlas V2 cyan borders define five fixed lower columns: left [OH07,OH08,OH09], electric [OH10,11,12], center [circuit / emergency / ground-wiper], fourth [OH15,16,17, voice REC atlas OH18, press-diff atlas OH19], right [OH20,21,22].",
-    "The previous duplicate/misleading source filenames do not define atlas IDs: OH18-GROUND-CALL image belongs to the lower center OH14 area, while OH19-VOICE image represents real atlas OH18.",
-    "One OH07-08 immutable source image is separated visually into two crops at image row 1216; same PNG remains unchanged.",
-    "Artwork scales to intended plate region without clipping letters; fill intentionally permits anisotropic fit where original aspect ratio was reconstructed incorrectly. The user can compare against unchanged Atlas View.",
-    "Footer OH23-25 shares a single original image; only documented white canvas margins are excluded in view.",
-    "All five columns finish y=3276, bottom strip begins y=3281.",
-    "No original locked image files renamed, overwritten, or deleted."
+    "UPPER OH01-OH06 placement and source remain exactly as UPD-0011.",
+    "All lower plate positions derive from OVH.png with one uniform reference-to-board scale.",
+    "Five physical column boundaries: x394,652,910,1032,1288,1544 in OVH.png.",
+    "Shared horizontal seams (reference y632 for Fuel/AC-ammeters, y1026 for lower strip) are calculated once, without arbitrary gutters.",
+    "Only reference-visible blank plate areas are inset (Flight Control top130px, Air Conditioning top110px).",
+    "OH07 and OH08 retain separate source crops from one original PNG.",
+    "The recorder door-annunciator bank and recorder face are registered to their reference seams.",
+    "The lower strip extends beyond the bottom of the supplied photo; its full locked artwork retains its native aspect.",
+    "Original locked images are not modified."
   ],
   "placements": [
     {
@@ -117,12 +129,11 @@
       "id": "OH07",
       "x": 3,
       "y": 1031,
-      "w": 550,
-      "h": 1244,
-      "note": "OH07 flight controls only; atlas has tall empty margin above switches",
-      "alignment": "atlas-boundary",
+      "w": 497,
+      "h": 943,
+      "note": "Physical plate bounds measured from OVH.png; source artwork registered inside that plate.",
+      "alignment": "OVH.png-physical-seams",
       "zIndex": 2,
-      "visualFit": "cover",
       "sourceDimensions": [
         913,
         1723
@@ -138,8 +149,6 @@
         913,
         1723
       ],
-      "auditCoverCropRatio": 0.364,
-      "imageAnchor": "center",
       "sourceId": "OH07-08",
       "atlasPanelIds": [
         "OH-07"
@@ -150,24 +159,29 @@
         "w": 913,
         "h": 1216
       },
+      "fitMode": "fill",
+      "referenceRect": {
+        "x": 394,
+        "y": 0,
+        "w": 258,
+        "h": 490
+      },
       "artInset": {
-        "top": 380,
+        "top": 250,
         "bottom": 0,
         "left": 0,
         "right": 0
-      },
-      "fitMode": "fill"
+      }
     },
     {
       "id": "OH08",
       "x": 3,
-      "y": 2280,
-      "w": 550,
-      "h": 244,
-      "note": "OH08 navigation selectors cut from lower portion of SAME immutable source",
-      "alignment": "atlas-boundary",
+      "y": 1974,
+      "w": 497,
+      "h": 274,
+      "note": "Physical plate bounds measured from OVH.png; source artwork registered inside that plate.",
+      "alignment": "OVH.png-physical-seams",
       "zIndex": 2,
-      "visualFit": "cover",
       "sourceDimensions": [
         913,
         1723
@@ -183,8 +197,6 @@
         913,
         1723
       ],
-      "auditCoverCropRatio": 0.364,
-      "imageAnchor": "center",
       "sourceId": "OH07-08",
       "atlasPanelIds": [
         "OH-08"
@@ -195,18 +207,23 @@
         "w": 913,
         "h": 507
       },
-      "fitMode": "fill"
+      "fitMode": "fill",
+      "referenceRect": {
+        "x": 394,
+        "y": 490,
+        "w": 258,
+        "h": 142
+      }
     },
     {
       "id": "OH09",
       "x": 3,
-      "y": 2529,
-      "w": 550,
-      "h": 747,
-      "note": "fuel left, lower edge y3276",
-      "alignment": "atlas-boundary",
+      "y": 2248,
+      "w": 497,
+      "h": 758,
+      "note": "Physical plate bounds measured from OVH.png; source artwork registered inside that plate.",
+      "alignment": "OVH.png-physical-seams",
       "zIndex": 2,
-      "visualFit": "cover",
       "sourceDimensions": [
         1012,
         1555
@@ -222,24 +239,27 @@
         1012,
         1555
       ],
-      "auditCoverCropRatio": 0.279,
-      "imageAnchor": "center",
       "sourceId": "OH09",
       "atlasPanelIds": [
         "OH-09"
       ],
-      "fitMode": "fill"
+      "fitMode": "fill",
+      "referenceRect": {
+        "x": 394,
+        "y": 632,
+        "w": 258,
+        "h": 394
+      }
     },
     {
       "id": "OH10",
-      "x": 558,
+      "x": 500,
       "y": 1031,
-      "w": 461,
-      "h": 920,
-      "note": "electrical DC AC",
-      "alignment": "atlas-boundary",
+      "w": 496,
+      "h": 672,
+      "note": "Physical plate bounds measured from OVH.png; source artwork registered inside that plate.",
+      "alignment": "OVH.png-physical-seams",
       "zIndex": 2,
-      "visualFit": "cover",
       "sourceDimensions": [
         1095,
         1436
@@ -255,30 +275,27 @@
         1095,
         1436
       ],
-      "auditCoverCropRatio": 0.343,
-      "imageAnchor": "center",
       "sourceId": "OH10",
       "atlasPanelIds": [
         "OH-10"
       ],
-      "artInset": {
-        "top": 170,
-        "bottom": 0,
-        "left": 0,
-        "right": 0
-      },
-      "fitMode": "fill"
+      "fitMode": "fill",
+      "referenceRect": {
+        "x": 652,
+        "y": 0,
+        "w": 258,
+        "h": 349
+      }
     },
     {
       "id": "OH11",
-      "x": 558,
-      "y": 1956,
-      "w": 461,
-      "h": 715,
-      "note": "standby electrical",
-      "alignment": "atlas-boundary",
+      "x": 500,
+      "y": 1703,
+      "w": 496,
+      "h": 545,
+      "note": "Physical plate bounds measured from OVH.png; source artwork registered inside that plate.",
+      "alignment": "OVH.png-physical-seams",
       "zIndex": 2,
-      "visualFit": "cover",
       "sourceDimensions": [
         1203,
         1308
@@ -294,24 +311,27 @@
         1203,
         1308
       ],
-      "auditCoverCropRatio": 0.299,
-      "imageAnchor": "center",
       "sourceId": "OH11",
       "atlasPanelIds": [
         "OH-11"
       ],
-      "fitMode": "fill"
+      "fitMode": "fill",
+      "referenceRect": {
+        "x": 652,
+        "y": 349,
+        "w": 258,
+        "h": 283
+      }
     },
     {
       "id": "OH12",
-      "x": 558,
-      "y": 2676,
-      "w": 461,
-      "h": 600,
-      "note": "bus transfer, lower edge y3276",
-      "alignment": "atlas-boundary",
+      "x": 500,
+      "y": 2248,
+      "w": 496,
+      "h": 758,
+      "note": "Physical plate bounds measured from OVH.png; source artwork registered inside that plate.",
+      "alignment": "OVH.png-physical-seams",
       "zIndex": 2,
-      "visualFit": "cover",
       "sourceDimensions": [
         1024,
         1536
@@ -327,24 +347,27 @@
         1024,
         1536
       ],
-      "auditCoverCropRatio": 0.132,
-      "imageAnchor": "center",
       "sourceId": "OH12",
       "atlasPanelIds": [
         "OH-12"
       ],
-      "fitMode": "fill"
+      "fitMode": "fill",
+      "referenceRect": {
+        "x": 652,
+        "y": 632,
+        "w": 258,
+        "h": 394
+      }
     },
     {
       "id": "OH13",
-      "x": 1024,
+      "x": 996,
       "y": 1031,
-      "w": 247,
-      "h": 1169,
-      "note": "Circuit breaker and equipment cooling share long continuous source artwork",
-      "alignment": "atlas-boundary",
+      "w": 235,
+      "h": 1032,
+      "note": "Physical plate bounds measured from OVH.png; source artwork registered inside that plate.",
+      "alignment": "OVH.png-physical-seams",
       "zIndex": 2,
-      "visualFit": "crop-white-side-gutters-and-cover",
       "sourceDimensions": [
         724,
         2172
@@ -360,24 +383,27 @@
         482,
         2172
       ],
-      "auditCoverCropRatio": 0.117,
-      "imageAnchor": "center",
       "sourceId": "OH13",
       "atlasPanelIds": [
         "OH-13"
       ],
-      "fitMode": "fill"
+      "fitMode": "fill",
+      "referenceRect": {
+        "x": 910,
+        "y": 0,
+        "w": 122,
+        "h": 536
+      }
     },
     {
       "id": "OH14",
-      "x": 1024,
-      "y": 2205,
-      "w": 247,
-      "h": 501,
-      "note": "Emergency exit lights and cabin signs; atlas OH14 overall center below circuit breaker",
-      "alignment": "atlas-boundary",
+      "x": 996,
+      "y": 2063,
+      "w": 235,
+      "h": 410,
+      "note": "Physical plate bounds measured from OVH.png; source artwork registered inside that plate.",
+      "alignment": "OVH.png-physical-seams",
       "zIndex": 2,
-      "visualFit": "cover",
       "sourceDimensions": [
         1074,
         1464
@@ -393,24 +419,27 @@
         1074,
         1464
       ],
-      "auditCoverCropRatio": 0.399,
-      "imageAnchor": "center",
       "sourceId": "OH14",
       "atlasPanelIds": [
         "OH-14"
       ],
-      "fitMode": "fill"
+      "fitMode": "fill",
+      "referenceRect": {
+        "x": 910,
+        "y": 536,
+        "w": 122,
+        "h": 213
+      }
     },
     {
       "id": "OH18",
-      "x": 1024,
-      "y": 2711,
-      "w": 247,
-      "h": 565,
-      "note": "File historically named OH18 but actually belongs to center OH14 Ground Call / Rain Repellent / Wiper. This is NOT atlas OH18.",
-      "alignment": "atlas-boundary",
+      "x": 996,
+      "y": 2473,
+      "w": 235,
+      "h": 533,
+      "note": "Physical plate bounds measured from OVH.png; source artwork registered inside that plate.",
+      "alignment": "OVH.png-physical-seams",
       "zIndex": 2,
-      "visualFit": "cover",
       "sourceDimensions": [
         816,
         1926
@@ -426,25 +455,28 @@
         816,
         1926
       ],
-      "auditCoverCropRatio": 0.271,
-      "imageAnchor": "center",
       "sourceId": "OH18",
       "atlasPanelIds": [
         "OH-14"
       ],
       "fitMode": "fill",
-      "displayLabel": "OH-14 • GRD / WIPER"
+      "displayLabel": "OH-14 • GRD / WIPER",
+      "referenceRect": {
+        "x": 910,
+        "y": 749,
+        "w": 122,
+        "h": 277
+      }
     },
     {
       "id": "OH15",
-      "x": 1276,
+      "x": 1231,
       "y": 1031,
-      "w": 473,
-      "h": 553,
-      "note": "window heat, 4th column",
-      "alignment": "atlas-boundary",
+      "w": 493,
+      "h": 508,
+      "note": "Physical plate bounds measured from OVH.png; source artwork registered inside that plate.",
+      "alignment": "OVH.png-physical-seams",
       "zIndex": 2,
-      "visualFit": "cover",
       "sourceDimensions": [
         1280,
         1229
@@ -460,24 +492,27 @@
         1280,
         1229
       ],
-      "auditCoverCropRatio": 0.179,
-      "imageAnchor": "center",
       "sourceId": "OH15",
       "atlasPanelIds": [
         "OH-15"
       ],
-      "fitMode": "fill"
+      "fitMode": "fill",
+      "referenceRect": {
+        "x": 1032,
+        "y": 0,
+        "w": 256,
+        "h": 264
+      }
     },
     {
       "id": "OH16",
-      "x": 1276,
-      "y": 1589,
-      "w": 473,
-      "h": 377,
-      "note": "anti-ice, 4th column",
-      "alignment": "atlas-boundary",
+      "x": 1231,
+      "y": 1539,
+      "w": 493,
+      "h": 279,
+      "note": "Physical plate bounds measured from OVH.png; source artwork registered inside that plate.",
+      "alignment": "OVH.png-physical-seams",
       "zIndex": 2,
-      "visualFit": "cover",
       "sourceDimensions": [
         1639,
         960
@@ -493,24 +528,27 @@
         1639,
         960
       ],
-      "auditCoverCropRatio": 0.265,
-      "imageAnchor": "center",
       "sourceId": "OH16",
       "atlasPanelIds": [
         "OH-16"
       ],
-      "fitMode": "fill"
+      "fitMode": "fill",
+      "referenceRect": {
+        "x": 1032,
+        "y": 264,
+        "w": 256,
+        "h": 145
+      }
     },
     {
       "id": "OH17",
-      "x": 1276,
-      "y": 1971,
-      "w": 473,
-      "h": 376,
-      "note": "hydraulic pumps, 4th column",
-      "alignment": "atlas-boundary",
+      "x": 1231,
+      "y": 1818,
+      "w": 493,
+      "h": 283,
+      "note": "Physical plate bounds measured from OVH.png; source artwork registered inside that plate.",
+      "alignment": "OVH.png-physical-seams",
       "zIndex": 2,
-      "visualFit": "cover",
       "sourceDimensions": [
         1672,
         941
@@ -526,24 +564,27 @@
         1672,
         941
       ],
-      "auditCoverCropRatio": 0.292,
-      "imageAnchor": "center",
       "sourceId": "OH17",
       "atlasPanelIds": [
         "OH-17"
       ],
-      "fitMode": "fill"
+      "fitMode": "fill",
+      "referenceRect": {
+        "x": 1032,
+        "y": 409,
+        "w": 256,
+        "h": 147
+      }
     },
     {
       "id": "OH19-VOICE",
-      "x": 1276,
-      "y": 2353,
-      "w": 473,
-      "h": 289,
-      "note": "True atlas OH18, uploaded under older OH19-VOICE filename",
-      "alignment": "atlas-boundary",
+      "x": 1231,
+      "y": 2101,
+      "w": 493,
+      "h": 385,
+      "note": "Physical plate bounds measured from OVH.png; source artwork registered inside that plate.",
+      "alignment": "OVH.png-physical-seams",
       "zIndex": 2,
-      "visualFit": "cover",
       "sourceDimensions": [
         1593,
         987
@@ -559,25 +600,46 @@
         1593,
         987
       ],
-      "auditCoverCropRatio": 0.014,
-      "imageAnchor": "center",
       "sourceId": "OH19-VOICE",
       "atlasPanelIds": [
         "OH-18"
       ],
       "fitMode": "fill",
-      "displayLabel": "OH-18 • VOICE REC"
+      "displayLabel": "OH-18 • VOICE REC",
+      "referenceRect": {
+        "x": 1032,
+        "y": 556,
+        "w": 256,
+        "h": 200
+      },
+      "rowRegistration": [
+        {
+          "sourceY": 0,
+          "targetY": 0
+        },
+        {
+          "sourceY": 110,
+          "targetY": 93
+        },
+        {
+          "sourceY": 414,
+          "targetY": 191
+        },
+        {
+          "sourceY": 987,
+          "targetY": 385
+        }
+      ]
     },
     {
       "id": "OH19-DIFF",
-      "x": 1276,
-      "y": 2647,
-      "w": 473,
-      "h": 629,
-      "note": "True atlas OH19 pressure-differential instrumentation",
-      "alignment": "atlas-boundary",
+      "x": 1231,
+      "y": 2486,
+      "w": 493,
+      "h": 520,
+      "note": "Physical plate bounds measured from OVH.png; source artwork registered inside that plate.",
+      "alignment": "OVH.png-physical-seams",
       "zIndex": 2,
-      "visualFit": "cover",
       "sourceDimensions": [
         1267,
         1241
@@ -593,24 +655,27 @@
         1267,
         1241
       ],
-      "auditCoverCropRatio": 0.263,
-      "imageAnchor": "center",
       "sourceId": "OH19-DIFF",
       "atlasPanelIds": [
         "OH-19"
       ],
-      "fitMode": "fill"
+      "fitMode": "fill",
+      "referenceRect": {
+        "x": 1032,
+        "y": 756,
+        "w": 256,
+        "h": 270
+      }
     },
     {
       "id": "OH20",
-      "x": 1754,
+      "x": 1724,
       "y": 1031,
-      "w": 463,
-      "h": 729,
-      "note": "air conditioning, rightmost",
-      "alignment": "atlas-boundary",
+      "w": 493,
+      "h": 720,
+      "note": "Physical plate bounds measured from OVH.png; source artwork registered inside that plate.",
+      "alignment": "OVH.png-physical-seams",
       "zIndex": 2,
-      "visualFit": "cover",
       "sourceDimensions": [
         1254,
         1254
@@ -626,30 +691,33 @@
         1254,
         1254
       ],
-      "auditCoverCropRatio": 0.365,
-      "imageAnchor": "center",
       "sourceId": "OH20",
       "atlasPanelIds": [
         "OH-20"
       ],
+      "fitMode": "fill",
+      "referenceRect": {
+        "x": 1288,
+        "y": 0,
+        "w": 256,
+        "h": 374
+      },
       "artInset": {
-        "top": 155,
+        "top": 212,
         "bottom": 0,
         "left": 0,
         "right": 0
-      },
-      "fitMode": "fill"
+      }
     },
     {
       "id": "OH21",
-      "x": 1754,
-      "y": 1765,
-      "w": 463,
-      "h": 510,
-      "note": "bleed air, rightmost",
-      "alignment": "atlas-boundary",
+      "x": 1724,
+      "y": 1751,
+      "w": 493,
+      "h": 701,
+      "note": "Physical plate bounds measured from OVH.png; source artwork registered inside that plate.",
+      "alignment": "OVH.png-physical-seams",
       "zIndex": 2,
-      "visualFit": "cover",
       "sourceDimensions": [
         1122,
         1402
@@ -665,24 +733,27 @@
         1122,
         1402
       ],
-      "auditCoverCropRatio": 0.118,
-      "imageAnchor": "center",
       "sourceId": "OH21",
       "atlasPanelIds": [
         "OH-21"
       ],
-      "fitMode": "fill"
+      "fitMode": "fill",
+      "referenceRect": {
+        "x": 1288,
+        "y": 374,
+        "w": 256,
+        "h": 364
+      }
     },
     {
       "id": "OH22",
-      "x": 1754,
-      "y": 2280,
-      "w": 463,
-      "h": 996,
-      "note": "cabin pressurization, lower edge y3276",
-      "alignment": "atlas-boundary",
+      "x": 1724,
+      "y": 2452,
+      "w": 493,
+      "h": 554,
+      "note": "Physical plate bounds measured from OVH.png; source artwork registered inside that plate.",
+      "alignment": "OVH.png-physical-seams",
       "zIndex": 2,
-      "visualFit": "cover",
       "sourceDimensions": [
         1167,
         1347
@@ -698,26 +769,24 @@
         1167,
         1347
       ],
-      "auditCoverCropRatio": 0.463,
-      "imageAnchor": "center",
       "sourceId": "OH22",
       "atlasPanelIds": [
         "OH-22"
       ],
-      "artInset": {
-        "top": 200,
-        "bottom": 0,
-        "left": 0,
-        "right": 0
-      },
-      "fitMode": "fill"
+      "fitMode": "fill",
+      "referenceRect": {
+        "x": 1288,
+        "y": 738,
+        "w": 256,
+        "h": 288
+      }
     },
     {
       "id": "OH23-25",
       "x": 3,
-      "y": 3281,
+      "y": 3006,
       "w": 2214,
-      "h": 241,
+      "h": 303,
       "note": "one continuous full-width lower switch strip for OH23-OH25",
       "alignment": "atlas-boundary",
       "zIndex": 2,
@@ -749,14 +818,12 @@
     }
   ],
   "qa": {
-    "panelSeams": "visual atlas trace; 5-pixel inter-panel gutters respected; source plate boundaries not independently confirmed for center-strip component segmentation",
-    "lockedSources": "never overwrite assets/locked",
-    "photoFit": "non-destructive fit of content bounding boxes",
-    "contentWhitespaces": "rendered empty in slate panel matching color, never replaced with original switch-filled atlas image",
-    "visualStatus": "layout safe but artwork source proportions differ from atlas; physical seams not yet approved",
-    "version": "UPD-0011",
-    "atlasMapping": "corrected by comparing against supplied full actual photographed overhead panel",
-    "visualReview": "needs user confirmation; asset images' non-uniform scale due to original wrong reconstruction proportions"
+    "version": "UPD-0012",
+    "lockedSources": "unchanged",
+    "upper": "placement dictionary identical to UPD-0011",
+    "panelSeams": "traced from OVH.png physical edges, approximately +/-2 reference pixels",
+    "visualStatus": "measured lower layout; visual review required",
+    "croppedReferenceBottom": "OVH.png stops at y1080; full bottom strip shown using existing source at native aspect"
   },
   "sourceAssetCount": 18,
   "renderedPieceCount": 19,
