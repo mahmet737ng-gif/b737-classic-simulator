@@ -150,6 +150,6 @@
  // Also survive a mount event emitted before this deferred script was evaluated.
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',beginMount,{once:true});
  else beginMount();
- const observer=new MutationObserver(()=>{if(!mounted&&byId('region-pedestal'))beginMount();});
+ const observer=new MutationObserver(()=>{if(!mounted&&byId('region-pedestal')){observer.disconnect();beginMount();}});
  observer.observe(root.body,{childList:true,subtree:true});
 })();
