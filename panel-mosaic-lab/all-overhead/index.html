@@ -2,18 +2,18 @@
 <html lang="fa" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#111d29">
 <title>B737 Classic — Full Overhead Mosaic Test (OH01–OH25)</title>
-<link rel="stylesheet" href="./style.css?v=UPD-0011-atlas-true-order">
+<link rel="stylesheet" href="./style.css?v=UPD-0012-OVH-measured-seams">
 </head><body>
 <header>
 <div><strong>B737 CLASSIC · OVERHEAD MOSAIC TEST</strong><small>ترکیب تمام تصاویر تأییدشدهٔ OH-01 تا OH-25 · بدون تغییر کیفیت منبع</small></div>
 <div class="head-actions"><a href="../">اطلس اصلی</a><a href="../upper-oh/">تست شش پنل بالایی</a><button id="reload">↻ به‌روزرسانی</button></div>
 </header>
 <main>
-<div class="notice"><strong>UPD-0011 — تطبیق با عکس واقعی اطلس</strong> — چیدمان بر اساس مرزبندی آبی اطلس اصلی بازسازی شد، نه نام قدیمی فایل‌ها: OH-07 و OH-08 دو قسمت مستقلِ یک تصویر هستند؛ Fuel بعد از OH-08 قرار دارد. تصویر Ground Call / Wiper بخشی از ستون میانی OH-14 است؛ Voice Recorder شناسهٔ واقعی OH-18 و Pressure Differential شناسهٔ OH-19 را دارد. تمام پنج ستون به نوار پیوستهٔ OH-23 تا OH-25 می‌رسند. اختلاف نسبت ابعاد بعضی تصاویر بازسازی‌شده در نمایش قابل مشاهده است؛ عکس‌های قفل‌شدهٔ اصلی دست‌نخورده‌اند.</div>
+<div class="notice"><strong>UPD-0012 — تنظیم اندازه و اتصال پنل‌ها بر اساس OVH</strong> — عرض پنج ستون، ارتفاع هر پنل و فاصلهٔ اجزا از عکس مرجع اندازه‌گیری شده‌اند. پنل سوخت و آمپرمترهای برق از یک خط شروع می‌شوند و هر پنج ستون روی یک لبه به نوار پایینی می‌رسند. OH-01 تا OH-06 مطابق نسخهٔ قبلی حفظ شده‌اند.</div>
 <div class="workspace">
 <section class="work-main">
 <div class="controls">
-<div class="control-group"><button class="active" id="modeMosaic">چیدمان یکپارچه</button><button id="modeGallery">تصاویر مستقل</button><button id="modeAtlas">مرجع اطلس</button><label><input id="borders" type="checkbox"> مرزهای آزمایشی بالا</label><label><input id="tags" type="checkbox" checked> شمارهٔ پنل‌ها</label></div>
+<div class="control-group"><button class="active" id="modeMosaic">چیدمان یکپارچه</button><button id="modeGallery">تصاویر مستقل</button><button id="modeAtlas">مرجع اطلس</button><label><input id="borders" type="checkbox"> مرز پنل‌ها</label><label><input id="tags" type="checkbox" checked> شمارهٔ پنل‌ها</label></div>
 <div class="control-group"><button id="minus" aria-label="Zoom out">−</button><output id="zoomLabel">100%</output><button id="plus" aria-label="Zoom in">+</button><button id="fit">FIT</button></div>
 </div>
 <div class="viewport" id="viewport" role="region" aria-label="Full overhead mosaic viewer">
@@ -26,7 +26,7 @@
 </div>
 <div id="gallery" class="gallery hidden"></div><div id="atlasView" class="hidden"><img src="../../assets/overhead.webp" alt="مرجع تصویر کامل اورهد از اطلس اصلی B737 Classic"></div>
 </div></div></div>
-<div class="caption">این تست بر اساس ترتیب اصلی پنل‌ها در عکس مرجع اطلس است. نسخهٔ نهایی تنها پس از تأیید چشمی ابعاد و اتصالات پذیرفته می‌شود. برای زوم از دکمه‌های + و −، روی کامپیوتر از Ctrl + چرخ ماوس و روی موبایل از دو انگشت استفاده کن. تصویر را جابه‌جا کن و روی هر پنل بزن تا شناسه و فایل اصلی آن نمایش داده شود. OH-07 و OH-08 یک فایل تصویری مشترک دارند.</div>
+<div class="caption">چیدمان OH-07 تا OH-25 از روی مرزهای فیزیکی عکس OVH تنظیم شده است؛ خطوط قرمز عکس، راهنمای تراز اجزا هستند. برای مقایسه، «مرز پنل‌ها» را روشن کن. با + و −، Ctrl + چرخ ماوس یا دو انگشت زوم کن. بخش پایین نوار پایینی در عکس مرجع دیده نمی‌شود و با تصویر کامل قبلی نمایش داده شده است.</div>
 </section>
 <aside class="inspector">
 <h2>وضعیت مونتاژ</h2>
@@ -36,5 +36,5 @@
 <div class="piece-list" id="pieces"></div>
 <div id="detail" class="detail">یک پنل را انتخاب کن.</div>
 </aside></div>
-<footer>منابع: <code>panel-mosaic-lab/assets/locked/2026-10-23/</code> · مشخصات این تست: <a href="./spec.json">spec.json</a> · تغییرات این صفحه فقط روی پیش‌نمایش است و فایل‌های اصلی Locked تغییر نمی‌کنند. OH-18 مطابق تصویر اطلس به GRD CALL / RAIN REPELLENT / WIPER شناسایی شد؛ مرزهای دقیق فیزیکی هنوز منتظر تأیید هستند.</footer>
-</main><script src="./stage.js?v=UPD-0011-atlas-true-order" defer></script></body></html>
+<footer>UPD-0012 · مرجع هندسهٔ بخش پایین: OVH.png · مشخصات: <a href="./atlas-layout.json">atlas-layout.json</a> / <a href="./spec.json">spec.json</a> · تصاویر اصلی و OH-01 تا OH-06 حفظ شده‌اند.</footer>
+</main><script src="./stage.js?v=UPD-0012-OVH-measured-seams" defer></script></body></html>
