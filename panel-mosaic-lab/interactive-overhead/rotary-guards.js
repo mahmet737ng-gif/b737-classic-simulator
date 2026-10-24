@@ -101,7 +101,7 @@
   group.append(cover,lever);return group;
  }
  function mount(layout){
-  const section=document.createElement('section');section.className='rg-inspector';section.innerHTML='<strong>۱۸ روتری‌ناب · ۱۰ گارد · RG-0001</strong><h3 id="rgSelected">یک ناب یا گارد را انتخاب کن</h3><button id="rgGuardAction" class="hidden"></button><div id="rgStates" class="rg-actions"></div><p id="rgValue" role="status" aria-live="polite"></p>';
+  const section=document.createElement('section');section.className='rg-inspector';section.innerHTML='<strong>۲۰ روتری‌ناب · ۱۱ گارد · LGT-0001</strong><h3 id="rgSelected">یک ناب یا گارد را انتخاب کن</h3><button id="rgGuardAction" class="hidden"></button><div id="rgStates" class="rg-actions"></div><p id="rgValue" role="status" aria-live="polite"></p>';
   byId('toggleInspector').after(section);
   layer=document.createElement('div');layer.className='rg-layer';layer.id='rotaryGuardLayer';const placements=new Map(layout.placements.map(p=>[p.id,p]));
   for(const c of [...registry.rotaries,...registry.guards]){const p=points.mapPoint(c,placements.get(c.placementId)),node=c.kind==='rotary'?rotary(c,p):guarded(c,p);widgets.set(c.id,node);layer.append(node);render(c);}
@@ -114,7 +114,7 @@
  async function start(){
   try{
    const responses=await Promise.all([fetch(url('rotary-guards.json'),{cache:'no-store'}),fetch(url('../all-overhead/atlas-layout.json'),{cache:'no-store'})]);if(responses.some(r=>!r.ok))throw Error('Rotary/guard registry unavailable');
-   registry=await responses[0].json();const layout=await responses[1].json();model.validate(registry,layout,points.mapPoint);
+   registry=await responses[0].json();const extraResponse=await fetch(url('lights-controls.json'),{cache:'no-store'});if(!extraResponse.ok)throw Error('Upper light controls unavailable');const extra=await extraResponse.json();registry.rotaries.push(...extra.rotaries);registry.guards.push(...extra.guards);const layout=await responses[1].json();model.validate(registry,layout,points.mapPoint);
    let saved={};try{saved=JSON.parse(localStorage.getItem(STORAGE)||'{}')||{};}catch{}
    engine=model.controller(registry,saved,event=>{const c=[...registry.rotaries,...registry.guards].find(c=>c.id===event.id);render(c);persist();if(window.B737OverheadToggles)interlocks();window.dispatchEvent(new CustomEvent('b737:'+event.kind+'-change',{detail:{...event,timestamp:new Date().toISOString()}}));},window.B737ControlMechanics);
    const root=byId('atlasAbsolute'),ready=()=>root.querySelector('.atlas-piece')&&window.B737OverheadToggles;

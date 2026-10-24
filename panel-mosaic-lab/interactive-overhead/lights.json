@@ -1,0 +1,1613 @@
+{
+  "schema": "b737.overhead.lights.v1",
+  "version": "LGT-0001",
+  "baseVersion": "UPD-0012-OVH-measured-seams",
+  "assets": {
+    "ON_DC_LAMP": {
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/ON_DC_LAMP_ON.svg",
+        "sha256": "33826b493f0aee39542acb4a1ab956470d620762439986347918d19f87888859"
+      },
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/ON_DC_LAMP_OFF.svg",
+        "sha256": "23808f2bf8347573330ab5ebbae682ebea1c43af969605cc714803923e0d6839"
+      }
+    },
+    "FAULT": {
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/FAULT_ON.svg",
+        "sha256": "67d3488a97d7af119bac5ce4f9e1d9f9766a8fcbb0f7748dee3e4170ee509208"
+      },
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/FAULT_OFF.svg",
+        "sha256": "92e40a84ad06e7547d6b48f980c2c1f48d6633d8e202332c9ec832014d8d615e"
+      }
+    },
+    "DC_FAIL": {
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/DC_FAIL_ON.svg",
+        "sha256": "8496435aaee501a66bcd3eae02904f69bc2ca169e1e2b7e5e3819688be9c2677"
+      },
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/DC_FAIL_OFF.svg",
+        "sha256": "6633dbbf195743d9576ad995f86ffc22b65761cdb8f510cb4254120e778dd9e7"
+      }
+    },
+    "REVERSER": {
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/REVERSER_ON.svg",
+        "sha256": "6eb7f85817dd33857db751989e1ae63c85c48ddc00545121cd284866b54ad2db"
+      },
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/REVERSER_OFF.svg",
+        "sha256": "0044607779815e48b038ab3f65b1724c132a749d688c070f7d03fb2648bb0a2b"
+      }
+    },
+    "LOW_IDLE": {
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/LOW_IDLE_ON.svg",
+        "sha256": "c512f19e39b44c8e5afc8bba5aa0597c91cf33bb243c0cd65829fc7185a191b0"
+      },
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/LOW_IDLE_OFF.svg",
+        "sha256": "d1ea97a546cb23054e063a05e65f3003f63b2c41e59a383402a81ad6e94a037e"
+      }
+    },
+    "PASS_OXY_ON_LAMP": {
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/PASS_OXY_ON_LAMP_ON.svg",
+        "sha256": "adb83fcf120ef4c0e9cdaf6a07bc5fae3ea990e0c6fae609dbeae400cbc96a3d"
+      },
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/PASS_OXY_ON_LAMP_OFF.svg",
+        "sha256": "3c609a6643ee478052f525644181ceb2a5d35e51d30ca6ba321982226d90b82a"
+      }
+    },
+    "OFF_LAMP": {
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/OFF_LAMP_ON.svg",
+        "sha256": "7049674557d214bc4faaacf32ec8e9f060080a55146e0b4f9889824053db30b7"
+      },
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/OFF_LAMP_OFF.svg",
+        "sha256": "db22e5096e19e6e5e0fd0093c5be9058ba0be690587d12202f9cb40202dd2df6"
+      }
+    },
+    "LOW_QUANTITY": {
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/LOW_QUANTITY_ON.svg",
+        "sha256": "3f629dbcb2f2ea147e4275008df432d03b5844ca1be82a94fdd2fa530b0408e0"
+      },
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/LOW_QUANTITY_OFF.svg",
+        "sha256": "ecc5caa24075e913d575862ce9d56557fd8958942e334c5d40cc044142d76a07"
+      }
+    },
+    "LOW_PRESSURE": {
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/LOW_PRESSURE_ON.svg",
+        "sha256": "fd958e7ad28807a81b574d63037277134033c6d53702d36c756e589445b962df"
+      },
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/LOW_PRESSURE_OFF.svg",
+        "sha256": "9870357aef7a1ba5a7e6d247af2c8838238292e27a0f3547a2a425c091f3e930"
+      }
+    },
+    "STBY_RUD_ON_LAMP": {
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/STBY_RUD_ON_LAMP_ON.svg",
+        "sha256": "8ae08b9054ec824081db42154ccf6d08406eb4966d88b2901926c187465d2dbb"
+      },
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/STBY_RUD_ON_LAMP_OFF.svg",
+        "sha256": "54c9f1cf9bb1fee8f89ccbda5cbaa8c0ad5f9da80c71ae69062d84d6efa2a3d6"
+      }
+    },
+    "FEEL_DIFF_PRESS": {
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/FEEL_DIFF_PRESS_ON.svg",
+        "sha256": "248c31d9751a8cf9971d1cdab9450d95af068c470047b1d85132463675449b34"
+      },
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/FEEL_DIFF_PRESS_OFF.svg",
+        "sha256": "04780f4f9ea331244a49c8046644d11630840f38c9ab704aaa9d9d1071cccefd"
+      }
+    },
+    "SPEED_TRIM_FAIL": {
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/SPEED_TRIM_FAIL_ON.svg",
+        "sha256": "4f22601e62ce712f246bf7296e6dae8431a17d291fd69328e2703e7c98e1e732"
+      },
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/SPEED_TRIM_FAIL_OFF.svg",
+        "sha256": "2f69dae81755e7e0015a8964addc78bca2ff9b6ae5f9e6b5e8574a43459883ae"
+      }
+    },
+    "MACH_TRIM_FAIL": {
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/MACH_TRIM_FAIL_ON.svg",
+        "sha256": "a06559e2df82c0e3c62019c1cab9cc3dfcbc2a0353e9ae84a58044e0d4f25d3d"
+      },
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/MACH_TRIM_FAIL_OFF.svg",
+        "sha256": "0beee58eb46e57a17b718db0ac18fa9b8773b369ab8c034554d85ce0a372fb29"
+      }
+    },
+    "AUTO_SLAT_FAIL": {
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/AUTO_SLAT_FAIL_ON.svg",
+        "sha256": "579bd49b5402d4188a897acfd1d0a30106515887a451a5fbf4cf79a42052ed87"
+      },
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/AUTO_SLAT_FAIL_OFF.svg",
+        "sha256": "2b82e11497097b0ca38238a58718b9b5732a2ac918468e13c380cb5a388910ff"
+      }
+    },
+    "YAW_DAMPER": {
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/YAW_DAMPER_ON.svg",
+        "sha256": "913434346b9f920b8b4c375224e35893662b859e279ef43507dc3df2cfa56173"
+      },
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/YAW_DAMPER_OFF.svg",
+        "sha256": "618842d258c956f76530234cd8dc0cb3bfd8b5e65ae1ccced27c3760f4b0bafd"
+      }
+    },
+    "FILTER_BYPASS": {
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/FILTER_BYPASS_ON.svg",
+        "sha256": "878494cc130f1e12b97f8d415a84347602ec09ccd354e7b3b35828129f7239a3"
+      },
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/FILTER_BYPASS_OFF.svg",
+        "sha256": "9a756fbc4c3fcf3f7bd542105e0d09d12f0bb6c39b878f153e370844721fb792"
+      }
+    },
+    "LOW_OIL_PRESSURE": {
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/LOW_OIL_PRESSURE_ON.svg",
+        "sha256": "1f79411fa7e28dab78385d21427ca199f564163d745da32dd85ff407d86c4acc"
+      },
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/LOW_OIL_PRESSURE_OFF.svg",
+        "sha256": "773043faa3dfd78b63cc7bc2aef7f53ef2e5ef6f7e9eb4021f69becf0d29f1ba"
+      }
+    },
+    "HIGH_OIL_TEMP": {
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/HIGH_OIL_TEMP_ON.svg",
+        "sha256": "4bbc5d207b5768b9ec8e06ecd941357f27ff562db20f3b87d652001be176fea6"
+      },
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/HIGH_OIL_TEMP_OFF.svg",
+        "sha256": "c5dcb47ba090323a71446636a2994ed90435c7122fa1e8cb3a4c1213d0b3d45b"
+      }
+    },
+    "STANDBY_PWR_OFF_LAMP": {
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/STANDBY_PWR_OFF_LAMP_ON.svg",
+        "sha256": "91fd0986ab43804ff760cccbd2a44d6a050982f76fc81ae9a08b3e3adef75d02"
+      },
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/STANDBY_PWR_OFF_LAMP_OFF.svg",
+        "sha256": "0d8036f98d5a686d9a7a5ba8ceb0ecf7a415b9d6a18f98372c0c7a8542bb4217"
+      }
+    },
+    "TRANSFER_BUS_OFF_LAMP": {
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/TRANSFER_BUS_OFF_LAMP_ON.svg",
+        "sha256": "c7a5e597bc2eb404cbe413ea7624584167a737918634a1daafe93a02d2ca8158"
+      },
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/TRANSFER_BUS_OFF_LAMP_OFF.svg",
+        "sha256": "3e497f9d4f85872f5ad88b6db08eb2ac8c18ad129b9b797753035298cd6f114e"
+      }
+    },
+    "BUS_OFF_LAMP": {
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/BUS_OFF_LAMP_ON.svg",
+        "sha256": "caaff6dd44ea5be58a5d0423cc75425433b4b93c273d5be83adfd20e3d8e7268"
+      },
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/BUS_OFF_LAMP_OFF.svg",
+        "sha256": "adf65882d3e2ecb7c3923445925a603dbc2938aee000211254b97dde609a2c5f"
+      }
+    },
+    "OVER_SPEED": {
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/OVER_SPEED_ON.svg",
+        "sha256": "3f4a984e640d7490e611d1728b2076951acdad3d385aa13cf1888b633689ebbc"
+      },
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/OVER_SPEED_OFF.svg",
+        "sha256": "b34358d4a889d377a818cf3a38af950691523bc319d210a3ad5fc5fd4fc0fca1"
+      }
+    },
+    "NOT_ARMED_VERTICAL": {
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/NOT_ARMED_VERTICAL_ON.svg",
+        "sha256": "6be2730e94aff4a7946ad7834450a0bb6b1f73cfb6ccca6c1502b957bd2e26a0"
+      },
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/NOT_ARMED_VERTICAL_OFF.svg",
+        "sha256": "0d2475a898274c7ed7e95d439f732bae7daa4b495cfcc8e765990f46cf3b0584"
+      }
+    },
+    "OVERHEAT": {
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/OVERHEAT_ON.svg",
+        "sha256": "ecbc2149607fb7dc2dd56be6569f4f5c522c9fbf59dce9322ac5046138b07cf4"
+      },
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/OVERHEAT_OFF.svg",
+        "sha256": "5096d7920af72f0fe49124a83da6880058fd92a9bec7b593b13c0ad63cb377b4"
+      }
+    },
+    "CAPT_PS_1_AUX_STATIC": {
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/CAPT_PS_1_AUX_STATIC_ON.svg",
+        "sha256": "b09b2bbeaaef1c45808b20207773f7278982dcde3c4482e534cbd9ba4dda0c99"
+      },
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/CAPT_PS_1_AUX_STATIC_OFF.svg",
+        "sha256": "a59d6b66a547288aa92296c29167910e3c2685b6f46498ec1def8efc1dd0a582"
+      }
+    },
+    "FO_STATIC_2_AUX_PS": {
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/FO_STATIC_2_AUX_PS_ON.svg",
+        "sha256": "dbbb16ff847fc361e38d6889d1a71d2b1fdbcdc0a299ab513474c66d05d1682b"
+      },
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/FO_STATIC_2_AUX_PS_OFF.svg",
+        "sha256": "052d0356b04b3324529bdc19dea59ca969cd43341608741c034dd0c748997c98"
+      }
+    },
+    "L_ELEV_PITOT": {
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/L_ELEV_PITOT_ON.svg",
+        "sha256": "6b1908fa9d4c735f297d2076356745866d91eb5d74a1d2c2664eb4ae073c7655"
+      },
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/L_ELEV_PITOT_OFF.svg",
+        "sha256": "b3746f49b5e48c36c6d6619a2d4d43c7d664a814b1f07fa2ae5f77a044be695e"
+      }
+    },
+    "L_ALPHA_VANE": {
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/L_ALPHA_VANE_ON.svg",
+        "sha256": "1464426ea8fd3cf17350d67373a1c8352e23f2118e454030534c9e36cbf35175"
+      },
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/L_ALPHA_VANE_OFF.svg",
+        "sha256": "f787d8c32a14cc3191cc09ccf534267ff45019b4fd89ad8c91b011b62639774c"
+      }
+    }
+  },
+  "lights": [
+    {
+      "id": "irs-l-on-dc",
+      "asset": "ON_DC_LAMP",
+      "placementId": "UPPER",
+      "sourceRect": [
+        503,
+        535,
+        64,
+        32
+      ],
+      "rule": "on-dc",
+      "controls": [
+        "irs-mode-l"
+      ],
+      "sensor": null,
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 11,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Existing simulator rules and frozen guide sockets; private page-level source unavailable in this session."
+      }
+    },
+    {
+      "id": "irs-l-fault",
+      "asset": "FAULT",
+      "placementId": "UPPER",
+      "sourceRect": [
+        428,
+        574,
+        64,
+        32
+      ],
+      "rule": "fault",
+      "controls": [
+        "irs-mode-l"
+      ],
+      "sensor": null,
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 11,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Existing simulator rules and frozen guide sockets; private page-level source unavailable in this session."
+      }
+    },
+    {
+      "id": "irs-l-dc-fail",
+      "asset": "DC_FAIL",
+      "placementId": "UPPER",
+      "sourceRect": [
+        503,
+        574,
+        64,
+        32
+      ],
+      "rule": "dc-fail",
+      "controls": [
+        "irs-mode-l"
+      ],
+      "sensor": null,
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 11,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Existing simulator rules and frozen guide sockets; private page-level source unavailable in this session."
+      }
+    },
+    {
+      "id": "irs-r-on-dc",
+      "asset": "ON_DC_LAMP",
+      "placementId": "UPPER",
+      "sourceRect": [
+        679,
+        535,
+        64,
+        32
+      ],
+      "rule": "on-dc",
+      "controls": [
+        "irs-mode-r"
+      ],
+      "sensor": null,
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 11,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Existing simulator rules and frozen guide sockets; private page-level source unavailable in this session."
+      }
+    },
+    {
+      "id": "irs-r-fault",
+      "asset": "FAULT",
+      "placementId": "UPPER",
+      "sourceRect": [
+        604,
+        574,
+        64,
+        32
+      ],
+      "rule": "fault",
+      "controls": [
+        "irs-mode-r"
+      ],
+      "sensor": null,
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 11,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Existing simulator rules and frozen guide sockets; private page-level source unavailable in this session."
+      }
+    },
+    {
+      "id": "irs-r-dc-fail",
+      "asset": "DC_FAIL",
+      "placementId": "UPPER",
+      "sourceRect": [
+        679,
+        574,
+        64,
+        32
+      ],
+      "rule": "dc-fail",
+      "controls": [
+        "irs-mode-r"
+      ],
+      "sensor": null,
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 11,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Existing simulator rules and frozen guide sockets; private page-level source unavailable in this session."
+      }
+    },
+    {
+      "id": "reverser-1",
+      "asset": "REVERSER",
+      "placementId": "UPPER",
+      "sourceRect": [
+        1040,
+        374,
+        74,
+        31
+      ],
+      "rule": "sensor",
+      "controls": [],
+      "sensor": "reverser-1",
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 7,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Existing simulator rules and frozen guide sockets; private page-level source unavailable in this session."
+      }
+    },
+    {
+      "id": "reverser-2",
+      "asset": "REVERSER",
+      "placementId": "UPPER",
+      "sourceRect": [
+        1213,
+        374,
+        74,
+        31
+      ],
+      "rule": "sensor",
+      "controls": [],
+      "sensor": "reverser-2",
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 7,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Existing simulator rules and frozen guide sockets; private page-level source unavailable in this session."
+      }
+    },
+    {
+      "id": "low-idle",
+      "asset": "LOW_IDLE",
+      "placementId": "UPPER",
+      "sourceRect": [
+        1136,
+        447,
+        54,
+        37
+      ],
+      "rule": "sensor",
+      "controls": [],
+      "sensor": "low-idle",
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 7,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Existing simulator rules and frozen guide sockets; private page-level source unavailable in this session."
+      }
+    },
+    {
+      "id": "pass-oxygen",
+      "asset": "PASS_OXY_ON_LAMP",
+      "placementId": "UPPER",
+      "sourceRect": [
+        1174,
+        665,
+        72,
+        44
+      ],
+      "rule": "oxygen",
+      "controls": [
+        "passenger-oxygen"
+      ],
+      "sensor": null,
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 1,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Existing simulator rules and frozen guide sockets; private page-level source unavailable in this session."
+      }
+    },
+    {
+      "id": "flight-recorder-off",
+      "asset": "OFF_LAMP",
+      "placementId": "UPPER",
+      "sourceRect": [
+        1485,
+        439,
+        40,
+        31
+      ],
+      "rule": "recorder",
+      "controls": [],
+      "sensor": "recorder-off",
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 5,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Existing simulator rules and frozen guide sockets; private page-level source unavailable in this session."
+      }
+    },
+    {
+      "id": "stby-quantity",
+      "asset": "LOW_QUANTITY",
+      "placementId": "OH07",
+      "sourceRect": [
+        630,
+        100,
+        159,
+        62
+      ],
+      "rule": "sensor",
+      "controls": [
+        "flight-control-a",
+        "flight-control-b",
+        "alternate-flaps-master"
+      ],
+      "sensor": "stby-quantity",
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 13,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Existing simulator rules and frozen guide sockets; private page-level source unavailable in this session."
+      }
+    },
+    {
+      "id": "stby-pressure",
+      "asset": "LOW_PRESSURE",
+      "placementId": "OH07",
+      "sourceRect": [
+        630,
+        171,
+        159,
+        62
+      ],
+      "rule": "standby-pressure",
+      "controls": [
+        "flight-control-a",
+        "flight-control-b",
+        "alternate-flaps-master"
+      ],
+      "sensor": null,
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 13,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Existing simulator rules and frozen guide sockets; private page-level source unavailable in this session."
+      }
+    },
+    {
+      "id": "stby-rudder",
+      "asset": "STBY_RUD_ON_LAMP",
+      "placementId": "OH07",
+      "sourceRect": [
+        630,
+        240,
+        159,
+        62
+      ],
+      "rule": "standby-rudder",
+      "controls": [
+        "flight-control-a",
+        "flight-control-b",
+        "alternate-flaps-master"
+      ],
+      "sensor": null,
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 13,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Existing simulator rules and frozen guide sockets; private page-level source unavailable in this session."
+      }
+    },
+    {
+      "id": "flight-pressure-a",
+      "asset": "LOW_PRESSURE",
+      "placementId": "OH07",
+      "sourceRect": [
+        128,
+        404,
+        151,
+        63
+      ],
+      "rule": "flight-pressure",
+      "controls": [
+        "flight-control-a"
+      ],
+      "sensor": null,
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 9,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Existing simulator rules and frozen guide sockets; private page-level source unavailable in this session."
+      }
+    },
+    {
+      "id": "flight-pressure-b",
+      "asset": "LOW_PRESSURE",
+      "placementId": "OH07",
+      "sourceRect": [
+        295,
+        404,
+        151,
+        63
+      ],
+      "rule": "flight-pressure",
+      "controls": [
+        "flight-control-b"
+      ],
+      "sensor": null,
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 9,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Existing simulator rules and frozen guide sockets; private page-level source unavailable in this session."
+      }
+    },
+    {
+      "id": "feel-diff",
+      "asset": "FEEL_DIFF_PRESS",
+      "placementId": "OH07",
+      "sourceRect": [
+        631,
+        758,
+        161,
+        64
+      ],
+      "rule": "sensor",
+      "controls": [],
+      "sensor": "feel-diff",
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 9,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Existing simulator rules and frozen guide sockets; private page-level source unavailable in this session."
+      }
+    },
+    {
+      "id": "speed-trim",
+      "asset": "SPEED_TRIM_FAIL",
+      "placementId": "OH07",
+      "sourceRect": [
+        631,
+        842,
+        161,
+        64
+      ],
+      "rule": "sensor",
+      "controls": [],
+      "sensor": "speed-trim",
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 9,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Existing simulator rules and frozen guide sockets; private page-level source unavailable in this session."
+      }
+    },
+    {
+      "id": "mach-trim",
+      "asset": "MACH_TRIM_FAIL",
+      "placementId": "OH07",
+      "sourceRect": [
+        631,
+        927,
+        161,
+        64
+      ],
+      "rule": "sensor",
+      "controls": [],
+      "sensor": "mach-trim",
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 9,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Existing simulator rules and frozen guide sockets; private page-level source unavailable in this session."
+      }
+    },
+    {
+      "id": "auto-slat",
+      "asset": "AUTO_SLAT_FAIL",
+      "placementId": "OH07",
+      "sourceRect": [
+        631,
+        1011,
+        161,
+        64
+      ],
+      "rule": "sensor",
+      "controls": [],
+      "sensor": "auto-slat",
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 9,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Existing simulator rules and frozen guide sockets; private page-level source unavailable in this session."
+      }
+    },
+    {
+      "id": "yaw-damper",
+      "asset": "YAW_DAMPER",
+      "placementId": "OH07",
+      "sourceRect": [
+        195,
+        994,
+        199,
+        64
+      ],
+      "rule": "yaw",
+      "controls": [
+        "yaw-damper"
+      ],
+      "sensor": null,
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 9,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Existing simulator rules and frozen guide sockets; private page-level source unavailable in this session."
+      }
+    },
+    {
+      "id": "filter-1",
+      "asset": "FILTER_BYPASS",
+      "placementId": "OH09",
+      "sourceRect": [
+        128,
+        414,
+        177,
+        72
+      ],
+      "rule": "sensor",
+      "controls": [],
+      "sensor": "filter-1",
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 12,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Existing simulator rules and frozen guide sockets; private page-level source unavailable in this session."
+      }
+    },
+    {
+      "id": "filter-2",
+      "asset": "FILTER_BYPASS",
+      "placementId": "OH09",
+      "sourceRect": [
+        704,
+        414,
+        177,
+        72
+      ],
+      "rule": "sensor",
+      "controls": [],
+      "sensor": "filter-2",
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 12,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Existing simulator rules and frozen guide sockets; private page-level source unavailable in this session."
+      }
+    },
+    {
+      "id": "fuel-center-l",
+      "asset": "LOW_PRESSURE",
+      "placementId": "OH09",
+      "sourceRect": [
+        332,
+        726,
+        166,
+        75
+      ],
+      "rule": "fuel-pressure",
+      "controls": [
+        "fuel-center-l"
+      ],
+      "sensor": null,
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 12,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Existing simulator rules and frozen guide sockets; private page-level source unavailable in this session."
+      }
+    },
+    {
+      "id": "fuel-center-r",
+      "asset": "LOW_PRESSURE",
+      "placementId": "OH09",
+      "sourceRect": [
+        520,
+        726,
+        166,
+        75
+      ],
+      "rule": "fuel-pressure",
+      "controls": [
+        "fuel-center-r"
+      ],
+      "sensor": null,
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 12,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Existing simulator rules and frozen guide sockets; private page-level source unavailable in this session."
+      }
+    },
+    {
+      "id": "fuel-1-aft",
+      "asset": "LOW_PRESSURE",
+      "placementId": "OH09",
+      "sourceRect": [
+        94,
+        1058,
+        166,
+        75
+      ],
+      "rule": "fuel-pressure",
+      "controls": [
+        "fuel-1-aft"
+      ],
+      "sensor": null,
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 12,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Existing simulator rules and frozen guide sockets; private page-level source unavailable in this session."
+      }
+    },
+    {
+      "id": "fuel-1-fwd",
+      "asset": "LOW_PRESSURE",
+      "placementId": "OH09",
+      "sourceRect": [
+        282,
+        1058,
+        166,
+        75
+      ],
+      "rule": "fuel-pressure",
+      "controls": [
+        "fuel-1-fwd"
+      ],
+      "sensor": null,
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 12,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Existing simulator rules and frozen guide sockets; private page-level source unavailable in this session."
+      }
+    },
+    {
+      "id": "fuel-2-fwd",
+      "asset": "LOW_PRESSURE",
+      "placementId": "OH09",
+      "sourceRect": [
+        570,
+        1058,
+        166,
+        75
+      ],
+      "rule": "fuel-pressure",
+      "controls": [
+        "fuel-2-fwd"
+      ],
+      "sensor": null,
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 12,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Existing simulator rules and frozen guide sockets; private page-level source unavailable in this session."
+      }
+    },
+    {
+      "id": "fuel-2-aft",
+      "asset": "LOW_PRESSURE",
+      "placementId": "OH09",
+      "sourceRect": [
+        758,
+        1058,
+        166,
+        75
+      ],
+      "rule": "fuel-pressure",
+      "controls": [
+        "fuel-2-aft"
+      ],
+      "sensor": null,
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 12,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Existing simulator rules and frozen guide sockets; private page-level source unavailable in this session."
+      }
+    },
+    {
+      "id": "drive-1-drive-pressure",
+      "asset": "LOW_OIL_PRESSURE",
+      "placementId": "OH11",
+      "sourceRect": [
+        150,
+        79,
+        199,
+        77
+      ],
+      "rule": "drive-pressure",
+      "controls": [
+        "generator-disconnect-1"
+      ],
+      "sensor": null,
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 6,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Existing simulator rules and frozen guide sockets; private page-level source unavailable in this session."
+      }
+    },
+    {
+      "id": "drive-1-drive-temperature",
+      "asset": "HIGH_OIL_TEMP",
+      "placementId": "OH11",
+      "sourceRect": [
+        150,
+        182,
+        199,
+        77
+      ],
+      "rule": "drive-temperature",
+      "controls": [
+        "generator-disconnect-1"
+      ],
+      "sensor": null,
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 6,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Existing simulator rules and frozen guide sockets; private page-level source unavailable in this session."
+      }
+    },
+    {
+      "id": "drive-2-drive-pressure",
+      "asset": "LOW_OIL_PRESSURE",
+      "placementId": "OH11",
+      "sourceRect": [
+        853,
+        79,
+        199,
+        77
+      ],
+      "rule": "drive-pressure",
+      "controls": [
+        "generator-disconnect-2"
+      ],
+      "sensor": null,
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 6,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Existing simulator rules and frozen guide sockets; private page-level source unavailable in this session."
+      }
+    },
+    {
+      "id": "drive-2-drive-temperature",
+      "asset": "HIGH_OIL_TEMP",
+      "placementId": "OH11",
+      "sourceRect": [
+        853,
+        182,
+        199,
+        77
+      ],
+      "rule": "drive-temperature",
+      "controls": [
+        "generator-disconnect-2"
+      ],
+      "sensor": null,
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 6,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Existing simulator rules and frozen guide sockets; private page-level source unavailable in this session."
+      }
+    },
+    {
+      "id": "standby-power-off",
+      "asset": "STANDBY_PWR_OFF_LAMP",
+      "placementId": "OH11",
+      "sourceRect": [
+        499,
+        80,
+        202,
+        78
+      ],
+      "rule": "standby-power",
+      "controls": [
+        "standby-power"
+      ],
+      "sensor": null,
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 6,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Existing simulator rules and frozen guide sockets; private page-level source unavailable in this session."
+      }
+    },
+    {
+      "id": "transferBusOff1",
+      "asset": "TRANSFER_BUS_OFF_LAMP",
+      "placementId": "OH12",
+      "sourceRect": [
+        90,
+        505,
+        169,
+        70
+      ],
+      "rule": "electrical",
+      "controls": [],
+      "sensor": "transferBusOff1",
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 6,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Existing simulator rules and frozen guide sockets; private page-level source unavailable in this session."
+      }
+    },
+    {
+      "id": "busOff1",
+      "asset": "BUS_OFF_LAMP",
+      "placementId": "OH12",
+      "sourceRect": [
+        90,
+        595,
+        169,
+        70
+      ],
+      "rule": "electrical",
+      "controls": [],
+      "sensor": "busOff1",
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 6,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Existing simulator rules and frozen guide sockets; private page-level source unavailable in this session."
+      }
+    },
+    {
+      "id": "transferBusOff2",
+      "asset": "TRANSFER_BUS_OFF_LAMP",
+      "placementId": "OH12",
+      "sourceRect": [
+        759,
+        505,
+        169,
+        70
+      ],
+      "rule": "electrical",
+      "controls": [],
+      "sensor": "transferBusOff2",
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 6,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Existing simulator rules and frozen guide sockets; private page-level source unavailable in this session."
+      }
+    },
+    {
+      "id": "busOff2",
+      "asset": "BUS_OFF_LAMP",
+      "placementId": "OH12",
+      "sourceRect": [
+        759,
+        595,
+        169,
+        70
+      ],
+      "rule": "electrical",
+      "controls": [],
+      "sensor": "busOff2",
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 6,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Existing simulator rules and frozen guide sockets; private page-level source unavailable in this session."
+      }
+    },
+    {
+      "id": "apu-low-pressure",
+      "asset": "LOW_PRESSURE",
+      "placementId": "OH12",
+      "sourceRect": [
+        337,
+        1054,
+        161,
+        63
+      ],
+      "rule": "apu",
+      "controls": [
+        "apu-start"
+      ],
+      "sensor": "apu-low-pressure",
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 7,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Existing simulator rules and frozen guide sockets; private page-level source unavailable in this session."
+      }
+    },
+    {
+      "id": "apu-high-oil-temp",
+      "asset": "HIGH_OIL_TEMP",
+      "placementId": "OH12",
+      "sourceRect": [
+        521,
+        1054,
+        161,
+        63
+      ],
+      "rule": "apu",
+      "controls": [
+        "apu-start"
+      ],
+      "sensor": "apu-high-oil-temp",
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 7,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Existing simulator rules and frozen guide sockets; private page-level source unavailable in this session."
+      }
+    },
+    {
+      "id": "apu-overspeed",
+      "asset": "OVER_SPEED",
+      "placementId": "OH12",
+      "sourceRect": [
+        707,
+        1054,
+        161,
+        63
+      ],
+      "rule": "apu",
+      "controls": [
+        "apu-start"
+      ],
+      "sensor": "apu-overspeed",
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 7,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Existing simulator rules and frozen guide sockets; private page-level source unavailable in this session."
+      }
+    },
+    {
+      "id": "equip-supply-off",
+      "asset": "OFF_LAMP",
+      "placementId": "OH13",
+      "sourceRect": [
+        192,
+        2032,
+        159,
+        83
+      ],
+      "rule": "equipment",
+      "controls": [
+        "equip-cooling-supply"
+      ],
+      "sensor": null,
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 2,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Existing simulator rules and frozen guide sockets; private page-level source unavailable in this session."
+      }
+    },
+    {
+      "id": "equip-exhaust-off",
+      "asset": "OFF_LAMP",
+      "placementId": "OH13",
+      "sourceRect": [
+        374,
+        2032,
+        159,
+        83
+      ],
+      "rule": "equipment",
+      "controls": [
+        "equip-cooling-exhaust"
+      ],
+      "sensor": null,
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 2,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Existing simulator rules and frozen guide sockets; private page-level source unavailable in this session."
+      }
+    },
+    {
+      "id": "emergency-not-armed",
+      "asset": "NOT_ARMED_VERTICAL",
+      "placementId": "OH14",
+      "sourceRect": [
+        138,
+        507,
+        183,
+        317
+      ],
+      "rule": "emergency",
+      "controls": [
+        "emergency-exit-lights"
+      ],
+      "sensor": null,
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 1,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Existing simulator rules and frozen guide sockets; private page-level source unavailable in this session."
+      }
+    },
+    {
+      "id": "window-l-side-overheat",
+      "asset": "OVERHEAT",
+      "placementId": "OH15",
+      "sourceRect": [
+        190,
+        20,
+        210,
+        77
+      ],
+      "rule": "window",
+      "controls": [
+        "window-l-side",
+        "window-power-test"
+      ],
+      "sensor": "window-l-side-overheat",
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 3,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Existing simulator rules and frozen guide sockets; private page-level source unavailable in this session."
+      }
+    },
+    {
+      "id": "window-l-fwd-overheat",
+      "asset": "OVERHEAT",
+      "placementId": "OH15",
+      "sourceRect": [
+        426,
+        20,
+        210,
+        77
+      ],
+      "rule": "window",
+      "controls": [
+        "window-l-fwd",
+        "window-power-test"
+      ],
+      "sensor": "window-l-fwd-overheat",
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 3,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Existing simulator rules and frozen guide sockets; private page-level source unavailable in this session."
+      }
+    },
+    {
+      "id": "window-r-fwd-overheat",
+      "asset": "OVERHEAT",
+      "placementId": "OH15",
+      "sourceRect": [
+        651,
+        20,
+        210,
+        77
+      ],
+      "rule": "window",
+      "controls": [
+        "window-r-fwd",
+        "window-power-test"
+      ],
+      "sensor": "window-r-fwd-overheat",
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 3,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Existing simulator rules and frozen guide sockets; private page-level source unavailable in this session."
+      }
+    },
+    {
+      "id": "window-r-side-overheat",
+      "asset": "OVERHEAT",
+      "placementId": "OH15",
+      "sourceRect": [
+        885,
+        20,
+        210,
+        77
+      ],
+      "rule": "window",
+      "controls": [
+        "window-r-side",
+        "window-power-test"
+      ],
+      "sensor": "window-r-side-overheat",
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 3,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Existing simulator rules and frozen guide sockets; private page-level source unavailable in this session."
+      }
+    },
+    {
+      "id": "probe-capt-ps",
+      "asset": "CAPT_PS_1_AUX_STATIC",
+      "placementId": "OH15",
+      "sourceRect": [
+        137,
+        571,
+        253,
+        86
+      ],
+      "rule": "probe",
+      "controls": [
+        "pitot-a"
+      ],
+      "sensor": "probe-capt-ps",
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 3,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Existing simulator rules and frozen guide sockets; private page-level source unavailable in this session."
+      }
+    },
+    {
+      "id": "probe-fo-static",
+      "asset": "FO_STATIC_2_AUX_PS",
+      "placementId": "OH15",
+      "sourceRect": [
+        137,
+        678,
+        253,
+        86
+      ],
+      "rule": "probe",
+      "controls": [
+        "pitot-a"
+      ],
+      "sensor": "probe-fo-static",
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 3,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Existing simulator rules and frozen guide sockets; private page-level source unavailable in this session."
+      }
+    },
+    {
+      "id": "probe-l-elev",
+      "asset": "L_ELEV_PITOT",
+      "placementId": "OH15",
+      "sourceRect": [
+        137,
+        789,
+        253,
+        86
+      ],
+      "rule": "probe",
+      "controls": [
+        "pitot-a"
+      ],
+      "sensor": "probe-l-elev",
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 3,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Existing simulator rules and frozen guide sockets; private page-level source unavailable in this session."
+      }
+    },
+    {
+      "id": "probe-l-alpha",
+      "asset": "L_ALPHA_VANE",
+      "placementId": "OH15",
+      "sourceRect": [
+        137,
+        900,
+        253,
+        86
+      ],
+      "rule": "probe",
+      "controls": [
+        "pitot-a"
+      ],
+      "sensor": "probe-l-alpha",
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 3,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Existing simulator rules and frozen guide sockets; private page-level source unavailable in this session."
+      }
+    },
+    {
+      "id": "hyd-eng-1",
+      "asset": "LOW_PRESSURE",
+      "placementId": "OH17",
+      "sourceRect": [
+        194,
+        335,
+        269,
+        118
+      ],
+      "rule": "hyd-pressure",
+      "controls": [
+        "hyd-eng-1"
+      ],
+      "sensor": null,
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 13,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Existing simulator rules and frozen guide sockets; private page-level source unavailable in this session."
+      }
+    },
+    {
+      "id": "hyd-elec-2",
+      "asset": "LOW_PRESSURE",
+      "placementId": "OH17",
+      "sourceRect": [
+        495,
+        335,
+        269,
+        118
+      ],
+      "rule": "hyd-pressure",
+      "controls": [
+        "hyd-elec-2"
+      ],
+      "sensor": null,
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 13,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Existing simulator rules and frozen guide sockets; private page-level source unavailable in this session."
+      }
+    },
+    {
+      "id": "hyd-elec-1",
+      "asset": "LOW_PRESSURE",
+      "placementId": "OH17",
+      "sourceRect": [
+        908,
+        335,
+        269,
+        118
+      ],
+      "rule": "hyd-pressure",
+      "controls": [
+        "hyd-elec-1"
+      ],
+      "sensor": null,
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 13,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Existing simulator rules and frozen guide sockets; private page-level source unavailable in this session."
+      }
+    },
+    {
+      "id": "hyd-eng-2",
+      "asset": "LOW_PRESSURE",
+      "placementId": "OH17",
+      "sourceRect": [
+        1213,
+        335,
+        269,
+        118
+      ],
+      "rule": "hyd-pressure",
+      "controls": [
+        "hyd-eng-2"
+      ],
+      "sensor": null,
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 13,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Existing simulator rules and frozen guide sockets; private page-level source unavailable in this session."
+      }
+    },
+    {
+      "id": "hyd-elec-2-overheat",
+      "asset": "OVERHEAT",
+      "placementId": "OH17",
+      "sourceRect": [
+        495,
+        188,
+        271,
+        118
+      ],
+      "rule": "sensor",
+      "controls": [],
+      "sensor": "hyd-elec-2-overheat",
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 13,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Existing simulator rules and frozen guide sockets; private page-level source unavailable in this session."
+      }
+    },
+    {
+      "id": "hyd-elec-1-overheat",
+      "asset": "OVERHEAT",
+      "placementId": "OH17",
+      "sourceRect": [
+        908,
+        188,
+        271,
+        118
+      ],
+      "rule": "sensor",
+      "controls": [],
+      "sensor": "hyd-elec-1-overheat",
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 13,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Existing simulator rules and frozen guide sockets; private page-level source unavailable in this session."
+      }
+    }
+  ],
+  "sourceStatus": "Public source-located electrical engine and previous fuel/flight-control models reused; private Technical Database retrieval returned no results. Remaining predicates are explicit simulator approximations, not source-verified aircraft rules.",
+  "unavailableLegends": [
+    "WINDOW HEAT ON (green)",
+    "F/O P/S 2 AUX STATIC",
+    "CAPT STATIC 1 AUX P/S",
+    "R ELEV PITOT",
+    "R ALPHA VANE",
+    "TEMP PROBE",
+    "APU LOW OIL QUANTITY",
+    "GEN OFF BUS / APU GEN OFF BUS",
+    "Blue valve and pneumatic/pressurization annunciators"
+  ]
+}

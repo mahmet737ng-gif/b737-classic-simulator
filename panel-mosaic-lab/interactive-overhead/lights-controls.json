@@ -1,0 +1,94 @@
+{
+  "version": "LGT-0001",
+  "rotaries": [
+    {
+      "id": "irs-mode-l",
+      "label": "IRS L MODE",
+      "placementId": "UPPER",
+      "sourcePoint": [
+        492,
+        667
+      ],
+      "bezelSourceDiameter": 72,
+      "kind": "rotary",
+      "mode": "detent",
+      "asset": "rotary-standard",
+      "pivot": [
+        0.5,
+        0.44
+      ],
+      "states": [
+        "OFF",
+        "ALIGN",
+        "NAV",
+        "ATT"
+      ],
+      "angles": [
+        -70,
+        -25,
+        25,
+        70
+      ],
+      "default": "OFF"
+    },
+    {
+      "id": "irs-mode-r",
+      "label": "IRS R MODE",
+      "placementId": "UPPER",
+      "sourcePoint": [
+        675,
+        667
+      ],
+      "bezelSourceDiameter": 72,
+      "kind": "rotary",
+      "mode": "detent",
+      "asset": "rotary-standard",
+      "pivot": [
+        0.5,
+        0.44
+      ],
+      "states": [
+        "OFF",
+        "ALIGN",
+        "NAV",
+        "ATT"
+      ],
+      "angles": [
+        -70,
+        -25,
+        25,
+        70
+      ],
+      "default": "OFF"
+    }
+  ],
+  "guards": [
+    {
+      "id": "passenger-oxygen",
+      "label": "PASSENGER OXYGEN",
+      "kind": "guarded",
+      "placementId": "UPPER",
+      "sourcePoint": [
+        1295,
+        612
+      ],
+      "bezelSourceDiameter": 83,
+      "color": "red",
+      "states": [
+        "normal",
+        "on"
+      ],
+      "default": {
+        "value": "normal",
+        "guard": "closed"
+      },
+      "closePolicy": {
+        "preserve": true
+      },
+      "rotation": 0,
+      "axis": "vertical",
+      "assetFamily": "original-approved-guarded-v2",
+      "logicStatus": "SIM_APPROX_ONLY; deployment latch resets only through explicit scenario reset"
+    }
+  ]
+}
