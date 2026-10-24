@@ -5,12 +5,13 @@
   ['B737PneumaticsV6','../../engine/systems/pneumatics-v6.js'],
   ['B737ISNEngineAPUV1','../../engine/integration/isn-engine-apu-v1.js'],
   ['B737ISNStartSequenceV1','../../engine/integration/isn-start-sequence-v1.js'],
+  ['B737ISNEngineStartDynamicsV1','../../engine/integration/isn-engine-start-dynamics-v1.js'],
   ['B737ISNAPUStartChainV1','../../engine/integration/isn-apu-start-chain-v1.js'],
   ['B737ISNStartIndicationsV1','../../engine/integration/isn-start-indications-v1.js']
  ];
  async function loadDependencies(){for(const [global,path] of deps){if(window[global])continue;
   await new Promise((resolve,reject)=>{const script=document.createElement('script');
-   script.src=new URL(path,moduleBase).href+'?v=ISN-0004';script.onload=resolve;
+   script.src=new URL(path,moduleBase).href+'?v=ISN-0005';script.onload=resolve;
    script.onerror=()=>reject(Error('Missing integration script '+path));document.head.append(script);});
  }}
  function init(){
@@ -37,7 +38,7 @@
  panel.querySelector('.isn-warnings').after(trainer);
  const replayButton=document.createElement('button');replayButton.id='isnReplay';replayButton.type='button';replayButton.textContent='بازپخش قطعی رویدادهای ISN';
  panel.querySelector('#isnTrace').after(replayButton);
- const startPanel=document.createElement('details');startPanel.open=true;startPanel.className='isn-start-panel';startPanel.innerHTML='<summary>ISN-03 · APU → BLEED + ELECTRICAL → ENGINE START</summary><p class="isn-note">مسیر تعاملی از سوییچ‌های واقعی اورهد است. زمان‌های کوتاه APU/N2 فقط نقاط آموزشی شبیه‌سازی‌اند، نه دادهٔ واقعی هواپیما. بعد از START، ژنراتور APU و Bleed باید با سوییچ‌های خودشان انتخاب شوند؛ PACK L/R روی OFF باشد. خوانش N2 و EGT در نوار بالا خروجی آموزشی است، نه گیج دینامیکی یا حسگر واقعی.</p><div id="isnStartStatus" role="status" dir="ltr">Waiting for overhead…</div><p class="isn-lever-instruction">برای بازکردن Fuel / Start Lever هر موتور، روی اهرم همان موتور در پایینِ Throttle Quadrant در پدستال کلیک کن. حرکت به IDLE فقط پس از موتورینگ و رسیدن به N2 مناسب پذیرفته می‌شود؛ کلیک بعدی CUTOFF می‌کند.</p><p id="isnStartLeverStatus" class="isn-lever-status" role="status" dir="ltr">ENG 1 CUTOFF · ENG 2 CUTOFF</p><p id="isnStartError" class="isn-error" role="alert"></p><a href="../../isn-start-sequence-lab/">باز کردن آزمایشگاه مستند ISN-03 ↗</a>';
+ const startPanel=document.createElement('details');startPanel.open=true;startPanel.className='isn-start-panel';startPanel.innerHTML='<summary>ISN-05 · APU → BLEED + ELECTRICAL → ENGINE START</summary><p class="isn-note">مسیر تعاملی از سوییچ‌های واقعی اورهد است. رشد پیوستهٔ N2/EGT و عقربه‌های روی پنل فقط درون‌یابی آموزشی‌اند، نه مدل عملکرد موتور یا دادهٔ حسگر. آستانه‌های اجازهٔ ورود سوخت و قطع استارتر جداگانه در موتور قواعد مستند بررسی می‌شوند. برای استارت، ژنراتور APU و Bleed را انتخاب کن و PACK L/R را OFF بگذار.</p><div id="isnStartStatus" role="status" dir="ltr">Waiting for overhead…</div><p class="isn-lever-instruction">برای بازکردن Fuel / Start Lever هر موتور، روی اهرم همان موتور در پایینِ Throttle Quadrant در پدستال کلیک کن. حرکت به IDLE فقط پس از موتورینگ و رسیدن به N2 مناسب پذیرفته می‌شود؛ کلیک بعدی CUTOFF می‌کند.</p><p id="isnStartLeverStatus" class="isn-lever-status" role="status" dir="ltr">ENG 1 CUTOFF · ENG 2 CUTOFF</p><p id="isnStartError" class="isn-error" role="alert"></p><a href="../../isn-start-sequence-lab/">باز کردن آزمایشگاه مستند ISN-03 ↗</a>';
  panel.querySelector('.isn-note').after(startPanel);
  const anchor=document.querySelector('.aircraft-profile-summary');if(anchor)anchor.after(panel);else byId('inspector').prepend(panel);
  const node=new Map();
@@ -75,6 +76,7 @@
    valve.dataset.amber=String(info.startValve.mountedLamp===true);
   }
   byId('isnIndicationError').textContent=indication.error||([1,2].some(n=>indication.engines['engine'+n].egt725Advisory)?'EGT 725°C ABNORMAL-START ADVISORY':'');
+  window.dispatchEvent(new CustomEvent('b737:isn-start-indications',{detail:indication}));
   const levers={engine1:s.observations.engine1.feedback.fuelStartLever.value,
    engine2:s.observations.engine2.feedback.fuelStartLever.value};
   byId('isnStartLeverStatus').textContent='ENG 1 '+levers.engine1+' · ENG 2 '+levers.engine2;

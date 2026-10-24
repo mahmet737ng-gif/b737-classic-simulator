@@ -3,8 +3,9 @@
  * explicitly marked TRAINING_SEQUENCE_SIMULATED, never physical sensors.
  * The real electrical, fuel/hydraulic and pneumatic discrete model is reused.
  */
-(function(root,factory){'use strict';const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;if(root)root.B737ISNAPUStartChainV1=api;})(typeof globalThis!=='undefined'?globalThis:null,function(){
+(function(root,factory){'use strict';const api=factory(root?.B737ISNEngineStartDynamicsV1||(typeof require==='function'?require('./isn-engine-start-dynamics-v1'):null));if(typeof module==='object'&&module.exports)module.exports=api;if(root)root.B737ISNAPUStartChainV1=api;})(typeof globalThis!=='undefined'?globalThis:null,function(Dynamics){
  'use strict';
+ if(!Dynamics?.sample)throw Error('ISN engine start dynamics dependency required');
  const ORIGIN='TRAINING_SEQUENCE_SIMULATED';
  const CONTROLS=Object.freeze({'apu-start':'apu','engine-start-1':'engine1','engine-start-2':'engine2'});
  const copy=v=>JSON.parse(JSON.stringify(v));
@@ -12,6 +13,7 @@
   constructor(start){if(!start?.send||!start?.core?.pack||!start?.core?.pneumaticState)throw Error('ISN-03 start session required');
    this.start=start;this.time=0;this.jobs=[];this.phase={apu:'OFF',engine1:'OFF',engine2:'OFF'};
    this.effects=[];this.lastError='';this.controls={};this.guards={};this.started={engine1:false,engine2:false};
+   this.dynamic={engine1:null,engine2:null};
    for(const device of ['engine1','engine2','apu'])this.obs(device,false);
    this.feedback('apu','cockpitFireHandleIn',true);
    this.feedback('apu','groundFireHandleIn',true);
@@ -28,9 +30,16 @@
   advance(ms){if(!Number.isFinite(ms)||ms<0)throw Error('Nonnegative elapsed ms required');
    const end=this.time+ms;let count=0;
    while(this.jobs.length&&this.jobs[0].at<=end){if(++count>100)throw Error('Training queue limit');
-    const job=this.jobs.shift();this.time=job.at;job.fn();this.syncPower();}
-   this.time=end;return this.get();
+    const job=this.jobs.shift();this.updateDynamics(job.at);this.time=job.at;job.fn();this.syncPower();}
+   this.updateDynamics(end);this.time=end;return this.get();
   }
+  updateDynamics(at){for(const device of ['engine1','engine2']){
+   const active=this.dynamic[device];if(!active||this.phase[device]!==active.phase)continue;
+   const value=Dynamics.sample(active.phase,Math.max(0,at-active.since));
+   this.feedback(device,'n2Percent',value.n2Percent);
+   if(value.egtC!==null)this.feedback(device,'egtC',value.egtC);
+   this.feedback(device,'fuelFlowKgHr',value.fuelFlowKgHr);
+  }}
   syncPower(){const p=this.start.core.pack;
    const e=p.get().electrical.bus,c=p.electricalState.config;
    for(const [key,val] of Object.entries({batterySwitchOn:c.batterySwitch,batteryBusPowered:e.battery,
@@ -121,7 +130,9 @@
   }
   startEngine(device){
    this.lastError='';this.cancel(device);this.started[device]=false;
+   this.dynamic[device]=null;
    this.feedback(device,'n2Percent',0);
+   this.feedback(device,'egtC',null);this.feedback(device,'fuelFlowKgHr',0);
    this.command({type:'ENGINE_START_SWITCH',device,position:'GRD'});
    this.syncPower();
    const failure=this.canStartEngine(device);
@@ -129,28 +140,34 @@
    this.feedback(device,'startAirAvailable',true);this.feedback(device,'startValveOpen',true);
    this.feedback(device,'starterEngaged',true);
    this.phase[device]='MOTORING';
+   this.dynamic[device]={phase:'MOTORING',since:this.time};
    this.schedule(device,850,()=>{if(this.phase[device]!=='MOTORING')return;
     this.feedback(device,'n1RotationObserved',true);this.feedback(device,'maxMotoringObserved',false);
     this.feedback(device,'n2Percent',25);this.phase[device]='AWAIT_FUEL_LEVER_IDLE';});
   }
   lever(device,position){if(!['engine1','engine2'].includes(device)||!['IDLE','CUTOFF'].includes(position))throw Error('Invalid start lever');
    if(position==='CUTOFF'){this.feedback(device,'fuelStartLever','CUTOFF');if(this.phase[device]!=='RUNNING')this.abortEngine(device);else{
-    this.obs(device,false);this.phase[device]='OFF';}return this.get();}
+    this.feedback(device,'fuelFlowKgHr',0);this.feedback(device,'n2Percent',null);
+    this.feedback(device,'egtC',null);this.obs(device,false);this.phase[device]='OFF';}return this.get();}
    if(this.phase[device]!=='AWAIT_FUEL_LEVER_IDLE'){
     this.lastError=device.toUpperCase()+': START LEVER IDLE requires starter motoring';return this.get();}
    const rule=this.start.get().observation[device].rules;
    if(rule.fuel.recommendMovingLeverToIdle!==true){this.lastError='WAIT FOR N1 ROTATION AND N2';return this.get();}
    this.feedback(device,'fuelStartLever','IDLE');
    this.lastError='';this.phase[device]='LIGHT_OFF_SEQUENCE';
-   this.feedback(device,'fuelFlowKgHr',400);this.feedback(device,'egtC',420);
+   this.dynamic[device]={phase:'LIGHT_OFF_SEQUENCE',since:this.time};
+   this.feedback(device,'fuelFlowKgHr',400);this.feedback(device,'egtC',0);
    this.schedule(device,1000,()=>{if(this.phase[device]!=='LIGHT_OFF_SEQUENCE')return;
+    this.dynamic[device]=null;
     this.feedback(device,'n2Percent',46);this.feedback(device,'startValveOpen',false);
     this.feedback(device,'startAirAvailable',false);this.feedback(device,'starterEngaged',false);
     this.feedback(device,'fuelFlowKgHr',350);this.obs(device,true);this.phase[device]='RUNNING';
     this.started[device]=true;this.effects.push({type:'ROTARY_RELEASE',id:device==='engine1'?'engine-start-1':'engine-start-2',position:'OFF'});
    });return this.get();
   }
-  abortEngine(device){this.cancel(device);this.feedback(device,'startValveOpen',false);
+  abortEngine(device){this.cancel(device);this.dynamic[device]=null;
+   this.feedback(device,'fuelFlowKgHr',0);this.feedback(device,'n2Percent',null);this.feedback(device,'egtC',null);
+   this.feedback(device,'startValveOpen',false);
    this.feedback(device,'startAirAvailable',false);this.feedback(device,'starterEngaged',false);
    this.command({type:'ENGINE_START_SWITCH',device,position:'OFF'});
    if(this.phase[device]!=='RUNNING')this.phase[device]='OFF';
@@ -169,7 +186,7 @@
     sources:copy(engine.network.source),electrical:copy(pack.electrical.bus),
     selectedSources:copy(pack.electrical.source),bleed:copy(this.start.core.Pneumatics.derive(this.start.core.pneumaticState).bleed),
     controls:copy(this.controls),projected,observations:copy(engine.observation),
-    trainingNotice:'TRAINING_SEQUENCE_SIMULATED: compressed classroom checkpoints; NOT real N2/APU RPM/EGT dynamics or sensor evidence'};
+    trainingNotice:'TRAINING_SEQUENCE_SIMULATED: continuous classroom interpolation between compressed checkpoints; NOT calibrated engine/APU performance or sensor evidence'};
   }
  }
  return Object.freeze({ORIGIN,CONTROLS,Chain});

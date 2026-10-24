@@ -1,0 +1,32 @@
+'use strict';
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const path=require('node:path');
+const Dynamics=require('../engine/integration/isn-engine-start-dynamics-v1');
+const Gauge=require('../panel-mosaic-lab/cockpit/isn-engine-gauge-model');
+assert.equal(Dynamics.sample('MOTORING',0).n2Percent,0);
+assert.equal(Dynamics.sample('MOTORING',425).n2Percent,12.5);
+assert.equal(Dynamics.sample('MOTORING',850).n2Percent,25);
+assert.equal(Dynamics.sample('MOTORING',2000).n2Percent,25);
+assert.equal(Dynamics.sample('LIGHT_OFF_SEQUENCE',0).egtC,0);
+assert.equal(Dynamics.sample('LIGHT_OFF_SEQUENCE',500).n2Percent,35.5);
+assert.equal(Dynamics.sample('LIGHT_OFF_SEQUENCE',500).egtC,210);
+assert.equal(Dynamics.sample('LIGHT_OFF_SEQUENCE',1000).n2Percent,46);
+assert.equal(Dynamics.sample('LIGHT_OFF_SEQUENCE',1000).egtC,420);
+assert.equal(Dynamics.sample('LIGHT_OFF_SEQUENCE',0).origin,'TRAINING_SEQUENCE_SIMULATED');
+assert.throws(()=>Dynamics.sample('MOTORING',-1));
+assert.equal(Gauge.gauges.length,4);
+for(const g of Gauge.gauges){
+ assert.ok(g.cx>0&&g.cy>0&&g.cx<Gauge.source.width&&g.cy<Gauge.source.height);
+ assert.equal(Gauge.angle(null,g.max),null);
+ assert.equal(Gauge.angle(0,g.max),-120);
+ assert.equal(Gauge.angle(g.max,g.max),120);
+}
+const html=fs.readFileSync(path.join(__dirname,'../panel-mosaic-lab/cockpit/index.html'),'utf8');
+const overlay=fs.readFileSync(path.join(__dirname,'../panel-mosaic-lab/cockpit/isn-engine-gauges.js'),'utf8');
+const host=fs.readFileSync(path.join(__dirname,'../panel-mosaic-lab/cockpit/isn-cockpit.js'),'utf8');
+for(const name of ['isn-engine-gauges.css','isn-engine-gauge-model.js','isn-engine-gauges.js'])assert.ok(html.includes(name));
+assert.ok(overlay.includes('data-piece="engine"'));
+assert.ok(host.includes('b737:isn-start-indications'));
+assert.ok(host.includes('isn-engine-start-dynamics-v1.js'));
+console.log('PASS ISN-05 training interpolation and four source-aligned engine-panel gauges.');

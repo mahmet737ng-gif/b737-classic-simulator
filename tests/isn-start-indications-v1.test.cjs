@@ -31,10 +31,11 @@ assert.equal(v.engines.engine1.startValve.text,'UNKNOWN','Engine 1 remains indep
 chain.advance(850);v=project(chain.get());assert.equal(v.engines.engine2.n2.text,'25 %');
 assert.equal(v.engines.engine2.n2.origin,Chain.ORIGIN);
 chain.lever('engine2','IDLE');v=project(chain.get());
-assert.equal(v.engines.engine2.egt.text,'420 °C');
+assert.equal(v.engines.engine2.egt.text,'0 °C');
 assert.equal(v.engines.engine2.egt.origin,Chain.ORIGIN);
 chain.advance(1000);v=project(chain.get());
 assert.equal(v.engines.engine2.n2.text,'46 %');
+assert.equal(v.engines.engine2.egt.text,'420 °C');
 assert.equal(v.engines.engine2.startValve.text,'CLOSED');
 assert.equal(v.engines.engine2.startValve.mountedLamp,false);
 assert.equal(v.engines.engine2.running,true);

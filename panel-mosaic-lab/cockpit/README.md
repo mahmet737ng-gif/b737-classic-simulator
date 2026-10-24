@@ -12,6 +12,18 @@ white pointer ends at that curve instead of crossing into the grey face.
 The four inspector sliders are
 visual-only tests; verified aircraft values are not yet wired to these gauges.
 
+## ISN-05 — Engine start interpolation and instrument overlays
+
+The ISN-03 source-backed start gates remain unchanged. Between their compressed
+training checkpoints, N2 and EGT now update continuously through
+`engine/integration/isn-engine-start-dynamics-v1.js`. Four separate vector
+gauges (N2 and EGT for each engine) are mounted over the untouched Engine /
+Standby image using coordinates in that source image's 1235 × 1274 space.
+The cockpit strip, gauges, and underlying start session share the same
+observations; aborted starts clear stale training indications. These curves
+and gauge-angle scales are **training visualization**, not calibrated engine
+physics, aircraft sensor readings, or FCOM-provided acceleration schedules.
+
 ## ISN-03 — APU / engine start from Unified controls (training beta)
 
 The latest Unified cockpit hosts a source-gated Engine/APU start training
