@@ -1,5 +1,25 @@
 # Unified cockpit — CKP-0012
 
+## FTN-0001 — approved white Fuel Temperature needle mounted on Unified
+
+The isolated, sharp-tipped white vector needle approved by the owner is
+included byte-for-byte as `fuel-temperature-needle.svg`. In the Unified
+cockpit only, it is a separate overlay on the embedded OH09 fuel panel. Its
+single pivot is registered to OH09 source pixel `(506, 235)` on the existing
+1012 × 1555 image, with exact atlas placement and zoom inherited from the
+approved mosaic. A small central mask allows the original blue pivot cap to
+remain visible without changing the background image or adding a new cap.
+
+Movement follows the already-defined Fuel Panel animation registry: -40 to
++40 °C maps to -70 to +70 degrees; default is +10 °C with 320 ms easing.
+The inspector includes a temperature slider and reset. The external API is
+`B737UnifiedFuelTemperature.setTemperature(celsius)` or a
+`b737:fuel-temperature` event with `{detail: {celsius}}`. This is a UI input,
+not a fabricated automatic fuel-heat or fault model. This patch leaves
+`all-overhead/`, the source fuel panel image, and the standalone fuel panel
+unchanged. `fuel-temperature-needle.test.cjs` validates the placement,
+movement range and approved asset fingerprint.
+
 ## FLP-0001 — approved double flap needle in Unified
 
 The Boeing 737 Classic F/O inner/gear panel's existing blank FLAPS gauge now

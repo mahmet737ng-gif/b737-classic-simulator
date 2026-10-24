@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="1024" height="1024" viewBox="0 0 512 512"
+     role="img" aria-label="Boeing 737 Classic fuel temperature gauge needle, isolated transparent background">
+  <title>737 Classic — Fuel Temperature Needle</title>
+  <desc>
+    Isolated, sharp-tipped white gauge needle with transparent background.
+    The rotation pivot is x=256,y=256. Its reference-photo position is
+    approximately 29 degrees clockwise from 12 o'clock. No hub, face,
+    dial, screw, lettering or blue backing is included.
+  </desc>
+  <defs>
+    <linearGradient id="blade" x1="0" x2="1" y1="0" y2="0">
+      <stop offset="0" stop-color="#d6d9d8"/>
+      <stop offset="0.22" stop-color="#f6f7f4"/>
+      <stop offset="0.73" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#e9ebe8"/>
+    </linearGradient>
+  </defs>
+
+  <!-- One white pointed needle only; all surrounding pixels are transparent. -->
+  <g id="fuel-temperature-pointer" transform="rotate(29 256 256)">
+    <path d="M 245 258
+             L 245 117
+             Q 245 108 249 94
+             L 256 62
+             L 262 95
+             Q 266 109 266 118
+             L 267 258
+             Q 256 263 245 258 Z"
+          fill="url(#blade)" stroke="#c4c9c8" stroke-width="1.2" stroke-linejoin="round"/>
+    <path d="M 252 245 L 252 115 L 256 78 L 257 245 Z"
+          fill="#fff" opacity=".67"/>
+  </g>
+</svg>
