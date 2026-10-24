@@ -70,3 +70,22 @@ setFault(id, boolean), reset(), or b737:overhead-scenario. Each lamp has its own
 stable data-light ID, even where legends repeat.
 
 Additional check: node panel-mosaic-lab/interactive-overhead/lights.test.cjs
+
+## LGT-0002 additions
+
+26 additional mounted lamps use the 21 newly uploaded, unmodified PNG face
+pairs (600x300); all 58 LGT-0001 records, geometry, assets and behavior stay
+unchanged. Total: 84 lamps / 49 legend types. The separate visual LIGHTS
+registry also lists all 49 types. No locked image or mosaic file is changed.
+
+New lamps cover right-hand probes + TEMP PROBE, eight door/service sensors,
+two COWL ANTI ICE, two DUCT OVERHEAT, DUAL BLEED, two each PACK TRIP OFF /
+WING-BODY OVERHEAT / BLEED TRIP OFF, AUTO FAIL and OFF SCHED DESCENT.
+
+Nine pneumatic lamps reuse engine/systems/pneumatics-v6.js, preserving its
+existing source pointers, isolation logic, trip latches and reset predicates.
+TRIP RESET is available under scenario inputs: clear the initiating sensor
+first, then reset. Clearing a fault or changing a pack switch alone does not
+unlatch a trip. New door inputs represent open/unsecured sensors, not switches
+on the overhead. Other new conditions remain explicit SIM_APPROX_ONLY inputs;
+no new source-page reading or precise thermal/pressure model is claimed.

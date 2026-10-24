@@ -1,4 +1,4 @@
-/* LGT-0001. Discrete trainer adapter, not an aircraft wiring model.
+/* LGT-0002. Discrete trainer adapter, not an aircraft wiring model.
  * Source-located electrical V7 is reused without resolving its UNKNOWN cases.
  * Fuel/flight-controls legacy rules are simulator prototypes; additional
  * sensor predicates and short delays are explicitly SIM_APPROX_ONLY.
@@ -18,8 +18,9 @@
    for(const state of ['ON','OFF'])if(!reg.assets[c.asset][state]?.url)throw Error('Missing lamp pair '+c.asset);
   }return true;
  }
- function controller(reg,electrical,notify=()=>{}){
+ function controller(reg,electrical,notify=()=>{},pneumatics){
   let context=initialContext(),toggles={},rotaries={},guards={},test=false,electricalState=electrical.initialState();
+  let pneumaticState=pneumatics.initial();
   let oxygen=false;const faults=new Set(reg.lights.map(c=>c.id)),switchTime={};let result=null;
   const control=id=>toggles[id]??guards[id]?.value??rotaries[id];
   const isOn=id=>String(control(id)).toUpperCase()==='ON';
@@ -27,6 +28,19 @@
   function syncElectrical(){
    for(const [key,value]of Object.entries({batterySwitch:isOn('battery-master'),standbySelector:String(control('standby-power')||'auto').toUpperCase(),engine1Running:context.engine1Running,engine2Running:context.engine2Running,apuRunning:context.apuRunning,groundPowerAttached:context.groundPowerAttached}))command({type:'CONTROL',key,value});
    for(const side of [1,2])command({type:'FAULT',id:'GEN'+side+'_FAILED',active:control('generator-disconnect-'+side)==='disconnect',instructor:true});
+  }
+  const pneumaticSensors={
+   'pack-trip-l':'packLOverheat','pack-trip-r':'packROverheat',
+   'duct-overheat-l':'ductLOverheat','duct-overheat-r':'ductROverheat',
+   'bleed-trip-l':'bleed1Overlimit','bleed-trip-r':'bleed2Overlimit',
+   'wing-body-overheat-l':'wingBodyLLeakDetected','wing-body-overheat-r':'wingBodyRLeakDetected'
+  };
+  function syncPneumatic(){
+   const controls={engineBleed1:control('bleed-eng-1'),engineBleed2:control('bleed-eng-2'),apuBleed:control('bleed-apu'),isolation:control('isolation-valve'),packL:control('pack-l'),packR:control('pack-r'),recirc:control('recirc-fan'),temperatureL:String(control('control-cabin-temp')).startsWith('MANUAL')?'MANUAL':'AUTO',temperatureR:String(control('pass-cabin-temp')).startsWith('MANUAL')?'MANUAL':'AUTO'};
+   for(const [key,value]of Object.entries(controls))if(value!==undefined)pneumaticState=pneumatics.apply(pneumaticState,{type:'CONTROL',key,value});
+   const inputs={engine1Running:context.engine1Running,engine2Running:context.engine2Running,apuRunning:context.apuRunning};
+   for(const [id,key]of Object.entries(pneumaticSensors))inputs[key]=context.faults[id]===true;
+   for(const [key,value]of Object.entries(inputs))pneumaticState=pneumatics.apply(pneumaticState,{type:'SENSOR',key,value});
   }
   function sourceEvent(id,next){
    let source,side;
@@ -40,7 +54,7 @@
    const before=toggles;toggles={...t};rotaries={...r.rotaries};guards=copy(r.guards);
    for(const [id,value]of Object.entries(toggles))if(value!==before[id])switchTime[id]=now;
    if(control('passenger-oxygen')==='on')oxygen=true;
-   syncElectrical();if(event)sourceEvent(event.id,event.next);
+   syncElectrical();syncPneumatic();if(event)sourceEvent(event.id,event.next);
    return evaluate(now);
   }
   function update(patch,now=0){
@@ -48,10 +62,10 @@
     if(key==='faults'){for(const [id,active]of Object.entries(value)){if(!faults.has(id)||typeof active!=='boolean')throw Error('Invalid lamp fault');context.faults[id]=active;}}
     else if(!Object.hasOwn(initialContext(),key)||typeof value!=='boolean')throw Error('Invalid scenario input');else context[key]=value;
    }
-   syncElectrical();return evaluate(now);
+   syncElectrical();syncPneumatic();return evaluate(now);
   }
   function evaluate(now=0){
-   const e=electrical.evaluate(electricalState),on={},unknown=[],fault=id=>context.faults[id]===true;
+   const p=pneumatics.derive(pneumaticState),e=electrical.evaluate(electricalState),on={},unknown=[],fault=id=>context.faults[id]===true;
    const standbyCommand=['flight-control-a','flight-control-b'].some(id=>control(id)==='stby')||control('alternate-flaps-master')==='arm';
    const hyd=id=>isOn(id)&&!fault(id)&&(id.includes('eng-')?context['engine'+id.at(-1)+'Running']:true);
    const pressureA=hyd('hyd-eng-1')||hyd('hyd-elec-2'),pressureB=hyd('hyd-eng-2')||hyd('hyd-elec-1');
@@ -77,15 +91,18 @@
      case 'dc-fail':active=v!=='OFF'&&fault(c.id);break;
      case 'fault':active=v!=='OFF'&&fault(c.id);break;
      case 'apu':active=c.id==='apu-low-pressure'?control('apu-start')!=='OFF'&&(!context.apuRunning||fault(c.id)):fault(c.id);break;
+     case 'anti-ice':active=isOn(id)&&fault(c.id);break;
+     case 'pneumatic':active=p.lamps[c.sensor];break;
+     case 'press-fault':active=v==='AUTO'&&fault(c.id);break;
      case 'oxygen':active=oxygen||context.passengerOxygenDeployed;break;
      case 'recorder':active=fault(c.sensor);break;
      default:throw Error('Unknown lamp predicate '+c.rule);
     }
     if(active===null){unknown.push(c.id);on[c.id]=available&&test?true:null;}else on[c.id]=available&&(test||!!active);
    }
-   result={version:reg.version,lights:on,unknown,electrical:e,context:copy(context),lampTest:test,passengerOxygenDeployed:oxygen,power:available};notify(copy(result));return copy(result);
+   result={version:reg.version,lights:on,unknown,electrical:e,pneumatic:p,context:copy(context),lampTest:test,passengerOxygenDeployed:oxygen,power:available};notify(copy(result));return copy(result);
   }
-  return {ingest,update,evaluate,snapshot:()=>copy(result),setLampTest:(v,now=0)=>{test=!!v;return evaluate(now);},reset:(now=0)=>{context=initialContext();oxygen=false;test=false;electricalState=electrical.initialState();syncElectrical();return evaluate(now);}};
+  return {tripReset:(now=0)=>{syncPneumatic();pneumaticState=pneumatics.apply(pneumaticState,{type:'TRIP_RESET'});return evaluate(now);},ingest,update,evaluate,snapshot:()=>copy(result),setLampTest:(v,now=0)=>{test=!!v;return evaluate(now);},reset:(now=0)=>{context=initialContext();oxygen=false;test=false;electricalState=electrical.initialState();pneumaticState=pneumatics.initial();syncElectrical();syncPneumatic();return evaluate(now);}};
  }
  return Object.freeze({initialContext,rectangle,validate,controller});
 });

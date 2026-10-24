@@ -1,6 +1,6 @@
 {
   "schema": "b737.overhead.lights.v1",
-  "version": "LGT-0001",
+  "version": "LGT-0002",
   "baseVersion": "UPD-0012-OVH-measured-seams",
   "assets": {
     "ON_DC_LAMP": {
@@ -281,6 +281,216 @@
       "OFF": {
         "url": "../assets/locked/2026-10-23/LIGHTS/L_ALPHA_VANE_OFF.svg",
         "sha256": "83fa58e6cf96396af1b8ac968f4fc9ec12c6263d8f18d38849848e78e4a34639"
+      }
+    },
+    "TEMP_PROBE": {
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/TEMP_PROBE_ON.png",
+        "sha256": "08050addd70cf9cad5c40d45e18df8506c08ff0a721a4df0cffc78e4e6255d11"
+      },
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/TEMP_PROBE_OFF.png",
+        "sha256": "fc3fdd64e0e9dfb4ad18a8950047c2eb567db6bbfcee26f3aac28271c7194ab5"
+      }
+    },
+    "FO_PS_2_AUX_STATIC": {
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/FO_PS_2_AUX_STATIC_ON.png",
+        "sha256": "7daf9c6c6b66d68706f11ef1ab448cab805465067790b2c1a8d0841774be824a"
+      },
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/FO_PS_2_AUX_STATIC_OFF.png",
+        "sha256": "16a2a9022c41850fe27702b631165169a7433e84fbf577e0e81f1650cb5d5911"
+      }
+    },
+    "CAPT_STATIC_1_AUX_PS": {
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/CAPT_STATIC_1_AUX_PS_ON.png",
+        "sha256": "4a6ed6bd66da62362a3c7bda1d59b5d69749614655c7725eda2966cd451a32b7"
+      },
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/CAPT_STATIC_1_AUX_PS_OFF.png",
+        "sha256": "90d4e2bdc583bc64b7ae189b156f8c2043a348345d17e54afb1c4e0e21011109"
+      }
+    },
+    "R_ELEV_PITOT": {
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/R_ELEV_PITOT_ON.png",
+        "sha256": "fa059a1d45a6a60ac9183e190ecef828b8a3a44bdac8eae0958b98c53fdf9002"
+      },
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/R_ELEV_PITOT_OFF.png",
+        "sha256": "6af3c8b7504bfd2a5d1e286213a6af1067afd0f68c51eccddb53de2fffdeb293"
+      }
+    },
+    "R_ALPHA_VANE": {
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/R_ALPHA_VANE_ON.png",
+        "sha256": "5b6ffb70906c109bdf7475a448607fb1748d3af41a0a59078494ae40c32f7c30"
+      },
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/R_ALPHA_VANE_OFF.png",
+        "sha256": "93c28db491816c7aa5b53d138c5d785edbcbfd03addef891c2f23749c01d8cab"
+      }
+    },
+    "COWL_ANTI_ICE": {
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/COWL_ANTI_ICE_ON.png",
+        "sha256": "b00a43533f0124104b91343ac981df5021a3728b2d7e4f55728663e34e1c1696"
+      },
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/COWL_ANTI_ICE_OFF.png",
+        "sha256": "9fbb8f721afb0b4b65b9052ab92b20a9bcb2f36ce073a0b181067461507cd8c0"
+      }
+    },
+    "FWD_ENTRY": {
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/FWD_ENTRY_ON.png",
+        "sha256": "8df17533cad17924de765c7910575211a50e5b6b9766c08d263c8f5b12029fdf"
+      },
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/FWD_ENTRY_OFF.png",
+        "sha256": "50681d980da9bd0bf830e325a5e026fa563d774e5c07c79d7a8657438b8cfccf"
+      }
+    },
+    "AFT_ENTRY": {
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/AFT_ENTRY_ON.png",
+        "sha256": "ce521be1fd744ee7326b505ab3a982bd5cbd3fc894ca42756c83450b87323b24"
+      },
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/AFT_ENTRY_OFF.png",
+        "sha256": "b6d383c25df39acab618489496f7e1948ed834ad3ff8f304629332a6cc5471d4"
+      }
+    },
+    "AIR_STAIR": {
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/AIR_STAIR_ON.png",
+        "sha256": "82dbb428acc68567b648f53797e530cacc8ad58a634bc774e5bd8a4687440ec4"
+      },
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/AIR_STAIR_OFF.png",
+        "sha256": "2b08443277ad42860d38d4a1b8ae8ec5791e2a959648a5068278c2233518c2ff"
+      }
+    },
+    "EQUIP": {
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/EQUIP_ON.png",
+        "sha256": "1f165279aff7c92fac62e6ad3b720cb951b957e1203521b6dd9e2361ae56afbf"
+      },
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/EQUIP_OFF.png",
+        "sha256": "6c36c986becab07a17b99ab14e819e5420da900df6d522ed4f33b7cf92374024"
+      }
+    },
+    "FWD_CARGO": {
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/FWD_CARGO_ON.png",
+        "sha256": "f50149c3ef683be089d5cc5750967b687f6e8bd2f94f715b31969355c165cac0"
+      },
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/FWD_CARGO_OFF.png",
+        "sha256": "e0c183b66146e62d3f5ef14f0af84ff112308e3f62f7363ebf85f687fdde702a"
+      }
+    },
+    "AFT_CARGO": {
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/AFT_CARGO_ON.png",
+        "sha256": "f630590d1c866cb0c28ebdc876bbfee8e683467d1745cb8e13847d4fc5cba8c8"
+      },
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/AFT_CARGO_OFF.png",
+        "sha256": "efcb7191409c9d91c95dfc7ea35c236d12c13723c0eacb073499f7739648b1ba"
+      }
+    },
+    "FWD_SERVICE": {
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/FWD_SERVICE_ON.png",
+        "sha256": "c80533d0428fc8e6fd66b1138459b61f28c77ecee1e1cd11e508c5b22374796b"
+      },
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/FWD_SERVICE_OFF.png",
+        "sha256": "064fcf584b4ff188c139f51849d5bae4b217ab08b185ddcb761ad8111a67db46"
+      }
+    },
+    "AFT_SERVICE": {
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/AFT_SERVICE_ON.png",
+        "sha256": "51a00086b4b071fce89928db23b1c5e02721a7e5a95bb7179a9ebc51d593974e"
+      },
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/AFT_SERVICE_OFF.png",
+        "sha256": "0086bb951dad154d1fd7dedb1c15070152ccefbe3ebc6ab18752cd8bffe949aa"
+      }
+    },
+    "DUCT_OVERHEAT": {
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/DUCT_OVERHEAT_ON.png",
+        "sha256": "f4a7c89841916970121c81a80714724c1d156e83e0df8c489027c504b6fc4795"
+      },
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/DUCT_OVERHEAT_OFF.png",
+        "sha256": "a3a138e079cf9c971ce774b7fd2330184caa2c3de69e57bd0a3d4ee4eec11df4"
+      }
+    },
+    "DUAL_BLEED": {
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/DUAL_BLEED_ON.png",
+        "sha256": "6821ff67ce9d707581b5c9e72f1fbec40d60cd687f46993be429c0b1bd679063"
+      },
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/DUAL_BLEED_OFF.png",
+        "sha256": "f796d9adbd5a45503e8f27f211009b88863532daaea1b85ef914556f8f169f3b"
+      }
+    },
+    "PACK_TRIP_OFF": {
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/PACK_TRIP_OFF_ON.png",
+        "sha256": "bfc2e7ac9930e4569205bb777cc62a0f05d6f445fcb192d4921086c914fbc13c"
+      },
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/PACK_TRIP_OFF_OFF.png",
+        "sha256": "b4fb44136e33b5a6f2b7df46a2a87d84a3fa1f2854fcf5a37692903c0133bdf4"
+      }
+    },
+    "WING_BODY_OVERHEAT": {
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/WING_BODY_OVERHEAT_ON.png",
+        "sha256": "168bdeafc22af279500ba03ba83fa9f4cf70b03321f591d37d8da04fa2818b1e"
+      },
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/WING_BODY_OVERHEAT_OFF.png",
+        "sha256": "722c7f834b09b08bcad921a998db0ce402c3586afecf8510ade9c1ba42edeb47"
+      }
+    },
+    "BLEED_TRIP_OFF": {
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/BLEED_TRIP_OFF_ON.png",
+        "sha256": "d9f716ae3eeff898b07088d2ee4949003062ef3495950216f7d4a2d6207aaf43"
+      },
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/BLEED_TRIP_OFF_OFF.png",
+        "sha256": "5fae8965a0f13def5013a7d14cbc2d37118812c8fe598dc0a2da44c80ea7e0c9"
+      }
+    },
+    "AUTO_FAIL": {
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/AUTO_FAIL_ON.png",
+        "sha256": "8f491ffe9445eeac6b24e368e4a3dfd95000410b6194a69791ac3820c497b9a3"
+      },
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/AUTO_FAIL_OFF.png",
+        "sha256": "703cf149863e6a470c94ba3850ee06e91d2b491a05c658d7f0e5c55a5b9406ef"
+      }
+    },
+    "OFF_SCHED_DESCENT": {
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/OFF_SCHED_DESCENT_ON.png",
+        "sha256": "3542afff36f9a323e419b0ba616e66728b054277d37f09d0999dfe3079ce239f"
+      },
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/OFF_SCHED_DESCENT_OFF.png",
+        "sha256": "a99326715be186da05dda5b8f3740590bc48083a736e0038b037648a40a2cbb6"
       }
     }
   },
@@ -1596,18 +1806,600 @@
         "status": "SIM_APPROX_ONLY",
         "basis": "Existing simulator rules and frozen guide sockets; private page-level source unavailable in this session."
       }
+    },
+    {
+      "id": "probe-temp",
+      "asset": "TEMP_PROBE",
+      "placementId": "OH15",
+      "sourceRect": [
+        137,
+        1005,
+        253,
+        86
+      ],
+      "rule": "probe",
+      "controls": [
+        "pitot-a"
+      ],
+      "sensor": "probe-temp",
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 3,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Frozen guide sockets; explicit trainer sensor input, no new source-page verification."
+      }
+    },
+    {
+      "id": "probe-fo-ps",
+      "asset": "FO_PS_2_AUX_STATIC",
+      "placementId": "OH15",
+      "sourceRect": [
+        893,
+        571,
+        253,
+        86
+      ],
+      "rule": "probe",
+      "controls": [
+        "pitot-b"
+      ],
+      "sensor": "probe-fo-ps",
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 3,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Frozen guide sockets; explicit trainer sensor input, no new source-page verification."
+      }
+    },
+    {
+      "id": "probe-capt-static",
+      "asset": "CAPT_STATIC_1_AUX_PS",
+      "placementId": "OH15",
+      "sourceRect": [
+        893,
+        678,
+        253,
+        86
+      ],
+      "rule": "probe",
+      "controls": [
+        "pitot-b"
+      ],
+      "sensor": "probe-capt-static",
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 3,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Frozen guide sockets; explicit trainer sensor input, no new source-page verification."
+      }
+    },
+    {
+      "id": "probe-r-elev",
+      "asset": "R_ELEV_PITOT",
+      "placementId": "OH15",
+      "sourceRect": [
+        893,
+        789,
+        253,
+        86
+      ],
+      "rule": "probe",
+      "controls": [
+        "pitot-b"
+      ],
+      "sensor": "probe-r-elev",
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 3,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Frozen guide sockets; explicit trainer sensor input, no new source-page verification."
+      }
+    },
+    {
+      "id": "probe-r-alpha",
+      "asset": "R_ALPHA_VANE",
+      "placementId": "OH15",
+      "sourceRect": [
+        893,
+        900,
+        253,
+        86
+      ],
+      "rule": "probe",
+      "controls": [
+        "pitot-b"
+      ],
+      "sensor": "probe-r-alpha",
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 3,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Frozen guide sockets; explicit trainer sensor input, no new source-page verification."
+      }
+    },
+    {
+      "id": "cowl-anti-ice-1",
+      "asset": "COWL_ANTI_ICE",
+      "placementId": "OH16",
+      "sourceRect": [
+        868,
+        167,
+        259,
+        106
+      ],
+      "rule": "anti-ice",
+      "controls": [
+        "engine-anti-ice-1"
+      ],
+      "sensor": "cowl-anti-ice-1",
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 3,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Frozen guide sockets; explicit trainer sensor input, no new source-page verification."
+      }
+    },
+    {
+      "id": "cowl-anti-ice-2",
+      "asset": "COWL_ANTI_ICE",
+      "placementId": "OH16",
+      "sourceRect": [
+        1168,
+        167,
+        259,
+        106
+      ],
+      "rule": "anti-ice",
+      "controls": [
+        "engine-anti-ice-2"
+      ],
+      "sensor": "cowl-anti-ice-2",
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 3,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Frozen guide sockets; explicit trainer sensor input, no new source-page verification."
+      }
+    },
+    {
+      "id": "door-fwd-entry",
+      "asset": "FWD_ENTRY",
+      "placementId": "OH19-VOICE",
+      "sourceRect": [
+        225,
+        120,
+        263,
+        115
+      ],
+      "rule": "sensor",
+      "controls": [],
+      "sensor": "door-fwd-entry",
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 1,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Frozen guide sockets; explicit trainer sensor input, no new source-page verification."
+      }
+    },
+    {
+      "id": "door-aft-entry",
+      "asset": "AFT_ENTRY",
+      "placementId": "OH19-VOICE",
+      "sourceRect": [
+        225,
+        258,
+        263,
+        115
+      ],
+      "rule": "sensor",
+      "controls": [],
+      "sensor": "door-aft-entry",
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 1,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Frozen guide sockets; explicit trainer sensor input, no new source-page verification."
+      }
+    },
+    {
+      "id": "door-air-stair",
+      "asset": "AIR_STAIR",
+      "placementId": "OH19-VOICE",
+      "sourceRect": [
+        519,
+        120,
+        263,
+        115
+      ],
+      "rule": "sensor",
+      "controls": [],
+      "sensor": "door-air-stair",
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 1,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Frozen guide sockets; explicit trainer sensor input, no new source-page verification."
+      }
+    },
+    {
+      "id": "door-equip",
+      "asset": "EQUIP",
+      "placementId": "OH19-VOICE",
+      "sourceRect": [
+        519,
+        258,
+        263,
+        115
+      ],
+      "rule": "sensor",
+      "controls": [],
+      "sensor": "door-equip",
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 1,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Frozen guide sockets; explicit trainer sensor input, no new source-page verification."
+      }
+    },
+    {
+      "id": "door-fwd-cargo",
+      "asset": "FWD_CARGO",
+      "placementId": "OH19-VOICE",
+      "sourceRect": [
+        813,
+        120,
+        263,
+        115
+      ],
+      "rule": "sensor",
+      "controls": [],
+      "sensor": "door-fwd-cargo",
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 1,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Frozen guide sockets; explicit trainer sensor input, no new source-page verification."
+      }
+    },
+    {
+      "id": "door-aft-cargo",
+      "asset": "AFT_CARGO",
+      "placementId": "OH19-VOICE",
+      "sourceRect": [
+        813,
+        258,
+        263,
+        115
+      ],
+      "rule": "sensor",
+      "controls": [],
+      "sensor": "door-aft-cargo",
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 1,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Frozen guide sockets; explicit trainer sensor input, no new source-page verification."
+      }
+    },
+    {
+      "id": "door-fwd-service",
+      "asset": "FWD_SERVICE",
+      "placementId": "OH19-VOICE",
+      "sourceRect": [
+        1107,
+        120,
+        263,
+        115
+      ],
+      "rule": "sensor",
+      "controls": [],
+      "sensor": "door-fwd-service",
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 1,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Frozen guide sockets; explicit trainer sensor input, no new source-page verification."
+      }
+    },
+    {
+      "id": "door-aft-service",
+      "asset": "AFT_SERVICE",
+      "placementId": "OH19-VOICE",
+      "sourceRect": [
+        1107,
+        258,
+        263,
+        115
+      ],
+      "rule": "sensor",
+      "controls": [],
+      "sensor": "door-aft-service",
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 1,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Frozen guide sockets; explicit trainer sensor input, no new source-page verification."
+      }
+    },
+    {
+      "id": "duct-overheat-l",
+      "asset": "DUCT_OVERHEAT",
+      "placementId": "OH20",
+      "sourceRect": [
+        108,
+        620,
+        213,
+        97
+      ],
+      "rule": "pneumatic",
+      "controls": [
+        "control-cabin-temp"
+      ],
+      "sensor": "ductOverheatL",
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 2,
+        "physical_pdf_page": null,
+        "status": "EXISTING_SOURCE_LOCATED_TRAINER",
+        "basis": "engine/systems/pneumatics-v6.js; source locations retained from existing Technical Database model, not newly re-read."
+      }
+    },
+    {
+      "id": "duct-overheat-r",
+      "asset": "DUCT_OVERHEAT",
+      "placementId": "OH20",
+      "sourceRect": [
+        926,
+        620,
+        213,
+        97
+      ],
+      "rule": "pneumatic",
+      "controls": [
+        "pass-cabin-temp"
+      ],
+      "sensor": "ductOverheatR",
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 2,
+        "physical_pdf_page": null,
+        "status": "EXISTING_SOURCE_LOCATED_TRAINER",
+        "basis": "engine/systems/pneumatics-v6.js; source locations retained from existing Technical Database model, not newly re-read."
+      }
+    },
+    {
+      "id": "dual-bleed",
+      "asset": "DUAL_BLEED",
+      "placementId": "OH21",
+      "sourceRect": [
+        172,
+        10,
+        152,
+        72
+      ],
+      "rule": "pneumatic",
+      "controls": [
+        "bleed-apu",
+        "bleed-eng-1",
+        "bleed-eng-2",
+        "isolation-valve"
+      ],
+      "sensor": "dualBleed",
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 2,
+        "physical_pdf_page": null,
+        "status": "EXISTING_SOURCE_LOCATED_TRAINER",
+        "basis": "engine/systems/pneumatics-v6.js; source locations retained from existing Technical Database model, not newly re-read."
+      }
+    },
+    {
+      "id": "pack-trip-l",
+      "asset": "PACK_TRIP_OFF",
+      "placementId": "OH21",
+      "sourceRect": [
+        243,
+        862,
+        180,
+        66
+      ],
+      "rule": "pneumatic",
+      "controls": [
+        "pack-l"
+      ],
+      "sensor": "packTripL",
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 2,
+        "physical_pdf_page": null,
+        "status": "EXISTING_SOURCE_LOCATED_TRAINER",
+        "basis": "engine/systems/pneumatics-v6.js; source locations retained from existing Technical Database model, not newly re-read."
+      }
+    },
+    {
+      "id": "wing-body-overheat-l",
+      "asset": "WING_BODY_OVERHEAT",
+      "placementId": "OH21",
+      "sourceRect": [
+        243,
+        953,
+        180,
+        66
+      ],
+      "rule": "pneumatic",
+      "controls": [
+        "wing-anti-ice"
+      ],
+      "sensor": "wingBodyOverheatL",
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 2,
+        "physical_pdf_page": null,
+        "status": "EXISTING_SOURCE_LOCATED_TRAINER",
+        "basis": "engine/systems/pneumatics-v6.js; source locations retained from existing Technical Database model, not newly re-read."
+      }
+    },
+    {
+      "id": "bleed-trip-l",
+      "asset": "BLEED_TRIP_OFF",
+      "placementId": "OH21",
+      "sourceRect": [
+        243,
+        1043,
+        180,
+        66
+      ],
+      "rule": "pneumatic",
+      "controls": [
+        "bleed-eng-1"
+      ],
+      "sensor": "bleedTrip1",
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 2,
+        "physical_pdf_page": null,
+        "status": "EXISTING_SOURCE_LOCATED_TRAINER",
+        "basis": "engine/systems/pneumatics-v6.js; source locations retained from existing Technical Database model, not newly re-read."
+      }
+    },
+    {
+      "id": "pack-trip-r",
+      "asset": "PACK_TRIP_OFF",
+      "placementId": "OH21",
+      "sourceRect": [
+        701,
+        862,
+        180,
+        66
+      ],
+      "rule": "pneumatic",
+      "controls": [
+        "pack-r"
+      ],
+      "sensor": "packTripR",
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 2,
+        "physical_pdf_page": null,
+        "status": "EXISTING_SOURCE_LOCATED_TRAINER",
+        "basis": "engine/systems/pneumatics-v6.js; source locations retained from existing Technical Database model, not newly re-read."
+      }
+    },
+    {
+      "id": "wing-body-overheat-r",
+      "asset": "WING_BODY_OVERHEAT",
+      "placementId": "OH21",
+      "sourceRect": [
+        701,
+        953,
+        180,
+        66
+      ],
+      "rule": "pneumatic",
+      "controls": [
+        "wing-anti-ice"
+      ],
+      "sensor": "wingBodyOverheatR",
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 2,
+        "physical_pdf_page": null,
+        "status": "EXISTING_SOURCE_LOCATED_TRAINER",
+        "basis": "engine/systems/pneumatics-v6.js; source locations retained from existing Technical Database model, not newly re-read."
+      }
+    },
+    {
+      "id": "bleed-trip-r",
+      "asset": "BLEED_TRIP_OFF",
+      "placementId": "OH21",
+      "sourceRect": [
+        701,
+        1043,
+        180,
+        66
+      ],
+      "rule": "pneumatic",
+      "controls": [
+        "bleed-eng-2"
+      ],
+      "sensor": "bleedTrip2",
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 2,
+        "physical_pdf_page": null,
+        "status": "EXISTING_SOURCE_LOCATED_TRAINER",
+        "basis": "engine/systems/pneumatics-v6.js; source locations retained from existing Technical Database model, not newly re-read."
+      }
+    },
+    {
+      "id": "press-auto-fail",
+      "asset": "AUTO_FAIL",
+      "placementId": "OH22",
+      "sourceRect": [
+        184,
+        26,
+        177,
+        86
+      ],
+      "rule": "press-fault",
+      "controls": [
+        "pressurization-mode"
+      ],
+      "sensor": "press-auto-fail",
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 2,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Frozen guide sockets; explicit trainer sensor input, no new source-page verification."
+      }
+    },
+    {
+      "id": "press-off-sched-descent",
+      "asset": "OFF_SCHED_DESCENT",
+      "placementId": "OH22",
+      "sourceRect": [
+        388,
+        26,
+        182,
+        86
+      ],
+      "rule": "sensor",
+      "controls": [
+        "pressurization-mode"
+      ],
+      "sensor": "press-off-sched-descent",
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 2,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Frozen guide sockets; explicit trainer sensor input, no new source-page verification."
+      }
     }
   ],
-  "sourceStatus": "Public source-located electrical engine and previous fuel/flight-control models reused; private Technical Database retrieval returned no results. Remaining predicates are explicit simulator approximations, not source-verified aircraft rules.",
+  "sourceStatus": "Public source-located electrical engine and previous fuel/flight-control models reused; private Technical Database retrieval returned no results. Remaining predicates are explicit simulator approximations, not source-verified aircraft rules. LGT-0002 reuses existing source-located Pneumatics V6 for 9 added pneumatic lamps and trip reset. New other sensor mappings remain explicit simulator approximations.",
   "unavailableLegends": [
     "WINDOW HEAT ON (green)",
-    "F/O P/S 2 AUX STATIC",
-    "CAPT STATIC 1 AUX P/S",
-    "R ELEV PITOT",
-    "R ALPHA VANE",
-    "TEMP PROBE",
     "APU LOW OIL QUANTITY",
     "GEN OFF BUS / APU GEN OFF BUS",
-    "Blue valve and pneumatic/pressurization annunciators"
-  ]
+    "Blue valve, RAM DOOR FULL OPEN and STANDBY/MANUAL annunciators"
+  ],
+  "previousVersion": "LGT-0001",
+  "preservedLampCount": 58
 }

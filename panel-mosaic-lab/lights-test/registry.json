@@ -1,6 +1,6 @@
 {
   "schema": "b737-annunciator-assets.v1",
-  "version": "2026-10-24.1",
+  "version": "LGT-0002",
   "assetDirectory": "../assets/locked/2026-10-23/LIGHTS/",
   "testMode": "manual-asset-visual-qa",
   "note": "Stable IDs for the owner-approved light designs. This registry does not assign physical coordinates or certify aircraft logic.",
@@ -408,6 +408,300 @@
       "lines": [
         "L ALPHA",
         "VANE"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null
+    },
+    {
+      "id": "AFT_CARGO",
+      "lines": [
+        "AFT CARGO"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null
+    },
+    {
+      "id": "AFT_ENTRY",
+      "lines": [
+        "AFT ENTRY"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null
+    },
+    {
+      "id": "AFT_SERVICE",
+      "lines": [
+        "AFT SERVICE"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null
+    },
+    {
+      "id": "AIR_STAIR",
+      "lines": [
+        "AIR STAIR"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null
+    },
+    {
+      "id": "AUTO_FAIL",
+      "lines": [
+        "AUTO FAIL"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null
+    },
+    {
+      "id": "BLEED_TRIP_OFF",
+      "lines": [
+        "BLEED TRIP OFF"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null
+    },
+    {
+      "id": "CAPT_STATIC_1_AUX_PS",
+      "lines": [
+        "CAPT STATIC 1 AUX PS"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null
+    },
+    {
+      "id": "COWL_ANTI_ICE",
+      "lines": [
+        "COWL ANTI ICE"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null
+    },
+    {
+      "id": "DUAL_BLEED",
+      "lines": [
+        "DUAL BLEED"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null
+    },
+    {
+      "id": "DUCT_OVERHEAT",
+      "lines": [
+        "DUCT OVERHEAT"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null
+    },
+    {
+      "id": "EQUIP",
+      "lines": [
+        "EQUIP"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null
+    },
+    {
+      "id": "FO_PS_2_AUX_STATIC",
+      "lines": [
+        "FO PS 2 AUX STATIC"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null
+    },
+    {
+      "id": "FWD_CARGO",
+      "lines": [
+        "FWD CARGO"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null
+    },
+    {
+      "id": "FWD_ENTRY",
+      "lines": [
+        "FWD ENTRY"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null
+    },
+    {
+      "id": "FWD_SERVICE",
+      "lines": [
+        "FWD SERVICE"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null
+    },
+    {
+      "id": "OFF_SCHED_DESCENT",
+      "lines": [
+        "OFF SCHED DESCENT"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null
+    },
+    {
+      "id": "PACK_TRIP_OFF",
+      "lines": [
+        "PACK TRIP OFF"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null
+    },
+    {
+      "id": "R_ALPHA_VANE",
+      "lines": [
+        "R ALPHA VANE"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null
+    },
+    {
+      "id": "R_ELEV_PITOT",
+      "lines": [
+        "R ELEV PITOT"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null
+    },
+    {
+      "id": "TEMP_PROBE",
+      "lines": [
+        "TEMP PROBE"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null
+    },
+    {
+      "id": "WING_BODY_OVERHEAT",
+      "lines": [
+        "WING BODY OVERHEAT"
       ],
       "orientation": "landscape",
       "face": {
