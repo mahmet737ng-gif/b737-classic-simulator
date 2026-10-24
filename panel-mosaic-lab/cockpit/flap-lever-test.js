@@ -89,7 +89,7 @@
    });
  }
  function mountingError(err){
-   console.error('FLAP-BMP-0002: failed to mount FLAP sprite',err);
+   console.error('FLAP-BMP-0003: failed to mount FLAP sprite',err);
    mounted=false;
    const notice=byId('flapLoadStatus')||root.createElement('span');
    notice.id='flapLoadStatus';notice.className='flap-test-error';notice.setAttribute('role','alert');
@@ -110,8 +110,10 @@
      if(!config.detents||VALUES.some((v,i)=>config.detents[i]?.value!==v))throw Error('Invalid nine-detent FLAP registry');
      const source=new URL(config.source,document.baseURI).href;
      sourceImage=new Image();sourceImage.decoding='async';sourceImage.src=source;
-     await sourceImage.decode();
-     if(sourceImage.naturalWidth!==2160||sourceImage.naturalHeight!==908)throw Error('Invalid owner image dimensions');
+     // Do not hold the entire cockpit actuator mount hostage to image.decode():
+     // some browsers defer decoding until the page/region is visible.
+     sourceImage.addEventListener('error',()=>mountingError(Error('FLAP PNG could not be loaded: '+source)),{once:true});
+     sourceImage.addEventListener('load',()=>{if(sourceImage.naturalWidth!==2160||sourceImage.naturalHeight!==908)mountingError(Error('Unexpected FLAP sprite dimensions'));},{once:true});
      const assetScale=config.mount.scale,dimensions=config.image;
      overlay=root.createElement('div');overlay.id='flapLeverBmpOverlay';overlay.className='flap-bmp-overlay';
      Object.assign(overlay.style,{
@@ -145,5 +147,9 @@
  }
  function beginMount(){if(byId('region-pedestal'))mount();}
  window.addEventListener('b737:cockpit-mounted',beginMount);
- if(byId('region-pedestal'))beginMount();
+ // Also survive a mount event emitted before this deferred script was evaluated.
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',beginMount,{once:true});
+ else beginMount();
+ const observer=new MutationObserver(()=>{if(!mounted&&byId('region-pedestal'))beginMount();});
+ observer.observe(root.body,{childList:true,subtree:true});
 })();
