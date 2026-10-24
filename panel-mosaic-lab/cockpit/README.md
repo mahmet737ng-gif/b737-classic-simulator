@@ -68,3 +68,21 @@ also reports settled light state changes after timed overhead valve transitions.
 
 Run `node panel-mosaic-lab/cockpit/lights.test.cjs` for source-condition,
 input-validation, power, gear, flap, engine, altitude and unchanged face checks.
+
+
+## LGT-0005: visible touch-friendly visual diagnostics
+
+The toolbar's visual-light-test button is a click/tap toggle: its ON state
+persists after pointer release and through region changes. It explicitly tests
+all 137 face images independently of simulated electrical power or an incomplete
+overhead handshake. It does not alter switches, sensors, faults or simulated
+power. The embedded overhead uses a route-local CSS presentation override;
+the original standalone overhead and frozen UPD-0012 URL are unchanged.
+The first click activates the test; the next returns to source-driven states.
+Reload clears visual-test mode. Reference mode is disabled during this test.
+
+Explicit individual ON/OFF visual overrides also work without simulated power;
+AUTO continues to obey simulated power and sensor conditions. Main-panel reset
+clears local and shared visual testing. The old momentary model lamp test still
+obeys simulated power. Regression cases cover no handshake, power-off visual
+test, restoring AUTO and preserving all input state.

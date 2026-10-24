@@ -1,6 +1,6 @@
 {
   "schema": "b737.shared-cockpit-mosaic.v1",
-  "version": "CKP-0002",
+  "version": "CKP-0003",
   "canvas": {
     "width": 4400,
     "height": 8100
@@ -103,7 +103,7 @@
       "y": 110,
       "w": 2220,
       "h": 3312,
-      "embeddedUrl": "./overhead-stage.html?v=CKP-0002",
+      "embeddedUrl": "./overhead-stage.html?v=CKP-0003",
       "baseVersion": "UPD-0012-OVH-measured-seams",
       "controlVersion": "LGT-0003"
     },
@@ -216,5 +216,5 @@
     "Overhead switches and lights remain interactive. Main and newly imported pedestal artwork are connected as base images; new actuator/system overlays are a separate stage.",
     "Pedestal throttle/fire upper area uses the explicitly identified existing reference until a replacement is selected."
   ],
-  "lightVersion": "LGT-0004"
+  "lightVersion": "LGT-0005"
 }

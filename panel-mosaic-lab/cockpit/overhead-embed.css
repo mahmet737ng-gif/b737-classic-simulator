@@ -6,3 +6,4 @@ main{margin:0!important;padding:0!important;width:2220px!important;max-width:non
 .viewport{width:2220px!important;height:3312px!important;min-height:0!important;max-height:none!important;border:0!important;overflow:clip!important;background:#111c29!important}
 #board{transform:scale(1)!important;transform-origin:0 0!important;width:2220px!important;margin:0!important}#sizer{width:2220px!important;height:3312px!important}
 .atlas-piece.selected,.atlas-piece:hover{outline:0!important}.atlas-geometry-stamp,.atlas-piece .tag{display:none!important}
+.cockpit-visual-test #overheadLightLayer{display:block!important}.cockpit-visual-test .mounted-light .light-face{opacity:0!important;transition:none!important}.cockpit-visual-test .mounted-light .light-face[data-visual-on=true]{opacity:1!important}

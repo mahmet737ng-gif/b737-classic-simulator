@@ -1,6 +1,6 @@
 {
   "schema": "b737.cockpit-annunciators.v1",
-  "version": "LGT-0004",
+  "version": "LGT-0005",
   "sourceDatabase": {
     "name": "B737_TECHNICAL_NETWORK_V2",
     "sourceId": "FCOM-SEPEHRAN-1937",
