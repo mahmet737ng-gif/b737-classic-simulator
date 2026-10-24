@@ -1,6 +1,17 @@
 # Unified cockpit — CKP-0012
 
-## DAN-0001 — one shared needle for two drive-oil and two A.C. amps gauges
+## DAN-0002 / EGT-0001 — APU's right and left gauges
+
+The right-hand APU A.C. AMPS gauge on OH12 reuses the already-approved white
+`drive-amps-needle.svg` asset, clipped precisely to that gauge's own curved
+grey cover. Its placement and test angle are independent from the two upper
+A.C. AMPS gauges. The left-hand APU EGT gauge uses a distinct transparent
+`apu-egt-needle.svg`, following the supplied photo's broad white body,
+hollow loop and split fine tip. Both are visual overlays registered to OH12
+source pixels; the locked panel artwork and final overhead mosaic are untouched.
+The inspector angles are visual tests, not synthetic APU readings.
+
+## DAN-0001 — one shared needle for two drive-oil and two upper A.C. amps gauges
 
 One transparent white pointer based on the owner-supplied reference is reused
 on the two GEN DRIVE OIL TEMP dials in OH11 and the two upper A.C. AMPS dials

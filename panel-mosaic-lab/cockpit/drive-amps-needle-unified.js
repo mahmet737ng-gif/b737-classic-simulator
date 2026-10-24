@@ -46,8 +46,8 @@
  }
  function controls(){
   const section=document.createElement('section');section.id='unifiedDriveAmpsNeedles';
-  const title=document.createElement('h2');title.textContent='GEN DRIVE / A.C. AMPS · 4 Needles';section.append(title);
-  const note=document.createElement('p');note.className='muted';note.textContent='چهار عقربه از یک تصویر مشترک؛ زاویه‌ها فعلاً فقط تست تصویری هستند.';section.append(note);
+  const title=document.createElement('h2');title.textContent='GEN DRIVE / A.C. AMPS · 5 Needles';section.append(title);
+  const note=document.createElement('p');note.className='muted';note.textContent='پنج عقربه از یک تصویر مشترک؛ زاویه‌ها فعلاً فقط تست تصویری هستند.';section.append(note);
   for(const needle of model.needles){
    const label=document.createElement('label');label.textContent=needle.label;label.style.display='block';label.style.direction='ltr';
    const input=document.createElement('input');Object.assign(input,{type:'range',min:'-70',max:'70',step:'1'});input.style.width='100%';input.style.accentColor='#edf0e8';
