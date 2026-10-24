@@ -1,6 +1,6 @@
 {
   "schema": "b737.flap-nine-detent-sprite.v1",
-  "version": "FLAP-BMP-0001",
+  "version": "FLAP-BMP-0002",
   "source": "../assets/locked/2026-10-23/B737_FLAP_9_ORIGINAL_BMP_EXTRACTED.png",
   "source_sha256": "709ea64910a134c4199f9bed393fc65fbd8e6b44bc70f7adc03a8470d29460a4",
   "source_sha1_gitblob": "da10a6b734d1bda52239e49972d924aefa2ddae2",
@@ -111,20 +111,34 @@
     "y": 115,
     "scale": 0.7,
     "coordSystem": "pedestal native coordinates",
-    "status": "provisional; visual QA required"
+    "status": "interactive gated test using exact photo crop; pending owner visual acceptance"
   },
   "controls": {
     "mode": "visual-test-only",
-    "snapsTo": [
-      "0",
-      "1",
-      "2",
-      "5",
-      "10",
-      "15",
-      "25",
-      "30",
-      "40"
+    "defaultDetent": 0,
+    "inputs": [
+      "pointer-swipe-one-detent",
+      "wheel-one-detent",
+      "keyboard-arrows",
+      "click-photo-scale-label",
+      "toolbar-target"
+    ],
+    "mechanicalGates": [
+      1,
+      15
+    ],
+    "longCommandBehavior": "Stop at the next crossed gate; another distinct click is required to continue",
+    "forwardLongCommandExample": [
+      0,
+      1,
+      15,
+      25
+    ],
+    "reverseLongCommandExample": [
+      25,
+      15,
+      1,
+      0
     ],
     "doesNotDriveSimulatedFlapMechanism": true
   },
