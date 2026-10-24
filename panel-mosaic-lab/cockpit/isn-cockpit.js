@@ -5,11 +5,12 @@
   ['B737PneumaticsV6','../../engine/systems/pneumatics-v6.js'],
   ['B737ISNEngineAPUV1','../../engine/integration/isn-engine-apu-v1.js'],
   ['B737ISNStartSequenceV1','../../engine/integration/isn-start-sequence-v1.js'],
-  ['B737ISNAPUStartChainV1','../../engine/integration/isn-apu-start-chain-v1.js']
+  ['B737ISNAPUStartChainV1','../../engine/integration/isn-apu-start-chain-v1.js'],
+  ['B737ISNStartIndicationsV1','../../engine/integration/isn-start-indications-v1.js']
  ];
  async function loadDependencies(){for(const [global,path] of deps){if(window[global])continue;
   await new Promise((resolve,reject)=>{const script=document.createElement('script');
-   script.src=new URL(path,moduleBase).href+'?v=ISN-0003';script.onload=resolve;
+   script.src=new URL(path,moduleBase).href+'?v=ISN-0004';script.onload=resolve;
    script.onerror=()=>reject(Error('Missing integration script '+path));document.head.append(script);});
  }}
  function init(){
@@ -25,13 +26,18 @@
  const session=startSession.core.pack;
  const bridge=new Adapter.Bridge(session,{sourceOwner:'ISN03_START_SESSION'});
  const pendingEvents=[];
+ const strip=document.createElement('section');strip.id='isnStartIndications';strip.className='isn-start-indications';
+ strip.setAttribute('aria-label','ISN-03 engine start training indications');
+ strip.innerHTML=[1,2].map(n=>'<div class="isn-engine-card" data-engine="engine'+n+'" role="status"><b>ENG '+n+'</b><span data-field="phase">OFF</span><span>N2 <strong data-field="n2">—</strong></span><span>EGT <strong data-field="egt">—</strong></span><span>START VALVE <strong data-field="valve">UNKNOWN</strong></span></div>').join('')+'<p class="isn-indication-error" id="isnIndicationError" role="alert"></p>';
+ document.querySelector('.workbench .toolbar').after(strip);
+ const cards=Object.fromEntries([1,2].map(n=>['engine'+n,strip.querySelector('[data-engine="engine'+n+'"]')]));
  const panel=document.createElement('section');panel.className='isn-bridge-panel';panel.id='isnBridgePanel';
  panel.innerHTML='<h2>ISN-02 · شبکهٔ زندهٔ کابین</h2><p id="isnStatus" role="status">منتظر وضعیت سوییچ‌های اورهد…</p><p class="isn-note">خروجی Source-Gated مستند است؛ منبع دقیق تغذیهٔ ۸ پمپ هنوز تأیید نشده و UNKNOWN باقی می‌ماند. وضعیت‌های آموزشی به‌صورت مجزا مشخص‌اند.</p><button id="isnMode" type="button" aria-pressed="false">Training Surrogate · خاموش</button><div class="isn-buses" id="isnBuses"></div><details><summary>کنترل‌های مربی · بدون سوییچ فیزیکی</summary><label class="isn-setting"><input type="checkbox" id="isnBusTransfer" checked> BUS TRANSFER AUTO (فقط تست؛ سوییچ در رجیستری نیست)</label><label class="isn-setting"><input type="checkbox" id="isnGen1Fault"> GEN 1 FAILED · تزریق مربی</label><label class="isn-setting"><input type="checkbox" id="isnGen2Fault"> GEN 2 FAILED · تزریق مربی</label><button id="isnReset" type="button">بازنشانی موتور ISN بر اساس وضعیت فعلی کابین</button></details><div class="isn-scroll"><table class="isn-table"><thead><tr><th>سوییچ / چراغ واقعی</th><th>RUN</th><th>LOW PRESS</th><th>Power Evidence</th><th>تست مربی</th></tr></thead><tbody id="isnPumpRows"></tbody></table></div><div class="isn-warnings" id="isnWarnings"></div><details><summary>ردگیری فرمان → سیستم → چراغ / هشدار</summary><div id="isnTrace" class="isn-trace" dir="ltr"></div></details><p id="isnError" class="isn-error" role="status"></p>';
  const trainer=document.createElement('details');trainer.innerHTML='<summary>هشدارهای مستند · ورودی سناریوی مربی</summary><label class="isn-setting"><input id="isnFire1" type="checkbox"> ENGINE 1 FIRE · ورودی آزمایشی</label><label class="isn-setting"><input id="isnCabinHigh" type="checkbox"> CABIN ALTITUDE 12000 ft · ورودی آزمایشی</label><button id="isnAckFire" type="button">Fire Bell Acknowledge</button><button id="isnCutoutCabin" type="button">Cabin Horn Cutout</button>';
  panel.querySelector('.isn-warnings').after(trainer);
  const replayButton=document.createElement('button');replayButton.id='isnReplay';replayButton.type='button';replayButton.textContent='بازپخش قطعی رویدادهای ISN';
  panel.querySelector('#isnTrace').after(replayButton);
- const startPanel=document.createElement('details');startPanel.open=true;startPanel.className='isn-start-panel';startPanel.innerHTML='<summary>ISN-03 · APU → BLEED + ELECTRICAL → ENGINE START</summary><p class="isn-note">مسیر تعاملی از سوییچ‌های واقعی اورهد است. زمان‌های کوتاه APU/N2 فقط نقاط آموزشی شبیه‌سازی‌اند، نه دادهٔ واقعی هواپیما. بعد از START، ژنراتور APU و Bleed باید با سوییچ‌های خودشان انتخاب شوند؛ PACK L/R روی OFF باشد.</p><div id="isnStartStatus" role="status" dir="ltr">Waiting for overhead…</div><p class="isn-lever-instruction">برای بازکردن Fuel / Start Lever هر موتور، روی اهرم همان موتور در پایینِ Throttle Quadrant در پدستال کلیک کن. حرکت به IDLE فقط پس از موتورینگ و رسیدن به N2 مناسب پذیرفته می‌شود؛ کلیک بعدی CUTOFF می‌کند.</p><p id="isnStartLeverStatus" class="isn-lever-status" role="status" dir="ltr">ENG 1 CUTOFF · ENG 2 CUTOFF</p><p id="isnStartError" class="isn-error" role="alert"></p><a href="../../isn-start-sequence-lab/">باز کردن آزمایشگاه مستند ISN-03 ↗</a>';
+ const startPanel=document.createElement('details');startPanel.open=true;startPanel.className='isn-start-panel';startPanel.innerHTML='<summary>ISN-03 · APU → BLEED + ELECTRICAL → ENGINE START</summary><p class="isn-note">مسیر تعاملی از سوییچ‌های واقعی اورهد است. زمان‌های کوتاه APU/N2 فقط نقاط آموزشی شبیه‌سازی‌اند، نه دادهٔ واقعی هواپیما. بعد از START، ژنراتور APU و Bleed باید با سوییچ‌های خودشان انتخاب شوند؛ PACK L/R روی OFF باشد. خوانش N2 و EGT در نوار بالا خروجی آموزشی است، نه گیج دینامیکی یا حسگر واقعی.</p><div id="isnStartStatus" role="status" dir="ltr">Waiting for overhead…</div><p class="isn-lever-instruction">برای بازکردن Fuel / Start Lever هر موتور، روی اهرم همان موتور در پایینِ Throttle Quadrant در پدستال کلیک کن. حرکت به IDLE فقط پس از موتورینگ و رسیدن به N2 مناسب پذیرفته می‌شود؛ کلیک بعدی CUTOFF می‌کند.</p><p id="isnStartLeverStatus" class="isn-lever-status" role="status" dir="ltr">ENG 1 CUTOFF · ENG 2 CUTOFF</p><p id="isnStartError" class="isn-error" role="alert"></p><a href="../../isn-start-sequence-lab/">باز کردن آزمایشگاه مستند ISN-03 ↗</a>';
  panel.querySelector('.isn-note').after(startPanel);
  const anchor=document.querySelector('.aircraft-profile-summary');if(anchor)anchor.after(panel);else byId('inspector').prepend(panel);
  const node=new Map();
@@ -54,11 +60,21 @@
  const indicator=(label,value)=>{const n=document.createElement('div');const s=document.createElement('small');s.textContent=label;n.append(s,span(value));return n;};
  let lastLampProjection='',lastStartInputs='';
  function renderStart(){const s=chain.get();
+  const indication=window.B737ISNStartIndicationsV1.project(s);
   const summary=['APU '+s.phase.apu,'ENG1 '+s.phase.engine1,'ENG2 '+s.phase.engine2,
    'APU GEN '+(Object.values(s.selectedSources).includes('APU')?'SELECTED':'NOT SELECTED'),
    'APU BLEED '+stateName(s.bleed.apuBleedValveOpen),
    'BATTERY '+stateName(s.electrical.battery)];
   byId('isnStartStatus').textContent=summary.join(' · ');
+  for(const n of [1,2]){const info=indication.engines['engine'+n],card=cards['engine'+n];
+   card.dataset.phase=info.phase;card.dataset.egtAdvisory=String(info.egt725Advisory);
+   card.querySelector('[data-field="phase"]').textContent=info.phase;
+   card.querySelector('[data-field="n2"]').textContent=info.n2.text;
+   card.querySelector('[data-field="egt"]').textContent=info.egt.text;
+   const valve=card.querySelector('[data-field="valve"]');valve.textContent=info.startValve.text;
+   valve.dataset.amber=String(info.startValve.mountedLamp===true);
+  }
+  byId('isnIndicationError').textContent=indication.error||([1,2].some(n=>indication.engines['engine'+n].egt725Advisory)?'EGT 725°C ABNORMAL-START ADVISORY':'');
   const levers={engine1:s.observations.engine1.feedback.fuelStartLever.value,
    engine2:s.observations.engine2.feedback.fuelStartLever.value};
   byId('isnStartLeverStatus').textContent='ENG 1 '+levers.engine1+' · ENG 2 '+levers.engine2;
@@ -69,8 +85,10 @@
     startInputs['startValve'+n+'Open']=s.observations['engine'+n].feedback.startValveOpen.value===true;
     startInputs['starter'+n+'Air']=s.observations['engine'+n].feedback.startAirAvailable.value===true;
    }
-   const key=JSON.stringify(startInputs);
-   if(key!==lastStartInputs){window.B737CockpitLights.setInputs(startInputs);lastStartInputs=key;}
+   const key=JSON.stringify(startInputs),actual=window.B737CockpitLights.getState()?.inputs;
+   if(key!==lastStartInputs||Object.keys(startInputs).some(k=>actual?.[k]!==startInputs[k])){
+    window.B737CockpitLights.setInputs(startInputs);lastStartInputs=key;
+   }
   }
  }
  function postProjection(){const f=byId('overheadFrame');if(!f?.contentWindow||!bridge.initialized)return;

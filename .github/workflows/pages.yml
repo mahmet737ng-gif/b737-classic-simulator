@@ -49,6 +49,8 @@ jobs:
           node tests/isn-start-sequence-v1.test.cjs
           node tests/isn-start-fcom-rules-v1.test.cjs
           node tests/isn-apu-start-chain-v1.test.cjs
+          node tests/isn-start-indications-v1.test.cjs
+          node tests/isn-cold-dark-two-engine.e2e.test.cjs
           node panel-mosaic-lab/cockpit/engine-start-levers.test.cjs
           node --check panel-mosaic-lab/cockpit/engine-start-levers.js
           node --check isn-start-sequence-lab/app.js
