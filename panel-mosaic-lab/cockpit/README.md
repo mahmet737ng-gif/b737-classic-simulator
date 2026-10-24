@@ -22,6 +22,9 @@ versioned so GitHub Pages/browser caches cannot keep showing the older face.
 29 main-panel lights are now physically mounted, versus 27 previously. The
 110 approved overhead lights and the frozen `UPD-0012` overhead montage remain
 intact. Physical registration for this new fit awaits owner's visual check.
+The shared asset-discovery merge honors pinned registry filenames so the
+immutable older STAB images cannot silently replace the registered FIT faces
+or create a duplicate STAB card when GitHub directory listing is available.
 
 ## Owner naming and upload destination — CKP-0004
 
