@@ -20,3 +20,8 @@
 .isn-trace{max-height:180px;overflow-y:auto;direction:ltr;overflow-wrap:anywhere;text-align:left;background:#0c1b29;padding:6px}
 .isn-trace p{border-bottom:1px solid #2b4354;padding:5px 0;margin:0;font:10px/1.5 monospace}
 .isn-error{color:#e6b382}
+.isn-start-panel{margin:10px 0;padding:9px;border:1px solid #4c756d;border-radius:8px;background:#102a2d}
+.isn-start-panel summary{cursor:pointer;color:#b6e3d0;font-weight:750;font-size:12px}
+.isn-start-panel #isnStartStatus{font:11px/1.6 ui-monospace,Consolas,monospace;color:#b9dfc8;overflow-wrap:anywhere;padding:8px;background:#0a2225;border-radius:6px;margin:8px 0}
+.isn-lever-instruction{border-inline-start:3px solid #7cb9a1;padding-inline-start:9px;background:#153736;color:#d7eee5}
+.isn-lever-status{direction:ltr;text-align:left;font:700 11px/1.8 Consolas,monospace;color:#bcefcf}

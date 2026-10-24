@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>B737 Classic — ISN-03 FCOM Start Logic Lab</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
+    <header class="topline">
+      <div><p class="eyebrow">B737 CLASSIC · ISN-03 · FCOM STAGE 2</p><h1>Engine / APU Start Rules</h1>
+        <p>Source-located discrete rules from FCOM 7.20 and 7.30 + NP.21.33–35; physical RPM/EGT and running status are never fabricated.</p></div>
+      <div class="tools"><a href="../panel-mosaic-lab/cockpit/">Unified Cockpit</a><button id="reset">Reset</button></div>
+    </header>
+    <section class="status-panel">
+      <div><span class="eyebrow">SOURCE PROPAGATION</span><div id="networkStatus" class="status">WAITING FOR OBSERVATIONS</div></div>
+      <div><span class="eyebrow">UNRESOLVED</span><div id="unresolved">Engine 1, Engine 2, APU</div></div>
+      <button id="cold">Observe all three STOPPED</button>
+    </section>
+    <section class="source utility" aria-label="Observed electrical bus input and ignition selector">
+      <div><h2>Ignition selector</h2><div id="ignitionControls" class="button-grid"></div></div>
+      <div><h2>Independent electrical evidence</h2><p>Explicit instructor/sensor observations, not an assumed bus route.</p><div id="powerControls"></div></div>
+    </section>
+    <section id="sources" class="sources" aria-label="Start source controls"></section>
+    <section class="utility">
+      <div><h2>Existing system controls</h2><p>These select existing V7/V6 modes only. They never manufacture engine readiness.</p>
+        <div class="button-grid">
+          <button data-electrical="GEN1_FAILED" data-fault="true">Fail GEN1</button>
+          <button data-electrical="GEN1_FAILED" data-fault="false">Restore GEN1</button>
+          <button data-apugen="1">Select APU GEN1</button>
+          <button data-apugen="2">Select APU GEN2</button>
+          <button data-apubleed="ON">APU BLEED ON</button>
+          <button data-apubleed="OFF">APU BLEED OFF</button>
+        </div>
+      </div>
+      <div><h2>Source-gated outputs</h2><pre id="outputs">Pending observations</pre></div>
+    </section>
+    <section class="events"><h2>Deterministic event trace</h2><pre id="trace">No events yet.</pre></section>
+    <footer>Source-based discrete commands ≠ physical valve/engine simulation. UNKNOWN is preserved for missing sensors, wiring and APU thresholds. Training only; not for aircraft operation.</footer>
+  </main>
+  <script src="../engine/systems/electrical-v7.js"></script>
+  <script src="../engine/systems/electrical-loads-v8.js"></script>
+  <script src="../engine/trainer/core.js"></script>
+  <script src="../audio/warning-engine.js"></script>
+  <script src="../engine/integration/isn-electrical-pack-v1.js"></script>
+  <script src="../engine/systems/pneumatics-v6.js"></script>
+  <script src="../engine/integration/isn-engine-apu-v1.js"></script>
+  <script src="../engine/integration/isn-start-sequence-v1.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

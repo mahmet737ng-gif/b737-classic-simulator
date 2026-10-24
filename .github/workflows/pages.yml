@@ -41,6 +41,13 @@ jobs:
           node panel-mosaic-lab/cockpit/lights.test.cjs
           node tests/aircraft-profile-v1.test.cjs
           node tests/isn-electrical-pack-v1.test.cjs
+          node tests/isn-engine-apu-v1.test.cjs
+          node tests/isn-start-sequence-v1.test.cjs
+          node tests/isn-start-fcom-rules-v1.test.cjs
+          node tests/isn-apu-start-chain-v1.test.cjs
+          node panel-mosaic-lab/cockpit/engine-start-levers.test.cjs
+          node --check panel-mosaic-lab/cockpit/engine-start-levers.js
+          node --check isn-start-sequence-lab/app.js
           node tests/isn-cockpit-bridge-v1.test.cjs
           node tests/isn-overhead-transport-v1.test.cjs
           node --check panel-mosaic-lab/cockpit/isn-cockpit.js

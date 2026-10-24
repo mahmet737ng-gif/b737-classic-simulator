@@ -1,0 +1,176 @@
+/* ISN-03 / cockpit training harness. Distinct from certified FCOM rules:
+ * discrete time checkpoints below are compressed classroom steps and are
+ * explicitly marked TRAINING_SEQUENCE_SIMULATED, never physical sensors.
+ * The real electrical, fuel/hydraulic and pneumatic discrete model is reused.
+ */
+(function(root,factory){'use strict';const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;if(root)root.B737ISNAPUStartChainV1=api;})(typeof globalThis!=='undefined'?globalThis:null,function(){
+ 'use strict';
+ const ORIGIN='TRAINING_SEQUENCE_SIMULATED';
+ const CONTROLS=Object.freeze({'apu-start':'apu','engine-start-1':'engine1','engine-start-2':'engine2'});
+ const copy=v=>JSON.parse(JSON.stringify(v));
+ class Chain{
+  constructor(start){if(!start?.send||!start?.core?.pack||!start?.core?.pneumaticState)throw Error('ISN-03 start session required');
+   this.start=start;this.time=0;this.jobs=[];this.phase={apu:'OFF',engine1:'OFF',engine2:'OFF'};
+   this.effects=[];this.lastError='';this.controls={};this.guards={};this.started={engine1:false,engine2:false};
+   for(const device of ['engine1','engine2','apu'])this.obs(device,false);
+   this.feedback('apu','cockpitFireHandleIn',true);
+   this.feedback('apu','groundFireHandleIn',true);
+   for(const device of ['engine1','engine2'])this.feedback(device,'fuelStartLever','CUTOFF');
+   this.start.send({type:'IGNITION_SELECTOR',position:'BOTH'});
+   this.syncPower();
+  }
+  command(cmd){return this.start.send(cmd);}
+  observed(key,value){return this.command({type:'POWER_FEEDBACK',key,value,origin:ORIGIN,training:true});}
+  feedback(device,key,value){return this.command({type:'FEEDBACK',device,key,value,origin:ORIGIN,training:true});}
+  obs(device,running){return this.command({type:'SOURCE_OBSERVATION',device,running,origin:ORIGIN,training:true});}
+  schedule(device,ms,fn){this.jobs.push({device,at:this.time+ms,fn});this.jobs.sort((a,b)=>a.at-b.at);}
+  cancel(device){this.jobs=this.jobs.filter(j=>j.device!==device);}
+  advance(ms){if(!Number.isFinite(ms)||ms<0)throw Error('Nonnegative elapsed ms required');
+   const end=this.time+ms;let count=0;
+   while(this.jobs.length&&this.jobs[0].at<=end){if(++count>100)throw Error('Training queue limit');
+    const job=this.jobs.shift();this.time=job.at;job.fn();this.syncPower();}
+   this.time=end;return this.get();
+  }
+  syncPower(){const p=this.start.core.pack;
+   const e=p.get().electrical.bus,c=p.electricalState.config;
+   for(const [key,val] of Object.entries({batterySwitchOn:c.batterySwitch,batteryBusPowered:e.battery,
+    acTransferBusPowered:e.transfer1||e.transfer2,acStandbyBusPowered:e.acStandby,onGround:c.onGround})){
+    if(this.start.powerFeedback[key].value!==val)this.observed(key,val);
+   }
+   if(['INLET_DOOR','STARTING','READY'].includes(this.phase.apu)&&
+      this.start.get().observation.apu.rules.prerequisitesSatisfied===false){
+    this.cancel('apu');this.phase.apu='STOPPING';this.lastError='APU start/operation inhibited: battery or fire handle prerequisite lost';
+    this.schedule('apu',250,()=>{this.obs('apu',false);this.feedback('apu','genOffBusLight',false);this.phase.apu='OFF';});
+   }
+   for(const device of ['engine1','engine2'])if(['MOTORING','AWAIT_FUEL_LEVER_IDLE','LIGHT_OFF_SEQUENCE'].includes(this.phase[device])){
+    const reason=this.canStartEngine(device);
+    if(reason){this.abortEngine(device);this.lastError=device.toUpperCase()+': start aborted — '+reason;}
+   }
+  }
+  synchronize(packet){if(!packet?.toggles||!packet?.guards||!packet?.rotaries)throw Error('Real overhead snapshot required');
+   const guard=packet.guards['battery-master']?.value;
+   if(['on','off'].includes(guard)&&this.guards.battery!==guard)
+    this.command({type:'ELECTRICAL',action:{type:'CONTROL',key:'batterySwitch',value:guard==='on'}});
+   this.guards.battery=guard;
+   const onGround=packet.context?.onGround;
+   if(typeof onGround==='boolean'&&this.guards.onGround!==onGround)
+    this.command({type:'ELECTRICAL',action:{type:'CONTROL',key:'onGround',value:onGround}});
+   this.guards.onGround=onGround;
+   for(const [id,key] of [['bleed-apu','apuBleed'],['bleed-eng-1','engineBleed1'],['bleed-eng-2','engineBleed2'],
+    ['pack-l','packL'],['pack-r','packR'],['isolation-valve','isolation']]){
+    if(typeof packet.toggles[id]==='string'&&packet.toggles[id]!==this.controls[id])
+     this.command({type:'PNEUMATIC',action:{type:'CONTROL',key,value:packet.toggles[id]}});
+   }
+   const ign=packet.rotaries['ignition-source'];if(['IGN L','BOTH','IGN R'].includes(ign)&&ign!==this.controls['ignition-source'])
+    this.command({type:'IGNITION_SELECTOR',position:ign.replace(' ','_')});
+   this.controls=copy({...packet.toggles,...packet.rotaries});this.syncPower();return this.get();
+  }
+  event(event){if(!event||typeof event.id!=='string')return this.get();
+   const id=event.id,value=event.kind==='guarded'?event.next?.value:event.next;
+   if(typeof value!=='string')return this.get();
+   this.controls[id]=value;
+   if(id==='battery-master'&&['on','off'].includes(value)){
+    this.guards.battery=value;
+    this.command({type:'ELECTRICAL',action:{type:'CONTROL',key:'batterySwitch',value:value==='on'}});
+   }
+   if(['bleed-apu','bleed-eng-1','bleed-eng-2','pack-l','pack-r','isolation-valve'].includes(id)){
+    const keys={'bleed-apu':'apuBleed','bleed-eng-1':'engineBleed1','bleed-eng-2':'engineBleed2','pack-l':'packL','pack-r':'packR','isolation-valve':'isolation'};
+    this.command({type:'PNEUMATIC',action:{type:'CONTROL',key:keys[id],value}});
+   }
+   if(id==='ignition-source')this.command({type:'IGNITION_SELECTOR',position:value.replace(' ','_')});
+   if(id==='apu-start'&&value==='START')this.startAPU();
+   if(id==='apu-start'&&value==='OFF')this.stopAPU();
+   if((id==='engine-start-1'||id==='engine-start-2')&&value==='GRD')this.startEngine(CONTROLS[id]);
+   if((id==='engine-start-1'||id==='engine-start-2')&&value==='OFF'&&
+     this.phase[CONTROLS[id]]!=='RUNNING')this.abortEngine(CONTROLS[id]);
+   this.syncPower();return this.get();
+  }
+  startAPU(){
+   this.lastError='';this.cancel('apu');this.command({type:'APU_SWITCH',position:'START'});
+   // Restore the actual cockpit-selected bleed switch after a prior APU OFF.
+   // Physical valve still requires a running source; no air is synthesized.
+   if(this.controls['bleed-apu']==='ON')
+    this.command({type:'PNEUMATIC',action:{type:'CONTROL',key:'apuBleed',value:'ON'}});
+   const r=this.start.get().observation.apu.rules;
+   if(r.prerequisitesSatisfied!==true){this.phase.apu='BLOCKED';this.lastError='APU requires BATTERY ON, battery power and both APU fire handles IN';return;}
+   this.phase.apu='INLET_DOOR';
+   this.schedule('apu',400,()=>{if(this.phase.apu!=='INLET_DOOR')return;this.feedback('apu','inletDoorOpen',true);this.feedback('apu','starterEngaged',true);this.phase.apu='STARTING';});
+   this.schedule('apu',1400,()=>{if(this.phase.apu!=='STARTING')return;
+    this.feedback('apu','starterEngaged',false);this.obs('apu',true);
+    this.feedback('apu','genOffBusLight',true);this.phase.apu='READY';});
+  }
+  stopAPU(){this.cancel('apu');this.command({type:'APU_SWITCH',position:'OFF'});
+   this.phase.apu='STOPPING';this.schedule('apu',400,()=>{
+    this.obs('apu',false);this.feedback('apu','genOffBusLight',false);
+    this.feedback('apu','inletDoorOpen',false);this.phase.apu='OFF';});
+  }
+  canStartEngine(device){
+   const apu=this.start.get().observation.apu.running;
+   const n=this.start.core.pneumaticState,c=n.controls;
+   const b=this.start.core.pack.get().electrical.bus;
+   if(apu!==true)return 'APU NOT READY';
+   if(c.apuBleed!=='ON')return 'APU BLEED OFF';
+   if(c.isolation==='CLOSE')return 'ISOLATION VALVE CLOSED';
+   if(c.packL!=='OFF'||c.packR!=='OFF')return 'PACK L/R MUST BE OFF FOR ENGINE START';
+   if(b.battery!==true)return 'BATTERY BUS NOT AVAILABLE';
+   const ign=this.start.controls.ignitionSelector;
+   const left=ign==='IGN_L'||ign==='BOTH',right=ign==='IGN_R'||ign==='BOTH';
+   if(!(left&&b.transfer1===true||right&&b.acStandby===true))
+    return 'IGNITION AC SUPPLY NOT READY — SELECT APU GEN';
+   return null;
+  }
+  startEngine(device){
+   this.lastError='';this.cancel(device);this.started[device]=false;
+   this.feedback(device,'n2Percent',0);
+   this.command({type:'ENGINE_START_SWITCH',device,position:'GRD'});
+   this.syncPower();
+   const failure=this.canStartEngine(device);
+   if(failure){this.phase[device]='BLOCKED';this.lastError=device.toUpperCase()+': '+failure;return;}
+   this.feedback(device,'startAirAvailable',true);this.feedback(device,'startValveOpen',true);
+   this.feedback(device,'starterEngaged',true);
+   this.phase[device]='MOTORING';
+   this.schedule(device,850,()=>{if(this.phase[device]!=='MOTORING')return;
+    this.feedback(device,'n1RotationObserved',true);this.feedback(device,'maxMotoringObserved',false);
+    this.feedback(device,'n2Percent',25);this.phase[device]='AWAIT_FUEL_LEVER_IDLE';});
+  }
+  lever(device,position){if(!['engine1','engine2'].includes(device)||!['IDLE','CUTOFF'].includes(position))throw Error('Invalid start lever');
+   if(position==='CUTOFF'){this.feedback(device,'fuelStartLever','CUTOFF');if(this.phase[device]!=='RUNNING')this.abortEngine(device);else{
+    this.obs(device,false);this.phase[device]='OFF';}return this.get();}
+   if(this.phase[device]!=='AWAIT_FUEL_LEVER_IDLE'){
+    this.lastError=device.toUpperCase()+': START LEVER IDLE requires starter motoring';return this.get();}
+   const rule=this.start.get().observation[device].rules;
+   if(rule.fuel.recommendMovingLeverToIdle!==true){this.lastError='WAIT FOR N1 ROTATION AND N2';return this.get();}
+   this.feedback(device,'fuelStartLever','IDLE');
+   this.lastError='';this.phase[device]='LIGHT_OFF_SEQUENCE';
+   this.feedback(device,'fuelFlowKgHr',400);this.feedback(device,'egtC',420);
+   this.schedule(device,1000,()=>{if(this.phase[device]!=='LIGHT_OFF_SEQUENCE')return;
+    this.feedback(device,'n2Percent',46);this.feedback(device,'startValveOpen',false);
+    this.feedback(device,'startAirAvailable',false);this.feedback(device,'starterEngaged',false);
+    this.feedback(device,'fuelFlowKgHr',350);this.obs(device,true);this.phase[device]='RUNNING';
+    this.started[device]=true;this.effects.push({type:'ROTARY_RELEASE',id:device==='engine1'?'engine-start-1':'engine-start-2',position:'OFF'});
+   });return this.get();
+  }
+  abortEngine(device){this.cancel(device);this.feedback(device,'startValveOpen',false);
+   this.feedback(device,'startAirAvailable',false);this.feedback(device,'starterEngaged',false);
+   this.command({type:'ENGINE_START_SWITCH',device,position:'OFF'});
+   if(this.phase[device]!=='RUNNING')this.phase[device]='OFF';
+  }
+  consumeEffects(){const effects=copy(this.effects);this.effects=[];return effects;}
+  get(){const engine=this.start.get(),pack=this.start.core.pack.get(),apu=engine.observation.apu;
+   const projected={};for(const device of ['engine1','engine2']){
+    const n=Number(device.at(-1)),r=engine.observation[device].rules;
+    projected['mainStartValve'+n]=r.starter.startValveOpenObserved===true &&
+      engine.observation[device].feedback.startAirAvailable.value===true;
+   }
+   const apuConnected=Object.values(pack.electrical.source).includes('APU');
+   projected['apu-gen-off-bus']=apu.running===true&&!apuConnected;
+   projected['apu-low-pressure']=['INLET_DOOR','STARTING'].includes(this.phase.apu);
+   return {clockMs:this.time,phase:copy(this.phase),lastError:this.lastError,
+    sources:copy(engine.network.source),electrical:copy(pack.electrical.bus),
+    selectedSources:copy(pack.electrical.source),bleed:copy(this.start.core.Pneumatics.derive(this.start.core.pneumaticState).bleed),
+    controls:copy(this.controls),projected,observations:copy(engine.observation),
+    trainingNotice:'TRAINING_SEQUENCE_SIMULATED: compressed classroom checkpoints; NOT real N2/APU RPM/EGT dynamics or sensor evidence'};
+  }
+ }
+ return Object.freeze({ORIGIN,CONTROLS,Chain});
+});

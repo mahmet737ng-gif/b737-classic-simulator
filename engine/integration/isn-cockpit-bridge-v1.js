@@ -36,7 +36,9 @@
   return lamps;
  }
  class Bridge{
-  constructor(session){if(!session?.send||!session?.get)throw Error('ISN-01 session required');this.session=session;this.snapshot=null;this.inputs={toggles:{},guards:{},rotaries:{},context:{}};this.initialized=false;this.rejected=[];}
+  constructor(session,{sourceOwner='LEGACY_SCENARIO'}={}){if(!session?.send||!session?.get)throw Error('ISN-01 session required');
+   if(!['LEGACY_SCENARIO','ISN03_START_SESSION'].includes(sourceOwner))throw Error('Invalid source state owner');
+   this.sourceOwner=sourceOwner;this.session=session;this.snapshot=null;this.inputs={toggles:{},guards:{},rotaries:{},context:{}};this.initialized=false;this.rejected=[];}
   send(command){try{return this.session.send(command);}catch(error){this.rejected.push({command:copy(command),reason:error.message});if(this.rejected.length>30)this.rejected.shift();return this.session.get();}}
   electrical(action){this.send({type:'ELECTRICAL',action});}
   control(id,next){
@@ -68,6 +70,7 @@
    const next={toggles:packet.toggles,guards:packet.guards,rotaries:packet.rotaries||{},context:packet.context};
    // Apply upstream scenarios before source-selector requests.
    for(const key of SCENARIO)if(typeof next.context[key]==='boolean'&&next.context[key]!==this.inputs.context[key]){
+    if(this.sourceOwner==='ISN03_START_SESSION'&&['engine1Running','engine2Running','apuRunning'].includes(key))continue;
     this.electrical({type:'CONTROL',key,value:next.context[key]});
     if(key==='onGround')this.send({type:'WARNING_SENSOR',key:'onGround',value:next.context[key]});
    }

@@ -1,5 +1,28 @@
 # Unified cockpit — CKP-0012
 
+## ISN-03 — APU / engine start from Unified controls (training beta)
+
+The latest Unified cockpit hosts a source-gated Engine/APU start training
+sequence on the same shared electrical, pneumatic and annunciator state.
+The real overhead BATTERY, APU START, APU GEN, APU BLEED, PACK L/R,
+ISOLATION VALVE, IGNITION selector and both ENGINE START rotary knobs are its
+inputs. The APU and starter timing checkpoints are explicitly synthetic
+`TRAINING_SEQUENCE_SIMULATED` signals, not real aircraft acceleration models.
+
+Two independently operable Engine Start Levers are physically overlaid on the
+existing blank throttle-quadrant photograph. Their two measured slots are
+registered in original image coordinates, then mapped into the display crop.
+They toggle between CUTOFF and IDLE by clicking/tapping the corresponding
+pedestal lever. The actual ISN-03 feedback confirms each position and rejects
+premature IDLE before N2, so a rejected command does not move the overlay.
+Only extra overlays and the state bridge are changed: approved photo pixels,
+the throttle-quadrant crop and frozen overhead mosaic are unmodified.
+
+Regression tests: `node tests/isn-apu-start-chain-v1.test.cjs` and
+`node panel-mosaic-lab/cockpit/engine-start-levers.test.cjs`.
+This is a cockpit-system training beta; flight dynamics, actual N2/EGT
+physics and comprehensive FCOM validation are not claimed.
+
 ## FTN-0001 — approved white Fuel Temperature needle mounted on Unified
 
 The isolated, sharp-tipped white vector needle approved by the owner is

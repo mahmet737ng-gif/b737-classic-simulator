@@ -1,0 +1,10 @@
+/* ISN-03 physical cockpit test. The existing approved throttle plate is not edited. */
+.engine-start-lever{position:absolute;display:grid;place-items:center;z-index:13;border:0;border-radius:6px;padding:0;background:linear-gradient(90deg,#2d3438,#565d63 20%,#13171b 48%,#525a61 78%,#242a2f);box-shadow:0 2px 5px #000d,0 0 0 1px #0a0b0c;cursor:pointer;line-height:1;transition:top .23s cubic-bezier(.2,.65,.15,1)}
+.engine-start-lever::before{content:'';position:absolute;left:8%;right:8%;top:12%;height:35%;background:linear-gradient(#8b9298,#33393f 50%,#11151a);border-radius:5px 5px 2px 2px;box-shadow:0 1px 2px #000c}
+.engine-start-lever .lever-number{position:relative;align-self:end;margin-bottom:8%;font:900 12px/1 Arial,sans-serif;color:#e2e6e9;text-shadow:0 1px 2px #000;pointer-events:none}
+.engine-start-lever:hover{filter:brightness(1.2)}
+.engine-start-lever:focus-visible{outline:4px solid #f4cd7a;outline-offset:3px}
+.engine-start-lever[data-position=IDLE]{box-shadow:0 2px 5px #000d,0 0 0 2px #74dcb1}
+.engine-start-lever[data-pending=true]{opacity:.5;cursor:progress}
+.reference-mode .engine-start-lever{display:none}
+@media(prefers-reduced-motion:reduce){.engine-start-lever{transition:none}}

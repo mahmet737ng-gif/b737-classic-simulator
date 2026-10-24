@@ -33,6 +33,9 @@
    projection={};for(const [id,v]of Object.entries(d.lamps))if(ids.has(id)&&(v===null||typeof v==='boolean'))projection[id]=v;
    applyProjection();
   }
+  if(d.action==='isn-starter-cutout'&&['engine-start-1','engine-start-2'].includes(d.id)){
+   window.B737RotaryGuards?.setDetent?.(d.id,'OFF');
+  }
   report();
  });
  document.addEventListener('click',e=>{const node=e.target.closest('[data-light]');if(node)send({kind:'selected-light',id:node.dataset.light});});

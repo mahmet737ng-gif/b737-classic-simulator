@@ -175,7 +175,9 @@
   byId('resetToggles').addEventListener('click',()=>{engine.reset();interlocks();persist();});
   byId('toggleVisibility').addEventListener('change',e=>layer.classList.toggle('hidden',!e.target.checked));
   const label=byId('toggleVisibility').parentElement;label.lastChild.textContent=' نمایش کنترل‌ها';byId('resetToggles').textContent='بازنشانی کنترل‌ها';
-  window.B737RotaryGuards=Object.freeze({getState:()=>engine.snapshot(),getRegistry:()=>JSON.parse(JSON.stringify(registry))});persist();
+  window.B737RotaryGuards=Object.freeze({getState:()=>engine.snapshot(),getRegistry:()=>JSON.parse(JSON.stringify(registry)),
+   setDetent:(id,value)=>{if(!['engine-start-1','engine-start-2'].includes(id)||value!=='OFF')return false;
+    return engine.setRotary(id,value,'ISN03_STARTER_CUTOUT');}});persist();
  }
  async function start(){
   try{

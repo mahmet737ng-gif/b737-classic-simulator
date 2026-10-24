@@ -1,0 +1,30 @@
+{
+  "schema": "b737-isn-engine-apu-contracts/1",
+  "id": "ISN-03-STAGE-1",
+  "scope": "B737 Classic 300/500/400 functional training interfaces; EP-FSI is reference only",
+  "flightDynamics": false,
+  "sourceOwnership": {
+    "observedStates": ["source.engine1.running", "source.engine2.running", "source.apu.running"],
+    "startRequestsAreObservations": false,
+    "acceptedOrigins": ["INSTRUCTOR_OBSERVATION", "EXTERNAL_SENSOR_OBSERVATION"],
+    "readyPolicy": "GATE_ALL_DERIVED_OUTPUTS_UNTIL_ALL_THREE_SOURCE_RUNNING_STATUSES_OBSERVED"
+  },
+  "edges": [
+    {"from": "source.engine1.running", "to": "electrical.config.engine1Running", "gate": "EXPLICIT_SOURCE_OBSERVATION", "class": "EXISTING_FUNCTIONAL_CONTRACT", "reference": "FCOM 6.20.1-4 / Electrical V7", "notes": "GEN1 readiness also depends on generator fault and explicit source selection"},
+    {"from": "source.engine2.running", "to": "electrical.config.engine2Running", "gate": "EXPLICIT_SOURCE_OBSERVATION", "class": "EXISTING_FUNCTIONAL_CONTRACT", "reference": "FCOM 6.20.1-4 / Electrical V7"},
+    {"from": "source.apu.running", "to": "electrical.config.apuRunning", "gate": "EXPLICIT_SOURCE_OBSERVATION", "class": "EXISTING_FUNCTIONAL_CONTRACT", "reference": "FCOM 6.20.1-4 / Electrical V7", "notes": "APU running does not auto-select APU GEN"},
+    {"from": "source.engine1.running", "to": "pneumatics.inputs.engine1Running", "gate": "EXPLICIT_SOURCE_OBSERVATION", "class": "EXISTING_FUNCTIONAL_CONTRACT", "reference": "FCOM 2.20.1-2 / Pneumatics V6"},
+    {"from": "source.engine2.running", "to": "pneumatics.inputs.engine2Running", "gate": "EXPLICIT_SOURCE_OBSERVATION", "class": "EXISTING_FUNCTIONAL_CONTRACT", "reference": "FCOM 2.20.1-2 / Pneumatics V6"},
+    {"from": "source.apu.running", "to": "pneumatics.inputs.apuRunning", "gate": "EXPLICIT_SOURCE_OBSERVATION", "class": "EXISTING_FUNCTIONAL_CONTRACT", "reference": "FCOM 2.20.1-2 / Pneumatics V6", "notes": "Requires separately selected APU BLEED; duct distribution unknown"},
+    {"from": "electrical.evaluated", "to": "fuelAndHydraulicPumps", "gate": "ISN_01_SOURCE_GATED", "class": "EXISTING_VERIFIED_SOFTWARE_CONTRACT_ONLY", "reference": "FCOM 12.10.2-3; 13.10.1 / Electrical Loads V8", "notes": "Individual bus feeders UNKNOWN"},
+    {"from": "warningSensors.engine1Fire/engine2Fire/apuFire", "to": "warnings.fireBell", "gate": "EXPLICIT_WARNING_SENSOR", "class": "EXISTING_FUNCTIONAL_CONTRACT", "reference": "FCOM 15.20 / existing WarningEngine"}
+  ],
+  "blockedEdges": [
+    {"from": "source.START_REQUEST", "to": "source.running", "reason": "NO_VALIDATED_STARTER_IGNITION_N2_EGT_STATE_MACHINE"},
+    {"from": "source.engine1/engine2.running", "to": "engineFuelFeed", "reason": "NO_VALIDATED_FUEL_METERING_OR_LINE_PRESSURE_MODEL"},
+    {"from": "electrical.transferBus", "to": "fuelAndHydraulicPumps.individualFeeder", "reason": "NO_INSTALLATION_SPECIFIC_WDM_OR_LOAD_SCHEDULE"},
+    {"from": "source.engine1/engine2/apu.stopped", "to": "warnings.fireBell", "reason": "FIRE_SENSOR_IS_INDEPENDENT; DO_NOT_SYNTHESIZE_AURAL_FIRE"},
+    {"from": "source.apu.running", "to": "pneumatics.ductLeft/ductRight.pressure", "reason": "APU_SOURCE_ROUTING_AND_PRESSURE_PHYSICS_UNVERIFIED"}
+  ],
+  "qaStatus": "IMPLEMENTED_DISCRETE_ADAPTER_TESTED; SOURCE_EFFECTIVITY_AND_LIVE_COCKPIT_QA_PENDING"
+}

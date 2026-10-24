@@ -1,0 +1,62 @@
+{
+  "schema": "b737-isn-start-sequence-contracts/1",
+  "stage": "ISN-03-STAGE-2",
+  "scope": "B737 Classic 300/500/400 functional observed start/shutdown feedback; not engine dynamics",
+  "status": "LOCAL_FCOM_DISCRETE_START_RULES_IMPLEMENTED_UNPUBLISHED",
+  "sourceAvailability": {
+    "existingModels": [
+      "Electrical V7: FCOM 6.20.1-4 — generator/APU source eligibility",
+      "Pneumatics V6: FCOM 2.20.1-2 — engine/APU bleed-source eligibility",
+      "WarningEngine: FCOM 15.20 — separate explicit fire sensors"
+    ],
+    "fullEngineStartFcom": "Owner-uploaded SEPEHRAN AIRLINES 737CL FCOM; 7.10.22 PDF1193, 7.10.25 PDF1196, 7.20.7-9 PDF1208-1210",
+    "apuStartFcom": "Same FCOM; 7.10.29 PDF1200, 7.30.2-3 PDF1217-1218",
+    "normalStartProcedure": "Same FCOM; NP.21.33-35 PDF133-135",
+    "exactStartSectionAndEffectivity": "FCOM document D6-27370-300/400/500-SHI; installation-specific variation still unverified",
+    "numericApproval": "N2 25% or maximum motoring at >=20%; starter cutout approximately 46% N2; EGT abnormal start criterion 725C; APU maximum start cycle 135 seconds; no APU ready RPM threshold"
+  },
+  "observedFeedbackPorts": {
+    "engine1": ["starterEngaged", "ignitionEnergized", "fuelStartLever", "n2Percent", "egtC", "startValveOpen", "startAirAvailable", "n1RotationObserved", "maxMotoringObserved", "fuelFlowKgHr"],
+    "engine2": ["starterEngaged", "ignitionEnergized", "fuelStartLever", "n2Percent", "egtC", "startValveOpen", "startAirAvailable", "n1RotationObserved", "maxMotoringObserved", "fuelFlowKgHr"],
+    "apu": ["starterEngaged", "rpmPercent", "egtC", "inletDoorOpen", "cockpitFireHandleIn", "groundFireHandleIn", "genOffBusLight"],
+    "power": ["batteryBusPowered", "batterySwitchOn", "onGround", "acTransferBusPowered", "acStandbyBusPowered"]
+  },
+  "signalOrigins": ["INSTRUCTOR_OBSERVATION", "EXTERNAL_SENSOR_OBSERVATION", "TRAINING_SEQUENCE_SIMULATED"],
+  "confirmedExecutableEdges": [
+    {"from": "SOURCE_OBSERVATION.engine1.running", "to": "ISN-03.engine1.running", "reference": "ISN-03 Stage 1 / FCOM 6.20.1-4 and 2.20.1-2", "kind": "EXPLICIT_OBSERVATION"},
+    {"from": "SOURCE_OBSERVATION.engine2.running", "to": "ISN-03.engine2.running", "reference": "ISN-03 Stage 1 / FCOM 6.20.1-4 and 2.20.1-2", "kind": "EXPLICIT_OBSERVATION"},
+    {"from": "SOURCE_OBSERVATION.apu.running", "to": "ISN-03.apu.running", "reference": "ISN-03 Stage 1 / FCOM 6.20.1-4 and 2.20.1-2", "kind": "EXPLICIT_OBSERVATION"},
+    {"from": "ENGINE_START_SWITCH.GRD + POWER_FEEDBACK.batteryBusPowered", "to": "engine.startValveOpenCommand", "reference": "FCOM 7.20.7 PDF1208", "kind": "FCOM_FUNCTIONAL_COMMAND"},
+    {"from": "ENGINE_START_SWITCH.GRD + FEEDBACK.n2Percent >= 46", "to": "ENGINE_START_SWITCH.OFF", "reference": "FCOM 7.20.7 PDF1208 + NP.21.35 PDF135", "kind": "FCOM_APPROXIMATE_DISCRETE_CUTOUT"},
+    {"from": "FEEDBACK.n1RotationObserved + FEEDBACK.n2Percent + FEEDBACK.maxMotoringObserved", "to": "engine.fuel.recommendMovingLeverToIdle", "reference": "FCOM NP.21.34 PDF134", "kind": "PROCEDURAL_RECOMMENDATION_ONLY"},
+    {"from": "ENGINE_START_SWITCH + IGNITION_SELECTOR + FEEDBACK.fuelStartLever + POWER_FEEDBACK.AC", "to": "engine.ignition.supplyEligible", "reference": "FCOM 7.10.22 + 7.20.8", "kind": "FUNCTIONAL_ELIGIBILITY_NOT_ACTUAL_IGNITION"},
+    {"from": "Ground start + FEEDBACK.egtC >= 725", "to": "engine.advisory.egt725Latched", "reference": "FCOM 7.20.7 PDF1208", "kind": "ABNORMAL_START_CRITERION_ONLY"},
+    {"from": "APU_SWITCH.START + POWER_FEEDBACK + FEEDBACK.fireHandles", "to": "apu.inletDoorOpenCommand", "reference": "FCOM 7.30.2 PDF1217", "kind": "FUNCTIONAL_COMMAND_NOT_DOOR_POSITION"},
+    {"from": "APU_SWITCH.OFF", "to": "selectedAPUGenerators.OFF + apuBleed.OFF", "reference": "FCOM 7.30.3 PDF1218", "kind": "FCOM_DISCRETE_COMMAND"},
+    {"from": "Observed ground + battery switch OFF or cockpit APU fire handle OUT", "to": "APU.SHUTDOWN_REQUEST + selectedAPUGenerators.OFF + apuBleed.OFF", "reference": "FCOM 7.30.2-3 PDF1217-1218", "kind": "FCOM_CONDITIONAL_SHUTDOWN_COMMAND"}
+  ],
+  "blockedAutomation": [
+    {"from": "engine.START_REQUEST", "to": "engine.running", "reason": "RUNNING_STILL_REQUIRES_EXPLICIT_OBSERVATION_NO_ENGINE_PHYSICS"},
+    {"from": "engine.startValveOpenCommand", "to": "engine.startValveOpenMeasured", "reason": "COMMAND_DOES_NOT_PROVE_PHYSICAL_VALVE_TRAVEL"},
+    {"from": "engine.ignition.supplyEligible", "to": "engine.ignitionEnergizedMeasured", "reason": "ELECTRICAL_BUS_ELIGIBILITY_DOES_NOT_PROVE_IGNITER_FUNCTION"},
+    {"from": "engine.n2Percent", "to": "engine.running", "reason": "CUTOUT_AT_APPROX_46_PERCENT_IS_NOT_RUNNING_CONFIRMATION"},
+    {"from": "engine.egtC", "to": "engine.running", "reason": "EGT_IS_NOT_COMBUSTION_OR_STABLE_IDLE_CONFIRMATION"},
+    {"from": "engine.fuelStartLever", "to": "engine.fuelValveOrCombustion", "reason": "FUEL_METERING_AND_FUEL_FLOW_NOT_MODELED"},
+    {"from": "apu.rpmPercent", "to": "apu.running", "reason": "FCOM_DOES_NOT_NUMERICALLY_DEFINE_APU_READY_RPM"},
+    {"from": "apu.egtC", "to": "apu.running", "reason": "NO_APPROVED_APU_EGT_START_LIMITS"},
+    {"from": "engine.egtC", "to": "warning.fireBell", "reason": "ABNORMAL_START_EGT_FLASH_IS_NOT_A_FIRE_SENSOR"},
+    {"from": "engine.n2Percent", "to": "warning.hungStart", "reason": "EGT_N2_OAT_LIMIT_FORMULA_AND_ACCELERATION_RATE_TEST_NOT_AVAILABLE"},
+    {"from": "apu.egtC", "to": "apu.shutdown", "reason": "FCOM_OVERTEMPERATURE_MAY_CLOSE_BLEED_WITHOUT_SHUTDOWN"},
+    {"from": "apu.START", "to": "apu.autoIgnitionAndFuel", "reason": "FCOM_APPROPRIATE_APU_RPM_NOT_NUMERICALLY_SPECIFIED"}
+  ],
+  "representationPolicy": {
+    "feedbackFieldsAreMeasurementsOnly": true,
+    "trainingSequenceSimulationIsNotExternalSensorEvidence": true,
+    "phasesAreObserverUiLabelsNotFcomProceduralSteps": true,
+    "simulatedN1NeverUsedToConfirmStart": true,
+    "automaticEngineGroundStartSwitchReleaseAtApprox46N2": true,
+    "noSyntheticFireAlarm": true,
+    "preserveUnmeasuredAsNull": true,
+    "doNotModifyFrozenOverhead": true
+  }
+}
