@@ -35,6 +35,9 @@ jobs:
           node panel-mosaic-lab/interactive-overhead/lights.test.cjs
       - name: Verify unified cockpit assembly
         run: |
+          node panel-mosaic-lab/cockpit/flap-lever-model.test.cjs
+          node --check panel-mosaic-lab/cockpit/flap-lever-test.js
+          node --check panel-mosaic-lab/cockpit/flap-lever-model.js
           node panel-mosaic-lab/cockpit/flap-needles.test.cjs
           node panel-mosaic-lab/cockpit/fuel-temperature-needle.test.cjs
           node panel-mosaic-lab/cockpit/test.cjs
