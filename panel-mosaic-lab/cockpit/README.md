@@ -1,4 +1,4 @@
-# Unified cockpit — CKP-0010
+# Unified cockpit — CKP-0011
 
 ## CKP-0005 / LGT-0007 — STAB socket fit and SPEED BRAKE mounting
 
@@ -197,3 +197,16 @@ that display and input; the explicit shared FMC reset clears flight data in both
 Per owner correction, the F/O top edge extends upward by 18 main-panel native pixels
 while its approved bottom, x and width stay fixed. Captain placement and all other
 panel geometry, source artwork, font files and 140 key hitboxes are unchanged.
+
+## CKP-0011 — standalone blank throttle quadrant installed
+
+The owner's new 1145×1373 `Aircraft Throttle Quadrant Control Panel.png` is mounted
+as the complete upper Pedestal panel at native width 1150, preserving its aspect
+ratio and original pixel bytes. The historical full pedestal photograph remains
+available only in Reference mode. The 685-pixel cropped Fire Protection plate
+follows immediately under the complete throttle panel, and the approved
+Radio/Nav/Audio plate follows under Fire, also at its original aspect ratio.
+The Pedestal and overall canvas heights increase to accommodate this without
+covering or deforming any neighboring panel. Lever mechanisms are not baked into
+the blank source and will be installed independently in the interactive stage.
+Frozen UPD-0012 overhead artwork and main-panel/CDU geometry are unaffected.

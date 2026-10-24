@@ -1,6 +1,16 @@
 'use strict';
 const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict'),crypto=require('node:crypto'),m=require('./view-model');
 const a=JSON.parse(fs.readFileSync(path.join(__dirname,'assembly.json'),'utf8'));assert.equal(m.validate(a),true);assert.equal(a.regions.length,3);assert.equal(a.regions.find(r=>r.id==='main').placements.length,5);assert.equal(a.regions.find(r=>r.id==='overhead').baseVersion,'UPD-0012-OVH-measured-seams');
+assert.equal(a.version,'CKP-0011-THROTTLE');
+const pedestal=a.regions.find(r=>r.id==='pedestal');
+const [throttle,fire,radio]=pedestal.placements;
+assert.deepEqual(pedestal.placements.map(p=>p.id),['throttle-quadrant','fire-protection','pedestal-radio']);
+assert.equal(throttle.asset,'panel-mosaic-lab/assets/locked/2026-10-23/Aircraft Throttle Quadrant Control Panel.png');
+assert.ok(Math.abs(throttle.w/throttle.h-1145/1373)<1e-9,'New complete throttle artwork preserves native aspect');
+assert.ok(Math.abs(fire.y-(throttle.y+throttle.h))<1e-9,'Fire follows throttle without overlap');
+assert.ok(Math.abs(radio.y-(fire.y+fire.h))<1e-9,'Radio follows fire without overlap');
+assert.ok(a.canvas.height>=pedestal.y+pedestal.h,'Whole pedestal remains inside canvas');
+assert.equal(a.assets[throttle.asset].sha256,'e533f907b3826dbf8fc986812b9045c2ef8980f93133ce85b859e9b9d7ab0030');
 for(const asset of Object.values(a.assets)){const bytes=fs.readFileSync(path.resolve(__dirname,asset.url));assert.equal(bytes.length,asset.bytes);assert.equal(crypto.createHash('sha256').update(bytes).digest('hex'),asset.sha256);assert.equal(crypto.createHash('sha1').update(Buffer.concat([Buffer.from('blob '+bytes.length+'\0'),bytes])).digest('hex'),asset.gitBlobSha);}
 const zoom=m.zoomAnchor(.25,.5,100,200,300,250);assert.equal((100+300)/.25,(zoom.left+300)/.5);assert.equal((200+250)/.25,(zoom.top+250)/.5);assert.ok(m.fit({w:4400,h:8100},390,600)>=.04);
 const centered=m.zoomAnchor(.1,.2,0,0,500,200,{x:300,y:20},{x:100,y:0});assert.equal((500-300)/.1,(centered.left+500-100)/.2);assert.equal((200-20)/.1,(centered.top+200)/.2);
@@ -10,6 +20,7 @@ assert.ok(interactive.includes('mountEngineStartLabelCorrection(layout)'),'Unifi
 assert.ok(interactive.includes('motion.createDetentGesture'),'Unified uses event-triggered hard-stop detents');
 assert.match(interactive,/if\(c\.mode==='detent'\)\{drag\.gesture\.feed\(delta\);return;\}/,'Detents exit before continuous free-follow rotation');
 const unified=fs.readFileSync(path.join(__dirname,'index.html'),'utf8');
+assert.ok(unified.includes('CKP-0011'),'Unified HTML advertises throttle update');
 for(const marker of ['id="unifiedLightsOpen"','id="unifiedLightsDialog"','id="unifiedLightSearch"','unified-lights.js?v=LGT-0013','../lights-test/asset-model.js?v=LGT-0013'])assert.ok(unified.includes(marker),'Unified annunciator testing: '+marker);
 const assetModel=require('../lights-test/asset-model'),gallery=JSON.parse(fs.readFileSync(path.join(__dirname,'../lights-test/registry.json')));
 assert.ok(gallery.lights.length>=87,'Unified must load the expanding LIGHTS catalogue');

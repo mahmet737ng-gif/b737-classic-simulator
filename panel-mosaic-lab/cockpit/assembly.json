@@ -1,9 +1,9 @@
 {
   "schema": "b737.shared-cockpit-mosaic.v1",
-  "version": "CKP-0010",
+  "version": "CKP-0011-THROTTLE",
   "canvas": {
     "width": 4400,
-    "height": 8100
+    "height": 8750
   },
   "assets": {
     "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png": {
@@ -82,6 +82,14 @@
       "bytes": 392730,
       "sha256": "08f7478a6a2d3e58faf5f0cbd12896e32ef97131616c5d4228e9e64594909bfe",
       "gitBlobSha": "73a819b1c42617ae4da52f359546a200ef189ae4"
+    },
+    "panel-mosaic-lab/assets/locked/2026-10-23/Aircraft Throttle Quadrant Control Panel.png": {
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/Aircraft Throttle Quadrant Control Panel.png",
+      "url": "../../panel-mosaic-lab/assets/locked/2026-10-23/Aircraft Throttle Quadrant Control Panel.png",
+      "dimensions": [1145, 1373],
+      "bytes": 2399844,
+      "sha256": "e533f907b3826dbf8fc986812b9045c2ef8980f93133ce85b859e9b9d7ab0030",
+      "gitBlobSha": "d97e33d42f4d7f14671235a25ea171ce056e58f1"
     },
     "panel-mosaic-lab/assets/locked/2026-10-23/PD-RADIO-AVIONICS-7a41044771fa.png": {
       "path": "panel-mosaic-lab/assets/locked/2026-10-23/PD-RADIO-AVIONICS-7a41044771fa.png",
@@ -187,32 +195,27 @@
       "x": 1596,
       "y": 5590,
       "w": 1207.5,
-      "h": 2378.175,
+      "h": 3056.55,
       "nativeWidth": 1150,
-      "nativeHeight": 2264.9285714285716,
+      "nativeHeight": 2911,
       "placements": [
         {
-          "id": "pedestal-upper-reference",
-          "label": "THROTTLE / FIRE — EXISTING REFERENCE",
-          "asset": "assets/pedestal.webp",
+          "id": "throttle-quadrant",
+          "label": "THROTTLE QUADRANT — BLANK CONTROL PLATE",
+          "asset": "panel-mosaic-lab/assets/locked/2026-10-23/Aircraft Throttle Quadrant Control Panel.png",
           "x": 0,
           "y": 0,
           "w": 1150,
-          "h": 914,
-          "sourceWindow": {
-            "x": 0,
-            "y": 0,
-            "w": 1150,
-            "h": 914
-          },
-          "referenceOnly": true
+          "h": 1378.995633187773,
+          "presentation": "Full owner-uploaded 1145×1373 blank throttle quadrant, uniform scaling; no crop or pixel edits",
+          "layoutStatus": "installed for owner visual review; mechanical lever overlays are not yet mounted"
         },
         {
           "id": "fire-protection",
-          "label": "FIRE PROTECTION — UNDER ENGINE START LEVERS",
+          "label": "FIRE PROTECTION — BELOW THROTTLE QUADRANT",
           "asset": "panel-mosaic-lab/assets/locked/2026-10-23/Fire_Protection_Panel_Blank_With_Buttons.png",
           "x": 244,
-          "y": 750,
+          "y": 1378.995633187773,
           "w": 685,
           "h": 170.10287081339712,
           "sourceWindow": {
@@ -221,32 +224,15 @@
             "w": 2090,
             "h": 519
           },
-          "presentation": "Crop of owner's exact unmodified blank panel, over the original Fire Protection plate directly beneath engine start lever 1 and 2; not above throttle quadrant",
-          "layoutStatus": "positioned on existing fire cutout, pending owner visual confirmation"
-        },
-        {
-          "id": "engine-start-levers-foreground",
-          "label": "ENGINE START LEVERS 1 / 2 — original foreground retained",
-          "asset": "assets/pedestal.webp",
-          "x": 477,
-          "y": 743,
-          "w": 165,
-          "h": 76,
-          "sourceWindow": {
-            "x": 477,
-            "y": 743,
-            "w": 165,
-            "h": 76
-          },
-          "referenceOnly": true,
-          "presentation": "Source window from unmodified owner reference: keeps original white start levers in front of Fire Panel overlay"
+          "presentation": "Original fire plate, source crop unchanged, now installed immediately after the new standalone throttle quadrant",
+          "layoutStatus": "reflowed below complete throttle plate without overlap"
         },
         {
           "id": "pedestal-radio",
           "label": "RADIO / NAV / AUDIO / TRIM",
           "asset": "panel-mosaic-lab/assets/locked/2026-10-23/PD-RADIO-AVIONICS-7a41044771fa.png",
           "x": 35,
-          "y": 914,
+          "y": 1549.09850400117,
           "w": 1080,
           "h": 1349.51871657754,
           "library_file_id": "libfile_5aeb51496eb88191be12ff3d6b903a27",
@@ -259,7 +245,7 @@
   "notes": [
     "All three regions are visible on one shared pan/zoom canvas. Region buttons change only the view, never navigate away or reload the overhead.",
     "Overhead switches and lights remain interactive. Main and newly imported pedestal artwork are connected as base images; new actuator/system overlays are a separate stage.",
-    "Fire Protection panel is displayed directly at the original Fire Protection position below the white engine start levers and immediately above pedestal radios; original throttle imagery and existing radio placement remain intact. Original owner-uploaded PNG is unmodified."
+    "CKP-0011: Owner-uploaded blank Throttle Quadrant replaces the historic live throttle reference at the top of the pedestal, unmodified and uncropped. Fire Protection and RADIO/NAV/Audio blocks follow beneath it without overlap. The historical pedestal image remains available in Reference mode."
   ],
   "lightVersion": "LGT-0007",
   "embeddedInstruments": [
