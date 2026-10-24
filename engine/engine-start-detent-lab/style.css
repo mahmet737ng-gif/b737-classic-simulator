@@ -1,0 +1,25 @@
+:root{color-scheme:dark;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:#f3f5f9;background:#101923}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 50% -10%,#2b4354 0%,#101923 58%)}
+main{width:min(1110px,96vw);margin:auto;padding:clamp(20px,4vw,48px) 0 60px}
+.eyebrow{font-size:11px;letter-spacing:.22em;color:#7ab6cd;font-weight:750}
+h1{font-size:clamp(24px,4vw,39px);letter-spacing:-.025em;margin:10px 0 8px}
+.intro{color:#b8c8d1;font-size:14px;max-width:720px;line-height:1.6;margin:0 0 25px}
+.photo-frame{background:#0b141c;border:1px solid #3e5767;border-radius:18px;box-shadow:0 22px 65px #0007;overflow:hidden;padding:10px}
+#stage{display:block;width:100%;height:auto;background:#354a5c;border-radius:11px;user-select:none;-webkit-user-select:none}
+.mark-correction{font-family:Arial,"Arial Narrow",sans-serif;font-size:15px;font-stretch:condensed;font-weight:700;letter-spacing:.05px}
+.rotary-group{cursor:grab;outline:none;touch-action:none}
+.rotary-group:active{cursor:grabbing}
+.rotary-group:focus-visible .rotary-image{filter:drop-shadow(0 0 5px #48c5f9)}
+.rotary-image{pointer-events:none;filter:drop-shadow(2px 3px 3px #07131a9c)}
+.controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:17px}
+.engine-card{border:1px solid #3c5667;background:#1b2935;border-radius:14px;padding:16px}
+.engine-title{display:flex;align-items:center;justify-content:space-between;font-size:13px;letter-spacing:.1em;font-weight:750;color:#d5e4ec;margin-bottom:13px}
+.status{font-size:13px;color:#062332;border-radius:6px;padding:5px 12px;background:#81d1e9;letter-spacing:.05em}
+.detents{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}
+.detents button{appearance:none;border-radius:7px;padding:11px 4px;border:1px solid #4a6070;background:#283a48;color:#bfd1db;font-size:12px;font-weight:750;cursor:pointer}
+.detents button[aria-pressed="true"]{background:#245f71;color:#fff;border-color:#74ccdf;box-shadow:inset 0 0 0 1px #74ccdf}
+.degrees{font-size:11px;color:#8baabc;margin-top:12px;font-variant-numeric:tabular-nums}
+.note{margin-top:19px;max-width:790px;color:#89a2b1;font-size:12px;line-height:1.6}
+@media(max-width:650px){.controls{grid-template-columns:1fr}.photo-frame{padding:3px;border-radius:10px}.intro{font-size:13px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}

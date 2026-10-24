@@ -4,7 +4,11 @@ const a=JSON.parse(fs.readFileSync(path.join(__dirname,'assembly.json'),'utf8'))
 for(const asset of Object.values(a.assets)){const bytes=fs.readFileSync(path.resolve(__dirname,asset.url));assert.equal(bytes.length,asset.bytes);assert.equal(crypto.createHash('sha256').update(bytes).digest('hex'),asset.sha256);assert.equal(crypto.createHash('sha1').update(Buffer.concat([Buffer.from('blob '+bytes.length+'\0'),bytes])).digest('hex'),asset.gitBlobSha);}
 const zoom=m.zoomAnchor(.25,.5,100,200,300,250);assert.equal((100+300)/.25,(zoom.left+300)/.5);assert.equal((200+250)/.25,(zoom.top+250)/.5);assert.ok(m.fit({w:4400,h:8100},390,600)>=.04);
 const centered=m.zoomAnchor(.1,.2,0,0,500,200,{x:300,y:20},{x:100,y:0});assert.equal((500-300)/.1,(centered.left+500-100)/.2);assert.equal((200-20)/.1,(centered.top+200)/.2);
-const html=fs.readFileSync(path.join(__dirname,'overhead-stage.html'),'utf8');for(const src of ['stage.js?v=UPD-0012','app.js?v=RG-0001','rotary-guards.js?v=LGT-0003','lights.js?v=LGT-0003'])assert.ok(html.includes(src),src);assert.ok(!html.includes('data-cockpit-entry'));
+const html=fs.readFileSync(path.join(__dirname,'overhead-stage.html'),'utf8');for(const src of ['stage.js?v=UPD-0012','app.js?v=RG-0001','rotary-motion-rm0002.js?v=RM-0002','rotary-guards.js?v=RM-0002','lights.js?v=LGT-0003'])assert.ok(html.includes(src),src);assert.ok(!html.includes('data-cockpit-entry'));
+const interactive=fs.readFileSync(path.join(__dirname,'../interactive-overhead/rotary-guards.js'),'utf8');
+assert.ok(interactive.includes('mountEngineStartLabelCorrection(layout)'),'Unified corrects FLT spacing without changing the locked atlas image');
+assert.ok(interactive.includes('motion.createDetentGesture'),'Unified uses event-triggered hard-stop detents');
+assert.match(interactive,/if\(c\.mode==='detent'\)\{drag\.gesture\.feed\(delta\);return;\}/,'Detents exit before continuous free-follow rotation');
 const unified=fs.readFileSync(path.join(__dirname,'index.html'),'utf8');
 for(const marker of ['id="unifiedLightsOpen"','id="unifiedLightsDialog"','id="unifiedLightSearch"','unified-lights.js?v=LGT-0013','../lights-test/asset-model.js?v=LGT-0013'])assert.ok(unified.includes(marker),'Unified annunciator testing: '+marker);
 const assetModel=require('../lights-test/asset-model'),gallery=JSON.parse(fs.readFileSync(path.join(__dirname,'../lights-test/registry.json')));

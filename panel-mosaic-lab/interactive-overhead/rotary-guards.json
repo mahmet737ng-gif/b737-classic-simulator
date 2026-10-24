@@ -7,6 +7,10 @@
       "url": "../../switch-lab/assets/rotary-standard-v1.webp",
       "sha256": "f42c72234dd53005d7b286f18d58da140bb89ef64f0671f1c6530b38a7c686e8"
     },
+    "rotary-crossfeed": {
+      "url": "../../panel-mosaic-lab/assets/locked/2026-10-23/Switches/Rotary/Cross_Feed_Knob.png",
+      "sha256": "eec1a9daca2d25a1d527c937b710f167aa0c2b076508974d9a71f105bcf01ef6"
+    },
     "black-CLOSED": {
       "url": "../../panel-mosaic-lab/assets/locked/2026-10-23/Black_Guarded_CLOSED.png",
       "sha256": "b45a6d74fbf052ab82baadf820cc79d94fce5055584442946fa15c4e3b760d6e"
@@ -176,11 +180,15 @@
       "bezelSourceDiameter": 186,
       "kind": "rotary",
       "mode": "detent",
-      "asset": "rotary-standard",
+      "asset": "rotary-crossfeed",
       "pivot": [
         0.5,
-        0.44
+        0.5
       ],
+      "imageAspect": 1.12966,
+      "renderScale": 1.0,
+      "visualPivot": [0.5, 0.5],
+      "calibrationStatus": "provisional",
       "states": [
         "CLOSED",
         "OPEN"
@@ -214,11 +222,13 @@
         "HIGH"
       ],
       "angles": [
-        -45,
-        0,
-        45,
-        90
+        -41.154,
+        -0.339,
+        40.897,
+        87.274
       ],
+      "panelPivot": [404, 1572],
+      "panelMarks": [[293, 1445], [403, 1403], [514, 1445], [572, 1564]],
       "default": "OFF"
     },
     {
@@ -496,11 +506,13 @@
         "FLT"
       ],
       "angles": [
-        -45,
-        0,
-        45,
-        90
+        -39.629,
+        -9.752,
+        30.700,
+        69.624
       ],
+      "panelPivot": [1022, 345],
+      "panelMarks": [[969, 281], [1011, 281], [1060, 281], [1092, 319]],
       "default": "OFF"
     },
     {
@@ -526,11 +538,13 @@
         "FLT"
       ],
       "angles": [
-        -45,
-        0,
-        45,
-        90
+        -33.896,
+        -5.356,
+        33.896,
+        68.499
       ],
+      "panelPivot": [1370, 345],
+      "panelMarks": [[1327, 281], [1364, 281], [1413, 281], [1436, 319]],
       "default": "OFF"
     },
     {

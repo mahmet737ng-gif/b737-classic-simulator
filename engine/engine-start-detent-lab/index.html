@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#101923">
+  <title>B737 Classic — Engine Start Detent Lab</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
+    <div class="eyebrow">B737 CLASSIC · ENGINE START · DETENT LAB</div>
+    <h1>Engine Start Switches</h1>
+    <p class="intro">Move either knob horizontally or vertically. Each recognized step snaps to the next labeled detent. Releasing does not change the selection.</p>
+    <section class="photo-frame" aria-label="Two B737 engine start selectors on the original overhead strip">
+      <svg id="stage" viewBox="885 198 510 278" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Engine start panel, engines 1 and 2">
+        <defs>
+          <clipPath id="leftOldFlt"><rect x="992" y="273" width="41" height="25" rx="2"/></clipPath>
+          <clipPath id="rightOldFlt"><rect x="1326" y="274" width="44" height="26" rx="2"/></clipPath>
+        </defs>
+        <image href="../../panel-mosaic-lab/assets/locked/2026-10-23/OH23-25-LOWER-CONTROLS-fad696c845df.png" x="0" y="0" width="2048" height="679"/>
+        <!-- Non-destructive, local print correction. Sample adjacent untouched metal texture
+             to cover only the old FLT lettering. The frozen PNG is never altered. -->
+        <image href="../../panel-mosaic-lab/assets/locked/2026-10-23/OH23-25-LOWER-CONTROLS-fad696c845df.png" x="0" y="-39" width="2048" height="679" clip-path="url(#leftOldFlt)"/>
+        <image href="../../panel-mosaic-lab/assets/locked/2026-10-23/OH23-25-LOWER-CONTROLS-fad696c845df.png" x="0" y="-38" width="2048" height="679" clip-path="url(#rightOldFlt)"/>
+        <g class="mark-correction" fill="#f1f0ed" stroke="#27343d" stroke-width=".24" paint-order="stroke">
+          <text x="1031" y="303" text-anchor="middle">FLT</text>
+          <text x="1355" y="303" text-anchor="middle">FLT</text>
+        </g>
+        <g class="rotary-group" id="rotary-1" role="button" tabindex="0" aria-label="Engine 1 start switch, OFF" data-engine="1">
+          <image class="rotary-image" x="920" y="289.3" width="88" height="88" href="../../panel-mosaic-lab/assets/locked/2026-10-23/Switches/Rotary/rotary-standard-v1.webp"/>
+          <circle cx="964" cy="328" r="45" fill="transparent"/>
+        </g>
+        <g class="rotary-group" id="rotary-2" role="button" tabindex="0" aria-label="Engine 2 start switch, OFF" data-engine="2">
+          <image class="rotary-image" x="1248" y="289.3" width="88" height="88" href="../../panel-mosaic-lab/assets/locked/2026-10-23/Switches/Rotary/rotary-standard-v1.webp"/>
+          <circle cx="1292" cy="328" r="45" fill="transparent"/>
+        </g>
+      </svg>
+    </section>
+    <div class="controls">
+      <section class="engine-card" data-card="1"><div class="engine-title">ENGINE 1 <span class="status" id="status-1">OFF</span></div><div class="detents" id="buttons-1"></div><div class="degrees" id="degrees-1"></div></section>
+      <section class="engine-card" data-card="2"><div class="engine-title">ENGINE 2 <span class="status" id="status-2">OFF</span></div><div class="detents" id="buttons-2"></div><div class="degrees" id="degrees-2"></div></section>
+    </div>
+    <p class="note">Visual control prototype only. Actual GRD automatic return / starter-valve / ignition behavior must come from the documented systems model; it is not inferred here. The approved overhead mosaic is unchanged.</p>
+  </main>
+  <script src="engine-start-detents.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

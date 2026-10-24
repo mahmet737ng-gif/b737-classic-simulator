@@ -3,6 +3,7 @@
 .mounted-rotary:active{cursor:grabbing}
 .rotary-picture{position:absolute;display:block;max-width:none!important;max-height:none!important;pointer-events:none;user-select:none;transform-origin:50% 44%;transition:transform 220ms cubic-bezier(.2,.85,.3,1)}
 .mounted-rotary.dragging .rotary-picture{transition:none}
+.mounted-rotary.detent-motion .rotary-picture,.mounted-rotary.detent-motion.dragging .rotary-picture{transition:transform 110ms cubic-bezier(.2,.85,.3,1)}
 .mounted-rotary:focus-visible{outline:2px solid #e6ce9c;outline-offset:3px}
 .guard-node{position:absolute;width:0;height:0;pointer-events:none;overflow:visible;transform-origin:0 0}
 .guard-picture{position:absolute;display:block;max-width:none!important;max-height:none!important;pointer-events:none;user-select:none;opacity:0;transition:opacity 210ms ease}
@@ -20,4 +21,4 @@
 .rg-actions button.active{border-color:#e6ce9c;background:#424a42}
 #rgGuardAction{width:100%;margin:0 0 8px;font-size:12px;padding:7px}
 .mounted-toggle[aria-disabled=true]{cursor:not-allowed}
-@media(prefers-reduced-motion:reduce){.rotary-picture,.guard-picture{transition:none}}
+@media(prefers-reduced-motion:reduce){.rotary-picture,.guard-picture,.mounted-rotary.detent-motion .rotary-picture,.mounted-rotary.detent-motion.dragging .rotary-picture{transition:none}}

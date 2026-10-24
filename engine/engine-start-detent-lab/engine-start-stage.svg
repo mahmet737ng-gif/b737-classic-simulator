@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1020" height="556" viewBox="885 198 510 278">
+  <defs>
+    <clipPath id="left-old-flt"><rect x="992" y="273" width="41" height="25" rx="2"/></clipPath>
+    <clipPath id="right-old-flt"><rect x="1326" y="274" width="44" height="26" rx="2"/></clipPath>
+  </defs>
+  <image href="../../panel-mosaic-lab/assets/locked/2026-10-23/OH23-25-LOWER-CONTROLS-fad696c845df.png" x="0" y="0" width="2048" height="679"/>
+  <image href="../../panel-mosaic-lab/assets/locked/2026-10-23/OH23-25-LOWER-CONTROLS-fad696c845df.png" x="0" y="-39" width="2048" height="679" clip-path="url(#left-old-flt)"/>
+  <image href="../../panel-mosaic-lab/assets/locked/2026-10-23/OH23-25-LOWER-CONTROLS-fad696c845df.png" x="0" y="-38" width="2048" height="679" clip-path="url(#right-old-flt)"/>
+  <g fill="#f1f0ed" stroke="#27343d" stroke-width=".24" paint-order="stroke" font-family="Arial Narrow,Arial,sans-serif" font-size="15" font-weight="700">
+    <text x="1031" y="303" text-anchor="middle">FLT</text>
+    <text x="1355" y="303" text-anchor="middle">FLT</text>
+  </g>
+  <g transform="rotate(-8.75 964 328)">
+    <image href="../../panel-mosaic-lab/assets/locked/2026-10-23/Switches/Rotary/rotary-standard-v1.webp" x="920" y="289.3" width="88" height="88"/>
+  </g>
+  <g transform="rotate(-4.33 1292 328)">
+    <image href="../../panel-mosaic-lab/assets/locked/2026-10-23/Switches/Rotary/rotary-standard-v1.webp" x="1248" y="289.3" width="88" height="88"/>
+  </g>
+</svg>

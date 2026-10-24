@@ -1,7 +1,7 @@
 (function(){
  'use strict';
  const scriptURL=document.currentScript.src,url=p=>new URL(p,scriptURL).href;
- const model=window.B737RotaryGuardModel,points=window.B737OverheadToggleModel;
+ const model=window.B737RotaryGuardModel,points=window.B737OverheadToggleModel,motion=window.B737RotaryMotionRM0002;
  const STORAGE='b737-overhead-rotary-guards-RG-0001',byId=id=>document.getElementById(id);
  let registry,engine,layer,selected=null;
  const widgets=new Map(),angles=new Map();
@@ -46,15 +46,33 @@
  function rotaryInput(c,button,img){
   let drag=null;
   const pointerAngle=e=>{const b=button.getBoundingClientRect();return Math.atan2(e.clientY-(b.top+b.height/2),e.clientX-(b.left+b.width/2))*180/Math.PI;};
-  button.addEventListener('pointerdown',e=>{if(e.button!==0)return;e.preventDefault();e.stopPropagation();choose(c);button.focus({preventScroll:true});button.setPointerCapture(e.pointerId);drag={id:e.pointerId,x:e.clientX,y:e.clientY,last:pointerAngle(e),angle:engine.angle(c.id),moved:false};button.classList.add('dragging');});
+  button.addEventListener('pointerdown',e=>{
+   if(e.button!==0)return;e.preventDefault();e.stopPropagation();choose(c);button.focus({preventScroll:true});button.setPointerCapture(e.pointerId);
+   const b=button.getBoundingClientRect(),radius=Math.hypot(e.clientX-(b.left+b.width/2),e.clientY-(b.top+b.height/2));
+   drag={id:e.pointerId,x:e.clientX,y:e.clientY,previousX:e.clientX,last:pointerAngle(e),angle:engine.angle(c.id),start:engine.rotary(c.id),moved:false,
+    radial:radius>=Math.min(b.width,b.height)*.19,
+    gesture:c.mode==='detent'?motion.createDetentGesture(direction=>engine.stepRotary(c.id,direction,'detent-drag')):null};
+   button.classList.add('dragging');
+  });
   button.addEventListener('pointermove',e=>{
-   if(!drag||drag.id!==e.pointerId)return;e.stopPropagation();const a=pointerAngle(e);let delta=a-drag.last;delta=((delta+540)%360)-180;drag.last=a;
+   if(!drag||drag.id!==e.pointerId)return;e.stopPropagation();const a=pointerAngle(e),delta=drag.radial?motion.deltaAngle(drag.last,a):(e.clientX-drag.previousX)*.85;
+   drag.last=a;drag.previousX=e.clientX;
    if(Math.hypot(e.clientX-drag.x,e.clientY-drag.y)>4)drag.moved=true;
-   if(!drag.moved)return;drag.angle+=delta;
+   if(!drag.moved)return;
+   if(c.mode==='detent'){drag.gesture.feed(delta);return;}
+   drag.angle+=delta;
    if(!c.wrap)drag.angle=Math.max(c.mode==='continuous'?c.angleMin:c.angles[0],Math.min(c.mode==='continuous'?c.angleMax:c.angles.at(-1),drag.angle));
    engine.turnRotary(c.id,drag.angle);angles.set(c.id,drag.angle);img.style.transform='rotate('+drag.angle+'deg)';
   });
-  const finish=(e,cancel)=>{if(!drag||drag.id!==e.pointerId)return;e.stopPropagation();if(!cancel&&!drag.moved)engine.cycleRotary(c.id);drag=null;button.classList.remove('dragging');render(c);};
+  const finish=(e,cancel)=>{
+   if(!drag||drag.id!==e.pointerId)return;e.stopPropagation();
+   if(cancel&&c.mode==='detent')engine.setRotary(c.id,drag.start,'cancel-drag');
+   else if(!cancel&&!drag.moved){
+    const b=button.getBoundingClientRect(),relativeX=e.clientX-(b.left+b.width/2);
+    engine.stepRotary(c.id,relativeX<-(b.width*.12)?-1:1,'tap');
+   }
+   drag=null;button.classList.remove('dragging');render(c);
+  };
   button.addEventListener('pointerup',e=>finish(e,false));button.addEventListener('pointercancel',e=>finish(e,true));button.addEventListener('lostpointercapture',e=>finish(e,true));
   button.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();if(e.detail===0){choose(c);engine.cycleRotary(c.id);}});
   button.addEventListener('wheel',e=>{e.preventDefault();e.stopPropagation();choose(c);engine.stepRotary(c.id,e.deltaY>0?1:-1,'wheel');},{passive:false});
@@ -62,13 +80,15 @@
    if(!['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Home','End',' ','Enter'].includes(e.key))return;e.preventDefault();e.stopPropagation();choose(c);
    if(e.key==='Home')engine.setRotary(c.id,c.mode==='continuous'?c.min:c.states[0],'key');else if(e.key==='End')engine.setRotary(c.id,c.mode==='continuous'?c.max:c.states.at(-1),'key');else if(e.key===' '||e.key==='Enter'){if(!e.repeat)engine.cycleRotary(c.id);}else engine.stepRotary(c.id,['ArrowLeft','ArrowDown'].includes(e.key)?-1:1,'key');
   });
-  button.addEventListener('blur',()=>{drag=null;button.classList.remove('dragging');render(c);});
+  button.addEventListener('blur',()=>{if(drag&&c.mode==='detent')engine.setRotary(c.id,drag.start,'cancel-blur');drag=null;button.classList.remove('dragging');render(c);});
  }
  function rotary(c,p){
-  const b=document.createElement('button');b.type='button';b.className='mounted-rotary';b.dataset.control=c.id;b.setAttribute('role','slider');b.setAttribute('aria-valuemin',String(c.mode==='continuous'?c.min:0));b.setAttribute('aria-valuemax',String(c.mode==='continuous'?c.max:c.states.length-1));b.title=c.label;
+  const b=document.createElement('button');b.type='button';b.className='mounted-rotary'+(c.mode==='detent'?' detent-motion':'');b.dataset.control=c.id;b.setAttribute('role','slider');b.setAttribute('aria-valuemin',String(c.mode==='continuous'?c.min:0));b.setAttribute('aria-valuemax',String(c.mode==='continuous'?c.max:c.states.length-1));b.title=c.label;
   Object.assign(b.style,{left:p.x+'px',top:p.y+'px',width:(p.diameter*1.10)+'px',height:(p.diameter*1.25)+'px'});
-  const pic=document.createElement('img'),w=p.diameter*288/204,h=w*279/288;pic.className='rotary-picture';pic.src=url(registry.assets[c.asset].url);pic.alt='';pic.draggable=false;
-  Object.assign(pic.style,{left:'calc(50% - '+(w*.5)+'px)',top:'calc(50% - '+(h*.44)+'px)',width:w+'px',height:h+'px'});
+  const pic=document.createElement('img'),isCustom=Boolean(c.imageAspect),w=isCustom?p.diameter*1.5*(c.renderScale||1):p.diameter*288/204,h=isCustom?w/c.imageAspect:w*279/288;
+  pic.className='rotary-picture';pic.src=url(registry.assets[c.asset].url);pic.alt='';pic.draggable=false;
+  const pivot=c.visualPivot||[.5,.44];
+  Object.assign(pic.style,{left:'calc(50% - '+(w*pivot[0])+'px)',top:'calc(50% - '+(h*pivot[1])+'px)',width:w+'px',height:h+'px',transformOrigin:(pivot[0]*100)+'% '+(pivot[1]*100)+'%'});
   b.append(pic);rotaryInput(c,b,pic);return b;
  }
  function guarded(c,p){
@@ -100,9 +120,36 @@
   });
   group.append(cover,lever);return group;
  }
+ // Non-destructive label calibration: the approved atlas bitmap remains byte-for-byte locked.
+ // The original FLT lettering on OH23-25 crowds CONT; replace only those two tiny regions.
+ function mountEngineStartLabelCorrection(layout){
+  const plate=layout.placements.find(p=>p.id==='OH23-25');if(!plate)return;
+  const ns='http://www.w3.org/2000/svg',make=tag=>document.createElementNS(ns,tag),svg=make('svg');
+  svg.classList.add('rg-start-label-correction');
+  svg.setAttribute('viewBox','0 212 2170 297');svg.setAttribute('preserveAspectRatio','none');
+  Object.assign(svg.style,{position:'absolute',left:plate.x+'px',top:plate.y+'px',width:plate.w+'px',height:plate.h+'px',zIndex:88,pointerEvents:'none',overflow:'hidden'});
+  const defs=make('defs'),clip=make('clipPath');clip.id='rm0002-old-flt-letters';
+  for(const [x,y,w,h] of [[1052,291,46,28],[1405,292,47,29]]){
+   const mask=make('rect');for(const [k,v] of Object.entries({x,y,width:w,height:h}))mask.setAttribute(k,v);clip.append(mask);
+  }
+  defs.append(clip);svg.append(defs);
+  const background=make('image');
+  background.setAttribute('href',url('../../panel-mosaic-lab/assets/locked/2026-10-23/OH23-25-LOWER-CONTROLS-fad696c845df.png'));
+  background.setAttribute('x','0');background.setAttribute('y','-41');background.setAttribute('width','2170');background.setAttribute('height','725');
+  background.setAttribute('clip-path','url(#rm0002-old-flt-letters)');svg.append(background);
+  for(const [x,y] of [[1093,324],[1436,324]]){
+   const label=make('text');label.textContent='FLT';label.setAttribute('x',x);label.setAttribute('y',y);
+   label.setAttribute('font-family','Arial Narrow,Arial,sans-serif');label.setAttribute('font-size','16');
+   label.setAttribute('font-weight','700');label.setAttribute('text-anchor','middle');
+   label.setAttribute('fill','#f0eae0');label.setAttribute('stroke','#383632');label.setAttribute('stroke-width','.55');
+   label.setAttribute('paint-order','stroke fill');svg.append(label);
+  }
+  byId('atlasAbsolute').append(svg);
+ }
  function mount(layout){
   const section=document.createElement('section');section.className='rg-inspector';section.innerHTML='<strong>۲۰ روتری‌ناب · ۱۱ گارد · LGT-0001</strong><h3 id="rgSelected">یک ناب یا گارد را انتخاب کن</h3><button id="rgGuardAction" class="hidden"></button><div id="rgStates" class="rg-actions"></div><p id="rgValue" role="status" aria-live="polite"></p>';
   byId('toggleInspector').after(section);
+  mountEngineStartLabelCorrection(layout);
   layer=document.createElement('div');layer.className='rg-layer';layer.id='rotaryGuardLayer';const placements=new Map(layout.placements.map(p=>[p.id,p]));
   for(const c of [...registry.rotaries,...registry.guards]){const p=points.mapPoint(c,placements.get(c.placementId)),node=c.kind==='rotary'?rotary(c,p):guarded(c,p);widgets.set(c.id,node);layer.append(node);render(c);}
   layer.classList.toggle('hidden',!byId('toggleVisibility').checked);byId('atlasAbsolute').append(layer);interlocks();
@@ -113,6 +160,7 @@
  }
  async function start(){
   try{
+   if(!motion||typeof motion.createDetentGesture!=='function')throw Error('RM-0002 detent engine unavailable');
    const responses=await Promise.all([fetch(url('rotary-guards.json'),{cache:'no-store'}),fetch(url('../all-overhead/atlas-layout.json'),{cache:'no-store'})]);if(responses.some(r=>!r.ok))throw Error('Rotary/guard registry unavailable');
    registry=await responses[0].json();const extraResponse=await fetch(url('lights-controls.json'),{cache:'no-store'});if(!extraResponse.ok)throw Error('Upper light controls unavailable');const extra=await extraResponse.json();registry.rotaries.push(...extra.rotaries);registry.guards.push(...extra.guards);const layout=await responses[1].json();model.validate(registry,layout,points.mapPoint);
    let saved={};try{saved=JSON.parse(localStorage.getItem(STORAGE)||'{}')||{};}catch{}

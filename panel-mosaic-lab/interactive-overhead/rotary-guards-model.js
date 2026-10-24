@@ -1,8 +1,13 @@
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;if(root)root.B737RotaryGuardModel=api;})(typeof globalThis==='undefined'?null:globalThis,function(){
  'use strict';
  const copy=x=>JSON.parse(JSON.stringify(x));
- function angle(c,value){return c.mode==='continuous'?c.angleMin+(value-c.min)/(c.max-c.min)*(c.angleMax-c.angleMin):c.angles[c.states.indexOf(value)];}
- function nearest(c,degrees){let index=0;for(let i=1;i<c.angles.length;i++)if(Math.abs(c.angles[i]-degrees)<Math.abs(c.angles[index]-degrees))index=i;return c.states[index];}
+ function detentAngles(c){
+  if(!c.panelMarks)return c.angles;
+  const [px,py]=c.panelPivot;
+  return c.panelMarks.map(([x,y])=>Math.atan2(x-px,py-y)*180/Math.PI-(c.pointerZero||0));
+ }
+ function angle(c,value){return c.mode==='continuous'?c.angleMin+(value-c.min)/(c.max-c.min)*(c.angleMax-c.angleMin):detentAngles(c)[c.states.indexOf(value)];}
+ function nearest(c,degrees){const a=detentAngles(c);let index=0;for(let i=1;i<a.length;i++)if(Math.abs(a[i]-degrees)<Math.abs(a[index]-degrees))index=i;return c.states[index];}
  function normalize(c,value){
   if(c.mode!=='continuous')return c.states.includes(value)?value:c.default;
   if(typeof value!=='number'||!Number.isFinite(value))return c.default;
@@ -16,7 +21,12 @@
    if(!slots.has(c.placementId))throw Error('Unknown plate: '+c.id);mapPoint(c,slots.get(c.placementId));
    if(c.kind==='rotary'){
     if(c.mode==='continuous'){if(!(c.min<c.max&&c.step>0&&c.angleMin<c.angleMax))throw Error('Invalid rotary range: '+c.id);}
-    else if(!c.states.includes(c.default)||c.states.length!==c.angles.length||c.angles.some((a,i)=>!Number.isFinite(a)||(i&&a<=c.angles[i-1])))throw Error('Invalid rotary detents: '+c.id);
+    else {
+     const a=detentAngles(c);
+     if(!c.states.includes(c.default)||c.states.length!==a.length||a.some((v,i)=>!Number.isFinite(v)||(i&&v<=a[i-1])))throw Error('Invalid rotary detents: '+c.id);
+     if(c.panelMarks&&(!Array.isArray(c.panelPivot)||c.panelPivot.length!==2||c.panelPivot.some(v=>!Number.isFinite(v))||c.panelMarks.some(p=>!Array.isArray(p)||p.length!==2||p.some(v=>!Number.isFinite(v)))))throw Error('Invalid calibration marks: '+c.id);
+     if(c.panelMarks&&c.angles.some((v,i)=>Math.abs(v-a[i])>.6))throw Error('Stale detent calibration: '+c.id);
+    }
    }else if(!c.states.includes(c.default.value)||(!c.closePolicy.preserve&&!c.states.includes(c.closePolicy.force)))throw Error('Missing per-control guard policy: '+c.id);
   }
   return true;
@@ -44,7 +54,7 @@
    const c=rotaries.get(id);if(!c)return false;
    return setRotary(id,c.mode==='continuous'?c.min+(degrees-c.angleMin)/(c.angleMax-c.angleMin)*(c.max-c.min):nearest(c,degrees),'drag');
   }
-  function cycleRotary(id){const c=rotaries.get(id);return c?c.mode==='continuous'?stepRotary(id,1,'tap'):setRotary(id,c.states[(c.states.indexOf(state.rotaries[id])+1)%c.states.length],'tap'):false;}
+  function cycleRotary(id){return stepRotary(id,1,'tap');} // hard stop; no detent wrap
   function guardAction(id,action,value){
    const c=guards.get(id);if(!c)return {ok:false,reason:'UNKNOWN_CONTROL'};
    const previous=state.guards[id];let result;
@@ -68,5 +78,5 @@
   }
   return {setRotary,stepRotary,turnRotary,cycleRotary,guardAction,reset,rotary:id=>state.rotaries[id],guard:id=>copy(state.guards[id]),angle:id=>angle(rotaries.get(id),state.rotaries[id]),snapshot:()=>copy(state)};
  }
- return Object.freeze({angle,nearest,normalize,validate,controller});
+ return Object.freeze({angle,detentAngles,nearest,normalize,validate,controller});
 });

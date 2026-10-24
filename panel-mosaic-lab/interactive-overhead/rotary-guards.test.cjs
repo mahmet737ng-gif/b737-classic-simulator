@@ -4,6 +4,15 @@ const m=require('./rotary-guards-model.js'),toggles=require('./model.js'),mechan
 const read=p=>JSON.parse(fs.readFileSync(path.join(__dirname,p),'utf8')),reg=read('rotary-guards.json'),layout=read('../all-overhead/atlas-layout.json');
 assert.equal(m.validate(reg,layout,toggles.mapPoint),true);assert.equal(reg.rotaries.length,18);assert.equal(reg.guards.length,10);
 const events=[],e=m.controller(reg,{},v=>events.push(v),mechanics);
+for(const id of ['wiper','engine-start-1','engine-start-2']){
+ const c=reg.rotaries.find(r=>r.id===id);assert.ok(c?.panelPivot&&c.panelMarks,id+' calibrated on actual legends');
+ const rays=m.detentAngles(c);assert.equal(rays.length,c.states.length);
+ for(let i=0;i<rays.length;i++)assert.ok(Math.abs(rays[i]-c.angles[i])<.002,id+' detent '+c.states[i]);
+}
+assert.equal(reg.rotaries.find(r=>r.id==='crossfeed').asset,'rotary-crossfeed','Use approved front-on crossfeed artwork');
+e.setRotary('engine-start-1','FLT');assert.equal(e.stepRotary('engine-start-1',1),false,'FLT is the right-hand hard stop');
+e.setRotary('engine-start-1','GRD');assert.equal(e.stepRotary('engine-start-1',-1),false,'GRD is the left-hand hard stop');
+e.setRotary('engine-start-1','OFF');
 e.stepRotary('dc-meter',1);assert.equal(e.rotary('dc-meter'),'TR1');assert.equal(e.angle('dc-meter'),45);
 e.turnRotary('crossfeed',85);assert.equal(e.rotary('crossfeed'),'OPEN');e.turnRotary('crossfeed',-200);assert.equal(e.rotary('crossfeed'),'CLOSED');
 e.setRotary('panel-brightness',1000);assert.equal(e.rotary('panel-brightness'),100);e.stepRotary('panel-brightness',1);assert.equal(e.rotary('panel-brightness'),100);
