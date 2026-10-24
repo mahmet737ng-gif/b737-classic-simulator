@@ -36,7 +36,7 @@ const align=gallery.lights.find(c=>c.id==='ALIGN_WHITE');assert.deepEqual(align?
 for(const [id,stem] of [['ALIGN_WHITE','ALIGN_WHITE'],['ON_DC_LAMP','ON_DC_LAMP'],['FAULT','FAULT'],['DC_FAIL','DC_FAIL']]){
  const legend=gallery.lights.find(c=>c.id===id);
  assert.ok(legend,id);assert.deepEqual(legend.states,['OFF','ON']);assert.equal(legend.face.width,600);assert.equal(legend.face.height,300);
- assert.equal(legend.assets.OFF,'unified-v2/'+stem+'_OFF.svg');assert.equal(legend.assets.ON,'unified-v2/'+stem+'_ON.svg');
+ const assetDir=id==='ALIGN_WHITE'?'black-white-v1/gallery/':'unified-v2/';assert.equal(legend.assets.OFF,assetDir+stem+'_OFF.svg');assert.equal(legend.assets.ON,assetDir+stem+'_ON.svg');
  assert.equal(gallery.lights.filter(c=>c.id===id).length,1,'One reusable legend per IRS type: '+id);
 }
 for(const [id,stem,expectedLines] of [

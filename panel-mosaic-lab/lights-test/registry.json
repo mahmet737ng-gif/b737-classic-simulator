@@ -1,6 +1,6 @@
 {
   "schema": "b737-annunciator-assets.v1",
-  "version": "LGT-0014",
+  "version": "LGT-0015",
   "assetDirectory": "../assets/locked/2026-10-23/LIGHTS/",
   "testMode": "manual-asset-visual-qa",
   "note": "Stable IDs for the owner-approved light designs. This registry does not assign physical coordinates or certify aircraft logic.",
@@ -2042,6 +2042,30 @@
         "ON": "unified-v2/YAW_DAMPER_ON.svg"
       },
       "scope": "OVERHEAD"
+    },
+    {
+      "id": "L_BOTTLE_DISCHARGED_AMBER",
+      "lines": [
+        "L BOTTLE",
+        "DISCHARGED"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "black-amber-v1/gallery/L_BOTTLE_DISCHARGED_OFF.svg",
+        "ON": "black-amber-v1/gallery/L_BOTTLE_DISCHARGED_ON.svg"
+      },
+      "scope": "ASSET_TEST_ONLY"
     }
   ]
 }
