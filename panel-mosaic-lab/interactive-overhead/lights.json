@@ -6,281 +6,281 @@
     "ON_DC_LAMP": {
       "ON": {
         "url": "../assets/locked/2026-10-23/LIGHTS/ON_DC_LAMP_ON.svg",
-        "sha256": "33826b493f0aee39542acb4a1ab956470d620762439986347918d19f87888859"
+        "sha256": "4f5317e528ff0d00b33bee6566b1cffbd051654af98e8151b6953c3bb1d7e5ca"
       },
       "OFF": {
         "url": "../assets/locked/2026-10-23/LIGHTS/ON_DC_LAMP_OFF.svg",
-        "sha256": "23808f2bf8347573330ab5ebbae682ebea1c43af969605cc714803923e0d6839"
+        "sha256": "02819e84cdab6054744facd13a61674faeb563bbda4ba3020d051fb14f8d8967"
       }
     },
     "FAULT": {
       "ON": {
         "url": "../assets/locked/2026-10-23/LIGHTS/FAULT_ON.svg",
-        "sha256": "67d3488a97d7af119bac5ce4f9e1d9f9766a8fcbb0f7748dee3e4170ee509208"
+        "sha256": "479d3169ba06fbf490bd9fae8adb06619fc2dacead76c1edd54b5a0865d626d6"
       },
       "OFF": {
         "url": "../assets/locked/2026-10-23/LIGHTS/FAULT_OFF.svg",
-        "sha256": "92e40a84ad06e7547d6b48f980c2c1f48d6633d8e202332c9ec832014d8d615e"
+        "sha256": "f44ea54c793a97b17d5ddd2928ae2891c173ab2c2648fd65b52c5e34a212716f"
       }
     },
     "DC_FAIL": {
       "ON": {
         "url": "../assets/locked/2026-10-23/LIGHTS/DC_FAIL_ON.svg",
-        "sha256": "8496435aaee501a66bcd3eae02904f69bc2ca169e1e2b7e5e3819688be9c2677"
+        "sha256": "46a43815346e68c98ea5cb8408051a8da884c5c4249b9eea7c5c0d4c1850c170"
       },
       "OFF": {
         "url": "../assets/locked/2026-10-23/LIGHTS/DC_FAIL_OFF.svg",
-        "sha256": "6633dbbf195743d9576ad995f86ffc22b65761cdb8f510cb4254120e778dd9e7"
+        "sha256": "9fdc9a7dbc3b4a016cbceb0b4df1deace79da08cd614651225a8f93eb8ea2425"
       }
     },
     "REVERSER": {
       "ON": {
         "url": "../assets/locked/2026-10-23/LIGHTS/REVERSER_ON.svg",
-        "sha256": "6eb7f85817dd33857db751989e1ae63c85c48ddc00545121cd284866b54ad2db"
+        "sha256": "f766014e384d1299e7ad4be340052928d4070cef100fa39f6446ef699fe15de8"
       },
       "OFF": {
         "url": "../assets/locked/2026-10-23/LIGHTS/REVERSER_OFF.svg",
-        "sha256": "0044607779815e48b038ab3f65b1724c132a749d688c070f7d03fb2648bb0a2b"
+        "sha256": "15bb8806e9d67f24b0356177badc9219e81458e852597eecd9e240941489a9e3"
       }
     },
     "LOW_IDLE": {
       "ON": {
         "url": "../assets/locked/2026-10-23/LIGHTS/LOW_IDLE_ON.svg",
-        "sha256": "c512f19e39b44c8e5afc8bba5aa0597c91cf33bb243c0cd65829fc7185a191b0"
+        "sha256": "8d5e978d4af0a2c97f6b51b5eb0fbd1bf42d9ec6d029b28a3a9c75acb7ae1f2b"
       },
       "OFF": {
         "url": "../assets/locked/2026-10-23/LIGHTS/LOW_IDLE_OFF.svg",
-        "sha256": "d1ea97a546cb23054e063a05e65f3003f63b2c41e59a383402a81ad6e94a037e"
+        "sha256": "76014c98bb88d3fcca378cf8c1017f15f9e5c3cadf9d8af4078d05101696ed71"
       }
     },
     "PASS_OXY_ON_LAMP": {
       "ON": {
         "url": "../assets/locked/2026-10-23/LIGHTS/PASS_OXY_ON_LAMP_ON.svg",
-        "sha256": "adb83fcf120ef4c0e9cdaf6a07bc5fae3ea990e0c6fae609dbeae400cbc96a3d"
+        "sha256": "99bfbe1db4de0747ff059ea64acc8b7ce9da8e72b15f291beea965a66cee3a23"
       },
       "OFF": {
         "url": "../assets/locked/2026-10-23/LIGHTS/PASS_OXY_ON_LAMP_OFF.svg",
-        "sha256": "3c609a6643ee478052f525644181ceb2a5d35e51d30ca6ba321982226d90b82a"
+        "sha256": "6e2cd240957cd513043833e46a22a63be426366c9c24a2ef93a6741eb1aee238"
       }
     },
     "OFF_LAMP": {
       "ON": {
         "url": "../assets/locked/2026-10-23/LIGHTS/OFF_LAMP_ON.svg",
-        "sha256": "7049674557d214bc4faaacf32ec8e9f060080a55146e0b4f9889824053db30b7"
+        "sha256": "cfc3ece5cbaf4147e15010e906e45855d97ecff6807b701fea513944b58ec50a"
       },
       "OFF": {
         "url": "../assets/locked/2026-10-23/LIGHTS/OFF_LAMP_OFF.svg",
-        "sha256": "db22e5096e19e6e5e0fd0093c5be9058ba0be690587d12202f9cb40202dd2df6"
+        "sha256": "08ff2fbdb08c88b159736594b8160bad89b446462d42d0def36911041441ab4a"
       }
     },
     "LOW_QUANTITY": {
       "ON": {
         "url": "../assets/locked/2026-10-23/LIGHTS/LOW_QUANTITY_ON.svg",
-        "sha256": "3f629dbcb2f2ea147e4275008df432d03b5844ca1be82a94fdd2fa530b0408e0"
+        "sha256": "a85fe5c9c7407dcfb0dfd3e8383939ca22c25730b5dd7b3dd4bd316f516a875b"
       },
       "OFF": {
         "url": "../assets/locked/2026-10-23/LIGHTS/LOW_QUANTITY_OFF.svg",
-        "sha256": "ecc5caa24075e913d575862ce9d56557fd8958942e334c5d40cc044142d76a07"
+        "sha256": "54c82ea9ae4c9b7bc48dc18575d4b463d0f8ad7b16a423142a8769ed6a10dcdc"
       }
     },
     "LOW_PRESSURE": {
       "ON": {
         "url": "../assets/locked/2026-10-23/LIGHTS/LOW_PRESSURE_ON.svg",
-        "sha256": "fd958e7ad28807a81b574d63037277134033c6d53702d36c756e589445b962df"
+        "sha256": "e36c79bbad556da6efd6c1defec8a2e645e2f149f2c2b3640da2683a59ce3c57"
       },
       "OFF": {
         "url": "../assets/locked/2026-10-23/LIGHTS/LOW_PRESSURE_OFF.svg",
-        "sha256": "9870357aef7a1ba5a7e6d247af2c8838238292e27a0f3547a2a425c091f3e930"
+        "sha256": "5ce614dbff25d19b3e7c0075aa398accc3eb14944e5479b39cf65803e6ec22b0"
       }
     },
     "STBY_RUD_ON_LAMP": {
       "ON": {
         "url": "../assets/locked/2026-10-23/LIGHTS/STBY_RUD_ON_LAMP_ON.svg",
-        "sha256": "8ae08b9054ec824081db42154ccf6d08406eb4966d88b2901926c187465d2dbb"
+        "sha256": "f0a3a0aae1ff53a110406941a93f41df3511a1860831cc3cbc491991ea88f836"
       },
       "OFF": {
         "url": "../assets/locked/2026-10-23/LIGHTS/STBY_RUD_ON_LAMP_OFF.svg",
-        "sha256": "54c9f1cf9bb1fee8f89ccbda5cbaa8c0ad5f9da80c71ae69062d84d6efa2a3d6"
+        "sha256": "530eabb1fc722dda3a70a4869a46e3b020a15b3cd9cb4d68fa95d83a57022843"
       }
     },
     "FEEL_DIFF_PRESS": {
       "ON": {
         "url": "../assets/locked/2026-10-23/LIGHTS/FEEL_DIFF_PRESS_ON.svg",
-        "sha256": "248c31d9751a8cf9971d1cdab9450d95af068c470047b1d85132463675449b34"
+        "sha256": "c97b6efa9b715cbed6340ec691f361cee05338a133289cc146ddf96d42aa9fd2"
       },
       "OFF": {
         "url": "../assets/locked/2026-10-23/LIGHTS/FEEL_DIFF_PRESS_OFF.svg",
-        "sha256": "04780f4f9ea331244a49c8046644d11630840f38c9ab704aaa9d9d1071cccefd"
+        "sha256": "478bad709fdb73bfdfa6c3e666dc522cab8dcc5904dc12922ed5bf0b7d0ce00b"
       }
     },
     "SPEED_TRIM_FAIL": {
       "ON": {
         "url": "../assets/locked/2026-10-23/LIGHTS/SPEED_TRIM_FAIL_ON.svg",
-        "sha256": "4f22601e62ce712f246bf7296e6dae8431a17d291fd69328e2703e7c98e1e732"
+        "sha256": "d5419f82de794d156e37c9e9935cc261cb5d1a79e33620e750d078b1b1c05003"
       },
       "OFF": {
         "url": "../assets/locked/2026-10-23/LIGHTS/SPEED_TRIM_FAIL_OFF.svg",
-        "sha256": "2f69dae81755e7e0015a8964addc78bca2ff9b6ae5f9e6b5e8574a43459883ae"
+        "sha256": "1d8da87331c34b6fe8a10295ca7dc22cf1d5037d6cac2190dd5bc61fb01d59e2"
       }
     },
     "MACH_TRIM_FAIL": {
       "ON": {
         "url": "../assets/locked/2026-10-23/LIGHTS/MACH_TRIM_FAIL_ON.svg",
-        "sha256": "a06559e2df82c0e3c62019c1cab9cc3dfcbc2a0353e9ae84a58044e0d4f25d3d"
+        "sha256": "81ad43d669d887e1d4b98a7dc9b258a6f1b68eb12ec3ba9c9322a2ad73171008"
       },
       "OFF": {
         "url": "../assets/locked/2026-10-23/LIGHTS/MACH_TRIM_FAIL_OFF.svg",
-        "sha256": "0beee58eb46e57a17b718db0ac18fa9b8773b369ab8c034554d85ce0a372fb29"
+        "sha256": "3435b117cb79e8492dfa0a9ddac3473c4f67029c8d5705a7520f5c9495b370ea"
       }
     },
     "AUTO_SLAT_FAIL": {
       "ON": {
         "url": "../assets/locked/2026-10-23/LIGHTS/AUTO_SLAT_FAIL_ON.svg",
-        "sha256": "579bd49b5402d4188a897acfd1d0a30106515887a451a5fbf4cf79a42052ed87"
+        "sha256": "c23cf623a5b3d047e6c7f7a0104085aeb86fd30cae189991f50c23bfb17a1e56"
       },
       "OFF": {
         "url": "../assets/locked/2026-10-23/LIGHTS/AUTO_SLAT_FAIL_OFF.svg",
-        "sha256": "2b82e11497097b0ca38238a58718b9b5732a2ac918468e13c380cb5a388910ff"
+        "sha256": "636be92eb4c7e07138a7ea067daf244c0d4471ff482e7e3154487c335d05dab3"
       }
     },
     "YAW_DAMPER": {
       "ON": {
         "url": "../assets/locked/2026-10-23/LIGHTS/YAW_DAMPER_ON.svg",
-        "sha256": "913434346b9f920b8b4c375224e35893662b859e279ef43507dc3df2cfa56173"
+        "sha256": "b42fe2283aa9bb49f972d856821e47e4e52a41a7f4ab8132aab4197e1799dd89"
       },
       "OFF": {
         "url": "../assets/locked/2026-10-23/LIGHTS/YAW_DAMPER_OFF.svg",
-        "sha256": "618842d258c956f76530234cd8dc0cb3bfd8b5e65ae1ccced27c3760f4b0bafd"
+        "sha256": "10b99a7e9a946eb5175464f8446926edb88dae138cc5655b5a7176ccd0b0f811"
       }
     },
     "FILTER_BYPASS": {
       "ON": {
         "url": "../assets/locked/2026-10-23/LIGHTS/FILTER_BYPASS_ON.svg",
-        "sha256": "878494cc130f1e12b97f8d415a84347602ec09ccd354e7b3b35828129f7239a3"
+        "sha256": "95fc1b4f5ec8a2682f614dc3cf44ac84c6c266b889dfd93454e28667c2c902d3"
       },
       "OFF": {
         "url": "../assets/locked/2026-10-23/LIGHTS/FILTER_BYPASS_OFF.svg",
-        "sha256": "9a756fbc4c3fcf3f7bd542105e0d09d12f0bb6c39b878f153e370844721fb792"
+        "sha256": "2b6e2cabab1509d59c5769875549c64f28425ba3549eab6018d95c83610383e6"
       }
     },
     "LOW_OIL_PRESSURE": {
       "ON": {
         "url": "../assets/locked/2026-10-23/LIGHTS/LOW_OIL_PRESSURE_ON.svg",
-        "sha256": "1f79411fa7e28dab78385d21427ca199f564163d745da32dd85ff407d86c4acc"
+        "sha256": "4cc3d8672fd02b8a1d2af9ab7f0e3ec54bcdcec8c1f56898f6253b07e055861d"
       },
       "OFF": {
         "url": "../assets/locked/2026-10-23/LIGHTS/LOW_OIL_PRESSURE_OFF.svg",
-        "sha256": "773043faa3dfd78b63cc7bc2aef7f53ef2e5ef6f7e9eb4021f69becf0d29f1ba"
+        "sha256": "a84b901743ca48504bd93bb3e251094007d84a3449767ac8a8ff2c0435425b0f"
       }
     },
     "HIGH_OIL_TEMP": {
       "ON": {
         "url": "../assets/locked/2026-10-23/LIGHTS/HIGH_OIL_TEMP_ON.svg",
-        "sha256": "4bbc5d207b5768b9ec8e06ecd941357f27ff562db20f3b87d652001be176fea6"
+        "sha256": "cf5c1269401ee408a78caa7cf77ded05228c7ca23f69932183674135a1831859"
       },
       "OFF": {
         "url": "../assets/locked/2026-10-23/LIGHTS/HIGH_OIL_TEMP_OFF.svg",
-        "sha256": "c5dcb47ba090323a71446636a2994ed90435c7122fa1e8cb3a4c1213d0b3d45b"
+        "sha256": "35c5d16bd7ae3cd638f8bc2600065f97ed64c026d9a2dbd41413d7b15201782d"
       }
     },
     "STANDBY_PWR_OFF_LAMP": {
       "ON": {
         "url": "../assets/locked/2026-10-23/LIGHTS/STANDBY_PWR_OFF_LAMP_ON.svg",
-        "sha256": "91fd0986ab43804ff760cccbd2a44d6a050982f76fc81ae9a08b3e3adef75d02"
+        "sha256": "e8274cb93ab9e884da14fe45b6acb3f3ebc142d60cac4b4c63be3b8b0b0971ec"
       },
       "OFF": {
         "url": "../assets/locked/2026-10-23/LIGHTS/STANDBY_PWR_OFF_LAMP_OFF.svg",
-        "sha256": "0d8036f98d5a686d9a7a5ba8ceb0ecf7a415b9d6a18f98372c0c7a8542bb4217"
+        "sha256": "9540167c7d1abe20b07a117358600d648b51d41d4498615b0d4b8d0f4bc413e9"
       }
     },
     "TRANSFER_BUS_OFF_LAMP": {
       "ON": {
         "url": "../assets/locked/2026-10-23/LIGHTS/TRANSFER_BUS_OFF_LAMP_ON.svg",
-        "sha256": "c7a5e597bc2eb404cbe413ea7624584167a737918634a1daafe93a02d2ca8158"
+        "sha256": "244d8afdfbb1b2b16b97dfa87b11823f0abf4ea64f625bddd41b318778ebed46"
       },
       "OFF": {
         "url": "../assets/locked/2026-10-23/LIGHTS/TRANSFER_BUS_OFF_LAMP_OFF.svg",
-        "sha256": "3e497f9d4f85872f5ad88b6db08eb2ac8c18ad129b9b797753035298cd6f114e"
+        "sha256": "17aead05aba49ae2fd2417576f4f8ebf383ac77927f366e27b3492ddaae5cfc4"
       }
     },
     "BUS_OFF_LAMP": {
       "ON": {
         "url": "../assets/locked/2026-10-23/LIGHTS/BUS_OFF_LAMP_ON.svg",
-        "sha256": "caaff6dd44ea5be58a5d0423cc75425433b4b93c273d5be83adfd20e3d8e7268"
+        "sha256": "cec11398340a96a6acb5591fad69e3a30c0a0c5505f90a0a45dac97cfaf1c541"
       },
       "OFF": {
         "url": "../assets/locked/2026-10-23/LIGHTS/BUS_OFF_LAMP_OFF.svg",
-        "sha256": "adf65882d3e2ecb7c3923445925a603dbc2938aee000211254b97dde609a2c5f"
+        "sha256": "eee3df7b7b4f98cceb86cbe90b1601f073332ac89bea3a51098d4e91c79fee20"
       }
     },
     "OVER_SPEED": {
       "ON": {
         "url": "../assets/locked/2026-10-23/LIGHTS/OVER_SPEED_ON.svg",
-        "sha256": "3f4a984e640d7490e611d1728b2076951acdad3d385aa13cf1888b633689ebbc"
+        "sha256": "345754f51374ea04f6a78dea59d31999277ec0e1f0809670a83273cfac3c8da4"
       },
       "OFF": {
         "url": "../assets/locked/2026-10-23/LIGHTS/OVER_SPEED_OFF.svg",
-        "sha256": "b34358d4a889d377a818cf3a38af950691523bc319d210a3ad5fc5fd4fc0fca1"
+        "sha256": "8528b45fab14b26d15e7a1317208aebe2c0297e953efef2078a4ec0106790fbf"
       }
     },
     "NOT_ARMED_VERTICAL": {
       "ON": {
         "url": "../assets/locked/2026-10-23/LIGHTS/NOT_ARMED_VERTICAL_ON.svg",
-        "sha256": "6be2730e94aff4a7946ad7834450a0bb6b1f73cfb6ccca6c1502b957bd2e26a0"
+        "sha256": "e09bf33809547f20f03e5a50bea1075a5dc100742794725703fb51fdc1c4ef2a"
       },
       "OFF": {
         "url": "../assets/locked/2026-10-23/LIGHTS/NOT_ARMED_VERTICAL_OFF.svg",
-        "sha256": "0d2475a898274c7ed7e95d439f732bae7daa4b495cfcc8e765990f46cf3b0584"
+        "sha256": "d3bbb8ec267e70a4c5514ac24898b154b27d07d31ee6bdb88f66c166381a4914"
       }
     },
     "OVERHEAT": {
       "ON": {
         "url": "../assets/locked/2026-10-23/LIGHTS/OVERHEAT_ON.svg",
-        "sha256": "ecbc2149607fb7dc2dd56be6569f4f5c522c9fbf59dce9322ac5046138b07cf4"
+        "sha256": "eb9d79b8297556535dd9b15061c323369fa997dd896d9b092a01e83bbc28085c"
       },
       "OFF": {
         "url": "../assets/locked/2026-10-23/LIGHTS/OVERHEAT_OFF.svg",
-        "sha256": "5096d7920af72f0fe49124a83da6880058fd92a9bec7b593b13c0ad63cb377b4"
+        "sha256": "6264d0e34c28b07511a134a65152936a24bfc981b46cdeb1a8ab3f75a642fb98"
       }
     },
     "CAPT_PS_1_AUX_STATIC": {
       "ON": {
         "url": "../assets/locked/2026-10-23/LIGHTS/CAPT_PS_1_AUX_STATIC_ON.svg",
-        "sha256": "b09b2bbeaaef1c45808b20207773f7278982dcde3c4482e534cbd9ba4dda0c99"
+        "sha256": "94da7204e5f1c380618698569e22cab0681d4248578a6988221c6308b6caedf3"
       },
       "OFF": {
         "url": "../assets/locked/2026-10-23/LIGHTS/CAPT_PS_1_AUX_STATIC_OFF.svg",
-        "sha256": "a59d6b66a547288aa92296c29167910e3c2685b6f46498ec1def8efc1dd0a582"
+        "sha256": "63f13964f79a8945ded0a9d98033e3ef5af204bea1092940a240e8b4d1f6cd18"
       }
     },
     "FO_STATIC_2_AUX_PS": {
       "ON": {
         "url": "../assets/locked/2026-10-23/LIGHTS/FO_STATIC_2_AUX_PS_ON.svg",
-        "sha256": "dbbb16ff847fc361e38d6889d1a71d2b1fdbcdc0a299ab513474c66d05d1682b"
+        "sha256": "1a56571e14733d2686dfbbacab13d48ce0e6bc5a030bd2c0cdce8f2881d86cc5"
       },
       "OFF": {
         "url": "../assets/locked/2026-10-23/LIGHTS/FO_STATIC_2_AUX_PS_OFF.svg",
-        "sha256": "052d0356b04b3324529bdc19dea59ca969cd43341608741c034dd0c748997c98"
+        "sha256": "ed7a057fc79bed9253144023eecfab5d730e749727635157556832fbd6676eaf"
       }
     },
     "L_ELEV_PITOT": {
       "ON": {
         "url": "../assets/locked/2026-10-23/LIGHTS/L_ELEV_PITOT_ON.svg",
-        "sha256": "6b1908fa9d4c735f297d2076356745866d91eb5d74a1d2c2664eb4ae073c7655"
+        "sha256": "ed4724cbebf0b68299799cdb8fa6e01d4297a3b337c4dfa68bc73e4ca6f443ca"
       },
       "OFF": {
         "url": "../assets/locked/2026-10-23/LIGHTS/L_ELEV_PITOT_OFF.svg",
-        "sha256": "b3746f49b5e48c36c6d6619a2d4d43c7d664a814b1f07fa2ae5f77a044be695e"
+        "sha256": "fabda5b22c3e3758af97d78c528253bfcad3d22d787d5e6e94db172012b838de"
       }
     },
     "L_ALPHA_VANE": {
       "ON": {
         "url": "../assets/locked/2026-10-23/LIGHTS/L_ALPHA_VANE_ON.svg",
-        "sha256": "1464426ea8fd3cf17350d67373a1c8352e23f2118e454030534c9e36cbf35175"
+        "sha256": "fc9799d1d0ed785defbfec9dc2b0a851da5fd1d86d371fada64a76436a1da144"
       },
       "OFF": {
         "url": "../assets/locked/2026-10-23/LIGHTS/L_ALPHA_VANE_OFF.svg",
-        "sha256": "f787d8c32a14cc3191cc09ccf534267ff45019b4fd89ad8c91b011b62639774c"
+        "sha256": "83fa58e6cf96396af1b8ac968f4fc9ec12c6263d8f18d38849848e78e4a34639"
       }
     }
   },
