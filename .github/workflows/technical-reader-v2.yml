@@ -1,0 +1,32 @@
+name: Technical Reader Workbench V2
+on:
+  push:
+    paths:
+      - 'engine/technical_reader_v1/**'
+      - 'engine/technical_reader_v2/**'
+      - 'tests/technical-reader-v2/**'
+      - '.github/workflows/technical-reader-v2.yml'
+  pull_request:
+    paths:
+      - 'engine/technical_reader_v1/**'
+      - 'engine/technical_reader_v2/**'
+      - 'tests/technical-reader-v2/**'
+      - '.github/workflows/technical-reader-v2.yml'
+  workflow_dispatch:
+jobs:
+  workbench:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: sudo apt-get update && sudo apt-get install -y tesseract-ocr fonts-dejavu-core
+      - run: python -m pip install -r engine/technical_reader_v1/requirements.txt
+      - run: python -m unittest discover -s tests/technical-reader-v1 -v
+      - run: python -m unittest discover -s tests/technical-reader-v2 -v
+      - run: node --check engine/technical_reader_v2/ui/app.js
+      - run: python panel-mosaic-lab/verify-final-overhead.py
