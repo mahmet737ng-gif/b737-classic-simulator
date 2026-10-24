@@ -57,3 +57,13 @@ for(const [asset,id] of [['SPEED_BRAKE_ARMED_GREEN','main-speed-brake-armed'],['
 assert.equal(assetModel.normalize(gallery.lights.find(c=>c.id==='VALVE_OPEN'),'DIM_BLUE'),'DIM_BLUE');
 for(const light of gallery.lights)for(const state of light.states)assert.ok(fs.existsSync(path.join(__dirname,'../assets/locked/2026-10-23/LIGHTS',light.assets[state])),light.id+' '+state);
 console.log('PASS: three regions; five main sources; complete source aspects; exact eight image fingerprints; cursor-anchored zoom; embedded approved overhead modules.');
+
+const approvedFlap=fs.readFileSync(path.resolve(__dirname,'../assets/locked/2026-10-23/B737_FLAP_9_ORIGINAL_BMP_EXTRACTED.png'));
+assert.equal(crypto.createHash('sha256').update(approvedFlap).digest('hex'),'709ea64910a134c4199f9bed393fc65fbd8e6b44bc70f7adc03a8470d29460a4','Original nine-BMP extraction must remain byte-for-byte unchanged');
+const flapManifest=JSON.parse(fs.readFileSync(path.join(__dirname,'flap-lever-test.json'),'utf8'));
+assert.deepEqual(flapManifest.detents.map(d=>d.value),[0,1,2,5,10,15,25,30,40]);
+assert.equal(flapManifest.image.frameWidth*flapManifest.image.frameCount,flapManifest.image.width);
+assert.equal(flapManifest.controls.mode,'visual-test-only','No unverified physical flap motion coupling');
+assert.ok(unified.includes('flap-lever-test.js?v=FLAP-BMP-0001'));
+assert.ok(unified.includes('flap-lever-test.css?v=FLAP-BMP-0001'));
+console.log('PASS: exact owner nine-BMP flap sprite archived and visual-only nine-detent Unified overlay registered.');
