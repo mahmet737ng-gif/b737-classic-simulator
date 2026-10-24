@@ -40,3 +40,9 @@
 .atlas-piece{background:#4a6170;box-shadow:inset 0 0 0 2px #1f3342}
 .atlas-image-window{background:linear-gradient(180deg,#53697a,#445b6c)}
 .atlas-piece .atlas-photo{max-height:none;pointer-events:none}
+
+/* OVH registration: shared seams have no artificial five-pixel gaps. */
+.atlas-piece:not([data-key="UPPER"]){box-shadow:inset 0 0 0 1px #253b49}
+.atlas-image-window{background:linear-gradient(110deg,#556b7a,#4b6272)}
+.atlas-source-strip>.atlas-photo{display:block;user-select:none;pointer-events:none}
+.show-borders .atlas-piece{box-shadow:inset 0 0 0 3px #34e2fc}
