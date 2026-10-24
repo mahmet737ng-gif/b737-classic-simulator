@@ -1,5 +1,17 @@
 # Unified cockpit — CKP-0012
 
+## DAN-0001 — one shared needle for two drive-oil and two A.C. amps gauges
+
+One transparent white pointer based on the owner-supplied reference is reused
+on the two GEN DRIVE OIL TEMP dials in OH11 and the two upper A.C. AMPS dials
+in OH12. Each visual instance has its own source-image placement and angle,
+but all four load the same `drive-amps-needle.svg`. The original panel images
+and frozen overhead mosaic remain unchanged. Each blade is clipped against
+the traced upper edge of its gauge's central grey half-round cover, so the
+white pointer ends at that curve instead of crossing into the grey face.
+The four inspector sliders are
+visual-only tests; verified aircraft values are not yet wired to these gauges.
+
 ## ISN-03 — APU / engine start from Unified controls (training beta)
 
 The latest Unified cockpit hosts a source-gated Engine/APU start training
