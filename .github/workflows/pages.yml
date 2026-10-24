@@ -24,6 +24,10 @@ jobs:
         env:
           GITHUB_BASE_SHA: ${{ github.event.before }}
         run: python3 panel-mosaic-lab/verify-immutable-assets.py
+      - name: Enforce FINAL overhead UPD-0012 lock
+        run: |
+          echo "283a3946ace19799284eb0f79dc924f744d661c4b6a1865932252f8ef29fd90f  panel-mosaic-lab/verify-final-overhead.py" | sha256sum --check --status
+          python3 panel-mosaic-lab/verify-final-overhead.py
       - name: Verify demo scripts and model
         run: npm test
       - name: Protect standalone CDU from private Stage5/Stage6 routing
