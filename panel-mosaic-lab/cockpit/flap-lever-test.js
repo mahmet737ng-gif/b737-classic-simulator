@@ -14,7 +14,7 @@
    sprite.style.left=(-model.indexOf(position)*config.image.frameWidth*config.mount.scale)+'px';
    if(selector)selector.value=String(model.indexOf(position));
    output();
-   overlay.dataset.detent=String(position);
+   overlay.dataset.detent=String(position);overlay.setAttribute('aria-valuenow',String(position));
    overlay.setAttribute('aria-label','Flap lever currently '+position+(position===0?' UP':'')+'. Swipe vertically to move one detent.');
    root.dispatchEvent(new CustomEvent('b737:flap-detent-visual-test',{detail:{index:model.indexOf(position),detent:position,visualOnly:true}}));
  }
