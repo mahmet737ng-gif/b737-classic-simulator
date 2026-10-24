@@ -15,7 +15,7 @@ self.addEventListener('fetch',event=>{
  if(!asset&&!text&&req.mode!=='navigate')return;
  event.respondWith((async()=>{let cache,hit;try{cache=await caches.open(CACHE);hit=await cache.match(req);}catch{}
   if(asset&&hit)return hit;
-  try{const reply=await fetch(req);if(reply.ok&&reply.type==='basic'){try{await cache?.put(req,reply.clone());}catch{}return reply;}if(hit)return hit;return reply;}
+  try{const reply=await fetch(req,{cache:asset?'default':'no-cache'});if(reply.ok&&reply.type==='basic'){try{await cache?.put(req,reply.clone());}catch{}return reply;}if(hit)return hit;return reply;}
   catch(error){if(hit)return hit;throw error;}
  })());
 });
@@ -24,6 +24,6 @@ self.addEventListener('fetch',event=>{
 self.addEventListener('message',event=>{
  if(event.origin!==root.origin||event.data?.type!=='b737:prime-used-textures'||!Array.isArray(event.data.urls))return;
  event.waitUntil((async()=>{let cache;try{cache=await caches.open(CACHE);}catch{return;}
-  for(const url of [...new Set(event.data.urls)].slice(0,128)){try{const u=new URL(url);if(u.origin!==root.origin||!immutable.has(u.pathname))continue;const req=new Request(u.href,{cache:'only-if-cached',mode:'same-origin'});if(await cache.match(req))continue;const reply=await fetch(req);if(reply.ok&&reply.type==='basic')await cache.put(req,reply);}catch{}}
+  for(const url of [...new Set(event.data.urls)].slice(0,512)){try{const u=new URL(url);if(u.origin!==root.origin||!immutable.has(u.pathname))continue;const req=new Request(u.href,{cache:'only-if-cached',mode:'same-origin'});if(await cache.match(req))continue;const reply=await fetch(req);if(reply.ok&&reply.type==='basic')await cache.put(req,reply);}catch{}}
  })());
 });
