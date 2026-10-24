@@ -428,3 +428,17 @@ Cabin Rate gauge. Only the installation scale changes: the tip radius is 148
 OH21 source pixels, matching the printed dial. R remains below L at the same
 pivot, and each moves independently. The shared asset has no L/R lettering;
 none is drawn onto it. The locked background and the source SVG are unchanged.
+
+## OXG-0001 — crew oxygen pressure indicator
+
+The upper OH01–OH06 panel's empty CREW OXYGEN aperture receives a separate
+vector dial and movable needle. The dial follows the owner reference: brown
+face, 0/5/10/15/20 scale, intermediate white ticks, and OXY. PRESS. / PSI X
+100 legend. The source-image center is (1078, 636), face radius 62 px. Its
+white tapered needle and dark central cap are separate from the face. A value
+in PSI maps linearly from 0 at −124° to 2000 at +124°. The 1200 PSI initial
+reading follows the supplied screenshot for visual testing only; no live
+oxygen-system contract is asserted. B737UnifiedOxygenPressureGauge exposes
+setPressurePsi and receives b737:oxygen-pressure-value with a psi field. The
+locked UPPER source and atlas renderer remain unchanged. Regression:
+node panel-mosaic-lab/cockpit/oxygen-pressure-gauge.test.cjs.
