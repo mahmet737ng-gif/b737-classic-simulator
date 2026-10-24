@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="300" viewBox="0 0 600 300" role="img" aria-label="BLEED TRIP OFF annunciator, on">
+  <rect x="2" y="2" width="596" height="296" rx="23" fill="#151618" stroke="#282a2b" stroke-width="4"/>
+  <rect x="12" y="12" width="576" height="276" rx="14" fill="#040404"/>
+  <g fill="#ffb629" font-family="Nimbus Sans Narrow, DejaVu Sans Condensed, sans-serif" font-weight="700" text-anchor="middle">
+    <text x="300" y="128" font-size="137" textLength="427" lengthAdjust="spacingAndGlyphs">BLEED</text>
+    <text x="300" y="242" font-size="108" textLength="494" lengthAdjust="spacingAndGlyphs">TRIP OFF</text>
+  </g>
+</svg>
