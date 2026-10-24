@@ -11,7 +11,7 @@ const assetModel=require('../lights-test/asset-model'),gallery=JSON.parse(fs.rea
 assert.ok(gallery.lights.length>=87,'Unified must load the expanding LIGHTS catalogue');
 const atLim=gallery.lights.find(c=>c.id==='A_T_LIM_WHITE');assert.deepEqual(atLim?.lines,['A/T LIM']);assert.deepEqual(atLim.states,['OFF','ON']);assert.deepEqual(atLim.face,{width:600,height:300});
 const align=gallery.lights.find(c=>c.id==='ALIGN_WHITE');assert.deepEqual(align?.lines,['ALIGN']);assert.deepEqual(align.states,['OFF','ON']);assert.deepEqual(align.face,{width:600,height:300});
-for(const [id,stem] of [['ALIGN_WHITE','IRS_ALIGN_REF'],['ON_DC_LAMP','IRS_ON_DC_REF'],['FAULT','IRS_FAULT_REF'],['DC_FAIL','IRS_DC_FAIL_REF']]){
+for(const [id,stem] of [['ALIGN_WHITE','ALIGN_WHITE'],['ON_DC_LAMP','ON_DC_LAMP'],['FAULT','FAULT'],['DC_FAIL','DC_FAIL']]){
  const legend=gallery.lights.find(c=>c.id===id);
  assert.ok(legend,id);assert.deepEqual(legend.states,['OFF','ON']);assert.equal(legend.face.width,600);assert.equal(legend.face.height,300);
  assert.equal(legend.assets.OFF,stem+'_OFF.svg');assert.equal(legend.assets.ON,stem+'_ON.svg');
