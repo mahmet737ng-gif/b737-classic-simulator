@@ -1,12 +1,22 @@
 {
   "schema": "b737.cockpit-annunciators.v1",
-  "version": "LGT-0009",
+  "version": "LGT-0010",
   "sourceDatabase": {
     "name": "B737_TECHNICAL_NETWORK_V2",
     "sourceId": "FCOM-SEPEHRAN-1937",
     "qa": "SOURCE_TRANSCRIPTION_CHECKED__INDEPENDENT_ENGINEERING_QA_PENDING"
   },
   "assets": {
+    "A_T_LIM_WHITE": {
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/black-white-v1/mounted/A_T_LIM_WHITE_OFF.svg",
+        "sha256": "2db20e9200b8ce678af2735a3647194438db0fc091ca4bf661d43bce01a43211"
+      },
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/black-white-v1/mounted/A_T_LIM_WHITE_ON.svg",
+        "sha256": "551b562a6cceb99081b2a47ec1a84c852573ebc59542db1ef5f32b88dbe07b8c"
+      }
+    },
     "REVERSER_UNLOCKED": {
       "OFF": {
         "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/REVERSER_UNLOCKED_OFF.svg",
@@ -229,6 +239,22 @@
     }
   },
   "lights": [
+    {
+      "id": "main-at-lim",
+      "asset": "A_T_LIM_WHITE",
+      "pieceId": "engine",
+      "sourceRect": [590, 257, 82, 35],
+      "rule": "signal",
+      "inputs": ["atLimitDegradedN1"],
+      "provenance": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "physicalPdfPage": null,
+        "printedFolio": null,
+        "status": "VISUAL_TEST_ONLY",
+        "condition": "White A/T LIM indication follows the autothrottle computer degraded N1-limit signal; signal source is an external engine/autothrottle input, not inferred from switch position.",
+        "placementStatus": "MEASURED_BLANK_ENGINE_SOCKET_PENDING_OWNER_VISUAL_ACCEPTANCE"
+      }
+    },
     {
       "id": "main-reverser-1",
       "asset": "REVERSER_UNLOCKED",
@@ -946,5 +972,5 @@
     "BRAKE_TEMP is direct visual test only; exact operating threshold not supplied by the retrieved Classic FCOM.",
     "BELOW_GS_P_INHIBIT follows the FSU face variant requested in the LIGHTS asset database."
   ],
-  "previousVersion": "LGT-0008"
+  "previousVersion": "LGT-0009"
 }

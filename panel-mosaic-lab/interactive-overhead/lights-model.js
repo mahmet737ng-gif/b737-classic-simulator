@@ -6,7 +6,7 @@
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;if(root)root.B737OverheadLightModel=api;})(typeof globalThis!=='undefined'?globalThis:null,function(){
  'use strict';
  const copy=v=>JSON.parse(JSON.stringify(v));
- function initialContext(){return {panelPower:true,engine1Running:true,engine2Running:true,apuRunning:false,groundPowerAttached:false,fuelAvailable:true,standbyPumpFailed:false,passengerOxygenDeployed:false,irsBatterySupply:false,equipmentSupplyFailed:false,equipmentExhaustFailed:false,onGround:true,engine1FuelValveClosed:false,engine2FuelValveClosed:false,faults:{}};}
+ function initialContext(){return {panelPower:true,engine1Running:true,engine2Running:true,apuRunning:false,groundPowerAttached:false,fuelAvailable:true,standbyPumpFailed:false,passengerOxygenDeployed:false,irsBatterySupply:false,irsLAlignmentInProgress:false,irsRAlignmentInProgress:false,irsLAttitudeAvailable:false,irsRAttitudeAvailable:false,irsLShutdownInProgress:false,irsRShutdownInProgress:false,equipmentSupplyFailed:false,equipmentExhaustFailed:false,onGround:true,engine1FuelValveClosed:false,engine2FuelValveClosed:false,faults:{}};}
  function rectangle(c,p,mapPoint){const [x,y,w,h]=c.sourceRect;const point=(a,b)=>mapPoint({id:c.id,sourcePoint:[a,b],bezelSourceDiameter:1},p);const a=point(x,y),b=point(x+w,y+h);return {x:a.x,y:a.y,w:b.x-a.x,h:b.y-a.y};}
  function validate(reg,layout,mapper,controlIds){
   const ids=new Set(),plates=new Map(layout.placements.map(p=>[p.id,p]));
@@ -89,6 +89,12 @@
      case 'window':active=control('window-power-test')==='OVHT'||isOn(id)&&fault(c.sensor);break;
      case 'probe':active=!isOn(id)||fault(c.sensor);break;
      case 'on-dc':active=v!=='OFF'&&context.irsBatterySupply;break;
+     case 'irs-align':{
+      const side=c.sensor==='R'?'R':'L';
+      const showing=v==='ALIGN'||v==='NAV'&&context['irs'+side+'AlignmentInProgress']||v==='ATT'&&!context['irs'+side+'AttitudeAvailable']||v==='OFF'&&context['irs'+side+'ShutdownInProgress'];
+      active=showing?(fault(c.id)?'FLASH':true):false;
+      break;
+     }
      case 'dc-fail':active=v!=='OFF'&&fault(c.id);break;
      case 'fault':active=v!=='OFF'&&fault(c.id);break;
      case 'apu':active=c.id==='apu-low-pressure'?control('apu-start')!=='OFF'&&(!context.apuRunning||fault(c.id)):fault(c.id);break;
