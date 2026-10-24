@@ -17,6 +17,15 @@ for(const [id,stem] of [['ALIGN_WHITE','ALIGN_WHITE'],['ON_DC_LAMP','ON_DC_LAMP'
  assert.equal(legend.assets.OFF,stem+'_OFF.svg');assert.equal(legend.assets.ON,stem+'_ON.svg');
  assert.equal(gallery.lights.filter(c=>c.id===id).length,1,'One reusable legend per IRS type: '+id);
 }
+for(const [id,stem,expectedLines] of [
+ ['LOW_PRESSURE','LOW_PRESSURE_AMBER_REF',['LOW','PRESSURE']],
+ ['R_ELEV_PITOT','R_ELEV_PITOT_AMBER_REF',['R ELEV','PITOT']]
+]){
+ const light=gallery.lights.find(c=>c.id===id);
+ assert.deepEqual(light?.lines,expectedLines);assert.deepEqual(light.states,['OFF','ON']);
+ assert.deepEqual(light.face,{width:600,height:300});
+ assert.equal(light.assets.OFF,stem+'_OFF.svg');assert.equal(light.assets.ON,stem+'_ON.svg');
+}
 for(const id of ['SPEED_BRAKE_ARMED_GREEN','SPEED_BRAKE_DO_NOT_ARMED_AMBER'])assert.ok(gallery.lights.some(c=>c.id===id),id);
 const stab=gallery.lights.find(c=>c.id==='STAB_OUT_OF_TRIM');assert.deepEqual(stab.face,{width:300,height:300});
 assert.equal(stab.assets.ON,'STAB_OUT_OF_TRIM_FIT_ON.svg');
