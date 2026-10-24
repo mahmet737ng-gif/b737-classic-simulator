@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="fa" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<base href="../all-overhead/">
+<meta name="theme-color" content="#111d29">
+<title>B737 Classic — Interactive Overhead — TGL-0001</title>
+<link rel="stylesheet" href="./style.css?v=UPD-0012-OVH-measured-seams">
+<link rel="stylesheet" href="../interactive-overhead/overlay.css?v=TGL-0001">
+</head><body>
+<header>
+<div><strong>B737 CLASSIC · INTERACTIVE OVERHEAD</strong><small>ترکیب تمام تصاویر تأییدشدهٔ OH-01 تا OH-25 · بدون تغییر کیفیت منبع</small></div>
+<div class="head-actions"><a href="../">اطلس اصلی</a><a href="../upper-oh/">تست شش پنل بالایی</a><button id="reload">↻ به‌روزرسانی</button></div>
+</header>
+<main>
+<div class="notice"><strong>TGL-0001 — تاگل‌های تعاملی روی موزاییک نهایی UPD-0012</strong> — دوحالتهٔ عمودی، سه‌حالتهٔ عمودی و سه‌حالتهٔ چپ‌وراست. لمس یا کلیک کن؛ برای انتخاب دقیق، اهرم را در جهت حرکتش بکش. زوم و جابه‌جایی پنل‌ها مثل قبل است.</div>
+<div class="workspace">
+<section class="work-main">
+<div class="controls">
+<div class="control-group"><button class="active" id="modeMosaic">چیدمان یکپارچه</button><button id="modeGallery">تصاویر مستقل</button><button id="modeAtlas">مرجع اطلس</button><label><input id="borders" type="checkbox"> مرز پنل‌ها</label><label><input id="tags" type="checkbox" checked> شمارهٔ پنل‌ها</label></div>
+<div class="control-group"><button id="minus" aria-label="Zoom out">−</button><output id="zoomLabel">100%</output><button id="plus" aria-label="Zoom in">+</button><button id="fit">FIT</button></div>
+</div>
+<div class="viewport" id="viewport" role="region" aria-label="Full overhead mosaic viewer">
+<div id="sizer" class="sizer"><div id="board" class="board">
+<div id="assembly" class="atlas-positioned">
+<div id="atlasAbsolute" aria-label="Original atlas coordinate-based mosaic, all overhead plates"></div>
+<div id="upper"></div>
+<div id="columns" class="columns"></div>
+<div id="bottom" class="bottom-placeholders"></div>
+</div>
+<div id="gallery" class="gallery hidden"></div><div id="atlasView" class="hidden"><img src="../../assets/overhead.webp" alt="مرجع تصویر کامل اورهد از اطلس اصلی B737 Classic"></div>
+</div></div></div>
+<div class="caption">چیدمان OH-07 تا OH-25 از روی مرزهای فیزیکی عکس OVH تنظیم شده است؛ خطوط قرمز عکس، راهنمای تراز اجزا هستند. برای مقایسه، «مرز پنل‌ها» را روشن کن. با + و −، Ctrl + چرخ ماوس یا دو انگشت زوم کن. بخش پایین نوار پایینی در عکس مرجع دیده نمی‌شود و با تصویر کامل قبلی نمایش داده شده است.</div>
+</section>
+<aside class="inspector"><section class="toggle-inspector" id="toggleInspector"><strong id="toggleCount">در حال نصب تاگل‌ها…</strong><h3 id="selectedToggle">یک سوییچ را انتخاب کن</h3><div id="toggleStates" class="toggle-state-buttons"></div><p id="toggleState" role="status" aria-live="polite"></p><label><input type="checkbox" id="toggleVisibility" checked> نمایش سوییچ‌ها</label><button id="resetToggles">بازنشانی سوییچ‌ها</button></section>
+<h2>وضعیت مونتاژ</h2>
+<div class="summary"><div class="metric"><b id="panelCount">—</b><small>شناسهٔ پنل با تصویر</small></div><div class="metric"><b id="sourceCount">—</b><small>فایل تصویری مستقل</small></div><div class="metric"><b id="loadedCount">—</b><small>تصویر بارگذاری‌شده</small></div><div class="metric"><b id="missingCount">۰</b><small>پنل بدون تصویر در اطلس</small></div></div>
+<div class="status" id="status">در حال خواندن دیتابیس…</div><div class="status" id="viewModeStatus" role="status">حالت فعال: چیدمان یکپارچه</div>
+<div style="margin-top:12px"><input id="search" type="search" placeholder="جست‌وجوی شمارهٔ پنل یا سیستم…" autocomplete="off"></div>
+<div class="piece-list" id="pieces"></div>
+<div id="detail" class="detail">یک پنل را انتخاب کن.</div>
+</aside></div>
+<footer>UPD-0012 · مرجع هندسهٔ بخش پایین: OVH.png · مشخصات: <a href="./atlas-layout.json">atlas-layout.json</a> / <a href="./spec.json">spec.json</a> · تصاویر اصلی و OH-01 تا OH-06 حفظ شده‌اند.</footer>
+</main><script src="./stage.js?v=UPD-0012-OVH-measured-seams" defer></script><script src="../interactive-overhead/model.js?v=TGL-0001" defer></script><script src="../interactive-overhead/app.js?v=TGL-0001" defer></script></body></html>
