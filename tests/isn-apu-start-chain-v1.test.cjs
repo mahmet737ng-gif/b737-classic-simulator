@@ -80,6 +80,9 @@ assert.equal(result.sources.engine1.origin,Chain.ORIGIN);
 assert.equal(start.get().controls.engine1.startSwitch,'OFF');
 assert.equal(result.projected.mainStartValve1,false);
 assert.deepEqual(chain.consumeEffects(),[{type:'ROTARY_RELEASE',id:'engine-start-1',position:'OFF'}]);
+chain.event({id:'engine-start-1',kind:'rotary',next:'GRD'});
+assert.equal(chain.get().phase.engine1,'RUNNING','a running engine cannot be restarted in the training sequence');
+assert.deepEqual(chain.consumeEffects(),[{type:'ROTARY_RELEASE',id:'engine-start-1',position:'OFF'}]);
 assert.equal(start.core.pack.get().electrical.bus.generator1,true,
   'Selected APU generator remains valid after Engine 1 becomes available');
 
@@ -94,6 +97,9 @@ assert.equal(chain.get().selectedSources[1],null,'APU OFF trips selected APU GEN
 chain.advance(400);
 assert.equal(chain.get().sources.apu.running,false);
 assert.equal(chain.get().sources.engine1.running,true,'Stopping APU does not extinguish independently running engines');
+chain.lever('engine1','CUTOFF');
+assert.equal(chain.get().phase.engine1,'OFF');
+assert.equal(start.get().network.requests.engine1,'SHUTDOWN');
 
 // Negative cases: battery unavailable, incomplete bleed path and packs left AUTO.
 ({start,chain}=make());

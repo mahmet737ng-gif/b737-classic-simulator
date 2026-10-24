@@ -9,6 +9,13 @@
  const ORIGIN='TRAINING_SEQUENCE_SIMULATED';
  const CONTROLS=Object.freeze({'apu-start':'apu','engine-start-1':'engine1','engine-start-2':'engine2'});
  const copy=v=>JSON.parse(JSON.stringify(v));
+ // The fault is a classroom curve. Queue its crossing before the normal
+ // completion checkpoint so a large advance() cannot skip the 725°C gate.
+ const HIGH_EGT_THRESHOLD_MS=(()=>{let low=0,high=Dynamics.duration.lightoffMs;
+  for(let i=0;i<24;i++){const mid=(low+high)/2;
+   if(Dynamics.sample('LIGHT_OFF_SEQUENCE',mid,{egtHigh:true}).egtC>=725)high=mid;else low=mid;}
+  return Math.ceil(high);
+ })();
  class Chain{
   constructor(start){if(!start?.send||!start?.core?.pack||!start?.core?.pneumaticState)throw Error('ISN-03 start session required');
    this.start=start;this.time=0;this.jobs=[];this.phase={apu:'OFF',engine1:'OFF',engine2:'OFF'};
@@ -141,6 +148,12 @@
    return null;
   }
   startEngine(device){
+   const fuelLever=this.start.get().observation[device].feedback.fuelStartLever.value;
+   if(!['OFF','BLOCKED'].includes(this.phase[device])||fuelLever!=='CUTOFF'){
+    this.lastError=device.toUpperCase()+': START LEVER CUTOFF and a stopped start sequence required before GRD';
+    this.effects.push({type:'ROTARY_RELEASE',id:device==='engine1'?'engine-start-1':'engine-start-2',position:'OFF'});
+    return;
+   }
    this.lastError='';this.cancel(device);this.started[device]=false;
    this.dynamic[device]=null;
    this.feedback(device,'n2Percent',0);
@@ -162,7 +175,9 @@
   lever(device,position){if(!['engine1','engine2'].includes(device)||!['IDLE','CUTOFF'].includes(position))throw Error('Invalid start lever');
    if(position==='CUTOFF'){this.feedback(device,'fuelStartLever','CUTOFF');if(this.phase[device]!=='RUNNING')this.abortEngine(device);else{
     this.feedback(device,'fuelFlowKgHr',0);this.feedback(device,'n2Percent',null);
-    this.feedback(device,'egtC',null);this.obs(device,false);this.phase[device]='OFF';}return this.get();}
+    this.feedback(device,'egtC',null);this.command({type:'SOURCE_REQUEST',device,request:'SHUTDOWN'});
+    this.obs(device,false);this.started[device]=false;this.phase[device]='OFF';}
+    this.lastError='';return this.get();}
    if(this.phase[device]!=='AWAIT_FUEL_LEVER_IDLE'){
     this.lastError=device.toUpperCase()+': START LEVER IDLE requires starter motoring';return this.get();}
    const rule=this.start.get().observation[device].rules;
@@ -171,6 +186,7 @@
    this.lastError='';this.phase[device]='LIGHT_OFF_SEQUENCE';
    this.dynamic[device]={phase:'LIGHT_OFF_SEQUENCE',since:this.time};
    this.feedback(device,'fuelFlowKgHr',400);this.feedback(device,'egtC',0);
+   if(this.trainingFaults[device].egtHigh)this.schedule(device,HIGH_EGT_THRESHOLD_MS,()=>{});
    this.schedule(device,1000,()=>{if(this.phase[device]!=='LIGHT_OFF_SEQUENCE')return;
     this.dynamic[device]=null;
     this.feedback(device,'n2Percent',46);this.feedback(device,'startValveOpen',false);
@@ -180,11 +196,18 @@
    });return this.get();
   }
   abortEngine(device){this.cancel(device);this.dynamic[device]=null;
-   this.feedback(device,'fuelFlowKgHr',0);this.feedback(device,'n2Percent',null);this.feedback(device,'egtC',null);
+   const fuelIdle=this.start.get().observation[device].feedback.fuelStartLever.value==='IDLE';
+   // Stopping the starter does not move the fuel lever. With IDLE selected,
+   // fuel flow after an abort is unknown, not a fabricated zero.
+   this.feedback(device,'fuelFlowKgHr',fuelIdle?null:0);
+   this.feedback(device,'n2Percent',null);
+   if(!fuelIdle)this.feedback(device,'egtC',null);
    this.feedback(device,'startValveOpen',false);
    this.feedback(device,'startAirAvailable',false);this.feedback(device,'starterEngaged',false);
    this.command({type:'ENGINE_START_SWITCH',device,position:'OFF'});
-   if(this.phase[device]!=='RUNNING')this.phase[device]='OFF';
+   this.command({type:'SOURCE_REQUEST',device,request:'SHUTDOWN'});
+   if(this.phase[device]!=='RUNNING')this.phase[device]=fuelIdle?'AWAIT_FUEL_CUTOFF':'OFF';
+   if(fuelIdle)this.lastError=device.toUpperCase()+': START LEVER remains IDLE — move it to CUTOFF';
   }
   consumeEffects(){const effects=copy(this.effects);this.effects=[];return effects;}
   get(){const engine=this.start.get(),pack=this.start.core.pack.get(),apu=engine.observation.apu;

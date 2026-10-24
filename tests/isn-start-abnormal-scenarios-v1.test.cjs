@@ -52,7 +52,51 @@ assert.equal(s.phase.engine2,'OFF');
 assert.equal(s.observations.engine2.feedback.fuelFlowKgHr.value,0);
 assert.equal(s.observations.engine2.rules.advisory.egt725Latched,false);
 assert.equal(s.projected.mainStartValve2,false);
+
+// A coarse clock jump must encounter the abnormal EGT gate before the
+// nominal 46% N2 / RUNNING checkpoint, not leap past it.
+chain=prepared();chain.setTrainingFault('engine1','egtHigh',true);
+chain.event({id:'engine-start-1',kind:'rotary',next:'GRD'});chain.advance(850);
+chain.lever('engine1','IDLE');chain.advance(5000);s=chain.get();
+assert.equal(s.phase.engine1,'ABNORMAL_EGT');
+assert.equal(s.sources.engine1.running,false);
+assert.equal(s.observations.engine1.rules.starter.cutoutAtApprox46N2,false);
+assert.ok(s.observations.engine1.feedback.n2Percent.value<46);
+assert.equal(s.observations.engine1.rules.advisory.egt725Latched,true);
+
+// Turning the starter OFF is not a substitute for moving the fuel lever to
+// CUTOFF. Keep the EGT advisory and refuse a new start until CUTOFF.
+chain.event({id:'engine-start-1',kind:'rotary',next:'OFF'});s=chain.get();
+assert.equal(s.phase.engine1,'AWAIT_FUEL_CUTOFF');
+assert.equal(s.observations.engine1.feedback.fuelStartLever.value,'IDLE');
+assert.equal(s.observations.engine1.feedback.fuelFlowKgHr.value,null);
+assert.equal(s.observations.engine1.rules.advisory.egt725Latched,true);
+assert.equal(s.projected.mainStartValve1,false);
+assert.equal(chain.start.get().network.requests.engine1,'SHUTDOWN');
+chain.event({id:'engine-start-1',kind:'rotary',next:'GRD'});s=chain.get();
+assert.equal(s.phase.engine1,'AWAIT_FUEL_CUTOFF');
+assert.match(s.lastError,/START LEVER CUTOFF/);
+assert.equal(s.projected.mainStartValve1,false);
+assert.deepEqual(chain.consumeEffects(),[{type:'ROTARY_RELEASE',id:'engine-start-1',position:'OFF'}]);
+chain.lever('engine1','CUTOFF');s=chain.get();
+assert.equal(s.phase.engine1,'OFF');
+assert.equal(s.observations.engine1.feedback.fuelFlowKgHr.value,0);
+assert.equal(s.observations.engine1.rules.advisory.egt725Latched,false);
+chain.setTrainingFault('engine1','egtHigh',false);
+chain.event({id:'engine-start-1',kind:'rotary',next:'GRD'});
+assert.equal(chain.get().phase.engine1,'MOTORING');
+
+// Loss of start air with the fuel lever already at IDLE has the same manual
+// cutoff requirement; no automatic fuel-lever action is fabricated.
+chain=prepared();chain.event({id:'engine-start-2',kind:'rotary',next:'GRD'});
+chain.advance(850);chain.lever('engine2','IDLE');
+chain.event({id:'bleed-apu',kind:'toggle',next:'OFF'});s=chain.get();
+assert.equal(s.phase.engine2,'AWAIT_FUEL_CUTOFF');
+assert.equal(s.observations.engine2.feedback.fuelStartLever.value,'IDLE');
+assert.equal(s.observations.engine2.feedback.fuelFlowKgHr.value,null);
+chain.advance(5000);assert.equal(chain.get().sources.engine2.running,false);
+chain.lever('engine2','CUTOFF');assert.equal(chain.get().phase.engine2,'OFF');
 const ui=fs.readFileSync(path.join(__dirname,'../panel-mosaic-lab/cockpit/isn-cockpit.js'),'utf8');
 assert.match(ui,/data-start-fault="engine1:n2Stall"/);
 assert.match(ui,/data-start-fault="engine2:egtHigh"/);
-console.log('PASS ISN-06 instructor N2-stall and high-EGT scenarios; source-backed EGT advisory and manual cutoff remain separate.');
+console.log('PASS ISN-06/07 instructor start faults, coarse-clock EGT protection, manual fuel cutoff, and restart gates.');
