@@ -10,8 +10,8 @@
       <stop offset="1" stop-color="#c9c9c3"/>
     </linearGradient>
   </defs>
-  <path d="M238 249 Q236 241 242 230 L244 174 L247 118 L251 94 L261 94 L265 118 L268 174 L270 230 Q276 243 274 249 Q271 257 256 258 Q241 257 238 249 Z" fill="url(#egtFace)" stroke="#383a38" stroke-width="2" stroke-linejoin="round"/>
+  <path d="M230 248 Q228 240 236 229 L238 174 L246 112 L250 94 L262 94 L266 112 L274 174 L276 229 Q284 244 282 249 Q278 260 256 261 Q234 260 230 248 Z" fill="url(#egtFace)" stroke="#383a38" stroke-width="2" stroke-linejoin="round"/>
   <path d="M248 108 Q244 98 247 86 Q250 75 256 75 Q262 75 265 86 Q268 98 264 108 L260 108 Q263 99 261 88 Q259 82 256 82 Q253 82 251 88 Q249 99 252 108 Z" fill="#fffefa" stroke="#383a38" stroke-width="1.6"/>
   <path d="M248 82 L245 37 Q245 33 248 32 L251 32 L254 81 Z M258 81 L261 32 L264 32 Q267 33 267 37 L264 82 Z" fill="#fffefa" stroke="#383a38" stroke-width="1.3" stroke-linejoin="round"/>
-  <path d="M246 231 L250 123 L251 111" fill="none" stroke="#ffffff" stroke-width="2.6" opacity=".6"/>
+  <path d="M239 230 L247 123 L250 108" fill="none" stroke="#ffffff" stroke-width="3" opacity=".6"/>
 </svg>

@@ -2,7 +2,7 @@
  'use strict';
  const model=window.B737ApuEgtNeedleModel;
  const ns='http://www.w3.org/2000/svg';
- const sprite=new URL('./apu-egt-needle.svg?v=EGT-0001',document.baseURI).href;
+ const sprite=new URL('./apu-egt-needle.svg?v=EGT-0002',document.baseURI).href;
  let currentAngle=model.needle.initialAngle,blade=null,frame=null,input=null,output=null;
  function svg(doc,parent,tag,attrs={}){const node=doc.createElementNS(ns,tag);for(const [key,value]of Object.entries(attrs))node.setAttribute(key,String(value));parent.append(node);return node;}
  function paint(){if(blade)blade.style.transform=`rotate(${currentAngle}deg)`;if(input)input.value=String(currentAngle);if(output)output.textContent=`${currentAngle}°`;}
