@@ -1,6 +1,6 @@
 {
   "schema": "b737-annunciator-assets.v1",
-  "version": "LGT-0009",
+  "version": "LGT-0010",
   "assetDirectory": "../assets/locked/2026-10-23/LIGHTS/",
   "testMode": "manual-asset-visual-qa",
   "note": "Stable IDs for the owner-approved light designs. This registry does not assign physical coordinates or certify aircraft logic.",
@@ -21,8 +21,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "ALIGN_WHITE_OFF.svg",
-        "ON": "ALIGN_WHITE_ON.svg"
+        "OFF": "IRS_ALIGN_REF_OFF.svg",
+        "ON": "IRS_ALIGN_REF_ON.svg"
       },
       "scope": "ASSET_TEST_ONLY"
     },
@@ -508,8 +508,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "DC_FAIL_OFF.svg",
-        "ON": "DC_FAIL_ON.svg"
+        "OFF": "IRS_DC_FAIL_REF_OFF.svg",
+        "ON": "IRS_DC_FAIL_REF_ON.svg"
       },
       "scope": "OVERHEAD"
     },
@@ -600,8 +600,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "FAULT_OFF.svg",
-        "ON": "FAULT_ON.svg"
+        "OFF": "IRS_FAULT_REF_OFF.svg",
+        "ON": "IRS_FAULT_REF_ON.svg"
       },
       "scope": "OVERHEAD"
     },
@@ -1376,8 +1376,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "ON_DC_LAMP_OFF.svg",
-        "ON": "ON_DC_LAMP_ON.svg"
+        "OFF": "IRS_ON_DC_REF_OFF.svg",
+        "ON": "IRS_ON_DC_REF_ON.svg"
       },
       "scope": "OVERHEAD"
     },
