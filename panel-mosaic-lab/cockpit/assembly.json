@@ -1,0 +1,219 @@
+{
+  "schema": "b737.shared-cockpit-mosaic.v1",
+  "version": "CKP-0001",
+  "canvas": {
+    "width": 4400,
+    "height": 8100
+  },
+  "assets": {
+    "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png": {
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png",
+      "url": "../../panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png",
+      "dimensions": [
+        3942,
+        3591
+      ],
+      "bytes": 9737911,
+      "sha256": "dea7c23ddd5d648cf51735d0fcbcc9d1e69ce37efd736ec45fb173fe766fc56b",
+      "gitBlobSha": "e33b8bf1e7f968509042d3d77a52a45694cf009c"
+    },
+    "panel-mosaic-lab/assets/locked/2026-10-23/B737_MCP_Blank_Panel.png": {
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/B737_MCP_Blank_Panel.png",
+      "url": "../../panel-mosaic-lab/assets/locked/2026-10-23/B737_MCP_Blank_Panel.png",
+      "dimensions": [
+        2172,
+        433
+      ],
+      "bytes": 1220975,
+      "sha256": "9ee5a14d8b3bbf903e62ba65c1f0b3c52f23238abc1b1cd16fe31fea25548062",
+      "gitBlobSha": "28b0424488c8e89104540369170bd88ce5987d2e"
+    },
+    "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png": {
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "url": "../../panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "dimensions": [
+        1235,
+        1274
+      ],
+      "bytes": 1836633,
+      "sha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "gitBlobSha": "4e17de4c553299c09acea9b83fa9b8c5ffcc5665"
+    },
+    "panel-mosaic-lab/assets/locked/2026-10-23/B737_Right_Main_Instruments_Blank.png": {
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Right_Main_Instruments_Blank.png",
+      "url": "../../panel-mosaic-lab/assets/locked/2026-10-23/B737_Right_Main_Instruments_Blank.png",
+      "dimensions": [
+        918,
+        1713
+      ],
+      "bytes": 2006264,
+      "sha256": "171bf9e8d21347e7a522ebc86b19cfe0b967f0503d26c483d8f3d685f719576a",
+      "gitBlobSha": "3eaff6fe8399b6ae5684966ecdde7c4682bf8b3b"
+    },
+    "file_000000006c00820ab145b3682f686256.png": {
+      "path": "file_000000006c00820ab145b3682f686256.png",
+      "url": "../../file_000000006c00820ab145b3682f686256.png",
+      "dimensions": [
+        1123,
+        1400
+      ],
+      "bytes": 1912384,
+      "sha256": "b2439666f75ddbcab15835b532d26a7ad2d1ab669be5f48774d656c1b8915a3c",
+      "gitBlobSha": "ff259644232ecc0543cbe7d2761fdfa286ab7bf8"
+    },
+    "assets/main-panel.webp": {
+      "path": "assets/main-panel.webp",
+      "url": "../../assets/main-panel.webp",
+      "dimensions": [
+        2100,
+        914
+      ],
+      "bytes": 300812,
+      "sha256": "9d82db8f672d766f98d7bd9a129a1aae240c048706b1f11feaf8499fa1740765",
+      "gitBlobSha": "94eef811497a3367e9ad3284b877fa3068b33d15"
+    },
+    "assets/pedestal.webp": {
+      "path": "assets/pedestal.webp",
+      "url": "../../assets/pedestal.webp",
+      "dimensions": [
+        1150,
+        2110
+      ],
+      "bytes": 392730,
+      "sha256": "08f7478a6a2d3e58faf5f0cbd12896e32ef97131616c5d4228e9e64594909bfe",
+      "gitBlobSha": "73a819b1c42617ae4da52f359546a200ef189ae4"
+    },
+    "panel-mosaic-lab/assets/locked/2026-10-23/PD-RADIO-AVIONICS-7a41044771fa.png": {
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/PD-RADIO-AVIONICS-7a41044771fa.png",
+      "url": "../../panel-mosaic-lab/assets/locked/2026-10-23/PD-RADIO-AVIONICS-7a41044771fa.png",
+      "dimensions": [
+        1122,
+        1402
+      ],
+      "bytes": 2681290,
+      "sha256": "7a41044771faad1d59f509c05ed2508f75c79fde219ee9ec19696f8fb19ed533",
+      "gitBlobSha": "7e58407776dda5d5d96d446e19648af742ef3045"
+    }
+  },
+  "regions": [
+    {
+      "id": "overhead",
+      "label": "OVERHEAD",
+      "x": 1090,
+      "y": 110,
+      "w": 2220,
+      "h": 3312,
+      "embeddedUrl": "./overhead-stage.html?v=CKP-0001",
+      "baseVersion": "UPD-0012-OVH-measured-seams",
+      "controlVersion": "LGT-0003"
+    },
+    {
+      "id": "main",
+      "label": "MAIN INSTRUMENT PANEL",
+      "x": 100,
+      "y": 3560,
+      "w": 4200,
+      "h": 1840,
+      "nativeWidth": 2100,
+      "nativeHeight": 920,
+      "placements": [
+        {
+          "id": "captain",
+          "label": "CAPTAIN",
+          "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png",
+          "x": 35,
+          "y": 166,
+          "w": 726,
+          "h": 661.3561643835617,
+          "presentation": "complete source, uniform scale; no source crop or mutation"
+        },
+        {
+          "id": "mcp",
+          "label": "MCP / AFDS",
+          "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_MCP_Blank_Panel.png",
+          "x": 786,
+          "y": 7,
+          "w": 600,
+          "h": 119.61325966850829,
+          "presentation": "complete source, uniform scale; no source crop or mutation"
+        },
+        {
+          "id": "engine",
+          "label": "ENGINE / STANDBY",
+          "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+          "x": 761,
+          "y": 127,
+          "w": 461,
+          "h": 475.5578947368421,
+          "presentation": "complete source, uniform scale; no source crop or mutation"
+        },
+        {
+          "id": "fo-inner",
+          "label": "F/O INNER / LANDING GEAR",
+          "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Right_Main_Instruments_Blank.png",
+          "x": 1222,
+          "y": 127,
+          "w": 372,
+          "h": 694.156862745098,
+          "presentation": "complete source, uniform scale; no source crop or mutation"
+        },
+        {
+          "id": "fo-outer",
+          "label": "F/O OUTER",
+          "asset": "file_000000006c00820ab145b3682f686256.png",
+          "x": 1594,
+          "y": 225,
+          "w": 475,
+          "h": 592.1638468388246,
+          "presentation": "complete source, uniform scale; no source crop or mutation"
+        }
+      ],
+      "layoutStatus": "initial visual registration against original main-panel photograph; source aspects preserved, owner visual review pending"
+    },
+    {
+      "id": "pedestal",
+      "label": "PEDESTAL",
+      "x": 1596,
+      "y": 5590,
+      "w": 1207.5,
+      "h": 2378.175,
+      "nativeWidth": 1150,
+      "nativeHeight": 2264.9285714285716,
+      "placements": [
+        {
+          "id": "pedestal-upper-reference",
+          "label": "THROTTLE / FIRE \u2014 EXISTING REFERENCE",
+          "asset": "assets/pedestal.webp",
+          "x": 0,
+          "y": 0,
+          "w": 1150,
+          "h": 914,
+          "sourceWindow": {
+            "x": 0,
+            "y": 0,
+            "w": 1150,
+            "h": 914
+          },
+          "referenceOnly": true
+        },
+        {
+          "id": "pedestal-radio",
+          "label": "RADIO / NAV / AUDIO / TRIM",
+          "asset": "panel-mosaic-lab/assets/locked/2026-10-23/PD-RADIO-AVIONICS-7a41044771fa.png",
+          "x": 35,
+          "y": 914,
+          "w": 1080,
+          "h": 1349.51871657754,
+          "library_file_id": "libfile_5aeb51496eb88191be12ff3d6b903a27",
+          "presentation": "full uploaded source; no crop or pixel changes"
+        }
+      ]
+    }
+  ],
+  "sourcePolicy": "Original uploaded PNGs are reused byte-for-byte. Existing overhead page and frozen files stay unchanged. Blank Avionics Panel Assembly.png is an alternate overhead attempt and is not substituted for the approved UPD-0012 mosaic.",
+  "notes": [
+    "All three regions are visible on one shared pan/zoom canvas. Region buttons change only the view, never navigate away or reload the overhead.",
+    "Overhead switches and lights remain interactive. Main and newly imported pedestal artwork are connected as base images; new actuator/system overlays are a separate stage.",
+    "Pedestal throttle/fire upper area uses the explicitly identified existing reference until a replacement is selected."
+  ]
+}

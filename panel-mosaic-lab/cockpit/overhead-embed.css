@@ -1,0 +1,8 @@
+/* Presentation only for this new embedded route. The approved page and files are untouched. */
+html,body{margin:0!important;padding:0!important;width:2220px!important;height:3312px!important;overflow:clip!important;background:#111c29!important}
+body>header,.notice,.controls,.caption,.inspector,footer{display:none!important}
+main{margin:0!important;padding:0!important;width:2220px!important;max-width:none!important}
+.workspace{display:block!important;margin:0!important}.work-main{border:0!important;border-radius:0!important;overflow:clip!important}
+.viewport{width:2220px!important;height:3312px!important;min-height:0!important;max-height:none!important;border:0!important;overflow:clip!important;background:#111c29!important}
+#board{transform:scale(1)!important;transform-origin:0 0!important;width:2220px!important;margin:0!important}#sizer{width:2220px!important;height:3312px!important}
+.atlas-piece.selected,.atlas-piece:hover{outline:0!important}.atlas-geometry-stamp,.atlas-piece .tag{display:none!important}
