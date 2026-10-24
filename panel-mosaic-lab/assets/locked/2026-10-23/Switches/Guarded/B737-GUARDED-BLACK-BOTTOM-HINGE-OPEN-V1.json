@@ -1,0 +1,54 @@
+{
+  "schema_version": "1.0",
+  "reference_id": "B737-GUARDED-BLACK-BOTTOM-HINGE-OPEN-V1",
+  "title": "B737 Classic black guarded toggle switch — bottom-hinged guard, open",
+  "type": "guarded-toggle-visual-reference",
+  "designation": "USER-APPROVED / REFERENCE ONLY",
+  "approved_on": "2026-10-23",
+  "source": {
+    "file_name": "b737_guarded_switch_black_bottom_hinge_open_v1.png",
+    "png_sha256": "f8fd42e93e90b824e0700b3eb27ce3fc7a28dca07e5531190db803ead161df21",
+    "pixel_dimensions": [
+      1254,
+      1254
+    ],
+    "color_mode": "RGBA",
+    "transparent_background": true,
+    "source_image_in_repository": false,
+    "note": "This manifest fingerprints the exact user-approved original reference in the conversation. The original high-resolution PNG is not embedded in this JSON and must not be silently replaced by an AI regeneration."
+  },
+  "visual_constraints": {
+    "perspective": "orthographic frontal",
+    "color": "black guard; light metal toggle",
+    "hinge": "bottom",
+    "guard_state": "open",
+    "black_assembly_reference": "exact shape, reflections, contrast and lighting of source PNG",
+    "lighting_policy": "FIXED across all derivative assets",
+    "preserve_geometry": true,
+    "preserve_base_and_mount": true,
+    "do_not_add": [
+      "background",
+      "angle view",
+      "dial",
+      "rotary knob",
+      "labels or graduation ticks",
+      "extra switches"
+    ]
+  },
+  "future_engine_compatibility": {
+    "family_id": "B737-GUARDED-BLACK",
+    "accepted_guard_variants": [
+      "open-bottom",
+      "open-top",
+      "closed"
+    ],
+    "toggle_detents": [
+      "up",
+      "center",
+      "down"
+    ],
+    "realization": "variants must be generated as separate versioned assets and compared against exact master image; no replacements of existing approved assets",
+    "status": "reference locked by convention; rendered variants not yet approved"
+  },
+  "change_control": "DO NOT UPDATE original reference fingerprint or replace asset silently. New variants receive new names and version numbers. GitHub ruleset protection is independent and not configured here."
+}

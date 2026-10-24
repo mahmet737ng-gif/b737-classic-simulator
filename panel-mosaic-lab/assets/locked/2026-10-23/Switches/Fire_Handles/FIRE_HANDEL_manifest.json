@@ -1,0 +1,101 @@
+{
+  "schema_version": "1.0.0",
+  "collection": "B737 Classic approved fire handles (retracted)",
+  "identifier_spelling": "FIRE_HANDEL follows user naming request; engine alias FIRE_HANDLE",
+  "status": "published",
+  "source_format": "PNG RGBA",
+  "deployed_format": "WebP lossless",
+  "pixel_integrity": "Visible RGBA pixels and alpha channel exactly match approved PNGs; fully transparent RGB may be normalized by lossless WebP encoder",
+  "image_dimensions": {
+    "width": 1024,
+    "height": 1536
+  },
+  "asset_storage": "locked append-only",
+  "publication_date": "2026-10-24",
+  "assets": [
+    {
+      "id": "B737-FIRE-HANDEL-APU-ON-V1",
+      "filename": "FIRE_HANDEL_APU_ON.webp",
+      "unit": "APU",
+      "light_state": "ON",
+      "handle_position": "IN",
+      "github_path": "panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_APU_ON.webp",
+      "blob_sha": "a48cd3be0acce30e2bc9c33f20f13d8bb4f97629",
+      "sha256": "3802fb498ed61d6d455c7a0f4d66fe83b7b1e004056f43a66ae61db5f833221f",
+      "source_png": "illuminated_red_apu_fire_handle.png",
+      "source_png_sha256": "9550f5ff55cc95249b4d006db68eccb4da5c314e5e0fc76fa4c3676484197306",
+      "bytes": 1015896,
+      "locked": true
+    },
+    {
+      "id": "B737-FIRE-HANDEL-APU-OFF-V1",
+      "filename": "FIRE_HANDEL_APU_OFF.webp",
+      "unit": "APU",
+      "light_state": "OFF",
+      "handle_position": "IN",
+      "github_path": "panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_APU_OFF.webp",
+      "blob_sha": "94e2b8bfa66509550e03694ed3f9f1c460bd1d2b",
+      "sha256": "a5ee96933c71f39af1a15e40d89b5d784b28711ba7a2c2eda20dc1efa1f5b8f6",
+      "source_png": "red_translucent_apu_emergency_handle.png",
+      "source_png_sha256": "e7dd10ddea44362acac6ec30659be1d5be4cc27b02b2d7be2b2deaf0c1172c50",
+      "bytes": 956876,
+      "locked": true
+    },
+    {
+      "id": "B737-FIRE-HANDEL-ENG1-ON-V1",
+      "filename": "FIRE_HANDEL_ENG1_ON.webp",
+      "unit": "ENG1",
+      "light_state": "ON",
+      "handle_position": "IN",
+      "github_path": "panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_ENG1_ON.webp",
+      "blob_sha": "62dcc3751545103b6178c24f65a27c30d6436dc4",
+      "sha256": "1446c0acaad89b8669e90da0e7eabceb6fcde0bc7acfa17474336201426d645f",
+      "source_png": "illuminated_red_disch_1_fire_handle.png",
+      "source_png_sha256": "54bd44c1ae862bf1202c562c7a300ed5b8343228f7d69cb6a8b6ba903c103736",
+      "bytes": 1042392,
+      "locked": true
+    },
+    {
+      "id": "B737-FIRE-HANDEL-ENG1-OFF-V1",
+      "filename": "FIRE_HANDEL_ENG1_OFF.webp",
+      "unit": "ENG1",
+      "light_state": "OFF",
+      "handle_position": "IN",
+      "github_path": "panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_ENG1_OFF.webp",
+      "blob_sha": "53972fdc92a1bd5131e82d7af3c12195c22fc29a",
+      "sha256": "25e6f1dba39bc0bdfc18ad748afa4332327166cad95c8cc6a523cb07a673e483",
+      "source_png": "boeing_737_engine_1_fire_handle.png",
+      "source_png_sha256": "85fe6ab523b599e613fc5c2e94453703c6b33db4eec2e2900de19d2d85e4ad86",
+      "bytes": 998418,
+      "locked": true
+    },
+    {
+      "id": "B737-FIRE-HANDEL-ENG2-ON-V1",
+      "filename": "FIRE_HANDEL_ENG2_ON.webp",
+      "unit": "ENG2",
+      "light_state": "ON",
+      "handle_position": "IN",
+      "github_path": "panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_ENG2_ON.webp",
+      "blob_sha": "3f68dd908d3e550aeb317b4a3eeca72ee0044238",
+      "sha256": "dd5f67fd50955623a52da44197d59e4e0fd39a910575341938060f480f5703bb",
+      "source_png": "illuminated_engine_2_fire_handle.png",
+      "source_png_sha256": "c7a1f8fe6f0992023a4734f92b1a23c29b7be5e65feb69ca6f3695086ef1c629",
+      "bytes": 836022,
+      "locked": true
+    },
+    {
+      "id": "B737-FIRE-HANDEL-ENG2-OFF-V1",
+      "filename": "FIRE_HANDEL_ENG2_OFF.webp",
+      "unit": "ENG2",
+      "light_state": "OFF",
+      "handle_position": "IN",
+      "github_path": "panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_ENG2_OFF.webp",
+      "blob_sha": "308afc9bc638fb2cd5a07f4fc76b1ccd86555d3a",
+      "sha256": "d1a2676302a026cc141244b489521163597ae6b13d80e08395cb5483e2c26252",
+      "source_png": "red_cockpit_fire_handle_cover.png",
+      "source_png_sha256": "8f4c775b4fd63f3909d2869cf7a6bdf4e151d3096bc2f7a8df4400540e177096",
+      "bytes": 971974,
+      "locked": true
+    }
+  ]
+}
