@@ -1,0 +1,9 @@
+
+/* Owner-approved 9-frame FLAP BMP sprite: standalone visual test, no source mutation. */
+.flap-bmp-overlay{position:absolute;z-index:9;pointer-events:none;background-repeat:no-repeat;background-color:transparent;image-rendering:auto;transform:none;filter:none;user-select:none}
+.flap-test-controls{display:flex;gap:4px;align-items:center;white-space:nowrap;padding:2px 5px;border:1px solid #5b8293;border-radius:7px;background:#122c38}
+.flap-test-controls button{min-width:28px;padding:4px 7px;font-size:12px}
+.flap-test-controls select{max-width:105px;background:#183747;color:#e9f6ff;border:1px solid #759cad;border-radius:5px;padding:4px;font:600 11px system-ui}
+#flapDetentStatus{min-width:66px;color:#e5c998;font:700 11px system-ui;text-align:center}
+.flap-test-error{font-size:11px;color:#ffaa95}
+@media(max-width:680px){.flap-test-controls{order:10}.flap-test-controls select{max-width:90px}}
