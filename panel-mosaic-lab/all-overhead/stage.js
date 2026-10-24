@@ -40,8 +40,8 @@ function populateLegacyAssembly(){populateUpper();const columns=$('columns');col
  columns.append(col)}
  const bottom=$('bottom');bottom.replaceChildren();for(const id of spec.bottomItems||[])bottom.append(card(assetById(id),'mosaic'));for(const id of spec.bottomMissing||[])bottom.append(placeholder([id]));}
 
-/* The original 2220 × 3525 atlas is the ONLY geometry source.
-   Every plate is absolutely positioned: source image heights never change a neighbour's location. */
+/* OVH.png supplies lower-panel seam coordinates; upper OH01-OH06 is preserved.
+   Adjacent panels share exact edges, independent of their source image aspect. */
 function populateAssembly(){
  const root=$('atlasAbsolute');root.replaceChildren();
  const oldUpper=$('upper'),oldColumns=$('columns'),oldBottom=$('bottom');
@@ -49,6 +49,7 @@ function populateAssembly(){
  $('assembly').classList.add('atlas-positioned');
  root.style.width=atlasLayout.canvas.width+'px';
  root.style.height=atlasLayout.canvas.height+'px';
+ $('board').style.width=atlasLayout.canvas.width+'px';
  const src=new Map(spec.images.map(asset=>[asset.id,asset]));
  for(const place of atlasLayout.placements){
    const asset=src.get(place.sourceId||place.id);
@@ -65,37 +66,47 @@ function populateAssembly(){
    photo.loading='eager';photo.draggable=false;
 
 
-   // Atlas-photo matching takes precedence over incorrect old file names.
-   // sourceRect crops are purely presentational subdivisions of the SAME locked binary.
+   // Register each source to measured OVH.png seams. UPPER keeps its original placement.
    const [sourceW,sourceH]=place.sourceDimensions;
-   const selected=place.sourceRect||{x:0,y:0,w:sourceW,h:sourceH};
+   const sourceRegion=place.sourceRect||{x:0,y:0,w:sourceW,h:sourceH};
    const crop=place.contentCrop||{left:0,top:0,right:0,bottom:0};
    const inset=place.artInset||{left:0,top:0,right:0,bottom:0};
    const leftInset=inset.left||0,rightInset=inset.right||0;
    const topInset=inset.top||0,bottomInset=inset.bottom||0;
-   const contentW=selected.w-crop.left-crop.right;
-   const contentH=selected.h-crop.top-crop.bottom;
+   const contentW=sourceRegion.w-crop.left-crop.right;
+   const contentH=sourceRegion.h-crop.top-crop.bottom;
    const innerW=place.w-leftInset-rightInset;
    const innerH=place.h-topInset-bottomInset;
    if(contentW<=0||contentH<=0||innerW<=0||innerH<=0)throw Error('محدودهٔ تصویر نامعتبر: '+place.id);
-   // Each physical plate's x/y/w/h is read from the photographed source atlas.
-   // Render the complete content crop into its art bounds, no controls removed.
-   // Some old reconstructed assets had wrong source aspect; their display correction is reversible.
-   const sx=innerW/contentW,sy=innerH/contentH;
-   Object.assign(photo.style,{
-      position:'absolute',width:(sourceW*sx)+'px',height:(sourceH*sy)+'px',
-      maxWidth:'none',left:(leftInset-(selected.x+crop.left)*sx)+'px',
-      top:(topInset-(selected.y+crop.top)*sy)+'px',
-      objectFit:'fill',transform:'none'
-   });
+   const rows=place.rowRegistration||[
+     {sourceY:sourceRegion.y+crop.top,targetY:0},
+     {sourceY:sourceRegion.y+sourceRegion.h-crop.bottom,targetY:innerH}
+   ];
+   for(let i=0;i<rows.length-1;i++){
+     const from=rows[i],to=rows[i+1];
+     const sourceHeight=to.sourceY-from.sourceY,targetHeight=to.targetY-from.targetY;
+     if(sourceHeight<=0||targetHeight<=0)throw Error('محدودهٔ ثبت تصویر نامعتبر: '+place.id);
+     const strip=el('div','atlas-source-strip');
+     Object.assign(strip.style,{position:'absolute',overflow:'hidden',left:leftInset+'px',top:(topInset+from.targetY)+'px',width:innerW+'px',height:targetHeight+'px'});
+     const segment=i===0?photo:photo.cloneNode(false);
+     if(i)segment.alt='';
+     const sx=innerW/contentW,sy=targetHeight/sourceHeight;
+     Object.assign(segment.style,{
+       position:'absolute',width:(sourceW*sx)+'px',height:(sourceH*sy)+'px',
+       maxWidth:'none',left:(-(sourceRegion.x+crop.left)*sx)+'px',
+       top:(-from.sourceY*sy)+'px',objectFit:'fill',transform:'none'
+     });
+     strip.append(segment);visible.append(strip);
+   }
    frame.dataset.atlasId=(place.atlasPanelIds||[]).join(',');
    frame.dataset.sourceAspect=(contentW/contentH).toFixed(3);
    frame.dataset.atlasAspect=(innerW/innerH).toFixed(3);
-   frame.dataset.fit='atlas-reconstructed-aspect';
-   frame.dataset.sourceSlice=selected.x+','+selected.y+','+selected.w+','+selected.h;
-   photo.addEventListener('load',()=>{loaded.add(asset.id);errored.delete(asset.id);summary();if(selected===asset.id)showDetails()});
+   frame.dataset.fit='OVH-measured-seams';
+   frame.dataset.sourceSlice=[sourceRegion.x,sourceRegion.y,sourceRegion.w,sourceRegion.h].join(',');
+   if(place.referenceRect)frame.dataset.referenceBounds=JSON.stringify(place.referenceRect);
+   photo.addEventListener('load',()=>{loaded.add(asset.id);errored.delete(asset.id);summary();if(resolveAsset(selected)?.id===asset.id)showDetails()});
    photo.addEventListener('error',()=>{errored.add(asset.id);loaded.delete(asset.id);visible.append(el('div','atlas-missing','تصویر بارگذاری نشد'));summary()});
-   visible.append(photo);frame.append(visible);
+   frame.append(visible);
    const tags=place.atlasPanelIds||asset.panelIds;
    const tag=el('span','tag',place.displayLabel|| (tags.length>1?tags[0]+'–'+tags.at(-1).slice(3):tags[0]));
    frame.append(tag);
@@ -103,7 +114,7 @@ function populateAssembly(){
    frame.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();pick(place.id,true)}};
    root.append(frame);
  }
- const stamp=el('div','atlas-geometry-stamp','ATLAS V2 · TRUE PLATE ORDER · UPD-0011');
+ const stamp=el('div','atlas-geometry-stamp','OVH REFERENCE · MEASURED SEAMS · UPD-0012');
  root.append(stamp);
  updateDimensions();
 }
@@ -120,13 +131,14 @@ function showDetails(){if(!spec)return;const a=resolveAsset(selected)||assetById
  const region=geometry.parts.find(p=>p.id===selected);const physical=atlasLayout?.placements?.find(p=>p.id===selected);detail.append(el('h3','',region?selected+' — '+region.name:a.panelIds.join('–')+' — '+a.title));
  const detailRow=(title,value)=>{const d=el('div');d.append(el('b','',title+': '),document.createTextNode(value));detail.append(d)};
  detailRow('شناسهٔ اطلس',physical?(physical.atlasPanelIds||[]).join(' / '):selected);
+ if(physical?.referenceRect){const r=physical.referenceRect;detailRow('مرز در عکس OVH',`x ${r.x} · y ${r.y} · ${r.w} × ${r.h} px`);}
  detailRow('شناسهٔ تصویر',a.id);detailRow('نام فایل',a.filename);detailRow('اندازه',new Intl.NumberFormat('en-US').format(a.bytes)+' bytes');
  detailRow('وضعیت',errored.has(a.id)?'خطا در بارگذاری':loaded.has(a.id)?'تصویر بارگذاری شد':'در حال دریافت تصویر');
  if(region)detailRow('مرز این بخش','Polygon آزمایشی، هنوز تأیید نشده');
  if(physical&&physical.id!==physical.sourceId)detail.append(el('div','pending','نام اصلی فایل با شناسهٔ اطلس یکسان نیست؛ جایگذاری از روی مرجع تصویری انجام شده است.'));
  detail.append(el('code','',a.sha256?'SHA-256: '+a.sha256:'Git blob: '+a.gitBlobSha));
  const link=el('a','','باز کردن تصویر اصلی در GitHub ↗');link.href=a.url;link.target='_blank';link.rel='noopener';detail.append(link);
- const note=el('p','', 'جایگاه ستون‌ها برای ارزیابی اولیه است؛ هندسهٔ دقیق پیچ‌ها و درزهای پنل‌ها هنوز تأیید نشده.');note.style.fontSize='11px';detail.append(note);}
+ const note=el('p','', 'اندازه و محل این بخش از روی مرزهای فیزیکی عکس OVH تنظیم شده؛ OH-01 تا OH-06 مطابق نسخهٔ قبلی حفظ شده‌اند.');note.style.fontSize='11px';detail.append(note);}
 function highlight(){document.querySelectorAll('[data-key]').forEach(x=>{if(x.classList.contains('piece')||x.classList.contains('atlas-piece')||x.parentElement?.id==='pieces')x.classList.toggle('selected',x.dataset.key===selected||!!(resolveAsset(selected)&&resolveAsset(selected).id===x.dataset.key))});
  document.querySelectorAll('[data-part]').forEach(x=>x.classList.toggle('selected',x.dataset.part===selected));}
 function pick(id,scroll){selected=id;highlight();showDetails();if(scroll){let piece=[...document.querySelectorAll('.board:not(.hidden) .atlas-piece, .board:not(.hidden) .piece')].find(x=>x.dataset.key===id);
