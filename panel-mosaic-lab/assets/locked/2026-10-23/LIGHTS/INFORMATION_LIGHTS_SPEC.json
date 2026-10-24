@@ -1,0 +1,60 @@
+{
+  "schema": "b737-classic-simulator/information-light-design/v1",
+  "effective_date": "2026-10-24",
+  "family": "blue_information_annunciators",
+  "approval": "state_logic_approved; exact_blue_palette_pending_visual_sample",
+  "input": {
+    "legend": "Use the user's supplied legend, preserving line breaks and capitalization rendered as approved cockpit uppercase.",
+    "default_when_message_contains_only_legend": {
+      "outputs": [
+        "OFF",
+        "BRIGHT_BLUE"
+      ]
+    },
+    "when_first_line_is_dim": {
+      "case_insensitive": true,
+      "trim_whitespace": true,
+      "control_word": "DIM",
+      "remove_control_word_from_legend": true,
+      "outputs": [
+        "OFF",
+        "DIM_BLUE",
+        "BRIGHT_BLUE"
+      ]
+    },
+    "dim_is_not_a_lettering_line": true
+  },
+  "appearance": {
+    "baseline": "Use the previously approved annunciator font, frame, dimensions, and alignment.",
+    "default_canvas_pixels": {
+      "width": 600,
+      "height": 300
+    },
+    "reference_specific_shape_override": "Only when user explicitly specifies a different housing or geometry.",
+    "off": {
+      "lens": "black, unchanged from approved OFF face",
+      "legend": "nearly imperceptible ghost lettering matching the black background"
+    },
+    "bright_blue": {
+      "lens": "saturated visibly bright blue",
+      "legend": "white"
+    },
+    "dim_blue": {
+      "lens": "same blue hue as BRIGHT_BLUE at conspicuously reduced brightness",
+      "legend": "same white as BRIGHT_BLUE"
+    },
+    "invariants": [
+      "Same housing and border in every state",
+      "Same font, wording, letter size, position, spacing, and number of lines in every state",
+      "BRIGHT_BLUE and DIM_BLUE differ only in blue background intensity",
+      "No separate glow or background treatment outside the annunciator lens"
+    ],
+    "exact_color_hex": "Not locked until the first blue information-light sample is approved."
+  },
+  "file_naming": {
+    "OFF": "<LEGEND_ID>_OFF.(png|svg)",
+    "BRIGHT_BLUE": "<LEGEND_ID>_BRIGHT_BLUE.(png|svg)",
+    "DIM_BLUE": "<LEGEND_ID>_DIM_BLUE.(png|svg)"
+  },
+  "scope": "Future information-light assets. Do not rewrite any previously locked amber annunciators or panel mosaic placements."
+}
