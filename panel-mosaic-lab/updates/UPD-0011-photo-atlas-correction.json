@@ -1,0 +1,50 @@
+{
+  "schema": "b737.overhead.atlas-visual-remap.v1",
+  "version": "UPD-0011-photo-atlas-order",
+  "date": "2026-10-24",
+  "sourceReference": "B737_Mosaic_Atlas_OH_v2.jpg, user supplied overhead reference screenshot",
+  "viewer": "https://mahmet737ng-gif.github.io/b737-classic-simulator/panel-mosaic-lab/all-overhead/",
+  "geometry": "panel-mosaic-lab/all-overhead/atlas-layout.json",
+  "pixelCanvas": [
+    2220,
+    3525
+  ],
+  "immutableSourceCount": 18,
+  "displayPlacements": 19,
+  "atlasMap": {
+    "left": [
+      "OH07 Flight Control upper slice of OH07-08",
+      "OH08 NAV Source lower slice of OH07-08",
+      "OH09 Fuel"
+    ],
+    "electrical": [
+      "OH10 AC/DC",
+      "OH11 Standby",
+      "OH12 Bus/Gen"
+    ],
+    "central": [
+      "OH13 CB/Equipment Cooling",
+      "OH14 Emergency Signs",
+      "OH14 Ground Call/Wiper from historially named OH18-GROUND"
+    ],
+    "fourth": [
+      "OH15 Window Heat",
+      "OH16 Anti-Ice",
+      "OH17 Hydraulic",
+      "OH18 Voice Recorder from historically OH19-VOICE",
+      "OH19 Press Differential from historically OH19-DIFF"
+    ],
+    "right": [
+      "OH20 Air Conditioning",
+      "OH21 Bleed Air",
+      "OH22 Cabin Pressurization"
+    ],
+    "fullWidthBottom": [
+      "OH23-25 Shared Overhead Lower Strip"
+    ]
+  },
+  "newSourceBlobs": 0,
+  "zeroImmutableRewrites": true,
+  "qualityGate": "Automated atlas placement and source hash tests; owner still to approve visual seams and proportions",
+  "important": "The historically embedded OH IDs in filenames are not necessarily the physical atlas identifiers. Atlas labels take precedence. Source images with incorrect natural aspect ratios are displayed in physical atlas slots by reversible geometric transformation only."
+}
