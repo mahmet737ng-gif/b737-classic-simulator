@@ -1,4 +1,4 @@
-# Unified cockpit — CKP-0009
+# Unified cockpit — CKP-0010
 
 ## CKP-0005 / LGT-0007 — STAB socket fit and SPEED BRAKE mounting
 
@@ -181,3 +181,19 @@ The same fixed Unified URL, independent seat states, focus/reset commands and
 existing panel/light geometry are retained. CDU tests project all four bezel
 corners back into the owner screenshot and check that all original key hitboxes
 remain inside the visible source window.
+
+
+## CKP-0010 — shared FMC, separate CDU displays
+
+Both original v6 CDU displays now use one in-memory FMC session in the Unified parent.
+Active fields, pending modifications, staged route fields, and optional route-adapter
+data propagate synchronously in either direction. Pages, scratchpads, messages,
+brightness, and page-selection cursors stay local. ACTIVATE, EXEC and ERASE update
+the same dataset; changing pages alone never copies the other CDU display.
+The session is scoped to this Unified page; standalone v6 behavior is unchanged.
+A late-loading/reloaded CDU receives the current shared data. CDU reset clears only
+that display and input; the explicit shared FMC reset clears flight data in both.
+
+Per owner correction, the F/O top edge extends upward by 18 main-panel native pixels
+while its approved bottom, x and width stay fixed. Captain placement and all other
+panel geometry, source artwork, font files and 140 key hitboxes are unchanged.

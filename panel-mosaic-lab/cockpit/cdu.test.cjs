@@ -7,11 +7,11 @@ const source=assembly.cduSource;for(const [p,sha]of [[source.artwork,source.artw
 const map=JSON.parse(read(source.controlMap));assert.equal(map.controls.length,70);assert.equal(map.outputs.length,5);assert.equal(source.artworkSha256,'2c60c534e6e9cd80afa721f2d82801d7bdbc54dce4bbd39b8adb3470f2df0237');
 const embedded=read('panel-mosaic-lab/cockpit/cdu-stage.html'),original=read(source.page),scripts=s=>[...s.matchAll(/<script[^>]*src="([^"]+)"/g)].map(m=>m[1]);assert.deepEqual(scripts(embedded).slice(0,-1),scripts(original));assert.ok(embedded.includes('<base href="../../cdu-standalone-v6/">'));assert.ok(embedded.includes('href="../assets/fonts/boeing-cdu/cdu-screen.css"'));
 const css=read('panel-mosaic-lab/cockpit/cdu-embed.css');for(const selector of ['font-family','font-size','.hotspot','.fmc-screen','.fmc-line'])assert.ok(!css.includes(selector),'Embed must not rewrite approved CDU screen or keys: '+selector);
-const a=core.makeState('RTE'),b=core.makeState('IDENT');for(const ch of 'OIIE')core.press(a,pages,'CDU_CAPT_KEY_'+ch);for(const ch of 'OMDB')core.press(b,pages,'CDU_CAPT_KEY_'+ch);assert.equal(a.scratch,'OIIE');assert.equal(b.scratch,'OMDB');core.press(a,pages,'CDU_CAPT_LSK_L1');assert.equal(core.readValue(a,'ORIGIN','RTE'),'OIIE');assert.equal(b.scratch,'OMDB');assert.equal(b.page,'IDENT');assert.equal(core.readValue(b,'ORIGIN','RTE'),'');core.press(b,pages,'CDU_CAPT_KEY_CLR');assert.equal(b.scratch,'OMD');assert.equal(core.readValue(a,'ORIGIN','RTE'),'OIIE');
+require('./cdu-session.test.cjs');
 // New CDU boxes must not cover any existing main-panel annunciator.
 const lights=JSON.parse(read('panel-mosaic-lab/cockpit/lights.json')),region=assembly.regions.find(r=>r.id==='main');for(const i of items)for(const light of lights.lights){const p=region.placements.find(p=>p.id===light.pieceId);if(!p)continue;const k=p.w/assembly.assets[p.asset].dimensions[0],[x,y,w,h]=light.sourceRect,b={x:p.x+x*k,y:p.y+y*k,w:w*k,h:h*k};assert.ok(!(i.x<b.x+b.w&&i.x+i.w>b.x&&i.y<b.y+b.h&&i.y+i.h>b.y),'CDU obscures light '+light.id);}
 const invalid=structuredClone(assembly);invalid.embeddedInstruments[1].x=2100;assert.throws(()=>view.validateInstruments(invalid));
-console.log('PASS: two correctly sided CDU frames; unchanged approved 1199×1312 art / 70 keys / five outputs / locked fonts; original v6 imports; independent pages, scratchpads and route fields; no lamp overlap.');
+console.log('PASS: two correctly sided CDU frames; unchanged approved 1199×1312 art / 70 keys / five outputs / locked fonts; original v6 imports; independent pages/scratchpads with shared FMC fields; no lamp overlap.');
 
 const group=view.target(assembly,'cdu-both');for(const i of items){const box=view.target(assembly,i.id);assert.ok(group.x<=box.x&&group.y<=box.y&&group.x+group.w>=box.x+box.w&&group.y+group.h>=box.y+box.h);}
 
@@ -24,7 +24,7 @@ for(const i of items){
  assert.ok(Math.abs(p.left+(window.x+window.w)*p.scaleX-i.w)<1e-8);assert.ok(Math.abs(p.top+(window.y+window.h)*p.scaleY-i.h)<1e-8);
  for(const control of map.controls){const [l,t,r,b]=control.bbox_px;assert.ok(l>=window.x&&t>=window.y&&r<=window.x+window.w&&b<=window.y+window.h,'Visible source crop removes key '+control.id);}
  const projected=[registration.offsetX+(i.x-anchor.x)/nativeRatio*registration.scale,registration.offsetY+(i.y-anchor.y)/nativeRatio*registration.scale,registration.offsetX+(i.x+i.w-anchor.x)/nativeRatio*registration.scale,registration.offsetY+(i.y+i.h-anchor.y)/nativeRatio*registration.scale];
- const expected=calibration.referenceFrames[i.seat];for(let n=0;n<4;n++)assert.ok(Math.abs(projected[n]-expected[n])<.001,'Visible CDU bezel differs from owner screenshot: '+i.seat);
+ const expected=[...calibration.referenceFrames[i.seat]],adjust=calibration.ownerAdjustments?.[i.seat];if(adjust){expected[1]+=adjust.top/nativeRatio*registration.scale;expected[3]+=adjust.bottom/nativeRatio*registration.scale;}for(let n=0;n<4;n++)assert.ok(Math.abs(projected[n]-expected[n])<.001,'Visible CDU bezel differs from owner screenshot: '+i.seat);
 }
 const wrongCrop=structuredClone(assembly);wrongCrop.embeddedInstruments[0].sourceWindow.w=1300;assert.throws(()=>view.validateInstruments(wrongCrop));
 console.log('PASS: bezel-to-reference corner registration; original black padding excluded; all 140 original key hitboxes remain visible and share the artwork transform.');

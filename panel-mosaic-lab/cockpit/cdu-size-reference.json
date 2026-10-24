@@ -45,5 +45,13 @@
       823
     ]
   },
-  "presentation": "Fit original visible bezel and all native overlays together to each owner-reference frame, excluding surrounding black bitmap padding. Native artwork and 70 source hitboxes are unchanged."
+  "presentation": "Fit original visible bezel and all native overlays together to each owner-reference frame, excluding surrounding black bitmap padding. Native artwork and 70 source hitboxes are unchanged.",
+  "ownerAdjustments": {
+    "FO": {
+      "top": -18,
+      "bottom": 0,
+      "units": "main-panel native pixels",
+      "reason": "Owner requested a slight upward extension to cover the remaining background CDU above the approved bezel."
+    }
+  }
 }

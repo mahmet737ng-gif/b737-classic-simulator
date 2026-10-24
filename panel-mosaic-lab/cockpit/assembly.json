@@ -1,6 +1,6 @@
 {
   "schema": "b737.shared-cockpit-mosaic.v1",
-  "version": "CKP-0009",
+  "version": "CKP-0010",
   "canvas": {
     "width": 4400,
     "height": 8100
@@ -193,7 +193,7 @@
       "placements": [
         {
           "id": "pedestal-upper-reference",
-          "label": "THROTTLE / FIRE \u2014 EXISTING REFERENCE",
+          "label": "THROTTLE / FIRE — EXISTING REFERENCE",
           "asset": "assets/pedestal.webp",
           "x": 0,
           "y": 0,
@@ -209,7 +209,7 @@
         },
         {
           "id": "fire-protection",
-          "label": "FIRE PROTECTION \u2014 UNDER ENGINE START LEVERS",
+          "label": "FIRE PROTECTION — UNDER ENGINE START LEVERS",
           "asset": "panel-mosaic-lab/assets/locked/2026-10-23/Fire_Protection_Panel_Blank_With_Buttons.png",
           "x": 244,
           "y": 750,
@@ -226,7 +226,7 @@
         },
         {
           "id": "engine-start-levers-foreground",
-          "label": "ENGINE START LEVERS 1 / 2 \u2014 original foreground retained",
+          "label": "ENGINE START LEVERS 1 / 2 — original foreground retained",
           "asset": "assets/pedestal.webp",
           "x": 477,
           "y": 743,
@@ -274,7 +274,7 @@
       "h": 318.9685,
       "nativeWidth": 1199,
       "nativeHeight": 1312,
-      "embeddedUrl": "./cdu-stage.html?seat=CAPT&v=CDU-U2",
+      "embeddedUrl": "./cdu-stage.html?seat=CAPT&v=CDU-U3",
       "sourceWindow": {
         "x": 111,
         "y": 21,
@@ -295,12 +295,12 @@
       "seat": "FO",
       "regionId": "main",
       "x": 1172.383157,
-      "y": 592.952633,
+      "y": 574.952633,
       "w": 211.208871,
-      "h": 321.554731,
+      "h": 339.554731,
       "nativeWidth": 1199,
       "nativeHeight": 1312,
-      "embeddedUrl": "./cdu-stage.html?seat=FO&v=CDU-U2",
+      "embeddedUrl": "./cdu-stage.html?seat=FO&v=CDU-U3",
       "sourceWindow": {
         "x": 111,
         "y": 21,
@@ -313,7 +313,12 @@
         450,
         1201,
         823
-      ]
+      ],
+      "referenceAdjustment": {
+        "top": -18,
+        "bottom": 0,
+        "reason": "Owner correction: extend top edge to cover remaining background CDU; retain approved bottom, width and x."
+      }
     }
   ],
   "cduSource": {
@@ -324,7 +329,7 @@
     "controlMapSha256": "42d7b9d8b3353c6cacd9237582b3712aeee84fe532c573c0010997d118b64a8b",
     "fontStylesheet": "assets/fonts/boeing-cdu/cdu-screen.css",
     "controlsPerSeat": 70,
-    "statePolicy": "Independent per-seat v6 engine and DOM; no shared scratchpad, route modifications or reset. Existing engine limitations retained.",
+    "statePolicy": "One shared FMC dataset (active, pending and staged fields plus route-adapter data); independent per-seat page, scratchpad, messages, brightness and navigation. CDU reset is display-only; explicit shared FMC reset clears flight data for both.",
     "sizeReference": "cdu-size-reference.json",
     "sizePolicy": "Owner screenshot visible-frame dimensions; source black padding is excluded from fit. Width/height registration transforms artwork and original hitboxes as one unit."
   }
