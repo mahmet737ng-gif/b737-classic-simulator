@@ -190,11 +190,11 @@
     "STAB_OUT_OF_TRIM": {
       "OFF": {
         "url": "../assets/locked/2026-10-23/LIGHTS/STAB_OUT_OF_TRIM_OFF.svg",
-        "sha256": "b7bfc911f276fa874709966b2e91f7a04b0e31887ef6320ce837ce33ec32c5ef"
+        "sha256": "b300eb85336f1cb741c79e11e9c47105954c3a24450cb24a32934325416be463"
       },
       "ON": {
         "url": "../assets/locked/2026-10-23/LIGHTS/STAB_OUT_OF_TRIM_ON.svg",
-        "sha256": "37b01c6d051f21564cff7ce7ff9c0a438e1cb639a2cee5bc30f8ef1504c552d8"
+        "sha256": "52bcc0b63b943df14bd4bb933a22093ce66b7933176ccc94cb6a4ca1210972c6"
       }
     },
     "INOP": {
