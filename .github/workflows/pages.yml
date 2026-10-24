@@ -47,6 +47,7 @@ jobs:
           node panel-mosaic-lab/cockpit/duct-pressure-needles.test.cjs
           node panel-mosaic-lab/cockpit/oxygen-pressure-gauge.test.cjs
           node panel-mosaic-lab/cockpit/airspeed-pointers.test.cjs
+          node panel-mosaic-lab/cockpit/flight-needles.test.cjs
           node panel-mosaic-lab/cockpit/flap-needles.test.cjs
           node panel-mosaic-lab/cockpit/fuel-temperature-needle.test.cjs
           node panel-mosaic-lab/cockpit/performance.test.cjs

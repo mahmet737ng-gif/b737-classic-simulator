@@ -455,3 +455,25 @@ interpolation. This is not a verified airspeed-system calibration or an AFM
 operating limit; it is not yet connected to an aircraft speed source. The
 original captain-panel bitmap remains unchanged. Regression:
 node panel-mosaic-lab/cockpit/airspeed-pointers.test.cjs.
+
+## ASP-0002 — first-officer Airspeed / VMO/MMO duplicate
+
+The same two approved needle sprites are mounted independently on the
+first-officer IAS/Mach gauge in the frozen `fo-inner` image. The F/O pivot is
+(741, 577) in its 918 × 1713 source image; pointer radii are scaled to that
+dial. Captain and F/O visual values can be controlled separately with the
+`station` argument, or updated together when the event omits `station`.
+The F/O printed scale uses its own provisional visual interpolation, distinct
+from the captain's. Neither gauge asserts a live air-data connection.
+
+## FLN-0001 — photographed ALT, VSI, clock, and RMI needles
+
+Five transparent SVG sprites reproduce only the photographed needle forms:
+altimeter, vertical-speed indicator, clock, RMI 1 (thin dashed), and RMI 2
+(broad hollow). Both RMI needles share the gauge pivot but rotate
+independently. The same assets are mounted over captain and first-officer
+panel pieces at separately measured pivots and radii, without modifying the
+frozen source images. Inspector sliders and
+`B737UnifiedFlightNeedles.setAngle(station, key, angle)` provide visual tests.
+These are appearance and angle controls, not yet aircraft-system readings.
+Regression: `node panel-mosaic-lab/cockpit/flight-needles.test.cjs`.
