@@ -1,0 +1,31 @@
+{
+  "schema": "B737-annunciator-aperture-fit-v1",
+  "reference": "Approved blank panel pixels; bare lens face fitted within original metal aperture",
+  "source": "2026-10-24 optical alignment review of 139 installed physical annunciators",
+  "main": {
+    "main-autobrake": [63, 767, 80, 40],
+    "main-gear-nose-red": [250, 150, 70, 31],
+    "main-gear-nose-green": [250, 194, 70, 32],
+    "main-gear-left-red": [210, 238, 69, 34],
+    "main-gear-left-green": [210, 282, 69, 34],
+    "main-gear-right-red": [295, 238, 68, 34],
+    "main-gear-right-green": [295, 282, 68, 34]
+  },
+  "overhead": {
+    "probe-capt-ps": [138, 565, 255, 80],
+    "probe-fo-static": [138, 664, 255, 86],
+    "probe-l-elev": [138, 770, 255, 84],
+    "probe-l-alpha": [138, 875, 255, 82],
+    "probe-temp": [138, 978, 255, 83],
+    "probe-fo-ps": [891, 565, 255, 80],
+    "probe-capt-static": [891, 664, 255, 86],
+    "probe-r-elev": [891, 769, 255, 85],
+    "probe-r-alpha": [891, 874, 255, 82]
+  },
+  "lockedSourceRectsUnchanged": [
+    "main-stab-trim",
+    "main-speed-brake-do-not-arm",
+    "main-speed-brake-armed"
+  ],
+  "notes": "123 source rectangles retained after optical comparison: they already match the original glass aperture. The new lens-only artwork removes the redundant black margin and secondary frame."
+}

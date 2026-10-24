@@ -1,6 +1,6 @@
 {
   "schema": "b737.cockpit-annunciators.v1",
-  "version": "LGT-0008",
+  "version": "LGT-0009",
   "sourceDatabase": {
     "name": "B737_TECHNICAL_NETWORK_V2",
     "sourceId": "FCOM-SEPEHRAN-1937",
@@ -9,222 +9,222 @@
   "assets": {
     "REVERSER_UNLOCKED": {
       "OFF": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-v2/REVERSER_UNLOCKED_OFF.svg",
-        "sha256": "d36676de48aee4d3bc9818c2ed6676d43aa1f8a5cc9e06be6f5ba1376fd224d4"
+        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/REVERSER_UNLOCKED_OFF.svg",
+        "sha256": "b92b310d97303ba9f3c5d8b48534b706978586f14c8da90f3d1ebd32d6112f76"
       },
       "ON": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-v2/REVERSER_UNLOCKED_ON.svg",
-        "sha256": "f9fad17ea12fe5260d2a87b51f575cc564ff2b845476bdfc2f594381ae2ee471"
+        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/REVERSER_UNLOCKED_ON.svg",
+        "sha256": "fde16ef72e23d121baf130cbb5649daebc0f1cd9f6c338ce4c2877cbb708894a"
       }
     },
     "START_VALVE_OPEN": {
       "OFF": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-v2/START_VALVE_OPEN_OFF.svg",
-        "sha256": "921c5223c1c390feac9c896e7e83de01183c13bcc2594f9efed5e73433e366b3"
+        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/START_VALVE_OPEN_OFF.svg",
+        "sha256": "5baf6d7345836f54f7474d2995a7b2e7eaf11a9dc2b9eac41d153bdeea2a7241"
       },
       "ON": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-v2/START_VALVE_OPEN_ON.svg",
-        "sha256": "647f030eeca4b0412487406f1d4a555d795c54e5d5eedc0eb29895d50b8352da"
+        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/START_VALVE_OPEN_ON.svg",
+        "sha256": "41bcdaa9e230a0920f956a13fbe5d93b98570f9e3605fd79adedf48842d2b782"
       }
     },
     "LOW_OIL_PRESSURE": {
       "OFF": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-v2/LOW_OIL_PRESSURE_OFF.svg",
-        "sha256": "78a1c159e18c9c1106312ee10bbafb73964edc8c8e66c3c52fc1ddf1fa25e98f"
+        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/LOW_OIL_PRESSURE_OFF.svg",
+        "sha256": "b156be091388345715a80b51bc15ccf5adf14bc6cf08a0654777c5ee93bbd767"
       },
       "ON": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-v2/LOW_OIL_PRESSURE_ON.svg",
-        "sha256": "109c642827c49638aceeee791fe64578fe80baaf292e11edc2cbb60a74d22e5d"
+        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/LOW_OIL_PRESSURE_ON.svg",
+        "sha256": "7df6b8da4f6107c9caa86d0b301db7322ca566cd3ba7725f2f2309c6e5e55acc"
       }
     },
     "OIL_FILTER_BYPASS": {
       "OFF": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-v2/OIL_FILTER_BYPASS_OFF.svg",
-        "sha256": "4950621f5c1c1ee3d2cd8dd901509caba9669ed124eda0ea0aedf3d6fff53bda"
+        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/OIL_FILTER_BYPASS_OFF.svg",
+        "sha256": "a2638d4524638fda018d6efbbdd085bd339f9846c42c43001b5a26221039cf28"
       },
       "ON": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-v2/OIL_FILTER_BYPASS_ON.svg",
-        "sha256": "274dbc38187b3407c0ce0da361b44cd05f3c071b872d88cdbefcf85a216f4ecd"
+        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/OIL_FILTER_BYPASS_ON.svg",
+        "sha256": "12761aee2968bda0dbd7cdd66b38fe24bbd28ade74a12e7ad8d871c5ddcbb504"
       }
     },
     "ALTITUDE_ALERT": {
       "OFF": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-v2/ALTITUDE_ALERT_OFF.svg",
-        "sha256": "d1979ecc757114d811070fbfe47fa97267d8c4716cd16d1b924d254f67d6d233"
+        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/ALTITUDE_ALERT_OFF.svg",
+        "sha256": "137ee664ff814782e644b14dbaf1658a71d76bf467bfe2381834a434ea74aafc"
       },
       "ON": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-v2/ALTITUDE_ALERT_ON.svg",
-        "sha256": "0ccd7471f6f46092a1f70bdf5d4ae431dd2c06f60807d73bc537a4a5ba2936fe"
+        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/ALTITUDE_ALERT_ON.svg",
+        "sha256": "88a960a22990726e91c0b0a46434451fd308b1e0a7e29cac7cc1927e78f0c7ff"
       }
     },
     "PULL_UP_RED": {
       "OFF": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-v2/PULL_UP_RED_OFF.svg",
-        "sha256": "0350ef8efcdcb55130f76a0152c8d486ba95b6d9177428335f974f64dc4d881e"
+        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/PULL_UP_RED_OFF.svg",
+        "sha256": "6e6845aca34fcabfa65e2343b0fb6decaf0c7069e397da6e0b763e0c6c64d268"
       },
       "ON": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-v2/PULL_UP_RED_ON.svg",
-        "sha256": "887c8076816ad75dc9bea4cfc286998203aaec82a8596383ae8280811f66f421"
+        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/PULL_UP_RED_ON.svg",
+        "sha256": "3517056ec3a5b4901d6fa1abd1898eeb0d078b6b88e9aa3d9fa283b0239cb345"
       }
     },
     "BELOW_GS_P_INHIBIT": {
       "OFF": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-v2/BELOW_GS_P_INHIBIT_OFF.svg",
-        "sha256": "9129b598313b8b489e67b0b15c6edf253d43e037b8446874f4369ee79c28acd5"
+        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/BELOW_GS_P_INHIBIT_OFF.svg",
+        "sha256": "009065544f8370dada5fbee03aae68acab8c518e9316b57b38bdd5d5a75d041c"
       },
       "ON": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-v2/BELOW_GS_P_INHIBIT_ON.svg",
-        "sha256": "851fe711899e6ee54a317f1a1d8e81d8c94924ecc4c02c4b812c222c6082277d"
+        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/BELOW_GS_P_INHIBIT_ON.svg",
+        "sha256": "12a7459939c88381e9a257182a7704dacc3afd90ae2550124108ba0b8706a010"
       }
     },
     "NOSE_GEAR_2LINE_RED": {
       "OFF": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-v2/NOSE_GEAR_2LINE_RED_OFF.svg",
-        "sha256": "96992138f694dece44985086e8fc4cb18c90d0c596a581877f3c1291bc012c16"
+        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/NOSE_GEAR_2LINE_RED_OFF.svg",
+        "sha256": "1d386cdc5a66d93f8cebdac0c4f9a269eb3b623245b5c14bc27c7e046334943e"
       },
       "ON": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-v2/NOSE_GEAR_2LINE_RED_ON.svg",
-        "sha256": "276428bb53faa896f2c3480587c477d236a1a0fadad66f4eb00876799d1d4c4e"
+        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/NOSE_GEAR_2LINE_RED_ON.svg",
+        "sha256": "9d3753e301a0e30a76180f2cc612cd8df1285f7c53ded53724462371cfebd3d4"
       }
     },
     "NOSE_GEAR_2LINE_GREEN": {
       "OFF": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-v2/NOSE_GEAR_2LINE_GREEN_OFF.svg",
-        "sha256": "57a7911d3b9fd0b570d91fb84308111be1cdf97b16d5d3f516f3243bc15aa1a0"
+        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/NOSE_GEAR_2LINE_GREEN_OFF.svg",
+        "sha256": "5a9572c4f8808f0ddc48aa619c3a89842c7c33a06dfb00e7b992f734cec8f7ed"
       },
       "ON": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-v2/NOSE_GEAR_2LINE_GREEN_ON.svg",
-        "sha256": "17830e6674e1aaeec49d480c9d520c0e59ad409c310906ebf19d2b32792ec9cb"
+        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/NOSE_GEAR_2LINE_GREEN_ON.svg",
+        "sha256": "23d470748f5b6d4ef38ce9541d9bcea3fb5ea564fb0fdc0d4c173cc40950108c"
       }
     },
     "LEFT_GEAR_2LINE_RED": {
       "OFF": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-v2/LEFT_GEAR_2LINE_RED_OFF.svg",
-        "sha256": "127fc3ab23f2b43e3aa5db8d7ac237293715fcb65c0d1f324e67ca8cba612cf1"
+        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/LEFT_GEAR_2LINE_RED_OFF.svg",
+        "sha256": "acc4e1f5948f2ce898659279ecba3d66b9617fd55f81c227284182e0af02c947"
       },
       "ON": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-v2/LEFT_GEAR_2LINE_RED_ON.svg",
-        "sha256": "d5c9a74569331cef409bef3d6d23129e51e7d1ec52b52c10341a0b2e355c5199"
+        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/LEFT_GEAR_2LINE_RED_ON.svg",
+        "sha256": "91aabb8dc13689d93179e20f095a531e97ba6c152bb4880875637ec500fd2e5d"
       }
     },
     "LEFT_GEAR_2LINE_GREEN": {
       "OFF": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-v2/LEFT_GEAR_2LINE_GREEN_OFF.svg",
-        "sha256": "f203bfb53e8e2f53c981494f0571e344b97ce450e60500867f530d9e645a6bf5"
+        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/LEFT_GEAR_2LINE_GREEN_OFF.svg",
+        "sha256": "253eeddf120418615523ecfaeb187b6b24c805231de55ef2db7012272d4c43b9"
       },
       "ON": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-v2/LEFT_GEAR_2LINE_GREEN_ON.svg",
-        "sha256": "df260e8c8d0ecd3d5ca048e75744abe7ec064eb22abcb8e263f0fd8bf39a1f42"
+        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/LEFT_GEAR_2LINE_GREEN_ON.svg",
+        "sha256": "74fbb50018f87d072f7f78b3ceb29cafb5f820dafb26be5c402afa5a6589813b"
       }
     },
     "RIGHT_GEAR_2LINE_RED": {
       "OFF": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-v2/RIGHT_GEAR_2LINE_RED_OFF.svg",
-        "sha256": "60a21bf96a86b7aaca5a64fac0e168feb9bcf6977281bd01dbb792a7ede6cf3d"
+        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/RIGHT_GEAR_2LINE_RED_OFF.svg",
+        "sha256": "3070908aee7cfe157699a48f4359394dcc1429d58b0f3914aa7f9927ae431c8e"
       },
       "ON": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-v2/RIGHT_GEAR_2LINE_RED_ON.svg",
-        "sha256": "484bc6d8f1543b00af327e45b09dd848eb4d34e2ba6f7d632d1cb5a79e1bb66b"
+        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/RIGHT_GEAR_2LINE_RED_ON.svg",
+        "sha256": "4eb284b8c61e000e82bef1a8bf54eda77adeafe18d172c5fadf10985dafc6a5b"
       }
     },
     "RIGHT_GEAR_2LINE_GREEN": {
       "OFF": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-v2/RIGHT_GEAR_2LINE_GREEN_OFF.svg",
-        "sha256": "e488b9d2bfbf5882b2fc443848f0bfd068f9d6c38c2ce2ecaddd88d0dff46ee4"
+        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/RIGHT_GEAR_2LINE_GREEN_OFF.svg",
+        "sha256": "749b19105156b9663f9f0630222cd39f37c9016c35ba79401c1780fabfa05d31"
       },
       "ON": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-v2/RIGHT_GEAR_2LINE_GREEN_ON.svg",
-        "sha256": "900c8589666e962f199bb1c2930c1151db87f8f92bf24b4c581a6563b76ca7b7"
+        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/RIGHT_GEAR_2LINE_GREEN_ON.svg",
+        "sha256": "61b3aeb2713b5d382fbc4bba46f6764d1e1ac8bed723bda2a512ef2940378020"
       }
     },
     "LE_FLAPS_TRANSIT": {
       "OFF": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-v2/LE_FLAPS_TRANSIT_OFF.svg",
-        "sha256": "2eff9c83721672fc8d4cc5d249e88c1cf2e585e03f9b29d8dbadf8c87ecc7a3c"
+        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/LE_FLAPS_TRANSIT_OFF.svg",
+        "sha256": "bfff5f9739244486062ea69b59ccd61d6d03d5f5ef91a36ef65737aa106dde46"
       },
       "ON": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-v2/LE_FLAPS_TRANSIT_ON.svg",
-        "sha256": "1495aeebd140f0f480322a9d03b2f65c1057671f4a0486361903b3a2f9cfe000"
+        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/LE_FLAPS_TRANSIT_ON.svg",
+        "sha256": "782ec9d94def4f882f832ec1f30b6ca53c408be7a6e2bb0abe2c9008f62defe6"
       }
     },
     "LE_FLAPS_EXT_GREEN": {
       "OFF": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-v2/LE_FLAPS_EXT_GREEN_OFF.svg",
-        "sha256": "0f344cdc1eb7680af133df20442b7e2d06ccd7e3d35f3a5d79708292b32dca1b"
+        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/LE_FLAPS_EXT_GREEN_OFF.svg",
+        "sha256": "09c27ba5f1f0c73f81c3e4852e9be01caca9857d1581bbc5394dd800b65b7de8"
       },
       "ON": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-v2/LE_FLAPS_EXT_GREEN_ON.svg",
-        "sha256": "e58e117b36b8c1fe89034cc22ba29f6fd04eea93eaefe405acbe16e00a9a763c"
+        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/LE_FLAPS_EXT_GREEN_ON.svg",
+        "sha256": "7498f28c304578d4eb7a18b161b0d68833c830da8c4eeffe4e8add22dca75cdf"
       }
     },
     "ANTI_SKID_INOP": {
       "OFF": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-v2/ANTI_SKID_INOP_OFF.svg",
-        "sha256": "f31252cd36040d040ae1c2724c5ba69a4000ab3c6458e3cd500774eda6312c03"
+        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/ANTI_SKID_INOP_OFF.svg",
+        "sha256": "d1f1afe30812dff3b004e27b73ac34f74d4ebf7097f155b6f25c2058cc37bcc5"
       },
       "ON": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-v2/ANTI_SKID_INOP_ON.svg",
-        "sha256": "b7c3424b8621a78e8f5399aa7cd333138ee317853d5794993dfecfb181e047b0"
+        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/ANTI_SKID_INOP_ON.svg",
+        "sha256": "a2a80f92a62631fa1dd619aa0d991f6c221ae0038c03fe3f6334fc1adf06ec16"
       }
     },
     "AUTO_BRAKE_DISARM": {
       "OFF": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-v2/AUTO_BRAKE_DISARM_OFF.svg",
-        "sha256": "fa43622e63703edc1ff2879d18f1eea8c0a3d338ae7680e2a76f637e7ef5f326"
+        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/AUTO_BRAKE_DISARM_OFF.svg",
+        "sha256": "e38cc68682a5df2de64ecaf56b1eb900c303e6e4500352b05c66decf57516b53"
       },
       "ON": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-v2/AUTO_BRAKE_DISARM_ON.svg",
-        "sha256": "b5ad7cdf07005d318d1eb69b5e284c8903c69f52c2c9405fba36ca42e7e84869"
+        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/AUTO_BRAKE_DISARM_ON.svg",
+        "sha256": "e062d61c26b4fe2d546615c59295b0456ba62b6831c2a98272c45abae22cbdf6"
       }
     },
     "BRAKE_TEMP": {
       "OFF": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-v2/BRAKE_TEMP_OFF.svg",
-        "sha256": "29031ec79eac8b5e9fbd2bc68009564017438749adb2e708350af73acf662502"
+        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/BRAKE_TEMP_OFF.svg",
+        "sha256": "a7280753feac47e6890e55f515dd9f288666ac361a283d8fe4141807a6e5d306"
       },
       "ON": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-v2/BRAKE_TEMP_ON.svg",
-        "sha256": "b4c97007c8a96bddf50b21f0ea88208b62237cde82bf617a25d93f3f470f37f3"
+        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/BRAKE_TEMP_ON.svg",
+        "sha256": "87318cd16515eebd6dc0b5ee20318b7ee0921f5edabd7c385db8433a2eca051d"
       }
     },
     "STAB_OUT_OF_TRIM": {
       "OFF": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-v2/STAB_OUT_OF_TRIM_OFF.svg",
-        "sha256": "4c7ad36b64c8e356e03a3d950d0484cd0cba94fb27fbd0307e2609541a602da8"
+        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/STAB_OUT_OF_TRIM_OFF.svg",
+        "sha256": "09becbf53caeef3f5b806b7fa0f8fea73db32a0e533e487f4c28184d02ce7f94"
       },
       "ON": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-v2/STAB_OUT_OF_TRIM_ON.svg",
-        "sha256": "1c7f826981d282e023d6cbfb949ab833a836687af47d5f3111b036bb4238ef3f"
+        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/STAB_OUT_OF_TRIM_ON.svg",
+        "sha256": "1b44a3071cf5ed7cf22ef325116ef8c3afb3a7313212e6415e6941a305d6b846"
       }
     },
     "SPEED_BRAKE_DO_NOT_ARMED_AMBER": {
       "OFF": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-v2/SPEED_BRAKE_DO_NOT_ARMED_AMBER_OFF.svg",
-        "sha256": "3e4e41c23375ed82e76c2cd85a4461c0dafba5ce43976474309dd34a9b63d309"
+        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/SPEED_BRAKE_DO_NOT_ARMED_AMBER_OFF.svg",
+        "sha256": "a44e59d7e9c93a7269d5565d66ae84db00196bc82a825476bd76782e855b8bd7"
       },
       "ON": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-v2/SPEED_BRAKE_DO_NOT_ARMED_AMBER_ON.svg",
-        "sha256": "e39bfb9266bc332d0e36d058c76866b4dd5cb33412991c7d449b10dcd9807d79"
+        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/SPEED_BRAKE_DO_NOT_ARMED_AMBER_ON.svg",
+        "sha256": "eb20faf86c7e506c93cd6a0bc1d5e6d25b5815f0e360938a841dd68971714e8c"
       }
     },
     "SPEED_BRAKE_ARMED_GREEN": {
       "OFF": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-v2/SPEED_BRAKE_ARMED_GREEN_OFF.svg",
-        "sha256": "bd85efc765d3ef81c47b87261a20731d7f85b1e3799fb3ed57da32d96e0930d6"
+        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/SPEED_BRAKE_ARMED_GREEN_OFF.svg",
+        "sha256": "8115a31c2bbbf7d2402d058acef39ede22e9ee53ddb7ba4282134ebc11779634"
       },
       "ON": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-v2/SPEED_BRAKE_ARMED_GREEN_ON.svg",
-        "sha256": "741564252a693da7cb822cda805943ad78ffcdbd8ee902736775228d826e4524"
+        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/SPEED_BRAKE_ARMED_GREEN_ON.svg",
+        "sha256": "f1f46f554eb5173a9434c72ae81253a9ef249a6c6a10c0f3e980b4596b634267"
       }
     },
     "INOP": {
       "OFF": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-v2/INOP_OFF.svg",
-        "sha256": "99535bcc446c5b98c009f360381b5ee8622f5810ef6c733b25e2e045a69ae4bd"
+        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/INOP_OFF.svg",
+        "sha256": "3cb847909063d78079d950f63ae76d7239d737c98843739a96cfd9e8e035db5f"
       },
       "ON": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-v2/INOP_ON.svg",
-        "sha256": "f98bd36f76c059d81a420c952acf4f37fbc3035571c7c494d8182561e3143b0d"
+        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/INOP_ON.svg",
+        "sha256": "2a5a25a5c18af2ad20689562ebfb60a71063f3bde2e3ad89c81a7fc21eecd729"
       }
     }
   },
@@ -572,10 +572,10 @@
       "asset": "NOSE_GEAR_2LINE_RED",
       "pieceId": "fo-inner",
       "sourceRect": [
-        251,
+        250,
         150,
-        64,
-        30
+        70,
+        31
       ],
       "rule": "gear-red",
       "inputs": [
@@ -598,10 +598,10 @@
       "asset": "NOSE_GEAR_2LINE_GREEN",
       "pieceId": "fo-inner",
       "sourceRect": [
-        251,
+        250,
         194,
-        64,
-        28
+        70,
+        32
       ],
       "rule": "gear-green",
       "inputs": [
@@ -622,10 +622,10 @@
       "asset": "LEFT_GEAR_2LINE_RED",
       "pieceId": "fo-inner",
       "sourceRect": [
-        212,
-        240,
-        64,
-        30
+        210,
+        238,
+        69,
+        34
       ],
       "rule": "gear-red",
       "inputs": [
@@ -648,10 +648,10 @@
       "asset": "LEFT_GEAR_2LINE_GREEN",
       "pieceId": "fo-inner",
       "sourceRect": [
-        212,
-        284,
-        64,
-        28
+        210,
+        282,
+        69,
+        34
       ],
       "rule": "gear-green",
       "inputs": [
@@ -672,10 +672,10 @@
       "asset": "RIGHT_GEAR_2LINE_RED",
       "pieceId": "fo-inner",
       "sourceRect": [
-        298,
-        240,
-        64,
-        30
+        295,
+        238,
+        68,
+        34
       ],
       "rule": "gear-red",
       "inputs": [
@@ -698,10 +698,10 @@
       "asset": "RIGHT_GEAR_2LINE_GREEN",
       "pieceId": "fo-inner",
       "sourceRect": [
-        298,
-        284,
-        64,
-        28
+        295,
+        282,
+        68,
+        34
       ],
       "rule": "gear-green",
       "inputs": [
@@ -795,10 +795,10 @@
       "asset": "AUTO_BRAKE_DISARM",
       "pieceId": "fo-inner",
       "sourceRect": [
-        55,
-        769,
-        88,
-        34
+        63,
+        767,
+        80,
+        40
       ],
       "rule": "autobrake",
       "inputs": [
@@ -945,5 +945,6 @@
     "Physical sensors are explicit instructor inputs; a switch command is not treated as proof of valve position.",
     "BRAKE_TEMP is direct visual test only; exact operating threshold not supplied by the retrieved Classic FCOM.",
     "BELOW_GS_P_INHIBIT follows the FSU face variant requested in the LIGHTS asset database."
-  ]
+  ],
+  "previousVersion": "LGT-0008"
 }

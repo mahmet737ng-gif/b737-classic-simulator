@@ -1,0 +1,1983 @@
+{
+  "schema": "B737-mounted-annunciator-lens.v1",
+  "galleryVersion": "LGT-0013",
+  "version": "LGT-0014",
+  "reference": "B737 approved LIGHTS unified-v2; no plate, bezel, or second housing on mounted sockets",
+  "sourceRectCorrections": {
+    "main": 7,
+    "overhead": 9
+  },
+  "types": 87,
+  "states": [
+    {
+      "id": "ALIGN_WHITE",
+      "palette": "white",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/ALIGN_WHITE_OFF.svg",
+      "sha256": "af0fa99935785bc19e66f04a349836820b09194143b5a65c3a16b4393d14ae40",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "ALIGN_WHITE",
+      "palette": "white",
+      "state": "ON",
+      "asset": "unified-mounted-v1/ALIGN_WHITE_ON.svg",
+      "sha256": "771abb95dde46b5e34723c1cf303df3c2a1244ce971779c1944965dad9c8ad9e",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "A_T_LIM_WHITE",
+      "palette": "white",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/A_T_LIM_WHITE_OFF.svg",
+      "sha256": "e853fd01de3e1bdb1512edbb87dbcded4994cec0cfd3b1140a1edf0e409fd301",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "A_T_LIM_WHITE",
+      "palette": "white",
+      "state": "ON",
+      "asset": "unified-mounted-v1/A_T_LIM_WHITE_ON.svg",
+      "sha256": "3a8ba428c86b241bf7ce56b35d6c178fbe919acf0e9c9cbf15903771e913d172",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "AFT_CARGO",
+      "palette": "amber",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/AFT_CARGO_OFF.svg",
+      "sha256": "50bb705ad4a12c3917076cebce616050339719a4f210f43f89c83a2aaeb796e7",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "AFT_CARGO",
+      "palette": "amber",
+      "state": "ON",
+      "asset": "unified-mounted-v1/AFT_CARGO_ON.svg",
+      "sha256": "f4263888425e1edf68e3a72785f6c4d2b6f8e547a5d41760a279bdc52e3b4381",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "AFT_ENTRY",
+      "palette": "amber",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/AFT_ENTRY_OFF.svg",
+      "sha256": "db0a709e9cea8e7e86710e681ae0c5d875ebb4c1af3b855ce8459eecc850ef4b",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "AFT_ENTRY",
+      "palette": "amber",
+      "state": "ON",
+      "asset": "unified-mounted-v1/AFT_ENTRY_ON.svg",
+      "sha256": "d8c04189240bad2d256eae71f873c73cae66fb94dc6cb0ed7c7665d2c427a59e",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "AFT_SERVICE",
+      "palette": "amber",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/AFT_SERVICE_OFF.svg",
+      "sha256": "355da7e519d60e6c221c4e991330a82dc01d870f962eb9d2c7f4b1f78284d8de",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "AFT_SERVICE",
+      "palette": "amber",
+      "state": "ON",
+      "asset": "unified-mounted-v1/AFT_SERVICE_ON.svg",
+      "sha256": "04b4b9dbb582e9405e92c2f9f45d89f43932f18e9ecb471ec772ae42c55faa19",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "AIR_STAIR",
+      "palette": "amber",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/AIR_STAIR_OFF.svg",
+      "sha256": "13dcae74677976aef9ead65445edcd6546ba3d0b33fa1fde47ccc21bfdc0b0b3",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "AIR_STAIR",
+      "palette": "amber",
+      "state": "ON",
+      "asset": "unified-mounted-v1/AIR_STAIR_ON.svg",
+      "sha256": "98c4d976d8687ce356bd893290f1bf408d926e6de4bac0cc20b96edab66a5ab4",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "ALTITUDE_ALERT",
+      "palette": "amber",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/ALTITUDE_ALERT_OFF.svg",
+      "sha256": "137ee664ff814782e644b14dbaf1658a71d76bf467bfe2381834a434ea74aafc",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "ALTITUDE_ALERT",
+      "palette": "amber",
+      "state": "ON",
+      "asset": "unified-mounted-v1/ALTITUDE_ALERT_ON.svg",
+      "sha256": "88a960a22990726e91c0b0a46434451fd308b1e0a7e29cac7cc1927e78f0c7ff",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "ANTI_SKID_INOP",
+      "palette": "amber",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/ANTI_SKID_INOP_OFF.svg",
+      "sha256": "d1f1afe30812dff3b004e27b73ac34f74d4ebf7097f155b6f25c2058cc37bcc5",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "ANTI_SKID_INOP",
+      "palette": "amber",
+      "state": "ON",
+      "asset": "unified-mounted-v1/ANTI_SKID_INOP_ON.svg",
+      "sha256": "a2a80f92a62631fa1dd619aa0d991f6c221ae0038c03fe3f6334fc1adf06ec16",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "APU_GEN_OFF_BUS",
+      "palette": "blue",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/APU_GEN_OFF_BUS_OFF.svg",
+      "sha256": "d2908ca4f2d73c24fd36769200132a8d2a01cec4a66a0a9675ccdd247446b5ed",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "APU_GEN_OFF_BUS",
+      "palette": "blue",
+      "state": "BRIGHT_BLUE",
+      "asset": "unified-mounted-v1/APU_GEN_OFF_BUS_BRIGHT_BLUE.svg",
+      "sha256": "693a9282e3a67fbc997ef161503903f20f92d78792c2186657fd0bf32d1ec5cc",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "AUTO_BRAKE_DISARM",
+      "palette": "amber",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/AUTO_BRAKE_DISARM_OFF.svg",
+      "sha256": "e38cc68682a5df2de64ecaf56b1eb900c303e6e4500352b05c66decf57516b53",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "AUTO_BRAKE_DISARM",
+      "palette": "amber",
+      "state": "ON",
+      "asset": "unified-mounted-v1/AUTO_BRAKE_DISARM_ON.svg",
+      "sha256": "e062d61c26b4fe2d546615c59295b0456ba62b6831c2a98272c45abae22cbdf6",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "AUTO_FAIL",
+      "palette": "amber",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/AUTO_FAIL_OFF.svg",
+      "sha256": "7bb221d004800be351e8b4cfb223406ade4b0b6fa1e9b46a029ff1fd880acda0",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "AUTO_FAIL",
+      "palette": "amber",
+      "state": "ON",
+      "asset": "unified-mounted-v1/AUTO_FAIL_ON.svg",
+      "sha256": "a214aaae093a7b134cb0f76e93a0050ffd98dbf861f5401a93abe905bafa98f8",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "AUTO_SLAT_FAIL",
+      "palette": "amber",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/AUTO_SLAT_FAIL_OFF.svg",
+      "sha256": "739c76f3815c1af091511a78ed099040ae60164235d2b96e062d8aba420e39d2",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "AUTO_SLAT_FAIL",
+      "palette": "amber",
+      "state": "ON",
+      "asset": "unified-mounted-v1/AUTO_SLAT_FAIL_ON.svg",
+      "sha256": "492c935873e98d393c33402c577aca1726dd4970601bae21ef92e72295cc8867",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "BELOW_GS_P_INHIBIT",
+      "palette": "amber",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/BELOW_GS_P_INHIBIT_OFF.svg",
+      "sha256": "009065544f8370dada5fbee03aae68acab8c518e9316b57b38bdd5d5a75d041c",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "BELOW_GS_P_INHIBIT",
+      "palette": "amber",
+      "state": "ON",
+      "asset": "unified-mounted-v1/BELOW_GS_P_INHIBIT_ON.svg",
+      "sha256": "12a7459939c88381e9a257182a7704dacc3afd90ae2550124108ba0b8706a010",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "BLEED_TRIP_OFF",
+      "palette": "amber",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/BLEED_TRIP_OFF_OFF.svg",
+      "sha256": "fa6b50b8ae2f1e3f107daa025ee7aa353eb55d82e85fd34734d295ee423207bc",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "BLEED_TRIP_OFF",
+      "palette": "amber",
+      "state": "ON",
+      "asset": "unified-mounted-v1/BLEED_TRIP_OFF_ON.svg",
+      "sha256": "79c8abf9fc30da0b00d86e3760aef73bc3b2963f6861fb7eadba7d09a648b8a3",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "BRAKE_TEMP",
+      "palette": "amber",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/BRAKE_TEMP_OFF.svg",
+      "sha256": "a7280753feac47e6890e55f515dd9f288666ac361a283d8fe4141807a6e5d306",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "BRAKE_TEMP",
+      "palette": "amber",
+      "state": "ON",
+      "asset": "unified-mounted-v1/BRAKE_TEMP_ON.svg",
+      "sha256": "87318cd16515eebd6dc0b5ee20318b7ee0921f5edabd7c385db8433a2eca051d",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "BUS_OFF_LAMP",
+      "palette": "amber",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/BUS_OFF_LAMP_OFF.svg",
+      "sha256": "edaa60a413f0aa585ae211f916884dd6a830ca1dcc3388d6cf5f01f5a2999284",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "BUS_OFF_LAMP",
+      "palette": "amber",
+      "state": "ON",
+      "asset": "unified-mounted-v1/BUS_OFF_LAMP_ON.svg",
+      "sha256": "df4a3f9bb9221b0f9be453d279e2907bb14073804bae209ee1ef7c813c525454",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "CALL",
+      "palette": "blue",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/CALL_OFF.svg",
+      "sha256": "0aff591dc1c4d3d20344ac041e0a6ae35b0842a32f9aa458b551a569f62f07b5",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "CALL",
+      "palette": "blue",
+      "state": "BRIGHT_BLUE",
+      "asset": "unified-mounted-v1/CALL_BRIGHT_BLUE.svg",
+      "sha256": "3f9ce5c85b9de42af144999ad55dedafc3665d0ed8a87edb5688042c9105e130",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "CAPT_PS_1_AUX_STATIC",
+      "palette": "amber",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/CAPT_PS_1_AUX_STATIC_OFF.svg",
+      "sha256": "de1f55c1cecfdf58f7030205a02d8f968c6a368ac960747ac65f9746e41ae6c9",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "CAPT_PS_1_AUX_STATIC",
+      "palette": "amber",
+      "state": "ON",
+      "asset": "unified-mounted-v1/CAPT_PS_1_AUX_STATIC_ON.svg",
+      "sha256": "4ac7f1a865c3a6df0d5529ef1208b44940f4022b34afbcff00fe250400d15817",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "CAPT_STATIC_1_AUX_PS",
+      "palette": "amber",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/CAPT_STATIC_1_AUX_PS_OFF.svg",
+      "sha256": "2361752e69dd30eb8a8c6156bfa93f7bd3c94f5793e8776c520775da638ce32f",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "CAPT_STATIC_1_AUX_PS",
+      "palette": "amber",
+      "state": "ON",
+      "asset": "unified-mounted-v1/CAPT_STATIC_1_AUX_PS_ON.svg",
+      "sha256": "a92afa22a0c0a64019f390a77e85cbe566fe4591be86157b0ef7dcae2d529987",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "COWL_ANTI_ICE",
+      "palette": "amber",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/COWL_ANTI_ICE_OFF.svg",
+      "sha256": "a8dda7da15ac2d7baab2d68ba5b131ba2eb8de665272a5aa8585c7841ea6f4d0",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "COWL_ANTI_ICE",
+      "palette": "amber",
+      "state": "ON",
+      "asset": "unified-mounted-v1/COWL_ANTI_ICE_ON.svg",
+      "sha256": "d4f5401e5afd9d71201b735b2b4d4fa9f700595116b0bccfb741c877eea478fb",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "COWL_VALVE_OPEN",
+      "palette": "blue",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/COWL_VALVE_OPEN_OFF.svg",
+      "sha256": "3d729036bff7b936666729400811810a01e7101631c45049fd9adbca8c046f89",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "COWL_VALVE_OPEN",
+      "palette": "blue",
+      "state": "DIM_BLUE",
+      "asset": "unified-mounted-v1/COWL_VALVE_OPEN_DIM_BLUE.svg",
+      "sha256": "fcbf6607f779de23fd3e7a8801c73b5900a303f029878ff0f0387267707e7264",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "COWL_VALVE_OPEN",
+      "palette": "blue",
+      "state": "BRIGHT_BLUE",
+      "asset": "unified-mounted-v1/COWL_VALVE_OPEN_BRIGHT_BLUE.svg",
+      "sha256": "d656659f4d6c7716f43cc1e1f2315e72aadb90c02cd669c11647b8cd5f03a0b2",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "DC_FAIL",
+      "palette": "amber",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/DC_FAIL_OFF.svg",
+      "sha256": "a1064bac427921dcf34ac37514d6706288ab83b3866868bf3f378e12e8fc7163",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "DC_FAIL",
+      "palette": "amber",
+      "state": "ON",
+      "asset": "unified-mounted-v1/DC_FAIL_ON.svg",
+      "sha256": "b40dd83307bfe42cbbdecf07d49235054f719e7b79a6f55f03eb99d687ece334",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "DUAL_BLEED",
+      "palette": "amber",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/DUAL_BLEED_OFF.svg",
+      "sha256": "94908552e0c2efa718319c8b36b4f7fa15ba928ac6d9b0fbc1625b499bbb4d1b",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "DUAL_BLEED",
+      "palette": "amber",
+      "state": "ON",
+      "asset": "unified-mounted-v1/DUAL_BLEED_ON.svg",
+      "sha256": "543498c2d4bba8f85aaca7f10d3d6b1f4da683cfa34a29569fb152f973bfc604",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "DUCT_OVERHEAT",
+      "palette": "amber",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/DUCT_OVERHEAT_OFF.svg",
+      "sha256": "4642ade827bf694fc5f2b39f0fd139a4c89f13a91c81d1f2b396cfe4af38b263",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "DUCT_OVERHEAT",
+      "palette": "amber",
+      "state": "ON",
+      "asset": "unified-mounted-v1/DUCT_OVERHEAT_ON.svg",
+      "sha256": "527b948e2480e9111bef32b521f78b46540eee1d87a3e80ae9aca0116fa44a1c",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "EQUIP",
+      "palette": "amber",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/EQUIP_OFF.svg",
+      "sha256": "13dc1c4b98cce142741cec0676f099b1376181a1876ae016df6654d3e59acf82",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "EQUIP",
+      "palette": "amber",
+      "state": "ON",
+      "asset": "unified-mounted-v1/EQUIP_ON.svg",
+      "sha256": "a87b904787a2a021b94a365a6668c335f66a1d2a2327bbdda2679e8031993b8f",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "FAULT",
+      "palette": "amber",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/FAULT_OFF.svg",
+      "sha256": "531bc24b545a12aa9c6476867b23a771f8060ec136a633361d5619fe3adc1822",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "FAULT",
+      "palette": "amber",
+      "state": "ON",
+      "asset": "unified-mounted-v1/FAULT_ON.svg",
+      "sha256": "7f44a7834c0053a4503df10d349ee3e9c46395edfa0c0255c0fd0da7204fc148",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "FEEL_DIFF_PRESS",
+      "palette": "amber",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/FEEL_DIFF_PRESS_OFF.svg",
+      "sha256": "23caed4a624c70aaf87b90a79eac094cb4bc20537f232db9f109bb7c02a1aaba",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "FEEL_DIFF_PRESS",
+      "palette": "amber",
+      "state": "ON",
+      "asset": "unified-mounted-v1/FEEL_DIFF_PRESS_ON.svg",
+      "sha256": "5c5ef5daa0f9f3c2c5cbb15a62599e9ac6ad72b02d7fb22231c913005405060c",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "FILTER_BYPASS",
+      "palette": "amber",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/FILTER_BYPASS_OFF.svg",
+      "sha256": "f4edf3cafc3f8159c0dc62d504f55f891e66ee1c12535c05d4849c538ce0b0e2",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "FILTER_BYPASS",
+      "palette": "amber",
+      "state": "ON",
+      "asset": "unified-mounted-v1/FILTER_BYPASS_ON.svg",
+      "sha256": "06e9fd74cd737dfec4aaa08e3b4b6d0ee0ae04575b1a03bde5b10b74788f909d",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "FO_PS_2_AUX_STATIC",
+      "palette": "amber",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/FO_PS_2_AUX_STATIC_OFF.svg",
+      "sha256": "5c5ad1caae6e98b4929ca2f325f0a17e8ea95aab77efc00117113857095021d9",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "FO_PS_2_AUX_STATIC",
+      "palette": "amber",
+      "state": "ON",
+      "asset": "unified-mounted-v1/FO_PS_2_AUX_STATIC_ON.svg",
+      "sha256": "30c3ead338b63df322c50f9c9147c36984e3128fda3cf971e214540f520e1a9a",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "FO_STATIC_2_AUX_PS",
+      "palette": "amber",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/FO_STATIC_2_AUX_PS_OFF.svg",
+      "sha256": "e25127d124276c6e25eb9ae4bd520ed67b368b81e07edb991e0f561bc2df059b",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "FO_STATIC_2_AUX_PS",
+      "palette": "amber",
+      "state": "ON",
+      "asset": "unified-mounted-v1/FO_STATIC_2_AUX_PS_ON.svg",
+      "sha256": "dc545ca9cd0fad459c99ed52bb2e3a638561add7ae106f30483b134644c62181",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "FUEL_VALVE_CLOSED",
+      "palette": "blue",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/FUEL_VALVE_CLOSED_OFF.svg",
+      "sha256": "e52b51b4898982cd4abd8430eb828fd57e6b9f04a04ec51706955c406d33ecf4",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "FUEL_VALVE_CLOSED",
+      "palette": "blue",
+      "state": "DIM_BLUE",
+      "asset": "unified-mounted-v1/FUEL_VALVE_CLOSED_DIM_BLUE.svg",
+      "sha256": "e0d225839c29690c457e168987bf6b31a562b52cc680e1f8037b84c9b8cb2b40",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "FUEL_VALVE_CLOSED",
+      "palette": "blue",
+      "state": "BRIGHT_BLUE",
+      "asset": "unified-mounted-v1/FUEL_VALVE_CLOSED_BRIGHT_BLUE.svg",
+      "sha256": "410c8d1d67ff64564083cda1930d991003a5ae83fcef7ac2d1035e99cd1540bd",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "FWD_CARGO",
+      "palette": "amber",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/FWD_CARGO_OFF.svg",
+      "sha256": "a5a58877828b3c8b9719f0cc5da7d64dafb9aa1cec6623eaa2fcf7288d024263",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "FWD_CARGO",
+      "palette": "amber",
+      "state": "ON",
+      "asset": "unified-mounted-v1/FWD_CARGO_ON.svg",
+      "sha256": "afe69dd46579f3b7c2858edf56fa2f0445808c61172c3297dd9bc961531cafb9",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "FWD_ENTRY",
+      "palette": "amber",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/FWD_ENTRY_OFF.svg",
+      "sha256": "b965fd00d3362e85c6e650dd7dea954933749c3a8b83fbc2bafac6dd0f9bf1a7",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "FWD_ENTRY",
+      "palette": "amber",
+      "state": "ON",
+      "asset": "unified-mounted-v1/FWD_ENTRY_ON.svg",
+      "sha256": "3d347961f229b4308a1c6b078239aa8623ce9b2019cea0eeda16a412ff796a41",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "FWD_SERVICE",
+      "palette": "amber",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/FWD_SERVICE_OFF.svg",
+      "sha256": "89125e418f11e5cf5dcb67a2d38b1dad596c51043071e81020b719bdd7bc2c79",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "FWD_SERVICE",
+      "palette": "amber",
+      "state": "ON",
+      "asset": "unified-mounted-v1/FWD_SERVICE_ON.svg",
+      "sha256": "025735ba262f9ec04d6ed9b17eeeb0dfb6918aaa46f1856248f9f9194d263703",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "GEN_OFF_BUS",
+      "palette": "blue",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/GEN_OFF_BUS_OFF.svg",
+      "sha256": "57ddcfad7c0c6605e380b978bbf76bd0bf480a931a22b42e761f2a47fcc00d16",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "GEN_OFF_BUS",
+      "palette": "blue",
+      "state": "BRIGHT_BLUE",
+      "asset": "unified-mounted-v1/GEN_OFF_BUS_BRIGHT_BLUE.svg",
+      "sha256": "12d58b738c0457d10fc98385593637b2dbcf0cb33eb63914859c2202777762fc",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "GRD_POWER_AVAILABLE",
+      "palette": "blue",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/GRD_POWER_AVAILABLE_OFF.svg",
+      "sha256": "a9dadd310fff3cf9d9cd88be0ac15703328c4d2d1a67627a26c39ad0cc680ff2",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "GRD_POWER_AVAILABLE",
+      "palette": "blue",
+      "state": "BRIGHT_BLUE",
+      "asset": "unified-mounted-v1/GRD_POWER_AVAILABLE_BRIGHT_BLUE.svg",
+      "sha256": "d3bc9a48549ec407f13e00a1b1becf8584d8057b9f95f20855142f5ff4b74a12",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "HIGH_OIL_TEMP",
+      "palette": "amber",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/HIGH_OIL_TEMP_OFF.svg",
+      "sha256": "73f9fcb8179e69156159285dfc4f576186e03d42efd77f2d1ec82b3f01bbcba7",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "HIGH_OIL_TEMP",
+      "palette": "amber",
+      "state": "ON",
+      "asset": "unified-mounted-v1/HIGH_OIL_TEMP_ON.svg",
+      "sha256": "dcb5e218d5cd311fe58c0eeef18dffa5444cd5e78d37217cd0f0a94bcf19a4fa",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "INOP",
+      "palette": "amber",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/INOP_OFF.svg",
+      "sha256": "3cb847909063d78079d950f63ae76d7239d737c98843739a96cfd9e8e035db5f",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "INOP",
+      "palette": "amber",
+      "state": "ON",
+      "asset": "unified-mounted-v1/INOP_ON.svg",
+      "sha256": "2a5a25a5c18af2ad20689562ebfb60a71063f3bde2e3ad89c81a7fc21eecd729",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "LEFT_GEAR_2LINE_GREEN",
+      "palette": "green",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/LEFT_GEAR_2LINE_GREEN_OFF.svg",
+      "sha256": "253eeddf120418615523ecfaeb187b6b24c805231de55ef2db7012272d4c43b9",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "LEFT_GEAR_2LINE_GREEN",
+      "palette": "green",
+      "state": "ON",
+      "asset": "unified-mounted-v1/LEFT_GEAR_2LINE_GREEN_ON.svg",
+      "sha256": "74fbb50018f87d072f7f78b3ceb29cafb5f820dafb26be5c402afa5a6589813b",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "LEFT_GEAR_2LINE_RED",
+      "palette": "red",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/LEFT_GEAR_2LINE_RED_OFF.svg",
+      "sha256": "acc4e1f5948f2ce898659279ecba3d66b9617fd55f81c227284182e0af02c947",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "LEFT_GEAR_2LINE_RED",
+      "palette": "red",
+      "state": "ON",
+      "asset": "unified-mounted-v1/LEFT_GEAR_2LINE_RED_ON.svg",
+      "sha256": "91aabb8dc13689d93179e20f095a531e97ba6c152bb4880875637ec500fd2e5d",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "LE_FLAPS_EXT_GREEN",
+      "palette": "green",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/LE_FLAPS_EXT_GREEN_OFF.svg",
+      "sha256": "09c27ba5f1f0c73f81c3e4852e9be01caca9857d1581bbc5394dd800b65b7de8",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "LE_FLAPS_EXT_GREEN",
+      "palette": "green",
+      "state": "ON",
+      "asset": "unified-mounted-v1/LE_FLAPS_EXT_GREEN_ON.svg",
+      "sha256": "7498f28c304578d4eb7a18b161b0d68833c830da8c4eeffe4e8add22dca75cdf",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "LE_FLAPS_TRANSIT",
+      "palette": "amber",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/LE_FLAPS_TRANSIT_OFF.svg",
+      "sha256": "bfff5f9739244486062ea69b59ccd61d6d03d5f5ef91a36ef65737aa106dde46",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "LE_FLAPS_TRANSIT",
+      "palette": "amber",
+      "state": "ON",
+      "asset": "unified-mounted-v1/LE_FLAPS_TRANSIT_ON.svg",
+      "sha256": "782ec9d94def4f882f832ec1f30b6ca53c408be7a6e2bb0abe2c9008f62defe6",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "LOW_IDLE",
+      "palette": "amber",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/LOW_IDLE_OFF.svg",
+      "sha256": "65444a6a9f39d0e74a333939b2d59a06d3cd7d962dc7af6eb11fa6e1515260e7",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "LOW_IDLE",
+      "palette": "amber",
+      "state": "ON",
+      "asset": "unified-mounted-v1/LOW_IDLE_ON.svg",
+      "sha256": "7ba0addab08138c35dcc7511fe544aa6b961f41e29fb16b53260c9158fc6c6e9",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "LOW_OIL_PRESSURE",
+      "palette": "amber",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/LOW_OIL_PRESSURE_OFF.svg",
+      "sha256": "b156be091388345715a80b51bc15ccf5adf14bc6cf08a0654777c5ee93bbd767",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "LOW_OIL_PRESSURE",
+      "palette": "amber",
+      "state": "ON",
+      "asset": "unified-mounted-v1/LOW_OIL_PRESSURE_ON.svg",
+      "sha256": "7df6b8da4f6107c9caa86d0b301db7322ca566cd3ba7725f2f2309c6e5e55acc",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "LOW_OIL_QUANTITY",
+      "palette": "blue",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/LOW_OIL_QUANTITY_OFF.svg",
+      "sha256": "8fa58027b8e07bf16447340f63a1793d9a4ccb119ac06af6a3dc1b0d5b463b3d",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "LOW_OIL_QUANTITY",
+      "palette": "blue",
+      "state": "BRIGHT_BLUE",
+      "asset": "unified-mounted-v1/LOW_OIL_QUANTITY_BRIGHT_BLUE.svg",
+      "sha256": "acce4ed62cd1db72288108793fc44412b88d379113cd4dd22c0439ec904b04e4",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "LOW_PRESSURE",
+      "palette": "amber",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/LOW_PRESSURE_OFF.svg",
+      "sha256": "0154d723b541f7c5f150852c0002d41b08258ecd24ac57b4b0a04677b8e7e1a9",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "LOW_PRESSURE",
+      "palette": "amber",
+      "state": "ON",
+      "asset": "unified-mounted-v1/LOW_PRESSURE_ON.svg",
+      "sha256": "29f533e1aca5475dbb67c0e2c39725c7df04a23673f41657b33a614e6d03e7f2",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "LOW_QUANTITY",
+      "palette": "amber",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/LOW_QUANTITY_OFF.svg",
+      "sha256": "3e04fcb9528d3cffb8dd7fdfa620073d8f72f73e31b4e99aaf5c9d775d08230c",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "LOW_QUANTITY",
+      "palette": "amber",
+      "state": "ON",
+      "asset": "unified-mounted-v1/LOW_QUANTITY_ON.svg",
+      "sha256": "139a21f3784fa73d282e7306ba3fe4a8a423db0b0b836bb858a45b8b0476a133",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "L_ALPHA_VANE",
+      "palette": "amber",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/L_ALPHA_VANE_OFF.svg",
+      "sha256": "c353dc4cc68c6c1d56dbc802428ed16cf4f5fa73ef1d4b1c403f113d238f0687",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "L_ALPHA_VANE",
+      "palette": "amber",
+      "state": "ON",
+      "asset": "unified-mounted-v1/L_ALPHA_VANE_ON.svg",
+      "sha256": "14db20847d460eaa148cb11c1044c5a51dee8933baefa9c5451393b971d34af2",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "L_ELEV_PITOT",
+      "palette": "amber",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/L_ELEV_PITOT_OFF.svg",
+      "sha256": "4805bb9cea2d85b16efd801610791654af15ba4f82d2cf08d5d1849ac44e355e",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "L_ELEV_PITOT",
+      "palette": "amber",
+      "state": "ON",
+      "asset": "unified-mounted-v1/L_ELEV_PITOT_ON.svg",
+      "sha256": "c08549f489979c22d65cd82236e0b14ba525a57c8a84432f4020b68fd662746c",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "L_VALVE_OPEN",
+      "palette": "blue",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/L_VALVE_OPEN_OFF.svg",
+      "sha256": "d7c2faa0c860c71fb5611bb5dde5c4d5bc35eead0361902cf7a77432ba65eaee",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "L_VALVE_OPEN",
+      "palette": "blue",
+      "state": "DIM_BLUE",
+      "asset": "unified-mounted-v1/L_VALVE_OPEN_DIM_BLUE.svg",
+      "sha256": "c69df868830c1955fdc133896d707ec4adb57eb3b01f8067dcefc452def405e4",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "L_VALVE_OPEN",
+      "palette": "blue",
+      "state": "BRIGHT_BLUE",
+      "asset": "unified-mounted-v1/L_VALVE_OPEN_BRIGHT_BLUE.svg",
+      "sha256": "d9d60dcb50cef902a711981bdd175ea8ccef0ff52457435ddb980987998d3ae5",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "MACH_TRIM_FAIL",
+      "palette": "amber",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/MACH_TRIM_FAIL_OFF.svg",
+      "sha256": "2611e41dc22ee17827c5d9c97c76cef7de39d65c427149ad21dc029f28d91d74",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "MACH_TRIM_FAIL",
+      "palette": "amber",
+      "state": "ON",
+      "asset": "unified-mounted-v1/MACH_TRIM_FAIL_ON.svg",
+      "sha256": "17d45a07fee70893ba722bda5728e1ccde2c7ff9a5c9692c18656af33cd02475",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "MANUAL_GREEN",
+      "palette": "green",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/MANUAL_GREEN_OFF.svg",
+      "sha256": "9db01d359579f26d295999f8a37d36447cda6ad28cc43045a137bbc9b94b5359",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "MANUAL_GREEN",
+      "palette": "green",
+      "state": "ON",
+      "asset": "unified-mounted-v1/MANUAL_GREEN_ON.svg",
+      "sha256": "d6fe7baa2eebf587dfe465d2cb8a2fdba96a0e0474454f77110663d17499ad03",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "NOSE_GEAR_2LINE_GREEN",
+      "palette": "green",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/NOSE_GEAR_2LINE_GREEN_OFF.svg",
+      "sha256": "5a9572c4f8808f0ddc48aa619c3a89842c7c33a06dfb00e7b992f734cec8f7ed",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "NOSE_GEAR_2LINE_GREEN",
+      "palette": "green",
+      "state": "ON",
+      "asset": "unified-mounted-v1/NOSE_GEAR_2LINE_GREEN_ON.svg",
+      "sha256": "23d470748f5b6d4ef38ce9541d9bcea3fb5ea564fb0fdc0d4c173cc40950108c",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "NOSE_GEAR_2LINE_RED",
+      "palette": "red",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/NOSE_GEAR_2LINE_RED_OFF.svg",
+      "sha256": "1d386cdc5a66d93f8cebdac0c4f9a269eb3b623245b5c14bc27c7e046334943e",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "NOSE_GEAR_2LINE_RED",
+      "palette": "red",
+      "state": "ON",
+      "asset": "unified-mounted-v1/NOSE_GEAR_2LINE_RED_ON.svg",
+      "sha256": "9d3753e301a0e30a76180f2cc612cd8df1285f7c53ded53724462371cfebd3d4",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "NOT_ARMED_VERTICAL",
+      "palette": "amber",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/NOT_ARMED_VERTICAL_OFF.svg",
+      "sha256": "f2ad1f5056b2e03bc249df2ca9eb162033a4e52dad07373070afd1717380cf6f",
+      "face": {
+        "width": 300,
+        "height": 600
+      }
+    },
+    {
+      "id": "NOT_ARMED_VERTICAL",
+      "palette": "amber",
+      "state": "ON",
+      "asset": "unified-mounted-v1/NOT_ARMED_VERTICAL_ON.svg",
+      "sha256": "b1371d9f6af7b89966213891d7ac67d7832ecbc94a6fb3b19d11bc4cb6c4aaf1",
+      "face": {
+        "width": 300,
+        "height": 600
+      }
+    },
+    {
+      "id": "OFF_LAMP",
+      "palette": "amber",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/OFF_LAMP_OFF.svg",
+      "sha256": "f90e763e4272182cb49f5db824a650e468e99b2e0110c14b8e1d941aab1062c4",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "OFF_LAMP",
+      "palette": "amber",
+      "state": "ON",
+      "asset": "unified-mounted-v1/OFF_LAMP_ON.svg",
+      "sha256": "cfd5a87fba26c9f54c9687f551ef5171a7c8163c1d6cca5d0797f52f6f5f6e60",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "OFF_SCHED_DESCENT",
+      "palette": "amber",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/OFF_SCHED_DESCENT_OFF.svg",
+      "sha256": "db613474e4d6f90a98ed72d8e105164011377de74726bcdd51a27c807d5b57ba",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "OFF_SCHED_DESCENT",
+      "palette": "amber",
+      "state": "ON",
+      "asset": "unified-mounted-v1/OFF_SCHED_DESCENT_ON.svg",
+      "sha256": "7d342eec3463d73508c6e74a3fc547ec00135c25aa0fe4864e5c98ba0e09289b",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "OIL_FILTER_BYPASS",
+      "palette": "amber",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/OIL_FILTER_BYPASS_OFF.svg",
+      "sha256": "a2638d4524638fda018d6efbbdd085bd339f9846c42c43001b5a26221039cf28",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "OIL_FILTER_BYPASS",
+      "palette": "amber",
+      "state": "ON",
+      "asset": "unified-mounted-v1/OIL_FILTER_BYPASS_ON.svg",
+      "sha256": "12761aee2968bda0dbd7cdd66b38fe24bbd28ade74a12e7ad8d871c5ddcbb504",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "ON_DC_LAMP",
+      "palette": "amber",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/ON_DC_LAMP_OFF.svg",
+      "sha256": "cd095b0e2a5b3bbde8dc7beaa120d70964b484de84ddc24b7f3fc2ce1bf313ce",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "ON_DC_LAMP",
+      "palette": "amber",
+      "state": "ON",
+      "asset": "unified-mounted-v1/ON_DC_LAMP_ON.svg",
+      "sha256": "23a0cbc7ed5a1327e26721ab47c860bcd5cc4f6d1492f955e4878d3953127ada",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "ON_GREEN",
+      "palette": "green",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/ON_GREEN_OFF.svg",
+      "sha256": "34fe29698ba3fbbe58b290a78c7353a8882eab8e58db7b7f9bb860853153f154",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "ON_GREEN",
+      "palette": "green",
+      "state": "ON",
+      "asset": "unified-mounted-v1/ON_GREEN_ON.svg",
+      "sha256": "024936dfdfa21014345520406cb2866d4948cedeae937fb27a3247e9c0cd743f",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "OVERHEAT",
+      "palette": "amber",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/OVERHEAT_OFF.svg",
+      "sha256": "9fd79c4232af2e24cd9dbfadc5a5ac9baad991539318fb8e904da91a8475e8a2",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "OVERHEAT",
+      "palette": "amber",
+      "state": "ON",
+      "asset": "unified-mounted-v1/OVERHEAT_ON.svg",
+      "sha256": "30012632b0122af6ffcadbb7c9409db97e7f4c87b657b4603e3c1fd108fff784",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "OVER_SPEED",
+      "palette": "amber",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/OVER_SPEED_OFF.svg",
+      "sha256": "630a2ec8e644a70ae7df63b9a2834faa87e939392e5fba68e3705b306f9216f1",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "OVER_SPEED",
+      "palette": "amber",
+      "state": "ON",
+      "asset": "unified-mounted-v1/OVER_SPEED_ON.svg",
+      "sha256": "5e84147dbee8a888a3dd32837294b040a2501279232202c27c2a287b0015ae71",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "PACK_TRIP_OFF",
+      "palette": "amber",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/PACK_TRIP_OFF_OFF.svg",
+      "sha256": "2d2154cfbbc7e21458e8a9635e338d8c43686813f6152715be536acbdf6e4081",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "PACK_TRIP_OFF",
+      "palette": "amber",
+      "state": "ON",
+      "asset": "unified-mounted-v1/PACK_TRIP_OFF_ON.svg",
+      "sha256": "b318f18a63ac19199c4fb19d25a3d502b3bf0fd00ea8ff33d60ca96fb5310dae",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "PASS_OXY_ON_LAMP",
+      "palette": "amber",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/PASS_OXY_ON_LAMP_OFF.svg",
+      "sha256": "12d289819728247fc6e3315ee0892af65c3a5c06dab68d6f7a8e01be6daed7ab",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "PASS_OXY_ON_LAMP",
+      "palette": "amber",
+      "state": "ON",
+      "asset": "unified-mounted-v1/PASS_OXY_ON_LAMP_ON.svg",
+      "sha256": "df9a24e48d64b650c2d5b0ff303aab445e56ec89af73a2d28002363969e7c47f",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "PULL_UP_RED",
+      "palette": "red",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/PULL_UP_RED_OFF.svg",
+      "sha256": "6e6845aca34fcabfa65e2343b0fb6decaf0c7069e397da6e0b763e0c6c64d268",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "PULL_UP_RED",
+      "palette": "red",
+      "state": "ON",
+      "asset": "unified-mounted-v1/PULL_UP_RED_ON.svg",
+      "sha256": "3517056ec3a5b4901d6fa1abd1898eeb0d078b6b88e9aa3d9fa283b0239cb345",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "RAM_DOOR_FULL_OPEN",
+      "palette": "blue",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/RAM_DOOR_FULL_OPEN_OFF.svg",
+      "sha256": "4500b61b0479c440a8de582bd08ba238ab7c57f91e01a8ce58aacb599dda6604",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "RAM_DOOR_FULL_OPEN",
+      "palette": "blue",
+      "state": "BRIGHT_BLUE",
+      "asset": "unified-mounted-v1/RAM_DOOR_FULL_OPEN_BRIGHT_BLUE.svg",
+      "sha256": "bc2f07636ca47b334cd3e78c9261e43af2a2ce419e2c782744697f8551729f96",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "REVERSER",
+      "palette": "amber",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/REVERSER_OFF.svg",
+      "sha256": "d2f91f075f79f705bb336db9607668f67ac730504e35e199835f62bdd65ddaa1",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "REVERSER",
+      "palette": "amber",
+      "state": "ON",
+      "asset": "unified-mounted-v1/REVERSER_ON.svg",
+      "sha256": "ea96bd38588a2f22871880217a655473640b223b33a052ad89f693d6716ff42d",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "REVERSER_UNLOCKED",
+      "palette": "amber",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/REVERSER_UNLOCKED_OFF.svg",
+      "sha256": "b92b310d97303ba9f3c5d8b48534b706978586f14c8da90f3d1ebd32d6112f76",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "REVERSER_UNLOCKED",
+      "palette": "amber",
+      "state": "ON",
+      "asset": "unified-mounted-v1/REVERSER_UNLOCKED_ON.svg",
+      "sha256": "fde16ef72e23d121baf130cbb5649daebc0f1cd9f6c338ce4c2877cbb708894a",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "RIGHT_GEAR_2LINE_GREEN",
+      "palette": "green",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/RIGHT_GEAR_2LINE_GREEN_OFF.svg",
+      "sha256": "749b19105156b9663f9f0630222cd39f37c9016c35ba79401c1780fabfa05d31",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "RIGHT_GEAR_2LINE_GREEN",
+      "palette": "green",
+      "state": "ON",
+      "asset": "unified-mounted-v1/RIGHT_GEAR_2LINE_GREEN_ON.svg",
+      "sha256": "61b3aeb2713b5d382fbc4bba46f6764d1e1ac8bed723bda2a512ef2940378020",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "RIGHT_GEAR_2LINE_RED",
+      "palette": "red",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/RIGHT_GEAR_2LINE_RED_OFF.svg",
+      "sha256": "3070908aee7cfe157699a48f4359394dcc1429d58b0f3914aa7f9927ae431c8e",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "RIGHT_GEAR_2LINE_RED",
+      "palette": "red",
+      "state": "ON",
+      "asset": "unified-mounted-v1/RIGHT_GEAR_2LINE_RED_ON.svg",
+      "sha256": "4eb284b8c61e000e82bef1a8bf54eda77adeafe18d172c5fadf10985dafc6a5b",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "R_ALPHA_VANE",
+      "palette": "amber",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/R_ALPHA_VANE_OFF.svg",
+      "sha256": "a09e10f28e721f8123ffaabac7664868e484aeede5a780a89d1823a2ad3beb55",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "R_ALPHA_VANE",
+      "palette": "amber",
+      "state": "ON",
+      "asset": "unified-mounted-v1/R_ALPHA_VANE_ON.svg",
+      "sha256": "d7ae10c05b2cb9891dbbcbcbb3aeb734c13d38a17a701a84c971dd9e663446ea",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "R_ELEV_PITOT",
+      "palette": "amber",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/R_ELEV_PITOT_OFF.svg",
+      "sha256": "e8712d5bceb1dd1d26b321b95dd28c9d2ace05decce0b7cd573a8c378c21be94",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "R_ELEV_PITOT",
+      "palette": "amber",
+      "state": "ON",
+      "asset": "unified-mounted-v1/R_ELEV_PITOT_ON.svg",
+      "sha256": "0273a7aa4cf40ad568832f87e3a71e34706ae6387ffeffa396257236c726d635",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "R_VALVE_OPEN",
+      "palette": "blue",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/R_VALVE_OPEN_OFF.svg",
+      "sha256": "6461d0f5390d196272408f02d08afbe788c688112c68bf7d8c9507c0f198e304",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "R_VALVE_OPEN",
+      "palette": "blue",
+      "state": "DIM_BLUE",
+      "asset": "unified-mounted-v1/R_VALVE_OPEN_DIM_BLUE.svg",
+      "sha256": "f5d001ac2bbfd120bb001f29e3f70962a4a1b7702f91eb2bdd06b0c57c8535ba",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "R_VALVE_OPEN",
+      "palette": "blue",
+      "state": "BRIGHT_BLUE",
+      "asset": "unified-mounted-v1/R_VALVE_OPEN_BRIGHT_BLUE.svg",
+      "sha256": "2dc15d4ed9263cc705bd8aa184dbd81d5f5263c9a3d4caf98293dd7d6950ad4a",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "SPEED_BRAKE_ARMED_GREEN",
+      "palette": "green",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/SPEED_BRAKE_ARMED_GREEN_OFF.svg",
+      "sha256": "8115a31c2bbbf7d2402d058acef39ede22e9ee53ddb7ba4282134ebc11779634",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "SPEED_BRAKE_ARMED_GREEN",
+      "palette": "green",
+      "state": "ON",
+      "asset": "unified-mounted-v1/SPEED_BRAKE_ARMED_GREEN_ON.svg",
+      "sha256": "f1f46f554eb5173a9434c72ae81253a9ef249a6c6a10c0f3e980b4596b634267",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "SPEED_BRAKE_DO_NOT_ARMED_AMBER",
+      "palette": "amber",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/SPEED_BRAKE_DO_NOT_ARMED_AMBER_OFF.svg",
+      "sha256": "a44e59d7e9c93a7269d5565d66ae84db00196bc82a825476bd76782e855b8bd7",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "SPEED_BRAKE_DO_NOT_ARMED_AMBER",
+      "palette": "amber",
+      "state": "ON",
+      "asset": "unified-mounted-v1/SPEED_BRAKE_DO_NOT_ARMED_AMBER_ON.svg",
+      "sha256": "eb20faf86c7e506c93cd6a0bc1d5e6d25b5815f0e360938a841dd68971714e8c",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "SPEED_TRIM_FAIL",
+      "palette": "amber",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/SPEED_TRIM_FAIL_OFF.svg",
+      "sha256": "07cc30bae382f6f1bb474a09073433defb2ed118f72d84b92abf8373385d03eb",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "SPEED_TRIM_FAIL",
+      "palette": "amber",
+      "state": "ON",
+      "asset": "unified-mounted-v1/SPEED_TRIM_FAIL_ON.svg",
+      "sha256": "f7d41fd49d6bf0a214b651421ff1c07ef32777fa30c133bfe28e7651903778d4",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "STAB_OUT_OF_TRIM",
+      "palette": "yellow",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/STAB_OUT_OF_TRIM_OFF.svg",
+      "sha256": "09becbf53caeef3f5b806b7fa0f8fea73db32a0e533e487f4c28184d02ce7f94",
+      "face": {
+        "width": 300,
+        "height": 300
+      }
+    },
+    {
+      "id": "STAB_OUT_OF_TRIM",
+      "palette": "yellow",
+      "state": "ON",
+      "asset": "unified-mounted-v1/STAB_OUT_OF_TRIM_ON.svg",
+      "sha256": "1b44a3071cf5ed7cf22ef325116ef8c3afb3a7313212e6415e6941a305d6b846",
+      "face": {
+        "width": 300,
+        "height": 300
+      }
+    },
+    {
+      "id": "STANDBY_GREEN",
+      "palette": "green",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/STANDBY_GREEN_OFF.svg",
+      "sha256": "43ca7d20acd75367895d1c647644127903af36c704497bb95495de1d2ea607c2",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "STANDBY_GREEN",
+      "palette": "green",
+      "state": "ON",
+      "asset": "unified-mounted-v1/STANDBY_GREEN_ON.svg",
+      "sha256": "bd84a11a9f971cb95b46fe5428a3b97424c9bfed5d36e46ae651fcdad7613c49",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "STANDBY_PWR_OFF_LAMP",
+      "palette": "amber",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/STANDBY_PWR_OFF_LAMP_OFF.svg",
+      "sha256": "599b663748a46797b94af22ddb1465e56cb540ff22b4481cf190c0147d562825",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "STANDBY_PWR_OFF_LAMP",
+      "palette": "amber",
+      "state": "ON",
+      "asset": "unified-mounted-v1/STANDBY_PWR_OFF_LAMP_ON.svg",
+      "sha256": "62e9b8af4a4f4cdd4b2565e51b9c2708574df2b20b2ae55266ba02d3531bbc16",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "START_VALVE_OPEN",
+      "palette": "amber",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/START_VALVE_OPEN_OFF.svg",
+      "sha256": "5baf6d7345836f54f7474d2995a7b2e7eaf11a9dc2b9eac41d153bdeea2a7241",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "START_VALVE_OPEN",
+      "palette": "amber",
+      "state": "ON",
+      "asset": "unified-mounted-v1/START_VALVE_OPEN_ON.svg",
+      "sha256": "41bcdaa9e230a0920f956a13fbe5d93b98570f9e3605fd79adedf48842d2b782",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "STBY_RUD_ON_LAMP",
+      "palette": "amber",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/STBY_RUD_ON_LAMP_OFF.svg",
+      "sha256": "75e272d2302799bbefbd2e2553c117d729c6b2257a1d7bd4410c04e15417b036",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "STBY_RUD_ON_LAMP",
+      "palette": "amber",
+      "state": "ON",
+      "asset": "unified-mounted-v1/STBY_RUD_ON_LAMP_ON.svg",
+      "sha256": "9834b2623f599304a4ad168e48919ea74ad66ff7b3233913d5c9be77933850c9",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "TEMP_PROBE",
+      "palette": "amber",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/TEMP_PROBE_OFF.svg",
+      "sha256": "5b7f6427da99a244f18866ec2fe81814131ad64cf4f9d974a61354c7954edb8d",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "TEMP_PROBE",
+      "palette": "amber",
+      "state": "ON",
+      "asset": "unified-mounted-v1/TEMP_PROBE_ON.svg",
+      "sha256": "6882d5581da2c5ce21ac013d24f6d0290f6aa5c7fca7d351a1f181cc40913641",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "TRANSFER_BUS_OFF_LAMP",
+      "palette": "amber",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/TRANSFER_BUS_OFF_LAMP_OFF.svg",
+      "sha256": "0db28d2a245fa7ea500c0985de19278f20981d6b47026484780e8148b09fea6a",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "TRANSFER_BUS_OFF_LAMP",
+      "palette": "amber",
+      "state": "ON",
+      "asset": "unified-mounted-v1/TRANSFER_BUS_OFF_LAMP_ON.svg",
+      "sha256": "7bf9fe625229194b29b08f819a924cbdc3f516b8ada1fbb0b04dd35c4440eae7",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "VALVE_OPEN",
+      "palette": "blue",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/VALVE_OPEN_OFF.svg",
+      "sha256": "c90f499a3792d89db8d1321037939012ca561abd848ccc62e2acd50635c85e6f",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "VALVE_OPEN",
+      "palette": "blue",
+      "state": "DIM_BLUE",
+      "asset": "unified-mounted-v1/VALVE_OPEN_DIM_BLUE.svg",
+      "sha256": "96e84272622696090f9013c0264db0bbf86865c91f5b72cfcd3329612001d298",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "VALVE_OPEN",
+      "palette": "blue",
+      "state": "BRIGHT_BLUE",
+      "asset": "unified-mounted-v1/VALVE_OPEN_BRIGHT_BLUE.svg",
+      "sha256": "44b7d97197f85ebb336b896e422e3ee837686196ea4f23ff9894c4111b336e7e",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "WHEEL_WELL_RED",
+      "palette": "red",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/WHEEL_WELL_RED_OFF.svg",
+      "sha256": "2a66c84aa69cb4b7fa65812d8dcb600fb294eaf3dc5e4ada20485704339538fa",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "WHEEL_WELL_RED",
+      "palette": "red",
+      "state": "ON",
+      "asset": "unified-mounted-v1/WHEEL_WELL_RED_ON.svg",
+      "sha256": "5b4c219dfe4b148f625a20d0bbb65b0a0f630a863c5e17d2ecf481a7cb80eec9",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "WING_BODY_OVERHEAT",
+      "palette": "amber",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/WING_BODY_OVERHEAT_OFF.svg",
+      "sha256": "723d56f52ffc8f7a74d990a1cc5a2fc5301e8f48ca32be4095ae3b7637414018",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "WING_BODY_OVERHEAT",
+      "palette": "amber",
+      "state": "ON",
+      "asset": "unified-mounted-v1/WING_BODY_OVERHEAT_ON.svg",
+      "sha256": "56635d6a33b28b6fe35c93bde9ef112d859ec45096c9f3feb732558e568213cc",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "YAW_DAMPER",
+      "palette": "amber",
+      "state": "OFF",
+      "asset": "unified-mounted-v1/YAW_DAMPER_OFF.svg",
+      "sha256": "ec9f2dd8fef16fc59761b370e7e84299d091c64d0d9ea75fcc401aa5f1f7baaa",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    },
+    {
+      "id": "YAW_DAMPER",
+      "palette": "amber",
+      "state": "ON",
+      "asset": "unified-mounted-v1/YAW_DAMPER_ON.svg",
+      "sha256": "4668ca2d540b0abe41cb6609205620949932fb753533955a2bed43af2f831f5f",
+      "face": {
+        "width": 600,
+        "height": 300
+      }
+    }
+  ],
+  "visualMode": "aperture-edge-to-edge"
+}
