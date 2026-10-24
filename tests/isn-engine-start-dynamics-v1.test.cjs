@@ -16,11 +16,14 @@ assert.equal(Dynamics.sample('LIGHT_OFF_SEQUENCE',1000).egtC,420);
 assert.equal(Dynamics.sample('LIGHT_OFF_SEQUENCE',0).origin,'TRAINING_SEQUENCE_SIMULATED');
 assert.throws(()=>Dynamics.sample('MOTORING',-1));
 assert.equal(Gauge.gauges.length,4);
+assert.deepEqual(Gauge.gauges.map(g=>[g.id,g.cx,g.cy]),[
+ ['egt1',535,723],['egt2',724,723],['n2_1',535,900],['n2_2',724,900]
+]);
 for(const g of Gauge.gauges){
  assert.ok(g.cx>0&&g.cy>0&&g.cx<Gauge.source.width&&g.cy<Gauge.source.height);
  assert.equal(Gauge.angle(null,g.max),null);
- assert.equal(Gauge.angle(0,g.max),-120);
- assert.equal(Gauge.angle(g.max,g.max),120);
+ assert.equal(Gauge.angle(0,g.max),-45);
+ assert.equal(Gauge.angle(g.max,g.max),-315);
 }
 const html=fs.readFileSync(path.join(__dirname,'../panel-mosaic-lab/cockpit/index.html'),'utf8');
 const overlay=fs.readFileSync(path.join(__dirname,'../panel-mosaic-lab/cockpit/isn-engine-gauges.js'),'utf8');

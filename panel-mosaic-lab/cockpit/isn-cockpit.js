@@ -11,7 +11,7 @@
  ];
  async function loadDependencies(){for(const [global,path] of deps){if(window[global])continue;
   await new Promise((resolve,reject)=>{const script=document.createElement('script');
-   script.src=new URL(path,moduleBase).href+'?v=ISN-0005';script.onload=resolve;
+   script.src=new URL(path,moduleBase).href+'?v=ISN-0006';script.onload=resolve;
    script.onerror=()=>reject(Error('Missing integration script '+path));document.head.append(script);});
  }}
  function init(){
@@ -39,6 +39,9 @@
  const replayButton=document.createElement('button');replayButton.id='isnReplay';replayButton.type='button';replayButton.textContent='بازپخش قطعی رویدادهای ISN';
  panel.querySelector('#isnTrace').after(replayButton);
  const startPanel=document.createElement('details');startPanel.open=true;startPanel.className='isn-start-panel';startPanel.innerHTML='<summary>ISN-05 · APU → BLEED + ELECTRICAL → ENGINE START</summary><p class="isn-note">مسیر تعاملی از سوییچ‌های واقعی اورهد است. رشد پیوستهٔ N2/EGT و عقربه‌های روی پنل فقط درون‌یابی آموزشی‌اند، نه مدل عملکرد موتور یا دادهٔ حسگر. آستانه‌های اجازهٔ ورود سوخت و قطع استارتر جداگانه در موتور قواعد مستند بررسی می‌شوند. برای استارت، ژنراتور APU و Bleed را انتخاب کن و PACK L/R را OFF بگذار.</p><div id="isnStartStatus" role="status" dir="ltr">Waiting for overhead…</div><p class="isn-lever-instruction">برای بازکردن Fuel / Start Lever هر موتور، روی اهرم همان موتور در پایینِ Throttle Quadrant در پدستال کلیک کن. حرکت به IDLE فقط پس از موتورینگ و رسیدن به N2 مناسب پذیرفته می‌شود؛ کلیک بعدی CUTOFF می‌کند.</p><p id="isnStartLeverStatus" class="isn-lever-status" role="status" dir="ltr">ENG 1 CUTOFF · ENG 2 CUTOFF</p><p id="isnStartError" class="isn-error" role="alert"></p><a href="../../isn-start-sequence-lab/">باز کردن آزمایشگاه مستند ISN-03 ↗</a>';
+ const faultControls=document.createElement('details');faultControls.className='isn-start-faults';
+ faultControls.innerHTML='<summary>سناریوهای خطای آموزشی · پیش از GRD تنظیم کن</summary><p>تزریق مربی: توقف N2 در ۱۸٪ یا رشد EGT تا ۷۶۰°C. عددهای تزریق، عملکرد واقعی موتور نیستند؛ معیار هشدار ۷۲۵°C از موتور قواعد مستند می‌آید.</p><label><input type="checkbox" data-start-fault="engine1:n2Stall"> ENG 1 · N2 STALL</label><label><input type="checkbox" data-start-fault="engine1:egtHigh"> ENG 1 · EGT HIGH</label><label><input type="checkbox" data-start-fault="engine2:n2Stall"> ENG 2 · N2 STALL</label><label><input type="checkbox" data-start-fault="engine2:egtHigh"> ENG 2 · EGT HIGH</label>';
+ startPanel.append(faultControls);
  panel.querySelector('.isn-note').after(startPanel);
  const anchor=document.querySelector('.aircraft-profile-summary');if(anchor)anchor.after(panel);else byId('inspector').prepend(panel);
  const node=new Map();
@@ -76,6 +79,11 @@
    valve.dataset.amber=String(info.startValve.mountedLamp===true);
   }
   byId('isnIndicationError').textContent=indication.error||([1,2].some(n=>indication.engines['engine'+n].egt725Advisory)?'EGT 725°C ABNORMAL-START ADVISORY':'');
+  for(const input of faultControls.querySelectorAll('[data-start-fault]')){
+   const [device,key]=input.dataset.startFault.split(':');
+   input.checked=s.trainingFaults[device][key];
+   input.disabled=!['OFF','BLOCKED'].includes(s.phase[device]);
+  }
   window.dispatchEvent(new CustomEvent('b737:isn-start-indications',{detail:indication}));
   const levers={engine1:s.observations.engine1.feedback.fuelStartLever.value,
    engine2:s.observations.engine2.feedback.fuelStartLever.value};
@@ -126,6 +134,12 @@
   if(e.detail?.source!=='PEDESTAL_PHYSICAL')return;
   try{chain.lever(e.detail.device,e.detail.position);render();}
   catch(error){byId('isnStartError').textContent=error.message;}
+ });
+ faultControls.addEventListener('change',event=>{
+  const input=event.target;if(!input.matches('[data-start-fault]'))return;
+  const [device,key]=input.dataset.startFault.split(':');
+  try{chain.setTrainingFault(device,key,input.checked);render();}
+  catch(error){byId('isnStartError').textContent=error.message;renderStart();}
  });
  byId('isnMode').onclick=()=>{bridge.instructor({type:'MODE',value:session.mode==='SOURCE_GATED'?'TRAINING_SURROGATE':'SOURCE_GATED',instructor:true});render();};
  byId('isnBusTransfer').onchange=e=>{bridge.instructor({type:'ELECTRICAL',action:{type:'CONTROL',key:'busTransferAuto',value:e.target.checked}});render();};

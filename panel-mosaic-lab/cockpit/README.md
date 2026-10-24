@@ -48,6 +48,21 @@ observations; aborted starts clear stale training indications. These curves
 and gauge-angle scales are **training visualization**, not calibrated engine
 physics, aircraft sensor readings, or FCOM-provided acceleration schedules.
 
+## ISN-06 — Visual registration and instructor abnormal-start tests
+
+The gauge overlay was checked against a crop of the unmodified 1235 × 1274
+Engine / Standby source: EGT pivots are (535,723) and (724,723); N2 pivots are
+(535,900) and (724,900). Needle travel follows the long visible lower arc.
+This is image-space alignment, **not** aircraft gauge-value calibration.
+
+Before GRD, the instructor may inject an 18% N2 stall or a high-EGT training
+curve (760°C target) per engine. The first blocks the fuel-lever cue and leaves
+the engine unstarted; the second reaches the source-backed 725°C start advisory,
+prevents a synthetic RUNNING transition, and requires a manual CUTOFF action in
+the test. Neither injection is presented as a measured aircraft value, an
+automatic fire warning, or a certified engine protection system. UI visual
+inspection in a real browser remains necessary after deployment.
+
 ## ISN-03 — APU / engine start from Unified controls (training beta)
 
 The latest Unified cockpit hosts a source-gated Engine/APU start training

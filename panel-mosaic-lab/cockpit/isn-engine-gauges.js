@@ -14,7 +14,7 @@
   svg.classList.add('isn-engine-gauges');
   for(const spec of model.gauges){
    const group=element(svg,'g',{'data-gauge':spec.id});
-   const pointer=element(group,'g',{'data-pointer':'',transform:`translate(${spec.cx} ${spec.cy}) rotate(-120)`});
+   const pointer=element(group,'g',{'data-pointer':'',transform:`translate(${spec.cx} ${spec.cy}) rotate(-45)`});
    element(pointer,'path',{d:`M -2 9 L 0 -${spec.radius} L 2 9 Z`,fill:'#f0f1e9',stroke:'#3d4647','stroke-width':'.7'});
    element(group,'circle',{cx:spec.cx,cy:spec.cy,r:4.4,fill:'#262d2b',stroke:'#e9e8e1','stroke-width':'1.1'});
    const value=element(group,'text',{'data-value':'',x:spec.cx,y:spec.cy+27,'text-anchor':'middle',

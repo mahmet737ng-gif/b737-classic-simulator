@@ -9,15 +9,15 @@
  const duration=Object.freeze({motoringMs:850,lightoffMs:1000});
  const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
  const smooth=x=>{const t=clamp(x,0,1);return t*t*(3-2*t);};
- function sample(phase,elapsedMs){
+ function sample(phase,elapsedMs,faults={}){
   if(!Number.isFinite(elapsedMs)||elapsedMs<0)throw Error('Nonnegative elapsed time required');
   if(phase==='MOTORING'){
    const f=smooth(elapsedMs/duration.motoringMs);
-   return {n2Percent:25*f,egtC:null,fuelFlowKgHr:0,origin:ORIGIN};
+   return {n2Percent:(faults.n2Stall?18:25)*f,egtC:null,fuelFlowKgHr:0,origin:ORIGIN};
   }
   if(phase==='LIGHT_OFF_SEQUENCE'){
    const f=smooth(elapsedMs/duration.lightoffMs);
-   return {n2Percent:25+21*f,egtC:420*f,fuelFlowKgHr:400-50*f,origin:ORIGIN};
+   return {n2Percent:25+21*f,egtC:(faults.egtHigh?760:420)*f,fuelFlowKgHr:400-50*f,origin:ORIGIN};
   }
   throw Error('Unsupported training phase '+phase);
  }

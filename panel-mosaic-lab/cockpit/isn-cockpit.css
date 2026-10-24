@@ -33,3 +33,5 @@
 .isn-engine-card[data-phase=RUNNING]{border-color:#60b28d}.isn-engine-card[data-egt-advisory=true] [data-field=egt]{color:#ff897f}
 .isn-indication-error{grid-column:1/-1;margin:0;color:#ffbf94;font:11px/1.4 ui-monospace,Consolas,monospace}.isn-indication-error:empty{display:none}
 @media(max-width:640px){.isn-engine-card{font-size:10px;gap:2px 5px;padding:4px}.isn-engine-card [data-field=phase]{width:100%}}
+.isn-start-faults{margin:8px 0;padding:7px;border:1px solid #516a6d;border-radius:5px}.isn-start-faults label{display:block;margin:5px 0;direction:ltr;text-align:left}.isn-start-faults input{margin-right:6px}.isn-start-faults input:disabled{opacity:.5}
+.isn-engine-card[data-phase=N2_STALLED],.isn-engine-card[data-phase=ABNORMAL_EGT]{border-color:#e0875c;background:#3b2728}

@@ -14,6 +14,7 @@
    this.start=start;this.time=0;this.jobs=[];this.phase={apu:'OFF',engine1:'OFF',engine2:'OFF'};
    this.effects=[];this.lastError='';this.controls={};this.guards={};this.started={engine1:false,engine2:false};
    this.dynamic={engine1:null,engine2:null};
+   this.trainingFaults={engine1:{n2Stall:false,egtHigh:false},engine2:{n2Stall:false,egtHigh:false}};
    for(const device of ['engine1','engine2','apu'])this.obs(device,false);
    this.feedback('apu','cockpitFireHandleIn',true);
    this.feedback('apu','groundFireHandleIn',true);
@@ -35,11 +36,22 @@
   }
   updateDynamics(at){for(const device of ['engine1','engine2']){
    const active=this.dynamic[device];if(!active||this.phase[device]!==active.phase)continue;
-   const value=Dynamics.sample(active.phase,Math.max(0,at-active.since));
+   const value=Dynamics.sample(active.phase,Math.max(0,at-active.since),this.trainingFaults[device]);
    this.feedback(device,'n2Percent',value.n2Percent);
    if(value.egtC!==null)this.feedback(device,'egtC',value.egtC);
    this.feedback(device,'fuelFlowKgHr',value.fuelFlowKgHr);
+   if(active.phase==='LIGHT_OFF_SEQUENCE'&&this.trainingFaults[device].egtHigh&&value.egtC>=725){
+    this.cancel(device);this.dynamic[device]=null;this.phase[device]='ABNORMAL_EGT';
+    this.lastError=device.toUpperCase()+': TRAINING EGT >=725°C — move START LEVER to CUTOFF';
+   }
   }}
+  setTrainingFault(device,key,active){
+   if(!['engine1','engine2'].includes(device)||!['n2Stall','egtHigh'].includes(key)||typeof active!=='boolean')
+    throw Error('Invalid instructor start fault');
+   if(!['OFF','BLOCKED'].includes(this.phase[device]))
+    throw Error('Set instructor start fault before ENGINE START GRD');
+   this.trainingFaults[device][key]=active;return this.get();
+  }
   syncPower(){const p=this.start.core.pack;
    const e=p.get().electrical.bus,c=p.electricalState.config;
    for(const [key,val] of Object.entries({batterySwitchOn:c.batterySwitch,batteryBusPowered:e.battery,
@@ -51,7 +63,7 @@
     this.cancel('apu');this.phase.apu='STOPPING';this.lastError='APU start/operation inhibited: battery or fire handle prerequisite lost';
     this.schedule('apu',250,()=>{this.obs('apu',false);this.feedback('apu','genOffBusLight',false);this.phase.apu='OFF';});
    }
-   for(const device of ['engine1','engine2'])if(['MOTORING','AWAIT_FUEL_LEVER_IDLE','LIGHT_OFF_SEQUENCE'].includes(this.phase[device])){
+   for(const device of ['engine1','engine2'])if(['MOTORING','N2_STALLED','AWAIT_FUEL_LEVER_IDLE','LIGHT_OFF_SEQUENCE','ABNORMAL_EGT'].includes(this.phase[device])){
     const reason=this.canStartEngine(device);
     if(reason){this.abortEngine(device);this.lastError=device.toUpperCase()+': start aborted — '+reason;}
    }
@@ -142,6 +154,8 @@
    this.phase[device]='MOTORING';
    this.dynamic[device]={phase:'MOTORING',since:this.time};
    this.schedule(device,850,()=>{if(this.phase[device]!=='MOTORING')return;
+    if(this.trainingFaults[device].n2Stall){this.dynamic[device]=null;this.phase[device]='N2_STALLED';
+     this.lastError=device.toUpperCase()+': TRAINING N2 STALL — START LEVER remains CUTOFF';return;}
     this.feedback(device,'n1RotationObserved',true);this.feedback(device,'maxMotoringObserved',false);
     this.feedback(device,'n2Percent',25);this.phase[device]='AWAIT_FUEL_LEVER_IDLE';});
   }
@@ -182,7 +196,7 @@
    const apuConnected=Object.values(pack.electrical.source).includes('APU');
    projected['apu-gen-off-bus']=apu.running===true&&!apuConnected;
    projected['apu-low-pressure']=['INLET_DOOR','STARTING'].includes(this.phase.apu);
-   return {clockMs:this.time,phase:copy(this.phase),lastError:this.lastError,
+   return {clockMs:this.time,phase:copy(this.phase),lastError:this.lastError,trainingFaults:copy(this.trainingFaults),
     sources:copy(engine.network.source),electrical:copy(pack.electrical.bus),
     selectedSources:copy(pack.electrical.source),bleed:copy(this.start.core.Pneumatics.derive(this.start.core.pneumaticState).bleed),
     controls:copy(this.controls),projected,observations:copy(engine.observation),
