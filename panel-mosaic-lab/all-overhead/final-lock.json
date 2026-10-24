@@ -1,0 +1,123 @@
+{
+  "schema": "b737.overhead-final-lock.v1",
+  "status": "FINAL_LOCKED",
+  "approved_version": "UPD-0012-OVH-measured-seams",
+  "approved_commit": "9cd1273f281f03785db4a47dfd0420f8132f677e",
+  "approved_date": "2026-10-24",
+  "owner_instruction": "همین رو فیکس و نهایی کن و تحت هیچ شرایطی نباید تغییر کنه",
+  "scope": "Entire approved overhead mosaic: OH-01 through OH-25; source pixels, positions, sizes, crops, order, seams, renderer, styles and page behavior.",
+  "files": {
+    "panel-mosaic-lab/all-overhead/atlas-layout.json": {
+      "sha256": "dc5971aba82146b0e5217f5ceef91db1194e1f8adb965b7498bb03e0730cc8ae",
+      "size": 18310
+    },
+    "panel-mosaic-lab/all-overhead/atlas-layout.test.cjs": {
+      "sha256": "faa7486aa3f95c4716c49e4465f5f74d3f4c212890f5e80b48d6ebd28cbac0a0",
+      "size": 4593
+    },
+    "panel-mosaic-lab/all-overhead/index.html": {
+      "sha256": "0e138a6842efa0c1bcebc48716bfa97d544466dbefacdba461afd5dc817b6eef",
+      "size": 4399
+    },
+    "panel-mosaic-lab/all-overhead/runtime.test.cjs": {
+      "sha256": "bf4b791a8ddf9d44646e37e856f7b970bf4b88bb5e341d42f8955af66f6747d5",
+      "size": 3531
+    },
+    "panel-mosaic-lab/all-overhead/spec.json": {
+      "sha256": "039e78c0778ebd91bf0b8a44675e8f989fa37b1cfe39e11cb8dbfc1eaa965dd4",
+      "size": 18985
+    },
+    "panel-mosaic-lab/all-overhead/stage.js": {
+      "sha256": "e07b1fbfbf4b5d2e4b565e361d07ed510ca84b7c97fe0b9c06ebd7cca76c0daf",
+      "size": 18057
+    },
+    "panel-mosaic-lab/all-overhead/style.css": {
+      "sha256": "4dabf74f3733ff99fc26bae649875494b51a817ca1b9c1f0ef960f7cb25562c4",
+      "size": 10468
+    },
+    "panel-mosaic-lab/all-overhead/test.cjs": {
+      "sha256": "8df9d8bc431bf418f511b0e4077815210207c63593783759651ea6cb24de200b",
+      "size": 4552
+    },
+    "panel-mosaic-lab/upper-oh/geometry.json": {
+      "sha256": "821ee6bea332ca172d3b45115c93b9aa9239b5dbde1897b457d5ed8950ab45c6",
+      "size": 1440
+    },
+    "assets/overhead.webp": {
+      "sha256": "dc503ac0276ce29f9d4b0c3409c11277e21f2044f4acc67773092b76f64ad579",
+      "size": 880614
+    },
+    "panel-mosaic-lab/assets/locked/2026-10-23/OH01-06-source-9d8ac0ac86bd.png": {
+      "sha256": "9d8ac0ac86bdb92c040e9bdd97811ca381535d949bff94aa5b1a01e5de8e23df",
+      "size": 2995593
+    },
+    "panel-mosaic-lab/assets/locked/2026-10-23/OH07-08-FLIGHT-NAV-c82458314584.png": {
+      "sha256": "c8245831458450691a9d861cc021b047440ec67f3cce4d688c3bba37ece11c70",
+      "size": 2943825
+    },
+    "panel-mosaic-lab/assets/locked/2026-10-23/OH09-FUEL-921977b56887.png": {
+      "sha256": "921977b568870233c9613a62101741dc369bb43f85b80b3769af07f05eeba733",
+      "size": 2979384
+    },
+    "panel-mosaic-lab/assets/locked/2026-10-23/OH10-ELEC-LOSSLESS-9a1ca4d6cfb2.png": {
+      "sha256": "9a1ca4d6cfb277ec1404f3a464e957d81be9d9689a0810883364342d57b0f1ea",
+      "size": 2459734
+    },
+    "panel-mosaic-lab/assets/locked/2026-10-23/OH11-STANDBY-8b7d36ff3182.png": {
+      "sha256": "86cf2f1de81146756adf694b1fe01067a271c32990c1fda7752eb913442a6708",
+      "size": 2412956
+    },
+    "panel-mosaic-lab/assets/locked/2026-10-23/OH12-BUS-TRANS-09319c17e7d0.png": {
+      "sha256": "709cb15a86f9038ca082136c4db59af83c7800107dfe320182bf7f4c56837e9f",
+      "size": 2593979
+    },
+    "panel-mosaic-lab/assets/locked/2026-10-23/OH13-CIRCUIT-BREAKER-efca1c6cec9e.png": {
+      "sha256": "8fef9e3d67fd78c794d0cceb31ab2806f82076bf7d6e987e3fbdcf5e2a1c76a4",
+      "size": 2307600
+    },
+    "panel-mosaic-lab/assets/locked/2026-10-23/OH14-EMER-EXIT-795cc819a3b3.png": {
+      "sha256": "7a707630ada8d1ae84a7377dd92e61bda95e07ccc3e71c4759da0b3dd113b3d8",
+      "size": 2674410
+    },
+    "panel-mosaic-lab/assets/locked/2026-10-23/OH15-WINDOW-PITOT-4ecfdc65f71b.png": {
+      "sha256": "b8c4ca3047fe5028093fb1f1f9e5d70eaa292f7d4d95ce664ef64f150fd1db96",
+      "size": 2341811
+    },
+    "panel-mosaic-lab/assets/locked/2026-10-23/OH16-ANTI-ICE-f59889e4efd2.png": {
+      "sha256": "6009e9eba2bd5ea6e4fc8c56dbe1a6454c2f9fbce8513d2d32d84703018d56e9",
+      "size": 2616368
+    },
+    "panel-mosaic-lab/assets/locked/2026-10-23/OH17-HYDRAULIC-f149122d1f5c.png": {
+      "sha256": "96c08c4f331d5c375cb73bbc16f10cc6172433abd5e7b0a84e2826f08a2d68f8",
+      "size": 2697606
+    },
+    "panel-mosaic-lab/assets/locked/2026-10-23/OH18-GROUND-CALL-5af4fdc5284b.png": {
+      "sha256": "939e9f6ed14cbe2a8a6182684fcef790607e7dba10a1bfe002a062457f83e5ee",
+      "size": 2787751
+    },
+    "panel-mosaic-lab/assets/locked/2026-10-23/OH19-VOICE-RECORDER-2db6785ecddc.png": {
+      "sha256": "2e012ed71ea7d656a058017494761bab7e42b3c9e102d9c22950494fd37c3358",
+      "size": 2584859
+    },
+    "panel-mosaic-lab/assets/locked/2026-10-23/OH19-PRESS-DIFF-ALT-HORN-d6719ce57cef.png": {
+      "sha256": "4c667d96ea7652e52784f5c06ee3cdde0879ca37631abf19969861afecc45fed",
+      "size": 2918832
+    },
+    "panel-mosaic-lab/assets/locked/2026-10-23/OH20-AIR-CONDITIONING-0734da6a7726.png": {
+      "sha256": "94669d21f0be8aa538b2ff3b0684683409cadf6d9fc4b55390e7147abe506121",
+      "size": 2733770
+    },
+    "panel-mosaic-lab/assets/locked/2026-10-23/OH21-BLEED-AIR-cc78219607a3.png": {
+      "sha256": "4efe8c59579e8675825ed4dabf393648cfa7f11f6c09d831d137c23f70ecfe1e",
+      "size": 2451832
+    },
+    "panel-mosaic-lab/assets/locked/2026-10-23/OH22-CABIN-PRESSURIZATION-d1c6c39b6b33.png": {
+      "sha256": "0756878f35a9b3e4bc9ce03e98a644927edbead65d4e61f3ae4b9e0a649a2a41",
+      "size": 2288696
+    },
+    "panel-mosaic-lab/assets/locked/2026-10-23/OH23-25-LOWER-CONTROLS-fad696c845df.png": {
+      "sha256": "80cb82375dccc9a127919e73cb13ebadfef198572fcbdce2ea9be8b7d7ba7f2a",
+      "size": 1552065
+    }
+  }
+}
