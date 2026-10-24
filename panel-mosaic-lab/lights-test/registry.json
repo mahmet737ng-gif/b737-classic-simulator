@@ -1,6 +1,6 @@
 {
   "schema": "b737-annunciator-assets.v1",
-  "version": "LGT-0004",
+  "version": "LGT-0006",
   "assetDirectory": "../assets/locked/2026-10-23/LIGHTS/",
   "testMode": "manual-asset-visual-qa",
   "note": "Stable IDs for the owner-approved light designs. This registry does not assign physical coordinates or certify aircraft logic.",
@@ -891,7 +891,8 @@
     {
       "id": "LE_FLAPS_EXT_GREEN",
       "lines": [
-        "LE FLAPS EXT GREEN"
+        "LE FLAPS",
+        "EXT"
       ],
       "orientation": "landscape",
       "face": {
@@ -1665,6 +1666,50 @@
       "scope": "OVERHEAD"
     },
     {
+      "id": "SPEED_BRAKE_ARMED_GREEN",
+      "lines": [
+        "SPEED BRAKE",
+        "ARMED"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "SPEED_BRAKE_ARMED_GREEN_OFF.svg",
+        "ON": "SPEED_BRAKE_ARMED_GREEN_ON.svg"
+      },
+      "scope": "ASSET_TEST_ONLY"
+    },
+    {
+      "id": "SPEED_BRAKE_DO_NOT_ARMED_AMBER",
+      "lines": [
+        "SPEED BRAKE",
+        "DO NOT ARMED"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "SPEED_BRAKE_DO_NOT_ARMED_AMBER_OFF.svg",
+        "ON": "SPEED_BRAKE_DO_NOT_ARMED_AMBER_ON.svg"
+      },
+      "scope": "ASSET_TEST_ONLY"
+    },
+    {
       "id": "SPEED_TRIM_FAIL",
       "lines": [
         "SPEED TRIM",
@@ -1691,11 +1736,13 @@
     {
       "id": "STAB_OUT_OF_TRIM",
       "lines": [
-        "STAB OUT OF TRIM"
+        "STAB",
+        "OUT OF",
+        "TRIM"
       ],
-      "orientation": "landscape",
+      "orientation": "square",
       "face": {
-        "width": 600,
+        "width": 300,
         "height": 300
       },
       "defaultState": "OFF",
