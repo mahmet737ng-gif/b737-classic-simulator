@@ -32,7 +32,7 @@
   }
   return true;
  }
- function controller(registry,saved={},notify=()=>{}){
+ function controller(registry,saved={},notify=()=>{},allow=()=>true){
   const definitions=new Map(registry.controls.map(c=>[c.id,c])),state={};
   for(const c of definitions.values()){
    const restored=c.states.includes(saved[c.id])?saved[c.id]:c.default;
@@ -40,6 +40,7 @@
   }
   function set(id,next,reason='set'){
    const c=definitions.get(id);if(!c||!c.states.includes(next))return false;
+   if(!['spring-return','reset'].includes(reason)&&!allow(id,next,reason))return false;
    const previous=state[id];if(previous===next)return false;
    state[id]=next;notify({id,previous,next,reason,type:c.type,axis:c.axis});return true;
   }
