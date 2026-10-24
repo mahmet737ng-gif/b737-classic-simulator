@@ -75,6 +75,7 @@
    const corrections=calibration.cosmeticCorrections||[];
    if(!corrections.length)return;
    const background=new Image();
+   const patchURL=window.B737ImageLoader.patchURL(asset.url,corrections[0].sourceRect);
    background.addEventListener('load',()=>{
      const win=texture.sourceWindow;
      const sx=texture.w/win.w,sy=texture.h/win.h;
@@ -86,12 +87,12 @@
        canvas.width=dest.w;canvas.height=dest.h;
        Object.assign(canvas.style,{left:at.x+'px',top:at.y+'px',width:(dest.w*sx)+'px',height:(dest.h*sy)+'px'});
        const context=canvas.getContext('2d');context.imageSmoothingEnabled=false;
-       context.drawImage(background,source.x,source.y,source.w,source.h,0,0,dest.w,dest.h);
+       context.drawImage(background,patchURL?0:source.x,patchURL?0:source.y,source.w,source.h,0,0,dest.w,dest.h);
        native.append(canvas);
      }
    },{once:true});
    background.addEventListener('error',()=>console.error('FLAP: could not load background correction source'),{once:true});
-   background.src=new URL(asset.url,document.baseURI).href;
+   background.src=patchURL||window.B737ImageLoader.fullURL(asset.url);
  }
  function enableSwipe(){
    overlay.addEventListener('pointerdown',event=>{
@@ -146,11 +147,6 @@
      if(!calibration||VALUES.some(v=>!calibration.targets[String(v)]))throw Error('No measured FLAP detent map for current throttle background');
      applyBackgroundCorrections(native,a.assets[texture.asset]);
      const source=new URL(config.source,document.baseURI).href;
-     sourceImage=new Image();sourceImage.decoding='async';sourceImage.src=source;
-     // Do not hold the entire cockpit actuator mount hostage to image.decode():
-     // some browsers defer decoding until the page/region is visible.
-     sourceImage.addEventListener('error',()=>mountingError(Error('FLAP PNG could not be loaded: '+source)),{once:true});
-     sourceImage.addEventListener('load',()=>{if(sourceImage.naturalWidth!==2160||sourceImage.naturalHeight!==908)mountingError(Error('Unexpected FLAP sprite dimensions'));},{once:true});
      const assetScale=config.mount.scale,dimensions=config.image;
      overlay=root.createElement('div');overlay.id='flapLeverBmpOverlay';overlay.className='flap-bmp-overlay';
      Object.assign(overlay.style,{
@@ -161,7 +157,7 @@
      overlay.setAttribute('aria-valuemin','0');overlay.setAttribute('aria-valuemax','40');
      overlay.setAttribute('aria-valuenow','0');
      sprite=root.createElement('img');sprite.className='flap-bmp-sprite';sprite.alt='';
-     sprite.src=source;sprite.draggable=false;
+     window.B737ImageLoader.assign(sprite,source);sprite.draggable=false;
      sprite.style.width=dimensions.width*assetScale+'px';sprite.style.height=dimensions.height*assetScale+'px';sprite.style.top='0';
      overlay.append(sprite);native.append(overlay);
      pedestalHitTargets(native);

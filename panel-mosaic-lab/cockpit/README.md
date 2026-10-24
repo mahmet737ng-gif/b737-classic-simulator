@@ -366,3 +366,17 @@ units, centered in the original 1150-unit assembly, rather than stretching acros
 the full pedestal width. Fire follows at y=740.986 and radio at y=911.089,
 restoring the original reference's proportions. Model validation and source
 fingerprint checks prevent accidental image stretching or mutation.
+
+## PERF-0001 — progressive textures and first-visit load reduction
+
+Unified now requests 384/768/1536 source-hashed display previews according to the
+visible viewport and DPR, upgrading to the original image at detailed zoom. Offscreen
+textures, hidden references and galleries wait for visibility; control/FMC/ISN state
+engines keep running. The frozen overhead route and original assets are unchanged.
+Both embedded CDUs omit hidden EHSI/map work. An on-demand, versioned runtime cache
+reuses immutable images/fonts while mutable configuration is fetched fresh.
+
+Controlled cold-URL browser measurement: **77.85 MB -> 1.51 MB** initial transferred
+resources (98.06% less); 367 -> 192 request entries. These are local preview results,
+not a guaranteed Internet load time. See `docs/UNIFIED_PERFORMANCE_PERF0001.md` for
+measurement conditions, delivery rules, rebuild instructions and validation.

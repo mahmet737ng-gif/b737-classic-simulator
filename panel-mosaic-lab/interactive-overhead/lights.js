@@ -40,7 +40,7 @@
   for(const c of registry.lights){
    const p=model.rectangle(c,plates.get(c.placementId),window.B737OverheadToggleModel.mapPoint),node=document.createElement('button');node.type='button';node.className='mounted-light';node.dataset.light=c.id;node.title=c.id;
    Object.assign(node.style,{left:p.x+'px',top:p.y+'px',width:p.w+'px',height:p.h+'px'});
-   for(const state of c.states||['OFF','ON']){const img=document.createElement('img');img.src=url(registry.assets[c.asset][state].url);img.alt='';img.draggable=false;img.dataset.frame=state;img.className='light-face';img.onerror=()=>{node.dataset.missing='true';byId('lightsStatus').textContent='خطای بارگذاری فایل چراغ: '+c.asset;};node.append(img);}
+   for(const state of c.states||['OFF','ON']){const img=document.createElement('img');if(window.B737ImageLoader)window.B737ImageLoader.assign(img,url(registry.assets[c.asset][state].url));else img.src=url(registry.assets[c.asset][state].url);img.alt='';img.draggable=false;img.dataset.frame=state;img.className='light-face';img.onerror=()=>{node.dataset.missing='true';byId('lightsStatus').textContent='خطای بارگذاری فایل چراغ: '+c.asset;};node.append(img);}
    node.addEventListener('pointerdown',e=>e.stopPropagation());node.addEventListener('click',e=>{e.stopPropagation();choose(c);});widgets.set(c.id,node);layer.append(node);
   }
   byId('atlasAbsolute').append(layer);engine=model.controller(registry,window.B737ElectricalV7,render,window.B737PneumaticsV6);inspector();ready=true;synchronize();choose(registry.lights.find(c=>c.id==='fuel-center-l'));

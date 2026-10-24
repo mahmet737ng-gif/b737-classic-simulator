@@ -88,7 +88,7 @@
   const b=document.createElement('button');b.type='button';b.className='mounted-rotary'+(c.mode==='detent'?' detent-motion':'');b.dataset.control=c.id;b.setAttribute('role','slider');b.setAttribute('aria-valuemin',String(c.mode==='continuous'?c.min:0));b.setAttribute('aria-valuemax',String(c.mode==='continuous'?c.max:c.states.length-1));b.title=c.label;
   Object.assign(b.style,{left:p.x+'px',top:p.y+'px',width:(p.diameter*1.10)+'px',height:(p.diameter*1.25)+'px'});
   const pic=document.createElement('img'),isCustom=Boolean(c.imageAspect),w=isCustom?p.diameter*1.5*(c.renderScale||1):p.diameter*288/204,h=isCustom?w/c.imageAspect:w*279/288;
-  pic.className='rotary-picture';pic.src=url(registry.assets[c.asset].url);pic.alt='';pic.draggable=false;
+  pic.className='rotary-picture';if(window.B737ImageLoader)window.B737ImageLoader.assign(pic,url(registry.assets[c.asset].url));else pic.src=url(registry.assets[c.asset].url);pic.alt='';pic.draggable=false;
   const pivot=c.visualPivot||[.5,.44];
   Object.assign(pic.style,{left:'calc(50% - '+(w*pivot[0])+'px)',top:'calc(50% - '+(h*pivot[1])+'px)',width:w+'px',height:h+'px',transformOrigin:(pivot[0]*100)+'% '+(pivot[1]*100)+'%'});
   b.append(pic);rotaryInput(c,b,pic);return b;
@@ -114,7 +114,7 @@
   const scale=p.diameter/261;group.dataset.scale=String(scale);
   const dimensions={CLOSED:[261,c.color==='red'?354:359],Open_UP:[c.color==='red'?254:256,c.color==='red'?466:470],Open_CENTER:[254,c.color==='red'?467:469],Open_DOWN:[c.color==='red'?253:256,c.color==='red'?468:471]};
   for(const frame of ['CLOSED','Open_UP','Open_CENTER','Open_DOWN']){
-   const img=document.createElement('img'),[w,h]=dimensions[frame];img.className='guard-picture';img.dataset.frame=frame;img.src=url(registry.assets[c.color+'-'+frame].url);img.alt='';img.draggable=false;
+   const img=document.createElement('img'),[w,h]=dimensions[frame];img.className='guard-picture';img.dataset.frame=frame;if(window.B737ImageLoader)window.B737ImageLoader.assign(img,url(registry.assets[c.color+'-'+frame].url));else img.src=url(registry.assets[c.color+'-'+frame].url);img.alt='';img.draggable=false;
    Object.assign(img.style,{left:(-(frame==='CLOSED'?130.5:w/2)*scale)+'px',top:(-(frame==='CLOSED'?179.5:230)*scale)+'px',width:(w*scale)+'px',height:(h*scale)+'px'});group.append(img);
   }
   const cover=document.createElement('button'),lever=document.createElement('button');cover.type=lever.type='button';cover.className='guard-hit guard-cover';lever.className='guard-hit guard-lever';
@@ -151,7 +151,7 @@
   }
   defs.append(clip);svg.append(defs);
   const background=make('image');
-  background.setAttribute('href',url('../../panel-mosaic-lab/assets/locked/2026-10-23/OH23-25-LOWER-CONTROLS-fad696c845df.png'));
+  background.setAttribute('href',window.B737ImageLoader?.labelPatchURL()||url('../../panel-mosaic-lab/assets/locked/2026-10-23/OH23-25-LOWER-CONTROLS-fad696c845df.png'));
   background.setAttribute('x','0');background.setAttribute('y','-41');background.setAttribute('width','2170');background.setAttribute('height','725');
   background.setAttribute('clip-path','url(#rm0002-old-flt-letters)');svg.append(background);
   for(const [x,y] of [[1093,324],[1436,324]]){

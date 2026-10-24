@@ -86,7 +86,10 @@
     "panel-mosaic-lab/assets/locked/2026-10-23/Aircraft Throttle Quadrant Control Panel.png": {
       "path": "panel-mosaic-lab/assets/locked/2026-10-23/Aircraft Throttle Quadrant Control Panel.png",
       "url": "../../panel-mosaic-lab/assets/locked/2026-10-23/Aircraft Throttle Quadrant Control Panel.png",
-      "dimensions": [1145, 1373],
+      "dimensions": [
+        1145,
+        1373
+      ],
       "bytes": 2399844,
       "sha256": "e533f907b3826dbf8fc986812b9045c2ef8980f93133ce85b859e9b9d7ab0030",
       "gitBlobSha": "d97e33d42f4d7f14671235a25ea171ce056e58f1"
@@ -122,7 +125,7 @@
       "y": 110,
       "w": 2220,
       "h": 3312,
-      "embeddedUrl": "./overhead-stage.html?v=ISN-0003",
+      "embeddedUrl": "./overhead-stage.html?v=ISN-0003-PERF-0001",
       "baseVersion": "UPD-0012-OVH-measured-seams",
       "controlVersion": "LGT-0003"
     },
@@ -207,16 +210,165 @@
           "y": 0,
           "w": 606,
           "h": 740.9857819905213,
-          "sourceWindow": {"x": 20, "y": 30, "w": 1055, "h": 1290},
+          "sourceWindow": {
+            "x": 20,
+            "y": 30,
+            "w": 1055,
+            "h": 1290
+          },
           "maskPolygon": [
-            [72, 34], [65, 40], [62, 60], [61, 120], [54, 150], [58, 180],
-            [50, 350], [43, 450], [39, 550], [34, 700], [31, 850], [25, 990],
-            [33, 1020], [34, 1110], [38, 1140], [91, 1150], [92, 1290],
-            [97, 1310], [104, 1314], [993, 1314], [999, 1310], [1003, 1290],
-            [1002, 1150], [1057, 1140], [1060, 1110], [1062, 1020],
-            [1069, 990], [1063, 850], [1060, 700], [1053, 550],
-            [1050, 450], [1044, 350], [1035, 180], [1038, 150],
-            [1031, 120], [1028, 60], [1025, 40], [1018, 34]
+            [
+              72,
+              34
+            ],
+            [
+              65,
+              40
+            ],
+            [
+              62,
+              60
+            ],
+            [
+              61,
+              120
+            ],
+            [
+              54,
+              150
+            ],
+            [
+              58,
+              180
+            ],
+            [
+              50,
+              350
+            ],
+            [
+              43,
+              450
+            ],
+            [
+              39,
+              550
+            ],
+            [
+              34,
+              700
+            ],
+            [
+              31,
+              850
+            ],
+            [
+              25,
+              990
+            ],
+            [
+              33,
+              1020
+            ],
+            [
+              34,
+              1110
+            ],
+            [
+              38,
+              1140
+            ],
+            [
+              91,
+              1150
+            ],
+            [
+              92,
+              1290
+            ],
+            [
+              97,
+              1310
+            ],
+            [
+              104,
+              1314
+            ],
+            [
+              993,
+              1314
+            ],
+            [
+              999,
+              1310
+            ],
+            [
+              1003,
+              1290
+            ],
+            [
+              1002,
+              1150
+            ],
+            [
+              1057,
+              1140
+            ],
+            [
+              1060,
+              1110
+            ],
+            [
+              1062,
+              1020
+            ],
+            [
+              1069,
+              990
+            ],
+            [
+              1063,
+              850
+            ],
+            [
+              1060,
+              700
+            ],
+            [
+              1053,
+              550
+            ],
+            [
+              1050,
+              450
+            ],
+            [
+              1044,
+              350
+            ],
+            [
+              1035,
+              180
+            ],
+            [
+              1038,
+              150
+            ],
+            [
+              1031,
+              120
+            ],
+            [
+              1028,
+              60
+            ],
+            [
+              1025,
+              40
+            ],
+            [
+              1018,
+              34
+            ]
           ],
           "presentation": "Owner original PNG remains unmodified. Display-only source crop and silhouette mask remove white exterior; 606-unit width aligns the throttle core centrally against the full pedestal reference.",
           "layoutStatus": "calibrated against owner cockpit reference screenshot; mechanical lever overlays remain a separate stage"
@@ -271,7 +423,7 @@
       "h": 318.9685,
       "nativeWidth": 1199,
       "nativeHeight": 1312,
-      "embeddedUrl": "./cdu-stage.html?seat=CAPT&v=CDU-U3",
+      "embeddedUrl": "./cdu-stage.html?seat=CAPT&v=CDU-U3-PERF-0001",
       "sourceWindow": {
         "x": 111,
         "y": 21,
@@ -297,7 +449,7 @@
       "h": 339.554731,
       "nativeWidth": 1199,
       "nativeHeight": 1312,
-      "embeddedUrl": "./cdu-stage.html?seat=FO&v=CDU-U3",
+      "embeddedUrl": "./cdu-stage.html?seat=FO&v=CDU-U3-PERF-0001",
       "sourceWindow": {
         "x": 111,
         "y": 21,
@@ -329,5 +481,10 @@
     "statePolicy": "One shared FMC dataset (active, pending and staged fields plus route-adapter data); independent per-seat page, scratchpad, messages, brightness and navigation. CDU reset is display-only; explicit shared FMC reset clears flight data for both.",
     "sizeReference": "cdu-size-reference.json",
     "sizePolicy": "Owner screenshot visible-frame dimensions; source black padding is excluded from fit. Width/height registration transforms artwork and original hitboxes as one unit."
+  },
+  "displayPerformance": {
+    "version": "PERF-0001",
+    "manifest": "performance/manifest.json",
+    "policy": "View-dependent 384/768/1536 WebP previews; original byte-identical textures at detailed zoom; source asset hashes and geometry remain authoritative."
   }
 }

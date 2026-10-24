@@ -87,7 +87,7 @@
    const art=document.createElement('span');art.className='toggle-art';
    for(const key of frameKeys(c)){
     const a=calibration[key],scale=p.diameter/a.diameter,img=document.createElement('img');
-    img.className='toggle-frame';img.src=localURL(registry.assets[key].url);img.alt='';img.draggable=false;img.decoding='async';
+    img.className='toggle-frame';if(window.B737ImageLoader)window.B737ImageLoader.assign(img,localURL(registry.assets[key].url));else img.src=localURL(registry.assets[key].url);img.alt='';img.draggable=false;img.decoding='async';
     Object.assign(img.style,{left:(-a.x*scale)+'px',top:(-a.y*scale)+'px',width:(a.w*scale)+'px',height:(a.h*scale)+'px'});art.append(img);
    }
    button.append(art);layer.append(button);nodes.set(c.id,button);bind(c,button);refreshOne(c);
