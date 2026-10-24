@@ -1,0 +1,6 @@
+/* Embed presentation only; original v6 artwork, hotspot map, fonts and display rules are reused. */
+html,body{margin:0!important;padding:0!important;width:1199px!important;height:1312px!important;min-height:0!important;overflow:clip!important;background:#000!important}
+body>header,body>footer,.sidebar,.ehsi-panel{display:none!important}
+main,.cockpit-stack,.cockpit{display:block!important;width:1199px!important;max-width:none!important;height:1312px!important;margin:0!important;padding:0!important;border:0!important;gap:0!important}
+.cdu-stage{width:1199px!important;max-width:none!important;height:1312px!important;margin:0!important}
+.cdu-stage>.base{width:1199px!important;height:1312px!important}

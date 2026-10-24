@@ -1,6 +1,6 @@
 {
   "schema": "b737.shared-cockpit-mosaic.v1",
-  "version": "CKP-0007",
+  "version": "CKP-0008",
   "canvas": {
     "width": 4400,
     "height": 8100
@@ -193,7 +193,7 @@
       "placements": [
         {
           "id": "pedestal-upper-reference",
-          "label": "THROTTLE / FIRE — EXISTING REFERENCE",
+          "label": "THROTTLE / FIRE \u2014 EXISTING REFERENCE",
           "asset": "assets/pedestal.webp",
           "x": 0,
           "y": 0,
@@ -209,7 +209,7 @@
         },
         {
           "id": "fire-protection",
-          "label": "FIRE PROTECTION — UNDER ENGINE START LEVERS",
+          "label": "FIRE PROTECTION \u2014 UNDER ENGINE START LEVERS",
           "asset": "panel-mosaic-lab/assets/locked/2026-10-23/Fire_Protection_Panel_Blank_With_Buttons.png",
           "x": 244,
           "y": 750,
@@ -226,7 +226,7 @@
         },
         {
           "id": "engine-start-levers-foreground",
-          "label": "ENGINE START LEVERS 1 / 2 — original foreground retained",
+          "label": "ENGINE START LEVERS 1 / 2 \u2014 original foreground retained",
           "asset": "assets/pedestal.webp",
           "x": 477,
           "y": 743,
@@ -261,5 +261,43 @@
     "Overhead switches and lights remain interactive. Main and newly imported pedestal artwork are connected as base images; new actuator/system overlays are a separate stage.",
     "Fire Protection panel is displayed directly at the original Fire Protection position below the white engine start levers and immediately above pedestal radios; original throttle imagery and existing radio placement remain intact. Original owner-uploaded PNG is unmodified."
   ],
-  "lightVersion": "LGT-0007"
+  "lightVersion": "LGT-0007",
+  "embeddedInstruments": [
+    {
+      "id": "cdu-captain",
+      "label": "CAPTAIN CDU",
+      "seat": "CAPT",
+      "regionId": "main",
+      "x": 770,
+      "y": 615,
+      "w": 180,
+      "h": 196.96413678065053,
+      "nativeWidth": 1199,
+      "nativeHeight": 1312,
+      "embeddedUrl": "./cdu-stage.html?seat=CAPT&v=CDU-U1"
+    },
+    {
+      "id": "cdu-first-officer",
+      "label": "FIRST OFFICER CDU",
+      "seat": "FO",
+      "regionId": "main",
+      "x": 1225,
+      "y": 615,
+      "w": 180,
+      "h": 196.96413678065053,
+      "nativeWidth": 1199,
+      "nativeHeight": 1312,
+      "embeddedUrl": "./cdu-stage.html?seat=FO&v=CDU-U1"
+    }
+  ],
+  "cduSource": {
+    "page": "cdu-standalone-v6/index.html",
+    "artwork": "cdu-standalone-v6/assets/cdu-approved-unlit.png",
+    "artworkSha256": "2c60c534e6e9cd80afa721f2d82801d7bdbc54dce4bbd39b8adb3470f2df0237",
+    "controlMap": "cdu-standalone-v6/data/cdu-map.json",
+    "controlMapSha256": "42d7b9d8b3353c6cacd9237582b3712aeee84fe532c573c0010997d118b64a8b",
+    "fontStylesheet": "assets/fonts/boeing-cdu/cdu-screen.css",
+    "controlsPerSeat": 70,
+    "statePolicy": "Independent per-seat v6 engine and DOM; no shared scratchpad, route modifications or reset. Existing engine limitations retained."
+  }
 }

@@ -37,6 +37,7 @@ jobs:
         run: |
           node panel-mosaic-lab/cockpit/test.cjs
           node panel-mosaic-lab/cockpit/lights.test.cjs
+          node panel-mosaic-lab/cockpit/cdu.test.cjs
       - name: Verify demo scripts and model
         run: npm test
       - name: Protect standalone CDU from private Stage5/Stage6 routing

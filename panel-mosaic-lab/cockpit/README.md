@@ -129,3 +129,31 @@ AUTO continues to obey simulated power and sensor conditions. Main-panel reset
 clears local and shared visual testing. The old momentary model lamp test still
 obeys simulated power. Regression cases cover no handshake, power-off visual
 test, restoring AUTO and preserving all input state.
+
+
+## CDU-U1 / CKP-0008: captain and first officer CDU
+
+Two independent iframe instances reuse the existing cdu-standalone-v6 entry
+structure, exact approved 1199×1312 source artwork, original 70-key map,
+five annunciator outputs and shared locked CDU fonts. Original files under
+cdu-standalone-v6, engine/ch11 and assets/fonts are unchanged. The embed
+stylesheet only removes the standalone page chrome/EHSI/sidebar and presents
+the original CDU at its native pixel size. No display typography, key-box
+coordinates or source image pixels are recalculated.
+
+Both units sit in the existing main-panel region, below the center instruments,
+with captain on the left and first officer on the right. Source aspect ratio
+is preserved. The new placement is reviewable; it is not a new owner-approved
+pixel-geometry lock. Existing panel placements, Fire Protection position and
+139 mounted annunciator sockets are preserved.
+
+The top CAPT/F/O buttons focus the same mounted instances; they never reload
+them or discard scratchpad/page state. Each embedded window owns its v6 state,
+keyboard focus, route modifications and reset. There is no new FMC cross-fill
+or shared route engine. Existing CDU source/page validation limits remain.
+Same-origin messages are checked against the precise seat frame before
+reporting readiness or sending a seat-specific reset.
+
+Use the stable /panel-mosaic-lab/cockpit/ URL and refresh for current updates.
+Regression: node panel-mosaic-lab/cockpit/cdu.test.cjs plus existing CDU font,
+asset, public-routing and frozen-overhead guards.
