@@ -1,0 +1,23 @@
+.rg-layer{position:absolute;inset:0;pointer-events:none;z-index:90}
+.mounted-rotary{position:absolute;display:block;padding:0!important;margin:0!important;border:0!important;outline:0;background:transparent!important;box-shadow:none!important;border-radius:50%!important;transform:translate(-50%,-50%);touch-action:none;pointer-events:auto;cursor:grab;overflow:visible}
+.mounted-rotary:active{cursor:grabbing}
+.rotary-picture{position:absolute;display:block;max-width:none!important;max-height:none!important;pointer-events:none;user-select:none;transform-origin:50% 44%;transition:transform 220ms cubic-bezier(.2,.85,.3,1)}
+.mounted-rotary.dragging .rotary-picture{transition:none}
+.mounted-rotary:focus-visible{outline:2px solid #e6ce9c;outline-offset:3px}
+.guard-node{position:absolute;width:0;height:0;pointer-events:none;overflow:visible;transform-origin:0 0}
+.guard-picture{position:absolute;display:block;max-width:none!important;max-height:none!important;pointer-events:none;user-select:none;opacity:0;transition:opacity 210ms ease}
+.guard-picture.active{opacity:1}
+.guard-hit{position:absolute;display:block;margin:0!important;padding:0!important;border:0!important;outline:0;box-shadow:none!important;background:transparent!important;border-radius:10%!important;pointer-events:auto;cursor:pointer;touch-action:none}
+.guard-hit:focus-visible{outline:2px solid #ecc68a;outline-offset:2px}
+.guard-hit:disabled{cursor:default;pointer-events:none}
+.guard-cover{z-index:3}.guard-lever{z-index:2}
+.rg-inspector{margin:0 0 18px;padding:0 0 16px;border-bottom:1px solid #486578;line-height:1.6}
+.rg-inspector>strong{display:block;color:#b2ebce;font-size:14px}
+.rg-inspector h3{font-size:13px;direction:ltr;text-align:left;margin:10px 0 7px;color:#f0f6fb}
+.rg-inspector p{direction:ltr;text-align:left;color:#eac794;font:12px/1.6 monospace;margin:7px 0}
+.rg-actions{display:flex;gap:5px;flex-wrap:wrap;direction:ltr}
+.rg-actions button{flex:1;min-width:58px;padding:6px 4px;font:11px/1.3 monospace}
+.rg-actions button.active{border-color:#e6ce9c;background:#424a42}
+#rgGuardAction{width:100%;margin:0 0 8px;font-size:12px;padding:7px}
+.mounted-toggle[aria-disabled=true]{cursor:not-allowed}
+@media(prefers-reduced-motion:reduce){.rotary-picture,.guard-picture{transition:none}}
