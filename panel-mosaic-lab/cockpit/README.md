@@ -1,9 +1,9 @@
-# Unified cockpit — CKP-0001
+# Unified cockpit — CKP-0002
 
 A single pan/zoom canvas contains the unchanged interactive overhead, five new
 main-panel sources and the uploaded pedestal radio/avionics base. Region
 buttons focus the same mounted scene; they never reload the overhead frame or
-reset its switch/lamp state. Main and pedestal controls are base artwork only.
+reset its switch/lamp state. Main and pedestal switches are base artwork only. LGT-0004 adds 27 independent main-panel annunciator sockets using 20 unchanged LIGHTS face pairs.
 
 The new overhead-stage.html copies the existing interactive page structure and
 reuses its renderer, exact UPD-0012 layout, original assets and LGT-0003 modules.
@@ -34,3 +34,37 @@ claimed. Existing overhead system assumptions and source-status labels remain.
 
 Checks: node panel-mosaic-lab/cockpit/test.cjs and the existing overhead tests,
 plus python3 panel-mosaic-lab/verify-final-overhead.py.
+
+
+## LGT-0004 database update
+
+27 main-panel instances are mounted in source-image pixel coordinates. All 110
+overhead instances are preserved. Registry `lights.json` records the exact face
+hashes, measured sockets and page-level FCOM provenance. Conditions for 26
+instances were checked against the private Technical Network V2 database;
+BRAKE_TEMP has only a direct visual test input and no fabricated temperature
+threshold. WHEEL_WELL_RED remains in the 83-type gallery because the upper
+pedestal reference socket is occluded; no new face covers the throttle handles.
+
+Source references (FCOM-SEPEHRAN-1937, physical PDF page → printed folio):
+1066 → 4.10.23; 1184 → 7.10.13; 1191 → 7.10.20; 1258/1259 →
+9.10.13/9.10.14; 1856 → 14.10.1; 1860 → 14.10.5; 1885/1886 →
+15.10.8/15.10.9; 1912 → 15.20.8. Source transcription is checked;
+independent engineering signoff and owner visual acceptance remain pending.
+Only paraphrased predicates and source identifiers are published, not the
+private raw reference database.
+
+The model consumes explicit simulated sensor outputs. It does not infer a
+physical start valve position merely because ENGINE START is set to GRD.
+Full GPWS hazard envelopes, autobrake disarm timing and engine physics remain
+upstream. The requested BELOW_GS_P_INHIBIT face uses FSU variant conditions.
+Gear lever OFF does not invent a new position command; actual in-transit/unsafe
+sensors and idle-thrust warning are still honored. Altitude warning flash is a
+one-second visual test cadence; exact Boeing flash timing is not asserted.
+
+The inherited overhead-power signal gates both automatic conditions and manual
+lamp tests. Same-origin/source checks protect the frame bridge; the bridge now
+also reports settled light state changes after timed overhead valve transitions.
+
+Run `node panel-mosaic-lab/cockpit/lights.test.cjs` for source-condition,
+input-validation, power, gear, flap, engine, altitude and unchanged face checks.

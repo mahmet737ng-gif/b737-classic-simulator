@@ -1,6 +1,6 @@
 {
   "schema": "b737-annunciator-assets.v1",
-  "version": "LGT-0003",
+  "version": "LGT-0004",
   "assetDirectory": "../assets/locked/2026-10-23/LIGHTS/",
   "testMode": "manual-asset-visual-qa",
   "note": "Stable IDs for the owner-approved light designs. This registry does not assign physical coordinates or certify aircraft logic.",
@@ -116,7 +116,11 @@
         "OFF": "ALTITUDE_ALERT_OFF.svg",
         "ON": "ALTITUDE_ALERT_ON.svg"
       },
-      "scope": "ASSET_TEST_ONLY"
+      "scope": "ASSET_TEST_ONLY",
+      "mountedCockpitInstances": [
+        "main-altitude-captain",
+        "main-altitude-fo"
+      ]
     },
     {
       "id": "ANTI_SKID_INOP",
@@ -137,7 +141,10 @@
         "OFF": "ANTI_SKID_INOP_OFF.svg",
         "ON": "ANTI_SKID_INOP_ON.svg"
       },
-      "scope": "ASSET_TEST_ONLY"
+      "scope": "ASSET_TEST_ONLY",
+      "mountedCockpitInstances": [
+        "main-antiskid"
+      ]
     },
     {
       "id": "APU_GEN_OFF_BUS",
@@ -179,7 +186,10 @@
         "OFF": "AUTO_BRAKE_DISARM_OFF.svg",
         "ON": "AUTO_BRAKE_DISARM_ON.svg"
       },
-      "scope": "ASSET_TEST_ONLY"
+      "scope": "ASSET_TEST_ONLY",
+      "mountedCockpitInstances": [
+        "main-autobrake"
+      ]
     },
     {
       "id": "AUTO_FAIL",
@@ -247,7 +257,11 @@
         "OFF": "BELOW_GS_P_INHIBIT_OFF.svg",
         "ON": "BELOW_GS_P_INHIBIT_ON.svg"
       },
-      "scope": "ASSET_TEST_ONLY"
+      "scope": "ASSET_TEST_ONLY",
+      "mountedCockpitInstances": [
+        "main-below-gs-captain",
+        "main-below-gs-fo"
+      ]
     },
     {
       "id": "BLEED_TRIP_OFF",
@@ -291,7 +305,10 @@
         "OFF": "BRAKE_TEMP_OFF.svg",
         "ON": "BRAKE_TEMP_ON.svg"
       },
-      "scope": "ASSET_TEST_ONLY"
+      "scope": "ASSET_TEST_ONLY",
+      "mountedCockpitInstances": [
+        "main-brake-temp"
+      ]
     },
     {
       "id": "BUS_OFF_LAMP",
@@ -818,7 +835,10 @@
         "OFF": "INOP_OFF.svg",
         "ON": "INOP_ON.svg"
       },
-      "scope": "OVERHEAD"
+      "scope": "OVERHEAD",
+      "mountedCockpitInstances": [
+        "main-gpws-inop"
+      ]
     },
     {
       "id": "LEFT_GEAR_2LINE_GREEN",
@@ -839,7 +859,10 @@
         "OFF": "LEFT_GEAR_2LINE_GREEN_OFF.svg",
         "ON": "LEFT_GEAR_2LINE_GREEN_ON.svg"
       },
-      "scope": "OVERHEAD"
+      "scope": "OVERHEAD",
+      "mountedCockpitInstances": [
+        "main-gear-left-green"
+      ]
     },
     {
       "id": "LEFT_GEAR_2LINE_RED",
@@ -860,7 +883,10 @@
         "OFF": "LEFT_GEAR_2LINE_RED_OFF.svg",
         "ON": "LEFT_GEAR_2LINE_RED_ON.svg"
       },
-      "scope": "ASSET_TEST_ONLY"
+      "scope": "ASSET_TEST_ONLY",
+      "mountedCockpitInstances": [
+        "main-gear-left-red"
+      ]
     },
     {
       "id": "LE_FLAPS_EXT_GREEN",
@@ -881,7 +907,10 @@
         "OFF": "LE_FLAPS_EXT_GREEN_OFF.svg",
         "ON": "LE_FLAPS_EXT_GREEN_ON.svg"
       },
-      "scope": "ASSET_TEST_ONLY"
+      "scope": "ASSET_TEST_ONLY",
+      "mountedCockpitInstances": [
+        "main-le-extended"
+      ]
     },
     {
       "id": "LE_FLAPS_TRANSIT",
@@ -902,7 +931,10 @@
         "OFF": "LE_FLAPS_TRANSIT_OFF.svg",
         "ON": "LE_FLAPS_TRANSIT_ON.svg"
       },
-      "scope": "ASSET_TEST_ONLY"
+      "scope": "ASSET_TEST_ONLY",
+      "mountedCockpitInstances": [
+        "main-le-transit"
+      ]
     },
     {
       "id": "LOW_IDLE",
@@ -949,7 +981,11 @@
         "OFF": "LOW_OIL_PRESSURE_OFF.svg",
         "ON": "LOW_OIL_PRESSURE_ON.svg"
       },
-      "scope": "OVERHEAD"
+      "scope": "OVERHEAD",
+      "mountedCockpitInstances": [
+        "main-low-oil-1",
+        "main-low-oil-2"
+      ]
     },
     {
       "id": "LOW_OIL_QUANTITY",
@@ -1155,7 +1191,10 @@
         "OFF": "NOSE_GEAR_2LINE_GREEN_OFF.svg",
         "ON": "NOSE_GEAR_2LINE_GREEN_ON.svg"
       },
-      "scope": "OVERHEAD"
+      "scope": "OVERHEAD",
+      "mountedCockpitInstances": [
+        "main-gear-nose-green"
+      ]
     },
     {
       "id": "NOSE_GEAR_2LINE_RED",
@@ -1176,7 +1215,10 @@
         "OFF": "NOSE_GEAR_2LINE_RED_OFF.svg",
         "ON": "NOSE_GEAR_2LINE_RED_ON.svg"
       },
-      "scope": "ASSET_TEST_ONLY"
+      "scope": "ASSET_TEST_ONLY",
+      "mountedCockpitInstances": [
+        "main-gear-nose-red"
+      ]
     },
     {
       "id": "NOT_ARMED_VERTICAL",
@@ -1267,7 +1309,11 @@
         "OFF": "OIL_FILTER_BYPASS_OFF.svg",
         "ON": "OIL_FILTER_BYPASS_ON.svg"
       },
-      "scope": "ASSET_TEST_ONLY"
+      "scope": "ASSET_TEST_ONLY",
+      "mountedCockpitInstances": [
+        "main-oil-filter-1",
+        "main-oil-filter-2"
+      ]
     },
     {
       "id": "ON_DC_LAMP",
@@ -1426,7 +1472,11 @@
         "OFF": "PULL_UP_RED_OFF.svg",
         "ON": "PULL_UP_RED_ON.svg"
       },
-      "scope": "ASSET_TEST_ONLY"
+      "scope": "ASSET_TEST_ONLY",
+      "mountedCockpitInstances": [
+        "main-pull-up-captain",
+        "main-pull-up-fo"
+      ]
     },
     {
       "id": "RAM_DOOR_FULL_OPEN",
@@ -1491,7 +1541,11 @@
         "OFF": "REVERSER_UNLOCKED_OFF.svg",
         "ON": "REVERSER_UNLOCKED_ON.svg"
       },
-      "scope": "ASSET_TEST_ONLY"
+      "scope": "ASSET_TEST_ONLY",
+      "mountedCockpitInstances": [
+        "main-reverser-1",
+        "main-reverser-2"
+      ]
     },
     {
       "id": "RIGHT_GEAR_2LINE_GREEN",
@@ -1512,7 +1566,10 @@
         "OFF": "RIGHT_GEAR_2LINE_GREEN_OFF.svg",
         "ON": "RIGHT_GEAR_2LINE_GREEN_ON.svg"
       },
-      "scope": "OVERHEAD"
+      "scope": "OVERHEAD",
+      "mountedCockpitInstances": [
+        "main-gear-right-green"
+      ]
     },
     {
       "id": "RIGHT_GEAR_2LINE_RED",
@@ -1533,7 +1590,10 @@
         "OFF": "RIGHT_GEAR_2LINE_RED_OFF.svg",
         "ON": "RIGHT_GEAR_2LINE_RED_ON.svg"
       },
-      "scope": "ASSET_TEST_ONLY"
+      "scope": "ASSET_TEST_ONLY",
+      "mountedCockpitInstances": [
+        "main-gear-right-red"
+      ]
     },
     {
       "id": "R_ALPHA_VANE",
@@ -1647,7 +1707,10 @@
         "OFF": "STAB_OUT_OF_TRIM_OFF.svg",
         "ON": "STAB_OUT_OF_TRIM_ON.svg"
       },
-      "scope": "ASSET_TEST_ONLY"
+      "scope": "ASSET_TEST_ONLY",
+      "mountedCockpitInstances": [
+        "main-stab-trim"
+      ]
     },
     {
       "id": "STANDBY_GREEN",
@@ -1713,7 +1776,11 @@
         "OFF": "START_VALVE_OPEN_OFF.svg",
         "ON": "START_VALVE_OPEN_ON.svg"
       },
-      "scope": "ASSET_TEST_ONLY"
+      "scope": "ASSET_TEST_ONLY",
+      "mountedCockpitInstances": [
+        "main-start-valve-1",
+        "main-start-valve-2"
+      ]
     },
     {
       "id": "STBY_RUD_ON_LAMP",

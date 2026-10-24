@@ -34,7 +34,9 @@ jobs:
           node panel-mosaic-lab/interactive-overhead/rotary-guards.test.cjs
           node panel-mosaic-lab/interactive-overhead/lights.test.cjs
       - name: Verify unified cockpit assembly
-        run: node panel-mosaic-lab/cockpit/test.cjs
+        run: |
+          node panel-mosaic-lab/cockpit/test.cjs
+          node panel-mosaic-lab/cockpit/lights.test.cjs
       - name: Verify demo scripts and model
         run: npm test
       - name: Protect standalone CDU from private Stage5/Stage6 routing

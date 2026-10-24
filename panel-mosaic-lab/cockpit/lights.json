@@ -1,0 +1,883 @@
+{
+  "schema": "b737.cockpit-annunciators.v1",
+  "version": "LGT-0004",
+  "sourceDatabase": {
+    "name": "B737_TECHNICAL_NETWORK_V2",
+    "sourceId": "FCOM-SEPEHRAN-1937",
+    "qa": "SOURCE_TRANSCRIPTION_CHECKED__INDEPENDENT_ENGINEERING_QA_PENDING"
+  },
+  "assets": {
+    "REVERSER_UNLOCKED": {
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/REVERSER_UNLOCKED_OFF.svg",
+        "sha256": "114e965dfde7563772a61731acce1ae25224d6275e7e4b6e5943532fa42bb780"
+      },
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/REVERSER_UNLOCKED_ON.svg",
+        "sha256": "992ff9812e20aef2fbb3bd16672996a1598266a0b24d1cf266d5bd05b79f51e2"
+      }
+    },
+    "START_VALVE_OPEN": {
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/START_VALVE_OPEN_OFF.svg",
+        "sha256": "80b11f3888516e332b117c3a0a3f4cb864fdf2cb410094885ba79a20cc2122b7"
+      },
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/START_VALVE_OPEN_ON.svg",
+        "sha256": "81b684907538dc4bcdc58e7c0187b294d313ad75c218fa53ba16778ac217fa44"
+      }
+    },
+    "LOW_OIL_PRESSURE": {
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/LOW_OIL_PRESSURE_OFF.svg",
+        "sha256": "a84b901743ca48504bd93bb3e251094007d84a3449767ac8a8ff2c0435425b0f"
+      },
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/LOW_OIL_PRESSURE_ON.svg",
+        "sha256": "4cc3d8672fd02b8a1d2af9ab7f0e3ec54bcdcec8c1f56898f6253b07e055861d"
+      }
+    },
+    "OIL_FILTER_BYPASS": {
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/OIL_FILTER_BYPASS_OFF.svg",
+        "sha256": "a298c50632c88532b123e22c85ae92a5287832adec285dba53efbea76a821560"
+      },
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/OIL_FILTER_BYPASS_ON.svg",
+        "sha256": "48b485afdad7cf1b4d3a7fd7c52119df80cac57b8d49ea1b1812f6d05c0aae92"
+      }
+    },
+    "ALTITUDE_ALERT": {
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/ALTITUDE_ALERT_OFF.svg",
+        "sha256": "b1dbb104cbeebab1da77908586219d622a453829eba2d60310f7ece3fc000d66"
+      },
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/ALTITUDE_ALERT_ON.svg",
+        "sha256": "0645345a64757ac9aebd1167792a19c54cb6f7a0889cf77bdb0a06c95b70b82f"
+      }
+    },
+    "PULL_UP_RED": {
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/PULL_UP_RED_OFF.svg",
+        "sha256": "f879e75cebd7b262be74f02e38e04d3680c17436edba4d94f8e3c1dfb84f57ea"
+      },
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/PULL_UP_RED_ON.svg",
+        "sha256": "a777d2161539b184bda325574cd2aee784c0f86aa90bb51922f74dddf0b1e5f9"
+      }
+    },
+    "BELOW_GS_P_INHIBIT": {
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/BELOW_GS_P_INHIBIT_OFF.svg",
+        "sha256": "de56b3729347442c53a8b70945c5406cd752a34fe1d4c7ece23acd5d61421f36"
+      },
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/BELOW_GS_P_INHIBIT_ON.svg",
+        "sha256": "4c571a272ba8b1f6adeab50c896d7d89a5cdfb0fb25051196049182d60be9280"
+      }
+    },
+    "NOSE_GEAR_2LINE_RED": {
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/NOSE_GEAR_2LINE_RED_OFF.svg",
+        "sha256": "23f919b0f83cbe8a477481e4e3748f18beb6d3e9de9de072becf4d5ba9ebf1fa"
+      },
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/NOSE_GEAR_2LINE_RED_ON.svg",
+        "sha256": "817bf33062a5cc7dc2db19621511c462fb23acb52869c674ddf2be3cb5ff9c30"
+      }
+    },
+    "NOSE_GEAR_2LINE_GREEN": {
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/NOSE_GEAR_2LINE_GREEN_OFF.svg",
+        "sha256": "452cdff681bc74565f5583cc8dcc33beb65d7aef4cd81fd9dfc1c7096fab9ad6"
+      },
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/NOSE_GEAR_2LINE_GREEN_ON.svg",
+        "sha256": "6d86595bbf1ab26a55560ffd7038b4aa54facf3d03edd911ec8b271e99a5de87"
+      }
+    },
+    "LEFT_GEAR_2LINE_RED": {
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/LEFT_GEAR_2LINE_RED_OFF.svg",
+        "sha256": "05b4edce26ba984ab1a9e454cdf91be862c226b80bfd19c5ff976fde239a3f4e"
+      },
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/LEFT_GEAR_2LINE_RED_ON.svg",
+        "sha256": "4ebb1ffb41a125bf5b5c9f14de70fac2bf181faa20874768ffca0eeadd9dfaed"
+      }
+    },
+    "LEFT_GEAR_2LINE_GREEN": {
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/LEFT_GEAR_2LINE_GREEN_OFF.svg",
+        "sha256": "dc67a9d8eb3b71db4fd2a8448be52ed3511ddfa6ce26442374ca12b7cbd934b1"
+      },
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/LEFT_GEAR_2LINE_GREEN_ON.svg",
+        "sha256": "1f15a0057639ed9550c87f17c3e043b947150f93758bfebfd0eb76eb2ef32206"
+      }
+    },
+    "RIGHT_GEAR_2LINE_RED": {
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/RIGHT_GEAR_2LINE_RED_OFF.svg",
+        "sha256": "c9d67cfb7b98008aa8ec57bae609c19c806fefdbd1264cf6b1f20ba1426dd7b1"
+      },
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/RIGHT_GEAR_2LINE_RED_ON.svg",
+        "sha256": "68ef32cd3d40f2e8cbae5baf724d33e8cb1a500b8ee88db93614435b268e931b"
+      }
+    },
+    "RIGHT_GEAR_2LINE_GREEN": {
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/RIGHT_GEAR_2LINE_GREEN_OFF.svg",
+        "sha256": "8ef6295981a5187e88a7e54ca6cd99317d97d493e843dd9dd93b80f4b9bc478d"
+      },
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/RIGHT_GEAR_2LINE_GREEN_ON.svg",
+        "sha256": "a401917934cce680aa7f70deed04d7c76b47721647def4c21413b34b94609265"
+      }
+    },
+    "LE_FLAPS_TRANSIT": {
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/LE_FLAPS_TRANSIT_OFF.svg",
+        "sha256": "292e4211a49bafcb2d5ee094a3ceedeff2b6c676f8ed30e6aa1c3471ead7189c"
+      },
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/LE_FLAPS_TRANSIT_ON.svg",
+        "sha256": "31d1b7f1100295c997ee09a105a8bd57e53a6f241812bbaf67650b095947828e"
+      }
+    },
+    "LE_FLAPS_EXT_GREEN": {
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/LE_FLAPS_EXT_GREEN_OFF.svg",
+        "sha256": "578e1581942dab39d63673087cab3facd2b83c28ffab7d45d728318a9a68c41d"
+      },
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/LE_FLAPS_EXT_GREEN_ON.svg",
+        "sha256": "cd5bdfa79b6bbe68241fac29271b1f1c4c2d828287fa2581ac29d899dc013961"
+      }
+    },
+    "ANTI_SKID_INOP": {
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/ANTI_SKID_INOP_OFF.svg",
+        "sha256": "236155ba6974133876305c330e5403d1a427cfdfe5b288e476aab2821558be43"
+      },
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/ANTI_SKID_INOP_ON.svg",
+        "sha256": "a936214fad58ed0eb1f37d5cf7e329930b8a82ad8d59537d34e1171258113985"
+      }
+    },
+    "AUTO_BRAKE_DISARM": {
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/AUTO_BRAKE_DISARM_OFF.svg",
+        "sha256": "db4e805ff5bee1001166c061b58bf9a9ce4b2e77ed2de07639239b3a4e35456f"
+      },
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/AUTO_BRAKE_DISARM_ON.svg",
+        "sha256": "76e276d254f511bc2bf06e70c220f5cdb59eadb5edf45f7497f39e1ad8564aad"
+      }
+    },
+    "BRAKE_TEMP": {
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/BRAKE_TEMP_OFF.svg",
+        "sha256": "b9fe743ff0c8996406334880bfe44892ac7830b67741d514a43c63a384d01584"
+      },
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/BRAKE_TEMP_ON.svg",
+        "sha256": "35b5c8621096d8060d810ce55b040bd91a3850591f17d79ac2d030755ec79cfa"
+      }
+    },
+    "STAB_OUT_OF_TRIM": {
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/STAB_OUT_OF_TRIM_OFF.svg",
+        "sha256": "b7bfc911f276fa874709966b2e91f7a04b0e31887ef6320ce837ce33ec32c5ef"
+      },
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/STAB_OUT_OF_TRIM_ON.svg",
+        "sha256": "37b01c6d051f21564cff7ce7ff9c0a438e1cb639a2cee5bc30f8ef1504c552d8"
+      }
+    },
+    "INOP": {
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/INOP_OFF.svg",
+        "sha256": "77b82862d04f52385247e93b97c0fee2c3f963db8c9efc8e1e3acf7ff076fa4c"
+      },
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/INOP_ON.svg",
+        "sha256": "048934664a048ee7eadbf7bf4623f66ca8c97219884b84d0bb4678be64dce10c"
+      }
+    }
+  },
+  "lights": [
+    {
+      "id": "main-reverser-1",
+      "asset": "REVERSER_UNLOCKED",
+      "pieceId": "engine",
+      "sourceRect": [
+        493,
+        257,
+        82,
+        35
+      ],
+      "rule": "signal",
+      "inputs": [
+        "reverser1Unlocked"
+      ],
+      "provenance": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "physicalPdfPage": 1184,
+        "printedFolio": "7.10.13",
+        "status": "SOURCE_CONDITION_SENSOR_INPUT",
+        "condition": "Reverser unlocked sensor active.",
+        "placementStatus": "MEASURED_SOURCE_SOCKET_PENDING_OWNER_VISUAL_ACCEPTANCE"
+      }
+    },
+    {
+      "id": "main-reverser-2",
+      "asset": "REVERSER_UNLOCKED",
+      "pieceId": "engine",
+      "sourceRect": [
+        687,
+        257,
+        82,
+        35
+      ],
+      "rule": "signal",
+      "inputs": [
+        "reverser2Unlocked"
+      ],
+      "provenance": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "physicalPdfPage": 1184,
+        "printedFolio": "7.10.13",
+        "status": "SOURCE_CONDITION_SENSOR_INPUT",
+        "condition": "Reverser unlocked sensor active.",
+        "placementStatus": "MEASURED_SOURCE_SOCKET_PENDING_OWNER_VISUAL_ACCEPTANCE"
+      }
+    },
+    {
+      "id": "main-start-valve-1",
+      "asset": "START_VALVE_OPEN",
+      "pieceId": "engine",
+      "sourceRect": [
+        900,
+        209,
+        82,
+        35
+      ],
+      "rule": "start-valve",
+      "inputs": [
+        "startValve1Open",
+        "starter1Air"
+      ],
+      "provenance": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "physicalPdfPage": 1191,
+        "printedFolio": "7.10.20",
+        "status": "SOURCE_CONDITION_SENSOR_INPUT",
+        "condition": "Start valve open and air supplied to the starter.",
+        "placementStatus": "MEASURED_SOURCE_SOCKET_PENDING_OWNER_VISUAL_ACCEPTANCE"
+      }
+    },
+    {
+      "id": "main-start-valve-2",
+      "asset": "START_VALVE_OPEN",
+      "pieceId": "engine",
+      "sourceRect": [
+        1088,
+        209,
+        82,
+        35
+      ],
+      "rule": "start-valve",
+      "inputs": [
+        "startValve2Open",
+        "starter2Air"
+      ],
+      "provenance": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "physicalPdfPage": 1191,
+        "printedFolio": "7.10.20",
+        "status": "SOURCE_CONDITION_SENSOR_INPUT",
+        "condition": "Start valve open and air supplied to the starter.",
+        "placementStatus": "MEASURED_SOURCE_SOCKET_PENDING_OWNER_VISUAL_ACCEPTANCE"
+      }
+    },
+    {
+      "id": "main-low-oil-1",
+      "asset": "LOW_OIL_PRESSURE",
+      "pieceId": "engine",
+      "sourceRect": [
+        854,
+        258,
+        80,
+        34
+      ],
+      "rule": "signal",
+      "inputs": [
+        "oil1AtRedRadial"
+      ],
+      "provenance": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "physicalPdfPage": 1191,
+        "printedFolio": "7.10.20",
+        "status": "SOURCE_CONDITION_SENSOR_INPUT",
+        "condition": "Oil pressure at or below the red radial; no invented pressure threshold.",
+        "placementStatus": "MEASURED_SOURCE_SOCKET_PENDING_OWNER_VISUAL_ACCEPTANCE"
+      }
+    },
+    {
+      "id": "main-oil-filter-1",
+      "asset": "OIL_FILTER_BYPASS",
+      "pieceId": "engine",
+      "sourceRect": [
+        949,
+        258,
+        79,
+        34
+      ],
+      "rule": "signal",
+      "inputs": [
+        "oilFilter1Bypass"
+      ],
+      "provenance": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "physicalPdfPage": 1191,
+        "printedFolio": "7.10.20",
+        "status": "SOURCE_CONDITION_SENSOR_INPUT",
+        "condition": "Impending bypass of the scavenge oil filter.",
+        "placementStatus": "MEASURED_SOURCE_SOCKET_PENDING_OWNER_VISUAL_ACCEPTANCE"
+      }
+    },
+    {
+      "id": "main-low-oil-2",
+      "asset": "LOW_OIL_PRESSURE",
+      "pieceId": "engine",
+      "sourceRect": [
+        1041,
+        258,
+        80,
+        34
+      ],
+      "rule": "signal",
+      "inputs": [
+        "oil2AtRedRadial"
+      ],
+      "provenance": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "physicalPdfPage": 1191,
+        "printedFolio": "7.10.20",
+        "status": "SOURCE_CONDITION_SENSOR_INPUT",
+        "condition": "Oil pressure at or below the red radial; no invented pressure threshold.",
+        "placementStatus": "MEASURED_SOURCE_SOCKET_PENDING_OWNER_VISUAL_ACCEPTANCE"
+      }
+    },
+    {
+      "id": "main-oil-filter-2",
+      "asset": "OIL_FILTER_BYPASS",
+      "pieceId": "engine",
+      "sourceRect": [
+        1136,
+        258,
+        79,
+        34
+      ],
+      "rule": "signal",
+      "inputs": [
+        "oilFilter2Bypass"
+      ],
+      "provenance": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "physicalPdfPage": 1191,
+        "printedFolio": "7.10.20",
+        "status": "SOURCE_CONDITION_SENSOR_INPUT",
+        "condition": "Impending bypass of the scavenge oil filter.",
+        "placementStatus": "MEASURED_SOURCE_SOCKET_PENDING_OWNER_VISUAL_ACCEPTANCE"
+      }
+    },
+    {
+      "id": "main-altitude-captain",
+      "asset": "ALTITUDE_ALERT",
+      "pieceId": "captain",
+      "sourceRect": [
+        2784,
+        486,
+        161,
+        68
+      ],
+      "rule": "altitude",
+      "inputs": [
+        "aircraftAltitude",
+        "selectedAltitude",
+        "trailingFlaps",
+        "gsCaptured"
+      ],
+      "provenance": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "physicalPdfPage": 1912,
+        "printedFolio": "15.20.8",
+        "status": "SOURCE_CONDITION_SENSOR_INPUT",
+        "condition": "Acquisition between 900 and 300 ft; deviation after acquisition flashes between 300 and 900 ft. Inhibited at flaps 25 or above or captured G/S.",
+        "placementStatus": "MEASURED_SOURCE_SOCKET_PENDING_OWNER_VISUAL_ACCEPTANCE"
+      }
+    },
+    {
+      "id": "main-altitude-fo",
+      "asset": "ALTITUDE_ALERT",
+      "pieceId": "fo-outer",
+      "sourceRect": [
+        505,
+        178,
+        67,
+        27
+      ],
+      "rule": "altitude",
+      "inputs": [
+        "aircraftAltitude",
+        "selectedAltitude",
+        "trailingFlaps",
+        "gsCaptured"
+      ],
+      "provenance": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "physicalPdfPage": 1912,
+        "printedFolio": "15.20.8",
+        "status": "SOURCE_CONDITION_SENSOR_INPUT",
+        "condition": "Acquisition between 900 and 300 ft; deviation after acquisition flashes between 300 and 900 ft. Inhibited at flaps 25 or above or captured G/S.",
+        "placementStatus": "MEASURED_SOURCE_SOCKET_PENDING_OWNER_VISUAL_ACCEPTANCE"
+      }
+    },
+    {
+      "id": "main-pull-up-captain",
+      "asset": "PULL_UP_RED",
+      "pieceId": "captain",
+      "sourceRect": [
+        1284,
+        389,
+        164,
+        68
+      ],
+      "rule": "signal",
+      "inputs": [
+        "gpwsPullUp"
+      ],
+      "provenance": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "physicalPdfPage": 1885,
+        "printedFolio": "15.10.8",
+        "status": "SOURCE_CONDITION_SENSOR_INPUT",
+        "condition": "GPWS computer pull-up warning output; hazard-envelope algorithms are not approximated here.",
+        "placementStatus": "MEASURED_SOURCE_SOCKET_PENDING_OWNER_VISUAL_ACCEPTANCE"
+      }
+    },
+    {
+      "id": "main-below-gs-captain",
+      "asset": "BELOW_GS_P_INHIBIT",
+      "pieceId": "captain",
+      "sourceRect": [
+        1284,
+        491,
+        164,
+        62
+      ],
+      "rule": "below-gs",
+      "inputs": [
+        "belowGsDots",
+        "gsSignalValid",
+        "gsInhibited",
+        "radioAltitude"
+      ],
+      "provenance": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "physicalPdfPage": 1885,
+        "printedFolio": "15.10.8",
+        "status": "SOURCE_CONDITION_SENSOR_INPUT",
+        "condition": "FSU variant: below G/S exceeds 1.3 dots or push-inhibit active. Inhibit resets outside 30\u20131000 ft RA.",
+        "placementStatus": "MEASURED_SOURCE_SOCKET_PENDING_OWNER_VISUAL_ACCEPTANCE"
+      },
+      "effectivity": "FSU face variant"
+    },
+    {
+      "id": "main-pull-up-fo",
+      "asset": "PULL_UP_RED",
+      "pieceId": "fo-inner",
+      "sourceRect": [
+        820,
+        314,
+        67,
+        27
+      ],
+      "rule": "signal",
+      "inputs": [
+        "gpwsPullUp"
+      ],
+      "provenance": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "physicalPdfPage": 1885,
+        "printedFolio": "15.10.8",
+        "status": "SOURCE_CONDITION_SENSOR_INPUT",
+        "condition": "GPWS computer pull-up warning output; hazard-envelope algorithms are not approximated here.",
+        "placementStatus": "MEASURED_SOURCE_SOCKET_PENDING_OWNER_VISUAL_ACCEPTANCE"
+      }
+    },
+    {
+      "id": "main-below-gs-fo",
+      "asset": "BELOW_GS_P_INHIBIT",
+      "pieceId": "fo-inner",
+      "sourceRect": [
+        820,
+        356,
+        67,
+        27
+      ],
+      "rule": "below-gs",
+      "inputs": [
+        "belowGsDots",
+        "gsSignalValid",
+        "gsInhibited",
+        "radioAltitude"
+      ],
+      "provenance": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "physicalPdfPage": 1885,
+        "printedFolio": "15.10.8",
+        "status": "SOURCE_CONDITION_SENSOR_INPUT",
+        "condition": "FSU variant: below G/S exceeds 1.3 dots or push-inhibit active. Inhibit resets outside 30\u20131000 ft RA.",
+        "placementStatus": "MEASURED_SOURCE_SOCKET_PENDING_OWNER_VISUAL_ACCEPTANCE"
+      },
+      "effectivity": "FSU face variant"
+    },
+    {
+      "id": "main-gear-nose-red",
+      "asset": "NOSE_GEAR_2LINE_RED",
+      "pieceId": "fo-inner",
+      "sourceRect": [
+        251,
+        150,
+        64,
+        30
+      ],
+      "rule": "gear-red",
+      "inputs": [
+        "gearNose",
+        "gearLever",
+        "thrustIdle"
+      ],
+      "provenance": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "physicalPdfPage": 1856,
+        "printedFolio": "14.10.1",
+        "status": "SOURCE_CONDITION_SENSOR_INPUT",
+        "condition": "Related gear unsafe/in transit, disagreement with UP or DN command, or not down with a forward thrust lever idle.",
+        "placementStatus": "MEASURED_SOURCE_SOCKET_PENDING_OWNER_VISUAL_ACCEPTANCE"
+      },
+      "gear": "nose"
+    },
+    {
+      "id": "main-gear-nose-green",
+      "asset": "NOSE_GEAR_2LINE_GREEN",
+      "pieceId": "fo-inner",
+      "sourceRect": [
+        251,
+        194,
+        64,
+        28
+      ],
+      "rule": "gear-green",
+      "inputs": [
+        "gearNose"
+      ],
+      "provenance": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "physicalPdfPage": 1856,
+        "printedFolio": "14.10.1",
+        "status": "SOURCE_CONDITION_SENSOR_INPUT",
+        "condition": "Related gear down and locked.",
+        "placementStatus": "MEASURED_SOURCE_SOCKET_PENDING_OWNER_VISUAL_ACCEPTANCE"
+      },
+      "gear": "nose"
+    },
+    {
+      "id": "main-gear-left-red",
+      "asset": "LEFT_GEAR_2LINE_RED",
+      "pieceId": "fo-inner",
+      "sourceRect": [
+        212,
+        240,
+        64,
+        30
+      ],
+      "rule": "gear-red",
+      "inputs": [
+        "gearLeft",
+        "gearLever",
+        "thrustIdle"
+      ],
+      "provenance": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "physicalPdfPage": 1856,
+        "printedFolio": "14.10.1",
+        "status": "SOURCE_CONDITION_SENSOR_INPUT",
+        "condition": "Related gear unsafe/in transit, disagreement with UP or DN command, or not down with a forward thrust lever idle.",
+        "placementStatus": "MEASURED_SOURCE_SOCKET_PENDING_OWNER_VISUAL_ACCEPTANCE"
+      },
+      "gear": "left"
+    },
+    {
+      "id": "main-gear-left-green",
+      "asset": "LEFT_GEAR_2LINE_GREEN",
+      "pieceId": "fo-inner",
+      "sourceRect": [
+        212,
+        284,
+        64,
+        28
+      ],
+      "rule": "gear-green",
+      "inputs": [
+        "gearLeft"
+      ],
+      "provenance": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "physicalPdfPage": 1856,
+        "printedFolio": "14.10.1",
+        "status": "SOURCE_CONDITION_SENSOR_INPUT",
+        "condition": "Related gear down and locked.",
+        "placementStatus": "MEASURED_SOURCE_SOCKET_PENDING_OWNER_VISUAL_ACCEPTANCE"
+      },
+      "gear": "left"
+    },
+    {
+      "id": "main-gear-right-red",
+      "asset": "RIGHT_GEAR_2LINE_RED",
+      "pieceId": "fo-inner",
+      "sourceRect": [
+        298,
+        240,
+        64,
+        30
+      ],
+      "rule": "gear-red",
+      "inputs": [
+        "gearRight",
+        "gearLever",
+        "thrustIdle"
+      ],
+      "provenance": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "physicalPdfPage": 1856,
+        "printedFolio": "14.10.1",
+        "status": "SOURCE_CONDITION_SENSOR_INPUT",
+        "condition": "Related gear unsafe/in transit, disagreement with UP or DN command, or not down with a forward thrust lever idle.",
+        "placementStatus": "MEASURED_SOURCE_SOCKET_PENDING_OWNER_VISUAL_ACCEPTANCE"
+      },
+      "gear": "right"
+    },
+    {
+      "id": "main-gear-right-green",
+      "asset": "RIGHT_GEAR_2LINE_GREEN",
+      "pieceId": "fo-inner",
+      "sourceRect": [
+        298,
+        284,
+        64,
+        28
+      ],
+      "rule": "gear-green",
+      "inputs": [
+        "gearRight"
+      ],
+      "provenance": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "physicalPdfPage": 1856,
+        "printedFolio": "14.10.1",
+        "status": "SOURCE_CONDITION_SENSOR_INPUT",
+        "condition": "Related gear down and locked.",
+        "placementStatus": "MEASURED_SOURCE_SOCKET_PENDING_OWNER_VISUAL_ACCEPTANCE"
+      },
+      "gear": "right"
+    },
+    {
+      "id": "main-le-transit",
+      "asset": "LE_FLAPS_TRANSIT",
+      "pieceId": "fo-inner",
+      "sourceRect": [
+        25,
+        404,
+        71,
+        29
+      ],
+      "rule": "le-transit",
+      "inputs": [
+        "leadingEdge",
+        "trailingFlaps",
+        "autoslatInFlight"
+      ],
+      "provenance": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "physicalPdfPage": 1258,
+        "printedFolio": "9.10.13",
+        "status": "SOURCE_CONDITION_SENSOR_INPUT",
+        "condition": "Any LE device in transit or not in programmed position; inhibited during autoslat operation in flight.",
+        "placementStatus": "MEASURED_SOURCE_SOCKET_PENDING_OWNER_VISUAL_ACCEPTANCE"
+      }
+    },
+    {
+      "id": "main-le-extended",
+      "asset": "LE_FLAPS_EXT_GREEN",
+      "pieceId": "fo-inner",
+      "sourceRect": [
+        107,
+        404,
+        67,
+        29
+      ],
+      "rule": "le-extended",
+      "inputs": [
+        "leadingEdge",
+        "trailingFlaps"
+      ],
+      "provenance": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "physicalPdfPage": 1259,
+        "printedFolio": "9.10.14",
+        "status": "SOURCE_CONDITION_SENSOR_INPUT",
+        "condition": "All LE flaps extended and slats intermediate at TE 1/2/5, or all LE devices fully extended at TE 10\u201340.",
+        "placementStatus": "MEASURED_SOURCE_SOCKET_PENDING_OWNER_VISUAL_ACCEPTANCE"
+      }
+    },
+    {
+      "id": "main-antiskid",
+      "asset": "ANTI_SKID_INOP",
+      "pieceId": "fo-inner",
+      "sourceRect": [
+        59,
+        507,
+        82,
+        32
+      ],
+      "rule": "antiskid",
+      "inputs": [
+        "antiskidOn",
+        "antiskidFault"
+      ],
+      "provenance": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "physicalPdfPage": 1860,
+        "printedFolio": "14.10.5",
+        "status": "SOURCE_CONDITION_SENSOR_INPUT",
+        "condition": "Antiskid switch off or monitoring-system fault.",
+        "placementStatus": "MEASURED_SOURCE_SOCKET_PENDING_OWNER_VISUAL_ACCEPTANCE"
+      }
+    },
+    {
+      "id": "main-autobrake",
+      "asset": "AUTO_BRAKE_DISARM",
+      "pieceId": "fo-inner",
+      "sourceRect": [
+        55,
+        769,
+        88,
+        34
+      ],
+      "rule": "autobrake",
+      "inputs": [
+        "autobrakeDisarmed",
+        "autobrakeArmed",
+        "antiskidOn"
+      ],
+      "provenance": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "physicalPdfPage": 1860,
+        "printedFolio": "14.10.5",
+        "status": "SOURCE_CONDITION_SENSOR_INPUT",
+        "condition": "Disarm output from autobrake computer, or antiskid OFF while autobrake armed. Full braking and timed RTO logic remains upstream.",
+        "placementStatus": "MEASURED_SOURCE_SOCKET_PENDING_OWNER_VISUAL_ACCEPTANCE"
+      }
+    },
+    {
+      "id": "main-brake-temp",
+      "asset": "BRAKE_TEMP",
+      "pieceId": "fo-inner",
+      "sourceRect": [
+        600,
+        1236,
+        65,
+        31
+      ],
+      "rule": "signal",
+      "inputs": [
+        "brakeTempTest"
+      ],
+      "provenance": {
+        "sourceId": null,
+        "physicalPdfPage": null,
+        "printedFolio": null,
+        "status": "VISUAL_TEST_ONLY",
+        "condition": "Direct visual test input only. Temperature threshold and wiring not source verified.",
+        "placementStatus": "MEASURED_SOURCE_SOCKET_PENDING_OWNER_VISUAL_ACCEPTANCE"
+      }
+    },
+    {
+      "id": "main-stab-trim",
+      "asset": "STAB_OUT_OF_TRIM",
+      "pieceId": "engine",
+      "sourceRect": [
+        256,
+        741,
+        51,
+        55
+      ],
+      "rule": "stab-trim",
+      "inputs": [
+        "autopilotEngaged",
+        "stabTrimError"
+      ],
+      "provenance": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "physicalPdfPage": 1066,
+        "printedFolio": "4.10.23",
+        "status": "SOURCE_CONDITION_SENSOR_INPUT",
+        "condition": "Autopilot engaged and not trimming stabilizer properly; extinguished with autopilot disengaged.",
+        "placementStatus": "MEASURED_SOURCE_SOCKET_PENDING_OWNER_VISUAL_ACCEPTANCE"
+      }
+    },
+    {
+      "id": "main-gpws-inop",
+      "asset": "INOP",
+      "pieceId": "fo-inner",
+      "sourceRect": [
+        485,
+        1405,
+        70,
+        32
+      ],
+      "rule": "gpws-inop",
+      "inputs": [
+        "gpwsComputerFailed",
+        "gpwsPowerLost",
+        "gpwsInvalidInput"
+      ],
+      "provenance": {
+        "sourceId": "FCOM-SEPEHRAN-1937",
+        "physicalPdfPage": 1886,
+        "printedFolio": "15.10.9",
+        "status": "SOURCE_CONDITION_SENSOR_INPUT",
+        "condition": "GPWS computer malfunction, loss of its supply, or invalid inputs.",
+        "placementStatus": "MEASURED_SOURCE_SOCKET_PENDING_OWNER_VISUAL_ACCEPTANCE"
+      }
+    }
+  ],
+  "deferred": [
+    {
+      "asset": "WHEEL_WELL_RED",
+      "reason": "Upper pedestal reference socket partly occluded by throttle handles; not mounted without a verified visible socket."
+    }
+  ],
+  "notes": [
+    "Existing overhead 110 lamps, geometry and original source files unchanged.",
+    "Physical sensors are explicit instructor inputs; a switch command is not treated as proof of valve position.",
+    "BRAKE_TEMP is direct visual test only; exact operating threshold not supplied by the retrieved Classic FCOM.",
+    "BELOW_GS_P_INHIBIT follows the FSU face variant requested in the LIGHTS asset database."
+  ]
+}

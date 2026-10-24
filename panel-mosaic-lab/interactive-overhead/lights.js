@@ -6,6 +6,7 @@
  function snapshots(){return [window.B737OverheadToggles.getState(),window.B737RotaryGuards.getState()];}
  function render(result){
   for(const c of registry.lights){const node=widgets.get(c.id);if(!node)continue;const v=result.lights[c.id],state=v===null?'UNKNOWN':v?'ON':'OFF';node.dataset.state=state;for(const img of node.querySelectorAll('.light-face'))img.classList.toggle('active',img.dataset.frame===result.frames[c.id]);node.dataset.frame=result.frames[c.id];node.setAttribute('aria-label',c.id+' — '+state);}
+  window.dispatchEvent(new CustomEvent('b737:overhead-light-state'));
   if(!ui)return;
   byId('lightsStatus').textContent=Object.values(result.lights).filter(v=>v===true).length+' / '+registry.lights.length+' روشن'+(result.power?'':' · تغذیهٔ تست خاموش')+(result.lampTest?' · LAMP TEST':'');
   byId('lightsUnknown').textContent=result.unknown.length?'UNKNOWN: '+result.unknown.join(', ')+' — ابهام منبع برق در دیتابیس حفظ شده است.':'';
