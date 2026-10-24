@@ -1,9 +1,9 @@
 {
   "schema": "b737.shared-cockpit-mosaic.v1",
-  "version": "CKP-0003",
+  "version": "CKP-0006",
   "canvas": {
     "width": 4400,
-    "height": 8100
+    "height": 8496
   },
   "assets": {
     "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png": {
@@ -93,6 +93,17 @@
       "bytes": 2681290,
       "sha256": "7a41044771faad1d59f509c05ed2508f75c79fde219ee9ec19696f8fb19ed533",
       "gitBlobSha": "7e58407776dda5d5d96d446e19648af742ef3045"
+    },
+    "panel-mosaic-lab/assets/locked/2026-10-23/Fire_Protection_Panel_Blank_With_Buttons.png": {
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/Fire_Protection_Panel_Blank_With_Buttons.png",
+      "url": "../../panel-mosaic-lab/assets/locked/2026-10-23/Fire_Protection_Panel_Blank_With_Buttons.png",
+      "dimensions": [
+        2172,
+        724
+      ],
+      "bytes": 1825903,
+      "sha256": "9f3db84357a88909210c055b3a3fc174ed0e830db5c31306c6466fcd72c536cd",
+      "gitBlobSha": "f5ab7cb55bc407944111e9409b3892fdb1244f94"
     }
   },
   "regions": [
@@ -176,16 +187,27 @@
       "x": 1596,
       "y": 5590,
       "w": 1207.5,
-      "h": 2378.175,
+      "h": 2780.6750000000006,
       "nativeWidth": 1150,
-      "nativeHeight": 2264.9285714285716,
+      "nativeHeight": 2648.261904761905,
       "placements": [
         {
-          "id": "pedestal-upper-reference",
-          "label": "THROTTLE / FIRE \u2014 EXISTING REFERENCE",
-          "asset": "assets/pedestal.webp",
+          "id": "fire-protection",
+          "label": "FIRE PROTECTION — BLANK BASE",
+          "asset": "panel-mosaic-lab/assets/locked/2026-10-23/Fire_Protection_Panel_Blank_With_Buttons.png",
           "x": 0,
           "y": 0,
+          "w": 1150,
+          "h": 383.3333333333333,
+          "presentation": "Owner-uploaded unchanged PNG, native aspect; new separate top strip pending owner visual alignment",
+          "layoutStatus": "staged in Unified pedestal without replacing any existing image"
+        },
+        {
+          "id": "pedestal-upper-reference",
+          "label": "THROTTLE / FIRE — EXISTING REFERENCE",
+          "asset": "assets/pedestal.webp",
+          "x": 0,
+          "y": 383.3333333333333,
           "w": 1150,
           "h": 914,
           "sourceWindow": {
@@ -201,7 +223,7 @@
           "label": "RADIO / NAV / AUDIO / TRIM",
           "asset": "panel-mosaic-lab/assets/locked/2026-10-23/PD-RADIO-AVIONICS-7a41044771fa.png",
           "x": 35,
-          "y": 914,
+          "y": 1297.3333333333333,
           "w": 1080,
           "h": 1349.51871657754,
           "library_file_id": "libfile_5aeb51496eb88191be12ff3d6b903a27",
@@ -214,7 +236,7 @@
   "notes": [
     "All three regions are visible on one shared pan/zoom canvas. Region buttons change only the view, never navigate away or reload the overhead.",
     "Overhead switches and lights remain interactive. Main and newly imported pedestal artwork are connected as base images; new actuator/system overlays are a separate stage.",
-    "Pedestal throttle/fire upper area uses the explicitly identified existing reference until a replacement is selected."
+    "The owner-uploaded Fire Protection Blank panel is staged as a new top strip in the pedestal; previous upper reference, radio artwork and all original panel image bytes are retained unchanged. Placement remains provisional pending owner visual review."
   ],
   "lightVersion": "LGT-0007"
 }
