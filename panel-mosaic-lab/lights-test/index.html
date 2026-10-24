@@ -4,15 +4,15 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#0b111b">
-<title>B737 Classic — LIGHTS Test</title>
+<title>B737 Classic — LIGHTS Test — LGT-0003</title>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#090f19;color:#e7f2fb;font:14px system-ui,Tahoma,sans-serif}button,input{font:inherit}a{color:#8bdcfc}header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;background:#101e2b;border-bottom:1px solid #30465c;padding:18px 25px}header strong{display:block;direction:ltr;letter-spacing:1px;font-size:19px}header small{color:#9db6c7}header a{padding:9px 12px;background:#21384a;border:1px solid #456578;border-radius:8px;text-decoration:none}main{max-width:1500px;margin:auto;padding:23px}.intro{line-height:1.9;color:#acc1d2;margin:0 0 17px}.intro strong{color:#f1c47e}.controls{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:13px;border:1px solid #324a5d;border-radius:12px;background:#142131;margin-bottom:14px}button{background:#233b50;color:#eaf5ff;border:1px solid #44647b;border-radius:8px;padding:9px 12px;cursor:pointer}button:hover{background:#34556a}button:focus-visible,input:focus-visible{outline:2px solid #90e2ff;outline-offset:2px}.controls input{flex:1;min-width:200px;background:#0a1523;color:#eef6ff;border:1px solid #557082;border-radius:8px;padding:10px 12px}.controls button.primary{background:#12607a;border-color:#48c1e7}.stats{color:#aac9da;line-height:1.8;margin-bottom:16px}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(285px,1fr));gap:14px}.card{border:1px solid #365065;background:#152433;border-radius:14px;padding:12px;min-width:0}.card.ready{border-color:#4b776b}.card h2{direction:ltr;text-align:center;font:bold 15px system-ui,Arial,sans-serif;margin:2px 0 4px;min-height:22px;overflow-wrap:anywhere}.card .meta{direction:ltr;text-align:center;font:11px monospace;color:#9ab9cd;min-height:19px}.stage{min-height:205px;display:flex;align-items:center;justify-content:center;margin:10px 0;border-radius:10px;background:#090e15;padding:10px;position:relative;cursor:pointer}.stage img{max-width:100%;max-height:195px;width:auto;height:auto;object-fit:contain;image-rendering:auto}.stage.portrait img{max-height:195px}.stage .fallback{color:#ad93a3;font-size:12px;text-align:center;line-height:2}.states{display:flex;gap:8px;justify-content:center}.states button{min-width:86px;font-weight:700;font:700 12px monospace}.states button.selected{background:#8c631f;border-color:#f3b544;color:#ffe8b1}.states button.off.selected{background:#3d4651;border-color:#aab2b9;color:#fff}.health{text-align:center;min-height:30px;font-size:11px;color:#9fc3bc;margin-top:10px;direction:ltr}.health.bad{color:#ffa8a0}.none{background:#212637;border:1px dashed #526b80;padding:32px;border-radius:12px;text-align:center}.status{white-space:pre-wrap;color:#87d7fb}.badge{display:inline-block;padding:3px 7px;border:1px solid #486a7a;border-radius:5px;font:11px monospace;margin-inline:5px}footer{max-width:1500px;margin:0 auto 22px;padding:0 24px;color:#819cae;font-size:12px;line-height:1.8}@media(max-width:650px){header{padding:13px}main{padding:13px}.grid{grid-template-columns:1fr}.stage{min-height:180px}.stage img{max-height:165px}}
+*{box-sizing:border-box}body{margin:0;background:#090f19;color:#e7f2fb;font:14px system-ui,Tahoma,sans-serif}button,input{font:inherit}a{color:#8bdcfc}header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;background:#101e2b;border-bottom:1px solid #30465c;padding:18px 25px}header strong{display:block;direction:ltr;letter-spacing:1px;font-size:19px}header small{color:#9db6c7}header a{padding:9px 12px;background:#21384a;border:1px solid #456578;border-radius:8px;text-decoration:none}main{max-width:1500px;margin:auto;padding:23px}.intro{line-height:1.9;color:#acc1d2;margin:0 0 17px}.intro strong{color:#f1c47e}.controls{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:13px;border:1px solid #324a5d;border-radius:12px;background:#142131;margin-bottom:14px}button{background:#233b50;color:#eaf5ff;border:1px solid #44647b;border-radius:8px;padding:9px 12px;cursor:pointer}button:hover{background:#34556a}button:focus-visible,input:focus-visible{outline:2px solid #90e2ff;outline-offset:2px}.controls input{flex:1;min-width:200px;background:#0a1523;color:#eef6ff;border:1px solid #557082;border-radius:8px;padding:10px 12px}.controls button.primary{background:#12607a;border-color:#48c1e7}.stats{color:#aac9da;line-height:1.8;margin-bottom:16px}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(285px,1fr));gap:14px}.card{border:1px solid #365065;background:#152433;border-radius:14px;padding:12px;min-width:0}.card.ready{border-color:#4b776b}.card h2{direction:ltr;text-align:center;font:bold 15px system-ui,Arial,sans-serif;margin:2px 0 4px;min-height:22px;overflow-wrap:anywhere}.card .meta{direction:ltr;text-align:center;font:11px monospace;color:#9ab9cd;min-height:19px}.stage{min-height:205px;display:flex;align-items:center;justify-content:center;margin:10px 0;border-radius:10px;background:#090e15;padding:10px;position:relative;cursor:pointer}.stage img{max-width:100%;max-height:195px;width:auto;height:auto;object-fit:contain;image-rendering:auto}.stage.portrait img{max-height:195px}.stage .fallback{color:#ad93a3;font-size:12px;text-align:center;line-height:2}.states{display:flex;gap:5px;justify-content:center;flex-wrap:wrap}.states button{min-width:60px;font-weight:700;font:700 12px monospace}.states button.selected{background:#8c631f;border-color:#f3b544;color:#ffe8b1}.states button.off.selected{background:#3d4651;border-color:#aab2b9;color:#fff}.health{text-align:center;min-height:30px;font-size:11px;color:#9fc3bc;margin-top:10px;direction:ltr}.health.bad{color:#ffa8a0}.none{background:#212637;border:1px dashed #526b80;padding:32px;border-radius:12px;text-align:center}.status{white-space:pre-wrap;color:#87d7fb}.badge{display:inline-block;padding:3px 7px;border:1px solid #486a7a;border-radius:5px;font:11px monospace;margin-inline:5px}footer{max-width:1500px;margin:0 auto 22px;padding:0 24px;color:#819cae;font-size:12px;line-height:1.8}@media(max-width:650px){header{padding:13px}main{padding:13px}.grid{grid-template-columns:1fr}.stage{min-height:180px}.stage img{max-height:165px}}
 </style>
 </head>
 <body>
 <header><div><strong>B737 CLASSIC · LIGHTS TEST</strong><small>بررسی جداگانهٔ چراغ‌های هشدار بدون تغییر چیدمان قفل‌شدهٔ Overhead</small></div><a href="../all-overhead/">بازگشت به موزاییک اورهد</a></header>
 <main>
-<p class="intro">تمام چراغ‌ها در وضعیت <strong>OFF</strong> با شبح بسیار کمرنگ نوشته و در وضعیت <strong>ON</strong> فقط با نوشتهٔ امبر نمایش داده می‌شوند. قاب در هر دو حالت ثابت است. فایل‌های جدید را در <a href="https://github.com/mahmet737ng-gif/b737-classic-simulator/tree/main/panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS" target="_blank" rel="noopener">پوشهٔ LIGHTS در GitHub</a> آپلود کن و سپس «همگام‌سازی» را بزن.</p>
+<p class="intro">حالت‌های <strong>OFF / ON / DIM BLUE / BRIGHT BLUE</strong> را با دکمهٔ مربوط تست کن. چراغ‌های امبر، سبز و قرمز هم در این صفحه موجودند. قاب و فایل اصلی هر چراغ حفظ شده است. فایل‌های جدید را در <a href="https://github.com/mahmet737ng-gif/b737-classic-simulator/tree/main/panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS" target="_blank" rel="noopener">پوشهٔ LIGHTS در GitHub</a> آپلود کن و سپس «همگام‌سازی» را بزن.</p>
 <div class="controls">
 <input id="search" type="search" placeholder="جست‌وجوی اسم چراغ، مثلاً LOW PRESSURE / YAW DAMPER">
 <button id="refresh" class="primary">↻ همگام‌سازی فایل‌ها</button>
@@ -22,135 +22,7 @@
 <div class="stats" id="stats" role="status">در حال خواندن رجیستری چراغ‌ها…</div>
 <div class="grid" id="grid"></div>
 </main>
-<footer>این صفحه برای QA تصویری و تست تغییر حالت است. محل نصب واقعی روی پنل و شرایط سیستم‌های هواپیما فقط پس از ثبت هندسه و منطق مستند فعال می‌شوند. نام‌گذاری: <code>ID_OFF.png</code> و <code>ID_ON.png</code> (یا SVG). فایل‌های موجود در مخزن اصلی و چیدمان OH-01…OH-25 تغییر نمی‌کنند.</footer>
-<script>
-(function(){
-'use strict';
-var ROOT='../assets/locked/2026-10-23/LIGHTS/';
-var API='https://api.github.com/repos/mahmet737ng-gif/b737-classic-simulator/contents/panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS';
-var lamps=[],files=new Map(),states=new Map(),cards=new Map(),lastSync=0,apiOK=false;
-var byId=function(x){return document.getElementById(x);};
-var key=function(s){return String(s||'').toUpperCase().replace(/[^A-Z0-9]+/g,'_').replace(/^_+|_+$/g,'');};
-function suffix(name){
- var m=/^(.*?)[\s_-]+(ON|OFF)\.(PNG|SVG|WEBP|JPE?G)$/i.exec(name);
- if(!m)return null;
- return {id:key(m[1]),state:m[2].toUpperCase(),ext:m[3].toLowerCase(),name:name};
-}
-function quality(ext){return {png:4,svg:3,webp:2,jpg:1,jpeg:1}[ext]||0;}
-function parseFiles(list){
- var found=new Map();
- list.forEach(function(f){
-  if(f.type!=='file')return;
-  var entry=suffix(f.name);if(!entry)return;
-  var group=found.get(entry.id)||{};
-  if(!group[entry.state]||quality(entry.ext)>quality(group[entry.state].ext))group[entry.state]=entry;
-  found.set(entry.id,group);
- });
- return found;
-}
-function assetFor(id,state){
- var from=files.get(id),entry=from&&from[state];
- return entry||{name:id+'_'+state+'.png',guessed:true};
-}
-function displayName(c){return (c.lines||[c.id.replace(/_/g,' ')]).join(' / ');}
-function statusLabel(c){
- var p=files.get(c.id)||{};
- return (p.ON?'ON ✓':'ON —')+'  |  '+(p.OFF?'OFF ✓':'OFF —');
-}
-function signal(id,on,origin){
- if(origin==='manual')window.dispatchEvent(new CustomEvent('b737:light-test-change',{detail:{id:id,on:on,source:'light-visual-qa'}}));
-}
-function update(c){
- var item=cards.get(c.id);if(!item)return;
- var on=states.get(c.id)===true,mode=on?'ON':'OFF',a=assetFor(c.id,mode);
- item.on.classList.toggle('selected',on);item.off.classList.toggle('selected',!on);
- item.on.setAttribute('aria-pressed',String(on));item.off.setAttribute('aria-pressed',String(!on));
- item.img.style.display='block';item.fallback.hidden=true;
- item.health.textContent=statusLabel(c)+' · '+(on?'ILLUMINATED':'UNLIT');item.health.classList.remove('bad');
- item.img.onload=function(){
-  var w=item.img.naturalWidth,h=item.img.naturalHeight,expect=c.face||{width:600,height:300};
-  if(w!==expect.width||h!==expect.height){item.health.textContent='SIZE MISMATCH '+w+'x'+h+' (expected '+expect.width+'x'+expect.height+')';item.health.classList.add('bad');}
- };
- item.img.onerror=function(){
-  item.img.style.display='none';item.fallback.hidden=false;
-  item.fallback.textContent='فایل '+a.name+' هنوز در سایت بارگذاری نشده است.';
-  item.health.textContent='MISSING '+mode+' FILE';item.health.classList.add('bad');
- };
- item.img.alt=displayName(c)+' '+mode;
- item.img.src=ROOT+encodeURIComponent(a.name)+'?v='+lastSync;
-}
-function setState(id,on,origin){
- id=key(id);states.set(id,Boolean(on));
- var item=lamps.find(function(x){return x.id===id;});if(item)update(item);
- signal(id,Boolean(on),origin);
- return Boolean(item);
-}
-function createCard(c){
- var box=document.createElement('article');box.className='card'+(files.get(c.id)&&files.get(c.id).ON&&files.get(c.id).OFF?' ready':'');
- var title=document.createElement('h2');title.textContent=displayName(c);
- var meta=document.createElement('div');meta.className='meta';meta.textContent=c.id+' · '+c.face.width+'×'+c.face.height;
- var stage=document.createElement('div');stage.className='stage'+(c.orientation==='portrait'?' portrait':'');
- stage.title='برای تغییر حالت کلیک کن';stage.tabIndex=0;stage.setAttribute('role','button');
- var img=document.createElement('img');img.draggable=false;img.decoding='async';
- var fallback=document.createElement('div');fallback.className='fallback';fallback.hidden=true;
- stage.append(img,fallback);
- var statesRow=document.createElement('div');statesRow.className='states';
- var off=document.createElement('button');off.className='off';off.textContent='OFF';
- var on=document.createElement('button');on.textContent='ON';
- statesRow.append(off,on);
- var health=document.createElement('div');health.className='health';
- box.append(title,meta,stage,statesRow,health);
- off.onclick=function(){setState(c.id,false,'manual');};
- on.onclick=function(){setState(c.id,true,'manual');};
- stage.onclick=function(){setState(c.id,!states.get(c.id),'manual');};
- stage.onkeydown=function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();stage.click();}};
- cards.set(c.id,{img:img,fallback:fallback,off:off,on:on,health:health});
- update(c);return box;
-}
-function render(){
- var q=key(byId('search').value),root=byId('grid');root.replaceChildren();cards.clear();
- var all=lamps.slice();files.forEach(function(_,id){if(!all.some(function(c){return c.id===id;})){all.push({id:id,lines:[id.replace(/_/g,' ')],orientation:id.includes('VERTICAL')?'portrait':'landscape',face:id.includes('VERTICAL')?{width:300,height:600}:{width:600,height:300}});}});
- var shown=all.filter(function(c){return !q||key(c.id+' '+displayName(c)).includes(q);});
- shown.forEach(function(c){if(!states.has(c.id))states.set(c.id,false);root.append(createCard(c));});
- if(!shown.length){var none=document.createElement('div');none.className='none';none.textContent='چراغی با این نام پیدا نشد.';root.append(none);}
- var pairs=lamps.filter(function(c){var f=files.get(c.id);return f&&f.ON&&f.OFF;}).length;
- byId('stats').textContent=lamps.length+' چراغ ثبت‌شده · '+pairs+' جفت فایل آماده · '+(lamps.length-pairs)+' مورد در انتظار آپلود'+(apiOK?'':' · دسترسی به فهرست GitHub برقرار نشد؛ نام‌های استاندارد همچنان قابل تست‌اند');
-}
-async function sync(){
- var btn=byId('refresh');btn.disabled=true;btn.textContent='در حال همگام‌سازی…';
- try{
-  var rr=await fetch('./registry.json?ts='+Date.now(),{cache:'no-store'});if(!rr.ok)throw Error('Light registry unavailable');
-  var reg=await rr.json();if(!Array.isArray(reg.lights))throw Error('Invalid light registry');
-  lamps=reg.lights;lastSync=Date.now();
-  try{
-   var resp=await fetch(API+'?ts='+lastSync,{cache:'no-store'});
-   if(!resp.ok)throw Error('GitHub list unavailable: '+resp.status);
-   var list=await resp.json();if(!Array.isArray(list))throw Error('Unexpected list');
-   files=parseFiles(list);apiOK=true;
-  }catch(apiError){console.warn(apiError);files=new Map();apiOK=false;}
-  render();
- }catch(err){byId('stats').textContent='خطای خواندن رجیستری: '+err.message;}
- finally{btn.disabled=false;btn.textContent='↻ همگام‌سازی فایل‌ها';}
-}
-byId('refresh').onclick=sync;
-byId('search').oninput=render;
-byId('allOn').onclick=function(){lamps.forEach(function(c){states.set(c.id,true);signal(c.id,true,'manual');});render();};
-byId('allOff').onclick=function(){lamps.forEach(function(c){states.set(c.id,false);signal(c.id,false,'manual');});render();};
-window.B737AnnunciatorTest=Object.freeze({
- set:function(id,on){return setState(id,on,'external');},
- get:function(id){return Boolean(states.get(key(id)));},
- snapshot:function(){return Object.fromEntries(states);},
- registry:function(){return lamps.slice();}
-});
-window.addEventListener('b737:annunciator-state',function(event){
- var d=event.detail;if(d&&typeof d.id==='string')setState(d.id,Boolean(d.on),'external');
-});
-window.addEventListener('message',function(event){
- if(event.origin!==location.origin)return;
- var d=event.data;if(d&&d.type==='B737_ANNUNCIATOR_SET'&&typeof d.id==='string')setState(d.id,Boolean(d.on),'external');
-});
-sync();
-})();
-</script>
+<footer>این صفحه برای QA تصویری و تست تغییر حالت است. محل نصب واقعی روی پنل و شرایط سیستم‌های هواپیما فقط پس از ثبت هندسه و منطق مستند فعال می‌شوند. آبی کم‌نور و پرنور از فایل‌های DIM_BLUE و BRIGHT_BLUE خوانده می‌شوند. فایل‌های موجود در مخزن اصلی و چیدمان OH-01…OH-25 تغییر نمی‌کنند.</footer>
+<script src="./asset-model.js?v=LGT-0003"></script><script src="./app.js?v=LGT-0003"></script>
 </body>
 </html>

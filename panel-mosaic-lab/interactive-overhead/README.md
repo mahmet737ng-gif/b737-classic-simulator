@@ -89,3 +89,28 @@ first, then reset. Clearing a fault or changing a pack switch alone does not
 unlatch a trip. New door inputs represent open/unsecured sensors, not switches
 on the overhead. Other new conditions remain explicit SIM_APPROX_ONLY inputs;
 no new source-page reading or precise thermal/pressure model is claimed.
+
+## LGT-0003 information lights
+
+110 mounted lamps / 67 overhead legend types; all 84 LGT-0002 lamp records
+remain unchanged. 26 new placements reuse original supplied SVG files, including
+green window ON, blue valves, generator/ground-power status, APU oil quantity,
+RAM DOOR, pressurization mode, CALL, PMC INOP and upper green gear repeaters.
+The independent visual catalogue includes all 83 available types, including
+main-panel-only warnings whose geometry is not assigned on the overhead.
+
+Blue information lights retain OFF / DIM_BLUE / BRIGHT_BLUE frame identity;
+the boolean lights API is preserved and an additional frames snapshot reports
+the rendered state. Valve changes show BRIGHT for 820ms, then DIM when open or
+OFF when closed; a simulated disagreement remains BRIGHT. Transit timing and
+new non-electrical sensor predicates are trainer approximations. Fuel valve
+sensors are explicit scenario inputs, not inferred from ENGINE START controls.
+V7 outputs drive GEN OFF BUS / GRD POWER AVAILABLE, while APU source status
+uses the same selected source snapshots. No new aircraft source-page approval
+or exact blue-palette lock is claimed.
+
+The standalone lights-test page supports OFF / ON / DIM_BLUE / BRIGHT_BLUE,
+uses original filenames and works from a complete local catalogue if the
+GitHub listing is unavailable. Existing boolean calls remain supported;
+getFrame/snapshotFrames expose full state names. Assets tagged ASSET_TEST_ONLY
+are clearly distinguished from mounted overhead faces.

@@ -1,6 +1,6 @@
 {
   "schema": "b737.overhead.lights.v1",
-  "version": "LGT-0002",
+  "version": "LGT-0003",
   "baseVersion": "UPD-0012-OVH-measured-seams",
   "assets": {
     "ON_DC_LAMP": {
@@ -491,6 +491,206 @@
       "OFF": {
         "url": "../assets/locked/2026-10-23/LIGHTS/OFF_SCHED_DESCENT_OFF.png",
         "sha256": "a99326715be186da05dda5b8f3740590bc48083a736e0038b037648a40a2cbb6"
+      }
+    },
+    "ON_GREEN": {
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/ON_GREEN_OFF.svg",
+        "sha256": "84ff25d079287b6dab077ca1145095db43d0bc861d81f5059a94188f938dd1ff"
+      },
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/ON_GREEN_ON.svg",
+        "sha256": "99e5cb17b227ac4647079007811433610c63ecbf1abec3689e25ba7f7c441fa7"
+      }
+    },
+    "L_VALVE_OPEN": {
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/L_VALVE_OPEN_OFF.svg",
+        "sha256": "3796d0d6a5fa23e6b798254e7dbf7f3f8bf617c4bce1642e2df9d83bdb784e0e"
+      },
+      "DIM_BLUE": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/L_VALVE_OPEN_DIM_BLUE.svg",
+        "sha256": "0b3b8afbf45f09072cf457fdeb6aec7df75693a2a11e65701c46a6c6fe563709"
+      },
+      "BRIGHT_BLUE": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/L_VALVE_OPEN_BRIGHT_BLUE.svg",
+        "sha256": "804999e8df42ee726a409191a4313951d31d342f4b1b68d97121b1e60cc18ee5"
+      }
+    },
+    "R_VALVE_OPEN": {
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/R_VALVE_OPEN_OFF.svg",
+        "sha256": "cb06964604780e388468461635e12da82967ba6157ccb923c0b48f402d6775c8"
+      },
+      "DIM_BLUE": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/R_VALVE_OPEN_DIM_BLUE.svg",
+        "sha256": "ea6bf6661a4c55842be3fd9ff9d4ab60dd675fae22689416290297b2085c185c"
+      },
+      "BRIGHT_BLUE": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/R_VALVE_OPEN_BRIGHT_BLUE.svg",
+        "sha256": "86ca36fe71ac567b03422d597ba1f9eb85bc5a04b4152910dbd8ca42531f3664"
+      }
+    },
+    "COWL_VALVE_OPEN": {
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/COWL_VALVE_OPEN_OFF.svg",
+        "sha256": "8932b98db7cc3c7888628995e02a83a67813ae10ed7c869e6981e86febada51e"
+      },
+      "DIM_BLUE": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/COWL_VALVE_OPEN_DIM_BLUE.svg",
+        "sha256": "9b0bb855b052b40b4d223120103a30e7946c94313d3b3787746ba32260899413"
+      },
+      "BRIGHT_BLUE": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/COWL_VALVE_OPEN_BRIGHT_BLUE.svg",
+        "sha256": "b9e2232780d68bc1062c5e5710e1d429fd3efd6b961957969cf4fecab269d36e"
+      }
+    },
+    "VALVE_OPEN": {
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/VALVE_OPEN_OFF.svg",
+        "sha256": "d6739835051e47da6a0a40d4256e57c87ecd30112699c050ee1269ed41c75483"
+      },
+      "DIM_BLUE": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/VALVE_OPEN_DIM_BLUE.svg",
+        "sha256": "7d7160467c8d958ddb7ae1758a862841da84baf74c24288394315ede5edf1860"
+      },
+      "BRIGHT_BLUE": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/VALVE_OPEN_BRIGHT_BLUE.svg",
+        "sha256": "95948a7dc9109ff5bde010c36a21837034d055ec803372c20acdbb681346f650"
+      }
+    },
+    "FUEL_VALVE_CLOSED": {
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/FUEL_VALVE_CLOSED_OFF.svg",
+        "sha256": "435a8b482e5e353956c1b15362bb1cd2665f40ed2a701eee5e68227a82ebf663"
+      },
+      "DIM_BLUE": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/FUEL_VALVE_CLOSED_DIM_BLUE.svg",
+        "sha256": "6e82690bc9bf92bd719f512e4078d1e0710c390da9c21981919daab21722196c"
+      },
+      "BRIGHT_BLUE": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/FUEL_VALVE_CLOSED_BRIGHT_BLUE.svg",
+        "sha256": "27fd59cde2bb62942504a7acb29329a73ccc1f6838b9f1049137ed7bfcb2ba92"
+      }
+    },
+    "GEN_OFF_BUS": {
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/GEN_OFF_BUS_OFF.svg",
+        "sha256": "b59d88da97a976273efeb3bbbe59f5f0656cff2ff738161c2a95a0434fd881f8"
+      },
+      "BRIGHT_BLUE": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/GEN_OFF_BUS_BRIGHT_BLUE.svg",
+        "sha256": "68e09ee20e64dc0ee04fab0d1e100f018d2df863859bd50d630d493955d71dbe"
+      }
+    },
+    "APU_GEN_OFF_BUS": {
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/APU_GEN_OFF_BUS_OFF.svg",
+        "sha256": "7b04324638649d5eb21ed23974eb4f97844fca5a449e17129b1e65b856fd1040"
+      },
+      "BRIGHT_BLUE": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/APU_GEN_OFF_BUS_BRIGHT_BLUE.svg",
+        "sha256": "a8175153c25de93a7e8a488c3090fdb1e51ccca98a2d6198c87094dc6650869b"
+      }
+    },
+    "GRD_POWER_AVAILABLE": {
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/GRD_POWER_AVAILABLE_OFF.svg",
+        "sha256": "3cfc33611fb0031b3603e233da28b7df21ed58f2030c60b74578322f41bc6785"
+      },
+      "BRIGHT_BLUE": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/GRD_POWER_AVAILABLE_BRIGHT_BLUE.svg",
+        "sha256": "9f220331b3c31402654387d6dced6f53d2c1439ab0a465abc71a9b84c94bd71e"
+      }
+    },
+    "LOW_OIL_QUANTITY": {
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/LOW_OIL_QUANTITY_OFF.svg",
+        "sha256": "b8e37f4396c05c39d2de33d53e304593238444b03e2edbd096b47864a6560c89"
+      },
+      "BRIGHT_BLUE": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/LOW_OIL_QUANTITY_BRIGHT_BLUE.svg",
+        "sha256": "32542fb6956b5364f53a56ed820d2f8de68b894abcc35b05bda2ff95eca835b4"
+      }
+    },
+    "RAM_DOOR_FULL_OPEN": {
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/RAM_DOOR_FULL_OPEN_OFF.svg",
+        "sha256": "cf56aa74c088f89c45f02a46f9614cf87ef38e64d6345329349f19019f5cdbeb"
+      },
+      "BRIGHT_BLUE": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/RAM_DOOR_FULL_OPEN_BRIGHT_BLUE.svg",
+        "sha256": "f604d1a0aae22190862754a3b2204937c5110f742e71a88ead395ce75e7de082"
+      }
+    },
+    "STANDBY_GREEN": {
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/STANDBY_GREEN_OFF.svg",
+        "sha256": "a469520e7ae0610ed20e9354e0b4eb2a7416194e0c2a0b8db5107ccb1daae043"
+      },
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/STANDBY_GREEN_ON.svg",
+        "sha256": "ccba5b579dca3ebfd95f0cf4bee934928aefa048d0a096a4b30b8685df666119"
+      }
+    },
+    "MANUAL_GREEN": {
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/MANUAL_GREEN_OFF.svg",
+        "sha256": "f446bb66177e9e2c4d79101e41d2a20094b5887bc0b0939f8a27795bdcef9d77"
+      },
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/MANUAL_GREEN_ON.svg",
+        "sha256": "e2479d99106dcd2cbddf66801906f887a0a2f922de0045e75203de486ea5cff2"
+      }
+    },
+    "CALL": {
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/CALL_OFF.svg",
+        "sha256": "5b37ad6a57fcc3f58ccab879ed5e0e6b09abdbc62946f174f7b4031b4e5b3343"
+      },
+      "BRIGHT_BLUE": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/CALL_BRIGHT_BLUE.svg",
+        "sha256": "5201b9ea6b86b34c090af1eea633d93486e8d9b17e5b6e3d419d64a5786abb5b"
+      }
+    },
+    "INOP": {
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/INOP_OFF.svg",
+        "sha256": "77b82862d04f52385247e93b97c0fee2c3f963db8c9efc8e1e3acf7ff076fa4c"
+      },
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/INOP_ON.svg",
+        "sha256": "048934664a048ee7eadbf7bf4623f66ca8c97219884b84d0bb4678be64dce10c"
+      }
+    },
+    "LEFT_GEAR_2LINE_GREEN": {
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/LEFT_GEAR_2LINE_GREEN_OFF.svg",
+        "sha256": "dc67a9d8eb3b71db4fd2a8448be52ed3511ddfa6ce26442374ca12b7cbd934b1"
+      },
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/LEFT_GEAR_2LINE_GREEN_ON.svg",
+        "sha256": "1f15a0057639ed9550c87f17c3e043b947150f93758bfebfd0eb76eb2ef32206"
+      }
+    },
+    "RIGHT_GEAR_2LINE_GREEN": {
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/RIGHT_GEAR_2LINE_GREEN_OFF.svg",
+        "sha256": "8ef6295981a5187e88a7e54ca6cd99317d97d493e843dd9dd93b80f4b9bc478d"
+      },
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/RIGHT_GEAR_2LINE_GREEN_ON.svg",
+        "sha256": "a401917934cce680aa7f70deed04d7c76b47721647def4c21413b34b94609265"
+      }
+    },
+    "NOSE_GEAR_2LINE_GREEN": {
+      "OFF": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/NOSE_GEAR_2LINE_GREEN_OFF.svg",
+        "sha256": "452cdff681bc74565f5583cc8dcc33beb65d7aef4cd81fd9dfc1c7096fab9ad6"
+      },
+      "ON": {
+        "url": "../assets/locked/2026-10-23/LIGHTS/NOSE_GEAR_2LINE_GREEN_ON.svg",
+        "sha256": "6d86595bbf1ab26a55560ffd7038b4aa54facf3d03edd911ec8b271e99a5de87"
       }
     }
   },
@@ -2391,15 +2591,711 @@
         "status": "SIM_APPROX_ONLY",
         "basis": "Frozen guide sockets; explicit trainer sensor input, no new source-page verification."
       }
+    },
+    {
+      "id": "window-l-side-on",
+      "asset": "ON_GREEN",
+      "placementId": "OH15",
+      "sourceRect": [
+        190,
+        111,
+        210,
+        77
+      ],
+      "rule": "window-on",
+      "controls": [
+        "window-l-side",
+        "window-power-test"
+      ],
+      "sensor": "window-l-side-on",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 3,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Original new LIGHTS states and frozen sockets; source-located V7 electrical outputs where specified. Valve transit duration 820ms is a trainer approximation."
+      }
+    },
+    {
+      "id": "window-l-fwd-on",
+      "asset": "ON_GREEN",
+      "placementId": "OH15",
+      "sourceRect": [
+        426,
+        111,
+        210,
+        77
+      ],
+      "rule": "window-on",
+      "controls": [
+        "window-l-fwd",
+        "window-power-test"
+      ],
+      "sensor": "window-l-fwd-on",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 3,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Original new LIGHTS states and frozen sockets; source-located V7 electrical outputs where specified. Valve transit duration 820ms is a trainer approximation."
+      }
+    },
+    {
+      "id": "window-r-fwd-on",
+      "asset": "ON_GREEN",
+      "placementId": "OH15",
+      "sourceRect": [
+        651,
+        111,
+        210,
+        77
+      ],
+      "rule": "window-on",
+      "controls": [
+        "window-r-fwd",
+        "window-power-test"
+      ],
+      "sensor": "window-r-fwd-on",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 3,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Original new LIGHTS states and frozen sockets; source-located V7 electrical outputs where specified. Valve transit duration 820ms is a trainer approximation."
+      }
+    },
+    {
+      "id": "window-r-side-on",
+      "asset": "ON_GREEN",
+      "placementId": "OH15",
+      "sourceRect": [
+        885,
+        111,
+        210,
+        77
+      ],
+      "rule": "window-on",
+      "controls": [
+        "window-r-side",
+        "window-power-test"
+      ],
+      "sensor": "window-r-side-on",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 3,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Original new LIGHTS states and frozen sockets; source-located V7 electrical outputs where specified. Valve transit duration 820ms is a trainer approximation."
+      }
+    },
+    {
+      "id": "wing-valve-l",
+      "asset": "L_VALVE_OPEN",
+      "placementId": "OH16",
+      "sourceRect": [
+        205,
+        316,
+        259,
+        99
+      ],
+      "rule": "valve",
+      "controls": [
+        "wing-anti-ice"
+      ],
+      "sensor": "wing-valve-l",
+      "states": [
+        "OFF",
+        "DIM_BLUE",
+        "BRIGHT_BLUE"
+      ],
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 3,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Original new LIGHTS states and frozen sockets; source-located V7 electrical outputs where specified. Valve transit duration 820ms is a trainer approximation."
+      }
+    },
+    {
+      "id": "wing-valve-r",
+      "asset": "R_VALVE_OPEN",
+      "placementId": "OH16",
+      "sourceRect": [
+        500,
+        316,
+        259,
+        99
+      ],
+      "rule": "valve",
+      "controls": [
+        "wing-anti-ice"
+      ],
+      "sensor": "wing-valve-r",
+      "states": [
+        "OFF",
+        "DIM_BLUE",
+        "BRIGHT_BLUE"
+      ],
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 3,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Original new LIGHTS states and frozen sockets; source-located V7 electrical outputs where specified. Valve transit duration 820ms is a trainer approximation."
+      }
+    },
+    {
+      "id": "cowl-valve-1",
+      "asset": "COWL_VALVE_OPEN",
+      "placementId": "OH16",
+      "sourceRect": [
+        868,
+        302,
+        259,
+        107
+      ],
+      "rule": "valve",
+      "controls": [
+        "engine-anti-ice-1"
+      ],
+      "sensor": "cowl-valve-1",
+      "states": [
+        "OFF",
+        "DIM_BLUE",
+        "BRIGHT_BLUE"
+      ],
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 3,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Original new LIGHTS states and frozen sockets; source-located V7 electrical outputs where specified. Valve transit duration 820ms is a trainer approximation."
+      }
+    },
+    {
+      "id": "cowl-valve-2",
+      "asset": "COWL_VALVE_OPEN",
+      "placementId": "OH16",
+      "sourceRect": [
+        1168,
+        302,
+        259,
+        107
+      ],
+      "rule": "valve",
+      "controls": [
+        "engine-anti-ice-2"
+      ],
+      "sensor": "cowl-valve-2",
+      "states": [
+        "OFF",
+        "DIM_BLUE",
+        "BRIGHT_BLUE"
+      ],
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 3,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Original new LIGHTS states and frozen sockets; source-located V7 electrical outputs where specified. Valve transit duration 820ms is a trainer approximation."
+      }
+    },
+    {
+      "id": "crossfeed-valve",
+      "asset": "VALVE_OPEN",
+      "placementId": "OH09",
+      "sourceRect": [
+        418,
+        414,
+        175,
+        70
+      ],
+      "rule": "valve",
+      "controls": [
+        "crossfeed"
+      ],
+      "sensor": "crossfeed-valve",
+      "states": [
+        "OFF",
+        "DIM_BLUE",
+        "BRIGHT_BLUE"
+      ],
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 12,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Original new LIGHTS states and frozen sockets; source-located V7 electrical outputs where specified. Valve transit duration 820ms is a trainer approximation."
+      }
+    },
+    {
+      "id": "fuel-valve-closed-1",
+      "asset": "FUEL_VALVE_CLOSED",
+      "placementId": "OH09",
+      "sourceRect": [
+        146,
+        47,
+        174,
+        72
+      ],
+      "rule": "fuel-valve",
+      "controls": [],
+      "sensor": "engine1FuelValveClosed",
+      "states": [
+        "OFF",
+        "DIM_BLUE",
+        "BRIGHT_BLUE"
+      ],
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 12,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Original new LIGHTS states and frozen sockets; source-located V7 electrical outputs where specified. Valve transit duration 820ms is a trainer approximation."
+      }
+    },
+    {
+      "id": "fuel-valve-closed-2",
+      "asset": "FUEL_VALVE_CLOSED",
+      "placementId": "OH09",
+      "sourceRect": [
+        694,
+        47,
+        174,
+        72
+      ],
+      "rule": "fuel-valve",
+      "controls": [],
+      "sensor": "engine2FuelValveClosed",
+      "states": [
+        "OFF",
+        "DIM_BLUE",
+        "BRIGHT_BLUE"
+      ],
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 12,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Original new LIGHTS states and frozen sockets; source-located V7 electrical outputs where specified. Valve transit duration 820ms is a trainer approximation."
+      }
+    },
+    {
+      "id": "gen-off-bus-1",
+      "asset": "GEN_OFF_BUS",
+      "placementId": "OH12",
+      "sourceRect": [
+        90,
+        684,
+        169,
+        70
+      ],
+      "rule": "electrical",
+      "controls": [
+        "gen-1"
+      ],
+      "sensor": "genOffBus1",
+      "states": [
+        "OFF",
+        "BRIGHT_BLUE"
+      ],
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 6,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Original new LIGHTS states and frozen sockets; source-located V7 electrical outputs where specified. Valve transit duration 820ms is a trainer approximation."
+      }
+    },
+    {
+      "id": "gen-off-bus-2",
+      "asset": "GEN_OFF_BUS",
+      "placementId": "OH12",
+      "sourceRect": [
+        759,
+        684,
+        169,
+        70
+      ],
+      "rule": "electrical",
+      "controls": [
+        "gen-2"
+      ],
+      "sensor": "genOffBus2",
+      "states": [
+        "OFF",
+        "BRIGHT_BLUE"
+      ],
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 6,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Original new LIGHTS states and frozen sockets; source-located V7 electrical outputs where specified. Valve transit duration 820ms is a trainer approximation."
+      }
+    },
+    {
+      "id": "apu-gen-off-bus",
+      "asset": "APU_GEN_OFF_BUS",
+      "placementId": "OH12",
+      "sourceRect": [
+        422,
+        678,
+        175,
+        76
+      ],
+      "rule": "apu-gen-off",
+      "controls": [
+        "apu-gen-1",
+        "apu-gen-2"
+      ],
+      "sensor": "apu-gen-off-bus",
+      "states": [
+        "OFF",
+        "BRIGHT_BLUE"
+      ],
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 6,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Original new LIGHTS states and frozen sockets; source-located V7 electrical outputs where specified. Valve transit duration 820ms is a trainer approximation."
+      }
+    },
+    {
+      "id": "ground-power-available",
+      "asset": "GRD_POWER_AVAILABLE",
+      "placementId": "OH12",
+      "sourceRect": [
+        421,
+        35,
+        182,
+        68
+      ],
+      "rule": "electrical",
+      "controls": [
+        "ground-power"
+      ],
+      "sensor": "groundPowerAvailable",
+      "states": [
+        "OFF",
+        "BRIGHT_BLUE"
+      ],
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 6,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Original new LIGHTS states and frozen sockets; source-located V7 electrical outputs where specified. Valve transit duration 820ms is a trainer approximation."
+      }
+    },
+    {
+      "id": "apu-low-oil-quantity",
+      "asset": "LOW_OIL_QUANTITY",
+      "placementId": "OH12",
+      "sourceRect": [
+        162,
+        1055,
+        152,
+        61
+      ],
+      "rule": "sensor",
+      "controls": [
+        "apu-start"
+      ],
+      "sensor": "apu-low-oil-quantity",
+      "states": [
+        "OFF",
+        "BRIGHT_BLUE"
+      ],
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 7,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Original new LIGHTS states and frozen sockets; source-located V7 electrical outputs where specified. Valve transit duration 820ms is a trainer approximation."
+      }
+    },
+    {
+      "id": "ram-door-l",
+      "asset": "RAM_DOOR_FULL_OPEN",
+      "placementId": "OH21",
+      "sourceRect": [
+        355,
+        15,
+        146,
+        68
+      ],
+      "rule": "ram-door",
+      "controls": [
+        "pack-l"
+      ],
+      "sensor": "ram-door-l",
+      "states": [
+        "OFF",
+        "BRIGHT_BLUE"
+      ],
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 2,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Original new LIGHTS states and frozen sockets; source-located V7 electrical outputs where specified. Valve transit duration 820ms is a trainer approximation."
+      }
+    },
+    {
+      "id": "ram-door-r",
+      "asset": "RAM_DOOR_FULL_OPEN",
+      "placementId": "OH21",
+      "sourceRect": [
+        730,
+        15,
+        220,
+        68
+      ],
+      "rule": "ram-door",
+      "controls": [
+        "pack-r"
+      ],
+      "sensor": "ram-door-r",
+      "states": [
+        "OFF",
+        "BRIGHT_BLUE"
+      ],
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 2,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Original new LIGHTS states and frozen sockets; source-located V7 electrical outputs where specified. Valve transit duration 820ms is a trainer approximation."
+      }
+    },
+    {
+      "id": "press-standby",
+      "asset": "STANDBY_GREEN",
+      "placementId": "OH22",
+      "sourceRect": [
+        596,
+        26,
+        178,
+        86
+      ],
+      "rule": "press-mode",
+      "controls": [
+        "pressurization-mode"
+      ],
+      "sensor": "STANDBY",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 2,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Original new LIGHTS states and frozen sockets; source-located V7 electrical outputs where specified. Valve transit duration 820ms is a trainer approximation."
+      }
+    },
+    {
+      "id": "press-manual",
+      "asset": "MANUAL_GREEN",
+      "placementId": "OH22",
+      "sourceRect": [
+        805,
+        26,
+        178,
+        86
+      ],
+      "rule": "press-mode",
+      "controls": [
+        "pressurization-mode"
+      ],
+      "sensor": "MANUAL",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 2,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Original new LIGHTS states and frozen sockets; source-located V7 electrical outputs where specified. Valve transit duration 820ms is a trainer approximation."
+      }
+    },
+    {
+      "id": "ground-call",
+      "asset": "CALL",
+      "placementId": "OH18",
+      "sourceRect": [
+        67,
+        615,
+        310,
+        146
+      ],
+      "rule": "sensor",
+      "controls": [],
+      "sensor": "ground-call",
+      "states": [
+        "OFF",
+        "BRIGHT_BLUE"
+      ],
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 5,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Original new LIGHTS states and frozen sockets; source-located V7 electrical outputs where specified. Valve transit duration 820ms is a trainer approximation."
+      }
+    },
+    {
+      "id": "pmc-inop-1",
+      "asset": "INOP",
+      "placementId": "UPPER",
+      "sourceRect": [
+        1044,
+        447,
+        64,
+        39
+      ],
+      "rule": "sensor",
+      "controls": [],
+      "sensor": "pmc-inop-1",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 7,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Original new LIGHTS states and frozen sockets; source-located V7 electrical outputs where specified. Valve transit duration 820ms is a trainer approximation."
+      }
+    },
+    {
+      "id": "pmc-inop-2",
+      "asset": "INOP",
+      "placementId": "UPPER",
+      "sourceRect": [
+        1216,
+        447,
+        64,
+        39
+      ],
+      "rule": "sensor",
+      "controls": [],
+      "sensor": "pmc-inop-2",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 7,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Original new LIGHTS states and frozen sockets; source-located V7 electrical outputs where specified. Valve transit duration 820ms is a trainer approximation."
+      }
+    },
+    {
+      "id": "gear-left-down",
+      "asset": "LEFT_GEAR_2LINE_GREEN",
+      "placementId": "UPPER",
+      "sourceRect": [
+        1005,
+        755,
+        58,
+        32
+      ],
+      "rule": "sensor",
+      "controls": [],
+      "sensor": "gear-left-down",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 14,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Original new LIGHTS states and frozen sockets; source-located V7 electrical outputs where specified. Valve transit duration 820ms is a trainer approximation."
+      }
+    },
+    {
+      "id": "gear-right-down",
+      "asset": "RIGHT_GEAR_2LINE_GREEN",
+      "placementId": "UPPER",
+      "sourceRect": [
+        1080,
+        755,
+        58,
+        32
+      ],
+      "rule": "sensor",
+      "controls": [],
+      "sensor": "gear-right-down",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 14,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Original new LIGHTS states and frozen sockets; source-located V7 electrical outputs where specified. Valve transit duration 820ms is a trainer approximation."
+      }
+    },
+    {
+      "id": "gear-nose-down",
+      "asset": "NOSE_GEAR_2LINE_GREEN",
+      "placementId": "UPPER",
+      "sourceRect": [
+        1045,
+        804,
+        58,
+        32
+      ],
+      "rule": "sensor",
+      "controls": [],
+      "sensor": "gear-nose-down",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "provenance": {
+        "source_id": "FCOM-SEPEHRAN-1937",
+        "chapter": 14,
+        "physical_pdf_page": null,
+        "status": "SIM_APPROX_ONLY",
+        "basis": "Original new LIGHTS states and frozen sockets; source-located V7 electrical outputs where specified. Valve transit duration 820ms is a trainer approximation."
+      }
     }
   ],
   "sourceStatus": "Public source-located electrical engine and previous fuel/flight-control models reused; private Technical Database retrieval returned no results. Remaining predicates are explicit simulator approximations, not source-verified aircraft rules. LGT-0002 reuses existing source-located Pneumatics V6 for 9 added pneumatic lamps and trip reset. New other sensor mappings remain explicit simulator approximations.",
   "unavailableLegends": [
-    "WINDOW HEAT ON (green)",
-    "APU LOW OIL QUANTITY",
-    "GEN OFF BUS / APU GEN OFF BUS",
-    "Blue valve, RAM DOOR FULL OPEN and STANDBY/MANUAL annunciators"
+    "IRS ALIGN"
   ],
-  "previousVersion": "LGT-0001",
-  "preservedLampCount": 58
+  "previousVersion": "LGT-0002",
+  "preservedLampCount": 84,
+  "bluePaletteStatus": "Preview; original supplied assets unchanged; exact blue palette pending owner visual approval per INFORMATION_LIGHTS_SPEC.json"
 }

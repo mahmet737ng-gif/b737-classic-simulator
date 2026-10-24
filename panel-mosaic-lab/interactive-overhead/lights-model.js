@@ -1,4 +1,4 @@
-/* LGT-0002. Discrete trainer adapter, not an aircraft wiring model.
+/* LGT-0003. Discrete trainer adapter, not an aircraft wiring model.
  * Source-located electrical V7 is reused without resolving its UNKNOWN cases.
  * Fuel/flight-controls legacy rules are simulator prototypes; additional
  * sensor predicates and short delays are explicitly SIM_APPROX_ONLY.
@@ -6,7 +6,7 @@
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;if(root)root.B737OverheadLightModel=api;})(typeof globalThis!=='undefined'?globalThis:null,function(){
  'use strict';
  const copy=v=>JSON.parse(JSON.stringify(v));
- function initialContext(){return {panelPower:true,engine1Running:true,engine2Running:true,apuRunning:false,groundPowerAttached:false,fuelAvailable:true,standbyPumpFailed:false,passengerOxygenDeployed:false,irsBatterySupply:false,equipmentSupplyFailed:false,equipmentExhaustFailed:false,faults:{}};}
+ function initialContext(){return {panelPower:true,engine1Running:true,engine2Running:true,apuRunning:false,groundPowerAttached:false,fuelAvailable:true,standbyPumpFailed:false,passengerOxygenDeployed:false,irsBatterySupply:false,equipmentSupplyFailed:false,equipmentExhaustFailed:false,onGround:true,engine1FuelValveClosed:false,engine2FuelValveClosed:false,faults:{}};}
  function rectangle(c,p,mapPoint){const [x,y,w,h]=c.sourceRect;const point=(a,b)=>mapPoint({id:c.id,sourcePoint:[a,b],bezelSourceDiameter:1},p);const a=point(x,y),b=point(x+w,y+h);return {x:a.x,y:a.y,w:b.x-a.x,h:b.y-a.y};}
  function validate(reg,layout,mapper,controlIds){
   const ids=new Set(),plates=new Map(layout.placements.map(p=>[p.id,p]));
@@ -15,13 +15,13 @@
    const p=plates.get(c.placementId);if(!p||c.sourceRect.length!==4||c.sourceRect.some(n=>!Number.isFinite(n)))throw Error('Invalid lamp geometry '+c.id);
    const box=rectangle(c,p,mapper);if(box.w<=0||box.h<=0||box.x<0||box.y<0||box.x+box.w>layout.canvas.width||box.y+box.h>layout.canvas.height)throw Error('Lamp outside board '+c.id);
    for(const id of c.controls)if(!controlIds.has(id))throw Error('Unresolved lamp control '+id);
-   for(const state of ['ON','OFF'])if(!reg.assets[c.asset][state]?.url)throw Error('Missing lamp pair '+c.asset);
+   for(const state of c.states||['ON','OFF'])if(!reg.assets[c.asset][state]?.url)throw Error('Missing lamp pair '+c.asset);
   }return true;
  }
  function controller(reg,electrical,notify=()=>{},pneumatics){
   let context=initialContext(),toggles={},rotaries={},guards={},test=false,electricalState=electrical.initialState();
   let pneumaticState=pneumatics.initial();
-  let oxygen=false;const faults=new Set(reg.lights.map(c=>c.id)),switchTime={};let result=null;
+  let oxygen=false;const faults=new Set(reg.lights.map(c=>c.id)),switchTime={},valveTime={};let result=null;
   const control=id=>toggles[id]??guards[id]?.value??rotaries[id];
   const isOn=id=>String(control(id)).toUpperCase()==='ON';
   function command(c){try{electricalState=electrical.apply(electricalState,c);}catch{ /* Unavailable source cannot latch. */ }}
@@ -51,8 +51,9 @@
    command({type:'SELECT_SOURCE',side,source:next==='ON'?source:'OFF'});
   }
   function ingest(t,r,now=0,event){
-   const before=toggles;toggles={...t};rotaries={...r.rotaries};guards=copy(r.guards);
+   const before=toggles,previousRotaries=rotaries;toggles={...t};rotaries={...r.rotaries};guards=copy(r.guards);
    for(const [id,value]of Object.entries(toggles))if(value!==before[id])switchTime[id]=now;
+   for(const [id,value]of Object.entries({...toggles,...rotaries})){const previous=before[id]??previousRotaries[id];if(previous!==undefined&&previous!==value)valveTime[id]=now;}
    if(control('passenger-oxygen')==='on')oxygen=true;
    syncElectrical();syncPneumatic();if(event)sourceEvent(event.id,event.next);
    return evaluate(now);
@@ -60,12 +61,12 @@
   function update(patch,now=0){
    for(const [key,value]of Object.entries(patch)){
     if(key==='faults'){for(const [id,active]of Object.entries(value)){if(!faults.has(id)||typeof active!=='boolean')throw Error('Invalid lamp fault');context.faults[id]=active;}}
-    else if(!Object.hasOwn(initialContext(),key)||typeof value!=='boolean')throw Error('Invalid scenario input');else context[key]=value;
+    else if(!Object.hasOwn(initialContext(),key)||typeof value!=='boolean')throw Error('Invalid scenario input');else {if(key.startsWith('engine')&&key.endsWith('FuelValveClosed')&&context[key]!==value)valveTime[key]=now;context[key]=value;}
    }
    syncElectrical();syncPneumatic();return evaluate(now);
   }
   function evaluate(now=0){
-   const p=pneumatics.derive(pneumaticState),e=electrical.evaluate(electricalState),on={},unknown=[],fault=id=>context.faults[id]===true;
+   const p=pneumatics.derive(pneumaticState),e=electrical.evaluate(electricalState),on={},frames={},unknown=[],fault=id=>context.faults[id]===true;
    const standbyCommand=['flight-control-a','flight-control-b'].some(id=>control(id)==='stby')||control('alternate-flaps-master')==='arm';
    const hyd=id=>isOn(id)&&!fault(id)&&(id.includes('eng-')?context['engine'+id.at(-1)+'Running']:true);
    const pressureA=hyd('hyd-eng-1')||hyd('hyd-elec-2'),pressureB=hyd('hyd-eng-2')||hyd('hyd-elec-1');
@@ -94,15 +95,23 @@
      case 'anti-ice':active=isOn(id)&&fault(c.id);break;
      case 'pneumatic':active=p.lamps[c.sensor];break;
      case 'press-fault':active=v==='AUTO'&&fault(c.id);break;
+     case 'window-on':active=control('window-power-test')==='PWR TEST'||isOn(id)&&!fault('window-'+id.slice(7)+'-overheat');break;
+     case 'valve':active=fault(c.id)||now-(valveTime[id]??-10000)<820?'BRIGHT_BLUE':(v==='ON'||v==='OPEN')?'DIM_BLUE':'OFF';break;
+     case 'fuel-valve':active=fault(c.id)||now-(valveTime[c.sensor]??-10000)<820?'BRIGHT_BLUE':context[c.sensor]?'DIM_BLUE':'OFF';break;
+     case 'apu-gen-off':active=context.apuRunning&&!Object.values(e.source).includes('APU');break;
+     case 'ram-door':active=context.onGround&&v!=='OFF'||fault(c.id);break;
+     case 'press-mode':active=v===c.sensor;break;
      case 'oxygen':active=oxygen||context.passengerOxygenDeployed;break;
      case 'recorder':active=fault(c.sensor);break;
      default:throw Error('Unknown lamp predicate '+c.rule);
     }
-    if(active===null){unknown.push(c.id);on[c.id]=available&&test?true:null;}else on[c.id]=available&&(test||!!active);
+    const states=c.states||['OFF','ON'],bright=states.at(-1);
+    if(active===null){unknown.push(c.id);on[c.id]=available&&test?true:null;frames[c.id]=available&&test?bright:'OFF';}
+    else {const frame=!available?'OFF':test?bright:typeof active==='string'?active:active?bright:'OFF';frames[c.id]=frame;on[c.id]=frame!=='OFF';}
    }
-   result={version:reg.version,lights:on,unknown,electrical:e,pneumatic:p,context:copy(context),lampTest:test,passengerOxygenDeployed:oxygen,power:available};notify(copy(result));return copy(result);
+   result={version:reg.version,lights:on,frames,unknown,electrical:e,pneumatic:p,context:copy(context),lampTest:test,passengerOxygenDeployed:oxygen,power:available};notify(copy(result));return copy(result);
   }
-  return {tripReset:(now=0)=>{syncPneumatic();pneumaticState=pneumatics.apply(pneumaticState,{type:'TRIP_RESET'});return evaluate(now);},ingest,update,evaluate,snapshot:()=>copy(result),setLampTest:(v,now=0)=>{test=!!v;return evaluate(now);},reset:(now=0)=>{context=initialContext();oxygen=false;test=false;electricalState=electrical.initialState();pneumaticState=pneumatics.initial();syncElectrical();syncPneumatic();return evaluate(now);}};
+  return {tripReset:(now=0)=>{syncPneumatic();pneumaticState=pneumatics.apply(pneumaticState,{type:'TRIP_RESET'});return evaluate(now);},ingest,update,evaluate,snapshot:()=>copy(result),setLampTest:(v,now=0)=>{test=!!v;return evaluate(now);},reset:(now=0)=>{context=initialContext();for(const id of Object.keys(valveTime))delete valveTime[id];oxygen=false;test=false;electricalState=electrical.initialState();pneumaticState=pneumatics.initial();syncElectrical();syncPneumatic();return evaluate(now);}};
  }
  return Object.freeze({initialContext,rectangle,validate,controller});
 });

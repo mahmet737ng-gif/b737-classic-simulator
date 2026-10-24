@@ -1,15 +1,14 @@
 {
   "schema": "b737-annunciator-assets.v1",
-  "version": "LGT-0002",
+  "version": "LGT-0003",
   "assetDirectory": "../assets/locked/2026-10-23/LIGHTS/",
   "testMode": "manual-asset-visual-qa",
   "note": "Stable IDs for the owner-approved light designs. This registry does not assign physical coordinates or certify aircraft logic.",
   "lights": [
     {
-      "id": "LOW_PRESSURE",
+      "id": "AFT_CARGO",
       "lines": [
-        "LOW",
-        "PRESSURE"
+        "AFT CARGO"
       ],
       "orientation": "landscape",
       "face": {
@@ -18,13 +17,21 @@
       },
       "defaultState": "OFF",
       "logicCondition": null,
-      "placement": null
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "AFT_CARGO_OFF.png",
+        "ON": "AFT_CARGO_ON.png"
+      },
+      "scope": "OVERHEAD"
     },
     {
-      "id": "LOW_OIL_PRESSURE",
+      "id": "AFT_ENTRY",
       "lines": [
-        "LOW OIL",
-        "PRESSURE"
+        "AFT ENTRY"
       ],
       "orientation": "landscape",
       "face": {
@@ -33,13 +40,21 @@
       },
       "defaultState": "OFF",
       "logicCondition": null,
-      "placement": null
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "AFT_ENTRY_OFF.png",
+        "ON": "AFT_ENTRY_ON.png"
+      },
+      "scope": "OVERHEAD"
     },
     {
-      "id": "YAW_DAMPER",
+      "id": "AFT_SERVICE",
       "lines": [
-        "YAW",
-        "DAMPER"
+        "AFT SERVICE"
       ],
       "orientation": "landscape",
       "face": {
@@ -48,13 +63,21 @@
       },
       "defaultState": "OFF",
       "logicCondition": null,
-      "placement": null
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "AFT_SERVICE_OFF.png",
+        "ON": "AFT_SERVICE_ON.png"
+      },
+      "scope": "OVERHEAD"
     },
     {
-      "id": "FILTER_BYPASS",
+      "id": "AIR_STAIR",
       "lines": [
-        "FILTER",
-        "BYPASS"
+        "AIR STAIR"
       ],
       "orientation": "landscape",
       "face": {
@@ -63,13 +86,21 @@
       },
       "defaultState": "OFF",
       "logicCondition": null,
-      "placement": null
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "AIR_STAIR_OFF.png",
+        "ON": "AIR_STAIR_ON.png"
+      },
+      "scope": "OVERHEAD"
     },
     {
-      "id": "FEEL_DIFF_PRESS",
+      "id": "ALTITUDE_ALERT",
       "lines": [
-        "FEEL",
-        "DIFF PRESS"
+        "ALTITUDE ALERT"
       ],
       "orientation": "landscape",
       "face": {
@@ -77,14 +108,20 @@
         "height": 300
       },
       "defaultState": "OFF",
-      "logicCondition": null,
-      "placement": null
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "ALTITUDE_ALERT_OFF.svg",
+        "ON": "ALTITUDE_ALERT_ON.svg"
+      },
+      "scope": "ASSET_TEST_ONLY"
     },
     {
-      "id": "SPEED_TRIM_FAIL",
+      "id": "ANTI_SKID_INOP",
       "lines": [
-        "SPEED TRIM",
-        "FAIL"
+        "ANTI SKID INOP"
       ],
       "orientation": "landscape",
       "face": {
@@ -92,14 +129,62 @@
         "height": 300
       },
       "defaultState": "OFF",
-      "logicCondition": null,
-      "placement": null
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "ANTI_SKID_INOP_OFF.svg",
+        "ON": "ANTI_SKID_INOP_ON.svg"
+      },
+      "scope": "ASSET_TEST_ONLY"
     },
     {
-      "id": "MACH_TRIM_FAIL",
+      "id": "APU_GEN_OFF_BUS",
       "lines": [
-        "MACH TRIM",
-        "FAIL"
+        "APU GEN OFF BUS"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "BRIGHT_BLUE"
+      ],
+      "assets": {
+        "BRIGHT_BLUE": "APU_GEN_OFF_BUS_BRIGHT_BLUE.svg",
+        "OFF": "APU_GEN_OFF_BUS_OFF.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "AUTO_BRAKE_DISARM",
+      "lines": [
+        "AUTO BRAKE DISARM"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "AUTO_BRAKE_DISARM_OFF.svg",
+        "ON": "AUTO_BRAKE_DISARM_ON.svg"
+      },
+      "scope": "ASSET_TEST_ONLY"
+    },
+    {
+      "id": "AUTO_FAIL",
+      "lines": [
+        "AUTO FAIL"
       ],
       "orientation": "landscape",
       "face": {
@@ -108,7 +193,16 @@
       },
       "defaultState": "OFF",
       "logicCondition": null,
-      "placement": null
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "AUTO_FAIL_OFF.png",
+        "ON": "AUTO_FAIL_ON.png"
+      },
+      "scope": "OVERHEAD"
     },
     {
       "id": "AUTO_SLAT_FAIL",
@@ -123,85 +217,42 @@
       },
       "defaultState": "OFF",
       "logicCondition": null,
-      "placement": null
-    },
-    {
-      "id": "LOW_QUANTITY",
-      "lines": [
-        "LOW",
-        "QUANTITY"
-      ],
-      "orientation": "landscape",
-      "face": {
-        "width": 600,
-        "height": 300
-      },
-      "defaultState": "OFF",
-      "logicCondition": null,
-      "placement": null
-    },
-    {
-      "id": "STBY_RUD_ON_LAMP",
-      "lines": [
-        "STBY",
-        "RUD ON"
-      ],
-      "orientation": "landscape",
-      "face": {
-        "width": 600,
-        "height": 300
-      },
-      "defaultState": "OFF",
-      "logicCondition": null,
-      "placement": null
-    },
-    {
-      "id": "REVERSER",
-      "lines": [
-        "REVERSER"
-      ],
-      "orientation": "landscape",
-      "face": {
-        "width": 600,
-        "height": 300
-      },
-      "defaultState": "OFF",
-      "logicCondition": null,
-      "placement": null
-    },
-    {
-      "id": "LOW_IDLE",
-      "lines": [
-        "LOW IDLE"
-      ],
-      "orientation": "landscape",
-      "face": {
-        "width": 600,
-        "height": 300
-      },
-      "defaultState": "OFF",
-      "logicCondition": null,
-      "placement": null
-    },
-    {
-      "id": "PASS_OXY_ON_LAMP",
-      "lines": [
-        "PASS OXY",
+      "placement": null,
+      "states": [
+        "OFF",
         "ON"
       ],
+      "assets": {
+        "OFF": "AUTO_SLAT_FAIL_OFF.svg",
+        "ON": "AUTO_SLAT_FAIL_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "BELOW_GS_P_INHIBIT",
+      "lines": [
+        "BELOW GS P INHIBIT"
+      ],
       "orientation": "landscape",
       "face": {
         "width": 600,
         "height": 300
       },
       "defaultState": "OFF",
-      "logicCondition": null,
-      "placement": null
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "BELOW_GS_P_INHIBIT_OFF.svg",
+        "ON": "BELOW_GS_P_INHIBIT_ON.svg"
+      },
+      "scope": "ASSET_TEST_ONLY"
     },
     {
-      "id": "OFF_LAMP",
+      "id": "BLEED_TRIP_OFF",
       "lines": [
-        "OFF"
+        "BLEED TRIP OFF"
       ],
       "orientation": "landscape",
       "face": {
@@ -210,12 +261,21 @@
       },
       "defaultState": "OFF",
       "logicCondition": null,
-      "placement": null
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "BLEED_TRIP_OFF_OFF.png",
+        "ON": "BLEED_TRIP_OFF_ON.png"
+      },
+      "scope": "OVERHEAD"
     },
     {
-      "id": "OVERHEAT",
+      "id": "BRAKE_TEMP",
       "lines": [
-        "OVERHEAT"
+        "BRAKE TEMP"
       ],
       "orientation": "landscape",
       "face": {
@@ -223,95 +283,15 @@
         "height": 300
       },
       "defaultState": "OFF",
-      "logicCondition": null,
-      "placement": null
-    },
-    {
-      "id": "ON_DC_LAMP",
-      "lines": [
-        "ON DC"
+      "states": [
+        "OFF",
+        "ON"
       ],
-      "orientation": "landscape",
-      "face": {
-        "width": 600,
-        "height": 300
+      "assets": {
+        "OFF": "BRAKE_TEMP_OFF.svg",
+        "ON": "BRAKE_TEMP_ON.svg"
       },
-      "defaultState": "OFF",
-      "logicCondition": null,
-      "placement": null
-    },
-    {
-      "id": "DC_FAIL",
-      "lines": [
-        "DC FAIL"
-      ],
-      "orientation": "landscape",
-      "face": {
-        "width": 600,
-        "height": 300
-      },
-      "defaultState": "OFF",
-      "logicCondition": null,
-      "placement": null
-    },
-    {
-      "id": "FAULT",
-      "lines": [
-        "FAULT"
-      ],
-      "orientation": "landscape",
-      "face": {
-        "width": 600,
-        "height": 300
-      },
-      "defaultState": "OFF",
-      "logicCondition": null,
-      "placement": null
-    },
-    {
-      "id": "STANDBY_PWR_OFF_LAMP",
-      "lines": [
-        "STANDBY",
-        "PWR OFF"
-      ],
-      "orientation": "landscape",
-      "face": {
-        "width": 600,
-        "height": 300
-      },
-      "defaultState": "OFF",
-      "logicCondition": null,
-      "placement": null
-    },
-    {
-      "id": "HIGH_OIL_TEMP",
-      "lines": [
-        "HIGH OIL",
-        "TEMP"
-      ],
-      "orientation": "landscape",
-      "face": {
-        "width": 600,
-        "height": 300
-      },
-      "defaultState": "OFF",
-      "logicCondition": null,
-      "placement": null
-    },
-    {
-      "id": "TRANSFER_BUS_OFF_LAMP",
-      "lines": [
-        "TRANSFER",
-        "BUS OFF"
-      ],
-      "orientation": "landscape",
-      "face": {
-        "width": 600,
-        "height": 300
-      },
-      "defaultState": "OFF",
-      "logicCondition": null,
-      "placement": null
+      "scope": "ASSET_TEST_ONLY"
     },
     {
       "id": "BUS_OFF_LAMP",
@@ -326,13 +306,21 @@
       },
       "defaultState": "OFF",
       "logicCondition": null,
-      "placement": null
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "BUS_OFF_LAMP_OFF.svg",
+        "ON": "BUS_OFF_LAMP_ON.svg"
+      },
+      "scope": "OVERHEAD"
     },
     {
-      "id": "OVER_SPEED",
+      "id": "CALL",
       "lines": [
-        "OVER",
-        "SPEED"
+        "CALL"
       ],
       "orientation": "landscape",
       "face": {
@@ -340,23 +328,15 @@
         "height": 300
       },
       "defaultState": "OFF",
-      "logicCondition": null,
-      "placement": null
-    },
-    {
-      "id": "NOT_ARMED_VERTICAL",
-      "lines": [
-        "NOT",
-        "ARMED"
+      "states": [
+        "OFF",
+        "BRIGHT_BLUE"
       ],
-      "orientation": "portrait",
-      "face": {
-        "width": 300,
-        "height": 600
+      "assets": {
+        "BRIGHT_BLUE": "CALL_BRIGHT_BLUE.svg",
+        "OFF": "CALL_OFF.svg"
       },
-      "defaultState": "OFF",
-      "logicCondition": null,
-      "placement": null
+      "scope": "OVERHEAD"
     },
     {
       "id": "CAPT_PS_1_AUX_STATIC",
@@ -371,7 +351,271 @@
       },
       "defaultState": "OFF",
       "logicCondition": null,
-      "placement": null
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "CAPT_PS_1_AUX_STATIC_OFF.svg",
+        "ON": "CAPT_PS_1_AUX_STATIC_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "CAPT_STATIC_1_AUX_PS",
+      "lines": [
+        "CAPT STATIC 1 AUX PS"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "CAPT_STATIC_1_AUX_PS_OFF.png",
+        "ON": "CAPT_STATIC_1_AUX_PS_ON.png"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "COWL_ANTI_ICE",
+      "lines": [
+        "COWL ANTI ICE"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "COWL_ANTI_ICE_OFF.png",
+        "ON": "COWL_ANTI_ICE_ON.png"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "COWL_VALVE_OPEN",
+      "lines": [
+        "COWL VALVE OPEN"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "DIM_BLUE",
+        "BRIGHT_BLUE"
+      ],
+      "assets": {
+        "BRIGHT_BLUE": "COWL_VALVE_OPEN_BRIGHT_BLUE.svg",
+        "DIM_BLUE": "COWL_VALVE_OPEN_DIM_BLUE.svg",
+        "OFF": "COWL_VALVE_OPEN_OFF.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "DC_FAIL",
+      "lines": [
+        "DC FAIL"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "DC_FAIL_OFF.svg",
+        "ON": "DC_FAIL_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "DUAL_BLEED",
+      "lines": [
+        "DUAL BLEED"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "DUAL_BLEED_OFF.png",
+        "ON": "DUAL_BLEED_ON.png"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "DUCT_OVERHEAT",
+      "lines": [
+        "DUCT OVERHEAT"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "DUCT_OVERHEAT_OFF.png",
+        "ON": "DUCT_OVERHEAT_ON.png"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "EQUIP",
+      "lines": [
+        "EQUIP"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "EQUIP_OFF.png",
+        "ON": "EQUIP_ON.png"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "FAULT",
+      "lines": [
+        "FAULT"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "FAULT_OFF.svg",
+        "ON": "FAULT_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "FEEL_DIFF_PRESS",
+      "lines": [
+        "FEEL",
+        "DIFF PRESS"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "FEEL_DIFF_PRESS_OFF.svg",
+        "ON": "FEEL_DIFF_PRESS_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "FILTER_BYPASS",
+      "lines": [
+        "FILTER",
+        "BYPASS"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "FILTER_BYPASS_OFF.svg",
+        "ON": "FILTER_BYPASS_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "FO_PS_2_AUX_STATIC",
+      "lines": [
+        "FO PS 2 AUX STATIC"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "FO_PS_2_AUX_STATIC_OFF.png",
+        "ON": "FO_PS_2_AUX_STATIC_ON.png"
+      },
+      "scope": "OVERHEAD"
     },
     {
       "id": "FO_STATIC_2_AUX_PS",
@@ -386,13 +630,44 @@
       },
       "defaultState": "OFF",
       "logicCondition": null,
-      "placement": null
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "FO_STATIC_2_AUX_PS_OFF.svg",
+        "ON": "FO_STATIC_2_AUX_PS_ON.svg"
+      },
+      "scope": "OVERHEAD"
     },
     {
-      "id": "L_ELEV_PITOT",
+      "id": "FUEL_VALVE_CLOSED",
       "lines": [
-        "L ELEV",
-        "PITOT"
+        "FUEL VALVE CLOSED"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "DIM_BLUE",
+        "BRIGHT_BLUE"
+      ],
+      "assets": {
+        "BRIGHT_BLUE": "FUEL_VALVE_CLOSED_BRIGHT_BLUE.svg",
+        "DIM_BLUE": "FUEL_VALVE_CLOSED_DIM_BLUE.svg",
+        "OFF": "FUEL_VALVE_CLOSED_OFF.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "FWD_CARGO",
+      "lines": [
+        "FWD CARGO"
       ],
       "orientation": "landscape",
       "face": {
@@ -401,7 +676,349 @@
       },
       "defaultState": "OFF",
       "logicCondition": null,
-      "placement": null
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "FWD_CARGO_OFF.png",
+        "ON": "FWD_CARGO_ON.png"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "FWD_ENTRY",
+      "lines": [
+        "FWD ENTRY"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "FWD_ENTRY_OFF.png",
+        "ON": "FWD_ENTRY_ON.png"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "FWD_SERVICE",
+      "lines": [
+        "FWD SERVICE"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "FWD_SERVICE_OFF.png",
+        "ON": "FWD_SERVICE_ON.png"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "GEN_OFF_BUS",
+      "lines": [
+        "GEN OFF BUS"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "BRIGHT_BLUE"
+      ],
+      "assets": {
+        "BRIGHT_BLUE": "GEN_OFF_BUS_BRIGHT_BLUE.svg",
+        "OFF": "GEN_OFF_BUS_OFF.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "GRD_POWER_AVAILABLE",
+      "lines": [
+        "GRD POWER AVAILABLE"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "BRIGHT_BLUE"
+      ],
+      "assets": {
+        "BRIGHT_BLUE": "GRD_POWER_AVAILABLE_BRIGHT_BLUE.svg",
+        "OFF": "GRD_POWER_AVAILABLE_OFF.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "HIGH_OIL_TEMP",
+      "lines": [
+        "HIGH OIL",
+        "TEMP"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "HIGH_OIL_TEMP_OFF.svg",
+        "ON": "HIGH_OIL_TEMP_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "INOP",
+      "lines": [
+        "INOP"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "INOP_OFF.svg",
+        "ON": "INOP_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "LEFT_GEAR_2LINE_GREEN",
+      "lines": [
+        "LEFT GEAR 2LINE GREEN"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "LEFT_GEAR_2LINE_GREEN_OFF.svg",
+        "ON": "LEFT_GEAR_2LINE_GREEN_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "LEFT_GEAR_2LINE_RED",
+      "lines": [
+        "LEFT GEAR 2LINE RED"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "LEFT_GEAR_2LINE_RED_OFF.svg",
+        "ON": "LEFT_GEAR_2LINE_RED_ON.svg"
+      },
+      "scope": "ASSET_TEST_ONLY"
+    },
+    {
+      "id": "LE_FLAPS_EXT_GREEN",
+      "lines": [
+        "LE FLAPS EXT GREEN"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "LE_FLAPS_EXT_GREEN_OFF.svg",
+        "ON": "LE_FLAPS_EXT_GREEN_ON.svg"
+      },
+      "scope": "ASSET_TEST_ONLY"
+    },
+    {
+      "id": "LE_FLAPS_TRANSIT",
+      "lines": [
+        "LE FLAPS TRANSIT"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "LE_FLAPS_TRANSIT_OFF.svg",
+        "ON": "LE_FLAPS_TRANSIT_ON.svg"
+      },
+      "scope": "ASSET_TEST_ONLY"
+    },
+    {
+      "id": "LOW_IDLE",
+      "lines": [
+        "LOW IDLE"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "LOW_IDLE_OFF.svg",
+        "ON": "LOW_IDLE_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "LOW_OIL_PRESSURE",
+      "lines": [
+        "LOW OIL",
+        "PRESSURE"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "LOW_OIL_PRESSURE_OFF.svg",
+        "ON": "LOW_OIL_PRESSURE_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "LOW_OIL_QUANTITY",
+      "lines": [
+        "LOW OIL QUANTITY"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "BRIGHT_BLUE"
+      ],
+      "assets": {
+        "BRIGHT_BLUE": "LOW_OIL_QUANTITY_BRIGHT_BLUE.svg",
+        "OFF": "LOW_OIL_QUANTITY_OFF.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "LOW_PRESSURE",
+      "lines": [
+        "LOW",
+        "PRESSURE"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "LOW_PRESSURE_OFF.svg",
+        "ON": "LOW_PRESSURE_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "LOW_QUANTITY",
+      "lines": [
+        "LOW",
+        "QUANTITY"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "LOW_QUANTITY_OFF.svg",
+        "ON": "LOW_QUANTITY_ON.svg"
+      },
+      "scope": "OVERHEAD"
     },
     {
       "id": "L_ALPHA_VANE",
@@ -416,12 +1033,22 @@
       },
       "defaultState": "OFF",
       "logicCondition": null,
-      "placement": null
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "L_ALPHA_VANE_OFF.svg",
+        "ON": "L_ALPHA_VANE_ON.svg"
+      },
+      "scope": "OVERHEAD"
     },
     {
-      "id": "AFT_CARGO",
+      "id": "L_ELEV_PITOT",
       "lines": [
-        "AFT CARGO"
+        "L ELEV",
+        "PITOT"
       ],
       "orientation": "landscape",
       "face": {
@@ -430,12 +1057,45 @@
       },
       "defaultState": "OFF",
       "logicCondition": null,
-      "placement": null
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "L_ELEV_PITOT_OFF.svg",
+        "ON": "L_ELEV_PITOT_ON.svg"
+      },
+      "scope": "OVERHEAD"
     },
     {
-      "id": "AFT_ENTRY",
+      "id": "L_VALVE_OPEN",
       "lines": [
-        "AFT ENTRY"
+        "L VALVE OPEN"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "DIM_BLUE",
+        "BRIGHT_BLUE"
+      ],
+      "assets": {
+        "BRIGHT_BLUE": "L_VALVE_OPEN_BRIGHT_BLUE.svg",
+        "DIM_BLUE": "L_VALVE_OPEN_DIM_BLUE.svg",
+        "OFF": "L_VALVE_OPEN_OFF.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "MACH_TRIM_FAIL",
+      "lines": [
+        "MACH TRIM",
+        "FAIL"
       ],
       "orientation": "landscape",
       "face": {
@@ -444,12 +1104,108 @@
       },
       "defaultState": "OFF",
       "logicCondition": null,
-      "placement": null
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "MACH_TRIM_FAIL_OFF.svg",
+        "ON": "MACH_TRIM_FAIL_ON.svg"
+      },
+      "scope": "OVERHEAD"
     },
     {
-      "id": "AFT_SERVICE",
+      "id": "MANUAL_GREEN",
       "lines": [
-        "AFT SERVICE"
+        "MANUAL GREEN"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "MANUAL_GREEN_OFF.svg",
+        "ON": "MANUAL_GREEN_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "NOSE_GEAR_2LINE_GREEN",
+      "lines": [
+        "NOSE GEAR 2LINE GREEN"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "NOSE_GEAR_2LINE_GREEN_OFF.svg",
+        "ON": "NOSE_GEAR_2LINE_GREEN_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "NOSE_GEAR_2LINE_RED",
+      "lines": [
+        "NOSE GEAR 2LINE RED"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "NOSE_GEAR_2LINE_RED_OFF.svg",
+        "ON": "NOSE_GEAR_2LINE_RED_ON.svg"
+      },
+      "scope": "ASSET_TEST_ONLY"
+    },
+    {
+      "id": "NOT_ARMED_VERTICAL",
+      "lines": [
+        "NOT",
+        "ARMED"
+      ],
+      "orientation": "portrait",
+      "face": {
+        "width": 300,
+        "height": 600
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "NOT_ARMED_VERTICAL_OFF.svg",
+        "ON": "NOT_ARMED_VERTICAL_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "OFF_LAMP",
+      "lines": [
+        "OFF"
       ],
       "orientation": "landscape",
       "face": {
@@ -458,175 +1214,16 @@
       },
       "defaultState": "OFF",
       "logicCondition": null,
-      "placement": null
-    },
-    {
-      "id": "AIR_STAIR",
-      "lines": [
-        "AIR STAIR"
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
       ],
-      "orientation": "landscape",
-      "face": {
-        "width": 600,
-        "height": 300
+      "assets": {
+        "OFF": "OFF_LAMP_OFF.svg",
+        "ON": "OFF_LAMP_ON.svg"
       },
-      "defaultState": "OFF",
-      "logicCondition": null,
-      "placement": null
-    },
-    {
-      "id": "AUTO_FAIL",
-      "lines": [
-        "AUTO FAIL"
-      ],
-      "orientation": "landscape",
-      "face": {
-        "width": 600,
-        "height": 300
-      },
-      "defaultState": "OFF",
-      "logicCondition": null,
-      "placement": null
-    },
-    {
-      "id": "BLEED_TRIP_OFF",
-      "lines": [
-        "BLEED TRIP OFF"
-      ],
-      "orientation": "landscape",
-      "face": {
-        "width": 600,
-        "height": 300
-      },
-      "defaultState": "OFF",
-      "logicCondition": null,
-      "placement": null
-    },
-    {
-      "id": "CAPT_STATIC_1_AUX_PS",
-      "lines": [
-        "CAPT STATIC 1 AUX PS"
-      ],
-      "orientation": "landscape",
-      "face": {
-        "width": 600,
-        "height": 300
-      },
-      "defaultState": "OFF",
-      "logicCondition": null,
-      "placement": null
-    },
-    {
-      "id": "COWL_ANTI_ICE",
-      "lines": [
-        "COWL ANTI ICE"
-      ],
-      "orientation": "landscape",
-      "face": {
-        "width": 600,
-        "height": 300
-      },
-      "defaultState": "OFF",
-      "logicCondition": null,
-      "placement": null
-    },
-    {
-      "id": "DUAL_BLEED",
-      "lines": [
-        "DUAL BLEED"
-      ],
-      "orientation": "landscape",
-      "face": {
-        "width": 600,
-        "height": 300
-      },
-      "defaultState": "OFF",
-      "logicCondition": null,
-      "placement": null
-    },
-    {
-      "id": "DUCT_OVERHEAT",
-      "lines": [
-        "DUCT OVERHEAT"
-      ],
-      "orientation": "landscape",
-      "face": {
-        "width": 600,
-        "height": 300
-      },
-      "defaultState": "OFF",
-      "logicCondition": null,
-      "placement": null
-    },
-    {
-      "id": "EQUIP",
-      "lines": [
-        "EQUIP"
-      ],
-      "orientation": "landscape",
-      "face": {
-        "width": 600,
-        "height": 300
-      },
-      "defaultState": "OFF",
-      "logicCondition": null,
-      "placement": null
-    },
-    {
-      "id": "FO_PS_2_AUX_STATIC",
-      "lines": [
-        "FO PS 2 AUX STATIC"
-      ],
-      "orientation": "landscape",
-      "face": {
-        "width": 600,
-        "height": 300
-      },
-      "defaultState": "OFF",
-      "logicCondition": null,
-      "placement": null
-    },
-    {
-      "id": "FWD_CARGO",
-      "lines": [
-        "FWD CARGO"
-      ],
-      "orientation": "landscape",
-      "face": {
-        "width": 600,
-        "height": 300
-      },
-      "defaultState": "OFF",
-      "logicCondition": null,
-      "placement": null
-    },
-    {
-      "id": "FWD_ENTRY",
-      "lines": [
-        "FWD ENTRY"
-      ],
-      "orientation": "landscape",
-      "face": {
-        "width": 600,
-        "height": 300
-      },
-      "defaultState": "OFF",
-      "logicCondition": null,
-      "placement": null
-    },
-    {
-      "id": "FWD_SERVICE",
-      "lines": [
-        "FWD SERVICE"
-      ],
-      "orientation": "landscape",
-      "face": {
-        "width": 600,
-        "height": 300
-      },
-      "defaultState": "OFF",
-      "logicCondition": null,
-      "placement": null
+      "scope": "OVERHEAD"
     },
     {
       "id": "OFF_SCHED_DESCENT",
@@ -640,7 +1237,128 @@
       },
       "defaultState": "OFF",
       "logicCondition": null,
-      "placement": null
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "OFF_SCHED_DESCENT_OFF.png",
+        "ON": "OFF_SCHED_DESCENT_ON.png"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "OIL_FILTER_BYPASS",
+      "lines": [
+        "OIL FILTER BYPASS"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "OIL_FILTER_BYPASS_OFF.svg",
+        "ON": "OIL_FILTER_BYPASS_ON.svg"
+      },
+      "scope": "ASSET_TEST_ONLY"
+    },
+    {
+      "id": "ON_DC_LAMP",
+      "lines": [
+        "ON DC"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "ON_DC_LAMP_OFF.svg",
+        "ON": "ON_DC_LAMP_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "ON_GREEN",
+      "lines": [
+        "ON GREEN"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "ON_GREEN_OFF.svg",
+        "ON": "ON_GREEN_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "OVERHEAT",
+      "lines": [
+        "OVERHEAT"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "OVERHEAT_OFF.svg",
+        "ON": "OVERHEAT_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "OVER_SPEED",
+      "lines": [
+        "OVER",
+        "SPEED"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "OVER_SPEED_OFF.svg",
+        "ON": "OVER_SPEED_ON.svg"
+      },
+      "scope": "OVERHEAD"
     },
     {
       "id": "PACK_TRIP_OFF",
@@ -654,7 +1372,168 @@
       },
       "defaultState": "OFF",
       "logicCondition": null,
-      "placement": null
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "PACK_TRIP_OFF_OFF.png",
+        "ON": "PACK_TRIP_OFF_ON.png"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "PASS_OXY_ON_LAMP",
+      "lines": [
+        "PASS OXY",
+        "ON"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "PASS_OXY_ON_LAMP_OFF.svg",
+        "ON": "PASS_OXY_ON_LAMP_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "PULL_UP_RED",
+      "lines": [
+        "PULL UP RED"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "PULL_UP_RED_OFF.svg",
+        "ON": "PULL_UP_RED_ON.svg"
+      },
+      "scope": "ASSET_TEST_ONLY"
+    },
+    {
+      "id": "RAM_DOOR_FULL_OPEN",
+      "lines": [
+        "RAM DOOR FULL OPEN"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "BRIGHT_BLUE"
+      ],
+      "assets": {
+        "BRIGHT_BLUE": "RAM_DOOR_FULL_OPEN_BRIGHT_BLUE.svg",
+        "OFF": "RAM_DOOR_FULL_OPEN_OFF.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "REVERSER",
+      "lines": [
+        "REVERSER"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "REVERSER_OFF.svg",
+        "ON": "REVERSER_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "REVERSER_UNLOCKED",
+      "lines": [
+        "REVERSER UNLOCKED"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "REVERSER_UNLOCKED_OFF.svg",
+        "ON": "REVERSER_UNLOCKED_ON.svg"
+      },
+      "scope": "ASSET_TEST_ONLY"
+    },
+    {
+      "id": "RIGHT_GEAR_2LINE_GREEN",
+      "lines": [
+        "RIGHT GEAR 2LINE GREEN"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "RIGHT_GEAR_2LINE_GREEN_OFF.svg",
+        "ON": "RIGHT_GEAR_2LINE_GREEN_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "RIGHT_GEAR_2LINE_RED",
+      "lines": [
+        "RIGHT GEAR 2LINE RED"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "RIGHT_GEAR_2LINE_RED_OFF.svg",
+        "ON": "RIGHT_GEAR_2LINE_RED_ON.svg"
+      },
+      "scope": "ASSET_TEST_ONLY"
     },
     {
       "id": "R_ALPHA_VANE",
@@ -668,7 +1547,16 @@
       },
       "defaultState": "OFF",
       "logicCondition": null,
-      "placement": null
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "R_ALPHA_VANE_OFF.png",
+        "ON": "R_ALPHA_VANE_ON.png"
+      },
+      "scope": "OVERHEAD"
     },
     {
       "id": "R_ELEV_PITOT",
@@ -682,7 +1570,174 @@
       },
       "defaultState": "OFF",
       "logicCondition": null,
-      "placement": null
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "R_ELEV_PITOT_OFF.png",
+        "ON": "R_ELEV_PITOT_ON.png"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "R_VALVE_OPEN",
+      "lines": [
+        "R VALVE OPEN"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "DIM_BLUE",
+        "BRIGHT_BLUE"
+      ],
+      "assets": {
+        "BRIGHT_BLUE": "R_VALVE_OPEN_BRIGHT_BLUE.svg",
+        "DIM_BLUE": "R_VALVE_OPEN_DIM_BLUE.svg",
+        "OFF": "R_VALVE_OPEN_OFF.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "SPEED_TRIM_FAIL",
+      "lines": [
+        "SPEED TRIM",
+        "FAIL"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "SPEED_TRIM_FAIL_OFF.svg",
+        "ON": "SPEED_TRIM_FAIL_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "STAB_OUT_OF_TRIM",
+      "lines": [
+        "STAB OUT OF TRIM"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "STAB_OUT_OF_TRIM_OFF.svg",
+        "ON": "STAB_OUT_OF_TRIM_ON.svg"
+      },
+      "scope": "ASSET_TEST_ONLY"
+    },
+    {
+      "id": "STANDBY_GREEN",
+      "lines": [
+        "STANDBY GREEN"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "STANDBY_GREEN_OFF.svg",
+        "ON": "STANDBY_GREEN_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "STANDBY_PWR_OFF_LAMP",
+      "lines": [
+        "STANDBY",
+        "PWR OFF"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "STANDBY_PWR_OFF_LAMP_OFF.svg",
+        "ON": "STANDBY_PWR_OFF_LAMP_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "START_VALVE_OPEN",
+      "lines": [
+        "START VALVE OPEN"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "START_VALVE_OPEN_OFF.svg",
+        "ON": "START_VALVE_OPEN_ON.svg"
+      },
+      "scope": "ASSET_TEST_ONLY"
+    },
+    {
+      "id": "STBY_RUD_ON_LAMP",
+      "lines": [
+        "STBY",
+        "RUD ON"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "STBY_RUD_ON_LAMP_OFF.svg",
+        "ON": "STBY_RUD_ON_LAMP_ON.svg"
+      },
+      "scope": "OVERHEAD"
     },
     {
       "id": "TEMP_PROBE",
@@ -696,7 +1751,84 @@
       },
       "defaultState": "OFF",
       "logicCondition": null,
-      "placement": null
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "TEMP_PROBE_OFF.png",
+        "ON": "TEMP_PROBE_ON.png"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "TRANSFER_BUS_OFF_LAMP",
+      "lines": [
+        "TRANSFER",
+        "BUS OFF"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "TRANSFER_BUS_OFF_LAMP_OFF.svg",
+        "ON": "TRANSFER_BUS_OFF_LAMP_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "VALVE_OPEN",
+      "lines": [
+        "VALVE OPEN"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "DIM_BLUE",
+        "BRIGHT_BLUE"
+      ],
+      "assets": {
+        "BRIGHT_BLUE": "VALVE_OPEN_BRIGHT_BLUE.svg",
+        "DIM_BLUE": "VALVE_OPEN_DIM_BLUE.svg",
+        "OFF": "VALVE_OPEN_OFF.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "WHEEL_WELL_RED",
+      "lines": [
+        "WHEEL WELL RED"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "WHEEL_WELL_RED_OFF.svg",
+        "ON": "WHEEL_WELL_RED_ON.svg"
+      },
+      "scope": "ASSET_TEST_ONLY"
     },
     {
       "id": "WING_BODY_OVERHEAT",
@@ -710,7 +1842,40 @@
       },
       "defaultState": "OFF",
       "logicCondition": null,
-      "placement": null
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "WING_BODY_OVERHEAT_OFF.png",
+        "ON": "WING_BODY_OVERHEAT_ON.png"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "YAW_DAMPER",
+      "lines": [
+        "YAW",
+        "DAMPER"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "YAW_DAMPER_OFF.svg",
+        "ON": "YAW_DAMPER_ON.svg"
+      },
+      "scope": "OVERHEAD"
     }
   ]
 }
