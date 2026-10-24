@@ -4,14 +4,19 @@
  const root=document,model=window.B737FlapLeverModel;
  const byId=id=>root.getElementById(id);
  const VALUES=[0,1,2,5,10,15,25,30,40];
- const SOURCE_Y=[340,396,547,624,700,770,844,922,1001];
- const SOURCE_X=816; // Scale label centers in original 1145x1373 quadrant photo.
  let config=null,position=0,overlay=null,sprite=null,selector=null,status=null,busy=false,mounted=false;
+ let texture=null,calibration=null;
  let pointer=null,queuedTimer=null,sourceImage=null;
  function output(message){if(status)status.textContent=message||'FLAP '+position+(position===0?' / UP':'');}
  function paint(){
    if(!config||!sprite)return;
-   sprite.style.left=(-model.indexOf(position)*config.image.frameWidth*config.mount.scale)+'px';
+   const detent=config.detents[model.indexOf(position)];
+   const target=model.nativePoint(texture,calibration.targets[String(position)]);
+   const scale=config.mount.scale;
+   // The tooth tip, not the handle or the old fixed bounding box, is the snap anchor.
+   overlay.style.left=(target.x-detent.toothTip.x*scale)+'px';
+   overlay.style.top=(target.y-detent.toothTip.y*scale)+'px';
+   sprite.style.left=(-detent.sourceRect.x*scale)+'px';
    if(selector)selector.value=String(model.indexOf(position));
    output();
    overlay.dataset.detent=String(position);overlay.setAttribute('aria-valuenow',String(position));
@@ -51,9 +56,9 @@
    selector.addEventListener('change',()=>{const selected=VALUES[Number(selector.value)];request(selected);focusPedestal();});
    group.append(prev,selector,next,status);toolbar.append(group);
  }
- function pedestalHitTargets(native,texture){
+ function pedestalHitTargets(native){
    for(let i=0;i<VALUES.length;i++){
-     const value=VALUES[i],point=model.nativePoint(texture,{x:SOURCE_X,y:SOURCE_Y[i]});
+     const value=VALUES[i],point=model.nativePoint(texture,calibration.targets[String(value)]);
      const hit=root.createElement('button');
      hit.type='button';hit.className='flap-detent-hit';hit.dataset.detent=String(value);
      hit.title='FLAP '+(value===0?'UP / 0':value)+' — mechanical gates enforced';
@@ -65,6 +70,28 @@
      hit.addEventListener('click',e=>{e.stopPropagation();request(value);});
      native.append(hit);
    }
+ }
+ function applyBackgroundCorrections(native,asset){
+   const corrections=calibration.cosmeticCorrections||[];
+   if(!corrections.length)return;
+   const background=new Image();
+   background.addEventListener('load',()=>{
+     const win=texture.sourceWindow;
+     const sx=texture.w/win.w,sy=texture.h/win.h;
+     for(const correction of corrections){
+       const source=correction.sourceRect,dest=correction.destinationRect;
+       const at=model.nativePoint(texture,dest);
+       const canvas=root.createElement('canvas');
+       canvas.className='flap-background-correction';
+       canvas.width=dest.w;canvas.height=dest.h;
+       Object.assign(canvas.style,{left:at.x+'px',top:at.y+'px',width:(dest.w*sx)+'px',height:(dest.h*sy)+'px'});
+       const context=canvas.getContext('2d');context.imageSmoothingEnabled=false;
+       context.drawImage(background,source.x,source.y,source.w,source.h,0,0,dest.w,dest.h);
+       native.append(canvas);
+     }
+   },{once:true});
+   background.addEventListener('error',()=>console.error('FLAP: could not load background correction source'),{once:true});
+   background.src=new URL(asset.url,document.baseURI).href;
  }
  function enableSwipe(){
    overlay.addEventListener('pointerdown',event=>{
@@ -108,6 +135,16 @@
      if(!reply.ok)throw Error('Manifest HTTP '+reply.status);
      config=await reply.json();
      if(!config.detents||VALUES.some((v,i)=>config.detents[i]?.value!==v))throw Error('Invalid nine-detent FLAP registry');
+     // Calibration belongs to the background asset. A replacement image must
+     // provide its own measured target map instead of inheriting stale pixels.
+     const r=await fetch('./assembly.json',{cache:'no-store'});
+     if(!r.ok)throw Error('Assembly HTTP '+r.status);
+     const a=await r.json();
+     texture=a.regions.find(x=>x.id==='pedestal')?.placements.find(x=>x.id==='throttle-quadrant');
+     if(!texture)throw Error('Throttle placement missing');
+     calibration=config.backgroundCalibrations?.[texture.asset];
+     if(!calibration||VALUES.some(v=>!calibration.targets[String(v)]))throw Error('No measured FLAP detent map for current throttle background');
+     applyBackgroundCorrections(native,a.assets[texture.asset]);
      const source=new URL(config.source,document.baseURI).href;
      sourceImage=new Image();sourceImage.decoding='async';sourceImage.src=source;
      // Do not hold the entire cockpit actuator mount hostage to image.decode():
@@ -117,7 +154,6 @@
      const assetScale=config.mount.scale,dimensions=config.image;
      overlay=root.createElement('div');overlay.id='flapLeverBmpOverlay';overlay.className='flap-bmp-overlay';
      Object.assign(overlay.style,{
-       left:config.mount.x+'px',top:config.mount.y+'px',
        width:dimensions.frameWidth*assetScale+'px',
        height:dimensions.cropHeight*assetScale+'px'
      });
@@ -128,11 +164,7 @@
      sprite.src=source;sprite.draggable=false;
      sprite.style.width=dimensions.width*assetScale+'px';sprite.style.height=dimensions.height*assetScale+'px';sprite.style.top='0';
      overlay.append(sprite);native.append(overlay);
-     // Exact registered original photo crop; no changes to locked throttle source.
-     const r=await fetch('./assembly.json',{cache:'no-store'});const a=await r.json();
-     const texture=a.regions.find(x=>x.id==='pedestal')?.placements.find(x=>x.id==='throttle-quadrant');
-     if(!texture)throw Error('Throttle placement missing');
-     pedestalHitTargets(native,texture);
+     pedestalHitTargets(native);
      enableSwipe();toolbarControls();position=0;paint();
      root.dispatchEvent(new CustomEvent('b737:flap-ready',{detail:{position:0,detents:VALUES.slice()}}));
      window.B737FlapVisualTest=Object.freeze({

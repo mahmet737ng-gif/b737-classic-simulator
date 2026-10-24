@@ -1,6 +1,6 @@
 {
   "schema": "b737.flap-nine-detent-sprite.v1",
-  "version": "FLAP-BMP-0002",
+  "version": "FLAP-BMP-0004",
   "source": "../assets/locked/2026-10-23/B737_FLAP_9_ORIGINAL_BMP_EXTRACTED.png",
   "source_sha256": "709ea64910a134c4199f9bed393fc65fbd8e6b44bc70f7adc03a8470d29460a4",
   "source_sha1_gitblob": "da10a6b734d1bda52239e49972d924aefa2ddae2",
@@ -9,13 +9,14 @@
     "height": 908,
     "frameWidth": 240,
     "frameCount": 9,
-    "cropHeight": 750,
+    "cropHeight": 800,
     "labelsBelow": 750
   },
   "detents": [
     {
       "value": 0,
       "index": 0,
+      "toothTip": {"x": 23, "y": 272},
       "sourceRect": {
         "x": 0,
         "y": 0,
@@ -26,6 +27,7 @@
     {
       "value": 1,
       "index": 1,
+      "toothTip": {"x": 24, "y": 326},
       "sourceRect": {
         "x": 240,
         "y": 0,
@@ -36,6 +38,7 @@
     {
       "value": 2,
       "index": 2,
+      "toothTip": {"x": 26, "y": 401},
       "sourceRect": {
         "x": 480,
         "y": 0,
@@ -46,6 +49,7 @@
     {
       "value": 5,
       "index": 3,
+      "toothTip": {"x": 26, "y": 441},
       "sourceRect": {
         "x": 720,
         "y": 0,
@@ -56,6 +60,7 @@
     {
       "value": 10,
       "index": 4,
+      "toothTip": {"x": 26, "y": 519},
       "sourceRect": {
         "x": 960,
         "y": 0,
@@ -66,6 +71,7 @@
     {
       "value": 15,
       "index": 5,
+      "toothTip": {"x": 39, "y": 530},
       "sourceRect": {
         "x": 1200,
         "y": 0,
@@ -76,6 +82,7 @@
     {
       "value": 25,
       "index": 6,
+      "toothTip": {"x": 25, "y": 586},
       "sourceRect": {
         "x": 1440,
         "y": 0,
@@ -86,6 +93,7 @@
     {
       "value": 30,
       "index": 7,
+      "toothTip": {"x": 25, "y": 637},
       "sourceRect": {
         "x": 1680,
         "y": 0,
@@ -96,6 +104,7 @@
     {
       "value": 40,
       "index": 8,
+      "toothTip": {"x": 23, "y": 691},
       "sourceRect": {
         "x": 1920,
         "y": 0,
@@ -107,11 +116,33 @@
   "mount": {
     "region": "pedestal",
     "texturePiece": "throttle-quadrant",
-    "x": 680,
-    "y": 115,
-    "scale": 0.7,
-    "coordSystem": "pedestal native coordinates",
+    "scale": 0.5744075829383886,
+    "coordSystem": "tooth-tip aligned to measured background source pixels via assembly sourceWindow",
     "status": "interactive gated test using exact photo crop; pending owner visual acceptance"
+  },
+  "backgroundCalibrations": {
+    "panel-mosaic-lab/assets/locked/2026-10-23/Aircraft Throttle Quadrant Control Panel.png": {
+      "sourceSize": [1145, 1373],
+      "method": "Bright horizontal tick segments measured in original PNG at x=855..872; extra unlabeled mark y=456..466 excluded",
+      "cosmeticCorrections": [
+        {
+          "reason": "Remove the extra unlabeled white mark between FLAP 1 and 2 without changing the locked background PNG",
+          "sourceRect": {"x": 838, "y": 455, "w": 14, "h": 14},
+          "destinationRect": {"x": 853, "y": 455, "w": 14, "h": 14}
+        }
+      ],
+      "targets": {
+        "0": {"x": 861, "y": 349},
+        "1": {"x": 861, "y": 402},
+        "2": {"x": 861, "y": 556},
+        "5": {"x": 861, "y": 622},
+        "10": {"x": 861, "y": 712},
+        "15": {"x": 861, "y": 787},
+        "25": {"x": 861, "y": 863},
+        "30": {"x": 861, "y": 937},
+        "40": {"x": 861, "y": 1021}
+      }
+    }
   },
   "controls": {
     "mode": "visual-test-only",
@@ -142,5 +173,5 @@
     ],
     "doesNotDriveSimulatedFlapMechanism": true
   },
-  "note": "Sprite is exact 9-original-BMP extraction; fixed quadrant is a different original source, so fit is a visual test, not a measured physical-engineering alignment."
+  "note": "Background ticks are pixel-measured and stored by asset ID so a future background has an independent calibration. The unlabeled extra tick is hidden with a 14x14 source-pixel correction using nearby texture from the same unmodified background. Visual test only; no simulated flap actuation."
 }

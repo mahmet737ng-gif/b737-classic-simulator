@@ -65,6 +65,19 @@ const flapManifest=JSON.parse(fs.readFileSync(path.join(__dirname,'flap-lever-te
 assert.deepEqual(flapManifest.detents.map(d=>d.value),[0,1,2,5,10,15,25,30,40]);
 assert.equal(flapManifest.image.frameWidth*flapManifest.image.frameCount,flapManifest.image.width);
 assert.equal(flapManifest.controls.mode,'visual-test-only','No unverified physical flap motion coupling');
-assert.ok(unified.includes('flap-lever-test.js?v=FLAP-BMP-0003'));
-assert.ok(unified.includes('flap-lever-test.css?v=FLAP-BMP-0003'));
+const background=a.regions.find(r=>r.id==='pedestal').placements.find(p=>p.id==='throttle-quadrant');
+const flapCalibration=flapManifest.backgroundCalibrations[background.asset];
+assert.ok(flapCalibration,'Current background must have its own measured FLAP calibration');
+const [tickCorrection]=flapCalibration.cosmeticCorrections;
+assert.deepEqual(tickCorrection.destinationRect,{x:853,y:455,w:14,h:14},'Only the unlabeled mark between 1 and 2 is covered');
+assert.deepEqual(tickCorrection.sourceRect,{x:838,y:455,w:14,h:14},'Copy neighboring dark surface from the same source image');
+for(const detent of flapManifest.detents){
+ const target=flapCalibration.targets[String(detent.value)];
+ assert.ok(target&&Number.isFinite(target.x)&&Number.isFinite(target.y),'Missing source-pixel target for '+detent.value);
+ assert.ok(Number.isFinite(detent.toothTip.x)&&Number.isFinite(detent.toothTip.y),'Missing sprite tooth anchor for '+detent.value);
+ const point=require('./flap-lever-model').nativePoint(background,target);
+ assert.ok(point.x>background.x+background.w/2,'FLAP tooth must sit to the right of the throttle core');
+}
+assert.ok(unified.includes('flap-lever-test.js?v=FLAP-BMP-0004'));
+assert.ok(unified.includes('flap-lever-test.css?v=FLAP-BMP-0004'));
 console.log('PASS: exact owner nine-BMP flap sprite archived and visual-only nine-detent Unified overlay registered.');

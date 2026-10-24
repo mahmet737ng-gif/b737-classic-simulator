@@ -1,14 +1,15 @@
 /* FLAP-BMP-0002: sprite from the exact approved nine-BMP extraction; no image edits. */
 .flap-bmp-overlay{position:absolute;z-index:16;overflow:hidden;display:block;pointer-events:auto;touch-action:none;cursor:ns-resize;border:0;background:transparent;image-rendering:auto;user-select:none;outline-offset:2px}
 .flap-bmp-overlay:focus-visible{outline:2px solid #ffda82}
+.flap-background-correction{position:absolute;z-index:14;pointer-events:none;image-rendering:auto}
 .flap-bmp-sprite{position:absolute;left:0;top:0;max-width:none!important;pointer-events:none;user-select:none;object-fit:fill}
-.flap-detent-hit{position:absolute!important;z-index:15;border:0!important;border-radius:2px!important;padding:0!important;background:transparent!important;cursor:pointer;touch-action:manipulation}
+.flap-detent-hit{position:absolute!important;z-index:17;border:0!important;border-radius:2px!important;padding:0!important;background:transparent!important;cursor:pointer;touch-action:manipulation}
 .flap-detent-hit:hover,.flap-detent-hit:focus-visible{outline:2px solid #fbd486!important;outline-offset:1px;background:#ecc65c24!important}
 .flap-test-controls{display:flex;gap:4px;align-items:center;white-space:nowrap;padding:2px 5px;border:1px solid #5b8293;border-radius:7px;background:#122c38;flex-shrink:0}
 .flap-test-controls button{min-width:28px;padding:4px 7px;font-size:12px}
 .flap-test-controls select{max-width:117px;background:#183747;color:#e9f6ff;border:1px solid #759cad;border-radius:5px;padding:4px;font:600 11px system-ui}
 #flapDetentStatus{min-width:88px;color:#e5c998;font:700 11px system-ui;text-align:center}
 .flap-test-error{font-size:11px;color:#ffaa95}
-.reference-mode .flap-bmp-overlay,.reference-mode .flap-detent-hit{display:none}
+.reference-mode .flap-bmp-overlay,.reference-mode .flap-detent-hit,.reference-mode .flap-background-correction{display:none}
 .pan-mode .flap-bmp-overlay,.pan-mode .flap-detent-hit{pointer-events:auto}
 @media(max-width:680px){.flap-test-controls{order:10}.flap-test-controls select{max-width:90px}}
