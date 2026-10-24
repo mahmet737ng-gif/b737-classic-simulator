@@ -1,5 +1,22 @@
 # Unified cockpit — CKP-0002
 
+## Owner naming and upload destination — CKP-0004
+
+**«یونیفاید» (Unified) means this route:**
+`https://mahmet737ng-gif.github.io/b737-classic-simulator/panel-mosaic-lab/cockpit/`
+
+An owner request to upload or make something testable **on Unified** targets this
+cockpit page, not the separate `lights-test/` page. The Unified annunciator QA
+dialog reads the shared SVG `LIGHTS` registry, including two-state green/amber/red
+and two-/three-state blue assets. It allows searching, cycling or explicitly
+selecting states, and whole-catalogue ON/OFF preview. Where a legend already
+has measured Main Instrument Panel sockets, selection also updates those
+mounted instances using a temporary visual override; Reset restores their
+previous source-driven states. Unknown physical placements stay in the in-page
+gallery until geometry is approved. Existing 110 overhead and 27 main-panel
+mounted annunciators, their systems logic, and the frozen UPD-0012 mosaic
+remain unchanged.
+
 A single pan/zoom canvas contains the unchanged interactive overhead, five new
 main-panel sources and the uploaded pedestal radio/avionics base. Region
 buttons focus the same mounted scene; they never reload the overhead frame or

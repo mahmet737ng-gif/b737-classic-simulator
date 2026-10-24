@@ -2,6 +2,7 @@
  'use strict';
  const byId=id=>document.getElementById(id),model=window.B737CockpitLightsModel,script=document.currentScript.src,url=p=>new URL(p,script).href;
  let registry,engine,selected,ui,frame,assembly,ready=false,localVisualTest=false,widgets=new Map();
+ const priorGalleryOverrides=new Map();
  const labels={power:'تغذیهٔ محلی تست',aircraftAltitude:'ارتفاع هواپیما · ft',selectedAltitude:'ارتفاع انتخابی MCP · ft',trailingFlaps:'موقعیت TE Flaps',gsCaptured:'G/S گرفته شده',gearLever:'فرمان Landing Gear',gearLeft:'حسگر چرخ چپ',gearRight:'حسگر چرخ راست',gearNose:'حسگر چرخ دماغه',thrustIdle:'حداقل یک تراتل در IDLE',leadingEdge:'وضعیت همهٔ Leading Edgeها',autoslatInFlight:'سیگنال Autoslat در پرواز',antiskidOn:'فرمان ANTISKID روشن',antiskidFault:'خرابی سیستم ANTISKID',autobrakeArmed:'Autobrake مسلح',autobrakeDisarmed:'خروجی Disarm رایانهٔ Autobrake',autopilotEngaged:'اتوپایلوت درگیر',stabTrimError:'اتوپایلوت استاب را درست تریم نمی‌کند',gpwsPullUp:'خروجی PULL UP رایانهٔ GPWS',belowGsDots:'انحراف به زیر G/S · dots',gsSignalValid:'سیگنال G/S معتبر',gsInhibited:'G/S Push Inhibit فعال',radioAltitude:'Radio Altitude · ft',gpwsComputerFailed:'خرابی رایانهٔ GPWS',gpwsPowerLost:'قطع تغذیهٔ GPWS',gpwsInvalidInput:'ورودی نامعتبر GPWS',brakeTempTest:'سیگنال مستقیم تست Brake Temp'};
  for(const n of [1,2])Object.assign(labels,{['reverser'+n+'Unlocked']:'حسگر Reverser '+n+' باز از قفل',['startValve'+n+'Open']:'حسگر Start Valve '+n+' باز',['starter'+n+'Air']:'هوای ورودی به Starter '+n,['oil'+n+'AtRedRadial']:'فشار روغن موتور '+n+' روی/زیر خط قرمز',['oilFilter'+n+'Bypass']:'سیگنال نزدیک‌شدن Oil Filter '+n+' به Bypass'});
  const options={gearLever:['UP','OFF','DN'],gearLeft:['UP','DOWN','TRANSIT','UNSAFE'],gearRight:['UP','DOWN','TRANSIT','UNSAFE'],gearNose:['UP','DOWN','TRANSIT','UNSAFE'],leadingEdge:['RETRACTED','INTERMEDIATE','FULL','TRANSIT','DISAGREE'],trailingFlaps:[0,1,2,5,10,15,25,30,40]};
@@ -16,6 +17,8 @@
   }render();
  }
  function inspector(){ui=document.createElement('section');ui.className='cockpit-light-tools';ui.id='cockpitLightsInspector';ui.innerHTML='<h2>چراغ‌های مین‌پنل</h2><p id="cockpitLightStatus" role="status"></p><button id="cockpitLightTest">روشن‌کردن ۲۷ چراغ مین‌پنل</button><label class="check"><input id="cockpitLightPower" type="checkbox" checked> تغذیهٔ محلی تست</label><label>انتخاب چراغ<select id="cockpitLightSelect" dir="ltr"></select></label><output id="cockpitLightFrame" dir="ltr"></output><label>کنترل مستقیم برای تست<select id="cockpitLightOverride"><option value="AUTO">شرط دیتابیس / حسگر</option><option value="OFF">خاموش برای تست</option><option value="ON">روشن برای تست</option></select></label><details open><summary>ورودی‌های شرط این چراغ</summary><div id="cockpitLightInputs"></div></details><p id="cockpitLightError" role="status"></p><small id="cockpitLightSource"></small><p id="cockpitLightCondition" class="light-condition" dir="ltr"></p><small id="cockpitLightEffectivity"></small><button id="cockpitLightReset">بازنشانی تست مین‌پنل</button><p class="muted">حسگرهای این بخش ورودی تست‌اند. فرمان سوییچ، تأیید بازشدن واقعی شیر نیست. منطق کامل موتور، GPWS و Autobrake همچنان در زیرسیستم مربوط قرار می‌گیرد.</p><a href="../lights-test/?v=LGT-0004">تست تمام ۸۳ نوع چراغ دیتابیس</a>';
+  const oldGalleryLink=ui.querySelector('a[href^="../lights-test"]'),inPageButton=document.createElement('button');
+  inPageButton.type='button';inPageButton.textContent='تست تک‌تک چراغ‌ها در یونیفاید';inPageButton.onclick=()=>byId('unifiedLightsOpen').click();oldGalleryLink.replaceWith(inPageButton);
   document.querySelector('.overhead-tools').before(ui);for(const c of registry.lights){const o=document.createElement('option');o.value=o.textContent=c.id;byId('cockpitLightSelect').append(o);}byId('cockpitLightSelect').onchange=e=>choose(registry.lights.find(c=>c.id===e.target.value));byId('cockpitLightOverride').onchange=e=>{engine.setOverride(selected.id,e.target.value);render();};byId('cockpitLightPower').onchange=e=>{engine.update({power:e.target.checked});render();};byId('cockpitLightReset').onclick=()=>{localVisualTest=false;window.dispatchEvent(new CustomEvent('b737:visual-test-request',{detail:{active:false}}));engine.reset();render();};
   byId('cockpitLightTest').onclick=()=>{if(document.documentElement.dataset.lampVisualTest==='true'){localVisualTest=false;window.dispatchEvent(new CustomEvent('b737:visual-test-request',{detail:{active:false}}));}else localVisualTest=!localVisualTest;if(localVisualTest){byId('scene').classList.remove('reference-mode');byId('reference').setAttribute('aria-pressed','false');}render();};
   window.addEventListener('b737:visual-test',()=>{localVisualTest=false;render();});
@@ -27,6 +30,22 @@
   window.addEventListener('b737:cockpit-sensors',e=>{try{engine.update(e.detail);render();}catch(error){byId('cockpitLightError').textContent=error.message;}});
  }
  window.addEventListener('message',e=>{if(!ready||e.origin!==location.origin||e.source!==frame?.contentWindow||e.data?.type!=='b737:cockpit-overhead'||e.data.kind!=='state'||typeof e.data.power!=='boolean')return;engine.setOverheadPower(e.data.power);render();});
+ // Route-local visual previews: never invent locations for new annunciator types.
+ window.addEventListener('b737:unified-legend-test',e=>{
+  if(!ready)return;
+  const asset=e.detail?.asset,state=e.detail?.state;
+  if(!asset||!['OFF','ON','DIM_BLUE','BRIGHT_BLUE'].includes(state))return;
+  const mounted=registry.lights.filter(c=>c.asset===asset);
+  if(!mounted.length)return;
+  const current=engine.evaluate().overrides;
+  for(const c of mounted){if(!priorGalleryOverrides.has(c.id))priorGalleryOverrides.set(c.id,current[c.id]||'AUTO');engine.setOverride(c.id,state==='OFF'?'OFF':'ON');}
+  render();
+ });
+ window.addEventListener('b737:unified-legend-clear',()=>{
+  if(!ready)return;
+  for(const [id,previous] of priorGalleryOverrides)engine.setOverride(id,previous);
+  priorGalleryOverrides.clear();render();
+ });
  async function start(){try{const responses=await Promise.all([fetch(url('lights.json'),{cache:'no-store'}),fetch(url('assembly.json'),{cache:'no-store'})]);if(responses.some(r=>!r.ok))throw Error('Cockpit light database unavailable');[registry,assembly]=await Promise.all(responses.map(r=>r.json()));if(byId('region-main'))mount();else window.addEventListener('b737:cockpit-mounted',mount,{once:true});}catch(e){const p=document.createElement('p');p.setAttribute('role','alert');p.textContent='خطای اتصال چراغ‌های مین‌پنل: '+e.message;byId('inspector').prepend(p);console.error(e);}}
  start();
 })();
