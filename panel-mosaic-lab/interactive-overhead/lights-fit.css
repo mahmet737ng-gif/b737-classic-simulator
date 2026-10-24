@@ -1,6 +1,10 @@
-/* Crop the duplicate artwork bezel inside already-framed overhead sockets. */
+/* LOW PRESSURE and R ELEV PITOT have their own decorative bezel baked into
+   the approved SVG. The overhead artwork already provides the physical frame.
+   Crop only the duplicate outer bezel; do not alter the measured lamp socket. */
 .mounted-light .light-face[src*="LOW_PRESSURE_AMBER_REF_"],
-.mounted-light .light-face[src*="R_ELEV_PITOT_AMBER_REF_"] {
+.mounted-light .light-face[src*="R_ELEV_PITOT_AMBER_REF_"],
+.mounted-light .light-face[src*="/unified-v2/LOW_PRESSURE_"],
+.mounted-light .light-face[src*="/unified-v2/R_ELEV_PITOT_"] {
   transform: scale(1.2);
   transform-origin: center center;
 }

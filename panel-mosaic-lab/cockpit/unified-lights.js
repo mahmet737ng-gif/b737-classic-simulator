@@ -20,7 +20,7 @@
    card.health.classList.toggle('bad',!matches);
   };
   card.image.onerror=()=>{card.health.textContent='MISSING '+file;card.health.classList.add('bad');};
-  card.image.src=assetRoot+encodeURIComponent(file)+'?v='+encodeURIComponent(version);
+  card.image.src=assetRoot+file.split('/').map(encodeURIComponent).join('/')+'?v='+encodeURIComponent(version);
   card.image.alt=c.lines.join(' ')+' '+state;
   card.stage.setAttribute('aria-label',c.id+' · '+state+' · کلیک برای حالت بعدی');
   for(const button of card.buttons)button.setAttribute('aria-pressed',String(button.dataset.state===state));

@@ -1,0 +1,1536 @@
+{
+  "schema": "B737-LIGHTS-UNIFIED-V2",
+  "version": "LGT-0013",
+  "source": "LIGHTS unique active legend registry",
+  "reference": [
+    "LOW_PRESSURE_AMBER_REF",
+    "R_ELEV_PITOT_AMBER_REF"
+  ],
+  "palette": {
+    "amber": {
+      "name": "AMBER",
+      "main": "#ffda68",
+      "mid": "#ff990f",
+      "glow": "#ff5b09",
+      "bezel": "#c26b3c",
+      "glass": "#260f09",
+      "dim": "#291a15"
+    },
+    "yellow": {
+      "name": "YELLOW",
+      "main": "#ffe52b",
+      "mid": "#ffd318",
+      "glow": "#ff9b00",
+      "bezel": "#b68b23",
+      "glass": "#221b08",
+      "dim": "#28210d"
+    },
+    "white": {
+      "name": "WHITE",
+      "main": "#f7faff",
+      "mid": "#e0f2ff",
+      "glow": "#b3d7ff",
+      "bezel": "#687681",
+      "glass": "#101217",
+      "dim": "#1e2529"
+    },
+    "red": {
+      "name": "RED",
+      "main": "#ff7077",
+      "mid": "#ff333f",
+      "glow": "#f00b27",
+      "bezel": "#9e3b42",
+      "glass": "#20080d",
+      "dim": "#311519"
+    },
+    "green": {
+      "name": "GREEN",
+      "main": "#7cff91",
+      "mid": "#35f467",
+      "glow": "#07d339",
+      "bezel": "#367a46",
+      "glass": "#071b0e",
+      "dim": "#13291b"
+    },
+    "blue": {
+      "name": "BLUE",
+      "main": "#f0fbff",
+      "mid": "#afdfff",
+      "glow": "#3b97ff",
+      "bezel": "#31598b",
+      "glass": "#154e96",
+      "dim": "#19232f"
+    }
+  },
+  "lamps": [
+    {
+      "id": "ALIGN_WHITE",
+      "legend": [
+        "ALIGN"
+      ],
+      "palette": "white",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 0
+    },
+    {
+      "id": "A_T_LIM_WHITE",
+      "legend": [
+        "A/T LIM"
+      ],
+      "palette": "white",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 0
+    },
+    {
+      "id": "AFT_CARGO",
+      "legend": [
+        "AFT",
+        "CARGO"
+      ],
+      "palette": "amber",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 1
+    },
+    {
+      "id": "AFT_ENTRY",
+      "legend": [
+        "AFT",
+        "ENTRY"
+      ],
+      "palette": "amber",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 1
+    },
+    {
+      "id": "AFT_SERVICE",
+      "legend": [
+        "AFT",
+        "SERVICE"
+      ],
+      "palette": "amber",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 1
+    },
+    {
+      "id": "AIR_STAIR",
+      "legend": [
+        "AIR",
+        "STAIR"
+      ],
+      "palette": "amber",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 1
+    },
+    {
+      "id": "ALTITUDE_ALERT",
+      "legend": [
+        "ALTITUDE",
+        "ALERT"
+      ],
+      "palette": "amber",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 2
+    },
+    {
+      "id": "ANTI_SKID_INOP",
+      "legend": [
+        "ANTI SKID",
+        "INOP"
+      ],
+      "palette": "amber",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 1
+    },
+    {
+      "id": "APU_GEN_OFF_BUS",
+      "legend": [
+        "APU GEN",
+        "OFF BUS"
+      ],
+      "palette": "blue",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "BRIGHT_BLUE"
+      ],
+      "instances": 1
+    },
+    {
+      "id": "AUTO_BRAKE_DISARM",
+      "legend": [
+        "AUTO BRAKE",
+        "DISARM"
+      ],
+      "palette": "amber",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 1
+    },
+    {
+      "id": "AUTO_FAIL",
+      "legend": [
+        "AUTO",
+        "FAIL"
+      ],
+      "palette": "amber",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 1
+    },
+    {
+      "id": "AUTO_SLAT_FAIL",
+      "legend": [
+        "AUTO SLAT",
+        "FAIL"
+      ],
+      "palette": "amber",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 1
+    },
+    {
+      "id": "BELOW_GS_P_INHIBIT",
+      "legend": [
+        "BELOW G/S",
+        "P-INHIBIT"
+      ],
+      "palette": "amber",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 2
+    },
+    {
+      "id": "BLEED_TRIP_OFF",
+      "legend": [
+        "BLEED",
+        "TRIP OFF"
+      ],
+      "palette": "amber",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 2
+    },
+    {
+      "id": "BRAKE_TEMP",
+      "legend": [
+        "BRAKE",
+        "TEMP"
+      ],
+      "palette": "amber",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 1
+    },
+    {
+      "id": "BUS_OFF_LAMP",
+      "legend": [
+        "BUS",
+        "OFF"
+      ],
+      "palette": "amber",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 2
+    },
+    {
+      "id": "CALL",
+      "legend": [
+        "CALL"
+      ],
+      "palette": "blue",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "BRIGHT_BLUE"
+      ],
+      "instances": 1
+    },
+    {
+      "id": "CAPT_PS_1_AUX_STATIC",
+      "legend": [
+        "CAPT P/S",
+        "1 AUX STATIC"
+      ],
+      "palette": "amber",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 1
+    },
+    {
+      "id": "CAPT_STATIC_1_AUX_PS",
+      "legend": [
+        "CAPT STATIC",
+        "1 AUX P/S"
+      ],
+      "palette": "amber",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 1
+    },
+    {
+      "id": "COWL_ANTI_ICE",
+      "legend": [
+        "COWL",
+        "ANTI ICE"
+      ],
+      "palette": "amber",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 2
+    },
+    {
+      "id": "COWL_VALVE_OPEN",
+      "legend": [
+        "COWL VALVE",
+        "OPEN"
+      ],
+      "palette": "blue",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "DIM_BLUE",
+        "BRIGHT_BLUE"
+      ],
+      "instances": 2
+    },
+    {
+      "id": "DC_FAIL",
+      "legend": [
+        "DC FAIL"
+      ],
+      "palette": "amber",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 2
+    },
+    {
+      "id": "DUAL_BLEED",
+      "legend": [
+        "DUAL",
+        "BLEED"
+      ],
+      "palette": "amber",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 1
+    },
+    {
+      "id": "DUCT_OVERHEAT",
+      "legend": [
+        "DUCT",
+        "OVERHEAT"
+      ],
+      "palette": "amber",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 2
+    },
+    {
+      "id": "EQUIP",
+      "legend": [
+        "EQUIP"
+      ],
+      "palette": "amber",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 1
+    },
+    {
+      "id": "FAULT",
+      "legend": [
+        "FAULT"
+      ],
+      "palette": "amber",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 2
+    },
+    {
+      "id": "FEEL_DIFF_PRESS",
+      "legend": [
+        "FEEL",
+        "DIFF PRESS"
+      ],
+      "palette": "amber",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 1
+    },
+    {
+      "id": "FILTER_BYPASS",
+      "legend": [
+        "FILTER",
+        "BYPASS"
+      ],
+      "palette": "amber",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 2
+    },
+    {
+      "id": "FO_PS_2_AUX_STATIC",
+      "legend": [
+        "F/O P/S",
+        "2 AUX STATIC"
+      ],
+      "palette": "amber",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 1
+    },
+    {
+      "id": "FO_STATIC_2_AUX_PS",
+      "legend": [
+        "F/O STATIC",
+        "2 AUX P/S"
+      ],
+      "palette": "amber",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 1
+    },
+    {
+      "id": "FUEL_VALVE_CLOSED",
+      "legend": [
+        "FUEL VALVE",
+        "CLOSED"
+      ],
+      "palette": "blue",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "DIM_BLUE",
+        "BRIGHT_BLUE"
+      ],
+      "instances": 2
+    },
+    {
+      "id": "FWD_CARGO",
+      "legend": [
+        "FWD",
+        "CARGO"
+      ],
+      "palette": "amber",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 1
+    },
+    {
+      "id": "FWD_ENTRY",
+      "legend": [
+        "FWD",
+        "ENTRY"
+      ],
+      "palette": "amber",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 1
+    },
+    {
+      "id": "FWD_SERVICE",
+      "legend": [
+        "FWD",
+        "SERVICE"
+      ],
+      "palette": "amber",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 1
+    },
+    {
+      "id": "GEN_OFF_BUS",
+      "legend": [
+        "GEN OFF",
+        "BUS"
+      ],
+      "palette": "blue",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "BRIGHT_BLUE"
+      ],
+      "instances": 2
+    },
+    {
+      "id": "GRD_POWER_AVAILABLE",
+      "legend": [
+        "GRD POWER",
+        "AVAILABLE"
+      ],
+      "palette": "blue",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "BRIGHT_BLUE"
+      ],
+      "instances": 1
+    },
+    {
+      "id": "HIGH_OIL_TEMP",
+      "legend": [
+        "HIGH OIL",
+        "TEMP"
+      ],
+      "palette": "amber",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 3
+    },
+    {
+      "id": "INOP",
+      "legend": [
+        "INOP"
+      ],
+      "palette": "amber",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 3
+    },
+    {
+      "id": "LEFT_GEAR_2LINE_GREEN",
+      "legend": [
+        "LEFT",
+        "GEAR"
+      ],
+      "palette": "green",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 2
+    },
+    {
+      "id": "LEFT_GEAR_2LINE_RED",
+      "legend": [
+        "LEFT",
+        "GEAR"
+      ],
+      "palette": "red",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 1
+    },
+    {
+      "id": "LE_FLAPS_EXT_GREEN",
+      "legend": [
+        "LE FLAPS",
+        "EXT"
+      ],
+      "palette": "green",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 1
+    },
+    {
+      "id": "LE_FLAPS_TRANSIT",
+      "legend": [
+        "LE FLAPS",
+        "TRANSIT"
+      ],
+      "palette": "amber",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 1
+    },
+    {
+      "id": "LOW_IDLE",
+      "legend": [
+        "LOW IDLE"
+      ],
+      "palette": "amber",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 1
+    },
+    {
+      "id": "LOW_OIL_PRESSURE",
+      "legend": [
+        "LOW OIL",
+        "PRESSURE"
+      ],
+      "palette": "amber",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 4
+    },
+    {
+      "id": "LOW_OIL_QUANTITY",
+      "legend": [
+        "LOW OIL",
+        "QUANTITY"
+      ],
+      "palette": "blue",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "BRIGHT_BLUE"
+      ],
+      "instances": 1
+    },
+    {
+      "id": "LOW_PRESSURE",
+      "legend": [
+        "LOW",
+        "PRESSURE"
+      ],
+      "palette": "amber",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 14
+    },
+    {
+      "id": "LOW_QUANTITY",
+      "legend": [
+        "LOW",
+        "QUANTITY"
+      ],
+      "palette": "amber",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 1
+    },
+    {
+      "id": "L_ALPHA_VANE",
+      "legend": [
+        "L ALPHA",
+        "VANE"
+      ],
+      "palette": "amber",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 1
+    },
+    {
+      "id": "L_ELEV_PITOT",
+      "legend": [
+        "L ELEV",
+        "PITOT"
+      ],
+      "palette": "amber",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 1
+    },
+    {
+      "id": "L_VALVE_OPEN",
+      "legend": [
+        "L VALVE",
+        "OPEN"
+      ],
+      "palette": "blue",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "DIM_BLUE",
+        "BRIGHT_BLUE"
+      ],
+      "instances": 1
+    },
+    {
+      "id": "MACH_TRIM_FAIL",
+      "legend": [
+        "MACH TRIM",
+        "FAIL"
+      ],
+      "palette": "amber",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 1
+    },
+    {
+      "id": "MANUAL_GREEN",
+      "legend": [
+        "MANUAL"
+      ],
+      "palette": "green",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 1
+    },
+    {
+      "id": "NOSE_GEAR_2LINE_GREEN",
+      "legend": [
+        "NOSE",
+        "GEAR"
+      ],
+      "palette": "green",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 2
+    },
+    {
+      "id": "NOSE_GEAR_2LINE_RED",
+      "legend": [
+        "NOSE",
+        "GEAR"
+      ],
+      "palette": "red",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 1
+    },
+    {
+      "id": "NOT_ARMED_VERTICAL",
+      "legend": [
+        "NOT",
+        "ARMED"
+      ],
+      "palette": "amber",
+      "face": {
+        "width": 300,
+        "height": 600
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 1
+    },
+    {
+      "id": "OFF_LAMP",
+      "legend": [
+        "OFF"
+      ],
+      "palette": "amber",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 3
+    },
+    {
+      "id": "OFF_SCHED_DESCENT",
+      "legend": [
+        "OFF SCHED",
+        "DESCENT"
+      ],
+      "palette": "amber",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 1
+    },
+    {
+      "id": "OIL_FILTER_BYPASS",
+      "legend": [
+        "OIL FILTER",
+        "BYPASS"
+      ],
+      "palette": "amber",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 2
+    },
+    {
+      "id": "ON_DC_LAMP",
+      "legend": [
+        "ON DC"
+      ],
+      "palette": "amber",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 2
+    },
+    {
+      "id": "ON_GREEN",
+      "legend": [
+        "ON"
+      ],
+      "palette": "green",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 4
+    },
+    {
+      "id": "OVERHEAT",
+      "legend": [
+        "OVERHEAT"
+      ],
+      "palette": "amber",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 6
+    },
+    {
+      "id": "OVER_SPEED",
+      "legend": [
+        "OVER",
+        "SPEED"
+      ],
+      "palette": "amber",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 1
+    },
+    {
+      "id": "PACK_TRIP_OFF",
+      "legend": [
+        "PACK",
+        "TRIP OFF"
+      ],
+      "palette": "amber",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 2
+    },
+    {
+      "id": "PASS_OXY_ON_LAMP",
+      "legend": [
+        "PASS OXY",
+        "ON"
+      ],
+      "palette": "amber",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 1
+    },
+    {
+      "id": "PULL_UP_RED",
+      "legend": [
+        "PULL UP"
+      ],
+      "palette": "red",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 2
+    },
+    {
+      "id": "RAM_DOOR_FULL_OPEN",
+      "legend": [
+        "RAM DOOR",
+        "FULL OPEN"
+      ],
+      "palette": "blue",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "BRIGHT_BLUE"
+      ],
+      "instances": 2
+    },
+    {
+      "id": "REVERSER",
+      "legend": [
+        "REVERSER"
+      ],
+      "palette": "amber",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 2
+    },
+    {
+      "id": "REVERSER_UNLOCKED",
+      "legend": [
+        "REVERSER",
+        "UNLOCKED"
+      ],
+      "palette": "amber",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 2
+    },
+    {
+      "id": "RIGHT_GEAR_2LINE_GREEN",
+      "legend": [
+        "RIGHT",
+        "GEAR"
+      ],
+      "palette": "green",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 2
+    },
+    {
+      "id": "RIGHT_GEAR_2LINE_RED",
+      "legend": [
+        "RIGHT",
+        "GEAR"
+      ],
+      "palette": "red",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 1
+    },
+    {
+      "id": "R_ALPHA_VANE",
+      "legend": [
+        "R ALPHA",
+        "VANE"
+      ],
+      "palette": "amber",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 1
+    },
+    {
+      "id": "R_ELEV_PITOT",
+      "legend": [
+        "R ELEV",
+        "PITOT"
+      ],
+      "palette": "amber",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 1
+    },
+    {
+      "id": "R_VALVE_OPEN",
+      "legend": [
+        "R VALVE",
+        "OPEN"
+      ],
+      "palette": "blue",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "DIM_BLUE",
+        "BRIGHT_BLUE"
+      ],
+      "instances": 1
+    },
+    {
+      "id": "SPEED_BRAKE_ARMED_GREEN",
+      "legend": [
+        "SPEED BRAKE",
+        "ARMED"
+      ],
+      "palette": "green",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 1
+    },
+    {
+      "id": "SPEED_BRAKE_DO_NOT_ARMED_AMBER",
+      "legend": [
+        "SPEED BRAKE",
+        "DO NOT ARMED"
+      ],
+      "palette": "amber",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 1
+    },
+    {
+      "id": "SPEED_TRIM_FAIL",
+      "legend": [
+        "SPEED TRIM",
+        "FAIL"
+      ],
+      "palette": "amber",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 1
+    },
+    {
+      "id": "STAB_OUT_OF_TRIM",
+      "legend": [
+        "STAB",
+        "OUT OF",
+        "TRIM"
+      ],
+      "palette": "yellow",
+      "face": {
+        "width": 300,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 1
+    },
+    {
+      "id": "STANDBY_GREEN",
+      "legend": [
+        "STANDBY"
+      ],
+      "palette": "green",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 1
+    },
+    {
+      "id": "STANDBY_PWR_OFF_LAMP",
+      "legend": [
+        "STANDBY",
+        "PWR OFF"
+      ],
+      "palette": "amber",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 1
+    },
+    {
+      "id": "START_VALVE_OPEN",
+      "legend": [
+        "START",
+        "VALVE OPEN"
+      ],
+      "palette": "amber",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 2
+    },
+    {
+      "id": "STBY_RUD_ON_LAMP",
+      "legend": [
+        "STBY",
+        "RUD ON"
+      ],
+      "palette": "amber",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 1
+    },
+    {
+      "id": "TEMP_PROBE",
+      "legend": [
+        "TEMP",
+        "PROBE"
+      ],
+      "palette": "amber",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 1
+    },
+    {
+      "id": "TRANSFER_BUS_OFF_LAMP",
+      "legend": [
+        "TRANSFER",
+        "BUS OFF"
+      ],
+      "palette": "amber",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 2
+    },
+    {
+      "id": "VALVE_OPEN",
+      "legend": [
+        "VALVE",
+        "OPEN"
+      ],
+      "palette": "blue",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "DIM_BLUE",
+        "BRIGHT_BLUE"
+      ],
+      "instances": 1
+    },
+    {
+      "id": "WHEEL_WELL_RED",
+      "legend": [
+        "WHEEL",
+        "WELL"
+      ],
+      "palette": "red",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 0
+    },
+    {
+      "id": "WING_BODY_OVERHEAT",
+      "legend": [
+        "WING-BODY",
+        "OVERHEAT"
+      ],
+      "palette": "amber",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 2
+    },
+    {
+      "id": "YAW_DAMPER",
+      "legend": [
+        "YAW",
+        "DAMPER"
+      ],
+      "palette": "amber",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "instances": 1
+    }
+  ]
+}

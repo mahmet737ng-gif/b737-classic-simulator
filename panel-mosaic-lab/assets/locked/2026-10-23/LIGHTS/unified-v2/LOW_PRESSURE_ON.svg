@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="300" viewBox="0 0 600 300" role="img" aria-label="LOW PRESSURE amber annunciator lit">
+  <defs>
+    <linearGradient id="metal" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#41454a"/>
+      <stop offset=".17" stop-color="#14181a"/>
+      <stop offset=".83" stop-color="#0b0d0e"/>
+      <stop offset="1" stop-color="#34383c"/>
+    </linearGradient>
+    <linearGradient id="amberBezel" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#96523a"/>
+      <stop offset=".09" stop-color="#d07443"/>
+      <stop offset=".24" stop-color="#542317"/>
+      <stop offset=".78" stop-color="#492016"/>
+      <stop offset=".92" stop-color="#b55930"/>
+      <stop offset="1" stop-color="#d57446"/>
+    </linearGradient>
+    <radialGradient id="glass" cx=".5" cy=".56" r=".75">
+      <stop offset="0" stop-color="#321209"/>
+      <stop offset=".72" stop-color="#210d09"/>
+      <stop offset="1" stop-color="#0d0808"/>
+    </radialGradient>
+    <filter id="rimGlow" x="-20%" y="-30%" width="140%" height="160%">
+      <feGaussianBlur stdDeviation="4"/>
+    </filter>
+    <filter id="textGlow" x="-40%" y="-70%" width="180%" height="240%">
+      <feGaussianBlur stdDeviation="8.5"/>
+    </filter>
+    <filter id="textSoft" x="-20%" y="-30%" width="140%" height="160%">
+      <feGaussianBlur stdDeviation="2.1"/>
+    </filter>
+    <pattern id="grain" width="7" height="9" patternUnits="userSpaceOnUse">
+      <path d="M1 1h1M5 7h1M3 4h1" stroke="#e67b3a" stroke-width=".65" opacity=".22"/>
+    </pattern>
+  </defs>
+  <rect x="2" y="2" width="596" height="296" rx="19" fill="#080909" stroke="#1c1f20" stroke-width="4"/>
+  <rect x="9" y="8" width="582" height="284" rx="15" fill="url(#metal)" stroke="#07090a" stroke-width="4"/>
+  <rect x="22" y="19" width="556" height="262" rx="9" fill="url(#amberBezel)" stroke="#070809" stroke-width="4"/>
+  <rect x="29" y="26" width="542" height="248" rx="5" fill="url(#glass)" stroke="#6c2c1c" stroke-width="4"/>
+  <rect x="35" y="32" width="530" height="235" rx="3" fill="url(#grain)" opacity=".34"/>
+  <path d="M31 30H568V271H31" fill="none" stroke="#ff7c33" stroke-width="3.5" opacity=".4" filter="url(#rimGlow)"/>
+  <path d="M34 31H565" stroke="#ed905c" stroke-width="3" opacity=".53"/>
+  <path d="M33 269H566" stroke="#a74822" stroke-width="3" opacity=".47"/>
+  <g font-family="Arial, Liberation Sans, Helvetica, sans-serif" font-weight="700" text-anchor="middle">
+    <g fill="#ff5b09" opacity=".95" filter="url(#textGlow)">
+      <text x="300" y="138" font-size="99" textLength="224" lengthAdjust="spacingAndGlyphs">LOW</text>
+      <text x="300" y="254" font-size="99" textLength="484" lengthAdjust="spacingAndGlyphs">PRESSURE</text>
+    </g>
+    <g fill="#ff990f" opacity=".84" filter="url(#textSoft)">
+      <text x="300" y="138" font-size="99" textLength="224" lengthAdjust="spacingAndGlyphs">LOW</text>
+      <text x="300" y="254" font-size="99" textLength="484" lengthAdjust="spacingAndGlyphs">PRESSURE</text>
+    </g>
+    <g fill="#ffda68">
+      <text x="300" y="138" font-size="99" textLength="224" lengthAdjust="spacingAndGlyphs">LOW</text>
+      <text x="300" y="254" font-size="99" textLength="484" lengthAdjust="spacingAndGlyphs">PRESSURE</text>
+    </g>
+  </g>
+</svg>

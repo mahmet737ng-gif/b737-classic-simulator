@@ -1,6 +1,6 @@
 {
   "schema": "b737-annunciator-assets.v1",
-  "version": "LGT-0012",
+  "version": "LGT-0013",
   "assetDirectory": "../assets/locked/2026-10-23/LIGHTS/",
   "testMode": "manual-asset-visual-qa",
   "note": "Stable IDs for the owner-approved light designs. This registry does not assign physical coordinates or certify aircraft logic.",
@@ -21,8 +21,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "ALIGN_WHITE_OFF.svg",
-        "ON": "ALIGN_WHITE_ON.svg"
+        "OFF": "unified-v2/ALIGN_WHITE_OFF.svg",
+        "ON": "unified-v2/ALIGN_WHITE_ON.svg"
       },
       "scope": "ASSET_TEST_ONLY"
     },
@@ -42,8 +42,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "A_T_LIM_WHITE_OFF.svg",
-        "ON": "A_T_LIM_WHITE_ON.svg"
+        "OFF": "unified-v2/A_T_LIM_WHITE_OFF.svg",
+        "ON": "unified-v2/A_T_LIM_WHITE_ON.svg"
       },
       "scope": "ASSET_TEST_ONLY"
     },
@@ -65,8 +65,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "AFT_CARGO_OFF.png",
-        "ON": "AFT_CARGO_ON.png"
+        "OFF": "unified-v2/AFT_CARGO_OFF.svg",
+        "ON": "unified-v2/AFT_CARGO_ON.svg"
       },
       "scope": "OVERHEAD"
     },
@@ -88,8 +88,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "AFT_ENTRY_OFF.png",
-        "ON": "AFT_ENTRY_ON.png"
+        "OFF": "unified-v2/AFT_ENTRY_OFF.svg",
+        "ON": "unified-v2/AFT_ENTRY_ON.svg"
       },
       "scope": "OVERHEAD"
     },
@@ -111,8 +111,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "AFT_SERVICE_OFF.png",
-        "ON": "AFT_SERVICE_ON.png"
+        "OFF": "unified-v2/AFT_SERVICE_OFF.svg",
+        "ON": "unified-v2/AFT_SERVICE_ON.svg"
       },
       "scope": "OVERHEAD"
     },
@@ -134,8 +134,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "AIR_STAIR_OFF.png",
-        "ON": "AIR_STAIR_ON.png"
+        "OFF": "unified-v2/AIR_STAIR_OFF.svg",
+        "ON": "unified-v2/AIR_STAIR_ON.svg"
       },
       "scope": "OVERHEAD"
     },
@@ -155,8 +155,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "ALTITUDE_ALERT_OFF.svg",
-        "ON": "ALTITUDE_ALERT_ON.svg"
+        "OFF": "unified-v2/ALTITUDE_ALERT_OFF.svg",
+        "ON": "unified-v2/ALTITUDE_ALERT_ON.svg"
       },
       "scope": "ASSET_TEST_ONLY",
       "mountedCockpitInstances": [
@@ -180,8 +180,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "ANTI_SKID_INOP_OFF.svg",
-        "ON": "ANTI_SKID_INOP_ON.svg"
+        "OFF": "unified-v2/ANTI_SKID_INOP_OFF.svg",
+        "ON": "unified-v2/ANTI_SKID_INOP_ON.svg"
       },
       "scope": "ASSET_TEST_ONLY",
       "mountedCockpitInstances": [
@@ -204,8 +204,8 @@
         "BRIGHT_BLUE"
       ],
       "assets": {
-        "BRIGHT_BLUE": "APU_GEN_OFF_BUS_BRIGHT_BLUE.svg",
-        "OFF": "APU_GEN_OFF_BUS_OFF.svg"
+        "BRIGHT_BLUE": "unified-v2/APU_GEN_OFF_BUS_BRIGHT_BLUE.svg",
+        "OFF": "unified-v2/APU_GEN_OFF_BUS_OFF.svg"
       },
       "scope": "OVERHEAD"
     },
@@ -225,8 +225,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "AUTO_BRAKE_DISARM_OFF.svg",
-        "ON": "AUTO_BRAKE_DISARM_ON.svg"
+        "OFF": "unified-v2/AUTO_BRAKE_DISARM_OFF.svg",
+        "ON": "unified-v2/AUTO_BRAKE_DISARM_ON.svg"
       },
       "scope": "ASSET_TEST_ONLY",
       "mountedCockpitInstances": [
@@ -251,8 +251,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "AUTO_FAIL_OFF.png",
-        "ON": "AUTO_FAIL_ON.png"
+        "OFF": "unified-v2/AUTO_FAIL_OFF.svg",
+        "ON": "unified-v2/AUTO_FAIL_ON.svg"
       },
       "scope": "OVERHEAD"
     },
@@ -275,8 +275,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "AUTO_SLAT_FAIL_OFF.svg",
-        "ON": "AUTO_SLAT_FAIL_ON.svg"
+        "OFF": "unified-v2/AUTO_SLAT_FAIL_OFF.svg",
+        "ON": "unified-v2/AUTO_SLAT_FAIL_ON.svg"
       },
       "scope": "OVERHEAD"
     },
@@ -296,8 +296,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "BELOW_GS_P_INHIBIT_OFF.svg",
-        "ON": "BELOW_GS_P_INHIBIT_ON.svg"
+        "OFF": "unified-v2/BELOW_GS_P_INHIBIT_OFF.svg",
+        "ON": "unified-v2/BELOW_GS_P_INHIBIT_ON.svg"
       },
       "scope": "ASSET_TEST_ONLY",
       "mountedCockpitInstances": [
@@ -323,8 +323,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "BLEED_TRIP_OFF_OFF.png",
-        "ON": "BLEED_TRIP_OFF_ON.png"
+        "OFF": "unified-v2/BLEED_TRIP_OFF_OFF.svg",
+        "ON": "unified-v2/BLEED_TRIP_OFF_ON.svg"
       },
       "scope": "OVERHEAD"
     },
@@ -344,8 +344,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "BRAKE_TEMP_OFF.svg",
-        "ON": "BRAKE_TEMP_ON.svg"
+        "OFF": "unified-v2/BRAKE_TEMP_OFF.svg",
+        "ON": "unified-v2/BRAKE_TEMP_ON.svg"
       },
       "scope": "ASSET_TEST_ONLY",
       "mountedCockpitInstances": [
@@ -371,8 +371,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "BUS_OFF_LAMP_OFF.svg",
-        "ON": "BUS_OFF_LAMP_ON.svg"
+        "OFF": "unified-v2/BUS_OFF_LAMP_OFF.svg",
+        "ON": "unified-v2/BUS_OFF_LAMP_ON.svg"
       },
       "scope": "OVERHEAD"
     },
@@ -392,8 +392,8 @@
         "BRIGHT_BLUE"
       ],
       "assets": {
-        "BRIGHT_BLUE": "CALL_BRIGHT_BLUE.svg",
-        "OFF": "CALL_OFF.svg"
+        "BRIGHT_BLUE": "unified-v2/CALL_BRIGHT_BLUE.svg",
+        "OFF": "unified-v2/CALL_OFF.svg"
       },
       "scope": "OVERHEAD"
     },
@@ -416,8 +416,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "CAPT_PS_1_AUX_STATIC_OFF.svg",
-        "ON": "CAPT_PS_1_AUX_STATIC_ON.svg"
+        "OFF": "unified-v2/CAPT_PS_1_AUX_STATIC_OFF.svg",
+        "ON": "unified-v2/CAPT_PS_1_AUX_STATIC_ON.svg"
       },
       "scope": "OVERHEAD"
     },
@@ -439,8 +439,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "CAPT_STATIC_1_AUX_PS_OFF.png",
-        "ON": "CAPT_STATIC_1_AUX_PS_ON.png"
+        "OFF": "unified-v2/CAPT_STATIC_1_AUX_PS_OFF.svg",
+        "ON": "unified-v2/CAPT_STATIC_1_AUX_PS_ON.svg"
       },
       "scope": "OVERHEAD"
     },
@@ -462,8 +462,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "COWL_ANTI_ICE_OFF.png",
-        "ON": "COWL_ANTI_ICE_ON.png"
+        "OFF": "unified-v2/COWL_ANTI_ICE_OFF.svg",
+        "ON": "unified-v2/COWL_ANTI_ICE_ON.svg"
       },
       "scope": "OVERHEAD"
     },
@@ -484,9 +484,9 @@
         "BRIGHT_BLUE"
       ],
       "assets": {
-        "BRIGHT_BLUE": "COWL_VALVE_OPEN_BRIGHT_BLUE.svg",
-        "DIM_BLUE": "COWL_VALVE_OPEN_DIM_BLUE.svg",
-        "OFF": "COWL_VALVE_OPEN_OFF.svg"
+        "BRIGHT_BLUE": "unified-v2/COWL_VALVE_OPEN_BRIGHT_BLUE.svg",
+        "DIM_BLUE": "unified-v2/COWL_VALVE_OPEN_DIM_BLUE.svg",
+        "OFF": "unified-v2/COWL_VALVE_OPEN_OFF.svg"
       },
       "scope": "OVERHEAD"
     },
@@ -508,8 +508,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "DC_FAIL_OFF.svg",
-        "ON": "DC_FAIL_ON.svg"
+        "OFF": "unified-v2/DC_FAIL_OFF.svg",
+        "ON": "unified-v2/DC_FAIL_ON.svg"
       },
       "scope": "OVERHEAD"
     },
@@ -531,8 +531,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "DUAL_BLEED_OFF.png",
-        "ON": "DUAL_BLEED_ON.png"
+        "OFF": "unified-v2/DUAL_BLEED_OFF.svg",
+        "ON": "unified-v2/DUAL_BLEED_ON.svg"
       },
       "scope": "OVERHEAD"
     },
@@ -554,8 +554,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "DUCT_OVERHEAT_OFF.png",
-        "ON": "DUCT_OVERHEAT_ON.png"
+        "OFF": "unified-v2/DUCT_OVERHEAT_OFF.svg",
+        "ON": "unified-v2/DUCT_OVERHEAT_ON.svg"
       },
       "scope": "OVERHEAD"
     },
@@ -577,8 +577,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "EQUIP_OFF.png",
-        "ON": "EQUIP_ON.png"
+        "OFF": "unified-v2/EQUIP_OFF.svg",
+        "ON": "unified-v2/EQUIP_ON.svg"
       },
       "scope": "OVERHEAD"
     },
@@ -600,8 +600,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "FAULT_OFF.svg",
-        "ON": "FAULT_ON.svg"
+        "OFF": "unified-v2/FAULT_OFF.svg",
+        "ON": "unified-v2/FAULT_ON.svg"
       },
       "scope": "OVERHEAD"
     },
@@ -624,8 +624,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "FEEL_DIFF_PRESS_OFF.svg",
-        "ON": "FEEL_DIFF_PRESS_ON.svg"
+        "OFF": "unified-v2/FEEL_DIFF_PRESS_OFF.svg",
+        "ON": "unified-v2/FEEL_DIFF_PRESS_ON.svg"
       },
       "scope": "OVERHEAD"
     },
@@ -648,8 +648,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "FILTER_BYPASS_OFF.svg",
-        "ON": "FILTER_BYPASS_ON.svg"
+        "OFF": "unified-v2/FILTER_BYPASS_OFF.svg",
+        "ON": "unified-v2/FILTER_BYPASS_ON.svg"
       },
       "scope": "OVERHEAD"
     },
@@ -671,8 +671,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "FO_PS_2_AUX_STATIC_OFF.png",
-        "ON": "FO_PS_2_AUX_STATIC_ON.png"
+        "OFF": "unified-v2/FO_PS_2_AUX_STATIC_OFF.svg",
+        "ON": "unified-v2/FO_PS_2_AUX_STATIC_ON.svg"
       },
       "scope": "OVERHEAD"
     },
@@ -695,8 +695,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "FO_STATIC_2_AUX_PS_OFF.svg",
-        "ON": "FO_STATIC_2_AUX_PS_ON.svg"
+        "OFF": "unified-v2/FO_STATIC_2_AUX_PS_OFF.svg",
+        "ON": "unified-v2/FO_STATIC_2_AUX_PS_ON.svg"
       },
       "scope": "OVERHEAD"
     },
@@ -717,9 +717,9 @@
         "BRIGHT_BLUE"
       ],
       "assets": {
-        "BRIGHT_BLUE": "FUEL_VALVE_CLOSED_BRIGHT_BLUE.svg",
-        "DIM_BLUE": "FUEL_VALVE_CLOSED_DIM_BLUE.svg",
-        "OFF": "FUEL_VALVE_CLOSED_OFF.svg"
+        "BRIGHT_BLUE": "unified-v2/FUEL_VALVE_CLOSED_BRIGHT_BLUE.svg",
+        "DIM_BLUE": "unified-v2/FUEL_VALVE_CLOSED_DIM_BLUE.svg",
+        "OFF": "unified-v2/FUEL_VALVE_CLOSED_OFF.svg"
       },
       "scope": "OVERHEAD"
     },
@@ -741,8 +741,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "FWD_CARGO_OFF.png",
-        "ON": "FWD_CARGO_ON.png"
+        "OFF": "unified-v2/FWD_CARGO_OFF.svg",
+        "ON": "unified-v2/FWD_CARGO_ON.svg"
       },
       "scope": "OVERHEAD"
     },
@@ -764,8 +764,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "FWD_ENTRY_OFF.png",
-        "ON": "FWD_ENTRY_ON.png"
+        "OFF": "unified-v2/FWD_ENTRY_OFF.svg",
+        "ON": "unified-v2/FWD_ENTRY_ON.svg"
       },
       "scope": "OVERHEAD"
     },
@@ -787,8 +787,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "FWD_SERVICE_OFF.png",
-        "ON": "FWD_SERVICE_ON.png"
+        "OFF": "unified-v2/FWD_SERVICE_OFF.svg",
+        "ON": "unified-v2/FWD_SERVICE_ON.svg"
       },
       "scope": "OVERHEAD"
     },
@@ -808,8 +808,8 @@
         "BRIGHT_BLUE"
       ],
       "assets": {
-        "BRIGHT_BLUE": "GEN_OFF_BUS_BRIGHT_BLUE.svg",
-        "OFF": "GEN_OFF_BUS_OFF.svg"
+        "BRIGHT_BLUE": "unified-v2/GEN_OFF_BUS_BRIGHT_BLUE.svg",
+        "OFF": "unified-v2/GEN_OFF_BUS_OFF.svg"
       },
       "scope": "OVERHEAD"
     },
@@ -829,8 +829,8 @@
         "BRIGHT_BLUE"
       ],
       "assets": {
-        "BRIGHT_BLUE": "GRD_POWER_AVAILABLE_BRIGHT_BLUE.svg",
-        "OFF": "GRD_POWER_AVAILABLE_OFF.svg"
+        "BRIGHT_BLUE": "unified-v2/GRD_POWER_AVAILABLE_BRIGHT_BLUE.svg",
+        "OFF": "unified-v2/GRD_POWER_AVAILABLE_OFF.svg"
       },
       "scope": "OVERHEAD"
     },
@@ -853,8 +853,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "HIGH_OIL_TEMP_OFF.svg",
-        "ON": "HIGH_OIL_TEMP_ON.svg"
+        "OFF": "unified-v2/HIGH_OIL_TEMP_OFF.svg",
+        "ON": "unified-v2/HIGH_OIL_TEMP_ON.svg"
       },
       "scope": "OVERHEAD"
     },
@@ -874,8 +874,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "INOP_OFF.svg",
-        "ON": "INOP_ON.svg"
+        "OFF": "unified-v2/INOP_OFF.svg",
+        "ON": "unified-v2/INOP_ON.svg"
       },
       "scope": "OVERHEAD",
       "mountedCockpitInstances": [
@@ -898,8 +898,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "LEFT_GEAR_2LINE_GREEN_OFF.svg",
-        "ON": "LEFT_GEAR_2LINE_GREEN_ON.svg"
+        "OFF": "unified-v2/LEFT_GEAR_2LINE_GREEN_OFF.svg",
+        "ON": "unified-v2/LEFT_GEAR_2LINE_GREEN_ON.svg"
       },
       "scope": "OVERHEAD",
       "mountedCockpitInstances": [
@@ -922,8 +922,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "LEFT_GEAR_2LINE_RED_OFF.svg",
-        "ON": "LEFT_GEAR_2LINE_RED_ON.svg"
+        "OFF": "unified-v2/LEFT_GEAR_2LINE_RED_OFF.svg",
+        "ON": "unified-v2/LEFT_GEAR_2LINE_RED_ON.svg"
       },
       "scope": "ASSET_TEST_ONLY",
       "mountedCockpitInstances": [
@@ -947,8 +947,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "LE_FLAPS_EXT_GREEN_OFF.svg",
-        "ON": "LE_FLAPS_EXT_GREEN_ON.svg"
+        "OFF": "unified-v2/LE_FLAPS_EXT_GREEN_OFF.svg",
+        "ON": "unified-v2/LE_FLAPS_EXT_GREEN_ON.svg"
       },
       "scope": "ASSET_TEST_ONLY",
       "mountedCockpitInstances": [
@@ -971,8 +971,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "LE_FLAPS_TRANSIT_OFF.svg",
-        "ON": "LE_FLAPS_TRANSIT_ON.svg"
+        "OFF": "unified-v2/LE_FLAPS_TRANSIT_OFF.svg",
+        "ON": "unified-v2/LE_FLAPS_TRANSIT_ON.svg"
       },
       "scope": "ASSET_TEST_ONLY",
       "mountedCockpitInstances": [
@@ -997,8 +997,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "LOW_IDLE_OFF.svg",
-        "ON": "LOW_IDLE_ON.svg"
+        "OFF": "unified-v2/LOW_IDLE_OFF.svg",
+        "ON": "unified-v2/LOW_IDLE_ON.svg"
       },
       "scope": "OVERHEAD"
     },
@@ -1021,8 +1021,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "LOW_OIL_PRESSURE_OFF.svg",
-        "ON": "LOW_OIL_PRESSURE_ON.svg"
+        "OFF": "unified-v2/LOW_OIL_PRESSURE_OFF.svg",
+        "ON": "unified-v2/LOW_OIL_PRESSURE_ON.svg"
       },
       "scope": "OVERHEAD",
       "mountedCockpitInstances": [
@@ -1046,8 +1046,8 @@
         "BRIGHT_BLUE"
       ],
       "assets": {
-        "BRIGHT_BLUE": "LOW_OIL_QUANTITY_BRIGHT_BLUE.svg",
-        "OFF": "LOW_OIL_QUANTITY_OFF.svg"
+        "BRIGHT_BLUE": "unified-v2/LOW_OIL_QUANTITY_BRIGHT_BLUE.svg",
+        "OFF": "unified-v2/LOW_OIL_QUANTITY_OFF.svg"
       },
       "scope": "OVERHEAD"
     },
@@ -1070,8 +1070,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "LOW_PRESSURE_AMBER_REF_OFF.svg",
-        "ON": "LOW_PRESSURE_AMBER_REF_ON.svg"
+        "OFF": "unified-v2/LOW_PRESSURE_OFF.svg",
+        "ON": "unified-v2/LOW_PRESSURE_ON.svg"
       },
       "scope": "OVERHEAD"
     },
@@ -1094,8 +1094,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "LOW_QUANTITY_OFF.svg",
-        "ON": "LOW_QUANTITY_ON.svg"
+        "OFF": "unified-v2/LOW_QUANTITY_OFF.svg",
+        "ON": "unified-v2/LOW_QUANTITY_ON.svg"
       },
       "scope": "OVERHEAD"
     },
@@ -1118,8 +1118,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "L_ALPHA_VANE_OFF.svg",
-        "ON": "L_ALPHA_VANE_ON.svg"
+        "OFF": "unified-v2/L_ALPHA_VANE_OFF.svg",
+        "ON": "unified-v2/L_ALPHA_VANE_ON.svg"
       },
       "scope": "OVERHEAD"
     },
@@ -1142,8 +1142,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "L_ELEV_PITOT_OFF.svg",
-        "ON": "L_ELEV_PITOT_ON.svg"
+        "OFF": "unified-v2/L_ELEV_PITOT_OFF.svg",
+        "ON": "unified-v2/L_ELEV_PITOT_ON.svg"
       },
       "scope": "OVERHEAD"
     },
@@ -1164,9 +1164,9 @@
         "BRIGHT_BLUE"
       ],
       "assets": {
-        "BRIGHT_BLUE": "L_VALVE_OPEN_BRIGHT_BLUE.svg",
-        "DIM_BLUE": "L_VALVE_OPEN_DIM_BLUE.svg",
-        "OFF": "L_VALVE_OPEN_OFF.svg"
+        "BRIGHT_BLUE": "unified-v2/L_VALVE_OPEN_BRIGHT_BLUE.svg",
+        "DIM_BLUE": "unified-v2/L_VALVE_OPEN_DIM_BLUE.svg",
+        "OFF": "unified-v2/L_VALVE_OPEN_OFF.svg"
       },
       "scope": "OVERHEAD"
     },
@@ -1189,8 +1189,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "MACH_TRIM_FAIL_OFF.svg",
-        "ON": "MACH_TRIM_FAIL_ON.svg"
+        "OFF": "unified-v2/MACH_TRIM_FAIL_OFF.svg",
+        "ON": "unified-v2/MACH_TRIM_FAIL_ON.svg"
       },
       "scope": "OVERHEAD"
     },
@@ -1210,8 +1210,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "MANUAL_GREEN_OFF.svg",
-        "ON": "MANUAL_GREEN_ON.svg"
+        "OFF": "unified-v2/MANUAL_GREEN_OFF.svg",
+        "ON": "unified-v2/MANUAL_GREEN_ON.svg"
       },
       "scope": "OVERHEAD"
     },
@@ -1231,8 +1231,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "NOSE_GEAR_2LINE_GREEN_OFF.svg",
-        "ON": "NOSE_GEAR_2LINE_GREEN_ON.svg"
+        "OFF": "unified-v2/NOSE_GEAR_2LINE_GREEN_OFF.svg",
+        "ON": "unified-v2/NOSE_GEAR_2LINE_GREEN_ON.svg"
       },
       "scope": "OVERHEAD",
       "mountedCockpitInstances": [
@@ -1255,8 +1255,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "NOSE_GEAR_2LINE_RED_OFF.svg",
-        "ON": "NOSE_GEAR_2LINE_RED_ON.svg"
+        "OFF": "unified-v2/NOSE_GEAR_2LINE_RED_OFF.svg",
+        "ON": "unified-v2/NOSE_GEAR_2LINE_RED_ON.svg"
       },
       "scope": "ASSET_TEST_ONLY",
       "mountedCockpitInstances": [
@@ -1282,8 +1282,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "NOT_ARMED_VERTICAL_OFF.svg",
-        "ON": "NOT_ARMED_VERTICAL_ON.svg"
+        "OFF": "unified-v2/NOT_ARMED_VERTICAL_OFF.svg",
+        "ON": "unified-v2/NOT_ARMED_VERTICAL_ON.svg"
       },
       "scope": "OVERHEAD"
     },
@@ -1305,8 +1305,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "OFF_LAMP_OFF.svg",
-        "ON": "OFF_LAMP_ON.svg"
+        "OFF": "unified-v2/OFF_LAMP_OFF.svg",
+        "ON": "unified-v2/OFF_LAMP_ON.svg"
       },
       "scope": "OVERHEAD"
     },
@@ -1328,8 +1328,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "OFF_SCHED_DESCENT_OFF.png",
-        "ON": "OFF_SCHED_DESCENT_ON.png"
+        "OFF": "unified-v2/OFF_SCHED_DESCENT_OFF.svg",
+        "ON": "unified-v2/OFF_SCHED_DESCENT_ON.svg"
       },
       "scope": "OVERHEAD"
     },
@@ -1349,8 +1349,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "OIL_FILTER_BYPASS_OFF.svg",
-        "ON": "OIL_FILTER_BYPASS_ON.svg"
+        "OFF": "unified-v2/OIL_FILTER_BYPASS_OFF.svg",
+        "ON": "unified-v2/OIL_FILTER_BYPASS_ON.svg"
       },
       "scope": "ASSET_TEST_ONLY",
       "mountedCockpitInstances": [
@@ -1376,8 +1376,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "ON_DC_LAMP_OFF.svg",
-        "ON": "ON_DC_LAMP_ON.svg"
+        "OFF": "unified-v2/ON_DC_LAMP_OFF.svg",
+        "ON": "unified-v2/ON_DC_LAMP_ON.svg"
       },
       "scope": "OVERHEAD"
     },
@@ -1397,8 +1397,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "ON_GREEN_OFF.svg",
-        "ON": "ON_GREEN_ON.svg"
+        "OFF": "unified-v2/ON_GREEN_OFF.svg",
+        "ON": "unified-v2/ON_GREEN_ON.svg"
       },
       "scope": "OVERHEAD"
     },
@@ -1420,8 +1420,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "OVERHEAT_OFF.svg",
-        "ON": "OVERHEAT_ON.svg"
+        "OFF": "unified-v2/OVERHEAT_OFF.svg",
+        "ON": "unified-v2/OVERHEAT_ON.svg"
       },
       "scope": "OVERHEAD"
     },
@@ -1444,8 +1444,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "OVER_SPEED_OFF.svg",
-        "ON": "OVER_SPEED_ON.svg"
+        "OFF": "unified-v2/OVER_SPEED_OFF.svg",
+        "ON": "unified-v2/OVER_SPEED_ON.svg"
       },
       "scope": "OVERHEAD"
     },
@@ -1467,8 +1467,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "PACK_TRIP_OFF_OFF.png",
-        "ON": "PACK_TRIP_OFF_ON.png"
+        "OFF": "unified-v2/PACK_TRIP_OFF_OFF.svg",
+        "ON": "unified-v2/PACK_TRIP_OFF_ON.svg"
       },
       "scope": "OVERHEAD"
     },
@@ -1491,8 +1491,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "PASS_OXY_ON_LAMP_OFF.svg",
-        "ON": "PASS_OXY_ON_LAMP_ON.svg"
+        "OFF": "unified-v2/PASS_OXY_ON_LAMP_OFF.svg",
+        "ON": "unified-v2/PASS_OXY_ON_LAMP_ON.svg"
       },
       "scope": "OVERHEAD"
     },
@@ -1512,8 +1512,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "PULL_UP_RED_OFF.svg",
-        "ON": "PULL_UP_RED_ON.svg"
+        "OFF": "unified-v2/PULL_UP_RED_OFF.svg",
+        "ON": "unified-v2/PULL_UP_RED_ON.svg"
       },
       "scope": "ASSET_TEST_ONLY",
       "mountedCockpitInstances": [
@@ -1537,8 +1537,8 @@
         "BRIGHT_BLUE"
       ],
       "assets": {
-        "BRIGHT_BLUE": "RAM_DOOR_FULL_OPEN_BRIGHT_BLUE.svg",
-        "OFF": "RAM_DOOR_FULL_OPEN_OFF.svg"
+        "BRIGHT_BLUE": "unified-v2/RAM_DOOR_FULL_OPEN_BRIGHT_BLUE.svg",
+        "OFF": "unified-v2/RAM_DOOR_FULL_OPEN_OFF.svg"
       },
       "scope": "OVERHEAD"
     },
@@ -1560,8 +1560,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "REVERSER_OFF.svg",
-        "ON": "REVERSER_ON.svg"
+        "OFF": "unified-v2/REVERSER_OFF.svg",
+        "ON": "unified-v2/REVERSER_ON.svg"
       },
       "scope": "OVERHEAD"
     },
@@ -1581,8 +1581,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "REVERSER_UNLOCKED_OFF.svg",
-        "ON": "REVERSER_UNLOCKED_ON.svg"
+        "OFF": "unified-v2/REVERSER_UNLOCKED_OFF.svg",
+        "ON": "unified-v2/REVERSER_UNLOCKED_ON.svg"
       },
       "scope": "ASSET_TEST_ONLY",
       "mountedCockpitInstances": [
@@ -1606,8 +1606,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "RIGHT_GEAR_2LINE_GREEN_OFF.svg",
-        "ON": "RIGHT_GEAR_2LINE_GREEN_ON.svg"
+        "OFF": "unified-v2/RIGHT_GEAR_2LINE_GREEN_OFF.svg",
+        "ON": "unified-v2/RIGHT_GEAR_2LINE_GREEN_ON.svg"
       },
       "scope": "OVERHEAD",
       "mountedCockpitInstances": [
@@ -1630,8 +1630,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "RIGHT_GEAR_2LINE_RED_OFF.svg",
-        "ON": "RIGHT_GEAR_2LINE_RED_ON.svg"
+        "OFF": "unified-v2/RIGHT_GEAR_2LINE_RED_OFF.svg",
+        "ON": "unified-v2/RIGHT_GEAR_2LINE_RED_ON.svg"
       },
       "scope": "ASSET_TEST_ONLY",
       "mountedCockpitInstances": [
@@ -1656,8 +1656,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "R_ALPHA_VANE_OFF.png",
-        "ON": "R_ALPHA_VANE_ON.png"
+        "OFF": "unified-v2/R_ALPHA_VANE_OFF.svg",
+        "ON": "unified-v2/R_ALPHA_VANE_ON.svg"
       },
       "scope": "OVERHEAD"
     },
@@ -1680,8 +1680,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "R_ELEV_PITOT_AMBER_REF_OFF.svg",
-        "ON": "R_ELEV_PITOT_AMBER_REF_ON.svg"
+        "OFF": "unified-v2/R_ELEV_PITOT_OFF.svg",
+        "ON": "unified-v2/R_ELEV_PITOT_ON.svg"
       },
       "scope": "OVERHEAD"
     },
@@ -1702,9 +1702,9 @@
         "BRIGHT_BLUE"
       ],
       "assets": {
-        "BRIGHT_BLUE": "R_VALVE_OPEN_BRIGHT_BLUE.svg",
-        "DIM_BLUE": "R_VALVE_OPEN_DIM_BLUE.svg",
-        "OFF": "R_VALVE_OPEN_OFF.svg"
+        "BRIGHT_BLUE": "unified-v2/R_VALVE_OPEN_BRIGHT_BLUE.svg",
+        "DIM_BLUE": "unified-v2/R_VALVE_OPEN_DIM_BLUE.svg",
+        "OFF": "unified-v2/R_VALVE_OPEN_OFF.svg"
       },
       "scope": "OVERHEAD"
     },
@@ -1725,8 +1725,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "SPEED_BRAKE_ARMED_GREEN_OFF.svg",
-        "ON": "SPEED_BRAKE_ARMED_GREEN_ON.svg"
+        "OFF": "unified-v2/SPEED_BRAKE_ARMED_GREEN_OFF.svg",
+        "ON": "unified-v2/SPEED_BRAKE_ARMED_GREEN_ON.svg"
       },
       "scope": "MAIN_INSTRUMENT_PANEL",
       "mountedCockpitInstances": [
@@ -1750,8 +1750,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "SPEED_BRAKE_DO_NOT_ARMED_AMBER_OFF.svg",
-        "ON": "SPEED_BRAKE_DO_NOT_ARMED_AMBER_ON.svg"
+        "OFF": "unified-v2/SPEED_BRAKE_DO_NOT_ARMED_AMBER_OFF.svg",
+        "ON": "unified-v2/SPEED_BRAKE_DO_NOT_ARMED_AMBER_ON.svg"
       },
       "scope": "MAIN_INSTRUMENT_PANEL",
       "mountedCockpitInstances": [
@@ -1777,8 +1777,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "SPEED_TRIM_FAIL_OFF.svg",
-        "ON": "SPEED_TRIM_FAIL_ON.svg"
+        "OFF": "unified-v2/SPEED_TRIM_FAIL_OFF.svg",
+        "ON": "unified-v2/SPEED_TRIM_FAIL_ON.svg"
       },
       "scope": "OVERHEAD"
     },
@@ -1800,8 +1800,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "STAB_OUT_OF_TRIM_FIT_OFF.svg",
-        "ON": "STAB_OUT_OF_TRIM_FIT_ON.svg"
+        "OFF": "unified-v2/STAB_OUT_OF_TRIM_OFF.svg",
+        "ON": "unified-v2/STAB_OUT_OF_TRIM_ON.svg"
       },
       "scope": "ASSET_TEST_ONLY",
       "mountedCockpitInstances": [
@@ -1824,8 +1824,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "STANDBY_GREEN_OFF.svg",
-        "ON": "STANDBY_GREEN_ON.svg"
+        "OFF": "unified-v2/STANDBY_GREEN_OFF.svg",
+        "ON": "unified-v2/STANDBY_GREEN_ON.svg"
       },
       "scope": "OVERHEAD"
     },
@@ -1848,8 +1848,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "STANDBY_PWR_OFF_LAMP_OFF.svg",
-        "ON": "STANDBY_PWR_OFF_LAMP_ON.svg"
+        "OFF": "unified-v2/STANDBY_PWR_OFF_LAMP_OFF.svg",
+        "ON": "unified-v2/STANDBY_PWR_OFF_LAMP_ON.svg"
       },
       "scope": "OVERHEAD"
     },
@@ -1869,8 +1869,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "START_VALVE_OPEN_OFF.svg",
-        "ON": "START_VALVE_OPEN_ON.svg"
+        "OFF": "unified-v2/START_VALVE_OPEN_OFF.svg",
+        "ON": "unified-v2/START_VALVE_OPEN_ON.svg"
       },
       "scope": "ASSET_TEST_ONLY",
       "mountedCockpitInstances": [
@@ -1897,8 +1897,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "STBY_RUD_ON_LAMP_OFF.svg",
-        "ON": "STBY_RUD_ON_LAMP_ON.svg"
+        "OFF": "unified-v2/STBY_RUD_ON_LAMP_OFF.svg",
+        "ON": "unified-v2/STBY_RUD_ON_LAMP_ON.svg"
       },
       "scope": "OVERHEAD"
     },
@@ -1920,8 +1920,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "TEMP_PROBE_OFF.png",
-        "ON": "TEMP_PROBE_ON.png"
+        "OFF": "unified-v2/TEMP_PROBE_OFF.svg",
+        "ON": "unified-v2/TEMP_PROBE_ON.svg"
       },
       "scope": "OVERHEAD"
     },
@@ -1944,8 +1944,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "TRANSFER_BUS_OFF_LAMP_OFF.svg",
-        "ON": "TRANSFER_BUS_OFF_LAMP_ON.svg"
+        "OFF": "unified-v2/TRANSFER_BUS_OFF_LAMP_OFF.svg",
+        "ON": "unified-v2/TRANSFER_BUS_OFF_LAMP_ON.svg"
       },
       "scope": "OVERHEAD"
     },
@@ -1966,9 +1966,9 @@
         "BRIGHT_BLUE"
       ],
       "assets": {
-        "BRIGHT_BLUE": "VALVE_OPEN_BRIGHT_BLUE.svg",
-        "DIM_BLUE": "VALVE_OPEN_DIM_BLUE.svg",
-        "OFF": "VALVE_OPEN_OFF.svg"
+        "BRIGHT_BLUE": "unified-v2/VALVE_OPEN_BRIGHT_BLUE.svg",
+        "DIM_BLUE": "unified-v2/VALVE_OPEN_DIM_BLUE.svg",
+        "OFF": "unified-v2/VALVE_OPEN_OFF.svg"
       },
       "scope": "OVERHEAD"
     },
@@ -1988,8 +1988,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "WHEEL_WELL_RED_OFF.svg",
-        "ON": "WHEEL_WELL_RED_ON.svg"
+        "OFF": "unified-v2/WHEEL_WELL_RED_OFF.svg",
+        "ON": "unified-v2/WHEEL_WELL_RED_ON.svg"
       },
       "scope": "ASSET_TEST_ONLY"
     },
@@ -2011,8 +2011,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "WING_BODY_OVERHEAT_OFF.png",
-        "ON": "WING_BODY_OVERHEAT_ON.png"
+        "OFF": "unified-v2/WING_BODY_OVERHEAT_OFF.svg",
+        "ON": "unified-v2/WING_BODY_OVERHEAT_ON.svg"
       },
       "scope": "OVERHEAD"
     },
@@ -2035,8 +2035,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "YAW_DAMPER_OFF.svg",
-        "ON": "YAW_DAMPER_ON.svg"
+        "OFF": "unified-v2/YAW_DAMPER_OFF.svg",
+        "ON": "unified-v2/YAW_DAMPER_ON.svg"
       },
       "scope": "OVERHEAD"
     }

@@ -6,7 +6,7 @@ const zoom=m.zoomAnchor(.25,.5,100,200,300,250);assert.equal((100+300)/.25,(zoom
 const centered=m.zoomAnchor(.1,.2,0,0,500,200,{x:300,y:20},{x:100,y:0});assert.equal((500-300)/.1,(centered.left+500-100)/.2);assert.equal((200-20)/.1,(centered.top+200)/.2);
 const html=fs.readFileSync(path.join(__dirname,'overhead-stage.html'),'utf8');for(const src of ['stage.js?v=UPD-0012','app.js?v=RG-0001','rotary-guards.js?v=LGT-0003','lights.js?v=LGT-0003'])assert.ok(html.includes(src),src);assert.ok(!html.includes('data-cockpit-entry'));
 const unified=fs.readFileSync(path.join(__dirname,'index.html'),'utf8');
-for(const marker of ['id="unifiedLightsOpen"','id="unifiedLightsDialog"','id="unifiedLightSearch"','unified-lights.js?v=CKP-0007','../lights-test/asset-model.js?v=LGT-0007'])assert.ok(unified.includes(marker),'Unified annunciator testing: '+marker);
+for(const marker of ['id="unifiedLightsOpen"','id="unifiedLightsDialog"','id="unifiedLightSearch"','unified-lights.js?v=LGT-0013','../lights-test/asset-model.js?v=LGT-0013'])assert.ok(unified.includes(marker),'Unified annunciator testing: '+marker);
 const assetModel=require('../lights-test/asset-model'),gallery=JSON.parse(fs.readFileSync(path.join(__dirname,'../lights-test/registry.json')));
 assert.ok(gallery.lights.length>=87,'Unified must load the expanding LIGHTS catalogue');
 const atLim=gallery.lights.find(c=>c.id==='A_T_LIM_WHITE');assert.deepEqual(atLim?.lines,['A/T LIM']);assert.deepEqual(atLim.states,['OFF','ON']);assert.deepEqual(atLim.face,{width:600,height:300});
@@ -14,7 +14,7 @@ const align=gallery.lights.find(c=>c.id==='ALIGN_WHITE');assert.deepEqual(align?
 for(const [id,stem] of [['ALIGN_WHITE','ALIGN_WHITE'],['ON_DC_LAMP','ON_DC_LAMP'],['FAULT','FAULT'],['DC_FAIL','DC_FAIL']]){
  const legend=gallery.lights.find(c=>c.id===id);
  assert.ok(legend,id);assert.deepEqual(legend.states,['OFF','ON']);assert.equal(legend.face.width,600);assert.equal(legend.face.height,300);
- assert.equal(legend.assets.OFF,stem+'_OFF.svg');assert.equal(legend.assets.ON,stem+'_ON.svg');
+ assert.equal(legend.assets.OFF,'unified-v2/'+stem+'_OFF.svg');assert.equal(legend.assets.ON,'unified-v2/'+stem+'_ON.svg');
  assert.equal(gallery.lights.filter(c=>c.id===id).length,1,'One reusable legend per IRS type: '+id);
 }
 for(const [id,stem,expectedLines] of [
@@ -24,13 +24,14 @@ for(const [id,stem,expectedLines] of [
  const light=gallery.lights.find(c=>c.id===id);
  assert.deepEqual(light?.lines,expectedLines);assert.deepEqual(light.states,['OFF','ON']);
  assert.deepEqual(light.face,{width:600,height:300});
- assert.equal(light.assets.OFF,stem+'_OFF.svg');assert.equal(light.assets.ON,stem+'_ON.svg');
+ assert.equal(light.assets.OFF,'unified-v2/'+id+'_OFF.svg');assert.equal(light.assets.ON,'unified-v2/'+id+'_ON.svg');
+ for(const state of light.states){const original=fs.readFileSync(path.join(__dirname,'../assets/locked/2026-10-23/LIGHTS',stem+'_'+state+'.svg'));const approved=fs.readFileSync(path.join(__dirname,'../assets/locked/2026-10-23/LIGHTS',light.assets[state]));assert.deepEqual(approved,original,'Keep the approved '+id+' '+state+' pixel-identical');}
 }
 for(const id of ['SPEED_BRAKE_ARMED_GREEN','SPEED_BRAKE_DO_NOT_ARMED_AMBER'])assert.ok(gallery.lights.some(c=>c.id===id),id);
 const stab=gallery.lights.find(c=>c.id==='STAB_OUT_OF_TRIM');assert.deepEqual(stab.face,{width:300,height:300});
-assert.equal(stab.assets.ON,'STAB_OUT_OF_TRIM_FIT_ON.svg');
+assert.equal(stab.assets.ON,'unified-v2/STAB_OUT_OF_TRIM_ON.svg');
 const fakeListing=['STAB_OUT_OF_TRIM_OFF.svg','STAB_OUT_OF_TRIM_ON.svg','STAB_OUT_OF_TRIM_FIT_OFF.svg','STAB_OUT_OF_TRIM_FIT_ON.svg'].map(name=>({name,type:'file'}));
-const mergedGallery=assetModel.merge(gallery,fakeListing);assert.equal(mergedGallery.length,gallery.lights.length,'Replacement faces must not create duplicate STAB lights');assert.equal(mergedGallery.find(c=>c.id==='STAB_OUT_OF_TRIM').assets.ON,'STAB_OUT_OF_TRIM_FIT_ON.svg','Registered revision must override older discovered face');
+const mergedGallery=assetModel.merge(gallery,fakeListing);assert.equal(mergedGallery.length,gallery.lights.length,'Replacement faces must not create duplicate STAB lights');assert.equal(mergedGallery.find(c=>c.id==='STAB_OUT_OF_TRIM').assets.ON,'unified-v2/STAB_OUT_OF_TRIM_ON.svg','Registered revision must override older discovered face');
 for(const [asset,id] of [['SPEED_BRAKE_ARMED_GREEN','main-speed-brake-armed'],['SPEED_BRAKE_DO_NOT_ARMED_AMBER','main-speed-brake-do-not-arm']])assert.ok(gallery.lights.find(c=>c.id===asset)?.mountedCockpitInstances.includes(id),asset+' mounted on Unified');
 assert.equal(assetModel.normalize(gallery.lights.find(c=>c.id==='VALVE_OPEN'),'DIM_BLUE'),'DIM_BLUE');
 for(const light of gallery.lights)for(const state of light.states)assert.ok(fs.existsSync(path.join(__dirname,'../assets/locked/2026-10-23/LIGHTS',light.assets[state])),light.id+' '+state);

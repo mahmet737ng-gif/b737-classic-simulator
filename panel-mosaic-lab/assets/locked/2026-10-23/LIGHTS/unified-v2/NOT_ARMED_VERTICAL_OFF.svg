@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="600" viewBox="0 0 300 600" role="img" aria-label="NOT ARMED amber annunciator OFF">
+ <defs>
+  <linearGradient id="metal" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#41454a"/><stop offset=".17" stop-color="#14181a"/><stop offset=".83" stop-color="#0b0d0e"/><stop offset="1" stop-color="#34383c"/></linearGradient>
+  <filter id="textGlow" x="-45%" y="-80%" width="190%" height="260%"><feGaussianBlur stdDeviation="6"/></filter>
+  <filter id="textSoft" x="-25%" y="-35%" width="150%" height="170%"><feGaussianBlur stdDeviation="2.1"/></filter>
+ </defs>
+ <rect x="2" y="2" width="296" height="596" rx="14" fill="#080909" stroke="#1c1f20" stroke-width="4"/>
+     <rect x="2" y="8" width="296" height="584" rx="11" fill="url(#metal)" stroke="#07090a" stroke-width="1.5"/>
+     <rect x="6" y="22" width="288" height="556" rx="6" fill="#473a39" stroke="#0b0b0c" stroke-width="2"/>
+     <rect x="9.5" y="34" width="281" height="532" rx="3" fill="#0c0b0c" stroke="#4a3934" stroke-width="1.5"/>
+     <path d="M11.5 48H288.5" stroke="#715a4f" stroke-width="5" opacity="0.23"/>
+ <g font-family="Arial, Liberation Sans, Helvetica, sans-serif" font-weight="700" text-anchor="middle" fill="#291a15" opacity=".47"><text x="210" y="123" font-size="90">A</text><text x="90" y="225" font-size="90">N</text><text x="210" y="225" font-size="90">R</text><text x="90" y="327" font-size="90">O</text><text x="210" y="327" font-size="90">M</text><text x="90" y="429" font-size="90">T</text><text x="210" y="429" font-size="90">E</text><text x="210" y="531" font-size="90">D</text></g>
+ </svg>

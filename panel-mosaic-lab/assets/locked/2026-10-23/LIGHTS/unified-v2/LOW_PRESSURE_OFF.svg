@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="300" viewBox="0 0 600 300" role="img" aria-label="LOW PRESSURE amber annunciator unlit">
+  <defs>
+    <linearGradient id="metal" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#41454a"/>
+      <stop offset=".17" stop-color="#14181a"/>
+      <stop offset=".83" stop-color="#0b0d0e"/>
+      <stop offset="1" stop-color="#34383c"/>
+    </linearGradient>
+    <linearGradient id="bezel" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#694b40"/>
+      <stop offset=".13" stop-color="#4a3029"/>
+      <stop offset=".76" stop-color="#35231f"/>
+      <stop offset="1" stop-color="#755344"/>
+    </linearGradient>
+    <radialGradient id="glass" cx=".5" cy=".54" r=".7">
+      <stop offset="0" stop-color="#190e0e"/>
+      <stop offset=".74" stop-color="#120b0c"/>
+      <stop offset="1" stop-color="#090808"/>
+    </radialGradient>
+    <pattern id="grain" width="7" height="9" patternUnits="userSpaceOnUse">
+      <path d="M1 1h1M5 7h1M3 4h1" stroke="#66514a" stroke-width=".65" opacity=".15"/>
+    </pattern>
+  </defs>
+  <rect x="2" y="2" width="596" height="296" rx="19" fill="#080909" stroke="#1c1f20" stroke-width="4"/>
+  <rect x="9" y="8" width="582" height="284" rx="15" fill="url(#metal)" stroke="#07090a" stroke-width="4"/>
+  <rect x="22" y="19" width="556" height="262" rx="9" fill="url(#bezel)" stroke="#070809" stroke-width="4"/>
+  <rect x="29" y="26" width="542" height="248" rx="5" fill="url(#glass)" stroke="#34211b" stroke-width="4"/>
+  <rect x="35" y="32" width="530" height="235" rx="3" fill="url(#grain)" opacity=".34"/>
+  <path d="M34 31H565" stroke="#8b6555" stroke-width="3" opacity=".24"/>
+  <path d="M33 269H566" stroke="#52342a" stroke-width="3" opacity=".28"/>
+  <g fill="#291a15" font-family="Arial, Liberation Sans, Helvetica, sans-serif" font-weight="700" text-anchor="middle" opacity=".46">
+    <text x="300" y="138" font-size="99" textLength="224" lengthAdjust="spacingAndGlyphs">LOW</text>
+    <text x="300" y="254" font-size="99" textLength="484" lengthAdjust="spacingAndGlyphs">PRESSURE</text>
+  </g>
+</svg>
