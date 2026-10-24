@@ -1,0 +1,1139 @@
+{
+  "schema": "b737.overhead-toggle-overlay.v1",
+  "version": "TGL-0001",
+  "baseVersion": "UPD-0012-OVH-measured-seams",
+  "baseLayout": "../all-overhead/atlas-layout.json",
+  "baseSpec": "../all-overhead/spec.json",
+  "guideLibraryFileId": "libfile_555402960f948191b6501fa77d2b8246",
+  "scope": "plain toggle switches shown on owner lower-overhead guide; guarded/paddle controls, knobs, buttons and upper OH01-OH06 are separate stages",
+  "approvedVisuals": [
+    "b737-cockpit-toggle-v1",
+    "nav-transfer-v3"
+  ],
+  "assets": {
+    "vertical-off": {
+      "url": "../../shared-assets/toggle-switch-standard-v1/b737-toggle-off.webp",
+      "sha256": "0a7c2b5f4f0580667ec24f61a8b35ad52cfbc668df848f283d46bc75078f710f"
+    },
+    "vertical-center": {
+      "url": "../../shared-assets/toggle-switch-standard-v1/b737-toggle-center.webp",
+      "sha256": "622cf6f85dbb685297266fd5220dd824afb1901c7dcd3d5c8f741ea138437a54"
+    },
+    "vertical-on": {
+      "url": "../../shared-assets/toggle-switch-standard-v1/b737-toggle-on.webp",
+      "sha256": "3f81a26c6fd641b4cbf64bc50f2b5a3fa9a439919c1b2b942b9d3c056d86c1cb"
+    },
+    "horizontal-left": {
+      "url": "../../flight-controls-panel/assets/nav-transfer-left-v3.webp",
+      "sha256": "b6e6e024cbb5f17b0be3f5965de67e702b97259524ff8751ac279e4d1e467378"
+    },
+    "horizontal-center": {
+      "url": "../../flight-controls-panel/assets/nav-transfer-center-v3.webp",
+      "sha256": "19a99481f7296d1d147157065d5eda838ad1d8b7a6594aab519c128c1c496522"
+    },
+    "horizontal-right": {
+      "url": "../../flight-controls-panel/assets/nav-transfer-right-v3.webp",
+      "sha256": "5aa1474533a4116e7b252bd4df27510dc2356bedc65d0718e76a69fc756351d6"
+    }
+  },
+  "controls": [
+    {
+      "id": "alternate-flaps-position",
+      "label": "ALTERNATE FLAPS POSITION",
+      "placementId": "OH07",
+      "sourcePoint": [
+        773.31,
+        554.81
+      ],
+      "bezelSourceDiameter": 96,
+      "type": "toggle-3-vertical",
+      "axis": "vertical",
+      "states": [
+        "UP",
+        "OFF",
+        "DOWN"
+      ],
+      "default": "OFF",
+      "basis": "owner guide image; mounted at existing socket in locked source",
+      "springReturn": {
+        "UP": "OFF",
+        "DOWN": "OFF"
+      }
+    },
+    {
+      "id": "yaw-damper",
+      "label": "YAW DAMPER",
+      "placementId": "OH07",
+      "sourcePoint": [
+        287.6,
+        1144.07
+      ],
+      "bezelSourceDiameter": 98,
+      "type": "toggle-2",
+      "axis": "vertical",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "default": "ON",
+      "basis": "owner guide image; mounted at existing socket in locked source"
+    },
+    {
+      "id": "vhf-nav",
+      "label": "VHF NAV",
+      "placementId": "OH08",
+      "sourcePoint": [
+        258.38,
+        1340.49
+      ],
+      "bezelSourceDiameter": 90,
+      "type": "toggle-3-horizontal",
+      "axis": "horizontal",
+      "states": [
+        "BOTH ON 1",
+        "NORMAL",
+        "BOTH ON 2"
+      ],
+      "default": "NORMAL",
+      "basis": "owner guide image; mounted at existing socket in locked source"
+    },
+    {
+      "id": "irs-transfer",
+      "label": "IRS",
+      "placementId": "OH08",
+      "sourcePoint": [
+        672.88,
+        1340.49
+      ],
+      "bezelSourceDiameter": 90,
+      "type": "toggle-3-horizontal",
+      "axis": "horizontal",
+      "states": [
+        "BOTH ON L",
+        "NORMAL",
+        "BOTH ON R"
+      ],
+      "default": "NORMAL",
+      "basis": "owner guide image; mounted at existing socket in locked source"
+    },
+    {
+      "id": "efi-transfer",
+      "label": "EFI",
+      "placementId": "OH08",
+      "sourcePoint": [
+        258.38,
+        1531.75
+      ],
+      "bezelSourceDiameter": 90,
+      "type": "toggle-3-horizontal",
+      "axis": "horizontal",
+      "states": [
+        "BOTH ON 1",
+        "NORMAL",
+        "BOTH ON 2"
+      ],
+      "default": "NORMAL",
+      "basis": "owner guide image; mounted at existing socket in locked source"
+    },
+    {
+      "id": "fuel-center-l",
+      "label": "FUEL CENTER L",
+      "placementId": "OH09",
+      "sourcePoint": [
+        400.75,
+        931.44
+      ],
+      "bezelSourceDiameter": 112,
+      "type": "toggle-2",
+      "axis": "vertical",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "default": "ON",
+      "basis": "owner guide image; mounted at existing socket in locked source"
+    },
+    {
+      "id": "fuel-center-r",
+      "label": "FUEL CENTER R",
+      "placementId": "OH09",
+      "sourcePoint": [
+        609.22,
+        931.44
+      ],
+      "bezelSourceDiameter": 112,
+      "type": "toggle-2",
+      "axis": "vertical",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "default": "ON",
+      "basis": "owner guide image; mounted at existing socket in locked source"
+    },
+    {
+      "id": "fuel-1-aft",
+      "label": "FUEL 1 AFT",
+      "placementId": "OH09",
+      "sourcePoint": [
+        175.08,
+        1262.66
+      ],
+      "bezelSourceDiameter": 112,
+      "type": "toggle-2",
+      "axis": "vertical",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "default": "ON",
+      "basis": "owner guide image; mounted at existing socket in locked source"
+    },
+    {
+      "id": "fuel-1-fwd",
+      "label": "FUEL 1 FWD",
+      "placementId": "OH09",
+      "sourcePoint": [
+        358.25,
+        1262.66
+      ],
+      "bezelSourceDiameter": 112,
+      "type": "toggle-2",
+      "axis": "vertical",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "default": "ON",
+      "basis": "owner guide image; mounted at existing socket in locked source"
+    },
+    {
+      "id": "fuel-2-fwd",
+      "label": "FUEL 2 FWD",
+      "placementId": "OH09",
+      "sourcePoint": [
+        645.66,
+        1262.66
+      ],
+      "bezelSourceDiameter": 112,
+      "type": "toggle-2",
+      "axis": "vertical",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "default": "ON",
+      "basis": "owner guide image; mounted at existing socket in locked source"
+    },
+    {
+      "id": "fuel-2-aft",
+      "label": "FUEL 2 AFT",
+      "placementId": "OH09",
+      "sourcePoint": [
+        832.88,
+        1262.66
+      ],
+      "bezelSourceDiameter": 112,
+      "type": "toggle-2",
+      "axis": "vertical",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "default": "ON",
+      "basis": "owner guide image; mounted at existing socket in locked source"
+    },
+    {
+      "id": "galley",
+      "label": "GALLEY",
+      "placementId": "OH10",
+      "sourcePoint": [
+        629.62,
+        1252.19
+      ],
+      "bezelSourceDiameter": 112,
+      "type": "toggle-2",
+      "axis": "vertical",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "default": "ON",
+      "basis": "owner guide image; mounted at existing socket in locked source"
+    },
+    {
+      "id": "drive-temp-rise",
+      "label": "DRIVE TEMP RISE",
+      "placementId": "OH11",
+      "sourcePoint": [
+        601.5,
+        643.54
+      ],
+      "bezelSourceDiameter": 150,
+      "type": "toggle-2",
+      "axis": "vertical",
+      "states": [
+        "RISE",
+        "TEMP"
+      ],
+      "default": "TEMP",
+      "basis": "owner guide image; mounted at existing socket in locked source"
+    },
+    {
+      "id": "ground-power",
+      "label": "GROUND POWER",
+      "placementId": "OH12",
+      "sourcePoint": [
+        512.0,
+        285.7
+      ],
+      "bezelSourceDiameter": 96,
+      "type": "toggle-2",
+      "axis": "vertical",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "default": "ON",
+      "basis": "owner guide image; mounted at existing socket in locked source"
+    },
+    {
+      "id": "gen-1",
+      "label": "GEN 1",
+      "placementId": "OH12",
+      "sourcePoint": [
+        184.32,
+        872.45
+      ],
+      "bezelSourceDiameter": 100,
+      "type": "toggle-3-vertical",
+      "axis": "vertical",
+      "states": [
+        "OFF",
+        "NEUTRAL",
+        "ON"
+      ],
+      "default": "NEUTRAL",
+      "basis": "owner guide image; mounted at existing socket in locked source",
+      "springReturn": {
+        "OFF": "NEUTRAL",
+        "ON": "NEUTRAL"
+      }
+    },
+    {
+      "id": "apu-gen-1",
+      "label": "APU GEN LEFT",
+      "placementId": "OH12",
+      "sourcePoint": [
+        373.76,
+        872.45
+      ],
+      "bezelSourceDiameter": 100,
+      "type": "toggle-3-vertical",
+      "axis": "vertical",
+      "states": [
+        "OFF",
+        "NEUTRAL",
+        "ON"
+      ],
+      "default": "NEUTRAL",
+      "basis": "owner guide image; mounted at existing socket in locked source",
+      "springReturn": {
+        "OFF": "NEUTRAL",
+        "ON": "NEUTRAL"
+      }
+    },
+    {
+      "id": "apu-gen-2",
+      "label": "APU GEN RIGHT",
+      "placementId": "OH12",
+      "sourcePoint": [
+        645.12,
+        872.45
+      ],
+      "bezelSourceDiameter": 100,
+      "type": "toggle-3-vertical",
+      "axis": "vertical",
+      "states": [
+        "OFF",
+        "NEUTRAL",
+        "ON"
+      ],
+      "default": "NEUTRAL",
+      "basis": "owner guide image; mounted at existing socket in locked source",
+      "springReturn": {
+        "OFF": "NEUTRAL",
+        "ON": "NEUTRAL"
+      }
+    },
+    {
+      "id": "gen-2",
+      "label": "GEN 2",
+      "placementId": "OH12",
+      "sourcePoint": [
+        833.54,
+        872.45
+      ],
+      "bezelSourceDiameter": 100,
+      "type": "toggle-3-vertical",
+      "axis": "vertical",
+      "states": [
+        "OFF",
+        "NEUTRAL",
+        "ON"
+      ],
+      "default": "NEUTRAL",
+      "basis": "owner guide image; mounted at existing socket in locked source",
+      "springReturn": {
+        "OFF": "NEUTRAL",
+        "ON": "NEUTRAL"
+      }
+    },
+    {
+      "id": "equip-cooling-supply",
+      "label": "EQUIP COOLING SUPPLY",
+      "placementId": "OH13",
+      "sourcePoint": [
+        249.78,
+        1880.95
+      ],
+      "bezelSourceDiameter": 92,
+      "type": "toggle-2",
+      "axis": "vertical",
+      "states": [
+        "NORMAL",
+        "ALTERNATE"
+      ],
+      "default": "NORMAL",
+      "basis": "owner guide image; mounted at existing socket in locked source"
+    },
+    {
+      "id": "equip-cooling-exhaust",
+      "label": "EQUIP COOLING EXHAUST",
+      "placementId": "OH13",
+      "sourcePoint": [
+        480.01,
+        1880.95
+      ],
+      "bezelSourceDiameter": 92,
+      "type": "toggle-2",
+      "axis": "vertical",
+      "states": [
+        "NORMAL",
+        "ALTERNATE"
+      ],
+      "default": "NORMAL",
+      "basis": "owner guide image; mounted at existing socket in locked source"
+    },
+    {
+      "id": "no-smoking",
+      "label": "NO SMOKING",
+      "placementId": "OH14",
+      "sourcePoint": [
+        285.68,
+        1204.87
+      ],
+      "bezelSourceDiameter": 224,
+      "type": "toggle-3-vertical",
+      "axis": "vertical",
+      "states": [
+        "OFF",
+        "ON",
+        "AUTO"
+      ],
+      "default": "OFF",
+      "basis": "owner guide image; mounted at existing socket in locked source"
+    },
+    {
+      "id": "fasten-belts",
+      "label": "FASTEN BELTS",
+      "placementId": "OH14",
+      "sourcePoint": [
+        792.61,
+        1204.87
+      ],
+      "bezelSourceDiameter": 224,
+      "type": "toggle-3-vertical",
+      "axis": "vertical",
+      "states": [
+        "OFF",
+        "ON",
+        "CREW"
+      ],
+      "default": "OFF",
+      "basis": "owner guide image; mounted at existing socket in locked source"
+    },
+    {
+      "id": "window-l-side",
+      "label": "WINDOW HEAT L SIDE",
+      "placementId": "OH15",
+      "sourcePoint": [
+        207.36,
+        414.17
+      ],
+      "bezelSourceDiameter": 122,
+      "type": "toggle-2",
+      "axis": "vertical",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "default": "OFF",
+      "basis": "owner guide image; mounted at existing socket in locked source"
+    },
+    {
+      "id": "window-l-fwd",
+      "label": "WINDOW HEAT L FWD",
+      "placementId": "OH15",
+      "sourcePoint": [
+        413.44,
+        414.17
+      ],
+      "bezelSourceDiameter": 122,
+      "type": "toggle-2",
+      "axis": "vertical",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "default": "OFF",
+      "basis": "owner guide image; mounted at existing socket in locked source"
+    },
+    {
+      "id": "window-r-fwd",
+      "label": "WINDOW HEAT R FWD",
+      "placementId": "OH15",
+      "sourcePoint": [
+        865.28,
+        414.17
+      ],
+      "bezelSourceDiameter": 122,
+      "type": "toggle-2",
+      "axis": "vertical",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "default": "OFF",
+      "basis": "owner guide image; mounted at existing socket in locked source"
+    },
+    {
+      "id": "window-r-side",
+      "label": "WINDOW HEAT R SIDE",
+      "placementId": "OH15",
+      "sourcePoint": [
+        1076.48,
+        414.17
+      ],
+      "bezelSourceDiameter": 122,
+      "type": "toggle-2",
+      "axis": "vertical",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "default": "OFF",
+      "basis": "owner guide image; mounted at existing socket in locked source"
+    },
+    {
+      "id": "window-power-test",
+      "label": "WINDOW HEAT TEST",
+      "placementId": "OH15",
+      "sourcePoint": [
+        640.0,
+        384.68
+      ],
+      "bezelSourceDiameter": 122,
+      "type": "toggle-3-vertical",
+      "axis": "vertical",
+      "states": [
+        "OVHT",
+        "OFF",
+        "PWR TEST"
+      ],
+      "default": "OFF",
+      "basis": "owner guide image; mounted at existing socket in locked source",
+      "springReturn": {
+        "OVHT": "OFF",
+        "PWR TEST": "OFF"
+      }
+    },
+    {
+      "id": "pitot-a",
+      "label": "PITOT STATIC HEAT A",
+      "placementId": "OH15",
+      "sourcePoint": [
+        527.36,
+        733.71
+      ],
+      "bezelSourceDiameter": 122,
+      "type": "toggle-2",
+      "axis": "vertical",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "default": "OFF",
+      "basis": "owner guide image; mounted at existing socket in locked source"
+    },
+    {
+      "id": "pitot-b",
+      "label": "PITOT STATIC HEAT B",
+      "placementId": "OH15",
+      "sourcePoint": [
+        751.36,
+        733.71
+      ],
+      "bezelSourceDiameter": 122,
+      "type": "toggle-2",
+      "axis": "vertical",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "default": "OFF",
+      "basis": "owner guide image; mounted at existing socket in locked source"
+    },
+    {
+      "id": "wing-anti-ice",
+      "label": "WING ANTI-ICE",
+      "placementId": "OH16",
+      "sourcePoint": [
+        490.06,
+        669.12
+      ],
+      "bezelSourceDiameter": 170,
+      "type": "toggle-2",
+      "axis": "vertical",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "default": "OFF",
+      "basis": "owner guide image; mounted at existing socket in locked source"
+    },
+    {
+      "id": "engine-anti-ice-1",
+      "label": "ENG 1 ANTI-ICE",
+      "placementId": "OH16",
+      "sourcePoint": [
+        1032.57,
+        669.12
+      ],
+      "bezelSourceDiameter": 170,
+      "type": "toggle-2",
+      "axis": "vertical",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "default": "OFF",
+      "basis": "owner guide image; mounted at existing socket in locked source"
+    },
+    {
+      "id": "engine-anti-ice-2",
+      "label": "ENG 2 ANTI-ICE",
+      "placementId": "OH16",
+      "sourcePoint": [
+        1327.59,
+        669.12
+      ],
+      "bezelSourceDiameter": 170,
+      "type": "toggle-2",
+      "axis": "vertical",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "default": "OFF",
+      "basis": "owner guide image; mounted at existing socket in locked source"
+    },
+    {
+      "id": "hyd-eng-1",
+      "label": "HYD PUMP ENG 1",
+      "placementId": "OH17",
+      "sourcePoint": [
+        336.07,
+        679.4
+      ],
+      "bezelSourceDiameter": 176,
+      "type": "toggle-2",
+      "axis": "vertical",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "default": "ON",
+      "basis": "owner guide image; mounted at existing socket in locked source"
+    },
+    {
+      "id": "hyd-elec-2",
+      "label": "HYD PUMP ELEC 2",
+      "placementId": "OH17",
+      "sourcePoint": [
+        632.02,
+        679.4
+      ],
+      "bezelSourceDiameter": 176,
+      "type": "toggle-2",
+      "axis": "vertical",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "default": "OFF",
+      "basis": "owner guide image; mounted at existing socket in locked source"
+    },
+    {
+      "id": "hyd-elec-1",
+      "label": "HYD PUMP ELEC 1",
+      "placementId": "OH17",
+      "sourcePoint": [
+        1050.02,
+        679.4
+      ],
+      "bezelSourceDiameter": 176,
+      "type": "toggle-2",
+      "axis": "vertical",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "default": "ON",
+      "basis": "owner guide image; mounted at existing socket in locked source"
+    },
+    {
+      "id": "hyd-eng-2",
+      "label": "HYD PUMP ENG 2",
+      "placementId": "OH17",
+      "sourcePoint": [
+        1340.94,
+        679.4
+      ],
+      "bezelSourceDiameter": 176,
+      "type": "toggle-2",
+      "axis": "vertical",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "default": "ON",
+      "basis": "owner guide image; mounted at existing socket in locked source"
+    },
+    {
+      "id": "recirc-fan",
+      "label": "RECIRC FAN",
+      "placementId": "OH21",
+      "sourcePoint": [
+        860.57,
+        231.33
+      ],
+      "bezelSourceDiameter": 102,
+      "type": "toggle-2",
+      "axis": "vertical",
+      "states": [
+        "OFF",
+        "AUTO"
+      ],
+      "default": "AUTO",
+      "basis": "owner guide image; mounted at existing socket in locked source"
+    },
+    {
+      "id": "pack-l",
+      "label": "L PACK",
+      "placementId": "OH21",
+      "sourcePoint": [
+        185.13,
+        706.61
+      ],
+      "bezelSourceDiameter": 102,
+      "type": "toggle-3-vertical",
+      "axis": "vertical",
+      "states": [
+        "OFF",
+        "AUTO",
+        "HIGH"
+      ],
+      "default": "AUTO",
+      "basis": "owner guide image; mounted at existing socket in locked source"
+    },
+    {
+      "id": "pack-r",
+      "label": "R PACK",
+      "placementId": "OH21",
+      "sourcePoint": [
+        927.89,
+        706.61
+      ],
+      "bezelSourceDiameter": 102,
+      "type": "toggle-3-vertical",
+      "axis": "vertical",
+      "states": [
+        "OFF",
+        "AUTO",
+        "HIGH"
+      ],
+      "default": "AUTO",
+      "basis": "owner guide image; mounted at existing socket in locked source"
+    },
+    {
+      "id": "isolation-valve",
+      "label": "ISOLATION VALVE",
+      "placementId": "OH21",
+      "sourcePoint": [
+        558.76,
+        793.53
+      ],
+      "bezelSourceDiameter": 102,
+      "type": "toggle-3-vertical",
+      "axis": "vertical",
+      "states": [
+        "CLOSE",
+        "AUTO",
+        "OPEN"
+      ],
+      "default": "AUTO",
+      "basis": "owner guide image; mounted at existing socket in locked source"
+    },
+    {
+      "id": "bleed-eng-1",
+      "label": "ENG 1 BLEED",
+      "placementId": "OH21",
+      "sourcePoint": [
+        185.13,
+        1233.76
+      ],
+      "bezelSourceDiameter": 102,
+      "type": "toggle-2",
+      "axis": "vertical",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "default": "ON",
+      "basis": "owner guide image; mounted at existing socket in locked source"
+    },
+    {
+      "id": "bleed-apu",
+      "label": "APU BLEED",
+      "placementId": "OH21",
+      "sourcePoint": [
+        474.61,
+        1233.76
+      ],
+      "bezelSourceDiameter": 102,
+      "type": "toggle-2",
+      "axis": "vertical",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "default": "ON",
+      "basis": "owner guide image; mounted at existing socket in locked source"
+    },
+    {
+      "id": "bleed-eng-2",
+      "label": "ENG 2 BLEED",
+      "placementId": "OH21",
+      "sourcePoint": [
+        927.89,
+        1233.76
+      ],
+      "bezelSourceDiameter": 102,
+      "type": "toggle-2",
+      "axis": "vertical",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "default": "ON",
+      "basis": "owner guide image; mounted at existing socket in locked source"
+    },
+    {
+      "id": "outflow-manual",
+      "label": "MANUAL OUTFLOW VALVE",
+      "placementId": "OH22",
+      "sourcePoint": [
+        948.77,
+        639.82
+      ],
+      "bezelSourceDiameter": 112,
+      "type": "toggle-3-vertical",
+      "axis": "vertical",
+      "states": [
+        "CLOSE",
+        "NEUTRAL",
+        "OPEN"
+      ],
+      "default": "NEUTRAL",
+      "basis": "owner guide image; mounted at existing socket in locked source",
+      "springReturn": {
+        "CLOSE": "NEUTRAL",
+        "OPEN": "NEUTRAL"
+      }
+    },
+    {
+      "id": "landing-out-l",
+      "label": "LANDING OUTBOARD L",
+      "placementId": "OH23-25",
+      "sourcePoint": [
+        235,
+        318
+      ],
+      "bezelSourceDiameter": 54,
+      "type": "toggle-2",
+      "axis": "vertical",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "default": "ON",
+      "basis": "owner guide image; mounted at existing socket in locked source"
+    },
+    {
+      "id": "landing-out-r",
+      "label": "LANDING OUTBOARD R",
+      "placementId": "OH23-25",
+      "sourcePoint": [
+        318,
+        318
+      ],
+      "bezelSourceDiameter": 54,
+      "type": "toggle-2",
+      "axis": "vertical",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "default": "ON",
+      "basis": "owner guide image; mounted at existing socket in locked source"
+    },
+    {
+      "id": "landing-in-l",
+      "label": "LANDING INBOARD L",
+      "placementId": "OH23-25",
+      "sourcePoint": [
+        459,
+        318
+      ],
+      "bezelSourceDiameter": 54,
+      "type": "toggle-2",
+      "axis": "vertical",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "default": "ON",
+      "basis": "owner guide image; mounted at existing socket in locked source"
+    },
+    {
+      "id": "landing-in-r",
+      "label": "LANDING INBOARD R",
+      "placementId": "OH23-25",
+      "sourcePoint": [
+        520,
+        318
+      ],
+      "bezelSourceDiameter": 54,
+      "type": "toggle-2",
+      "axis": "vertical",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "default": "ON",
+      "basis": "owner guide image; mounted at existing socket in locked source"
+    },
+    {
+      "id": "runway-turnoff-l",
+      "label": "RUNWAY TURNOFF L",
+      "placementId": "OH23-25",
+      "sourcePoint": [
+        597,
+        318
+      ],
+      "bezelSourceDiameter": 54,
+      "type": "toggle-2",
+      "axis": "vertical",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "default": "ON",
+      "basis": "owner guide image; mounted at existing socket in locked source"
+    },
+    {
+      "id": "runway-turnoff-r",
+      "label": "RUNWAY TURNOFF R",
+      "placementId": "OH23-25",
+      "sourcePoint": [
+        680,
+        318
+      ],
+      "bezelSourceDiameter": 54,
+      "type": "toggle-2",
+      "axis": "vertical",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "default": "ON",
+      "basis": "owner guide image; mounted at existing socket in locked source"
+    },
+    {
+      "id": "taxi",
+      "label": "TAXI",
+      "placementId": "OH23-25",
+      "sourcePoint": [
+        766,
+        318
+      ],
+      "bezelSourceDiameter": 54,
+      "type": "toggle-2",
+      "axis": "vertical",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "default": "ON",
+      "basis": "owner guide image; mounted at existing socket in locked source"
+    },
+    {
+      "id": "apu-start",
+      "label": "APU",
+      "placementId": "OH23-25",
+      "sourcePoint": [
+        852,
+        345
+      ],
+      "bezelSourceDiameter": 54,
+      "type": "toggle-3-vertical",
+      "axis": "vertical",
+      "states": [
+        "OFF",
+        "ON",
+        "START"
+      ],
+      "default": "ON",
+      "basis": "owner guide image; mounted at existing socket in locked source",
+      "springReturn": {
+        "START": "ON"
+      }
+    },
+    {
+      "id": "logo",
+      "label": "LOGO",
+      "placementId": "OH23-25",
+      "sourcePoint": [
+        1498,
+        318
+      ],
+      "bezelSourceDiameter": 54,
+      "type": "toggle-2",
+      "axis": "vertical",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "default": "ON",
+      "basis": "owner guide image; mounted at existing socket in locked source"
+    },
+    {
+      "id": "strobe",
+      "label": "STROBE",
+      "placementId": "OH23-25",
+      "sourcePoint": [
+        1585,
+        318
+      ],
+      "bezelSourceDiameter": 54,
+      "type": "toggle-2",
+      "axis": "vertical",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "default": "ON",
+      "basis": "owner guide image; mounted at existing socket in locked source"
+    },
+    {
+      "id": "position-lights",
+      "label": "POSITION",
+      "placementId": "OH23-25",
+      "sourcePoint": [
+        1688,
+        318
+      ],
+      "bezelSourceDiameter": 54,
+      "type": "toggle-3-vertical",
+      "axis": "vertical",
+      "states": [
+        "ON BAT",
+        "AUTO",
+        "ON"
+      ],
+      "default": "ON",
+      "basis": "owner guide image; mounted at existing socket in locked source"
+    },
+    {
+      "id": "anti-collision",
+      "label": "ANTI COLLISION",
+      "placementId": "OH23-25",
+      "sourcePoint": [
+        1800,
+        318
+      ],
+      "bezelSourceDiameter": 54,
+      "type": "toggle-2",
+      "axis": "vertical",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "default": "ON",
+      "basis": "owner guide image; mounted at existing socket in locked source"
+    },
+    {
+      "id": "wing-lights",
+      "label": "WING",
+      "placementId": "OH23-25",
+      "sourcePoint": [
+        1894,
+        318
+      ],
+      "bezelSourceDiameter": 54,
+      "type": "toggle-2",
+      "axis": "vertical",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "default": "ON",
+      "basis": "owner guide image; mounted at existing socket in locked source"
+    },
+    {
+      "id": "wheel-well",
+      "label": "WHEEL WELL",
+      "placementId": "OH23-25",
+      "sourcePoint": [
+        1988,
+        318
+      ],
+      "bezelSourceDiameter": 54,
+      "type": "toggle-2",
+      "axis": "vertical",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "default": "ON",
+      "basis": "owner guide image; mounted at existing socket in locked source"
+    }
+  ],
+  "logicScope": "Control detents and visual interaction only; aircraft-system effects are not connected.",
+  "referenceNotes": [
+    "Two and three-position assignments follow visible guide labels. Unlabelled drive-temperature detents are a simulator UI assignment.",
+    "Spring return for generator/test controls is a simulator interaction assignment; no new FCOM validation claimed.",
+    "Source artwork and frozen placement files are not modified."
+  ]
+}
