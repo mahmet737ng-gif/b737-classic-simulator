@@ -1,0 +1,31 @@
+name: Interactive overhead toggle QA
+on:
+  push:
+    paths:
+      - 'panel-mosaic-lab/interactive-overhead/**'
+      - 'panel-mosaic-lab/all-overhead/**'
+      - 'shared-assets/toggle-switch-standard-v1/**'
+      - 'flight-controls-panel/assets/nav-transfer-*-v3.webp'
+      - '.github/workflows/overhead-toggles.yml'
+  pull_request:
+    paths:
+      - 'panel-mosaic-lab/interactive-overhead/**'
+      - 'panel-mosaic-lab/all-overhead/**'
+      - 'shared-assets/toggle-switch-standard-v1/**'
+      - 'flight-controls-panel/assets/nav-transfer-*-v3.webp'
+      - '.github/workflows/overhead-toggles.yml'
+permissions:
+  contents: read
+jobs:
+  toggles:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Preserve final mosaic
+        run: python3 panel-mosaic-lab/verify-final-overhead.py
+      - name: Verify toggle state logic and approved frame hashes
+        run: node panel-mosaic-lab/interactive-overhead/test.cjs
+      - name: Check browser scripts
+        run: |
+          node --check panel-mosaic-lab/interactive-overhead/app.js
+          node --check panel-mosaic-lab/interactive-overhead/model.js
