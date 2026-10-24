@@ -6,7 +6,8 @@
  const assetRoot='../assets/locked/2026-10-23/LIGHTS/';
  const githubApi='https://api.github.com/repos/mahmet737ng-gif/b737-classic-simulator/contents/panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS';
  const states=new Map(),cards=new Map();
- let lights=[],version='LGT-0007',registered=new Set();
+ let lights=[],version='LGT-0008',registered=new Set();
+ const queryKey=value=>String(value).toUpperCase().replace(/[^A-Z0-9]+/g,'_').replace(/^_+|_+$/g,'');
 
  function update(c){
   const card=cards.get(c.id);if(!card)return;
@@ -33,8 +34,8 @@
  }
  function render(){
   const grid=byId('unifiedLightGrid');grid.replaceChildren();cards.clear();
-  const query=byId('unifiedLightSearch').value.trim().toUpperCase().replace(/\s+/g,'_');
-  const shown=lights.filter(c=>(c.id+'_'+c.lines.join('_')).toUpperCase().includes(query));
+  const query=queryKey(byId('unifiedLightSearch').value);
+  const shown=lights.filter(c=>queryKey(c.id+' '+c.lines.join(' ')).includes(query));
   for(const c of shown){
    const card=document.createElement('article');card.className='unified-light-card';card.dataset.light=c.id;
    const heading=document.createElement('h3');heading.textContent=c.lines.join(' / ');
