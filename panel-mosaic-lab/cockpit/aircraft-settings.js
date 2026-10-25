@@ -110,9 +110,14 @@
     byId('activeEngineInstruments').textContent = selected.engineInstruments.label;
     // Apply the selected owner artwork to the embedded OH22 panel, not only this dialog.
     const overheadFrame = byId('overheadFrame');
-    if(overheadFrame?.contentWindow) overheadFrame.contentWindow.postMessage({
-      type:'b737:cockpit-command', action:'pressurization-background', system:pressure
-    }, location.origin);
+    if(overheadFrame?.contentWindow) {
+      overheadFrame.contentWindow.postMessage({
+        type:'b737:cockpit-command', action:'pressurization-background', system:pressure
+      }, location.origin);
+      overheadFrame.contentWindow.postMessage({
+        type:'b737:cockpit-command', action:'aircon-background', family:selected.family.id
+      }, location.origin);
+    }
     byId('openSelectedPressurizationPanel').textContent = 'باز کردن پنل ' + pressure + ' برای تست';
     try {
       activeSession = getPressureSession(pressure);
