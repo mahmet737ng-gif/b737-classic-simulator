@@ -33,6 +33,7 @@ jobs:
           node panel-mosaic-lab/interactive-overhead/test.cjs
           node panel-mosaic-lab/interactive-overhead/rotary-guards.test.cjs
           node panel-mosaic-lab/interactive-overhead/lights.test.cjs
+          node panel-mosaic-lab/lights-test/phase1-geometry-audit.test.cjs
       - name: Verify unified cockpit assembly
         run: |
           node panel-mosaic-lab/cockpit/flap-lever-model.test.cjs
