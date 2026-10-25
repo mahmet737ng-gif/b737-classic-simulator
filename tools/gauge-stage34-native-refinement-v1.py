@@ -165,6 +165,45 @@ def classify_ticks(strokes,reference,mode,lo,hi):
                        "status":state,"sourcePhotoApproved":False})
     return matched
 
+def linear_tick_candidates(image,window):
+    h,w=image.shape[:2]
+    x0=max(0,int(window["x0"]));x1=min(w,int(window["x1"])+1)
+    y0=max(0,int(window["y0"]));y1=min(h,int(window["y1"])+1)
+    roi=image[y0:y1,x0:x1]
+    assert roi.size>0
+    binary=mask_white(roi)*255
+    edge=cv2.Canny(cv2.GaussianBlur(binary,(3,3),0),50,150)
+    verticalTravel=(y1-y0)>(x1-x0)
+    requiredLength=max(5,int((x1-x0 if verticalTravel else y1-y0)*.10))
+    lines=cv2.HoughLinesP(edge,1,np.pi/720,threshold=8,
+                           minLineLength=requiredLength,maxLineGap=2)
+    candidates=[]
+    if lines is not None:
+        for xA,yA,xB,yB in np.asarray(lines).reshape((-1,4)):
+            dx=int(xB)-int(xA);dy=int(yB)-int(yA)
+            length=math.hypot(dx,dy)
+            if length<requiredLength:continue
+            # Horizontal marks across a vertical track, or vice versa.
+            if verticalTravel and abs(dy)>max(2,abs(dx)*.22):continue
+            if not verticalTravel and abs(dx)>max(2,abs(dy)*.22):continue
+            majorCoord=round((yA+yB)/2+y0,2) if verticalTravel else round((xA+xB)/2+x0,2)
+            item={"strokePointA":[int(xA+x0),int(yA+y0)],
+                  "strokePointB":[int(xB+x0),int(yB+y0)],
+                  "travelAxisCoordPx":majorCoord,"lengthPx":round(float(length),2),
+                  "numericValue":None,"physicalTickApproved":False}
+            candidates.append(item)
+    candidates.sort(key=lambda o:-o["lengthPx"])
+    selected=[]
+    for a in candidates:
+        if any(abs(a["travelAxisCoordPx"]-s["travelAxisCoordPx"])<2.1 for s in selected):continue
+        selected.append(a)
+    lengths=[s["lengthPx"] for s in selected]
+    med=median_or(lengths,0)
+    for a in selected:
+        a["lengthClassCandidate"]="long" if a["lengthPx"]>=med*1.5 else "medium" if a["lengthPx"]>=med else "short"
+    selected.sort(key=lambda o:o["travelAxisCoordPx"])
+    return ("y" if verticalTravel else "x"),selected
+
 def main():
     ap=argparse.ArgumentParser()
     ap.add_argument("--report",default="reports/stage34-native-pixel-v1.json")
@@ -186,9 +225,12 @@ def main():
                 "approved":False}
         if f["id"] in linear:
             window=linear[f["id"]]["travelWindowCandidate"]
+            travelAxis,ticks=linear_tick_candidates(image,window)
             record.update({"rotationPivot":None,"lineTrackCandidate":window,
-                "linearTickEndpoints":[],"reviewState":"linear_travel_tick_mapping_pending"})
+                "linearTravelAxis":travelAxis,"linearTickEndpoints":ticks,
+                "reviewState":"linear_tick_candidates_need_photo_confirmation"})
             counts["linearFaces"]+=1
+            counts["linearTickCandidates"]=counts.get("linearTickCandidates",0)+len(ticks)
         else:
             pivot=f["pivot"]
             assert pivot and "x" in pivot and "y" in pivot
