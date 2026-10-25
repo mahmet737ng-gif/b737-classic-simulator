@@ -112,3 +112,27 @@ test('GEN DRIVE OIL TEMP 1/2 use independent user-confirmed RISE 0–30 and IN 6
    assert.equal(inlet.marks.length,0);
  }
 });
+
+
+test('user-confirmed Fuel Temperature scale has all nine labels and clockwise order',()=>{
+ const face=data.faces.find(f=>f.id==='oh.fuel.temperature');
+ const scale=face.scales.find(s=>s.mode==='primary');
+ assert.deepEqual(scale.printedNumericValues,[-40,-30,-20,-10,0,10,20,30,40]);
+ assert.deepEqual([scale.minimum,scale.maximum],[-40,40]);
+ assert.equal(scale.unit,'°C');
+ assert.equal(scale.rotationDirection,'clockwise');
+ assert.equal(scale.numericStep,10);
+ assert.equal(scale.angularSpacingVerified,false);
+ assert.equal(scale.published,false);
+ assert.equal(face.stage4.realReadingsEnabled,false);
+});
+test('DC AMPS three identified labels are not mistaken for confirmed physical endpoints',()=>{
+ const face=data.faces.find(f=>f.id==='oh.elec.dc_amps');
+ const scale=face.scales[0];
+ assert.deepEqual(scale.printedNumericValues,[-50,0,50]);
+ assert.deepEqual(scale.labeledRange,[-50,50]);
+ assert.equal(scale.minimum,null);
+ assert.equal(scale.maximum,null);
+ assert.equal(scale.angularSpacingVerified,false);
+ assert.equal(face.stage4.realReadingsEnabled,false);
+});
