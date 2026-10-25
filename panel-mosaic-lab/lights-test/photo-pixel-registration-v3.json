@@ -1,0 +1,5201 @@
+{
+  "schema": "b737.annunciators.pixel-geometry-audit.v3",
+  "date": "2026-10-26",
+  "evidence": {
+    "baseline": "photo-pixel-registration-v2.json",
+    "thirdMethod": "tools/lamp-photo-scanline-qa.py",
+    "actionsRun": "https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/40238859555",
+    "sourcePhotographs": 19,
+    "methodAcceptance": "Independent signed black-glass rim gradients on four sides, robust contrast, accepted aspect/size and within 3 original-source pixels of existing sourceRect center. See scanline source."
+  },
+  "summary": {
+    "mounted": 142,
+    "nativePhotoReviewed": 142,
+    "priorPixelApproved": 120,
+    "thirdScanlineApproved": 19,
+    "totalPixelApproved": 139,
+    "remainingPixelUnresolved": 3,
+    "sourceRectChangesByScanline": 0,
+    "sourcePhotosChanged": 0,
+    "firstCohortFitted": 9,
+    "secondCohortFittedPendingQA": 12
+  },
+  "remaining": [
+    {
+      "id": "flight-recorder-off",
+      "panel": "UPPER",
+      "sourceRect": [
+        1485,
+        439,
+        40,
+        31
+      ],
+      "scanline": {
+        "status": "SCANLINE_REVIEW",
+        "centreDeviationSourcePx": null,
+        "detectedSides": {
+          "left": null,
+          "right": {
+            "pos": 1525.5,
+            "strength": 47.4,
+            "count": 6
+          },
+          "top": {
+            "pos": 438.5,
+            "strength": 45.5,
+            "count": 6
+          },
+          "bottom": {
+            "pos": 469.5,
+            "strength": 60.6,
+            "count": 5
+          }
+        },
+        "apertureWidthDeltaPx": null,
+        "apertureHeightDeltaPx": null
+      },
+      "reason": "Tiny atypical lens; weak left rim gradient"
+    },
+    {
+      "id": "fuel-1-aft",
+      "panel": "OH09",
+      "sourceRect": [
+        94,
+        1058,
+        166,
+        75
+      ],
+      "scanline": {
+        "status": "SCANLINE_REVIEW",
+        "centreDeviationSourcePx": [
+          3.5,
+          -1.5
+        ],
+        "detectedSides": {
+          "left": {
+            "pos": 97.5,
+            "strength": 45.4,
+            "count": 6
+          },
+          "right": {
+            "pos": 263.5,
+            "strength": 48.8,
+            "count": 8
+          },
+          "top": {
+            "pos": 1058.5,
+            "strength": 24.7,
+            "count": 7
+          },
+          "bottom": {
+            "pos": 1129.5,
+            "strength": 66.2,
+            "count": 6
+          }
+        },
+        "apertureWidthDeltaPx": 0,
+        "apertureHeightDeltaPx": -4
+      },
+      "reason": "Horizontal center deviation 3.5 native pixels exceeds limit"
+    },
+    {
+      "id": "main-pull-up-captain",
+      "panel": "captain",
+      "sourceRect": [
+        1284,
+        389,
+        164,
+        68
+      ],
+      "scanline": {
+        "status": "SCANLINE_REVIEW",
+        "centreDeviationSourcePx": [
+          0,
+          -3
+        ],
+        "detectedSides": {
+          "left": {
+            "pos": 1283.5,
+            "strength": 37,
+            "count": 7
+          },
+          "right": {
+            "pos": 1448.5,
+            "strength": 25.5,
+            "count": 7
+          },
+          "top": {
+            "pos": 384.5,
+            "strength": 24.6,
+            "count": 4
+          },
+          "bottom": {
+            "pos": 455.5,
+            "strength": 6.3,
+            "count": 4
+          }
+        },
+        "apertureWidthDeltaPx": 1,
+        "apertureHeightDeltaPx": 3
+      },
+      "reason": "Tilted/brown captains lens; lower rim contrast inadequate"
+    }
+  ],
+  "records": [
+    {
+      "id": "irs-l-align",
+      "panel": "UPPER",
+      "scope": "OVERHEAD",
+      "asset": "ALIGN_WHITE",
+      "currentSourceRect": [
+        428,
+        535,
+        64,
+        32
+      ],
+      "photoRimMethod": "AUTO_CENTRE_MATCH",
+      "photoRimDelta": [
+        0.5,
+        -1
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        1.5,
+        0
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "irs-r-align",
+      "panel": "UPPER",
+      "scope": "OVERHEAD",
+      "asset": "ALIGN_WHITE",
+      "currentSourceRect": [
+        604,
+        535,
+        64,
+        32
+      ],
+      "photoRimMethod": "AUTO_CENTRE_MATCH",
+      "photoRimDelta": [
+        0.5,
+        0
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        1,
+        1
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "irs-l-on-dc",
+      "panel": "UPPER",
+      "scope": "OVERHEAD",
+      "asset": "ON_DC_LAMP",
+      "currentSourceRect": [
+        503,
+        535,
+        64,
+        32
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        -3,
+        -1
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        -2,
+        -1.5
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "irs-l-fault",
+      "panel": "UPPER",
+      "scope": "OVERHEAD",
+      "asset": "FAULT",
+      "currentSourceRect": [
+        428,
+        574,
+        64,
+        32
+      ],
+      "photoRimMethod": "AUTO_CENTRE_MATCH",
+      "photoRimDelta": [
+        0.5,
+        -1.5
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        1.5,
+        -1.5
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "irs-l-dc-fail",
+      "panel": "UPPER",
+      "scope": "OVERHEAD",
+      "asset": "DC_FAIL",
+      "currentSourceRect": [
+        503,
+        574,
+        64,
+        32
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        -3,
+        -1.5
+      ],
+      "darkGlassComponentMethod": "NEEDS_MANUAL_REVIEW",
+      "darkGlassDelta": [
+        -2.5,
+        -3.5
+      ],
+      "status": "PHOTO_ENLARGED_REVIEWED_PIXEL_PRECISION_OPEN",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "SCANLINE_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "PHOTO_INDEPENDENT_FOUR_EDGE_SCANLINE",
+      "scanlineEvidence": {
+        "status": "SCANLINE_CENTRE_CANDIDATE",
+        "centreDeviationSourcePx": [
+          -0.5,
+          -0.5
+        ],
+        "detectedSides": {
+          "left": {
+            "pos": 502.5,
+            "strength": 18.8,
+            "count": 7
+          },
+          "right": {
+            "pos": 566.5,
+            "strength": 26.7,
+            "count": 5
+          },
+          "top": {
+            "pos": 573.5,
+            "strength": 48.2,
+            "count": 6
+          },
+          "bottom": {
+            "pos": 605.5,
+            "strength": 42.8,
+            "count": 4
+          }
+        },
+        "apertureWidthDeltaPx": 0,
+        "apertureHeightDeltaPx": 0
+      }
+    },
+    {
+      "id": "irs-r-on-dc",
+      "panel": "UPPER",
+      "scope": "OVERHEAD",
+      "asset": "ON_DC_LAMP",
+      "currentSourceRect": [
+        679,
+        535,
+        64,
+        32
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        -2,
+        0
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        -1.5,
+        1
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "irs-r-fault",
+      "panel": "UPPER",
+      "scope": "OVERHEAD",
+      "asset": "FAULT",
+      "currentSourceRect": [
+        604,
+        574,
+        64,
+        32
+      ],
+      "photoRimMethod": "AUTO_CENTRE_MATCH",
+      "photoRimDelta": [
+        -0.5,
+        0.5
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        0.5,
+        1.5
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "irs-r-dc-fail",
+      "panel": "UPPER",
+      "scope": "OVERHEAD",
+      "asset": "DC_FAIL",
+      "currentSourceRect": [
+        679,
+        574,
+        64,
+        32
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        -2.5,
+        0.5
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        -2,
+        1.5
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "reverser-1",
+      "panel": "UPPER",
+      "scope": "OVERHEAD",
+      "asset": "REVERSER",
+      "currentSourceRect": [
+        1040,
+        374,
+        74,
+        31
+      ],
+      "photoRimMethod": "AUTO_CENTRE_MATCH",
+      "photoRimDelta": [
+        -1,
+        -0.5
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        -0.5,
+        0
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "reverser-2",
+      "panel": "UPPER",
+      "scope": "OVERHEAD",
+      "asset": "REVERSER",
+      "currentSourceRect": [
+        1213,
+        374,
+        74,
+        31
+      ],
+      "photoRimMethod": "AUTO_CENTRE_MATCH",
+      "photoRimDelta": [
+        -2,
+        -0.5
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        -2,
+        0
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "low-idle",
+      "panel": "UPPER",
+      "scope": "OVERHEAD",
+      "asset": "LOW_IDLE",
+      "currentSourceRect": [
+        1136,
+        447,
+        54,
+        37
+      ],
+      "photoRimMethod": "AUTO_CENTRE_MATCH",
+      "photoRimDelta": [
+        0,
+        0
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        0.5,
+        1
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "pass-oxygen",
+      "panel": "UPPER",
+      "scope": "OVERHEAD",
+      "asset": "PASS_OXY_ON_LAMP",
+      "currentSourceRect": [
+        1174,
+        665,
+        72,
+        44
+      ],
+      "photoRimMethod": "AUTO_CENTRE_MATCH",
+      "photoRimDelta": [
+        -1,
+        -0.5
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        0,
+        0
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "flight-recorder-off",
+      "panel": "UPPER",
+      "scope": "OVERHEAD",
+      "asset": "OFF_LAMP",
+      "currentSourceRect": [
+        1485,
+        439,
+        40,
+        31
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        1.5,
+        -1
+      ],
+      "darkGlassComponentMethod": "NEEDS_MANUAL_REVIEW",
+      "darkGlassDelta": [
+        -3.5,
+        -0.5
+      ],
+      "status": "PHOTO_ENLARGED_REVIEWED_PIXEL_PRECISION_OPEN",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "PHOTO_ENLARGED_REVIEWED_PIXEL_PRECISION_OPEN",
+      "verificationMethod": "NOT_CERTIFIED",
+      "scanlineEvidence": {
+        "status": "SCANLINE_REVIEW",
+        "centreDeviationSourcePx": null,
+        "detectedSides": {
+          "left": null,
+          "right": {
+            "pos": 1525.5,
+            "strength": 47.4,
+            "count": 6
+          },
+          "top": {
+            "pos": 438.5,
+            "strength": 45.5,
+            "count": 6
+          },
+          "bottom": {
+            "pos": 469.5,
+            "strength": 60.6,
+            "count": 5
+          }
+        },
+        "apertureWidthDeltaPx": null,
+        "apertureHeightDeltaPx": null
+      }
+    },
+    {
+      "id": "stby-quantity",
+      "panel": "OH07",
+      "scope": "OVERHEAD",
+      "asset": "LOW_QUANTITY",
+      "currentSourceRect": [
+        630,
+        100,
+        159,
+        62
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        5.5,
+        -3
+      ],
+      "darkGlassComponentMethod": "NEEDS_MANUAL_REVIEW",
+      "darkGlassDelta": [
+        -2,
+        4
+      ],
+      "status": "PHOTO_ENLARGED_REVIEWED_PIXEL_PRECISION_OPEN",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "SCANLINE_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "PHOTO_INDEPENDENT_FOUR_EDGE_SCANLINE",
+      "scanlineEvidence": {
+        "status": "SCANLINE_CENTRE_CANDIDATE",
+        "centreDeviationSourcePx": [
+          -2,
+          1
+        ],
+        "detectedSides": {
+          "left": {
+            "pos": 630.5,
+            "strength": 25.2,
+            "count": 6
+          },
+          "right": {
+            "pos": 784.5,
+            "strength": 49.1,
+            "count": 8
+          },
+          "top": {
+            "pos": 99.5,
+            "strength": 30,
+            "count": 5
+          },
+          "bottom": {
+            "pos": 164.5,
+            "strength": 45.4,
+            "count": 7
+          }
+        },
+        "apertureWidthDeltaPx": -5,
+        "apertureHeightDeltaPx": 3
+      }
+    },
+    {
+      "id": "stby-pressure",
+      "panel": "OH07",
+      "scope": "OVERHEAD",
+      "asset": "LOW_PRESSURE",
+      "currentSourceRect": [
+        630,
+        171,
+        159,
+        62
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        5.5,
+        -3
+      ],
+      "darkGlassComponentMethod": "NEEDS_MANUAL_REVIEW",
+      "darkGlassDelta": [
+        -1.5,
+        0
+      ],
+      "status": "PHOTO_ENLARGED_REVIEWED_PIXEL_PRECISION_OPEN",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "SCANLINE_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "PHOTO_INDEPENDENT_FOUR_EDGE_SCANLINE",
+      "scanlineEvidence": {
+        "status": "SCANLINE_CENTRE_CANDIDATE",
+        "centreDeviationSourcePx": [
+          -1.5,
+          1
+        ],
+        "detectedSides": {
+          "left": {
+            "pos": 630.5,
+            "strength": 25.4,
+            "count": 7
+          },
+          "right": {
+            "pos": 785.5,
+            "strength": 28.1,
+            "count": 8
+          },
+          "top": {
+            "pos": 170.5,
+            "strength": 62,
+            "count": 4
+          },
+          "bottom": {
+            "pos": 235.5,
+            "strength": 39.8,
+            "count": 6
+          }
+        },
+        "apertureWidthDeltaPx": -4,
+        "apertureHeightDeltaPx": 3
+      }
+    },
+    {
+      "id": "stby-rudder",
+      "panel": "OH07",
+      "scope": "OVERHEAD",
+      "asset": "STBY_RUD_ON_LAMP",
+      "currentSourceRect": [
+        630,
+        240,
+        159,
+        62
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        5.5,
+        -0.5
+      ],
+      "darkGlassComponentMethod": "NEEDS_MANUAL_REVIEW",
+      "darkGlassDelta": [
+        -1,
+        -4
+      ],
+      "status": "PHOTO_ENLARGED_REVIEWED_PIXEL_PRECISION_OPEN",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "SCANLINE_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "PHOTO_INDEPENDENT_FOUR_EDGE_SCANLINE",
+      "scanlineEvidence": {
+        "status": "SCANLINE_CENTRE_CANDIDATE",
+        "centreDeviationSourcePx": [
+          -2,
+          -0.5
+        ],
+        "detectedSides": {
+          "left": {
+            "pos": 630.5,
+            "strength": 24.5,
+            "count": 7
+          },
+          "right": {
+            "pos": 784.5,
+            "strength": 46.7,
+            "count": 7
+          },
+          "top": {
+            "pos": 240.5,
+            "strength": 55.8,
+            "count": 5
+          },
+          "bottom": {
+            "pos": 300.5,
+            "strength": 42,
+            "count": 4
+          }
+        },
+        "apertureWidthDeltaPx": -5,
+        "apertureHeightDeltaPx": -2
+      }
+    },
+    {
+      "id": "flight-pressure-a",
+      "panel": "OH07",
+      "scope": "OVERHEAD",
+      "asset": "LOW_PRESSURE",
+      "currentSourceRect": [
+        128,
+        404,
+        151,
+        63
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        -0.5,
+        4
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        0,
+        -0.5
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "flight-pressure-b",
+      "panel": "OH07",
+      "scope": "OVERHEAD",
+      "asset": "LOW_PRESSURE",
+      "currentSourceRect": [
+        295,
+        404,
+        151,
+        63
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        -2.5,
+        3.5
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        -0.5,
+        -0.5
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "feel-diff",
+      "panel": "OH07",
+      "scope": "OVERHEAD",
+      "asset": "FEEL_DIFF_PRESS",
+      "currentSourceRect": [
+        631,
+        758,
+        161,
+        64
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        6,
+        -6
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        0,
+        -1.5
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "speed-trim",
+      "panel": "OH07",
+      "scope": "OVERHEAD",
+      "asset": "SPEED_TRIM_FAIL",
+      "currentSourceRect": [
+        631,
+        842,
+        161,
+        64
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        6,
+        -5.5
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        0,
+        0
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "mach-trim",
+      "panel": "OH07",
+      "scope": "OVERHEAD",
+      "asset": "MACH_TRIM_FAIL",
+      "currentSourceRect": [
+        631,
+        927,
+        161,
+        64
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        5.5,
+        -6
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        0,
+        -1
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "auto-slat",
+      "panel": "OH07",
+      "scope": "OVERHEAD",
+      "asset": "AUTO_SLAT_FAIL",
+      "currentSourceRect": [
+        631,
+        1011,
+        161,
+        64
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        5.5,
+        -6
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        0,
+        -0.5
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "yaw-damper",
+      "panel": "OH07",
+      "scope": "OVERHEAD",
+      "asset": "YAW_DAMPER",
+      "currentSourceRect": [
+        195,
+        994,
+        199,
+        64
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        6.5,
+        -1
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        0,
+        -0.5
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": true,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "filter-1",
+      "panel": "OH09",
+      "scope": "OVERHEAD",
+      "asset": "FILTER_BYPASS",
+      "currentSourceRect": [
+        128,
+        414,
+        177,
+        72
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        7.5,
+        -3
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        0.5,
+        -1.5
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "filter-2",
+      "panel": "OH09",
+      "scope": "OVERHEAD",
+      "asset": "FILTER_BYPASS",
+      "currentSourceRect": [
+        704,
+        414,
+        177,
+        72
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        -1,
+        -3
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        -0.5,
+        -1.5
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "fuel-center-l",
+      "panel": "OH09",
+      "scope": "OVERHEAD",
+      "asset": "LOW_PRESSURE",
+      "currentSourceRect": [
+        332,
+        726,
+        166,
+        75
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        -11.5,
+        -2
+      ],
+      "darkGlassComponentMethod": "NEEDS_MANUAL_REVIEW",
+      "darkGlassDelta": [
+        13.5,
+        -1.5
+      ],
+      "status": "PHOTO_ENLARGED_REVIEWED_PIXEL_PRECISION_OPEN",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "SCANLINE_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "PHOTO_INDEPENDENT_FOUR_EDGE_SCANLINE",
+      "scanlineEvidence": {
+        "status": "SCANLINE_CENTRE_CANDIDATE",
+        "centreDeviationSourcePx": [
+          0.5,
+          -1
+        ],
+        "detectedSides": {
+          "left": {
+            "pos": 331.5,
+            "strength": 22.8,
+            "count": 8
+          },
+          "right": {
+            "pos": 499.5,
+            "strength": 39.6,
+            "count": 7
+          },
+          "top": {
+            "pos": 725.5,
+            "strength": 37,
+            "count": 5
+          },
+          "bottom": {
+            "pos": 799.5,
+            "strength": 41.4,
+            "count": 5
+          }
+        },
+        "apertureWidthDeltaPx": 2,
+        "apertureHeightDeltaPx": -1
+      }
+    },
+    {
+      "id": "fuel-center-r",
+      "panel": "OH09",
+      "scope": "OVERHEAD",
+      "asset": "LOW_PRESSURE",
+      "currentSourceRect": [
+        520,
+        726,
+        166,
+        75
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        -4.5,
+        -2
+      ],
+      "darkGlassComponentMethod": "NEEDS_MANUAL_REVIEW",
+      "darkGlassDelta": [
+        -18.5,
+        -3
+      ],
+      "status": "PHOTO_ENLARGED_REVIEWED_PIXEL_PRECISION_OPEN",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "SCANLINE_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "PHOTO_INDEPENDENT_FOUR_EDGE_SCANLINE",
+      "scanlineEvidence": {
+        "status": "SCANLINE_CENTRE_CANDIDATE",
+        "centreDeviationSourcePx": [
+          0,
+          -1
+        ],
+        "detectedSides": {
+          "left": {
+            "pos": 519.5,
+            "strength": 47.2,
+            "count": 8
+          },
+          "right": {
+            "pos": 686.5,
+            "strength": 92.2,
+            "count": 7
+          },
+          "top": {
+            "pos": 725.5,
+            "strength": 36.9,
+            "count": 5
+          },
+          "bottom": {
+            "pos": 799.5,
+            "strength": 43.7,
+            "count": 5
+          }
+        },
+        "apertureWidthDeltaPx": 1,
+        "apertureHeightDeltaPx": -1
+      }
+    },
+    {
+      "id": "fuel-1-aft",
+      "panel": "OH09",
+      "scope": "OVERHEAD",
+      "asset": "LOW_PRESSURE",
+      "currentSourceRect": [
+        94,
+        1058,
+        166,
+        75
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        -10,
+        -7.5
+      ],
+      "darkGlassComponentMethod": "NEEDS_MANUAL_REVIEW",
+      "darkGlassDelta": [
+        14,
+        -1.5
+      ],
+      "status": "PHOTO_ENLARGED_REVIEWED_PIXEL_PRECISION_OPEN",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "PHOTO_ENLARGED_REVIEWED_PIXEL_PRECISION_OPEN",
+      "verificationMethod": "NOT_CERTIFIED",
+      "scanlineEvidence": {
+        "status": "SCANLINE_REVIEW",
+        "centreDeviationSourcePx": [
+          3.5,
+          -1.5
+        ],
+        "detectedSides": {
+          "left": {
+            "pos": 97.5,
+            "strength": 45.4,
+            "count": 6
+          },
+          "right": {
+            "pos": 263.5,
+            "strength": 48.8,
+            "count": 8
+          },
+          "top": {
+            "pos": 1058.5,
+            "strength": 24.7,
+            "count": 7
+          },
+          "bottom": {
+            "pos": 1129.5,
+            "strength": 66.2,
+            "count": 6
+          }
+        },
+        "apertureWidthDeltaPx": 0,
+        "apertureHeightDeltaPx": -4
+      }
+    },
+    {
+      "id": "fuel-1-fwd",
+      "panel": "OH09",
+      "scope": "OVERHEAD",
+      "asset": "LOW_PRESSURE",
+      "currentSourceRect": [
+        282,
+        1058,
+        166,
+        75
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        2.5,
+        -7.5
+      ],
+      "darkGlassComponentMethod": "NEEDS_MANUAL_REVIEW",
+      "darkGlassDelta": [
+        -18,
+        -2
+      ],
+      "status": "PHOTO_ENLARGED_REVIEWED_PIXEL_PRECISION_OPEN",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "SCANLINE_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "PHOTO_INDEPENDENT_FOUR_EDGE_SCANLINE",
+      "scanlineEvidence": {
+        "status": "SCANLINE_CENTRE_CANDIDATE",
+        "centreDeviationSourcePx": [
+          1.5,
+          -1.5
+        ],
+        "detectedSides": {
+          "left": {
+            "pos": 282.5,
+            "strength": 23.6,
+            "count": 9
+          },
+          "right": {
+            "pos": 450.5,
+            "strength": 102.6,
+            "count": 7
+          },
+          "top": {
+            "pos": 1058.5,
+            "strength": 30.1,
+            "count": 6
+          },
+          "bottom": {
+            "pos": 1129.5,
+            "strength": 60.3,
+            "count": 6
+          }
+        },
+        "apertureWidthDeltaPx": 2,
+        "apertureHeightDeltaPx": -4
+      }
+    },
+    {
+      "id": "fuel-2-fwd",
+      "panel": "OH09",
+      "scope": "OVERHEAD",
+      "asset": "LOW_PRESSURE",
+      "currentSourceRect": [
+        570,
+        1058,
+        166,
+        75
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        -13.5,
+        -7.5
+      ],
+      "darkGlassComponentMethod": "NEEDS_MANUAL_REVIEW",
+      "darkGlassDelta": [
+        12.5,
+        -1
+      ],
+      "status": "PHOTO_ENLARGED_REVIEWED_PIXEL_PRECISION_OPEN",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "SCANLINE_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "PHOTO_INDEPENDENT_FOUR_EDGE_SCANLINE",
+      "scanlineEvidence": {
+        "status": "SCANLINE_CENTRE_CANDIDATE",
+        "centreDeviationSourcePx": [
+          0.5,
+          -1.5
+        ],
+        "detectedSides": {
+          "left": {
+            "pos": 570.5,
+            "strength": 49.8,
+            "count": 5
+          },
+          "right": {
+            "pos": 736.5,
+            "strength": 63.2,
+            "count": 7
+          },
+          "top": {
+            "pos": 1058.5,
+            "strength": 28.7,
+            "count": 6
+          },
+          "bottom": {
+            "pos": 1129.5,
+            "strength": 63.4,
+            "count": 5
+          }
+        },
+        "apertureWidthDeltaPx": 0,
+        "apertureHeightDeltaPx": -4
+      }
+    },
+    {
+      "id": "fuel-2-aft",
+      "panel": "OH09",
+      "scope": "OVERHEAD",
+      "asset": "LOW_PRESSURE",
+      "currentSourceRect": [
+        758,
+        1058,
+        166,
+        75
+      ],
+      "photoRimMethod": "AUTO_CENTRE_MATCH",
+      "photoRimDelta": [
+        1.5,
+        -1
+      ],
+      "darkGlassComponentMethod": "NEEDS_MANUAL_REVIEW",
+      "darkGlassDelta": [
+        -17.5,
+        -1
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "drive-1-drive-pressure",
+      "panel": "OH11",
+      "scope": "OVERHEAD",
+      "asset": "LOW_OIL_PRESSURE",
+      "currentSourceRect": [
+        150,
+        79,
+        199,
+        77
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        -5,
+        0
+      ],
+      "darkGlassComponentMethod": "NEEDS_MANUAL_REVIEW",
+      "darkGlassDelta": [
+        -2.5,
+        3
+      ],
+      "status": "PHOTO_ENLARGED_REVIEWED_PIXEL_PRECISION_OPEN",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "SCANLINE_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "PHOTO_INDEPENDENT_FOUR_EDGE_SCANLINE",
+      "scanlineEvidence": {
+        "status": "SCANLINE_CENTRE_CANDIDATE",
+        "centreDeviationSourcePx": [
+          -1.5,
+          0
+        ],
+        "detectedSides": {
+          "left": {
+            "pos": 150.5,
+            "strength": 41.8,
+            "count": 7
+          },
+          "right": {
+            "pos": 345.5,
+            "strength": 42.6,
+            "count": 8
+          },
+          "top": {
+            "pos": 79.5,
+            "strength": 39.8,
+            "count": 6
+          },
+          "bottom": {
+            "pos": 155.5,
+            "strength": 42.6,
+            "count": 4
+          }
+        },
+        "apertureWidthDeltaPx": -4,
+        "apertureHeightDeltaPx": -1
+      }
+    },
+    {
+      "id": "drive-1-drive-temperature",
+      "panel": "OH11",
+      "scope": "OVERHEAD",
+      "asset": "HIGH_OIL_TEMP",
+      "currentSourceRect": [
+        150,
+        182,
+        199,
+        77
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        -5,
+        -4
+      ],
+      "darkGlassComponentMethod": "NEEDS_MANUAL_REVIEW",
+      "darkGlassDelta": [
+        -2.5,
+        -3
+      ],
+      "status": "PHOTO_ENLARGED_REVIEWED_PIXEL_PRECISION_OPEN",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "SCANLINE_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "PHOTO_INDEPENDENT_FOUR_EDGE_SCANLINE",
+      "scanlineEvidence": {
+        "status": "SCANLINE_CENTRE_CANDIDATE",
+        "centreDeviationSourcePx": [
+          -1.5,
+          -1
+        ],
+        "detectedSides": {
+          "left": {
+            "pos": 150.5,
+            "strength": 39.4,
+            "count": 7
+          },
+          "right": {
+            "pos": 345.5,
+            "strength": 38.6,
+            "count": 8
+          },
+          "top": {
+            "pos": 182.5,
+            "strength": 29.6,
+            "count": 7
+          },
+          "bottom": {
+            "pos": 256.5,
+            "strength": 52.6,
+            "count": 3
+          }
+        },
+        "apertureWidthDeltaPx": -4,
+        "apertureHeightDeltaPx": -3
+      }
+    },
+    {
+      "id": "drive-2-drive-pressure",
+      "panel": "OH11",
+      "scope": "OVERHEAD",
+      "asset": "LOW_OIL_PRESSURE",
+      "currentSourceRect": [
+        853,
+        79,
+        199,
+        77
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        10.5,
+        -2.5
+      ],
+      "darkGlassComponentMethod": "NEEDS_MANUAL_REVIEW",
+      "darkGlassDelta": [
+        1,
+        2.5
+      ],
+      "status": "PHOTO_ENLARGED_REVIEWED_PIXEL_PRECISION_OPEN",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "SCANLINE_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "PHOTO_INDEPENDENT_FOUR_EDGE_SCANLINE",
+      "scanlineEvidence": {
+        "status": "SCANLINE_CENTRE_CANDIDATE",
+        "centreDeviationSourcePx": [
+          0,
+          0
+        ],
+        "detectedSides": {
+          "left": {
+            "pos": 853.5,
+            "strength": 44.2,
+            "count": 6
+          },
+          "right": {
+            "pos": 1051.5,
+            "strength": 63.2,
+            "count": 4
+          },
+          "top": {
+            "pos": 79.5,
+            "strength": 21.4,
+            "count": 6
+          },
+          "bottom": {
+            "pos": 155.5,
+            "strength": 70.6,
+            "count": 4
+          }
+        },
+        "apertureWidthDeltaPx": -1,
+        "apertureHeightDeltaPx": -1
+      }
+    },
+    {
+      "id": "drive-2-drive-temperature",
+      "panel": "OH11",
+      "scope": "OVERHEAD",
+      "asset": "HIGH_OIL_TEMP",
+      "currentSourceRect": [
+        853,
+        182,
+        199,
+        77
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        10.5,
+        -4
+      ],
+      "darkGlassComponentMethod": "NEEDS_MANUAL_REVIEW",
+      "darkGlassDelta": [
+        1,
+        -3
+      ],
+      "status": "PHOTO_ENLARGED_REVIEWED_PIXEL_PRECISION_OPEN",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "SCANLINE_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "PHOTO_INDEPENDENT_FOUR_EDGE_SCANLINE",
+      "scanlineEvidence": {
+        "status": "SCANLINE_CENTRE_CANDIDATE",
+        "centreDeviationSourcePx": [
+          0,
+          -1
+        ],
+        "detectedSides": {
+          "left": {
+            "pos": 853.5,
+            "strength": 50.2,
+            "count": 6
+          },
+          "right": {
+            "pos": 1051.5,
+            "strength": 64,
+            "count": 4
+          },
+          "top": {
+            "pos": 181.5,
+            "strength": 31.6,
+            "count": 8
+          },
+          "bottom": {
+            "pos": 257.5,
+            "strength": 23.2,
+            "count": 4
+          }
+        },
+        "apertureWidthDeltaPx": -1,
+        "apertureHeightDeltaPx": -1
+      }
+    },
+    {
+      "id": "standby-power-off",
+      "panel": "OH11",
+      "scope": "OVERHEAD",
+      "asset": "STANDBY_PWR_OFF_LAMP",
+      "currentSourceRect": [
+        499,
+        80,
+        202,
+        78
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        8.5,
+        -3.5
+      ],
+      "darkGlassComponentMethod": "NEEDS_MANUAL_REVIEW",
+      "darkGlassDelta": [
+        -1,
+        -2
+      ],
+      "status": "PHOTO_ENLARGED_REVIEWED_PIXEL_PRECISION_OPEN",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "SCANLINE_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "PHOTO_INDEPENDENT_FOUR_EDGE_SCANLINE",
+      "scanlineEvidence": {
+        "status": "SCANLINE_CENTRE_CANDIDATE",
+        "centreDeviationSourcePx": [
+          0,
+          0
+        ],
+        "detectedSides": {
+          "left": {
+            "pos": 499.5,
+            "strength": 43,
+            "count": 6
+          },
+          "right": {
+            "pos": 700.5,
+            "strength": 33.3,
+            "count": 5
+          },
+          "top": {
+            "pos": 80.5,
+            "strength": 26.8,
+            "count": 7
+          },
+          "bottom": {
+            "pos": 157.5,
+            "strength": 39,
+            "count": 4
+          }
+        },
+        "apertureWidthDeltaPx": -1,
+        "apertureHeightDeltaPx": -1
+      }
+    },
+    {
+      "id": "transferBusOff1",
+      "panel": "OH12",
+      "scope": "OVERHEAD",
+      "asset": "TRANSFER_BUS_OFF_LAMP",
+      "currentSourceRect": [
+        90,
+        505,
+        169,
+        70
+      ],
+      "photoRimMethod": "AUTO_CENTRE_MATCH",
+      "photoRimDelta": [
+        -2.5,
+        -1
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        -1.5,
+        -0.5
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "busOff1",
+      "panel": "OH12",
+      "scope": "OVERHEAD",
+      "asset": "BUS_OFF_LAMP",
+      "currentSourceRect": [
+        90,
+        595,
+        169,
+        70
+      ],
+      "photoRimMethod": "AUTO_CENTRE_MATCH",
+      "photoRimDelta": [
+        -2.5,
+        -1
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        -1.5,
+        -0.5
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "transferBusOff2",
+      "panel": "OH12",
+      "scope": "OVERHEAD",
+      "asset": "TRANSFER_BUS_OFF_LAMP",
+      "currentSourceRect": [
+        759,
+        505,
+        169,
+        70
+      ],
+      "photoRimMethod": "AUTO_CENTRE_MATCH",
+      "photoRimDelta": [
+        0.5,
+        -1
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        0,
+        -0.5
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "busOff2",
+      "panel": "OH12",
+      "scope": "OVERHEAD",
+      "asset": "BUS_OFF_LAMP",
+      "currentSourceRect": [
+        759,
+        595,
+        169,
+        70
+      ],
+      "photoRimMethod": "AUTO_CENTRE_MATCH",
+      "photoRimDelta": [
+        0.5,
+        -1
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        0,
+        -0.5
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "apu-low-pressure",
+      "panel": "OH12",
+      "scope": "OVERHEAD",
+      "asset": "LOW_PRESSURE",
+      "currentSourceRect": [
+        337,
+        1054,
+        161,
+        63
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        -0.5,
+        -1
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        0,
+        -0.5
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "apu-high-oil-temp",
+      "panel": "OH12",
+      "scope": "OVERHEAD",
+      "asset": "HIGH_OIL_TEMP",
+      "currentSourceRect": [
+        521,
+        1054,
+        161,
+        63
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        9,
+        -1
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        1,
+        -0.5
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "apu-overspeed",
+      "panel": "OH12",
+      "scope": "OVERHEAD",
+      "asset": "OVER_SPEED",
+      "currentSourceRect": [
+        707,
+        1054,
+        161,
+        63
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        -3.5,
+        -1
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        -3,
+        -0.5
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "equip-supply-off",
+      "panel": "OH13",
+      "scope": "OVERHEAD",
+      "asset": "OFF_LAMP",
+      "currentSourceRect": [
+        192,
+        2032,
+        159,
+        83
+      ],
+      "photoRimMethod": "AUTO_CENTRE_MATCH",
+      "photoRimDelta": [
+        -0.5,
+        -2.5
+      ],
+      "darkGlassComponentMethod": "NEEDS_MANUAL_REVIEW",
+      "darkGlassDelta": [
+        10,
+        1
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "equip-exhaust-off",
+      "panel": "OH13",
+      "scope": "OVERHEAD",
+      "asset": "OFF_LAMP",
+      "currentSourceRect": [
+        374,
+        2032,
+        159,
+        83
+      ],
+      "photoRimMethod": "AUTO_CENTRE_MATCH",
+      "photoRimDelta": [
+        0,
+        -0.5
+      ],
+      "darkGlassComponentMethod": "NEEDS_MANUAL_REVIEW",
+      "darkGlassDelta": [
+        -9.5,
+        1
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "emergency-not-armed",
+      "panel": "OH14",
+      "scope": "OVERHEAD",
+      "asset": "NOT_ARMED_VERTICAL",
+      "currentSourceRect": [
+        138,
+        507,
+        183,
+        317
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        -2.5,
+        8.5
+      ],
+      "darkGlassComponentMethod": "NEEDS_MANUAL_REVIEW",
+      "darkGlassDelta": [
+        -1.5,
+        -3.5
+      ],
+      "status": "PHOTO_ENLARGED_REVIEWED_PIXEL_PRECISION_OPEN",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "SCANLINE_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "PHOTO_INDEPENDENT_FOUR_EDGE_SCANLINE",
+      "scanlineEvidence": {
+        "status": "SCANLINE_CENTRE_CANDIDATE",
+        "centreDeviationSourcePx": [
+          0,
+          -0.5
+        ],
+        "detectedSides": {
+          "left": {
+            "pos": 138.5,
+            "strength": 56.8,
+            "count": 4
+          },
+          "right": {
+            "pos": 320.5,
+            "strength": 21.2,
+            "count": 9
+          },
+          "top": {
+            "pos": 506.5,
+            "strength": 55.4,
+            "count": 6
+          },
+          "bottom": {
+            "pos": 823.5,
+            "strength": 26.6,
+            "count": 4
+          }
+        },
+        "apertureWidthDeltaPx": -1,
+        "apertureHeightDeltaPx": 0
+      }
+    },
+    {
+      "id": "window-l-side-overheat",
+      "panel": "OH15",
+      "scope": "OVERHEAD",
+      "asset": "OVERHEAT",
+      "currentSourceRect": [
+        190,
+        20,
+        210,
+        77
+      ],
+      "photoRimMethod": "AUTO_CENTRE_MATCH",
+      "photoRimDelta": [
+        2,
+        0.5
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        2.5,
+        0.5
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "window-l-fwd-overheat",
+      "panel": "OH15",
+      "scope": "OVERHEAD",
+      "asset": "OVERHEAT",
+      "currentSourceRect": [
+        426,
+        20,
+        210,
+        77
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        -10.5,
+        -0.5
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        -1,
+        0.5
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "window-r-fwd-overheat",
+      "panel": "OH15",
+      "scope": "OVERHEAD",
+      "asset": "OVERHEAT",
+      "currentSourceRect": [
+        651,
+        20,
+        210,
+        77
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        -7,
+        -0.5
+      ],
+      "darkGlassComponentMethod": "NEEDS_MANUAL_REVIEW",
+      "darkGlassDelta": [
+        3.5,
+        0
+      ],
+      "status": "PHOTO_ENLARGED_REVIEWED_PIXEL_PRECISION_OPEN",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "SCANLINE_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "PHOTO_INDEPENDENT_FOUR_EDGE_SCANLINE",
+      "scanlineEvidence": {
+        "status": "SCANLINE_CENTRE_CANDIDATE",
+        "centreDeviationSourcePx": [
+          1.5,
+          0
+        ],
+        "detectedSides": {
+          "left": {
+            "pos": 653.5,
+            "strength": 29.6,
+            "count": 14
+          },
+          "right": {
+            "pos": 861.5,
+            "strength": 92.8,
+            "count": 5
+          },
+          "top": {
+            "pos": 19.5,
+            "strength": 80.1,
+            "count": 4
+          },
+          "bottom": {
+            "pos": 97.5,
+            "strength": 77.2,
+            "count": 5
+          }
+        },
+        "apertureWidthDeltaPx": -2,
+        "apertureHeightDeltaPx": 1
+      }
+    },
+    {
+      "id": "window-r-side-overheat",
+      "panel": "OH15",
+      "scope": "OVERHEAD",
+      "asset": "OVERHEAT",
+      "currentSourceRect": [
+        885,
+        20,
+        210,
+        77
+      ],
+      "photoRimMethod": "AUTO_CENTRE_MATCH",
+      "photoRimDelta": [
+        0.5,
+        -0.5
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        0.5,
+        0
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "probe-capt-ps",
+      "panel": "OH15",
+      "scope": "OVERHEAD",
+      "asset": "CAPT_PS_1_AUX_STATIC",
+      "currentSourceRect": [
+        138,
+        565,
+        255,
+        80
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        8,
+        -0.5
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        0,
+        0
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": true,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "probe-fo-static",
+      "panel": "OH15",
+      "scope": "OVERHEAD",
+      "asset": "FO_STATIC_2_AUX_PS",
+      "currentSourceRect": [
+        138,
+        664,
+        255,
+        86
+      ],
+      "photoRimMethod": "AUTO_CENTRE_MATCH",
+      "photoRimDelta": [
+        0,
+        -1.5
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        0,
+        0
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "probe-l-elev",
+      "panel": "OH15",
+      "scope": "OVERHEAD",
+      "asset": "L_ELEV_PITOT",
+      "currentSourceRect": [
+        138,
+        770,
+        255,
+        84
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        8.5,
+        -0.5
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        0,
+        0
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": true,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "probe-l-alpha",
+      "panel": "OH15",
+      "scope": "OVERHEAD",
+      "asset": "L_ALPHA_VANE",
+      "currentSourceRect": [
+        138,
+        875,
+        255,
+        82
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        8.5,
+        -0.5
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        0,
+        -0.5
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": true,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "hyd-eng-1",
+      "panel": "OH17",
+      "scope": "OVERHEAD",
+      "asset": "LOW_PRESSURE",
+      "currentSourceRect": [
+        194,
+        335,
+        269,
+        118
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        11.5,
+        -2.5
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        -1,
+        0
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "hyd-elec-2",
+      "panel": "OH17",
+      "scope": "OVERHEAD",
+      "asset": "LOW_PRESSURE",
+      "currentSourceRect": [
+        495,
+        335,
+        269,
+        118
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        -12.5,
+        -2.5
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        1,
+        0
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "hyd-elec-1",
+      "panel": "OH17",
+      "scope": "OVERHEAD",
+      "asset": "LOW_PRESSURE",
+      "currentSourceRect": [
+        908,
+        335,
+        269,
+        118
+      ],
+      "photoRimMethod": "AUTO_CENTRE_MATCH",
+      "photoRimDelta": [
+        0.5,
+        -2.5
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        1,
+        0
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "hyd-eng-2",
+      "panel": "OH17",
+      "scope": "OVERHEAD",
+      "asset": "LOW_PRESSURE",
+      "currentSourceRect": [
+        1213,
+        335,
+        269,
+        118
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        -14,
+        -2
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        0,
+        -0.5
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "hyd-elec-2-overheat",
+      "panel": "OH17",
+      "scope": "OVERHEAD",
+      "asset": "OVERHEAT",
+      "currentSourceRect": [
+        495,
+        188,
+        271,
+        118
+      ],
+      "photoRimMethod": "AUTO_CENTRE_MATCH",
+      "photoRimDelta": [
+        -0.5,
+        -2.5
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        0,
+        -0.5
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "hyd-elec-1-overheat",
+      "panel": "OH17",
+      "scope": "OVERHEAD",
+      "asset": "OVERHEAT",
+      "currentSourceRect": [
+        908,
+        188,
+        271,
+        118
+      ],
+      "photoRimMethod": "AUTO_CENTRE_MATCH",
+      "photoRimDelta": [
+        -0.5,
+        -2.5
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        0.5,
+        0
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "probe-temp",
+      "panel": "OH15",
+      "scope": "OVERHEAD",
+      "asset": "TEMP_PROBE",
+      "currentSourceRect": [
+        138,
+        978,
+        255,
+        83
+      ],
+      "photoRimMethod": "AUTO_CENTRE_MATCH",
+      "photoRimDelta": [
+        0,
+        0
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        0,
+        0.5
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": true,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "probe-fo-ps",
+      "panel": "OH15",
+      "scope": "OVERHEAD",
+      "asset": "FO_PS_2_AUX_STATIC",
+      "currentSourceRect": [
+        891,
+        565,
+        255,
+        80
+      ],
+      "photoRimMethod": "AUTO_CENTRE_MATCH",
+      "photoRimDelta": [
+        0,
+        -1
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        0.5,
+        -1
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": true,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "probe-capt-static",
+      "panel": "OH15",
+      "scope": "OVERHEAD",
+      "asset": "CAPT_STATIC_1_AUX_PS",
+      "currentSourceRect": [
+        891,
+        664,
+        255,
+        86
+      ],
+      "photoRimMethod": "AUTO_CENTRE_MATCH",
+      "photoRimDelta": [
+        0,
+        -2.5
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        0.5,
+        -1
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "probe-r-elev",
+      "panel": "OH15",
+      "scope": "OVERHEAD",
+      "asset": "R_ELEV_PITOT",
+      "currentSourceRect": [
+        891,
+        769,
+        255,
+        85
+      ],
+      "photoRimMethod": "AUTO_CENTRE_MATCH",
+      "photoRimDelta": [
+        0,
+        -2
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        0.5,
+        0
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": true,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "probe-r-alpha",
+      "panel": "OH15",
+      "scope": "OVERHEAD",
+      "asset": "R_ALPHA_VANE",
+      "currentSourceRect": [
+        891,
+        874,
+        255,
+        82
+      ],
+      "photoRimMethod": "AUTO_CENTRE_MATCH",
+      "photoRimDelta": [
+        0,
+        -0.5
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        0.5,
+        -0.5
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": true,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "cowl-anti-ice-1",
+      "panel": "OH16",
+      "scope": "OVERHEAD",
+      "asset": "COWL_ANTI_ICE",
+      "currentSourceRect": [
+        873,
+        167,
+        259,
+        106
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        8.5,
+        0
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        0.5,
+        0.5
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        5,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "cowl-anti-ice-2",
+      "panel": "OH16",
+      "scope": "OVERHEAD",
+      "asset": "COWL_ANTI_ICE",
+      "currentSourceRect": [
+        1168,
+        167,
+        259,
+        106
+      ],
+      "photoRimMethod": "AUTO_CENTRE_MATCH",
+      "photoRimDelta": [
+        -3,
+        0
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        0,
+        0
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "door-fwd-entry",
+      "panel": "OH19-VOICE",
+      "scope": "OVERHEAD",
+      "asset": "FWD_ENTRY",
+      "currentSourceRect": [
+        229,
+        120,
+        263,
+        115
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        -0.5,
+        -5
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        0.5,
+        -1.5
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        4,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "door-aft-entry",
+      "panel": "OH19-VOICE",
+      "scope": "OVERHEAD",
+      "asset": "AFT_ENTRY",
+      "currentSourceRect": [
+        229,
+        258,
+        263,
+        115
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        -0.5,
+        -7.5
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        0,
+        0.5
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        4,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "door-air-stair",
+      "panel": "OH19-VOICE",
+      "scope": "OVERHEAD",
+      "asset": "AIR_STAIR",
+      "currentSourceRect": [
+        524,
+        120,
+        263,
+        115
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        0,
+        0
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        0,
+        1
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        5,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "door-equip",
+      "panel": "OH19-VOICE",
+      "scope": "OVERHEAD",
+      "asset": "EQUIP",
+      "currentSourceRect": [
+        524,
+        258,
+        263,
+        115
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        0,
+        -5
+      ],
+      "darkGlassComponentMethod": "NEEDS_MANUAL_REVIEW",
+      "darkGlassDelta": [
+        0,
+        -9.5
+      ],
+      "status": "PHOTO_ENLARGED_REVIEWED_PIXEL_PRECISION_OPEN",
+      "appliedDisplacement": [
+        5,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "SCANLINE_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "PHOTO_INDEPENDENT_FOUR_EDGE_SCANLINE",
+      "scanlineEvidence": {
+        "status": "SCANLINE_CENTRE_CANDIDATE",
+        "centreDeviationSourcePx": [
+          0,
+          0
+        ],
+        "detectedSides": {
+          "left": {
+            "pos": 527.5,
+            "strength": 46.6,
+            "count": 4
+          },
+          "right": {
+            "pos": 783.5,
+            "strength": 35.4,
+            "count": 4
+          },
+          "top": {
+            "pos": 258.5,
+            "strength": 51.8,
+            "count": 7
+          },
+          "bottom": {
+            "pos": 372.5,
+            "strength": 58.8,
+            "count": 8
+          }
+        },
+        "apertureWidthDeltaPx": -7,
+        "apertureHeightDeltaPx": -1
+      }
+    },
+    {
+      "id": "door-fwd-cargo",
+      "panel": "OH19-VOICE",
+      "scope": "OVERHEAD",
+      "asset": "FWD_CARGO",
+      "currentSourceRect": [
+        818,
+        120,
+        263,
+        115
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        0,
+        -6.5
+      ],
+      "darkGlassComponentMethod": "NEEDS_MANUAL_REVIEW",
+      "darkGlassDelta": [
+        0,
+        10
+      ],
+      "status": "PHOTO_ENLARGED_REVIEWED_PIXEL_PRECISION_OPEN",
+      "appliedDisplacement": [
+        5,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "SCANLINE_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "PHOTO_INDEPENDENT_FOUR_EDGE_SCANLINE",
+      "scanlineEvidence": {
+        "status": "SCANLINE_CENTRE_CANDIDATE",
+        "centreDeviationSourcePx": [
+          0,
+          0
+        ],
+        "detectedSides": {
+          "left": {
+            "pos": 821.5,
+            "strength": 47.2,
+            "count": 4
+          },
+          "right": {
+            "pos": 1077.5,
+            "strength": 41,
+            "count": 4
+          },
+          "top": {
+            "pos": 120.5,
+            "strength": 37.8,
+            "count": 7
+          },
+          "bottom": {
+            "pos": 234.5,
+            "strength": 72.6,
+            "count": 6
+          }
+        },
+        "apertureWidthDeltaPx": -7,
+        "apertureHeightDeltaPx": -1
+      }
+    },
+    {
+      "id": "door-aft-cargo",
+      "panel": "OH19-VOICE",
+      "scope": "OVERHEAD",
+      "asset": "AFT_CARGO",
+      "currentSourceRect": [
+        818,
+        258,
+        263,
+        115
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        0,
+        -5
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        0,
+        0.5
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        5,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "door-fwd-service",
+      "panel": "OH19-VOICE",
+      "scope": "OVERHEAD",
+      "asset": "FWD_SERVICE",
+      "currentSourceRect": [
+        1112,
+        120,
+        263,
+        115
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        -0.5,
+        5.5
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        0,
+        1
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        5,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "door-aft-service",
+      "panel": "OH19-VOICE",
+      "scope": "OVERHEAD",
+      "asset": "AFT_SERVICE",
+      "currentSourceRect": [
+        1112,
+        258,
+        263,
+        115
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        -0.5,
+        -5
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        0,
+        -0.5
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        5,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "duct-overheat-l",
+      "panel": "OH20",
+      "scope": "OVERHEAD",
+      "asset": "DUCT_OVERHEAT",
+      "currentSourceRect": [
+        108,
+        620,
+        213,
+        97
+      ],
+      "photoRimMethod": "AUTO_CENTRE_MATCH",
+      "photoRimDelta": [
+        -0.5,
+        1.5
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        0,
+        1.5
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "duct-overheat-r",
+      "panel": "OH20",
+      "scope": "OVERHEAD",
+      "asset": "DUCT_OVERHEAT",
+      "currentSourceRect": [
+        931,
+        620,
+        213,
+        97
+      ],
+      "photoRimMethod": "AUTO_CENTRE_MATCH",
+      "photoRimDelta": [
+        -0.5,
+        0.5
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        -0.5,
+        -0.5
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        5,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "dual-bleed",
+      "panel": "OH21",
+      "scope": "OVERHEAD",
+      "asset": "DUAL_BLEED",
+      "currentSourceRect": [
+        172,
+        10,
+        152,
+        72
+      ],
+      "photoRimMethod": "AUTO_CENTRE_MATCH",
+      "photoRimDelta": [
+        -1,
+        2.5
+      ],
+      "darkGlassComponentMethod": "NEEDS_MANUAL_REVIEW",
+      "darkGlassDelta": [
+        10,
+        3.5
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "pack-trip-l",
+      "panel": "OH21",
+      "scope": "OVERHEAD",
+      "asset": "PACK_TRIP_OFF",
+      "currentSourceRect": [
+        243,
+        862,
+        180,
+        66
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        9,
+        -2.5
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        0,
+        -2.5
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "wing-body-overheat-l",
+      "panel": "OH21",
+      "scope": "OVERHEAD",
+      "asset": "WING_BODY_OVERHEAT",
+      "currentSourceRect": [
+        243,
+        953,
+        180,
+        66
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        -0.5,
+        -3.5
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        0.5,
+        -2.5
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "bleed-trip-l",
+      "panel": "OH21",
+      "scope": "OVERHEAD",
+      "asset": "BLEED_TRIP_OFF",
+      "currentSourceRect": [
+        243,
+        1043,
+        180,
+        66
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        9,
+        0
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        0,
+        0.5
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "pack-trip-r",
+      "panel": "OH21",
+      "scope": "OVERHEAD",
+      "asset": "PACK_TRIP_OFF",
+      "currentSourceRect": [
+        701,
+        862,
+        180,
+        66
+      ],
+      "photoRimMethod": "AUTO_CENTRE_MATCH",
+      "photoRimDelta": [
+        -1,
+        -3
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        0,
+        -0.5
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "wing-body-overheat-r",
+      "panel": "OH21",
+      "scope": "OVERHEAD",
+      "asset": "WING_BODY_OVERHEAT",
+      "currentSourceRect": [
+        701,
+        953,
+        180,
+        66
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        -1,
+        -3.5
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        -0.5,
+        0
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "bleed-trip-r",
+      "panel": "OH21",
+      "scope": "OVERHEAD",
+      "asset": "BLEED_TRIP_OFF",
+      "currentSourceRect": [
+        701,
+        1043,
+        180,
+        66
+      ],
+      "photoRimMethod": "AUTO_CENTRE_MATCH",
+      "photoRimDelta": [
+        -1,
+        0
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        0,
+        0
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "press-auto-fail",
+      "panel": "OH22",
+      "scope": "OVERHEAD",
+      "asset": "AUTO_FAIL",
+      "currentSourceRect": [
+        184,
+        26,
+        177,
+        86
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        11.5,
+        -4
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        -0.5,
+        0
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "press-off-sched-descent",
+      "panel": "OH22",
+      "scope": "OVERHEAD",
+      "asset": "OFF_SCHED_DESCENT",
+      "currentSourceRect": [
+        388,
+        26,
+        182,
+        86
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        11.5,
+        -4.5
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        0.5,
+        0
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "window-l-side-on",
+      "panel": "OH15",
+      "scope": "OVERHEAD",
+      "asset": "ON_GREEN",
+      "currentSourceRect": [
+        190,
+        111,
+        210,
+        77
+      ],
+      "photoRimMethod": "AUTO_CENTRE_MATCH",
+      "photoRimDelta": [
+        2,
+        -1
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        2.5,
+        -0.5
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "window-l-fwd-on",
+      "panel": "OH15",
+      "scope": "OVERHEAD",
+      "asset": "ON_GREEN",
+      "currentSourceRect": [
+        426,
+        111,
+        210,
+        77
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        -1,
+        -2
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        -1,
+        -1
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "window-r-fwd-on",
+      "panel": "OH15",
+      "scope": "OVERHEAD",
+      "asset": "ON_GREEN",
+      "currentSourceRect": [
+        654,
+        111,
+        210,
+        77
+      ],
+      "photoRimMethod": "AUTO_CENTRE_MATCH",
+      "photoRimDelta": [
+        0,
+        -2
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        0.5,
+        -2
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        3,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "window-r-side-on",
+      "panel": "OH15",
+      "scope": "OVERHEAD",
+      "asset": "ON_GREEN",
+      "currentSourceRect": [
+        885,
+        111,
+        210,
+        77
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        0.5,
+        -2.5
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        0.5,
+        -2
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "wing-valve-l",
+      "panel": "OH16",
+      "scope": "OVERHEAD",
+      "asset": "L_VALVE_OPEN",
+      "currentSourceRect": [
+        205,
+        316,
+        259,
+        99
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        0,
+        -3.5
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        0.5,
+        0
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "wing-valve-r",
+      "panel": "OH16",
+      "scope": "OVERHEAD",
+      "asset": "R_VALVE_OPEN",
+      "currentSourceRect": [
+        500,
+        316,
+        259,
+        99
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        -0.5,
+        -1.5
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        0,
+        -1
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "cowl-valve-1",
+      "panel": "OH16",
+      "scope": "OVERHEAD",
+      "asset": "COWL_VALVE_OPEN",
+      "currentSourceRect": [
+        873,
+        302,
+        259,
+        107
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        8.5,
+        -4
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        0.5,
+        0.5
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        5,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "cowl-valve-2",
+      "panel": "OH16",
+      "scope": "OVERHEAD",
+      "asset": "COWL_VALVE_OPEN",
+      "currentSourceRect": [
+        1168,
+        302,
+        259,
+        107
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        -3,
+        -4.5
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        0,
+        -0.5
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "crossfeed-valve",
+      "panel": "OH09",
+      "scope": "OVERHEAD",
+      "asset": "VALVE_OPEN",
+      "currentSourceRect": [
+        418,
+        414,
+        175,
+        70
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        5.5,
+        -2
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        -1,
+        0.5
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "fuel-valve-closed-1",
+      "panel": "OH09",
+      "scope": "OVERHEAD",
+      "asset": "FUEL_VALVE_CLOSED",
+      "currentSourceRect": [
+        146,
+        47,
+        174,
+        72
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        -0.5,
+        3.5
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        -1.5,
+        0
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "fuel-valve-closed-2",
+      "panel": "OH09",
+      "scope": "OVERHEAD",
+      "asset": "FUEL_VALVE_CLOSED",
+      "currentSourceRect": [
+        694,
+        47,
+        174,
+        72
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        5,
+        -2.5
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        -1.5,
+        0
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "gen-off-bus-1",
+      "panel": "OH12",
+      "scope": "OVERHEAD",
+      "asset": "GEN_OFF_BUS",
+      "currentSourceRect": [
+        90,
+        684,
+        169,
+        70
+      ],
+      "photoRimMethod": "AUTO_CENTRE_MATCH",
+      "photoRimDelta": [
+        -2.5,
+        -0.5
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        -1.5,
+        0
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "gen-off-bus-2",
+      "panel": "OH12",
+      "scope": "OVERHEAD",
+      "asset": "GEN_OFF_BUS",
+      "currentSourceRect": [
+        759,
+        684,
+        169,
+        70
+      ],
+      "photoRimMethod": "AUTO_CENTRE_MATCH",
+      "photoRimDelta": [
+        0,
+        -0.5
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        0,
+        0
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "apu-gen-off-bus",
+      "panel": "OH12",
+      "scope": "OVERHEAD",
+      "asset": "APU_GEN_OFF_BUS",
+      "currentSourceRect": [
+        422,
+        678,
+        175,
+        76
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        0,
+        6
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        0,
+        0
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "ground-power-available",
+      "panel": "OH12",
+      "scope": "OVERHEAD",
+      "asset": "GRD_POWER_AVAILABLE",
+      "currentSourceRect": [
+        421,
+        35,
+        182,
+        68
+      ],
+      "photoRimMethod": "AUTO_CENTRE_MATCH",
+      "photoRimDelta": [
+        -1.5,
+        -1
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        0,
+        0
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "apu-low-oil-quantity",
+      "panel": "OH12",
+      "scope": "OVERHEAD",
+      "asset": "LOW_OIL_QUANTITY",
+      "currentSourceRect": [
+        162,
+        1055,
+        152,
+        61
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        7.5,
+        -0.5
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        0,
+        0
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "ram-door-l",
+      "panel": "OH21",
+      "scope": "OVERHEAD",
+      "asset": "RAM_DOOR_FULL_OPEN",
+      "currentSourceRect": [
+        355,
+        15,
+        146,
+        68
+      ],
+      "photoRimMethod": "AUTO_CENTRE_MATCH",
+      "photoRimDelta": [
+        0,
+        2.5
+      ],
+      "darkGlassComponentMethod": "NEEDS_MANUAL_REVIEW",
+      "darkGlassDelta": [
+        -11,
+        0.5
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "ram-door-r",
+      "panel": "OH21",
+      "scope": "OVERHEAD",
+      "asset": "RAM_DOOR_FULL_OPEN",
+      "currentSourceRect": [
+        730,
+        15,
+        220,
+        68
+      ],
+      "photoRimMethod": "AUTO_CENTRE_MATCH",
+      "photoRimDelta": [
+        1,
+        -0.5
+      ],
+      "darkGlassComponentMethod": "NEEDS_MANUAL_REVIEW",
+      "darkGlassDelta": [
+        -14.5,
+        0.5
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "press-standby",
+      "panel": "OH22",
+      "scope": "OVERHEAD",
+      "asset": "STANDBY_GREEN",
+      "currentSourceRect": [
+        596,
+        26,
+        178,
+        86
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        5,
+        -4.5
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        2,
+        0
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "press-manual",
+      "panel": "OH22",
+      "scope": "OVERHEAD",
+      "asset": "MANUAL_GREEN",
+      "currentSourceRect": [
+        805,
+        26,
+        178,
+        86
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        3,
+        -4.5
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        0,
+        0
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "ground-call",
+      "panel": "OH18",
+      "scope": "OVERHEAD",
+      "asset": "CALL",
+      "currentSourceRect": [
+        67,
+        615,
+        310,
+        146
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        -1,
+        7
+      ],
+      "darkGlassComponentMethod": "NEEDS_MANUAL_REVIEW",
+      "darkGlassDelta": [
+        -0.5,
+        -5
+      ],
+      "status": "PHOTO_ENLARGED_REVIEWED_PIXEL_PRECISION_OPEN",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "SCANLINE_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "PHOTO_INDEPENDENT_FOUR_EDGE_SCANLINE",
+      "scanlineEvidence": {
+        "status": "SCANLINE_CENTRE_CANDIDATE",
+        "centreDeviationSourcePx": [
+          -0.5,
+          -1
+        ],
+        "detectedSides": {
+          "left": {
+            "pos": 66.5,
+            "strength": 23,
+            "count": 5
+          },
+          "right": {
+            "pos": 376.5,
+            "strength": 22.9,
+            "count": 4
+          },
+          "top": {
+            "pos": 613.5,
+            "strength": 15.6,
+            "count": 5
+          },
+          "bottom": {
+            "pos": 760.5,
+            "strength": 71.2,
+            "count": 3
+          }
+        },
+        "apertureWidthDeltaPx": 0,
+        "apertureHeightDeltaPx": 1
+      }
+    },
+    {
+      "id": "pmc-inop-1",
+      "panel": "UPPER",
+      "scope": "OVERHEAD",
+      "asset": "INOP",
+      "currentSourceRect": [
+        1044,
+        447,
+        64,
+        39
+      ],
+      "photoRimMethod": "AUTO_CENTRE_MATCH",
+      "photoRimDelta": [
+        0,
+        -3
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        -1,
+        -2.5
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "pmc-inop-2",
+      "panel": "UPPER",
+      "scope": "OVERHEAD",
+      "asset": "INOP",
+      "currentSourceRect": [
+        1216,
+        447,
+        64,
+        39
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        1.5,
+        -3
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        1.5,
+        -2.5
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "gear-left-down",
+      "panel": "UPPER",
+      "scope": "OVERHEAD",
+      "asset": "LEFT_GEAR_2LINE_GREEN",
+      "currentSourceRect": [
+        1005,
+        755,
+        58,
+        32
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        -0.5,
+        2.5
+      ],
+      "darkGlassComponentMethod": "NEEDS_MANUAL_REVIEW",
+      "darkGlassDelta": [
+        0.5,
+        3.5
+      ],
+      "status": "PHOTO_ENLARGED_REVIEWED_PIXEL_PRECISION_OPEN",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "SCANLINE_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "PHOTO_INDEPENDENT_FOUR_EDGE_SCANLINE",
+      "scanlineEvidence": {
+        "status": "SCANLINE_CENTRE_CANDIDATE",
+        "centreDeviationSourcePx": [
+          0,
+          1.5
+        ],
+        "detectedSides": {
+          "left": {
+            "pos": 1005.5,
+            "strength": 57.6,
+            "count": 5
+          },
+          "right": {
+            "pos": 1062.5,
+            "strength": 48.6,
+            "count": 6
+          },
+          "top": {
+            "pos": 757.5,
+            "strength": 35.3,
+            "count": 4
+          },
+          "bottom": {
+            "pos": 787.5,
+            "strength": 66.6,
+            "count": 5
+          }
+        },
+        "apertureWidthDeltaPx": -1,
+        "apertureHeightDeltaPx": -2
+      }
+    },
+    {
+      "id": "gear-right-down",
+      "panel": "UPPER",
+      "scope": "OVERHEAD",
+      "asset": "RIGHT_GEAR_2LINE_GREEN",
+      "currentSourceRect": [
+        1080,
+        755,
+        58,
+        32
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        0,
+        1.5
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        1,
+        2.5
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "gear-nose-down",
+      "panel": "UPPER",
+      "scope": "OVERHEAD",
+      "asset": "NOSE_GEAR_2LINE_GREEN",
+      "currentSourceRect": [
+        1045,
+        804,
+        58,
+        32
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        -2.5,
+        -1
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        -1,
+        0
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "main-at-lim",
+      "panel": "engine",
+      "scope": "MAIN",
+      "asset": "A_T_LIM_WHITE",
+      "currentSourceRect": [
+        590,
+        257,
+        82,
+        35
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        4,
+        0
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        0.5,
+        1
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "main-reverser-1",
+      "panel": "engine",
+      "scope": "MAIN",
+      "asset": "REVERSER_UNLOCKED",
+      "currentSourceRect": [
+        493,
+        257,
+        82,
+        35
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        4.5,
+        1
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        0,
+        2
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "main-reverser-2",
+      "panel": "engine",
+      "scope": "MAIN",
+      "asset": "REVERSER_UNLOCKED",
+      "currentSourceRect": [
+        687,
+        257,
+        82,
+        35
+      ],
+      "photoRimMethod": "AUTO_CENTRE_MATCH",
+      "photoRimDelta": [
+        -1,
+        1
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        0,
+        1.5
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "main-start-valve-1",
+      "panel": "engine",
+      "scope": "MAIN",
+      "asset": "START_VALVE_OPEN",
+      "currentSourceRect": [
+        900,
+        209,
+        82,
+        35
+      ],
+      "photoRimMethod": "AUTO_CENTRE_MATCH",
+      "photoRimDelta": [
+        0,
+        0.5
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        0.5,
+        1
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "main-start-valve-2",
+      "panel": "engine",
+      "scope": "MAIN",
+      "asset": "START_VALVE_OPEN",
+      "currentSourceRect": [
+        1088,
+        209,
+        82,
+        35
+      ],
+      "photoRimMethod": "AUTO_CENTRE_MATCH",
+      "photoRimDelta": [
+        1,
+        -1
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        1.5,
+        0
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "main-low-oil-1",
+      "panel": "engine",
+      "scope": "MAIN",
+      "asset": "LOW_OIL_PRESSURE",
+      "currentSourceRect": [
+        854,
+        258,
+        80,
+        34
+      ],
+      "photoRimMethod": "AUTO_CENTRE_MATCH",
+      "photoRimDelta": [
+        -1,
+        1.5
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        -0.5,
+        1.5
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "main-oil-filter-1",
+      "panel": "engine",
+      "scope": "MAIN",
+      "asset": "OIL_FILTER_BYPASS",
+      "currentSourceRect": [
+        949,
+        258,
+        79,
+        34
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        -6,
+        0.5
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        -1.5,
+        1.5
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "main-low-oil-2",
+      "panel": "engine",
+      "scope": "MAIN",
+      "asset": "LOW_OIL_PRESSURE",
+      "currentSourceRect": [
+        1041,
+        258,
+        80,
+        34
+      ],
+      "photoRimMethod": "AUTO_CENTRE_MATCH",
+      "photoRimDelta": [
+        0.5,
+        1
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        1,
+        1.5
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "main-oil-filter-2",
+      "panel": "engine",
+      "scope": "MAIN",
+      "asset": "OIL_FILTER_BYPASS",
+      "currentSourceRect": [
+        1136,
+        258,
+        79,
+        34
+      ],
+      "photoRimMethod": "AUTO_CENTRE_MATCH",
+      "photoRimDelta": [
+        1,
+        1.5
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        1,
+        2
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "main-altitude-captain",
+      "panel": "captain",
+      "scope": "MAIN",
+      "asset": "ALTITUDE_ALERT",
+      "currentSourceRect": [
+        2784,
+        486,
+        161,
+        68
+      ],
+      "photoRimMethod": "AUTO_CENTRE_MATCH",
+      "photoRimDelta": [
+        -3,
+        1.5
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        -2.5,
+        2
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "main-altitude-fo",
+      "panel": "fo-outer",
+      "scope": "MAIN",
+      "asset": "ALTITUDE_ALERT",
+      "currentSourceRect": [
+        505,
+        178,
+        67,
+        27
+      ],
+      "photoRimMethod": "AUTO_CENTRE_MATCH",
+      "photoRimDelta": [
+        -0.5,
+        -2
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        0.5,
+        -1.5
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "main-pull-up-captain",
+      "panel": "captain",
+      "scope": "MAIN",
+      "asset": "PULL_UP_RED",
+      "currentSourceRect": [
+        1284,
+        389,
+        164,
+        68
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        8,
+        -5
+      ],
+      "darkGlassComponentMethod": "NEEDS_MANUAL_REVIEW",
+      "darkGlassDelta": [
+        -12,
+        6
+      ],
+      "status": "PHOTO_ENLARGED_REVIEWED_PIXEL_PRECISION_OPEN",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "PHOTO_ENLARGED_REVIEWED_PIXEL_PRECISION_OPEN",
+      "verificationMethod": "NOT_CERTIFIED",
+      "scanlineEvidence": {
+        "status": "SCANLINE_REVIEW",
+        "centreDeviationSourcePx": [
+          0,
+          -3
+        ],
+        "detectedSides": {
+          "left": {
+            "pos": 1283.5,
+            "strength": 37,
+            "count": 7
+          },
+          "right": {
+            "pos": 1448.5,
+            "strength": 25.5,
+            "count": 7
+          },
+          "top": {
+            "pos": 384.5,
+            "strength": 24.6,
+            "count": 4
+          },
+          "bottom": {
+            "pos": 455.5,
+            "strength": 6.3,
+            "count": 4
+          }
+        },
+        "apertureWidthDeltaPx": 1,
+        "apertureHeightDeltaPx": 3
+      }
+    },
+    {
+      "id": "main-below-gs-captain",
+      "panel": "captain",
+      "scope": "MAIN",
+      "asset": "BELOW_GS_P_INHIBIT",
+      "currentSourceRect": [
+        1284,
+        491,
+        164,
+        62
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        7.5,
+        -2.5
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        -1,
+        -2.5
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "main-pull-up-fo",
+      "panel": "fo-inner",
+      "scope": "MAIN",
+      "asset": "PULL_UP_RED",
+      "currentSourceRect": [
+        820,
+        314,
+        67,
+        27
+      ],
+      "photoRimMethod": "AUTO_CENTRE_MATCH",
+      "photoRimDelta": [
+        0.5,
+        0
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        2,
+        0.5
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "main-below-gs-fo",
+      "panel": "fo-inner",
+      "scope": "MAIN",
+      "asset": "BELOW_GS_P_INHIBIT",
+      "currentSourceRect": [
+        820,
+        356,
+        67,
+        27
+      ],
+      "photoRimMethod": "AUTO_CENTRE_MATCH",
+      "photoRimDelta": [
+        0.5,
+        -0.5
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        1.5,
+        0
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "main-gear-nose-red",
+      "panel": "fo-inner",
+      "scope": "MAIN",
+      "asset": "NOSE_GEAR_2LINE_RED",
+      "currentSourceRect": [
+        250,
+        150,
+        70,
+        31
+      ],
+      "photoRimMethod": "AUTO_CENTRE_MATCH",
+      "photoRimDelta": [
+        -3,
+        2
+      ],
+      "darkGlassComponentMethod": "NEEDS_MANUAL_REVIEW",
+      "darkGlassDelta": [
+        0.5,
+        4
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "main-gear-nose-green",
+      "panel": "fo-inner",
+      "scope": "MAIN",
+      "asset": "NOSE_GEAR_2LINE_GREEN",
+      "currentSourceRect": [
+        250,
+        194,
+        70,
+        32
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        -4,
+        0.5
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        0.5,
+        0.5
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "main-gear-left-red",
+      "panel": "fo-inner",
+      "scope": "MAIN",
+      "asset": "LEFT_GEAR_2LINE_RED",
+      "currentSourceRect": [
+        210,
+        238,
+        69,
+        34
+      ],
+      "photoRimMethod": "AUTO_CENTRE_MATCH",
+      "photoRimDelta": [
+        0,
+        -1.5
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        0.5,
+        0
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "main-gear-left-green",
+      "panel": "fo-inner",
+      "scope": "MAIN",
+      "asset": "LEFT_GEAR_2LINE_GREEN",
+      "currentSourceRect": [
+        210,
+        282,
+        69,
+        34
+      ],
+      "photoRimMethod": "AUTO_CENTRE_MATCH",
+      "photoRimDelta": [
+        0,
+        2
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        0.5,
+        -0.5
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "main-gear-right-red",
+      "panel": "fo-inner",
+      "scope": "MAIN",
+      "asset": "RIGHT_GEAR_2LINE_RED",
+      "currentSourceRect": [
+        295,
+        238,
+        68,
+        34
+      ],
+      "photoRimMethod": "AUTO_CENTRE_MATCH",
+      "photoRimDelta": [
+        -0.5,
+        -0.5
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        0,
+        0
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "main-gear-right-green",
+      "panel": "fo-inner",
+      "scope": "MAIN",
+      "asset": "RIGHT_GEAR_2LINE_GREEN",
+      "currentSourceRect": [
+        295,
+        282,
+        68,
+        34
+      ],
+      "photoRimMethod": "AUTO_CENTRE_MATCH",
+      "photoRimDelta": [
+        0,
+        -1
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        0.5,
+        -1
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "main-le-transit",
+      "panel": "fo-inner",
+      "scope": "MAIN",
+      "asset": "LE_FLAPS_TRANSIT",
+      "currentSourceRect": [
+        25,
+        404,
+        71,
+        29
+      ],
+      "photoRimMethod": "AUTO_CENTRE_MATCH",
+      "photoRimDelta": [
+        -1.5,
+        1.5
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        -1.5,
+        2
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "main-le-extended",
+      "panel": "fo-inner",
+      "scope": "MAIN",
+      "asset": "LE_FLAPS_EXT_GREEN",
+      "currentSourceRect": [
+        107,
+        404,
+        67,
+        29
+      ],
+      "photoRimMethod": "AUTO_CENTRE_MATCH",
+      "photoRimDelta": [
+        1.5,
+        1.5
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        2,
+        2
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "main-antiskid",
+      "panel": "fo-inner",
+      "scope": "MAIN",
+      "asset": "ANTI_SKID_INOP",
+      "currentSourceRect": [
+        59,
+        507,
+        82,
+        32
+      ],
+      "photoRimMethod": "AUTO_CENTRE_MATCH",
+      "photoRimDelta": [
+        -3,
+        -2.5
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        2,
+        -1.5
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "main-autobrake",
+      "panel": "fo-inner",
+      "scope": "MAIN",
+      "asset": "AUTO_BRAKE_DISARM",
+      "currentSourceRect": [
+        63,
+        767,
+        80,
+        40
+      ],
+      "photoRimMethod": "AUTO_CENTRE_MATCH",
+      "photoRimDelta": [
+        -0.5,
+        2
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        -0.5,
+        0
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "main-brake-temp",
+      "panel": "fo-inner",
+      "scope": "MAIN",
+      "asset": "BRAKE_TEMP",
+      "currentSourceRect": [
+        600,
+        1236,
+        65,
+        31
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        -1,
+        -3.5
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        -0.5,
+        -2
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "main-stab-trim",
+      "panel": "engine",
+      "scope": "MAIN",
+      "asset": "STAB_OUT_OF_TRIM",
+      "currentSourceRect": [
+        255,
+        740,
+        88,
+        59
+      ],
+      "photoRimMethod": "EDGE_REVIEW",
+      "photoRimDelta": [
+        -5,
+        2
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        0.5,
+        -2
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": true,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "main-speed-brake-do-not-arm",
+      "panel": "engine",
+      "scope": "MAIN",
+      "asset": "SPEED_BRAKE_DO_NOT_ARMED_AMBER",
+      "currentSourceRect": [
+        22,
+        740,
+        94,
+        39
+      ],
+      "photoRimMethod": "AUTO_CENTRE_MATCH",
+      "photoRimDelta": [
+        -1.5,
+        -1
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        -1,
+        0
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "main-speed-brake-armed",
+      "panel": "engine",
+      "scope": "MAIN",
+      "asset": "SPEED_BRAKE_ARMED_GREEN",
+      "currentSourceRect": [
+        22,
+        789,
+        94,
+        39
+      ],
+      "photoRimMethod": "AUTO_CENTRE_MATCH",
+      "photoRimDelta": [
+        -1.5,
+        0
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        -1,
+        0.5
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    },
+    {
+      "id": "main-gpws-inop",
+      "panel": "fo-inner",
+      "scope": "MAIN",
+      "asset": "INOP",
+      "currentSourceRect": [
+        485,
+        1405,
+        70,
+        32
+      ],
+      "photoRimMethod": "AUTO_CENTRE_MATCH",
+      "photoRimDelta": [
+        -0.5,
+        0.5
+      ],
+      "darkGlassComponentMethod": "PHOTO_COMPONENT_CENTRED",
+      "darkGlassDelta": [
+        -0.5,
+        0.5
+      ],
+      "status": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "appliedDisplacement": [
+        0,
+        0
+      ],
+      "visualFaceReflowed": false,
+      "verifiedStatus": "AUTO_PIXEL_CENTRE_MATCH_3PX",
+      "verificationMethod": "TWO_PRIOR_PHOTO_METHODS",
+      "scanlineEvidence": null
+    }
+  ]
+}
