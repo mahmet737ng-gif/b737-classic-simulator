@@ -13,7 +13,9 @@ test('54 faces each retain source-proven photo geometry blockers and distinct ba
  assert.equal(m.counts.rotary,49);
  assert.equal(m.counts.linear,5);
  assert.equal(m.counts.highRisk,15);
- assert.equal(m.counts.missingVersionControlledImageSourceFaces,3);
+ assert.equal(m.counts.missingVersionControlledImageSourceFaces,0);
+ assert.equal(m.counts.rootStoredPhotoSourceFaces,3);
+ assert.equal(m.sourceDiscovery.status,'REPOSITORY_ROOT_SHA256_AND_1123X1400_DIMENSIONS_VERIFIED');
  assert.equal(m.counts.mediumRisk,14);
  assert.equal(m.counts.normalRisk,25);
  assert.equal(m.counts.finalGeometricCalibration,0);
@@ -26,8 +28,9 @@ test('54 faces each retain source-proven photo geometry blockers and distinct ba
   assert.ok(f.blockingReasons.length);
   assert.ok(f.sourceOriginal.endsWith('.png')||f.sourceOriginal.endsWith('.webp'),f.id);
   if(!f.sourceOriginal.startsWith('panel-mosaic-lab/')){
-   assert.equal(f.originalImageRepositoryStatus,'EXTERNAL_FILENAME_ONLY_NOT_REPOSITORY_VERIFIED');
-   assert.ok(f.blockingReasons.includes('original_source_not_in_versioned_repository'));
+   assert.equal(f.originalImageRepositoryStatus,'REPOSITORY_ROOT_ASSET_SHA256_AND_DIMENSIONS_VERIFIED');
+   assert.ok(f.blockingReasons.includes('original_photo_present_but_dial_geometry_not_certified'));
+   assert.ok(!f.blockingReasons.includes('original_source_not_in_versioned_repository'));
   }
   assert.deepEqual(f.systemChannels.map(x=>x.id),sources.faces[f.id].channels.map(x=>x.id));
   for(const s of f.numericScales)assert.equal(s.minorGraduationsCertified,false);
