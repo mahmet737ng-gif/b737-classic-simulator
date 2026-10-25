@@ -6,6 +6,7 @@ on:
       - tools/lamp-photo-registration.py
       - .github/workflows/lamp-photo-qa.yml
       - tools/lamp-photo-edge-qa.py
+      - tools/lamp-photo-component-qa.py
 permissions:
   contents: read
 jobs:
@@ -35,3 +36,6 @@ jobs:
       - name: Run native glass-edge measurements for all mounted lamps
         if: matrix.panel_group == 'engine captain fo-inner fo-outer'
         run: python3 tools/lamp-photo-edge-qa.py
+      - name: Check dark lens connected components for every mounted lamp
+        if: matrix.panel_group == 'engine captain fo-inner fo-outer'
+        run: python3 tools/lamp-photo-component-qa.py
