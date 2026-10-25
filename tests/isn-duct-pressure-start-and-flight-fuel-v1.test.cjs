@@ -100,6 +100,11 @@ sim.setThrottle('engine1',1);sim.advance(22000);
 let live=sim.get().engines.engine1.fuelFlowKgHr;
 assert.ok(live>3850,'Takeoff engine fuel flow converges toward 4000 kg/h per engine');
 const beforeBurn=sim.get().fuel.burnedKg.engine1;
+// High-altitude unboosted suction was deliberately UNKNOWN, so restore an
+// explicitly sourced electric boost-pump route before checking actual burn.
+sim.selectGenerator('GEN1',1);sim.prepareFuel();
+assert.equal(sim.get().engines.engine1.fuelPath.available,true,
+ 'Powered own-main electric boost pumps must be valid in high-altitude test');
 sim.setOnGround(false);
 sim.setFlightInputs({pressureAltitudeFt:35000,iasKt:250});
 sim.setThrottle('engine1',.78);sim.advance(22000);
