@@ -1,0 +1,38 @@
+'use strict';
+const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
+const root=path.resolve(__dirname,'../..');
+const get=p=>fs.readFileSync(path.join(root,p),'utf8'),read=p=>JSON.parse(get(p));
+const manifest=read('panel-mosaic-lab/lights-test/precision-faces-batch2.json');
+const main=read('panel-mosaic-lab/cockpit/lights.json'),oh=read('panel-mosaic-lab/interactive-overhead/lights.json');
+assert.equal(manifest.uniqueDesigns,12);assert.equal(manifest.derivativeStates,27);
+assert.equal(manifest.records.length,27);
+assert.equal(manifest.originalSvgChanges,0);
+assert.equal(manifest.frozenPhotoChanges,0);
+assert.equal(oh.version,'LGT-0010');assert.equal(main.version,'LGT-0012');
+const seen=new Set(),lamps=new Set();
+for(const row of manifest.records){
+ const reg=row.lamp.startsWith('main-')?main:oh;
+ const lamp=reg.lights.find(x=>x.id===row.lamp);
+ assert.ok(lamp,row.lamp);lamps.add(row.lamp);
+ assert.deepEqual(row.sourceRect,lamp.sourceRect,row.lamp);
+ const sig=row.lamp+'_'+row.state;assert.ok(!seen.has(sig),sig);seen.add(sig);
+ const src=get(row.original),derived=get(row.derived),[,,w,h]=row.sourceRect;
+ assert.ok(row.original.includes('/locked/2026-10-23/LIGHTS/'));
+ assert.ok(row.derived.includes('assets/lights/precision-fit-v1/'));
+ assert.equal(row.originalGlyphsUnscaled,true);
+ const origText=[...src.matchAll(/<text\b[^>]*>.*?<\/text>/gs)].map(x=>x[0]);
+ const newText=[...derived.matchAll(/<text\b[^>]*>.*?<\/text>/gs)].map(x=>x[0]);
+ assert.deepEqual(newText,origText,'Do not stretch legends '+sig);
+ const rootSvg=derived.match(/^<svg\b[^>]*>/)?.[0];assert.ok(rootSvg);
+ assert.match(rootSvg,new RegExp('\\bwidth="'+w+'"'));
+ assert.match(rootSvg,new RegExp('\\bheight="'+h+'"'));
+ const view=rootSvg.match(/viewBox="0 0 ([\d.]+) ([\d.]+)"/);assert.ok(view);
+ assert.ok(Math.abs(Number(view[1])/Number(view[2])-w/h)<1e-5,'Correct natural vector ratio '+sig);
+ assert.match(derived,/data-fit="uniform-translation-only"/);
+ assert.doesNotMatch(derived,/<g transform="scale\(/);
+ const sha=crypto.createHash('sha256').update(derived).digest('hex');
+ assert.equal(sha,row.sha256,sig);
+ assert.equal(reg.assets[lamp.asset][row.state].sha256,sha,sig);
+}
+assert.equal(lamps.size,12);
+console.log('PASS: 12 new native-ratio B737 annunciator faces, 27 verified states, zero altered locked panel backgrounds and untouched text shapes.');
