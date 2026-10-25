@@ -211,6 +211,23 @@
   setOnGround(onGround){if(typeof onGround!=='boolean')throw Error('Boolean onGround required');
    this.flight.onGround=onGround;return this.get();
   }
+  // ISN-12 training-only fuel starvation. Unlike CUTOFF this does not move the
+  // fuel start lever, and it cannot overwrite externally observed engine status.
+  fuelFlameout(device,reason='NO_AVAILABLE_FUEL_PATH'){
+   if(!['engine1','engine2'].includes(device))throw Error('Invalid fuel-starvation engine');
+   if(this.phase[device]!=='RUNNING')return this.get();
+   const status=this.start.get().observation[device];
+   if(status.running!==true||status.evidence.running!=='TRAINING_SEQUENCE_SIMULATED')
+    throw Error('Fuel model cannot overwrite externally-owned running state');
+   this.cancel(device);this.dynamic[device]=null;this.operating[device]=null;
+   this.feedback(device,'fuelFlowKgHr',0);
+   this.feedback(device,'n2Percent',null);this.feedback(device,'egtC',null);
+   this.command({type:'SOURCE_REQUEST',device,request:'SHUTDOWN'});
+   this.obs(device,false);this.started[device]=false;this.phase[device]='FUEL_STARVATION';
+   this.lastError=device.toUpperCase()+': TRAINING FUEL SUPPLY LOSS — '+reason+
+     '; START LEVER remains '+this.start.get().observation[device].feedback.fuelStartLever.value;
+   return this.get();
+  }
   lever(device,position){if(!['engine1','engine2'].includes(device)||!['IDLE','CUTOFF'].includes(position))throw Error('Invalid start lever');
    if(position==='CUTOFF'){this.operating[device]=null;this.feedback(device,'fuelStartLever','CUTOFF');if(this.phase[device]!=='RUNNING')this.abortEngine(device);else{
     this.cancel(device);this.dynamic[device]=null;
