@@ -1,0 +1,38 @@
+name: OH19 Cabin Altitude Photo Anchors
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'engine/instruments/oh19-cab-alt-*'
+      - 'engine/instruments/cold-dark-needle-fit-audit-v1.json'
+      - 'panel-mosaic-lab/cockpit/cabin-dual-needles*'
+      - '.github/workflows/oh19-cab-alt-photo-qa.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'engine/instruments/oh19-cab-alt-*'
+      - 'engine/instruments/cold-dark-needle-fit-audit-v1.json'
+      - 'panel-mosaic-lab/cockpit/cabin-dual-needles*'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  source-pixel-qa:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Frozen Overhead Verification
+        run: python3 panel-mosaic-lab/verify-final-overhead.py
+      - name: Native OH19 Source SHA-256
+        run: echo "4c667d96ea7652e52784f5c06ee3cdde0879ca37631abf19969861afecc45fed  panel-mosaic-lab/assets/locked/2026-10-23/OH19-PRESS-DIFF-ALT-HORN-d6719ce57cef.png" | sha256sum -c -
+      - name: Cabin gauge geometry and scale tests
+        run: |
+          node panel-mosaic-lab/cockpit/cabin-dual-needles.test.cjs
+          node engine/instruments/oh19-cab-alt-54-gauge-qa-v1.test.cjs
+          node engine/instruments/gauge-visual-audit-v1.test.cjs
+          node engine/instruments/cold-dark-indicator-v1.test.cjs
+          node tests/cabin-field-elevation-v1.test.cjs
+      - name: Syntax and locked pixel originals
+        run: |
+          node --check panel-mosaic-lab/cockpit/cabin-dual-needles-model.js
+          node --check panel-mosaic-lab/cockpit/cabin-dual-needles-unified.js
