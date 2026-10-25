@@ -1,0 +1,33 @@
+name: Native gauge calibration batch-1 data QA
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'engine/instruments/native-radial-ticks-batch1-v1.json'
+      - 'engine/instruments/native-radial-ticks-batch1-v1.test.cjs'
+      - 'engine/instruments/native-pivot-track-batch1-v1.json'
+      - 'engine/instruments/native-pivot-track-batch1-v1.test.cjs'
+      - 'engine/instruments/oh19-native-ticks-batch1.json'
+      - 'engine/instruments/oh19-native-ticks-batch1.test.cjs'
+      - 'engine/instruments/needle-zero-reference-stage1-v1.json'
+      - 'engine/instruments/needle-zero-reference-stage1-v1.test.cjs'
+      - '.github/workflows/native-gauge-calibration-batch1-qa.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  batch1:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: 54-face inventory, 29 rotary pivots, 5 tracks and 250 stroke candidates
+        run: |
+          node --test engine/instruments/needle-zero-reference-stage1-v1.test.cjs
+          node --test engine/instruments/native-pivot-track-batch1-v1.test.cjs
+          node --test engine/instruments/oh19-native-ticks-batch1.test.cjs
+          node --test engine/instruments/native-radial-ticks-batch1-v1.test.cjs
+      - name: Frozen-source and source dimension contract
+        run: python3 panel-mosaic-lab/verify-final-overhead.py
