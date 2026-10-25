@@ -11,6 +11,10 @@ const oh=read('../interactive-overhead/lights.json');
 const main=read('../cockpit/lights.json');
 const code=new Map([...oh.lights,...main.lights].map(x=>[x.id,x]));
 const audit=new Map(original.instances.map(x=>[x.id,x]));
+const corrections=read('photo-position-corrections-v1.json');
+const correctionById=new Map(corrections.records.map(x=>[x.id,x]));
+assert.equal(correctionById.size,8);
+
 assert.equal(registry.summary.total,142);
 assert.equal(registry.records.length,142);
 assert.equal(new Set(registry.records.map(x=>x.id)).size,142);
@@ -24,7 +28,7 @@ for(const record of registry.records){
  const prior=audit.get(record.id),source=code.get(record.id);
  assert.ok(prior&&source,record.id);
  assert.deepEqual(record.sourceRect,prior.sourceRect,record.id);
- assert.deepEqual(record.sourceRect,source.sourceRect,record.id);
+ assert.deepEqual(source.sourceRect,correctionById.get(record.id)?.sourceRect||record.sourceRect,record.id);
  assert.deepEqual(record.sourceCenter,prior.sourceCenter,record.id);
  assert.equal(record.reviewedOriginalContactSheet,true);
  assert.equal(record.sourceRectChanged,false);
