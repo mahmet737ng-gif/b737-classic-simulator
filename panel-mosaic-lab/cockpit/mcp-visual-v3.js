@@ -15,12 +15,12 @@ const initial=()=>({
 });
 const values=initial();
 const displays=[
- {id:"courseL",x:92,y:112,w:122,h:59,digits:3},
- {id:"speed",x:488,y:112,w:161,h:59,digits:3},
- {id:"heading",x:835,y:112,w:114,h:59,digits:3},
+ {id:"courseL",x:85,y:112,w:112,h:59,digits:3},
+ {id:"speed",x:480,y:112,w:155,h:59,digits:3},
+ {id:"heading",x:817,y:112,w:118,h:59,digits:3},
  {id:"altitude",x:1130,y:112,w:151,h:59,digits:5},
  {id:"verticalSpeed",x:1381,y:112,w:161,h:59,digits:4},
- {id:"courseR",x:1880,y:112,w:136,h:59,digits:3}
+ {id:"courseR",x:1860,y:112,w:157,h:59,digits:3}
 ];
 const lamps=[
  {id:"AT_ARM",x:322,y:129,w:45,h:8},
