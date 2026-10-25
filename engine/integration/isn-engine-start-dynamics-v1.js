@@ -17,7 +17,7 @@
  const ENVELOPE=Object.freeze({
   groundIdle:Object.freeze({n1Percent:22,n2Percent:60,egtC:445,fuelFlowKgHr:360}),
   flightIdle:Object.freeze({n1Percent:32,n2Percent:78,egtC:495,fuelFlowKgHr:430}),
-  fullThrust:Object.freeze({n1Percent:97,n2Percent:101,egtC:695,fuelFlowKgHr:2400}),
+  fullThrust:Object.freeze({n1Percent:97,n2Percent:101,egtC:695,fuelFlowKgHr:4000}),
   normalStartPeakEgtC:620,
   responseMs:Object.freeze({n1Up:2200,n1Down:3500,n2Up:3000,n2Down:4600,egtUp:1600,egtDown:3200,fuelUp:1800,fuelDown:2500})
  });
@@ -27,21 +27,37 @@
    return ENVELOPE.normalStartPeakEgtC-(ENVELOPE.normalStartPeakEgtC-420)*smooth((t-.75)/.25);
  };
  const interpolate=(a,b,f)=>a+(b-a)*f;
- function runningTarget({throttle=0,onGround=true}={}){
+ // Fuel-rate trainer: ~4000 kg/h per engine at sea-level takeoff power;
+ // at ~35000 ft a ~75%-throttle/250 IAS cruise reference trends toward
+ // ~1000 kg/h. Flight fuel is NOT simply determined by height: throttle
+ // and IAS also influence the estimated flow. NOT calibrated CFM56-3 charts.
+ function fuelFlowTarget({throttle=0,onGround=true,pressureAltitudeFt=0,iasKt=0}={}){
+  if(!Number.isFinite(throttle)||throttle<0||throttle>1||
+   !Number.isFinite(pressureAltitudeFt)||pressureAltitudeFt < -1000||
+   !Number.isFinite(iasKt)||iasKt<0||iasKt>600||
+   typeof onGround!=='boolean')throw Error('Invalid simulated flight fuel inputs');
+  const idle=onGround?ENVELOPE.groundIdle:ENVELOPE.flightIdle;
+  const seaLevelFlow=interpolate(idle.fuelFlowKgHr,ENVELOPE.fullThrust.fuelFlowKgHr,Math.pow(throttle,1.35));
+  const normalizedAltitude=clamp(Math.max(0,pressureAltitudeFt)/35000,0,1);
+  const altitudeFactor=1-.65*Math.pow(normalizedAltitude,.85);
+  const speedFactor=1-.1*clamp(iasKt/300,0,1);
+  return seaLevelFlow*altitudeFactor*speedFactor;
+ }
+ function runningTarget({throttle=0,onGround=true,pressureAltitudeFt=0,iasKt=0}={}){
   if(!Number.isFinite(throttle)||throttle<0||throttle>1)throw Error('Throttle must be in [0,1]');
   if(typeof onGround!=='boolean')throw Error('onGround must be boolean');
   const idle=onGround?ENVELOPE.groundIdle:ENVELOPE.flightIdle,top=ENVELOPE.fullThrust;
   return {n1Percent:interpolate(idle.n1Percent,top.n1Percent,Math.pow(throttle,1.12)),
    n2Percent:interpolate(idle.n2Percent,top.n2Percent,Math.pow(throttle,.86)),
    egtC:interpolate(idle.egtC,top.egtC,Math.pow(throttle,.95)),
-   fuelFlowKgHr:interpolate(idle.fuelFlowKgHr,top.fuelFlowKgHr,Math.pow(throttle,1.35))};
+   fuelFlowKgHr:fuelFlowTarget({throttle,onGround,pressureAltitudeFt,iasKt})};
  }
  function initialRunning(){return {n1Percent:15,n2Percent:46,egtC:420,fuelFlowKgHr:350};}
- function stepRunning(previous,{deltaMs,throttle=0,onGround=true}={}){
+ function stepRunning(previous,{deltaMs,throttle=0,onGround=true,pressureAltitudeFt=0,iasKt=0}={}){
   if(!Number.isFinite(deltaMs)||deltaMs<0)throw Error('Nonnegative finite deltaMs required');
   if(!previous||['n1Percent','n2Percent','egtC','fuelFlowKgHr'].some(k=>!Number.isFinite(previous[k])))
    throw Error('Finite previous engine state required');
-  const target=runningTarget({throttle,onGround}),tau=ENVELOPE.responseMs,next={};
+  const target=runningTarget({throttle,onGround,pressureAltitudeFt,iasKt}),tau=ENVELOPE.responseMs,next={};
   for(const [key,up,down] of [['n1Percent','n1Up','n1Down'],['n2Percent','n2Up','n2Down'],
    ['egtC','egtUp','egtDown'],['fuelFlowKgHr','fuelUp','fuelDown']]){
    const constant=target[key]>previous[key]?tau[up]:tau[down];
@@ -79,5 +95,5 @@
   }
   throw Error('Unsupported training phase '+phase);
  }
- return Object.freeze({ORIGIN,duration,faultTargets,ENVELOPE,sample,runningTarget,initialRunning,stepRunning});
+ return Object.freeze({ORIGIN,duration,faultTargets,ENVELOPE,sample,runningTarget,fuelFlowTarget,initialRunning,stepRunning});
 });
