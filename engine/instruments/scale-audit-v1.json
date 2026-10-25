@@ -23,7 +23,20 @@
         "0",
         "+50"
       ],
-      "issue": "Outer end ticks extend beyond the ±50 labels; true endpoints must be checked"
+      "issue": "Printed labels -50/0/+50 identified; outer end ticks may extend beyond marked numbers, so do not claim gauge min/max until visual inspection",
+      "printedScales": {
+        "primary": {
+          "visibleNumerals": [
+            -50,
+            0,
+            50
+          ],
+          "unit": "A",
+          "endpointsVerified": false,
+          "direction": "clockwise_provisional",
+          "origin": "existing image inventory; awaiting source-image measurement"
+        }
+      }
     },
     {
       "id": "cps",
@@ -288,8 +301,41 @@
     {
       "id": "fuelTemperature",
       "panel": "OH09",
-      "printedLabels": [],
-      "issue": "Existing -40..40 °C visual registry is not a full native-image tick survey"
+      "printedLabels": [
+        "-40",
+        "-30",
+        "-20",
+        "-10",
+        "0",
+        "+10",
+        "+20",
+        "+30",
+        "+40"
+      ],
+      "issue": "Range, numeral order and clockwise direction confirmed by user; physical tick positions, all minor marks and angular spacing not verified",
+      "printedScales": {
+        "primary": {
+          "range": [
+            -40,
+            40
+          ],
+          "numerals": [
+            -40,
+            -30,
+            -20,
+            -10,
+            0,
+            10,
+            20,
+            30,
+            40
+          ],
+          "unit": "°C",
+          "rotation": "clockwise",
+          "numericInterval": 10,
+          "origin": "user-confirmed"
+        }
+      }
     },
     {
       "id": "flapL",
