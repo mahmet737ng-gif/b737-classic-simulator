@@ -22,6 +22,7 @@ jobs:
       - name: Check CB and Electrical V7 syntax
         run: |
           node --check engine/cb/cb-kernel.js
+          node --check engine/cb/classic-mrg-index.v2.js
           node --check engine/cb/electrical-v7-integration.js
           node --check cb-panel-lab/electrical-bridge.js
           node --check cb-panel-lab/v7-effects.js
@@ -29,5 +30,7 @@ jobs:
         run: npm run test:cb
       - name: Validate source-mapped CB subsystem effects
         run: npm run test:cb-v7
+      - name: Validate MRG-photo source QA and quarantines
+        run: npm run test:cb-audit
       - name: Validate Electrical V7 upstream bus model
         run: node tests/electrical-v7.test.cjs
