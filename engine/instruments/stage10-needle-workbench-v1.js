@@ -55,7 +55,7 @@
    drivers.set(route.spriteId,{route,compiled,profile,
      motion:dynamics.create({id:route.spriteId,profile,limits:{minAngleDeg:a,maxAngleDeg:b}})});
   }
-  let priorTimeMs=null;
+  let priorTimeMs=null,priorObservationNowMs=null;
   function evaluate(pointerSnapshot,{nowMs=null,observationNowMs=null}={}){
    if(pointerSnapshot?.schema!=='b737.stage8.pointer-route-snapshot.v1'||
      Object.keys(pointerSnapshot.pointers||{}).length!==38)
@@ -65,9 +65,13 @@
     throw Error('Observed sensor wall clock invalid');
    if(nowMs!==null&&priorTimeMs!==null&&nowMs<priorTimeMs)
     throw Error('Source clock moved backward; reset workbench explicitly');
+   if(observationNowMs!==null&&priorObservationNowMs!==null&&
+      observationNowMs<priorObservationNowMs)
+    throw Error('Observed source clock moved backward; reset workbench explicitly');
    const dt=nowMs!==null&&priorTimeMs!==null?
      Math.min(1,(nowMs-priorTimeMs)/1000):0;
    if(nowMs!==null)priorTimeMs=nowMs;
+   if(observationNowMs!==null)priorObservationNowMs=observationNowMs;
    const output={},counts={total:38,geometryPreviewCapable:drivers.size,withQualifiedSignal:0,
       dynamicsEvaluated:0,blockedNoCalibration:0,missingData:0,powerUnknown:0,
       liveNeedlesMoved:0,observedRejected:0,staleObservations:0,
@@ -158,7 +162,7 @@
    });
   }
   function reset(){
-   priorTimeMs=null;lastObserved.clear();
+   priorTimeMs=null;priorObservationNowMs=null;lastObserved.clear();
    for(const x of drivers.values())x.motion.reset();
    for(const k of Object.keys(results))delete results[k];
   }
