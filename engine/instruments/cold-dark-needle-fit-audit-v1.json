@@ -1,0 +1,456 @@
+{
+  "schema": "b737.cold-dark-needle-fit-audit.v1",
+  "faceCount": 54,
+  "reference": "Owner full-window Unified screenshots captured 2026-10-24 + existing model tests",
+  "risk": "No automated assumption that a measured zero value equals a particular universal 12 o'clock angle",
+  "approvedFullNumericalCalibrations": 0,
+  "records": {
+    "oh.fuel.temperature": {
+      "panel": "OH09",
+      "status": "OWNER_APPROVED_NEEDLE_ASSET_GEOMETRY_ONLY",
+      "pointers": [
+        "fuelTemperature"
+      ],
+      "photoSource": "panel-mosaic-lab/assets/locked/2026-10-23/OH09-FUEL-921977b56887.png",
+      "note": "Fuel temperature sprite is SHA-locked and geometry test passes. Zero/magnitude is ambient sensor, not forced 0."
+    },
+    "oh.elec.dc_amps": {
+      "panel": "OH10",
+      "status": "LEGACY_TIP_REACH_NOT_MEASURED",
+      "pointers": [
+        "dcAmps",
+        "cps",
+        "dcVolts",
+        "acVolts"
+      ],
+      "photoSource": "panel-mosaic-lab/assets/locked/2026-10-23/OH10-ELEC-LOSSLESS-9a1ca4d6cfb2.png",
+      "note": "Existing pointer and center known, but native pixel inner end of each printed tick not verified."
+    },
+    "oh.elec.cps": {
+      "panel": "OH10",
+      "status": "LEGACY_TIP_REACH_NOT_MEASURED",
+      "pointers": [
+        "dcAmps",
+        "cps",
+        "dcVolts",
+        "acVolts"
+      ],
+      "photoSource": "panel-mosaic-lab/assets/locked/2026-10-23/OH10-ELEC-LOSSLESS-9a1ca4d6cfb2.png",
+      "note": "Existing pointer and center known, but native pixel inner end of each printed tick not verified."
+    },
+    "oh.elec.dc_volts": {
+      "panel": "OH10",
+      "status": "LEGACY_TIP_REACH_NOT_MEASURED",
+      "pointers": [
+        "dcAmps",
+        "cps",
+        "dcVolts",
+        "acVolts"
+      ],
+      "photoSource": "panel-mosaic-lab/assets/locked/2026-10-23/OH10-ELEC-LOSSLESS-9a1ca4d6cfb2.png",
+      "note": "Existing pointer and center known, but native pixel inner end of each printed tick not verified."
+    },
+    "oh.elec.ac_volts": {
+      "panel": "OH10",
+      "status": "LEGACY_TIP_REACH_NOT_MEASURED",
+      "pointers": [
+        "dcAmps",
+        "cps",
+        "dcVolts",
+        "acVolts"
+      ],
+      "photoSource": "panel-mosaic-lab/assets/locked/2026-10-23/OH10-ELEC-LOSSLESS-9a1ca4d6cfb2.png",
+      "note": "Existing pointer and center known, but native pixel inner end of each printed tick not verified."
+    },
+    "oh.drive_oil.1": {
+      "panel": "OH11",
+      "status": "PROVISIONAL_ENLARGED_SCREENSHOT_FIT",
+      "pointers": [
+        "driveOil1",
+        "driveOil2"
+      ],
+      "photoSource": "panel-mosaic-lab/assets/locked/2026-10-23/OH11-STANDBY-8b7d36ff3182.png",
+      "note": "Tip radius revised from 98 to 128 source pixels; zero/low stop initial angle revised from -46 to -80 based on screenshot inspection, requires original-image QA."
+    },
+    "oh.drive_oil.2": {
+      "panel": "OH11",
+      "status": "PROVISIONAL_ENLARGED_SCREENSHOT_FIT",
+      "pointers": [
+        "driveOil1",
+        "driveOil2"
+      ],
+      "photoSource": "panel-mosaic-lab/assets/locked/2026-10-23/OH11-STANDBY-8b7d36ff3182.png",
+      "note": "Tip radius revised from 98 to 128 source pixels; zero/low stop initial angle revised from -46 to -80 based on screenshot inspection, requires original-image QA."
+    },
+    "oh.ac_amps.1": {
+      "panel": "OH12",
+      "status": "PROVISIONAL_ENLARGED_SCREENSHOT_FIT",
+      "pointers": [
+        "acAmps1",
+        "acAmps2",
+        "apuAcAmps"
+      ],
+      "photoSource": "panel-mosaic-lab/assets/locked/2026-10-23/OH12-BUS-TRANS-09319c17e7d0.png",
+      "note": "Tip radius revised from 102 to 135 source pixels; left rest angle from -45 to -65, needs original-image QA."
+    },
+    "oh.ac_amps.2": {
+      "panel": "OH12",
+      "status": "PROVISIONAL_ENLARGED_SCREENSHOT_FIT",
+      "pointers": [
+        "acAmps1",
+        "acAmps2",
+        "apuAcAmps"
+      ],
+      "photoSource": "panel-mosaic-lab/assets/locked/2026-10-23/OH12-BUS-TRANS-09319c17e7d0.png",
+      "note": "Tip radius revised from 102 to 135 source pixels; left rest angle from -45 to -65, needs original-image QA."
+    },
+    "oh.ac_amps.apu": {
+      "panel": "OH12",
+      "status": "LEGACY_TIP_REACH_NOT_MEASURED",
+      "pointers": [
+        "acAmps1",
+        "acAmps2",
+        "apuAcAmps"
+      ],
+      "photoSource": "panel-mosaic-lab/assets/locked/2026-10-23/OH12-BUS-TRANS-09319c17e7d0.png",
+      "note": "Existing pointer and center known, but native pixel inner end of each printed tick not verified."
+    },
+    "oh.apu.egt": {
+      "panel": "OH12",
+      "status": "LEGACY_TIP_REACH_NOT_MEASURED",
+      "pointers": [
+        "apuEgt"
+      ],
+      "photoSource": "panel-mosaic-lab/assets/locked/2026-10-23/OH12-BUS-TRANS-09319c17e7d0.png",
+      "note": "Existing pointer and center known, but native pixel inner end of each printed tick not verified."
+    },
+    "oh.cabin.diff_pressure_altitude": {
+      "panel": "OH19-DIFF",
+      "status": "LEGACY_TIP_REACH_NOT_MEASURED",
+      "pointers": [
+        "press",
+        "cabAlt"
+      ],
+      "photoSource": "panel-mosaic-lab/assets/locked/2026-10-23/OH19-PRESS-DIFF-ALT-HORN-d6719ce57cef.png",
+      "note": "Existing pointer and center known, but native pixel inner end of each printed tick not verified."
+    },
+    "oh.cabin.rate": {
+      "panel": "OH19-DIFF",
+      "status": "LEGACY_TIP_REACH_NOT_MEASURED",
+      "pointers": [
+        "cabinRate"
+      ],
+      "photoSource": "panel-mosaic-lab/assets/locked/2026-10-23/OH19-PRESS-DIFF-ALT-HORN-d6719ce57cef.png",
+      "note": "Existing pointer and center known, but native pixel inner end of each printed tick not verified."
+    },
+    "oh.cabin.temperature": {
+      "panel": "OH20",
+      "status": "LEGACY_TIP_REACH_NOT_MEASURED",
+      "pointers": [
+        "cabinTemperature"
+      ],
+      "photoSource": "panel-mosaic-lab/assets/locked/2026-10-23/OH20-AIR-CONDITIONING-0734da6a7726.png",
+      "note": "Existing pointer and center known, but native pixel inner end of each printed tick not verified."
+    },
+    "oh.duct.pressure_lr": {
+      "panel": "OH21",
+      "status": "LEGACY_TIP_REACH_NOT_MEASURED",
+      "pointers": [
+        "ductL",
+        "ductR"
+      ],
+      "photoSource": "panel-mosaic-lab/assets/locked/2026-10-23/OH21-BLEED-AIR-cc78219607a3.png",
+      "note": "Existing pointer and center known, but native pixel inner end of each printed tick not verified."
+    },
+    "capt.airspeed": {
+      "panel": "CAPTAIN",
+      "status": "PREVIOUSLY_REGISTERED_NEEDS_SOURCE_PIXEL_QA",
+      "pointers": [],
+      "photoSource": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png",
+      "note": "Newer captain/FO gauge overlays exist outside 23-needle initial audit; native tick match must be measured."
+    },
+    "capt.rmi": {
+      "panel": "CAPTAIN",
+      "status": "LOCKED_OWNER_APPROVED_SPRITE_FIT",
+      "pointers": [],
+      "photoSource": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png",
+      "note": "Owner RMI sprite shape/size locked; previous per-pivot tests show contact with tick inner edge. Do not redesign."
+    },
+    "capt.altimeter": {
+      "panel": "CAPTAIN",
+      "status": "PREVIOUSLY_REGISTERED_NEEDS_SOURCE_PIXEL_QA",
+      "pointers": [],
+      "photoSource": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png",
+      "note": "Newer captain/FO gauge overlays exist outside 23-needle initial audit; native tick match must be measured."
+    },
+    "capt.alt_ias_combined": {
+      "panel": "CAPTAIN",
+      "status": "NO_POINTER_INSTALLED",
+      "pointers": [],
+      "photoSource": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png",
+      "note": "No independent moving needle overlay yet; model and image geometry must be built before any visual QA."
+    },
+    "capt.vertical_speed": {
+      "panel": "CAPTAIN",
+      "status": "PREVIOUSLY_REGISTERED_NEEDS_SOURCE_PIXEL_QA",
+      "pointers": [],
+      "photoSource": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png",
+      "note": "Newer captain/FO gauge overlays exist outside 23-needle initial audit; native tick match must be measured."
+    },
+    "capt.clock": {
+      "panel": "CAPTAIN",
+      "status": "PREVIOUSLY_REGISTERED_NEEDS_SOURCE_PIXEL_QA",
+      "pointers": [],
+      "photoSource": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png",
+      "note": "Newer captain/FO gauge overlays exist outside 23-needle initial audit; native tick match must be measured."
+    },
+    "eng.left_upper_20_20": {
+      "panel": "ENGINE",
+      "status": "NO_POINTER_INSTALLED",
+      "pointers": [],
+      "photoSource": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "note": "No independent moving needle overlay yet; model and image geometry must be built before any visual QA."
+    },
+    "eng.fuel_qty.center": {
+      "panel": "ENGINE",
+      "status": "NO_POINTER_INSTALLED",
+      "pointers": [],
+      "photoSource": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "note": "No independent moving needle overlay yet; model and image geometry must be built before any visual QA."
+    },
+    "eng.fuel_qty.1": {
+      "panel": "ENGINE",
+      "status": "NO_POINTER_INSTALLED",
+      "pointers": [],
+      "photoSource": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "note": "No independent moving needle overlay yet; model and image geometry must be built before any visual QA."
+    },
+    "eng.fuel_qty.2": {
+      "panel": "ENGINE",
+      "status": "NO_POINTER_INSTALLED",
+      "pointers": [],
+      "photoSource": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "note": "No independent moving needle overlay yet; model and image geometry must be built before any visual QA."
+    },
+    "eng.n1.1": {
+      "panel": "ENGINE",
+      "status": "NO_POINTER_INSTALLED",
+      "pointers": [],
+      "photoSource": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "note": "No independent moving needle overlay yet; model and image geometry must be built before any visual QA."
+    },
+    "eng.n1.2": {
+      "panel": "ENGINE",
+      "status": "NO_POINTER_INSTALLED",
+      "pointers": [],
+      "photoSource": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "note": "No independent moving needle overlay yet; model and image geometry must be built before any visual QA."
+    },
+    "eng.egt.1": {
+      "panel": "ENGINE",
+      "status": "SIM_CONNECTED_UNCALIBRATED",
+      "pointers": [
+        "egt1",
+        "egt2"
+      ],
+      "photoSource": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "note": "N2/EGT simulator signal model exists but angular sweep deliberately marked provisional."
+    },
+    "eng.egt.2": {
+      "panel": "ENGINE",
+      "status": "SIM_CONNECTED_UNCALIBRATED",
+      "pointers": [
+        "egt1",
+        "egt2"
+      ],
+      "photoSource": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "note": "N2/EGT simulator signal model exists but angular sweep deliberately marked provisional."
+    },
+    "eng.n2.1": {
+      "panel": "ENGINE",
+      "status": "SIM_CONNECTED_UNCALIBRATED",
+      "pointers": [
+        "n2_1",
+        "n2_2"
+      ],
+      "photoSource": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "note": "N2/EGT simulator signal model exists but angular sweep deliberately marked provisional."
+    },
+    "eng.n2.2": {
+      "panel": "ENGINE",
+      "status": "SIM_CONNECTED_UNCALIBRATED",
+      "pointers": [
+        "n2_1",
+        "n2_2"
+      ],
+      "photoSource": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "note": "N2/EGT simulator signal model exists but angular sweep deliberately marked provisional."
+    },
+    "eng.fuel_flow.1": {
+      "panel": "ENGINE",
+      "status": "NO_POINTER_INSTALLED",
+      "pointers": [],
+      "photoSource": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "note": "No independent moving needle overlay yet; model and image geometry must be built before any visual QA."
+    },
+    "eng.fuel_flow.2": {
+      "panel": "ENGINE",
+      "status": "NO_POINTER_INSTALLED",
+      "pointers": [],
+      "photoSource": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "note": "No independent moving needle overlay yet; model and image geometry must be built before any visual QA."
+    },
+    "eng.oil_pressure.1": {
+      "panel": "ENGINE",
+      "status": "NO_POINTER_INSTALLED",
+      "pointers": [],
+      "photoSource": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "note": "No independent moving needle overlay yet; model and image geometry must be built before any visual QA."
+    },
+    "eng.oil_pressure.2": {
+      "panel": "ENGINE",
+      "status": "NO_POINTER_INSTALLED",
+      "pointers": [],
+      "photoSource": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "note": "No independent moving needle overlay yet; model and image geometry must be built before any visual QA."
+    },
+    "eng.oil_temperature.1": {
+      "panel": "ENGINE",
+      "status": "NO_POINTER_INSTALLED",
+      "pointers": [],
+      "photoSource": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "note": "No independent moving needle overlay yet; model and image geometry must be built before any visual QA."
+    },
+    "eng.oil_temperature.2": {
+      "panel": "ENGINE",
+      "status": "NO_POINTER_INSTALLED",
+      "pointers": [],
+      "photoSource": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "note": "No independent moving needle overlay yet; model and image geometry must be built before any visual QA."
+    },
+    "eng.vibration.1": {
+      "panel": "ENGINE",
+      "status": "NO_POINTER_INSTALLED",
+      "pointers": [],
+      "photoSource": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "note": "No independent moving needle overlay yet; model and image geometry must be built before any visual QA."
+    },
+    "eng.vibration.2": {
+      "panel": "ENGINE",
+      "status": "NO_POINTER_INSTALLED",
+      "pointers": [],
+      "photoSource": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "note": "No independent moving needle overlay yet; model and image geometry must be built before any visual QA."
+    },
+    "eng.hyd_pressure.a": {
+      "panel": "ENGINE",
+      "status": "NO_POINTER_INSTALLED",
+      "pointers": [],
+      "photoSource": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "note": "No independent moving needle overlay yet; model and image geometry must be built before any visual QA."
+    },
+    "eng.hyd_pressure.b": {
+      "panel": "ENGINE",
+      "status": "NO_POINTER_INSTALLED",
+      "pointers": [],
+      "photoSource": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "note": "No independent moving needle overlay yet; model and image geometry must be built before any visual QA."
+    },
+    "fo.flap_position": {
+      "panel": "FO-INNER",
+      "status": "LEGACY_TIP_REACH_NOT_MEASURED",
+      "pointers": [
+        "flapL",
+        "flapR"
+      ],
+      "photoSource": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Right_Main_Instruments_Blank.png",
+      "note": "Existing pointer and center known, but native pixel inner end of each printed tick not verified."
+    },
+    "fo.hyd_brake_pressure": {
+      "panel": "FO-INNER",
+      "status": "NO_POINTER_INSTALLED",
+      "pointers": [],
+      "photoSource": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Right_Main_Instruments_Blank.png",
+      "note": "No independent moving needle overlay yet; model and image geometry must be built before any visual QA."
+    },
+    "fo.airspeed": {
+      "panel": "FO-INNER",
+      "status": "PREVIOUSLY_REGISTERED_NEEDS_SOURCE_PIXEL_QA",
+      "pointers": [],
+      "photoSource": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Right_Main_Instruments_Blank.png",
+      "note": "Newer captain/FO gauge overlays exist outside 23-needle initial audit; native tick match must be measured."
+    },
+    "fo.rmi": {
+      "panel": "FO-INNER",
+      "status": "LOCKED_OWNER_APPROVED_SPRITE_FIT",
+      "pointers": [],
+      "photoSource": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Right_Main_Instruments_Blank.png",
+      "note": "Owner RMI sprite shape/size locked; previous per-pivot tests show contact with tick inner edge. Do not redesign."
+    },
+    "fo.left_linear": {
+      "panel": "FO-INNER",
+      "status": "NO_POINTER_INSTALLED",
+      "pointers": [],
+      "photoSource": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Right_Main_Instruments_Blank.png",
+      "note": "No independent moving needle overlay yet; model and image geometry must be built before any visual QA."
+    },
+    "fo.right_linear": {
+      "panel": "FO-INNER",
+      "status": "NO_POINTER_INSTALLED",
+      "pointers": [],
+      "photoSource": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Right_Main_Instruments_Blank.png",
+      "note": "No independent moving needle overlay yet; model and image geometry must be built before any visual QA."
+    },
+    "fo.outer_altimeter": {
+      "panel": "FO-OUTER",
+      "status": "PREVIOUSLY_REGISTERED_NEEDS_SOURCE_PIXEL_QA",
+      "pointers": [],
+      "photoSource": "file_000000006c00820ab145b3682f686256.png",
+      "note": "Newer captain/FO gauge overlays exist outside 23-needle initial audit; native tick match must be measured."
+    },
+    "fo.outer_vertical_speed": {
+      "panel": "FO-OUTER",
+      "status": "PREVIOUSLY_REGISTERED_NEEDS_SOURCE_PIXEL_QA",
+      "pointers": [],
+      "photoSource": "file_000000006c00820ab145b3682f686256.png",
+      "note": "Newer captain/FO gauge overlays exist outside 23-needle initial audit; native tick match must be measured."
+    },
+    "fo.outer_clock": {
+      "panel": "FO-OUTER",
+      "status": "PREVIOUSLY_REGISTERED_NEEDS_SOURCE_PIXEL_QA",
+      "pointers": [],
+      "photoSource": "file_000000006c00820ab145b3682f686256.png",
+      "note": "Newer captain/FO gauge overlays exist outside 23-needle initial audit; native tick match must be measured."
+    },
+    "ped.stab_trim.left": {
+      "panel": "THROTTLE",
+      "status": "NO_POINTER_INSTALLED",
+      "pointers": [],
+      "photoSource": "panel-mosaic-lab/assets/locked/2026-10-23/Aircraft Throttle Quadrant Control Panel.png",
+      "note": "No independent moving needle overlay yet; model and image geometry must be built before any visual QA."
+    },
+    "ped.stab_trim.right": {
+      "panel": "THROTTLE",
+      "status": "NO_POINTER_INSTALLED",
+      "pointers": [],
+      "photoSource": "panel-mosaic-lab/assets/locked/2026-10-23/Aircraft Throttle Quadrant Control Panel.png",
+      "note": "No independent moving needle overlay yet; model and image geometry must be built before any visual QA."
+    },
+    "ped.rudder_trim": {
+      "panel": "RADIO",
+      "status": "NO_POINTER_INSTALLED",
+      "pointers": [],
+      "photoSource": "panel-mosaic-lab/assets/locked/2026-10-23/PD-RADIO-AVIONICS-7a41044771fa.png",
+      "note": "No independent moving needle overlay yet; model and image geometry must be built before any visual QA."
+    },
+    "oh.crew_oxygen.pressure": {
+      "panel": "UPPER",
+      "status": "INSTALLED_GEOMETRY_TESTED_NOT_ZERO",
+      "pointers": [
+        "oxygenPressure"
+      ],
+      "photoSource": "panel-mosaic-lab/assets/locked/2026-10-23/OH01-06-source-9d8ac0ac86bd.png",
+      "note": "Oxygen gauge and sprite mounted/tested; pressure retained cold dark rather than forcing zero."
+    }
+  }
+}
