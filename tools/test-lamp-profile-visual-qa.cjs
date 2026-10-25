@@ -12,23 +12,24 @@ const {chromium}=require('playwright');
  const errors=[];page.on('pageerror',error=>errors.push(String(error)));
  const scenarios=[];
  try{
-  await page.goto('http://127.0.0.1:8788/panel-mosaic-lab/cockpit/',{waitUntil:'domcontentloaded',timeout:60000});
-  await page.waitForSelector('#overheadFrame',{timeout:60000});
-  await page.waitForFunction(()=>{const f=document.querySelector('#overheadFrame');return !!(f?.contentWindow?.B737OH22Pressurization&&f.contentWindow.B737Aircon400&&f.contentDocument?.querySelectorAll('.atlas-piece').length>=20)},{timeout:90000});
-  const frame=page.frameLocator('#overheadFrame');
+  await page.goto('http://127.0.0.1:8788/panel-mosaic-lab/cockpit/overhead-stage.html',{waitUntil:'domcontentloaded',timeout:60000});
+  await page.waitForFunction(()=>!!(window.B737OH22Pressurization&&window.B737Aircon400&&document.querySelectorAll('.atlas-piece').length>=20),null,{timeout:90000});
+  const frame=page;
   for(const system of ['DCPCS','CPCS']){
    for(const family of ['B737-300-500','B737-400']){
     await page.evaluate(({system,family})=>{
-      const win=document.getElementById('overheadFrame').contentWindow;
+      const win=window;
+      win.B737OH22Pressurization.setSystem(system);
+      win.B737Aircon400.switchFamily(family);
       win.postMessage({type:'b737:cockpit-command',action:'pressurization-background',system},location.origin);
       win.postMessage({type:'b737:cockpit-command',action:'aircon-background',family},location.origin);
     },{system,family});
     await page.waitForFunction(({system,family})=>{
-      const w=document.getElementById('overheadFrame')?.contentWindow;
+      const w=window;
       return w?.B737OH22Pressurization?.getSystem()===system&&w?.B737Aircon400?.getState()?.family===family;
     },{system,family},{timeout:25000});
     const data=await page.evaluate(({system,family})=>{
-      const w=document.getElementById('overheadFrame').contentWindow,d=w.document;
+      const w=window,d=document;
       const layer=d.querySelector('.oh22-pressure-controls'),panel=d.querySelector('.atlas-piece[data-key="OH22"]');
       const image=d.querySelector('.dcpcs-owner-oh22-background');
       const ac=d.getElementById('aircon400Overlay'),acback=d.querySelector('.b737-400-owner-oh20-background');
@@ -57,9 +58,9 @@ const {chromium}=require('playwright');
     assert.ok(data.lamps.every(x=>x.bounds.w>0&&x.bounds.w<300&&x.bounds.h<110),'Lens must remain inside photograph region');
     // Each configuration and light-test state is captured independently.
     for(const lit of [false,true]){
-      await page.evaluate(on=>{const w=document.getElementById('overheadFrame').contentWindow;w.B737OverheadLights.setLampTest(on);w.dispatchEvent(new CustomEvent('b737:pressure-light-test'));},lit);
+      await page.evaluate(on=>{const w=window;w.B737OverheadLights.setLampTest(on);w.dispatchEvent(new CustomEvent('b737:pressure-light-test'));},lit);
       await page.waitForTimeout(100);
-      const live=await page.evaluate(()=>{const d=document.getElementById('overheadFrame').contentDocument;return [...d.querySelectorAll('.oh22-pressure-controls [data-role="lamp"]')].map(n=>({id:n.dataset.lamp,lit:n.dataset.lit,on:n.classList.contains('on'),image:n.querySelector('img')?.src||null}))});
+      const live=await page.evaluate(()=>{const d=document;return [...d.querySelectorAll('.oh22-pressure-controls [data-role="lamp"]')].map(n=>({id:n.dataset.lamp,lit:n.dataset.lit,on:n.classList.contains('on'),image:n.querySelector('img')?.src||null}))});
       assert.equal(live.length,4);if(lit)assert.ok(live.every(x=>x.lit==='true'&&x.on),'OH22 visual test must light all four lamps');
       const tag=system+'_'+family.replace(/[^A-Za-z0-9]/g,'')+'_'+(lit?'ON':'OFF');
       await frame.locator('.atlas-piece[data-key="OH22"]').screenshot({path:path.join(out,tag+'_OH22.png'),timeout:20000});
@@ -67,7 +68,7 @@ const {chromium}=require('playwright');
       scenarios.push({tag,...data,lightTest:lit,litLamps:live});
       console.log('LAMP_PROFILE_VARIANT',JSON.stringify({tag,lamps:data.lamps.length,acVisible:data.airconVisible,oh22Owner:data.oh22BackgroundVisible,litCount:live.filter(x=>x.on).length}));
     }
-    await page.evaluate(()=>document.getElementById('overheadFrame').contentWindow.B737OverheadLights.setLampTest(false));
+    await page.evaluate(()=>window.B737OverheadLights.setLampTest(false));
    }
   }
   assert.equal(scenarios.length,8);
