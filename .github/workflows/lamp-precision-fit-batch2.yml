@@ -22,7 +22,7 @@ jobs:
         run: python3 panel-mosaic-lab/verify-final-overhead.py
       - name: Build 12 additional fitted annunciator vector faces
         run: python3 tools/build-lamp-precision-faces-batch2.py
-      - name: Run model, original-photo registry and glyph-integrity tests
+      - name: Run both vector-fit cohorts and photo/geometry regression tests
         run: |
           node panel-mosaic-lab/interactive-overhead/lights.test.cjs
           node panel-mosaic-lab/cockpit/lights.test.cjs
