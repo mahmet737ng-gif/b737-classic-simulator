@@ -1,0 +1,23 @@
+name: Native gauge source visual QA
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'tools/gauge-source-visual-review.py'
+      - '.github/workflows/gauge-source-visual-qa.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  source-crops:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install image review dependency
+        run: python3 -m pip install --user Pillow
+      - name: Lock-guard original overhead files
+        run: |
+          echo "283a3946ace19799284eb0f79dc924f744d661c4b6a1865932252f8ef29fd90f  panel-mosaic-lab/verify-final-overhead.py" | sha256sum --check --status
+          python3 panel-mosaic-lab/verify-final-overhead.py
+      - name: Emit readonly full-source gauge crops
+        run: python3 tools/gauge-source-visual-review.py
