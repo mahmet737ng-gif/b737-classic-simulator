@@ -1,46 +1,13 @@
 {
   "schema": "b737.overhead-toggle-overlay.v1",
-  "version": "TGL-0009-CENTER-APPROVED",
+  "version": "TGL-VISUAL-RESET-0001",
   "baseVersion": "UPD-0012-OVH-measured-seams",
   "baseLayout": "../all-overhead/atlas-layout.json",
   "baseSpec": "../all-overhead/spec.json",
   "guideLibraryFileId": "libfile_555402960f948191b6501fa77d2b8246",
   "scope": "plain toggle switches shown on owner lower-overhead guide; guarded/paddle controls, knobs, buttons and upper OH01-OH06 are separate stages",
-  "approvedVisuals": [
-    "b737-toggle-five-v9-user-approved-center"
-  ],
-  "assets": {
-    "vertical-off": {
-      "url": "../../shared-assets/toggle-switch-standard-v7/b737-toggle-five-center-approved-v9.webp",
-      "frame": 4,
-      "sha256": "f4a6a57a6d2e2f077a99ab2726fbc2ffb4377e678dbfaa069d1d9b7a60ceb391"
-    },
-    "vertical-center": {
-      "url": "../../shared-assets/toggle-switch-standard-v7/b737-toggle-five-center-approved-v9.webp",
-      "frame": 1,
-      "sha256": "f4a6a57a6d2e2f077a99ab2726fbc2ffb4377e678dbfaa069d1d9b7a60ceb391"
-    },
-    "vertical-on": {
-      "url": "../../shared-assets/toggle-switch-standard-v7/b737-toggle-five-center-approved-v9.webp",
-      "frame": 3,
-      "sha256": "f4a6a57a6d2e2f077a99ab2726fbc2ffb4377e678dbfaa069d1d9b7a60ceb391"
-    },
-    "horizontal-left": {
-      "url": "../../shared-assets/toggle-switch-standard-v7/b737-toggle-five-center-approved-v9.webp",
-      "frame": 0,
-      "sha256": "f4a6a57a6d2e2f077a99ab2726fbc2ffb4377e678dbfaa069d1d9b7a60ceb391"
-    },
-    "horizontal-center": {
-      "url": "../../shared-assets/toggle-switch-standard-v7/b737-toggle-five-center-approved-v9.webp",
-      "frame": 1,
-      "sha256": "f4a6a57a6d2e2f077a99ab2726fbc2ffb4377e678dbfaa069d1d9b7a60ceb391"
-    },
-    "horizontal-right": {
-      "url": "../../shared-assets/toggle-switch-standard-v7/b737-toggle-five-center-approved-v9.webp",
-      "frame": 2,
-      "sha256": "f4a6a57a6d2e2f077a99ab2726fbc2ffb4377e678dbfaa069d1d9b7a60ceb391"
-    }
-  },
+  "approvedVisuals": [],
+  "assets": {},
   "controls": [
     {
       "id": "alternate-flaps-position",
@@ -894,8 +861,7 @@
         "ON"
       ],
       "default": "ON",
-      "basis": "Owner Landing Lights reference: two outboard switches have UP/CENTER/DOWN positions; source bitmap unchanged.",
-      "visualFamily": "landing-triplet-v1"
+      "basis": "Owner Landing Lights reference: two outboard switches have UP/CENTER/DOWN positions; source bitmap unchanged."
     },
     {
       "id": "landing-out-r",
@@ -914,8 +880,7 @@
         "ON"
       ],
       "default": "ON",
-      "basis": "Owner Landing Lights reference: two outboard switches have UP/CENTER/DOWN positions; source bitmap unchanged.",
-      "visualFamily": "landing-triplet-v1"
+      "basis": "Owner Landing Lights reference: two outboard switches have UP/CENTER/DOWN positions; source bitmap unchanged."
     },
     {
       "id": "landing-in-l",
@@ -933,8 +898,7 @@
         "ON"
       ],
       "default": "ON",
-      "basis": "owner guide image; mounted at existing socket in locked source",
-      "visualFamily": "landing-triplet-v1"
+      "basis": "owner guide image; mounted at existing socket in locked source"
     },
     {
       "id": "landing-in-r",
@@ -952,8 +916,7 @@
         "ON"
       ],
       "default": "ON",
-      "basis": "owner guide image; mounted at existing socket in locked source",
-      "visualFamily": "landing-triplet-v1"
+      "basis": "owner guide image; mounted at existing socket in locked source"
     },
     {
       "id": "runway-turnoff-l",
@@ -1147,25 +1110,5 @@
     "Spring return for generator/test controls is a simulator interaction assignment; no new FCOM validation claimed.",
     "Source artwork and frozen placement files are not modified."
   ],
-  "specialAssets": {
-    "landingTriplet": {
-      "url": "../assets/locked/2026-10-23/Switches/Toggle/LandingLights/b737-landing-triple-3positions-v1.webp",
-      "sha256": "7c3abe2a758aad78c06830ac49002562e2808018dbebc0f6bf11664cffc92fc7",
-      "dimensions": [
-        300,
-        100
-      ],
-      "cell": [
-        100,
-        100
-      ],
-      "order": [
-        "UP",
-        "CENTER",
-        "DOWN"
-      ],
-      "transparent": true,
-      "provenance": "Owner-approved three-pose switch render. Pure visual overlay; source photograph unchanged."
-    }
-  }
+  "visualStatus": "AWAITING_NEW_OWNER_REFERENCE"
 }

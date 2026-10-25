@@ -63,9 +63,6 @@ test('Horizontal NAV transfer mechanics preserve three detents with hard stops',
   assert.match(html,/fcom-control-mechanics\.js/);
   assert.equal((html.match(/class="paddle-guard"/g)||[]).length,4);
   assert.equal((html.match(/class="toggle selector"/g)||[]).length,3);
-  assert.equal(html.split('class="nav-frame nav-left"').length-1,3);
-  assert.equal(html.split('class="nav-frame nav-center"').length-1,3);
-  assert.equal(html.split('class="nav-frame nav-right"').length-1,3);
 });
 
 test('FCOM requires spring return for alt flap DOWN only',()=>{
@@ -75,49 +72,12 @@ test('FCOM requires spring return for alt flap DOWN only',()=>{
   assert.match(js,/state\.altPosition === 'down'/);
 });
 
-test('photo-matched three-position frames and actual JS source compile',()=>{
-  const vm=require('node:vm');
-  const dir=path.join(__dirname,'../flight-controls-panel');
-  const html=fs.readFileSync(path.join(dir,'index.html'),'utf8');
-  const css=fs.readFileSync(path.join(dir,'flight-controls.css'),'utf8');
-  const js=fs.readFileSync(path.join(dir,'flight-controls.js'),'utf8');
-  const map=JSON.parse(fs.readFileSync(path.join(dir,'nav-transfer-visual-calibration.json'),'utf8'));
-  new vm.Script(js,{filename:'flight-controls.js'});
-  assert.equal(map.nativeImageSize.width,893);
-  assert.equal(map.nativeImageSize.height,1761);
-  assert.ok(html.includes('flight-controls-front-empty-v1.webp'));
-  for(const id of ['vhfNav','irs','efi']){
-    const meta=map.switches.find(item=>item.id===id);
-    assert.ok(meta,id+' missing calibration');
-    const start=html.indexOf('<button class="toggle selector" data-control="'+id+'"');
-    assert.ok(start>=0,id+' missing selector');
-    const segment=html.slice(start,html.indexOf('</button>',start));
-    for(const [detent,frameIndex] of [['left',0],['center',1],['right',2]]){
-      assert.ok(segment.includes('class="nav-frame nav-'+detent+'"'),id+' '+detent);
-      const offset=frameIndex*25;
-      assert.ok(css.includes('.toggle.selector .nav-'+detent+'{background-position:'+offset+'% 50%}'),id+' atlas frame '+frameIndex);
-    }
-    const atlasPath=path.resolve(dir,'../shared-assets/toggle-switch-standard-v7/b737-toggle-five-center-approved-v9.webp');
-    const atlas=fs.readFileSync(atlasPath);
-    assert.ok(atlas.length>1000,'owner-approved atlas missing');
-    assert.equal(atlas.toString('ascii',0,4),'RIFF');
-    assert.equal(atlas.toString('ascii',8,12),'WEBP');
-    assert.equal(require('node:crypto').createHash('sha256').update(atlas).digest('hex'),'f4a6a57a6d2e2f077a99ab2726fbc2ffb4377e678dbfaa069d1d9b7a60ceb391','five aligned fixed-bezel frames unchanged');
-    assert.ok(segment.includes('data:image/gif;base64,'),'legacy sprite image is not loaded');
-    for(const [key,prefix] of [['x','--x'],['y','--y'],['width','--w'],['height','--h']]){
-      const begin=segment.indexOf(prefix+':');
-      assert.ok(begin>=0,id+' missing '+key);
-      const actual=parseFloat(segment.slice(begin+prefix.length+1));
-      assert.equal(actual,meta.boxPct[key],id+' '+key);
-    }
-  }
-  assert.ok(css.includes('data-position="left"] .nav-left'));
-  assert.ok(css.includes('data-position="normal"] .nav-center'));
-  assert.ok(css.includes('data-position="right"] .nav-right'));
-  assert.ok(css.includes('.toggle .frame-off{background-position:75% 50%}'),'OFF faces UP at the hardware bezel');
-  assert.ok(css.includes('.toggle .frame-on{background-position:100% 50%}'),'ON faces DOWN at the hardware bezel');
-  assert.ok(css.includes('.toggle[data-control="altPosition"][data-position="off"] .frame-center{opacity:1!important}'),'Alt flaps central OFF detent is centered');
-  assert.ok(js.includes('const $$ = (selector'));
-  assert.ok(!js.includes('$$$('));
-  assert.ok(js.includes('pointermove')&&js.includes('setPointerCapture'));
+test('Visual reset preserves horizontal selector mechanics without any sprites',()=>{
+ const vm=require('node:vm'),dir=path.join(__dirname,'../flight-controls-panel');
+ const html=fs.readFileSync(path.join(dir,'index.html'),'utf8'),css=fs.readFileSync(path.join(dir,'flight-controls.css'),'utf8');
+ const js=fs.readFileSync(path.join(dir,'flight-controls.js'),'utf8');
+ new vm.Script(js);
+ assert.equal((html.match(/class="toggle selector"/g)||[]).length,3);
+ assert.ok(!html.includes('class="nav-frame'));assert.ok(!html.includes('class="frame frame-'));
+ assert.ok(!css.includes('toggle-switch-standard-'));assert.ok(js.includes('pointermove')&&js.includes('setPointerCapture'));
 });

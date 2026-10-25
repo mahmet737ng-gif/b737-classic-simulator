@@ -1,10 +1,7 @@
+/* Owner requested complete visual toggle reset. Only invisible event hitzones remain. */
 .toggle-layer{position:absolute;inset:0;z-index:80;pointer-events:none}
 .mounted-toggle{position:absolute;display:block;padding:0!important;margin:0!important;min-width:0;min-height:0;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;outline:0;transform:translate(-50%,-50%);touch-action:none;pointer-events:auto;cursor:pointer;overflow:visible;isolation:isolate;-webkit-tap-highlight-color:transparent}
 .mounted-toggle:focus-visible{outline:2px solid #ecc68a;outline-offset:3px;border-radius:8px!important}
-.toggle-art{position:absolute;left:50%;top:50%;width:0;height:0;pointer-events:none}
-.toggle-frame{position:absolute;display:block;max-width:none!important;max-height:none!important;pointer-events:none;user-select:none;opacity:0;transition:opacity 270ms cubic-bezier(.2,.8,.2,1);object-fit:fill}
-.toggle-frame.active{opacity:1}
-.mounted-toggle:hover .toggle-frame.active{filter:brightness(1.07)}
 .toggle-inspector{margin:0 0 20px;padding:0 0 16px;border-bottom:1px solid #486578;line-height:1.6}
 .toggle-inspector>strong{display:block;color:#b2ebce;font-size:14px}
 .toggle-inspector h3{font-size:13px;direction:ltr;text-align:left;margin:12px 0 8px;color:#f0f6fb}
@@ -15,16 +12,3 @@
 .toggle-inspector label{display:flex;align-items:center;gap:7px;margin:10px 0;font-size:12px}
 .toggle-inspector input[type=checkbox]{width:auto}
 #resetToggles{width:100%;font-size:12px;padding:7px}
-@media(prefers-reduced-motion:reduce){.toggle-frame{transition:none}}
-
-/* TGL-0003 HQ: same immutable nut/pivot in all five visual states. */
-.toggle-frame{will-change:opacity;background-color:transparent}
-
-/* TGL-0004: no opaque background in toggle frames, and never show the old photographed socket behind them. */
-.mounted-toggle .toggle-socket-cleanup{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);pointer-events:none;z-index:0;display:block;background:transparent;image-rendering:auto}
-.mounted-toggle .toggle-art{z-index:1}
-.mounted-toggle .toggle-frame{background-color:transparent!important}
-
-/* TGL-0005: never allow a fallback black fill; all backing is sampled from the real panel. */
-.toggle-socket-cleanup{background:none!important;border:0!important;box-shadow:none!important;border-radius:0!important}
-.toggle-frame,.landing-triplet-frame{background-color:transparent!important;box-shadow:none!important}

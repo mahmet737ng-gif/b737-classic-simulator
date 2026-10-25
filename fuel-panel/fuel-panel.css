@@ -287,11 +287,6 @@ body {
   *, *::before, *::after { animation-duration: .001ms !important; transition-duration: .001ms !important; }
 }
 
-/* TGL-0005: fixed metal bezel; OFF points UP, ON points DOWN. */
-.toggle-visual img{
- content:url("data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=")!important;
- background-image:url("../shared-assets/toggle-switch-standard-v7/b737-toggle-five-center-approved-v9.webp");background-size:500% 100%;background-repeat:no-repeat;
- transform:none!important;object-fit:fill!important;
-}
-.toggle-visual .off-frame{background-position:75% 50%}
-.toggle-visual .on-frame{background-position:100% 50%}
+
+/* Fuel toggle click areas are retained; old artwork is absent. */
+.toggle-visual,.toggle-visual img{display:none!important;background:none!important;box-shadow:none!important}

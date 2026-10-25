@@ -3,22 +3,14 @@
  const entryURL=document.currentScript.src,localURL=p=>new URL(p,entryURL).href;
  const STORAGE='b737-overhead-toggles-TGL-0001';
  const byId=id=>document.getElementById(id),model=window.B737OverheadToggleModel;
- // All five poses share the identical, immovable metal collar and orthographic pivot.
- // Every sprite cell is 768 x 768; the fixed metal disc is ~245 source pixels wide.
- const calibration=Object.fromEntries(
-  ['vertical-off','vertical-center','vertical-on','horizontal-left','horizontal-center','horizontal-right']
-   .map(key=>[key,{w:768,h:768,x:384,y:384,diameter:245}])
- );
  let registry,engine,active=null,layer;
  const nodes=new Map(),interlocks=new Map();
  function persist(){try{localStorage.setItem(STORAGE,JSON.stringify(engine.snapshot()));}catch{}}
- function frameKeys(c){return window.B737TogglePoseMap.frameKeys(c);}
  function refreshOne(c){
   const button=nodes.get(c.id);if(!button)return;
   const value=engine.get(c.id),index=c.states.indexOf(value);
   button.setAttribute('aria-disabled',String(interlocks.get(c.id)===false));
   button.dataset.state=value;button.setAttribute('aria-valuenow',String(index));button.setAttribute('aria-valuetext',value);button.setAttribute('aria-label',c.label+' — '+value);
-  button.querySelectorAll('.toggle-frame').forEach((img,i)=>img.classList.toggle('active',i===index));
   if(active===c.id){byId('toggleState').textContent=value;for(const b of byId('toggleStates').children){b.classList.toggle('active',b.dataset.state===value);b.disabled=interlocks.get(c.id)===false;}}
  }
  function select(c){
@@ -82,51 +74,11 @@
    button.type='button';button.className='mounted-toggle';button.id='toggle-'+c.id;button.dataset.control=c.id;button.dataset.axis=c.axis;button.dataset.placement=c.placementId;
    button.setAttribute('role','slider');button.setAttribute('aria-orientation',c.axis);button.setAttribute('aria-valuemin','0');button.setAttribute('aria-valuemax',String(c.states.length-1));button.title=c.label;
    Object.assign(button.style,{left:p.x+'px',top:p.y+'px',width:(p.diameter*1.65)+'px',height:(p.diameter*1.65)+'px'});
-   // The locked source photo still contains the old hardware/socket underneath.
-   // Paint a feathered local replacement on a separate layer, below the transparent sprite.
-   const cleanup=document.createElement('canvas');
-   cleanup.className='toggle-socket-cleanup';
-   cleanup.setAttribute('aria-hidden','true');
-   cleanup.dataset.placement=c.placementId;
-   const art=document.createElement('span');art.className='toggle-art';
-   // The four landing-light paddle levers use the approved top-down
-   // UP/CENTER/DOWN artwork, independent of all generic toggle images.
-   // Their photographed pivot position is constant in every detent.
-   const landing=c.visualFamily==='landing-triplet-v1';
-   if(landing){
-    button.dataset.visual='landing-triplet-v1';
-    const sprite=registry.specialAssets?.landingTriplet;
-    if(!sprite||sprite.order.join('/')!=='UP/CENTER/DOWN')throw Error('Approved landing-light paddle artwork missing');
-    const frames=window.B737TogglePoseMap.landingFrames(c); // OFF is UP; ON is DOWN
-    const size=p.diameter*(c.id.startsWith('landing-in-')?1.06:1.35);
-    for(const frame of frames){
-      const img=document.createElement('span');
-      img.className='toggle-frame landing-triplet-frame';img.setAttribute('aria-hidden','true');
-      Object.assign(img.style,{
-       left:(-size/2)+'px',top:(-size/2)+'px',width:size+'px',height:size+'px',
-       backgroundImage:'url("'+localURL(sprite.url)+'")',
-       backgroundSize:'300% 100%',backgroundPosition:(frame*50)+'% 50%',backgroundRepeat:'no-repeat'
-      });
-      art.append(img);
-    }
-   }else for(const key of frameKeys(c)){
-    const a=calibration[key],sprite=registry.assets[key],scale=p.diameter/a.diameter,img=document.createElement('span');
-    img.className='toggle-frame';img.setAttribute('aria-hidden','true');
-    Object.assign(img.style,{
-      left:(-a.x*scale)+'px',top:(-a.y*scale)+'px',width:(a.w*scale)+'px',height:(a.h*scale)+'px',
-      backgroundImage:'url("'+localURL(sprite.url)+'")',
-      backgroundSize:'500% 100%',backgroundPosition:(sprite.frame*25)+'% 50%',backgroundRepeat:'no-repeat'
-    });art.append(img);
-   }
-   button.append(cleanup,art);layer.append(button);nodes.set(c.id,button);bind(c,button);refreshOne(c);
-   const photo=document.querySelector('#atlasAbsolute .atlas-piece[data-key="'+c.placementId+'"] .atlas-photo');
-   if(photo&&window.B737ToggleSocketCleanup){
-    const paint=()=>window.B737ToggleSocketCleanup.render(cleanup,photo,c.sourcePoint,c.bezelSourceDiameter,p.diameter,c.placementId);
-    if(!paint())photo.addEventListener('load',paint,{once:true});
-   }
+   // VISUAL RESET: transparent hitbox only; no sprites, shadows or inpainting.
+   layer.append(button);nodes.set(c.id,button);bind(c,button);refreshOne(c);
   }
   byId('atlasAbsolute').append(layer);
-  byId('toggleCount').textContent=registry.controls.length+' تاگل تعاملی · '+registry.version;
+  byId('toggleCount').textContent=registry.controls.length+' تاگل تعاملی — بدون تصویر، منتظر رفرنس جدید · '+registry.version;
   byId('toggleVisibility').onchange=e=>layer.classList.toggle('hidden',!e.target.checked);
   byId('resetToggles').onclick=()=>{engine.releaseAll();engine.reset();persist();byId('toggleState').textContent='RESET';};
   select(registry.controls.find(c=>c.id==='vhf-nav'));
