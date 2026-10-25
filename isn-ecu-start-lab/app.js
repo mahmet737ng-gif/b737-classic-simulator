@@ -24,6 +24,7 @@ function engineCard(e,num){
  <p>START VALVE <strong>${e.startValveOpen===null?'UNKNOWN':e.startValveOpen?'OPEN':'CLOSED'}</strong> · FUEL LEVER <strong>${html(e.fuelLever)}</strong> · PHASE <strong>${html(e.phase)}</strong></p>
  <p>FUEL SUPPLY <strong class="${e.fuelSupplyReady===true?'ok':'amber'}">${e.fuelSupplyReady===true?(e.fuelSupplyReason==='OWN_MAIN_ENGINE_DRIVEN_SUCTION'?'SUCTION FEED — OWN MAIN TANK':'AVAILABLE'):html(e.fuelSupplyReason||'UNAVAILABLE')}</strong></p>
  <p>IGN L ${e.ignition?.eligible?.left===true?'POWERED':e.ignition?.eligible?.left===null?'UNKNOWN':'OFF'} · IGN R ${e.ignition?.eligible?.right===true?'POWERED':e.ignition?.eligible?.right===null?'UNKNOWN':'OFF'}</p>
+ <p>START DUCT ${e.starterDuctPsiTraining} PSI (TRAINING INPUT) · NOMINAL 25% N2 ${(e.startTimingTraining.motoringMs/1000).toFixed(1)}s · POST-IDLE ${(e.startTimingTraining.lightoffMs/1000).toFixed(1)}s</p>
  <p><span class="lamp ${e.oil.lowPressureLamp?'on':'off'}">LOW OIL PRESSURE ${e.oil.lowPressureLamp?'ON':'OFF'}</span>
  <span class="lamp ${e.oil.filterBypassLamp?'on':'off'}">OIL FILTER BYPASS ${e.oil.filterBypassLamp?'ON':'OFF'}</span></p></section>`;
 }
@@ -31,6 +32,7 @@ function render(){if(!sim)return;const s=sim.get();$('clock').textContent=`${(s.
  $('apu').textContent=`BATTERY ${s.electrical.battery?'ON':'OFF'} · APU ${s.apu.rpmPct}% RPM · EGT ${s.apu.egtC}°C · GEN ${s.apu.generator?.voltageV??0} V / ${s.apu.generator?.frequencyHz??0} Hz · APU LOAD ${s.apu.load?.actualLoadKva??0} kVA · POWER ${s.apu.load?.powerDemandPercent??0}% · FUEL ${s.apu.fuelFlowEstimatedKgHr??0} kg/h · BLEED ${s.apu.bleedValveOpen?'OPEN':'CLOSED'} · BUS 1 ${s.electrical.selectedSources[1]||'OFF'}`;
  $('engines').innerHTML=engineCard(s.engines.engine1,1)+engineCard(s.engines.engine2,2);
  $('ignitionStatus').textContent=`STANDBY POWER ${s.electrical.standbySelector} · STANDBY AC ${s.electrical.standbyAcPowered===true?'AVAILABLE':s.electrical.standbyAcPowered===false?'OFF':'UNKNOWN'} · RIGHT IGNITION: AC STANDBY (BAT via inverter)`;
+ $('ductInfo').textContent=`ENG1 ${s.engines.engine1.starterDuctPsiTraining} PSI · ENG2 ${s.engines.engine2.starterDuctPsiTraining} PSI (simulated); 35 PSI -> nominal 65s cycle`;
  $('alertSummary').textContent=s.alerts.length?s.alerts.map(a=>a.id).join(' | '):'No active advisories';
  $('fuelStatus').textContent=`MAIN1 ${s.fuel.tanksKg.main1.toFixed(1)} kg · CENTER ${s.fuel.tanksKg.center.toFixed(1)} kg · MAIN2 ${s.fuel.tanksKg.main2.toFixed(1)} kg · CROSSFEED ${s.fuel.crossfeed}`;
  $('log').textContent=s.trace.slice(-40).map(x=>`${(x.tMs/1000).toFixed(2).padStart(7)}s ${x.type} ${JSON.stringify(x)}`).join('\n');
@@ -77,7 +79,14 @@ function action(type){if(type==='reset'){create();return;}if(!sim)throw Error('S
  case 'hot1':sim.setStartFault('engine1','egtHigh',true);break;
  case 'crossfeed':sim.core.fuel.setCrossfeed(status.fuel.crossfeed==='OPEN'?'CLOSED':'OPEN');break;
  case 'fuelLoss1':sim.core.setFireSwitch('engine1',true);break;
- case 'n1plan':{
+ case 'flightInputs':{
+   sim.setFlightInputs({iasKt:Number($('ias').value),
+    pressureAltitudeFt:Number($('alt').value),oatC:Number($('oat').value)});
+   $('n1result').textContent='FLIGHT CONDITIONS UPDATED · IAS '+sim.get().aircraft.iasKt+
+    ' kt · ALT '+sim.get().aircraft.pressureAltitudeFt+' ft · each engine fuel flow responds to throttle, altitude and IAS';
+   break;
+  }
+  case 'n1plan':{
   const ias=Number($('ias').value),alt=Number($('alt').value),oat=Number($('oat').value);
   sim.setFlightInputs({iasKt:ias,pressureAltitudeFt:alt,oatC:oat});
   const r=sim.planThrust('engine1',{mode:$('mode').value});
@@ -89,5 +98,10 @@ function action(type){if(type==='reset'){create();return;}if(!sim)throw Error('S
 document.addEventListener('click',e=>{const button=e.target.closest('[data-act]');if(!button)return;
  $('errors').textContent='';try{action(button.dataset.act);}catch(err){$('errors').textContent=err.message;render();}});
 for(const id of ['throttle1','throttle2'])$(id).addEventListener('input',e=>{try{sim.setThrottle('engine'+id.at(-1),Number(e.target.value)/100);$('errors').textContent='';}catch(err){$('errors').textContent=err.message;}render();});
+ for(const id of ['duct1','duct2'])$(id).addEventListener('change',e=>{
+  try{sim.setStartDuctPressure('engine'+id.at(-1),Number(e.target.value));$('errors').textContent='';}
+  catch(err){$('errors').textContent=err.message;}
+  render();
+ });
 try{create();}catch(err){$('errors').textContent='Missing engine library: '+err.message;console.error(err);}
 })();
