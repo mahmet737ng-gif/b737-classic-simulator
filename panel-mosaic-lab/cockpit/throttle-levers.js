@@ -76,10 +76,32 @@ function place(engine,tex){
  Object.assign(hit.style,{left:(x-60)+'px',top:(tex.offsetTop+60)+'px',width:'120px',height:'570px'});
  root.append(hit);controls.set(engine,{sprite:sprites,visual:hit,select:null});
 }
+function mountPlasticCover(tex){
+ if(root.querySelector('.throttle-plastic-cover'))return;
+ // Calibrated against the owner screenshot: the two unfilled throttle paths
+ // and center hump only. Never edit the locked quadrant photograph.
+ const sourceRect={x:625,y:165,w:250,h:680};
+ const sourceWindow={x:20,y:30,w:1055,h:1290};
+ const unit=tex.offsetWidth/sourceWindow.w;
+ const cover=document.createElement('img');
+ cover.className='throttle-plastic-cover';
+ cover.alt='';
+ cover.draggable=false;
+ cover.decoding='async';
+ cover.src=CONFIG.relativeAssetRoot+'throttle-plastic-cover.svg?v=THR-0003';
+ Object.assign(cover.style,{
+  left:(tex.offsetLeft+(sourceRect.x-sourceWindow.x)*unit)+'px',
+  top:(tex.offsetTop+(sourceRect.y-sourceWindow.y)*unit)+'px',
+  width:(sourceRect.w*unit)+'px',height:(sourceRect.h*unit)+'px'
+ });
+ // The cover is behind all throttle sprites and does not intercept controls.
+ root.append(cover);
+}
 async function mount(){
  if(mounted)return;root=document.querySelector('#region-pedestal .region-native');
  texture=root?.querySelector('[data-piece="throttle-quadrant"]');
  if(!root||!texture)return;
+ mountPlasticCover(texture);
  try{
    const entries=[1,2].flatMap(e=>KEYS.map(p=>[filename(e,p),path(e,p)]));
    const loaded=await Promise.all(entries.map(async ([name,url])=>{
