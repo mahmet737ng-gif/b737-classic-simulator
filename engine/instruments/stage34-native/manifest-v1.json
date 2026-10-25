@@ -1,7 +1,7 @@
 {
   "schema": "b737.stage3-4.native-evidence-manifest.v1",
   "created": "2026-10-25",
-  "sourceRun": "https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/40221766933",
+  "sourceRun": "https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/40222250774",
   "sourceBranch": "main",
   "sourceOriginalsSha256Verified": true,
   "originalOverheadLocksPassed": true,
@@ -27,7 +27,8 @@
     "noNeighbor": 0,
     "circleRimCandidates": 49,
     "approvedNeedlePivots": 0,
-    "certifiedTickScales": 0
+    "certifiedTickScales": 0,
+    "linearTickCandidates": 29
   },
   "groupFiles": [
     {
@@ -55,6 +56,8 @@
     "Major/medium/minor strokes are only provisional length categories; label values not inferred from size.",
     "True needle axis is not assumed to equal photographic case/rim center.",
     "Five linear strips have travel-window rectangles and no rotation pivot.",
-    "Differential pressure and cabin altitude measured on separate concentric radius bands."
+    "Differential pressure and cabin altitude measured on separate concentric radius bands.",
+    "Five linear strips scanned with transverse Hough segments plus directional morphology; detected segments remain unverified, including missing ticks on some strips.",
+    "Source photographs are immutable and independently SHA256-checked on CI."
   ]
 }
