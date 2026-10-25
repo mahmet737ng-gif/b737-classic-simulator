@@ -13,7 +13,8 @@
     'PSI':'psi',psi:'psi',ft:'ft',A:'A',Hz:'Hz'}[u]||u);
  const selectMode=route=>route.channel==='cabAlt'?'cabinAltitude':
     route.channel==='press'?'diffPressure':route.modeSelector?'UNVERIFIED_MODE':'primary';
- function create({routes,scales,scaleEngine,dynamics,previewPowerPolicy='require_verified_feed'}={}){
+ function create({routes,scales,scaleEngine,dynamics,profileRegistry=null,
+    previewPowerPolicy='require_verified_feed'}={}){
   if(routes?.schema!=='b737.stage8.pointer-routing.v1'||routes.routes?.length!==38||
      scales?.schema!=='b737.stage10.candidate-calibration-subset.v1'||
      scales.counts?.scaleModes!==7||scaleEngine?.compile===undefined||!dynamics?.create)
@@ -22,6 +23,10 @@
    throw Error('Invalid preview-only power option');
   if(scales.readiness!=='PREVIEW_ONLY_0_PHOTO_APPROVAL'||routes.counts?.liveApproved!==0)
    throw Error('Geometry authorisation must remain blocked');
+  if(profileRegistry&&(profileRegistry.schema!=='b737.stage9.pointer-response-contracts.v1'||
+      profileRegistry.pointers?.length!==38||profileRegistry.counts?.certifiedMechanicalResponseProfiles!==0))
+   throw Error('Invalid source stage9 response profile registry');
+  const registryProfiles=new Map((profileRegistry?.pointers||[]).map(r=>[r.pointerId,r]));
   const drivers=new Map(),results={},blocked={};
   for(const route of routes.routes){
    const mode=selectMode(route),key=route.faceId+':'+mode;
@@ -33,11 +38,15 @@
    if(compiled.approved)throw Error('Stage10 preview must never load an approved map');
    const a=compiled.marks[0].angleUnwrappedDeg,b=compiled.marks.at(-1).angleUnwrappedDeg;
    if(!finite(a)||!finite(b)||a>=b)throw Error('Source scale direction ambiguous');
-   const profile=route.faceId.startsWith('oh.elec.')?
+   const trainingProfile=route.faceId.startsWith('oh.elec.')?
      {mode:'slew',speedDegPerSec:120,requiresPower:true,lossBehavior:'hold'}:
      route.faceId==='oh.fuel.temperature'?
        {mode:'first_order',tauSeconds:2.0,requiresPower:true,lossBehavior:'hold'}:
        {mode:'second_order',omegaRadSec:5,dampingRatio:1.1,requiresPower:true,lossBehavior:'hold'};
+   const entry=registryProfiles.get(route.spriteId);
+   if(profileRegistry&&(!entry||entry.faceId!==route.faceId||!entry.response||entry.approvedForOperationalMotion))
+    throw Error('Unverified stage9 response profile for '+route.spriteId);
+   const profile=entry?entry.response:trainingProfile;
    drivers.set(route.spriteId,{route,compiled,profile,
      motion:dynamics.create({id:route.spriteId,profile,limits:{minAngleDeg:a,maxAngleDeg:b}})});
   }
