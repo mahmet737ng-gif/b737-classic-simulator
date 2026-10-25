@@ -3,30 +3,349 @@
   "purpose": "Inventory of the 23 needle overlays currently mounted in Unified; NOT a claim that all aircraft gauges are calibrated",
   "status": "incomplete_do_not_bind_as_aircraft_readings",
   "coordinateSpace": "native pixels of each unchanged source panel",
-  "requiredForActivation": ["source image and image hash", "correct pivot", "unit", "printed minimum and maximum", "position of every major and minor tick", "sensor signal ID and validity", "power/failure behavior", "source/page/effectivity", "visual and numeric QA"],
+  "requiredForActivation": [
+    "source image and image hash",
+    "correct pivot",
+    "unit",
+    "printed minimum and maximum",
+    "position of every major and minor tick",
+    "sensor signal ID and validity",
+    "power/failure behavior",
+    "source/page/effectivity",
+    "visual and numeric QA"
+  ],
   "gauges": [
-    {"id":"dcAmps","panel":"OH10","printedLabels":["-50","0","+50"],"issue":"Outer end ticks extend beyond the ±50 labels; true endpoints must be checked"},
-    {"id":"cps","panel":"OH10","printedLabels":["0","400","420"],"issue":"Printed 0/400/420 progression is suspect for a frequency dial; do not infer a linear range"},
-    {"id":"dcVolts","panel":"OH10","printedLabels":["0","20","40"],"issue":"All intervening tick coordinates still need measurement"},
-    {"id":"acVolts","panel":"OH10","printedLabels":["100","110","120","130"],"issue":"All intervening tick coordinates still need measurement"},
-    {"id":"driveOil1","panel":"OH11","printedLabels":["RISE 0","RISE 10","RISE 20","RISE 30","IN 80","IN 120","IN 160"],"issue":"Two scales share one needle; selector/signal mode and tick coordinates are required"},
-    {"id":"driveOil2","panel":"OH11","printedLabels":["RISE 0","RISE 10","RISE 20","RISE 30","IN 80","IN 120","IN 160"],"issue":"Two scales share one needle; selector/signal mode and tick coordinates are required"},
-    {"id":"acAmps1","panel":"OH12","printedLabels":["0","50","100","150","200"],"issue":"Minor tick coordinates and source signal remain unverified"},
-    {"id":"acAmps2","panel":"OH12","printedLabels":["0","50","100","150","200"],"issue":"Minor tick coordinates and source signal remain unverified"},
-    {"id":"apuAcAmps","panel":"OH12","printedLabels":["0","50","100","150","200"],"issue":"Minor tick coordinates and source signal remain unverified"},
-    {"id":"apuEgt","panel":"OH12","printedLabels":["1","2","3","4","5","6","7","8","°C×100"],"issue":"Circular scale and needle direction require full image-point registration"},
-    {"id":"press","panel":"OH19","printedLabels":["0","1","2","3","4","5","6","7","8","9","10","PSI"],"issue":"Outer scale; every intermediate tick must be registered separately"},
-    {"id":"cabAlt","panel":"OH19","printedLabels":["3","10","15","20","25","30","35","40","50","×1000 FT"],"issue":"Inner scale is not a simple uniform 0–50 arc; unlabeled zero/endpoints need confirmation"},
-    {"id":"cabinRate","panel":"OH19","printedLabels":["DN","0",".5","1","2","3","4","1000 FEET PER MIN"],"issue":"Signed climb/descent halves need separate direction and tick registration"},
-    {"id":"cabinTemperature","panel":"OH20","printedLabels":["0","20","40","60","80","100","°C"],"issue":"Major angles exist provisionally; all minor tick coordinates need measurement"},
-    {"id":"ductR","panel":"OH21","printedLabels":["20","40","60","80","100","PSI"],"issue":"Unlabeled lower-left endpoint and minor tick positions need verification"},
-    {"id":"ductL","panel":"OH21","printedLabels":["20","40","60","80","100","PSI"],"issue":"Unlabeled lower-left endpoint and minor tick positions need verification"},
-    {"id":"fuelTemperature","panel":"OH09","printedLabels":[],"issue":"Existing -40..40 °C visual registry is not a full native-image tick survey"},
-    {"id":"flapL","panel":"FO_INNER_GEAR","printedLabels":["UP","1","2","5","10","15","25","30","40"],"issue":"Existing stop angles are visual calibrations; source-image tick coordinates not recorded"},
-    {"id":"flapR","panel":"FO_INNER_GEAR","printedLabels":["UP","1","2","5","10","15","25","30","40"],"issue":"Existing stop angles are visual calibrations; source-image tick coordinates not recorded"},
-    {"id":"egt1","panel":"ENGINE_STANDBY","printedLabels":[],"issue":"Current 0..800 mapping explicitly marked temporary training visualization"},
-    {"id":"egt2","panel":"ENGINE_STANDBY","printedLabels":[],"issue":"Current 0..800 mapping explicitly marked temporary training visualization"},
-    {"id":"n2_1","panel":"ENGINE_STANDBY","printedLabels":[],"issue":"Current 0..100 mapping explicitly marked temporary training visualization"},
-    {"id":"n2_2","panel":"ENGINE_STANDBY","printedLabels":[],"issue":"Current 0..100 mapping explicitly marked temporary training visualization"}
+    {
+      "id": "dcAmps",
+      "panel": "OH10",
+      "printedLabels": [
+        "-50",
+        "0",
+        "+50"
+      ],
+      "issue": "Outer end ticks extend beyond the ±50 labels; true endpoints must be checked"
+    },
+    {
+      "id": "cps",
+      "panel": "OH10",
+      "printedLabels": [
+        "0",
+        "400",
+        "420"
+      ],
+      "issue": "Printed 0/400/420 progression is suspect for a frequency dial; do not infer a linear range"
+    },
+    {
+      "id": "dcVolts",
+      "panel": "OH10",
+      "printedLabels": [
+        "0",
+        "20",
+        "40"
+      ],
+      "issue": "All intervening tick coordinates still need measurement"
+    },
+    {
+      "id": "acVolts",
+      "panel": "OH10",
+      "printedLabels": [
+        "100",
+        "110",
+        "120",
+        "130"
+      ],
+      "issue": "All intervening tick coordinates still need measurement"
+    },
+    {
+      "id": "driveOil1",
+      "panel": "OH11",
+      "printedLabels": [
+        "RISE 0",
+        "RISE 10",
+        "RISE 20",
+        "RISE 30",
+        "IN 60",
+        "IN 80",
+        "IN 120",
+        "IN 160"
+      ],
+      "issue": "RISE and IN independently calibrated scales on one pointer; native image tick coordinates, mode selector, minor ticks and actual needle angle remain unverified",
+      "printedScales": {
+        "rise": {
+          "range": [
+            0,
+            30
+          ],
+          "numerals": [
+            0,
+            10,
+            20,
+            30
+          ],
+          "origin": "user-confirmed"
+        },
+        "inlet": {
+          "range": [
+            60,
+            160
+          ],
+          "numerals": [
+            60,
+            80,
+            120,
+            160
+          ],
+          "origin": "user-confirmed"
+        }
+      }
+    },
+    {
+      "id": "driveOil2",
+      "panel": "OH11",
+      "printedLabels": [
+        "RISE 0",
+        "RISE 10",
+        "RISE 20",
+        "RISE 30",
+        "IN 60",
+        "IN 80",
+        "IN 120",
+        "IN 160"
+      ],
+      "issue": "RISE and IN independently calibrated scales on one pointer; native image tick coordinates, mode selector, minor ticks and actual needle angle remain unverified",
+      "printedScales": {
+        "rise": {
+          "range": [
+            0,
+            30
+          ],
+          "numerals": [
+            0,
+            10,
+            20,
+            30
+          ],
+          "origin": "user-confirmed"
+        },
+        "inlet": {
+          "range": [
+            60,
+            160
+          ],
+          "numerals": [
+            60,
+            80,
+            120,
+            160
+          ],
+          "origin": "user-confirmed"
+        }
+      }
+    },
+    {
+      "id": "acAmps1",
+      "panel": "OH12",
+      "printedLabels": [
+        "0",
+        "50",
+        "100",
+        "150",
+        "200"
+      ],
+      "issue": "Minor tick coordinates and source signal remain unverified"
+    },
+    {
+      "id": "acAmps2",
+      "panel": "OH12",
+      "printedLabels": [
+        "0",
+        "50",
+        "100",
+        "150",
+        "200"
+      ],
+      "issue": "Minor tick coordinates and source signal remain unverified"
+    },
+    {
+      "id": "apuAcAmps",
+      "panel": "OH12",
+      "printedLabels": [
+        "0",
+        "50",
+        "100",
+        "150",
+        "200"
+      ],
+      "issue": "Minor tick coordinates and source signal remain unverified"
+    },
+    {
+      "id": "apuEgt",
+      "panel": "OH12",
+      "printedLabels": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "°C×100"
+      ],
+      "issue": "Circular scale and needle direction require full image-point registration"
+    },
+    {
+      "id": "press",
+      "panel": "OH19",
+      "printedLabels": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "PSI"
+      ],
+      "issue": "Outer scale; every intermediate tick must be registered separately"
+    },
+    {
+      "id": "cabAlt",
+      "panel": "OH19",
+      "printedLabels": [
+        "3",
+        "10",
+        "15",
+        "20",
+        "25",
+        "30",
+        "35",
+        "40",
+        "50",
+        "×1000 FT"
+      ],
+      "issue": "Inner scale is not a simple uniform 0–50 arc; unlabeled zero/endpoints need confirmation"
+    },
+    {
+      "id": "cabinRate",
+      "panel": "OH19",
+      "printedLabels": [
+        "DN",
+        "0",
+        ".5",
+        "1",
+        "2",
+        "3",
+        "4",
+        "1000 FEET PER MIN"
+      ],
+      "issue": "Signed climb/descent halves need separate direction and tick registration"
+    },
+    {
+      "id": "cabinTemperature",
+      "panel": "OH20",
+      "printedLabels": [
+        "0",
+        "20",
+        "40",
+        "60",
+        "80",
+        "100",
+        "°C"
+      ],
+      "issue": "Major angles exist provisionally; all minor tick coordinates need measurement"
+    },
+    {
+      "id": "ductR",
+      "panel": "OH21",
+      "printedLabels": [
+        "20",
+        "40",
+        "60",
+        "80",
+        "100",
+        "PSI"
+      ],
+      "issue": "Unlabeled lower-left endpoint and minor tick positions need verification"
+    },
+    {
+      "id": "ductL",
+      "panel": "OH21",
+      "printedLabels": [
+        "20",
+        "40",
+        "60",
+        "80",
+        "100",
+        "PSI"
+      ],
+      "issue": "Unlabeled lower-left endpoint and minor tick positions need verification"
+    },
+    {
+      "id": "fuelTemperature",
+      "panel": "OH09",
+      "printedLabels": [],
+      "issue": "Existing -40..40 °C visual registry is not a full native-image tick survey"
+    },
+    {
+      "id": "flapL",
+      "panel": "FO_INNER_GEAR",
+      "printedLabels": [
+        "UP",
+        "1",
+        "2",
+        "5",
+        "10",
+        "15",
+        "25",
+        "30",
+        "40"
+      ],
+      "issue": "Existing stop angles are visual calibrations; source-image tick coordinates not recorded"
+    },
+    {
+      "id": "flapR",
+      "panel": "FO_INNER_GEAR",
+      "printedLabels": [
+        "UP",
+        "1",
+        "2",
+        "5",
+        "10",
+        "15",
+        "25",
+        "30",
+        "40"
+      ],
+      "issue": "Existing stop angles are visual calibrations; source-image tick coordinates not recorded"
+    },
+    {
+      "id": "egt1",
+      "panel": "ENGINE_STANDBY",
+      "printedLabels": [],
+      "issue": "Current 0..800 mapping explicitly marked temporary training visualization"
+    },
+    {
+      "id": "egt2",
+      "panel": "ENGINE_STANDBY",
+      "printedLabels": [],
+      "issue": "Current 0..800 mapping explicitly marked temporary training visualization"
+    },
+    {
+      "id": "n2_1",
+      "panel": "ENGINE_STANDBY",
+      "printedLabels": [],
+      "issue": "Current 0..100 mapping explicitly marked temporary training visualization"
+    },
+    {
+      "id": "n2_2",
+      "panel": "ENGINE_STANDBY",
+      "printedLabels": [],
+      "issue": "Current 0..100 mapping explicitly marked temporary training visualization"
+    }
   ]
 }
