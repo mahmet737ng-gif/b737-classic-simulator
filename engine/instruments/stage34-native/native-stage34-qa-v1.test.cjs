@@ -24,8 +24,18 @@ test('Stage 3: source-image pixel coordinates, radial angles and non-release req
    if(f.kind==='linear'){
      linear++;
      assert.equal(f.rotationPivot,null,f.id);
-     assert.deepEqual(f.linearTickEndpoints,[],f.id);
+     assert.ok(Array.isArray(f.linearTickEndpoints),f.id);
      const x=f.lineTrackCandidate;
+     const expectedAxis=(x.y1-x.y0)>(x.x1-x.x0)?'y':'x';
+     assert.equal(f.linearTravelAxis,expectedAxis,f.id);
+     for(const tick of f.linearTickEndpoints){
+       assert.equal(tick.physicalTickApproved,false);
+       assert.equal(tick.numericValue,null);
+       assert.ok(tick.lengthPx>0);
+       for(const point of [tick.strokePointA,tick.strokePointB]){
+         assert.ok(point[0]>=0&&point[0]<W&&point[1]>=0&&point[1]<H,f.id);
+       }
+     }
      assert.ok(x.x0>=0&&x.x1<=W&&x.y0>=0&&x.y1<=H&&x.x1>x.x0&&x.y1>x.y0,f.id);
    }else{
      rotary++;
