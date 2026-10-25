@@ -8,7 +8,11 @@ Date: 2026-10-26
 - Original 68 overhead and 23 main-panel catalogue assets and electrical controller rules remain unchanged.
 - A rendering-path bug has been corrected: when `B737ImageLoader` is absent, the overhead must still resolve its registered `instanceFaces.instances[id].states[state].url`. It must not silently fall back to the older shared image.
 - This path is now covered by `instance-faces.test.cjs`.
-- A headless Chromium smoke workflow loads both complete pages (112 overhead + 30 main), checks representative instance-mounted lights and decodes their SVGs through actual browser imaging rather than static text alone.
+- **Passed headless Chromium QA:** 112/112 overhead and 30/30 main lamp DOM mounts, with **all 74 physical-instance SVG states decoded in Chromium** (70 overhead, 4 main), exact native socket dimensions, seven real-mounted image samples and no reported lamp JavaScript errors. This validates live browser resource integrity, not photographic pixel position.
+
+## Interactive overhead routing
+
+The overhead reference HTML deliberately redirects to Unified unless `standalone=1`. It also uses `<base href="../all-overhead/">` to serve the **existing approved atlas-stage engine**. An exploratory duplicate stage file was removed after this behavior was confirmed; the approved stage/source mosaic is unchanged. The browser smoke exercise explicitly visits `/interactive-overhead/?standalone=1&debugLights=1` to test the overhead itself instead of following the normal redirect.
 
 ## Two unresolved source-photo apertures — no guessed coordinate edits
 
@@ -30,7 +34,7 @@ Date: 2026-10-26
 
 - [Targeted photo scan source](../tools/lamp-photo-special-qa.py)
 - [Original-photo annotated crops and recorded evidence](https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/40241991857)
-- [Live-browser functional image smoke test](https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/40242258760)
+- [Live-browser functional image smoke test](https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/40243089156)
 - [Historical 142-position native-source evidence](../panel-mosaic-lab/lights-test/photo-pixel-registration-v4.json)
 - [Per-position SVG derivation and tests](../panel-mosaic-lab/lights-test/instance-faces-rollout.json)
 
