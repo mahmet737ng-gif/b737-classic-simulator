@@ -3434,5 +3434,38 @@
       ],
       "faceApproved": false
     }
-  ]
+  ],
+  "extensionBatch1": {
+    "status": "native_source_candidate_scans_registered_not_final_approved",
+    "updated": "2026-10-25",
+    "additionalRecords": [
+      {
+        "file": "engine/instruments/oh19-native-ticks-batch1.json",
+        "faces": 1,
+        "scales": 2,
+        "whiteStrokeCandidates": 98,
+        "sourceMethod": "previous branch source-photo radial candidate study"
+      },
+      {
+        "file": "engine/instruments/native-radial-ticks-batch1-v1.json",
+        "faces": 3,
+        "scales": 3,
+        "whiteStrokeCandidates": 152,
+        "sourceMethod": "0.25 degree source-native white radial pixel scan + major printed-angle cross-check"
+      },
+      {
+        "file": "engine/instruments/native-pivot-track-batch1-v1.json",
+        "circularPivotCandidates": 29,
+        "linearTracksWithoutPivot": 5,
+        "sourceMethod": "native-image manual coordinate grid with automated circular candidates"
+      }
+    ],
+    "totalNewWhiteStrokeCandidates": 250,
+    "previouslyRegisteredIndependentPivotCandidates": 20,
+    "newCircularFacePivotCandidates": 29,
+    "linearIndicatorTravelTracks": 5,
+    "validationRun": "https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/40217850226",
+    "sourceLocked": true,
+    "warning": "Do not treat tick candidates as guaranteed complete minor ticks or enable real readings without native-pixel and mechanism QA"
+  }
 }
