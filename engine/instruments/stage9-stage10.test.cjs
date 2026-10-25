@@ -124,7 +124,7 @@ test('Stage10 pending values remain blocked even when valid observed source is i
   value:410,unit:'Hz',valid:true,origin:'QA_INSTRUMENT_SENSOR',timeMs:1000}}}});
  const work=runtime.create({routes,scales:subset,scaleEngine,dynamics:motion,profileRegistry:responseProfiles,
   previewPowerPolicy:'training_qa_assume_power'});
- let preview=work.evaluate(routing.project(s),{nowMs:1000});
+ let preview=work.evaluate(routing.project(s),{nowMs:1000,observationNowMs:1000});
  assert.ok(Math.abs(preview.pointers.cps.simulationAngleDeg-41.805)<.03);
  assert.equal(preview.pointers.cps.liveNeedleAuthorized,false);
  assert.equal(preview.pointers.cps.sourceCandidateStatus,'preview_unverified');
@@ -147,4 +147,60 @@ test('Every one of the 38 known pointers has exactly one stage9 response policy'
  const compiled=runtime.create({routes,scales:subset,scaleEngine,dynamics:motion,
    profileRegistry:responseProfiles});
  assert.equal(compiled.getPreparedModels().count,8);
+});
+
+test('Stage10 observed sample freshness, anti-replay and invalidation are fail-closed in read-only QA',()=>{
+ const sensor=signal.create(contracts),routing=routeEngine.create(routes);
+ const work=runtime.create({routes,scales:subset,scaleEngine,dynamics:motion,
+   profileRegistry:responseProfiles,previewPowerPolicy:'training_qa_assume_power'});
+ const withObservation=(timeMs,value=410)=>routing.project(sensor.read({
+   observed:{'oh.elec.cps':{primary:{value,unit:'Hz',valid:true,
+     origin:'QA_OBSERVED_CPS',...(timeMs===null?{}:{timeMs})}}}
+ }));
+ const at=(reading,motionNow,wallNow)=>work.evaluate(reading,{
+    nowMs:motionNow,observationNowMs:wallNow}).pointers.cps;
+ const first=at(withObservation(1000),1000,1000);
+ assert.equal(first.status,'initialized');
+ assert.equal(first.sourceIntegrityStatus,'fresh_observed');
+ const next=at(withObservation(1500,411),1500,1500);
+ assert.equal(next.sourceIntegrityStatus,'fresh_observed');
+ const held=next.simulationAngleDeg;
+ const replay=at(withObservation(1100,412),1600,1600);
+ assert.equal(replay.status,'sensor_lost');
+ assert.equal(replay.sourceIntegrityStatus,'observed_timestamp_replay');
+ assert.equal(replay.simulationAngleDeg,held);
+ assert.equal(replay.sourceValue,null);
+ const mutate=at(withObservation(1500,412),1700,1700);
+ assert.equal(mutate.sourceIntegrityStatus,'observed_timestamp_mutated');
+ assert.equal(mutate.simulationAngleDeg,held);
+ const future=at(withObservation(2500),1701,1701);
+ assert.equal(future.sourceIntegrityStatus,'observed_timestamp_future');
+ assert.equal(future.simulationAngleDeg,held);
+ const noDate=at(withObservation(null),1702,1702);
+ assert.equal(noDate.sourceIntegrityStatus,'observed_timestamp_missing');
+ assert.equal(noDate.simulationAngleDeg,held);
+ const stale=work.evaluate(withObservation(1500),{nowMs:7200,observationNowMs:7200});
+ assert.equal(stale.pointers.cps.status,'data_stale');
+ assert.equal(stale.pointers.cps.sourceIntegrityStatus,'observed_timestamp_stale');
+ assert.equal(stale.pointers.cps.simulationAngleDeg,held);
+ assert.equal(stale.counts.staleObservations,1);
+ assert.equal(stale.counts.liveNeedlesMoved,0);
+ assert.throws(()=>work.evaluate(withObservation(1500),{
+    nowMs:7201,observationNowMs:7100}),/Observed source clock moved backward/);
+ work.reset();
+ assert.equal(at(withObservation(1000),1000,1000).status,'initialized');
+});
+test('Stage10 requires an explicit wall clock for independently observed signals',()=>{
+ const sensor=signal.create(contracts),routing=routeEngine.create(routes);
+ const work=runtime.create({routes,scales:subset,scaleEngine,dynamics:motion,
+   profileRegistry:responseProfiles,previewPowerPolicy:'training_qa_assume_power'});
+ const reading=routing.project(sensor.read({observed:{'oh.elec.cps':{
+   primary:{value:410,unit:'Hz',valid:true,origin:'QA_SENSOR',timeMs:1000}}}}));
+ const result=work.evaluate(reading,{nowMs:1000}).pointers.cps;
+ assert.equal(result.status,'sensor_lost');
+ assert.equal(result.sourceIntegrityStatus,'observation_clock_missing');
+ assert.equal(result.simulationAngleDeg,null);
+ assert.equal(result.liveNeedleAuthorized,false);
+ assert.throws(()=>runtime.create({routes,scales:subset,scaleEngine,dynamics:motion,
+   profileRegistry:responseProfiles,observedMaxAgeMs:0}),/freshness window invalid/);
 });
