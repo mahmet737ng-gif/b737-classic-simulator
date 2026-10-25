@@ -77,6 +77,26 @@ assert.equal(s.evidence.fmcRouteReady,null);
 assert.throws(()=>advance(s,{type:"OBSERVE_POWER",active:true,instructor:false}),/instructor/);
 s=advance(s,{type:"OBSERVE_POWER",active:true,instructor:true});
 assert.throws(()=>advance(s,{type:"VALUE",id:"speed",value:500}),/out of range/);
+// Source integration: real Electrical V7, not only a fabricated bus object.
+const E=require("../../engine/systems/electrical-v7.js");
+let real=E.initialState();
+let proj=E.evaluate(real);
+assert.equal(Core.globalPowerPossible(proj.bus),true);
+let rState=Core.initialState();
+rState=advance(rState,{type:"ELECTRICAL",snapshot:proj});
+assert.equal(view(rState).power,null); // energized buses do not prove MCP feeder.
+real=E.apply(real,{type:"CONTROL",key:"engine1Running",value:false});
+real=E.apply(real,{type:"CONTROL",key:"engine2Running",value:false});
+real=E.apply(real,{type:"CONTROL",key:"standbySelector",value:"OFF"});
+real=E.apply(real,{type:"FAULT",id:"BATTERY_DEPLETED",active:true,instructor:true});
+proj=E.evaluate(real);
+assert.equal(Core.globalPowerPossible(proj.bus),false);
+rState=advance(rState,{type:"ELECTRICAL",snapshot:proj});
+assert.equal(view(rState).power,false);
+assert.ok(Object.values(view(rState).lamps).every(x=>x===false));
+// Unsupported intervention commands cannot remain permanently illuminated.
+assert.match(js,/setState\(d.id,false\)/);
+
 // Cold and dark is never mistaken for a known aircraft MCP feeder.
 assert.match(js,/B737ISNCockpitV1/);
 assert.match(js,/B737_ELECTRICAL_V7_RESULT/);
