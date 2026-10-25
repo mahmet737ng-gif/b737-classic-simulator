@@ -76,6 +76,7 @@ const {chromium}=require('playwright');
     assert.equal(data.acLamps.length,3,'737-400 zone lamp count');
     assert.equal(data.oh21Visible,family==='B737-400','OH21 400 dual-recirc/pack overlay visibility');
     assert.equal(data.oh21Packs.length,2,'Two independent 737-400 PACK annunciators');
+    assert.ok(data.oh21Packs.every(x=>x.images.length===2&&x.images.every(src=>src.includes('737-400-PACK_FITTED_'))),'Distinct 737-400 PACK indicators must use naturally proportioned 180x66 pixel artwork');
     assert.ok(data.leftRecirc&&data.rightRecirc,'Independent L/R Recirc Fan switch mounts required');
     assert.ok(data.lamps.every(x=>x.bounds.w>0&&x.bounds.w<300&&x.bounds.h<110),'Lens must remain inside photograph region');
     // Each configuration and light-test state is captured independently.
