@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>B737 Classic · Circuit Breaker Panel Lab</title>
+<style>
+:root{color-scheme:dark;--bg:#0b0e12;--panel:#25282e;--plate:#34373d;--letter:#ededee;--muted:#a5aab4;--line:#4b505b;--amber:#ffbf79;--cyan:#86dbed}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle at 45% 0,#22262e 0,#0b0e12 50%);font-family:Inter,Segoe UI,Arial,sans-serif;color:var(--letter)}
+header{padding:20px clamp(16px,3vw,40px);border-bottom:1px solid #3e444b;background:#171a21e8;position:sticky;top:0;z-index:10;backdrop-filter:blur(12px)}
+.top{display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:space-between}.eyebrow{font-size:11px;letter-spacing:2.6px;color:var(--cyan);font-weight:700}h1{font-size:clamp(21px,2.5vw,32px);margin:4px 0 0;font-weight:650}
+.sub{color:#a5aab4;font-size:12px;line-height:1.6;max-width:850px}
+.controls{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-top:16px}
+button,input,select{font:inherit}button,select,input{border:1px solid #50545f;background:#262a31;color:#f2f4f5;padding:10px 12px;border-radius:9px}
+button{cursor:pointer}button:hover{border-color:#92a1ae}button.active{border-color:#96dbe9;background:#263c44;color:#c7f5fb}input{min-width:160px;flex:1}
+main{max-width:1600px;margin:0 auto;padding:20px clamp(12px,3vw,40px) 85px}
+.section-heading{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:28px 0 14px}.section-heading h2{font-size:17px;font-weight:650;margin:0}.section-heading small{color:#a2aab3}
+.overview{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(260px,.8fr);gap:22px}
+.overview-panel{padding:22px;border-radius:14px;background:#171a1fcf;border:1px solid #343b44}
+.overview-panel .label{font-size:12px;letter-spacing:1.3px;color:#d9e0e7;text-align:center;margin-bottom:15px}
+.station{display:grid;grid-template-columns:65px 1fr;gap:10px;max-width:470px;margin:auto;align-items:stretch}
+.stack{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.stack .wide{grid-column:1 / -1}.stack button{font-size:13px;min-height:52px;border-radius:6px;border:1px solid #656b75;background:linear-gradient(155deg,#383c45,#20242b);color:#e5e8ec;box-shadow:inset 0 2px 4px #676b7633}
+.stack button:hover,.stack button.active{border-color:#8cd2e8}.station .slender{min-height:240px;writing-mode:vertical-rl;text-orientation:mixed}
+.station .slender button{width:100%;height:100%;min-height:265px}
+.captain .stack{grid-template-columns:1fr 1fr}.fo-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;max-width:340px;margin:auto}
+.fo-grid button{min-height:54px;background:#292e34;border-radius:5px;color:#e7e9ee;border:1px solid #575c65}
+.fo-grid .available{background:#34414c;border-color:#86c4d5}.fo-grid .wide{grid-column:span 2}
+.summary{display:flex;gap:11px;flex-wrap:wrap;margin:16px 0}
+.pill{font-size:11px;color:#b9c3c9;border:1px solid #414a51;background:#222830;border-radius:100px;padding:6px 10px}
+.viewer-shell{border-radius:15px;background:#13161b;border:1px solid #383b43;overflow:hidden;box-shadow:0 10px 40px #0009}
+.viewer-title{padding:18px 22px;background:#191d22;border-bottom:1px solid #464b50;display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.viewer-title h2{margin:0;font-size:22px}.viewer-title .meta{font-size:12px;color:#aeb5be}
+.viewer-scroll{overflow-x:auto;padding:25px;overscroll-behavior-x:contain}
+.face{padding:24px 25px 18px;background:linear-gradient(145deg,#34373d,#292c32 48%,#25272d);border:1px solid #45464b;box-shadow:inset 0 4px 7px #ffffff0b,inset 0 -5px 8px #0009;position:relative;width:max-content;min-width:450px;border-radius:8px}
+.face.bevel{clip-path:polygon(0 18%,0 100%,100% 100%,100% 0,15% 0)}.face.slender{min-width:180px;width:260px;max-width:100%}
+.face-top{min-height:24px;display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}
+.face-top strong{font-size:14px;letter-spacing:1px;text-align:center;flex:1}
+.face-top span{font-size:11px;color:#c3c3c6;padding:5px 10px;background:#4a3c40;border-radius:14px}
+.matrix{display:grid;gap:4px 3px;--size:65px;grid-template-columns:32px repeat(var(--cols),var(--size));grid-template-rows:repeat(var(--rows),92px) 22px}
+.row-tag{grid-column:1;align-self:center;justify-self:start;font-size:13px;width:25px;height:25px;border-radius:50%;background:#513f41;display:grid;place-items:center;color:#fff}
+.cb-slot{position:relative;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;padding-bottom:5px;width:var(--size);height:92px;border-top:1px solid #54565d22;transition:opacity .12s}
+.cb-slot.mark{background:#65bcd31c;outline:1px solid #65c3db44}
+.cb-slot.faded{opacity:.21}
+.cb-label{width:calc(var(--size) + 6px);height:44px;font-family:Arial Narrow,Arial,sans-serif;line-height:1.04;text-align:center;font-weight:800;font-size:8px;color:#e4e4e7;letter-spacing:-.08px;display:flex;align-items:flex-end;justify-content:center;overflow-wrap:break-word;text-wrap:balance;padding:0 1px 5px;user-select:none}
+.knob{position:relative;width:39px;height:39px;flex:0 0 39px;margin:auto 0 0;border:0;border-radius:0;padding:0;background:linear-gradient(125deg,#16181d,#5b5b5e 35%,#0d0f14 70%);clip-path:polygon(22% 0,78% 0,100% 22%,100% 78%,78% 100%,22% 100%,0 78%,0 22%);filter:drop-shadow(0 3px 2px #0009);display:grid;place-items:center}
+.knob .dial{display:grid;place-items:center;width:31px;height:31px;border-radius:50%;font-size:12px;color:#f3f3f4;font-weight:600;text-shadow:0 1px 2px black;border:2px solid #646872;background:radial-gradient(circle at 40% 30%,#4c4e52,#13161a 60%);box-shadow:inset 0 0 2px 2px #06080b}
+.knob.pulled{filter:drop-shadow(0 4px 7px #000);transform:translateY(-7px) scale(1.13);background:linear-gradient(145deg,#eeb45c,#5b4840,#171a1e)}
+.knob.pulled .dial{border-color:#e4a15c;color:#fbd3a3}
+.blank{width:40px;height:40px;border:1px solid #34373a;border-radius:50%;background:radial-gradient(circle at 40% 36%,#3f4248,#303339 67%,#222429);align-self:center;margin:0 0 1px}
+.cols{display:contents}.col-num{text-align:center;align-self:center;color:#bdc2cb;font-size:10px;border-top:1px solid #5b5e6688;padding-top:7px}
+.cb-slot::before{content:"";height:9px;width:7px;border-radius:3px 3px 0 0;background:#050608;position:absolute;top:48px;left:calc(50% - 3.5px)}
+.special{display:flex;flex-direction:column;align-items:center;gap:17px;max-width:250px}
+.socket{width:125px;height:125px;border-radius:50%;background:radial-gradient(circle,#332c2b 0 45%,#211b1e 47% 70%,#a2a4a6 71% 74%,#1e2025 77%);border:4px solid #5c5b5f;display:grid;place-items:center;color:#d9cac2;font-size:9px;text-align:center}
+.special-row{text-align:center;padding:12px 20px;border-radius:9px;background:#44474d;width:100%;font-weight:750;font-size:12px}
+.special-breaker{display:flex;flex-direction:column;align-items:center;gap:8px}
+.variant{text-align:center;padding:9px;font-size:11px;color:#eecf8f;background:#443b2c88;border-radius:7px;margin-top:12px;max-width:600px}
+.info{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:16px 22px;border-top:1px solid #393c44;color:#b9c0c8;font-size:12px;line-height:1.6}
+.info strong{color:#e3e7ea}.footer{margin-top:20px;color:#adb4c0;font-size:12px;line-height:1.8}
+@media(max-width:700px){header{position:relative}.overview{grid-template-columns:1fr}.viewer-scroll{padding:9px}.face{padding:14px 8px}.matrix{--size:55px;grid-template-rows:repeat(var(--rows),87px) 22px}.cb-slot{height:87px}.cb-label{font-size:7px;width:calc(var(--size) + 4px)}.info{grid-template-columns:1fr}.viewer-title h2{font-size:18px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="top"><div><div class="eyebrow">B737 CLASSIC · TECHNICAL LAB</div><h1>Circuit Breaker Panels</h1></div><div class="pill">PHOTO MAPPED · TRAINER ONLY</div></div>
+  <div class="sub">Photo-based geometry and CB ratings. Pull/push is an independent visual test. No unverified electrical feed or physical fault behavior is connected to the simulator.</div>
+  <div class="controls"><select id="panelSelect" aria-label="Panel selector"></select><input id="filter" type="search" aria-label="Find a circuit" placeholder="Find a breaker, e.g. TR3, CDU, GEN BUS"><select id="configuration" aria-label="Pressurization option"><option value="CPCS">CPCS · Original</option><option value="DCPCS">DCPCS · Digital retrofit</option></select><button id="reset" type="button">Reset lab pulls</button></div>
+</header>
+<main>
+  <div class="section-heading"><h2>Aft cockpit · panel arrangement</h2><small>Conceptual spacing based on overall photograph; select a panel to view its detailed grid</small></div>
+  <div class="overview">
+    <div class="overview-panel captain"><div class="label">CAPTAIN SIDE · P6</div><div class="station"><div class="slender"><button data-panel="P6-6">P6-6 · HOT BAT</button></div><div class="stack">
+      <button data-panel="P6-1" class="wide">P6-1 · Instruments</button>
+      <button data-panel="P6-2" class="wide">P6-2 · Controls / Engines</button>
+      <button data-panel="P6-3" class="wide">P6-3 · Fuel / Lighting</button>
+      <button data-panel="P6-5">P6-5 · DC</button>
+      <button data-panel="P6-4">P6-4 · Air / Elec</button>
+      <button data-panel="P6-11">P6-11 · GEN 1</button>
+      <button data-panel="P6-12">P6-12 · GEN 2</button>
+    </div></div></div>
+    <div class="overview-panel"><div class="label">FIRST OFFICER SIDE · P18</div><div class="fo-grid">
+      <button disabled>P18-0 · pending</button><button data-panel="P18-1" class="available">P18-1 · Nav / AFCS</button>
+      <button disabled>P18-2 · pending</button><button disabled>P18-3 · pending</button>
+      <button disabled>P18-4 · pending</button><button disabled>P18-5 · pending</button>
+    </div><p class="sub">Other P18 locations appear in the overview image. Their individual front-on photographs have not been supplied; no invented breaker layout is drawn.</p></div>
+  </div>
+  <div class="summary" id="summary"></div>
+  <section class="viewer-shell">
+    <div class="viewer-title"><h2 id="selectedTitle"></h2><span class="meta" id="selectedMeta"></span></div>
+    <div class="viewer-scroll" id="viewer"></div>
+    <div class="info"><div id="currentDetails">Select a CB to inspect its source label, rating and physical grid location.</div><div><strong>Electrical feed: UNKNOWN</strong><p>Electrical-V7 consumer/bus connectivity is intentionally not changed by this panel lab. Mechanical pulling is simulated as a training UI state only. Source photo is not proof of an aircraft-specific power feed.</p></div></div>
+  </section>
+  <p class="footer">Sources: user-supplied screenshots dated Oct 25, 2026, and Classic MRG p133–136 index. All NG-only entries excluded. Rounded blanks represent visible blank/unused positions. Ratings, labels and slots require visual acceptance and effectivity checking. P6-4 CPCS and digital retrofit views are mutually exclusive. This is not a real-aircraft operating reference.</p>
+</main>
+<script src="catalog.js"></script>
+<script>
+(()=>{
+"use strict";
+const data=window.CB_CATALOG;const ids=data.panels.map(p=>p.id);
+const state={id:"P6-4",variant:"CPCS",query:"",pulled:new Set()};
+const $=id=>document.getElementById(id);
+const selector=$("panelSelect"),view=$("viewer"),title=$("selectedTitle"),meta=$("selectedMeta"),details=$("currentDetails");
+function entries(src){return (src||"").split(";").map(s=>s.trim()).filter(Boolean).map(s=>{let [left,name=""] = s.split("|");let [pos,amp]=left.split(":");return {pos,amp:Number(amp),name:name.trim()};})}
+function breakers(p){let arr=entries(p.breakers);if(p.id==="P6-4"&&state.variant==="DCPCS"){arr=arr.filter(x=>!/^F[1-6]$/.test(x.pos)).concat(entries(p.altBreakers));}return arr}
+function k(p,pos){return p.id+"|"+state.variant+"|"+pos}
+function choose(id){if(!ids.includes(id))return;state.id=id;selector.value=id;render();document.querySelector(".viewer-shell").scrollIntoView({behavior:"smooth",block:"start"});}
+function selectItem(p,item){let pulled=state.pulled.has(k(p,item.pos));details.innerHTML="<strong>"+p.id+" / "+item.pos+"</strong><p>"+escapeText(item.name)+" · "+item.amp+" A · "+(pulled?"PULLED":"PUSHED")+"</p><p>Position and printed rating from photograph. Provider/consumer feed: <strong>UNVERIFIED</strong></p>";}
+function escapeText(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+function knob(p,item){let button=document.createElement("button");let isPulled=state.pulled.has(k(p,item.pos));button.className="knob"+(isPulled?" pulled":"");button.setAttribute("aria-label",p.id+" "+item.pos+" "+item.name+" "+item.amp+" amp; "+(isPulled?"pulled":"pushed"));button.title=p.id+" / "+item.pos+" — "+item.name+" — "+item.amp+"A";
+let inner=document.createElement("span");inner.className="dial";inner.textContent=Number.isInteger(item.amp)?item.amp:String(item.amp).replace(".5","½");button.appendChild(inner);
+button.addEventListener("click",()=>{let id=k(p,item.pos);if(state.pulled.has(id))state.pulled.delete(id);else state.pulled.add(id);render();selectItem(p,item)});return button}
+function renderSpecial(p){const outer=document.createElement("div");outer.className="special";
+p.sockets.forEach((name,i)=>{let s=document.createElement("div");s.className="socket";s.textContent=i===0?"SERVICE SOCKET 1":"28V DC D154";s.title=name;outer.appendChild(s)});
+breakers(p).forEach(item=>{let section=document.createElement("div");section.className="special-breaker";section.appendChild(knob(p,item));let label=document.createElement("div");label.className="special-row";label.textContent=item.name;section.appendChild(label);outer.appendChild(section)});return outer}
+function makeSlot(p,row,n,map){let pos=row+n,item=map.get(pos);let slot=document.createElement("div");slot.className="cb-slot";slot.style.gridColumn=String(n+1);slot.style.gridRow=String("ABCDEF".indexOf(row)+1);
+if(item){let lab=document.createElement("div");lab.className="cb-label";lab.textContent=item.name;slot.appendChild(lab);slot.appendChild(knob(p,item));}else{let lab=document.createElement("div");lab.className="cb-label";slot.appendChild(lab);let blank=document.createElement("span");blank.className="blank";blank.setAttribute("aria-label","Blank "+pos);slot.appendChild(blank)}
+if(state.query){let found=item&&[p.id,pos,item.name,item.amp+"A"].join(" ").toLowerCase().includes(state.query);slot.classList.add(found?"mark":"faded")}
+return slot}
+function render(){let p=data.panels.find(p=>p.id===state.id);if(!p)return;selector.value=p.id;title.textContent=p.id+" · "+p.title;const items=breakers(p);
+meta.textContent=p.rows?p.rows.length+" rows × "+p.cols+" columns · "+items.length+" mapped CBs":items.length+" CBs · special panel";
+view.replaceChildren();let face=document.createElement("div");face.className="face "+(p.outline||"rectangle");
+let top=document.createElement("div");top.className="face-top";top.innerHTML="<strong>"+escapeText(p.title)+"</strong><span>"+p.id+"</span>";face.appendChild(top);
+if(p.id==="P6-6"){face.appendChild(renderSpecial(p))}else{
+let matrix=document.createElement("div");matrix.className="matrix";matrix.style.setProperty("--cols",p.cols);matrix.style.setProperty("--rows",p.rows.length);let map=new Map(items.map(i=>[i.pos,i]));
+for(let i=0;i<p.rows.length;i++){let row=p.rows[i];let tag=document.createElement("div");tag.className="row-tag";tag.style.gridRow=String(i+1);tag.textContent=row;matrix.appendChild(tag);for(let n=1;n<=p.cols;n++)matrix.appendChild(makeSlot(p,row,n,map));}
+for(let n=1;n<=p.cols;n++){let c=document.createElement("div");c.className="col-num";c.style.gridRow=String(p.rows.length+1);c.style.gridColumn=String(n+1);c.textContent=n;matrix.appendChild(c)}face.appendChild(matrix);
+if(p.id==="P6-4"){let note=document.createElement("div");note.className="variant";note.textContent=state.variant==="DCPCS"?"DIGITAL RETROFIT / DCPCS selected. Original controller CB positions F1-F6 are not simultaneously installed.":"ORIGINAL CPCS selected. Digital retrofit row is not installed in this configuration.";face.appendChild(note)}
+}view.appendChild(face);
+document.querySelectorAll("[data-panel]").forEach(el=>el.classList.toggle("active",el.dataset.panel===p.id));
+let total=data.panels.reduce((acc,x)=>acc+breakers(x).length,0);
+$("summary").innerHTML="<span class='pill'>9 photo-mapped subpanels</span><span class='pill'>"+total+" labeled CB candidates</span><span class='pill'>"+state.pulled.size+" pulled (visual lab)</span><span class='pill'>P18 others pending</span>";
+}
+for(let p of data.panels){let opt=document.createElement("option");opt.value=p.id;opt.textContent=p.id+" · "+p.title;selector.appendChild(opt);}
+selector.addEventListener("change",e=>choose(e.target.value));
+$("filter").addEventListener("input",e=>{state.query=e.target.value.trim().toLowerCase();render()});
+$("configuration").addEventListener("change",e=>{state.variant=e.target.value;render()});
+$("reset").addEventListener("click",()=>{state.pulled.clear();details.textContent="All lab pulls reset. No simulator electrical state was modified.";render()});
+document.querySelectorAll("[data-panel]").forEach(el=>el.addEventListener("click",()=>choose(el.dataset.panel)));
+let invalid=[];data.panels.forEach(p=>{let seen=new Set();entries(p.breakers).forEach(i=>{if(seen.has(i.pos)||!Number.isFinite(i.amp)||i.amp<=0||((p.cols>0)&&(!p.rows.includes(i.pos[0])||Number(i.pos.slice(1))>p.cols))) invalid.push(p.id+":"+i.pos);seen.add(i.pos)})});if(invalid.length){console.warn("CB catalog audit:",invalid);details.textContent="Catalog validation requires review: "+invalid.join(", ")}render();
+})();
+</script>
+</body>
+</html>
