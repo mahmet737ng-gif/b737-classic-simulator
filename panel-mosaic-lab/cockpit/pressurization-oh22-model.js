@@ -1,5 +1,8 @@
 /* B737 Classic OH22 pressurization configurations, independent from the artwork.
- * Coordinates are fractions of the photographed OH22 plate. Test-fit geometry;
+ * Coordinates are normalized OH22 panel anchors calibrated against the owner's
+ * 2026-10-25 Unified screenshot with the owner's approved DCPCS artwork
+ * displayed edge-to-edge ('fill'). They are NOT shared with CPCS, whose
+ * calibration remains independent. Layout is visual test fit pending owner QA;
  * no pixel coordinates of CPCS are inherited by DCPCS.
  * Physical pressure/servo motion is not invented here: commands go to the
  * independent source-linked engine implementations.
@@ -9,19 +12,19 @@
  const layouts=Object.freeze({
    DCPCS:Object.freeze({
      engine:'B737DCPCSV4',backgroundAsset:owner,
-     modes:['AUTO','ALTN','MAN'],modePosition:[.78,.79],
+     modes:['AUTO','ALTN','MAN'],artworkFit:'fill',calibrationAsset:owner,modePosition:[.72,.682],
      controls:[
-       {id:'flight-alt',kind:'altitude',label:'FLT ALT',xy:[.29,.48],unit:'ft',key:'flightAltitudeFt',step:500,min:-1000,max:37000},
-       {id:'landing-alt',kind:'altitude',label:'LAND ALT',xy:[.29,.78],unit:'ft',key:'landingAltitudeFt',step:50,min:-1000,max:14000},
-       {id:'press-mode',kind:'selector',label:'MODE',xy:[.78,.79],states:['AUTO','ALTN','MAN']},
-       {id:'manual-valve',kind:'spring',label:'MANUAL VALVE',xy:[.78,.55],states:['CLOSE','NEUTRAL','OPEN']}
+       {id:'flight-alt',kind:'altitude',label:'FLT ALT',xy:[.292,.36],unit:'ft',key:'flightAltitudeFt',step:500,min:-1000,max:37000},
+       {id:'landing-alt',kind:'altitude',label:'LAND ALT',xy:[.292,.672],unit:'ft',key:'landingAltitudeFt',step:50,min:-1000,max:14000},
+       {id:'press-mode',kind:'selector',label:'MODE',xy:[.72,.682],states:['AUTO','ALTN','MAN']},
+       {id:'manual-valve',kind:'spring',label:'MANUAL VALVE',xy:[.72,.437],states:['CLOSE','NEUTRAL','OPEN']}
      ],
-     displays:[{id:'flight-display',xy:[.28,.28],field:'flightAltitudeFt'},{id:'landing-display',xy:[.28,.64],field:'landingAltitudeFt'}],
+     displays:[{id:'flight-display',xy:[.332,.215],field:'flightAltitudeFt'},{id:'landing-display',xy:[.332,.49],field:'landingAltitudeFt'}],
      lamps:[
-       {id:'auto-fail',xy:[.205,.082],output:'autoFail',label:'AUTO FAIL'},
-       {id:'off-sched',xy:[.416,.082],output:'offSchedDescent',label:'OFF SCHED DESCENT'},
-       {id:'altn',xy:[.625,.082],output:'altn',label:'ALTN'},
-       {id:'manual',xy:[.837,.082],output:'manual',label:'MANUAL'}
+       {id:'auto-fail',xy:[.205,.045],output:'autoFail',label:'AUTO FAIL'},
+       {id:'off-sched',xy:[.416,.045],output:'offSchedDescent',label:'OFF SCHED DESCENT'},
+       {id:'altn',xy:[.625,.045],output:'altn',label:'ALTN'},
+       {id:'manual',xy:[.837,.045],output:'manual',label:'MANUAL'}
      ]
    }),
    CPCS:Object.freeze({
