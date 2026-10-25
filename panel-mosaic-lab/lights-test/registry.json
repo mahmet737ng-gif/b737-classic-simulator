@@ -1,6 +1,6 @@
 {
   "schema": "b737-annunciator-assets.v1",
-  "version": "LGT-0019",
+  "version": "LGT-0020",
   "assetDirectory": "../assets/locked/2026-10-23/LIGHTS/",
   "testMode": "manual-asset-visual-qa",
   "note": "Stable IDs for the owner-approved light designs. This registry does not assign physical coordinates or certify aircraft logic.",
@@ -2160,6 +2160,53 @@
       "assets": {
         "OFF": "black-amber-v1/gallery/APU_DET_INOP_OFF.svg",
         "ON": "black-amber-v1/gallery/APU_DET_INOP_ON.svg"
+      },
+      "scope": "ASSET_TEST_ONLY"
+    },
+    {
+      "id": "ALTEN_GREEN",
+      "lines": [
+        "ALTEN"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "black-green-v1/gallery/ALTEN_GREEN_OFF.svg",
+        "ON": "black-green-v1/gallery/ALTEN_GREEN_ON.svg"
+      },
+      "scope": "ASSET_TEST_ONLY"
+    },
+    {
+      "id": "ZONE_TEMP_YELLOW",
+      "lines": [
+        "ZONE",
+        "TEMP"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "black-yellow-v1/gallery/ZONE_TEMP_YELLOW_OFF.svg",
+        "ON": "black-yellow-v1/gallery/ZONE_TEMP_YELLOW_ON.svg"
       },
       "scope": "ASSET_TEST_ONLY"
     }
