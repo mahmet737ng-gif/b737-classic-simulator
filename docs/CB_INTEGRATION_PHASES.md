@@ -45,3 +45,7 @@ npm run test:cb
 ```
 
 The published source is training software only, not suitable for actual navigation or operation.
+
+## Additional offline photographic browser QA (2026-10-26)
+
+A standalone, self-contained HTML/ZIP was built from the **eleven original user-supplied panel images** and their separate local geometry. It preserves red inner-face Pull/Push and adds a clearly labeled synthetic fault/28V indicator. Chromium Playwright `page.set_content` smoke tests on the offline HTML **passed for 11/11 panel samples** (one independently chosen CB per panel, Pull then Push; no JavaScript page errors). Synthetic fault blocks Push until cleared, and P6-4 CPCS/DCPCS alternate photo geometry isolation passed. ZIP archive integrity passed. This QA does **not** establish that every individual CB has been manually pixel-approved, nor that its electrical routing is aircraft-accurate, nor that the same photo HTML/assets were published to GitHub. The offline image package is conversation-local and intentionally not copied into the public repository.
