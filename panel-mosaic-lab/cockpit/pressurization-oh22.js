@@ -32,11 +32,16 @@
    el.title=c.label+(c.kind==='altitude'?' — left click increase, shift/right click decrease':' — click to next detent');
    el.setAttribute('aria-label',el.title);el.setAttribute('aria-keyshortcuts','ArrowUp ArrowDown');
    pos(el,c.xy);
-   const size=c.kind==='altitude'?11.8:c.kind==='momentary'?10.2:c.kind==='spring'?9.2:12.5;
-   el.style.width=size+'%';el.style.height=(size*.84)+'%';
-   const img=root.createElement('img');img.src=c.kind==='spring'?toggleAsset:knobAsset;img.alt='';img.draggable=false;
+   const hotspot=c.appearance==='hotspot';
+   const size=hotspot?11:c.kind==='altitude'?11.8:c.kind==='momentary'?10.2:c.kind==='spring'?9.2:12.5;
+   el.style.width=size+'%';el.style.height=(size*(hotspot?.34:.84))+'%';
+   if(hotspot)el.classList.add('oh22-pressure-hotspot');
    const value=root.createElement('span');value.className='oh22-control-value';value.dataset.value='';
-   el.append(img,value);
+   if(!hotspot){
+     const img=root.createElement('img');img.src=c.kind==='spring'?toggleAsset:knobAsset;img.alt='';img.draggable=false;
+     el.append(img);
+   }
+   el.append(value);
    const go=(input)=>dispatch(c,input);
    const values=c.states||[];
    function step(dir){
@@ -76,7 +81,9 @@
  function createLamp(l){
    const el=root.createElement('span');el.dataset.role='lamp';el.dataset.lamp=l.id;
    el.textContent=l.label;el.title=l.label+' · '+system+' logic';pos(el,l.xy);
-   el.style.width=system==='DCPCS'?'18%':'16%';el.style.height=system==='DCPCS'?'7.7%':'6%';
+   // Only cover the inner face, not the photographed lamp frame and border.
+   el.style.width=system==='DCPCS'?'15.65%':'14.7%';
+   el.style.height=system==='DCPCS'?'5.85%':'5.45%';
    el.classList.add(l.id==='auto-fail'||l.id==='off-sched'?'amber':'green');
    if(approvedLamps[l.id]){
      el.dataset.asset=approvedLamps[l.id];
@@ -98,6 +105,8 @@
    for(const lamp of cfg.lamps){const node=createLamp(lamp);layer.append(node);lamps.set(lamp.id,node);}
    for(const display of cfg.displays){
      const node=root.createElement('output');node.className='oh22-pressure-digits';node.dataset.display=display.id;pos(node,display.xy);
+     if(display.width)node.style.width=display.width*100+'%';
+     if(display.height)node.style.height=display.height*100+'%';
      layer.append(node);digits.set(display.id,node);
    }
    for(const control of cfg.controls){const node=createActuator(control);layer.append(node);controls.set(control.id,node);}
@@ -156,7 +165,10 @@
      else if(c.kind==='spring')angle=value==='CLOSE'?-24:value==='OPEN'?24:0;
      const img=n.querySelector('img');if(img)img.style.transform='rotate('+angle+'deg)';
    }
-   for(const d of cfg.displays){const el=digits.get(d.id);if(el)el.textContent=String(state.input?.[d.field]??'—');}
+   for(const d of cfg.displays){
+     const el=digits.get(d.id);
+     if(el){const v=model.readDisplay(system,d,state);el.textContent=v===null?'—':String(v);}
+   }
    if(gauge){
      const manual=output.operatingMode==='MAN';
      gauge.dataset.known=String(manual);
