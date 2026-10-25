@@ -1,6 +1,6 @@
 {
   "schema": "b737-annunciator-assets.v1",
-  "version": "LGT-0018",
+  "version": "LGT-0019",
   "assetDirectory": "../assets/locked/2026-10-23/LIGHTS/",
   "testMode": "manual-asset-visual-qa",
   "note": "Stable IDs for the owner-approved light designs. This registry does not assign physical coordinates or certify aircraft logic.",
@@ -603,8 +603,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "unified-v2/FAULT_OFF.svg",
-        "ON": "unified-v2/FAULT_ON.svg"
+        "OFF": "black-amber-v1/gallery/FAULT_OFF.svg",
+        "ON": "black-amber-v1/gallery/FAULT_ON.svg"
       },
       "scope": "OVERHEAD"
     },
@@ -2136,6 +2136,30 @@
       "assets": {
         "OFF": "black-amber-v1/gallery/ENG_1_OVERHEAT_OFF.svg",
         "ON": "black-amber-v1/gallery/ENG_1_OVERHEAT_ON.svg"
+      },
+      "scope": "ASSET_TEST_ONLY"
+    },
+    {
+      "id": "APU_DET_INOP",
+      "lines": [
+        "APU DET",
+        "INOP"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "black-amber-v1/gallery/APU_DET_INOP_OFF.svg",
+        "ON": "black-amber-v1/gallery/APU_DET_INOP_ON.svg"
       },
       "scope": "ASSET_TEST_ONLY"
     }
