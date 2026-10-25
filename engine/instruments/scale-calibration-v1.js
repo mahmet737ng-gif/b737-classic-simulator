@@ -6,7 +6,7 @@
 })(typeof globalThis === 'object' ? globalThis : this, function () {
   'use strict';
 
-  // Clockwise degrees from twelve o'clock in the unscaled source image.
+  // Clockwise degrees from twelve o'clock in native source pixels (image Y grows down).
   function bearing(pivot, point) {
     if (![pivot?.x, pivot?.y, point?.x, point?.y].every(Number.isFinite))
       throw Error('A pivot and tick point in source-image pixels are required');
