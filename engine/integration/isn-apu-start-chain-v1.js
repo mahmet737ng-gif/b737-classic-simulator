@@ -34,7 +34,7 @@
    this.timingProfile=timingProfile;this.timing=TIMING_PROFILES[timingProfile];
    this.start=start;this.time=0;this.jobs=[];this.phase={apu:'OFF',engine1:'OFF',engine2:'OFF'};
    this.effects=[];this.lastError='';this.controls={};this.guards={};this.started={engine1:false,engine2:false};
-   this.dynamic={engine1:null,engine2:null};
+   this.dynamic={engine1:null,engine2:null};this.fuelAvailable={engine1:false,engine2:false};
    this.operating={engine1:null,engine2:null};this.throttle={engine1:0,engine2:0};
    this.flight={onGround:true};
    this.trainingFaults=Object.fromEntries(['engine1','engine2'].map(device=>
@@ -72,17 +72,17 @@
     }
    }
    const active=this.dynamic[device];if(!active||this.phase[device]!==active.phase)continue;
-   const total=active.phase==='MOTORING'?this.timing.engineMotoringMs:this.timing.engineLightoffMs;
+   const total=active.durationMs??(active.phase==='MOTORING'?this.timing.engineMotoringMs:this.timing.engineLightoffMs);
    const reference=active.phase==='MOTORING'?Dynamics.duration.motoringMs:Dynamics.duration.lightoffMs;
    // Resample the same training curve over a longer clock horizon.
    const sampleMs=Math.max(0,at-active.since)*reference/total;
-   const value=Dynamics.sample(active.phase,sampleMs,this.trainingFaults[device]);
+   const value=Dynamics.sample(active.phase,sampleMs,{...this.trainingFaults[device],fuelEntryN2:active.fuelEntryN2});
    this.feedback(device,'n2Percent',value.n2Percent);
    if(value.egtC!==null)this.feedback(device,'egtC',value.egtC);
-   this.feedback(device,'fuelFlowKgHr',value.fuelFlowKgHr);
-   if(active.phase==='LIGHT_OFF_SEQUENCE'&&this.trainingFaults[device].egtHigh&&value.egtC>=725){
+   this.feedback(device,'fuelFlowKgHr',active.phase==='MOTORING'&&this.start.get().observation[device].feedback.fuelStartLever.value==='IDLE'&&this.fuelAvailable[device]===true?400:value.fuelFlowKgHr);
+   if(active.phase==='LIGHT_OFF_SEQUENCE'&&value.egtC>=725){
     this.cancel(device);this.dynamic[device]=null;this.phase[device]='ABNORMAL_EGT';
-    this.lastError=device.toUpperCase()+': TRAINING EGT >=725°C — move START LEVER to CUTOFF';
+    this.lastError=device.toUpperCase()+': ABNORMAL START EGT >=725°C';
    }
   }}
   setTrainingFault(device,key,active){
@@ -177,23 +177,21 @@
    if(c.isolation==='CLOSE')return 'ISOLATION VALVE CLOSED';
    if(c.packL!=='OFF'||c.packR!=='OFF')return 'PACK L/R MUST BE OFF FOR ENGINE START';
    if(b.battery!==true)return 'BATTERY BUS NOT AVAILABLE';
-   const ign=this.start.controls.ignitionSelector;
-   const left=ign==='IGN_L'||ign==='BOTH',right=ign==='IGN_R'||ign==='BOTH';
-   if(!(left&&b.transfer1===true||right&&b.acStandby===true))
-    return 'IGNITION AC SUPPLY NOT READY — SELECT APU GEN';
+   // Starter motoring is pneumatic; ignition power is checked at light-off.
+   // Right igniter uses AC STANDBY, which can be battery/inverter powered.
    return null;
   }
   startEngine(device){
    const fuelLever=this.start.get().observation[device].feedback.fuelStartLever.value;
-   if(!['OFF','BLOCKED'].includes(this.phase[device])||fuelLever!=='CUTOFF'){
-    this.lastError=device.toUpperCase()+': START LEVER CUTOFF and a stopped start sequence required before GRD';
+   if(!['OFF','BLOCKED'].includes(this.phase[device])){
+    this.lastError=device.toUpperCase()+': a stopped start sequence required before GRD';
     this.effects.push({type:'ROTARY_RELEASE',id:device==='engine1'?'engine-start-1':'engine-start-2',position:'OFF'});
     return;
    }
    this.lastError='';this.cancel(device);this.started[device]=false;
    this.dynamic[device]=null;this.operating[device]=null;
    this.feedback(device,'n2Percent',0);
-   this.feedback(device,'egtC',null);this.feedback(device,'fuelFlowKgHr',0);
+   this.feedback(device,'egtC',null);this.feedback(device,'fuelFlowKgHr',fuelLever==='IDLE'&&this.fuelAvailable[device]===true?400:0);
    this.command({type:'ENGINE_START_SWITCH',device,position:'GRD'});
    this.syncPower();
    const failure=this.canStartEngine(device);
@@ -244,44 +242,96 @@
      '; START LEVER remains '+this.start.get().observation[device].feedback.fuelStartLever.value;
    return this.get();
   }
-  lever(device,position){if(!['engine1','engine2'].includes(device)||!['IDLE','CUTOFF'].includes(position))throw Error('Invalid start lever');
-   if(position==='CUTOFF'){this.operating[device]=null;this.feedback(device,'fuelStartLever','CUTOFF');if(this.phase[device]!=='RUNNING')this.abortEngine(device);else{
-    this.cancel(device);this.dynamic[device]=null;
-    this.feedback(device,'fuelFlowKgHr',0);this.feedback(device,'n2Percent',null);
-    this.feedback(device,'egtC',null);this.command({type:'SOURCE_REQUEST',device,request:'SHUTDOWN'});
-    this.obs(device,false);this.started[device]=false;this.phase[device]='OFF';}
-    this.lastError='';return this.get();}
-   if(this.phase[device]!=='AWAIT_FUEL_LEVER_IDLE'){
-    this.lastError=device.toUpperCase()+': START LEVER IDLE requires starter motoring';return this.get();}
-   const rule=this.start.get().observation[device].rules;
-   if(rule.fuel.recommendMovingLeverToIdle!==true){this.lastError='WAIT FOR N1 ROTATION AND N2';return this.get();}
-   this.feedback(device,'fuelStartLever','IDLE');
-   this.lastError='';this.phase[device]='LIGHT_OFF_SEQUENCE';
-   this.dynamic[device]={phase:'LIGHT_OFF_SEQUENCE',since:this.time};
-   this.feedback(device,'fuelFlowKgHr',400);this.feedback(device,'egtC',0);
-   if(this.trainingFaults[device].egtHigh)this.schedule(device,Math.round(HIGH_EGT_THRESHOLD_MS*this.timing.engineLightoffMs/Dynamics.duration.lightoffMs),()=>{});
-   this.schedule(device,this.timing.engineLightoffMs,()=>{if(this.phase[device]!=='LIGHT_OFF_SEQUENCE')return;
+  // Lever mechanics and fuel valve commands are independent of N2 and start
+  // phase. Spark requires an electrically eligible selected ignition channel.
+  // Pneumatic starter may motor without ignition supply.
+  ignitionReady(device){
+   const obs=this.start.get().observation[device];
+   const ignition=obs.rules.ignition;
+   return ignition.supplyEligible.left===true||ignition.supplyEligible.right===true;
+  }
+  setFuelAvailable(device,available){
+   if(!['engine1','engine2'].includes(device)||typeof available!=='boolean')
+    throw Error('Fuel availability requires engine and resolved boolean');
+   this.fuelAvailable[device]=available;
+   const lever=this.start.get().observation[device].feedback.fuelStartLever.value;
+   if(lever==='IDLE'&&this.phase[device]!=='RUNNING'&&this.phase[device]!=='LIGHT_OFF_SEQUENCE'){
+    this.feedback(device,'fuelFlowKgHr',available?400:0);
+   }
+   this.maybeLightoff(device);
+   return this.get();
+  }
+  maybeLightoff(device){
+   if(!['MOTORING','AWAIT_FUEL_LEVER_IDLE'].includes(this.phase[device]))return false;
+   if(this.start.get().observation[device].feedback.fuelStartLever.value!=='IDLE')return false;
+   if(this.fuelAvailable[device]!==true||!this.ignitionReady(device))return false;
+   const n2=this.start.get().observation[device].feedback.n2Percent.value;
+   if(!Number.isFinite(n2)||n2<5)return false;
+   const previous=this.dynamic[device];
+   const remainingMotoring=previous?.phase==='MOTORING'?
+    Math.max(0,this.timing.engineMotoringMs-(this.time-previous.since)):0;
+   const durationMs=this.timing.engineLightoffMs+remainingMotoring;
+   this.cancel(device);
+   this.lastError='';
+   this.phase[device]='LIGHT_OFF_SEQUENCE';
+   this.dynamic[device]={phase:'LIGHT_OFF_SEQUENCE',since:this.time,
+    durationMs,fuelEntryN2:n2};
+   this.feedback(device,'fuelFlowKgHr',400);
+   this.feedback(device,'egtC',0);
+   if(this.trainingFaults[device].egtHigh)
+    this.schedule(device,Math.round(HIGH_EGT_THRESHOLD_MS*durationMs/Dynamics.duration.lightoffMs),()=>{});
+   this.schedule(device,durationMs,()=>{
+    if(this.phase[device]!=='LIGHT_OFF_SEQUENCE')return;
     this.dynamic[device]=null;
     if(this.trainingFaults[device].noLightOff||this.trainingFaults[device].hungStart){
      this.phase[device]=this.trainingFaults[device].noLightOff?'NO_LIGHT_OFF':'HUNG_START';
-     this.lastError=device.toUpperCase()+': INJECTED '+this.phase[device]+' — move START LEVER to CUTOFF';
+     this.lastError=device.toUpperCase()+': INJECTED '+this.phase[device];
      return;
     }
-    this.feedback(device,'n2Percent',46);this.feedback(device,'startValveOpen',false);
-    this.feedback(device,'startAirAvailable',false);this.feedback(device,'starterEngaged',false);
-    this.feedback(device,'fuelFlowKgHr',350);this.obs(device,true);this.phase[device]='RUNNING';
+    this.feedback(device,'n2Percent',46);
+    this.feedback(device,'startValveOpen',false);
+    this.feedback(device,'startAirAvailable',false);
+    this.feedback(device,'starterEngaged',false);
+    this.feedback(device,'fuelFlowKgHr',350);
+    this.obs(device,true);this.phase[device]='RUNNING';
     this.started[device]=true;
     this.operating[device]={at:this.time,values:Dynamics.initialRunning()};
     this.effects.push({type:'ROTARY_RELEASE',id:device==='engine1'?'engine-start-1':'engine-start-2',position:'OFF'});
     if(this.trainingFaults[device].flameOut)this.schedule(device,FAULT_TIMING.flameOutAfterRunningMs,()=>{
      if(this.phase[device]!=='RUNNING')return;
-     this.operating[device]=null;this.obs(device,false);this.feedback(device,'fuelFlowKgHr',null);
+     this.operating[device]=null;this.obs(device,false);
+     this.feedback(device,'fuelFlowKgHr',null);
      this.feedback(device,'n2Percent',null);this.feedback(device,'egtC',null);
      this.command({type:'SOURCE_REQUEST',device,request:'SHUTDOWN'});
      this.started[device]=false;this.phase[device]='FLAMEOUT';
-     this.lastError=device.toUpperCase()+': INJECTED FLAMEOUT — move START LEVER to CUTOFF before retry';
+     this.lastError=device.toUpperCase()+': INJECTED FLAMEOUT';
     });
-   });return this.get();
+   });
+   return true;
+  }
+  lever(device,position){
+   if(!['engine1','engine2'].includes(device)||!['IDLE','CUTOFF'].includes(position))
+    throw Error('Invalid start lever');
+   if(position==='CUTOFF'){
+    this.operating[device]=null;this.fuelAvailable[device]=false;
+    this.feedback(device,'fuelStartLever','CUTOFF');
+    if(this.phase[device]!=='RUNNING')this.abortEngine(device);
+    else{
+     this.cancel(device);this.dynamic[device]=null;
+     this.feedback(device,'fuelFlowKgHr',0);this.feedback(device,'n2Percent',null);
+     this.feedback(device,'egtC',null);
+     this.command({type:'SOURCE_REQUEST',device,request:'SHUTDOWN'});
+     this.obs(device,false);this.started[device]=false;this.phase[device]='OFF';
+    }
+    this.lastError='';return this.get();
+   }
+   // This is a commanded fuel-valve motion even when no pump/igniter
+   // pressure is available. No automatic combustion without fuel and spark.
+   this.feedback(device,'fuelStartLever','IDLE');
+   this.feedback(device,'fuelFlowKgHr',this.fuelAvailable[device]===true?400:0);
+   this.maybeLightoff(device);
+   this.lastError='';
+   return this.get();
   }
   abortEngine(device){this.cancel(device);this.dynamic[device]=null;this.operating[device]=null;
    const fuelIdle=this.start.get().observation[device].feedback.fuelStartLever.value==='IDLE';
