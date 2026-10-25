@@ -5,5 +5,5 @@ const html=fs.readFileSync(path.resolve(__dirname,'../fuel-panel/index.html'),'u
 assert.ok(css.includes('.toggle-visual .off-frame{background-position:75% 50%}'),'OFF is the approved UP pose');
 assert.ok(css.includes('.toggle-visual .on-frame{background-position:100% 50%}'),'ON is the approved DOWN pose');
 assert.equal((html.match(/class="toggle-visual"/g)||[]).length,6,'fuel pump overlays preserved');
-assert.ok(css.includes('toggle-switch-standard-v6/b737-toggle-five-shafts-centered-v8.webp'),'approved transparent asset unchanged');
+assert.ok(css.includes('toggle-switch-standard-v7/b737-toggle-five-center-approved-v9.webp'),'approved transparent asset unchanged');
 console.log('PASS: six fuel pump overlays show OFF UP, ON DOWN, without changing state logic.');

@@ -60,10 +60,13 @@ const hqPath=path.resolve(__dirname,registry.assets['vertical-on'].url);
 const hqBytes=fs.readFileSync(hqPath);
 assert.equal(hqBytes.subarray(0,4).toString('ascii'),'RIFF');
 assert.equal(hqBytes.subarray(8,12).toString('ascii'),'WEBP');
-assert.equal(hqBytes.subarray(12,16).toString('ascii'),'VP8X');
-assert.equal(1+hqBytes.readUIntLE(24,3),3840);
-assert.equal(1+hqBytes.readUIntLE(27,3),768);
-assert.equal(registry.version,'TGL-0008-SHAFT-CENTERED');
+
+const frameFormat=hqBytes.subarray(12,16).toString('ascii');
+assert.equal(frameFormat,'VP8L','the v9 lossless five-frame sprite is VP8L');
+assert.equal(hqBytes[20],0x2f,'lossless WebP signature');
+assert.equal(1+hqBytes[21]+((hqBytes[22]&63)<<8),3840);
+assert.equal(1+(hqBytes[22]>>6)+(hqBytes[23]<<2)+((hqBytes[24]&15)<<10),768);
+assert.equal(registry.version,'TGL-0009-CENTER-APPROVED');
 
 // TGL-0005: prevent upside-down visuals and dark ring regressions.
 const poses=require('./toggle-pose-v1.js');
@@ -107,9 +110,9 @@ console.log('PASS TGL-0005: all 58 physical detents upright, no black fallback, 
 
 // TGL-0006: five sprites now share a halo-free, orthographic metal nut.
 // The original frozen photographic mosaic is deliberately unchanged.
-assert.equal(registry.approvedVisuals[0],'b737-cockpit-toggle-v6-shaft-centered-fixed-collar');
+assert.equal(registry.approvedVisuals[0],'b737-toggle-five-v9-user-approved-center');
 assert.ok(registry.controls.length===58,'Every switch must still be mapped');
-assert.ok(Object.values(registry.assets).every(a=>a.url.includes('toggle-switch-standard-v6/b737-toggle-five-shafts-centered-v8.webp')));
+assert.ok(Object.values(registry.assets).every(a=>a.url.includes('toggle-switch-standard-v7/b737-toggle-five-center-approved-v9.webp')));
 console.log('PASS TGL-0006: unified overhead reuses one transparent no-halo five-pose nut atlas with all physical detents intact.');
 
 /* TGL-0007: eliminate black circles and recenter the metal collar itself. */
@@ -133,7 +136,7 @@ for(const [panel,color] of [['OH12',[200,217,226]],['OH09',[92,105,120]],['OH23-
  assert.equal(px(60,60,3),255,'Photographed hole masked below metal collar');
 }
 assert.ok(mountedSource.includes('p.diameter,c.placementId)'),'The background sampler must know the original panel');
-assert.ok(Object.values(registry.assets).every(a=>a.sha256==='1bf7934b77b32acac90d7ad10e41e3810a5ca65d70ff967c06f5ee171e3792f0'));
+assert.ok(Object.values(registry.assets).every(a=>a.sha256==='f4a6a57a6d2e2f077a99ab2726fbc2ffb4377e678dbfaa069d1d9b7a60ceb391'));
 assert.ok(html2.includes('socket-cleanup-v3.js?v=TGL-0007'));
 console.log('PASS TGL-0007: centered bezel; only narrow transparent repair, original old black pixel discarded.');
 
@@ -145,5 +148,16 @@ assert.equal(alignment.shaftCorrection.x,30,'shaft moved to the right inside the
 assert.equal(alignment.shaftCorrection.y,0);
 assert.equal(alignment.shiftAppliedToBase,false,'nut image must not move along with the shaft');
 assert.deepEqual(alignment.states,['LEFT','CENTER','RIGHT','UP','DOWN']);
-assert.equal(registry.version,'TGL-0008-SHAFT-CENTERED');
+assert.equal(registry.version,'TGL-0009-CENTER-APPROVED');
 console.log('PASS TGL-0008: stationary socket/nut, shaft re-centered 30 source pixels, five states unchanged.');
+
+/* TGL-0009: replace ONLY CENTER with the owner-approved true top-down white circular head. */
+const centerPng=fs.readFileSync(path.resolve(__dirname,'../../shared-assets/toggle-switch-standard-v7/B737_Toggle_CENTER_final_v9.png'));
+assert.equal(centerPng.subarray(1,4).toString('ascii'),'PNG');
+assert.equal(centerPng.readUInt32BE(16),768);
+assert.equal(centerPng.readUInt32BE(20),768);
+assert.equal(crypto.createHash('sha256').update(centerPng).digest('hex'),'39905c8005bcc1474ecec09280d44aaf1a5ff998f9f54a54d65f856f4825726a');
+assert.equal(registry.assets['vertical-center'].frame,1);
+assert.equal(registry.assets['horizontal-center'].frame,1);
+assert.ok(Object.values(registry.assets).every(a=>a.sha256==='f4a6a57a6d2e2f077a99ab2726fbc2ffb4377e678dbfaa069d1d9b7a60ceb391'));
+console.log('PASS TGL-0009: user-approved CENTER-only sprite installed with preserved other detents.');
