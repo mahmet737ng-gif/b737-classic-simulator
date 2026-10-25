@@ -1,4 +1,5 @@
 'use strict';
+require('./aircon-400-model.test.cjs');
 const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict'),crypto=require('node:crypto'),m=require('./view-model');
 const a=JSON.parse(fs.readFileSync(path.join(__dirname,'assembly.json'),'utf8'));assert.equal(m.validate(a),true);assert.equal(a.regions.length,3);assert.equal(a.regions.find(r=>r.id==='main').placements.length,5);assert.equal(a.regions.find(r=>r.id==='overhead').baseVersion,'UPD-0012-OVH-measured-seams');
 assert.equal(a.version,'CKP-0012-THROTTLE-FIT');
