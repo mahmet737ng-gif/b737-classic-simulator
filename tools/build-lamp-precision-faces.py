@@ -80,6 +80,12 @@ def main():
                     if not existing.is_file():raise FileNotFoundError(existing)
                     digest=hashlib.sha256(existing.read_bytes()).hexdigest()
                     if frames[state]["sha256"]!=digest:raise ValueError("Generated content tampered "+str(existing))
+                    src=ROOT/"panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1"/f"{key}_{state}.svg"
+                    if not src.is_file():raise FileNotFoundError(src)
+                    report.append({"lamp":lid,"asset":key,"state":state,"oldSource":str(src.relative_to(ROOT)),
+                                   "derived":str(existing.relative_to(ROOT)),"sourceRect":lamp["sourceRect"],
+                                   "SVGRoot":[w,h],"viewBox":[round(300*w/h,6),300],
+                                   "glyphRescaled":False,"positionChanged":False,"sha256":digest})
                     continue
                 src=(file.parent/url).resolve()
                 if "assets/locked/2026-10-23/LIGHTS" not in str(src):
@@ -101,7 +107,7 @@ def main():
             if registry["version"]=="LGT-0007":
                 registry["previousVersion"]="LGT-0007"
                 registry["version"]="LGT-0008"
-            elif registry["version"]!="LGT-0008":raise ValueError("Unexpected overhead registry version "+registry["version"])
+            elif registry["version"] not in ("LGT-0008","LGT-0009"):raise ValueError("Unexpected overhead registry version "+registry["version"])
         else:
             if registry["version"]=="LGT-0010":
                 registry["previousVersion"]="LGT-0010"
