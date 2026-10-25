@@ -1,0 +1,709 @@
+{
+  "schema": "b737.stage10.candidate-calibration-subset.v1",
+  "purpose": "Read-only pending geometry approvals; NEVER apply to owner sprites or release needles",
+  "aircraft": "B737-33V EP-FSI",
+  "readiness": "PREVIEW_ONLY_0_PHOTO_APPROVAL",
+  "provenance": "engine/instruments/stage5-numeric-scale-candidates-v1.json",
+  "counts": {
+    "scaleModes": 7,
+    "faceCount": 6
+  },
+  "calibrations": {
+    "oh.fuel.temperature:primary": {
+      "faceId": "oh.fuel.temperature",
+      "mode": "primary",
+      "kind": "rotary",
+      "unit": "°C",
+      "pivot": {
+        "x": 506,
+        "y": 235,
+        "evidence": "gauge-survey-stage2-3.json",
+        "state": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/OH09-FUEL-921977b56887.png",
+        "sha256": "921977b568870233c9613a62101741dc369bb43f85b80b3769af07f05eeba733",
+        "width": 1012,
+        "height": 1555
+      },
+      "anchors": [
+        {
+          "value": -40,
+          "angleDeg": -92,
+          "point": null,
+          "status": "native_photo_candidate_not_approved",
+          "origin": "gauge-survey-stage2-3.json/candidateNativeMajorTicks",
+          "quality": "native_radial_candidate"
+        },
+        {
+          "value": -30,
+          "angleDeg": -69,
+          "point": null,
+          "status": "native_photo_candidate_not_approved",
+          "origin": "gauge-survey-stage2-3.json/candidateNativeMajorTicks",
+          "quality": "native_radial_candidate"
+        },
+        {
+          "value": -20,
+          "angleDeg": -47.5,
+          "point": null,
+          "status": "native_photo_candidate_not_approved",
+          "origin": "gauge-survey-stage2-3.json/candidateNativeMajorTicks",
+          "quality": "native_radial_candidate"
+        },
+        {
+          "value": -10,
+          "angleDeg": -24.5,
+          "point": null,
+          "status": "native_photo_candidate_not_approved",
+          "origin": "gauge-survey-stage2-3.json/candidateNativeMajorTicks",
+          "quality": "native_radial_candidate"
+        },
+        {
+          "value": 0,
+          "angleDeg": 0.5,
+          "point": null,
+          "status": "native_photo_candidate_not_approved",
+          "origin": "gauge-survey-stage2-3.json/candidateNativeMajorTicks",
+          "quality": "native_radial_candidate"
+        },
+        {
+          "value": 10,
+          "angleDeg": 24,
+          "point": null,
+          "status": "native_photo_candidate_not_approved",
+          "origin": "gauge-survey-stage2-3.json/candidateNativeMajorTicks",
+          "quality": "native_radial_candidate"
+        },
+        {
+          "value": 20,
+          "angleDeg": 47,
+          "point": null,
+          "status": "native_photo_candidate_not_approved",
+          "origin": "gauge-survey-stage2-3.json/candidateNativeMajorTicks",
+          "quality": "native_radial_candidate"
+        },
+        {
+          "value": 30,
+          "angleDeg": 69,
+          "point": null,
+          "status": "native_photo_candidate_not_approved",
+          "origin": "gauge-survey-stage2-3.json/candidateNativeMajorTicks",
+          "quality": "native_radial_candidate"
+        },
+        {
+          "value": 40,
+          "angleDeg": 91,
+          "point": null,
+          "status": "native_photo_candidate_not_approved",
+          "origin": "gauge-survey-stage2-3.json/candidateNativeMajorTicks",
+          "quality": "native_radial_candidate"
+        }
+      ],
+      "approval": {
+        "allNativeTicksReviewed": false,
+        "shaftPivotPhotoReviewed": false,
+        "sourceGeometryReviewed": false,
+        "reviewerEvidence": []
+      },
+      "increasingDirection": "clockwise",
+      "maxGapDeg": 125
+    },
+    "oh.elec.dc_amps:primary": {
+      "faceId": "oh.elec.dc_amps",
+      "mode": "primary",
+      "kind": "rotary",
+      "unit": "A",
+      "pivot": {
+        "x": 310,
+        "y": 192,
+        "evidence": "photo-anchor-checkpoints-v1.json",
+        "state": "optical_center_estimate_needs_confirmation"
+      },
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/OH10-ELEC-LOSSLESS-9a1ca4d6cfb2.png",
+        "sha256": "9a1ca4d6cfb277ec1404f3a464e957d81be9d9689a0810883364342d57b0f1ea",
+        "width": 1095,
+        "height": 1436
+      },
+      "anchors": [
+        {
+          "value": -50,
+          "angleDeg": -52.1,
+          "point": {
+            "x": 226.5,
+            "y": 127
+          },
+          "status": "native_photo_candidate_not_approved",
+          "origin": "photo-anchor-checkpoints-v1.json",
+          "quality": "automated_source_photo_line_candidate"
+        },
+        {
+          "value": 0,
+          "angleDeg": 1.05,
+          "point": {
+            "x": 311.5,
+            "y": 110.5
+          },
+          "status": "native_photo_candidate_not_approved",
+          "origin": "photo-anchor-checkpoints-v1.json",
+          "quality": "automated_source_photo_line_candidate"
+        },
+        {
+          "value": 50,
+          "angleDeg": 59.55,
+          "point": {
+            "x": 409.5,
+            "y": 133.5
+          },
+          "status": "native_photo_candidate_not_approved",
+          "origin": "photo-anchor-checkpoints-v1.json",
+          "quality": "automated_source_photo_line_candidate"
+        }
+      ],
+      "approval": {
+        "allNativeTicksReviewed": false,
+        "shaftPivotPhotoReviewed": false,
+        "sourceGeometryReviewed": false,
+        "reviewerEvidence": []
+      },
+      "increasingDirection": "clockwise",
+      "maxGapDeg": 125
+    },
+    "oh.elec.cps:primary": {
+      "faceId": "oh.elec.cps",
+      "mode": "primary",
+      "kind": "rotary",
+      "unit": "Hz",
+      "pivot": {
+        "x": 780,
+        "y": 192,
+        "evidence": "photo-anchor-checkpoints-v1.json",
+        "state": "optical_center_estimate_needs_confirmation"
+      },
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/OH10-ELEC-LOSSLESS-9a1ca4d6cfb2.png",
+        "sha256": "9a1ca4d6cfb277ec1404f3a464e957d81be9d9689a0810883364342d57b0f1ea",
+        "width": 1095,
+        "height": 1436
+      },
+      "anchors": [
+        {
+          "value": 0,
+          "angleDeg": -71.08,
+          "point": {
+            "x": 656,
+            "y": 149.5
+          },
+          "status": "native_photo_candidate_not_approved",
+          "origin": "photo-anchor-checkpoints-v1.json",
+          "quality": "automated_source_photo_line_candidate"
+        },
+        {
+          "value": 400,
+          "angleDeg": -1.33,
+          "point": {
+            "x": 778,
+            "y": 106
+          },
+          "status": "native_photo_candidate_not_approved",
+          "origin": "photo-anchor-checkpoints-v1.json",
+          "quality": "automated_source_photo_line_candidate"
+        },
+        {
+          "value": 420,
+          "angleDeg": 84.94,
+          "point": {
+            "x": 898.5,
+            "y": 181.5
+          },
+          "status": "native_photo_candidate_not_approved",
+          "origin": "photo-anchor-checkpoints-v1.json",
+          "quality": "automated_source_photo_line_candidate"
+        }
+      ],
+      "approval": {
+        "allNativeTicksReviewed": false,
+        "shaftPivotPhotoReviewed": false,
+        "sourceGeometryReviewed": false,
+        "reviewerEvidence": []
+      },
+      "increasingDirection": "clockwise",
+      "maxGapDeg": 125
+    },
+    "oh.cabin.diff_pressure_altitude:cabinAltitude": {
+      "faceId": "oh.cabin.diff_pressure_altitude",
+      "mode": "cabinAltitude",
+      "kind": "rotary",
+      "unit": "ft",
+      "pivot": {
+        "x": 489,
+        "y": 365,
+        "evidence": "photo-anchor-checkpoints-v1.json",
+        "state": "optical_center_estimate_needs_confirmation"
+      },
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/OH19-PRESS-DIFF-ALT-HORN-d6719ce57cef.png",
+        "sha256": "4c667d96ea7652e52784f5c06ee3cdde0879ca37631abf19969861afecc45fed",
+        "width": 1267,
+        "height": 1241
+      },
+      "anchors": [
+        {
+          "value": 0,
+          "angleDeg": 2.71,
+          "point": null,
+          "status": "native_photo_candidate_not_approved",
+          "origin": "oh19-cab-alt-photo-anchors-v1.json",
+          "quality": "source_photo_radial_candidate"
+        },
+        {
+          "value": 500,
+          "angleDeg": 13.59,
+          "point": null,
+          "status": "native_photo_candidate_not_approved",
+          "origin": "oh19-cab-alt-photo-anchors-v1.json",
+          "quality": "source_photo_radial_candidate"
+        },
+        {
+          "value": 1000,
+          "angleDeg": 22.37,
+          "point": null,
+          "status": "native_photo_candidate_not_approved",
+          "origin": "oh19-cab-alt-photo-anchors-v1.json",
+          "quality": "source_photo_radial_candidate"
+        },
+        {
+          "value": 1500,
+          "angleDeg": 31.32,
+          "point": null,
+          "status": "native_photo_candidate_not_approved",
+          "origin": "oh19-cab-alt-photo-anchors-v1.json",
+          "quality": "source_photo_radial_candidate"
+        },
+        {
+          "value": 2000,
+          "angleDeg": 40.34,
+          "point": null,
+          "status": "native_photo_candidate_not_approved",
+          "origin": "oh19-cab-alt-photo-anchors-v1.json",
+          "quality": "source_photo_radial_candidate"
+        },
+        {
+          "value": 2500,
+          "angleDeg": 50.2,
+          "point": null,
+          "status": "native_photo_candidate_not_approved",
+          "origin": "oh19-cab-alt-photo-anchors-v1.json",
+          "quality": "source_photo_radial_candidate"
+        },
+        {
+          "value": 3000,
+          "angleDeg": 59.98,
+          "point": null,
+          "status": "native_photo_candidate_not_approved",
+          "origin": "oh19-cab-alt-photo-anchors-v1.json",
+          "quality": "source_photo_radial_candidate"
+        },
+        {
+          "value": 10000,
+          "angleDeg": 108.64,
+          "point": null,
+          "status": "native_photo_candidate_not_approved",
+          "origin": "oh19-cab-alt-photo-anchors-v1.json",
+          "quality": "source_photo_radial_candidate"
+        },
+        {
+          "value": 15000,
+          "angleDeg": 155.65,
+          "point": null,
+          "status": "native_photo_candidate_not_approved",
+          "origin": "oh19-cab-alt-photo-anchors-v1.json",
+          "quality": "source_photo_radial_candidate"
+        },
+        {
+          "value": 20000,
+          "angleDeg": 200.55,
+          "point": null,
+          "status": "native_photo_candidate_not_approved",
+          "origin": "oh19-cab-alt-photo-anchors-v1.json",
+          "quality": "source_photo_radial_candidate"
+        },
+        {
+          "value": 25000,
+          "angleDeg": 236.57,
+          "point": null,
+          "status": "native_photo_candidate_not_approved",
+          "origin": "oh19-cab-alt-photo-anchors-v1.json",
+          "quality": "source_photo_radial_candidate"
+        },
+        {
+          "value": 30000,
+          "angleDeg": 262.03,
+          "point": null,
+          "status": "native_photo_candidate_not_approved",
+          "origin": "oh19-cab-alt-photo-anchors-v1.json",
+          "quality": "source_photo_radial_candidate"
+        },
+        {
+          "value": 35000,
+          "angleDeg": 284.48,
+          "point": null,
+          "status": "native_photo_candidate_not_approved",
+          "origin": "oh19-cab-alt-photo-anchors-v1.json",
+          "quality": "source_photo_radial_candidate"
+        },
+        {
+          "value": 40000,
+          "angleDeg": 304.18,
+          "point": null,
+          "status": "native_photo_candidate_not_approved",
+          "origin": "oh19-cab-alt-photo-anchors-v1.json",
+          "quality": "source_photo_radial_candidate"
+        },
+        {
+          "value": 50000,
+          "angleDeg": 327.37,
+          "point": null,
+          "status": "native_photo_candidate_not_approved",
+          "origin": "oh19-cab-alt-photo-anchors-v1.json",
+          "quality": "source_photo_radial_candidate"
+        }
+      ],
+      "approval": {
+        "allNativeTicksReviewed": false,
+        "shaftPivotPhotoReviewed": false,
+        "sourceGeometryReviewed": false,
+        "reviewerEvidence": []
+      },
+      "increasingDirection": "clockwise",
+      "maxGapDeg": 125
+    },
+    "oh.cabin.diff_pressure_altitude:diffPressure": {
+      "faceId": "oh.cabin.diff_pressure_altitude",
+      "mode": "diffPressure",
+      "kind": "rotary",
+      "unit": "psi",
+      "pivot": {
+        "x": 489,
+        "y": 365,
+        "evidence": "photo-anchor-checkpoints-v1.json",
+        "state": "optical_center_estimate_needs_confirmation"
+      },
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/OH19-PRESS-DIFF-ALT-HORN-d6719ce57cef.png",
+        "sha256": "4c667d96ea7652e52784f5c06ee3cdde0879ca37631abf19969861afecc45fed",
+        "width": 1267,
+        "height": 1241
+      },
+      "anchors": [
+        {
+          "value": 0,
+          "angleDeg": 0.64,
+          "point": {
+            "x": 492,
+            "y": 96
+          },
+          "status": "native_photo_candidate_not_approved",
+          "origin": "photo-anchor-checkpoints-v1.json",
+          "quality": "automated_source_photo_line_candidate"
+        },
+        {
+          "value": 1,
+          "angleDeg": 33.19,
+          "point": {
+            "x": 620.5,
+            "y": 164
+          },
+          "status": "native_photo_candidate_not_approved",
+          "origin": "photo-anchor-checkpoints-v1.json",
+          "quality": "automated_source_photo_line_candidate"
+        },
+        {
+          "value": 2,
+          "angleDeg": 64.44,
+          "point": {
+            "x": 708.5,
+            "y": 260
+          },
+          "status": "native_photo_candidate_not_approved",
+          "origin": "photo-anchor-checkpoints-v1.json",
+          "quality": "automated_source_photo_line_candidate"
+        },
+        {
+          "value": 3,
+          "angleDeg": 89.52,
+          "point": {
+            "x": 728.5,
+            "y": 363
+          },
+          "status": "native_photo_candidate_not_approved",
+          "origin": "photo-anchor-checkpoints-v1.json",
+          "quality": "automated_source_photo_line_candidate"
+        },
+        {
+          "value": 4,
+          "angleDeg": 126.82,
+          "point": {
+            "x": 686,
+            "y": 512.5
+          },
+          "status": "native_photo_candidate_not_approved",
+          "origin": "photo-anchor-checkpoints-v1.json",
+          "quality": "automated_source_photo_line_candidate"
+        },
+        {
+          "value": 5,
+          "angleDeg": 159.24,
+          "point": {
+            "x": 574.5,
+            "y": 590.5
+          },
+          "status": "native_photo_candidate_not_approved",
+          "origin": "photo-anchor-checkpoints-v1.json",
+          "quality": "automated_source_photo_line_candidate"
+        },
+        {
+          "value": 6,
+          "angleDeg": -165.85,
+          "point": {
+            "x": 430.5,
+            "y": 597
+          },
+          "status": "native_photo_candidate_not_approved",
+          "origin": "photo-anchor-checkpoints-v1.json",
+          "quality": "automated_source_photo_line_candidate"
+        },
+        {
+          "value": 7,
+          "angleDeg": -134.42,
+          "point": {
+            "x": 315.5,
+            "y": 535
+          },
+          "status": "native_photo_candidate_not_approved",
+          "origin": "photo-anchor-checkpoints-v1.json",
+          "quality": "automated_source_photo_line_candidate"
+        },
+        {
+          "value": 8,
+          "angleDeg": -103.67,
+          "point": {
+            "x": 248.5,
+            "y": 423.5
+          },
+          "status": "native_photo_candidate_not_approved",
+          "origin": "photo-anchor-checkpoints-v1.json",
+          "quality": "automated_source_photo_line_candidate"
+        },
+        {
+          "value": 9,
+          "angleDeg": -69.75,
+          "point": {
+            "x": 260,
+            "y": 280.5
+          },
+          "status": "native_photo_candidate_not_approved",
+          "origin": "photo-anchor-checkpoints-v1.json",
+          "quality": "automated_source_photo_line_candidate"
+        },
+        {
+          "value": 10,
+          "angleDeg": -37.72,
+          "point": {
+            "x": 340.5,
+            "y": 173
+          },
+          "status": "native_photo_candidate_not_approved",
+          "origin": "photo-anchor-checkpoints-v1.json",
+          "quality": "automated_source_photo_line_candidate"
+        }
+      ],
+      "approval": {
+        "allNativeTicksReviewed": false,
+        "shaftPivotPhotoReviewed": false,
+        "sourceGeometryReviewed": false,
+        "reviewerEvidence": []
+      },
+      "increasingDirection": "clockwise",
+      "maxGapDeg": 125
+    },
+    "oh.cabin.temperature:primary": {
+      "faceId": "oh.cabin.temperature",
+      "mode": "primary",
+      "kind": "rotary",
+      "unit": "°C",
+      "pivot": {
+        "x": 618,
+        "y": 681,
+        "evidence": "photo-anchor-checkpoints-v1.json",
+        "state": "optical_center_estimate_needs_confirmation"
+      },
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/OH20-AIR-CONDITIONING-0734da6a7726.png",
+        "sha256": "94669d21f0be8aa538b2ff3b0684683409cadf6d9fc4b55390e7147abe506121",
+        "width": 1254,
+        "height": 1254
+      },
+      "anchors": [
+        {
+          "value": 0,
+          "angleDeg": -137.27,
+          "point": {
+            "x": 515,
+            "y": 792.5
+          },
+          "status": "native_photo_candidate_not_approved",
+          "origin": "photo-anchor-checkpoints-v1.json",
+          "quality": "automated_source_photo_line_candidate"
+        },
+        {
+          "value": 20,
+          "angleDeg": -89.63,
+          "point": {
+            "x": 462.5,
+            "y": 680
+          },
+          "status": "native_photo_candidate_not_approved",
+          "origin": "photo-anchor-checkpoints-v1.json",
+          "quality": "automated_source_photo_line_candidate"
+        },
+        {
+          "value": 40,
+          "angleDeg": -46.83,
+          "point": {
+            "x": 529,
+            "y": 597.5
+          },
+          "status": "native_photo_candidate_not_approved",
+          "origin": "photo-anchor-checkpoints-v1.json",
+          "quality": "automated_source_photo_line_candidate"
+        },
+        {
+          "value": 80,
+          "angleDeg": 74.15,
+          "point": {
+            "x": 769.5,
+            "y": 638
+          },
+          "status": "native_photo_candidate_not_approved",
+          "origin": "photo-anchor-checkpoints-v1.json",
+          "quality": "automated_source_photo_line_candidate"
+        },
+        {
+          "value": 100,
+          "angleDeg": 109.54,
+          "point": {
+            "x": 757.5,
+            "y": 730.5
+          },
+          "status": "native_photo_candidate_not_approved",
+          "origin": "photo-anchor-checkpoints-v1.json",
+          "quality": "automated_source_photo_line_candidate"
+        }
+      ],
+      "approval": {
+        "allNativeTicksReviewed": false,
+        "shaftPivotPhotoReviewed": false,
+        "sourceGeometryReviewed": false,
+        "reviewerEvidence": []
+      },
+      "increasingDirection": "clockwise",
+      "maxGapDeg": 125
+    },
+    "oh.duct.pressure_lr:primary": {
+      "faceId": "oh.duct.pressure_lr",
+      "mode": "primary",
+      "kind": "rotary",
+      "unit": "psi",
+      "pivot": {
+        "x": 544,
+        "y": 439,
+        "evidence": "photo-anchor-checkpoints-v1.json",
+        "state": "optical_center_estimate_needs_confirmation"
+      },
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/OH21-BLEED-AIR-cc78219607a3.png",
+        "sha256": "4efe8c59579e8675825ed4dabf393648cfa7f11f6c09d831d137c23f70ecfe1e",
+        "width": 1122,
+        "height": 1402
+      },
+      "anchors": [
+        {
+          "value": 0,
+          "angleDeg": -152.06,
+          "point": {
+            "x": 478.5,
+            "y": 562.5
+          },
+          "status": "native_photo_candidate_not_approved",
+          "origin": "photo-anchor-checkpoints-v1.json",
+          "quality": "automated_source_photo_line_candidate"
+        },
+        {
+          "value": 20,
+          "angleDeg": -92.41,
+          "point": {
+            "x": 401.5,
+            "y": 445
+          },
+          "status": "native_photo_candidate_not_approved",
+          "origin": "photo-anchor-checkpoints-v1.json",
+          "quality": "automated_source_photo_line_candidate"
+        },
+        {
+          "value": 40,
+          "angleDeg": -25.96,
+          "point": {
+            "x": 479,
+            "y": 305.5
+          },
+          "status": "native_photo_candidate_not_approved",
+          "origin": "photo-anchor-checkpoints-v1.json",
+          "quality": "automated_source_photo_line_candidate"
+        },
+        {
+          "value": 60,
+          "angleDeg": 28.16,
+          "point": {
+            "x": 608.5,
+            "y": 318.5
+          },
+          "status": "native_photo_candidate_not_approved",
+          "origin": "photo-anchor-checkpoints-v1.json",
+          "quality": "automated_source_photo_line_candidate"
+        },
+        {
+          "value": 80,
+          "angleDeg": 91.2,
+          "point": {
+            "x": 687,
+            "y": 442
+          },
+          "status": "native_photo_candidate_not_approved",
+          "origin": "photo-anchor-checkpoints-v1.json",
+          "quality": "automated_source_photo_line_candidate"
+        },
+        {
+          "value": 100,
+          "angleDeg": 152.16,
+          "point": {
+            "x": 595.5,
+            "y": 536.5
+          },
+          "status": "native_photo_candidate_not_approved",
+          "origin": "photo-anchor-checkpoints-v1.json",
+          "quality": "automated_source_photo_line_candidate"
+        }
+      ],
+      "approval": {
+        "allNativeTicksReviewed": false,
+        "shaftPivotPhotoReviewed": false,
+        "sourceGeometryReviewed": false,
+        "reviewerEvidence": []
+      },
+      "increasingDirection": "clockwise",
+      "maxGapDeg": 125
+    }
+  }
+}
