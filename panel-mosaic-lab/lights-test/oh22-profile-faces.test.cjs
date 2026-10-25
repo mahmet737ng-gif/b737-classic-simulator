@@ -26,4 +26,7 @@ for(const f of info.files){
  combinations.add(f.system+':'+f.lamp+':'+f.state);
 }
 assert.equal(combinations.size,14);
+const live=get('panel-mosaic-lab/cockpit/pressurization-oh22.js');
+assert.match(live,/faceBase\+system\+'_'\+l\.id\+'_OFF\.svg'/,'CPCS/DCPCS initial states must mount profile-specific SVG artwork');
+assert.match(live,/faceBase\+system\+'_'\+l\.id\+'_'\+/,'Lamp test must use corresponding system-specific ON source');
 console.log('PASS: 14 CPCS/DCPCS photo-specific vector faces, source legends preserved, no source-image or installation-coordinate edits.');
