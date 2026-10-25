@@ -61,8 +61,8 @@
  const ticks=Object.freeze(bearings.map((angleDeg,i)=>Object.freeze({
    index:i,valueThousandsFt:values[i],angleDeg,
    innerRadiusPx:strokeInnerRadius[i],
-   x:SOURCE.pivot.x+135*Math.sin(angleDeg*Math.PI/180),
-   y:SOURCE.pivot.y-135*Math.cos(angleDeg*Math.PI/180),
+   x:SOURCE.pivot.x+(strokeInnerRadius[i]+7)*Math.sin(angleDeg*Math.PI/180),
+   y:SOURCE.pivot.y-(strokeInnerRadius[i]+7)*Math.cos(angleDeg*Math.PI/180),
    labelEvidence:printed.has(i)?'printed_source_photo':i===0?'unprinted_zero_origin_inferred':'between_labels_inferred',
    pixelEvidence:'native_photo_radial_white_line'
  })));
