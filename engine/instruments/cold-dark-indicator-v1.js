@@ -59,7 +59,7 @@
         v.cabinEqualized&&finite(v.fieldElevationFt)?
         safe('cabAlt',v.fieldElevationFt,'ft','cabin equalized, field elevation assumed on QNH'):
         need('cabAlt','Cabin altitude depends on outside static pressure, not zero','ft');
-      return Object.freeze({id,status:'dual_independent_values',needles:Object.freeze({press, cabAlt}),
+      return Object.freeze({id,status:'dual_independent_values',needles:Object.freeze({press, cabAlt:alt}),
         calibrationApproved:false});
     }
     case 'zero_on_stable_cabin':
