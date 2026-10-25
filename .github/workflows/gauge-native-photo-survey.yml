@@ -1,0 +1,21 @@
+name: Native missing-gauge photo survey
+on:
+  push:
+    branches: [gauge-native-photo-extraction-batch1-20261025]
+    paths:
+      - 'tools/gauge-native-photo-survey.py'
+      - '.github/workflows/gauge-native-photo-survey.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  native-images:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare computer vision
+        run: python3 -m pip install --user Pillow opencv-python-headless numpy
+      - name: Verify frozen overhead images
+        run: python3 panel-mosaic-lab/verify-final-overhead.py
+      - name: Detect candidate dial centers and inspect source photos
+        run: python3 tools/gauge-native-photo-survey.py
