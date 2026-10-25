@@ -14,6 +14,7 @@ const initial=()=>({
   lamps:Object.fromEntries(["AT_ARM","VNAV","LNAV","N1","SPEED","LVL_CHG","HDG_SEL","APP","ALT_HLD","VS","CMD_A","CWS_A","CMD_B","CWS_B"].map(k=>[k,false]))
 });
 const values=initial();
+let powerState=null; // equipment supply unresolved until explicit observed evidence
 const displays=[
  {id:"courseL",x:85,y:112,w:112,h:59,digits:3},
  {id:"speed",x:480,y:112,w:155,h:59,digits:3},
@@ -82,6 +83,7 @@ function drawDisplay(svg,d){
  svg.querySelector("defs").append(clip);
  g.setAttribute("clip-path","url(#mcp-v5-"+d.id+")");
  g.append(svgElement("rect",{x:d.x+2,y:d.y+2,width:d.w-4,height:d.h-4,rx:1.6,fill:"#070b0b",opacity:.97}));
+ if(powerState!==true)return; // original photographed digits must be masked when unpowered/unknown
  const chars=numericText(d.id);
  const count=chars.length;
  const size=count>=5?24.5:29.5;
@@ -148,7 +150,8 @@ function mountLamp(svg,l){
  const reflector=svgElement("path",{d:"M"+(l.x+3)+" "+(l.y+2)+"h"+(l.w-6),stroke:"#dcffe1","stroke-width":1.8,opacity:.85,class:"mcp-v3-light"});
  const hit=svgElement("rect",{x:l.x-8,y:l.y-24,width:l.w+16,height:48,fill:"transparent",class:"mcp-v3-lamp-hit",tabindex:0,role:"button","aria-label":l.id.replaceAll("_"," ")});
  g.append(dark,glow,face,reflector,hit);
- function toggle(e){e.stopPropagation();values.lamps[l.id]=!values.lamps[l.id];repaint();event("lamp-toggle",{control:l.id,active:values.lamps[l.id],method:"click"});}
+ function toggle(e){e.stopPropagation();if(window.B737McpAFDSBridgeV1){window.dispatchEvent(new CustomEvent("b737:mcp-button-request",{detail:{id:l.id,method:"button"}}));return;}
+  values.lamps[l.id]=!values.lamps[l.id];repaint();event("lamp-toggle",{control:l.id,active:values.lamps[l.id],method:"click"});}
  on(hit,"click",toggle);
  on(hit,"keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();toggle(e)}});
 }
@@ -170,6 +173,8 @@ window.B737McpVisualV3=Object.freeze({
  getState:()=>JSON.parse(JSON.stringify(values)),
  setValue:(id,v)=>setValue(id,v,"external"),
  setLamp:(id,state)=>{if(Object.hasOwn(values.lamps,id)){values.lamps[id]=!!state;repaint()}},
+ setLamps:(states)=>{for(const id of Object.keys(values.lamps))values.lamps[id]=states?.[id]===true;repaint()},
+ setPower:(powered)=>{if(![true,false,null].includes(powered))throw Error("MCP power must be true/false/null");powerState=powered;repaint()},
  mount
 });
 window.addEventListener("b737:visual-test",e=>{for(const id of Object.keys(values.lamps))values.lamps[id]=!!e.detail?.active;repaint()});
