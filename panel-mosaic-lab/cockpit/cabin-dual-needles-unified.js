@@ -4,13 +4,39 @@
  const sprites=Object.fromEntries(model.needles.map(needle=>[needle.id,new URL('./'+needle.asset+'?v=CDN-0001',document.baseURI).href]));
  const state=Object.fromEntries(model.needles.map(needle=>[needle.id,needle.initialAngle]));
  const blades=new Map(),inputs=new Map(),outputs=new Map();
+ const photoStretch={cabAlt:1,press:1};
+ let photoPose=null;
  let frame=null,physical=null,physicalOutput=null;
  function svg(doc,parent,tag,attrs={}){const node=doc.createElementNS(ns,tag);for(const [key,value]of Object.entries(attrs))node.setAttribute(key,String(value));parent.append(node);return node;}
  function paint(id){
-  const blade=blades.get(id);if(blade)blade.style.transform=`rotate(${state[id]}deg)`;
+  const blade=blades.get(id);
+  if(blade)blade.style.transform=`rotate(${state[id]}deg) scaleY(${photoStretch[id]||1})`;
   const input=inputs.get(id),output=outputs.get(id);if(input)input.value=String(state[id]);if(output)output.textContent=`${state[id]}°`;
  }
- function setAngle(id,value){state[id]=model.angle(id,value);paint(id);return state[id];}
+ function setAngle(id,value){
+  state[id]=model.angle(id,value);
+  photoStretch[id]=1;photoPose=null;
+  paint(id);return state[id];
+ }
+ function setPhotoCabinAltitude(feet){
+  const mapper=window.B737CabinAltitudePhotoMapV1;
+  if(!mapper)return Object.freeze({status:'missing_photo_map'});
+  const pose=mapper.poseAtFt(feet);
+  if(pose.status==='out_of_range')return pose;
+  // Preserve a monotonically UNWRAPPED clockwise angle through 180 degrees.
+  // The source image has an elliptical projected tick track; gently correct
+  // pointer *display length* without editing its owner-approved SVG sprite.
+  const baseTip=mapper.displayedNeedle.scaledTipRadiusPx;
+  const stretch=pose.innerRadiusPx/baseTip;
+  if(!(Number.isFinite(stretch)&&stretch>.90&&stretch<1.10))
+    return Object.freeze({status:'photo_fit_outside_safe_bounds'});
+  photoStretch.cabAlt=stretch;
+  state.cabAlt=pose.angleDeg;
+  photoPose=Object.freeze({...pose,tipStretch:stretch,
+    visualStatus:'SOURCE_PHOTO_MAPPED_NOT_AIRCRAFT_CERTIFIED'});
+  paint('cabAlt');
+  return photoPose;
+ }
  function setAngles(values){for(const [id,value]of Object.entries(values||{}))setAngle(id,value);return {...state};}
  // Physical cabin altitude comes from the selected CPCS/DCPCS plant.
  // Needle offsets stay visual-only until the inner CAB ALT x1000-ft photo
@@ -25,10 +51,13 @@
     calibrationApproved:false,
     source:'CABIN_PRESSURE_PLANT_PROVISIONAL'
   });
+  const pose=setPhotoCabinAltitude(physical.cabinAltitudeFt);
   if(physicalOutput)physicalOutput.textContent=
     'CAB ALT: '+physical.cabinAltitudeFt.toFixed(0)+' ft · DIFF PRESS: '+
     physical.differentialPsid.toFixed(2)+' psi'+
-    '\nPhysical sensor state; needle-to-tick angle still unverified.';
+    '\nCAB ALT needle: '+(pose?.visualStatus||'PHOTO MAP NOT AVAILABLE')+
+    (Number.isFinite(pose?.angleDeg)?' | '+pose.angleDeg.toFixed(2)+' deg':'')+
+    '\nPhoto tick candidates tested; inferred minor values still need engineering sign-off.';
   return physical;
  }
  function mount(){
@@ -51,7 +80,7 @@
  function controls(){
   const section=document.createElement('section');section.id='unifiedCabinDualNeedles';
   const title=document.createElement('h2');title.textContent='Cabin gauge · PRESS / CAB ALT';section.append(title);
-  const note=document.createElement('p');note.className='muted';note.textContent='دو عقربه با محور مشترک و حرکت مستقل. مقدار واقعی CAB ALT از فرودگاه/سیستم فشار کابین خوانده می‌شود؛ نگاشت زاویهٔ نیدل هنوز نیازمند تأیید اسکیل تصویری است.';section.append(note);
+  const note=document.createElement('p');note.className='muted';note.textContent='دو عقربه مستقل. CAB ALT با ۴۷ خطِ استخراج‌شده از عکس اصلی به حرکت درمی‌آید؛ مقدار خطوط بی‌عدد هنوز تخمینی و این نمایش غیرگواهی‌شده است. PRESS تا کالیبراسیون جداگانه به زاویهٔ واقعی متصل نشده است.';section.append(note);
   physicalOutput=document.createElement('output');
   physicalOutput.style.display='block';physicalOutput.style.whiteSpace='pre-line';
   physicalOutput.style.direction='ltr';physicalOutput.style.textAlign='left';
@@ -60,7 +89,7 @@
   if(physical)setMeasuredReadings(physical);
   for(const needle of model.needles){
    const label=document.createElement('label');label.textContent=needle.label;label.style.display='block';label.style.direction='ltr';
-   const input=document.createElement('input');Object.assign(input,{type:'range',min:'-166',max:'166',step:'1'});input.style.width='100%';input.style.accentColor='#edf0e8';
+   const input=document.createElement('input');Object.assign(input,{type:'range',min:'-180',max:'360',step:'1'});input.style.width='100%';input.style.accentColor='#edf0e8';
    const output=document.createElement('output');output.style.display='block';output.style.textAlign='left';output.style.direction='ltr';
    input.addEventListener('input',()=>setAngle(needle.id,Number(input.value)));label.append(input,output);section.append(label);
    inputs.set(needle.id,input);outputs.set(needle.id,output);paint(needle.id);
@@ -70,7 +99,8 @@
  }
  window.B737UnifiedCabinNeedles=Object.freeze({
   getAngles:()=>({...state}),setAngle,setAngles,setMeasuredReadings,
-  getMeasuredReadings:()=>physical
+  getMeasuredReadings:()=>physical,
+  getPhotoPose:()=>photoPose,setPhotoCabinAltitude
  });
  window.addEventListener('b737:cabin-needle-angles',event=>{try{setAngles(event.detail);}catch(error){console.error(error);}});
  window.addEventListener('b737:pressurization-state',event=>{
