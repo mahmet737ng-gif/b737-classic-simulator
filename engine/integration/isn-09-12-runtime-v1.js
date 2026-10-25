@@ -113,20 +113,27 @@
   pumpSwitch(id,on){if(!Object.values(pumpNames).flat().includes(id)||typeof on!=='boolean')throw Error('Invalid fuel pump');
    this.chain.start.core.pack.send({type:'PUMP_SWITCH',id,value:on});return this.get();}
   enableTrainingPumpPower(){this.chain.start.core.pack.send({type:'MODE',value:'TRAINING_SURROGATE',instructor:true});return this.get();}
-  fuelLever(device,position){if(!IDS.includes(device)||!['CUTOFF','IDLE'].includes(position))throw Error('Invalid fuel lever');
-   if(position==='IDLE'){
-    const phase=this.chain.get().phase[device];
-    if(phase!=='AWAIT_FUEL_LEVER_IDLE')
-     return {accepted:false,reason:'WAIT_FOR_N2_25_AND_STARTER_MOTORING',phase};
-    const test=this.fuel.supply(device,this.pumps(),{pressureAltitudeFt:this.env.pressureAltitudeFt,
-     fuelStartLever:'IDLE',fireSwitchPulled:this.fireSwitch[device]});
-    if(test.available!==true)return {accepted:false,reason:test.reason,quality:test.quality,phase};
-   }
+  fuelLever(device,position){
+   if(!IDS.includes(device)||!['CUTOFF','IDLE'].includes(position))throw Error('Invalid fuel lever');
+   // IDLE is a mechanical valve command, never conditioned on recommended N2.
+   const supply=this.fuel.supply(device,this.pumps(),{pressureAltitudeFt:this.env.pressureAltitudeFt,
+    fuelStartLever:position,fireSwitchPulled:this.fireSwitch[device]});
+   this.chain.setFuelAvailable(device,supply.available===true);
    this.chain.lever(device,position);
    const after=this.chain.get();
-   const accepted=position==='CUTOFF'?after.observations[device].feedback.fuelStartLever.value==='CUTOFF':
-    after.phase[device]==='LIGHT_OFF_SEQUENCE';
-   return {accepted,phase:after.phase[device],reason:accepted?null:after.lastError};
+   const accepted=after.observations[device].feedback.fuelStartLever.value===position;
+   return {accepted,phase:after.phase[device],fuelAvailable:supply.available===true,
+    ignitionAvailable:after.observations[device].rules.ignition.supplyEligible,
+    reason:accepted?null:after.lastError,fuelSupplyReason:supply.reason};
+  }
+  refreshFuelDelivery(){
+   for(const id of IDS){
+    const current=this.chain.get();
+    const phase=current.phase[id],lever=current.observations[id].feedback.fuelStartLever.value;
+    if(!['MOTORING','AWAIT_FUEL_LEVER_IDLE'].includes(phase)&&lever!=='IDLE')continue;
+    const supply=this.fuelPath(id);
+    this.chain.setFuelAvailable(id,supply.available===true);
+   }
   }
   planThrust(device,input,{apply=false}={}){
    if(!IDS.includes(device))throw Error('Invalid engine');
@@ -149,6 +156,8 @@
      else throw Error('ISN-12 requires source-gated fuelFlameout adapter');
     }
     this.chain.advance(dt);this.elapsedMs+=dt;
+    // Fuel switches and ignition may come on after IDLE or during motoring.
+    this.refreshFuelDelivery();
     const now=this.chain.get();
     for(const id of IDS){
      if(now.phase[id]!=='RUNNING')continue;
