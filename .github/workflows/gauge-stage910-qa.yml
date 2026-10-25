@@ -14,6 +14,7 @@ on:
       - 'engine/instruments/oh19-native-ticks-batch1.json'
       - 'engine/instruments/oh19-source-pixel-intensity-v2.py'
       - 'engine/instruments/oh19-photo-overlay-v2.cjs'
+      - 'engine/instruments/oh19-native-hub-center-v1.py'
       - 'engine/instruments/oh19-shaft-*'
       - 'panel-mosaic-lab/cockpit/stage78-readonly-unified.js'
       - 'panel-mosaic-lab/cockpit/index.html'
@@ -43,6 +44,7 @@ jobs:
           node engine/instruments/oh19-photo-overlay-v2.cjs
           python3 -m pip install --quiet pillow
           python3 engine/instruments/oh19-source-pixel-intensity-v2.py
+          python3 engine/instruments/oh19-native-hub-center-v1.py
           python3 -c "import json; p=json.load(open('artifacts/oh19-pixel-qa/OH19_SOURCE_PIXEL_INTENSITIES.json')); from statistics import mean; print('OH19 original-photo contrast samples',len(p['points'])); print('Inner mean white contrast',round(mean(x['localWhiteContrast'] for x in p['points'] if x['ring']=='inner'),4)); print('Outer mean white contrast',round(mean(x['localWhiteContrast'] for x in p['points'] if x['ring']=='outer'),4)); print('SHA256',p['sourceSha256']); print('PIXEL_GEOMETRY_OPERATIONAL_APPROVAL',p['operationalNeedlesReleased'])"
       - name: Preserve annotated original OH19 photo and native-pixel evidence
         uses: actions/upload-artifact@v4
