@@ -29,3 +29,27 @@ const html=fs.readFileSync(path.join(__dirname,'index.html'),'utf8');
 assert.ok(html.includes('cabin-dual-needles-model.js?v=CDN-0001'));
 assert.ok(html.includes('cabin-dual-needles-unified.js?v=CDN-0001'));
 console.log('PASS: separate OH19 CAB ALT and PRESS needles share a pivot, rotate independently, and keep CAB ALT beneath PRESS.');
+
+
+const photo=require('../../engine/instruments/oh19-cab-alt-photo-anchors-v1.json');
+assert.equal(photo.sourceDimensions[0],model.source.width);
+assert.equal(photo.sourceDimensions[1],model.source.height);
+assert.equal(photo.sourceSha256.length,64);
+assert.equal(model.photoPreviewApproved,false);
+assert.equal(photo.review.productionApproved,false);
+assert.deepEqual(photo.marks.map(x=>x.valueFt),model.cabinAltPhotoAnchors.map(x=>x.valueFt));
+for(const {valueFt,angleDeg} of photo.marks)
+ assert.ok(Math.abs(model.cabinAltitudePreviewBearing(valueFt)-angleDeg)<.00001);
+const expectedAngles=[
+ [66,2.71+(66/3000)*(59.98-2.71)],
+ [3260,59.98+(260/7000)*(108.64-59.98)],
+ [3963,59.98+(963/7000)*(108.64-59.98)]
+];
+for(const [ft,expected] of expectedAngles)
+ assert.ok(Math.abs(model.cabinAltitudePreviewBearing(ft)-expected)<.00001);
+assert.ok(model.cabinAltitudePreviewBearing(66)<model.cabinAltitudePreviewBearing(3260));
+assert.ok(model.cabinAltitudePreviewBearing(3260)<model.cabinAltitudePreviewBearing(3963));
+assert.ok(model.cabinAltitudePreviewBearing(50000)>300,'Angle must unwrap beyond 180 degrees');
+assert.throws(()=>model.cabinAltitudePreviewBearing(NaN),/Invalid CAB ALT/);
+assert.ok(ui.includes('state.cabAlt=model.cabinAltitudePreviewBearing(readings.cabinAltitudeFt)'));
+assert.ok(ui.includes('NOT FINAL'));
