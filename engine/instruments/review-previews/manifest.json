@@ -1,0 +1,210 @@
+[
+  {
+    "panel": "OH09",
+    "source": "panel-mosaic-lab/assets/locked/2026-10-23/OH09-FUEL-921977b56887.png",
+    "nativeSize": [
+      1012,
+      1555
+    ],
+    "previewSize": [
+      1012,
+      1555
+    ],
+    "previewFile": "engine/instruments/review-previews/oh09.b64.txt",
+    "originalSha256": "921977b568870233c9613a62101741dc369bb43f85b80b3769af07f05eeba733",
+    "previewSha256": "653e9a38bedcd1a49b3d3bf213fbddbbc800ff840db3bfb123fff4ae7fbacf66",
+    "note": "derived preview; must not be used for native pixel measurements"
+  },
+  {
+    "panel": "OH10",
+    "source": "panel-mosaic-lab/assets/locked/2026-10-23/OH10-ELEC-LOSSLESS-9a1ca4d6cfb2.png",
+    "nativeSize": [
+      1095,
+      1436
+    ],
+    "previewSize": [
+      1095,
+      1436
+    ],
+    "previewFile": "engine/instruments/review-previews/oh10.b64.txt",
+    "originalSha256": "9a1ca4d6cfb277ec1404f3a464e957d81be9d9689a0810883364342d57b0f1ea",
+    "previewSha256": "82f7bc5fbfcb43f8eb88932ea63d1b0cbc4728586edabb994dd7c4ff2f2d0cec",
+    "note": "derived preview; must not be used for native pixel measurements"
+  },
+  {
+    "panel": "OH11",
+    "source": "panel-mosaic-lab/assets/locked/2026-10-23/OH11-STANDBY-8b7d36ff3182.png",
+    "nativeSize": [
+      1203,
+      1308
+    ],
+    "previewSize": [
+      1203,
+      1308
+    ],
+    "previewFile": "engine/instruments/review-previews/oh11.b64.txt",
+    "originalSha256": "86cf2f1de81146756adf694b1fe01067a271c32990c1fda7752eb913442a6708",
+    "previewSha256": "9b5815162a7712a047f974684f073b02fe309beded552fc20a183e8d5b0cdc54",
+    "note": "derived preview; must not be used for native pixel measurements"
+  },
+  {
+    "panel": "OH12",
+    "source": "panel-mosaic-lab/assets/locked/2026-10-23/OH12-BUS-TRANS-09319c17e7d0.png",
+    "nativeSize": [
+      1024,
+      1536
+    ],
+    "previewSize": [
+      1024,
+      1536
+    ],
+    "previewFile": "engine/instruments/review-previews/oh12.b64.txt",
+    "originalSha256": "709cb15a86f9038ca082136c4db59af83c7800107dfe320182bf7f4c56837e9f",
+    "previewSha256": "c5e1a5974cf53554285f2c86f236fa0a56ae3ec7310eb63db86a7d900734cdaf",
+    "note": "derived preview; must not be used for native pixel measurements"
+  },
+  {
+    "panel": "OH19-DIFF",
+    "source": "panel-mosaic-lab/assets/locked/2026-10-23/OH19-PRESS-DIFF-ALT-HORN-d6719ce57cef.png",
+    "nativeSize": [
+      1267,
+      1241
+    ],
+    "previewSize": [
+      1267,
+      1241
+    ],
+    "previewFile": "engine/instruments/review-previews/oh19_diff.b64.txt",
+    "originalSha256": "4c667d96ea7652e52784f5c06ee3cdde0879ca37631abf19969861afecc45fed",
+    "previewSha256": "0859adab1592474b146206ab30611bd3259d6e1680f92a24ce09e35f47f16828",
+    "note": "derived preview; must not be used for native pixel measurements"
+  },
+  {
+    "panel": "OH20",
+    "source": "panel-mosaic-lab/assets/locked/2026-10-23/OH20-AIR-CONDITIONING-0734da6a7726.png",
+    "nativeSize": [
+      1254,
+      1254
+    ],
+    "previewSize": [
+      1254,
+      1254
+    ],
+    "previewFile": "engine/instruments/review-previews/oh20.b64.txt",
+    "originalSha256": "94669d21f0be8aa538b2ff3b0684683409cadf6d9fc4b55390e7147abe506121",
+    "previewSha256": "4c3eab6a98ab460d5bccb1f951818028c6e472408799a45bade629af0277407a",
+    "note": "derived preview; must not be used for native pixel measurements"
+  },
+  {
+    "panel": "OH21",
+    "source": "panel-mosaic-lab/assets/locked/2026-10-23/OH21-BLEED-AIR-cc78219607a3.png",
+    "nativeSize": [
+      1122,
+      1402
+    ],
+    "previewSize": [
+      1122,
+      1402
+    ],
+    "previewFile": "engine/instruments/review-previews/oh21.b64.txt",
+    "originalSha256": "4efe8c59579e8675825ed4dabf393648cfa7f11f6c09d831d137c23f70ecfe1e",
+    "previewSha256": "321068b7bef61c3c906dc6df7030ba3f53050ea89724a97ed226a888828791ed",
+    "note": "derived preview; must not be used for native pixel measurements"
+  },
+  {
+    "panel": "CAPTAIN",
+    "source": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png",
+    "nativeSize": [
+      3942,
+      3591
+    ],
+    "previewSize": [
+      1700,
+      1549
+    ],
+    "previewFile": "engine/instruments/review-previews/captain.b64.txt",
+    "originalSha256": "dea7c23ddd5d648cf51735d0fcbcc9d1e69ce37efd736ec45fb173fe766fc56b",
+    "previewSha256": "eb8bb21f3b53883815a4649e8ec1df9a32e9a89424989a5d64fca4fbc68204c6",
+    "note": "derived preview; must not be used for native pixel measurements"
+  },
+  {
+    "panel": "ENGINE",
+    "source": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+    "nativeSize": [
+      1235,
+      1274
+    ],
+    "previewSize": [
+      1235,
+      1274
+    ],
+    "previewFile": "engine/instruments/review-previews/engine.b64.txt",
+    "originalSha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+    "previewSha256": "a0bd69f424763028640aeb317590d88586f5b26cfa79b7b922a3e6ed6ac02b82",
+    "note": "derived preview; must not be used for native pixel measurements"
+  },
+  {
+    "panel": "FO-INNER",
+    "source": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Right_Main_Instruments_Blank.png",
+    "nativeSize": [
+      918,
+      1713
+    ],
+    "previewSize": [
+      911,
+      1700
+    ],
+    "previewFile": "engine/instruments/review-previews/fo_inner.b64.txt",
+    "originalSha256": "171bf9e8d21347e7a522ebc86b19cfe0b967f0503d26c483d8f3d685f719576a",
+    "previewSha256": "cd258f5dd59a0d9a5076f29b33f44db8e1a3feafa7d85178f27cb2d64bdb9a86",
+    "note": "derived preview; must not be used for native pixel measurements"
+  },
+  {
+    "panel": "FO-OUTER",
+    "source": "file_000000006c00820ab145b3682f686256.png",
+    "nativeSize": [
+      1123,
+      1400
+    ],
+    "previewSize": [
+      1123,
+      1400
+    ],
+    "previewFile": "engine/instruments/review-previews/fo_outer.b64.txt",
+    "originalSha256": "b2439666f75ddbcab15835b532d26a7ad2d1ab669be5f48774d656c1b8915a3c",
+    "previewSha256": "73f1d202be290f1eb6de60540f6bd2f9a75f4fe585296ca90fc6cb5100189b03",
+    "note": "derived preview; must not be used for native pixel measurements"
+  },
+  {
+    "panel": "THROTTLE",
+    "source": "panel-mosaic-lab/assets/locked/2026-10-23/Aircraft Throttle Quadrant Control Panel.png",
+    "nativeSize": [
+      1145,
+      1373
+    ],
+    "previewSize": [
+      1145,
+      1373
+    ],
+    "previewFile": "engine/instruments/review-previews/throttle.b64.txt",
+    "originalSha256": "e533f907b3826dbf8fc986812b9045c2ef8980f93133ce85b859e9b9d7ab0030",
+    "previewSha256": "f9e69e5c061ffee1214557cd2b2b119fe1628aeb464bb1d8a87ae4f56764fd10",
+    "note": "derived preview; must not be used for native pixel measurements"
+  },
+  {
+    "panel": "RADIO",
+    "source": "panel-mosaic-lab/assets/locked/2026-10-23/PD-RADIO-AVIONICS-7a41044771fa.png",
+    "nativeSize": [
+      1122,
+      1402
+    ],
+    "previewSize": [
+      1122,
+      1402
+    ],
+    "previewFile": "engine/instruments/review-previews/radio.b64.txt",
+    "originalSha256": "7a41044771faad1d59f509c05ed2508f75c79fde219ee9ec19696f8fb19ed533",
+    "previewSha256": "cfd52d90f4583814d431b409e076c739c905d5971bd03ea293bee667b667ed5e",
+    "note": "derived preview; must not be used for native pixel measurements"
+  }
+]
