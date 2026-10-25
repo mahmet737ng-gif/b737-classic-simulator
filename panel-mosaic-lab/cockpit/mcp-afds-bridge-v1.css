@@ -1,0 +1,9 @@
+/* Readable audit strip; no changes to frozen cockpit textures. */
+.mcp-afds-control{direction:ltr;border:1px solid #54616c;border-radius:6px;
+ background:#192632;color:#e4edf5;padding:10px;margin:8px 0;font:12px/1.55 system-ui,sans-serif;max-width:100%}
+.mcp-afds-control strong{display:block;letter-spacing:.06em;margin-bottom:6px;font-size:12px}
+.mcp-afds-control p{margin:4px 0 7px;overflow-wrap:anywhere}
+.mcp-afds-control button{font-size:12px;white-space:normal;border:1px solid #567f8e;border-radius:5px;
+ color:#f4f7fb;background:#244357;padding:6px 8px;cursor:pointer}
+.mcp-afds-control button:disabled{opacity:.4;cursor:not-allowed}
+.mcp-afds-control small{display:block;color:#abbec7;font-size:11px}
