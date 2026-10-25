@@ -1,0 +1,75 @@
+{
+  "schema": "b737.stage3-4.candidate-native-pixels.v1",
+  "sourceRun": "https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/40221766933",
+  "group": "pedestal",
+  "review": "CANDIDATE_ONLY_NOT_SIGNED_OFF",
+  "count": 3,
+  "faces": [
+    {
+      "id": "ped.stab_trim.left",
+      "panel": "THROTTLE",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/Aircraft Throttle Quadrant Control Panel.png",
+        "sha256": "e533f907b3826dbf8fc986812b9045c2ef8980f93133ce85b859e9b9d7ab0030",
+        "width": 1145,
+        "height": 1373
+      },
+      "kind": "linear",
+      "approved": false,
+      "rotationPivot": null,
+      "lineTrackCandidate": {
+        "x0": 192,
+        "y0": 613,
+        "x1": 271,
+        "y1": 957,
+        "reason": "left stabilizer trim position window, vertical travel"
+      },
+      "linearTickEndpoints": [],
+      "reviewState": "linear_travel_tick_mapping_pending"
+    },
+    {
+      "id": "ped.stab_trim.right",
+      "panel": "THROTTLE",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/Aircraft Throttle Quadrant Control Panel.png",
+        "sha256": "e533f907b3826dbf8fc986812b9045c2ef8980f93133ce85b859e9b9d7ab0030",
+        "width": 1145,
+        "height": 1373
+      },
+      "kind": "linear",
+      "approved": false,
+      "rotationPivot": null,
+      "lineTrackCandidate": {
+        "x0": 961,
+        "y0": 609,
+        "x1": 1063,
+        "y1": 965,
+        "reason": "right stabilizer trim position window, vertical travel"
+      },
+      "linearTickEndpoints": [],
+      "reviewState": "linear_travel_tick_mapping_pending"
+    },
+    {
+      "id": "ped.rudder_trim",
+      "panel": "RADIO",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/PD-RADIO-AVIONICS-7a41044771fa.png",
+        "sha256": "7a41044771faad1d59f509c05ed2508f75c79fde219ee9ec19696f8fb19ed533",
+        "width": 1122,
+        "height": 1402
+      },
+      "kind": "linear",
+      "approved": false,
+      "rotationPivot": null,
+      "lineTrackCandidate": {
+        "x0": 518,
+        "y0": 737,
+        "x1": 765,
+        "y1": 808,
+        "reason": "rudder trim transverse travel"
+      },
+      "linearTickEndpoints": [],
+      "reviewState": "linear_travel_tick_mapping_pending"
+    }
+  ]
+}
