@@ -1,0 +1,30 @@
+name: Gauge numeric calibration — Stage 2 to 4
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'engine/instruments/**'
+      - 'panel-mosaic-lab/cockpit/scale-calibration-lab/**'
+      - '.github/workflows/gauge-stage-2-4.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  gauge-scale:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify approved overhead mosaic remains byte-identical
+        run: |
+          echo "283a3946ace19799284eb0f79dc924f744d661c4b6a1865932252f8ef29fd90f  panel-mosaic-lab/verify-final-overhead.py" | sha256sum --check --status
+          python3 panel-mosaic-lab/verify-final-overhead.py
+      - name: Stage 2/3 complete face coverage, hashes, and scale field validation
+        run: |
+          node engine/instruments/gauge-inventory-v1.test.cjs
+          node engine/instruments/gauge-scale-engine-v2.test.cjs
+          node engine/instruments/scale-calibration-v1.test.cjs
+          node engine/instruments/scale-audit-v1.test.cjs
+      - name: Stage 4 preview logic syntax
+        run: |
+          node --check engine/instruments/gauge-scale-engine-v2.js
+          node --check panel-mosaic-lab/cockpit/scale-calibration-lab/lab.js
