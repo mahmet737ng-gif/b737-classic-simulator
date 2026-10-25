@@ -113,6 +113,7 @@
       system: selected.id,
       engineVersion: selected.version,
       read: () => engine.derive(state),
+      snapshot: () => JSON.parse(JSON.stringify(state)),
       dispatch(command) { state = engine.apply(state, command); return engine.derive(state); },
       reset() { state = engine.initial(); return engine.derive(state); }
     });
