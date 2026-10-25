@@ -477,3 +477,14 @@ frozen source images. Inspector sliders and
 `B737UnifiedFlightNeedles.setAngle(station, key, angle)` provide visual tests.
 These are appearance and angle controls, not yet aircraft-system readings.
 Regression: `node panel-mosaic-lab/cockpit/flight-needles.test.cjs`.
+
+## FLN-0002 — exact owner-reference RMI geometry, both stations
+
+Two pointers are isolated by their source colors in the 435×436 owner reference.
+The yellow solid slim pointer (RMI 1) is an unchanged-resolution transparent
+raster with only color replaced by white. The green hollow double-ended pointer
+(RMI 2) is traced directly from its color mask into white SVG contours at the
+same 435×436 original coordinate scale. Their source pivot is (216,240); both
+are mounted at each dial's radius / 215 to captain and first-officer RMI gauges.
+Each rotates independently, without adding a fake large cap. These renderers
+are visual tests only and preserve all original locked gauge artwork.

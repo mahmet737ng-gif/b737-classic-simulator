@@ -22,8 +22,8 @@
   altimeter:Object.freeze({asset:'altimeter-needle.svg',initialAngle:0}),
   verticalSpeed:Object.freeze({asset:'vertical-speed-needle.svg',initialAngle:-90}),
   clock:Object.freeze({asset:'clock-hand.svg',initialAngle:0}),
-  rmi1:Object.freeze({asset:'rmi-needle-1-dashed.svg',initialAngle:57}),
-  rmi2:Object.freeze({asset:'rmi-needle-2-hollow.svg',initialAngle:58})
+  rmi1:Object.freeze({asset:'rmi-needle-1-owner-white.svg',initialAngle:0}),
+  rmi2:Object.freeze({asset:'rmi-needle-2-owner-white.svg',initialAngle:0})
  });
  function angle(value){const n=Number(value);if(!Number.isFinite(n))throw Error('Needle angle must be finite');return Math.max(-360,Math.min(360,n));}
  return Object.freeze({sources,needles,angle});
