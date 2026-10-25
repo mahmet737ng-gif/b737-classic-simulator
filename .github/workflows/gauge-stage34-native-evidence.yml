@@ -1,0 +1,32 @@
+name: Gauge stage 3-4 native calibration evidence
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'tools/gauge-stage34-native-refinement-v1.py'
+      - 'engine/instruments/native-photo-geometric-evidence-v1.json'
+      - '.github/workflows/gauge-stage34-native-evidence.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  native-pixel-review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install OpenCV and NumPy
+        run: python -m pip install numpy opencv-python-headless
+      - name: Verify and scan immutable native source panels
+        run: python tools/gauge-stage34-native-refinement-v1.py
+      - name: Validate immutable overhead assets
+        run: python3 panel-mosaic-lab/verify-final-overhead.py
+      - name: Upload pixel candidates for 54 faces
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gauge-stage34-native-pixel-v1
+          path: reports/stage34-native-pixel-v1.json
+          if-no-files-found: warn
