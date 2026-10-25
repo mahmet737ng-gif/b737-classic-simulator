@@ -92,7 +92,7 @@
   node.dataset.airconPack=item.side;node.setAttribute('aria-label',item.side+' PACK caution');
   fit(node,g.rect(item.rect));
   for(const state of ['OFF','ON']){
-   const img=document.createElement('img');img.src=asset('737-400-PACK_'+state+'.svg');
+   const img=document.createElement('img');img.src=asset('737-400-PACK_FITTED_'+state+'.svg');
    img.alt='';img.draggable=false;img.dataset.frame=state;node.append(img);
   }
   layer.append(node);packNodes.set(item.side,{node,item});
