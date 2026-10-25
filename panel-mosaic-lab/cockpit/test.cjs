@@ -35,7 +35,7 @@ const airconParent=fs.readFileSync(path.join(__dirname,'app.js'),'utf8');
 assert.ok(airconSettings.includes("action:'aircon-background', family:selected.family.id"),'Settings swaps the visible OH20');
 assert.ok(airconParent.includes("command('aircon-background'"),'New overhead frames restore aircraft family');
 const html=fs.readFileSync(path.join(__dirname,'overhead-stage.html'),'utf8');for(const src of ['performance/overhead-renderer.js?v=PERF-0001','app.js?v=RG-0001','rotary-motion-rm0002.js?v=RM-0004','rotary-guards.js?v=ISN-0003','rotary-guards-model.js?v=RM-0003','overhead-bridge.js?v=PRESS-OH22-0005-AIRCON400','lights.js?v=LGT-0006'])assert.ok(html.includes(src),src);assert.ok(!html.includes('data-cockpit-entry'));
-assert.equal(a.regions.find(r=>r.id==='overhead').embeddedUrl,'./overhead-stage.html?v=ISN-0003-PERF-0001-LGT-0006-PRESS-OH22-0006-LAMP-FACES-AIRCON400','Unified must reload current overhead bridge and start cutout handling');
+assert.equal(a.regions.find(r=>r.id==='overhead').embeddedUrl,'./overhead-stage.html?v=ISN-0003-PERF-0001-LGT-0006-PRESS-OH22-0007-SOCKET-FIT','Unified must reload current overhead bridge and start cutout handling');
 const interactive=fs.readFileSync(path.join(__dirname,'../interactive-overhead/rotary-guards.js'),'utf8');
 assert.ok(interactive.includes('mountEngineStartLabelCorrection(layout)'),'Unified corrects FLT spacing without changing the locked atlas image');
 assert.ok(interactive.includes('motion.createDetentGesture'),'Unified uses event-triggered hard-stop detents');
