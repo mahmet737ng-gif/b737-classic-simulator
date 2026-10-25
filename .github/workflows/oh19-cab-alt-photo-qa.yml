@@ -8,6 +8,7 @@ on:
       - 'engine/instruments/oh19-photo-*.js'
       - 'engine/instruments/oh19-photo-*.cjs'
       - 'engine/instruments/oh19-source-pixel-intensity-v2.py'
+      - 'engine/instruments/oh19-needle-tip-fit-v1.py'
       - 'engine/instruments/cold-dark-needle-fit-audit-v1.json'
       - 'panel-mosaic-lab/cockpit/cabin-dual-needles*'
       - '.github/workflows/oh19-cab-alt-photo-qa.yml'
@@ -19,6 +20,7 @@ on:
       - 'engine/instruments/oh19-photo-*.js'
       - 'engine/instruments/oh19-photo-*.cjs'
       - 'engine/instruments/oh19-source-pixel-intensity-v2.py'
+      - 'engine/instruments/oh19-needle-tip-fit-v1.py'
       - 'engine/instruments/cold-dark-needle-fit-audit-v1.json'
       - 'panel-mosaic-lab/cockpit/cabin-dual-needles*'
   workflow_dispatch:
@@ -48,6 +50,7 @@ jobs:
           python3 -m pip install --quiet pillow
           python3 -m py_compile engine/instruments/oh19-source-pixel-intensity-v2.py
           python3 engine/instruments/oh19-source-pixel-intensity-v2.py
+          python3 engine/instruments/oh19-needle-tip-fit-v1.py
       - name: Upload OH19 original-image coordinate evidence
         uses: actions/upload-artifact@v4
         with:
