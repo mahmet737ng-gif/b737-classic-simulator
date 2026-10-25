@@ -1,0 +1,40 @@
+{
+  "schema": "b737.annunciator-source-roi-pixel-adjustments.v2",
+  "date": "2026-10-26",
+  "basedOn": "photo-pixel-registration-v3.json",
+  "sourceImage": "panel-mosaic-lab/assets/locked/2026-10-23/OH09-FUEL-921977b56887.png",
+  "algorithm": "Independent native-photo left/right glass-rim scanline localization and enlarged source crop inspection.",
+  "status": "APPLY_AND_REVERIFY",
+  "sourcePhotosModified": 0,
+  "records": [
+    {
+      "id": "fuel-1-aft",
+      "panel": "OH09",
+      "previousSourceRect": [
+        94,
+        1058,
+        166,
+        75
+      ],
+      "newSourceRect": [
+        98,
+        1058,
+        166,
+        75
+      ],
+      "deltaSourcePixels": [
+        4,
+        0
+      ],
+      "sourceGlassDetectedPx": {
+        "left": 97.5,
+        "right": 263.5
+      },
+      "sourceGlassCenterDeviationPx": [
+        3.5,
+        -1.5
+      ],
+      "why": "Both measured vertical glass rims are shifted +4 pixels compared with existing registration; preserve y, w, h and original image."
+    }
+  ]
+}
