@@ -46,10 +46,14 @@
   if(host.querySelector('[data-cabin-dual-needles]'))return true;
   const layer=svg(doc,host,'svg',{'data-cabin-dual-needles':'OH19',viewBox:`0 0 ${model.source.width} ${model.source.height}`,preserveAspectRatio:'none',role:'img','aria-label':'Cabin pressure and cabin altitude independent needles'});
   Object.assign(layer.style,{position:'absolute',left:piece.style.left,top:piece.style.top,width:piece.style.width,height:piece.style.height,zIndex:'1002',pointerEvents:'none',overflow:'hidden'});
-  // Append order is deliberate: the shorter CAB ALT needle stays below PRESS.
-  for(const needle of model.needles){
+  // Source-photo contract: outer PSI tick arc belongs to PRESS and inner
+  // x1000-ft arc belongs to CAB ALT. Physical stack is independent: the
+  // PRESS assembly must be behind the CAB ALT assembly (owner correction).
+  // Painter's ordering comes from the array sorted by explicit stack layer.
+  const stack=model.needles.slice().sort((a,b)=>a.layer-b.layer);
+  for(const needle of stack){
    const assembly=svg(doc,layer,'g',{transform:`translate(${model.pivot.x} ${model.pivot.y}) scale(${needle.tipRadius/220}) translate(-256 -256)`});
-   const blade=svg(doc,assembly,'g',{'data-cabin-needle':needle.id});
+   const blade=svg(doc,assembly,'g',{'data-cabin-needle':needle.id,'data-cabin-stack':needle.stack,'data-cabin-printed-scale':needle.printedScale});
    Object.assign(blade.style,{transformOrigin:'256px 256px',transition:'transform 320ms ease-out'});
    svg(doc,blade,'image',{href:sprites[needle.id],x:0,y:0,width:512,height:512});blades.set(needle.id,blade);paint(needle.id);
   }
