@@ -12,7 +12,7 @@
  // Still PRELIMINARY: intermediate marks, pivot subpixel and tip-to-inner-tick
  // contacts have not been signed off. Separate from outer PRESS mapping.
  const cabinAltPhotoAnchors=Object.freeze([
-  [0,2.71],[3000,59.98],[10000,108.64],[15000,155.65],
+  [0,2.71],[500,13.59],[1000,22.37],[1500,31.32],[2000,40.34],[2500,50.2],[3000,59.98],[10000,108.64],[15000,155.65],
   [20000,200.55],[25000,236.57],[30000,262.03],[35000,284.48],
   [40000,304.18],[50000,327.37]
  ].map(([valueFt,bearingDeg])=>Object.freeze({valueFt,bearingDeg})));
