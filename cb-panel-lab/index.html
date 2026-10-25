@@ -32,7 +32,7 @@ main{max-width:1600px;margin:0 auto;padding:20px clamp(12px,3vw,40px) 85px}
 .viewer-title h2{margin:0;font-size:22px}.viewer-title .meta{font-size:12px;color:#aeb5be}
 .viewer-scroll{overflow-x:auto;padding:25px;overscroll-behavior-x:contain}
 .face{padding:24px 25px 18px;background:linear-gradient(145deg,#34373d,#292c32 48%,#25272d);border:1px solid #45464b;box-shadow:inset 0 4px 7px #ffffff0b,inset 0 -5px 8px #0009;position:relative;width:max-content;min-width:450px;border-radius:8px}
-.face.bevel{clip-path:polygon(0 18%,0 100%,100% 100%,100% 0,15% 0)}.face.slender{min-width:180px;width:260px;max-width:100%}
+.face.bevel{clip-path:polygon(0 18%,0 100%,100% 100%,100% 0,15% 0)}.face.bevel-right{clip-path:polygon(0 0,89% 0,100% 22%,100% 100%,0 100%)}.face.tail-right{clip-path:polygon(0 0,63% 0,79% 53%,100% 53%,100% 100%,0 100%)}.face.slender{min-width:180px;width:260px;max-width:100%}
 .face-top{min-height:24px;display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}
 .face-top strong{font-size:14px;letter-spacing:1px;text-align:center;flex:1}
 .face-top span{font-size:11px;color:#c3c3c6;padding:5px 10px;background:#4a3c40;border-radius:14px}
@@ -48,7 +48,7 @@ main{max-width:1600px;margin:0 auto;padding:20px clamp(12px,3vw,40px) 85px}
 .knob.pulled .dial{border-color:#e4a15c;color:#fbd3a3}
 .blank{width:40px;height:40px;border:1px solid #34373a;border-radius:50%;background:radial-gradient(circle at 40% 36%,#3f4248,#303339 67%,#222429);align-self:center;margin:0 0 1px}
 .cols{display:contents}.col-num{text-align:center;align-self:center;color:#bdc2cb;font-size:10px;border-top:1px solid #5b5e6688;padding-top:7px}
-.cb-slot::before{content:"";height:9px;width:7px;border-radius:3px 3px 0 0;background:#050608;position:absolute;top:48px;left:calc(50% - 3.5px)}
+.cb-slot::before{content:"";height:9px;width:7px;border-radius:3px 3px 0 0;background:#050608;position:absolute;top:48px;left:calc(50% - 3.5px)}.cb-slot:has(.blank)::before{display:none}
 .special{display:flex;flex-direction:column;align-items:center;gap:17px;max-width:250px}
 .socket{width:125px;height:125px;border-radius:50%;background:radial-gradient(circle,#332c2b 0 45%,#211b1e 47% 70%,#a2a4a6 71% 74%,#1e2025 77%);border:4px solid #5c5b5f;display:grid;place-items:center;color:#d9cac2;font-size:9px;text-align:center}
 .special-row{text-align:center;padding:12px 20px;border-radius:9px;background:#44474d;width:100%;font-weight:750;font-size:12px}
@@ -79,9 +79,9 @@ main{max-width:1600px;margin:0 auto;padding:20px clamp(12px,3vw,40px) 85px}
     </div></div></div>
     <div class="overview-panel"><div class="label">FIRST OFFICER SIDE · P18</div><div class="fo-grid">
       <button disabled>P18-0 · pending</button><button data-panel="P18-1" class="available">P18-1 · Nav / AFCS</button>
-      <button disabled>P18-2 · pending</button><button disabled>P18-3 · pending</button>
+      <button data-panel="P18-2" class="available">P18-2 · Instruments</button><button data-panel="P18-3" class="available">P18-3 · Anti-Ice / Lights</button>
       <button disabled>P18-4 · pending</button><button disabled>P18-5 · pending</button>
-    </div><p class="sub">Other P18 locations appear in the overview image. Their individual front-on photographs have not been supplied; no invented breaker layout is drawn.</p></div>
+    </div><p class="sub">P18-1, P18-2 and P18-3 are mapped from frontal source screenshots. Other P18 panels remain pending and are not filled from guesses.</p></div>
   </div>
   <div class="summary" id="summary"></div>
   <section class="viewer-shell">
@@ -127,7 +127,7 @@ if(p.id==="P6-4"){let note=document.createElement("div");note.className="variant
 }view.appendChild(face);
 document.querySelectorAll("[data-panel]").forEach(el=>el.classList.toggle("active",el.dataset.panel===p.id));
 let total=data.panels.reduce((acc,x)=>acc+breakers(x).length,0);
-$("summary").innerHTML="<span class='pill'>9 photo-mapped subpanels</span><span class='pill'>"+total+" labeled CB candidates</span><span class='pill'>"+state.pulled.size+" pulled (visual lab)</span><span class='pill'>P18 others pending</span>";
+$("summary").innerHTML="<span class='pill'>11 photo-mapped subpanels</span><span class='pill'>"+total+" labeled CB candidates</span><span class='pill'>"+state.pulled.size+" pulled (visual lab)</span><span class='pill'>P18-0/4/5 pending</span>";
 }
 for(let p of data.panels){let opt=document.createElement("option");opt.value=p.id;opt.textContent=p.id+" · "+p.title;selector.appendChild(opt);}
 selector.addEventListener("change",e=>choose(e.target.value));
