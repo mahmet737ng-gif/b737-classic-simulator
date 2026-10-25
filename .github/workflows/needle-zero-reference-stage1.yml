@@ -1,0 +1,23 @@
+name: Needle native-reference stage 1
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'engine/instruments/needle-zero-reference-stage1-v1.json'
+      - 'engine/instruments/needle-zero-reference-stage1-v1.test.cjs'
+      - '.github/workflows/needle-zero-reference-stage1.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  check-source-references:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify all 54 reference manifests and angular conventions
+        run: node --test engine/instruments/needle-zero-reference-stage1-v1.test.cjs
+      - name: Preserve immutable overhead and approved panel geometry
+        run: python3 panel-mosaic-lab/verify-final-overhead.py
