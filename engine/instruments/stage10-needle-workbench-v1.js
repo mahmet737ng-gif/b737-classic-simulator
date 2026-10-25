@@ -29,7 +29,7 @@
    if(!c){blocked[route.spriteId]=route.channel===null?'channel_not_resolved':'no_two_anchor_scale';continue;}
    if(c.approval?.allNativeTicksReviewed||c.approval?.shaftPivotPhotoReviewed)
     throw Error('Preview registry must not include promoted geometry');
-   const compiled=scaleEngine.compile(c);
+   const compiled=scaleEngine.compile({...c,id:c.faceId});
    if(compiled.approved)throw Error('Stage10 preview must never load an approved map');
    const a=compiled.marks[0].angleUnwrappedDeg,b=compiled.marks.at(-1).angleUnwrappedDeg;
    if(!finite(a)||!finite(b)||a>=b)throw Error('Source scale direction ambiguous');
