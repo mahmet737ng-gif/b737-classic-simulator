@@ -290,3 +290,8 @@ body {
 
 /* Fuel toggle click areas are retained; old artwork is absent. */
 .toggle-visual,.toggle-visual img{display:none!important;background:none!important;box-shadow:none!important}
+
+/* TGL-NEWREF-0001: six pump switches use the new transparent owner source. */
+.toggle-visual{display:block!important}
+.toggle-visual::after{content:"";position:absolute;left:50%;top:50%;width:210%;height:auto;aspect-ratio:1;transform:translate(-50%,-50%);pointer-events:none;background-image:url("../shared-assets/toggle-switch-newref-v1/b737-toggle-five-new-reference.webp");background-size:500% 100%;background-repeat:no-repeat;background-position:75% 50%;background-color:transparent;box-shadow:none;filter:none}
+.toggle-visual.on::after{background-position:100% 50%}

@@ -1,13 +1,46 @@
 {
   "schema": "b737.overhead-toggle-overlay.v1",
-  "version": "TGL-VISUAL-RESET-0001",
+  "version": "TGL-NEWREF-0001",
   "baseVersion": "UPD-0012-OVH-measured-seams",
   "baseLayout": "../all-overhead/atlas-layout.json",
   "baseSpec": "../all-overhead/spec.json",
   "guideLibraryFileId": "libfile_555402960f948191b6501fa77d2b8246",
   "scope": "plain toggle switches shown on owner lower-overhead guide; guarded/paddle controls, knobs, buttons and upper OH01-OH06 are separate stages",
-  "approvedVisuals": [],
-  "assets": {},
+  "approvedVisuals": [
+    "2026-10-26-user-three-source-reference"
+  ],
+  "assets": {
+    "vertical-off": {
+      "url": "../../shared-assets/toggle-switch-newref-v1/b737-toggle-five-new-reference.webp",
+      "frame": 4,
+      "sha256": "3ad98aa39742d38caed990229efd7c5aa39d59ed9b1e5a2f967b5fcfec74ca55"
+    },
+    "vertical-center": {
+      "url": "../../shared-assets/toggle-switch-newref-v1/b737-toggle-five-new-reference.webp",
+      "frame": 1,
+      "sha256": "3ad98aa39742d38caed990229efd7c5aa39d59ed9b1e5a2f967b5fcfec74ca55"
+    },
+    "vertical-on": {
+      "url": "../../shared-assets/toggle-switch-newref-v1/b737-toggle-five-new-reference.webp",
+      "frame": 3,
+      "sha256": "3ad98aa39742d38caed990229efd7c5aa39d59ed9b1e5a2f967b5fcfec74ca55"
+    },
+    "horizontal-left": {
+      "url": "../../shared-assets/toggle-switch-newref-v1/b737-toggle-five-new-reference.webp",
+      "frame": 0,
+      "sha256": "3ad98aa39742d38caed990229efd7c5aa39d59ed9b1e5a2f967b5fcfec74ca55"
+    },
+    "horizontal-center": {
+      "url": "../../shared-assets/toggle-switch-newref-v1/b737-toggle-five-new-reference.webp",
+      "frame": 1,
+      "sha256": "3ad98aa39742d38caed990229efd7c5aa39d59ed9b1e5a2f967b5fcfec74ca55"
+    },
+    "horizontal-right": {
+      "url": "../../shared-assets/toggle-switch-newref-v1/b737-toggle-five-new-reference.webp",
+      "frame": 2,
+      "sha256": "3ad98aa39742d38caed990229efd7c5aa39d59ed9b1e5a2f967b5fcfec74ca55"
+    }
+  },
   "controls": [
     {
       "id": "alternate-flaps-position",
@@ -1110,5 +1143,5 @@
     "Spring return for generator/test controls is a simulator interaction assignment; no new FCOM validation claimed.",
     "Source artwork and frozen placement files are not modified."
   ],
-  "visualStatus": "AWAITING_NEW_OWNER_REFERENCE"
+  "visualStatus": "USER_REFERENCE_INSTALLED"
 }

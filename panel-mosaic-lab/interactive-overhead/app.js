@@ -3,6 +3,9 @@
  const entryURL=document.currentScript.src,localURL=p=>new URL(p,entryURL).href;
  const STORAGE='b737-overhead-toggles-TGL-0001';
  const byId=id=>document.getElementById(id),model=window.B737OverheadToggleModel;
+ // One directly supplied transparent atlas, no old sprite families or background repair.
+ const SPRITE_CELL=1024,SPRITE_BEZEL=390;
+ const poseFrames=c=>c.axis==='horizontal'?[0,1,2]:(c.states.length===2?[3,4]:[3,1,4]);
  let registry,engine,active=null,layer;
  const nodes=new Map(),interlocks=new Map();
  function persist(){try{localStorage.setItem(STORAGE,JSON.stringify(engine.snapshot()));}catch{}}
@@ -11,6 +14,8 @@
   const value=engine.get(c.id),index=c.states.indexOf(value);
   button.setAttribute('aria-disabled',String(interlocks.get(c.id)===false));
   button.dataset.state=value;button.setAttribute('aria-valuenow',String(index));button.setAttribute('aria-valuetext',value);button.setAttribute('aria-label',c.label+' — '+value);
+  const sprite=button.querySelector('.toggle-sprite');
+  if(sprite&&index>=0)sprite.style.backgroundPosition=(poseFrames(c)[index]*25)+'% 50%';
   if(active===c.id){byId('toggleState').textContent=value;for(const b of byId('toggleStates').children){b.classList.toggle('active',b.dataset.state===value);b.disabled=interlocks.get(c.id)===false;}}
  }
  function select(c){
@@ -74,11 +79,17 @@
    button.type='button';button.className='mounted-toggle';button.id='toggle-'+c.id;button.dataset.control=c.id;button.dataset.axis=c.axis;button.dataset.placement=c.placementId;
    button.setAttribute('role','slider');button.setAttribute('aria-orientation',c.axis);button.setAttribute('aria-valuemin','0');button.setAttribute('aria-valuemax',String(c.states.length-1));button.title=c.label;
    Object.assign(button.style,{left:p.x+'px',top:p.y+'px',width:(p.diameter*1.65)+'px',height:(p.diameter*1.65)+'px'});
-   // VISUAL RESET: transparent hitbox only; no sprites, shadows or inpainting.
+   // The nut center sits exactly at the existing, unmodified socket pivot.
+   const sprite=document.createElement('span');
+   sprite.className='toggle-sprite';sprite.setAttribute('aria-hidden','true');
+   const fullSize=p.diameter*SPRITE_CELL/SPRITE_BEZEL;
+   Object.assign(sprite.style,{width:fullSize+'px',height:fullSize+'px',
+     backgroundImage:'url("'+localURL(registry.assets['vertical-on'].url)+'")'});
+   button.append(sprite);
    layer.append(button);nodes.set(c.id,button);bind(c,button);refreshOne(c);
   }
   byId('atlasAbsolute').append(layer);
-  byId('toggleCount').textContent=registry.controls.length+' تاگل تعاملی — بدون تصویر، منتظر رفرنس جدید · '+registry.version;
+  byId('toggleCount').textContent=registry.controls.length+' تاگل تعاملی · رفرنس جدید · '+registry.version;
   byId('toggleVisibility').onchange=e=>layer.classList.toggle('hidden',!e.target.checked);
   byId('resetToggles').onclick=()=>{engine.releaseAll();engine.reset();persist();byId('toggleState').textContent='RESET';};
   select(registry.controls.find(c=>c.id==='vhf-nav'));

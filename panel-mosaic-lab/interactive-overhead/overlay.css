@@ -12,3 +12,6 @@
 .toggle-inspector label{display:flex;align-items:center;gap:7px;margin:10px 0;font-size:12px}
 .toggle-inspector input[type=checkbox]{width:auto}
 #resetToggles{width:100%;font-size:12px;padding:7px}
+
+/* TGL-NEWREF-0001: user-supplied image only; transparent full-canvas sprite. */
+.mounted-toggle .toggle-sprite{position:absolute;left:50%;top:50%;display:block;transform:translate(-50%,-50%);pointer-events:none;background-color:transparent;background-size:500% 100%;background-repeat:no-repeat;border:0;box-shadow:none;filter:none;opacity:1;user-select:none}

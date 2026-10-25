@@ -70,3 +70,16 @@ button{font:inherit;color:inherit;-webkit-tap-highlight-color:transparent;touch-
 
 /* No old toggle visuals or background images. */
 .toggle .frame,.toggle .nav-frame,.alt-arm .arm-switch img{display:none!important;background:none!important;box-shadow:none!important}
+
+/* TGL-NEWREF-0001 — owner-provided 5-pose top-down toggle; CSS provides artwork only. */
+.toggle{clip-path:none!important;overflow:visible!important}
+.toggle::after,.alt-arm .arm-switch::after{content:"";position:absolute;left:50%;top:50%;width:190%;height:auto;aspect-ratio:1;transform:translate(-50%,-50%);pointer-events:none;background-image:url("../shared-assets/toggle-switch-newref-v1/b737-toggle-five-new-reference.webp");background-size:500% 100%;background-repeat:no-repeat;background-position:25% 50%;background-color:transparent;box-shadow:none;filter:none}
+.toggle[data-position="left"]::after{background-position:0% 50%}
+.toggle[data-position="normal"]::after,.toggle[data-position="center"]::after{background-position:25% 50%}
+.toggle[data-position="right"]::after{background-position:50% 50%}
+.toggle[data-position="up"]::after,.toggle[data-position="off"]::after{background-position:75% 50%}
+.toggle[data-position="down"]::after,.toggle[data-position="on"]::after{background-position:100% 50%}
+.toggle[data-control="altPosition"][data-position="off"]::after{background-position:25% 50%}
+.alt-arm .arm-switch{clip-path:none!important;overflow:visible!important}
+.alt-arm .arm-switch::after{background-position:75% 50%}
+.alt-arm[data-armed="true"] .arm-switch::after{background-position:100% 50%}
