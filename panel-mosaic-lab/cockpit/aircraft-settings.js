@@ -118,7 +118,7 @@
       activeSession = getPressureSession(pressure);
       window.B737ActivePressurization = activeSession;
       publishPressureState(pressure);
-      byId('activeProfileStatus').textContent = 'موتور ' + pressure + ' V' + activeSession.engineVersion + ' آماده است.' + (selected.pressurization.backgroundAsset ? ' بک‌گراند تأییدشدهٔ DCPCS در پنل تست انتخاب شده نمایش داده می‌شود.' : ' پنل CPCS مستقل است.');
+      byId('activeProfileStatus').textContent = 'سیستم ' + pressure + ' V' + activeSession.engineVersion + ' فعال است؛ کنترل‌ها، نمایشگرها و چراغ‌های OH22 از موتور اختصاصی همین سیستم فرمان می‌گیرند. مدل فشار کابین و زمان واقعی حرکت شیر هنوز شبیه‌سازی نشده است.';
     } catch (error) {
       window.B737ActivePressurization = null;
       byId('activeProfileStatus').textContent = 'موتور انتخاب‌شده در دسترس نیست: ' + error.message;
