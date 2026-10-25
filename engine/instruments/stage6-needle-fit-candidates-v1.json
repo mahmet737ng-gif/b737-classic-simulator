@@ -1,0 +1,1893 @@
+{
+  "schema": "b737.stage6.needle-tip-fit-candidates.v1",
+  "date": "2026-10-25",
+  "status": "existing_needle_appearance_preserved_validation_only",
+  "source": [
+    "engine/instruments/cold-dark-needle-fit-audit-v1.json",
+    "engine/instruments/stage34-native/manifest-v1.json"
+  ],
+  "counts": {
+    "faces": 54,
+    "registeredSprites": 38,
+    "knownCandidateNativeTipRadii": 13,
+    "spriteShapeOwnerLocked": 5,
+    "pointersWithPhotoDistanceComparisons": 5,
+    "finalApprovedNeedleFits": 0
+  },
+  "pointers": [
+    {
+      "faceId": "oh.fuel.temperature",
+      "ownerSpriteId": "fuelTemperature",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/OH09-FUEL-921977b56887.png",
+        "sha256": "921977b568870233c9613a62101741dc369bb43f85b80b3769af07f05eeba733",
+        "width": 1012,
+        "height": 1555
+      },
+      "pivotCandidate": {
+        "x": 506,
+        "y": 235,
+        "evidence": "gauge-survey-stage2-3.json",
+        "state": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "pivotApproved": false,
+      "spriteApprovalStatus": "OWNER_APPROVED_NEEDLE_ASSET_GEOMETRY_ONLY",
+      "shapeLocked": true,
+      "preservedSprite": true,
+      "existingNeedleTipRadiusPx": 136,
+      "radiusOrigin": "existing_legacy_needle_geometry_visual_model_not_final_per_tick",
+      "photographedNativeTipCandidates": [],
+      "relativeRadialGaps": [],
+      "spriteLocalPivot": null,
+      "spriteLocalTip": null,
+      "spriteSourceSha256": null,
+      "offsetAngleCalibrationApproved": false,
+      "allTickTipReachApproved": false,
+      "changesToMountedGeometry": false,
+      "ownerReviewRequired": true
+    },
+    {
+      "faceId": "oh.elec.dc_amps",
+      "ownerSpriteId": "dcAmps",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/OH10-ELEC-LOSSLESS-9a1ca4d6cfb2.png",
+        "sha256": "9a1ca4d6cfb277ec1404f3a464e957d81be9d9689a0810883364342d57b0f1ea",
+        "width": 1095,
+        "height": 1436
+      },
+      "pivotCandidate": {
+        "x": 310,
+        "y": 192,
+        "evidence": "photo-anchor-checkpoints-v1.json",
+        "state": "optical_center_estimate_needs_confirmation"
+      },
+      "pivotApproved": false,
+      "spriteApprovalStatus": "LEGACY_TIP_REACH_NOT_MEASURED",
+      "shapeLocked": false,
+      "preservedSprite": true,
+      "existingNeedleTipRadiusPx": null,
+      "radiusOrigin": null,
+      "photographedNativeTipCandidates": [
+        {
+          "mode": "primary",
+          "value": -50,
+          "point": {
+            "x": 226.5,
+            "y": 127
+          },
+          "sourceAngle": -52.1,
+          "photoRadiusPx": 105.81705911619353
+        },
+        {
+          "mode": "primary",
+          "value": 0,
+          "point": {
+            "x": 311.5,
+            "y": 110.5
+          },
+          "sourceAngle": 1.05,
+          "photoRadiusPx": 81.51380251221262
+        },
+        {
+          "mode": "primary",
+          "value": 50,
+          "point": {
+            "x": 409.5,
+            "y": 133.5
+          },
+          "sourceAngle": 59.55,
+          "photoRadiusPx": 115.42313459614584
+        }
+      ],
+      "relativeRadialGaps": [],
+      "spriteLocalPivot": null,
+      "spriteLocalTip": null,
+      "spriteSourceSha256": null,
+      "offsetAngleCalibrationApproved": false,
+      "allTickTipReachApproved": false,
+      "changesToMountedGeometry": false,
+      "ownerReviewRequired": true
+    },
+    {
+      "faceId": "oh.elec.cps",
+      "ownerSpriteId": "cps",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/OH10-ELEC-LOSSLESS-9a1ca4d6cfb2.png",
+        "sha256": "9a1ca4d6cfb277ec1404f3a464e957d81be9d9689a0810883364342d57b0f1ea",
+        "width": 1095,
+        "height": 1436
+      },
+      "pivotCandidate": {
+        "x": 780,
+        "y": 192,
+        "evidence": "photo-anchor-checkpoints-v1.json",
+        "state": "optical_center_estimate_needs_confirmation"
+      },
+      "pivotApproved": false,
+      "spriteApprovalStatus": "LEGACY_TIP_REACH_NOT_MEASURED",
+      "shapeLocked": false,
+      "preservedSprite": true,
+      "existingNeedleTipRadiusPx": null,
+      "radiusOrigin": null,
+      "photographedNativeTipCandidates": [
+        {
+          "mode": "primary",
+          "value": 0,
+          "point": {
+            "x": 656,
+            "y": 149.5
+          },
+          "sourceAngle": -71.08,
+          "photoRadiusPx": 131.08108177765394
+        },
+        {
+          "mode": "primary",
+          "value": 400,
+          "point": {
+            "x": 778,
+            "y": 106
+          },
+          "sourceAngle": -1.33,
+          "photoRadiusPx": 86.02325267042627
+        },
+        {
+          "mode": "primary",
+          "value": 420,
+          "point": {
+            "x": 898.5,
+            "y": 181.5
+          },
+          "sourceAngle": 84.94,
+          "photoRadiusPx": 118.96428035339012
+        }
+      ],
+      "relativeRadialGaps": [],
+      "spriteLocalPivot": null,
+      "spriteLocalTip": null,
+      "spriteSourceSha256": null,
+      "offsetAngleCalibrationApproved": false,
+      "allTickTipReachApproved": false,
+      "changesToMountedGeometry": false,
+      "ownerReviewRequired": true
+    },
+    {
+      "faceId": "oh.elec.dc_volts",
+      "ownerSpriteId": "dcVolts",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/OH10-ELEC-LOSSLESS-9a1ca4d6cfb2.png",
+        "sha256": "9a1ca4d6cfb277ec1404f3a464e957d81be9d9689a0810883364342d57b0f1ea",
+        "width": 1095,
+        "height": 1436
+      },
+      "pivotCandidate": {
+        "x": 332,
+        "y": 600,
+        "evidence": "gauge-survey-stage2-3.json",
+        "state": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "pivotApproved": false,
+      "spriteApprovalStatus": "LEGACY_TIP_REACH_NOT_MEASURED",
+      "shapeLocked": false,
+      "preservedSprite": true,
+      "existingNeedleTipRadiusPx": null,
+      "radiusOrigin": null,
+      "photographedNativeTipCandidates": [],
+      "relativeRadialGaps": [],
+      "spriteLocalPivot": null,
+      "spriteLocalTip": null,
+      "spriteSourceSha256": null,
+      "offsetAngleCalibrationApproved": false,
+      "allTickTipReachApproved": false,
+      "changesToMountedGeometry": false,
+      "ownerReviewRequired": true
+    },
+    {
+      "faceId": "oh.elec.ac_volts",
+      "ownerSpriteId": "acVolts",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/OH10-ELEC-LOSSLESS-9a1ca4d6cfb2.png",
+        "sha256": "9a1ca4d6cfb277ec1404f3a464e957d81be9d9689a0810883364342d57b0f1ea",
+        "width": 1095,
+        "height": 1436
+      },
+      "pivotCandidate": {
+        "x": 715,
+        "y": 620,
+        "evidence": "gauge-survey-stage2-3.json",
+        "state": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "pivotApproved": false,
+      "spriteApprovalStatus": "LEGACY_TIP_REACH_NOT_MEASURED",
+      "shapeLocked": false,
+      "preservedSprite": true,
+      "existingNeedleTipRadiusPx": null,
+      "radiusOrigin": null,
+      "photographedNativeTipCandidates": [],
+      "relativeRadialGaps": [],
+      "spriteLocalPivot": null,
+      "spriteLocalTip": null,
+      "spriteSourceSha256": null,
+      "offsetAngleCalibrationApproved": false,
+      "allTickTipReachApproved": false,
+      "changesToMountedGeometry": false,
+      "ownerReviewRequired": true
+    },
+    {
+      "faceId": "oh.drive_oil.1",
+      "ownerSpriteId": "driveOil1",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/OH11-STANDBY-8b7d36ff3182.png",
+        "sha256": "86cf2f1de81146756adf694b1fe01067a271c32990c1fda7752eb913442a6708",
+        "width": 1203,
+        "height": 1308
+      },
+      "pivotCandidate": {
+        "x": 266,
+        "y": 1021,
+        "evidence": "gauge-survey-stage2-3.json",
+        "state": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "pivotApproved": false,
+      "spriteApprovalStatus": "SOURCE_IMAGE_ZERO_TICK_PROVISIONAL_FIT",
+      "shapeLocked": false,
+      "preservedSprite": true,
+      "existingNeedleTipRadiusPx": 98,
+      "radiusOrigin": "existing_legacy_needle_geometry_visual_model_not_final_per_tick",
+      "photographedNativeTipCandidates": [],
+      "relativeRadialGaps": [],
+      "spriteLocalPivot": null,
+      "spriteLocalTip": null,
+      "spriteSourceSha256": null,
+      "offsetAngleCalibrationApproved": false,
+      "allTickTipReachApproved": false,
+      "changesToMountedGeometry": false,
+      "ownerReviewRequired": true
+    },
+    {
+      "faceId": "oh.drive_oil.2",
+      "ownerSpriteId": "driveOil2",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/OH11-STANDBY-8b7d36ff3182.png",
+        "sha256": "86cf2f1de81146756adf694b1fe01067a271c32990c1fda7752eb913442a6708",
+        "width": 1203,
+        "height": 1308
+      },
+      "pivotCandidate": {
+        "x": 781,
+        "y": 1021,
+        "evidence": "gauge-survey-stage2-3.json",
+        "state": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "pivotApproved": false,
+      "spriteApprovalStatus": "SOURCE_IMAGE_ZERO_TICK_PROVISIONAL_FIT",
+      "shapeLocked": false,
+      "preservedSprite": true,
+      "existingNeedleTipRadiusPx": 98,
+      "radiusOrigin": "existing_legacy_needle_geometry_visual_model_not_final_per_tick",
+      "photographedNativeTipCandidates": [],
+      "relativeRadialGaps": [],
+      "spriteLocalPivot": null,
+      "spriteLocalTip": null,
+      "spriteSourceSha256": null,
+      "offsetAngleCalibrationApproved": false,
+      "allTickTipReachApproved": false,
+      "changesToMountedGeometry": false,
+      "ownerReviewRequired": true
+    },
+    {
+      "faceId": "oh.ac_amps.1",
+      "ownerSpriteId": "acAmps1",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/OH12-BUS-TRANS-09319c17e7d0.png",
+        "sha256": "709cb15a86f9038ca082136c4db59af83c7800107dfe320182bf7f4c56837e9f",
+        "width": 1024,
+        "height": 1536
+      },
+      "pivotCandidate": {
+        "x": 210,
+        "y": 265,
+        "evidence": "gauge-survey-stage2-3.json",
+        "state": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "pivotApproved": false,
+      "spriteApprovalStatus": "SOURCE_IMAGE_ZERO_TICK_PROVISIONAL_FIT",
+      "shapeLocked": false,
+      "preservedSprite": true,
+      "existingNeedleTipRadiusPx": 102,
+      "radiusOrigin": "existing_legacy_needle_geometry_visual_model_not_final_per_tick",
+      "photographedNativeTipCandidates": [],
+      "relativeRadialGaps": [],
+      "spriteLocalPivot": null,
+      "spriteLocalTip": null,
+      "spriteSourceSha256": null,
+      "offsetAngleCalibrationApproved": false,
+      "allTickTipReachApproved": false,
+      "changesToMountedGeometry": false,
+      "ownerReviewRequired": true
+    },
+    {
+      "faceId": "oh.ac_amps.2",
+      "ownerSpriteId": "acAmps2",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/OH12-BUS-TRANS-09319c17e7d0.png",
+        "sha256": "709cb15a86f9038ca082136c4db59af83c7800107dfe320182bf7f4c56837e9f",
+        "width": 1024,
+        "height": 1536
+      },
+      "pivotCandidate": {
+        "x": 705,
+        "y": 265,
+        "evidence": "gauge-survey-stage2-3.json",
+        "state": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "pivotApproved": false,
+      "spriteApprovalStatus": "SOURCE_IMAGE_ZERO_TICK_PROVISIONAL_FIT",
+      "shapeLocked": false,
+      "preservedSprite": true,
+      "existingNeedleTipRadiusPx": 102,
+      "radiusOrigin": "existing_legacy_needle_geometry_visual_model_not_final_per_tick",
+      "photographedNativeTipCandidates": [],
+      "relativeRadialGaps": [],
+      "spriteLocalPivot": null,
+      "spriteLocalTip": null,
+      "spriteSourceSha256": null,
+      "offsetAngleCalibrationApproved": false,
+      "allTickTipReachApproved": false,
+      "changesToMountedGeometry": false,
+      "ownerReviewRequired": true
+    },
+    {
+      "faceId": "oh.ac_amps.apu",
+      "ownerSpriteId": "apuAcAmps",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/OH12-BUS-TRANS-09319c17e7d0.png",
+        "sha256": "709cb15a86f9038ca082136c4db59af83c7800107dfe320182bf7f4c56837e9f",
+        "width": 1024,
+        "height": 1536
+      },
+      "pivotCandidate": {
+        "x": 724,
+        "y": 1334,
+        "evidence": "gauge-survey-stage2-3.json",
+        "state": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "pivotApproved": false,
+      "spriteApprovalStatus": "SOURCE_IMAGE_ZERO_TICK_PROVISIONAL_FIT",
+      "shapeLocked": false,
+      "preservedSprite": true,
+      "existingNeedleTipRadiusPx": 124,
+      "radiusOrigin": "existing_legacy_needle_geometry_visual_model_not_final_per_tick",
+      "photographedNativeTipCandidates": [],
+      "relativeRadialGaps": [],
+      "spriteLocalPivot": null,
+      "spriteLocalTip": null,
+      "spriteSourceSha256": null,
+      "offsetAngleCalibrationApproved": false,
+      "allTickTipReachApproved": false,
+      "changesToMountedGeometry": false,
+      "ownerReviewRequired": true
+    },
+    {
+      "faceId": "oh.apu.egt",
+      "ownerSpriteId": "apuEgt",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/OH12-BUS-TRANS-09319c17e7d0.png",
+        "sha256": "709cb15a86f9038ca082136c4db59af83c7800107dfe320182bf7f4c56837e9f",
+        "width": 1024,
+        "height": 1536
+      },
+      "pivotCandidate": {
+        "x": 300,
+        "y": 1324,
+        "evidence": "gauge-survey-stage2-3.json",
+        "state": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "pivotApproved": false,
+      "spriteApprovalStatus": "LEGACY_TIP_REACH_NOT_MEASURED",
+      "shapeLocked": false,
+      "preservedSprite": true,
+      "existingNeedleTipRadiusPx": null,
+      "radiusOrigin": null,
+      "photographedNativeTipCandidates": [],
+      "relativeRadialGaps": [],
+      "spriteLocalPivot": null,
+      "spriteLocalTip": null,
+      "spriteSourceSha256": null,
+      "offsetAngleCalibrationApproved": false,
+      "allTickTipReachApproved": false,
+      "changesToMountedGeometry": false,
+      "ownerReviewRequired": true
+    },
+    {
+      "faceId": "oh.cabin.diff_pressure_altitude",
+      "ownerSpriteId": "press",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/OH19-PRESS-DIFF-ALT-HORN-d6719ce57cef.png",
+        "sha256": "4c667d96ea7652e52784f5c06ee3cdde0879ca37631abf19969861afecc45fed",
+        "width": 1267,
+        "height": 1241
+      },
+      "pivotCandidate": {
+        "x": 489,
+        "y": 365,
+        "evidence": "photo-anchor-checkpoints-v1.json",
+        "state": "optical_center_estimate_needs_confirmation"
+      },
+      "pivotApproved": false,
+      "spriteApprovalStatus": "CAB_ALT_INNER_PHOTO_MAJOR_TICKS_PREVIEW_NOT_FULL_FIT",
+      "shapeLocked": false,
+      "preservedSprite": true,
+      "existingNeedleTipRadiusPx": 207,
+      "radiusOrigin": "existing_legacy_needle_geometry_visual_model_not_final_per_tick",
+      "photographedNativeTipCandidates": [
+        {
+          "mode": "diffPressure",
+          "value": 0,
+          "point": {
+            "x": 492,
+            "y": 96
+          },
+          "sourceAngle": 0.64,
+          "photoRadiusPx": 269.0167281044062
+        },
+        {
+          "mode": "diffPressure",
+          "value": 1,
+          "point": {
+            "x": 620.5,
+            "y": 164
+          },
+          "sourceAngle": 33.19,
+          "photoRadiusPx": 240.19419226950515
+        },
+        {
+          "mode": "diffPressure",
+          "value": 2,
+          "point": {
+            "x": 708.5,
+            "y": 260
+          },
+          "sourceAngle": 64.44,
+          "photoRadiusPx": 243.32128965628962
+        },
+        {
+          "mode": "diffPressure",
+          "value": 3,
+          "point": {
+            "x": 728.5,
+            "y": 363
+          },
+          "sourceAngle": 89.52,
+          "photoRadiusPx": 239.5083505851101
+        },
+        {
+          "mode": "diffPressure",
+          "value": 4,
+          "point": {
+            "x": 686,
+            "y": 512.5
+          },
+          "sourceAngle": 126.82,
+          "photoRadiusPx": 246.1000812677639
+        },
+        {
+          "mode": "diffPressure",
+          "value": 5,
+          "point": {
+            "x": 574.5,
+            "y": 590.5
+          },
+          "sourceAngle": 159.24,
+          "photoRadiusPx": 241.16488135713294
+        },
+        {
+          "mode": "diffPressure",
+          "value": 6,
+          "point": {
+            "x": 430.5,
+            "y": 597
+          },
+          "sourceAngle": -165.85,
+          "photoRadiusPx": 239.2618858071632
+        },
+        {
+          "mode": "diffPressure",
+          "value": 7,
+          "point": {
+            "x": 315.5,
+            "y": 535
+          },
+          "sourceAngle": -134.42,
+          "photoRadiusPx": 242.90378753737045
+        },
+        {
+          "mode": "diffPressure",
+          "value": 8,
+          "point": {
+            "x": 248.5,
+            "y": 423.5
+          },
+          "sourceAngle": -103.67,
+          "photoRadiusPx": 247.512625940577
+        },
+        {
+          "mode": "diffPressure",
+          "value": 9,
+          "point": {
+            "x": 260,
+            "y": 280.5
+          },
+          "sourceAngle": -69.75,
+          "photoRadiusPx": 244.09270779767266
+        },
+        {
+          "mode": "diffPressure",
+          "value": 10,
+          "point": {
+            "x": 340.5,
+            "y": 173
+          },
+          "sourceAngle": -37.72,
+          "photoRadiusPx": 242.72669816070913
+        }
+      ],
+      "relativeRadialGaps": [
+        {
+          "mode": "diffPressure",
+          "value": 0,
+          "radialGapPx": -62.02,
+          "imageEvidence": "source_pixel_candidate_not_approved"
+        },
+        {
+          "mode": "diffPressure",
+          "value": 1,
+          "radialGapPx": -33.19,
+          "imageEvidence": "source_pixel_candidate_not_approved"
+        },
+        {
+          "mode": "diffPressure",
+          "value": 2,
+          "radialGapPx": -36.32,
+          "imageEvidence": "source_pixel_candidate_not_approved"
+        },
+        {
+          "mode": "diffPressure",
+          "value": 3,
+          "radialGapPx": -32.51,
+          "imageEvidence": "source_pixel_candidate_not_approved"
+        },
+        {
+          "mode": "diffPressure",
+          "value": 4,
+          "radialGapPx": -39.1,
+          "imageEvidence": "source_pixel_candidate_not_approved"
+        },
+        {
+          "mode": "diffPressure",
+          "value": 5,
+          "radialGapPx": -34.16,
+          "imageEvidence": "source_pixel_candidate_not_approved"
+        },
+        {
+          "mode": "diffPressure",
+          "value": 6,
+          "radialGapPx": -32.26,
+          "imageEvidence": "source_pixel_candidate_not_approved"
+        },
+        {
+          "mode": "diffPressure",
+          "value": 7,
+          "radialGapPx": -35.9,
+          "imageEvidence": "source_pixel_candidate_not_approved"
+        },
+        {
+          "mode": "diffPressure",
+          "value": 8,
+          "radialGapPx": -40.51,
+          "imageEvidence": "source_pixel_candidate_not_approved"
+        },
+        {
+          "mode": "diffPressure",
+          "value": 9,
+          "radialGapPx": -37.09,
+          "imageEvidence": "source_pixel_candidate_not_approved"
+        },
+        {
+          "mode": "diffPressure",
+          "value": 10,
+          "radialGapPx": -35.73,
+          "imageEvidence": "source_pixel_candidate_not_approved"
+        }
+      ],
+      "spriteLocalPivot": null,
+      "spriteLocalTip": null,
+      "spriteSourceSha256": null,
+      "offsetAngleCalibrationApproved": false,
+      "allTickTipReachApproved": false,
+      "changesToMountedGeometry": false,
+      "ownerReviewRequired": true
+    },
+    {
+      "faceId": "oh.cabin.diff_pressure_altitude",
+      "ownerSpriteId": "cabAlt",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/OH19-PRESS-DIFF-ALT-HORN-d6719ce57cef.png",
+        "sha256": "4c667d96ea7652e52784f5c06ee3cdde0879ca37631abf19969861afecc45fed",
+        "width": 1267,
+        "height": 1241
+      },
+      "pivotCandidate": {
+        "x": 489,
+        "y": 365,
+        "evidence": "photo-anchor-checkpoints-v1.json",
+        "state": "optical_center_estimate_needs_confirmation"
+      },
+      "pivotApproved": false,
+      "spriteApprovalStatus": "CAB_ALT_INNER_PHOTO_MAJOR_TICKS_PREVIEW_NOT_FULL_FIT",
+      "shapeLocked": false,
+      "preservedSprite": true,
+      "existingNeedleTipRadiusPx": 123,
+      "radiusOrigin": "existing_legacy_needle_geometry_visual_model_not_final_per_tick",
+      "photographedNativeTipCandidates": [
+        {
+          "mode": "diffPressure",
+          "value": 0,
+          "point": {
+            "x": 492,
+            "y": 96
+          },
+          "sourceAngle": 0.64,
+          "photoRadiusPx": 269.0167281044062
+        },
+        {
+          "mode": "diffPressure",
+          "value": 1,
+          "point": {
+            "x": 620.5,
+            "y": 164
+          },
+          "sourceAngle": 33.19,
+          "photoRadiusPx": 240.19419226950515
+        },
+        {
+          "mode": "diffPressure",
+          "value": 2,
+          "point": {
+            "x": 708.5,
+            "y": 260
+          },
+          "sourceAngle": 64.44,
+          "photoRadiusPx": 243.32128965628962
+        },
+        {
+          "mode": "diffPressure",
+          "value": 3,
+          "point": {
+            "x": 728.5,
+            "y": 363
+          },
+          "sourceAngle": 89.52,
+          "photoRadiusPx": 239.5083505851101
+        },
+        {
+          "mode": "diffPressure",
+          "value": 4,
+          "point": {
+            "x": 686,
+            "y": 512.5
+          },
+          "sourceAngle": 126.82,
+          "photoRadiusPx": 246.1000812677639
+        },
+        {
+          "mode": "diffPressure",
+          "value": 5,
+          "point": {
+            "x": 574.5,
+            "y": 590.5
+          },
+          "sourceAngle": 159.24,
+          "photoRadiusPx": 241.16488135713294
+        },
+        {
+          "mode": "diffPressure",
+          "value": 6,
+          "point": {
+            "x": 430.5,
+            "y": 597
+          },
+          "sourceAngle": -165.85,
+          "photoRadiusPx": 239.2618858071632
+        },
+        {
+          "mode": "diffPressure",
+          "value": 7,
+          "point": {
+            "x": 315.5,
+            "y": 535
+          },
+          "sourceAngle": -134.42,
+          "photoRadiusPx": 242.90378753737045
+        },
+        {
+          "mode": "diffPressure",
+          "value": 8,
+          "point": {
+            "x": 248.5,
+            "y": 423.5
+          },
+          "sourceAngle": -103.67,
+          "photoRadiusPx": 247.512625940577
+        },
+        {
+          "mode": "diffPressure",
+          "value": 9,
+          "point": {
+            "x": 260,
+            "y": 280.5
+          },
+          "sourceAngle": -69.75,
+          "photoRadiusPx": 244.09270779767266
+        },
+        {
+          "mode": "diffPressure",
+          "value": 10,
+          "point": {
+            "x": 340.5,
+            "y": 173
+          },
+          "sourceAngle": -37.72,
+          "photoRadiusPx": 242.72669816070913
+        }
+      ],
+      "relativeRadialGaps": [
+        {
+          "mode": "diffPressure",
+          "value": 0,
+          "radialGapPx": -146.02,
+          "imageEvidence": "source_pixel_candidate_not_approved"
+        },
+        {
+          "mode": "diffPressure",
+          "value": 1,
+          "radialGapPx": -117.19,
+          "imageEvidence": "source_pixel_candidate_not_approved"
+        },
+        {
+          "mode": "diffPressure",
+          "value": 2,
+          "radialGapPx": -120.32,
+          "imageEvidence": "source_pixel_candidate_not_approved"
+        },
+        {
+          "mode": "diffPressure",
+          "value": 3,
+          "radialGapPx": -116.51,
+          "imageEvidence": "source_pixel_candidate_not_approved"
+        },
+        {
+          "mode": "diffPressure",
+          "value": 4,
+          "radialGapPx": -123.1,
+          "imageEvidence": "source_pixel_candidate_not_approved"
+        },
+        {
+          "mode": "diffPressure",
+          "value": 5,
+          "radialGapPx": -118.16,
+          "imageEvidence": "source_pixel_candidate_not_approved"
+        },
+        {
+          "mode": "diffPressure",
+          "value": 6,
+          "radialGapPx": -116.26,
+          "imageEvidence": "source_pixel_candidate_not_approved"
+        },
+        {
+          "mode": "diffPressure",
+          "value": 7,
+          "radialGapPx": -119.9,
+          "imageEvidence": "source_pixel_candidate_not_approved"
+        },
+        {
+          "mode": "diffPressure",
+          "value": 8,
+          "radialGapPx": -124.51,
+          "imageEvidence": "source_pixel_candidate_not_approved"
+        },
+        {
+          "mode": "diffPressure",
+          "value": 9,
+          "radialGapPx": -121.09,
+          "imageEvidence": "source_pixel_candidate_not_approved"
+        },
+        {
+          "mode": "diffPressure",
+          "value": 10,
+          "radialGapPx": -119.73,
+          "imageEvidence": "source_pixel_candidate_not_approved"
+        }
+      ],
+      "spriteLocalPivot": null,
+      "spriteLocalTip": null,
+      "spriteSourceSha256": null,
+      "offsetAngleCalibrationApproved": false,
+      "allTickTipReachApproved": false,
+      "changesToMountedGeometry": false,
+      "ownerReviewRequired": true
+    },
+    {
+      "faceId": "oh.cabin.rate",
+      "ownerSpriteId": "cabinRate",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/OH19-PRESS-DIFF-ALT-HORN-d6719ce57cef.png",
+        "sha256": "4c667d96ea7652e52784f5c06ee3cdde0879ca37631abf19969861afecc45fed",
+        "width": 1267,
+        "height": 1241
+      },
+      "pivotCandidate": {
+        "x": 520,
+        "y": 950,
+        "evidence": "gauge-survey-stage2-3.json",
+        "state": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "pivotApproved": false,
+      "spriteApprovalStatus": "LEGACY_TIP_REACH_NOT_MEASURED",
+      "shapeLocked": false,
+      "preservedSprite": true,
+      "existingNeedleTipRadiusPx": 139,
+      "radiusOrigin": "existing_legacy_needle_geometry_visual_model_not_final_per_tick",
+      "photographedNativeTipCandidates": [],
+      "relativeRadialGaps": [],
+      "spriteLocalPivot": null,
+      "spriteLocalTip": null,
+      "spriteSourceSha256": null,
+      "offsetAngleCalibrationApproved": false,
+      "allTickTipReachApproved": false,
+      "changesToMountedGeometry": false,
+      "ownerReviewRequired": true
+    },
+    {
+      "faceId": "oh.cabin.temperature",
+      "ownerSpriteId": "cabinTemperature",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/OH20-AIR-CONDITIONING-0734da6a7726.png",
+        "sha256": "94669d21f0be8aa538b2ff3b0684683409cadf6d9fc4b55390e7147abe506121",
+        "width": 1254,
+        "height": 1254
+      },
+      "pivotCandidate": {
+        "x": 618,
+        "y": 681,
+        "evidence": "photo-anchor-checkpoints-v1.json",
+        "state": "optical_center_estimate_needs_confirmation"
+      },
+      "pivotApproved": false,
+      "spriteApprovalStatus": "LEGACY_TIP_REACH_NOT_MEASURED",
+      "shapeLocked": false,
+      "preservedSprite": true,
+      "existingNeedleTipRadiusPx": 158,
+      "radiusOrigin": "existing_legacy_needle_geometry_visual_model_not_final_per_tick",
+      "photographedNativeTipCandidates": [
+        {
+          "mode": "primary",
+          "value": 0,
+          "point": {
+            "x": 515,
+            "y": 792.5
+          },
+          "sourceAngle": -137.27,
+          "photoRadiusPx": 151.79344518127257
+        },
+        {
+          "mode": "primary",
+          "value": 20,
+          "point": {
+            "x": 462.5,
+            "y": 680
+          },
+          "sourceAngle": -89.63,
+          "photoRadiusPx": 155.50321540083988
+        },
+        {
+          "mode": "primary",
+          "value": 40,
+          "point": {
+            "x": 529,
+            "y": 597.5
+          },
+          "sourceAngle": -46.83,
+          "photoRadiusPx": 122.03790394791282
+        },
+        {
+          "mode": "primary",
+          "value": 80,
+          "point": {
+            "x": 769.5,
+            "y": 638
+          },
+          "sourceAngle": 74.15,
+          "photoRadiusPx": 157.48412618419675
+        },
+        {
+          "mode": "primary",
+          "value": 100,
+          "point": {
+            "x": 757.5,
+            "y": 730.5
+          },
+          "sourceAngle": 109.54,
+          "photoRadiusPx": 148.02195783058676
+        }
+      ],
+      "relativeRadialGaps": [
+        {
+          "mode": "primary",
+          "value": 0,
+          "radialGapPx": 6.21,
+          "imageEvidence": "source_pixel_candidate_not_approved"
+        },
+        {
+          "mode": "primary",
+          "value": 20,
+          "radialGapPx": 2.5,
+          "imageEvidence": "source_pixel_candidate_not_approved"
+        },
+        {
+          "mode": "primary",
+          "value": 40,
+          "radialGapPx": 35.96,
+          "imageEvidence": "source_pixel_candidate_not_approved"
+        },
+        {
+          "mode": "primary",
+          "value": 80,
+          "radialGapPx": 0.52,
+          "imageEvidence": "source_pixel_candidate_not_approved"
+        },
+        {
+          "mode": "primary",
+          "value": 100,
+          "radialGapPx": 9.98,
+          "imageEvidence": "source_pixel_candidate_not_approved"
+        }
+      ],
+      "spriteLocalPivot": null,
+      "spriteLocalTip": null,
+      "spriteSourceSha256": null,
+      "offsetAngleCalibrationApproved": false,
+      "allTickTipReachApproved": false,
+      "changesToMountedGeometry": false,
+      "ownerReviewRequired": true
+    },
+    {
+      "faceId": "oh.duct.pressure_lr",
+      "ownerSpriteId": "ductL",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/OH21-BLEED-AIR-cc78219607a3.png",
+        "sha256": "4efe8c59579e8675825ed4dabf393648cfa7f11f6c09d831d137c23f70ecfe1e",
+        "width": 1122,
+        "height": 1402
+      },
+      "pivotCandidate": {
+        "x": 544,
+        "y": 439,
+        "evidence": "photo-anchor-checkpoints-v1.json",
+        "state": "optical_center_estimate_needs_confirmation"
+      },
+      "pivotApproved": false,
+      "spriteApprovalStatus": "LEGACY_TIP_REACH_NOT_MEASURED",
+      "shapeLocked": false,
+      "preservedSprite": true,
+      "existingNeedleTipRadiusPx": 148,
+      "radiusOrigin": "existing_legacy_needle_geometry_visual_model_not_final_per_tick",
+      "photographedNativeTipCandidates": [
+        {
+          "mode": "primary",
+          "value": 0,
+          "point": {
+            "x": 478.5,
+            "y": 562.5
+          },
+          "sourceAngle": -152.06,
+          "photoRadiusPx": 139.7944920231123
+        },
+        {
+          "mode": "primary",
+          "value": 20,
+          "point": {
+            "x": 401.5,
+            "y": 445
+          },
+          "sourceAngle": -92.41,
+          "photoRadiusPx": 142.62625985420777
+        },
+        {
+          "mode": "primary",
+          "value": 40,
+          "point": {
+            "x": 479,
+            "y": 305.5
+          },
+          "sourceAngle": -25.96,
+          "photoRadiusPx": 148.4831640287881
+        },
+        {
+          "mode": "primary",
+          "value": 60,
+          "point": {
+            "x": 608.5,
+            "y": 318.5
+          },
+          "sourceAngle": 28.16,
+          "photoRadiusPx": 136.67662565340132
+        },
+        {
+          "mode": "primary",
+          "value": 80,
+          "point": {
+            "x": 687,
+            "y": 442
+          },
+          "sourceAngle": 91.2,
+          "photoRadiusPx": 143.0314650697531
+        },
+        {
+          "mode": "primary",
+          "value": 100,
+          "point": {
+            "x": 595.5,
+            "y": 536.5
+          },
+          "sourceAngle": 152.16,
+          "photoRadiusPx": 110.26558846711879
+        }
+      ],
+      "relativeRadialGaps": [
+        {
+          "mode": "primary",
+          "value": 0,
+          "radialGapPx": 8.21,
+          "imageEvidence": "source_pixel_candidate_not_approved"
+        },
+        {
+          "mode": "primary",
+          "value": 20,
+          "radialGapPx": 5.37,
+          "imageEvidence": "source_pixel_candidate_not_approved"
+        },
+        {
+          "mode": "primary",
+          "value": 40,
+          "radialGapPx": -0.48,
+          "imageEvidence": "source_pixel_candidate_not_approved"
+        },
+        {
+          "mode": "primary",
+          "value": 60,
+          "radialGapPx": 11.32,
+          "imageEvidence": "source_pixel_candidate_not_approved"
+        },
+        {
+          "mode": "primary",
+          "value": 80,
+          "radialGapPx": 4.97,
+          "imageEvidence": "source_pixel_candidate_not_approved"
+        },
+        {
+          "mode": "primary",
+          "value": 100,
+          "radialGapPx": 37.73,
+          "imageEvidence": "source_pixel_candidate_not_approved"
+        }
+      ],
+      "spriteLocalPivot": null,
+      "spriteLocalTip": null,
+      "spriteSourceSha256": null,
+      "offsetAngleCalibrationApproved": false,
+      "allTickTipReachApproved": false,
+      "changesToMountedGeometry": false,
+      "ownerReviewRequired": true
+    },
+    {
+      "faceId": "oh.duct.pressure_lr",
+      "ownerSpriteId": "ductR",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/OH21-BLEED-AIR-cc78219607a3.png",
+        "sha256": "4efe8c59579e8675825ed4dabf393648cfa7f11f6c09d831d137c23f70ecfe1e",
+        "width": 1122,
+        "height": 1402
+      },
+      "pivotCandidate": {
+        "x": 544,
+        "y": 439,
+        "evidence": "photo-anchor-checkpoints-v1.json",
+        "state": "optical_center_estimate_needs_confirmation"
+      },
+      "pivotApproved": false,
+      "spriteApprovalStatus": "LEGACY_TIP_REACH_NOT_MEASURED",
+      "shapeLocked": false,
+      "preservedSprite": true,
+      "existingNeedleTipRadiusPx": 148,
+      "radiusOrigin": "existing_legacy_needle_geometry_visual_model_not_final_per_tick",
+      "photographedNativeTipCandidates": [
+        {
+          "mode": "primary",
+          "value": 0,
+          "point": {
+            "x": 478.5,
+            "y": 562.5
+          },
+          "sourceAngle": -152.06,
+          "photoRadiusPx": 139.7944920231123
+        },
+        {
+          "mode": "primary",
+          "value": 20,
+          "point": {
+            "x": 401.5,
+            "y": 445
+          },
+          "sourceAngle": -92.41,
+          "photoRadiusPx": 142.62625985420777
+        },
+        {
+          "mode": "primary",
+          "value": 40,
+          "point": {
+            "x": 479,
+            "y": 305.5
+          },
+          "sourceAngle": -25.96,
+          "photoRadiusPx": 148.4831640287881
+        },
+        {
+          "mode": "primary",
+          "value": 60,
+          "point": {
+            "x": 608.5,
+            "y": 318.5
+          },
+          "sourceAngle": 28.16,
+          "photoRadiusPx": 136.67662565340132
+        },
+        {
+          "mode": "primary",
+          "value": 80,
+          "point": {
+            "x": 687,
+            "y": 442
+          },
+          "sourceAngle": 91.2,
+          "photoRadiusPx": 143.0314650697531
+        },
+        {
+          "mode": "primary",
+          "value": 100,
+          "point": {
+            "x": 595.5,
+            "y": 536.5
+          },
+          "sourceAngle": 152.16,
+          "photoRadiusPx": 110.26558846711879
+        }
+      ],
+      "relativeRadialGaps": [
+        {
+          "mode": "primary",
+          "value": 0,
+          "radialGapPx": 8.21,
+          "imageEvidence": "source_pixel_candidate_not_approved"
+        },
+        {
+          "mode": "primary",
+          "value": 20,
+          "radialGapPx": 5.37,
+          "imageEvidence": "source_pixel_candidate_not_approved"
+        },
+        {
+          "mode": "primary",
+          "value": 40,
+          "radialGapPx": -0.48,
+          "imageEvidence": "source_pixel_candidate_not_approved"
+        },
+        {
+          "mode": "primary",
+          "value": 60,
+          "radialGapPx": 11.32,
+          "imageEvidence": "source_pixel_candidate_not_approved"
+        },
+        {
+          "mode": "primary",
+          "value": 80,
+          "radialGapPx": 4.97,
+          "imageEvidence": "source_pixel_candidate_not_approved"
+        },
+        {
+          "mode": "primary",
+          "value": 100,
+          "radialGapPx": 37.73,
+          "imageEvidence": "source_pixel_candidate_not_approved"
+        }
+      ],
+      "spriteLocalPivot": null,
+      "spriteLocalTip": null,
+      "spriteSourceSha256": null,
+      "offsetAngleCalibrationApproved": false,
+      "allTickTipReachApproved": false,
+      "changesToMountedGeometry": false,
+      "ownerReviewRequired": true
+    },
+    {
+      "faceId": "oh.crew_oxygen.pressure",
+      "ownerSpriteId": "oxygenPressure",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/OH01-06-source-9d8ac0ac86bd.png",
+        "sha256": "9d8ac0ac86bdb92c040e9bdd97811ca381535d949bff94aa5b1a01e5de8e23df",
+        "width": 1731,
+        "height": 909
+      },
+      "pivotCandidate": {
+        "x": 1078,
+        "y": 636,
+        "evidence": "tools/gauge-source-visual-review.py",
+        "state": "existing_overlay_position_not_full_photo_certification"
+      },
+      "pivotApproved": false,
+      "spriteApprovalStatus": "INSTALLED_GEOMETRY_TESTED_NOT_ZERO",
+      "shapeLocked": false,
+      "preservedSprite": true,
+      "existingNeedleTipRadiusPx": 55,
+      "radiusOrigin": "existing_legacy_needle_geometry_visual_model_not_final_per_tick",
+      "photographedNativeTipCandidates": [],
+      "relativeRadialGaps": [],
+      "spriteLocalPivot": null,
+      "spriteLocalTip": null,
+      "spriteSourceSha256": null,
+      "offsetAngleCalibrationApproved": false,
+      "allTickTipReachApproved": false,
+      "changesToMountedGeometry": false,
+      "ownerReviewRequired": true
+    },
+    {
+      "faceId": "capt.airspeed",
+      "ownerSpriteId": "captIAS",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png",
+        "sha256": "dea7c23ddd5d648cf51735d0fcbcc9d1e69ce37efd736ec45fb173fe766fc56b",
+        "width": 3942,
+        "height": 3591
+      },
+      "pivotCandidate": {
+        "x": 1100,
+        "y": 970,
+        "uncertaintyPx": 40,
+        "reason": "visually estimated native-grid dial center"
+      },
+      "pivotApproved": false,
+      "spriteApprovalStatus": "PREVIOUSLY_REGISTERED_NEEDS_SOURCE_PIXEL_QA",
+      "shapeLocked": false,
+      "preservedSprite": true,
+      "existingNeedleTipRadiusPx": null,
+      "radiusOrigin": null,
+      "photographedNativeTipCandidates": [],
+      "relativeRadialGaps": [],
+      "spriteLocalPivot": null,
+      "spriteLocalTip": null,
+      "spriteSourceSha256": null,
+      "offsetAngleCalibrationApproved": false,
+      "allTickTipReachApproved": false,
+      "changesToMountedGeometry": false,
+      "ownerReviewRequired": true
+    },
+    {
+      "faceId": "capt.airspeed",
+      "ownerSpriteId": "captVMO",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png",
+        "sha256": "dea7c23ddd5d648cf51735d0fcbcc9d1e69ce37efd736ec45fb173fe766fc56b",
+        "width": 3942,
+        "height": 3591
+      },
+      "pivotCandidate": {
+        "x": 1100,
+        "y": 970,
+        "uncertaintyPx": 40,
+        "reason": "visually estimated native-grid dial center"
+      },
+      "pivotApproved": false,
+      "spriteApprovalStatus": "PREVIOUSLY_REGISTERED_NEEDS_SOURCE_PIXEL_QA",
+      "shapeLocked": false,
+      "preservedSprite": true,
+      "existingNeedleTipRadiusPx": null,
+      "radiusOrigin": null,
+      "photographedNativeTipCandidates": [],
+      "relativeRadialGaps": [],
+      "spriteLocalPivot": null,
+      "spriteLocalTip": null,
+      "spriteSourceSha256": null,
+      "offsetAngleCalibrationApproved": false,
+      "allTickTipReachApproved": false,
+      "changesToMountedGeometry": false,
+      "ownerReviewRequired": true
+    },
+    {
+      "faceId": "capt.rmi",
+      "ownerSpriteId": "captRMI1",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png",
+        "sha256": "dea7c23ddd5d648cf51735d0fcbcc9d1e69ce37efd736ec45fb173fe766fc56b",
+        "width": 3942,
+        "height": 3591
+      },
+      "pivotCandidate": {
+        "x": 1170,
+        "y": 1850,
+        "uncertaintyPx": 40,
+        "reason": "visually estimated native-grid RMI card center"
+      },
+      "pivotApproved": false,
+      "spriteApprovalStatus": "LOCKED_OWNER_APPROVED_SPRITE_FIT",
+      "shapeLocked": true,
+      "preservedSprite": true,
+      "existingNeedleTipRadiusPx": null,
+      "radiusOrigin": null,
+      "photographedNativeTipCandidates": [],
+      "relativeRadialGaps": [],
+      "spriteLocalPivot": null,
+      "spriteLocalTip": null,
+      "spriteSourceSha256": null,
+      "offsetAngleCalibrationApproved": false,
+      "allTickTipReachApproved": false,
+      "changesToMountedGeometry": false,
+      "ownerReviewRequired": true
+    },
+    {
+      "faceId": "capt.rmi",
+      "ownerSpriteId": "captRMI2",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png",
+        "sha256": "dea7c23ddd5d648cf51735d0fcbcc9d1e69ce37efd736ec45fb173fe766fc56b",
+        "width": 3942,
+        "height": 3591
+      },
+      "pivotCandidate": {
+        "x": 1170,
+        "y": 1850,
+        "uncertaintyPx": 40,
+        "reason": "visually estimated native-grid RMI card center"
+      },
+      "pivotApproved": false,
+      "spriteApprovalStatus": "LOCKED_OWNER_APPROVED_SPRITE_FIT",
+      "shapeLocked": true,
+      "preservedSprite": true,
+      "existingNeedleTipRadiusPx": null,
+      "radiusOrigin": null,
+      "photographedNativeTipCandidates": [],
+      "relativeRadialGaps": [],
+      "spriteLocalPivot": null,
+      "spriteLocalTip": null,
+      "spriteSourceSha256": null,
+      "offsetAngleCalibrationApproved": false,
+      "allTickTipReachApproved": false,
+      "changesToMountedGeometry": false,
+      "ownerReviewRequired": true
+    },
+    {
+      "faceId": "capt.altimeter",
+      "ownerSpriteId": "captAltimeter",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png",
+        "sha256": "dea7c23ddd5d648cf51735d0fcbcc9d1e69ce37efd736ec45fb173fe766fc56b",
+        "width": 3942,
+        "height": 3591
+      },
+      "pivotCandidate": {
+        "x": 3100,
+        "y": 940,
+        "uncertaintyPx": 40,
+        "reason": "visually estimated native-grid altimeter card center"
+      },
+      "pivotApproved": false,
+      "spriteApprovalStatus": "PREVIOUSLY_REGISTERED_NEEDS_SOURCE_PIXEL_QA",
+      "shapeLocked": false,
+      "preservedSprite": true,
+      "existingNeedleTipRadiusPx": null,
+      "radiusOrigin": null,
+      "photographedNativeTipCandidates": [],
+      "relativeRadialGaps": [],
+      "spriteLocalPivot": null,
+      "spriteLocalTip": null,
+      "spriteSourceSha256": null,
+      "offsetAngleCalibrationApproved": false,
+      "allTickTipReachApproved": false,
+      "changesToMountedGeometry": false,
+      "ownerReviewRequired": true
+    },
+    {
+      "faceId": "capt.vertical_speed",
+      "ownerSpriteId": "captVSI",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png",
+        "sha256": "dea7c23ddd5d648cf51735d0fcbcc9d1e69ce37efd736ec45fb173fe766fc56b",
+        "width": 3942,
+        "height": 3591
+      },
+      "pivotCandidate": {
+        "x": 3100,
+        "y": 1600,
+        "uncertaintyPx": 40,
+        "reason": "visually estimated native-grid VSI center"
+      },
+      "pivotApproved": false,
+      "spriteApprovalStatus": "PREVIOUSLY_REGISTERED_NEEDS_SOURCE_PIXEL_QA",
+      "shapeLocked": false,
+      "preservedSprite": true,
+      "existingNeedleTipRadiusPx": null,
+      "radiusOrigin": null,
+      "photographedNativeTipCandidates": [],
+      "relativeRadialGaps": [],
+      "spriteLocalPivot": null,
+      "spriteLocalTip": null,
+      "spriteSourceSha256": null,
+      "offsetAngleCalibrationApproved": false,
+      "allTickTipReachApproved": false,
+      "changesToMountedGeometry": false,
+      "ownerReviewRequired": true
+    },
+    {
+      "faceId": "capt.clock",
+      "ownerSpriteId": "captClock",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png",
+        "sha256": "dea7c23ddd5d648cf51735d0fcbcc9d1e69ce37efd736ec45fb173fe766fc56b",
+        "width": 3942,
+        "height": 3591
+      },
+      "pivotCandidate": {
+        "x": 3700,
+        "y": 1580,
+        "uncertaintyPx": 40,
+        "reason": "visually estimated native-grid clock face center"
+      },
+      "pivotApproved": false,
+      "spriteApprovalStatus": "PREVIOUSLY_REGISTERED_NEEDS_SOURCE_PIXEL_QA",
+      "shapeLocked": false,
+      "preservedSprite": true,
+      "existingNeedleTipRadiusPx": null,
+      "radiusOrigin": null,
+      "photographedNativeTipCandidates": [],
+      "relativeRadialGaps": [],
+      "spriteLocalPivot": null,
+      "spriteLocalTip": null,
+      "spriteSourceSha256": null,
+      "offsetAngleCalibrationApproved": false,
+      "allTickTipReachApproved": false,
+      "changesToMountedGeometry": false,
+      "ownerReviewRequired": true
+    },
+    {
+      "faceId": "eng.egt.1",
+      "ownerSpriteId": "egt1",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+        "sha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+        "width": 1235,
+        "height": 1274
+      },
+      "pivotCandidate": {
+        "x": 535,
+        "y": 723,
+        "evidence": "gauge-survey-stage2-3.json",
+        "state": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "pivotApproved": false,
+      "spriteApprovalStatus": "SIM_CONNECTED_UNCALIBRATED",
+      "shapeLocked": false,
+      "preservedSprite": true,
+      "existingNeedleTipRadiusPx": null,
+      "radiusOrigin": null,
+      "photographedNativeTipCandidates": [],
+      "relativeRadialGaps": [],
+      "spriteLocalPivot": null,
+      "spriteLocalTip": null,
+      "spriteSourceSha256": null,
+      "offsetAngleCalibrationApproved": false,
+      "allTickTipReachApproved": false,
+      "changesToMountedGeometry": false,
+      "ownerReviewRequired": true
+    },
+    {
+      "faceId": "eng.egt.2",
+      "ownerSpriteId": "egt2",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+        "sha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+        "width": 1235,
+        "height": 1274
+      },
+      "pivotCandidate": {
+        "x": 724,
+        "y": 723,
+        "evidence": "gauge-survey-stage2-3.json",
+        "state": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "pivotApproved": false,
+      "spriteApprovalStatus": "SIM_CONNECTED_UNCALIBRATED",
+      "shapeLocked": false,
+      "preservedSprite": true,
+      "existingNeedleTipRadiusPx": null,
+      "radiusOrigin": null,
+      "photographedNativeTipCandidates": [],
+      "relativeRadialGaps": [],
+      "spriteLocalPivot": null,
+      "spriteLocalTip": null,
+      "spriteSourceSha256": null,
+      "offsetAngleCalibrationApproved": false,
+      "allTickTipReachApproved": false,
+      "changesToMountedGeometry": false,
+      "ownerReviewRequired": true
+    },
+    {
+      "faceId": "eng.n2.1",
+      "ownerSpriteId": "n2_1",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+        "sha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+        "width": 1235,
+        "height": 1274
+      },
+      "pivotCandidate": {
+        "x": 535,
+        "y": 900,
+        "evidence": "gauge-survey-stage2-3.json",
+        "state": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "pivotApproved": false,
+      "spriteApprovalStatus": "SIM_CONNECTED_UNCALIBRATED",
+      "shapeLocked": false,
+      "preservedSprite": true,
+      "existingNeedleTipRadiusPx": null,
+      "radiusOrigin": null,
+      "photographedNativeTipCandidates": [],
+      "relativeRadialGaps": [],
+      "spriteLocalPivot": null,
+      "spriteLocalTip": null,
+      "spriteSourceSha256": null,
+      "offsetAngleCalibrationApproved": false,
+      "allTickTipReachApproved": false,
+      "changesToMountedGeometry": false,
+      "ownerReviewRequired": true
+    },
+    {
+      "faceId": "eng.n2.2",
+      "ownerSpriteId": "n2_2",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+        "sha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+        "width": 1235,
+        "height": 1274
+      },
+      "pivotCandidate": {
+        "x": 724,
+        "y": 900,
+        "evidence": "gauge-survey-stage2-3.json",
+        "state": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "pivotApproved": false,
+      "spriteApprovalStatus": "SIM_CONNECTED_UNCALIBRATED",
+      "shapeLocked": false,
+      "preservedSprite": true,
+      "existingNeedleTipRadiusPx": null,
+      "radiusOrigin": null,
+      "photographedNativeTipCandidates": [],
+      "relativeRadialGaps": [],
+      "spriteLocalPivot": null,
+      "spriteLocalTip": null,
+      "spriteSourceSha256": null,
+      "offsetAngleCalibrationApproved": false,
+      "allTickTipReachApproved": false,
+      "changesToMountedGeometry": false,
+      "ownerReviewRequired": true
+    },
+    {
+      "faceId": "fo.flap_position",
+      "ownerSpriteId": "flapL",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Right_Main_Instruments_Blank.png",
+        "sha256": "171bf9e8d21347e7a522ebc86b19cfe0b967f0503d26c483d8f3d685f719576a",
+        "width": 918,
+        "height": 1713
+      },
+      "pivotCandidate": {
+        "x": 145,
+        "y": 290,
+        "uncertaintyPx": 22,
+        "reason": "flap two-needle central circular face"
+      },
+      "pivotApproved": false,
+      "spriteApprovalStatus": "LEGACY_TIP_REACH_NOT_MEASURED",
+      "shapeLocked": false,
+      "preservedSprite": true,
+      "existingNeedleTipRadiusPx": null,
+      "radiusOrigin": null,
+      "photographedNativeTipCandidates": [],
+      "relativeRadialGaps": [],
+      "spriteLocalPivot": null,
+      "spriteLocalTip": null,
+      "spriteSourceSha256": null,
+      "offsetAngleCalibrationApproved": false,
+      "allTickTipReachApproved": false,
+      "changesToMountedGeometry": false,
+      "ownerReviewRequired": true
+    },
+    {
+      "faceId": "fo.flap_position",
+      "ownerSpriteId": "flapR",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Right_Main_Instruments_Blank.png",
+        "sha256": "171bf9e8d21347e7a522ebc86b19cfe0b967f0503d26c483d8f3d685f719576a",
+        "width": 918,
+        "height": 1713
+      },
+      "pivotCandidate": {
+        "x": 145,
+        "y": 290,
+        "uncertaintyPx": 22,
+        "reason": "flap two-needle central circular face"
+      },
+      "pivotApproved": false,
+      "spriteApprovalStatus": "LEGACY_TIP_REACH_NOT_MEASURED",
+      "shapeLocked": false,
+      "preservedSprite": true,
+      "existingNeedleTipRadiusPx": null,
+      "radiusOrigin": null,
+      "photographedNativeTipCandidates": [],
+      "relativeRadialGaps": [],
+      "spriteLocalPivot": null,
+      "spriteLocalTip": null,
+      "spriteSourceSha256": null,
+      "offsetAngleCalibrationApproved": false,
+      "allTickTipReachApproved": false,
+      "changesToMountedGeometry": false,
+      "ownerReviewRequired": true
+    },
+    {
+      "faceId": "fo.airspeed",
+      "ownerSpriteId": "foIAS",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Right_Main_Instruments_Blank.png",
+        "sha256": "171bf9e8d21347e7a522ebc86b19cfe0b967f0503d26c483d8f3d685f719576a",
+        "width": 918,
+        "height": 1713
+      },
+      "pivotCandidate": {
+        "x": 711,
+        "y": 564,
+        "uncertaintyPx": 22,
+        "reason": "FO airspeed dial center"
+      },
+      "pivotApproved": false,
+      "spriteApprovalStatus": "PREVIOUSLY_REGISTERED_NEEDS_SOURCE_PIXEL_QA",
+      "shapeLocked": false,
+      "preservedSprite": true,
+      "existingNeedleTipRadiusPx": null,
+      "radiusOrigin": null,
+      "photographedNativeTipCandidates": [],
+      "relativeRadialGaps": [],
+      "spriteLocalPivot": null,
+      "spriteLocalTip": null,
+      "spriteSourceSha256": null,
+      "offsetAngleCalibrationApproved": false,
+      "allTickTipReachApproved": false,
+      "changesToMountedGeometry": false,
+      "ownerReviewRequired": true
+    },
+    {
+      "faceId": "fo.airspeed",
+      "ownerSpriteId": "foVMO",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Right_Main_Instruments_Blank.png",
+        "sha256": "171bf9e8d21347e7a522ebc86b19cfe0b967f0503d26c483d8f3d685f719576a",
+        "width": 918,
+        "height": 1713
+      },
+      "pivotCandidate": {
+        "x": 711,
+        "y": 564,
+        "uncertaintyPx": 22,
+        "reason": "FO airspeed dial center"
+      },
+      "pivotApproved": false,
+      "spriteApprovalStatus": "PREVIOUSLY_REGISTERED_NEEDS_SOURCE_PIXEL_QA",
+      "shapeLocked": false,
+      "preservedSprite": true,
+      "existingNeedleTipRadiusPx": null,
+      "radiusOrigin": null,
+      "photographedNativeTipCandidates": [],
+      "relativeRadialGaps": [],
+      "spriteLocalPivot": null,
+      "spriteLocalTip": null,
+      "spriteSourceSha256": null,
+      "offsetAngleCalibrationApproved": false,
+      "allTickTipReachApproved": false,
+      "changesToMountedGeometry": false,
+      "ownerReviewRequired": true
+    },
+    {
+      "faceId": "fo.rmi",
+      "ownerSpriteId": "foRMI1",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Right_Main_Instruments_Blank.png",
+        "sha256": "171bf9e8d21347e7a522ebc86b19cfe0b967f0503d26c483d8f3d685f719576a",
+        "width": 918,
+        "height": 1713
+      },
+      "pivotCandidate": {
+        "x": 761,
+        "y": 936,
+        "uncertaintyPx": 22,
+        "reason": "FO rotating compass card center"
+      },
+      "pivotApproved": false,
+      "spriteApprovalStatus": "LOCKED_OWNER_APPROVED_SPRITE_FIT",
+      "shapeLocked": true,
+      "preservedSprite": true,
+      "existingNeedleTipRadiusPx": null,
+      "radiusOrigin": null,
+      "photographedNativeTipCandidates": [],
+      "relativeRadialGaps": [],
+      "spriteLocalPivot": null,
+      "spriteLocalTip": null,
+      "spriteSourceSha256": null,
+      "offsetAngleCalibrationApproved": false,
+      "allTickTipReachApproved": false,
+      "changesToMountedGeometry": false,
+      "ownerReviewRequired": true
+    },
+    {
+      "faceId": "fo.rmi",
+      "ownerSpriteId": "foRMI2",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Right_Main_Instruments_Blank.png",
+        "sha256": "171bf9e8d21347e7a522ebc86b19cfe0b967f0503d26c483d8f3d685f719576a",
+        "width": 918,
+        "height": 1713
+      },
+      "pivotCandidate": {
+        "x": 761,
+        "y": 936,
+        "uncertaintyPx": 22,
+        "reason": "FO rotating compass card center"
+      },
+      "pivotApproved": false,
+      "spriteApprovalStatus": "LOCKED_OWNER_APPROVED_SPRITE_FIT",
+      "shapeLocked": true,
+      "preservedSprite": true,
+      "existingNeedleTipRadiusPx": null,
+      "radiusOrigin": null,
+      "photographedNativeTipCandidates": [],
+      "relativeRadialGaps": [],
+      "spriteLocalPivot": null,
+      "spriteLocalTip": null,
+      "spriteSourceSha256": null,
+      "offsetAngleCalibrationApproved": false,
+      "allTickTipReachApproved": false,
+      "changesToMountedGeometry": false,
+      "ownerReviewRequired": true
+    },
+    {
+      "faceId": "fo.outer_altimeter",
+      "ownerSpriteId": "foAltimeter",
+      "source": {
+        "asset": "file_000000006c00820ab145b3682f686256.png",
+        "sha256": "b2439666f75ddbcab15835b532d26a7ad2d1ab669be5f48774d656c1b8915a3c",
+        "width": 1123,
+        "height": 1400
+      },
+      "pivotCandidate": {
+        "x": 616,
+        "y": 343,
+        "uncertaintyPx": 15,
+        "reason": "strong Hough-circle candidate; still not optical pivot certified"
+      },
+      "pivotApproved": false,
+      "spriteApprovalStatus": "PREVIOUSLY_REGISTERED_NEEDS_SOURCE_PIXEL_QA",
+      "shapeLocked": false,
+      "preservedSprite": true,
+      "existingNeedleTipRadiusPx": null,
+      "radiusOrigin": null,
+      "photographedNativeTipCandidates": [],
+      "relativeRadialGaps": [],
+      "spriteLocalPivot": null,
+      "spriteLocalTip": null,
+      "spriteSourceSha256": null,
+      "offsetAngleCalibrationApproved": false,
+      "allTickTipReachApproved": false,
+      "changesToMountedGeometry": false,
+      "ownerReviewRequired": true
+    },
+    {
+      "faceId": "fo.outer_vertical_speed",
+      "ownerSpriteId": "foVSI",
+      "source": {
+        "asset": "file_000000006c00820ab145b3682f686256.png",
+        "sha256": "b2439666f75ddbcab15835b532d26a7ad2d1ab669be5f48774d656c1b8915a3c",
+        "width": 1123,
+        "height": 1400
+      },
+      "pivotCandidate": {
+        "x": 617,
+        "y": 609,
+        "uncertaintyPx": 15,
+        "reason": "strong Hough-circle candidate; still not optical pivot certified"
+      },
+      "pivotApproved": false,
+      "spriteApprovalStatus": "PREVIOUSLY_REGISTERED_NEEDS_SOURCE_PIXEL_QA",
+      "shapeLocked": false,
+      "preservedSprite": true,
+      "existingNeedleTipRadiusPx": null,
+      "radiusOrigin": null,
+      "photographedNativeTipCandidates": [],
+      "relativeRadialGaps": [],
+      "spriteLocalPivot": null,
+      "spriteLocalTip": null,
+      "spriteSourceSha256": null,
+      "offsetAngleCalibrationApproved": false,
+      "allTickTipReachApproved": false,
+      "changesToMountedGeometry": false,
+      "ownerReviewRequired": true
+    },
+    {
+      "faceId": "fo.outer_clock",
+      "ownerSpriteId": "foClock",
+      "source": {
+        "asset": "file_000000006c00820ab145b3682f686256.png",
+        "sha256": "b2439666f75ddbcab15835b532d26a7ad2d1ab669be5f48774d656c1b8915a3c",
+        "width": 1123,
+        "height": 1400
+      },
+      "pivotCandidate": {
+        "x": 873,
+        "y": 609,
+        "uncertaintyPx": 15,
+        "reason": "strong Hough-circle candidate; still not optical pivot certified"
+      },
+      "pivotApproved": false,
+      "spriteApprovalStatus": "PREVIOUSLY_REGISTERED_NEEDS_SOURCE_PIXEL_QA",
+      "shapeLocked": false,
+      "preservedSprite": true,
+      "existingNeedleTipRadiusPx": null,
+      "radiusOrigin": null,
+      "photographedNativeTipCandidates": [],
+      "relativeRadialGaps": [],
+      "spriteLocalPivot": null,
+      "spriteLocalTip": null,
+      "spriteSourceSha256": null,
+      "offsetAngleCalibrationApproved": false,
+      "allTickTipReachApproved": false,
+      "changesToMountedGeometry": false,
+      "ownerReviewRequired": true
+    }
+  ]
+}
