@@ -11,7 +11,62 @@
   try { storage = window.localStorage; } catch (_) { /* browser storage may be restricted */ }
   const store = api.createStore({storage, emitter: window});
   let activeSession = null;
+  const pressureSessions = new Map();
   window.B737AircraftProfileStore = store;
+  function selectedPressure(){return store.resolve().pressurization.id;}
+  function getPressureSession(system){
+    if(!['DCPCS','CPCS'].includes(system))throw Error('Unsupported pressurization system');
+    if(!pressureSessions.has(system)){
+      pressureSessions.set(system,api.createPressurizationSession({...store.get(),pressurization:system},window));
+    }
+    return pressureSessions.get(system);
+  }
+  // One authoritative engine state per installation. Swapping installation
+  // does not mix CPCS controls, lamp output or memory with DCPCS.
+  function publishPressureState(system=selectedPressure()){
+    if(system!==selectedPressure())return;
+    const session=getPressureSession(system);
+    const target=byId('overheadFrame')?.contentWindow;
+    if(target)target.postMessage({
+      type:'b737:cockpit-command',action:'pressurization-state',
+      system,output:session.read(),state:session.snapshot()
+    },location.origin);
+    window.dispatchEvent(new CustomEvent('b737:pressurization-state',{
+      detail:{system,output:session.read(),state:session.snapshot()}
+    }));
+  }
+  function applyPressureCommand(system,cmd){
+    if(system!==selectedPressure())throw Error('Control belongs to the inactive pressurization installation');
+    if(!cmd||!['MODE','MANUAL_SWITCH','INPUT','ALTITUDE','CABIN_RATE','FLIGHT_GROUND','VALVE_SWITCH','AUTO_CHECK','ADVANCE'].includes(cmd.type))throw Error('Invalid OH22 control command');
+    const session=getPressureSession(system);
+    const output=session.dispatch(cmd);
+    publishPressureState(system);
+    return output;
+  }
+  window.addEventListener('message',event=>{
+    if(event.origin!==location.origin||event.source!==byId('overheadFrame')?.contentWindow)return;
+    const msg=event.data;
+    if(msg?.type!=='b737:cockpit-overhead')return;
+    if(msg.kind==='pressurization-need-state'&&msg.system===selectedPressure()){
+      publishPressureState(msg.system);
+    } else if(msg.kind==='pressurization-command'){
+      try{applyPressureCommand(msg.system,msg.command);}
+      catch(error){
+        byId('activeProfileStatus').textContent='OH22 '+msg.system+': '+error.message;
+        publishPressureState();
+      }
+    }
+  });
+  // Future simulator sensor adapters can inject sourced inputs to the selected
+  // pressure engine; no made-up shared physical pressure model is introduced.
+  window.B737PressurizationIntegration=Object.freeze({
+    getSelected:selectedPressure,
+    read:system=>getPressureSession(system).read(),
+    snapshot:system=>getPressureSession(system).snapshot(),
+    dispatch:applyPressureCommand,
+    feed(system,key,value){return applyPressureCommand(system,{type:'INPUT',key,value});},
+    sync:()=>publishPressureState()
+  });
 
   // Render the owner background for the selected pressurization type only.
   // The image is a preview; no original panel source or cockpit geometry is modified.
@@ -60,10 +115,9 @@
     }, location.origin);
     byId('openSelectedPressurizationPanel').textContent = 'باز کردن پنل ' + pressure + ' برای تست';
     try {
-      if (!activeSession || activeSession.system !== pressure) {
-        activeSession = api.createPressurizationSession(selected.profile, window);
-        window.B737ActivePressurization = activeSession;
-      }
+      activeSession = getPressureSession(pressure);
+      window.B737ActivePressurization = activeSession;
+      publishPressureState(pressure);
       byId('activeProfileStatus').textContent = 'موتور ' + pressure + ' V' + activeSession.engineVersion + ' آماده است.' + (selected.pressurization.backgroundAsset ? ' بک‌گراند تأییدشدهٔ DCPCS در پنل تست انتخاب شده نمایش داده می‌شود.' : ' پنل CPCS مستقل است.');
     } catch (error) {
       window.B737ActivePressurization = null;
