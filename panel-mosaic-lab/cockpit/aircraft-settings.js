@@ -132,6 +132,12 @@
         }
       }
       session.stepPhysics(1000,{...pressureEnvironment});
+      // Send measured cabin altitude to the ALREADY EXISTING ISN warning
+      // engine. No second horn instance or duplicate audio timer is created.
+      const measured=session.physical()?.cabinAltitudeFt;
+      if(Number.isFinite(measured)&&typeof window.B737ISNCockpitV1?.instructor==='function'){
+        window.B737ISNCockpitV1.instructor({type:'WARNING_SENSOR',key:'cabinAltitudeFt',value:measured});
+      }
       publishPressureState(active);
       updatePressureDiagnostics();
     }catch(error){
