@@ -12,12 +12,12 @@
  const layouts=Object.freeze({
    DCPCS:Object.freeze({
      engine:'B737DCPCSV4',backgroundAsset:owner,
-     modes:['AUTO','ALTN','MAN'],artworkFit:'fill',calibrationAsset:owner,modePosition:[.77,.678],
+     modes:['AUTO','ALTN','MAN'],artworkFit:'fill',calibrationAsset:owner,modePosition:[.72,.678],
      controls:[
        {id:'flight-alt',kind:'altitude',label:'FLT ALT',xy:[.325,.372],unit:'ft',key:'flightAltitudeFt',step:500,min:-1000,max:37000},
        {id:'landing-alt',kind:'altitude',label:'LAND ALT',xy:[.325,.676],unit:'ft',key:'landingAltitudeFt',step:50,min:-1000,max:14000},
-       {id:'press-mode',kind:'selector',label:'MODE',xy:[.77,.678],states:['AUTO','ALTN','MAN']},
-       {id:'manual-valve',kind:'spring',label:'MANUAL VALVE',xy:[.77,.453],states:['CLOSE','NEUTRAL','OPEN']}
+       {id:'press-mode',kind:'selector',label:'MODE',xy:[.72,.678],states:['AUTO','ALTN','MAN']},
+       {id:'manual-valve',kind:'spring',label:'MANUAL VALVE',xy:[.72,.453],states:['CLOSE','NEUTRAL','OPEN']}
      ],
      displays:[{id:'flight-display',xy:[.32,.207],field:'flightAltitudeFt'},{id:'landing-display',xy:[.32,.498],field:'landingAltitudeFt'}],
      lamps:[
@@ -29,18 +29,21 @@
    }),
    CPCS:Object.freeze({
      engine:'B737CPCSV5',backgroundAsset:null,
-     modes:['AUTO','STBY','MAN_AC','MAN_DC'],modePosition:[.805,.293],
+     modes:['AUTO','STBY','MAN_AC','MAN_DC'],modePosition:[.805,.735],
      controls:[
        {id:'flight-alt',kind:'altitude',label:'FLT ALT',xy:[.288,.429],key:'flightAltitudeFt',unit:'ft',step:500,min:-1000,max:37000},
        {id:'landing-alt',kind:'altitude',label:'LAND ALT',xy:[.286,.729],key:'landingAltitudeFt',unit:'ft',step:50,min:-1000,max:14000},
        {id:'standby-alt',kind:'altitude',label:'STBY CABIN ALT',xy:[.584,.598],key:'standbyCabinAltitudeFt',unit:'ft',step:50,min:-1000,max:14000},
        {id:'cabin-rate',kind:'selector',label:'CABIN RATE',xy:[.553,.270],states:['DECR','INDEX','INCR']},
-       {id:'press-mode',kind:'selector',label:'MODE',xy:[.805,.293],states:['AUTO','STBY','MAN_AC','MAN_DC']},
-       {id:'flight-ground',kind:'selector',label:'FLT / GRD',xy:[.81,.735],states:['GRD','FLT']},
+       {id:'press-mode',kind:'selector',label:'MODE',xy:[.805,.735],states:['AUTO','STBY','MAN_AC','MAN_DC']},
        {id:'manual-valve',kind:'spring',label:'MANUAL VALVE',xy:[.813,.475],states:['CLOSE','NEUTRAL','OPEN']},
-       {id:'auto-check',kind:'momentary',label:'AUTO CHECK',xy:[.81,.875]}
+       {id:'auto-check',kind:'momentary',label:'AUTO CHECK',xy:[.74,.805],appearance:'hotspot'}
      ],
-     displays:[],
+     displays:[
+       {id:'flight-display',xy:[.246,.259],field:'flightAltitudeFt',stateRoot:'settings',width:.272,height:.072},
+       {id:'landing-display',xy:[.246,.573],field:'landingAltitudeFt',stateRoot:'settings',width:.272,height:.072},
+       {id:'standby-display',xy:[.57,.425],field:'standbyCabinAltitudeFt',stateRoot:'settings',width:.215,height:.067}
+     ],
      lamps:[
        {id:'auto-fail',xy:[.233,.056],output:'autoFail',label:'AUTO FAIL'},
        {id:'off-sched',xy:[.412,.056],output:'offSchedDescent',label:'OFF SCHED DESCENT'},
@@ -60,10 +63,11 @@
    if(c.kind==='momentary'&&system==='CPCS'&&value==='CHECK')return {type:'AUTO_CHECK',pressed:true};
    throw Error('Unsupported action '+controlId);
  }
+ function readDisplay(system,d,state){const record=d.stateRoot==='settings'?state?.settings:state?.input;return record?.[d.field]??null;}
  function readControl(system,c,state){if(system==='DCPCS'){const s=state||{};if(c.kind==='altitude')return s.input?.[c.key]??0;if(c.id==='press-mode')return s.selector||'AUTO';if(c.id==='manual-valve')return s.manualCommand||'NEUTRAL';}
  else {const s=state||{};if(c.kind==='altitude')return s.settings?.[c.key]??0;if(c.id==='press-mode')return s.selectedMode||'AUTO';if(c.id==='cabin-rate')return s.cabinRate||'INDEX';if(c.id==='flight-ground')return s.flightGround||'GRD';if(c.id==='manual-valve')return s.valveSwitch||'NEUTRAL';}
  return null;
  }
  function lamps(system,derived){const values=derived?.lamps||{};return Object.fromEntries(config(system).lamps.map(c=>[c.id,values[c.output]===true]));}
- return Object.freeze({layouts,modes,config,validate,command,readControl,lamps});
+ return Object.freeze({layouts,modes,config,validate,command,readControl,readDisplay,lamps});
 });
