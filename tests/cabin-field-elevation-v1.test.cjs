@@ -35,7 +35,7 @@ for(const [icao,ft] of locations){
      instances.push(a);
      const p=a.physical(),s=a.snapshot(),inputs=s.input||s.inputs;
      near(p.cabinAltitudeFt,ft);
-     near(p.aircraftAltitudeFt,ft);
+     near(plant.altitudeFromPressureFt(p.ambientPressurePa),ft);
      near(p.differentialPsid,0);
      near(p.cabinRateFtMin,0);
      assert.equal(inputs.cabinAltitudeFt,ft);
