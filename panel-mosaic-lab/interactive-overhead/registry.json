@@ -1143,7 +1143,7 @@
     "Spring return for generator/test controls is a simulator interaction assignment; no new FCOM validation claimed.",
     "Source artwork and frozen placement files are not modified."
   ],
-  "visualStatus": "USER_REFERENCE_INSTALLED_DOWN_ALIGNED",
+  "visualStatus": "USER_REFERENCE_INSTALLED",
   "downPoseCalibration": {
     "sourceNutCenter": [
       625.5,
