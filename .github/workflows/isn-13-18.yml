@@ -14,6 +14,7 @@ on:
       - 'tests/isn-start-spool-calibration-v2.test.cjs'
       - 'tests/isn-ecu-fuel-lever-ui.test.cjs'
       - 'tests/isn-early-fuel-battery-ignition-v1.test.cjs'
+      - 'tests/isn-engine-suction-feed-v1.test.cjs'
       - 'tests/isn-apu-electrical-load-v1.test.cjs'
       - 'tests/isn-engine-envelope-v1.test.cjs'
       - '.github/workflows/isn-13-18.yml'
@@ -39,6 +40,7 @@ jobs:
           node tests/isn-13-18-ecu.test.cjs
           node tests/isn-ecu-fuel-lever-ui.test.cjs
           node tests/isn-early-fuel-battery-ignition-v1.test.cjs
+          node tests/isn-engine-suction-feed-v1.test.cjs
           node tests/isn-start-spool-calibration-v2.test.cjs
           node tests/isn-apu-electrical-load-v1.test.cjs
           node tests/isn-09-12-integration.test.cjs
