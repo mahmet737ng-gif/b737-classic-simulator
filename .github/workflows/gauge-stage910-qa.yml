@@ -3,6 +3,7 @@ on:
   push:
     branches: [main]
     paths:
+      - 'engine/instruments/stage5-scale-mapping-v1.js'
       - 'engine/instruments/stage9-needle-dynamics-v1.js'
       - 'engine/instruments/stage10-needle-workbench-v1.js'
       - 'engine/instruments/stage10-preview-scale-subset-v1.json'
@@ -23,6 +24,8 @@ jobs:
           node-version: '22'
       - name: Exercise 38 pointer routes, 8 scale previews, response physics and fail-safe behaviour
         run: node --test engine/instruments/stage9-stage10.test.cjs
+      - name: Regression-test source-photo numeric maps and Unified event wiring
+        run: node --test engine/instruments/stage5-stage6.test.cjs engine/instruments/stage78-unified-integration.test.cjs
       - name: Run source-aware 7 and 8 bridge tests
         run: node --test engine/instruments/stage7-stage8.test.cjs
       - name: Assert original immutable overhead panel art
