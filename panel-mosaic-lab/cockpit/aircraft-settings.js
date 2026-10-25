@@ -13,6 +13,37 @@
   let activeSession = null;
   window.B737AircraftProfileStore = store;
 
+  // Render the owner background for the selected pressurization type only.
+  // The image is a preview; no original panel source or cockpit geometry is modified.
+  const pressureField = form.querySelector('input[name="pressurization"]')?.closest('fieldset');
+  const ownerPreview = document.createElement('figure');
+  ownerPreview.className = 'aircraft-pressure-owner-preview';
+  ownerPreview.id = 'aircraftPressureOwnerPreview';
+  const ownerImage = document.createElement('img');
+  ownerImage.id = 'aircraftPressureOwnerImage';
+  ownerImage.alt = 'Owner-approved DCPCS background';
+  ownerImage.loading = 'lazy';
+  const ownerCaption = document.createElement('figcaption');
+  ownerCaption.textContent = 'DCPCS · تصویر تأییدشدهٔ مرجع (بدون تغییر)';
+  ownerPreview.append(ownerImage, ownerCaption);
+  pressureField?.append(ownerPreview);
+  function showPressureArtwork(pressureId) {
+    const selected = api.CATALOG.pressurization.find(item => item.id === pressureId);
+    const source = selected?.backgroundAsset;
+    ownerPreview.hidden = !source;
+    if (source) {
+      const uri = new URL('../../' + source, document.baseURI).href;
+      if (ownerImage.src !== uri) ownerImage.src = uri;
+    } else {
+      ownerImage.removeAttribute('src');
+    }
+  }
+  form.querySelectorAll('input[name="pressurization"]').forEach(input => {
+    input.addEventListener('change', () => {
+      if (input.checked) showPressureArtwork(input.value);
+    });
+  });
+
   function render(detail) {
     const selected = detail.resolved;
     const family = selected.family.label;
@@ -28,7 +59,7 @@
         activeSession = api.createPressurizationSession(selected.profile, window);
         window.B737ActivePressurization = activeSession;
       }
-      byId('activeProfileStatus').textContent = 'موتور ' + pressure + ' V' + activeSession.engineVersion + ' آمادهٔ تست مستقل است. تصویر فعلی ثابت می‌ماند.';
+      byId('activeProfileStatus').textContent = 'موتور ' + pressure + ' V' + activeSession.engineVersion + ' آماده است.' + (selected.pressurization.backgroundAsset ? ' بک‌گراند تأییدشدهٔ DCPCS در پنل تست انتخاب شده نمایش داده می‌شود.' : ' پنل CPCS مستقل است.');
     } catch (error) {
       window.B737ActivePressurization = null;
       byId('activeProfileStatus').textContent = 'موتور انتخاب‌شده در دسترس نیست: ' + error.message;
@@ -48,6 +79,7 @@
       const control = form.querySelector('input[name="' + field + '"][value="' + profile[field] + '"]');
       if (control) control.checked = true;
     }
+    showPressureArtwork(profile.pressurization);
     byId('aircraftSettingsError').hidden = true;
     settings.showModal();
   }
