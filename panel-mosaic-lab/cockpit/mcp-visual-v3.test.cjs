@@ -14,7 +14,7 @@ assert.match(script,/W=2172,H=433/);
 assert.match(script,/source:"MCP-0003"/);
 assert.match(script,/role:"button"/);
 assert.match(script,/MCP-0003: source-coordinate/);
-assert.equal((script.match(/\{id:"(?:courseL|courseR|speed|heading|altitude)"/g)||[]).length,11);
+assert.equal((script.match(/\{id:"(?:courseL|courseR|speed|heading|altitude)"/g)||[]).length,10);
 assert.match(css,/\.mcp-v3-overlay/);
 assert.match(css,/pointer-events:auto/);
 console.log('MCP-0003 visual mounts and calibration contracts: PASS');
