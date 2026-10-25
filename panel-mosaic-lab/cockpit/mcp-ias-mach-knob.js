@@ -2,7 +2,7 @@
 (function(){
 "use strict";
 const url=new URL("./assets/mcp-ias-mach-knob.webp",document.currentScript.src).href;
-const placement=Object.freeze({sourceWidth:2172,sourceHeight:433,x:690,y:278,diameter:136,detentDegrees:12});
+const placement=Object.freeze({sourceWidth:2172,sourceHeight:433,x:596,y:286,diameter:136,detentDegrees:12});
 const knobs=new Set();let detent=0;
 function paint(){for(const k of knobs)k.style.setProperty("--mcp-angle",detent*placement.detentDegrees+"deg");}
 function step(d,method){detent+=d;paint();window.dispatchEvent(new CustomEvent("b737:mcp-ias-mach-detent",{detail:{control:"MCP.IAS_MACH",delta:d,detent,method}}));}
