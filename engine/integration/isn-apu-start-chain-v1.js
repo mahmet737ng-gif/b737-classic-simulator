@@ -10,6 +10,15 @@
  const CONTROLS=Object.freeze({'apu-start':'apu','engine-start-1':'engine1','engine-start-2':'engine2'});
  const FAULT_KEYS=Object.freeze(['n2Stall','egtHigh','noLightOff','hungStart','earlyCutout','flameOut']);
  const FAULT_TIMING=Object.freeze({earlyCutoutMs:650,flameOutAfterRunningMs:700});
+ // Optional profile: old fast trainer unchanged; standalone ECU bench is
+ // deliberately user-timed ~85 s APU and ~100 s engine (with timely IDLE).
+ // These are simulator preferences, not measured EP-FSI start performance.
+ const TIMING_PROFILES=Object.freeze({
+  CLASSROOM_COMPRESSED:Object.freeze({apuDoorMs:400,apuReadyMs:1400,
+   engineMotoringMs:850,engineLightoffMs:1000,engineIdleSettleMs:10000}),
+  REALTIME_TRAINING:Object.freeze({apuDoorMs:9000,apuReadyMs:85000,
+   engineMotoringMs:40000,engineLightoffMs:50000,engineIdleSettleMs:10000})
+ });
  const copy=v=>JSON.parse(JSON.stringify(v));
  // The fault is a classroom curve. Queue its crossing before the normal
  // completion checkpoint so a large advance() cannot skip the 725°C gate.
@@ -19,7 +28,10 @@
   return Math.ceil(high);
  })();
  class Chain{
-  constructor(start){if(!start?.send||!start?.core?.pack||!start?.core?.pneumaticState)throw Error('ISN-03 start session required');
+  constructor(start,{timingProfile='CLASSROOM_COMPRESSED'}={}){
+   if(!start?.send||!start?.core?.pack||!start?.core?.pneumaticState)throw Error('ISN-03 start session required');
+   if(!Object.hasOwn(TIMING_PROFILES,timingProfile))throw Error('Unknown ISN timing profile');
+   this.timingProfile=timingProfile;this.timing=TIMING_PROFILES[timingProfile];
    this.start=start;this.time=0;this.jobs=[];this.phase={apu:'OFF',engine1:'OFF',engine2:'OFF'};
    this.effects=[];this.lastError='';this.controls={};this.guards={};this.started={engine1:false,engine2:false};
    this.dynamic={engine1:null,engine2:null};
@@ -60,7 +72,11 @@
     }
    }
    const active=this.dynamic[device];if(!active||this.phase[device]!==active.phase)continue;
-   const value=Dynamics.sample(active.phase,Math.max(0,at-active.since),this.trainingFaults[device]);
+   const total=active.phase==='MOTORING'?this.timing.engineMotoringMs:this.timing.engineLightoffMs;
+   const reference=active.phase==='MOTORING'?Dynamics.duration.motoringMs:Dynamics.duration.lightoffMs;
+   // Resample the same training curve over a longer clock horizon.
+   const sampleMs=Math.max(0,at-active.since)*reference/total;
+   const value=Dynamics.sample(active.phase,sampleMs,this.trainingFaults[device]);
    this.feedback(device,'n2Percent',value.n2Percent);
    if(value.egtC!==null)this.feedback(device,'egtC',value.egtC);
    this.feedback(device,'fuelFlowKgHr',value.fuelFlowKgHr);
@@ -142,8 +158,8 @@
    const r=this.start.get().observation.apu.rules;
    if(r.prerequisitesSatisfied!==true){this.phase.apu='BLOCKED';this.lastError='APU requires BATTERY ON, battery power and both APU fire handles IN';return;}
    this.phase.apu='INLET_DOOR';
-   this.schedule('apu',400,()=>{if(this.phase.apu!=='INLET_DOOR')return;this.feedback('apu','inletDoorOpen',true);this.feedback('apu','starterEngaged',true);this.phase.apu='STARTING';});
-   this.schedule('apu',1400,()=>{if(this.phase.apu!=='STARTING')return;
+   this.schedule('apu',this.timing.apuDoorMs,()=>{if(this.phase.apu!=='INLET_DOOR')return;this.feedback('apu','inletDoorOpen',true);this.feedback('apu','starterEngaged',true);this.phase.apu='STARTING';});
+   this.schedule('apu',this.timing.apuReadyMs,()=>{if(this.phase.apu!=='STARTING')return;
     this.feedback('apu','starterEngaged',false);this.obs('apu',true);
     this.feedback('apu','genOffBusLight',true);this.phase.apu='READY';});
   }
@@ -186,7 +202,7 @@
    this.feedback(device,'starterEngaged',true);
    this.phase[device]='MOTORING';
    this.dynamic[device]={phase:'MOTORING',since:this.time};
-   if(this.trainingFaults[device].earlyCutout)this.schedule(device,FAULT_TIMING.earlyCutoutMs,()=>{
+   if(this.trainingFaults[device].earlyCutout)this.schedule(device,Math.round(this.timing.engineMotoringMs*FAULT_TIMING.earlyCutoutMs/Dynamics.duration.motoringMs),()=>{
     if(this.phase[device]!=='MOTORING')return;
     this.cancel(device);this.dynamic[device]=null;
     this.feedback(device,'startValveOpen',false);this.feedback(device,'startAirAvailable',false);
@@ -197,7 +213,7 @@
     this.lastError=device.toUpperCase()+': INJECTED EARLY STARTER CUTOUT — confirm START LEVER CUTOFF';
     this.effects.push({type:'ROTARY_RELEASE',id:device==='engine1'?'engine-start-1':'engine-start-2',position:'OFF'});
    });
-   this.schedule(device,850,()=>{if(this.phase[device]!=='MOTORING')return;
+   this.schedule(device,this.timing.engineMotoringMs,()=>{if(this.phase[device]!=='MOTORING')return;
     if(this.trainingFaults[device].n2Stall){this.dynamic[device]=null;this.phase[device]='N2_STALLED';
      this.lastError=device.toUpperCase()+': TRAINING N2 STALL — START LEVER remains CUTOFF';return;}
     this.feedback(device,'n1RotationObserved',true);this.feedback(device,'maxMotoringObserved',false);
@@ -243,8 +259,8 @@
    this.lastError='';this.phase[device]='LIGHT_OFF_SEQUENCE';
    this.dynamic[device]={phase:'LIGHT_OFF_SEQUENCE',since:this.time};
    this.feedback(device,'fuelFlowKgHr',400);this.feedback(device,'egtC',0);
-   if(this.trainingFaults[device].egtHigh)this.schedule(device,HIGH_EGT_THRESHOLD_MS,()=>{});
-   this.schedule(device,1000,()=>{if(this.phase[device]!=='LIGHT_OFF_SEQUENCE')return;
+   if(this.trainingFaults[device].egtHigh)this.schedule(device,Math.round(HIGH_EGT_THRESHOLD_MS*this.timing.engineLightoffMs/Dynamics.duration.lightoffMs),()=>{});
+   this.schedule(device,this.timing.engineLightoffMs,()=>{if(this.phase[device]!=='LIGHT_OFF_SEQUENCE')return;
     this.dynamic[device]=null;
     if(this.trainingFaults[device].noLightOff||this.trainingFaults[device].hungStart){
      this.phase[device]=this.trainingFaults[device].noLightOff?'NO_LIGHT_OFF':'HUNG_START';
@@ -301,7 +317,7 @@
    const apuConnected=Object.values(pack.electrical.source).includes('APU');
    projected['apu-gen-off-bus']=apu.running===true&&!apuConnected;
    projected['apu-low-pressure']=['INLET_DOOR','STARTING'].includes(this.phase.apu);
-   return {clockMs:this.time,phase:copy(this.phase),lastError:this.lastError,trainingFaults:copy(this.trainingFaults),
+   return {clockMs:this.time,phase:copy(this.phase),lastError:this.lastError,timingProfile:this.timingProfile,timing:copy(this.timing),trainingFaults:copy(this.trainingFaults),
     runningEnvelope:{
      origin:ORIGIN,quality:'SIMULATION_APPROX_ONLY',
      onGround:this.flight.onGround,throttle:copy(this.throttle),
@@ -316,5 +332,5 @@
     trainingNotice:'TRAINING_SEQUENCE_SIMULATED: continuous classroom interpolation between compressed checkpoints; NOT calibrated engine/APU performance or sensor evidence'};
   }
  }
- return Object.freeze({ORIGIN,CONTROLS,FAULT_KEYS,FAULT_TIMING,Chain});
+ return Object.freeze({ORIGIN,CONTROLS,FAULT_KEYS,FAULT_TIMING,TIMING_PROFILES,Chain});
 });
