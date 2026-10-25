@@ -30,8 +30,17 @@ for(const [i,l] of m.lamps.entries()){
  assert.ok(x>=left+6&&y>=top+9&&x+w<=right-6&&y+h<=bottom-8,
   'ZONE TEMP image must remain inside black opening, preserving baked orange border: '+l.id);
 }
-assert.ok(m.precheck.diameter>=226&&m.zoneKnobs.every(c=>c.diameter>=232),'Actual 400 rotary faces resized');
-assert.ok(m.trim.width>=148&&m.trim.height>=196,'Actual 400 TRIM AIR toggle resized');
+assert.ok(m.precheck.diameter>=258&&m.zoneKnobs.every(c=>c.diameter>=260),'Actual 400 rotary faces enlarged');
+
+// The ORIGINAL source image's black socket centers, not screen CSS / zoom.
+// Regressions here detect a raised lower knob and any radial pivot drift.
+assert.deepEqual([m.precheck.x,m.precheck.y],[839,348]);
+assert.deepEqual(m.zoneKnobs.map(c=>[c.x,c.y]),[[220,1117],[561,1117],[900,1117]]);
+assert.deepEqual([m.trim.x,m.trim.y],[553,639]);
+const distinct=m.zoneKnobs.map(c=>[c.x,c.y]);
+assert.ok(distinct.every(([x,y],i)=>i===0||x-distinct[i-1][0]>300),'No knob overlaps adjacent socket');
+
+assert.ok(m.trim.width>=176&&m.trim.height>=220,'Actual 400 TRIM AIR toggle enlarged');
 
 const layout=JSON.parse(fs.readFileSync(path.join(__dirname,'../all-overhead/atlas-layout.json'),'utf8'));
 const placement=layout.placements.find(p=>p.id==='OH20');
@@ -61,8 +70,8 @@ assert.ok(overlay.includes('setAirconTemperature'),'Outer-zone controls retain p
 assert.ok(shared.includes('setAirconTemperature:(id,value)=>'),'Narrow outer-zone integration exists');
 assert.ok(overlay.includes("classList.toggle('b737-aircon300500'"),'Legacy family retains its own fit class');
 assert.ok(css.includes('html.b737-aircon300500'),'737-300/500 knobs and lamps have their own visual scale');
-assert.ok(css.includes('transform:scale(1.06) rotate(var(--aircon-angle,0deg))'),'400 knob visual enlargement preserves detents');
-assert.ok(css.includes('transform:scale(1.08)'),'400 trim toggle face fills its opening');
+assert.ok(css.includes('top:6%')&&css.includes('transform:scale(1.09) rotate(var(--aircon-angle,0deg))'),'400 knob image pivot matches socket center at detents');
+assert.ok(css.includes('transform:translateY(-4%) scale(1.25)'),'400 trim switch art is correctly seated');
 assert.ok(css.includes('scale:1.16'),'Legacy lower temp knobs grow without overriding live rotation');
 assert.ok(css.includes('scale(1.075,1.11)'),'Legacy DUCT OVERHEAT faces enlarge independently');
 
