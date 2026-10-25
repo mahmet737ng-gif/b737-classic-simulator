@@ -1,0 +1,31 @@
+name: Non-destructive source-image gauge review
+on:
+  push:
+    branches: [gauge-image-inspection]
+    paths:
+      - 'engine/instruments/scan-source-images.py'
+      - '.github/workflows/gauge-image-inspection.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  previews:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: true}
+      - name: Ensure overhead is locked
+        run: python3 panel-mosaic-lab/verify-final-overhead.py
+      - name: Install image tools
+        run: python3 -m pip install --user Pillow
+      - name: Create JPEG review proxies only
+        run: python3 engine/instruments/scan-source-images.py
+      - name: Commit preview evidence to inspection branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add engine/instruments/review-previews
+          if ! git diff --cached --quiet; then
+            git commit -m "derived native-source review previews [skip ci]"
+            git push origin HEAD:gauge-image-inspection
+          fi
