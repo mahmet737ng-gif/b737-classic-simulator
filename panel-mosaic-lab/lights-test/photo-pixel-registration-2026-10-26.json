@@ -1,0 +1,4156 @@
+{
+  "schema": "b737.lamps.photo-pixel-registration.v1",
+  "date": "2026-10-26",
+  "evidence": {
+    "actionsRun": "https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/40235130859",
+    "source": "19 immutable photo sources; source rects projected on 19 native-image contact sheets",
+    "tests": [
+      "tools/lamp-photo-registration.py",
+      "tools/lamp-photo-edge-qa.py",
+      "tools/lamp-photo-component-qa.py"
+    ],
+    "pixelAcceptanceCriterion": "<= 3 source-image px centre offset from correctly detected dark glass component / independently detected glass rim; bounding safety checks apply"
+  },
+  "summary": {
+    "total": 142,
+    "originalPhotos": 19,
+    "overhead": 112,
+    "main": 30,
+    "autoEdgeVerified": 60,
+    "autoComponentVerified": 103,
+    "unionPixelVerified": 110,
+    "pixelPrecisionUnresolved": 32,
+    "visualContactSheetsReviewed": 19,
+    "sourceRectsChanged": 0,
+    "lockedImageChanges": 0
+  },
+  "notes": [
+    "A missing automatic rim match is not necessarily a placement error; adjacent black lenses or dark shared frames can merge regions.",
+    "At most 110 mounted lamps are numerically centre-confirmed at <=3 source pixels by either independent method; 32 are not signed off at pixel precision.",
+    "All 142 rectangles were visually reviewed on native-source crop sheets for gross off-socket placement; this is weaker than exact pixel centre certification.",
+    "No sourceRect changes are authorized from inconclusive pixel segmentation.",
+    "CPCS/DCPCS alternative images and 737-400 OH20 replacement require separate profile-specific final UI screenshot QA."
+  ],
+  "records": [
+    {
+      "id": "irs-l-align",
+      "scope": "OVERHEAD",
+      "panel": "UPPER",
+      "sourceRect": [
+        428,
+        535,
+        64,
+        32
+      ],
+      "sourceCenter": [
+        460,
+        551
+      ],
+      "asset": "ALIGN_WHITE",
+      "pixelEdgeTest": "AUTO_CENTRE_MATCH",
+      "edgeCenterDeltaSourcePx": [
+        0.5,
+        -1
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        1.5,
+        0
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "irs-r-align",
+      "scope": "OVERHEAD",
+      "panel": "UPPER",
+      "sourceRect": [
+        604,
+        535,
+        64,
+        32
+      ],
+      "sourceCenter": [
+        636,
+        551
+      ],
+      "asset": "ALIGN_WHITE",
+      "pixelEdgeTest": "AUTO_CENTRE_MATCH",
+      "edgeCenterDeltaSourcePx": [
+        0.5,
+        0
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        1,
+        1
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "irs-l-on-dc",
+      "scope": "OVERHEAD",
+      "panel": "UPPER",
+      "sourceRect": [
+        503,
+        535,
+        64,
+        32
+      ],
+      "sourceCenter": [
+        535,
+        551
+      ],
+      "asset": "ON_DC_LAMP",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        -3,
+        -1
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        -2,
+        -1.5
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "irs-l-fault",
+      "scope": "OVERHEAD",
+      "panel": "UPPER",
+      "sourceRect": [
+        428,
+        574,
+        64,
+        32
+      ],
+      "sourceCenter": [
+        460,
+        590
+      ],
+      "asset": "FAULT",
+      "pixelEdgeTest": "AUTO_CENTRE_MATCH",
+      "edgeCenterDeltaSourcePx": [
+        0.5,
+        -1.5
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        1.5,
+        -1.5
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "irs-l-dc-fail",
+      "scope": "OVERHEAD",
+      "panel": "UPPER",
+      "sourceRect": [
+        503,
+        574,
+        64,
+        32
+      ],
+      "sourceCenter": [
+        535,
+        590
+      ],
+      "asset": "DC_FAIL",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        -3,
+        -1.5
+      ],
+      "pixelComponentTest": "NEEDS_MANUAL_REVIEW",
+      "componentCenterDeltaSourcePx": [
+        -2.5,
+        -3.5
+      ],
+      "pixelCentreVerdict": "PHOTO_VISUAL_REVIEW_PIXEL_PRECISION_UNRESOLVED",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "irs-r-on-dc",
+      "scope": "OVERHEAD",
+      "panel": "UPPER",
+      "sourceRect": [
+        679,
+        535,
+        64,
+        32
+      ],
+      "sourceCenter": [
+        711,
+        551
+      ],
+      "asset": "ON_DC_LAMP",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        -2,
+        0
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        -1.5,
+        1
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "irs-r-fault",
+      "scope": "OVERHEAD",
+      "panel": "UPPER",
+      "sourceRect": [
+        604,
+        574,
+        64,
+        32
+      ],
+      "sourceCenter": [
+        636,
+        590
+      ],
+      "asset": "FAULT",
+      "pixelEdgeTest": "AUTO_CENTRE_MATCH",
+      "edgeCenterDeltaSourcePx": [
+        -0.5,
+        0.5
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        0.5,
+        1.5
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "irs-r-dc-fail",
+      "scope": "OVERHEAD",
+      "panel": "UPPER",
+      "sourceRect": [
+        679,
+        574,
+        64,
+        32
+      ],
+      "sourceCenter": [
+        711,
+        590
+      ],
+      "asset": "DC_FAIL",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        -2.5,
+        0.5
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        -2,
+        1.5
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "reverser-1",
+      "scope": "OVERHEAD",
+      "panel": "UPPER",
+      "sourceRect": [
+        1040,
+        374,
+        74,
+        31
+      ],
+      "sourceCenter": [
+        1077,
+        389.5
+      ],
+      "asset": "REVERSER",
+      "pixelEdgeTest": "AUTO_CENTRE_MATCH",
+      "edgeCenterDeltaSourcePx": [
+        -1,
+        -0.5
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        -0.5,
+        0
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "reverser-2",
+      "scope": "OVERHEAD",
+      "panel": "UPPER",
+      "sourceRect": [
+        1213,
+        374,
+        74,
+        31
+      ],
+      "sourceCenter": [
+        1250,
+        389.5
+      ],
+      "asset": "REVERSER",
+      "pixelEdgeTest": "AUTO_CENTRE_MATCH",
+      "edgeCenterDeltaSourcePx": [
+        -2,
+        -0.5
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        -2,
+        0
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "low-idle",
+      "scope": "OVERHEAD",
+      "panel": "UPPER",
+      "sourceRect": [
+        1136,
+        447,
+        54,
+        37
+      ],
+      "sourceCenter": [
+        1163,
+        465.5
+      ],
+      "asset": "LOW_IDLE",
+      "pixelEdgeTest": "AUTO_CENTRE_MATCH",
+      "edgeCenterDeltaSourcePx": [
+        0,
+        0
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        0.5,
+        1
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "pass-oxygen",
+      "scope": "OVERHEAD",
+      "panel": "UPPER",
+      "sourceRect": [
+        1174,
+        665,
+        72,
+        44
+      ],
+      "sourceCenter": [
+        1210,
+        687
+      ],
+      "asset": "PASS_OXY_ON_LAMP",
+      "pixelEdgeTest": "AUTO_CENTRE_MATCH",
+      "edgeCenterDeltaSourcePx": [
+        -1,
+        -0.5
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        0,
+        0
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "flight-recorder-off",
+      "scope": "OVERHEAD",
+      "panel": "UPPER",
+      "sourceRect": [
+        1485,
+        439,
+        40,
+        31
+      ],
+      "sourceCenter": [
+        1505,
+        454.5
+      ],
+      "asset": "OFF_LAMP",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        1.5,
+        -1
+      ],
+      "pixelComponentTest": "NEEDS_MANUAL_REVIEW",
+      "componentCenterDeltaSourcePx": [
+        -3.5,
+        -0.5
+      ],
+      "pixelCentreVerdict": "PHOTO_VISUAL_REVIEW_PIXEL_PRECISION_UNRESOLVED",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "stby-quantity",
+      "scope": "OVERHEAD",
+      "panel": "OH07",
+      "sourceRect": [
+        630,
+        100,
+        159,
+        62
+      ],
+      "sourceCenter": [
+        709.5,
+        131
+      ],
+      "asset": "LOW_QUANTITY",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        5.5,
+        -3
+      ],
+      "pixelComponentTest": "NEEDS_MANUAL_REVIEW",
+      "componentCenterDeltaSourcePx": [
+        -2,
+        4
+      ],
+      "pixelCentreVerdict": "PHOTO_VISUAL_REVIEW_PIXEL_PRECISION_UNRESOLVED",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "stby-pressure",
+      "scope": "OVERHEAD",
+      "panel": "OH07",
+      "sourceRect": [
+        630,
+        171,
+        159,
+        62
+      ],
+      "sourceCenter": [
+        709.5,
+        202
+      ],
+      "asset": "LOW_PRESSURE",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        5.5,
+        -3
+      ],
+      "pixelComponentTest": "NEEDS_MANUAL_REVIEW",
+      "componentCenterDeltaSourcePx": [
+        -1.5,
+        0
+      ],
+      "pixelCentreVerdict": "PHOTO_VISUAL_REVIEW_PIXEL_PRECISION_UNRESOLVED",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "stby-rudder",
+      "scope": "OVERHEAD",
+      "panel": "OH07",
+      "sourceRect": [
+        630,
+        240,
+        159,
+        62
+      ],
+      "sourceCenter": [
+        709.5,
+        271
+      ],
+      "asset": "STBY_RUD_ON_LAMP",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        5.5,
+        -0.5
+      ],
+      "pixelComponentTest": "NEEDS_MANUAL_REVIEW",
+      "componentCenterDeltaSourcePx": [
+        -1,
+        -4
+      ],
+      "pixelCentreVerdict": "PHOTO_VISUAL_REVIEW_PIXEL_PRECISION_UNRESOLVED",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "flight-pressure-a",
+      "scope": "OVERHEAD",
+      "panel": "OH07",
+      "sourceRect": [
+        128,
+        404,
+        151,
+        63
+      ],
+      "sourceCenter": [
+        203.5,
+        435.5
+      ],
+      "asset": "LOW_PRESSURE",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        -0.5,
+        4
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        0,
+        -0.5
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "flight-pressure-b",
+      "scope": "OVERHEAD",
+      "panel": "OH07",
+      "sourceRect": [
+        295,
+        404,
+        151,
+        63
+      ],
+      "sourceCenter": [
+        370.5,
+        435.5
+      ],
+      "asset": "LOW_PRESSURE",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        -2.5,
+        3.5
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        -0.5,
+        -0.5
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "feel-diff",
+      "scope": "OVERHEAD",
+      "panel": "OH07",
+      "sourceRect": [
+        631,
+        758,
+        161,
+        64
+      ],
+      "sourceCenter": [
+        711.5,
+        790
+      ],
+      "asset": "FEEL_DIFF_PRESS",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        6,
+        -6
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        0,
+        -1.5
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "speed-trim",
+      "scope": "OVERHEAD",
+      "panel": "OH07",
+      "sourceRect": [
+        631,
+        842,
+        161,
+        64
+      ],
+      "sourceCenter": [
+        711.5,
+        874
+      ],
+      "asset": "SPEED_TRIM_FAIL",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        6,
+        -5.5
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        0,
+        0
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "mach-trim",
+      "scope": "OVERHEAD",
+      "panel": "OH07",
+      "sourceRect": [
+        631,
+        927,
+        161,
+        64
+      ],
+      "sourceCenter": [
+        711.5,
+        959
+      ],
+      "asset": "MACH_TRIM_FAIL",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        5.5,
+        -6
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        0,
+        -1
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "auto-slat",
+      "scope": "OVERHEAD",
+      "panel": "OH07",
+      "sourceRect": [
+        631,
+        1011,
+        161,
+        64
+      ],
+      "sourceCenter": [
+        711.5,
+        1043
+      ],
+      "asset": "AUTO_SLAT_FAIL",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        5.5,
+        -6
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        0,
+        -0.5
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "yaw-damper",
+      "scope": "OVERHEAD",
+      "panel": "OH07",
+      "sourceRect": [
+        195,
+        994,
+        199,
+        64
+      ],
+      "sourceCenter": [
+        294.5,
+        1026
+      ],
+      "asset": "YAW_DAMPER",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        6.5,
+        -1
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        0,
+        -0.5
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "filter-1",
+      "scope": "OVERHEAD",
+      "panel": "OH09",
+      "sourceRect": [
+        128,
+        414,
+        177,
+        72
+      ],
+      "sourceCenter": [
+        216.5,
+        450
+      ],
+      "asset": "FILTER_BYPASS",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        7.5,
+        -3
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        0.5,
+        -1.5
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "filter-2",
+      "scope": "OVERHEAD",
+      "panel": "OH09",
+      "sourceRect": [
+        704,
+        414,
+        177,
+        72
+      ],
+      "sourceCenter": [
+        792.5,
+        450
+      ],
+      "asset": "FILTER_BYPASS",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        -1,
+        -3
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        -0.5,
+        -1.5
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "fuel-center-l",
+      "scope": "OVERHEAD",
+      "panel": "OH09",
+      "sourceRect": [
+        332,
+        726,
+        166,
+        75
+      ],
+      "sourceCenter": [
+        415,
+        763.5
+      ],
+      "asset": "LOW_PRESSURE",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        -11.5,
+        -2
+      ],
+      "pixelComponentTest": "NEEDS_MANUAL_REVIEW",
+      "componentCenterDeltaSourcePx": [
+        13.5,
+        -1.5
+      ],
+      "pixelCentreVerdict": "PHOTO_VISUAL_REVIEW_PIXEL_PRECISION_UNRESOLVED",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "fuel-center-r",
+      "scope": "OVERHEAD",
+      "panel": "OH09",
+      "sourceRect": [
+        520,
+        726,
+        166,
+        75
+      ],
+      "sourceCenter": [
+        603,
+        763.5
+      ],
+      "asset": "LOW_PRESSURE",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        -4.5,
+        -2
+      ],
+      "pixelComponentTest": "NEEDS_MANUAL_REVIEW",
+      "componentCenterDeltaSourcePx": [
+        -18.5,
+        -3
+      ],
+      "pixelCentreVerdict": "PHOTO_VISUAL_REVIEW_PIXEL_PRECISION_UNRESOLVED",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "fuel-1-aft",
+      "scope": "OVERHEAD",
+      "panel": "OH09",
+      "sourceRect": [
+        94,
+        1058,
+        166,
+        75
+      ],
+      "sourceCenter": [
+        177,
+        1095.5
+      ],
+      "asset": "LOW_PRESSURE",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        -10,
+        -7.5
+      ],
+      "pixelComponentTest": "NEEDS_MANUAL_REVIEW",
+      "componentCenterDeltaSourcePx": [
+        14,
+        -1.5
+      ],
+      "pixelCentreVerdict": "PHOTO_VISUAL_REVIEW_PIXEL_PRECISION_UNRESOLVED",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "fuel-1-fwd",
+      "scope": "OVERHEAD",
+      "panel": "OH09",
+      "sourceRect": [
+        282,
+        1058,
+        166,
+        75
+      ],
+      "sourceCenter": [
+        365,
+        1095.5
+      ],
+      "asset": "LOW_PRESSURE",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        2.5,
+        -7.5
+      ],
+      "pixelComponentTest": "NEEDS_MANUAL_REVIEW",
+      "componentCenterDeltaSourcePx": [
+        -18,
+        -2
+      ],
+      "pixelCentreVerdict": "PHOTO_VISUAL_REVIEW_PIXEL_PRECISION_UNRESOLVED",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "fuel-2-fwd",
+      "scope": "OVERHEAD",
+      "panel": "OH09",
+      "sourceRect": [
+        570,
+        1058,
+        166,
+        75
+      ],
+      "sourceCenter": [
+        653,
+        1095.5
+      ],
+      "asset": "LOW_PRESSURE",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        -13.5,
+        -7.5
+      ],
+      "pixelComponentTest": "NEEDS_MANUAL_REVIEW",
+      "componentCenterDeltaSourcePx": [
+        12.5,
+        -1
+      ],
+      "pixelCentreVerdict": "PHOTO_VISUAL_REVIEW_PIXEL_PRECISION_UNRESOLVED",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "fuel-2-aft",
+      "scope": "OVERHEAD",
+      "panel": "OH09",
+      "sourceRect": [
+        758,
+        1058,
+        166,
+        75
+      ],
+      "sourceCenter": [
+        841,
+        1095.5
+      ],
+      "asset": "LOW_PRESSURE",
+      "pixelEdgeTest": "AUTO_CENTRE_MATCH",
+      "edgeCenterDeltaSourcePx": [
+        1.5,
+        -1
+      ],
+      "pixelComponentTest": "NEEDS_MANUAL_REVIEW",
+      "componentCenterDeltaSourcePx": [
+        -17.5,
+        -1
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "drive-1-drive-pressure",
+      "scope": "OVERHEAD",
+      "panel": "OH11",
+      "sourceRect": [
+        150,
+        79,
+        199,
+        77
+      ],
+      "sourceCenter": [
+        249.5,
+        117.5
+      ],
+      "asset": "LOW_OIL_PRESSURE",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        -5,
+        0
+      ],
+      "pixelComponentTest": "NEEDS_MANUAL_REVIEW",
+      "componentCenterDeltaSourcePx": [
+        -2.5,
+        3
+      ],
+      "pixelCentreVerdict": "PHOTO_VISUAL_REVIEW_PIXEL_PRECISION_UNRESOLVED",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "drive-1-drive-temperature",
+      "scope": "OVERHEAD",
+      "panel": "OH11",
+      "sourceRect": [
+        150,
+        182,
+        199,
+        77
+      ],
+      "sourceCenter": [
+        249.5,
+        220.5
+      ],
+      "asset": "HIGH_OIL_TEMP",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        -5,
+        -4
+      ],
+      "pixelComponentTest": "NEEDS_MANUAL_REVIEW",
+      "componentCenterDeltaSourcePx": [
+        -2.5,
+        -3
+      ],
+      "pixelCentreVerdict": "PHOTO_VISUAL_REVIEW_PIXEL_PRECISION_UNRESOLVED",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "drive-2-drive-pressure",
+      "scope": "OVERHEAD",
+      "panel": "OH11",
+      "sourceRect": [
+        853,
+        79,
+        199,
+        77
+      ],
+      "sourceCenter": [
+        952.5,
+        117.5
+      ],
+      "asset": "LOW_OIL_PRESSURE",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        10.5,
+        -2.5
+      ],
+      "pixelComponentTest": "NEEDS_MANUAL_REVIEW",
+      "componentCenterDeltaSourcePx": [
+        1,
+        2.5
+      ],
+      "pixelCentreVerdict": "PHOTO_VISUAL_REVIEW_PIXEL_PRECISION_UNRESOLVED",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "drive-2-drive-temperature",
+      "scope": "OVERHEAD",
+      "panel": "OH11",
+      "sourceRect": [
+        853,
+        182,
+        199,
+        77
+      ],
+      "sourceCenter": [
+        952.5,
+        220.5
+      ],
+      "asset": "HIGH_OIL_TEMP",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        10.5,
+        -4
+      ],
+      "pixelComponentTest": "NEEDS_MANUAL_REVIEW",
+      "componentCenterDeltaSourcePx": [
+        1,
+        -3
+      ],
+      "pixelCentreVerdict": "PHOTO_VISUAL_REVIEW_PIXEL_PRECISION_UNRESOLVED",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "standby-power-off",
+      "scope": "OVERHEAD",
+      "panel": "OH11",
+      "sourceRect": [
+        499,
+        80,
+        202,
+        78
+      ],
+      "sourceCenter": [
+        600,
+        119
+      ],
+      "asset": "STANDBY_PWR_OFF_LAMP",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        8.5,
+        -3.5
+      ],
+      "pixelComponentTest": "NEEDS_MANUAL_REVIEW",
+      "componentCenterDeltaSourcePx": [
+        -1,
+        -2
+      ],
+      "pixelCentreVerdict": "PHOTO_VISUAL_REVIEW_PIXEL_PRECISION_UNRESOLVED",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "transferBusOff1",
+      "scope": "OVERHEAD",
+      "panel": "OH12",
+      "sourceRect": [
+        90,
+        505,
+        169,
+        70
+      ],
+      "sourceCenter": [
+        174.5,
+        540
+      ],
+      "asset": "TRANSFER_BUS_OFF_LAMP",
+      "pixelEdgeTest": "AUTO_CENTRE_MATCH",
+      "edgeCenterDeltaSourcePx": [
+        -2.5,
+        -1
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        -1.5,
+        -0.5
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "busOff1",
+      "scope": "OVERHEAD",
+      "panel": "OH12",
+      "sourceRect": [
+        90,
+        595,
+        169,
+        70
+      ],
+      "sourceCenter": [
+        174.5,
+        630
+      ],
+      "asset": "BUS_OFF_LAMP",
+      "pixelEdgeTest": "AUTO_CENTRE_MATCH",
+      "edgeCenterDeltaSourcePx": [
+        -2.5,
+        -1
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        -1.5,
+        -0.5
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "transferBusOff2",
+      "scope": "OVERHEAD",
+      "panel": "OH12",
+      "sourceRect": [
+        759,
+        505,
+        169,
+        70
+      ],
+      "sourceCenter": [
+        843.5,
+        540
+      ],
+      "asset": "TRANSFER_BUS_OFF_LAMP",
+      "pixelEdgeTest": "AUTO_CENTRE_MATCH",
+      "edgeCenterDeltaSourcePx": [
+        0.5,
+        -1
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        0,
+        -0.5
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "busOff2",
+      "scope": "OVERHEAD",
+      "panel": "OH12",
+      "sourceRect": [
+        759,
+        595,
+        169,
+        70
+      ],
+      "sourceCenter": [
+        843.5,
+        630
+      ],
+      "asset": "BUS_OFF_LAMP",
+      "pixelEdgeTest": "AUTO_CENTRE_MATCH",
+      "edgeCenterDeltaSourcePx": [
+        0.5,
+        -1
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        0,
+        -0.5
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "apu-low-pressure",
+      "scope": "OVERHEAD",
+      "panel": "OH12",
+      "sourceRect": [
+        337,
+        1054,
+        161,
+        63
+      ],
+      "sourceCenter": [
+        417.5,
+        1085.5
+      ],
+      "asset": "LOW_PRESSURE",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        -0.5,
+        -1
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        0,
+        -0.5
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "apu-high-oil-temp",
+      "scope": "OVERHEAD",
+      "panel": "OH12",
+      "sourceRect": [
+        521,
+        1054,
+        161,
+        63
+      ],
+      "sourceCenter": [
+        601.5,
+        1085.5
+      ],
+      "asset": "HIGH_OIL_TEMP",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        9,
+        -1
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        1,
+        -0.5
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "apu-overspeed",
+      "scope": "OVERHEAD",
+      "panel": "OH12",
+      "sourceRect": [
+        707,
+        1054,
+        161,
+        63
+      ],
+      "sourceCenter": [
+        787.5,
+        1085.5
+      ],
+      "asset": "OVER_SPEED",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        -3.5,
+        -1
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        -3,
+        -0.5
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "equip-supply-off",
+      "scope": "OVERHEAD",
+      "panel": "OH13",
+      "sourceRect": [
+        192,
+        2032,
+        159,
+        83
+      ],
+      "sourceCenter": [
+        271.5,
+        2073.5
+      ],
+      "asset": "OFF_LAMP",
+      "pixelEdgeTest": "AUTO_CENTRE_MATCH",
+      "edgeCenterDeltaSourcePx": [
+        -0.5,
+        -2.5
+      ],
+      "pixelComponentTest": "NEEDS_MANUAL_REVIEW",
+      "componentCenterDeltaSourcePx": [
+        10,
+        1
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "equip-exhaust-off",
+      "scope": "OVERHEAD",
+      "panel": "OH13",
+      "sourceRect": [
+        374,
+        2032,
+        159,
+        83
+      ],
+      "sourceCenter": [
+        453.5,
+        2073.5
+      ],
+      "asset": "OFF_LAMP",
+      "pixelEdgeTest": "AUTO_CENTRE_MATCH",
+      "edgeCenterDeltaSourcePx": [
+        0,
+        -0.5
+      ],
+      "pixelComponentTest": "NEEDS_MANUAL_REVIEW",
+      "componentCenterDeltaSourcePx": [
+        -9.5,
+        1
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "emergency-not-armed",
+      "scope": "OVERHEAD",
+      "panel": "OH14",
+      "sourceRect": [
+        138,
+        507,
+        183,
+        317
+      ],
+      "sourceCenter": [
+        229.5,
+        665.5
+      ],
+      "asset": "NOT_ARMED_VERTICAL",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        -2.5,
+        8.5
+      ],
+      "pixelComponentTest": "NEEDS_MANUAL_REVIEW",
+      "componentCenterDeltaSourcePx": [
+        -1.5,
+        -3.5
+      ],
+      "pixelCentreVerdict": "PHOTO_VISUAL_REVIEW_PIXEL_PRECISION_UNRESOLVED",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false,
+      "notes": "Nonrectangular/perspective bezel needs special visual QA"
+    },
+    {
+      "id": "window-l-side-overheat",
+      "scope": "OVERHEAD",
+      "panel": "OH15",
+      "sourceRect": [
+        190,
+        20,
+        210,
+        77
+      ],
+      "sourceCenter": [
+        295,
+        58.5
+      ],
+      "asset": "OVERHEAT",
+      "pixelEdgeTest": "AUTO_CENTRE_MATCH",
+      "edgeCenterDeltaSourcePx": [
+        2,
+        0.5
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        2.5,
+        0.5
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "window-l-fwd-overheat",
+      "scope": "OVERHEAD",
+      "panel": "OH15",
+      "sourceRect": [
+        426,
+        20,
+        210,
+        77
+      ],
+      "sourceCenter": [
+        531,
+        58.5
+      ],
+      "asset": "OVERHEAT",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        -10.5,
+        -0.5
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        -1,
+        0.5
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "window-r-fwd-overheat",
+      "scope": "OVERHEAD",
+      "panel": "OH15",
+      "sourceRect": [
+        651,
+        20,
+        210,
+        77
+      ],
+      "sourceCenter": [
+        756,
+        58.5
+      ],
+      "asset": "OVERHEAT",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        -7,
+        -0.5
+      ],
+      "pixelComponentTest": "NEEDS_MANUAL_REVIEW",
+      "componentCenterDeltaSourcePx": [
+        3.5,
+        0
+      ],
+      "pixelCentreVerdict": "PHOTO_VISUAL_REVIEW_PIXEL_PRECISION_UNRESOLVED",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "window-r-side-overheat",
+      "scope": "OVERHEAD",
+      "panel": "OH15",
+      "sourceRect": [
+        885,
+        20,
+        210,
+        77
+      ],
+      "sourceCenter": [
+        990,
+        58.5
+      ],
+      "asset": "OVERHEAT",
+      "pixelEdgeTest": "AUTO_CENTRE_MATCH",
+      "edgeCenterDeltaSourcePx": [
+        0.5,
+        -0.5
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        0.5,
+        0
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "probe-capt-ps",
+      "scope": "OVERHEAD",
+      "panel": "OH15",
+      "sourceRect": [
+        138,
+        565,
+        255,
+        80
+      ],
+      "sourceCenter": [
+        265.5,
+        605
+      ],
+      "asset": "CAPT_PS_1_AUX_STATIC",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        8,
+        -0.5
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        0,
+        0
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "probe-fo-static",
+      "scope": "OVERHEAD",
+      "panel": "OH15",
+      "sourceRect": [
+        138,
+        664,
+        255,
+        86
+      ],
+      "sourceCenter": [
+        265.5,
+        707
+      ],
+      "asset": "FO_STATIC_2_AUX_PS",
+      "pixelEdgeTest": "AUTO_CENTRE_MATCH",
+      "edgeCenterDeltaSourcePx": [
+        0,
+        -1.5
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        0,
+        0
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "probe-l-elev",
+      "scope": "OVERHEAD",
+      "panel": "OH15",
+      "sourceRect": [
+        138,
+        770,
+        255,
+        84
+      ],
+      "sourceCenter": [
+        265.5,
+        812
+      ],
+      "asset": "L_ELEV_PITOT",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        8.5,
+        -0.5
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        0,
+        0
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "probe-l-alpha",
+      "scope": "OVERHEAD",
+      "panel": "OH15",
+      "sourceRect": [
+        138,
+        875,
+        255,
+        82
+      ],
+      "sourceCenter": [
+        265.5,
+        916
+      ],
+      "asset": "L_ALPHA_VANE",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        8.5,
+        -0.5
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        0,
+        -0.5
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "hyd-eng-1",
+      "scope": "OVERHEAD",
+      "panel": "OH17",
+      "sourceRect": [
+        194,
+        335,
+        269,
+        118
+      ],
+      "sourceCenter": [
+        328.5,
+        394
+      ],
+      "asset": "LOW_PRESSURE",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        11.5,
+        -2.5
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        -1,
+        0
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "hyd-elec-2",
+      "scope": "OVERHEAD",
+      "panel": "OH17",
+      "sourceRect": [
+        495,
+        335,
+        269,
+        118
+      ],
+      "sourceCenter": [
+        629.5,
+        394
+      ],
+      "asset": "LOW_PRESSURE",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        -12.5,
+        -2.5
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        1,
+        0
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "hyd-elec-1",
+      "scope": "OVERHEAD",
+      "panel": "OH17",
+      "sourceRect": [
+        908,
+        335,
+        269,
+        118
+      ],
+      "sourceCenter": [
+        1042.5,
+        394
+      ],
+      "asset": "LOW_PRESSURE",
+      "pixelEdgeTest": "AUTO_CENTRE_MATCH",
+      "edgeCenterDeltaSourcePx": [
+        0.5,
+        -2.5
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        1,
+        0
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "hyd-eng-2",
+      "scope": "OVERHEAD",
+      "panel": "OH17",
+      "sourceRect": [
+        1213,
+        335,
+        269,
+        118
+      ],
+      "sourceCenter": [
+        1347.5,
+        394
+      ],
+      "asset": "LOW_PRESSURE",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        -14,
+        -2
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        0,
+        -0.5
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "hyd-elec-2-overheat",
+      "scope": "OVERHEAD",
+      "panel": "OH17",
+      "sourceRect": [
+        495,
+        188,
+        271,
+        118
+      ],
+      "sourceCenter": [
+        630.5,
+        247
+      ],
+      "asset": "OVERHEAT",
+      "pixelEdgeTest": "AUTO_CENTRE_MATCH",
+      "edgeCenterDeltaSourcePx": [
+        -0.5,
+        -2.5
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        0,
+        -0.5
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "hyd-elec-1-overheat",
+      "scope": "OVERHEAD",
+      "panel": "OH17",
+      "sourceRect": [
+        908,
+        188,
+        271,
+        118
+      ],
+      "sourceCenter": [
+        1043.5,
+        247
+      ],
+      "asset": "OVERHEAT",
+      "pixelEdgeTest": "AUTO_CENTRE_MATCH",
+      "edgeCenterDeltaSourcePx": [
+        -0.5,
+        -2.5
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        0.5,
+        0
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "probe-temp",
+      "scope": "OVERHEAD",
+      "panel": "OH15",
+      "sourceRect": [
+        138,
+        978,
+        255,
+        83
+      ],
+      "sourceCenter": [
+        265.5,
+        1019.5
+      ],
+      "asset": "TEMP_PROBE",
+      "pixelEdgeTest": "AUTO_CENTRE_MATCH",
+      "edgeCenterDeltaSourcePx": [
+        0,
+        0
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        0,
+        0.5
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "probe-fo-ps",
+      "scope": "OVERHEAD",
+      "panel": "OH15",
+      "sourceRect": [
+        891,
+        565,
+        255,
+        80
+      ],
+      "sourceCenter": [
+        1018.5,
+        605
+      ],
+      "asset": "FO_PS_2_AUX_STATIC",
+      "pixelEdgeTest": "AUTO_CENTRE_MATCH",
+      "edgeCenterDeltaSourcePx": [
+        0,
+        -1
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        0.5,
+        -1
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "probe-capt-static",
+      "scope": "OVERHEAD",
+      "panel": "OH15",
+      "sourceRect": [
+        891,
+        664,
+        255,
+        86
+      ],
+      "sourceCenter": [
+        1018.5,
+        707
+      ],
+      "asset": "CAPT_STATIC_1_AUX_PS",
+      "pixelEdgeTest": "AUTO_CENTRE_MATCH",
+      "edgeCenterDeltaSourcePx": [
+        0,
+        -2.5
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        0.5,
+        -1
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "probe-r-elev",
+      "scope": "OVERHEAD",
+      "panel": "OH15",
+      "sourceRect": [
+        891,
+        769,
+        255,
+        85
+      ],
+      "sourceCenter": [
+        1018.5,
+        811.5
+      ],
+      "asset": "R_ELEV_PITOT",
+      "pixelEdgeTest": "AUTO_CENTRE_MATCH",
+      "edgeCenterDeltaSourcePx": [
+        0,
+        -2
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        0.5,
+        0
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "probe-r-alpha",
+      "scope": "OVERHEAD",
+      "panel": "OH15",
+      "sourceRect": [
+        891,
+        874,
+        255,
+        82
+      ],
+      "sourceCenter": [
+        1018.5,
+        915
+      ],
+      "asset": "R_ALPHA_VANE",
+      "pixelEdgeTest": "AUTO_CENTRE_MATCH",
+      "edgeCenterDeltaSourcePx": [
+        0,
+        -0.5
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        0.5,
+        -0.5
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "cowl-anti-ice-1",
+      "scope": "OVERHEAD",
+      "panel": "OH16",
+      "sourceRect": [
+        868,
+        167,
+        259,
+        106
+      ],
+      "sourceCenter": [
+        997.5,
+        220
+      ],
+      "asset": "COWL_ANTI_ICE",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        13.5,
+        0
+      ],
+      "pixelComponentTest": "NEEDS_MANUAL_REVIEW",
+      "componentCenterDeltaSourcePx": [
+        5.5,
+        0.5
+      ],
+      "pixelCentreVerdict": "PHOTO_VISUAL_REVIEW_PIXEL_PRECISION_UNRESOLVED",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "cowl-anti-ice-2",
+      "scope": "OVERHEAD",
+      "panel": "OH16",
+      "sourceRect": [
+        1168,
+        167,
+        259,
+        106
+      ],
+      "sourceCenter": [
+        1297.5,
+        220
+      ],
+      "asset": "COWL_ANTI_ICE",
+      "pixelEdgeTest": "AUTO_CENTRE_MATCH",
+      "edgeCenterDeltaSourcePx": [
+        -3,
+        0
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        0,
+        0
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "door-fwd-entry",
+      "scope": "OVERHEAD",
+      "panel": "OH19-VOICE",
+      "sourceRect": [
+        225,
+        120,
+        263,
+        115
+      ],
+      "sourceCenter": [
+        356.5,
+        177.5
+      ],
+      "asset": "FWD_ENTRY",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        3.5,
+        -5
+      ],
+      "pixelComponentTest": "NEEDS_MANUAL_REVIEW",
+      "componentCenterDeltaSourcePx": [
+        4.5,
+        -1.5
+      ],
+      "pixelCentreVerdict": "PHOTO_VISUAL_REVIEW_PIXEL_PRECISION_UNRESOLVED",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "door-aft-entry",
+      "scope": "OVERHEAD",
+      "panel": "OH19-VOICE",
+      "sourceRect": [
+        225,
+        258,
+        263,
+        115
+      ],
+      "sourceCenter": [
+        356.5,
+        315.5
+      ],
+      "asset": "AFT_ENTRY",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        3.5,
+        -7.5
+      ],
+      "pixelComponentTest": "NEEDS_MANUAL_REVIEW",
+      "componentCenterDeltaSourcePx": [
+        4,
+        0.5
+      ],
+      "pixelCentreVerdict": "PHOTO_VISUAL_REVIEW_PIXEL_PRECISION_UNRESOLVED",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "door-air-stair",
+      "scope": "OVERHEAD",
+      "panel": "OH19-VOICE",
+      "sourceRect": [
+        519,
+        120,
+        263,
+        115
+      ],
+      "sourceCenter": [
+        650.5,
+        177.5
+      ],
+      "asset": "AIR_STAIR",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        5,
+        0
+      ],
+      "pixelComponentTest": "NEEDS_MANUAL_REVIEW",
+      "componentCenterDeltaSourcePx": [
+        5,
+        1
+      ],
+      "pixelCentreVerdict": "PHOTO_VISUAL_REVIEW_PIXEL_PRECISION_UNRESOLVED",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "door-equip",
+      "scope": "OVERHEAD",
+      "panel": "OH19-VOICE",
+      "sourceRect": [
+        519,
+        258,
+        263,
+        115
+      ],
+      "sourceCenter": [
+        650.5,
+        315.5
+      ],
+      "asset": "EQUIP",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        5,
+        -5
+      ],
+      "pixelComponentTest": "NEEDS_MANUAL_REVIEW",
+      "componentCenterDeltaSourcePx": [
+        0,
+        -9.5
+      ],
+      "pixelCentreVerdict": "PHOTO_VISUAL_REVIEW_PIXEL_PRECISION_UNRESOLVED",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "door-fwd-cargo",
+      "scope": "OVERHEAD",
+      "panel": "OH19-VOICE",
+      "sourceRect": [
+        813,
+        120,
+        263,
+        115
+      ],
+      "sourceCenter": [
+        944.5,
+        177.5
+      ],
+      "asset": "FWD_CARGO",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        5,
+        -6.5
+      ],
+      "pixelComponentTest": "NEEDS_MANUAL_REVIEW",
+      "componentCenterDeltaSourcePx": [
+        0,
+        10
+      ],
+      "pixelCentreVerdict": "PHOTO_VISUAL_REVIEW_PIXEL_PRECISION_UNRESOLVED",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "door-aft-cargo",
+      "scope": "OVERHEAD",
+      "panel": "OH19-VOICE",
+      "sourceRect": [
+        813,
+        258,
+        263,
+        115
+      ],
+      "sourceCenter": [
+        944.5,
+        315.5
+      ],
+      "asset": "AFT_CARGO",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        5,
+        -5
+      ],
+      "pixelComponentTest": "NEEDS_MANUAL_REVIEW",
+      "componentCenterDeltaSourcePx": [
+        5,
+        0.5
+      ],
+      "pixelCentreVerdict": "PHOTO_VISUAL_REVIEW_PIXEL_PRECISION_UNRESOLVED",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "door-fwd-service",
+      "scope": "OVERHEAD",
+      "panel": "OH19-VOICE",
+      "sourceRect": [
+        1107,
+        120,
+        263,
+        115
+      ],
+      "sourceCenter": [
+        1238.5,
+        177.5
+      ],
+      "asset": "FWD_SERVICE",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        4.5,
+        -1
+      ],
+      "pixelComponentTest": "NEEDS_MANUAL_REVIEW",
+      "componentCenterDeltaSourcePx": [
+        5,
+        1
+      ],
+      "pixelCentreVerdict": "PHOTO_VISUAL_REVIEW_PIXEL_PRECISION_UNRESOLVED",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "door-aft-service",
+      "scope": "OVERHEAD",
+      "panel": "OH19-VOICE",
+      "sourceRect": [
+        1107,
+        258,
+        263,
+        115
+      ],
+      "sourceCenter": [
+        1238.5,
+        315.5
+      ],
+      "asset": "AFT_SERVICE",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        4.5,
+        -5
+      ],
+      "pixelComponentTest": "NEEDS_MANUAL_REVIEW",
+      "componentCenterDeltaSourcePx": [
+        5,
+        -0.5
+      ],
+      "pixelCentreVerdict": "PHOTO_VISUAL_REVIEW_PIXEL_PRECISION_UNRESOLVED",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "duct-overheat-l",
+      "scope": "OVERHEAD",
+      "panel": "OH20",
+      "sourceRect": [
+        108,
+        620,
+        213,
+        97
+      ],
+      "sourceCenter": [
+        214.5,
+        668.5
+      ],
+      "asset": "DUCT_OVERHEAT",
+      "pixelEdgeTest": "AUTO_CENTRE_MATCH",
+      "edgeCenterDeltaSourcePx": [
+        -0.5,
+        1.5
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        0,
+        1.5
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "duct-overheat-r",
+      "scope": "OVERHEAD",
+      "panel": "OH20",
+      "sourceRect": [
+        926,
+        620,
+        213,
+        97
+      ],
+      "sourceCenter": [
+        1032.5,
+        668.5
+      ],
+      "asset": "DUCT_OVERHEAT",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        4.5,
+        0.5
+      ],
+      "pixelComponentTest": "NEEDS_MANUAL_REVIEW",
+      "componentCenterDeltaSourcePx": [
+        4.5,
+        -0.5
+      ],
+      "pixelCentreVerdict": "PHOTO_VISUAL_REVIEW_PIXEL_PRECISION_UNRESOLVED",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "dual-bleed",
+      "scope": "OVERHEAD",
+      "panel": "OH21",
+      "sourceRect": [
+        172,
+        10,
+        152,
+        72
+      ],
+      "sourceCenter": [
+        248,
+        46
+      ],
+      "asset": "DUAL_BLEED",
+      "pixelEdgeTest": "AUTO_CENTRE_MATCH",
+      "edgeCenterDeltaSourcePx": [
+        -1,
+        2.5
+      ],
+      "pixelComponentTest": "NEEDS_MANUAL_REVIEW",
+      "componentCenterDeltaSourcePx": [
+        10,
+        3.5
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "pack-trip-l",
+      "scope": "OVERHEAD",
+      "panel": "OH21",
+      "sourceRect": [
+        243,
+        862,
+        180,
+        66
+      ],
+      "sourceCenter": [
+        333,
+        895
+      ],
+      "asset": "PACK_TRIP_OFF",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        9,
+        -2.5
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        0,
+        -2.5
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "wing-body-overheat-l",
+      "scope": "OVERHEAD",
+      "panel": "OH21",
+      "sourceRect": [
+        243,
+        953,
+        180,
+        66
+      ],
+      "sourceCenter": [
+        333,
+        986
+      ],
+      "asset": "WING_BODY_OVERHEAT",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        -0.5,
+        -3.5
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        0.5,
+        -2.5
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "bleed-trip-l",
+      "scope": "OVERHEAD",
+      "panel": "OH21",
+      "sourceRect": [
+        243,
+        1043,
+        180,
+        66
+      ],
+      "sourceCenter": [
+        333,
+        1076
+      ],
+      "asset": "BLEED_TRIP_OFF",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        9,
+        0
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        0,
+        0.5
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "pack-trip-r",
+      "scope": "OVERHEAD",
+      "panel": "OH21",
+      "sourceRect": [
+        701,
+        862,
+        180,
+        66
+      ],
+      "sourceCenter": [
+        791,
+        895
+      ],
+      "asset": "PACK_TRIP_OFF",
+      "pixelEdgeTest": "AUTO_CENTRE_MATCH",
+      "edgeCenterDeltaSourcePx": [
+        -1,
+        -3
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        0,
+        -0.5
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "wing-body-overheat-r",
+      "scope": "OVERHEAD",
+      "panel": "OH21",
+      "sourceRect": [
+        701,
+        953,
+        180,
+        66
+      ],
+      "sourceCenter": [
+        791,
+        986
+      ],
+      "asset": "WING_BODY_OVERHEAT",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        -1,
+        -3.5
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        -0.5,
+        0
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "bleed-trip-r",
+      "scope": "OVERHEAD",
+      "panel": "OH21",
+      "sourceRect": [
+        701,
+        1043,
+        180,
+        66
+      ],
+      "sourceCenter": [
+        791,
+        1076
+      ],
+      "asset": "BLEED_TRIP_OFF",
+      "pixelEdgeTest": "AUTO_CENTRE_MATCH",
+      "edgeCenterDeltaSourcePx": [
+        -1,
+        0
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        0,
+        0
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "press-auto-fail",
+      "scope": "OVERHEAD",
+      "panel": "OH22",
+      "sourceRect": [
+        184,
+        26,
+        177,
+        86
+      ],
+      "sourceCenter": [
+        272.5,
+        69
+      ],
+      "asset": "AUTO_FAIL",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        11.5,
+        -4
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        -0.5,
+        0
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "press-off-sched-descent",
+      "scope": "OVERHEAD",
+      "panel": "OH22",
+      "sourceRect": [
+        388,
+        26,
+        182,
+        86
+      ],
+      "sourceCenter": [
+        479,
+        69
+      ],
+      "asset": "OFF_SCHED_DESCENT",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        11.5,
+        -4.5
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        0.5,
+        0
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "window-l-side-on",
+      "scope": "OVERHEAD",
+      "panel": "OH15",
+      "sourceRect": [
+        190,
+        111,
+        210,
+        77
+      ],
+      "sourceCenter": [
+        295,
+        149.5
+      ],
+      "asset": "ON_GREEN",
+      "pixelEdgeTest": "AUTO_CENTRE_MATCH",
+      "edgeCenterDeltaSourcePx": [
+        2,
+        -1
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        2.5,
+        -0.5
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "window-l-fwd-on",
+      "scope": "OVERHEAD",
+      "panel": "OH15",
+      "sourceRect": [
+        426,
+        111,
+        210,
+        77
+      ],
+      "sourceCenter": [
+        531,
+        149.5
+      ],
+      "asset": "ON_GREEN",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        -1,
+        -2
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        -1,
+        -1
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "window-r-fwd-on",
+      "scope": "OVERHEAD",
+      "panel": "OH15",
+      "sourceRect": [
+        651,
+        111,
+        210,
+        77
+      ],
+      "sourceCenter": [
+        756,
+        149.5
+      ],
+      "asset": "ON_GREEN",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        3,
+        -2
+      ],
+      "pixelComponentTest": "NEEDS_MANUAL_REVIEW",
+      "componentCenterDeltaSourcePx": [
+        3.5,
+        -2
+      ],
+      "pixelCentreVerdict": "PHOTO_VISUAL_REVIEW_PIXEL_PRECISION_UNRESOLVED",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "window-r-side-on",
+      "scope": "OVERHEAD",
+      "panel": "OH15",
+      "sourceRect": [
+        885,
+        111,
+        210,
+        77
+      ],
+      "sourceCenter": [
+        990,
+        149.5
+      ],
+      "asset": "ON_GREEN",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        0.5,
+        -2.5
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        0.5,
+        -2
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "wing-valve-l",
+      "scope": "OVERHEAD",
+      "panel": "OH16",
+      "sourceRect": [
+        205,
+        316,
+        259,
+        99
+      ],
+      "sourceCenter": [
+        334.5,
+        365.5
+      ],
+      "asset": "L_VALVE_OPEN",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        0,
+        -3.5
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        0.5,
+        0
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "wing-valve-r",
+      "scope": "OVERHEAD",
+      "panel": "OH16",
+      "sourceRect": [
+        500,
+        316,
+        259,
+        99
+      ],
+      "sourceCenter": [
+        629.5,
+        365.5
+      ],
+      "asset": "R_VALVE_OPEN",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        -0.5,
+        -1.5
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        0,
+        -1
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "cowl-valve-1",
+      "scope": "OVERHEAD",
+      "panel": "OH16",
+      "sourceRect": [
+        868,
+        302,
+        259,
+        107
+      ],
+      "sourceCenter": [
+        997.5,
+        355.5
+      ],
+      "asset": "COWL_VALVE_OPEN",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        13.5,
+        -4
+      ],
+      "pixelComponentTest": "NEEDS_MANUAL_REVIEW",
+      "componentCenterDeltaSourcePx": [
+        5.5,
+        0.5
+      ],
+      "pixelCentreVerdict": "PHOTO_VISUAL_REVIEW_PIXEL_PRECISION_UNRESOLVED",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "cowl-valve-2",
+      "scope": "OVERHEAD",
+      "panel": "OH16",
+      "sourceRect": [
+        1168,
+        302,
+        259,
+        107
+      ],
+      "sourceCenter": [
+        1297.5,
+        355.5
+      ],
+      "asset": "COWL_VALVE_OPEN",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        -3,
+        -4.5
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        0,
+        -0.5
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "crossfeed-valve",
+      "scope": "OVERHEAD",
+      "panel": "OH09",
+      "sourceRect": [
+        418,
+        414,
+        175,
+        70
+      ],
+      "sourceCenter": [
+        505.5,
+        449
+      ],
+      "asset": "VALVE_OPEN",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        5.5,
+        -2
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        -1,
+        0.5
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "fuel-valve-closed-1",
+      "scope": "OVERHEAD",
+      "panel": "OH09",
+      "sourceRect": [
+        146,
+        47,
+        174,
+        72
+      ],
+      "sourceCenter": [
+        233,
+        83
+      ],
+      "asset": "FUEL_VALVE_CLOSED",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        -0.5,
+        3.5
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        -1.5,
+        0
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "fuel-valve-closed-2",
+      "scope": "OVERHEAD",
+      "panel": "OH09",
+      "sourceRect": [
+        694,
+        47,
+        174,
+        72
+      ],
+      "sourceCenter": [
+        781,
+        83
+      ],
+      "asset": "FUEL_VALVE_CLOSED",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        5,
+        -2.5
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        -1.5,
+        0
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "gen-off-bus-1",
+      "scope": "OVERHEAD",
+      "panel": "OH12",
+      "sourceRect": [
+        90,
+        684,
+        169,
+        70
+      ],
+      "sourceCenter": [
+        174.5,
+        719
+      ],
+      "asset": "GEN_OFF_BUS",
+      "pixelEdgeTest": "AUTO_CENTRE_MATCH",
+      "edgeCenterDeltaSourcePx": [
+        -2.5,
+        -0.5
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        -1.5,
+        0
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "gen-off-bus-2",
+      "scope": "OVERHEAD",
+      "panel": "OH12",
+      "sourceRect": [
+        759,
+        684,
+        169,
+        70
+      ],
+      "sourceCenter": [
+        843.5,
+        719
+      ],
+      "asset": "GEN_OFF_BUS",
+      "pixelEdgeTest": "AUTO_CENTRE_MATCH",
+      "edgeCenterDeltaSourcePx": [
+        0,
+        -0.5
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        0,
+        0
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "apu-gen-off-bus",
+      "scope": "OVERHEAD",
+      "panel": "OH12",
+      "sourceRect": [
+        422,
+        678,
+        175,
+        76
+      ],
+      "sourceCenter": [
+        509.5,
+        716
+      ],
+      "asset": "APU_GEN_OFF_BUS",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        0,
+        6
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        0,
+        0
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "ground-power-available",
+      "scope": "OVERHEAD",
+      "panel": "OH12",
+      "sourceRect": [
+        421,
+        35,
+        182,
+        68
+      ],
+      "sourceCenter": [
+        512,
+        69
+      ],
+      "asset": "GRD_POWER_AVAILABLE",
+      "pixelEdgeTest": "AUTO_CENTRE_MATCH",
+      "edgeCenterDeltaSourcePx": [
+        -1.5,
+        -1
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        0,
+        0
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "apu-low-oil-quantity",
+      "scope": "OVERHEAD",
+      "panel": "OH12",
+      "sourceRect": [
+        162,
+        1055,
+        152,
+        61
+      ],
+      "sourceCenter": [
+        238,
+        1085.5
+      ],
+      "asset": "LOW_OIL_QUANTITY",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        7.5,
+        -0.5
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        0,
+        0
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "ram-door-l",
+      "scope": "OVERHEAD",
+      "panel": "OH21",
+      "sourceRect": [
+        355,
+        15,
+        146,
+        68
+      ],
+      "sourceCenter": [
+        428,
+        49
+      ],
+      "asset": "RAM_DOOR_FULL_OPEN",
+      "pixelEdgeTest": "AUTO_CENTRE_MATCH",
+      "edgeCenterDeltaSourcePx": [
+        0,
+        2.5
+      ],
+      "pixelComponentTest": "NEEDS_MANUAL_REVIEW",
+      "componentCenterDeltaSourcePx": [
+        -11,
+        0.5
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "ram-door-r",
+      "scope": "OVERHEAD",
+      "panel": "OH21",
+      "sourceRect": [
+        730,
+        15,
+        220,
+        68
+      ],
+      "sourceCenter": [
+        840,
+        49
+      ],
+      "asset": "RAM_DOOR_FULL_OPEN",
+      "pixelEdgeTest": "AUTO_CENTRE_MATCH",
+      "edgeCenterDeltaSourcePx": [
+        1,
+        -0.5
+      ],
+      "pixelComponentTest": "NEEDS_MANUAL_REVIEW",
+      "componentCenterDeltaSourcePx": [
+        -14.5,
+        0.5
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "press-standby",
+      "scope": "OVERHEAD",
+      "panel": "OH22",
+      "sourceRect": [
+        596,
+        26,
+        178,
+        86
+      ],
+      "sourceCenter": [
+        685,
+        69
+      ],
+      "asset": "STANDBY_GREEN",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        5,
+        -4.5
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        2,
+        0
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "press-manual",
+      "scope": "OVERHEAD",
+      "panel": "OH22",
+      "sourceRect": [
+        805,
+        26,
+        178,
+        86
+      ],
+      "sourceCenter": [
+        894,
+        69
+      ],
+      "asset": "MANUAL_GREEN",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        3,
+        -4.5
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        0,
+        0
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "ground-call",
+      "scope": "OVERHEAD",
+      "panel": "OH18",
+      "sourceRect": [
+        67,
+        615,
+        310,
+        146
+      ],
+      "sourceCenter": [
+        222,
+        688
+      ],
+      "asset": "CALL",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        -1,
+        7
+      ],
+      "pixelComponentTest": "NEEDS_MANUAL_REVIEW",
+      "componentCenterDeltaSourcePx": [
+        -0.5,
+        -5
+      ],
+      "pixelCentreVerdict": "PHOTO_VISUAL_REVIEW_PIXEL_PRECISION_UNRESOLVED",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "pmc-inop-1",
+      "scope": "OVERHEAD",
+      "panel": "UPPER",
+      "sourceRect": [
+        1044,
+        447,
+        64,
+        39
+      ],
+      "sourceCenter": [
+        1076,
+        466.5
+      ],
+      "asset": "INOP",
+      "pixelEdgeTest": "AUTO_CENTRE_MATCH",
+      "edgeCenterDeltaSourcePx": [
+        0,
+        -3
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        -1,
+        -2.5
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "pmc-inop-2",
+      "scope": "OVERHEAD",
+      "panel": "UPPER",
+      "sourceRect": [
+        1216,
+        447,
+        64,
+        39
+      ],
+      "sourceCenter": [
+        1248,
+        466.5
+      ],
+      "asset": "INOP",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        1.5,
+        -3
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        1.5,
+        -2.5
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "gear-left-down",
+      "scope": "OVERHEAD",
+      "panel": "UPPER",
+      "sourceRect": [
+        1005,
+        755,
+        58,
+        32
+      ],
+      "sourceCenter": [
+        1034,
+        771
+      ],
+      "asset": "LEFT_GEAR_2LINE_GREEN",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        -0.5,
+        2.5
+      ],
+      "pixelComponentTest": "NEEDS_MANUAL_REVIEW",
+      "componentCenterDeltaSourcePx": [
+        0.5,
+        3.5
+      ],
+      "pixelCentreVerdict": "PHOTO_VISUAL_REVIEW_PIXEL_PRECISION_UNRESOLVED",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "gear-right-down",
+      "scope": "OVERHEAD",
+      "panel": "UPPER",
+      "sourceRect": [
+        1080,
+        755,
+        58,
+        32
+      ],
+      "sourceCenter": [
+        1109,
+        771
+      ],
+      "asset": "RIGHT_GEAR_2LINE_GREEN",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        0,
+        1.5
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        1,
+        2.5
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "gear-nose-down",
+      "scope": "OVERHEAD",
+      "panel": "UPPER",
+      "sourceRect": [
+        1045,
+        804,
+        58,
+        32
+      ],
+      "sourceCenter": [
+        1074,
+        820
+      ],
+      "asset": "NOSE_GEAR_2LINE_GREEN",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        -2.5,
+        -1
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        -1,
+        0
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "main-at-lim",
+      "scope": "MAIN",
+      "panel": "engine",
+      "sourceRect": [
+        590,
+        257,
+        82,
+        35
+      ],
+      "sourceCenter": [
+        631,
+        274.5
+      ],
+      "asset": "A_T_LIM_WHITE",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        4,
+        0
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        0.5,
+        1
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "main-reverser-1",
+      "scope": "MAIN",
+      "panel": "engine",
+      "sourceRect": [
+        493,
+        257,
+        82,
+        35
+      ],
+      "sourceCenter": [
+        534,
+        274.5
+      ],
+      "asset": "REVERSER_UNLOCKED",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        4.5,
+        1
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        0,
+        2
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "main-reverser-2",
+      "scope": "MAIN",
+      "panel": "engine",
+      "sourceRect": [
+        687,
+        257,
+        82,
+        35
+      ],
+      "sourceCenter": [
+        728,
+        274.5
+      ],
+      "asset": "REVERSER_UNLOCKED",
+      "pixelEdgeTest": "AUTO_CENTRE_MATCH",
+      "edgeCenterDeltaSourcePx": [
+        -1,
+        1
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        0,
+        1.5
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "main-start-valve-1",
+      "scope": "MAIN",
+      "panel": "engine",
+      "sourceRect": [
+        900,
+        209,
+        82,
+        35
+      ],
+      "sourceCenter": [
+        941,
+        226.5
+      ],
+      "asset": "START_VALVE_OPEN",
+      "pixelEdgeTest": "AUTO_CENTRE_MATCH",
+      "edgeCenterDeltaSourcePx": [
+        0,
+        0.5
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        0.5,
+        1
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "main-start-valve-2",
+      "scope": "MAIN",
+      "panel": "engine",
+      "sourceRect": [
+        1088,
+        209,
+        82,
+        35
+      ],
+      "sourceCenter": [
+        1129,
+        226.5
+      ],
+      "asset": "START_VALVE_OPEN",
+      "pixelEdgeTest": "AUTO_CENTRE_MATCH",
+      "edgeCenterDeltaSourcePx": [
+        1,
+        -1
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        1.5,
+        0
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "main-low-oil-1",
+      "scope": "MAIN",
+      "panel": "engine",
+      "sourceRect": [
+        854,
+        258,
+        80,
+        34
+      ],
+      "sourceCenter": [
+        894,
+        275
+      ],
+      "asset": "LOW_OIL_PRESSURE",
+      "pixelEdgeTest": "AUTO_CENTRE_MATCH",
+      "edgeCenterDeltaSourcePx": [
+        -1,
+        1.5
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        -0.5,
+        1.5
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "main-oil-filter-1",
+      "scope": "MAIN",
+      "panel": "engine",
+      "sourceRect": [
+        949,
+        258,
+        79,
+        34
+      ],
+      "sourceCenter": [
+        988.5,
+        275
+      ],
+      "asset": "OIL_FILTER_BYPASS",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        -6,
+        0.5
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        -1.5,
+        1.5
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "main-low-oil-2",
+      "scope": "MAIN",
+      "panel": "engine",
+      "sourceRect": [
+        1041,
+        258,
+        80,
+        34
+      ],
+      "sourceCenter": [
+        1081,
+        275
+      ],
+      "asset": "LOW_OIL_PRESSURE",
+      "pixelEdgeTest": "AUTO_CENTRE_MATCH",
+      "edgeCenterDeltaSourcePx": [
+        0.5,
+        1
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        1,
+        1.5
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "main-oil-filter-2",
+      "scope": "MAIN",
+      "panel": "engine",
+      "sourceRect": [
+        1136,
+        258,
+        79,
+        34
+      ],
+      "sourceCenter": [
+        1175.5,
+        275
+      ],
+      "asset": "OIL_FILTER_BYPASS",
+      "pixelEdgeTest": "AUTO_CENTRE_MATCH",
+      "edgeCenterDeltaSourcePx": [
+        1,
+        1.5
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        1,
+        2
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "main-altitude-captain",
+      "scope": "MAIN",
+      "panel": "captain",
+      "sourceRect": [
+        2784,
+        486,
+        161,
+        68
+      ],
+      "sourceCenter": [
+        2864.5,
+        520
+      ],
+      "asset": "ALTITUDE_ALERT",
+      "pixelEdgeTest": "AUTO_CENTRE_MATCH",
+      "edgeCenterDeltaSourcePx": [
+        -3,
+        1.5
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        -2.5,
+        2
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "main-altitude-fo",
+      "scope": "MAIN",
+      "panel": "fo-outer",
+      "sourceRect": [
+        505,
+        178,
+        67,
+        27
+      ],
+      "sourceCenter": [
+        538.5,
+        191.5
+      ],
+      "asset": "ALTITUDE_ALERT",
+      "pixelEdgeTest": "AUTO_CENTRE_MATCH",
+      "edgeCenterDeltaSourcePx": [
+        -0.5,
+        -2
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        0.5,
+        -1.5
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "main-pull-up-captain",
+      "scope": "MAIN",
+      "panel": "captain",
+      "sourceRect": [
+        1284,
+        389,
+        164,
+        68
+      ],
+      "sourceCenter": [
+        1366,
+        423
+      ],
+      "asset": "PULL_UP_RED",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        8,
+        -5
+      ],
+      "pixelComponentTest": "NEEDS_MANUAL_REVIEW",
+      "componentCenterDeltaSourcePx": [
+        -12,
+        6
+      ],
+      "pixelCentreVerdict": "PHOTO_VISUAL_REVIEW_PIXEL_PRECISION_UNRESOLVED",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "main-below-gs-captain",
+      "scope": "MAIN",
+      "panel": "captain",
+      "sourceRect": [
+        1284,
+        491,
+        164,
+        62
+      ],
+      "sourceCenter": [
+        1366,
+        522
+      ],
+      "asset": "BELOW_GS_P_INHIBIT",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        7.5,
+        -2.5
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        -1,
+        -2.5
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "main-pull-up-fo",
+      "scope": "MAIN",
+      "panel": "fo-inner",
+      "sourceRect": [
+        820,
+        314,
+        67,
+        27
+      ],
+      "sourceCenter": [
+        853.5,
+        327.5
+      ],
+      "asset": "PULL_UP_RED",
+      "pixelEdgeTest": "AUTO_CENTRE_MATCH",
+      "edgeCenterDeltaSourcePx": [
+        0.5,
+        0
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        2,
+        0.5
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "main-below-gs-fo",
+      "scope": "MAIN",
+      "panel": "fo-inner",
+      "sourceRect": [
+        820,
+        356,
+        67,
+        27
+      ],
+      "sourceCenter": [
+        853.5,
+        369.5
+      ],
+      "asset": "BELOW_GS_P_INHIBIT",
+      "pixelEdgeTest": "AUTO_CENTRE_MATCH",
+      "edgeCenterDeltaSourcePx": [
+        0.5,
+        -0.5
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        1.5,
+        0
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "main-gear-nose-red",
+      "scope": "MAIN",
+      "panel": "fo-inner",
+      "sourceRect": [
+        250,
+        150,
+        70,
+        31
+      ],
+      "sourceCenter": [
+        285,
+        165.5
+      ],
+      "asset": "NOSE_GEAR_2LINE_RED",
+      "pixelEdgeTest": "AUTO_CENTRE_MATCH",
+      "edgeCenterDeltaSourcePx": [
+        -3,
+        2
+      ],
+      "pixelComponentTest": "NEEDS_MANUAL_REVIEW",
+      "componentCenterDeltaSourcePx": [
+        0.5,
+        4
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "main-gear-nose-green",
+      "scope": "MAIN",
+      "panel": "fo-inner",
+      "sourceRect": [
+        250,
+        194,
+        70,
+        32
+      ],
+      "sourceCenter": [
+        285,
+        210
+      ],
+      "asset": "NOSE_GEAR_2LINE_GREEN",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        -4,
+        0.5
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        0.5,
+        0.5
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "main-gear-left-red",
+      "scope": "MAIN",
+      "panel": "fo-inner",
+      "sourceRect": [
+        210,
+        238,
+        69,
+        34
+      ],
+      "sourceCenter": [
+        244.5,
+        255
+      ],
+      "asset": "LEFT_GEAR_2LINE_RED",
+      "pixelEdgeTest": "AUTO_CENTRE_MATCH",
+      "edgeCenterDeltaSourcePx": [
+        0,
+        -1.5
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        0.5,
+        0
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "main-gear-left-green",
+      "scope": "MAIN",
+      "panel": "fo-inner",
+      "sourceRect": [
+        210,
+        282,
+        69,
+        34
+      ],
+      "sourceCenter": [
+        244.5,
+        299
+      ],
+      "asset": "LEFT_GEAR_2LINE_GREEN",
+      "pixelEdgeTest": "AUTO_CENTRE_MATCH",
+      "edgeCenterDeltaSourcePx": [
+        0,
+        2
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        0.5,
+        -0.5
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "main-gear-right-red",
+      "scope": "MAIN",
+      "panel": "fo-inner",
+      "sourceRect": [
+        295,
+        238,
+        68,
+        34
+      ],
+      "sourceCenter": [
+        329,
+        255
+      ],
+      "asset": "RIGHT_GEAR_2LINE_RED",
+      "pixelEdgeTest": "AUTO_CENTRE_MATCH",
+      "edgeCenterDeltaSourcePx": [
+        -0.5,
+        -0.5
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        0,
+        0
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "main-gear-right-green",
+      "scope": "MAIN",
+      "panel": "fo-inner",
+      "sourceRect": [
+        295,
+        282,
+        68,
+        34
+      ],
+      "sourceCenter": [
+        329,
+        299
+      ],
+      "asset": "RIGHT_GEAR_2LINE_GREEN",
+      "pixelEdgeTest": "AUTO_CENTRE_MATCH",
+      "edgeCenterDeltaSourcePx": [
+        0,
+        -1
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        0.5,
+        -1
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "main-le-transit",
+      "scope": "MAIN",
+      "panel": "fo-inner",
+      "sourceRect": [
+        25,
+        404,
+        71,
+        29
+      ],
+      "sourceCenter": [
+        60.5,
+        418.5
+      ],
+      "asset": "LE_FLAPS_TRANSIT",
+      "pixelEdgeTest": "AUTO_CENTRE_MATCH",
+      "edgeCenterDeltaSourcePx": [
+        -1.5,
+        1.5
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        -1.5,
+        2
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "main-le-extended",
+      "scope": "MAIN",
+      "panel": "fo-inner",
+      "sourceRect": [
+        107,
+        404,
+        67,
+        29
+      ],
+      "sourceCenter": [
+        140.5,
+        418.5
+      ],
+      "asset": "LE_FLAPS_EXT_GREEN",
+      "pixelEdgeTest": "AUTO_CENTRE_MATCH",
+      "edgeCenterDeltaSourcePx": [
+        1.5,
+        1.5
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        2,
+        2
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "main-antiskid",
+      "scope": "MAIN",
+      "panel": "fo-inner",
+      "sourceRect": [
+        59,
+        507,
+        82,
+        32
+      ],
+      "sourceCenter": [
+        100,
+        523
+      ],
+      "asset": "ANTI_SKID_INOP",
+      "pixelEdgeTest": "AUTO_CENTRE_MATCH",
+      "edgeCenterDeltaSourcePx": [
+        -3,
+        -2.5
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        2,
+        -1.5
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "main-autobrake",
+      "scope": "MAIN",
+      "panel": "fo-inner",
+      "sourceRect": [
+        63,
+        767,
+        80,
+        40
+      ],
+      "sourceCenter": [
+        103,
+        787
+      ],
+      "asset": "AUTO_BRAKE_DISARM",
+      "pixelEdgeTest": "AUTO_CENTRE_MATCH",
+      "edgeCenterDeltaSourcePx": [
+        -0.5,
+        2
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        -0.5,
+        0
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "main-brake-temp",
+      "scope": "MAIN",
+      "panel": "fo-inner",
+      "sourceRect": [
+        600,
+        1236,
+        65,
+        31
+      ],
+      "sourceCenter": [
+        632.5,
+        1251.5
+      ],
+      "asset": "BRAKE_TEMP",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        -1,
+        -3.5
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        -0.5,
+        -2
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "main-stab-trim",
+      "scope": "MAIN",
+      "panel": "engine",
+      "sourceRect": [
+        255,
+        740,
+        88,
+        59
+      ],
+      "sourceCenter": [
+        299,
+        769.5
+      ],
+      "asset": "STAB_OUT_OF_TRIM",
+      "pixelEdgeTest": "EDGE_REVIEW",
+      "edgeCenterDeltaSourcePx": [
+        -5,
+        2
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        0.5,
+        -2
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "main-speed-brake-do-not-arm",
+      "scope": "MAIN",
+      "panel": "engine",
+      "sourceRect": [
+        22,
+        740,
+        94,
+        39
+      ],
+      "sourceCenter": [
+        69,
+        759.5
+      ],
+      "asset": "SPEED_BRAKE_DO_NOT_ARMED_AMBER",
+      "pixelEdgeTest": "AUTO_CENTRE_MATCH",
+      "edgeCenterDeltaSourcePx": [
+        -1.5,
+        -1
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        -1,
+        0
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "main-speed-brake-armed",
+      "scope": "MAIN",
+      "panel": "engine",
+      "sourceRect": [
+        22,
+        789,
+        94,
+        39
+      ],
+      "sourceCenter": [
+        69,
+        808.5
+      ],
+      "asset": "SPEED_BRAKE_ARMED_GREEN",
+      "pixelEdgeTest": "AUTO_CENTRE_MATCH",
+      "edgeCenterDeltaSourcePx": [
+        -1.5,
+        0
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        -1,
+        0.5
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false
+    },
+    {
+      "id": "main-gpws-inop",
+      "scope": "MAIN",
+      "panel": "fo-inner",
+      "sourceRect": [
+        485,
+        1405,
+        70,
+        32
+      ],
+      "sourceCenter": [
+        520,
+        1421
+      ],
+      "asset": "INOP",
+      "pixelEdgeTest": "AUTO_CENTRE_MATCH",
+      "edgeCenterDeltaSourcePx": [
+        -0.5,
+        0.5
+      ],
+      "pixelComponentTest": "PHOTO_COMPONENT_CENTRED",
+      "componentCenterDeltaSourcePx": [
+        -0.5,
+        0.5
+      ],
+      "pixelCentreVerdict": "PHOTO_PIXEL_CENTRE_VERIFIED_3PX",
+      "reviewedOriginalContactSheet": true,
+      "sourceRectChanged": false,
+      "notes": "Nonrectangular/perspective bezel needs special visual QA"
+    }
+  ]
+}
