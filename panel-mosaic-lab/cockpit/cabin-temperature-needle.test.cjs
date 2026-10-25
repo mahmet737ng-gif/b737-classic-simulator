@@ -20,6 +20,10 @@ const ui=fs.readFileSync(path.join(__dirname,'cabin-temperature-needle-unified.j
 assert.ok(ui.includes('piece.querySelector(\'.atlas-source-strip\')'));
 assert.ok(ui.includes('model.needle.asset'));
 assert.ok(ui.includes('window.B737UnifiedCabinTemperatureNeedle'));
+assert.ok(ui.includes('width:1122,height:1402,pivotX:284,pivotY:268'),'737-400 needle uses its distinct image-space pivot');
+assert.ok(ui.includes("window.addEventListener('b737:aircraft-profile-change',syncFamily)"),'Needle follows in-session model changes');
+assert.ok(ui.includes("fourHundred?aircon400:model.source"),'300/500 retains its existing needle calibration');
+
 const html=fs.readFileSync(path.join(__dirname,'index.html'),'utf8');
 assert.ok(html.includes('cabin-temperature-needle-model.js?v=CTN-0001'));
 assert.ok(html.includes('cabin-temperature-needle-unified.js?v=CTN-0002-AIRCON400'));
