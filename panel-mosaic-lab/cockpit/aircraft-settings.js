@@ -25,11 +25,18 @@
   }
   let groundSelection=initialGround();
   // Cold-dark policy can obtain the same selected ground baseline.
-  window.B737GroundAirfieldContext=()=>Object.freeze({
-    fieldElevationFt:groundSelection.fieldElevationFt,
-    cabinEqualized:true,cabinPressureStable:true,
-    groundAirportIcao:groundSelection.icao
-  });
+  window.B737GroundAirfieldContext=()=>{
+    const physical=pressureSessions.get(selectedPressure())?.physical();
+    const onGround=pressureEnvironment.onGround;
+    const equalized=onGround&&(!physical||Math.abs(physical.differentialPsid)<0.05);
+    return Object.freeze({
+      fieldElevationFt:groundSelection.fieldElevationFt,
+      cabinAltitudeFt:physical?.cabinAltitudeFt??null,
+      cabinEqualized:equalized,
+      cabinPressureStable:equalized&&Math.abs(physical?.cabinRateFtMin||0)<1,
+      groundAirportIcao:groundSelection.icao
+    });
+  };
   let activeSession = null;
   const pressureSessions = new Map();
   window.B737AircraftProfileStore = store;
@@ -114,7 +121,8 @@
   const groundElevationBox=byId('pressureGroundElevation');
   const groundStatus=byId('pressureGroundStatus');
   function displayGroundSelection(){
-    const preset=!!airfieldModel.AIRFIELDS[groundSelection.icao];
+    const preset=!!airfieldModel.AIRFIELDS[groundSelection.icao]&&
+      airfieldModel.AIRFIELDS[groundSelection.icao].elevationFt===groundSelection.fieldElevationFt;
     if(groundAirportBox)groundAirportBox.value=preset?groundSelection.icao:'CUSTOM';
     if(groundIcaoBox)groundIcaoBox.value=groundSelection.icao||'';
     if(groundElevationBox)groundElevationBox.value=String(groundSelection.fieldElevationFt??'');
