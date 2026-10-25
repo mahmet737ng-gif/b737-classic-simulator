@@ -56,7 +56,7 @@ for name,panel,(cx,cy),(low,high) in DIALS:
     mask[y0:y1,x0:x1]=bright
     lines=cv2.HoughLinesP(mask,1,np.pi/900,threshold=12,minLineLength=8,maxLineGap=2)
     hits=[]
-    for ln in ([] if lines is None else lines[:,0]):
+    for ln in ([] if lines is None else lines.reshape(-1,4)):
         x1,y1,x2,y2=[int(x) for x in ln]
         mx=(x1+x2)/2;my=(y1+y2)/2
         d=math.hypot(mx-cx,my-cy)
