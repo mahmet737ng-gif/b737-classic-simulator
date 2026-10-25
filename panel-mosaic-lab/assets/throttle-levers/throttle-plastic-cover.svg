@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="270" height="720" viewBox="0 0 270 720" role="img" aria-label="B737 throttle quadrant rolling black plastic cover with increase thrust center marking">
+<defs>
+<linearGradient id="track" x1="0" x2="1" y1="0" y2="0"><stop stop-color="#020303" offset="0"/><stop stop-color="#13181b" offset=".15"/><stop stop-color="#292c2e" offset=".49"/><stop stop-color="#0f1417" offset=".78"/><stop stop-color="#020406" offset="1"/></linearGradient>
+<linearGradient id="center" x1="0" x2="1" y1="0" y2="0"><stop stop-color="#07090d" offset="0"/><stop stop-color="#393b3e" offset=".15"/><stop stop-color="#17191b" offset=".29"/><stop stop-color="#333538" offset=".52"/><stop stop-color="#111316" offset=".74"/><stop stop-color="#32373c" offset=".92"/><stop stop-color="#060709" offset="1"/></linearGradient>
+<linearGradient id="decal" x1="0" x2="1" y1="0" y2="0"><stop stop-color="#090b0c" offset="0"/><stop stop-color="#202124" offset=".35"/><stop stop-color="#0d0f11" offset="1"/></linearGradient>
+<linearGradient id="vertical" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#889099" stop-opacity=".16" offset="0"/><stop stop-color="#000" stop-opacity="0" offset=".12"/><stop stop-color="#000" stop-opacity="0" offset=".82"/><stop stop-color="#000" stop-opacity=".6" offset="1"/></linearGradient>
+</defs>
+<path d="M14 11 Q52 3 91 10 Q98 18 99 31 L99 684 Q97 708 88 713 Q48 722 13 711 Q5 704 4 684 V35 Q5 16 14 11Z" fill="url(#track)" stroke="#080a0d" stroke-width="2"/>
+<path d="M180 10 Q220 4 257 11 Q266 17 266 35 V684 Q266 705 257 713 Q215 722 180 712 Q173 704 173 684 V33 Q173 17 180 10Z" fill="url(#track)" stroke="#080a0d" stroke-width="2"/>
+<path d="M107 8 Q135 -1 164 8 Q175 16 175 36 L175 684 Q175 704 165 713 Q135 722 106 712 Q97 705 97 684 V36 Q97 16 107 8Z" fill="url(#center)" stroke="#080a0c" stroke-width="2"/>
+<path d="M13 30L13 688 M90 25L90 695 M180 26L180 691 M256 29L256 689" stroke="#07090b" stroke-width="6" opacity=".8"/>
+<path d="M19 28L19 695 M83 27L83 695 M187 29L187 697 M248 29L248 698" stroke="#666d73" stroke-opacity=".23" stroke-width="2"/>
+<path d="M103 30L103 690 M168 30L168 689" stroke="#697078" stroke-opacity=".42" stroke-width="2"/>
+<rect x="4" y="8" width="262" height="704" fill="url(#vertical)" rx="18"/>
+<path d="M111 172 Q135 166 159 172 L159 562 Q135 572 111 562 Z" fill="url(#decal)" stroke="#54514b" stroke-opacity=".7" stroke-width="1.8"/>
+<path d="M113 175 Q135 171 157 175" fill="none" stroke="#9a9279" stroke-opacity=".38" stroke-width="1"/>
+<path d="M114 558 Q135 565 156 558" fill="none" stroke="#090909" stroke-width="2"/>
+<g font-family="Arial,Helvetica,sans-serif" font-weight="bold" font-size="10" letter-spacing=".3" fill="#c9bea0">
+ <text transform="translate(120 529) rotate(-90)">INCREASE THRUST</text>
+ <text transform="translate(152 204) rotate(90)">INCREASE THRUST</text>
+</g>
+<path d="M135 293 L120 324 H128 V414 H142 V324 H150 Z" fill="#c9bea0" stroke="#84775f" stroke-width="1"/>
+<path d="M4 104H266 M4 624H266" stroke="#020304" stroke-opacity=".50" stroke-width="5"/>
+<path d="M4 109H266 M4 629H266" stroke="#666b6e" stroke-opacity=".22" stroke-width="1.5"/>
+</svg>
