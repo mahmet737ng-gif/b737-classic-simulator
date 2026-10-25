@@ -30,8 +30,7 @@ for(const id of ['fuel.main1FwdPump','fuel.main1AftPump','fuel.main2FwdPump','fu
 n.engineStart('engine1');
 assert.equal(n.get().engines.engine1.fuelSupplyReady,false,
  'Stationary pump at N2=0 does not create suction pressure');
-const zero=n.fuelLever('engine1','CUTOFF');
-assert.equal(zero.accepted,true);
+assert.equal(n.get().engines.engine1.fuelLever,'CUTOFF');
 n.advance(850);
 let a=n.get().engines.engine1;
 assert.equal(a.phase,'AWAIT_FUEL_LEVER_IDLE');
