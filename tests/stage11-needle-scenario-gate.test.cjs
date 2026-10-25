@@ -267,11 +267,11 @@ test('09 — stuck mechanism retains angle under subsequent valid target and no 
 test('10 — owner bitmaps and public production pointer code remain explicitly out of new render path',()=>{
  const code=fs.readFileSync(path.join(__dirname,
   '../engine/instruments/stage10-needle-workbench-v1.js'),'utf8');
- assert.ok(!/\\.style\\.|\\.setAngle\\s*\\(|\\.setValues\\s*\\(|document\\.getElementById/.test(code));
+ for(const forbidden of ['.style.','.setAngle(','.setValues(','document.getElementById'])assert.ok(!code.includes(forbidden),forbidden);
  const browser=fs.readFileSync(path.join(__dirname,
   '../panel-mosaic-lab/cockpit/stage78-readonly-unified.js'),'utf8');
  assert.ok(browser.includes('getMotionPreview:()=>motionPreview'));
- assert.ok(!/B737UnifiedAcDcMetering\\.setAngle\\s*\\(|B737UnifiedDuctPressureNeedles\\.setValues\\s*\\(/.test(browser));
+ for(const forbidden of ['B737UnifiedAcDcMetering.setAngle(', 'B737UnifiedDuctPressureNeedles.setValues('])assert.ok(!browser.includes(forbidden),forbidden);
  assert.equal(routes.counts.liveApproved,0);
 });
 test.after(()=>{
