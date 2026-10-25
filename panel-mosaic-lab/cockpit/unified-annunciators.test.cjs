@@ -39,7 +39,7 @@ test('all unified gallery annunciators resolve real local state files',()=>{
 test('Unified loads canonical library without relying on external GitHub API',()=>{
  const js=fs.readFileSync(path.join(__dirname,'unified-lights.js'),'utf8');
  const html=fs.readFileSync(path.join(__dirname,'index.html'),'utf8');
- assert.match(js,/fetch\('../lights-test\/registry\.json/);
+ assert.match(js,/fetch\('\.\.\/lights-test\/registry\.json/);
  assert.match(js,/sync\(\{renderNow:false,force:false\}\)/);
  assert.match(js,/whenReady:/);
  assert.match(html,/id="unifiedLightsOpen"/);
