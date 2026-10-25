@@ -149,10 +149,13 @@ class Testbench{
   const snap=this.chain.get();
   if(position==='IDLE'&&snap.phase[engine]!=='AWAIT_FUEL_LEVER_IDLE'){
    const n2=snap.observations[engine].feedback.n2Percent.value;
-   return {accepted:false,phase:snap.phase[engine],
+   const result={accepted:false,phase:snap.phase[engine],
     reason:snap.phase[engine]==='MOTORING'?
      'WAIT FOR N2 25% BEFORE FUEL LEVER IDLE (CURRENT '+round(n2??0,1)+'% N2)':
      'ENGINE START GRD / N2 25% REQUIRED BEFORE FUEL LEVER IDLE. CURRENT PHASE: '+snap.phase[engine]};
+   this.log('FUEL_LEVER_REJECTED',{engine,position,phase:result.phase,
+    n2Percent:n2,reason:result.reason});
+   return result;
   }
   const result=this.core.fuelLever(engine,position);
   this.log('FUEL_LEVER',{engine,position,accepted:result.accepted,reason:result.reason??null});
