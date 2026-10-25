@@ -3,6 +3,8 @@
  const send=detail=>{if(parent!==window)parent.postMessage({type:'b737:cockpit-overhead',...detail},location.origin);};
  let ready=false,pending=false,projection=null;
  // DCPCS-OWNER-OH22: runtime-only replacement of the OH22 plate background.
+ // Scale owner artwork edge-to-edge to the locked OH22 tile so the former
+ // contain letterboxing above/below the panel disappears. Original PNG untouched.
  // The locked OH22 source, physical atlas seams, lights and switch overlays stay untouched.
  const DCPCS_ARTWORK='../assets/locked/2026-10-23/DCPCS_Background_Owner.png';
  const PROFILE_KEY='b737classic.aircraft-profile.v1';
@@ -27,7 +29,7 @@
      img.alt='DCPCS owner-approved overhead background';
      img.draggable=false;
      img.decoding='async';
-     Object.assign(img.style,{display:'block',width:'100%',height:'100%',maxWidth:'none',maxHeight:'none',objectFit:'contain',pointerEvents:'none'});
+     Object.assign(img.style,{display:'block',width:'100%',height:'100%',maxWidth:'none',maxHeight:'none',objectFit:'fill',objectPosition:'center',pointerEvents:'none'});
      img.addEventListener('load',()=>{layer.dataset.loaded='true';layer.style.display=pressurizationSystem==='DCPCS'?'block':'none';});
      img.addEventListener('error',()=>{layer.dataset.loaded='false';layer.style.display='none';send({kind:'pressurization-background-error',system:'DCPCS'});});
      img.src=new URL(DCPCS_ARTWORK,document.baseURI).href;
