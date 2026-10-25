@@ -78,6 +78,12 @@ const {chromium}=require('playwright');
       const tag=system+'_'+family.replace(/[^A-Za-z0-9]/g,'')+'_'+(lit?'ON':'OFF');
       await frame.locator('.atlas-piece[data-key="OH22"]').screenshot({path:path.join(out,tag+'_OH22.png'),timeout:20000});
       await frame.locator('.atlas-piece[data-key="OH20"]').screenshot({path:path.join(out,tag+'_OH20.png'),timeout:20000});
+      // Small 2x2 photo-socket image samples are logged for expert inspection
+      // without uploading owner reference files or their raw source artwork.
+      if((system==='CPCS'||system==='DCPCS')&&family==='B737-400'&&lit){
+       const preview=await frame.locator('.atlas-piece[data-key="OH22"]').screenshot({type:'jpeg',quality:65,timeout:20000});
+       console.log('PROFILE_PHOTO_PREVIEW',tag,preview.toString('base64'));
+      }
       scenarios.push({tag,...data,lightTest:lit,litLamps:live});
       console.log('LAMP_PROFILE_VARIANT',JSON.stringify({tag,lamps:data.lamps.length,acVisible:data.airconVisible,oh22Owner:data.oh22BackgroundVisible,litCount:live.filter(x=>x.on).length}));
     }
