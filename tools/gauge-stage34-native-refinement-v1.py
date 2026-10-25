@@ -20,6 +20,21 @@ RADIUS={
 }
 BANDS={"oh.cabin.diff_pressure_altitude":[("cabinAltitude",112,150),("diffPressure",204,280)]}
 STEP=0.5
+# Physical tick-bearing sectors inferred from native dial artwork.
+# Numbers are *screen bearings*, not approved scale numeric mappings.
+SECTORS={
+ "oh.fuel.temperature":(-140,140),
+ "oh.elec.dc_amps":(-87,87),"oh.elec.cps":(-87,87),
+ "oh.elec.dc_volts":(-87,87),"oh.elec.ac_volts":(-85,85),
+ "oh.drive_oil.1":(-87,87),"oh.drive_oil.2":(-87,87),
+ "oh.ac_amps.1":(-87,87),"oh.ac_amps.2":(-87,87),
+ "oh.ac_amps.apu":(-87,87),
+ "oh.cabin.temperature":(-145,120),
+ "oh.duct.pressure_lr":(-163,163)
+}
+# Smooth EGT/N2 arcs in the supplied blank panel have no numbered tick
+# graduations; angular pixel segments there are NOT tick measurements.
+CONTINUOUS_ARC_FACES={"eng.egt.1","eng.egt.2","eng.n2.1","eng.n2.2"}
 
 def angle(p,q):
     return (math.degrees(math.atan2(q[0]-p[0],p[1]-q[1]))+360)%360
@@ -67,10 +82,12 @@ def sample_ray(mask,pivot,lo,hi,bearing):
         runs.append((r0,r1,int(n)))
     return runs
 
-def radial_candidates(mask,pivot,lo,hi):
+def radial_candidates(mask,pivot,lo,hi,sector=None):
     candidates=[]
     for i in range(int(360/STEP)):
         a=i*STEP
+        signed=((a+180)%360)-180
+        if sector and not(sector[0]<=signed<=sector[1]):continue
         segments=sample_ray(mask,pivot,lo,hi,a)
         for r0,r1,length in segments:
             # White point is a candidate only. Digit stems and borders can be radial.
@@ -187,7 +204,7 @@ def main():
             refs=[dict(mode=s["mode"],value=x["value"],angleDeg=x["angleDeg"])
                   for s in orig["scales"] for x in s["referenceCandidates"]]
             for mode,lo,hi in bands:
-                candidates=radial_candidates(white,p,lo,hi)
+                candidates=radial_candidates(white,p,lo,hi,SECTORS.get(f["id"]))
                 matched=classify_ticks(candidates,refs,mode,lo,hi)
                 counts["scaleBands"]+=1;counts["candidateWhiteStrokes"]+=len(candidates)
                 counts["candidateMajorLike"]+=sum(x["lengthClassCandidate"]=="long" for x in candidates)
@@ -199,6 +216,8 @@ def main():
                 scales.append({"mode":mode,"radiusBandPx":[lo,hi],
                     "whiteRadialCandidates":candidates,
                     "majorMinorClassification":"length_only_angular_pixel_candidate",
+                    "bearingSectorCandidate":SECTORS.get(f["id"]),
+                    "hasPrintedDiscreteTickScale":f["id"] not in CONTINUOUS_ARC_FACES,
                     "referenceMatches":matched,
                     "allPhysicalGraduationsCertified":False})
             counts["circleRimCandidates"]+=len(circle)
