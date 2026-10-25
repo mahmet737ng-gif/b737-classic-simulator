@@ -115,11 +115,18 @@
   enableTrainingPumpPower(){this.chain.start.core.pack.send({type:'MODE',value:'TRAINING_SURROGATE',instructor:true});return this.get();}
   fuelLever(device,position){if(!IDS.includes(device)||!['CUTOFF','IDLE'].includes(position))throw Error('Invalid fuel lever');
    if(position==='IDLE'){
+    const phase=this.chain.get().phase[device];
+    if(phase!=='AWAIT_FUEL_LEVER_IDLE')
+     return {accepted:false,reason:'WAIT_FOR_N2_25_AND_STARTER_MOTORING',phase};
     const test=this.fuel.supply(device,this.pumps(),{pressureAltitudeFt:this.env.pressureAltitudeFt,
      fuelStartLever:'IDLE',fireSwitchPulled:this.fireSwitch[device]});
-    if(test.available!==true)return {accepted:false,reason:test.reason,quality:test.quality};
+    if(test.available!==true)return {accepted:false,reason:test.reason,quality:test.quality,phase};
    }
-   this.chain.lever(device,position);return {accepted:true,phase:this.chain.get().phase[device]};
+   this.chain.lever(device,position);
+   const after=this.chain.get();
+   const accepted=position==='CUTOFF'?after.observations[device].feedback.fuelStartLever.value==='CUTOFF':
+    after.phase[device]==='LIGHT_OFF_SEQUENCE';
+   return {accepted,phase:after.phase[device],reason:accepted?null:after.lastError};
   }
   planThrust(device,input,{apply=false}={}){
    if(!IDS.includes(device))throw Error('Invalid engine');
