@@ -2,7 +2,14 @@
  'use strict';
  const model=window.B737ISNEngineGaugeModel,ns='http://www.w3.org/2000/svg';
  if(!model)return;
- let layer=null,last=null;
+ // At initial cold-dark boot the stationary N2 spools read zero.
+ // EGT must not be fabricated as zero: hot metal cools toward ambient.
+ // A subsequent ISN observation always replaces this fallback.
+ const initialColdDark=Object.freeze({engines:{
+  engine1:{n2:{value:0},egt:{value:null}},
+  engine2:{n2:{value:0},egt:{value:null}}
+ }});
+ let layer=null,last=initialColdDark;
  const element=(parent,tag,attrs={})=>{const node=document.createElementNS(ns,tag);
   for(const [key,value]of Object.entries(attrs))node.setAttribute(key,String(value));
   parent.append(node);return node;
