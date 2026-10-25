@@ -52,3 +52,20 @@
 @media(prefers-reduced-motion:reduce){
  .aircon400-knob img,.aircon400-trim img{transition:none}
 }
+
+/* B737-300/500: the legacy interactive assets keep their own atlas positions.
+   Only their render size grows. Inline rotary rotation remains operative. */
+html.b737-aircon300500 #rotaryGuardLayer .mounted-rotary[data-control="temperature-source"] .rotary-picture {
+ scale:1.13; /* knob artwork contains intrinsic transparent safety margins */
+}
+html.b737-aircon300500 #rotaryGuardLayer .mounted-rotary[data-control="control-cabin-temp"] .rotary-picture,
+html.b737-aircon300500 #rotaryGuardLayer .mounted-rotary[data-control="pass-cabin-temp"] .rotary-picture {
+ scale:1.16;
+}
+/* Only the annunciator face, not the OH20 photo or the bezel, is enlarged. */
+html.b737-aircon300500 #overheadLightLayer .mounted-light[data-light="duct-overheat-l"],
+html.b737-aircon300500 #overheadLightLayer .mounted-light[data-light="duct-overheat-r"] {
+ transform:scale(1.075,1.11);
+ transform-origin:center center;
+}
+/* Scaling preserves the switch hit area in the 300/500 installation. */
