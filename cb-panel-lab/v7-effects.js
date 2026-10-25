@@ -24,17 +24,18 @@ const color=state===false||state==="OPEN"?"#f9aab4":state===true||state==="CLOSE
 return '<span class="cb-chip" style="border-color:'+color+'"><b>'+safe(name)+'</b>: '+safe(state===null?"UNKNOWN":String(state))+(info?'<small style="display:block;font-size:10px">'+safe(info)+'</small>':"")+'</span>';
 }
 function render(){
-const v=E.evaluate(elState),t=T.derive(trainingState),p=Bridge.project({cbNetwork:net,electricalV7Result:v,trainerResult:t});
+const v=E.evaluate(elState),t=T.derive(trainingState),p=Bridge.project({cbNetwork:net,electricalV7Result:v,trainerResult:t,trainerState:trainingState});
 last={v7:v,project:p};
 $("cbv-summary").textContent="Electrical V7: GEN 1 "+(v.source[1]||"OFF")+" | GEN 2 "+(v.source[2]||"OFF")+" | BUS TRANS AUTO "+(elState.config.busTransferAuto?"ON":"OFF")+" | CB equipment mappings: "+p.linkedEquipment;
 $("cbv-bus").innerHTML=[["Transfer 1",v.bus.transfer1],["Transfer 2",v.bus.transfer2],["DC 1",v.bus.dc1],["DC 2",v.bus.dc2],["Battery",v.bus.battery],["AC standby",v.bus.acStandby]].map(x=>tile(x[0],x[1])).join("");
 $("cbv-devices").innerHTML=Bridge.ALLOCATIONS.map(a=>{
 const c=p.circuits[a.load],fuel=a.load.startsWith("fuel."),f=fuel?p.overlay.fuel[a.load.slice(5)]:null;
-let detail=fuel?"TRAINING "+(f.operational===null?"UNKNOWN":f.operational?"RUN":"STOP")+" | "+f.surrogateBus:"Real availability UNKNOWN";
+const hyd=a.load.startsWith("hyd."),h=hyd?p.overlay.hyd[a.load.slice(4)]:null;
+let detail=fuel?"FUEL TRAINING "+(f.operational===null?"UNKNOWN":f.operational?"RUN":"STOP")+" | "+f.surrogateBus:hyd?"HYD TRAINING "+(h.operating===null?"UNKNOWN":h.operating?"RUN":"STOP")+" | "+h.feedBus:"Real availability UNKNOWN";
 return tile(a.load,c.protectionCircuit,detail);
 }).join("");
 const x=p.overlay.annunciations;
-$("cbv-caution").textContent="Training FUEL caution: "+(x.fuelCautionTraining?"ON":"OFF")+" (simplified; no actual master caution lamp rewiring).";
+$("cbv-caution").textContent="Training FUEL caution: "+(x.fuelCautionTraining?"ON":"OFF")+" | HYD System A: "+String(p.overlay.systemHyd.A)+"; B: "+String(p.overlay.systemHyd.B)+" (engine-driven pumps remain independent; simplified projection).";
 }
 function fault(id){elState=E.apply(elState,{type:"FAULT",id,active:!elState.faults[id],instructor:true});render();}
 $("cbv-gen1").onclick=()=>fault("GEN1_FAILED");
