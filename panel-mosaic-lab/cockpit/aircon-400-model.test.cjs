@@ -18,6 +18,12 @@ assert.equal(m.precheck.type,'rotary');
 assert.ok(m.precheck.states.some(x=>x.startsWith('SUPPLY DUCT')));
 assert.ok(m.precheck.states.some(x=>x.startsWith('PASS CAB')));
 assert.deepEqual(m.zoneKnobs.map(x=>x.id),['cont-cab','fwd-cab','aft-cab']);
+
+assert.ok(m.precheck.diameter>=195,'737-400 PRECHECK rotary must fit its round socket');
+for(const c of m.zoneKnobs)assert.ok(c.diameter>=198,'737-400 zone rotary must fit its socket: '+c.id);
+assert.ok(m.trim.width>=120&&m.trim.height>=160,'TRIM AIR toggle must fill its slot');
+assert.ok(m.lamps.every(l=>l.rect[2]>=210&&l.rect[3]>=80),'All three ZONE TEMP faces fill their cutouts');
+
 const layout=JSON.parse(fs.readFileSync(path.join(__dirname,'../all-overhead/atlas-layout.json'),'utf8'));
 const placement=layout.placements.find(p=>p.id==='OH20');
 for(const c of m.controls){const pos=m.map([c.x,c.y],placement);
@@ -44,6 +50,11 @@ for(const id of ['temperature-source','control-cabin-temp','pass-cabin-temp','du
 assert.ok(overlay.includes('zoneFaults'),'Three caution outputs are distinct');
 assert.ok(overlay.includes('setAirconTemperature'),'Outer-zone controls retain pneumatic bridge');
 assert.ok(shared.includes('setAirconTemperature:(id,value)=>'),'Narrow outer-zone integration exists');
+assert.ok(overlay.includes("classList.toggle('b737-aircon300500'"),'Legacy family retains its own fit class');
+assert.ok(css.includes('html.b737-aircon300500'),'737-300/500 knobs and lamps have their own visual scale');
+assert.ok(css.includes('scale:1.16'),'Legacy lower temp knobs grow without overriding live rotation');
+assert.ok(css.includes('scale(1.075,1.11)'),'Legacy DUCT OVERHEAT faces enlarge independently');
+
 assert.ok(bridge.includes("action==='aircon-background'"),'Profile change selects 400 image');
 assert.ok(!fs.readFileSync(path.join(__dirname,'../all-overhead/stage.js'),'utf8').includes('aircon400Overlay'),'Frozen overhead untouched');
 console.log('PASS: 737-400 environmental controls, toggle and Zone Temp windows are independent of 300/500.');
