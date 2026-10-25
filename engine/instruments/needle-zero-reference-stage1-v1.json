@@ -1,0 +1,3438 @@
+{
+  "schema": "b737.instrument-native-photo-zero-reference.stage1.v1",
+  "effectivity": "B737-33V EP-FSI; frozen Unified assembly",
+  "created": "2026-10-25",
+  "intendedUse": "auditable stage-1 native-image scale registry; NOT live simulator needle geometry",
+  "angleConvention": "0 degrees points up (12 o'clock); positive clockwise; image y increases downward. Angles are bearings from the pivot of the cited measurement, not universal SVG rotations.",
+  "provenance": [
+    "engine/instruments/gauge-survey-stage2-3.json",
+    "engine/instruments/printed-scale-labels-v1.json",
+    "engine/instruments/photo-anchor-checkpoints-v1.json",
+    "engine/instruments/oh19-cab-alt-photo-anchors-v1.json",
+    "engine/instruments/gauge-motion-visual-audit-v1.json",
+    "engine/instruments/cold-dark-indicator-policy-v1.json",
+    "tools/gauge-source-visual-review.py"
+  ],
+  "safeguards": [
+    "All image-derived bearings are candidates; none passes the complete all-tick native-pixel visual sign-off.",
+    "Never derive gauge zeros from display power-off state or an assumed 12 o'clock pose.",
+    "No missing center/angle is replaced by a fabricated value.",
+    "The two OH19 concentric scales use independent angle maps.",
+    "Retained-pressure, temperature, and aircraft elevation are physical states, not universal numeric zero."
+  ],
+  "coverage": {
+    "faces": 54,
+    "facesWithPivotCandidate": 20,
+    "facesWithAnyMeasuredOrScannedAngle": 6,
+    "facesWithCandidateZeroBearing": 6,
+    "candidatePointCount": 52,
+    "fullyCertifiedFaces": 0,
+    "pivotConflicts": [
+      {
+        "id": "oh.elec.dc_amps",
+        "overlayPivot": {
+          "x": 310,
+          "y": 168
+        },
+        "photoCandidatePivot": {
+          "x": 310,
+          "y": 192
+        },
+        "dx": 0,
+        "dy": 24
+      },
+      {
+        "id": "oh.elec.cps",
+        "overlayPivot": {
+          "x": 715,
+          "y": 190
+        },
+        "photoCandidatePivot": {
+          "x": 780,
+          "y": 192
+        },
+        "dx": 65,
+        "dy": 2
+      }
+    ]
+  },
+  "faces": [
+    {
+      "id": "oh.fuel.temperature",
+      "panel": "OH09",
+      "region": "overhead",
+      "mechanism": "bipolar_arc",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/OH09-FUEL-921977b56887.png",
+        "sha256": "921977b568870233c9613a62101741dc369bb43f85b80b3769af07f05eeba733",
+        "width": 1012,
+        "height": 1555
+      },
+      "pivot": {
+        "x": 506,
+        "y": 235,
+        "evidence": "gauge-survey-stage2-3.json",
+        "state": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "pivotConflict": null,
+      "previousOverlayPivot": {
+        "x": 506,
+        "y": 235
+      },
+      "scales": [
+        {
+          "mode": "primary",
+          "printedLabels": [
+            "40",
+            "20",
+            "0",
+            "20",
+            "40"
+          ],
+          "interpretedNumbers": [
+            -40,
+            -20,
+            0,
+            20,
+            40
+          ],
+          "units": "°C",
+          "referenceCandidates": [
+            {
+              "value": -40,
+              "angleDeg": -92,
+              "point": null,
+              "source": "gauge-survey-stage2-3.json/candidateNativeMajorTicks",
+              "quality": "native_radial_candidate",
+              "approved": false
+            },
+            {
+              "value": -30,
+              "angleDeg": -69,
+              "point": null,
+              "source": "gauge-survey-stage2-3.json/candidateNativeMajorTicks",
+              "quality": "native_radial_candidate",
+              "approved": false
+            },
+            {
+              "value": -20,
+              "angleDeg": -47.5,
+              "point": null,
+              "source": "gauge-survey-stage2-3.json/candidateNativeMajorTicks",
+              "quality": "native_radial_candidate",
+              "approved": false
+            },
+            {
+              "value": -10,
+              "angleDeg": -24.5,
+              "point": null,
+              "source": "gauge-survey-stage2-3.json/candidateNativeMajorTicks",
+              "quality": "native_radial_candidate",
+              "approved": false
+            },
+            {
+              "value": 0,
+              "angleDeg": 0.5,
+              "point": null,
+              "source": "gauge-survey-stage2-3.json/candidateNativeMajorTicks",
+              "quality": "native_radial_candidate",
+              "approved": false
+            },
+            {
+              "value": 10,
+              "angleDeg": 24,
+              "point": null,
+              "source": "gauge-survey-stage2-3.json/candidateNativeMajorTicks",
+              "quality": "native_radial_candidate",
+              "approved": false
+            },
+            {
+              "value": 20,
+              "angleDeg": 47,
+              "point": null,
+              "source": "gauge-survey-stage2-3.json/candidateNativeMajorTicks",
+              "quality": "native_radial_candidate",
+              "approved": false
+            },
+            {
+              "value": 30,
+              "angleDeg": 69,
+              "point": null,
+              "source": "gauge-survey-stage2-3.json/candidateNativeMajorTicks",
+              "quality": "native_radial_candidate",
+              "approved": false
+            },
+            {
+              "value": 40,
+              "angleDeg": 91,
+              "point": null,
+              "source": "gauge-survey-stage2-3.json/candidateNativeMajorTicks",
+              "quality": "native_radial_candidate",
+              "approved": false
+            }
+          ],
+          "zeroTick": {
+            "value": 0,
+            "anglesDeg": [
+              0.5
+            ],
+            "source": [
+              "gauge-survey-stage2-3.json/candidateNativeMajorTicks"
+            ],
+            "state": "photo_candidate_not_approved"
+          },
+          "needPhotoQA": [
+            "all_minor_tick_tips_not_individually_photo_approved",
+            "actual_needle_tip_fit_not_approved"
+          ],
+          "approved": false
+        }
+      ],
+      "faceApproved": false
+    },
+    {
+      "id": "oh.elec.dc_amps",
+      "panel": "OH10",
+      "region": "overhead",
+      "mechanism": "bipolar_arc",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/OH10-ELEC-LOSSLESS-9a1ca4d6cfb2.png",
+        "sha256": "9a1ca4d6cfb277ec1404f3a464e957d81be9d9689a0810883364342d57b0f1ea",
+        "width": 1095,
+        "height": 1436
+      },
+      "pivot": {
+        "x": 310,
+        "y": 192,
+        "evidence": "photo-anchor-checkpoints-v1.json",
+        "state": "optical_center_estimate_needs_confirmation"
+      },
+      "pivotConflict": {
+        "overlayPivot": {
+          "x": 310,
+          "y": 168
+        },
+        "photoCandidatePivot": {
+          "x": 310,
+          "y": 192
+        },
+        "dx": 0,
+        "dy": 24
+      },
+      "previousOverlayPivot": {
+        "x": 310,
+        "y": 168
+      },
+      "scales": [
+        {
+          "mode": "primary",
+          "printedLabels": [
+            "-50",
+            "0",
+            "+50"
+          ],
+          "interpretedNumbers": [
+            -50,
+            0,
+            50
+          ],
+          "units": "A",
+          "referenceCandidates": [
+            {
+              "value": -50,
+              "angleDeg": -52.1,
+              "point": {
+                "x": 226.5,
+                "y": 127
+              },
+              "source": "photo-anchor-checkpoints-v1.json",
+              "quality": "automated_source_photo_line_candidate",
+              "approved": false
+            },
+            {
+              "value": 0,
+              "angleDeg": 1.05,
+              "point": {
+                "x": 311.5,
+                "y": 110.5
+              },
+              "source": "photo-anchor-checkpoints-v1.json",
+              "quality": "automated_source_photo_line_candidate",
+              "approved": false
+            },
+            {
+              "value": 50,
+              "angleDeg": 59.55,
+              "point": {
+                "x": 409.5,
+                "y": 133.5
+              },
+              "source": "photo-anchor-checkpoints-v1.json",
+              "quality": "automated_source_photo_line_candidate",
+              "approved": false
+            }
+          ],
+          "zeroTick": {
+            "value": 0,
+            "anglesDeg": [
+              1.05
+            ],
+            "source": [
+              "photo-anchor-checkpoints-v1.json"
+            ],
+            "state": "photo_candidate_not_approved"
+          },
+          "needPhotoQA": [
+            "pivot_coordinate_disagreement",
+            "all_minor_tick_tips_not_individually_photo_approved",
+            "actual_needle_tip_fit_not_approved"
+          ],
+          "approved": false
+        }
+      ],
+      "faceApproved": false
+    },
+    {
+      "id": "oh.elec.cps",
+      "panel": "OH10",
+      "region": "overhead",
+      "mechanism": "nonlinear_piecewise_arc",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/OH10-ELEC-LOSSLESS-9a1ca4d6cfb2.png",
+        "sha256": "9a1ca4d6cfb277ec1404f3a464e957d81be9d9689a0810883364342d57b0f1ea",
+        "width": 1095,
+        "height": 1436
+      },
+      "pivot": {
+        "x": 780,
+        "y": 192,
+        "evidence": "photo-anchor-checkpoints-v1.json",
+        "state": "optical_center_estimate_needs_confirmation"
+      },
+      "pivotConflict": {
+        "overlayPivot": {
+          "x": 715,
+          "y": 190
+        },
+        "photoCandidatePivot": {
+          "x": 780,
+          "y": 192
+        },
+        "dx": 65,
+        "dy": 2
+      },
+      "previousOverlayPivot": {
+        "x": 715,
+        "y": 190
+      },
+      "scales": [
+        {
+          "mode": "primary",
+          "printedLabels": [
+            "0",
+            "400",
+            "420"
+          ],
+          "interpretedNumbers": [
+            0,
+            400,
+            420
+          ],
+          "units": "Hz",
+          "referenceCandidates": [
+            {
+              "value": 0,
+              "angleDeg": -71.08,
+              "point": {
+                "x": 656,
+                "y": 149.5
+              },
+              "source": "photo-anchor-checkpoints-v1.json",
+              "quality": "automated_source_photo_line_candidate",
+              "approved": false
+            },
+            {
+              "value": 400,
+              "angleDeg": -1.33,
+              "point": {
+                "x": 778,
+                "y": 106
+              },
+              "source": "photo-anchor-checkpoints-v1.json",
+              "quality": "automated_source_photo_line_candidate",
+              "approved": false
+            },
+            {
+              "value": 420,
+              "angleDeg": 84.94,
+              "point": {
+                "x": 898.5,
+                "y": 181.5
+              },
+              "source": "photo-anchor-checkpoints-v1.json",
+              "quality": "automated_source_photo_line_candidate",
+              "approved": false
+            }
+          ],
+          "zeroTick": {
+            "value": 0,
+            "anglesDeg": [
+              -71.08
+            ],
+            "source": [
+              "photo-anchor-checkpoints-v1.json"
+            ],
+            "state": "photo_candidate_not_approved"
+          },
+          "needPhotoQA": [
+            "pivot_coordinate_disagreement",
+            "all_minor_tick_tips_not_individually_photo_approved",
+            "actual_needle_tip_fit_not_approved"
+          ],
+          "approved": false
+        }
+      ],
+      "faceApproved": false
+    },
+    {
+      "id": "oh.elec.dc_volts",
+      "panel": "OH10",
+      "region": "overhead",
+      "mechanism": "piecewise_arc",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/OH10-ELEC-LOSSLESS-9a1ca4d6cfb2.png",
+        "sha256": "9a1ca4d6cfb277ec1404f3a464e957d81be9d9689a0810883364342d57b0f1ea",
+        "width": 1095,
+        "height": 1436
+      },
+      "pivot": {
+        "x": 332,
+        "y": 600,
+        "evidence": "gauge-survey-stage2-3.json",
+        "state": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "pivotConflict": null,
+      "previousOverlayPivot": {
+        "x": 332,
+        "y": 600
+      },
+      "scales": [
+        {
+          "mode": "primary",
+          "printedLabels": [
+            "0",
+            "20",
+            "40"
+          ],
+          "interpretedNumbers": [
+            0,
+            20,
+            40
+          ],
+          "units": "V",
+          "referenceCandidates": [],
+          "zeroTick": {
+            "value": 0,
+            "anglesDeg": [],
+            "state": "numeric_label_known_position_not_measured"
+          },
+          "needPhotoQA": [
+            "insufficient_source_pixel_angle_anchors",
+            "all_minor_tick_tips_not_individually_photo_approved",
+            "actual_needle_tip_fit_not_approved"
+          ],
+          "approved": false
+        }
+      ],
+      "faceApproved": false
+    },
+    {
+      "id": "oh.elec.ac_volts",
+      "panel": "OH10",
+      "region": "overhead",
+      "mechanism": "piecewise_arc",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/OH10-ELEC-LOSSLESS-9a1ca4d6cfb2.png",
+        "sha256": "9a1ca4d6cfb277ec1404f3a464e957d81be9d9689a0810883364342d57b0f1ea",
+        "width": 1095,
+        "height": 1436
+      },
+      "pivot": {
+        "x": 715,
+        "y": 620,
+        "evidence": "gauge-survey-stage2-3.json",
+        "state": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "pivotConflict": null,
+      "previousOverlayPivot": {
+        "x": 715,
+        "y": 620
+      },
+      "scales": [
+        {
+          "mode": "primary",
+          "printedLabels": [
+            "100",
+            "110",
+            "120",
+            "130"
+          ],
+          "interpretedNumbers": [
+            100,
+            110,
+            120,
+            130
+          ],
+          "units": "V",
+          "referenceCandidates": [],
+          "zeroTick": null,
+          "needPhotoQA": [
+            "insufficient_source_pixel_angle_anchors",
+            "all_minor_tick_tips_not_individually_photo_approved",
+            "actual_needle_tip_fit_not_approved"
+          ],
+          "approved": false
+        }
+      ],
+      "faceApproved": false
+    },
+    {
+      "id": "oh.drive_oil.1",
+      "panel": "OH11",
+      "region": "overhead",
+      "mechanism": "selector_two_angular_scales",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/OH11-STANDBY-8b7d36ff3182.png",
+        "sha256": "86cf2f1de81146756adf694b1fe01067a271c32990c1fda7752eb913442a6708",
+        "width": 1203,
+        "height": 1308
+      },
+      "pivot": {
+        "x": 266,
+        "y": 1021,
+        "evidence": "gauge-survey-stage2-3.json",
+        "state": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "pivotConflict": null,
+      "previousOverlayPivot": {
+        "x": 266,
+        "y": 1021
+      },
+      "scales": [
+        {
+          "mode": "rise",
+          "printedLabels": [
+            "0",
+            "10",
+            "20",
+            "30"
+          ],
+          "interpretedNumbers": [
+            0,
+            10,
+            20,
+            30
+          ],
+          "units": "°C",
+          "referenceCandidates": [],
+          "zeroTick": {
+            "value": 0,
+            "anglesDeg": [],
+            "state": "numeric_label_known_position_not_measured"
+          },
+          "needPhotoQA": [
+            "insufficient_source_pixel_angle_anchors",
+            "all_minor_tick_tips_not_individually_photo_approved",
+            "actual_needle_tip_fit_not_approved"
+          ],
+          "approved": false
+        },
+        {
+          "mode": "inlet",
+          "printedLabels": [
+            "80",
+            "120",
+            "160"
+          ],
+          "interpretedNumbers": [
+            80,
+            120,
+            160
+          ],
+          "units": "°C",
+          "referenceCandidates": [],
+          "zeroTick": null,
+          "needPhotoQA": [
+            "insufficient_source_pixel_angle_anchors",
+            "all_minor_tick_tips_not_individually_photo_approved",
+            "actual_needle_tip_fit_not_approved"
+          ],
+          "approved": false
+        }
+      ],
+      "faceApproved": false
+    },
+    {
+      "id": "oh.drive_oil.2",
+      "panel": "OH11",
+      "region": "overhead",
+      "mechanism": "selector_two_angular_scales",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/OH11-STANDBY-8b7d36ff3182.png",
+        "sha256": "86cf2f1de81146756adf694b1fe01067a271c32990c1fda7752eb913442a6708",
+        "width": 1203,
+        "height": 1308
+      },
+      "pivot": {
+        "x": 781,
+        "y": 1021,
+        "evidence": "gauge-survey-stage2-3.json",
+        "state": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "pivotConflict": null,
+      "previousOverlayPivot": {
+        "x": 781,
+        "y": 1021
+      },
+      "scales": [
+        {
+          "mode": "rise",
+          "printedLabels": [
+            "0",
+            "10",
+            "20",
+            "30"
+          ],
+          "interpretedNumbers": [
+            0,
+            10,
+            20,
+            30
+          ],
+          "units": "°C",
+          "referenceCandidates": [],
+          "zeroTick": {
+            "value": 0,
+            "anglesDeg": [],
+            "state": "numeric_label_known_position_not_measured"
+          },
+          "needPhotoQA": [
+            "insufficient_source_pixel_angle_anchors",
+            "all_minor_tick_tips_not_individually_photo_approved",
+            "actual_needle_tip_fit_not_approved"
+          ],
+          "approved": false
+        },
+        {
+          "mode": "inlet",
+          "printedLabels": [
+            "80",
+            "120",
+            "160"
+          ],
+          "interpretedNumbers": [
+            80,
+            120,
+            160
+          ],
+          "units": "°C",
+          "referenceCandidates": [],
+          "zeroTick": null,
+          "needPhotoQA": [
+            "insufficient_source_pixel_angle_anchors",
+            "all_minor_tick_tips_not_individually_photo_approved",
+            "actual_needle_tip_fit_not_approved"
+          ],
+          "approved": false
+        }
+      ],
+      "faceApproved": false
+    },
+    {
+      "id": "oh.ac_amps.1",
+      "panel": "OH12",
+      "region": "overhead",
+      "mechanism": "piecewise_arc",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/OH12-BUS-TRANS-09319c17e7d0.png",
+        "sha256": "709cb15a86f9038ca082136c4db59af83c7800107dfe320182bf7f4c56837e9f",
+        "width": 1024,
+        "height": 1536
+      },
+      "pivot": {
+        "x": 210,
+        "y": 265,
+        "evidence": "gauge-survey-stage2-3.json",
+        "state": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "pivotConflict": null,
+      "previousOverlayPivot": {
+        "x": 210,
+        "y": 265
+      },
+      "scales": [
+        {
+          "mode": "primary",
+          "printedLabels": [
+            "0",
+            "50",
+            "100",
+            "150",
+            "200"
+          ],
+          "interpretedNumbers": [
+            0,
+            50,
+            100,
+            150,
+            200
+          ],
+          "units": "A",
+          "referenceCandidates": [],
+          "zeroTick": {
+            "value": 0,
+            "anglesDeg": [],
+            "state": "numeric_label_known_position_not_measured"
+          },
+          "needPhotoQA": [
+            "insufficient_source_pixel_angle_anchors",
+            "all_minor_tick_tips_not_individually_photo_approved",
+            "actual_needle_tip_fit_not_approved"
+          ],
+          "approved": false
+        }
+      ],
+      "faceApproved": false
+    },
+    {
+      "id": "oh.ac_amps.2",
+      "panel": "OH12",
+      "region": "overhead",
+      "mechanism": "piecewise_arc",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/OH12-BUS-TRANS-09319c17e7d0.png",
+        "sha256": "709cb15a86f9038ca082136c4db59af83c7800107dfe320182bf7f4c56837e9f",
+        "width": 1024,
+        "height": 1536
+      },
+      "pivot": {
+        "x": 705,
+        "y": 265,
+        "evidence": "gauge-survey-stage2-3.json",
+        "state": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "pivotConflict": null,
+      "previousOverlayPivot": {
+        "x": 705,
+        "y": 265
+      },
+      "scales": [
+        {
+          "mode": "primary",
+          "printedLabels": [
+            "0",
+            "50",
+            "100",
+            "150",
+            "200"
+          ],
+          "interpretedNumbers": [
+            0,
+            50,
+            100,
+            150,
+            200
+          ],
+          "units": "A",
+          "referenceCandidates": [],
+          "zeroTick": {
+            "value": 0,
+            "anglesDeg": [],
+            "state": "numeric_label_known_position_not_measured"
+          },
+          "needPhotoQA": [
+            "insufficient_source_pixel_angle_anchors",
+            "all_minor_tick_tips_not_individually_photo_approved",
+            "actual_needle_tip_fit_not_approved"
+          ],
+          "approved": false
+        }
+      ],
+      "faceApproved": false
+    },
+    {
+      "id": "oh.ac_amps.apu",
+      "panel": "OH12",
+      "region": "overhead",
+      "mechanism": "piecewise_arc",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/OH12-BUS-TRANS-09319c17e7d0.png",
+        "sha256": "709cb15a86f9038ca082136c4db59af83c7800107dfe320182bf7f4c56837e9f",
+        "width": 1024,
+        "height": 1536
+      },
+      "pivot": {
+        "x": 724,
+        "y": 1334,
+        "evidence": "gauge-survey-stage2-3.json",
+        "state": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "pivotConflict": null,
+      "previousOverlayPivot": {
+        "x": 724,
+        "y": 1334
+      },
+      "scales": [
+        {
+          "mode": "primary",
+          "printedLabels": [
+            "0",
+            "50",
+            "100",
+            "150",
+            "200"
+          ],
+          "interpretedNumbers": [
+            0,
+            50,
+            100,
+            150,
+            200
+          ],
+          "units": "A",
+          "referenceCandidates": [],
+          "zeroTick": {
+            "value": 0,
+            "anglesDeg": [],
+            "state": "numeric_label_known_position_not_measured"
+          },
+          "needPhotoQA": [
+            "insufficient_source_pixel_angle_anchors",
+            "all_minor_tick_tips_not_individually_photo_approved",
+            "actual_needle_tip_fit_not_approved"
+          ],
+          "approved": false
+        }
+      ],
+      "faceApproved": false
+    },
+    {
+      "id": "oh.apu.egt",
+      "panel": "OH12",
+      "region": "overhead",
+      "mechanism": "near_full_circle_nonlinear",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/OH12-BUS-TRANS-09319c17e7d0.png",
+        "sha256": "709cb15a86f9038ca082136c4db59af83c7800107dfe320182bf7f4c56837e9f",
+        "width": 1024,
+        "height": 1536
+      },
+      "pivot": {
+        "x": 300,
+        "y": 1324,
+        "evidence": "gauge-survey-stage2-3.json",
+        "state": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "pivotConflict": null,
+      "previousOverlayPivot": {
+        "x": 300,
+        "y": 1324
+      },
+      "scales": [
+        {
+          "mode": "primary",
+          "printedLabels": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8"
+          ],
+          "interpretedNumbers": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "units": "°C×100",
+          "referenceCandidates": [],
+          "zeroTick": null,
+          "needPhotoQA": [
+            "insufficient_source_pixel_angle_anchors",
+            "all_minor_tick_tips_not_individually_photo_approved",
+            "actual_needle_tip_fit_not_approved"
+          ],
+          "approved": false
+        }
+      ],
+      "faceApproved": false
+    },
+    {
+      "id": "oh.cabin.diff_pressure_altitude",
+      "panel": "OH19-DIFF",
+      "region": "overhead",
+      "mechanism": "two_independent_pointers_two_scales",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/OH19-PRESS-DIFF-ALT-HORN-d6719ce57cef.png",
+        "sha256": "4c667d96ea7652e52784f5c06ee3cdde0879ca37631abf19969861afecc45fed",
+        "width": 1267,
+        "height": 1241
+      },
+      "pivot": {
+        "x": 489,
+        "y": 365,
+        "evidence": "photo-anchor-checkpoints-v1.json",
+        "state": "optical_center_estimate_needs_confirmation"
+      },
+      "pivotConflict": null,
+      "previousOverlayPivot": {
+        "x": 489,
+        "y": 365
+      },
+      "scales": [
+        {
+          "mode": "diffPressure",
+          "printedLabels": [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10"
+          ],
+          "interpretedNumbers": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "units": "psi",
+          "referenceCandidates": [
+            {
+              "value": 0,
+              "angleDeg": 0.64,
+              "point": {
+                "x": 492,
+                "y": 96
+              },
+              "source": "photo-anchor-checkpoints-v1.json",
+              "quality": "automated_source_photo_line_candidate",
+              "approved": false
+            },
+            {
+              "value": 1,
+              "angleDeg": 33.19,
+              "point": {
+                "x": 620.5,
+                "y": 164
+              },
+              "source": "photo-anchor-checkpoints-v1.json",
+              "quality": "automated_source_photo_line_candidate",
+              "approved": false
+            },
+            {
+              "value": 2,
+              "angleDeg": 64.44,
+              "point": {
+                "x": 708.5,
+                "y": 260
+              },
+              "source": "photo-anchor-checkpoints-v1.json",
+              "quality": "automated_source_photo_line_candidate",
+              "approved": false
+            },
+            {
+              "value": 3,
+              "angleDeg": 89.52,
+              "point": {
+                "x": 728.5,
+                "y": 363
+              },
+              "source": "photo-anchor-checkpoints-v1.json",
+              "quality": "automated_source_photo_line_candidate",
+              "approved": false
+            },
+            {
+              "value": 4,
+              "angleDeg": 126.82,
+              "point": {
+                "x": 686,
+                "y": 512.5
+              },
+              "source": "photo-anchor-checkpoints-v1.json",
+              "quality": "automated_source_photo_line_candidate",
+              "approved": false
+            },
+            {
+              "value": 5,
+              "angleDeg": 159.24,
+              "point": {
+                "x": 574.5,
+                "y": 590.5
+              },
+              "source": "photo-anchor-checkpoints-v1.json",
+              "quality": "automated_source_photo_line_candidate",
+              "approved": false
+            },
+            {
+              "value": 6,
+              "angleDeg": -165.85,
+              "point": {
+                "x": 430.5,
+                "y": 597
+              },
+              "source": "photo-anchor-checkpoints-v1.json",
+              "quality": "automated_source_photo_line_candidate",
+              "approved": false
+            },
+            {
+              "value": 7,
+              "angleDeg": -134.42,
+              "point": {
+                "x": 315.5,
+                "y": 535
+              },
+              "source": "photo-anchor-checkpoints-v1.json",
+              "quality": "automated_source_photo_line_candidate",
+              "approved": false
+            },
+            {
+              "value": 8,
+              "angleDeg": -103.67,
+              "point": {
+                "x": 248.5,
+                "y": 423.5
+              },
+              "source": "photo-anchor-checkpoints-v1.json",
+              "quality": "automated_source_photo_line_candidate",
+              "approved": false
+            },
+            {
+              "value": 9,
+              "angleDeg": -69.75,
+              "point": {
+                "x": 260,
+                "y": 280.5
+              },
+              "source": "photo-anchor-checkpoints-v1.json",
+              "quality": "automated_source_photo_line_candidate",
+              "approved": false
+            },
+            {
+              "value": 10,
+              "angleDeg": -37.72,
+              "point": {
+                "x": 340.5,
+                "y": 173
+              },
+              "source": "photo-anchor-checkpoints-v1.json",
+              "quality": "automated_source_photo_line_candidate",
+              "approved": false
+            }
+          ],
+          "zeroTick": {
+            "value": 0,
+            "anglesDeg": [
+              0.64
+            ],
+            "source": [
+              "photo-anchor-checkpoints-v1.json"
+            ],
+            "state": "photo_candidate_not_approved"
+          },
+          "needPhotoQA": [
+            "all_minor_tick_tips_not_individually_photo_approved",
+            "actual_needle_tip_fit_not_approved"
+          ],
+          "approved": false
+        },
+        {
+          "mode": "cabinAltitude",
+          "printedLabels": [
+            "3",
+            "10",
+            "15",
+            "20",
+            "25",
+            "30",
+            "35",
+            "40",
+            "50"
+          ],
+          "interpretedNumbers": [
+            3,
+            10,
+            15,
+            20,
+            25,
+            30,
+            35,
+            40,
+            50
+          ],
+          "units": "ft",
+          "referenceCandidates": [
+            {
+              "value": 0,
+              "angleDeg": 2.71,
+              "point": null,
+              "source": "oh19-cab-alt-photo-anchors-v1.json",
+              "quality": "source_photo_radial_candidate",
+              "approved": false
+            },
+            {
+              "value": 500,
+              "angleDeg": 13.59,
+              "point": null,
+              "source": "oh19-cab-alt-photo-anchors-v1.json",
+              "quality": "source_photo_radial_candidate",
+              "approved": false
+            },
+            {
+              "value": 1000,
+              "angleDeg": 22.37,
+              "point": null,
+              "source": "oh19-cab-alt-photo-anchors-v1.json",
+              "quality": "source_photo_radial_candidate",
+              "approved": false
+            },
+            {
+              "value": 1500,
+              "angleDeg": 31.32,
+              "point": null,
+              "source": "oh19-cab-alt-photo-anchors-v1.json",
+              "quality": "source_photo_radial_candidate",
+              "approved": false
+            },
+            {
+              "value": 2000,
+              "angleDeg": 40.34,
+              "point": null,
+              "source": "oh19-cab-alt-photo-anchors-v1.json",
+              "quality": "source_photo_radial_candidate",
+              "approved": false
+            },
+            {
+              "value": 2500,
+              "angleDeg": 50.2,
+              "point": null,
+              "source": "oh19-cab-alt-photo-anchors-v1.json",
+              "quality": "source_photo_radial_candidate",
+              "approved": false
+            },
+            {
+              "value": 3000,
+              "angleDeg": 59.98,
+              "point": null,
+              "source": "oh19-cab-alt-photo-anchors-v1.json",
+              "quality": "source_photo_radial_candidate",
+              "approved": false
+            },
+            {
+              "value": 10000,
+              "angleDeg": 108.64,
+              "point": null,
+              "source": "oh19-cab-alt-photo-anchors-v1.json",
+              "quality": "source_photo_radial_candidate",
+              "approved": false
+            },
+            {
+              "value": 15000,
+              "angleDeg": 155.65,
+              "point": null,
+              "source": "oh19-cab-alt-photo-anchors-v1.json",
+              "quality": "source_photo_radial_candidate",
+              "approved": false
+            },
+            {
+              "value": 20000,
+              "angleDeg": 200.55,
+              "point": null,
+              "source": "oh19-cab-alt-photo-anchors-v1.json",
+              "quality": "source_photo_radial_candidate",
+              "approved": false
+            },
+            {
+              "value": 25000,
+              "angleDeg": 236.57,
+              "point": null,
+              "source": "oh19-cab-alt-photo-anchors-v1.json",
+              "quality": "source_photo_radial_candidate",
+              "approved": false
+            },
+            {
+              "value": 30000,
+              "angleDeg": 262.03,
+              "point": null,
+              "source": "oh19-cab-alt-photo-anchors-v1.json",
+              "quality": "source_photo_radial_candidate",
+              "approved": false
+            },
+            {
+              "value": 35000,
+              "angleDeg": 284.48,
+              "point": null,
+              "source": "oh19-cab-alt-photo-anchors-v1.json",
+              "quality": "source_photo_radial_candidate",
+              "approved": false
+            },
+            {
+              "value": 40000,
+              "angleDeg": 304.18,
+              "point": null,
+              "source": "oh19-cab-alt-photo-anchors-v1.json",
+              "quality": "source_photo_radial_candidate",
+              "approved": false
+            },
+            {
+              "value": 50000,
+              "angleDeg": 327.37,
+              "point": null,
+              "source": "oh19-cab-alt-photo-anchors-v1.json",
+              "quality": "source_photo_radial_candidate",
+              "approved": false
+            }
+          ],
+          "zeroTick": {
+            "value": 0,
+            "anglesDeg": [
+              2.71
+            ],
+            "source": [
+              "oh19-cab-alt-photo-anchors-v1.json"
+            ],
+            "state": "photo_candidate_not_approved"
+          },
+          "needPhotoQA": [
+            "all_minor_tick_tips_not_individually_photo_approved",
+            "actual_needle_tip_fit_not_approved"
+          ],
+          "approved": false
+        }
+      ],
+      "faceApproved": false
+    },
+    {
+      "id": "oh.cabin.rate",
+      "panel": "OH19-DIFF",
+      "region": "overhead",
+      "mechanism": "signed_bidirectional_around_zero",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/OH19-PRESS-DIFF-ALT-HORN-d6719ce57cef.png",
+        "sha256": "4c667d96ea7652e52784f5c06ee3cdde0879ca37631abf19969861afecc45fed",
+        "width": 1267,
+        "height": 1241
+      },
+      "pivot": {
+        "x": 520,
+        "y": 950,
+        "evidence": "gauge-survey-stage2-3.json",
+        "state": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "pivotConflict": null,
+      "previousOverlayPivot": {
+        "x": 520,
+        "y": 950
+      },
+      "scales": [
+        {
+          "mode": "primary",
+          "printedLabels": [
+            "0",
+            ".5",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5"
+          ],
+          "interpretedNumbers": [
+            0,
+            0.5,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "units": "1000 ft/min",
+          "referenceCandidates": [],
+          "zeroTick": {
+            "value": 0,
+            "anglesDeg": [],
+            "state": "numeric_label_known_position_not_measured"
+          },
+          "needPhotoQA": [
+            "insufficient_source_pixel_angle_anchors",
+            "all_minor_tick_tips_not_individually_photo_approved",
+            "actual_needle_tip_fit_not_approved"
+          ],
+          "approved": false
+        }
+      ],
+      "faceApproved": false
+    },
+    {
+      "id": "oh.cabin.temperature",
+      "panel": "OH20",
+      "region": "overhead",
+      "mechanism": "nonlinear_piecewise_arc",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/OH20-AIR-CONDITIONING-0734da6a7726.png",
+        "sha256": "94669d21f0be8aa538b2ff3b0684683409cadf6d9fc4b55390e7147abe506121",
+        "width": 1254,
+        "height": 1254
+      },
+      "pivot": {
+        "x": 618,
+        "y": 681,
+        "evidence": "photo-anchor-checkpoints-v1.json",
+        "state": "optical_center_estimate_needs_confirmation"
+      },
+      "pivotConflict": null,
+      "previousOverlayPivot": {
+        "x": 618,
+        "y": 681
+      },
+      "scales": [
+        {
+          "mode": "primary",
+          "printedLabels": [
+            "0",
+            "20",
+            "40",
+            "60",
+            "80",
+            "100"
+          ],
+          "interpretedNumbers": [
+            0,
+            20,
+            40,
+            60,
+            80,
+            100
+          ],
+          "units": "°C",
+          "referenceCandidates": [
+            {
+              "value": 0,
+              "angleDeg": -137.27,
+              "point": {
+                "x": 515,
+                "y": 792.5
+              },
+              "source": "photo-anchor-checkpoints-v1.json",
+              "quality": "automated_source_photo_line_candidate",
+              "approved": false
+            },
+            {
+              "value": 20,
+              "angleDeg": -89.63,
+              "point": {
+                "x": 462.5,
+                "y": 680
+              },
+              "source": "photo-anchor-checkpoints-v1.json",
+              "quality": "automated_source_photo_line_candidate",
+              "approved": false
+            },
+            {
+              "value": 40,
+              "angleDeg": -46.83,
+              "point": {
+                "x": 529,
+                "y": 597.5
+              },
+              "source": "photo-anchor-checkpoints-v1.json",
+              "quality": "automated_source_photo_line_candidate",
+              "approved": false
+            },
+            {
+              "value": 80,
+              "angleDeg": 74.15,
+              "point": {
+                "x": 769.5,
+                "y": 638
+              },
+              "source": "photo-anchor-checkpoints-v1.json",
+              "quality": "automated_source_photo_line_candidate",
+              "approved": false
+            },
+            {
+              "value": 100,
+              "angleDeg": 109.54,
+              "point": {
+                "x": 757.5,
+                "y": 730.5
+              },
+              "source": "photo-anchor-checkpoints-v1.json",
+              "quality": "automated_source_photo_line_candidate",
+              "approved": false
+            }
+          ],
+          "zeroTick": {
+            "value": 0,
+            "anglesDeg": [
+              -137.27
+            ],
+            "source": [
+              "photo-anchor-checkpoints-v1.json"
+            ],
+            "state": "photo_candidate_not_approved"
+          },
+          "needPhotoQA": [
+            "all_minor_tick_tips_not_individually_photo_approved",
+            "actual_needle_tip_fit_not_approved"
+          ],
+          "approved": false
+        }
+      ],
+      "faceApproved": false
+    },
+    {
+      "id": "oh.duct.pressure_lr",
+      "panel": "OH21",
+      "region": "overhead",
+      "mechanism": "two_independent_pointers_one_scale",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/OH21-BLEED-AIR-cc78219607a3.png",
+        "sha256": "4efe8c59579e8675825ed4dabf393648cfa7f11f6c09d831d137c23f70ecfe1e",
+        "width": 1122,
+        "height": 1402
+      },
+      "pivot": {
+        "x": 544,
+        "y": 439,
+        "evidence": "photo-anchor-checkpoints-v1.json",
+        "state": "optical_center_estimate_needs_confirmation"
+      },
+      "pivotConflict": null,
+      "previousOverlayPivot": {
+        "x": 544,
+        "y": 439
+      },
+      "scales": [
+        {
+          "mode": "primary",
+          "printedLabels": [
+            "20",
+            "40",
+            "60",
+            "80",
+            "100"
+          ],
+          "interpretedNumbers": [
+            20,
+            40,
+            60,
+            80,
+            100
+          ],
+          "units": "psi",
+          "referenceCandidates": [
+            {
+              "value": 0,
+              "angleDeg": -152.06,
+              "point": {
+                "x": 478.5,
+                "y": 562.5
+              },
+              "source": "photo-anchor-checkpoints-v1.json",
+              "quality": "automated_source_photo_line_candidate",
+              "approved": false
+            },
+            {
+              "value": 20,
+              "angleDeg": -92.41,
+              "point": {
+                "x": 401.5,
+                "y": 445
+              },
+              "source": "photo-anchor-checkpoints-v1.json",
+              "quality": "automated_source_photo_line_candidate",
+              "approved": false
+            },
+            {
+              "value": 40,
+              "angleDeg": -25.96,
+              "point": {
+                "x": 479,
+                "y": 305.5
+              },
+              "source": "photo-anchor-checkpoints-v1.json",
+              "quality": "automated_source_photo_line_candidate",
+              "approved": false
+            },
+            {
+              "value": 60,
+              "angleDeg": 28.16,
+              "point": {
+                "x": 608.5,
+                "y": 318.5
+              },
+              "source": "photo-anchor-checkpoints-v1.json",
+              "quality": "automated_source_photo_line_candidate",
+              "approved": false
+            },
+            {
+              "value": 80,
+              "angleDeg": 91.2,
+              "point": {
+                "x": 687,
+                "y": 442
+              },
+              "source": "photo-anchor-checkpoints-v1.json",
+              "quality": "automated_source_photo_line_candidate",
+              "approved": false
+            },
+            {
+              "value": 100,
+              "angleDeg": 152.16,
+              "point": {
+                "x": 595.5,
+                "y": 536.5
+              },
+              "source": "photo-anchor-checkpoints-v1.json",
+              "quality": "automated_source_photo_line_candidate",
+              "approved": false
+            }
+          ],
+          "zeroTick": {
+            "value": 0,
+            "anglesDeg": [
+              -152.06
+            ],
+            "source": [
+              "photo-anchor-checkpoints-v1.json"
+            ],
+            "state": "photo_candidate_not_approved"
+          },
+          "needPhotoQA": [
+            "all_minor_tick_tips_not_individually_photo_approved",
+            "actual_needle_tip_fit_not_approved"
+          ],
+          "approved": false
+        }
+      ],
+      "faceApproved": false
+    },
+    {
+      "id": "capt.airspeed",
+      "panel": "CAPTAIN",
+      "region": "main",
+      "mechanism": "nonlinear_airspeed_arc",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png",
+        "sha256": "dea7c23ddd5d648cf51735d0fcbcc9d1e69ce37efd736ec45fb173fe766fc56b",
+        "width": 3942,
+        "height": 3591
+      },
+      "pivot": null,
+      "pivotConflict": null,
+      "previousOverlayPivot": null,
+      "scales": [
+        {
+          "mode": "primary",
+          "printedLabels": [
+            "60",
+            "80",
+            "100",
+            "120",
+            "140",
+            "160",
+            "200",
+            "250",
+            "300",
+            "350",
+            "400"
+          ],
+          "interpretedNumbers": [
+            60,
+            80,
+            100,
+            120,
+            140,
+            160,
+            200,
+            250,
+            300,
+            350,
+            400
+          ],
+          "units": "knots",
+          "referenceCandidates": [],
+          "zeroTick": null,
+          "needPhotoQA": [
+            "insufficient_source_pixel_angle_anchors",
+            "all_minor_tick_tips_not_individually_photo_approved",
+            "actual_needle_tip_fit_not_approved"
+          ],
+          "approved": false
+        }
+      ],
+      "faceApproved": false
+    },
+    {
+      "id": "capt.rmi",
+      "panel": "CAPTAIN",
+      "region": "main",
+      "mechanism": "rotating_compass_card_with_two_bearing_pointers",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png",
+        "sha256": "dea7c23ddd5d648cf51735d0fcbcc9d1e69ce37efd736ec45fb173fe766fc56b",
+        "width": 3942,
+        "height": 3591
+      },
+      "pivot": null,
+      "pivotConflict": null,
+      "previousOverlayPivot": null,
+      "scales": [
+        {
+          "mode": "primary",
+          "printedLabels": [
+            "0",
+            "3",
+            "6",
+            "9",
+            "12",
+            "15",
+            "18",
+            "21",
+            "24",
+            "27",
+            "30",
+            "33"
+          ],
+          "interpretedNumbers": [
+            0,
+            30,
+            60,
+            90,
+            120,
+            150,
+            180,
+            210,
+            240,
+            270,
+            300,
+            330
+          ],
+          "units": "degrees",
+          "referenceCandidates": [],
+          "zeroTick": {
+            "value": 0,
+            "anglesDeg": [],
+            "state": "numeric_label_known_position_not_measured"
+          },
+          "needPhotoQA": [
+            "insufficient_source_pixel_angle_anchors",
+            "all_minor_tick_tips_not_individually_photo_approved",
+            "actual_needle_tip_fit_not_approved"
+          ],
+          "approved": false
+        }
+      ],
+      "faceApproved": false
+    },
+    {
+      "id": "capt.altimeter",
+      "panel": "CAPTAIN",
+      "region": "main",
+      "mechanism": "multi_turn_altimeter_and_counters",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png",
+        "sha256": "dea7c23ddd5d648cf51735d0fcbcc9d1e69ce37efd736ec45fb173fe766fc56b",
+        "width": 3942,
+        "height": 3591
+      },
+      "pivot": null,
+      "pivotConflict": null,
+      "previousOverlayPivot": null,
+      "scales": [
+        {
+          "mode": "primary",
+          "printedLabels": [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9"
+          ],
+          "interpretedNumbers": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "units": "ft",
+          "referenceCandidates": [],
+          "zeroTick": {
+            "value": 0,
+            "anglesDeg": [],
+            "state": "numeric_label_known_position_not_measured"
+          },
+          "needPhotoQA": [
+            "insufficient_source_pixel_angle_anchors",
+            "all_minor_tick_tips_not_individually_photo_approved",
+            "actual_needle_tip_fit_not_approved"
+          ],
+          "approved": false
+        }
+      ],
+      "faceApproved": false
+    },
+    {
+      "id": "capt.alt_ias_combined",
+      "panel": "CAPTAIN",
+      "region": "main",
+      "mechanism": "composite_displays_separate_alt_ias",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png",
+        "sha256": "dea7c23ddd5d648cf51735d0fcbcc9d1e69ce37efd736ec45fb173fe766fc56b",
+        "width": 3942,
+        "height": 3591
+      },
+      "pivot": null,
+      "pivotConflict": null,
+      "previousOverlayPivot": null,
+      "scales": [
+        {
+          "mode": "alt",
+          "printedLabels": [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6"
+          ],
+          "interpretedNumbers": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "units": "multiple",
+          "referenceCandidates": [],
+          "zeroTick": {
+            "value": 0,
+            "anglesDeg": [],
+            "state": "numeric_label_known_position_not_measured"
+          },
+          "needPhotoQA": [
+            "insufficient_source_pixel_angle_anchors",
+            "all_minor_tick_tips_not_individually_photo_approved",
+            "actual_needle_tip_fit_not_approved"
+          ],
+          "approved": false
+        },
+        {
+          "mode": "ias",
+          "printedLabels": [
+            "0",
+            "40"
+          ],
+          "interpretedNumbers": [
+            0,
+            40
+          ],
+          "units": "multiple",
+          "referenceCandidates": [],
+          "zeroTick": {
+            "value": 0,
+            "anglesDeg": [],
+            "state": "numeric_label_known_position_not_measured"
+          },
+          "needPhotoQA": [
+            "insufficient_source_pixel_angle_anchors",
+            "all_minor_tick_tips_not_individually_photo_approved",
+            "actual_needle_tip_fit_not_approved"
+          ],
+          "approved": false
+        }
+      ],
+      "faceApproved": false
+    },
+    {
+      "id": "capt.vertical_speed",
+      "panel": "CAPTAIN",
+      "region": "main",
+      "mechanism": "signed_bidirectional_around_zero",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png",
+        "sha256": "dea7c23ddd5d648cf51735d0fcbcc9d1e69ce37efd736ec45fb173fe766fc56b",
+        "width": 3942,
+        "height": 3591
+      },
+      "pivot": null,
+      "pivotConflict": null,
+      "previousOverlayPivot": null,
+      "scales": [
+        {
+          "mode": "primary",
+          "printedLabels": [
+            "0",
+            "1",
+            "2",
+            "4",
+            "6",
+            "-1",
+            "-2",
+            "-4",
+            "-6"
+          ],
+          "interpretedNumbers": [
+            0,
+            1,
+            2,
+            4,
+            6,
+            -1,
+            -2,
+            -4,
+            -6
+          ],
+          "units": "1000 ft/min",
+          "referenceCandidates": [],
+          "zeroTick": {
+            "value": 0,
+            "anglesDeg": [],
+            "state": "numeric_label_known_position_not_measured"
+          },
+          "needPhotoQA": [
+            "insufficient_source_pixel_angle_anchors",
+            "all_minor_tick_tips_not_individually_photo_approved",
+            "actual_needle_tip_fit_not_approved"
+          ],
+          "approved": false
+        }
+      ],
+      "faceApproved": false
+    },
+    {
+      "id": "capt.clock",
+      "panel": "CAPTAIN",
+      "region": "main",
+      "mechanism": "multi_hand_clock",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png",
+        "sha256": "dea7c23ddd5d648cf51735d0fcbcc9d1e69ce37efd736ec45fb173fe766fc56b",
+        "width": 3942,
+        "height": 3591
+      },
+      "pivot": null,
+      "pivotConflict": null,
+      "previousOverlayPivot": null,
+      "scales": [
+        {
+          "mode": "primary",
+          "printedLabels": [
+            "0",
+            "10",
+            "20",
+            "30",
+            "40",
+            "50"
+          ],
+          "interpretedNumbers": [
+            0,
+            10,
+            20,
+            30,
+            40,
+            50
+          ],
+          "units": "time",
+          "referenceCandidates": [],
+          "zeroTick": {
+            "value": 0,
+            "anglesDeg": [],
+            "state": "numeric_label_known_position_not_measured"
+          },
+          "needPhotoQA": [
+            "insufficient_source_pixel_angle_anchors",
+            "all_minor_tick_tips_not_individually_photo_approved",
+            "actual_needle_tip_fit_not_approved"
+          ],
+          "approved": false
+        }
+      ],
+      "faceApproved": false
+    },
+    {
+      "id": "eng.left_upper_20_20",
+      "panel": "ENGINE",
+      "region": "main",
+      "mechanism": "unidentified_indicator",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+        "sha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+        "width": 1235,
+        "height": 1274
+      },
+      "pivot": null,
+      "pivotConflict": null,
+      "previousOverlayPivot": null,
+      "scales": [
+        {
+          "mode": "primary",
+          "printedLabels": [
+            "20",
+            "20"
+          ],
+          "interpretedNumbers": [],
+          "units": "unknown",
+          "referenceCandidates": [],
+          "zeroTick": null,
+          "needPhotoQA": [
+            "insufficient_source_pixel_angle_anchors",
+            "all_minor_tick_tips_not_individually_photo_approved",
+            "actual_needle_tip_fit_not_approved"
+          ],
+          "approved": false
+        }
+      ],
+      "faceApproved": false
+    },
+    {
+      "id": "eng.fuel_qty.center",
+      "panel": "ENGINE",
+      "region": "main",
+      "mechanism": "arc_with_digital_readout",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+        "sha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+        "width": 1235,
+        "height": 1274
+      },
+      "pivot": null,
+      "pivotConflict": null,
+      "previousOverlayPivot": null,
+      "scales": [
+        {
+          "mode": "primary",
+          "printedLabels": [
+            "%"
+          ],
+          "interpretedNumbers": [],
+          "units": "%",
+          "referenceCandidates": [],
+          "zeroTick": null,
+          "needPhotoQA": [
+            "insufficient_source_pixel_angle_anchors",
+            "all_minor_tick_tips_not_individually_photo_approved",
+            "actual_needle_tip_fit_not_approved"
+          ],
+          "approved": false
+        }
+      ],
+      "faceApproved": false
+    },
+    {
+      "id": "eng.fuel_qty.1",
+      "panel": "ENGINE",
+      "region": "main",
+      "mechanism": "arc_with_digital_readout",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+        "sha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+        "width": 1235,
+        "height": 1274
+      },
+      "pivot": null,
+      "pivotConflict": null,
+      "previousOverlayPivot": null,
+      "scales": [
+        {
+          "mode": "primary",
+          "printedLabels": [
+            "%"
+          ],
+          "interpretedNumbers": [],
+          "units": "%",
+          "referenceCandidates": [],
+          "zeroTick": null,
+          "needPhotoQA": [
+            "insufficient_source_pixel_angle_anchors",
+            "all_minor_tick_tips_not_individually_photo_approved",
+            "actual_needle_tip_fit_not_approved"
+          ],
+          "approved": false
+        }
+      ],
+      "faceApproved": false
+    },
+    {
+      "id": "eng.fuel_qty.2",
+      "panel": "ENGINE",
+      "region": "main",
+      "mechanism": "arc_with_digital_readout",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+        "sha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+        "width": 1235,
+        "height": 1274
+      },
+      "pivot": null,
+      "pivotConflict": null,
+      "previousOverlayPivot": null,
+      "scales": [
+        {
+          "mode": "primary",
+          "printedLabels": [
+            "%"
+          ],
+          "interpretedNumbers": [],
+          "units": "%",
+          "referenceCandidates": [],
+          "zeroTick": null,
+          "needPhotoQA": [
+            "insufficient_source_pixel_angle_anchors",
+            "all_minor_tick_tips_not_individually_photo_approved",
+            "actual_needle_tip_fit_not_approved"
+          ],
+          "approved": false
+        }
+      ],
+      "faceApproved": false
+    },
+    {
+      "id": "eng.n1.1",
+      "panel": "ENGINE",
+      "region": "main",
+      "mechanism": "full_arc_nonuniform",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+        "sha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+        "width": 1235,
+        "height": 1274
+      },
+      "pivot": null,
+      "pivotConflict": null,
+      "previousOverlayPivot": null,
+      "scales": [
+        {
+          "mode": "primary",
+          "printedLabels": [
+            "0",
+            "2",
+            "4",
+            "6",
+            "8",
+            "10",
+            "12"
+          ],
+          "interpretedNumbers": [
+            0,
+            2,
+            4,
+            6,
+            8,
+            10,
+            12
+          ],
+          "units": "%RPM",
+          "referenceCandidates": [],
+          "zeroTick": {
+            "value": 0,
+            "anglesDeg": [],
+            "state": "numeric_label_known_position_not_measured"
+          },
+          "needPhotoQA": [
+            "insufficient_source_pixel_angle_anchors",
+            "all_minor_tick_tips_not_individually_photo_approved",
+            "actual_needle_tip_fit_not_approved"
+          ],
+          "approved": false
+        }
+      ],
+      "faceApproved": false
+    },
+    {
+      "id": "eng.n1.2",
+      "panel": "ENGINE",
+      "region": "main",
+      "mechanism": "full_arc_nonuniform",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+        "sha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+        "width": 1235,
+        "height": 1274
+      },
+      "pivot": null,
+      "pivotConflict": null,
+      "previousOverlayPivot": null,
+      "scales": [
+        {
+          "mode": "primary",
+          "printedLabels": [
+            "0",
+            "2",
+            "4",
+            "6",
+            "8",
+            "10",
+            "12"
+          ],
+          "interpretedNumbers": [
+            0,
+            2,
+            4,
+            6,
+            8,
+            10,
+            12
+          ],
+          "units": "%RPM",
+          "referenceCandidates": [],
+          "zeroTick": {
+            "value": 0,
+            "anglesDeg": [],
+            "state": "numeric_label_known_position_not_measured"
+          },
+          "needPhotoQA": [
+            "insufficient_source_pixel_angle_anchors",
+            "all_minor_tick_tips_not_individually_photo_approved",
+            "actual_needle_tip_fit_not_approved"
+          ],
+          "approved": false
+        }
+      ],
+      "faceApproved": false
+    },
+    {
+      "id": "eng.egt.1",
+      "panel": "ENGINE",
+      "region": "main",
+      "mechanism": "color_band_arc_unlabeled",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+        "sha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+        "width": 1235,
+        "height": 1274
+      },
+      "pivot": {
+        "x": 535,
+        "y": 723,
+        "evidence": "gauge-survey-stage2-3.json",
+        "state": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "pivotConflict": null,
+      "previousOverlayPivot": {
+        "x": 535,
+        "y": 723
+      },
+      "scales": [
+        {
+          "mode": "primary",
+          "printedLabels": [],
+          "interpretedNumbers": [],
+          "units": "°C",
+          "referenceCandidates": [],
+          "zeroTick": null,
+          "needPhotoQA": [
+            "insufficient_source_pixel_angle_anchors",
+            "all_minor_tick_tips_not_individually_photo_approved",
+            "actual_needle_tip_fit_not_approved"
+          ],
+          "approved": false
+        }
+      ],
+      "faceApproved": false
+    },
+    {
+      "id": "eng.egt.2",
+      "panel": "ENGINE",
+      "region": "main",
+      "mechanism": "color_band_arc_unlabeled",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+        "sha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+        "width": 1235,
+        "height": 1274
+      },
+      "pivot": {
+        "x": 724,
+        "y": 723,
+        "evidence": "gauge-survey-stage2-3.json",
+        "state": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "pivotConflict": null,
+      "previousOverlayPivot": {
+        "x": 724,
+        "y": 723
+      },
+      "scales": [
+        {
+          "mode": "primary",
+          "printedLabels": [],
+          "interpretedNumbers": [],
+          "units": "°C",
+          "referenceCandidates": [],
+          "zeroTick": null,
+          "needPhotoQA": [
+            "insufficient_source_pixel_angle_anchors",
+            "all_minor_tick_tips_not_individually_photo_approved",
+            "actual_needle_tip_fit_not_approved"
+          ],
+          "approved": false
+        }
+      ],
+      "faceApproved": false
+    },
+    {
+      "id": "eng.n2.1",
+      "panel": "ENGINE",
+      "region": "main",
+      "mechanism": "color_band_arc_unlabeled",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+        "sha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+        "width": 1235,
+        "height": 1274
+      },
+      "pivot": {
+        "x": 535,
+        "y": 900,
+        "evidence": "gauge-survey-stage2-3.json",
+        "state": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "pivotConflict": null,
+      "previousOverlayPivot": {
+        "x": 535,
+        "y": 900
+      },
+      "scales": [
+        {
+          "mode": "primary",
+          "printedLabels": [],
+          "interpretedNumbers": [],
+          "units": "%RPM",
+          "referenceCandidates": [],
+          "zeroTick": null,
+          "needPhotoQA": [
+            "insufficient_source_pixel_angle_anchors",
+            "all_minor_tick_tips_not_individually_photo_approved",
+            "actual_needle_tip_fit_not_approved"
+          ],
+          "approved": false
+        }
+      ],
+      "faceApproved": false
+    },
+    {
+      "id": "eng.n2.2",
+      "panel": "ENGINE",
+      "region": "main",
+      "mechanism": "color_band_arc_unlabeled",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+        "sha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+        "width": 1235,
+        "height": 1274
+      },
+      "pivot": {
+        "x": 724,
+        "y": 900,
+        "evidence": "gauge-survey-stage2-3.json",
+        "state": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "pivotConflict": null,
+      "previousOverlayPivot": {
+        "x": 724,
+        "y": 900
+      },
+      "scales": [
+        {
+          "mode": "primary",
+          "printedLabels": [],
+          "interpretedNumbers": [],
+          "units": "%RPM",
+          "referenceCandidates": [],
+          "zeroTick": null,
+          "needPhotoQA": [
+            "insufficient_source_pixel_angle_anchors",
+            "all_minor_tick_tips_not_individually_photo_approved",
+            "actual_needle_tip_fit_not_approved"
+          ],
+          "approved": false
+        }
+      ],
+      "faceApproved": false
+    },
+    {
+      "id": "eng.fuel_flow.1",
+      "panel": "ENGINE",
+      "region": "main",
+      "mechanism": "dual_mode_fuel_flow_used",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+        "sha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+        "width": 1235,
+        "height": 1274
+      },
+      "pivot": null,
+      "pivotConflict": null,
+      "previousOverlayPivot": null,
+      "scales": [
+        {
+          "mode": "primary",
+          "printedLabels": [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6"
+          ],
+          "interpretedNumbers": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "units": "kg/h or kg",
+          "referenceCandidates": [],
+          "zeroTick": {
+            "value": 0,
+            "anglesDeg": [],
+            "state": "numeric_label_known_position_not_measured"
+          },
+          "needPhotoQA": [
+            "insufficient_source_pixel_angle_anchors",
+            "all_minor_tick_tips_not_individually_photo_approved",
+            "actual_needle_tip_fit_not_approved"
+          ],
+          "approved": false
+        }
+      ],
+      "faceApproved": false
+    },
+    {
+      "id": "eng.fuel_flow.2",
+      "panel": "ENGINE",
+      "region": "main",
+      "mechanism": "dual_mode_fuel_flow_used",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+        "sha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+        "width": 1235,
+        "height": 1274
+      },
+      "pivot": null,
+      "pivotConflict": null,
+      "previousOverlayPivot": null,
+      "scales": [
+        {
+          "mode": "primary",
+          "printedLabels": [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6"
+          ],
+          "interpretedNumbers": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "units": "kg/h or kg",
+          "referenceCandidates": [],
+          "zeroTick": {
+            "value": 0,
+            "anglesDeg": [],
+            "state": "numeric_label_known_position_not_measured"
+          },
+          "needPhotoQA": [
+            "insufficient_source_pixel_angle_anchors",
+            "all_minor_tick_tips_not_individually_photo_approved",
+            "actual_needle_tip_fit_not_approved"
+          ],
+          "approved": false
+        }
+      ],
+      "faceApproved": false
+    },
+    {
+      "id": "eng.oil_pressure.1",
+      "panel": "ENGINE",
+      "region": "main",
+      "mechanism": "piecewise_arc_colored_limits",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+        "sha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+        "width": 1235,
+        "height": 1274
+      },
+      "pivot": null,
+      "pivotConflict": null,
+      "previousOverlayPivot": null,
+      "scales": [
+        {
+          "mode": "primary",
+          "printedLabels": [
+            "0",
+            "50",
+            "100"
+          ],
+          "interpretedNumbers": [
+            0,
+            50,
+            100
+          ],
+          "units": "psi",
+          "referenceCandidates": [],
+          "zeroTick": {
+            "value": 0,
+            "anglesDeg": [],
+            "state": "numeric_label_known_position_not_measured"
+          },
+          "needPhotoQA": [
+            "insufficient_source_pixel_angle_anchors",
+            "all_minor_tick_tips_not_individually_photo_approved",
+            "actual_needle_tip_fit_not_approved"
+          ],
+          "approved": false
+        }
+      ],
+      "faceApproved": false
+    },
+    {
+      "id": "eng.oil_pressure.2",
+      "panel": "ENGINE",
+      "region": "main",
+      "mechanism": "piecewise_arc_colored_limits",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+        "sha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+        "width": 1235,
+        "height": 1274
+      },
+      "pivot": null,
+      "pivotConflict": null,
+      "previousOverlayPivot": null,
+      "scales": [
+        {
+          "mode": "primary",
+          "printedLabels": [
+            "0",
+            "50",
+            "100"
+          ],
+          "interpretedNumbers": [
+            0,
+            50,
+            100
+          ],
+          "units": "psi",
+          "referenceCandidates": [],
+          "zeroTick": {
+            "value": 0,
+            "anglesDeg": [],
+            "state": "numeric_label_known_position_not_measured"
+          },
+          "needPhotoQA": [
+            "insufficient_source_pixel_angle_anchors",
+            "all_minor_tick_tips_not_individually_photo_approved",
+            "actual_needle_tip_fit_not_approved"
+          ],
+          "approved": false
+        }
+      ],
+      "faceApproved": false
+    },
+    {
+      "id": "eng.oil_temperature.1",
+      "panel": "ENGINE",
+      "region": "main",
+      "mechanism": "piecewise_arc_colored_limits",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+        "sha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+        "width": 1235,
+        "height": 1274
+      },
+      "pivot": null,
+      "pivotConflict": null,
+      "previousOverlayPivot": null,
+      "scales": [
+        {
+          "mode": "primary",
+          "printedLabels": [
+            "0",
+            "100",
+            "200"
+          ],
+          "interpretedNumbers": [
+            0,
+            100,
+            200
+          ],
+          "units": "°C",
+          "referenceCandidates": [],
+          "zeroTick": {
+            "value": 0,
+            "anglesDeg": [],
+            "state": "numeric_label_known_position_not_measured"
+          },
+          "needPhotoQA": [
+            "insufficient_source_pixel_angle_anchors",
+            "all_minor_tick_tips_not_individually_photo_approved",
+            "actual_needle_tip_fit_not_approved"
+          ],
+          "approved": false
+        }
+      ],
+      "faceApproved": false
+    },
+    {
+      "id": "eng.oil_temperature.2",
+      "panel": "ENGINE",
+      "region": "main",
+      "mechanism": "piecewise_arc_colored_limits",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+        "sha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+        "width": 1235,
+        "height": 1274
+      },
+      "pivot": null,
+      "pivotConflict": null,
+      "previousOverlayPivot": null,
+      "scales": [
+        {
+          "mode": "primary",
+          "printedLabels": [
+            "0",
+            "100",
+            "200"
+          ],
+          "interpretedNumbers": [
+            0,
+            100,
+            200
+          ],
+          "units": "°C",
+          "referenceCandidates": [],
+          "zeroTick": {
+            "value": 0,
+            "anglesDeg": [],
+            "state": "numeric_label_known_position_not_measured"
+          },
+          "needPhotoQA": [
+            "insufficient_source_pixel_angle_anchors",
+            "all_minor_tick_tips_not_individually_photo_approved",
+            "actual_needle_tip_fit_not_approved"
+          ],
+          "approved": false
+        }
+      ],
+      "faceApproved": false
+    },
+    {
+      "id": "eng.vibration.1",
+      "panel": "ENGINE",
+      "region": "main",
+      "mechanism": "piecewise_arc",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+        "sha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+        "width": 1235,
+        "height": 1274
+      },
+      "pivot": null,
+      "pivotConflict": null,
+      "previousOverlayPivot": null,
+      "scales": [
+        {
+          "mode": "primary",
+          "printedLabels": [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5"
+          ],
+          "interpretedNumbers": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "units": "units",
+          "referenceCandidates": [],
+          "zeroTick": {
+            "value": 0,
+            "anglesDeg": [],
+            "state": "numeric_label_known_position_not_measured"
+          },
+          "needPhotoQA": [
+            "insufficient_source_pixel_angle_anchors",
+            "all_minor_tick_tips_not_individually_photo_approved",
+            "actual_needle_tip_fit_not_approved"
+          ],
+          "approved": false
+        }
+      ],
+      "faceApproved": false
+    },
+    {
+      "id": "eng.vibration.2",
+      "panel": "ENGINE",
+      "region": "main",
+      "mechanism": "piecewise_arc",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+        "sha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+        "width": 1235,
+        "height": 1274
+      },
+      "pivot": null,
+      "pivotConflict": null,
+      "previousOverlayPivot": null,
+      "scales": [
+        {
+          "mode": "primary",
+          "printedLabels": [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5"
+          ],
+          "interpretedNumbers": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "units": "units",
+          "referenceCandidates": [],
+          "zeroTick": {
+            "value": 0,
+            "anglesDeg": [],
+            "state": "numeric_label_known_position_not_measured"
+          },
+          "needPhotoQA": [
+            "insufficient_source_pixel_angle_anchors",
+            "all_minor_tick_tips_not_individually_photo_approved",
+            "actual_needle_tip_fit_not_approved"
+          ],
+          "approved": false
+        }
+      ],
+      "faceApproved": false
+    },
+    {
+      "id": "eng.hyd_pressure.a",
+      "panel": "ENGINE",
+      "region": "main",
+      "mechanism": "piecewise_arc_colored_limits",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+        "sha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+        "width": 1235,
+        "height": 1274
+      },
+      "pivot": null,
+      "pivotConflict": null,
+      "previousOverlayPivot": null,
+      "scales": [
+        {
+          "mode": "primary",
+          "printedLabels": [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4"
+          ],
+          "interpretedNumbers": [
+            0,
+            1,
+            2,
+            3,
+            4
+          ],
+          "units": "1000 psi",
+          "referenceCandidates": [],
+          "zeroTick": {
+            "value": 0,
+            "anglesDeg": [],
+            "state": "numeric_label_known_position_not_measured"
+          },
+          "needPhotoQA": [
+            "insufficient_source_pixel_angle_anchors",
+            "all_minor_tick_tips_not_individually_photo_approved",
+            "actual_needle_tip_fit_not_approved"
+          ],
+          "approved": false
+        }
+      ],
+      "faceApproved": false
+    },
+    {
+      "id": "eng.hyd_pressure.b",
+      "panel": "ENGINE",
+      "region": "main",
+      "mechanism": "piecewise_arc_colored_limits",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+        "sha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+        "width": 1235,
+        "height": 1274
+      },
+      "pivot": null,
+      "pivotConflict": null,
+      "previousOverlayPivot": null,
+      "scales": [
+        {
+          "mode": "primary",
+          "printedLabels": [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4"
+          ],
+          "interpretedNumbers": [
+            0,
+            1,
+            2,
+            3,
+            4
+          ],
+          "units": "1000 psi",
+          "referenceCandidates": [],
+          "zeroTick": {
+            "value": 0,
+            "anglesDeg": [],
+            "state": "numeric_label_known_position_not_measured"
+          },
+          "needPhotoQA": [
+            "insufficient_source_pixel_angle_anchors",
+            "all_minor_tick_tips_not_individually_photo_approved",
+            "actual_needle_tip_fit_not_approved"
+          ],
+          "approved": false
+        }
+      ],
+      "faceApproved": false
+    },
+    {
+      "id": "fo.flap_position",
+      "panel": "FO-INNER",
+      "region": "main",
+      "mechanism": "two_independent_pointers_one_scale",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Right_Main_Instruments_Blank.png",
+        "sha256": "171bf9e8d21347e7a522ebc86b19cfe0b967f0503d26c483d8f3d685f719576a",
+        "width": 918,
+        "height": 1713
+      },
+      "pivot": null,
+      "pivotConflict": null,
+      "previousOverlayPivot": null,
+      "scales": [
+        {
+          "mode": "primary",
+          "printedLabels": [
+            "UP",
+            "1",
+            "2",
+            "5",
+            "10",
+            "15",
+            "25",
+            "30",
+            "40"
+          ],
+          "interpretedNumbers": [
+            0,
+            1,
+            2,
+            5,
+            10,
+            15,
+            25,
+            30,
+            40
+          ],
+          "units": "flap units",
+          "referenceCandidates": [],
+          "zeroTick": {
+            "value": 0,
+            "anglesDeg": [],
+            "state": "numeric_label_known_position_not_measured"
+          },
+          "needPhotoQA": [
+            "insufficient_source_pixel_angle_anchors",
+            "all_minor_tick_tips_not_individually_photo_approved",
+            "actual_needle_tip_fit_not_approved"
+          ],
+          "approved": false
+        }
+      ],
+      "faceApproved": false
+    },
+    {
+      "id": "fo.hyd_brake_pressure",
+      "panel": "FO-INNER",
+      "region": "main",
+      "mechanism": "piecewise_arc_colored_limits",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Right_Main_Instruments_Blank.png",
+        "sha256": "171bf9e8d21347e7a522ebc86b19cfe0b967f0503d26c483d8f3d685f719576a",
+        "width": 918,
+        "height": 1713
+      },
+      "pivot": null,
+      "pivotConflict": null,
+      "previousOverlayPivot": null,
+      "scales": [
+        {
+          "mode": "primary",
+          "printedLabels": [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4"
+          ],
+          "interpretedNumbers": [
+            0,
+            1,
+            2,
+            3,
+            4
+          ],
+          "units": "1000 psi",
+          "referenceCandidates": [],
+          "zeroTick": {
+            "value": 0,
+            "anglesDeg": [],
+            "state": "numeric_label_known_position_not_measured"
+          },
+          "needPhotoQA": [
+            "insufficient_source_pixel_angle_anchors",
+            "all_minor_tick_tips_not_individually_photo_approved",
+            "actual_needle_tip_fit_not_approved"
+          ],
+          "approved": false
+        }
+      ],
+      "faceApproved": false
+    },
+    {
+      "id": "fo.airspeed",
+      "panel": "FO-INNER",
+      "region": "main",
+      "mechanism": "nonlinear_airspeed_arc",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Right_Main_Instruments_Blank.png",
+        "sha256": "171bf9e8d21347e7a522ebc86b19cfe0b967f0503d26c483d8f3d685f719576a",
+        "width": 918,
+        "height": 1713
+      },
+      "pivot": null,
+      "pivotConflict": null,
+      "previousOverlayPivot": null,
+      "scales": [
+        {
+          "mode": "primary",
+          "printedLabels": [
+            "0",
+            "80",
+            "100",
+            "120",
+            "140",
+            "160",
+            "180",
+            "200",
+            "250",
+            "300",
+            "350",
+            "400"
+          ],
+          "interpretedNumbers": [
+            0,
+            80,
+            100,
+            120,
+            140,
+            160,
+            180,
+            200,
+            250,
+            300,
+            350,
+            400
+          ],
+          "units": "knots",
+          "referenceCandidates": [],
+          "zeroTick": {
+            "value": 0,
+            "anglesDeg": [],
+            "state": "numeric_label_known_position_not_measured"
+          },
+          "needPhotoQA": [
+            "insufficient_source_pixel_angle_anchors",
+            "all_minor_tick_tips_not_individually_photo_approved",
+            "actual_needle_tip_fit_not_approved"
+          ],
+          "approved": false
+        }
+      ],
+      "faceApproved": false
+    },
+    {
+      "id": "fo.rmi",
+      "panel": "FO-INNER",
+      "region": "main",
+      "mechanism": "rotating_compass_card_with_two_bearing_pointers",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Right_Main_Instruments_Blank.png",
+        "sha256": "171bf9e8d21347e7a522ebc86b19cfe0b967f0503d26c483d8f3d685f719576a",
+        "width": 918,
+        "height": 1713
+      },
+      "pivot": null,
+      "pivotConflict": null,
+      "previousOverlayPivot": null,
+      "scales": [
+        {
+          "mode": "primary",
+          "printedLabels": [
+            "0",
+            "3",
+            "6",
+            "9",
+            "12",
+            "15",
+            "18",
+            "21",
+            "24",
+            "27",
+            "30",
+            "33"
+          ],
+          "interpretedNumbers": [
+            0,
+            30,
+            60,
+            90,
+            120,
+            150,
+            180,
+            210,
+            240,
+            270,
+            300,
+            330
+          ],
+          "units": "degrees",
+          "referenceCandidates": [],
+          "zeroTick": {
+            "value": 0,
+            "anglesDeg": [],
+            "state": "numeric_label_known_position_not_measured"
+          },
+          "needPhotoQA": [
+            "insufficient_source_pixel_angle_anchors",
+            "all_minor_tick_tips_not_individually_photo_approved",
+            "actual_needle_tip_fit_not_approved"
+          ],
+          "approved": false
+        }
+      ],
+      "faceApproved": false
+    },
+    {
+      "id": "fo.left_linear",
+      "panel": "FO-INNER",
+      "region": "main",
+      "mechanism": "linear_indicator",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Right_Main_Instruments_Blank.png",
+        "sha256": "171bf9e8d21347e7a522ebc86b19cfe0b967f0503d26c483d8f3d685f719576a",
+        "width": 918,
+        "height": 1713
+      },
+      "pivot": null,
+      "pivotConflict": null,
+      "previousOverlayPivot": null,
+      "scales": [
+        {
+          "mode": "primary",
+          "printedLabels": [
+            "0",
+            "2",
+            "4",
+            "6",
+            "8",
+            "10"
+          ],
+          "interpretedNumbers": [
+            0,
+            2,
+            4,
+            6,
+            8,
+            10
+          ],
+          "units": "unverified",
+          "referenceCandidates": [],
+          "zeroTick": {
+            "value": 0,
+            "anglesDeg": [],
+            "state": "numeric_label_known_position_not_measured"
+          },
+          "needPhotoQA": [
+            "insufficient_source_pixel_angle_anchors",
+            "all_minor_tick_tips_not_individually_photo_approved",
+            "actual_needle_tip_fit_not_approved"
+          ],
+          "approved": false
+        }
+      ],
+      "faceApproved": false
+    },
+    {
+      "id": "fo.right_linear",
+      "panel": "FO-INNER",
+      "region": "main",
+      "mechanism": "linear_indicator",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Right_Main_Instruments_Blank.png",
+        "sha256": "171bf9e8d21347e7a522ebc86b19cfe0b967f0503d26c483d8f3d685f719576a",
+        "width": 918,
+        "height": 1713
+      },
+      "pivot": null,
+      "pivotConflict": null,
+      "previousOverlayPivot": null,
+      "scales": [
+        {
+          "mode": "primary",
+          "printedLabels": [
+            "0",
+            "2",
+            "4",
+            "6",
+            "8",
+            "10"
+          ],
+          "interpretedNumbers": [
+            0,
+            2,
+            4,
+            6,
+            8,
+            10
+          ],
+          "units": "unverified",
+          "referenceCandidates": [],
+          "zeroTick": {
+            "value": 0,
+            "anglesDeg": [],
+            "state": "numeric_label_known_position_not_measured"
+          },
+          "needPhotoQA": [
+            "insufficient_source_pixel_angle_anchors",
+            "all_minor_tick_tips_not_individually_photo_approved",
+            "actual_needle_tip_fit_not_approved"
+          ],
+          "approved": false
+        }
+      ],
+      "faceApproved": false
+    },
+    {
+      "id": "fo.outer_altimeter",
+      "panel": "FO-OUTER",
+      "region": "main",
+      "mechanism": "multi_turn_altimeter_and_counters",
+      "source": {
+        "asset": "file_000000006c00820ab145b3682f686256.png",
+        "sha256": "b2439666f75ddbcab15835b532d26a7ad2d1ab669be5f48774d656c1b8915a3c",
+        "width": 1123,
+        "height": 1400
+      },
+      "pivot": null,
+      "pivotConflict": null,
+      "previousOverlayPivot": null,
+      "scales": [
+        {
+          "mode": "primary",
+          "printedLabels": [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9"
+          ],
+          "interpretedNumbers": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "units": "ft",
+          "referenceCandidates": [],
+          "zeroTick": {
+            "value": 0,
+            "anglesDeg": [],
+            "state": "numeric_label_known_position_not_measured"
+          },
+          "needPhotoQA": [
+            "insufficient_source_pixel_angle_anchors",
+            "all_minor_tick_tips_not_individually_photo_approved",
+            "actual_needle_tip_fit_not_approved"
+          ],
+          "approved": false
+        }
+      ],
+      "faceApproved": false
+    },
+    {
+      "id": "fo.outer_vertical_speed",
+      "panel": "FO-OUTER",
+      "region": "main",
+      "mechanism": "signed_bidirectional_around_zero",
+      "source": {
+        "asset": "file_000000006c00820ab145b3682f686256.png",
+        "sha256": "b2439666f75ddbcab15835b532d26a7ad2d1ab669be5f48774d656c1b8915a3c",
+        "width": 1123,
+        "height": 1400
+      },
+      "pivot": null,
+      "pivotConflict": null,
+      "previousOverlayPivot": null,
+      "scales": [
+        {
+          "mode": "primary",
+          "printedLabels": [
+            "0",
+            "1",
+            "2",
+            "4",
+            "6",
+            "-1",
+            "-2",
+            "-4",
+            "-6"
+          ],
+          "interpretedNumbers": [
+            0,
+            1,
+            2,
+            4,
+            6,
+            -1,
+            -2,
+            -4,
+            -6
+          ],
+          "units": "1000 ft/min",
+          "referenceCandidates": [],
+          "zeroTick": {
+            "value": 0,
+            "anglesDeg": [],
+            "state": "numeric_label_known_position_not_measured"
+          },
+          "needPhotoQA": [
+            "insufficient_source_pixel_angle_anchors",
+            "all_minor_tick_tips_not_individually_photo_approved",
+            "actual_needle_tip_fit_not_approved"
+          ],
+          "approved": false
+        }
+      ],
+      "faceApproved": false
+    },
+    {
+      "id": "fo.outer_clock",
+      "panel": "FO-OUTER",
+      "region": "main",
+      "mechanism": "multi_hand_clock",
+      "source": {
+        "asset": "file_000000006c00820ab145b3682f686256.png",
+        "sha256": "b2439666f75ddbcab15835b532d26a7ad2d1ab669be5f48774d656c1b8915a3c",
+        "width": 1123,
+        "height": 1400
+      },
+      "pivot": null,
+      "pivotConflict": null,
+      "previousOverlayPivot": null,
+      "scales": [
+        {
+          "mode": "primary",
+          "printedLabels": [
+            "0",
+            "10",
+            "20",
+            "30",
+            "40",
+            "50"
+          ],
+          "interpretedNumbers": [
+            0,
+            10,
+            20,
+            30,
+            40,
+            50
+          ],
+          "units": "time",
+          "referenceCandidates": [],
+          "zeroTick": {
+            "value": 0,
+            "anglesDeg": [],
+            "state": "numeric_label_known_position_not_measured"
+          },
+          "needPhotoQA": [
+            "insufficient_source_pixel_angle_anchors",
+            "all_minor_tick_tips_not_individually_photo_approved",
+            "actual_needle_tip_fit_not_approved"
+          ],
+          "approved": false
+        }
+      ],
+      "faceApproved": false
+    },
+    {
+      "id": "ped.stab_trim.left",
+      "panel": "THROTTLE",
+      "region": "pedestal",
+      "mechanism": "signed_linear_travel",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/Aircraft Throttle Quadrant Control Panel.png",
+        "sha256": "e533f907b3826dbf8fc986812b9045c2ef8980f93133ce85b859e9b9d7ab0030",
+        "width": 1145,
+        "height": 1373
+      },
+      "pivot": null,
+      "pivotConflict": null,
+      "previousOverlayPivot": null,
+      "scales": [
+        {
+          "mode": "primary",
+          "printedLabels": [
+            "0",
+            "-5",
+            "-10",
+            "-15",
+            "+5",
+            "+15"
+          ],
+          "interpretedNumbers": [],
+          "units": "units",
+          "referenceCandidates": [],
+          "zeroTick": null,
+          "needPhotoQA": [
+            "insufficient_source_pixel_angle_anchors",
+            "all_minor_tick_tips_not_individually_photo_approved",
+            "actual_needle_tip_fit_not_approved"
+          ],
+          "approved": false
+        }
+      ],
+      "faceApproved": false
+    },
+    {
+      "id": "ped.stab_trim.right",
+      "panel": "THROTTLE",
+      "region": "pedestal",
+      "mechanism": "signed_linear_travel",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/Aircraft Throttle Quadrant Control Panel.png",
+        "sha256": "e533f907b3826dbf8fc986812b9045c2ef8980f93133ce85b859e9b9d7ab0030",
+        "width": 1145,
+        "height": 1373
+      },
+      "pivot": null,
+      "pivotConflict": null,
+      "previousOverlayPivot": null,
+      "scales": [
+        {
+          "mode": "primary",
+          "printedLabels": [
+            "0",
+            "-5",
+            "-10",
+            "-15",
+            "+5",
+            "+15"
+          ],
+          "interpretedNumbers": [],
+          "units": "units",
+          "referenceCandidates": [],
+          "zeroTick": null,
+          "needPhotoQA": [
+            "insufficient_source_pixel_angle_anchors",
+            "all_minor_tick_tips_not_individually_photo_approved",
+            "actual_needle_tip_fit_not_approved"
+          ],
+          "approved": false
+        }
+      ],
+      "faceApproved": false
+    },
+    {
+      "id": "ped.rudder_trim",
+      "panel": "RADIO",
+      "region": "pedestal",
+      "mechanism": "signed_linear_travel",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/PD-RADIO-AVIONICS-7a41044771fa.png",
+        "sha256": "7a41044771faad1d59f509c05ed2508f75c79fde219ee9ec19696f8fb19ed533",
+        "width": 1122,
+        "height": 1402
+      },
+      "pivot": null,
+      "pivotConflict": null,
+      "previousOverlayPivot": null,
+      "scales": [
+        {
+          "mode": "primary",
+          "printedLabels": [
+            "15",
+            "10",
+            "5",
+            "0",
+            "5",
+            "10",
+            "15"
+          ],
+          "interpretedNumbers": [
+            -15,
+            -10,
+            -5,
+            0,
+            5,
+            10,
+            15
+          ],
+          "units": "units",
+          "referenceCandidates": [],
+          "zeroTick": {
+            "value": 0,
+            "anglesDeg": [],
+            "state": "numeric_label_known_position_not_measured"
+          },
+          "needPhotoQA": [
+            "insufficient_source_pixel_angle_anchors",
+            "all_minor_tick_tips_not_individually_photo_approved",
+            "actual_needle_tip_fit_not_approved"
+          ],
+          "approved": false
+        }
+      ],
+      "faceApproved": false
+    },
+    {
+      "id": "oh.crew_oxygen.pressure",
+      "panel": "OH01-06",
+      "region": "overhead",
+      "mechanism": "pressure_dial",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/OH01-06-source-9d8ac0ac86bd.png",
+        "sha256": "9d8ac0ac86bdb92c040e9bdd97811ca381535d949bff94aa5b1a01e5de8e23df",
+        "width": 1731,
+        "height": 909
+      },
+      "pivot": {
+        "x": 1078,
+        "y": 636,
+        "evidence": "tools/gauge-source-visual-review.py",
+        "state": "existing_overlay_position_not_full_photo_certification"
+      },
+      "pivotConflict": null,
+      "previousOverlayPivot": {
+        "x": 1078,
+        "y": 636
+      },
+      "scales": [
+        {
+          "mode": "pressure",
+          "printedLabels": [],
+          "interpretedNumbers": [],
+          "units": "psi",
+          "referenceCandidates": [],
+          "zeroTick": null,
+          "needPhotoQA": [
+            "no_source_image_zero_angle",
+            "source_tick_coordinates_not_registered",
+            "retained_bottle_pressure_in_cold_dark",
+            "actual_needle_tip_fit_not_approved"
+          ],
+          "approved": false
+        }
+      ],
+      "faceApproved": false
+    }
+  ]
+}
