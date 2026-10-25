@@ -1,34 +1,22 @@
 {
   "schema": "b737.photo-matched-horizontal-selector/v3",
-  "status": "photographic-three-frame-mounted-awaiting-user-visual-approval",
+  "status": "AWAITING_NEW_OWNER_VISUAL_REFERENCE",
   "approvedOriginalPanel": "flight-controls-panel/assets/flight-controls-front-empty-v1.webp",
   "nativeImageSize": {
     "width": 893,
     "height": 1761
   },
-  "protectedReferences": [
-    "shared-assets/toggle-switch-standard-v1/b737-toggle-off.webp",
-    "shared-assets/toggle-switch-standard-v1/b737-toggle-center.webp",
-    "shared-assets/toggle-switch-standard-v1/b737-toggle-on.webp"
-  ],
+  "protectedReferences": [],
   "sourceRule": "Keep exact original panel photograph and visible chrome nut; do not draw a replacement circular mount or rail.",
   "mechanism": {
-    "type": "three-approved-photographic-states",
+    "type": "none",
     "states": [
       "left",
       "normal",
       "right"
     ],
-    "photos": {
-      "left": "assets/nav-transfer-left-v3.webp",
-      "normal": "assets/nav-transfer-center-v3.webp",
-      "right": "assets/nav-transfer-right-v3.webp"
-    },
-    "source": "User center image and user-approved left/right renders",
-    "canvas": "aligned transparent 220x220 WebP per state",
-    "pivot": "fixed panel socket positions from calibrated VHF NAV IRS EFI buttons",
-    "animation": "140ms crossfade between authentic left center right photos",
-    "control": "horizontal pointer drag with three snap detents; tap mousewheel keyboard"
+    "control": "horizontal pointer drag / tap / keyboard; no sprite art",
+    "source": "Previous photographic toggle imagery removed at owner request"
   },
   "switches": [
     {
@@ -78,12 +66,9 @@
     }
   ],
   "acceptance": [
-    "Keep the original photographed chrome hex socket, locknut and original panel lettering pixels untouched.",
-    "Only a white rounded grip and metal shaft overlay moves; all three selectors reuse the same independent pivot-centered lever asset.",
-    "LEFT/NORMAL/RIGHT pivot about fixed socket center at respective original calibrated coordinates.",
-    "No fake base plate, no sliding bar, no dial ring, no regenerated background, no rotating 2-position toggle bitmap.",
-    "Original two-position toggle assets and guard logic are unchanged.",
-    "Test on iPad for touch taps and gestures; screen/photo alignment must still be approved by owner."
+    "Keep original panel photo and all switch control boxes",
+    "No old images, handles, bases or cleanup masks mounted",
+    "Await new user-provided visual reference"
   ],
-  "verification": "Node syntax/FCOM regression check and GitHub Pages deploy; device screenshot user sign-off pending."
+  "verification": "Switch model and input tests; visual presentation intentionally blank"
 }

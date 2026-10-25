@@ -1,2 +1,4 @@
 # Toggle visual reset
 All prior custom toggle sprites, alpha masks, painted bezel, switch backs and background repair modules are deleted at owner request. No new visual assets may be reintroduced until owner supplies a new reference. All 58 switch IDs, pivots, states, spring-return, click zones and systems event emission remain. Original 18 locked lower-overhead panel photographs and non-toggle (rotary, lights, fire handles, guards) visuals remain unchanged. Old switch pixels baked in panel source photographs are not modified during this visual-only reset.
+
+Immutable **archival** Toggle reference files under `panel-mosaic-lab/assets/locked/...` must stay byte-identical to satisfy the protected panel vault. They are NOT loaded, rendered, or used as a future design reference. All generated shared toggle images and standalone duplicates were deleted from the active branch.

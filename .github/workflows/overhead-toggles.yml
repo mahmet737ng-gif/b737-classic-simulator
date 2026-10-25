@@ -4,7 +4,7 @@ on:
     paths:
       - 'panel-mosaic-lab/interactive-overhead/**'
       - 'panel-mosaic-lab/all-overhead/**'
-      - 'shared-assets/toggle-switch-standard-v1/**'
+      - 'panel-mosaic-lab/interactive-overhead/**'
       - 'switch-lab/assets/rotary-standard-v1.webp'
       - 'panel-mosaic-lab/assets/locked/2026-10-23/*Guarded*.png'
       - 'flight-controls-panel/fcom-control-mechanics.js'
@@ -14,7 +14,7 @@ on:
     paths:
       - 'panel-mosaic-lab/interactive-overhead/**'
       - 'panel-mosaic-lab/all-overhead/**'
-      - 'shared-assets/toggle-switch-standard-v1/**'
+      - 'panel-mosaic-lab/interactive-overhead/**'
       - 'switch-lab/assets/rotary-standard-v1.webp'
       - 'panel-mosaic-lab/assets/locked/2026-10-23/*Guarded*.png'
       - 'flight-controls-panel/fcom-control-mechanics.js'
