@@ -14,11 +14,11 @@ const evaluate=x=>Effects.project({cbNetwork:x.cb,electricalV7Result:V7.evaluate
 const pump=name=>Effects.ALLOCATIONS.find(x=>x.load==="fuel."+name);
 test("Source-identified 11 circuits exist with exact keys and MRG folios",()=>{
 const x=init();A.equal(Effects.ALLOCATIONS.length,11);
-for(const a of Effects.ALLOCATIONS){A(x.cb.state(a.key),a.key);A.match(a.location,/MRG p\.13[56]/);A.equal(a.bus,null);}
+for(const a of Effects.ALLOCATIONS){A(x.cb.state(a.key),a.key);A.match(a.location,/MRG p\.13[56]/);if(!a.load.startsWith("hyd."))A.equal(a.bus,null);else A(["generator1","generator2"].includes(a.bus));}
 });
 test("V7 original AC/DC system is not altered by CB projection",()=>{
 const x=init(),baseline=V7.evaluate(x.electrical),out=evaluate(x);
-A.deepEqual(out.overlay.bus,baseline.bus);A.equal(out.originalV7BusesUnmodified,true);A.equal(out.linkedEquipment,9);
+A.deepEqual(out.overlay.bus,baseline.bus);A.equal(out.originalV7BusesUnmodified,true);A.equal(out.linkedEquipment,11);
 });
 test("CB pushed does not imply certified aircraft equipment power",()=>{
 const x=init(),p=evaluate(x);A.equal(p.circuits["fuel.leftFwd"].devicePower,null);A.equal(p.circuits["com.vhf1"].devicePower,null);
