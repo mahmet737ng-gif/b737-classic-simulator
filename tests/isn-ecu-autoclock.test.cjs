@@ -24,7 +24,7 @@ const tick=n=>{for(let i=0;i<n;i++)for(const fn of [...timers.values()])fn();};
 assert.equal(timers.size,0);
 click('battery');assert.equal(timers.size,0,'Battery ON alone should not run the clock');
 click('apuStart');assert.equal(timers.size,1,'APU START auto-runs the simulator clock');
-tick(14);assert.equal(el('clock').textContent,'1.4 s');assert.match(el('apu').textContent,/APU READY/);
+tick(14);assert.equal(el('clock').textContent,'1.4 s');assert.match(el('apu').textContent,/APU 100% RPM/);
 click('play');assert.equal(timers.size,0,'Manual pause should stop time');
 click('start1');assert.equal(timers.size,1,'Engine GRD resumes timer after manual pause');
 click('start2');assert.equal(timers.size,1,'Concurrent starts should not create duplicate timers');
