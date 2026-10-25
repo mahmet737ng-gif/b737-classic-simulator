@@ -119,6 +119,18 @@
         packSource='SOURCE_GATED_PNEUMATICS_V6';
       }
       const active=selectedPressure(),session=getPressureSession(active);
+      if(active==='DCPCS'){
+        // Functional signal only. Stall Management / ISN signal pin mapping
+        // remains UNKNOWN; never combine N1 from one engine with N2 of another.
+        const running=window.B737ISNCockpitV1?.getStartState?.()?.runningEnvelope?.engines;
+        const pairs=Object.values(running||{}).filter(v=>v&&Number.isFinite(v.n1Percent)&&Number.isFinite(v.n2Percent));
+        if(pairs.length){
+          const sample=pairs.sort((x,y)=>Math.min(y.n1Percent/60,y.n2Percent/89)-Math.min(x.n1Percent/60,x.n2Percent/89))[0];
+          const current=session.snapshot().input;
+          if(Math.abs(current.engineN1Pct-sample.n1Percent)>.05)session.dispatch({type:'INPUT',key:'engineN1Pct',value:sample.n1Percent});
+          if(Math.abs(current.engineN2Pct-sample.n2Percent)>.05)session.dispatch({type:'INPUT',key:'engineN2Pct',value:sample.n2Percent});
+        }
+      }
       session.stepPhysics(1000,{...pressureEnvironment});
       publishPressureState(active);
       updatePressureDiagnostics();
@@ -206,7 +218,7 @@
       activeSession = getPressureSession(pressure);
       window.B737ActivePressurization = activeSession;
       publishPressureState(pressure);
-      byId('activeProfileStatus').textContent = 'سیستم ' + pressure + ' V' + activeSession.engineVersion + ' فعال است؛ کنترل‌ها، نمایشگرها و چراغ‌های OH22 از موتور اختصاصی همین سیستم فرمان می‌گیرند. مدل فشار کابین و زمان واقعی حرکت شیر هنوز شبیه‌سازی نشده است.';
+      byId('activeProfileStatus').textContent = 'سیستم ' + pressure + ' V' + activeSession.engineVersion + ' فعال است؛ کنترل‌ها، نمایشگرها و چراغ‌های OH22 از موتور اختصاصی همین سیستم فرمان می‌گیرند. مدل آموزشی فشار کابین و حرکت Outflow Valve به‌صورت حلقه‌بسته فعال است؛ ضرایب، منبع قطعی تغذیه و نرخ واقعی موتور هنوز کالیبره نشده‌اند.';
     } catch (error) {
       window.B737ActivePressurization = null;
       byId('activeProfileStatus').textContent = 'موتور انتخاب‌شده در دسترس نیست: ' + error.message;
