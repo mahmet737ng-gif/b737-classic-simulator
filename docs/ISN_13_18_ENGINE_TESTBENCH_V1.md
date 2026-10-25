@@ -23,7 +23,7 @@ Source lineage: Sepehran 737 Classic FCOM §7.20.5 engine oil/fuel system, §7.2
 - Low oil lamp is pressure-dependent, not time- or N2-detent dependent. Lamp ON at <=12.25 PSI, OFF at >15.25 PSI, otherwise previous state persists. Separate filter bypass lamp.
 - APU electrical GEN selection and BLEED selection require distinct button actions. Fuel pumps require instructor-enabled surrogate bus power; unknown physical feeder stays unresolved by default.
 - GRD starter without APU air/power blocks; engine fuel lever IDLE before N2 cue blocks; fuel lever IDLE with missing fuel path blocks. No arbitrary automatic lever action.
-- EGT typical compressed start reaches ~600°C transient and settles; normal user envelope 22/60 ground, 32/78 flight, 97% max training N1. The injected >725°C start advisory is **not** a fire sensor.
+- EGT typical compressed start reaches ~620°C transient and settles; normal user envelope 22/60 ground, 32/78 flight, 97% max training N1. The injected >725°C start advisory is **not** a fire sensor.
 - Operating engine fuel flow drains its selected simulated tank; flameout can occur on loss. Crossfeed is explicit and does not invent physical line pressure.
 - Shutdown of the original Chain drops observations per the earlier contract; the rig overlays a **training-only indicated coastdown**, preserving source ownership.
 - Frozen approved OH-01 to OH-25 and overhead images are unchanged.
@@ -34,7 +34,7 @@ Open repository's `/isn-ecu-start-lab/` GitHub Pages route (after deployment).
 
 1. Click BATTERY ON, APU START, then advance/run clock at least 1.4 simulated seconds until READY.
 2. Select APU GEN → BUS1, APU BLEED ON, and Enable training pump supply.
-3. ENG1 START GRD, step clock 0.85s (N2 25%), ENG1 LEVER IDLE, step ~1s (EGT rises to near 600 then ~420 at cutout), continue until ground idle 22 N1/60 N2 and oil LOW PRESSURE is out.
+3. ENG1 START GRD, step clock 0.85s (N2 25%), ENG1 LEVER IDLE, step ~1s (EGT rises to near 620 then ~420 at cutout), continue until ground idle 22 N1/60 N2 and oil LOW PRESSURE is out.
 4. Repeat for engine 2. Switch FLIGHT, set IAS/ALT/OAT and command an N1 Schedule, or move throttle sliders.
 5. Inject oil pump failure, filter restriction, bleed loss or hot start to test advisories and no invalid sensor ownership. Finally CUTOFF and advance to see coastdown and the LOW OIL PRESSURE lamp return.
 
@@ -48,3 +48,7 @@ Open repository's `/isn-ecu-start-lab/` GitHub Pages route (after deployment).
 - `python3 panel-mosaic-lab/verify-final-overhead.py`
 
 Known remaining production work: wiring actual CDU display and selected lever detents, physical needle interpolation overlay, full oil system sources/limits, mature APU dynamics, simulator position/IAS dynamics, fuel pressure sensor calibration, complete Master Caution/QRH mapping, engine start timing/real ECU hardware test. The model does not imply that ISN-13...18 are complete for real-world operations or that the Unified app has native integration.
+
+## 2026-10-25 spool calibration follow-up
+
+New owner-selected engine/APU EGT, oil, engine-driven hydraulic and APU AC outputs are documented in [ISN_START_SPOOL_CALIBRATION_V2.md](ISN_START_SPOOL_CALIBRATION_V2.md). These are simulated indicated values, **not measured or aircraft-source-validated pressure dynamics**, and do not certify Unified cockpit integration.
