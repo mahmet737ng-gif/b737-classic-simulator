@@ -6,7 +6,7 @@
 })(typeof globalThis==='object'?globalThis:this,function(){
  'use strict';
  // Registered to the unchanged OH11 (1203x1308) and OH12 (1024x1536) artwork.
- // These are visual reference poses from the owner photo, not calibrated values.
+ // Enlarged owner screenshot: former OH11 (98px) / OH12 (102px) tip radii did not meet inner tick edges.\n // Tip reach and rest pose are screenshot-based candidates, NOT final physical tick calibration.
  const panels=Object.freeze({OH11:Object.freeze({width:1203,height:1308}),OH12:Object.freeze({width:1024,height:1536})});
  // Upper edges of the grey half-round covers, traced from the unchanged source panels.
  // Clipping to these contours keeps every white blade exactly within the black dial.
@@ -16,13 +16,13 @@
   OH12_APU:Object.freeze({top:1130,offset:0,edge:Object.freeze([[563,1324],[590,1326],[625,1326],[648,1325],[666,1318],[685,1310],[705,1305],[725,1303],[745,1305],[765,1311],[784,1319],[803,1325],[835,1326],[879,1326]])})
  });
  const needles=Object.freeze([
-  Object.freeze({id:'driveOil1',label:'GEN DRIVE OIL TEMP 1',piece:'OH11',x:266,y:1021,tipRadius:98,initialAngle:-46}),
-  Object.freeze({id:'driveOil2',label:'GEN DRIVE OIL TEMP 2',piece:'OH11',x:781,y:1021,tipRadius:98,initialAngle:-46}),
-  Object.freeze({id:'acAmps1',label:'A.C. AMPS 1',piece:'OH12',x:210,y:265,tipRadius:102,initialAngle:-45}),
-  Object.freeze({id:'acAmps2',label:'A.C. AMPS 2',piece:'OH12',x:698,y:265,tipRadius:102,initialAngle:-45}),
+  Object.freeze({id:'driveOil1',label:'GEN DRIVE OIL TEMP 1',piece:'OH11',x:266,y:1021,tipRadius:128,initialAngle:-80}),
+  Object.freeze({id:'driveOil2',label:'GEN DRIVE OIL TEMP 2',piece:'OH11',x:781,y:1021,tipRadius:128,initialAngle:-80}),
+  Object.freeze({id:'acAmps1',label:'A.C. AMPS 1',piece:'OH12',x:210,y:265,tipRadius:135,initialAngle:-65}),
+  Object.freeze({id:'acAmps2',label:'A.C. AMPS 2',piece:'OH12',x:698,y:265,tipRadius:135,initialAngle:-65}),
   Object.freeze({id:'apuAcAmps',label:'APU A.C. AMPS',piece:'OH12',window:'OH12_APU',x:724,y:1334,tipRadius:124,initialAngle:-47})
  ]);
- function angle(value){const n=Number(value);if(!Number.isFinite(n))throw Error('Needle angle must be finite');return Math.max(-70,Math.min(70,n));}
+ function angle(value){const n=Number(value);if(!Number.isFinite(n))throw Error('Needle angle must be finite');return Math.max(-90,Math.min(90,n));}
  function windowPath(needle){
   if(!needles.includes(needle))throw Error('Invalid drive/amps needle');
   const window=windows[needle.window||needle.piece],dx=(needle.id.endsWith('2')?window.offset:0);
