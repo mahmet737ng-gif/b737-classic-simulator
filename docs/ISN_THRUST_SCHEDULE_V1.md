@@ -29,7 +29,7 @@ Inputs: pressure altitude ft, OAT °C, IAS kt, airplane mass kg, climb/descent f
 
 - ISA atmosphere estimates static pressure; actual OAT sets approximate air density. Approximate TAS = IAS / sqrt(density ratio); IAS treated as EAS, so compressibility/CAS corrections are not modeled.
 - Wind: headwind = wind speed × cos(wind FROM − track); crosswind = wind speed × sin(same angle). Along-track GS = sqrt(TAS² − crosswind²) − headwind, assuming a track-holding crab angle. Wind changes GS, not steady N1 at fixed IAS, weight and flight path.
-- Demand force = parasitic drag + induced drag + weight × vertical speed / TAS. The test drag polar uses assumed CD0=0.030, k=0.055, wing area 91.04 m², simplistic flap and gear factors.
+- Demand force = parasitic drag + induced drag + weight × vertical speed / TAS. The test drag polar uses an approximate Boeing 737 Classic wing-area reference and assumed CD0=0.030, k=0.055, wing area 105.4 m², simplistic flap and gear factors.
 - Available engine thrust reference = 20,000 lbf × (air density ratio)^0.72 per engine, then a deliberately estimated nonlinear thrust-to-N1 mapping.
 - N1 required minimum for airborne RUNNING is 32% in this approximation. If N1 required exceeds selected reference limit, the result reports an insufficiency flag and caps N1 command; it does not falsely promise speed hold.
 - Return a normalized throttle **recommendation** compatible with the current \`ISN Engine Start Dynamics V1\` ground/flight idle N1 curve. No state-changing start/throttle action is issued here.
@@ -40,12 +40,12 @@ Weather condition CLEAR/RAIN/SNOW/ICING is metadata, not a direct arbitrary nume
 
 | At 10,000 ft, −5°C, 55 t, flaps 0, gear UP, two engines, level, CRZ | N1 required | TAS | Ground speed |
 |---|---:|---:|---:|
-| 200 KIAS, calm |58.3%|233 kt|233 kt|
-| 240 KIAS, calm |58.1%|279 kt|279 kt|
-| 280 KIAS, calm |60.0%|326 kt|326 kt|
-| 240 KIAS, 30 kt direct headwind |58.1%|279 kt|249 kt|
-| 240 KIAS, 30 kt direct tailwind |58.1%|279 kt|309 kt|
-| 240 KIAS, 1,000 fpm climb |66.4%|279 kt|279 kt|
+| 200 KIAS, calm |57.9%|233 kt|233 kt|
+| 240 KIAS, calm |58.7%|279 kt|279 kt|
+| 280 KIAS, calm |61.6%|326 kt|326 kt|
+| 240 KIAS, 30 kt direct headwind |58.7%|279 kt|249 kt|
+| 240 KIAS, 30 kt direct tailwind |58.7%|279 kt|309 kt|
+| 240 KIAS, 1,000 fpm climb |67.1%|279 kt|279 kt|
 
 A change from 200 to 240 KIAS does not necessarily increase **steady level-flight** power in a quadratic parasite-plus-induced drag model: the induced-drag decrease can offset the parasite increase. Different airplane polar coefficients or weight change that result. Numbers are not AFM-derived or for real flight.
 
@@ -64,6 +64,6 @@ Returns \`quality: SIM_ESTIMATE_NOT_AFM\`, \`atmosphere\`, \`navigation\`, \`req
 
 V1 now also accepts optional \`targetIasKt\` and \`accelTimeSec\`. If target speed differs from current IAS, a positive 1–600 second horizon **must** be specified; there is no arbitrarily guessed acceleration. Extra required force is \`aircraftMassKg × ((targetIAS − IAS) / sqrt(densityRatio) / accelerationTime)\` in SI units. Normal \`N1 REQUIRED\` includes that acceleration force; \`n1HoldAtTargetPct\` shows the level-flight requirement once the target IAS is reached. \`command.speedDemand\` distinguishes the two cases.
 
-**Owner example:** 10,000 ft pressure altitude, −5°C OAT, 55 tonnes, clean, level flight, two engines, CRZ mode. At current 200 KIAS holding, \`n1RequiredPct ≈ 58.3\`. For \`iasKt:200, targetIasKt:240, accelTimeSec:40\`, \`n1RequiredPct ≈ 72.4\`, and \`n1HoldAtTargetPct ≈ 58.1\`. These are training-model outputs, not actual 737 spool/thrust timings. Steady wind changes estimated ground speed, **not** this IAS acceleration thrust in a constant-airmass approximation. Crosswind exceeding air-relative TAS now reports \`trackHoldPossible:false\` and \`groundSpeedKt:null\`, not a fabricated track solution.
+**Owner example:** 10,000 ft pressure altitude, −5°C OAT, 55 tonnes, clean, level flight, two engines, CRZ mode. At current 200 KIAS holding, \`n1RequiredPct ≈ 58.3\`. For \`iasKt:200, targetIasKt:240, accelTimeSec:40\`, \`n1RequiredPct ≈ 72.0\`, and \`n1HoldAtTargetPct ≈ 58.1\`. These are training-model outputs, not actual 737 spool/thrust timings. Steady wind changes estimated ground speed, **not** this IAS acceleration thrust in a constant-airmass approximation. Crosswind exceeding air-relative TAS now reports \`trackHoldPossible:false\` and \`groundSpeedKt:null\`, not a fabricated track solution.
 
 The engine dynamics module should continue to handle how quickly actual N1 follows a scheduled throttle; the planner merely publishes the normalized requested throttle and N1 limit for later integration with instructor-controlled speed hold and the CDU.
