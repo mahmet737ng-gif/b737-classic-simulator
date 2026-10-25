@@ -142,6 +142,32 @@ for index in range(0,15,3):
     if index in (0,3,6,9,12):
         ok,jpg=cv2.imencode('.jpg',image,[cv2.IMWRITE_JPEG_QUALITY,66]);assert ok
         print('B737_HIGH_RISK_PHOTO_SHEET_'+str(index//3+1)+'='+base64.b64encode(jpg).decode('ascii'),flush=True)
+# Explore, but do not auto-approve, candidate dark vertical Stab Trim tracks near old ROI.
+trim=next(f for f in high if f['id']=='ped.stab_trim.right')
+source_image=load(trim)
+original_window=BYID[trim['id']]['lineTrackCandidate']
+crop_rect=(max(0,original_window['x0']-170),max(0,original_window['y0']-85),
+           min(source_image.shape[1],original_window['x1']+35),
+           min(source_image.shape[0],original_window['y1']+45))
+rx0,ry0,rx1,ry1=crop_rect
+roi=cv2.cvtColor(source_image[ry0:ry1,rx0:rx1],cv2.COLOR_BGR2GRAY)
+dark=(roi<70).astype(np.uint8)*255
+dark=cv2.morphologyEx(dark,cv2.MORPH_CLOSE,cv2.getStructuringElement(cv2.MORPH_RECT,(5,21)))
+dark=cv2.morphologyEx(dark,cv2.MORPH_OPEN,cv2.getStructuringElement(cv2.MORPH_RECT,(3,80)))
+components=cv2.connectedComponentsWithStats(dark,8)[2]
+boxes=[]
+for xx,yy,ww,hh,area in components[1:]:
+    xx,yy,ww,hh,area=map(int,(xx,yy,ww,hh,area))
+    if hh<150 or ww<5 or ww>180:continue
+    boxes.append({'x0':xx+rx0,'y0':yy+ry0,'x1':xx+ww+rx0,'y1':yy+hh+ry0,
+      'areaPx':area,'status':'DARK_REGION_CANDIDATE_NOT_PROVEN_TRIM_SLIDER'})
+boxes.sort(key=lambda b:(-(b['y1']-b['y0']),-b['areaPx']))
+boxes=boxes[:12]
+print('B737_TRIM_RIGHT_DARK_VERTICAL_CANDIDATES='+json.dumps(boxes),flush=True)
+for b in boxes:
+    # A wrong box must not be automatically replaced with a dark connected region.
+    assert b['x0']>=rx0 and b['x1']<=rx1+1
+
 fo=[f for f in MATRIX['faces'] if f['id'] in ('fo.outer_altimeter','fo.outer_vertical_speed','fo.outer_clock')]
 assert len(fo)==3
 for face in fo:
@@ -167,7 +193,8 @@ report={'schema':'b737.high-risk-pivot-and-tick-review.v2','sourceDate':'2026-10
    'foExternalImageFilesStillMissing':0},
  'restrictions':['Never confuse rim circle with shaft pivot','Line segment can be label/screw/rim, not tick',
    'No value assignment without exact photographed major/minor label','Never rewrite artwork or operational coordinates without reviewer evidence'],
- 'foSourceVerification':extra,'faces':records}
+ 'foSourceVerification':extra,'trimRightDarkVerticalCandidates':boxes,
+ 'oldTrimRightWindowQuarantined':original_window,'faces':records}
 dest=ROOT/'reports/stage11-high-risk-native-evidence-v2.json'
 dest.write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
 print('B737_HIGH_RISK_COUNTS='+json.dumps(report['counts']),flush=True)
