@@ -1,7 +1,7 @@
 (function(){
  'use strict';
  const model=window.B737CabinDualNeedlesModel,ns='http://www.w3.org/2000/svg';
- const sprites=Object.fromEntries(model.needles.map(needle=>[needle.id,new URL('./'+needle.asset+'?v=CDN-0002',document.baseURI).href]));
+ const sprites=Object.fromEntries(model.needles.map(needle=>[needle.id,new URL('./'+needle.asset+'?v=CDN-0003',document.baseURI).href]));
  const state=Object.fromEntries(model.needles.map(needle=>[needle.id,needle.initialAngle]));
  const blades=new Map(),inputs=new Map(),outputs=new Map();
  let frame=null,physical=null,physicalOutput=null;
@@ -46,6 +46,9 @@
   if(host.querySelector('[data-cabin-dual-needles]'))return true;
   const layer=svg(doc,host,'svg',{'data-cabin-dual-needles':'OH19',viewBox:`0 0 ${model.source.width} ${model.source.height}`,preserveAspectRatio:'none',role:'img','aria-label':'Cabin pressure and cabin altitude independent needles'});
   Object.assign(layer.style,{position:'absolute',left:piece.style.left,top:piece.style.top,width:piece.style.width,height:piece.style.height,zIndex:'1002',pointerEvents:'none',overflow:'hidden'});
+  // Source-pixel tip lengths now use inspected SVG path endpoints (not the
+  // mistaken assumption that nominal tipRadius is the actual painted reach).
+  // Owner sprites are immutable; this only changes group scaling in preview.
   // Source-photo contract: outer PSI tick arc belongs to PRESS and inner
   // x1000-ft arc belongs to CAB ALT. Physical stack is independent: the
   // PRESS assembly must be behind the CAB ALT assembly (owner correction).
@@ -73,7 +76,7 @@
   if(physical)setMeasuredReadings(physical);
   for(const needle of model.needles){
    const label=document.createElement('label');label.textContent=needle.label;label.style.display='block';label.style.direction='ltr';
-   const input=document.createElement('input');Object.assign(input,{type:'range',min:'-166',max:'166',step:'1'});input.style.width='100%';input.style.accentColor='#edf0e8';
+   const input=document.createElement('input');Object.assign(input,{type:'range',min:'0',max:'360',step:'0.5'});input.style.width='100%';input.style.accentColor='#edf0e8';
    const output=document.createElement('output');output.style.display='block';output.style.textAlign='left';output.style.direction='ltr';
    input.addEventListener('input',()=>setAngle(needle.id,Number(input.value)));label.append(input,output);section.append(label);
    inputs.set(needle.id,input);outputs.set(needle.id,output);paint(needle.id);
