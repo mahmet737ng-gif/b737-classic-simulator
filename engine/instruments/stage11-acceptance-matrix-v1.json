@@ -3517,11 +3517,10 @@
         "scenario_test_not_photo_signoff",
         "two_numbered_photo_anchors_missing",
         "response_model_not_calibrated",
-        "original_photo_present_but_dial_geometry_not_certified",
-        "original_image_native_sha256_and_visual_gauge_crop_still_require_approval"
+        "original_photo_present_but_dial_geometry_not_certified"
       ],
       "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA",
-      "originalImageRepositoryStatus": "VERSION_CONTROLLED_ROOT_BLOB_VERIFIED",
+      "originalImageRepositoryStatus": "REPOSITORY_ROOT_ASSET_SHA256_AND_DIMENSIONS_VERIFIED",
       "originalImageGitBlobSHA": "ff259644232ecc0543cbe7d2761fdfa286ab7bf8",
       "originalImageGitObjectPath": "file_000000006c00820ab145b3682f686256.png"
     },
@@ -3594,11 +3593,10 @@
         "scenario_test_not_photo_signoff",
         "two_numbered_photo_anchors_missing",
         "response_model_not_calibrated",
-        "original_photo_present_but_dial_geometry_not_certified",
-        "original_image_native_sha256_and_visual_gauge_crop_still_require_approval"
+        "original_photo_present_but_dial_geometry_not_certified"
       ],
       "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA",
-      "originalImageRepositoryStatus": "VERSION_CONTROLLED_ROOT_BLOB_VERIFIED",
+      "originalImageRepositoryStatus": "REPOSITORY_ROOT_ASSET_SHA256_AND_DIMENSIONS_VERIFIED",
       "originalImageGitBlobSHA": "ff259644232ecc0543cbe7d2761fdfa286ab7bf8",
       "originalImageGitObjectPath": "file_000000006c00820ab145b3682f686256.png"
     },
@@ -3671,11 +3669,10 @@
         "scenario_test_not_photo_signoff",
         "two_numbered_photo_anchors_missing",
         "response_model_not_calibrated",
-        "original_photo_present_but_dial_geometry_not_certified",
-        "original_image_native_sha256_and_visual_gauge_crop_still_require_approval"
+        "original_photo_present_but_dial_geometry_not_certified"
       ],
       "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA",
-      "originalImageRepositoryStatus": "VERSION_CONTROLLED_ROOT_BLOB_VERIFIED",
+      "originalImageRepositoryStatus": "REPOSITORY_ROOT_ASSET_SHA256_AND_DIMENSIONS_VERIFIED",
       "originalImageGitBlobSHA": "ff259644232ecc0543cbe7d2761fdfa286ab7bf8",
       "originalImageGitObjectPath": "file_000000006c00820ab145b3682f686256.png"
     },
