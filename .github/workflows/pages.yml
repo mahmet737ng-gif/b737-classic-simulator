@@ -40,6 +40,8 @@ jobs:
           node panel-mosaic-lab/lights-test/photo-pixel-registration-v2.test.cjs
           node panel-mosaic-lab/lights-test/photo-pixel-registration-v3.test.cjs
           node panel-mosaic-lab/lights-test/photo-pixel-registration-v4.test.cjs
+          node panel-mosaic-lab/lights-test/photo-pixel-registration-v5.test.cjs
+          node panel-mosaic-lab/lights-test/instance-faces.test.cjs
       - name: Verify unified cockpit assembly
         run: |
           node panel-mosaic-lab/cockpit/flap-lever-model.test.cjs
