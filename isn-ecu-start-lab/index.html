@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ISN 13–18 — Engine & Start Controller Testbench</title>
+<style>
+:root{font-family:system-ui,Segoe UI,sans-serif;color-scheme:dark;background:#0e1520;color:#e9f1fa}*{box-sizing:border-box}
+body{max-width:1290px;margin:auto;padding:16px}h1{font-size:1.45rem;margin-bottom:5px}h2{font-size:1.1rem;margin:8px 0}small,.subtle{color:#a9b8ca}section{border:1px solid #35475a;border-radius:12px;padding:12px;margin:11px 0;background:#162231}
+.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center}button,select,input{background:#27394d;color:#ecf2f9;border:1px solid #65829b;border-radius:7px;padding:10px;min-height:42px;font:inherit}button:active{background:#385976}button{cursor:pointer}button:focus-visible{outline:2px solid #7af}button:disabled{opacity:.42;cursor:default}
+.engines{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.metric{padding:10px;border:1px solid #34475a;border-radius:8px;background:#101c2a}.metric b{display:block;font-size:1.5rem;font-variant-numeric:tabular-nums}.metric span{display:block;color:#b9c9db;font-size:.8rem}.status{padding:9px;border-radius:6px;background:#233446;margin:8px 0;word-break:break-word}.amber{color:#ffce72}.ok{color:#85e6ae}.error{color:#ff9898}.lamp{display:inline-block;border-radius:6px;padding:5px 9px;background:#44505b}.lamp.on{background:#725016;color:#ffeb90;box-shadow:0 0 7px #ecad22}.lamp.off{background:#15251e;color:#678a71}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}#errors{white-space:pre-wrap;color:#ff9797;min-height:1.2em}#log{max-height:210px;overflow:auto;white-space:pre-wrap;background:#0a111c;border-radius:7px;padding:10px;font:12px ui-monospace,SFMono-Regular,monospace}
+label{display:inline-flex;align-items:center;gap:5px;font-size:.92rem}input[type=number]{width:90px}input[type=range]{width:150px;padding:0}strong{font-weight:700}
+@media(max-width:760px){.engines,.grid{grid-template-columns:1fr}.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}body{padding:9px}button{font-size:.92rem}}
+</style></head><body>
+<h1>ISN 13–18 · B737 Classic Engine Start Bench <span id="clock" class="subtle">00:00</span></h1>
+<p class="subtle">Independent **training** testbench for mechanical engine control / PMC-like thrust planning (not certified ECU/FADEC). Uses existing ISN-01/03/09-12 source owners. No original artwork is modified.</p>
+<section><h2>1. Electrical / APU / fuel preparation</h2>
+<div class="controls"><button data-act="battery">BATTERY ON</button><button data-act="apuStart">APU START</button><button data-act="apuGen">APU GEN → BUS 1</button><button data-act="apuBleed">APU BLEED ON</button><button data-act="fuel">Enable training pump supply</button><button data-act="apuStop">APU OFF</button></div>
+<div class="status" id="apu">APU OFF</div><div class="controls"><button data-act="bleedFault">Inject APU bleed failure</button><button data-act="genFault">Inject APU GEN failure</button><button data-act="reset">RESET (Cold & Dark)</button></div></section>
+<section><h2>2. Engine start & operating controls</h2><div class="controls">
+<button data-act="start1">ENG 1 START GRD</button><button data-act="idle1">ENG 1 LEVER IDLE</button><button data-act="off1">ENG 1 CUTOFF</button>
+<button data-act="start2">ENG 2 START GRD</button><button data-act="idle2">ENG 2 LEVER IDLE</button><button data-act="off2">ENG 2 CUTOFF</button>
+</div><p class="subtle">Starter N2 25% → fuel lever IDLE → light-off → 46% cutout → stable 22/60 ground idle (32/78 flight idle). Start stages are intentionally time-compressed.</p>
+<div class="engines" id="engines"></div></section>
+<section><h2>3. Simulation clock and thrust</h2>
+<div class="controls"><button data-act="play">▶ RUN LIVE</button><button data-act="step">STEP +500 ms</button><button data-act="step5">STEP +5 sec</button><button data-act="ground">GROUND → FLIGHT</button>
+<label>Throttle ENG1 <input id="throttle1" type="range" min="0" max="100" step="1" value="0"></label><label>Throttle ENG2 <input id="throttle2" type="range" min="0" max="100" step="1" value="0"></label></div>
+<div class="controls"><label>IAS <input id="ias" type="number" value="200" min="100" max="360"> kt</label>
+<label>ALT <input id="alt" type="number" value="10000" min="0" max="40000"> ft</label>
+<label>OAT <input id="oat" type="number" value="-5" min="-80" max="60"> °C</label>
+<label>TO/GA/CON/CLB/CRZ <select id="mode"><option>CRZ</option><option>CLB</option><option>CON</option><option>GA</option><option>TO</option></select></label>
+<button data-act="n1plan">N1 Schedule ENG 1</button></div><div id="n1result" class="status">No thrust schedule applied</div></section>
+<section><h2>4. Abnormal tests</h2><div class="controls"><button data-act="oilPump1">ENG1 OIL PUMP FAIL</button><button data-act="oilFilter1">ENG1 FILTER RESTRICTED</button><button data-act="oilLeak1">ENG1 OIL LEAK</button><button data-act="hot1">Hot start ENG1 (before GRD)</button><button data-act="crossfeed">Crossfeed OPEN</button><button data-act="fuelLoss1">ENG1 FUEL SUPPLY LOST (trainer)</button></div>
+<div class="status" id="alertSummary">No active abnormal advisories</div><div id="errors" role="alert"></div></section>
+<section><h2>5. Trace and tank quantities</h2><div class="status" id="fuelStatus">Fuel tanks</div><pre id="log"></pre></section>
+<script src="../engine/systems/electrical-v7.js"></script>
+<script src="../engine/systems/electrical-loads-v8.js"></script>
+<script src="../engine/trainer/core.js"></script>
+<script src="../audio/warning-engine.js"></script>
+<script src="../engine/systems/pneumatics-v6.js"></script>
+<script src="../engine/integration/isn-electrical-pack-v1.js"></script>
+<script src="../engine/integration/isn-engine-apu-v1.js"></script>
+<script src="../engine/integration/isn-start-sequence-v1.js"></script>
+<script src="../engine/integration/isn-engine-start-dynamics-v1.js"></script>
+<script src="../engine/integration/isn-apu-start-chain-v1.js"></script>
+<script src="../engine/integration/isn-thrust-performance-v1.js"></script>
+<script src="../engine/integration/isn-09-12-runtime-v1.js"></script>
+<script src="../engine/integration/isn-13-18-ecu-testbench-v1.js"></script>
+<script src="./app.js"></script>
+</body></html>

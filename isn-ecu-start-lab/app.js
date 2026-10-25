@@ -1,0 +1,61 @@
+(function(){'use strict';
+const $=id=>document.getElementById(id), html=s=>String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;');
+const deps={Electrical:window.B737ElectricalV7,Loads:window.B737ElectricalLoadsV8,
+ TrainerCore:window.B737TrainerCore,WarningEngine:window.B737WarningEngine?.WarningEngine,
+ Pneumatics:window.B737PneumaticsV6,Pack:window.B737ISNElectricalPackV1,
+ EngineAPU:window.B737ISNEngineAPUV1,Start:window.B737ISNStartSequenceV1,
+ Chain:window.B737ISNAPUStartChainV1,ThrustPlanner:window.B737ISNThrustPerformanceV1,
+ FuelRuntime:window.B737ISN0912RuntimeV1};
+let sim=null,runner=null;
+function create(){if(runner){clearInterval(runner);runner=null;}sim=new window.B737ISN1318ECUTestbenchV1.Testbench(deps);$('n1result').textContent='No thrust schedule applied';render();}
+function metrics(e){return [['N1',e.n1Percent,'%'],['N2',e.n2Percent,'%'],['EGT',e.egtC,'°C'],['FUEL FLOW',e.fuelFlowKgHr,'kg/h'],['OIL PRESS',e.oil.pressurePsi,'PSI'],['OIL TEMP',e.oil.temperatureC,'°C'],['OIL QTY',e.oil.quantityPct,'%']].map(([name,value,unit])=>`<div class="metric"><span>${name}</span><b>${value==null?'—':html(Number(value).toFixed(1))} <small>${unit}</small></b></div>`).join('');}
+function engineCard(e,num){return `<section><h2>ENGINE ${num} · <span class="${e.phase==='RUNNING'?'ok':'amber'}">${html(e.phase)}</span></h2><div class="metrics">${metrics(e)}</div><p>START VALVE <strong>${e.startValveOpen===null?'UNKNOWN':e.startValveOpen?'OPEN':'CLOSED'}</strong> · FUEL LEVER <strong>${html(e.fuelLever)}</strong></p><p><span class="lamp ${e.oil.lowPressureLamp?'on':'off'}">LOW OIL PRESSURE ${e.oil.lowPressureLamp?'ON':'OFF'}</span> <span class="lamp ${e.oil.filterBypassLamp?'on':'off'}">OIL FILTER BYPASS ${e.oil.filterBypassLamp?'ON':'OFF'}</span></p></section>`;}
+function render(){if(!sim)return;const s=sim.get();$('clock').textContent=`${(s.timeMs/1000).toFixed(1)} s`;
+ $('apu').textContent=`BATTERY ${s.electrical.battery?'ON':'OFF'} · APU ${s.apu.phase} · ${s.apu.rpmPct}% RPM · ${s.apu.egtC}°C · APU BLEED ${s.apu.bleedValveOpen?'OPEN':'CLOSED'} · BUS 1 ${s.electrical.selectedSources[1]||'OFF'}`;
+ $('engines').innerHTML=engineCard(s.engines.engine1,1)+engineCard(s.engines.engine2,2);
+ $('alertSummary').textContent=s.alerts.length?s.alerts.map(a=>a.id).join(' | '):'No active advisories';
+ $('fuelStatus').textContent=`MAIN1 ${s.fuel.tanksKg.main1.toFixed(1)} kg · CENTER ${s.fuel.tanksKg.center.toFixed(1)} kg · MAIN2 ${s.fuel.tanksKg.main2.toFixed(1)} kg · CROSSFEED ${s.fuel.crossfeed}`;
+ $('log').textContent=s.trace.slice(-40).map(x=>`${(x.tMs/1000).toFixed(2).padStart(7)}s ${x.type} ${JSON.stringify(x)}`).join('\n');
+ document.querySelector('[data-act="play"]').textContent=runner?'❚❚ PAUSE':'▶ RUN LIVE';
+ document.querySelector('[data-act="ground"]').textContent=s.aircraft.onGround?'GROUND → FLIGHT':'FLIGHT → GROUND';
+}
+function action(type){if(type==='reset'){create();return;}if(!sim)throw Error('Simulator not initialized');
+ const status=sim.get();switch(type){
+ case 'battery':sim.battery(true);break;
+ case 'apuStart':sim.startAPU();break;
+ case 'apuGen':sim.selectGenerator('APU',1);break;
+ case 'apuBleed':sim.apuBleed(true);break;
+ case 'fuel':sim.prepareFuel();break;
+ case 'apuStop':sim.chain.event({id:'apu-start',kind:'toggle',next:'OFF'});break;
+ case 'start1':sim.engineStart('engine1');break;
+ case 'idle1':{const r=sim.fuelLever('engine1','IDLE');if(!r.accepted)throw Error(r.reason);break;}
+ case 'off1':sim.shutdown('engine1');break;
+ case 'start2':sim.engineStart('engine2');break;
+ case 'idle2':{const r=sim.fuelLever('engine2','IDLE');if(!r.accepted)throw Error(r.reason);break;}
+ case 'off2':sim.shutdown('engine2');break;
+ case 'play':if(runner){clearInterval(runner);runner=null;}else runner=setInterval(()=>{try{sim.advance(100);render();}catch(err){clearInterval(runner);runner=null;$('errors').textContent=err.message;}},100);break;
+ case 'step':sim.advance(500);break;
+ case 'step5':sim.advance(5000);break;
+ case 'ground':sim.setOnGround(!status.aircraft.onGround);break;
+ case 'bleedFault':sim.setAPUFault('bleedFailure',!status.apu.faults.bleedFailure);break;
+ case 'genFault':sim.setAPUFault('generatorFailure',!status.apu.faults.generatorFailure);break;
+ case 'oilPump1':sim.setOilFault('engine1','pumpFailure',!sim.oil.engine1.faults.pumpFailure);break;
+ case 'oilFilter1':sim.setOilFault('engine1','filterRestriction',!sim.oil.engine1.faults.filterRestriction);break;
+ case 'oilLeak1':sim.setOilFault('engine1','oilLeak',!sim.oil.engine1.faults.oilLeak);break;
+ case 'hot1':sim.setStartFault('engine1','egtHigh',true);break;
+ case 'crossfeed':sim.core.fuel.setCrossfeed(status.fuel.crossfeed==='OPEN'?'CLOSED':'OPEN');break;
+ case 'fuelLoss1':sim.core.setFireSwitch('engine1',true);break;
+ case 'n1plan':{
+  const ias=Number($('ias').value),alt=Number($('alt').value),oat=Number($('oat').value);
+  sim.setFlightInputs({iasKt:ias,pressureAltitudeFt:alt,oatC:oat});
+  const r=sim.planThrust('engine1',{mode:$('mode').value});
+  $('n1result').textContent=`${r.plan.mode.active}: N1 LIMIT ${r.plan.mode.limitN1Percent.toFixed(1)}% · N1 REQUIRED ${r.plan.performance.requiredN1NowPercent.toFixed(1)}% · COMMANDED ${r.plan.performance.selectedN1CommandPercent.toFixed(1)}%`;
+  break;
+ }
+ default:throw Error('Unknown action '+type);
+ }render();}
+document.addEventListener('click',e=>{const button=e.target.closest('[data-act]');if(!button)return;
+ $('errors').textContent='';try{action(button.dataset.act);}catch(err){$('errors').textContent=err.message;render();}});
+for(const id of ['throttle1','throttle2'])$(id).addEventListener('input',e=>{try{sim.setThrottle('engine'+id.at(-1),Number(e.target.value)/100);$('errors').textContent='';}catch(err){$('errors').textContent=err.message;}render();});
+try{create();}catch(err){$('errors').textContent='Missing engine library: '+err.message;console.error(err);}
+})();
