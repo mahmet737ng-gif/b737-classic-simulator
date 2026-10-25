@@ -35,7 +35,7 @@
    const transferSource=pumpSnapshot.electrical?.feed?.transferSource??{};
    for(const [id,p] of Object.entries(pumpSnapshot.pumps??{})){
     if(p.operating!==true||!/^transfer[12]$/.test(p.sourceBus??''))continue;
-    const generatorFeed=transferSource[p.sourceBus];
+    const generatorFeed=transferSource[Number(p.sourceBus.slice(-1))];
     const selectedSide=generatorFeed==='GENERATOR_BUS_1'?1:generatorFeed==='GENERATOR_BUS_2'?2:null;
     if(!selectedSide||!sides.includes(selectedSide))continue;
     const kva=id.startsWith('hyd.')?CONFIG.pumpHydKva:CONFIG.pumpFuelKva;
