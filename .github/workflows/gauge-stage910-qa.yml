@@ -5,6 +5,7 @@ on:
     paths:
       - 'engine/instruments/stage5-scale-mapping-v1.js'
       - 'engine/instruments/stage9-needle-dynamics-v1.js'
+      - 'engine/instruments/stage9-dynamics-registry-v1.json'
       - 'engine/instruments/stage10-needle-workbench-v1.js'
       - 'engine/instruments/stage10-preview-scale-subset-v1.json'
       - 'engine/instruments/stage9-stage10.test.cjs'
