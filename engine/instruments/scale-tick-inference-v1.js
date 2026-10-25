@@ -67,14 +67,23 @@
         increment:rounded(increment)
       }));
     }
+    // If source-image positions and a measured pivot exist, derive real
+    // angular bearings from pixel geometry rather than a generic arc.
     let angles=null;
-    if(ticks.every(t=>finite(t.angleDeg))){
+    const pivot=config.pivot;
+    if(pivot&&(!finite(pivot.x)||!finite(pivot.y)))throw Error('Invalid dial pivot');
+    const measuredAngles=ticks.map(t=>{
+      if(pivot&&finite(t.x)&&finite(t.y))
+        return Math.atan2(t.x-pivot.x,pivot.y-t.y)*180/Math.PI;
+      return t.angleDeg;
+    });
+    if(config.direction!=='linear'&&measuredAngles.every(finite)){
       const direction=config.direction;
       if(direction==='linear')throw Error('Linear indicator cannot supply rotary angles');
       const sign=direction==='clockwise'?1:-1;
-      angles=[ticks[0].angleDeg];
+      angles=[measuredAngles[0]];
       for(let i=1;i<ticks.length;i++){
-        let angle=ticks[i].angleDeg;
+        let angle=measuredAngles[i];
         while((angle-angles.at(-1))*sign<=0)angle+=360*sign;
         const delta=(angle-angles.at(-1))*sign;
         if(delta>(config.maxGapDeg||120))
@@ -93,13 +102,13 @@
       valueOrigin:finite(tick.labelValue)?'read_label':'inferred_tick_division',
       positionOrigin:config.positionOrigin||'unverified'
     }));
-    return Object.freeze({direction:config.direction,
+    return Object.freeze({direction:config.direction,pivot:pivot?Object.freeze({x:pivot.x,y:pivot.y}):null,
       marks:Object.freeze(marks),intervals:Object.freeze(intervals),
       allValuesInferred:marks.every(m=>finite(m.value)),
       visualApproved:false // Requires independent source image QA.
     });
   }
-  function mapValue(inferred,value,{outOfRange='clamp'}={}){
+  function mapValue(inferred,value,{outOfRange='reject'}={}){
     if(!inferred||!Array.isArray(inferred.marks)||!inferred.allValuesInferred)
       throw Error('Complete measured tick map required');
     if(!finite(value))throw Error('Reading must be a finite number');
@@ -112,8 +121,16 @@
     const a=marks[i-1],b=marks[i],t=(v-a.value)/(b.value-a.value);
     const angleDeg=finite(a.angleDeg)&&finite(b.angleDeg)?
       midpoint(a.angleDeg,b.angleDeg,t):null;
-    const position=finite(a.x)&&finite(a.y)&&finite(b.x)&&finite(b.y)?
-      Object.freeze({x:midpoint(a.x,b.x,t),y:midpoint(a.y,b.y,t)}):null;
+    let position=null;
+    if(finite(a.x)&&finite(a.y)&&finite(b.x)&&finite(b.y)){
+      if(inferred.pivot&&angleDeg!==null){
+        const p=inferred.pivot;
+        // A rotary needle traces an ARC, not the straight chord between ticks.
+        const rA=Math.hypot(a.x-p.x,a.y-p.y),rB=Math.hypot(b.x-p.x,b.y-p.y);
+        const radius=midpoint(rA,rB,t),phi=angleDeg*Math.PI/180;
+        position=Object.freeze({x:p.x+radius*Math.sin(phi),y:p.y-radius*Math.cos(phi)});
+      }else position=Object.freeze({x:midpoint(a.x,b.x,t),y:midpoint(a.y,b.y,t)});
+    }
     if(angleDeg===null&&position===null)throw Error('Measured geometry required for target');
     return Object.freeze({input:value,value:v,
       status:v!==value?'pegged':'ok',angleDeg,position,
