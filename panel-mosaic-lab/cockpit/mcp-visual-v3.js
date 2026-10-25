@@ -77,9 +77,10 @@ function drawDisplay(svg,d){
  g.append(svgElement("rect",{x:d.x,y:d.y,width:d.w,height:d.h,rx:5,fill:"#101313",stroke:"#4d5356","stroke-width":3}));
  g.append(svgElement("rect",{x:d.x+4,y:d.y+4,width:d.w-8,height:d.h-8,rx:3,fill:"#090e0d"}));
  const chars=numericText(d.id);
- const size=d.digits===5?24.5:29.5;
- const aw=size, spacing=d.digits===5?5.7:6.1;
- const total=d.digits*aw+(d.digits-1)*spacing;
+ const count=chars.length;
+ const size=count>=5?24.5:29.5;
+ const aw=size, spacing=count>=5?5.7:6.1;
+ const total=count*aw+(count-1)*spacing;
  const start=d.x+(d.w-total)/2;
  const height=size*59/35;
  for(let i=0;i<chars.length;i++)drawDigit(g,start+i*(aw+spacing),d.y+(d.h-height)/2,size,chars[i]);
@@ -101,7 +102,10 @@ function setValue(id,v,method){
  if(id==="altitude")next=Math.max(0,Math.min(49900,next));
  if(id==="verticalSpeed")next=Math.max(-9900,Math.min(9900,next));
  values[id]=next;repaint();
- if(next!==before)event("value-change",{control:id,value:next,previous:before,method});
+ if(next!==before){
+  event("value-change",{control:id,value:next,previous:before,method});
+  if(id==="speed")window.dispatchEvent(new CustomEvent("b737:mcp-ias-mach-detent",{detail:{control:"MCP.IAS_MACH",delta:next-before,detent:next-312,method}}));
+ }
 }
 function step(id,d,method){
  const increments={courseL:1,courseR:1,speed:1,heading:1,altitude:100,verticalSpeed:100};
@@ -161,6 +165,7 @@ window.B737McpVisualV3=Object.freeze({
  setLamp:(id,state)=>{if(Object.hasOwn(values.lamps,id)){values.lamps[id]=!!state;repaint()}},
  mount
 });
+window.B737McpIasMachKnob=Object.freeze({placement:Object.freeze({sourceWidth:W,sourceHeight:H,x:615,y:277,diameter:116,detentDegrees:12}),getDetent:()=>values.speed-312,setDetent(v){if(Number.isFinite(v))setValue("speed",312+Math.trunc(v),"external")}});
 window.addEventListener("b737:cockpit-mounted",mount);
 document.addEventListener("DOMContentLoaded",mount);
 if(document.readyState!=="loading")mount();
