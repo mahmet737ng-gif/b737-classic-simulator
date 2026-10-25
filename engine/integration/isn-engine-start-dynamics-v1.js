@@ -18,13 +18,13 @@
   groundIdle:Object.freeze({n1Percent:22,n2Percent:60,egtC:445,fuelFlowKgHr:360}),
   flightIdle:Object.freeze({n1Percent:32,n2Percent:78,egtC:495,fuelFlowKgHr:430}),
   fullThrust:Object.freeze({n1Percent:97,n2Percent:101,egtC:695,fuelFlowKgHr:2400}),
-  normalStartPeakEgtC:600,
+  normalStartPeakEgtC:620,
   responseMs:Object.freeze({n1Up:2200,n1Down:3500,n2Up:3000,n2Down:4600,egtUp:1600,egtDown:3200,fuelUp:1800,fuelDown:2500})
  });
  const startEgt=p=>{const t=clamp(p,0,1);
   if(t<=.5)return 420*t;
-  if(t<=.75)return 210+390*smooth((t-.5)/.25);
-  return 600-180*smooth((t-.75)/.25);
+  if(t<=.75)return 210+(ENVELOPE.normalStartPeakEgtC-210)*smooth((t-.5)/.25);
+   return ENVELOPE.normalStartPeakEgtC-(ENVELOPE.normalStartPeakEgtC-420)*smooth((t-.75)/.25);
  };
  const interpolate=(a,b,f)=>a+(b-a)*f;
  function runningTarget({throttle=0,onGround=true}={}){
