@@ -48,6 +48,26 @@ const {chromium}=require('playwright');
    assert.ok(good.w>0&&good.h>0);
    diagnostics.push({kind,id,image:src.substring(src.lastIndexOf('/')+1),size:[good.w,good.h]});
   }
+  const fullManifestURL=new URL('instance-faces.json',page.url()).href;
+  const allFaces=await page.evaluate(async manifestURL=>{
+    const response=await fetch(manifestURL,{cache:'no-store'});
+    if(!response.ok)return {error:'manifest status '+response.status};
+    const data=await response.json();
+    const records=Object.entries(data.instances).flatMap(([id,inst])=>
+      Object.entries(inst.states).map(([state,frame])=>({
+       id,state,sourceRect:inst.sourceRect,url:new URL(frame.url,manifestURL).href
+      })));
+    const results=await Promise.all(records.map(async face=>{
+      const im=new Image();im.src=face.url;
+      try{await im.decode();return {...face,loaded:im.naturalWidth===face.sourceRect[2]&&im.naturalHeight===face.sourceRect[3],width:im.naturalWidth,height:im.naturalHeight}}
+      catch(e){return {...face,loaded:false,error:String(e)}}
+    }));
+    return {total:results.length,failed:results.filter(x=>!x.loaded)};
+  },fullManifestURL);
+  assert.ok(!allFaces.error,kind+' '+allFaces.error);
+  assert.equal(allFaces.total,kind==='overhead'?70:4,'all source SVG states counted');
+  assert.deepEqual(allFaces.failed,[],kind+' cannot display one or more physical face states');
+  console.log('BROWSER_ALL_INSTANCE_STATES_PASS',kind,JSON.stringify({states:allFaces.total,bad:allFaces.failed.length}));
   const bad=errors.filter(msg=>/lights|instance.face|cannot|SyntaxError/.test(msg));
   assert.deepEqual(bad,[],kind+' browser JavaScript errors');
   console.log('BROWSER_PANEL_PASS',kind,JSON.stringify({mounted,example:diagnostics.filter(x=>x.kind===kind),errors:errors.slice(0,5)}));
