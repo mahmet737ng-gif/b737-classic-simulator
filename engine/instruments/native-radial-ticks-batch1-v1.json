@@ -1,0 +1,2541 @@
+{
+  "schema": "b737.native-source-radial-detections.batch1.v1",
+  "aircraft": "B737-33V EP-FSI / Unified unchanged native-source images",
+  "date": "2026-10-25",
+  "algorithm": "Read-only 0.25-degree radial white-luminance scanner, native source x/y, major numbers cross-checked with earlier printed source-photo anchors. Numeric values are ONLY assigned to printed major anchors; minor stroke values remain null. Candidate inner tips are brightness-run start, not approved final measurement.",
+  "sourceCodeBranch": "gauge-native-photo-extraction-batch1-20261025",
+  "actionLog": "https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/40217603498",
+  "imagesUnmodified": true,
+  "calibrationApproved": false,
+  "count": {
+    "faces": 3,
+    "totalStrokeCandidates": 152,
+    "byFace": {
+      "oh.fuel.temperature": 49,
+      "oh.cabin.temperature": 51,
+      "oh.duct.pressure_lr": 52
+    }
+  },
+  "faces": [
+    {
+      "id": "oh.fuel.temperature",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/OH09-FUEL-921977b56887.png",
+      "sourceSha256": "921977b568870233c9613a62101741dc369bb43f85b80b3769af07f05eeba733",
+      "sourceSize": [
+        1012,
+        1555
+      ],
+      "pivotCandidate": {
+        "x": 506,
+        "y": 235
+      },
+      "scaleMode": "primary",
+      "unit": "°C",
+      "scanSettings": {
+        "annulusPx": [
+          108,
+          148
+        ],
+        "angularWindowDeg": [
+          -136,
+          136
+        ],
+        "angularStepDeg": 0.25
+      },
+      "majorReferenceAngles": [
+        {
+          "numericValue": -40,
+          "candidateAngle": -92,
+          "photoNumberedStatus": "source_label_candidate"
+        },
+        {
+          "numericValue": -30,
+          "candidateAngle": -69,
+          "photoNumberedStatus": "source_label_candidate"
+        },
+        {
+          "numericValue": -20,
+          "candidateAngle": -47.5,
+          "photoNumberedStatus": "source_label_candidate"
+        },
+        {
+          "numericValue": -10,
+          "candidateAngle": -24.5,
+          "photoNumberedStatus": "source_label_candidate"
+        },
+        {
+          "numericValue": 0,
+          "candidateAngle": 0.5,
+          "photoNumberedStatus": "source_label_candidate"
+        },
+        {
+          "numericValue": 10,
+          "candidateAngle": 24,
+          "photoNumberedStatus": "source_label_candidate"
+        },
+        {
+          "numericValue": 20,
+          "candidateAngle": 47,
+          "photoNumberedStatus": "source_label_candidate"
+        },
+        {
+          "numericValue": 30,
+          "candidateAngle": 69,
+          "photoNumberedStatus": "source_label_candidate"
+        },
+        {
+          "numericValue": 40,
+          "candidateAngle": 91,
+          "photoNumberedStatus": "source_label_candidate"
+        }
+      ],
+      "strokeCandidates": [
+        {
+          "id": 0,
+          "angleDeg": -125.5,
+          "candidateInnerRadiusPx": 113,
+          "innerPoint": {
+            "x": 414,
+            "y": 300.62
+          },
+          "brightnessRunScore": 17.6,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 1,
+          "angleDeg": -119.5,
+          "candidateInnerRadiusPx": 115,
+          "innerPoint": {
+            "x": 405.91,
+            "y": 291.63
+          },
+          "brightnessRunScore": 16,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 2,
+          "angleDeg": -114,
+          "candidateInnerRadiusPx": 108,
+          "innerPoint": {
+            "x": 407.34,
+            "y": 278.93
+          },
+          "brightnessRunScore": 24,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 3,
+          "angleDeg": -108.25,
+          "candidateInnerRadiusPx": 117,
+          "innerPoint": {
+            "x": 394.89,
+            "y": 271.64
+          },
+          "brightnessRunScore": 15.8,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 4,
+          "angleDeg": -102.5,
+          "candidateInnerRadiusPx": 117,
+          "innerPoint": {
+            "x": 391.77,
+            "y": 260.32
+          },
+          "brightnessRunScore": 16,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 5,
+          "angleDeg": -96.75,
+          "candidateInnerRadiusPx": 117,
+          "innerPoint": {
+            "x": 389.81,
+            "y": 248.75
+          },
+          "brightnessRunScore": 16.4,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 6,
+          "angleDeg": -91.75,
+          "candidateInnerRadiusPx": 108,
+          "innerPoint": {
+            "x": 398.05,
+            "y": 238.3
+          },
+          "brightnessRunScore": 26,
+          "majorNumber": -40,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "major_printed_number_alignment_candidate",
+          "anchorDisagreementDeg": 0.25,
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 7,
+          "angleDeg": -85.75,
+          "candidateInnerRadiusPx": 118,
+          "innerPoint": {
+            "x": 388.32,
+            "y": 226.26
+          },
+          "brightnessRunScore": 16,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 8,
+          "angleDeg": -80.25,
+          "candidateInnerRadiusPx": 119,
+          "innerPoint": {
+            "x": 388.72,
+            "y": 214.85
+          },
+          "brightnessRunScore": 16,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 9,
+          "angleDeg": -74.75,
+          "candidateInnerRadiusPx": 119,
+          "innerPoint": {
+            "x": 391.19,
+            "y": 203.7
+          },
+          "brightnessRunScore": 16,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 10,
+          "angleDeg": -69.25,
+          "candidateInnerRadiusPx": 111,
+          "innerPoint": {
+            "x": 402.2,
+            "y": 195.67
+          },
+          "brightnessRunScore": 24.2,
+          "majorNumber": -30,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "major_printed_number_alignment_candidate",
+          "anchorDisagreementDeg": 0.25,
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 11,
+          "angleDeg": -64,
+          "candidateInnerRadiusPx": 120,
+          "innerPoint": {
+            "x": 398.14,
+            "y": 182.4
+          },
+          "brightnessRunScore": 16.2,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 12,
+          "angleDeg": -58.75,
+          "candidateInnerRadiusPx": 120,
+          "innerPoint": {
+            "x": 403.41,
+            "y": 172.75
+          },
+          "brightnessRunScore": 16.4,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 13,
+          "angleDeg": -53,
+          "candidateInnerRadiusPx": 121,
+          "innerPoint": {
+            "x": 409.37,
+            "y": 162.18
+          },
+          "brightnessRunScore": 16.2,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 14,
+          "angleDeg": -47.5,
+          "candidateInnerRadiusPx": 111,
+          "innerPoint": {
+            "x": 424.16,
+            "y": 160.01
+          },
+          "brightnessRunScore": 27,
+          "majorNumber": -20,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "major_printed_number_alignment_candidate",
+          "anchorDisagreementDeg": 0,
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 15,
+          "angleDeg": -42.25,
+          "candidateInnerRadiusPx": 122,
+          "innerPoint": {
+            "x": 423.97,
+            "y": 144.69
+          },
+          "brightnessRunScore": 16.8,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 16,
+          "angleDeg": -37,
+          "candidateInnerRadiusPx": 123,
+          "innerPoint": {
+            "x": 431.98,
+            "y": 136.77
+          },
+          "brightnessRunScore": 16.2,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 17,
+          "angleDeg": -32.5,
+          "candidateInnerRadiusPx": 124,
+          "innerPoint": {
+            "x": 439.37,
+            "y": 130.42
+          },
+          "brightnessRunScore": 12.6,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 18,
+          "angleDeg": -28.75,
+          "candidateInnerRadiusPx": 124,
+          "innerPoint": {
+            "x": 446.36,
+            "y": 126.29
+          },
+          "brightnessRunScore": 11,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 19,
+          "angleDeg": -24.5,
+          "candidateInnerRadiusPx": 115,
+          "innerPoint": {
+            "x": 458.31,
+            "y": 130.35
+          },
+          "brightnessRunScore": 26.2,
+          "majorNumber": -10,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "major_printed_number_alignment_candidate",
+          "anchorDisagreementDeg": 0,
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 20,
+          "angleDeg": -19.5,
+          "candidateInnerRadiusPx": 125,
+          "innerPoint": {
+            "x": 464.27,
+            "y": 117.17
+          },
+          "brightnessRunScore": 14.8,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 21,
+          "angleDeg": -14.75,
+          "candidateInnerRadiusPx": 125,
+          "innerPoint": {
+            "x": 474.17,
+            "y": 114.12
+          },
+          "brightnessRunScore": 17.2,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 22,
+          "angleDeg": -9.75,
+          "candidateInnerRadiusPx": 127,
+          "innerPoint": {
+            "x": 484.49,
+            "y": 109.83
+          },
+          "brightnessRunScore": 15.4,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 23,
+          "angleDeg": -4.75,
+          "candidateInnerRadiusPx": 126,
+          "innerPoint": {
+            "x": 495.57,
+            "y": 109.43
+          },
+          "brightnessRunScore": 15.2,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 24,
+          "angleDeg": 0.25,
+          "candidateInnerRadiusPx": 112,
+          "innerPoint": {
+            "x": 506.49,
+            "y": 123
+          },
+          "brightnessRunScore": 28.2,
+          "majorNumber": 0,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "major_printed_number_alignment_candidate",
+          "anchorDisagreementDeg": 0.25,
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 25,
+          "angleDeg": 4.5,
+          "candidateInnerRadiusPx": 126,
+          "innerPoint": {
+            "x": 515.89,
+            "y": 109.39
+          },
+          "brightnessRunScore": 15.4,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 26,
+          "angleDeg": 9.5,
+          "candidateInnerRadiusPx": 127,
+          "innerPoint": {
+            "x": 526.96,
+            "y": 109.74
+          },
+          "brightnessRunScore": 15.2,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 27,
+          "angleDeg": 14.5,
+          "candidateInnerRadiusPx": 125,
+          "innerPoint": {
+            "x": 537.3,
+            "y": 113.98
+          },
+          "brightnessRunScore": 17.4,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 28,
+          "angleDeg": 19.5,
+          "candidateInnerRadiusPx": 125,
+          "innerPoint": {
+            "x": 547.73,
+            "y": 117.17
+          },
+          "brightnessRunScore": 15.4,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 29,
+          "angleDeg": 24,
+          "candidateInnerRadiusPx": 115,
+          "innerPoint": {
+            "x": 552.77,
+            "y": 129.94
+          },
+          "brightnessRunScore": 25.4,
+          "majorNumber": 10,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "major_printed_number_alignment_candidate",
+          "anchorDisagreementDeg": 0,
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 30,
+          "angleDeg": 28.75,
+          "candidateInnerRadiusPx": 125,
+          "innerPoint": {
+            "x": 566.12,
+            "y": 125.41
+          },
+          "brightnessRunScore": 7.4,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 31,
+          "angleDeg": 31.75,
+          "candidateInnerRadiusPx": 123,
+          "innerPoint": {
+            "x": 570.72,
+            "y": 130.41
+          },
+          "brightnessRunScore": 14.8,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 32,
+          "angleDeg": 36.75,
+          "candidateInnerRadiusPx": 122,
+          "innerPoint": {
+            "x": 579,
+            "y": 137.25
+          },
+          "brightnessRunScore": 17,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 33,
+          "angleDeg": 42.25,
+          "candidateInnerRadiusPx": 122,
+          "innerPoint": {
+            "x": 588.03,
+            "y": 144.69
+          },
+          "brightnessRunScore": 16,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 34,
+          "angleDeg": 47.25,
+          "candidateInnerRadiusPx": 111,
+          "innerPoint": {
+            "x": 587.51,
+            "y": 159.65
+          },
+          "brightnessRunScore": 27,
+          "majorNumber": 20,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "major_printed_number_alignment_candidate",
+          "anchorDisagreementDeg": 0.25,
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 35,
+          "angleDeg": 53,
+          "candidateInnerRadiusPx": 121,
+          "innerPoint": {
+            "x": 602.63,
+            "y": 162.18
+          },
+          "brightnessRunScore": 16.8,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 36,
+          "angleDeg": 58.5,
+          "candidateInnerRadiusPx": 120,
+          "innerPoint": {
+            "x": 608.32,
+            "y": 172.3
+          },
+          "brightnessRunScore": 17,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 37,
+          "angleDeg": 64,
+          "candidateInnerRadiusPx": 120,
+          "innerPoint": {
+            "x": 613.86,
+            "y": 182.4
+          },
+          "brightnessRunScore": 16.4,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 38,
+          "angleDeg": 69.25,
+          "candidateInnerRadiusPx": 110,
+          "innerPoint": {
+            "x": 608.86,
+            "y": 196.03
+          },
+          "brightnessRunScore": 26,
+          "majorNumber": 30,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "major_printed_number_alignment_candidate",
+          "anchorDisagreementDeg": 0.25,
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 39,
+          "angleDeg": 74.75,
+          "candidateInnerRadiusPx": 118,
+          "innerPoint": {
+            "x": 619.84,
+            "y": 203.96
+          },
+          "brightnessRunScore": 17.2,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 40,
+          "angleDeg": 80.25,
+          "candidateInnerRadiusPx": 118,
+          "innerPoint": {
+            "x": 622.3,
+            "y": 215.02
+          },
+          "brightnessRunScore": 17,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 41,
+          "angleDeg": 86,
+          "candidateInnerRadiusPx": 117,
+          "innerPoint": {
+            "x": 622.71,
+            "y": 226.84
+          },
+          "brightnessRunScore": 16.8,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 42,
+          "angleDeg": 90.75,
+          "candidateInnerRadiusPx": 108,
+          "innerPoint": {
+            "x": 613.99,
+            "y": 236.41
+          },
+          "brightnessRunScore": 25.8,
+          "majorNumber": 40,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "major_printed_number_alignment_candidate",
+          "anchorDisagreementDeg": 0.25,
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 43,
+          "angleDeg": 96.75,
+          "candidateInnerRadiusPx": 116,
+          "innerPoint": {
+            "x": 621.2,
+            "y": 248.63
+          },
+          "brightnessRunScore": 16.6,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 44,
+          "angleDeg": 103,
+          "candidateInnerRadiusPx": 115,
+          "innerPoint": {
+            "x": 618.05,
+            "y": 260.87
+          },
+          "brightnessRunScore": 16.6,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 45,
+          "angleDeg": 108.25,
+          "candidateInnerRadiusPx": 116,
+          "innerPoint": {
+            "x": 616.17,
+            "y": 271.33
+          },
+          "brightnessRunScore": 17.4,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 46,
+          "angleDeg": 113.5,
+          "candidateInnerRadiusPx": 108,
+          "innerPoint": {
+            "x": 605.04,
+            "y": 278.06
+          },
+          "brightnessRunScore": 25.2,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 47,
+          "angleDeg": 119.5,
+          "candidateInnerRadiusPx": 114,
+          "innerPoint": {
+            "x": 605.22,
+            "y": 291.14
+          },
+          "brightnessRunScore": 17.4,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 48,
+          "angleDeg": 125.75,
+          "candidateInnerRadiusPx": 112,
+          "innerPoint": {
+            "x": 596.9,
+            "y": 300.44
+          },
+          "brightnessRunScore": 19.6,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        }
+      ],
+      "hasAllStrokesPhotoVerified": false,
+      "approved": false,
+      "openIssues": [
+        "digit_mask_not_manually_certified",
+        "minor_stroke_numeric_values_not_verified",
+        "pivot_optical_center_unverified",
+        "needle_tip_length_vs_tick_inner_end_not_verified"
+      ]
+    },
+    {
+      "id": "oh.cabin.temperature",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/OH20-AIR-CONDITIONING-0734da6a7726.png",
+      "sourceSha256": "94669d21f0be8aa538b2ff3b0684683409cadf6d9fc4b55390e7147abe506121",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "pivotCandidate": {
+        "x": 618,
+        "y": 681
+      },
+      "scaleMode": "primary",
+      "unit": "°C",
+      "scanSettings": {
+        "annulusPx": [
+          140,
+          181
+        ],
+        "angularWindowDeg": [
+          -145,
+          120
+        ],
+        "angularStepDeg": 0.25
+      },
+      "majorReferenceAngles": [
+        {
+          "numericValue": 0,
+          "candidateAngle": -137.27,
+          "photoNumberedStatus": "source_label_candidate"
+        },
+        {
+          "numericValue": 20,
+          "candidateAngle": -89.63,
+          "photoNumberedStatus": "source_label_candidate"
+        },
+        {
+          "numericValue": 40,
+          "candidateAngle": -46.83,
+          "photoNumberedStatus": "source_label_candidate"
+        },
+        {
+          "numericValue": 60,
+          "candidateAngle": 13,
+          "photoNumberedStatus": "source_label_candidate"
+        },
+        {
+          "numericValue": 80,
+          "candidateAngle": 74.15,
+          "photoNumberedStatus": "source_label_candidate"
+        },
+        {
+          "numericValue": 100,
+          "candidateAngle": 109.54,
+          "photoNumberedStatus": "source_label_candidate"
+        }
+      ],
+      "strokeCandidates": [
+        {
+          "id": 0,
+          "angleDeg": -138.5,
+          "candidateInnerRadiusPx": 140,
+          "innerPoint": {
+            "x": 525.23,
+            "y": 785.85
+          },
+          "brightnessRunScore": 29,
+          "majorNumber": 0,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "major_printed_number_alignment_candidate",
+          "anchorDisagreementDeg": 1.23,
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 1,
+          "angleDeg": -132.5,
+          "candidateInnerRadiusPx": 151,
+          "innerPoint": {
+            "x": 506.67,
+            "y": 783.01
+          },
+          "brightnessRunScore": 18,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 2,
+          "angleDeg": -127.75,
+          "candidateInnerRadiusPx": 152,
+          "innerPoint": {
+            "x": 497.82,
+            "y": 774.06
+          },
+          "brightnessRunScore": 18.6,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 3,
+          "angleDeg": -122.75,
+          "candidateInnerRadiusPx": 153,
+          "innerPoint": {
+            "x": 489.32,
+            "y": 763.77
+          },
+          "brightnessRunScore": 17.8,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 4,
+          "angleDeg": -118,
+          "candidateInnerRadiusPx": 154,
+          "innerPoint": {
+            "x": 482.03,
+            "y": 753.3
+          },
+          "brightnessRunScore": 17.8,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 5,
+          "angleDeg": -113.75,
+          "candidateInnerRadiusPx": 140,
+          "innerPoint": {
+            "x": 489.86,
+            "y": 737.38
+          },
+          "brightnessRunScore": 32.8,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 6,
+          "angleDeg": -108.75,
+          "candidateInnerRadiusPx": 155,
+          "innerPoint": {
+            "x": 471.23,
+            "y": 730.82
+          },
+          "brightnessRunScore": 18,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 7,
+          "angleDeg": -104.25,
+          "candidateInnerRadiusPx": 155,
+          "innerPoint": {
+            "x": 467.77,
+            "y": 719.15
+          },
+          "brightnessRunScore": 17.8,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 8,
+          "angleDeg": -99.75,
+          "candidateInnerRadiusPx": 155,
+          "innerPoint": {
+            "x": 465.24,
+            "y": 707.25
+          },
+          "brightnessRunScore": 18.2,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 9,
+          "angleDeg": -94.5,
+          "candidateInnerRadiusPx": 155,
+          "innerPoint": {
+            "x": 463.48,
+            "y": 693.16
+          },
+          "brightnessRunScore": 18.4,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 10,
+          "angleDeg": -90.25,
+          "candidateInnerRadiusPx": 141,
+          "innerPoint": {
+            "x": 477,
+            "y": 681.62
+          },
+          "brightnessRunScore": 32.8,
+          "majorNumber": 20,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "major_printed_number_alignment_candidate",
+          "anchorDisagreementDeg": 0.62,
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 11,
+          "angleDeg": -85.5,
+          "candidateInnerRadiusPx": 155,
+          "innerPoint": {
+            "x": 463.48,
+            "y": 668.84
+          },
+          "brightnessRunScore": 18.4,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 12,
+          "angleDeg": -80.75,
+          "candidateInnerRadiusPx": 155,
+          "innerPoint": {
+            "x": 465.02,
+            "y": 656.08
+          },
+          "brightnessRunScore": 17.8,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 13,
+          "angleDeg": -75.75,
+          "candidateInnerRadiusPx": 155,
+          "innerPoint": {
+            "x": 467.77,
+            "y": 642.85
+          },
+          "brightnessRunScore": 17.6,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 14,
+          "angleDeg": -71.25,
+          "candidateInnerRadiusPx": 154,
+          "innerPoint": {
+            "x": 472.17,
+            "y": 631.5
+          },
+          "brightnessRunScore": 18.6,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 15,
+          "angleDeg": -66.25,
+          "candidateInnerRadiusPx": 140,
+          "innerPoint": {
+            "x": 489.86,
+            "y": 624.62
+          },
+          "brightnessRunScore": 32.8,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 16,
+          "angleDeg": -61,
+          "candidateInnerRadiusPx": 154,
+          "innerPoint": {
+            "x": 483.31,
+            "y": 606.34
+          },
+          "brightnessRunScore": 18.6,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 17,
+          "angleDeg": -56.5,
+          "candidateInnerRadiusPx": 154,
+          "innerPoint": {
+            "x": 489.58,
+            "y": 596
+          },
+          "brightnessRunScore": 18.4,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 18,
+          "angleDeg": -51,
+          "candidateInnerRadiusPx": 154,
+          "innerPoint": {
+            "x": 498.32,
+            "y": 584.08
+          },
+          "brightnessRunScore": 17.6,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 19,
+          "angleDeg": -46,
+          "candidateInnerRadiusPx": 154,
+          "innerPoint": {
+            "x": 507.22,
+            "y": 574.02
+          },
+          "brightnessRunScore": 17.6,
+          "majorNumber": 40,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "major_printed_number_alignment_candidate",
+          "anchorDisagreementDeg": 0.83,
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 20,
+          "angleDeg": -41.25,
+          "candidateInnerRadiusPx": 140,
+          "innerPoint": {
+            "x": 525.69,
+            "y": 575.74
+          },
+          "brightnessRunScore": 32.6,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 21,
+          "angleDeg": -35.25,
+          "candidateInnerRadiusPx": 153,
+          "innerPoint": {
+            "x": 529.7,
+            "y": 556.05
+          },
+          "brightnessRunScore": 19.6,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 22,
+          "angleDeg": -30.75,
+          "candidateInnerRadiusPx": 152,
+          "innerPoint": {
+            "x": 540.28,
+            "y": 550.37
+          },
+          "brightnessRunScore": 19.4,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 23,
+          "angleDeg": -25,
+          "candidateInnerRadiusPx": 152,
+          "innerPoint": {
+            "x": 553.76,
+            "y": 543.24
+          },
+          "brightnessRunScore": 19.6,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 24,
+          "angleDeg": -19.5,
+          "candidateInnerRadiusPx": 152,
+          "innerPoint": {
+            "x": 567.26,
+            "y": 537.72
+          },
+          "brightnessRunScore": 19.8,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 25,
+          "angleDeg": -14,
+          "candidateInnerRadiusPx": 140,
+          "innerPoint": {
+            "x": 584.13,
+            "y": 545.16
+          },
+          "brightnessRunScore": 32,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 26,
+          "angleDeg": -9.75,
+          "candidateInnerRadiusPx": 150,
+          "innerPoint": {
+            "x": 592.6,
+            "y": 533.17
+          },
+          "brightnessRunScore": 20.8,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 27,
+          "angleDeg": -4.5,
+          "candidateInnerRadiusPx": 150,
+          "innerPoint": {
+            "x": 606.23,
+            "y": 531.46
+          },
+          "brightnessRunScore": 21.4,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 28,
+          "angleDeg": 1.25,
+          "candidateInnerRadiusPx": 150,
+          "innerPoint": {
+            "x": 621.27,
+            "y": 531.04
+          },
+          "brightnessRunScore": 21,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 29,
+          "angleDeg": 6.25,
+          "candidateInnerRadiusPx": 150,
+          "innerPoint": {
+            "x": 634.33,
+            "y": 531.89
+          },
+          "brightnessRunScore": 21,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 30,
+          "angleDeg": 11.75,
+          "candidateInnerRadiusPx": 140,
+          "innerPoint": {
+            "x": 646.51,
+            "y": 543.93
+          },
+          "brightnessRunScore": 31,
+          "majorNumber": 60,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "major_printed_number_alignment_candidate",
+          "anchorDisagreementDeg": 1.25,
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 31,
+          "angleDeg": 17.5,
+          "candidateInnerRadiusPx": 150,
+          "innerPoint": {
+            "x": 663.11,
+            "y": 537.94
+          },
+          "brightnessRunScore": 20.6,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 32,
+          "angleDeg": 22.5,
+          "candidateInnerRadiusPx": 150,
+          "innerPoint": {
+            "x": 675.4,
+            "y": 542.42
+          },
+          "brightnessRunScore": 20.8,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 33,
+          "angleDeg": 27.75,
+          "candidateInnerRadiusPx": 150,
+          "innerPoint": {
+            "x": 687.84,
+            "y": 548.25
+          },
+          "brightnessRunScore": 20.4,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 34,
+          "angleDeg": 33.25,
+          "candidateInnerRadiusPx": 149,
+          "innerPoint": {
+            "x": 699.7,
+            "y": 556.39
+          },
+          "brightnessRunScore": 20.6,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 35,
+          "angleDeg": 38,
+          "candidateInnerRadiusPx": 140,
+          "innerPoint": {
+            "x": 704.19,
+            "y": 570.68
+          },
+          "brightnessRunScore": 29.6,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 36,
+          "angleDeg": 43.5,
+          "candidateInnerRadiusPx": 150,
+          "innerPoint": {
+            "x": 721.25,
+            "y": 572.19
+          },
+          "brightnessRunScore": 19,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 37,
+          "angleDeg": 49.5,
+          "candidateInnerRadiusPx": 149,
+          "innerPoint": {
+            "x": 731.3,
+            "y": 584.23
+          },
+          "brightnessRunScore": 19,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 38,
+          "angleDeg": 54.5,
+          "candidateInnerRadiusPx": 149,
+          "innerPoint": {
+            "x": 739.3,
+            "y": 594.48
+          },
+          "brightnessRunScore": 18.8,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 39,
+          "angleDeg": 59.75,
+          "candidateInnerRadiusPx": 148,
+          "innerPoint": {
+            "x": 745.85,
+            "y": 606.44
+          },
+          "brightnessRunScore": 19,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 40,
+          "angleDeg": 64.5,
+          "candidateInnerRadiusPx": 140,
+          "innerPoint": {
+            "x": 744.36,
+            "y": 620.73
+          },
+          "brightnessRunScore": 27,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 41,
+          "angleDeg": 69.5,
+          "candidateInnerRadiusPx": 148,
+          "innerPoint": {
+            "x": 756.63,
+            "y": 629.17
+          },
+          "brightnessRunScore": 19.2,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 42,
+          "angleDeg": 74.5,
+          "candidateInnerRadiusPx": 148,
+          "innerPoint": {
+            "x": 760.62,
+            "y": 641.45
+          },
+          "brightnessRunScore": 18.6,
+          "majorNumber": 80,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "major_printed_number_alignment_candidate",
+          "anchorDisagreementDeg": 0.35,
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 43,
+          "angleDeg": 79,
+          "candidateInnerRadiusPx": 149,
+          "innerPoint": {
+            "x": 764.26,
+            "y": 652.57
+          },
+          "brightnessRunScore": 17.2,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 44,
+          "angleDeg": 82.75,
+          "candidateInnerRadiusPx": 148,
+          "innerPoint": {
+            "x": 764.82,
+            "y": 662.32
+          },
+          "brightnessRunScore": 17.8,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 45,
+          "angleDeg": 87,
+          "candidateInnerRadiusPx": 140,
+          "innerPoint": {
+            "x": 757.81,
+            "y": 673.67
+          },
+          "brightnessRunScore": 26,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 46,
+          "angleDeg": 91.5,
+          "candidateInnerRadiusPx": 148,
+          "innerPoint": {
+            "x": 765.95,
+            "y": 684.87
+          },
+          "brightnessRunScore": 18,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 47,
+          "angleDeg": 95.5,
+          "candidateInnerRadiusPx": 148,
+          "innerPoint": {
+            "x": 765.32,
+            "y": 695.19
+          },
+          "brightnessRunScore": 17,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 48,
+          "angleDeg": 100.25,
+          "candidateInnerRadiusPx": 147,
+          "innerPoint": {
+            "x": 762.65,
+            "y": 707.16
+          },
+          "brightnessRunScore": 17.4,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 49,
+          "angleDeg": 104,
+          "candidateInnerRadiusPx": 146,
+          "innerPoint": {
+            "x": 759.66,
+            "y": 716.32
+          },
+          "brightnessRunScore": 18.8,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 50,
+          "angleDeg": 108.75,
+          "candidateInnerRadiusPx": 140,
+          "innerPoint": {
+            "x": 750.57,
+            "y": 726
+          },
+          "brightnessRunScore": 24.8,
+          "majorNumber": 100,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "major_printed_number_alignment_candidate",
+          "anchorDisagreementDeg": 0.79,
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        }
+      ],
+      "hasAllStrokesPhotoVerified": false,
+      "approved": false,
+      "openIssues": [
+        "digit_mask_not_manually_certified",
+        "minor_stroke_numeric_values_not_verified",
+        "pivot_optical_center_unverified",
+        "needle_tip_length_vs_tick_inner_end_not_verified"
+      ]
+    },
+    {
+      "id": "oh.duct.pressure_lr",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/OH21-BLEED-AIR-cc78219607a3.png",
+      "sourceSha256": "4efe8c59579e8675825ed4dabf393648cfa7f11f6c09d831d137c23f70ecfe1e",
+      "sourceSize": [
+        1122,
+        1402
+      ],
+      "pivotCandidate": {
+        "x": 544,
+        "y": 439
+      },
+      "scaleMode": "primary",
+      "unit": "psi",
+      "scanSettings": {
+        "annulusPx": [
+          136,
+          187
+        ],
+        "angularWindowDeg": [
+          -155,
+          158
+        ],
+        "angularStepDeg": 0.25
+      },
+      "majorReferenceAngles": [
+        {
+          "numericValue": 0,
+          "candidateAngle": -152.06,
+          "photoNumberedStatus": "zero_inferred_not_printed"
+        },
+        {
+          "numericValue": 20,
+          "candidateAngle": -92.41,
+          "photoNumberedStatus": "source_label_candidate"
+        },
+        {
+          "numericValue": 40,
+          "candidateAngle": -25.96,
+          "photoNumberedStatus": "source_label_candidate"
+        },
+        {
+          "numericValue": 60,
+          "candidateAngle": 28.16,
+          "photoNumberedStatus": "source_label_candidate"
+        },
+        {
+          "numericValue": 80,
+          "candidateAngle": 91.2,
+          "photoNumberedStatus": "source_label_candidate"
+        },
+        {
+          "numericValue": 100,
+          "candidateAngle": 152.16,
+          "photoNumberedStatus": "source_label_candidate"
+        }
+      ],
+      "strokeCandidates": [
+        {
+          "id": 0,
+          "angleDeg": -152.5,
+          "candidateInnerRadiusPx": 136,
+          "innerPoint": {
+            "x": 481.2,
+            "y": 559.63
+          },
+          "brightnessRunScore": 20.6,
+          "majorNumber": 0,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "provisional_unlabeled_zero_stroke",
+          "anchorDisagreementDeg": 0.44,
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 1,
+          "angleDeg": -146,
+          "candidateInnerRadiusPx": 142,
+          "innerPoint": {
+            "x": 464.59,
+            "y": 556.72
+          },
+          "brightnessRunScore": 14.8,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 2,
+          "angleDeg": -140,
+          "candidateInnerRadiusPx": 142,
+          "innerPoint": {
+            "x": 452.72,
+            "y": 547.78
+          },
+          "brightnessRunScore": 16,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 3,
+          "angleDeg": -134.5,
+          "candidateInnerRadiusPx": 142,
+          "innerPoint": {
+            "x": 442.72,
+            "y": 538.53
+          },
+          "brightnessRunScore": 15,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 4,
+          "angleDeg": -128.25,
+          "candidateInnerRadiusPx": 142,
+          "innerPoint": {
+            "x": 432.48,
+            "y": 526.91
+          },
+          "brightnessRunScore": 12.6,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 5,
+          "angleDeg": -122,
+          "candidateInnerRadiusPx": 136,
+          "innerPoint": {
+            "x": 428.67,
+            "y": 511.07
+          },
+          "brightnessRunScore": 14.2,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 6,
+          "angleDeg": -116.5,
+          "candidateInnerRadiusPx": 142,
+          "innerPoint": {
+            "x": 416.92,
+            "y": 502.36
+          },
+          "brightnessRunScore": 8,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 7,
+          "angleDeg": -110.25,
+          "candidateInnerRadiusPx": 142,
+          "innerPoint": {
+            "x": 410.78,
+            "y": 488.15
+          },
+          "brightnessRunScore": 7,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 8,
+          "angleDeg": -104.25,
+          "candidateInnerRadiusPx": 142,
+          "innerPoint": {
+            "x": 406.37,
+            "y": 473.95
+          },
+          "brightnessRunScore": 11.2,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 9,
+          "angleDeg": -98.25,
+          "candidateInnerRadiusPx": 143,
+          "innerPoint": {
+            "x": 402.48,
+            "y": 459.52
+          },
+          "brightnessRunScore": 8.8,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 10,
+          "angleDeg": -91.75,
+          "candidateInnerRadiusPx": 138,
+          "innerPoint": {
+            "x": 406.06,
+            "y": 443.21
+          },
+          "brightnessRunScore": 12,
+          "majorNumber": 20,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "major_printed_number_alignment_candidate",
+          "anchorDisagreementDeg": 0.66,
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 11,
+          "angleDeg": -89,
+          "candidateInnerRadiusPx": 138,
+          "innerPoint": {
+            "x": 406.02,
+            "y": 436.59
+          },
+          "brightnessRunScore": 8.8,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 12,
+          "angleDeg": -86.75,
+          "candidateInnerRadiusPx": 142,
+          "innerPoint": {
+            "x": 402.23,
+            "y": 430.95
+          },
+          "brightnessRunScore": 8.8,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 13,
+          "angleDeg": -80.75,
+          "candidateInnerRadiusPx": 143,
+          "innerPoint": {
+            "x": 402.86,
+            "y": 416.01
+          },
+          "brightnessRunScore": 9.2,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 14,
+          "angleDeg": -75,
+          "candidateInnerRadiusPx": 143,
+          "innerPoint": {
+            "x": 405.87,
+            "y": 401.99
+          },
+          "brightnessRunScore": 12.2,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 15,
+          "angleDeg": -69,
+          "candidateInnerRadiusPx": 143,
+          "innerPoint": {
+            "x": 410.5,
+            "y": 387.75
+          },
+          "brightnessRunScore": 11.4,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 16,
+          "angleDeg": -62.5,
+          "candidateInnerRadiusPx": 136,
+          "innerPoint": {
+            "x": 423.37,
+            "y": 376.2
+          },
+          "brightnessRunScore": 18,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 17,
+          "angleDeg": -57,
+          "candidateInnerRadiusPx": 143,
+          "innerPoint": {
+            "x": 424.07,
+            "y": 361.12
+          },
+          "brightnessRunScore": 14.6,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 18,
+          "angleDeg": -50.75,
+          "candidateInnerRadiusPx": 144,
+          "innerPoint": {
+            "x": 432.49,
+            "y": 347.89
+          },
+          "brightnessRunScore": 14.2,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 19,
+          "angleDeg": -44.75,
+          "candidateInnerRadiusPx": 143,
+          "innerPoint": {
+            "x": 443.33,
+            "y": 337.44
+          },
+          "brightnessRunScore": 14,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 20,
+          "angleDeg": -38.25,
+          "candidateInnerRadiusPx": 142,
+          "innerPoint": {
+            "x": 456.09,
+            "y": 327.48
+          },
+          "brightnessRunScore": 16.6,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 21,
+          "angleDeg": -31.75,
+          "candidateInnerRadiusPx": 136,
+          "innerPoint": {
+            "x": 472.43,
+            "y": 323.35
+          },
+          "brightnessRunScore": 21,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 22,
+          "angleDeg": -26.25,
+          "candidateInnerRadiusPx": 140,
+          "innerPoint": {
+            "x": 482.08,
+            "y": 313.44
+          },
+          "brightnessRunScore": 16.2,
+          "majorNumber": 40,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "major_printed_number_alignment_candidate",
+          "anchorDisagreementDeg": 0.29,
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 23,
+          "angleDeg": -19.75,
+          "candidateInnerRadiusPx": 140,
+          "innerPoint": {
+            "x": 496.69,
+            "y": 307.24
+          },
+          "brightnessRunScore": 16.8,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 24,
+          "angleDeg": -13.5,
+          "candidateInnerRadiusPx": 140,
+          "innerPoint": {
+            "x": 511.32,
+            "y": 302.87
+          },
+          "brightnessRunScore": 16.6,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 25,
+          "angleDeg": -7.25,
+          "candidateInnerRadiusPx": 141,
+          "innerPoint": {
+            "x": 526.21,
+            "y": 299.13
+          },
+          "brightnessRunScore": 16,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 26,
+          "angleDeg": -1.75,
+          "candidateInnerRadiusPx": 136,
+          "innerPoint": {
+            "x": 539.85,
+            "y": 303.06
+          },
+          "brightnessRunScore": 21,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 27,
+          "angleDeg": 4.75,
+          "candidateInnerRadiusPx": 141,
+          "innerPoint": {
+            "x": 555.68,
+            "y": 298.48
+          },
+          "brightnessRunScore": 16.6,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 28,
+          "angleDeg": 10.75,
+          "candidateInnerRadiusPx": 141,
+          "innerPoint": {
+            "x": 570.3,
+            "y": 300.47
+          },
+          "brightnessRunScore": 16.8,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 29,
+          "angleDeg": 17,
+          "candidateInnerRadiusPx": 142,
+          "innerPoint": {
+            "x": 585.52,
+            "y": 303.2
+          },
+          "brightnessRunScore": 17,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 30,
+          "angleDeg": 23,
+          "candidateInnerRadiusPx": 142,
+          "innerPoint": {
+            "x": 599.48,
+            "y": 308.29
+          },
+          "brightnessRunScore": 16.6,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 31,
+          "angleDeg": 29,
+          "candidateInnerRadiusPx": 136,
+          "innerPoint": {
+            "x": 609.93,
+            "y": 320.05
+          },
+          "brightnessRunScore": 22.8,
+          "majorNumber": 60,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "major_printed_number_alignment_candidate",
+          "anchorDisagreementDeg": 0.84,
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 32,
+          "angleDeg": 35.25,
+          "candidateInnerRadiusPx": 142,
+          "innerPoint": {
+            "x": 625.95,
+            "y": 323.04
+          },
+          "brightnessRunScore": 16.2,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 33,
+          "angleDeg": 41.25,
+          "candidateInnerRadiusPx": 141,
+          "innerPoint": {
+            "x": 636.97,
+            "y": 332.99
+          },
+          "brightnessRunScore": 16.2,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 34,
+          "angleDeg": 47.5,
+          "candidateInnerRadiusPx": 141,
+          "innerPoint": {
+            "x": 647.96,
+            "y": 343.74
+          },
+          "brightnessRunScore": 16,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 35,
+          "angleDeg": 53.75,
+          "candidateInnerRadiusPx": 141,
+          "innerPoint": {
+            "x": 657.71,
+            "y": 355.63
+          },
+          "brightnessRunScore": 15.2,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 36,
+          "angleDeg": 59.75,
+          "candidateInnerRadiusPx": 136,
+          "innerPoint": {
+            "x": 661.48,
+            "y": 370.49
+          },
+          "brightnessRunScore": 19.8,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 37,
+          "angleDeg": 65.75,
+          "candidateInnerRadiusPx": 140,
+          "innerPoint": {
+            "x": 671.65,
+            "y": 381.5
+          },
+          "brightnessRunScore": 15.6,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 38,
+          "angleDeg": 72,
+          "candidateInnerRadiusPx": 140,
+          "innerPoint": {
+            "x": 677.15,
+            "y": 395.74
+          },
+          "brightnessRunScore": 16.4,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 39,
+          "angleDeg": 78.25,
+          "candidateInnerRadiusPx": 140,
+          "innerPoint": {
+            "x": 681.07,
+            "y": 410.49
+          },
+          "brightnessRunScore": 18,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 40,
+          "angleDeg": 84.5,
+          "candidateInnerRadiusPx": 141,
+          "innerPoint": {
+            "x": 684.35,
+            "y": 425.49
+          },
+          "brightnessRunScore": 17.4,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 41,
+          "angleDeg": 90.25,
+          "candidateInnerRadiusPx": 136,
+          "innerPoint": {
+            "x": 680,
+            "y": 439.59
+          },
+          "brightnessRunScore": 18.6,
+          "majorNumber": 80,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "major_printed_number_alignment_candidate",
+          "anchorDisagreementDeg": 0.95,
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 42,
+          "angleDeg": 97,
+          "candidateInnerRadiusPx": 140,
+          "innerPoint": {
+            "x": 682.96,
+            "y": 456.06
+          },
+          "brightnessRunScore": 17,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 43,
+          "angleDeg": 103,
+          "candidateInnerRadiusPx": 141,
+          "innerPoint": {
+            "x": 681.39,
+            "y": 470.72
+          },
+          "brightnessRunScore": 15.6,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 44,
+          "angleDeg": 109.5,
+          "candidateInnerRadiusPx": 140,
+          "innerPoint": {
+            "x": 675.97,
+            "y": 485.73
+          },
+          "brightnessRunScore": 16.8,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 45,
+          "angleDeg": 115.5,
+          "candidateInnerRadiusPx": 141,
+          "innerPoint": {
+            "x": 671.26,
+            "y": 499.7
+          },
+          "brightnessRunScore": 16.8,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 46,
+          "angleDeg": 121.25,
+          "candidateInnerRadiusPx": 136,
+          "innerPoint": {
+            "x": 660.27,
+            "y": 509.55
+          },
+          "brightnessRunScore": 21.6,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 47,
+          "angleDeg": 127.75,
+          "candidateInnerRadiusPx": 142,
+          "innerPoint": {
+            "x": 656.28,
+            "y": 525.93
+          },
+          "brightnessRunScore": 15.8,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 48,
+          "angleDeg": 133.75,
+          "candidateInnerRadiusPx": 141,
+          "innerPoint": {
+            "x": 645.85,
+            "y": 536.5
+          },
+          "brightnessRunScore": 16.8,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 49,
+          "angleDeg": 140.5,
+          "candidateInnerRadiusPx": 141,
+          "innerPoint": {
+            "x": 633.69,
+            "y": 547.8
+          },
+          "brightnessRunScore": 15.8,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 50,
+          "angleDeg": 146.5,
+          "candidateInnerRadiusPx": 141,
+          "innerPoint": {
+            "x": 621.82,
+            "y": 556.58
+          },
+          "brightnessRunScore": 15.8,
+          "majorNumber": null,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "unassigned_minor_or_outer_line",
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        },
+        {
+          "id": 51,
+          "angleDeg": 151.75,
+          "candidateInnerRadiusPx": 136,
+          "innerPoint": {
+            "x": 608.37,
+            "y": 558.8
+          },
+          "brightnessRunScore": 21.6,
+          "majorNumber": 100,
+          "sourcePhotoSignedOff": false,
+          "numberingStatus": "major_printed_number_alignment_candidate",
+          "anchorDisagreementDeg": 0.41,
+          "physicalLineStatus": "automatic_native_luminance_radial_candidate",
+          "approved": false
+        }
+      ],
+      "hasAllStrokesPhotoVerified": false,
+      "approved": false,
+      "openIssues": [
+        "digit_mask_not_manually_certified",
+        "minor_stroke_numeric_values_not_verified",
+        "pivot_optical_center_unverified",
+        "needle_tip_length_vs_tick_inner_end_not_verified"
+      ]
+    }
+  ]
+}
