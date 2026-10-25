@@ -16,26 +16,27 @@ const rejected=(s,reason)=>({...s,lastRejection:reason,revision:s.revision+1});
 const clone=v=>JSON.parse(JSON.stringify(v));
 function initialState(){return {
  schema:"B737_MCP_AFDS_V1",revision:0,
- electrical:{globalAcPossible:null,feed:STATES.UNVERIFIED,mcpPower:null,rawRevision:null},
+ electrical:{globalPowerPossible:null,feed:STATES.UNVERIFIED,mcpPower:null,rawRevision:null},
  observedPower:false, fd:{left:false,right:false},autoThrottleArm:false,
  values:{courseL:261,courseR:261,speed:312,heading:134,altitude:31000,verticalSpeed:0},
  modes:{lateral:null,vertical:null,thrust:null,autopilot:null},
  evidence:{fmcRouteReady:null,approachCapture:null},
  pending:{approach:false},lastRejection:null
 };}
-function globalAcPossible(bus){
+function globalPowerPossible(bus){
  if(!bus||typeof bus!=="object")return null;
  // Evaluation is a global absence proof, NOT an MCP equipment-feed assignment.
- const keys=["generator1","generator2","transfer1","transfer2","main1","main2","acStandby","groundService"];
+ const keys=["generator1","generator2","transfer1","transfer2","main1","main2","acStandby","groundService","dc1","dc2","battery","hotBattery","switchedHotBattery","dcStandby"];
+ // No MCP AC-only assumption: all possible AC and DC classes must be absent.
  if(keys.some(x=>!Object.hasOwn(bus,x)))return null;
  if(keys.some(x=>bus[x]===true))return true;
  if(keys.every(x=>bus[x]===false))return false;
  return null;
 }
-function projectPower(s){const global=s.electrical.globalAcPossible;
- if(global===false)return {globalAcPossible:global,feed:STATES.ABSENT,mcpPower:false,rawRevision:s.electrical.rawRevision};
- if(s.observedPower)return {globalAcPossible:global,feed:STATES.INSTRUCTOR_OBSERVED,mcpPower:true,rawRevision:s.electrical.rawRevision};
- return {globalAcPossible:global,feed:STATES.UNVERIFIED,mcpPower:null,rawRevision:s.electrical.rawRevision};
+function projectPower(s){const global=s.electrical.globalPowerPossible;
+ if(global===false)return {globalPowerPossible:global,feed:STATES.ABSENT,mcpPower:false,rawRevision:s.electrical.rawRevision};
+ if(s.observedPower)return {globalPowerPossible:global,feed:STATES.INSTRUCTOR_OBSERVED,mcpPower:true,rawRevision:s.electrical.rawRevision};
+ return {globalPowerPossible:global,feed:STATES.UNVERIFIED,mcpPower:null,rawRevision:s.electrical.rawRevision};
 }
 function clearModes(s){s.modes={lateral:null,vertical:null,thrust:null,autopilot:null};s.pending.approach=false;}
 function transition(state,action){
@@ -47,7 +48,7 @@ function transition(state,action){
  if(action.type==="ELECTRICAL"){
   const source=action.snapshot;
   if(!source||source.schema!=="B737_ELECTRICAL_V7_RESULT"||!source.bus)throw Error("Electrical V7 evaluated snapshot required");
-  s.electrical.globalAcPossible=globalAcPossible(source.bus);
+  s.electrical.globalPowerPossible=globalPowerPossible(source.bus);
   s.electrical.rawRevision=source.revision;
   s.electrical=projectPower(s);
   if(s.electrical.mcpPower!==true)clearModes(s);
@@ -55,7 +56,7 @@ function transition(state,action){
  }
  if(action.type==="OBSERVE_POWER"){
   if(typeof action.active!=="boolean"||action.instructor!==true)throw Error("Explicit instructor observed-power control required");
-  if(action.active&&s.electrical.globalAcPossible===false)return rejected(s,"GLOBAL_AC_ABSENT");
+  if(action.active&&s.electrical.globalPowerPossible===false)return rejected(s,"GLOBAL_AC_ABSENT");
   s.observedPower=action.active;s.electrical=projectPower(s);
   if(s.electrical.mcpPower!==true)clearModes(s);
   return done();
@@ -101,7 +102,6 @@ function transition(state,action){
  if(id==="VOR_LOC")return rejected(s,"VOR_LOC_CAPTURE_INPUT_UNVERIFIED");
  if(id.startsWith("CMD_")||id.startsWith("CWS_")){
   if(!s.fd.left&&!s.fd.right)return rejected(s,"FLIGHT_DIRECTOR_NOT_SELECTED");
-  const target=id.slice(-1);
   const selected=s.modes.autopilot;
   s.modes.autopilot=selected===id?null:id;
   // Dual-channel autoland, CWS capture and servo are not modeled.
@@ -133,5 +133,5 @@ function output(s){
   modes:{...s.modes},pending:{...s.pending},rejection:s.lastRejection,
   limitations:["TRAINING_ONLY_NO_FLIGHT_DYNAMICS","NO_VERIFIED_MCP_FEED_MAPPING","NO_AUTOLAND_CAPTURE","NO_IAS_MACH_CHANGEOVER_LAW"]};
 }
-return Object.freeze({STATES,initialState,globalAcPossible,transition,output});
+return Object.freeze({STATES,initialState,globalPowerPossible,transition,output});
 });
