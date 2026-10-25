@@ -5,7 +5,7 @@
  */
 const MODEL = 'ISN_THRUST_SCHEDULE_V1_SIM_EST';
 const STANDARD = Object.freeze({g:9.80665, rho0:1.225, p0:101325, R:287.05, T0:288.15,
- lapse:0.0065, kiasToMps:0.514444, ftToM:0.3048, wingAreaM2:91.04,
+ lapse:0.0065, kiasToMps:0.514444, ftToM:0.3048, wingAreaM2:105.4,
  cd0Clean:0.030, inducedDragFactor:0.055,
  ratedThrustN:20000*4.4482216153, densityThrustExponent:0.72,
  thrustToSpoolExponent:0.78});
