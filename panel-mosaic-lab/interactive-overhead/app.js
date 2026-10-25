@@ -121,7 +121,7 @@
    button.append(cleanup,art);layer.append(button);nodes.set(c.id,button);bind(c,button);refreshOne(c);
    const photo=document.querySelector('#atlasAbsolute .atlas-piece[data-key="'+c.placementId+'"] .atlas-photo');
    if(photo&&window.B737ToggleSocketCleanup){
-    const paint=()=>window.B737ToggleSocketCleanup.render(cleanup,photo,c.sourcePoint,c.bezelSourceDiameter,p.diameter);
+    const paint=()=>window.B737ToggleSocketCleanup.render(cleanup,photo,c.sourcePoint,c.bezelSourceDiameter,p.diameter,c.placementId);
     if(!paint())photo.addEventListener('load',paint,{once:true});
    }
   }

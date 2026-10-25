@@ -63,7 +63,7 @@ assert.equal(hqBytes.subarray(8,12).toString('ascii'),'WEBP');
 assert.equal(hqBytes.subarray(12,16).toString('ascii'),'VP8X');
 assert.equal(1+hqBytes.readUIntLE(24,3),3840);
 assert.equal(1+hqBytes.readUIntLE(27,3),768);
-assert.equal(registry.version,'TGL-0006-NO-HALO');
+assert.equal(registry.version,'TGL-0007-PIVOT-AND-CLEANUP');
 
 // TGL-0005: prevent upside-down visuals and dark ring regressions.
 const poses=require('./toggle-pose-v1.js');
@@ -101,13 +101,38 @@ const mountedSource=fs.readFileSync(path.join(__dirname,'app.js'),'utf8');
 assert.ok(mountedSource.includes('window.B737TogglePoseMap.landingFrames(c)'));
 assert.ok(mountedSource.includes('button.append(cleanup,art)'),'cleanup must remain behind the approved five-position art');
 const html2=fs.readFileSync(path.join(__dirname,'../cockpit/overhead-stage.html'),'utf8');
-assert.ok(html2.indexOf('toggle-pose-v1.js')<html2.indexOf('app.js?v=TGL-0005'));
-assert.ok(html2.indexOf('socket-cleanup-v2.js')<html2.indexOf('app.js?v=TGL-0005'));
+assert.ok(html2.indexOf('toggle-pose-v1.js')<html2.indexOf('app.js?v=TGL-0007'));
+assert.ok(html2.indexOf('socket-cleanup-v3.js')<html2.indexOf('app.js?v=TGL-0007'));
 console.log('PASS TGL-0005: all 58 physical detents upright, no black fallback, feathered masked sockets, immutable art.');
 
 // TGL-0006: five sprites now share a halo-free, orthographic metal nut.
 // The original frozen photographic mosaic is deliberately unchanged.
-assert.equal(registry.approvedVisuals[0],'b737-cockpit-toggle-v4-five-pose-clean-nut');
+assert.equal(registry.approvedVisuals[0],'b737-cockpit-toggle-v5-centered-true-pivot');
 assert.ok(registry.controls.length===58,'Every switch must still be mapped');
-assert.ok(Object.values(registry.assets).every(a=>a.url.includes('toggle-switch-standard-v4/b737-toggle-five-positions-no-white-halo.webp')));
+assert.ok(Object.values(registry.assets).every(a=>a.url.includes('toggle-switch-standard-v5/b737-toggle-five-centered-v7.webp')));
 console.log('PASS TGL-0006: unified overhead reuses one transparent no-halo five-pose nut atlas with all physical detents intact.');
+
+/* TGL-0007: eliminate black circles and recenter the metal collar itself. */
+const repair=require('./socket-cleanup-v3.js');
+assert.ok(repair.REPAIR_RADIUS_RATIO<.5,'Repair must not draw a new disc larger than the mounted bezel');
+for(const [panel,color] of [['OH12',[200,217,226]],['OH09',[92,105,120]],['OH23-25',[68,78,88]]]){
+ const n=160,source=new Uint8ClampedArray(n*n*4),m=(n-1)/2;
+ for(let y=0;y<n;y++)for(let x=0;x<n;x++){
+   const off=(y*n+x)*4,dark=Math.hypot(x-m,y-m)<28;
+   for(let k=0;k<3;k++)source[off+k]=dark?5:color[k];
+   source[off+3]=255;
+ }
+ const sampled=repair.chooseBackground(source,n,panel);
+ assert.ok(sampled,panel+' samples unavailable');
+ assert.deepEqual(sampled.base,color,'The original black hole must never be chosen as panel skin: '+panel);
+ const patch={width:120,height:120,data:new Uint8ClampedArray(120*120*4)};
+ repair.patchToImageData(patch,sampled,70);
+ const px=(x,y,k)=>patch.data[(y*120+x)*4+k];
+ assert.equal(px(60,60,0),color[0]);
+ assert.equal(px(0,0,3),0,'No visible black or colored outer halo');
+ assert.equal(px(60,60,3),255,'Photographed hole masked below metal collar');
+}
+assert.ok(mountedSource.includes('p.diameter,c.placementId)'),'The background sampler must know the original panel');
+assert.ok(Object.values(registry.assets).every(a=>a.sha256==='fc579b9ed02d151d2a180ec76f7c3974dde184e566fadbd8d881625a6389d21f'));
+assert.ok(html2.includes('socket-cleanup-v3.js?v=TGL-0007'));
+console.log('PASS TGL-0007: centered bezel; only narrow transparent repair, original old black pixel discarded.');

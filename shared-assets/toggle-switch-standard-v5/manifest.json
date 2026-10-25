@@ -1,0 +1,41 @@
+{
+  "schema": "b737.cockpit.toggle-alignment-v5",
+  "version": "TGL-0007-PIVOT-AND-CLEANUP",
+  "asset": "b737-toggle-five-centered-v7.webp",
+  "dimensions": {
+    "width": 3840,
+    "height": 768
+  },
+  "cell": {
+    "width": 768,
+    "height": 768
+  },
+  "order": [
+    "LEFT",
+    "CENTER",
+    "RIGHT",
+    "UP",
+    "DOWN"
+  ],
+  "fixedBase": true,
+  "transparent": true,
+  "opticalCenterBefore": {
+    "x": 412,
+    "y": 391
+  },
+  "opticalCenterAfter": {
+    "x": 384,
+    "y": 384
+  },
+  "pixelTranslation": {
+    "x": -28,
+    "y": -7
+  },
+  "originalAsset": "../toggle-switch-standard-v4/b737-toggle-five-positions-no-white-halo.webp",
+  "sha256": "fc579b9ed02d151d2a180ec76f7c3974dde184e566fadbd8d881625a6389d21f",
+  "gitBlobSha": "51a4cf3603489a9f12ddadf2b8f8149605198da6",
+  "cleanupModule": "../../panel-mosaic-lab/interactive-overhead/socket-cleanup-v3.js",
+  "cleanupConstraints": "Never paint a black disc, repair radius <half of mount diameter, sample exterior panel skin, skip if uncertain",
+  "logicalStates": "Preserve previous OFF=UP/ON=DOWN, horizontal 3-way, and landing special frames",
+  "sourceIntegrity": "No edits to locked original panel photos or placements"
+}
