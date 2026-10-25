@@ -108,14 +108,60 @@
     if (!engine || typeof engine.initial !== 'function' || typeof engine.apply !== 'function' || typeof engine.derive !== 'function') {
       throw Error('Selected pressurization engine not loaded: ' + selected.engine);
     }
-    let state = engine.initial();
+    // The physical model is OPTIONAL: existing source-linked controller labs
+    // continue accepting direct instructor sensor values without synthesized
+    // pressure. In Unified it is separately enabled and explicitly provisional.
+    const plant = engines && engines.B737CabinPressurePlantV1;
+    const hasPlant = !!(plant && typeof plant.initial === 'function' && typeof plant.step === 'function' && typeof plant.observe === 'function');
+    let state = engine.initial(), plantState = hasPlant ? plant.initial() : null;
+    function read() {
+      const logical = engine.derive(state);
+      return hasPlant ? {...logical,physical:plant.observe(plantState)} : logical;
+    }
+    function dispatch(command) {
+      state = engine.apply(state, command);
+      if (command.type === 'RESET' && hasPlant) plantState = plant.initial();
+      return read();
+    }
+    function stepPhysics(ms, environment = {}) {
+      if (!hasPlant) throw Error('Pressure plant dependency not supplied');
+      const logical = engine.derive(state), sensor = state.input || state.inputs;
+      const aircraftAltitudeFt = environment.aircraftAltitudeFt ?? sensor.airplaneAltitudeFt;
+      const onGround = environment.onGround ?? sensor.onGround;
+      const plantInput = {
+        ms, aircraftAltitudeFt, onGround,
+        packsAvailable: environment.packsAvailable,
+        bleedAirAvailable: environment.bleedAirAvailable ?? sensor.bleedAirAvailable,
+        packMassFlowKgS: environment.packMassFlowKgS,
+        outflowCommand: logical.outflowCommand || logical.outflow?.command || 'HOLD',
+        mode: logical.operatingMode,
+        landingAltitudeFt: state.settings?.landingAltitudeFt ?? sensor.landingAltitudeFt,
+        standbyCabinAltitudeFt: state.settings?.standbyCabinAltitudeFt,
+        cabinTargetFt: logical.outflow?.cabinTargetFt,
+        prepressurized: Boolean(logical.prepressQualified)
+      };
+      // Compute before mutating the controller, so failure cannot leave a
+      // partly-applied input set on a malformed instructor environment.
+      const nextPlant = plant.step(plantState,plantInput);
+      const measurement = plant.observe(nextPlant);
+      const map = selected.id === 'DCPCS' ?
+        {cabinAltitudeFt:'cabinAltitudeFt',cabinRateFtMin:'cabinRateFtMin',differentialPsid:'cabinDifferentialPsid'} :
+        {cabinAltitudeFt:'cabinAltitudeFt',cabinRateFtMin:'cabinRateFtMin',differentialPsid:'differentialPsid'};
+      let nextState = engine.apply(state,{type:'ADVANCE',ms});
+      for (const [key,sensorKey] of Object.entries(map)) {
+        nextState = engine.apply(nextState,{type:'INPUT',key:sensorKey,value:measurement[key]});
+      }
+      if (onGround !== sensor.onGround) nextState=engine.apply(nextState,{type:'INPUT',key:'onGround',value:onGround});
+      if (aircraftAltitudeFt !== sensor.airplaneAltitudeFt) nextState=engine.apply(nextState,{type:'INPUT',key:'airplaneAltitudeFt',value:aircraftAltitudeFt});
+      plantState=nextPlant;state=nextState;
+      return read();
+    }
     return Object.freeze({
-      system: selected.id,
-      engineVersion: selected.version,
-      read: () => engine.derive(state),
-      snapshot: () => JSON.parse(JSON.stringify(state)),
-      dispatch(command) { state = engine.apply(state, command); return engine.derive(state); },
-      reset() { state = engine.initial(); return engine.derive(state); }
+      system: selected.id,engineVersion: selected.version,
+      read, snapshot: () => JSON.parse(JSON.stringify(state)),
+      physical: () => hasPlant ? plant.observe(plantState) : null,
+      dispatch, stepPhysics,
+      reset() { state = engine.initial();if (hasPlant) plantState=plant.initial();return read(); }
     });
   }
 
