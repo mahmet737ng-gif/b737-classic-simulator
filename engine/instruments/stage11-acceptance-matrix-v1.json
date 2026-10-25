@@ -5,6 +5,7 @@
   "scenarioResultUrl": "https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/40227687706",
   "stage11Disposition": "SOURCE_SCENARIO_QA_PASS___ORIGINAL_IMAGE_PIXEL_CERTIFICATION_INCOMPLETE___RELEASE_BLOCKED",
   "requirements": [
+    "All 54 source image files must have a verified versioned repository path and immutable hash; FO outer three images currently external-only.",
     "Every main/minor stroke must be manually traced in native image source and all circle/shaft conflicts resolved",
     "Value-to-angle must be signed off for each actual scale including dual rings and needle pointer shape",
     "Every logical needle must have approved electrical/per-instrument power source and correct system source with units",
@@ -30,7 +31,8 @@
     "ownerLockedSpriteIdentities": 5,
     "sceneExamples": 12,
     "scenarioAssertions": 10,
-    "operationalNeedlesReleased": 0
+    "operationalNeedlesReleased": 0,
+    "missingVersionControlledImageSourceFaces": 3
   },
   "faces": [
     {
@@ -102,7 +104,8 @@
         "scenario_test_not_photo_signoff",
         "candidate_numeric_scale_not_approved"
       ],
-      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA",
+      "originalImageRepositoryStatus": "REPOSITORY_ASSET_PATH_REGISTERED"
     },
     {
       "id": "oh.elec.dc_amps",
@@ -174,7 +177,8 @@
         "scenario_test_not_photo_signoff",
         "candidate_numeric_scale_not_approved"
       ],
-      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA",
+      "originalImageRepositoryStatus": "REPOSITORY_ASSET_PATH_REGISTERED"
     },
     {
       "id": "oh.elec.cps",
@@ -246,7 +250,8 @@
         "scenario_test_not_photo_signoff",
         "candidate_numeric_scale_not_approved"
       ],
-      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA",
+      "originalImageRepositoryStatus": "REPOSITORY_ASSET_PATH_REGISTERED"
     },
     {
       "id": "oh.elec.dc_volts",
@@ -319,7 +324,8 @@
         "two_numbered_photo_anchors_missing",
         "response_model_not_calibrated"
       ],
-      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA",
+      "originalImageRepositoryStatus": "REPOSITORY_ASSET_PATH_REGISTERED"
     },
     {
       "id": "oh.elec.ac_volts",
@@ -392,7 +398,8 @@
         "two_numbered_photo_anchors_missing",
         "response_model_not_calibrated"
       ],
-      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA",
+      "originalImageRepositoryStatus": "REPOSITORY_ASSET_PATH_REGISTERED"
     },
     {
       "id": "oh.drive_oil.1",
@@ -480,7 +487,8 @@
         "two_numbered_photo_anchors_missing",
         "response_model_not_calibrated"
       ],
-      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA",
+      "originalImageRepositoryStatus": "REPOSITORY_ASSET_PATH_REGISTERED"
     },
     {
       "id": "oh.drive_oil.2",
@@ -567,7 +575,8 @@
         "two_numbered_photo_anchors_missing",
         "response_model_not_calibrated"
       ],
-      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA",
+      "originalImageRepositoryStatus": "REPOSITORY_ASSET_PATH_REGISTERED"
     },
     {
       "id": "oh.ac_amps.1",
@@ -639,7 +648,8 @@
         "two_numbered_photo_anchors_missing",
         "response_model_not_calibrated"
       ],
-      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA",
+      "originalImageRepositoryStatus": "REPOSITORY_ASSET_PATH_REGISTERED"
     },
     {
       "id": "oh.ac_amps.2",
@@ -711,7 +721,8 @@
         "two_numbered_photo_anchors_missing",
         "response_model_not_calibrated"
       ],
-      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA",
+      "originalImageRepositoryStatus": "REPOSITORY_ASSET_PATH_REGISTERED"
     },
     {
       "id": "oh.ac_amps.apu",
@@ -783,7 +794,8 @@
         "two_numbered_photo_anchors_missing",
         "response_model_not_calibrated"
       ],
-      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA",
+      "originalImageRepositoryStatus": "REPOSITORY_ASSET_PATH_REGISTERED"
     },
     {
       "id": "oh.apu.egt",
@@ -855,7 +867,8 @@
         "two_numbered_photo_anchors_missing",
         "response_model_not_calibrated"
       ],
-      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA",
+      "originalImageRepositoryStatus": "REPOSITORY_ASSET_PATH_REGISTERED"
     },
     {
       "id": "oh.cabin.diff_pressure_altitude",
@@ -943,7 +956,8 @@
         "scenario_test_not_photo_signoff",
         "candidate_numeric_scale_not_approved"
       ],
-      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA",
+      "originalImageRepositoryStatus": "REPOSITORY_ASSET_PATH_REGISTERED"
     },
     {
       "id": "oh.cabin.rate",
@@ -1022,7 +1036,8 @@
         "two_numbered_photo_anchors_missing",
         "response_model_not_calibrated"
       ],
-      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA",
+      "originalImageRepositoryStatus": "REPOSITORY_ASSET_PATH_REGISTERED"
     },
     {
       "id": "oh.cabin.temperature",
@@ -1093,7 +1108,8 @@
         "scenario_test_not_photo_signoff",
         "candidate_numeric_scale_not_approved"
       ],
-      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA",
+      "originalImageRepositoryStatus": "REPOSITORY_ASSET_PATH_REGISTERED"
     },
     {
       "id": "oh.duct.pressure_lr",
@@ -1179,7 +1195,8 @@
         "scenario_test_not_photo_signoff",
         "candidate_numeric_scale_not_approved"
       ],
-      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA",
+      "originalImageRepositoryStatus": "REPOSITORY_ASSET_PATH_REGISTERED"
     },
     {
       "id": "oh.crew_oxygen.pressure",
@@ -1253,7 +1270,8 @@
         "two_numbered_photo_anchors_missing",
         "response_model_not_calibrated"
       ],
-      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA",
+      "originalImageRepositoryStatus": "REPOSITORY_ASSET_PATH_REGISTERED"
     },
     {
       "id": "capt.airspeed",
@@ -1334,7 +1352,8 @@
         "two_numbered_photo_anchors_missing",
         "response_model_not_calibrated"
       ],
-      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA",
+      "originalImageRepositoryStatus": "REPOSITORY_ASSET_PATH_REGISTERED"
     },
     {
       "id": "capt.rmi",
@@ -1422,7 +1441,8 @@
         "two_numbered_photo_anchors_missing",
         "response_model_not_calibrated"
       ],
-      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA",
+      "originalImageRepositoryStatus": "REPOSITORY_ASSET_PATH_REGISTERED"
     },
     {
       "id": "capt.altimeter",
@@ -1495,7 +1515,8 @@
         "two_numbered_photo_anchors_missing",
         "response_model_not_calibrated"
       ],
-      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA",
+      "originalImageRepositoryStatus": "REPOSITORY_ASSET_PATH_REGISTERED"
     },
     {
       "id": "capt.alt_ias_combined",
@@ -1573,7 +1594,8 @@
         "two_numbered_photo_anchors_missing",
         "owner_pointer_binding_missing"
       ],
-      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA",
+      "originalImageRepositoryStatus": "REPOSITORY_ASSET_PATH_REGISTERED"
     },
     {
       "id": "capt.vertical_speed",
@@ -1646,7 +1668,8 @@
         "two_numbered_photo_anchors_missing",
         "response_model_not_calibrated"
       ],
-      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA",
+      "originalImageRepositoryStatus": "REPOSITORY_ASSET_PATH_REGISTERED"
     },
     {
       "id": "capt.clock",
@@ -1719,7 +1742,8 @@
         "two_numbered_photo_anchors_missing",
         "response_model_not_calibrated"
       ],
-      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA",
+      "originalImageRepositoryStatus": "REPOSITORY_ASSET_PATH_REGISTERED"
     },
     {
       "id": "eng.left_upper_20_20",
@@ -1782,7 +1806,8 @@
         "two_numbered_photo_anchors_missing",
         "owner_pointer_binding_missing"
       ],
-      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA",
+      "originalImageRepositoryStatus": "REPOSITORY_ASSET_PATH_REGISTERED"
     },
     {
       "id": "eng.fuel_qty.center",
@@ -1846,7 +1871,8 @@
         "two_numbered_photo_anchors_missing",
         "owner_pointer_binding_missing"
       ],
-      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA",
+      "originalImageRepositoryStatus": "REPOSITORY_ASSET_PATH_REGISTERED"
     },
     {
       "id": "eng.fuel_qty.1",
@@ -1910,7 +1936,8 @@
         "two_numbered_photo_anchors_missing",
         "owner_pointer_binding_missing"
       ],
-      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA",
+      "originalImageRepositoryStatus": "REPOSITORY_ASSET_PATH_REGISTERED"
     },
     {
       "id": "eng.fuel_qty.2",
@@ -1973,7 +2000,8 @@
         "two_numbered_photo_anchors_missing",
         "owner_pointer_binding_missing"
       ],
-      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA",
+      "originalImageRepositoryStatus": "REPOSITORY_ASSET_PATH_REGISTERED"
     },
     {
       "id": "eng.n1.1",
@@ -2036,7 +2064,8 @@
         "two_numbered_photo_anchors_missing",
         "owner_pointer_binding_missing"
       ],
-      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA",
+      "originalImageRepositoryStatus": "REPOSITORY_ASSET_PATH_REGISTERED"
     },
     {
       "id": "eng.n1.2",
@@ -2100,7 +2129,8 @@
         "two_numbered_photo_anchors_missing",
         "owner_pointer_binding_missing"
       ],
-      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA",
+      "originalImageRepositoryStatus": "REPOSITORY_ASSET_PATH_REGISTERED"
     },
     {
       "id": "eng.egt.1",
@@ -2173,7 +2203,8 @@
         "two_numbered_photo_anchors_missing",
         "response_model_not_calibrated"
       ],
-      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA",
+      "originalImageRepositoryStatus": "REPOSITORY_ASSET_PATH_REGISTERED"
     },
     {
       "id": "eng.egt.2",
@@ -2246,7 +2277,8 @@
         "two_numbered_photo_anchors_missing",
         "response_model_not_calibrated"
       ],
-      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA",
+      "originalImageRepositoryStatus": "REPOSITORY_ASSET_PATH_REGISTERED"
     },
     {
       "id": "eng.n2.1",
@@ -2319,7 +2351,8 @@
         "two_numbered_photo_anchors_missing",
         "response_model_not_calibrated"
       ],
-      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA",
+      "originalImageRepositoryStatus": "REPOSITORY_ASSET_PATH_REGISTERED"
     },
     {
       "id": "eng.n2.2",
@@ -2392,7 +2425,8 @@
         "two_numbered_photo_anchors_missing",
         "response_model_not_calibrated"
       ],
-      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA",
+      "originalImageRepositoryStatus": "REPOSITORY_ASSET_PATH_REGISTERED"
     },
     {
       "id": "eng.fuel_flow.1",
@@ -2449,7 +2483,8 @@
         "two_numbered_photo_anchors_missing",
         "owner_pointer_binding_missing"
       ],
-      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA",
+      "originalImageRepositoryStatus": "REPOSITORY_ASSET_PATH_REGISTERED"
     },
     {
       "id": "eng.fuel_flow.2",
@@ -2512,7 +2547,8 @@
         "two_numbered_photo_anchors_missing",
         "owner_pointer_binding_missing"
       ],
-      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA",
+      "originalImageRepositoryStatus": "REPOSITORY_ASSET_PATH_REGISTERED"
     },
     {
       "id": "eng.oil_pressure.1",
@@ -2569,7 +2605,8 @@
         "two_numbered_photo_anchors_missing",
         "owner_pointer_binding_missing"
       ],
-      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA",
+      "originalImageRepositoryStatus": "REPOSITORY_ASSET_PATH_REGISTERED"
     },
     {
       "id": "eng.oil_pressure.2",
@@ -2626,7 +2663,8 @@
         "two_numbered_photo_anchors_missing",
         "owner_pointer_binding_missing"
       ],
-      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA",
+      "originalImageRepositoryStatus": "REPOSITORY_ASSET_PATH_REGISTERED"
     },
     {
       "id": "eng.oil_temperature.1",
@@ -2683,7 +2721,8 @@
         "two_numbered_photo_anchors_missing",
         "owner_pointer_binding_missing"
       ],
-      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA",
+      "originalImageRepositoryStatus": "REPOSITORY_ASSET_PATH_REGISTERED"
     },
     {
       "id": "eng.oil_temperature.2",
@@ -2740,7 +2779,8 @@
         "two_numbered_photo_anchors_missing",
         "owner_pointer_binding_missing"
       ],
-      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA",
+      "originalImageRepositoryStatus": "REPOSITORY_ASSET_PATH_REGISTERED"
     },
     {
       "id": "eng.vibration.1",
@@ -2803,7 +2843,8 @@
         "two_numbered_photo_anchors_missing",
         "owner_pointer_binding_missing"
       ],
-      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA",
+      "originalImageRepositoryStatus": "REPOSITORY_ASSET_PATH_REGISTERED"
     },
     {
       "id": "eng.vibration.2",
@@ -2860,7 +2901,8 @@
         "two_numbered_photo_anchors_missing",
         "owner_pointer_binding_missing"
       ],
-      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA",
+      "originalImageRepositoryStatus": "REPOSITORY_ASSET_PATH_REGISTERED"
     },
     {
       "id": "eng.hyd_pressure.a",
@@ -2917,7 +2959,8 @@
         "two_numbered_photo_anchors_missing",
         "owner_pointer_binding_missing"
       ],
-      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA",
+      "originalImageRepositoryStatus": "REPOSITORY_ASSET_PATH_REGISTERED"
     },
     {
       "id": "eng.hyd_pressure.b",
@@ -2974,7 +3017,8 @@
         "two_numbered_photo_anchors_missing",
         "owner_pointer_binding_missing"
       ],
-      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA",
+      "originalImageRepositoryStatus": "REPOSITORY_ASSET_PATH_REGISTERED"
     },
     {
       "id": "fo.flap_position",
@@ -3061,7 +3105,8 @@
         "two_numbered_photo_anchors_missing",
         "response_model_not_calibrated"
       ],
-      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA",
+      "originalImageRepositoryStatus": "REPOSITORY_ASSET_PATH_REGISTERED"
     },
     {
       "id": "fo.hyd_brake_pressure",
@@ -3124,7 +3169,8 @@
         "two_numbered_photo_anchors_missing",
         "owner_pointer_binding_missing"
       ],
-      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA",
+      "originalImageRepositoryStatus": "REPOSITORY_ASSET_PATH_REGISTERED"
     },
     {
       "id": "fo.airspeed",
@@ -3205,7 +3251,8 @@
         "two_numbered_photo_anchors_missing",
         "response_model_not_calibrated"
       ],
-      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA",
+      "originalImageRepositoryStatus": "REPOSITORY_ASSET_PATH_REGISTERED"
     },
     {
       "id": "fo.rmi",
@@ -3292,7 +3339,8 @@
         "two_numbered_photo_anchors_missing",
         "response_model_not_calibrated"
       ],
-      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA",
+      "originalImageRepositoryStatus": "REPOSITORY_ASSET_PATH_REGISTERED"
     },
     {
       "id": "fo.left_linear",
@@ -3342,7 +3390,8 @@
         "two_numbered_photo_anchors_missing",
         "owner_pointer_binding_missing"
       ],
-      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA",
+      "originalImageRepositoryStatus": "REPOSITORY_ASSET_PATH_REGISTERED"
     },
     {
       "id": "fo.right_linear",
@@ -3392,7 +3441,8 @@
         "two_numbered_photo_anchors_missing",
         "owner_pointer_binding_missing"
       ],
-      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA",
+      "originalImageRepositoryStatus": "REPOSITORY_ASSET_PATH_REGISTERED"
     },
     {
       "id": "fo.outer_altimeter",
@@ -3462,9 +3512,11 @@
         "source_model_not_aircraft_certified",
         "scenario_test_not_photo_signoff",
         "two_numbered_photo_anchors_missing",
-        "response_model_not_calibrated"
+        "response_model_not_calibrated",
+        "original_source_not_in_versioned_repository"
       ],
-      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA",
+      "originalImageRepositoryStatus": "EXTERNAL_FILENAME_ONLY_NOT_REPOSITORY_VERIFIED"
     },
     {
       "id": "fo.outer_vertical_speed",
@@ -3534,9 +3586,11 @@
         "source_model_not_aircraft_certified",
         "scenario_test_not_photo_signoff",
         "two_numbered_photo_anchors_missing",
-        "response_model_not_calibrated"
+        "response_model_not_calibrated",
+        "original_source_not_in_versioned_repository"
       ],
-      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA",
+      "originalImageRepositoryStatus": "EXTERNAL_FILENAME_ONLY_NOT_REPOSITORY_VERIFIED"
     },
     {
       "id": "fo.outer_clock",
@@ -3606,9 +3660,11 @@
         "source_model_not_aircraft_certified",
         "scenario_test_not_photo_signoff",
         "two_numbered_photo_anchors_missing",
-        "response_model_not_calibrated"
+        "response_model_not_calibrated",
+        "original_source_not_in_versioned_repository"
       ],
-      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA",
+      "originalImageRepositoryStatus": "EXTERNAL_FILENAME_ONLY_NOT_REPOSITORY_VERIFIED"
     },
     {
       "id": "ped.stab_trim.left",
@@ -3659,7 +3715,8 @@
         "two_numbered_photo_anchors_missing",
         "owner_pointer_binding_missing"
       ],
-      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA",
+      "originalImageRepositoryStatus": "REPOSITORY_ASSET_PATH_REGISTERED"
     },
     {
       "id": "ped.stab_trim.right",
@@ -3711,7 +3768,8 @@
         "two_numbered_photo_anchors_missing",
         "owner_pointer_binding_missing"
       ],
-      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA",
+      "originalImageRepositoryStatus": "REPOSITORY_ASSET_PATH_REGISTERED"
     },
     {
       "id": "ped.rudder_trim",
@@ -3761,7 +3819,8 @@
         "two_numbered_photo_anchors_missing",
         "owner_pointer_binding_missing"
       ],
-      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA",
+      "originalImageRepositoryStatus": "REPOSITORY_ASSET_PATH_REGISTERED"
     }
   ],
   "dispositionClarification": "All 62 signal channels lack independent actual aircraft per-instrument equipment-feed verification; provider mapping for 23 channels does not imply certified wiring."
