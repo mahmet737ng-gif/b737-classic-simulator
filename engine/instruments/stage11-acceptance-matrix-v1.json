@@ -33,7 +33,9 @@
     "scenarioAssertions": 10,
     "operationalNeedlesReleased": 0,
     "missingVersionControlledImageSourceFaces": 0,
-    "rootStoredPhotoSourceFaces": 3
+    "rootStoredPhotoSourceFaces": 3,
+    "highRiskOriginalSourceImageHashesChecked": 7,
+    "highRiskOriginalAssetMissing": 0
   },
   "faces": [
     {
@@ -3514,10 +3516,10 @@
         "scenario_test_not_photo_signoff",
         "two_numbered_photo_anchors_missing",
         "response_model_not_calibrated",
-        "original_photo_sha256_ci_check_pending"
+        "original_photo_present_but_dial_geometry_not_certified"
       ],
       "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA",
-      "originalImageRepositoryStatus": "REPOSITORY_ROOT_ASSET_PRESENT_PENDING_CI_SHA_VERIFICATION"
+      "originalImageRepositoryStatus": "REPOSITORY_ROOT_ASSET_SHA256_AND_DIMENSIONS_VERIFIED"
     },
     {
       "id": "fo.outer_vertical_speed",
@@ -3588,10 +3590,10 @@
         "scenario_test_not_photo_signoff",
         "two_numbered_photo_anchors_missing",
         "response_model_not_calibrated",
-        "original_photo_sha256_ci_check_pending"
+        "original_photo_present_but_dial_geometry_not_certified"
       ],
       "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA",
-      "originalImageRepositoryStatus": "REPOSITORY_ROOT_ASSET_PRESENT_PENDING_CI_SHA_VERIFICATION"
+      "originalImageRepositoryStatus": "REPOSITORY_ROOT_ASSET_SHA256_AND_DIMENSIONS_VERIFIED"
     },
     {
       "id": "fo.outer_clock",
@@ -3662,10 +3664,10 @@
         "scenario_test_not_photo_signoff",
         "two_numbered_photo_anchors_missing",
         "response_model_not_calibrated",
-        "original_photo_sha256_ci_check_pending"
+        "original_photo_present_but_dial_geometry_not_certified"
       ],
       "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA",
-      "originalImageRepositoryStatus": "REPOSITORY_ROOT_ASSET_PRESENT_PENDING_CI_SHA_VERIFICATION"
+      "originalImageRepositoryStatus": "REPOSITORY_ROOT_ASSET_SHA256_AND_DIMENSIONS_VERIFIED"
     },
     {
       "id": "ped.stab_trim.left",
@@ -3836,6 +3838,7 @@
     "expectedSha256": "b2439666f75ddbcab15835b532d26a7ad2d1ab669be5f48774d656c1b8915a3c",
     "nativeWidthPx": 1123,
     "nativeHeightPx": 1400,
-    "status": "PRESENT_PENDING_INDEPENDENT_SHA_VERIFICATION"
+    "status": "REPOSITORY_ROOT_SHA256_AND_1123X1400_DIMENSIONS_VERIFIED",
+    "shaVerifiedInWorkflow": "https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/40228608145"
   }
 }
