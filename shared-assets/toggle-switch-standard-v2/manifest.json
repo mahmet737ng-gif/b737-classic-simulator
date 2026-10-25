@@ -1,0 +1,28 @@
+{
+  "schema": "b737.cockpit-toggle-five-position/v2",
+  "id": "b737-cockpit-toggle-v2-5-state",
+  "status": "owner-approved",
+  "asset": "b737-toggle-five-positions.webp",
+  "format": "image/webp",
+  "alpha": true,
+  "cell": {
+    "width": 112,
+    "height": 112
+  },
+  "grid": {
+    "rows": 1,
+    "columns": 5
+  },
+  "frames": {
+    "LEFT": 0,
+    "CENTER": 1,
+    "RIGHT": 2,
+    "UP": 3,
+    "DOWN": 4
+  },
+  "fixedBase": "One identical metallic disc/nut image at the same pivot/scale in every frame; never move bezel per state.",
+  "sha256": "3f18c9fc0835e877060f086c7bc67f96e191b93ad0569a07afb7e62296b0213c",
+  "scope": "Interactive overhead and unified cockpit, fuel standalone, flight-controls standalone",
+  "legacyAssets": "V1 locked images preserved untouched",
+  "note": "2-state switches reuse UP/DOWN; 3-state selectors reuse LEFT/CENTER/RIGHT or UP/CENTER/DOWN as defined by switch axis."
+}

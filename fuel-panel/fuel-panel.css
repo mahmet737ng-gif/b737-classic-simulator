@@ -286,3 +286,12 @@ body {
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .001ms !important; transition-duration: .001ms !important; }
 }
+
+/* TGL-0002: fixed metal bezel; OFF points down, ON points up. */
+.toggle-visual img{
+ content:url("data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=")!important;
+ background-image:url("../shared-assets/toggle-switch-standard-v2/b737-toggle-five-positions.webp");background-size:500% 100%;background-repeat:no-repeat;
+ transform:none!important;object-fit:fill!important;
+}
+.toggle-visual .off-frame{background-position:100% 50%}
+.toggle-visual .on-frame{background-position:75% 50%}

@@ -16,3 +16,6 @@
 .toggle-inspector input[type=checkbox]{width:auto}
 #resetToggles{width:100%;font-size:12px;padding:7px}
 @media(prefers-reduced-motion:reduce){.toggle-frame{transition:none}}
+
+/* TGL-0002: same immutable nut/pivot in all five visual states. */
+.toggle-frame{will-change:opacity;background-color:transparent}

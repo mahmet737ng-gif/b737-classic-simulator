@@ -3,18 +3,16 @@
  const entryURL=document.currentScript.src,localURL=p=>new URL(p,entryURL).href;
  const STORAGE='b737-overhead-toggles-TGL-0001';
  const byId=id=>document.getElementById(id),model=window.B737OverheadToggleModel;
- const calibration={
-  'vertical-off':{w:1254,h:1254,x:645,y:680,diameter:790},
-  'vertical-center':{w:1254,h:1254,x:626,y:650,diameter:768},
-  'vertical-on':{w:1254,h:1254,x:648,y:690,diameter:790},
-  'horizontal-left':{w:220,h:220,x:114,y:121,diameter:144},
-  'horizontal-center':{w:220,h:220,x:114,y:121,diameter:144},
-  'horizontal-right':{w:220,h:220,x:114,y:121,diameter:144}
- };
+ // All five poses share the identical, immovable metal collar and orthographic pivot.
+ // Every sprite cell is 112 x 112; the metal disc is ~42 px in diameter.
+ const calibration=Object.fromEntries(
+  ['vertical-off','vertical-center','vertical-on','horizontal-left','horizontal-center','horizontal-right']
+   .map(key=>[key,{w:112,h:112,x:56,y:56,diameter:42}])
+ );
  let registry,engine,active=null,layer;
  const nodes=new Map(),interlocks=new Map();
  function persist(){try{localStorage.setItem(STORAGE,JSON.stringify(engine.snapshot()));}catch{}}
- function frameKeys(c){return c.axis==='horizontal'?['horizontal-left','horizontal-center','horizontal-right']:c.states.length===2?['vertical-off','vertical-on']:['vertical-off','vertical-center','vertical-on'];}
+ function frameKeys(c){return c.axis==='horizontal'?['horizontal-left','horizontal-center','horizontal-right']:c.states.length===2?['vertical-off','vertical-on']:['vertical-on','vertical-center','vertical-off'];}
  function refreshOne(c){
   const button=nodes.get(c.id);if(!button)return;
   const value=engine.get(c.id),index=c.states.indexOf(value);
@@ -86,9 +84,13 @@
    Object.assign(button.style,{left:p.x+'px',top:p.y+'px',width:(p.diameter*1.65)+'px',height:(p.diameter*1.65)+'px'});
    const art=document.createElement('span');art.className='toggle-art';
    for(const key of frameKeys(c)){
-    const a=calibration[key],scale=p.diameter/a.diameter,img=document.createElement('img');
-    img.className='toggle-frame';if(window.B737ImageLoader)window.B737ImageLoader.assign(img,localURL(registry.assets[key].url));else img.src=localURL(registry.assets[key].url);img.alt='';img.draggable=false;img.decoding='async';
-    Object.assign(img.style,{left:(-a.x*scale)+'px',top:(-a.y*scale)+'px',width:(a.w*scale)+'px',height:(a.h*scale)+'px'});art.append(img);
+    const a=calibration[key],sprite=registry.assets[key],scale=p.diameter/a.diameter,img=document.createElement('span');
+    img.className='toggle-frame';img.setAttribute('aria-hidden','true');
+    Object.assign(img.style,{
+      left:(-a.x*scale)+'px',top:(-a.y*scale)+'px',width:(a.w*scale)+'px',height:(a.h*scale)+'px',
+      backgroundImage:'url("'+localURL(sprite.url)+'")',
+      backgroundSize:'500% 100%',backgroundPosition:(sprite.frame*25)+'% 50%',backgroundRepeat:'no-repeat'
+    });art.append(img);
    }
    button.append(art);layer.append(button);nodes.set(c.id,button);bind(c,button);refreshOne(c);
   }

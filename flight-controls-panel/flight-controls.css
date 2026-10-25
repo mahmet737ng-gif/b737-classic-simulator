@@ -94,3 +94,31 @@ button{font:inherit;color:inherit;-webkit-tap-highlight-color:transparent;touch-
 .toggle.selector:focus-visible {outline:none;}
 .toggle.selector:focus-visible .nav-frame {filter:drop-shadow(0 0 .25cqw rgba(255,215,148,.6));}
 @media(prefers-reduced-motion:reduce){.toggle.selector .nav-frame {transition:none;}}
+
+/* TGL-0002: approved true top-down five-position atlas; no artificial lever rotation. */
+.toggle:not(.selector) .frame,.toggle.selector .nav-frame {
+  content:url("data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=")!important;
+  position:absolute!important;left:50%!important;top:50%!important;inset:auto!important;
+  width:180%!important;height:auto!important;aspect-ratio:1!important;
+  object-fit:fill!important;transform:translate(-50%,-50%)!important;
+  background-image:url("../shared-assets/toggle-switch-standard-v2/b737-toggle-five-positions.webp");background-size:500% 100%;background-repeat:no-repeat;
+  transition:opacity 145ms ease-in-out!important;
+  filter:none!important;
+}
+.toggle .frame-off{background-position:100% 50%}
+.toggle .frame-center{background-position:25% 50%}
+.toggle .frame-on{background-position:75% 50%}
+.toggle.selector .nav-left{background-position:0% 50%}
+.toggle.selector .nav-center{background-position:25% 50%}
+.toggle.selector .nav-right{background-position:50% 50%}
+.toggle[data-position="up"] .frame-off{opacity:0!important}
+.toggle[data-position="up"] .frame-on{opacity:1!important}
+.toggle[data-position="down"] .frame-on{opacity:0!important}
+.toggle[data-position="down"] .frame-off{opacity:1!important}
+.alt-arm .arm-switch img,.alt-arm[data-armed] .arm-switch img{
+ content:url("data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=")!important;
+ transform:none!important;
+ background-image:url("../shared-assets/toggle-switch-standard-v2/b737-toggle-five-positions.webp");background-size:500% 100%;background-repeat:no-repeat;
+ background-position:100% 50%;
+}
+.alt-arm[data-armed="true"] .arm-switch img{background-position:75% 50%}

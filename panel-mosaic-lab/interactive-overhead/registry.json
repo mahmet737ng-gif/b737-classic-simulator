@@ -1,39 +1,44 @@
 {
   "schema": "b737.overhead-toggle-overlay.v1",
-  "version": "TGL-0001",
+  "version": "TGL-0002",
   "baseVersion": "UPD-0012-OVH-measured-seams",
   "baseLayout": "../all-overhead/atlas-layout.json",
   "baseSpec": "../all-overhead/spec.json",
   "guideLibraryFileId": "libfile_555402960f948191b6501fa77d2b8246",
   "scope": "plain toggle switches shown on owner lower-overhead guide; guarded/paddle controls, knobs, buttons and upper OH01-OH06 are separate stages",
   "approvedVisuals": [
-    "b737-cockpit-toggle-v1",
-    "nav-transfer-v3"
+    "b737-cockpit-toggle-v2-5-state"
   ],
   "assets": {
     "vertical-off": {
-      "url": "../../shared-assets/toggle-switch-standard-v1/b737-toggle-off.webp",
-      "sha256": "0a7c2b5f4f0580667ec24f61a8b35ad52cfbc668df848f283d46bc75078f710f"
+      "url": "../../shared-assets/toggle-switch-standard-v2/b737-toggle-five-positions.webp",
+      "frame": 4,
+      "sha256": "3f18c9fc0835e877060f086c7bc67f96e191b93ad0569a07afb7e62296b0213c"
     },
     "vertical-center": {
-      "url": "../../shared-assets/toggle-switch-standard-v1/b737-toggle-center.webp",
-      "sha256": "622cf6f85dbb685297266fd5220dd824afb1901c7dcd3d5c8f741ea138437a54"
+      "url": "../../shared-assets/toggle-switch-standard-v2/b737-toggle-five-positions.webp",
+      "frame": 1,
+      "sha256": "3f18c9fc0835e877060f086c7bc67f96e191b93ad0569a07afb7e62296b0213c"
     },
     "vertical-on": {
-      "url": "../../shared-assets/toggle-switch-standard-v1/b737-toggle-on.webp",
-      "sha256": "3f81a26c6fd641b4cbf64bc50f2b5a3fa9a439919c1b2b942b9d3c056d86c1cb"
+      "url": "../../shared-assets/toggle-switch-standard-v2/b737-toggle-five-positions.webp",
+      "frame": 3,
+      "sha256": "3f18c9fc0835e877060f086c7bc67f96e191b93ad0569a07afb7e62296b0213c"
     },
     "horizontal-left": {
-      "url": "../../flight-controls-panel/assets/nav-transfer-left-v3.webp",
-      "sha256": "b6e6e024cbb5f17b0be3f5965de67e702b97259524ff8751ac279e4d1e467378"
+      "url": "../../shared-assets/toggle-switch-standard-v2/b737-toggle-five-positions.webp",
+      "frame": 0,
+      "sha256": "3f18c9fc0835e877060f086c7bc67f96e191b93ad0569a07afb7e62296b0213c"
     },
     "horizontal-center": {
-      "url": "../../flight-controls-panel/assets/nav-transfer-center-v3.webp",
-      "sha256": "19a99481f7296d1d147157065d5eda838ad1d8b7a6594aab519c128c1c496522"
+      "url": "../../shared-assets/toggle-switch-standard-v2/b737-toggle-five-positions.webp",
+      "frame": 1,
+      "sha256": "3f18c9fc0835e877060f086c7bc67f96e191b93ad0569a07afb7e62296b0213c"
     },
     "horizontal-right": {
-      "url": "../../flight-controls-panel/assets/nav-transfer-right-v3.webp",
-      "sha256": "5aa1474533a4116e7b252bd4df27510dc2356bedc65d0718e76a69fc756351d6"
+      "url": "../../shared-assets/toggle-switch-standard-v2/b737-toggle-five-positions.webp",
+      "frame": 2,
+      "sha256": "3f18c9fc0835e877060f086c7bc67f96e191b93ad0569a07afb7e62296b0213c"
     }
   },
   "controls": [
@@ -284,7 +289,7 @@
       "label": "GROUND POWER",
       "placementId": "OH12",
       "sourcePoint": [
-        512.0,
+        512,
         285.7
       ],
       "bezelSourceDiameter": 96,
@@ -540,7 +545,7 @@
       "label": "WINDOW HEAT TEST",
       "placementId": "OH15",
       "sourcePoint": [
-        640.0,
+        640,
         384.68
       ],
       "bezelSourceDiameter": 122,

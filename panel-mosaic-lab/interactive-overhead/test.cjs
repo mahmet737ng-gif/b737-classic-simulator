@@ -26,3 +26,5 @@ for(const a of Object.values(registry.assets)){const bytes=fs.readFileSync(path.
 engine.reset();for(const c of registry.controls)assert.equal(engine.get(c.id),c.default);
 const html=fs.readFileSync(path.join(__dirname,'index.html'),'utf8');assert.ok(html.includes('<base href="../all-overhead/">'));assert.ok(html.includes('./stage.js?v=UPD-0012-OVH-measured-seams'),'frozen renderer reused unchanged');
 console.log('PASS: 58 socket mappings; binary, horizontal and vertical detents; clamps; spring release; safe persistence; fixed pivots; six approved frame hashes; frozen renderer reuse.');
+
+assert.deepEqual(Object.fromEntries(Object.entries(registry.assets).map(([name,asset])=>[name,asset.frame])),{'vertical-off':4,'vertical-center':1,'vertical-on':3,'horizontal-left':0,'horizontal-center':1,'horizontal-right':2});
