@@ -86,3 +86,29 @@ for key,box in [('ZERO_TO_THREE',(445,188,655,370)),
     focus=focus.resize((focus.width*3,focus.height*3),Image.Resampling.NEAREST)
     b=io.BytesIO();focus.save(b,format='JPEG',quality=88,optimize=True)
     print(f'OH19_IMAGE_B64_{key}='+base64.b64encode(b.getvalue()).decode('ascii'))
+
+# PRESS outer arc separate from CAB ALT inner arc; never recycle one scale
+# or the other's pointer radius. Both share a real pivot.
+outer=[]
+for i in range(round(360/step)):
+    a=i*step
+    rad=a*pi/180
+    found=[]
+    for rr in range(211,282):
+        xx=round(cx+rr*sin(rad));yy=round(cy-rr*cos(rad))
+        if 0<=xx<im.width and 0<=yy<im.height:
+            co=pixel[xx,yy];avg=sum(co)/3
+            if avg>170 and max(co)-min(co)<65:found.append(rr)
+    outer.append((a,len([v for v in found if 240<=v<=259]),found))
+outercands=group_peaks(outer,5)
+print('OH19_PRESS_OUTER_TICKS='+json.dumps(outercands,separators=(',',':')))
+print('OH19_PRESS_OUTER_COUNT='+str(len(outercands)))
+annotated=im.crop((150,10,820,700))
+draw=ImageDraw.Draw(annotated)
+for c in outercands:
+    a=c['angle']*pi/180
+    x0=cx-150+220*sin(a);y0=cy-10-220*cos(a)
+    x1=cx-150+285*sin(a);y1=cy-10-285*cos(a)
+    draw.line((x0,y0,x1,y1),fill=(36,233,247),width=2)
+buf=io.BytesIO();annotated.save(buf,format='JPEG',quality=87,optimize=True)
+print('OH19_IMAGE_B64_PRESS_DETECTED='+base64.b64encode(buf.getvalue()).decode('ascii'))
