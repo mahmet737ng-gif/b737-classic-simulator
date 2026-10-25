@@ -38,6 +38,31 @@ assert.equal(cs.flightGround,'FLT');
 cs=cpcs.apply(cs,oh22.command('CPCS','manual-valve','OPEN',cs));
 assert.equal(cs.valveSwitch,'OPEN');
 assert.equal(ds.selector,'ALTN','CPCS commands must not corrupt independent DCPCS engine');
+// Owner screenshot measured the actual DCPCS sockets, NOT old wrongly mounted knobs.
+// Pixel references are normalized to the same OH22 plate with edge-to-edge image fit.
+// Do not reuse these coordinates when a different owner background is installed.
+assert.equal(d.calibrationAsset,d.backgroundAsset);
+assert.equal(d.artworkFit,'fill','DCPCS image must fill physical OH22 plate with no top letterbox');
+const anchors=Object.fromEntries(d.controls.map(x=>[x.id,x.xy]));
+const readouts=Object.fromEntries(d.displays.map(x=>[x.id,x.xy]));
+const ideal={
+  'flight-alt':[.325,.372],
+  'landing-alt':[.325,.676],
+  'manual-valve':[.77,.453],
+  'press-mode':[.77,.678]
+};
+for(const [id,xy]of Object.entries(ideal)){
+  assert.ok(anchors[id],'Missing calibrated DCPCS socket '+id);
+  assert.ok(Math.abs(anchors[id][0]-xy[0])<.002&&Math.abs(anchors[id][1]-xy[1])<.002,'DCPCS knob shifted off photo socket: '+id);
+}
+assert.deepEqual(readouts['flight-display'],[.32,.207]);
+assert.deepEqual(readouts['landing-display'],[.32,.498]);
+assert.ok(d.lamps.every(l=>Math.abs(l.xy[1]-.055)<.002),'Lamps must stay inside upper annunciator row');
+const bridge=fs.readFileSync(path.join(__dirname,'overhead-bridge.js'),'utf8');
+assert.ok(bridge.includes("objectFit:'fill'"),'Owner photo must reach tile top and bottom with no contain gaps');
+const skin=fs.readFileSync(path.join(__dirname,'pressurization-oh22.css'),'utf8');
+assert.ok(skin.includes('display:none; /* Physical knobs do not print live value labels'),'Knob text must not overlap real panel labels');
+assert.ok(skin.includes('font:700 21px'),'Digital altitude text must fit its dedicated instrument windows');
 const overhead=fs.readFileSync(path.join(__dirname,'overhead-stage.html'),'utf8');
 for(const src of ['pressurization-oh22-model.js','pressurization-oh22.js','pressurization-oh22.css'])assert.ok(overhead.includes(src));
 const styles=fs.readFileSync(path.join(__dirname,'pressurization-oh22.css'),'utf8');
