@@ -1,14 +1,16 @@
 {
   "schema": "b737.cold-dark-needle-fit-audit.v1",
   "faceCount": 54,
-  "reference": "Owner full-window Unified screenshots captured 2026-10-24 + existing model tests",
+  "reference": "Locked original PNG native source pixel contact sheets, GitHub Actions runs 40202526632, 40202844633, and latest image review; preexisting owner locked sprite QA.",
   "risk": "No automated assumption that a measured zero value equals a particular universal 12 o'clock angle",
   "approvedFullNumericalCalibrations": 0,
   "records": {
     "oh.fuel.temperature": {
       "panel": "OH09",
       "status": "OWNER_APPROVED_NEEDLE_ASSET_GEOMETRY_ONLY",
-      "pointers": [],
+      "pointers": [
+        "fuelTemperature"
+      ],
       "photoSource": "panel-mosaic-lab/assets/locked/2026-10-23/OH09-FUEL-921977b56887.png",
       "note": "Fuel temperature sprite is SHA-locked and geometry test passes. Zero/magnitude is ambient sensor, not forced 0."
     },
@@ -50,48 +52,48 @@
     },
     "oh.drive_oil.1": {
       "panel": "OH11",
-      "status": "PROVISIONAL_ENLARGED_SCREENSHOT_FIT",
+      "status": "PROVISIONAL_NATIVE_SOURCE_ZERO_FIT",
       "pointers": [
         "driveOil1"
       ],
       "photoSource": "panel-mosaic-lab/assets/locked/2026-10-23/OH11-STANDBY-8b7d36ff3182.png",
-      "note": "Tip radius revised from 98 to 128 source pixels; zero/low stop initial angle revised from -46 to -80 based on screenshot inspection, requires original-image QA."
+      "note": "Direct native OH11 original-image comparison: previous 98px and attempted 128px both overshot inner zero stroke. Latest tipRadius=64 source pixels, initialAngle=-46°, unchanged shared white SVG. Verify final overlay in browser; other tick angles remain uncalibrated."
     },
     "oh.drive_oil.2": {
       "panel": "OH11",
-      "status": "PROVISIONAL_ENLARGED_SCREENSHOT_FIT",
+      "status": "PROVISIONAL_NATIVE_SOURCE_ZERO_FIT",
       "pointers": [
         "driveOil2"
       ],
       "photoSource": "panel-mosaic-lab/assets/locked/2026-10-23/OH11-STANDBY-8b7d36ff3182.png",
-      "note": "Tip radius revised from 98 to 128 source pixels; zero/low stop initial angle revised from -46 to -80 based on screenshot inspection, requires original-image QA."
+      "note": "Direct native OH11 original-image comparison: previous 98px and attempted 128px both overshot inner zero stroke. Latest tipRadius=64 source pixels, initialAngle=-46°, unchanged shared white SVG. Verify final overlay in browser; other tick angles remain uncalibrated."
     },
     "oh.ac_amps.1": {
       "panel": "OH12",
-      "status": "PROVISIONAL_ENLARGED_SCREENSHOT_FIT",
+      "status": "PROVISIONAL_NATIVE_SOURCE_ZERO_FIT",
       "pointers": [
         "acAmps1"
       ],
       "photoSource": "panel-mosaic-lab/assets/locked/2026-10-23/OH12-BUS-TRANS-09319c17e7d0.png",
-      "note": "Tip radius revised from 102 to 135 source pixels; left rest angle from -45 to -65, needs original-image QA."
+      "note": "Direct native OH12 original-image comparison: previous 102px (APU 124) and attempted 135px crossed the tick band. Latest tipRadius=64 source pixels, initialAngle=-55°, original SVG preserved; A.C. AMPS 2 pivot corrected to x705. Whole sweep not calibrated."
     },
     "oh.ac_amps.2": {
       "panel": "OH12",
-      "status": "PROVISIONAL_ENLARGED_SCREENSHOT_FIT",
+      "status": "PROVISIONAL_NATIVE_SOURCE_ZERO_FIT",
       "pointers": [
         "acAmps2"
       ],
       "photoSource": "panel-mosaic-lab/assets/locked/2026-10-23/OH12-BUS-TRANS-09319c17e7d0.png",
-      "note": "Tip radius revised from 102 to 135 source pixels; left rest angle from -45 to -65, needs original-image QA."
+      "note": "Direct native OH12 original-image comparison: previous 102px (APU 124) and attempted 135px crossed the tick band. Latest tipRadius=64 source pixels, initialAngle=-55°, original SVG preserved; A.C. AMPS 2 pivot corrected to x705. Whole sweep not calibrated."
     },
     "oh.ac_amps.apu": {
       "panel": "OH12",
-      "status": "LEGACY_TIP_REACH_NOT_MEASURED",
+      "status": "PROVISIONAL_NATIVE_SOURCE_ZERO_FIT",
       "pointers": [
         "apuAcAmps"
       ],
       "photoSource": "panel-mosaic-lab/assets/locked/2026-10-23/OH12-BUS-TRANS-09319c17e7d0.png",
-      "note": "Existing pointer and center known, but native pixel inner end of each printed tick not verified."
+      "note": "Direct native OH12 original-image comparison: previous 102px (APU 124) and attempted 135px crossed the tick band. Latest tipRadius=64 source pixels, initialAngle=-55°, original SVG preserved; A.C. AMPS 2 pivot corrected to x705. Whole sweep not calibrated."
     },
     "oh.apu.egt": {
       "panel": "OH12",
