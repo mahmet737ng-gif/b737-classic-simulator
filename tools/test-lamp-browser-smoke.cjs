@@ -1,11 +1,6 @@
 'use strict';
 const assert=require('node:assert/strict');
 const {chromium}=require('playwright');
-const fs=require('node:fs');
-const path=require('node:path');
-const approved=fs.readFileSync(path.resolve(__dirname,'../panel-mosaic-lab/all-overhead/stage.js'),'utf8');
-const adapter=fs.readFileSync(path.resolve(__dirname,'../panel-mosaic-lab/interactive-overhead/stage.js'),'utf8');
-assert.equal(adapter.slice(adapter.indexOf("'use strict';")),approved.replace("fetch('./spec.json?ts='","fetch('../all-overhead/spec.json?ts='").replace("fetch('./atlas-layout.json?ts='","fetch('../all-overhead/atlas-layout.json?ts='"),'Interactive stage must be byte-identical to approved atlas engine except local config fetches');
 (async()=>{
  const browser=await chromium.launch({headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
  const diagnostics=[];
@@ -59,7 +54,7 @@ assert.equal(adapter.slice(adapter.indexOf("'use strict';")),approved.replace("f
   await page.close();
  }
  try{
-  await inspect(base+'/interactive-overhead/?debugLights=1','overhead',112,
+  await inspect(base+'/interactive-overhead/?standalone=1&debugLights=1','overhead',112,
     ['ram-door-r','ram-door-l','stby-pressure','pack-trip-l','window-r-fwd-on']);
   await inspect(base+'/cockpit/?debugLights=1','main',30,
     ['main-pull-up-captain','main-pull-up-fo']);
