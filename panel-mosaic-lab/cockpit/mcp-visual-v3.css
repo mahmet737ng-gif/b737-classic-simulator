@@ -2,12 +2,12 @@
 [data-piece="mcp"]{isolation:isolate}
 [data-piece="mcp"]>.mcp-v3-overlay{position:absolute;inset:0;width:100%;height:100%;z-index:3;display:block;overflow:visible;pointer-events:none;direction:ltr}
 .mcp-v3-overlay .mcp-lit-segment{filter:drop-shadow(0 0 2px #edaa16) drop-shadow(0 0 2px #e0a52c)}
-.mcp-v3-overlay .mcp-v3-lamp[data-on="false"]>rect:not(.mcp-v3-lamp-hit),.mcp-v3-overlay .mcp-v3-lamp[data-on="false"]>path{opacity:0}
+.mcp-v3-overlay .mcp-v3-lamp[data-on="false"]>.mcp-v3-light{opacity:0}
 .mcp-v3-overlay .mcp-v3-lamp-hit{pointer-events:auto;cursor:pointer;outline:none}
 .mcp-v3-overlay .mcp-v3-lamp-hit:focus-visible{stroke:#e7fff5;stroke-width:3}
 [data-piece="mcp"]>.mcp-v3-knob{position:absolute;z-index:4;display:block;aspect-ratio:1/1;transform:translate(-50%,-50%);background-size:contain;background-position:center;background-repeat:no-repeat;box-sizing:border-box;border:0;border-radius:50%;cursor:ew-resize;touch-action:none;user-select:none;box-shadow:2px 4px 7px #0007}
 .mcp-v3-knob:focus-visible{outline:2px solid #c5fff5;outline-offset:3px}
-.mcp-v3-course,.mcp-v3-plain{background:repeating-conic-gradient(#44484a 0deg 9deg,#a8a6a0 9deg 16deg,#56595b 17deg 22deg);border:2px solid #4e5355!important;padding:7%}
-.mcp-v3-course-face,.mcp-v3-plain-face{display:block;width:100%;height:100%;border-radius:50%;background:radial-gradient(circle at 32% 25%,#e5e5e4 3%,#bdbfbe 58%,#9ea2a1 85%,#66696b);border:2px solid #d1d1ce;box-shadow:inset -3px -5px 8px #5559,inset 2px 2px 4px #fff9}
+.mcp-v3-course,.mcp-v3-plain{background:repeating-conic-gradient(#44484a 0deg 9deg,#a8a6a0 9deg 16deg,#56595b 17deg 22deg);border:2px solid #4e5355!important;padding:0}
+.mcp-v3-course-face,.mcp-v3-plain-face{display:block;position:absolute;left:9%;top:9%;width:82%;height:82%;box-sizing:border-box;border-radius:50%;background:radial-gradient(circle at 32% 25%,#e5e5e4 3%,#bdbfbe 58%,#9ea2a1 85%,#66696b);border:2px solid #d1d1ce;box-shadow:inset -3px -5px 8px #5559,inset 2px 2px 4px #fff9}
 .mcp-v3-course-face svg{display:block;width:100%;height:100%;transform:rotate(var(--mcp-turn,0deg))}
 .mcp-v3-ias{box-shadow:none!important;border-radius:0!important;transform:translate(-50%,-50%) rotate(var(--mcp-turn,0deg))!important}
