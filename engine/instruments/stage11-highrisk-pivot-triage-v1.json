@@ -1,0 +1,340 @@
+{
+  "schema": "b737.high-risk-pivot-conflict-triage.v1",
+  "created": "2026-10-25",
+  "dataSource": "stage11 acceptance and original source-image Stage3/4 geometric evidence",
+  "sourceVerifiedRootFOBlob": "ff259644232ecc0543cbe7d2761fdfa286ab7bf8",
+  "numberOfHighRisk": 15,
+  "centerDisplacementOver20px": 11,
+  "verifiedShaftCenters": 0,
+  "rule": "Hough-case-circle center is a competing visual hypothesis, not proof of the actual needle pivot. Never auto-replace registered sprite pivots.",
+  "instruments": [
+    {
+      "id": "oh.elec.dc_amps",
+      "kind": "rotary",
+      "panel": "OH10",
+      "sourceAsset": "panel-mosaic-lab/assets/locked/2026-10-23/OH10-ELEC-LOSSLESS-9a1ca4d6cfb2.png",
+      "workingPivot": {
+        "x": 310,
+        "y": 192
+      },
+      "rimCenterCandidate": {
+        "x": 297.2,
+        "y": 192.6,
+        "radius": 189.32
+      },
+      "rimVsPivotPx": 12.81,
+      "geometryConflict": "CLOSE_CENTERS_STILL_NOT_SHAFT_PROOF",
+      "reasonCode": [
+        "historical_pivot_disagreement",
+        "pivot_shaft_not_certified"
+      ],
+      "certified": false,
+      "activeVisualChange": false
+    },
+    {
+      "id": "oh.elec.cps",
+      "kind": "rotary",
+      "panel": "OH10",
+      "sourceAsset": "panel-mosaic-lab/assets/locked/2026-10-23/OH10-ELEC-LOSSLESS-9a1ca4d6cfb2.png",
+      "workingPivot": {
+        "x": 780,
+        "y": 192
+      },
+      "rimCenterCandidate": {
+        "x": 776.8,
+        "y": 203.4,
+        "radius": 190.64
+      },
+      "rimVsPivotPx": 11.84,
+      "geometryConflict": "CLOSE_CENTERS_STILL_NOT_SHAFT_PROOF",
+      "reasonCode": [
+        "historical_pivot_disagreement",
+        "pivot_shaft_not_certified"
+      ],
+      "certified": false,
+      "activeVisualChange": false
+    },
+    {
+      "id": "oh.elec.dc_volts",
+      "kind": "rotary",
+      "panel": "OH10",
+      "sourceAsset": "panel-mosaic-lab/assets/locked/2026-10-23/OH10-ELEC-LOSSLESS-9a1ca4d6cfb2.png",
+      "workingPivot": {
+        "x": 332,
+        "y": 600
+      },
+      "rimCenterCandidate": {
+        "x": 337.2,
+        "y": 578.8,
+        "radius": 132.56
+      },
+      "rimVsPivotPx": 21.83,
+      "geometryConflict": "HIGH_DISPLACEMENT_MUST_VISUALLY_VERIFY",
+      "reasonCode": [
+        "pivot_shaft_not_certified"
+      ],
+      "certified": false,
+      "activeVisualChange": false
+    },
+    {
+      "id": "oh.elec.ac_volts",
+      "kind": "rotary",
+      "panel": "OH10",
+      "sourceAsset": "panel-mosaic-lab/assets/locked/2026-10-23/OH10-ELEC-LOSSLESS-9a1ca4d6cfb2.png",
+      "workingPivot": {
+        "x": 715,
+        "y": 620
+      },
+      "rimCenterCandidate": {
+        "x": 685.4,
+        "y": 621.6,
+        "radius": 98.24
+      },
+      "rimVsPivotPx": 29.64,
+      "geometryConflict": "HIGH_DISPLACEMENT_MUST_VISUALLY_VERIFY",
+      "reasonCode": [
+        "pivot_shaft_not_certified"
+      ],
+      "certified": false,
+      "activeVisualChange": false
+    },
+    {
+      "id": "oh.drive_oil.1",
+      "kind": "rotary",
+      "panel": "OH11",
+      "sourceAsset": "panel-mosaic-lab/assets/locked/2026-10-23/OH11-STANDBY-8b7d36ff3182.png",
+      "workingPivot": {
+        "x": 266,
+        "y": 1021
+      },
+      "rimCenterCandidate": {
+        "x": 271.8,
+        "y": 983.8,
+        "radius": 141.08
+      },
+      "rimVsPivotPx": 37.65,
+      "geometryConflict": "HIGH_DISPLACEMENT_MUST_VISUALLY_VERIFY",
+      "reasonCode": [
+        "RISE_IN_separate_numeric_modes_same_strokes",
+        "pivot_shaft_not_certified"
+      ],
+      "certified": false,
+      "activeVisualChange": false
+    },
+    {
+      "id": "capt.airspeed",
+      "kind": "rotary",
+      "panel": "CAPTAIN",
+      "sourceAsset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png",
+      "workingPivot": {
+        "x": 1100,
+        "y": 970
+      },
+      "rimCenterCandidate": {
+        "x": 1080.6,
+        "y": 980.6,
+        "radius": 372.16
+      },
+      "rimVsPivotPx": 22.11,
+      "geometryConflict": "HIGH_DISPLACEMENT_MUST_VISUALLY_VERIFY",
+      "reasonCode": [
+        "pivot_shaft_not_certified"
+      ],
+      "certified": false,
+      "activeVisualChange": false
+    },
+    {
+      "id": "capt.rmi",
+      "kind": "rotary",
+      "panel": "CAPTAIN",
+      "sourceAsset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png",
+      "workingPivot": {
+        "x": 1170,
+        "y": 1850
+      },
+      "rimCenterCandidate": {
+        "x": 1186.6,
+        "y": 1896.6,
+        "radius": 260.52
+      },
+      "rimVsPivotPx": 49.47,
+      "geometryConflict": "HIGH_DISPLACEMENT_MUST_VISUALLY_VERIFY",
+      "reasonCode": [
+        "pivot_shaft_not_certified"
+      ],
+      "certified": false,
+      "activeVisualChange": false
+    },
+    {
+      "id": "capt.altimeter",
+      "kind": "rotary",
+      "panel": "CAPTAIN",
+      "sourceAsset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png",
+      "workingPivot": {
+        "x": 3100,
+        "y": 940
+      },
+      "rimCenterCandidate": {
+        "x": 3080.2,
+        "y": 953.8,
+        "radius": 280
+      },
+      "rimVsPivotPx": 24.13,
+      "geometryConflict": "HIGH_DISPLACEMENT_MUST_VISUALLY_VERIFY",
+      "reasonCode": [
+        "pivot_shaft_not_certified"
+      ],
+      "certified": false,
+      "activeVisualChange": false
+    },
+    {
+      "id": "capt.alt_ias_combined",
+      "kind": "rotary",
+      "panel": "CAPTAIN",
+      "sourceAsset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png",
+      "workingPivot": {
+        "x": 3720,
+        "y": 950
+      },
+      "rimCenterCandidate": {
+        "x": 3711.8,
+        "y": 955,
+        "radius": 260.96
+      },
+      "rimVsPivotPx": 9.6,
+      "geometryConflict": "CLOSE_CENTERS_STILL_NOT_SHAFT_PROOF",
+      "reasonCode": [
+        "ALT_IAS_separate_geometry_requirements",
+        "pivot_shaft_not_certified"
+      ],
+      "certified": false,
+      "activeVisualChange": false
+    },
+    {
+      "id": "capt.vertical_speed",
+      "kind": "rotary",
+      "panel": "CAPTAIN",
+      "sourceAsset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png",
+      "workingPivot": {
+        "x": 3100,
+        "y": 1600
+      },
+      "rimCenterCandidate": {
+        "x": 3073,
+        "y": 1607.8,
+        "radius": 271.72
+      },
+      "rimVsPivotPx": 28.1,
+      "geometryConflict": "HIGH_DISPLACEMENT_MUST_VISUALLY_VERIFY",
+      "reasonCode": [
+        "pivot_shaft_not_certified"
+      ],
+      "certified": false,
+      "activeVisualChange": false
+    },
+    {
+      "id": "capt.clock",
+      "kind": "rotary",
+      "panel": "CAPTAIN",
+      "sourceAsset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png",
+      "workingPivot": {
+        "x": 3700,
+        "y": 1580
+      },
+      "rimCenterCandidate": {
+        "x": 3721.8,
+        "y": 1603,
+        "radius": 281.04
+      },
+      "rimVsPivotPx": 31.69,
+      "geometryConflict": "HIGH_DISPLACEMENT_MUST_VISUALLY_VERIFY",
+      "reasonCode": [
+        "pivot_shaft_not_certified"
+      ],
+      "certified": false,
+      "activeVisualChange": false
+    },
+    {
+      "id": "eng.fuel_qty.center",
+      "kind": "rotary",
+      "panel": "ENGINE",
+      "sourceAsset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "workingPivot": {
+        "x": 261,
+        "y": 922
+      },
+      "rimCenterCandidate": {
+        "x": 229.2,
+        "y": 908.2,
+        "radius": 106.24
+      },
+      "rimVsPivotPx": 34.67,
+      "geometryConflict": "HIGH_DISPLACEMENT_MUST_VISUALLY_VERIFY",
+      "reasonCode": [
+        "pivot_shaft_not_certified"
+      ],
+      "certified": false,
+      "activeVisualChange": false
+    },
+    {
+      "id": "eng.fuel_qty.1",
+      "kind": "rotary",
+      "panel": "ENGINE",
+      "sourceAsset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "workingPivot": {
+        "x": 145,
+        "y": 1114
+      },
+      "rimCenterCandidate": {
+        "x": 114.6,
+        "y": 1125,
+        "radius": 127.12
+      },
+      "rimVsPivotPx": 32.33,
+      "geometryConflict": "HIGH_DISPLACEMENT_MUST_VISUALLY_VERIFY",
+      "reasonCode": [
+        "pivot_shaft_not_certified"
+      ],
+      "certified": false,
+      "activeVisualChange": false
+    },
+    {
+      "id": "fo.airspeed",
+      "kind": "rotary",
+      "panel": "FO-INNER",
+      "sourceAsset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Right_Main_Instruments_Blank.png",
+      "workingPivot": {
+        "x": 711,
+        "y": 564
+      },
+      "rimCenterCandidate": {
+        "x": 733.2,
+        "y": 577.8,
+        "radius": 164.56
+      },
+      "rimVsPivotPx": 26.14,
+      "geometryConflict": "HIGH_DISPLACEMENT_MUST_VISUALLY_VERIFY",
+      "reasonCode": [
+        "pivot_shaft_not_certified"
+      ],
+      "certified": false,
+      "activeVisualChange": false
+    },
+    {
+      "id": "ped.stab_trim.right",
+      "kind": "linear",
+      "panel": "THROTTLE",
+      "sourceAsset": "panel-mosaic-lab/assets/locked/2026-10-23/Aircraft Throttle Quadrant Control Panel.png",
+      "workingPivot": null,
+      "rimCenterCandidate": null,
+      "rimVsPivotPx": null,
+      "geometryConflict": "NO_INDEPENDENT_SHAFT_CENTER_EVIDENCE",
+      "reasonCode": [
+        "no_transverse_lines_detected",
+        "line_values_unassigned"
+      ],
+      "certified": false,
+      "activeVisualChange": false
+    }
+  ]
+}
