@@ -16,7 +16,7 @@
  ];
  async function loadDependencies(){for(const [global,path] of deps){if(window[global])continue;
   await new Promise((resolve,reject)=>{const script=document.createElement('script');
-   script.src=new URL(path,moduleBase).href+'?v=ISN-0018-ECU';script.onload=resolve;
+   script.src=new URL(path,moduleBase).href+'?v=ISN-0019-LIVE-START';script.onload=resolve;
    script.onerror=()=>reject(Error('Missing integration script '+path));document.head.append(script);});
  }}
  function init(){
