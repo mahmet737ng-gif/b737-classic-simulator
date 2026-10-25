@@ -4,7 +4,7 @@ const model=require('./model.js'),registry=JSON.parse(fs.readFileSync(path.join(
 const layout=JSON.parse(fs.readFileSync(path.join(__dirname,'../all-overhead/atlas-layout.json'),'utf8'));
 assert.equal(model.validate(registry,layout),true);
 assert.equal(registry.controls.length,58);
-assert.deepEqual(Object.fromEntries(['toggle-2','toggle-3-vertical','toggle-3-horizontal'].map(t=>[t,registry.controls.filter(c=>c.type===t).length])),{'toggle-2':41,'toggle-3-vertical':14,'toggle-3-horizontal':3});
+assert.deepEqual(Object.fromEntries(['toggle-2','toggle-3-vertical','toggle-3-horizontal'].map(t=>[t,registry.controls.filter(c=>c.type===t).length])),{'toggle-2':39,'toggle-3-vertical':16,'toggle-3-horizontal':3});
 assert.equal(registry.controls.some(c=>c.placementId==='UPPER'),false,'guide covers lower overhead only');
 const events=[],engine=model.controller(registry,{},e=>events.push(e));
 engine.cycle('yaw-damper');assert.equal(engine.get('yaw-damper'),'OFF');engine.cycle('yaw-damper');assert.equal(engine.get('yaw-damper'),'ON');
@@ -24,6 +24,32 @@ const savedPoint={...point};engine.set('vhf-nav','NORMAL');assert.deepEqual(mode
 for(const c of registry.controls){const p=model.mapPoint(c,layout.placements.find(p=>p.id===c.placementId));assert.ok(Number.isFinite(p.x+p.y+p.diameter)&&p.diameter>0);}
 for(const a of Object.values(registry.assets)){const bytes=fs.readFileSync(path.resolve(__dirname,a.url));assert.equal(crypto.createHash('sha256').update(bytes).digest('hex'),a.sha256,'original approved toggle asset reused');}
 engine.reset();for(const c of registry.controls)assert.equal(engine.get(c.id),c.default);
+
+// Owner-approved landing lights: two outboard 3-detent, two inboard 2-detent.
+const landingIds=['landing-out-l','landing-out-r','landing-in-l','landing-in-r'];
+const landings=landingIds.map(id=>registry.controls.find(c=>c.id===id));
+assert.deepEqual(landings.slice(0,2).map(c=>c.states),[['EXTEND','OFF','ON'],['EXTEND','OFF','ON']]);
+assert.deepEqual(landings.slice(2).map(c=>c.states),[['OFF','ON'],['OFF','ON']]);
+assert.ok(landings.every(c=>c.visualFamily==='landing-triplet-v1'));
+for(const id of landingIds.slice(0,2)){
+ assert.equal(engine.set(id,'EXTEND','test'),true);
+ assert.equal(engine.step(id,1,'test'),true);
+ assert.equal(engine.get(id),'OFF');
+ assert.equal(engine.step(id,1,'test'),true);
+ assert.equal(engine.get(id),'ON');
+}
+for(const id of landingIds.slice(2))assert.equal(engine.set(id,'EXTEND','test'),false);
+const triplet=registry.specialAssets?.landingTriplet;
+assert.deepEqual(triplet?.order,['UP','CENTER','DOWN']);
+const tripletBytes=fs.readFileSync(path.resolve(__dirname,triplet.url));
+assert.equal(crypto.createHash('sha256').update(tripletBytes).digest('hex'),triplet.sha256);
+assert.equal(tripletBytes.subarray(0,4).toString('ascii'),'RIFF');
+assert.equal(tripletBytes.subarray(8,12).toString('ascii'),'WEBP');
+const landingSource=fs.readFileSync(path.join(__dirname,'app.js'),'utf8');
+assert.ok(landingSource.includes("c.visualFamily==='landing-triplet-v1'"));
+assert.ok(landingSource.includes('const frames=c.states.length===3?[0,1,2]:[1,2]'));
+assert.ok(landingSource.includes("backgroundSize:'300% 100%'"));
+
 const html=fs.readFileSync(path.join(__dirname,'index.html'),'utf8');assert.ok(html.includes('<base href="../all-overhead/">'));assert.ok(html.includes('./stage.js?v=UPD-0012-OVH-measured-seams'),'frozen renderer reused unchanged');
 console.log('PASS: 58 socket mappings; binary, horizontal and vertical detents; clamps; spring release; safe persistence; fixed pivots; six approved frame hashes; frozen renderer reuse.');
 
