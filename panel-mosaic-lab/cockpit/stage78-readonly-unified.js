@@ -43,12 +43,48 @@
   const out=document.createElement('output');out.style.display='block';out.dir='ltr';
   area.append(h,note,out);box.append(area);show();
  };
+ const derivedContext=()=>{
+  const ground=typeof window.B737GroundAirfieldContext==='function'?
+      window.B737GroundAirfieldContext():null;
+  const pressure=window.B737PressurizationIntegration;
+  let cabinPhysical=null,selected=null;
+  try{
+   selected=pressure?.getSelected?.()??null;
+   const snap=pressure?.read?.(selected);
+   if(snap?.physical?.status==='PROVISIONAL_TRAINING_PHYSICS_NOT_AIRCRAFT_VALIDATED')
+     cabinPhysical={...snap.physical,source:'PROVISIONAL_IDEAL_GAS_TRAINER'};
+  }catch(_){ /* optional physical plant may not be initialized yet */ }
+  const motorOff={};
+  for(const n of [1,2]){
+   const e=ecu?.engines?.['engine'+n];
+   motorOff['engine'+n]=e?.phase==='OFF'&&
+     e.n1Percent===0&&e.n2Percent===0;
+  }
+  const noGenerator=ecu?.electrical?.selectedSources&&
+    Object.values(ecu.electrical.selectedSources).every(x=>!x||x==='OFF');
+  const coldDark=ecu?.electrical?.battery===false&&noGenerator===true&&
+    ecu?.apu?.phase==='OFF'&&motorOff.engine1===true&&motorOff.engine2===true;
+  return {
+   coldDarkConfirmed:coldDark===true,
+   engineStopped:motorOff,
+   fieldElevationFt:Number.isFinite(ground?.fieldElevationFt)?ground.fieldElevationFt:null,
+   cabinEqualized:ground?.cabinEqualized===true&&cabinPhysical!==null&&
+     Number.isFinite(cabinPhysical.differentialPsid)&&Math.abs(cabinPhysical.differentialPsid)<.05,
+   cabinPressureStable:ground?.cabinPressureStable===true&&cabinPhysical!==null&&
+     Number.isFinite(cabinPhysical.cabinRateFtMin)&&Math.abs(cabinPhysical.cabinRateFtMin)<1,
+   aircraftStationary:ecu?.aircraft?.onGround===true&&ecu?.aircraft?.iasKt===0,
+   pressurizationArchitecture:selected,
+   cabinPlant:cabinPhysical
+  };
+ };
  const refresh=()=>{
   if(!bridge)return;
   try{
    // Existing cockpit ECU emits training simulation data, never a certified sensor.
-   signals=bridge.read({ecu,observed,timeMs:ecu?.timeMs??null});
-   initial=cold.evaluate({signalSnapshot:signals,conditions});
+   const current=derivedContext();
+   signals=bridge.read({ecu,cabinPlant:current.cabinPlant,observed,timeMs:ecu?.timeMs??null});
+   const {cabinPlant,...derived}=current;
+   initial=cold.evaluate({signalSnapshot:signals,conditions:{...derived,...conditions}});
    lastError=null;
   }catch(err){lastError=err.message;signals=null;initial=null;}
   mount();show();
@@ -72,7 +108,10 @@
   if(value?.quality!=='TRAINING_SIMULATION_ONLY')return;
   ecu=value;refresh();
  });
- window.addEventListener('b737:cockpit-mounted',mount);
+ window.addEventListener('b737:cockpit-mounted',()=>{mount();refresh();});
+ window.addEventListener('b737:pressurization-state',refresh);
+ window.addEventListener('b737:ground-airfield-changed',refresh);
+ window.addEventListener('b737:cold-dark-state',refresh);
  document.addEventListener('DOMContentLoaded',mount,{once:true});
  (async()=>{
   try{
