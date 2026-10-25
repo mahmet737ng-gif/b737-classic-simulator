@@ -70,17 +70,17 @@ function coastStep(prev,{runningN1=null,n2=null,egtC=null,phase='OFF'}={},dtMs){
  return s;
 }
 class Testbench{
- constructor({Electrical,Loads,TrainerCore,WarningEngine,Pneumatics,Pack,EngineAPU,Start,Chain,ThrustPlanner,FuelRuntime}={}){
+ constructor({Electrical,Loads,TrainerCore,WarningEngine,Pneumatics,Pack,EngineAPU,Start,Chain,ThrustPlanner,FuelRuntime,timingProfile='REALTIME_TRAINING'}={}){
   if(!Electrical?.initialState||!Loads?.project||!Pack?.Session||!Start?.Session||
    !Chain?.Chain||!FuelRuntime?.Runtime||!ThrustPlanner?.performance||typeof WarningEngine!=='function')
    throw Error('ISN 01, 03, 09-12 and N1 planner modules required');
   this.modules={Electrical,Loads,TrainerCore,WarningEngine,Pneumatics,Pack,EngineAPU,Start,Chain,ThrustPlanner,FuelRuntime};
   this.start=new Start.Session({EngineAPU,ElectricalPack:Pack,Electrical,Loads,TrainerCore,WarningEngine,Pneumatics});
-  this.chain=new Chain.Chain(this.start);
+  this.chain=new Chain.Chain(this.start,{timingProfile});
   this.core=new FuelRuntime.Runtime({chain:this.chain,thrustPlanner:ThrustPlanner});
   this.oil={engine1:oilInitial(),engine2:oilInitial()};
   this.coast={engine1:initialCoast(),engine2:initialCoast()};
-  this.elapsedMs=0;this.apuStartMs=null;this.lastThrust=null;this.trace=[];
+  this.elapsedMs=0;this.apuStartMs=null;this.engineStartMs={engine1:null,engine2:null};this.lastThrust=null;this.trace=[];
   this.apuFaults={overheat:false,bleedFailure:false,generatorFailure:false};
   this.aircraft={pressureAltitudeFt:0,oatC:15,iasKt:0,massKg:55000,onGround:true};
   this.chain.synchronize({toggles:{'apu-start':'OFF','bleed-apu':'OFF','bleed-eng-1':'OFF','bleed-eng-2':'OFF',
@@ -94,8 +94,8 @@ class Testbench{
   this.chain.event({id:'battery-master',kind:'guarded',next:{value:on?'on':'off',guard:'open'}});
   this.log('BATTERY',{on});return this.get();}
  startAPU(){if(this.apuFaults.overheat)throw Error('Clear injected APU overheat before new start');
-  this.apuStartMs=this.elapsedMs;
   this.chain.event({id:'apu-start',kind:'toggle',next:'START'});
+  this.apuStartMs=this.chain.get().phase.apu==='INLET_DOOR'?this.elapsedMs:null;
   this.log('APU_START_REQUEST');return this.get();}
  selectGenerator(source,side){if(![1,2].includes(side)||!['APU','GEN1','GEN2','OFF'].includes(source))throw Error('Invalid generator selection');
   if(this.apuFaults.generatorFailure&&source==='APU')throw Error('Injected APU generator failure');
@@ -111,8 +111,17 @@ class Testbench{
   this.log('FUEL_PUMPS',{trainingPumpPower,pumps});return this.get();}
  engineStart(engine){checkEngine(engine);
   this.chain.event({id:'engine-start-'+engine.at(-1),kind:'rotary',next:'GRD'});
-  this.log('ENGINE_START_GRD',{engine});return this.get();}
+  if(this.chain.get().phase[engine]==='MOTORING')this.engineStartMs[engine]=this.elapsedMs;
+  this.log('ENGINE_START_GRD',{engine,phase:this.chain.get().phase[engine],reason:this.chain.get().lastError});return this.get();}
  fuelLever(engine,position){checkEngine(engine);
+  const snap=this.chain.get();
+  if(position==='IDLE'&&snap.phase[engine]!=='AWAIT_FUEL_LEVER_IDLE'){
+   const n2=snap.observations[engine].feedback.n2Percent.value;
+   return {accepted:false,phase:snap.phase[engine],
+    reason:snap.phase[engine]==='MOTORING'?
+     'WAIT FOR N2 25% BEFORE FUEL LEVER IDLE (CURRENT '+round(n2??0,1)+'% N2)':
+     'ENGINE START GRD / N2 25% REQUIRED BEFORE FUEL LEVER IDLE. CURRENT PHASE: '+snap.phase[engine]};
+  }
   const result=this.core.fuelLever(engine,position);
   this.log('FUEL_LEVER',{engine,position,accepted:result.accepted,reason:result.reason??null});
   return result;}
@@ -168,13 +177,29 @@ class Testbench{
   for(const id of ENGINES){
    const e=base.engines[id],oil=this.oil[id],needle=this.coast[id],phase=e.phase;
    const running=phase==='RUNNING';
+   // Actual lever is CUTOFF until manually moved; preview the fuel route as
+   // if IDLE were selected, without opening a valve or bypassing pump guards.
+   const fuelReady=this.core.fuel.supply(id,this.core.pumps(),{
+    pressureAltitudeFt:this.aircraft.pressureAltitudeFt,fuelStartLever:'IDLE',
+    fireSwitchPulled:this.core.fireSwitch[id]});
+   const n2Observed=snap.observations[id].feedback.n2Percent.value;
+   const startCue=phase==='MOTORING'?'WAIT FOR N2 TO REACH 25%':
+    phase==='AWAIT_FUEL_LEVER_IDLE'?
+     (fuelReady.available===true?'N2 25% — MOVE FUEL LEVER TO IDLE NOW':
+      'FUEL NOT READY: '+fuelReady.reason+' — ENABLE PUMPS / POWER'):
+    phase==='LIGHT_OFF_SEQUENCE'?'FUEL INTRODUCED — LIGHT-OFF AND EGT RISE':
+    running?'ENGINE RUNNING — STABILIZING / THRUST AVAILABLE':
+    phase==='BLOCKED'?snap.lastError:phase;
    engines[id]={phase,n1Percent:needle.n1,n2Percent:needle.n2,
     egtC:needle.egt, fuelFlowKgHr:e.fuelFlowKgHr,
     oil:{pressurePsi:oil.pressurePsi,temperatureC:oil.temperatureC,quantityPct:oil.quantityPct,
      lowPressureLamp:oil.lowPressureLamp,filterBypassLamp:oil.filterBypassLamp,origin:ORIGIN},
     startValveOpen:snap.observations[id].feedback.startValveOpen.value,
     fuelLever:snap.observations[id].feedback.fuelStartLever.value,
-    fuelPath:e.fuelPath,origin:e.source,
+    fuelPath:e.fuelPath,fuelSupplyReady:fuelReady.available,
+    fuelSupplyReason:fuelReady.reason,startCue,
+    startElapsedSec:this.engineStartMs[id]===null?null:round((this.elapsedMs-this.engineStartMs[id])/1000,1),
+    origin:e.source,
     readingsAreTrainingEstimates:true};
    if(oil.lowPressureLamp)alerts.push({id:id+'.LOW_OIL_PRESSURE',level:'AMBER',source:ORIGIN});
    if(oil.filterBypassLamp)alerts.push({id:id+'.OIL_FILTER_BYPASS',level:'AMBER',source:ORIGIN});
@@ -186,14 +211,20 @@ class Testbench{
   if(this.apuFaults.generatorFailure)alerts.push({id:'APU.GEN_FAILURE_INJECTED',level:'AMBER',source:ORIGIN});
   const tSince=this.apuStartMs===null?0:Math.max(0,this.elapsedMs-this.apuStartMs);
   const apuPhase=snap.phase.apu;
-  const apuRPM=apuPhase==='READY'?100:apuPhase==='STARTING'?clip(15+85*tSince/1400,0,100):apuPhase==='INLET_DOOR'?5:0;
-  const apuEGT=apuPhase==='READY'?CONFIG.apuReadyEGTC:apuPhase==='STARTING'?round(150+350*clip(tSince/1400,0,1)):CONFIG.oilAmbientTempC;
+  const timing=this.chain.timing;
+  const apuProgress=clip((tSince-timing.apuDoorMs)/(timing.apuReadyMs-timing.apuDoorMs),0,1);
+  const ramp=apuProgress*apuProgress*(3-2*apuProgress);
+  const apuRPM=apuPhase==='READY'?100:apuPhase==='STARTING'?5+95*ramp:0;
+  const apuEGT=apuPhase==='READY'?CONFIG.apuReadyEGTC:apuPhase==='STARTING'?
+   round(CONFIG.oilAmbientTempC+370*ramp+140*Math.sin(Math.PI*apuProgress)):CONFIG.oilAmbientTempC;
   const apu={phase:apuPhase,rpmPct:round(apuRPM),egtC:round(apuEGT),
+   startElapsedSec:this.apuStartMs===null?null:round(tSince/1000,1),
+   readyTargetSec:timing.apuReadyMs/1000,
    bleedValveOpen:snap.bleed.apuBleedValveOpen,genSelected:Object.values(snap.selectedSources).includes('APU'),
    faults:{...this.apuFaults},origin:ORIGIN};
   const states={aircraft:copy(this.aircraft),engine1:engines.engine1,engine2:engines.engine2,apu};
   return {schema:SCHEMA,origin:ORIGIN,quality:'TRAINING_SIMULATION_ONLY',
-   timeMs:this.elapsedMs,stage:{ISN13:'OIL',ISN14:'APU_TELEMETRY',ISN15:'FAILURE_BUS',
+   timeMs:this.elapsedMs,timingProfile:this.chain.timingProfile,timing:copy(this.chain.timing),stage:{ISN13:'OIL',ISN14:'APU_TELEMETRY',ISN15:'FAILURE_BUS',
     ISN16:'THRUST_LIMIT',ISN17:'ENGINE_DYNAMICS',ISN18:'TESTBENCH_E2E'},
    aircraft:copy(this.aircraft),engines,apu,
    electrical:{battery:snap.electrical.battery,selectedSources:copy(snap.selectedSources)},
@@ -201,7 +232,7 @@ class Testbench{
    alerts,trace:copy(this.trace),
    limits:{oilPressureLampOnPsi:CONFIG.oilPressureLampOnPsi,oilPressureLampOffPsi:CONFIG.oilPressureLampOffPsi},
    limitations:['NOT_AIRCRAFT_AFMS','NO_PHYSICAL_ECU_OR_FADEC_EMULATION',
-    'IGNITION_TIMELINE_COMPRESSED_FOR_TRAINING','FUEL_PUMP_BUS_ASSIGNMENT_UNVERIFIED',
+    'USER_TIMED_START_PROFILE_NOT_AFM_CERTIFIED','FUEL_PUMP_BUS_ASSIGNMENT_UNVERIFIED',
     'APU_EGT_AND_RPM_SURROGATES','NO_RELIABLE_MACH_OR_FULL_AERODYNAMIC_MODEL',
     'NOT_CONNECTED_TO_APPROVED_UNIFIED_COCPIT_NEEDLES']};
  }
