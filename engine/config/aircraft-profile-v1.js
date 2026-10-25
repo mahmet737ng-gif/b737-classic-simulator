@@ -102,7 +102,7 @@
       destroy() { subscribers.clear(); if (emitter && typeof emitter.removeEventListener === 'function') emitter.removeEventListener('storage', handleStorage); }
     });
   }
-  function createPressurizationSession(profile, engines) {
+  function createPressurizationSession(profile, engines, options = {}) {
     const selected = resolve(profile).pressurization;
     const engine = engines && engines[selected.engine];
     if (!engine || typeof engine.initial !== 'function' || typeof engine.apply !== 'function' || typeof engine.derive !== 'function') {
@@ -113,14 +113,36 @@
     // pressure. In Unified it is separately enabled and explicitly provisional.
     const plant = engines && engines.B737CabinPressurePlantV1;
     const hasPlant = !!(plant && typeof plant.initial === 'function' && typeof plant.step === 'function' && typeof plant.observe === 'function');
-    let state = engine.initial(), plantState = hasPlant ? plant.initial() : null;
+    // Ground-field reference is an initial PHYSICAL state, not a universal
+    // indicated-altitude zero. The field value must come from selected airport
+    // or a live aircraft-location input, never a guessed geographic position.
+    let groundFieldElevationFt = Number.isFinite(options.fieldElevationFt)
+      ? options.fieldElevationFt : null;
+    function makeInitialState() {
+      let fresh=engine.initial();
+      if (groundFieldElevationFt===null) return fresh;
+      for (const [key,value] of [
+        ['airplaneAltitudeFt',groundFieldElevationFt],
+        ['cabinAltitudeFt',groundFieldElevationFt],
+        [selected.id==='DCPCS'?'cabinDifferentialPsid':'differentialPsid',0],
+        ['cabinRateFtMin',0]
+      ]) fresh=engine.apply(fresh,{type:'INPUT',key,value});
+      return fresh;
+    }
+    function makeInitialPlant() {
+      return hasPlant ? plant.initial({aircraftAltitudeFt:groundFieldElevationFt??0}) : null;
+    }
+    let state=makeInitialState(),plantState=makeInitialPlant();
     function read() {
       const logical = engine.derive(state);
       return hasPlant ? {...logical,physical:plant.observe(plantState)} : logical;
     }
     function dispatch(command) {
       state = engine.apply(state, command);
-      if (command.type === 'RESET' && hasPlant) plantState = plant.initial();
+      if (command.type === 'RESET') {
+        state=makeInitialState();
+        if (hasPlant) plantState=makeInitialPlant();
+      }
       return read();
     }
     function stepPhysics(ms, environment = {}) {
@@ -161,7 +183,23 @@
       read, snapshot: () => JSON.parse(JSON.stringify(state)),
       physical: () => hasPlant ? plant.observe(plantState) : null,
       dispatch, stepPhysics,
-      reset() { state = engine.initial();if (hasPlant) plantState=plant.initial();return read(); }
+      reset() { state=makeInitialState();if (hasPlant) plantState=makeInitialPlant();return read(); },
+      rebaseGround(fieldElevationFt) {
+        // Explicit trainer location change is a cold/dark INITIALIZATION,
+        // not an in-flight teleport of a sealed or pressurized cabin.
+        if (!Number.isFinite(fieldElevationFt)||fieldElevationFt< -2000||fieldElevationFt>14000)
+          throw Error('Invalid field elevation in feet');
+        const i=state.input||state.inputs;
+        if (!i.onGround) throw Error('Cannot reset ground baseline in flight');
+        if (hasPlant&&Math.abs(plant.observe(plantState).differentialPsid)>0.05)
+          throw Error('Cannot reset a pressurized cabin to the outside field elevation');
+        groundFieldElevationFt=fieldElevationFt;
+        state=makeInitialState();
+        if (hasPlant) plantState=makeInitialPlant();
+        return read();
+      },
+      groundReference:()=>({fieldElevationFt:groundFieldElevationFt,
+        known:groundFieldElevationFt!==null})
     });
   }
 
