@@ -9,6 +9,9 @@ const overhead=read('../interactive-overhead/lights.json'),main=read('../cockpit
 const current=new Map([...overhead.lights,...main.lights].map(l=>[l.id,l]));
 const originals=new Map(baseline.records.map(l=>[l.id,l]));
 const movement=new Map(corrections.records.map(l=>[l.id,l]));
+const finalCorrections=read('photo-position-corrections-v2.json');
+const latest=new Map(finalCorrections.records.map(c=>[c.id,c.newSourceRect]));
+assert.equal(latest.size,1);
 const fittedInstances=new Set(fitted.derivatives.map(l=>l.lamp));
 assert.equal(data.sourceVersions.overhead,'LGT-0009');
 assert.ok(['LGT-0009','LGT-0010'].includes(overhead.version));
@@ -28,10 +31,10 @@ let matches=0,photoOnly=0;
 for(const row of data.records){
  const source=current.get(row.id),old=originals.get(row.id);
  assert.ok(source&&old,row.id);
- assert.deepEqual(row.currentSourceRect,source.sourceRect,row.id);
+ assert.deepEqual(row.currentSourceRect,old.sourceRect.map((v,i)=>v+(row.appliedDisplacement?.[i]||0)),row.id+' historical position');
  const c=movement.get(row.id);
  assert.deepEqual(row.appliedDisplacement,c?.delta||[0,0],row.id);
- assert.deepEqual(source.sourceRect,c?.sourceRect||old.sourceRect,row.id);
+ assert.deepEqual(source.sourceRect,latest.get(row.id)||c?.sourceRect||old.sourceRect,row.id);
  assert.equal(row.visualFaceReflowed,fittedInstances.has(row.id),row.id);
  const passed=row.photoRimMethod==='AUTO_CENTRE_MATCH'||row.darkGlassComponentMethod==='PHOTO_COMPONENT_CENTRED';
  assert.equal(row.status,passed?'AUTO_PIXEL_CENTRE_MATCH_3PX':'PHOTO_ENLARGED_REVIEWED_PIXEL_PRECISION_OPEN',row.id);
