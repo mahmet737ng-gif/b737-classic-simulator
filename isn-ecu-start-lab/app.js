@@ -26,7 +26,7 @@ function engineCard(e,num){
  <span class="lamp ${e.oil.filterBypassLamp?'on':'off'}">OIL FILTER BYPASS ${e.oil.filterBypassLamp?'ON':'OFF'}</span></p></section>`;
 }
 function render(){if(!sim)return;const s=sim.get();$('clock').textContent=`${(s.timeMs/1000).toFixed(1)} s`;
- $('apu').textContent=`BATTERY ${s.electrical.battery?'ON':'OFF'} · APU ${s.apu.rpmPct}% RPM · EGT ${s.apu.egtC}°C · GEN ${s.apu.generator?.voltageV??0} V / ${s.apu.generator?.frequencyHz??0} Hz · BLEED ${s.apu.bleedValveOpen?'OPEN':'CLOSED'} · BUS 1 ${s.electrical.selectedSources[1]||'OFF'}`;
+ $('apu').textContent=`BATTERY ${s.electrical.battery?'ON':'OFF'} · APU ${s.apu.rpmPct}% RPM · EGT ${s.apu.egtC}°C · GEN ${s.apu.generator?.voltageV??0} V / ${s.apu.generator?.frequencyHz??0} Hz · APU LOAD ${s.apu.load?.actualLoadKva??0} kVA · POWER ${s.apu.load?.powerDemandPercent??0}% · FUEL ${s.apu.fuelFlowEstimatedKgHr??0} kg/h · BLEED ${s.apu.bleedValveOpen?'OPEN':'CLOSED'} · BUS 1 ${s.electrical.selectedSources[1]||'OFF'}`;
  $('engines').innerHTML=engineCard(s.engines.engine1,1)+engineCard(s.engines.engine2,2);
  $('alertSummary').textContent=s.alerts.length?s.alerts.map(a=>a.id).join(' | '):'No active advisories';
  $('fuelStatus').textContent=`MAIN1 ${s.fuel.tanksKg.main1.toFixed(1)} kg · CENTER ${s.fuel.tanksKg.center.toFixed(1)} kg · MAIN2 ${s.fuel.tanksKg.main2.toFixed(1)} kg · CROSSFEED ${s.fuel.crossfeed}`;
@@ -39,6 +39,11 @@ function action(type){if(type==='reset'){create();return;}if(!sim)throw Error('S
  case 'battery':sim.battery(true);break;
  case 'apuStart':sim.startAPU();if(['INLET_DOOR','STARTING'].includes(sim.get().apu.phase))startLive();break;
  case 'apuGen':sim.selectGenerator('APU',1);break;
+ case 'apuGen2':sim.selectGenerator('APU',2);break;
+ case 'loadAvionics':sim.setElectricalConsumer('AVIONICS',!status.electrical.apuConsumerSwitches.AVIONICS);break;
+ case 'loadLights':sim.setElectricalConsumer('CABIN_LIGHTS',!status.electrical.apuConsumerSwitches.CABIN_LIGHTS);break;
+ case 'loadGalley':sim.setElectricalConsumer('GALLEY',!status.electrical.apuConsumerSwitches.GALLEY);break;
+ case 'loadFans':sim.setElectricalConsumer('AIR_CONDITIONING_FANS',!status.electrical.apuConsumerSwitches.AIR_CONDITIONING_FANS);break;
  case 'apuBleed':sim.apuBleed(true);break;
  case 'fuel':sim.prepareFuel();break;
  case 'apuStop':sim.chain.event({id:'apu-start',kind:'toggle',next:'OFF'});break;
