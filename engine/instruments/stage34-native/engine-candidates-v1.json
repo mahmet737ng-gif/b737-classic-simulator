@@ -1,0 +1,4032 @@
+{
+  "schema": "b737.stage3-4.candidate-native-pixels.v1",
+  "sourceRun": "https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/40221766933",
+  "group": "engine",
+  "review": "CANDIDATE_ONLY_NOT_SIGNED_OFF",
+  "count": 20,
+  "faces": [
+    {
+      "id": "eng.left_upper_20_20",
+      "panel": "ENGINE",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+        "sha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+        "width": 1235,
+        "height": 1274
+      },
+      "kind": "rotary",
+      "approved": false,
+      "pivotInput": {
+        "x": 205,
+        "y": 550,
+        "uncertaintyPx": 22,
+        "reason": "unidentified upper-left dial: mechanical pivot not confirmed"
+      },
+      "pivotSource": "coarse_native_grid_estimate",
+      "pivotDisagreement": null,
+      "circleRimAlternatives": [
+        {
+          "x": 216.6,
+          "y": 541.4,
+          "radius": 169.08,
+          "centerDeltaPx": 14.44,
+          "radiusDeltaPx": 34.08,
+          "grade": "circle_rim_candidate_not_shaft"
+        }
+      ],
+      "pivotSelectedForLiveMotion": null,
+      "scales": [
+        {
+          "mode": "primary",
+          "radiusBandPx": [
+            90,
+            144
+          ],
+          "whiteRadialCandidates": [
+            {
+              "angleDeg": 144,
+              "innerTip": [
+                262.02,
+                628.47
+              ],
+              "outerTip": [
+                264.95,
+                632.52
+              ],
+              "innerRadiusPx": 97,
+              "outerRadiusPx": 102,
+              "lengthPx": 6,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "short",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 153,
+              "innerTip": [
+                245.86,
+                630.19
+              ],
+              "outerTip": [
+                252.22,
+                642.66
+              ],
+              "innerRadiusPx": 90,
+              "outerRadiusPx": 104,
+              "lengthPx": 15,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "long",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 155,
+              "innerTip": [
+                243.04,
+                631.57
+              ],
+              "outerTip": [
+                245.57,
+                637.01
+              ],
+              "innerRadiusPx": 90,
+              "outerRadiusPx": 96,
+              "lengthPx": 7,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 245,
+              "innerTip": [
+                90.81,
+                603.25
+              ],
+              "outerTip": [
+                84.46,
+                606.21
+              ],
+              "innerRadiusPx": 126,
+              "outerRadiusPx": 133,
+              "lengthPx": 8,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 250,
+              "innerTip": [
+                78.14,
+                596.17
+              ],
+              "outerTip": [
+                70.62,
+                598.91
+              ],
+              "innerRadiusPx": 135,
+              "outerRadiusPx": 143,
+              "lengthPx": 9,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 252,
+              "innerTip": [
+                75.66,
+                592.03
+              ],
+              "outerTip": [
+                69.95,
+                593.88
+              ],
+              "innerRadiusPx": 136,
+              "outerRadiusPx": 142,
+              "lengthPx": 7,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 308,
+              "innerTip": [
+                95.47,
+                464.42
+              ],
+              "outerTip": [
+                91.53,
+                461.34
+              ],
+              "innerRadiusPx": 139,
+              "outerRadiusPx": 144,
+              "lengthPx": 6,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "short",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 328.5,
+              "innerTip": [
+                143.87,
+                450.24
+              ],
+              "outerTip": [
+                140.73,
+                445.13
+              ],
+              "innerRadiusPx": 117,
+              "outerRadiusPx": 123,
+              "lengthPx": 7,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 330.5,
+              "innerTip": [
+                147.39,
+                448.17
+              ],
+              "outerTip": [
+                140.98,
+                436.85
+              ],
+              "innerRadiusPx": 117,
+              "outerRadiusPx": 130,
+              "lengthPx": 14,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "long",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 354,
+              "innerTip": [
+                195.59,
+                460.49
+              ],
+              "outerTip": [
+                195.07,
+                455.52
+              ],
+              "innerRadiusPx": 90,
+              "outerRadiusPx": 95,
+              "lengthPx": 6,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "short",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            }
+          ],
+          "majorMinorClassification": "length_only_angular_pixel_candidate",
+          "bearingSectorCandidate": null,
+          "hasPrintedDiscreteTickScale": true,
+          "referenceMatches": [],
+          "allPhysicalGraduationsCertified": false
+        }
+      ],
+      "reviewState": "pixel_candidates_need_manual_image_qa"
+    },
+    {
+      "id": "eng.fuel_qty.center",
+      "panel": "ENGINE",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+        "sha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+        "width": 1235,
+        "height": 1274
+      },
+      "kind": "rotary",
+      "approved": false,
+      "pivotInput": {
+        "x": 261,
+        "y": 922,
+        "uncertaintyPx": 22,
+        "reason": "circular face center; actual moving pointer unknown"
+      },
+      "pivotSource": "coarse_native_grid_estimate",
+      "pivotDisagreement": null,
+      "circleRimAlternatives": [
+        {
+          "x": 229.2,
+          "y": 908.2,
+          "radius": 106.24,
+          "centerDeltaPx": 34.67,
+          "radiusDeltaPx": 6.24,
+          "grade": "circle_rim_candidate_not_shaft"
+        }
+      ],
+      "pivotSelectedForLiveMotion": null,
+      "scales": [
+        {
+          "mode": "primary",
+          "radiusBandPx": [
+            67,
+            107
+          ],
+          "whiteRadialCandidates": [
+            {
+              "angleDeg": 127,
+              "innerTip": [
+                333.68,
+                976.77
+              ],
+              "outerTip": [
+                339.27,
+                980.98
+              ],
+              "innerRadiusPx": 91,
+              "outerRadiusPx": 98,
+              "lengthPx": 8,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 180,
+              "innerTip": [
+                261,
+                1024
+              ],
+              "outerTip": [
+                261,
+                1029
+              ],
+              "innerRadiusPx": 102,
+              "outerRadiusPx": 107,
+              "lengthPx": 6,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "short",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 312.5,
+              "innerTip": [
+                195.38,
+                861.87
+              ],
+              "outerTip": [
+                191.7,
+                858.49
+              ],
+              "innerRadiusPx": 89,
+              "outerRadiusPx": 94,
+              "lengthPx": 6,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "short",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 336,
+              "innerTip": [
+                227.65,
+                847.09
+              ],
+              "outerTip": [
+                225.21,
+                841.61
+              ],
+              "innerRadiusPx": 82,
+              "outerRadiusPx": 88,
+              "lengthPx": 7,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 339.5,
+              "innerTip": [
+                237.54,
+                859.24
+              ],
+              "outerTip": [
+                235.08,
+                852.69
+              ],
+              "innerRadiusPx": 67,
+              "outerRadiusPx": 74,
+              "lengthPx": 8,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            }
+          ],
+          "majorMinorClassification": "length_only_angular_pixel_candidate",
+          "bearingSectorCandidate": null,
+          "hasPrintedDiscreteTickScale": true,
+          "referenceMatches": [],
+          "allPhysicalGraduationsCertified": false
+        }
+      ],
+      "reviewState": "pixel_candidates_need_manual_image_qa"
+    },
+    {
+      "id": "eng.fuel_qty.1",
+      "panel": "ENGINE",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+        "sha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+        "width": 1235,
+        "height": 1274
+      },
+      "kind": "rotary",
+      "approved": false,
+      "pivotInput": {
+        "x": 145,
+        "y": 1114,
+        "uncertaintyPx": 22,
+        "reason": "circular face center; actual moving pointer unknown"
+      },
+      "pivotSource": "coarse_native_grid_estimate",
+      "pivotDisagreement": null,
+      "circleRimAlternatives": [
+        {
+          "x": 114.6,
+          "y": 1125,
+          "radius": 127.12,
+          "centerDeltaPx": 32.33,
+          "radiusDeltaPx": 17.12,
+          "grade": "circle_rim_candidate_not_shaft"
+        }
+      ],
+      "pivotSelectedForLiveMotion": null,
+      "scales": [
+        {
+          "mode": "primary",
+          "radiusBandPx": [
+            74,
+            118
+          ],
+          "whiteRadialCandidates": [
+            {
+              "angleDeg": 49.5,
+              "innerTip": [
+                221.8,
+                1048.41
+              ],
+              "outerTip": [
+                234.73,
+                1037.37
+              ],
+              "innerRadiusPx": 101,
+              "outerRadiusPx": 118,
+              "lengthPx": 18,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 51.5,
+              "innerTip": [
+                214.65,
+                1058.6
+              ],
+              "outerTip": [
+                237.35,
+                1040.54
+              ],
+              "innerRadiusPx": 89,
+              "outerRadiusPx": 118,
+              "lengthPx": 30,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "long",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 53.5,
+              "innerTip": [
+                211.72,
+                1064.63
+              ],
+              "outerTip": [
+                239.86,
+                1043.81
+              ],
+              "innerRadiusPx": 83,
+              "outerRadiusPx": 118,
+              "lengthPx": 36,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "long",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 55.5,
+              "innerTip": [
+                209.28,
+                1069.82
+              ],
+              "outerTip": [
+                225.76,
+                1058.49
+              ],
+              "innerRadiusPx": 78,
+              "outerRadiusPx": 98,
+              "lengthPx": 21,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "long",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 57.5,
+              "innerTip": [
+                208.25,
+                1073.7
+              ],
+              "outerTip": [
+                221.75,
+                1065.11
+              ],
+              "innerRadiusPx": 75,
+              "outerRadiusPx": 91,
+              "lengthPx": 17,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 59.5,
+              "innerTip": [
+                208.76,
+                1076.44
+              ],
+              "outerTip": [
+                219.1,
+                1070.35
+              ],
+              "innerRadiusPx": 74,
+              "outerRadiusPx": 86,
+              "lengthPx": 13,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 61.5,
+              "innerTip": [
+                210.03,
+                1078.69
+              ],
+              "outerTip": [
+                217.94,
+                1074.4
+              ],
+              "innerRadiusPx": 74,
+              "outerRadiusPx": 83,
+              "lengthPx": 10,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "short",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 63.5,
+              "innerTip": [
+                211.23,
+                1080.98
+              ],
+              "outerTip": [
+                217.49,
+                1077.86
+              ],
+              "innerRadiusPx": 74,
+              "outerRadiusPx": 81,
+              "lengthPx": 8,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "short",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 109.5,
+              "innerTip": [
+                244.92,
+                1149.38
+              ],
+              "outerTip": [
+                255.29,
+                1153.06
+              ],
+              "innerRadiusPx": 106,
+              "outerRadiusPx": 117,
+              "lengthPx": 12,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "short",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 311.5,
+              "innerTip": [
+                60.37,
+                1039.12
+              ],
+              "outerTip": [
+                56.62,
+                1035.81
+              ],
+              "innerRadiusPx": 113,
+              "outerRadiusPx": 118,
+              "lengthPx": 6,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "short",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 313.5,
+              "innerTip": [
+                65.21,
+                1038.28
+              ],
+              "outerTip": [
+                59.41,
+                1032.77
+              ],
+              "innerRadiusPx": 110,
+              "outerRadiusPx": 118,
+              "lengthPx": 9,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "short",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 316.5,
+              "innerTip": [
+                72.03,
+                1037.11
+              ],
+              "outerTip": [
+                63.77,
+                1028.41
+              ],
+              "innerRadiusPx": 106,
+              "outerRadiusPx": 118,
+              "lengthPx": 13,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 318.5,
+              "innerTip": [
+                76.09,
+                1036.11
+              ],
+              "outerTip": [
+                68.14,
+                1027.12
+              ],
+              "innerRadiusPx": 104,
+              "outerRadiusPx": 116,
+              "lengthPx": 13,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            }
+          ],
+          "majorMinorClassification": "length_only_angular_pixel_candidate",
+          "bearingSectorCandidate": null,
+          "hasPrintedDiscreteTickScale": true,
+          "referenceMatches": [],
+          "allPhysicalGraduationsCertified": false
+        }
+      ],
+      "reviewState": "pixel_candidates_need_manual_image_qa"
+    },
+    {
+      "id": "eng.fuel_qty.2",
+      "panel": "ENGINE",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+        "sha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+        "width": 1235,
+        "height": 1274
+      },
+      "kind": "rotary",
+      "approved": false,
+      "pivotInput": {
+        "x": 332,
+        "y": 1114,
+        "uncertaintyPx": 22,
+        "reason": "circular face center; actual moving pointer unknown"
+      },
+      "pivotSource": "coarse_native_grid_estimate",
+      "pivotDisagreement": null,
+      "circleRimAlternatives": [
+        {
+          "x": 321.4,
+          "y": 1119,
+          "radius": 131.08,
+          "centerDeltaPx": 11.72,
+          "radiusDeltaPx": 21.08,
+          "grade": "circle_rim_candidate_not_shaft"
+        }
+      ],
+      "pivotSelectedForLiveMotion": null,
+      "scales": [
+        {
+          "mode": "primary",
+          "radiusBandPx": [
+            74,
+            118
+          ],
+          "whiteRadialCandidates": [
+            {
+              "angleDeg": 51.5,
+              "innerTip": [
+                398.52,
+                1061.09
+              ],
+              "outerTip": [
+                402.43,
+                1057.97
+              ],
+              "innerRadiusPx": 85,
+              "outerRadiusPx": 90,
+              "lengthPx": 6,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "short",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 53.5,
+              "innerTip": [
+                398.72,
+                1064.63
+              ],
+              "outerTip": [
+                407.56,
+                1058.09
+              ],
+              "innerRadiusPx": 83,
+              "outerRadiusPx": 94,
+              "lengthPx": 12,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "long",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 58.5,
+              "innerTip": [
+                407.88,
+                1067.5
+              ],
+              "outerTip": [
+                413,
+                1064.36
+              ],
+              "innerRadiusPx": 89,
+              "outerRadiusPx": 95,
+              "lengthPx": 7,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 61.5,
+              "innerTip": [
+                404.94,
+                1074.4
+              ],
+              "outerTip": [
+                410.21,
+                1071.53
+              ],
+              "innerRadiusPx": 83,
+              "outerRadiusPx": 89,
+              "lengthPx": 7,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 64.5,
+              "innerTip": [
+                410.52,
+                1076.55
+              ],
+              "outerTip": [
+                418.65,
+                1072.67
+              ],
+              "innerRadiusPx": 87,
+              "outerRadiusPx": 96,
+              "lengthPx": 10,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 68.5,
+              "innerTip": [
+                413.88,
+                1081.75
+              ],
+              "outerTip": [
+                420.39,
+                1079.18
+              ],
+              "innerRadiusPx": 88,
+              "outerRadiusPx": 95,
+              "lengthPx": 8,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 70.5,
+              "innerTip": [
+                402.7,
+                1088.96
+              ],
+              "outerTip": [
+                407.41,
+                1087.3
+              ],
+              "innerRadiusPx": 75,
+              "outerRadiusPx": 80,
+              "lengthPx": 6,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "short",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 72.5,
+              "innerTip": [
+                410.2,
+                1089.34
+              ],
+              "outerTip": [
+                418.79,
+                1086.64
+              ],
+              "innerRadiusPx": 82,
+              "outerRadiusPx": 91,
+              "lengthPx": 10,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 74.5,
+              "innerTip": [
+                410.05,
+                1092.35
+              ],
+              "outerTip": [
+                414.87,
+                1091.02
+              ],
+              "innerRadiusPx": 81,
+              "outerRadiusPx": 86,
+              "lengthPx": 6,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "short",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 77,
+              "innerTip": [
+                409.95,
+                1096
+              ],
+              "outerTip": [
+                414.82,
+                1094.88
+              ],
+              "innerRadiusPx": 80,
+              "outerRadiusPx": 85,
+              "lengthPx": 6,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "short",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 83.5,
+              "innerTip": [
+                405.52,
+                1105.62
+              ],
+              "outerTip": [
+                410.49,
+                1105.06
+              ],
+              "innerRadiusPx": 74,
+              "outerRadiusPx": 79,
+              "lengthPx": 6,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "short",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 108.5,
+              "innerTip": [
+                431.57,
+                1147.32
+              ],
+              "outerTip": [
+                443.9,
+                1151.44
+              ],
+              "innerRadiusPx": 105,
+              "outerRadiusPx": 118,
+              "lengthPx": 14,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "long",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 117.5,
+              "innerTip": [
+                419.81,
+                1159.71
+              ],
+              "outerTip": [
+                425.14,
+                1162.48
+              ],
+              "innerRadiusPx": 99,
+              "outerRadiusPx": 105,
+              "lengthPx": 7,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 267.5,
+              "innerTip": [
+                220.11,
+                1118.89
+              ],
+              "outerTip": [
+                214.11,
+                1119.15
+              ],
+              "innerRadiusPx": 112,
+              "outerRadiusPx": 118,
+              "lengthPx": 7,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 306.5,
+              "innerTip": [
+                267.69,
+                1066.41
+              ],
+              "outerTip": [
+                263.67,
+                1063.44
+              ],
+              "innerRadiusPx": 80,
+              "outerRadiusPx": 85,
+              "lengthPx": 6,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "short",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 310,
+              "innerTip": [
+                245.44,
+                1041.37
+              ],
+              "outerTip": [
+                241.61,
+                1038.15
+              ],
+              "innerRadiusPx": 113,
+              "outerRadiusPx": 118,
+              "lengthPx": 6,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "short",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 313,
+              "innerTip": [
+                250.82,
+                1038.3
+              ],
+              "outerTip": [
+                245.7,
+                1033.52
+              ],
+              "innerRadiusPx": 111,
+              "outerRadiusPx": 118,
+              "lengthPx": 8,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 315.5,
+              "innerTip": [
+                255.6,
+                1036.26
+              ],
+              "outerTip": [
+                249.29,
+                1029.84
+              ],
+              "innerRadiusPx": 109,
+              "outerRadiusPx": 118,
+              "lengthPx": 10,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 318,
+              "innerTip": [
+                260.4,
+                1034.48
+              ],
+              "outerTip": [
+                253.04,
+                1026.31
+              ],
+              "innerRadiusPx": 107,
+              "outerRadiusPx": 118,
+              "lengthPx": 12,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "long",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 320,
+              "innerTip": [
+                263.86,
+                1032.8
+              ],
+              "outerTip": [
+                257.44,
+                1025.14
+              ],
+              "innerRadiusPx": 106,
+              "outerRadiusPx": 116,
+              "lengthPx": 11,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "long",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            }
+          ],
+          "majorMinorClassification": "length_only_angular_pixel_candidate",
+          "bearingSectorCandidate": null,
+          "hasPrintedDiscreteTickScale": true,
+          "referenceMatches": [],
+          "allPhysicalGraduationsCertified": false
+        }
+      ],
+      "reviewState": "pixel_candidates_need_manual_image_qa"
+    },
+    {
+      "id": "eng.n1.1",
+      "panel": "ENGINE",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+        "sha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+        "width": 1235,
+        "height": 1274
+      },
+      "kind": "rotary",
+      "approved": false,
+      "pivotInput": {
+        "x": 535,
+        "y": 553,
+        "uncertaintyPx": 22,
+        "reason": "geometric center from original native engine panel"
+      },
+      "pivotSource": "coarse_native_grid_estimate",
+      "pivotDisagreement": null,
+      "circleRimAlternatives": [
+        {
+          "x": 536,
+          "y": 543.2,
+          "radius": 90.44,
+          "centerDeltaPx": 9.85,
+          "radiusDeltaPx": 3.56,
+          "grade": "circle_rim_candidate_not_shaft"
+        }
+      ],
+      "pivotSelectedForLiveMotion": null,
+      "scales": [
+        {
+          "mode": "primary",
+          "radiusBandPx": [
+            63,
+            101
+          ],
+          "whiteRadialCandidates": [
+            {
+              "angleDeg": 112.5,
+              "innerTip": [
+                620.92,
+                588.59
+              ],
+              "outerTip": [
+                628.31,
+                591.65
+              ],
+              "innerRadiusPx": 93,
+              "outerRadiusPx": 101,
+              "lengthPx": 9,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            }
+          ],
+          "majorMinorClassification": "length_only_angular_pixel_candidate",
+          "bearingSectorCandidate": null,
+          "hasPrintedDiscreteTickScale": true,
+          "referenceMatches": [],
+          "allPhysicalGraduationsCertified": false
+        }
+      ],
+      "reviewState": "pixel_candidates_need_manual_image_qa"
+    },
+    {
+      "id": "eng.n1.2",
+      "panel": "ENGINE",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+        "sha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+        "width": 1235,
+        "height": 1274
+      },
+      "kind": "rotary",
+      "approved": false,
+      "pivotInput": {
+        "x": 724,
+        "y": 553,
+        "uncertaintyPx": 22,
+        "reason": "geometric center from original native engine panel"
+      },
+      "pivotSource": "coarse_native_grid_estimate",
+      "pivotDisagreement": null,
+      "circleRimAlternatives": [
+        {
+          "x": 719,
+          "y": 539.6,
+          "radius": 94.4,
+          "centerDeltaPx": 14.3,
+          "radiusDeltaPx": 0.4,
+          "grade": "circle_rim_candidate_not_shaft"
+        }
+      ],
+      "pivotSelectedForLiveMotion": null,
+      "scales": [
+        {
+          "mode": "primary",
+          "radiusBandPx": [
+            63,
+            101
+          ],
+          "whiteRadialCandidates": [],
+          "majorMinorClassification": "length_only_angular_pixel_candidate",
+          "bearingSectorCandidate": null,
+          "hasPrintedDiscreteTickScale": true,
+          "referenceMatches": [],
+          "allPhysicalGraduationsCertified": false
+        }
+      ],
+      "reviewState": "pixel_candidates_need_manual_image_qa"
+    },
+    {
+      "id": "eng.egt.1",
+      "panel": "ENGINE",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+        "sha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+        "width": 1235,
+        "height": 1274
+      },
+      "kind": "rotary",
+      "approved": false,
+      "pivotInput": {
+        "x": 535,
+        "y": 723,
+        "evidence": "gauge-survey-stage2-3.json",
+        "state": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "pivotSource": "previous_overlay_candidate",
+      "pivotDisagreement": null,
+      "circleRimAlternatives": [
+        {
+          "x": 534.2,
+          "y": 725.8,
+          "radius": 80.48,
+          "centerDeltaPx": 2.91,
+          "radiusDeltaPx": 39.52,
+          "grade": "circle_rim_candidate_not_shaft"
+        }
+      ],
+      "pivotSelectedForLiveMotion": null,
+      "scales": [
+        {
+          "mode": "primary",
+          "radiusBandPx": [
+            80,
+            128
+          ],
+          "whiteRadialCandidates": [
+            {
+              "angleDeg": 112.5,
+              "innerTip": [
+                638.47,
+                765.86
+              ],
+              "outerTip": [
+                643.09,
+                767.77
+              ],
+              "innerRadiusPx": 112,
+              "outerRadiusPx": 117,
+              "lengthPx": 6,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "short",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 114.5,
+              "innerTip": [
+                628.73,
+                765.71
+              ],
+              "outerTip": [
+                635.1,
+                768.62
+              ],
+              "innerRadiusPx": 103,
+              "outerRadiusPx": 110,
+              "lengthPx": 8,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 117.5,
+              "innerTip": [
+                630.8,
+                772.87
+              ],
+              "outerTip": [
+                636.12,
+                775.64
+              ],
+              "innerRadiusPx": 108,
+              "outerRadiusPx": 114,
+              "lengthPx": 7,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "short",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 120.5,
+              "innerTip": [
+                612.55,
+                768.68
+              ],
+              "outerTip": [
+                620.3,
+                773.25
+              ],
+              "innerRadiusPx": 90,
+              "outerRadiusPx": 99,
+              "lengthPx": 10,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 120.5,
+              "innerTip": [
+                623.75,
+                775.28
+              ],
+              "outerTip": [
+                630.64,
+                779.34
+              ],
+              "innerRadiusPx": 103,
+              "outerRadiusPx": 111,
+              "lengthPx": 9,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 124,
+              "innerTip": [
+                612.93,
+                775.56
+              ],
+              "outerTip": [
+                618.73,
+                779.48
+              ],
+              "innerRadiusPx": 94,
+              "outerRadiusPx": 101,
+              "lengthPx": 8,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            }
+          ],
+          "majorMinorClassification": "length_only_angular_pixel_candidate",
+          "bearingSectorCandidate": null,
+          "hasPrintedDiscreteTickScale": false,
+          "referenceMatches": [],
+          "allPhysicalGraduationsCertified": false
+        }
+      ],
+      "reviewState": "pixel_candidates_need_manual_image_qa"
+    },
+    {
+      "id": "eng.egt.2",
+      "panel": "ENGINE",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+        "sha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+        "width": 1235,
+        "height": 1274
+      },
+      "kind": "rotary",
+      "approved": false,
+      "pivotInput": {
+        "x": 724,
+        "y": 723,
+        "evidence": "gauge-survey-stage2-3.json",
+        "state": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "pivotSource": "previous_overlay_candidate",
+      "pivotDisagreement": null,
+      "circleRimAlternatives": [
+        {
+          "x": 723.2,
+          "y": 722.2,
+          "radius": 81.08,
+          "centerDeltaPx": 1.13,
+          "radiusDeltaPx": 38.92,
+          "grade": "circle_rim_candidate_not_shaft"
+        }
+      ],
+      "pivotSelectedForLiveMotion": null,
+      "scales": [
+        {
+          "mode": "primary",
+          "radiusBandPx": [
+            80,
+            128
+          ],
+          "whiteRadialCandidates": [
+            {
+              "angleDeg": 239,
+              "innerTip": [
+                635.71,
+                776.05
+              ],
+              "outerTip": [
+                628.85,
+                780.17
+              ],
+              "innerRadiusPx": 103,
+              "outerRadiusPx": 111,
+              "lengthPx": 9,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 241.5,
+              "innerTip": [
+                644.91,
+                765.94
+              ],
+              "outerTip": [
+                640.51,
+                768.33
+              ],
+              "innerRadiusPx": 90,
+              "outerRadiusPx": 95,
+              "lengthPx": 6,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "short",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 245,
+              "innerTip": [
+                632.46,
+                765.68
+              ],
+              "outerTip": [
+                624.31,
+                769.49
+              ],
+              "innerRadiusPx": 101,
+              "outerRadiusPx": 110,
+              "lengthPx": 10,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 245,
+              "innerTip": [
+                619.77,
+                771.6
+              ],
+              "outerTip": [
+                612.52,
+                774.98
+              ],
+              "innerRadiusPx": 115,
+              "outerRadiusPx": 123,
+              "lengthPx": 9,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 248,
+              "innerTip": [
+                618.3,
+                765.71
+              ],
+              "outerTip": [
+                612.74,
+                767.95
+              ],
+              "innerRadiusPx": 114,
+              "outerRadiusPx": 120,
+              "lengthPx": 7,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "short",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            }
+          ],
+          "majorMinorClassification": "length_only_angular_pixel_candidate",
+          "bearingSectorCandidate": null,
+          "hasPrintedDiscreteTickScale": false,
+          "referenceMatches": [],
+          "allPhysicalGraduationsCertified": false
+        }
+      ],
+      "reviewState": "pixel_candidates_need_manual_image_qa"
+    },
+    {
+      "id": "eng.n2.1",
+      "panel": "ENGINE",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+        "sha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+        "width": 1235,
+        "height": 1274
+      },
+      "kind": "rotary",
+      "approved": false,
+      "pivotInput": {
+        "x": 535,
+        "y": 900,
+        "evidence": "gauge-survey-stage2-3.json",
+        "state": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "pivotSource": "previous_overlay_candidate",
+      "pivotDisagreement": null,
+      "circleRimAlternatives": [
+        {
+          "x": 534.2,
+          "y": 895.6,
+          "radius": 81.68,
+          "centerDeltaPx": 4.47,
+          "radiusDeltaPx": 38.32,
+          "grade": "circle_rim_candidate_not_shaft"
+        }
+      ],
+      "pivotSelectedForLiveMotion": null,
+      "scales": [
+        {
+          "mode": "primary",
+          "radiusBandPx": [
+            80,
+            128
+          ],
+          "whiteRadialCandidates": [
+            {
+              "angleDeg": 111,
+              "innerTip": [
+                635.83,
+                938.7
+              ],
+              "outerTip": [
+                641.43,
+                940.85
+              ],
+              "innerRadiusPx": 108,
+              "outerRadiusPx": 114,
+              "lengthPx": 7,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "short",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 116.5,
+              "innerTip": [
+                635.23,
+                949.97
+              ],
+              "outerTip": [
+                641.5,
+                953.1
+              ],
+              "innerRadiusPx": 112,
+              "outerRadiusPx": 119,
+              "lengthPx": 8,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 117,
+              "innerTip": [
+                616.97,
+                941.77
+              ],
+              "outerTip": [
+                624.99,
+                945.85
+              ],
+              "innerRadiusPx": 92,
+              "outerRadiusPx": 101,
+              "lengthPx": 10,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 164.5,
+              "innerTip": [
+                566.27,
+                1012.74
+              ],
+              "outerTip": [
+                568.14,
+                1019.49
+              ],
+              "innerRadiusPx": 117,
+              "outerRadiusPx": 124,
+              "lengthPx": 8,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 167,
+              "innerTip": [
+                561.54,
+                1014.98
+              ],
+              "outerTip": [
+                563.12,
+                1021.8
+              ],
+              "innerRadiusPx": 118,
+              "outerRadiusPx": 125,
+              "lengthPx": 8,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            }
+          ],
+          "majorMinorClassification": "length_only_angular_pixel_candidate",
+          "bearingSectorCandidate": null,
+          "hasPrintedDiscreteTickScale": false,
+          "referenceMatches": [],
+          "allPhysicalGraduationsCertified": false
+        }
+      ],
+      "reviewState": "pixel_candidates_need_manual_image_qa"
+    },
+    {
+      "id": "eng.n2.2",
+      "panel": "ENGINE",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+        "sha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+        "width": 1235,
+        "height": 1274
+      },
+      "kind": "rotary",
+      "approved": false,
+      "pivotInput": {
+        "x": 724,
+        "y": 900,
+        "evidence": "gauge-survey-stage2-3.json",
+        "state": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "pivotSource": "previous_overlay_candidate",
+      "pivotDisagreement": null,
+      "circleRimAlternatives": [
+        {
+          "x": 723.2,
+          "y": 895.6,
+          "radius": 81.68,
+          "centerDeltaPx": 4.47,
+          "radiusDeltaPx": 38.32,
+          "grade": "circle_rim_candidate_not_shaft"
+        }
+      ],
+      "pivotSelectedForLiveMotion": null,
+      "scales": [
+        {
+          "mode": "primary",
+          "radiusBandPx": [
+            80,
+            128
+          ],
+          "whiteRadialCandidates": [
+            {
+              "angleDeg": 159.5,
+              "innerTip": [
+                767.08,
+                1015.21
+              ],
+              "outerTip": [
+                768.83,
+                1019.89
+              ],
+              "innerRadiusPx": 123,
+              "outerRadiusPx": 128,
+              "lengthPx": 6,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "short",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 165.5,
+              "innerTip": [
+                753.04,
+                1012.31
+              ],
+              "outerTip": [
+                754.8,
+                1019.08
+              ],
+              "innerRadiusPx": 116,
+              "outerRadiusPx": 123,
+              "lengthPx": 8,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 167.5,
+              "innerTip": [
+                749.32,
+                1014.23
+              ],
+              "outerTip": [
+                750.84,
+                1021.06
+              ],
+              "innerRadiusPx": 117,
+              "outerRadiusPx": 124,
+              "lengthPx": 8,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 239.5,
+              "innerTip": [
+                637.84,
+                950.75
+              ],
+              "outerTip": [
+                633.53,
+                953.29
+              ],
+              "innerRadiusPx": 100,
+              "outerRadiusPx": 105,
+              "lengthPx": 6,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "short",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 245.5,
+              "innerTip": [
+                638.46,
+                938.98
+              ],
+              "outerTip": [
+                633,
+                941.47
+              ],
+              "innerRadiusPx": 94,
+              "outerRadiusPx": 100,
+              "lengthPx": 7,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 247,
+              "innerTip": [
+                621.82,
+                943.37
+              ],
+              "outerTip": [
+                617.22,
+                945.32
+              ],
+              "innerRadiusPx": 111,
+              "outerRadiusPx": 116,
+              "lengthPx": 6,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "short",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            }
+          ],
+          "majorMinorClassification": "length_only_angular_pixel_candidate",
+          "bearingSectorCandidate": null,
+          "hasPrintedDiscreteTickScale": false,
+          "referenceMatches": [],
+          "allPhysicalGraduationsCertified": false
+        }
+      ],
+      "reviewState": "pixel_candidates_need_manual_image_qa"
+    },
+    {
+      "id": "eng.fuel_flow.1",
+      "panel": "ENGINE",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+        "sha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+        "width": 1235,
+        "height": 1274
+      },
+      "kind": "rotary",
+      "approved": false,
+      "pivotInput": {
+        "x": 535,
+        "y": 1082,
+        "uncertaintyPx": 22,
+        "reason": "geometric center of FF/FU circular display"
+      },
+      "pivotSource": "coarse_native_grid_estimate",
+      "pivotDisagreement": null,
+      "circleRimAlternatives": [],
+      "pivotSelectedForLiveMotion": null,
+      "scales": [
+        {
+          "mode": "primary",
+          "radiusBandPx": [
+            62,
+            100
+          ],
+          "whiteRadialCandidates": [
+            {
+              "angleDeg": 22.5,
+              "innerTip": [
+                561.79,
+                1017.33
+              ],
+              "outerTip": [
+                563.7,
+                1012.71
+              ],
+              "innerRadiusPx": 70,
+              "outerRadiusPx": 75,
+              "lengthPx": 6,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "short",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 27,
+              "innerTip": [
+                565.42,
+                1022.3
+              ],
+              "outerTip": [
+                568.14,
+                1016.96
+              ],
+              "innerRadiusPx": 67,
+              "outerRadiusPx": 73,
+              "lengthPx": 7,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 31.5,
+              "innerTip": [
+                574.19,
+                1018.05
+              ],
+              "outerTip": [
+                576.8,
+                1013.79
+              ],
+              "innerRadiusPx": 75,
+              "outerRadiusPx": 80,
+              "lengthPx": 6,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "short",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 97,
+              "innerTip": [
+                615.4,
+                1091.87
+              ],
+              "outerTip": [
+                622.34,
+                1092.72
+              ],
+              "innerRadiusPx": 81,
+              "outerRadiusPx": 88,
+              "lengthPx": 8,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 100.5,
+              "innerTip": [
+                614.64,
+                1096.76
+              ],
+              "outerTip": [
+                621.53,
+                1098.04
+              ],
+              "innerRadiusPx": 81,
+              "outerRadiusPx": 88,
+              "lengthPx": 8,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 102.5,
+              "innerTip": [
+                605.29,
+                1097.58
+              ],
+              "outerTip": [
+                611.15,
+                1098.88
+              ],
+              "innerRadiusPx": 72,
+              "outerRadiusPx": 78,
+              "lengthPx": 7,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 148,
+              "innerTip": [
+                583.22,
+                1159.17
+              ],
+              "outerTip": [
+                585.87,
+                1163.41
+              ],
+              "innerRadiusPx": 91,
+              "outerRadiusPx": 96,
+              "lengthPx": 6,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "short",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 150.5,
+              "innerTip": [
+                580.8,
+                1162.94
+              ],
+              "outerTip": [
+                583.26,
+                1167.29
+              ],
+              "innerRadiusPx": 93,
+              "outerRadiusPx": 98,
+              "lengthPx": 6,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "short",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 329.5,
+              "innerTip": [
+                497.95,
+                1019.1
+              ],
+              "outerTip": [
+                495.41,
+                1014.79
+              ],
+              "innerRadiusPx": 73,
+              "outerRadiusPx": 78,
+              "lengthPx": 6,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "short",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 334,
+              "innerTip": [
+                507.82,
+                1026.27
+              ],
+              "outerTip": [
+                504.75,
+                1019.98
+              ],
+              "innerRadiusPx": 62,
+              "outerRadiusPx": 69,
+              "lengthPx": 8,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            }
+          ],
+          "majorMinorClassification": "length_only_angular_pixel_candidate",
+          "bearingSectorCandidate": null,
+          "hasPrintedDiscreteTickScale": true,
+          "referenceMatches": [],
+          "allPhysicalGraduationsCertified": false
+        }
+      ],
+      "reviewState": "pixel_candidates_need_manual_image_qa"
+    },
+    {
+      "id": "eng.fuel_flow.2",
+      "panel": "ENGINE",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+        "sha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+        "width": 1235,
+        "height": 1274
+      },
+      "kind": "rotary",
+      "approved": false,
+      "pivotInput": {
+        "x": 724,
+        "y": 1082,
+        "uncertaintyPx": 22,
+        "reason": "geometric center of FF/FU circular display"
+      },
+      "pivotSource": "coarse_native_grid_estimate",
+      "pivotDisagreement": null,
+      "circleRimAlternatives": [
+        {
+          "x": 723.4,
+          "y": 1095.8,
+          "radius": 86.84,
+          "centerDeltaPx": 13.81,
+          "radiusDeltaPx": 6.16,
+          "grade": "circle_rim_candidate_not_shaft"
+        },
+        {
+          "x": 703,
+          "y": 1052.6,
+          "radius": 125.24,
+          "centerDeltaPx": 36.13,
+          "radiusDeltaPx": 32.24,
+          "grade": "circle_rim_candidate_not_shaft"
+        }
+      ],
+      "pivotSelectedForLiveMotion": null,
+      "scales": [
+        {
+          "mode": "primary",
+          "radiusBandPx": [
+            62,
+            100
+          ],
+          "whiteRadialCandidates": [
+            {
+              "angleDeg": 21,
+              "innerTip": [
+                748.73,
+                1017.58
+              ],
+              "outerTip": [
+                750.88,
+                1011.98
+              ],
+              "innerRadiusPx": 69,
+              "outerRadiusPx": 75,
+              "lengthPx": 7,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "short",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 25.5,
+              "innerTip": [
+                753.27,
+                1020.62
+              ],
+              "outerTip": [
+                755.43,
+                1016.11
+              ],
+              "innerRadiusPx": 68,
+              "outerRadiusPx": 73,
+              "lengthPx": 6,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "short",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 165,
+              "innerTip": [
+                741.86,
+                1148.65
+              ],
+              "outerTip": [
+                744.45,
+                1158.31
+              ],
+              "innerRadiusPx": 69,
+              "outerRadiusPx": 79,
+              "lengthPx": 11,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 170,
+              "innerTip": [
+                740.15,
+                1173.59
+              ],
+              "outerTip": [
+                741.36,
+                1180.48
+              ],
+              "innerRadiusPx": 93,
+              "outerRadiusPx": 100,
+              "lengthPx": 8,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "short",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 171.5,
+              "innerTip": [
+                734.05,
+                1149.25
+              ],
+              "outerTip": [
+                735.38,
+                1158.15
+              ],
+              "innerRadiusPx": 68,
+              "outerRadiusPx": 77,
+              "lengthPx": 10,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 172.5,
+              "innerTip": [
+                734.57,
+                1162.31
+              ],
+              "outerTip": [
+                735.62,
+                1170.24
+              ],
+              "innerRadiusPx": 81,
+              "outerRadiusPx": 89,
+              "lengthPx": 9,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 174.5,
+              "innerTip": [
+                730.81,
+                1152.67
+              ],
+              "outerTip": [
+                731.28,
+                1157.65
+              ],
+              "innerRadiusPx": 71,
+              "outerRadiusPx": 76,
+              "lengthPx": 6,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "short",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 176.5,
+              "innerTip": [
+                728.82,
+                1160.85
+              ],
+              "outerTip": [
+                729.37,
+                1169.84
+              ],
+              "innerRadiusPx": 79,
+              "outerRadiusPx": 88,
+              "lengthPx": 10,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 177,
+              "innerTip": [
+                728.81,
+                1173.87
+              ],
+              "outerTip": [
+                729.23,
+                1181.86
+              ],
+              "innerRadiusPx": 92,
+              "outerRadiusPx": 100,
+              "lengthPx": 9,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 180,
+              "innerTip": [
+                724,
+                1161
+              ],
+              "outerTip": [
+                724,
+                1170
+              ],
+              "innerRadiusPx": 79,
+              "outerRadiusPx": 88,
+              "lengthPx": 10,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 182.5,
+              "innerTip": [
+                721.08,
+                1148.94
+              ],
+              "outerTip": [
+                720.68,
+                1157.93
+              ],
+              "innerRadiusPx": 67,
+              "outerRadiusPx": 76,
+              "lengthPx": 10,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 183.5,
+              "innerTip": [
+                718.38,
+                1173.83
+              ],
+              "outerTip": [
+                717.9,
+                1181.81
+              ],
+              "innerRadiusPx": 92,
+              "outerRadiusPx": 100,
+              "lengthPx": 9,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 186.5,
+              "innerTip": [
+                716.42,
+                1148.57
+              ],
+              "outerTip": [
+                715.51,
+                1156.52
+              ],
+              "innerRadiusPx": 67,
+              "outerRadiusPx": 75,
+              "lengthPx": 9,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 186.5,
+              "innerTip": [
+                713.47,
+                1174.4
+              ],
+              "outerTip": [
+                712.68,
+                1181.36
+              ],
+              "innerRadiusPx": 93,
+              "outerRadiusPx": 100,
+              "lengthPx": 8,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "short",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 187.5,
+              "innerTip": [
+                713.56,
+                1161.32
+              ],
+              "outerTip": [
+                712.38,
+                1170.24
+              ],
+              "innerRadiusPx": 80,
+              "outerRadiusPx": 89,
+              "lengthPx": 10,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 189.5,
+              "innerTip": [
+                712.78,
+                1149.07
+              ],
+              "outerTip": [
+                711.62,
+                1155.97
+              ],
+              "innerRadiusPx": 68,
+              "outerRadiusPx": 75,
+              "lengthPx": 8,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "short",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 198,
+              "innerTip": [
+                695.26,
+                1170.45
+              ],
+              "outerTip": [
+                693.72,
+                1175.2
+              ],
+              "innerRadiusPx": 93,
+              "outerRadiusPx": 98,
+              "lengthPx": 6,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "short",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 219.5,
+              "innerTip": [
+                664.84,
+                1153.76
+              ],
+              "outerTip": [
+                661.66,
+                1157.62
+              ],
+              "innerRadiusPx": 93,
+              "outerRadiusPx": 98,
+              "lengthPx": 6,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "short",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 233,
+              "innerTip": [
+                656.12,
+                1133.15
+              ],
+              "outerTip": [
+                649.73,
+                1137.97
+              ],
+              "innerRadiusPx": 85,
+              "outerRadiusPx": 93,
+              "lengthPx": 9,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 253,
+              "innerTip": [
+                654.19,
+                1103.34
+              ],
+              "outerTip": [
+                646.54,
+                1105.68
+              ],
+              "innerRadiusPx": 73,
+              "outerRadiusPx": 81,
+              "lengthPx": 9,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 259,
+              "innerTip": [
+                639.58,
+                1098.41
+              ],
+              "outerTip": [
+                632.71,
+                1099.75
+              ],
+              "innerRadiusPx": 86,
+              "outerRadiusPx": 93,
+              "lengthPx": 8,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "short",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 263,
+              "innerTip": [
+                639.63,
+                1092.36
+              ],
+              "outerTip": [
+                632.69,
+                1093.21
+              ],
+              "innerRadiusPx": 85,
+              "outerRadiusPx": 92,
+              "lengthPx": 8,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "short",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 333,
+              "innerTip": [
+                694.94,
+                1024.98
+              ],
+              "outerTip": [
+                691.77,
+                1018.74
+              ],
+              "innerRadiusPx": 64,
+              "outerRadiusPx": 71,
+              "lengthPx": 8,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "short",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            }
+          ],
+          "majorMinorClassification": "length_only_angular_pixel_candidate",
+          "bearingSectorCandidate": null,
+          "hasPrintedDiscreteTickScale": true,
+          "referenceMatches": [],
+          "allPhysicalGraduationsCertified": false
+        }
+      ],
+      "reviewState": "pixel_candidates_need_manual_image_qa"
+    },
+    {
+      "id": "eng.oil_pressure.1",
+      "panel": "ENGINE",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+        "sha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+        "width": 1235,
+        "height": 1274
+      },
+      "kind": "rotary",
+      "approved": false,
+      "pivotInput": {
+        "x": 1050,
+        "y": 538,
+        "uncertaintyPx": 22,
+        "reason": "geometric center of engine-1 oil pressure dial"
+      },
+      "pivotSource": "coarse_native_grid_estimate",
+      "pivotDisagreement": null,
+      "circleRimAlternatives": [],
+      "pivotSelectedForLiveMotion": null,
+      "scales": [
+        {
+          "mode": "primary",
+          "radiusBandPx": [
+            46,
+            74
+          ],
+          "whiteRadialCandidates": [
+            {
+              "angleDeg": 43,
+              "innerTip": [
+                1089.56,
+                495.58
+              ],
+              "outerTip": [
+                1092.97,
+                491.92
+              ],
+              "innerRadiusPx": 58,
+              "outerRadiusPx": 63,
+              "lengthPx": 6,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 47,
+              "innerTip": [
+                1096.81,
+                494.35
+              ],
+              "outerTip": [
+                1100.46,
+                490.94
+              ],
+              "innerRadiusPx": 64,
+              "outerRadiusPx": 69,
+              "lengthPx": 6,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 52.5,
+              "innerTip": [
+                1099.19,
+                500.26
+              ],
+              "outerTip": [
+                1103.15,
+                497.21
+              ],
+              "innerRadiusPx": 62,
+              "outerRadiusPx": 67,
+              "lengthPx": 6,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 274,
+              "innerTip": [
+                997.13,
+                534.3
+              ],
+              "outerTip": [
+                990.15,
+                533.81
+              ],
+              "innerRadiusPx": 53,
+              "outerRadiusPx": 60,
+              "lengthPx": 8,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 298,
+              "innerTip": [
+                1001.44,
+                512.18
+              ],
+              "outerTip": [
+                997.02,
+                509.83
+              ],
+              "innerRadiusPx": 55,
+              "outerRadiusPx": 60,
+              "lengthPx": 6,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            }
+          ],
+          "majorMinorClassification": "length_only_angular_pixel_candidate",
+          "bearingSectorCandidate": null,
+          "hasPrintedDiscreteTickScale": true,
+          "referenceMatches": [],
+          "allPhysicalGraduationsCertified": false
+        }
+      ],
+      "reviewState": "pixel_candidates_need_manual_image_qa"
+    },
+    {
+      "id": "eng.oil_pressure.2",
+      "panel": "ENGINE",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+        "sha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+        "width": 1235,
+        "height": 1274
+      },
+      "kind": "rotary",
+      "approved": false,
+      "pivotInput": {
+        "x": 1174,
+        "y": 538,
+        "uncertaintyPx": 22,
+        "reason": "geometric center of engine-2 oil pressure dial"
+      },
+      "pivotSource": "coarse_native_grid_estimate",
+      "pivotDisagreement": null,
+      "circleRimAlternatives": [],
+      "pivotSelectedForLiveMotion": null,
+      "scales": [
+        {
+          "mode": "primary",
+          "radiusBandPx": [
+            46,
+            74
+          ],
+          "whiteRadialCandidates": [
+            {
+              "angleDeg": 274.5,
+              "innerTip": [
+                1128.14,
+                534.39
+              ],
+              "outerTip": [
+                1123.16,
+                534
+              ],
+              "innerRadiusPx": 46,
+              "outerRadiusPx": 51,
+              "lengthPx": 6,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 303,
+              "innerTip": [
+                1135.42,
+                512.95
+              ],
+              "outerTip": [
+                1131.23,
+                510.22
+              ],
+              "innerRadiusPx": 46,
+              "outerRadiusPx": 51,
+              "lengthPx": 6,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 326,
+              "innerTip": [
+                1136.53,
+                482.45
+              ],
+              "outerTip": [
+                1132.62,
+                476.65
+              ],
+              "innerRadiusPx": 67,
+              "outerRadiusPx": 74,
+              "lengthPx": 8,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 330.5,
+              "innerTip": [
+                1140.02,
+                477.95
+              ],
+              "outerTip": [
+                1137.56,
+                473.59
+              ],
+              "innerRadiusPx": 69,
+              "outerRadiusPx": 74,
+              "lengthPx": 6,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            }
+          ],
+          "majorMinorClassification": "length_only_angular_pixel_candidate",
+          "bearingSectorCandidate": null,
+          "hasPrintedDiscreteTickScale": true,
+          "referenceMatches": [],
+          "allPhysicalGraduationsCertified": false
+        }
+      ],
+      "reviewState": "pixel_candidates_need_manual_image_qa"
+    },
+    {
+      "id": "eng.oil_temperature.1",
+      "panel": "ENGINE",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+        "sha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+        "width": 1235,
+        "height": 1274
+      },
+      "kind": "rotary",
+      "approved": false,
+      "pivotInput": {
+        "x": 1050,
+        "y": 688,
+        "uncertaintyPx": 22,
+        "reason": "geometric center of engine-1 oil temperature dial"
+      },
+      "pivotSource": "coarse_native_grid_estimate",
+      "pivotDisagreement": null,
+      "circleRimAlternatives": [],
+      "pivotSelectedForLiveMotion": null,
+      "scales": [
+        {
+          "mode": "primary",
+          "radiusBandPx": [
+            46,
+            74
+          ],
+          "whiteRadialCandidates": [
+            {
+              "angleDeg": 83.5,
+              "innerTip": [
+                1101.67,
+                682.11
+              ],
+              "outerTip": [
+                1108.62,
+                681.32
+              ],
+              "innerRadiusPx": 52,
+              "outerRadiusPx": 59,
+              "lengthPx": 8,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "short",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 86.5,
+              "innerTip": [
+                1107.89,
+                684.46
+              ],
+              "outerTip": [
+                1123.86,
+                683.48
+              ],
+              "innerRadiusPx": 58,
+              "outerRadiusPx": 74,
+              "lengthPx": 17,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 273.5,
+              "innerTip": [
+                992.11,
+                684.46
+              ],
+              "outerTip": [
+                976.14,
+                683.48
+              ],
+              "innerRadiusPx": 58,
+              "outerRadiusPx": 74,
+              "lengthPx": 17,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            }
+          ],
+          "majorMinorClassification": "length_only_angular_pixel_candidate",
+          "bearingSectorCandidate": null,
+          "hasPrintedDiscreteTickScale": true,
+          "referenceMatches": [],
+          "allPhysicalGraduationsCertified": false
+        }
+      ],
+      "reviewState": "pixel_candidates_need_manual_image_qa"
+    },
+    {
+      "id": "eng.oil_temperature.2",
+      "panel": "ENGINE",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+        "sha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+        "width": 1235,
+        "height": 1274
+      },
+      "kind": "rotary",
+      "approved": false,
+      "pivotInput": {
+        "x": 1174,
+        "y": 688,
+        "uncertaintyPx": 22,
+        "reason": "geometric center of engine-2 oil temperature dial"
+      },
+      "pivotSource": "coarse_native_grid_estimate",
+      "pivotDisagreement": null,
+      "circleRimAlternatives": [],
+      "pivotSelectedForLiveMotion": null,
+      "scales": [
+        {
+          "mode": "primary",
+          "radiusBandPx": [
+            46,
+            74
+          ],
+          "whiteRadialCandidates": [
+            {
+              "angleDeg": 274,
+              "innerTip": [
+                1123.12,
+                684.44
+              ],
+              "outerTip": [
+                1104.17,
+                683.12
+              ],
+              "innerRadiusPx": 51,
+              "outerRadiusPx": 70,
+              "lengthPx": 20,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "long",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 275,
+              "innerTip": [
+                1109.25,
+                682.33
+              ],
+              "outerTip": [
+                1102.27,
+                681.72
+              ],
+              "innerRadiusPx": 65,
+              "outerRadiusPx": 72,
+              "lengthPx": 8,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 276,
+              "innerTip": [
+                1128.25,
+                683.19
+              ],
+              "outerTip": [
+                1122.28,
+                682.56
+              ],
+              "innerRadiusPx": 46,
+              "outerRadiusPx": 52,
+              "lengthPx": 7,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "short",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 326,
+              "innerTip": [
+                1136.53,
+                632.45
+              ],
+              "outerTip": [
+                1132.62,
+                626.65
+              ],
+              "innerRadiusPx": 67,
+              "outerRadiusPx": 74,
+              "lengthPx": 8,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 330.5,
+              "innerTip": [
+                1140.02,
+                627.95
+              ],
+              "outerTip": [
+                1137.56,
+                623.59
+              ],
+              "innerRadiusPx": 69,
+              "outerRadiusPx": 74,
+              "lengthPx": 6,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "short",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            }
+          ],
+          "majorMinorClassification": "length_only_angular_pixel_candidate",
+          "bearingSectorCandidate": null,
+          "hasPrintedDiscreteTickScale": true,
+          "referenceMatches": [],
+          "allPhysicalGraduationsCertified": false
+        }
+      ],
+      "reviewState": "pixel_candidates_need_manual_image_qa"
+    },
+    {
+      "id": "eng.vibration.1",
+      "panel": "ENGINE",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+        "sha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+        "width": 1235,
+        "height": 1274
+      },
+      "kind": "rotary",
+      "approved": false,
+      "pivotInput": {
+        "x": 1050,
+        "y": 865,
+        "uncertaintyPx": 22,
+        "reason": "geometric center of engine-1 vibration dial"
+      },
+      "pivotSource": "coarse_native_grid_estimate",
+      "pivotDisagreement": null,
+      "circleRimAlternatives": [
+        {
+          "x": 1064.6,
+          "y": 855.6,
+          "radius": 88.36,
+          "centerDeltaPx": 17.36,
+          "radiusDeltaPx": 19.36,
+          "grade": "circle_rim_candidate_not_shaft"
+        },
+        {
+          "x": 1052.6,
+          "y": 830.4,
+          "radius": 92.32,
+          "centerDeltaPx": 34.7,
+          "radiusDeltaPx": 23.32,
+          "grade": "circle_rim_candidate_not_shaft"
+        }
+      ],
+      "pivotSelectedForLiveMotion": null,
+      "scales": [
+        {
+          "mode": "primary",
+          "radiusBandPx": [
+            46,
+            74
+          ],
+          "whiteRadialCandidates": [
+            {
+              "angleDeg": 36,
+              "innerTip": [
+                1079.98,
+                823.74
+              ],
+              "outerTip": [
+                1091.73,
+                807.56
+              ],
+              "innerRadiusPx": 51,
+              "outerRadiusPx": 71,
+              "lengthPx": 21,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "long",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 36.5,
+              "innerTip": [
+                1089.26,
+                811.95
+              ],
+              "outerTip": [
+                1092.83,
+                807.12
+              ],
+              "innerRadiusPx": 66,
+              "outerRadiusPx": 72,
+              "lengthPx": 7,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "short",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 101,
+              "innerTip": [
+                1114.79,
+                877.59
+              ],
+              "outerTip": [
+                1120.68,
+                878.74
+              ],
+              "innerRadiusPx": 66,
+              "outerRadiusPx": 72,
+              "lengthPx": 7,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "short",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 102,
+              "innerTip": [
+                1100.86,
+                875.81
+              ],
+              "outerTip": [
+                1117.49,
+                879.35
+              ],
+              "innerRadiusPx": 52,
+              "outerRadiusPx": 69,
+              "lengthPx": 18,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "long",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 133.5,
+              "innerTip": [
+                1097.15,
+                909.74
+              ],
+              "outerTip": [
+                1102.95,
+                915.25
+              ],
+              "innerRadiusPx": 65,
+              "outerRadiusPx": 73,
+              "lengthPx": 9,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 138,
+              "innerTip": [
+                1092.82,
+                912.56
+              ],
+              "outerTip": [
+                1096.84,
+                917.02
+              ],
+              "innerRadiusPx": 64,
+              "outerRadiusPx": 70,
+              "lengthPx": 7,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "short",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 140.5,
+              "innerTip": [
+                1090.71,
+                914.38
+              ],
+              "outerTip": [
+                1094.53,
+                919.01
+              ],
+              "innerRadiusPx": 64,
+              "outerRadiusPx": 70,
+              "lengthPx": 7,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "short",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 147.5,
+              "innerTip": [
+                1084.92,
+                919.82
+              ],
+              "outerTip": [
+                1088.69,
+                925.72
+              ],
+              "innerRadiusPx": 65,
+              "outerRadiusPx": 72,
+              "lengthPx": 8,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 173,
+              "innerTip": [
+                1057.31,
+                924.55
+              ],
+              "outerTip": [
+                1058.41,
+                933.49
+              ],
+              "innerRadiusPx": 60,
+              "outerRadiusPx": 69,
+              "lengthPx": 10,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 178,
+              "innerTip": [
+                1052.06,
+                923.96
+              ],
+              "outerTip": [
+                1052.44,
+                934.96
+              ],
+              "innerRadiusPx": 59,
+              "outerRadiusPx": 70,
+              "lengthPx": 12,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "long",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 184.5,
+              "innerTip": [
+                1045.14,
+                926.81
+              ],
+              "outerTip": [
+                1044.51,
+                934.78
+              ],
+              "innerRadiusPx": 62,
+              "outerRadiusPx": 70,
+              "lengthPx": 9,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 186.5,
+              "innerTip": [
+                1043.09,
+                925.61
+              ],
+              "outerTip": [
+                1042.53,
+                930.58
+              ],
+              "innerRadiusPx": 61,
+              "outerRadiusPx": 66,
+              "lengthPx": 6,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "short",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 191,
+              "innerTip": [
+                1038.17,
+                925.86
+              ],
+              "outerTip": [
+                1036.45,
+                934.7
+              ],
+              "innerRadiusPx": 62,
+              "outerRadiusPx": 71,
+              "lengthPx": 10,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 193,
+              "innerTip": [
+                1036.28,
+                924.44
+              ],
+              "outerTip": [
+                1034.93,
+                930.28
+              ],
+              "innerRadiusPx": 61,
+              "outerRadiusPx": 67,
+              "lengthPx": 7,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "short",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 196.5,
+              "innerTip": [
+                1031.25,
+                928.28
+              ],
+              "outerTip": [
+                1029.27,
+                934.99
+              ],
+              "innerRadiusPx": 66,
+              "outerRadiusPx": 73,
+              "lengthPx": 8,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 198.5,
+              "innerTip": [
+                1030.33,
+                923.8
+              ],
+              "outerTip": [
+                1028.74,
+                928.54
+              ],
+              "innerRadiusPx": 62,
+              "outerRadiusPx": 67,
+              "lengthPx": 6,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "short",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 257.5,
+              "innerTip": [
+                1000.21,
+                876.04
+              ],
+              "outerTip": [
+                985.56,
+                879.29
+              ],
+              "innerRadiusPx": 51,
+              "outerRadiusPx": 66,
+              "lengthPx": 16,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "long",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 259,
+              "innerTip": [
+                985.21,
+                877.59
+              ],
+              "outerTip": [
+                977.36,
+                879.12
+              ],
+              "innerRadiusPx": 66,
+              "outerRadiusPx": 74,
+              "lengthPx": 9,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 260,
+              "innerTip": [
+                1004.7,
+                872.99
+              ],
+              "outerTip": [
+                999.77,
+                873.86
+              ],
+              "innerRadiusPx": 46,
+              "outerRadiusPx": 51,
+              "lengthPx": 6,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "short",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 274.5,
+              "innerTip": [
+                1001.15,
+                861.16
+              ],
+              "outerTip": [
+                996.17,
+                860.76
+              ],
+              "innerRadiusPx": 49,
+              "outerRadiusPx": 54,
+              "lengthPx": 6,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "short",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 312,
+              "innerTip": [
+                1003.18,
+                822.84
+              ],
+              "outerTip": [
+                998.72,
+                818.83
+              ],
+              "innerRadiusPx": 63,
+              "outerRadiusPx": 69,
+              "lengthPx": 7,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "short",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            }
+          ],
+          "majorMinorClassification": "length_only_angular_pixel_candidate",
+          "bearingSectorCandidate": null,
+          "hasPrintedDiscreteTickScale": true,
+          "referenceMatches": [],
+          "allPhysicalGraduationsCertified": false
+        }
+      ],
+      "reviewState": "pixel_candidates_need_manual_image_qa"
+    },
+    {
+      "id": "eng.vibration.2",
+      "panel": "ENGINE",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+        "sha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+        "width": 1235,
+        "height": 1274
+      },
+      "kind": "rotary",
+      "approved": false,
+      "pivotInput": {
+        "x": 1174,
+        "y": 865,
+        "uncertaintyPx": 22,
+        "reason": "geometric center of engine-2 vibration dial"
+      },
+      "pivotSource": "coarse_native_grid_estimate",
+      "pivotDisagreement": null,
+      "circleRimAlternatives": [],
+      "pivotSelectedForLiveMotion": null,
+      "scales": [
+        {
+          "mode": "primary",
+          "radiusBandPx": [
+            46,
+            74
+          ],
+          "whiteRadialCandidates": [
+            {
+              "angleDeg": 256,
+              "innerTip": [
+                1129.37,
+                876.13
+              ],
+              "outerTip": [
+                1116.75,
+                879.27
+              ],
+              "innerRadiusPx": 46,
+              "outerRadiusPx": 59,
+              "lengthPx": 14,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "long",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 260,
+              "innerTip": [
+                1109,
+                876.46
+              ],
+              "outerTip": [
+                1104.08,
+                877.33
+              ],
+              "innerRadiusPx": 66,
+              "outerRadiusPx": 71,
+              "lengthPx": 6,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "short",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 319,
+              "innerTip": [
+                1137.26,
+                822.74
+              ],
+              "outerTip": [
+                1132.67,
+                817.45
+              ],
+              "innerRadiusPx": 56,
+              "outerRadiusPx": 63,
+              "lengthPx": 8,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 330.5,
+              "innerTip": [
+                1142.48,
+                809.3
+              ],
+              "outerTip": [
+                1140.02,
+                804.95
+              ],
+              "innerRadiusPx": 64,
+              "outerRadiusPx": 69,
+              "lengthPx": 6,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "short",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            }
+          ],
+          "majorMinorClassification": "length_only_angular_pixel_candidate",
+          "bearingSectorCandidate": null,
+          "hasPrintedDiscreteTickScale": true,
+          "referenceMatches": [],
+          "allPhysicalGraduationsCertified": false
+        }
+      ],
+      "reviewState": "pixel_candidates_need_manual_image_qa"
+    },
+    {
+      "id": "eng.hyd_pressure.a",
+      "panel": "ENGINE",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+        "sha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+        "width": 1235,
+        "height": 1274
+      },
+      "kind": "rotary",
+      "approved": false,
+      "pivotInput": {
+        "x": 1050,
+        "y": 1037,
+        "uncertaintyPx": 22,
+        "reason": "geometric center of hydraulic pressure A"
+      },
+      "pivotSource": "coarse_native_grid_estimate",
+      "pivotDisagreement": null,
+      "circleRimAlternatives": [],
+      "pivotSelectedForLiveMotion": null,
+      "scales": [
+        {
+          "mode": "primary",
+          "radiusBandPx": [
+            47,
+            75
+          ],
+          "whiteRadialCandidates": [
+            {
+              "angleDeg": 61,
+              "innerTip": [
+                1098.98,
+                1009.85
+              ],
+              "outerTip": [
+                1103.35,
+                1007.43
+              ],
+              "innerRadiusPx": 56,
+              "outerRadiusPx": 61,
+              "lengthPx": 6,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "short",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 175.5,
+              "innerTip": [
+                1055.26,
+                1103.79
+              ],
+              "outerTip": [
+                1055.88,
+                1111.77
+              ],
+              "innerRadiusPx": 67,
+              "outerRadiusPx": 75,
+              "lengthPx": 9,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 182.5,
+              "innerTip": [
+                1047.16,
+                1101.94
+              ],
+              "outerTip": [
+                1046.73,
+                1111.93
+              ],
+              "innerRadiusPx": 65,
+              "outerRadiusPx": 75,
+              "lengthPx": 11,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 187.5,
+              "innerTip": [
+                1040.99,
+                1105.41
+              ],
+              "outerTip": [
+                1040.21,
+                1111.36
+              ],
+              "innerRadiusPx": 69,
+              "outerRadiusPx": 75,
+              "lengthPx": 7,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "short",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 195.5,
+              "innerTip": [
+                1032.1,
+                1101.56
+              ],
+              "outerTip": [
+                1029.96,
+                1109.27
+              ],
+              "innerRadiusPx": 67,
+              "outerRadiusPx": 75,
+              "lengthPx": 9,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 300.5,
+              "innerTip": [
+                1000.89,
+                1008.07
+              ],
+              "outerTip": [
+                996.58,
+                1005.53
+              ],
+              "innerRadiusPx": 57,
+              "outerRadiusPx": 62,
+              "lengthPx": 6,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "short",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            }
+          ],
+          "majorMinorClassification": "length_only_angular_pixel_candidate",
+          "bearingSectorCandidate": null,
+          "hasPrintedDiscreteTickScale": true,
+          "referenceMatches": [],
+          "allPhysicalGraduationsCertified": false
+        }
+      ],
+      "reviewState": "pixel_candidates_need_manual_image_qa"
+    },
+    {
+      "id": "eng.hyd_pressure.b",
+      "panel": "ENGINE",
+      "source": {
+        "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+        "sha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+        "width": 1235,
+        "height": 1274
+      },
+      "kind": "rotary",
+      "approved": false,
+      "pivotInput": {
+        "x": 1174,
+        "y": 1037,
+        "uncertaintyPx": 22,
+        "reason": "geometric center of hydraulic pressure B"
+      },
+      "pivotSource": "coarse_native_grid_estimate",
+      "pivotDisagreement": null,
+      "circleRimAlternatives": [],
+      "pivotSelectedForLiveMotion": null,
+      "scales": [
+        {
+          "mode": "primary",
+          "radiusBandPx": [
+            47,
+            75
+          ],
+          "whiteRadialCandidates": [
+            {
+              "angleDeg": 56,
+              "innerTip": [
+                1227.06,
+                1001.21
+              ],
+              "outerTip": [
+                1231.2,
+                998.42
+              ],
+              "innerRadiusPx": 64,
+              "outerRadiusPx": 69,
+              "lengthPx": 6,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "short",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 58,
+              "innerTip": [
+                1225.73,
+                1004.67
+              ],
+              "outerTip": [
+                1233.36,
+                999.91
+              ],
+              "innerRadiusPx": 61,
+              "outerRadiusPx": 70,
+              "lengthPx": 10,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 64,
+              "innerTip": [
+                1227.93,
+                1010.7
+              ],
+              "outerTip": [
+                1234.22,
+                1007.63
+              ],
+              "innerRadiusPx": 60,
+              "outerRadiusPx": 67,
+              "lengthPx": 8,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "medium",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            },
+            {
+              "angleDeg": 66,
+              "innerTip": [
+                1229.73,
+                1012.19
+              ],
+              "outerTip": [
+                1234.29,
+                1010.16
+              ],
+              "innerRadiusPx": 61,
+              "outerRadiusPx": 66,
+              "lengthPx": 6,
+              "source": "native_white_radial_run",
+              "approved": false,
+              "lengthClassCandidate": "short",
+              "scaleModeCandidate": "primary",
+              "numericValue": null,
+              "physicalTickApproved": false
+            }
+          ],
+          "majorMinorClassification": "length_only_angular_pixel_candidate",
+          "bearingSectorCandidate": null,
+          "hasPrintedDiscreteTickScale": true,
+          "referenceMatches": [],
+          "allPhysicalGraduationsCertified": false
+        }
+      ],
+      "reviewState": "pixel_candidates_need_manual_image_qa"
+    }
+  ]
+}
