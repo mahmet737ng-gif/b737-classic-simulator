@@ -10,7 +10,9 @@
     "historicalOverlayPivotsQuarantined": 2,
     "caseCircleAsShaftRejected": 1,
     "mislocatedLinearTrackQuarantined": 1,
-    "versionedFOImageSourcePathsResolved": 3
+    "versionedFOImageSourcePathsResolved": 3,
+    "oldRightTrimWindowZeroLineDetections": 1,
+    "alternativeRightTrimWindowWithFiveCandidates": 1
   },
   "protections": [
     "Original approved photo assets unchanged",
@@ -503,7 +505,25 @@
         "y1": 965
       },
       "preferredProvisional": null,
-      "reason": "OLD_RIGHT_STAB_TRIM_BOX_EXCLUDES_SCALE_TRACK"
+      "reason": "OLD_RIGHT_STAB_TRIM_BOX_EXCLUDES_SCALE_TRACK",
+      "provisionalReplacementWindow": {
+        "x0": 895,
+        "x1": 998,
+        "y0": 609,
+        "y1": 965,
+        "geometryStatus": "UNVERIFIED_SOURCE_DARK_STRIP_CANDIDATE",
+        "previousRoiRawTransverseCount": 0,
+        "proposedRoiRawHorizontalCount": 5,
+        "rawHorizontalRowsPx": [
+          657,
+          775,
+          880,
+          923,
+          928
+        ],
+        "source": "https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/40229366671",
+        "warning": "Five unclassified edges are NOT five signed scale ticks and do not authorize panel sprite movement"
+      }
     }
   ]
 }
