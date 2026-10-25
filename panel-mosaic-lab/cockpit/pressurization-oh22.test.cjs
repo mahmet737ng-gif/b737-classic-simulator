@@ -13,7 +13,7 @@ assert.deepEqual(c.modes,['AUTO','STBY','MAN_AC','MAN_DC']);
 assert.ok(c.controls.some(x=>x.id==='cabin-rate'));
 assert.ok(!d.controls.some(x=>x.id==='cabin-rate'));
 assert.ok(!d.controls.some(x=>x.id==='flight-ground'));
-assert.ok(c.controls.some(x=>x.id==='flight-ground'));
+assert.ok(!c.controls.some(x=>x.id==='flight-ground'), 'FLT/GRD engine input must not masquerade as a physical OH22 selector');
 assert.ok(c.controls.some(x=>x.id==='standby-alt'));
 assert.ok(!d.controls.some(x=>x.id==='standby-alt'));
 assert.deepEqual(Object.keys(oh22.lamps('DCPCS',{lamps:{autoFail:true,altn:false,manual:false,offSchedDescent:false}})),['auto-fail','off-sched','altn','manual']);
@@ -33,7 +33,7 @@ ds=dcpcs.apply(ds,oh22.command('DCPCS','flight-alt',32000,ds));
 assert.equal(ds.input.flightAltitudeFt,32000);
 ds=dcpcs.apply(ds,oh22.command('DCPCS','landing-alt',250,ds));
 assert.equal(ds.input.landingAltitudeFt,250);
-cs=cpcs.apply(cs,oh22.command('CPCS','flight-ground','FLT',cs));
+cs=cpcs.apply(cs,{type:'FLIGHT_GROUND',value:'FLT'});
 assert.equal(cs.flightGround,'FLT');
 cs=cpcs.apply(cs,oh22.command('CPCS','manual-valve','OPEN',cs));
 assert.equal(cs.valveSwitch,'OPEN');
@@ -48,8 +48,8 @@ const readouts=Object.fromEntries(d.displays.map(x=>[x.id,x.xy]));
 const ideal={
   'flight-alt':[.325,.372],
   'landing-alt':[.325,.676],
-  'manual-valve':[.77,.453],
-  'press-mode':[.77,.678]
+  'manual-valve':[.72,.453],
+  'press-mode':[.72,.678]
 };
 for(const [id,xy]of Object.entries(ideal)){
   assert.ok(anchors[id],'Missing calibrated DCPCS socket '+id);
@@ -58,6 +58,19 @@ for(const [id,xy]of Object.entries(ideal)){
 assert.deepEqual(readouts['flight-display'],[.32,.207]);
 assert.deepEqual(readouts['landing-display'],[.32,.498]);
 assert.ok(d.lamps.every(l=>Math.abs(l.xy[1]-.055)<.002),'Lamps must stay inside upper annunciator row');
+assert.ok(c.controls.find(x=>x.id==='press-mode')?.xy[1]>.7,
+  'CPCS MODE must be mounted at the real lower right selector (not the upper valve gauge)');
+assert.ok(!c.controls.some(x=>x.id==='flight-ground'),
+  'CPCS FLT/GRD is an engine input, not a knob at the MODE socket');
+assert.equal(c.controls.find(x=>x.id==='auto-check')?.appearance,'hotspot',
+  'CPCS AUTO CHECK is a selector action, not a floating duplicate knob');
+assert.equal(c.displays.length,3,'CPCS must show FLT ALT, LAND ALT, standby cabin altitude');
+for(const d of c.displays)assert.equal(d.stateRoot,'settings');
+let cpcsDisplayState=cpcs.initial();
+cpcsDisplayState=cpcs.apply(cpcsDisplayState,{type:'ALTITUDE',key:'flightAltitudeFt',value:29000});
+assert.equal(oh22.readDisplay('CPCS',c.displays[0],cpcsDisplayState),29000);
+assert.equal(oh22.readDisplay('DCPCS',d.displays[0],dcpcs.initial()),28000);
+
 const bridge=fs.readFileSync(path.join(__dirname,'overhead-bridge.js'),'utf8');
 assert.ok(bridge.includes("objectFit:'fill'"),'Owner photo must reach tile top and bottom with no contain gaps');
 const skin=fs.readFileSync(path.join(__dirname,'pressurization-oh22.css'),'utf8');
