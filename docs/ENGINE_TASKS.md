@@ -285,3 +285,14 @@ GitHub CI: [successful v19 N1 source + CDU integration run 39888361177](https://
 ### CDU v6 N1 estimate parity — v19
 
 Also committed the same user-accepted visual N1 estimator to `cdu-standalone-v6/data/epfsi-simulated-n1-v19.js`, with ISA scenario defaults. `cdu-standalone-v6/app.js` displays approximate N1 LIMIT (R1) and TAKEOFF REF TO N1 (L3) with `EST` labels, plus both PRESENT N1 estimates in the separate training sidebar. Physical controls and EHSI imagery unchanged. Acceptance test `cdu-standalone-v6/tests/est-n1-v19.test.cjs` and [GitHub CI 39889087284](https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/39889087284) successful. V6 does NOT yet receive external live engine telemetry; numbers remain simulated visual outputs. The separate AFM numeric release remains blocked and is not overridden by this policy.
+
+
+## 2026-10-26 — CB mechanical/electrical integration slice (UNVERIFIED AIRCRAFT WIRING)
+
+- Phase 1: retained prior red-inner-face / stationary-hex CB lab appearance; local photo geometry QA remains separate and not fully reconciled to the CB name catalogue.
+- Phase 2: root Unified toolbar now exposes `cb-panel-lab/`. Lab commands flow through `engine/cb/cb-kernel.js` and `cb-panel-lab/electrical-bridge.js`; locally saved state and CPCS/DCPCS variants are supported. Root artwork untouched. Full original-photo embedding in Unified remains open.
+- Phase 3: 11-panel candidate catalogue yields 472 active CBs with CPCS or 471 with DCPCS; photo QA has different counts. `engine/cb/wiring-manifest.v1.json` records **zero verified aircraft routes**.
+- Phase 4: kernel exposes evidence-gated power source / circuit / consumer evaluation; **no actual aircraft consumer connected** without provenance. Only a clearly fictional sandbox lamp demonstrates Pull/Push power effects.
+- Phase 5: synthetic instructor trip, fault latch, failed reset while fault active, clear fault then manual Push. Actual thermal overcurrent laws have not been extracted and were not invented.
+- Phase 6: 29 in-memory integration assertions passed during implementation; `tests/cb-kernel.test.cjs` and npm test script committed, but complete GitHub Actions and photo browser acceptance remain UNVERIFIED.
+- Read `docs/CB_INTEGRATION_PHASES.md` for full acceptance criteria, known limitations, and next wiring audit.
