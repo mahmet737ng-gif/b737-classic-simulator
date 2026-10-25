@@ -163,6 +163,30 @@ for xx,yy,ww,hh,area in components[1:]:
       'areaPx':area,'status':'DARK_REGION_CANDIDATE_NOT_PROVEN_TRIM_SLIDER'})
 boxes.sort(key=lambda b:(-(b['y1']-b['y0']),-b['areaPx']))
 boxes=boxes[:12]
+trimWindowProposal=None
+if boxes:
+    # Consistent with human visual observation of a dark scale LEFT of old ROI.
+    nearer=[box for box in boxes if box['x0'] < original_window['x0'] and
+            box['x1'] > original_window['x0']-30]
+    if nearer:
+        darkSelected=nearer[0]
+        trimWindowProposal={'x0':darkSelected['x0'],
+          'x1':darkSelected['x1'],'y0':original_window['y0'],
+          'y1':original_window['y1'],
+          'geometryStatus':'UNVERIFIED_ALTERNATIVE_WINDOW_NEEDS_EXACT_SCALE_TICK_QA'}
+        left,top,right,bottom=(trimWindowProposal[k] for k in ('x0','y0','x1','y1'))
+        gray=cv2.cvtColor(source_image[top:bottom,left:right],cv2.COLOR_BGR2GRAY)
+        edge=cv2.Canny(gray,55,145)
+        lines=cv2.HoughLinesP(edge,1,np.pi/360,threshold=10,minLineLength=9,maxLineGap=2)
+        yset=set()
+        if lines is not None:
+            for xx,yy,XX,YY in lines.reshape(-1,4):
+                if abs(int(YY)-int(yy))<=3:
+                    yset.add(int(round((int(yy)+int(YY))/2)))
+        trimWindowProposal['horizontalLineCandidateCount']=len(yset)
+        trimWindowProposal['rawHorizontalLineRowsPx']=sorted([int(top+y) for y in yset])[:90]
+        trimWindowProposal['oldWindowLineCount']=len(BYID[trim['id']]['linearTickEndpoints'])
+print('B737_TRIM_RIGHT_ALTERNATIVE_WINDOW='+json.dumps(trimWindowProposal),flush=True)
 print('B737_TRIM_RIGHT_DARK_VERTICAL_CANDIDATES='+json.dumps(boxes),flush=True)
 for b in boxes:
     # A wrong box must not be automatically replaced with a dark connected region.
@@ -194,7 +218,8 @@ report={'schema':'b737.high-risk-pivot-and-tick-review.v2','sourceDate':'2026-10
  'restrictions':['Never confuse rim circle with shaft pivot','Line segment can be label/screw/rim, not tick',
    'No value assignment without exact photographed major/minor label','Never rewrite artwork or operational coordinates without reviewer evidence'],
  'foSourceVerification':extra,'trimRightDarkVerticalCandidates':boxes,
- 'oldTrimRightWindowQuarantined':original_window,'faces':records}
+ 'oldTrimRightWindowQuarantined':original_window,
+ 'trimRightAlternativeWindowProvisional':trimWindowProposal,'faces':records}
 dest=ROOT/'reports/stage11-high-risk-native-evidence-v2.json'
 dest.write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
 print('B737_HIGH_RISK_COUNTS='+json.dumps(report['counts']),flush=True)
