@@ -5,6 +5,7 @@
   "scenarioResultUrl": "https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/40227687706",
   "stage11Disposition": "SOURCE_SCENARIO_QA_PASS___ORIGINAL_IMAGE_PIXEL_CERTIFICATION_INCOMPLETE___RELEASE_BLOCKED",
   "requirements": [
+    "Verify original image SHA-256 and pixel crop for the three versioned root-stored FO outer instruments; repository Git blob location verified, but this does not prove exact shaft/pixel endpoint calibration.",
     "The shared FO outer-image source is a version-controlled root PNG; verify immutable SHA-256 and native dimensions in CI.",
     "Every main/minor stroke must be manually traced in native image source and all circle/shaft conflicts resolved",
     "Value-to-angle must be signed off for each actual scale including dual rings and needle pointer shape",
@@ -3516,10 +3517,13 @@
         "scenario_test_not_photo_signoff",
         "two_numbered_photo_anchors_missing",
         "response_model_not_calibrated",
-        "original_photo_present_but_dial_geometry_not_certified"
+        "original_photo_present_but_dial_geometry_not_certified",
+        "original_image_native_sha256_and_visual_gauge_crop_still_require_approval"
       ],
       "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA",
-      "originalImageRepositoryStatus": "REPOSITORY_ROOT_ASSET_SHA256_AND_DIMENSIONS_VERIFIED"
+      "originalImageRepositoryStatus": "VERSION_CONTROLLED_ROOT_BLOB_VERIFIED",
+      "originalImageGitBlobSHA": "ff259644232ecc0543cbe7d2761fdfa286ab7bf8",
+      "originalImageGitObjectPath": "file_000000006c00820ab145b3682f686256.png"
     },
     {
       "id": "fo.outer_vertical_speed",
@@ -3590,10 +3594,13 @@
         "scenario_test_not_photo_signoff",
         "two_numbered_photo_anchors_missing",
         "response_model_not_calibrated",
-        "original_photo_present_but_dial_geometry_not_certified"
+        "original_photo_present_but_dial_geometry_not_certified",
+        "original_image_native_sha256_and_visual_gauge_crop_still_require_approval"
       ],
       "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA",
-      "originalImageRepositoryStatus": "REPOSITORY_ROOT_ASSET_SHA256_AND_DIMENSIONS_VERIFIED"
+      "originalImageRepositoryStatus": "VERSION_CONTROLLED_ROOT_BLOB_VERIFIED",
+      "originalImageGitBlobSHA": "ff259644232ecc0543cbe7d2761fdfa286ab7bf8",
+      "originalImageGitObjectPath": "file_000000006c00820ab145b3682f686256.png"
     },
     {
       "id": "fo.outer_clock",
@@ -3664,10 +3671,13 @@
         "scenario_test_not_photo_signoff",
         "two_numbered_photo_anchors_missing",
         "response_model_not_calibrated",
-        "original_photo_present_but_dial_geometry_not_certified"
+        "original_photo_present_but_dial_geometry_not_certified",
+        "original_image_native_sha256_and_visual_gauge_crop_still_require_approval"
       ],
       "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA",
-      "originalImageRepositoryStatus": "REPOSITORY_ROOT_ASSET_SHA256_AND_DIMENSIONS_VERIFIED"
+      "originalImageRepositoryStatus": "VERSION_CONTROLLED_ROOT_BLOB_VERIFIED",
+      "originalImageGitBlobSHA": "ff259644232ecc0543cbe7d2761fdfa286ab7bf8",
+      "originalImageGitObjectPath": "file_000000006c00820ab145b3682f686256.png"
     },
     {
       "id": "ped.stab_trim.left",
