@@ -39,5 +39,5 @@ test('Tricky scales remain independent and are not assumed linear',()=>{
  assert.deepEqual(id('fo.flap_position').scales[0].interpreted,[0,1,2,5,10,15,25,30,40]);
  assert.deepEqual(id('capt.rmi').scales[0].interpreted,[0,30,60,90,120,150,180,210,240,270,300,330]);
  assert.equal(id('eng.egt.1').scales[0].interpreted.length,0);
- assert.equal(id('eng.n2_1').scales[0].interpreted.length,0);
+ assert.equal(id('eng.n2.1').scales[0].interpreted.length,0);
 });
