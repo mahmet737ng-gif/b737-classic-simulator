@@ -25,10 +25,19 @@
     calibrationApproved:false,
     source:'CABIN_PRESSURE_PLANT_PROVISIONAL'
   });
+  // Provisional CAB ALT inner-pointer display only: derived from the actual
+  // native-photo major long ticks, not the PRESS dial or a linear 0..50k sweep.
+  // Do not mark full calibration approved until every minor tick and physical
+  // needle tip-to-inner-tick contact has passed source-pixel QA.
+  if(Number.isFinite(readings.cabinAltitudeFt) && typeof model.cabinAltitudePreviewBearing==='function'){
+    state.cabAlt=model.cabinAltitudePreviewBearing(readings.cabinAltitudeFt);
+    paint('cabAlt');
+  }
   if(physicalOutput)physicalOutput.textContent=
     'CAB ALT: '+physical.cabinAltitudeFt.toFixed(0)+' ft · DIFF PRESS: '+
     physical.differentialPsid.toFixed(2)+' psi'+
-    '\nPhysical sensor state; needle-to-tick angle still unverified.';
+    '\nCAB ALT photo major-tick preview: '+state.cabAlt.toFixed(2)+
+    ' deg. Minor-tick and pointer-tip QA pending (NOT FINAL).';
   return physical;
  }
  function mount(){
