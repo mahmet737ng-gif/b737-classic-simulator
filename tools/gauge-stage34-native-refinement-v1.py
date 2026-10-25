@@ -192,6 +192,26 @@ def linear_tick_candidates(image,window):
                   "travelAxisCoordPx":majorCoord,"lengthPx":round(float(length),2),
                   "numericValue":None,"physicalTickApproved":False}
             candidates.append(item)
+    # Shape-based second detector for thin, straight white tick segments.
+    # Opening in the axis perpendicular to travel suppresses most characters
+    # and rescues strokes that Hough skips. All retained matches are candidates.
+    horizontal=verticalTravel
+    kernel=cv2.getStructuringElement(cv2.MORPH_RECT,(7,1) if horizontal else (1,7))
+    opened=cv2.morphologyEx(binary,cv2.MORPH_OPEN,kernel)
+    nlabels,component,stats,centroids=cv2.connectedComponentsWithStats(opened,8)
+    for index in range(1,nlabels):
+        xx,yy,ww,hh,area=[int(v) for v in stats[index]]
+        principal=ww if horizontal else hh
+        secondary=hh if horizontal else ww
+        if principal<max(7,requiredLength) or secondary>max(7,int(principal*.35)):continue
+        if principal>max(x1-x0,y1-y0)*.8:continue
+        pointA=[int(x0+xx),int(y0+yy)]
+        pointB=[int(x0+xx+ww-1),int(y0+yy+hh-1)]
+        coord=round(y0+yy+(hh-1)/2,2) if horizontal else round(x0+xx+(ww-1)/2,2)
+        candidates.append({"strokePointA":pointA,"strokePointB":pointB,
+          "travelAxisCoordPx":coord,"lengthPx":float(principal),
+          "numericValue":None,"physicalTickApproved":False,
+          "detector":"directional_morphology_candidate"})
     candidates.sort(key=lambda o:-o["lengthPx"])
     selected=[]
     for a in candidates:
