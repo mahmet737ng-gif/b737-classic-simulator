@@ -6,9 +6,11 @@
  'use strict';
  const contractsUrl=new URL('../../engine/instruments/stage8-signal-contracts-v1.json',document.currentScript.src).href;
  const policyUrl=new URL('../../engine/instruments/cold-dark-indicator-policy-v1.json',document.currentScript.src).href;
+ const pointerUrl=new URL('../../engine/instruments/stage8-pointer-routing-v1.json',document.currentScript.src).href;
  const engine=window.B737InstrumentSignalBridgeV1;
  const coldModel=window.B737Stage7ColdDarkV1;
- let bridge=null,cold=null,ecu=null,observed={},conditions={},signals=null,initial=null;
+ const routeModel=window.B737InstrumentPointerRoutingV1;
+ let bridge=null,cold=null,pointerRouter=null,ecu=null,observed={},conditions={},selectors={},signals=null,initial=null,pointerSignals=null;
  let lastError=null;
  const countStatus=()=>{
   if(!bridge)return {status:'loading',reason:lastError};
@@ -85,6 +87,7 @@
    signals=bridge.read({ecu,cabinPlant:current.cabinPlant,observed,timeMs:ecu?.timeMs??null});
    const {cabinPlant,...derived}=current;
    initial=cold.evaluate({signalSnapshot:signals,conditions:{...derived,...conditions}});
+   pointerSignals=pointerRouter.project(signals,{selectors});
    lastError=null;
   }catch(err){lastError=err.message;signals=null;initial=null;}
   mount();show();
@@ -93,9 +96,14 @@
   getStatus:()=>Object.freeze(countStatus()),
   getSignals:()=>signals,
   getColdDarkState:()=>initial,
+  getPointerSignals:()=>pointerSignals,
   setExplicitContext(value){
    if(!value||typeof value!=='object'||Array.isArray(value))throw Error('Explicit initial-state context object required');
    conditions={...value};refresh();return initial;
+  },
+  setPointerSelectors(value){
+   if(!value||typeof value!=='object'||Array.isArray(value))throw Error('Pointer selector map required');
+   selectors={...value};refresh();return pointerSignals;
   },
   setValidatedObservations(value){
    if(!value||typeof value!=='object'||Array.isArray(value))throw Error('Explicit sensor envelope required');
@@ -115,13 +123,14 @@
  document.addEventListener('DOMContentLoaded',mount,{once:true});
  (async()=>{
   try{
-   if(!engine||!coldModel)throw Error('Missing stage 7/8 adapter scripts');
+   if(!engine||!coldModel||!routeModel)throw Error('Missing stage 7/8 adapter scripts');
    const responses=await Promise.all([fetch(contractsUrl,{cache:'no-cache'}),
-       fetch(policyUrl,{cache:'no-cache'})]);
+       fetch(policyUrl,{cache:'no-cache'}),fetch(pointerUrl,{cache:'no-cache'})]);
    if(responses.some(r=>!r.ok))throw Error('Stage 7/8 contract fetch failed');
-   const [contracts,policy]=await Promise.all(responses.map(r=>r.json()));
+   const [contracts,policy,routes]=await Promise.all(responses.map(r=>r.json()));
    bridge=engine.create(contracts);
    cold=coldModel.create({contracts,policy});
+   pointerRouter=routeModel.create(routes);
    if(!ecu)ecu=window.B737ISNCockpitV1?.getECUState?.()??null;
    refresh();
   }catch(err){lastError=err.message;console.error('Stage 7/8 signal bridge:',err);show();}
