@@ -59,12 +59,85 @@
   });
   // Future simulator sensor adapters can inject sourced inputs to the selected
   // pressure engine; no made-up shared physical pressure model is introduced.
+  // Standalone Unified trainer environment: explicit instructor inputs until
+  // the upstream flight and PACK systems publish validated live adapters.
+  // Do NOT silently interpret missing PACK data as a real electrical bus state.
+  const pressureEnvironment={aircraftAltitudeFt:0,onGround:true,packsAvailable:true,bleedAirAvailable:true};
+  let pressureRunning=true;
+  const pressureMount=byId('pressurePhysicsDiagnostics');
+  const details=document.createElement('details');
+  details.innerHTML='<summary>Cabin pressure · physical trainer / diagnostics</summary>'+
+    '<label style="display:block">Aircraft ALT (ft) <input id="pressureInstructorAltitude" type="number" min="-1000" max="40000" step="500" value="0" style="width:100%"></label>'+
+    '<label style="display:block"><input id="pressureInstructorGround" type="checkbox" checked> On ground</label>'+
+    '<label style="display:block"><input id="pressureInstructorPacks" type="checkbox" checked> PACK / bleed source available (trainer override)</label>'+
+    '<button id="pressureTrainerRun" type="button">Pause physical model</button> '+
+    '<button id="pressureTrainerReset" type="button">Reset selected model</button>'+
+    '<output id="pressureTrainerReadout" style="display:block;white-space:pre-line;direction:ltr;text-align:left;font:12px/1.6 monospace"></output>'+
+    '<small>Provisional physics only: mass flow, cabin volume, relief and valve rate not aircraft-calibrated. These inputs are instructor overrides, not actual avionics wiring.</small>';
+  pressureMount?.append(details);
+  const altitudeBox=byId('pressureInstructorAltitude'),groundBox=byId('pressureInstructorGround'),packsBox=byId('pressureInstructorPacks');
+  altitudeBox?.addEventListener('change',()=>{
+    const altitude=Number(altitudeBox.value);
+    if(!Number.isFinite(altitude)||altitude< -1000||altitude>40000){altitudeBox.value=String(pressureEnvironment.aircraftAltitudeFt);return;}
+    pressureEnvironment.aircraftAltitudeFt=altitude;
+  });
+  groundBox?.addEventListener('change',()=>{pressureEnvironment.onGround=groundBox.checked;});
+  packsBox?.addEventListener('change',()=>{pressureEnvironment.packsAvailable=packsBox.checked;pressureEnvironment.bleedAirAvailable=packsBox.checked;});
+  byId('pressureTrainerRun')?.addEventListener('click',()=>{
+    pressureRunning=!pressureRunning;
+    byId('pressureTrainerRun').textContent=pressureRunning?'Pause physical model':'Resume physical model';
+  });
+  byId('pressureTrainerReset')?.addEventListener('click',()=>{
+    getPressureSession(selectedPressure()).reset();
+    publishPressureState();
+    updatePressureDiagnostics();
+  });
+  function updatePressureDiagnostics(){
+    const active=selectedPressure(),out=getPressureSession(active).read(),p=out.physical;
+    const node=byId('pressureTrainerReadout');
+    if(!node)return;
+    node.textContent=!p?'Physical plant unavailable':
+      active+' · '+out.operatingMode+
+      '\\nCAB ALT: '+p.cabinAltitudeFt.toFixed(0)+' ft | RATE: '+p.cabinRateFtMin.toFixed(0)+' ft/min'+
+      '\\nDIFF: '+p.differentialPsid.toFixed(2)+' psid | VALVE: '+(100*p.valveOpenFraction).toFixed(0)+'% open'+
+      '\\nTARGET: '+p.targetCabinAltitudeFt.toFixed(0)+' ft | PACK: '+p.packFlowKgS.toFixed(2)+' kg/s'+
+      '\\nAUTO FAIL: '+Boolean(out.lamps.autoFail)+' | ALT: '+pressureEnvironment.aircraftAltitudeFt+' ft';
+  }
+  // Keep cabin physics isolated to the selected installation; browser tabs
+  // in the background must not simulate a giant elapsed interval on return.
+  window.setInterval(()=>{
+    if(!pressureRunning||document.hidden)return;
+    try{
+      const active=selectedPressure(),session=getPressureSession(active);
+      session.stepPhysics(1000,{...pressureEnvironment});
+      publishPressureState(active);
+      updatePressureDiagnostics();
+    }catch(error){
+      pressureRunning=false;
+      const node=byId('pressureTrainerReadout');
+      if(node)node.textContent='PRESSURE PHYSICS STOPPED: '+error.message;
+    }
+  },1000);
   window.B737PressurizationIntegration=Object.freeze({
     getSelected:selectedPressure,
     read:system=>getPressureSession(system).read(),
     snapshot:system=>getPressureSession(system).snapshot(),
     dispatch:applyPressureCommand,
-    feed(system,key,value){return applyPressureCommand(system,{type:'INPUT',key,value});},
+    feed(system,key,value){
+      if(system===selectedPressure()&&key==='packsAvailable'){
+        pressureEnvironment.packsAvailable=Boolean(value);packsBox.checked=Boolean(value);return getPressureSession(system).read();
+      }
+      if(system===selectedPressure()&&key==='airplaneAltitudeFt'){
+        pressureEnvironment.aircraftAltitudeFt=value;altitudeBox.value=String(value);
+      }
+      if(system===selectedPressure()&&key==='onGround'){
+        pressureEnvironment.onGround=Boolean(value);groundBox.checked=Boolean(value);
+      }
+      if(system===selectedPressure()&&key==='bleedAirAvailable'){
+        pressureEnvironment.bleedAirAvailable=Boolean(value);packsBox.checked=Boolean(value);
+      }
+      return applyPressureCommand(system,{type:'INPUT',key,value});
+    },
     sync:()=>publishPressureState()
   });
 
@@ -136,6 +209,7 @@
 
   store.subscribe(render);
   render({resolved: store.resolve()});
+  updatePressureDiagnostics();
 
   function showSettings() {
     const profile = store.get();
