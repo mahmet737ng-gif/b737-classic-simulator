@@ -1,0 +1,29 @@
+name: Gauge candidate overlay review
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'tools/gauge-photo-overlay-review-v1.py'
+      - 'engine/instruments/native-photo-geometric-evidence-v1.json'
+      - '.github/workflows/gauge-photo-overlay-review-v1.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  original-image-qa:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install image dependency
+        run: python -m pip install opencv-python-headless
+      - name: Draw line detections over unchanged original source image
+        run: python tools/gauge-photo-overlay-review-v1.py
+      - name: Archive review images
+        uses: actions/upload-artifact@v4
+        with:
+          name: gauge-photo-native-tick-review-v1
+          path: reports/gauge-photo-overlays-v1/
+          if-no-files-found: error
