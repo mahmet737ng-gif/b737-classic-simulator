@@ -34,13 +34,40 @@
         {
           "mode": "primary",
           "unit": "°C",
-          "minimum": null,
-          "maximum": null,
+          "minimum": -40,
+          "maximum": 40,
           "marks": [],
-          "marksStatus": "NO_NATIVE_PIXEL_TICK_COORDINATES",
+          "marksStatus": "NUMERIC_LABELS_USER_CONFIRMED; NATIVE_PIXEL_TICK_COORDINATES_PENDING",
           "published": false,
           "evidenceRequired": "individually measured source-image x/y per numeric major and minor tick",
-          "labelCandidates": []
+          "labelCandidates": [
+            "-40",
+            "-30",
+            "-20",
+            "-10",
+            "0",
+            "+10",
+            "+20",
+            "+30",
+            "+40"
+          ],
+          "printedNumericValues": [
+            -40,
+            -30,
+            -20,
+            -10,
+            0,
+            10,
+            20,
+            30,
+            40
+          ],
+          "numericStep": 10,
+          "rotationDirection": "clockwise",
+          "readingDirection": "left_to_right",
+          "scaleMotion": "continuous",
+          "angularSpacingVerified": false,
+          "endpointsOrigin": "user-specified 2026-10-25"
         }
       ],
       "legacyAngularPreview": {
@@ -59,10 +86,21 @@
       },
       "stage2": {
         "scanned": true,
-        "labelsVisible": false,
-        "labelsCandidate": [],
+        "labelsVisible": true,
+        "labelsCandidate": [
+          "-40",
+          "-30",
+          "-20",
+          "-10",
+          "0",
+          "+10",
+          "+20",
+          "+30",
+          "+40"
+        ],
         "rangeVerified": false,
-        "allMinorTicksRead": false
+        "allMinorTicksRead": false,
+        "userConfirmedRanges": true
       },
       "stage3": {
         "pivotRegistered": true,
@@ -72,7 +110,7 @@
       "stage4": {
         "numericEngine": "gauge-scale-engine-v2.js",
         "realReadingsEnabled": false,
-        "reason": "No approved native-pixel tick mapping"
+        "reason": "Nine numeric Fuel Temperature labels and clockwise direction confirmed; native pixel tick angles require verification"
       },
       "notes": null
     },
@@ -97,18 +135,34 @@
       "scales": [
         {
           "mode": "primary",
-          "unit": null,
+          "unit": "A",
           "minimum": null,
           "maximum": null,
           "marks": [],
-          "marksStatus": "NO_NATIVE_PIXEL_TICK_COORDINATES",
+          "marksStatus": "THREE_PRINTED_LABELS_IDENTIFIED; UNLABELED_END_TICKS_AND_NATIVE_PIXEL_COORDINATES_PENDING",
           "published": false,
           "evidenceRequired": "individually measured source-image x/y per numeric major and minor tick",
           "labelCandidates": [
             "-50",
             "0",
             "+50"
-          ]
+          ],
+          "labeledRange": [
+            -50,
+            50
+          ],
+          "printedNumericValues": [
+            -50,
+            0,
+            50
+          ],
+          "readingDirection": "left_to_right",
+          "rotationDirection": "clockwise_provisional_from_reference",
+          "numericGapCandidates": [
+            50,
+            50
+          ],
+          "angularSpacingVerified": false
         }
       ],
       "legacyAngularPreview": null,
@@ -121,7 +175,8 @@
           "+50"
         ],
         "rangeVerified": false,
-        "allMinorTicksRead": false
+        "allMinorTicksRead": false,
+        "userConfirmedRanges": false
       },
       "stage3": {
         "pivotRegistered": true,
@@ -131,7 +186,7 @@
       "stage4": {
         "numericEngine": "gauge-scale-engine-v2.js",
         "realReadingsEnabled": false,
-        "reason": "No approved native-pixel tick mapping"
+        "reason": "Three printed DC AMPS labels registered; actual dial endpoints and angular tick positions unverified"
       },
       "notes": null
     },
