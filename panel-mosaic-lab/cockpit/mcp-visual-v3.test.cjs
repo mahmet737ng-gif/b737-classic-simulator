@@ -6,7 +6,7 @@ const css=fs.readFileSync(path.join(root,'mcp-visual-v3.css'),'utf8');
 const unified=fs.readFileSync(path.join(root,'index.html'),'utf8');
 const standalone=fs.readFileSync(path.join(root,'../mcp-panel/index.html'),'utf8');
 for(const p of [unified,standalone]){
- assert.match(p,/mcp-visual-v3\.js\?v=MCP-0004-SOCKET-ALIGN/);
+ assert.match(p,/mcp-visual-v3\.js\?v=MCP-0005-PIXEL-QA/);
  assert.match(p,/mcp-visual-v3\.css\?v=MCP-0003/);
  assert.doesNotMatch(p,/src="[^"]*mcp-ias-mach-knob\.js/);
 }
@@ -30,7 +30,7 @@ assert.equal(lamps.length,14);
 assert.equal(knobs.length,5);
 for(const item of [...displays,...lamps])assert.ok(item.x>=0&&item.y>=0&&item.x+item.w<=2172&&item.y+item.h<=433,item.id+" out of source");
 for(const item of knobs)assert.ok(item.x-item.d/2>=0&&item.y-item.d/2>=0&&item.x+item.d/2<=2172&&item.y+item.d/2<=433,item.id+" rotation outside source");
-const screenshotCenters={courseL:[85,252],speed:[569,275],heading:[867,245],altitude:[1218,244],courseR:[2052,249]};
+const screenshotCenters={courseL:[88,252],speed:[558,275],heading:[860,245],altitude:[1198,244],courseR:[2110,249]};
 for(const [id,[x,y]] of Object.entries(screenshotCenters)){
  const n=knobs.find(v=>v.id===id);assert.ok(n,id+" missing pivot");
  assert.ok(Math.hypot(n.x-x,n.y-y)<=3,id+" not aligned to physical hole");
@@ -47,15 +47,18 @@ const buttonBounds={
  N1:[236,350,330,398], SPEED:[375,350,453,398], LVL_CHG:[683,350,775,398],
  HDG_SEL:[837,350,920,398], APP:[986,350,1074,398], ALT_HLD:[1167,350,1252,398],
  VS:[1298,350,1384,398], VNAV:[690,135,784,185], LNAV:[976,135,1070,185],
- CMD_A:[1615,160,1702,201], CMD_B:[1786,160,1875,201],
- CWS_A:[1615,257,1702,309], CWS_B:[1786,257,1875,309],
+ CMD_A:[1615,160,1702,201], CMD_B:[1786,160,1885,201],
+ CWS_A:[1615,257,1702,309], CWS_B:[1786,257,1885,309],
  AT_ARM:[306,114,380,155]
 };
 for(const l of lamps){
  const box=buttonBounds[l.id];assert.ok(box,"missing "+l.id+" target lens");
  assert.ok(l.x>=box[0]&&l.y>=box[1]&&l.x+l.w<=box[2]&&l.y+l.h<=box[3],l.id+" light is outside its button");
 }
-assert.match(script,/only cover the exact black glass interior/);
+assert.match(script,/one exact clipping boundary for black LCD glass/);
+assert.match(script,/mcp-v5-/);
+assert.match(script,/map\(k=>\[k,false\]\)/);
+assert.match(script,/b737:visual-test/);
 console.log('MCP screenshot-calibrated six windows, fourteen lenses, five hole centers: PASS');
 
-console.log('MCP-0004 visual mounts and calibration contracts: PASS');
+console.log('MCP-0005 visual mounts and calibration contracts: PASS');
