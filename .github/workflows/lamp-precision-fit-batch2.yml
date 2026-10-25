@@ -1,0 +1,60 @@
+name: B737 annunciator vector precision faces batch 2
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - tools/build-lamp-precision-faces-batch2.py
+      - .github/workflows/lamp-precision-fit-batch2.yml
+permissions:
+  contents: write
+  actions: write
+concurrency:
+  group: annunciator-precision-fit-batch2
+  cancel-in-progress: false
+jobs:
+  calibrated-lens-cohort-2:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Protect immutable original photographs and overhead mosaic
+        run: python3 panel-mosaic-lab/verify-final-overhead.py
+      - name: Build 12 additional fitted annunciator vector faces
+        run: python3 tools/build-lamp-precision-faces-batch2.py
+      - name: Run model, original-photo registry and glyph-integrity tests
+        run: |
+          node panel-mosaic-lab/interactive-overhead/lights.test.cjs
+          node panel-mosaic-lab/cockpit/lights.test.cjs
+          node panel-mosaic-lab/lights-test/phase1-geometry-audit.test.cjs
+          node panel-mosaic-lab/lights-test/photo-pixel-registration.test.cjs
+          node panel-mosaic-lab/lights-test/photo-pixel-registration-v2.test.cjs
+          node panel-mosaic-lab/lights-test/precision-faces.test.cjs
+          node panel-mosaic-lab/lights-test/precision-faces-batch2.test.cjs
+          python3 panel-mosaic-lab/verify-final-overhead.py
+      - name: Publish fitted vector states and digest registry without overwriting other work
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add panel-mosaic-lab/assets/lights/precision-fit-v1/ panel-mosaic-lab/lights-test/precision-faces-batch2.json panel-mosaic-lab/interactive-overhead/lights.json panel-mosaic-lab/cockpit/lights.json
+          if git diff --cached --quiet; then
+            echo "No new derivative changes"
+            exit 0
+          fi
+          git commit -m "feat(lamps): precision reflow next 12 bezel-free annunciators in 27 light states"
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git rebase origin/main
+            if git push origin HEAD:main; then
+              echo "NEW_FACE_COMMIT=$(git rev-parse HEAD)"
+              exit 0
+            fi
+            sleep 2
+          done
+          exit 1
+      - name: Verify changes on GitHub Pages
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run pages.yml --ref main
