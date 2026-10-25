@@ -1,0 +1,95 @@
+{
+  "schema": "b737.oh19.cabin-altitude-photo-anchors.v1",
+  "source": "panel-mosaic-lab/assets/locked/2026-10-23/OH19-PRESS-DIFF-ALT-HORN-d6719ce57cef.png",
+  "sourceSha256": "4c667d96ea7652e52784f5c06ee3cdde0879ca37631abf19969861afecc45fed",
+  "sourceDimensions": [
+    1267,
+    1241
+  ],
+  "pivot": {
+    "x": 489,
+    "y": 365,
+    "status": "optical_center_estimate"
+  },
+  "pointer": "cabAlt",
+  "unit": "ft",
+  "labelMultiplierFt": 1000,
+  "direction": "clockwise",
+  "bearingsReference": "clockwise_from_12_oclock_screen_coordinates",
+  "status": "MAJOR_LABELS_VISUALLY_CROSSCHECKED; TICK_ENDPOINTS_AND_MINOR_VALUES_UNAPPROVED",
+  "origin": "2026-10-25 OH19 read-only photo inspection, GitHub Actions run 40210391430",
+  "review": {
+    "majorLabelsPhotoChecked": true,
+    "minorTickSequenceVerified": false,
+    "pivotApproved": false,
+    "needleTipInnerTickFitApproved": false,
+    "productionApproved": false
+  },
+  "marks": [
+    {
+      "valueFt": 0,
+      "angleDeg": 2.71,
+      "evidence": "source-photo-long-tick-radial-scan-plus-visual-label-check",
+      "positionStatus": "candidate_angular_center_not_exact_inner_endpoint"
+    },
+    {
+      "valueFt": 3000,
+      "angleDeg": 59.98,
+      "evidence": "source-photo-long-tick-radial-scan-plus-visual-label-check",
+      "positionStatus": "candidate_angular_center_not_exact_inner_endpoint"
+    },
+    {
+      "valueFt": 10000,
+      "angleDeg": 108.64,
+      "evidence": "source-photo-long-tick-radial-scan-plus-visual-label-check",
+      "positionStatus": "candidate_angular_center_not_exact_inner_endpoint"
+    },
+    {
+      "valueFt": 15000,
+      "angleDeg": 155.65,
+      "evidence": "source-photo-long-tick-radial-scan-plus-visual-label-check",
+      "positionStatus": "candidate_angular_center_not_exact_inner_endpoint"
+    },
+    {
+      "valueFt": 20000,
+      "angleDeg": 200.55,
+      "evidence": "source-photo-long-tick-radial-scan-plus-visual-label-check",
+      "positionStatus": "candidate_angular_center_not_exact_inner_endpoint"
+    },
+    {
+      "valueFt": 25000,
+      "angleDeg": 236.57,
+      "evidence": "source-photo-long-tick-radial-scan-plus-visual-label-check",
+      "positionStatus": "candidate_angular_center_not_exact_inner_endpoint"
+    },
+    {
+      "valueFt": 30000,
+      "angleDeg": 262.03,
+      "evidence": "source-photo-long-tick-radial-scan-plus-visual-label-check",
+      "positionStatus": "candidate_angular_center_not_exact_inner_endpoint"
+    },
+    {
+      "valueFt": 35000,
+      "angleDeg": 284.48,
+      "evidence": "source-photo-long-tick-radial-scan-plus-visual-label-check",
+      "positionStatus": "candidate_angular_center_not_exact_inner_endpoint"
+    },
+    {
+      "valueFt": 40000,
+      "angleDeg": 304.18,
+      "evidence": "source-photo-long-tick-radial-scan-plus-visual-label-check",
+      "positionStatus": "candidate_angular_center_not_exact_inner_endpoint"
+    },
+    {
+      "valueFt": 50000,
+      "angleDeg": 327.37,
+      "evidence": "source-photo-long-tick-radial-scan-plus-visual-label-check",
+      "positionStatus": "candidate_angular_center_not_exact_inner_endpoint"
+    }
+  ],
+  "expectedTestAirfields": {
+    "OIAW": 66,
+    "OIII": 3963,
+    "OIMM": 3260
+  }
+}
