@@ -100,7 +100,20 @@
         ],
         "rangeVerified": false,
         "allMinorTicksRead": false,
-        "userConfirmedRanges": true
+        "userConfirmedRanges": true,
+        "inferredIntegerTargets": {
+          "minimum": -40,
+          "maximum": 40,
+          "step": 1,
+          "count": 81,
+          "angleSource": "legacy_visual_model_ONLY",
+          "nativeTickSurveyComplete": false
+        },
+        "incrementInference": {
+          "printedMajorNumberStep": 10,
+          "minorTicksUnknown": true,
+          "noClaimOf81PrintedStrokes": true
+        }
       },
       "stage3": {
         "pivotRegistered": true,
@@ -409,7 +422,18 @@
             20,
             30
           ],
-          "endpointsOrigin": "user-specified 2026-10-25"
+          "endpointsOrigin": "user-specified 2026-10-25",
+          "inferredTickValues": [
+            0,
+            5,
+            10,
+            15,
+            20,
+            25,
+            30
+          ],
+          "tickValueStatus": "inferred_from_enlarged_Unified_screenshot_pending_native_asset_review",
+          "angularSpacingVerified": false
         },
         {
           "mode": "inlet",
@@ -432,7 +456,18 @@
             120,
             160
           ],
-          "endpointsOrigin": "user-specified 2026-10-25"
+          "endpointsOrigin": "user-specified 2026-10-25",
+          "inferredTickValues": [
+            60,
+            70,
+            80,
+            100,
+            120,
+            140,
+            160
+          ],
+          "tickValueStatus": "inferred_from_enlarged_Unified_screenshot_pending_native_asset_review",
+          "angularSpacingVerified": false
         }
       ],
       "legacyAngularPreview": null,
@@ -451,7 +486,9 @@
         ],
         "rangeVerified": false,
         "allMinorTicksRead": false,
-        "userConfirmedRanges": true
+        "userConfirmedRanges": true,
+        "graduationPatternRef": "gauge-graduation-patterns-v1.json#oh.drive_oil.1",
+        "physicalTickClassObservation": "alternating_long_short"
       },
       "stage3": {
         "pivotRegistered": true,
@@ -505,7 +542,18 @@
             20,
             30
           ],
-          "endpointsOrigin": "user-specified 2026-10-25"
+          "endpointsOrigin": "user-specified 2026-10-25",
+          "inferredTickValues": [
+            0,
+            5,
+            10,
+            15,
+            20,
+            25,
+            30
+          ],
+          "tickValueStatus": "inferred_from_enlarged_Unified_screenshot_pending_native_asset_review",
+          "angularSpacingVerified": false
         },
         {
           "mode": "inlet",
@@ -528,7 +576,18 @@
             120,
             160
           ],
-          "endpointsOrigin": "user-specified 2026-10-25"
+          "endpointsOrigin": "user-specified 2026-10-25",
+          "inferredTickValues": [
+            60,
+            70,
+            80,
+            100,
+            120,
+            140,
+            160
+          ],
+          "tickValueStatus": "inferred_from_enlarged_Unified_screenshot_pending_native_asset_review",
+          "angularSpacingVerified": false
         }
       ],
       "legacyAngularPreview": null,
@@ -547,7 +606,9 @@
         ],
         "rangeVerified": false,
         "allMinorTicksRead": false,
-        "userConfirmedRanges": true
+        "userConfirmedRanges": true,
+        "graduationPatternRef": "gauge-graduation-patterns-v1.json#oh.drive_oil.2",
+        "physicalTickClassObservation": "alternating_long_short"
       },
       "stage3": {
         "pivotRegistered": true,
@@ -595,7 +656,32 @@
             "100",
             "150",
             "200"
-          ]
+          ],
+          "inferredTickValues": [
+            0,
+            10,
+            20,
+            30,
+            40,
+            50,
+            60,
+            70,
+            80,
+            90,
+            100,
+            110,
+            120,
+            130,
+            140,
+            150,
+            160,
+            170,
+            180,
+            190,
+            200
+          ],
+          "tickValueStatus": "inferred_from_enlarged_Unified_screenshot_pending_native_asset_review",
+          "angularSpacingVerified": false
         }
       ],
       "legacyAngularPreview": null,
@@ -610,7 +696,9 @@
           "200"
         ],
         "rangeVerified": false,
-        "allMinorTicksRead": false
+        "allMinorTicksRead": false,
+        "graduationPatternRef": "gauge-graduation-patterns-v1.json#oh.ac_amps.1",
+        "physicalTickClassObservation": "alternating_long_short"
       },
       "stage3": {
         "pivotRegistered": true,
@@ -658,7 +746,32 @@
             "100",
             "150",
             "200"
-          ]
+          ],
+          "inferredTickValues": [
+            0,
+            10,
+            20,
+            30,
+            40,
+            50,
+            60,
+            70,
+            80,
+            90,
+            100,
+            110,
+            120,
+            130,
+            140,
+            150,
+            160,
+            170,
+            180,
+            190,
+            200
+          ],
+          "tickValueStatus": "inferred_from_enlarged_Unified_screenshot_pending_native_asset_review",
+          "angularSpacingVerified": false
         }
       ],
       "legacyAngularPreview": null,
@@ -673,7 +786,9 @@
           "200"
         ],
         "rangeVerified": false,
-        "allMinorTicksRead": false
+        "allMinorTicksRead": false,
+        "graduationPatternRef": "gauge-graduation-patterns-v1.json#oh.ac_amps.2",
+        "physicalTickClassObservation": "alternating_long_short"
       },
       "stage3": {
         "pivotRegistered": true,
