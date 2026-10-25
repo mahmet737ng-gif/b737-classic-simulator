@@ -19,7 +19,7 @@
   Object.freeze({id:'driveOil1',label:'GEN DRIVE OIL TEMP 1',piece:'OH11',x:266,y:1021,tipRadius:64,initialAngle:-46}),
   Object.freeze({id:'driveOil2',label:'GEN DRIVE OIL TEMP 2',piece:'OH11',x:781,y:1021,tipRadius:64,initialAngle:-46}),
   Object.freeze({id:'acAmps1',label:'A.C. AMPS 1',piece:'OH12',x:210,y:265,tipRadius:64,initialAngle:-55}),
-  Object.freeze({id:'acAmps2',label:'A.C. AMPS 2',piece:'OH12',x:698,y:265,tipRadius:64,initialAngle:-55}),
+  Object.freeze({id:'acAmps2',label:'A.C. AMPS 2',piece:'OH12',x:705,y:265,tipRadius:64,initialAngle:-55}),
   Object.freeze({id:'apuAcAmps',label:'APU A.C. AMPS',piece:'OH12',window:'OH12_APU',x:724,y:1334,tipRadius:64,initialAngle:-55})
  ]);
  function angle(value){const n=Number(value);if(!Number.isFinite(n))throw Error('Needle angle must be finite');return Math.max(-90,Math.min(90,n));}
