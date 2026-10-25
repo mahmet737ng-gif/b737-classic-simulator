@@ -35,7 +35,7 @@ const BASE_ASSOCIATIONS=Object.freeze([
     "role": "CONTROL_ONLY",
     "printedPage": "136",
     "pdfPage": "145",
-    "photoMatch": "AUTO BRAKES",
+    "photoMatch": "AUTO BRAKES CONT",
     "review": "CLASSIC_MRG_INDEX_AND_CATALOG_MATCH",
     "effectivity": "GENERIC_B737_CLASSIC_NOT_EP_FSI_WIRING",
     "upstreamBus": null
@@ -555,7 +555,7 @@ function audit(catalog){
   const parts=a.id.split("|"),p=catalog.panels.find(x=>x.id===parts[0]);
   if(!p){errors.push({id:a.id,reason:"PANEL_NOT_FOUND"});continue;}
   let lines=String(p.breakers||"");
-  if(parts[0]==="P6-4"&&parts[1]==="DCPCS")lines=String(p.altBreakers||"");
+  if(parts[0]==="P6-4"&&parts[1]==="DCPCS"&&/^F[1-6]$/.test(parts[2]))lines=String(p.altBreakers||"");
   const tokens=lines.split(";").map(t=>t.trim()).filter(Boolean);
   const entry=tokens.find(t=>t.split(":")[0]===parts[2]);
   if(!entry){errors.push({id:a.id,reason:"SLOT_NOT_FOUND"});continue;}
