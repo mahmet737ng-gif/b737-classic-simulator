@@ -22,7 +22,7 @@ function metrics(e){return [['N1',e.n1Percent,'%'],['N2',e.n2Percent,'%'],['EGT'
 function engineCard(e,num){
  return `<section><h2>ENGINE ${num}</h2><div class="metrics">${metrics(e)}</div>
  <p>START VALVE <strong>${e.startValveOpen===null?'UNKNOWN':e.startValveOpen?'OPEN':'CLOSED'}</strong> · FUEL LEVER <strong>${html(e.fuelLever)}</strong> · PHASE <strong>${html(e.phase)}</strong></p>
- <p>FUEL SUPPLY <strong class="${e.fuelSupplyReady===true?'ok':'amber'}">${e.fuelSupplyReady===true?'AVAILABLE':html(e.fuelSupplyReason||'UNAVAILABLE')}</strong></p>
+ <p>FUEL SUPPLY <strong class="${e.fuelSupplyReady===true?'ok':'amber'}">${e.fuelSupplyReady===true?(e.fuelSupplyReason==='OWN_MAIN_ENGINE_DRIVEN_SUCTION'?'SUCTION FEED — OWN MAIN TANK':'AVAILABLE'):html(e.fuelSupplyReason||'UNAVAILABLE')}</strong></p>
  <p>IGN L ${e.ignition?.eligible?.left===true?'POWERED':e.ignition?.eligible?.left===null?'UNKNOWN':'OFF'} · IGN R ${e.ignition?.eligible?.right===true?'POWERED':e.ignition?.eligible?.right===null?'UNKNOWN':'OFF'}</p>
  <p><span class="lamp ${e.oil.lowPressureLamp?'on':'off'}">LOW OIL PRESSURE ${e.oil.lowPressureLamp?'ON':'OFF'}</span>
  <span class="lamp ${e.oil.filterBypassLamp?'on':'off'}">OIL FILTER BYPASS ${e.oil.filterBypassLamp?'ON':'OFF'}</span></p></section>`;
