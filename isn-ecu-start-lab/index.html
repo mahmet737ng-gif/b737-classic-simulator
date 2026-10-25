@@ -30,6 +30,12 @@ label{display:inline-flex;align-items:center;gap:5px;font-size:.92rem}input[type
 <button data-act="standbyAUTO">STANDBY POWER AUTO</button>
 <button data-act="standbyOFF">STANDBY POWER OFF</button></div>
 <div class="status" id="ignitionStatus">Ignition power</div>
+<div class="controls"><label>START DUCT ENG 1 (training)
+<input id="duct1" type="range" min="20" max="50" value="35" step="1"></label>
+<label>START DUCT ENG 2 (training)
+<input id="duct2" type="range" min="20" max="50" value="35" step="1"></label>
+<span class="subtle" id="ductInfo">Nominal 35 PSI · 65s starter cycle per engine</span></div>
+<p class="subtle">Duct pressure is an adjustable test input, not aircraft-measured PSI. Set before selecting START GRD.</p>
 <div class="controls">
 <button data-act="start1">ENG 1 START GRD</button><button data-act="idle1">ENG 1 LEVER IDLE</button><button data-act="off1">ENG 1 CUTOFF</button>
 <button data-act="start2">ENG 2 START GRD</button><button data-act="idle2">ENG 2 LEVER IDLE</button><button data-act="off2">ENG 2 CUTOFF</button>
@@ -44,7 +50,7 @@ label{display:inline-flex;align-items:center;gap:5px;font-size:.92rem}input[type
 <label>ALT <input id="alt" type="number" value="10000" min="0" max="40000"> ft</label>
 <label>OAT <input id="oat" type="number" value="-5" min="-80" max="60"> °C</label>
 <label>TO/GA/CON/CLB/CRZ <select id="mode"><option>CRZ</option><option>CLB</option><option>CON</option><option>GA</option><option>TO</option></select></label>
-<button data-act="n1plan">N1 Schedule ENG 1</button></div><div id="n1result" class="status">No thrust schedule applied</div></section>
+<button data-act="flightInputs">SET FLIGHT IAS / ALT</button><button data-act="n1plan">N1 Schedule ENG 1</button></div><div id="n1result" class="status">No thrust schedule applied</div></section>
 <section><h2>4. Abnormal tests</h2><div class="controls"><button data-act="oilPump1">ENG1 OIL PUMP FAIL</button><button data-act="oilFilter1">ENG1 FILTER RESTRICTED</button><button data-act="oilLeak1">ENG1 OIL LEAK</button><button data-act="hot1">Hot start ENG1 (before GRD)</button><button data-act="crossfeed">Crossfeed OPEN</button><button data-act="fuelLoss1">ENG1 FUEL SUPPLY LOST (trainer)</button></div>
 <div class="status" id="alertSummary">No active abnormal advisories</div></section>
 <section><h2>5. Trace and tank quantities</h2><div class="status" id="fuelStatus">Fuel tanks</div><pre id="log"></pre></section>
