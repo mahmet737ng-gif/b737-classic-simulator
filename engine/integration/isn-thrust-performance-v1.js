@@ -13,7 +13,7 @@
   engineTakeoffRatingLbf:20000, wingAreaM2:105.4, cdZero:0.025, inducedDragFactor:0.05,
   n1ThrustExponent:0.43, thrustLapseExponent:0.70,
   // Reference limits and corrections are SIMULATION assumptions, not AFM limits.
-  referenceN1:Object.freeze({TO:97,GA:97,CON:94,CLB:91,CRZ:86}),
+  referenceN1:Object.freeze({TO:97,GA:96.5,CON:94,CLB:92,CRZ:88}),
   altitudeN1CorrectionPer1000Ft:0.08,temperatureN1CorrectionPerC:0.025,
   engineAntiIceN1Cost:1.0,wingAntiIceN1Cost:1.8,packsN1Cost:0.4
  });
@@ -53,8 +53,10 @@
    CONFIG.temperatureN1CorrectionPerC*Math.max(0,a.isaDeviationC);
   const base={};
   for(const [name,n1] of Object.entries(CONFIG.referenceN1))base[name]=round(clamp(n1-correction,0,97));
-  base['CLB-1']=round(base.CLB-3);
-  base['CLB-2']=clb2Available?round(base.CLB-6):null;
+  // FCOM 11.41.43: reduced climb washes out progressively by 15,000 ft.
+  const fade=clamp((15000-pressureAltitudeFt)/15000,0,1);
+  base['CLB-1']=round(base.CLB-3*fade);
+  base['CLB-2']=clb2Available?round(base.CLB-6*fade):null;
   return {limitsN1Percent:base,clb2Available,
    reducedClimbAutoDeleteAbove15000Ft:pressureAltitudeFt>15000,
    rule:'TRAINING_N1_LIMIT_SURROGATE',atmosphere:a};
