@@ -9,9 +9,11 @@ assert.deepEqual(model.needles.map(n=>n.piece),['OH11','OH11','OH12','OH12','OH1
 assert.equal(new Set(model.needles.map(n=>n.id)).size,5);
 assert.equal(model.needles[4].id,'apuAcAmps');
 assert.equal(model.needles[4].window,'OH12_APU');
-// Direct immutable SOURCE image QA: old 98/102 and proposed 128/135 radii overshot the inner zero strokes.
-for(const needle of model.needles.slice(0,2)){assert.equal(needle.tipRadius,64);assert.equal(needle.initialAngle,-46);}
-for(const needle of model.needles.slice(2,5)){assert.equal(needle.tipRadius,64);assert.equal(needle.initialAngle,-55);}
+// Immutable source image QA rejected 128/135px oversized and 64px undersized pointers; near-original radii touch inner 0 ticks.
+for(const needle of model.needles.slice(0,2)){assert.equal(needle.tipRadius,98);assert.equal(needle.initialAngle,-46);}
+for(const needle of model.needles.slice(2,4)){assert.equal(needle.tipRadius,102);assert.equal(needle.initialAngle,-45);}
+assert.equal(model.needles[4].tipRadius,124);assert.equal(model.needles[4].initialAngle,-47);
+assert.equal(model.needles[3].x,705,'A.C. AMPS 2 pivot must match native OH12 panel');
 
 for(const [name,source]of Object.entries(model.panels)){
  const piece=atlas.placements.find(p=>p.id===name);assert.ok(piece,name);
@@ -20,7 +22,7 @@ for(const [name,source]of Object.entries(model.panels)){
   const p=model.placement(piece,needle);
   assert.ok(p.x>piece.x&&p.x<piece.x+piece.w);
   assert.ok(p.y>piece.y&&p.y<piece.y+piece.h);
-  assert.ok(p.size>40&&p.size<105,'Pointer must remain within the inner printed tick radius');
+  assert.ok(p.size>90&&p.size<(needle.id==='apuAcAmps'?150:120),'Near source-image inner tick, not cross into numerals');
   const window=model.windowPath(needle);
   assert.match(window,/^M \d+ \d+ L \d+ \d+ /);
   assert.match(window,/ Z$/);
