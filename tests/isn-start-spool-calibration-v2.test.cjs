@@ -1,0 +1,80 @@
+'use strict';
+// Engine/APU start indication calibration is owner-selected simulator training.
+// These numbers are not aircraft-certified hydraulic, oil or APU data.
+const assert=require('node:assert/strict');
+const B=require('../engine/integration/isn-13-18-ecu-testbench-v1');
+const Electrical=require('../engine/systems/electrical-v7');
+const Loads=require('../engine/systems/electrical-loads-v8');
+const TrainerCore=require('../engine/trainer/core');
+const {WarningEngine}=require('../audio/warning-engine');
+const Pneumatics=require('../engine/systems/pneumatics-v6');
+const Pack=require('../engine/integration/isn-electrical-pack-v1');
+const EngineAPU=require('../engine/integration/isn-engine-apu-v1');
+const Start=require('../engine/integration/isn-start-sequence-v1');
+const Chain=require('../engine/integration/isn-apu-start-chain-v1');
+const ThrustPlanner=require('../engine/integration/isn-thrust-performance-v1');
+const FuelRuntime=require('../engine/integration/isn-09-12-runtime-v1');
+const sim=new B.Testbench({Electrical,Loads,TrainerCore,WarningEngine,
+ Pneumatics,Pack,EngineAPU,Start,Chain,ThrustPlanner,FuelRuntime});
+const near=(a,b,tol=.02)=>assert.ok(Math.abs(a-b)<=tol,a+' != '+b+' +/- '+tol);
+assert.equal(B.CONFIG.oilPressureRiseN2,18);
+assert.equal(B.CONFIG.oilPressureLampOffPsi,13);
+assert.equal(B.hydraulicPressure(4.5),0);
+near(B.hydraulicPressure(5.25),1500);
+assert.equal(B.hydraulicPressure(6),3000);
+assert.equal(B.hydraulicPressure(60),3000);
+assert.equal(B.apuStartEGT(0),20);
+assert.equal(B.apuStartEGT(.64),620);
+assert.equal(B.apuStartEGT(1),390);
+sim.battery(true);sim.startAPU();
+assert.equal(sim.get().apu.generator.ready,false);
+assert.throws(()=>sim.selectGenerator('APU',1),/rated speed/);
+sim.advance(9000+Math.round((85000-9000)*.64));
+const hotAPU=sim.get();
+assert.ok(hotAPU.apu.egtC>=619&&hotAPU.apu.egtC<=620);
+assert.ok(hotAPU.apu.rpmPct<95.5);
+assert.equal(hotAPU.apu.generator.voltageV,0);
+sim.advance(85000-sim.get().timeMs);
+const ready=sim.get();
+assert.equal(ready.apu.phase,'READY');
+near(ready.apu.rpmPct,95.5);
+near(ready.apu.egtC,390);
+assert.equal(ready.apu.generator.ready,true);
+assert.equal(ready.apu.generator.voltageV,115);
+assert.equal(ready.apu.generator.frequencyHz,400);
+assert.equal(ready.apu.genSelected,false,'generation does not connect the bus automatically');
+sim.selectGenerator('APU',1);
+assert.deepEqual(sim.get().apu.generator.connectedBusSides,[1]);
+sim.apuBleed(true);sim.prepareFuel();
+sim.engineStart('engine1');
+let sawEarlyHyd=false,sawOilRise=false,sawOilLampOff=false;
+for(let t=0;t<40000;t+=250){
+ sim.advance(250);
+ const e=sim.get().engines.engine1;
+ if(e.n2Percent<=18)assert.equal(e.oil.pressurePsi,0,'oil pressure must wait for N2 ~18');
+ if(e.n2Percent>=6)assert.equal(e.hydraulic.engineDrivenPressurePsi,3000);
+ if(e.n2Percent>4.5&&e.n2Percent<6&&e.hydraulic.engineDrivenPressurePsi>0)sawEarlyHyd=true;
+ if(e.n2Percent>=19.5&&e.oil.pressurePsi>0)sawOilRise=true;
+ if(e.n2Percent>=22&&e.n2Percent<=25){
+   assert.ok(e.oil.pressurePsi>=13,'oil must exceed 13 psi by N2 22');
+   assert.equal(e.oil.lowPressureLamp,false);
+   sawOilLampOff=true;
+ }
+ assert.equal(sim.get().engines.engine2.hydraulic.engineDrivenPressurePsi,0,'independent EDP');
+}
+assert.ok(sawEarlyHyd&&sawOilRise&&sawOilLampOff);
+assert.equal(sim.get().engines.engine1.phase,'AWAIT_FUEL_LEVER_IDLE');
+assert.equal(sim.fuelLever('engine1','IDLE').accepted,true);
+sim.advance(37500);
+const peak=sim.get().engines.engine1;
+assert.equal(peak.phase,'LIGHT_OFF_SEQUENCE');
+near(peak.egtC,620);
+sim.advance(12500);
+assert.equal(sim.get().engines.engine1.phase,'RUNNING');
+near(sim.get().engines.engine1.egtC,420);
+sim.setAPUFault('generatorFailure',true);
+assert.equal(sim.get().apu.generator.ready,false);
+assert.equal(sim.get().apu.generator.voltageV,0);
+assert.equal(sim.get().apu.generator.frequencyHz,0);
+assert.deepEqual(sim.get().apu.generator.connectedBusSides,[]);
+console.log('PASS ECU spool calibration: engine/APU peak 620C and decay, EDP 3000psi near N2 6, oil begins near N2 18 and lamp off by 22, APU 95.5pct rated 115V/400Hz with manual bus selection.');
