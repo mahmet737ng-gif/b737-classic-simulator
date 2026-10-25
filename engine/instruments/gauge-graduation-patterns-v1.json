@@ -1,0 +1,290 @@
+{
+  "schema": "b737.gauge-graduation-patterns.v1",
+  "scope": "OH09/OH11/OH12 inferred increments from known numerals and owner Unified screenshot",
+  "status": "VISUAL_CANDIDATE_NOT_NATIVE_SOURCE_PIXEL_QA",
+  "interpretation": "A long stroke is not always 10 or 50; read labeled anchors, count physical gaps, then divide numeric difference by gaps.",
+  "faces": [
+    {
+      "id": "oh.fuel.temperature",
+      "panel": "OH09",
+      "unit": "°C",
+      "increaseDirection": "clockwise",
+      "scaleType": "rotary",
+      "labeledAnchors": [
+        -40,
+        -30,
+        -20,
+        -10,
+        0,
+        10,
+        20,
+        30,
+        40
+      ],
+      "inferredPrintedMinorTicks": null,
+      "reason": "Full native-source tick length survey is still pending",
+      "integerTargets": {
+        "inclusiveMinimum": -40,
+        "inclusiveMaximum": 40,
+        "step": 1,
+        "count": 81
+      },
+      "angleSource": "OH09 fuel-temperature-needle-model existing -70 to +70 linear preview only",
+      "approval": "NUMBERS_CONFIRMED_GEOMETRY_UNVERIFIED"
+    },
+    {
+      "id": "oh.drive_oil.1",
+      "panel": "OH11",
+      "sharedFace": "driveOil1",
+      "increaseDirection": "clockwise",
+      "scaleType": "rotary",
+      "tickIndex": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "longStrokeIndices": [
+        0,
+        2,
+        4,
+        6
+      ],
+      "shortStrokeIndices": [
+        1,
+        3,
+        5
+      ],
+      "modes": [
+        {
+          "name": "rise",
+          "unit": "°C",
+          "labeledAnchors": [
+            0,
+            10,
+            20,
+            30
+          ],
+          "anchorIndices": [
+            0,
+            2,
+            4,
+            6
+          ],
+          "inferredTickValues": [
+            0,
+            5,
+            10,
+            15,
+            20,
+            25,
+            30
+          ]
+        },
+        {
+          "name": "inlet",
+          "unit": "°C",
+          "labeledAnchors": [
+            60,
+            80,
+            120,
+            160
+          ],
+          "anchorIndices": [
+            0,
+            2,
+            4,
+            6
+          ],
+          "inferredTickValues": [
+            60,
+            70,
+            80,
+            100,
+            120,
+            140,
+            160
+          ]
+        }
+      ],
+      "visualEvidence": "User supplied enlarged Unified screenshot: one short tick between every two long rise strokes",
+      "approval": "NUMERIC_INFERENCE_FROM_SCREENSHOT_NATIVE_PIXEL_ANGLES_UNVERIFIED"
+    },
+    {
+      "id": "oh.drive_oil.2",
+      "panel": "OH11",
+      "sharedFace": "driveOil2",
+      "increaseDirection": "clockwise",
+      "scaleType": "rotary",
+      "tickIndex": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "longStrokeIndices": [
+        0,
+        2,
+        4,
+        6
+      ],
+      "shortStrokeIndices": [
+        1,
+        3,
+        5
+      ],
+      "modes": [
+        {
+          "name": "rise",
+          "unit": "°C",
+          "labeledAnchors": [
+            0,
+            10,
+            20,
+            30
+          ],
+          "anchorIndices": [
+            0,
+            2,
+            4,
+            6
+          ],
+          "inferredTickValues": [
+            0,
+            5,
+            10,
+            15,
+            20,
+            25,
+            30
+          ]
+        },
+        {
+          "name": "inlet",
+          "unit": "°C",
+          "labeledAnchors": [
+            60,
+            80,
+            120,
+            160
+          ],
+          "anchorIndices": [
+            0,
+            2,
+            4,
+            6
+          ],
+          "inferredTickValues": [
+            60,
+            70,
+            80,
+            100,
+            120,
+            140,
+            160
+          ]
+        }
+      ],
+      "visualEvidence": "Same OH11 two dials share printed tick pattern; independent pointer overlays",
+      "approval": "NUMERIC_INFERENCE_FROM_SCREENSHOT_NATIVE_PIXEL_ANGLES_UNVERIFIED"
+    },
+    {
+      "id": "oh.ac_amps.1",
+      "panel": "OH12",
+      "unit": "A",
+      "scaleType": "rotary",
+      "increaseDirection": "clockwise",
+      "labeledAnchors": [
+        0,
+        50,
+        100,
+        150,
+        200
+      ],
+      "shortStrokesBetweenAnchors": [
+        4,
+        4,
+        4,
+        4
+      ],
+      "candidateIncrement": 10,
+      "candidateAllTickValues": [
+        0,
+        10,
+        20,
+        30,
+        40,
+        50,
+        60,
+        70,
+        80,
+        90,
+        100,
+        110,
+        120,
+        130,
+        140,
+        150,
+        160,
+        170,
+        180,
+        190,
+        200
+      ],
+      "visualEvidence": "Four small strokes per 50-A interval appear on enlarged owner Unified screenshot; verify at native pixels",
+      "approval": "PRELIMINARY_SCREENSHOT_COUNT_NOT_FINAL"
+    },
+    {
+      "id": "oh.ac_amps.2",
+      "panel": "OH12",
+      "unit": "A",
+      "scaleType": "rotary",
+      "increaseDirection": "clockwise",
+      "labeledAnchors": [
+        0,
+        50,
+        100,
+        150,
+        200
+      ],
+      "shortStrokesBetweenAnchors": [
+        4,
+        4,
+        4,
+        4
+      ],
+      "candidateIncrement": 10,
+      "candidateAllTickValues": [
+        0,
+        10,
+        20,
+        30,
+        40,
+        50,
+        60,
+        70,
+        80,
+        90,
+        100,
+        110,
+        120,
+        130,
+        140,
+        150,
+        160,
+        170,
+        180,
+        190,
+        200
+      ],
+      "visualEvidence": "Four small strokes per 50-A interval appear on enlarged owner Unified screenshot; verify at native pixels",
+      "approval": "PRELIMINARY_SCREENSHOT_COUNT_NOT_FINAL"
+    }
+  ]
+}
