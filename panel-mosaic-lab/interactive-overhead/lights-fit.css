@@ -1,10 +1,7 @@
-/* LOW PRESSURE and R ELEV PITOT have their own decorative bezel baked into
-   the approved SVG. The overhead artwork already provides the physical frame.
-   Crop only the duplicate outer bezel; do not alter the measured lamp socket. */
-.mounted-light .light-face[src*="LOW_PRESSURE_AMBER_REF_"],
-.mounted-light .light-face[src*="R_ELEV_PITOT_AMBER_REF_"],
-.mounted-light .light-face[src*="/unified-v2/LOW_PRESSURE_"],
-.mounted-light .light-face[src*="/unified-v2/R_ELEV_PITOT_"] {
-  transform: scale(1.2);
-  transform-origin: center center;
-}
+/* LGT-PHASE1: retired the historical zoom/crop exception.
+ * Mounted annunciators use bezel-free lens assets and must keep their native
+ * SVG aspect ratios inside immutable photo-defined apertures.
+ * Never transform/scale a mounted light image to hide a fitting mismatch.
+ * Remediation for under-filled sockets requires individually reviewed
+ * reflowed face artwork, not stretching letters or touching locked mosaics.
+ */
