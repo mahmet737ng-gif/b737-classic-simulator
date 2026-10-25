@@ -5,12 +5,14 @@ on:
     paths:
       - 'engine/integration/isn-13-18-ecu-testbench-v1.js'
       - 'engine/integration/isn-engine-start-dynamics-v1.js'
+      - 'engine/integration/isn-apu-load-dynamics-v1.js'
       - 'engine/integration/isn-09-12-runtime-v1.js'
       - 'engine/integration/isn-apu-start-chain-v1.js'
       - 'engine/integration/isn-thrust-performance-v1.js'
       - 'isn-ecu-start-lab/**'
       - 'tests/isn-13-18-ecu.test.cjs'
       - 'tests/isn-start-spool-calibration-v2.test.cjs'
+      - 'tests/isn-apu-electrical-load-v1.test.cjs'
       - 'tests/isn-engine-envelope-v1.test.cjs'
       - '.github/workflows/isn-13-18.yml'
   workflow_dispatch:
@@ -34,6 +36,7 @@ jobs:
         run: |
           node tests/isn-13-18-ecu.test.cjs
           node tests/isn-start-spool-calibration-v2.test.cjs
+          node tests/isn-apu-electrical-load-v1.test.cjs
           node tests/isn-09-12-integration.test.cjs
           node tests/isn-engine-envelope-v1.test.cjs
           node tests/isn-start-abnormal-scenarios-v2.test.cjs
