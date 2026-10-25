@@ -1,6 +1,6 @@
 {
   "schema": "b737.overhead.lights.v1",
-  "version": "LGT-0010",
+  "version": "LGT-0011",
   "baseVersion": "UPD-0012-OVH-measured-seams",
   "assets": {
     "ALIGN_WHITE": {
@@ -1317,7 +1317,7 @@
       "asset": "LOW_PRESSURE",
       "placementId": "OH09",
       "sourceRect": [
-        94,
+        98,
         1058,
         166,
         75
@@ -3349,9 +3349,9 @@
   ],
   "sourceStatus": "Public source-located electrical engine and previous fuel/flight-control models reused; private Technical Database retrieval returned no results. Remaining predicates are explicit simulator approximations, not source-verified aircraft rules. LGT-0002 reuses existing source-located Pneumatics V6 for 9 added pneumatic lamps and trip reset. New other sensor mappings remain explicit simulator approximations.",
   "unavailableLegends": [],
-  "previousVersion": "LGT-0009",
+  "previousVersion": "LGT-0010",
   "preservedLampCount": 84,
   "bluePaletteStatus": "Preview; original supplied assets unchanged; exact blue palette pending owner visual approval per INFORMATION_LIGHTS_SPEC.json",
-  "pixelRegistrationRevision": "LPR-0002",
+  "pixelRegistrationRevision": "LPR-0003",
   "faceFitRevision": "PH2-FIT-0002"
 }
