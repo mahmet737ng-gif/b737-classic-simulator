@@ -42,6 +42,7 @@
    if(!['DCPCS','CPCS'].includes(system))return;
    pressurizationSystem=system;
    syncOwnerPlate();
+   window.dispatchEvent(new CustomEvent('b737:pressure-configuration',{detail:{system}}));
  }
  pressurizationSystem=savedPressurization();
  const ownerPlateObserver=new MutationObserver(()=>{if(syncOwnerPlate())ownerPlateObserver.disconnect();});
