@@ -1,6 +1,6 @@
 {
   "schema": "b737.overhead.lights.v1",
-  "version": "LGT-0007",
+  "version": "LGT-0008",
   "baseVersion": "UPD-0012-OVH-measured-seams",
   "assets": {
     "ALIGN_WHITE": {
@@ -155,12 +155,12 @@
     },
     "YAW_DAMPER": {
       "ON": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/YAW_DAMPER_ON.svg",
-        "sha256": "4668ca2d540b0abe41cb6609205620949932fb753533955a2bed43af2f831f5f"
+        "url": "../assets/lights/precision-fit-v1/YAW_DAMPER_ON_199x64.svg",
+        "sha256": "1ebdc22072c0c3c73e022a496b21286f60169b14e22938aa11a64bd006432b70"
       },
       "OFF": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/YAW_DAMPER_OFF.svg",
-        "sha256": "ec9f2dd8fef16fc59761b370e7e84299d091c64d0d9ea75fcc401aa5f1f7baaa"
+        "url": "../assets/lights/precision-fit-v1/YAW_DAMPER_OFF_199x64.svg",
+        "sha256": "1a59ad0f4846942667d022d0b082989db5977030ecc4b46e8f025438e1c4ca64"
       }
     },
     "FILTER_BYPASS": {
@@ -255,12 +255,12 @@
     },
     "CAPT_PS_1_AUX_STATIC": {
       "ON": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/CAPT_PS_1_AUX_STATIC_ON.svg",
-        "sha256": "4ac7f1a865c3a6df0d5529ef1208b44940f4022b34afbcff00fe250400d15817"
+        "url": "../assets/lights/precision-fit-v1/CAPT_PS_1_AUX_STATIC_ON_255x80.svg",
+        "sha256": "e1ad2979ce21307cd81873530dcd90216b28fed99253436564ecdd76dc917e4e"
       },
       "OFF": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/CAPT_PS_1_AUX_STATIC_OFF.svg",
-        "sha256": "de1f55c1cecfdf58f7030205a02d8f968c6a368ac960747ac65f9746e41ae6c9"
+        "url": "../assets/lights/precision-fit-v1/CAPT_PS_1_AUX_STATIC_OFF_255x80.svg",
+        "sha256": "296d6474979354597d916432772fc314ab2476d79ca11d5d255fa76b6a197a23"
       }
     },
     "FO_STATIC_2_AUX_PS": {
@@ -275,42 +275,42 @@
     },
     "L_ELEV_PITOT": {
       "ON": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/L_ELEV_PITOT_ON.svg",
-        "sha256": "c08549f489979c22d65cd82236e0b14ba525a57c8a84432f4020b68fd662746c"
+        "url": "../assets/lights/precision-fit-v1/L_ELEV_PITOT_ON_255x84.svg",
+        "sha256": "bdb34feb6e567372f6bbf93f16e76fd8fa9121ebd1a1b8e3166b7401d55eca1f"
       },
       "OFF": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/L_ELEV_PITOT_OFF.svg",
-        "sha256": "4805bb9cea2d85b16efd801610791654af15ba4f82d2cf08d5d1849ac44e355e"
+        "url": "../assets/lights/precision-fit-v1/L_ELEV_PITOT_OFF_255x84.svg",
+        "sha256": "301a204b0b7123835f4cdfa9886826dfa4d4df5dd112a058997d6d151d8dd2c2"
       }
     },
     "L_ALPHA_VANE": {
       "ON": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/L_ALPHA_VANE_ON.svg",
-        "sha256": "14db20847d460eaa148cb11c1044c5a51dee8933baefa9c5451393b971d34af2"
+        "url": "../assets/lights/precision-fit-v1/L_ALPHA_VANE_ON_255x82.svg",
+        "sha256": "e9f3a894bb0764471ba83810d191e2abc2edfdadde04c59bcaab72f402c98e88"
       },
       "OFF": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/L_ALPHA_VANE_OFF.svg",
-        "sha256": "c353dc4cc68c6c1d56dbc802428ed16cf4f5fa73ef1d4b1c403f113d238f0687"
+        "url": "../assets/lights/precision-fit-v1/L_ALPHA_VANE_OFF_255x82.svg",
+        "sha256": "0fe01b7f62d0c7961fc3cf0ae64167f3ccae91a08768eddb9f3cbef3f9917a4d"
       }
     },
     "TEMP_PROBE": {
       "ON": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/TEMP_PROBE_ON.svg",
-        "sha256": "6882d5581da2c5ce21ac013d24f6d0290f6aa5c7fca7d351a1f181cc40913641"
+        "url": "../assets/lights/precision-fit-v1/TEMP_PROBE_ON_255x83.svg",
+        "sha256": "c90c474eb083da18f51bc077d2a9e2fe44eea16f83221bfc587cdcfd4285c5d2"
       },
       "OFF": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/TEMP_PROBE_OFF.svg",
-        "sha256": "5b7f6427da99a244f18866ec2fe81814131ad64cf4f9d974a61354c7954edb8d"
+        "url": "../assets/lights/precision-fit-v1/TEMP_PROBE_OFF_255x83.svg",
+        "sha256": "fd9d2c10574233d1c9e58d044ead69fdfcd09e9280fa07097e62af9150433b0e"
       }
     },
     "FO_PS_2_AUX_STATIC": {
       "ON": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/FO_PS_2_AUX_STATIC_ON.svg",
-        "sha256": "30c3ead338b63df322c50f9c9147c36984e3128fda3cf971e214540f520e1a9a"
+        "url": "../assets/lights/precision-fit-v1/FO_PS_2_AUX_STATIC_ON_255x80.svg",
+        "sha256": "adaca5009b4ac903ad5f729e52e2c2fc4403f04c38fff2b94e1a7f2a557988e4"
       },
       "OFF": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/FO_PS_2_AUX_STATIC_OFF.svg",
-        "sha256": "5c5ad1caae6e98b4929ca2f325f0a17e8ea95aab77efc00117113857095021d9"
+        "url": "../assets/lights/precision-fit-v1/FO_PS_2_AUX_STATIC_OFF_255x80.svg",
+        "sha256": "ce879fa8da36a47a1b4cd71d2710f219cb3e0ce4025838a93505ef49b628c79b"
       }
     },
     "CAPT_STATIC_1_AUX_PS": {
@@ -325,22 +325,22 @@
     },
     "R_ELEV_PITOT": {
       "ON": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/R_ELEV_PITOT_ON.svg",
-        "sha256": "0273a7aa4cf40ad568832f87e3a71e34706ae6387ffeffa396257236c726d635"
+        "url": "../assets/lights/precision-fit-v1/R_ELEV_PITOT_ON_255x85.svg",
+        "sha256": "a1e4d585a15492fd69bc1cdecbe5ca062f202c29031bfd21a2796cb116c669ab"
       },
       "OFF": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/R_ELEV_PITOT_OFF.svg",
-        "sha256": "e8712d5bceb1dd1d26b321b95dd28c9d2ace05decce0b7cd573a8c378c21be94"
+        "url": "../assets/lights/precision-fit-v1/R_ELEV_PITOT_OFF_255x85.svg",
+        "sha256": "c25c196b7a073f605fbb38a5245a93d7e2e43aafafd94e1593721062cff2390f"
       }
     },
     "R_ALPHA_VANE": {
       "ON": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/R_ALPHA_VANE_ON.svg",
-        "sha256": "d7ae10c05b2cb9891dbbcbcbb3aeb734c13d38a17a701a84c971dd9e663446ea"
+        "url": "../assets/lights/precision-fit-v1/R_ALPHA_VANE_ON_255x82.svg",
+        "sha256": "38a1cb8358774f4b6a8934b98ca68302d5c2187d9db64a8abb350a465d5d70fc"
       },
       "OFF": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/R_ALPHA_VANE_OFF.svg",
-        "sha256": "a09e10f28e721f8123ffaabac7664868e484aeede5a780a89d1823a2ad3beb55"
+        "url": "../assets/lights/precision-fit-v1/R_ALPHA_VANE_OFF_255x82.svg",
+        "sha256": "a805410d0ec24838c0e09849b3c91c3f842ddfca4c81eafadea69e044cea0cdc"
       }
     },
     "COWL_ANTI_ICE": {
@@ -3349,8 +3349,9 @@
   ],
   "sourceStatus": "Public source-located electrical engine and previous fuel/flight-control models reused; private Technical Database retrieval returned no results. Remaining predicates are explicit simulator approximations, not source-verified aircraft rules. LGT-0002 reuses existing source-located Pneumatics V6 for 9 added pneumatic lamps and trip reset. New other sensor mappings remain explicit simulator approximations.",
   "unavailableLegends": [],
-  "previousVersion": "LGT-0006",
+  "previousVersion": "LGT-0007",
   "preservedLampCount": 84,
   "bluePaletteStatus": "Preview; original supplied assets unchanged; exact blue palette pending owner visual approval per INFORMATION_LIGHTS_SPEC.json",
-  "pixelRegistrationRevision": "LPR-0001"
+  "pixelRegistrationRevision": "LPR-0001",
+  "faceFitRevision": "PH2-FIT-0001"
 }

@@ -1,6 +1,6 @@
 {
   "schema": "b737.cockpit-annunciators.v1",
-  "version": "LGT-0010",
+  "version": "LGT-0011",
   "sourceDatabase": {
     "name": "B737_TECHNICAL_NETWORK_V2",
     "sourceId": "FCOM-SEPEHRAN-1937",
@@ -199,12 +199,12 @@
     },
     "STAB_OUT_OF_TRIM": {
       "OFF": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/STAB_OUT_OF_TRIM_OFF.svg",
-        "sha256": "09becbf53caeef3f5b806b7fa0f8fea73db32a0e533e487f4c28184d02ce7f94"
+        "url": "../assets/lights/precision-fit-v1/STAB_OUT_OF_TRIM_OFF_88x59.svg",
+        "sha256": "47d79eb15579d22687f0564e36e403bb8ef7c9244a2286d0d416155d650fd129"
       },
       "ON": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/STAB_OUT_OF_TRIM_ON.svg",
-        "sha256": "1b44a3071cf5ed7cf22ef325116ef8c3afb3a7313212e6415e6941a305d6b846"
+        "url": "../assets/lights/precision-fit-v1/STAB_OUT_OF_TRIM_ON_88x59.svg",
+        "sha256": "36a2a11ea9e31c75f66dee09721e4a691441e900f337a4577a21c6390c6ce6c5"
       }
     },
     "SPEED_BRAKE_DO_NOT_ARMED_AMBER": {
@@ -243,9 +243,16 @@
       "id": "main-at-lim",
       "asset": "A_T_LIM_WHITE",
       "pieceId": "engine",
-      "sourceRect": [590, 257, 82, 35],
+      "sourceRect": [
+        590,
+        257,
+        82,
+        35
+      ],
       "rule": "signal",
-      "inputs": ["atLimitDegradedN1"],
+      "inputs": [
+        "atLimitDegradedN1"
+      ],
       "provenance": {
         "sourceId": "FCOM-SEPEHRAN-1937",
         "physicalPdfPage": null,
@@ -972,5 +979,6 @@
     "BRAKE_TEMP is direct visual test only; exact operating threshold not supplied by the retrieved Classic FCOM.",
     "BELOW_GS_P_INHIBIT follows the FSU face variant requested in the LIGHTS asset database."
   ],
-  "previousVersion": "LGT-0009"
+  "previousVersion": "LGT-0010",
+  "faceFitRevision": "PH2-FIT-0001"
 }
