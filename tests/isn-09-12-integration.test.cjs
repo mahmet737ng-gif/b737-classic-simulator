@@ -1,0 +1,61 @@
+'use strict';
+const assert=require('node:assert/strict');
+const Electrical=require('../engine/systems/electrical-v7');
+const Loads=require('../engine/systems/electrical-loads-v8');
+const TrainerCore=require('../engine/trainer/core');
+const {WarningEngine}=require('../audio/warning-engine');
+const Pneumatics=require('../engine/systems/pneumatics-v6');
+const Pack=require('../engine/integration/isn-electrical-pack-v1');
+const EngineAPU=require('../engine/integration/isn-engine-apu-v1');
+const Start=require('../engine/integration/isn-start-sequence-v1');
+const Chain=require('../engine/integration/isn-apu-start-chain-v1');
+const Planner=require('../engine/integration/isn-thrust-performance-v1');
+const ISN=require('../engine/integration/isn-09-12-runtime-v1');
+function rig(fuel=0.06){
+ const start=new Start.Session({EngineAPU,ElectricalPack:Pack,Electrical,Loads,TrainerCore,WarningEngine,Pneumatics});
+ const chain=new Chain.Chain(start);
+ chain.synchronize({toggles:{'apu-start':'ON','bleed-apu':'ON','bleed-eng-1':'ON','bleed-eng-2':'ON',
+   'pack-l':'OFF','pack-r':'OFF','isolation-valve':'OPEN'},guards:{'battery-master':{value:'on'}},
+   rotaries:{'ignition-source':'BOTH','engine-start-1':'OFF','engine-start-2':'OFF'},context:{onGround:true}});
+ const sim=new ISN.Runtime({chain,thrustPlanner:Planner,initialFuelKg:{main1:fuel,center:0,main2:100}});
+ sim.enableTrainingPumpPower();sim.pumpSwitch('fuel.main1FwdPump',true);
+ chain.event({id:'apu-start',kind:'toggle',next:'START'});
+ chain.advance(1400);start.core.pack.send({type:'ELECTRICAL',action:{type:'SELECT_SOURCE',source:'APU',side:1}});
+ chain.syncPower();
+ chain.event({id:'engine-start-1',kind:'rotary',next:'GRD'});
+ assert.equal(chain.get().phase.engine1,'MOTORING');
+ chain.advance(850);
+ assert.equal(chain.get().phase.engine1,'AWAIT_FUEL_LEVER_IDLE');
+ return {start,chain,sim};
+}
+const noFuel=rig(0);
+const deny=noFuel.sim.fuelLever('engine1','IDLE');
+assert.equal(deny.accepted,false);
+assert.equal(noFuel.chain.get().phase.engine1,'AWAIT_FUEL_LEVER_IDLE');
+const {chain,sim}=rig();
+assert.equal(sim.fuelLever('engine1','IDLE').accepted,true);
+chain.advance(1000);
+assert.equal(chain.get().phase.engine1,'RUNNING');
+assert.equal(sim.get().engines.engine1.fuelPath.available,true);
+const input={pressureAltitudeFt:10000,oatC:-5,iasKt:240,weightKg:55000,onGround:true,
+  operatingEngines:1,mode:'CLB',packsOn:false};
+const plan=sim.planThrust('engine1',input);
+assert.ok(plan.plan.performance.requiredN1NowPercent>0);
+assert.equal(plan.action,null);
+const applied=sim.planThrust('engine1',input,{apply:true});
+assert.equal(applied.action.status,'THROTTLE_COMMAND_APPLIED_FOR_SIMULATION');
+assert.equal(sim.get().modeLimitsN1Pct.TO,97);
+sim.advance(1000);
+assert.equal(chain.get().phase.engine1,'FUEL_STARVATION');
+assert.equal(chain.get().sources.engine1.running,false);
+assert.equal(chain.get().observations.engine1.feedback.fuelStartLever.value,'IDLE');
+assert.ok(sim.get().fuel.burnedKg.engine1>0);
+assert.equal(sim.get().diagnostics.engines.engine1.status,'ABNORMAL');
+assert.ok(sim.get().diagnostics.engines.engine1.faults.some(x=>x.code==='FUEL_STARVATION'));
+assert.equal(sim.get().diagnostics.noInferredFireBell,true);
+assert.throws(()=>sim.planThrust('engine1',input,{apply:true}),/Cannot command stopped engine/);
+const r=rig(10);
+r.sim.setFireSwitch('engine1',true);
+assert.equal(r.sim.fuelLever('engine1','IDLE').accepted,false);
+assert.equal(r.chain.get().phase.engine1,'AWAIT_FUEL_LEVER_IDLE');
+console.log('PASS ISN-09/10/11/12 engine fuel + start gate + thrust command + fuel starvation integration.');
