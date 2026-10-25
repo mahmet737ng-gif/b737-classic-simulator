@@ -10,7 +10,7 @@ net.setBus("SANDBOX_28V",true,"SANDBOX");
 let selected=demoCB,error="";
 try{const raw=localStorage.getItem(storageKey);if(raw){const r=net.restore(JSON.parse(raw));if(!r.ok)error="Stored state rejected: "+r.reason;}}catch(e){error="Local storage unavailable";}
 function save(){try{localStorage.setItem(storageKey,JSON.stringify(net.snapshot()));}catch(e){error="Local storage unavailable";}}
-function syncVisual(){const lab=window.B737_CB_LAB;if(!lab)return;lab.setVariant(net.variant);for(const b of net.activeEntries())lab.setPulled(b.id,b.pulled);}
+function syncVisual(){const lab=window.B737_CB_LAB;if(lab)lab.hydrate(net.snapshot());}
 const style=document.createElement("style");style.textContent=[
 ".cb-electric{border:1px solid #59707d;border-radius:12px;background:#18242c;padding:16px 19px;margin:16px 0;display:grid;gap:12px;color:#e6f1f5;direction:ltr;font:13px/1.6 Arial,sans-serif}",
 ".cb-electric h3{font-size:16px;margin:0}.cb-electric p{margin:0;color:#b9cdd7}",
