@@ -1,0 +1,113 @@
+{
+  "schema": "b737.lamps.instance-derived-source-fingerprints.v1",
+  "records": [
+    {
+      "id": "main-pull-up-captain",
+      "originalAsset": "PULL_UP_RED",
+      "state": "OFF",
+      "sourceRect": [
+        1284,
+        389,
+        164,
+        68
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/PULL_UP_RED_OFF.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/COCKPIT_main-pull-up-captain_OFF_164x68.svg",
+      "svgDimensions": [
+        164,
+        68
+      ],
+      "viewBox": [
+        723.529412,
+        300.0
+      ],
+      "translation": [
+        61.764706,
+        0
+      ],
+      "sourceTextPreserved": true,
+      "hash": "59147f4c0abc48773261109dc76921e9c08387d15e6bf6833dce041f0531fb4c"
+    },
+    {
+      "id": "main-pull-up-captain",
+      "originalAsset": "PULL_UP_RED",
+      "state": "ON",
+      "sourceRect": [
+        1284,
+        389,
+        164,
+        68
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/PULL_UP_RED_ON.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/COCKPIT_main-pull-up-captain_ON_164x68.svg",
+      "svgDimensions": [
+        164,
+        68
+      ],
+      "viewBox": [
+        723.529412,
+        300.0
+      ],
+      "translation": [
+        61.764706,
+        0
+      ],
+      "sourceTextPreserved": true,
+      "hash": "07d2fabe65a94490faad2c5504ba25942c9173b03f63382ee6280ff542bc3eb6"
+    },
+    {
+      "id": "main-pull-up-fo",
+      "originalAsset": "PULL_UP_RED",
+      "state": "OFF",
+      "sourceRect": [
+        820,
+        314,
+        67,
+        27
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/PULL_UP_RED_OFF.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/COCKPIT_main-pull-up-fo_OFF_67x27.svg",
+      "svgDimensions": [
+        67,
+        27
+      ],
+      "viewBox": [
+        744.444444,
+        300.0
+      ],
+      "translation": [
+        72.222222,
+        0
+      ],
+      "sourceTextPreserved": true,
+      "hash": "476d1514b6ba4a0f0b8f0d4fe5a39764b2af4b33d5032f4f43f57d8b6f893a6a"
+    },
+    {
+      "id": "main-pull-up-fo",
+      "originalAsset": "PULL_UP_RED",
+      "state": "ON",
+      "sourceRect": [
+        820,
+        314,
+        67,
+        27
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/PULL_UP_RED_ON.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/COCKPIT_main-pull-up-fo_ON_67x27.svg",
+      "svgDimensions": [
+        67,
+        27
+      ],
+      "viewBox": [
+        744.444444,
+        300.0
+      ],
+      "translation": [
+        72.222222,
+        0
+      ],
+      "sourceTextPreserved": true,
+      "hash": "5590a9d7d17b2921b2e846149cd4ec7c35cb83b5fc4a02b444b7fb99023e4803"
+    }
+  ]
+}

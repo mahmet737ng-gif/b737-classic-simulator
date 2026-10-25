@@ -1,0 +1,1895 @@
+{
+  "schema": "b737.lamps.instance-derived-source-fingerprints.v1",
+  "records": [
+    {
+      "id": "flight-recorder-off",
+      "originalAsset": "OFF_LAMP",
+      "state": "OFF",
+      "sourceRect": [
+        1485,
+        439,
+        40,
+        31
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/OFF_LAMP_OFF.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_flight-recorder-off_OFF_40x31.svg",
+      "svgDimensions": [
+        40,
+        31
+      ],
+      "viewBox": [
+        600.0,
+        465.0
+      ],
+      "translation": [
+        0,
+        82.5
+      ],
+      "sourceTextPreserved": true,
+      "hash": "738f0e94256908eac1096fed012aaacca17d6c3f14318dd5e81c22f4546b470a"
+    },
+    {
+      "id": "flight-recorder-off",
+      "originalAsset": "OFF_LAMP",
+      "state": "ON",
+      "sourceRect": [
+        1485,
+        439,
+        40,
+        31
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/OFF_LAMP_ON.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_flight-recorder-off_ON_40x31.svg",
+      "svgDimensions": [
+        40,
+        31
+      ],
+      "viewBox": [
+        600.0,
+        465.0
+      ],
+      "translation": [
+        0,
+        82.5
+      ],
+      "sourceTextPreserved": true,
+      "hash": "4aa480d9a14d351c215a7fee036e603db3e30b8592680cfe47c041f67bbbed6d"
+    },
+    {
+      "id": "stby-pressure",
+      "originalAsset": "LOW_PRESSURE",
+      "state": "OFF",
+      "sourceRect": [
+        630,
+        171,
+        159,
+        62
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/LOW_PRESSURE_OFF.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_stby-pressure_OFF_159x62.svg",
+      "svgDimensions": [
+        159,
+        62
+      ],
+      "viewBox": [
+        769.354839,
+        300.0
+      ],
+      "translation": [
+        84.677419,
+        0
+      ],
+      "sourceTextPreserved": true,
+      "hash": "e36b53fc94893efda526520c05412cba5ac9f6f1cf599aab468ecf4035a9dc97"
+    },
+    {
+      "id": "stby-pressure",
+      "originalAsset": "LOW_PRESSURE",
+      "state": "ON",
+      "sourceRect": [
+        630,
+        171,
+        159,
+        62
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/LOW_PRESSURE_ON.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_stby-pressure_ON_159x62.svg",
+      "svgDimensions": [
+        159,
+        62
+      ],
+      "viewBox": [
+        769.354839,
+        300.0
+      ],
+      "translation": [
+        84.677419,
+        0
+      ],
+      "sourceTextPreserved": true,
+      "hash": "53345d156bc4cab9510b3657a2c050d86e2af71a450c5d5cd69fde544b0617d1"
+    },
+    {
+      "id": "flight-pressure-a",
+      "originalAsset": "LOW_PRESSURE",
+      "state": "OFF",
+      "sourceRect": [
+        128,
+        404,
+        151,
+        63
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/LOW_PRESSURE_OFF.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_flight-pressure-a_OFF_151x63.svg",
+      "svgDimensions": [
+        151,
+        63
+      ],
+      "viewBox": [
+        719.047619,
+        300.0
+      ],
+      "translation": [
+        59.52381,
+        0
+      ],
+      "sourceTextPreserved": true,
+      "hash": "33508be1b62bb3bc4c390d0fcebcbbf158662be6f238a9c3af1480a7563785dc"
+    },
+    {
+      "id": "flight-pressure-a",
+      "originalAsset": "LOW_PRESSURE",
+      "state": "ON",
+      "sourceRect": [
+        128,
+        404,
+        151,
+        63
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/LOW_PRESSURE_ON.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_flight-pressure-a_ON_151x63.svg",
+      "svgDimensions": [
+        151,
+        63
+      ],
+      "viewBox": [
+        719.047619,
+        300.0
+      ],
+      "translation": [
+        59.52381,
+        0
+      ],
+      "sourceTextPreserved": true,
+      "hash": "a93ecad64be147b97e58c060d3d13faff22f05acd35d03f0ea1c0fb29f2ea7fd"
+    },
+    {
+      "id": "flight-pressure-b",
+      "originalAsset": "LOW_PRESSURE",
+      "state": "OFF",
+      "sourceRect": [
+        295,
+        404,
+        151,
+        63
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/LOW_PRESSURE_OFF.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_flight-pressure-b_OFF_151x63.svg",
+      "svgDimensions": [
+        151,
+        63
+      ],
+      "viewBox": [
+        719.047619,
+        300.0
+      ],
+      "translation": [
+        59.52381,
+        0
+      ],
+      "sourceTextPreserved": true,
+      "hash": "33508be1b62bb3bc4c390d0fcebcbbf158662be6f238a9c3af1480a7563785dc"
+    },
+    {
+      "id": "flight-pressure-b",
+      "originalAsset": "LOW_PRESSURE",
+      "state": "ON",
+      "sourceRect": [
+        295,
+        404,
+        151,
+        63
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/LOW_PRESSURE_ON.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_flight-pressure-b_ON_151x63.svg",
+      "svgDimensions": [
+        151,
+        63
+      ],
+      "viewBox": [
+        719.047619,
+        300.0
+      ],
+      "translation": [
+        59.52381,
+        0
+      ],
+      "sourceTextPreserved": true,
+      "hash": "a93ecad64be147b97e58c060d3d13faff22f05acd35d03f0ea1c0fb29f2ea7fd"
+    },
+    {
+      "id": "fuel-center-l",
+      "originalAsset": "LOW_PRESSURE",
+      "state": "OFF",
+      "sourceRect": [
+        332,
+        726,
+        166,
+        75
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/LOW_PRESSURE_OFF.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_fuel-center-l_OFF_166x75.svg",
+      "svgDimensions": [
+        166,
+        75
+      ],
+      "viewBox": [
+        664.0,
+        300.0
+      ],
+      "translation": [
+        32.0,
+        0
+      ],
+      "sourceTextPreserved": true,
+      "hash": "1c0777b53e7860e24eee66c6d1f97653ec85188fcbe657a25f0752826d4bec1f"
+    },
+    {
+      "id": "fuel-center-l",
+      "originalAsset": "LOW_PRESSURE",
+      "state": "ON",
+      "sourceRect": [
+        332,
+        726,
+        166,
+        75
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/LOW_PRESSURE_ON.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_fuel-center-l_ON_166x75.svg",
+      "svgDimensions": [
+        166,
+        75
+      ],
+      "viewBox": [
+        664.0,
+        300.0
+      ],
+      "translation": [
+        32.0,
+        0
+      ],
+      "sourceTextPreserved": true,
+      "hash": "3a8b760ef0e05a4883c70fb450d350f16389920b88a964df27255155a86389a3"
+    },
+    {
+      "id": "fuel-center-r",
+      "originalAsset": "LOW_PRESSURE",
+      "state": "OFF",
+      "sourceRect": [
+        520,
+        726,
+        166,
+        75
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/LOW_PRESSURE_OFF.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_fuel-center-r_OFF_166x75.svg",
+      "svgDimensions": [
+        166,
+        75
+      ],
+      "viewBox": [
+        664.0,
+        300.0
+      ],
+      "translation": [
+        32.0,
+        0
+      ],
+      "sourceTextPreserved": true,
+      "hash": "1c0777b53e7860e24eee66c6d1f97653ec85188fcbe657a25f0752826d4bec1f"
+    },
+    {
+      "id": "fuel-center-r",
+      "originalAsset": "LOW_PRESSURE",
+      "state": "ON",
+      "sourceRect": [
+        520,
+        726,
+        166,
+        75
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/LOW_PRESSURE_ON.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_fuel-center-r_ON_166x75.svg",
+      "svgDimensions": [
+        166,
+        75
+      ],
+      "viewBox": [
+        664.0,
+        300.0
+      ],
+      "translation": [
+        32.0,
+        0
+      ],
+      "sourceTextPreserved": true,
+      "hash": "3a8b760ef0e05a4883c70fb450d350f16389920b88a964df27255155a86389a3"
+    },
+    {
+      "id": "fuel-1-aft",
+      "originalAsset": "LOW_PRESSURE",
+      "state": "OFF",
+      "sourceRect": [
+        98,
+        1058,
+        166,
+        75
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/LOW_PRESSURE_OFF.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_fuel-1-aft_OFF_166x75.svg",
+      "svgDimensions": [
+        166,
+        75
+      ],
+      "viewBox": [
+        664.0,
+        300.0
+      ],
+      "translation": [
+        32.0,
+        0
+      ],
+      "sourceTextPreserved": true,
+      "hash": "1c0777b53e7860e24eee66c6d1f97653ec85188fcbe657a25f0752826d4bec1f"
+    },
+    {
+      "id": "fuel-1-aft",
+      "originalAsset": "LOW_PRESSURE",
+      "state": "ON",
+      "sourceRect": [
+        98,
+        1058,
+        166,
+        75
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/LOW_PRESSURE_ON.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_fuel-1-aft_ON_166x75.svg",
+      "svgDimensions": [
+        166,
+        75
+      ],
+      "viewBox": [
+        664.0,
+        300.0
+      ],
+      "translation": [
+        32.0,
+        0
+      ],
+      "sourceTextPreserved": true,
+      "hash": "3a8b760ef0e05a4883c70fb450d350f16389920b88a964df27255155a86389a3"
+    },
+    {
+      "id": "fuel-1-fwd",
+      "originalAsset": "LOW_PRESSURE",
+      "state": "OFF",
+      "sourceRect": [
+        282,
+        1058,
+        166,
+        75
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/LOW_PRESSURE_OFF.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_fuel-1-fwd_OFF_166x75.svg",
+      "svgDimensions": [
+        166,
+        75
+      ],
+      "viewBox": [
+        664.0,
+        300.0
+      ],
+      "translation": [
+        32.0,
+        0
+      ],
+      "sourceTextPreserved": true,
+      "hash": "1c0777b53e7860e24eee66c6d1f97653ec85188fcbe657a25f0752826d4bec1f"
+    },
+    {
+      "id": "fuel-1-fwd",
+      "originalAsset": "LOW_PRESSURE",
+      "state": "ON",
+      "sourceRect": [
+        282,
+        1058,
+        166,
+        75
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/LOW_PRESSURE_ON.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_fuel-1-fwd_ON_166x75.svg",
+      "svgDimensions": [
+        166,
+        75
+      ],
+      "viewBox": [
+        664.0,
+        300.0
+      ],
+      "translation": [
+        32.0,
+        0
+      ],
+      "sourceTextPreserved": true,
+      "hash": "3a8b760ef0e05a4883c70fb450d350f16389920b88a964df27255155a86389a3"
+    },
+    {
+      "id": "fuel-2-fwd",
+      "originalAsset": "LOW_PRESSURE",
+      "state": "OFF",
+      "sourceRect": [
+        570,
+        1058,
+        166,
+        75
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/LOW_PRESSURE_OFF.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_fuel-2-fwd_OFF_166x75.svg",
+      "svgDimensions": [
+        166,
+        75
+      ],
+      "viewBox": [
+        664.0,
+        300.0
+      ],
+      "translation": [
+        32.0,
+        0
+      ],
+      "sourceTextPreserved": true,
+      "hash": "1c0777b53e7860e24eee66c6d1f97653ec85188fcbe657a25f0752826d4bec1f"
+    },
+    {
+      "id": "fuel-2-fwd",
+      "originalAsset": "LOW_PRESSURE",
+      "state": "ON",
+      "sourceRect": [
+        570,
+        1058,
+        166,
+        75
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/LOW_PRESSURE_ON.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_fuel-2-fwd_ON_166x75.svg",
+      "svgDimensions": [
+        166,
+        75
+      ],
+      "viewBox": [
+        664.0,
+        300.0
+      ],
+      "translation": [
+        32.0,
+        0
+      ],
+      "sourceTextPreserved": true,
+      "hash": "3a8b760ef0e05a4883c70fb450d350f16389920b88a964df27255155a86389a3"
+    },
+    {
+      "id": "fuel-2-aft",
+      "originalAsset": "LOW_PRESSURE",
+      "state": "OFF",
+      "sourceRect": [
+        758,
+        1058,
+        166,
+        75
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/LOW_PRESSURE_OFF.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_fuel-2-aft_OFF_166x75.svg",
+      "svgDimensions": [
+        166,
+        75
+      ],
+      "viewBox": [
+        664.0,
+        300.0
+      ],
+      "translation": [
+        32.0,
+        0
+      ],
+      "sourceTextPreserved": true,
+      "hash": "1c0777b53e7860e24eee66c6d1f97653ec85188fcbe657a25f0752826d4bec1f"
+    },
+    {
+      "id": "fuel-2-aft",
+      "originalAsset": "LOW_PRESSURE",
+      "state": "ON",
+      "sourceRect": [
+        758,
+        1058,
+        166,
+        75
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/LOW_PRESSURE_ON.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_fuel-2-aft_ON_166x75.svg",
+      "svgDimensions": [
+        166,
+        75
+      ],
+      "viewBox": [
+        664.0,
+        300.0
+      ],
+      "translation": [
+        32.0,
+        0
+      ],
+      "sourceTextPreserved": true,
+      "hash": "3a8b760ef0e05a4883c70fb450d350f16389920b88a964df27255155a86389a3"
+    },
+    {
+      "id": "apu-low-pressure",
+      "originalAsset": "LOW_PRESSURE",
+      "state": "OFF",
+      "sourceRect": [
+        337,
+        1054,
+        161,
+        63
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/LOW_PRESSURE_OFF.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_apu-low-pressure_OFF_161x63.svg",
+      "svgDimensions": [
+        161,
+        63
+      ],
+      "viewBox": [
+        766.666667,
+        300.0
+      ],
+      "translation": [
+        83.333333,
+        0
+      ],
+      "sourceTextPreserved": true,
+      "hash": "0d8d0d47ef95114adc94019e2bc7fcbc9c1025edd52a9ac6f96f922befeef4cd"
+    },
+    {
+      "id": "apu-low-pressure",
+      "originalAsset": "LOW_PRESSURE",
+      "state": "ON",
+      "sourceRect": [
+        337,
+        1054,
+        161,
+        63
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/LOW_PRESSURE_ON.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_apu-low-pressure_ON_161x63.svg",
+      "svgDimensions": [
+        161,
+        63
+      ],
+      "viewBox": [
+        766.666667,
+        300.0
+      ],
+      "translation": [
+        83.333333,
+        0
+      ],
+      "sourceTextPreserved": true,
+      "hash": "d99e4ee4ad0a37087b323605da9fce6ae03a66f882717c4652c45c0c64f40eb2"
+    },
+    {
+      "id": "equip-supply-off",
+      "originalAsset": "OFF_LAMP",
+      "state": "OFF",
+      "sourceRect": [
+        192,
+        2032,
+        159,
+        83
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/OFF_LAMP_OFF.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_equip-supply-off_OFF_159x83.svg",
+      "svgDimensions": [
+        159,
+        83
+      ],
+      "viewBox": [
+        600.0,
+        313.207547
+      ],
+      "translation": [
+        0,
+        6.603774
+      ],
+      "sourceTextPreserved": true,
+      "hash": "d659bfb7f092daaae0fb41e54fe5dcc8b8ce245558cfc84eb6ef78994c5a33c3"
+    },
+    {
+      "id": "equip-supply-off",
+      "originalAsset": "OFF_LAMP",
+      "state": "ON",
+      "sourceRect": [
+        192,
+        2032,
+        159,
+        83
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/OFF_LAMP_ON.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_equip-supply-off_ON_159x83.svg",
+      "svgDimensions": [
+        159,
+        83
+      ],
+      "viewBox": [
+        600.0,
+        313.207547
+      ],
+      "translation": [
+        0,
+        6.603774
+      ],
+      "sourceTextPreserved": true,
+      "hash": "a12e704442c4e3019fe697b2608c30542b00fc18a5d7c4df5efdf7f564afc666"
+    },
+    {
+      "id": "equip-exhaust-off",
+      "originalAsset": "OFF_LAMP",
+      "state": "OFF",
+      "sourceRect": [
+        374,
+        2032,
+        159,
+        83
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/OFF_LAMP_OFF.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_equip-exhaust-off_OFF_159x83.svg",
+      "svgDimensions": [
+        159,
+        83
+      ],
+      "viewBox": [
+        600.0,
+        313.207547
+      ],
+      "translation": [
+        0,
+        6.603774
+      ],
+      "sourceTextPreserved": true,
+      "hash": "d659bfb7f092daaae0fb41e54fe5dcc8b8ce245558cfc84eb6ef78994c5a33c3"
+    },
+    {
+      "id": "equip-exhaust-off",
+      "originalAsset": "OFF_LAMP",
+      "state": "ON",
+      "sourceRect": [
+        374,
+        2032,
+        159,
+        83
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/OFF_LAMP_ON.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_equip-exhaust-off_ON_159x83.svg",
+      "svgDimensions": [
+        159,
+        83
+      ],
+      "viewBox": [
+        600.0,
+        313.207547
+      ],
+      "translation": [
+        0,
+        6.603774
+      ],
+      "sourceTextPreserved": true,
+      "hash": "a12e704442c4e3019fe697b2608c30542b00fc18a5d7c4df5efdf7f564afc666"
+    },
+    {
+      "id": "window-l-side-overheat",
+      "originalAsset": "OVERHEAT",
+      "state": "OFF",
+      "sourceRect": [
+        190,
+        20,
+        210,
+        77
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/OVERHEAT_OFF.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_window-l-side-overheat_OFF_210x77.svg",
+      "svgDimensions": [
+        210,
+        77
+      ],
+      "viewBox": [
+        818.181818,
+        300.0
+      ],
+      "translation": [
+        109.090909,
+        0
+      ],
+      "sourceTextPreserved": true,
+      "hash": "8975b61678c95e5cf6fca61880ff6e75f7fab436cf2cdebf93dc8fb482c492c6"
+    },
+    {
+      "id": "window-l-side-overheat",
+      "originalAsset": "OVERHEAT",
+      "state": "ON",
+      "sourceRect": [
+        190,
+        20,
+        210,
+        77
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/OVERHEAT_ON.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_window-l-side-overheat_ON_210x77.svg",
+      "svgDimensions": [
+        210,
+        77
+      ],
+      "viewBox": [
+        818.181818,
+        300.0
+      ],
+      "translation": [
+        109.090909,
+        0
+      ],
+      "sourceTextPreserved": true,
+      "hash": "76c9cabe7d4fef9a81bc9ce99320f67e9d951c1f0b49d6cec84f71f76ece5def"
+    },
+    {
+      "id": "window-l-fwd-overheat",
+      "originalAsset": "OVERHEAT",
+      "state": "OFF",
+      "sourceRect": [
+        426,
+        20,
+        210,
+        77
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/OVERHEAT_OFF.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_window-l-fwd-overheat_OFF_210x77.svg",
+      "svgDimensions": [
+        210,
+        77
+      ],
+      "viewBox": [
+        818.181818,
+        300.0
+      ],
+      "translation": [
+        109.090909,
+        0
+      ],
+      "sourceTextPreserved": true,
+      "hash": "8975b61678c95e5cf6fca61880ff6e75f7fab436cf2cdebf93dc8fb482c492c6"
+    },
+    {
+      "id": "window-l-fwd-overheat",
+      "originalAsset": "OVERHEAT",
+      "state": "ON",
+      "sourceRect": [
+        426,
+        20,
+        210,
+        77
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/OVERHEAT_ON.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_window-l-fwd-overheat_ON_210x77.svg",
+      "svgDimensions": [
+        210,
+        77
+      ],
+      "viewBox": [
+        818.181818,
+        300.0
+      ],
+      "translation": [
+        109.090909,
+        0
+      ],
+      "sourceTextPreserved": true,
+      "hash": "76c9cabe7d4fef9a81bc9ce99320f67e9d951c1f0b49d6cec84f71f76ece5def"
+    },
+    {
+      "id": "window-r-fwd-overheat",
+      "originalAsset": "OVERHEAT",
+      "state": "OFF",
+      "sourceRect": [
+        651,
+        20,
+        210,
+        77
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/OVERHEAT_OFF.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_window-r-fwd-overheat_OFF_210x77.svg",
+      "svgDimensions": [
+        210,
+        77
+      ],
+      "viewBox": [
+        818.181818,
+        300.0
+      ],
+      "translation": [
+        109.090909,
+        0
+      ],
+      "sourceTextPreserved": true,
+      "hash": "8975b61678c95e5cf6fca61880ff6e75f7fab436cf2cdebf93dc8fb482c492c6"
+    },
+    {
+      "id": "window-r-fwd-overheat",
+      "originalAsset": "OVERHEAT",
+      "state": "ON",
+      "sourceRect": [
+        651,
+        20,
+        210,
+        77
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/OVERHEAT_ON.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_window-r-fwd-overheat_ON_210x77.svg",
+      "svgDimensions": [
+        210,
+        77
+      ],
+      "viewBox": [
+        818.181818,
+        300.0
+      ],
+      "translation": [
+        109.090909,
+        0
+      ],
+      "sourceTextPreserved": true,
+      "hash": "76c9cabe7d4fef9a81bc9ce99320f67e9d951c1f0b49d6cec84f71f76ece5def"
+    },
+    {
+      "id": "window-r-side-overheat",
+      "originalAsset": "OVERHEAT",
+      "state": "OFF",
+      "sourceRect": [
+        885,
+        20,
+        210,
+        77
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/OVERHEAT_OFF.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_window-r-side-overheat_OFF_210x77.svg",
+      "svgDimensions": [
+        210,
+        77
+      ],
+      "viewBox": [
+        818.181818,
+        300.0
+      ],
+      "translation": [
+        109.090909,
+        0
+      ],
+      "sourceTextPreserved": true,
+      "hash": "8975b61678c95e5cf6fca61880ff6e75f7fab436cf2cdebf93dc8fb482c492c6"
+    },
+    {
+      "id": "window-r-side-overheat",
+      "originalAsset": "OVERHEAT",
+      "state": "ON",
+      "sourceRect": [
+        885,
+        20,
+        210,
+        77
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/OVERHEAT_ON.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_window-r-side-overheat_ON_210x77.svg",
+      "svgDimensions": [
+        210,
+        77
+      ],
+      "viewBox": [
+        818.181818,
+        300.0
+      ],
+      "translation": [
+        109.090909,
+        0
+      ],
+      "sourceTextPreserved": true,
+      "hash": "76c9cabe7d4fef9a81bc9ce99320f67e9d951c1f0b49d6cec84f71f76ece5def"
+    },
+    {
+      "id": "hyd-eng-1",
+      "originalAsset": "LOW_PRESSURE",
+      "state": "OFF",
+      "sourceRect": [
+        194,
+        335,
+        269,
+        118
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/LOW_PRESSURE_OFF.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_hyd-eng-1_OFF_269x118.svg",
+      "svgDimensions": [
+        269,
+        118
+      ],
+      "viewBox": [
+        683.898305,
+        300.0
+      ],
+      "translation": [
+        41.949153,
+        0
+      ],
+      "sourceTextPreserved": true,
+      "hash": "60fc53a7503666ddc37984189ea05ce42be4d1860ff203756c65a76479e63c26"
+    },
+    {
+      "id": "hyd-eng-1",
+      "originalAsset": "LOW_PRESSURE",
+      "state": "ON",
+      "sourceRect": [
+        194,
+        335,
+        269,
+        118
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/LOW_PRESSURE_ON.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_hyd-eng-1_ON_269x118.svg",
+      "svgDimensions": [
+        269,
+        118
+      ],
+      "viewBox": [
+        683.898305,
+        300.0
+      ],
+      "translation": [
+        41.949153,
+        0
+      ],
+      "sourceTextPreserved": true,
+      "hash": "979ff879ed54f8725e7714687534df25237c3f8856f2be25d51822a24421771e"
+    },
+    {
+      "id": "hyd-elec-2",
+      "originalAsset": "LOW_PRESSURE",
+      "state": "OFF",
+      "sourceRect": [
+        495,
+        335,
+        269,
+        118
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/LOW_PRESSURE_OFF.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_hyd-elec-2_OFF_269x118.svg",
+      "svgDimensions": [
+        269,
+        118
+      ],
+      "viewBox": [
+        683.898305,
+        300.0
+      ],
+      "translation": [
+        41.949153,
+        0
+      ],
+      "sourceTextPreserved": true,
+      "hash": "60fc53a7503666ddc37984189ea05ce42be4d1860ff203756c65a76479e63c26"
+    },
+    {
+      "id": "hyd-elec-2",
+      "originalAsset": "LOW_PRESSURE",
+      "state": "ON",
+      "sourceRect": [
+        495,
+        335,
+        269,
+        118
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/LOW_PRESSURE_ON.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_hyd-elec-2_ON_269x118.svg",
+      "svgDimensions": [
+        269,
+        118
+      ],
+      "viewBox": [
+        683.898305,
+        300.0
+      ],
+      "translation": [
+        41.949153,
+        0
+      ],
+      "sourceTextPreserved": true,
+      "hash": "979ff879ed54f8725e7714687534df25237c3f8856f2be25d51822a24421771e"
+    },
+    {
+      "id": "hyd-elec-1",
+      "originalAsset": "LOW_PRESSURE",
+      "state": "OFF",
+      "sourceRect": [
+        908,
+        335,
+        269,
+        118
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/LOW_PRESSURE_OFF.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_hyd-elec-1_OFF_269x118.svg",
+      "svgDimensions": [
+        269,
+        118
+      ],
+      "viewBox": [
+        683.898305,
+        300.0
+      ],
+      "translation": [
+        41.949153,
+        0
+      ],
+      "sourceTextPreserved": true,
+      "hash": "60fc53a7503666ddc37984189ea05ce42be4d1860ff203756c65a76479e63c26"
+    },
+    {
+      "id": "hyd-elec-1",
+      "originalAsset": "LOW_PRESSURE",
+      "state": "ON",
+      "sourceRect": [
+        908,
+        335,
+        269,
+        118
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/LOW_PRESSURE_ON.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_hyd-elec-1_ON_269x118.svg",
+      "svgDimensions": [
+        269,
+        118
+      ],
+      "viewBox": [
+        683.898305,
+        300.0
+      ],
+      "translation": [
+        41.949153,
+        0
+      ],
+      "sourceTextPreserved": true,
+      "hash": "979ff879ed54f8725e7714687534df25237c3f8856f2be25d51822a24421771e"
+    },
+    {
+      "id": "hyd-eng-2",
+      "originalAsset": "LOW_PRESSURE",
+      "state": "OFF",
+      "sourceRect": [
+        1213,
+        335,
+        269,
+        118
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/LOW_PRESSURE_OFF.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_hyd-eng-2_OFF_269x118.svg",
+      "svgDimensions": [
+        269,
+        118
+      ],
+      "viewBox": [
+        683.898305,
+        300.0
+      ],
+      "translation": [
+        41.949153,
+        0
+      ],
+      "sourceTextPreserved": true,
+      "hash": "60fc53a7503666ddc37984189ea05ce42be4d1860ff203756c65a76479e63c26"
+    },
+    {
+      "id": "hyd-eng-2",
+      "originalAsset": "LOW_PRESSURE",
+      "state": "ON",
+      "sourceRect": [
+        1213,
+        335,
+        269,
+        118
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/LOW_PRESSURE_ON.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_hyd-eng-2_ON_269x118.svg",
+      "svgDimensions": [
+        269,
+        118
+      ],
+      "viewBox": [
+        683.898305,
+        300.0
+      ],
+      "translation": [
+        41.949153,
+        0
+      ],
+      "sourceTextPreserved": true,
+      "hash": "979ff879ed54f8725e7714687534df25237c3f8856f2be25d51822a24421771e"
+    },
+    {
+      "id": "hyd-elec-2-overheat",
+      "originalAsset": "OVERHEAT",
+      "state": "OFF",
+      "sourceRect": [
+        495,
+        188,
+        271,
+        118
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/OVERHEAT_OFF.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_hyd-elec-2-overheat_OFF_271x118.svg",
+      "svgDimensions": [
+        271,
+        118
+      ],
+      "viewBox": [
+        688.983051,
+        300.0
+      ],
+      "translation": [
+        44.491525,
+        0
+      ],
+      "sourceTextPreserved": true,
+      "hash": "df6eb8764e041e53e87c08fc8e62ca0d3353741059c911fc76a61ddc1a03fb1a"
+    },
+    {
+      "id": "hyd-elec-2-overheat",
+      "originalAsset": "OVERHEAT",
+      "state": "ON",
+      "sourceRect": [
+        495,
+        188,
+        271,
+        118
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/OVERHEAT_ON.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_hyd-elec-2-overheat_ON_271x118.svg",
+      "svgDimensions": [
+        271,
+        118
+      ],
+      "viewBox": [
+        688.983051,
+        300.0
+      ],
+      "translation": [
+        44.491525,
+        0
+      ],
+      "sourceTextPreserved": true,
+      "hash": "4df52d2959d5c5df74dd0dae3328e410f37f10ae24291d9b39297c0c1c85b7d6"
+    },
+    {
+      "id": "hyd-elec-1-overheat",
+      "originalAsset": "OVERHEAT",
+      "state": "OFF",
+      "sourceRect": [
+        908,
+        188,
+        271,
+        118
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/OVERHEAT_OFF.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_hyd-elec-1-overheat_OFF_271x118.svg",
+      "svgDimensions": [
+        271,
+        118
+      ],
+      "viewBox": [
+        688.983051,
+        300.0
+      ],
+      "translation": [
+        44.491525,
+        0
+      ],
+      "sourceTextPreserved": true,
+      "hash": "df6eb8764e041e53e87c08fc8e62ca0d3353741059c911fc76a61ddc1a03fb1a"
+    },
+    {
+      "id": "hyd-elec-1-overheat",
+      "originalAsset": "OVERHEAT",
+      "state": "ON",
+      "sourceRect": [
+        908,
+        188,
+        271,
+        118
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/OVERHEAT_ON.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_hyd-elec-1-overheat_ON_271x118.svg",
+      "svgDimensions": [
+        271,
+        118
+      ],
+      "viewBox": [
+        688.983051,
+        300.0
+      ],
+      "translation": [
+        44.491525,
+        0
+      ],
+      "sourceTextPreserved": true,
+      "hash": "4df52d2959d5c5df74dd0dae3328e410f37f10ae24291d9b39297c0c1c85b7d6"
+    },
+    {
+      "id": "pack-trip-l",
+      "originalAsset": "PACK_TRIP_OFF",
+      "state": "OFF",
+      "sourceRect": [
+        243,
+        862,
+        180,
+        66
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/PACK_TRIP_OFF_OFF.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_pack-trip-l_OFF_180x66.svg",
+      "svgDimensions": [
+        180,
+        66
+      ],
+      "viewBox": [
+        818.181818,
+        300.0
+      ],
+      "translation": [
+        109.090909,
+        0
+      ],
+      "sourceTextPreserved": true,
+      "hash": "b89c7d5ee7930c423ef4ac0772807c6efabdf0cb3a6311d70e085a3d7b6f8479"
+    },
+    {
+      "id": "pack-trip-l",
+      "originalAsset": "PACK_TRIP_OFF",
+      "state": "ON",
+      "sourceRect": [
+        243,
+        862,
+        180,
+        66
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/PACK_TRIP_OFF_ON.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_pack-trip-l_ON_180x66.svg",
+      "svgDimensions": [
+        180,
+        66
+      ],
+      "viewBox": [
+        818.181818,
+        300.0
+      ],
+      "translation": [
+        109.090909,
+        0
+      ],
+      "sourceTextPreserved": true,
+      "hash": "05eef762578f121bb900dc8f6ddfd4cf2ab7dec083d4cc077b908ae5a31cf580"
+    },
+    {
+      "id": "wing-body-overheat-l",
+      "originalAsset": "WING_BODY_OVERHEAT",
+      "state": "OFF",
+      "sourceRect": [
+        243,
+        953,
+        180,
+        66
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/WING_BODY_OVERHEAT_OFF.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_wing-body-overheat-l_OFF_180x66.svg",
+      "svgDimensions": [
+        180,
+        66
+      ],
+      "viewBox": [
+        818.181818,
+        300.0
+      ],
+      "translation": [
+        109.090909,
+        0
+      ],
+      "sourceTextPreserved": true,
+      "hash": "596be5f91cc060ac4e3ce538bc84283064abd6d9f044ec36bafdef9c1a73ff17"
+    },
+    {
+      "id": "wing-body-overheat-l",
+      "originalAsset": "WING_BODY_OVERHEAT",
+      "state": "ON",
+      "sourceRect": [
+        243,
+        953,
+        180,
+        66
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/WING_BODY_OVERHEAT_ON.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_wing-body-overheat-l_ON_180x66.svg",
+      "svgDimensions": [
+        180,
+        66
+      ],
+      "viewBox": [
+        818.181818,
+        300.0
+      ],
+      "translation": [
+        109.090909,
+        0
+      ],
+      "sourceTextPreserved": true,
+      "hash": "78058b9948a75d4ea095fcf6cd3a95bb7eae84f44e2bcb49592eda2a1eff07cb"
+    },
+    {
+      "id": "bleed-trip-l",
+      "originalAsset": "BLEED_TRIP_OFF",
+      "state": "OFF",
+      "sourceRect": [
+        243,
+        1043,
+        180,
+        66
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/BLEED_TRIP_OFF_OFF.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_bleed-trip-l_OFF_180x66.svg",
+      "svgDimensions": [
+        180,
+        66
+      ],
+      "viewBox": [
+        818.181818,
+        300.0
+      ],
+      "translation": [
+        109.090909,
+        0
+      ],
+      "sourceTextPreserved": true,
+      "hash": "4c3aa4c671b97245c9c1b2071ff1c97066eb14d2d3cf3e49b00c8945c6f255d3"
+    },
+    {
+      "id": "bleed-trip-l",
+      "originalAsset": "BLEED_TRIP_OFF",
+      "state": "ON",
+      "sourceRect": [
+        243,
+        1043,
+        180,
+        66
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/BLEED_TRIP_OFF_ON.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_bleed-trip-l_ON_180x66.svg",
+      "svgDimensions": [
+        180,
+        66
+      ],
+      "viewBox": [
+        818.181818,
+        300.0
+      ],
+      "translation": [
+        109.090909,
+        0
+      ],
+      "sourceTextPreserved": true,
+      "hash": "b6664b0dc48ae9c5c3269a8a19a1eae6c0ccbb26a8113da13eeaa83c09e5c4c9"
+    },
+    {
+      "id": "pack-trip-r",
+      "originalAsset": "PACK_TRIP_OFF",
+      "state": "OFF",
+      "sourceRect": [
+        701,
+        862,
+        180,
+        66
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/PACK_TRIP_OFF_OFF.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_pack-trip-r_OFF_180x66.svg",
+      "svgDimensions": [
+        180,
+        66
+      ],
+      "viewBox": [
+        818.181818,
+        300.0
+      ],
+      "translation": [
+        109.090909,
+        0
+      ],
+      "sourceTextPreserved": true,
+      "hash": "b89c7d5ee7930c423ef4ac0772807c6efabdf0cb3a6311d70e085a3d7b6f8479"
+    },
+    {
+      "id": "pack-trip-r",
+      "originalAsset": "PACK_TRIP_OFF",
+      "state": "ON",
+      "sourceRect": [
+        701,
+        862,
+        180,
+        66
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/PACK_TRIP_OFF_ON.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_pack-trip-r_ON_180x66.svg",
+      "svgDimensions": [
+        180,
+        66
+      ],
+      "viewBox": [
+        818.181818,
+        300.0
+      ],
+      "translation": [
+        109.090909,
+        0
+      ],
+      "sourceTextPreserved": true,
+      "hash": "05eef762578f121bb900dc8f6ddfd4cf2ab7dec083d4cc077b908ae5a31cf580"
+    },
+    {
+      "id": "wing-body-overheat-r",
+      "originalAsset": "WING_BODY_OVERHEAT",
+      "state": "OFF",
+      "sourceRect": [
+        701,
+        953,
+        180,
+        66
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/WING_BODY_OVERHEAT_OFF.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_wing-body-overheat-r_OFF_180x66.svg",
+      "svgDimensions": [
+        180,
+        66
+      ],
+      "viewBox": [
+        818.181818,
+        300.0
+      ],
+      "translation": [
+        109.090909,
+        0
+      ],
+      "sourceTextPreserved": true,
+      "hash": "596be5f91cc060ac4e3ce538bc84283064abd6d9f044ec36bafdef9c1a73ff17"
+    },
+    {
+      "id": "wing-body-overheat-r",
+      "originalAsset": "WING_BODY_OVERHEAT",
+      "state": "ON",
+      "sourceRect": [
+        701,
+        953,
+        180,
+        66
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/WING_BODY_OVERHEAT_ON.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_wing-body-overheat-r_ON_180x66.svg",
+      "svgDimensions": [
+        180,
+        66
+      ],
+      "viewBox": [
+        818.181818,
+        300.0
+      ],
+      "translation": [
+        109.090909,
+        0
+      ],
+      "sourceTextPreserved": true,
+      "hash": "78058b9948a75d4ea095fcf6cd3a95bb7eae84f44e2bcb49592eda2a1eff07cb"
+    },
+    {
+      "id": "bleed-trip-r",
+      "originalAsset": "BLEED_TRIP_OFF",
+      "state": "OFF",
+      "sourceRect": [
+        701,
+        1043,
+        180,
+        66
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/BLEED_TRIP_OFF_OFF.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_bleed-trip-r_OFF_180x66.svg",
+      "svgDimensions": [
+        180,
+        66
+      ],
+      "viewBox": [
+        818.181818,
+        300.0
+      ],
+      "translation": [
+        109.090909,
+        0
+      ],
+      "sourceTextPreserved": true,
+      "hash": "4c3aa4c671b97245c9c1b2071ff1c97066eb14d2d3cf3e49b00c8945c6f255d3"
+    },
+    {
+      "id": "bleed-trip-r",
+      "originalAsset": "BLEED_TRIP_OFF",
+      "state": "ON",
+      "sourceRect": [
+        701,
+        1043,
+        180,
+        66
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/BLEED_TRIP_OFF_ON.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_bleed-trip-r_ON_180x66.svg",
+      "svgDimensions": [
+        180,
+        66
+      ],
+      "viewBox": [
+        818.181818,
+        300.0
+      ],
+      "translation": [
+        109.090909,
+        0
+      ],
+      "sourceTextPreserved": true,
+      "hash": "b6664b0dc48ae9c5c3269a8a19a1eae6c0ccbb26a8113da13eeaa83c09e5c4c9"
+    },
+    {
+      "id": "window-l-side-on",
+      "originalAsset": "ON_GREEN",
+      "state": "OFF",
+      "sourceRect": [
+        190,
+        111,
+        210,
+        77
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/ON_GREEN_OFF.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_window-l-side-on_OFF_210x77.svg",
+      "svgDimensions": [
+        210,
+        77
+      ],
+      "viewBox": [
+        818.181818,
+        300.0
+      ],
+      "translation": [
+        109.090909,
+        0
+      ],
+      "sourceTextPreserved": true,
+      "hash": "fb2dbe7b2f28e1fc5a2fa63a6247085d31c09974eed91ff67049aef250080a77"
+    },
+    {
+      "id": "window-l-side-on",
+      "originalAsset": "ON_GREEN",
+      "state": "ON",
+      "sourceRect": [
+        190,
+        111,
+        210,
+        77
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/ON_GREEN_ON.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_window-l-side-on_ON_210x77.svg",
+      "svgDimensions": [
+        210,
+        77
+      ],
+      "viewBox": [
+        818.181818,
+        300.0
+      ],
+      "translation": [
+        109.090909,
+        0
+      ],
+      "sourceTextPreserved": true,
+      "hash": "4a85352e3668f4695f6f2116f043e197f0bc239c2fa04c603fef57aeb7d8a8ac"
+    },
+    {
+      "id": "window-l-fwd-on",
+      "originalAsset": "ON_GREEN",
+      "state": "OFF",
+      "sourceRect": [
+        426,
+        111,
+        210,
+        77
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/ON_GREEN_OFF.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_window-l-fwd-on_OFF_210x77.svg",
+      "svgDimensions": [
+        210,
+        77
+      ],
+      "viewBox": [
+        818.181818,
+        300.0
+      ],
+      "translation": [
+        109.090909,
+        0
+      ],
+      "sourceTextPreserved": true,
+      "hash": "fb2dbe7b2f28e1fc5a2fa63a6247085d31c09974eed91ff67049aef250080a77"
+    },
+    {
+      "id": "window-l-fwd-on",
+      "originalAsset": "ON_GREEN",
+      "state": "ON",
+      "sourceRect": [
+        426,
+        111,
+        210,
+        77
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/ON_GREEN_ON.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_window-l-fwd-on_ON_210x77.svg",
+      "svgDimensions": [
+        210,
+        77
+      ],
+      "viewBox": [
+        818.181818,
+        300.0
+      ],
+      "translation": [
+        109.090909,
+        0
+      ],
+      "sourceTextPreserved": true,
+      "hash": "4a85352e3668f4695f6f2116f043e197f0bc239c2fa04c603fef57aeb7d8a8ac"
+    },
+    {
+      "id": "window-r-fwd-on",
+      "originalAsset": "ON_GREEN",
+      "state": "OFF",
+      "sourceRect": [
+        654,
+        111,
+        210,
+        77
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/ON_GREEN_OFF.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_window-r-fwd-on_OFF_210x77.svg",
+      "svgDimensions": [
+        210,
+        77
+      ],
+      "viewBox": [
+        818.181818,
+        300.0
+      ],
+      "translation": [
+        109.090909,
+        0
+      ],
+      "sourceTextPreserved": true,
+      "hash": "fb2dbe7b2f28e1fc5a2fa63a6247085d31c09974eed91ff67049aef250080a77"
+    },
+    {
+      "id": "window-r-fwd-on",
+      "originalAsset": "ON_GREEN",
+      "state": "ON",
+      "sourceRect": [
+        654,
+        111,
+        210,
+        77
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/ON_GREEN_ON.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_window-r-fwd-on_ON_210x77.svg",
+      "svgDimensions": [
+        210,
+        77
+      ],
+      "viewBox": [
+        818.181818,
+        300.0
+      ],
+      "translation": [
+        109.090909,
+        0
+      ],
+      "sourceTextPreserved": true,
+      "hash": "4a85352e3668f4695f6f2116f043e197f0bc239c2fa04c603fef57aeb7d8a8ac"
+    },
+    {
+      "id": "window-r-side-on",
+      "originalAsset": "ON_GREEN",
+      "state": "OFF",
+      "sourceRect": [
+        885,
+        111,
+        210,
+        77
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/ON_GREEN_OFF.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_window-r-side-on_OFF_210x77.svg",
+      "svgDimensions": [
+        210,
+        77
+      ],
+      "viewBox": [
+        818.181818,
+        300.0
+      ],
+      "translation": [
+        109.090909,
+        0
+      ],
+      "sourceTextPreserved": true,
+      "hash": "fb2dbe7b2f28e1fc5a2fa63a6247085d31c09974eed91ff67049aef250080a77"
+    },
+    {
+      "id": "window-r-side-on",
+      "originalAsset": "ON_GREEN",
+      "state": "ON",
+      "sourceRect": [
+        885,
+        111,
+        210,
+        77
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/ON_GREEN_ON.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_window-r-side-on_ON_210x77.svg",
+      "svgDimensions": [
+        210,
+        77
+      ],
+      "viewBox": [
+        818.181818,
+        300.0
+      ],
+      "translation": [
+        109.090909,
+        0
+      ],
+      "sourceTextPreserved": true,
+      "hash": "4a85352e3668f4695f6f2116f043e197f0bc239c2fa04c603fef57aeb7d8a8ac"
+    },
+    {
+      "id": "ram-door-l",
+      "originalAsset": "RAM_DOOR_FULL_OPEN",
+      "state": "BRIGHT_BLUE",
+      "sourceRect": [
+        355,
+        15,
+        146,
+        68
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/RAM_DOOR_FULL_OPEN_BRIGHT_BLUE.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_ram-door-l_BRIGHT_BLUE_146x68.svg",
+      "svgDimensions": [
+        146,
+        68
+      ],
+      "viewBox": [
+        644.117647,
+        300.0
+      ],
+      "translation": [
+        22.058824,
+        0
+      ],
+      "sourceTextPreserved": true,
+      "hash": "250252440515411c5c841adcf8361b7a44e3fe0a805f43c8e10cf48cb18574ca"
+    },
+    {
+      "id": "ram-door-l",
+      "originalAsset": "RAM_DOOR_FULL_OPEN",
+      "state": "OFF",
+      "sourceRect": [
+        355,
+        15,
+        146,
+        68
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/RAM_DOOR_FULL_OPEN_OFF.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_ram-door-l_OFF_146x68.svg",
+      "svgDimensions": [
+        146,
+        68
+      ],
+      "viewBox": [
+        644.117647,
+        300.0
+      ],
+      "translation": [
+        22.058824,
+        0
+      ],
+      "sourceTextPreserved": true,
+      "hash": "d8340160e36c01a62148cf5311acb6e315d8fe145beecd1a9ea8b279f4d4320b"
+    },
+    {
+      "id": "ram-door-r",
+      "originalAsset": "RAM_DOOR_FULL_OPEN",
+      "state": "BRIGHT_BLUE",
+      "sourceRect": [
+        730,
+        15,
+        220,
+        68
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/RAM_DOOR_FULL_OPEN_BRIGHT_BLUE.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_ram-door-r_BRIGHT_BLUE_220x68.svg",
+      "svgDimensions": [
+        220,
+        68
+      ],
+      "viewBox": [
+        970.588235,
+        300.0
+      ],
+      "translation": [
+        185.294118,
+        0
+      ],
+      "sourceTextPreserved": true,
+      "hash": "c4f52cbd1c2042df30a48bf8e3d09e2ec8ea2aa9a8827e36107e3534b875c53b"
+    },
+    {
+      "id": "ram-door-r",
+      "originalAsset": "RAM_DOOR_FULL_OPEN",
+      "state": "OFF",
+      "sourceRect": [
+        730,
+        15,
+        220,
+        68
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/RAM_DOOR_FULL_OPEN_OFF.svg",
+      "derived": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_ram-door-r_OFF_220x68.svg",
+      "svgDimensions": [
+        220,
+        68
+      ],
+      "viewBox": [
+        970.588235,
+        300.0
+      ],
+      "translation": [
+        185.294118,
+        0
+      ],
+      "sourceTextPreserved": true,
+      "hash": "26301ca969be898b6c4fabf76f7e4ad1b8a3114deb31cc7f0c9cfd96ca2aa7f1"
+    }
+  ]
+}

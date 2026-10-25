@@ -1,0 +1,32 @@
+{
+  "schema": "b737.lamps.instance-precision-rollout.v1",
+  "date": "2026-10-26",
+  "overheadAndMain": {
+    "overhead": {
+      "count": 35,
+      "states": 70,
+      "families": {
+        "OFF_LAMP": 3,
+        "LOW_PRESSURE": 14,
+        "OVERHEAT": 6,
+        "PACK_TRIP_OFF": 2,
+        "WING_BODY_OVERHEAT": 2,
+        "BLEED_TRIP_OFF": 2,
+        "ON_GREEN": 4,
+        "RAM_DOOR_FULL_OPEN": 2
+      }
+    },
+    "cockpit": {
+      "count": 2,
+      "states": 4,
+      "families": {
+        "PULL_UP_RED": 2
+      }
+    }
+  },
+  "totalNewStates": 74,
+  "sourceArtworkModified": false,
+  "displayChangesOnly": true,
+  "unifiedScreenshotApproval": "PENDING",
+  "specialTwoSourcePositions": "NOT_AUTO_CERTIFIED"
+}
