@@ -32,10 +32,26 @@
     return Object.freeze({status:'photo_fit_outside_safe_bounds'});
   photoStretch.cabAlt=stretch;
   state.cabAlt=pose.angleDeg;
-  photoPose=Object.freeze({...pose,tipStretch:stretch,
+  const entry=Object.freeze({...pose,tipStretch:stretch,
     visualStatus:'SOURCE_PHOTO_MAPPED_NOT_AIRCRAFT_CERTIFIED'});
+  photoPose=Object.freeze({...photoPose,cabAlt:entry});
   paint('cabAlt');
   return photoPose;
+ }
+ function setPhotoDifferentialPsi(psi){
+  const mapper=window.B737CabinDifferentialPhotoMapV1;
+  if(!mapper)return Object.freeze({status:'missing_photo_map'});
+  const pose=mapper.poseAtPsi(psi);
+  if(pose.status==='out_of_range')return pose;
+  if(!(Number.isFinite(pose.stretch)&&pose.stretch>.90&&pose.stretch<1.10))
+    return Object.freeze({status:'photo_fit_outside_safe_bounds'});
+  state.press=pose.angleDeg;
+  photoStretch.press=pose.stretch;
+  const entry=Object.freeze({...pose,
+    visualStatus:'SOURCE_PHOTO_MAPPED_NOT_AIRCRAFT_CERTIFIED'});
+  photoPose=Object.freeze({...photoPose,press:entry});
+  paint('press');
+  return entry;
  }
  function setAngles(values){for(const [id,value]of Object.entries(values||{}))setAngle(id,value);return {...state};}
  // Physical cabin altitude comes from the selected CPCS/DCPCS plant.
@@ -52,12 +68,15 @@
     source:'CABIN_PRESSURE_PLANT_PROVISIONAL'
   });
   const pose=setPhotoCabinAltitude(physical.cabinAltitudeFt);
+  const pressPose=setPhotoDifferentialPsi(physical.differentialPsid);
   if(physicalOutput)physicalOutput.textContent=
     'CAB ALT: '+physical.cabinAltitudeFt.toFixed(0)+' ft · DIFF PRESS: '+
     physical.differentialPsid.toFixed(2)+' psi'+
     '\nCAB ALT needle: '+(pose?.visualStatus||'PHOTO MAP NOT AVAILABLE')+
     (Number.isFinite(pose?.angleDeg)?' | '+pose.angleDeg.toFixed(2)+' deg':'')+
-    '\nPhoto tick candidates tested; inferred minor values still need engineering sign-off.';
+    '\nPRESS needle: '+(pressPose?.visualStatus||pressPose?.status||'PHOTO MAP NOT AVAILABLE')+
+    (Number.isFinite(pressPose?.angleDeg)?' | '+pressPose.angleDeg.toFixed(2)+' deg':'')+
+    '\n98 photographed tick strokes passed pixel QA; CAB ALT unlabeled values remain inferred.';
   return physical;
  }
  function mount(){
@@ -80,7 +99,7 @@
  function controls(){
   const section=document.createElement('section');section.id='unifiedCabinDualNeedles';
   const title=document.createElement('h2');title.textContent='Cabin gauge · PRESS / CAB ALT';section.append(title);
-  const note=document.createElement('p');note.className='muted';note.textContent='دو عقربه مستقل. CAB ALT با ۴۷ خطِ استخراج‌شده از عکس اصلی به حرکت درمی‌آید؛ مقدار خطوط بی‌عدد هنوز تخمینی و این نمایش غیرگواهی‌شده است. PRESS تا کالیبراسیون جداگانه به زاویهٔ واقعی متصل نشده است.';section.append(note);
+  const note=document.createElement('p');note.className='muted';note.textContent='دو عقربه مستقل با ۹۸ خط اندازه‌گیری‌شده روی عکس اصلی (CAB ALT: ۴۷، PRESS: ۵۱). مکان خط‌ها بررسی شده ولی مقادیر خطوط بی‌عدد CAB ALT هنوز برآوردی‌اند؛ خروجی غیرگواهی‌شده است.';section.append(note);
   physicalOutput=document.createElement('output');
   physicalOutput.style.display='block';physicalOutput.style.whiteSpace='pre-line';
   physicalOutput.style.direction='ltr';physicalOutput.style.textAlign='left';
@@ -100,7 +119,7 @@
  window.B737UnifiedCabinNeedles=Object.freeze({
   getAngles:()=>({...state}),setAngle,setAngles,setMeasuredReadings,
   getMeasuredReadings:()=>physical,
-  getPhotoPose:()=>photoPose,setPhotoCabinAltitude
+  getPhotoPose:()=>photoPose,setPhotoCabinAltitude,setPhotoDifferentialPsi
  });
  window.addEventListener('b737:cabin-needle-angles',event=>{try{setAngles(event.detail);}catch(error){console.error(error);}});
  window.addEventListener('b737:pressurization-state',event=>{
