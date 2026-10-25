@@ -21,6 +21,7 @@
  function controller(reg,electrical,notify=()=>{},pneumatics){
   let context=initialContext(),toggles={},rotaries={},guards={},test=false,electricalState=electrical.initialState();
   let pneumaticState=pneumatics.initial();
+  let aircraftFamily='B737-300-500',recirc400Left='AUTO';
   let oxygen=false;const faults=new Set(reg.lights.map(c=>c.id)),switchTime={},valveTime={};let result=null;
   const control=id=>toggles[id]??guards[id]?.value??rotaries[id];
   const isOn=id=>String(control(id)).toUpperCase()==='ON';
@@ -36,7 +37,7 @@
    'wing-body-overheat-l':'wingBodyLLeakDetected','wing-body-overheat-r':'wingBodyRLeakDetected'
   };
   function syncPneumatic(){
-   const controls={engineBleed1:control('bleed-eng-1'),engineBleed2:control('bleed-eng-2'),apuBleed:control('bleed-apu'),isolation:control('isolation-valve'),packL:control('pack-l'),packR:control('pack-r'),recirc:control('recirc-fan'),temperatureL:String(control('control-cabin-temp')).startsWith('MANUAL')?'MANUAL':'AUTO',temperatureR:String(control('pass-cabin-temp')).startsWith('MANUAL')?'MANUAL':'AUTO'};
+   const controls={engineBleed1:control('bleed-eng-1'),engineBleed2:control('bleed-eng-2'),apuBleed:control('bleed-apu'),isolation:control('isolation-valve'),packL:control('pack-l'),packR:control('pack-r'),recirc:control('recirc-fan'),recircL:recirc400Left,recircR:control('recirc-fan')??'AUTO',aircraftFamily,temperatureL:String(control('control-cabin-temp')).startsWith('MANUAL')?'MANUAL':'AUTO',temperatureR:String(control('pass-cabin-temp')).startsWith('MANUAL')?'MANUAL':'AUTO'};
    for(const [key,value]of Object.entries(controls))if(value!==undefined)pneumaticState=pneumatics.apply(pneumaticState,{type:'CONTROL',key,value});
    const inputs={engine1Running:context.engine1Running,engine2Running:context.engine2Running,apuRunning:context.apuRunning};
    for(const [id,key]of Object.entries(pneumaticSensors))inputs[key]=context.faults[id]===true;
@@ -117,7 +118,9 @@
    }
    result={version:reg.version,lights:on,frames,unknown,electrical:e,pneumatic:p,context:copy(context),lampTest:test,passengerOxygenDeployed:oxygen,power:available};notify(copy(result));return copy(result);
   }
-  return {tripReset:(now=0)=>{syncPneumatic();pneumaticState=pneumatics.apply(pneumaticState,{type:'TRIP_RESET'});return evaluate(now);},ingest,update,evaluate,snapshot:()=>copy(result),setLampTest:(v,now=0)=>{test=!!v;return evaluate(now);},reset:(now=0)=>{context=initialContext();for(const id of Object.keys(valveTime))delete valveTime[id];oxygen=false;test=false;electricalState=electrical.initialState();pneumaticState=pneumatics.initial();syncElectrical();syncPneumatic();return evaluate(now);}};
+  return {setAircraftFamily:(value,now=0)=>{if(!['B737-300-500','B737-400'].includes(value))throw Error('Invalid airframe family');aircraftFamily=value;syncPneumatic();return evaluate(now);},
+  setAircon400LeftRecirc:(value,now=0)=>{if(!['OFF','AUTO'].includes(value))throw Error('Invalid left recirc fan position');recirc400Left=value;syncPneumatic();return evaluate(now);},
+  tripReset:(now=0)=>{syncPneumatic();pneumaticState=pneumatics.apply(pneumaticState,{type:'TRIP_RESET'});return evaluate(now);},ingest,update,evaluate,snapshot:()=>copy(result),setLampTest:(v,now=0)=>{test=!!v;return evaluate(now);},reset:(now=0)=>{context=initialContext();for(const id of Object.keys(valveTime))delete valveTime[id];oxygen=false;test=false;electricalState=electrical.initialState();pneumaticState=pneumatics.initial();syncElectrical();syncPneumatic();return evaluate(now);}};
  }
  return Object.freeze({initialContext,rectangle,validate,controller});
 });
