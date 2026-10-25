@@ -1,0 +1,26 @@
+name: B737 pending annunciator pixel scanline audit
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - tools/lamp-photo-scanline-qa.py
+      - .github/workflows/lamp-scanline-qa.yml
+permissions:
+  contents: read
+jobs:
+  pixel-scanning:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify immutable source photographs
+        run: python3 panel-mosaic-lab/verify-final-overhead.py
+      - name: Image processing dependencies
+        run: python3 -m pip install --disable-pip-version-check numpy Pillow
+      - name: Measure independent lens boundaries for unresolved 22
+        run: python3 tools/lamp-photo-scanline-qa.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pending-lamp-photo-scanline-measurements
+          path: /tmp/b737-22-photo-scanline.json
+          if-no-files-found: error
+          retention-days: 30
