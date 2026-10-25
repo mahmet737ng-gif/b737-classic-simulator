@@ -1,0 +1,47 @@
+{
+  "schema": "b737classic.cb.wiring-audit.v1",
+  "date": "2026-10-26",
+  "scope": "737 Classic 300/400/500; optional CPCS/DCPCS exclusive",
+  "panels": [
+    "P6-1",
+    "P6-2",
+    "P6-3",
+    "P6-4",
+    "P6-5",
+    "P6-6",
+    "P6-11",
+    "P6-12",
+    "P18-1",
+    "P18-2",
+    "P18-3"
+  ],
+  "catalogueCandidateCounts": {
+    "CPCS": 472,
+    "DCPCS": 471,
+    "alternativeVariantInventory": 544
+  },
+  "photoCoordinateQA": "Separate local geometric set reports 475 candidates, including DCPCS retrofit positions: do not equate to validated slot/label inventory",
+  "validatedAircraftBusRoutes": [],
+  "status": "NO CONFIRMED CB-TO-POWER-BUS-TO-CONSUMER WIRING IN THIS MANIFEST",
+  "requiredBeforeActivation": [
+    "CB panel-position effectivity confirmation",
+    "B737 Classic manual revision and page",
+    "Bus/source wire trace",
+    "Connected consumer identification and backup feed topology",
+    "Real breaker trip reset mechanism and limitations",
+    "System reaction vector test"
+  ],
+  "sandboxExample": {
+    "breaker": "P6-5|ALL|A1",
+    "bus": "SANDBOX_28V",
+    "consumer": "SANDBOX_INDICATOR_NOT_AIRCRAFT",
+    "realAircraftWiring": false
+  },
+  "rules": {
+    "rejectUntracedPowerEffects": true,
+    "autoTripThreshold": "UNVERIFIED_NOT_SET",
+    "thermalResetLaw": "UNVERIFIED_NOT_SET",
+    "preserveMasterPhoto": true,
+    "excludeNGOnly": true
+  }
+}
