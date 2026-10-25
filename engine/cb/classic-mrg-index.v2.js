@@ -3,7 +3,7 @@
  * Pages 134-136 are printed Classic pages, NOT NG page 137.
  */
 (function(root,factory){const api=factory();if(typeof module==="object"&&module.exports)module.exports=api;if(root)root.B737ClassicMRGCBIndex=api;})(typeof globalThis!=="undefined"?globalThis:this,function(){"use strict";
-const ASSOCIATIONS=Object.freeze([
+const BASE_ASSOCIATIONS=Object.freeze([
   {
     "id": "P6-3|ALL|A2",
     "load": "door.warningCircuit",
@@ -521,6 +521,10 @@ const ASSOCIATIONS=Object.freeze([
     "upstreamBus": null
   }
 ]);
+// P6-4 has alternative CPCS/DCPCS pressure-control CBs at F1-F6 only.
+// All other P6-4 CBs are the same physical circuit across variants, but state keys are variant-scoped.
+const ASSOCIATIONS=Object.freeze(BASE_ASSOCIATIONS.flatMap(a => a.id.startsWith("P6-4|CPCS|") && !/\|F[1-6]$/.test(a.id)
+ ? [a, Object.freeze({...a,id:a.id.replace("|CPCS|","|DCPCS|")})] : [a]));
 const DISPUTES=Object.freeze([
   {
     "id": "P6-1|ALL|C2",
