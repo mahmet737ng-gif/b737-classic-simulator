@@ -1,6 +1,6 @@
 {
   "schema": "b737.overhead.lights.v1",
-  "version": "LGT-0009",
+  "version": "LGT-0010",
   "baseVersion": "UPD-0012-OVH-measured-seams",
   "assets": {
     "ALIGN_WHITE": {
@@ -115,42 +115,42 @@
     },
     "FEEL_DIFF_PRESS": {
       "ON": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/FEEL_DIFF_PRESS_ON.svg",
-        "sha256": "5c5ef5daa0f9f3c2c5cbb15a62599e9ac6ad72b02d7fb22231c913005405060c"
+        "url": "../assets/lights/precision-fit-v1/FEEL_DIFF_PRESS_ON_161x64.svg",
+        "sha256": "cc0f7016d72bd728ce466337704167ecef8da6c7e6c31db3c58ff636a14abe65"
       },
       "OFF": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/FEEL_DIFF_PRESS_OFF.svg",
-        "sha256": "23caed4a624c70aaf87b90a79eac094cb4bc20537f232db9f109bb7c02a1aaba"
+        "url": "../assets/lights/precision-fit-v1/FEEL_DIFF_PRESS_OFF_161x64.svg",
+        "sha256": "9387e22e081a71df09959655ecfddb00ddf93d60f122312529fcb51c97b1b96a"
       }
     },
     "SPEED_TRIM_FAIL": {
       "ON": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/SPEED_TRIM_FAIL_ON.svg",
-        "sha256": "f7d41fd49d6bf0a214b651421ff1c07ef32777fa30c133bfe28e7651903778d4"
+        "url": "../assets/lights/precision-fit-v1/SPEED_TRIM_FAIL_ON_161x64.svg",
+        "sha256": "aa4f54cbe1cc6c8d30d39909e374496a4e3195fa30fff1e4696ee6929ea2596b"
       },
       "OFF": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/SPEED_TRIM_FAIL_OFF.svg",
-        "sha256": "07cc30bae382f6f1bb474a09073433defb2ed118f72d84b92abf8373385d03eb"
+        "url": "../assets/lights/precision-fit-v1/SPEED_TRIM_FAIL_OFF_161x64.svg",
+        "sha256": "c8e505c0c6f92deedae9e6963c841d33d5031053af79dceadccbc62183f0dbad"
       }
     },
     "MACH_TRIM_FAIL": {
       "ON": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/MACH_TRIM_FAIL_ON.svg",
-        "sha256": "17d45a07fee70893ba722bda5728e1ccde2c7ff9a5c9692c18656af33cd02475"
+        "url": "../assets/lights/precision-fit-v1/MACH_TRIM_FAIL_ON_161x64.svg",
+        "sha256": "bad2c162dc933493cc0fa8c595b64d7441da8a078988daa3f3fbbe41dda0ca0d"
       },
       "OFF": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/MACH_TRIM_FAIL_OFF.svg",
-        "sha256": "2611e41dc22ee17827c5d9c97c76cef7de39d65c427149ad21dc029f28d91d74"
+        "url": "../assets/lights/precision-fit-v1/MACH_TRIM_FAIL_OFF_161x64.svg",
+        "sha256": "203513bb138652d622a8293575d0c5b5266a1d0753889fb6be4a57c99b9f9c2b"
       }
     },
     "AUTO_SLAT_FAIL": {
       "ON": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/AUTO_SLAT_FAIL_ON.svg",
-        "sha256": "492c935873e98d393c33402c577aca1726dd4970601bae21ef92e72295cc8867"
+        "url": "../assets/lights/precision-fit-v1/AUTO_SLAT_FAIL_ON_161x64.svg",
+        "sha256": "85c6872ac2d2d5f6526f3705bec4dccb8ea171c1e101ca1d1c09c9ccd2b6a241"
       },
       "OFF": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/AUTO_SLAT_FAIL_OFF.svg",
-        "sha256": "739c76f3815c1af091511a78ed099040ae60164235d2b96e062d8aba420e39d2"
+        "url": "../assets/lights/precision-fit-v1/AUTO_SLAT_FAIL_OFF_161x64.svg",
+        "sha256": "5f875293285c33de01d90301b693c38e6247b2a8f930745305dbc968bf0d99a6"
       }
     },
     "YAW_DAMPER": {
@@ -225,12 +225,12 @@
     },
     "OVER_SPEED": {
       "ON": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/OVER_SPEED_ON.svg",
-        "sha256": "5e84147dbee8a888a3dd32837294b040a2501279232202c27c2a287b0015ae71"
+        "url": "../assets/lights/precision-fit-v1/OVER_SPEED_ON_161x63.svg",
+        "sha256": "7623bbb3d8b0e2703e4bf9f0301edcd79e95ea54b8ee7a14a78b7705000eefbc"
       },
       "OFF": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/OVER_SPEED_OFF.svg",
-        "sha256": "630a2ec8e644a70ae7df63b9a2834faa87e939392e5fba68e3705b306f9216f1"
+        "url": "../assets/lights/precision-fit-v1/OVER_SPEED_OFF_161x63.svg",
+        "sha256": "83184be3edfb7698184ad7a670a4770a5d91e923f501614aede0083ab19034dc"
       }
     },
     "NOT_ARMED_VERTICAL": {
@@ -265,12 +265,12 @@
     },
     "FO_STATIC_2_AUX_PS": {
       "ON": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/FO_STATIC_2_AUX_PS_ON.svg",
-        "sha256": "dc545ca9cd0fad459c99ed52bb2e3a638561add7ae106f30483b134644c62181"
+        "url": "../assets/lights/precision-fit-v1/FO_STATIC_2_AUX_PS_ON_255x86.svg",
+        "sha256": "27a8748ded0b1573eec848f38aef64ee711622e48a2301f23f9316b2414374d6"
       },
       "OFF": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/FO_STATIC_2_AUX_PS_OFF.svg",
-        "sha256": "e25127d124276c6e25eb9ae4bd520ed67b368b81e07edb991e0f561bc2df059b"
+        "url": "../assets/lights/precision-fit-v1/FO_STATIC_2_AUX_PS_OFF_255x86.svg",
+        "sha256": "c3c04d2e4f903522017e225897b58a0f882ab4e1b4da92c4a630fe2ab04017d6"
       }
     },
     "L_ELEV_PITOT": {
@@ -315,12 +315,12 @@
     },
     "CAPT_STATIC_1_AUX_PS": {
       "ON": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/CAPT_STATIC_1_AUX_PS_ON.svg",
-        "sha256": "a92afa22a0c0a64019f390a77e85cbe566fe4591be86157b0ef7dcae2d529987"
+        "url": "../assets/lights/precision-fit-v1/CAPT_STATIC_1_AUX_PS_ON_255x86.svg",
+        "sha256": "70e154c15b0be2ccfe059229181254a16cdf29099c79a77304a36b2afa6e2fe2"
       },
       "OFF": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/CAPT_STATIC_1_AUX_PS_OFF.svg",
-        "sha256": "2361752e69dd30eb8a8c6156bfa93f7bd3c94f5793e8776c520775da638ce32f"
+        "url": "../assets/lights/precision-fit-v1/CAPT_STATIC_1_AUX_PS_OFF_255x86.svg",
+        "sha256": "01a3efeafe56218995bb460811eead64dca4c8b1a626a36c03f2ecbb116feed0"
       }
     },
     "R_ELEV_PITOT": {
@@ -515,30 +515,30 @@
     },
     "L_VALVE_OPEN": {
       "OFF": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/L_VALVE_OPEN_OFF.svg",
-        "sha256": "d7c2faa0c860c71fb5611bb5dde5c4d5bc35eead0361902cf7a77432ba65eaee"
+        "url": "../assets/lights/precision-fit-v1/L_VALVE_OPEN_OFF_259x99.svg",
+        "sha256": "9dc8eafc937e8d130c1cf0970279b3f44df29f1cfafc7d0c453af7940f275994"
       },
       "DIM_BLUE": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/L_VALVE_OPEN_DIM_BLUE.svg",
-        "sha256": "c69df868830c1955fdc133896d707ec4adb57eb3b01f8067dcefc452def405e4"
+        "url": "../assets/lights/precision-fit-v1/L_VALVE_OPEN_DIM_BLUE_259x99.svg",
+        "sha256": "46275019e2f7814e8144517e6b57024c06e886249f909c18c8320552bea787f8"
       },
       "BRIGHT_BLUE": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/L_VALVE_OPEN_BRIGHT_BLUE.svg",
-        "sha256": "d9d60dcb50cef902a711981bdd175ea8ccef0ff52457435ddb980987998d3ae5"
+        "url": "../assets/lights/precision-fit-v1/L_VALVE_OPEN_BRIGHT_BLUE_259x99.svg",
+        "sha256": "73e30281dfbe44fcd7aeb2f5c7a4c562d92127e86d8ae870659760d74ca35382"
       }
     },
     "R_VALVE_OPEN": {
       "OFF": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/R_VALVE_OPEN_OFF.svg",
-        "sha256": "6461d0f5390d196272408f02d08afbe788c688112c68bf7d8c9507c0f198e304"
+        "url": "../assets/lights/precision-fit-v1/R_VALVE_OPEN_OFF_259x99.svg",
+        "sha256": "55d2046272366e80f6187001fb33e8fe5d9ab9b097749eae57344b5d38f9ddc7"
       },
       "DIM_BLUE": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/R_VALVE_OPEN_DIM_BLUE.svg",
-        "sha256": "f5d001ac2bbfd120bb001f29e3f70962a4a1b7702f91eb2bdd06b0c57c8535ba"
+        "url": "../assets/lights/precision-fit-v1/R_VALVE_OPEN_DIM_BLUE_259x99.svg",
+        "sha256": "969585d365d441931db74e6b477b9256f5f7b448ad09938308eb3f1853ad690f"
       },
       "BRIGHT_BLUE": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/R_VALVE_OPEN_BRIGHT_BLUE.svg",
-        "sha256": "2dc15d4ed9263cc705bd8aa184dbd81d5f5263c9a3d4caf98293dd7d6950ad4a"
+        "url": "../assets/lights/precision-fit-v1/R_VALVE_OPEN_BRIGHT_BLUE_259x99.svg",
+        "sha256": "f9e5ef5bdc3354b50e813693c1d2a5c27db3b06dfbd6148e9b54cc4a0e5a46f2"
       }
     },
     "COWL_VALVE_OPEN": {
@@ -557,16 +557,16 @@
     },
     "VALVE_OPEN": {
       "OFF": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/VALVE_OPEN_OFF.svg",
-        "sha256": "c90f499a3792d89db8d1321037939012ca561abd848ccc62e2acd50635c85e6f"
+        "url": "../assets/lights/precision-fit-v1/VALVE_OPEN_OFF_175x70.svg",
+        "sha256": "e59b3792ab3105fcdf3603cf5dba93a812ab73783e44de6f2e9f9edfb036d701"
       },
       "DIM_BLUE": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/VALVE_OPEN_DIM_BLUE.svg",
-        "sha256": "96e84272622696090f9013c0264db0bbf86865c91f5b72cfcd3329612001d298"
+        "url": "../assets/lights/precision-fit-v1/VALVE_OPEN_DIM_BLUE_175x70.svg",
+        "sha256": "67552fa5613a8daf327726127a5c4ab45bd831f112280a6dd1496aa949e9f226"
       },
       "BRIGHT_BLUE": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/VALVE_OPEN_BRIGHT_BLUE.svg",
-        "sha256": "44b7d97197f85ebb336b896e422e3ee837686196ea4f23ff9894c4111b336e7e"
+        "url": "../assets/lights/precision-fit-v1/VALVE_OPEN_BRIGHT_BLUE_175x70.svg",
+        "sha256": "320e2e2fa05ded8b8de82076b0826653e42d0badce1acf0e4bcd24a6e57f6c33"
       }
     },
     "FUEL_VALVE_CLOSED": {
@@ -605,12 +605,12 @@
     },
     "GRD_POWER_AVAILABLE": {
       "OFF": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/GRD_POWER_AVAILABLE_OFF.svg",
-        "sha256": "a9dadd310fff3cf9d9cd88be0ac15703328c4d2d1a67627a26c39ad0cc680ff2"
+        "url": "../assets/lights/precision-fit-v1/GRD_POWER_AVAILABLE_OFF_182x68.svg",
+        "sha256": "edec6f456385e82fca7f1ea4ae8508406a706a412177b05968a256251ac7f15b"
       },
       "BRIGHT_BLUE": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/GRD_POWER_AVAILABLE_BRIGHT_BLUE.svg",
-        "sha256": "d3bc9a48549ec407f13e00a1b1becf8584d8057b9f95f20855142f5ff4b74a12"
+        "url": "../assets/lights/precision-fit-v1/GRD_POWER_AVAILABLE_BRIGHT_BLUE_182x68.svg",
+        "sha256": "69773764f006415d4cc92a4fbe33a909c6601e7085cbdb11bad060c2cffa9366"
       }
     },
     "LOW_OIL_QUANTITY": {
@@ -3349,9 +3349,9 @@
   ],
   "sourceStatus": "Public source-located electrical engine and previous fuel/flight-control models reused; private Technical Database retrieval returned no results. Remaining predicates are explicit simulator approximations, not source-verified aircraft rules. LGT-0002 reuses existing source-located Pneumatics V6 for 9 added pneumatic lamps and trip reset. New other sensor mappings remain explicit simulator approximations.",
   "unavailableLegends": [],
-  "previousVersion": "LGT-0008",
+  "previousVersion": "LGT-0009",
   "preservedLampCount": 84,
   "bluePaletteStatus": "Preview; original supplied assets unchanged; exact blue palette pending owner visual approval per INFORMATION_LIGHTS_SPEC.json",
   "pixelRegistrationRevision": "LPR-0002",
-  "faceFitRevision": "PH2-FIT-0001"
+  "faceFitRevision": "PH2-FIT-0002"
 }

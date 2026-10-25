@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="259" height="99" viewBox="0 0 784.848485 300" role="img" aria-label="L_VALVE_OPEN mounted BRIGHT_BLUE">
+<defs>
+  <linearGradient id="metal" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#41454a"/><stop offset=".17" stop-color="#14181a"/><stop offset=".83" stop-color="#0b0d0e"/><stop offset="1" stop-color="#34383c"/></linearGradient>
+  <filter id="textGlow" x="-45%" y="-80%" width="190%" height="260%"><feGaussianBlur stdDeviation="8.5"/></filter>
+  <filter id="textSoft" x="-25%" y="-35%" width="150%" height="170%"><feGaussianBlur stdDeviation="2.1"/></filter>
+ </defs>
+<rect width="784.848485" height="300" fill="#18569e"/>
+<g transform="translate(92.424242 0)" data-fit="uniform-translation-only">
+<g font-family="Arial, Liberation Sans, Helvetica, sans-serif" font-weight="700" text-anchor="middle" fill="#3b97ff" opacity="0.92" filter="url(#textGlow)"><text x="300" y="136.5" font-size="110">L VALVE</text><text x="300" y="252.0" font-size="110">OPEN</text></g>
+     <g font-family="Arial, Liberation Sans, Helvetica, sans-serif" font-weight="700" text-anchor="middle" fill="#afdfff" opacity="0.82" filter="url(#textSoft)"><text x="300" y="136.5" font-size="110">L VALVE</text><text x="300" y="252.0" font-size="110">OPEN</text></g>
+     <g font-family="Arial, Liberation Sans, Helvetica, sans-serif" font-weight="700" text-anchor="middle" fill="#f0fbff"><text x="300" y="136.5" font-size="110">L VALVE</text><text x="300" y="252.0" font-size="110">OPEN</text></g>
+</g>
+</svg>

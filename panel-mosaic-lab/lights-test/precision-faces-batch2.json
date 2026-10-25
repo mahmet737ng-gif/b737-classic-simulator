@@ -1,0 +1,525 @@
+{
+  "schema": "b737.lamps.annunciator-fit.second-batch.v1",
+  "date": "2026-10-26",
+  "uniqueDesigns": 12,
+  "derivativeStates": 27,
+  "originalSvgChanges": 0,
+  "frozenPhotoChanges": 0,
+  "method": "Expanded dark vector face proportionally to source ROI; translate existing glyph groups, no nonuniform scaling.",
+  "browserVisualAcceptance": "PENDING",
+  "records": [
+    {
+      "lamp": "probe-fo-static",
+      "asset": "FO_STATIC_2_AUX_PS",
+      "state": "ON",
+      "original": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/FO_STATIC_2_AUX_PS_ON.svg",
+      "derived": "panel-mosaic-lab/assets/lights/precision-fit-v1/FO_STATIC_2_AUX_PS_ON_255x86.svg",
+      "sourceRect": [
+        138,
+        664,
+        255,
+        86
+      ],
+      "fittedDimensions": [
+        255,
+        86
+      ],
+      "sha256": "27a8748ded0b1573eec848f38aef64ee711622e48a2301f23f9316b2414374d6",
+      "originalGlyphsUnscaled": true
+    },
+    {
+      "lamp": "probe-fo-static",
+      "asset": "FO_STATIC_2_AUX_PS",
+      "state": "OFF",
+      "original": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/FO_STATIC_2_AUX_PS_OFF.svg",
+      "derived": "panel-mosaic-lab/assets/lights/precision-fit-v1/FO_STATIC_2_AUX_PS_OFF_255x86.svg",
+      "sourceRect": [
+        138,
+        664,
+        255,
+        86
+      ],
+      "fittedDimensions": [
+        255,
+        86
+      ],
+      "sha256": "c3c04d2e4f903522017e225897b58a0f882ab4e1b4da92c4a630fe2ab04017d6",
+      "originalGlyphsUnscaled": true
+    },
+    {
+      "lamp": "probe-capt-static",
+      "asset": "CAPT_STATIC_1_AUX_PS",
+      "state": "ON",
+      "original": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/CAPT_STATIC_1_AUX_PS_ON.svg",
+      "derived": "panel-mosaic-lab/assets/lights/precision-fit-v1/CAPT_STATIC_1_AUX_PS_ON_255x86.svg",
+      "sourceRect": [
+        891,
+        664,
+        255,
+        86
+      ],
+      "fittedDimensions": [
+        255,
+        86
+      ],
+      "sha256": "70e154c15b0be2ccfe059229181254a16cdf29099c79a77304a36b2afa6e2fe2",
+      "originalGlyphsUnscaled": true
+    },
+    {
+      "lamp": "probe-capt-static",
+      "asset": "CAPT_STATIC_1_AUX_PS",
+      "state": "OFF",
+      "original": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/CAPT_STATIC_1_AUX_PS_OFF.svg",
+      "derived": "panel-mosaic-lab/assets/lights/precision-fit-v1/CAPT_STATIC_1_AUX_PS_OFF_255x86.svg",
+      "sourceRect": [
+        891,
+        664,
+        255,
+        86
+      ],
+      "fittedDimensions": [
+        255,
+        86
+      ],
+      "sha256": "01a3efeafe56218995bb460811eead64dca4c8b1a626a36c03f2ecbb116feed0",
+      "originalGlyphsUnscaled": true
+    },
+    {
+      "lamp": "ground-power-available",
+      "asset": "GRD_POWER_AVAILABLE",
+      "state": "OFF",
+      "original": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/GRD_POWER_AVAILABLE_OFF.svg",
+      "derived": "panel-mosaic-lab/assets/lights/precision-fit-v1/GRD_POWER_AVAILABLE_OFF_182x68.svg",
+      "sourceRect": [
+        421,
+        35,
+        182,
+        68
+      ],
+      "fittedDimensions": [
+        182,
+        68
+      ],
+      "sha256": "edec6f456385e82fca7f1ea4ae8508406a706a412177b05968a256251ac7f15b",
+      "originalGlyphsUnscaled": true
+    },
+    {
+      "lamp": "ground-power-available",
+      "asset": "GRD_POWER_AVAILABLE",
+      "state": "BRIGHT_BLUE",
+      "original": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/GRD_POWER_AVAILABLE_BRIGHT_BLUE.svg",
+      "derived": "panel-mosaic-lab/assets/lights/precision-fit-v1/GRD_POWER_AVAILABLE_BRIGHT_BLUE_182x68.svg",
+      "sourceRect": [
+        421,
+        35,
+        182,
+        68
+      ],
+      "fittedDimensions": [
+        182,
+        68
+      ],
+      "sha256": "69773764f006415d4cc92a4fbe33a909c6601e7085cbdb11bad060c2cffa9366",
+      "originalGlyphsUnscaled": true
+    },
+    {
+      "lamp": "wing-valve-l",
+      "asset": "L_VALVE_OPEN",
+      "state": "OFF",
+      "original": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/L_VALVE_OPEN_OFF.svg",
+      "derived": "panel-mosaic-lab/assets/lights/precision-fit-v1/L_VALVE_OPEN_OFF_259x99.svg",
+      "sourceRect": [
+        205,
+        316,
+        259,
+        99
+      ],
+      "fittedDimensions": [
+        259,
+        99
+      ],
+      "sha256": "9dc8eafc937e8d130c1cf0970279b3f44df29f1cfafc7d0c453af7940f275994",
+      "originalGlyphsUnscaled": true
+    },
+    {
+      "lamp": "wing-valve-l",
+      "asset": "L_VALVE_OPEN",
+      "state": "DIM_BLUE",
+      "original": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/L_VALVE_OPEN_DIM_BLUE.svg",
+      "derived": "panel-mosaic-lab/assets/lights/precision-fit-v1/L_VALVE_OPEN_DIM_BLUE_259x99.svg",
+      "sourceRect": [
+        205,
+        316,
+        259,
+        99
+      ],
+      "fittedDimensions": [
+        259,
+        99
+      ],
+      "sha256": "46275019e2f7814e8144517e6b57024c06e886249f909c18c8320552bea787f8",
+      "originalGlyphsUnscaled": true
+    },
+    {
+      "lamp": "wing-valve-l",
+      "asset": "L_VALVE_OPEN",
+      "state": "BRIGHT_BLUE",
+      "original": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/L_VALVE_OPEN_BRIGHT_BLUE.svg",
+      "derived": "panel-mosaic-lab/assets/lights/precision-fit-v1/L_VALVE_OPEN_BRIGHT_BLUE_259x99.svg",
+      "sourceRect": [
+        205,
+        316,
+        259,
+        99
+      ],
+      "fittedDimensions": [
+        259,
+        99
+      ],
+      "sha256": "73e30281dfbe44fcd7aeb2f5c7a4c562d92127e86d8ae870659760d74ca35382",
+      "originalGlyphsUnscaled": true
+    },
+    {
+      "lamp": "wing-valve-r",
+      "asset": "R_VALVE_OPEN",
+      "state": "OFF",
+      "original": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/R_VALVE_OPEN_OFF.svg",
+      "derived": "panel-mosaic-lab/assets/lights/precision-fit-v1/R_VALVE_OPEN_OFF_259x99.svg",
+      "sourceRect": [
+        500,
+        316,
+        259,
+        99
+      ],
+      "fittedDimensions": [
+        259,
+        99
+      ],
+      "sha256": "55d2046272366e80f6187001fb33e8fe5d9ab9b097749eae57344b5d38f9ddc7",
+      "originalGlyphsUnscaled": true
+    },
+    {
+      "lamp": "wing-valve-r",
+      "asset": "R_VALVE_OPEN",
+      "state": "DIM_BLUE",
+      "original": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/R_VALVE_OPEN_DIM_BLUE.svg",
+      "derived": "panel-mosaic-lab/assets/lights/precision-fit-v1/R_VALVE_OPEN_DIM_BLUE_259x99.svg",
+      "sourceRect": [
+        500,
+        316,
+        259,
+        99
+      ],
+      "fittedDimensions": [
+        259,
+        99
+      ],
+      "sha256": "969585d365d441931db74e6b477b9256f5f7b448ad09938308eb3f1853ad690f",
+      "originalGlyphsUnscaled": true
+    },
+    {
+      "lamp": "wing-valve-r",
+      "asset": "R_VALVE_OPEN",
+      "state": "BRIGHT_BLUE",
+      "original": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/R_VALVE_OPEN_BRIGHT_BLUE.svg",
+      "derived": "panel-mosaic-lab/assets/lights/precision-fit-v1/R_VALVE_OPEN_BRIGHT_BLUE_259x99.svg",
+      "sourceRect": [
+        500,
+        316,
+        259,
+        99
+      ],
+      "fittedDimensions": [
+        259,
+        99
+      ],
+      "sha256": "f9e5ef5bdc3354b50e813693c1d2a5c27db3b06dfbd6148e9b54cc4a0e5a46f2",
+      "originalGlyphsUnscaled": true
+    },
+    {
+      "lamp": "apu-overspeed",
+      "asset": "OVER_SPEED",
+      "state": "ON",
+      "original": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/OVER_SPEED_ON.svg",
+      "derived": "panel-mosaic-lab/assets/lights/precision-fit-v1/OVER_SPEED_ON_161x63.svg",
+      "sourceRect": [
+        707,
+        1054,
+        161,
+        63
+      ],
+      "fittedDimensions": [
+        161,
+        63
+      ],
+      "sha256": "7623bbb3d8b0e2703e4bf9f0301edcd79e95ea54b8ee7a14a78b7705000eefbc",
+      "originalGlyphsUnscaled": true
+    },
+    {
+      "lamp": "apu-overspeed",
+      "asset": "OVER_SPEED",
+      "state": "OFF",
+      "original": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/OVER_SPEED_OFF.svg",
+      "derived": "panel-mosaic-lab/assets/lights/precision-fit-v1/OVER_SPEED_OFF_161x63.svg",
+      "sourceRect": [
+        707,
+        1054,
+        161,
+        63
+      ],
+      "fittedDimensions": [
+        161,
+        63
+      ],
+      "sha256": "83184be3edfb7698184ad7a670a4770a5d91e923f501614aede0083ab19034dc",
+      "originalGlyphsUnscaled": true
+    },
+    {
+      "lamp": "feel-diff",
+      "asset": "FEEL_DIFF_PRESS",
+      "state": "ON",
+      "original": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/FEEL_DIFF_PRESS_ON.svg",
+      "derived": "panel-mosaic-lab/assets/lights/precision-fit-v1/FEEL_DIFF_PRESS_ON_161x64.svg",
+      "sourceRect": [
+        631,
+        758,
+        161,
+        64
+      ],
+      "fittedDimensions": [
+        161,
+        64
+      ],
+      "sha256": "cc0f7016d72bd728ce466337704167ecef8da6c7e6c31db3c58ff636a14abe65",
+      "originalGlyphsUnscaled": true
+    },
+    {
+      "lamp": "feel-diff",
+      "asset": "FEEL_DIFF_PRESS",
+      "state": "OFF",
+      "original": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/FEEL_DIFF_PRESS_OFF.svg",
+      "derived": "panel-mosaic-lab/assets/lights/precision-fit-v1/FEEL_DIFF_PRESS_OFF_161x64.svg",
+      "sourceRect": [
+        631,
+        758,
+        161,
+        64
+      ],
+      "fittedDimensions": [
+        161,
+        64
+      ],
+      "sha256": "9387e22e081a71df09959655ecfddb00ddf93d60f122312529fcb51c97b1b96a",
+      "originalGlyphsUnscaled": true
+    },
+    {
+      "lamp": "speed-trim",
+      "asset": "SPEED_TRIM_FAIL",
+      "state": "ON",
+      "original": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/SPEED_TRIM_FAIL_ON.svg",
+      "derived": "panel-mosaic-lab/assets/lights/precision-fit-v1/SPEED_TRIM_FAIL_ON_161x64.svg",
+      "sourceRect": [
+        631,
+        842,
+        161,
+        64
+      ],
+      "fittedDimensions": [
+        161,
+        64
+      ],
+      "sha256": "aa4f54cbe1cc6c8d30d39909e374496a4e3195fa30fff1e4696ee6929ea2596b",
+      "originalGlyphsUnscaled": true
+    },
+    {
+      "lamp": "speed-trim",
+      "asset": "SPEED_TRIM_FAIL",
+      "state": "OFF",
+      "original": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/SPEED_TRIM_FAIL_OFF.svg",
+      "derived": "panel-mosaic-lab/assets/lights/precision-fit-v1/SPEED_TRIM_FAIL_OFF_161x64.svg",
+      "sourceRect": [
+        631,
+        842,
+        161,
+        64
+      ],
+      "fittedDimensions": [
+        161,
+        64
+      ],
+      "sha256": "c8e505c0c6f92deedae9e6963c841d33d5031053af79dceadccbc62183f0dbad",
+      "originalGlyphsUnscaled": true
+    },
+    {
+      "lamp": "mach-trim",
+      "asset": "MACH_TRIM_FAIL",
+      "state": "ON",
+      "original": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/MACH_TRIM_FAIL_ON.svg",
+      "derived": "panel-mosaic-lab/assets/lights/precision-fit-v1/MACH_TRIM_FAIL_ON_161x64.svg",
+      "sourceRect": [
+        631,
+        927,
+        161,
+        64
+      ],
+      "fittedDimensions": [
+        161,
+        64
+      ],
+      "sha256": "bad2c162dc933493cc0fa8c595b64d7441da8a078988daa3f3fbbe41dda0ca0d",
+      "originalGlyphsUnscaled": true
+    },
+    {
+      "lamp": "mach-trim",
+      "asset": "MACH_TRIM_FAIL",
+      "state": "OFF",
+      "original": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/MACH_TRIM_FAIL_OFF.svg",
+      "derived": "panel-mosaic-lab/assets/lights/precision-fit-v1/MACH_TRIM_FAIL_OFF_161x64.svg",
+      "sourceRect": [
+        631,
+        927,
+        161,
+        64
+      ],
+      "fittedDimensions": [
+        161,
+        64
+      ],
+      "sha256": "203513bb138652d622a8293575d0c5b5266a1d0753889fb6be4a57c99b9f9c2b",
+      "originalGlyphsUnscaled": true
+    },
+    {
+      "lamp": "auto-slat",
+      "asset": "AUTO_SLAT_FAIL",
+      "state": "ON",
+      "original": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/AUTO_SLAT_FAIL_ON.svg",
+      "derived": "panel-mosaic-lab/assets/lights/precision-fit-v1/AUTO_SLAT_FAIL_ON_161x64.svg",
+      "sourceRect": [
+        631,
+        1011,
+        161,
+        64
+      ],
+      "fittedDimensions": [
+        161,
+        64
+      ],
+      "sha256": "85c6872ac2d2d5f6526f3705bec4dccb8ea171c1e101ca1d1c09c9ccd2b6a241",
+      "originalGlyphsUnscaled": true
+    },
+    {
+      "lamp": "auto-slat",
+      "asset": "AUTO_SLAT_FAIL",
+      "state": "OFF",
+      "original": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/AUTO_SLAT_FAIL_OFF.svg",
+      "derived": "panel-mosaic-lab/assets/lights/precision-fit-v1/AUTO_SLAT_FAIL_OFF_161x64.svg",
+      "sourceRect": [
+        631,
+        1011,
+        161,
+        64
+      ],
+      "fittedDimensions": [
+        161,
+        64
+      ],
+      "sha256": "5f875293285c33de01d90301b693c38e6247b2a8f930745305dbc968bf0d99a6",
+      "originalGlyphsUnscaled": true
+    },
+    {
+      "lamp": "crossfeed-valve",
+      "asset": "VALVE_OPEN",
+      "state": "OFF",
+      "original": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/VALVE_OPEN_OFF.svg",
+      "derived": "panel-mosaic-lab/assets/lights/precision-fit-v1/VALVE_OPEN_OFF_175x70.svg",
+      "sourceRect": [
+        418,
+        414,
+        175,
+        70
+      ],
+      "fittedDimensions": [
+        175,
+        70
+      ],
+      "sha256": "e59b3792ab3105fcdf3603cf5dba93a812ab73783e44de6f2e9f9edfb036d701",
+      "originalGlyphsUnscaled": true
+    },
+    {
+      "lamp": "crossfeed-valve",
+      "asset": "VALVE_OPEN",
+      "state": "DIM_BLUE",
+      "original": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/VALVE_OPEN_DIM_BLUE.svg",
+      "derived": "panel-mosaic-lab/assets/lights/precision-fit-v1/VALVE_OPEN_DIM_BLUE_175x70.svg",
+      "sourceRect": [
+        418,
+        414,
+        175,
+        70
+      ],
+      "fittedDimensions": [
+        175,
+        70
+      ],
+      "sha256": "67552fa5613a8daf327726127a5c4ab45bd831f112280a6dd1496aa949e9f226",
+      "originalGlyphsUnscaled": true
+    },
+    {
+      "lamp": "crossfeed-valve",
+      "asset": "VALVE_OPEN",
+      "state": "BRIGHT_BLUE",
+      "original": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/VALVE_OPEN_BRIGHT_BLUE.svg",
+      "derived": "panel-mosaic-lab/assets/lights/precision-fit-v1/VALVE_OPEN_BRIGHT_BLUE_175x70.svg",
+      "sourceRect": [
+        418,
+        414,
+        175,
+        70
+      ],
+      "fittedDimensions": [
+        175,
+        70
+      ],
+      "sha256": "320e2e2fa05ded8b8de82076b0826653e42d0badce1acf0e4bcd24a6e57f6c33",
+      "originalGlyphsUnscaled": true
+    },
+    {
+      "lamp": "main-antiskid",
+      "asset": "ANTI_SKID_INOP",
+      "state": "OFF",
+      "original": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/ANTI_SKID_INOP_OFF.svg",
+      "derived": "panel-mosaic-lab/assets/lights/precision-fit-v1/ANTI_SKID_INOP_OFF_82x32.svg",
+      "sourceRect": [
+        59,
+        507,
+        82,
+        32
+      ],
+      "fittedDimensions": [
+        82,
+        32
+      ],
+      "sha256": "1b4990a893b3d384ae7364045d278390217276ca8ada6210d6e4715f36f4b8f7",
+      "originalGlyphsUnscaled": true
+    },
+    {
+      "lamp": "main-antiskid",
+      "asset": "ANTI_SKID_INOP",
+      "state": "ON",
+      "original": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/ANTI_SKID_INOP_ON.svg",
+      "derived": "panel-mosaic-lab/assets/lights/precision-fit-v1/ANTI_SKID_INOP_ON_82x32.svg",
+      "sourceRect": [
+        59,
+        507,
+        82,
+        32
+      ],
+      "fittedDimensions": [
+        82,
+        32
+      ],
+      "sha256": "ec601a6ef6dd7a83d9946e141034314a4a933b1c19a600e1a105d4be82ac141c",
+      "originalGlyphsUnscaled": true
+    }
+  ]
+}

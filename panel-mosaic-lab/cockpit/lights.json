@@ -1,6 +1,6 @@
 {
   "schema": "b737.cockpit-annunciators.v1",
-  "version": "LGT-0011",
+  "version": "LGT-0012",
   "sourceDatabase": {
     "name": "B737_TECHNICAL_NETWORK_V2",
     "sourceId": "FCOM-SEPEHRAN-1937",
@@ -169,12 +169,12 @@
     },
     "ANTI_SKID_INOP": {
       "OFF": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/ANTI_SKID_INOP_OFF.svg",
-        "sha256": "d1f1afe30812dff3b004e27b73ac34f74d4ebf7097f155b6f25c2058cc37bcc5"
+        "url": "../assets/lights/precision-fit-v1/ANTI_SKID_INOP_OFF_82x32.svg",
+        "sha256": "1b4990a893b3d384ae7364045d278390217276ca8ada6210d6e4715f36f4b8f7"
       },
       "ON": {
-        "url": "../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/ANTI_SKID_INOP_ON.svg",
-        "sha256": "a2a80f92a62631fa1dd619aa0d991f6c221ae0038c03fe3f6334fc1adf06ec16"
+        "url": "../assets/lights/precision-fit-v1/ANTI_SKID_INOP_ON_82x32.svg",
+        "sha256": "ec601a6ef6dd7a83d9946e141034314a4a933b1c19a600e1a105d4be82ac141c"
       }
     },
     "AUTO_BRAKE_DISARM": {
@@ -979,6 +979,6 @@
     "BRAKE_TEMP is direct visual test only; exact operating threshold not supplied by the retrieved Classic FCOM.",
     "BELOW_GS_P_INHIBIT follows the FSU face variant requested in the LIGHTS asset database."
   ],
-  "previousVersion": "LGT-0010",
-  "faceFitRevision": "PH2-FIT-0001"
+  "previousVersion": "LGT-0011",
+  "faceFitRevision": "PH2-FIT-0002"
 }
