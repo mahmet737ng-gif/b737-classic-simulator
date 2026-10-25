@@ -12,7 +12,7 @@ const document={getElementById:el,querySelector:selector=>el(selector),addEventL
 class FakeTestbench{
  constructor(){this.timeMs=0;this.apuPhase='OFF';this.engines={engine1:'OFF',engine2:'OFF'};this.batteryOn=false;}
  get(){const engine=phase=>({phase,n1Percent:0,n2Percent:0,egtC:20,fuelFlowKgHr:null,oil:{pressurePsi:0,temperatureC:20,quantityPct:85,lowPressureLamp:true,filterBypassLamp:false},startValveOpen:null,fuelLever:'CUTOFF'});
- return {timeMs:this.timeMs,electrical:{battery:this.batteryOn,selectedSources:{1:null}},apu:{phase:this.apuPhase,rpmPct:this.apuPhase==='READY'?100:5,egtC:20,bleedValveOpen:false,faults:{}},engines:{engine1:engine(this.engines.engine1),engine2:engine(this.engines.engine2)},alerts:[],fuel:{tanksKg:{main1:3500,center:1000,main2:3500},crossfeed:'CLOSED'},trace:[],aircraft:{onGround:true}};}
+ return {timeMs:this.timeMs,electrical:{battery:this.batteryOn,selectedSources:{1:null}},apu:{phase:this.apuPhase,rpmPct:this.apuPhase==='READY'?95.5:5,egtC:20,bleedValveOpen:false,faults:{}},engines:{engine1:engine(this.engines.engine1),engine2:engine(this.engines.engine2)},alerts:[],fuel:{tanksKg:{main1:3500,center:1000,main2:3500},crossfeed:'CLOSED'},trace:[],aircraft:{onGround:true}};}
  battery(x){this.batteryOn=x;}
  startAPU(){if(!this.batteryOn)throw Error('BATTERY OFF');this.apuPhase='INLET_DOOR';}
  engineStart(engine){this.engines[engine]='MOTORING';}
@@ -24,7 +24,7 @@ const tick=n=>{for(let i=0;i<n;i++)for(const fn of [...timers.values()])fn();};
 assert.equal(timers.size,0);
 click('battery');assert.equal(timers.size,0,'Battery ON alone should not run the clock');
 click('apuStart');assert.equal(timers.size,1,'APU START auto-runs the simulator clock');
-tick(14);assert.equal(el('clock').textContent,'1.4 s');assert.match(el('apu').textContent,/APU 100% RPM/);
+tick(14);assert.equal(el('clock').textContent,'1.4 s');assert.match(el('apu').textContent,/APU 95.5% RPM/);
 click('play');assert.equal(timers.size,0,'Manual pause should stop time');
 click('start1');assert.equal(timers.size,1,'Engine GRD resumes timer after manual pause');
 click('start2');assert.equal(timers.size,1,'Concurrent starts should not create duplicate timers');
