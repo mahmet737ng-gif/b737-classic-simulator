@@ -12,19 +12,19 @@
  const layouts=Object.freeze({
    DCPCS:Object.freeze({
      engine:'B737DCPCSV4',backgroundAsset:owner,
-     modes:['AUTO','ALTN','MAN'],artworkFit:'fill',calibrationAsset:owner,modePosition:[.72,.682],
+     modes:['AUTO','ALTN','MAN'],artworkFit:'fill',calibrationAsset:owner,modePosition:[.77,.678],
      controls:[
-       {id:'flight-alt',kind:'altitude',label:'FLT ALT',xy:[.292,.36],unit:'ft',key:'flightAltitudeFt',step:500,min:-1000,max:37000},
-       {id:'landing-alt',kind:'altitude',label:'LAND ALT',xy:[.292,.672],unit:'ft',key:'landingAltitudeFt',step:50,min:-1000,max:14000},
-       {id:'press-mode',kind:'selector',label:'MODE',xy:[.72,.682],states:['AUTO','ALTN','MAN']},
-       {id:'manual-valve',kind:'spring',label:'MANUAL VALVE',xy:[.72,.437],states:['CLOSE','NEUTRAL','OPEN']}
+       {id:'flight-alt',kind:'altitude',label:'FLT ALT',xy:[.325,.372],unit:'ft',key:'flightAltitudeFt',step:500,min:-1000,max:37000},
+       {id:'landing-alt',kind:'altitude',label:'LAND ALT',xy:[.325,.676],unit:'ft',key:'landingAltitudeFt',step:50,min:-1000,max:14000},
+       {id:'press-mode',kind:'selector',label:'MODE',xy:[.77,.678],states:['AUTO','ALTN','MAN']},
+       {id:'manual-valve',kind:'spring',label:'MANUAL VALVE',xy:[.77,.453],states:['CLOSE','NEUTRAL','OPEN']}
      ],
-     displays:[{id:'flight-display',xy:[.332,.215],field:'flightAltitudeFt'},{id:'landing-display',xy:[.332,.49],field:'landingAltitudeFt'}],
+     displays:[{id:'flight-display',xy:[.32,.207],field:'flightAltitudeFt'},{id:'landing-display',xy:[.32,.498],field:'landingAltitudeFt'}],
      lamps:[
-       {id:'auto-fail',xy:[.205,.045],output:'autoFail',label:'AUTO FAIL'},
-       {id:'off-sched',xy:[.416,.045],output:'offSchedDescent',label:'OFF SCHED DESCENT'},
-       {id:'altn',xy:[.625,.045],output:'altn',label:'ALTN'},
-       {id:'manual',xy:[.837,.045],output:'manual',label:'MANUAL'}
+       {id:'auto-fail',xy:[.205,.055],output:'autoFail',label:'AUTO FAIL'},
+       {id:'off-sched',xy:[.416,.055],output:'offSchedDescent',label:'OFF SCHED DESCENT'},
+       {id:'altn',xy:[.625,.055],output:'altn',label:'ALTN'},
+       {id:'manual',xy:[.837,.055],output:'manual',label:'MANUAL'}
      ]
    }),
    CPCS:Object.freeze({
