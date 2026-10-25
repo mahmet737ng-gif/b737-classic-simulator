@@ -1,0 +1,1025 @@
+{
+  "schema": "b737.stage8.instrument-signals.v1",
+  "date": "2026-10-25",
+  "aircraft": "B737-33V EP-FSI",
+  "integration": "Read-only trained model snapshot; not WDM/AFM-certified sensor wiring",
+  "verifiedPerInstrumentElectricalPowerFeeds": 0,
+  "certifiedAngleTables": 0,
+  "activation": "BLOCKED",
+  "qualityClasses": [
+    "TRAINING_SIMULATION_ONLY",
+    "OBSERVED_SENSOR_WITH_VALIDATION",
+    "UNKNOWN"
+  ],
+  "sourceShapes": {
+    "ecu": "B737ISN1318ECUTestbenchV1.Testbench.get() — origin TRAINING_SIMULATION_ONLY",
+    "cabinPlant": "B737CabinPressurePlantV1.derive()/state verified against source schema; simulator training, not CPCS mode implicitly",
+    "observed": "Explicit caller-supplied per-id per-channel {value,unit,valid,origin}, no implied power"
+  },
+  "cautions": [
+    "Original B737 electrical trainer bus graph does not contain instrument-by-instrument EP-FSI feed wiring.",
+    "CPCS and DCPCS remain independently selectable; never infer cabin pressure from pack status or merge both readings.",
+    "Fuel tank mass from ECU is kg, whereas rendered source face may print %, so no unapproved conversion or display target.",
+    "No source exists yet for many sensors; missing input stays UNKNOWN rather than zero."
+  ],
+  "faces": {
+    "oh.fuel.temperature": {
+      "kind": "ambient_sensor",
+      "system": "overhead",
+      "channels": [
+        {
+          "id": "primary",
+          "source": {
+            "provider": null,
+            "path": null,
+            "unit": null
+          },
+          "powerDependency": "UNKNOWN_LRU_BUS_WIRING",
+          "status": "requires_explicit_source"
+        }
+      ],
+      "sourcePolicy": "temperature_data_available"
+    },
+    "oh.elec.dc_amps": {
+      "kind": "electrically_unpowered",
+      "system": "electrical",
+      "channels": [
+        {
+          "id": "primary",
+          "source": {
+            "provider": null,
+            "path": null,
+            "unit": null
+          },
+          "powerDependency": "UNKNOWN_LRU_BUS_WIRING",
+          "status": "requires_explicit_source"
+        }
+      ],
+      "sourcePolicy": "no_voltage_source_and_buses_deenergized"
+    },
+    "oh.elec.cps": {
+      "kind": "electrically_unpowered",
+      "system": "electrical",
+      "channels": [
+        {
+          "id": "primary",
+          "source": {
+            "provider": null,
+            "path": null,
+            "unit": null
+          },
+          "powerDependency": "UNKNOWN_LRU_BUS_WIRING",
+          "status": "requires_explicit_source"
+        }
+      ],
+      "sourcePolicy": "no_voltage_source_and_buses_deenergized"
+    },
+    "oh.elec.dc_volts": {
+      "kind": "electrically_unpowered",
+      "system": "electrical",
+      "channels": [
+        {
+          "id": "primary",
+          "source": {
+            "provider": null,
+            "path": null,
+            "unit": null
+          },
+          "powerDependency": "UNKNOWN_LRU_BUS_WIRING",
+          "status": "requires_explicit_source"
+        }
+      ],
+      "sourcePolicy": "no_voltage_source_and_buses_deenergized"
+    },
+    "oh.elec.ac_volts": {
+      "kind": "electrically_unpowered",
+      "system": "electrical",
+      "channels": [
+        {
+          "id": "primary",
+          "source": {
+            "provider": null,
+            "path": null,
+            "unit": null
+          },
+          "powerDependency": "UNKNOWN_LRU_BUS_WIRING",
+          "status": "requires_explicit_source"
+        }
+      ],
+      "sourcePolicy": "no_voltage_source_and_buses_deenergized"
+    },
+    "oh.drive_oil.1": {
+      "kind": "selector_dual_temperature",
+      "system": "overhead",
+      "channels": [
+        {
+          "id": "rise",
+          "source": {
+            "provider": null,
+            "path": null,
+            "unit": null
+          },
+          "powerDependency": "UNKNOWN_LRU_BUS_WIRING",
+          "status": "requires_explicit_source"
+        },
+        {
+          "id": "inlet",
+          "source": {
+            "provider": null,
+            "path": null,
+            "unit": null
+          },
+          "powerDependency": "UNKNOWN_LRU_BUS_WIRING",
+          "status": "requires_explicit_source"
+        }
+      ],
+      "sourcePolicy": "engine_stopped_and_csd_thermal_equalized"
+    },
+    "oh.drive_oil.2": {
+      "kind": "selector_dual_temperature",
+      "system": "overhead",
+      "channels": [
+        {
+          "id": "rise",
+          "source": {
+            "provider": null,
+            "path": null,
+            "unit": null
+          },
+          "powerDependency": "UNKNOWN_LRU_BUS_WIRING",
+          "status": "requires_explicit_source"
+        },
+        {
+          "id": "inlet",
+          "source": {
+            "provider": null,
+            "path": null,
+            "unit": null
+          },
+          "powerDependency": "UNKNOWN_LRU_BUS_WIRING",
+          "status": "requires_explicit_source"
+        }
+      ],
+      "sourcePolicy": "engine_stopped_and_csd_thermal_equalized"
+    },
+    "oh.ac_amps.1": {
+      "kind": "electrically_unpowered",
+      "system": "electrical",
+      "channels": [
+        {
+          "id": "primary",
+          "source": {
+            "provider": null,
+            "path": null,
+            "unit": null
+          },
+          "powerDependency": "UNKNOWN_LRU_BUS_WIRING",
+          "status": "requires_explicit_source"
+        }
+      ],
+      "sourcePolicy": "no_voltage_source_and_buses_deenergized"
+    },
+    "oh.ac_amps.2": {
+      "kind": "electrically_unpowered",
+      "system": "electrical",
+      "channels": [
+        {
+          "id": "primary",
+          "source": {
+            "provider": null,
+            "path": null,
+            "unit": null
+          },
+          "powerDependency": "UNKNOWN_LRU_BUS_WIRING",
+          "status": "requires_explicit_source"
+        }
+      ],
+      "sourcePolicy": "no_voltage_source_and_buses_deenergized"
+    },
+    "oh.ac_amps.apu": {
+      "kind": "electrically_unpowered",
+      "system": "electrical",
+      "channels": [
+        {
+          "id": "primary",
+          "source": {
+            "provider": null,
+            "path": null,
+            "unit": null
+          },
+          "powerDependency": "UNKNOWN_LRU_BUS_WIRING",
+          "status": "requires_explicit_source"
+        }
+      ],
+      "sourcePolicy": "no_voltage_source_and_buses_deenergized"
+    },
+    "oh.apu.egt": {
+      "kind": "thermal_or_power_dependent",
+      "system": "overhead",
+      "channels": [
+        {
+          "id": "primary",
+          "source": {
+            "provider": "ecu",
+            "path": "apu.egtC",
+            "unit": "°C"
+          },
+          "powerDependency": "UNKNOWN_LRU_BUS_WIRING",
+          "status": "source_available_training_only"
+        }
+      ],
+      "sourcePolicy": "apu_stopped"
+    },
+    "oh.cabin.diff_pressure_altitude": {
+      "kind": "dual_readings",
+      "system": "pressurization",
+      "channels": [
+        {
+          "id": "cabAlt",
+          "source": {
+            "provider": "cabinPlant",
+            "path": "cabinAltitudeFt",
+            "unit": "ft"
+          },
+          "powerDependency": "UNKNOWN_LRU_BUS_WIRING",
+          "status": "source_available_training_only"
+        },
+        {
+          "id": "press",
+          "source": {
+            "provider": "cabinPlant",
+            "path": "differentialPsid",
+            "unit": "psi"
+          },
+          "powerDependency": "UNKNOWN_LRU_BUS_WIRING",
+          "status": "source_available_training_only"
+        }
+      ],
+      "sourcePolicy": "equalized_cabin_and_ambient"
+    },
+    "oh.cabin.rate": {
+      "kind": "zero_on_stable_cabin",
+      "system": "pressurization",
+      "channels": [
+        {
+          "id": "rate",
+          "source": {
+            "provider": "cabinPlant",
+            "path": "cabinRateFtMin",
+            "unit": "ft/min"
+          },
+          "powerDependency": "UNKNOWN_LRU_BUS_WIRING",
+          "status": "source_available_training_only"
+        }
+      ],
+      "sourcePolicy": "cabin_pressure_stable"
+    },
+    "oh.cabin.temperature": {
+      "kind": "ambient_sensor",
+      "system": "pressurization",
+      "channels": [
+        {
+          "id": "primary",
+          "source": {
+            "provider": null,
+            "path": null,
+            "unit": null
+          },
+          "powerDependency": "UNKNOWN_LRU_BUS_WIRING",
+          "status": "requires_explicit_source"
+        }
+      ],
+      "sourcePolicy": "temperature_data_available"
+    },
+    "oh.duct.pressure_lr": {
+      "kind": "zero_if_pneumatics_isolated",
+      "system": "pneumatics",
+      "channels": [
+        {
+          "id": "L",
+          "source": {
+            "provider": null,
+            "path": null,
+            "unit": null
+          },
+          "powerDependency": "UNKNOWN_LRU_BUS_WIRING",
+          "status": "requires_explicit_source"
+        },
+        {
+          "id": "R",
+          "source": {
+            "provider": null,
+            "path": null,
+            "unit": null
+          },
+          "powerDependency": "UNKNOWN_LRU_BUS_WIRING",
+          "status": "requires_explicit_source"
+        }
+      ],
+      "sourcePolicy": "no_bleed_source_and_manifold_depressurized"
+    },
+    "capt.airspeed": {
+      "kind": "mechanical_low_stop",
+      "system": "flight_indicators",
+      "channels": [
+        {
+          "id": "primary",
+          "source": {
+            "provider": "ecu",
+            "path": "aircraft.iasKt",
+            "unit": "kt"
+          },
+          "powerDependency": "UNKNOWN_LRU_BUS_WIRING",
+          "status": "source_available_training_only"
+        }
+      ],
+      "sourcePolicy": "aircraft_stationary_and_no_pitot_pressure"
+    },
+    "capt.rmi": {
+      "kind": "nav_power_dependent",
+      "system": "flight_indicators",
+      "channels": [
+        {
+          "id": "bearing1",
+          "source": {
+            "provider": null,
+            "path": null,
+            "unit": null
+          },
+          "powerDependency": "UNKNOWN_LRU_BUS_WIRING",
+          "status": "requires_explicit_source"
+        },
+        {
+          "id": "bearing2",
+          "source": {
+            "provider": null,
+            "path": null,
+            "unit": null
+          },
+          "powerDependency": "UNKNOWN_LRU_BUS_WIRING",
+          "status": "requires_explicit_source"
+        }
+      ],
+      "sourcePolicy": "nav_receiver_off_or_power_unavailable"
+    },
+    "capt.altimeter": {
+      "kind": "static_pressure_altitude",
+      "system": "flight_indicators",
+      "channels": [
+        {
+          "id": "primary",
+          "source": {
+            "provider": null,
+            "path": null,
+            "unit": null
+          },
+          "powerDependency": "UNKNOWN_LRU_BUS_WIRING",
+          "status": "requires_explicit_source"
+        }
+      ],
+      "sourcePolicy": "static_pressure_and_baro_setting_available"
+    },
+    "capt.alt_ias_combined": {
+      "kind": "identity_unresolved",
+      "system": "flight_indicators",
+      "channels": [
+        {
+          "id": "alt",
+          "source": {
+            "provider": null,
+            "path": null,
+            "unit": null
+          },
+          "powerDependency": "UNKNOWN_LRU_BUS_WIRING",
+          "status": "requires_explicit_source"
+        },
+        {
+          "id": "ias",
+          "source": {
+            "provider": null,
+            "path": null,
+            "unit": null
+          },
+          "powerDependency": "UNKNOWN_LRU_BUS_WIRING",
+          "status": "requires_explicit_source"
+        }
+      ],
+      "sourcePolicy": "none"
+    },
+    "capt.vertical_speed": {
+      "kind": "zero_on_stable_static_pressure",
+      "system": "flight_indicators",
+      "channels": [
+        {
+          "id": "primary",
+          "source": {
+            "provider": null,
+            "path": null,
+            "unit": null
+          },
+          "powerDependency": "UNKNOWN_LRU_BUS_WIRING",
+          "status": "requires_explicit_source"
+        }
+      ],
+      "sourcePolicy": "aircraft_stationary_and_static_pressure_stable"
+    },
+    "capt.clock": {
+      "kind": "clock_retained",
+      "system": "flight_indicators",
+      "channels": [
+        {
+          "id": "primary",
+          "source": {
+            "provider": null,
+            "path": null,
+            "unit": null
+          },
+          "powerDependency": "UNKNOWN_LRU_BUS_WIRING",
+          "status": "requires_explicit_source"
+        }
+      ],
+      "sourcePolicy": "clock_battery_or_clock_mechanism"
+    },
+    "eng.left_upper_20_20": {
+      "kind": "identity_unresolved",
+      "system": "engine",
+      "channels": [
+        {
+          "id": "primary",
+          "source": {
+            "provider": null,
+            "path": null,
+            "unit": null
+          },
+          "powerDependency": "UNKNOWN_LRU_BUS_WIRING",
+          "status": "requires_explicit_source"
+        }
+      ],
+      "sourcePolicy": "none"
+    },
+    "eng.fuel_qty.center": {
+      "kind": "fuel_quantity_retained",
+      "system": "engine",
+      "channels": [
+        {
+          "id": "primary",
+          "source": {
+            "provider": "ecu",
+            "path": "fuel.tanksKg.center",
+            "unit": "kg"
+          },
+          "powerDependency": "UNKNOWN_LRU_BUS_WIRING",
+          "status": "source_available_training_only"
+        }
+      ],
+      "sourcePolicy": "fuel_mass_or_quantity_from_tank_state"
+    },
+    "eng.fuel_qty.1": {
+      "kind": "fuel_quantity_retained",
+      "system": "engine",
+      "channels": [
+        {
+          "id": "primary",
+          "source": {
+            "provider": "ecu",
+            "path": "fuel.tanksKg.main1",
+            "unit": "kg"
+          },
+          "powerDependency": "UNKNOWN_LRU_BUS_WIRING",
+          "status": "source_available_training_only"
+        }
+      ],
+      "sourcePolicy": "fuel_mass_or_quantity_from_tank_state"
+    },
+    "eng.fuel_qty.2": {
+      "kind": "fuel_quantity_retained",
+      "system": "engine",
+      "channels": [
+        {
+          "id": "primary",
+          "source": {
+            "provider": "ecu",
+            "path": "fuel.tanksKg.main2",
+            "unit": "kg"
+          },
+          "powerDependency": "UNKNOWN_LRU_BUS_WIRING",
+          "status": "source_available_training_only"
+        }
+      ],
+      "sourcePolicy": "fuel_mass_or_quantity_from_tank_state"
+    },
+    "eng.n1.1": {
+      "kind": "rotor_zero",
+      "system": "engine",
+      "channels": [
+        {
+          "id": "primary",
+          "source": {
+            "provider": "ecu",
+            "path": "engines.engine1.n1Percent",
+            "unit": "%"
+          },
+          "powerDependency": "UNKNOWN_LRU_BUS_WIRING",
+          "status": "source_available_training_only"
+        }
+      ],
+      "sourcePolicy": "engine_rotor_stopped"
+    },
+    "eng.n1.2": {
+      "kind": "rotor_zero",
+      "system": "engine",
+      "channels": [
+        {
+          "id": "primary",
+          "source": {
+            "provider": "ecu",
+            "path": "engines.engine2.n1Percent",
+            "unit": "%"
+          },
+          "powerDependency": "UNKNOWN_LRU_BUS_WIRING",
+          "status": "source_available_training_only"
+        }
+      ],
+      "sourcePolicy": "engine_rotor_stopped"
+    },
+    "eng.egt.1": {
+      "kind": "engine_thermal",
+      "system": "engine",
+      "channels": [
+        {
+          "id": "primary",
+          "source": {
+            "provider": "ecu",
+            "path": "engines.engine1.egtC",
+            "unit": "°C"
+          },
+          "powerDependency": "UNKNOWN_LRU_BUS_WIRING",
+          "status": "source_available_training_only"
+        }
+      ],
+      "sourcePolicy": "engines_stopped"
+    },
+    "eng.egt.2": {
+      "kind": "engine_thermal",
+      "system": "engine",
+      "channels": [
+        {
+          "id": "primary",
+          "source": {
+            "provider": "ecu",
+            "path": "engines.engine2.egtC",
+            "unit": "°C"
+          },
+          "powerDependency": "UNKNOWN_LRU_BUS_WIRING",
+          "status": "source_available_training_only"
+        }
+      ],
+      "sourcePolicy": "engines_stopped"
+    },
+    "eng.n2.1": {
+      "kind": "rotor_zero",
+      "system": "engine",
+      "channels": [
+        {
+          "id": "primary",
+          "source": {
+            "provider": "ecu",
+            "path": "engines.engine1.n2Percent",
+            "unit": "%"
+          },
+          "powerDependency": "UNKNOWN_LRU_BUS_WIRING",
+          "status": "source_available_training_only"
+        }
+      ],
+      "sourcePolicy": "engine_rotor_stopped"
+    },
+    "eng.n2.2": {
+      "kind": "rotor_zero",
+      "system": "engine",
+      "channels": [
+        {
+          "id": "primary",
+          "source": {
+            "provider": "ecu",
+            "path": "engines.engine2.n2Percent",
+            "unit": "%"
+          },
+          "powerDependency": "UNKNOWN_LRU_BUS_WIRING",
+          "status": "source_available_training_only"
+        }
+      ],
+      "sourcePolicy": "engine_rotor_stopped"
+    },
+    "eng.fuel_flow.1": {
+      "kind": "fuel_flow_zero",
+      "system": "engine",
+      "channels": [
+        {
+          "id": "primary",
+          "source": {
+            "provider": "ecu",
+            "path": "engines.engine1.fuelFlowKgHr",
+            "unit": "kg/h"
+          },
+          "powerDependency": "UNKNOWN_LRU_BUS_WIRING",
+          "status": "source_available_training_only"
+        }
+      ],
+      "sourcePolicy": "engine_fuel_cutoff"
+    },
+    "eng.fuel_flow.2": {
+      "kind": "fuel_flow_zero",
+      "system": "engine",
+      "channels": [
+        {
+          "id": "primary",
+          "source": {
+            "provider": "ecu",
+            "path": "engines.engine2.fuelFlowKgHr",
+            "unit": "kg/h"
+          },
+          "powerDependency": "UNKNOWN_LRU_BUS_WIRING",
+          "status": "source_available_training_only"
+        }
+      ],
+      "sourcePolicy": "engine_fuel_cutoff"
+    },
+    "eng.oil_pressure.1": {
+      "kind": "oil_pressure_zero",
+      "system": "engine",
+      "channels": [
+        {
+          "id": "primary",
+          "source": {
+            "provider": "ecu",
+            "path": "engines.engine1.oil.pressurePsi",
+            "unit": "psi"
+          },
+          "powerDependency": "UNKNOWN_LRU_BUS_WIRING",
+          "status": "source_available_training_only"
+        }
+      ],
+      "sourcePolicy": "engines_stopped_and_oil_pressure_dissipated"
+    },
+    "eng.oil_pressure.2": {
+      "kind": "oil_pressure_zero",
+      "system": "engine",
+      "channels": [
+        {
+          "id": "primary",
+          "source": {
+            "provider": "ecu",
+            "path": "engines.engine2.oil.pressurePsi",
+            "unit": "psi"
+          },
+          "powerDependency": "UNKNOWN_LRU_BUS_WIRING",
+          "status": "source_available_training_only"
+        }
+      ],
+      "sourcePolicy": "engines_stopped_and_oil_pressure_dissipated"
+    },
+    "eng.oil_temperature.1": {
+      "kind": "engine_oil_thermal",
+      "system": "engine",
+      "channels": [
+        {
+          "id": "primary",
+          "source": {
+            "provider": "ecu",
+            "path": "engines.engine1.oil.temperatureC",
+            "unit": "°C"
+          },
+          "powerDependency": "UNKNOWN_LRU_BUS_WIRING",
+          "status": "source_available_training_only"
+        }
+      ],
+      "sourcePolicy": "engines_stopped"
+    },
+    "eng.oil_temperature.2": {
+      "kind": "engine_oil_thermal",
+      "system": "engine",
+      "channels": [
+        {
+          "id": "primary",
+          "source": {
+            "provider": "ecu",
+            "path": "engines.engine2.oil.temperatureC",
+            "unit": "°C"
+          },
+          "powerDependency": "UNKNOWN_LRU_BUS_WIRING",
+          "status": "source_available_training_only"
+        }
+      ],
+      "sourcePolicy": "engines_stopped"
+    },
+    "eng.vibration.1": {
+      "kind": "vibration_zero",
+      "system": "engine",
+      "channels": [
+        {
+          "id": "primary",
+          "source": {
+            "provider": null,
+            "path": null,
+            "unit": null
+          },
+          "powerDependency": "UNKNOWN_LRU_BUS_WIRING",
+          "status": "requires_explicit_source"
+        }
+      ],
+      "sourcePolicy": "rotors_stopped"
+    },
+    "eng.vibration.2": {
+      "kind": "vibration_zero",
+      "system": "engine",
+      "channels": [
+        {
+          "id": "primary",
+          "source": {
+            "provider": null,
+            "path": null,
+            "unit": null
+          },
+          "powerDependency": "UNKNOWN_LRU_BUS_WIRING",
+          "status": "requires_explicit_source"
+        }
+      ],
+      "sourcePolicy": "rotors_stopped"
+    },
+    "eng.hyd_pressure.a": {
+      "kind": "hydraulics_condition",
+      "system": "engine",
+      "channels": [
+        {
+          "id": "primary",
+          "source": {
+            "provider": "ecu",
+            "path": "hydraulics.systemA.pressurePsi",
+            "unit": "psi"
+          },
+          "powerDependency": "UNKNOWN_LRU_BUS_WIRING",
+          "status": "source_available_training_only"
+        }
+      ],
+      "sourcePolicy": "hydraulic_pumps_off"
+    },
+    "eng.hyd_pressure.b": {
+      "kind": "hydraulics_condition",
+      "system": "engine",
+      "channels": [
+        {
+          "id": "primary",
+          "source": {
+            "provider": "ecu",
+            "path": "hydraulics.systemB.pressurePsi",
+            "unit": "psi"
+          },
+          "powerDependency": "UNKNOWN_LRU_BUS_WIRING",
+          "status": "source_available_training_only"
+        }
+      ],
+      "sourcePolicy": "hydraulic_pumps_off"
+    },
+    "fo.flap_position": {
+      "kind": "mechanical_last_position",
+      "system": "flight_indicators",
+      "channels": [
+        {
+          "id": "flapL",
+          "source": {
+            "provider": null,
+            "path": null,
+            "unit": null
+          },
+          "powerDependency": "UNKNOWN_LRU_BUS_WIRING",
+          "status": "requires_explicit_source"
+        },
+        {
+          "id": "flapR",
+          "source": {
+            "provider": null,
+            "path": null,
+            "unit": null
+          },
+          "powerDependency": "UNKNOWN_LRU_BUS_WIRING",
+          "status": "requires_explicit_source"
+        }
+      ],
+      "sourcePolicy": "none"
+    },
+    "fo.hyd_brake_pressure": {
+      "kind": "accumulator_retained",
+      "system": "flight_indicators",
+      "channels": [
+        {
+          "id": "primary",
+          "source": {
+            "provider": null,
+            "path": null,
+            "unit": null
+          },
+          "powerDependency": "UNKNOWN_LRU_BUS_WIRING",
+          "status": "requires_explicit_source"
+        }
+      ],
+      "sourcePolicy": "hydraulic_system_state_available"
+    },
+    "fo.airspeed": {
+      "kind": "mechanical_low_stop",
+      "system": "flight_indicators",
+      "channels": [
+        {
+          "id": "primary",
+          "source": {
+            "provider": "ecu",
+            "path": "aircraft.iasKt",
+            "unit": "kt"
+          },
+          "powerDependency": "UNKNOWN_LRU_BUS_WIRING",
+          "status": "source_available_training_only"
+        }
+      ],
+      "sourcePolicy": "aircraft_stationary_and_no_pitot_pressure"
+    },
+    "fo.rmi": {
+      "kind": "nav_power_dependent",
+      "system": "flight_indicators",
+      "channels": [
+        {
+          "id": "bearing1",
+          "source": {
+            "provider": null,
+            "path": null,
+            "unit": null
+          },
+          "powerDependency": "UNKNOWN_LRU_BUS_WIRING",
+          "status": "requires_explicit_source"
+        },
+        {
+          "id": "bearing2",
+          "source": {
+            "provider": null,
+            "path": null,
+            "unit": null
+          },
+          "powerDependency": "UNKNOWN_LRU_BUS_WIRING",
+          "status": "requires_explicit_source"
+        }
+      ],
+      "sourcePolicy": "nav_receiver_off_or_power_unavailable"
+    },
+    "fo.left_linear": {
+      "kind": "indicator_identity_unknown",
+      "system": "flight_indicators",
+      "channels": [
+        {
+          "id": "primary",
+          "source": {
+            "provider": null,
+            "path": null,
+            "unit": null
+          },
+          "powerDependency": "UNKNOWN_LRU_BUS_WIRING",
+          "status": "requires_explicit_source"
+        }
+      ],
+      "sourcePolicy": "none"
+    },
+    "fo.right_linear": {
+      "kind": "indicator_identity_unknown",
+      "system": "flight_indicators",
+      "channels": [
+        {
+          "id": "primary",
+          "source": {
+            "provider": null,
+            "path": null,
+            "unit": null
+          },
+          "powerDependency": "UNKNOWN_LRU_BUS_WIRING",
+          "status": "requires_explicit_source"
+        }
+      ],
+      "sourcePolicy": "none"
+    },
+    "fo.outer_altimeter": {
+      "kind": "static_pressure_altitude",
+      "system": "flight_indicators",
+      "channels": [
+        {
+          "id": "primary",
+          "source": {
+            "provider": null,
+            "path": null,
+            "unit": null
+          },
+          "powerDependency": "UNKNOWN_LRU_BUS_WIRING",
+          "status": "requires_explicit_source"
+        }
+      ],
+      "sourcePolicy": "static_pressure_and_baro_setting_available"
+    },
+    "fo.outer_vertical_speed": {
+      "kind": "zero_on_stable_static_pressure",
+      "system": "flight_indicators",
+      "channels": [
+        {
+          "id": "primary",
+          "source": {
+            "provider": null,
+            "path": null,
+            "unit": null
+          },
+          "powerDependency": "UNKNOWN_LRU_BUS_WIRING",
+          "status": "requires_explicit_source"
+        }
+      ],
+      "sourcePolicy": "aircraft_stationary_and_static_pressure_stable"
+    },
+    "fo.outer_clock": {
+      "kind": "clock_retained",
+      "system": "flight_indicators",
+      "channels": [
+        {
+          "id": "primary",
+          "source": {
+            "provider": null,
+            "path": null,
+            "unit": null
+          },
+          "powerDependency": "UNKNOWN_LRU_BUS_WIRING",
+          "status": "requires_explicit_source"
+        }
+      ],
+      "sourcePolicy": "clock_battery_or_clock_mechanism"
+    },
+    "ped.stab_trim.left": {
+      "kind": "mechanical_last_position",
+      "system": "controls",
+      "channels": [
+        {
+          "id": "primary",
+          "source": {
+            "provider": null,
+            "path": null,
+            "unit": null
+          },
+          "powerDependency": "UNKNOWN_LRU_BUS_WIRING",
+          "status": "requires_explicit_source"
+        }
+      ],
+      "sourcePolicy": "none"
+    },
+    "ped.stab_trim.right": {
+      "kind": "mechanical_last_position",
+      "system": "controls",
+      "channels": [
+        {
+          "id": "primary",
+          "source": {
+            "provider": null,
+            "path": null,
+            "unit": null
+          },
+          "powerDependency": "UNKNOWN_LRU_BUS_WIRING",
+          "status": "requires_explicit_source"
+        }
+      ],
+      "sourcePolicy": "none"
+    },
+    "ped.rudder_trim": {
+      "kind": "mechanical_last_position",
+      "system": "controls",
+      "channels": [
+        {
+          "id": "primary",
+          "source": {
+            "provider": null,
+            "path": null,
+            "unit": null
+          },
+          "powerDependency": "UNKNOWN_LRU_BUS_WIRING",
+          "status": "requires_explicit_source"
+        }
+      ],
+      "sourcePolicy": "none"
+    },
+    "oh.crew_oxygen.pressure": {
+      "kind": "bottle_pressure_retained",
+      "system": "overhead",
+      "channels": [
+        {
+          "id": "primary",
+          "source": {
+            "provider": null,
+            "path": null,
+            "unit": null
+          },
+          "powerDependency": "UNKNOWN_LRU_BUS_WIRING",
+          "status": "requires_explicit_source"
+        }
+      ],
+      "sourcePolicy": "bottle_contents_known"
+    }
+  }
+}
