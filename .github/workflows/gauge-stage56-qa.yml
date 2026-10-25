@@ -1,0 +1,23 @@
+name: Gauge stages 5 and 6 interpolation / needle geometry QA
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'engine/instruments/stage5*'
+      - 'engine/instruments/stage6*'
+      - '.github/workflows/gauge-stage56-qa.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  numerical-and-geometry-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate numerical scale anchors, interpolation and original needle geometry
+        run: node --test engine/instruments/stage5-stage6.test.cjs
+      - name: Check immutable overhead photographs
+        run: python3 panel-mosaic-lab/verify-final-overhead.py
