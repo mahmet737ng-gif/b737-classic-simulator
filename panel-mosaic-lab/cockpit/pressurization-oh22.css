@@ -55,7 +55,7 @@ html.oh22-pressure-config-active .lights-layer .mounted-light[data-light="press-
     duplicate outlines and lamps protruding outside their sockets. */
  display:flex;justify-content:center;align-items:center;white-space:normal;
  text-align:center;background:transparent;pointer-events:none;
- border-radius:0;border:0;
+ border-radius:0;border:0;box-sizing:border-box;overflow:hidden;
  font:750 9px/1.15 ui-sans-serif,system-ui;color:#595d60;
 }
 .oh22-pressure-controls [data-role="lamp"].on.amber{
@@ -107,5 +107,21 @@ html.oh22-pressure-config-active .lights-layer .mounted-light[data-light="press-
 }
 .oh22-pressure-controls .oh22-pressure-hotspot:focus-visible{
  outline:2px solid #ffe0a2;
+}
+/* ALTN is the owner's exact four-character legend: do not use the unrelated
+   archived "ALTEN" graphic. Keep all artwork inside its independent socket. */
+.oh22-pressure-controls [data-role="lamp"].oh22-altn-face{
+ color:#16301b;background:#050807;letter-spacing:.01em;
+ font:800 14px/1 Arial,Helvetica,sans-serif;
+}
+.oh22-pressure-controls [data-role="lamp"].oh22-altn-face.on{
+ color:#90ef8d;text-shadow:0 0 5px #63dc63,0 0 9px #368f40;
+ background:#08140b;
+}
+/* No other lamp face may paint the colored bezel that is baked into each
+   separately approved CPCS/DCPCS background asset. */
+.oh22-pressure-controls [data-role="lamp"]>img{
+ display:block;width:100%;height:100%;object-fit:fill;
+ max-width:none;max-height:none;pointer-events:none;
 }
 
