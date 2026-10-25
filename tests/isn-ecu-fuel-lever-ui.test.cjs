@@ -43,13 +43,12 @@ assert.match(element('clock').textContent,/125.0 s/);
 assert.match(element('engines').innerHTML,/PHASE <strong>AWAIT_FUEL_LEVER_IDLE/);
 assert.match(element('engines').innerHTML,/FUEL SUPPLY <strong class="amber">NO_AVAILABLE_FUEL_PATH/);
 click('idle1');
-assert.match(element('errors').textContent,/NO_AVAILABLE_FUEL_PATH/,
- 'Rejected IDLE must be clearly visible next to start controls');
-assert.match(element('engines').innerHTML,/FUEL LEVER <strong>CUTOFF/);
+assert.equal(element('errors').textContent,'','Lever movement is accepted even without supply');
+assert.match(element('engines').innerHTML,/FUEL LEVER <strong>IDLE/);
+assert.match(element('engines').innerHTML,/PHASE <strong>AWAIT_FUEL_LEVER_IDLE/);
 click('fuel');
 assert.match(element('[data-act="fuel"]').textContent,/4\/4 ON/);
 assert.match(element('engines').innerHTML,/FUEL SUPPLY <strong class="ok">AVAILABLE/);
-click('idle1');
 assert.equal(element('errors').textContent,'');
 assert.match(element('engines').innerHTML,/FUEL LEVER <strong>IDLE/);
 assert.match(element('engines').innerHTML,/PHASE <strong>LIGHT_OFF_SEQUENCE/);
@@ -64,4 +63,4 @@ assert.match(element('engines').innerHTML,/PHASE <strong>AWAIT_FUEL_LEVER_IDLE/)
 click('idle2');
 assert.equal(element('errors').textContent,'');
 assert.match(element('engines').innerHTML,/PHASE <strong>LIGHT_OFF_SEQUENCE/);
-console.log('PASS ECU Fuel Lever DOM E2E: N2 25 idle blocked with pumps OFF and visible error; pump switches ON restores fuel; real button leads to LIGHT_OFF and RUNNING; second engine independent.');
+console.log('PASS ECU Fuel Lever DOM E2E: N2 25 lever IDLE accepted with pumps OFF but no flow; pumps ON restores fuel; real button leads to LIGHT_OFF and RUNNING; second engine independent.');
