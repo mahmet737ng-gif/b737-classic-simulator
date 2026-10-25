@@ -12,7 +12,7 @@
  let registry,engine,active=null,layer;
  const nodes=new Map(),interlocks=new Map();
  function persist(){try{localStorage.setItem(STORAGE,JSON.stringify(engine.snapshot()));}catch{}}
- function frameKeys(c){return c.axis==='horizontal'?['horizontal-left','horizontal-center','horizontal-right']:c.states.length===2?['vertical-off','vertical-on']:['vertical-on','vertical-center','vertical-off'];}
+ function frameKeys(c){return window.B737TogglePoseMap.frameKeys(c);}
  function refreshOne(c){
   const button=nodes.get(c.id);if(!button)return;
   const value=engine.get(c.id),index=c.states.indexOf(value);
@@ -97,7 +97,7 @@
     button.dataset.visual='landing-triplet-v1';
     const sprite=registry.specialAssets?.landingTriplet;
     if(!sprite||sprite.order.join('/')!=='UP/CENTER/DOWN')throw Error('Approved landing-light paddle artwork missing');
-    const frames=c.states.length===3?[0,1,2]:[1,2]; // two inboard detents: OFF / ON
+    const frames=window.B737TogglePoseMap.landingFrames(c); // OFF is UP; ON is DOWN
     const size=p.diameter*(c.id.startsWith('landing-in-')?1.06:1.35);
     for(const frame of frames){
       const img=document.createElement('span');

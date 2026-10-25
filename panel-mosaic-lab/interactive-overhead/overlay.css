@@ -24,3 +24,7 @@
 .mounted-toggle .toggle-socket-cleanup{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);pointer-events:none;z-index:0;display:block;background:transparent;image-rendering:auto}
 .mounted-toggle .toggle-art{z-index:1}
 .mounted-toggle .toggle-frame{background-color:transparent!important}
+
+/* TGL-0005: never allow a fallback black fill; all backing is sampled from the real panel. */
+.toggle-socket-cleanup{background:none!important;border:0!important;box-shadow:none!important;border-radius:0!important}
+.toggle-frame,.landing-triplet-frame{background-color:transparent!important;box-shadow:none!important}

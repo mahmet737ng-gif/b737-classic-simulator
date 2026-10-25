@@ -65,22 +65,42 @@ assert.equal(1+hqBytes.readUIntLE(24,3),3840);
 assert.equal(1+hqBytes.readUIntLE(27,3),768);
 assert.equal(registry.version,'TGL-0003-HQ');
 
-// Approved sprite has a transparent background; image cleanup only affects mounted switch footprints.
-const cleanup=require('./socket-cleanup-v1.js');
-assert.equal(cleanup.REPAIR_RADIUS_RATIO,.82);
-const photoPixels=new Uint8ClampedArray(128*128*4);
-for(let y=0;y<128;y++)for(let x=0;x<128;x++){
- const n=(y*128+x)*4;photoPixels[n]=76;photoPixels[n+1]=96;photoPixels[n+2]=112;photoPixels[n+3]=255;
- if(x>50&&x<78&&y>47&&y<81){photoPixels[n]=244;photoPixels[n+1]=238;photoPixels[n+2]=230;}
+// TGL-0005: prevent upside-down visuals and dark ring regressions.
+const poses=require('./toggle-pose-v1.js');
+for(const c of registry.controls){
+ if(c.axis!=='vertical')continue;
+ const frames=poses.frameKeys(c);
+ assert.equal(frames.length,c.states.length,c.id);
+ if(c.states.length===2){assert.deepEqual(frames,['vertical-on','vertical-off'],c.id+' top OFF bottom ON');}
+ if(c.states.length===3){assert.deepEqual(frames,['vertical-on','vertical-center','vertical-off'],c.id);}
 }
-const neutral=cleanup.estimate(photoPixels,128);
-assert.deepEqual(neutral.base,[76,96,112],'old white toggle is excluded from sampled paint');
-const patch={width:128,height:128,data:new Uint8ClampedArray(128*128*4)};
-cleanup.patchToImageData(patch,neutral,55);
-assert.equal(patch.data[(64*128+64)*4+3],255,'old socket covered directly below new switch');
-assert.equal(patch.data[(13*128+64)*4+3],0,'legends outside the switch remain unaltered');
-const mountJS=fs.readFileSync(path.join(__dirname,'app.js'),'utf8');
-assert.ok(mountJS.includes("cleanup.className='toggle-socket-cleanup'"));
-assert.ok(mountJS.includes('button.append(cleanup,art)'),'cleanup must stay BEHIND approved sprite');
-const cockpitHTML=fs.readFileSync(path.join(__dirname,'../cockpit/overhead-stage.html'),'utf8');
-assert.ok(cockpitHTML.indexOf('socket-cleanup-v1.js')<cockpitHTML.indexOf('app.js?v=TGL-0004'),'cleanup loads before toggle mount');
+for(const id of ['landing-in-l','landing-in-r']){
+ const c=registry.controls.find(s=>s.id===id);
+ assert.deepEqual(poses.landingFrames(c),[0,2],id+' OFF UP / ON DOWN');
+}
+for(const id of ['landing-out-l','landing-out-r']){
+ const c=registry.controls.find(s=>s.id===id);
+ assert.deepEqual(poses.landingFrames(c),[0,1,2],id+' three detents');
+}
+const cleanup=require('./socket-cleanup-v2.js');
+const s=176,d=new Uint8ClampedArray(s*s*4),mid=(s-1)/2;
+for(let y=0;y<s;y++)for(let x=0;x<s;x++){
+ const k=(y*s+x)*4,blackOld=Math.hypot(x-mid,y-mid)<28;
+ d[k]=blackOld?5:169;d[k+1]=blackOld?4:181;d[k+2]=blackOld?6:191;d[k+3]=255;
+}
+const neutral=cleanup.estimate(d,s);
+assert.ok(neutral.base.every(v=>v>=160),'must sample silver panel rather than black old bezel '+JSON.stringify(neutral.base));
+const out={width:128,height:128,data:new Uint8ClampedArray(128*128*4)};
+cleanup.patchToImageData(out,neutral,70);
+const at=(x,y,k)=>out.data[(y*128+x)*4+k];
+assert.ok(at(64,64,0)>140&&at(64,64,1)>140,'center of replacement must never become black');
+assert.equal(at(0,0,3),0,'all exterior pixels must stay fully transparent');
+assert.equal(at(64,64,3),255,'metal ghost is fully masked beneath the switch');
+assert.ok(at(64,13,3)<255,'outer feather must blend into the original photo');
+const mountedSource=fs.readFileSync(path.join(__dirname,'app.js'),'utf8');
+assert.ok(mountedSource.includes('window.B737TogglePoseMap.landingFrames(c)'));
+assert.ok(mountedSource.includes('button.append(cleanup,art)'),'cleanup must remain behind the approved five-position art');
+const html2=fs.readFileSync(path.join(__dirname,'../cockpit/overhead-stage.html'),'utf8');
+assert.ok(html2.indexOf('toggle-pose-v1.js')<html2.indexOf('app.js?v=TGL-0005'));
+assert.ok(html2.indexOf('socket-cleanup-v2.js')<html2.indexOf('app.js?v=TGL-0005'));
+console.log('PASS TGL-0005: all 58 physical detents upright, no black fallback, feathered masked sockets, immutable art.');
