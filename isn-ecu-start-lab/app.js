@@ -23,12 +23,14 @@ function engineCard(e,num){
  return `<section><h2>ENGINE ${num}</h2><div class="metrics">${metrics(e)}</div>
  <p>START VALVE <strong>${e.startValveOpen===null?'UNKNOWN':e.startValveOpen?'OPEN':'CLOSED'}</strong> · FUEL LEVER <strong>${html(e.fuelLever)}</strong> · PHASE <strong>${html(e.phase)}</strong></p>
  <p>FUEL SUPPLY <strong class="${e.fuelSupplyReady===true?'ok':'amber'}">${e.fuelSupplyReady===true?'AVAILABLE':html(e.fuelSupplyReason||'UNAVAILABLE')}</strong></p>
+ <p>IGN L ${e.ignition?.eligible?.left===true?'POWERED':e.ignition?.eligible?.left===null?'UNKNOWN':'OFF'} · IGN R ${e.ignition?.eligible?.right===true?'POWERED':e.ignition?.eligible?.right===null?'UNKNOWN':'OFF'}</p>
  <p><span class="lamp ${e.oil.lowPressureLamp?'on':'off'}">LOW OIL PRESSURE ${e.oil.lowPressureLamp?'ON':'OFF'}</span>
  <span class="lamp ${e.oil.filterBypassLamp?'on':'off'}">OIL FILTER BYPASS ${e.oil.filterBypassLamp?'ON':'OFF'}</span></p></section>`;
 }
 function render(){if(!sim)return;const s=sim.get();$('clock').textContent=`${(s.timeMs/1000).toFixed(1)} s`;
  $('apu').textContent=`BATTERY ${s.electrical.battery?'ON':'OFF'} · APU ${s.apu.rpmPct}% RPM · EGT ${s.apu.egtC}°C · GEN ${s.apu.generator?.voltageV??0} V / ${s.apu.generator?.frequencyHz??0} Hz · APU LOAD ${s.apu.load?.actualLoadKva??0} kVA · POWER ${s.apu.load?.powerDemandPercent??0}% · FUEL ${s.apu.fuelFlowEstimatedKgHr??0} kg/h · BLEED ${s.apu.bleedValveOpen?'OPEN':'CLOSED'} · BUS 1 ${s.electrical.selectedSources[1]||'OFF'}`;
  $('engines').innerHTML=engineCard(s.engines.engine1,1)+engineCard(s.engines.engine2,2);
+ $('ignitionStatus').textContent=`STANDBY POWER ${s.electrical.standbySelector} · STANDBY AC ${s.electrical.standbyAcPowered===true?'AVAILABLE':s.electrical.standbyAcPowered===false?'OFF':'UNKNOWN'} · RIGHT IGNITION: AC STANDBY (BAT via inverter)`;
  $('alertSummary').textContent=s.alerts.length?s.alerts.map(a=>a.id).join(' | '):'No active advisories';
  $('fuelStatus').textContent=`MAIN1 ${s.fuel.tanksKg.main1.toFixed(1)} kg · CENTER ${s.fuel.tanksKg.center.toFixed(1)} kg · MAIN2 ${s.fuel.tanksKg.main2.toFixed(1)} kg · CROSSFEED ${s.fuel.crossfeed}`;
  $('log').textContent=s.trace.slice(-40).map(x=>`${(x.tMs/1000).toFixed(2).padStart(7)}s ${x.type} ${JSON.stringify(x)}`).join('\n');
@@ -48,6 +50,12 @@ function action(type){if(type==='reset'){create();return;}if(!sim)throw Error('S
  case 'loadLights':sim.setElectricalConsumer('CABIN_LIGHTS',!status.electrical.apuConsumerSwitches.CABIN_LIGHTS);break;
  case 'loadGalley':sim.setElectricalConsumer('GALLEY',!status.electrical.apuConsumerSwitches.GALLEY);break;
  case 'loadFans':sim.setElectricalConsumer('AIR_CONDITIONING_FANS',!status.electrical.apuConsumerSwitches.AIR_CONDITIONING_FANS);break;
+ case 'ignL':sim.setIgnitionSelector('IGN_L');break;
+ case 'ignBoth':sim.setIgnitionSelector('BOTH');break;
+ case 'ignR':sim.setIgnitionSelector('IGN_R');break;
+ case 'standbyBAT':sim.setStandbyPower('BAT');break;
+ case 'standbyAUTO':sim.setStandbyPower('AUTO');break;
+ case 'standbyOFF':sim.setStandbyPower('OFF');break;
  case 'apuBleed':sim.apuBleed(true);break;
  case 'fuel':sim.prepareFuel();break;
  case 'apuStop':sim.chain.event({id:'apu-start',kind:'toggle',next:'OFF'});break;
