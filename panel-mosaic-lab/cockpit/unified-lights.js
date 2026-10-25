@@ -4,9 +4,8 @@
  const byId=id=>document.getElementById(id);
  const dialog=byId('unifiedLightsDialog');
  const assetRoot='../assets/locked/2026-10-23/LIGHTS/';
- const githubApi='https://api.github.com/repos/mahmet737ng-gif/b737-classic-simulator/contents/panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS';
  const states=new Map(),cards=new Map();
- let lights=[],version='LGT-0008',registered=new Set();
+ let lights=[],version='LGT-0020',registered=new Set(),loadPromise=null,loaded=false,loadError='';
  const queryKey=value=>String(value).toUpperCase().replace(/[^A-Z0-9]+/g,'_').replace(/^_+|_+$/g,'');
 
  function update(c){
@@ -52,26 +51,84 @@
   }
   byId('unifiedLightStats').textContent=lights.length+' نوع چراغ · '+lights.filter(c=>c.states.includes('DIM_BLUE')).length+' نوع آبی سه‌حالته · '+shown.length+' نمایش داده‌شده · '+version;
  }
- async function sync(){
+ // The single canonical gallery registry is also Unified's library. Do not duplicate
+ // 193 SVG files or make a blocking GitHub API call on startup.
+ function announceReady(){
+  const count=lights.length;
+  const open=byId('unifiedLightsOpen');
+  open.textContent='تست چراغ‌ها ('+count+')';
+  open.setAttribute('aria-label','کتابخانهٔ یونیفاید · '+count+' نوع چراغ');
+  window.dispatchEvent(new CustomEvent('b737:unified-light-library-ready',{
+   detail:{version,count,states:lights.reduce((n,c)=>n+c.states.length,0)}
+  }));
+ }
+ function validateRegistry(reg){
+  if(!reg||!Array.isArray(reg.lights)||!reg.lights.length)throw Error('رجیستری فاقد چراغ است');
+  const ids=new Set();
+  for(const c of reg.lights){
+   if(ids.has(c.id))throw Error('شناسهٔ تکراری: '+c.id);
+   ids.add(c.id);
+   if(!c.assets?.OFF||!c.states?.includes('OFF')||!c.states.some(s=>s!=='OFF'))throw Error('حالت ناقص: '+c.id);
+   if(!c.face||c.face.width<=0||c.face.height<=0)throw Error('ابعاد نامعتبر: '+c.id);
+   for(const state of c.states){
+    const path=c.assets[state];
+    if(typeof path!=='string'||!/^[-a-zA-Z0-9_./]+\\.svg$/.test(path)||path.includes('..')||path.startsWith('/'))throw Error('مسیر SVG نامعتبر: '+c.id+' '+state);
+   }
+  }
+ }
+ async function sync({renderNow=true,force=true}={}){
+  if(loadPromise){
+   await loadPromise;
+   if(renderNow&&loaded)render();
+   return;
+  }
+  if(loaded&&!force){if(renderNow)render();return;}
   const button=byId('unifiedLightSync');button.disabled=true;
-  try{
-   const response=await fetch('../lights-test/registry.json?ts='+Date.now(),{cache:'no-store'});
-   if(!response.ok)throw Error('رجیستری چراغ‌ها در دسترس نیست');
-   const reg=await response.json();version=reg.version;registered=new Set(reg.lights.map(c=>c.id));
-   lights=model.merge(reg);
-   try{const r=await fetch(githubApi,{cache:'no-store'});if(r.ok){const files=await r.json();if(Array.isArray(files))lights=model.merge(reg,files);}}catch{/* The full versioned registry works offline from the GitHub API. */}
-   for(const c of lights)if(!c.states.includes(states.get(c.id)))states.set(c.id,'OFF');
-   render();
-  }catch(error){byId('unifiedLightStats').textContent='خطای همگام‌سازی: '+error.message;}
-  finally{button.disabled=false;}
+  loadPromise=(async()=>{
+   try{
+    const response=await fetch('../lights-test/registry.json?ts='+Date.now(),{cache:'no-store'});
+    if(!response.ok)throw Error('رجیستری چراغ‌ها در دسترس نیست');
+    const reg=await response.json();
+    validateRegistry(reg);
+    version=reg.version;registered=new Set(reg.lights.map(c=>c.id));
+    lights=model.merge(reg);
+    for(const c of lights)if(!c.states.includes(states.get(c.id)))states.set(c.id,'OFF');
+    loaded=true;loadError='';announceReady();
+   }catch(error){
+    loadError=error.message;
+    if(!loaded)byId('unifiedLightsOpen').textContent='چراغ‌ها · خطای اتصال';
+    byId('unifiedLightStats').textContent='خطای همگام‌سازی: '+loadError;
+   }finally{button.disabled=false;}
+  })();
+  try{await loadPromise;}finally{loadPromise=null;}
+  if(renderNow&&loaded)render();
  }
  function all(state){for(const c of lights){const s=state==='OFF'?'OFF':c.states.at(-1);states.set(c.id,s);window.dispatchEvent(new CustomEvent('b737:unified-legend-test',{detail:{asset:c.id,state:s}}));}render();}
- byId('unifiedLightsOpen').onclick=()=>{dialog.showModal();sync();};
+ byId('unifiedLightsOpen').onclick=()=>{dialog.showModal();if(loaded)render();sync({renderNow:true,force:true});};
  byId('unifiedLightsClose').onclick=()=>dialog.close();
  byId('unifiedLightSearch').oninput=render;
  byId('unifiedLightSync').onclick=sync;
  byId('unifiedLightAllOn').onclick=()=>all('ON');
  byId('unifiedLightAllOff').onclick=()=>all('OFF');
  byId('unifiedLightReset').onclick=()=>{states.clear();window.dispatchEvent(new CustomEvent('b737:unified-legend-clear'));render();};
- window.B737UnifiedLights=Object.freeze({open:()=>byId('unifiedLightsOpen').click(),set,getFrame:id=>states.get(String(id).toUpperCase())||'OFF',registry:()=>JSON.parse(JSON.stringify(lights))});
+ // Uniform resolver for future panel mounts. No location or aircraft logic is inferred.
+ const find=id=>lights.find(c=>c.id===String(id).toUpperCase())||null;
+ const resolve=(id,state='OFF')=>{
+  const c=find(id);if(!c)return null;
+  const frame=model.normalize(c,state);if(!frame)return null;
+  return {id:c.id,state:frame,url:new URL(assetRoot+c.assets[frame],location.href).href,
+   face:{...c.face},scope:c.scope||'ASSET_TEST_ONLY',
+   mountedCockpitInstances:[...(c.mountedCockpitInstances||[])]};
+ };
+ window.B737UnifiedLights=Object.freeze({
+  open:()=>byId('unifiedLightsOpen').click(),
+  set,
+  getFrame:id=>states.get(String(id).toUpperCase())||'OFF',
+  registry:()=>JSON.parse(JSON.stringify(lights)),
+  resolve,
+  whenReady:()=>loadPromise||Promise.resolve(),
+  status:()=>({ready:loaded,version,count:lights.length,error:loadError})
+ });
+ // Preload metadata only: images stay lazy until the user opens the test library.
+ sync({renderNow:false,force:false});
 })();
