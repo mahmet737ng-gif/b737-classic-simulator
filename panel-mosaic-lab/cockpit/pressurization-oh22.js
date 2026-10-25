@@ -32,7 +32,7 @@
    el.title=c.label+(c.kind==='altitude'?' — left click increase, shift/right click decrease':' — click to next detent');
    el.setAttribute('aria-label',el.title);el.setAttribute('aria-keyshortcuts','ArrowUp ArrowDown');
    pos(el,c.xy);
-   const size=c.kind==='altitude'?11.8:c.kind==='momentary'?10.2:c.kind==='spring'?12.2:12.5;
+   const size=c.kind==='altitude'?11.8:c.kind==='momentary'?10.2:c.kind==='spring'?9.2:12.5;
    el.style.width=size+'%';el.style.height=(size*.84)+'%';
    const img=root.createElement('img');img.src=c.kind==='spring'?toggleAsset:knobAsset;img.alt='';img.draggable=false;
    const value=root.createElement('span');value.className='oh22-control-value';value.dataset.value='';
@@ -76,7 +76,7 @@
  function createLamp(l){
    const el=root.createElement('span');el.dataset.role='lamp';el.dataset.lamp=l.id;
    el.textContent=l.label;el.title=l.label+' · '+system+' logic';pos(el,l.xy);
-   el.style.width=system==='DCPCS'?'18%':'16%';el.style.height=system==='DCPCS'?'7%':'6%';
+   el.style.width=system==='DCPCS'?'18%':'16%';el.style.height=system==='DCPCS'?'7.7%':'6%';
    el.classList.add(l.id==='auto-fail'||l.id==='off-sched'?'amber':'green');
    if(approvedLamps[l.id]){
      el.dataset.asset=approvedLamps[l.id];
@@ -147,7 +147,7 @@
      n.setAttribute('aria-valuetext',String(value));
      let angle=0;
      if(c.kind==='altitude')angle=-155+310*(Number(value)-c.min)/(c.max-c.min);
-     else if(c.kind==='selector')angle=-65+130*(c.states.indexOf(value)/Math.max(1,c.states.length-1));
+     else if(c.kind==='selector')angle=(system==='DCPCS'&&c.id==='press-mode'?-45:-65)+(system==='DCPCS'&&c.id==='press-mode'?90:130)*(c.states.indexOf(value)/Math.max(1,c.states.length-1));
      else if(c.kind==='spring')angle=value==='CLOSE'?-24:value==='OPEN'?24:0;
      const img=n.querySelector('img');if(img)img.style.transform='rotate('+angle+'deg)';
    }
@@ -155,7 +155,7 @@
    if(gauge){
      const manual=output.operatingMode==='MAN';
      gauge.dataset.known=String(manual);
-     gauge.textContent=manual?Math.round(output.manualValveFraction*100)+'%':'—';
+     gauge.textContent=manual?Math.round(output.manualValveFraction*100)+'%':'';
      gauge.title=manual?'Illustrative MAN command position only; not actual measured valve travel':'Actual valve position unknown: no pressure/servo simulation';
    }
    caption.textContent=system+'  ·  '+(output.operatingMode||'UNKNOWN')+'  ·  '+(output.outflowCommand||output.outflow?.command||'NOT CALCULATED');
