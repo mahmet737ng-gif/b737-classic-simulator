@@ -7,12 +7,13 @@
  const registry=(typeof module==='object'&&module.exports)?
    require('./cold-dark-indicator-policy-v1.json'):
    root?.B737ColdDarkIndicatorPolicyV1;
- const api=factory(registry);
+ const api=factory(registry,root);
  if(typeof module==='object'&&module.exports)module.exports=api;
  if(root)root.B737ColdDarkIndicatorV1=api;
-})(typeof globalThis==='object'?globalThis:this,function(registry){
+})(typeof globalThis==='object'?globalThis:this,function(registry,root){
  'use strict';
  const finite=v=>typeof v==='number'&&Number.isFinite(v);
+ const registryNow=()=>registry||root?.B737ColdDarkIndicatorPolicyV1;
  const safe=(name,val,unit,source)=>Object.freeze({id:name,status:'physical_value_known',value:val,unit,source,calibrationApproved:false});
  const need=(name,why,unit)=>Object.freeze({id:name,status:'requires_system_state',value:null,unit,reason:why,calibrationApproved:false});
  const status=(name,state,reason,unit)=>Object.freeze({id:name,status:state,value:null,unit,reason,calibrationApproved:false});
@@ -34,9 +35,9 @@
    return Object.freeze({...defaults,...profile});
  }
  function resolve(id,c={}) {
-   if(!registry?.entries||!Object.prototype.hasOwnProperty.call(registry.entries,id))
+   if(!registryNow()?.entries||!Object.prototype.hasOwnProperty.call(registryNow().entries,id))
      throw Error('Unknown cold-dark gauge ID '+id);
-   const p=registry.entries[id],v=context(c),kind=p.kind;
+   const p=registryNow().entries[id],v=context(c),kind=p.kind;
    const physical=(num,key,unit)=>finite(num)?safe(id,num,unit,key):need(id,'Missing '+key,unit);
    switch(kind){
     case 'electrically_unpowered':
@@ -135,6 +136,6 @@
     default:return status(id,'system_state_required',p.details,p.unit);
    }
  }
- function snapshot(c){return Object.freeze(Object.fromEntries(Object.keys(registry.entries).map(id=>[id,resolve(id,c)])));}
- return Object.freeze({context,resolve,snapshot,registry});
+ function snapshot(c){return Object.freeze(Object.fromEntries(Object.keys(registryNow().entries).map(id=>[id,resolve(id,c)])));}
+ return Object.freeze({context,resolve,snapshot,get registry(){return registryNow();}});
 });
