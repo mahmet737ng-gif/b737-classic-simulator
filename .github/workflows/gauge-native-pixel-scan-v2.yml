@@ -1,0 +1,30 @@
+name: Gauge native pixel scan v2
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'tools/gauge-native-pixel-survey-v2.py'
+      - 'engine/instruments/needle-zero-reference-stage1-v1.json'
+      - '.github/workflows/gauge-native-pixel-scan-v2.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  survey:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Image processing dependencies
+        run: python -m pip install numpy opencv-python-headless
+      - name: Read original native-pixel panels and infer candidates
+        run: python tools/gauge-native-pixel-survey-v2.py
+      - name: Upload raw evidence (not approved calibrations)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gauge-native-source-candidates-v2
+          path: reports/gauge-native-scan-v2.json
+          if-no-files-found: warn
