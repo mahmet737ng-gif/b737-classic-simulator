@@ -54,7 +54,7 @@ test.advance(15000);
 const two=test.get();
 assert.ok(two.apu.egtC>one.apu.egtC,'Additional electrical consumers raise EGT');
 assert.ok(two.apu.load.actualLoadKva>one.apu.load.actualLoadKva);
-assert.ok(two.apu.fuel.burnedKg.apu>baselineFuelBurn,'Additional simulated fuel consumed');
+assert.ok(two.fuel.burnedKg.apu>baselineFuelBurn,'Additional simulated fuel consumed');
 test.selectGenerator('APU',2);
 test.setElectricalConsumer('GALLEY',true);
 test.advance(16000);
