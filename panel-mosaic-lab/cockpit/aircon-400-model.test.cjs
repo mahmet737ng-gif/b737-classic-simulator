@@ -22,7 +22,16 @@ assert.deepEqual(m.zoneKnobs.map(x=>x.id),['cont-cab','fwd-cab','aft-cab']);
 assert.ok(m.precheck.diameter>=195,'737-400 PRECHECK rotary must fit its round socket');
 for(const c of m.zoneKnobs)assert.ok(c.diameter>=198,'737-400 zone rotary must fit its socket: '+c.id);
 assert.ok(m.trim.width>=120&&m.trim.height>=160,'TRIM AIR toggle must fill its slot');
-assert.ok(m.lamps.every(l=>l.rect[2]>=210&&l.rect[3]>=80),'All three ZONE TEMP faces fill their cutouts');
+// The annunciator faces are measured against BLACK glass, not the orange frame.
+const ownerBezelBounds=[[107,774,338,887],[456,774,679,887],[787,774,1017,887]];
+assert.deepEqual(m.lamps.map(l=>l.rect),[[118,788,210,88],[466,788,204,88],[797,788,210,88]]);
+for(const [i,l] of m.lamps.entries()){
+ const [x,y,w,h]=l.rect,[left,top,right,bottom]=ownerBezelBounds[i];
+ assert.ok(x>=left+6&&y>=top+9&&x+w<=right-6&&y+h<=bottom-8,
+  'ZONE TEMP image must remain inside black opening, preserving baked orange border: '+l.id);
+}
+assert.ok(m.precheck.diameter>=226&&m.zoneKnobs.every(c=>c.diameter>=232),'Actual 400 rotary faces resized');
+assert.ok(m.trim.width>=148&&m.trim.height>=196,'Actual 400 TRIM AIR toggle resized');
 
 const layout=JSON.parse(fs.readFileSync(path.join(__dirname,'../all-overhead/atlas-layout.json'),'utf8'));
 const placement=layout.placements.find(p=>p.id==='OH20');
@@ -52,6 +61,8 @@ assert.ok(overlay.includes('setAirconTemperature'),'Outer-zone controls retain p
 assert.ok(shared.includes('setAirconTemperature:(id,value)=>'),'Narrow outer-zone integration exists');
 assert.ok(overlay.includes("classList.toggle('b737-aircon300500'"),'Legacy family retains its own fit class');
 assert.ok(css.includes('html.b737-aircon300500'),'737-300/500 knobs and lamps have their own visual scale');
+assert.ok(css.includes('transform:scale(1.06) rotate(var(--aircon-angle,0deg))'),'400 knob visual enlargement preserves detents');
+assert.ok(css.includes('transform:scale(1.08)'),'400 trim toggle face fills its opening');
 assert.ok(css.includes('scale:1.16'),'Legacy lower temp knobs grow without overriding live rotation');
 assert.ok(css.includes('scale(1.075,1.11)'),'Legacy DUCT OVERHEAT faces enlarge independently');
 
