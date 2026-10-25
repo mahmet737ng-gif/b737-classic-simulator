@@ -1,0 +1,376 @@
+{
+  "schema": "b737.source-image-radial-anchor-checkpoints.v1",
+  "effectivity": "737-33V EP-FSI",
+  "created": "2026-10-25",
+  "status": "auto_and_visual_candidate_NOT_certified",
+  "method": "Direct native source image inspection and Hough line detections. Nominal numeric labels matched visually; no proof of every minor tick, actual needle pivot, failure mechanics, or angular zero offset.",
+  "gauges": [
+    {
+      "id": "oh.elec.dc_amps",
+      "sourceId": "oh.elec.dc_amps",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/OH10-ELEC-LOSSLESS-9a1ca4d6cfb2.png",
+      "sha256": "9a1ca4d6cfb277ec1404f3a464e957d81be9d9689a0810883364342d57b0f1ea",
+      "imageSize": [
+        1095,
+        1436
+      ],
+      "pivot": {
+        "x": 310,
+        "y": 192,
+        "status": "optical_center_estimate_needs_confirmation"
+      },
+      "unit": "A",
+      "readingMode": "rotary",
+      "positiveDirection": "clockwise",
+      "marks": [
+        {
+          "value": -50,
+          "x": 226.5,
+          "y": 127,
+          "detectedAngle": -52.1,
+          "lengthPx": 27.8,
+          "major": true,
+          "evidence": "automatic_white_radial_line_candidate_not_signed_off"
+        },
+        {
+          "value": 0,
+          "x": 311.5,
+          "y": 110.5,
+          "detectedAngle": 1.05,
+          "lengthPx": 27,
+          "major": true,
+          "evidence": "automatic_white_radial_line_candidate_not_signed_off"
+        },
+        {
+          "value": 50,
+          "x": 409.5,
+          "y": 133.5,
+          "detectedAngle": 59.55,
+          "lengthPx": 10.3,
+          "major": true,
+          "evidence": "automatic_white_radial_line_candidate_not_signed_off"
+        }
+      ],
+      "completeMinorTicks": false,
+      "approved": false,
+      "notes": "Outer unlabeled ticks exist; -50/+50 are NOT physical min/max"
+    },
+    {
+      "id": "oh.elec.cps",
+      "sourceId": "oh.elec.cps",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/OH10-ELEC-LOSSLESS-9a1ca4d6cfb2.png",
+      "sha256": "9a1ca4d6cfb277ec1404f3a464e957d81be9d9689a0810883364342d57b0f1ea",
+      "imageSize": [
+        1095,
+        1436
+      ],
+      "pivot": {
+        "x": 780,
+        "y": 192,
+        "status": "optical_center_estimate_needs_confirmation"
+      },
+      "unit": "Hz",
+      "readingMode": "rotary",
+      "positiveDirection": "clockwise",
+      "marks": [
+        {
+          "value": 0,
+          "x": 656,
+          "y": 149.5,
+          "detectedAngle": -71.08,
+          "lengthPx": 10,
+          "major": true,
+          "evidence": "automatic_white_radial_line_candidate_not_signed_off"
+        },
+        {
+          "value": 400,
+          "x": 778,
+          "y": 106,
+          "detectedAngle": -1.33,
+          "lengthPx": 34.2,
+          "major": true,
+          "evidence": "automatic_white_radial_line_candidate_not_signed_off"
+        },
+        {
+          "value": 420,
+          "x": 898.5,
+          "y": 181.5,
+          "detectedAngle": 84.94,
+          "lengthPx": 13,
+          "major": true,
+          "evidence": "automatic_white_radial_line_candidate_not_signed_off"
+        }
+      ],
+      "completeMinorTicks": false,
+      "approved": false,
+      "notes": "Strongly nonlinear printed-number spacing; zero-to-400 compressed relative to 400-to-420"
+    },
+    {
+      "id": "oh.cabin.diff_pressure_altitude.outer",
+      "sourceId": "oh.cabin.diff_pressure_altitude",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/OH19-PRESS-DIFF-ALT-HORN-d6719ce57cef.png",
+      "sha256": "4c667d96ea7652e52784f5c06ee3cdde0879ca37631abf19969861afecc45fed",
+      "imageSize": [
+        1267,
+        1241
+      ],
+      "pivot": {
+        "x": 489,
+        "y": 365,
+        "status": "optical_center_estimate_needs_confirmation"
+      },
+      "unit": "psi",
+      "readingMode": "rotary",
+      "positiveDirection": "clockwise",
+      "marks": [
+        {
+          "value": 0,
+          "x": 492,
+          "y": 96,
+          "detectedAngle": 0.64,
+          "lengthPx": 18.1,
+          "major": true,
+          "evidence": "automatic_white_radial_line_candidate_not_signed_off"
+        },
+        {
+          "value": 1,
+          "x": 620.5,
+          "y": 164,
+          "detectedAngle": 33.19,
+          "lengthPx": 22.2,
+          "major": true,
+          "evidence": "automatic_white_radial_line_candidate_not_signed_off"
+        },
+        {
+          "value": 2,
+          "x": 708.5,
+          "y": 260,
+          "detectedAngle": 64.44,
+          "lengthPx": 28,
+          "major": true,
+          "evidence": "automatic_white_radial_line_candidate_not_signed_off"
+        },
+        {
+          "value": 3,
+          "x": 728.5,
+          "y": 363,
+          "detectedAngle": 89.52,
+          "lengthPx": 19.1,
+          "major": true,
+          "evidence": "automatic_white_radial_line_candidate_not_signed_off"
+        },
+        {
+          "value": 4,
+          "x": 686,
+          "y": 512.5,
+          "detectedAngle": 126.82,
+          "lengthPx": 33.2,
+          "major": true,
+          "evidence": "automatic_white_radial_line_candidate_not_signed_off"
+        },
+        {
+          "value": 5,
+          "x": 574.5,
+          "y": 590.5,
+          "detectedAngle": 159.24,
+          "lengthPx": 30,
+          "major": true,
+          "evidence": "automatic_white_radial_line_candidate_not_signed_off"
+        },
+        {
+          "value": 6,
+          "x": 430.5,
+          "y": 597,
+          "detectedAngle": -165.85,
+          "lengthPx": 26.5,
+          "major": true,
+          "evidence": "automatic_white_radial_line_candidate_not_signed_off"
+        },
+        {
+          "value": 7,
+          "x": 315.5,
+          "y": 535,
+          "detectedAngle": -134.42,
+          "lengthPx": 27.6,
+          "major": true,
+          "evidence": "automatic_white_radial_line_candidate_not_signed_off"
+        },
+        {
+          "value": 8,
+          "x": 248.5,
+          "y": 423.5,
+          "detectedAngle": -103.67,
+          "lengthPx": 15.8,
+          "major": true,
+          "evidence": "automatic_white_radial_line_candidate_not_signed_off"
+        },
+        {
+          "value": 9,
+          "x": 260,
+          "y": 280.5,
+          "detectedAngle": -69.75,
+          "lengthPx": 27.5,
+          "major": true,
+          "evidence": "automatic_white_radial_line_candidate_not_signed_off"
+        },
+        {
+          "value": 10,
+          "x": 340.5,
+          "y": 173,
+          "detectedAngle": -37.72,
+          "lengthPx": 27.3,
+          "major": true,
+          "evidence": "automatic_white_radial_line_candidate_not_signed_off"
+        }
+      ],
+      "completeMinorTicks": false,
+      "approved": false,
+      "notes": "Complete printed integer major tick set, intermediates still need independent QA"
+    },
+    {
+      "id": "oh.duct.pressure_lr",
+      "sourceId": "oh.duct.pressure_lr",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/OH21-BLEED-AIR-cc78219607a3.png",
+      "sha256": "4efe8c59579e8675825ed4dabf393648cfa7f11f6c09d831d137c23f70ecfe1e",
+      "imageSize": [
+        1122,
+        1402
+      ],
+      "pivot": {
+        "x": 544,
+        "y": 439,
+        "status": "optical_center_estimate_needs_confirmation"
+      },
+      "unit": "psi",
+      "readingMode": "rotary",
+      "positiveDirection": "clockwise",
+      "marks": [
+        {
+          "value": 0,
+          "x": 478.5,
+          "y": 562.5,
+          "detectedAngle": -152.06,
+          "lengthPx": 19.2,
+          "major": true,
+          "evidence": "automatic_white_radial_line_candidate_not_signed_off"
+        },
+        {
+          "value": 20,
+          "x": 401.5,
+          "y": 445,
+          "detectedAngle": -92.41,
+          "lengthPx": 11,
+          "major": true,
+          "evidence": "automatic_white_radial_line_candidate_not_signed_off"
+        },
+        {
+          "value": 40,
+          "x": 479,
+          "y": 305.5,
+          "detectedAngle": -25.96,
+          "lengthPx": 16.2,
+          "major": true,
+          "evidence": "automatic_white_radial_line_candidate_not_signed_off"
+        },
+        {
+          "value": 60,
+          "x": 608.5,
+          "y": 318.5,
+          "detectedAngle": 28.16,
+          "lengthPx": 10.3,
+          "major": true,
+          "evidence": "automatic_white_radial_line_candidate_not_signed_off"
+        },
+        {
+          "value": 80,
+          "x": 687,
+          "y": 442,
+          "detectedAngle": 91.2,
+          "lengthPx": 26,
+          "major": true,
+          "evidence": "automatic_white_radial_line_candidate_not_signed_off"
+        },
+        {
+          "value": 100,
+          "x": 595.5,
+          "y": 536.5,
+          "detectedAngle": 152.16,
+          "lengthPx": 17.7,
+          "major": true,
+          "evidence": "automatic_white_radial_line_candidate_not_signed_off"
+        }
+      ],
+      "completeMinorTicks": false,
+      "approved": false,
+      "notes": "0 is unlabeled inferred lower-left scale origin"
+    },
+    {
+      "id": "oh.cabin.temperature",
+      "sourceId": "oh.cabin.temperature",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/OH20-AIR-CONDITIONING-0734da6a7726.png",
+      "sha256": "94669d21f0be8aa538b2ff3b0684683409cadf6d9fc4b55390e7147abe506121",
+      "imageSize": [
+        1254,
+        1254
+      ],
+      "pivot": {
+        "x": 618,
+        "y": 681,
+        "status": "optical_center_estimate_needs_confirmation"
+      },
+      "unit": "°C",
+      "readingMode": "rotary",
+      "positiveDirection": "clockwise",
+      "marks": [
+        {
+          "value": 0,
+          "x": 515,
+          "y": 792.5,
+          "detectedAngle": -137.27,
+          "lengthPx": 30.6,
+          "major": true,
+          "evidence": "automatic_white_radial_line_candidate_not_signed_off"
+        },
+        {
+          "value": 20,
+          "x": 462.5,
+          "y": 680,
+          "detectedAngle": -89.63,
+          "lengthPx": 31.3,
+          "major": true,
+          "evidence": "automatic_white_radial_line_candidate_not_signed_off"
+        },
+        {
+          "value": 40,
+          "x": 529,
+          "y": 597.5,
+          "detectedAngle": -46.83,
+          "lengthPx": 18.4,
+          "major": true,
+          "evidence": "automatic_white_radial_line_candidate_not_signed_off"
+        },
+        {
+          "value": 80,
+          "x": 769.5,
+          "y": 638,
+          "detectedAngle": 74.15,
+          "lengthPx": 17,
+          "major": true,
+          "evidence": "automatic_white_radial_line_candidate_not_signed_off"
+        },
+        {
+          "value": 100,
+          "x": 757.5,
+          "y": 730.5,
+          "detectedAngle": 109.54,
+          "lengthPx": 30.4,
+          "major": true,
+          "evidence": "automatic_white_radial_line_candidate_not_signed_off"
+        }
+      ],
+      "completeMinorTicks": false,
+      "approved": false,
+      "notes": "60 degree-mark not unambiguously detected and therefore deliberately not approved"
+    }
+  ]
+}
