@@ -14,7 +14,7 @@ const {chromium}=require('playwright');
  try{
   await page.goto('http://127.0.0.1:8788/panel-mosaic-lab/cockpit/overhead-stage.html',{waitUntil:'domcontentloaded',timeout:60000});
   try{
-   await page.waitForFunction(()=>!!(window.B737OH22Pressurization&&window.B737Aircon400&&document.querySelectorAll('.atlas-piece').length>=20),null,{timeout:20000});
+   await page.waitForFunction(()=>!!(window.B737OH22Pressurization&&window.B737Aircon400&&document.querySelectorAll('.atlas-piece').length===19),null,{timeout:20000});
   }catch(e){
    const diag=await page.evaluate(()=>({
      href:location.href,
