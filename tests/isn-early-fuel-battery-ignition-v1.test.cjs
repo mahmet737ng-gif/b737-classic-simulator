@@ -42,14 +42,14 @@ assert.equal(battery.get().engines.engine1.phase,'MOTORING','No generator requir
 battery.advance(850);
 const first=battery.fuelLever('engine1','IDLE');
 assert.equal(first.accepted,true,'Fuel lever opens at 25% even if pumps still unpowered');
-assert.equal(first.fuelAvailable,false,'No simulated AC pump / resolved suction source');
+assert.equal(first.fuelAvailable,true,'Classic own-main engine-driven suction works without AC boost pumps');
 assert.equal(battery.get().engines.engine1.ignition.eligible.right,true,'BAT inverter energizes AC standby igniter');
 assert.equal(battery.get().engines.engine1.ignition.eligible.left,false,'IGN_R does not select left igniter');
-assert.equal(battery.get().engines.engine1.fuelFlowKgHr,0);
-assert.equal(battery.get().engines.engine1.phase,'AWAIT_FUEL_LEVER_IDLE');
-battery.selectGenerator('APU',1);battery.prepareFuel();
+assert.ok(battery.get().engines.engine1.fuelFlowKgHr>0,'Suction gives lightoff fuel flow at N2=25');
 assert.equal(battery.get().engines.engine1.phase,'LIGHT_OFF_SEQUENCE',
- 'Later real pump supply starts combustion without moving IDLE a second time');
+ 'Battery inverter right ignition plus suction can start without AC generator');
+assert.equal(battery.get().engines.engine1.fuelSupplyReason,'OWN_MAIN_ENGINE_DRIVEN_SUCTION');
+assert.ok(Object.values(battery.get().electrical.selectedSources).every(x=>x!=='APU'));
 battery.advance(1000);
 assert.equal(battery.get().engines.engine1.phase,'RUNNING');
 
@@ -77,4 +77,4 @@ assert.notEqual(veryEarly.get().engines.engine2.phase,'RUNNING');
 assert.ok(veryEarly.get().alerts.some(x=>x.id.includes('START_EGT_725')||x.id.includes('ABNORMAL_START_EGT')));
 veryEarly.fuelLever('engine2','CUTOFF');
 assert.equal(veryEarly.get().engines.engine2.fuelLever,'CUTOFF');
-console.log('PASS EARLY IDLE + BAT ignition: mechanical lever at N2=0; right igniter AC STANDBY powered via battery inverter; no AC generator for motoring; late pump activation ignites; under-20 N2 risk and severe early hot-start EGT cutoff.');
+console.log('PASS EARLY IDLE + BAT ignition: mechanical lever at N2=0; right igniter AC STANDBY powered via battery inverter; no AC generator for motoring; boost pumps OFF but suction starts; under-20 N2 risk and severe early hot-start EGT cutoff.');
