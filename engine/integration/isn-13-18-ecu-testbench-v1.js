@@ -79,7 +79,7 @@ function coastStep(prev,{runningN1=null,n2=null,egtC=null,phase='OFF'}={},dtMs){
  const s={...prev};
  if(phase==='RUNNING'&&finite(runningN1)&&finite(n2)){
   s.n1=runningN1;s.n2=n2;s.egt=finite(egtC)?egtC:s.egt;s.lastRunning=true;
- }else if(phase==='MOTORING'||phase==='AWAIT_FUEL_LEVER_IDLE'||phase==='LIGHT_OFF_SEQUENCE'){
+ }else if(phase==='MOTORING'||phase==='AWAIT_FUEL_LEVER_IDLE'||phase==='LIGHT_OFF_SEQUENCE'||phase==='ABNORMAL_EGT'||phase==='NO_LIGHT_OFF'||phase==='HUNG_START'){
   s.n2=finite(n2)?n2:s.n2;
   s.n1=clip(s.n2*0.17,0,12);
   if(finite(egtC))s.egt=egtC;
