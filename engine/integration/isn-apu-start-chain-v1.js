@@ -316,7 +316,7 @@
    if(!['engine1','engine2'].includes(device)||!['IDLE','CUTOFF'].includes(position))
     throw Error('Invalid start lever');
    if(position==='CUTOFF'){
-    this.operating[device]=null;this.fuelAvailable[device]=false;
+    this.operating[device]=null; // CUTOFF closes valves; upstream pump availability remains separately owned.
     this.feedback(device,'fuelStartLever','CUTOFF');
     if(this.phase[device]!=='RUNNING')this.abortEngine(device);
     else{
