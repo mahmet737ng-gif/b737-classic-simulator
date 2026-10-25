@@ -42,7 +42,7 @@ test('All existing photo anchors compile as preview only, without changing hardw
   for(const anchor of s.anchors){
    const loc=m.locate(anchor.value,{preview:true});
    assert.equal(loc.status,'preview_unverified',f.id+'/'+s.mode);
-   assert.ok(Math.abs(loc.angleDeg-anchor.angleDeg)<1e-5,f.id+'/'+s.mode);
+   assert.ok(Math.abs((((loc.angleDeg-anchor.angleDeg+180)%360)+360)%360-180)<1e-5,f.id+'/'+s.mode);
   }
   maps++;
  }
