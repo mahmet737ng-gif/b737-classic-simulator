@@ -1,0 +1,20 @@
+name: ISN thrust performance backend
+on:
+  push:
+    paths:
+      - 'engine/integration/isn-thrust-performance-v1.js'
+      - 'tests/isn-thrust-performance-v1.test.cjs'
+      - 'docs/ISN_THRUST_PERFORMANCE_V1.md'
+      - '.github/workflows/isn-thrust-performance.yml'
+  workflow_dispatch:
+
+jobs:
+  thrust-planner:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out current repository
+        uses: actions/checkout@v4
+      - name: Node syntax
+        run: node --check engine/integration/isn-thrust-performance-v1.js
+      - name: Reproducible thrust planner tests
+        run: node tests/isn-thrust-performance-v1.test.cjs
