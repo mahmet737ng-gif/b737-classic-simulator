@@ -17,7 +17,7 @@ const mapPoint=require('../interactive-overhead/model.js').mapPoint;
 const faces=new Map(gallery.lights.map(a=>[a.id,a.face]));
 const corrections=load('photo-position-corrections-v1.json');
 const correctionById=new Map(corrections.records.map(x=>[x.id,x]));
-assert.equal(correctionById.size,8);
+assert.equal(correctionById.size,12);
 
 const atlasPlates=new Map(atlas.placements.map(p=>[p.id,p]));
 const mainPieces=new Map(assembly.regions.flatMap(r=>(r.placements||[]).map(p=>[p.id,p])));
@@ -33,7 +33,7 @@ assert.equal(audit.summary.installed,142);
 assert.equal(audit.summary.visualVerified,0);
 assert.equal(audit.sourceRectOverlaps.length,0);
 assert.equal(audit.sourceVersions.overhead,'LGT-0006');
-assert.ok(['LGT-0007','LGT-0008'].includes(overhead.version),'version must be an approved registration or vector-fit revision');
+assert.ok(['LGT-0007','LGT-0008','LGT-0009'].includes(overhead.version),'version must be an approved registration or vector-fit revision');
 assert.equal(audit.sourceVersions.main,'LGT-0010');
 assert.ok(['LGT-0010','LGT-0011'].includes(main.version),'main original or fitted-face revision');
 assert.equal(audit.sourceVersions.gallery,gallery.version);
