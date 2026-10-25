@@ -4,6 +4,7 @@ on:
     branches: [main]
     paths:
       - 'tools/gauge-native-pixel-survey-v2.py'
+      - 'tools/gauge-native-triage-v1.py'
       - 'engine/instruments/needle-zero-reference-stage1-v1.json'
       - '.github/workflows/gauge-native-pixel-scan-v2.yml'
   workflow_dispatch:
@@ -21,10 +22,14 @@ jobs:
         run: python -m pip install numpy opencv-python-headless
       - name: Read original native-pixel panels and infer candidates
         run: python tools/gauge-native-pixel-survey-v2.py
+      - name: Correlate Hough segments with source-based photo anchors and coarse pivots
+        run: python tools/gauge-native-triage-v1.py
       - name: Upload raw evidence (not approved calibrations)
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: gauge-native-source-candidates-v2
-          path: reports/gauge-native-scan-v2.json
+          path: |
+            reports/gauge-native-scan-v2.json
+            reports/gauge-native-triage-v1.json
           if-no-files-found: warn
