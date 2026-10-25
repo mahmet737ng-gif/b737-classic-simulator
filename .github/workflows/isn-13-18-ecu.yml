@@ -26,6 +26,7 @@ jobs:
         run: |
           node --check engine/integration/isn-13-18-ecu-testbench-v1.js
           node --check isn-ecu-start-lab/app.js
+          node tests/isn-ecu-autoclock.test.cjs
           node tests/isn-13-18-ecu.test.cjs
           node tests/isn-09-12-integration.test.cjs
           node tests/isn-engine-envelope-v1.test.cjs
