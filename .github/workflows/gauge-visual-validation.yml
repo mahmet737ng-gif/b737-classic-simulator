@@ -1,0 +1,26 @@
+name: Gauge self-validation and source-scale QA
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'engine/instruments/**'
+      - 'tests/gauge-source-numeric-audit.test.cjs'
+      - '.github/workflows/gauge-visual-validation.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  gauge-quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify immutable approved overhead imagery
+        run: |
+          echo "283a3946ace19799284eb0f79dc924f744d661c4b6a1865932252f8ef29fd90f  panel-mosaic-lab/verify-final-overhead.py" | sha256sum --check --status
+          python3 panel-mosaic-lab/verify-final-overhead.py
+      - name: Check all source-linked scales, geometry and numerical movement
+        run: |
+          node tests/gauge-source-numeric-audit.test.cjs
+          node engine/instruments/gauge-visual-audit-v1.test.cjs
+          node engine/instruments/gauge-scale-engine-v2.test.cjs
+          node engine/instruments/gauge-inventory-v1.test.cjs
