@@ -8,6 +8,7 @@
   ['B737ISNEngineStartDynamicsV1','../../engine/integration/isn-engine-start-dynamics-v1.js'],
   ['B737ISNAPUStartChainV1','../../engine/integration/isn-apu-start-chain-v1.js'],
   ['B737ISNStartIndicationsV1','../../engine/integration/isn-start-indications-v1.js'],
+  ['B737ISNUnifiedControlRouterV1','../../engine/integration/isn-unified-control-router-v1.js'],
   ['B737ISNThrustPerformanceV1','../../engine/integration/isn-thrust-performance-v1.js'],
   ['B737ISN0912RuntimeV1','../../engine/integration/isn-09-12-runtime-v1.js'],
   ['B737ISNAPULoadDynamicsV1','../../engine/integration/isn-apu-load-dynamics-v1.js'],
@@ -37,7 +38,9 @@
  const pendingEvents=[];
  const strip=document.createElement('section');strip.id='isnStartIndications';strip.className='isn-start-indications';
  strip.setAttribute('aria-label','ISN-03 engine start training indications');
- strip.innerHTML=[1,2].map(n=>'<div class="isn-engine-card" data-engine="engine'+n+'" role="status"><b>ENG '+n+'</b><span data-field="phase">OFF</span><span>N1 <strong data-field="n1">0%</strong></span><span>N2 <strong data-field="n2">0%</strong></span><span>EGT <strong data-field="egt">—</strong></span><span>FUEL <strong data-field="fuel">0 kg/h</strong></span><span>OIL <strong data-field="oil">0 PSI</strong></span><span>START VALVE <strong data-field="valve">UNKNOWN</strong></span></div>').join('')+'<p class="isn-indication-error" id="isnIndicationError" role="alert"></p>';
+ strip.innerHTML='<div class="isn-engine-card isn-apu-card" data-apu-phase="OFF" role="status"><b>APU</b><span data-apu-field="phase">OFF</span><span>RPM <strong data-apu-field="rpm">0%</strong></span><span>EGT <strong data-apu-field="egt">—</strong></span><span>AC <strong data-apu-field="generator">0 V</strong></span><span>TIME <strong data-apu-field="time">0s</strong></span></div>'+
+ [1,2].map(n=>'<div class="isn-engine-card" data-engine="engine'+n+'" role="status"><b>ENG '+n+'</b><span data-field="phase">OFF</span><span>N1 <strong data-field="n1">0%</strong></span><span>N2 <strong data-field="n2">0%</strong></span><span>EGT <strong data-field="egt">—</strong></span><span>FUEL <strong data-field="fuel">0 kg/h</strong></span><span>OIL <strong data-field="oil">0 PSI</strong></span><span>START VALVE <strong data-field="valve">UNKNOWN</strong></span></div>').join('')+
+ '<p class="isn-indication-error" id="isnIndicationError" role="alert"></p>';
  document.querySelector('.workbench .toolbar').after(strip);
  const cards=Object.fromEntries([1,2].map(n=>['engine'+n,strip.querySelector('[data-engine="engine'+n+'"]')]));
  const panel=document.createElement('section');panel.className='isn-bridge-panel';panel.id='isnBridgePanel';
@@ -72,15 +75,8 @@
  const indicator=(label,value)=>{const n=document.createElement('div');const s=document.createElement('small');s.textContent=label;n.append(s,span(value));return n;};
  let lastLampProjection='',lastStartInputs='';
  const numeric=(value,unit='')=>Number.isFinite(value)?Number(value).toFixed(1)+(unit?' '+unit:''):'—';
- function ecuCommandFromOverhead(event){
-  const id=event?.id,value=event?.kind==='guarded'?event.next?.value:event?.next;
-  if(id==='apu-start'&&value==='START'){ecu.startAPU();return;}
-  if(['engine-start-1','engine-start-2'].includes(id)&&value==='GRD'){
-   ecu.engineStart('engine'+id.at(-1));return;
-  }
-  chain.event(event);
-  ecu.core.refreshFuelDelivery();
- }
+ const physical=window.B737ISNUnifiedControlRouterV1;
+ function ecuCommandFromOverhead(event){return physical.dispatch(ecu,event);}
  for(const id of [1,2]){
   byId('unifiedStarterDuct'+id).addEventListener('change',event=>{
    try{ecu.setStartDuctPressure('engine'+id,Number(event.target.value));render();}
@@ -106,6 +102,13 @@
   byId('isnApuTelemetry').textContent='APU '+s.phase.apu+' · RPM '+numeric(live.apu.rpmPct,'%')+
    ' · EGT '+numeric(live.apu.egtC,'°C')+' · GEN '+numeric(live.apu.generator.voltageV,'V')+
    '/'+numeric(live.apu.generator.frequencyHz,'Hz')+' · BLEED '+stateName(live.apu.bleedValveOpen);
+  const apuCard=strip.querySelector('.isn-apu-card');
+  apuCard.dataset.apuPhase=live.apu.phase;
+  apuCard.querySelector('[data-apu-field="phase"]').textContent=live.apu.phase;
+  apuCard.querySelector('[data-apu-field="rpm"]').textContent=numeric(live.apu.rpmPct,'%');
+  apuCard.querySelector('[data-apu-field="egt"]').textContent=numeric(live.apu.egtC,'°C');
+  apuCard.querySelector('[data-apu-field="generator"]').textContent=numeric(live.apu.generator.voltageV,'V');
+  apuCard.querySelector('[data-apu-field="time"]').textContent=numeric(live.apu.startElapsedSec,'s');
   for(const n of [1,2]){const info=indication.engines['engine'+n],card=cards['engine'+n];
    card.dataset.phase=info.phase;card.dataset.egtAdvisory=String(info.egt725Advisory);
    card.querySelector('[data-field="phase"]').textContent=info.phase;
@@ -118,7 +121,8 @@
    const valve=card.querySelector('[data-field="valve"]');valve.textContent=info.startValve.text;
    valve.dataset.amber=String(info.startValve.mountedLamp===true);
   }
-  byId('isnIndicationError').textContent=indication.error||([1,2].some(n=>indication.engines['engine'+n].egt725Advisory)?'EGT 725°C ABNORMAL-START ADVISORY':'');
+  const activeWarning=[1,2].some(n=>indication.engines['engine'+n].egt725Advisory)?'EGT 725°C ABNORMAL-START ADVISORY':'';
+  byId('isnIndicationError').textContent=indication.error||activeWarning;
   for(const input of faultControls.querySelectorAll('[data-start-fault]')){
    const [device,key]=input.dataset.startFault.split(':');
    input.checked=s.trainingFaults[device][key];
@@ -205,8 +209,7 @@
   try{
    if(e.data.kind==='controls-state'){
     bridge.synchronize(e.data);
-    chain.synchronize(e.data);
-    ecu.core.refreshFuelDelivery();
+    physical.synchronize(ecu,e.data);
     for(const event of pendingEvents.splice(0)){bridge.handleEvent(event);ecuCommandFromOverhead(event);}
     render();
    }else if(e.data.kind==='control-event'){
