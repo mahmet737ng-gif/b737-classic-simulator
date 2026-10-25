@@ -208,6 +208,7 @@ def main():
                 "scales":scales,"reviewState":"pixel_candidates_need_manual_image_qa"})
             counts["rotaryFaces"]+=1
         all_records.append(record);counts["faces"]+=1
+        print("B737_STAGE34_JSON_FACE="+json.dumps(record,ensure_ascii=False,separators=(",",":")),flush=True)
         compact={"id":record["id"],"type":record["kind"],
                  "lineCandidates":sum(len(s["whiteRadialCandidates"]) for s in record.get("scales",[])),
                  "rimMatches":len(record.get("circleRimAlternatives",[])),
