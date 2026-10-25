@@ -9,6 +9,10 @@ assert.deepEqual(model.needles.map(n=>n.piece),['OH11','OH11','OH12','OH12','OH1
 assert.equal(new Set(model.needles.map(n=>n.id)).size,5);
 assert.equal(model.needles[4].id,'apuAcAmps');
 assert.equal(model.needles[4].window,'OH12_APU');
+// Enlarged owner OH11/OH12 screenshot shows old pointers short of inner scale tick edges.
+for(const needle of model.needles.slice(0,2)){assert.equal(needle.tipRadius,128);assert.equal(needle.initialAngle,-80);}
+for(const needle of model.needles.slice(2,4)){assert.equal(needle.tipRadius,135);assert.equal(needle.initialAngle,-65);}
+
 for(const [name,source]of Object.entries(model.panels)){
  const piece=atlas.placements.find(p=>p.id===name);assert.ok(piece,name);
  assert.deepEqual(piece.sourceDimensions,[source.width,source.height]);
@@ -16,13 +20,13 @@ for(const [name,source]of Object.entries(model.panels)){
   const p=model.placement(piece,needle);
   assert.ok(p.x>piece.x&&p.x<piece.x+piece.w);
   assert.ok(p.y>piece.y&&p.y<piece.y+piece.h);
-  assert.ok(p.size>90&&p.size<(needle.id==='apuAcAmps'?150:120));
+  assert.ok(p.size>90&&p.size<(needle.id==='apuAcAmps'?150:190));
   const window=model.windowPath(needle);
   assert.match(window,/^M \d+ \d+ L \d+ \d+ /);
   assert.match(window,/ Z$/);
  }
 }
-assert.equal(model.angle(-500),-70);assert.equal(model.angle(500),70);assert.throws(()=>model.angle(NaN));
+assert.equal(model.angle(-500),-90);assert.equal(model.angle(500),90);assert.throws(()=>model.angle(NaN));
 const asset=fs.readFileSync(path.join(__dirname,'drive-amps-needle.svg'),'utf8');
 assert.equal((asset.match(/<path /g)||[]).length,2);
 assert.doesNotMatch(asset,/<circle|<text|<image/,'The shared file must contain only a transparent blade');
