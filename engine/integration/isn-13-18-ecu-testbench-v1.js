@@ -4,10 +4,11 @@
  * The only writable owners of engine running state remain the ISN03 start chain
  * and ISN09-12 fuel runtime. Never override external/instructor observations.
  */
-(function(root,factory){'use strict';const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;if(root)root.B737ISN1318ECUTestbenchV1=api;})(typeof globalThis!=='undefined'?globalThis:null,function(){
+(function(root,factory){'use strict';const api=factory(root?.B737ISNAPULoadDynamicsV1||(typeof require==='function'?require('./isn-apu-load-dynamics-v1'):null));if(typeof module==='object'&&module.exports)module.exports=api;if(root)root.B737ISN1318ECUTestbenchV1=api;})(typeof globalThis!=='undefined'?globalThis:null,function(LoadDynamics){
 'use strict';
 const SCHEMA='b737.isn.ecu-start-test.v1', ORIGIN='SIM_TRAINING_APPROX_13_18';
-const ENGINES=['engine1','engine2'];
+if(!LoadDynamics?.initial||!LoadDynamics?.step)throw Error('APU load dynamics dependency required');
+ const ENGINES=['engine1','engine2'];
 const CONFIG=Object.freeze({oilPressureLampOnPsi:11.75,oilPressureLampOffPsi:13,
  oilRedRadialTrainingPsi:13,oilPressureRiseN2:18,oilPressureAt22N2Psi:45,
  oilPumpPressurePerN2:0.75,oilPressureMaxPsi:95,
@@ -103,6 +104,8 @@ class Testbench{
   this.coast={engine1:initialCoast(),engine2:initialCoast()};
   this.elapsedMs=0;this.apuStartMs=null;this.engineStartMs={engine1:null,engine2:null};this.lastThrust=null;this.trace=[];
   this.apuFaults={overheat:false,bleedFailure:false,generatorFailure:false};
+   this.apuConsumers=Object.fromEntries(Object.keys(LoadDynamics.CATALOG).map(id=>[id,false]));
+   this.apuLoadState=LoadDynamics.initial();
   this.aircraft={pressureAltitudeFt:0,oatC:15,iasKt:0,massKg:55000,onGround:true};
   this.chain.synchronize({toggles:{'apu-start':'OFF','bleed-apu':'OFF','bleed-eng-1':'OFF','bleed-eng-2':'OFF',
    'pack-l':'OFF','pack-r':'OFF','isolation-valve':'OPEN'},
@@ -123,7 +126,14 @@ class Testbench{
    if(source==='APU'&&!this.get().apu.generator.ready)throw Error('APU generator not yet at rated speed');
   this.start.core.pack.send({type:'ELECTRICAL',action:{type:'SELECT_SOURCE',source,side}});
   this.chain.syncPower();this.log('SOURCE_SELECT',{source,side});return this.get();}
- apuBleed(on){if(typeof on!=='boolean')throw Error('APU BLEED boolean required');
+ setElectricalConsumer(id,on){
+   if(!Object.hasOwn(LoadDynamics.CATALOG,id)||typeof on!=='boolean')
+    throw Error('Known training electrical consumer ID and boolean switch required');
+   this.apuConsumers[id]=on;
+   this.log('TRAINING_ELECTRICAL_CONSUMER',{id,on,kvaEstimate:LoadDynamics.CATALOG[id].kva});
+   return this.get();
+  }
+  apuBleed(on){if(typeof on!=='boolean')throw Error('APU BLEED boolean required');
   if(on&&this.apuFaults.bleedFailure)throw Error('Injected APU bleed unavailable');
   this.chain.event({id:'bleed-apu',kind:'toggle',next:on?'ON':'OFF'});
   this.log('APU_BLEED',{on});return this.get();}
@@ -192,6 +202,17 @@ class Testbench{
     this.oil[id]=oilStep(this.oil[id],{n2Percent:this.coast[id].n2,
      throttle:snap.runningEnvelope.throttle[id],engineRunning:running},dt);
    }
+   if(snap.phase.apu==='READY'){
+    const load=LoadDynamics.demand({selectedSources:snap.selectedSources,
+     switches:this.apuConsumers,bleedValveOpen:snap.bleed.apuBleedValveOpen,
+     pumpSnapshot:this.start.core.pack.get()});
+    this.apuLoadState=LoadDynamics.step(this.apuLoadState,load,dt);
+    // ISN-12 burns the estimated baseline 110 kg/h. Charge only the
+    // simulated excess from electrical/pneumatic load, with no double count.
+    const excessKgHr=Math.max(0,this.apuLoadState.fuelFlowKgHr-this.modules.FuelRuntime.approx.apuFuelKgHr);
+    if(snap.sources?.apu?.running===true&&this.core.fuel.tanks.main1>0&&excessKgHr>0)
+     this.core.fuel.consume('apu',excessKgHr*dt/3600000,'main1');
+   }else this.apuLoadState=LoadDynamics.initial();
   }
   return this.get();}
  get(){const base=this.core.get(),snap=this.chain.get();
@@ -237,9 +258,13 @@ class Testbench{
   const timing=this.chain.timing;
   const apuProgress=clip((tSince-timing.apuDoorMs)/(timing.apuReadyMs-timing.apuDoorMs),0,1);
   const ramp=apuProgress*apuProgress*(3-2*apuProgress);
-  const apuRPM=apuPhase==='READY'?CONFIG.apuRatedRpmPct:
+   const apuDemand=LoadDynamics.demand({selectedSources:snap.selectedSources,
+    switches:this.apuConsumers,bleedValveOpen:snap.bleed.apuBleedValveOpen,
+    pumpSnapshot:this.start.core.pack.get()});
+   const apuLoad=LoadDynamics.project(this.apuLoadState,apuDemand);
+   const apuRPM=apuPhase==='READY'?apuLoad.rpmPct:
     apuPhase==='STARTING'?5+(CONFIG.apuRatedRpmPct-5)*ramp:0;
-   const apuEGT=apuPhase==='READY'?CONFIG.apuReadyEGTC:
+   const apuEGT=apuPhase==='READY'?apuLoad.egtC:
     apuPhase==='STARTING'?apuStartEGT(apuProgress):CONFIG.oilAmbientTempC;
    // APU rated generator capability does not close the GEN-to-BUS switch.
    const genReady=apuPhase==='READY'&&apuRPM>=CONFIG.apuGeneratorReadyRpmPct&&!this.apuFaults.generatorFailure;
@@ -250,14 +275,15 @@ class Testbench{
     startElapsedSec:this.apuStartMs===null?null:round(tSince/1000,1),
     readyTargetSec:timing.apuReadyMs/1000,
     bleedValveOpen:snap.bleed.apuBleedValveOpen,genSelected:generator.connectedBusSides.length>0,
-    generator,faults:{...this.apuFaults},origin:ORIGIN};
+    generator,load:apuLoad,fuelFlowEstimatedKgHr:apuPhase==='READY'?apuLoad.fuelFlowKgHr:0,
+   faults:{...this.apuFaults},origin:ORIGIN};
   const states={aircraft:copy(this.aircraft),engine1:engines.engine1,engine2:engines.engine2,apu};
   return {schema:SCHEMA,origin:ORIGIN,quality:'TRAINING_SIMULATION_ONLY',
    timeMs:this.elapsedMs,timingProfile:this.chain.timingProfile,timing:copy(this.chain.timing),stage:{ISN13:'OIL',ISN14:'APU_TELEMETRY',ISN15:'FAILURE_BUS',
     ISN16:'THRUST_LIMIT',ISN17:'ENGINE_DYNAMICS',ISN18:'TESTBENCH_E2E'},
    aircraft:copy(this.aircraft),engines,apu,
    electrical:{battery:snap.electrical.battery,selectedSources:copy(snap.selectedSources),
-     apuGenerator:copy(generator)},
+     apuGenerator:copy(generator),apuConsumerSwitches:copy(this.apuConsumers)},
     hydraulics:{systemA:{pressurePsi:engines.engine1.hydraulic.engineDrivenPressurePsi,origin:ORIGIN},
      systemB:{pressurePsi:engines.engine2.hydraulic.engineDrivenPressurePsi,origin:ORIGIN}},
    fuel:base.fuel,thrust:{lastPlan:this.lastThrust,limits:base.modeLimitsN1Pct},
@@ -265,7 +291,7 @@ class Testbench{
    limits:{oilPressureLampOnPsi:CONFIG.oilPressureLampOnPsi,oilPressureLampOffPsi:CONFIG.oilPressureLampOffPsi},
    limitations:['NOT_AIRCRAFT_AFMS','NO_PHYSICAL_ECU_OR_FADEC_EMULATION',
     'USER_TIMED_START_PROFILE_NOT_AFM_CERTIFIED','FUEL_PUMP_BUS_ASSIGNMENT_UNVERIFIED',
-    'APU_EGT_AND_RPM_SURROGATES','NO_RELIABLE_MACH_OR_FULL_AERODYNAMIC_MODEL',
+    'APU_EGT_AND_RPM_SURROGATES','APU_LOAD_KVA_AND_GOVERNOR_SURROGATE_NOT_WDM_CALIBRATED','NO_RELIABLE_MACH_OR_FULL_AERODYNAMIC_MODEL',
     'NOT_CONNECTED_TO_APPROVED_UNIFIED_COCPIT_NEEDLES']};
  }
 }
