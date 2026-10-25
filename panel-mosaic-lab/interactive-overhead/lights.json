@@ -1,6 +1,6 @@
 {
   "schema": "b737.overhead.lights.v1",
-  "version": "LGT-0008",
+  "version": "LGT-0009",
   "baseVersion": "UPD-0012-OVH-measured-seams",
   "assets": {
     "ALIGN_WHITE": {
@@ -2183,7 +2183,7 @@
       "asset": "COWL_ANTI_ICE",
       "placementId": "OH16",
       "sourceRect": [
-        868,
+        873,
         167,
         259,
         106
@@ -2292,7 +2292,7 @@
       "asset": "EQUIP",
       "placementId": "OH19-VOICE",
       "sourceRect": [
-        519,
+        524,
         258,
         263,
         115
@@ -2313,7 +2313,7 @@
       "asset": "FWD_CARGO",
       "placementId": "OH19-VOICE",
       "sourceRect": [
-        813,
+        818,
         120,
         263,
         115
@@ -2821,7 +2821,7 @@
       "asset": "COWL_VALVE_OPEN",
       "placementId": "OH16",
       "sourceRect": [
-        868,
+        873,
         302,
         259,
         107
@@ -3349,9 +3349,9 @@
   ],
   "sourceStatus": "Public source-located electrical engine and previous fuel/flight-control models reused; private Technical Database retrieval returned no results. Remaining predicates are explicit simulator approximations, not source-verified aircraft rules. LGT-0002 reuses existing source-located Pneumatics V6 for 9 added pneumatic lamps and trip reset. New other sensor mappings remain explicit simulator approximations.",
   "unavailableLegends": [],
-  "previousVersion": "LGT-0007",
+  "previousVersion": "LGT-0008",
   "preservedLampCount": 84,
   "bluePaletteStatus": "Preview; original supplied assets unchanged; exact blue palette pending owner visual approval per INFORMATION_LIGHTS_SPEC.json",
-  "pixelRegistrationRevision": "LPR-0001",
+  "pixelRegistrationRevision": "LPR-0002",
   "faceFitRevision": "PH2-FIT-0001"
 }
