@@ -1,0 +1,23 @@
+name: Pixel review remaining B737 annunciator apertures
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - tools/lamp-photo-final-review.py
+      - .github/workflows/lamp-remaining-photo-review.yml
+permissions:
+  contents: read
+jobs:
+  inspect-pending-native-pixels:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 panel-mosaic-lab/verify-final-overhead.py
+      - run: python3 -m pip install --disable-pip-version-check Pillow
+      - run: python3 tools/lamp-photo-final-review.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: b737-remaining-24-original-pixel-views
+          path: /tmp/b737-remaining-24-crops/*.png
+          if-no-files-found: error
+          retention-days: 30
