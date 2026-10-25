@@ -30,6 +30,7 @@ jobs:
           node tests/isn-start-fcom-rules-v1.test.cjs
       - name: Engine start and fuel integration
         run: |
+          node tests/isn-09-12-unit.test.cjs
           node tests/isn-09-12-integration.test.cjs
           node tests/isn-apu-start-chain-v1.test.cjs
           node tests/isn-cold-dark-two-engine.e2e.test.cjs
