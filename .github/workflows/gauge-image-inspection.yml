@@ -4,6 +4,7 @@ on:
     branches: [gauge-image-inspection]
     paths:
       - 'engine/instruments/scan-source-images.py'
+      - 'engine/instruments/scan-radial-ticks.py'
       - '.github/workflows/gauge-image-inspection.yml'
   workflow_dispatch:
 permissions:
@@ -17,9 +18,11 @@ jobs:
       - name: Ensure overhead is locked
         run: python3 panel-mosaic-lab/verify-final-overhead.py
       - name: Install image tools
-        run: python3 -m pip install --user Pillow
+        run: python3 -m pip install --user Pillow opencv-python-headless
       - name: Create JPEG review proxies only
-        run: python3 engine/instruments/scan-source-images.py
+        run: |
+          python3 engine/instruments/scan-source-images.py
+          python3 engine/instruments/scan-radial-ticks.py
       - name: Commit preview evidence to inspection branch
         run: |
           git config user.name "github-actions[bot]"
