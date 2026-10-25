@@ -1,6 +1,8 @@
 /* MCP-0003: source-coordinate, non-destructive illuminated MCP controls.
  * The approved background images and locked overhead remain untouched.
  * Preview states are VISUAL ONLY, not a certified flight-control system.
+ * MCP-0004: calibrated against the owner 1920x1080 Unified screenshot;
+ * display source transform approx screen=(131,339)+0.70*source.
  */
 (function(){
 "use strict";
@@ -13,35 +15,35 @@ const initial=()=>({
 });
 const values=initial();
 const displays=[
- {id:"courseL",x:128,y:121,w:163,h:58,digits:3},
- {id:"speed",x:499,y:121,w:188,h:58,digits:3},
- {id:"heading",x:820,y:121,w:165,h:58,digits:3},
- {id:"altitude",x:1116,y:121,w:183,h:58,digits:5},
- {id:"verticalSpeed",x:1343,y:121,w:182,h:58,digits:4},
- {id:"courseR",x:1846,y:121,w:164,h:58,digits:3}
+ {id:"courseL",x:92,y:112,w:122,h:59,digits:3},
+ {id:"speed",x:488,y:112,w:161,h:59,digits:3},
+ {id:"heading",x:835,y:112,w:114,h:59,digits:3},
+ {id:"altitude",x:1130,y:112,w:151,h:59,digits:5},
+ {id:"verticalSpeed",x:1381,y:112,w:161,h:59,digits:4},
+ {id:"courseR",x:1880,y:112,w:136,h:59,digits:3}
 ];
 const lamps=[
- {id:"AT_ARM",x:365,y:137,w:41,h:10},
- {id:"VNAV",x:729,y:135,w:51,h:11},
- {id:"LNAV",x:1016,y:135,w:52,h:11},
- {id:"N1",x:364,y:333,w:52,h:11},
- {id:"SPEED",x:451,y:333,w:53,h:11},
- {id:"LVL_CHG",x:730,y:333,w:53,h:11},
- {id:"HDG_SEL",x:876,y:333,w:53,h:11},
- {id:"APP",x:1015,y:333,w:52,h:11},
- {id:"ALT_HLD",x:1179,y:333,w:53,h:11},
- {id:"VS",x:1288,y:333,w:52,h:11},
- {id:"CMD_A",x:1626,y:142,w:52,h:11},
- {id:"CWS_A",x:1626,y:232,w:52,h:11},
- {id:"CMD_B",x:1746,y:142,w:52,h:11},
- {id:"CWS_B",x:1746,y:232,w:52,h:11}
+ {id:"AT_ARM",x:322,y:129,w:45,h:8},
+ {id:"VNAV",x:701,y:161,w:58,h:10},
+ {id:"LNAV",x:991,y:161,w:58,h:10},
+ {id:"N1",x:264,y:374,w:54,h:10},
+ {id:"SPEED",x:384,y:374,w:54,h:10},
+ {id:"LVL_CHG",x:702,y:374,w:59,h:10},
+ {id:"HDG_SEL",x:849,y:374,w:58,h:10},
+ {id:"APP",x:998,y:374,w:62,h:10},
+ {id:"ALT_HLD",x:1178,y:374,w:58,h:10},
+ {id:"VS",x:1312,y:374,w:58,h:10},
+ {id:"CMD_A",x:1631,y:177,w:55,h:10},
+ {id:"CWS_A",x:1631,y:272,w:55,h:10},
+ {id:"CMD_B",x:1804,y:177,w:55,h:10},
+ {id:"CWS_B",x:1804,y:272,w:55,h:10}
 ];
 const knobs=[
- {id:"courseL",label:"COURSE L",x:182,y:241,d:95,type:"course"},
- {id:"speed",label:"IAS/MACH",x:614,y:274,d:116,type:"ias"},
- {id:"heading",label:"HEADING",x:902,y:239,d:89,type:"plain"},
- {id:"altitude",label:"ALTITUDE",x:1205,y:241,d:92,type:"plain"},
- {id:"courseR",label:"COURSE R",x:1949,y:238,d:95,type:"course"}
+ {id:"courseL",label:"COURSE L",x:85,y:252,d:93,type:"course"},
+ {id:"speed",label:"IAS/MACH",x:569,y:275,d:110,type:"ias"},
+ {id:"heading",label:"HEADING",x:867,y:245,d:89,type:"plain"},
+ {id:"altitude",label:"ALTITUDE",x:1218,y:244,d:92,type:"plain"},
+ {id:"courseR",label:"COURSE R",x:2052,y:249,d:95,type:"course"}
 ];
 const on=(root,name,fn,opt)=>root.addEventListener(name,fn,opt);
 function svgElement(tag,attrs={},txt){
@@ -74,8 +76,8 @@ function drawDigit(g,x,y,size,character){
 }
 function drawDisplay(svg,d){
  const g=group(svg,{"data-mcp-display":d.id});
- g.append(svgElement("rect",{x:d.x,y:d.y,width:d.w,height:d.h,rx:5,fill:"#101313",stroke:"#4d5356","stroke-width":3}));
- g.append(svgElement("rect",{x:d.x+4,y:d.y+4,width:d.w-8,height:d.h-8,rx:3,fill:"#090e0d"}));
+ // Keep the photo bezel visible: only cover the exact black glass interior.
+ g.append(svgElement("rect",{x:d.x,y:d.y,width:d.w,height:d.h,rx:1.6,fill:"#070b0b",opacity:.96}));
  const chars=numericText(d.id);
  const count=chars.length;
  const size=count>=5?24.5:29.5;
@@ -165,7 +167,7 @@ window.B737McpVisualV3=Object.freeze({
  setLamp:(id,state)=>{if(Object.hasOwn(values.lamps,id)){values.lamps[id]=!!state;repaint()}},
  mount
 });
-window.B737McpIasMachKnob=Object.freeze({placement:Object.freeze({sourceWidth:W,sourceHeight:H,x:614,y:274,diameter:116,detentDegrees:12}),getDetent:()=>values.speed-312,setDetent(v){if(Number.isFinite(v))setValue("speed",312+Math.trunc(v),"external")}});
+window.B737McpIasMachKnob=Object.freeze({placement:Object.freeze({sourceWidth:W,sourceHeight:H,x:569,y:275,diameter:110,detentDegrees:12}),getDetent:()=>values.speed-312,setDetent(v){if(Number.isFinite(v))setValue("speed",312+Math.trunc(v),"external")}});
 window.addEventListener("b737:cockpit-mounted",mount);
 document.addEventListener("DOMContentLoaded",mount);
 if(document.readyState!=="loading")mount();
