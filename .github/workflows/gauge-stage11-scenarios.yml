@@ -4,6 +4,8 @@ on:
     branches: [main]
     paths:
       - 'tests/stage11-needle-scenario-gate.test.cjs'
+      - 'tests/stage11-acceptance-matrix.test.cjs'
+      - 'engine/instruments/stage11-acceptance-matrix-v1.json'
       - 'engine/instruments/stage9*'
       - 'engine/instruments/stage10*'
       - 'engine/instruments/stage7*'
@@ -24,6 +26,8 @@ jobs:
         env:
           STAGE11_REPORT_PATH: reports/stage11-needle-scenarios-v1.json
         run: node --test tests/stage11-needle-scenario-gate.test.cjs
+      - name: Enforce exact 54-gauge native-photo and instrument-wiring release matrix
+        run: node --test tests/stage11-acceptance-matrix.test.cjs
       - name: Validate real-time engine start timing without changing it
         run: node tests/isn-ecu-realtime-start-v1.test.cjs
       - name: Validate independent dual-engine cruise and oil fault scenarios
