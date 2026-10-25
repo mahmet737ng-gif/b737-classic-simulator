@@ -4,7 +4,440 @@
   "sourceArtImmutable": true,
   "strategy": "Expand bezel-free SVG face background horizontally; centre original glyph and glow groups without scaling, preserving size, font and colors.",
   "selectedLamps": 9,
-  "derivedStates": 0,
+  "derivedStates": 18,
   "visualReleaseState": "UNIFIED_SCREENSHOT_QA_REQUIRED",
-  "derivatives": []
+  "derivatives": [
+    {
+      "lamp": "probe-capt-ps",
+      "asset": "CAPT_PS_1_AUX_STATIC",
+      "state": "OFF",
+      "oldSource": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/CAPT_PS_1_AUX_STATIC_OFF.svg",
+      "derived": "panel-mosaic-lab/assets/lights/precision-fit-v1/CAPT_PS_1_AUX_STATIC_OFF_255x80.svg",
+      "sourceRect": [
+        138,
+        565,
+        255,
+        80
+      ],
+      "SVGRoot": [
+        255,
+        80
+      ],
+      "viewBox": [
+        956.25,
+        300
+      ],
+      "glyphRescaled": false,
+      "positionChanged": false,
+      "sha256": "296d6474979354597d916432772fc314ab2476d79ca11d5d255fa76b6a197a23"
+    },
+    {
+      "lamp": "probe-capt-ps",
+      "asset": "CAPT_PS_1_AUX_STATIC",
+      "state": "ON",
+      "oldSource": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/CAPT_PS_1_AUX_STATIC_ON.svg",
+      "derived": "panel-mosaic-lab/assets/lights/precision-fit-v1/CAPT_PS_1_AUX_STATIC_ON_255x80.svg",
+      "sourceRect": [
+        138,
+        565,
+        255,
+        80
+      ],
+      "SVGRoot": [
+        255,
+        80
+      ],
+      "viewBox": [
+        956.25,
+        300
+      ],
+      "glyphRescaled": false,
+      "positionChanged": false,
+      "sha256": "e1ad2979ce21307cd81873530dcd90216b28fed99253436564ecdd76dc917e4e"
+    },
+    {
+      "lamp": "probe-fo-ps",
+      "asset": "FO_PS_2_AUX_STATIC",
+      "state": "OFF",
+      "oldSource": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/FO_PS_2_AUX_STATIC_OFF.svg",
+      "derived": "panel-mosaic-lab/assets/lights/precision-fit-v1/FO_PS_2_AUX_STATIC_OFF_255x80.svg",
+      "sourceRect": [
+        891,
+        565,
+        255,
+        80
+      ],
+      "SVGRoot": [
+        255,
+        80
+      ],
+      "viewBox": [
+        956.25,
+        300
+      ],
+      "glyphRescaled": false,
+      "positionChanged": false,
+      "sha256": "ce879fa8da36a47a1b4cd71d2710f219cb3e0ce4025838a93505ef49b628c79b"
+    },
+    {
+      "lamp": "probe-fo-ps",
+      "asset": "FO_PS_2_AUX_STATIC",
+      "state": "ON",
+      "oldSource": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/FO_PS_2_AUX_STATIC_ON.svg",
+      "derived": "panel-mosaic-lab/assets/lights/precision-fit-v1/FO_PS_2_AUX_STATIC_ON_255x80.svg",
+      "sourceRect": [
+        891,
+        565,
+        255,
+        80
+      ],
+      "SVGRoot": [
+        255,
+        80
+      ],
+      "viewBox": [
+        956.25,
+        300
+      ],
+      "glyphRescaled": false,
+      "positionChanged": false,
+      "sha256": "adaca5009b4ac903ad5f729e52e2c2fc4403f04c38fff2b94e1a7f2a557988e4"
+    },
+    {
+      "lamp": "probe-l-alpha",
+      "asset": "L_ALPHA_VANE",
+      "state": "OFF",
+      "oldSource": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/L_ALPHA_VANE_OFF.svg",
+      "derived": "panel-mosaic-lab/assets/lights/precision-fit-v1/L_ALPHA_VANE_OFF_255x82.svg",
+      "sourceRect": [
+        138,
+        875,
+        255,
+        82
+      ],
+      "SVGRoot": [
+        255,
+        82
+      ],
+      "viewBox": [
+        932.926829,
+        300
+      ],
+      "glyphRescaled": false,
+      "positionChanged": false,
+      "sha256": "0fe01b7f62d0c7961fc3cf0ae64167f3ccae91a08768eddb9f3cbef3f9917a4d"
+    },
+    {
+      "lamp": "probe-l-alpha",
+      "asset": "L_ALPHA_VANE",
+      "state": "ON",
+      "oldSource": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/L_ALPHA_VANE_ON.svg",
+      "derived": "panel-mosaic-lab/assets/lights/precision-fit-v1/L_ALPHA_VANE_ON_255x82.svg",
+      "sourceRect": [
+        138,
+        875,
+        255,
+        82
+      ],
+      "SVGRoot": [
+        255,
+        82
+      ],
+      "viewBox": [
+        932.926829,
+        300
+      ],
+      "glyphRescaled": false,
+      "positionChanged": false,
+      "sha256": "e9f3a894bb0764471ba83810d191e2abc2edfdadde04c59bcaab72f402c98e88"
+    },
+    {
+      "lamp": "probe-l-elev",
+      "asset": "L_ELEV_PITOT",
+      "state": "OFF",
+      "oldSource": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/L_ELEV_PITOT_OFF.svg",
+      "derived": "panel-mosaic-lab/assets/lights/precision-fit-v1/L_ELEV_PITOT_OFF_255x84.svg",
+      "sourceRect": [
+        138,
+        770,
+        255,
+        84
+      ],
+      "SVGRoot": [
+        255,
+        84
+      ],
+      "viewBox": [
+        910.714286,
+        300
+      ],
+      "glyphRescaled": false,
+      "positionChanged": false,
+      "sha256": "301a204b0b7123835f4cdfa9886826dfa4d4df5dd112a058997d6d151d8dd2c2"
+    },
+    {
+      "lamp": "probe-l-elev",
+      "asset": "L_ELEV_PITOT",
+      "state": "ON",
+      "oldSource": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/L_ELEV_PITOT_ON.svg",
+      "derived": "panel-mosaic-lab/assets/lights/precision-fit-v1/L_ELEV_PITOT_ON_255x84.svg",
+      "sourceRect": [
+        138,
+        770,
+        255,
+        84
+      ],
+      "SVGRoot": [
+        255,
+        84
+      ],
+      "viewBox": [
+        910.714286,
+        300
+      ],
+      "glyphRescaled": false,
+      "positionChanged": false,
+      "sha256": "bdb34feb6e567372f6bbf93f16e76fd8fa9121ebd1a1b8e3166b7401d55eca1f"
+    },
+    {
+      "lamp": "probe-r-alpha",
+      "asset": "R_ALPHA_VANE",
+      "state": "OFF",
+      "oldSource": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/R_ALPHA_VANE_OFF.svg",
+      "derived": "panel-mosaic-lab/assets/lights/precision-fit-v1/R_ALPHA_VANE_OFF_255x82.svg",
+      "sourceRect": [
+        891,
+        874,
+        255,
+        82
+      ],
+      "SVGRoot": [
+        255,
+        82
+      ],
+      "viewBox": [
+        932.926829,
+        300
+      ],
+      "glyphRescaled": false,
+      "positionChanged": false,
+      "sha256": "a805410d0ec24838c0e09849b3c91c3f842ddfca4c81eafadea69e044cea0cdc"
+    },
+    {
+      "lamp": "probe-r-alpha",
+      "asset": "R_ALPHA_VANE",
+      "state": "ON",
+      "oldSource": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/R_ALPHA_VANE_ON.svg",
+      "derived": "panel-mosaic-lab/assets/lights/precision-fit-v1/R_ALPHA_VANE_ON_255x82.svg",
+      "sourceRect": [
+        891,
+        874,
+        255,
+        82
+      ],
+      "SVGRoot": [
+        255,
+        82
+      ],
+      "viewBox": [
+        932.926829,
+        300
+      ],
+      "glyphRescaled": false,
+      "positionChanged": false,
+      "sha256": "38a1cb8358774f4b6a8934b98ca68302d5c2187d9db64a8abb350a465d5d70fc"
+    },
+    {
+      "lamp": "probe-r-elev",
+      "asset": "R_ELEV_PITOT",
+      "state": "OFF",
+      "oldSource": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/R_ELEV_PITOT_OFF.svg",
+      "derived": "panel-mosaic-lab/assets/lights/precision-fit-v1/R_ELEV_PITOT_OFF_255x85.svg",
+      "sourceRect": [
+        891,
+        769,
+        255,
+        85
+      ],
+      "SVGRoot": [
+        255,
+        85
+      ],
+      "viewBox": [
+        900.0,
+        300
+      ],
+      "glyphRescaled": false,
+      "positionChanged": false,
+      "sha256": "c25c196b7a073f605fbb38a5245a93d7e2e43aafafd94e1593721062cff2390f"
+    },
+    {
+      "lamp": "probe-r-elev",
+      "asset": "R_ELEV_PITOT",
+      "state": "ON",
+      "oldSource": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/R_ELEV_PITOT_ON.svg",
+      "derived": "panel-mosaic-lab/assets/lights/precision-fit-v1/R_ELEV_PITOT_ON_255x85.svg",
+      "sourceRect": [
+        891,
+        769,
+        255,
+        85
+      ],
+      "SVGRoot": [
+        255,
+        85
+      ],
+      "viewBox": [
+        900.0,
+        300
+      ],
+      "glyphRescaled": false,
+      "positionChanged": false,
+      "sha256": "a1e4d585a15492fd69bc1cdecbe5ca062f202c29031bfd21a2796cb116c669ab"
+    },
+    {
+      "lamp": "probe-temp",
+      "asset": "TEMP_PROBE",
+      "state": "OFF",
+      "oldSource": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/TEMP_PROBE_OFF.svg",
+      "derived": "panel-mosaic-lab/assets/lights/precision-fit-v1/TEMP_PROBE_OFF_255x83.svg",
+      "sourceRect": [
+        138,
+        978,
+        255,
+        83
+      ],
+      "SVGRoot": [
+        255,
+        83
+      ],
+      "viewBox": [
+        921.686747,
+        300
+      ],
+      "glyphRescaled": false,
+      "positionChanged": false,
+      "sha256": "fd9d2c10574233d1c9e58d044ead69fdfcd09e9280fa07097e62af9150433b0e"
+    },
+    {
+      "lamp": "probe-temp",
+      "asset": "TEMP_PROBE",
+      "state": "ON",
+      "oldSource": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/TEMP_PROBE_ON.svg",
+      "derived": "panel-mosaic-lab/assets/lights/precision-fit-v1/TEMP_PROBE_ON_255x83.svg",
+      "sourceRect": [
+        138,
+        978,
+        255,
+        83
+      ],
+      "SVGRoot": [
+        255,
+        83
+      ],
+      "viewBox": [
+        921.686747,
+        300
+      ],
+      "glyphRescaled": false,
+      "positionChanged": false,
+      "sha256": "c90c474eb083da18f51bc077d2a9e2fe44eea16f83221bfc587cdcfd4285c5d2"
+    },
+    {
+      "lamp": "yaw-damper",
+      "asset": "YAW_DAMPER",
+      "state": "OFF",
+      "oldSource": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/YAW_DAMPER_OFF.svg",
+      "derived": "panel-mosaic-lab/assets/lights/precision-fit-v1/YAW_DAMPER_OFF_199x64.svg",
+      "sourceRect": [
+        195,
+        994,
+        199,
+        64
+      ],
+      "SVGRoot": [
+        199,
+        64
+      ],
+      "viewBox": [
+        932.8125,
+        300
+      ],
+      "glyphRescaled": false,
+      "positionChanged": false,
+      "sha256": "1a59ad0f4846942667d022d0b082989db5977030ecc4b46e8f025438e1c4ca64"
+    },
+    {
+      "lamp": "yaw-damper",
+      "asset": "YAW_DAMPER",
+      "state": "ON",
+      "oldSource": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/YAW_DAMPER_ON.svg",
+      "derived": "panel-mosaic-lab/assets/lights/precision-fit-v1/YAW_DAMPER_ON_199x64.svg",
+      "sourceRect": [
+        195,
+        994,
+        199,
+        64
+      ],
+      "SVGRoot": [
+        199,
+        64
+      ],
+      "viewBox": [
+        932.8125,
+        300
+      ],
+      "glyphRescaled": false,
+      "positionChanged": false,
+      "sha256": "1ebdc22072c0c3c73e022a496b21286f60169b14e22938aa11a64bd006432b70"
+    },
+    {
+      "lamp": "main-stab-trim",
+      "asset": "STAB_OUT_OF_TRIM",
+      "state": "OFF",
+      "oldSource": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/STAB_OUT_OF_TRIM_OFF.svg",
+      "derived": "panel-mosaic-lab/assets/lights/precision-fit-v1/STAB_OUT_OF_TRIM_OFF_88x59.svg",
+      "sourceRect": [
+        255,
+        740,
+        88,
+        59
+      ],
+      "SVGRoot": [
+        88,
+        59
+      ],
+      "viewBox": [
+        447.457627,
+        300
+      ],
+      "glyphRescaled": false,
+      "positionChanged": false,
+      "sha256": "47d79eb15579d22687f0564e36e403bb8ef7c9244a2286d0d416155d650fd129"
+    },
+    {
+      "lamp": "main-stab-trim",
+      "asset": "STAB_OUT_OF_TRIM",
+      "state": "ON",
+      "oldSource": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/STAB_OUT_OF_TRIM_ON.svg",
+      "derived": "panel-mosaic-lab/assets/lights/precision-fit-v1/STAB_OUT_OF_TRIM_ON_88x59.svg",
+      "sourceRect": [
+        255,
+        740,
+        88,
+        59
+      ],
+      "SVGRoot": [
+        88,
+        59
+      ],
+      "viewBox": [
+        447.457627,
+        300
+      ],
+      "glyphRescaled": false,
+      "positionChanged": false,
+      "sha256": "36a2a11ea9e31c75f66dee09721e4a691441e900f337a4577a21c6390c6ce6c5"
+    }
+  ]
 }
