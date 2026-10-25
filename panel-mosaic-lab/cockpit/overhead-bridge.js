@@ -14,6 +14,8 @@
    }catch(_){return 'DCPCS';}
  }
  function syncOwnerPlate(){
+   // Headless ISN bridge fixtures deliberately have no full DOM querying API.
+   if(typeof document.querySelector!=='function')return false;
    const plate=document.querySelector('#atlasAbsolute .atlas-piece[data-key="OH22"] .atlas-image-window');
    if(!plate)return false;
    if(!ownerPlate||!plate.contains(ownerPlate)){
