@@ -18,7 +18,9 @@ test('ISM pressure increasing moves CW; decreasing moves CCW on same pointer',()
  s=d.advance({value:100,unit:'PSI',valid:true,powered:true},1);
  assert.equal(s.angleDeg,-60);assert.equal(s.targetAngleDeg,90);
  assert.equal(s.motionDirection,'clockwise');
- s=d.advance({value:0,unit:'psi',valid:true,powered:true},1);
+ s=d.advance({value:0,unit:'psi',valid:true,powered:true},0.5);
+ assert.equal(s.angleDeg,-75);assert.equal(s.motionDirection,'counterclockwise');
+ s=d.advance({value:0,unit:'psi',valid:true,powered:true},0.5);
  assert.equal(s.angleDeg,-90);assert.equal(s.motionDirection,'stopped');
  s=d.advance({value:0,unit:'psi',valid:true,powered:true},1);
  assert.equal(s.angleDeg,-90);
