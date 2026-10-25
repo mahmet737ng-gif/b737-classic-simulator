@@ -101,7 +101,9 @@ assert.equal(s.sources.engine2.running,true);
 c.chain.advance(850);c.chain.lever('engine1','IDLE');c.chain.advance(1000);
 ({s,v,lamps}=c.view());assert.equal(s.phase.engine1,'RUNNING');
 assert.equal(s.sources.engine1.running,true);assert.equal(s.sources.engine2.running,true);
-assert.equal(v.engines.engine1.n2.text,'46 %');assert.equal(v.engines.engine2.n2.text,'46 %');
+assert.equal(v.engines.engine1.n2.text,'46 %');
+assert.ok(v.engines.engine2.n2.value>46&&v.engines.engine2.n2.value<60,
+ 'Engine 2 now accelerates smoothly toward stable ground idle while Engine 1 starts');
 assert.equal(lamps['main-start-valve-1'],'OFF');assert.equal(lamps['main-start-valve-2'],'OFF');
 assert.deepEqual(c.chain.consumeEffects(),[{type:'ROTARY_RELEASE',id:'engine-start-1',position:'OFF'}]);
 
