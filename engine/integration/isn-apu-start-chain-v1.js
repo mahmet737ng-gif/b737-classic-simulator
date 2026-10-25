@@ -278,6 +278,9 @@
     durationMs,fuelEntryN2:n2};
    this.feedback(device,'fuelFlowKgHr',400);
    this.feedback(device,'egtC',0);
+   // Sample the actual 75% EGT peak as an intermediate event: a coarse
+   // 250ms advance can skip the 725C transient otherwise and falsely RUN.
+   this.schedule(device,Math.round(durationMs*.75),()=>{});
    if(this.trainingFaults[device].egtHigh)
     this.schedule(device,Math.round(HIGH_EGT_THRESHOLD_MS*durationMs/Dynamics.duration.lightoffMs),()=>{});
    this.schedule(device,durationMs,()=>{
