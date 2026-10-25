@@ -1,0 +1,29 @@
+name: Gauge Stage 9-10 Motion and Unified Integration QA
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'engine/instruments/stage9-needle-dynamics-v1.js'
+      - 'engine/instruments/stage10-needle-workbench-v1.js'
+      - 'engine/instruments/stage10-preview-scale-subset-v1.json'
+      - 'engine/instruments/stage9-stage10.test.cjs'
+      - 'panel-mosaic-lab/cockpit/stage78-readonly-unified.js'
+      - 'panel-mosaic-lab/cockpit/index.html'
+      - '.github/workflows/gauge-stage910-qa.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  motion-and-render-release-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Exercise 38 pointer routes, 8 scale previews, response physics and fail-safe behaviour
+        run: node --test engine/instruments/stage9-stage10.test.cjs
+      - name: Run source-aware 7 and 8 bridge tests
+        run: node --test engine/instruments/stage7-stage8.test.cjs
+      - name: Assert original immutable overhead panel art
+        run: python3 panel-mosaic-lab/verify-final-overhead.py
