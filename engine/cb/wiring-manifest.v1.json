@@ -43,5 +43,44 @@
     "thermalResetLaw": "UNVERIFIED_NOT_SET",
     "preserveMasterPhoto": true,
     "excludeNGOnly": true
-  }
+  },
+  "functionalEquipmentAssociations": 11,
+  "genericClassicGeneratorBusEvidence": [
+    {
+      "breaker": "P6-12|ALL|C2",
+      "equipment": "hyd.elecA",
+      "genericBus": "generator2",
+      "references": [
+        "Classic MRG printed p.136",
+        "Classic MRG printed p.330"
+      ],
+      "airframeSpecificVerified": false
+    },
+    {
+      "breaker": "P6-11|ALL|C2",
+      "equipment": "hyd.elecB",
+      "genericBus": "generator1",
+      "references": [
+        "Classic MRG printed p.136",
+        "Classic MRG printed p.330"
+      ],
+      "airframeSpecificVerified": false
+    }
+  ],
+  "equipmentEffectProjections": [
+    "fuel.rightFwd",
+    "fuel.leftFwd",
+    "fuel.rightAft",
+    "fuel.leftAft",
+    "fuel.centerRight",
+    "fuel.centerLeft",
+    "com.vhf1",
+    "com.vhf2",
+    "nav.vorloc1",
+    "hyd.elecA",
+    "hyd.elecB"
+  ],
+  "fullInventory": "engine/cb/all-circuits-audit.v1.json",
+  "airframeSpecificRoutesRemainingUnverified": true,
+  "sourceNote": "Classic MRG proves functional CB equipment indexing for 11 lines, not EP-FSI exact upstream bus/connector/pin. Fuel bus assignment is a trainer surrogate. Generic Classic MRG generator-bus evidence for hydraulic pumps is airframe-unreviewed. V7 remains unchanged."
 }
