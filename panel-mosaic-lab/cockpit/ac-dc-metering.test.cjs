@@ -9,7 +9,7 @@ assert.ok(oh10);
 assert.deepEqual(oh10.sourceDimensions,[model.source.width,model.source.height]);
 assert.equal(model.meters.length,4);
 assert.deepEqual(model.meters.map(m=>m.id),['dcAmps','cps','dcVolts','acVolts']);
-assert.deepEqual(model.meters.map(m=>m.initialAngle),[0,-54,20,-60]);
+assert.deepEqual(model.meters.map(m=>m.initialAngle),[0,-54,-70,-70]);
 assert.equal(new Set(model.meters.map(m=>`${m.x}:${m.y}`)).size,4);
 for(const meter of model.meters){
  const p=model.placement(oh10,meter);
@@ -29,6 +29,6 @@ assert.ok(ui.includes("new URL('./ac-dc-metering-needle.svg?v=MET-0001'"));
 assert.ok(ui.includes('for(const meter of model.meters)'));
 assert.ok(ui.includes('window.B737UnifiedAcDcMetering'));
 const html=fs.readFileSync(path.join(__dirname,'index.html'),'utf8');
-assert.ok(html.includes('ac-dc-metering-model.js?v=MET-0001'));
-assert.ok(html.includes('ac-dc-metering-unified.js?v=MET-0001'));
+assert.ok(html.includes('ac-dc-metering-model.js?v=MET-0002-CDARK'));
+assert.ok(html.includes('ac-dc-metering-unified.js?v=MET-0002-CDARK'));
 console.log('PASS: one transparent AC/DC metering needle reused on four OH10 gauges with separate pivots/angles.');
