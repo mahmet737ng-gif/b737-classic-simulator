@@ -22,7 +22,15 @@ label{display:inline-flex;align-items:center;gap:5px;font-size:.92rem}input[type
 <button data-act="loadGalley">GALLEY ON/OFF</button>
 <button data-act="loadFans">A/C FANS ON/OFF</button></div>
 <p class="subtle">Electrical consumer kVA values are simulator estimates, not verified aircraft feeder data.</p><div class="controls"><button data-act="bleedFault">Inject APU bleed failure</button><button data-act="genFault">Inject APU GEN failure</button><button data-act="reset">RESET (Cold & Dark)</button></div></section>
-<section><h2>2. Engine start & operating controls</h2><div class="controls">
+<section><h2>2. Engine start & operating controls</h2>
+<div class="controls">
+<button data-act="ignL">IGN L</button><button data-act="ignBoth">IGN BOTH</button>
+<button data-act="ignR">IGN R</button>
+<button data-act="standbyBAT">STANDBY POWER BAT</button>
+<button data-act="standbyAUTO">STANDBY POWER AUTO</button>
+<button data-act="standbyOFF">STANDBY POWER OFF</button></div>
+<div class="status" id="ignitionStatus">Ignition power</div>
+<div class="controls">
 <button data-act="start1">ENG 1 START GRD</button><button data-act="idle1">ENG 1 LEVER IDLE</button><button data-act="off1">ENG 1 CUTOFF</button>
 <button data-act="start2">ENG 2 START GRD</button><button data-act="idle2">ENG 2 LEVER IDLE</button><button data-act="off2">ENG 2 CUTOFF</button>
 </div>
