@@ -1,6 +1,6 @@
 {
   "schema": "b737.overhead.lights.v1",
-  "version": "LGT-0006",
+  "version": "LGT-0007",
   "baseVersion": "UPD-0012-OVH-measured-seams",
   "assets": {
     "ALIGN_WHITE": {
@@ -709,9 +709,16 @@
       "id": "irs-l-align",
       "asset": "ALIGN_WHITE",
       "placementId": "UPPER",
-      "sourceRect": [428, 535, 64, 32],
+      "sourceRect": [
+        428,
+        535,
+        64,
+        32
+      ],
       "rule": "irs-align",
-      "controls": ["irs-mode-l"],
+      "controls": [
+        "irs-mode-l"
+      ],
       "sensor": "L",
       "provenance": {
         "source_id": "FCOM-SEPEHRAN-1937",
@@ -725,9 +732,16 @@
       "id": "irs-r-align",
       "asset": "ALIGN_WHITE",
       "placementId": "UPPER",
-      "sourceRect": [604, 535, 64, 32],
+      "sourceRect": [
+        604,
+        535,
+        64,
+        32
+      ],
       "rule": "irs-align",
-      "controls": ["irs-mode-r"],
+      "controls": [
+        "irs-mode-r"
+      ],
       "sensor": "R",
       "provenance": {
         "source_id": "FCOM-SEPEHRAN-1937",
@@ -2215,7 +2229,7 @@
       "asset": "FWD_ENTRY",
       "placementId": "OH19-VOICE",
       "sourceRect": [
-        225,
+        229,
         120,
         263,
         115
@@ -2236,7 +2250,7 @@
       "asset": "AFT_ENTRY",
       "placementId": "OH19-VOICE",
       "sourceRect": [
-        225,
+        229,
         258,
         263,
         115
@@ -2257,7 +2271,7 @@
       "asset": "AIR_STAIR",
       "placementId": "OH19-VOICE",
       "sourceRect": [
-        519,
+        524,
         120,
         263,
         115
@@ -2320,7 +2334,7 @@
       "asset": "AFT_CARGO",
       "placementId": "OH19-VOICE",
       "sourceRect": [
-        813,
+        818,
         258,
         263,
         115
@@ -2341,7 +2355,7 @@
       "asset": "FWD_SERVICE",
       "placementId": "OH19-VOICE",
       "sourceRect": [
-        1107,
+        1112,
         120,
         263,
         115
@@ -2362,7 +2376,7 @@
       "asset": "AFT_SERVICE",
       "placementId": "OH19-VOICE",
       "sourceRect": [
-        1107,
+        1112,
         258,
         263,
         115
@@ -2406,7 +2420,7 @@
       "asset": "DUCT_OVERHEAT",
       "placementId": "OH20",
       "sourceRect": [
-        926,
+        931,
         620,
         213,
         97
@@ -2695,7 +2709,7 @@
       "asset": "ON_GREEN",
       "placementId": "OH15",
       "sourceRect": [
-        651,
+        654,
         111,
         210,
         77
@@ -3335,7 +3349,8 @@
   ],
   "sourceStatus": "Public source-located electrical engine and previous fuel/flight-control models reused; private Technical Database retrieval returned no results. Remaining predicates are explicit simulator approximations, not source-verified aircraft rules. LGT-0002 reuses existing source-located Pneumatics V6 for 9 added pneumatic lamps and trip reset. New other sensor mappings remain explicit simulator approximations.",
   "unavailableLegends": [],
-  "previousVersion": "LGT-0005",
+  "previousVersion": "LGT-0006",
   "preservedLampCount": 84,
-  "bluePaletteStatus": "Preview; original supplied assets unchanged; exact blue palette pending owner visual approval per INFORMATION_LIGHTS_SPEC.json"
+  "bluePaletteStatus": "Preview; original supplied assets unchanged; exact blue palette pending owner visual approval per INFORMATION_LIGHTS_SPEC.json",
+  "pixelRegistrationRevision": "LPR-0001"
 }
