@@ -9,9 +9,9 @@ assert.deepEqual(model.needles.map(n=>n.piece),['OH11','OH11','OH12','OH12','OH1
 assert.equal(new Set(model.needles.map(n=>n.id)).size,5);
 assert.equal(model.needles[4].id,'apuAcAmps');
 assert.equal(model.needles[4].window,'OH12_APU');
-// Enlarged owner OH11/OH12 screenshot shows old pointers short of inner scale tick edges.
-for(const needle of model.needles.slice(0,2)){assert.equal(needle.tipRadius,128);assert.equal(needle.initialAngle,-80);}
-for(const needle of model.needles.slice(2,4)){assert.equal(needle.tipRadius,135);assert.equal(needle.initialAngle,-65);}
+// Direct immutable SOURCE image QA: old 98/102 and proposed 128/135 radii overshot the inner zero strokes.
+for(const needle of model.needles.slice(0,2)){assert.equal(needle.tipRadius,64);assert.equal(needle.initialAngle,-46);}
+for(const needle of model.needles.slice(2,5)){assert.equal(needle.tipRadius,64);assert.equal(needle.initialAngle,-55);}
 
 for(const [name,source]of Object.entries(model.panels)){
  const piece=atlas.placements.find(p=>p.id===name);assert.ok(piece,name);
@@ -20,7 +20,7 @@ for(const [name,source]of Object.entries(model.panels)){
   const p=model.placement(piece,needle);
   assert.ok(p.x>piece.x&&p.x<piece.x+piece.w);
   assert.ok(p.y>piece.y&&p.y<piece.y+piece.h);
-  assert.ok(p.size>90&&p.size<(needle.id==='apuAcAmps'?150:190));
+  assert.ok(p.size>40&&p.size<105,'Pointer must remain within the inner printed tick radius');
   const window=model.windowPath(needle);
   assert.match(window,/^M \d+ \d+ L \d+ \d+ /);
   assert.match(window,/ Z$/);
@@ -36,6 +36,6 @@ assert.ok(ui.includes('model.windowPath(needle)'),'Blade must stop at the traced
 assert.ok(ui.includes("new URL('./drive-amps-needle.svg?v=DAN-0001'"));
 assert.ok(ui.includes('window.B737UnifiedDriveAmpsNeedles'));
 const html=fs.readFileSync(path.join(__dirname,'index.html'),'utf8');
-assert.ok(html.includes('drive-amps-needle-model.js?v=DAN-0003-CDARK'));
-assert.ok(html.includes('drive-amps-needle-unified.js?v=DAN-0003-CDARK'));
+assert.ok(html.includes('drive-amps-needle-model.js?v=DAN-0004-SOURCEQA'));
+assert.ok(html.includes('drive-amps-needle-unified.js?v=DAN-0004-SOURCEQA'));
 console.log('PASS: one shared white needle on both OH11 drive gauges, two upper OH12 A.C. amps gauges and APU A.C. amps.');
