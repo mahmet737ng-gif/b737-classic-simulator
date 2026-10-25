@@ -4,6 +4,9 @@ on:
     branches: [main]
     paths:
       - 'engine/instruments/oh19-cab-alt-*'
+      - 'engine/instruments/oh19-native-ticks-batch1.json'
+      - 'engine/instruments/oh19-photo-*.js'
+      - 'engine/instruments/oh19-photo-*.cjs'
       - 'engine/instruments/cold-dark-needle-fit-audit-v1.json'
       - 'panel-mosaic-lab/cockpit/cabin-dual-needles*'
       - '.github/workflows/oh19-cab-alt-photo-qa.yml'
@@ -11,6 +14,9 @@ on:
     branches: [main]
     paths:
       - 'engine/instruments/oh19-cab-alt-*'
+      - 'engine/instruments/oh19-native-ticks-batch1.json'
+      - 'engine/instruments/oh19-photo-*.js'
+      - 'engine/instruments/oh19-photo-*.cjs'
       - 'engine/instruments/cold-dark-needle-fit-audit-v1.json'
       - 'panel-mosaic-lab/cockpit/cabin-dual-needles*'
   workflow_dispatch:
@@ -29,10 +35,22 @@ jobs:
         run: |
           node panel-mosaic-lab/cockpit/cabin-dual-needles.test.cjs
           node engine/instruments/oh19-cab-alt-54-gauge-qa-v1.test.cjs
+          node --test engine/instruments/oh19-photo-evidence-v2.test.cjs
           node engine/instruments/gauge-visual-audit-v1.test.cjs
           node engine/instruments/cold-dark-indicator-v1.test.cjs
           node tests/cabin-field-elevation-v1.test.cjs
+      - name: Generate original photo OH19 pixel-contact overlays (QA only)
+        run: node engine/instruments/oh19-photo-overlay-v2.cjs
+      - name: Upload OH19 original-image coordinate evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: OH19-native-photo-candidate-overlays
+          path: artifacts/oh19-pixel-qa/
+          retention-days: 30
+          if-no-files-found: error
       - name: Syntax and locked pixel originals
         run: |
           node --check panel-mosaic-lab/cockpit/cabin-dual-needles-model.js
           node --check panel-mosaic-lab/cockpit/cabin-dual-needles-unified.js
+          node --check engine/instruments/oh19-photo-evidence-v2.js
+          node --check engine/instruments/oh19-photo-overlay-v2.cjs
