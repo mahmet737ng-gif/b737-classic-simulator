@@ -1,0 +1,445 @@
+{
+  "schema": "b737.oh22.profile-specific-faces.v1",
+  "date": "2026-10-26",
+  "sourceImagesChanged": 0,
+  "sourceGeometryChanged": 0,
+  "states": 14,
+  "strategy": "Unique CPCS/DCPCS native physical viewBox; compensate for CSS lampFit without changing approved photo coordinates, letters unchanged",
+  "browserVisualApproval": "REQUIRED",
+  "files": [
+    {
+      "system": "CPCS",
+      "lamp": "auto-fail",
+      "asset": "AUTO_FAIL",
+      "state": "OFF",
+      "file": "panel-mosaic-lab/assets/lights/oh22-profile-v1/CPCS_auto-fail_OFF.svg",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/AUTO_FAIL_OFF.svg",
+      "sourceSha": "7bb221d004800be351e8b4cfb223406ade4b0b6fa1e9b46a029ff1fd880acda0",
+      "sha256": "ecca14f8a5d2b7ae602ddb9751be4bb8e67a8d3997a5ad7eaf0daa4db9bdcfc6",
+      "faceNormalized": [
+        0.233,
+        0.056,
+        0.159,
+        0.057
+      ],
+      "tileDimensions": [
+        493,
+        554
+      ],
+      "parentFit": [
+        1.075,
+        1.13
+      ],
+      "physicalRatio": 2.361508,
+      "viewBox": [
+        708.452437,
+        300
+      ],
+      "glyphNodesPreserved": true,
+      "sourceRectChanged": false
+    },
+    {
+      "system": "CPCS",
+      "lamp": "auto-fail",
+      "asset": "AUTO_FAIL",
+      "state": "ON",
+      "file": "panel-mosaic-lab/assets/lights/oh22-profile-v1/CPCS_auto-fail_ON.svg",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/AUTO_FAIL_ON.svg",
+      "sourceSha": "a214aaae093a7b134cb0f76e93a0050ffd98dbf861f5401a93abe905bafa98f8",
+      "sha256": "75b4a2d5f9655937e9a0b7cbfee1af66d478112a6c17b608aa7f52edc3bd3258",
+      "faceNormalized": [
+        0.233,
+        0.056,
+        0.159,
+        0.057
+      ],
+      "tileDimensions": [
+        493,
+        554
+      ],
+      "parentFit": [
+        1.075,
+        1.13
+      ],
+      "physicalRatio": 2.361508,
+      "viewBox": [
+        708.452437,
+        300
+      ],
+      "glyphNodesPreserved": true,
+      "sourceRectChanged": false
+    },
+    {
+      "system": "CPCS",
+      "lamp": "off-sched",
+      "asset": "OFF_SCHED_DESCENT",
+      "state": "OFF",
+      "file": "panel-mosaic-lab/assets/lights/oh22-profile-v1/CPCS_off-sched_OFF.svg",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/OFF_SCHED_DESCENT_OFF.svg",
+      "sourceSha": "db613474e4d6f90a98ed72d8e105164011377de74726bcdd51a27c807d5b57ba",
+      "sha256": "1cebf68325a25f826a029ce5de8e6835164fcea0a7109bc528c1fd32e63dca90",
+      "faceNormalized": [
+        0.412,
+        0.056,
+        0.16,
+        0.057
+      ],
+      "tileDimensions": [
+        493,
+        554
+      ],
+      "parentFit": [
+        1.075,
+        1.13
+      ],
+      "physicalRatio": 2.37636,
+      "viewBox": [
+        712.908113,
+        300
+      ],
+      "glyphNodesPreserved": true,
+      "sourceRectChanged": false
+    },
+    {
+      "system": "CPCS",
+      "lamp": "off-sched",
+      "asset": "OFF_SCHED_DESCENT",
+      "state": "ON",
+      "file": "panel-mosaic-lab/assets/lights/oh22-profile-v1/CPCS_off-sched_ON.svg",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/OFF_SCHED_DESCENT_ON.svg",
+      "sourceSha": "7d342eec3463d73508c6e74a3fc547ec00135c25aa0fe4864e5c98ba0e09289b",
+      "sha256": "63cf3553323525e274b60b33e18fa39aa92dcc4bcdc990416d5182c8bb3da7d2",
+      "faceNormalized": [
+        0.412,
+        0.056,
+        0.16,
+        0.057
+      ],
+      "tileDimensions": [
+        493,
+        554
+      ],
+      "parentFit": [
+        1.075,
+        1.13
+      ],
+      "physicalRatio": 2.37636,
+      "viewBox": [
+        712.908113,
+        300
+      ],
+      "glyphNodesPreserved": true,
+      "sourceRectChanged": false
+    },
+    {
+      "system": "CPCS",
+      "lamp": "standby",
+      "asset": "STANDBY_GREEN",
+      "state": "OFF",
+      "file": "panel-mosaic-lab/assets/lights/oh22-profile-v1/CPCS_standby_OFF.svg",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/STANDBY_GREEN_OFF.svg",
+      "sourceSha": "43ca7d20acd75367895d1c647644127903af36c704497bb95495de1d2ea607c2",
+      "sha256": "599db5ced78c93a70bbda76da275fff58ee659e4534750a19fed0147e328e5ab",
+      "faceNormalized": [
+        0.59,
+        0.056,
+        0.158,
+        0.057
+      ],
+      "tileDimensions": [
+        493,
+        554
+      ],
+      "parentFit": [
+        1.075,
+        1.13
+      ],
+      "physicalRatio": 2.346656,
+      "viewBox": [
+        703.996761,
+        300
+      ],
+      "glyphNodesPreserved": true,
+      "sourceRectChanged": false
+    },
+    {
+      "system": "CPCS",
+      "lamp": "standby",
+      "asset": "STANDBY_GREEN",
+      "state": "ON",
+      "file": "panel-mosaic-lab/assets/lights/oh22-profile-v1/CPCS_standby_ON.svg",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/STANDBY_GREEN_ON.svg",
+      "sourceSha": "bd84a11a9f971cb95b46fe5428a3b97424c9bfed5d36e46ae651fcdad7613c49",
+      "sha256": "3af619c0e026f3532b0f49b4f672a826b1ea2ba449ec1681eca8799425204b39",
+      "faceNormalized": [
+        0.59,
+        0.056,
+        0.158,
+        0.057
+      ],
+      "tileDimensions": [
+        493,
+        554
+      ],
+      "parentFit": [
+        1.075,
+        1.13
+      ],
+      "physicalRatio": 2.346656,
+      "viewBox": [
+        703.996761,
+        300
+      ],
+      "glyphNodesPreserved": true,
+      "sourceRectChanged": false
+    },
+    {
+      "system": "CPCS",
+      "lamp": "manual",
+      "asset": "MANUAL_GREEN",
+      "state": "OFF",
+      "file": "panel-mosaic-lab/assets/lights/oh22-profile-v1/CPCS_manual_OFF.svg",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/MANUAL_GREEN_OFF.svg",
+      "sourceSha": "9db01d359579f26d295999f8a37d36447cda6ad28cc43045a137bbc9b94b5359",
+      "sha256": "a28c4bc33fd8f76b93b5c0062aaaeca59a1a86ae97c7fd14e6e0617fef274863",
+      "faceNormalized": [
+        0.766,
+        0.056,
+        0.157,
+        0.057
+      ],
+      "tileDimensions": [
+        493,
+        554
+      ],
+      "parentFit": [
+        1.075,
+        1.13
+      ],
+      "physicalRatio": 2.331804,
+      "viewBox": [
+        699.541086,
+        300
+      ],
+      "glyphNodesPreserved": true,
+      "sourceRectChanged": false
+    },
+    {
+      "system": "CPCS",
+      "lamp": "manual",
+      "asset": "MANUAL_GREEN",
+      "state": "ON",
+      "file": "panel-mosaic-lab/assets/lights/oh22-profile-v1/CPCS_manual_ON.svg",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/MANUAL_GREEN_ON.svg",
+      "sourceSha": "d6fe7baa2eebf587dfe465d2cb8a2fdba96a0e0474454f77110663d17499ad03",
+      "sha256": "b2d7ecddc67c080f9d527e5157fb3c76938cc833a51a5861d4d96449ec25be9e",
+      "faceNormalized": [
+        0.766,
+        0.056,
+        0.157,
+        0.057
+      ],
+      "tileDimensions": [
+        493,
+        554
+      ],
+      "parentFit": [
+        1.075,
+        1.13
+      ],
+      "physicalRatio": 2.331804,
+      "viewBox": [
+        699.541086,
+        300
+      ],
+      "glyphNodesPreserved": true,
+      "sourceRectChanged": false
+    },
+    {
+      "system": "DCPCS",
+      "lamp": "auto-fail",
+      "asset": "AUTO_FAIL",
+      "state": "OFF",
+      "file": "panel-mosaic-lab/assets/lights/oh22-profile-v1/DCPCS_auto-fail_OFF.svg",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/AUTO_FAIL_OFF.svg",
+      "sourceSha": "7bb221d004800be351e8b4cfb223406ade4b0b6fa1e9b46a029ff1fd880acda0",
+      "sha256": "be71c78fe3b15752124c593c301bd39ef98a3dc7085dc83da5975b1b46618987",
+      "faceNormalized": [
+        0.219,
+        0.043,
+        0.157,
+        0.05
+      ],
+      "tileDimensions": [
+        493,
+        554
+      ],
+      "parentFit": [
+        1.09,
+        1.13
+      ],
+      "physicalRatio": 2.695348,
+      "viewBox": [
+        808.604422,
+        300
+      ],
+      "glyphNodesPreserved": true,
+      "sourceRectChanged": false
+    },
+    {
+      "system": "DCPCS",
+      "lamp": "auto-fail",
+      "asset": "AUTO_FAIL",
+      "state": "ON",
+      "file": "panel-mosaic-lab/assets/lights/oh22-profile-v1/DCPCS_auto-fail_ON.svg",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/AUTO_FAIL_ON.svg",
+      "sourceSha": "a214aaae093a7b134cb0f76e93a0050ffd98dbf861f5401a93abe905bafa98f8",
+      "sha256": "f120915e2cde11a3cd0159bb99909a410b456f5587488c158a87f1a0283f414f",
+      "faceNormalized": [
+        0.219,
+        0.043,
+        0.157,
+        0.05
+      ],
+      "tileDimensions": [
+        493,
+        554
+      ],
+      "parentFit": [
+        1.09,
+        1.13
+      ],
+      "physicalRatio": 2.695348,
+      "viewBox": [
+        808.604422,
+        300
+      ],
+      "glyphNodesPreserved": true,
+      "sourceRectChanged": false
+    },
+    {
+      "system": "DCPCS",
+      "lamp": "off-sched",
+      "asset": "OFF_SCHED_DESCENT",
+      "state": "OFF",
+      "file": "panel-mosaic-lab/assets/lights/oh22-profile-v1/DCPCS_off-sched_OFF.svg",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/OFF_SCHED_DESCENT_OFF.svg",
+      "sourceSha": "db613474e4d6f90a98ed72d8e105164011377de74726bcdd51a27c807d5b57ba",
+      "sha256": "3259eb8d76a864d0ef5ac77c74f6666caccaadea5064e57db5f58b8f6d4b5695",
+      "faceNormalized": [
+        0.405,
+        0.043,
+        0.157,
+        0.05
+      ],
+      "tileDimensions": [
+        493,
+        554
+      ],
+      "parentFit": [
+        1.09,
+        1.13
+      ],
+      "physicalRatio": 2.695348,
+      "viewBox": [
+        808.604422,
+        300
+      ],
+      "glyphNodesPreserved": true,
+      "sourceRectChanged": false
+    },
+    {
+      "system": "DCPCS",
+      "lamp": "off-sched",
+      "asset": "OFF_SCHED_DESCENT",
+      "state": "ON",
+      "file": "panel-mosaic-lab/assets/lights/oh22-profile-v1/DCPCS_off-sched_ON.svg",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/OFF_SCHED_DESCENT_ON.svg",
+      "sourceSha": "7d342eec3463d73508c6e74a3fc547ec00135c25aa0fe4864e5c98ba0e09289b",
+      "sha256": "09f9a70e493c9c7aecccd86c9b72e0d0d2eeea2cfad41b100f0d5dc7842f12ce",
+      "faceNormalized": [
+        0.405,
+        0.043,
+        0.157,
+        0.05
+      ],
+      "tileDimensions": [
+        493,
+        554
+      ],
+      "parentFit": [
+        1.09,
+        1.13
+      ],
+      "physicalRatio": 2.695348,
+      "viewBox": [
+        808.604422,
+        300
+      ],
+      "glyphNodesPreserved": true,
+      "sourceRectChanged": false
+    },
+    {
+      "system": "DCPCS",
+      "lamp": "manual",
+      "asset": "MANUAL_GREEN",
+      "state": "OFF",
+      "file": "panel-mosaic-lab/assets/lights/oh22-profile-v1/DCPCS_manual_OFF.svg",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/MANUAL_GREEN_OFF.svg",
+      "sourceSha": "9db01d359579f26d295999f8a37d36447cda6ad28cc43045a137bbc9b94b5359",
+      "sha256": "9c2fc1bd7e4ec6410318d867097aa3087e3453ab3c8a1c9e9e25a2e29f0af480",
+      "faceNormalized": [
+        0.782,
+        0.043,
+        0.153,
+        0.05
+      ],
+      "tileDimensions": [
+        493,
+        554
+      ],
+      "parentFit": [
+        1.09,
+        1.13
+      ],
+      "physicalRatio": 2.626677,
+      "viewBox": [
+        788.003035,
+        300
+      ],
+      "glyphNodesPreserved": true,
+      "sourceRectChanged": false
+    },
+    {
+      "system": "DCPCS",
+      "lamp": "manual",
+      "asset": "MANUAL_GREEN",
+      "state": "ON",
+      "file": "panel-mosaic-lab/assets/lights/oh22-profile-v1/DCPCS_manual_ON.svg",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/MANUAL_GREEN_ON.svg",
+      "sourceSha": "d6fe7baa2eebf587dfe465d2cb8a2fdba96a0e0474454f77110663d17499ad03",
+      "sha256": "0fbbb8b0e0226f197f4426a3483dd8b4bc0838aafb52a4946c062d910514c2c4",
+      "faceNormalized": [
+        0.782,
+        0.043,
+        0.153,
+        0.05
+      ],
+      "tileDimensions": [
+        493,
+        554
+      ],
+      "parentFit": [
+        1.09,
+        1.13
+      ],
+      "physicalRatio": 2.626677,
+      "viewBox": [
+        788.003035,
+        300
+      ],
+      "glyphNodesPreserved": true,
+      "sourceRectChanged": false
+    }
+  ]
+}
