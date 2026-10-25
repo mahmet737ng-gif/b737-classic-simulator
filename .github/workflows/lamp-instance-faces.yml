@@ -1,0 +1,51 @@
+name: B737 shared annunciator per-position lens build
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - tools/build-lamp-instance-faces.py
+      - .github/workflows/lamp-instance-faces.yml
+permissions:
+  contents: write
+concurrency:
+  group: b737-shared-annunciator-vector-derivatives
+  cancel-in-progress: false
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Protect locked source images
+        run: python3 panel-mosaic-lab/verify-final-overhead.py
+      - name: Generate independent lens artwork for each shared lamp socket
+        run: python3 tools/build-lamp-instance-faces.py
+      - name: Verify native lens geometry and unrelated systems
+        run: |
+          node --check panel-mosaic-lab/interactive-overhead/lights.js
+          node --check panel-mosaic-lab/cockpit/lights.js
+          node panel-mosaic-lab/interactive-overhead/lights.test.cjs
+          node panel-mosaic-lab/cockpit/lights.test.cjs
+          node panel-mosaic-lab/lights-test/phase1-geometry-audit.test.cjs
+          node panel-mosaic-lab/lights-test/photo-pixel-registration-v4.test.cjs
+          node panel-mosaic-lab/lights-test/precision-faces.test.cjs
+          node panel-mosaic-lab/lights-test/precision-faces-batch2.test.cjs
+          node panel-mosaic-lab/lights-test/instance-faces.test.cjs
+          python3 panel-mosaic-lab/verify-final-overhead.py
+      - name: Publish signed per-socket vectors without replacing existing photographs
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add panel-mosaic-lab/assets/lights/instance-fit-v1/ panel-mosaic-lab/interactive-overhead/instance-faces.json panel-mosaic-lab/cockpit/instance-faces.json panel-mosaic-lab/lights-test/instance-faces-rollout.json panel-mosaic-lab/lights-test/instance-faces-overhead-evidence.json panel-mosaic-lab/lights-test/instance-faces-cockpit-evidence.json
+          if git diff --cached --quiet; then echo "No new shared lens derivatives"; exit 0; fi
+          git commit -m "feat(lamps): 37 separately sized shared lens mounts in 74 illuminated/off states"
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git rebase origin/main
+            if git push origin HEAD:main; then echo "PER_INSTANCE_SHA=$(git rev-parse HEAD)"; exit 0; fi
+            sleep 2
+          done
+          exit 1
