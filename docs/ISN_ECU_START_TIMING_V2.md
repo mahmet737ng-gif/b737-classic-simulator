@@ -1,3 +1,5 @@
+> **SUPERSEDED — 2026-10-25:** Engine REALTIME_TRAINING timing is now 28+37=65 s to RUNNING at nominal 35 PSI, with per-engine duct-pressure dependence; APU remains 85 s. Fuel Lever IDLE is not N2-locked and main-tank suction feed is available with boost pumps OFF. See [ISN_START_DUCT_AND_FUEL_V3.md](ISN_START_DUCT_AND_FUEL_V3.md) and [ISN_FUEL_SUCTION_FEED_V1.md](ISN_FUEL_SUCTION_FEED_V1.md). Earlier 40+50=90 and pump-only/lever-lock instructions below are archival only.
+
 # ISN 13–18 ECU Start Bench: longer owner-selected training timeline (V2)
 
 **Status:** simulator calibration, not aircraft-certified start data. The B737 Classic FCOM controls start prerequisites and the approximate N2 25% fuel cue / 46% starter cutout; it does NOT establish the 85-second APU / 100-second engine schedule selected for this demonstration. Do not present these chosen durations as AFM/FCOM operating requirements.
