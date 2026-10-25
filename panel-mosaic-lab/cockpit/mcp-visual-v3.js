@@ -37,11 +37,11 @@ const lamps=[
  {id:"CWS_B",x:1746,y:232,w:52,h:11}
 ];
 const knobs=[
- {id:"courseL",label:"COURSE L",x:184,y:246,d:95,type:"course"},
- {id:"speed",label:"IAS/MACH",x:615,y:277,d:116,type:"ias"},
- {id:"heading",label:"HEADING",x:903,y:244,d:89,type:"plain"},
- {id:"altitude",label:"ALTITUDE",x:1206,y:244,d:92,type:"plain"},
- {id:"courseR",label:"COURSE R",x:1947,y:246,d:95,type:"course"}
+ {id:"courseL",label:"COURSE L",x:182,y:241,d:95,type:"course"},
+ {id:"speed",label:"IAS/MACH",x:614,y:274,d:116,type:"ias"},
+ {id:"heading",label:"HEADING",x:902,y:239,d:89,type:"plain"},
+ {id:"altitude",label:"ALTITUDE",x:1205,y:241,d:92,type:"plain"},
+ {id:"courseR",label:"COURSE R",x:1949,y:238,d:95,type:"course"}
 ];
 const on=(root,name,fn,opt)=>root.addEventListener(name,fn,opt);
 function svgElement(tag,attrs={},txt){
@@ -165,7 +165,7 @@ window.B737McpVisualV3=Object.freeze({
  setLamp:(id,state)=>{if(Object.hasOwn(values.lamps,id)){values.lamps[id]=!!state;repaint()}},
  mount
 });
-window.B737McpIasMachKnob=Object.freeze({placement:Object.freeze({sourceWidth:W,sourceHeight:H,x:615,y:277,diameter:116,detentDegrees:12}),getDetent:()=>values.speed-312,setDetent(v){if(Number.isFinite(v))setValue("speed",312+Math.trunc(v),"external")}});
+window.B737McpIasMachKnob=Object.freeze({placement:Object.freeze({sourceWidth:W,sourceHeight:H,x:614,y:274,diameter:116,detentDegrees:12}),getDetent:()=>values.speed-312,setDetent(v){if(Number.isFinite(v))setValue("speed",312+Math.trunc(v),"external")}});
 window.addEventListener("b737:cockpit-mounted",mount);
 document.addEventListener("DOMContentLoaded",mount);
 if(document.readyState!=="loading")mount();
