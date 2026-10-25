@@ -41,7 +41,7 @@ click('loadAvionics');click('loadLights');
 click('start1');advance5(8);
 assert.match(element('clock').textContent,/125.0 s/);
 assert.match(element('engines').innerHTML,/PHASE <strong>AWAIT_FUEL_LEVER_IDLE/);
-assert.match(element('engines').innerHTML,/FUEL SUPPLY <strong class="ok">OWN_MAIN_ENGINE_DRIVEN_SUCTION/);
+assert.match(element('engines').innerHTML,/FUEL SUPPLY <strong class="ok">SUCTION FEED — OWN MAIN TANK/);
 click('idle1');
 assert.equal(element('errors').textContent,'','Lever movement is accepted even without supply');
 assert.match(element('engines').innerHTML,/FUEL LEVER <strong>IDLE/);
@@ -49,7 +49,7 @@ assert.match(element('engines').innerHTML,/PHASE <strong>LIGHT_OFF_SEQUENCE/,'No
 assert.match(element('[data-act="fuel"]').textContent,/0\/4 ON/,'Keep all electric pumps OFF');
 assert.equal(element('errors').textContent,'');
 assert.match(element('engines').innerHTML,/FUEL LEVER <strong>IDLE/);
-assert.match(element('engines').innerHTML,/FUEL SUPPLY <strong class="ok">OWN_MAIN_ENGINE_DRIVEN_SUCTION/);
+assert.match(element('engines').innerHTML,/FUEL SUPPLY <strong class="ok">SUCTION FEED — OWN MAIN TANK/);
 advance5(1);
 assert.match(element('engines').innerHTML,/FUEL LEVER <strong>IDLE/);
 const cards=element('engines').innerHTML;
