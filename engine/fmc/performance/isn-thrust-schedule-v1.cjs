@@ -19,6 +19,9 @@ function check(p){
  inRange('pressureAltitudeFt',p.pressureAltitudeFt,-1000,36000);
  inRange('oatC',p.oatC,-70,55);
  inRange('iasKt',p.iasKt,100,340);
+ if(p.targetIasKt!==null)inRange('targetIasKt',p.targetIasKt,100,340);
+ if(p.accelTimeSec!==null)inRange('accelTimeSec',p.accelTimeSec,1,600);
+ if(p.targetIasKt!==null&&p.targetIasKt!==p.iasKt&&p.accelTimeSec===null)throw Error('accelTimeSec required for IAS target change');
  inRange('massKg',p.massKg,30000,75000);
  inRange('verticalSpeedFpm',p.verticalSpeedFpm,-4500,4500);
  inRange('windSpeedKt',p.windSpeedKt,0,150);
@@ -34,7 +37,7 @@ function check(p){
 }
 function defaults(overrides={}){return {
  pressureAltitudeFt:10000,oatC:-5,iasKt:240,massKg:55000,
- verticalSpeedFpm:0,windSpeedKt:0,windFromDeg:0,trackDeg:90,
+ verticalSpeedFpm:0,targetIasKt:null,accelTimeSec:null,windSpeedKt:0,windFromDeg:0,trackDeg:90,
  mode:'CRZ',flaps:0,gearDown:false,operatingEngines:2,
  engineAntiIce:false,packsHigh:false,engineBleedOn:true,clb2Installed:false,
  weather:'CLEAR',...overrides};}
@@ -69,7 +72,8 @@ function compute(raw){
  const relative=((p.windFromDeg-p.trackDeg)*Math.PI/180);
  const headwindKt=p.windSpeedKt*Math.cos(relative);
  const crosswindKt=p.windSpeedKt*Math.sin(relative);
- const gsAlongTrackKt=Math.sqrt(Math.max(0,tasKt*tasKt-crosswindKt*crosswindKt))-headwindKt;
+ const trackHoldPossible=Math.abs(crosswindKt)<=tasKt;
+ const gsAlongTrackKt=trackHoldPossible?Math.sqrt(Math.max(0,tasKt*tasKt-crosswindKt*crosswindKt))-headwindKt:null;
  const q=STANDARD.rho0*iasMps*iasMps/2;
  const qS=q*STANDARD.wingAreaM2;
  // Nominal parasite/induced drag model. Configuration deltas are training placeholders.
@@ -79,13 +83,22 @@ function compute(raw){
  const cleanDragN=qS*cd0+STANDARD.inducedDragFactor*weightN*weightN/qS;
  const verticalMps=p.verticalSpeedFpm*0.00508;
  const climbForceN=weightN*verticalMps/Math.max(tasMps,1); // energy balance W * climb-rate / TAS.
- const requiredThrustN=Math.max(0,cleanDragN+climbForceN);
+ const targetIas=p.targetIasKt===null?p.iasKt:p.targetIasKt;
+ const tasTargetMps=targetIas*STANDARD.kiasToMps/Math.sqrt(atm.sigma);
+ const accelerationMps2=p.accelTimeSec===null?0:(tasTargetMps-tasMps)/p.accelTimeSec;
+ const accelerationForceN=p.massKg*accelerationMps2;
+ const requiredThrustN=Math.max(0,cleanDragN+climbForceN+accelerationForceN);
+ const qTargetS=qS*Math.pow(targetIas/p.iasKt,2);
+ const targetDragN=qTargetS*cd0+STANDARD.inducedDragFactor*weightN*weightN/qTargetS;
+ const targetHoldThrustN=Math.max(0,targetDragN+weightN*verticalMps/Math.max(tasTargetMps,1));
  const perEngineN=requiredThrustN/p.operatingEngines;
  const maxThrustPerEngineN=STANDARD.ratedThrustN*Math.pow(atm.sigma,STANDARD.densityThrustExponent);
  const loadFraction=perEngineN/maxThrustPerEngineN;
  const idlePct=32; // airborne/high idle, synchronized with ISN envelope policy.
  const rawN1=idlePct+(97-idlePct)*Math.pow(Math.max(0,loadFraction),STANDARD.thrustToSpoolExponent);
  const requiredN1=round(clamp(rawN1,idlePct,110));
+ const targetHoldLoad=(targetHoldThrustN/p.operatingEngines)/maxThrustPerEngineN;
+ const targetHoldN1=round(clamp(idlePct+(97-idlePct)*Math.pow(targetHoldLoad,STANDARD.thrustToSpoolExponent),idlePct,110));
  const lim=limits(p,atm.isaC);
  const cap=lim.valuePct;
  const demanded=Math.min(cap,requiredN1);
@@ -96,18 +109,20 @@ function compute(raw){
  if(p.weather==='ICING'&&!p.engineAntiIce)issues.push('ICING_SCENARIO_ANTIICE_NOT_SELECTED');
  if(p.flaps>0||p.gearDown)issues.push('CONFIGURATION_DRAG_IS_TRAINING_APPROXIMATION');
  if(p.operatingEngines===1)issues.push('OEI_THRUST_AND_FLIGHT_PATH_NOT_AIRCRAFT_PERFORMANCE_DATA');
- if(gsAlongTrackKt<0)issues.push('COURSE_TRACK_CANNOT_BE_MAINTAINED_IN_HEADWIND');
+ if(!trackHoldPossible||gsAlongTrackKt<0)issues.push('COURSE_TRACK_CANNOT_BE_MAINTAINED_IN_WIND');
  const cr= {origin:MODEL,quality:'SIM_ESTIMATE_NOT_AFM',inputs:p,
   atmosphere:{isaC:round(atm.isaC,1),deltaIsaC:lim.temperatureDeltaC,sigma:round(atm.sigma,3),
    densityKgM3:round(atm.rho,3)},
   navigation:{tasKt:round(tasKt),headwindKt:round(headwindKt),crosswindKt:round(crosswindKt),
-   groundSpeedKt:round(gsAlongTrackKt)},
+   groundSpeedKt:gsAlongTrackKt===null?null:round(gsAlongTrackKt),trackHoldPossible,targetTasKt:round(tasTargetMps/STANDARD.kiasToMps)},
   limits:{selectedMode:p.mode,n1LimitPct:cap,allModesN1Pct:lim.allModesPct,
    estimatedCorrectionPct:lim.estimatedCorrectionPct},
-  required:{n1RequiredPct:requiredN1,thrustRequiredTotalKN:round(requiredThrustN/1000),
+  required:{n1RequiredPct:requiredN1,n1HoldAtTargetPct:targetHoldN1,accelerationMps2:round(accelerationMps2,3),
+   accelerationForceKN:round(accelerationForceN/1000),thrustRequiredTotalKN:round(requiredThrustN/1000),
    thrustRequiredPerEngineKN:round(perEngineN/1000),
    availableReferencePerEngineKN:round(maxThrustPerEngineN/1000)},
   command:{n1CommandPct:round(demanded),normalizedThrottle:round(throttleDemand,4),
+   speedDemand:targetIas===p.iasKt?'HOLD_IAS':'TARGET_IAS_WITH_ACCEL_HORIZON',
    withinSelectedLimit:!unavailable},flags:issues};
  return Object.freeze(cr);
 }
