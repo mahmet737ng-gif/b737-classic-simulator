@@ -176,6 +176,13 @@
   byId('toggleVisibility').addEventListener('change',e=>layer.classList.toggle('hidden',!e.target.checked));
   const label=byId('toggleVisibility').parentElement;label.lastChild.textContent=' نمایش کنترل‌ها';byId('resetToggles').textContent='بازنشانی کنترل‌ها';
   window.B737RotaryGuards=Object.freeze({getState:()=>engine.snapshot(),getRegistry:()=>JSON.parse(JSON.stringify(registry)),
+   // Narrow 737-400 adapter: retain existing pneumatic control channel for outer two zones.
+   // No geometry or behavior change for 737-300/500 when this adapter is not called.
+   setAirconTemperature:(id,value)=>{
+    if(!['control-cabin-temp','pass-cabin-temp'].includes(id)||
+       !['MANUAL COOL','AUTO COOL','AUTO NORM','AUTO WARM','MANUAL WARM'].includes(value))return false;
+    return engine.setRotary(id,value,'AIRCON400_ZONE_SELECTOR');
+   },
    setDetent:(id,value)=>{if(!['engine-start-1','engine-start-2'].includes(id)||value!=='OFF')return false;
     return engine.setRotary(id,value,'ISN03_STARTER_CUTOUT');}});persist();
  }
