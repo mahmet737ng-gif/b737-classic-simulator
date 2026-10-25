@@ -7,7 +7,11 @@
   ['B737ISNStartSequenceV1','../../engine/integration/isn-start-sequence-v1.js'],
   ['B737ISNEngineStartDynamicsV1','../../engine/integration/isn-engine-start-dynamics-v1.js'],
   ['B737ISNAPUStartChainV1','../../engine/integration/isn-apu-start-chain-v1.js'],
-  ['B737ISNStartIndicationsV1','../../engine/integration/isn-start-indications-v1.js']
+  ['B737ISNStartIndicationsV1','../../engine/integration/isn-start-indications-v1.js'],
+  ['B737ISNThrustPerformanceV1','../../engine/integration/isn-thrust-performance-v1.js'],
+  ['B737ISN0912RuntimeV1','../../engine/integration/isn-09-12-runtime-v1.js'],
+  ['B737ISNAPULoadDynamicsV1','../../engine/integration/isn-apu-load-dynamics-v1.js'],
+  ['B737ISN1318ECUTestbenchV1','../../engine/integration/isn-13-18-ecu-testbench-v1.js']
  ];
  async function loadDependencies(){for(const [global,path] of deps){if(window[global])continue;
   await new Promise((resolve,reject)=>{const script=document.createElement('script');
@@ -18,18 +22,22 @@
  const byId=id=>document.getElementById(id);
  const Pack=window.B737ISNElectricalPackV1,Adapter=window.B737ISNCockpitBridgeV1;
  if(!Pack||!Adapter){console.error('ISN-02: missing integration modules');return;}
- const startSession=new window.B737ISNStartSequenceV1.Session({
-  EngineAPU:window.B737ISNEngineAPUV1,ElectricalPack:Pack,
+ // Shared ECU: physical cockpit controls and engine gauges use one real-time
+ // ISN-18 session; no separate compressed startup chain in Unified.
+ const ecu=new window.B737ISN1318ECUTestbenchV1.Testbench({
   Electrical:window.B737ElectricalV7,Loads:window.B737ElectricalLoadsV8,
   TrainerCore:window.B737TrainerCore,WarningEngine:window.B737WarningEngine.WarningEngine,
-  Pneumatics:window.B737PneumaticsV6});
- const chain=new window.B737ISNAPUStartChainV1.Chain(startSession);
- const session=startSession.core.pack;
+  Pneumatics:window.B737PneumaticsV6,Pack,
+  EngineAPU:window.B737ISNEngineAPUV1,Start:window.B737ISNStartSequenceV1,
+  Chain:window.B737ISNAPUStartChainV1,
+  ThrustPlanner:window.B737ISNThrustPerformanceV1,
+  FuelRuntime:window.B737ISN0912RuntimeV1,timingProfile:'REALTIME_TRAINING'});
+ const startSession=ecu.start,chain=ecu.chain,session=startSession.core.pack;
  const bridge=new Adapter.Bridge(session,{sourceOwner:'ISN03_START_SESSION'});
  const pendingEvents=[];
  const strip=document.createElement('section');strip.id='isnStartIndications';strip.className='isn-start-indications';
  strip.setAttribute('aria-label','ISN-03 engine start training indications');
- strip.innerHTML=[1,2].map(n=>'<div class="isn-engine-card" data-engine="engine'+n+'" role="status"><b>ENG '+n+'</b><span data-field="phase">OFF</span><span>N2 <strong data-field="n2">—</strong></span><span>EGT <strong data-field="egt">—</strong></span><span>START VALVE <strong data-field="valve">UNKNOWN</strong></span></div>').join('')+'<p class="isn-indication-error" id="isnIndicationError" role="alert"></p>';
+ strip.innerHTML=[1,2].map(n=>'<div class="isn-engine-card" data-engine="engine'+n+'" role="status"><b>ENG '+n+'</b><span data-field="phase">OFF</span><span>N1 <strong data-field="n1">0%</strong></span><span>N2 <strong data-field="n2">0%</strong></span><span>EGT <strong data-field="egt">—</strong></span><span>FUEL <strong data-field="fuel">0 kg/h</strong></span><span>OIL <strong data-field="oil">0 PSI</strong></span><span>START VALVE <strong data-field="valve">UNKNOWN</strong></span></div>').join('')+'<p class="isn-indication-error" id="isnIndicationError" role="alert"></p>';
  document.querySelector('.workbench .toolbar').after(strip);
  const cards=Object.fromEntries([1,2].map(n=>['engine'+n,strip.querySelector('[data-engine="engine'+n+'"]')]));
  const panel=document.createElement('section');panel.className='isn-bridge-panel';panel.id='isnBridgePanel';
@@ -38,7 +46,7 @@
  panel.querySelector('.isn-warnings').after(trainer);
  const replayButton=document.createElement('button');replayButton.id='isnReplay';replayButton.type='button';replayButton.textContent='بازپخش قطعی رویدادهای ISN';
  panel.querySelector('#isnTrace').after(replayButton);
- const startPanel=document.createElement('details');startPanel.open=true;startPanel.className='isn-start-panel';startPanel.innerHTML='<summary>ISN-05 · APU → BLEED + ELECTRICAL → ENGINE START</summary><p class="isn-note">مسیر تعاملی از سوییچ‌های واقعی اورهد است. رشد پیوستهٔ N2/EGT و عقربه‌های روی پنل فقط درون‌یابی آموزشی‌اند، نه مدل عملکرد موتور یا دادهٔ حسگر. آستانه‌های اجازهٔ ورود سوخت و قطع استارتر جداگانه در موتور قواعد مستند بررسی می‌شوند. برای استارت، ژنراتور APU و Bleed را انتخاب کن و PACK L/R را OFF بگذار.</p><div id="isnStartStatus" role="status" dir="ltr">Waiting for overhead…</div><p class="isn-lever-instruction">برای بازکردن Fuel / Start Lever هر موتور، روی اهرم همان موتور در پایینِ Throttle Quadrant در پدستال کلیک کن. حرکت به IDLE فقط پس از موتورینگ و رسیدن به N2 مناسب پذیرفته می‌شود؛ کلیک بعدی CUTOFF می‌کند.</p><p id="isnStartLeverStatus" class="isn-lever-status" role="status" dir="ltr">ENG 1 CUTOFF · ENG 2 CUTOFF</p><p id="isnStartError" class="isn-error" role="alert"></p><a href="../../isn-start-sequence-lab/">باز کردن آزمایشگاه مستند ISN-03 ↗</a>';
+ const startPanel=document.createElement('details');startPanel.open=true;startPanel.className='isn-start-panel';startPanel.innerHTML='<summary>ISN-18 · Unified ECU / APU / Engine Start</summary><p class="isn-note">سوییچ‌های واقعی اورهد و Fuel Leverهای پدستال به انجین ECU مشترک متصل هستند. ۳۵ PSI آموزشی: حدود ۶۵ ثانیه تا RUNNING در صورت ورود به‌موقع سوخت. Suction Feed از مخزن اصلی هر موتور پشتیبانی می‌شود. پارامترهای مدل آموزشی هستند.</p><div id="isnStartStatus" role="status" dir="ltr">Waiting for overhead…</div><p id="isnStartLeverStatus" class="isn-lever-status" role="status" dir="ltr">ENG 1 CUTOFF · ENG 2 CUTOFF</p><p id="isnApuTelemetry" dir="ltr" role="status">APU OFF · EGT — · GEN OFF</p><p id="isnStartError" class="isn-error" role="alert"></p><details><summary>ECU starter duct pressure · instructor only</summary><label>ENG 1 DUCT (training PSI) <input id="unifiedStarterDuct1" type="number" min="20" max="50" value="35"></label><label>ENG 2 DUCT (training PSI) <input id="unifiedStarterDuct2" type="number" min="20" max="50" value="35"></label><p>این ورودی فشار اندازه‌گیری‌شدهٔ واقعی نیست؛ فقط سرعت استارت موتور آموزشی را تنظیم می‌کند.</p></details><a href="../../isn-ecu-start-lab/">ECU Testbench مستقل ↗</a>';
  const faultControls=document.createElement('details');faultControls.className='isn-start-faults';
  faultControls.innerHTML='<summary>سناریوهای خطای آموزشی · پیش از GRD تنظیم کن</summary><p>تزریق مربی: توقف N2 در ۱۸٪ یا رشد EGT تا ۷۶۰°C. عددهای تزریق، عملکرد واقعی موتور نیستند؛ معیار هشدار ۷۲۵°C از موتور قواعد مستند می‌آید.</p><label><input type="checkbox" data-start-fault="engine1:n2Stall"> ENG 1 · N2 STALL</label><label><input type="checkbox" data-start-fault="engine1:egtHigh"> ENG 1 · EGT HIGH</label><label><input type="checkbox" data-start-fault="engine2:n2Stall"> ENG 2 · N2 STALL</label><label><input type="checkbox" data-start-fault="engine2:egtHigh"> ENG 2 · EGT HIGH</label>';
  startPanel.append(faultControls);
@@ -63,18 +71,50 @@
  }
  const indicator=(label,value)=>{const n=document.createElement('div');const s=document.createElement('small');s.textContent=label;n.append(s,span(value));return n;};
  let lastLampProjection='',lastStartInputs='';
- function renderStart(){const s=chain.get();
+ const numeric=(value,unit='')=>Number.isFinite(value)?Number(value).toFixed(1)+(unit?' '+unit:''):'—';
+ function ecuCommandFromOverhead(event){
+  const id=event?.id,value=event?.kind==='guarded'?event.next?.value:event?.next;
+  if(id==='apu-start'&&value==='START'){ecu.startAPU();return;}
+  if(['engine-start-1','engine-start-2'].includes(id)&&value==='GRD'){
+   ecu.engineStart('engine'+id.at(-1));return;
+  }
+  chain.event(event);
+  ecu.core.refreshFuelDelivery();
+ }
+ for(const id of [1,2]){
+  byId('unifiedStarterDuct'+id).addEventListener('change',event=>{
+   try{ecu.setStartDuctPressure('engine'+id,Number(event.target.value));render();}
+   catch(error){byId('isnStartError').textContent=error.message;}
+  });
+ }
+ document.addEventListener('b737:throttle-position',e=>{
+  const id=e.detail?.engine,pct=e.detail?.percent;
+  if(![1,2].includes(id)||!Number.isFinite(pct))return;
+  try{ecu.setThrottle('engine'+id,Math.max(0,Math.min(100,pct))/100);}
+  catch(error){if(!/must be RUNNING/.test(error.message))byId('isnStartError').textContent=error.message;}
+ });
+
+ function renderStart(){const s=chain.get(),live=ecu.get();
   const indication=window.B737ISNStartIndicationsV1.project(s);
   const summary=['APU '+s.phase.apu,'ENG1 '+s.phase.engine1,'ENG2 '+s.phase.engine2,
    'APU GEN '+(Object.values(s.selectedSources).includes('APU')?'SELECTED':'NOT SELECTED'),
    'APU BLEED '+stateName(s.bleed.apuBleedValveOpen),
    'BATTERY '+stateName(s.electrical.battery)];
+  summary.push('DUCT1 '+live.engines.engine1.starterDuctPsiTraining+' PSI',
+   'DUCT2 '+live.engines.engine2.starterDuctPsiTraining+' PSI');
   byId('isnStartStatus').textContent=summary.join(' · ');
+  byId('isnApuTelemetry').textContent='APU '+s.phase.apu+' · RPM '+numeric(live.apu.rpmPct,'%')+
+   ' · EGT '+numeric(live.apu.egtC,'°C')+' · GEN '+numeric(live.apu.generator.voltageV,'V')+
+   '/'+numeric(live.apu.generator.frequencyHz,'Hz')+' · BLEED '+stateName(live.apu.bleedValveOpen);
   for(const n of [1,2]){const info=indication.engines['engine'+n],card=cards['engine'+n];
    card.dataset.phase=info.phase;card.dataset.egtAdvisory=String(info.egt725Advisory);
    card.querySelector('[data-field="phase"]').textContent=info.phase;
-   card.querySelector('[data-field="n2"]').textContent=info.n2.text;
-   card.querySelector('[data-field="egt"]').textContent=info.egt.text;
+   const measured=live.engines['engine'+n];
+   card.querySelector('[data-field="n1"]').textContent=numeric(measured.n1Percent,'%');
+   card.querySelector('[data-field="n2"]').textContent=numeric(measured.n2Percent,'%');
+   card.querySelector('[data-field="egt"]').textContent=numeric(measured.egtC,'°C');
+   card.querySelector('[data-field="fuel"]').textContent=numeric(measured.fuelFlowKgHr,'kg/h');
+   card.querySelector('[data-field="oil"]').textContent=numeric(measured.oil.pressurePsi,'PSI');
    const valve=card.querySelector('[data-field="valve"]');valve.textContent=info.startValve.text;
    valve.dataset.amber=String(info.startValve.mountedLamp===true);
   }
@@ -84,7 +124,15 @@
    input.checked=s.trainingFaults[device][key];
    input.disabled=!['OFF','BLOCKED'].includes(s.phase[device]);
   }
+  // Existing N2/EGT needle registrations remain untouched; readings now
+  // come from the shared ECU rather than the old disconnected start engine.
+  for(const n of [1,2]){
+   const id='engine'+n,measured=live.engines[id];
+   indication.engines[id].n2={value:measured.n2Percent,text:numeric(measured.n2Percent,'%')};
+   indication.engines[id].egt={value:measured.egtC,text:numeric(measured.egtC,'°C')};
+  }
   window.dispatchEvent(new CustomEvent('b737:isn-start-indications',{detail:indication}));
+  window.dispatchEvent(new CustomEvent('b737:unified-ecu-observation',{detail:live}));
   const levers={engine1:s.observations.engine1.feedback.fuelStartLever.value,
    engine2:s.observations.engine2.feedback.fuelStartLever.value};
   byId('isnStartLeverStatus').textContent='ENG 1 '+levers.engine1+' · ENG 2 '+levers.engine2;
@@ -132,7 +180,7 @@
  }
  window.addEventListener('b737:engine-start-lever-command',e=>{
   if(e.detail?.source!=='PEDESTAL_PHYSICAL')return;
-  try{chain.lever(e.detail.device,e.detail.position);render();}
+  try{ecu.fuelLever(e.detail.device,e.detail.position);render();}
   catch(error){byId('isnStartError').textContent=error.message;}
  });
  faultControls.addEventListener('change',event=>{
@@ -158,27 +206,29 @@
    if(e.data.kind==='controls-state'){
     bridge.synchronize(e.data);
     chain.synchronize(e.data);
-    for(const event of pendingEvents.splice(0))bridge.handleEvent(event);
+    ecu.core.refreshFuelDelivery();
+    for(const event of pendingEvents.splice(0)){bridge.handleEvent(event);ecuCommandFromOverhead(event);}
     render();
    }else if(e.data.kind==='control-event'){
     if(!bridge.initialized){if(pendingEvents.length<50)pendingEvents.push(e.data.event);}
     else bridge.handleEvent(e.data.event);
-    chain.event(e.data.event);
+    ecuCommandFromOverhead(e.data.event);
     render();
    }
   }catch(error){byId('isnError').textContent='خطای ارتباط ISN: '+error.message;}
  });
  let lastTime=performance.now();
  setInterval(()=>{const now=performance.now(),elapsed=Math.max(0,Math.min(500,now-lastTime));lastTime=now;
-  if(!chain.jobs.length)return;
-  chain.advance(elapsed);
+  const sources=chain.get().sources;
+  if(!chain.jobs.length&&!sources.engine1.running&&!sources.engine2.running&&!sources.apu.running)return;
+  ecu.advance(elapsed);
   for(const effect of chain.consumeEffects())if(effect.type==='ROTARY_RELEASE'){
    byId('overheadFrame')?.contentWindow?.postMessage({type:'b737:cockpit-command',
     action:'isn-starter-cutout',id:effect.id},location.origin);
   }
   render();
  },100);
- window.B737ISNCockpitV1=Object.freeze({getState:()=>bridge.get(),getStartState:()=>chain.get(),
+ window.B737ISNCockpitV1=Object.freeze({getState:()=>bridge.get(),getStartState:()=>chain.get(),getECUState:()=>ecu.get(),
    // Pass only source-observed pneumatic supply to pressurization. UNKNOWN
    // must never become a fabricated zero PACK or an invented DC bus mapping.
    getPressurizationAir:()=>startSession.core.complete()
