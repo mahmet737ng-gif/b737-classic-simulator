@@ -1,0 +1,48 @@
+name: Cabin ground elevation and Cold Dark QA
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'engine/config/ground-airfield-elevation-v1.js'
+      - 'engine/config/aircraft-profile-v1.js'
+      - 'panel-mosaic-lab/cockpit/aircraft-settings.js'
+      - 'panel-mosaic-lab/cockpit/cabin-dual-needles-unified.js'
+      - 'panel-mosaic-lab/cockpit/cold-dark-indicators-unified.js'
+      - 'panel-mosaic-lab/cockpit/index.html'
+      - 'tests/cabin-field-elevation-v1.test.cjs'
+      - '.github/workflows/cabin-ground-elevation-v1.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'engine/config/ground-airfield-elevation-v1.js'
+      - 'engine/config/aircraft-profile-v1.js'
+      - 'panel-mosaic-lab/cockpit/aircraft-settings.js'
+      - 'panel-mosaic-lab/cockpit/cabin-dual-needles-unified.js'
+      - 'panel-mosaic-lab/cockpit/cold-dark-indicators-unified.js'
+      - 'tests/cabin-field-elevation-v1.test.cjs'
+      - '.github/workflows/cabin-ground-elevation-v1.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  ground-elevation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Preserve immutable approved overhead
+        run: |
+          echo "283a3946ace19799284eb0f79dc924f744d661c4b6a1865932252f8ef29fd90f  panel-mosaic-lab/verify-final-overhead.py" | sha256sum --check --status
+          python3 panel-mosaic-lab/verify-final-overhead.py
+      - name: Validate edited JS modules
+        run: |
+          node --check engine/config/ground-airfield-elevation-v1.js
+          node --check engine/config/aircraft-profile-v1.js
+          node --check panel-mosaic-lab/cockpit/aircraft-settings.js
+          node --check panel-mosaic-lab/cockpit/cabin-dual-needles-unified.js
+          node --check panel-mosaic-lab/cockpit/cold-dark-indicators-unified.js
+      - name: Test 3 named airfields in CPCS and DCPCS
+        run: |
+          node tests/cabin-field-elevation-v1.test.cjs
+          node tests/cabin-pressure-plant-v1.test.cjs
+          node engine/instruments/cold-dark-indicator-v1.test.cjs
+          node panel-mosaic-lab/cockpit/cabin-dual-needles.test.cjs
