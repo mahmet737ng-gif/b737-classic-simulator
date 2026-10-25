@@ -4,10 +4,10 @@
  const STORAGE='b737-overhead-toggles-TGL-0001';
  const byId=id=>document.getElementById(id),model=window.B737OverheadToggleModel;
  // All five poses share the identical, immovable metal collar and orthographic pivot.
- // Every sprite cell is 112 x 112; the metal disc is ~42 px in diameter.
+ // Every sprite cell is 768 x 768; the fixed metal disc is ~245 source pixels wide.
  const calibration=Object.fromEntries(
   ['vertical-off','vertical-center','vertical-on','horizontal-left','horizontal-center','horizontal-right']
-   .map(key=>[key,{w:112,h:112,x:56,y:56,diameter:42}])
+   .map(key=>[key,{w:768,h:768,x:384,y:384,diameter:245}])
  );
  let registry,engine,active=null,layer;
  const nodes=new Map(),interlocks=new Map();

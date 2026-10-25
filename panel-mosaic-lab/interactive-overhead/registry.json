@@ -1,44 +1,44 @@
 {
   "schema": "b737.overhead-toggle-overlay.v1",
-  "version": "TGL-0002",
+  "version": "TGL-0003-HQ",
   "baseVersion": "UPD-0012-OVH-measured-seams",
   "baseLayout": "../all-overhead/atlas-layout.json",
   "baseSpec": "../all-overhead/spec.json",
   "guideLibraryFileId": "libfile_555402960f948191b6501fa77d2b8246",
   "scope": "plain toggle switches shown on owner lower-overhead guide; guarded/paddle controls, knobs, buttons and upper OH01-OH06 are separate stages",
   "approvedVisuals": [
-    "b737-cockpit-toggle-v2-5-state"
+    "b737-cockpit-toggle-v3-hq"
   ],
   "assets": {
     "vertical-off": {
-      "url": "../../shared-assets/toggle-switch-standard-v2/b737-toggle-five-positions.webp",
+      "url": "../../shared-assets/toggle-switch-standard-v3/b737-toggle-five-positions-hq.webp",
       "frame": 4,
-      "sha256": "3f18c9fc0835e877060f086c7bc67f96e191b93ad0569a07afb7e62296b0213c"
+      "sha256": "81a07bb8a678b4de89aab40cf8ba0e7d108e4dc9599ab2ceeec5e6d90cc36c20"
     },
     "vertical-center": {
-      "url": "../../shared-assets/toggle-switch-standard-v2/b737-toggle-five-positions.webp",
+      "url": "../../shared-assets/toggle-switch-standard-v3/b737-toggle-five-positions-hq.webp",
       "frame": 1,
-      "sha256": "3f18c9fc0835e877060f086c7bc67f96e191b93ad0569a07afb7e62296b0213c"
+      "sha256": "81a07bb8a678b4de89aab40cf8ba0e7d108e4dc9599ab2ceeec5e6d90cc36c20"
     },
     "vertical-on": {
-      "url": "../../shared-assets/toggle-switch-standard-v2/b737-toggle-five-positions.webp",
+      "url": "../../shared-assets/toggle-switch-standard-v3/b737-toggle-five-positions-hq.webp",
       "frame": 3,
-      "sha256": "3f18c9fc0835e877060f086c7bc67f96e191b93ad0569a07afb7e62296b0213c"
+      "sha256": "81a07bb8a678b4de89aab40cf8ba0e7d108e4dc9599ab2ceeec5e6d90cc36c20"
     },
     "horizontal-left": {
-      "url": "../../shared-assets/toggle-switch-standard-v2/b737-toggle-five-positions.webp",
+      "url": "../../shared-assets/toggle-switch-standard-v3/b737-toggle-five-positions-hq.webp",
       "frame": 0,
-      "sha256": "3f18c9fc0835e877060f086c7bc67f96e191b93ad0569a07afb7e62296b0213c"
+      "sha256": "81a07bb8a678b4de89aab40cf8ba0e7d108e4dc9599ab2ceeec5e6d90cc36c20"
     },
     "horizontal-center": {
-      "url": "../../shared-assets/toggle-switch-standard-v2/b737-toggle-five-positions.webp",
+      "url": "../../shared-assets/toggle-switch-standard-v3/b737-toggle-five-positions-hq.webp",
       "frame": 1,
-      "sha256": "3f18c9fc0835e877060f086c7bc67f96e191b93ad0569a07afb7e62296b0213c"
+      "sha256": "81a07bb8a678b4de89aab40cf8ba0e7d108e4dc9599ab2ceeec5e6d90cc36c20"
     },
     "horizontal-right": {
-      "url": "../../shared-assets/toggle-switch-standard-v2/b737-toggle-five-positions.webp",
+      "url": "../../shared-assets/toggle-switch-standard-v3/b737-toggle-five-positions-hq.webp",
       "frame": 2,
-      "sha256": "3f18c9fc0835e877060f086c7bc67f96e191b93ad0569a07afb7e62296b0213c"
+      "sha256": "81a07bb8a678b4de89aab40cf8ba0e7d108e4dc9599ab2ceeec5e6d90cc36c20"
     }
   },
   "controls": [

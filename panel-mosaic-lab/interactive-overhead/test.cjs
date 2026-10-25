@@ -28,3 +28,13 @@ const html=fs.readFileSync(path.join(__dirname,'index.html'),'utf8');assert.ok(h
 console.log('PASS: 58 socket mappings; binary, horizontal and vertical detents; clamps; spring release; safe persistence; fixed pivots; six approved frame hashes; frozen renderer reuse.');
 
 assert.deepEqual(Object.fromEntries(Object.entries(registry.assets).map(([name,asset])=>[name,asset.frame])),{'vertical-off':4,'vertical-center':1,'vertical-on':3,'horizontal-left':0,'horizontal-center':1,'horizontal-right':2});
+
+// HQ image decodes as one shared 3840x768 texture across all mounted switches.
+const hqPath=path.resolve(__dirname,registry.assets['vertical-on'].url);
+const hqBytes=fs.readFileSync(hqPath);
+assert.equal(hqBytes.subarray(0,4).toString('ascii'),'RIFF');
+assert.equal(hqBytes.subarray(8,12).toString('ascii'),'WEBP');
+assert.equal(hqBytes.subarray(12,16).toString('ascii'),'VP8X');
+assert.equal(1+hqBytes.readUIntLE(24,3),3840);
+assert.equal(1+hqBytes.readUIntLE(27,3),768);
+assert.equal(registry.version,'TGL-0003-HQ');
