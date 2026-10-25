@@ -70,6 +70,9 @@ def main():
     ap.add_argument("--max-lines",type=int,default=180)
     args=ap.parse_args()
     registry=json.loads((ROOT/"engine/instruments/needle-zero-reference-stage1-v1.json").read_text())
+    track=json.loads((ROOT/"engine/instruments/native-pivot-track-batch1-v1.json").read_text())
+    coarse={f["id"]:f for f in track["circularFaces"]}
+    linear={f["id"]:f for f in track["linearFaces"]}
     by_source={}
     for f in registry["faces"]:by_source.setdefault(f["source"]["asset"],[]).append(f)
     result={"schema":"b737.gauge-native-scan.v2","status":"AUTOMATIC_CANDIDATES_NOT_APPROVED",
@@ -94,12 +97,20 @@ def main():
                 "candidates":detect_circle_centres(img)})
         for f in faces:
             centre=f["pivot"]
+            pivotKind="previous_overlay_candidate"
+            if centre is None and f["id"] in coarse:
+                centre=coarse[f["id"]]["pivotCandidate"]
+                pivotKind="coarse_native_grid_estimate"
             if centre is None:
                 result["faces"].append({"id":f["id"],"source":src,"pivot":None,
-                    "status":"PIVOT_UNKNOWN_NOT_AUTO_ASSIGNED","radialLines":[]})
+                    "mechanism":"linear" if f["id"] in linear else "unknown",
+                    "travelWindow":linear.get(f["id"],{}).get("travelWindowCandidate"),
+                    "status":"LINEAR_TRACK_NOT_ROTARY" if f["id"] in linear else "PIVOT_UNKNOWN_NOT_AUTO_ASSIGNED",
+                    "radialLines":[]})
                 continue
             cx,cy=centre["x"],centre["y"]
-            rmax=min(width*.24,height*.27, max(55, min(width,height)*.22))
+            roughRadius=coarse[f["id"]]["roughDialRadiusPx"] if f["id"] in coarse else None
+            rmax=max(45,min(width*.24,height*.27,roughRadius*1.18 if roughRadius else min(width,height)*.22))
             region=cv2.getRectSubPix(img,(int(rmax*2+1),int(rmax*2+1)),(float(cx),float(cy)))
             local=extract_lines(region,rmax,rmax,rmax)
             # Convert crop coordinates to the original immutable source pixel space.
@@ -108,7 +119,9 @@ def main():
                 for key in ("innerPoint","outerPoint"):
                     line[key]=[round(line[key][0]+dx,2),round(line[key][1]+dy,2)]
             result["faces"].append({"id":f["id"],"source":src,
-                "pivot":centre,"pivotConflict":f.get("pivotConflict"),
+                "pivot":centre,"pivotBasis":pivotKind,
+                "pivotUncertaintyPx":centre.get("uncertaintyPx"),
+                "pivotConflict":f.get("pivotConflict"),
                 "status":"RADIAL_STROKE_CANDIDATES_ONLY","radialLines":local[:args.max_lines],
                 "lineCountRawAfterDedup":len(local)})
     result["counts"]={
@@ -117,6 +130,8 @@ def main():
         "facesWithStrokeCandidates":sum(bool(f["radialLines"]) for f in result["faces"]),
         "candidateStrokes":sum(len(f["radialLines"]) for f in result["faces"]),
         "unknownPivotFaces":sum(f["pivot"] is None for f in result["faces"]),
+        "additionalCoarseRotaryPivots":sum(f.get("pivotBasis")=="coarse_native_grid_estimate" for f in result["faces"]),
+        "linearTracks":sum(f.get("status")=="LINEAR_TRACK_NOT_ROTARY" for f in result["faces"]),
         "unassignedCentreCandidates":sum(len(x["candidates"]) for x in result["unassignedCirclesBySource"]),
         "certifiedFaces":0}
     out=ROOT/args.output;out.parent.mkdir(parents=True,exist_ok=True)
