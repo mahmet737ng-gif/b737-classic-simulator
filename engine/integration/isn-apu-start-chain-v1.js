@@ -34,7 +34,7 @@
    this.timingProfile=timingProfile;this.timing=TIMING_PROFILES[timingProfile];
    this.start=start;this.time=0;this.jobs=[];this.phase={apu:'OFF',engine1:'OFF',engine2:'OFF'};
    this.effects=[];this.lastError='';this.controls={};this.guards={};this.started={engine1:false,engine2:false};
-   this.dynamic={engine1:null,engine2:null};this.fuelAvailable={engine1:false,engine2:false};
+   this.dynamic={engine1:null,engine2:null};this.fuelAvailable={engine1:true,engine2:true}; // Legacy direct Chain tests use explicitly simulated fuel; ISN-12 replaces this with source resolution.
    this.operating={engine1:null,engine2:null};this.throttle={engine1:0,engine2:0};
    this.flight={onGround:true};
    this.trainingFaults=Object.fromEntries(['engine1','engine2'].map(device=>
