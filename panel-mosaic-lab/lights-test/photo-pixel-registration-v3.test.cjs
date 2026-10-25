@@ -9,6 +9,9 @@ const v2=read('photo-pixel-registration-v2.json');
 const old=new Map(v2.records.map(x=>[x.id,x]));
 const oh=read('../interactive-overhead/lights.json'),main=read('../cockpit/lights.json');
 const live=new Map([...oh.lights,...main.lights].map(x=>[x.id,x]));
+const finalCorrections=read('photo-position-corrections-v2.json');
+const latest=new Map(finalCorrections.records.map(c=>[c.id,c.newSourceRect]));
+assert.equal(latest.size,1);
 assert.equal(v3.summary.mounted,142);
 assert.equal(v3.records.length,142);
 assert.equal(v3.summary.priorPixelApproved,120);
@@ -22,7 +25,7 @@ for(const row of v3.records){
  const baseline=old.get(row.id),lamp=live.get(row.id);
  assert.ok(lamp&&baseline,row.id);
  assert.deepEqual(row.currentSourceRect,baseline.currentSourceRect,row.id+' photo baseline preserved');
- assert.deepEqual(row.currentSourceRect,lamp.sourceRect,row.id+' source position not corrupted');
+ assert.deepEqual(lamp.sourceRect,latest.get(row.id)||row.currentSourceRect,row.id+' source position not corrupted');
  if(row.status==='AUTO_PIXEL_CENTRE_MATCH_3PX'){
   assert.equal(row.verifiedStatus,'AUTO_PIXEL_CENTRE_MATCH_3PX');prior++;continue;
  }
