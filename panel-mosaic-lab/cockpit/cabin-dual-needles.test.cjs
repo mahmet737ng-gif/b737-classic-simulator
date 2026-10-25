@@ -41,7 +41,7 @@ assert.deepEqual(photo.marks.map(x=>x.valueFt),model.cabinAltPhotoAnchors.map(x=
 for(const {valueFt,angleDeg} of photo.marks)
  assert.ok(Math.abs(model.cabinAltitudePreviewBearing(valueFt)-angleDeg)<.00001);
 const expectedAngles=[
- [66,2.71+(66/3000)*(59.98-2.71)],
+ [66,2.71+(66/500)*(13.59-2.71)],
  [3260,59.98+(260/7000)*(108.64-59.98)],
  [3963,59.98+(963/7000)*(108.64-59.98)]
 ];
