@@ -114,6 +114,9 @@ test('photo-matched three-position frames and actual JS source compile',()=>{
   assert.ok(css.includes('data-position="left"] .nav-left'));
   assert.ok(css.includes('data-position="normal"] .nav-center'));
   assert.ok(css.includes('data-position="right"] .nav-right'));
+  assert.ok(css.includes('.toggle .frame-off{background-position:75% 50%}'),'OFF faces UP at the hardware bezel');
+  assert.ok(css.includes('.toggle .frame-on{background-position:100% 50%}'),'ON faces DOWN at the hardware bezel');
+  assert.ok(css.includes('.toggle[data-control="altPosition"][data-position="off"] .frame-center{opacity:1!important}'),'Alt flaps central OFF detent is centered');
   assert.ok(js.includes('const $$ = (selector'));
   assert.ok(!js.includes('$$$('));
   assert.ok(js.includes('pointermove')&&js.includes('setPointerCapture'));

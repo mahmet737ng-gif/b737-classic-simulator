@@ -105,20 +105,24 @@ button{font:inherit;color:inherit;-webkit-tap-highlight-color:transparent;touch-
   transition:opacity 145ms ease-in-out!important;
   filter:none!important;
 }
-.toggle .frame-off{background-position:100% 50%}
+.toggle .frame-off{background-position:75% 50%}
 .toggle .frame-center{background-position:25% 50%}
-.toggle .frame-on{background-position:75% 50%}
+.toggle .frame-on{background-position:100% 50%}
 .toggle.selector .nav-left{background-position:0% 50%}
 .toggle.selector .nav-center{background-position:25% 50%}
 .toggle.selector .nav-right{background-position:50% 50%}
-.toggle[data-position="up"] .frame-off{opacity:0!important}
-.toggle[data-position="up"] .frame-on{opacity:1!important}
-.toggle[data-position="down"] .frame-on{opacity:0!important}
-.toggle[data-position="down"] .frame-off{opacity:1!important}
+.toggle[data-position="up"] .frame-off{opacity:1!important}
+.toggle[data-position="up"] .frame-on{opacity:0!important}
+.toggle[data-position="down"] .frame-on{opacity:1!important}
+.toggle[data-position="down"] .frame-off{opacity:0!important}
 .alt-arm .arm-switch img,.alt-arm[data-armed] .arm-switch img{
  content:url("data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=")!important;
  transform:none!important;
  background-image:url("../shared-assets/toggle-switch-standard-v3/b737-toggle-five-positions-hq.webp");background-size:500% 100%;background-repeat:no-repeat;
- background-position:100% 50%;
+ background-position:75% 50%;
 }
-.alt-arm[data-armed="true"] .arm-switch img{background-position:75% 50%}
+.alt-arm[data-armed="true"] .arm-switch img{background-position:100% 50%}
+
+/* The 3-detent ALTERNATE FLAPS POSITION has an actual central OFF detent. */
+.toggle[data-control="altPosition"][data-position="off"] .frame-off{opacity:0!important}
+.toggle[data-control="altPosition"][data-position="off"] .frame-center{opacity:1!important}
