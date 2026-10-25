@@ -1,0 +1,509 @@
+{
+  "schema": "b737.highrisk-source-image-disposition.v2",
+  "aircraft": "B737-33V EP-FSI",
+  "date": "2026-10-25",
+  "reviewBasis": "Five original image native-pixel panels in GitHub Actions artifacts, SHA-256 and dimensions confirmed",
+  "counts": {
+    "reviewedHighRiskFaces": 15,
+    "mechanicalPivotCertified": 0,
+    "scaleLinesCertified": 0,
+    "historicalOverlayPivotsQuarantined": 2,
+    "caseCircleAsShaftRejected": 1,
+    "mislocatedLinearTrackQuarantined": 1,
+    "versionedFOImageSourcePathsResolved": 3
+  },
+  "protections": [
+    "Original approved photo assets unchanged",
+    "All legacy sprite shapes unchanged",
+    "Quarantines forbid stale origin use in Stage12 release logic",
+    "No numbers inferred from text outlines/screw edges",
+    "No migration of case-circle centers to operational pivot coordinates without independent proof"
+  ],
+  "faces": [
+    {
+      "id": "oh.elec.dc_amps",
+      "priorityRank": 1,
+      "kind": "rotary",
+      "sourceAsset": "panel-mosaic-lab/assets/locked/2026-10-23/OH10-ELEC-LOSSLESS-9a1ca4d6cfb2.png",
+      "sourceSha256": "9a1ca4d6cfb277ec1404f3a464e957d81be9d9689a0810883364342d57b0f1ea",
+      "originalWidth": 1095,
+      "originalHeight": 1436,
+      "pixelReview": "SOURCE_IMAGE_OVERLAY_EXAMINED__PHYSICAL_SHAFT_NOT_YET_CERTIFIED",
+      "evidence": "https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/40228921125",
+      "specificVisualFinding": "The prior overlay pivot is 24 native pixels above the later photographic position; the large 0 graduation at 12 o'clock does not itself certify the shaft.",
+      "originalPivotCandidate": {
+        "x": 310,
+        "y": 192,
+        "evidence": "photo-anchor-checkpoints-v1.json",
+        "state": "optical_center_estimate_needs_confirmation"
+      },
+      "originalRimCandidate": {
+        "x": 297.2,
+        "y": 192.6,
+        "radius": 189.32,
+        "centerDeltaPx": 12.81,
+        "radiusDeltaPx": 46.32,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "sourceTickCandidates": 31,
+      "operationalGeometryAction": "DISQUALIFY_STALE_ORIGIN_WHERE_EVIDENCE_CONFLICTS_ELSE_RETAIN_BLOCK",
+      "shaftApproved": false,
+      "majorMinorScaleApproved": false,
+      "releasedInUnified": false,
+      "rejectedPriorOverlay": {
+        "x": 310,
+        "y": 168
+      },
+      "preferredProvisional": {
+        "x": 310,
+        "y": 192
+      },
+      "reason": "HISTORICAL_24PX_UPWARD_SHIFT_UNSUITABLE"
+    },
+    {
+      "id": "oh.elec.cps",
+      "priorityRank": 2,
+      "kind": "rotary",
+      "sourceAsset": "panel-mosaic-lab/assets/locked/2026-10-23/OH10-ELEC-LOSSLESS-9a1ca4d6cfb2.png",
+      "sourceSha256": "9a1ca4d6cfb277ec1404f3a464e957d81be9d9689a0810883364342d57b0f1ea",
+      "originalWidth": 1095,
+      "originalHeight": 1436,
+      "pixelReview": "SOURCE_IMAGE_OVERLAY_EXAMINED__PHYSICAL_SHAFT_NOT_YET_CERTIFIED",
+      "evidence": "https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/40228921125",
+      "specificVisualFinding": "Historical overlay pivot x=715 is displaced 65 native pixels to the left of photo-centred candidate x=780; never use the old x=715 position for automatic needle placement.",
+      "originalPivotCandidate": {
+        "x": 780,
+        "y": 192,
+        "evidence": "photo-anchor-checkpoints-v1.json",
+        "state": "optical_center_estimate_needs_confirmation"
+      },
+      "originalRimCandidate": {
+        "x": 776.8,
+        "y": 203.4,
+        "radius": 190.64,
+        "centerDeltaPx": 11.84,
+        "radiusDeltaPx": 47.64,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "sourceTickCandidates": 55,
+      "operationalGeometryAction": "DISQUALIFY_STALE_ORIGIN_WHERE_EVIDENCE_CONFLICTS_ELSE_RETAIN_BLOCK",
+      "shaftApproved": false,
+      "majorMinorScaleApproved": false,
+      "releasedInUnified": false,
+      "rejectedPriorOverlay": {
+        "x": 715,
+        "y": 190
+      },
+      "preferredProvisional": {
+        "x": 780,
+        "y": 192
+      },
+      "reason": "HISTORICAL_65PX_LEFT_SHIFT_UNSUITABLE"
+    },
+    {
+      "id": "oh.elec.dc_volts",
+      "priorityRank": 3,
+      "kind": "rotary",
+      "sourceAsset": "panel-mosaic-lab/assets/locked/2026-10-23/OH10-ELEC-LOSSLESS-9a1ca4d6cfb2.png",
+      "sourceSha256": "9a1ca4d6cfb277ec1404f3a464e957d81be9d9689a0810883364342d57b0f1ea",
+      "originalWidth": 1095,
+      "originalHeight": 1436,
+      "pixelReview": "SOURCE_IMAGE_OVERLAY_EXAMINED__PHYSICAL_SHAFT_NOT_YET_CERTIFIED",
+      "evidence": "https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/40228921125",
+      "specificVisualFinding": "Source presents a half-dial arc with many graduations; a case-circle fit cannot certify the concealed needle spindle.",
+      "originalPivotCandidate": {
+        "x": 332,
+        "y": 600,
+        "evidence": "gauge-survey-stage2-3.json",
+        "state": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "originalRimCandidate": {
+        "x": 337.2,
+        "y": 578.8,
+        "radius": 132.56,
+        "centerDeltaPx": 21.83,
+        "radiusDeltaPx": 10.44,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "sourceTickCandidates": 18,
+      "operationalGeometryAction": "DISQUALIFY_STALE_ORIGIN_WHERE_EVIDENCE_CONFLICTS_ELSE_RETAIN_BLOCK",
+      "shaftApproved": false,
+      "majorMinorScaleApproved": false,
+      "releasedInUnified": false
+    },
+    {
+      "id": "oh.elec.ac_volts",
+      "priorityRank": 4,
+      "kind": "rotary",
+      "sourceAsset": "panel-mosaic-lab/assets/locked/2026-10-23/OH10-ELEC-LOSSLESS-9a1ca4d6cfb2.png",
+      "sourceSha256": "9a1ca4d6cfb277ec1404f3a464e957d81be9d9689a0810883364342d57b0f1ea",
+      "originalWidth": 1095,
+      "originalHeight": 1436,
+      "pixelReview": "SOURCE_IMAGE_OVERLAY_EXAMINED__PHYSICAL_SHAFT_NOT_YET_CERTIFIED",
+      "evidence": "https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/40228921125",
+      "specificVisualFinding": "Upper half-ring and scale numerals are visible, but a generic Hough rim center is not a hub; source reference values are not yet assigned.",
+      "originalPivotCandidate": {
+        "x": 715,
+        "y": 620,
+        "evidence": "gauge-survey-stage2-3.json",
+        "state": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "originalRimCandidate": {
+        "x": 685.4,
+        "y": 621.6,
+        "radius": 98.24,
+        "centerDeltaPx": 29.64,
+        "radiusDeltaPx": 44.76,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "sourceTickCandidates": 22,
+      "operationalGeometryAction": "DISQUALIFY_STALE_ORIGIN_WHERE_EVIDENCE_CONFLICTS_ELSE_RETAIN_BLOCK",
+      "shaftApproved": false,
+      "majorMinorScaleApproved": false,
+      "releasedInUnified": false
+    },
+    {
+      "id": "oh.drive_oil.1",
+      "priorityRank": 5,
+      "kind": "rotary",
+      "sourceAsset": "panel-mosaic-lab/assets/locked/2026-10-23/OH11-STANDBY-8b7d36ff3182.png",
+      "sourceSha256": "86cf2f1de81146756adf694b1fe01067a271c32990c1fda7752eb913442a6708",
+      "originalWidth": 1203,
+      "originalHeight": 1308,
+      "pixelReview": "SOURCE_IMAGE_OVERLAY_EXAMINED__PHYSICAL_SHAFT_NOT_YET_CERTIFIED",
+      "evidence": "https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/40228921125",
+      "specificVisualFinding": "Two distinct RISE and IN numeric readings appear on the same face, with no photographed shaft/needle overlay; previous center near grey/black seam unverified.",
+      "originalPivotCandidate": {
+        "x": 266,
+        "y": 1021,
+        "evidence": "gauge-survey-stage2-3.json",
+        "state": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "originalRimCandidate": {
+        "x": 271.8,
+        "y": 983.8,
+        "radius": 141.08,
+        "centerDeltaPx": 37.65,
+        "radiusDeltaPx": 18.92,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "sourceTickCandidates": 22,
+      "operationalGeometryAction": "DISQUALIFY_STALE_ORIGIN_WHERE_EVIDENCE_CONFLICTS_ELSE_RETAIN_BLOCK",
+      "shaftApproved": false,
+      "majorMinorScaleApproved": false,
+      "releasedInUnified": false
+    },
+    {
+      "id": "capt.airspeed",
+      "priorityRank": 6,
+      "kind": "rotary",
+      "sourceAsset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png",
+      "sourceSha256": "dea7c23ddd5d648cf51735d0fcbcc9d1e69ce37efd736ec45fb173fe766fc56b",
+      "originalWidth": 3942,
+      "originalHeight": 3591,
+      "pixelReview": "SOURCE_IMAGE_OVERLAY_EXAMINED__PHYSICAL_SHAFT_NOT_YET_CERTIFIED",
+      "evidence": "https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/40228921125",
+      "specificVisualFinding": "Blank indicated airspeed dial has full edge ticks; no moving needle or spindle cap is drawn in this native source. Visual rim center is not final motion pivot.",
+      "originalPivotCandidate": {
+        "x": 1100,
+        "y": 970,
+        "uncertaintyPx": 40,
+        "reason": "visually estimated native-grid dial center"
+      },
+      "originalRimCandidate": {
+        "x": 1080.6,
+        "y": 980.6,
+        "radius": 372.16,
+        "centerDeltaPx": 22.11,
+        "radiusDeltaPx": 12.16,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "sourceTickCandidates": 116,
+      "operationalGeometryAction": "DISQUALIFY_STALE_ORIGIN_WHERE_EVIDENCE_CONFLICTS_ELSE_RETAIN_BLOCK",
+      "shaftApproved": false,
+      "majorMinorScaleApproved": false,
+      "releasedInUnified": false
+    },
+    {
+      "id": "capt.rmi",
+      "priorityRank": 7,
+      "kind": "rotary",
+      "sourceAsset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png",
+      "sourceSha256": "dea7c23ddd5d648cf51735d0fcbcc9d1e69ce37efd736ec45fb173fe766fc56b",
+      "originalWidth": 3942,
+      "originalHeight": 3591,
+      "pixelReview": "SOURCE_IMAGE_OVERLAY_EXAMINED__PHYSICAL_SHAFT_NOT_YET_CERTIFIED",
+      "evidence": "https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/40228921125",
+      "specificVisualFinding": "The RMI card shows a visible central round cap near the historical magenta point; the alternative green case center is materially offset and must not replace the hub.",
+      "originalPivotCandidate": {
+        "x": 1170,
+        "y": 1850,
+        "uncertaintyPx": 40,
+        "reason": "visually estimated native-grid RMI card center"
+      },
+      "originalRimCandidate": {
+        "x": 1186.6,
+        "y": 1896.6,
+        "radius": 260.52,
+        "centerDeltaPx": 49.47,
+        "radiusDeltaPx": 39.48,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "sourceTickCandidates": 72,
+      "operationalGeometryAction": "DISQUALIFY_STALE_ORIGIN_WHERE_EVIDENCE_CONFLICTS_ELSE_RETAIN_BLOCK",
+      "shaftApproved": false,
+      "majorMinorScaleApproved": false,
+      "releasedInUnified": false,
+      "rejectedCaseCircleAsShaft": true,
+      "preferredProvisional": {
+        "x": 1170,
+        "y": 1850
+      },
+      "reason": "RIM_CENTER_MUST_NOT_OVERRIDE_CENTRAL_VISIBLE_HUB"
+    },
+    {
+      "id": "capt.altimeter",
+      "priorityRank": 8,
+      "kind": "rotary",
+      "sourceAsset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png",
+      "sourceSha256": "dea7c23ddd5d648cf51735d0fcbcc9d1e69ce37efd736ec45fb173fe766fc56b",
+      "originalWidth": 3942,
+      "originalHeight": 3591,
+      "pixelReview": "SOURCE_IMAGE_OVERLAY_EXAMINED__PHYSICAL_SHAFT_NOT_YET_CERTIFIED",
+      "evidence": "https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/40228921125",
+      "specificVisualFinding": "The blank numerical ring, baro apertures and label glyphs cannot be interpreted as needle pivots or graduation line fragments.",
+      "originalPivotCandidate": {
+        "x": 3100,
+        "y": 940,
+        "uncertaintyPx": 40,
+        "reason": "visually estimated native-grid altimeter card center"
+      },
+      "originalRimCandidate": {
+        "x": 3080.2,
+        "y": 953.8,
+        "radius": 280,
+        "centerDeltaPx": 24.13,
+        "radiusDeltaPx": 0,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "sourceTickCandidates": 85,
+      "operationalGeometryAction": "DISQUALIFY_STALE_ORIGIN_WHERE_EVIDENCE_CONFLICTS_ELSE_RETAIN_BLOCK",
+      "shaftApproved": false,
+      "majorMinorScaleApproved": false,
+      "releasedInUnified": false
+    },
+    {
+      "id": "capt.alt_ias_combined",
+      "priorityRank": 9,
+      "kind": "rotary",
+      "sourceAsset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png",
+      "sourceSha256": "dea7c23ddd5d648cf51735d0fcbcc9d1e69ce37efd736ec45fb173fe766fc56b",
+      "originalWidth": 3942,
+      "originalHeight": 3591,
+      "pixelReview": "SOURCE_IMAGE_OVERLAY_EXAMINED__PHYSICAL_SHAFT_NOT_YET_CERTIFIED",
+      "evidence": "https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/40228921125",
+      "specificVisualFinding": "Combined ALT/IAS face has separate upper/lower scale and digital windows. Do not apply one global rotary pivot to two different mechanical representations.",
+      "originalPivotCandidate": {
+        "x": 3720,
+        "y": 950,
+        "uncertaintyPx": 40,
+        "reason": "visually estimated native-grid combined ALT/IAS face center"
+      },
+      "originalRimCandidate": {
+        "x": 3711.8,
+        "y": 955,
+        "radius": 260.96,
+        "centerDeltaPx": 9.6,
+        "radiusDeltaPx": 15.96,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "sourceTickCandidates": 74,
+      "operationalGeometryAction": "DISQUALIFY_STALE_ORIGIN_WHERE_EVIDENCE_CONFLICTS_ELSE_RETAIN_BLOCK",
+      "shaftApproved": false,
+      "majorMinorScaleApproved": false,
+      "releasedInUnified": false
+    },
+    {
+      "id": "capt.vertical_speed",
+      "priorityRank": 10,
+      "kind": "rotary",
+      "sourceAsset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png",
+      "sourceSha256": "dea7c23ddd5d648cf51735d0fcbcc9d1e69ce37efd736ec45fb173fe766fc56b",
+      "originalWidth": 3942,
+      "originalHeight": 3591,
+      "pixelReview": "SOURCE_IMAGE_OVERLAY_EXAMINED__PHYSICAL_SHAFT_NOT_YET_CERTIFIED",
+      "evidence": "https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/40228921125",
+      "specificVisualFinding": "The VSI has positive and negative sectors and a central instrument window; numeric and mechanical 0 must be registered separately.",
+      "originalPivotCandidate": {
+        "x": 3100,
+        "y": 1600,
+        "uncertaintyPx": 40,
+        "reason": "visually estimated native-grid VSI center"
+      },
+      "originalRimCandidate": {
+        "x": 3073,
+        "y": 1607.8,
+        "radius": 271.72,
+        "centerDeltaPx": 28.1,
+        "radiusDeltaPx": 8.28,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "sourceTickCandidates": 54,
+      "operationalGeometryAction": "DISQUALIFY_STALE_ORIGIN_WHERE_EVIDENCE_CONFLICTS_ELSE_RETAIN_BLOCK",
+      "shaftApproved": false,
+      "majorMinorScaleApproved": false,
+      "releasedInUnified": false
+    },
+    {
+      "id": "capt.clock",
+      "priorityRank": 11,
+      "kind": "rotary",
+      "sourceAsset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png",
+      "sourceSha256": "dea7c23ddd5d648cf51735d0fcbcc9d1e69ce37efd736ec45fb173fe766fc56b",
+      "originalWidth": 3942,
+      "originalHeight": 3591,
+      "pixelReview": "SOURCE_IMAGE_OVERLAY_EXAMINED__PHYSICAL_SHAFT_NOT_YET_CERTIFIED",
+      "evidence": "https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/40228921125",
+      "specificVisualFinding": "Multiple clock hands and display windows share an instrument body; circle-fit center is not a verified pivot for every hand.",
+      "originalPivotCandidate": {
+        "x": 3700,
+        "y": 1580,
+        "uncertaintyPx": 40,
+        "reason": "visually estimated native-grid clock face center"
+      },
+      "originalRimCandidate": {
+        "x": 3721.8,
+        "y": 1603,
+        "radius": 281.04,
+        "centerDeltaPx": 31.69,
+        "radiusDeltaPx": 21.04,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "sourceTickCandidates": 76,
+      "operationalGeometryAction": "DISQUALIFY_STALE_ORIGIN_WHERE_EVIDENCE_CONFLICTS_ELSE_RETAIN_BLOCK",
+      "shaftApproved": false,
+      "majorMinorScaleApproved": false,
+      "releasedInUnified": false
+    },
+    {
+      "id": "eng.fuel_qty.center",
+      "priorityRank": 12,
+      "kind": "rotary",
+      "sourceAsset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "sourceSha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "originalWidth": 1235,
+      "originalHeight": 1274,
+      "pixelReview": "SOURCE_IMAGE_OVERLAY_EXAMINED__PHYSICAL_SHAFT_NOT_YET_CERTIFIED",
+      "evidence": "https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/40228921125",
+      "specificVisualFinding": "Fuel quantity blank artwork shows a partial illuminated arc and no visible physical needle spindle; generic circle center risks inventing a mechanism.",
+      "originalPivotCandidate": {
+        "x": 261,
+        "y": 922,
+        "uncertaintyPx": 22,
+        "reason": "circular face center; actual moving pointer unknown"
+      },
+      "originalRimCandidate": {
+        "x": 229.2,
+        "y": 908.2,
+        "radius": 106.24,
+        "centerDeltaPx": 34.67,
+        "radiusDeltaPx": 6.24,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "sourceTickCandidates": 5,
+      "operationalGeometryAction": "DISQUALIFY_STALE_ORIGIN_WHERE_EVIDENCE_CONFLICTS_ELSE_RETAIN_BLOCK",
+      "shaftApproved": false,
+      "majorMinorScaleApproved": false,
+      "releasedInUnified": false
+    },
+    {
+      "id": "eng.fuel_qty.1",
+      "priorityRank": 13,
+      "kind": "rotary",
+      "sourceAsset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "sourceSha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "originalWidth": 1235,
+      "originalHeight": 1274,
+      "pixelReview": "SOURCE_IMAGE_OVERLAY_EXAMINED__PHYSICAL_SHAFT_NOT_YET_CERTIFIED",
+      "evidence": "https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/40228921125",
+      "specificVisualFinding": "Fuel quantity semi-circular arc with no shaft shown. Previous pivot at lower edge should never be certified solely from rim detection.",
+      "originalPivotCandidate": {
+        "x": 145,
+        "y": 1114,
+        "uncertaintyPx": 22,
+        "reason": "circular face center; actual moving pointer unknown"
+      },
+      "originalRimCandidate": {
+        "x": 114.6,
+        "y": 1125,
+        "radius": 127.12,
+        "centerDeltaPx": 32.33,
+        "radiusDeltaPx": 17.12,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "sourceTickCandidates": 13,
+      "operationalGeometryAction": "DISQUALIFY_STALE_ORIGIN_WHERE_EVIDENCE_CONFLICTS_ELSE_RETAIN_BLOCK",
+      "shaftApproved": false,
+      "majorMinorScaleApproved": false,
+      "releasedInUnified": false
+    },
+    {
+      "id": "fo.airspeed",
+      "priorityRank": 14,
+      "kind": "rotary",
+      "sourceAsset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Right_Main_Instruments_Blank.png",
+      "sourceSha256": "171bf9e8d21347e7a522ebc86b19cfe0b967f0503d26c483d8f3d685f719576a",
+      "originalWidth": 918,
+      "originalHeight": 1713,
+      "pixelReview": "SOURCE_IMAGE_OVERLAY_EXAMINED__PHYSICAL_SHAFT_NOT_YET_CERTIFIED",
+      "evidence": "https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/40228921125",
+      "specificVisualFinding": "The right-side airspeed dial is pictured without a physical needle. An approximately centered case circle does not prove the tip geometry.",
+      "originalPivotCandidate": {
+        "x": 711,
+        "y": 564,
+        "uncertaintyPx": 22,
+        "reason": "FO airspeed dial center"
+      },
+      "originalRimCandidate": {
+        "x": 733.2,
+        "y": 577.8,
+        "radius": 164.56,
+        "centerDeltaPx": 26.14,
+        "radiusDeltaPx": 19.56,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "sourceTickCandidates": 90,
+      "operationalGeometryAction": "DISQUALIFY_STALE_ORIGIN_WHERE_EVIDENCE_CONFLICTS_ELSE_RETAIN_BLOCK",
+      "shaftApproved": false,
+      "majorMinorScaleApproved": false,
+      "releasedInUnified": false
+    },
+    {
+      "id": "ped.stab_trim.right",
+      "priorityRank": 15,
+      "kind": "linear",
+      "sourceAsset": "panel-mosaic-lab/assets/locked/2026-10-23/Aircraft Throttle Quadrant Control Panel.png",
+      "sourceSha256": "e533f907b3826dbf8fc986812b9045c2ef8980f93133ce85b859e9b9d7ab0030",
+      "originalWidth": 1145,
+      "originalHeight": 1373,
+      "pixelReview": "SOURCE_IMAGE_OVERLAY_EXAMINED__PHYSICAL_SHAFT_NOT_YET_CERTIFIED",
+      "evidence": "https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/40228921125",
+      "specificVisualFinding": "Original trim scale and dark vertical position track are visibly LEFT of the previously outlined x=961..1063 window; previous right-track ROI yielded zero transverse strokes and is unsafe for calibration.",
+      "originalPivotCandidate": null,
+      "originalRimCandidate": null,
+      "sourceTickCandidates": 0,
+      "operationalGeometryAction": "DISQUALIFY_STALE_ORIGIN_WHERE_EVIDENCE_CONFLICTS_ELSE_RETAIN_BLOCK",
+      "shaftApproved": false,
+      "majorMinorScaleApproved": false,
+      "releasedInUnified": false,
+      "rejectedWindow": {
+        "x0": 961,
+        "y0": 609,
+        "x1": 1063,
+        "y1": 965
+      },
+      "preferredProvisional": null,
+      "reason": "OLD_RIGHT_STAB_TRIM_BOX_EXCLUDES_SCALE_TRACK"
+    }
+  ]
+}
