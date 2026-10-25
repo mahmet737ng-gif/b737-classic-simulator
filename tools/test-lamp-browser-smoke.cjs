@@ -12,8 +12,23 @@ const {chromium}=require('playwright');
   const response=await page.goto(url,{waitUntil:'domcontentloaded',timeout:60000});
   assert.equal(response.status(),200,kind+' page route');
   const sel=kind==='overhead'?'.mounted-light[data-light]':'.cockpit-light[data-cockpit-light]';
-  await page.waitForFunction(arg=>document.querySelectorAll(arg.selector).length===arg.n,
-    {selector:sel,n:expected},{timeout:90000});
+  try{
+   await page.waitForFunction(arg=>document.querySelectorAll(arg.selector).length===arg.n,
+     {selector:sel,n:expected},{timeout:25000});
+  }catch(error){
+   const inspect=await page.evaluate(selector=>({
+    count:document.querySelectorAll(selector).length,
+    overheadPieces:document.querySelectorAll('.atlas-piece').length,
+    mainRegion:!!document.getElementById('region-main'),
+    mounted:document.querySelectorAll('.mounted-light').length,
+    cockpit:document.querySelectorAll('.cockpit-light').length,
+    alerts:[...document.querySelectorAll('[role=alert]')].map(x=>x.textContent).slice(0,8),
+    status:document.getElementById('lightsStatus')?.textContent,
+    lightScripts:[...document.scripts].map(x=>x.src).filter(x=>/light|stage/.test(x)).slice(-12)
+   }),sel);
+   console.error('BROWSER_DOM_DIAGNOSTIC',kind,JSON.stringify({inspect,errors}));
+   throw error;
+  }
   const mounted=await page.locator(sel).count();
   assert.equal(mounted,expected,kind+' all mounted lights');
   for(const id of ids){
