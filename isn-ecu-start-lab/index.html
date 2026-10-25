@@ -14,8 +14,14 @@ label{display:inline-flex;align-items:center;gap:5px;font-size:.92rem}input[type
 <h1>ISN 13–18 · B737 Classic Engine Start Bench <span id="clock" class="subtle">00:00</span></h1>
 <p class="subtle">B737 Classic · Engine / APU testbench · Simulator only</p>
 <section><h2>1. Electrical / APU / fuel preparation</h2>
-<div class="controls"><button data-act="battery">BATTERY ON</button><button data-act="apuStart">APU START</button><button data-act="apuGen">APU GEN → BUS 1</button><button data-act="apuBleed">APU BLEED ON</button><button data-act="fuel">Enable training pump supply</button><button data-act="apuStop">APU OFF</button></div>
-<div class="status" id="apu">APU OFF</div><div class="controls"><button data-act="bleedFault">Inject APU bleed failure</button><button data-act="genFault">Inject APU GEN failure</button><button data-act="reset">RESET (Cold & Dark)</button></div></section>
+<div class="controls"><button data-act="battery">BATTERY ON</button><button data-act="apuStart">APU START</button><button data-act="apuGen">APU GEN → BUS 1</button><button data-act="apuGen2">APU GEN → BUS 2</button><button data-act="apuBleed">APU BLEED ON</button><button data-act="fuel">Enable training pump supply</button><button data-act="apuStop">APU OFF</button></div>
+<div class="status" id="apu">APU OFF</div>
+<div class="controls" aria-label="Standalone training electrical consumers">
+<button data-act="loadAvionics">AVIONICS ON/OFF</button>
+<button data-act="loadLights">CABIN LIGHTS ON/OFF</button>
+<button data-act="loadGalley">GALLEY ON/OFF</button>
+<button data-act="loadFans">A/C FANS ON/OFF</button></div>
+<p class="subtle">Electrical consumer kVA values are simulator estimates, not verified aircraft feeder data.</p><div class="controls"><button data-act="bleedFault">Inject APU bleed failure</button><button data-act="genFault">Inject APU GEN failure</button><button data-act="reset">RESET (Cold & Dark)</button></div></section>
 <section><h2>2. Engine start & operating controls</h2><div class="controls">
 <button data-act="start1">ENG 1 START GRD</button><button data-act="idle1">ENG 1 LEVER IDLE</button><button data-act="off1">ENG 1 CUTOFF</button>
 <button data-act="start2">ENG 2 START GRD</button><button data-act="idle2">ENG 2 LEVER IDLE</button><button data-act="off2">ENG 2 CUTOFF</button>
@@ -45,6 +51,7 @@ label{display:inline-flex;align-items:center;gap:5px;font-size:.92rem}input[type
 <script src="../engine/integration/isn-apu-start-chain-v1.js"></script>
 <script src="../engine/integration/isn-thrust-performance-v1.js"></script>
 <script src="../engine/integration/isn-09-12-runtime-v1.js"></script>
+<script src="../engine/integration/isn-apu-load-dynamics-v1.js"></script>
 <script src="../engine/integration/isn-13-18-ecu-testbench-v1.js"></script>
 <script src="./app.js"></script>
 </body></html>
