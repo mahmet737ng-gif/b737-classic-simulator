@@ -1,0 +1,60 @@
+{
+  "schema": "b737.stage3-4.native-evidence-manifest.v1",
+  "created": "2026-10-25",
+  "sourceRun": "https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/40221766933",
+  "sourceBranch": "main",
+  "sourceOriginalsSha256Verified": true,
+  "originalOverheadLocksPassed": true,
+  "angleConvention": "degrees clockwise from twelve; native source y down",
+  "purpose": "review and correction; not released to Unified ISM",
+  "approval": {
+    "fullyCalibratedFaces": 0,
+    "certifiedPivotCentres": 0,
+    "actualAllTickGeometriesApproved": 0,
+    "liveNeedleBindingsChanged": false
+  },
+  "counts": {
+    "faces": 54,
+    "rotaryFaces": 49,
+    "linearFaces": 5,
+    "scaleBands": 50,
+    "candidateWhiteStrokes": 1808,
+    "candidateMajorLike": 232,
+    "candidateShortLike": 748,
+    "angleReferences": 52,
+    "oneNeighbor": 23,
+    "multipleNeighbors": 29,
+    "noNeighbor": 0,
+    "circleRimCandidates": 49,
+    "approvedNeedlePivots": 0,
+    "certifiedTickScales": 0
+  },
+  "groupFiles": [
+    {
+      "path": "engine/instruments/stage34-native/overhead-candidates-v1.json",
+      "faces": 16
+    },
+    {
+      "path": "engine/instruments/stage34-native/captain-candidates-v1.json",
+      "faces": 6
+    },
+    {
+      "path": "engine/instruments/stage34-native/engine-candidates-v1.json",
+      "faces": 20
+    },
+    {
+      "path": "engine/instruments/stage34-native/first-officer-candidates-v1.json",
+      "faces": 9
+    },
+    {
+      "path": "engine/instruments/stage34-native/pedestal-candidates-v1.json",
+      "faces": 3
+    }
+  ],
+  "notes": [
+    "Major/medium/minor strokes are only provisional length categories; label values not inferred from size.",
+    "True needle axis is not assumed to equal photographic case/rim center.",
+    "Five linear strips have travel-window rectangles and no rotation pivot.",
+    "Differential pressure and cabin altitude measured on separate concentric radius bands."
+  ]
+}
