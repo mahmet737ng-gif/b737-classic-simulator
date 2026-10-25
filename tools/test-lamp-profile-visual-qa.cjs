@@ -53,12 +53,17 @@ const {chromium}=require('playwright');
       }));
       const controls=[...layer.querySelectorAll('[data-role="actuator"]')].map(n=>n.dataset.control);
       const acLamps=[...d.querySelectorAll('[data-aircon-lamp]')].map(n=>({id:n.dataset.airconLamp,visible:getComputedStyle(n).visibility}));
+      const oh21=d.getElementById('aircon400Oh21Overlay');
+      const packs21=[...d.querySelectorAll('[data-aircon-pack]')].map(n=>({side:n.dataset.airconPack,state:n.dataset.state,images:[...n.querySelectorAll('img')].map(i=>i.src)}));
+      const leftRecirc=d.getElementById('toggle-recirc-fan-l-400');
+      const rightRecirc=d.getElementById('toggle-recirc-fan');
       return {system,family,layerSystem:layer?.dataset.system,lamps,controls,
        oh22BackgroundVisible:!!image&&getComputedStyle(image).display!=='none',
        oh22ImageLoaded:image?.dataset.loaded||null,
        airconVisible:!!ac&&!ac.hidden,
        airconBackgroundVisible:!!acback&&getComputedStyle(acback).display!=='none',
-       airconImageLoaded:acback?.dataset.loaded||null,acLamps};
+       airconImageLoaded:acback?.dataset.loaded||null,acLamps,
+       oh21Visible:!!oh21&&!oh21.hidden,oh21Packs:packs21,leftRecirc:!!leftRecirc,rightRecirc:!!rightRecirc};
     },{system,family});
     assert.equal(data.layerSystem,system,'OH22 wrong displayed type');
     assert.equal(data.lamps.length,4,system+' annunciator count');
@@ -69,6 +74,9 @@ const {chromium}=require('playwright');
     assert.equal(data.airconVisible,family==='B737-400','737-400 zone panel visibility');
     assert.equal(data.airconBackgroundVisible,family==='B737-400','737-400 OH20 owner photo');
     assert.equal(data.acLamps.length,3,'737-400 zone lamp count');
+    assert.equal(data.oh21Visible,family==='B737-400','OH21 400 dual-recirc/pack overlay visibility');
+    assert.equal(data.oh21Packs.length,2,'Two independent 737-400 PACK annunciators');
+    assert.ok(data.leftRecirc&&data.rightRecirc,'Independent L/R Recirc Fan switch mounts required');
     assert.ok(data.lamps.every(x=>x.bounds.w>0&&x.bounds.w<300&&x.bounds.h<110),'Lens must remain inside photograph region');
     // Each configuration and light-test state is captured independently.
     for(const lit of [false,true]){
@@ -79,6 +87,7 @@ const {chromium}=require('playwright');
       const tag=system+'_'+family.replace(/[^A-Za-z0-9]/g,'')+'_'+(lit?'ON':'OFF');
       await frame.locator('.atlas-piece[data-key="OH22"]').screenshot({path:path.join(out,tag+'_OH22.png'),timeout:20000});
       await frame.locator('.atlas-piece[data-key="OH20"]').screenshot({path:path.join(out,tag+'_OH20.png'),timeout:20000});
+      await frame.locator('.atlas-piece[data-key="OH21"]').screenshot({path:path.join(out,tag+'_OH21.png'),timeout:20000});
       // Small 2x2 photo-socket image samples are logged for expert inspection
       // without uploading owner reference files or their raw source artwork.
       if((system==='CPCS'||system==='DCPCS')&&family==='B737-400'&&lit){
@@ -94,6 +103,6 @@ const {chromium}=require('playwright');
   assert.equal(scenarios.length,8);
   assert.equal(errors.filter(x=>/OH22|aircon400|pressure|lights/.test(x)).length,0,'JavaScript runtime errors');
   fs.writeFileSync(path.join(out,'variant-geometries.json'),JSON.stringify({scenarios,errors},null,2)+'\n');
-  console.log('LAMP_PROFILE_VARIANTS_PASS',JSON.stringify({matrix:'2 pressurization × 2 airframes × 2 light-test states',scenarios:scenarios.length,screenshots:16,errors:errors.length}));
+  console.log('LAMP_PROFILE_VARIANTS_PASS',JSON.stringify({matrix:'2 pressurization × 2 airframes × 2 light-test states',scenarios:scenarios.length,screenshots:24,errors:errors.length}));
  }finally{await browser.close()}
 })().catch(e=>{console.error('LAMP_PROFILE_VARIANTS_FAILED',e.stack||String(e));process.exitCode=1});
