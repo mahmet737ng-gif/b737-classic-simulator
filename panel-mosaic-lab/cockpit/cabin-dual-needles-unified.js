@@ -1,7 +1,7 @@
 (function(){
  'use strict';
  const model=window.B737CabinDualNeedlesModel,ns='http://www.w3.org/2000/svg';
- const sprites=Object.fromEntries(model.needles.map(needle=>[needle.id,new URL('./'+needle.asset+'?v=CDN-0001',document.baseURI).href]));
+ const sprites=Object.fromEntries(model.needles.map(needle=>[needle.id,new URL('./'+needle.asset+'?v=CDN-0002',document.baseURI).href]));
  const state=Object.fromEntries(model.needles.map(needle=>[needle.id,needle.initialAngle]));
  const blades=new Map(),inputs=new Map(),outputs=new Map();
  let frame=null,physical=null,physicalOutput=null;
