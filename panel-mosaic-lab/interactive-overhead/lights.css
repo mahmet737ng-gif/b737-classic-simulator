@@ -2,3 +2,7 @@
 .mounted-light.flashing .light-face.active{animation:irs-align-flash 1s steps(1,end) infinite}
 @keyframes irs-align-flash{0%,49%{opacity:1}50%,100%{opacity:0}}
 @media(prefers-reduced-motion:reduce){.mounted-light.flashing .light-face.active{animation:none}}
+
+/* Opt-in geometry QA overlay: ?debugLights=1. Never enabled for flight/test normal mode. */
+html[data-light-geometry-debug=true] .mounted-light{outline:2px solid #f7dc58!important;outline-offset:-2px}
+html[data-light-geometry-debug=true] .mounted-light::after{content:'';position:absolute;left:50%;top:50%;width:8px;height:8px;border-radius:50%;background:#f7dc58;border:1px solid #111;transform:translate(-50%,-50%);z-index:4;pointer-events:none}
