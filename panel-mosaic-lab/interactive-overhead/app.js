@@ -82,6 +82,12 @@
    button.type='button';button.className='mounted-toggle';button.id='toggle-'+c.id;button.dataset.control=c.id;button.dataset.axis=c.axis;button.dataset.placement=c.placementId;
    button.setAttribute('role','slider');button.setAttribute('aria-orientation',c.axis);button.setAttribute('aria-valuemin','0');button.setAttribute('aria-valuemax',String(c.states.length-1));button.title=c.label;
    Object.assign(button.style,{left:p.x+'px',top:p.y+'px',width:(p.diameter*1.65)+'px',height:(p.diameter*1.65)+'px'});
+   // The locked source photo still contains the old hardware/socket underneath.
+   // Paint a feathered local replacement on a separate layer, below the transparent sprite.
+   const cleanup=document.createElement('canvas');
+   cleanup.className='toggle-socket-cleanup';
+   cleanup.setAttribute('aria-hidden','true');
+   cleanup.dataset.placement=c.placementId;
    const art=document.createElement('span');art.className='toggle-art';
    for(const key of frameKeys(c)){
     const a=calibration[key],sprite=registry.assets[key],scale=p.diameter/a.diameter,img=document.createElement('span');
@@ -92,10 +98,15 @@
       backgroundSize:'500% 100%',backgroundPosition:(sprite.frame*25)+'% 50%',backgroundRepeat:'no-repeat'
     });art.append(img);
    }
-   button.append(art);layer.append(button);nodes.set(c.id,button);bind(c,button);refreshOne(c);
+   button.append(cleanup,art);layer.append(button);nodes.set(c.id,button);bind(c,button);refreshOne(c);
+   const photo=document.querySelector('#atlasAbsolute .atlas-piece[data-key="'+c.placementId+'"] .atlas-photo');
+   if(photo&&window.B737ToggleSocketCleanup){
+    const paint=()=>window.B737ToggleSocketCleanup.render(cleanup,photo,c.sourcePoint,c.bezelSourceDiameter,p.diameter);
+    if(!paint())photo.addEventListener('load',paint,{once:true});
+   }
   }
   byId('atlasAbsolute').append(layer);
-  byId('toggleCount').textContent=registry.controls.length+' تاگل تعاملی · TGL-0001';
+  byId('toggleCount').textContent=registry.controls.length+' تاگل تعاملی · '+registry.version;
   byId('toggleVisibility').onchange=e=>layer.classList.toggle('hidden',!e.target.checked);
   byId('resetToggles').onclick=()=>{engine.releaseAll();engine.reset();persist();byId('toggleState').textContent='RESET';};
   select(registry.controls.find(c=>c.id==='vhf-nav'));

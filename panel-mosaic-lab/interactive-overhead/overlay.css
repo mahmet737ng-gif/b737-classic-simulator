@@ -19,3 +19,8 @@
 
 /* TGL-0003 HQ: same immutable nut/pivot in all five visual states. */
 .toggle-frame{will-change:opacity;background-color:transparent}
+
+/* TGL-0004: no opaque background in toggle frames, and never show the old photographed socket behind them. */
+.mounted-toggle .toggle-socket-cleanup{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);pointer-events:none;z-index:0;display:block;background:transparent;image-rendering:auto}
+.mounted-toggle .toggle-art{z-index:1}
+.mounted-toggle .toggle-frame{background-color:transparent!important}

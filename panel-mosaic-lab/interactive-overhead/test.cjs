@@ -38,3 +38,23 @@ assert.equal(hqBytes.subarray(12,16).toString('ascii'),'VP8X');
 assert.equal(1+hqBytes.readUIntLE(24,3),3840);
 assert.equal(1+hqBytes.readUIntLE(27,3),768);
 assert.equal(registry.version,'TGL-0003-HQ');
+
+// Approved sprite has a transparent background; image cleanup only affects mounted switch footprints.
+const cleanup=require('./socket-cleanup-v1.js');
+assert.equal(cleanup.REPAIR_RADIUS_RATIO,.82);
+const photoPixels=new Uint8ClampedArray(128*128*4);
+for(let y=0;y<128;y++)for(let x=0;x<128;x++){
+ const n=(y*128+x)*4;photoPixels[n]=76;photoPixels[n+1]=96;photoPixels[n+2]=112;photoPixels[n+3]=255;
+ if(x>50&&x<78&&y>47&&y<81){photoPixels[n]=244;photoPixels[n+1]=238;photoPixels[n+2]=230;}
+}
+const neutral=cleanup.estimate(photoPixels,128);
+assert.deepEqual(neutral.base,[76,96,112],'old white toggle is excluded from sampled paint');
+const patch={width:128,height:128,data:new Uint8ClampedArray(128*128*4)};
+cleanup.patchToImageData(patch,neutral,55);
+assert.equal(patch.data[(64*128+64)*4+3],255,'old socket covered directly below new switch');
+assert.equal(patch.data[(13*128+64)*4+3],0,'legends outside the switch remain unaltered');
+const mountJS=fs.readFileSync(path.join(__dirname,'app.js'),'utf8');
+assert.ok(mountJS.includes("cleanup.className='toggle-socket-cleanup'"));
+assert.ok(mountJS.includes('button.append(cleanup,art)'),'cleanup must stay BEHIND approved sprite');
+const cockpitHTML=fs.readFileSync(path.join(__dirname,'../cockpit/overhead-stage.html'),'utf8');
+assert.ok(cockpitHTML.indexOf('socket-cleanup-v1.js')<cockpitHTML.indexOf('app.js?v=TGL-0004'),'cleanup loads before toggle mount');
