@@ -75,6 +75,7 @@ assert.equal(view(s).power,null);
 s=advance(s,{type:"EVIDENCE",key:"fmcRouteReady",value:null});
 assert.equal(s.evidence.fmcRouteReady,null);
 assert.throws(()=>advance(s,{type:"OBSERVE_POWER",active:true,instructor:false}),/instructor/);
+s=advance(s,{type:"OBSERVE_POWER",active:true,instructor:true});
 assert.throws(()=>advance(s,{type:"VALUE",id:"speed",value:500}),/out of range/);
 // Cold and dark is never mistaken for a known aircraft MCP feeder.
 assert.match(js,/B737ISNCockpitV1/);
