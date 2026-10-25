@@ -34,12 +34,13 @@ for start in range(0,len(faces),4):
   x0=max(0,rect[0]);y0=max(0,rect[1]);x1=min(src.width,rect[2]);y1=min(src.height,rect[3])
   crop.paste(src.crop((x0,y0,x1,y1)),(x0-rect[0],y0-rect[1]))
   # Visual compare old vs proposed needle placement in ORIGINAL source pixels.
-  # BLUE is previous reference; MAGENTA is the current implementation.
+  # BLUE is previous reference; MAGENTA is the current reduced-to-tick candidate.
   comparisons={
-   'oh.drive_oil.1':((-46,98),(-80,128)),
-   'oh.drive_oil.2':((-46,98),(-80,128)),
-   'oh.ac_amps.1':((-45,102),(-65,135)),
-   'oh.ac_amps.2':((-45,102),(-65,135)),
+   'oh.drive_oil.1':((-46,98),(-46,64)),
+   'oh.drive_oil.2':((-46,98),(-46,64)),
+   'oh.ac_amps.1':((-45,102),(-55,64)),
+   'oh.ac_amps.2':((-45,102),(-55,64)),
+   'oh.ac_amps.apu':((-47,124),(-55,64)),
   }
   if f['id'] in comparisons:
    import math
