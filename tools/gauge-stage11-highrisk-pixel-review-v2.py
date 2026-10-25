@@ -139,7 +139,7 @@ for index in range(0,15,3):
     path=outdir/f'priorities_{index//3+1:02d}.jpg'
     assert cv2.imwrite(str(path),image,[cv2.IMWRITE_JPEG_QUALITY,85])
     # Three sheets to inspect directly; complete 5-page bundle uploaded as CI artifact.
-    if index in (0,6,12):
+    if index in (0,3,6,9,12):
         ok,jpg=cv2.imencode('.jpg',image,[cv2.IMWRITE_JPEG_QUALITY,66]);assert ok
         print('B737_HIGH_RISK_PHOTO_SHEET_'+str(index//3+1)+'='+base64.b64encode(jpg).decode('ascii'),flush=True)
 fo=[f for f in MATRIX['faces'] if f['id'] in ('fo.outer_altimeter','fo.outer_vertical_speed','fo.outer_clock')]
