@@ -67,7 +67,63 @@
           "readingDirection": "left_to_right",
           "scaleMotion": "continuous",
           "angularSpacingVerified": false,
-          "endpointsOrigin": "user-specified 2026-10-25"
+          "endpointsOrigin": "user-specified 2026-10-25",
+          "candidateNativeMajorTicks": [
+            {
+              "value": -40,
+              "angleDeg": -92,
+              "evidence": "OH09 native-pixel radial luminance scan 110-136px; manual source image reviewed",
+              "finalImageApproval": false
+            },
+            {
+              "value": -30,
+              "angleDeg": -69,
+              "evidence": "OH09 native-pixel radial luminance scan 110-136px; manual source image reviewed",
+              "finalImageApproval": false
+            },
+            {
+              "value": -20,
+              "angleDeg": -47.5,
+              "evidence": "OH09 native-pixel radial luminance scan 110-136px; manual source image reviewed",
+              "finalImageApproval": false
+            },
+            {
+              "value": -10,
+              "angleDeg": -24.5,
+              "evidence": "OH09 native-pixel radial luminance scan 110-136px; manual source image reviewed",
+              "finalImageApproval": false
+            },
+            {
+              "value": 0,
+              "angleDeg": 0.5,
+              "evidence": "OH09 native-pixel radial luminance scan 110-136px; manual source image reviewed",
+              "finalImageApproval": false
+            },
+            {
+              "value": 10,
+              "angleDeg": 24,
+              "evidence": "OH09 native-pixel radial luminance scan 110-136px; manual source image reviewed",
+              "finalImageApproval": false
+            },
+            {
+              "value": 20,
+              "angleDeg": 47,
+              "evidence": "OH09 native-pixel radial luminance scan 110-136px; manual source image reviewed",
+              "finalImageApproval": false
+            },
+            {
+              "value": 30,
+              "angleDeg": 69,
+              "evidence": "OH09 native-pixel radial luminance scan 110-136px; manual source image reviewed",
+              "finalImageApproval": false
+            },
+            {
+              "value": 40,
+              "angleDeg": 91,
+              "evidence": "OH09 native-pixel radial luminance scan 110-136px; manual source image reviewed",
+              "finalImageApproval": false
+            }
+          ]
         }
       ],
       "legacyAngularPreview": {
@@ -123,7 +179,7 @@
       "stage4": {
         "numericEngine": "gauge-scale-engine-v2.js",
         "realReadingsEnabled": false,
-        "reason": "Nine numeric Fuel Temperature labels and clockwise direction confirmed; native pixel tick angles require verification"
+        "reason": "Nine native-source raster-scan major bearing candidates now drive visual preview; all minor tick endpoints, camera distortions and source approval still pending."
       },
       "notes": null
     },
