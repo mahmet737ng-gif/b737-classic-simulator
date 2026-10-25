@@ -13,22 +13,26 @@
  const source=Object.freeze({width:1122,height:1402,asset:'Boeing-Style Environmental Control Panel.png'});
  const precheck=Object.freeze({
   id:'air-temp-precheck',label:'AIR TEMP PRECHECK',type:'rotary',
-  x:839,y:348,diameter:198,
+  x:839,y:348,diameter:226,
   states:Object.freeze(['SUPPLY DUCT FWD','SUPPLY DUCT AFT','CONT CAB','PASS CAB FWD','PASS CAB AFT','PACK L','PACK R']),
   angles:Object.freeze([-130,-94,-45,0,45,91,130]),default:'PASS CAB FWD'
  });
  const temperatureStates=Object.freeze(['C','AUTO COOL','AUTO','AUTO WARM','W','OFF']);
  const temperatureAngles=Object.freeze([-128,-61,0,61,128,180]);
  const zoneKnobs=Object.freeze([
-  Object.freeze({id:'cont-cab',label:'CONT CAB TEMPERATURE',type:'rotary',x:223,y:1092,diameter:200,states:temperatureStates,angles:temperatureAngles,default:'AUTO',mirror:'control-cabin-temp'}),
-  Object.freeze({id:'fwd-cab',label:'FWD CAB TEMPERATURE',type:'rotary',x:560,y:1092,diameter:200,states:temperatureStates,angles:temperatureAngles,default:'AUTO'}),
-  Object.freeze({id:'aft-cab',label:'AFT CAB TEMPERATURE',type:'rotary',x:897,y:1092,diameter:200,states:temperatureStates,angles:temperatureAngles,default:'AUTO',mirror:'pass-cabin-temp'})
+  Object.freeze({id:'cont-cab',label:'CONT CAB TEMPERATURE',type:'rotary',x:223,y:1092,diameter:232,states:temperatureStates,angles:temperatureAngles,default:'AUTO',mirror:'control-cabin-temp'}),
+  Object.freeze({id:'fwd-cab',label:'FWD CAB TEMPERATURE',type:'rotary',x:560,y:1092,diameter:232,states:temperatureStates,angles:temperatureAngles,default:'AUTO'}),
+  Object.freeze({id:'aft-cab',label:'AFT CAB TEMPERATURE',type:'rotary',x:897,y:1092,diameter:232,states:temperatureStates,angles:temperatureAngles,default:'AUTO',mirror:'pass-cabin-temp'})
  ]);
- const trim=Object.freeze({id:'trim-air',label:'TRIM AIR',type:'toggle',x:551,y:627,width:123,height:164,states:Object.freeze(['OFF','ON']),default:'OFF'});
+ const trim=Object.freeze({id:'trim-air',label:'TRIM AIR',type:'toggle',x:551,y:640,width:148,height:196,states:Object.freeze(['OFF','ON']),default:'OFF'});
+ // Lamp locations correspond to the INTERNAL black glass inside orange rims.
+ // Verified against owner-approved 1122x1402 background: outer frames
+ // [107..337,774..886], [456..678,774..886], [787..1016,774..886].
+ // Never expand faces across those already printed orange metal frames.
  const lamps=Object.freeze([
-  Object.freeze({id:'zone-temp-cont',zone:'cont-cab',label:'CONT CAB ZONE TEMP',rect:Object.freeze([114,776,216,83])}),
-  Object.freeze({id:'zone-temp-fwd',zone:'fwd-cab',label:'FWD CAB ZONE TEMP',rect:Object.freeze([460,776,213,83])}),
-  Object.freeze({id:'zone-temp-aft',zone:'aft-cab',label:'AFT CAB ZONE TEMP',rect:Object.freeze([789,776,217,83])})
+  Object.freeze({id:'zone-temp-cont',zone:'cont-cab',label:'CONT CAB ZONE TEMP',rect:Object.freeze([118,788,210,88])}),
+  Object.freeze({id:'zone-temp-fwd',zone:'fwd-cab',label:'FWD CAB ZONE TEMP',rect:Object.freeze([466,788,204,88])}),
+  Object.freeze({id:'zone-temp-aft',zone:'aft-cab',label:'AFT CAB ZONE TEMP',rect:Object.freeze([797,788,210,88])})
  ]);
  const controls=Object.freeze([precheck,trim,...zoneKnobs]);
  const defaults=Object.freeze(Object.fromEntries(controls.map(c=>[c.id,c.default])));
