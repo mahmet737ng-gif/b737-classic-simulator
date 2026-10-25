@@ -9,6 +9,10 @@ const contracts=require('./stage8-signal-contracts-v1.json');
 const policy=require('./cold-dark-indicator-policy-v1.json');
 const routeModel=require('./stage8-pointer-routing-v1.js');
 const routes=require('./stage8-pointer-routing-v1.json');
+const scaleEngine=require('./stage5-scale-mapping-v1.js');
+const dynamics=require('./stage9-needle-dynamics-v1.js');
+const workbench=require('./stage10-needle-workbench-v1.js');
+const scales=require('./stage10-preview-scale-subset-v1.json');
 const index=fs.readFileSync('panel-mosaic-lab/cockpit/index.html','utf8');
 const code=fs.readFileSync('panel-mosaic-lab/cockpit/stage78-readonly-unified.js','utf8');
 const location='https://example.invalid/panel-mosaic-lab/cockpit/stage78-readonly-unified.js';
@@ -18,6 +22,9 @@ function boot(){
  const window={
   B737InstrumentSignalBridgeV1:bridge,B737Stage7ColdDarkV1:cold,
   B737InstrumentPointerRoutingV1:routeModel,
+  B737Stage5ScaleMappingV1:scaleEngine,
+  B737Stage9NeedleDynamicsV1:dynamics,
+  B737Stage10NeedleWorkbenchV1:workbench,
   B737GroundAirfieldContext:()=>({fieldElevationFt:field,cabinEqualized:true,cabinPressureStable:true}),
   B737PressurizationIntegration:{
    getSelected:()=>system,
@@ -39,7 +46,8 @@ function boot(){
  const fetch=async url=>{
    calls.push(url);
    return {ok:true,json:async()=>url.includes('stage8-signal-contracts')?contracts:
-      url.includes('stage8-pointer-routing')?routes:policy};
+      url.includes('stage8-pointer-routing')?routes:
+      url.includes('stage10-preview-scale-subset')?scales:policy};
  };
  vm.runInNewContext(code,{window,document,console:{error:e=>errors.push(String(e))},URL,fetch},
     {filename:'stage78-readonly-unified.js'});
@@ -50,9 +58,14 @@ test('Unified HTML loads stage 7/8 before live ECU emitter and retains existing 
  const a=index.indexOf('stage8-ism-signal-bridge-v1.js');
  const b=index.indexOf('stage7-cold-dark-state-v1.js');
  const routeIndex=index.indexOf('stage8-pointer-routing-v1.js');
+ const stage5index=index.indexOf('stage5-scale-mapping-v1.js');
+ const stage9index=index.indexOf('stage9-needle-dynamics-v1.js');
+ const stage10index=index.indexOf('stage10-needle-workbench-v1.js');
  const c=index.indexOf('stage78-readonly-unified.js');
  const d=index.indexOf('isn-cockpit.js');
- assert.ok(a>=0&&b>a&&routeIndex>b&&c>routeIndex&&d>c,'Expected ordered source-signal modules');
+ assert.ok(a>=0&&b>a&&routeIndex>b&&stage5index>routeIndex&&
+   stage9index>stage5index&&stage10index>stage9index&&c>stage10index&&d>c,
+   'Expected ordered source-signal modules');
  assert.ok(index.includes('cold-dark-indicators-unified.js'));
 });
 test('Unified live ECU and currently selected CPCS/DCPCS trainer pressure share read-only signal envelopes',async()=>{
@@ -63,6 +76,9 @@ test('Unified live ECU and currently selected CPCS/DCPCS trainer pressure share 
  assert.equal(app.getStatus().status,'read_only',demo.errors.join('; '));
  assert.equal(app.getSignals().stats.faces,54);
  assert.equal(Object.keys(app.getPointerSignals().pointers).length,38);
+ assert.equal(app.getMotionPreview().counts.total,38);
+ assert.equal(app.getMotionPreview().counts.geometryPreviewCapable,8);
+ assert.equal(app.getMotionPreview().counts.liveNeedlesMoved,0);
  assert.equal(app.getPointerSignals().authorizedLiveMovements,0);
  assert.equal(app.getSignals().signals['oh.cabin.diff_pressure_altitude'].channels.cabAlt.value,3963);
  assert.equal(app.getColdDarkState().faces['oh.cabin.diff_pressure_altitude'].pressurizationArchitecture,'CPCS');
@@ -74,6 +90,7 @@ test('Unified live ECU and currently selected CPCS/DCPCS trainer pressure share 
  assert.equal(reading.provenance,'TRAINING_SIMULATION_ONLY');
  assert.equal(reading.liveNeedleAuthorized,false);
  assert.equal(app.getStatus().liveNeedlesUpdated,0);
+ assert.equal(app.getMotionPreview().pointers.cabAlt.liveNeedleAuthorized,false);
  assert.deepEqual(demo.errors,[]);
 });
 test('On real ECU event, validated training envelope is updated but meter selectors remain absent',async()=>{
