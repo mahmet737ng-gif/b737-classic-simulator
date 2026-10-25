@@ -4,3 +4,7 @@
 .cdu-station{position:absolute;z-index:4;background:#000;isolation:isolate}.cdu-frame-window>.cdu-frame{position:absolute;left:0;top:0;right:auto;bottom:auto;border:0;background:#000;max-width:none;max-height:none}.cdu-seat-label{position:absolute;bottom:100%;left:0;color:#b5dce7;font:700 7px/1.2 system-ui;white-space:nowrap;background:#102633;padding:1px 4px;pointer-events:none}.cdu-station:not(.ready)::after{content:'CDU…';position:absolute;inset:0;display:grid;place-items:center;color:#b5dce7;background:#0b1118;font:12px system-ui;pointer-events:none}.reference-mode .cdu-station{display:none}.cdu-actions{display:flex;gap:5px}.cdu-actions button{font-size:10px}.cdu-tools{border-color:#58798b}header nav{flex-wrap:wrap}
 
 .cdu-frame-window{position:absolute;inset:0;overflow:hidden}
+
+/* Opt-in geometry QA overlay: ?debugLights=1; source artwork unchanged. */
+html[data-light-geometry-debug=true] .cockpit-light{outline:2px solid #f7dc58;outline-offset:-2px}
+html[data-light-geometry-debug=true] .cockpit-light::after{content:'';position:absolute;left:50%;top:50%;width:8px;height:8px;border-radius:50%;background:#f7dc58;border:1px solid #111;transform:translate(-50%,-50%);z-index:4;pointer-events:none}
