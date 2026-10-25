@@ -1,0 +1,16 @@
+name: OH19 read-only photo inspection
+on:
+  push:
+    branches: [gauge-photo-calibration-oh19-54-v1]
+    paths:
+      - 'tools/gauge-oh19-photo-qa.py'
+      - '.github/workflows/oh19-photo-inspection.yml'
+  workflow_dispatch:
+permissions: {contents: read}
+jobs:
+  image:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 -m pip install --user pillow
+      - run: python3 tools/gauge-oh19-photo-qa.py
