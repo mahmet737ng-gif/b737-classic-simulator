@@ -80,10 +80,13 @@
  }
  function createLamp(l){
    const el=root.createElement('span');el.dataset.role='lamp';el.dataset.lamp=l.id;
-   el.textContent=l.label;el.title=l.label+' · '+system+' logic';pos(el,l.xy);
-   // Only cover the inner face, not the photographed lamp frame and border.
-   el.style.width=system==='DCPCS'?'15.65%':'14.7%';
-   el.style.height=system==='DCPCS'?'5.85%':'5.45%';
+   el.title=l.label+' · '+system+' logic';
+   // Each photograph has its own physical lamp apertures.  Use measured
+   // center AND independent width/height, never a common arbitrary lamp size.
+   const [x,y,w,h]=model.lampFace(system,l.id);
+   pos(el,[x,y]);
+   el.style.width=(w*100)+'%';el.style.height=(h*100)+'%';
+   el.dataset.faceSystem=system;
    el.classList.add(l.id==='auto-fail'||l.id==='off-sched'?'amber':'green');
    if(approvedLamps[l.id]){
      el.dataset.asset=approvedLamps[l.id];
@@ -93,6 +96,13 @@
      Object.assign(approved.style,{display:'block',width:'100%',height:'100%',maxWidth:'none',maxHeight:'none',objectFit:'fill',pointerEvents:'none'});
      approved.src=lampBase+approvedLamps[l.id]+'_OFF.svg';
      el.replaceChildren(approved);
+   } else if(l.id==='altn') {
+     // Owner's DCPCS label is "ALTN", not the separately archived
+     // "ALTEN" spare lamp. Draw the exact legend without duplicating bezel.
+     el.textContent='ALTN';
+     el.classList.add('oh22-altn-face');
+   } else {
+     el.textContent=l.label;
    }
    return el;
  }
