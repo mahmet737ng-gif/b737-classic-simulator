@@ -1,0 +1,58 @@
+name: Reflow annunciator vector faces — no glyph stretching
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - tools/build-lamp-precision-faces.py
+      - .github/workflows/lamp-precision-fit.yml
+permissions:
+  contents: write
+  actions: write
+concurrency:
+  group: annunciator-precision-fit
+  cancel-in-progress: false
+jobs:
+  generate-native-faces:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Verify source photographs and frozen overhead untouched
+        run: python3 panel-mosaic-lab/verify-final-overhead.py
+      - name: Generate 9 vector reflows and matching signed hashes
+        run: python3 tools/build-lamp-precision-faces.py
+      - name: Check new SVG integrity and lamps model regression
+        run: |
+          node panel-mosaic-lab/interactive-overhead/lights.test.cjs
+          node panel-mosaic-lab/cockpit/lights.test.cjs
+          node panel-mosaic-lab/lights-test/phase1-geometry-audit.test.cjs
+          node panel-mosaic-lab/lights-test/photo-pixel-registration.test.cjs
+          python3 panel-mosaic-lab/verify-final-overhead.py
+      - name: Publish native-shape vector derivatives without altering locked art
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add panel-mosaic-lab/assets/lights/precision-fit-v1/ panel-mosaic-lab/lights-test/precision-faces-v1.json panel-mosaic-lab/interactive-overhead/lights.json panel-mosaic-lab/cockpit/lights.json
+          if git diff --cached --quiet; then
+            echo "No new vector derivatives"
+            exit 0
+          fi
+          git commit -m "feat(lamps): nine fitted SVG annunciators preserving vector text proportions"
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git rebase origin/main
+            if git push origin HEAD:main; then
+              echo "VECTOR_COMMIT=$(git rev-parse HEAD)"
+              exit 0
+            fi
+            echo "Concurrent push; retrying clean rebase" >&2
+            sleep 2
+          done
+          exit 1
+      - name: Trigger Pages verification on generated commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run pages.yml --ref main
