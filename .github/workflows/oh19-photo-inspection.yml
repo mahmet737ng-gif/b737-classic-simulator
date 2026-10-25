@@ -4,6 +4,9 @@ on:
     branches: [gauge-photo-calibration-oh19-54-v1]
     paths:
       - 'tools/gauge-oh19-photo-qa.py'
+      - 'tools/cabin-altitude-photo-verify-v1.py'
+      - 'engine/instruments/cabin-altitude-photo-map-v1.js'
+      - 'engine/instruments/cabin-altitude-photo-map-v1.test.cjs'
       - '.github/workflows/oh19-photo-inspection.yml'
   workflow_dispatch:
 permissions: {contents: read}
@@ -12,5 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: python3 -m pip install --user pillow
+      - run: python3 -m pip install --user pillow cairosvg
+      - run: node --test engine/instruments/cabin-altitude-photo-map-v1.test.cjs
+      - run: python3 tools/cabin-altitude-photo-verify-v1.py
       - run: python3 tools/gauge-oh19-photo-qa.py
