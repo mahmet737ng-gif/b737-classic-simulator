@@ -68,7 +68,7 @@
         let b = marks[i].angle;
         let delta = b - marks[i-1].angle;
         while (delta * direction <= 0) { b += 360 * direction; delta = b - marks[i-1].angle; }
-        if (delta * direction > (spec.maxGapDeg ?? 120))
+        if (delta * direction > (spec.maxGapDeg ?? 120) + 1e-8)
           throw Error('Scale has an unmeasured angular gap or reversed mark at index '+i);
         marks[i] = Object.freeze({ ...marks[i], angle: b });
       }
