@@ -11,6 +11,7 @@ on:
       - 'tests/isn-start-spool-calibration-v2.test.cjs'
       - 'tests/isn-ecu-realtime-start-v1.test.cjs'
       - 'tests/isn-ecu-autoclock.test.cjs'
+      - 'tests/isn-engine-envelope-v1.test.cjs'
       - 'isn-ecu-start-lab/**'
       - '.github/workflows/isn-13-18-ecu.yml'
   workflow_dispatch:
