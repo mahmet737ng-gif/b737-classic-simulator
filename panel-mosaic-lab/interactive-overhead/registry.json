@@ -886,14 +886,16 @@
         318
       ],
       "bezelSourceDiameter": 54,
-      "type": "toggle-2",
+      "type": "toggle-3-vertical",
       "axis": "vertical",
       "states": [
+        "EXTEND",
         "OFF",
         "ON"
       ],
       "default": "ON",
-      "basis": "owner guide image; mounted at existing socket in locked source"
+      "basis": "Owner Landing Lights reference: two outboard switches have UP/CENTER/DOWN positions; source bitmap unchanged.",
+      "visualFamily": "landing-triplet-v1"
     },
     {
       "id": "landing-out-r",
@@ -904,14 +906,16 @@
         318
       ],
       "bezelSourceDiameter": 54,
-      "type": "toggle-2",
+      "type": "toggle-3-vertical",
       "axis": "vertical",
       "states": [
+        "EXTEND",
         "OFF",
         "ON"
       ],
       "default": "ON",
-      "basis": "owner guide image; mounted at existing socket in locked source"
+      "basis": "Owner Landing Lights reference: two outboard switches have UP/CENTER/DOWN positions; source bitmap unchanged.",
+      "visualFamily": "landing-triplet-v1"
     },
     {
       "id": "landing-in-l",
@@ -929,7 +933,8 @@
         "ON"
       ],
       "default": "ON",
-      "basis": "owner guide image; mounted at existing socket in locked source"
+      "basis": "owner guide image; mounted at existing socket in locked source",
+      "visualFamily": "landing-triplet-v1"
     },
     {
       "id": "landing-in-r",
@@ -947,7 +952,8 @@
         "ON"
       ],
       "default": "ON",
-      "basis": "owner guide image; mounted at existing socket in locked source"
+      "basis": "owner guide image; mounted at existing socket in locked source",
+      "visualFamily": "landing-triplet-v1"
     },
     {
       "id": "runway-turnoff-l",
@@ -1140,5 +1146,26 @@
     "Two and three-position assignments follow visible guide labels. Unlabelled drive-temperature detents are a simulator UI assignment.",
     "Spring return for generator/test controls is a simulator interaction assignment; no new FCOM validation claimed.",
     "Source artwork and frozen placement files are not modified."
-  ]
+  ],
+  "specialAssets": {
+    "landingTriplet": {
+      "url": "../assets/locked/2026-10-23/Switches/Toggle/LandingLights/b737-landing-triple-3positions-v1.webp",
+      "sha256": "7c3abe2a758aad78c06830ac49002562e2808018dbebc0f6bf11664cffc92fc7",
+      "dimensions": [
+        300,
+        100
+      ],
+      "cell": [
+        100,
+        100
+      ],
+      "order": [
+        "UP",
+        "CENTER",
+        "DOWN"
+      ],
+      "transparent": true,
+      "provenance": "Owner-approved three-pose switch render. Pure visual overlay; source photograph unchanged."
+    }
+  }
 }
