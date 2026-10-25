@@ -1,0 +1,56 @@
+{
+  "schema": "b737.toggle-switch-family/1",
+  "family": "Small",
+  "status": "DESIGN_REFERENCE_SEPARATE_FROM_LOCKED_STANDARD",
+  "description_fa": "نسخه سر باریک. دستور «تاگل فلان بخش Small باشد» به استفاده از این مجموعه اشاره دارد.",
+  "aliases": {
+    "Small": "Small White",
+    "Small White": "Small_White_5Positions.webp",
+    "Small Silver": "Small_Silver_5Positions.webp"
+  },
+  "original_locked_standard": {
+    "version": "TGL-NEWREF-0002",
+    "preserve": true,
+    "overrideOnlyOnExplicitOwnerRequest": true
+  },
+  "variants": [
+    {
+      "name": "Small White",
+      "asset": "Small_White_5Positions.webp",
+      "role": "named slimmer-head alternative",
+      "sha256": "80c18ea4ae805f05a29e5a3e1f7a72c6c0b38510caba230fd4efcb0908880741"
+    },
+    {
+      "name": "Small Silver",
+      "asset": "Small_Silver_5Positions.webp",
+      "role": "silver-head alternative based on same five poses",
+      "sha256": "5c37de64cf20e97d01085b1400b9b131965160618f851cccd019a4c1c4d89766",
+      "approval": "visual review pending"
+    }
+  ],
+  "states": [
+    "LEFT",
+    "CENTER",
+    "RIGHT",
+    "UP",
+    "DOWN"
+  ],
+  "atlas": {
+    "width": 5120,
+    "height": 1024,
+    "cellWidth": 1024,
+    "cellHeight": 1024,
+    "center": [
+      512,
+      512
+    ],
+    "metalBezelDiameter": 390,
+    "alpha": true
+  },
+  "alignment": "Base ring is centered exactly at (512,512) for every state and both color variants; center is true frontal view (no down tilt).",
+  "installationPolicy": "Never replace the locked default in Unified implicitly. Only install Small on an explicitly specified switch/location after the user chooses Small. Silver requires explicit selection.",
+  "preserveLogic": true,
+  "preserveElectricalConnections": true,
+  "preserveSpringReturn": true,
+  "sources": "Slim White 5-pose generated references plus user-approved head-on center source; Silver is material-only recoloring of these same silhouette poses."
+}
