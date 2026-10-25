@@ -8,7 +8,7 @@
  // Source: OH09-FUEL-921977b56887.png. Never resample or edit that locked image.
  const source=Object.freeze({piece:'OH09',width:1012,height:1555,pivotX:506,pivotY:235,tipRadius:136,hubRadius:25});
  // Nine printed numeric ticks registered against original OH09 source pixels
- // (173? no: original source is 1012 x 1555). The source-image radial
+ // (native image 1012 x 1555). The source-image radial
  // luminance survey `tools/fuel-temperature-tick-scan.py` detects long
  // tick candidates and finds NONLINEAR angular spacing. Interim visual
  // calibration: all 81 integer values use per-segment interpolation.
