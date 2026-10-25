@@ -47,7 +47,7 @@ assert.equal(tripletBytes.subarray(0,4).toString('ascii'),'RIFF');
 assert.equal(tripletBytes.subarray(8,12).toString('ascii'),'WEBP');
 const landingSource=fs.readFileSync(path.join(__dirname,'app.js'),'utf8');
 assert.ok(landingSource.includes("c.visualFamily==='landing-triplet-v1'"));
-assert.ok(landingSource.includes('const frames=c.states.length===3?[0,1,2]:[1,2]'));
+assert.ok(landingSource.includes('window.B737TogglePoseMap.landingFrames(c)'),'render uses verified physical UP/OFF DOWN/ON poses');
 assert.ok(landingSource.includes("backgroundSize:'300% 100%'"));
 
 const html=fs.readFileSync(path.join(__dirname,'index.html'),'utf8');assert.ok(html.includes('<base href="../all-overhead/">'));assert.ok(html.includes('./stage.js?v=UPD-0012-OVH-measured-seams'),'frozen renderer reused unchanged');
