@@ -106,13 +106,62 @@
     },
     "oh.cabin.diff_pressure_altitude": {
       "panel": "OH19-DIFF",
-      "status": "LEGACY_TIP_REACH_NOT_MEASURED",
+      "status": "PHOTO_TICK_GEOMETRY_QA_47_INNER_51_OUTER_MINOR_NUMBERS_INFERRED",
       "pointers": [
         "press",
         "cabAlt"
       ],
       "photoSource": "panel-mosaic-lab/assets/locked/2026-10-23/OH19-PRESS-DIFF-ALT-HORN-d6719ce57cef.png",
-      "note": "Existing pointer and center known, but native pixel inner end of each printed tick not verified."
+      "note": "Actual immutable OH19 photo reviewed at native resolution. CAB ALT has 47 inner strokes and PRESS 51 outer. All source pixel white ticks validated in GH Actions. New PRESS displayed tip radius 230px vs old 207px; CAB ALT display length compensated 0.95..1.06 for image projection. Both pointers now use different source-photo angular tables, including unwrapped 180-degree travel. CAB ALT unnumbered numeric assignments remain inferred; not manufacturer-validated.",
+      "photoSourceHash": "4c667d96ea7652e52784f5c06ee3cdde0879ca37631abf19969861afecc45fed",
+      "cabAlt": {
+        "whiteTickCandidates": 47,
+        "measuredAngles": true,
+        "majorLabels": [
+          0,
+          3,
+          10,
+          15,
+          20,
+          25,
+          30,
+          35,
+          40,
+          50
+        ],
+        "intermediateValues": "mathematically_inferred_from_gap_count",
+        "groundScenariosFt": [
+          66,
+          3260,
+          3963
+        ],
+        "spriteFileUnchanged": true,
+        "tipReachCompensation": "photo_perspective_scaleY_small_per_angle",
+        "finalApproved": false
+      },
+      "press": {
+        "whiteTickCandidates": 51,
+        "measuredAngles": true,
+        "majorLabels": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "minorPsiIncrement": 0.2,
+        "formerRadiusPx": 207,
+        "newRadiusPx": 230,
+        "spriteFileUnchanged": true,
+        "tipReachCompensation": "photo_perspective_scaleY_small_per_angle",
+        "finalApproved": false
+      }
     },
     "oh.cabin.rate": {
       "panel": "OH19-DIFF",
