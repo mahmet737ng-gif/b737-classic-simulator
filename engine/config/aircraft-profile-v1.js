@@ -20,7 +20,7 @@
       Object.freeze({id: 'B737-400', label: '737-400', variants: Object.freeze(['737-400'])})
     ]),
     pressurization: Object.freeze([
-      Object.freeze({id: 'DCPCS', label: 'DCPCS', engine: 'B737DCPCSV4', version: 4, lab: 'dcpcs-lab/'}),
+      Object.freeze({id: 'DCPCS', label: 'DCPCS', engine: 'B737DCPCSV4', version: 4, lab: 'dcpcs-lab/', backgroundAsset: 'panel-mosaic-lab/assets/locked/2026-10-23/DCPCS_Background_Owner.png'}),
       Object.freeze({id: 'CPCS', label: 'CPCS', engine: 'B737CPCSV5', version: 5, lab: 'cpcs-lab/'})
     ]),
     engineInstruments: Object.freeze([
