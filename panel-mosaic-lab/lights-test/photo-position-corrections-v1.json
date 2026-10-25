@@ -2,7 +2,7 @@
   "schema": "b737.photo-lamp-source-corrections.v1",
   "date": "2026-10-26",
   "baseline": "photo-pixel-registration-2026-10-26.json",
-  "totalChanged": 8,
+  "totalChanged": 12,
   "sourcePhotosChanged": 0,
   "lockedMosaicChanged": 0,
   "notes": "Only X positions are adjusted; widths/heights and original approved panel photos unchanged. Remaining uncertain lamps not moved.",
@@ -246,6 +246,132 @@
       ],
       "evidence": "independent image rim + dark-glass region measurements",
       "status": "CORRECTED_PENDING_POSTCHANGE_PHOTO_CONFIRMATION"
+    },
+    {
+      "id": "door-equip",
+      "panel": "OH19-VOICE",
+      "oldSourceRect": [
+        519,
+        258,
+        263,
+        115
+      ],
+      "sourceRect": [
+        524,
+        258,
+        263,
+        115
+      ],
+      "delta": [
+        5,
+        0
+      ],
+      "originalEdgeDelta": [
+        5,
+        -5
+      ],
+      "originalComponentDelta": [
+        0,
+        -9.5
+      ],
+      "evidence": "Enlarged native-image pixel crop shows asymmetrical dark-glass margins; candidate +5 x position remains inside immutable lens aperture",
+      "status": "PHOTO_CROP_REVIEWED_REQUIRES_RETEST",
+      "reviewArtifact": "https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/40237357643"
+    },
+    {
+      "id": "door-fwd-cargo",
+      "panel": "OH19-VOICE",
+      "oldSourceRect": [
+        813,
+        120,
+        263,
+        115
+      ],
+      "sourceRect": [
+        818,
+        120,
+        263,
+        115
+      ],
+      "delta": [
+        5,
+        0
+      ],
+      "originalEdgeDelta": [
+        5,
+        -6.5
+      ],
+      "originalComponentDelta": [
+        0,
+        10
+      ],
+      "evidence": "Enlarged native-image pixel crop shows asymmetrical dark-glass margins; candidate +5 x position remains inside immutable lens aperture",
+      "status": "PHOTO_CROP_REVIEWED_REQUIRES_RETEST",
+      "reviewArtifact": "https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/40237357643"
+    },
+    {
+      "id": "cowl-anti-ice-1",
+      "panel": "OH16",
+      "oldSourceRect": [
+        868,
+        167,
+        259,
+        106
+      ],
+      "sourceRect": [
+        873,
+        167,
+        259,
+        106
+      ],
+      "delta": [
+        5,
+        0
+      ],
+      "originalEdgeDelta": [
+        13.5,
+        0
+      ],
+      "originalComponentDelta": [
+        5.5,
+        0.5
+      ],
+      "evidence": "Enlarged native-image pixel crop shows asymmetrical dark-glass margins; candidate +5 x position remains inside immutable lens aperture",
+      "status": "PHOTO_CROP_REVIEWED_REQUIRES_RETEST",
+      "reviewArtifact": "https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/40237357643"
+    },
+    {
+      "id": "cowl-valve-1",
+      "panel": "OH16",
+      "oldSourceRect": [
+        868,
+        302,
+        259,
+        107
+      ],
+      "sourceRect": [
+        873,
+        302,
+        259,
+        107
+      ],
+      "delta": [
+        5,
+        0
+      ],
+      "originalEdgeDelta": [
+        13.5,
+        -4
+      ],
+      "originalComponentDelta": [
+        5.5,
+        0.5
+      ],
+      "evidence": "Enlarged native-image pixel crop shows asymmetrical dark-glass margins; candidate +5 x position remains inside immutable lens aperture",
+      "status": "PHOTO_CROP_REVIEWED_REQUIRES_RETEST",
+      "reviewArtifact": "https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/40237357643"
     }
-  ]
+  ],
+  "additionalNativePhotoReviewed": 4,
+  "revision": "LPR-0002"
 }
