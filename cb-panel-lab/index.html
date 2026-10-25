@@ -101,7 +101,7 @@ const $=id=>document.getElementById(id);
 const selector=$("panelSelect"),view=$("viewer"),title=$("selectedTitle"),meta=$("selectedMeta"),details=$("currentDetails");
 function entries(src){return (src||"").split(";").map(s=>s.trim()).filter(Boolean).map(s=>{let [left,name=""] = s.split("|");let [pos,amp]=left.split(":");return {pos,amp:Number(amp),name:name.trim()};})}
 function breakers(p){let arr=entries(p.breakers);if(p.id==="P6-4"&&state.variant==="DCPCS"){arr=arr.filter(x=>!/^F[1-6]$/.test(x.pos)).concat(entries(p.altBreakers));}return arr}
-function k(p,pos){return p.id+"|"+state.variant+"|"+pos}
+function k(p,pos){return p.id+"|"+(p.id==="P6-4"?state.variant:"ALL")+"|"+pos}
 function choose(id){if(!ids.includes(id))return;state.id=id;selector.value=id;render();document.querySelector(".viewer-shell").scrollIntoView({behavior:"smooth",block:"start"});}
 function selectItem(p,item){let pulled=state.pulled.has(k(p,item.pos));details.innerHTML="<strong>"+p.id+" / "+item.pos+"</strong><p>"+escapeText(item.name)+" · "+item.amp+" A · "+(pulled?"PULLED":"PUSHED")+"</p><p>Position and printed rating from photograph. Provider/consumer feed: <strong>UNVERIFIED</strong></p>";}
 function escapeText(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
