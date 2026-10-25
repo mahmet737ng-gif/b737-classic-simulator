@@ -45,9 +45,13 @@
    if(!elt||!last)return;
    const unresolved=Object.values(last).filter(v=>v.status==='requires_system_state'
      ||v.status==='identity_unresolved'||v.status==='selector_unknown').length;
+   const cabin=last['oh.cabin.diff_pressure_altitude']?.needles;
+   const numericCabin=cabin?.cabAlt?.status==='physical_value_known'
+    ?' · CAB ALT زمین: '+cabin.cabAlt.value.toFixed(0)+' ft (DIFF '+cabin.press?.value+' psi)'
+    :' · CAB ALT: نیازمند ارتفاع فرودگاه/سنسور';
    elt.querySelector('output').textContent=
     'پوشش '+Object.keys(last).length+' گیج · صفرهای فیزیکی مستقل از برق · '+
-    'نیازمند دادهٔ محیط/سیستم: '+unresolved+
+    'نیازمند دادهٔ محیط/سیستم: '+unresolved+numericCabin+
     ' · نیدل‌های دارای کالیبراسیون تصویری تأییدشده: ۰'+
     ' · اعمال نمایش‌های امن: '+(lastApplied?.applied.join('، ')||'—');
  }
@@ -85,8 +89,9 @@
       if(Object.keys(policy.entries||{}).length!==54)throw Error('Cold dark inventory completeness guard failed');
       window.B737ColdDarkIndicatorPolicyV1=Object.freeze(policy);
       ready=true;
-      if(!simActive&&cleanColdDark())safeApply({});
-      else{last=window.B737ColdDarkIndicatorV1.snapshot({});show();}
+      const ground=window.B737GroundAirfieldContext?.()||{};
+      if(!simActive&&cleanColdDark())safeApply(ground);
+      else{last=window.B737ColdDarkIndicatorV1.snapshot(ground);show();}
     }).catch(error=>{
       const out=document.querySelector('#coldDarkGaugeQA output');
       if(out)out.textContent='عدم دسترسی به رجیستری وضعیت خاموش: '+error.message;
