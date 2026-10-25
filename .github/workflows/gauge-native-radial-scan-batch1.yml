@@ -1,0 +1,21 @@
+name: Source-native radial tick extraction batch 1
+on:
+  push:
+    branches: [gauge-native-photo-extraction-batch1-20261025]
+    paths:
+      - 'tools/gauge-native-radial-scan-batch1.py'
+      - '.github/workflows/gauge-native-radial-scan-batch1.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  native-radial:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install source-photo analysis requirements
+        run: python3 -m pip install --user numpy Pillow
+      - name: Verify immutable overhead images
+        run: python3 panel-mosaic-lab/verify-final-overhead.py
+      - name: Extract angular positions and photo pixel checkpoints
+        run: python3 tools/gauge-native-radial-scan-batch1.py
