@@ -13,6 +13,9 @@
    DCPCS:Object.freeze({
      engine:'B737DCPCSV4',backgroundAsset:owner,
      modes:['AUTO','ALTN','MAN'],artworkFit:'fill',calibrationAsset:owner,modePosition:[.72,.678],
+     // Individual socket-relative VISUAL sizing; no pressure-system logic changes.
+     controlFit:Object.freeze({'flight-alt':.157,'landing-alt':.157,'press-mode':.156,'manual-valve':.122}),
+     lampFit:Object.freeze({x:1.09,y:1.13}),
      controls:[
        {id:'flight-alt',kind:'altitude',label:'FLT ALT',xy:[.325,.372],unit:'ft',key:'flightAltitudeFt',step:500,min:-1000,max:37000},
        {id:'landing-alt',kind:'altitude',label:'LAND ALT',xy:[.325,.676],unit:'ft',key:'landingAltitudeFt',step:50,min:-1000,max:14000},
@@ -35,6 +38,8 @@
    CPCS:Object.freeze({
      engine:'B737CPCSV5',backgroundAsset:null,
      modes:['AUTO','STBY','MAN_AC','MAN_DC'],modePosition:[.805,.735],
+     controlFit:Object.freeze({'flight-alt':.162,'landing-alt':.162,'standby-alt':.150,'cabin-rate':.154,'press-mode':.160,'manual-valve':.125}),
+     lampFit:Object.freeze({x:1.075,y:1.13}),
      controls:[
        {id:'flight-alt',kind:'altitude',label:'FLT ALT',xy:[.288,.429],key:'flightAltitudeFt',unit:'ft',step:500,min:-1000,max:37000},
        {id:'landing-alt',kind:'altitude',label:'LAND ALT',xy:[.286,.729],key:'landingAltitudeFt',unit:'ft',step:50,min:-1000,max:14000},
@@ -65,7 +70,10 @@
  function validPoint(p){return Array.isArray(p)&&p.length===2&&p.every(v=>Number.isFinite(v)&&v>=0&&v<=1);}
  function validFace(face){return Array.isArray(face)&&face.length===4&&face.every(v=>Number.isFinite(v)&&v>0&&v<1)&&face[0]-face[2]/2>=0&&face[0]+face[2]/2<=1&&face[1]-face[3]/2>=0&&face[1]+face[3]/2<=1;}
  function lampFace(system,id){const lamp=config(system).lamps.find(x=>x.id===id);if(!lamp||!validFace(lamp.face))throw Error('Missing measured lamp aperture '+system+' '+id);return lamp.face.slice();}
- function validate(){for(const system of modes){const c=config(system),ids=new Set();for(const part of [...c.controls,...c.lamps,...c.displays]){if(!validPoint(part.xy)||ids.has(part.id))throw Error('Invalid '+system+' OH22 '+part.id);ids.add(part.id);}
+ function validate(){for(const system of modes){const c=config(system),ids=new Set();
+     if(!c.lampFit||c.lampFit.x<=1||c.lampFit.y<=1)throw Error('Missing '+system+' lamp-fit');
+     for(const control of c.controls)if(control.appearance!=='hotspot'&&!(c.controlFit[control.id]>.07&&c.controlFit[control.id]<.19))throw Error('Missing '+system+' actuator fit '+control.id);
+     for(const part of [...c.controls,...c.lamps,...c.displays]){if(!validPoint(part.xy)||ids.has(part.id))throw Error('Invalid '+system+' OH22 '+part.id);ids.add(part.id);}
      if(!c.controls.some(c=>c.id==='press-mode')||!c.controls.some(c=>c.id==='manual-valve'))throw Error('Missing '+system+' controls');
      if(!c.lampFaceCalibration?.asset||c.lamps.length!==4)throw Error('Missing unique '+system+' lamp calibration');
      for(const lamp of c.lamps){if(!validFace(lamp.face)||Math.abs(lamp.face[0]-lamp.xy[0])>.000001||Math.abs(lamp.face[1]-lamp.xy[1])>.000001)throw Error('Invalid '+system+' lamp aperture '+lamp.id);}
