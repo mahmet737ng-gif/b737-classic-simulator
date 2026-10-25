@@ -4,6 +4,7 @@ on:
     branches: [main]
     paths:
       - 'tools/gauge-source-visual-review.py'
+      - 'tools/fuel-temperature-tick-scan.py'
       - '.github/workflows/gauge-source-visual-qa.yml'
   workflow_dispatch:
 permissions:
@@ -20,4 +21,6 @@ jobs:
           echo "283a3946ace19799284eb0f79dc924f744d661c4b6a1865932252f8ef29fd90f  panel-mosaic-lab/verify-final-overhead.py" | sha256sum --check --status
           python3 panel-mosaic-lab/verify-final-overhead.py
       - name: Emit readonly full-source gauge crops
-        run: python3 tools/gauge-source-visual-review.py
+        run: |
+          python3 tools/gauge-source-visual-review.py
+          python3 tools/fuel-temperature-tick-scan.py
