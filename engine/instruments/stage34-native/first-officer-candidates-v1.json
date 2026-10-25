@@ -1,6 +1,6 @@
 {
   "schema": "b737.stage3-4.candidate-native-pixels.v1",
-  "sourceRun": "https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/40221766933",
+  "sourceRun": "https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/40222250774",
   "group": "first-officer",
   "review": "CANDIDATE_ONLY_NOT_SIGNED_OFF",
   "count": 9,
@@ -4080,8 +4080,170 @@
         "y1": 1218,
         "reason": "left linear display requires bar travel rather than rotation"
       },
-      "linearTickEndpoints": [],
-      "reviewState": "linear_travel_tick_mapping_pending"
+      "linearTravelAxis": "y",
+      "linearTickEndpoints": [
+        {
+          "strokePointA": [
+            452,
+            1125
+          ],
+          "strokePointB": [
+            459,
+            1127
+          ],
+          "travelAxisCoordPx": 1126,
+          "lengthPx": 8,
+          "numericValue": null,
+          "physicalTickApproved": false,
+          "detector": "directional_morphology_candidate",
+          "lengthClassCandidate": "medium"
+        },
+        {
+          "strokePointA": [
+            452,
+            1136
+          ],
+          "strokePointB": [
+            459,
+            1137
+          ],
+          "travelAxisCoordPx": 1136.5,
+          "lengthPx": 8,
+          "numericValue": null,
+          "physicalTickApproved": false,
+          "detector": "directional_morphology_candidate",
+          "lengthClassCandidate": "medium"
+        },
+        {
+          "strokePointA": [
+            452,
+            1146
+          ],
+          "strokePointB": [
+            464,
+            1148
+          ],
+          "travelAxisCoordPx": 1147,
+          "lengthPx": 13,
+          "numericValue": null,
+          "physicalTickApproved": false,
+          "detector": "directional_morphology_candidate",
+          "lengthClassCandidate": "long"
+        },
+        {
+          "strokePointA": [
+            452,
+            1157
+          ],
+          "strokePointB": [
+            458,
+            1157
+          ],
+          "travelAxisCoordPx": 1157,
+          "lengthPx": 7,
+          "numericValue": null,
+          "physicalTickApproved": false,
+          "detector": "directional_morphology_candidate",
+          "lengthClassCandidate": "short"
+        },
+        {
+          "strokePointA": [
+            452,
+            1166
+          ],
+          "strokePointB": [
+            464,
+            1167
+          ],
+          "travelAxisCoordPx": 1166.5,
+          "lengthPx": 13,
+          "numericValue": null,
+          "physicalTickApproved": false,
+          "detector": "directional_morphology_candidate",
+          "lengthClassCandidate": "long"
+        },
+        {
+          "strokePointA": [
+            452,
+            1176
+          ],
+          "strokePointB": [
+            458,
+            1176
+          ],
+          "travelAxisCoordPx": 1176,
+          "lengthPx": 7,
+          "numericValue": null,
+          "physicalTickApproved": false,
+          "detector": "directional_morphology_candidate",
+          "lengthClassCandidate": "short"
+        },
+        {
+          "strokePointA": [
+            452,
+            1185
+          ],
+          "strokePointB": [
+            464,
+            1187
+          ],
+          "travelAxisCoordPx": 1186,
+          "lengthPx": 13,
+          "numericValue": null,
+          "physicalTickApproved": false,
+          "detector": "directional_morphology_candidate",
+          "lengthClassCandidate": "long"
+        },
+        {
+          "strokePointA": [
+            452,
+            1195
+          ],
+          "strokePointB": [
+            458,
+            1195
+          ],
+          "travelAxisCoordPx": 1195,
+          "lengthPx": 7,
+          "numericValue": null,
+          "physicalTickApproved": false,
+          "detector": "directional_morphology_candidate",
+          "lengthClassCandidate": "short"
+        },
+        {
+          "strokePointA": [
+            452,
+            1203
+          ],
+          "strokePointB": [
+            465,
+            1205
+          ],
+          "travelAxisCoordPx": 1204,
+          "lengthPx": 14,
+          "numericValue": null,
+          "physicalTickApproved": false,
+          "detector": "directional_morphology_candidate",
+          "lengthClassCandidate": "long"
+        },
+        {
+          "strokePointA": [
+            452,
+            1212
+          ],
+          "strokePointB": [
+            458,
+            1213
+          ],
+          "travelAxisCoordPx": 1212.5,
+          "lengthPx": 7,
+          "numericValue": null,
+          "physicalTickApproved": false,
+          "detector": "directional_morphology_candidate",
+          "lengthClassCandidate": "short"
+        }
+      ],
+      "reviewState": "linear_tick_candidates_need_photo_confirmation"
     },
     {
       "id": "fo.right_linear",
@@ -4102,8 +4264,186 @@
         "y1": 1218,
         "reason": "right linear display requires bar travel rather than rotation"
       },
-      "linearTickEndpoints": [],
-      "reviewState": "linear_travel_tick_mapping_pending"
+      "linearTravelAxis": "y",
+      "linearTickEndpoints": [
+        {
+          "strokePointA": [
+            525,
+            1126
+          ],
+          "strokePointB": [
+            533,
+            1127
+          ],
+          "travelAxisCoordPx": 1126.5,
+          "lengthPx": 9,
+          "numericValue": null,
+          "physicalTickApproved": false,
+          "detector": "directional_morphology_candidate",
+          "lengthClassCandidate": "medium"
+        },
+        {
+          "strokePointA": [
+            525,
+            1137
+          ],
+          "strokePointB": [
+            532,
+            1137
+          ],
+          "travelAxisCoordPx": 1137,
+          "lengthPx": 8,
+          "numericValue": null,
+          "physicalTickApproved": false,
+          "detector": "directional_morphology_candidate",
+          "lengthClassCandidate": "short"
+        },
+        {
+          "strokePointA": [
+            548,
+            1146
+          ],
+          "strokePointB": [
+            561,
+            1147
+          ],
+          "travelAxisCoordPx": 1146.5,
+          "lengthPx": 14,
+          "numericValue": null,
+          "physicalTickApproved": false,
+          "detector": "directional_morphology_candidate",
+          "lengthClassCandidate": "long"
+        },
+        {
+          "strokePointA": [
+            525,
+            1157
+          ],
+          "strokePointB": [
+            532,
+            1157
+          ],
+          "travelAxisCoordPx": 1157,
+          "lengthPx": 8,
+          "numericValue": null,
+          "physicalTickApproved": false,
+          "detector": "directional_morphology_candidate",
+          "lengthClassCandidate": "short"
+        },
+        {
+          "strokePointA": [
+            520,
+            1166
+          ],
+          "strokePointB": [
+            533,
+            1167
+          ],
+          "travelAxisCoordPx": 1166.5,
+          "lengthPx": 14,
+          "numericValue": null,
+          "physicalTickApproved": false,
+          "detector": "directional_morphology_candidate",
+          "lengthClassCandidate": "long"
+        },
+        {
+          "strokePointA": [
+            525,
+            1176
+          ],
+          "strokePointB": [
+            532,
+            1177
+          ],
+          "travelAxisCoordPx": 1176.5,
+          "lengthPx": 8,
+          "numericValue": null,
+          "physicalTickApproved": false,
+          "detector": "directional_morphology_candidate",
+          "lengthClassCandidate": "short"
+        },
+        {
+          "strokePointA": [
+            519,
+            1185
+          ],
+          "strokePointB": [
+            532,
+            1187
+          ],
+          "travelAxisCoordPx": 1186,
+          "lengthPx": 14,
+          "numericValue": null,
+          "physicalTickApproved": false,
+          "detector": "directional_morphology_candidate",
+          "lengthClassCandidate": "long"
+        },
+        {
+          "strokePointA": [
+            524,
+            1195
+          ],
+          "strokePointB": [
+            532,
+            1195
+          ],
+          "travelAxisCoordPx": 1195,
+          "lengthPx": 9,
+          "numericValue": null,
+          "physicalTickApproved": false,
+          "detector": "directional_morphology_candidate",
+          "lengthClassCandidate": "medium"
+        },
+        {
+          "strokePointA": [
+            548,
+            1203
+          ],
+          "strokePointB": [
+            561,
+            1205
+          ],
+          "travelAxisCoordPx": 1204,
+          "lengthPx": 14,
+          "numericValue": null,
+          "physicalTickApproved": false,
+          "detector": "directional_morphology_candidate",
+          "lengthClassCandidate": "long"
+        },
+        {
+          "strokePointA": [
+            537,
+            1208
+          ],
+          "strokePointB": [
+            543,
+            1208
+          ],
+          "travelAxisCoordPx": 1208,
+          "lengthPx": 7,
+          "numericValue": null,
+          "physicalTickApproved": false,
+          "detector": "directional_morphology_candidate",
+          "lengthClassCandidate": "short"
+        },
+        {
+          "strokePointA": [
+            525,
+            1212
+          ],
+          "strokePointB": [
+            532,
+            1213
+          ],
+          "travelAxisCoordPx": 1212.5,
+          "lengthPx": 8,
+          "numericValue": null,
+          "physicalTickApproved": false,
+          "detector": "directional_morphology_candidate",
+          "lengthClassCandidate": "short"
+        }
+      ],
+      "reviewState": "linear_tick_candidates_need_photo_confirmation"
     },
     {
       "id": "fo.outer_altimeter",
