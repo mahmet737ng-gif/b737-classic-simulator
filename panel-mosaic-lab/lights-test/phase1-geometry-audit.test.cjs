@@ -15,7 +15,7 @@ const atlas=load('../all-overhead/atlas-layout.json');
 const assembly=load('../cockpit/assembly.json');
 const mapPoint=require('../interactive-overhead/model.js').mapPoint;
 const faces=new Map(gallery.lights.map(a=>[a.id,a.face]));
-const corrections=read('photo-position-corrections-v1.json');
+const corrections=load('photo-position-corrections-v1.json');
 const correctionById=new Map(corrections.records.map(x=>[x.id,x]));
 assert.equal(correctionById.size,8);
 
