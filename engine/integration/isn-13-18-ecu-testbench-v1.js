@@ -154,6 +154,11 @@ class Testbench{
   if(pumps)for(const name of ['fuel.main1FwdPump','fuel.main1AftPump','fuel.main2FwdPump','fuel.main2AftPump'])this.core.pumpSwitch(name,true);
   this.core.refreshFuelDelivery();
   this.log('FUEL_PUMPS',{trainingPumpPower,pumps});return this.get();}
+ setStartDuctPressure(engine,psi){
+  checkEngine(engine);this.chain.setStartDuctPressure(engine,psi);
+  this.log('TRAINING_DUCT_PRESSURE',{engine,psi,source:'TRAINING_INPUT_NOT_SENSOR'});
+  return this.get();
+ }
  engineStart(engine){checkEngine(engine);
   this.core.refreshFuelDelivery();
   this.chain.event({id:'engine-start-'+engine.at(-1),kind:'rotary',next:'GRD'});
@@ -171,6 +176,8 @@ class Testbench{
   for(const [key,range] of Object.entries({pressureAltitudeFt:[-1000,40000],oatC:[-80,60],iasKt:[0,360],massKg:[35000,80000]}))
    if(Object.hasOwn(input,key)){const value=input[key];if(!finite(value)||value<range[0]||value>range[1])throw Error('Invalid '+key);this.aircraft[key]=value;}
   this.core.setEnvironment({pressureAltitudeFt:this.aircraft.pressureAltitudeFt});
+  this.chain.setFlightConditions({pressureAltitudeFt:this.aircraft.pressureAltitudeFt,
+   iasKt:this.aircraft.iasKt});
   return this.get();}
  setThrottle(engine,throttle){checkEngine(engine);if(!finite(throttle)||throttle<0||throttle>1)throw Error('throttle 0..1');
   if(this.chain.get().phase[engine]!=='RUNNING')throw Error('Engine must be RUNNING');
@@ -245,6 +252,8 @@ class Testbench{
     fuelPath:e.fuelPath,fuelSupplyReady:fuelReady.available,
     fuelSupplyReason:fuelReady.reason,startCue,
     startElapsedSec:this.engineStartMs[id]===null?null:round((this.elapsedMs-this.engineStartMs[id])/1000,1),
+    starterDuctPsiTraining:snap.trainingStartDuctPsi[id],
+    startTimingTraining:copy(snap.effectiveEngineStartTiming[id]),
     origin:e.source,
     readingsAreTrainingEstimates:true};
    if(oil.lowPressureLamp)alerts.push({id:id+'.LOW_OIL_PRESSURE',level:'AMBER',source:ORIGIN});
@@ -294,7 +303,7 @@ class Testbench{
    alerts,trace:copy(this.trace),
    limits:{oilPressureLampOnPsi:CONFIG.oilPressureLampOnPsi,oilPressureLampOffPsi:CONFIG.oilPressureLampOffPsi},
    limitations:['NOT_AIRCRAFT_AFMS','NO_PHYSICAL_ECU_OR_FADEC_EMULATION',
-    'USER_TIMED_START_PROFILE_NOT_AFM_CERTIFIED','FUEL_PUMP_BUS_ASSIGNMENT_UNVERIFIED',
+    'USER_TIMED_START_PROFILE_NOT_AFM_CERTIFIED','START_DUCT_PSI_ESTIMATED_NOT_A_MEASURED_SENSOR','ALTITUDE_IAS_FUEL_MODEL_NOT_FCOM_VALIDATED','FUEL_PUMP_BUS_ASSIGNMENT_UNVERIFIED',
     'APU_EGT_AND_RPM_SURROGATES','APU_LOAD_KVA_AND_GOVERNOR_SURROGATE_NOT_WDM_CALIBRATED','NO_RELIABLE_MACH_OR_FULL_AERODYNAMIC_MODEL',
     'NOT_CONNECTED_TO_APPROVED_UNIFIED_COCPIT_NEEDLES']};
  }
