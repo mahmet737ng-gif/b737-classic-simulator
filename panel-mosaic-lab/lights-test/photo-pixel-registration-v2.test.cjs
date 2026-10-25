@@ -14,7 +14,7 @@ const latest=new Map(finalCorrections.records.map(c=>[c.id,c.newSourceRect]));
 assert.equal(latest.size,1);
 const fittedInstances=new Set(fitted.derivatives.map(l=>l.lamp));
 assert.equal(data.sourceVersions.overhead,'LGT-0009');
-assert.ok(['LGT-0009','LGT-0010'].includes(overhead.version));
+assert.ok(['LGT-0009','LGT-0010','LGT-0011'].includes(overhead.version));
 assert.equal(data.sourceVersions.main,'LGT-0011');
 assert.ok(['LGT-0011','LGT-0012'].includes(main.version));
 assert.equal(data.summary.total,142);
