@@ -17,4 +17,45 @@ assert.match(script,/MCP-0003: source-coordinate/);
 assert.equal((script.match(/\{id:"(?:courseL|courseR|speed|heading|altitude)"/g)||[]).length,10);
 assert.match(css,/\.mcp-v3-overlay/);
 assert.match(css,/pointer-events:auto/);
-console.log('MCP-0003 visual mounts and calibration contracts: PASS');
+
+const vm=require("node:vm");
+function geometry(name){
+ const m=script.match(new RegExp("const "+name+"=\\[([\\s\\S]*?)\\];"));
+ assert.ok(m,"missing "+name+" geometry");
+ return vm.runInNewContext("["+m[1]+"]");
+}
+const displays=geometry("displays"),lamps=geometry("lamps"),knobs=geometry("knobs");
+assert.equal(displays.length,6);
+assert.equal(lamps.length,14);
+assert.equal(knobs.length,5);
+for(const item of [...displays,...lamps])assert.ok(item.x>=0&&item.y>=0&&item.x+item.w<=2172&&item.y+item.h<=433,item.id+" out of source");
+for(const item of knobs)assert.ok(item.x-item.d/2>=0&&item.y-item.d/2>=0&&item.x+item.d/2<=2172&&item.y+item.d/2<=433,item.id+" rotation outside source");
+const screenshotCenters={courseL:[85,252],speed:[569,275],heading:[867,245],altitude:[1218,244],courseR:[2052,249]};
+for(const [id,[x,y]] of Object.entries(screenshotCenters)){
+ const n=knobs.find(v=>v.id===id);assert.ok(n,id+" missing pivot");
+ assert.ok(Math.hypot(n.x-x,n.y-y)<=3,id+" not aligned to physical hole");
+}
+const windows={
+ courseL:[75,110,205,178],speed:[465,110,650,178],heading:[802,110,970,178],
+ altitude:[1115,110,1309,178],verticalSpeed:[1360,110,1560,178],courseR:[1830,110,2040,178]
+};
+for(const d of displays){
+ const [l,t,r,b]=windows[d.id];
+ assert.ok(d.x>=l&&d.y>=t&&d.x+d.w<=r&&d.y+d.h<=b,d.id+" LCD exceeds socket");
+}
+const buttonBounds={
+ N1:[236,350,330,398], SPEED:[375,350,453,398], LVL_CHG:[683,350,775,398],
+ HDG_SEL:[837,350,920,398], APP:[986,350,1074,398], ALT_HLD:[1167,350,1252,398],
+ VS:[1298,350,1384,398], VNAV:[690,135,784,185], LNAV:[976,135,1070,185],
+ CMD_A:[1615,160,1702,201], CMD_B:[1786,160,1875,201],
+ CWS_A:[1615,257,1702,309], CWS_B:[1786,257,1875,309],
+ AT_ARM:[306,114,380,155]
+};
+for(const l of lamps){
+ const box=buttonBounds[l.id];assert.ok(box,"missing "+l.id+" target lens");
+ assert.ok(l.x>=box[0]&&l.y>=box[1]&&l.x+l.w<=box[2]&&l.y+l.h<=box[3],l.id+" light is outside its button");
+}
+assert.match(script,/only cover the exact black glass interior/);
+console.log('MCP screenshot-calibrated six windows, fourteen lenses, five hole centers: PASS');
+
+console.log('MCP-0004 visual mounts and calibration contracts: PASS');
