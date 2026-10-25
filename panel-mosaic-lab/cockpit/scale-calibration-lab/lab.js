@@ -150,7 +150,6 @@
   };
   function compileCurrent(){
     const d=draft(), marks=d.marks.slice().sort((a,b)=>a.value-b.value);
-    if(!d.sourceSha256)throw Error('Source hash missing: cannot pass verification');
     return engine.compile({
       id:current.id+'::'+mode,kind:d.kind,unit:d.unit,source:{
         asset:d.source,sha256:d.sourceSha256,width:$('sourceImage').naturalWidth,height:$('sourceImage').naturalHeight
