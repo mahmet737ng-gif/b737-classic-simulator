@@ -47,7 +47,7 @@
  function controls(){
   const section=document.createElement('section');section.id='unifiedDriveAmpsNeedles';
   const title=document.createElement('h2');title.textContent='GEN DRIVE / A.C. AMPS · 5 Needles';section.append(title);
-  const note=document.createElement('p');note.className='muted';note.textContent='پنج عقربه از تصویر مشترک؛ نوک نیدل‌های OH11 و OH12 طبق اسکرین‌شات بزرگ‌شده بلندتر و زاویهٔ ابتدای اسکیل اصلاح شده است. کالیبراسیون پیکسلی نهایی هنوز تأیید نشده.';section.append(note);
+  const note=document.createElement('p');note.className='muted';note.textContent='پنج عقربه از تصویر مشترک؛ نوک نیدل‌های OH11 و OH12 پس از بررسی مستقیم تصویر اصلی تا لبهٔ داخلی خط صفر کوتاه و هم‌زاویه شد. نقشهٔ عددی کامل خطوط هنوز تأیید نشده.';section.append(note);
   for(const needle of model.needles){
    const label=document.createElement('label');label.textContent=needle.label;label.style.display='block';label.style.direction='ltr';
    const input=document.createElement('input');Object.assign(input,{type:'range',min:'-90',max:'90',step:'1'});input.style.width='100%';input.style.accentColor='#edf0e8';
