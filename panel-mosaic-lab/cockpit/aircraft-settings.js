@@ -63,7 +63,7 @@
   // the upstream flight and PACK systems publish validated live adapters.
   // Do NOT silently interpret missing PACK data as a real electrical bus state.
   const pressureEnvironment={aircraftAltitudeFt:0,onGround:true,packsAvailable:true,bleedAirAvailable:true};
-  let pressureRunning=true;
+  let pressureRunning=true,packInstructorOverride=false,packSource='TRAINER_DEFAULT_UNVERIFIED';
   const pressureMount=byId('pressurePhysicsDiagnostics');
   const details=document.createElement('details');
   details.innerHTML='<summary>Cabin pressure · physical trainer / diagnostics</summary>'+
@@ -82,7 +82,7 @@
     pressureEnvironment.aircraftAltitudeFt=altitude;
   });
   groundBox?.addEventListener('change',()=>{pressureEnvironment.onGround=groundBox.checked;});
-  packsBox?.addEventListener('change',()=>{pressureEnvironment.packsAvailable=packsBox.checked;pressureEnvironment.bleedAirAvailable=packsBox.checked;});
+  packsBox?.addEventListener('change',()=>{packInstructorOverride=true;packSource='INSTRUCTOR_OVERRIDE';pressureEnvironment.packsAvailable=packsBox.checked;pressureEnvironment.bleedAirAvailable=packsBox.checked;});
   byId('pressureTrainerRun')?.addEventListener('click',()=>{
     pressureRunning=!pressureRunning;
     byId('pressureTrainerRun').textContent=pressureRunning?'Pause physical model':'Resume physical model';
@@ -100,7 +100,7 @@
       active+' · '+out.operatingMode+
       '\\nCAB ALT: '+p.cabinAltitudeFt.toFixed(0)+' ft | RATE: '+p.cabinRateFtMin.toFixed(0)+' ft/min'+
       '\\nDIFF: '+p.differentialPsid.toFixed(2)+' psid | VALVE: '+(100*p.valveOpenFraction).toFixed(0)+'% open'+
-      '\\nTARGET: '+p.targetCabinAltitudeFt.toFixed(0)+' ft | PACK: '+p.packFlowKgS.toFixed(2)+' kg/s'+
+      '\\nTARGET: '+p.targetCabinAltitudeFt.toFixed(0)+' ft | PACK: '+p.packFlowKgS.toFixed(2)+' kg/s ('+packSource+')'+
       '\\nAUTO FAIL: '+Boolean(out.lamps.autoFail)+' | ALT: '+pressureEnvironment.aircraftAltitudeFt+' ft';
   }
   // Keep cabin physics isolated to the selected installation; browser tabs
@@ -108,6 +108,16 @@
   window.setInterval(()=>{
     if(!pressureRunning||document.hidden)return;
     try{
+      // ISN-03 pneumatic output is only trusted if its source observations
+      // are complete. Unknown does NOT mean PACK OFF.
+      const air=window.B737ISNCockpitV1?.getPressurizationAir?.();
+      const conditioned=air?.packConditionedAirAvailable;
+      if(!packInstructorOverride&&typeof conditioned==='boolean'){
+        pressureEnvironment.packsAvailable=conditioned;
+        pressureEnvironment.bleedAirAvailable=conditioned;
+        packsBox.checked=conditioned;
+        packSource='SOURCE_GATED_PNEUMATICS_V6';
+      }
       const active=selectedPressure(),session=getPressureSession(active);
       session.stepPhysics(1000,{...pressureEnvironment});
       publishPressureState(active);
@@ -125,7 +135,7 @@
     dispatch:applyPressureCommand,
     feed(system,key,value){
       if(system===selectedPressure()&&key==='packsAvailable'){
-        pressureEnvironment.packsAvailable=Boolean(value);packsBox.checked=Boolean(value);return getPressureSession(system).read();
+        packInstructorOverride=true;packSource='EXTERNAL_ADAPTER';pressureEnvironment.packsAvailable=Boolean(value);packsBox.checked=Boolean(value);return getPressureSession(system).read();
       }
       if(system===selectedPressure()&&key==='airplaneAltitudeFt'){
         pressureEnvironment.aircraftAltitudeFt=value;altitudeBox.value=String(value);
