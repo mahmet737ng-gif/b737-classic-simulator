@@ -33,6 +33,22 @@ for start in range(0,len(faces),4):
   crop=Image.new('RGB',(2*radius,2*radius),'#252d33')
   x0=max(0,rect[0]);y0=max(0,rect[1]);x1=min(src.width,rect[2]);y1=min(src.height,rect[3])
   crop.paste(src.crop((x0,y0,x1,y1)),(x0-rect[0],y0-rect[1]))
+  # Visual compare old vs proposed needle placement in ORIGINAL source pixels.
+  # BLUE is previous reference; MAGENTA is the current implementation.
+  comparisons={
+   'oh.drive_oil.1':((-46,98),(-80,128)),
+   'oh.drive_oil.2':((-46,98),(-80,128)),
+   'oh.ac_amps.1':((-45,102),(-65,135)),
+   'oh.ac_amps.2':((-45,102),(-65,135)),
+  }
+  if f['id'] in comparisons:
+   import math
+   cd=ImageDraw.Draw(crop)
+   for (angle,length),color in zip(comparisons[f['id']],('#12bdff','#ff3c9d')):
+    phi=math.radians(angle)
+    end=(radius+length*math.sin(phi),radius-length*math.cos(phi))
+    cd.line((radius,radius,*end),fill=color,width=3)
+    cd.ellipse((end[0]-4,end[1]-4,end[0]+4,end[1]+4),fill=color)
   crop=crop.resize((436,436),Image.Resampling.LANCZOS)
   # Crosshair is diagnostic only; a tiny ring keeps the actual pivot visible.
   cx=cy=218
