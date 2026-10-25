@@ -34,7 +34,11 @@
    pos(el,c.xy);
    const hotspot=c.appearance==='hotspot';
    const size=hotspot?11:c.kind==='altitude'?11.8:c.kind==='momentary'?10.2:c.kind==='spring'?9.2:12.5;
-   el.style.width=size+'%';el.style.height=(size*(hotspot?.34:.84))+'%';
+   // The atlas tile is rectangular: a percentage HEIGHT shrank the rotary
+   // visual into a tiny ellipse. Size normal knobs from width, keep 1:1.
+   el.style.width=size+'%';
+   if(hotspot){el.style.height=(size*.34)+'%';}
+   else{el.style.height='auto';el.style.aspectRatio='1 / 1';}
    if(hotspot)el.classList.add('oh22-pressure-hotspot');
    const value=root.createElement('span');value.className='oh22-control-value';value.dataset.value='';
    if(!hotspot){
@@ -181,9 +185,12 @@
    }
    if(gauge){
      const manual=output.operatingMode==='MAN';
-     gauge.dataset.known=String(manual);
-     gauge.textContent=manual?Math.round(output.manualValveFraction*100)+'%':'';
-     gauge.title=manual?'Illustrative MAN command position only; not actual measured valve travel':'Actual valve position unknown: no pressure/servo simulation';
+     const modelFraction=output.physical?.valveOpenFraction;
+     const physicalKnown=typeof modelFraction==='number'&&Number.isFinite(modelFraction);
+     gauge.dataset.known=String(physicalKnown||manual);
+     gauge.textContent=physicalKnown?Math.round(modelFraction*100)+'%':manual?Math.round(output.manualValveFraction*100)+'%':'';
+     gauge.title=physicalKnown?'Training plant estimated outflow opening; not aircraft-measured':
+       manual?'Illustrative MAN motor stroke only':'Actual valve position unknown without a pressure plant';
    }
    caption.textContent=system+'  ·  '+(output.operatingMode||'UNKNOWN')+'  ·  '+(output.outflowCommand||output.outflow?.command||'NOT CALCULATED');
    layer.dataset.mode=output.operatingMode||'UNKNOWN';

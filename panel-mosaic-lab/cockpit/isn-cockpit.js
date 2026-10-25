@@ -179,6 +179,11 @@
   render();
  },100);
  window.B737ISNCockpitV1=Object.freeze({getState:()=>bridge.get(),getStartState:()=>chain.get(),
+   // Pass only source-observed pneumatic supply to pressurization. UNKNOWN
+   // must never become a fabricated zero PACK or an invented DC bus mapping.
+   getPressurizationAir:()=>startSession.core.complete()
+     ?startSession.core.Pneumatics.derive(startSession.core.pneumaticState).toPressurization
+     :null,
   instructor:command=>{const r=bridge.instructor(command);render();return r;},reset:()=>{const r=bridge.reset();render();return r;}});
  // Dependencies are dynamically loaded, so request a fresh iframe snapshot
  // even if its initial ready event arrived before this message listener.
