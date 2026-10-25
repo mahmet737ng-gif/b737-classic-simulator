@@ -99,7 +99,10 @@
    pointerSignals=pointerRouter.project(signals,{selectors});
    if(motionWorkbench)motionPreview=motionWorkbench.evaluate(pointerSignals,{
     nowMs:typeof performance!=='undefined'&&typeof performance.now==='function'?
-       performance.now():ecu?.timeMs??null
+       performance.now():ecu?.timeMs??null,
+    // Wall-clock timestamps on externally observed sensor envelopes are NOT
+    // the simulator's monotonic animation clock. Never compare their domains.
+    observationNowMs:Date.now()
    });
    lastError=null;
   }catch(err){lastError=err.message;signals=null;initial=null;}
