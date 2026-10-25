@@ -33,9 +33,10 @@
    el.setAttribute('aria-label',el.title);el.setAttribute('aria-keyshortcuts','ArrowUp ArrowDown');
    pos(el,c.xy);
    const hotspot=c.appearance==='hotspot';
-   const size=hotspot?11:c.kind==='altitude'?11.8:c.kind==='momentary'?10.2:c.kind==='spring'?9.2:12.5;
-   // The atlas tile is rectangular: a percentage HEIGHT shrank the rotary
-   // visual into a tiny ellipse. Size normal knobs from width, keep 1:1.
+   // Size is installation-specific and based on the real source aperture.
+   // A common tiny width made the CPCS/DCPCS mechanisms float in their bezels.
+   const size=hotspot?11:model.config(system).controlFit[c.id]*100;
+   el.dataset.fitSystem=system;
    el.style.width=size+'%';
    if(hotspot){el.style.height=(size*.34)+'%';}
    else{el.style.height='auto';el.style.aspectRatio='1 / 1';}
@@ -90,6 +91,10 @@
    const [x,y,w,h]=model.lampFace(system,l.id);
    pos(el,[x,y]);
    el.style.width=(w*100)+'%';el.style.height=(h*100)+'%';
+   // Scale the inner lamp FACE only. The photographed frame never moves.
+   // Measured boxes keep their centers; neighbouring faces cannot overlap.
+   const fit=model.config(system).lampFit;
+   el.style.scale=fit.x+' '+fit.y;
    el.dataset.faceSystem=system;
    el.classList.add(l.id==='auto-fail'||l.id==='off-sched'?'amber':'green');
    if(approvedLamps[l.id]){
