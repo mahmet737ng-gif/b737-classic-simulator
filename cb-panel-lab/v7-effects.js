@@ -1,48 +1,72 @@
-/* CB panel lab: source-located circuit association × Electrical V7 × fuel trainer.
- * No aircraft bus-to-CB feed has been asserted; fuel bus is labeled SURROGATE.
+/* B737 Classic CB functional index ↔ Electrical V7 training adapter.
+ * Only opened protection circuits are asserted; EP-FSI bus wiring stays unverified.
  */
-(function(){
-"use strict";
-const C=window.B737_CB_Electrical, E=window.B737ElectricalV7,
- T=window.B737TrainerCore, Bridge=window.B737CBSystemsBridge;
-if(!C||!E||!T||!Bridge){console.warn("CB/V7 dependencies unavailable");return;}
-const net=C.network;
-let elState=E.initialState(),trainingState=T.initialState(),last=null;
-const section=document.createElement("section");
-section.className="cb-electric";section.setAttribute("aria-label","Electrical V7 and CB dependent equipment");
-section.innerHTML='<h3>CB → ELECTRICAL V7 → EQUIPMENT / TRAINING</h3>'+
-'<p>Source: Classic MRG CB Index pp.135–136; Sepehran FCOM Electrical 6.20. The actual CB-to-bus wires remain UNVERIFIED. Fuel pump bus mapping below is a <b>trainer surrogate</b>, not EP-FSI wiring.</p>'+
-'<div class="cb-btns"><button id="cbv-gen1">TEST GEN1 FAIL</button><button id="cbv-gen2">TEST GEN2 FAIL</button><button id="cbv-trans">BUS TRANS AUTO</button><button id="cbv-reset">RESET ELECTRICAL V7</button></div>'+
-'<p id="cbv-summary"></p><div id="cbv-bus" class="cb-cells"></div><p>Protected circuits (CB open = protected circuit interrupted, NOT proof of every backup feed):</p>'+
-'<div id="cbv-devices" class="cb-cells"></div><p id="cbv-caution"></p>'+
-'<p class="cb-warn">No undocumented CB pull propagates a false bus outage into Electrical V7. A closed CB alone never asserts aircraft load powered.</p>';
-const origin=document.querySelector(".cb-electric");origin.after(section);
+(function(){"use strict";
+const C=window.B737_CB_Electrical,E=window.B737ElectricalV7,T=window.B737TrainerCore;
+const B=window.B737CBSystemsBridge,Index=window.B737ClassicMRGCBIndex;
+if(!C||!E||!T||!B||!Index){console.warn("CB MRG/V7 dependencies unavailable");return;}
+const network=C.network;
+let v7State=E.initialState(),trainerState=T.initialState(),last=null;
+const section=document.createElement("section");section.className="cb-electric";
+section.setAttribute("aria-label","Classic CB and Electrical V7 protected-circuit test");
+section.innerHTML=[
+'<h3>B737 CLASSIC CB → ELECTRICAL V7 → PROTECTED CIRCUITS</h3>',
+'<p>Classic MRG index pp.134–136; source/photo-matched associations only. ',
+'Exact EP-FSI CB feed wiring remains unverified.</p>',
+'<div class="cb-btns">',
+'<button id="cbv-gen1">INJECT GEN1 FAIL</button>',
+'<button id="cbv-gen2">INJECT GEN2 FAIL</button>',
+'<button id="cbv-transfer">BUS TRANS AUTO</button>',
+'<button id="cbv-reset">RESET V7</button></div>',
+'<p id="cbv-summary"></p><div id="cbv-bus" class="cb-cells"></div>',
+'<p>Each entry denotes its protected circuit, NOT the entire equipment.</p>',
+'<div id="cbv-devices" class="cb-cells"></div>',
+'<p id="cbv-caution"></p><p id="cbv-audit" class="cb-warn"></p>'
+].join("");
+document.querySelector(".cb-electric").after(section);
 const $=id=>section.querySelector("#"+id);
-const safe=s=>String(s).replace(/[&<>"]/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[ch]));
-function tile(name,state,info){
-const color=state===false||state==="OPEN"?"#f9aab4":state===true||state==="CLOSED"?"#a9e8be":"#e8c784";
-return '<span class="cb-chip" style="border-color:'+color+'"><b>'+safe(name)+'</b>: '+safe(state===null?"UNKNOWN":String(state))+(info?'<small style="display:block;font-size:10px">'+safe(info)+'</small>':"")+'</span>';
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function tile(name,val,detail){
+ const edge=val===false||val==="OPEN"?"#f9aab4":val===true||val==="CLOSED"?"#a9e8be":"#e8c784";
+ return '<span class="cb-chip" style="border-color:'+edge+'"><b>'+esc(name)+'</b>: '+
+ esc(val===null?"UNKNOWN":String(val))+(detail?'<small style="display:block;font-size:10px">'+esc(detail)+'</small>':"")+'</span>';
 }
 function render(){
-const v=E.evaluate(elState),t=T.derive(trainingState),p=Bridge.project({cbNetwork:net,electricalV7Result:v,trainerResult:t,trainerState:trainingState});
-last={v7:v,project:p};
-$("cbv-summary").textContent="Electrical V7: GEN 1 "+(v.source[1]||"OFF")+" | GEN 2 "+(v.source[2]||"OFF")+" | BUS TRANS AUTO "+(elState.config.busTransferAuto?"ON":"OFF")+" | CB equipment mappings: "+p.linkedEquipment;
-$("cbv-bus").innerHTML=[["Transfer 1",v.bus.transfer1],["Transfer 2",v.bus.transfer2],["DC 1",v.bus.dc1],["DC 2",v.bus.dc2],["Battery",v.bus.battery],["AC standby",v.bus.acStandby]].map(x=>tile(x[0],x[1])).join("");
-$("cbv-devices").innerHTML=Bridge.ALLOCATIONS.map(a=>{
-const c=p.circuits[a.load],fuel=a.load.startsWith("fuel."),f=fuel?p.overlay.fuel[a.load.slice(5)]:null;
-const hyd=a.load.startsWith("hyd."),h=hyd?p.overlay.hyd[a.load.slice(4)]:null;
-let detail=fuel?"FUEL TRAINING "+(f.operational===null?"UNKNOWN":f.operational?"RUN":"STOP")+" | "+f.surrogateBus:hyd?"HYD TRAINING "+(h.operating===null?"UNKNOWN":h.operating?"RUN":"STOP")+" | "+h.feedBus:"Real availability UNKNOWN";
-return tile(a.load,c.protectionCircuit,detail);
-}).join("");
-const x=p.overlay.annunciations;
-$("cbv-caution").textContent="Training FUEL caution: "+(x.fuelCautionTraining?"ON":"OFF")+" | HYD System A: "+String(p.overlay.systemHyd.A)+"; B: "+String(p.overlay.systemHyd.B)+" (engine-driven pumps remain independent; simplified projection).";
+ const e=E.evaluate(v7State),t=T.derive(trainerState);
+ const p=B.project({cbNetwork:network,electricalV7Result:e,trainerResult:t,trainerState:trainerState});
+ last={electrical:e,projection:p};
+ $("cbv-summary").textContent="GEN1 "+(e.source[1]||"OFF")+" | GEN2 "+(e.source[2]||"OFF")+
+  " | BUS TRANS "+(v7State.config.busTransferAuto?"AUTO":"OFF")+
+  " | Active source-indexed CB associations "+p.linkedEquipment;
+ $("cbv-bus").innerHTML=[["GEN BUS1",e.bus.generator1],["GEN BUS2",e.bus.generator2],
+  ["TRANSFER1",e.bus.transfer1],["TRANSFER2",e.bus.transfer2],
+  ["DC1",e.bus.dc1],["DC2",e.bus.dc2],["BATTERY",e.bus.battery],
+  ["AC STANDBY",e.bus.acStandby]].map(row=>tile(row[0],row[1])).join("");
+ $("cbv-devices").innerHTML=Object.values(p.circuits).map(c=>{
+   const f=c.load.startsWith("fuel.")?p.overlay.fuel[c.load.slice(5)]:null;
+   const h=c.load.startsWith("hyd.")?p.overlay.hyd[c.load.slice(4)]:null;
+   const detail=f&&f.surrogateBus?
+    "FUEL TRAINER "+(f.operational===null?"UNKNOWN":f.operational?"RUN":"STOP")+" / "+f.surrogateBus:
+    h&&h.feedBus?"HYD TRAINER "+(h.operating===null?"UNKNOWN":h.operating?"RUN":"STOP")+" / "+h.feedBus:
+    "Protected "+c.role+"; full equipment power UNKNOWN";
+   return tile(c.key+" · "+c.load,c.protectionCircuit,detail);
+ }).join("");
+ const w=p.overlay.annunciations;
+ $("cbv-caution").textContent="Fuel warning CONDITION (trainer): "+(w.fuelCautionTraining?"ACTIVE":"INACTIVE")+
+  " | Fuel LAMP (trainer): "+(w.fuelLampTraining?"ON":"OFF")+
+  " | HYD A: "+String(p.overlay.systemHyd.A)+" / B: "+String(p.overlay.systemHyd.B)+
+  ". Pulling a lamp CB cannot clear the warning cause.";
+ const qa=Index.audit(window.CB_CATALOG);
+ $("cbv-audit").textContent="MRG-photo matched variant entries: "+qa.valid.length+
+  " | OCR conflicts: "+qa.errors.length+" | disputed locations: "+qa.quarantine.length+
+  " | EP-FSI-specific CB upstream wiring proven: ZERO.";
 }
-function fault(id){elState=E.apply(elState,{type:"FAULT",id,active:!elState.faults[id],instructor:true});render();}
+function fault(id){v7State=E.apply(v7State,{type:"FAULT",id,active:!v7State.faults[id],instructor:true});render();}
 $("cbv-gen1").onclick=()=>fault("GEN1_FAILED");
 $("cbv-gen2").onclick=()=>fault("GEN2_FAILED");
-$("cbv-trans").onclick=()=>{elState=E.apply(elState,{type:"CONTROL",key:"busTransferAuto",value:!elState.config.busTransferAuto});render();};
-$("cbv-reset").onclick=()=>{elState=E.initialState();render();};
-net.subscribe(evt=>{if(["PULL","PUSH","INJECT_TRIP","CLEAR_FAULT","RESET","VARIANT","RESTORE"].includes(evt.type))render();});
-window.B737_CB_V7_Integration={evaluate:()=>last,electrical:()=>elState};
+$("cbv-transfer").onclick=()=>{v7State=E.apply(v7State,{type:"CONTROL",key:"busTransferAuto",value:!v7State.config.busTransferAuto});render();};
+$("cbv-reset").onclick=()=>{v7State=E.initialState();render();};
+network.subscribe(e=>{if(["PULL","PUSH","INJECT_TRIP","CLEAR_FAULT","RESET","VARIANT","RESTORE"].includes(e.type))render();});
+window.B737_CB_V7_Integration={evaluate:()=>last,electrical:()=>v7State};
 render();
 })();
