@@ -8,9 +8,13 @@
 'use strict';
 const SCHEMA='b737.isn.ecu-start-test.v1', ORIGIN='SIM_TRAINING_APPROX_13_18';
 const ENGINES=['engine1','engine2'];
-const CONFIG=Object.freeze({oilPressureLampOnPsi:12.25,oilPressureLampOffPsi:15.25,
- oilRedRadialTrainingPsi:13, oilPumpPressurePerN2:1.17,oilPressureMaxPsi:95,
- oilPressureResponseMs:1300,oilPressureDecayMs:2100,
+const CONFIG=Object.freeze({oilPressureLampOnPsi:11.75,oilPressureLampOffPsi:13,
+ oilRedRadialTrainingPsi:13,oilPressureRiseN2:18,oilPressureAt22N2Psi:45,
+ oilPumpPressurePerN2:0.75,oilPressureMaxPsi:95,
+ oilPressureResponseMs:300,oilPressureDecayMs:2100,
+ hydraulicPumpStartN2:4.5,hydraulicPumpRatedN2:6,hydraulicRatedPressurePsi:3000,
+ apuRatedRpmPct:95.5,apuGeneratorReadyRpmPct:95,
+ apuGenVoltageV:115,apuGenFrequencyHz:400,apuStartPeakEGTC:620,
  oilAmbientTempC:20,oilIdleTempC:82,oilHighPowerTempC:103,oilTempWarmupMs:95000,
  oilTempCooldownMs:240000,oilInitialQuantityPct:85,
  oilLeakLossPctPerSec:0.20,oilNaturalLossPctPerHour:0.02,
@@ -33,7 +37,10 @@ function oilStep(previous,{n2Percent=0,throttle=0,engineRunning=false}={},dtMs){
   throw Error('Invalid prior oil state');
  const s={...previous,faults:{...previous.faults}};
  const effectiveN2=clip(n2Percent,0,110);
- const coldN2Pressure=clip((effectiveN2-1)*CONFIG.oilPumpPressurePerN2,0,CONFIG.oilPressureMaxPsi);
+ // No simulated oil pressure until N2 reaches 18%; rapid rise through N2 22%.
+  const coldN2Pressure=effectiveN2<=CONFIG.oilPressureRiseN2?0:
+   effectiveN2<22?CONFIG.oilPressureAt22N2Psi*(effectiveN2-CONFIG.oilPressureRiseN2)/(22-CONFIG.oilPressureRiseN2):
+   clip(CONFIG.oilPressureAt22N2Psi+(effectiveN2-22)*CONFIG.oilPumpPressurePerN2,0,CONFIG.oilPressureMaxPsi);
  const quantityMultiplier=s.quantityPct<=5?0:s.quantityPct<20?s.quantityPct/20:1;
  const warmFactor=1-clip((s.temperatureC-100)*0.003,0,0.20);
  const pumpGood=!s.faults.pumpFailure;
@@ -47,12 +54,26 @@ function oilStep(previous,{n2Percent=0,throttle=0,engineRunning=false}={},dtMs){
  const normalLoss=engineRunning?CONFIG.oilNaturalLossPctPerHour*dtMs/3600000:0;
  s.quantityPct=round(clip(s.quantityPct-normalLoss-leakLoss,0,100),5);
  // Explicit Schmitt thresholds for TRAINING lamp; independent of N2 or phase.
- if(s.pressurePsi>CONFIG.oilPressureLampOffPsi)s.lowPressureLamp=false;
+ if(s.pressurePsi>=CONFIG.oilPressureLampOffPsi)s.lowPressureLamp=false;
  else if(s.pressurePsi<=CONFIG.oilPressureLampOnPsi)s.lowPressureLamp=true;
  s.filterBypassLamp=Boolean(s.faults.filterRestriction&&effectiveN2>10);
  return s;
 }
-function initialCoast(){return {n1:0,n2:0,egt:CONFIG.oilAmbientTempC,lastRunning:false};}
+// Read-only engine-driven hydraulic pressure training indication, not an
+ // assertion that the fitted aircraft's hydraulic bus has this measured pressure.
+ function hydraulicPressure(n2Percent){
+  if(!finite(n2Percent))throw Error('Finite N2 required for hydraulic pressure');
+  return round(CONFIG.hydraulicRatedPressurePsi*clip(
+   (n2Percent-CONFIG.hydraulicPumpStartN2)/
+   (CONFIG.hydraulicPumpRatedN2-CONFIG.hydraulicPumpStartN2),0,1));
+ }
+ function apuStartEGT(progress){
+  const peakAt=0.64,p=clip(progress,0,1),ease=x=>x*x*(3-2*x);
+  return round(p<=peakAt?
+   CONFIG.oilAmbientTempC+(CONFIG.apuStartPeakEGTC-CONFIG.oilAmbientTempC)*ease(p/peakAt):
+   CONFIG.apuStartPeakEGTC+(CONFIG.apuReadyEGTC-CONFIG.apuStartPeakEGTC)*ease((p-peakAt)/(1-peakAt)));
+ }
+ function initialCoast(){return {n1:0,n2:0,egt:CONFIG.oilAmbientTempC,lastRunning:false};}
 function coastStep(prev,{runningN1=null,n2=null,egtC=null,phase='OFF'}={},dtMs){
  const s={...prev};
  if(phase==='RUNNING'&&finite(runningN1)&&finite(n2)){
@@ -99,6 +120,7 @@ class Testbench{
   this.log('APU_START_REQUEST');return this.get();}
  selectGenerator(source,side){if(![1,2].includes(side)||!['APU','GEN1','GEN2','OFF'].includes(source))throw Error('Invalid generator selection');
   if(this.apuFaults.generatorFailure&&source==='APU')throw Error('Injected APU generator failure');
+   if(source==='APU'&&!this.get().apu.generator.ready)throw Error('APU generator not yet at rated speed');
   this.start.core.pack.send({type:'ELECTRICAL',action:{type:'SELECT_SOURCE',source,side}});
   this.chain.syncPower();this.log('SOURCE_SELECT',{source,side});return this.get();}
  apuBleed(on){if(typeof on!=='boolean')throw Error('APU BLEED boolean required');
@@ -194,6 +216,7 @@ class Testbench{
     egtC:needle.egt, fuelFlowKgHr:e.fuelFlowKgHr,
     oil:{pressurePsi:oil.pressurePsi,temperatureC:oil.temperatureC,quantityPct:oil.quantityPct,
      lowPressureLamp:oil.lowPressureLamp,filterBypassLamp:oil.filterBypassLamp,origin:ORIGIN},
+     hydraulic:{system:id==='engine1'?'A':'B',engineDrivenPressurePsi:hydraulicPressure(needle.n2),origin:ORIGIN},
     startValveOpen:snap.observations[id].feedback.startValveOpen.value,
     fuelLever:snap.observations[id].feedback.fuelStartLever.value,
     fuelPath:e.fuelPath,fuelSupplyReady:fuelReady.available,
@@ -214,20 +237,29 @@ class Testbench{
   const timing=this.chain.timing;
   const apuProgress=clip((tSince-timing.apuDoorMs)/(timing.apuReadyMs-timing.apuDoorMs),0,1);
   const ramp=apuProgress*apuProgress*(3-2*apuProgress);
-  const apuRPM=apuPhase==='READY'?100:apuPhase==='STARTING'?5+95*ramp:0;
-  const apuEGT=apuPhase==='READY'?CONFIG.apuReadyEGTC:apuPhase==='STARTING'?
-   round(CONFIG.oilAmbientTempC+370*ramp+140*Math.sin(Math.PI*apuProgress)):CONFIG.oilAmbientTempC;
-  const apu={phase:apuPhase,rpmPct:round(apuRPM),egtC:round(apuEGT),
-   startElapsedSec:this.apuStartMs===null?null:round(tSince/1000,1),
-   readyTargetSec:timing.apuReadyMs/1000,
-   bleedValveOpen:snap.bleed.apuBleedValveOpen,genSelected:Object.values(snap.selectedSources).includes('APU'),
-   faults:{...this.apuFaults},origin:ORIGIN};
+  const apuRPM=apuPhase==='READY'?CONFIG.apuRatedRpmPct:
+    apuPhase==='STARTING'?5+(CONFIG.apuRatedRpmPct-5)*ramp:0;
+   const apuEGT=apuPhase==='READY'?CONFIG.apuReadyEGTC:
+    apuPhase==='STARTING'?apuStartEGT(apuProgress):CONFIG.oilAmbientTempC;
+   // APU rated generator capability does not close the GEN-to-BUS switch.
+   const genReady=apuPhase==='READY'&&apuRPM>=CONFIG.apuGeneratorReadyRpmPct&&!this.apuFaults.generatorFailure;
+   const generator={ready:genReady,voltageV:genReady?CONFIG.apuGenVoltageV:0,
+    frequencyHz:genReady?CONFIG.apuGenFrequencyHz:0,
+    connectedBusSides:Object.keys(snap.selectedSources).filter(side=>snap.selectedSources[side]==='APU').map(Number),origin:ORIGIN};
+   const apu={phase:apuPhase,rpmPct:round(apuRPM),egtC:round(apuEGT),
+    startElapsedSec:this.apuStartMs===null?null:round(tSince/1000,1),
+    readyTargetSec:timing.apuReadyMs/1000,
+    bleedValveOpen:snap.bleed.apuBleedValveOpen,genSelected:generator.connectedBusSides.length>0,
+    generator,faults:{...this.apuFaults},origin:ORIGIN};
   const states={aircraft:copy(this.aircraft),engine1:engines.engine1,engine2:engines.engine2,apu};
   return {schema:SCHEMA,origin:ORIGIN,quality:'TRAINING_SIMULATION_ONLY',
    timeMs:this.elapsedMs,timingProfile:this.chain.timingProfile,timing:copy(this.chain.timing),stage:{ISN13:'OIL',ISN14:'APU_TELEMETRY',ISN15:'FAILURE_BUS',
     ISN16:'THRUST_LIMIT',ISN17:'ENGINE_DYNAMICS',ISN18:'TESTBENCH_E2E'},
    aircraft:copy(this.aircraft),engines,apu,
-   electrical:{battery:snap.electrical.battery,selectedSources:copy(snap.selectedSources)},
+   electrical:{battery:snap.electrical.battery,selectedSources:copy(snap.selectedSources),
+     apuGenerator:copy(generator)},
+    hydraulics:{systemA:{pressurePsi:engines.engine1.hydraulic.engineDrivenPressurePsi,origin:ORIGIN},
+     systemB:{pressurePsi:engines.engine2.hydraulic.engineDrivenPressurePsi,origin:ORIGIN}},
    fuel:base.fuel,thrust:{lastPlan:this.lastThrust,limits:base.modeLimitsN1Pct},
    alerts,trace:copy(this.trace),
    limits:{oilPressureLampOnPsi:CONFIG.oilPressureLampOnPsi,oilPressureLampOffPsi:CONFIG.oilPressureLampOffPsi},
@@ -237,5 +269,5 @@ class Testbench{
     'NOT_CONNECTED_TO_APPROVED_UNIFIED_COCPIT_NEEDLES']};
  }
 }
-return Object.freeze({SCHEMA,ORIGIN,CONFIG,oilInitial,oilStep,coastStep,Testbench});
+return Object.freeze({SCHEMA,ORIGIN,CONFIG,oilInitial,oilStep,hydraulicPressure,apuStartEGT,coastStep,Testbench});
 });
