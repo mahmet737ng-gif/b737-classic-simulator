@@ -1,0 +1,1654 @@
+{
+  "schema": "b737.printed-scale-labels-v1",
+  "created": "2026-10-25",
+  "scope": "all 53 Unified indicating faces",
+  "source": "Visual inspection of native source panels and existing face references; numbers provisional when indicated",
+  "faces": [
+    {
+      "id": "oh.fuel.temperature",
+      "panel": "OH09",
+      "movement": "bipolar_arc",
+      "sourceHash": "921977b568870233c9613a62101741dc369bb43f85b80b3769af07f05eeba733",
+      "scales": [
+        {
+          "name": "temperature",
+          "printed": [
+            "40",
+            "20",
+            "0",
+            "20",
+            "40"
+          ],
+          "interpreted": [
+            -40,
+            -20,
+            0,
+            20,
+            40
+          ],
+          "status": "left_negative_interpreted_from_symmetric_scale"
+        }
+      ],
+      "status": "PRINTED_LABELS_TRANSCRIBED",
+      "geometryApproved": false,
+      "notes": "Numbers from source images or visual references. NOT verified tick coordinates. No inferred numeric limits activated."
+    },
+    {
+      "id": "oh.elec.dc_amps",
+      "panel": "OH10",
+      "movement": "bipolar_arc",
+      "sourceHash": "9a1ca4d6cfb277ec1404f3a464e957d81be9d9689a0810883364342d57b0f1ea",
+      "scales": [
+        {
+          "name": "dc_amps",
+          "printed": [
+            "-50",
+            "0",
+            "+50"
+          ],
+          "interpreted": [
+            -50,
+            0,
+            50
+          ],
+          "status": "outer_unlabeled_ticks_exist_endpoints_unknown"
+        }
+      ],
+      "status": "PRINTED_LABELS_TRANSCRIBED",
+      "geometryApproved": false,
+      "notes": "Numbers from source images or visual references. NOT verified tick coordinates. No inferred numeric limits activated."
+    },
+    {
+      "id": "oh.elec.cps",
+      "panel": "OH10",
+      "movement": "nonlinear_piecewise_arc",
+      "sourceHash": "9a1ca4d6cfb277ec1404f3a464e957d81be9d9689a0810883364342d57b0f1ea",
+      "scales": [
+        {
+          "name": "frequency",
+          "printed": [
+            "0",
+            "400",
+            "420"
+          ],
+          "interpreted": [
+            0,
+            400,
+            420
+          ],
+          "status": "major_ticks_nonuniform"
+        }
+      ],
+      "status": "PRINTED_LABELS_TRANSCRIBED",
+      "geometryApproved": false,
+      "notes": "Numbers from source images or visual references. NOT verified tick coordinates. No inferred numeric limits activated."
+    },
+    {
+      "id": "oh.elec.dc_volts",
+      "panel": "OH10",
+      "movement": "piecewise_arc",
+      "sourceHash": "9a1ca4d6cfb277ec1404f3a464e957d81be9d9689a0810883364342d57b0f1ea",
+      "scales": [
+        {
+          "name": "dc_volts",
+          "printed": [
+            "0",
+            "20",
+            "40"
+          ],
+          "interpreted": [
+            0,
+            20,
+            40
+          ],
+          "status": "major_ticks_read"
+        }
+      ],
+      "status": "PRINTED_LABELS_TRANSCRIBED",
+      "geometryApproved": false,
+      "notes": "Numbers from source images or visual references. NOT verified tick coordinates. No inferred numeric limits activated."
+    },
+    {
+      "id": "oh.elec.ac_volts",
+      "panel": "OH10",
+      "movement": "piecewise_arc",
+      "sourceHash": "9a1ca4d6cfb277ec1404f3a464e957d81be9d9689a0810883364342d57b0f1ea",
+      "scales": [
+        {
+          "name": "ac_volts",
+          "printed": [
+            "100",
+            "110",
+            "120",
+            "130"
+          ],
+          "interpreted": [
+            100,
+            110,
+            120,
+            130
+          ],
+          "status": "major_ticks_read"
+        }
+      ],
+      "status": "PRINTED_LABELS_TRANSCRIBED",
+      "geometryApproved": false,
+      "notes": "Numbers from source images or visual references. NOT verified tick coordinates. No inferred numeric limits activated."
+    },
+    {
+      "id": "oh.drive_oil.1",
+      "panel": "OH11",
+      "movement": "selector_two_angular_scales",
+      "sourceHash": "86cf2f1de81146756adf694b1fe01067a271c32990c1fda7752eb913442a6708",
+      "scales": [
+        {
+          "name": "RISE",
+          "printed": [
+            "0",
+            "10",
+            "20",
+            "30"
+          ],
+          "interpreted": [
+            0,
+            10,
+            20,
+            30
+          ],
+          "status": "selector_specific_scale"
+        },
+        {
+          "name": "IN",
+          "printed": [
+            "80",
+            "120",
+            "160"
+          ],
+          "interpreted": [
+            80,
+            120,
+            160
+          ],
+          "status": "selector_specific_scale"
+        }
+      ],
+      "status": "PRINTED_LABELS_TRANSCRIBED",
+      "geometryApproved": false,
+      "notes": "Numbers from source images or visual references. NOT verified tick coordinates. No inferred numeric limits activated."
+    },
+    {
+      "id": "oh.drive_oil.2",
+      "panel": "OH11",
+      "movement": "selector_two_angular_scales",
+      "sourceHash": "86cf2f1de81146756adf694b1fe01067a271c32990c1fda7752eb913442a6708",
+      "scales": [
+        {
+          "name": "RISE",
+          "printed": [
+            "0",
+            "10",
+            "20",
+            "30"
+          ],
+          "interpreted": [
+            0,
+            10,
+            20,
+            30
+          ],
+          "status": "selector_specific_scale"
+        },
+        {
+          "name": "IN",
+          "printed": [
+            "80",
+            "120",
+            "160"
+          ],
+          "interpreted": [
+            80,
+            120,
+            160
+          ],
+          "status": "selector_specific_scale"
+        }
+      ],
+      "status": "PRINTED_LABELS_TRANSCRIBED",
+      "geometryApproved": false,
+      "notes": "Numbers from source images or visual references. NOT verified tick coordinates. No inferred numeric limits activated."
+    },
+    {
+      "id": "oh.ac_amps.1",
+      "panel": "OH12",
+      "movement": "piecewise_arc",
+      "sourceHash": "709cb15a86f9038ca082136c4db59af83c7800107dfe320182bf7f4c56837e9f",
+      "scales": [
+        {
+          "name": "AC_AMPS",
+          "printed": [
+            "0",
+            "50",
+            "100",
+            "150",
+            "200"
+          ],
+          "interpreted": [
+            0,
+            50,
+            100,
+            150,
+            200
+          ],
+          "status": "major_ticks_read"
+        }
+      ],
+      "status": "PRINTED_LABELS_TRANSCRIBED",
+      "geometryApproved": false,
+      "notes": "Numbers from source images or visual references. NOT verified tick coordinates. No inferred numeric limits activated."
+    },
+    {
+      "id": "oh.ac_amps.2",
+      "panel": "OH12",
+      "movement": "piecewise_arc",
+      "sourceHash": "709cb15a86f9038ca082136c4db59af83c7800107dfe320182bf7f4c56837e9f",
+      "scales": [
+        {
+          "name": "AC_AMPS",
+          "printed": [
+            "0",
+            "50",
+            "100",
+            "150",
+            "200"
+          ],
+          "interpreted": [
+            0,
+            50,
+            100,
+            150,
+            200
+          ],
+          "status": "major_ticks_read"
+        }
+      ],
+      "status": "PRINTED_LABELS_TRANSCRIBED",
+      "geometryApproved": false,
+      "notes": "Numbers from source images or visual references. NOT verified tick coordinates. No inferred numeric limits activated."
+    },
+    {
+      "id": "oh.ac_amps.apu",
+      "panel": "OH12",
+      "movement": "piecewise_arc",
+      "sourceHash": "709cb15a86f9038ca082136c4db59af83c7800107dfe320182bf7f4c56837e9f",
+      "scales": [
+        {
+          "name": "AC_AMPS",
+          "printed": [
+            "0",
+            "50",
+            "100",
+            "150",
+            "200"
+          ],
+          "interpreted": [
+            0,
+            50,
+            100,
+            150,
+            200
+          ],
+          "status": "major_ticks_read"
+        }
+      ],
+      "status": "PRINTED_LABELS_TRANSCRIBED",
+      "geometryApproved": false,
+      "notes": "Numbers from source images or visual references. NOT verified tick coordinates. No inferred numeric limits activated."
+    },
+    {
+      "id": "oh.apu.egt",
+      "panel": "OH12",
+      "movement": "near_full_circle_nonlinear",
+      "sourceHash": "709cb15a86f9038ca082136c4db59af83c7800107dfe320182bf7f4c56837e9f",
+      "scales": [
+        {
+          "name": "apu_egt",
+          "printed": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8"
+          ],
+          "interpreted": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "status": "times_100C_zero_unlabeled"
+        }
+      ],
+      "status": "PRINTED_LABELS_TRANSCRIBED",
+      "geometryApproved": false,
+      "notes": "Numbers from source images or visual references. NOT verified tick coordinates. No inferred numeric limits activated."
+    },
+    {
+      "id": "oh.cabin.diff_pressure_altitude",
+      "panel": "OH19-DIFF",
+      "movement": "two_independent_pointers_two_scales",
+      "sourceHash": "4c667d96ea7652e52784f5c06ee3cdde0879ca37631abf19969861afecc45fed",
+      "scales": [
+        {
+          "name": "diff_pressure",
+          "printed": [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10"
+          ],
+          "interpreted": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "status": "outer_major_ticks_read"
+        },
+        {
+          "name": "cabin_altitude",
+          "printed": [
+            "3",
+            "10",
+            "15",
+            "20",
+            "25",
+            "30",
+            "35",
+            "40",
+            "50"
+          ],
+          "interpreted": [
+            3,
+            10,
+            15,
+            20,
+            25,
+            30,
+            35,
+            40,
+            50
+          ],
+          "status": "inner_scale_0_implied_not_printed"
+        }
+      ],
+      "status": "PRINTED_LABELS_TRANSCRIBED",
+      "geometryApproved": false,
+      "notes": "Numbers from source images or visual references. NOT verified tick coordinates. No inferred numeric limits activated."
+    },
+    {
+      "id": "oh.cabin.rate",
+      "panel": "OH19-DIFF",
+      "movement": "signed_bidirectional_around_zero",
+      "sourceHash": "4c667d96ea7652e52784f5c06ee3cdde0879ca37631abf19969861afecc45fed",
+      "scales": [
+        {
+          "name": "cabin_climb",
+          "printed": [
+            "0",
+            ".5",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5"
+          ],
+          "interpreted": [
+            0,
+            0.5,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "status": "zero_and_climb_branch_read"
+        },
+        {
+          "name": "cabin_descent",
+          "printed": [
+            "0",
+            ".5",
+            "1",
+            "2"
+          ],
+          "interpreted": [
+            0,
+            -0.5,
+            -1,
+            -2
+          ],
+          "status": "branch_labels_partly_obscured"
+        }
+      ],
+      "status": "PRINTED_LABELS_TRANSCRIBED",
+      "geometryApproved": false,
+      "notes": "Numbers from source images or visual references. NOT verified tick coordinates. No inferred numeric limits activated."
+    },
+    {
+      "id": "oh.cabin.temperature",
+      "panel": "OH20",
+      "movement": "nonlinear_piecewise_arc",
+      "sourceHash": "94669d21f0be8aa538b2ff3b0684683409cadf6d9fc4b55390e7147abe506121",
+      "scales": [
+        {
+          "name": "temperature",
+          "printed": [
+            "0",
+            "20",
+            "40",
+            "60",
+            "80",
+            "100"
+          ],
+          "interpreted": [
+            0,
+            20,
+            40,
+            60,
+            80,
+            100
+          ],
+          "status": "major_ticks_read_60_location_unresolved"
+        }
+      ],
+      "status": "PRINTED_LABELS_TRANSCRIBED",
+      "geometryApproved": false,
+      "notes": "Numbers from source images or visual references. NOT verified tick coordinates. No inferred numeric limits activated."
+    },
+    {
+      "id": "oh.duct.pressure_lr",
+      "panel": "OH21",
+      "movement": "two_independent_pointers_one_scale",
+      "sourceHash": "4efe8c59579e8675825ed4dabf393648cfa7f11f6c09d831d137c23f70ecfe1e",
+      "scales": [
+        {
+          "name": "duct_pressure",
+          "printed": [
+            "20",
+            "40",
+            "60",
+            "80",
+            "100"
+          ],
+          "interpreted": [
+            20,
+            40,
+            60,
+            80,
+            100
+          ],
+          "status": "unlabeled_zero_candidate"
+        }
+      ],
+      "status": "PRINTED_LABELS_TRANSCRIBED",
+      "geometryApproved": false,
+      "notes": "Numbers from source images or visual references. NOT verified tick coordinates. No inferred numeric limits activated."
+    },
+    {
+      "id": "capt.airspeed",
+      "panel": "CAPTAIN",
+      "movement": "nonlinear_airspeed_arc",
+      "sourceHash": "dea7c23ddd5d648cf51735d0fcbcc9d1e69ce37efd736ec45fb173fe766fc56b",
+      "scales": [
+        {
+          "name": "IAS",
+          "printed": [
+            "60",
+            "80",
+            "100",
+            "120",
+            "140",
+            "160",
+            "200",
+            "250",
+            "300",
+            "350",
+            "400"
+          ],
+          "interpreted": [
+            60,
+            80,
+            100,
+            120,
+            140,
+            160,
+            200,
+            250,
+            300,
+            350,
+            400
+          ],
+          "status": "printed_major_numbers_only"
+        }
+      ],
+      "status": "PRINTED_LABELS_TRANSCRIBED",
+      "geometryApproved": false,
+      "notes": "Numbers from source images or visual references. NOT verified tick coordinates. No inferred numeric limits activated."
+    },
+    {
+      "id": "capt.rmi",
+      "panel": "CAPTAIN",
+      "movement": "rotating_compass_card_with_two_bearing_pointers",
+      "sourceHash": "dea7c23ddd5d648cf51735d0fcbcc9d1e69ce37efd736ec45fb173fe766fc56b",
+      "scales": [
+        {
+          "name": "compass_card",
+          "printed": [
+            "0",
+            "3",
+            "6",
+            "9",
+            "12",
+            "15",
+            "18",
+            "21",
+            "24",
+            "27",
+            "30",
+            "33"
+          ],
+          "interpreted": [
+            0,
+            30,
+            60,
+            90,
+            120,
+            150,
+            180,
+            210,
+            240,
+            270,
+            300,
+            330
+          ],
+          "status": "rotating_card_two_independent_bearing_pointers"
+        }
+      ],
+      "status": "PRINTED_LABELS_TRANSCRIBED",
+      "geometryApproved": false,
+      "notes": "Numbers from source images or visual references. NOT verified tick coordinates. No inferred numeric limits activated."
+    },
+    {
+      "id": "capt.altimeter",
+      "panel": "CAPTAIN",
+      "movement": "multi_turn_altimeter_and_counters",
+      "sourceHash": "dea7c23ddd5d648cf51735d0fcbcc9d1e69ce37efd736ec45fb173fe766fc56b",
+      "scales": [
+        {
+          "name": "altitude_card",
+          "printed": [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9"
+          ],
+          "interpreted": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "status": "cyclic_turn_pointers_not_verified"
+        }
+      ],
+      "status": "PRINTED_LABELS_TRANSCRIBED",
+      "geometryApproved": false,
+      "notes": "Numbers from source images or visual references. NOT verified tick coordinates. No inferred numeric limits activated."
+    },
+    {
+      "id": "capt.alt_ias_combined",
+      "panel": "CAPTAIN",
+      "movement": "composite_displays_separate_alt_ias",
+      "sourceHash": "dea7c23ddd5d648cf51735d0fcbcc9d1e69ce37efd736ec45fb173fe766fc56b",
+      "scales": [
+        {
+          "name": "ALT",
+          "printed": [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6"
+          ],
+          "interpreted": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "status": "source_composite_identity_unknown"
+        },
+        {
+          "name": "IAS",
+          "printed": [
+            "0",
+            "40"
+          ],
+          "interpreted": [
+            0,
+            40
+          ],
+          "status": "source_composite_identity_unknown"
+        }
+      ],
+      "status": "PRINTED_LABELS_TRANSCRIBED",
+      "geometryApproved": false,
+      "notes": "Numbers from source images or visual references. NOT verified tick coordinates. No inferred numeric limits activated."
+    },
+    {
+      "id": "capt.vertical_speed",
+      "panel": "CAPTAIN",
+      "movement": "signed_bidirectional_around_zero",
+      "sourceHash": "dea7c23ddd5d648cf51735d0fcbcc9d1e69ce37efd736ec45fb173fe766fc56b",
+      "scales": [
+        {
+          "name": "vertical_speed",
+          "printed": [
+            "0",
+            "1",
+            "2",
+            "4",
+            "6",
+            "-1",
+            "-2",
+            "-4",
+            "-6"
+          ],
+          "interpreted": [
+            0,
+            1,
+            2,
+            4,
+            6,
+            -1,
+            -2,
+            -4,
+            -6
+          ],
+          "status": "signed_nonlinear_two_branch"
+        }
+      ],
+      "status": "PRINTED_LABELS_TRANSCRIBED",
+      "geometryApproved": false,
+      "notes": "Numbers from source images or visual references. NOT verified tick coordinates. No inferred numeric limits activated."
+    },
+    {
+      "id": "capt.clock",
+      "panel": "CAPTAIN",
+      "movement": "multi_hand_clock",
+      "sourceHash": "dea7c23ddd5d648cf51735d0fcbcc9d1e69ce37efd736ec45fb173fe766fc56b",
+      "scales": [
+        {
+          "name": "clock",
+          "printed": [
+            "0",
+            "10",
+            "20",
+            "30",
+            "40",
+            "50"
+          ],
+          "interpreted": [
+            0,
+            10,
+            20,
+            30,
+            40,
+            50
+          ],
+          "status": "time_cyclic_multiple_hands"
+        }
+      ],
+      "status": "PRINTED_LABELS_TRANSCRIBED",
+      "geometryApproved": false,
+      "notes": "Numbers from source images or visual references. NOT verified tick coordinates. No inferred numeric limits activated."
+    },
+    {
+      "id": "eng.left_upper_20_20",
+      "panel": "ENGINE",
+      "movement": "unidentified_indicator",
+      "sourceHash": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "scales": [
+        {
+          "name": "unidentified",
+          "printed": [
+            "20",
+            "20"
+          ],
+          "interpreted": [],
+          "status": "cannot_resolve_identical_labels"
+        }
+      ],
+      "status": "PRINTED_LABELS_TRANSCRIBED",
+      "geometryApproved": false,
+      "notes": "Numbers from source images or visual references. NOT verified tick coordinates. No inferred numeric limits activated."
+    },
+    {
+      "id": "eng.fuel_qty.center",
+      "panel": "ENGINE",
+      "movement": "arc_with_digital_readout",
+      "sourceHash": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "scales": [
+        {
+          "name": "fuel_qty",
+          "printed": [
+            "%"
+          ],
+          "interpreted": [],
+          "status": "numeric_divisions_absent_from_blank"
+        }
+      ],
+      "status": "PRINTED_LABELS_TRANSCRIBED",
+      "geometryApproved": false,
+      "notes": "Numbers from source images or visual references. NOT verified tick coordinates. No inferred numeric limits activated."
+    },
+    {
+      "id": "eng.fuel_qty.1",
+      "panel": "ENGINE",
+      "movement": "arc_with_digital_readout",
+      "sourceHash": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "scales": [
+        {
+          "name": "fuel_qty",
+          "printed": [
+            "%"
+          ],
+          "interpreted": [],
+          "status": "numeric_divisions_absent_from_blank"
+        }
+      ],
+      "status": "PRINTED_LABELS_TRANSCRIBED",
+      "geometryApproved": false,
+      "notes": "Numbers from source images or visual references. NOT verified tick coordinates. No inferred numeric limits activated."
+    },
+    {
+      "id": "eng.fuel_qty.2",
+      "panel": "ENGINE",
+      "movement": "arc_with_digital_readout",
+      "sourceHash": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "scales": [
+        {
+          "name": "fuel_qty",
+          "printed": [
+            "%"
+          ],
+          "interpreted": [],
+          "status": "numeric_divisions_absent_from_blank"
+        }
+      ],
+      "status": "PRINTED_LABELS_TRANSCRIBED",
+      "geometryApproved": false,
+      "notes": "Numbers from source images or visual references. NOT verified tick coordinates. No inferred numeric limits activated."
+    },
+    {
+      "id": "eng.n1.1",
+      "panel": "ENGINE",
+      "movement": "full_arc_nonuniform",
+      "sourceHash": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "scales": [
+        {
+          "name": "N1",
+          "printed": [
+            "0",
+            "2",
+            "4",
+            "6",
+            "8",
+            "10",
+            "12"
+          ],
+          "interpreted": [
+            0,
+            2,
+            4,
+            6,
+            8,
+            10,
+            12
+          ],
+          "status": "label_factor_requires_reference"
+        }
+      ],
+      "status": "PRINTED_LABELS_TRANSCRIBED",
+      "geometryApproved": false,
+      "notes": "Numbers from source images or visual references. NOT verified tick coordinates. No inferred numeric limits activated."
+    },
+    {
+      "id": "eng.n1.2",
+      "panel": "ENGINE",
+      "movement": "full_arc_nonuniform",
+      "sourceHash": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "scales": [
+        {
+          "name": "N1",
+          "printed": [
+            "0",
+            "2",
+            "4",
+            "6",
+            "8",
+            "10",
+            "12"
+          ],
+          "interpreted": [
+            0,
+            2,
+            4,
+            6,
+            8,
+            10,
+            12
+          ],
+          "status": "label_factor_requires_reference"
+        }
+      ],
+      "status": "PRINTED_LABELS_TRANSCRIBED",
+      "geometryApproved": false,
+      "notes": "Numbers from source images or visual references. NOT verified tick coordinates. No inferred numeric limits activated."
+    },
+    {
+      "id": "eng.egt.1",
+      "panel": "ENGINE",
+      "movement": "color_band_arc_unlabeled",
+      "sourceHash": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "scales": [
+        {
+          "name": "EGT",
+          "printed": [],
+          "interpreted": [],
+          "status": "no_visible_numeric_tick_labels"
+        }
+      ],
+      "status": "PRINTED_LABELS_TRANSCRIBED",
+      "geometryApproved": false,
+      "notes": "Numbers from source images or visual references. NOT verified tick coordinates. No inferred numeric limits activated."
+    },
+    {
+      "id": "eng.egt.2",
+      "panel": "ENGINE",
+      "movement": "color_band_arc_unlabeled",
+      "sourceHash": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "scales": [
+        {
+          "name": "EGT",
+          "printed": [],
+          "interpreted": [],
+          "status": "no_visible_numeric_tick_labels"
+        }
+      ],
+      "status": "PRINTED_LABELS_TRANSCRIBED",
+      "geometryApproved": false,
+      "notes": "Numbers from source images or visual references. NOT verified tick coordinates. No inferred numeric limits activated."
+    },
+    {
+      "id": "eng.n2.1",
+      "panel": "ENGINE",
+      "movement": "color_band_arc_unlabeled",
+      "sourceHash": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "scales": [
+        {
+          "name": "N2",
+          "printed": [],
+          "interpreted": [],
+          "status": "no_visible_numeric_tick_labels"
+        }
+      ],
+      "status": "PRINTED_LABELS_TRANSCRIBED",
+      "geometryApproved": false,
+      "notes": "Numbers from source images or visual references. NOT verified tick coordinates. No inferred numeric limits activated."
+    },
+    {
+      "id": "eng.n2.2",
+      "panel": "ENGINE",
+      "movement": "color_band_arc_unlabeled",
+      "sourceHash": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "scales": [
+        {
+          "name": "N2",
+          "printed": [],
+          "interpreted": [],
+          "status": "no_visible_numeric_tick_labels"
+        }
+      ],
+      "status": "PRINTED_LABELS_TRANSCRIBED",
+      "geometryApproved": false,
+      "notes": "Numbers from source images or visual references. NOT verified tick coordinates. No inferred numeric limits activated."
+    },
+    {
+      "id": "eng.fuel_flow.1",
+      "panel": "ENGINE",
+      "movement": "dual_mode_fuel_flow_used",
+      "sourceHash": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "scales": [
+        {
+          "name": "FF/FU",
+          "printed": [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6"
+          ],
+          "interpreted": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "status": "flow_used_unit_mode_pending"
+        }
+      ],
+      "status": "PRINTED_LABELS_TRANSCRIBED",
+      "geometryApproved": false,
+      "notes": "Numbers from source images or visual references. NOT verified tick coordinates. No inferred numeric limits activated."
+    },
+    {
+      "id": "eng.fuel_flow.2",
+      "panel": "ENGINE",
+      "movement": "dual_mode_fuel_flow_used",
+      "sourceHash": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "scales": [
+        {
+          "name": "FF/FU",
+          "printed": [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6"
+          ],
+          "interpreted": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "status": "flow_used_unit_mode_pending"
+        }
+      ],
+      "status": "PRINTED_LABELS_TRANSCRIBED",
+      "geometryApproved": false,
+      "notes": "Numbers from source images or visual references. NOT verified tick coordinates. No inferred numeric limits activated."
+    },
+    {
+      "id": "eng.oil_pressure.1",
+      "panel": "ENGINE",
+      "movement": "piecewise_arc_colored_limits",
+      "sourceHash": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "scales": [
+        {
+          "name": "OIL PRESS",
+          "printed": [
+            "0",
+            "50",
+            "100"
+          ],
+          "interpreted": [
+            0,
+            50,
+            100
+          ],
+          "status": "color_bands_separate"
+        }
+      ],
+      "status": "PRINTED_LABELS_TRANSCRIBED",
+      "geometryApproved": false,
+      "notes": "Numbers from source images or visual references. NOT verified tick coordinates. No inferred numeric limits activated."
+    },
+    {
+      "id": "eng.oil_pressure.2",
+      "panel": "ENGINE",
+      "movement": "piecewise_arc_colored_limits",
+      "sourceHash": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "scales": [
+        {
+          "name": "OIL PRESS",
+          "printed": [
+            "0",
+            "50",
+            "100"
+          ],
+          "interpreted": [
+            0,
+            50,
+            100
+          ],
+          "status": "color_bands_separate"
+        }
+      ],
+      "status": "PRINTED_LABELS_TRANSCRIBED",
+      "geometryApproved": false,
+      "notes": "Numbers from source images or visual references. NOT verified tick coordinates. No inferred numeric limits activated."
+    },
+    {
+      "id": "eng.oil_temperature.1",
+      "panel": "ENGINE",
+      "movement": "piecewise_arc_colored_limits",
+      "sourceHash": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "scales": [
+        {
+          "name": "OIL TEMP",
+          "printed": [
+            "0",
+            "100",
+            "200"
+          ],
+          "interpreted": [
+            0,
+            100,
+            200
+          ],
+          "status": "color_bands_separate"
+        }
+      ],
+      "status": "PRINTED_LABELS_TRANSCRIBED",
+      "geometryApproved": false,
+      "notes": "Numbers from source images or visual references. NOT verified tick coordinates. No inferred numeric limits activated."
+    },
+    {
+      "id": "eng.oil_temperature.2",
+      "panel": "ENGINE",
+      "movement": "piecewise_arc_colored_limits",
+      "sourceHash": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "scales": [
+        {
+          "name": "OIL TEMP",
+          "printed": [
+            "0",
+            "100",
+            "200"
+          ],
+          "interpreted": [
+            0,
+            100,
+            200
+          ],
+          "status": "color_bands_separate"
+        }
+      ],
+      "status": "PRINTED_LABELS_TRANSCRIBED",
+      "geometryApproved": false,
+      "notes": "Numbers from source images or visual references. NOT verified tick coordinates. No inferred numeric limits activated."
+    },
+    {
+      "id": "eng.vibration.1",
+      "panel": "ENGINE",
+      "movement": "piecewise_arc",
+      "sourceHash": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "scales": [
+        {
+          "name": "VIB",
+          "printed": [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5"
+          ],
+          "interpreted": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "status": "read_only_major_numbers"
+        }
+      ],
+      "status": "PRINTED_LABELS_TRANSCRIBED",
+      "geometryApproved": false,
+      "notes": "Numbers from source images or visual references. NOT verified tick coordinates. No inferred numeric limits activated."
+    },
+    {
+      "id": "eng.vibration.2",
+      "panel": "ENGINE",
+      "movement": "piecewise_arc",
+      "sourceHash": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "scales": [
+        {
+          "name": "VIB",
+          "printed": [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5"
+          ],
+          "interpreted": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "status": "read_only_major_numbers"
+        }
+      ],
+      "status": "PRINTED_LABELS_TRANSCRIBED",
+      "geometryApproved": false,
+      "notes": "Numbers from source images or visual references. NOT verified tick coordinates. No inferred numeric limits activated."
+    },
+    {
+      "id": "eng.hyd_pressure.a",
+      "panel": "ENGINE",
+      "movement": "piecewise_arc_colored_limits",
+      "sourceHash": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "scales": [
+        {
+          "name": "HYD",
+          "printed": [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4"
+          ],
+          "interpreted": [
+            0,
+            1,
+            2,
+            3,
+            4
+          ],
+          "status": "x1000_psi"
+        }
+      ],
+      "status": "PRINTED_LABELS_TRANSCRIBED",
+      "geometryApproved": false,
+      "notes": "Numbers from source images or visual references. NOT verified tick coordinates. No inferred numeric limits activated."
+    },
+    {
+      "id": "eng.hyd_pressure.b",
+      "panel": "ENGINE",
+      "movement": "piecewise_arc_colored_limits",
+      "sourceHash": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "scales": [
+        {
+          "name": "HYD",
+          "printed": [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4"
+          ],
+          "interpreted": [
+            0,
+            1,
+            2,
+            3,
+            4
+          ],
+          "status": "x1000_psi"
+        }
+      ],
+      "status": "PRINTED_LABELS_TRANSCRIBED",
+      "geometryApproved": false,
+      "notes": "Numbers from source images or visual references. NOT verified tick coordinates. No inferred numeric limits activated."
+    },
+    {
+      "id": "fo.flap_position",
+      "panel": "FO-INNER",
+      "movement": "two_independent_pointers_one_scale",
+      "sourceHash": "171bf9e8d21347e7a522ebc86b19cfe0b967f0503d26c483d8f3d685f719576a",
+      "scales": [
+        {
+          "name": "flap",
+          "printed": [
+            "UP",
+            "1",
+            "2",
+            "5",
+            "10",
+            "15",
+            "25",
+            "30",
+            "40"
+          ],
+          "interpreted": [
+            0,
+            1,
+            2,
+            5,
+            10,
+            15,
+            25,
+            30,
+            40
+          ],
+          "status": "nonuniform_not_simple_linear"
+        }
+      ],
+      "status": "PRINTED_LABELS_TRANSCRIBED",
+      "geometryApproved": false,
+      "notes": "Numbers from source images or visual references. NOT verified tick coordinates. No inferred numeric limits activated."
+    },
+    {
+      "id": "fo.hyd_brake_pressure",
+      "panel": "FO-INNER",
+      "movement": "piecewise_arc_colored_limits",
+      "sourceHash": "171bf9e8d21347e7a522ebc86b19cfe0b967f0503d26c483d8f3d685f719576a",
+      "scales": [
+        {
+          "name": "brake_pressure",
+          "printed": [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4"
+          ],
+          "interpreted": [
+            0,
+            1,
+            2,
+            3,
+            4
+          ],
+          "status": "x1000_psi"
+        }
+      ],
+      "status": "PRINTED_LABELS_TRANSCRIBED",
+      "geometryApproved": false,
+      "notes": "Numbers from source images or visual references. NOT verified tick coordinates. No inferred numeric limits activated."
+    },
+    {
+      "id": "fo.airspeed",
+      "panel": "FO-INNER",
+      "movement": "nonlinear_airspeed_arc",
+      "sourceHash": "171bf9e8d21347e7a522ebc86b19cfe0b967f0503d26c483d8f3d685f719576a",
+      "scales": [
+        {
+          "name": "IAS",
+          "printed": [
+            "0",
+            "80",
+            "100",
+            "120",
+            "140",
+            "160",
+            "180",
+            "200",
+            "250",
+            "300",
+            "350",
+            "400"
+          ],
+          "interpreted": [
+            0,
+            80,
+            100,
+            120,
+            140,
+            160,
+            180,
+            200,
+            250,
+            300,
+            350,
+            400
+          ],
+          "status": "printed_major_numbers_only"
+        }
+      ],
+      "status": "PRINTED_LABELS_TRANSCRIBED",
+      "geometryApproved": false,
+      "notes": "Numbers from source images or visual references. NOT verified tick coordinates. No inferred numeric limits activated."
+    },
+    {
+      "id": "fo.rmi",
+      "panel": "FO-INNER",
+      "movement": "rotating_compass_card_with_two_bearing_pointers",
+      "sourceHash": "171bf9e8d21347e7a522ebc86b19cfe0b967f0503d26c483d8f3d685f719576a",
+      "scales": [
+        {
+          "name": "compass_card",
+          "printed": [
+            "0",
+            "3",
+            "6",
+            "9",
+            "12",
+            "15",
+            "18",
+            "21",
+            "24",
+            "27",
+            "30",
+            "33"
+          ],
+          "interpreted": [
+            0,
+            30,
+            60,
+            90,
+            120,
+            150,
+            180,
+            210,
+            240,
+            270,
+            300,
+            330
+          ],
+          "status": "rotating_card_two_independent_bearing_pointers"
+        }
+      ],
+      "status": "PRINTED_LABELS_TRANSCRIBED",
+      "geometryApproved": false,
+      "notes": "Numbers from source images or visual references. NOT verified tick coordinates. No inferred numeric limits activated."
+    },
+    {
+      "id": "fo.left_linear",
+      "panel": "FO-INNER",
+      "movement": "linear_indicator",
+      "sourceHash": "171bf9e8d21347e7a522ebc86b19cfe0b967f0503d26c483d8f3d685f719576a",
+      "scales": [
+        {
+          "name": "LEFT",
+          "printed": [
+            "0",
+            "2",
+            "4",
+            "6",
+            "8",
+            "10"
+          ],
+          "interpreted": [
+            0,
+            2,
+            4,
+            6,
+            8,
+            10
+          ],
+          "status": "indicator_identity_pending"
+        }
+      ],
+      "status": "PRINTED_LABELS_TRANSCRIBED",
+      "geometryApproved": false,
+      "notes": "Numbers from source images or visual references. NOT verified tick coordinates. No inferred numeric limits activated."
+    },
+    {
+      "id": "fo.right_linear",
+      "panel": "FO-INNER",
+      "movement": "linear_indicator",
+      "sourceHash": "171bf9e8d21347e7a522ebc86b19cfe0b967f0503d26c483d8f3d685f719576a",
+      "scales": [
+        {
+          "name": "RIGHT",
+          "printed": [
+            "0",
+            "2",
+            "4",
+            "6",
+            "8",
+            "10"
+          ],
+          "interpreted": [
+            0,
+            2,
+            4,
+            6,
+            8,
+            10
+          ],
+          "status": "indicator_identity_pending"
+        }
+      ],
+      "status": "PRINTED_LABELS_TRANSCRIBED",
+      "geometryApproved": false,
+      "notes": "Numbers from source images or visual references. NOT verified tick coordinates. No inferred numeric limits activated."
+    },
+    {
+      "id": "fo.outer_altimeter",
+      "panel": "FO-OUTER",
+      "movement": "multi_turn_altimeter_and_counters",
+      "sourceHash": "b2439666f75ddbcab15835b532d26a7ad2d1ab669be5f48774d656c1b8915a3c",
+      "scales": [
+        {
+          "name": "altitude_card",
+          "printed": [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9"
+          ],
+          "interpreted": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "status": "cyclic_turn_pointers_not_verified"
+        }
+      ],
+      "status": "PRINTED_LABELS_TRANSCRIBED",
+      "geometryApproved": false,
+      "notes": "Numbers from source images or visual references. NOT verified tick coordinates. No inferred numeric limits activated."
+    },
+    {
+      "id": "fo.outer_vertical_speed",
+      "panel": "FO-OUTER",
+      "movement": "signed_bidirectional_around_zero",
+      "sourceHash": "b2439666f75ddbcab15835b532d26a7ad2d1ab669be5f48774d656c1b8915a3c",
+      "scales": [
+        {
+          "name": "vertical_speed",
+          "printed": [
+            "0",
+            "1",
+            "2",
+            "4",
+            "6",
+            "-1",
+            "-2",
+            "-4",
+            "-6"
+          ],
+          "interpreted": [
+            0,
+            1,
+            2,
+            4,
+            6,
+            -1,
+            -2,
+            -4,
+            -6
+          ],
+          "status": "signed_nonlinear_two_branch"
+        }
+      ],
+      "status": "PRINTED_LABELS_TRANSCRIBED",
+      "geometryApproved": false,
+      "notes": "Numbers from source images or visual references. NOT verified tick coordinates. No inferred numeric limits activated."
+    },
+    {
+      "id": "fo.outer_clock",
+      "panel": "FO-OUTER",
+      "movement": "multi_hand_clock",
+      "sourceHash": "b2439666f75ddbcab15835b532d26a7ad2d1ab669be5f48774d656c1b8915a3c",
+      "scales": [
+        {
+          "name": "clock",
+          "printed": [
+            "0",
+            "10",
+            "20",
+            "30",
+            "40",
+            "50"
+          ],
+          "interpreted": [
+            0,
+            10,
+            20,
+            30,
+            40,
+            50
+          ],
+          "status": "time_cyclic_multiple_hands"
+        }
+      ],
+      "status": "PRINTED_LABELS_TRANSCRIBED",
+      "geometryApproved": false,
+      "notes": "Numbers from source images or visual references. NOT verified tick coordinates. No inferred numeric limits activated."
+    },
+    {
+      "id": "ped.stab_trim.left",
+      "panel": "THROTTLE",
+      "movement": "signed_linear_travel",
+      "sourceHash": "e533f907b3826dbf8fc986812b9045c2ef8980f93133ce85b859e9b9d7ab0030",
+      "scales": [
+        {
+          "name": "trim",
+          "printed": [
+            "0",
+            "-5",
+            "-10",
+            "-15",
+            "+5",
+            "+15"
+          ],
+          "interpreted": [],
+          "status": "mixed_ND_UP_section_requires_measured_divisions"
+        }
+      ],
+      "status": "PRINTED_LABELS_TRANSCRIBED",
+      "geometryApproved": false,
+      "notes": "Numbers from source images or visual references. NOT verified tick coordinates. No inferred numeric limits activated."
+    },
+    {
+      "id": "ped.stab_trim.right",
+      "panel": "THROTTLE",
+      "movement": "signed_linear_travel",
+      "sourceHash": "e533f907b3826dbf8fc986812b9045c2ef8980f93133ce85b859e9b9d7ab0030",
+      "scales": [
+        {
+          "name": "trim",
+          "printed": [
+            "0",
+            "-5",
+            "-10",
+            "-15",
+            "+5",
+            "+15"
+          ],
+          "interpreted": [],
+          "status": "mixed_ND_UP_section_requires_measured_divisions"
+        }
+      ],
+      "status": "PRINTED_LABELS_TRANSCRIBED",
+      "geometryApproved": false,
+      "notes": "Numbers from source images or visual references. NOT verified tick coordinates. No inferred numeric limits activated."
+    },
+    {
+      "id": "ped.rudder_trim",
+      "panel": "RADIO",
+      "movement": "signed_linear_travel",
+      "sourceHash": "7a41044771faad1d59f509c05ed2508f75c79fde219ee9ec19696f8fb19ed533",
+      "scales": [
+        {
+          "name": "rudder_trim",
+          "printed": [
+            "15",
+            "10",
+            "5",
+            "0",
+            "5",
+            "10",
+            "15"
+          ],
+          "interpreted": [
+            -15,
+            -10,
+            -5,
+            0,
+            5,
+            10,
+            15
+          ],
+          "status": "left_vs_right_sign_interpreted"
+        }
+      ],
+      "status": "PRINTED_LABELS_TRANSCRIBED",
+      "geometryApproved": false,
+      "notes": "Numbers from source images or visual references. NOT verified tick coordinates. No inferred numeric limits activated."
+    }
+  ]
+}
