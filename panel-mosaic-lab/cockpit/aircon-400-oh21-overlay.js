@@ -36,9 +36,15 @@
  function renderLeft(){
   if(!left)return;
   const sprite=left.querySelector('.toggle-sprite');
-  const defs=window.B737OverheadToggles?.getRegistry()?.assets||{};
+  const reference=window.B737OverheadToggles?.getRegistry()||{};
+  const defs=reference.assets||{},small=reference.visualFamilies?.Small;
   const frame=leftValue==='OFF'?3:4,down=frame===4,definition=defs[down?'vertical-off':'vertical-on'];
-  if(sprite&&definition){
+  if(sprite&&small){
+   // The 737-400 L and R RECIRC FAN use precisely the same fixed-bezel Small atlas.
+   sprite.style.backgroundImage='url("'+new URL('../interactive-overhead/'+small.asset,document.baseURI).href+'")';
+   sprite.style.backgroundSize='500% 100%';
+   sprite.style.backgroundPosition=frame*25+'% 50%';
+  }else if(sprite&&definition){
    sprite.style.backgroundImage='url("'+new URL('../interactive-overhead/'+definition.url,document.baseURI).href+'")';
    sprite.style.backgroundSize=down?'100% 100%':'500% 100%';
    sprite.style.backgroundPosition=down?'50% 50%':frame*25+'% 50%';
@@ -71,7 +77,7 @@
   // Reuse the approved physical toggle artwork/size, not a new unrelated switch.
   left=right.cloneNode(true);
   left.id='toggle-recirc-fan-l-400';left.dataset.control='recirc-fan-l';
-  left.classList.add('aircon400-left-recirculation');
+  left.classList.add('aircon400-left-recirculation');left.dataset.visualFamily='Small';
   left.title='L RECIRC FAN — OFF / AUTO';
   Object.assign(left.style,{left:point.x+'px',top:point.y+'px'});
   left.addEventListener('pointerdown',e=>{e.stopPropagation();e.preventDefault();});

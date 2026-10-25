@@ -85,9 +85,9 @@
   button.addEventListener('blur',()=>{if(drag&&c.mode==='detent')engine.setRotary(c.id,drag.start,'cancel-blur');drag=null;button.classList.remove('dragging');render(c);});
  }
  function rotary(c,p){
-  const b=document.createElement('button');b.type='button';b.className='mounted-rotary'+(c.mode==='detent'?' detent-motion':'');b.dataset.control=c.id;b.setAttribute('role','slider');b.setAttribute('aria-valuemin',String(c.mode==='continuous'?c.min:0));b.setAttribute('aria-valuemax',String(c.mode==='continuous'?c.max:c.states.length-1));b.title=c.label;
+  const b=document.createElement('button');b.type='button';b.className='mounted-rotary'+(c.mode==='detent'?' detent-motion':'');b.dataset.control=c.id;b.dataset.visualSize=c.visualSize||'Standard';b.setAttribute('role','slider');b.setAttribute('aria-valuemin',String(c.mode==='continuous'?c.min:0));b.setAttribute('aria-valuemax',String(c.mode==='continuous'?c.max:c.states.length-1));b.title=c.label;
   Object.assign(b.style,{left:p.x+'px',top:p.y+'px',width:(p.diameter*1.10)+'px',height:(p.diameter*1.25)+'px'});
-  const pic=document.createElement('img'),isCustom=Boolean(c.imageAspect),w=isCustom?p.diameter*1.5*(c.renderScale||1):p.diameter*288/204,h=isCustom?w/c.imageAspect:w*279/288;
+  const pic=document.createElement('img'),isCustom=Boolean(c.imageAspect),w=(isCustom?p.diameter*1.5:p.diameter*288/204)*(c.renderScale||1),h=isCustom?w/c.imageAspect:w*279/288;
   pic.className='rotary-picture';if(window.B737ImageLoader)window.B737ImageLoader.assign(pic,url(registry.assets[c.asset].url));else pic.src=url(registry.assets[c.asset].url);pic.alt='';pic.draggable=false;
   const pivot=c.visualPivot||[.5,.44];
   Object.assign(pic.style,{left:'calc(50% - '+(w*pivot[0])+'px)',top:'calc(50% - '+(h*pivot[1])+'px)',width:w+'px',height:h+'px',transformOrigin:(pivot[0]*100)+'% '+(pivot[1]*100)+'%'});

@@ -45,3 +45,16 @@ console.log('PASS 58 overhead controls, five user reference sprites, centered be
 assert.ok(app.includes("const down=frame===4;"),'DOWN must use standalone aligned reference, not miscentered old atlas frame');
 assert.ok(app.includes("sprite.style.backgroundSize=down?'100% 100%':'500% 100%'"),'other 4 poses remain unchanged');
 console.log('PASS TGL-NEWREF-0002: DOWN aligned, 4 other poses preserved.');
+
+const smallToggleIds=["alternate-flaps-position","yaw-damper","drive-temp-rise","galley","wing-anti-ice","window-l-side","window-l-fwd","window-r-fwd","window-r-side","window-power-test","pitot-a","pitot-b","recirc-fan","runway-turnoff-l","runway-turnoff-r","taxi","logo","strobe","anti-collision","wing-lights","wheel-well"];
+assert.equal(registry.visualProfileVersion,'OVERHEAD-SMALL-001');
+assert.equal(registry.visualFamilies.Small.name,'Small White');
+assert.deepEqual(registry.visualFamilies.Small.frameOrder,['LEFT','CENTER','RIGHT','UP','DOWN']);
+assert.equal(registry.controls.filter(c=>c.visualFamily==='Small').length,21);
+for(const c of registry.controls)assert.equal(c.visualFamily||'Standard',smallToggleIds.includes(c.id)?'Small':'Standard',c.id+' family');
+const smallAtlas=fs.readFileSync(path.resolve(__dirname,registry.visualFamilies.Small.asset));
+assert.equal(smallAtlas.subarray(0,4).toString('ascii'),'RIFF');
+assert.equal(crypto.createHash('sha256').update(smallAtlas).digest('hex'),registry.visualFamilies.Small.sha256);
+assert.ok(app.includes("if(c.visualFamily==='Small')"));
+assert.ok(app.includes("sprite.style.backgroundSize='500% 100%'"));
+console.log('PASS Small White: 21 selected toggles, remaining 37 Standard, unaltered calibrated pivots.');

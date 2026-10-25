@@ -46,3 +46,12 @@ const saved=e.snapshot();saved.guards['alternate-flaps-master']={guard:'closed',
 for(const a of Object.values(reg.assets)){const bytes=fs.readFileSync(path.resolve(__dirname,a.url));assert.equal(crypto.createHash('sha256').update(bytes).digest('hex'),a.sha256);}
 e.reset();for(const c of reg.rotaries)assert.equal(e.rotary(c.id),c.default);for(const c of reg.guards)assert.deepEqual(e.guard(c.id),c.default);
 console.log('PASS: 18 fixed-pivot rotaries, ranges/wrap/detents; 10 guards, closed gating and per-control close policies; Alternate Flaps interlock; safe restore; 9 approved asset hashes.');
+
+const smallRotaryIds=['engine-start-1','engine-start-2','ignition-source'];
+for(const c of reg.rotaries){
+ assert.equal(c.visualSize||'Standard',smallRotaryIds.includes(c.id)?'Small':'Standard',c.id+' rotary size');
+ if(smallRotaryIds.includes(c.id))assert.ok(c.renderScale>0&&c.renderScale<1,c.id+' compact picture');
+}
+const rotaryView=fs.readFileSync(path.join(__dirname,'rotary-guards.js'),'utf8');
+assert.ok(rotaryView.includes('*(c.renderScale||1)'),'Small rotary images must honor render scale');
+console.log('PASS Small rotary art for both engine start selectors and ignition, detents unchanged.');

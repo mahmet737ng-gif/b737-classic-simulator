@@ -63,7 +63,8 @@
       "springReturn": {
         "UP": "OFF",
         "DOWN": "OFF"
-      }
+      },
+      "visualFamily": "Small"
     },
     {
       "id": "yaw-damper",
@@ -81,7 +82,8 @@
         "ON"
       ],
       "default": "ON",
-      "basis": "owner guide image; mounted at existing socket in locked source"
+      "basis": "owner guide image; mounted at existing socket in locked source",
+      "visualFamily": "Small"
     },
     {
       "id": "vhf-nav",
@@ -264,7 +266,8 @@
         "ON"
       ],
       "default": "ON",
-      "basis": "owner guide image; mounted at existing socket in locked source"
+      "basis": "owner guide image; mounted at existing socket in locked source",
+      "visualFamily": "Small"
     },
     {
       "id": "drive-temp-rise",
@@ -282,7 +285,8 @@
         "TEMP"
       ],
       "default": "TEMP",
-      "basis": "owner guide image; mounted at existing socket in locked source"
+      "basis": "owner guide image; mounted at existing socket in locked source",
+      "visualFamily": "Small"
     },
     {
       "id": "ground-power",
@@ -484,7 +488,8 @@
         "ON"
       ],
       "default": "OFF",
-      "basis": "owner guide image; mounted at existing socket in locked source"
+      "basis": "owner guide image; mounted at existing socket in locked source",
+      "visualFamily": "Small"
     },
     {
       "id": "window-l-fwd",
@@ -502,7 +507,8 @@
         "ON"
       ],
       "default": "OFF",
-      "basis": "owner guide image; mounted at existing socket in locked source"
+      "basis": "owner guide image; mounted at existing socket in locked source",
+      "visualFamily": "Small"
     },
     {
       "id": "window-r-fwd",
@@ -520,7 +526,8 @@
         "ON"
       ],
       "default": "OFF",
-      "basis": "owner guide image; mounted at existing socket in locked source"
+      "basis": "owner guide image; mounted at existing socket in locked source",
+      "visualFamily": "Small"
     },
     {
       "id": "window-r-side",
@@ -538,7 +545,8 @@
         "ON"
       ],
       "default": "OFF",
-      "basis": "owner guide image; mounted at existing socket in locked source"
+      "basis": "owner guide image; mounted at existing socket in locked source",
+      "visualFamily": "Small"
     },
     {
       "id": "window-power-test",
@@ -561,7 +569,8 @@
       "springReturn": {
         "OVHT": "OFF",
         "PWR TEST": "OFF"
-      }
+      },
+      "visualFamily": "Small"
     },
     {
       "id": "pitot-a",
@@ -579,7 +588,8 @@
         "ON"
       ],
       "default": "OFF",
-      "basis": "owner guide image; mounted at existing socket in locked source"
+      "basis": "owner guide image; mounted at existing socket in locked source",
+      "visualFamily": "Small"
     },
     {
       "id": "pitot-b",
@@ -597,7 +607,8 @@
         "ON"
       ],
       "default": "OFF",
-      "basis": "owner guide image; mounted at existing socket in locked source"
+      "basis": "owner guide image; mounted at existing socket in locked source",
+      "visualFamily": "Small"
     },
     {
       "id": "wing-anti-ice",
@@ -615,7 +626,8 @@
         "ON"
       ],
       "default": "OFF",
-      "basis": "owner guide image; mounted at existing socket in locked source"
+      "basis": "owner guide image; mounted at existing socket in locked source",
+      "visualFamily": "Small"
     },
     {
       "id": "engine-anti-ice-1",
@@ -741,7 +753,8 @@
         "AUTO"
       ],
       "default": "AUTO",
-      "basis": "owner guide image; mounted at existing socket in locked source"
+      "basis": "owner guide image; mounted at existing socket in locked source",
+      "visualFamily": "Small"
     },
     {
       "id": "pack-l",
@@ -967,7 +980,8 @@
         "ON"
       ],
       "default": "ON",
-      "basis": "owner guide image; mounted at existing socket in locked source"
+      "basis": "owner guide image; mounted at existing socket in locked source",
+      "visualFamily": "Small"
     },
     {
       "id": "runway-turnoff-r",
@@ -985,7 +999,8 @@
         "ON"
       ],
       "default": "ON",
-      "basis": "owner guide image; mounted at existing socket in locked source"
+      "basis": "owner guide image; mounted at existing socket in locked source",
+      "visualFamily": "Small"
     },
     {
       "id": "taxi",
@@ -1003,7 +1018,8 @@
         "ON"
       ],
       "default": "ON",
-      "basis": "owner guide image; mounted at existing socket in locked source"
+      "basis": "owner guide image; mounted at existing socket in locked source",
+      "visualFamily": "Small"
     },
     {
       "id": "apu-start",
@@ -1043,7 +1059,8 @@
         "ON"
       ],
       "default": "ON",
-      "basis": "owner guide image; mounted at existing socket in locked source"
+      "basis": "owner guide image; mounted at existing socket in locked source",
+      "visualFamily": "Small"
     },
     {
       "id": "strobe",
@@ -1061,7 +1078,8 @@
         "ON"
       ],
       "default": "ON",
-      "basis": "owner guide image; mounted at existing socket in locked source"
+      "basis": "owner guide image; mounted at existing socket in locked source",
+      "visualFamily": "Small"
     },
     {
       "id": "position-lights",
@@ -1098,7 +1116,8 @@
         "ON"
       ],
       "default": "ON",
-      "basis": "owner guide image; mounted at existing socket in locked source"
+      "basis": "owner guide image; mounted at existing socket in locked source",
+      "visualFamily": "Small"
     },
     {
       "id": "wing-lights",
@@ -1116,7 +1135,8 @@
         "ON"
       ],
       "default": "ON",
-      "basis": "owner guide image; mounted at existing socket in locked source"
+      "basis": "owner guide image; mounted at existing socket in locked source",
+      "visualFamily": "Small"
     },
     {
       "id": "wheel-well",
@@ -1134,7 +1154,8 @@
         "ON"
       ],
       "default": "ON",
-      "basis": "owner guide image; mounted at existing socket in locked source"
+      "basis": "owner guide image; mounted at existing socket in locked source",
+      "visualFamily": "Small"
     }
   ],
   "logicScope": "Control detents and visual interaction only; aircraft-system effects are not connected.",
@@ -1157,5 +1178,23 @@
     "targetDiameterPx": 390,
     "source": "vintage_toggle_switch_down_position.png",
     "scope": "DOWN artwork only, all logical positions unchanged"
-  }
+  },
+  "visualFamilies": {
+    "Small": {
+      "name": "Small White",
+      "asset": "../../shared-assets/toggle-switch-small/Small_White_5Positions.webp",
+      "sha256": "80c18ea4ae805f05a29e5a3e1f7a72c6c0b38510caba230fd4efcb0908880741",
+      "frameOrder": [
+        "LEFT",
+        "CENTER",
+        "RIGHT",
+        "UP",
+        "DOWN"
+      ],
+      "cellPx": 1024,
+      "bezelPx": 390,
+      "mountPolicy": "Same calibrated metal bezel and pivot as Standard; only switch sprite differs."
+    }
+  },
+  "visualProfileVersion": "OVERHEAD-SMALL-001"
 }

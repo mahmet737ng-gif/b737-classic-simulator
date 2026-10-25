@@ -18,10 +18,19 @@
   if(sprite&&index>=0){
    const frame=poseFrames(c)[index];
    const down=frame===4;
-   const asset=registry.assets[down?'vertical-off':'vertical-on'];
-   sprite.style.backgroundImage='url("'+localURL(asset.url)+'")';
-   sprite.style.backgroundSize=down?'100% 100%':'500% 100%';
-   sprite.style.backgroundPosition=down?'50% 50%':(frame*25)+'% 50%';
+   if(c.visualFamily==='Small'){
+    // Five top-down poses share the exact fixed metal bezel and pivot.
+    const small=registry.visualFamilies.Small;
+    sprite.style.backgroundImage='url("'+localURL(small.asset)+'")';
+    sprite.style.backgroundSize='500% 100%';
+    sprite.style.backgroundPosition=(frame*25)+'% 50%';
+   }else{
+    // Locked Standard uses its individually corrected DOWN reference.
+    const asset=registry.assets[down?'vertical-off':'vertical-on'];
+    sprite.style.backgroundImage='url("'+localURL(asset.url)+'")';
+    sprite.style.backgroundSize=down?'100% 100%':'500% 100%';
+    sprite.style.backgroundPosition=down?'50% 50%':(frame*25)+'% 50%';
+   }
   }
   if(active===c.id){byId('toggleState').textContent=value;for(const b of byId('toggleStates').children){b.classList.toggle('active',b.dataset.state===value);b.disabled=interlocks.get(c.id)===false;}}
  }
@@ -83,7 +92,7 @@
   const placements=new Map(layout.placements.map(p=>[p.id,p]));
   for(const c of registry.controls){
    const p=model.mapPoint(c,placements.get(c.placementId)),button=document.createElement('button');
-   button.type='button';button.className='mounted-toggle';button.id='toggle-'+c.id;button.dataset.control=c.id;button.dataset.axis=c.axis;button.dataset.placement=c.placementId;
+   button.type='button';button.className='mounted-toggle';button.id='toggle-'+c.id;button.dataset.control=c.id;button.dataset.axis=c.axis;button.dataset.placement=c.placementId;button.dataset.visualFamily=c.visualFamily||'Standard';
    button.setAttribute('role','slider');button.setAttribute('aria-orientation',c.axis);button.setAttribute('aria-valuemin','0');button.setAttribute('aria-valuemax',String(c.states.length-1));button.title=c.label;
    Object.assign(button.style,{left:p.x+'px',top:p.y+'px',width:(p.diameter*1.65)+'px',height:(p.diameter*1.65)+'px'});
    // The nut center sits exactly at the existing, unmodified socket pivot.
@@ -91,7 +100,7 @@
    sprite.className='toggle-sprite';sprite.setAttribute('aria-hidden','true');
    const fullSize=p.diameter*SPRITE_CELL/SPRITE_BEZEL;
    Object.assign(sprite.style,{width:fullSize+'px',height:fullSize+'px',
-     backgroundImage:'url("'+localURL(registry.assets['vertical-on'].url)+'")'});
+     backgroundImage:'url("'+localURL(c.visualFamily==='Small'?registry.visualFamilies.Small.asset:registry.assets['vertical-on'].url)+'")'});
    button.append(sprite);
    layer.append(button);nodes.set(c.id,button);bind(c,button);refreshOne(c);
   }
