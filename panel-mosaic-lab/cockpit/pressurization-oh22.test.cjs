@@ -60,6 +60,23 @@ assert.deepEqual(readouts['landing-display'],[.32,.498]);
 assert.ok(d.lamps.every(l=>Math.abs(l.xy[1]-.043)<.002),'DCPCS faces must align with photographed lamp row, not fall below housings');
 assert.ok(c.lamps.every(l=>Math.abs(l.xy[1]-.056)<.002),'CPCS has its OWN higher/deeper lamp row calibration');
 assert.notEqual(d.lampFaceCalibration.asset,c.lampFaceCalibration.asset,'CPCS/DCPCS must never share source-specific calibration');
+
+// Each installation owns its own visual fit and all added faces must remain
+// inside their photographed bezel without colliding with the next aperture.
+for(const id of ['CPCS','DCPCS']){
+ const cfg=oh22.config(id);
+ assert.ok(cfg.lampFit.x>1&&cfg.lampFit.y>1,id+' lamp face must grow');
+ for(const knob of cfg.controls.filter(x=>x.appearance!=='hotspot')){
+  assert.ok(cfg.controlFit[knob.id]>=.12, id+' '+knob.id+' must use its fitted aperture');
+ }
+ const expanded=cfg.lamps.map(l=>({x:l.face[0],y:l.face[1],w:l.face[2]*cfg.lampFit.x,h:l.face[3]*cfg.lampFit.y}));
+ expanded.forEach((f,i)=>{
+  assert.ok(f.x-f.w/2>=0&&f.x+f.w/2<=1&&f.y-f.h/2>=0&&f.y+f.h/2<=1,id+' lamp fits inside panel');
+  if(i)assert.ok(expanded[i-1].x+expanded[i-1].w/2<f.x-f.w/2,id+' grown lamp faces must not touch');
+ });
+}
+assert.notDeepEqual(c.controlFit,d.controlFit,'Independent knob calibration is required');
+
 assert.deepEqual(oh22.lampFace('DCPCS','auto-fail'),[.219,.043,.157,.050]);
 assert.deepEqual(oh22.lampFace('CPCS','auto-fail'),[.233,.056,.159,.057]);
 assert.deepEqual(oh22.lampFace('DCPCS','manual'),[.782,.043,.153,.050]);
