@@ -138,7 +138,12 @@
    if(!received)return;
    const {state,output}=received,cfg=model.config(system);
    const values=model.lamps(system,output);
-   for(const l of cfg.lamps){const n=lamps.get(l.id);if(!n)continue;const lit=values[l.id];n.classList.toggle('on',lit);n.dataset.lit=String(lit);n.setAttribute('aria-label',l.label+' '+(lit?'ON':'OFF'));if(n.dataset.asset){const img=n.querySelector('img'),next=lampBase+n.dataset.asset+'_'+(lit?'ON':'OFF')+'.svg';if(img&&img.src!==next)img.src=next;}}
+   // The parent "test all lights" switch and the native overhead lamp-test
+   // must override BOTH CPCS and DCPCS annunciators without mutating either
+   // engine's real fault/logic state.
+   const lampTest=document.documentElement.classList.contains('cockpit-visual-test')||
+     window.B737OverheadLights?.getState?.()?.lampTest===true;
+   for(const l of cfg.lamps){const n=lamps.get(l.id);if(!n)continue;const lit=lampTest||values[l.id];n.classList.toggle('on',lit);n.dataset.lit=String(lit);n.setAttribute('aria-label',l.label+' '+(lit?'ON':'OFF'));if(n.dataset.asset){const img=n.querySelector('img'),next=lampBase+n.dataset.asset+'_'+(lit?'ON':'OFF')+'.svg';if(img&&img.src!==next)img.src=next;}}
    for(const c of cfg.controls){
      const n=controls.get(c.id);if(!n)continue;
      const value=model.readControl(system,c,state),label=n.querySelector('.oh22-control-value');
@@ -160,6 +165,7 @@
    }
    caption.textContent=system+'  ·  '+(output.operatingMode||'UNKNOWN')+'  ·  '+(output.outflowCommand||output.outflow?.command||'NOT CALCULATED');
    layer.dataset.mode=output.operatingMode||'UNKNOWN';
+   layer.dataset.lampTest=String(lampTest);
  }
  function setSystem(next){
    if(next!=='CPCS'&&next!=='DCPCS')return;
@@ -168,6 +174,10 @@
    if(mount())build();
  }
  window.addEventListener('b737:pressure-configuration',event=>setSystem(event.detail?.system));
+ // Visual test is sourced from the cockpit toolbar; the native lamp test is
+ // sourced from the same overhead lamp controller as all other annunciators.
+ window.addEventListener('b737:pressure-light-test',()=>paint());
+ window.addEventListener('b737:overhead-light-state',()=>paint());
  window.addEventListener('storage',event=>{if(event.key===PROFILE_KEY)setSystem(savedSystem());});
  window.addEventListener('message',event=>{
    if(event.origin!==location.origin||event.source!==parent||event.data?.type!=='b737:cockpit-command')return;
