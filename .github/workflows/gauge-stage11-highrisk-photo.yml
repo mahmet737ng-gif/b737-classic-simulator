@@ -1,0 +1,34 @@
+name: Gauge high-risk native pixel and FO root-source QA
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'tools/gauge-stage11-highrisk-pixel-review-v2.py'
+      - 'engine/instruments/stage11-acceptance-matrix-v1.json'
+      - '.github/workflows/gauge-stage11-highrisk-photo.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  native-original-highrisk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install source-photo inspection libraries
+        run: python -m pip install opencv-python-headless numpy
+      - name: Verify original SHA/size and draw high-priority photo comparisons
+        run: python tools/gauge-stage11-highrisk-pixel-review-v2.py
+      - name: Check original approved Overhead hashes and locked artwork
+        run: python3 panel-mosaic-lab/verify-final-overhead.py
+      - name: Upload 15 native source photo annotated reviews
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: highrisk-15-native-pivots-and-FO-photo-provenance
+          path: |
+            reports/stage11-high-risk-native-evidence-v2.json
+            reports/stage11-high-risk-native-review/*.jpg
+          if-no-files-found: warn
