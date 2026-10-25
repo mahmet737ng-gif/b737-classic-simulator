@@ -3,14 +3,14 @@
  const model=window.B737FlightNeedlesModel,ns='http://www.w3.org/2000/svg';
  const state={captain:{},firstOfficer:{}};const blades={captain:{},firstOfficer:{}};const controls={captain:{},firstOfficer:{}};
  for(const station of Object.keys(state))for(const [key,def] of Object.entries(model.needles))state[station][key]=def.initialAngle;
- const images=Object.fromEntries(Object.entries(model.needles).map(([key,def])=>[key,new URL('./'+def.asset+'?v=FLN-0003',document.baseURI).href]));
+ const images=Object.fromEntries(Object.entries(model.needles).map(([key,def])=>[key,new URL('./'+def.asset+'?v=FLN-0004',document.baseURI).href]));
  function svg(parent,tag,attrs={}){const el=document.createElementNS(ns,tag);for(const [key,value]of Object.entries(attrs))el.setAttribute(key,String(value));parent.append(el);return el;}
  function paint(station,key){const blade=blades[station]?.[key],angle=state[station]?.[key];if(blade)blade.style.transform=`rotate(${angle}deg)`;const control=controls[station]?.[key];if(control){control.input.value=String(angle);control.output.textContent=`${angle}°`;}}
  function setAngle(station,key,value){if(!state[station]||!model.needles[key])throw Error('Unknown station or needle');const n=model.angle(value);state[station][key]=n;paint(station,key);return n;}
  function addNeedle(layer,station,key,gauge){
   const isRmi=key==='rmi1'||key==='rmi2';
   // Resize, but never redraw, the two photographed RMI assets. Both share the
-  // physical pivot and stop inside the digits on their own captain/F/O faces.
+  // physical pivot and touch the inner ends of the scale tick lines (not the numeral labels).
   const rmi=model.rmiRegistration;
   const rmiScale=(gauge.radius/rmi.sourceDialRadius)*rmi.placementScale;
   const group=isRmi

@@ -501,3 +501,16 @@ radii remain inherited from the locked atlas. The projected tips extend to
 approximately 44% of the registered dial radius, reaching the inner numeral
 boundary without obscuring digits or tick marks. Captain/F/O bearings still
 rotate independently. This remains a visual test, not a live NAV connection.
+
+## FLN-0004 — RMI needles reach the scale ticks, not the labels
+
+The owner clarified that the needle tips must touch the **inner ends of the
+white scale tick lines**, not stop inside the numeral ring. Measured from the
+latest zoomed Unified screenshot, the old pointer tip was roughly 180 px from
+the center; the scale-tick inner edge is approximately 260 px from the same
+center (screen coordinates at 2x crop magnification). The only runtime change
+is the RMI placement scale 0.57 → 0.835, producing a source-tip projection of
+0.6486 of the registered dial radius. Both white source assets remain byte-for-
+byte unchanged, retaining the *different* front/back profiles of the hollow
+RMI 2 pointer, and keeping each station and needle independently controlled.
+No frozen panel art, atlas coordinates, pivot, or non-RMI instrument changed.

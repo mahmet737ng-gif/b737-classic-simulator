@@ -15,8 +15,8 @@ assert.equal(model.angle(900),360);assert.throws(()=>model.angle(Infinity));
 const ui=fs.readFileSync(path.join(__dirname,'flight-needles-unified.js'),'utf8');
 assert.match(ui,/rmi2','rmi1/);assert.match(ui,/x:-rmi.referencePivot.x,y:-rmi.referencePivot.y/);assert.match(ui,/data-flight-needles/);
 const html=fs.readFileSync(path.join(__dirname,'index.html'),'utf8');
-assert.match(html,/flight-needles-model.js\?v=FLN-0003/);
-assert.match(html,/flight-needles-unified.js\?v=FLN-0003/);
+assert.match(html,/flight-needles-model.js\?v=FLN-0004/);
+assert.match(html,/flight-needles-unified.js\?v=FLN-0004/);
 
 // The original white RMI sprites are unchanged; verify registration and
 // safe radial reach for the separately-sized captain and F/O dials.
@@ -24,19 +24,19 @@ const rmi=model.rmiRegistration;
 assert.deepEqual(rmi.referencePivot,{x:216,y:218});
 assert.equal(rmi.sourceWidth,435);
 assert.equal(rmi.sourceHeight,436);
-assert.ok(rmi.placementScale>0.5 && rmi.placementScale<0.65);
+assert.ok(rmi.placementScale===0.835);
 for(const source of [model.sources.captain,model.sources.firstOfficerInner]){
  const gauge=source.gauges.rmi;
  const scale=gauge.radius/rmi.sourceDialRadius*rmi.placementScale;
  const projectedTipMax=scale*rmi.sourceMaxTipRadius;
- // 0.45 of the gauge registration radius is the surveyed blank margin
- // before the dial numerals; preserve a slight clearance for both needles.
- assert.ok(projectedTipMax<=gauge.radius*0.45,
-  'RMI tips must end at the inner edge, not on or past the numerals');
- assert.ok(projectedTipMax>=gauge.radius*0.42,
-  'RMI tips must not look truncated or sit too far from the numeral band');
+ // Reference measured in the owner's zoomed Unified screenshot:
+ // pointer reaches approximately 0.65 registered dial radii at the INNER
+ // END of the white scale ticks, outside the number band (never on labels).
+ const ratio=projectedTipMax/gauge.radius;
+ assert.ok(ratio>=0.64 && ratio<=0.66,
+  'RMI tip must touch the scale tick inner edge without crossing into tick/labels');
 }
 assert.match(ui,/const rmiScale=/);
 assert.match(ui,/model.rmiRegistration/);
 
-console.log('PASS: photographed ALT, VSI, clock, and RMI pointers registered at numeral inner edge mount on both stations.');
+console.log('PASS: photographed ALT, VSI, clock, and RMI pointers registered at scale tick inner edge mount on both stations.');
