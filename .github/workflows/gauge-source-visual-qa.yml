@@ -5,6 +5,7 @@ on:
     paths:
       - 'tools/gauge-source-visual-review.py'
       - 'tools/fuel-temperature-tick-scan.py'
+      - 'tools/gauge-zero-tip-radial-scan.py'
       - '.github/workflows/gauge-source-visual-qa.yml'
   workflow_dispatch:
 permissions:
@@ -24,3 +25,4 @@ jobs:
         run: |
           python3 tools/gauge-source-visual-review.py
           python3 tools/fuel-temperature-tick-scan.py
+          python3 tools/gauge-zero-tip-radial-scan.py
