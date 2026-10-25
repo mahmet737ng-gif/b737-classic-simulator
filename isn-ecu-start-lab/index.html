@@ -26,6 +26,7 @@ label{display:inline-flex;align-items:center;gap:5px;font-size:.92rem}input[type
 <button data-act="start1">ENG 1 START GRD</button><button data-act="idle1">ENG 1 LEVER IDLE</button><button data-act="off1">ENG 1 CUTOFF</button>
 <button data-act="start2">ENG 2 START GRD</button><button data-act="idle2">ENG 2 LEVER IDLE</button><button data-act="off2">ENG 2 CUTOFF</button>
 </div>
+<div id="errors" class="error" role="alert" aria-live="assertive"></div>
 <div class="engines" id="engines"></div></section>
 <section><h2>3. Simulation clock and thrust</h2>
 
@@ -37,7 +38,7 @@ label{display:inline-flex;align-items:center;gap:5px;font-size:.92rem}input[type
 <label>TO/GA/CON/CLB/CRZ <select id="mode"><option>CRZ</option><option>CLB</option><option>CON</option><option>GA</option><option>TO</option></select></label>
 <button data-act="n1plan">N1 Schedule ENG 1</button></div><div id="n1result" class="status">No thrust schedule applied</div></section>
 <section><h2>4. Abnormal tests</h2><div class="controls"><button data-act="oilPump1">ENG1 OIL PUMP FAIL</button><button data-act="oilFilter1">ENG1 FILTER RESTRICTED</button><button data-act="oilLeak1">ENG1 OIL LEAK</button><button data-act="hot1">Hot start ENG1 (before GRD)</button><button data-act="crossfeed">Crossfeed OPEN</button><button data-act="fuelLoss1">ENG1 FUEL SUPPLY LOST (trainer)</button></div>
-<div class="status" id="alertSummary">No active abnormal advisories</div><div id="errors" role="alert"></div></section>
+<div class="status" id="alertSummary">No active abnormal advisories</div></section>
 <section><h2>5. Trace and tank quantities</h2><div class="status" id="fuelStatus">Fuel tanks</div><pre id="log"></pre></section>
 <script src="../engine/systems/electrical-v7.js"></script>
 <script src="../engine/systems/electrical-loads-v8.js"></script>
