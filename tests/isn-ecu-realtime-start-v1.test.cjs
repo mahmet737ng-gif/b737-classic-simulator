@@ -1,5 +1,5 @@
 'use strict';
-// Source-faithful gates, owner-selected (not AFM verified) ~85s APU/~100s
+// Source-faithful gates, owner-selected (not AFM verified) ~85s APU/~65s
 // engine training timeline. Old ISN-03 remains in fast instructional mode.
 const assert=require('node:assert/strict');
 const B=require('../engine/integration/isn-13-18-ecu-testbench-v1');
@@ -17,8 +17,8 @@ const FuelRuntime=require('../engine/integration/isn-09-12-runtime-v1');
 const s=new B.Testbench({Electrical,Loads,TrainerCore,WarningEngine,Pneumatics,Pack,EngineAPU,Start,Chain,ThrustPlanner,FuelRuntime});
 assert.equal(s.get().timingProfile,'REALTIME_TRAINING');
 assert.equal(s.get().timing.apuReadyMs,85000);
-assert.equal(s.get().timing.engineMotoringMs,40000);
-assert.equal(s.get().timing.engineLightoffMs,50000);
+assert.equal(s.get().timing.engineMotoringMs,28000);
+assert.equal(s.get().timing.engineLightoffMs,37000);
 assert.equal(s.get().engines.engine1.phase,'OFF');
 s.battery(true);
 s.startAPU();
@@ -38,7 +38,7 @@ assert.equal(s.get().apu.generator.voltageV,115);
 assert.equal(s.get().apu.generator.frequencyHz,400);
 s.selectGenerator('APU',1);
 s.apuBleed(true);
-// Nominal 85s APU / 100s engine timing with booster pumps OFF:
+// Nominal 85s APU / 65s engine timing with booster pumps OFF:
 // procedural cue remains 25% N2 while engine-driven suction is available.
 s.engineStart('engine1');
 assert.equal(s.get().engines.engine1.phase,'MOTORING');
@@ -49,7 +49,7 @@ s.advance(20000);
 const earlyN2=s.get().engines.engine1.n2Percent;
 assert.ok(earlyN2>3&&earlyN2<25,'N2 must spool, not jump to 25');
 assert.ok(s.get().engines.engine1.n1Percent<7,'N1 initially low under starter is normal');
-s.advance(19999);
+s.advance(7999);
 assert.equal(s.get().engines.engine1.phase,'MOTORING');
 s.advance(1);
 assert.equal(s.get().engines.engine1.phase,'AWAIT_FUEL_LEVER_IDLE');
@@ -62,18 +62,18 @@ assert.equal(accepted.accepted,true);
 assert.equal(accepted.fuelAvailable,true);
 assert.equal(s.get().engines.engine1.phase,'LIGHT_OFF_SEQUENCE');
 assert.ok(s.get().engines.engine1.fuelFlowKgHr>0);
-s.advance(37500);
+s.advance(27750);
 assert.ok(s.get().engines.engine1.egtC>=615,'Nominal light-off EGT transient should approach 620C');
 assert.ok(s.get().engines.engine1.n2Percent>25);
 assert.equal(s.get().engines.engine1.phase,'LIGHT_OFF_SEQUENCE');
-s.advance(12499);
+s.advance(9249);
 assert.equal(s.get().engines.engine1.phase,'LIGHT_OFF_SEQUENCE');
 s.advance(1);
-assert.equal(s.get().engines.engine1.phase,'RUNNING','~90s total to RUNNING with timely lever');
+assert.equal(s.get().engines.engine1.phase,'RUNNING','~65s total to RUNNING with timely lever');
 assert.equal(s.get().engines.engine1.startValveOpen,false);
-assert.equal(s.get().engines.engine1.startElapsedSec,90);
-s.advance(10000);
-assert.equal(s.get().engines.engine1.startElapsedSec,100);
+assert.equal(s.get().engines.engine1.startElapsedSec,65);
+s.advance(8000);
+assert.equal(s.get().engines.engine1.startElapsedSec,73);
 assert.ok(Math.abs(s.get().engines.engine1.n1Percent-22)<1);
 assert.ok(Math.abs(s.get().engines.engine1.n2Percent-60)<1);
 assert.equal(s.get().engines.engine1.oil.lowPressureLamp,false);
@@ -82,4 +82,4 @@ assert.equal(s.get().engines.engine2.phase,'OFF');
 const compStart=new Chain.Chain(s.start,{timingProfile:'CLASSROOM_COMPRESSED'});
 assert.equal(compStart.timing.apuReadyMs,1400);
 assert.throws(()=>new Chain.Chain(s.start,{timingProfile:'BAD'}),/Unknown ISN timing profile/);
-console.log('PASS ECU SLOW START: APU 85s, engine N2 25% at 40s, fuel via main-tank suction without electric pumps, light-off EGT ~620C, starter cutout at ~90s, stable 22/60 by ~100s.');
+console.log('PASS ECU SLOW START: APU 85s, engine N2 25% at 28s, fuel via main-tank suction without electric pumps, light-off EGT ~620C, starter cutout at ~65s, stable 22/60 by ~73s.');
