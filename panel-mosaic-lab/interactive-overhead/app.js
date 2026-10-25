@@ -15,7 +15,14 @@
   button.setAttribute('aria-disabled',String(interlocks.get(c.id)===false));
   button.dataset.state=value;button.setAttribute('aria-valuenow',String(index));button.setAttribute('aria-valuetext',value);button.setAttribute('aria-label',c.label+' — '+value);
   const sprite=button.querySelector('.toggle-sprite');
-  if(sprite&&index>=0)sprite.style.backgroundPosition=(poseFrames(c)[index]*25)+'% 50%';
+  if(sprite&&index>=0){
+   const frame=poseFrames(c)[index];
+   const down=frame===4;
+   const asset=registry.assets[down?'vertical-off':'vertical-on'];
+   sprite.style.backgroundImage='url("'+localURL(asset.url)+'")';
+   sprite.style.backgroundSize=down?'100% 100%':'500% 100%';
+   sprite.style.backgroundPosition=down?'50% 50%':(frame*25)+'% 50%';
+  }
   if(active===c.id){byId('toggleState').textContent=value;for(const b of byId('toggleStates').children){b.classList.toggle('active',b.dataset.state===value);b.disabled=interlocks.get(c.id)===false;}}
  }
  function select(c){

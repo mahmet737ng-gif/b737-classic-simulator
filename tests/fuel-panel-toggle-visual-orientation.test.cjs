@@ -3,7 +3,8 @@ const fs=require('node:fs'),path=require('node:path'),assert=require('node:asser
 const dir=path.resolve(__dirname,'../fuel-panel'),css=fs.readFileSync(path.join(dir,'fuel-panel.css'),'utf8'),html=fs.readFileSync(path.join(dir,'index.html'),'utf8'),js=fs.readFileSync(path.join(dir,'fuel-panel.js'),'utf8');
 assert.equal((html.match(/class="toggle-visual"/g)||[]).length,6);
 assert.ok(css.includes('toggle-switch-newref-v1/b737-toggle-five-new-reference.webp'));
-assert.ok(css.includes('.toggle-visual.on::after{background-position:100% 50%}'));
+assert.ok(css.includes('toggle-switch-newref-v2/down-recentered.webp'));
+assert.ok(css.includes('.toggle-visual.on::after{background-image:url('));
 assert.ok(css.includes('.toggle-visual{display:block!important}'));
 assert.ok(js.includes("visual.classList.toggle('on'"));
 console.log('PASS: six pump switches use new user reference with existing pump state logic');

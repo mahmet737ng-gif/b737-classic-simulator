@@ -79,5 +79,5 @@ test('Visual reset preserves horizontal selector mechanics without any sprites',
  new vm.Script(js);
  assert.equal((html.match(/class="toggle selector"/g)||[]).length,3);
  assert.ok(!html.includes('class="nav-frame'));assert.ok(!html.includes('class="frame frame-'));
- assert.ok(css.includes('toggle-switch-newref-v1/b737-toggle-five-new-reference.webp'));assert.ok(css.includes('.toggle[data-position="left"]::after{background-position:0% 50%}'));assert.ok(css.includes('.toggle[data-position="up"]::after'));assert.ok(js.includes('pointermove')&&js.includes('setPointerCapture'));
+ assert.ok(css.includes('toggle-switch-newref-v1/b737-toggle-five-new-reference.webp'));assert.ok(css.includes('toggle-switch-newref-v2/down-recentered.webp'),'DOWN source registered');assert.ok(css.includes('.toggle[data-position="left"]::after{background-position:0% 50%}'));assert.ok(css.includes('.toggle[data-position="up"]::after'));assert.ok(js.includes('pointermove')&&js.includes('setPointerCapture'));
 });

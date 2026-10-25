@@ -295,3 +295,6 @@ body {
 .toggle-visual{display:block!important}
 .toggle-visual::after{content:"";position:absolute;left:50%;top:50%;width:210%;height:auto;aspect-ratio:1;transform:translate(-50%,-50%);pointer-events:none;background-image:url("../shared-assets/toggle-switch-newref-v1/b737-toggle-five-new-reference.webp");background-size:500% 100%;background-repeat:no-repeat;background-position:75% 50%;background-color:transparent;box-shadow:none;filter:none}
 .toggle-visual.on::after{background-position:100% 50%}
+
+/* TGL-NEWREF-0002: DOWN/ON uses calibrated, fully transparent source. */
+.toggle-visual.on::after{background-image:url("../shared-assets/toggle-switch-newref-v2/down-recentered.webp");background-size:100% 100%;background-position:50% 50%}

@@ -1,6 +1,6 @@
 {
   "schema": "b737.overhead-toggle-overlay.v1",
-  "version": "TGL-NEWREF-0001",
+  "version": "TGL-NEWREF-0002",
   "baseVersion": "UPD-0012-OVH-measured-seams",
   "baseLayout": "../all-overhead/atlas-layout.json",
   "baseSpec": "../all-overhead/spec.json",
@@ -11,9 +11,9 @@
   ],
   "assets": {
     "vertical-off": {
-      "url": "../../shared-assets/toggle-switch-newref-v1/b737-toggle-five-new-reference.webp",
-      "frame": 4,
-      "sha256": "3ad98aa39742d38caed990229efd7c5aa39d59ed9b1e5a2f967b5fcfec74ca55"
+      "url": "../../shared-assets/toggle-switch-newref-v2/down-recentered.webp",
+      "frame": 0,
+      "sha256": "3b71eb9632dd17a986e65f60d53fa468fbb34f1ebe02a635915aedde53fcc0b6"
     },
     "vertical-center": {
       "url": "../../shared-assets/toggle-switch-newref-v1/b737-toggle-five-new-reference.webp",
@@ -1143,5 +1143,19 @@
     "Spring return for generator/test controls is a simulator interaction assignment; no new FCOM validation claimed.",
     "Source artwork and frozen placement files are not modified."
   ],
-  "visualStatus": "USER_REFERENCE_INSTALLED"
+  "visualStatus": "USER_REFERENCE_INSTALLED_DOWN_ALIGNED",
+  "downPoseCalibration": {
+    "sourceNutCenter": [
+      625.5,
+      455.5
+    ],
+    "originalDiameterPx": 608,
+    "targetNutCenter": [
+      512,
+      512
+    ],
+    "targetDiameterPx": 390,
+    "source": "vintage_toggle_switch_down_position.png",
+    "scope": "DOWN artwork only, all logical positions unchanged"
+  }
 }

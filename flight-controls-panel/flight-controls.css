@@ -83,3 +83,6 @@ button{font:inherit;color:inherit;-webkit-tap-highlight-color:transparent;touch-
 .alt-arm .arm-switch{clip-path:none!important;overflow:visible!important}
 .alt-arm .arm-switch::after{background-position:75% 50%}
 .alt-arm[data-armed="true"] .arm-switch::after{background-position:100% 50%}
+
+/* TGL-NEWREF-0002: only DOWN is a separate, exactly centered image. */
+.toggle[data-position="down"]::after,.toggle[data-position="on"]::after,.alt-arm[data-armed="true"] .arm-switch::after{background-image:url("../shared-assets/toggle-switch-newref-v2/down-recentered.webp");background-size:100% 100%;background-position:50% 50%}
