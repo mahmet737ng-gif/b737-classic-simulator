@@ -1,0 +1,3767 @@
+{
+  "schema": "b737.stage11.instrument-acceptance-matrix.v1",
+  "created": "2026-10-25",
+  "aircraft": "B737-33V EP-FSI",
+  "scenarioResultUrl": "https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/40227687706",
+  "stage11Disposition": "SOURCE_SCENARIO_QA_PASS___ORIGINAL_IMAGE_PIXEL_CERTIFICATION_INCOMPLETE___RELEASE_BLOCKED",
+  "requirements": [
+    "Every main/minor stroke must be manually traced in native image source and all circle/shaft conflicts resolved",
+    "Value-to-angle must be signed off for each actual scale including dual rings and needle pointer shape",
+    "Every logical needle must have approved electrical/per-instrument power source and correct system source with units",
+    "Power loss, sensor fail, and startup dynamics must match approved reference per individual instrument",
+    "Unified screenshot and simulator-position flight tests are needed before user acceptance and release"
+  ],
+  "scenarioObservationsAreTrainingOnly": true,
+  "originalArtworkKeptImmutable": true,
+  "counts": {
+    "faces": 54,
+    "rotary": 49,
+    "linear": 5,
+    "highRisk": 15,
+    "mediumRisk": 14,
+    "normalRisk": 25,
+    "finalGeometricCalibration": 0,
+    "withCandidateNumericPreview": 6,
+    "logicalNeedles": 38,
+    "unapprovedSourceFeeds": 0,
+    "sourceProviderMappedChannels": 23,
+    "unmappedSourceChannels": 39,
+    "unknownPerGaugeElectricalFeeds": 54,
+    "ownerLockedSpriteIdentities": 5,
+    "sceneExamples": 12,
+    "scenarioAssertions": 10,
+    "operationalNeedlesReleased": 0
+  },
+  "faces": [
+    {
+      "id": "oh.fuel.temperature",
+      "panel": "OH09",
+      "kind": "rotary",
+      "priority": "normal",
+      "sourceOriginal": "panel-mosaic-lab/assets/locked/2026-10-23/OH09-FUEL-921977b56887.png",
+      "photoCandidateStrokes": 58,
+      "sourcePivotCandidate": {
+        "x": 506,
+        "y": 235,
+        "evidence": "gauge-survey-stage2-3.json",
+        "state": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "caseCircleCandidate": {
+        "x": 504,
+        "y": 225,
+        "radius": 166.76,
+        "centerDeltaPx": 10.2,
+        "radiusDeltaPx": 23.76,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "nativeGeometry": {
+        "pivotCertified": false,
+        "allTicksCertified": false,
+        "photoReviewReady": false
+      },
+      "numericScales": [
+        {
+          "mode": "primary",
+          "unit": "°C",
+          "photoNumberAnchors": 9,
+          "numericInterpolationPreviewReady": true,
+          "minorGraduationsCertified": false
+        }
+      ],
+      "pointers": [
+        {
+          "pointerId": "fuelTemperature",
+          "shapeLocked": true,
+          "responseMode": "first_order",
+          "sourceChannel": "primary",
+          "geometryAccepted": false,
+          "angleOffsetAccepted": false
+        }
+      ],
+      "systemChannels": [
+        {
+          "id": "primary",
+          "provider": null,
+          "path": null,
+          "unit": null,
+          "feedApproval": "UNKNOWN_LRU_BUS_WIRING"
+        }
+      ],
+      "stage11": {
+        "scenarioRegistryIncluded": true,
+        "actualVisualFlightTestAccepted": false,
+        "hasStandaloneOperationalSource": false,
+        "isReleased": false
+      },
+      "blockingReasons": [
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified",
+        "all_scale_major_and_minor_labels_not_signed",
+        "no_per-instrument_power_circuit_signoff",
+        "source_model_not_aircraft_certified",
+        "scenario_test_not_photo_signoff",
+        "candidate_numeric_scale_not_approved"
+      ],
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+    },
+    {
+      "id": "oh.elec.dc_amps",
+      "panel": "OH10",
+      "kind": "rotary",
+      "priority": "high",
+      "sourceOriginal": "panel-mosaic-lab/assets/locked/2026-10-23/OH10-ELEC-LOSSLESS-9a1ca4d6cfb2.png",
+      "photoCandidateStrokes": 31,
+      "sourcePivotCandidate": {
+        "x": 310,
+        "y": 192,
+        "evidence": "photo-anchor-checkpoints-v1.json",
+        "state": "optical_center_estimate_needs_confirmation"
+      },
+      "caseCircleCandidate": {
+        "x": 297.2,
+        "y": 192.6,
+        "radius": 189.32,
+        "centerDeltaPx": 12.81,
+        "radiusDeltaPx": 46.32,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "nativeGeometry": {
+        "pivotCertified": false,
+        "allTicksCertified": false,
+        "photoReviewReady": false
+      },
+      "numericScales": [
+        {
+          "mode": "primary",
+          "unit": "A",
+          "photoNumberAnchors": 3,
+          "numericInterpolationPreviewReady": true,
+          "minorGraduationsCertified": false
+        }
+      ],
+      "pointers": [
+        {
+          "pointerId": "dcAmps",
+          "shapeLocked": false,
+          "responseMode": "slew",
+          "sourceChannel": "primary",
+          "geometryAccepted": false,
+          "angleOffsetAccepted": false
+        }
+      ],
+      "systemChannels": [
+        {
+          "id": "primary",
+          "provider": null,
+          "path": null,
+          "unit": null,
+          "feedApproval": "UNKNOWN_LRU_BUS_WIRING"
+        }
+      ],
+      "stage11": {
+        "scenarioRegistryIncluded": true,
+        "actualVisualFlightTestAccepted": false,
+        "hasStandaloneOperationalSource": false,
+        "isReleased": false
+      },
+      "blockingReasons": [
+        "historical_pivot_disagreement",
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified",
+        "all_scale_major_and_minor_labels_not_signed",
+        "no_per-instrument_power_circuit_signoff",
+        "source_model_not_aircraft_certified",
+        "scenario_test_not_photo_signoff",
+        "candidate_numeric_scale_not_approved"
+      ],
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+    },
+    {
+      "id": "oh.elec.cps",
+      "panel": "OH10",
+      "kind": "rotary",
+      "priority": "high",
+      "sourceOriginal": "panel-mosaic-lab/assets/locked/2026-10-23/OH10-ELEC-LOSSLESS-9a1ca4d6cfb2.png",
+      "photoCandidateStrokes": 55,
+      "sourcePivotCandidate": {
+        "x": 780,
+        "y": 192,
+        "evidence": "photo-anchor-checkpoints-v1.json",
+        "state": "optical_center_estimate_needs_confirmation"
+      },
+      "caseCircleCandidate": {
+        "x": 776.8,
+        "y": 203.4,
+        "radius": 190.64,
+        "centerDeltaPx": 11.84,
+        "radiusDeltaPx": 47.64,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "nativeGeometry": {
+        "pivotCertified": false,
+        "allTicksCertified": false,
+        "photoReviewReady": false
+      },
+      "numericScales": [
+        {
+          "mode": "primary",
+          "unit": "Hz",
+          "photoNumberAnchors": 3,
+          "numericInterpolationPreviewReady": true,
+          "minorGraduationsCertified": false
+        }
+      ],
+      "pointers": [
+        {
+          "pointerId": "cps",
+          "shapeLocked": false,
+          "responseMode": "slew",
+          "sourceChannel": "primary",
+          "geometryAccepted": false,
+          "angleOffsetAccepted": false
+        }
+      ],
+      "systemChannels": [
+        {
+          "id": "primary",
+          "provider": null,
+          "path": null,
+          "unit": null,
+          "feedApproval": "UNKNOWN_LRU_BUS_WIRING"
+        }
+      ],
+      "stage11": {
+        "scenarioRegistryIncluded": true,
+        "actualVisualFlightTestAccepted": false,
+        "hasStandaloneOperationalSource": false,
+        "isReleased": false
+      },
+      "blockingReasons": [
+        "historical_pivot_disagreement",
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified",
+        "all_scale_major_and_minor_labels_not_signed",
+        "no_per-instrument_power_circuit_signoff",
+        "source_model_not_aircraft_certified",
+        "scenario_test_not_photo_signoff",
+        "candidate_numeric_scale_not_approved"
+      ],
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+    },
+    {
+      "id": "oh.elec.dc_volts",
+      "panel": "OH10",
+      "kind": "rotary",
+      "priority": "high",
+      "sourceOriginal": "panel-mosaic-lab/assets/locked/2026-10-23/OH10-ELEC-LOSSLESS-9a1ca4d6cfb2.png",
+      "photoCandidateStrokes": 18,
+      "sourcePivotCandidate": {
+        "x": 332,
+        "y": 600,
+        "evidence": "gauge-survey-stage2-3.json",
+        "state": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "caseCircleCandidate": {
+        "x": 337.2,
+        "y": 578.8,
+        "radius": 132.56,
+        "centerDeltaPx": 21.83,
+        "radiusDeltaPx": 10.44,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "nativeGeometry": {
+        "pivotCertified": false,
+        "allTicksCertified": false,
+        "photoReviewReady": false
+      },
+      "numericScales": [
+        {
+          "mode": "primary",
+          "unit": "V",
+          "photoNumberAnchors": 0,
+          "numericInterpolationPreviewReady": false,
+          "minorGraduationsCertified": false
+        }
+      ],
+      "pointers": [
+        {
+          "pointerId": "dcVolts",
+          "shapeLocked": false,
+          "responseMode": null,
+          "sourceChannel": "primary",
+          "geometryAccepted": false,
+          "angleOffsetAccepted": false
+        }
+      ],
+      "systemChannels": [
+        {
+          "id": "primary",
+          "provider": null,
+          "path": null,
+          "unit": null,
+          "feedApproval": "UNKNOWN_LRU_BUS_WIRING"
+        }
+      ],
+      "stage11": {
+        "scenarioRegistryIncluded": true,
+        "actualVisualFlightTestAccepted": false,
+        "hasStandaloneOperationalSource": false,
+        "isReleased": false
+      },
+      "blockingReasons": [
+        "circle_vs_legacy_center_delta_over_20px",
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified",
+        "all_scale_major_and_minor_labels_not_signed",
+        "no_per-instrument_power_circuit_signoff",
+        "source_model_not_aircraft_certified",
+        "scenario_test_not_photo_signoff",
+        "two_numbered_photo_anchors_missing",
+        "response_model_not_calibrated"
+      ],
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+    },
+    {
+      "id": "oh.elec.ac_volts",
+      "panel": "OH10",
+      "kind": "rotary",
+      "priority": "high",
+      "sourceOriginal": "panel-mosaic-lab/assets/locked/2026-10-23/OH10-ELEC-LOSSLESS-9a1ca4d6cfb2.png",
+      "photoCandidateStrokes": 22,
+      "sourcePivotCandidate": {
+        "x": 715,
+        "y": 620,
+        "evidence": "gauge-survey-stage2-3.json",
+        "state": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "caseCircleCandidate": {
+        "x": 685.4,
+        "y": 621.6,
+        "radius": 98.24,
+        "centerDeltaPx": 29.64,
+        "radiusDeltaPx": 44.76,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "nativeGeometry": {
+        "pivotCertified": false,
+        "allTicksCertified": false,
+        "photoReviewReady": false
+      },
+      "numericScales": [
+        {
+          "mode": "primary",
+          "unit": "V",
+          "photoNumberAnchors": 0,
+          "numericInterpolationPreviewReady": false,
+          "minorGraduationsCertified": false
+        }
+      ],
+      "pointers": [
+        {
+          "pointerId": "acVolts",
+          "shapeLocked": false,
+          "responseMode": null,
+          "sourceChannel": "primary",
+          "geometryAccepted": false,
+          "angleOffsetAccepted": false
+        }
+      ],
+      "systemChannels": [
+        {
+          "id": "primary",
+          "provider": null,
+          "path": null,
+          "unit": null,
+          "feedApproval": "UNKNOWN_LRU_BUS_WIRING"
+        }
+      ],
+      "stage11": {
+        "scenarioRegistryIncluded": true,
+        "actualVisualFlightTestAccepted": false,
+        "hasStandaloneOperationalSource": false,
+        "isReleased": false
+      },
+      "blockingReasons": [
+        "circle_vs_legacy_center_delta_over_20px",
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified",
+        "all_scale_major_and_minor_labels_not_signed",
+        "no_per-instrument_power_circuit_signoff",
+        "source_model_not_aircraft_certified",
+        "scenario_test_not_photo_signoff",
+        "two_numbered_photo_anchors_missing",
+        "response_model_not_calibrated"
+      ],
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+    },
+    {
+      "id": "oh.drive_oil.1",
+      "panel": "OH11",
+      "kind": "rotary",
+      "priority": "high",
+      "sourceOriginal": "panel-mosaic-lab/assets/locked/2026-10-23/OH11-STANDBY-8b7d36ff3182.png",
+      "photoCandidateStrokes": 22,
+      "sourcePivotCandidate": {
+        "x": 266,
+        "y": 1021,
+        "evidence": "gauge-survey-stage2-3.json",
+        "state": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "caseCircleCandidate": {
+        "x": 271.8,
+        "y": 983.8,
+        "radius": 141.08,
+        "centerDeltaPx": 37.65,
+        "radiusDeltaPx": 18.92,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "nativeGeometry": {
+        "pivotCertified": false,
+        "allTicksCertified": false,
+        "photoReviewReady": false
+      },
+      "numericScales": [
+        {
+          "mode": "rise",
+          "unit": "°C",
+          "photoNumberAnchors": 0,
+          "numericInterpolationPreviewReady": false,
+          "minorGraduationsCertified": false
+        },
+        {
+          "mode": "inlet",
+          "unit": "°C",
+          "photoNumberAnchors": 0,
+          "numericInterpolationPreviewReady": false,
+          "minorGraduationsCertified": false
+        }
+      ],
+      "pointers": [
+        {
+          "pointerId": "driveOil1",
+          "shapeLocked": false,
+          "responseMode": null,
+          "sourceChannel": null,
+          "geometryAccepted": false,
+          "angleOffsetAccepted": false
+        }
+      ],
+      "systemChannels": [
+        {
+          "id": "rise",
+          "provider": null,
+          "path": null,
+          "unit": null,
+          "feedApproval": "UNKNOWN_LRU_BUS_WIRING"
+        },
+        {
+          "id": "inlet",
+          "provider": null,
+          "path": null,
+          "unit": null,
+          "feedApproval": "UNKNOWN_LRU_BUS_WIRING"
+        }
+      ],
+      "stage11": {
+        "scenarioRegistryIncluded": true,
+        "actualVisualFlightTestAccepted": false,
+        "hasStandaloneOperationalSource": false,
+        "isReleased": false
+      },
+      "blockingReasons": [
+        "circle_vs_legacy_center_delta_over_20px",
+        "RISE_IN_separate_numeric_modes_same_strokes",
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified",
+        "all_scale_major_and_minor_labels_not_signed",
+        "no_per-instrument_power_circuit_signoff",
+        "source_model_not_aircraft_certified",
+        "scenario_test_not_photo_signoff",
+        "two_numbered_photo_anchors_missing",
+        "response_model_not_calibrated"
+      ],
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+    },
+    {
+      "id": "oh.drive_oil.2",
+      "panel": "OH11",
+      "kind": "rotary",
+      "priority": "normal",
+      "sourceOriginal": "panel-mosaic-lab/assets/locked/2026-10-23/OH11-STANDBY-8b7d36ff3182.png",
+      "photoCandidateStrokes": 20,
+      "sourcePivotCandidate": {
+        "x": 781,
+        "y": 1021,
+        "evidence": "gauge-survey-stage2-3.json",
+        "state": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "caseCircleCandidate": {
+        "x": 782.2,
+        "y": 1025.8,
+        "radius": 135.8,
+        "centerDeltaPx": 4.95,
+        "radiusDeltaPx": 24.2,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "nativeGeometry": {
+        "pivotCertified": false,
+        "allTicksCertified": false,
+        "photoReviewReady": false
+      },
+      "numericScales": [
+        {
+          "mode": "rise",
+          "unit": "°C",
+          "photoNumberAnchors": 0,
+          "numericInterpolationPreviewReady": false,
+          "minorGraduationsCertified": false
+        },
+        {
+          "mode": "inlet",
+          "unit": "°C",
+          "photoNumberAnchors": 0,
+          "numericInterpolationPreviewReady": false,
+          "minorGraduationsCertified": false
+        }
+      ],
+      "pointers": [
+        {
+          "pointerId": "driveOil2",
+          "shapeLocked": false,
+          "responseMode": null,
+          "sourceChannel": null,
+          "geometryAccepted": false,
+          "angleOffsetAccepted": false
+        }
+      ],
+      "systemChannels": [
+        {
+          "id": "rise",
+          "provider": null,
+          "path": null,
+          "unit": null,
+          "feedApproval": "UNKNOWN_LRU_BUS_WIRING"
+        },
+        {
+          "id": "inlet",
+          "provider": null,
+          "path": null,
+          "unit": null,
+          "feedApproval": "UNKNOWN_LRU_BUS_WIRING"
+        }
+      ],
+      "stage11": {
+        "scenarioRegistryIncluded": true,
+        "actualVisualFlightTestAccepted": false,
+        "hasStandaloneOperationalSource": false,
+        "isReleased": false
+      },
+      "blockingReasons": [
+        "RISE_IN_separate_numeric_modes_same_strokes",
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified",
+        "all_scale_major_and_minor_labels_not_signed",
+        "no_per-instrument_power_circuit_signoff",
+        "source_model_not_aircraft_certified",
+        "scenario_test_not_photo_signoff",
+        "two_numbered_photo_anchors_missing",
+        "response_model_not_calibrated"
+      ],
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+    },
+    {
+      "id": "oh.ac_amps.1",
+      "panel": "OH12",
+      "kind": "rotary",
+      "priority": "normal",
+      "sourceOriginal": "panel-mosaic-lab/assets/locked/2026-10-23/OH12-BUS-TRANS-09319c17e7d0.png",
+      "photoCandidateStrokes": 35,
+      "sourcePivotCandidate": {
+        "x": 210,
+        "y": 265,
+        "evidence": "gauge-survey-stage2-3.json",
+        "state": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "caseCircleCandidate": {
+        "x": 207,
+        "y": 277.8,
+        "radius": 125.64,
+        "centerDeltaPx": 13.15,
+        "radiusDeltaPx": 18.36,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "nativeGeometry": {
+        "pivotCertified": false,
+        "allTicksCertified": false,
+        "photoReviewReady": false
+      },
+      "numericScales": [
+        {
+          "mode": "primary",
+          "unit": "A",
+          "photoNumberAnchors": 0,
+          "numericInterpolationPreviewReady": false,
+          "minorGraduationsCertified": false
+        }
+      ],
+      "pointers": [
+        {
+          "pointerId": "acAmps1",
+          "shapeLocked": false,
+          "responseMode": null,
+          "sourceChannel": "primary",
+          "geometryAccepted": false,
+          "angleOffsetAccepted": false
+        }
+      ],
+      "systemChannels": [
+        {
+          "id": "primary",
+          "provider": null,
+          "path": null,
+          "unit": null,
+          "feedApproval": "UNKNOWN_LRU_BUS_WIRING"
+        }
+      ],
+      "stage11": {
+        "scenarioRegistryIncluded": true,
+        "actualVisualFlightTestAccepted": false,
+        "hasStandaloneOperationalSource": false,
+        "isReleased": false
+      },
+      "blockingReasons": [
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified",
+        "all_scale_major_and_minor_labels_not_signed",
+        "no_per-instrument_power_circuit_signoff",
+        "source_model_not_aircraft_certified",
+        "scenario_test_not_photo_signoff",
+        "two_numbered_photo_anchors_missing",
+        "response_model_not_calibrated"
+      ],
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+    },
+    {
+      "id": "oh.ac_amps.2",
+      "panel": "OH12",
+      "kind": "rotary",
+      "priority": "normal",
+      "sourceOriginal": "panel-mosaic-lab/assets/locked/2026-10-23/OH12-BUS-TRANS-09319c17e7d0.png",
+      "photoCandidateStrokes": 37,
+      "sourcePivotCandidate": {
+        "x": 705,
+        "y": 265,
+        "evidence": "gauge-survey-stage2-3.json",
+        "state": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "caseCircleCandidate": {
+        "x": 697.4,
+        "y": 282.6,
+        "radius": 104.4,
+        "centerDeltaPx": 19.17,
+        "radiusDeltaPx": 39.6,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "nativeGeometry": {
+        "pivotCertified": false,
+        "allTicksCertified": false,
+        "photoReviewReady": false
+      },
+      "numericScales": [
+        {
+          "mode": "primary",
+          "unit": "A",
+          "photoNumberAnchors": 0,
+          "numericInterpolationPreviewReady": false,
+          "minorGraduationsCertified": false
+        }
+      ],
+      "pointers": [
+        {
+          "pointerId": "acAmps2",
+          "shapeLocked": false,
+          "responseMode": null,
+          "sourceChannel": "primary",
+          "geometryAccepted": false,
+          "angleOffsetAccepted": false
+        }
+      ],
+      "systemChannels": [
+        {
+          "id": "primary",
+          "provider": null,
+          "path": null,
+          "unit": null,
+          "feedApproval": "UNKNOWN_LRU_BUS_WIRING"
+        }
+      ],
+      "stage11": {
+        "scenarioRegistryIncluded": true,
+        "actualVisualFlightTestAccepted": false,
+        "hasStandaloneOperationalSource": false,
+        "isReleased": false
+      },
+      "blockingReasons": [
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified",
+        "all_scale_major_and_minor_labels_not_signed",
+        "no_per-instrument_power_circuit_signoff",
+        "source_model_not_aircraft_certified",
+        "scenario_test_not_photo_signoff",
+        "two_numbered_photo_anchors_missing",
+        "response_model_not_calibrated"
+      ],
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+    },
+    {
+      "id": "oh.ac_amps.apu",
+      "panel": "OH12",
+      "kind": "rotary",
+      "priority": "normal",
+      "sourceOriginal": "panel-mosaic-lab/assets/locked/2026-10-23/OH12-BUS-TRANS-09319c17e7d0.png",
+      "photoCandidateStrokes": 50,
+      "sourcePivotCandidate": {
+        "x": 724,
+        "y": 1334,
+        "evidence": "gauge-survey-stage2-3.json",
+        "state": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "caseCircleCandidate": {
+        "x": 720,
+        "y": 1322.8,
+        "radius": 171,
+        "centerDeltaPx": 11.89,
+        "radiusDeltaPx": 27,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "nativeGeometry": {
+        "pivotCertified": false,
+        "allTicksCertified": false,
+        "photoReviewReady": false
+      },
+      "numericScales": [
+        {
+          "mode": "primary",
+          "unit": "A",
+          "photoNumberAnchors": 0,
+          "numericInterpolationPreviewReady": false,
+          "minorGraduationsCertified": false
+        }
+      ],
+      "pointers": [
+        {
+          "pointerId": "apuAcAmps",
+          "shapeLocked": false,
+          "responseMode": null,
+          "sourceChannel": "primary",
+          "geometryAccepted": false,
+          "angleOffsetAccepted": false
+        }
+      ],
+      "systemChannels": [
+        {
+          "id": "primary",
+          "provider": null,
+          "path": null,
+          "unit": null,
+          "feedApproval": "UNKNOWN_LRU_BUS_WIRING"
+        }
+      ],
+      "stage11": {
+        "scenarioRegistryIncluded": true,
+        "actualVisualFlightTestAccepted": false,
+        "hasStandaloneOperationalSource": false,
+        "isReleased": false
+      },
+      "blockingReasons": [
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified",
+        "all_scale_major_and_minor_labels_not_signed",
+        "no_per-instrument_power_circuit_signoff",
+        "source_model_not_aircraft_certified",
+        "scenario_test_not_photo_signoff",
+        "two_numbered_photo_anchors_missing",
+        "response_model_not_calibrated"
+      ],
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+    },
+    {
+      "id": "oh.apu.egt",
+      "panel": "OH12",
+      "kind": "rotary",
+      "priority": "normal",
+      "sourceOriginal": "panel-mosaic-lab/assets/locked/2026-10-23/OH12-BUS-TRANS-09319c17e7d0.png",
+      "photoCandidateStrokes": 63,
+      "sourcePivotCandidate": {
+        "x": 300,
+        "y": 1324,
+        "evidence": "gauge-survey-stage2-3.json",
+        "state": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "caseCircleCandidate": {
+        "x": 296.8,
+        "y": 1318.4,
+        "radius": 174.04,
+        "centerDeltaPx": 6.45,
+        "radiusDeltaPx": 20.04,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "nativeGeometry": {
+        "pivotCertified": false,
+        "allTicksCertified": false,
+        "photoReviewReady": false
+      },
+      "numericScales": [
+        {
+          "mode": "primary",
+          "unit": "°C×100",
+          "photoNumberAnchors": 0,
+          "numericInterpolationPreviewReady": false,
+          "minorGraduationsCertified": false
+        }
+      ],
+      "pointers": [
+        {
+          "pointerId": "apuEgt",
+          "shapeLocked": false,
+          "responseMode": null,
+          "sourceChannel": "primary",
+          "geometryAccepted": false,
+          "angleOffsetAccepted": false
+        }
+      ],
+      "systemChannels": [
+        {
+          "id": "primary",
+          "provider": "ecu",
+          "path": "apu.egtC",
+          "unit": "°C",
+          "feedApproval": "UNKNOWN_LRU_BUS_WIRING"
+        }
+      ],
+      "stage11": {
+        "scenarioRegistryIncluded": true,
+        "actualVisualFlightTestAccepted": false,
+        "hasStandaloneOperationalSource": true,
+        "isReleased": false
+      },
+      "blockingReasons": [
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified",
+        "all_scale_major_and_minor_labels_not_signed",
+        "no_per-instrument_power_circuit_signoff",
+        "source_model_not_aircraft_certified",
+        "scenario_test_not_photo_signoff",
+        "two_numbered_photo_anchors_missing",
+        "response_model_not_calibrated"
+      ],
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+    },
+    {
+      "id": "oh.cabin.diff_pressure_altitude",
+      "panel": "OH19-DIFF",
+      "kind": "rotary",
+      "priority": "medium",
+      "sourceOriginal": "panel-mosaic-lab/assets/locked/2026-10-23/OH19-PRESS-DIFF-ALT-HORN-d6719ce57cef.png",
+      "photoCandidateStrokes": 145,
+      "sourcePivotCandidate": {
+        "x": 489,
+        "y": 365,
+        "evidence": "photo-anchor-checkpoints-v1.json",
+        "state": "optical_center_estimate_needs_confirmation"
+      },
+      "caseCircleCandidate": null,
+      "nativeGeometry": {
+        "pivotCertified": false,
+        "allTicksCertified": false,
+        "photoReviewReady": false
+      },
+      "numericScales": [
+        {
+          "mode": "cabinAltitude",
+          "unit": "ft",
+          "photoNumberAnchors": 15,
+          "numericInterpolationPreviewReady": true,
+          "minorGraduationsCertified": false
+        },
+        {
+          "mode": "diffPressure",
+          "unit": "psi",
+          "photoNumberAnchors": 11,
+          "numericInterpolationPreviewReady": true,
+          "minorGraduationsCertified": false
+        }
+      ],
+      "pointers": [
+        {
+          "pointerId": "press",
+          "shapeLocked": false,
+          "responseMode": "second_order",
+          "sourceChannel": "press",
+          "geometryAccepted": false,
+          "angleOffsetAccepted": false
+        },
+        {
+          "pointerId": "cabAlt",
+          "shapeLocked": false,
+          "responseMode": "second_order",
+          "sourceChannel": "cabAlt",
+          "geometryAccepted": false,
+          "angleOffsetAccepted": false
+        }
+      ],
+      "systemChannels": [
+        {
+          "id": "cabAlt",
+          "provider": "cabinPlant",
+          "path": "cabinAltitudeFt",
+          "unit": "ft",
+          "feedApproval": "UNKNOWN_LRU_BUS_WIRING"
+        },
+        {
+          "id": "press",
+          "provider": "cabinPlant",
+          "path": "differentialPsid",
+          "unit": "psi",
+          "feedApproval": "UNKNOWN_LRU_BUS_WIRING"
+        }
+      ],
+      "stage11": {
+        "scenarioRegistryIncluded": true,
+        "actualVisualFlightTestAccepted": false,
+        "hasStandaloneOperationalSource": true,
+        "isReleased": false
+      },
+      "blockingReasons": [
+        "no_independent_circle_center_candidate",
+        "independent_concentric_scale_modes",
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified",
+        "all_scale_major_and_minor_labels_not_signed",
+        "no_per-instrument_power_circuit_signoff",
+        "source_model_not_aircraft_certified",
+        "scenario_test_not_photo_signoff",
+        "candidate_numeric_scale_not_approved"
+      ],
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+    },
+    {
+      "id": "oh.cabin.rate",
+      "panel": "OH19-DIFF",
+      "kind": "rotary",
+      "priority": "normal",
+      "sourceOriginal": "panel-mosaic-lab/assets/locked/2026-10-23/OH19-PRESS-DIFF-ALT-HORN-d6719ce57cef.png",
+      "photoCandidateStrokes": 116,
+      "sourcePivotCandidate": {
+        "x": 520,
+        "y": 950,
+        "evidence": "gauge-survey-stage2-3.json",
+        "state": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "caseCircleCandidate": {
+        "x": 521.6,
+        "y": 951.6,
+        "radius": 188.96,
+        "centerDeltaPx": 2.26,
+        "radiusDeltaPx": 23.96,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "nativeGeometry": {
+        "pivotCertified": false,
+        "allTicksCertified": false,
+        "photoReviewReady": false
+      },
+      "numericScales": [
+        {
+          "mode": "cabinClimb",
+          "unit": "UNRESOLVED",
+          "photoNumberAnchors": 0,
+          "numericInterpolationPreviewReady": false,
+          "minorGraduationsCertified": false
+        },
+        {
+          "mode": "cabinDescent",
+          "unit": "UNRESOLVED",
+          "photoNumberAnchors": 0,
+          "numericInterpolationPreviewReady": false,
+          "minorGraduationsCertified": false
+        }
+      ],
+      "pointers": [
+        {
+          "pointerId": "cabinRate",
+          "shapeLocked": false,
+          "responseMode": null,
+          "sourceChannel": "rate",
+          "geometryAccepted": false,
+          "angleOffsetAccepted": false
+        }
+      ],
+      "systemChannels": [
+        {
+          "id": "rate",
+          "provider": "cabinPlant",
+          "path": "cabinRateFtMin",
+          "unit": "ft/min",
+          "feedApproval": "UNKNOWN_LRU_BUS_WIRING"
+        }
+      ],
+      "stage11": {
+        "scenarioRegistryIncluded": true,
+        "actualVisualFlightTestAccepted": false,
+        "hasStandaloneOperationalSource": true,
+        "isReleased": false
+      },
+      "blockingReasons": [
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified",
+        "all_scale_major_and_minor_labels_not_signed",
+        "no_per-instrument_power_circuit_signoff",
+        "source_model_not_aircraft_certified",
+        "scenario_test_not_photo_signoff",
+        "two_numbered_photo_anchors_missing",
+        "response_model_not_calibrated"
+      ],
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+    },
+    {
+      "id": "oh.cabin.temperature",
+      "panel": "OH20",
+      "kind": "rotary",
+      "priority": "normal",
+      "sourceOriginal": "panel-mosaic-lab/assets/locked/2026-10-23/OH20-AIR-CONDITIONING-0734da6a7726.png",
+      "photoCandidateStrokes": 83,
+      "sourcePivotCandidate": {
+        "x": 618,
+        "y": 681,
+        "evidence": "photo-anchor-checkpoints-v1.json",
+        "state": "optical_center_estimate_needs_confirmation"
+      },
+      "caseCircleCandidate": {
+        "x": 612.4,
+        "y": 667,
+        "radius": 202.2,
+        "centerDeltaPx": 15.08,
+        "radiusDeltaPx": 22.2,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "nativeGeometry": {
+        "pivotCertified": false,
+        "allTicksCertified": false,
+        "photoReviewReady": false
+      },
+      "numericScales": [
+        {
+          "mode": "primary",
+          "unit": "°C",
+          "photoNumberAnchors": 5,
+          "numericInterpolationPreviewReady": true,
+          "minorGraduationsCertified": false
+        }
+      ],
+      "pointers": [
+        {
+          "pointerId": "cabinTemperature",
+          "shapeLocked": false,
+          "responseMode": "second_order",
+          "sourceChannel": "primary",
+          "geometryAccepted": false,
+          "angleOffsetAccepted": false
+        }
+      ],
+      "systemChannels": [
+        {
+          "id": "primary",
+          "provider": null,
+          "path": null,
+          "unit": null,
+          "feedApproval": "UNKNOWN_LRU_BUS_WIRING"
+        }
+      ],
+      "stage11": {
+        "scenarioRegistryIncluded": true,
+        "actualVisualFlightTestAccepted": false,
+        "hasStandaloneOperationalSource": false,
+        "isReleased": false
+      },
+      "blockingReasons": [
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified",
+        "all_scale_major_and_minor_labels_not_signed",
+        "no_per-instrument_power_circuit_signoff",
+        "source_model_not_aircraft_certified",
+        "scenario_test_not_photo_signoff",
+        "candidate_numeric_scale_not_approved"
+      ],
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+    },
+    {
+      "id": "oh.duct.pressure_lr",
+      "panel": "OH21",
+      "kind": "rotary",
+      "priority": "normal",
+      "sourceOriginal": "panel-mosaic-lab/assets/locked/2026-10-23/OH21-BLEED-AIR-cc78219607a3.png",
+      "photoCandidateStrokes": 67,
+      "sourcePivotCandidate": {
+        "x": 544,
+        "y": 439,
+        "evidence": "photo-anchor-checkpoints-v1.json",
+        "state": "optical_center_estimate_needs_confirmation"
+      },
+      "caseCircleCandidate": {
+        "x": 549.6,
+        "y": 435,
+        "radius": 162.68,
+        "centerDeltaPx": 6.88,
+        "radiusDeltaPx": 7.32,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "nativeGeometry": {
+        "pivotCertified": false,
+        "allTicksCertified": false,
+        "photoReviewReady": false
+      },
+      "numericScales": [
+        {
+          "mode": "primary",
+          "unit": "psi",
+          "photoNumberAnchors": 6,
+          "numericInterpolationPreviewReady": true,
+          "minorGraduationsCertified": false
+        }
+      ],
+      "pointers": [
+        {
+          "pointerId": "ductL",
+          "shapeLocked": false,
+          "responseMode": "second_order",
+          "sourceChannel": "L",
+          "geometryAccepted": false,
+          "angleOffsetAccepted": false
+        },
+        {
+          "pointerId": "ductR",
+          "shapeLocked": false,
+          "responseMode": "second_order",
+          "sourceChannel": "R",
+          "geometryAccepted": false,
+          "angleOffsetAccepted": false
+        }
+      ],
+      "systemChannels": [
+        {
+          "id": "L",
+          "provider": null,
+          "path": null,
+          "unit": null,
+          "feedApproval": "UNKNOWN_LRU_BUS_WIRING"
+        },
+        {
+          "id": "R",
+          "provider": null,
+          "path": null,
+          "unit": null,
+          "feedApproval": "UNKNOWN_LRU_BUS_WIRING"
+        }
+      ],
+      "stage11": {
+        "scenarioRegistryIncluded": true,
+        "actualVisualFlightTestAccepted": false,
+        "hasStandaloneOperationalSource": false,
+        "isReleased": false
+      },
+      "blockingReasons": [
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified",
+        "all_scale_major_and_minor_labels_not_signed",
+        "no_per-instrument_power_circuit_signoff",
+        "source_model_not_aircraft_certified",
+        "scenario_test_not_photo_signoff",
+        "candidate_numeric_scale_not_approved"
+      ],
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+    },
+    {
+      "id": "oh.crew_oxygen.pressure",
+      "panel": "OH01-06",
+      "kind": "rotary",
+      "priority": "normal",
+      "sourceOriginal": "panel-mosaic-lab/assets/locked/2026-10-23/OH01-06-source-9d8ac0ac86bd.png",
+      "photoCandidateStrokes": 0,
+      "sourcePivotCandidate": {
+        "x": 1078,
+        "y": 636,
+        "evidence": "tools/gauge-source-visual-review.py",
+        "state": "existing_overlay_position_not_full_photo_certification"
+      },
+      "caseCircleCandidate": {
+        "x": 1079.8,
+        "y": 639,
+        "radius": 64.28,
+        "centerDeltaPx": 3.5,
+        "radiusDeltaPx": 7.28,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "nativeGeometry": {
+        "pivotCertified": false,
+        "allTicksCertified": false,
+        "photoReviewReady": false
+      },
+      "numericScales": [
+        {
+          "mode": "primary",
+          "unit": "psi",
+          "photoNumberAnchors": 0,
+          "numericInterpolationPreviewReady": false,
+          "minorGraduationsCertified": false
+        }
+      ],
+      "pointers": [
+        {
+          "pointerId": "oxygenPressure",
+          "shapeLocked": false,
+          "responseMode": null,
+          "sourceChannel": "primary",
+          "geometryAccepted": false,
+          "angleOffsetAccepted": false
+        }
+      ],
+      "systemChannels": [
+        {
+          "id": "primary",
+          "provider": null,
+          "path": null,
+          "unit": null,
+          "feedApproval": "UNKNOWN_LRU_BUS_WIRING"
+        }
+      ],
+      "stage11": {
+        "scenarioRegistryIncluded": true,
+        "actualVisualFlightTestAccepted": false,
+        "hasStandaloneOperationalSource": false,
+        "isReleased": false
+      },
+      "blockingReasons": [
+        "no_white_candidate_strokes",
+        "face_blank_no_printed_scale",
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified",
+        "all_scale_major_and_minor_labels_not_signed",
+        "no_per-instrument_power_circuit_signoff",
+        "source_model_not_aircraft_certified",
+        "scenario_test_not_photo_signoff",
+        "two_numbered_photo_anchors_missing",
+        "response_model_not_calibrated"
+      ],
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+    },
+    {
+      "id": "capt.airspeed",
+      "panel": "CAPTAIN",
+      "kind": "rotary",
+      "priority": "high",
+      "sourceOriginal": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png",
+      "photoCandidateStrokes": 116,
+      "sourcePivotCandidate": {
+        "x": 1100,
+        "y": 970,
+        "uncertaintyPx": 40,
+        "reason": "visually estimated native-grid dial center"
+      },
+      "caseCircleCandidate": {
+        "x": 1080.6,
+        "y": 980.6,
+        "radius": 372.16,
+        "centerDeltaPx": 22.11,
+        "radiusDeltaPx": 12.16,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "nativeGeometry": {
+        "pivotCertified": false,
+        "allTicksCertified": false,
+        "photoReviewReady": false
+      },
+      "numericScales": [
+        {
+          "mode": "primary",
+          "unit": "knots",
+          "photoNumberAnchors": 0,
+          "numericInterpolationPreviewReady": false,
+          "minorGraduationsCertified": false
+        }
+      ],
+      "pointers": [
+        {
+          "pointerId": "captIAS",
+          "shapeLocked": false,
+          "responseMode": null,
+          "sourceChannel": "primary",
+          "geometryAccepted": false,
+          "angleOffsetAccepted": false
+        },
+        {
+          "pointerId": "captVMO",
+          "shapeLocked": false,
+          "responseMode": null,
+          "sourceChannel": null,
+          "geometryAccepted": false,
+          "angleOffsetAccepted": false
+        }
+      ],
+      "systemChannels": [
+        {
+          "id": "primary",
+          "provider": "ecu",
+          "path": "aircraft.iasKt",
+          "unit": "kt",
+          "feedApproval": "UNKNOWN_LRU_BUS_WIRING"
+        }
+      ],
+      "stage11": {
+        "scenarioRegistryIncluded": true,
+        "actualVisualFlightTestAccepted": false,
+        "hasStandaloneOperationalSource": true,
+        "isReleased": false
+      },
+      "blockingReasons": [
+        "circle_vs_legacy_center_delta_over_20px",
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified",
+        "all_scale_major_and_minor_labels_not_signed",
+        "no_per-instrument_power_circuit_signoff",
+        "source_model_not_aircraft_certified",
+        "scenario_test_not_photo_signoff",
+        "two_numbered_photo_anchors_missing",
+        "response_model_not_calibrated"
+      ],
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+    },
+    {
+      "id": "capt.rmi",
+      "panel": "CAPTAIN",
+      "kind": "rotary",
+      "priority": "high",
+      "sourceOriginal": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png",
+      "photoCandidateStrokes": 72,
+      "sourcePivotCandidate": {
+        "x": 1170,
+        "y": 1850,
+        "uncertaintyPx": 40,
+        "reason": "visually estimated native-grid RMI card center"
+      },
+      "caseCircleCandidate": {
+        "x": 1186.6,
+        "y": 1896.6,
+        "radius": 260.52,
+        "centerDeltaPx": 49.47,
+        "radiusDeltaPx": 39.48,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "nativeGeometry": {
+        "pivotCertified": false,
+        "allTicksCertified": false,
+        "photoReviewReady": false
+      },
+      "numericScales": [
+        {
+          "mode": "primary",
+          "unit": "degrees",
+          "photoNumberAnchors": 0,
+          "numericInterpolationPreviewReady": false,
+          "minorGraduationsCertified": false
+        }
+      ],
+      "pointers": [
+        {
+          "pointerId": "captRMI1",
+          "shapeLocked": true,
+          "responseMode": null,
+          "sourceChannel": "bearing1",
+          "geometryAccepted": false,
+          "angleOffsetAccepted": false
+        },
+        {
+          "pointerId": "captRMI2",
+          "shapeLocked": true,
+          "responseMode": null,
+          "sourceChannel": "bearing2",
+          "geometryAccepted": false,
+          "angleOffsetAccepted": false
+        }
+      ],
+      "systemChannels": [
+        {
+          "id": "bearing1",
+          "provider": null,
+          "path": null,
+          "unit": null,
+          "feedApproval": "UNKNOWN_LRU_BUS_WIRING"
+        },
+        {
+          "id": "bearing2",
+          "provider": null,
+          "path": null,
+          "unit": null,
+          "feedApproval": "UNKNOWN_LRU_BUS_WIRING"
+        }
+      ],
+      "stage11": {
+        "scenarioRegistryIncluded": true,
+        "actualVisualFlightTestAccepted": false,
+        "hasStandaloneOperationalSource": false,
+        "isReleased": false
+      },
+      "blockingReasons": [
+        "circle_vs_legacy_center_delta_over_20px",
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified",
+        "all_scale_major_and_minor_labels_not_signed",
+        "no_per-instrument_power_circuit_signoff",
+        "source_model_not_aircraft_certified",
+        "scenario_test_not_photo_signoff",
+        "two_numbered_photo_anchors_missing",
+        "response_model_not_calibrated"
+      ],
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+    },
+    {
+      "id": "capt.altimeter",
+      "panel": "CAPTAIN",
+      "kind": "rotary",
+      "priority": "high",
+      "sourceOriginal": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png",
+      "photoCandidateStrokes": 85,
+      "sourcePivotCandidate": {
+        "x": 3100,
+        "y": 940,
+        "uncertaintyPx": 40,
+        "reason": "visually estimated native-grid altimeter card center"
+      },
+      "caseCircleCandidate": {
+        "x": 3080.2,
+        "y": 953.8,
+        "radius": 280,
+        "centerDeltaPx": 24.13,
+        "radiusDeltaPx": 0,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "nativeGeometry": {
+        "pivotCertified": false,
+        "allTicksCertified": false,
+        "photoReviewReady": false
+      },
+      "numericScales": [
+        {
+          "mode": "primary",
+          "unit": "ft",
+          "photoNumberAnchors": 0,
+          "numericInterpolationPreviewReady": false,
+          "minorGraduationsCertified": false
+        }
+      ],
+      "pointers": [
+        {
+          "pointerId": "captAltimeter",
+          "shapeLocked": false,
+          "responseMode": null,
+          "sourceChannel": "primary",
+          "geometryAccepted": false,
+          "angleOffsetAccepted": false
+        }
+      ],
+      "systemChannels": [
+        {
+          "id": "primary",
+          "provider": null,
+          "path": null,
+          "unit": null,
+          "feedApproval": "UNKNOWN_LRU_BUS_WIRING"
+        }
+      ],
+      "stage11": {
+        "scenarioRegistryIncluded": true,
+        "actualVisualFlightTestAccepted": false,
+        "hasStandaloneOperationalSource": false,
+        "isReleased": false
+      },
+      "blockingReasons": [
+        "circle_vs_legacy_center_delta_over_20px",
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified",
+        "all_scale_major_and_minor_labels_not_signed",
+        "no_per-instrument_power_circuit_signoff",
+        "source_model_not_aircraft_certified",
+        "scenario_test_not_photo_signoff",
+        "two_numbered_photo_anchors_missing",
+        "response_model_not_calibrated"
+      ],
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+    },
+    {
+      "id": "capt.alt_ias_combined",
+      "panel": "CAPTAIN",
+      "kind": "rotary",
+      "priority": "high",
+      "sourceOriginal": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png",
+      "photoCandidateStrokes": 74,
+      "sourcePivotCandidate": {
+        "x": 3720,
+        "y": 950,
+        "uncertaintyPx": 40,
+        "reason": "visually estimated native-grid combined ALT/IAS face center"
+      },
+      "caseCircleCandidate": {
+        "x": 3711.8,
+        "y": 955,
+        "radius": 260.96,
+        "centerDeltaPx": 9.6,
+        "radiusDeltaPx": 15.96,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "nativeGeometry": {
+        "pivotCertified": false,
+        "allTicksCertified": false,
+        "photoReviewReady": false
+      },
+      "numericScales": [
+        {
+          "mode": "alt",
+          "unit": "multiple",
+          "photoNumberAnchors": 0,
+          "numericInterpolationPreviewReady": false,
+          "minorGraduationsCertified": false
+        },
+        {
+          "mode": "ias",
+          "unit": "multiple",
+          "photoNumberAnchors": 0,
+          "numericInterpolationPreviewReady": false,
+          "minorGraduationsCertified": false
+        }
+      ],
+      "pointers": [],
+      "systemChannels": [
+        {
+          "id": "alt",
+          "provider": null,
+          "path": null,
+          "unit": null,
+          "feedApproval": "UNKNOWN_LRU_BUS_WIRING"
+        },
+        {
+          "id": "ias",
+          "provider": null,
+          "path": null,
+          "unit": null,
+          "feedApproval": "UNKNOWN_LRU_BUS_WIRING"
+        }
+      ],
+      "stage11": {
+        "scenarioRegistryIncluded": true,
+        "actualVisualFlightTestAccepted": false,
+        "hasStandaloneOperationalSource": false,
+        "isReleased": false
+      },
+      "blockingReasons": [
+        "ALT_IAS_separate_geometry_requirements",
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified",
+        "all_scale_major_and_minor_labels_not_signed",
+        "no_per-instrument_power_circuit_signoff",
+        "source_model_not_aircraft_certified",
+        "scenario_test_not_photo_signoff",
+        "two_numbered_photo_anchors_missing",
+        "owner_pointer_binding_missing"
+      ],
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+    },
+    {
+      "id": "capt.vertical_speed",
+      "panel": "CAPTAIN",
+      "kind": "rotary",
+      "priority": "high",
+      "sourceOriginal": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png",
+      "photoCandidateStrokes": 54,
+      "sourcePivotCandidate": {
+        "x": 3100,
+        "y": 1600,
+        "uncertaintyPx": 40,
+        "reason": "visually estimated native-grid VSI center"
+      },
+      "caseCircleCandidate": {
+        "x": 3073,
+        "y": 1607.8,
+        "radius": 271.72,
+        "centerDeltaPx": 28.1,
+        "radiusDeltaPx": 8.28,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "nativeGeometry": {
+        "pivotCertified": false,
+        "allTicksCertified": false,
+        "photoReviewReady": false
+      },
+      "numericScales": [
+        {
+          "mode": "primary",
+          "unit": "1000 ft/min",
+          "photoNumberAnchors": 0,
+          "numericInterpolationPreviewReady": false,
+          "minorGraduationsCertified": false
+        }
+      ],
+      "pointers": [
+        {
+          "pointerId": "captVSI",
+          "shapeLocked": false,
+          "responseMode": null,
+          "sourceChannel": "primary",
+          "geometryAccepted": false,
+          "angleOffsetAccepted": false
+        }
+      ],
+      "systemChannels": [
+        {
+          "id": "primary",
+          "provider": null,
+          "path": null,
+          "unit": null,
+          "feedApproval": "UNKNOWN_LRU_BUS_WIRING"
+        }
+      ],
+      "stage11": {
+        "scenarioRegistryIncluded": true,
+        "actualVisualFlightTestAccepted": false,
+        "hasStandaloneOperationalSource": false,
+        "isReleased": false
+      },
+      "blockingReasons": [
+        "circle_vs_legacy_center_delta_over_20px",
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified",
+        "all_scale_major_and_minor_labels_not_signed",
+        "no_per-instrument_power_circuit_signoff",
+        "source_model_not_aircraft_certified",
+        "scenario_test_not_photo_signoff",
+        "two_numbered_photo_anchors_missing",
+        "response_model_not_calibrated"
+      ],
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+    },
+    {
+      "id": "capt.clock",
+      "panel": "CAPTAIN",
+      "kind": "rotary",
+      "priority": "high",
+      "sourceOriginal": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png",
+      "photoCandidateStrokes": 76,
+      "sourcePivotCandidate": {
+        "x": 3700,
+        "y": 1580,
+        "uncertaintyPx": 40,
+        "reason": "visually estimated native-grid clock face center"
+      },
+      "caseCircleCandidate": {
+        "x": 3721.8,
+        "y": 1603,
+        "radius": 281.04,
+        "centerDeltaPx": 31.69,
+        "radiusDeltaPx": 21.04,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "nativeGeometry": {
+        "pivotCertified": false,
+        "allTicksCertified": false,
+        "photoReviewReady": false
+      },
+      "numericScales": [
+        {
+          "mode": "primary",
+          "unit": "time",
+          "photoNumberAnchors": 0,
+          "numericInterpolationPreviewReady": false,
+          "minorGraduationsCertified": false
+        }
+      ],
+      "pointers": [
+        {
+          "pointerId": "captClock",
+          "shapeLocked": false,
+          "responseMode": null,
+          "sourceChannel": "primary",
+          "geometryAccepted": false,
+          "angleOffsetAccepted": false
+        }
+      ],
+      "systemChannels": [
+        {
+          "id": "primary",
+          "provider": null,
+          "path": null,
+          "unit": null,
+          "feedApproval": "UNKNOWN_LRU_BUS_WIRING"
+        }
+      ],
+      "stage11": {
+        "scenarioRegistryIncluded": true,
+        "actualVisualFlightTestAccepted": false,
+        "hasStandaloneOperationalSource": false,
+        "isReleased": false
+      },
+      "blockingReasons": [
+        "circle_vs_legacy_center_delta_over_20px",
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified",
+        "all_scale_major_and_minor_labels_not_signed",
+        "no_per-instrument_power_circuit_signoff",
+        "source_model_not_aircraft_certified",
+        "scenario_test_not_photo_signoff",
+        "two_numbered_photo_anchors_missing",
+        "response_model_not_calibrated"
+      ],
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+    },
+    {
+      "id": "eng.left_upper_20_20",
+      "panel": "ENGINE",
+      "kind": "rotary",
+      "priority": "normal",
+      "sourceOriginal": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "photoCandidateStrokes": 10,
+      "sourcePivotCandidate": {
+        "x": 205,
+        "y": 550,
+        "uncertaintyPx": 22,
+        "reason": "unidentified upper-left dial: mechanical pivot not confirmed"
+      },
+      "caseCircleCandidate": {
+        "x": 216.6,
+        "y": 541.4,
+        "radius": 169.08,
+        "centerDeltaPx": 14.44,
+        "radiusDeltaPx": 34.08,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "nativeGeometry": {
+        "pivotCertified": false,
+        "allTicksCertified": false,
+        "photoReviewReady": false
+      },
+      "numericScales": [
+        {
+          "mode": "primary",
+          "unit": "unknown",
+          "photoNumberAnchors": 0,
+          "numericInterpolationPreviewReady": false,
+          "minorGraduationsCertified": false
+        }
+      ],
+      "pointers": [],
+      "systemChannels": [
+        {
+          "id": "primary",
+          "provider": null,
+          "path": null,
+          "unit": null,
+          "feedApproval": "UNKNOWN_LRU_BUS_WIRING"
+        }
+      ],
+      "stage11": {
+        "scenarioRegistryIncluded": true,
+        "actualVisualFlightTestAccepted": false,
+        "hasStandaloneOperationalSource": false,
+        "isReleased": false
+      },
+      "blockingReasons": [
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified",
+        "all_scale_major_and_minor_labels_not_signed",
+        "no_per-instrument_power_circuit_signoff",
+        "source_model_not_aircraft_certified",
+        "scenario_test_not_photo_signoff",
+        "two_numbered_photo_anchors_missing",
+        "owner_pointer_binding_missing"
+      ],
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+    },
+    {
+      "id": "eng.fuel_qty.center",
+      "panel": "ENGINE",
+      "kind": "rotary",
+      "priority": "high",
+      "sourceOriginal": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "photoCandidateStrokes": 5,
+      "sourcePivotCandidate": {
+        "x": 261,
+        "y": 922,
+        "uncertaintyPx": 22,
+        "reason": "circular face center; actual moving pointer unknown"
+      },
+      "caseCircleCandidate": {
+        "x": 229.2,
+        "y": 908.2,
+        "radius": 106.24,
+        "centerDeltaPx": 34.67,
+        "radiusDeltaPx": 6.24,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "nativeGeometry": {
+        "pivotCertified": false,
+        "allTicksCertified": false,
+        "photoReviewReady": false
+      },
+      "numericScales": [
+        {
+          "mode": "primary",
+          "unit": "%",
+          "photoNumberAnchors": 0,
+          "numericInterpolationPreviewReady": false,
+          "minorGraduationsCertified": false
+        }
+      ],
+      "pointers": [],
+      "systemChannels": [
+        {
+          "id": "primary",
+          "provider": "ecu",
+          "path": "fuel.tanksKg.center",
+          "unit": "kg",
+          "feedApproval": "UNKNOWN_LRU_BUS_WIRING"
+        }
+      ],
+      "stage11": {
+        "scenarioRegistryIncluded": true,
+        "actualVisualFlightTestAccepted": false,
+        "hasStandaloneOperationalSource": true,
+        "isReleased": false
+      },
+      "blockingReasons": [
+        "circle_vs_legacy_center_delta_over_20px",
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified",
+        "all_scale_major_and_minor_labels_not_signed",
+        "no_per-instrument_power_circuit_signoff",
+        "source_model_not_aircraft_certified",
+        "scenario_test_not_photo_signoff",
+        "two_numbered_photo_anchors_missing",
+        "owner_pointer_binding_missing"
+      ],
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+    },
+    {
+      "id": "eng.fuel_qty.1",
+      "panel": "ENGINE",
+      "kind": "rotary",
+      "priority": "high",
+      "sourceOriginal": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "photoCandidateStrokes": 13,
+      "sourcePivotCandidate": {
+        "x": 145,
+        "y": 1114,
+        "uncertaintyPx": 22,
+        "reason": "circular face center; actual moving pointer unknown"
+      },
+      "caseCircleCandidate": {
+        "x": 114.6,
+        "y": 1125,
+        "radius": 127.12,
+        "centerDeltaPx": 32.33,
+        "radiusDeltaPx": 17.12,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "nativeGeometry": {
+        "pivotCertified": false,
+        "allTicksCertified": false,
+        "photoReviewReady": false
+      },
+      "numericScales": [
+        {
+          "mode": "primary",
+          "unit": "%",
+          "photoNumberAnchors": 0,
+          "numericInterpolationPreviewReady": false,
+          "minorGraduationsCertified": false
+        }
+      ],
+      "pointers": [],
+      "systemChannels": [
+        {
+          "id": "primary",
+          "provider": "ecu",
+          "path": "fuel.tanksKg.main1",
+          "unit": "kg",
+          "feedApproval": "UNKNOWN_LRU_BUS_WIRING"
+        }
+      ],
+      "stage11": {
+        "scenarioRegistryIncluded": true,
+        "actualVisualFlightTestAccepted": false,
+        "hasStandaloneOperationalSource": true,
+        "isReleased": false
+      },
+      "blockingReasons": [
+        "circle_vs_legacy_center_delta_over_20px",
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified",
+        "all_scale_major_and_minor_labels_not_signed",
+        "no_per-instrument_power_circuit_signoff",
+        "source_model_not_aircraft_certified",
+        "scenario_test_not_photo_signoff",
+        "two_numbered_photo_anchors_missing",
+        "owner_pointer_binding_missing"
+      ],
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+    },
+    {
+      "id": "eng.fuel_qty.2",
+      "panel": "ENGINE",
+      "kind": "rotary",
+      "priority": "normal",
+      "sourceOriginal": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "photoCandidateStrokes": 20,
+      "sourcePivotCandidate": {
+        "x": 332,
+        "y": 1114,
+        "uncertaintyPx": 22,
+        "reason": "circular face center; actual moving pointer unknown"
+      },
+      "caseCircleCandidate": {
+        "x": 321.4,
+        "y": 1119,
+        "radius": 131.08,
+        "centerDeltaPx": 11.72,
+        "radiusDeltaPx": 21.08,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "nativeGeometry": {
+        "pivotCertified": false,
+        "allTicksCertified": false,
+        "photoReviewReady": false
+      },
+      "numericScales": [
+        {
+          "mode": "primary",
+          "unit": "%",
+          "photoNumberAnchors": 0,
+          "numericInterpolationPreviewReady": false,
+          "minorGraduationsCertified": false
+        }
+      ],
+      "pointers": [],
+      "systemChannels": [
+        {
+          "id": "primary",
+          "provider": "ecu",
+          "path": "fuel.tanksKg.main2",
+          "unit": "kg",
+          "feedApproval": "UNKNOWN_LRU_BUS_WIRING"
+        }
+      ],
+      "stage11": {
+        "scenarioRegistryIncluded": true,
+        "actualVisualFlightTestAccepted": false,
+        "hasStandaloneOperationalSource": true,
+        "isReleased": false
+      },
+      "blockingReasons": [
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified",
+        "all_scale_major_and_minor_labels_not_signed",
+        "no_per-instrument_power_circuit_signoff",
+        "source_model_not_aircraft_certified",
+        "scenario_test_not_photo_signoff",
+        "two_numbered_photo_anchors_missing",
+        "owner_pointer_binding_missing"
+      ],
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+    },
+    {
+      "id": "eng.n1.1",
+      "panel": "ENGINE",
+      "kind": "rotary",
+      "priority": "normal",
+      "sourceOriginal": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "photoCandidateStrokes": 1,
+      "sourcePivotCandidate": {
+        "x": 535,
+        "y": 553,
+        "uncertaintyPx": 22,
+        "reason": "geometric center from original native engine panel"
+      },
+      "caseCircleCandidate": {
+        "x": 536,
+        "y": 543.2,
+        "radius": 90.44,
+        "centerDeltaPx": 9.85,
+        "radiusDeltaPx": 3.56,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "nativeGeometry": {
+        "pivotCertified": false,
+        "allTicksCertified": false,
+        "photoReviewReady": false
+      },
+      "numericScales": [
+        {
+          "mode": "primary",
+          "unit": "%RPM",
+          "photoNumberAnchors": 0,
+          "numericInterpolationPreviewReady": false,
+          "minorGraduationsCertified": false
+        }
+      ],
+      "pointers": [],
+      "systemChannels": [
+        {
+          "id": "primary",
+          "provider": "ecu",
+          "path": "engines.engine1.n1Percent",
+          "unit": "%",
+          "feedApproval": "UNKNOWN_LRU_BUS_WIRING"
+        }
+      ],
+      "stage11": {
+        "scenarioRegistryIncluded": true,
+        "actualVisualFlightTestAccepted": false,
+        "hasStandaloneOperationalSource": true,
+        "isReleased": false
+      },
+      "blockingReasons": [
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified",
+        "all_scale_major_and_minor_labels_not_signed",
+        "no_per-instrument_power_circuit_signoff",
+        "source_model_not_aircraft_certified",
+        "scenario_test_not_photo_signoff",
+        "two_numbered_photo_anchors_missing",
+        "owner_pointer_binding_missing"
+      ],
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+    },
+    {
+      "id": "eng.n1.2",
+      "panel": "ENGINE",
+      "kind": "rotary",
+      "priority": "normal",
+      "sourceOriginal": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "photoCandidateStrokes": 0,
+      "sourcePivotCandidate": {
+        "x": 724,
+        "y": 553,
+        "uncertaintyPx": 22,
+        "reason": "geometric center from original native engine panel"
+      },
+      "caseCircleCandidate": {
+        "x": 719,
+        "y": 539.6,
+        "radius": 94.4,
+        "centerDeltaPx": 14.3,
+        "radiusDeltaPx": 0.4,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "nativeGeometry": {
+        "pivotCertified": false,
+        "allTicksCertified": false,
+        "photoReviewReady": false
+      },
+      "numericScales": [
+        {
+          "mode": "primary",
+          "unit": "%RPM",
+          "photoNumberAnchors": 0,
+          "numericInterpolationPreviewReady": false,
+          "minorGraduationsCertified": false
+        }
+      ],
+      "pointers": [],
+      "systemChannels": [
+        {
+          "id": "primary",
+          "provider": "ecu",
+          "path": "engines.engine2.n1Percent",
+          "unit": "%",
+          "feedApproval": "UNKNOWN_LRU_BUS_WIRING"
+        }
+      ],
+      "stage11": {
+        "scenarioRegistryIncluded": true,
+        "actualVisualFlightTestAccepted": false,
+        "hasStandaloneOperationalSource": true,
+        "isReleased": false
+      },
+      "blockingReasons": [
+        "no_white_candidate_strokes",
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified",
+        "all_scale_major_and_minor_labels_not_signed",
+        "no_per-instrument_power_circuit_signoff",
+        "source_model_not_aircraft_certified",
+        "scenario_test_not_photo_signoff",
+        "two_numbered_photo_anchors_missing",
+        "owner_pointer_binding_missing"
+      ],
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+    },
+    {
+      "id": "eng.egt.1",
+      "panel": "ENGINE",
+      "kind": "rotary",
+      "priority": "medium",
+      "sourceOriginal": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "photoCandidateStrokes": 6,
+      "sourcePivotCandidate": {
+        "x": 535,
+        "y": 723,
+        "evidence": "gauge-survey-stage2-3.json",
+        "state": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "caseCircleCandidate": {
+        "x": 534.2,
+        "y": 725.8,
+        "radius": 80.48,
+        "centerDeltaPx": 2.91,
+        "radiusDeltaPx": 39.52,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "nativeGeometry": {
+        "pivotCertified": false,
+        "allTicksCertified": false,
+        "photoReviewReady": false
+      },
+      "numericScales": [
+        {
+          "mode": "primary",
+          "unit": "°C",
+          "photoNumberAnchors": 0,
+          "numericInterpolationPreviewReady": false,
+          "minorGraduationsCertified": false
+        }
+      ],
+      "pointers": [
+        {
+          "pointerId": "egt1",
+          "shapeLocked": false,
+          "responseMode": null,
+          "sourceChannel": "primary",
+          "geometryAccepted": false,
+          "angleOffsetAccepted": false
+        }
+      ],
+      "systemChannels": [
+        {
+          "id": "primary",
+          "provider": "ecu",
+          "path": "engines.engine1.egtC",
+          "unit": "°C",
+          "feedApproval": "UNKNOWN_LRU_BUS_WIRING"
+        }
+      ],
+      "stage11": {
+        "scenarioRegistryIncluded": true,
+        "actualVisualFlightTestAccepted": false,
+        "hasStandaloneOperationalSource": true,
+        "isReleased": false
+      },
+      "blockingReasons": [
+        "smooth_unnumbered_arc_no_discrete_tick_mapping",
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified",
+        "all_scale_major_and_minor_labels_not_signed",
+        "no_per-instrument_power_circuit_signoff",
+        "source_model_not_aircraft_certified",
+        "scenario_test_not_photo_signoff",
+        "two_numbered_photo_anchors_missing",
+        "response_model_not_calibrated"
+      ],
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+    },
+    {
+      "id": "eng.egt.2",
+      "panel": "ENGINE",
+      "kind": "rotary",
+      "priority": "medium",
+      "sourceOriginal": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "photoCandidateStrokes": 5,
+      "sourcePivotCandidate": {
+        "x": 724,
+        "y": 723,
+        "evidence": "gauge-survey-stage2-3.json",
+        "state": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "caseCircleCandidate": {
+        "x": 723.2,
+        "y": 722.2,
+        "radius": 81.08,
+        "centerDeltaPx": 1.13,
+        "radiusDeltaPx": 38.92,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "nativeGeometry": {
+        "pivotCertified": false,
+        "allTicksCertified": false,
+        "photoReviewReady": false
+      },
+      "numericScales": [
+        {
+          "mode": "primary",
+          "unit": "°C",
+          "photoNumberAnchors": 0,
+          "numericInterpolationPreviewReady": false,
+          "minorGraduationsCertified": false
+        }
+      ],
+      "pointers": [
+        {
+          "pointerId": "egt2",
+          "shapeLocked": false,
+          "responseMode": null,
+          "sourceChannel": "primary",
+          "geometryAccepted": false,
+          "angleOffsetAccepted": false
+        }
+      ],
+      "systemChannels": [
+        {
+          "id": "primary",
+          "provider": "ecu",
+          "path": "engines.engine2.egtC",
+          "unit": "°C",
+          "feedApproval": "UNKNOWN_LRU_BUS_WIRING"
+        }
+      ],
+      "stage11": {
+        "scenarioRegistryIncluded": true,
+        "actualVisualFlightTestAccepted": false,
+        "hasStandaloneOperationalSource": true,
+        "isReleased": false
+      },
+      "blockingReasons": [
+        "smooth_unnumbered_arc_no_discrete_tick_mapping",
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified",
+        "all_scale_major_and_minor_labels_not_signed",
+        "no_per-instrument_power_circuit_signoff",
+        "source_model_not_aircraft_certified",
+        "scenario_test_not_photo_signoff",
+        "two_numbered_photo_anchors_missing",
+        "response_model_not_calibrated"
+      ],
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+    },
+    {
+      "id": "eng.n2.1",
+      "panel": "ENGINE",
+      "kind": "rotary",
+      "priority": "medium",
+      "sourceOriginal": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "photoCandidateStrokes": 5,
+      "sourcePivotCandidate": {
+        "x": 535,
+        "y": 900,
+        "evidence": "gauge-survey-stage2-3.json",
+        "state": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "caseCircleCandidate": {
+        "x": 534.2,
+        "y": 895.6,
+        "radius": 81.68,
+        "centerDeltaPx": 4.47,
+        "radiusDeltaPx": 38.32,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "nativeGeometry": {
+        "pivotCertified": false,
+        "allTicksCertified": false,
+        "photoReviewReady": false
+      },
+      "numericScales": [
+        {
+          "mode": "primary",
+          "unit": "%RPM",
+          "photoNumberAnchors": 0,
+          "numericInterpolationPreviewReady": false,
+          "minorGraduationsCertified": false
+        }
+      ],
+      "pointers": [
+        {
+          "pointerId": "n2_1",
+          "shapeLocked": false,
+          "responseMode": null,
+          "sourceChannel": "primary",
+          "geometryAccepted": false,
+          "angleOffsetAccepted": false
+        }
+      ],
+      "systemChannels": [
+        {
+          "id": "primary",
+          "provider": "ecu",
+          "path": "engines.engine1.n2Percent",
+          "unit": "%",
+          "feedApproval": "UNKNOWN_LRU_BUS_WIRING"
+        }
+      ],
+      "stage11": {
+        "scenarioRegistryIncluded": true,
+        "actualVisualFlightTestAccepted": false,
+        "hasStandaloneOperationalSource": true,
+        "isReleased": false
+      },
+      "blockingReasons": [
+        "smooth_unnumbered_arc_no_discrete_tick_mapping",
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified",
+        "all_scale_major_and_minor_labels_not_signed",
+        "no_per-instrument_power_circuit_signoff",
+        "source_model_not_aircraft_certified",
+        "scenario_test_not_photo_signoff",
+        "two_numbered_photo_anchors_missing",
+        "response_model_not_calibrated"
+      ],
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+    },
+    {
+      "id": "eng.n2.2",
+      "panel": "ENGINE",
+      "kind": "rotary",
+      "priority": "medium",
+      "sourceOriginal": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "photoCandidateStrokes": 6,
+      "sourcePivotCandidate": {
+        "x": 724,
+        "y": 900,
+        "evidence": "gauge-survey-stage2-3.json",
+        "state": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "caseCircleCandidate": {
+        "x": 723.2,
+        "y": 895.6,
+        "radius": 81.68,
+        "centerDeltaPx": 4.47,
+        "radiusDeltaPx": 38.32,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "nativeGeometry": {
+        "pivotCertified": false,
+        "allTicksCertified": false,
+        "photoReviewReady": false
+      },
+      "numericScales": [
+        {
+          "mode": "primary",
+          "unit": "%RPM",
+          "photoNumberAnchors": 0,
+          "numericInterpolationPreviewReady": false,
+          "minorGraduationsCertified": false
+        }
+      ],
+      "pointers": [
+        {
+          "pointerId": "n2_2",
+          "shapeLocked": false,
+          "responseMode": null,
+          "sourceChannel": "primary",
+          "geometryAccepted": false,
+          "angleOffsetAccepted": false
+        }
+      ],
+      "systemChannels": [
+        {
+          "id": "primary",
+          "provider": "ecu",
+          "path": "engines.engine2.n2Percent",
+          "unit": "%",
+          "feedApproval": "UNKNOWN_LRU_BUS_WIRING"
+        }
+      ],
+      "stage11": {
+        "scenarioRegistryIncluded": true,
+        "actualVisualFlightTestAccepted": false,
+        "hasStandaloneOperationalSource": true,
+        "isReleased": false
+      },
+      "blockingReasons": [
+        "smooth_unnumbered_arc_no_discrete_tick_mapping",
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified",
+        "all_scale_major_and_minor_labels_not_signed",
+        "no_per-instrument_power_circuit_signoff",
+        "source_model_not_aircraft_certified",
+        "scenario_test_not_photo_signoff",
+        "two_numbered_photo_anchors_missing",
+        "response_model_not_calibrated"
+      ],
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+    },
+    {
+      "id": "eng.fuel_flow.1",
+      "panel": "ENGINE",
+      "kind": "rotary",
+      "priority": "medium",
+      "sourceOriginal": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "photoCandidateStrokes": 10,
+      "sourcePivotCandidate": {
+        "x": 535,
+        "y": 1082,
+        "uncertaintyPx": 22,
+        "reason": "geometric center of FF/FU circular display"
+      },
+      "caseCircleCandidate": null,
+      "nativeGeometry": {
+        "pivotCertified": false,
+        "allTicksCertified": false,
+        "photoReviewReady": false
+      },
+      "numericScales": [
+        {
+          "mode": "primary",
+          "unit": "kg/h or kg",
+          "photoNumberAnchors": 0,
+          "numericInterpolationPreviewReady": false,
+          "minorGraduationsCertified": false
+        }
+      ],
+      "pointers": [],
+      "systemChannels": [
+        {
+          "id": "primary",
+          "provider": "ecu",
+          "path": "engines.engine1.fuelFlowKgHr",
+          "unit": "kg/h",
+          "feedApproval": "UNKNOWN_LRU_BUS_WIRING"
+        }
+      ],
+      "stage11": {
+        "scenarioRegistryIncluded": true,
+        "actualVisualFlightTestAccepted": false,
+        "hasStandaloneOperationalSource": true,
+        "isReleased": false
+      },
+      "blockingReasons": [
+        "no_independent_circle_center_candidate",
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified",
+        "all_scale_major_and_minor_labels_not_signed",
+        "no_per-instrument_power_circuit_signoff",
+        "source_model_not_aircraft_certified",
+        "scenario_test_not_photo_signoff",
+        "two_numbered_photo_anchors_missing",
+        "owner_pointer_binding_missing"
+      ],
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+    },
+    {
+      "id": "eng.fuel_flow.2",
+      "panel": "ENGINE",
+      "kind": "rotary",
+      "priority": "normal",
+      "sourceOriginal": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "photoCandidateStrokes": 23,
+      "sourcePivotCandidate": {
+        "x": 724,
+        "y": 1082,
+        "uncertaintyPx": 22,
+        "reason": "geometric center of FF/FU circular display"
+      },
+      "caseCircleCandidate": {
+        "x": 723.4,
+        "y": 1095.8,
+        "radius": 86.84,
+        "centerDeltaPx": 13.81,
+        "radiusDeltaPx": 6.16,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "nativeGeometry": {
+        "pivotCertified": false,
+        "allTicksCertified": false,
+        "photoReviewReady": false
+      },
+      "numericScales": [
+        {
+          "mode": "primary",
+          "unit": "kg/h or kg",
+          "photoNumberAnchors": 0,
+          "numericInterpolationPreviewReady": false,
+          "minorGraduationsCertified": false
+        }
+      ],
+      "pointers": [],
+      "systemChannels": [
+        {
+          "id": "primary",
+          "provider": "ecu",
+          "path": "engines.engine2.fuelFlowKgHr",
+          "unit": "kg/h",
+          "feedApproval": "UNKNOWN_LRU_BUS_WIRING"
+        }
+      ],
+      "stage11": {
+        "scenarioRegistryIncluded": true,
+        "actualVisualFlightTestAccepted": false,
+        "hasStandaloneOperationalSource": true,
+        "isReleased": false
+      },
+      "blockingReasons": [
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified",
+        "all_scale_major_and_minor_labels_not_signed",
+        "no_per-instrument_power_circuit_signoff",
+        "source_model_not_aircraft_certified",
+        "scenario_test_not_photo_signoff",
+        "two_numbered_photo_anchors_missing",
+        "owner_pointer_binding_missing"
+      ],
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+    },
+    {
+      "id": "eng.oil_pressure.1",
+      "panel": "ENGINE",
+      "kind": "rotary",
+      "priority": "medium",
+      "sourceOriginal": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "photoCandidateStrokes": 5,
+      "sourcePivotCandidate": {
+        "x": 1050,
+        "y": 538,
+        "uncertaintyPx": 22,
+        "reason": "geometric center of engine-1 oil pressure dial"
+      },
+      "caseCircleCandidate": null,
+      "nativeGeometry": {
+        "pivotCertified": false,
+        "allTicksCertified": false,
+        "photoReviewReady": false
+      },
+      "numericScales": [
+        {
+          "mode": "primary",
+          "unit": "psi",
+          "photoNumberAnchors": 0,
+          "numericInterpolationPreviewReady": false,
+          "minorGraduationsCertified": false
+        }
+      ],
+      "pointers": [],
+      "systemChannels": [
+        {
+          "id": "primary",
+          "provider": "ecu",
+          "path": "engines.engine1.oil.pressurePsi",
+          "unit": "psi",
+          "feedApproval": "UNKNOWN_LRU_BUS_WIRING"
+        }
+      ],
+      "stage11": {
+        "scenarioRegistryIncluded": true,
+        "actualVisualFlightTestAccepted": false,
+        "hasStandaloneOperationalSource": true,
+        "isReleased": false
+      },
+      "blockingReasons": [
+        "no_independent_circle_center_candidate",
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified",
+        "all_scale_major_and_minor_labels_not_signed",
+        "no_per-instrument_power_circuit_signoff",
+        "source_model_not_aircraft_certified",
+        "scenario_test_not_photo_signoff",
+        "two_numbered_photo_anchors_missing",
+        "owner_pointer_binding_missing"
+      ],
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+    },
+    {
+      "id": "eng.oil_pressure.2",
+      "panel": "ENGINE",
+      "kind": "rotary",
+      "priority": "medium",
+      "sourceOriginal": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "photoCandidateStrokes": 4,
+      "sourcePivotCandidate": {
+        "x": 1174,
+        "y": 538,
+        "uncertaintyPx": 22,
+        "reason": "geometric center of engine-2 oil pressure dial"
+      },
+      "caseCircleCandidate": null,
+      "nativeGeometry": {
+        "pivotCertified": false,
+        "allTicksCertified": false,
+        "photoReviewReady": false
+      },
+      "numericScales": [
+        {
+          "mode": "primary",
+          "unit": "psi",
+          "photoNumberAnchors": 0,
+          "numericInterpolationPreviewReady": false,
+          "minorGraduationsCertified": false
+        }
+      ],
+      "pointers": [],
+      "systemChannels": [
+        {
+          "id": "primary",
+          "provider": "ecu",
+          "path": "engines.engine2.oil.pressurePsi",
+          "unit": "psi",
+          "feedApproval": "UNKNOWN_LRU_BUS_WIRING"
+        }
+      ],
+      "stage11": {
+        "scenarioRegistryIncluded": true,
+        "actualVisualFlightTestAccepted": false,
+        "hasStandaloneOperationalSource": true,
+        "isReleased": false
+      },
+      "blockingReasons": [
+        "no_independent_circle_center_candidate",
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified",
+        "all_scale_major_and_minor_labels_not_signed",
+        "no_per-instrument_power_circuit_signoff",
+        "source_model_not_aircraft_certified",
+        "scenario_test_not_photo_signoff",
+        "two_numbered_photo_anchors_missing",
+        "owner_pointer_binding_missing"
+      ],
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+    },
+    {
+      "id": "eng.oil_temperature.1",
+      "panel": "ENGINE",
+      "kind": "rotary",
+      "priority": "medium",
+      "sourceOriginal": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "photoCandidateStrokes": 3,
+      "sourcePivotCandidate": {
+        "x": 1050,
+        "y": 688,
+        "uncertaintyPx": 22,
+        "reason": "geometric center of engine-1 oil temperature dial"
+      },
+      "caseCircleCandidate": null,
+      "nativeGeometry": {
+        "pivotCertified": false,
+        "allTicksCertified": false,
+        "photoReviewReady": false
+      },
+      "numericScales": [
+        {
+          "mode": "primary",
+          "unit": "°C",
+          "photoNumberAnchors": 0,
+          "numericInterpolationPreviewReady": false,
+          "minorGraduationsCertified": false
+        }
+      ],
+      "pointers": [],
+      "systemChannels": [
+        {
+          "id": "primary",
+          "provider": "ecu",
+          "path": "engines.engine1.oil.temperatureC",
+          "unit": "°C",
+          "feedApproval": "UNKNOWN_LRU_BUS_WIRING"
+        }
+      ],
+      "stage11": {
+        "scenarioRegistryIncluded": true,
+        "actualVisualFlightTestAccepted": false,
+        "hasStandaloneOperationalSource": true,
+        "isReleased": false
+      },
+      "blockingReasons": [
+        "no_independent_circle_center_candidate",
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified",
+        "all_scale_major_and_minor_labels_not_signed",
+        "no_per-instrument_power_circuit_signoff",
+        "source_model_not_aircraft_certified",
+        "scenario_test_not_photo_signoff",
+        "two_numbered_photo_anchors_missing",
+        "owner_pointer_binding_missing"
+      ],
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+    },
+    {
+      "id": "eng.oil_temperature.2",
+      "panel": "ENGINE",
+      "kind": "rotary",
+      "priority": "medium",
+      "sourceOriginal": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "photoCandidateStrokes": 5,
+      "sourcePivotCandidate": {
+        "x": 1174,
+        "y": 688,
+        "uncertaintyPx": 22,
+        "reason": "geometric center of engine-2 oil temperature dial"
+      },
+      "caseCircleCandidate": null,
+      "nativeGeometry": {
+        "pivotCertified": false,
+        "allTicksCertified": false,
+        "photoReviewReady": false
+      },
+      "numericScales": [
+        {
+          "mode": "primary",
+          "unit": "°C",
+          "photoNumberAnchors": 0,
+          "numericInterpolationPreviewReady": false,
+          "minorGraduationsCertified": false
+        }
+      ],
+      "pointers": [],
+      "systemChannels": [
+        {
+          "id": "primary",
+          "provider": "ecu",
+          "path": "engines.engine2.oil.temperatureC",
+          "unit": "°C",
+          "feedApproval": "UNKNOWN_LRU_BUS_WIRING"
+        }
+      ],
+      "stage11": {
+        "scenarioRegistryIncluded": true,
+        "actualVisualFlightTestAccepted": false,
+        "hasStandaloneOperationalSource": true,
+        "isReleased": false
+      },
+      "blockingReasons": [
+        "no_independent_circle_center_candidate",
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified",
+        "all_scale_major_and_minor_labels_not_signed",
+        "no_per-instrument_power_circuit_signoff",
+        "source_model_not_aircraft_certified",
+        "scenario_test_not_photo_signoff",
+        "two_numbered_photo_anchors_missing",
+        "owner_pointer_binding_missing"
+      ],
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+    },
+    {
+      "id": "eng.vibration.1",
+      "panel": "ENGINE",
+      "kind": "rotary",
+      "priority": "normal",
+      "sourceOriginal": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "photoCandidateStrokes": 21,
+      "sourcePivotCandidate": {
+        "x": 1050,
+        "y": 865,
+        "uncertaintyPx": 22,
+        "reason": "geometric center of engine-1 vibration dial"
+      },
+      "caseCircleCandidate": {
+        "x": 1064.6,
+        "y": 855.6,
+        "radius": 88.36,
+        "centerDeltaPx": 17.36,
+        "radiusDeltaPx": 19.36,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "nativeGeometry": {
+        "pivotCertified": false,
+        "allTicksCertified": false,
+        "photoReviewReady": false
+      },
+      "numericScales": [
+        {
+          "mode": "primary",
+          "unit": "units",
+          "photoNumberAnchors": 0,
+          "numericInterpolationPreviewReady": false,
+          "minorGraduationsCertified": false
+        }
+      ],
+      "pointers": [],
+      "systemChannels": [
+        {
+          "id": "primary",
+          "provider": null,
+          "path": null,
+          "unit": null,
+          "feedApproval": "UNKNOWN_LRU_BUS_WIRING"
+        }
+      ],
+      "stage11": {
+        "scenarioRegistryIncluded": true,
+        "actualVisualFlightTestAccepted": false,
+        "hasStandaloneOperationalSource": false,
+        "isReleased": false
+      },
+      "blockingReasons": [
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified",
+        "all_scale_major_and_minor_labels_not_signed",
+        "no_per-instrument_power_circuit_signoff",
+        "source_model_not_aircraft_certified",
+        "scenario_test_not_photo_signoff",
+        "two_numbered_photo_anchors_missing",
+        "owner_pointer_binding_missing"
+      ],
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+    },
+    {
+      "id": "eng.vibration.2",
+      "panel": "ENGINE",
+      "kind": "rotary",
+      "priority": "medium",
+      "sourceOriginal": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "photoCandidateStrokes": 4,
+      "sourcePivotCandidate": {
+        "x": 1174,
+        "y": 865,
+        "uncertaintyPx": 22,
+        "reason": "geometric center of engine-2 vibration dial"
+      },
+      "caseCircleCandidate": null,
+      "nativeGeometry": {
+        "pivotCertified": false,
+        "allTicksCertified": false,
+        "photoReviewReady": false
+      },
+      "numericScales": [
+        {
+          "mode": "primary",
+          "unit": "units",
+          "photoNumberAnchors": 0,
+          "numericInterpolationPreviewReady": false,
+          "minorGraduationsCertified": false
+        }
+      ],
+      "pointers": [],
+      "systemChannels": [
+        {
+          "id": "primary",
+          "provider": null,
+          "path": null,
+          "unit": null,
+          "feedApproval": "UNKNOWN_LRU_BUS_WIRING"
+        }
+      ],
+      "stage11": {
+        "scenarioRegistryIncluded": true,
+        "actualVisualFlightTestAccepted": false,
+        "hasStandaloneOperationalSource": false,
+        "isReleased": false
+      },
+      "blockingReasons": [
+        "no_independent_circle_center_candidate",
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified",
+        "all_scale_major_and_minor_labels_not_signed",
+        "no_per-instrument_power_circuit_signoff",
+        "source_model_not_aircraft_certified",
+        "scenario_test_not_photo_signoff",
+        "two_numbered_photo_anchors_missing",
+        "owner_pointer_binding_missing"
+      ],
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+    },
+    {
+      "id": "eng.hyd_pressure.a",
+      "panel": "ENGINE",
+      "kind": "rotary",
+      "priority": "medium",
+      "sourceOriginal": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "photoCandidateStrokes": 6,
+      "sourcePivotCandidate": {
+        "x": 1050,
+        "y": 1037,
+        "uncertaintyPx": 22,
+        "reason": "geometric center of hydraulic pressure A"
+      },
+      "caseCircleCandidate": null,
+      "nativeGeometry": {
+        "pivotCertified": false,
+        "allTicksCertified": false,
+        "photoReviewReady": false
+      },
+      "numericScales": [
+        {
+          "mode": "primary",
+          "unit": "1000 psi",
+          "photoNumberAnchors": 0,
+          "numericInterpolationPreviewReady": false,
+          "minorGraduationsCertified": false
+        }
+      ],
+      "pointers": [],
+      "systemChannels": [
+        {
+          "id": "primary",
+          "provider": "ecu",
+          "path": "hydraulics.systemA.pressurePsi",
+          "unit": "psi",
+          "feedApproval": "UNKNOWN_LRU_BUS_WIRING"
+        }
+      ],
+      "stage11": {
+        "scenarioRegistryIncluded": true,
+        "actualVisualFlightTestAccepted": false,
+        "hasStandaloneOperationalSource": true,
+        "isReleased": false
+      },
+      "blockingReasons": [
+        "no_independent_circle_center_candidate",
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified",
+        "all_scale_major_and_minor_labels_not_signed",
+        "no_per-instrument_power_circuit_signoff",
+        "source_model_not_aircraft_certified",
+        "scenario_test_not_photo_signoff",
+        "two_numbered_photo_anchors_missing",
+        "owner_pointer_binding_missing"
+      ],
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+    },
+    {
+      "id": "eng.hyd_pressure.b",
+      "panel": "ENGINE",
+      "kind": "rotary",
+      "priority": "medium",
+      "sourceOriginal": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "photoCandidateStrokes": 4,
+      "sourcePivotCandidate": {
+        "x": 1174,
+        "y": 1037,
+        "uncertaintyPx": 22,
+        "reason": "geometric center of hydraulic pressure B"
+      },
+      "caseCircleCandidate": null,
+      "nativeGeometry": {
+        "pivotCertified": false,
+        "allTicksCertified": false,
+        "photoReviewReady": false
+      },
+      "numericScales": [
+        {
+          "mode": "primary",
+          "unit": "1000 psi",
+          "photoNumberAnchors": 0,
+          "numericInterpolationPreviewReady": false,
+          "minorGraduationsCertified": false
+        }
+      ],
+      "pointers": [],
+      "systemChannels": [
+        {
+          "id": "primary",
+          "provider": "ecu",
+          "path": "hydraulics.systemB.pressurePsi",
+          "unit": "psi",
+          "feedApproval": "UNKNOWN_LRU_BUS_WIRING"
+        }
+      ],
+      "stage11": {
+        "scenarioRegistryIncluded": true,
+        "actualVisualFlightTestAccepted": false,
+        "hasStandaloneOperationalSource": true,
+        "isReleased": false
+      },
+      "blockingReasons": [
+        "no_independent_circle_center_candidate",
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified",
+        "all_scale_major_and_minor_labels_not_signed",
+        "no_per-instrument_power_circuit_signoff",
+        "source_model_not_aircraft_certified",
+        "scenario_test_not_photo_signoff",
+        "two_numbered_photo_anchors_missing",
+        "owner_pointer_binding_missing"
+      ],
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+    },
+    {
+      "id": "fo.flap_position",
+      "panel": "FO-INNER",
+      "kind": "rotary",
+      "priority": "normal",
+      "sourceOriginal": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Right_Main_Instruments_Blank.png",
+      "photoCandidateStrokes": 15,
+      "sourcePivotCandidate": {
+        "x": 145,
+        "y": 290,
+        "uncertaintyPx": 22,
+        "reason": "flap two-needle central circular face"
+      },
+      "caseCircleCandidate": {
+        "x": 132.6,
+        "y": 304.6,
+        "radius": 90.8,
+        "centerDeltaPx": 19.16,
+        "radiusDeltaPx": 6.8,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "nativeGeometry": {
+        "pivotCertified": false,
+        "allTicksCertified": false,
+        "photoReviewReady": false
+      },
+      "numericScales": [
+        {
+          "mode": "primary",
+          "unit": "flap units",
+          "photoNumberAnchors": 0,
+          "numericInterpolationPreviewReady": false,
+          "minorGraduationsCertified": false
+        }
+      ],
+      "pointers": [
+        {
+          "pointerId": "flapL",
+          "shapeLocked": false,
+          "responseMode": null,
+          "sourceChannel": "flapL",
+          "geometryAccepted": false,
+          "angleOffsetAccepted": false
+        },
+        {
+          "pointerId": "flapR",
+          "shapeLocked": false,
+          "responseMode": null,
+          "sourceChannel": "flapR",
+          "geometryAccepted": false,
+          "angleOffsetAccepted": false
+        }
+      ],
+      "systemChannels": [
+        {
+          "id": "flapL",
+          "provider": null,
+          "path": null,
+          "unit": null,
+          "feedApproval": "UNKNOWN_LRU_BUS_WIRING"
+        },
+        {
+          "id": "flapR",
+          "provider": null,
+          "path": null,
+          "unit": null,
+          "feedApproval": "UNKNOWN_LRU_BUS_WIRING"
+        }
+      ],
+      "stage11": {
+        "scenarioRegistryIncluded": true,
+        "actualVisualFlightTestAccepted": false,
+        "hasStandaloneOperationalSource": false,
+        "isReleased": false
+      },
+      "blockingReasons": [
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified",
+        "all_scale_major_and_minor_labels_not_signed",
+        "no_per-instrument_power_circuit_signoff",
+        "source_model_not_aircraft_certified",
+        "scenario_test_not_photo_signoff",
+        "two_numbered_photo_anchors_missing",
+        "response_model_not_calibrated"
+      ],
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+    },
+    {
+      "id": "fo.hyd_brake_pressure",
+      "panel": "FO-INNER",
+      "kind": "rotary",
+      "priority": "normal",
+      "sourceOriginal": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Right_Main_Instruments_Blank.png",
+      "photoCandidateStrokes": 42,
+      "sourcePivotCandidate": {
+        "x": 473,
+        "y": 568,
+        "uncertaintyPx": 22,
+        "reason": "hydraulic brake dial center"
+      },
+      "caseCircleCandidate": {
+        "x": 480.2,
+        "y": 576.4,
+        "radius": 87,
+        "centerDeltaPx": 11.06,
+        "radiusDeltaPx": 15,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "nativeGeometry": {
+        "pivotCertified": false,
+        "allTicksCertified": false,
+        "photoReviewReady": false
+      },
+      "numericScales": [
+        {
+          "mode": "primary",
+          "unit": "1000 psi",
+          "photoNumberAnchors": 0,
+          "numericInterpolationPreviewReady": false,
+          "minorGraduationsCertified": false
+        }
+      ],
+      "pointers": [],
+      "systemChannels": [
+        {
+          "id": "primary",
+          "provider": null,
+          "path": null,
+          "unit": null,
+          "feedApproval": "UNKNOWN_LRU_BUS_WIRING"
+        }
+      ],
+      "stage11": {
+        "scenarioRegistryIncluded": true,
+        "actualVisualFlightTestAccepted": false,
+        "hasStandaloneOperationalSource": false,
+        "isReleased": false
+      },
+      "blockingReasons": [
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified",
+        "all_scale_major_and_minor_labels_not_signed",
+        "no_per-instrument_power_circuit_signoff",
+        "source_model_not_aircraft_certified",
+        "scenario_test_not_photo_signoff",
+        "two_numbered_photo_anchors_missing",
+        "owner_pointer_binding_missing"
+      ],
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+    },
+    {
+      "id": "fo.airspeed",
+      "panel": "FO-INNER",
+      "kind": "rotary",
+      "priority": "high",
+      "sourceOriginal": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Right_Main_Instruments_Blank.png",
+      "photoCandidateStrokes": 90,
+      "sourcePivotCandidate": {
+        "x": 711,
+        "y": 564,
+        "uncertaintyPx": 22,
+        "reason": "FO airspeed dial center"
+      },
+      "caseCircleCandidate": {
+        "x": 733.2,
+        "y": 577.8,
+        "radius": 164.56,
+        "centerDeltaPx": 26.14,
+        "radiusDeltaPx": 19.56,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "nativeGeometry": {
+        "pivotCertified": false,
+        "allTicksCertified": false,
+        "photoReviewReady": false
+      },
+      "numericScales": [
+        {
+          "mode": "primary",
+          "unit": "knots",
+          "photoNumberAnchors": 0,
+          "numericInterpolationPreviewReady": false,
+          "minorGraduationsCertified": false
+        }
+      ],
+      "pointers": [
+        {
+          "pointerId": "foIAS",
+          "shapeLocked": false,
+          "responseMode": null,
+          "sourceChannel": "primary",
+          "geometryAccepted": false,
+          "angleOffsetAccepted": false
+        },
+        {
+          "pointerId": "foVMO",
+          "shapeLocked": false,
+          "responseMode": null,
+          "sourceChannel": null,
+          "geometryAccepted": false,
+          "angleOffsetAccepted": false
+        }
+      ],
+      "systemChannels": [
+        {
+          "id": "primary",
+          "provider": "ecu",
+          "path": "aircraft.iasKt",
+          "unit": "kt",
+          "feedApproval": "UNKNOWN_LRU_BUS_WIRING"
+        }
+      ],
+      "stage11": {
+        "scenarioRegistryIncluded": true,
+        "actualVisualFlightTestAccepted": false,
+        "hasStandaloneOperationalSource": true,
+        "isReleased": false
+      },
+      "blockingReasons": [
+        "circle_vs_legacy_center_delta_over_20px",
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified",
+        "all_scale_major_and_minor_labels_not_signed",
+        "no_per-instrument_power_circuit_signoff",
+        "source_model_not_aircraft_certified",
+        "scenario_test_not_photo_signoff",
+        "two_numbered_photo_anchors_missing",
+        "response_model_not_calibrated"
+      ],
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+    },
+    {
+      "id": "fo.rmi",
+      "panel": "FO-INNER",
+      "kind": "rotary",
+      "priority": "normal",
+      "sourceOriginal": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Right_Main_Instruments_Blank.png",
+      "photoCandidateStrokes": 45,
+      "sourcePivotCandidate": {
+        "x": 761,
+        "y": 936,
+        "uncertaintyPx": 22,
+        "reason": "FO rotating compass card center"
+      },
+      "caseCircleCandidate": {
+        "x": 769.2,
+        "y": 950.2,
+        "radius": 91.2,
+        "centerDeltaPx": 16.4,
+        "radiusDeltaPx": 43.8,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "nativeGeometry": {
+        "pivotCertified": false,
+        "allTicksCertified": false,
+        "photoReviewReady": false
+      },
+      "numericScales": [
+        {
+          "mode": "primary",
+          "unit": "degrees",
+          "photoNumberAnchors": 0,
+          "numericInterpolationPreviewReady": false,
+          "minorGraduationsCertified": false
+        }
+      ],
+      "pointers": [
+        {
+          "pointerId": "foRMI1",
+          "shapeLocked": true,
+          "responseMode": null,
+          "sourceChannel": "bearing1",
+          "geometryAccepted": false,
+          "angleOffsetAccepted": false
+        },
+        {
+          "pointerId": "foRMI2",
+          "shapeLocked": true,
+          "responseMode": null,
+          "sourceChannel": "bearing2",
+          "geometryAccepted": false,
+          "angleOffsetAccepted": false
+        }
+      ],
+      "systemChannels": [
+        {
+          "id": "bearing1",
+          "provider": null,
+          "path": null,
+          "unit": null,
+          "feedApproval": "UNKNOWN_LRU_BUS_WIRING"
+        },
+        {
+          "id": "bearing2",
+          "provider": null,
+          "path": null,
+          "unit": null,
+          "feedApproval": "UNKNOWN_LRU_BUS_WIRING"
+        }
+      ],
+      "stage11": {
+        "scenarioRegistryIncluded": true,
+        "actualVisualFlightTestAccepted": false,
+        "hasStandaloneOperationalSource": false,
+        "isReleased": false
+      },
+      "blockingReasons": [
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified",
+        "all_scale_major_and_minor_labels_not_signed",
+        "no_per-instrument_power_circuit_signoff",
+        "source_model_not_aircraft_certified",
+        "scenario_test_not_photo_signoff",
+        "two_numbered_photo_anchors_missing",
+        "response_model_not_calibrated"
+      ],
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+    },
+    {
+      "id": "fo.left_linear",
+      "panel": "FO-INNER",
+      "kind": "linear",
+      "priority": "normal",
+      "sourceOriginal": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Right_Main_Instruments_Blank.png",
+      "photoCandidateStrokes": 10,
+      "sourcePivotCandidate": null,
+      "caseCircleCandidate": null,
+      "nativeGeometry": {
+        "pivotCertified": false,
+        "allTicksCertified": false,
+        "photoReviewReady": false
+      },
+      "numericScales": [
+        {
+          "mode": "linear",
+          "unit": "unverified",
+          "photoNumberAnchors": 0,
+          "numericInterpolationPreviewReady": false,
+          "minorGraduationsCertified": false
+        }
+      ],
+      "pointers": [],
+      "systemChannels": [
+        {
+          "id": "primary",
+          "provider": null,
+          "path": null,
+          "unit": null,
+          "feedApproval": "UNKNOWN_LRU_BUS_WIRING"
+        }
+      ],
+      "stage11": {
+        "scenarioRegistryIncluded": true,
+        "actualVisualFlightTestAccepted": false,
+        "hasStandaloneOperationalSource": false,
+        "isReleased": false
+      },
+      "blockingReasons": [
+        "line_values_unassigned",
+        "all_scale_major_and_minor_labels_not_signed",
+        "no_per-instrument_power_circuit_signoff",
+        "source_model_not_aircraft_certified",
+        "scenario_test_not_photo_signoff",
+        "two_numbered_photo_anchors_missing",
+        "owner_pointer_binding_missing"
+      ],
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+    },
+    {
+      "id": "fo.right_linear",
+      "panel": "FO-INNER",
+      "kind": "linear",
+      "priority": "normal",
+      "sourceOriginal": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Right_Main_Instruments_Blank.png",
+      "photoCandidateStrokes": 11,
+      "sourcePivotCandidate": null,
+      "caseCircleCandidate": null,
+      "nativeGeometry": {
+        "pivotCertified": false,
+        "allTicksCertified": false,
+        "photoReviewReady": false
+      },
+      "numericScales": [
+        {
+          "mode": "linear",
+          "unit": "unverified",
+          "photoNumberAnchors": 0,
+          "numericInterpolationPreviewReady": false,
+          "minorGraduationsCertified": false
+        }
+      ],
+      "pointers": [],
+      "systemChannels": [
+        {
+          "id": "primary",
+          "provider": null,
+          "path": null,
+          "unit": null,
+          "feedApproval": "UNKNOWN_LRU_BUS_WIRING"
+        }
+      ],
+      "stage11": {
+        "scenarioRegistryIncluded": true,
+        "actualVisualFlightTestAccepted": false,
+        "hasStandaloneOperationalSource": false,
+        "isReleased": false
+      },
+      "blockingReasons": [
+        "line_values_unassigned",
+        "all_scale_major_and_minor_labels_not_signed",
+        "no_per-instrument_power_circuit_signoff",
+        "source_model_not_aircraft_certified",
+        "scenario_test_not_photo_signoff",
+        "two_numbered_photo_anchors_missing",
+        "owner_pointer_binding_missing"
+      ],
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+    },
+    {
+      "id": "fo.outer_altimeter",
+      "panel": "FO-OUTER",
+      "kind": "rotary",
+      "priority": "normal",
+      "sourceOriginal": "file_000000006c00820ab145b3682f686256.png",
+      "photoCandidateStrokes": 64,
+      "sourcePivotCandidate": {
+        "x": 616,
+        "y": 343,
+        "uncertaintyPx": 15,
+        "reason": "strong Hough-circle candidate; still not optical pivot certified"
+      },
+      "caseCircleCandidate": {
+        "x": 616.4,
+        "y": 344.6,
+        "radius": 111.56,
+        "centerDeltaPx": 1.65,
+        "radiusDeltaPx": 3.44,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "nativeGeometry": {
+        "pivotCertified": false,
+        "allTicksCertified": false,
+        "photoReviewReady": false
+      },
+      "numericScales": [
+        {
+          "mode": "primary",
+          "unit": "ft",
+          "photoNumberAnchors": 0,
+          "numericInterpolationPreviewReady": false,
+          "minorGraduationsCertified": false
+        }
+      ],
+      "pointers": [
+        {
+          "pointerId": "foAltimeter",
+          "shapeLocked": false,
+          "responseMode": null,
+          "sourceChannel": "primary",
+          "geometryAccepted": false,
+          "angleOffsetAccepted": false
+        }
+      ],
+      "systemChannels": [
+        {
+          "id": "primary",
+          "provider": null,
+          "path": null,
+          "unit": null,
+          "feedApproval": "UNKNOWN_LRU_BUS_WIRING"
+        }
+      ],
+      "stage11": {
+        "scenarioRegistryIncluded": true,
+        "actualVisualFlightTestAccepted": false,
+        "hasStandaloneOperationalSource": false,
+        "isReleased": false
+      },
+      "blockingReasons": [
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified",
+        "all_scale_major_and_minor_labels_not_signed",
+        "no_per-instrument_power_circuit_signoff",
+        "source_model_not_aircraft_certified",
+        "scenario_test_not_photo_signoff",
+        "two_numbered_photo_anchors_missing",
+        "response_model_not_calibrated"
+      ],
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+    },
+    {
+      "id": "fo.outer_vertical_speed",
+      "panel": "FO-OUTER",
+      "kind": "rotary",
+      "priority": "normal",
+      "sourceOriginal": "file_000000006c00820ab145b3682f686256.png",
+      "photoCandidateStrokes": 41,
+      "sourcePivotCandidate": {
+        "x": 617,
+        "y": 609,
+        "uncertaintyPx": 15,
+        "reason": "strong Hough-circle candidate; still not optical pivot certified"
+      },
+      "caseCircleCandidate": {
+        "x": 617,
+        "y": 610.2,
+        "radius": 107.8,
+        "centerDeltaPx": 1.2,
+        "radiusDeltaPx": 2.2,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "nativeGeometry": {
+        "pivotCertified": false,
+        "allTicksCertified": false,
+        "photoReviewReady": false
+      },
+      "numericScales": [
+        {
+          "mode": "primary",
+          "unit": "1000 ft/min",
+          "photoNumberAnchors": 0,
+          "numericInterpolationPreviewReady": false,
+          "minorGraduationsCertified": false
+        }
+      ],
+      "pointers": [
+        {
+          "pointerId": "foVSI",
+          "shapeLocked": false,
+          "responseMode": null,
+          "sourceChannel": "primary",
+          "geometryAccepted": false,
+          "angleOffsetAccepted": false
+        }
+      ],
+      "systemChannels": [
+        {
+          "id": "primary",
+          "provider": null,
+          "path": null,
+          "unit": null,
+          "feedApproval": "UNKNOWN_LRU_BUS_WIRING"
+        }
+      ],
+      "stage11": {
+        "scenarioRegistryIncluded": true,
+        "actualVisualFlightTestAccepted": false,
+        "hasStandaloneOperationalSource": false,
+        "isReleased": false
+      },
+      "blockingReasons": [
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified",
+        "all_scale_major_and_minor_labels_not_signed",
+        "no_per-instrument_power_circuit_signoff",
+        "source_model_not_aircraft_certified",
+        "scenario_test_not_photo_signoff",
+        "two_numbered_photo_anchors_missing",
+        "response_model_not_calibrated"
+      ],
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+    },
+    {
+      "id": "fo.outer_clock",
+      "panel": "FO-OUTER",
+      "kind": "rotary",
+      "priority": "normal",
+      "sourceOriginal": "file_000000006c00820ab145b3682f686256.png",
+      "photoCandidateStrokes": 56,
+      "sourcePivotCandidate": {
+        "x": 873,
+        "y": 609,
+        "uncertaintyPx": 15,
+        "reason": "strong Hough-circle candidate; still not optical pivot certified"
+      },
+      "caseCircleCandidate": {
+        "x": 873.4,
+        "y": 610.6,
+        "radius": 110.24,
+        "centerDeltaPx": 1.65,
+        "radiusDeltaPx": 4.76,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "nativeGeometry": {
+        "pivotCertified": false,
+        "allTicksCertified": false,
+        "photoReviewReady": false
+      },
+      "numericScales": [
+        {
+          "mode": "primary",
+          "unit": "time",
+          "photoNumberAnchors": 0,
+          "numericInterpolationPreviewReady": false,
+          "minorGraduationsCertified": false
+        }
+      ],
+      "pointers": [
+        {
+          "pointerId": "foClock",
+          "shapeLocked": false,
+          "responseMode": null,
+          "sourceChannel": "primary",
+          "geometryAccepted": false,
+          "angleOffsetAccepted": false
+        }
+      ],
+      "systemChannels": [
+        {
+          "id": "primary",
+          "provider": null,
+          "path": null,
+          "unit": null,
+          "feedApproval": "UNKNOWN_LRU_BUS_WIRING"
+        }
+      ],
+      "stage11": {
+        "scenarioRegistryIncluded": true,
+        "actualVisualFlightTestAccepted": false,
+        "hasStandaloneOperationalSource": false,
+        "isReleased": false
+      },
+      "blockingReasons": [
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified",
+        "all_scale_major_and_minor_labels_not_signed",
+        "no_per-instrument_power_circuit_signoff",
+        "source_model_not_aircraft_certified",
+        "scenario_test_not_photo_signoff",
+        "two_numbered_photo_anchors_missing",
+        "response_model_not_calibrated"
+      ],
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+    },
+    {
+      "id": "ped.stab_trim.left",
+      "panel": "THROTTLE",
+      "kind": "linear",
+      "priority": "medium",
+      "sourceOriginal": "panel-mosaic-lab/assets/locked/2026-10-23/Aircraft Throttle Quadrant Control Panel.png",
+      "photoCandidateStrokes": 2,
+      "sourcePivotCandidate": null,
+      "caseCircleCandidate": null,
+      "nativeGeometry": {
+        "pivotCertified": false,
+        "allTicksCertified": false,
+        "photoReviewReady": false
+      },
+      "numericScales": [
+        {
+          "mode": "linear",
+          "unit": "units",
+          "photoNumberAnchors": 0,
+          "numericInterpolationPreviewReady": false,
+          "minorGraduationsCertified": false
+        }
+      ],
+      "pointers": [],
+      "systemChannels": [
+        {
+          "id": "primary",
+          "provider": null,
+          "path": null,
+          "unit": null,
+          "feedApproval": "UNKNOWN_LRU_BUS_WIRING"
+        }
+      ],
+      "stage11": {
+        "scenarioRegistryIncluded": true,
+        "actualVisualFlightTestAccepted": false,
+        "hasStandaloneOperationalSource": false,
+        "isReleased": false
+      },
+      "blockingReasons": [
+        "linear_minor_ticks_incomplete",
+        "line_values_unassigned",
+        "all_scale_major_and_minor_labels_not_signed",
+        "no_per-instrument_power_circuit_signoff",
+        "source_model_not_aircraft_certified",
+        "scenario_test_not_photo_signoff",
+        "two_numbered_photo_anchors_missing",
+        "owner_pointer_binding_missing"
+      ],
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+    },
+    {
+      "id": "ped.stab_trim.right",
+      "panel": "THROTTLE",
+      "kind": "linear",
+      "priority": "high",
+      "sourceOriginal": "panel-mosaic-lab/assets/locked/2026-10-23/Aircraft Throttle Quadrant Control Panel.png",
+      "photoCandidateStrokes": 0,
+      "sourcePivotCandidate": null,
+      "caseCircleCandidate": null,
+      "nativeGeometry": {
+        "pivotCertified": false,
+        "allTicksCertified": false,
+        "photoReviewReady": false
+      },
+      "numericScales": [
+        {
+          "mode": "linear",
+          "unit": "units",
+          "photoNumberAnchors": 0,
+          "numericInterpolationPreviewReady": false,
+          "minorGraduationsCertified": false
+        }
+      ],
+      "pointers": [],
+      "systemChannels": [
+        {
+          "id": "primary",
+          "provider": null,
+          "path": null,
+          "unit": null,
+          "feedApproval": "UNKNOWN_LRU_BUS_WIRING"
+        }
+      ],
+      "stage11": {
+        "scenarioRegistryIncluded": true,
+        "actualVisualFlightTestAccepted": false,
+        "hasStandaloneOperationalSource": false,
+        "isReleased": false
+      },
+      "blockingReasons": [
+        "no_transverse_lines_detected",
+        "linear_minor_ticks_incomplete",
+        "line_values_unassigned",
+        "all_scale_major_and_minor_labels_not_signed",
+        "no_per-instrument_power_circuit_signoff",
+        "source_model_not_aircraft_certified",
+        "scenario_test_not_photo_signoff",
+        "two_numbered_photo_anchors_missing",
+        "owner_pointer_binding_missing"
+      ],
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+    },
+    {
+      "id": "ped.rudder_trim",
+      "panel": "RADIO",
+      "kind": "linear",
+      "priority": "normal",
+      "sourceOriginal": "panel-mosaic-lab/assets/locked/2026-10-23/PD-RADIO-AVIONICS-7a41044771fa.png",
+      "photoCandidateStrokes": 6,
+      "sourcePivotCandidate": null,
+      "caseCircleCandidate": null,
+      "nativeGeometry": {
+        "pivotCertified": false,
+        "allTicksCertified": false,
+        "photoReviewReady": false
+      },
+      "numericScales": [
+        {
+          "mode": "linear",
+          "unit": "units",
+          "photoNumberAnchors": 0,
+          "numericInterpolationPreviewReady": false,
+          "minorGraduationsCertified": false
+        }
+      ],
+      "pointers": [],
+      "systemChannels": [
+        {
+          "id": "primary",
+          "provider": null,
+          "path": null,
+          "unit": null,
+          "feedApproval": "UNKNOWN_LRU_BUS_WIRING"
+        }
+      ],
+      "stage11": {
+        "scenarioRegistryIncluded": true,
+        "actualVisualFlightTestAccepted": false,
+        "hasStandaloneOperationalSource": false,
+        "isReleased": false
+      },
+      "blockingReasons": [
+        "line_values_unassigned",
+        "all_scale_major_and_minor_labels_not_signed",
+        "no_per-instrument_power_circuit_signoff",
+        "source_model_not_aircraft_certified",
+        "scenario_test_not_photo_signoff",
+        "two_numbered_photo_anchors_missing",
+        "owner_pointer_binding_missing"
+      ],
+      "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
+    }
+  ]
+}
