@@ -67,7 +67,10 @@ function hardwareCommand(e){
  if(own(map,d.id))send(map[d.id]);
  else if(d.id==="VS_WHEEL")send({type:"VALUE",id:"verticalSpeed",value:d.value});
  else if(["CO","SPD_INTV","ALT_INTV"].includes(d.id)){
-  // Preserve these physical controls until FCOM-specific laws are added.
+  // A momentary button must not remain visually latched if its control law
+  // has not been source-validated. Accept the physical press, reject activation.
+  if(window.B737McpHardwareV1?.getState()?.[d.id]===true)
+   window.B737McpHardwareV1.setState(d.id,false);
   state.lastRejection=d.id+"_LOGIC_NOT_VALIDATED";
   project();notify();
  }
