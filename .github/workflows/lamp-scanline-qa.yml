@@ -4,6 +4,8 @@ on:
   push:
     paths:
       - tools/lamp-photo-scanline-qa.py
+      - panel-mosaic-lab/interactive-overhead/lights.json
+      - panel-mosaic-lab/cockpit/lights.json
       - .github/workflows/lamp-scanline-qa.yml
 permissions:
   contents: read
