@@ -1,0 +1,659 @@
+{
+  "schema": "b737.native-pixel-unverified-pivot-track-candidates.v1",
+  "created": "2026-10-25",
+  "aircraft": "737-33V EP-FSI",
+  "evidence": "Human visual examination of unchanged native-source-panel previews with original-image coordinate grid, plus high-threshold OpenCV Hough center proposals. These are coarse center hypotheses, NOT confirmed exact optical needle shafts.",
+  "scan": "https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/40216924201",
+  "methodology": "Native dimensions and source image SHA256 taken from frozen gauge-survey-stage2-3 registry. Circular candidates are rendered over source pixel grid, while nonrotating track windows are bounding boxes. Actual centers, major/minor line tips, zero bearings, and graduation values require crop-by-crop final inspection.",
+  "approval": "NONE",
+  "circularFaces": [
+    {
+      "id": "capt.airspeed",
+      "panel": "CAPTAIN",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png",
+      "sourceSha256": "dea7c23ddd5d648cf51735d0fcbcc9d1e69ce37efd736ec45fb173fe766fc56b",
+      "sourceWidth": 3942,
+      "sourceHeight": 3591,
+      "pivotCandidate": {
+        "x": 1100,
+        "y": 970,
+        "uncertaintyPx": 40,
+        "reason": "visually estimated native-grid dial center"
+      },
+      "roughDialRadiusPx": 360,
+      "pivotVerified": false,
+      "majorMinorTicksVerified": false,
+      "zeroAngleDeg": null,
+      "liveNeedleEnabled": false
+    },
+    {
+      "id": "capt.rmi",
+      "panel": "CAPTAIN",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png",
+      "sourceSha256": "dea7c23ddd5d648cf51735d0fcbcc9d1e69ce37efd736ec45fb173fe766fc56b",
+      "sourceWidth": 3942,
+      "sourceHeight": 3591,
+      "pivotCandidate": {
+        "x": 1170,
+        "y": 1850,
+        "uncertaintyPx": 40,
+        "reason": "visually estimated native-grid RMI card center"
+      },
+      "roughDialRadiusPx": 300,
+      "pivotVerified": false,
+      "majorMinorTicksVerified": false,
+      "zeroAngleDeg": null,
+      "liveNeedleEnabled": false
+    },
+    {
+      "id": "capt.altimeter",
+      "panel": "CAPTAIN",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png",
+      "sourceSha256": "dea7c23ddd5d648cf51735d0fcbcc9d1e69ce37efd736ec45fb173fe766fc56b",
+      "sourceWidth": 3942,
+      "sourceHeight": 3591,
+      "pivotCandidate": {
+        "x": 3100,
+        "y": 940,
+        "uncertaintyPx": 40,
+        "reason": "visually estimated native-grid altimeter card center"
+      },
+      "roughDialRadiusPx": 280,
+      "pivotVerified": false,
+      "majorMinorTicksVerified": false,
+      "zeroAngleDeg": null,
+      "liveNeedleEnabled": false
+    },
+    {
+      "id": "capt.alt_ias_combined",
+      "panel": "CAPTAIN",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png",
+      "sourceSha256": "dea7c23ddd5d648cf51735d0fcbcc9d1e69ce37efd736ec45fb173fe766fc56b",
+      "sourceWidth": 3942,
+      "sourceHeight": 3591,
+      "pivotCandidate": {
+        "x": 3720,
+        "y": 950,
+        "uncertaintyPx": 40,
+        "reason": "visually estimated native-grid combined ALT/IAS face center"
+      },
+      "roughDialRadiusPx": 245,
+      "pivotVerified": false,
+      "majorMinorTicksVerified": false,
+      "zeroAngleDeg": null,
+      "liveNeedleEnabled": false
+    },
+    {
+      "id": "capt.vertical_speed",
+      "panel": "CAPTAIN",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png",
+      "sourceSha256": "dea7c23ddd5d648cf51735d0fcbcc9d1e69ce37efd736ec45fb173fe766fc56b",
+      "sourceWidth": 3942,
+      "sourceHeight": 3591,
+      "pivotCandidate": {
+        "x": 3100,
+        "y": 1600,
+        "uncertaintyPx": 40,
+        "reason": "visually estimated native-grid VSI center"
+      },
+      "roughDialRadiusPx": 280,
+      "pivotVerified": false,
+      "majorMinorTicksVerified": false,
+      "zeroAngleDeg": null,
+      "liveNeedleEnabled": false
+    },
+    {
+      "id": "capt.clock",
+      "panel": "CAPTAIN",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png",
+      "sourceSha256": "dea7c23ddd5d648cf51735d0fcbcc9d1e69ce37efd736ec45fb173fe766fc56b",
+      "sourceWidth": 3942,
+      "sourceHeight": 3591,
+      "pivotCandidate": {
+        "x": 3700,
+        "y": 1580,
+        "uncertaintyPx": 40,
+        "reason": "visually estimated native-grid clock face center"
+      },
+      "roughDialRadiusPx": 260,
+      "pivotVerified": false,
+      "majorMinorTicksVerified": false,
+      "zeroAngleDeg": null,
+      "liveNeedleEnabled": false
+    },
+    {
+      "id": "eng.left_upper_20_20",
+      "panel": "ENGINE",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "sourceSha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "sourceWidth": 1235,
+      "sourceHeight": 1274,
+      "pivotCandidate": {
+        "x": 205,
+        "y": 550,
+        "uncertaintyPx": 22,
+        "reason": "unidentified upper-left dial: mechanical pivot not confirmed"
+      },
+      "roughDialRadiusPx": 135,
+      "pivotVerified": false,
+      "majorMinorTicksVerified": false,
+      "zeroAngleDeg": null,
+      "liveNeedleEnabled": false
+    },
+    {
+      "id": "eng.fuel_qty.center",
+      "panel": "ENGINE",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "sourceSha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "sourceWidth": 1235,
+      "sourceHeight": 1274,
+      "pivotCandidate": {
+        "x": 261,
+        "y": 922,
+        "uncertaintyPx": 22,
+        "reason": "circular face center; actual moving pointer unknown"
+      },
+      "roughDialRadiusPx": 100,
+      "pivotVerified": false,
+      "majorMinorTicksVerified": false,
+      "zeroAngleDeg": null,
+      "liveNeedleEnabled": false
+    },
+    {
+      "id": "eng.fuel_qty.1",
+      "panel": "ENGINE",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "sourceSha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "sourceWidth": 1235,
+      "sourceHeight": 1274,
+      "pivotCandidate": {
+        "x": 145,
+        "y": 1114,
+        "uncertaintyPx": 22,
+        "reason": "circular face center; actual moving pointer unknown"
+      },
+      "roughDialRadiusPx": 110,
+      "pivotVerified": false,
+      "majorMinorTicksVerified": false,
+      "zeroAngleDeg": null,
+      "liveNeedleEnabled": false
+    },
+    {
+      "id": "eng.fuel_qty.2",
+      "panel": "ENGINE",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "sourceSha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "sourceWidth": 1235,
+      "sourceHeight": 1274,
+      "pivotCandidate": {
+        "x": 332,
+        "y": 1114,
+        "uncertaintyPx": 22,
+        "reason": "circular face center; actual moving pointer unknown"
+      },
+      "roughDialRadiusPx": 110,
+      "pivotVerified": false,
+      "majorMinorTicksVerified": false,
+      "zeroAngleDeg": null,
+      "liveNeedleEnabled": false
+    },
+    {
+      "id": "eng.n1.1",
+      "panel": "ENGINE",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "sourceSha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "sourceWidth": 1235,
+      "sourceHeight": 1274,
+      "pivotCandidate": {
+        "x": 535,
+        "y": 553,
+        "uncertaintyPx": 22,
+        "reason": "geometric center from original native engine panel"
+      },
+      "roughDialRadiusPx": 94,
+      "pivotVerified": false,
+      "majorMinorTicksVerified": false,
+      "zeroAngleDeg": null,
+      "liveNeedleEnabled": false
+    },
+    {
+      "id": "eng.n1.2",
+      "panel": "ENGINE",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "sourceSha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "sourceWidth": 1235,
+      "sourceHeight": 1274,
+      "pivotCandidate": {
+        "x": 724,
+        "y": 553,
+        "uncertaintyPx": 22,
+        "reason": "geometric center from original native engine panel"
+      },
+      "roughDialRadiusPx": 94,
+      "pivotVerified": false,
+      "majorMinorTicksVerified": false,
+      "zeroAngleDeg": null,
+      "liveNeedleEnabled": false
+    },
+    {
+      "id": "eng.fuel_flow.1",
+      "panel": "ENGINE",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "sourceSha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "sourceWidth": 1235,
+      "sourceHeight": 1274,
+      "pivotCandidate": {
+        "x": 535,
+        "y": 1082,
+        "uncertaintyPx": 22,
+        "reason": "geometric center of FF/FU circular display"
+      },
+      "roughDialRadiusPx": 93,
+      "pivotVerified": false,
+      "majorMinorTicksVerified": false,
+      "zeroAngleDeg": null,
+      "liveNeedleEnabled": false
+    },
+    {
+      "id": "eng.fuel_flow.2",
+      "panel": "ENGINE",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "sourceSha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "sourceWidth": 1235,
+      "sourceHeight": 1274,
+      "pivotCandidate": {
+        "x": 724,
+        "y": 1082,
+        "uncertaintyPx": 22,
+        "reason": "geometric center of FF/FU circular display"
+      },
+      "roughDialRadiusPx": 93,
+      "pivotVerified": false,
+      "majorMinorTicksVerified": false,
+      "zeroAngleDeg": null,
+      "liveNeedleEnabled": false
+    },
+    {
+      "id": "eng.oil_pressure.1",
+      "panel": "ENGINE",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "sourceSha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "sourceWidth": 1235,
+      "sourceHeight": 1274,
+      "pivotCandidate": {
+        "x": 1050,
+        "y": 538,
+        "uncertaintyPx": 22,
+        "reason": "geometric center of engine-1 oil pressure dial"
+      },
+      "roughDialRadiusPx": 69,
+      "pivotVerified": false,
+      "majorMinorTicksVerified": false,
+      "zeroAngleDeg": null,
+      "liveNeedleEnabled": false
+    },
+    {
+      "id": "eng.oil_pressure.2",
+      "panel": "ENGINE",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "sourceSha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "sourceWidth": 1235,
+      "sourceHeight": 1274,
+      "pivotCandidate": {
+        "x": 1174,
+        "y": 538,
+        "uncertaintyPx": 22,
+        "reason": "geometric center of engine-2 oil pressure dial"
+      },
+      "roughDialRadiusPx": 69,
+      "pivotVerified": false,
+      "majorMinorTicksVerified": false,
+      "zeroAngleDeg": null,
+      "liveNeedleEnabled": false
+    },
+    {
+      "id": "eng.oil_temperature.1",
+      "panel": "ENGINE",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "sourceSha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "sourceWidth": 1235,
+      "sourceHeight": 1274,
+      "pivotCandidate": {
+        "x": 1050,
+        "y": 688,
+        "uncertaintyPx": 22,
+        "reason": "geometric center of engine-1 oil temperature dial"
+      },
+      "roughDialRadiusPx": 69,
+      "pivotVerified": false,
+      "majorMinorTicksVerified": false,
+      "zeroAngleDeg": null,
+      "liveNeedleEnabled": false
+    },
+    {
+      "id": "eng.oil_temperature.2",
+      "panel": "ENGINE",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "sourceSha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "sourceWidth": 1235,
+      "sourceHeight": 1274,
+      "pivotCandidate": {
+        "x": 1174,
+        "y": 688,
+        "uncertaintyPx": 22,
+        "reason": "geometric center of engine-2 oil temperature dial"
+      },
+      "roughDialRadiusPx": 69,
+      "pivotVerified": false,
+      "majorMinorTicksVerified": false,
+      "zeroAngleDeg": null,
+      "liveNeedleEnabled": false
+    },
+    {
+      "id": "eng.vibration.1",
+      "panel": "ENGINE",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "sourceSha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "sourceWidth": 1235,
+      "sourceHeight": 1274,
+      "pivotCandidate": {
+        "x": 1050,
+        "y": 865,
+        "uncertaintyPx": 22,
+        "reason": "geometric center of engine-1 vibration dial"
+      },
+      "roughDialRadiusPx": 69,
+      "pivotVerified": false,
+      "majorMinorTicksVerified": false,
+      "zeroAngleDeg": null,
+      "liveNeedleEnabled": false
+    },
+    {
+      "id": "eng.vibration.2",
+      "panel": "ENGINE",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "sourceSha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "sourceWidth": 1235,
+      "sourceHeight": 1274,
+      "pivotCandidate": {
+        "x": 1174,
+        "y": 865,
+        "uncertaintyPx": 22,
+        "reason": "geometric center of engine-2 vibration dial"
+      },
+      "roughDialRadiusPx": 69,
+      "pivotVerified": false,
+      "majorMinorTicksVerified": false,
+      "zeroAngleDeg": null,
+      "liveNeedleEnabled": false
+    },
+    {
+      "id": "eng.hyd_pressure.a",
+      "panel": "ENGINE",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "sourceSha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "sourceWidth": 1235,
+      "sourceHeight": 1274,
+      "pivotCandidate": {
+        "x": 1050,
+        "y": 1037,
+        "uncertaintyPx": 22,
+        "reason": "geometric center of hydraulic pressure A"
+      },
+      "roughDialRadiusPx": 70,
+      "pivotVerified": false,
+      "majorMinorTicksVerified": false,
+      "zeroAngleDeg": null,
+      "liveNeedleEnabled": false
+    },
+    {
+      "id": "eng.hyd_pressure.b",
+      "panel": "ENGINE",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "sourceSha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "sourceWidth": 1235,
+      "sourceHeight": 1274,
+      "pivotCandidate": {
+        "x": 1174,
+        "y": 1037,
+        "uncertaintyPx": 22,
+        "reason": "geometric center of hydraulic pressure B"
+      },
+      "roughDialRadiusPx": 70,
+      "pivotVerified": false,
+      "majorMinorTicksVerified": false,
+      "zeroAngleDeg": null,
+      "liveNeedleEnabled": false
+    },
+    {
+      "id": "fo.flap_position",
+      "panel": "FO-INNER",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Right_Main_Instruments_Blank.png",
+      "sourceSha256": "171bf9e8d21347e7a522ebc86b19cfe0b967f0503d26c483d8f3d685f719576a",
+      "sourceWidth": 918,
+      "sourceHeight": 1713,
+      "pivotCandidate": {
+        "x": 145,
+        "y": 290,
+        "uncertaintyPx": 22,
+        "reason": "flap two-needle central circular face"
+      },
+      "roughDialRadiusPx": 84,
+      "pivotVerified": false,
+      "majorMinorTicksVerified": false,
+      "zeroAngleDeg": null,
+      "liveNeedleEnabled": false
+    },
+    {
+      "id": "fo.hyd_brake_pressure",
+      "panel": "FO-INNER",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Right_Main_Instruments_Blank.png",
+      "sourceSha256": "171bf9e8d21347e7a522ebc86b19cfe0b967f0503d26c483d8f3d685f719576a",
+      "sourceWidth": 918,
+      "sourceHeight": 1713,
+      "pivotCandidate": {
+        "x": 473,
+        "y": 568,
+        "uncertaintyPx": 22,
+        "reason": "hydraulic brake dial center"
+      },
+      "roughDialRadiusPx": 72,
+      "pivotVerified": false,
+      "majorMinorTicksVerified": false,
+      "zeroAngleDeg": null,
+      "liveNeedleEnabled": false
+    },
+    {
+      "id": "fo.airspeed",
+      "panel": "FO-INNER",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Right_Main_Instruments_Blank.png",
+      "sourceSha256": "171bf9e8d21347e7a522ebc86b19cfe0b967f0503d26c483d8f3d685f719576a",
+      "sourceWidth": 918,
+      "sourceHeight": 1713,
+      "pivotCandidate": {
+        "x": 711,
+        "y": 564,
+        "uncertaintyPx": 22,
+        "reason": "FO airspeed dial center"
+      },
+      "roughDialRadiusPx": 145,
+      "pivotVerified": false,
+      "majorMinorTicksVerified": false,
+      "zeroAngleDeg": null,
+      "liveNeedleEnabled": false
+    },
+    {
+      "id": "fo.rmi",
+      "panel": "FO-INNER",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Right_Main_Instruments_Blank.png",
+      "sourceSha256": "171bf9e8d21347e7a522ebc86b19cfe0b967f0503d26c483d8f3d685f719576a",
+      "sourceWidth": 918,
+      "sourceHeight": 1713,
+      "pivotCandidate": {
+        "x": 761,
+        "y": 936,
+        "uncertaintyPx": 22,
+        "reason": "FO rotating compass card center"
+      },
+      "roughDialRadiusPx": 135,
+      "pivotVerified": false,
+      "majorMinorTicksVerified": false,
+      "zeroAngleDeg": null,
+      "liveNeedleEnabled": false
+    },
+    {
+      "id": "fo.outer_altimeter",
+      "panel": "FO-OUTER",
+      "source": "file_000000006c00820ab145b3682f686256.png",
+      "sourceSha256": "b2439666f75ddbcab15835b532d26a7ad2d1ab669be5f48774d656c1b8915a3c",
+      "sourceWidth": 1123,
+      "sourceHeight": 1400,
+      "pivotCandidate": {
+        "x": 616,
+        "y": 343,
+        "uncertaintyPx": 15,
+        "reason": "strong Hough-circle candidate; still not optical pivot certified"
+      },
+      "roughDialRadiusPx": 115,
+      "pivotVerified": false,
+      "majorMinorTicksVerified": false,
+      "zeroAngleDeg": null,
+      "liveNeedleEnabled": false
+    },
+    {
+      "id": "fo.outer_vertical_speed",
+      "panel": "FO-OUTER",
+      "source": "file_000000006c00820ab145b3682f686256.png",
+      "sourceSha256": "b2439666f75ddbcab15835b532d26a7ad2d1ab669be5f48774d656c1b8915a3c",
+      "sourceWidth": 1123,
+      "sourceHeight": 1400,
+      "pivotCandidate": {
+        "x": 617,
+        "y": 609,
+        "uncertaintyPx": 15,
+        "reason": "strong Hough-circle candidate; still not optical pivot certified"
+      },
+      "roughDialRadiusPx": 110,
+      "pivotVerified": false,
+      "majorMinorTicksVerified": false,
+      "zeroAngleDeg": null,
+      "liveNeedleEnabled": false
+    },
+    {
+      "id": "fo.outer_clock",
+      "panel": "FO-OUTER",
+      "source": "file_000000006c00820ab145b3682f686256.png",
+      "sourceSha256": "b2439666f75ddbcab15835b532d26a7ad2d1ab669be5f48774d656c1b8915a3c",
+      "sourceWidth": 1123,
+      "sourceHeight": 1400,
+      "pivotCandidate": {
+        "x": 873,
+        "y": 609,
+        "uncertaintyPx": 15,
+        "reason": "strong Hough-circle candidate; still not optical pivot certified"
+      },
+      "roughDialRadiusPx": 115,
+      "pivotVerified": false,
+      "majorMinorTicksVerified": false,
+      "zeroAngleDeg": null,
+      "liveNeedleEnabled": false
+    }
+  ],
+  "linearFaces": [
+    {
+      "id": "fo.left_linear",
+      "panel": "FO-INNER",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Right_Main_Instruments_Blank.png",
+      "sourceSha256": "171bf9e8d21347e7a522ebc86b19cfe0b967f0503d26c483d8f3d685f719576a",
+      "sourceWidth": 918,
+      "sourceHeight": 1713,
+      "travelWindowCandidate": {
+        "x0": 437,
+        "y0": 1089,
+        "x1": 497,
+        "y1": 1218,
+        "reason": "left linear display requires bar travel rather than rotation"
+      },
+      "mechanism": "linear",
+      "pivot": "not_applicable",
+      "travelTickPositionsVerified": false,
+      "linearTravelEnabled": false
+    },
+    {
+      "id": "fo.right_linear",
+      "panel": "FO-INNER",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Right_Main_Instruments_Blank.png",
+      "sourceSha256": "171bf9e8d21347e7a522ebc86b19cfe0b967f0503d26c483d8f3d685f719576a",
+      "sourceWidth": 918,
+      "sourceHeight": 1713,
+      "travelWindowCandidate": {
+        "x0": 505,
+        "y0": 1089,
+        "x1": 565,
+        "y1": 1218,
+        "reason": "right linear display requires bar travel rather than rotation"
+      },
+      "mechanism": "linear",
+      "pivot": "not_applicable",
+      "travelTickPositionsVerified": false,
+      "linearTravelEnabled": false
+    },
+    {
+      "id": "ped.stab_trim.left",
+      "panel": "THROTTLE",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/Aircraft Throttle Quadrant Control Panel.png",
+      "sourceSha256": "e533f907b3826dbf8fc986812b9045c2ef8980f93133ce85b859e9b9d7ab0030",
+      "sourceWidth": 1145,
+      "sourceHeight": 1373,
+      "travelWindowCandidate": {
+        "x0": 192,
+        "y0": 613,
+        "x1": 271,
+        "y1": 957,
+        "reason": "left stabilizer trim position window, vertical travel"
+      },
+      "mechanism": "linear",
+      "pivot": "not_applicable",
+      "travelTickPositionsVerified": false,
+      "linearTravelEnabled": false
+    },
+    {
+      "id": "ped.stab_trim.right",
+      "panel": "THROTTLE",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/Aircraft Throttle Quadrant Control Panel.png",
+      "sourceSha256": "e533f907b3826dbf8fc986812b9045c2ef8980f93133ce85b859e9b9d7ab0030",
+      "sourceWidth": 1145,
+      "sourceHeight": 1373,
+      "travelWindowCandidate": {
+        "x0": 961,
+        "y0": 609,
+        "x1": 1063,
+        "y1": 965,
+        "reason": "right stabilizer trim position window, vertical travel"
+      },
+      "mechanism": "linear",
+      "pivot": "not_applicable",
+      "travelTickPositionsVerified": false,
+      "linearTravelEnabled": false
+    },
+    {
+      "id": "ped.rudder_trim",
+      "panel": "RADIO",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/PD-RADIO-AVIONICS-7a41044771fa.png",
+      "sourceSha256": "7a41044771faad1d59f509c05ed2508f75c79fde219ee9ec19696f8fb19ed533",
+      "sourceWidth": 1122,
+      "sourceHeight": 1402,
+      "travelWindowCandidate": {
+        "x0": 518,
+        "y0": 737,
+        "x1": 765,
+        "y1": 808,
+        "reason": "rudder trim transverse travel"
+      },
+      "mechanism": "linear",
+      "pivot": "not_applicable",
+      "travelTickPositionsVerified": false,
+      "linearTravelEnabled": false
+    }
+  ]
+}
