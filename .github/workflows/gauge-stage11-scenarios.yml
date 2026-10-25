@@ -1,0 +1,41 @@
+name: Gauge Stage 11 Scenario and Release Gate
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'tests/stage11-needle-scenario-gate.test.cjs'
+      - 'engine/instruments/stage9*'
+      - 'engine/instruments/stage10*'
+      - 'engine/instruments/stage7*'
+      - 'engine/instruments/stage8*'
+      - '.github/workflows/gauge-stage11-scenarios.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  instrument-source-scenarios:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Real ECU trainer start, flight, pressure and fault scenarios
+        env:
+          STAGE11_REPORT_PATH: reports/stage11-needle-scenarios-v1.json
+        run: node --test tests/stage11-needle-scenario-gate.test.cjs
+      - name: Validate real-time engine start timing without changing it
+        run: node tests/isn-ecu-realtime-start-v1.test.cjs
+      - name: Validate independent dual-engine cruise and oil fault scenarios
+        run: node tests/isn-13-18-ecu.test.cjs
+      - name: Regression checks on Stage 5 through 10 input, outputs and gating
+        run: node --test engine/instruments/stage5-stage6.test.cjs engine/instruments/stage7-stage8.test.cjs engine/instruments/stage78-unified-integration.test.cjs engine/instruments/stage9-stage10.test.cjs
+      - name: Protect frozen source and approved overhead imagery
+        run: python3 panel-mosaic-lab/verify-final-overhead.py
+      - name: Archive stage11 scenario/coverage/blocker evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: stage11-needle-scenario-evidence-v1
+          path: reports/stage11-needle-scenarios-v1.json
+          if-no-files-found: warn
