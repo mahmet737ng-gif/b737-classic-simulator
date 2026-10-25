@@ -35,9 +35,14 @@ print('CABALT_PIXEL_TICKS_QA='+json.dumps(dict(total=len(ticks),matched=len(pass
     unmatched=failures,hashValid=True),separators=(',',':')))
 if failures:sys.exit('CAB ALT SOURCE PIXELS DO NOT MATCH CALIBRATION TICKS')
 
-def render_sprite(path,radius,angle):
+def render_sprite(path,radius,angle,stretch=1):
     raw=cairosvg.svg2png(url=str(path.resolve()))
     sprite=Image.open(io.BytesIO(raw)).convert('RGBA')
+    # CSS transform: rotate(angle) scaleY(stretch), anchored on SVG pivot.
+    if abs(stretch-1)>1e-7:
+        sprite=sprite.transform((512,512),Image.Transform.AFFINE,
+            (1,0,0,0,1/stretch,256*(1-1/stretch)),
+            resample=Image.Resampling.BICUBIC)
     sprite=sprite.rotate(-angle,resample=Image.Resampling.BICUBIC,expand=False)
     size=round(512*radius/220)
     return sprite.resize((size,size),Image.Resampling.LANCZOS)
@@ -56,10 +61,19 @@ for icao,feet in [('OIAW',66),('OIMM',3260),('OIII',3963)]:
     frame=image.convert('RGBA')
     # Cabin altitude sprite first (lower layer); differential pressure at
     # outer zero degree on top, matching actual Unified SVG layering.
-    for item,radius,degree in [
-        ('cabin-altitude-needle.svg',123,angle),
-        ('cabin-diff-pressure-needle.svg',207,.64)]:
-        sprite=render_sprite(Path('panel-mosaic-lab/cockpit')/item,radius,degree)
+    tip=(256-39)*(123/220)
+    inner=ticks[0]['innerRadiusPx']
+    for aa,bb in zip(ticks,ticks[1:]):
+        if feet/1000<=bb['valueThousandsFt']:
+            frac=(feet/1000-aa['valueThousandsFt'])/(bb['valueThousandsFt']-aa['valueThousandsFt'])
+            inner=aa['innerRadiusPx']+frac*(bb['innerRadiusPx']-aa['innerRadiusPx'])
+            break
+    stretch=inner/tip
+    assert .90<stretch<1.10
+    for item,radius,degree,vertical in [
+        ('cabin-altitude-needle.svg',123,angle,stretch),
+        ('cabin-diff-pressure-needle.svg',207,.64,1)]:
+        sprite=render_sprite(Path('panel-mosaic-lab/cockpit')/item,radius,degree,vertical)
         w,h=sprite.size
         frame.alpha_composite(sprite,(int(round(489-w/2)),int(round(365-h/2))))
     crop=frame.convert('RGB').crop((150,10,820,700))
@@ -79,4 +93,6 @@ for icao,feet in [('OIAW',66),('OIMM',3260),('OIII',3963)]:
     tip=(256-39)*(123/220)
     print('CABALT_AIRPORT_FIT='+json.dumps(dict(icao=icao,feet=feet,angleDeg=round(angle,4),
         photoInnerEdgeRadiusPx=round(radius,2),spriteTipRadiusPx=round(tip,2),
-        gapPx=round(radius-tip,2),approved=False),separators=(',',':')))
+        uncorrectedGapPx=round(radius-tip,2),
+        perspectiveStretch=round(stretch,4),correctedTipErrorPx=round(radius-tip*stretch,4),
+        approved=False),separators=(',',':')))
