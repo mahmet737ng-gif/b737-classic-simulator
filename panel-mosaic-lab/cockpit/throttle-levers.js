@@ -97,7 +97,7 @@ async function mount(){
  mounted=true;place(1,texture);place(2,texture);buildControls();
  root.dispatchEvent(new CustomEvent('b737:throttle-sprites-ready',{detail:{engines:2,positions:KEYS.slice()}}));
 }
-document.addEventListener('b737:cockpit-mounted',mount,{once:true});
+window.addEventListener('b737:cockpit-mounted',mount,{once:true});
 document.addEventListener('b737:throttle-state',event=>{
  const d=event.detail||{};if([1,2].includes(d.engine)&&Number.isFinite(d.percent)&&mounted)apply(d.engine,d.percent,'sim');
 });
