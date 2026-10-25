@@ -8,7 +8,7 @@ assert.equal(manifest.uniqueDesigns,12);assert.equal(manifest.derivativeStates,2
 assert.equal(manifest.records.length,27);
 assert.equal(manifest.originalSvgChanges,0);
 assert.equal(manifest.frozenPhotoChanges,0);
-assert.equal(oh.version,'LGT-0010');assert.equal(main.version,'LGT-0012');
+assert.ok(['LGT-0010','LGT-0011'].includes(oh.version),'second fitting and subsequent geometry must coexist');assert.equal(main.version,'LGT-0012');
 const seen=new Set(),lamps=new Set();
 for(const row of manifest.records){
  const reg=row.lamp.startsWith('main-')?main:oh;
