@@ -7,7 +7,17 @@ const deps={Electrical:window.B737ElectricalV7,Loads:window.B737ElectricalLoadsV
  Chain:window.B737ISNAPUStartChainV1,ThrustPlanner:window.B737ISNThrustPerformanceV1,
  FuelRuntime:window.B737ISN0912RuntimeV1};
 let sim=null,runner=null;
-function create(){if(runner){clearInterval(runner);runner=null;}sim=new window.B737ISN1318ECUTestbenchV1.Testbench(deps);$('n1result').textContent='No thrust schedule applied';render();}
+function pauseLive(){if(runner!==null){clearInterval(runner);runner=null;}}
+function startLive(){
+ if(runner!==null)return;
+ // Engine/APU START commands progress automatically; manual PAUSE is optional.
+ runner=setInterval(()=>{
+  try{sim.advance(100);render();}
+  catch(err){pauseLive();$('errors').textContent=err.message;render();}
+ },100);
+ render();
+}
+function create(){pauseLive();sim=new window.B737ISN1318ECUTestbenchV1.Testbench(deps);$('n1result').textContent='No thrust schedule applied';render();}
 function metrics(e){return [['N1',e.n1Percent,'%'],['N2',e.n2Percent,'%'],['EGT',e.egtC,'°C'],['FUEL FLOW',e.fuelFlowKgHr,'kg/h'],['OIL PRESS',e.oil.pressurePsi,'PSI'],['OIL TEMP',e.oil.temperatureC,'°C'],['OIL QTY',e.oil.quantityPct,'%']].map(([name,value,unit])=>`<div class="metric"><span>${name}</span><b>${value==null?'—':html(Number(value).toFixed(1))} <small>${unit}</small></b></div>`).join('');}
 function engineCard(e,num){return `<section><h2>ENGINE ${num} · <span class="${e.phase==='RUNNING'?'ok':'amber'}">${html(e.phase)}</span></h2><div class="metrics">${metrics(e)}</div><p>START VALVE <strong>${e.startValveOpen===null?'UNKNOWN':e.startValveOpen?'OPEN':'CLOSED'}</strong> · FUEL LEVER <strong>${html(e.fuelLever)}</strong></p><p><span class="lamp ${e.oil.lowPressureLamp?'on':'off'}">LOW OIL PRESSURE ${e.oil.lowPressureLamp?'ON':'OFF'}</span> <span class="lamp ${e.oil.filterBypassLamp?'on':'off'}">OIL FILTER BYPASS ${e.oil.filterBypassLamp?'ON':'OFF'}</span></p></section>`;}
 function render(){if(!sim)return;const s=sim.get();$('clock').textContent=`${(s.timeMs/1000).toFixed(1)} s`;
@@ -22,18 +32,18 @@ function render(){if(!sim)return;const s=sim.get();$('clock').textContent=`${(s.
 function action(type){if(type==='reset'){create();return;}if(!sim)throw Error('Simulator not initialized');
  const status=sim.get();switch(type){
  case 'battery':sim.battery(true);break;
- case 'apuStart':sim.startAPU();break;
+ case 'apuStart':sim.startAPU();if(['INLET_DOOR','STARTING'].includes(sim.get().apu.phase))startLive();break;
  case 'apuGen':sim.selectGenerator('APU',1);break;
  case 'apuBleed':sim.apuBleed(true);break;
  case 'fuel':sim.prepareFuel();break;
  case 'apuStop':sim.chain.event({id:'apu-start',kind:'toggle',next:'OFF'});break;
- case 'start1':sim.engineStart('engine1');break;
+ case 'start1':sim.engineStart('engine1');if(sim.get().engines.engine1.phase==='MOTORING')startLive();break;
  case 'idle1':{const r=sim.fuelLever('engine1','IDLE');if(!r.accepted)throw Error(r.reason);break;}
  case 'off1':sim.shutdown('engine1');break;
- case 'start2':sim.engineStart('engine2');break;
+ case 'start2':sim.engineStart('engine2');if(sim.get().engines.engine2.phase==='MOTORING')startLive();break;
  case 'idle2':{const r=sim.fuelLever('engine2','IDLE');if(!r.accepted)throw Error(r.reason);break;}
  case 'off2':sim.shutdown('engine2');break;
- case 'play':if(runner){clearInterval(runner);runner=null;}else runner=setInterval(()=>{try{sim.advance(100);render();}catch(err){clearInterval(runner);runner=null;$('errors').textContent=err.message;}},100);break;
+ case 'play':if(runner!==null)pauseLive();else startLive();break;
  case 'step':sim.advance(500);break;
  case 'step5':sim.advance(5000);break;
  case 'ground':sim.setOnGround(!status.aircraft.onGround);break;
