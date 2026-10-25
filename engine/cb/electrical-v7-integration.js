@@ -45,10 +45,13 @@ function project({cbNetwork,electricalV7Result,trainerResult=null}){
     // This is a dedicated, clearly labeled trainer projection: open circuit
     // inhibits the simulated pump, no change to source state or other loads.
     const interrupted=c.protectionCircuit==="OPEN";
-    overlay.fuel[id]={selected:raw.switchOn,operational:interrupted?false:raw.operational,
-      lowPressure:interrupted?(id.startsWith("center")?Boolean(raw.switchOn):true):raw.lowPressure,
-      cbOpen:interrupted,upstreamTrainingAssumption:trainerResult.qa?trainerResult.qa.loadRouting:"TRAINER_BUS_UNVERIFIED",
-      effectClassification:interrupted?"TRAINING_CIRCUIT_ISOLATION":"TRAINER_SOURCE_MODEL"};
+    const surrogateBus=(id==="rightFwd"||id==="rightAft"||id==="centerRight")?"transfer2":"transfer1";
+    const trainingBusPower=electricalV7Result.bus[surrogateBus];
+    const operational=interrupted?false:trainingBusPower===null?null:Boolean(raw.operational&&trainingBusPower);
+    overlay.fuel[id]={selected:raw.switchOn,operational,
+      lowPressure:interrupted?(id.startsWith("center")?Boolean(raw.switchOn):true):operational===null?null:(id.startsWith("center")?Boolean(raw.switchOn)&&!operational:!operational),
+      cbOpen:interrupted,surrogateBus,trainingBusPower,upstreamTrainingAssumption:"TRAINER_SURROGATE_NOT_EP_FSI_WIRING",
+      effectClassification:interrupted?"TRAINING_CIRCUIT_ISOLATION":"TRAINING_SURROGATE_V7_FEED"};
    }else{
     overlay.fuel[id]={operational:null,cbOpen:c.protectionCircuit==="OPEN",
       effectClassification:c.effect};
