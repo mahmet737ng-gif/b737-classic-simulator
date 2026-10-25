@@ -1,6 +1,6 @@
 (function(){
 'use strict';
-const CONFIG={"schema":"b737.throttle-five-position-v1","version":"THR-0001","relativeAssetRoot":"../assets/throttle-levers/","engineSourceCenters":{"1":465,"2":680},"backgroundSource":{"width":1145,"height":1373},"stages":{"0":{"name":"idle","sourceY":1060},"25":{"name":"quarter","sourceY":770},"50":{"name":"mid","sourceY":565},"75":{"name":"three-quarter","sourceY":360},"100":{"name":"full","sourceY":160}},"gripWidthNative":114,"note":"Owner visual stage pack. Position/scale calibration is provisional pending on-panel verification. No underlying panel/locked bitmap is changed.","sprites":{"engine-1-idle.png":{"anchor":[0.5,0.9],"gripWidth":790},"engine-2-idle.png":{"anchor":[0.53,0.9],"gripWidth":790},"engine-1-quarter.png":{"anchor":[0.49,0.84],"gripWidth":800},"engine-2-quarter.png":{"anchor":[0.52,0.86],"gripWidth":800},"engine-1-mid.png":{"anchor":[0.5,0.76],"gripWidth":1240},"engine-2-mid.png":{"anchor":[0.51,0.76],"gripWidth":1040},"engine-1-three-quarter.png":{"anchor":[0.5,0.38],"gripWidth":1180},"engine-2-three-quarter.png":{"anchor":[0.5,0.37],"gripWidth":1140},"engine-1-full.png":{"anchor":[0.5,0.13],"gripWidth":590},"engine-2-full.png":{"anchor":[0.5,0.13],"gripWidth":590}}};
+const CONFIG={"schema":"b737.throttle-five-position-v1","version":"THR-0005","relativeAssetRoot":"../assets/throttle-levers/","engineSourceCenters":{"1":478,"2":570},"backgroundSource":{"width":1145,"height":1373},"stages":{"0":{"name":"idle","sourceY":1088},"25":{"name":"quarter","sourceY":856},"50":{"name":"mid","sourceY":642},"75":{"name":"three-quarter","sourceY":430},"100":{"name":"full","sourceY":220}},"gripWidthNative":138,"note":"THR-0005: both throttle visual stages use slot-registered centers and five fixed Y anchors. Existing approved PNGs and locked quadrant are unmodified.","sprites":{"engine-1-idle.png":{"anchor":[0.5,0.9],"gripWidth":640},"engine-1-quarter.png":{"anchor":[0.5,0.88],"gripWidth":655},"engine-1-mid.png":{"anchor":[0.5,0.83],"gripWidth":760},"engine-1-three-quarter.png":{"anchor":[0.5,0.78],"gripWidth":760},"engine-1-full.png":{"anchor":[0.5,0.73],"gripWidth":650},"engine-2-idle.png":{"anchor":[0.5,0.9],"gripWidth":640},"engine-2-quarter.png":{"anchor":[0.5,0.88],"gripWidth":655},"engine-2-mid.png":{"anchor":[0.5,0.83],"gripWidth":760},"engine-2-three-quarter.png":{"anchor":[0.5,0.78],"gripWidth":760},"engine-2-full.png":{"anchor":[0.5,0.73],"gripWidth":650}}};
 const KEYS=Object.freeze([0,25,50,75,100]);
 const position={1:0,2:0};
 const images={};
@@ -73,17 +73,21 @@ function place(engine,tex){
  // Hit area follows common section of sprite movement, avoiding overlap with engine-start levers below.
  const ref=CONFIG.engineSourceCenters[engine],scale=tex.offsetWidth/1055;
  const x=tex.offsetLeft+(ref-20)*scale;
- Object.assign(hit.style,{left:(x-60)+'px',top:(tex.offsetTop+60)+'px',width:'120px',height:'570px'});
+ Object.assign(hit.style,{
+  left:(x-48)+'px',
+  top:(tex.offsetTop+78)+'px',
+  width:'96px',
+  height:'585px'
+ });
  root.append(hit);controls.set(engine,{sprite:sprites,visual:hit,select:null});
 }
 function mountPlasticCover(tex){
  if(root.querySelector('.throttle-plastic-cover'))return;
- // THR-0004: owner mobile screenshot (2026-10-25) calibration.
- // The old x=625 positioned the cover over the right-hand column toward FLAP.
- // Limit it to the two central throttle roller tracks; all coordinates are
+ // THR-0005: corrected slot-based placement (owner screenshot, 2026-10-25).
+ // Cover is aligned to the two central throttle roller tracks; all coordinates are
  // original 1145x1373 quadrant-image pixels, not viewport/mobile CSS pixels.
  // This stays behind throttle sprites, with the locked plate unmodified.
- const sourceRect={x:365,y:165,w:255,h:680};
+ const sourceRect={x:388,y:176,w:224,h:648};
  const sourceWindow={x:20,y:30,w:1055,h:1290};
  const unit=tex.offsetWidth/sourceWindow.w;
  const cover=document.createElement('img');
@@ -91,7 +95,7 @@ function mountPlasticCover(tex){
  cover.alt='';
  cover.draggable=false;
  cover.decoding='async';
- cover.src=CONFIG.relativeAssetRoot+'throttle-plastic-cover.svg?v=THR-0003';
+ cover.src=CONFIG.relativeAssetRoot+'throttle-plastic-cover.svg?v=THR-0005';
  Object.assign(cover.style,{
   left:(tex.offsetLeft+(sourceRect.x-sourceWindow.x)*unit)+'px',
   top:(tex.offsetTop+(sourceRect.y-sourceWindow.y)*unit)+'px',
