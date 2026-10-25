@@ -6,6 +6,7 @@
 "use strict";
 const NS="http://www.w3.org/2000/svg";
 const W=2172,H=433, mounted=new WeakSet(), instances=[];
+const ASSET_URL=new URL("./assets/mcp-ias-mach-knob.webp",document.currentScript.src).href;
 const initial=()=>({
   courseL:261,courseR:261,speed:312,heading:134,altitude:31000,verticalSpeed:0,
   lamps:Object.fromEntries(["AT_ARM","VNAV","LNAV","N1","SPEED","LVL_CHG","HDG_SEL","APP","ALT_HLD","VS","CMD_A","CWS_A","CMD_B","CWS_B"].map(k=>[k,true]))
@@ -77,7 +78,7 @@ function drawDisplay(svg,d){
  g.append(svgElement("rect",{x:d.x+4,y:d.y+4,width:d.w-8,height:d.h-8,rx:3,fill:"#090e0d"}));
  const chars=numericText(d.id);
  const size=d.digits===5?24.5:29.5;
- const aw=size*.84, spacing=d.digits===5?5.7:6.1;
+ const aw=size, spacing=d.digits===5?5.7:6.1;
  const total=d.digits*aw+(d.digits-1)*spacing;
  const start=d.x+(d.w-total)/2;
  const height=size*59/35;
@@ -114,7 +115,7 @@ function mountKnob(parent,n){
  el.setAttribute("aria-label",n.label+" rotary knob");
  el.style.left=n.x/W*100+"%";el.style.top=n.y/H*100+"%";el.style.width=n.d/W*100+"%";
  if(n.type==="ias"){
-  el.style.backgroundImage='url("'+new URL("./assets/mcp-ias-mach-knob.webp",document.currentScript.src).href+'")';
+  el.style.backgroundImage='url("'+ASSET_URL+'")';
  }else if(n.type==="course"){
   el.innerHTML='<span class="mcp-v3-course-face"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M23 64 L43 75 L72 28 L82 33 L50 85 L18 72 Z" fill="#f1a819" stroke="#d0830d" stroke-width="2"/></svg></span>';
  }else el.innerHTML='<span class="mcp-v3-plain-face"></span>';
@@ -130,11 +131,12 @@ function mountKnob(parent,n){
 }
 function mountLamp(svg,l){
  const g=group(svg,{"data-mcp-lamp":l.id,"data-on":String(!!values.lamps[l.id]),class:"mcp-v3-lamp"});
- const glow=svgElement("rect",{x:l.x-3,y:l.y-4,width:l.w+6,height:l.h+8,rx:5,fill:"#25ff55",opacity:.35,filter:"url(#mcp3Glow)"});
- const face=svgElement("rect",{x:l.x,y:l.y,width:l.w,height:l.h,rx:2,fill:"url(#mcp3Green)"});
- const reflector=svgElement("path",{d:"M"+(l.x+3)+" "+(l.y+2)+"h"+(l.w-6),stroke:"#dcffe1","stroke-width":1.8,opacity:.85});
+ const dark=svgElement("rect",{x:l.x,y:l.y,width:l.w,height:l.h,rx:2,fill:"#070d09",class:"mcp-v3-lamp-dark"});
+ const glow=svgElement("rect",{x:l.x-3,y:l.y-4,width:l.w+6,height:l.h+8,rx:5,fill:"#25ff55",opacity:.35,filter:"url(#mcp3Glow)",class:"mcp-v3-light"});
+ const face=svgElement("rect",{x:l.x,y:l.y,width:l.w,height:l.h,rx:2,fill:"url(#mcp3Green)",class:"mcp-v3-light"});
+ const reflector=svgElement("path",{d:"M"+(l.x+3)+" "+(l.y+2)+"h"+(l.w-6),stroke:"#dcffe1","stroke-width":1.8,opacity:.85,class:"mcp-v3-light"});
  const hit=svgElement("rect",{x:l.x-8,y:l.y-24,width:l.w+16,height:48,fill:"transparent",class:"mcp-v3-lamp-hit",tabindex:0,role:"button","aria-label":l.id.replaceAll("_"," ")});
- g.append(glow,face,reflector,hit);
+ g.append(dark,glow,face,reflector,hit);
  function toggle(e){e.stopPropagation();values.lamps[l.id]=!values.lamps[l.id];repaint();event("lamp-toggle",{control:l.id,active:values.lamps[l.id],method:"click"});}
  on(hit,"click",toggle);
  on(hit,"keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();toggle(e)}});
