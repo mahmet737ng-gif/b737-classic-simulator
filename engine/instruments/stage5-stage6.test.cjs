@@ -93,6 +93,13 @@ test('Stage 6 identity and owner sprite locks remain unchanged',()=>{
   assert.equal(p.allTickTipReachApproved,false);
  }
  assert.equal(fits.pointers.find(p=>p.faceId==='capt.rmi'&&p.ownerSpriteId==='captRMI1').shapeLocked,true);
+ const cabinInner=fits.pointers.find(p=>p.faceId==='oh.cabin.diff_pressure_altitude'&&p.ownerSpriteId==='cabAlt');
+ const pressureOuter=fits.pointers.find(p=>p.faceId==='oh.cabin.diff_pressure_altitude'&&p.ownerSpriteId==='press');
+ assert.equal(cabinInner.needleScaleMode,'cabinAltitude');
+ assert.equal(cabinInner.relativeRadialGaps.length,0);
+ assert.equal(pressureOuter.needleScaleMode,'diffPressure');
+ assert.equal(pressureOuter.relativeRadialGaps.length,11);
+ assert.equal(fits.counts.pointersWithPhotoDistanceComparisons,4);
 });
 test('Native source needle radial geometry computes exact reach and 0/90 bearing',()=>{
  const p={x:506,y:235};
