@@ -22,7 +22,7 @@ If manual fuel introduction is delayed, the total engine startup takes longer th
 - Motoring N2 is smoothly resampled to 25% across 40 seconds; N1 trails, so a small N1 reading early in the start is not evidence of a stall.
 - On reaching the fuel introduction cue, the engine stage becomes `AWAIT_FUEL_LEVER_IDLE` and the testbench shows **MOVE FUEL LEVER TO IDLE NOW** if pumps/fuel are ready. The motor does not silently advance past 25% N2 while the lever stays at CUTOFF.
 - Start lever IDLE is rejected early and returns the actual N2 reading. Even after 25%, fuel must be independently available from the selected pump network; the fuel gate is not bypassed.
-- After accepted IDLE, fuel flow appears and EGT rises through an explicitly simulated transient toward 600°C, then settles. N2 passes to ~46% starter cutout, and the RUNNING idle dynamics settle to around 22% N1 / 60% N2 on ground.
+- After accepted IDLE, fuel flow appears and EGT rises through an explicitly simulated transient toward 620°C, then settles. N2 passes to ~46% starter cutout, and the RUNNING idle dynamics settle to around 22% N1 / 60% N2 on ground.
 - APU RPM/EGT now transition gradually across the 85-second timebase instead of jumping after 1.4 s. Battery, APU GEN, APU BLEED and pumps remain explicit operator actions.
 - Start commands start the lab simulation clock automatically; PAUSE/RESET remain available. No physical cockpit image or frozen panel asset changes.
 
@@ -46,3 +46,6 @@ If manual fuel introduction is delayed, the total engine startup takes longer th
 - GitHub Actions `ISN 13-18 ECU Startup Acceptance` executes both plus locked overhead guard.
 
 **Not for actual flight, ground operations, or certified ECU maintenance.** A true start simulator would need validated spool/EGT profiles, ambient and bleed-air sensitivity, fuel characteristics and the specific aircraft's variant/effectivity.
+
+
+**2026-10-25 recalibration:** EGT engine startup peak now ~620°C, APU transient also ~620°C and settles ~390°C. APU READY indicated RPM is capped at 95.5%; availability of 115 V/400 Hz AC at READY is distinct from GEN->BUS selection. Engine oil and EDP pressure follow N2 thresholds described in [ISN_START_SPOOL_CALIBRATION_V2.md](ISN_START_SPOOL_CALIBRATION_V2.md). Older ~600°C or 100% APU test notes are superseded for this standalone ECU bench.
