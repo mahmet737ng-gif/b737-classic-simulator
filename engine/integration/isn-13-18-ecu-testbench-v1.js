@@ -227,19 +227,11 @@ class Testbench{
   for(const id of ENGINES){
    const e=base.engines[id],oil=this.oil[id],needle=this.coast[id],phase=e.phase;
    const running=phase==='RUNNING';
-   // Actual lever is CUTOFF until manually moved; preview the fuel route as
-   // if IDLE were selected, without opening a valve or bypassing pump guards.
-   const fuelReady=this.core.fuel.supply(id,this.core.pumps(),{
-    pressureAltitudeFt:this.aircraft.pressureAltitudeFt,fuelStartLever:'IDLE',
-    fireSwitchPulled:this.core.fireSwitch[id]});
+   // Probe the actual ISN-12 source graph as though IDLE were selected. This
+   // includes engine-driven suction when motor N2 is rotating, not only pumps.
+   const fuelReady=this.core.fuelPath(id,{fuelStartLever:'IDLE'});
    const n2Observed=snap.observations[id].feedback.n2Percent.value;
-   const startCue=phase==='MOTORING'?'WAIT FOR N2 TO REACH 25%':
-    phase==='AWAIT_FUEL_LEVER_IDLE'?
-     (fuelReady.available===true?'N2 25% — MOVE FUEL LEVER TO IDLE NOW':
-      'FUEL NOT READY: '+fuelReady.reason+' — ENABLE PUMPS / POWER'):
-    phase==='LIGHT_OFF_SEQUENCE'?'FUEL INTRODUCED — LIGHT-OFF AND EGT RISE':
-    running?'ENGINE RUNNING — STABILIZING / THRUST AVAILABLE':
-    phase==='BLOCKED'?snap.lastError:phase;
+   const startCue=fuelReady.reason; // State only; no pilot-facing instructions.
    engines[id]={phase,n1Percent:needle.n1,n2Percent:needle.n2,
     egtC:needle.egt, fuelFlowKgHr:e.fuelFlowKgHr,
     oil:{pressurePsi:oil.pressurePsi,temperatureC:oil.temperatureC,quantityPct:oil.quantityPct,
