@@ -27,9 +27,14 @@
   return a[a.length-1].bearingDeg;
  }
 
+ // Physical stack (front/back) is NOT the printed dial's inner/outer scale.
+ // Owner-specified: PRESS lies underneath/inside the CAB ALT pointer assembly.
+ // Immutable artwork: PRESS still reads the outer PSI graduations and CAB ALT
+ // still reads the inner thousand-foot graduations on the source OH19 face.
+ // Tip lengths remain PHOTO CANDIDATES, not calibrated physical end points.
  const needles=Object.freeze([
-  Object.freeze({id:'cabAlt',label:'CAB ALT · inner x1000 FT',asset:'cabin-altitude-needle.svg',tipRadius:123,initialAngle:0,layer:0}),
-  Object.freeze({id:'press',label:'PRESS · outer DIFF PRESS PSI',asset:'cabin-diff-pressure-needle.svg',tipRadius:207,initialAngle:0,layer:1})
+  Object.freeze({id:'press',label:'PRESS · lower needle / outer PSI scale',asset:'cabin-diff-pressure-needle.svg',tipRadius:207,initialAngle:0,layer:0,stack:'rear',printedScale:'outer',valueSource:'differentialPsid'}),
+  Object.freeze({id:'cabAlt',label:'CAB ALT · upper needle / inner x1000 FT scale',asset:'cabin-altitude-needle.svg',tipRadius:123,initialAngle:0,layer:1,stack:'front',printedScale:'inner',valueSource:'cabinAltitudeFt'})
  ]);
  function angle(id,value){
   if(!needles.some(needle=>needle.id===id))throw Error('Unknown cabin gauge needle '+id);
