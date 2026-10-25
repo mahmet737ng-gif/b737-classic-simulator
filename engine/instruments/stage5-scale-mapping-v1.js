@@ -49,8 +49,8 @@
    if(kind!=='rotary')return m;
    let a=m.angleDeg;
    if(i>0){
-    while((a-marks[i-1].angleDeg)*turn<=0)a+=360*turn;
-    const span=(a-marks[i-1].angleDeg)*turn;
+    while((a-marks[i-1].angleUnwrappedDeg)*turn<=0)a+=360*turn;
+    const span=(a-marks[i-1].angleUnwrappedDeg)*turn;
     if(span>(candidate.maxGapDeg??125))throw Error('Angular gap needs independent source review');
    }
    marks[i]=Object.freeze({...m,angleUnwrappedDeg:a});
