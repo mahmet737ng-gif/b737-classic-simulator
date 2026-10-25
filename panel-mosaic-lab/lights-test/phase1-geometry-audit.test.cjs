@@ -18,6 +18,9 @@ const faces=new Map(gallery.lights.map(a=>[a.id,a.face]));
 const corrections=load('photo-position-corrections-v1.json');
 const correctionById=new Map(corrections.records.map(x=>[x.id,x]));
 assert.equal(correctionById.size,12);
+const finalCorrections=load('photo-position-corrections-v2.json');
+const latest=new Map(finalCorrections.records.map(c=>[c.id,c.newSourceRect]));
+assert.equal(latest.size,1);
 
 const atlasPlates=new Map(atlas.placements.map(p=>[p.id,p]));
 const mainPieces=new Map(assembly.regions.flatMap(r=>(r.placements||[]).map(p=>[p.id,p])));
@@ -45,7 +48,7 @@ for(const [scope,items] of [['OVERHEAD',overhead.lights],['MAIN',main.lights]]){
   assert.ok(record,'Missing report row: '+source.id);
   assert.equal(record.scope,scope);
   assert.equal(record.asset,source.asset);
-  assert.deepEqual(source.sourceRect,correctionById.get(source.id)?.sourceRect||record.sourceRect,source.id);
+  assert.deepEqual(source.sourceRect,latest.get(source.id)||correctionById.get(source.id)?.sourceRect||record.sourceRect,source.id);
   assert.equal(record.geometryStatus,'MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED');
   assert.equal(record.visualReview,'PENDING_OWNER_PHOTO_MATCH');
   const face=faces.get(source.asset);
