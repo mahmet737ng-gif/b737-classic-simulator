@@ -1,0 +1,2897 @@
+{
+  "schema": "b737.gauge-survey-stage2-3.v1",
+  "effectivity": "737-33V EP-FSI MSN 29340",
+  "created": "2026-10-25",
+  "method": "Non-destructive inventory-to-calibration registration; existing visual overlay pivots and published labels are NOT independent source-image tick measurements.",
+  "stage2": "coverage_complete_tick_reading_incomplete",
+  "stage3": "registration_partial",
+  "stage4": "all_gauges_blocked_pending_verified_geometry",
+  "counts": {
+    "instrumentFaces": 53,
+    "unresolvedCandidates": 3,
+    "existingNeedles": 23
+  },
+  "faces": [
+    {
+      "id": "oh.fuel.temperature",
+      "panel": "OH09",
+      "region": "overhead",
+      "kind": "dial",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/OH09-FUEL-921977b56887.png",
+      "imageWidth": 1012,
+      "imageHeight": 1555,
+      "sourceSha256": null,
+      "pivot": {
+        "x": 506,
+        "y": 235,
+        "evidence": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "needleIds": [
+        "fuelTemperature"
+      ],
+      "expectedNeedles": 1,
+      "scales": [
+        {
+          "mode": "primary",
+          "unit": "°C",
+          "minimum": null,
+          "maximum": null,
+          "marks": [],
+          "marksStatus": "NO_NATIVE_PIXEL_TICK_COORDINATES",
+          "published": false,
+          "evidenceRequired": "individually measured source-image x/y per numeric major and minor tick",
+          "labelCandidates": []
+        }
+      ],
+      "legacyAngularPreview": {
+        "unit": "°C",
+        "observations": [
+          [
+            -40,
+            -70
+          ],
+          [
+            40,
+            70
+          ]
+        ],
+        "origin": "fuel-temperature-needle-model.js linear display formula"
+      },
+      "stage2": {
+        "scanned": true,
+        "labelsVisible": false,
+        "labelsCandidate": [],
+        "rangeVerified": false,
+        "allMinorTicksRead": false
+      },
+      "stage3": {
+        "pivotRegistered": true,
+        "measuredTicks": 0,
+        "geometryVerified": false
+      },
+      "stage4": {
+        "numericEngine": "gauge-scale-engine-v2.js",
+        "realReadingsEnabled": false,
+        "reason": "No approved native-pixel tick mapping"
+      },
+      "notes": null
+    },
+    {
+      "id": "oh.elec.dc_amps",
+      "panel": "OH10",
+      "region": "overhead",
+      "kind": "dial",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/OH10-ELEC-LOSSLESS-9a1ca4d6cfb2.png",
+      "imageWidth": 1095,
+      "imageHeight": 1436,
+      "sourceSha256": null,
+      "pivot": {
+        "x": 310,
+        "y": 168,
+        "evidence": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "needleIds": [
+        "dcAmps"
+      ],
+      "expectedNeedles": 1,
+      "scales": [
+        {
+          "mode": "primary",
+          "unit": null,
+          "minimum": null,
+          "maximum": null,
+          "marks": [],
+          "marksStatus": "NO_NATIVE_PIXEL_TICK_COORDINATES",
+          "published": false,
+          "evidenceRequired": "individually measured source-image x/y per numeric major and minor tick",
+          "labelCandidates": [
+            "-50",
+            "0",
+            "+50"
+          ]
+        }
+      ],
+      "legacyAngularPreview": null,
+      "stage2": {
+        "scanned": true,
+        "labelsVisible": true,
+        "labelsCandidate": [
+          "-50",
+          "0",
+          "+50"
+        ],
+        "rangeVerified": false,
+        "allMinorTicksRead": false
+      },
+      "stage3": {
+        "pivotRegistered": true,
+        "measuredTicks": 0,
+        "geometryVerified": false
+      },
+      "stage4": {
+        "numericEngine": "gauge-scale-engine-v2.js",
+        "realReadingsEnabled": false,
+        "reason": "No approved native-pixel tick mapping"
+      },
+      "notes": null
+    },
+    {
+      "id": "oh.elec.cps",
+      "panel": "OH10",
+      "region": "overhead",
+      "kind": "dial",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/OH10-ELEC-LOSSLESS-9a1ca4d6cfb2.png",
+      "imageWidth": 1095,
+      "imageHeight": 1436,
+      "sourceSha256": null,
+      "pivot": {
+        "x": 715,
+        "y": 190,
+        "evidence": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "needleIds": [
+        "cps"
+      ],
+      "expectedNeedles": 1,
+      "scales": [
+        {
+          "mode": "primary",
+          "unit": null,
+          "minimum": null,
+          "maximum": null,
+          "marks": [],
+          "marksStatus": "NO_NATIVE_PIXEL_TICK_COORDINATES",
+          "published": false,
+          "evidenceRequired": "individually measured source-image x/y per numeric major and minor tick",
+          "labelCandidates": [
+            "0",
+            "400",
+            "420"
+          ]
+        }
+      ],
+      "legacyAngularPreview": null,
+      "stage2": {
+        "scanned": true,
+        "labelsVisible": true,
+        "labelsCandidate": [
+          "0",
+          "400",
+          "420"
+        ],
+        "rangeVerified": false,
+        "allMinorTicksRead": false
+      },
+      "stage3": {
+        "pivotRegistered": true,
+        "measuredTicks": 0,
+        "geometryVerified": false
+      },
+      "stage4": {
+        "numericEngine": "gauge-scale-engine-v2.js",
+        "realReadingsEnabled": false,
+        "reason": "No approved native-pixel tick mapping"
+      },
+      "notes": null
+    },
+    {
+      "id": "oh.elec.dc_volts",
+      "panel": "OH10",
+      "region": "overhead",
+      "kind": "dial",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/OH10-ELEC-LOSSLESS-9a1ca4d6cfb2.png",
+      "imageWidth": 1095,
+      "imageHeight": 1436,
+      "sourceSha256": null,
+      "pivot": {
+        "x": 332,
+        "y": 600,
+        "evidence": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "needleIds": [
+        "dcVolts"
+      ],
+      "expectedNeedles": 1,
+      "scales": [
+        {
+          "mode": "primary",
+          "unit": null,
+          "minimum": null,
+          "maximum": null,
+          "marks": [],
+          "marksStatus": "NO_NATIVE_PIXEL_TICK_COORDINATES",
+          "published": false,
+          "evidenceRequired": "individually measured source-image x/y per numeric major and minor tick",
+          "labelCandidates": [
+            "0",
+            "20",
+            "40"
+          ]
+        }
+      ],
+      "legacyAngularPreview": null,
+      "stage2": {
+        "scanned": true,
+        "labelsVisible": true,
+        "labelsCandidate": [
+          "0",
+          "20",
+          "40"
+        ],
+        "rangeVerified": false,
+        "allMinorTicksRead": false
+      },
+      "stage3": {
+        "pivotRegistered": true,
+        "measuredTicks": 0,
+        "geometryVerified": false
+      },
+      "stage4": {
+        "numericEngine": "gauge-scale-engine-v2.js",
+        "realReadingsEnabled": false,
+        "reason": "No approved native-pixel tick mapping"
+      },
+      "notes": null
+    },
+    {
+      "id": "oh.elec.ac_volts",
+      "panel": "OH10",
+      "region": "overhead",
+      "kind": "dial",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/OH10-ELEC-LOSSLESS-9a1ca4d6cfb2.png",
+      "imageWidth": 1095,
+      "imageHeight": 1436,
+      "sourceSha256": null,
+      "pivot": {
+        "x": 715,
+        "y": 620,
+        "evidence": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "needleIds": [
+        "acVolts"
+      ],
+      "expectedNeedles": 1,
+      "scales": [
+        {
+          "mode": "primary",
+          "unit": null,
+          "minimum": null,
+          "maximum": null,
+          "marks": [],
+          "marksStatus": "NO_NATIVE_PIXEL_TICK_COORDINATES",
+          "published": false,
+          "evidenceRequired": "individually measured source-image x/y per numeric major and minor tick",
+          "labelCandidates": [
+            "100",
+            "110",
+            "120",
+            "130"
+          ]
+        }
+      ],
+      "legacyAngularPreview": null,
+      "stage2": {
+        "scanned": true,
+        "labelsVisible": true,
+        "labelsCandidate": [
+          "100",
+          "110",
+          "120",
+          "130"
+        ],
+        "rangeVerified": false,
+        "allMinorTicksRead": false
+      },
+      "stage3": {
+        "pivotRegistered": true,
+        "measuredTicks": 0,
+        "geometryVerified": false
+      },
+      "stage4": {
+        "numericEngine": "gauge-scale-engine-v2.js",
+        "realReadingsEnabled": false,
+        "reason": "No approved native-pixel tick mapping"
+      },
+      "notes": null
+    },
+    {
+      "id": "oh.drive_oil.1",
+      "panel": "OH11",
+      "region": "overhead",
+      "kind": "dial",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/OH11-STANDBY-8b7d36ff3182.png",
+      "imageWidth": 1203,
+      "imageHeight": 1308,
+      "sourceSha256": "86cf2f1de81146756adf694b1fe01067a271c32990c1fda7752eb913442a6708",
+      "pivot": {
+        "x": 266,
+        "y": 1021,
+        "evidence": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "needleIds": [
+        "driveOil1"
+      ],
+      "expectedNeedles": 1,
+      "scales": [
+        {
+          "mode": "rise",
+          "unit": null,
+          "minimum": null,
+          "maximum": null,
+          "marks": [],
+          "marksStatus": "NO_NATIVE_PIXEL_TICK_COORDINATES",
+          "published": false,
+          "evidenceRequired": "individually measured source-image x/y per numeric major and minor tick",
+          "labelCandidates": [
+            "RISE 0",
+            "RISE 10",
+            "RISE 20",
+            "RISE 30"
+          ]
+        },
+        {
+          "mode": "inlet",
+          "unit": null,
+          "minimum": null,
+          "maximum": null,
+          "marks": [],
+          "marksStatus": "NO_NATIVE_PIXEL_TICK_COORDINATES",
+          "published": false,
+          "evidenceRequired": "individually measured source-image x/y per numeric major and minor tick",
+          "labelCandidates": [
+            "IN 80",
+            "IN 120",
+            "IN 160"
+          ]
+        }
+      ],
+      "legacyAngularPreview": null,
+      "stage2": {
+        "scanned": true,
+        "labelsVisible": true,
+        "labelsCandidate": [
+          "RISE 0",
+          "RISE 10",
+          "RISE 20",
+          "RISE 30",
+          "IN 80",
+          "IN 120",
+          "IN 160"
+        ],
+        "rangeVerified": false,
+        "allMinorTicksRead": false
+      },
+      "stage3": {
+        "pivotRegistered": true,
+        "measuredTicks": 0,
+        "geometryVerified": false
+      },
+      "stage4": {
+        "numericEngine": "gauge-scale-engine-v2.js",
+        "realReadingsEnabled": false,
+        "reason": "No approved native-pixel tick mapping"
+      },
+      "notes": "Each face has separate RISE and IN printed scales sharing a pointer."
+    },
+    {
+      "id": "oh.drive_oil.2",
+      "panel": "OH11",
+      "region": "overhead",
+      "kind": "dial",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/OH11-STANDBY-8b7d36ff3182.png",
+      "imageWidth": 1203,
+      "imageHeight": 1308,
+      "sourceSha256": "86cf2f1de81146756adf694b1fe01067a271c32990c1fda7752eb913442a6708",
+      "pivot": {
+        "x": 781,
+        "y": 1021,
+        "evidence": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "needleIds": [
+        "driveOil2"
+      ],
+      "expectedNeedles": 1,
+      "scales": [
+        {
+          "mode": "rise",
+          "unit": null,
+          "minimum": null,
+          "maximum": null,
+          "marks": [],
+          "marksStatus": "NO_NATIVE_PIXEL_TICK_COORDINATES",
+          "published": false,
+          "evidenceRequired": "individually measured source-image x/y per numeric major and minor tick",
+          "labelCandidates": [
+            "RISE 0",
+            "RISE 10",
+            "RISE 20",
+            "RISE 30"
+          ]
+        },
+        {
+          "mode": "inlet",
+          "unit": null,
+          "minimum": null,
+          "maximum": null,
+          "marks": [],
+          "marksStatus": "NO_NATIVE_PIXEL_TICK_COORDINATES",
+          "published": false,
+          "evidenceRequired": "individually measured source-image x/y per numeric major and minor tick",
+          "labelCandidates": [
+            "IN 80",
+            "IN 120",
+            "IN 160"
+          ]
+        }
+      ],
+      "legacyAngularPreview": null,
+      "stage2": {
+        "scanned": true,
+        "labelsVisible": true,
+        "labelsCandidate": [
+          "RISE 0",
+          "RISE 10",
+          "RISE 20",
+          "RISE 30",
+          "IN 80",
+          "IN 120",
+          "IN 160"
+        ],
+        "rangeVerified": false,
+        "allMinorTicksRead": false
+      },
+      "stage3": {
+        "pivotRegistered": true,
+        "measuredTicks": 0,
+        "geometryVerified": false
+      },
+      "stage4": {
+        "numericEngine": "gauge-scale-engine-v2.js",
+        "realReadingsEnabled": false,
+        "reason": "No approved native-pixel tick mapping"
+      },
+      "notes": "Each face has separate RISE and IN printed scales sharing a pointer."
+    },
+    {
+      "id": "oh.ac_amps.1",
+      "panel": "OH12",
+      "region": "overhead",
+      "kind": "dial",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/OH12-BUS-TRANS-09319c17e7d0.png",
+      "imageWidth": 1024,
+      "imageHeight": 1536,
+      "sourceSha256": "709cb15a86f9038ca082136c4db59af83c7800107dfe320182bf7f4c56837e9f",
+      "pivot": {
+        "x": 210,
+        "y": 265,
+        "evidence": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "needleIds": [
+        "acAmps1"
+      ],
+      "expectedNeedles": 1,
+      "scales": [
+        {
+          "mode": "primary",
+          "unit": null,
+          "minimum": null,
+          "maximum": null,
+          "marks": [],
+          "marksStatus": "NO_NATIVE_PIXEL_TICK_COORDINATES",
+          "published": false,
+          "evidenceRequired": "individually measured source-image x/y per numeric major and minor tick",
+          "labelCandidates": [
+            "0",
+            "50",
+            "100",
+            "150",
+            "200"
+          ]
+        }
+      ],
+      "legacyAngularPreview": null,
+      "stage2": {
+        "scanned": true,
+        "labelsVisible": true,
+        "labelsCandidate": [
+          "0",
+          "50",
+          "100",
+          "150",
+          "200"
+        ],
+        "rangeVerified": false,
+        "allMinorTicksRead": false
+      },
+      "stage3": {
+        "pivotRegistered": true,
+        "measuredTicks": 0,
+        "geometryVerified": false
+      },
+      "stage4": {
+        "numericEngine": "gauge-scale-engine-v2.js",
+        "realReadingsEnabled": false,
+        "reason": "No approved native-pixel tick mapping"
+      },
+      "notes": null
+    },
+    {
+      "id": "oh.ac_amps.2",
+      "panel": "OH12",
+      "region": "overhead",
+      "kind": "dial",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/OH12-BUS-TRANS-09319c17e7d0.png",
+      "imageWidth": 1024,
+      "imageHeight": 1536,
+      "sourceSha256": "709cb15a86f9038ca082136c4db59af83c7800107dfe320182bf7f4c56837e9f",
+      "pivot": {
+        "x": 705,
+        "y": 265,
+        "evidence": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "needleIds": [
+        "acAmps2"
+      ],
+      "expectedNeedles": 1,
+      "scales": [
+        {
+          "mode": "primary",
+          "unit": null,
+          "minimum": null,
+          "maximum": null,
+          "marks": [],
+          "marksStatus": "NO_NATIVE_PIXEL_TICK_COORDINATES",
+          "published": false,
+          "evidenceRequired": "individually measured source-image x/y per numeric major and minor tick",
+          "labelCandidates": [
+            "0",
+            "50",
+            "100",
+            "150",
+            "200"
+          ]
+        }
+      ],
+      "legacyAngularPreview": null,
+      "stage2": {
+        "scanned": true,
+        "labelsVisible": true,
+        "labelsCandidate": [
+          "0",
+          "50",
+          "100",
+          "150",
+          "200"
+        ],
+        "rangeVerified": false,
+        "allMinorTicksRead": false
+      },
+      "stage3": {
+        "pivotRegistered": true,
+        "measuredTicks": 0,
+        "geometryVerified": false
+      },
+      "stage4": {
+        "numericEngine": "gauge-scale-engine-v2.js",
+        "realReadingsEnabled": false,
+        "reason": "No approved native-pixel tick mapping"
+      },
+      "notes": null
+    },
+    {
+      "id": "oh.ac_amps.apu",
+      "panel": "OH12",
+      "region": "overhead",
+      "kind": "dial",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/OH12-BUS-TRANS-09319c17e7d0.png",
+      "imageWidth": 1024,
+      "imageHeight": 1536,
+      "sourceSha256": "709cb15a86f9038ca082136c4db59af83c7800107dfe320182bf7f4c56837e9f",
+      "pivot": {
+        "x": 724,
+        "y": 1334,
+        "evidence": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "needleIds": [
+        "apuAcAmps"
+      ],
+      "expectedNeedles": 1,
+      "scales": [
+        {
+          "mode": "primary",
+          "unit": null,
+          "minimum": null,
+          "maximum": null,
+          "marks": [],
+          "marksStatus": "NO_NATIVE_PIXEL_TICK_COORDINATES",
+          "published": false,
+          "evidenceRequired": "individually measured source-image x/y per numeric major and minor tick",
+          "labelCandidates": [
+            "0",
+            "50",
+            "100",
+            "150",
+            "200"
+          ]
+        }
+      ],
+      "legacyAngularPreview": null,
+      "stage2": {
+        "scanned": true,
+        "labelsVisible": true,
+        "labelsCandidate": [
+          "0",
+          "50",
+          "100",
+          "150",
+          "200"
+        ],
+        "rangeVerified": false,
+        "allMinorTicksRead": false
+      },
+      "stage3": {
+        "pivotRegistered": true,
+        "measuredTicks": 0,
+        "geometryVerified": false
+      },
+      "stage4": {
+        "numericEngine": "gauge-scale-engine-v2.js",
+        "realReadingsEnabled": false,
+        "reason": "No approved native-pixel tick mapping"
+      },
+      "notes": null
+    },
+    {
+      "id": "oh.apu.egt",
+      "panel": "OH12",
+      "region": "overhead",
+      "kind": "dial",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/OH12-BUS-TRANS-09319c17e7d0.png",
+      "imageWidth": 1024,
+      "imageHeight": 1536,
+      "sourceSha256": "709cb15a86f9038ca082136c4db59af83c7800107dfe320182bf7f4c56837e9f",
+      "pivot": {
+        "x": 300,
+        "y": 1324,
+        "evidence": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "needleIds": [
+        "apuEgt"
+      ],
+      "expectedNeedles": 1,
+      "scales": [
+        {
+          "mode": "primary",
+          "unit": null,
+          "minimum": null,
+          "maximum": null,
+          "marks": [],
+          "marksStatus": "NO_NATIVE_PIXEL_TICK_COORDINATES",
+          "published": false,
+          "evidenceRequired": "individually measured source-image x/y per numeric major and minor tick",
+          "labelCandidates": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "°C×100"
+          ]
+        }
+      ],
+      "legacyAngularPreview": null,
+      "stage2": {
+        "scanned": true,
+        "labelsVisible": true,
+        "labelsCandidate": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "°C×100"
+        ],
+        "rangeVerified": false,
+        "allMinorTicksRead": false
+      },
+      "stage3": {
+        "pivotRegistered": true,
+        "measuredTicks": 0,
+        "geometryVerified": false
+      },
+      "stage4": {
+        "numericEngine": "gauge-scale-engine-v2.js",
+        "realReadingsEnabled": false,
+        "reason": "No approved native-pixel tick mapping"
+      },
+      "notes": null
+    },
+    {
+      "id": "oh.cabin.diff_pressure_altitude",
+      "panel": "OH19-DIFF",
+      "region": "overhead",
+      "kind": "dial",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/OH19-PRESS-DIFF-ALT-HORN-d6719ce57cef.png",
+      "imageWidth": 1267,
+      "imageHeight": 1241,
+      "sourceSha256": "4c667d96ea7652e52784f5c06ee3cdde0879ca37631abf19969861afecc45fed",
+      "pivot": {
+        "x": 489,
+        "y": 365,
+        "evidence": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "needleIds": [
+        "press",
+        "cabAlt"
+      ],
+      "expectedNeedles": 2,
+      "scales": [
+        {
+          "mode": "diffPressure",
+          "unit": null,
+          "minimum": null,
+          "maximum": null,
+          "marks": [],
+          "marksStatus": "NO_NATIVE_PIXEL_TICK_COORDINATES",
+          "published": false,
+          "evidenceRequired": "individually measured source-image x/y per numeric major and minor tick",
+          "labelCandidates": [
+            "PSI"
+          ]
+        },
+        {
+          "mode": "cabinAltitude",
+          "unit": null,
+          "minimum": null,
+          "maximum": null,
+          "marks": [],
+          "marksStatus": "NO_NATIVE_PIXEL_TICK_COORDINATES",
+          "published": false,
+          "evidenceRequired": "individually measured source-image x/y per numeric major and minor tick",
+          "labelCandidates": [
+            "×1000 FT"
+          ]
+        }
+      ],
+      "legacyAngularPreview": null,
+      "stage2": {
+        "scanned": true,
+        "labelsVisible": true,
+        "labelsCandidate": [
+          "0",
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "9",
+          "10",
+          "PSI",
+          "15",
+          "20",
+          "25",
+          "30",
+          "35",
+          "40",
+          "50",
+          "×1000 FT"
+        ],
+        "rangeVerified": false,
+        "allMinorTicksRead": false
+      },
+      "stage3": {
+        "pivotRegistered": true,
+        "measuredTicks": 0,
+        "geometryVerified": false
+      },
+      "stage4": {
+        "numericEngine": "gauge-scale-engine-v2.js",
+        "realReadingsEnabled": false,
+        "reason": "No approved native-pixel tick mapping"
+      },
+      "notes": null
+    },
+    {
+      "id": "oh.cabin.rate",
+      "panel": "OH19-DIFF",
+      "region": "overhead",
+      "kind": "dial",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/OH19-PRESS-DIFF-ALT-HORN-d6719ce57cef.png",
+      "imageWidth": 1267,
+      "imageHeight": 1241,
+      "sourceSha256": "4c667d96ea7652e52784f5c06ee3cdde0879ca37631abf19969861afecc45fed",
+      "pivot": {
+        "x": 520,
+        "y": 950,
+        "evidence": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "needleIds": [
+        "cabinRate"
+      ],
+      "expectedNeedles": 1,
+      "scales": [
+        {
+          "mode": "primary",
+          "unit": null,
+          "minimum": null,
+          "maximum": null,
+          "marks": [],
+          "marksStatus": "NO_NATIVE_PIXEL_TICK_COORDINATES",
+          "published": false,
+          "evidenceRequired": "individually measured source-image x/y per numeric major and minor tick",
+          "labelCandidates": [
+            "DN",
+            "0",
+            ".5",
+            "1",
+            "2",
+            "3",
+            "4",
+            "1000 FEET PER MIN"
+          ]
+        }
+      ],
+      "legacyAngularPreview": null,
+      "stage2": {
+        "scanned": true,
+        "labelsVisible": true,
+        "labelsCandidate": [
+          "DN",
+          "0",
+          ".5",
+          "1",
+          "2",
+          "3",
+          "4",
+          "1000 FEET PER MIN"
+        ],
+        "rangeVerified": false,
+        "allMinorTicksRead": false
+      },
+      "stage3": {
+        "pivotRegistered": true,
+        "measuredTicks": 0,
+        "geometryVerified": false
+      },
+      "stage4": {
+        "numericEngine": "gauge-scale-engine-v2.js",
+        "realReadingsEnabled": false,
+        "reason": "No approved native-pixel tick mapping"
+      },
+      "notes": null
+    },
+    {
+      "id": "oh.cabin.temperature",
+      "panel": "OH20",
+      "region": "overhead",
+      "kind": "dial",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/OH20-AIR-CONDITIONING-0734da6a7726.png",
+      "imageWidth": 1254,
+      "imageHeight": 1254,
+      "sourceSha256": "94669d21f0be8aa538b2ff3b0684683409cadf6d9fc4b55390e7147abe506121",
+      "pivot": {
+        "x": 618,
+        "y": 681,
+        "evidence": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "needleIds": [
+        "cabinTemperature"
+      ],
+      "expectedNeedles": 1,
+      "scales": [
+        {
+          "mode": "primary",
+          "unit": "°C",
+          "minimum": null,
+          "maximum": null,
+          "marks": [],
+          "marksStatus": "NO_NATIVE_PIXEL_TICK_COORDINATES",
+          "published": false,
+          "evidenceRequired": "individually measured source-image x/y per numeric major and minor tick",
+          "labelCandidates": [
+            "0",
+            "20",
+            "40",
+            "60",
+            "80",
+            "100",
+            "°C"
+          ]
+        }
+      ],
+      "legacyAngularPreview": {
+        "unit": "°C",
+        "observations": [
+          [
+            0,
+            -136
+          ],
+          [
+            20,
+            -90
+          ],
+          [
+            40,
+            -48
+          ],
+          [
+            60,
+            11
+          ],
+          [
+            80,
+            67
+          ],
+          [
+            100,
+            107
+          ]
+        ],
+        "origin": "cabin-temperature-needle-model.js approximate label angles"
+      },
+      "stage2": {
+        "scanned": true,
+        "labelsVisible": true,
+        "labelsCandidate": [
+          "0",
+          "20",
+          "40",
+          "60",
+          "80",
+          "100",
+          "°C"
+        ],
+        "rangeVerified": false,
+        "allMinorTicksRead": false
+      },
+      "stage3": {
+        "pivotRegistered": true,
+        "measuredTicks": 0,
+        "geometryVerified": false
+      },
+      "stage4": {
+        "numericEngine": "gauge-scale-engine-v2.js",
+        "realReadingsEnabled": false,
+        "reason": "No approved native-pixel tick mapping"
+      },
+      "notes": null
+    },
+    {
+      "id": "oh.duct.pressure_lr",
+      "panel": "OH21",
+      "region": "overhead",
+      "kind": "dial",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/OH21-BLEED-AIR-cc78219607a3.png",
+      "imageWidth": 1122,
+      "imageHeight": 1402,
+      "sourceSha256": "4efe8c59579e8675825ed4dabf393648cfa7f11f6c09d831d137c23f70ecfe1e",
+      "pivot": {
+        "x": 544,
+        "y": 439,
+        "evidence": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "needleIds": [
+        "ductL",
+        "ductR"
+      ],
+      "expectedNeedles": 2,
+      "scales": [
+        {
+          "mode": "primary",
+          "unit": "psi",
+          "minimum": null,
+          "maximum": null,
+          "marks": [],
+          "marksStatus": "NO_NATIVE_PIXEL_TICK_COORDINATES",
+          "published": false,
+          "evidenceRequired": "individually measured source-image x/y per numeric major and minor tick",
+          "labelCandidates": [
+            "20",
+            "40",
+            "60",
+            "80",
+            "100",
+            "PSI"
+          ]
+        }
+      ],
+      "legacyAngularPreview": {
+        "unit": "psi",
+        "observations": [
+          [
+            0,
+            -150
+          ],
+          [
+            100,
+            150
+          ]
+        ],
+        "origin": "duct-pressure-needles-model.js approximate linear display formula"
+      },
+      "stage2": {
+        "scanned": true,
+        "labelsVisible": true,
+        "labelsCandidate": [
+          "20",
+          "40",
+          "60",
+          "80",
+          "100",
+          "PSI"
+        ],
+        "rangeVerified": false,
+        "allMinorTicksRead": false
+      },
+      "stage3": {
+        "pivotRegistered": true,
+        "measuredTicks": 0,
+        "geometryVerified": false
+      },
+      "stage4": {
+        "numericEngine": "gauge-scale-engine-v2.js",
+        "realReadingsEnabled": false,
+        "reason": "No approved native-pixel tick mapping"
+      },
+      "notes": null
+    },
+    {
+      "id": "capt.airspeed",
+      "panel": "CAPTAIN",
+      "region": "main",
+      "kind": "dial",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png",
+      "imageWidth": 3942,
+      "imageHeight": 3591,
+      "sourceSha256": "dea7c23ddd5d648cf51735d0fcbcc9d1e69ce37efd736ec45fb173fe766fc56b",
+      "pivot": null,
+      "needleIds": [],
+      "expectedNeedles": 1,
+      "scales": [
+        {
+          "mode": "primary",
+          "unit": null,
+          "minimum": null,
+          "maximum": null,
+          "marks": [],
+          "marksStatus": "NO_NATIVE_PIXEL_TICK_COORDINATES",
+          "published": false,
+          "evidenceRequired": "individually measured source-image x/y per numeric major and minor tick",
+          "labelCandidates": []
+        }
+      ],
+      "legacyAngularPreview": null,
+      "stage2": {
+        "scanned": true,
+        "labelsVisible": false,
+        "labelsCandidate": [],
+        "rangeVerified": false,
+        "allMinorTicksRead": false
+      },
+      "stage3": {
+        "pivotRegistered": false,
+        "measuredTicks": 0,
+        "geometryVerified": false
+      },
+      "stage4": {
+        "numericEngine": "gauge-scale-engine-v2.js",
+        "realReadingsEnabled": false,
+        "reason": "No approved native-pixel tick mapping"
+      },
+      "notes": null
+    },
+    {
+      "id": "capt.rmi",
+      "panel": "CAPTAIN",
+      "region": "main",
+      "kind": "moving_card_dial",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png",
+      "imageWidth": 3942,
+      "imageHeight": 3591,
+      "sourceSha256": "dea7c23ddd5d648cf51735d0fcbcc9d1e69ce37efd736ec45fb173fe766fc56b",
+      "pivot": null,
+      "needleIds": [],
+      "expectedNeedles": null,
+      "scales": [
+        {
+          "mode": "primary",
+          "unit": null,
+          "minimum": null,
+          "maximum": null,
+          "marks": [],
+          "marksStatus": "NO_NATIVE_PIXEL_TICK_COORDINATES",
+          "published": false,
+          "evidenceRequired": "individually measured source-image x/y per numeric major and minor tick",
+          "labelCandidates": []
+        }
+      ],
+      "legacyAngularPreview": null,
+      "stage2": {
+        "scanned": true,
+        "labelsVisible": false,
+        "labelsCandidate": [],
+        "rangeVerified": false,
+        "allMinorTicksRead": false
+      },
+      "stage3": {
+        "pivotRegistered": false,
+        "measuredTicks": 0,
+        "geometryVerified": false
+      },
+      "stage4": {
+        "numericEngine": "gauge-scale-engine-v2.js",
+        "realReadingsEnabled": false,
+        "reason": "No approved native-pixel tick mapping"
+      },
+      "notes": "Rotating compass card and pointer count must be verified against the approved reference."
+    },
+    {
+      "id": "capt.altimeter",
+      "panel": "CAPTAIN",
+      "region": "main",
+      "kind": "dial",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png",
+      "imageWidth": 3942,
+      "imageHeight": 3591,
+      "sourceSha256": "dea7c23ddd5d648cf51735d0fcbcc9d1e69ce37efd736ec45fb173fe766fc56b",
+      "pivot": null,
+      "needleIds": [],
+      "expectedNeedles": null,
+      "scales": [
+        {
+          "mode": "primary",
+          "unit": null,
+          "minimum": null,
+          "maximum": null,
+          "marks": [],
+          "marksStatus": "NO_NATIVE_PIXEL_TICK_COORDINATES",
+          "published": false,
+          "evidenceRequired": "individually measured source-image x/y per numeric major and minor tick",
+          "labelCandidates": []
+        }
+      ],
+      "legacyAngularPreview": null,
+      "stage2": {
+        "scanned": true,
+        "labelsVisible": false,
+        "labelsCandidate": [],
+        "rangeVerified": false,
+        "allMinorTicksRead": false
+      },
+      "stage3": {
+        "pivotRegistered": false,
+        "measuredTicks": 0,
+        "geometryVerified": false
+      },
+      "stage4": {
+        "numericEngine": "gauge-scale-engine-v2.js",
+        "realReadingsEnabled": false,
+        "reason": "No approved native-pixel tick mapping"
+      },
+      "notes": "Visible altitude dial and digital windows; moving hand configuration not approved."
+    },
+    {
+      "id": "capt.alt_ias_combined",
+      "panel": "CAPTAIN",
+      "region": "main",
+      "kind": "multi_scale_dial",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png",
+      "imageWidth": 3942,
+      "imageHeight": 3591,
+      "sourceSha256": "dea7c23ddd5d648cf51735d0fcbcc9d1e69ce37efd736ec45fb173fe766fc56b",
+      "pivot": null,
+      "needleIds": [],
+      "expectedNeedles": null,
+      "scales": [
+        {
+          "mode": "alt",
+          "unit": null,
+          "minimum": null,
+          "maximum": null,
+          "marks": [],
+          "marksStatus": "NO_NATIVE_PIXEL_TICK_COORDINATES",
+          "published": false,
+          "evidenceRequired": "individually measured source-image x/y per numeric major and minor tick",
+          "labelCandidates": []
+        },
+        {
+          "mode": "ias",
+          "unit": null,
+          "minimum": null,
+          "maximum": null,
+          "marks": [],
+          "marksStatus": "NO_NATIVE_PIXEL_TICK_COORDINATES",
+          "published": false,
+          "evidenceRequired": "individually measured source-image x/y per numeric major and minor tick",
+          "labelCandidates": []
+        }
+      ],
+      "legacyAngularPreview": null,
+      "stage2": {
+        "scanned": true,
+        "labelsVisible": false,
+        "labelsCandidate": [],
+        "rangeVerified": false,
+        "allMinorTicksRead": false
+      },
+      "stage3": {
+        "pivotRegistered": false,
+        "measuredTicks": 0,
+        "geometryVerified": false
+      },
+      "stage4": {
+        "numericEngine": "gauge-scale-engine-v2.js",
+        "realReadingsEnabled": false,
+        "reason": "No approved native-pixel tick mapping"
+      },
+      "notes": "Source image labels ALT and IAS on one face; identity and mechanism require reference check."
+    },
+    {
+      "id": "capt.vertical_speed",
+      "panel": "CAPTAIN",
+      "region": "main",
+      "kind": "dial",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png",
+      "imageWidth": 3942,
+      "imageHeight": 3591,
+      "sourceSha256": "dea7c23ddd5d648cf51735d0fcbcc9d1e69ce37efd736ec45fb173fe766fc56b",
+      "pivot": null,
+      "needleIds": [],
+      "expectedNeedles": 1,
+      "scales": [
+        {
+          "mode": "primary",
+          "unit": null,
+          "minimum": null,
+          "maximum": null,
+          "marks": [],
+          "marksStatus": "NO_NATIVE_PIXEL_TICK_COORDINATES",
+          "published": false,
+          "evidenceRequired": "individually measured source-image x/y per numeric major and minor tick",
+          "labelCandidates": []
+        }
+      ],
+      "legacyAngularPreview": null,
+      "stage2": {
+        "scanned": true,
+        "labelsVisible": false,
+        "labelsCandidate": [],
+        "rangeVerified": false,
+        "allMinorTicksRead": false
+      },
+      "stage3": {
+        "pivotRegistered": false,
+        "measuredTicks": 0,
+        "geometryVerified": false
+      },
+      "stage4": {
+        "numericEngine": "gauge-scale-engine-v2.js",
+        "realReadingsEnabled": false,
+        "reason": "No approved native-pixel tick mapping"
+      },
+      "notes": null
+    },
+    {
+      "id": "capt.clock",
+      "panel": "CAPTAIN",
+      "region": "main",
+      "kind": "clock",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png",
+      "imageWidth": 3942,
+      "imageHeight": 3591,
+      "sourceSha256": "dea7c23ddd5d648cf51735d0fcbcc9d1e69ce37efd736ec45fb173fe766fc56b",
+      "pivot": null,
+      "needleIds": [],
+      "expectedNeedles": null,
+      "scales": [
+        {
+          "mode": "primary",
+          "unit": null,
+          "minimum": null,
+          "maximum": null,
+          "marks": [],
+          "marksStatus": "NO_NATIVE_PIXEL_TICK_COORDINATES",
+          "published": false,
+          "evidenceRequired": "individually measured source-image x/y per numeric major and minor tick",
+          "labelCandidates": []
+        }
+      ],
+      "legacyAngularPreview": null,
+      "stage2": {
+        "scanned": true,
+        "labelsVisible": false,
+        "labelsCandidate": [],
+        "rangeVerified": false,
+        "allMinorTicksRead": false
+      },
+      "stage3": {
+        "pivotRegistered": false,
+        "measuredTicks": 0,
+        "geometryVerified": false
+      },
+      "stage4": {
+        "numericEngine": "gauge-scale-engine-v2.js",
+        "realReadingsEnabled": false,
+        "reason": "No approved native-pixel tick mapping"
+      },
+      "notes": "Clock/chronograph is inventoried but not bound to a flight-system sensor."
+    },
+    {
+      "id": "eng.left_upper_20_20",
+      "panel": "ENGINE",
+      "region": "main",
+      "kind": "unresolved_dial",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "imageWidth": 1235,
+      "imageHeight": 1274,
+      "sourceSha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "pivot": null,
+      "needleIds": [],
+      "expectedNeedles": null,
+      "scales": [
+        {
+          "mode": "primary",
+          "unit": null,
+          "minimum": null,
+          "maximum": null,
+          "marks": [],
+          "marksStatus": "NO_NATIVE_PIXEL_TICK_COORDINATES",
+          "published": false,
+          "evidenceRequired": "individually measured source-image x/y per numeric major and minor tick",
+          "labelCandidates": []
+        }
+      ],
+      "legacyAngularPreview": null,
+      "stage2": {
+        "scanned": true,
+        "labelsVisible": false,
+        "labelsCandidate": [],
+        "rangeVerified": false,
+        "allMinorTicksRead": false
+      },
+      "stage3": {
+        "pivotRegistered": false,
+        "measuredTicks": 0,
+        "geometryVerified": false
+      },
+      "stage4": {
+        "numericEngine": "gauge-scale-engine-v2.js",
+        "realReadingsEnabled": false,
+        "reason": "No approved native-pixel tick mapping"
+      },
+      "notes": "Unlabeled face above center fuel-quantity dial, printed 20 on both sides; do not assign a system yet."
+    },
+    {
+      "id": "eng.fuel_qty.center",
+      "panel": "ENGINE",
+      "region": "main",
+      "kind": "dial",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "imageWidth": 1235,
+      "imageHeight": 1274,
+      "sourceSha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "pivot": null,
+      "needleIds": [],
+      "expectedNeedles": null,
+      "scales": [
+        {
+          "mode": "primary",
+          "unit": null,
+          "minimum": null,
+          "maximum": null,
+          "marks": [],
+          "marksStatus": "NO_NATIVE_PIXEL_TICK_COORDINATES",
+          "published": false,
+          "evidenceRequired": "individually measured source-image x/y per numeric major and minor tick",
+          "labelCandidates": []
+        }
+      ],
+      "legacyAngularPreview": null,
+      "stage2": {
+        "scanned": true,
+        "labelsVisible": false,
+        "labelsCandidate": [],
+        "rangeVerified": false,
+        "allMinorTicksRead": false
+      },
+      "stage3": {
+        "pivotRegistered": false,
+        "measuredTicks": 0,
+        "geometryVerified": false
+      },
+      "stage4": {
+        "numericEngine": "gauge-scale-engine-v2.js",
+        "realReadingsEnabled": false,
+        "reason": "No approved native-pixel tick mapping"
+      },
+      "notes": "Three FUEL quantity faces, each with a window and curved percent scale; pointer design pending."
+    },
+    {
+      "id": "eng.fuel_qty.1",
+      "panel": "ENGINE",
+      "region": "main",
+      "kind": "dial",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "imageWidth": 1235,
+      "imageHeight": 1274,
+      "sourceSha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "pivot": null,
+      "needleIds": [],
+      "expectedNeedles": null,
+      "scales": [
+        {
+          "mode": "primary",
+          "unit": null,
+          "minimum": null,
+          "maximum": null,
+          "marks": [],
+          "marksStatus": "NO_NATIVE_PIXEL_TICK_COORDINATES",
+          "published": false,
+          "evidenceRequired": "individually measured source-image x/y per numeric major and minor tick",
+          "labelCandidates": []
+        }
+      ],
+      "legacyAngularPreview": null,
+      "stage2": {
+        "scanned": true,
+        "labelsVisible": false,
+        "labelsCandidate": [],
+        "rangeVerified": false,
+        "allMinorTicksRead": false
+      },
+      "stage3": {
+        "pivotRegistered": false,
+        "measuredTicks": 0,
+        "geometryVerified": false
+      },
+      "stage4": {
+        "numericEngine": "gauge-scale-engine-v2.js",
+        "realReadingsEnabled": false,
+        "reason": "No approved native-pixel tick mapping"
+      },
+      "notes": "Three FUEL quantity faces, each with a window and curved percent scale; pointer design pending."
+    },
+    {
+      "id": "eng.fuel_qty.2",
+      "panel": "ENGINE",
+      "region": "main",
+      "kind": "dial",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "imageWidth": 1235,
+      "imageHeight": 1274,
+      "sourceSha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "pivot": null,
+      "needleIds": [],
+      "expectedNeedles": null,
+      "scales": [
+        {
+          "mode": "primary",
+          "unit": null,
+          "minimum": null,
+          "maximum": null,
+          "marks": [],
+          "marksStatus": "NO_NATIVE_PIXEL_TICK_COORDINATES",
+          "published": false,
+          "evidenceRequired": "individually measured source-image x/y per numeric major and minor tick",
+          "labelCandidates": []
+        }
+      ],
+      "legacyAngularPreview": null,
+      "stage2": {
+        "scanned": true,
+        "labelsVisible": false,
+        "labelsCandidate": [],
+        "rangeVerified": false,
+        "allMinorTicksRead": false
+      },
+      "stage3": {
+        "pivotRegistered": false,
+        "measuredTicks": 0,
+        "geometryVerified": false
+      },
+      "stage4": {
+        "numericEngine": "gauge-scale-engine-v2.js",
+        "realReadingsEnabled": false,
+        "reason": "No approved native-pixel tick mapping"
+      },
+      "notes": "Three FUEL quantity faces, each with a window and curved percent scale; pointer design pending."
+    },
+    {
+      "id": "eng.n1.1",
+      "panel": "ENGINE",
+      "region": "main",
+      "kind": "dial",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "imageWidth": 1235,
+      "imageHeight": 1274,
+      "sourceSha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "pivot": null,
+      "needleIds": [],
+      "expectedNeedles": 1,
+      "scales": [
+        {
+          "mode": "primary",
+          "unit": null,
+          "minimum": null,
+          "maximum": null,
+          "marks": [],
+          "marksStatus": "NO_NATIVE_PIXEL_TICK_COORDINATES",
+          "published": false,
+          "evidenceRequired": "individually measured source-image x/y per numeric major and minor tick",
+          "labelCandidates": []
+        }
+      ],
+      "legacyAngularPreview": null,
+      "stage2": {
+        "scanned": true,
+        "labelsVisible": false,
+        "labelsCandidate": [],
+        "rangeVerified": false,
+        "allMinorTicksRead": false
+      },
+      "stage3": {
+        "pivotRegistered": false,
+        "measuredTicks": 0,
+        "geometryVerified": false
+      },
+      "stage4": {
+        "numericEngine": "gauge-scale-engine-v2.js",
+        "realReadingsEnabled": false,
+        "reason": "No approved native-pixel tick mapping"
+      },
+      "notes": "N1 faces have printed percent/RPM scale, but no verified Unified needle overlay."
+    },
+    {
+      "id": "eng.n1.2",
+      "panel": "ENGINE",
+      "region": "main",
+      "kind": "dial",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "imageWidth": 1235,
+      "imageHeight": 1274,
+      "sourceSha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "pivot": null,
+      "needleIds": [],
+      "expectedNeedles": 1,
+      "scales": [
+        {
+          "mode": "primary",
+          "unit": null,
+          "minimum": null,
+          "maximum": null,
+          "marks": [],
+          "marksStatus": "NO_NATIVE_PIXEL_TICK_COORDINATES",
+          "published": false,
+          "evidenceRequired": "individually measured source-image x/y per numeric major and minor tick",
+          "labelCandidates": []
+        }
+      ],
+      "legacyAngularPreview": null,
+      "stage2": {
+        "scanned": true,
+        "labelsVisible": false,
+        "labelsCandidate": [],
+        "rangeVerified": false,
+        "allMinorTicksRead": false
+      },
+      "stage3": {
+        "pivotRegistered": false,
+        "measuredTicks": 0,
+        "geometryVerified": false
+      },
+      "stage4": {
+        "numericEngine": "gauge-scale-engine-v2.js",
+        "realReadingsEnabled": false,
+        "reason": "No approved native-pixel tick mapping"
+      },
+      "notes": "N1 faces have printed percent/RPM scale, but no verified Unified needle overlay."
+    },
+    {
+      "id": "eng.egt.1",
+      "panel": "ENGINE",
+      "region": "main",
+      "kind": "dial",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "imageWidth": 1235,
+      "imageHeight": 1274,
+      "sourceSha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "pivot": {
+        "x": 535,
+        "y": 723,
+        "evidence": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "needleIds": [
+        "egt1"
+      ],
+      "expectedNeedles": 1,
+      "scales": [
+        {
+          "mode": "primary",
+          "unit": null,
+          "minimum": null,
+          "maximum": null,
+          "marks": [],
+          "marksStatus": "NO_NATIVE_PIXEL_TICK_COORDINATES",
+          "published": false,
+          "evidenceRequired": "individually measured source-image x/y per numeric major and minor tick",
+          "labelCandidates": []
+        }
+      ],
+      "legacyAngularPreview": null,
+      "stage2": {
+        "scanned": true,
+        "labelsVisible": false,
+        "labelsCandidate": [],
+        "rangeVerified": false,
+        "allMinorTicksRead": false
+      },
+      "stage3": {
+        "pivotRegistered": true,
+        "measuredTicks": 0,
+        "geometryVerified": false
+      },
+      "stage4": {
+        "numericEngine": "gauge-scale-engine-v2.js",
+        "realReadingsEnabled": false,
+        "reason": "No approved native-pixel tick mapping"
+      },
+      "notes": null
+    },
+    {
+      "id": "eng.egt.2",
+      "panel": "ENGINE",
+      "region": "main",
+      "kind": "dial",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "imageWidth": 1235,
+      "imageHeight": 1274,
+      "sourceSha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "pivot": {
+        "x": 724,
+        "y": 723,
+        "evidence": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "needleIds": [
+        "egt2"
+      ],
+      "expectedNeedles": 1,
+      "scales": [
+        {
+          "mode": "primary",
+          "unit": null,
+          "minimum": null,
+          "maximum": null,
+          "marks": [],
+          "marksStatus": "NO_NATIVE_PIXEL_TICK_COORDINATES",
+          "published": false,
+          "evidenceRequired": "individually measured source-image x/y per numeric major and minor tick",
+          "labelCandidates": []
+        }
+      ],
+      "legacyAngularPreview": null,
+      "stage2": {
+        "scanned": true,
+        "labelsVisible": false,
+        "labelsCandidate": [],
+        "rangeVerified": false,
+        "allMinorTicksRead": false
+      },
+      "stage3": {
+        "pivotRegistered": true,
+        "measuredTicks": 0,
+        "geometryVerified": false
+      },
+      "stage4": {
+        "numericEngine": "gauge-scale-engine-v2.js",
+        "realReadingsEnabled": false,
+        "reason": "No approved native-pixel tick mapping"
+      },
+      "notes": null
+    },
+    {
+      "id": "eng.n2.1",
+      "panel": "ENGINE",
+      "region": "main",
+      "kind": "dial",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "imageWidth": 1235,
+      "imageHeight": 1274,
+      "sourceSha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "pivot": {
+        "x": 535,
+        "y": 900,
+        "evidence": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "needleIds": [
+        "n2_1"
+      ],
+      "expectedNeedles": 1,
+      "scales": [
+        {
+          "mode": "primary",
+          "unit": null,
+          "minimum": null,
+          "maximum": null,
+          "marks": [],
+          "marksStatus": "NO_NATIVE_PIXEL_TICK_COORDINATES",
+          "published": false,
+          "evidenceRequired": "individually measured source-image x/y per numeric major and minor tick",
+          "labelCandidates": []
+        }
+      ],
+      "legacyAngularPreview": null,
+      "stage2": {
+        "scanned": true,
+        "labelsVisible": false,
+        "labelsCandidate": [],
+        "rangeVerified": false,
+        "allMinorTicksRead": false
+      },
+      "stage3": {
+        "pivotRegistered": true,
+        "measuredTicks": 0,
+        "geometryVerified": false
+      },
+      "stage4": {
+        "numericEngine": "gauge-scale-engine-v2.js",
+        "realReadingsEnabled": false,
+        "reason": "No approved native-pixel tick mapping"
+      },
+      "notes": null
+    },
+    {
+      "id": "eng.n2.2",
+      "panel": "ENGINE",
+      "region": "main",
+      "kind": "dial",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "imageWidth": 1235,
+      "imageHeight": 1274,
+      "sourceSha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "pivot": {
+        "x": 724,
+        "y": 900,
+        "evidence": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "needleIds": [
+        "n2_2"
+      ],
+      "expectedNeedles": 1,
+      "scales": [
+        {
+          "mode": "primary",
+          "unit": null,
+          "minimum": null,
+          "maximum": null,
+          "marks": [],
+          "marksStatus": "NO_NATIVE_PIXEL_TICK_COORDINATES",
+          "published": false,
+          "evidenceRequired": "individually measured source-image x/y per numeric major and minor tick",
+          "labelCandidates": []
+        }
+      ],
+      "legacyAngularPreview": null,
+      "stage2": {
+        "scanned": true,
+        "labelsVisible": false,
+        "labelsCandidate": [],
+        "rangeVerified": false,
+        "allMinorTicksRead": false
+      },
+      "stage3": {
+        "pivotRegistered": true,
+        "measuredTicks": 0,
+        "geometryVerified": false
+      },
+      "stage4": {
+        "numericEngine": "gauge-scale-engine-v2.js",
+        "realReadingsEnabled": false,
+        "reason": "No approved native-pixel tick mapping"
+      },
+      "notes": null
+    },
+    {
+      "id": "eng.fuel_flow.1",
+      "panel": "ENGINE",
+      "region": "main",
+      "kind": "dial",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "imageWidth": 1235,
+      "imageHeight": 1274,
+      "sourceSha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "pivot": null,
+      "needleIds": [],
+      "expectedNeedles": 1,
+      "scales": [
+        {
+          "mode": "primary",
+          "unit": null,
+          "minimum": null,
+          "maximum": null,
+          "marks": [],
+          "marksStatus": "NO_NATIVE_PIXEL_TICK_COORDINATES",
+          "published": false,
+          "evidenceRequired": "individually measured source-image x/y per numeric major and minor tick",
+          "labelCandidates": []
+        }
+      ],
+      "legacyAngularPreview": null,
+      "stage2": {
+        "scanned": true,
+        "labelsVisible": false,
+        "labelsCandidate": [],
+        "rangeVerified": false,
+        "allMinorTicksRead": false
+      },
+      "stage3": {
+        "pivotRegistered": false,
+        "measuredTicks": 0,
+        "geometryVerified": false
+      },
+      "stage4": {
+        "numericEngine": "gauge-scale-engine-v2.js",
+        "realReadingsEnabled": false,
+        "reason": "No approved native-pixel tick mapping"
+      },
+      "notes": "FF/FU faces; fuel-flow versus fuel-used display modes still require separation."
+    },
+    {
+      "id": "eng.fuel_flow.2",
+      "panel": "ENGINE",
+      "region": "main",
+      "kind": "dial",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "imageWidth": 1235,
+      "imageHeight": 1274,
+      "sourceSha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "pivot": null,
+      "needleIds": [],
+      "expectedNeedles": 1,
+      "scales": [
+        {
+          "mode": "primary",
+          "unit": null,
+          "minimum": null,
+          "maximum": null,
+          "marks": [],
+          "marksStatus": "NO_NATIVE_PIXEL_TICK_COORDINATES",
+          "published": false,
+          "evidenceRequired": "individually measured source-image x/y per numeric major and minor tick",
+          "labelCandidates": []
+        }
+      ],
+      "legacyAngularPreview": null,
+      "stage2": {
+        "scanned": true,
+        "labelsVisible": false,
+        "labelsCandidate": [],
+        "rangeVerified": false,
+        "allMinorTicksRead": false
+      },
+      "stage3": {
+        "pivotRegistered": false,
+        "measuredTicks": 0,
+        "geometryVerified": false
+      },
+      "stage4": {
+        "numericEngine": "gauge-scale-engine-v2.js",
+        "realReadingsEnabled": false,
+        "reason": "No approved native-pixel tick mapping"
+      },
+      "notes": "FF/FU faces; fuel-flow versus fuel-used display modes still require separation."
+    },
+    {
+      "id": "eng.oil_pressure.1",
+      "panel": "ENGINE",
+      "region": "main",
+      "kind": "dial",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "imageWidth": 1235,
+      "imageHeight": 1274,
+      "sourceSha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "pivot": null,
+      "needleIds": [],
+      "expectedNeedles": 1,
+      "scales": [
+        {
+          "mode": "primary",
+          "unit": null,
+          "minimum": null,
+          "maximum": null,
+          "marks": [],
+          "marksStatus": "NO_NATIVE_PIXEL_TICK_COORDINATES",
+          "published": false,
+          "evidenceRequired": "individually measured source-image x/y per numeric major and minor tick",
+          "labelCandidates": []
+        }
+      ],
+      "legacyAngularPreview": null,
+      "stage2": {
+        "scanned": true,
+        "labelsVisible": false,
+        "labelsCandidate": [],
+        "rangeVerified": false,
+        "allMinorTicksRead": false
+      },
+      "stage3": {
+        "pivotRegistered": false,
+        "measuredTicks": 0,
+        "geometryVerified": false
+      },
+      "stage4": {
+        "numericEngine": "gauge-scale-engine-v2.js",
+        "realReadingsEnabled": false,
+        "reason": "No approved native-pixel tick mapping"
+      },
+      "notes": null
+    },
+    {
+      "id": "eng.oil_pressure.2",
+      "panel": "ENGINE",
+      "region": "main",
+      "kind": "dial",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "imageWidth": 1235,
+      "imageHeight": 1274,
+      "sourceSha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "pivot": null,
+      "needleIds": [],
+      "expectedNeedles": 1,
+      "scales": [
+        {
+          "mode": "primary",
+          "unit": null,
+          "minimum": null,
+          "maximum": null,
+          "marks": [],
+          "marksStatus": "NO_NATIVE_PIXEL_TICK_COORDINATES",
+          "published": false,
+          "evidenceRequired": "individually measured source-image x/y per numeric major and minor tick",
+          "labelCandidates": []
+        }
+      ],
+      "legacyAngularPreview": null,
+      "stage2": {
+        "scanned": true,
+        "labelsVisible": false,
+        "labelsCandidate": [],
+        "rangeVerified": false,
+        "allMinorTicksRead": false
+      },
+      "stage3": {
+        "pivotRegistered": false,
+        "measuredTicks": 0,
+        "geometryVerified": false
+      },
+      "stage4": {
+        "numericEngine": "gauge-scale-engine-v2.js",
+        "realReadingsEnabled": false,
+        "reason": "No approved native-pixel tick mapping"
+      },
+      "notes": null
+    },
+    {
+      "id": "eng.oil_temperature.1",
+      "panel": "ENGINE",
+      "region": "main",
+      "kind": "dial",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "imageWidth": 1235,
+      "imageHeight": 1274,
+      "sourceSha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "pivot": null,
+      "needleIds": [],
+      "expectedNeedles": 1,
+      "scales": [
+        {
+          "mode": "primary",
+          "unit": null,
+          "minimum": null,
+          "maximum": null,
+          "marks": [],
+          "marksStatus": "NO_NATIVE_PIXEL_TICK_COORDINATES",
+          "published": false,
+          "evidenceRequired": "individually measured source-image x/y per numeric major and minor tick",
+          "labelCandidates": []
+        }
+      ],
+      "legacyAngularPreview": null,
+      "stage2": {
+        "scanned": true,
+        "labelsVisible": false,
+        "labelsCandidate": [],
+        "rangeVerified": false,
+        "allMinorTicksRead": false
+      },
+      "stage3": {
+        "pivotRegistered": false,
+        "measuredTicks": 0,
+        "geometryVerified": false
+      },
+      "stage4": {
+        "numericEngine": "gauge-scale-engine-v2.js",
+        "realReadingsEnabled": false,
+        "reason": "No approved native-pixel tick mapping"
+      },
+      "notes": null
+    },
+    {
+      "id": "eng.oil_temperature.2",
+      "panel": "ENGINE",
+      "region": "main",
+      "kind": "dial",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "imageWidth": 1235,
+      "imageHeight": 1274,
+      "sourceSha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "pivot": null,
+      "needleIds": [],
+      "expectedNeedles": 1,
+      "scales": [
+        {
+          "mode": "primary",
+          "unit": null,
+          "minimum": null,
+          "maximum": null,
+          "marks": [],
+          "marksStatus": "NO_NATIVE_PIXEL_TICK_COORDINATES",
+          "published": false,
+          "evidenceRequired": "individually measured source-image x/y per numeric major and minor tick",
+          "labelCandidates": []
+        }
+      ],
+      "legacyAngularPreview": null,
+      "stage2": {
+        "scanned": true,
+        "labelsVisible": false,
+        "labelsCandidate": [],
+        "rangeVerified": false,
+        "allMinorTicksRead": false
+      },
+      "stage3": {
+        "pivotRegistered": false,
+        "measuredTicks": 0,
+        "geometryVerified": false
+      },
+      "stage4": {
+        "numericEngine": "gauge-scale-engine-v2.js",
+        "realReadingsEnabled": false,
+        "reason": "No approved native-pixel tick mapping"
+      },
+      "notes": null
+    },
+    {
+      "id": "eng.vibration.1",
+      "panel": "ENGINE",
+      "region": "main",
+      "kind": "dial",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "imageWidth": 1235,
+      "imageHeight": 1274,
+      "sourceSha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "pivot": null,
+      "needleIds": [],
+      "expectedNeedles": 1,
+      "scales": [
+        {
+          "mode": "primary",
+          "unit": null,
+          "minimum": null,
+          "maximum": null,
+          "marks": [],
+          "marksStatus": "NO_NATIVE_PIXEL_TICK_COORDINATES",
+          "published": false,
+          "evidenceRequired": "individually measured source-image x/y per numeric major and minor tick",
+          "labelCandidates": []
+        }
+      ],
+      "legacyAngularPreview": null,
+      "stage2": {
+        "scanned": true,
+        "labelsVisible": false,
+        "labelsCandidate": [],
+        "rangeVerified": false,
+        "allMinorTicksRead": false
+      },
+      "stage3": {
+        "pivotRegistered": false,
+        "measuredTicks": 0,
+        "geometryVerified": false
+      },
+      "stage4": {
+        "numericEngine": "gauge-scale-engine-v2.js",
+        "realReadingsEnabled": false,
+        "reason": "No approved native-pixel tick mapping"
+      },
+      "notes": null
+    },
+    {
+      "id": "eng.vibration.2",
+      "panel": "ENGINE",
+      "region": "main",
+      "kind": "dial",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "imageWidth": 1235,
+      "imageHeight": 1274,
+      "sourceSha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "pivot": null,
+      "needleIds": [],
+      "expectedNeedles": 1,
+      "scales": [
+        {
+          "mode": "primary",
+          "unit": null,
+          "minimum": null,
+          "maximum": null,
+          "marks": [],
+          "marksStatus": "NO_NATIVE_PIXEL_TICK_COORDINATES",
+          "published": false,
+          "evidenceRequired": "individually measured source-image x/y per numeric major and minor tick",
+          "labelCandidates": []
+        }
+      ],
+      "legacyAngularPreview": null,
+      "stage2": {
+        "scanned": true,
+        "labelsVisible": false,
+        "labelsCandidate": [],
+        "rangeVerified": false,
+        "allMinorTicksRead": false
+      },
+      "stage3": {
+        "pivotRegistered": false,
+        "measuredTicks": 0,
+        "geometryVerified": false
+      },
+      "stage4": {
+        "numericEngine": "gauge-scale-engine-v2.js",
+        "realReadingsEnabled": false,
+        "reason": "No approved native-pixel tick mapping"
+      },
+      "notes": null
+    },
+    {
+      "id": "eng.hyd_pressure.a",
+      "panel": "ENGINE",
+      "region": "main",
+      "kind": "dial",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "imageWidth": 1235,
+      "imageHeight": 1274,
+      "sourceSha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "pivot": null,
+      "needleIds": [],
+      "expectedNeedles": 1,
+      "scales": [
+        {
+          "mode": "primary",
+          "unit": null,
+          "minimum": null,
+          "maximum": null,
+          "marks": [],
+          "marksStatus": "NO_NATIVE_PIXEL_TICK_COORDINATES",
+          "published": false,
+          "evidenceRequired": "individually measured source-image x/y per numeric major and minor tick",
+          "labelCandidates": []
+        }
+      ],
+      "legacyAngularPreview": null,
+      "stage2": {
+        "scanned": true,
+        "labelsVisible": false,
+        "labelsCandidate": [],
+        "rangeVerified": false,
+        "allMinorTicksRead": false
+      },
+      "stage3": {
+        "pivotRegistered": false,
+        "measuredTicks": 0,
+        "geometryVerified": false
+      },
+      "stage4": {
+        "numericEngine": "gauge-scale-engine-v2.js",
+        "realReadingsEnabled": false,
+        "reason": "No approved native-pixel tick mapping"
+      },
+      "notes": null
+    },
+    {
+      "id": "eng.hyd_pressure.b",
+      "panel": "ENGINE",
+      "region": "main",
+      "kind": "dial",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "imageWidth": 1235,
+      "imageHeight": 1274,
+      "sourceSha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "pivot": null,
+      "needleIds": [],
+      "expectedNeedles": 1,
+      "scales": [
+        {
+          "mode": "primary",
+          "unit": null,
+          "minimum": null,
+          "maximum": null,
+          "marks": [],
+          "marksStatus": "NO_NATIVE_PIXEL_TICK_COORDINATES",
+          "published": false,
+          "evidenceRequired": "individually measured source-image x/y per numeric major and minor tick",
+          "labelCandidates": []
+        }
+      ],
+      "legacyAngularPreview": null,
+      "stage2": {
+        "scanned": true,
+        "labelsVisible": false,
+        "labelsCandidate": [],
+        "rangeVerified": false,
+        "allMinorTicksRead": false
+      },
+      "stage3": {
+        "pivotRegistered": false,
+        "measuredTicks": 0,
+        "geometryVerified": false
+      },
+      "stage4": {
+        "numericEngine": "gauge-scale-engine-v2.js",
+        "realReadingsEnabled": false,
+        "reason": "No approved native-pixel tick mapping"
+      },
+      "notes": null
+    },
+    {
+      "id": "fo.flap_position",
+      "panel": "FO-INNER",
+      "region": "main",
+      "kind": "dial",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Right_Main_Instruments_Blank.png",
+      "imageWidth": 918,
+      "imageHeight": 1713,
+      "sourceSha256": "171bf9e8d21347e7a522ebc86b19cfe0b967f0503d26c483d8f3d685f719576a",
+      "pivot": null,
+      "needleIds": [
+        "flapL",
+        "flapR"
+      ],
+      "expectedNeedles": 2,
+      "scales": [
+        {
+          "mode": "primary",
+          "unit": "flap",
+          "minimum": null,
+          "maximum": null,
+          "marks": [],
+          "marksStatus": "NO_NATIVE_PIXEL_TICK_COORDINATES",
+          "published": false,
+          "evidenceRequired": "individually measured source-image x/y per numeric major and minor tick",
+          "labelCandidates": [
+            "UP",
+            "1",
+            "2",
+            "5",
+            "10",
+            "15",
+            "25",
+            "30",
+            "40"
+          ]
+        }
+      ],
+      "legacyAngularPreview": {
+        "unit": "flap",
+        "observations": [
+          [
+            0,
+            0
+          ],
+          [
+            1,
+            38
+          ],
+          [
+            2,
+            78
+          ],
+          [
+            5,
+            116
+          ],
+          [
+            10,
+            148
+          ],
+          [
+            15,
+            180
+          ],
+          [
+            25,
+            218
+          ],
+          [
+            30,
+            244
+          ],
+          [
+            40,
+            270
+          ]
+        ],
+        "origin": "flap-needles-model.js visual angular stop offsets"
+      },
+      "stage2": {
+        "scanned": true,
+        "labelsVisible": true,
+        "labelsCandidate": [
+          "UP",
+          "1",
+          "2",
+          "5",
+          "10",
+          "15",
+          "25",
+          "30",
+          "40"
+        ],
+        "rangeVerified": false,
+        "allMinorTicksRead": false
+      },
+      "stage3": {
+        "pivotRegistered": false,
+        "measuredTicks": 0,
+        "geometryVerified": false
+      },
+      "stage4": {
+        "numericEngine": "gauge-scale-engine-v2.js",
+        "realReadingsEnabled": false,
+        "reason": "No approved native-pixel tick mapping"
+      },
+      "notes": null
+    },
+    {
+      "id": "fo.hyd_brake_pressure",
+      "panel": "FO-INNER",
+      "region": "main",
+      "kind": "dial",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Right_Main_Instruments_Blank.png",
+      "imageWidth": 918,
+      "imageHeight": 1713,
+      "sourceSha256": "171bf9e8d21347e7a522ebc86b19cfe0b967f0503d26c483d8f3d685f719576a",
+      "pivot": null,
+      "needleIds": [],
+      "expectedNeedles": 1,
+      "scales": [
+        {
+          "mode": "primary",
+          "unit": null,
+          "minimum": null,
+          "maximum": null,
+          "marks": [],
+          "marksStatus": "NO_NATIVE_PIXEL_TICK_COORDINATES",
+          "published": false,
+          "evidenceRequired": "individually measured source-image x/y per numeric major and minor tick",
+          "labelCandidates": []
+        }
+      ],
+      "legacyAngularPreview": null,
+      "stage2": {
+        "scanned": true,
+        "labelsVisible": false,
+        "labelsCandidate": [],
+        "rangeVerified": false,
+        "allMinorTicksRead": false
+      },
+      "stage3": {
+        "pivotRegistered": false,
+        "measuredTicks": 0,
+        "geometryVerified": false
+      },
+      "stage4": {
+        "numericEngine": "gauge-scale-engine-v2.js",
+        "realReadingsEnabled": false,
+        "reason": "No approved native-pixel tick mapping"
+      },
+      "notes": null
+    },
+    {
+      "id": "fo.airspeed",
+      "panel": "FO-INNER",
+      "region": "main",
+      "kind": "dial",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Right_Main_Instruments_Blank.png",
+      "imageWidth": 918,
+      "imageHeight": 1713,
+      "sourceSha256": "171bf9e8d21347e7a522ebc86b19cfe0b967f0503d26c483d8f3d685f719576a",
+      "pivot": null,
+      "needleIds": [],
+      "expectedNeedles": 1,
+      "scales": [
+        {
+          "mode": "primary",
+          "unit": null,
+          "minimum": null,
+          "maximum": null,
+          "marks": [],
+          "marksStatus": "NO_NATIVE_PIXEL_TICK_COORDINATES",
+          "published": false,
+          "evidenceRequired": "individually measured source-image x/y per numeric major and minor tick",
+          "labelCandidates": []
+        }
+      ],
+      "legacyAngularPreview": null,
+      "stage2": {
+        "scanned": true,
+        "labelsVisible": false,
+        "labelsCandidate": [],
+        "rangeVerified": false,
+        "allMinorTicksRead": false
+      },
+      "stage3": {
+        "pivotRegistered": false,
+        "measuredTicks": 0,
+        "geometryVerified": false
+      },
+      "stage4": {
+        "numericEngine": "gauge-scale-engine-v2.js",
+        "realReadingsEnabled": false,
+        "reason": "No approved native-pixel tick mapping"
+      },
+      "notes": null
+    },
+    {
+      "id": "fo.rmi",
+      "panel": "FO-INNER",
+      "region": "main",
+      "kind": "moving_card_dial",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Right_Main_Instruments_Blank.png",
+      "imageWidth": 918,
+      "imageHeight": 1713,
+      "sourceSha256": "171bf9e8d21347e7a522ebc86b19cfe0b967f0503d26c483d8f3d685f719576a",
+      "pivot": null,
+      "needleIds": [],
+      "expectedNeedles": null,
+      "scales": [
+        {
+          "mode": "primary",
+          "unit": null,
+          "minimum": null,
+          "maximum": null,
+          "marks": [],
+          "marksStatus": "NO_NATIVE_PIXEL_TICK_COORDINATES",
+          "published": false,
+          "evidenceRequired": "individually measured source-image x/y per numeric major and minor tick",
+          "labelCandidates": []
+        }
+      ],
+      "legacyAngularPreview": null,
+      "stage2": {
+        "scanned": true,
+        "labelsVisible": false,
+        "labelsCandidate": [],
+        "rangeVerified": false,
+        "allMinorTicksRead": false
+      },
+      "stage3": {
+        "pivotRegistered": false,
+        "measuredTicks": 0,
+        "geometryVerified": false
+      },
+      "stage4": {
+        "numericEngine": "gauge-scale-engine-v2.js",
+        "realReadingsEnabled": false,
+        "reason": "No approved native-pixel tick mapping"
+      },
+      "notes": null
+    },
+    {
+      "id": "fo.left_linear",
+      "panel": "FO-INNER",
+      "region": "main",
+      "kind": "linear_indicator",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Right_Main_Instruments_Blank.png",
+      "imageWidth": 918,
+      "imageHeight": 1713,
+      "sourceSha256": "171bf9e8d21347e7a522ebc86b19cfe0b967f0503d26c483d8f3d685f719576a",
+      "pivot": null,
+      "needleIds": [],
+      "expectedNeedles": null,
+      "scales": [
+        {
+          "mode": "primary",
+          "unit": null,
+          "minimum": null,
+          "maximum": null,
+          "marks": [],
+          "marksStatus": "NO_NATIVE_PIXEL_TICK_COORDINATES",
+          "published": false,
+          "evidenceRequired": "individually measured source-image x/y per numeric major and minor tick",
+          "labelCandidates": []
+        }
+      ],
+      "legacyAngularPreview": null,
+      "stage2": {
+        "scanned": true,
+        "labelsVisible": false,
+        "labelsCandidate": [],
+        "rangeVerified": false,
+        "allMinorTicksRead": false
+      },
+      "stage3": {
+        "pivotRegistered": false,
+        "measuredTicks": 0,
+        "geometryVerified": false
+      },
+      "stage4": {
+        "numericEngine": "gauge-scale-engine-v2.js",
+        "realReadingsEnabled": false,
+        "reason": "No approved native-pixel tick mapping"
+      },
+      "notes": "Two 0–10 vertical indicator windows marked LEFT and RIGHT; mechanism and quantity pending."
+    },
+    {
+      "id": "fo.right_linear",
+      "panel": "FO-INNER",
+      "region": "main",
+      "kind": "linear_indicator",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Right_Main_Instruments_Blank.png",
+      "imageWidth": 918,
+      "imageHeight": 1713,
+      "sourceSha256": "171bf9e8d21347e7a522ebc86b19cfe0b967f0503d26c483d8f3d685f719576a",
+      "pivot": null,
+      "needleIds": [],
+      "expectedNeedles": null,
+      "scales": [
+        {
+          "mode": "primary",
+          "unit": null,
+          "minimum": null,
+          "maximum": null,
+          "marks": [],
+          "marksStatus": "NO_NATIVE_PIXEL_TICK_COORDINATES",
+          "published": false,
+          "evidenceRequired": "individually measured source-image x/y per numeric major and minor tick",
+          "labelCandidates": []
+        }
+      ],
+      "legacyAngularPreview": null,
+      "stage2": {
+        "scanned": true,
+        "labelsVisible": false,
+        "labelsCandidate": [],
+        "rangeVerified": false,
+        "allMinorTicksRead": false
+      },
+      "stage3": {
+        "pivotRegistered": false,
+        "measuredTicks": 0,
+        "geometryVerified": false
+      },
+      "stage4": {
+        "numericEngine": "gauge-scale-engine-v2.js",
+        "realReadingsEnabled": false,
+        "reason": "No approved native-pixel tick mapping"
+      },
+      "notes": "Two 0–10 vertical indicator windows marked LEFT and RIGHT; mechanism and quantity pending."
+    },
+    {
+      "id": "fo.outer_altimeter",
+      "panel": "FO-OUTER",
+      "region": "main",
+      "kind": "dial",
+      "source": "file_000000006c00820ab145b3682f686256.png",
+      "imageWidth": 1123,
+      "imageHeight": 1400,
+      "sourceSha256": "b2439666f75ddbcab15835b532d26a7ad2d1ab669be5f48774d656c1b8915a3c",
+      "pivot": null,
+      "needleIds": [],
+      "expectedNeedles": null,
+      "scales": [
+        {
+          "mode": "primary",
+          "unit": null,
+          "minimum": null,
+          "maximum": null,
+          "marks": [],
+          "marksStatus": "NO_NATIVE_PIXEL_TICK_COORDINATES",
+          "published": false,
+          "evidenceRequired": "individually measured source-image x/y per numeric major and minor tick",
+          "labelCandidates": []
+        }
+      ],
+      "legacyAngularPreview": null,
+      "stage2": {
+        "scanned": true,
+        "labelsVisible": false,
+        "labelsCandidate": [],
+        "rangeVerified": false,
+        "allMinorTicksRead": false
+      },
+      "stage3": {
+        "pivotRegistered": false,
+        "measuredTicks": 0,
+        "geometryVerified": false
+      },
+      "stage4": {
+        "numericEngine": "gauge-scale-engine-v2.js",
+        "realReadingsEnabled": false,
+        "reason": "No approved native-pixel tick mapping"
+      },
+      "notes": null
+    },
+    {
+      "id": "fo.outer_vertical_speed",
+      "panel": "FO-OUTER",
+      "region": "main",
+      "kind": "dial",
+      "source": "file_000000006c00820ab145b3682f686256.png",
+      "imageWidth": 1123,
+      "imageHeight": 1400,
+      "sourceSha256": "b2439666f75ddbcab15835b532d26a7ad2d1ab669be5f48774d656c1b8915a3c",
+      "pivot": null,
+      "needleIds": [],
+      "expectedNeedles": 1,
+      "scales": [
+        {
+          "mode": "primary",
+          "unit": null,
+          "minimum": null,
+          "maximum": null,
+          "marks": [],
+          "marksStatus": "NO_NATIVE_PIXEL_TICK_COORDINATES",
+          "published": false,
+          "evidenceRequired": "individually measured source-image x/y per numeric major and minor tick",
+          "labelCandidates": []
+        }
+      ],
+      "legacyAngularPreview": null,
+      "stage2": {
+        "scanned": true,
+        "labelsVisible": false,
+        "labelsCandidate": [],
+        "rangeVerified": false,
+        "allMinorTicksRead": false
+      },
+      "stage3": {
+        "pivotRegistered": false,
+        "measuredTicks": 0,
+        "geometryVerified": false
+      },
+      "stage4": {
+        "numericEngine": "gauge-scale-engine-v2.js",
+        "realReadingsEnabled": false,
+        "reason": "No approved native-pixel tick mapping"
+      },
+      "notes": null
+    },
+    {
+      "id": "fo.outer_clock",
+      "panel": "FO-OUTER",
+      "region": "main",
+      "kind": "clock",
+      "source": "file_000000006c00820ab145b3682f686256.png",
+      "imageWidth": 1123,
+      "imageHeight": 1400,
+      "sourceSha256": "b2439666f75ddbcab15835b532d26a7ad2d1ab669be5f48774d656c1b8915a3c",
+      "pivot": null,
+      "needleIds": [],
+      "expectedNeedles": null,
+      "scales": [
+        {
+          "mode": "primary",
+          "unit": null,
+          "minimum": null,
+          "maximum": null,
+          "marks": [],
+          "marksStatus": "NO_NATIVE_PIXEL_TICK_COORDINATES",
+          "published": false,
+          "evidenceRequired": "individually measured source-image x/y per numeric major and minor tick",
+          "labelCandidates": []
+        }
+      ],
+      "legacyAngularPreview": null,
+      "stage2": {
+        "scanned": true,
+        "labelsVisible": false,
+        "labelsCandidate": [],
+        "rangeVerified": false,
+        "allMinorTicksRead": false
+      },
+      "stage3": {
+        "pivotRegistered": false,
+        "measuredTicks": 0,
+        "geometryVerified": false
+      },
+      "stage4": {
+        "numericEngine": "gauge-scale-engine-v2.js",
+        "realReadingsEnabled": false,
+        "reason": "No approved native-pixel tick mapping"
+      },
+      "notes": null
+    },
+    {
+      "id": "ped.stab_trim.left",
+      "panel": "THROTTLE",
+      "region": "pedestal",
+      "kind": "linear_indicator",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/Aircraft Throttle Quadrant Control Panel.png",
+      "imageWidth": 1145,
+      "imageHeight": 1373,
+      "sourceSha256": "e533f907b3826dbf8fc986812b9045c2ef8980f93133ce85b859e9b9d7ab0030",
+      "pivot": null,
+      "needleIds": [],
+      "expectedNeedles": null,
+      "scales": [
+        {
+          "mode": "primary",
+          "unit": null,
+          "minimum": null,
+          "maximum": null,
+          "marks": [],
+          "marksStatus": "NO_NATIVE_PIXEL_TICK_COORDINATES",
+          "published": false,
+          "evidenceRequired": "individually measured source-image x/y per numeric major and minor tick",
+          "labelCandidates": []
+        }
+      ],
+      "legacyAngularPreview": null,
+      "stage2": {
+        "scanned": true,
+        "labelsVisible": false,
+        "labelsCandidate": [],
+        "rangeVerified": false,
+        "allMinorTicksRead": false
+      },
+      "stage3": {
+        "pivotRegistered": false,
+        "measuredTicks": 0,
+        "geometryVerified": false
+      },
+      "stage4": {
+        "numericEngine": "gauge-scale-engine-v2.js",
+        "realReadingsEnabled": false,
+        "reason": "No approved native-pixel tick mapping"
+      },
+      "notes": "Dual STAB TRIM position windows; movable pointer/travel to be identified separately from lever detents."
+    },
+    {
+      "id": "ped.stab_trim.right",
+      "panel": "THROTTLE",
+      "region": "pedestal",
+      "kind": "linear_indicator",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/Aircraft Throttle Quadrant Control Panel.png",
+      "imageWidth": 1145,
+      "imageHeight": 1373,
+      "sourceSha256": "e533f907b3826dbf8fc986812b9045c2ef8980f93133ce85b859e9b9d7ab0030",
+      "pivot": null,
+      "needleIds": [],
+      "expectedNeedles": null,
+      "scales": [
+        {
+          "mode": "primary",
+          "unit": null,
+          "minimum": null,
+          "maximum": null,
+          "marks": [],
+          "marksStatus": "NO_NATIVE_PIXEL_TICK_COORDINATES",
+          "published": false,
+          "evidenceRequired": "individually measured source-image x/y per numeric major and minor tick",
+          "labelCandidates": []
+        }
+      ],
+      "legacyAngularPreview": null,
+      "stage2": {
+        "scanned": true,
+        "labelsVisible": false,
+        "labelsCandidate": [],
+        "rangeVerified": false,
+        "allMinorTicksRead": false
+      },
+      "stage3": {
+        "pivotRegistered": false,
+        "measuredTicks": 0,
+        "geometryVerified": false
+      },
+      "stage4": {
+        "numericEngine": "gauge-scale-engine-v2.js",
+        "realReadingsEnabled": false,
+        "reason": "No approved native-pixel tick mapping"
+      },
+      "notes": "Dual STAB TRIM position windows; movable pointer/travel to be identified separately from lever detents."
+    },
+    {
+      "id": "ped.rudder_trim",
+      "panel": "RADIO",
+      "region": "pedestal",
+      "kind": "linear_indicator",
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/PD-RADIO-AVIONICS-7a41044771fa.png",
+      "imageWidth": 1122,
+      "imageHeight": 1402,
+      "sourceSha256": "7a41044771faad1d59f509c05ed2508f75c79fde219ee9ec19696f8fb19ed533",
+      "pivot": null,
+      "needleIds": [],
+      "expectedNeedles": null,
+      "scales": [
+        {
+          "mode": "primary",
+          "unit": null,
+          "minimum": null,
+          "maximum": null,
+          "marks": [],
+          "marksStatus": "NO_NATIVE_PIXEL_TICK_COORDINATES",
+          "published": false,
+          "evidenceRequired": "individually measured source-image x/y per numeric major and minor tick",
+          "labelCandidates": []
+        }
+      ],
+      "legacyAngularPreview": null,
+      "stage2": {
+        "scanned": true,
+        "labelsVisible": false,
+        "labelsCandidate": [],
+        "rangeVerified": false,
+        "allMinorTicksRead": false
+      },
+      "stage3": {
+        "pivotRegistered": false,
+        "measuredTicks": 0,
+        "geometryVerified": false
+      },
+      "stage4": {
+        "numericEngine": "gauge-scale-engine-v2.js",
+        "realReadingsEnabled": false,
+        "reason": "No approved native-pixel tick mapping"
+      },
+      "notes": "Center pedestal RUDDER TRIM signed LEFT/RIGHT 0–15 strip."
+    }
+  ],
+  "unresolvedCandidates": [
+    {
+      "id": "oh.voice_recorder.test_meter",
+      "panel": "OH19-VOICE",
+      "reason": "Small ticked recorder-test face; visible pointer count and active behavior cannot be established from the blank image.",
+      "published": false
+    },
+    {
+      "id": "oh.air_mix_valve.left",
+      "panel": "OH20",
+      "reason": "Small semicircular AIR MIX VALVE position arc; need approved source to distinguish pointer indicator from static marking.",
+      "published": false
+    },
+    {
+      "id": "oh.air_mix_valve.right",
+      "panel": "OH20",
+      "reason": "Small semicircular AIR MIX VALVE position arc; need approved source to distinguish pointer indicator from static marking.",
+      "published": false
+    }
+  ]
+}
