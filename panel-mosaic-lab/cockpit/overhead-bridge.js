@@ -8,6 +8,14 @@
  // The locked OH22 source, physical atlas seams, lights and switch overlays stay untouched.
  const DCPCS_ARTWORK='../assets/locked/2026-10-23/DCPCS_Background_Owner.png';
  const PROFILE_KEY='b737classic.aircraft-profile.v1';
+ // Only the Unified Cockpit replaces OH20 for the 737-400.
+ // Approved 300/500 OH20 artwork and frozen overhead mosaic remain untouched.
+ const AIRCON_400_ARTWORK='../assets/locked/2026-10-23/Boeing-Style Environmental Control Panel.png';
+ let airframeFamily='B737-300-500',airconPlate=null,airconImage=null;
+ function savedAirframe(){
+   try{return JSON.parse(localStorage.getItem(PROFILE_KEY)||'null')?.aircraftFamily==='B737-400'?'B737-400':'B737-300-500';}
+   catch(_){return 'B737-300-500';}
+ }
  let pressurizationSystem='DCPCS',ownerPlate=null;
  function savedPressurization(){
    try{
@@ -40,6 +48,33 @@
    ownerPlate.style.display=pressurizationSystem==='DCPCS'&&ownerPlate.dataset.loaded==='true'?'block':'none';
    return true;
  }
+ function syncAirconPlate(){
+   if(typeof document.querySelector!=='function')return false;
+   const plate=document.querySelector('#atlasAbsolute .atlas-piece[data-key="OH20"] .atlas-image-window');
+   if(!plate)return false;
+   if(!airconPlate||!plate.contains(airconPlate)){
+     const layer=document.createElement('div');
+     layer.className='b737-400-owner-oh20-background';
+     layer.dataset.asset='Boeing-Style Environmental Control Panel.png';
+     Object.assign(layer.style,{position:'absolute',inset:'0',display:'none',zIndex:'2',pointerEvents:'none',background:'#394858',overflow:'hidden'});
+     const img=document.createElement('img');
+     img.alt='B737-400 environmental and air conditioning panel';
+     img.draggable=false;img.decoding='async';
+     Object.assign(img.style,{display:'block',width:'100%',height:'100%',maxWidth:'none',maxHeight:'none',objectFit:'fill',objectPosition:'center',pointerEvents:'none'});
+     img.addEventListener('load',()=>{layer.dataset.loaded='true';layer.style.display=airframeFamily==='B737-400'?'block':'none';});
+     img.addEventListener('error',()=>{layer.dataset.loaded='false';layer.style.display='none';send({kind:'aircon-background-error',family:'B737-400'});});
+     layer.append(img);plate.append(layer);
+     airconPlate=layer;airconImage=img;
+   }
+   if(airframeFamily==='B737-400'&&!airconImage.getAttribute('src'))airconImage.src=new URL(AIRCON_400_ARTWORK,document.baseURI).href;
+   airconPlate.style.display=airframeFamily==='B737-400'&&airconPlate.dataset.loaded==='true'?'block':'none';
+   return true;
+ }
+ function setAirframeArtwork(family){
+   if(!['B737-300-500','B737-400'].includes(family))return;
+   airframeFamily=family;
+   syncAirconPlate();
+ }
  function setPressurizationArtwork(system){
    if(!['DCPCS','CPCS'].includes(system))return;
    pressurizationSystem=system;
@@ -47,10 +82,12 @@
    window.dispatchEvent(new CustomEvent('b737:pressure-configuration',{detail:{system}}));
  }
  pressurizationSystem=savedPressurization();
- const ownerPlateObserver=new MutationObserver(()=>{if(syncOwnerPlate())ownerPlateObserver.disconnect();});
+ airframeFamily=savedAirframe();
+ const ownerPlateObserver=new MutationObserver(()=>{if(syncOwnerPlate()&&syncAirconPlate())ownerPlateObserver.disconnect();});
  ownerPlateObserver.observe(document.getElementById('atlasAbsolute'),{childList:true,subtree:true});
  syncOwnerPlate();
- window.addEventListener('storage',e=>{if(e.key===PROFILE_KEY)setPressurizationArtwork(savedPressurization());});
+ syncAirconPlate();
+ window.addEventListener('storage',e=>{if(e.key===PROFILE_KEY){setPressurizationArtwork(savedPressurization());setAirframeArtwork(savedAirframe());}});
  function applyProjection(){
   if(!ready||!projection||document.documentElement.classList.contains('cockpit-visual-test'))return;
   const base=window.B737OverheadLights.getState();
@@ -77,6 +114,7 @@
  window.addEventListener('b737:overhead-light-state',()=>{applyProjection();report();});
  window.addEventListener('message',e=>{if(e.origin!==location.origin||e.source!==parent||e.data?.type!=='b737:cockpit-command')return;const d=e.data;if(!ready)return;
   if(d.action==='pressurization-background'&&['DCPCS','CPCS'].includes(d.system))setPressurizationArtwork(d.system);
+  if(d.action==='aircon-background'&&['B737-300-500','B737-400'].includes(d.family))setAirframeArtwork(d.family);
   if(d.action==='visual-test'&&typeof d.active==='boolean')visualTest(d.active);
   if(d.action==='lamp-test'&&typeof d.active==='boolean')window.B737OverheadLights.setLampTest(d.active);
   if(d.action==='fault'&&typeof d.id==='string'&&typeof d.active==='boolean'){try{window.B737OverheadLights.setFault(d.id,d.active);}catch{}}
