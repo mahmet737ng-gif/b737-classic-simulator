@@ -28,7 +28,7 @@ assert.ok(interactive.includes('model.legendHotspots'),'UI maps calibrated polyg
 assert.match(interactive,/if\(c\.mode==='detent'\)\{drag\.gesture\.feed\(delta,Math\.hypot\(dx,dy\)\);return;\}/,'Detents require angular and pointer-distance dead zones; no continuous free-follow rotation');
 const unified=fs.readFileSync(path.join(__dirname,'index.html'),'utf8');
 assert.ok(unified.includes('CKP-0012'),'Unified HTML advertises throttle fit correction');
-for(const marker of ['id="unifiedLightsOpen"','id="unifiedLightsDialog"','id="unifiedLightSearch"','unified-lights.js?v=LGT-0013','../lights-test/asset-model.js?v=LGT-0013'])assert.ok(unified.includes(marker),'Unified annunciator testing: '+marker);
+for(const marker of ['id="unifiedLightsOpen"','id="unifiedLightsDialog"','id="unifiedLightSearch"','unified-lights.js?v=LGT-0021','../lights-test/asset-model.js?v=LGT-0021'])assert.ok(unified.includes(marker),'Unified annunciator testing: '+marker);
 const assetModel=require('../lights-test/asset-model'),gallery=JSON.parse(fs.readFileSync(path.join(__dirname,'../lights-test/registry.json')));
 assert.ok(gallery.lights.length>=87,'Unified must load the expanding LIGHTS catalogue');
 const atLim=gallery.lights.find(c=>c.id==='A_T_LIM_WHITE');assert.deepEqual(atLim?.lines,['A/T LIM']);assert.deepEqual(atLim.states,['OFF','ON']);assert.deepEqual(atLim.face,{width:600,height:300});
@@ -36,7 +36,7 @@ const align=gallery.lights.find(c=>c.id==='ALIGN_WHITE');assert.deepEqual(align?
 for(const [id,stem] of [['ALIGN_WHITE','ALIGN_WHITE'],['ON_DC_LAMP','ON_DC_LAMP'],['FAULT','FAULT'],['DC_FAIL','DC_FAIL']]){
  const legend=gallery.lights.find(c=>c.id===id);
  assert.ok(legend,id);assert.deepEqual(legend.states,['OFF','ON']);assert.equal(legend.face.width,600);assert.equal(legend.face.height,300);
- const assetDir=id==='ALIGN_WHITE'?'black-white-v1/gallery/':'unified-v2/';assert.equal(legend.assets.OFF,assetDir+stem+'_OFF.svg');assert.equal(legend.assets.ON,assetDir+stem+'_ON.svg');
+ const assetDir=id==='ALIGN_WHITE'?'black-white-v1/gallery/':id==='FAULT'?'black-amber-v1/gallery/':'unified-v2/';assert.equal(legend.assets.OFF,assetDir+stem+'_OFF.svg');assert.equal(legend.assets.ON,assetDir+stem+'_ON.svg');
  assert.equal(gallery.lights.filter(c=>c.id===id).length,1,'One reusable legend per IRS type: '+id);
 }
 for(const [id,stem,expectedLines] of [
