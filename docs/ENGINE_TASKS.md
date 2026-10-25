@@ -296,3 +296,14 @@ Also committed the same user-accepted visual N1 estimator to `cdu-standalone-v6/
 - Phase 5: synthetic instructor trip, fault latch, failed reset while fault active, clear fault then manual Push. Actual thermal overcurrent laws have not been extracted and were not invented.
 - Phase 6: 29 in-memory integration assertions passed during implementation; `tests/cb-kernel.test.cjs` and npm test script committed, but complete GitHub Actions and photo browser acceptance remain UNVERIFIED.
 - Read `docs/CB_INTEGRATION_PHASES.md` for full acceptance criteria, known limitations, and next wiring audit.
+
+
+## 2026-10-26 — Classic CB source-matching expansion (v2 QA gate)
+
+- `engine/cb/classic-mrg-index.v2.js`: 43 physical Classic MRG+photo equipment associations, including duplicate variant keys for P6-4 shared CBs; 48 variant-key pairs verified by exact photo-label match, 4 flagged OCR ambiguities.
+- `engine/cb/electrical-v7-integration.js`: 58 functional variant-key associations available; exactly 51 active per CPCS/DCPCS configuration. Existing VHF2/HF2 positional collision quarantined.
+- `engine/cb/all-circuits-audit.v2.json`: full 544-key audit; 58 source-indexed, 8 quarantined, 478 pending. Zero approved EP-FSI-specific upstream CB wires.
+- `cb-panel-lab/v7-effects.js`: active circuits shown without variant duplication, separation of FUEL lamp power from underlying caution, evidence warnings.
+- `tests/cb-source-audit-v2.test.cjs`: nine source/behavior regression tests, 102 per-variant CB pull/push sequences; test path linked in npm and Actions.
+- Test evidence: 40 CB-related test cases and 47 electrical V7 baseline cases PASSED in JavaScript-compatible harness; Node CI and browser screenshot completion status not independently available.
+- Do not classify upstream feeds as VERIFIED until EP-FSI WDM/ATA24 installed circuit information is checked. Do not edit locked cockpit artwork.
