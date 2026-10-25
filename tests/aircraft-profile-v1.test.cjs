@@ -55,6 +55,18 @@ for (const id of ['CPCS', 'DCPCS']) {
 }
 assert.throws(() => profile.createPressurizationSession(profile.DEFAULTS, {}), /not loaded/);
 
+// DCPCS must select the immutable owner-supplied background. CPCS must not reuse it.
+const dcpcsAsset = 'panel-mosaic-lab/assets/locked/2026-10-23/DCPCS_Background_Owner.png';
+assert.equal(profile.resolve({...profile.DEFAULTS, pressurization: 'DCPCS'}).pressurization.backgroundAsset, dcpcsAsset);
+assert.equal(profile.resolve({...profile.DEFAULTS, pressurization: 'CPCS'}).pressurization.backgroundAsset, undefined);
+const approvedPanel = fs.readFileSync(path.join(__dirname, '..', dcpcsAsset));
+assert.equal(approvedPanel.subarray(0, 8).toString('hex'), '89504e470d0a1a0a', 'DCPCS source should be PNG');
+const labHtml = fs.readFileSync(path.join(__dirname, '../dcpcs-lab/index.html'), 'utf8');
+assert.ok(labHtml.includes('../' + dcpcsAsset), 'DCPCS lab must show approved image, not generated placeholder');
+const settingsUi = fs.readFileSync(path.join(__dirname, '../panel-mosaic-lab/cockpit/aircraft-settings.js'), 'utf8');
+assert.ok(settingsUi.includes('selected?.backgroundAsset'), 'Settings must use selected pressurization artwork');
+assert.ok(settingsUi.includes('ownerPreview.hidden = !source'), 'CPCS must not show DCPCS image');
+
 const html = fs.readFileSync(path.join(__dirname, '../panel-mosaic-lab/cockpit/index.html'), 'utf8');
 for (const id of ['aircraftSettingsOpen','aircraftSettingsDialog','aircraftSettingsForm','activeAircraftFamily','activePressurization','activeEngineInstruments','openSelectedPressurizationPanel','selectedPressureFrame']) {
   assert.ok(html.includes('id="' + id + '"'), 'Unified settings element missing: ' + id);
