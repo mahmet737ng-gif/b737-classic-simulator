@@ -3,20 +3,22 @@
  const model=window.B737FlightNeedlesModel,ns='http://www.w3.org/2000/svg';
  const state={captain:{},firstOfficer:{}};const blades={captain:{},firstOfficer:{}};const controls={captain:{},firstOfficer:{}};
  for(const station of Object.keys(state))for(const [key,def] of Object.entries(model.needles))state[station][key]=def.initialAngle;
- const images=Object.fromEntries(Object.entries(model.needles).map(([key,def])=>[key,new URL('./'+def.asset+'?v=FLN-0002',document.baseURI).href]));
+ const images=Object.fromEntries(Object.entries(model.needles).map(([key,def])=>[key,new URL('./'+def.asset+'?v=FLN-0003',document.baseURI).href]));
  function svg(parent,tag,attrs={}){const el=document.createElementNS(ns,tag);for(const [key,value]of Object.entries(attrs))el.setAttribute(key,String(value));parent.append(el);return el;}
  function paint(station,key){const blade=blades[station]?.[key],angle=state[station]?.[key];if(blade)blade.style.transform=`rotate(${angle}deg)`;const control=controls[station]?.[key];if(control){control.input.value=String(angle);control.output.textContent=`${angle}°`;}}
  function setAngle(station,key,value){if(!state[station]||!model.needles[key])throw Error('Unknown station or needle');const n=model.angle(value);state[station][key]=n;paint(station,key);return n;}
  function addNeedle(layer,station,key,gauge){
   const isRmi=key==='rmi1'||key==='rmi2';
-  // The owner-reference RMI image is 435x436. Its observed needle pivot is (216,240);
-  // preserving this full image coordinate system retains BOTH arms and the hollow cutout.
+  // Resize, but never redraw, the two photographed RMI assets. Both share the
+  // physical pivot and stop inside the digits on their own captain/F/O faces.
+  const rmi=model.rmiRegistration;
+  const rmiScale=(gauge.radius/rmi.sourceDialRadius)*rmi.placementScale;
   const group=isRmi
-   ? svg(layer,'g',{transform:`translate(${gauge.x} ${gauge.y}) scale(${gauge.radius/215})`})
+   ? svg(layer,'g',{transform:`translate(${gauge.x} ${gauge.y}) scale(${rmiScale})`})
    : svg(layer,'g',{transform:`translate(${gauge.x} ${gauge.y}) scale(${gauge.radius/229}) translate(-256 -256)`});
   const blade=svg(group,'g',{'data-flight-needle':key,'data-station':station});
   Object.assign(blade.style,{transformOrigin:isRmi?'0px 0px':'256px 256px',transition:'transform 320ms ease-out'});
-  svg(blade,'image',isRmi?{href:images[key],x:-216,y:-240,width:435,height:436}:{href:images[key],x:0,y:0,width:512,height:512});
+  svg(blade,'image',isRmi?{href:images[key],x:-rmi.referencePivot.x,y:-rmi.referencePivot.y,width:rmi.sourceWidth,height:rmi.sourceHeight}:{href:images[key],x:0,y:0,width:512,height:512});
   blades[station][key]=blade;paint(station,key);
  }
  function mountPiece(source,station){const piece=document.querySelector(`.texture-piece[data-piece="${source.piece}"]`);if(!piece)return false;if(piece.querySelector('[data-flight-needles]'))return true;

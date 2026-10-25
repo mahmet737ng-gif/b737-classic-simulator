@@ -488,3 +488,16 @@ same 435×436 original coordinate scale. Their source pivot is (216,240); both
 are mounted at each dial's radius / 215 to captain and first-officer RMI gauges.
 Each rotates independently, without adding a fake large cap. These renderers
 are visual tests only and preserve all original locked gauge artwork.
+
+## FLN-0003 — numerals-inner-edge RMI reach on both stations
+
+After the owner reviewed the real Unified RMI screenshot, the source-photo
+registration was corrected to pivot (216,218) rather than (216,240).
+Both reference needle assets from FLN-0002 are kept **byte-for-byte unchanged**:
+RMI 1 is the slim white arrow with the original fine trailing leg; RMI 2 is the
+white hollow pointer whose two ends have distinct shapes. The only adjustment
+is a common 0.57 placement scale relative to FLN-0002; station-specific dial
+radii remain inherited from the locked atlas. The projected tips extend to
+approximately 44% of the registered dial radius, reaching the inner numeral
+boundary without obscuring digits or tick marks. Captain/F/O bearings still
+rotate independently. This remains a visual test, not a live NAV connection.

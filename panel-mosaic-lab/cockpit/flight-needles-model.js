@@ -25,6 +25,16 @@
   rmi1:Object.freeze({asset:'rmi-needle-1-owner-white.svg',initialAngle:0}),
   rmi2:Object.freeze({asset:'rmi-needle-2-owner-white.svg',initialAngle:0})
  });
+ // FLN-0003: exact needle shapes are immutable. Only installation geometry changes.
+ // The source-photo hub is (216,218), not (216,240); the latter made the
+ // upper and lower arms sit off-center in both cockpit instrument faces.
+ const rmiRegistration=Object.freeze({
+  referencePivot:Object.freeze({x:216,y:218}),
+  sourceWidth:435,sourceHeight:436,sourceDialRadius:215,
+  placementScale:0.57,sourceMaxTipRadius:167,
+  // Source-photo tip pixel positions retained; no path redesign or recoloring.
+  sourceTipBounds:Object.freeze({rmi1:161.4,rmi2:167.0})
+ });
  function angle(value){const n=Number(value);if(!Number.isFinite(n))throw Error('Needle angle must be finite');return Math.max(-360,Math.min(360,n));}
- return Object.freeze({sources,needles,angle});
+ return Object.freeze({sources,needles,rmiRegistration,angle});
 });
