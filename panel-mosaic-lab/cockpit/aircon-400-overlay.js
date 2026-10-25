@@ -19,6 +19,23 @@
   ON:asset('LIGHTS/black-yellow-v1/mounted/ZONE_TEMP_YELLOW_ON.svg')
  };
  let state,zoneFaults={'cont-cab':false,'fwd-cab':false,'aft-cab':false},test=false,family='B737-300-500',plate=null,layer=null;
+ // Temperature values come from external simulated sensors, never from invented defaults.
+ const measuredTemperatures=Object.create(null);
+ function publishIndicatedTemperature(){
+  const position=state[model.precheck.id];
+  const celsius=measuredTemperatures[position];
+  if(family!=='B737-400'||!Number.isFinite(celsius))return false;
+  const detail={source:position,celsius};
+  window.dispatchEvent(new CustomEvent('b737:aircon400-temperature',{detail}));
+  if(parent!==window)parent.postMessage({type:'b737:cockpit-overhead',kind:'aircon400-temperature-reading',...detail},location.origin);
+  return true;
+ }
+ function setTemperatureReading(position,celsius){
+  if(!model.precheck.states.includes(position)||!Number.isFinite(celsius))return false;
+  measuredTemperatures[position]=Math.max(0,Math.min(100,celsius));
+  if(state[model.precheck.id]===position)publishIndicatedTemperature();
+  return true;
+ }
  const controls=new Map(),lamps=new Map();
  function saved(){
   try{return model.normalize(JSON.parse(localStorage.getItem(STORE_KEY)||'null'));}
@@ -44,7 +61,7 @@
    const mirrorValue={'C':'MANUAL COOL','AUTO COOL':'AUTO COOL','AUTO':'AUTO NORM','AUTO WARM':'AUTO WARM','W':'MANUAL WARM'}[value];
    if(mirrorValue)window.B737RotaryGuards?.setAirconTemperature?.(c.mirror,mirrorValue);
   }
-  report(c,value,reason);return true;
+  report(c,value,reason);if(c.id===model.precheck.id)publishIndicatedTemperature();return true;
  }
  function addRotary(c){
   const b=document.createElement('button');b.type='button';b.className='aircon400-knob';b.dataset.airconControl=c.id;
@@ -161,6 +178,7 @@
   if(!['B737-400','B737-300-500'].includes(value))return;
   family=value;document.documentElement.classList.toggle('b737-aircon400',family==='B737-400');
   if(layer)layer.hidden=family!=='B737-400';
+  if(family==='B737-400')publishIndicatedTemperature();
  }
  function setZoneFault(zone,active){
   if(!Object.hasOwn(zoneFaults,zone)||typeof active!=='boolean')return false;
@@ -177,6 +195,7 @@
   if(e.origin!==location.origin||e.source!==parent||e.data?.type!=='b737:cockpit-command')return;
   if(e.data.action==='aircon-background')applyFamily(e.data.family);
   if(e.data.action==='aircon400-zone-fault')setZoneFault(e.data.zone,e.data.active);
+  if(e.data.action==='aircon400-temperature-reading')setTemperatureReading(e.data.source,e.data.celsius);
   if(e.data.action==='visual-test'||e.data.action==='lamp-test')setLampTest(e.data.active);
  });
  window.addEventListener('storage',e=>{if(e.key===PROFILE_KEY)applyFamily(selectedFamily());});
@@ -187,7 +206,7 @@
  window.addEventListener('b737:aircon400-reset',()=>{state=model.normalize(null);save();model.controls.forEach(renderOne);});
  window.B737Aircon400=Object.freeze({
   getState:()=>({family,controls:{...state},zoneFaults:{...zoneFaults},lampTest:test}),
-  setValue,setZoneFault,setLampTest,
+  setValue,setZoneFault,setLampTest,setTemperatureReading,
   switchFamily:applyFamily
  });
  boot();
