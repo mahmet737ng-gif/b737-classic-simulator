@@ -29,5 +29,7 @@ click('play');assert.equal(timers.size,0,'Manual pause should stop time');
 click('start1');assert.equal(timers.size,1,'Engine GRD resumes timer after manual pause');
 click('start2');assert.equal(timers.size,1,'Concurrent starts should not create duplicate timers');
 click('reset');assert.equal(timers.size,0,'Reset must cancel background intervals');assert.equal(el('clock').textContent,'0.0 s');
-assert.match(html,/clock starts automatically/i);
+assert.ok(!/MOVE FUEL LEVER TO IDLE NOW|wait for APU READY|After ENG START GRD watch|clock starts automatically/i.test(html));
+assert.ok(!/START CUE:|fuel-ready|nominal stable at|— READY/.test(app),'Engine panel must not coach pilots');
+assert.ok(app.includes('START VALVE')&&app.includes('LOW OIL PRESSURE'),'Raw discrete state and warnings remain visible');
 console.log('PASS ECU startup browser lab: APU START auto-runs clock, resumes with engine GRD, single timer, PAUSE and RESET.');
