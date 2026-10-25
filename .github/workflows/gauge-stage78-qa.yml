@@ -1,0 +1,26 @@
+name: Stage 7 and 8 instrument state / ISM integration QA
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'engine/instruments/stage7-cold-dark-state-v1.js'
+      - 'engine/instruments/stage8-ism-signal-bridge-v1.js'
+      - 'engine/instruments/stage8-signal-contracts-v1.json'
+      - 'engine/instruments/stage7-stage8.test.cjs'
+      - 'panel-mosaic-lab/cockpit/stage78-readonly-unified.js'
+      - '.github/workflows/gauge-stage78-qa.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  contracts-and-cold-dark:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate 54-face physical state, mode independence, signal path and display release gates
+        run: node --test engine/instruments/stage7-stage8.test.cjs
+      - name: Verify immutable approved overhead photos
+        run: python3 panel-mosaic-lab/verify-final-overhead.py
