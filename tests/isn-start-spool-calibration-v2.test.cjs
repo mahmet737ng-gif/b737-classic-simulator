@@ -48,7 +48,7 @@ assert.deepEqual(sim.get().apu.generator.connectedBusSides,[1]);
 sim.apuBleed(true);sim.prepareFuel();
 sim.engineStart('engine1');
 let sawEarlyHyd=false,sawOilRise=false,sawOilLampOff=false;
-for(let t=0;t<40000;t+=250){
+for(let t=0;t<28000;t+=250){
  sim.advance(250);
  const e=sim.get().engines.engine1;
  if(e.n2Percent<=18)assert.equal(e.oil.pressurePsi,0,'oil pressure must wait for N2 ~18');
@@ -65,11 +65,11 @@ for(let t=0;t<40000;t+=250){
 assert.ok(sawEarlyHyd&&sawOilRise&&sawOilLampOff);
 assert.equal(sim.get().engines.engine1.phase,'AWAIT_FUEL_LEVER_IDLE');
 assert.equal(sim.fuelLever('engine1','IDLE').accepted,true);
-sim.advance(37500);
+sim.advance(27750);
 const peak=sim.get().engines.engine1;
 assert.equal(peak.phase,'LIGHT_OFF_SEQUENCE');
 near(peak.egtC,620);
-sim.advance(12500);
+sim.advance(9250);
 assert.equal(sim.get().engines.engine1.phase,'RUNNING');
 near(sim.get().engines.engine1.egtC,420);
 sim.setAPUFault('generatorFailure',true);
