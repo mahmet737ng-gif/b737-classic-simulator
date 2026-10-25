@@ -105,7 +105,10 @@
     observationNowMs:Date.now()
    });
    lastError=null;
-  }catch(err){lastError=err.message;signals=null;initial=null;}
+  }catch(err){
+   // Never leave a previous QA snapshot visible after a failed refresh.
+   lastError=err.message;signals=null;initial=null;pointerSignals=null;motionPreview=null;
+  }
   mount();show();
  };
  const api=Object.freeze({
