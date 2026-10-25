@@ -13,7 +13,7 @@ const code=new Map([...oh.lights,...main.lights].map(x=>[x.id,x]));
 const audit=new Map(original.instances.map(x=>[x.id,x]));
 const corrections=read('photo-position-corrections-v1.json');
 const correctionById=new Map(corrections.records.map(x=>[x.id,x]));
-assert.equal(correctionById.size,8);
+assert.equal(correctionById.size,12);
 
 assert.equal(registry.summary.total,142);
 assert.equal(registry.records.length,142);
