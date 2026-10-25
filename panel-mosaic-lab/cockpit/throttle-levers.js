@@ -78,9 +78,12 @@ function place(engine,tex){
 }
 function mountPlasticCover(tex){
  if(root.querySelector('.throttle-plastic-cover'))return;
- // Calibrated against the owner screenshot: the two unfilled throttle paths
- // and center hump only. Never edit the locked quadrant photograph.
- const sourceRect={x:625,y:165,w:250,h:680};
+ // THR-0004: owner mobile screenshot (2026-10-25) calibration.
+ // The old x=625 positioned the cover over the right-hand column toward FLAP.
+ // Limit it to the two central throttle roller tracks; all coordinates are
+ // original 1145x1373 quadrant-image pixels, not viewport/mobile CSS pixels.
+ // This stays behind throttle sprites, with the locked plate unmodified.
+ const sourceRect={x:365,y:165,w:255,h:680};
  const sourceWindow={x:20,y:30,w:1055,h:1290};
  const unit=tex.offsetWidth/sourceWindow.w;
  const cover=document.createElement('img');
