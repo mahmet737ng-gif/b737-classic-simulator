@@ -1,0 +1,7234 @@
+{
+  "schema": "b737.lights.phase1-audit.v1",
+  "created": "2026-10-25",
+  "sourceVersions": {
+    "overhead": "LGT-0006",
+    "main": "LGT-0010",
+    "gallery": "LGT-0020",
+    "atlas": "UPD-0012-OVH-measured-seams",
+    "assembly": "CKP-0012-THROTTLE-FIT"
+  },
+  "purpose": "Machine measured photo-source rectangles and fit risk, not owner-approved visual calibration",
+  "geometryPolicy": "Do not alter sourceRect or frozen backgrounds from numerical ratio alone; preserve sockets and use aspect-preserving lens rendering until image review.",
+  "summary": {
+    "installed": 142,
+    "uniqueAssets": 86,
+    "assetOnly": 8,
+    "registeredAssets": 94,
+    "byScope": {
+      "OVERHEAD": {
+        "instances": 112,
+        "over10Percent": 93,
+        "over25Percent": 45,
+        "over50Percent": 9,
+        "panels": [
+          "UPPER",
+          "OH07",
+          "OH09",
+          "OH11",
+          "OH12",
+          "OH13",
+          "OH14",
+          "OH15",
+          "OH17",
+          "OH16",
+          "OH19-VOICE",
+          "OH20",
+          "OH21",
+          "OH22",
+          "OH18"
+        ]
+      },
+      "MAIN": {
+        "instances": 30,
+        "over10Percent": 22,
+        "over25Percent": 3,
+        "over50Percent": 0,
+        "panels": [
+          "engine",
+          "captain",
+          "fo-outer",
+          "fo-inner"
+        ]
+      }
+    },
+    "sourceRectOverlaps": 0,
+    "visualVerified": 0
+  },
+  "instances": [
+    {
+      "id": "irs-l-align",
+      "asset": "ALIGN_WHITE",
+      "scope": "OVERHEAD",
+      "panel": "UPPER",
+      "sourceRect": [
+        428,
+        535,
+        64,
+        32
+      ],
+      "sourceCanvas": [
+        1731,
+        909
+      ],
+      "boardRect": [
+        550.425,
+        602.741,
+        81.858,
+        35.872
+      ],
+      "boardCenter": [
+        591.354,
+        620.678
+      ],
+      "sourceCenter": [
+        460,
+        551
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2,
+      "stretchFactor": 1,
+      "fitInsetsOnBoard": [
+        5.057,
+        0
+      ],
+      "severity": "LOW_RATIO",
+      "rule": "irs-align",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "irs-r-align",
+      "asset": "ALIGN_WHITE",
+      "scope": "OVERHEAD",
+      "panel": "UPPER",
+      "sourceRect": [
+        604,
+        535,
+        64,
+        32
+      ],
+      "sourceCanvas": [
+        1731,
+        909
+      ],
+      "boardRect": [
+        775.534,
+        602.741,
+        81.858,
+        35.872
+      ],
+      "boardCenter": [
+        816.463,
+        620.678
+      ],
+      "sourceCenter": [
+        636,
+        551
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2,
+      "stretchFactor": 1,
+      "fitInsetsOnBoard": [
+        5.057,
+        0
+      ],
+      "severity": "LOW_RATIO",
+      "rule": "irs-align",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "irs-l-on-dc",
+      "asset": "ON_DC_LAMP",
+      "scope": "OVERHEAD",
+      "panel": "UPPER",
+      "sourceRect": [
+        503,
+        535,
+        64,
+        32
+      ],
+      "sourceCanvas": [
+        1731,
+        909
+      ],
+      "boardRect": [
+        646.352,
+        602.741,
+        81.858,
+        35.872
+      ],
+      "boardCenter": [
+        687.281,
+        620.678
+      ],
+      "sourceCenter": [
+        535,
+        551
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2,
+      "stretchFactor": 1,
+      "fitInsetsOnBoard": [
+        5.057,
+        0
+      ],
+      "severity": "LOW_RATIO",
+      "rule": "on-dc",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "irs-l-fault",
+      "asset": "FAULT",
+      "scope": "OVERHEAD",
+      "panel": "UPPER",
+      "sourceRect": [
+        428,
+        574,
+        64,
+        32
+      ],
+      "sourceCanvas": [
+        1731,
+        909
+      ],
+      "boardRect": [
+        550.425,
+        646.461,
+        81.858,
+        35.872
+      ],
+      "boardCenter": [
+        591.354,
+        664.397
+      ],
+      "sourceCenter": [
+        460,
+        590
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2,
+      "stretchFactor": 1,
+      "fitInsetsOnBoard": [
+        5.057,
+        0
+      ],
+      "severity": "LOW_RATIO",
+      "rule": "fault",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "irs-l-dc-fail",
+      "asset": "DC_FAIL",
+      "scope": "OVERHEAD",
+      "panel": "UPPER",
+      "sourceRect": [
+        503,
+        574,
+        64,
+        32
+      ],
+      "sourceCanvas": [
+        1731,
+        909
+      ],
+      "boardRect": [
+        646.352,
+        646.461,
+        81.858,
+        35.872
+      ],
+      "boardCenter": [
+        687.281,
+        664.397
+      ],
+      "sourceCenter": [
+        535,
+        590
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2,
+      "stretchFactor": 1,
+      "fitInsetsOnBoard": [
+        5.057,
+        0
+      ],
+      "severity": "LOW_RATIO",
+      "rule": "dc-fail",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "irs-r-on-dc",
+      "asset": "ON_DC_LAMP",
+      "scope": "OVERHEAD",
+      "panel": "UPPER",
+      "sourceRect": [
+        679,
+        535,
+        64,
+        32
+      ],
+      "sourceCanvas": [
+        1731,
+        909
+      ],
+      "boardRect": [
+        871.461,
+        602.741,
+        81.858,
+        35.872
+      ],
+      "boardCenter": [
+        912.39,
+        620.678
+      ],
+      "sourceCenter": [
+        711,
+        551
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2,
+      "stretchFactor": 1,
+      "fitInsetsOnBoard": [
+        5.057,
+        0
+      ],
+      "severity": "LOW_RATIO",
+      "rule": "on-dc",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "irs-r-fault",
+      "asset": "FAULT",
+      "scope": "OVERHEAD",
+      "panel": "UPPER",
+      "sourceRect": [
+        604,
+        574,
+        64,
+        32
+      ],
+      "sourceCanvas": [
+        1731,
+        909
+      ],
+      "boardRect": [
+        775.534,
+        646.461,
+        81.858,
+        35.872
+      ],
+      "boardCenter": [
+        816.463,
+        664.397
+      ],
+      "sourceCenter": [
+        636,
+        590
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2,
+      "stretchFactor": 1,
+      "fitInsetsOnBoard": [
+        5.057,
+        0
+      ],
+      "severity": "LOW_RATIO",
+      "rule": "fault",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "irs-r-dc-fail",
+      "asset": "DC_FAIL",
+      "scope": "OVERHEAD",
+      "panel": "UPPER",
+      "sourceRect": [
+        679,
+        574,
+        64,
+        32
+      ],
+      "sourceCanvas": [
+        1731,
+        909
+      ],
+      "boardRect": [
+        871.461,
+        646.461,
+        81.858,
+        35.872
+      ],
+      "boardCenter": [
+        912.39,
+        664.397
+      ],
+      "sourceCenter": [
+        711,
+        590
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2,
+      "stretchFactor": 1,
+      "fitInsetsOnBoard": [
+        5.057,
+        0
+      ],
+      "severity": "LOW_RATIO",
+      "rule": "dc-fail",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "reverser-1",
+      "asset": "REVERSER",
+      "scope": "OVERHEAD",
+      "panel": "UPPER",
+      "sourceRect": [
+        1040,
+        374,
+        74,
+        31
+      ],
+      "sourceCanvas": [
+        1731,
+        909
+      ],
+      "boardRect": [
+        1333.191,
+        422.259,
+        94.648,
+        34.751
+      ],
+      "boardCenter": [
+        1380.515,
+        439.634
+      ],
+      "sourceCenter": [
+        1077,
+        389.5
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.387,
+      "stretchFactor": 1.194,
+      "fitInsetsOnBoard": [
+        12.573,
+        0
+      ],
+      "severity": "MODERATE_RATIO",
+      "rule": "sensor",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "reverser-2",
+      "asset": "REVERSER",
+      "scope": "OVERHEAD",
+      "panel": "UPPER",
+      "sourceRect": [
+        1213,
+        374,
+        74,
+        31
+      ],
+      "sourceCanvas": [
+        1731,
+        909
+      ],
+      "boardRect": [
+        1554.463,
+        422.259,
+        94.648,
+        34.751
+      ],
+      "boardCenter": [
+        1601.787,
+        439.634
+      ],
+      "sourceCenter": [
+        1250,
+        389.5
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.387,
+      "stretchFactor": 1.194,
+      "fitInsetsOnBoard": [
+        12.573,
+        0
+      ],
+      "severity": "MODERATE_RATIO",
+      "rule": "sensor",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "low-idle",
+      "asset": "LOW_IDLE",
+      "scope": "OVERHEAD",
+      "panel": "UPPER",
+      "sourceRect": [
+        1136,
+        447,
+        54,
+        37
+      ],
+      "sourceCanvas": [
+        1731,
+        909
+      ],
+      "boardRect": [
+        1455.977,
+        504.092,
+        69.068,
+        41.477
+      ],
+      "boardCenter": [
+        1490.511,
+        524.831
+      ],
+      "sourceCenter": [
+        1163,
+        465.5
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 1.459,
+      "stretchFactor": 1.37,
+      "fitInsetsOnBoard": [
+        0,
+        3.472
+      ],
+      "severity": "HIGH_RATIO",
+      "rule": "sensor",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "pass-oxygen",
+      "asset": "PASS_OXY_ON_LAMP",
+      "scope": "OVERHEAD",
+      "panel": "UPPER",
+      "sourceRect": [
+        1174,
+        665,
+        72,
+        44
+      ],
+      "sourceCanvas": [
+        1731,
+        909
+      ],
+      "boardRect": [
+        1504.581,
+        748.473,
+        92.09,
+        49.325
+      ],
+      "boardCenter": [
+        1550.626,
+        773.135
+      ],
+      "sourceCenter": [
+        1210,
+        687
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 1.636,
+      "stretchFactor": 1.222,
+      "fitInsetsOnBoard": [
+        0,
+        1.64
+      ],
+      "severity": "MODERATE_RATIO",
+      "rule": "oxygen",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "flight-recorder-off",
+      "asset": "OFF_LAMP",
+      "scope": "OVERHEAD",
+      "panel": "UPPER",
+      "sourceRect": [
+        1485,
+        439,
+        40,
+        31
+      ],
+      "sourceCanvas": [
+        1731,
+        909
+      ],
+      "boardRect": [
+        1902.359,
+        495.124,
+        51.161,
+        34.751
+      ],
+      "boardCenter": [
+        1927.939,
+        512.5
+      ],
+      "sourceCenter": [
+        1505,
+        454.5
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 1.29,
+      "stretchFactor": 1.55,
+      "fitInsetsOnBoard": [
+        0,
+        4.585
+      ],
+      "severity": "CRITICAL_RATIO",
+      "rule": "recorder",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "stby-quantity",
+      "asset": "LOW_QUANTITY",
+      "scope": "OVERHEAD",
+      "panel": "OH07",
+      "sourceRect": [
+        630,
+        100,
+        159,
+        62
+      ],
+      "sourceCanvas": [
+        913,
+        1723
+      ],
+      "boardRect": [
+        345.946,
+        1337.99,
+        86.553,
+        35.334
+      ],
+      "boardCenter": [
+        389.223,
+        1355.657
+      ],
+      "sourceCenter": [
+        709.5,
+        131
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.565,
+      "stretchFactor": 1.282,
+      "fitInsetsOnBoard": [
+        7.943,
+        0
+      ],
+      "severity": "HIGH_RATIO",
+      "rule": "sensor",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "stby-pressure",
+      "asset": "LOW_PRESSURE",
+      "scope": "OVERHEAD",
+      "panel": "OH07",
+      "sourceRect": [
+        630,
+        171,
+        159,
+        62
+      ],
+      "sourceCanvas": [
+        913,
+        1723
+      ],
+      "boardRect": [
+        345.946,
+        1378.453,
+        86.553,
+        35.334
+      ],
+      "boardCenter": [
+        389.223,
+        1396.12
+      ],
+      "sourceCenter": [
+        709.5,
+        202
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.565,
+      "stretchFactor": 1.282,
+      "fitInsetsOnBoard": [
+        7.943,
+        0
+      ],
+      "severity": "HIGH_RATIO",
+      "rule": "standby-pressure",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "stby-rudder",
+      "asset": "STBY_RUD_ON_LAMP",
+      "scope": "OVERHEAD",
+      "panel": "OH07",
+      "sourceRect": [
+        630,
+        240,
+        159,
+        62
+      ],
+      "sourceCanvas": [
+        913,
+        1723
+      ],
+      "boardRect": [
+        345.946,
+        1417.776,
+        86.553,
+        35.334
+      ],
+      "boardCenter": [
+        389.223,
+        1435.443
+      ],
+      "sourceCenter": [
+        709.5,
+        271
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.565,
+      "stretchFactor": 1.282,
+      "fitInsetsOnBoard": [
+        7.943,
+        0
+      ],
+      "severity": "HIGH_RATIO",
+      "rule": "standby-rudder",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "flight-pressure-a",
+      "asset": "LOW_PRESSURE",
+      "scope": "OVERHEAD",
+      "panel": "OH07",
+      "sourceRect": [
+        128,
+        404,
+        151,
+        63
+      ],
+      "sourceCanvas": [
+        913,
+        1723
+      ],
+      "boardRect": [
+        72.678,
+        1511.24,
+        82.198,
+        35.904
+      ],
+      "boardCenter": [
+        113.777,
+        1529.192
+      ],
+      "sourceCenter": [
+        203.5,
+        435.5
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.397,
+      "stretchFactor": 1.198,
+      "fitInsetsOnBoard": [
+        5.195,
+        0
+      ],
+      "severity": "MODERATE_RATIO",
+      "rule": "flight-pressure",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "flight-pressure-b",
+      "asset": "LOW_PRESSURE",
+      "scope": "OVERHEAD",
+      "panel": "OH07",
+      "sourceRect": [
+        295,
+        404,
+        151,
+        63
+      ],
+      "sourceCanvas": [
+        913,
+        1723
+      ],
+      "boardRect": [
+        163.586,
+        1511.24,
+        82.198,
+        35.904
+      ],
+      "boardCenter": [
+        204.685,
+        1529.192
+      ],
+      "sourceCenter": [
+        370.5,
+        435.5
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.397,
+      "stretchFactor": 1.198,
+      "fitInsetsOnBoard": [
+        5.195,
+        0
+      ],
+      "severity": "MODERATE_RATIO",
+      "rule": "flight-pressure",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "feel-diff",
+      "asset": "FEEL_DIFF_PRESS",
+      "scope": "OVERHEAD",
+      "panel": "OH07",
+      "sourceRect": [
+        631,
+        758,
+        161,
+        64
+      ],
+      "sourceCanvas": [
+        913,
+        1723
+      ],
+      "boardRect": [
+        346.491,
+        1712.985,
+        87.642,
+        36.474
+      ],
+      "boardCenter": [
+        390.312,
+        1731.222
+      ],
+      "sourceCenter": [
+        711.5,
+        790
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.516,
+      "stretchFactor": 1.258,
+      "fitInsetsOnBoard": [
+        7.347,
+        0
+      ],
+      "severity": "HIGH_RATIO",
+      "rule": "sensor",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "speed-trim",
+      "asset": "SPEED_TRIM_FAIL",
+      "scope": "OVERHEAD",
+      "panel": "OH07",
+      "sourceRect": [
+        631,
+        842,
+        161,
+        64
+      ],
+      "sourceCanvas": [
+        913,
+        1723
+      ],
+      "boardRect": [
+        346.491,
+        1760.857,
+        87.642,
+        36.474
+      ],
+      "boardCenter": [
+        390.312,
+        1779.094
+      ],
+      "sourceCenter": [
+        711.5,
+        874
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.516,
+      "stretchFactor": 1.258,
+      "fitInsetsOnBoard": [
+        7.347,
+        0
+      ],
+      "severity": "HIGH_RATIO",
+      "rule": "sensor",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "mach-trim",
+      "asset": "MACH_TRIM_FAIL",
+      "scope": "OVERHEAD",
+      "panel": "OH07",
+      "sourceRect": [
+        631,
+        927,
+        161,
+        64
+      ],
+      "sourceCanvas": [
+        913,
+        1723
+      ],
+      "boardRect": [
+        346.491,
+        1809.299,
+        87.642,
+        36.474
+      ],
+      "boardCenter": [
+        390.312,
+        1827.535
+      ],
+      "sourceCenter": [
+        711.5,
+        959
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.516,
+      "stretchFactor": 1.258,
+      "fitInsetsOnBoard": [
+        7.347,
+        0
+      ],
+      "severity": "HIGH_RATIO",
+      "rule": "sensor",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "auto-slat",
+      "asset": "AUTO_SLAT_FAIL",
+      "scope": "OVERHEAD",
+      "panel": "OH07",
+      "sourceRect": [
+        631,
+        1011,
+        161,
+        64
+      ],
+      "sourceCanvas": [
+        913,
+        1723
+      ],
+      "boardRect": [
+        346.491,
+        1857.17,
+        87.642,
+        36.474
+      ],
+      "boardCenter": [
+        390.312,
+        1875.407
+      ],
+      "sourceCenter": [
+        711.5,
+        1043
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.516,
+      "stretchFactor": 1.258,
+      "fitInsetsOnBoard": [
+        7.347,
+        0
+      ],
+      "severity": "HIGH_RATIO",
+      "rule": "sensor",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "yaw-damper",
+      "asset": "YAW_DAMPER",
+      "scope": "OVERHEAD",
+      "panel": "OH07",
+      "sourceRect": [
+        195,
+        994,
+        199,
+        64
+      ],
+      "sourceCanvas": [
+        913,
+        1723
+      ],
+      "boardRect": [
+        109.15,
+        1847.482,
+        108.327,
+        36.474
+      ],
+      "boardCenter": [
+        163.314,
+        1865.719
+      ],
+      "sourceCenter": [
+        294.5,
+        1026
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 3.109,
+      "stretchFactor": 1.555,
+      "fitInsetsOnBoard": [
+        17.69,
+        0
+      ],
+      "severity": "CRITICAL_RATIO",
+      "rule": "yaw",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "filter-1",
+      "asset": "FILTER_BYPASS",
+      "scope": "OVERHEAD",
+      "panel": "OH09",
+      "sourceRect": [
+        128,
+        414,
+        177,
+        72
+      ],
+      "sourceCanvas": [
+        1012,
+        1555
+      ],
+      "boardRect": [
+        65.862,
+        2449.808,
+        86.926,
+        35.097
+      ],
+      "boardCenter": [
+        109.325,
+        2467.357
+      ],
+      "sourceCenter": [
+        216.5,
+        450
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.458,
+      "stretchFactor": 1.229,
+      "fitInsetsOnBoard": [
+        8.366,
+        0
+      ],
+      "severity": "MODERATE_RATIO",
+      "rule": "sensor",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "filter-2",
+      "asset": "FILTER_BYPASS",
+      "scope": "OVERHEAD",
+      "panel": "OH09",
+      "sourceRect": [
+        704,
+        414,
+        177,
+        72
+      ],
+      "sourceCanvas": [
+        1012,
+        1555
+      ],
+      "boardRect": [
+        348.739,
+        2449.808,
+        86.926,
+        35.097
+      ],
+      "boardCenter": [
+        392.202,
+        2467.357
+      ],
+      "sourceCenter": [
+        792.5,
+        450
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.458,
+      "stretchFactor": 1.229,
+      "fitInsetsOnBoard": [
+        8.366,
+        0
+      ],
+      "severity": "MODERATE_RATIO",
+      "rule": "sensor",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "fuel-center-l",
+      "asset": "LOW_PRESSURE",
+      "scope": "OVERHEAD",
+      "panel": "OH09",
+      "sourceRect": [
+        332,
+        726,
+        166,
+        75
+      ],
+      "sourceCanvas": [
+        1012,
+        1555
+      ],
+      "boardRect": [
+        166.047,
+        2601.896,
+        81.524,
+        36.559
+      ],
+      "boardCenter": [
+        206.809,
+        2620.176
+      ],
+      "sourceCenter": [
+        415,
+        763.5
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.213,
+      "stretchFactor": 1.107,
+      "fitInsetsOnBoard": [
+        4.202,
+        0
+      ],
+      "severity": "MODERATE_RATIO",
+      "rule": "fuel-pressure",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "fuel-center-r",
+      "asset": "LOW_PRESSURE",
+      "scope": "OVERHEAD",
+      "panel": "OH09",
+      "sourceRect": [
+        520,
+        726,
+        166,
+        75
+      ],
+      "sourceCanvas": [
+        1012,
+        1555
+      ],
+      "boardRect": [
+        258.375,
+        2601.896,
+        81.524,
+        36.559
+      ],
+      "boardCenter": [
+        299.137,
+        2620.176
+      ],
+      "sourceCenter": [
+        603,
+        763.5
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.213,
+      "stretchFactor": 1.107,
+      "fitInsetsOnBoard": [
+        4.202,
+        0
+      ],
+      "severity": "MODERATE_RATIO",
+      "rule": "fuel-pressure",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "fuel-1-aft",
+      "asset": "LOW_PRESSURE",
+      "scope": "OVERHEAD",
+      "panel": "OH09",
+      "sourceRect": [
+        94,
+        1058,
+        166,
+        75
+      ],
+      "sourceCanvas": [
+        1012,
+        1555
+      ],
+      "boardRect": [
+        49.164,
+        2763.732,
+        81.524,
+        36.559
+      ],
+      "boardCenter": [
+        89.926,
+        2782.012
+      ],
+      "sourceCenter": [
+        177,
+        1095.5
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.213,
+      "stretchFactor": 1.107,
+      "fitInsetsOnBoard": [
+        4.202,
+        0
+      ],
+      "severity": "MODERATE_RATIO",
+      "rule": "fuel-pressure",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "fuel-1-fwd",
+      "asset": "LOW_PRESSURE",
+      "scope": "OVERHEAD",
+      "panel": "OH09",
+      "sourceRect": [
+        282,
+        1058,
+        166,
+        75
+      ],
+      "sourceCanvas": [
+        1012,
+        1555
+      ],
+      "boardRect": [
+        141.492,
+        2763.732,
+        81.524,
+        36.559
+      ],
+      "boardCenter": [
+        182.254,
+        2782.012
+      ],
+      "sourceCenter": [
+        365,
+        1095.5
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.213,
+      "stretchFactor": 1.107,
+      "fitInsetsOnBoard": [
+        4.202,
+        0
+      ],
+      "severity": "MODERATE_RATIO",
+      "rule": "fuel-pressure",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "fuel-2-fwd",
+      "asset": "LOW_PRESSURE",
+      "scope": "OVERHEAD",
+      "panel": "OH09",
+      "sourceRect": [
+        570,
+        1058,
+        166,
+        75
+      ],
+      "sourceCanvas": [
+        1012,
+        1555
+      ],
+      "boardRect": [
+        282.931,
+        2763.732,
+        81.524,
+        36.559
+      ],
+      "boardCenter": [
+        323.693,
+        2782.012
+      ],
+      "sourceCenter": [
+        653,
+        1095.5
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.213,
+      "stretchFactor": 1.107,
+      "fitInsetsOnBoard": [
+        4.202,
+        0
+      ],
+      "severity": "MODERATE_RATIO",
+      "rule": "fuel-pressure",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "fuel-2-aft",
+      "asset": "LOW_PRESSURE",
+      "scope": "OVERHEAD",
+      "panel": "OH09",
+      "sourceRect": [
+        758,
+        1058,
+        166,
+        75
+      ],
+      "sourceCanvas": [
+        1012,
+        1555
+      ],
+      "boardRect": [
+        375.259,
+        2763.732,
+        81.524,
+        36.559
+      ],
+      "boardCenter": [
+        416.021,
+        2782.012
+      ],
+      "sourceCenter": [
+        841,
+        1095.5
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.213,
+      "stretchFactor": 1.107,
+      "fitInsetsOnBoard": [
+        4.202,
+        0
+      ],
+      "severity": "MODERATE_RATIO",
+      "rule": "fuel-pressure",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "drive-1-drive-pressure",
+      "asset": "LOW_OIL_PRESSURE",
+      "scope": "OVERHEAD",
+      "panel": "OH11",
+      "sourceRect": [
+        150,
+        79,
+        199,
+        77
+      ],
+      "sourceCanvas": [
+        1203,
+        1308
+      ],
+      "boardRect": [
+        561.845,
+        1735.917,
+        82.048,
+        32.083
+      ],
+      "boardCenter": [
+        602.869,
+        1751.958
+      ],
+      "sourceCenter": [
+        249.5,
+        117.5
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.584,
+      "stretchFactor": 1.292,
+      "fitInsetsOnBoard": [
+        8.941,
+        0
+      ],
+      "severity": "HIGH_RATIO",
+      "rule": "drive-pressure",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "drive-1-drive-temperature",
+      "asset": "HIGH_OIL_TEMP",
+      "scope": "OVERHEAD",
+      "panel": "OH11",
+      "sourceRect": [
+        150,
+        182,
+        199,
+        77
+      ],
+      "sourceCanvas": [
+        1203,
+        1308
+      ],
+      "boardRect": [
+        561.845,
+        1778.833,
+        82.048,
+        32.083
+      ],
+      "boardCenter": [
+        602.869,
+        1794.875
+      ],
+      "sourceCenter": [
+        249.5,
+        220.5
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.584,
+      "stretchFactor": 1.292,
+      "fitInsetsOnBoard": [
+        8.941,
+        0
+      ],
+      "severity": "HIGH_RATIO",
+      "rule": "drive-temperature",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "drive-2-drive-pressure",
+      "asset": "LOW_OIL_PRESSURE",
+      "scope": "OVERHEAD",
+      "panel": "OH11",
+      "sourceRect": [
+        853,
+        79,
+        199,
+        77
+      ],
+      "sourceCanvas": [
+        1203,
+        1308
+      ],
+      "boardRect": [
+        851.694,
+        1735.917,
+        82.048,
+        32.083
+      ],
+      "boardCenter": [
+        892.718,
+        1751.958
+      ],
+      "sourceCenter": [
+        952.5,
+        117.5
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.584,
+      "stretchFactor": 1.292,
+      "fitInsetsOnBoard": [
+        8.941,
+        0
+      ],
+      "severity": "HIGH_RATIO",
+      "rule": "drive-pressure",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "drive-2-drive-temperature",
+      "asset": "HIGH_OIL_TEMP",
+      "scope": "OVERHEAD",
+      "panel": "OH11",
+      "sourceRect": [
+        853,
+        182,
+        199,
+        77
+      ],
+      "sourceCanvas": [
+        1203,
+        1308
+      ],
+      "boardRect": [
+        851.694,
+        1778.833,
+        82.048,
+        32.083
+      ],
+      "boardCenter": [
+        892.718,
+        1794.875
+      ],
+      "sourceCenter": [
+        952.5,
+        220.5
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.584,
+      "stretchFactor": 1.292,
+      "fitInsetsOnBoard": [
+        8.941,
+        0
+      ],
+      "severity": "HIGH_RATIO",
+      "rule": "drive-temperature",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "standby-power-off",
+      "asset": "STANDBY_PWR_OFF_LAMP",
+      "scope": "OVERHEAD",
+      "panel": "OH11",
+      "sourceRect": [
+        499,
+        80,
+        202,
+        78
+      ],
+      "sourceCanvas": [
+        1203,
+        1308
+      ],
+      "boardRect": [
+        705.739,
+        1736.333,
+        83.285,
+        32.5
+      ],
+      "boardCenter": [
+        747.382,
+        1752.583
+      ],
+      "sourceCenter": [
+        600,
+        119
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.59,
+      "stretchFactor": 1.295,
+      "fitInsetsOnBoard": [
+        9.143,
+        0
+      ],
+      "severity": "HIGH_RATIO",
+      "rule": "standby-power",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "transferBusOff1",
+      "asset": "TRANSFER_BUS_OFF_LAMP",
+      "scope": "OVERHEAD",
+      "panel": "OH12",
+      "sourceRect": [
+        90,
+        505,
+        169,
+        70
+      ],
+      "sourceCanvas": [
+        1024,
+        1536
+      ],
+      "boardRect": [
+        543.594,
+        2497.212,
+        81.859,
+        34.544
+      ],
+      "boardCenter": [
+        584.523,
+        2514.484
+      ],
+      "sourceCenter": [
+        174.5,
+        540
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.414,
+      "stretchFactor": 1.207,
+      "fitInsetsOnBoard": [
+        6.385,
+        0
+      ],
+      "severity": "MODERATE_RATIO",
+      "rule": "electrical",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "busOff1",
+      "asset": "BUS_OFF_LAMP",
+      "scope": "OVERHEAD",
+      "panel": "OH12",
+      "sourceRect": [
+        90,
+        595,
+        169,
+        70
+      ],
+      "sourceCanvas": [
+        1024,
+        1536
+      ],
+      "boardRect": [
+        543.594,
+        2541.626,
+        81.859,
+        34.544
+      ],
+      "boardCenter": [
+        584.523,
+        2558.898
+      ],
+      "sourceCenter": [
+        174.5,
+        630
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.414,
+      "stretchFactor": 1.207,
+      "fitInsetsOnBoard": [
+        6.385,
+        0
+      ],
+      "severity": "MODERATE_RATIO",
+      "rule": "electrical",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "transferBusOff2",
+      "asset": "TRANSFER_BUS_OFF_LAMP",
+      "scope": "OVERHEAD",
+      "panel": "OH12",
+      "sourceRect": [
+        759,
+        505,
+        169,
+        70
+      ],
+      "sourceCanvas": [
+        1024,
+        1536
+      ],
+      "boardRect": [
+        867.641,
+        2497.212,
+        81.859,
+        34.544
+      ],
+      "boardCenter": [
+        908.57,
+        2514.484
+      ],
+      "sourceCenter": [
+        843.5,
+        540
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.414,
+      "stretchFactor": 1.207,
+      "fitInsetsOnBoard": [
+        6.385,
+        0
+      ],
+      "severity": "MODERATE_RATIO",
+      "rule": "electrical",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "busOff2",
+      "asset": "BUS_OFF_LAMP",
+      "scope": "OVERHEAD",
+      "panel": "OH12",
+      "sourceRect": [
+        759,
+        595,
+        169,
+        70
+      ],
+      "sourceCanvas": [
+        1024,
+        1536
+      ],
+      "boardRect": [
+        867.641,
+        2541.626,
+        81.859,
+        34.544
+      ],
+      "boardCenter": [
+        908.57,
+        2558.898
+      ],
+      "sourceCenter": [
+        843.5,
+        630
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.414,
+      "stretchFactor": 1.207,
+      "fitInsetsOnBoard": [
+        6.385,
+        0
+      ],
+      "severity": "MODERATE_RATIO",
+      "rule": "electrical",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "apu-low-pressure",
+      "asset": "LOW_PRESSURE",
+      "scope": "OVERHEAD",
+      "panel": "OH12",
+      "sourceRect": [
+        337,
+        1054,
+        161,
+        63
+      ],
+      "sourceCanvas": [
+        1024,
+        1536
+      ],
+      "boardRect": [
+        663.234,
+        2768.138,
+        77.984,
+        31.09
+      ],
+      "boardCenter": [
+        702.227,
+        2783.683
+      ],
+      "sourceCenter": [
+        417.5,
+        1085.5
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.556,
+      "stretchFactor": 1.278,
+      "fitInsetsOnBoard": [
+        7.902,
+        0
+      ],
+      "severity": "HIGH_RATIO",
+      "rule": "apu",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "apu-high-oil-temp",
+      "asset": "HIGH_OIL_TEMP",
+      "scope": "OVERHEAD",
+      "panel": "OH12",
+      "sourceRect": [
+        521,
+        1054,
+        161,
+        63
+      ],
+      "sourceCanvas": [
+        1024,
+        1536
+      ],
+      "boardRect": [
+        752.359,
+        2768.138,
+        77.984,
+        31.09
+      ],
+      "boardCenter": [
+        791.352,
+        2783.683
+      ],
+      "sourceCenter": [
+        601.5,
+        1085.5
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.556,
+      "stretchFactor": 1.278,
+      "fitInsetsOnBoard": [
+        7.902,
+        0
+      ],
+      "severity": "HIGH_RATIO",
+      "rule": "apu",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "apu-overspeed",
+      "asset": "OVER_SPEED",
+      "scope": "OVERHEAD",
+      "panel": "OH12",
+      "sourceRect": [
+        707,
+        1054,
+        161,
+        63
+      ],
+      "sourceCanvas": [
+        1024,
+        1536
+      ],
+      "boardRect": [
+        842.453,
+        2768.138,
+        77.984,
+        31.09
+      ],
+      "boardCenter": [
+        881.445,
+        2783.683
+      ],
+      "sourceCenter": [
+        787.5,
+        1085.5
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.556,
+      "stretchFactor": 1.278,
+      "fitInsetsOnBoard": [
+        7.902,
+        0
+      ],
+      "severity": "HIGH_RATIO",
+      "rule": "apu",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "equip-supply-off",
+      "asset": "OFF_LAMP",
+      "scope": "OVERHEAD",
+      "panel": "OH13",
+      "sourceRect": [
+        192,
+        2032,
+        159,
+        83
+      ],
+      "sourceCanvas": [
+        724,
+        2172
+      ],
+      "boardRect": [
+        1030.616,
+        1996.481,
+        77.521,
+        39.436
+      ],
+      "boardCenter": [
+        1069.377,
+        2016.199
+      ],
+      "sourceCenter": [
+        271.5,
+        2073.5
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 1.916,
+      "stretchFactor": 1.044,
+      "fitInsetsOnBoard": [
+        0,
+        0.338
+      ],
+      "severity": "LOW_RATIO",
+      "rule": "equipment",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "equip-exhaust-off",
+      "asset": "OFF_LAMP",
+      "scope": "OVERHEAD",
+      "panel": "OH13",
+      "sourceRect": [
+        374,
+        2032,
+        159,
+        83
+      ],
+      "sourceCanvas": [
+        724,
+        2172
+      ],
+      "boardRect": [
+        1119.351,
+        1996.481,
+        77.521,
+        39.436
+      ],
+      "boardCenter": [
+        1158.111,
+        2016.199
+      ],
+      "sourceCenter": [
+        453.5,
+        2073.5
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 1.916,
+      "stretchFactor": 1.044,
+      "fitInsetsOnBoard": [
+        0,
+        0.338
+      ],
+      "severity": "LOW_RATIO",
+      "rule": "equipment",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "emergency-not-armed",
+      "asset": "NOT_ARMED_VERTICAL",
+      "scope": "OVERHEAD",
+      "panel": "OH14",
+      "sourceRect": [
+        138,
+        507,
+        183,
+        317
+      ],
+      "sourceCanvas": [
+        1074,
+        1464
+      ],
+      "boardRect": [
+        1026.196,
+        2204.988,
+        40.042,
+        88.777
+      ],
+      "boardCenter": [
+        1046.216,
+        2249.376
+      ],
+      "sourceCenter": [
+        229.5,
+        665.5
+      ],
+      "assetDimensions": [
+        300,
+        600
+      ],
+      "nativeRatio": 0.5,
+      "apertureRatio": 0.577,
+      "stretchFactor": 1.155,
+      "fitInsetsOnBoard": [
+        0,
+        4.347
+      ],
+      "severity": "MODERATE_RATIO",
+      "rule": "emergency",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "window-l-side-overheat",
+      "asset": "OVERHEAT",
+      "scope": "OVERHEAD",
+      "panel": "OH15",
+      "sourceRect": [
+        190,
+        20,
+        210,
+        77
+      ],
+      "sourceCanvas": [
+        1280,
+        1229
+      ],
+      "boardRect": [
+        1304.18,
+        1039.267,
+        80.883,
+        31.828
+      ],
+      "boardCenter": [
+        1344.621,
+        1055.181
+      ],
+      "sourceCenter": [
+        295,
+        58.5
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.727,
+      "stretchFactor": 1.364,
+      "fitInsetsOnBoard": [
+        8.614,
+        0
+      ],
+      "severity": "HIGH_RATIO",
+      "rule": "window",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "window-l-fwd-overheat",
+      "asset": "OVERHEAT",
+      "scope": "OVERHEAD",
+      "panel": "OH15",
+      "sourceRect": [
+        426,
+        20,
+        210,
+        77
+      ],
+      "sourceCanvas": [
+        1280,
+        1229
+      ],
+      "boardRect": [
+        1395.077,
+        1039.267,
+        80.883,
+        31.828
+      ],
+      "boardCenter": [
+        1435.518,
+        1055.181
+      ],
+      "sourceCenter": [
+        531,
+        58.5
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.727,
+      "stretchFactor": 1.364,
+      "fitInsetsOnBoard": [
+        8.614,
+        0
+      ],
+      "severity": "HIGH_RATIO",
+      "rule": "window",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "window-r-fwd-overheat",
+      "asset": "OVERHEAT",
+      "scope": "OVERHEAD",
+      "panel": "OH15",
+      "sourceRect": [
+        651,
+        20,
+        210,
+        77
+      ],
+      "sourceCanvas": [
+        1280,
+        1229
+      ],
+      "boardRect": [
+        1481.737,
+        1039.267,
+        80.883,
+        31.828
+      ],
+      "boardCenter": [
+        1522.178,
+        1055.181
+      ],
+      "sourceCenter": [
+        756,
+        58.5
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.727,
+      "stretchFactor": 1.364,
+      "fitInsetsOnBoard": [
+        8.614,
+        0
+      ],
+      "severity": "HIGH_RATIO",
+      "rule": "window",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "window-r-side-overheat",
+      "asset": "OVERHEAT",
+      "scope": "OVERHEAD",
+      "panel": "OH15",
+      "sourceRect": [
+        885,
+        20,
+        210,
+        77
+      ],
+      "sourceCanvas": [
+        1280,
+        1229
+      ],
+      "boardRect": [
+        1571.863,
+        1039.267,
+        80.883,
+        31.828
+      ],
+      "boardCenter": [
+        1612.305,
+        1055.181
+      ],
+      "sourceCenter": [
+        990,
+        58.5
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.727,
+      "stretchFactor": 1.364,
+      "fitInsetsOnBoard": [
+        8.614,
+        0
+      ],
+      "severity": "HIGH_RATIO",
+      "rule": "window",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "probe-capt-ps",
+      "asset": "CAPT_PS_1_AUX_STATIC",
+      "scope": "OVERHEAD",
+      "panel": "OH15",
+      "sourceRect": [
+        138,
+        565,
+        255,
+        80
+      ],
+      "sourceCanvas": [
+        1280,
+        1229
+      ],
+      "boardRect": [
+        1284.152,
+        1264.539,
+        98.215,
+        33.068
+      ],
+      "boardCenter": [
+        1333.259,
+        1281.073
+      ],
+      "sourceCenter": [
+        265.5,
+        605
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 3.188,
+      "stretchFactor": 1.594,
+      "fitInsetsOnBoard": [
+        16.04,
+        0
+      ],
+      "severity": "CRITICAL_RATIO",
+      "rule": "probe",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "probe-fo-static",
+      "asset": "FO_STATIC_2_AUX_PS",
+      "scope": "OVERHEAD",
+      "panel": "OH15",
+      "sourceRect": [
+        138,
+        664,
+        255,
+        86
+      ],
+      "sourceCanvas": [
+        1280,
+        1229
+      ],
+      "boardRect": [
+        1284.152,
+        1305.461,
+        98.215,
+        35.548
+      ],
+      "boardCenter": [
+        1333.259,
+        1323.234
+      ],
+      "sourceCenter": [
+        265.5,
+        707
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.965,
+      "stretchFactor": 1.483,
+      "fitInsetsOnBoard": [
+        13.56,
+        0
+      ],
+      "severity": "HIGH_RATIO",
+      "rule": "probe",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "probe-l-elev",
+      "asset": "L_ELEV_PITOT",
+      "scope": "OVERHEAD",
+      "panel": "OH15",
+      "sourceRect": [
+        138,
+        770,
+        255,
+        84
+      ],
+      "sourceCanvas": [
+        1280,
+        1229
+      ],
+      "boardRect": [
+        1284.152,
+        1349.275,
+        98.215,
+        34.721
+      ],
+      "boardCenter": [
+        1333.259,
+        1366.635
+      ],
+      "sourceCenter": [
+        265.5,
+        812
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 3.036,
+      "stretchFactor": 1.518,
+      "fitInsetsOnBoard": [
+        14.387,
+        0
+      ],
+      "severity": "CRITICAL_RATIO",
+      "rule": "probe",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "probe-l-alpha",
+      "asset": "L_ALPHA_VANE",
+      "scope": "OVERHEAD",
+      "panel": "OH15",
+      "sourceRect": [
+        138,
+        875,
+        255,
+        82
+      ],
+      "sourceCanvas": [
+        1280,
+        1229
+      ],
+      "boardRect": [
+        1284.152,
+        1392.676,
+        98.215,
+        33.894
+      ],
+      "boardCenter": [
+        1333.259,
+        1409.623
+      ],
+      "sourceCenter": [
+        265.5,
+        916
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 3.11,
+      "stretchFactor": 1.555,
+      "fitInsetsOnBoard": [
+        15.213,
+        0
+      ],
+      "severity": "CRITICAL_RATIO",
+      "rule": "probe",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "hyd-eng-1",
+      "asset": "LOW_PRESSURE",
+      "scope": "OVERHEAD",
+      "panel": "OH17",
+      "sourceRect": [
+        194,
+        335,
+        269,
+        118
+      ],
+      "sourceCanvas": [
+        1672,
+        941
+      ],
+      "boardRect": [
+        1288.202,
+        1918.749,
+        79.316,
+        35.488
+      ],
+      "boardCenter": [
+        1327.86,
+        1936.493
+      ],
+      "sourceCenter": [
+        328.5,
+        394
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.28,
+      "stretchFactor": 1.14,
+      "fitInsetsOnBoard": [
+        4.17,
+        0
+      ],
+      "severity": "MODERATE_RATIO",
+      "rule": "hyd-pressure",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "hyd-elec-2",
+      "asset": "LOW_PRESSURE",
+      "scope": "OVERHEAD",
+      "panel": "OH17",
+      "sourceRect": [
+        495,
+        335,
+        269,
+        118
+      ],
+      "sourceCanvas": [
+        1672,
+        941
+      ],
+      "boardRect": [
+        1376.954,
+        1918.749,
+        79.316,
+        35.488
+      ],
+      "boardCenter": [
+        1416.612,
+        1936.493
+      ],
+      "sourceCenter": [
+        629.5,
+        394
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.28,
+      "stretchFactor": 1.14,
+      "fitInsetsOnBoard": [
+        4.17,
+        0
+      ],
+      "severity": "MODERATE_RATIO",
+      "rule": "hyd-pressure",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "hyd-elec-1",
+      "asset": "LOW_PRESSURE",
+      "scope": "OVERHEAD",
+      "panel": "OH17",
+      "sourceRect": [
+        908,
+        335,
+        269,
+        118
+      ],
+      "sourceCanvas": [
+        1672,
+        941
+      ],
+      "boardRect": [
+        1498.73,
+        1918.749,
+        79.316,
+        35.488
+      ],
+      "boardCenter": [
+        1538.388,
+        1936.493
+      ],
+      "sourceCenter": [
+        1042.5,
+        394
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.28,
+      "stretchFactor": 1.14,
+      "fitInsetsOnBoard": [
+        4.17,
+        0
+      ],
+      "severity": "MODERATE_RATIO",
+      "rule": "hyd-pressure",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "hyd-eng-2",
+      "asset": "LOW_PRESSURE",
+      "scope": "OVERHEAD",
+      "panel": "OH17",
+      "sourceRect": [
+        1213,
+        335,
+        269,
+        118
+      ],
+      "sourceCanvas": [
+        1672,
+        941
+      ],
+      "boardRect": [
+        1588.661,
+        1918.749,
+        79.316,
+        35.488
+      ],
+      "boardCenter": [
+        1628.319,
+        1936.493
+      ],
+      "sourceCenter": [
+        1347.5,
+        394
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.28,
+      "stretchFactor": 1.14,
+      "fitInsetsOnBoard": [
+        4.17,
+        0
+      ],
+      "severity": "MODERATE_RATIO",
+      "rule": "hyd-pressure",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "hyd-elec-2-overheat",
+      "asset": "OVERHEAT",
+      "scope": "OVERHEAD",
+      "panel": "OH17",
+      "sourceRect": [
+        495,
+        188,
+        271,
+        118
+      ],
+      "sourceCanvas": [
+        1672,
+        941
+      ],
+      "boardRect": [
+        1376.954,
+        1874.54,
+        79.906,
+        35.488
+      ],
+      "boardCenter": [
+        1416.907,
+        1892.284
+      ],
+      "sourceCenter": [
+        630.5,
+        247
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.297,
+      "stretchFactor": 1.148,
+      "fitInsetsOnBoard": [
+        4.465,
+        0
+      ],
+      "severity": "MODERATE_RATIO",
+      "rule": "sensor",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "hyd-elec-1-overheat",
+      "asset": "OVERHEAT",
+      "scope": "OVERHEAD",
+      "panel": "OH17",
+      "sourceRect": [
+        908,
+        188,
+        271,
+        118
+      ],
+      "sourceCanvas": [
+        1672,
+        941
+      ],
+      "boardRect": [
+        1498.73,
+        1874.54,
+        79.906,
+        35.488
+      ],
+      "boardCenter": [
+        1538.683,
+        1892.284
+      ],
+      "sourceCenter": [
+        1043.5,
+        247
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.297,
+      "stretchFactor": 1.148,
+      "fitInsetsOnBoard": [
+        4.465,
+        0
+      ],
+      "severity": "MODERATE_RATIO",
+      "rule": "sensor",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "probe-temp",
+      "asset": "TEMP_PROBE",
+      "scope": "OVERHEAD",
+      "panel": "OH15",
+      "sourceRect": [
+        138,
+        978,
+        255,
+        83
+      ],
+      "sourceCanvas": [
+        1280,
+        1229
+      ],
+      "boardRect": [
+        1284.152,
+        1435.251,
+        98.215,
+        34.308
+      ],
+      "boardCenter": [
+        1333.259,
+        1452.404
+      ],
+      "sourceCenter": [
+        265.5,
+        1019.5
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 3.072,
+      "stretchFactor": 1.536,
+      "fitInsetsOnBoard": [
+        14.8,
+        0
+      ],
+      "severity": "CRITICAL_RATIO",
+      "rule": "probe",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "probe-fo-ps",
+      "asset": "FO_PS_2_AUX_STATIC",
+      "scope": "OVERHEAD",
+      "panel": "OH15",
+      "sourceRect": [
+        891,
+        565,
+        255,
+        80
+      ],
+      "sourceCanvas": [
+        1280,
+        1229
+      ],
+      "boardRect": [
+        1574.174,
+        1264.539,
+        98.215,
+        33.068
+      ],
+      "boardCenter": [
+        1623.282,
+        1281.073
+      ],
+      "sourceCenter": [
+        1018.5,
+        605
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 3.188,
+      "stretchFactor": 1.594,
+      "fitInsetsOnBoard": [
+        16.04,
+        0
+      ],
+      "severity": "CRITICAL_RATIO",
+      "rule": "probe",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "probe-capt-static",
+      "asset": "CAPT_STATIC_1_AUX_PS",
+      "scope": "OVERHEAD",
+      "panel": "OH15",
+      "sourceRect": [
+        891,
+        664,
+        255,
+        86
+      ],
+      "sourceCanvas": [
+        1280,
+        1229
+      ],
+      "boardRect": [
+        1574.174,
+        1305.461,
+        98.215,
+        35.548
+      ],
+      "boardCenter": [
+        1623.282,
+        1323.234
+      ],
+      "sourceCenter": [
+        1018.5,
+        707
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.965,
+      "stretchFactor": 1.483,
+      "fitInsetsOnBoard": [
+        13.56,
+        0
+      ],
+      "severity": "HIGH_RATIO",
+      "rule": "probe",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "probe-r-elev",
+      "asset": "R_ELEV_PITOT",
+      "scope": "OVERHEAD",
+      "panel": "OH15",
+      "sourceRect": [
+        891,
+        769,
+        255,
+        85
+      ],
+      "sourceCanvas": [
+        1280,
+        1229
+      ],
+      "boardRect": [
+        1574.174,
+        1348.862,
+        98.215,
+        35.134
+      ],
+      "boardCenter": [
+        1623.282,
+        1366.429
+      ],
+      "sourceCenter": [
+        1018.5,
+        811.5
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 3,
+      "stretchFactor": 1.5,
+      "fitInsetsOnBoard": [
+        13.973,
+        0
+      ],
+      "severity": "CRITICAL_RATIO",
+      "rule": "probe",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "probe-r-alpha",
+      "asset": "R_ALPHA_VANE",
+      "scope": "OVERHEAD",
+      "panel": "OH15",
+      "sourceRect": [
+        891,
+        874,
+        255,
+        82
+      ],
+      "sourceCanvas": [
+        1280,
+        1229
+      ],
+      "boardRect": [
+        1574.174,
+        1392.263,
+        98.215,
+        33.894
+      ],
+      "boardCenter": [
+        1623.282,
+        1409.21
+      ],
+      "sourceCenter": [
+        1018.5,
+        915
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 3.11,
+      "stretchFactor": 1.555,
+      "fitInsetsOnBoard": [
+        15.213,
+        0
+      ],
+      "severity": "CRITICAL_RATIO",
+      "rule": "probe",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "cowl-anti-ice-1",
+      "asset": "COWL_ANTI_ICE",
+      "scope": "OVERHEAD",
+      "panel": "OH16",
+      "sourceRect": [
+        868,
+        167,
+        259,
+        106
+      ],
+      "sourceCanvas": [
+        1639,
+        960
+      ],
+      "boardRect": [
+        1492.088,
+        1587.534,
+        77.905,
+        30.806
+      ],
+      "boardCenter": [
+        1531.041,
+        1602.938
+      ],
+      "sourceCenter": [
+        997.5,
+        220
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.443,
+      "stretchFactor": 1.222,
+      "fitInsetsOnBoard": [
+        8.146,
+        0
+      ],
+      "severity": "MODERATE_RATIO",
+      "rule": "anti-ice",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "cowl-anti-ice-2",
+      "asset": "COWL_ANTI_ICE",
+      "scope": "OVERHEAD",
+      "panel": "OH16",
+      "sourceRect": [
+        1168,
+        167,
+        259,
+        106
+      ],
+      "sourceCanvas": [
+        1639,
+        960
+      ],
+      "boardRect": [
+        1582.326,
+        1587.534,
+        77.905,
+        30.806
+      ],
+      "boardCenter": [
+        1621.279,
+        1602.938
+      ],
+      "sourceCenter": [
+        1297.5,
+        220
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.443,
+      "stretchFactor": 1.222,
+      "fitInsetsOnBoard": [
+        8.146,
+        0
+      ],
+      "severity": "MODERATE_RATIO",
+      "rule": "anti-ice",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "door-fwd-entry",
+      "asset": "FWD_ENTRY",
+      "scope": "OVERHEAD",
+      "panel": "OH19-VOICE",
+      "sourceRect": [
+        225,
+        120,
+        263,
+        115
+      ],
+      "sourceCanvas": [
+        1593,
+        987
+      ],
+      "boardRect": [
+        1300.633,
+        2197.224,
+        81.393,
+        37.072
+      ],
+      "boardCenter": [
+        1341.329,
+        2215.76
+      ],
+      "sourceCenter": [
+        356.5,
+        177.5
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.287,
+      "stretchFactor": 1.143,
+      "fitInsetsOnBoard": [
+        3.624,
+        0
+      ],
+      "severity": "MODERATE_RATIO",
+      "rule": "sensor",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "door-aft-entry",
+      "asset": "AFT_ENTRY",
+      "scope": "OVERHEAD",
+      "panel": "OH19-VOICE",
+      "sourceRect": [
+        225,
+        258,
+        263,
+        115
+      ],
+      "sourceCanvas": [
+        1593,
+        987
+      ],
+      "boardRect": [
+        1300.633,
+        2241.711,
+        81.393,
+        37.072
+      ],
+      "boardCenter": [
+        1341.329,
+        2260.247
+      ],
+      "sourceCenter": [
+        356.5,
+        315.5
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.287,
+      "stretchFactor": 1.143,
+      "fitInsetsOnBoard": [
+        3.624,
+        0
+      ],
+      "severity": "MODERATE_RATIO",
+      "rule": "sensor",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "door-air-stair",
+      "asset": "AIR_STAIR",
+      "scope": "OVERHEAD",
+      "panel": "OH19-VOICE",
+      "sourceRect": [
+        519,
+        120,
+        263,
+        115
+      ],
+      "sourceCanvas": [
+        1593,
+        987
+      ],
+      "boardRect": [
+        1391.62,
+        2197.224,
+        81.393,
+        37.072
+      ],
+      "boardCenter": [
+        1432.316,
+        2215.76
+      ],
+      "sourceCenter": [
+        650.5,
+        177.5
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.287,
+      "stretchFactor": 1.143,
+      "fitInsetsOnBoard": [
+        3.624,
+        0
+      ],
+      "severity": "MODERATE_RATIO",
+      "rule": "sensor",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "door-equip",
+      "asset": "EQUIP",
+      "scope": "OVERHEAD",
+      "panel": "OH19-VOICE",
+      "sourceRect": [
+        519,
+        258,
+        263,
+        115
+      ],
+      "sourceCanvas": [
+        1593,
+        987
+      ],
+      "boardRect": [
+        1391.62,
+        2241.711,
+        81.393,
+        37.072
+      ],
+      "boardCenter": [
+        1432.316,
+        2260.247
+      ],
+      "sourceCenter": [
+        650.5,
+        315.5
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.287,
+      "stretchFactor": 1.143,
+      "fitInsetsOnBoard": [
+        3.624,
+        0
+      ],
+      "severity": "MODERATE_RATIO",
+      "rule": "sensor",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "door-fwd-cargo",
+      "asset": "FWD_CARGO",
+      "scope": "OVERHEAD",
+      "panel": "OH19-VOICE",
+      "sourceRect": [
+        813,
+        120,
+        263,
+        115
+      ],
+      "sourceCanvas": [
+        1593,
+        987
+      ],
+      "boardRect": [
+        1482.606,
+        2197.224,
+        81.393,
+        37.072
+      ],
+      "boardCenter": [
+        1523.303,
+        2215.76
+      ],
+      "sourceCenter": [
+        944.5,
+        177.5
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.287,
+      "stretchFactor": 1.143,
+      "fitInsetsOnBoard": [
+        3.624,
+        0
+      ],
+      "severity": "MODERATE_RATIO",
+      "rule": "sensor",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "door-aft-cargo",
+      "asset": "AFT_CARGO",
+      "scope": "OVERHEAD",
+      "panel": "OH19-VOICE",
+      "sourceRect": [
+        813,
+        258,
+        263,
+        115
+      ],
+      "sourceCanvas": [
+        1593,
+        987
+      ],
+      "boardRect": [
+        1482.606,
+        2241.711,
+        81.393,
+        37.072
+      ],
+      "boardCenter": [
+        1523.303,
+        2260.247
+      ],
+      "sourceCenter": [
+        944.5,
+        315.5
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.287,
+      "stretchFactor": 1.143,
+      "fitInsetsOnBoard": [
+        3.624,
+        0
+      ],
+      "severity": "MODERATE_RATIO",
+      "rule": "sensor",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "door-fwd-service",
+      "asset": "FWD_SERVICE",
+      "scope": "OVERHEAD",
+      "panel": "OH19-VOICE",
+      "sourceRect": [
+        1107,
+        120,
+        263,
+        115
+      ],
+      "sourceCanvas": [
+        1593,
+        987
+      ],
+      "boardRect": [
+        1573.593,
+        2197.224,
+        81.393,
+        37.072
+      ],
+      "boardCenter": [
+        1614.29,
+        2215.76
+      ],
+      "sourceCenter": [
+        1238.5,
+        177.5
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.287,
+      "stretchFactor": 1.143,
+      "fitInsetsOnBoard": [
+        3.624,
+        0
+      ],
+      "severity": "MODERATE_RATIO",
+      "rule": "sensor",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "door-aft-service",
+      "asset": "AFT_SERVICE",
+      "scope": "OVERHEAD",
+      "panel": "OH19-VOICE",
+      "sourceRect": [
+        1107,
+        258,
+        263,
+        115
+      ],
+      "sourceCanvas": [
+        1593,
+        987
+      ],
+      "boardRect": [
+        1573.593,
+        2241.711,
+        81.393,
+        37.072
+      ],
+      "boardCenter": [
+        1614.29,
+        2260.247
+      ],
+      "sourceCenter": [
+        1238.5,
+        315.5
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.287,
+      "stretchFactor": 1.143,
+      "fitInsetsOnBoard": [
+        3.624,
+        0
+      ],
+      "severity": "MODERATE_RATIO",
+      "rule": "sensor",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "duct-overheat-l",
+      "asset": "DUCT_OVERHEAT",
+      "scope": "OVERHEAD",
+      "panel": "OH20",
+      "sourceRect": [
+        108,
+        620,
+        213,
+        97
+      ],
+      "sourceCanvas": [
+        1254,
+        1254
+      ],
+      "boardRect": [
+        1766.459,
+        1494.164,
+        83.739,
+        39.295
+      ],
+      "boardCenter": [
+        1808.329,
+        1513.812
+      ],
+      "sourceCenter": [
+        214.5,
+        668.5
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.196,
+      "stretchFactor": 1.098,
+      "fitInsetsOnBoard": [
+        2.575,
+        0
+      ],
+      "severity": "LOW_RATIO",
+      "rule": "pneumatic",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "EXISTING_SOURCE_LOCATED_TRAINER",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "duct-overheat-r",
+      "asset": "DUCT_OVERHEAT",
+      "scope": "OVERHEAD",
+      "panel": "OH20",
+      "sourceRect": [
+        926,
+        620,
+        213,
+        97
+      ],
+      "sourceCanvas": [
+        1254,
+        1254
+      ],
+      "boardRect": [
+        2088.049,
+        1494.164,
+        83.739,
+        39.295
+      ],
+      "boardCenter": [
+        2129.919,
+        1513.812
+      ],
+      "sourceCenter": [
+        1032.5,
+        668.5
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.196,
+      "stretchFactor": 1.098,
+      "fitInsetsOnBoard": [
+        2.575,
+        0
+      ],
+      "severity": "LOW_RATIO",
+      "rule": "pneumatic",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "EXISTING_SOURCE_LOCATED_TRAINER",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "dual-bleed",
+      "asset": "DUAL_BLEED",
+      "scope": "OVERHEAD",
+      "panel": "OH21",
+      "sourceRect": [
+        172,
+        10,
+        152,
+        72
+      ],
+      "sourceCanvas": [
+        1122,
+        1402
+      ],
+      "boardRect": [
+        1799.576,
+        1756,
+        66.788,
+        36
+      ],
+      "boardCenter": [
+        1832.97,
+        1774
+      ],
+      "sourceCenter": [
+        248,
+        46
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.111,
+      "stretchFactor": 1.056,
+      "fitInsetsOnBoard": [
+        0,
+        1.303
+      ],
+      "severity": "LOW_RATIO",
+      "rule": "pneumatic",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "EXISTING_SOURCE_LOCATED_TRAINER",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "pack-trip-l",
+      "asset": "PACK_TRIP_OFF",
+      "scope": "OVERHEAD",
+      "panel": "OH21",
+      "sourceRect": [
+        243,
+        862,
+        180,
+        66
+      ],
+      "sourceCanvas": [
+        1122,
+        1402
+      ],
+      "boardRect": [
+        1830.773,
+        2182,
+        79.091,
+        33
+      ],
+      "boardCenter": [
+        1870.318,
+        2198.5
+      ],
+      "sourceCenter": [
+        333,
+        895
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.727,
+      "stretchFactor": 1.364,
+      "fitInsetsOnBoard": [
+        6.545,
+        0
+      ],
+      "severity": "HIGH_RATIO",
+      "rule": "pneumatic",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "EXISTING_SOURCE_LOCATED_TRAINER",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "wing-body-overheat-l",
+      "asset": "WING_BODY_OVERHEAT",
+      "scope": "OVERHEAD",
+      "panel": "OH21",
+      "sourceRect": [
+        243,
+        953,
+        180,
+        66
+      ],
+      "sourceCanvas": [
+        1122,
+        1402
+      ],
+      "boardRect": [
+        1830.773,
+        2227.5,
+        79.091,
+        33
+      ],
+      "boardCenter": [
+        1870.318,
+        2244
+      ],
+      "sourceCenter": [
+        333,
+        986
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.727,
+      "stretchFactor": 1.364,
+      "fitInsetsOnBoard": [
+        6.545,
+        0
+      ],
+      "severity": "HIGH_RATIO",
+      "rule": "pneumatic",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "EXISTING_SOURCE_LOCATED_TRAINER",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "bleed-trip-l",
+      "asset": "BLEED_TRIP_OFF",
+      "scope": "OVERHEAD",
+      "panel": "OH21",
+      "sourceRect": [
+        243,
+        1043,
+        180,
+        66
+      ],
+      "sourceCanvas": [
+        1122,
+        1402
+      ],
+      "boardRect": [
+        1830.773,
+        2272.5,
+        79.091,
+        33
+      ],
+      "boardCenter": [
+        1870.318,
+        2289
+      ],
+      "sourceCenter": [
+        333,
+        1076
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.727,
+      "stretchFactor": 1.364,
+      "fitInsetsOnBoard": [
+        6.545,
+        0
+      ],
+      "severity": "HIGH_RATIO",
+      "rule": "pneumatic",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "EXISTING_SOURCE_LOCATED_TRAINER",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "pack-trip-r",
+      "asset": "PACK_TRIP_OFF",
+      "scope": "OVERHEAD",
+      "panel": "OH21",
+      "sourceRect": [
+        701,
+        862,
+        180,
+        66
+      ],
+      "sourceCanvas": [
+        1122,
+        1402
+      ],
+      "boardRect": [
+        2032.015,
+        2182,
+        79.091,
+        33
+      ],
+      "boardCenter": [
+        2071.561,
+        2198.5
+      ],
+      "sourceCenter": [
+        791,
+        895
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.727,
+      "stretchFactor": 1.364,
+      "fitInsetsOnBoard": [
+        6.545,
+        0
+      ],
+      "severity": "HIGH_RATIO",
+      "rule": "pneumatic",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "EXISTING_SOURCE_LOCATED_TRAINER",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "wing-body-overheat-r",
+      "asset": "WING_BODY_OVERHEAT",
+      "scope": "OVERHEAD",
+      "panel": "OH21",
+      "sourceRect": [
+        701,
+        953,
+        180,
+        66
+      ],
+      "sourceCanvas": [
+        1122,
+        1402
+      ],
+      "boardRect": [
+        2032.015,
+        2227.5,
+        79.091,
+        33
+      ],
+      "boardCenter": [
+        2071.561,
+        2244
+      ],
+      "sourceCenter": [
+        791,
+        986
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.727,
+      "stretchFactor": 1.364,
+      "fitInsetsOnBoard": [
+        6.545,
+        0
+      ],
+      "severity": "HIGH_RATIO",
+      "rule": "pneumatic",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "EXISTING_SOURCE_LOCATED_TRAINER",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "bleed-trip-r",
+      "asset": "BLEED_TRIP_OFF",
+      "scope": "OVERHEAD",
+      "panel": "OH21",
+      "sourceRect": [
+        701,
+        1043,
+        180,
+        66
+      ],
+      "sourceCanvas": [
+        1122,
+        1402
+      ],
+      "boardRect": [
+        2032.015,
+        2272.5,
+        79.091,
+        33
+      ],
+      "boardCenter": [
+        2071.561,
+        2289
+      ],
+      "sourceCenter": [
+        791,
+        1076
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.727,
+      "stretchFactor": 1.364,
+      "fitInsetsOnBoard": [
+        6.545,
+        0
+      ],
+      "severity": "HIGH_RATIO",
+      "rule": "pneumatic",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "EXISTING_SOURCE_LOCATED_TRAINER",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "press-auto-fail",
+      "asset": "AUTO_FAIL",
+      "scope": "OVERHEAD",
+      "panel": "OH22",
+      "sourceRect": [
+        184,
+        26,
+        177,
+        86
+      ],
+      "sourceCanvas": [
+        1167,
+        1347
+      ],
+      "boardRect": [
+        1801.731,
+        2462.693,
+        74.774,
+        35.37
+      ],
+      "boardCenter": [
+        1839.118,
+        2480.379
+      ],
+      "sourceCenter": [
+        272.5,
+        69
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.058,
+      "stretchFactor": 1.029,
+      "fitInsetsOnBoard": [
+        2.016,
+        0
+      ],
+      "severity": "LOW_RATIO",
+      "rule": "press-fault",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "press-off-sched-descent",
+      "asset": "OFF_SCHED_DESCENT",
+      "scope": "OVERHEAD",
+      "panel": "OH22",
+      "sourceRect": [
+        388,
+        26,
+        182,
+        86
+      ],
+      "sourceCanvas": [
+        1167,
+        1347
+      ],
+      "boardRect": [
+        1887.911,
+        2462.693,
+        76.886,
+        35.37
+      ],
+      "boardCenter": [
+        1926.354,
+        2480.379
+      ],
+      "sourceCenter": [
+        479,
+        69
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.116,
+      "stretchFactor": 1.058,
+      "fitInsetsOnBoard": [
+        3.073,
+        0
+      ],
+      "severity": "LOW_RATIO",
+      "rule": "sensor",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "window-l-side-on",
+      "asset": "ON_GREEN",
+      "scope": "OVERHEAD",
+      "panel": "OH15",
+      "sourceRect": [
+        190,
+        111,
+        210,
+        77
+      ],
+      "sourceCanvas": [
+        1280,
+        1229
+      ],
+      "boardRect": [
+        1304.18,
+        1076.881,
+        80.883,
+        31.828
+      ],
+      "boardCenter": [
+        1344.621,
+        1092.795
+      ],
+      "sourceCenter": [
+        295,
+        149.5
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.727,
+      "stretchFactor": 1.364,
+      "fitInsetsOnBoard": [
+        8.614,
+        0
+      ],
+      "severity": "HIGH_RATIO",
+      "rule": "window-on",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "window-l-fwd-on",
+      "asset": "ON_GREEN",
+      "scope": "OVERHEAD",
+      "panel": "OH15",
+      "sourceRect": [
+        426,
+        111,
+        210,
+        77
+      ],
+      "sourceCanvas": [
+        1280,
+        1229
+      ],
+      "boardRect": [
+        1395.077,
+        1076.881,
+        80.883,
+        31.828
+      ],
+      "boardCenter": [
+        1435.518,
+        1092.795
+      ],
+      "sourceCenter": [
+        531,
+        149.5
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.727,
+      "stretchFactor": 1.364,
+      "fitInsetsOnBoard": [
+        8.614,
+        0
+      ],
+      "severity": "HIGH_RATIO",
+      "rule": "window-on",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "window-r-fwd-on",
+      "asset": "ON_GREEN",
+      "scope": "OVERHEAD",
+      "panel": "OH15",
+      "sourceRect": [
+        651,
+        111,
+        210,
+        77
+      ],
+      "sourceCanvas": [
+        1280,
+        1229
+      ],
+      "boardRect": [
+        1481.737,
+        1076.881,
+        80.883,
+        31.828
+      ],
+      "boardCenter": [
+        1522.178,
+        1092.795
+      ],
+      "sourceCenter": [
+        756,
+        149.5
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.727,
+      "stretchFactor": 1.364,
+      "fitInsetsOnBoard": [
+        8.614,
+        0
+      ],
+      "severity": "HIGH_RATIO",
+      "rule": "window-on",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "window-r-side-on",
+      "asset": "ON_GREEN",
+      "scope": "OVERHEAD",
+      "panel": "OH15",
+      "sourceRect": [
+        885,
+        111,
+        210,
+        77
+      ],
+      "sourceCanvas": [
+        1280,
+        1229
+      ],
+      "boardRect": [
+        1571.863,
+        1076.881,
+        80.883,
+        31.828
+      ],
+      "boardCenter": [
+        1612.305,
+        1092.795
+      ],
+      "sourceCenter": [
+        990,
+        149.5
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.727,
+      "stretchFactor": 1.364,
+      "fitInsetsOnBoard": [
+        8.614,
+        0
+      ],
+      "severity": "HIGH_RATIO",
+      "rule": "window-on",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "wing-valve-l",
+      "asset": "L_VALVE_OPEN",
+      "scope": "OVERHEAD",
+      "panel": "OH16",
+      "sourceRect": [
+        205,
+        316,
+        259,
+        99
+      ],
+      "sourceCanvas": [
+        1639,
+        960
+      ],
+      "boardRect": [
+        1292.663,
+        1630.838,
+        77.905,
+        28.772
+      ],
+      "boardCenter": [
+        1331.615,
+        1645.223
+      ],
+      "sourceCenter": [
+        334.5,
+        365.5
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.616,
+      "stretchFactor": 1.308,
+      "fitInsetsOnBoard": [
+        10.181,
+        0
+      ],
+      "severity": "HIGH_RATIO",
+      "rule": "valve",
+      "states": [
+        "OFF",
+        "DIM_BLUE",
+        "BRIGHT_BLUE"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "wing-valve-r",
+      "asset": "R_VALVE_OPEN",
+      "scope": "OVERHEAD",
+      "panel": "OH16",
+      "sourceRect": [
+        500,
+        316,
+        259,
+        99
+      ],
+      "sourceCanvas": [
+        1639,
+        960
+      ],
+      "boardRect": [
+        1381.397,
+        1630.838,
+        77.905,
+        28.772
+      ],
+      "boardCenter": [
+        1420.349,
+        1645.223
+      ],
+      "sourceCenter": [
+        629.5,
+        365.5
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.616,
+      "stretchFactor": 1.308,
+      "fitInsetsOnBoard": [
+        10.181,
+        0
+      ],
+      "severity": "HIGH_RATIO",
+      "rule": "valve",
+      "states": [
+        "OFF",
+        "DIM_BLUE",
+        "BRIGHT_BLUE"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "cowl-valve-1",
+      "asset": "COWL_VALVE_OPEN",
+      "scope": "OVERHEAD",
+      "panel": "OH16",
+      "sourceRect": [
+        868,
+        302,
+        259,
+        107
+      ],
+      "sourceCanvas": [
+        1639,
+        960
+      ],
+      "boardRect": [
+        1492.088,
+        1626.769,
+        77.905,
+        31.097
+      ],
+      "boardCenter": [
+        1531.041,
+        1642.317
+      ],
+      "sourceCenter": [
+        997.5,
+        355.5
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.421,
+      "stretchFactor": 1.21,
+      "fitInsetsOnBoard": [
+        7.856,
+        0
+      ],
+      "severity": "MODERATE_RATIO",
+      "rule": "valve",
+      "states": [
+        "OFF",
+        "DIM_BLUE",
+        "BRIGHT_BLUE"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "cowl-valve-2",
+      "asset": "COWL_VALVE_OPEN",
+      "scope": "OVERHEAD",
+      "panel": "OH16",
+      "sourceRect": [
+        1168,
+        302,
+        259,
+        107
+      ],
+      "sourceCanvas": [
+        1639,
+        960
+      ],
+      "boardRect": [
+        1582.326,
+        1626.769,
+        77.905,
+        31.097
+      ],
+      "boardCenter": [
+        1621.279,
+        1642.317
+      ],
+      "sourceCenter": [
+        1297.5,
+        355.5
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.421,
+      "stretchFactor": 1.21,
+      "fitInsetsOnBoard": [
+        7.856,
+        0
+      ],
+      "severity": "MODERATE_RATIO",
+      "rule": "valve",
+      "states": [
+        "OFF",
+        "DIM_BLUE",
+        "BRIGHT_BLUE"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "crossfeed-valve",
+      "asset": "VALVE_OPEN",
+      "scope": "OVERHEAD",
+      "panel": "OH09",
+      "sourceRect": [
+        418,
+        414,
+        175,
+        70
+      ],
+      "sourceCanvas": [
+        1012,
+        1555
+      ],
+      "boardRect": [
+        208.283,
+        2449.808,
+        85.944,
+        34.122
+      ],
+      "boardCenter": [
+        251.254,
+        2466.869
+      ],
+      "sourceCenter": [
+        505.5,
+        449
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.5,
+      "stretchFactor": 1.25,
+      "fitInsetsOnBoard": [
+        8.85,
+        0
+      ],
+      "severity": "HIGH_RATIO",
+      "rule": "valve",
+      "states": [
+        "OFF",
+        "DIM_BLUE",
+        "BRIGHT_BLUE"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "fuel-valve-closed-1",
+      "asset": "FUEL_VALVE_CLOSED",
+      "scope": "OVERHEAD",
+      "panel": "OH09",
+      "sourceRect": [
+        146,
+        47,
+        174,
+        72
+      ],
+      "sourceCanvas": [
+        1012,
+        1555
+      ],
+      "boardRect": [
+        74.702,
+        2270.911,
+        85.453,
+        35.097
+      ],
+      "boardCenter": [
+        117.428,
+        2288.459
+      ],
+      "sourceCenter": [
+        233,
+        83
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.417,
+      "stretchFactor": 1.208,
+      "fitInsetsOnBoard": [
+        7.629,
+        0
+      ],
+      "severity": "MODERATE_RATIO",
+      "rule": "fuel-valve",
+      "states": [
+        "OFF",
+        "DIM_BLUE",
+        "BRIGHT_BLUE"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "fuel-valve-closed-2",
+      "asset": "FUEL_VALVE_CLOSED",
+      "scope": "OVERHEAD",
+      "panel": "OH09",
+      "sourceRect": [
+        694,
+        47,
+        174,
+        72
+      ],
+      "sourceCanvas": [
+        1012,
+        1555
+      ],
+      "boardRect": [
+        343.828,
+        2270.911,
+        85.453,
+        35.097
+      ],
+      "boardCenter": [
+        386.554,
+        2288.459
+      ],
+      "sourceCenter": [
+        781,
+        83
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.417,
+      "stretchFactor": 1.208,
+      "fitInsetsOnBoard": [
+        7.629,
+        0
+      ],
+      "severity": "MODERATE_RATIO",
+      "rule": "fuel-valve",
+      "states": [
+        "OFF",
+        "DIM_BLUE",
+        "BRIGHT_BLUE"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "gen-off-bus-1",
+      "asset": "GEN_OFF_BUS",
+      "scope": "OVERHEAD",
+      "panel": "OH12",
+      "sourceRect": [
+        90,
+        684,
+        169,
+        70
+      ],
+      "sourceCanvas": [
+        1024,
+        1536
+      ],
+      "boardRect": [
+        543.594,
+        2585.547,
+        81.859,
+        34.544
+      ],
+      "boardCenter": [
+        584.523,
+        2602.819
+      ],
+      "sourceCenter": [
+        174.5,
+        719
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.414,
+      "stretchFactor": 1.207,
+      "fitInsetsOnBoard": [
+        6.385,
+        0
+      ],
+      "severity": "MODERATE_RATIO",
+      "rule": "electrical",
+      "states": [
+        "OFF",
+        "BRIGHT_BLUE"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "gen-off-bus-2",
+      "asset": "GEN_OFF_BUS",
+      "scope": "OVERHEAD",
+      "panel": "OH12",
+      "sourceRect": [
+        759,
+        684,
+        169,
+        70
+      ],
+      "sourceCanvas": [
+        1024,
+        1536
+      ],
+      "boardRect": [
+        867.641,
+        2585.547,
+        81.859,
+        34.544
+      ],
+      "boardCenter": [
+        908.57,
+        2602.819
+      ],
+      "sourceCenter": [
+        843.5,
+        719
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.414,
+      "stretchFactor": 1.207,
+      "fitInsetsOnBoard": [
+        6.385,
+        0
+      ],
+      "severity": "MODERATE_RATIO",
+      "rule": "electrical",
+      "states": [
+        "OFF",
+        "BRIGHT_BLUE"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "apu-gen-off-bus",
+      "asset": "APU_GEN_OFF_BUS",
+      "scope": "OVERHEAD",
+      "panel": "OH12",
+      "sourceRect": [
+        422,
+        678,
+        175,
+        76
+      ],
+      "sourceCanvas": [
+        1024,
+        1536
+      ],
+      "boardRect": [
+        704.406,
+        2582.586,
+        84.766,
+        37.505
+      ],
+      "boardCenter": [
+        746.789,
+        2601.339
+      ],
+      "sourceCenter": [
+        509.5,
+        716
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.303,
+      "stretchFactor": 1.151,
+      "fitInsetsOnBoard": [
+        4.878,
+        0
+      ],
+      "severity": "MODERATE_RATIO",
+      "rule": "apu-gen-off",
+      "states": [
+        "OFF",
+        "BRIGHT_BLUE"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "ground-power-available",
+      "asset": "GRD_POWER_AVAILABLE",
+      "scope": "OVERHEAD",
+      "panel": "OH12",
+      "sourceRect": [
+        421,
+        35,
+        182,
+        68
+      ],
+      "sourceCanvas": [
+        1024,
+        1536
+      ],
+      "boardRect": [
+        703.922,
+        2265.272,
+        88.156,
+        33.557
+      ],
+      "boardCenter": [
+        748,
+        2282.051
+      ],
+      "sourceCenter": [
+        512,
+        69
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.676,
+      "stretchFactor": 1.338,
+      "fitInsetsOnBoard": [
+        10.521,
+        0
+      ],
+      "severity": "HIGH_RATIO",
+      "rule": "electrical",
+      "states": [
+        "OFF",
+        "BRIGHT_BLUE"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "apu-low-oil-quantity",
+      "asset": "LOW_OIL_QUANTITY",
+      "scope": "OVERHEAD",
+      "panel": "OH12",
+      "sourceRect": [
+        162,
+        1055,
+        152,
+        61
+      ],
+      "sourceCanvas": [
+        1024,
+        1536
+      ],
+      "boardRect": [
+        578.469,
+        2768.632,
+        73.625,
+        30.103
+      ],
+      "boardCenter": [
+        615.281,
+        2783.683
+      ],
+      "sourceCenter": [
+        238,
+        1085.5
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.492,
+      "stretchFactor": 1.246,
+      "fitInsetsOnBoard": [
+        6.71,
+        0
+      ],
+      "severity": "MODERATE_RATIO",
+      "rule": "sensor",
+      "states": [
+        "OFF",
+        "BRIGHT_BLUE"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "ram-door-l",
+      "asset": "RAM_DOOR_FULL_OPEN",
+      "scope": "OVERHEAD",
+      "panel": "OH21",
+      "sourceRect": [
+        355,
+        15,
+        146,
+        68
+      ],
+      "sourceCanvas": [
+        1122,
+        1402
+      ],
+      "boardRect": [
+        1879.985,
+        1758.5,
+        64.152,
+        34
+      ],
+      "boardCenter": [
+        1912.061,
+        1775.5
+      ],
+      "sourceCenter": [
+        428,
+        49
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.147,
+      "stretchFactor": 1.074,
+      "fitInsetsOnBoard": [
+        0,
+        0.962
+      ],
+      "severity": "LOW_RATIO",
+      "rule": "ram-door",
+      "states": [
+        "OFF",
+        "BRIGHT_BLUE"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "ram-door-r",
+      "asset": "RAM_DOOR_FULL_OPEN",
+      "scope": "OVERHEAD",
+      "panel": "OH21",
+      "sourceRect": [
+        730,
+        15,
+        220,
+        68
+      ],
+      "sourceCanvas": [
+        1122,
+        1402
+      ],
+      "boardRect": [
+        2044.758,
+        1758.5,
+        96.667,
+        34
+      ],
+      "boardCenter": [
+        2093.091,
+        1775.5
+      ],
+      "sourceCenter": [
+        840,
+        49
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 3.235,
+      "stretchFactor": 1.618,
+      "fitInsetsOnBoard": [
+        14.333,
+        0
+      ],
+      "severity": "CRITICAL_RATIO",
+      "rule": "ram-door",
+      "states": [
+        "OFF",
+        "BRIGHT_BLUE"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "press-standby",
+      "asset": "STANDBY_GREEN",
+      "scope": "OVERHEAD",
+      "panel": "OH22",
+      "sourceRect": [
+        596,
+        26,
+        178,
+        86
+      ],
+      "sourceCanvas": [
+        1167,
+        1347
+      ],
+      "boardRect": [
+        1975.781,
+        2462.693,
+        75.196,
+        35.37
+      ],
+      "boardCenter": [
+        2013.379,
+        2480.379
+      ],
+      "sourceCenter": [
+        685,
+        69
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.07,
+      "stretchFactor": 1.035,
+      "fitInsetsOnBoard": [
+        2.228,
+        0
+      ],
+      "severity": "LOW_RATIO",
+      "rule": "press-mode",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "press-manual",
+      "asset": "MANUAL_GREEN",
+      "scope": "OVERHEAD",
+      "panel": "OH22",
+      "sourceRect": [
+        805,
+        26,
+        178,
+        86
+      ],
+      "sourceCanvas": [
+        1167,
+        1347
+      ],
+      "boardRect": [
+        2064.073,
+        2462.693,
+        75.196,
+        35.37
+      ],
+      "boardCenter": [
+        2101.671,
+        2480.379
+      ],
+      "sourceCenter": [
+        894,
+        69
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.07,
+      "stretchFactor": 1.035,
+      "fitInsetsOnBoard": [
+        2.228,
+        0
+      ],
+      "severity": "LOW_RATIO",
+      "rule": "press-mode",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "ground-call",
+      "asset": "CALL",
+      "scope": "OVERHEAD",
+      "panel": "OH18",
+      "sourceRect": [
+        67,
+        615,
+        310,
+        146
+      ],
+      "sourceCanvas": [
+        816,
+        1926
+      ],
+      "boardRect": [
+        1015.295,
+        2643.195,
+        89.277,
+        40.404
+      ],
+      "boardCenter": [
+        1059.934,
+        2663.397
+      ],
+      "sourceCenter": [
+        222,
+        688
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.123,
+      "stretchFactor": 1.062,
+      "fitInsetsOnBoard": [
+        4.235,
+        0
+      ],
+      "severity": "LOW_RATIO",
+      "rule": "sensor",
+      "states": [
+        "OFF",
+        "BRIGHT_BLUE"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "pmc-inop-1",
+      "asset": "INOP",
+      "scope": "OVERHEAD",
+      "panel": "UPPER",
+      "sourceRect": [
+        1044,
+        447,
+        64,
+        39
+      ],
+      "sourceCanvas": [
+        1731,
+        909
+      ],
+      "boardRect": [
+        1338.307,
+        504.092,
+        81.858,
+        43.719
+      ],
+      "boardCenter": [
+        1379.236,
+        525.952
+      ],
+      "sourceCenter": [
+        1076,
+        466.5
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 1.641,
+      "stretchFactor": 1.219,
+      "fitInsetsOnBoard": [
+        0,
+        1.395
+      ],
+      "severity": "MODERATE_RATIO",
+      "rule": "sensor",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "pmc-inop-2",
+      "asset": "INOP",
+      "scope": "OVERHEAD",
+      "panel": "UPPER",
+      "sourceRect": [
+        1216,
+        447,
+        64,
+        39
+      ],
+      "sourceCanvas": [
+        1731,
+        909
+      ],
+      "boardRect": [
+        1558.3,
+        504.092,
+        81.858,
+        43.719
+      ],
+      "boardCenter": [
+        1599.229,
+        525.952
+      ],
+      "sourceCenter": [
+        1248,
+        466.5
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 1.641,
+      "stretchFactor": 1.219,
+      "fitInsetsOnBoard": [
+        0,
+        1.395
+      ],
+      "severity": "MODERATE_RATIO",
+      "rule": "sensor",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "gear-left-down",
+      "asset": "LEFT_GEAR_2LINE_GREEN",
+      "scope": "OVERHEAD",
+      "panel": "UPPER",
+      "sourceRect": [
+        1005,
+        755,
+        58,
+        32
+      ],
+      "sourceCanvas": [
+        1731,
+        909
+      ],
+      "boardRect": [
+        1288.425,
+        849.364,
+        74.184,
+        35.872
+      ],
+      "boardCenter": [
+        1325.516,
+        867.3
+      ],
+      "sourceCenter": [
+        1034,
+        771
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 1.813,
+      "stretchFactor": 1.103,
+      "fitInsetsOnBoard": [
+        1.219,
+        0
+      ],
+      "severity": "MODERATE_RATIO",
+      "rule": "sensor",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "gear-right-down",
+      "asset": "RIGHT_GEAR_2LINE_GREEN",
+      "scope": "OVERHEAD",
+      "panel": "UPPER",
+      "sourceRect": [
+        1080,
+        755,
+        58,
+        32
+      ],
+      "sourceCanvas": [
+        1731,
+        909
+      ],
+      "boardRect": [
+        1384.352,
+        849.364,
+        74.184,
+        35.872
+      ],
+      "boardCenter": [
+        1421.444,
+        867.3
+      ],
+      "sourceCenter": [
+        1109,
+        771
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 1.813,
+      "stretchFactor": 1.103,
+      "fitInsetsOnBoard": [
+        1.219,
+        0
+      ],
+      "severity": "MODERATE_RATIO",
+      "rule": "sensor",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "gear-nose-down",
+      "asset": "NOSE_GEAR_2LINE_GREEN",
+      "scope": "OVERHEAD",
+      "panel": "UPPER",
+      "sourceRect": [
+        1045,
+        804,
+        58,
+        32
+      ],
+      "sourceCanvas": [
+        1731,
+        909
+      ],
+      "boardRect": [
+        1339.586,
+        904.294,
+        74.184,
+        35.872
+      ],
+      "boardCenter": [
+        1376.678,
+        922.23
+      ],
+      "sourceCenter": [
+        1074,
+        820
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 1.813,
+      "stretchFactor": 1.103,
+      "fitInsetsOnBoard": [
+        1.219,
+        0
+      ],
+      "severity": "MODERATE_RATIO",
+      "rule": "sensor",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SIM_APPROX_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "main-at-lim",
+      "asset": "A_T_LIM_WHITE",
+      "scope": "MAIN",
+      "panel": "engine",
+      "sourceRect": [
+        590,
+        257,
+        82,
+        35
+      ],
+      "sourceCanvas": [
+        1235,
+        1274
+      ],
+      "boardRect": [
+        981.235,
+        222.933,
+        30.609,
+        13.065
+      ],
+      "boardCenter": [
+        996.539,
+        229.465
+      ],
+      "sourceCenter": [
+        631,
+        274.5
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.343,
+      "stretchFactor": 1.171,
+      "fitInsetsOnBoard": [
+        2.24,
+        0
+      ],
+      "severity": "MODERATE_RATIO",
+      "rule": "signal",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "VISUAL_TEST_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "main-reverser-1",
+      "asset": "REVERSER_UNLOCKED",
+      "scope": "MAIN",
+      "panel": "engine",
+      "sourceRect": [
+        493,
+        257,
+        82,
+        35
+      ],
+      "sourceCanvas": [
+        1235,
+        1274
+      ],
+      "boardRect": [
+        945.027,
+        222.933,
+        30.609,
+        13.065
+      ],
+      "boardCenter": [
+        960.331,
+        229.465
+      ],
+      "sourceCenter": [
+        534,
+        274.5
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.343,
+      "stretchFactor": 1.171,
+      "fitInsetsOnBoard": [
+        2.24,
+        0
+      ],
+      "severity": "MODERATE_RATIO",
+      "rule": "signal",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SOURCE_CONDITION_SENSOR_INPUT",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "main-reverser-2",
+      "asset": "REVERSER_UNLOCKED",
+      "scope": "MAIN",
+      "panel": "engine",
+      "sourceRect": [
+        687,
+        257,
+        82,
+        35
+      ],
+      "sourceCanvas": [
+        1235,
+        1274
+      ],
+      "boardRect": [
+        1017.443,
+        222.933,
+        30.609,
+        13.065
+      ],
+      "boardCenter": [
+        1032.747,
+        229.465
+      ],
+      "sourceCenter": [
+        728,
+        274.5
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.343,
+      "stretchFactor": 1.171,
+      "fitInsetsOnBoard": [
+        2.24,
+        0
+      ],
+      "severity": "MODERATE_RATIO",
+      "rule": "signal",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SOURCE_CONDITION_SENSOR_INPUT",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "main-start-valve-1",
+      "asset": "START_VALVE_OPEN",
+      "scope": "MAIN",
+      "panel": "engine",
+      "sourceRect": [
+        900,
+        209,
+        82,
+        35
+      ],
+      "sourceCanvas": [
+        1235,
+        1274
+      ],
+      "boardRect": [
+        1096.951,
+        205.015,
+        30.609,
+        13.065
+      ],
+      "boardCenter": [
+        1112.256,
+        211.548
+      ],
+      "sourceCenter": [
+        941,
+        226.5
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.343,
+      "stretchFactor": 1.171,
+      "fitInsetsOnBoard": [
+        2.24,
+        0
+      ],
+      "severity": "MODERATE_RATIO",
+      "rule": "start-valve",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SOURCE_CONDITION_SENSOR_INPUT",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "main-start-valve-2",
+      "asset": "START_VALVE_OPEN",
+      "scope": "MAIN",
+      "panel": "engine",
+      "sourceRect": [
+        1088,
+        209,
+        82,
+        35
+      ],
+      "sourceCanvas": [
+        1235,
+        1274
+      ],
+      "boardRect": [
+        1167.128,
+        205.015,
+        30.609,
+        13.065
+      ],
+      "boardCenter": [
+        1182.432,
+        211.548
+      ],
+      "sourceCenter": [
+        1129,
+        226.5
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.343,
+      "stretchFactor": 1.171,
+      "fitInsetsOnBoard": [
+        2.24,
+        0
+      ],
+      "severity": "MODERATE_RATIO",
+      "rule": "start-valve",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SOURCE_CONDITION_SENSOR_INPUT",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "main-low-oil-1",
+      "asset": "LOW_OIL_PRESSURE",
+      "scope": "MAIN",
+      "panel": "engine",
+      "sourceRect": [
+        854,
+        258,
+        80,
+        34
+      ],
+      "sourceCanvas": [
+        1235,
+        1274
+      ],
+      "boardRect": [
+        1079.781,
+        223.306,
+        29.862,
+        12.691
+      ],
+      "boardCenter": [
+        1094.712,
+        229.652
+      ],
+      "sourceCenter": [
+        894,
+        275
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.353,
+      "stretchFactor": 1.176,
+      "fitInsetsOnBoard": [
+        2.24,
+        0
+      ],
+      "severity": "MODERATE_RATIO",
+      "rule": "signal",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SOURCE_CONDITION_SENSOR_INPUT",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "main-oil-filter-1",
+      "asset": "OIL_FILTER_BYPASS",
+      "scope": "MAIN",
+      "panel": "engine",
+      "sourceRect": [
+        949,
+        258,
+        79,
+        34
+      ],
+      "sourceCanvas": [
+        1235,
+        1274
+      ],
+      "boardRect": [
+        1115.242,
+        223.306,
+        29.489,
+        12.691
+      ],
+      "boardCenter": [
+        1129.987,
+        229.652
+      ],
+      "sourceCenter": [
+        988.5,
+        275
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.324,
+      "stretchFactor": 1.162,
+      "fitInsetsOnBoard": [
+        2.053,
+        0
+      ],
+      "severity": "MODERATE_RATIO",
+      "rule": "signal",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SOURCE_CONDITION_SENSOR_INPUT",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "main-low-oil-2",
+      "asset": "LOW_OIL_PRESSURE",
+      "scope": "MAIN",
+      "panel": "engine",
+      "sourceRect": [
+        1041,
+        258,
+        80,
+        34
+      ],
+      "sourceCanvas": [
+        1235,
+        1274
+      ],
+      "boardRect": [
+        1149.584,
+        223.306,
+        29.862,
+        12.691
+      ],
+      "boardCenter": [
+        1164.515,
+        229.652
+      ],
+      "sourceCenter": [
+        1081,
+        275
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.353,
+      "stretchFactor": 1.176,
+      "fitInsetsOnBoard": [
+        2.24,
+        0
+      ],
+      "severity": "MODERATE_RATIO",
+      "rule": "signal",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SOURCE_CONDITION_SENSOR_INPUT",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "main-oil-filter-2",
+      "asset": "OIL_FILTER_BYPASS",
+      "scope": "MAIN",
+      "panel": "engine",
+      "sourceRect": [
+        1136,
+        258,
+        79,
+        34
+      ],
+      "sourceCanvas": [
+        1235,
+        1274
+      ],
+      "boardRect": [
+        1185.045,
+        223.306,
+        29.489,
+        12.691
+      ],
+      "boardCenter": [
+        1199.79,
+        229.652
+      ],
+      "sourceCenter": [
+        1175.5,
+        275
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.324,
+      "stretchFactor": 1.162,
+      "fitInsetsOnBoard": [
+        2.053,
+        0
+      ],
+      "severity": "MODERATE_RATIO",
+      "rule": "signal",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SOURCE_CONDITION_SENSOR_INPUT",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "main-altitude-captain",
+      "asset": "ALTITUDE_ALERT",
+      "scope": "MAIN",
+      "panel": "captain",
+      "sourceRect": [
+        2784,
+        486,
+        161,
+        68
+      ],
+      "sourceCanvas": [
+        3942,
+        3591
+      ],
+      "boardRect": [
+        547.731,
+        255.507,
+        29.651,
+        12.524
+      ],
+      "boardCenter": [
+        562.556,
+        261.769
+      ],
+      "sourceCenter": [
+        2864.5,
+        520
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.368,
+      "stretchFactor": 1.184,
+      "fitInsetsOnBoard": [
+        2.302,
+        0
+      ],
+      "severity": "MODERATE_RATIO",
+      "rule": "altitude",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SOURCE_CONDITION_SENSOR_INPUT",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "main-altitude-fo",
+      "asset": "ALTITUDE_ALERT",
+      "scope": "MAIN",
+      "panel": "fo-outer",
+      "sourceRect": [
+        505,
+        178,
+        67,
+        27
+      ],
+      "sourceCanvas": [
+        1123,
+        1400
+      ],
+      "boardRect": [
+        1807.602,
+        300.289,
+        28.339,
+        11.42
+      ],
+      "boardCenter": [
+        1821.772,
+        306
+      ],
+      "sourceCenter": [
+        538.5,
+        191.5
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.481,
+      "stretchFactor": 1.241,
+      "fitInsetsOnBoard": [
+        2.749,
+        0
+      ],
+      "severity": "MODERATE_RATIO",
+      "rule": "altitude",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SOURCE_CONDITION_SENSOR_INPUT",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "main-pull-up-captain",
+      "asset": "PULL_UP_RED",
+      "scope": "MAIN",
+      "panel": "captain",
+      "sourceRect": [
+        1284,
+        389,
+        164,
+        68
+      ],
+      "sourceCanvas": [
+        3942,
+        3591
+      ],
+      "boardRect": [
+        271.475,
+        237.642,
+        30.204,
+        12.524
+      ],
+      "boardCenter": [
+        286.577,
+        243.904
+      ],
+      "sourceCenter": [
+        1366,
+        423
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.412,
+      "stretchFactor": 1.206,
+      "fitInsetsOnBoard": [
+        2.578,
+        0
+      ],
+      "severity": "MODERATE_RATIO",
+      "rule": "signal",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SOURCE_CONDITION_SENSOR_INPUT",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "main-below-gs-captain",
+      "asset": "BELOW_GS_P_INHIBIT",
+      "scope": "MAIN",
+      "panel": "captain",
+      "sourceRect": [
+        1284,
+        491,
+        164,
+        62
+      ],
+      "sourceCanvas": [
+        3942,
+        3591
+      ],
+      "boardRect": [
+        271.475,
+        256.428,
+        30.204,
+        11.419
+      ],
+      "boardCenter": [
+        286.577,
+        262.137
+      ],
+      "sourceCenter": [
+        1366,
+        522
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.645,
+      "stretchFactor": 1.323,
+      "fitInsetsOnBoard": [
+        3.683,
+        0
+      ],
+      "severity": "HIGH_RATIO",
+      "rule": "below-gs",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SOURCE_CONDITION_SENSOR_INPUT",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "main-pull-up-fo",
+      "asset": "PULL_UP_RED",
+      "scope": "MAIN",
+      "panel": "fo-inner",
+      "sourceRect": [
+        820,
+        314,
+        67,
+        27
+      ],
+      "sourceCanvas": [
+        918,
+        1713
+      ],
+      "boardRect": [
+        1554.288,
+        254.242,
+        27.15,
+        10.941
+      ],
+      "boardCenter": [
+        1567.863,
+        259.712
+      ],
+      "sourceCenter": [
+        853.5,
+        327.5
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.481,
+      "stretchFactor": 1.241,
+      "fitInsetsOnBoard": [
+        2.634,
+        0
+      ],
+      "severity": "MODERATE_RATIO",
+      "rule": "signal",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SOURCE_CONDITION_SENSOR_INPUT",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "main-below-gs-fo",
+      "asset": "BELOW_GS_P_INHIBIT",
+      "scope": "MAIN",
+      "panel": "fo-inner",
+      "sourceRect": [
+        820,
+        356,
+        67,
+        27
+      ],
+      "sourceCanvas": [
+        918,
+        1713
+      ],
+      "boardRect": [
+        1554.288,
+        271.261,
+        27.15,
+        10.941
+      ],
+      "boardCenter": [
+        1567.863,
+        276.732
+      ],
+      "sourceCenter": [
+        853.5,
+        369.5
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.481,
+      "stretchFactor": 1.241,
+      "fitInsetsOnBoard": [
+        2.634,
+        0
+      ],
+      "severity": "MODERATE_RATIO",
+      "rule": "below-gs",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SOURCE_CONDITION_SENSOR_INPUT",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "main-gear-nose-red",
+      "asset": "NOSE_GEAR_2LINE_RED",
+      "scope": "MAIN",
+      "panel": "fo-inner",
+      "sourceRect": [
+        250,
+        150,
+        70,
+        31
+      ],
+      "sourceCanvas": [
+        918,
+        1713
+      ],
+      "boardRect": [
+        1323.307,
+        187.784,
+        28.366,
+        12.562
+      ],
+      "boardCenter": [
+        1337.49,
+        194.065
+      ],
+      "sourceCenter": [
+        285,
+        165.5
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.258,
+      "stretchFactor": 1.129,
+      "fitInsetsOnBoard": [
+        1.621,
+        0
+      ],
+      "severity": "MODERATE_RATIO",
+      "rule": "gear-red",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SOURCE_CONDITION_SENSOR_INPUT",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "main-gear-nose-green",
+      "asset": "NOSE_GEAR_2LINE_GREEN",
+      "scope": "MAIN",
+      "panel": "fo-inner",
+      "sourceRect": [
+        250,
+        194,
+        70,
+        32
+      ],
+      "sourceCanvas": [
+        918,
+        1713
+      ],
+      "boardRect": [
+        1323.307,
+        205.614,
+        28.366,
+        12.967
+      ],
+      "boardCenter": [
+        1337.49,
+        212.098
+      ],
+      "sourceCenter": [
+        285,
+        210
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.188,
+      "stretchFactor": 1.094,
+      "fitInsetsOnBoard": [
+        1.216,
+        0
+      ],
+      "severity": "LOW_RATIO",
+      "rule": "gear-green",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SOURCE_CONDITION_SENSOR_INPUT",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "main-gear-left-red",
+      "asset": "LEFT_GEAR_2LINE_RED",
+      "scope": "MAIN",
+      "panel": "fo-inner",
+      "sourceRect": [
+        210,
+        238,
+        69,
+        34
+      ],
+      "sourceCanvas": [
+        918,
+        1713
+      ],
+      "boardRect": [
+        1307.098,
+        223.444,
+        27.961,
+        13.778
+      ],
+      "boardCenter": [
+        1321.078,
+        230.333
+      ],
+      "sourceCenter": [
+        244.5,
+        255
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.029,
+      "stretchFactor": 1.015,
+      "fitInsetsOnBoard": [
+        0.203,
+        0
+      ],
+      "severity": "LOW_RATIO",
+      "rule": "gear-red",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SOURCE_CONDITION_SENSOR_INPUT",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "main-gear-left-green",
+      "asset": "LEFT_GEAR_2LINE_GREEN",
+      "scope": "MAIN",
+      "panel": "fo-inner",
+      "sourceRect": [
+        210,
+        282,
+        69,
+        34
+      ],
+      "sourceCanvas": [
+        918,
+        1713
+      ],
+      "boardRect": [
+        1307.098,
+        241.275,
+        27.961,
+        13.778
+      ],
+      "boardCenter": [
+        1321.078,
+        248.163
+      ],
+      "sourceCenter": [
+        244.5,
+        299
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.029,
+      "stretchFactor": 1.015,
+      "fitInsetsOnBoard": [
+        0.203,
+        0
+      ],
+      "severity": "LOW_RATIO",
+      "rule": "gear-green",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SOURCE_CONDITION_SENSOR_INPUT",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "main-gear-right-red",
+      "asset": "RIGHT_GEAR_2LINE_RED",
+      "scope": "MAIN",
+      "panel": "fo-inner",
+      "sourceRect": [
+        295,
+        238,
+        68,
+        34
+      ],
+      "sourceCanvas": [
+        918,
+        1713
+      ],
+      "boardRect": [
+        1341.542,
+        223.444,
+        27.556,
+        13.778
+      ],
+      "boardCenter": [
+        1355.32,
+        230.333
+      ],
+      "sourceCenter": [
+        329,
+        255
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2,
+      "stretchFactor": 1,
+      "fitInsetsOnBoard": [
+        0,
+        0
+      ],
+      "severity": "LOW_RATIO",
+      "rule": "gear-red",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SOURCE_CONDITION_SENSOR_INPUT",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "main-gear-right-green",
+      "asset": "RIGHT_GEAR_2LINE_GREEN",
+      "scope": "MAIN",
+      "panel": "fo-inner",
+      "sourceRect": [
+        295,
+        282,
+        68,
+        34
+      ],
+      "sourceCanvas": [
+        918,
+        1713
+      ],
+      "boardRect": [
+        1341.542,
+        241.275,
+        27.556,
+        13.778
+      ],
+      "boardCenter": [
+        1355.32,
+        248.163
+      ],
+      "sourceCenter": [
+        329,
+        299
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2,
+      "stretchFactor": 1,
+      "fitInsetsOnBoard": [
+        0,
+        0
+      ],
+      "severity": "LOW_RATIO",
+      "rule": "gear-green",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SOURCE_CONDITION_SENSOR_INPUT",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "main-le-transit",
+      "asset": "LE_FLAPS_TRANSIT",
+      "scope": "MAIN",
+      "panel": "fo-inner",
+      "sourceRect": [
+        25,
+        404,
+        71,
+        29
+      ],
+      "sourceCanvas": [
+        918,
+        1713
+      ],
+      "boardRect": [
+        1232.131,
+        290.712,
+        28.771,
+        11.752
+      ],
+      "boardCenter": [
+        1246.516,
+        296.588
+      ],
+      "sourceCenter": [
+        60.5,
+        418.5
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.448,
+      "stretchFactor": 1.224,
+      "fitInsetsOnBoard": [
+        2.634,
+        0
+      ],
+      "severity": "MODERATE_RATIO",
+      "rule": "le-transit",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SOURCE_CONDITION_SENSOR_INPUT",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "main-le-extended",
+      "asset": "LE_FLAPS_EXT_GREEN",
+      "scope": "MAIN",
+      "panel": "fo-inner",
+      "sourceRect": [
+        107,
+        404,
+        67,
+        29
+      ],
+      "sourceCanvas": [
+        918,
+        1713
+      ],
+      "boardRect": [
+        1265.359,
+        290.712,
+        27.15,
+        11.752
+      ],
+      "boardCenter": [
+        1278.935,
+        296.588
+      ],
+      "sourceCenter": [
+        140.5,
+        418.5
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.31,
+      "stretchFactor": 1.155,
+      "fitInsetsOnBoard": [
+        1.824,
+        0
+      ],
+      "severity": "MODERATE_RATIO",
+      "rule": "le-extended",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SOURCE_CONDITION_SENSOR_INPUT",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "main-antiskid",
+      "asset": "ANTI_SKID_INOP",
+      "scope": "MAIN",
+      "panel": "fo-inner",
+      "sourceRect": [
+        59,
+        507,
+        82,
+        32
+      ],
+      "sourceCanvas": [
+        918,
+        1713
+      ],
+      "boardRect": [
+        1245.908,
+        332.451,
+        33.229,
+        12.967
+      ],
+      "boardCenter": [
+        1262.523,
+        338.935
+      ],
+      "sourceCenter": [
+        100,
+        523
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.563,
+      "stretchFactor": 1.281,
+      "fitInsetsOnBoard": [
+        3.647,
+        0
+      ],
+      "severity": "HIGH_RATIO",
+      "rule": "antiskid",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SOURCE_CONDITION_SENSOR_INPUT",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "main-autobrake",
+      "asset": "AUTO_BRAKE_DISARM",
+      "scope": "MAIN",
+      "panel": "fo-inner",
+      "sourceRect": [
+        63,
+        767,
+        80,
+        40
+      ],
+      "sourceCanvas": [
+        918,
+        1713
+      ],
+      "boardRect": [
+        1247.529,
+        437.81,
+        32.418,
+        16.209
+      ],
+      "boardCenter": [
+        1263.739,
+        445.915
+      ],
+      "sourceCenter": [
+        103,
+        787
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2,
+      "stretchFactor": 1,
+      "fitInsetsOnBoard": [
+        0,
+        0
+      ],
+      "severity": "LOW_RATIO",
+      "rule": "autobrake",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SOURCE_CONDITION_SENSOR_INPUT",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "main-brake-temp",
+      "asset": "BRAKE_TEMP",
+      "scope": "MAIN",
+      "panel": "fo-inner",
+      "sourceRect": [
+        600,
+        1236,
+        65,
+        31
+      ],
+      "sourceCanvas": [
+        918,
+        1713
+      ],
+      "boardRect": [
+        1465.137,
+        627.863,
+        26.34,
+        12.562
+      ],
+      "boardCenter": [
+        1478.307,
+        634.144
+      ],
+      "sourceCenter": [
+        632.5,
+        1251.5
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.097,
+      "stretchFactor": 1.048,
+      "fitInsetsOnBoard": [
+        0.608,
+        0
+      ],
+      "severity": "LOW_RATIO",
+      "rule": "signal",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "VISUAL_TEST_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "main-stab-trim",
+      "asset": "STAB_OUT_OF_TRIM",
+      "scope": "MAIN",
+      "panel": "engine",
+      "sourceRect": [
+        255,
+        740,
+        88,
+        59
+      ],
+      "sourceCanvas": [
+        1235,
+        1274
+      ],
+      "boardRect": [
+        856.186,
+        403.227,
+        32.849,
+        22.023
+      ],
+      "boardCenter": [
+        872.611,
+        414.238
+      ],
+      "sourceCenter": [
+        299,
+        769.5
+      ],
+      "assetDimensions": [
+        300,
+        300
+      ],
+      "nativeRatio": 1,
+      "apertureRatio": 1.492,
+      "stretchFactor": 1.492,
+      "fitInsetsOnBoard": [
+        5.413,
+        0
+      ],
+      "severity": "HIGH_RATIO",
+      "rule": "stab-trim",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SOURCE_CONDITION_SENSOR_INPUT",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "main-speed-brake-do-not-arm",
+      "asset": "SPEED_BRAKE_DO_NOT_ARMED_AMBER",
+      "scope": "MAIN",
+      "panel": "engine",
+      "sourceRect": [
+        22,
+        740,
+        94,
+        39
+      ],
+      "sourceCanvas": [
+        1235,
+        1274
+      ],
+      "boardRect": [
+        769.212,
+        403.227,
+        35.088,
+        14.558
+      ],
+      "boardCenter": [
+        786.756,
+        410.506
+      ],
+      "sourceCenter": [
+        69,
+        759.5
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.41,
+      "stretchFactor": 1.205,
+      "fitInsetsOnBoard": [
+        2.986,
+        0
+      ],
+      "severity": "MODERATE_RATIO",
+      "rule": "signal",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "VISUAL_TEST_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "main-speed-brake-armed",
+      "asset": "SPEED_BRAKE_ARMED_GREEN",
+      "scope": "MAIN",
+      "panel": "engine",
+      "sourceRect": [
+        22,
+        789,
+        94,
+        39
+      ],
+      "sourceCanvas": [
+        1235,
+        1274
+      ],
+      "boardRect": [
+        769.212,
+        421.517,
+        35.088,
+        14.558
+      ],
+      "boardCenter": [
+        786.756,
+        428.796
+      ],
+      "sourceCenter": [
+        69,
+        808.5
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.41,
+      "stretchFactor": 1.205,
+      "fitInsetsOnBoard": [
+        2.986,
+        0
+      ],
+      "severity": "MODERATE_RATIO",
+      "rule": "signal",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "VISUAL_TEST_ONLY",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    },
+    {
+      "id": "main-gpws-inop",
+      "asset": "INOP",
+      "scope": "MAIN",
+      "panel": "fo-inner",
+      "sourceRect": [
+        485,
+        1405,
+        70,
+        32
+      ],
+      "sourceCanvas": [
+        918,
+        1713
+      ],
+      "boardRect": [
+        1418.536,
+        696.346,
+        28.366,
+        12.967
+      ],
+      "boardCenter": [
+        1432.719,
+        702.83
+      ],
+      "sourceCenter": [
+        520,
+        1421
+      ],
+      "assetDimensions": [
+        600,
+        300
+      ],
+      "nativeRatio": 2,
+      "apertureRatio": 2.188,
+      "stretchFactor": 1.094,
+      "fitInsetsOnBoard": [
+        1.216,
+        0
+      ],
+      "severity": "LOW_RATIO",
+      "rule": "gpws-inop",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "sourceProvenance": "SOURCE_CONDITION_SENSOR_INPUT",
+      "geometryStatus": "MAPPED_FROM_EXISTING_SOCKET_NOT_PIXEL_APPROVED",
+      "visualReview": "PENDING_OWNER_PHOTO_MATCH"
+    }
+  ],
+  "assetOnly": [
+    {
+      "asset": "WHEEL_WELL_RED",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "status": "ASSET_ONLY_NO_VERIFIED_MOUNT"
+    },
+    {
+      "asset": "L_BOTTLE_DISCHARGED_AMBER",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "status": "ASSET_ONLY_NO_VERIFIED_MOUNT"
+    },
+    {
+      "asset": "R_BOTTLE_DISCHARGED_AMBER",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "status": "ASSET_ONLY_NO_VERIFIED_MOUNT"
+    },
+    {
+      "asset": "ENG_2_OVERHEAT_AMBER",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "status": "ASSET_ONLY_NO_VERIFIED_MOUNT"
+    },
+    {
+      "asset": "ENG_1_OVERHEAT_AMBER",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "status": "ASSET_ONLY_NO_VERIFIED_MOUNT"
+    },
+    {
+      "asset": "APU_DET_INOP",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "status": "ASSET_ONLY_NO_VERIFIED_MOUNT"
+    },
+    {
+      "asset": "ALTEN_GREEN",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "status": "ASSET_ONLY_NO_VERIFIED_MOUNT"
+    },
+    {
+      "asset": "ZONE_TEMP_YELLOW",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "status": "ASSET_ONLY_NO_VERIFIED_MOUNT"
+    }
+  ],
+  "sourceRectOverlaps": []
+}
