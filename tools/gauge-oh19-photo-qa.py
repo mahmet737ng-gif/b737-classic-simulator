@@ -78,3 +78,11 @@ for c in cands:
 buf=io.BytesIO()
 color.save(buf,format='JPEG',quality=88,optimize=True)
 print('OH19_IMAGE_B64_DETECTED='+base64.b64encode(buf.getvalue()).decode('ascii'))
+
+for key,box in [('ZERO_TO_THREE',(445,188,655,370)),
+                ('THREE_TO_TEN',(560,240,695,520)),
+                ('CABINNER_LEFT',(285,215,480,565))]:
+    focus=im.crop(box)
+    focus=focus.resize((focus.width*3,focus.height*3),Image.Resampling.NEAREST)
+    b=io.BytesIO();focus.save(b,format='JPEG',quality=88,optimize=True)
+    print(f'OH19_IMAGE_B64_{key}='+base64.b64encode(b.getvalue()).decode('ascii'))
