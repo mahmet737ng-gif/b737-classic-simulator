@@ -23,6 +23,8 @@
    this.start=start;this.time=0;this.jobs=[];this.phase={apu:'OFF',engine1:'OFF',engine2:'OFF'};
    this.effects=[];this.lastError='';this.controls={};this.guards={};this.started={engine1:false,engine2:false};
    this.dynamic={engine1:null,engine2:null};
+   this.operating={engine1:null,engine2:null};this.throttle={engine1:0,engine2:0};
+   this.flight={onGround:true};
    this.trainingFaults=Object.fromEntries(['engine1','engine2'].map(device=>
     [device,Object.fromEntries(FAULT_KEYS.map(key=>[key,false]))]));
    for(const device of ['engine1','engine2','apu'])this.obs(device,false);
@@ -45,6 +47,18 @@
    this.updateDynamics(end);this.time=end;return this.get();
   }
   updateDynamics(at){for(const device of ['engine1','engine2']){
+   const operating=this.operating[device];
+   if(this.phase[device]==='RUNNING'&&operating&&at>=operating.at){
+    const values=Dynamics.stepRunning(operating.values,{
+     deltaMs:at-operating.at,throttle:this.throttle[device],onGround:this.flight.onGround});
+    this.operating[device]={at,values};
+    // Training feedback never replaces externally-owned sensor/instructor observations.
+    const feedback=this.start.get().observation[device].feedback;
+    for(const [key,value] of [['n2Percent',values.n2Percent],['egtC',values.egtC],
+     ['fuelFlowKgHr',values.fuelFlowKgHr]]){
+     if(feedback[key]?.origin===null||feedback[key]?.origin===ORIGIN)this.feedback(device,key,value);
+    }
+   }
    const active=this.dynamic[device];if(!active||this.phase[device]!==active.phase)continue;
    const value=Dynamics.sample(active.phase,Math.max(0,at-active.since),this.trainingFaults[device]);
    this.feedback(device,'n2Percent',value.n2Percent);
@@ -89,6 +103,7 @@
    if(typeof onGround==='boolean'&&this.guards.onGround!==onGround)
     this.command({type:'ELECTRICAL',action:{type:'CONTROL',key:'onGround',value:onGround}});
    this.guards.onGround=onGround;
+   if(typeof onGround==='boolean')this.flight.onGround=onGround;
    for(const [id,key] of [['bleed-apu','apuBleed'],['bleed-eng-1','engineBleed1'],['bleed-eng-2','engineBleed2'],
     ['pack-l','packL'],['pack-r','packR'],['isolation-valve','isolation']]){
     if(typeof packet.toggles[id]==='string'&&packet.toggles[id]!==this.controls[id])
@@ -160,7 +175,7 @@
     return;
    }
    this.lastError='';this.cancel(device);this.started[device]=false;
-   this.dynamic[device]=null;
+   this.dynamic[device]=null;this.operating[device]=null;
    this.feedback(device,'n2Percent',0);
    this.feedback(device,'egtC',null);this.feedback(device,'fuelFlowKgHr',0);
    this.command({type:'ENGINE_START_SWITCH',device,position:'GRD'});
@@ -188,8 +203,16 @@
     this.feedback(device,'n1RotationObserved',true);this.feedback(device,'maxMotoringObserved',false);
     this.feedback(device,'n2Percent',25);this.phase[device]='AWAIT_FUEL_LEVER_IDLE';});
   }
+  setThrottle(device,value){
+   if(!['engine1','engine2'].includes(device)||!Number.isFinite(value)||value<0||value>1)
+    throw Error('Engine and normalized throttle in [0,1] required');
+   this.throttle[device]=value;return this.get();
+  }
+  setOnGround(onGround){if(typeof onGround!=='boolean')throw Error('Boolean onGround required');
+   this.flight.onGround=onGround;return this.get();
+  }
   lever(device,position){if(!['engine1','engine2'].includes(device)||!['IDLE','CUTOFF'].includes(position))throw Error('Invalid start lever');
-   if(position==='CUTOFF'){this.feedback(device,'fuelStartLever','CUTOFF');if(this.phase[device]!=='RUNNING')this.abortEngine(device);else{
+   if(position==='CUTOFF'){this.operating[device]=null;this.feedback(device,'fuelStartLever','CUTOFF');if(this.phase[device]!=='RUNNING')this.abortEngine(device);else{
     this.cancel(device);this.dynamic[device]=null;
     this.feedback(device,'fuelFlowKgHr',0);this.feedback(device,'n2Percent',null);
     this.feedback(device,'egtC',null);this.command({type:'SOURCE_REQUEST',device,request:'SHUTDOWN'});
@@ -214,10 +237,12 @@
     this.feedback(device,'n2Percent',46);this.feedback(device,'startValveOpen',false);
     this.feedback(device,'startAirAvailable',false);this.feedback(device,'starterEngaged',false);
     this.feedback(device,'fuelFlowKgHr',350);this.obs(device,true);this.phase[device]='RUNNING';
-    this.started[device]=true;this.effects.push({type:'ROTARY_RELEASE',id:device==='engine1'?'engine-start-1':'engine-start-2',position:'OFF'});
+    this.started[device]=true;
+    this.operating[device]={at:this.time,values:Dynamics.initialRunning()};
+    this.effects.push({type:'ROTARY_RELEASE',id:device==='engine1'?'engine-start-1':'engine-start-2',position:'OFF'});
     if(this.trainingFaults[device].flameOut)this.schedule(device,FAULT_TIMING.flameOutAfterRunningMs,()=>{
      if(this.phase[device]!=='RUNNING')return;
-     this.obs(device,false);this.feedback(device,'fuelFlowKgHr',null);
+     this.operating[device]=null;this.obs(device,false);this.feedback(device,'fuelFlowKgHr',null);
      this.feedback(device,'n2Percent',null);this.feedback(device,'egtC',null);
      this.command({type:'SOURCE_REQUEST',device,request:'SHUTDOWN'});
      this.started[device]=false;this.phase[device]='FLAMEOUT';
@@ -225,7 +250,7 @@
     });
    });return this.get();
   }
-  abortEngine(device){this.cancel(device);this.dynamic[device]=null;
+  abortEngine(device){this.cancel(device);this.dynamic[device]=null;this.operating[device]=null;
    const fuelIdle=this.start.get().observation[device].feedback.fuelStartLever.value==='IDLE';
    // Stopping the starter does not move the fuel lever. With IDLE selected,
    // fuel flow after an abort is unknown, not a fabricated zero.
@@ -260,6 +285,13 @@
    projected['apu-gen-off-bus']=apu.running===true&&!apuConnected;
    projected['apu-low-pressure']=['INLET_DOOR','STARTING'].includes(this.phase.apu);
    return {clockMs:this.time,phase:copy(this.phase),lastError:this.lastError,trainingFaults:copy(this.trainingFaults),
+    runningEnvelope:{
+     origin:ORIGIN,quality:'SIMULATION_APPROX_ONLY',
+     onGround:this.flight.onGround,throttle:copy(this.throttle),
+     engines:copy(Object.fromEntries(['engine1','engine2'].map(d=>[d,this.phase[d]==='RUNNING'?
+      this.operating[d]?.values??null:null]))),
+     limits:copy(Dynamics.ENVELOPE)
+    },
     faultStatus:copy(faultStatus),
     sources:copy(engine.network.source),electrical:copy(pack.electrical.bus),
     selectedSources:copy(pack.electrical.source),bleed:copy(this.start.core.Pneumatics.derive(this.start.core.pneumaticState).bleed),
