@@ -20,7 +20,7 @@ function startLive(){
 function create(){pauseLive();sim=new window.B737ISN1318ECUTestbenchV1.Testbench(deps);$('n1result').textContent='No thrust schedule applied';render();}
 function metrics(e){return [['N1',e.n1Percent,'%'],['N2',e.n2Percent,'%'],['EGT',e.egtC,'°C'],['FUEL FLOW',e.fuelFlowKgHr,'kg/h'],['OIL PRESS',e.oil.pressurePsi,'PSI'],['OIL TEMP',e.oil.temperatureC,'°C'],['OIL QTY',e.oil.quantityPct,'%']].map(([name,value,unit])=>`<div class="metric"><span>${name}</span><b>${value==null?'—':html(Number(value).toFixed(1))} <small>${unit}</small></b></div>`).join('');}
 function engineCard(e,num){
- const progress=e.startElapsedSec===null?'':`<p class="subtle">START AGE ${html(e.startElapsedSec)} s · nominal stable at ~100 s after GRD + timely IDLE</p><progress max="100" value="${Math.min(100,e.startElapsedSec)}"></progress>`;
+ const progress=e.startElapsedSec==null?'':`<p class="subtle">START AGE ${html(e.startElapsedSec)} s · nominal stable at ~100 s after GRD + timely IDLE</p><progress max="100" value="${Math.min(100,e.startElapsedSec)}"></progress>`;
  return `<section><h2>ENGINE ${num} · <span class="${e.phase==='RUNNING'?'ok':'amber'}">${html(e.phase)}</span></h2><div class="metrics">${metrics(e)}</div>
  <div class="status ${e.phase==='AWAIT_FUEL_LEVER_IDLE'&&e.fuelSupplyReady?'fuel-ready':''}"><strong>START CUE:</strong> ${html(e.startCue||e.phase)}</div>
  ${progress}<p>START VALVE <strong>${e.startValveOpen===null?'UNKNOWN':e.startValveOpen?'OPEN':'CLOSED'}</strong> · FUEL LEVER <strong>${html(e.fuelLever)}</strong> · FUEL FEED <strong>${e.fuelSupplyReady===true?'READY':e.fuelSupplyReady===null?'UNKNOWN':'NOT READY'}</strong> (${html(e.fuelSupplyReason||'—')})</p>
@@ -30,7 +30,7 @@ function render(){if(!sim)return;const s=sim.get();$('clock').textContent=`${(s.
  $('apu').textContent=`BATTERY ${s.electrical.battery?'ON':'OFF'} · APU ${s.apu.phase} · ${s.apu.rpmPct}% RPM · ${s.apu.egtC}°C · APU START ${s.apu.startElapsedSec??'—'} / ${s.apu.readyTargetSec} s · APU BLEED ${s.apu.bleedValveOpen?'OPEN':'CLOSED'} · BUS 1 ${s.electrical.selectedSources[1]||'OFF'}`;
  $('engines').innerHTML=engineCard(s.engines.engine1,1)+engineCard(s.engines.engine2,2);
  for(const n of [1,2]){const e=s.engines['engine'+n],btn=document.querySelector('[data-act="idle'+n+'"]');
-  if(btn){btn.classList.toggle('fuel-ready',e.phase==='AWAIT_FUEL_LEVER_IDLE'&&e.fuelSupplyReady===true);
+  if(btn){btn.classList?.toggle?.('fuel-ready',e.phase==='AWAIT_FUEL_LEVER_IDLE'&&e.fuelSupplyReady===true);
    btn.textContent=e.phase==='AWAIT_FUEL_LEVER_IDLE'&&e.fuelSupplyReady===true?'ENG '+n+' LEVER IDLE — READY':'ENG '+n+' LEVER IDLE';}
  }
  $('alertSummary').textContent=s.alerts.length?s.alerts.map(a=>a.id).join(' | '):'No active advisories';
