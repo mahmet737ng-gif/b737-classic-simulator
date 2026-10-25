@@ -93,3 +93,22 @@ test('all 53 source-image faces are registered; none misrepresented as verified'
  }
  assert.equal(data.faces.filter(x=>x.pivot).length,19);
 });
+
+test('GEN DRIVE OIL TEMP 1/2 use independent user-confirmed RISE 0–30 and IN 60/80/120/160 labels',()=>{
+ for(const id of ['oh.drive_oil.1','oh.drive_oil.2']){
+   const face=data.faces.find(x=>x.id===id);
+   assert.ok(face);
+   assert.equal(face.scales.length,2);
+   const rise=face.scales.find(x=>x.mode==='rise');
+   const inlet=face.scales.find(x=>x.mode==='inlet');
+   assert.deepEqual([rise.minimum,rise.maximum],[0,30]);
+   assert.deepEqual(rise.printedNumericValues,[0,10,20,30]);
+   assert.deepEqual([inlet.minimum,inlet.maximum],[60,160]);
+   assert.deepEqual(inlet.printedNumericValues,[60,80,120,160]);
+   assert.equal(face.stage2.userConfirmedRanges,true);
+   assert.equal(face.stage3.geometryVerified,false);
+   assert.equal(face.stage4.realReadingsEnabled,false);
+   assert.equal(rise.marks.length,0);
+   assert.equal(inlet.marks.length,0);
+ }
+});
