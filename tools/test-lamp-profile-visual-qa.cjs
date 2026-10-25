@@ -13,7 +13,20 @@ const {chromium}=require('playwright');
  const scenarios=[];
  try{
   await page.goto('http://127.0.0.1:8788/panel-mosaic-lab/cockpit/overhead-stage.html',{waitUntil:'domcontentloaded',timeout:60000});
-  await page.waitForFunction(()=>!!(window.B737OH22Pressurization&&window.B737Aircon400&&document.querySelectorAll('.atlas-piece').length>=20),null,{timeout:90000});
+  try{
+   await page.waitForFunction(()=>!!(window.B737OH22Pressurization&&window.B737Aircon400&&document.querySelectorAll('.atlas-piece').length>=20),null,{timeout:20000});
+  }catch(e){
+   const diag=await page.evaluate(()=>({
+     href:location.href,
+     pressure:!!window.B737OH22Pressurization,aircon:!!window.B737Aircon400,
+     atlas:document.querySelectorAll('.atlas-piece').length,
+     status:document.getElementById('status')?.textContent,
+     alerts:[...document.querySelectorAll('[role=alert]')].map(n=>n.textContent).slice(0,10),
+     scripts:[...document.scripts].map(n=>n.src).filter(v=>/stage|pressurization|aircon-400|overhead-bridge/.test(v))
+   }));
+   console.error('LAMP_PROFILE_BOOT_DIAGNOSTIC',JSON.stringify({diag,errors}));
+   throw e;
+  }
   const frame=page;
   for(const system of ['DCPCS','CPCS']){
    for(const family of ['B737-300-500','B737-400']){
