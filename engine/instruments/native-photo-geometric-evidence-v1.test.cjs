@@ -3,7 +3,7 @@ const test=require('node:test');
 const evidence=require('./native-photo-geometric-evidence-v1.json');
 const baseline=require('./needle-zero-reference-stage1-v1.json');
 const names=new Set(baseline.faces.map(f=>f.id));
-const error=(a,b)=>Math.abs((a-b+180)%360-180);
+const error=(a,b)=>Math.abs((((a-b+180)%360)+360)%360-180);
 test('54 native-image gauge records, no invented certification',()=>{
  assert.equal(evidence.faces.length,54);
  assert.equal(new Set(evidence.faces.map(f=>f.id)).size,54);
