@@ -92,6 +92,7 @@ main{max-width:1600px;margin:0 auto;padding:20px clamp(12px,3vw,40px) 85px}
   <p class="footer">Sources: user-supplied screenshots dated Oct 25, 2026, and Classic MRG p133–136 index. All NG-only entries excluded. Rounded blanks represent visible blank/unused positions. Ratings, labels and slots require visual acceptance and effectivity checking. P6-4 CPCS and digital retrofit views are mutually exclusive. This is not a real-aircraft operating reference.</p>
 </main>
 <script src="catalog.js"></script>
+<script src="../engine/cb/cb-kernel.js"></script>
 <script>
 (()=>{
 "use strict";
@@ -107,7 +108,7 @@ function selectItem(p,item){let pulled=state.pulled.has(k(p,item.pos));details.i
 function escapeText(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
 function knob(p,item){let button=document.createElement("button");let isPulled=state.pulled.has(k(p,item.pos));button.className="knob"+(isPulled?" pulled":"");button.setAttribute("aria-label",p.id+" "+item.pos+" "+item.name+" "+item.amp+" amp; "+(isPulled?"pulled":"pushed"));button.title=p.id+" / "+item.pos+" — "+item.name+" — "+item.amp+"A";
 let inner=document.createElement("span");inner.className="dial";inner.textContent=Number.isInteger(item.amp)?item.amp:String(item.amp).replace(".5","½");button.appendChild(inner);
-button.addEventListener("click",()=>{let id=k(p,item.pos);if(state.pulled.has(id))state.pulled.delete(id);else state.pulled.add(id);render();selectItem(p,item)});return button}
+button.addEventListener("click",()=>{let id=k(p,item.pos),next=!state.pulled.has(id);const command=new CustomEvent("b737-cb-command",{cancelable:true,detail:{key:id,panel:p.id,position:item.pos,variant:state.variant,action:next?"PULL":"PUSH",label:item.name,rating:item.amp}});if(!window.dispatchEvent(command))return;if(next)state.pulled.add(id);else state.pulled.delete(id);render();selectItem(p,item)});return button}
 function renderSpecial(p){const outer=document.createElement("div");outer.className="special";
 p.sockets.forEach((name,i)=>{let s=document.createElement("div");s.className="socket";s.textContent=i===0?"SERVICE SOCKET 1":"28V DC D154";s.title=name;outer.appendChild(s)});
 breakers(p).forEach(item=>{let section=document.createElement("div");section.className="special-breaker";section.appendChild(knob(p,item));let label=document.createElement("div");label.className="special-row";label.textContent=item.name;section.appendChild(label);outer.appendChild(section)});return outer}
@@ -132,11 +133,14 @@ $("summary").innerHTML="<span class='pill'>11 photo-mapped subpanels</span><span
 for(let p of data.panels){let opt=document.createElement("option");opt.value=p.id;opt.textContent=p.id+" · "+p.title;selector.appendChild(opt);}
 selector.addEventListener("change",e=>choose(e.target.value));
 $("filter").addEventListener("input",e=>{state.query=e.target.value.trim().toLowerCase();render()});
-$("configuration").addEventListener("change",e=>{state.variant=e.target.value;render()});
-$("reset").addEventListener("click",()=>{state.pulled.clear();details.textContent="All lab pulls reset. No simulator electrical state was modified.";render()});
+$("configuration").addEventListener("change",e=>{state.variant=e.target.value;window.dispatchEvent(new CustomEvent("b737-cb-variant",{detail:{variant:state.variant}}));render()});
+$("reset").addEventListener("click",()=>{state.pulled.clear();window.dispatchEvent(new CustomEvent("b737-cb-reset"));details.textContent="All CB mechanical states reset; simulation circuit effects remain evidence-gated.";render()});
 document.querySelectorAll("[data-panel]").forEach(el=>el.addEventListener("click",()=>choose(el.dataset.panel)));
-let invalid=[];data.panels.forEach(p=>{let seen=new Set();entries(p.breakers).forEach(i=>{if(seen.has(i.pos)||!Number.isFinite(i.amp)||i.amp<=0||((p.cols>0)&&(!p.rows.includes(i.pos[0])||Number(i.pos.slice(1))>p.cols))) invalid.push(p.id+":"+i.pos);seen.add(i.pos)})});if(invalid.length){console.warn("CB catalog audit:",invalid);details.textContent="Catalog validation requires review: "+invalid.join(", ")}render();
+let invalid=[];data.panels.forEach(p=>{let seen=new Set();entries(p.breakers).forEach(i=>{if(seen.has(i.pos)||!Number.isFinite(i.amp)||i.amp<=0||((p.cols>0)&&(!p.rows.includes(i.pos[0])||Number(i.pos.slice(1))>p.cols))) invalid.push(p.id+":"+i.pos);seen.add(i.pos)})});if(invalid.length){console.warn("CB catalog audit:",invalid);details.textContent="Catalog validation requires review: "+invalid.join(", ")}
+window.B737_CB_LAB={hydrate:function(s){if(!s||!Array.isArray(s.breakers))return;state.variant=s.variant==="DCPCS"?"DCPCS":"CPCS";$("configuration").value=state.variant;state.pulled.clear();for(const b of s.breakers){if(b.pulled)state.pulled.add(b.id);}render();},setPulled:function(id,pulled){if(pulled)state.pulled.add(id);else state.pulled.delete(id);render();},getVariant:function(){return state.variant;}};
+render();
 })();
 </script>
+<script src="electrical-bridge.js"></script>
 </body>
 </html>
