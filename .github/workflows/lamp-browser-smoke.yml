@@ -6,6 +6,8 @@ on:
       - tools/test-lamp-browser-smoke.cjs
       - .github/workflows/lamp-browser-smoke.yml
       - panel-mosaic-lab/interactive-overhead/lights.js
+      - panel-mosaic-lab/interactive-overhead/stage.js
+      - panel-mosaic-lab/all-overhead/stage.js
       - panel-mosaic-lab/cockpit/lights.js
       - panel-mosaic-lab/interactive-overhead/instance-faces.json
       - panel-mosaic-lab/cockpit/instance-faces.json
