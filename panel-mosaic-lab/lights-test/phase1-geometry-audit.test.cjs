@@ -36,7 +36,7 @@ assert.equal(audit.summary.installed,142);
 assert.equal(audit.summary.visualVerified,0);
 assert.equal(audit.sourceRectOverlaps.length,0);
 assert.equal(audit.sourceVersions.overhead,'LGT-0006');
-assert.ok(['LGT-0007','LGT-0008','LGT-0009','LGT-0010'].includes(overhead.version),'version must be an approved registration or vector-fit revision');
+assert.ok(['LGT-0007','LGT-0008','LGT-0009','LGT-0010','LGT-0011'].includes(overhead.version),'version must be an approved registration or vector-fit revision');
 assert.equal(audit.sourceVersions.main,'LGT-0010');
 assert.ok(['LGT-0010','LGT-0011','LGT-0012'].includes(main.version),'main original or fitted-face revision');
 assert.equal(audit.sourceVersions.gallery,gallery.version);
