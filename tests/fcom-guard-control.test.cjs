@@ -97,12 +97,12 @@ test('photo-matched three-position frames and actual JS source compile',()=>{
       const offset=frameIndex*25;
       assert.ok(css.includes('.toggle.selector .nav-'+detent+'{background-position:'+offset+'% 50%}'),id+' atlas frame '+frameIndex);
     }
-    const atlasPath=path.resolve(dir,'../shared-assets/toggle-switch-standard-v3/b737-toggle-five-positions-hq.webp');
+    const atlasPath=path.resolve(dir,'../shared-assets/toggle-switch-standard-v4/b737-toggle-five-positions-no-white-halo.webp');
     const atlas=fs.readFileSync(atlasPath);
     assert.ok(atlas.length>1000,'owner-approved atlas missing');
     assert.equal(atlas.toString('ascii',0,4),'RIFF');
     assert.equal(atlas.toString('ascii',8,12),'WEBP');
-    assert.equal(require('node:crypto').createHash('sha256').update(atlas).digest('hex'),'81a07bb8a678b4de89aab40cf8ba0e7d108e4dc9599ab2ceeec5e6d90cc36c20','five aligned fixed-bezel frames unchanged');
+    assert.equal(require('node:crypto').createHash('sha256').update(atlas).digest('hex'),'2931fd3407a84c289534333da50d79bacdda181bdd1ccc61e3174e02aa684a6a','five aligned fixed-bezel frames unchanged');
     assert.ok(segment.includes('data:image/gif;base64,'),'legacy sprite image is not loaded');
     for(const [key,prefix] of [['x','--x'],['y','--y'],['width','--w'],['height','--h']]){
       const begin=segment.indexOf(prefix+':');

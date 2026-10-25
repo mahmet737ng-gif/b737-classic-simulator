@@ -63,7 +63,7 @@ assert.equal(hqBytes.subarray(8,12).toString('ascii'),'WEBP');
 assert.equal(hqBytes.subarray(12,16).toString('ascii'),'VP8X');
 assert.equal(1+hqBytes.readUIntLE(24,3),3840);
 assert.equal(1+hqBytes.readUIntLE(27,3),768);
-assert.equal(registry.version,'TGL-0003-HQ');
+assert.equal(registry.version,'TGL-0006-NO-HALO');
 
 // TGL-0005: prevent upside-down visuals and dark ring regressions.
 const poses=require('./toggle-pose-v1.js');
@@ -104,3 +104,10 @@ const html2=fs.readFileSync(path.join(__dirname,'../cockpit/overhead-stage.html'
 assert.ok(html2.indexOf('toggle-pose-v1.js')<html2.indexOf('app.js?v=TGL-0005'));
 assert.ok(html2.indexOf('socket-cleanup-v2.js')<html2.indexOf('app.js?v=TGL-0005'));
 console.log('PASS TGL-0005: all 58 physical detents upright, no black fallback, feathered masked sockets, immutable art.');
+
+// TGL-0006: five sprites now share a halo-free, orthographic metal nut.
+// The original frozen photographic mosaic is deliberately unchanged.
+assert.equal(registry.approvedVisuals[0],'b737-cockpit-toggle-v4-five-pose-clean-nut');
+assert.ok(registry.controls.length===58,'Every switch must still be mapped');
+assert.ok(Object.values(registry.assets).every(a=>a.url.includes('toggle-switch-standard-v4/b737-toggle-five-positions-no-white-halo.webp')));
+console.log('PASS TGL-0006: unified overhead reuses one transparent no-halo five-pose nut atlas with all physical detents intact.');
