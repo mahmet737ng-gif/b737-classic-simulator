@@ -8,6 +8,7 @@
  const policyUrl=new URL('../../engine/instruments/cold-dark-indicator-policy-v1.json',document.currentScript.src).href;
  const pointerUrl=new URL('../../engine/instruments/stage8-pointer-routing-v1.json',document.currentScript.src).href;
  const previewUrl=new URL('../../engine/instruments/stage10-preview-scale-subset-v1.json',document.currentScript.src).href;
+ const responseUrl=new URL('../../engine/instruments/stage9-dynamics-registry-v1.json',document.currentScript.src).href;
  const engine=window.B737InstrumentSignalBridgeV1;
  const coldModel=window.B737Stage7ColdDarkV1;
  const routeModel=window.B737InstrumentPointerRoutingV1;
@@ -140,13 +141,13 @@
     throw Error('Missing stage 5/7/8/9/10 read-only engine dependencies');
    const responses=await Promise.all([fetch(contractsUrl,{cache:'no-cache'}),
        fetch(policyUrl,{cache:'no-cache'}),fetch(pointerUrl,{cache:'no-cache'}),
-       fetch(previewUrl,{cache:'no-cache'})]);
+       fetch(previewUrl,{cache:'no-cache'}),fetch(responseUrl,{cache:'no-cache'})]);
    if(responses.some(r=>!r.ok))throw Error('Stage 7/8 contract fetch failed');
-   const [contracts,policy,routes,scales]=await Promise.all(responses.map(r=>r.json()));
+   const [contracts,policy,routes,scales,profileRegistry]=await Promise.all(responses.map(r=>r.json()));
    bridge=engine.create(contracts);
    cold=coldModel.create({contracts,policy});
    pointerRouter=routeModel.create(routes);
-   motionWorkbench=stage10.create({routes,scales,scaleEngine:stage5,dynamics:stage9,
+   motionWorkbench=stage10.create({routes,scales,scaleEngine:stage5,dynamics:stage9,profileRegistry,
     previewPowerPolicy:'training_qa_assume_power'});
    if(!ecu)ecu=window.B737ISNCockpitV1?.getECUState?.()??null;
    refresh();
