@@ -1,0 +1,105 @@
+{
+  "schema": "b737.lamps.special-two-colour-rim.v1",
+  "date": "2026-10-26",
+  "workflow": "https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/40241103485",
+  "method": "Colour signed-rim gradient extraction (independent 4 side) supported by earlier grayscale scanline geometry and owner source screenshot.",
+  "positionsChanged": 0,
+  "records": [
+    {
+      "id": "flight-recorder-off",
+      "panel": "UPPER",
+      "sourcePhoto": "panel-mosaic-lab/assets/locked/2026-10-23/OH01-06-source-9d8ac0ac86bd.png",
+      "sourceRect": [
+        1485,
+        439,
+        40,
+        31
+      ],
+      "fourIndependentEdges": false,
+      "centreDeviationNativePixels": null,
+      "status": "PHOTO_COLOUR_RIM_REVIEW",
+      "edgeEvidence": {
+        "left": {
+          "status": "NO_SAFELY_ISOLATED_RIM",
+          "position": null,
+          "candidateCount": 0
+        },
+        "right": {
+          "position": 1526,
+          "delta": 1,
+          "lum": 99.39,
+          "colorGradient": 101.85,
+          "status": "MEASURED_RIM",
+          "candidateCount": 5
+        },
+        "top": {
+          "position": 439,
+          "delta": 0,
+          "lum": 72.84,
+          "colorGradient": 74.1,
+          "status": "MEASURED_RIM",
+          "candidateCount": 5
+        },
+        "bottom": {
+          "position": 470,
+          "delta": 0,
+          "lum": 85.54,
+          "colorGradient": 88.25,
+          "status": "MEASURED_RIM",
+          "candidateCount": 5
+        }
+      }
+    },
+    {
+      "id": "main-pull-up-captain",
+      "panel": "captain",
+      "sourcePhoto": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png",
+      "sourceRect": [
+        1284,
+        389,
+        164,
+        68
+      ],
+      "fourIndependentEdges": true,
+      "centreDeviationNativePixels": [
+        0.5,
+        -2.5
+      ],
+      "status": "COLOUR_FOUR_SIDE_CENTRE_CANDIDATE",
+      "edgeEvidence": {
+        "left": {
+          "position": 1284,
+          "delta": 0,
+          "lum": 64.24,
+          "colorGradient": 64.6,
+          "status": "MEASURED_RIM",
+          "candidateCount": 7
+        },
+        "right": {
+          "position": 1449,
+          "delta": 1,
+          "lum": 41.21,
+          "colorGradient": 41.54,
+          "status": "MEASURED_RIM",
+          "candidateCount": 10
+        },
+        "top": {
+          "position": 385,
+          "delta": -4,
+          "lum": 41.92,
+          "colorGradient": 41.87,
+          "status": "MEASURED_RIM",
+          "candidateCount": 6
+        },
+        "bottom": {
+          "position": 456,
+          "delta": -1,
+          "lum": 12.07,
+          "colorGradient": 11.73,
+          "status": "MEASURED_RIM",
+          "candidateCount": 5
+        }
+      }
+    }
+  ]
+}
