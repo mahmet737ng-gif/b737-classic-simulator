@@ -158,9 +158,9 @@ test('04 — APU and engine1 start, independent engine2 indications and real tel
  const state=rig.get();
  const o=capture('engine1_stable','ENG1_RUNNING_ENG2_OFF',state);
  assert.ok(o.snap.signals['eng.n2.1'].channels.primary.value>25);
- assert.equal(o.snap.signals['eng.n2.2'].channels.primary.value,null,'A stopped engine N2 source may be genuinely absent; never synthesize zero');
+ assert.equal(o.snap.signals['eng.n2.2'].channels.primary.value,0,'Stopped engine2 N2 has a sourced zero reading');
  assert.ok(o.snap.signals['eng.fuel_flow.1'].channels.primary.value>0);
- assert.equal(o.snap.signals['eng.fuel_flow.2'].channels.primary.value,0);
+ assert.equal(o.snap.signals['eng.fuel_flow.2'].channels.primary.value,null,'No qualified fuel-flow observation for shut-down engine2');
  assert.equal(o.preview.pointers.captIAS.status,'blocked');
  assert.equal(o.preview.pointers.n2_1.status,'blocked');
  assert.equal(o.preview.pointers.n2_2.status,'blocked');
