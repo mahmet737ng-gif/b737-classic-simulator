@@ -1,5 +1,11 @@
 name: Gauge numeric calibration — Stage 2 to 4
 on:
+  push:
+    branches: [main]
+    paths:
+      - 'engine/instruments/**'
+      - 'panel-mosaic-lab/cockpit/scale-calibration-lab/**'
+      - '.github/workflows/gauge-stage-2-4.yml'
   pull_request:
     branches: [main]
     paths:
