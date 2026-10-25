@@ -172,6 +172,7 @@
   model.controls.forEach(c=>c.type==='rotary'?addRotary(c):addTrim(c));
   model.lamps.forEach(addLamp);host.append(layer);
   position();model.controls.forEach(renderOne);paintLamps();syncVisibility();applyFamily(family);
+  for(const id of ['toggleVisibility','lightVisibility'])document.getElementById(id)?.addEventListener('change',syncVisibility);
   return true;
  }
  function applyFamily(value){
