@@ -1,0 +1,1274 @@
+{
+  "schema": "b737.gauge.stage34.native-review-queue.v1",
+  "created": "2026-10-25",
+  "sourceRun": "https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/40222250774",
+  "stage3": "automation_done_human_tick-by-tick_audit_open",
+  "stage4": "candidate_centres_documented_final_shaft_certification_open",
+  "certifiedFaces": 0,
+  "sourceImmutable": true,
+  "priorities": {
+    "high": 15,
+    "medium": 14,
+    "normal": 25
+  },
+  "faces": [
+    {
+      "id": "oh.fuel.temperature",
+      "panel": "OH09",
+      "kind": "rotary",
+      "priority": "normal",
+      "candidateStrokes": 58,
+      "pivot": {
+        "x": 506,
+        "y": 235,
+        "evidence": "gauge-survey-stage2-3.json",
+        "state": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "rimCandidate": {
+        "x": 504,
+        "y": 225,
+        "radius": 166.76,
+        "centerDeltaPx": 10.2,
+        "radiusDeltaPx": 23.76,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "issues": [
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified"
+      ]
+    },
+    {
+      "id": "oh.elec.dc_amps",
+      "panel": "OH10",
+      "kind": "rotary",
+      "priority": "high",
+      "candidateStrokes": 31,
+      "pivot": {
+        "x": 310,
+        "y": 192,
+        "evidence": "photo-anchor-checkpoints-v1.json",
+        "state": "optical_center_estimate_needs_confirmation"
+      },
+      "rimCandidate": {
+        "x": 297.2,
+        "y": 192.6,
+        "radius": 189.32,
+        "centerDeltaPx": 12.81,
+        "radiusDeltaPx": 46.32,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "issues": [
+        "historical_pivot_disagreement",
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified"
+      ]
+    },
+    {
+      "id": "oh.elec.cps",
+      "panel": "OH10",
+      "kind": "rotary",
+      "priority": "high",
+      "candidateStrokes": 55,
+      "pivot": {
+        "x": 780,
+        "y": 192,
+        "evidence": "photo-anchor-checkpoints-v1.json",
+        "state": "optical_center_estimate_needs_confirmation"
+      },
+      "rimCandidate": {
+        "x": 776.8,
+        "y": 203.4,
+        "radius": 190.64,
+        "centerDeltaPx": 11.84,
+        "radiusDeltaPx": 47.64,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "issues": [
+        "historical_pivot_disagreement",
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified"
+      ]
+    },
+    {
+      "id": "oh.elec.dc_volts",
+      "panel": "OH10",
+      "kind": "rotary",
+      "priority": "high",
+      "candidateStrokes": 18,
+      "pivot": {
+        "x": 332,
+        "y": 600,
+        "evidence": "gauge-survey-stage2-3.json",
+        "state": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "rimCandidate": {
+        "x": 337.2,
+        "y": 578.8,
+        "radius": 132.56,
+        "centerDeltaPx": 21.83,
+        "radiusDeltaPx": 10.44,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "issues": [
+        "circle_vs_legacy_center_delta_over_20px",
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified"
+      ]
+    },
+    {
+      "id": "oh.elec.ac_volts",
+      "panel": "OH10",
+      "kind": "rotary",
+      "priority": "high",
+      "candidateStrokes": 22,
+      "pivot": {
+        "x": 715,
+        "y": 620,
+        "evidence": "gauge-survey-stage2-3.json",
+        "state": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "rimCandidate": {
+        "x": 685.4,
+        "y": 621.6,
+        "radius": 98.24,
+        "centerDeltaPx": 29.64,
+        "radiusDeltaPx": 44.76,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "issues": [
+        "circle_vs_legacy_center_delta_over_20px",
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified"
+      ]
+    },
+    {
+      "id": "oh.drive_oil.1",
+      "panel": "OH11",
+      "kind": "rotary",
+      "priority": "high",
+      "candidateStrokes": 22,
+      "pivot": {
+        "x": 266,
+        "y": 1021,
+        "evidence": "gauge-survey-stage2-3.json",
+        "state": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "rimCandidate": {
+        "x": 271.8,
+        "y": 983.8,
+        "radius": 141.08,
+        "centerDeltaPx": 37.65,
+        "radiusDeltaPx": 18.92,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "issues": [
+        "circle_vs_legacy_center_delta_over_20px",
+        "RISE_IN_separate_numeric_modes_same_strokes",
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified"
+      ]
+    },
+    {
+      "id": "oh.drive_oil.2",
+      "panel": "OH11",
+      "kind": "rotary",
+      "priority": "normal",
+      "candidateStrokes": 20,
+      "pivot": {
+        "x": 781,
+        "y": 1021,
+        "evidence": "gauge-survey-stage2-3.json",
+        "state": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "rimCandidate": {
+        "x": 782.2,
+        "y": 1025.8,
+        "radius": 135.8,
+        "centerDeltaPx": 4.95,
+        "radiusDeltaPx": 24.2,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "issues": [
+        "RISE_IN_separate_numeric_modes_same_strokes",
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified"
+      ]
+    },
+    {
+      "id": "oh.ac_amps.1",
+      "panel": "OH12",
+      "kind": "rotary",
+      "priority": "normal",
+      "candidateStrokes": 35,
+      "pivot": {
+        "x": 210,
+        "y": 265,
+        "evidence": "gauge-survey-stage2-3.json",
+        "state": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "rimCandidate": {
+        "x": 207,
+        "y": 277.8,
+        "radius": 125.64,
+        "centerDeltaPx": 13.15,
+        "radiusDeltaPx": 18.36,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "issues": [
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified"
+      ]
+    },
+    {
+      "id": "oh.ac_amps.2",
+      "panel": "OH12",
+      "kind": "rotary",
+      "priority": "normal",
+      "candidateStrokes": 37,
+      "pivot": {
+        "x": 705,
+        "y": 265,
+        "evidence": "gauge-survey-stage2-3.json",
+        "state": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "rimCandidate": {
+        "x": 697.4,
+        "y": 282.6,
+        "radius": 104.4,
+        "centerDeltaPx": 19.17,
+        "radiusDeltaPx": 39.6,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "issues": [
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified"
+      ]
+    },
+    {
+      "id": "oh.ac_amps.apu",
+      "panel": "OH12",
+      "kind": "rotary",
+      "priority": "normal",
+      "candidateStrokes": 50,
+      "pivot": {
+        "x": 724,
+        "y": 1334,
+        "evidence": "gauge-survey-stage2-3.json",
+        "state": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "rimCandidate": {
+        "x": 720,
+        "y": 1322.8,
+        "radius": 171,
+        "centerDeltaPx": 11.89,
+        "radiusDeltaPx": 27,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "issues": [
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified"
+      ]
+    },
+    {
+      "id": "oh.apu.egt",
+      "panel": "OH12",
+      "kind": "rotary",
+      "priority": "normal",
+      "candidateStrokes": 63,
+      "pivot": {
+        "x": 300,
+        "y": 1324,
+        "evidence": "gauge-survey-stage2-3.json",
+        "state": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "rimCandidate": {
+        "x": 296.8,
+        "y": 1318.4,
+        "radius": 174.04,
+        "centerDeltaPx": 6.45,
+        "radiusDeltaPx": 20.04,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "issues": [
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified"
+      ]
+    },
+    {
+      "id": "oh.cabin.diff_pressure_altitude",
+      "panel": "OH19-DIFF",
+      "kind": "rotary",
+      "priority": "medium",
+      "candidateStrokes": 145,
+      "pivot": {
+        "x": 489,
+        "y": 365,
+        "evidence": "photo-anchor-checkpoints-v1.json",
+        "state": "optical_center_estimate_needs_confirmation"
+      },
+      "rimCandidate": null,
+      "issues": [
+        "no_independent_circle_center_candidate",
+        "independent_concentric_scale_modes",
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified"
+      ]
+    },
+    {
+      "id": "oh.cabin.rate",
+      "panel": "OH19-DIFF",
+      "kind": "rotary",
+      "priority": "normal",
+      "candidateStrokes": 116,
+      "pivot": {
+        "x": 520,
+        "y": 950,
+        "evidence": "gauge-survey-stage2-3.json",
+        "state": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "rimCandidate": {
+        "x": 521.6,
+        "y": 951.6,
+        "radius": 188.96,
+        "centerDeltaPx": 2.26,
+        "radiusDeltaPx": 23.96,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "issues": [
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified"
+      ]
+    },
+    {
+      "id": "oh.cabin.temperature",
+      "panel": "OH20",
+      "kind": "rotary",
+      "priority": "normal",
+      "candidateStrokes": 83,
+      "pivot": {
+        "x": 618,
+        "y": 681,
+        "evidence": "photo-anchor-checkpoints-v1.json",
+        "state": "optical_center_estimate_needs_confirmation"
+      },
+      "rimCandidate": {
+        "x": 612.4,
+        "y": 667,
+        "radius": 202.2,
+        "centerDeltaPx": 15.08,
+        "radiusDeltaPx": 22.2,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "issues": [
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified"
+      ]
+    },
+    {
+      "id": "oh.duct.pressure_lr",
+      "panel": "OH21",
+      "kind": "rotary",
+      "priority": "normal",
+      "candidateStrokes": 67,
+      "pivot": {
+        "x": 544,
+        "y": 439,
+        "evidence": "photo-anchor-checkpoints-v1.json",
+        "state": "optical_center_estimate_needs_confirmation"
+      },
+      "rimCandidate": {
+        "x": 549.6,
+        "y": 435,
+        "radius": 162.68,
+        "centerDeltaPx": 6.88,
+        "radiusDeltaPx": 7.32,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "issues": [
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified"
+      ]
+    },
+    {
+      "id": "oh.crew_oxygen.pressure",
+      "panel": "OH01-06",
+      "kind": "rotary",
+      "priority": "normal",
+      "candidateStrokes": 0,
+      "pivot": {
+        "x": 1078,
+        "y": 636,
+        "evidence": "tools/gauge-source-visual-review.py",
+        "state": "existing_overlay_position_not_full_photo_certification"
+      },
+      "rimCandidate": {
+        "x": 1079.8,
+        "y": 639,
+        "radius": 64.28,
+        "centerDeltaPx": 3.5,
+        "radiusDeltaPx": 7.28,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "issues": [
+        "no_white_candidate_strokes",
+        "face_blank_no_printed_scale",
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified"
+      ]
+    },
+    {
+      "id": "capt.airspeed",
+      "panel": "CAPTAIN",
+      "kind": "rotary",
+      "priority": "high",
+      "candidateStrokes": 116,
+      "pivot": {
+        "x": 1100,
+        "y": 970,
+        "uncertaintyPx": 40,
+        "reason": "visually estimated native-grid dial center"
+      },
+      "rimCandidate": {
+        "x": 1080.6,
+        "y": 980.6,
+        "radius": 372.16,
+        "centerDeltaPx": 22.11,
+        "radiusDeltaPx": 12.16,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "issues": [
+        "circle_vs_legacy_center_delta_over_20px",
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified"
+      ]
+    },
+    {
+      "id": "capt.rmi",
+      "panel": "CAPTAIN",
+      "kind": "rotary",
+      "priority": "high",
+      "candidateStrokes": 72,
+      "pivot": {
+        "x": 1170,
+        "y": 1850,
+        "uncertaintyPx": 40,
+        "reason": "visually estimated native-grid RMI card center"
+      },
+      "rimCandidate": {
+        "x": 1186.6,
+        "y": 1896.6,
+        "radius": 260.52,
+        "centerDeltaPx": 49.47,
+        "radiusDeltaPx": 39.48,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "issues": [
+        "circle_vs_legacy_center_delta_over_20px",
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified"
+      ]
+    },
+    {
+      "id": "capt.altimeter",
+      "panel": "CAPTAIN",
+      "kind": "rotary",
+      "priority": "high",
+      "candidateStrokes": 85,
+      "pivot": {
+        "x": 3100,
+        "y": 940,
+        "uncertaintyPx": 40,
+        "reason": "visually estimated native-grid altimeter card center"
+      },
+      "rimCandidate": {
+        "x": 3080.2,
+        "y": 953.8,
+        "radius": 280,
+        "centerDeltaPx": 24.13,
+        "radiusDeltaPx": 0,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "issues": [
+        "circle_vs_legacy_center_delta_over_20px",
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified"
+      ]
+    },
+    {
+      "id": "capt.alt_ias_combined",
+      "panel": "CAPTAIN",
+      "kind": "rotary",
+      "priority": "high",
+      "candidateStrokes": 74,
+      "pivot": {
+        "x": 3720,
+        "y": 950,
+        "uncertaintyPx": 40,
+        "reason": "visually estimated native-grid combined ALT/IAS face center"
+      },
+      "rimCandidate": {
+        "x": 3711.8,
+        "y": 955,
+        "radius": 260.96,
+        "centerDeltaPx": 9.6,
+        "radiusDeltaPx": 15.96,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "issues": [
+        "ALT_IAS_separate_geometry_requirements",
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified"
+      ]
+    },
+    {
+      "id": "capt.vertical_speed",
+      "panel": "CAPTAIN",
+      "kind": "rotary",
+      "priority": "high",
+      "candidateStrokes": 54,
+      "pivot": {
+        "x": 3100,
+        "y": 1600,
+        "uncertaintyPx": 40,
+        "reason": "visually estimated native-grid VSI center"
+      },
+      "rimCandidate": {
+        "x": 3073,
+        "y": 1607.8,
+        "radius": 271.72,
+        "centerDeltaPx": 28.1,
+        "radiusDeltaPx": 8.28,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "issues": [
+        "circle_vs_legacy_center_delta_over_20px",
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified"
+      ]
+    },
+    {
+      "id": "capt.clock",
+      "panel": "CAPTAIN",
+      "kind": "rotary",
+      "priority": "high",
+      "candidateStrokes": 76,
+      "pivot": {
+        "x": 3700,
+        "y": 1580,
+        "uncertaintyPx": 40,
+        "reason": "visually estimated native-grid clock face center"
+      },
+      "rimCandidate": {
+        "x": 3721.8,
+        "y": 1603,
+        "radius": 281.04,
+        "centerDeltaPx": 31.69,
+        "radiusDeltaPx": 21.04,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "issues": [
+        "circle_vs_legacy_center_delta_over_20px",
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified"
+      ]
+    },
+    {
+      "id": "eng.left_upper_20_20",
+      "panel": "ENGINE",
+      "kind": "rotary",
+      "priority": "normal",
+      "candidateStrokes": 10,
+      "pivot": {
+        "x": 205,
+        "y": 550,
+        "uncertaintyPx": 22,
+        "reason": "unidentified upper-left dial: mechanical pivot not confirmed"
+      },
+      "rimCandidate": {
+        "x": 216.6,
+        "y": 541.4,
+        "radius": 169.08,
+        "centerDeltaPx": 14.44,
+        "radiusDeltaPx": 34.08,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "issues": [
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified"
+      ]
+    },
+    {
+      "id": "eng.fuel_qty.center",
+      "panel": "ENGINE",
+      "kind": "rotary",
+      "priority": "high",
+      "candidateStrokes": 5,
+      "pivot": {
+        "x": 261,
+        "y": 922,
+        "uncertaintyPx": 22,
+        "reason": "circular face center; actual moving pointer unknown"
+      },
+      "rimCandidate": {
+        "x": 229.2,
+        "y": 908.2,
+        "radius": 106.24,
+        "centerDeltaPx": 34.67,
+        "radiusDeltaPx": 6.24,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "issues": [
+        "circle_vs_legacy_center_delta_over_20px",
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified"
+      ]
+    },
+    {
+      "id": "eng.fuel_qty.1",
+      "panel": "ENGINE",
+      "kind": "rotary",
+      "priority": "high",
+      "candidateStrokes": 13,
+      "pivot": {
+        "x": 145,
+        "y": 1114,
+        "uncertaintyPx": 22,
+        "reason": "circular face center; actual moving pointer unknown"
+      },
+      "rimCandidate": {
+        "x": 114.6,
+        "y": 1125,
+        "radius": 127.12,
+        "centerDeltaPx": 32.33,
+        "radiusDeltaPx": 17.12,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "issues": [
+        "circle_vs_legacy_center_delta_over_20px",
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified"
+      ]
+    },
+    {
+      "id": "eng.fuel_qty.2",
+      "panel": "ENGINE",
+      "kind": "rotary",
+      "priority": "normal",
+      "candidateStrokes": 20,
+      "pivot": {
+        "x": 332,
+        "y": 1114,
+        "uncertaintyPx": 22,
+        "reason": "circular face center; actual moving pointer unknown"
+      },
+      "rimCandidate": {
+        "x": 321.4,
+        "y": 1119,
+        "radius": 131.08,
+        "centerDeltaPx": 11.72,
+        "radiusDeltaPx": 21.08,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "issues": [
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified"
+      ]
+    },
+    {
+      "id": "eng.n1.1",
+      "panel": "ENGINE",
+      "kind": "rotary",
+      "priority": "normal",
+      "candidateStrokes": 1,
+      "pivot": {
+        "x": 535,
+        "y": 553,
+        "uncertaintyPx": 22,
+        "reason": "geometric center from original native engine panel"
+      },
+      "rimCandidate": {
+        "x": 536,
+        "y": 543.2,
+        "radius": 90.44,
+        "centerDeltaPx": 9.85,
+        "radiusDeltaPx": 3.56,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "issues": [
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified"
+      ]
+    },
+    {
+      "id": "eng.n1.2",
+      "panel": "ENGINE",
+      "kind": "rotary",
+      "priority": "normal",
+      "candidateStrokes": 0,
+      "pivot": {
+        "x": 724,
+        "y": 553,
+        "uncertaintyPx": 22,
+        "reason": "geometric center from original native engine panel"
+      },
+      "rimCandidate": {
+        "x": 719,
+        "y": 539.6,
+        "radius": 94.4,
+        "centerDeltaPx": 14.3,
+        "radiusDeltaPx": 0.4,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "issues": [
+        "no_white_candidate_strokes",
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified"
+      ]
+    },
+    {
+      "id": "eng.egt.1",
+      "panel": "ENGINE",
+      "kind": "rotary",
+      "priority": "medium",
+      "candidateStrokes": 6,
+      "pivot": {
+        "x": 535,
+        "y": 723,
+        "evidence": "gauge-survey-stage2-3.json",
+        "state": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "rimCandidate": {
+        "x": 534.2,
+        "y": 725.8,
+        "radius": 80.48,
+        "centerDeltaPx": 2.91,
+        "radiusDeltaPx": 39.52,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "issues": [
+        "smooth_unnumbered_arc_no_discrete_tick_mapping",
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified"
+      ]
+    },
+    {
+      "id": "eng.egt.2",
+      "panel": "ENGINE",
+      "kind": "rotary",
+      "priority": "medium",
+      "candidateStrokes": 5,
+      "pivot": {
+        "x": 724,
+        "y": 723,
+        "evidence": "gauge-survey-stage2-3.json",
+        "state": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "rimCandidate": {
+        "x": 723.2,
+        "y": 722.2,
+        "radius": 81.08,
+        "centerDeltaPx": 1.13,
+        "radiusDeltaPx": 38.92,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "issues": [
+        "smooth_unnumbered_arc_no_discrete_tick_mapping",
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified"
+      ]
+    },
+    {
+      "id": "eng.n2.1",
+      "panel": "ENGINE",
+      "kind": "rotary",
+      "priority": "medium",
+      "candidateStrokes": 5,
+      "pivot": {
+        "x": 535,
+        "y": 900,
+        "evidence": "gauge-survey-stage2-3.json",
+        "state": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "rimCandidate": {
+        "x": 534.2,
+        "y": 895.6,
+        "radius": 81.68,
+        "centerDeltaPx": 4.47,
+        "radiusDeltaPx": 38.32,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "issues": [
+        "smooth_unnumbered_arc_no_discrete_tick_mapping",
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified"
+      ]
+    },
+    {
+      "id": "eng.n2.2",
+      "panel": "ENGINE",
+      "kind": "rotary",
+      "priority": "medium",
+      "candidateStrokes": 6,
+      "pivot": {
+        "x": 724,
+        "y": 900,
+        "evidence": "gauge-survey-stage2-3.json",
+        "state": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "rimCandidate": {
+        "x": 723.2,
+        "y": 895.6,
+        "radius": 81.68,
+        "centerDeltaPx": 4.47,
+        "radiusDeltaPx": 38.32,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "issues": [
+        "smooth_unnumbered_arc_no_discrete_tick_mapping",
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified"
+      ]
+    },
+    {
+      "id": "eng.fuel_flow.1",
+      "panel": "ENGINE",
+      "kind": "rotary",
+      "priority": "medium",
+      "candidateStrokes": 10,
+      "pivot": {
+        "x": 535,
+        "y": 1082,
+        "uncertaintyPx": 22,
+        "reason": "geometric center of FF/FU circular display"
+      },
+      "rimCandidate": null,
+      "issues": [
+        "no_independent_circle_center_candidate",
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified"
+      ]
+    },
+    {
+      "id": "eng.fuel_flow.2",
+      "panel": "ENGINE",
+      "kind": "rotary",
+      "priority": "normal",
+      "candidateStrokes": 23,
+      "pivot": {
+        "x": 724,
+        "y": 1082,
+        "uncertaintyPx": 22,
+        "reason": "geometric center of FF/FU circular display"
+      },
+      "rimCandidate": {
+        "x": 723.4,
+        "y": 1095.8,
+        "radius": 86.84,
+        "centerDeltaPx": 13.81,
+        "radiusDeltaPx": 6.16,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "issues": [
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified"
+      ]
+    },
+    {
+      "id": "eng.oil_pressure.1",
+      "panel": "ENGINE",
+      "kind": "rotary",
+      "priority": "medium",
+      "candidateStrokes": 5,
+      "pivot": {
+        "x": 1050,
+        "y": 538,
+        "uncertaintyPx": 22,
+        "reason": "geometric center of engine-1 oil pressure dial"
+      },
+      "rimCandidate": null,
+      "issues": [
+        "no_independent_circle_center_candidate",
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified"
+      ]
+    },
+    {
+      "id": "eng.oil_pressure.2",
+      "panel": "ENGINE",
+      "kind": "rotary",
+      "priority": "medium",
+      "candidateStrokes": 4,
+      "pivot": {
+        "x": 1174,
+        "y": 538,
+        "uncertaintyPx": 22,
+        "reason": "geometric center of engine-2 oil pressure dial"
+      },
+      "rimCandidate": null,
+      "issues": [
+        "no_independent_circle_center_candidate",
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified"
+      ]
+    },
+    {
+      "id": "eng.oil_temperature.1",
+      "panel": "ENGINE",
+      "kind": "rotary",
+      "priority": "medium",
+      "candidateStrokes": 3,
+      "pivot": {
+        "x": 1050,
+        "y": 688,
+        "uncertaintyPx": 22,
+        "reason": "geometric center of engine-1 oil temperature dial"
+      },
+      "rimCandidate": null,
+      "issues": [
+        "no_independent_circle_center_candidate",
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified"
+      ]
+    },
+    {
+      "id": "eng.oil_temperature.2",
+      "panel": "ENGINE",
+      "kind": "rotary",
+      "priority": "medium",
+      "candidateStrokes": 5,
+      "pivot": {
+        "x": 1174,
+        "y": 688,
+        "uncertaintyPx": 22,
+        "reason": "geometric center of engine-2 oil temperature dial"
+      },
+      "rimCandidate": null,
+      "issues": [
+        "no_independent_circle_center_candidate",
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified"
+      ]
+    },
+    {
+      "id": "eng.vibration.1",
+      "panel": "ENGINE",
+      "kind": "rotary",
+      "priority": "normal",
+      "candidateStrokes": 21,
+      "pivot": {
+        "x": 1050,
+        "y": 865,
+        "uncertaintyPx": 22,
+        "reason": "geometric center of engine-1 vibration dial"
+      },
+      "rimCandidate": {
+        "x": 1064.6,
+        "y": 855.6,
+        "radius": 88.36,
+        "centerDeltaPx": 17.36,
+        "radiusDeltaPx": 19.36,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "issues": [
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified"
+      ]
+    },
+    {
+      "id": "eng.vibration.2",
+      "panel": "ENGINE",
+      "kind": "rotary",
+      "priority": "medium",
+      "candidateStrokes": 4,
+      "pivot": {
+        "x": 1174,
+        "y": 865,
+        "uncertaintyPx": 22,
+        "reason": "geometric center of engine-2 vibration dial"
+      },
+      "rimCandidate": null,
+      "issues": [
+        "no_independent_circle_center_candidate",
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified"
+      ]
+    },
+    {
+      "id": "eng.hyd_pressure.a",
+      "panel": "ENGINE",
+      "kind": "rotary",
+      "priority": "medium",
+      "candidateStrokes": 6,
+      "pivot": {
+        "x": 1050,
+        "y": 1037,
+        "uncertaintyPx": 22,
+        "reason": "geometric center of hydraulic pressure A"
+      },
+      "rimCandidate": null,
+      "issues": [
+        "no_independent_circle_center_candidate",
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified"
+      ]
+    },
+    {
+      "id": "eng.hyd_pressure.b",
+      "panel": "ENGINE",
+      "kind": "rotary",
+      "priority": "medium",
+      "candidateStrokes": 4,
+      "pivot": {
+        "x": 1174,
+        "y": 1037,
+        "uncertaintyPx": 22,
+        "reason": "geometric center of hydraulic pressure B"
+      },
+      "rimCandidate": null,
+      "issues": [
+        "no_independent_circle_center_candidate",
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified"
+      ]
+    },
+    {
+      "id": "fo.flap_position",
+      "panel": "FO-INNER",
+      "kind": "rotary",
+      "priority": "normal",
+      "candidateStrokes": 15,
+      "pivot": {
+        "x": 145,
+        "y": 290,
+        "uncertaintyPx": 22,
+        "reason": "flap two-needle central circular face"
+      },
+      "rimCandidate": {
+        "x": 132.6,
+        "y": 304.6,
+        "radius": 90.8,
+        "centerDeltaPx": 19.16,
+        "radiusDeltaPx": 6.8,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "issues": [
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified"
+      ]
+    },
+    {
+      "id": "fo.hyd_brake_pressure",
+      "panel": "FO-INNER",
+      "kind": "rotary",
+      "priority": "normal",
+      "candidateStrokes": 42,
+      "pivot": {
+        "x": 473,
+        "y": 568,
+        "uncertaintyPx": 22,
+        "reason": "hydraulic brake dial center"
+      },
+      "rimCandidate": {
+        "x": 480.2,
+        "y": 576.4,
+        "radius": 87,
+        "centerDeltaPx": 11.06,
+        "radiusDeltaPx": 15,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "issues": [
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified"
+      ]
+    },
+    {
+      "id": "fo.airspeed",
+      "panel": "FO-INNER",
+      "kind": "rotary",
+      "priority": "high",
+      "candidateStrokes": 90,
+      "pivot": {
+        "x": 711,
+        "y": 564,
+        "uncertaintyPx": 22,
+        "reason": "FO airspeed dial center"
+      },
+      "rimCandidate": {
+        "x": 733.2,
+        "y": 577.8,
+        "radius": 164.56,
+        "centerDeltaPx": 26.14,
+        "radiusDeltaPx": 19.56,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "issues": [
+        "circle_vs_legacy_center_delta_over_20px",
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified"
+      ]
+    },
+    {
+      "id": "fo.rmi",
+      "panel": "FO-INNER",
+      "kind": "rotary",
+      "priority": "normal",
+      "candidateStrokes": 45,
+      "pivot": {
+        "x": 761,
+        "y": 936,
+        "uncertaintyPx": 22,
+        "reason": "FO rotating compass card center"
+      },
+      "rimCandidate": {
+        "x": 769.2,
+        "y": 950.2,
+        "radius": 91.2,
+        "centerDeltaPx": 16.4,
+        "radiusDeltaPx": 43.8,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "issues": [
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified"
+      ]
+    },
+    {
+      "id": "fo.left_linear",
+      "panel": "FO-INNER",
+      "kind": "linear",
+      "priority": "normal",
+      "candidateStrokes": 10,
+      "pivot": null,
+      "rimCandidate": null,
+      "issues": [
+        "line_values_unassigned"
+      ]
+    },
+    {
+      "id": "fo.right_linear",
+      "panel": "FO-INNER",
+      "kind": "linear",
+      "priority": "normal",
+      "candidateStrokes": 11,
+      "pivot": null,
+      "rimCandidate": null,
+      "issues": [
+        "line_values_unassigned"
+      ]
+    },
+    {
+      "id": "fo.outer_altimeter",
+      "panel": "FO-OUTER",
+      "kind": "rotary",
+      "priority": "normal",
+      "candidateStrokes": 64,
+      "pivot": {
+        "x": 616,
+        "y": 343,
+        "uncertaintyPx": 15,
+        "reason": "strong Hough-circle candidate; still not optical pivot certified"
+      },
+      "rimCandidate": {
+        "x": 616.4,
+        "y": 344.6,
+        "radius": 111.56,
+        "centerDeltaPx": 1.65,
+        "radiusDeltaPx": 3.44,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "issues": [
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified"
+      ]
+    },
+    {
+      "id": "fo.outer_vertical_speed",
+      "panel": "FO-OUTER",
+      "kind": "rotary",
+      "priority": "normal",
+      "candidateStrokes": 41,
+      "pivot": {
+        "x": 617,
+        "y": 609,
+        "uncertaintyPx": 15,
+        "reason": "strong Hough-circle candidate; still not optical pivot certified"
+      },
+      "rimCandidate": {
+        "x": 617,
+        "y": 610.2,
+        "radius": 107.8,
+        "centerDeltaPx": 1.2,
+        "radiusDeltaPx": 2.2,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "issues": [
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified"
+      ]
+    },
+    {
+      "id": "fo.outer_clock",
+      "panel": "FO-OUTER",
+      "kind": "rotary",
+      "priority": "normal",
+      "candidateStrokes": 56,
+      "pivot": {
+        "x": 873,
+        "y": 609,
+        "uncertaintyPx": 15,
+        "reason": "strong Hough-circle candidate; still not optical pivot certified"
+      },
+      "rimCandidate": {
+        "x": 873.4,
+        "y": 610.6,
+        "radius": 110.24,
+        "centerDeltaPx": 1.65,
+        "radiusDeltaPx": 4.76,
+        "grade": "circle_rim_candidate_not_shaft"
+      },
+      "issues": [
+        "pivot_shaft_not_certified",
+        "major_minor_numeric_values_not_certified"
+      ]
+    },
+    {
+      "id": "ped.stab_trim.left",
+      "panel": "THROTTLE",
+      "kind": "linear",
+      "priority": "medium",
+      "candidateStrokes": 2,
+      "pivot": null,
+      "rimCandidate": null,
+      "issues": [
+        "linear_minor_ticks_incomplete",
+        "line_values_unassigned"
+      ]
+    },
+    {
+      "id": "ped.stab_trim.right",
+      "panel": "THROTTLE",
+      "kind": "linear",
+      "priority": "high",
+      "candidateStrokes": 0,
+      "pivot": null,
+      "rimCandidate": null,
+      "issues": [
+        "no_transverse_lines_detected",
+        "linear_minor_ticks_incomplete",
+        "line_values_unassigned"
+      ]
+    },
+    {
+      "id": "ped.rudder_trim",
+      "panel": "RADIO",
+      "kind": "linear",
+      "priority": "normal",
+      "candidateStrokes": 6,
+      "pivot": null,
+      "rimCandidate": null,
+      "issues": [
+        "line_values_unassigned"
+      ]
+    }
+  ]
+}
