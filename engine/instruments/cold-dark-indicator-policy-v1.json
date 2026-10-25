@@ -1,0 +1,396 @@
+{
+  "schema": "b737.cold-dark-needle-policy.v1",
+  "aircraft": "B737-300/400/500",
+  "version": "2026-10-25",
+  "sourceInventory": "engine/instruments/gauge-inventory-v1.json",
+  "inventoryFaceCount": 53,
+  "additionalInstalledFaces": [
+    "oh.crew_oxygen.pressure"
+  ],
+  "definition": "Cold and dark means engines/APU stopped and electrical generation off. It does NOT mean every physically independent gauge is zero.",
+  "policyStatus": "PHYSICAL_COLD_DARK_RULES_ONLY_NEEDLE_ANGLES_REQUIRE_MEASURED_TICK_GEOMETRY",
+  "approval": {
+    "simulationLogic": "source_backed_or_physical_conditional",
+    "scaleGeometry": "UNVERIFIED_NO_BLIND_ZERO_SET",
+    "needleDimensions": "requires_visual_QA_per_source"
+  },
+  "entries": {
+    "oh.fuel.temperature": {
+      "kind": "ambient_sensor",
+      "unit": "°C",
+      "criteria": "temperature_data_available",
+      "details": "Temperature is an actual environmental/fluid state, not always 0°C."
+    },
+    "oh.elec.dc_amps": {
+      "kind": "electrically_unpowered",
+      "unit": "reading_by_selected_bus",
+      "criteria": "no_voltage_source_and_buses_deenergized",
+      "details": "Meter may park at scale zero/offscale only when exact mechanism is established; missing live selection must not be treated as electrical zero",
+      "referencePolicy": "zero_stop_unverified"
+    },
+    "oh.elec.cps": {
+      "kind": "electrically_unpowered",
+      "unit": "reading_by_selected_bus",
+      "criteria": "no_voltage_source_and_buses_deenergized",
+      "details": "Meter may park at scale zero/offscale only when exact mechanism is established; missing live selection must not be treated as electrical zero",
+      "referencePolicy": "zero_stop_unverified"
+    },
+    "oh.elec.dc_volts": {
+      "kind": "electrically_unpowered",
+      "unit": "reading_by_selected_bus",
+      "criteria": "no_voltage_source_and_buses_deenergized",
+      "details": "Meter may park at scale zero/offscale only when exact mechanism is established; missing live selection must not be treated as electrical zero",
+      "referencePolicy": "zero_stop_unverified"
+    },
+    "oh.elec.ac_volts": {
+      "kind": "electrically_unpowered",
+      "unit": "reading_by_selected_bus",
+      "criteria": "no_voltage_source_and_buses_deenergized",
+      "details": "Meter may park at scale zero/offscale only when exact mechanism is established; missing live selection must not be treated as electrical zero",
+      "referencePolicy": "zero_stop_unverified"
+    },
+    "oh.drive_oil.1": {
+      "kind": "selector_dual_temperature",
+      "unit": "°C",
+      "criteria": "engine_stopped_and_csd_thermal_equalized",
+      "details": "RISE is inlet-outlet temperature difference and can become zero; IN indicates actual inlet oil temperature. Unpowered pointer rest requires device reference",
+      "selectorModes": {
+        "rise": {
+          "valueAtThermalEquilibrium": 0
+        },
+        "inlet": {
+          "value": "measuredOilInletTemperatureC"
+        }
+      }
+    },
+    "oh.drive_oil.2": {
+      "kind": "selector_dual_temperature",
+      "unit": "°C",
+      "criteria": "engine_stopped_and_csd_thermal_equalized",
+      "details": "RISE is inlet-outlet temperature difference and can become zero; IN indicates actual inlet oil temperature. Unpowered pointer rest requires device reference",
+      "selectorModes": {
+        "rise": {
+          "valueAtThermalEquilibrium": 0
+        },
+        "inlet": {
+          "value": "measuredOilInletTemperatureC"
+        }
+      }
+    },
+    "oh.ac_amps.1": {
+      "kind": "electrically_unpowered",
+      "unit": "reading_by_selected_bus",
+      "criteria": "no_voltage_source_and_buses_deenergized",
+      "details": "Meter may park at scale zero/offscale only when exact mechanism is established; missing live selection must not be treated as electrical zero",
+      "referencePolicy": "zero_stop_unverified"
+    },
+    "oh.ac_amps.2": {
+      "kind": "electrically_unpowered",
+      "unit": "reading_by_selected_bus",
+      "criteria": "no_voltage_source_and_buses_deenergized",
+      "details": "Meter may park at scale zero/offscale only when exact mechanism is established; missing live selection must not be treated as electrical zero",
+      "referencePolicy": "zero_stop_unverified"
+    },
+    "oh.ac_amps.apu": {
+      "kind": "electrically_unpowered",
+      "unit": "reading_by_selected_bus",
+      "criteria": "no_voltage_source_and_buses_deenergized",
+      "details": "Meter may park at scale zero/offscale only when exact mechanism is established; missing live selection must not be treated as electrical zero",
+      "referencePolicy": "zero_stop_unverified"
+    },
+    "oh.apu.egt": {
+      "kind": "thermal_or_power_dependent",
+      "unit": "°C",
+      "criteria": "apu_stopped",
+      "details": "APU EGT after shutoff may remain hot and may not be indicated unpowered. No fabricated zero."
+    },
+    "oh.cabin.diff_pressure_altitude": {
+      "kind": "dual_readings",
+      "unit": "psi / ft",
+      "criteria": "equalized_cabin_and_ambient",
+      "details": "DIFF PRESS is 0 psi when equalized; CAB ALT follows ambient pressure altitude/field elevation, not necessarily 0",
+      "needles": {
+        "press": {
+          "kind": "zero_on_equalized",
+          "unit": "psi"
+        },
+        "cabAlt": {
+          "kind": "ambient_pressure_altitude",
+          "unit": "ft"
+        }
+      }
+    },
+    "oh.cabin.rate": {
+      "kind": "zero_on_stable_cabin",
+      "unit": "ft/min",
+      "criteria": "cabin_pressure_stable",
+      "details": "Zero rate if cabin pressure is steady; measure needle zero bearing from actual dial"
+    },
+    "oh.cabin.temperature": {
+      "kind": "ambient_sensor",
+      "unit": "°C",
+      "criteria": "temperature_data_available",
+      "details": "Temperature is an actual environmental/fluid state, not always 0°C."
+    },
+    "oh.duct.pressure_lr": {
+      "kind": "zero_if_pneumatics_isolated",
+      "unit": "psi",
+      "criteria": "no_bleed_source_and_manifold_depressurized",
+      "details": "L/R duct pressures can hold transient pressure; do not force immediate zero after shutting down"
+    },
+    "capt.airspeed": {
+      "kind": "mechanical_low_stop",
+      "unit": "kt",
+      "criteria": "aircraft_stationary_and_no_pitot_pressure",
+      "details": "Actual indicated speed is zero; photographed scale starts at 60 kt, so pointer parks at its low stop, not a nonexistent printed zero",
+      "physicalValue": 0,
+      "visualPegKts": 60,
+      "vmmoMarkerIndependent": true
+    },
+    "capt.rmi": {
+      "kind": "nav_power_dependent",
+      "unit": "bearing_deg",
+      "criteria": "nav_receiver_off_or_power_unavailable",
+      "details": "Needles can park or retain last bearing; compass card and bearing needles are NOT calibrated to zero heading."
+    },
+    "capt.altimeter": {
+      "kind": "static_pressure_altitude",
+      "unit": "ft",
+      "criteria": "static_pressure_and_baro_setting_available",
+      "details": "On QNH aircraft at airport generally indicates airport elevation; do not force 0 ft."
+    },
+    "capt.alt_ias_combined": {
+      "kind": "identity_unresolved",
+      "unit": null,
+      "criteria": "none",
+      "details": "Gauge identity/mechanism ambiguous in current source picture: must not manufacture start reading"
+    },
+    "capt.vertical_speed": {
+      "kind": "zero_on_stable_static_pressure",
+      "unit": "ft/min",
+      "criteria": "aircraft_stationary_and_static_pressure_stable",
+      "details": "VSI indicates zero climb/descent; dial zero position not universal twelve oclock",
+      "value": 0
+    },
+    "capt.clock": {
+      "kind": "clock_retained",
+      "unit": "time",
+      "criteria": "clock_battery_or_clock_mechanism",
+      "details": "Clock remains actual time or stops at retained position; never zeros because aircraft is cold dark."
+    },
+    "eng.left_upper_20_20": {
+      "kind": "identity_unresolved",
+      "unit": null,
+      "criteria": "none",
+      "details": "Gauge identity/mechanism ambiguous in current source picture: must not manufacture start reading"
+    },
+    "eng.fuel_qty.center": {
+      "kind": "fuel_quantity_retained",
+      "unit": "fuel_qty",
+      "criteria": "fuel_mass_or_quantity_from_tank_state",
+      "details": "Fuel physically remains in tanks when electric buses are off; display may blank depending sensor power."
+    },
+    "eng.fuel_qty.1": {
+      "kind": "fuel_quantity_retained",
+      "unit": "fuel_qty",
+      "criteria": "fuel_mass_or_quantity_from_tank_state",
+      "details": "Fuel physically remains in tanks when electric buses are off; display may blank depending sensor power."
+    },
+    "eng.fuel_qty.2": {
+      "kind": "fuel_quantity_retained",
+      "unit": "fuel_qty",
+      "criteria": "fuel_mass_or_quantity_from_tank_state",
+      "details": "Fuel physically remains in tanks when electric buses are off; display may blank depending sensor power."
+    },
+    "eng.n1.1": {
+      "kind": "rotor_zero",
+      "unit": "%",
+      "criteria": "engine_rotor_stopped",
+      "details": "Spool speed 0 when stopped; analogue pointer position still requires native tick geometry",
+      "value": 0
+    },
+    "eng.n1.2": {
+      "kind": "rotor_zero",
+      "unit": "%",
+      "criteria": "engine_rotor_stopped",
+      "details": "Spool speed 0 when stopped; analogue pointer position still requires native tick geometry",
+      "value": 0
+    },
+    "eng.egt.1": {
+      "kind": "engine_thermal",
+      "unit": "°C",
+      "criteria": "engines_stopped",
+      "details": "Exhaust temperature trends toward ambient after cool-down; unpowered electrical presentation may blank"
+    },
+    "eng.egt.2": {
+      "kind": "engine_thermal",
+      "unit": "°C",
+      "criteria": "engines_stopped",
+      "details": "Exhaust temperature trends toward ambient after cool-down; unpowered electrical presentation may blank"
+    },
+    "eng.n2.1": {
+      "kind": "rotor_zero",
+      "unit": "%",
+      "criteria": "engine_rotor_stopped",
+      "details": "Spool speed 0 when stopped; analogue pointer position still requires native tick geometry",
+      "value": 0
+    },
+    "eng.n2.2": {
+      "kind": "rotor_zero",
+      "unit": "%",
+      "criteria": "engine_rotor_stopped",
+      "details": "Spool speed 0 when stopped; analogue pointer position still requires native tick geometry",
+      "value": 0
+    },
+    "eng.fuel_flow.1": {
+      "kind": "fuel_flow_zero",
+      "unit": "flow",
+      "criteria": "engine_fuel_cutoff",
+      "details": "Fuel flow 0 when no fuel injected (fuel used totals retain their values)",
+      "value": 0
+    },
+    "eng.fuel_flow.2": {
+      "kind": "fuel_flow_zero",
+      "unit": "flow",
+      "criteria": "engine_fuel_cutoff",
+      "details": "Fuel flow 0 when no fuel injected (fuel used totals retain their values)",
+      "value": 0
+    },
+    "eng.oil_pressure.1": {
+      "kind": "oil_pressure_zero",
+      "unit": "psi",
+      "criteria": "engines_stopped_and_oil_pressure_dissipated",
+      "details": "Oil pressure trends to zero after engine stop; transient residual pressure is not magically zero",
+      "value": 0
+    },
+    "eng.oil_pressure.2": {
+      "kind": "oil_pressure_zero",
+      "unit": "psi",
+      "criteria": "engines_stopped_and_oil_pressure_dissipated",
+      "details": "Oil pressure trends to zero after engine stop; transient residual pressure is not magically zero",
+      "value": 0
+    },
+    "eng.oil_temperature.1": {
+      "kind": "engine_oil_thermal",
+      "unit": "°C",
+      "criteria": "engines_stopped",
+      "details": "Oil temperature is retained and cools toward ambient, not always 0°C"
+    },
+    "eng.oil_temperature.2": {
+      "kind": "engine_oil_thermal",
+      "unit": "°C",
+      "criteria": "engines_stopped",
+      "details": "Oil temperature is retained and cools toward ambient, not always 0°C"
+    },
+    "eng.vibration.1": {
+      "kind": "vibration_zero",
+      "unit": "units",
+      "criteria": "rotors_stopped",
+      "details": "Vibration 0 when rotating assembly stopped",
+      "value": 0
+    },
+    "eng.vibration.2": {
+      "kind": "vibration_zero",
+      "unit": "units",
+      "criteria": "rotors_stopped",
+      "details": "Vibration 0 when rotating assembly stopped",
+      "value": 0
+    },
+    "eng.hyd_pressure.a": {
+      "kind": "hydraulics_condition",
+      "unit": "psi",
+      "criteria": "hydraulic_pumps_off",
+      "details": "Hydraulic pressures can retain residuals/accumulator pressure; use actual system model"
+    },
+    "eng.hyd_pressure.b": {
+      "kind": "hydraulics_condition",
+      "unit": "psi",
+      "criteria": "hydraulic_pumps_off",
+      "details": "Hydraulic pressures can retain residuals/accumulator pressure; use actual system model"
+    },
+    "fo.flap_position": {
+      "kind": "mechanical_last_position",
+      "unit": "flap_detent",
+      "criteria": "none",
+      "details": "Flaps remain at their actual position; UP (0) only if left/right panels are physically up"
+    },
+    "fo.hyd_brake_pressure": {
+      "kind": "accumulator_retained",
+      "unit": "psi",
+      "criteria": "hydraulic_system_state_available",
+      "details": "Brake accumulator can retain pressure with AC/DC buses off"
+    },
+    "fo.airspeed": {
+      "kind": "mechanical_low_stop",
+      "unit": "kt",
+      "criteria": "aircraft_stationary_and_no_pitot_pressure",
+      "details": "Actual indicated speed is zero; photographed scale starts at 60 kt, so pointer parks at its low stop, not a nonexistent printed zero",
+      "physicalValue": 0,
+      "visualPegKts": 60,
+      "vmmoMarkerIndependent": true
+    },
+    "fo.rmi": {
+      "kind": "nav_power_dependent",
+      "unit": "bearing_deg",
+      "criteria": "nav_receiver_off_or_power_unavailable",
+      "details": "Needles can park or retain last bearing; compass card and bearing needles are NOT calibrated to zero heading."
+    },
+    "fo.left_linear": {
+      "kind": "indicator_identity_unknown",
+      "unit": null,
+      "criteria": "none",
+      "details": "Two linear indicator windows not yet physically identified, no artificial zero"
+    },
+    "fo.right_linear": {
+      "kind": "indicator_identity_unknown",
+      "unit": null,
+      "criteria": "none",
+      "details": "Two linear indicator windows not yet physically identified, no artificial zero"
+    },
+    "fo.outer_altimeter": {
+      "kind": "static_pressure_altitude",
+      "unit": "ft",
+      "criteria": "static_pressure_and_baro_setting_available",
+      "details": "On QNH aircraft at airport generally indicates airport elevation; do not force 0 ft."
+    },
+    "fo.outer_vertical_speed": {
+      "kind": "zero_on_stable_static_pressure",
+      "unit": "ft/min",
+      "criteria": "aircraft_stationary_and_static_pressure_stable",
+      "details": "VSI indicates zero climb/descent; dial zero position not universal twelve oclock",
+      "value": 0
+    },
+    "fo.outer_clock": {
+      "kind": "clock_retained",
+      "unit": "time",
+      "criteria": "clock_battery_or_clock_mechanism",
+      "details": "Clock remains actual time or stops at retained position; never zeros because aircraft is cold dark."
+    },
+    "ped.stab_trim.left": {
+      "kind": "mechanical_last_position",
+      "unit": "trim_units",
+      "criteria": "none",
+      "details": "Stabilizer trim holds actual surface position after power loss"
+    },
+    "ped.stab_trim.right": {
+      "kind": "mechanical_last_position",
+      "unit": "trim_units",
+      "criteria": "none",
+      "details": "Stabilizer trim holds actual surface position after power loss"
+    },
+    "ped.rudder_trim": {
+      "kind": "mechanical_last_position",
+      "unit": "rudder_trim_units",
+      "criteria": "none",
+      "details": "Rudder trim holds last actual trim angle"
+    },
+    "oh.crew_oxygen.pressure": {
+      "kind": "bottle_pressure_retained",
+      "unit": "psi",
+      "criteria": "bottle_contents_known",
+      "details": "Oxygen bottle has physical pressure with aircraft electrical power off. Never force zero unless empty.",
+      "installed": true,
+      "source": "panel-mosaic-lab/cockpit/oxygen-pressure-gauge-model.js"
+    }
+  }
+}
