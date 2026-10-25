@@ -43,12 +43,20 @@ for panel,(img,path,digest) in images.items():
     maxRadius=round(min(tw,th)*.22)
     circles=cv2.HoughCircles(
         blurred,cv2.HOUGH_GRADIENT,dp=1.25,minDist=max(38,minRadius*1.5),
-        param1=125,param2=37,minRadius=minRadius,maxRadius=maxRadius)
+        param1=125,param2=95,minRadius=minRadius,maxRadius=maxRadius)
     detections=[]
     if circles is not None:
         for x,y,r in np.round(circles[0]).astype(int):
             detections.append({'x':round(x/scale,1),'y':round(y/scale,1),
                                'radius':round(r/scale,1)})
+    # High-confidence, large rings only; suppress duplicates and clutter.
+    candidates=sorted(detections,key=lambda c:-c['radius'])
+    detections=[]
+    for c in candidates:
+        if c['radius']<max(45,85/scale): continue
+        if all(((c['x']-d['x'])**2+(c['y']-d['y'])**2)**.5>min(c['radius'],d['radius'])*.85 for d in detections):
+            detections.append(c)
+        if len(detections)>=38:break
     detections.sort(key=lambda c:(c['y'],c['x']))
     # Native coordinate grid, not a fictitious calibration angle or digit.
     sheet=Image.new('RGB',(max(tw+120,500),th+90),'#e7ecf2')
@@ -66,7 +74,7 @@ for panel,(img,path,digest) in images.items():
         painter.text((4,py),str(ny),fill='#ad3000',font=font)
     for i,c in enumerate(detections):
         x,y,r=c['x']*scale+70,c['y']*scale+48,c['radius']*scale
-        painter.ellipse((x-r,y-r,x+r,y+r),outline='#00efff',width=2)
+        painter.ellipse((x-r,y-r,x+r,y+r),outline='#00dfc2',width=1)
         painter.ellipse((x-3,y-3,x+3,y+3),outline='#fa2a73',width=2)
         painter.text((x+4,y+3),str(i),fill='#ff376f',stroke_width=1,stroke_fill='#ffffff',font=font)
     # Previously registered centers shown in magenta + face suffix
