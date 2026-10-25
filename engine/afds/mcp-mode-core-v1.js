@@ -71,7 +71,6 @@ function transition(state,action){
   if(action.key==="approachCapture"&&action.value!==true)s.pending.approach=false;
   return done();
  }
- if(s.electrical.mcpPower!==true)return rejected(s,"MCP_POWER_NOT_OBSERVED");
  if(action.type==="FD"){
   if(!["left","right"].includes(action.side)||typeof action.on!=="boolean")throw Error("Invalid FD position");
   s.fd[action.side]=action.on;
@@ -82,6 +81,7 @@ function transition(state,action){
   if(typeof action.armed!=="boolean")throw Error("Invalid A/T switch");
   s.autoThrottleArm=action.armed;if(!action.armed)s.modes.thrust=null;return done();
  }
+ if(s.electrical.mcpPower!==true)return rejected(s,"MCP_POWER_NOT_OBSERVED");
  if(action.type==="VALUE"){
   const v=action.value,id=action.id;
   const bounds={courseL:[0,359,1],courseR:[0,359,1],heading:[0,359,1],speed:[100,399,1],altitude:[0,49900,100],verticalSpeed:[-9900,9900,100]};
