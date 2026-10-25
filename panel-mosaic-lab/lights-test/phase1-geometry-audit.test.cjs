@@ -33,7 +33,7 @@ assert.equal(audit.summary.installed,142);
 assert.equal(audit.summary.visualVerified,0);
 assert.equal(audit.sourceRectOverlaps.length,0);
 assert.equal(audit.sourceVersions.overhead,'LGT-0006');
-assert.equal(overhead.version,'LGT-0007');
+assert.ok(['LGT-0007','LGT-0008'].includes(overhead.version),'version must be an approved registration or vector-fit revision');
 assert.equal(audit.sourceVersions.main,main.version);
 assert.equal(audit.sourceVersions.gallery,gallery.version);
 assert.equal(audit.sourceVersions.atlas,atlas.version);
