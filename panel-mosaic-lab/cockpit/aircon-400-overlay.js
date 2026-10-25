@@ -178,6 +178,7 @@
  function applyFamily(value){
   if(!['B737-400','B737-300-500'].includes(value))return;
   family=value;document.documentElement.classList.toggle('b737-aircon400',family==='B737-400');
+  document.documentElement.classList.toggle('b737-aircon300500',family==='B737-300-500');
   if(layer)layer.hidden=family!=='B737-400';
   if(family==='B737-400')publishIndicatedTemperature();
  }
