@@ -17,6 +17,22 @@ assert.equal(a.assets[throttle.asset].sha256,'e533f907b3826dbf8fc986812b9045c2ef
 for(const asset of Object.values(a.assets)){const bytes=fs.readFileSync(path.resolve(__dirname,asset.url));assert.equal(bytes.length,asset.bytes);assert.equal(crypto.createHash('sha256').update(bytes).digest('hex'),asset.sha256);assert.equal(crypto.createHash('sha1').update(Buffer.concat([Buffer.from('blob '+bytes.length+'\0'),bytes])).digest('hex'),asset.gitBlobSha);}
 const zoom=m.zoomAnchor(.25,.5,100,200,300,250);assert.equal((100+300)/.25,(zoom.left+300)/.5);assert.equal((200+250)/.25,(zoom.top+250)/.5);assert.ok(m.fit({w:4400,h:8100},390,600)>=.04);
 const centered=m.zoomAnchor(.1,.2,0,0,500,200,{x:300,y:20},{x:100,y:0});assert.equal((500-300)/.1,(centered.left+500-100)/.2);assert.equal((200-20)/.1,(centered.top+200)/.2);
+
+const airconFile=path.join(__dirname,'../assets/locked/2026-10-23/Boeing-Style Environmental Control Panel.png');
+assert.ok(fs.existsSync(airconFile),'737-400 owner Air Conditioning image must be uploaded');
+const airconPng=fs.readFileSync(airconFile);
+assert.equal(airconPng.subarray(1,4).toString(),'PNG','Owner artwork must be a PNG');
+assert.deepEqual([airconPng.readUInt32BE(16),airconPng.readUInt32BE(20)],[1122,1402],'737-400 OH20 source dimensions are fixed for needle registration');
+const oh20Bridge=fs.readFileSync(path.join(__dirname,'overhead-bridge.js'),'utf8');
+assert.ok(oh20Bridge.includes('Boeing-Style Environmental Control Panel.png'),'Bridge must reference the uploaded owner image');
+assert.ok(oh20Bridge.includes('.atlas-piece[data-key="OH20"] .atlas-image-window'),'OH20 runtime-only replacement target');
+assert.ok(oh20Bridge.includes("airframeFamily==='B737-400'"),'B737-400 must be the sole background replacement trigger');
+assert.ok(oh20Bridge.includes("setAirframeArtwork(savedAirframe())"),'Cross-tab aircraft selection must be honoured');
+assert.ok(oh20Bridge.includes("action==='aircon-background'"),'Embedded overhead must accept aircraft selection changes');
+const airconSettings=fs.readFileSync(path.join(__dirname,'aircraft-settings.js'),'utf8');
+const airconParent=fs.readFileSync(path.join(__dirname,'app.js'),'utf8');
+assert.ok(airconSettings.includes("action:'aircon-background', family:selected.family.id"),'Settings swaps the visible OH20');
+assert.ok(airconParent.includes("command('aircon-background'"),'New overhead frames restore aircraft family');
 const html=fs.readFileSync(path.join(__dirname,'overhead-stage.html'),'utf8');for(const src of ['performance/overhead-renderer.js?v=PERF-0001','app.js?v=RG-0001','rotary-motion-rm0002.js?v=RM-0004','rotary-guards.js?v=ISN-0003','rotary-guards-model.js?v=RM-0003','overhead-bridge.js?v=PRESS-OH22-0005-AIRCON400','lights.js?v=LGT-0006'])assert.ok(html.includes(src),src);assert.ok(!html.includes('data-cockpit-entry'));
 assert.equal(a.regions.find(r=>r.id==='overhead').embeddedUrl,'./overhead-stage.html?v=ISN-0003-PERF-0001-LGT-0006-PRESS-OH22-0005-AIRCON400','Unified must reload current overhead bridge and start cutout handling');
 const interactive=fs.readFileSync(path.join(__dirname,'../interactive-overhead/rotary-guards.js'),'utf8');
