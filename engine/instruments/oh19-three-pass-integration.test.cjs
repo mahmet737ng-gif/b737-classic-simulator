@@ -19,16 +19,45 @@ const outer=native.scales.find(s=>s.mode==='diffPressure').allVisibleTickCandida
 const majors=outer.filter(t=>t.labelOrigin==='printed_major');
 function harness(active){
  const handlers={};let selected=active;
+ class Element{
+  constructor(tag){this.tag=tag;this.attrs={};this.children=[];this.style={}}
+  setAttribute(key,value){this.attrs[key]=value}
+  append(node){this.children.push(node)}
+  querySelector(selector){
+   if(selector.startsWith('.atlas-piece'))return piece;
+   if(selector==='[data-cabin-dual-needles]')
+    return this.children.find(e=>e.attrs['data-cabin-dual-needles']==='OH19')||null;
+   return null;
+  }
+ }
+ const host=new Element('host');
+ const piece=new Element('div');
+ piece.style={left:'12px',top:'18px',width:'600px',height:'585px'};
+ const framedDoc={
+  getElementById:name=>name==='atlasAbsolute'?host:null,
+  createElementNS:(_namespace,tag)=>new Element(tag)
+ };
+ const frame={contentDocument:framedDoc,addEventListener:()=>{}};
+ const doc={baseURI:'https://example.invalid/b737/',
+  getElementById:name=>name==='overheadFrame'?frame:null,
+  querySelector:()=>null};
  const win={B737CabinDualNeedlesModel:model,
   B737PressurizationIntegration:{getSelected:()=>selected},
   addEventListener:(name,fn)=>{handlers[name]=fn}};
- const doc={baseURI:'https://example.invalid/b737/',getElementById:()=>null,querySelector:()=>null};
  vm.runInNewContext(spriteUI,{window:win,document:doc,URL,console,MutationObserver:class {}});
+ function blades(){
+  const layer=host.children.find(x=>x.attrs['data-cabin-dual-needles']==='OH19');
+  assert.ok(layer,'The OH19 SVG must really mount onto Unified');
+  const items=layer.children.map(group=>group.children[0]);
+  assert.deepEqual(items.map(x=>x.attrs['data-cabin-needle']),['press','cabAlt']);
+  return {press:items[0],cabAlt:items[1]};
+ }
  return {
   send:(system,p)=>handlers['b737:pressurization-state']({detail:{system,output:{physical:p}}}),
   switchTo:name=>{selected=name},
   angles:()=>win.B737UnifiedCabinNeedles.getAngles(),
   physical:()=>win.B737UnifiedCabinNeedles.getMeasuredReadings(),
+  painted:()=>Object.fromEntries(Object.entries(blades()).map(([k,v])=>[k,v.style.transform])),
   malformed:()=>handlers['b737:pressurization-state']({detail:{system:selected,output:{physical:{cabinAltitudeFt:NaN,differentialPsid:0}}}})
  };
 }
@@ -86,7 +115,9 @@ for(let pass=1;pass<=3;pass++){
   assert.equal(app.physical().operationalNeedleAuthorized,false);
   assert.equal(app.angles().press,model.differentialPressurePreviewBearing(0));
   assert.equal(app.angles().cabAlt,model.cabinAltitudePreviewBearing(field));
-  const first=app.angles();
+  assert.equal(app.painted().press,'rotate('+app.angles().press+'deg)');
+  assert.equal(app.painted().cabAlt,'rotate('+app.angles().cabAlt+'deg)');
+  const first=app.angles(),firstPaint=app.painted();
   app.send('DCPCS',{cabinAltitudeFt:20000,differentialPsid:7});
   assert.deepEqual(app.angles(),first);
   app.malformed();assert.deepEqual(app.angles(),first);
@@ -96,6 +127,10 @@ for(let pass=1;pass<=3;pass++){
   app.send('CPCS',moved);
   assert.ok(app.angles().press>first.press);
   assert.equal(app.angles().cabAlt,model.cabinAltitudePreviewBearing(moved.cabinAltitudeFt));
+  assert.notEqual(app.painted().press,firstPaint.press,
+   'pressure event must rotate the actual mounted SVG blade, not only a state variable');
+  assert.equal(app.painted().press,'rotate('+app.angles().press+'deg)');
+  assert.equal(app.painted().cabAlt,'rotate('+app.angles().cabAlt+'deg)');
   app.switchTo('DCPCS');const held=app.angles();
   app.send('CPCS',{cabinAltitudeFt:40000,differentialPsid:9});
   assert.deepEqual(app.angles(),held);
