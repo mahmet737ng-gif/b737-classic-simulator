@@ -1,44 +1,44 @@
 {
   "schema": "b737.overhead-toggle-overlay.v1",
-  "version": "TGL-0007-PIVOT-AND-CLEANUP",
+  "version": "TGL-0008-SHAFT-CENTERED",
   "baseVersion": "UPD-0012-OVH-measured-seams",
   "baseLayout": "../all-overhead/atlas-layout.json",
   "baseSpec": "../all-overhead/spec.json",
   "guideLibraryFileId": "libfile_555402960f948191b6501fa77d2b8246",
   "scope": "plain toggle switches shown on owner lower-overhead guide; guarded/paddle controls, knobs, buttons and upper OH01-OH06 are separate stages",
   "approvedVisuals": [
-    "b737-cockpit-toggle-v5-centered-true-pivot"
+    "b737-cockpit-toggle-v6-shaft-centered-fixed-collar"
   ],
   "assets": {
     "vertical-off": {
-      "url": "../../shared-assets/toggle-switch-standard-v5/b737-toggle-five-centered-v7.webp",
+      "url": "../../shared-assets/toggle-switch-standard-v6/b737-toggle-five-shafts-centered-v8.webp",
       "frame": 4,
-      "sha256": "fc579b9ed02d151d2a180ec76f7c3974dde184e566fadbd8d881625a6389d21f"
+      "sha256": "1bf7934b77b32acac90d7ad10e41e3810a5ca65d70ff967c06f5ee171e3792f0"
     },
     "vertical-center": {
-      "url": "../../shared-assets/toggle-switch-standard-v5/b737-toggle-five-centered-v7.webp",
+      "url": "../../shared-assets/toggle-switch-standard-v6/b737-toggle-five-shafts-centered-v8.webp",
       "frame": 1,
-      "sha256": "fc579b9ed02d151d2a180ec76f7c3974dde184e566fadbd8d881625a6389d21f"
+      "sha256": "1bf7934b77b32acac90d7ad10e41e3810a5ca65d70ff967c06f5ee171e3792f0"
     },
     "vertical-on": {
-      "url": "../../shared-assets/toggle-switch-standard-v5/b737-toggle-five-centered-v7.webp",
+      "url": "../../shared-assets/toggle-switch-standard-v6/b737-toggle-five-shafts-centered-v8.webp",
       "frame": 3,
-      "sha256": "fc579b9ed02d151d2a180ec76f7c3974dde184e566fadbd8d881625a6389d21f"
+      "sha256": "1bf7934b77b32acac90d7ad10e41e3810a5ca65d70ff967c06f5ee171e3792f0"
     },
     "horizontal-left": {
-      "url": "../../shared-assets/toggle-switch-standard-v5/b737-toggle-five-centered-v7.webp",
+      "url": "../../shared-assets/toggle-switch-standard-v6/b737-toggle-five-shafts-centered-v8.webp",
       "frame": 0,
-      "sha256": "fc579b9ed02d151d2a180ec76f7c3974dde184e566fadbd8d881625a6389d21f"
+      "sha256": "1bf7934b77b32acac90d7ad10e41e3810a5ca65d70ff967c06f5ee171e3792f0"
     },
     "horizontal-center": {
-      "url": "../../shared-assets/toggle-switch-standard-v5/b737-toggle-five-centered-v7.webp",
+      "url": "../../shared-assets/toggle-switch-standard-v6/b737-toggle-five-shafts-centered-v8.webp",
       "frame": 1,
-      "sha256": "fc579b9ed02d151d2a180ec76f7c3974dde184e566fadbd8d881625a6389d21f"
+      "sha256": "1bf7934b77b32acac90d7ad10e41e3810a5ca65d70ff967c06f5ee171e3792f0"
     },
     "horizontal-right": {
-      "url": "../../shared-assets/toggle-switch-standard-v5/b737-toggle-five-centered-v7.webp",
+      "url": "../../shared-assets/toggle-switch-standard-v6/b737-toggle-five-shafts-centered-v8.webp",
       "frame": 2,
-      "sha256": "fc579b9ed02d151d2a180ec76f7c3974dde184e566fadbd8d881625a6389d21f"
+      "sha256": "1bf7934b77b32acac90d7ad10e41e3810a5ca65d70ff967c06f5ee171e3792f0"
     }
   },
   "controls": [

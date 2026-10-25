@@ -63,7 +63,7 @@ assert.equal(hqBytes.subarray(8,12).toString('ascii'),'WEBP');
 assert.equal(hqBytes.subarray(12,16).toString('ascii'),'VP8X');
 assert.equal(1+hqBytes.readUIntLE(24,3),3840);
 assert.equal(1+hqBytes.readUIntLE(27,3),768);
-assert.equal(registry.version,'TGL-0007-PIVOT-AND-CLEANUP');
+assert.equal(registry.version,'TGL-0008-SHAFT-CENTERED');
 
 // TGL-0005: prevent upside-down visuals and dark ring regressions.
 const poses=require('./toggle-pose-v1.js');
@@ -107,9 +107,9 @@ console.log('PASS TGL-0005: all 58 physical detents upright, no black fallback, 
 
 // TGL-0006: five sprites now share a halo-free, orthographic metal nut.
 // The original frozen photographic mosaic is deliberately unchanged.
-assert.equal(registry.approvedVisuals[0],'b737-cockpit-toggle-v5-centered-true-pivot');
+assert.equal(registry.approvedVisuals[0],'b737-cockpit-toggle-v6-shaft-centered-fixed-collar');
 assert.ok(registry.controls.length===58,'Every switch must still be mapped');
-assert.ok(Object.values(registry.assets).every(a=>a.url.includes('toggle-switch-standard-v5/b737-toggle-five-centered-v7.webp')));
+assert.ok(Object.values(registry.assets).every(a=>a.url.includes('toggle-switch-standard-v6/b737-toggle-five-shafts-centered-v8.webp')));
 console.log('PASS TGL-0006: unified overhead reuses one transparent no-halo five-pose nut atlas with all physical detents intact.');
 
 /* TGL-0007: eliminate black circles and recenter the metal collar itself. */
@@ -133,6 +133,17 @@ for(const [panel,color] of [['OH12',[200,217,226]],['OH09',[92,105,120]],['OH23-
  assert.equal(px(60,60,3),255,'Photographed hole masked below metal collar');
 }
 assert.ok(mountedSource.includes('p.diameter,c.placementId)'),'The background sampler must know the original panel');
-assert.ok(Object.values(registry.assets).every(a=>a.sha256==='fc579b9ed02d151d2a180ec76f7c3974dde184e566fadbd8d881625a6389d21f'));
+assert.ok(Object.values(registry.assets).every(a=>a.sha256==='1bf7934b77b32acac90d7ad10e41e3810a5ca65d70ff967c06f5ee171e3792f0'));
 assert.ok(html2.includes('socket-cleanup-v3.js?v=TGL-0007'));
 console.log('PASS TGL-0007: centered bezel; only narrow transparent repair, original old black pixel discarded.');
+
+/* TGL-0008: the shaft artwork, NOT the nut nor the panel socket, is aligned. */
+const alignment=require('../../shared-assets/toggle-switch-standard-v6/alignment.json');
+assert.equal(alignment.baseTranslation.x,-28);
+assert.equal(alignment.baseTranslation.y,-7);
+assert.equal(alignment.shaftCorrection.x,30,'shaft moved to the right inside the fixed nut');
+assert.equal(alignment.shaftCorrection.y,0);
+assert.equal(alignment.shiftAppliedToBase,false,'nut image must not move along with the shaft');
+assert.deepEqual(alignment.states,['LEFT','CENTER','RIGHT','UP','DOWN']);
+assert.equal(registry.version,'TGL-0008-SHAFT-CENTERED');
+console.log('PASS TGL-0008: stationary socket/nut, shaft re-centered 30 source pixels, five states unchanged.');
