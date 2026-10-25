@@ -1,0 +1,33 @@
+name: Pixel audit B737 annunciator locations
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - tools/lamp-photo-registration.py
+      - .github/workflows/lamp-photo-qa.yml
+permissions:
+  contents: read
+jobs:
+  native-photo-evidence:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        panel_group:
+          - "UPPER OH07 OH09 OH11 OH12 OH13"
+          - "OH14 OH15 OH16 OH17"
+          - "OH18 OH19-VOICE OH20 OH21 OH22"
+          - "engine captain fo-inner fo-outer"
+    steps:
+      - uses: actions/checkout@v4
+      - name: Ensure approved mosaic is unchanged
+        run: python3 panel-mosaic-lab/verify-final-overhead.py
+      - name: Load image inspection dependencies
+        run: python3 -m pip install --disable-pip-version-check Pillow
+      - name: Generate and log original-photo crosshair crops
+        shell: bash
+        run: |
+          set -euo pipefail
+          for panel in ${{ matrix.panel_group }}; do
+            python3 tools/lamp-photo-registration.py --only "$panel" --emit-preview
+          done
