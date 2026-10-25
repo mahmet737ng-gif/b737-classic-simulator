@@ -6,7 +6,11 @@
 })(typeof globalThis==='object'?globalThis:this,function(){
  'use strict';
  // Registered to the unchanged OH11 (1203x1308) and OH12 (1024x1536) artwork.
- // SOURCE NATIVE PIXELS: visual QA by comparing actual OH11/OH12 locked images with pointer rays.\n // The old (98/102px) and first attempted enlarged (128/135px) pointers overshot the\n // inner ends of the 0-tick lines. These 64px radii and bearing offsets are\n // approximate SOURCE-image fits; each dial still needs full tick-by-tick QA.
+ // SOURCE NATIVE PIXELS: locked OH11/OH12 originals were checked side-by-side with
+ // candidate pointer rays. 128/135px proposals crossed beyond the inner tick;
+ // 64px proposals stopped short. Original near-98/102px reach is the
+ // best source-image 0-tick approximation pending the full tick survey.
+ // Sprite paths stay owner-approved and byte-identical.
  const panels=Object.freeze({OH11:Object.freeze({width:1203,height:1308}),OH12:Object.freeze({width:1024,height:1536})});
  // Upper edges of the grey half-round covers, traced from the unchanged source panels.
  // Clipping to these contours keeps every white blade exactly within the black dial.
@@ -16,11 +20,11 @@
   OH12_APU:Object.freeze({top:1130,offset:0,edge:Object.freeze([[563,1324],[590,1326],[625,1326],[648,1325],[666,1318],[685,1310],[705,1305],[725,1303],[745,1305],[765,1311],[784,1319],[803,1325],[835,1326],[879,1326]])})
  });
  const needles=Object.freeze([
-  Object.freeze({id:'driveOil1',label:'GEN DRIVE OIL TEMP 1',piece:'OH11',x:266,y:1021,tipRadius:64,initialAngle:-46}),
-  Object.freeze({id:'driveOil2',label:'GEN DRIVE OIL TEMP 2',piece:'OH11',x:781,y:1021,tipRadius:64,initialAngle:-46}),
-  Object.freeze({id:'acAmps1',label:'A.C. AMPS 1',piece:'OH12',x:210,y:265,tipRadius:64,initialAngle:-55}),
-  Object.freeze({id:'acAmps2',label:'A.C. AMPS 2',piece:'OH12',x:705,y:265,tipRadius:64,initialAngle:-55}),
-  Object.freeze({id:'apuAcAmps',label:'APU A.C. AMPS',piece:'OH12',window:'OH12_APU',x:724,y:1334,tipRadius:64,initialAngle:-55})
+  Object.freeze({id:'driveOil1',label:'GEN DRIVE OIL TEMP 1',piece:'OH11',x:266,y:1021,tipRadius:98,initialAngle:-46}),
+  Object.freeze({id:'driveOil2',label:'GEN DRIVE OIL TEMP 2',piece:'OH11',x:781,y:1021,tipRadius:98,initialAngle:-46}),
+  Object.freeze({id:'acAmps1',label:'A.C. AMPS 1',piece:'OH12',x:210,y:265,tipRadius:102,initialAngle:-45}),
+  Object.freeze({id:'acAmps2',label:'A.C. AMPS 2',piece:'OH12',x:705,y:265,tipRadius:102,initialAngle:-45}),
+  Object.freeze({id:'apuAcAmps',label:'APU A.C. AMPS',piece:'OH12',window:'OH12_APU',x:724,y:1334,tipRadius:124,initialAngle:-47})
  ]);
  function angle(value){const n=Number(value);if(!Number.isFinite(n))throw Error('Needle angle must be finite');return Math.max(-90,Math.min(90,n));}
  function windowPath(needle){
