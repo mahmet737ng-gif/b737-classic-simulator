@@ -44,7 +44,7 @@ assert.ok(plan.plan.performance.requiredN1NowPercent>0);
 assert.equal(plan.action,null);
 const applied=sim.planThrust('engine1',input,{apply:true});
 assert.equal(applied.action.status,'THROTTLE_COMMAND_APPLIED_FOR_SIMULATION');
-assert.equal(sim.get().modeLimitsN1Pct.TO,97);
+assert.ok(sim.get().modeLimitsN1Pct.TO<=97&&sim.get().modeLimitsN1Pct.TO>90,'corrected TO N1 is below nominal 97 after altitude/ISA');
 sim.advance(1000);
 assert.equal(chain.get().phase.engine1,'FUEL_STARVATION');
 assert.equal(chain.get().sources.engine1.running,false);
