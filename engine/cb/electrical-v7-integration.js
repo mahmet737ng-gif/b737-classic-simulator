@@ -16,7 +16,9 @@ const ALLOCATIONS=Object.freeze([
   {key:"P6-3|ALL|E5",load:"fuel.centerLeft",label:"LEFT CENTER BOOST PUMP",bus:null,location:"MRG p.136 Fuel Boost Pumps Center P6-3 D5/E5; photograph P6-3 E5"},
   {key:"P18-2|ALL|D12",load:"com.vhf1",label:"VHF COM 1",bus:null,location:"MRG p.135 VHF 1 P18-2 D12; photograph P18-2 D12"},
   {key:"P6-1|ALL|C2",load:"com.vhf2",label:"VHF COM 2",bus:null,location:"MRG p.135 VHF 2 P6-1 C2; photograph P6-1 C2"},
-  {key:"P18-1|ALL|A1",load:"nav.vorloc1",label:"VOR/LOC 1",bus:null,location:"MRG p.135 VOR/LOC 1 P18-1 A1; photograph P18-1 A1"}
+  {key:"P18-1|ALL|A1",load:"nav.vorloc1",label:"VOR/LOC 1",bus:null,location:"MRG p.135 VOR/LOC 1 P18-1 A1; photograph P18-1 A1"},
+  {key:"P6-12|ALL|C2",load:"hyd.elecA",label:"HYD SYS A ELECTRIC PUMP",bus:"generator2",location:"MRG p.136 System A Electric Pump P6-12 C2; p.330 Classic opposite GEN BUS"},
+  {key:"P6-11|ALL|C2",load:"hyd.elecB",label:"HYD SYS B ELECTRIC PUMP",bus:"generator1",location:"MRG p.136 System B Electric Pump P6-11 C2; p.330 Classic opposite GEN BUS"}
 ]);
 const CATALOG_WARNING="The photographed CB label and MRG equipment index establish functional association only; individual bus feed and alternate/backup power path have not been validated for EP-FSI.";
 function assertNetwork(net){if(!net||typeof net.state!=="function")throw Error("CB network required");}
@@ -28,15 +30,15 @@ function protectedCircuits(net,electricalResult){
    if(!b)throw Error("Missing protected CB "+def.key);
    const open=Boolean(b.pulled||b.tripped);
    return {key:def.key,load:def.load,label:def.label,rating:b.rating,protectionCircuit:open?"OPEN":"CLOSED",
-     electricalBus:"UNKNOWN_UNTRACED",devicePower:open?false:null,
+     electricalBus:def.bus||"UNKNOWN_UNTRACED",devicePower:open?false:null,
      effect:open?"PROTECTED_CIRCUIT_INTERRUPTED":"EQUIPMENT_UPSTREAM_UNVERIFIED",
      confidence:"MRG_EQUIPMENT_ASSOCIATION_ONLY",source:SOURCE.mrg,sourceDetail:def.location};
  });
 }
-function project({cbNetwork,electricalV7Result,trainerResult=null}){
+function project({cbNetwork,electricalV7Result,trainerResult=null,trainerState=null}){
  const results=protectedCircuits(cbNetwork,electricalV7Result);
  const circuits=Object.fromEntries(results.map(x=>[x.load,x]));
- const overlay={fuel:{},com:{},nav:{},bus:electricalV7Result.bus,rectifiers:electricalV7Result.feed.tr,annunciations:{},powerAssumptions:"NONE_ADDED"};
+ const overlay={fuel:{},hyd:{},systemHyd:{A:null,B:null},com:{},nav:{},bus:electricalV7Result.bus,rectifiers:electricalV7Result.feed.tr,annunciations:{},powerAssumptions:"FUEL_TRAINER_SURROGATE; HYD_CLASSIC_MRG_GEN_BUS_GENERIC_EFFECTIVITY_UNREVIEWED"};
  for(const c of results){
   const [domain,id]=c.load.split(".");
   if(domain==="fuel"){
@@ -56,7 +58,23 @@ function project({cbNetwork,electricalV7Result,trainerResult=null}){
     overlay.fuel[id]={operational:null,cbOpen:c.protectionCircuit==="OPEN",
       effectClassification:c.effect};
    }
+  }else if(domain==="hyd"){
+   const motorOpen=c.protectionCircuit==="OPEN";
+   const bus=id==="elecA"?"generator2":"generator1";
+   const source=electricalV7Result.bus[bus];
+   const raw=trainerResult&&trainerResult.hyd&&trainerResult.hyd[id];
+   const running=motorOpen?false:source===null?null:!source?false:raw?Boolean(raw.switchOn&&!raw.overheat&&source):null;
+   overlay.hyd[id]={operating:running,lowPressure:running===null?null:!running,cbOpen:motorOpen,feedBus:bus,
+     source:"CLASSIC_MRG_P330_GENERIC; AIRFRAME_EFFECTIVITY_UNVERIFIED",
+     effectClassification:motorOpen?"PROTECTED_ELECTRIC_PUMP_CIRCUIT_OPEN":"GENERATOR_BUS_SUPPLY_TEST"};
   }else overlay[domain][id]={operational:null,cbOpen:c.protectionCircuit==="OPEN",effectClassification:c.effect};
+ }
+ if(trainerState&&trainerState.controls&&trainerState.controls.engineHyd){
+  const ctrl=trainerState.controls,ha=overlay.hyd.elecA,hb=overlay.hyd.elecB;
+  const engA=Boolean(ctrl.engineHyd.A&&ctrl.engine1Running),engB=Boolean(ctrl.engineHyd.B&&ctrl.engine2Running);
+  overlay.systemHyd.A=engA?true:ha.operating;
+  overlay.systemHyd.B=engB?true:hb.operating;
+  overlay.systemHydStatus="GENERIC_TRAINER_ENGINE_PUMP_OR_ELECTRIC_PUMP";
  }
  if(trainerResult&&trainerResult.fuel){
   const F=overlay.fuel;
