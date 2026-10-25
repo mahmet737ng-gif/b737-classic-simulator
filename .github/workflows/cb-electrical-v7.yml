@@ -1,0 +1,33 @@
+name: CB Electrical V7 Regression
+on:
+  push:
+    paths:
+      - "engine/cb/**"
+      - "cb-panel-lab/**"
+      - "engine/systems/electrical-v7.js"
+      - "engine/trainer/core.js"
+      - "tests/cb*.cjs"
+      - ".github/workflows/cb-electrical-v7.yml"
+  workflow_dispatch:
+jobs:
+  cb-v7:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out simulator
+        uses: actions/checkout@v4
+      - name: Install Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Check CB and Electrical V7 syntax
+        run: |
+          node --check engine/cb/cb-kernel.js
+          node --check engine/cb/electrical-v7-integration.js
+          node --check cb-panel-lab/electrical-bridge.js
+          node --check cb-panel-lab/v7-effects.js
+      - name: Validate breaker mechanical and fault state
+        run: npm run test:cb
+      - name: Validate source-mapped CB subsystem effects
+        run: npm run test:cb-v7
+      - name: Validate Electrical V7 upstream bus model
+        run: node tests/electrical-v7.test.cjs
