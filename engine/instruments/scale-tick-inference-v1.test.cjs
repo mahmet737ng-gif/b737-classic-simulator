@@ -114,3 +114,20 @@ test('OH09 uses 81 target positions without claiming 81 printed tick strokes',()
  assert.equal(f.stage2.inferredIntegerTargets.count,81);
  assert.equal(f.stage2.incrementInference.noClaimOf81PrintedStrokes,true);
 });
+
+
+test('A rotary needle follows the source-image circular arc, never the chord between printed ticks',()=>{
+ const pivot={x:100,y:100};
+ const s=inferTicks({direction:'clockwise',pivot,positionOrigin:'synthetic_geometry_for_unit_test',ticks:[
+  {x:0,y:100,labelValue:0,lengthPx:12},
+  {x:100,y:0,labelValue:10,lengthPx:12},
+  {x:200,y:100,labelValue:20,lengthPx:12}
+ ]});
+ const mid=mapValue(s,5);
+ assert.ok(Math.abs(mid.angleDeg+45)<1e-8);
+ assert.ok(Math.abs(Math.hypot(mid.position.x-100,mid.position.y-100)-100)<1e-8);
+ assert.ok(Math.abs(mid.position.x-29.289321881345)<1e-8);
+ assert.ok(Math.abs(mid.position.y-29.289321881345)<1e-8);
+ assert.equal(mapValue(s,-10).status,'out_of_range');
+ assert.equal(mapValue(s,-10,{outOfRange:'clamp'}).status,'pegged');
+});
