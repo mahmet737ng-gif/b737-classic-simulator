@@ -204,3 +204,21 @@ test('Stage10 requires an explicit wall clock for independently observed signals
  assert.throws(()=>runtime.create({routes,scales:subset,scaleEngine,dynamics:motion,
    profileRegistry:responseProfiles,observedMaxAgeMs:0}),/freshness window invalid/);
 });
+
+test('Ground-equalized Cabin Alt QA values follow each airport elevation, not a forced zero',()=>{
+ const source=signal.create(contracts),router=routeEngine.create(routes);
+ const angles=[];
+ for(const [icao,elevation] of [['OIAW',66],['OIMM',3260],['OIII',3963]]){
+  const work=runtime.create({routes,scales:subset,scaleEngine,dynamics:motion,
+    profileRegistry:responseProfiles,previewPowerPolicy:'training_qa_assume_power'});
+  const sensor=source.read({cabinPlant:{source:'PROVISIONAL_IDEAL_GAS_TRAINER',
+    cabinAltitudeFt:elevation,cabinRateFtMin:0,differentialPsid:0}});
+  const result=work.evaluate(router.project(sensor),{nowMs:1000});
+  assert.equal(result.pointers.cabAlt.sourceValue,elevation,icao);
+  assert.equal(result.pointers.cabAlt.status,'initialized',icao);
+  assert.equal(result.pointers.cabAlt.liveNeedleAuthorized,false);
+  assert.equal(result.pointers.press.sourceValue,0);
+  angles.push(result.pointers.cabAlt.simulationAngleDeg);
+ }
+ assert.ok(angles[0]<angles[1]&&angles[1]<angles[2]);
+});
