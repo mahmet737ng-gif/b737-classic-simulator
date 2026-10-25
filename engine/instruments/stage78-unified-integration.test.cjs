@@ -13,6 +13,7 @@ const scaleEngine=require('./stage5-scale-mapping-v1.js');
 const dynamics=require('./stage9-needle-dynamics-v1.js');
 const workbench=require('./stage10-needle-workbench-v1.js');
 const scales=require('./stage10-preview-scale-subset-v1.json');
+const responseProfiles=require('./stage9-dynamics-registry-v1.json');
 const index=fs.readFileSync('panel-mosaic-lab/cockpit/index.html','utf8');
 const code=fs.readFileSync('panel-mosaic-lab/cockpit/stage78-readonly-unified.js','utf8');
 const location='https://example.invalid/panel-mosaic-lab/cockpit/stage78-readonly-unified.js';
@@ -47,7 +48,8 @@ function boot(){
    calls.push(url);
    return {ok:true,json:async()=>url.includes('stage8-signal-contracts')?contracts:
       url.includes('stage8-pointer-routing')?routes:
-      url.includes('stage10-preview-scale-subset')?scales:policy};
+      url.includes('stage10-preview-scale-subset')?scales:
+      url.includes('stage9-dynamics-registry')?responseProfiles:policy};
  };
  vm.runInNewContext(code,{window,document,console:{error:e=>errors.push(String(e))},URL,fetch},
     {filename:'stage78-readonly-unified.js'});
