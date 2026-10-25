@@ -38,15 +38,13 @@ assert.equal(s.get().apu.generator.voltageV,115);
 assert.equal(s.get().apu.generator.frequencyHz,400);
 s.selectGenerator('APU',1);
 s.apuBleed(true);
-// Engine can motor before fuel pump selection, but fuel lever must be blocked
-// until both the N2 start cue AND fuel pump supply are true.
+// Nominal 85s APU / 100s engine timing with booster pumps OFF:
+// procedural cue remains 25% N2 while engine-driven suction is available.
 s.engineStart('engine1');
 assert.equal(s.get().engines.engine1.phase,'MOTORING');
-let early=s.fuelLever('engine1','IDLE');
-assert.equal(early.accepted,true,'Lever IDLE is never mechanically locked by N2');
-assert.equal(early.fuelAvailable,false,'Pumps OFF still prevent fuel delivery');
-assert.equal(s.get().engines.engine1.fuelLever,'IDLE');
+assert.equal(s.get().engines.engine1.fuelLever,'CUTOFF');
 assert.equal(s.get().engines.engine1.fuelFlowKgHr,0);
+assert.equal(s.get().engines.engine1.fuelSupplyReady,false,'At N2=0 engine suction pump is stationary');
 s.advance(20000);
 const earlyN2=s.get().engines.engine1.n2Percent;
 assert.ok(earlyN2>3&&earlyN2<25,'N2 must spool, not jump to 25');
@@ -56,12 +54,13 @@ assert.equal(s.get().engines.engine1.phase,'MOTORING');
 s.advance(1);
 assert.equal(s.get().engines.engine1.phase,'AWAIT_FUEL_LEVER_IDLE');
 assert.ok(Math.abs(s.get().engines.engine1.n2Percent-25)<0.1);
-assert.equal(s.get().engines.engine1.fuelSupplyReady===true,false);
-assert.equal(s.get().engines.engine1.fuelLever,'IDLE','Lever stays IDLE even without delivery');
-assert.equal(s.get().engines.engine1.fuelFlowKgHr,0);
-s.prepareFuel();
-assert.equal(s.get().engines.engine1.fuelSupplyReady,true);
-assert.equal(s.get().engines.engine1.phase,'LIGHT_OFF_SEQUENCE','Fuel and ignition trigger lightoff after previously selected IDLE');
+assert.equal(s.get().engines.engine1.fuelSupplyReady,true,'Engine-driven suction ready without electric pumps');
+assert.equal(s.get().engines.engine1.fuelSupplyReason,'OWN_MAIN_ENGINE_DRIVEN_SUCTION');
+assert.equal(s.get().engines.engine1.fuelLever,'CUTOFF');
+const accepted=s.fuelLever('engine1','IDLE');
+assert.equal(accepted.accepted,true);
+assert.equal(accepted.fuelAvailable,true);
+assert.equal(s.get().engines.engine1.phase,'LIGHT_OFF_SEQUENCE');
 assert.ok(s.get().engines.engine1.fuelFlowKgHr>0);
 s.advance(37500);
 assert.ok(s.get().engines.engine1.egtC>=615,'Nominal light-off EGT transient should approach 620C');
@@ -83,4 +82,4 @@ assert.equal(s.get().engines.engine2.phase,'OFF');
 const compStart=new Chain.Chain(s.start,{timingProfile:'CLASSROOM_COMPRESSED'});
 assert.equal(compStart.timing.apuReadyMs,1400);
 assert.throws(()=>new Chain.Chain(s.start,{timingProfile:'BAD'}),/Unknown ISN timing profile/);
-console.log('PASS ECU SLOW START: APU 85s, engine N2 25% at 40s, early IDLE accepted mechanically, pump source required, light-off EGT ~620C, starter cutout at ~90s, stable 22/60 by ~100s.');
+console.log('PASS ECU SLOW START: APU 85s, engine N2 25% at 40s, fuel via main-tank suction without electric pumps, light-off EGT ~620C, starter cutout at ~90s, stable 22/60 by ~100s.');
