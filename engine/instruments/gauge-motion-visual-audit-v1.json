@@ -1,0 +1,1516 @@
+{
+  "schema": "b737.gauge-motion-visual-audit.v1",
+  "aircraft": "EP-FSI B737-33V",
+  "created": "2026-10-25",
+  "sourceBasis": "13 native locked-source photo previews; actual pixels preserved via SHA, original gauge models and 4 user screenshot comparisons",
+  "important": "All movement type/direction classifications are visual engineering candidates, not final measurement or validated system physics; no numerically certified gauges yet.",
+  "counts": {
+    "faces": 53,
+    "directionalCandidates": 44,
+    "photoRadialCandidateFaces": 5,
+    "approvedNumericCalibrations": 0
+  },
+  "faces": [
+    {
+      "id": "oh.fuel.temperature",
+      "panel": "OH09",
+      "movementType": "bipolar_arc",
+      "direction": "clockwise",
+      "unit": "°C",
+      "printedRangeCandidate": {
+        "min": -40,
+        "max": 40,
+        "approved": false
+      },
+      "physicalPivot": {
+        "x": 506,
+        "y": 235,
+        "evidence": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "sourceImage": "panel-mosaic-lab/assets/locked/2026-10-23/OH09-FUEL-921977b56887.png",
+      "sourceSha256": "921977b568870233c9613a62101741dc369bb43f85b80b3769af07f05eeba733",
+      "printedScales": [
+        "primary"
+      ],
+      "numberOfIndependentNeedles": 1,
+      "needles": [
+        "fuelTemperature"
+      ],
+      "photoRadialCandidatesAvailable": false,
+      "classifyState": "MODEL_IDENTIFIED_VISUAL",
+      "geometryState": "NOT_CERTIFIED",
+      "numericState": "NOT_CERTIFIED",
+      "motionDynamics": "NO_RESPONSE_RATE_ASSUMED_FROM_IMAGE",
+      "reason": "Original fuel-temperature source photo shows 0 at top and 40 on left/right; left indicates negative temperature; 0..±40 visual reading; prior -70..70 deg is NOT a source tick calibration."
+    },
+    {
+      "id": "oh.elec.dc_amps",
+      "panel": "OH10",
+      "movementType": "bipolar_arc",
+      "direction": "clockwise",
+      "unit": "A",
+      "printedRangeCandidate": {
+        "min": null,
+        "max": null,
+        "approved": false
+      },
+      "physicalPivot": {
+        "x": 310,
+        "y": 168,
+        "evidence": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "sourceImage": "panel-mosaic-lab/assets/locked/2026-10-23/OH10-ELEC-LOSSLESS-9a1ca4d6cfb2.png",
+      "sourceSha256": "9a1ca4d6cfb277ec1404f3a464e957d81be9d9689a0810883364342d57b0f1ea",
+      "printedScales": [
+        "primary"
+      ],
+      "numberOfIndependentNeedles": 1,
+      "needles": [
+        "dcAmps"
+      ],
+      "photoRadialCandidatesAvailable": true,
+      "classifyState": "MODEL_IDENTIFIED_VISUAL",
+      "geometryState": "NOT_CERTIFIED",
+      "numericState": "NOT_CERTIFIED",
+      "motionDynamics": "NO_RESPONSE_RATE_ASSUMED_FROM_IMAGE",
+      "reason": "-50,0,+50 printed with extra unlabeled ticks outside; do not clamp ±50."
+    },
+    {
+      "id": "oh.elec.cps",
+      "panel": "OH10",
+      "movementType": "nonlinear_piecewise_arc",
+      "direction": "clockwise",
+      "unit": "Hz",
+      "printedRangeCandidate": {
+        "min": 0,
+        "max": 420,
+        "approved": false
+      },
+      "physicalPivot": {
+        "x": 715,
+        "y": 190,
+        "evidence": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "sourceImage": "panel-mosaic-lab/assets/locked/2026-10-23/OH10-ELEC-LOSSLESS-9a1ca4d6cfb2.png",
+      "sourceSha256": "9a1ca4d6cfb277ec1404f3a464e957d81be9d9689a0810883364342d57b0f1ea",
+      "printedScales": [
+        "primary"
+      ],
+      "numberOfIndependentNeedles": 1,
+      "needles": [
+        "cps"
+      ],
+      "photoRadialCandidatesAvailable": true,
+      "classifyState": "MODEL_IDENTIFIED_VISUAL",
+      "geometryState": "NOT_CERTIFIED",
+      "numericState": "NOT_CERTIFIED",
+      "motionDynamics": "NO_RESPONSE_RATE_ASSUMED_FROM_IMAGE",
+      "reason": "0 at left, 400 at top, 420 at right; source-image evidence rejects linear value-to-angle model."
+    },
+    {
+      "id": "oh.elec.dc_volts",
+      "panel": "OH10",
+      "movementType": "piecewise_arc",
+      "direction": "clockwise",
+      "unit": "V",
+      "printedRangeCandidate": {
+        "min": 0,
+        "max": 40,
+        "approved": false
+      },
+      "physicalPivot": {
+        "x": 332,
+        "y": 600,
+        "evidence": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "sourceImage": "panel-mosaic-lab/assets/locked/2026-10-23/OH10-ELEC-LOSSLESS-9a1ca4d6cfb2.png",
+      "sourceSha256": "9a1ca4d6cfb277ec1404f3a464e957d81be9d9689a0810883364342d57b0f1ea",
+      "printedScales": [
+        "primary"
+      ],
+      "numberOfIndependentNeedles": 1,
+      "needles": [
+        "dcVolts"
+      ],
+      "photoRadialCandidatesAvailable": false,
+      "classifyState": "MODEL_IDENTIFIED_VISUAL",
+      "geometryState": "NOT_CERTIFIED",
+      "numericState": "NOT_CERTIFIED",
+      "motionDynamics": "NO_RESPONSE_RATE_ASSUMED_FROM_IMAGE",
+      "reason": "0,20,40 printed; there are also subdividing ticks."
+    },
+    {
+      "id": "oh.elec.ac_volts",
+      "panel": "OH10",
+      "movementType": "piecewise_arc",
+      "direction": "clockwise",
+      "unit": "V",
+      "printedRangeCandidate": {
+        "min": 100,
+        "max": 130,
+        "approved": false
+      },
+      "physicalPivot": {
+        "x": 715,
+        "y": 620,
+        "evidence": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "sourceImage": "panel-mosaic-lab/assets/locked/2026-10-23/OH10-ELEC-LOSSLESS-9a1ca4d6cfb2.png",
+      "sourceSha256": "9a1ca4d6cfb277ec1404f3a464e957d81be9d9689a0810883364342d57b0f1ea",
+      "printedScales": [
+        "primary"
+      ],
+      "numberOfIndependentNeedles": 1,
+      "needles": [
+        "acVolts"
+      ],
+      "photoRadialCandidatesAvailable": false,
+      "classifyState": "MODEL_IDENTIFIED_VISUAL",
+      "geometryState": "NOT_CERTIFIED",
+      "numericState": "NOT_CERTIFIED",
+      "motionDynamics": "NO_RESPONSE_RATE_ASSUMED_FROM_IMAGE",
+      "reason": "100,110,120,130 printed; subdivision and end stops need geometric calibration."
+    },
+    {
+      "id": "oh.drive_oil.1",
+      "panel": "OH11",
+      "movementType": "selector_two_angular_scales",
+      "direction": "clockwise",
+      "unit": "°C",
+      "printedRangeCandidate": {
+        "min": null,
+        "max": null,
+        "approved": false
+      },
+      "physicalPivot": {
+        "x": 266,
+        "y": 1021,
+        "evidence": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "sourceImage": "panel-mosaic-lab/assets/locked/2026-10-23/OH11-STANDBY-8b7d36ff3182.png",
+      "sourceSha256": "86cf2f1de81146756adf694b1fe01067a271c32990c1fda7752eb913442a6708",
+      "printedScales": [
+        "rise",
+        "inlet"
+      ],
+      "numberOfIndependentNeedles": 1,
+      "needles": [
+        "driveOil1"
+      ],
+      "photoRadialCandidatesAvailable": false,
+      "classifyState": "MODEL_IDENTIFIED_VISUAL",
+      "geometryState": "NOT_CERTIFIED",
+      "numericState": "NOT_CERTIFIED",
+      "motionDynamics": "NO_RESPONSE_RATE_ASSUMED_FROM_IMAGE",
+      "reason": "RISE 0,10,20,30 and IN 80,120,160; selector determines the active signal and map; two sets cannot share one simple mapping."
+    },
+    {
+      "id": "oh.drive_oil.2",
+      "panel": "OH11",
+      "movementType": "selector_two_angular_scales",
+      "direction": "clockwise",
+      "unit": "°C",
+      "printedRangeCandidate": {
+        "min": null,
+        "max": null,
+        "approved": false
+      },
+      "physicalPivot": {
+        "x": 781,
+        "y": 1021,
+        "evidence": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "sourceImage": "panel-mosaic-lab/assets/locked/2026-10-23/OH11-STANDBY-8b7d36ff3182.png",
+      "sourceSha256": "86cf2f1de81146756adf694b1fe01067a271c32990c1fda7752eb913442a6708",
+      "printedScales": [
+        "rise",
+        "inlet"
+      ],
+      "numberOfIndependentNeedles": 1,
+      "needles": [
+        "driveOil2"
+      ],
+      "photoRadialCandidatesAvailable": false,
+      "classifyState": "MODEL_IDENTIFIED_VISUAL",
+      "geometryState": "NOT_CERTIFIED",
+      "numericState": "NOT_CERTIFIED",
+      "motionDynamics": "NO_RESPONSE_RATE_ASSUMED_FROM_IMAGE",
+      "reason": "RISE 0,10,20,30 and IN 80,120,160; selector determines the active signal and map; two sets cannot share one simple mapping."
+    },
+    {
+      "id": "oh.ac_amps.1",
+      "panel": "OH12",
+      "movementType": "piecewise_arc",
+      "direction": "clockwise",
+      "unit": "A",
+      "printedRangeCandidate": {
+        "min": 0,
+        "max": 200,
+        "approved": false
+      },
+      "physicalPivot": {
+        "x": 210,
+        "y": 265,
+        "evidence": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "sourceImage": "panel-mosaic-lab/assets/locked/2026-10-23/OH12-BUS-TRANS-09319c17e7d0.png",
+      "sourceSha256": "709cb15a86f9038ca082136c4db59af83c7800107dfe320182bf7f4c56837e9f",
+      "printedScales": [
+        "primary"
+      ],
+      "numberOfIndependentNeedles": 1,
+      "needles": [
+        "acAmps1"
+      ],
+      "photoRadialCandidatesAvailable": false,
+      "classifyState": "MODEL_IDENTIFIED_VISUAL",
+      "geometryState": "NOT_CERTIFIED",
+      "numericState": "NOT_CERTIFIED",
+      "motionDynamics": "NO_RESPONSE_RATE_ASSUMED_FROM_IMAGE",
+      "reason": "0,50,100,150,200 major printed; multiple minor divisions; previous -70..70 deg slider not numeric."
+    },
+    {
+      "id": "oh.ac_amps.2",
+      "panel": "OH12",
+      "movementType": "piecewise_arc",
+      "direction": "clockwise",
+      "unit": "A",
+      "printedRangeCandidate": {
+        "min": 0,
+        "max": 200,
+        "approved": false
+      },
+      "physicalPivot": {
+        "x": 705,
+        "y": 265,
+        "evidence": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "sourceImage": "panel-mosaic-lab/assets/locked/2026-10-23/OH12-BUS-TRANS-09319c17e7d0.png",
+      "sourceSha256": "709cb15a86f9038ca082136c4db59af83c7800107dfe320182bf7f4c56837e9f",
+      "printedScales": [
+        "primary"
+      ],
+      "numberOfIndependentNeedles": 1,
+      "needles": [
+        "acAmps2"
+      ],
+      "photoRadialCandidatesAvailable": false,
+      "classifyState": "MODEL_IDENTIFIED_VISUAL",
+      "geometryState": "NOT_CERTIFIED",
+      "numericState": "NOT_CERTIFIED",
+      "motionDynamics": "NO_RESPONSE_RATE_ASSUMED_FROM_IMAGE",
+      "reason": "0,50,100,150,200 major printed; multiple minor divisions; previous -70..70 deg slider not numeric."
+    },
+    {
+      "id": "oh.ac_amps.apu",
+      "panel": "OH12",
+      "movementType": "piecewise_arc",
+      "direction": "clockwise",
+      "unit": "A",
+      "printedRangeCandidate": {
+        "min": 0,
+        "max": 200,
+        "approved": false
+      },
+      "physicalPivot": {
+        "x": 724,
+        "y": 1334,
+        "evidence": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "sourceImage": "panel-mosaic-lab/assets/locked/2026-10-23/OH12-BUS-TRANS-09319c17e7d0.png",
+      "sourceSha256": "709cb15a86f9038ca082136c4db59af83c7800107dfe320182bf7f4c56837e9f",
+      "printedScales": [
+        "primary"
+      ],
+      "numberOfIndependentNeedles": 1,
+      "needles": [
+        "apuAcAmps"
+      ],
+      "photoRadialCandidatesAvailable": false,
+      "classifyState": "MODEL_IDENTIFIED_VISUAL",
+      "geometryState": "NOT_CERTIFIED",
+      "numericState": "NOT_CERTIFIED",
+      "motionDynamics": "NO_RESPONSE_RATE_ASSUMED_FROM_IMAGE",
+      "reason": "0,50,100,150,200 major printed; multiple minor divisions; previous -70..70 deg slider not numeric."
+    },
+    {
+      "id": "oh.apu.egt",
+      "panel": "OH12",
+      "movementType": "near_full_circle_nonlinear",
+      "direction": "clockwise",
+      "unit": "°C×100",
+      "printedRangeCandidate": {
+        "min": null,
+        "max": null,
+        "approved": false
+      },
+      "physicalPivot": {
+        "x": 300,
+        "y": 1324,
+        "evidence": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "sourceImage": "panel-mosaic-lab/assets/locked/2026-10-23/OH12-BUS-TRANS-09319c17e7d0.png",
+      "sourceSha256": "709cb15a86f9038ca082136c4db59af83c7800107dfe320182bf7f4c56837e9f",
+      "printedScales": [
+        "primary"
+      ],
+      "numberOfIndependentNeedles": 1,
+      "needles": [
+        "apuEgt"
+      ],
+      "photoRadialCandidatesAvailable": false,
+      "classifyState": "MODEL_IDENTIFIED_VISUAL",
+      "geometryState": "NOT_CERTIFIED",
+      "numericState": "NOT_CERTIFIED",
+      "motionDynamics": "NO_RESPONSE_RATE_ASSUMED_FROM_IMAGE",
+      "reason": "Printed 1–8; zero and mechanical stops not visible. Existing angles are visual slider only."
+    },
+    {
+      "id": "oh.cabin.diff_pressure_altitude",
+      "panel": "OH19-DIFF",
+      "movementType": "two_independent_pointers_two_scales",
+      "direction": "clockwise",
+      "unit": "psi & 1000 ft",
+      "printedRangeCandidate": {
+        "min": null,
+        "max": null,
+        "approved": false
+      },
+      "physicalPivot": {
+        "x": 489,
+        "y": 365,
+        "evidence": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "sourceImage": "panel-mosaic-lab/assets/locked/2026-10-23/OH19-PRESS-DIFF-ALT-HORN-d6719ce57cef.png",
+      "sourceSha256": "4c667d96ea7652e52784f5c06ee3cdde0879ca37631abf19969861afecc45fed",
+      "printedScales": [
+        "diffPressure",
+        "cabinAltitude"
+      ],
+      "numberOfIndependentNeedles": 2,
+      "needles": [
+        "press",
+        "cabAlt"
+      ],
+      "photoRadialCandidatesAvailable": true,
+      "classifyState": "MODEL_IDENTIFIED_VISUAL",
+      "geometryState": "NOT_CERTIFIED",
+      "numericState": "NOT_CERTIFIED",
+      "motionDynamics": "NO_RESPONSE_RATE_ASSUMED_FROM_IMAGE",
+      "reason": "Long PRESS outer / short CAB ALT inner; different numerical domains and angular maps."
+    },
+    {
+      "id": "oh.cabin.rate",
+      "panel": "OH19-DIFF",
+      "movementType": "signed_bidirectional_around_zero",
+      "direction": "two_sided",
+      "unit": "1000 ft/min",
+      "printedRangeCandidate": {
+        "min": null,
+        "max": null,
+        "approved": false
+      },
+      "physicalPivot": {
+        "x": 520,
+        "y": 950,
+        "evidence": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "sourceImage": "panel-mosaic-lab/assets/locked/2026-10-23/OH19-PRESS-DIFF-ALT-HORN-d6719ce57cef.png",
+      "sourceSha256": "4c667d96ea7652e52784f5c06ee3cdde0879ca37631abf19969861afecc45fed",
+      "printedScales": [
+        "primary"
+      ],
+      "numberOfIndependentNeedles": 1,
+      "needles": [
+        "cabinRate"
+      ],
+      "photoRadialCandidatesAvailable": false,
+      "classifyState": "MODEL_IDENTIFIED_VISUAL",
+      "geometryState": "NOT_CERTIFIED",
+      "numericState": "NOT_CERTIFIED",
+      "motionDynamics": "NO_RESPONSE_RATE_ASSUMED_FROM_IMAGE",
+      "reason": "Cabin rate gauge with UP/DN halves; unsigned straight arc would be invalid."
+    },
+    {
+      "id": "oh.cabin.temperature",
+      "panel": "OH20",
+      "movementType": "nonlinear_piecewise_arc",
+      "direction": "clockwise",
+      "unit": "°C",
+      "printedRangeCandidate": {
+        "min": 0,
+        "max": 100,
+        "approved": false
+      },
+      "physicalPivot": {
+        "x": 618,
+        "y": 681,
+        "evidence": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "sourceImage": "panel-mosaic-lab/assets/locked/2026-10-23/OH20-AIR-CONDITIONING-0734da6a7726.png",
+      "sourceSha256": "94669d21f0be8aa538b2ff3b0684683409cadf6d9fc4b55390e7147abe506121",
+      "printedScales": [
+        "primary"
+      ],
+      "numberOfIndependentNeedles": 1,
+      "needles": [
+        "cabinTemperature"
+      ],
+      "photoRadialCandidatesAvailable": true,
+      "classifyState": "MODEL_IDENTIFIED_VISUAL",
+      "geometryState": "NOT_CERTIFIED",
+      "numericState": "NOT_CERTIFIED",
+      "motionDynamics": "NO_RESPONSE_RATE_ASSUMED_FROM_IMAGE",
+      "reason": "0,20,40,60,80,100 printed; existing six approximate angles, photo mark for 60 not resolved."
+    },
+    {
+      "id": "oh.duct.pressure_lr",
+      "panel": "OH21",
+      "movementType": "two_independent_pointers_one_scale",
+      "direction": "clockwise",
+      "unit": "psi",
+      "printedRangeCandidate": {
+        "min": 0,
+        "max": 100,
+        "approved": false
+      },
+      "physicalPivot": {
+        "x": 544,
+        "y": 439,
+        "evidence": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "sourceImage": "panel-mosaic-lab/assets/locked/2026-10-23/OH21-BLEED-AIR-cc78219607a3.png",
+      "sourceSha256": "4efe8c59579e8675825ed4dabf393648cfa7f11f6c09d831d137c23f70ecfe1e",
+      "printedScales": [
+        "primary"
+      ],
+      "numberOfIndependentNeedles": 2,
+      "needles": [
+        "ductL",
+        "ductR"
+      ],
+      "photoRadialCandidatesAvailable": true,
+      "classifyState": "MODEL_IDENTIFIED_VISUAL",
+      "geometryState": "NOT_CERTIFIED",
+      "numericState": "NOT_CERTIFIED",
+      "motionDynamics": "NO_RESPONSE_RATE_ASSUMED_FROM_IMAGE",
+      "reason": "Two independent L/R pointers at common axis, labels 20,40,60,80,100; unlabeled 0 estimated."
+    },
+    {
+      "id": "capt.airspeed",
+      "panel": "CAPTAIN",
+      "movementType": "nonlinear_airspeed_arc",
+      "direction": "clockwise",
+      "unit": "knots",
+      "printedRangeCandidate": {
+        "min": null,
+        "max": null,
+        "approved": false
+      },
+      "physicalPivot": null,
+      "sourceImage": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png",
+      "sourceSha256": "dea7c23ddd5d648cf51735d0fcbcc9d1e69ce37efd736ec45fb173fe766fc56b",
+      "printedScales": [
+        "primary"
+      ],
+      "numberOfIndependentNeedles": 1,
+      "needles": [],
+      "photoRadialCandidatesAvailable": false,
+      "classifyState": "MODEL_IDENTIFIED_VISUAL",
+      "geometryState": "NOT_CERTIFIED",
+      "numericState": "NOT_CERTIFIED",
+      "motionDynamics": "NO_RESPONSE_RATE_ASSUMED_FROM_IMAGE",
+      "reason": "IAS is not constant degrees per knot; major and minor ticks and MACH subdisplay are distinct."
+    },
+    {
+      "id": "capt.rmi",
+      "panel": "CAPTAIN",
+      "movementType": "rotating_compass_card_with_two_bearing_pointers",
+      "direction": "bearing_relative_to_card",
+      "unit": "degrees",
+      "printedRangeCandidate": {
+        "min": 0,
+        "max": 360,
+        "approved": false
+      },
+      "physicalPivot": null,
+      "sourceImage": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png",
+      "sourceSha256": "dea7c23ddd5d648cf51735d0fcbcc9d1e69ce37efd736ec45fb173fe766fc56b",
+      "printedScales": [
+        "primary"
+      ],
+      "numberOfIndependentNeedles": null,
+      "needles": [],
+      "photoRadialCandidatesAvailable": false,
+      "classifyState": "MODEL_IDENTIFIED_VISUAL",
+      "geometryState": "NOT_CERTIFIED",
+      "numericState": "NOT_CERTIFIED",
+      "motionDynamics": "NO_RESPONSE_RATE_ASSUMED_FROM_IMAGE",
+      "reason": "Pointer 1 thin dashed; pointer 2 hollow broad; compass card rotates with heading, pointers independent."
+    },
+    {
+      "id": "capt.altimeter",
+      "panel": "CAPTAIN",
+      "movementType": "multi_turn_altimeter_and_counters",
+      "direction": "clockwise_modulo",
+      "unit": "ft",
+      "printedRangeCandidate": {
+        "min": null,
+        "max": null,
+        "approved": false
+      },
+      "physicalPivot": null,
+      "sourceImage": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png",
+      "sourceSha256": "dea7c23ddd5d648cf51735d0fcbcc9d1e69ce37efd736ec45fb173fe766fc56b",
+      "printedScales": [
+        "primary"
+      ],
+      "numberOfIndependentNeedles": null,
+      "needles": [],
+      "photoRadialCandidatesAvailable": false,
+      "classifyState": "MODEL_IDENTIFIED_VISUAL",
+      "geometryState": "NOT_CERTIFIED",
+      "numericState": "NOT_CERTIFIED",
+      "motionDynamics": "NO_RESPONSE_RATE_ASSUMED_FROM_IMAGE",
+      "reason": "0–9 around 360°; dial hand and digital altitude windows must remain synchronized."
+    },
+    {
+      "id": "capt.alt_ias_combined",
+      "panel": "CAPTAIN",
+      "movementType": "composite_displays_separate_alt_ias",
+      "direction": "unknown",
+      "unit": "multiple",
+      "printedRangeCandidate": {
+        "min": null,
+        "max": null,
+        "approved": false
+      },
+      "physicalPivot": null,
+      "sourceImage": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png",
+      "sourceSha256": "dea7c23ddd5d648cf51735d0fcbcc9d1e69ce37efd736ec45fb173fe766fc56b",
+      "printedScales": [
+        "alt",
+        "ias"
+      ],
+      "numberOfIndependentNeedles": null,
+      "needles": [],
+      "photoRadialCandidatesAvailable": false,
+      "classifyState": "NEEDS_REFERENCE",
+      "geometryState": "NOT_CERTIFIED",
+      "numericState": "NOT_CERTIFIED",
+      "motionDynamics": "NO_RESPONSE_RATE_ASSUMED_FROM_IMAGE",
+      "reason": "Two separate ALT/IAS printed faces visible within instrument assembly; not one numerical scale."
+    },
+    {
+      "id": "capt.vertical_speed",
+      "panel": "CAPTAIN",
+      "movementType": "signed_bidirectional_around_zero",
+      "direction": "two_sided",
+      "unit": "1000 ft/min",
+      "printedRangeCandidate": {
+        "min": null,
+        "max": null,
+        "approved": false
+      },
+      "physicalPivot": null,
+      "sourceImage": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png",
+      "sourceSha256": "dea7c23ddd5d648cf51735d0fcbcc9d1e69ce37efd736ec45fb173fe766fc56b",
+      "printedScales": [
+        "primary"
+      ],
+      "numberOfIndependentNeedles": 1,
+      "needles": [],
+      "photoRadialCandidatesAvailable": false,
+      "classifyState": "MODEL_IDENTIFIED_VISUAL",
+      "geometryState": "NOT_CERTIFIED",
+      "numericState": "NOT_CERTIFIED",
+      "motionDynamics": "NO_RESPONSE_RATE_ASSUMED_FROM_IMAGE",
+      "reason": "0 at left around nine o'clock; positive rate around upper arc, negative around lower arc."
+    },
+    {
+      "id": "capt.clock",
+      "panel": "CAPTAIN",
+      "movementType": "multi_hand_clock",
+      "direction": "clockwise",
+      "unit": "time",
+      "printedRangeCandidate": {
+        "min": null,
+        "max": null,
+        "approved": false
+      },
+      "physicalPivot": null,
+      "sourceImage": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png",
+      "sourceSha256": "dea7c23ddd5d648cf51735d0fcbcc9d1e69ce37efd736ec45fb173fe766fc56b",
+      "printedScales": [
+        "primary"
+      ],
+      "numberOfIndependentNeedles": null,
+      "needles": [],
+      "photoRadialCandidatesAvailable": false,
+      "classifyState": "MODEL_IDENTIFIED_VISUAL",
+      "geometryState": "NOT_CERTIFIED",
+      "numericState": "NOT_CERTIFIED",
+      "motionDynamics": "NO_RESPONSE_RATE_ASSUMED_FROM_IMAGE",
+      "reason": "Clock/chrono hands, digital windows separate; no static clamp on full turn."
+    },
+    {
+      "id": "eng.left_upper_20_20",
+      "panel": "ENGINE",
+      "movementType": "unidentified_indicator",
+      "direction": "unknown",
+      "unit": "unknown",
+      "printedRangeCandidate": {
+        "min": null,
+        "max": null,
+        "approved": false
+      },
+      "physicalPivot": null,
+      "sourceImage": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "sourceSha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "printedScales": [
+        "primary"
+      ],
+      "numberOfIndependentNeedles": null,
+      "needles": [],
+      "photoRadialCandidatesAvailable": false,
+      "classifyState": "NEEDS_REFERENCE",
+      "geometryState": "NOT_CERTIFIED",
+      "numericState": "NOT_CERTIFIED",
+      "motionDynamics": "NO_RESPONSE_RATE_ASSUMED_FROM_IMAGE",
+      "reason": "Only twin 20 labels can be read; identity cannot be assigned from original photo."
+    },
+    {
+      "id": "eng.fuel_qty.center",
+      "panel": "ENGINE",
+      "movementType": "arc_with_digital_readout",
+      "direction": "unconfirmed",
+      "unit": "%",
+      "printedRangeCandidate": {
+        "min": null,
+        "max": null,
+        "approved": false
+      },
+      "physicalPivot": null,
+      "sourceImage": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "sourceSha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "printedScales": [
+        "primary"
+      ],
+      "numberOfIndependentNeedles": null,
+      "needles": [],
+      "photoRadialCandidatesAvailable": false,
+      "classifyState": "NEEDS_REFERENCE",
+      "geometryState": "NOT_CERTIFIED",
+      "numericState": "NOT_CERTIFIED",
+      "motionDynamics": "NO_RESPONSE_RATE_ASSUMED_FROM_IMAGE",
+      "reason": "Fuel quantity dial source has percent symbol but no numeric major tick labels; must cross-check calibration and readout."
+    },
+    {
+      "id": "eng.fuel_qty.1",
+      "panel": "ENGINE",
+      "movementType": "arc_with_digital_readout",
+      "direction": "unconfirmed",
+      "unit": "%",
+      "printedRangeCandidate": {
+        "min": null,
+        "max": null,
+        "approved": false
+      },
+      "physicalPivot": null,
+      "sourceImage": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "sourceSha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "printedScales": [
+        "primary"
+      ],
+      "numberOfIndependentNeedles": null,
+      "needles": [],
+      "photoRadialCandidatesAvailable": false,
+      "classifyState": "NEEDS_REFERENCE",
+      "geometryState": "NOT_CERTIFIED",
+      "numericState": "NOT_CERTIFIED",
+      "motionDynamics": "NO_RESPONSE_RATE_ASSUMED_FROM_IMAGE",
+      "reason": "Fuel quantity dial source has percent symbol but no numeric major tick labels; must cross-check calibration and readout."
+    },
+    {
+      "id": "eng.fuel_qty.2",
+      "panel": "ENGINE",
+      "movementType": "arc_with_digital_readout",
+      "direction": "unconfirmed",
+      "unit": "%",
+      "printedRangeCandidate": {
+        "min": null,
+        "max": null,
+        "approved": false
+      },
+      "physicalPivot": null,
+      "sourceImage": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "sourceSha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "printedScales": [
+        "primary"
+      ],
+      "numberOfIndependentNeedles": null,
+      "needles": [],
+      "photoRadialCandidatesAvailable": false,
+      "classifyState": "NEEDS_REFERENCE",
+      "geometryState": "NOT_CERTIFIED",
+      "numericState": "NOT_CERTIFIED",
+      "motionDynamics": "NO_RESPONSE_RATE_ASSUMED_FROM_IMAGE",
+      "reason": "Fuel quantity dial source has percent symbol but no numeric major tick labels; must cross-check calibration and readout."
+    },
+    {
+      "id": "eng.n1.1",
+      "panel": "ENGINE",
+      "movementType": "full_arc_nonuniform",
+      "direction": "clockwise",
+      "unit": "%RPM",
+      "printedRangeCandidate": {
+        "min": null,
+        "max": null,
+        "approved": false
+      },
+      "physicalPivot": null,
+      "sourceImage": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "sourceSha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "printedScales": [
+        "primary"
+      ],
+      "numberOfIndependentNeedles": 1,
+      "needles": [],
+      "photoRadialCandidatesAvailable": false,
+      "classifyState": "MODEL_IDENTIFIED_VISUAL",
+      "geometryState": "NOT_CERTIFIED",
+      "numericState": "NOT_CERTIFIED",
+      "motionDynamics": "NO_RESPONSE_RATE_ASSUMED_FROM_IMAGE",
+      "reason": "Dial printed 0,2,4,...12, units %RPM; scaling and positions require source evidence."
+    },
+    {
+      "id": "eng.n1.2",
+      "panel": "ENGINE",
+      "movementType": "full_arc_nonuniform",
+      "direction": "clockwise",
+      "unit": "%RPM",
+      "printedRangeCandidate": {
+        "min": null,
+        "max": null,
+        "approved": false
+      },
+      "physicalPivot": null,
+      "sourceImage": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "sourceSha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "printedScales": [
+        "primary"
+      ],
+      "numberOfIndependentNeedles": 1,
+      "needles": [],
+      "photoRadialCandidatesAvailable": false,
+      "classifyState": "MODEL_IDENTIFIED_VISUAL",
+      "geometryState": "NOT_CERTIFIED",
+      "numericState": "NOT_CERTIFIED",
+      "motionDynamics": "NO_RESPONSE_RATE_ASSUMED_FROM_IMAGE",
+      "reason": "Dial printed 0,2,4,...12, units %RPM; scaling and positions require source evidence."
+    },
+    {
+      "id": "eng.egt.1",
+      "panel": "ENGINE",
+      "movementType": "color_band_arc_unlabeled",
+      "direction": "unconfirmed",
+      "unit": "°C",
+      "printedRangeCandidate": {
+        "min": null,
+        "max": null,
+        "approved": false
+      },
+      "physicalPivot": {
+        "x": 535,
+        "y": 723,
+        "evidence": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "sourceImage": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "sourceSha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "printedScales": [
+        "primary"
+      ],
+      "numberOfIndependentNeedles": 1,
+      "needles": [
+        "egt1"
+      ],
+      "photoRadialCandidatesAvailable": false,
+      "classifyState": "NEEDS_REFERENCE",
+      "geometryState": "NOT_CERTIFIED",
+      "numericState": "NOT_CERTIFIED",
+      "motionDynamics": "NO_RESPONSE_RATE_ASSUMED_FROM_IMAGE",
+      "reason": "Only color arcs, no numerical tick labels on blank; model 0..800 is explicitly temporary."
+    },
+    {
+      "id": "eng.egt.2",
+      "panel": "ENGINE",
+      "movementType": "color_band_arc_unlabeled",
+      "direction": "unconfirmed",
+      "unit": "°C",
+      "printedRangeCandidate": {
+        "min": null,
+        "max": null,
+        "approved": false
+      },
+      "physicalPivot": {
+        "x": 724,
+        "y": 723,
+        "evidence": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "sourceImage": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "sourceSha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "printedScales": [
+        "primary"
+      ],
+      "numberOfIndependentNeedles": 1,
+      "needles": [
+        "egt2"
+      ],
+      "photoRadialCandidatesAvailable": false,
+      "classifyState": "NEEDS_REFERENCE",
+      "geometryState": "NOT_CERTIFIED",
+      "numericState": "NOT_CERTIFIED",
+      "motionDynamics": "NO_RESPONSE_RATE_ASSUMED_FROM_IMAGE",
+      "reason": "Only color arcs, no numerical tick labels on blank; model 0..800 is explicitly temporary."
+    },
+    {
+      "id": "eng.n2.1",
+      "panel": "ENGINE",
+      "movementType": "color_band_arc_unlabeled",
+      "direction": "unconfirmed",
+      "unit": "%RPM",
+      "printedRangeCandidate": {
+        "min": null,
+        "max": null,
+        "approved": false
+      },
+      "physicalPivot": {
+        "x": 535,
+        "y": 900,
+        "evidence": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "sourceImage": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "sourceSha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "printedScales": [
+        "primary"
+      ],
+      "numberOfIndependentNeedles": 1,
+      "needles": [
+        "n2_1"
+      ],
+      "photoRadialCandidatesAvailable": false,
+      "classifyState": "NEEDS_REFERENCE",
+      "geometryState": "NOT_CERTIFIED",
+      "numericState": "NOT_CERTIFIED",
+      "motionDynamics": "NO_RESPONSE_RATE_ASSUMED_FROM_IMAGE",
+      "reason": "No printed numeric ticks on blank; current 0..100 training law not source-confirmed."
+    },
+    {
+      "id": "eng.n2.2",
+      "panel": "ENGINE",
+      "movementType": "color_band_arc_unlabeled",
+      "direction": "unconfirmed",
+      "unit": "%RPM",
+      "printedRangeCandidate": {
+        "min": null,
+        "max": null,
+        "approved": false
+      },
+      "physicalPivot": {
+        "x": 724,
+        "y": 900,
+        "evidence": "existing_overlay_visual_placement_not_tick_survey"
+      },
+      "sourceImage": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "sourceSha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "printedScales": [
+        "primary"
+      ],
+      "numberOfIndependentNeedles": 1,
+      "needles": [
+        "n2_2"
+      ],
+      "photoRadialCandidatesAvailable": false,
+      "classifyState": "NEEDS_REFERENCE",
+      "geometryState": "NOT_CERTIFIED",
+      "numericState": "NOT_CERTIFIED",
+      "motionDynamics": "NO_RESPONSE_RATE_ASSUMED_FROM_IMAGE",
+      "reason": "No printed numeric ticks on blank; current 0..100 training law not source-confirmed."
+    },
+    {
+      "id": "eng.fuel_flow.1",
+      "panel": "ENGINE",
+      "movementType": "dual_mode_fuel_flow_used",
+      "direction": "clockwise",
+      "unit": "kg/h or kg",
+      "printedRangeCandidate": {
+        "min": null,
+        "max": null,
+        "approved": false
+      },
+      "physicalPivot": null,
+      "sourceImage": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "sourceSha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "printedScales": [
+        "primary"
+      ],
+      "numberOfIndependentNeedles": 1,
+      "needles": [],
+      "photoRadialCandidatesAvailable": false,
+      "classifyState": "MODEL_IDENTIFIED_VISUAL",
+      "geometryState": "NOT_CERTIFIED",
+      "numericState": "NOT_CERTIFIED",
+      "motionDynamics": "NO_RESPONSE_RATE_ASSUMED_FROM_IMAGE",
+      "reason": "Printed FF/FU, 0–6; flow versus fuel used needs independent model."
+    },
+    {
+      "id": "eng.fuel_flow.2",
+      "panel": "ENGINE",
+      "movementType": "dual_mode_fuel_flow_used",
+      "direction": "clockwise",
+      "unit": "kg/h or kg",
+      "printedRangeCandidate": {
+        "min": null,
+        "max": null,
+        "approved": false
+      },
+      "physicalPivot": null,
+      "sourceImage": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "sourceSha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "printedScales": [
+        "primary"
+      ],
+      "numberOfIndependentNeedles": 1,
+      "needles": [],
+      "photoRadialCandidatesAvailable": false,
+      "classifyState": "MODEL_IDENTIFIED_VISUAL",
+      "geometryState": "NOT_CERTIFIED",
+      "numericState": "NOT_CERTIFIED",
+      "motionDynamics": "NO_RESPONSE_RATE_ASSUMED_FROM_IMAGE",
+      "reason": "Printed FF/FU, 0–6; flow versus fuel used needs independent model."
+    },
+    {
+      "id": "eng.oil_pressure.1",
+      "panel": "ENGINE",
+      "movementType": "piecewise_arc_colored_limits",
+      "direction": "clockwise",
+      "unit": "psi",
+      "printedRangeCandidate": {
+        "min": 0,
+        "max": 100,
+        "approved": false
+      },
+      "physicalPivot": null,
+      "sourceImage": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "sourceSha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "printedScales": [
+        "primary"
+      ],
+      "numberOfIndependentNeedles": 1,
+      "needles": [],
+      "photoRadialCandidatesAvailable": false,
+      "classifyState": "MODEL_IDENTIFIED_VISUAL",
+      "geometryState": "NOT_CERTIFIED",
+      "numericState": "NOT_CERTIFIED",
+      "motionDynamics": "NO_RESPONSE_RATE_ASSUMED_FROM_IMAGE",
+      "reason": "Printed 0,50,100 with colored limits; numeric and alert thresholds are separate."
+    },
+    {
+      "id": "eng.oil_pressure.2",
+      "panel": "ENGINE",
+      "movementType": "piecewise_arc_colored_limits",
+      "direction": "clockwise",
+      "unit": "psi",
+      "printedRangeCandidate": {
+        "min": 0,
+        "max": 100,
+        "approved": false
+      },
+      "physicalPivot": null,
+      "sourceImage": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "sourceSha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "printedScales": [
+        "primary"
+      ],
+      "numberOfIndependentNeedles": 1,
+      "needles": [],
+      "photoRadialCandidatesAvailable": false,
+      "classifyState": "MODEL_IDENTIFIED_VISUAL",
+      "geometryState": "NOT_CERTIFIED",
+      "numericState": "NOT_CERTIFIED",
+      "motionDynamics": "NO_RESPONSE_RATE_ASSUMED_FROM_IMAGE",
+      "reason": "Printed 0,50,100 with colored limits; numeric and alert thresholds are separate."
+    },
+    {
+      "id": "eng.oil_temperature.1",
+      "panel": "ENGINE",
+      "movementType": "piecewise_arc_colored_limits",
+      "direction": "clockwise",
+      "unit": "°C",
+      "printedRangeCandidate": {
+        "min": 0,
+        "max": 200,
+        "approved": false
+      },
+      "physicalPivot": null,
+      "sourceImage": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "sourceSha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "printedScales": [
+        "primary"
+      ],
+      "numberOfIndependentNeedles": 1,
+      "needles": [],
+      "photoRadialCandidatesAvailable": false,
+      "classifyState": "MODEL_IDENTIFIED_VISUAL",
+      "geometryState": "NOT_CERTIFIED",
+      "numericState": "NOT_CERTIFIED",
+      "motionDynamics": "NO_RESPONSE_RATE_ASSUMED_FROM_IMAGE",
+      "reason": "Printed 0,100,200; limits are color regions, not motion constraints."
+    },
+    {
+      "id": "eng.oil_temperature.2",
+      "panel": "ENGINE",
+      "movementType": "piecewise_arc_colored_limits",
+      "direction": "clockwise",
+      "unit": "°C",
+      "printedRangeCandidate": {
+        "min": 0,
+        "max": 200,
+        "approved": false
+      },
+      "physicalPivot": null,
+      "sourceImage": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "sourceSha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "printedScales": [
+        "primary"
+      ],
+      "numberOfIndependentNeedles": 1,
+      "needles": [],
+      "photoRadialCandidatesAvailable": false,
+      "classifyState": "MODEL_IDENTIFIED_VISUAL",
+      "geometryState": "NOT_CERTIFIED",
+      "numericState": "NOT_CERTIFIED",
+      "motionDynamics": "NO_RESPONSE_RATE_ASSUMED_FROM_IMAGE",
+      "reason": "Printed 0,100,200; limits are color regions, not motion constraints."
+    },
+    {
+      "id": "eng.vibration.1",
+      "panel": "ENGINE",
+      "movementType": "piecewise_arc",
+      "direction": "clockwise",
+      "unit": "units",
+      "printedRangeCandidate": {
+        "min": 0,
+        "max": 5,
+        "approved": false
+      },
+      "physicalPivot": null,
+      "sourceImage": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "sourceSha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "printedScales": [
+        "primary"
+      ],
+      "numberOfIndependentNeedles": 1,
+      "needles": [],
+      "photoRadialCandidatesAvailable": false,
+      "classifyState": "MODEL_IDENTIFIED_VISUAL",
+      "geometryState": "NOT_CERTIFIED",
+      "numericState": "NOT_CERTIFIED",
+      "motionDynamics": "NO_RESPONSE_RATE_ASSUMED_FROM_IMAGE",
+      "reason": "Printed 0,1,2,3,4,5."
+    },
+    {
+      "id": "eng.vibration.2",
+      "panel": "ENGINE",
+      "movementType": "piecewise_arc",
+      "direction": "clockwise",
+      "unit": "units",
+      "printedRangeCandidate": {
+        "min": 0,
+        "max": 5,
+        "approved": false
+      },
+      "physicalPivot": null,
+      "sourceImage": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "sourceSha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "printedScales": [
+        "primary"
+      ],
+      "numberOfIndependentNeedles": 1,
+      "needles": [],
+      "photoRadialCandidatesAvailable": false,
+      "classifyState": "MODEL_IDENTIFIED_VISUAL",
+      "geometryState": "NOT_CERTIFIED",
+      "numericState": "NOT_CERTIFIED",
+      "motionDynamics": "NO_RESPONSE_RATE_ASSUMED_FROM_IMAGE",
+      "reason": "Printed 0,1,2,3,4,5."
+    },
+    {
+      "id": "eng.hyd_pressure.a",
+      "panel": "ENGINE",
+      "movementType": "piecewise_arc_colored_limits",
+      "direction": "clockwise",
+      "unit": "1000 psi",
+      "printedRangeCandidate": {
+        "min": 0,
+        "max": 4,
+        "approved": false
+      },
+      "physicalPivot": null,
+      "sourceImage": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "sourceSha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "printedScales": [
+        "primary"
+      ],
+      "numberOfIndependentNeedles": 1,
+      "needles": [],
+      "photoRadialCandidatesAvailable": false,
+      "classifyState": "MODEL_IDENTIFIED_VISUAL",
+      "geometryState": "NOT_CERTIFIED",
+      "numericState": "NOT_CERTIFIED",
+      "motionDynamics": "NO_RESPONSE_RATE_ASSUMED_FROM_IMAGE",
+      "reason": "Printed 0,1,2,3,4 ×1000 psi; colored range is not movement law."
+    },
+    {
+      "id": "eng.hyd_pressure.b",
+      "panel": "ENGINE",
+      "movementType": "piecewise_arc_colored_limits",
+      "direction": "clockwise",
+      "unit": "1000 psi",
+      "printedRangeCandidate": {
+        "min": 0,
+        "max": 4,
+        "approved": false
+      },
+      "physicalPivot": null,
+      "sourceImage": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "sourceSha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "printedScales": [
+        "primary"
+      ],
+      "numberOfIndependentNeedles": 1,
+      "needles": [],
+      "photoRadialCandidatesAvailable": false,
+      "classifyState": "MODEL_IDENTIFIED_VISUAL",
+      "geometryState": "NOT_CERTIFIED",
+      "numericState": "NOT_CERTIFIED",
+      "motionDynamics": "NO_RESPONSE_RATE_ASSUMED_FROM_IMAGE",
+      "reason": "Printed 0,1,2,3,4 ×1000 psi; colored range is not movement law."
+    },
+    {
+      "id": "fo.flap_position",
+      "panel": "FO-INNER",
+      "movementType": "two_independent_pointers_one_scale",
+      "direction": "clockwise",
+      "unit": "flap units",
+      "printedRangeCandidate": {
+        "min": 0,
+        "max": 40,
+        "approved": false
+      },
+      "physicalPivot": null,
+      "sourceImage": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Right_Main_Instruments_Blank.png",
+      "sourceSha256": "171bf9e8d21347e7a522ebc86b19cfe0b967f0503d26c483d8f3d685f719576a",
+      "printedScales": [
+        "primary"
+      ],
+      "numberOfIndependentNeedles": 2,
+      "needles": [
+        "flapL",
+        "flapR"
+      ],
+      "photoRadialCandidatesAvailable": false,
+      "classifyState": "MODEL_IDENTIFIED_VISUAL",
+      "geometryState": "NOT_CERTIFIED",
+      "numericState": "NOT_CERTIFIED",
+      "motionDynamics": "NO_RESPONSE_RATE_ASSUMED_FROM_IMAGE",
+      "reason": "L upper front, R occluded behind L when angles identical; printed 0/UP,1,2,5,10,15,25,30,40."
+    },
+    {
+      "id": "fo.hyd_brake_pressure",
+      "panel": "FO-INNER",
+      "movementType": "piecewise_arc_colored_limits",
+      "direction": "clockwise",
+      "unit": "1000 psi",
+      "printedRangeCandidate": {
+        "min": 0,
+        "max": 4,
+        "approved": false
+      },
+      "physicalPivot": null,
+      "sourceImage": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Right_Main_Instruments_Blank.png",
+      "sourceSha256": "171bf9e8d21347e7a522ebc86b19cfe0b967f0503d26c483d8f3d685f719576a",
+      "printedScales": [
+        "primary"
+      ],
+      "numberOfIndependentNeedles": 1,
+      "needles": [],
+      "photoRadialCandidatesAvailable": false,
+      "classifyState": "MODEL_IDENTIFIED_VISUAL",
+      "geometryState": "NOT_CERTIFIED",
+      "numericState": "NOT_CERTIFIED",
+      "motionDynamics": "NO_RESPONSE_RATE_ASSUMED_FROM_IMAGE",
+      "reason": "0–4 ×1000 psi printed with colored ranges."
+    },
+    {
+      "id": "fo.airspeed",
+      "panel": "FO-INNER",
+      "movementType": "nonlinear_airspeed_arc",
+      "direction": "clockwise",
+      "unit": "knots",
+      "printedRangeCandidate": {
+        "min": null,
+        "max": null,
+        "approved": false
+      },
+      "physicalPivot": null,
+      "sourceImage": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Right_Main_Instruments_Blank.png",
+      "sourceSha256": "171bf9e8d21347e7a522ebc86b19cfe0b967f0503d26c483d8f3d685f719576a",
+      "printedScales": [
+        "primary"
+      ],
+      "numberOfIndependentNeedles": 1,
+      "needles": [],
+      "photoRadialCandidatesAvailable": false,
+      "classifyState": "MODEL_IDENTIFIED_VISUAL",
+      "geometryState": "NOT_CERTIFIED",
+      "numericState": "NOT_CERTIFIED",
+      "motionDynamics": "NO_RESPONSE_RATE_ASSUMED_FROM_IMAGE",
+      "reason": "IAS is not constant degrees per knot; major and minor ticks and MACH subdisplay are distinct."
+    },
+    {
+      "id": "fo.rmi",
+      "panel": "FO-INNER",
+      "movementType": "rotating_compass_card_with_two_bearing_pointers",
+      "direction": "bearing_relative_to_card",
+      "unit": "degrees",
+      "printedRangeCandidate": {
+        "min": 0,
+        "max": 360,
+        "approved": false
+      },
+      "physicalPivot": null,
+      "sourceImage": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Right_Main_Instruments_Blank.png",
+      "sourceSha256": "171bf9e8d21347e7a522ebc86b19cfe0b967f0503d26c483d8f3d685f719576a",
+      "printedScales": [
+        "primary"
+      ],
+      "numberOfIndependentNeedles": null,
+      "needles": [],
+      "photoRadialCandidatesAvailable": false,
+      "classifyState": "MODEL_IDENTIFIED_VISUAL",
+      "geometryState": "NOT_CERTIFIED",
+      "numericState": "NOT_CERTIFIED",
+      "motionDynamics": "NO_RESPONSE_RATE_ASSUMED_FROM_IMAGE",
+      "reason": "Pointer 1 thin dashed; pointer 2 hollow broad; compass card rotates with heading, pointers independent."
+    },
+    {
+      "id": "fo.left_linear",
+      "panel": "FO-INNER",
+      "movementType": "linear_indicator",
+      "direction": "vertical",
+      "unit": "unverified",
+      "printedRangeCandidate": {
+        "min": 0,
+        "max": 10,
+        "approved": false
+      },
+      "physicalPivot": null,
+      "sourceImage": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Right_Main_Instruments_Blank.png",
+      "sourceSha256": "171bf9e8d21347e7a522ebc86b19cfe0b967f0503d26c483d8f3d685f719576a",
+      "printedScales": [
+        "primary"
+      ],
+      "numberOfIndependentNeedles": null,
+      "needles": [],
+      "photoRadialCandidatesAvailable": false,
+      "classifyState": "MODEL_IDENTIFIED_VISUAL",
+      "geometryState": "NOT_CERTIFIED",
+      "numericState": "NOT_CERTIFIED",
+      "motionDynamics": "NO_RESPONSE_RATE_ASSUMED_FROM_IMAGE",
+      "reason": "Window LEFT marked 0..10; moving marker mechanism not visible."
+    },
+    {
+      "id": "fo.right_linear",
+      "panel": "FO-INNER",
+      "movementType": "linear_indicator",
+      "direction": "vertical",
+      "unit": "unverified",
+      "printedRangeCandidate": {
+        "min": 0,
+        "max": 10,
+        "approved": false
+      },
+      "physicalPivot": null,
+      "sourceImage": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Right_Main_Instruments_Blank.png",
+      "sourceSha256": "171bf9e8d21347e7a522ebc86b19cfe0b967f0503d26c483d8f3d685f719576a",
+      "printedScales": [
+        "primary"
+      ],
+      "numberOfIndependentNeedles": null,
+      "needles": [],
+      "photoRadialCandidatesAvailable": false,
+      "classifyState": "MODEL_IDENTIFIED_VISUAL",
+      "geometryState": "NOT_CERTIFIED",
+      "numericState": "NOT_CERTIFIED",
+      "motionDynamics": "NO_RESPONSE_RATE_ASSUMED_FROM_IMAGE",
+      "reason": "Window RIGHT marked 0..10; moving marker mechanism not visible."
+    },
+    {
+      "id": "fo.outer_altimeter",
+      "panel": "FO-OUTER",
+      "movementType": "multi_turn_altimeter_and_counters",
+      "direction": "clockwise_modulo",
+      "unit": "ft",
+      "printedRangeCandidate": {
+        "min": null,
+        "max": null,
+        "approved": false
+      },
+      "physicalPivot": null,
+      "sourceImage": "file_000000006c00820ab145b3682f686256.png",
+      "sourceSha256": "b2439666f75ddbcab15835b532d26a7ad2d1ab669be5f48774d656c1b8915a3c",
+      "printedScales": [
+        "primary"
+      ],
+      "numberOfIndependentNeedles": null,
+      "needles": [],
+      "photoRadialCandidatesAvailable": false,
+      "classifyState": "MODEL_IDENTIFIED_VISUAL",
+      "geometryState": "NOT_CERTIFIED",
+      "numericState": "NOT_CERTIFIED",
+      "motionDynamics": "NO_RESPONSE_RATE_ASSUMED_FROM_IMAGE",
+      "reason": "0–9 dial and numerical windows cannot share one wrapped model."
+    },
+    {
+      "id": "fo.outer_vertical_speed",
+      "panel": "FO-OUTER",
+      "movementType": "signed_bidirectional_around_zero",
+      "direction": "two_sided",
+      "unit": "1000 ft/min",
+      "printedRangeCandidate": {
+        "min": null,
+        "max": null,
+        "approved": false
+      },
+      "physicalPivot": null,
+      "sourceImage": "file_000000006c00820ab145b3682f686256.png",
+      "sourceSha256": "b2439666f75ddbcab15835b532d26a7ad2d1ab669be5f48774d656c1b8915a3c",
+      "printedScales": [
+        "primary"
+      ],
+      "numberOfIndependentNeedles": 1,
+      "needles": [],
+      "photoRadialCandidatesAvailable": false,
+      "classifyState": "MODEL_IDENTIFIED_VISUAL",
+      "geometryState": "NOT_CERTIFIED",
+      "numericState": "NOT_CERTIFIED",
+      "motionDynamics": "NO_RESPONSE_RATE_ASSUMED_FROM_IMAGE",
+      "reason": "0 at left around nine o'clock; positive rate upper arc and negative rate lower arc."
+    },
+    {
+      "id": "fo.outer_clock",
+      "panel": "FO-OUTER",
+      "movementType": "multi_hand_clock",
+      "direction": "clockwise",
+      "unit": "time",
+      "printedRangeCandidate": {
+        "min": null,
+        "max": null,
+        "approved": false
+      },
+      "physicalPivot": null,
+      "sourceImage": "file_000000006c00820ab145b3682f686256.png",
+      "sourceSha256": "b2439666f75ddbcab15835b532d26a7ad2d1ab669be5f48774d656c1b8915a3c",
+      "printedScales": [
+        "primary"
+      ],
+      "numberOfIndependentNeedles": null,
+      "needles": [],
+      "photoRadialCandidatesAvailable": false,
+      "classifyState": "MODEL_IDENTIFIED_VISUAL",
+      "geometryState": "NOT_CERTIFIED",
+      "numericState": "NOT_CERTIFIED",
+      "motionDynamics": "NO_RESPONSE_RATE_ASSUMED_FROM_IMAGE",
+      "reason": "Clock/chrono hands and digital windows are distinct outputs."
+    },
+    {
+      "id": "ped.stab_trim.left",
+      "panel": "THROTTLE",
+      "movementType": "signed_linear_travel",
+      "direction": "vertical",
+      "unit": "units",
+      "printedRangeCandidate": {
+        "min": null,
+        "max": null,
+        "approved": false
+      },
+      "physicalPivot": null,
+      "sourceImage": "panel-mosaic-lab/assets/locked/2026-10-23/Aircraft Throttle Quadrant Control Panel.png",
+      "sourceSha256": "e533f907b3826dbf8fc986812b9045c2ef8980f93133ce85b859e9b9d7ab0030",
+      "printedScales": [
+        "primary"
+      ],
+      "numberOfIndependentNeedles": null,
+      "needles": [],
+      "photoRadialCandidatesAvailable": false,
+      "classifyState": "MODEL_IDENTIFIED_VISUAL",
+      "geometryState": "NOT_CERTIFIED",
+      "numericState": "NOT_CERTIFIED",
+      "motionDynamics": "NO_RESPONSE_RATE_ASSUMED_FROM_IMAGE",
+      "reason": "Trim nose-down and nose-up are separate signed ranges; nonuniform printed scale."
+    },
+    {
+      "id": "ped.stab_trim.right",
+      "panel": "THROTTLE",
+      "movementType": "signed_linear_travel",
+      "direction": "vertical",
+      "unit": "units",
+      "printedRangeCandidate": {
+        "min": null,
+        "max": null,
+        "approved": false
+      },
+      "physicalPivot": null,
+      "sourceImage": "panel-mosaic-lab/assets/locked/2026-10-23/Aircraft Throttle Quadrant Control Panel.png",
+      "sourceSha256": "e533f907b3826dbf8fc986812b9045c2ef8980f93133ce85b859e9b9d7ab0030",
+      "printedScales": [
+        "primary"
+      ],
+      "numberOfIndependentNeedles": null,
+      "needles": [],
+      "photoRadialCandidatesAvailable": false,
+      "classifyState": "MODEL_IDENTIFIED_VISUAL",
+      "geometryState": "NOT_CERTIFIED",
+      "numericState": "NOT_CERTIFIED",
+      "motionDynamics": "NO_RESPONSE_RATE_ASSUMED_FROM_IMAGE",
+      "reason": "Trim nose-down and nose-up are separate signed ranges; nonuniform printed scale."
+    },
+    {
+      "id": "ped.rudder_trim",
+      "panel": "RADIO",
+      "movementType": "signed_linear_travel",
+      "direction": "horizontal",
+      "unit": "units",
+      "printedRangeCandidate": {
+        "min": -15,
+        "max": 15,
+        "approved": false
+      },
+      "physicalPivot": null,
+      "sourceImage": "panel-mosaic-lab/assets/locked/2026-10-23/PD-RADIO-AVIONICS-7a41044771fa.png",
+      "sourceSha256": "7a41044771faad1d59f509c05ed2508f75c79fde219ee9ec19696f8fb19ed533",
+      "printedScales": [
+        "primary"
+      ],
+      "numberOfIndependentNeedles": null,
+      "needles": [],
+      "photoRadialCandidatesAvailable": false,
+      "classifyState": "MODEL_IDENTIFIED_VISUAL",
+      "geometryState": "NOT_CERTIFIED",
+      "numericState": "NOT_CERTIFIED",
+      "motionDynamics": "NO_RESPONSE_RATE_ASSUMED_FROM_IMAGE",
+      "reason": "LEFT 15 through 0 to RIGHT 15; pointer not present in blank source."
+    }
+  ]
+}
