@@ -66,6 +66,18 @@ assert.ok(labHtml.includes('../' + dcpcsAsset), 'DCPCS lab must show approved im
 const settingsUi = fs.readFileSync(path.join(__dirname, '../panel-mosaic-lab/cockpit/aircraft-settings.js'), 'utf8');
 assert.ok(settingsUi.includes('selected?.backgroundAsset'), 'Settings must use selected pressurization artwork');
 assert.ok(settingsUi.includes('ownerPreview.hidden = !source'), 'CPCS must not show DCPCS image');
+assert.ok(settingsUi.includes("action:'pressurization-background'"), 'Settings must command actual Unified OH22 background to switch');
+const overheadBridge = fs.readFileSync(path.join(__dirname, '../panel-mosaic-lab/cockpit/overhead-bridge.js'), 'utf8');
+assert.ok(overheadBridge.includes('DCPCS_Background_Owner.png'), 'Embedded overhead must show exact owner-uploaded asset');
+assert.ok(overheadBridge.includes('[data-key="OH22"] .atlas-image-window'), 'DCPCS must display on actual OH22 plate');
+assert.ok(overheadBridge.includes("pressurizationSystem==='DCPCS'"), 'Only DCPCS may show replacement on OH22');
+assert.ok(overheadBridge.includes("new URL(DCPCS_ARTWORK,document.baseURI)"), 'Resolve owner artwork from overhead base URL');
+assert.ok(overheadBridge.includes("e.key===PROFILE_KEY"), 'Existing saved settings must sync across iframe contexts');
+const parentCockpit = fs.readFileSync(path.join(__dirname,'../panel-mosaic-lab/cockpit/app.js'),'utf8');
+assert.ok(parentCockpit.includes("command('pressurization-background'"), 'Iframe-ready handshake must restore selection');
+const overheadAtlas = JSON.parse(fs.readFileSync(path.join(__dirname,'../panel-mosaic-lab/all-overhead/atlas-layout.json'),'utf8'));
+assert.ok(overheadAtlas.placements.some(p=>p.id==='OH22'&&p.sourceId==='OH22'), 'Original OH22 physical placement must be preserved');
+
 
 const html = fs.readFileSync(path.join(__dirname, '../panel-mosaic-lab/cockpit/index.html'), 'utf8');
 for (const id of ['aircraftSettingsOpen','aircraftSettingsDialog','aircraftSettingsForm','activeAircraftFamily','activePressurization','activeEngineInstruments','openSelectedPressurizationPanel','selectedPressureFrame']) {
