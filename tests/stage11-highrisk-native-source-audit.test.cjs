@@ -41,6 +41,12 @@ test('RMI shell circle not promoted and rejected right-trim box must remain fail
  assert.equal(trim.reason,'OLD_RIGHT_STAB_TRIM_BOX_EXCLUDES_SCALE_TRACK');
  assert.equal(trim.rejectedWindow.x0,961);
  assert.equal(trim.rejectedWindow.x1,1063);
+ assert.deepEqual([trim.provisionalReplacementWindow.x0,trim.provisionalReplacementWindow.x1],[895,998]);
+ assert.deepEqual([trim.provisionalReplacementWindow.y0,trim.provisionalReplacementWindow.y1],[609,965]);
+ assert.equal(trim.provisionalReplacementWindow.previousRoiRawTransverseCount,0);
+ assert.equal(trim.provisionalReplacementWindow.proposedRoiRawHorizontalCount,5);
+ assert.match(trim.provisionalReplacementWindow.geometryStatus,/UNVERIFIED/);
+ assert.equal(ledger.counts.alternativeRightTrimWindowWithFiveCandidates,1);
  assert.equal(stage6.counts.finalApprovedNeedleFits,0);
  assert.equal(stage5.counts.liveApprovedFaces,0);
 });
