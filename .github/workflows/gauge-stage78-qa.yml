@@ -5,6 +5,8 @@ on:
     paths:
       - 'engine/instruments/stage7-cold-dark-state-v1.js'
       - 'engine/instruments/stage8-ism-signal-bridge-v1.js'
+      - 'engine/instruments/stage8-pointer-routing-v1.js'
+      - 'engine/instruments/stage8-pointer-routing-v1.json'
       - 'engine/instruments/stage8-signal-contracts-v1.json'
       - 'engine/instruments/stage7-stage8.test.cjs'
       - 'engine/instruments/stage78-unified-integration.test.cjs'
