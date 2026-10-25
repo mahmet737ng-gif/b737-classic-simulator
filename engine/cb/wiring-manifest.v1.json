@@ -82,5 +82,24 @@
   ],
   "fullInventory": "engine/cb/all-circuits-audit.v1.json",
   "airframeSpecificRoutesRemainingUnverified": true,
-  "sourceNote": "Classic MRG proves functional CB equipment indexing for 11 lines, not EP-FSI exact upstream bus/connector/pin. Fuel bus assignment is a trainer surrogate. Generic Classic MRG generator-bus evidence for hydraulic pumps is airframe-unreviewed. V7 remains unchanged."
+  "sourceNote": "Classic MRG proves functional CB equipment indexing for 11 lines, not EP-FSI exact upstream bus/connector/pin. Fuel bus assignment is a trainer surrogate. Generic Classic MRG generator-bus evidence for hydraulic pumps is airframe-unreviewed. V7 remains unchanged.",
+  "latestEvidenceIndex": "engine/cb/classic-mrg-index.v2.js",
+  "latestCandidateAudit": "engine/cb/all-circuits-audit.v2.json",
+  "sourceIndexedActiveAssociations": 51,
+  "sourceIndexedVariantRows": 58,
+  "quarantinedVariantRows": 8,
+  "stillUnindexedVariantRows": 478,
+  "airframeSpecificBusFeedValidatedCount": 0,
+  "blockedDueToPhotographOrIndexDisagreement": [
+    "P6-1|ALL|C2",
+    "P18-1|ALL|B2",
+    "P18-3|ALL|A12",
+    "P6-3|ALL|D18",
+    "P6-4|CPCS|C8",
+    "P6-4|DCPCS|C8",
+    "P6-4|CPCS|E8",
+    "P6-4|DCPCS|E8"
+  ],
+  "additionalTrainingProjection": "Fuel Master Caution FUEL lamp P6-3 D10 can be extinguished by pulled CB without clearing underlying pump low-pressure training condition.",
+  "note": "Protective circuit OPEN is distinct from whole equipment not powered; every EP-FSI wire/source/alternate feed still requires a reviewed aircraft diagram."
 }
