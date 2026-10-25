@@ -1,0 +1,81 @@
+/* OH22 exclusively owns its active control layers. Never hide adjacent panels.
+   CPCS and DCPCS have disjoint configurations/DOM; registered source images remain immutable. */
+html.oh22-pressure-config-active #rotaryGuardLayer .mounted-rotary[data-control="flight-alt"],
+html.oh22-pressure-config-active #rotaryGuardLayer .mounted-rotary[data-control="landing-alt"],
+html.oh22-pressure-config-active #rotaryGuardLayer .mounted-rotary[data-control="cabin-alt"],
+html.oh22-pressure-config-active #rotaryGuardLayer .mounted-rotary[data-control="cabin-rate"],
+html.oh22-pressure-config-active #rotaryGuardLayer .mounted-rotary[data-control="pressurization-mode"],
+html.oh22-pressure-config-active #rotaryGuardLayer .mounted-rotary[data-control="pressurization-check"],
+html.oh22-pressure-config-active .toggle-layer .mounted-toggle[data-control="outflow-manual"],
+html.oh22-pressure-config-active .lights-layer .mounted-light[data-light="press-auto-fail"],
+html.oh22-pressure-config-active .lights-layer .mounted-light[data-light="press-off-sched-descent"],
+html.oh22-pressure-config-active .lights-layer .mounted-light[data-light="press-standby"],
+html.oh22-pressure-config-active .lights-layer .mounted-light[data-light="press-manual"]{
+ display:none!important;pointer-events:none!important;
+}
+.oh22-pressure-controls{
+ position:absolute;inset:0;z-index:8;pointer-events:none;
+ font-family:system-ui,Segoe UI,sans-serif;color:#fff;
+}
+.oh22-pressure-controls [data-role="actuator"],.oh22-pressure-controls [data-role="lamp"]{
+ position:absolute;transform:translate(-50%,-50%);
+}
+.oh22-pressure-controls [data-role="actuator"]{
+ background:transparent;border:0;min-width:0;min-height:0;padding:0;margin:0;
+ cursor:pointer;pointer-events:auto;touch-action:manipulation;
+ color:inherit;display:grid;place-items:center;
+}
+.oh22-pressure-controls [data-role="actuator"]>img{
+ width:100%;height:100%;max-width:none;max-height:none;object-fit:contain;
+ user-select:none;pointer-events:none;transform-origin:center 45%;
+ transition:transform 110ms cubic-bezier(.2,.85,.3,1);
+}
+.oh22-pressure-controls [data-role="actuator"]:focus-visible{
+ outline:2px solid #f5e1ac;outline-offset:1px;border-radius:50%;
+}
+.oh22-pressure-controls .oh22-control-value{
+ position:absolute;left:50%;top:99%;transform:translateX(-50%);
+ white-space:nowrap;padding:1px 3px;min-width:32px;max-width:145%;
+ overflow:hidden;text-overflow:ellipsis;
+ font:700 9px/1.2 ui-monospace,Consolas,monospace;
+ color:#edfaff;background:#121e2bdb;border-radius:3px;
+ pointer-events:none;text-align:center;
+}
+.oh22-pressure-controls [data-role="lamp"]{
+ display:flex;justify-content:center;align-items:center;white-space:normal;
+ text-align:center;background:#070a0ce8;pointer-events:none;
+ border-radius:1px;border:1px solid #333b40;
+ font:750 9px/1.15 ui-sans-serif,system-ui;color:#595d60;
+}
+.oh22-pressure-controls [data-role="lamp"].on.amber{
+ color:#ffbd65;text-shadow:0 0 7px #f29c3d;border-color:#8c4c16;background:#362314e8;
+}
+.oh22-pressure-controls [data-role="lamp"].on.green{
+ color:#b7fca9;text-shadow:0 0 7px #65e556;border-color:#4d7f3b;background:#172c1dec;
+}
+.oh22-pressure-controls .oh22-pressure-digits{
+ position:absolute;transform:translate(-50%,-50%);
+ width:33%;height:8%;display:flex;align-items:center;justify-content:center;
+ color:#e7f5fa;pointer-events:none;letter-spacing:.13em;
+ font:600 clamp(7px,1.1vw,20px)/1.1 ui-monospace,Consolas,monospace;
+ text-shadow:0 0 3px #94d5ee;
+}
+.oh22-pressure-controls .oh22-pressure-note{
+ position:absolute;bottom:1%;left:6%;right:6%;pointer-events:none;
+ text-align:center;color:#e8f4f8;font:700 8px/1.1 system-ui;
+ background:#182a39b3;border-radius:2px;
+}
+.oh22-pressure-controls .oh22-pressure-gauge{
+ position:absolute;left:78%;top:31%;width:9%;height:10%;transform:translate(-50%,-50%);
+ pointer-events:none;border-radius:50%;display:grid;place-items:center;
+ font:700 8px/1.1 ui-monospace,monospace;color:#d8f3ff;
+}
+.oh22-pressure-controls .oh22-pressure-gauge[data-known="false"]{color:#d7bd8b}
+.oh22-pressure-controls .oh22-pressure-actuator-spring{cursor:ns-resize!important}
+.oh22-pressure-controls .oh22-pressure-spring-hotspot{
+ position:absolute;inset:0;display:flex;pointer-events:auto;
+}
+.oh22-pressure-controls .oh22-pressure-spring-hotspot>span{
+ width:50%;height:100%;cursor:pointer;
+}
+.oh22-pressure-controls[data-system="CPCS"] [data-role="lamp"]{font-size:8px}
