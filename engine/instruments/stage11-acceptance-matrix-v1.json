@@ -5,7 +5,7 @@
   "scenarioResultUrl": "https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/40227687706",
   "stage11Disposition": "SOURCE_SCENARIO_QA_PASS___ORIGINAL_IMAGE_PIXEL_CERTIFICATION_INCOMPLETE___RELEASE_BLOCKED",
   "requirements": [
-    "All 54 source image files must have a verified versioned repository path and immutable hash; FO outer three images currently external-only.",
+    "The shared FO outer-image source is a version-controlled root PNG; verify immutable SHA-256 and native dimensions in CI.",
     "Every main/minor stroke must be manually traced in native image source and all circle/shaft conflicts resolved",
     "Value-to-angle must be signed off for each actual scale including dual rings and needle pointer shape",
     "Every logical needle must have approved electrical/per-instrument power source and correct system source with units",
@@ -32,7 +32,8 @@
     "sceneExamples": 12,
     "scenarioAssertions": 10,
     "operationalNeedlesReleased": 0,
-    "missingVersionControlledImageSourceFaces": 3
+    "missingVersionControlledImageSourceFaces": 0,
+    "rootStoredPhotoSourceFaces": 3
   },
   "faces": [
     {
@@ -3513,10 +3514,10 @@
         "scenario_test_not_photo_signoff",
         "two_numbered_photo_anchors_missing",
         "response_model_not_calibrated",
-        "original_source_not_in_versioned_repository"
+        "original_photo_sha256_ci_check_pending"
       ],
       "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA",
-      "originalImageRepositoryStatus": "EXTERNAL_FILENAME_ONLY_NOT_REPOSITORY_VERIFIED"
+      "originalImageRepositoryStatus": "REPOSITORY_ROOT_ASSET_PRESENT_PENDING_CI_SHA_VERIFICATION"
     },
     {
       "id": "fo.outer_vertical_speed",
@@ -3587,10 +3588,10 @@
         "scenario_test_not_photo_signoff",
         "two_numbered_photo_anchors_missing",
         "response_model_not_calibrated",
-        "original_source_not_in_versioned_repository"
+        "original_photo_sha256_ci_check_pending"
       ],
       "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA",
-      "originalImageRepositoryStatus": "EXTERNAL_FILENAME_ONLY_NOT_REPOSITORY_VERIFIED"
+      "originalImageRepositoryStatus": "REPOSITORY_ROOT_ASSET_PRESENT_PENDING_CI_SHA_VERIFICATION"
     },
     {
       "id": "fo.outer_clock",
@@ -3661,10 +3662,10 @@
         "scenario_test_not_photo_signoff",
         "two_numbered_photo_anchors_missing",
         "response_model_not_calibrated",
-        "original_source_not_in_versioned_repository"
+        "original_photo_sha256_ci_check_pending"
       ],
       "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA",
-      "originalImageRepositoryStatus": "EXTERNAL_FILENAME_ONLY_NOT_REPOSITORY_VERIFIED"
+      "originalImageRepositoryStatus": "REPOSITORY_ROOT_ASSET_PRESENT_PENDING_CI_SHA_VERIFICATION"
     },
     {
       "id": "ped.stab_trim.left",
@@ -3823,5 +3824,18 @@
       "originalImageRepositoryStatus": "REPOSITORY_ASSET_PATH_REGISTERED"
     }
   ],
-  "dispositionClarification": "All 62 signal channels lack independent actual aircraft per-instrument equipment-feed verification; provider mapping for 23 channels does not imply certified wiring."
+  "dispositionClarification": "All 62 signal channels lack independent actual aircraft per-instrument equipment-feed verification; provider mapping for 23 channels does not imply certified wiring.",
+  "sourceDiscovery": {
+    "source": "file_000000006c00820ab145b3682f686256.png",
+    "repositoryPath": "file_000000006c00820ab145b3682f686256.png",
+    "affectedFaces": [
+      "fo.outer_altimeter",
+      "fo.outer_vertical_speed",
+      "fo.outer_clock"
+    ],
+    "expectedSha256": "b2439666f75ddbcab15835b532d26a7ad2d1ab669be5f48774d656c1b8915a3c",
+    "nativeWidthPx": 1123,
+    "nativeHeightPx": 1400,
+    "status": "PRESENT_PENDING_INDEPENDENT_SHA_VERIFICATION"
+  }
 }
