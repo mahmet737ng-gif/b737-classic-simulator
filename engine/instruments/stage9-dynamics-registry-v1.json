@@ -1,0 +1,407 @@
+{
+  "schema": "b737.stage9.pointer-response-contracts.v1",
+  "airframe": "B737-33V EP-FSI",
+  "created": "2026-10-25",
+  "basis": "read-only demonstration coefficients, not aircraft/AFM measured inertial response",
+  "sources": [
+    "engine/instruments/stage6-needle-fit-candidates-v1.json",
+    "engine/instruments/stage8-pointer-routing-v1.json",
+    "engine/instruments/stage10-preview-scale-subset-v1.json"
+  ],
+  "behavior": "All missing-profile pointers are blocked; no conjectural default is assigned to a physical LRU.",
+  "counts": {
+    "pointerIdentities": 38,
+    "previewResponseProfiles": 8,
+    "unresolvedResponseProfiles": 30,
+    "certifiedMechanicalResponseProfiles": 0
+  },
+  "pointers": [
+    {
+      "pointerId": "fuelTemperature",
+      "faceId": "oh.fuel.temperature",
+      "channel": "primary",
+      "response": {
+        "mode": "first_order",
+        "tauSeconds": 2,
+        "requiresPower": true,
+        "lossBehavior": "hold"
+      },
+      "state": "QA_SIMULATION_PARAMETERS_NOT_LRU_CERTIFIED",
+      "failureMechanic": "HOLD_LAST_ON_NO_SOURCE_OR_POWER; DEVICE-SPECIFIC PARK NOT_VERIFIED",
+      "approvedForOperationalMotion": false
+    },
+    {
+      "pointerId": "dcAmps",
+      "faceId": "oh.elec.dc_amps",
+      "channel": "primary",
+      "response": {
+        "mode": "slew",
+        "speedDegPerSec": 120,
+        "requiresPower": true,
+        "lossBehavior": "hold"
+      },
+      "state": "QA_SIMULATION_PARAMETERS_NOT_LRU_CERTIFIED",
+      "failureMechanic": "HOLD_LAST_ON_NO_SOURCE_OR_POWER; DEVICE-SPECIFIC PARK NOT_VERIFIED",
+      "approvedForOperationalMotion": false
+    },
+    {
+      "pointerId": "cps",
+      "faceId": "oh.elec.cps",
+      "channel": "primary",
+      "response": {
+        "mode": "slew",
+        "speedDegPerSec": 120,
+        "requiresPower": true,
+        "lossBehavior": "hold"
+      },
+      "state": "QA_SIMULATION_PARAMETERS_NOT_LRU_CERTIFIED",
+      "failureMechanic": "HOLD_LAST_ON_NO_SOURCE_OR_POWER; DEVICE-SPECIFIC PARK NOT_VERIFIED",
+      "approvedForOperationalMotion": false
+    },
+    {
+      "pointerId": "dcVolts",
+      "faceId": "oh.elec.dc_volts",
+      "channel": "primary",
+      "response": null,
+      "state": "BLOCKED_MISSING_FULL_SCALE_MECHANISM_QA",
+      "failureMechanic": "HOLD_LAST_ON_NO_SOURCE_OR_POWER; DEVICE-SPECIFIC PARK NOT_VERIFIED",
+      "approvedForOperationalMotion": false
+    },
+    {
+      "pointerId": "acVolts",
+      "faceId": "oh.elec.ac_volts",
+      "channel": "primary",
+      "response": null,
+      "state": "BLOCKED_MISSING_FULL_SCALE_MECHANISM_QA",
+      "failureMechanic": "HOLD_LAST_ON_NO_SOURCE_OR_POWER; DEVICE-SPECIFIC PARK NOT_VERIFIED",
+      "approvedForOperationalMotion": false
+    },
+    {
+      "pointerId": "driveOil1",
+      "faceId": "oh.drive_oil.1",
+      "channel": null,
+      "response": null,
+      "state": "BLOCKED_MISSING_FULL_SCALE_MECHANISM_QA",
+      "failureMechanic": "HOLD_LAST_ON_NO_SOURCE_OR_POWER; DEVICE-SPECIFIC PARK NOT_VERIFIED",
+      "approvedForOperationalMotion": false
+    },
+    {
+      "pointerId": "driveOil2",
+      "faceId": "oh.drive_oil.2",
+      "channel": null,
+      "response": null,
+      "state": "BLOCKED_MISSING_FULL_SCALE_MECHANISM_QA",
+      "failureMechanic": "HOLD_LAST_ON_NO_SOURCE_OR_POWER; DEVICE-SPECIFIC PARK NOT_VERIFIED",
+      "approvedForOperationalMotion": false
+    },
+    {
+      "pointerId": "acAmps1",
+      "faceId": "oh.ac_amps.1",
+      "channel": "primary",
+      "response": null,
+      "state": "BLOCKED_MISSING_FULL_SCALE_MECHANISM_QA",
+      "failureMechanic": "HOLD_LAST_ON_NO_SOURCE_OR_POWER; DEVICE-SPECIFIC PARK NOT_VERIFIED",
+      "approvedForOperationalMotion": false
+    },
+    {
+      "pointerId": "acAmps2",
+      "faceId": "oh.ac_amps.2",
+      "channel": "primary",
+      "response": null,
+      "state": "BLOCKED_MISSING_FULL_SCALE_MECHANISM_QA",
+      "failureMechanic": "HOLD_LAST_ON_NO_SOURCE_OR_POWER; DEVICE-SPECIFIC PARK NOT_VERIFIED",
+      "approvedForOperationalMotion": false
+    },
+    {
+      "pointerId": "apuAcAmps",
+      "faceId": "oh.ac_amps.apu",
+      "channel": "primary",
+      "response": null,
+      "state": "BLOCKED_MISSING_FULL_SCALE_MECHANISM_QA",
+      "failureMechanic": "HOLD_LAST_ON_NO_SOURCE_OR_POWER; DEVICE-SPECIFIC PARK NOT_VERIFIED",
+      "approvedForOperationalMotion": false
+    },
+    {
+      "pointerId": "apuEgt",
+      "faceId": "oh.apu.egt",
+      "channel": "primary",
+      "response": null,
+      "state": "BLOCKED_MISSING_FULL_SCALE_MECHANISM_QA",
+      "failureMechanic": "HOLD_LAST_ON_NO_SOURCE_OR_POWER; DEVICE-SPECIFIC PARK NOT_VERIFIED",
+      "approvedForOperationalMotion": false
+    },
+    {
+      "pointerId": "press",
+      "faceId": "oh.cabin.diff_pressure_altitude",
+      "channel": "press",
+      "response": {
+        "mode": "second_order",
+        "omegaRadSec": 5,
+        "dampingRatio": 1.1,
+        "requiresPower": true,
+        "lossBehavior": "hold"
+      },
+      "state": "QA_SIMULATION_PARAMETERS_NOT_LRU_CERTIFIED",
+      "failureMechanic": "HOLD_LAST_ON_NO_SOURCE_OR_POWER; DEVICE-SPECIFIC PARK NOT_VERIFIED",
+      "approvedForOperationalMotion": false
+    },
+    {
+      "pointerId": "cabAlt",
+      "faceId": "oh.cabin.diff_pressure_altitude",
+      "channel": "cabAlt",
+      "response": {
+        "mode": "second_order",
+        "omegaRadSec": 5,
+        "dampingRatio": 1.1,
+        "requiresPower": true,
+        "lossBehavior": "hold"
+      },
+      "state": "QA_SIMULATION_PARAMETERS_NOT_LRU_CERTIFIED",
+      "failureMechanic": "HOLD_LAST_ON_NO_SOURCE_OR_POWER; DEVICE-SPECIFIC PARK NOT_VERIFIED",
+      "approvedForOperationalMotion": false
+    },
+    {
+      "pointerId": "cabinRate",
+      "faceId": "oh.cabin.rate",
+      "channel": "rate",
+      "response": null,
+      "state": "BLOCKED_MISSING_FULL_SCALE_MECHANISM_QA",
+      "failureMechanic": "HOLD_LAST_ON_NO_SOURCE_OR_POWER; DEVICE-SPECIFIC PARK NOT_VERIFIED",
+      "approvedForOperationalMotion": false
+    },
+    {
+      "pointerId": "cabinTemperature",
+      "faceId": "oh.cabin.temperature",
+      "channel": "primary",
+      "response": {
+        "mode": "second_order",
+        "omegaRadSec": 5,
+        "dampingRatio": 1.1,
+        "requiresPower": true,
+        "lossBehavior": "hold"
+      },
+      "state": "QA_SIMULATION_PARAMETERS_NOT_LRU_CERTIFIED",
+      "failureMechanic": "HOLD_LAST_ON_NO_SOURCE_OR_POWER; DEVICE-SPECIFIC PARK NOT_VERIFIED",
+      "approvedForOperationalMotion": false
+    },
+    {
+      "pointerId": "ductL",
+      "faceId": "oh.duct.pressure_lr",
+      "channel": "L",
+      "response": {
+        "mode": "second_order",
+        "omegaRadSec": 5,
+        "dampingRatio": 1.1,
+        "requiresPower": true,
+        "lossBehavior": "hold"
+      },
+      "state": "QA_SIMULATION_PARAMETERS_NOT_LRU_CERTIFIED",
+      "failureMechanic": "HOLD_LAST_ON_NO_SOURCE_OR_POWER; DEVICE-SPECIFIC PARK NOT_VERIFIED",
+      "approvedForOperationalMotion": false
+    },
+    {
+      "pointerId": "ductR",
+      "faceId": "oh.duct.pressure_lr",
+      "channel": "R",
+      "response": {
+        "mode": "second_order",
+        "omegaRadSec": 5,
+        "dampingRatio": 1.1,
+        "requiresPower": true,
+        "lossBehavior": "hold"
+      },
+      "state": "QA_SIMULATION_PARAMETERS_NOT_LRU_CERTIFIED",
+      "failureMechanic": "HOLD_LAST_ON_NO_SOURCE_OR_POWER; DEVICE-SPECIFIC PARK NOT_VERIFIED",
+      "approvedForOperationalMotion": false
+    },
+    {
+      "pointerId": "oxygenPressure",
+      "faceId": "oh.crew_oxygen.pressure",
+      "channel": "primary",
+      "response": null,
+      "state": "BLOCKED_MISSING_FULL_SCALE_MECHANISM_QA",
+      "failureMechanic": "HOLD_LAST_ON_NO_SOURCE_OR_POWER; DEVICE-SPECIFIC PARK NOT_VERIFIED",
+      "approvedForOperationalMotion": false
+    },
+    {
+      "pointerId": "captIAS",
+      "faceId": "capt.airspeed",
+      "channel": "primary",
+      "response": null,
+      "state": "BLOCKED_MISSING_FULL_SCALE_MECHANISM_QA",
+      "failureMechanic": "HOLD_LAST_ON_NO_SOURCE_OR_POWER; DEVICE-SPECIFIC PARK NOT_VERIFIED",
+      "approvedForOperationalMotion": false
+    },
+    {
+      "pointerId": "captVMO",
+      "faceId": "capt.airspeed",
+      "channel": null,
+      "response": null,
+      "state": "BLOCKED_MISSING_FULL_SCALE_MECHANISM_QA",
+      "failureMechanic": "HOLD_LAST_ON_NO_SOURCE_OR_POWER; DEVICE-SPECIFIC PARK NOT_VERIFIED",
+      "approvedForOperationalMotion": false
+    },
+    {
+      "pointerId": "captRMI1",
+      "faceId": "capt.rmi",
+      "channel": "bearing1",
+      "response": null,
+      "state": "BLOCKED_MISSING_FULL_SCALE_MECHANISM_QA",
+      "failureMechanic": "HOLD_LAST_ON_NO_SOURCE_OR_POWER; DEVICE-SPECIFIC PARK NOT_VERIFIED",
+      "approvedForOperationalMotion": false
+    },
+    {
+      "pointerId": "captRMI2",
+      "faceId": "capt.rmi",
+      "channel": "bearing2",
+      "response": null,
+      "state": "BLOCKED_MISSING_FULL_SCALE_MECHANISM_QA",
+      "failureMechanic": "HOLD_LAST_ON_NO_SOURCE_OR_POWER; DEVICE-SPECIFIC PARK NOT_VERIFIED",
+      "approvedForOperationalMotion": false
+    },
+    {
+      "pointerId": "captAltimeter",
+      "faceId": "capt.altimeter",
+      "channel": "primary",
+      "response": null,
+      "state": "BLOCKED_MISSING_FULL_SCALE_MECHANISM_QA",
+      "failureMechanic": "HOLD_LAST_ON_NO_SOURCE_OR_POWER; DEVICE-SPECIFIC PARK NOT_VERIFIED",
+      "approvedForOperationalMotion": false
+    },
+    {
+      "pointerId": "captVSI",
+      "faceId": "capt.vertical_speed",
+      "channel": "primary",
+      "response": null,
+      "state": "BLOCKED_MISSING_FULL_SCALE_MECHANISM_QA",
+      "failureMechanic": "HOLD_LAST_ON_NO_SOURCE_OR_POWER; DEVICE-SPECIFIC PARK NOT_VERIFIED",
+      "approvedForOperationalMotion": false
+    },
+    {
+      "pointerId": "captClock",
+      "faceId": "capt.clock",
+      "channel": "primary",
+      "response": null,
+      "state": "BLOCKED_MISSING_FULL_SCALE_MECHANISM_QA",
+      "failureMechanic": "HOLD_LAST_ON_NO_SOURCE_OR_POWER; DEVICE-SPECIFIC PARK NOT_VERIFIED",
+      "approvedForOperationalMotion": false
+    },
+    {
+      "pointerId": "egt1",
+      "faceId": "eng.egt.1",
+      "channel": "primary",
+      "response": null,
+      "state": "BLOCKED_MISSING_FULL_SCALE_MECHANISM_QA",
+      "failureMechanic": "HOLD_LAST_ON_NO_SOURCE_OR_POWER; DEVICE-SPECIFIC PARK NOT_VERIFIED",
+      "approvedForOperationalMotion": false
+    },
+    {
+      "pointerId": "egt2",
+      "faceId": "eng.egt.2",
+      "channel": "primary",
+      "response": null,
+      "state": "BLOCKED_MISSING_FULL_SCALE_MECHANISM_QA",
+      "failureMechanic": "HOLD_LAST_ON_NO_SOURCE_OR_POWER; DEVICE-SPECIFIC PARK NOT_VERIFIED",
+      "approvedForOperationalMotion": false
+    },
+    {
+      "pointerId": "n2_1",
+      "faceId": "eng.n2.1",
+      "channel": "primary",
+      "response": null,
+      "state": "BLOCKED_MISSING_FULL_SCALE_MECHANISM_QA",
+      "failureMechanic": "HOLD_LAST_ON_NO_SOURCE_OR_POWER; DEVICE-SPECIFIC PARK NOT_VERIFIED",
+      "approvedForOperationalMotion": false
+    },
+    {
+      "pointerId": "n2_2",
+      "faceId": "eng.n2.2",
+      "channel": "primary",
+      "response": null,
+      "state": "BLOCKED_MISSING_FULL_SCALE_MECHANISM_QA",
+      "failureMechanic": "HOLD_LAST_ON_NO_SOURCE_OR_POWER; DEVICE-SPECIFIC PARK NOT_VERIFIED",
+      "approvedForOperationalMotion": false
+    },
+    {
+      "pointerId": "flapL",
+      "faceId": "fo.flap_position",
+      "channel": "flapL",
+      "response": null,
+      "state": "BLOCKED_MISSING_FULL_SCALE_MECHANISM_QA",
+      "failureMechanic": "HOLD_LAST_ON_NO_SOURCE_OR_POWER; DEVICE-SPECIFIC PARK NOT_VERIFIED",
+      "approvedForOperationalMotion": false
+    },
+    {
+      "pointerId": "flapR",
+      "faceId": "fo.flap_position",
+      "channel": "flapR",
+      "response": null,
+      "state": "BLOCKED_MISSING_FULL_SCALE_MECHANISM_QA",
+      "failureMechanic": "HOLD_LAST_ON_NO_SOURCE_OR_POWER; DEVICE-SPECIFIC PARK NOT_VERIFIED",
+      "approvedForOperationalMotion": false
+    },
+    {
+      "pointerId": "foIAS",
+      "faceId": "fo.airspeed",
+      "channel": "primary",
+      "response": null,
+      "state": "BLOCKED_MISSING_FULL_SCALE_MECHANISM_QA",
+      "failureMechanic": "HOLD_LAST_ON_NO_SOURCE_OR_POWER; DEVICE-SPECIFIC PARK NOT_VERIFIED",
+      "approvedForOperationalMotion": false
+    },
+    {
+      "pointerId": "foVMO",
+      "faceId": "fo.airspeed",
+      "channel": null,
+      "response": null,
+      "state": "BLOCKED_MISSING_FULL_SCALE_MECHANISM_QA",
+      "failureMechanic": "HOLD_LAST_ON_NO_SOURCE_OR_POWER; DEVICE-SPECIFIC PARK NOT_VERIFIED",
+      "approvedForOperationalMotion": false
+    },
+    {
+      "pointerId": "foRMI1",
+      "faceId": "fo.rmi",
+      "channel": "bearing1",
+      "response": null,
+      "state": "BLOCKED_MISSING_FULL_SCALE_MECHANISM_QA",
+      "failureMechanic": "HOLD_LAST_ON_NO_SOURCE_OR_POWER; DEVICE-SPECIFIC PARK NOT_VERIFIED",
+      "approvedForOperationalMotion": false
+    },
+    {
+      "pointerId": "foRMI2",
+      "faceId": "fo.rmi",
+      "channel": "bearing2",
+      "response": null,
+      "state": "BLOCKED_MISSING_FULL_SCALE_MECHANISM_QA",
+      "failureMechanic": "HOLD_LAST_ON_NO_SOURCE_OR_POWER; DEVICE-SPECIFIC PARK NOT_VERIFIED",
+      "approvedForOperationalMotion": false
+    },
+    {
+      "pointerId": "foAltimeter",
+      "faceId": "fo.outer_altimeter",
+      "channel": "primary",
+      "response": null,
+      "state": "BLOCKED_MISSING_FULL_SCALE_MECHANISM_QA",
+      "failureMechanic": "HOLD_LAST_ON_NO_SOURCE_OR_POWER; DEVICE-SPECIFIC PARK NOT_VERIFIED",
+      "approvedForOperationalMotion": false
+    },
+    {
+      "pointerId": "foVSI",
+      "faceId": "fo.outer_vertical_speed",
+      "channel": "primary",
+      "response": null,
+      "state": "BLOCKED_MISSING_FULL_SCALE_MECHANISM_QA",
+      "failureMechanic": "HOLD_LAST_ON_NO_SOURCE_OR_POWER; DEVICE-SPECIFIC PARK NOT_VERIFIED",
+      "approvedForOperationalMotion": false
+    },
+    {
+      "pointerId": "foClock",
+      "faceId": "fo.outer_clock",
+      "channel": "primary",
+      "response": null,
+      "state": "BLOCKED_MISSING_FULL_SCALE_MECHANISM_QA",
+      "failureMechanic": "HOLD_LAST_ON_NO_SOURCE_OR_POWER; DEVICE-SPECIFIC PARK NOT_VERIFIED",
+      "approvedForOperationalMotion": false
+    }
+  ]
+}
