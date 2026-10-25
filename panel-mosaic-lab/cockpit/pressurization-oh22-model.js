@@ -20,11 +20,16 @@
        {id:'manual-valve',kind:'spring',label:'MANUAL VALVE',xy:[.72,.453],states:['CLOSE','NEUTRAL','OPEN']}
      ],
      displays:[{id:'flight-display',xy:[.32,.207],field:'flightAltitudeFt'},{id:'landing-display',xy:[.32,.498],field:'landingAltitudeFt'}],
+     // Inner rectangles of the four DCPCS lamp apertures, measured against
+     // the owner's approved DCPCS photograph in its physical OH22 placement.
+     // [centerX,centerY,width,height] normalized to this installation ONLY.
+     // Each face is fitted within the underlying metal bezel; never redraw it.
+     lampFaceCalibration:{asset:owner,version:'DCPCS-OH22-FACES-2'},
      lamps:[
-       {id:'auto-fail',xy:[.205,.055],output:'autoFail',label:'AUTO FAIL'},
-       {id:'off-sched',xy:[.416,.055],output:'offSchedDescent',label:'OFF SCHED DESCENT'},
-       {id:'altn',xy:[.625,.055],output:'altn',label:'ALTN'},
-       {id:'manual',xy:[.837,.055],output:'manual',label:'MANUAL'}
+       {id:'auto-fail',xy:[.219,.043],face:[.219,.043,.157,.050],output:'autoFail',label:'AUTO FAIL'},
+       {id:'off-sched',xy:[.405,.043],face:[.405,.043,.157,.050],output:'offSchedDescent',label:'OFF SCHED DESCENT'},
+       {id:'altn',xy:[.596,.043],face:[.596,.043,.157,.050],output:'altn',label:'ALTN'},
+       {id:'manual',xy:[.782,.043],face:[.782,.043,.153,.050],output:'manual',label:'MANUAL'}
      ]
    }),
    CPCS:Object.freeze({
@@ -44,18 +49,27 @@
        {id:'landing-display',xy:[.246,.573],field:'landingAltitudeFt',stateRoot:'settings',width:.272,height:.072},
        {id:'standby-display',xy:[.57,.425],field:'standbyCabinAltitudeFt',stateRoot:'settings',width:.215,height:.067}
      ],
+     // Physical CPCS image has a DIFFERENT row spacing and aperture sizes.
+     // Its source stays independent of DCPCS, including future image swaps.
+     lampFaceCalibration:{asset:'OH22-CABIN-PRESSURIZATION-d1c6c39b6b33.png',version:'CPCS-OH22-FACES-2'},
      lamps:[
-       {id:'auto-fail',xy:[.233,.056],output:'autoFail',label:'AUTO FAIL'},
-       {id:'off-sched',xy:[.412,.056],output:'offSchedDescent',label:'OFF SCHED DESCENT'},
-       {id:'standby',xy:[.588,.056],output:'standby',label:'STANDBY'},
-       {id:'manual',xy:[.768,.056],output:'manual',label:'MANUAL'}
+       {id:'auto-fail',xy:[.233,.056],face:[.233,.056,.159,.057],output:'autoFail',label:'AUTO FAIL'},
+       {id:'off-sched',xy:[.412,.056],face:[.412,.056,.160,.057],output:'offSchedDescent',label:'OFF SCHED DESCENT'},
+       {id:'standby',xy:[.590,.056],face:[.590,.056,.158,.057],output:'standby',label:'STANDBY'},
+       {id:'manual',xy:[.766,.056],face:[.766,.056,.157,.057],output:'manual',label:'MANUAL'}
      ]
    })
  });
  const modes=Object.freeze(['CPCS','DCPCS']);
  function config(system){if(!modes.includes(system))throw Error('Unsupported pressure installation '+system);return layouts[system];}
  function validPoint(p){return Array.isArray(p)&&p.length===2&&p.every(v=>Number.isFinite(v)&&v>=0&&v<=1);}
- function validate(){for(const system of modes){const c=config(system),ids=new Set();for(const part of [...c.controls,...c.lamps,...c.displays]){if(!validPoint(part.xy)||ids.has(part.id))throw Error('Invalid '+system+' OH22 '+part.id);ids.add(part.id);}if(!c.controls.some(c=>c.id==='press-mode')||!c.controls.some(c=>c.id==='manual-valve'))throw Error('Missing '+system+' controls');}return true;}
+ function validFace(face){return Array.isArray(face)&&face.length===4&&face.every(v=>Number.isFinite(v)&&v>0&&v<1)&&face[0]-face[2]/2>=0&&face[0]+face[2]/2<=1&&face[1]-face[3]/2>=0&&face[1]+face[3]/2<=1;}
+ function lampFace(system,id){const lamp=config(system).lamps.find(x=>x.id===id);if(!lamp||!validFace(lamp.face))throw Error('Missing measured lamp aperture '+system+' '+id);return lamp.face.slice();}
+ function validate(){for(const system of modes){const c=config(system),ids=new Set();for(const part of [...c.controls,...c.lamps,...c.displays]){if(!validPoint(part.xy)||ids.has(part.id))throw Error('Invalid '+system+' OH22 '+part.id);ids.add(part.id);}
+     if(!c.controls.some(c=>c.id==='press-mode')||!c.controls.some(c=>c.id==='manual-valve'))throw Error('Missing '+system+' controls');
+     if(!c.lampFaceCalibration?.asset||c.lamps.length!==4)throw Error('Missing unique '+system+' lamp calibration');
+     for(const lamp of c.lamps){if(!validFace(lamp.face)||Math.abs(lamp.face[0]-lamp.xy[0])>.000001||Math.abs(lamp.face[1]-lamp.xy[1])>.000001)throw Error('Invalid '+system+' lamp aperture '+lamp.id);}
+   }return true;}
  function command(system,controlId,value,state){const c=config(system).controls.find(x=>x.id===controlId);if(!c)throw Error('Unknown '+system+' control '+controlId);
    if(c.kind==='altitude'){if(!Number.isFinite(value)||value<c.min||value>c.max||(system==='DCPCS'&&value%c.step!==0))throw Error('Out of range '+controlId);return system==='DCPCS'?{type:'INPUT',key:c.key,value}:{type:'ALTITUDE',key:c.key,value};}
    if(c.kind==='selector'){if(!c.states.includes(value))throw Error('Bad detent '+controlId);if(controlId==='press-mode')return {type:'MODE',value};if(controlId==='cabin-rate'&&system==='CPCS')return {type:'CABIN_RATE',value};if(controlId==='flight-ground'&&system==='CPCS')return {type:'FLIGHT_GROUND',value};}
@@ -69,5 +83,5 @@
  return null;
  }
  function lamps(system,derived){const values=derived?.lamps||{};return Object.fromEntries(config(system).lamps.map(c=>[c.id,values[c.output]===true]));}
- return Object.freeze({layouts,modes,config,validate,command,readControl,readDisplay,lamps});
+ return Object.freeze({layouts,modes,config,validate,lampFace,command,readControl,readDisplay,lamps});
 });
