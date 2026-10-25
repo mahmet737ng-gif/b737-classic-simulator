@@ -1,0 +1,23 @@
+name: Native gauge geometric evidence QA
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'engine/instruments/native-photo-geometric-evidence-v1.json'
+      - 'engine/instruments/native-photo-geometric-evidence-v1.test.cjs'
+      - '.github/workflows/gauge-native-geometry-qa-v1.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  evidence-release-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify all source references remain uncertified and geometric constraints hold
+        run: node --test engine/instruments/native-photo-geometric-evidence-v1.test.cjs
+      - name: Check locked imagery guard
+        run: python3 panel-mosaic-lab/verify-final-overhead.py
