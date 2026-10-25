@@ -44,10 +44,12 @@ assert.equal(result.projected['apu-gen-off-bus'],true);
 assert.equal(result.bleed.apuBleedValveOpen,true);
 assert.equal(result.electrical.generator1,false,'APU READY does not auto-select APU GEN');
 
-// GRD without a selected APU GEN is rejected: IGN L/R need AC supply.
+// Pneumatic GRD motoring does not require ignition AC GEN selection.
+ // Spark eligibility remains separately source-gated at fuel lightoff.
 chain.event({id:'engine-start-1',kind:'rotary',next:'GRD'});
-assert.equal(chain.get().phase.engine1,'BLOCKED');
-assert.match(chain.get().lastError,/IGNITION AC SUPPLY/);
+assert.equal(chain.get().phase.engine1,'MOTORING');
+assert.equal(chain.get().selectedSources[1],null);
+assert.equal(chain.get().observations.engine1.rules.ignition.supplyEligible.left,false);
 assert.equal(result.sources.engine1.running,false);
 chain.event({id:'engine-start-1',kind:'rotary',next:'OFF'});
 // Real Unified ISN02 bridge and ISN03 share EXACT same Pack session.
