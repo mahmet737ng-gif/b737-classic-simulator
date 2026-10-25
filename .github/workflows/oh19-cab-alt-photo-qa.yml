@@ -23,6 +23,7 @@ on:
       - 'engine/instruments/oh19-needle-tip-fit-v1.py'
       - 'engine/instruments/cold-dark-needle-fit-audit-v1.json'
       - 'panel-mosaic-lab/cockpit/cabin-dual-needles*'
+      - '.github/workflows/oh19-cab-alt-photo-qa.yml'
   workflow_dispatch:
 permissions:
   contents: read
