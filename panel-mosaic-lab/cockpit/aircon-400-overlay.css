@@ -1,0 +1,54 @@
+/* Unified-only B737-400 interactive OH20; do not mutate frozen OH20 atlas. */
+.b737-aircon400 .rg-layer .mounted-rotary[data-control="temperature-source"],
+.b737-aircon400 .rg-layer .mounted-rotary[data-control="control-cabin-temp"],
+.b737-aircon400 .rg-layer .mounted-rotary[data-control="pass-cabin-temp"],
+.b737-aircon400 .rg-layer .rg-detent-hit[data-control="temperature-source"],
+.b737-aircon400 .rg-layer .rg-detent-hit[data-control="control-cabin-temp"],
+.b737-aircon400 .rg-layer .rg-detent-hit[data-control="pass-cabin-temp"],
+.b737-aircon400 .lights-layer .mounted-light[data-light="duct-overheat-l"],
+.b737-aircon400 .lights-layer .mounted-light[data-light="duct-overheat-r"]{
+ display:none!important;
+ pointer-events:none!important;
+}
+.aircon400-layer{position:absolute;inset:0;z-index:98;pointer-events:none}
+.aircon400-layer[hidden]{display:none!important}
+.aircon400-knob,.aircon400-trim,.aircon400-zone-lamp{
+ display:block;position:absolute;margin:0!important;padding:0!important;
+ min-width:0;min-height:0;border:0!important;outline:0;
+ box-shadow:none!important;background:transparent!important;pointer-events:auto;
+ box-sizing:border-box;
+}
+.aircon400-knob,.aircon400-trim{
+ transform:translate(-50%,-50%);cursor:pointer;touch-action:none;border-radius:50%;
+}
+.aircon400-knob img{
+ display:block;position:absolute;width:100%;height:100%;left:0;top:0;
+ max-width:none!important;max-height:none!important;object-fit:fill;
+ pointer-events:none;user-select:none;
+ transform-origin:50% 44%;
+ transform:rotate(var(--aircon-angle,0deg));
+ transition:transform 130ms cubic-bezier(.2,.9,.28,1);
+}
+.aircon400-trim img{
+ display:block;position:absolute;inset:0;width:100%;height:100%;
+ max-width:none!important;max-height:none!important;object-fit:contain;
+ opacity:0;pointer-events:none;user-select:none;
+ transition:opacity 120ms linear;
+}
+.aircon400-trim img.active{opacity:1}
+.aircon400-zone-lamp{
+ overflow:hidden;cursor:default;background:#050505!important;
+ border-radius:1px!important;pointer-events:none;
+}
+.aircon400-zone-lamp img{
+ position:absolute;inset:0;width:100%;height:100%;
+ max-width:none!important;max-height:none!important;object-fit:fill;
+ opacity:0;pointer-events:none;user-select:none;
+}
+.aircon400-zone-lamp img.active{opacity:1}
+.aircon400-knob:focus-visible,.aircon400-trim:focus-visible{
+ outline:2px solid #fbd48d!important;outline-offset:3px;
+}
+@media(prefers-reduced-motion:reduce){
+ .aircon400-knob img,.aircon400-trim img{transition:none}
+}
