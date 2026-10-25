@@ -1,0 +1,26 @@
+name: B737 tiny and tinted lamp photographic pixel verification
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - tools/lamp-photo-special-qa.py
+      - .github/workflows/lamp-special-qa.yml
+permissions:
+  contents: read
+jobs:
+  source-photo-measurements:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Protect frozen source photographs
+        run: python3 panel-mosaic-lab/verify-final-overhead.py
+      - name: Image analysis requirements
+        run: python3 -m pip install --disable-pip-version-check Pillow numpy
+      - name: Independently measure both difficult original photo source glasses
+        run: python3 tools/lamp-photo-special-qa.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: b737-recorder-pullup-photo-measurements
+          path: /tmp/b737-special-two-lamps-evidence.json
+          if-no-files-found: error
+          retention-days: 30
