@@ -27,11 +27,15 @@
  function differentialPressurePreviewBearing(psid){
   if(typeof psid!=='number'||!Number.isFinite(psid))
    throw Error('Invalid DIFF PRESS reading');
-  if(psid<0||psid>10)
+  // IEEE754 summation can yield 10.000000000000007 at the 10-psi mark.
+  // Reject genuinely out-of-dial values but permit sub-nanopsi float noise.
+  const tiny=1e-9;
+  if(psid< -tiny||psid>10+tiny)
    return null; // Do not fake out-of-range physical readings.
+  const v=Math.max(0,Math.min(10,psid));
   const a=pressurePhotoAnchors;
-  for(let i=1;i<a.length;i++)if(psid<=a[i].valuePsid){
-   const lo=a[i-1],hi=a[i],t=(psid-lo.valuePsid)/(hi.valuePsid-lo.valuePsid);
+  for(let i=1;i<a.length;i++)if(v<=a[i].valuePsid){
+   const lo=a[i-1],hi=a[i],t=(v-lo.valuePsid)/(hi.valuePsid-lo.valuePsid);
    return lo.bearingDeg+t*(hi.bearingDeg-lo.bearingDeg);
   }
   return a[a.length-1].bearingDeg;
