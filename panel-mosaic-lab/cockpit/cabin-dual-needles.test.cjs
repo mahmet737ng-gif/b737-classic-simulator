@@ -8,9 +8,24 @@ const oh19=atlas.placements.find(piece=>piece.id===model.source.piece);
 assert.ok(oh19);
 assert.deepEqual(oh19.sourceDimensions,[model.source.width,model.source.height]);
 assert.deepEqual(model.pivot,{x:489,y:365});
-assert.deepEqual(model.needles.map(needle=>needle.id),['cabAlt','press']);
-assert.ok(model.needles[0].tipRadius<model.needles[1].tipRadius);
+// Physical stack (rear->front) differs from printed radial scale assignment.
+assert.deepEqual(model.needles.map(needle=>needle.id),['press','cabAlt']);
 assert.deepEqual(model.needles.map(needle=>needle.layer),[0,1]);
+assert.deepEqual(model.needles.map(needle=>needle.stack),['rear','front']);
+assert.deepEqual(model.needles.map(needle=>needle.printedScale),['outer','inner']);
+assert.deepEqual(model.needles.map(needle=>needle.valueSource),['differentialPsid','cabinAltitudeFt']);
+assert.ok(model.needles.find(n=>n.id==='cabAlt').tipRadius<
+          model.needles.find(n=>n.id==='press').tipRadius);
+// Keep all native OH19 geometry candidate-only (do not swap the printed scales).
+const nativeTicks=require('../../engine/instruments/oh19-native-ticks-batch1.json');
+assert.deepEqual(nativeTicks.scales.map(scale=>scale.mode),['cabinAltitude','diffPressure']);
+const rings=Object.fromEntries(nativeTicks.scales.map(x=>[x.mode,x.allVisibleTickCandidates]));
+assert.equal(rings.cabinAltitude.length,47);
+assert.equal(rings.diffPressure.length,51);
+assert.ok(Math.max(...rings.cabinAltitude.map(x=>x.innerRadiusPx))<
+          Math.min(...rings.diffPressure.map(x=>x.innerRadiusPx)));
+const ordered=model.needles.slice().sort((a,b)=>a.layer-b.layer);
+assert.deepEqual(ordered.map(n=>n.id),['press','cabAlt']);
 const at=model.placement(oh19);assert.ok(at.x>oh19.x&&at.x<oh19.x+oh19.w);assert.ok(at.y>oh19.y&&at.y<oh19.y+oh19.h);
 assert.equal(model.angle('press',200),166);assert.equal(model.angle('cabAlt',-200),-166);
 assert.throws(()=>model.angle('bad',0));assert.throws(()=>model.angle('press',NaN));
@@ -22,13 +37,15 @@ for(const needle of model.needles){
 }
 const ui=fs.readFileSync(path.join(__dirname,'cabin-dual-needles-unified.js'),'utf8');
 assert.ok(ui.includes('`.atlas-piece[data-key="${model.source.piece}"]`'));
-assert.ok(ui.includes('for(const needle of model.needles)'));
+assert.ok(ui.includes('for(const needle of stack)'));
+assert.ok(ui.includes("'data-cabin-stack':needle.stack"));
+assert.ok(ui.includes("'data-cabin-printed-scale':needle.printedScale"));
 assert.ok(ui.includes('window.B737UnifiedCabinNeedles'));
 assert.ok(ui.includes('needle.tipRadius/220'));
 const html=fs.readFileSync(path.join(__dirname,'index.html'),'utf8');
-assert.ok(html.includes('cabin-dual-needles-model.js?v=CDN-0001'));
-assert.ok(html.includes('cabin-dual-needles-unified.js?v=CDN-0001'));
-console.log('PASS: separate OH19 CAB ALT and PRESS needles share a pivot, rotate independently, and keep CAB ALT beneath PRESS.');
+assert.ok(html.includes('cabin-dual-needles-model.js?v=CDN-0002'));
+assert.ok(html.includes('cabin-dual-needles-unified.js?v=CDN-0002'));
+console.log('PASS: separate OH19 CAB ALT and PRESS needles share a pivot, rotate independently, and stack PRESS behind CAB ALT while preserving PSI outer and ALT inner printed scales.');
 
 
 const photo=require('../../engine/instruments/oh19-cab-alt-photo-anchors-v1.json');
