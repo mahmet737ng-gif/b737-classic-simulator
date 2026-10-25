@@ -63,8 +63,8 @@ def sample_ray(mask,pivot,lo,hi,bearing):
     for start,end in zip(starts,ends):
         n=end-start
         if n<5 or n>max(43,(hi-lo)*.85):continue
-        r0=lo+start; r1=lo+end-1
-        runs.append((r0,r1,n))
+        r0=int(lo+start); r1=int(lo+end-1)
+        runs.append((r0,r1,int(n)))
     return runs
 
 def radial_candidates(mask,pivot,lo,hi):
@@ -113,7 +113,7 @@ def choose_circle(im,pivot,rough_radius,uncertainty):
         for x,y,r in fit[0]:
             px=x+x0; py=y+y0
             delta=math.hypot(px-cx,py-cy)
-            rerr=abs(r-radius)
+            rerr=float(abs(float(r)-radius))
             if delta>max(uncertainty*1.7,20):continue
             out.append({"x":round(float(px),2),"y":round(float(py),2),
                         "radius":round(float(r),2),
