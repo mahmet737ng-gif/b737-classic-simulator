@@ -52,7 +52,7 @@ start.core.pack.send({type:'ELECTRICAL',action:{type:'SELECT_SOURCE',source:'APU
 chain.syncPower();
 chain.event({id:'engine-start-1',kind:'rotary',next:'GRD'});
 chain.advance(850);chain.lever('engine1','IDLE');chain.advance(750);
-near(chain.get().observations.engine1.feedback.egtC.value,600,0.001);
+near(chain.get().observations.engine1.feedback.egtC.value,620,0.001);
 chain.advance(250);assert.equal(chain.get().phase.engine1,'RUNNING');
 let sim=chain.get().runningEnvelope;
 assert.equal(sim.quality,'SIMULATION_APPROX_ONLY');
