@@ -16,6 +16,38 @@
   [20000,200.55],[25000,236.57],[30000,262.03],[35000,284.48],
   [40000,304.18],[50000,327.37]
  ].map(([valueFt,bearingDeg])=>Object.freeze({valueFt,bearingDeg})));
+ // Outer PSI numerals read from original OH19 face. This registration is
+ // native-photo CANDIDATE, not a certified spindle/tick fit. Distinct from
+ // the existing stage10 Hough candidate angles (disagreements are audited).
+ const pressurePhotoAnchors=Object.freeze([
+  [0,1.50],[1,32.49],[2,64.21],[3,96.06],[4,127.30],
+  [5,159.47],[6,193.57],[7,225.42],[8,256.99],
+  [9,290.23],[10,322.05]
+ ].map(([valuePsid,bearingDeg])=>Object.freeze({valuePsid,bearingDeg})));
+ function differentialPressurePreviewBearing(psid){
+  if(typeof psid!=='number'||!Number.isFinite(psid))
+   throw Error('Invalid DIFF PRESS reading');
+  if(psid<0||psid>10)
+   return null; // Do not fake out-of-range physical readings.
+  const a=pressurePhotoAnchors;
+  for(let i=1;i<a.length;i++)if(psid<=a[i].valuePsid){
+   const lo=a[i-1],hi=a[i],t=(psid-lo.valuePsid)/(hi.valuePsid-lo.valuePsid);
+   return lo.bearingDeg+t*(hi.bearingDeg-lo.bearingDeg);
+  }
+  return a[a.length-1].bearingDeg;
+ }
+ function resolvePhysicalReadings(readings){
+  if(!readings||!Number.isFinite(readings.cabinAltitudeFt)||
+      !Number.isFinite(readings.differentialPsid))
+   return Object.freeze({status:'INVALID_SENSOR_SAMPLE',previewApproved:false});
+  const cabAlt=readings.cabinAltitudeFt>=0&&readings.cabinAltitudeFt<=50000?
+     cabinAltitudePreviewBearing(readings.cabinAltitudeFt):null;
+  const press=differentialPressurePreviewBearing(readings.differentialPsid);
+  return Object.freeze({status:cabAlt!==null&&press!==null?
+   'BOTH_CANDIDATE_BEARINGS':'OUT_OF_PRINTED_RANGE',
+   cabAltBearingDeg:cabAlt,pressBearingDeg:press,
+   previewApproved:false,operationalNeedleAuthorized:false});
+ }
  function cabinAltitudePreviewBearing(valueFt){
   if(typeof valueFt!=='number'||!Number.isFinite(valueFt))throw Error('Invalid CAB ALT reading');
   const a=cabinAltPhotoAnchors;
@@ -51,5 +83,5 @@
   if(!piece||![piece.x,piece.y,piece.w,piece.h].every(Number.isFinite)||piece.w<=0||piece.h<=0)throw Error('Invalid OH19 atlas placement');
   return {x:piece.x+pivot.x*piece.w/source.width,y:piece.y+pivot.y*piece.h/source.height};
  }
- return Object.freeze({source,pivot,needles,angle,placement,cabinAltPhotoAnchors,cabinAltitudePreviewBearing,photoPreviewApproved:false});
+ return Object.freeze({source,pivot,needles,angle,placement,cabinAltPhotoAnchors,cabinAltitudePreviewBearing,pressurePhotoAnchors,differentialPressurePreviewBearing,resolvePhysicalReadings,photoPreviewApproved:false});
 });
