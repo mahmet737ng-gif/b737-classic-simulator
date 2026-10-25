@@ -1,6 +1,6 @@
 {
   "schema": "b737-annunciator-assets.v1",
-  "version": "LGT-0016",
+  "version": "LGT-0017",
   "assetDirectory": "../assets/locked/2026-10-23/LIGHTS/",
   "testMode": "manual-asset-visual-qa",
   "note": "Stable IDs for the owner-approved light designs. This registry does not assign physical coordinates or certify aircraft logic.",
@@ -2088,6 +2088,30 @@
       "assets": {
         "OFF": "black-amber-v1/gallery/R_BOTTLE_DISCHARGED_OFF.svg",
         "ON": "black-amber-v1/gallery/R_BOTTLE_DISCHARGED_ON.svg"
+      },
+      "scope": "ASSET_TEST_ONLY"
+    },
+    {
+      "id": "ENG_2_OVERHEAT_AMBER",
+      "lines": [
+        "ENG 2",
+        "OVERHEAT"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "black-amber-v1/gallery/ENG_2_OVERHEAT_OFF.svg",
+        "ON": "black-amber-v1/gallery/ENG_2_OVERHEAT_ON.svg"
       },
       "scope": "ASSET_TEST_ONLY"
     }
