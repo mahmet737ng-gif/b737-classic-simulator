@@ -126,6 +126,18 @@ class Testbench{
    if(source==='APU'&&!this.get().apu.generator.ready)throw Error('APU generator not yet at rated speed');
   this.start.core.pack.send({type:'ELECTRICAL',action:{type:'SELECT_SOURCE',source,side}});
   this.chain.syncPower();this.log('SOURCE_SELECT',{source,side});return this.get();}
+ setIgnitionSelector(position){
+  if(!['IGN_L','BOTH','IGN_R'].includes(position))throw Error('Expected IGN_L/BOTH/IGN_R');
+  this.chain.event({id:'ignition-source',kind:'rotary',next:position.replace('_',' ')});
+  this.core.refreshFuelDelivery();
+  this.log('IGNITION_SELECTOR',{position});return this.get();
+ }
+ setStandbyPower(position){
+  if(!['AUTO','BAT','OFF'].includes(position))throw Error('Expected standby AUTO/BAT/OFF');
+  this.start.core.pack.send({type:'ELECTRICAL',action:{type:'CONTROL',key:'standbySelector',value:position}});
+  this.chain.syncPower();this.core.refreshFuelDelivery();
+  this.log('STANDBY_POWER',{position});return this.get();
+ }
  setElectricalConsumer(id,on){
    if(!Object.hasOwn(LoadDynamics.CATALOG,id)||typeof on!=='boolean')
     throw Error('Known training electrical consumer ID and boolean switch required');
@@ -140,25 +152,17 @@ class Testbench{
  prepareFuel({trainingPumpPower=true,pumps=true}={}){
   if(trainingPumpPower)this.core.enableTrainingPumpPower();
   if(pumps)for(const name of ['fuel.main1FwdPump','fuel.main1AftPump','fuel.main2FwdPump','fuel.main2AftPump'])this.core.pumpSwitch(name,true);
+  this.core.refreshFuelDelivery();
   this.log('FUEL_PUMPS',{trainingPumpPower,pumps});return this.get();}
  engineStart(engine){checkEngine(engine);
+  this.core.refreshFuelDelivery();
   this.chain.event({id:'engine-start-'+engine.at(-1),kind:'rotary',next:'GRD'});
   if(this.chain.get().phase[engine]==='MOTORING')this.engineStartMs[engine]=this.elapsedMs;
   this.log('ENGINE_START_GRD',{engine,phase:this.chain.get().phase[engine],reason:this.chain.get().lastError});return this.get();}
  fuelLever(engine,position){checkEngine(engine);
-  const snap=this.chain.get();
-  if(position==='IDLE'&&snap.phase[engine]!=='AWAIT_FUEL_LEVER_IDLE'){
-   const n2=snap.observations[engine].feedback.n2Percent.value;
-   const result={accepted:false,phase:snap.phase[engine],
-    reason:snap.phase[engine]==='MOTORING'?
-     'WAIT FOR N2 25% BEFORE FUEL LEVER IDLE (CURRENT '+round(n2??0,1)+'% N2)':
-     'ENGINE START GRD / N2 25% REQUIRED BEFORE FUEL LEVER IDLE. CURRENT PHASE: '+snap.phase[engine]};
-   this.log('FUEL_LEVER_REJECTED',{engine,position,phase:result.phase,
-    n2Percent:n2,reason:result.reason});
-   return result;
-  }
   const result=this.core.fuelLever(engine,position);
-  this.log('FUEL_LEVER',{engine,position,accepted:result.accepted,reason:result.reason??null});
+  this.log('FUEL_LEVER',{engine,position,accepted:result.accepted,phase:result.phase,
+   fuelAvailable:result.fuelAvailable,reason:result.fuelSupplyReason??result.reason??null});
   return result;}
  setOnGround(onGround){if(typeof onGround!=='boolean')throw Error('onGround boolean');
   this.chain.setOnGround(onGround);this.aircraft.onGround=onGround;
@@ -241,7 +245,10 @@ class Testbench{
     oil:{pressurePsi:oil.pressurePsi,temperatureC:oil.temperatureC,quantityPct:oil.quantityPct,
      lowPressureLamp:oil.lowPressureLamp,filterBypassLamp:oil.filterBypassLamp,origin:ORIGIN},
      hydraulic:{system:id==='engine1'?'A':'B',engineDrivenPressurePsi:hydraulicPressure(needle.n2),origin:ORIGIN},
-    startValveOpen:snap.observations[id].feedback.startValveOpen.value,
+    ignition:{selector:snap.observations[id].rules.ignition.selector,
+      demand:copy(snap.observations[id].rules.ignition.demand),
+      eligible:copy(snap.observations[id].rules.ignition.supplyEligible)},
+     startValveOpen:snap.observations[id].feedback.startValveOpen.value,
     fuelLever:snap.observations[id].feedback.fuelStartLever.value,
     fuelPath:e.fuelPath,fuelSupplyReady:fuelReady.available,
     fuelSupplyReason:fuelReady.reason,startCue,
@@ -286,6 +293,8 @@ class Testbench{
     ISN16:'THRUST_LIMIT',ISN17:'ENGINE_DYNAMICS',ISN18:'TESTBENCH_E2E'},
    aircraft:copy(this.aircraft),engines,apu,
    electrical:{battery:snap.electrical.battery,selectedSources:copy(snap.selectedSources),
+     standbySelector:this.start.core.pack.electricalState.config.standbySelector,
+     standbyAcPowered:snap.electrical.acStandby,
      apuGenerator:copy(generator),apuConsumerSwitches:copy(this.apuConsumers)},
     hydraulics:{systemA:{pressurePsi:engines.engine1.hydraulic.engineDrivenPressurePsi,origin:ORIGIN},
      systemB:{pressurePsi:engines.engine2.hydraulic.engineDrivenPressurePsi,origin:ORIGIN}},
