@@ -13,8 +13,8 @@ survey=json.loads((ROOT/'engine/instruments/gauge-survey-stage2-3.json').read_te
 table={x['id']:x for x in survey['faces']}
 configs=[
  ('oh.fuel.temperature',-136,136,108,148),
- ('oh.cabin.temperature',-146,146,122,181),
- ('oh.duct.pressure_lr',-159,159,126,187),
+ ('oh.cabin.temperature',-145,120,140,181),
+ ('oh.duct.pressure_lr',-155,158,136,187),
 ]
 fnt=ImageFont.load_default()
 for gid,amin,amax,rmin,rmax in configs:
