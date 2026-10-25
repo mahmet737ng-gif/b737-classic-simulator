@@ -63,6 +63,29 @@ assert.ok(bridge.includes("objectFit:'fill'"),'Owner photo must reach tile top a
 const skin=fs.readFileSync(path.join(__dirname,'pressurization-oh22.css'),'utf8');
 assert.ok(skin.includes('display:none; /* Physical knobs do not print live value labels'),'Knob text must not overlap real panel labels');
 assert.ok(skin.includes('font:700 21px'),'Digital altitude text must fit its dedicated instrument windows');
+// Independent annunciators must illuminate under either overhead lamp test,
+// including the cockpit all-lights visual test, without fault-latching engines.
+const actuatorSource=fs.readFileSync(path.join(__dirname,'pressurization-oh22.js'),'utf8');
+assert.ok(actuatorSource.includes("document.documentElement.classList.contains('cockpit-visual-test')"),
+  'OH22 must follow the global visual lamp-test mode');
+assert.ok(actuatorSource.includes('window.B737OverheadLights?.getState?.()?.lampTest===true'),
+  'OH22 must follow the hardware overhead lamp-test mode');
+assert.ok(actuatorSource.includes('const lit=lampTest||values[l.id]'),
+  'Both systems must illuminate all annunciators during lamp-test');
+assert.ok(actuatorSource.includes("window.addEventListener('b737:pressure-light-test'"),
+  'OH22 must repaint when the user operates all-lights test');
+assert.ok(actuatorSource.includes("window.addEventListener('b737:overhead-light-state'"),
+  'OH22 must repaint when the existing overhead lamp-test state changes');
+const lightBridge=fs.readFileSync(path.join(__dirname,'overhead-bridge.js'),'utf8');
+assert.ok(lightBridge.includes("new CustomEvent('b737:pressure-light-test'"),
+  'All-lights visual test must notify isolated OH22 annunciator layers');
+const legacySkin=fs.readFileSync(path.join(__dirname,'pressurization-oh22.css'),'utf8');
+for(const id of ['flight-alt','landing-alt','cabin-alt','cabin-rate','pressurization-mode','pressurization-check']){
+  assert.ok(legacySkin.includes('.rg-detent-hit[data-control="'+id+'"]'),
+    'Old detached detent hit areas must not overlay either selected system: '+id);
+}
+assert.ok(legacySkin.includes('.guard-node[data-control="pressurization-check"]'),
+  'CPCS/DCPCS must suppress outdated guarded OH22 action area');
 const overhead=fs.readFileSync(path.join(__dirname,'overhead-stage.html'),'utf8');
 for(const src of ['pressurization-oh22-model.js','pressurization-oh22.js','pressurization-oh22.css'])assert.ok(overhead.includes(src));
 const styles=fs.readFileSync(path.join(__dirname,'pressurization-oh22.css'),'utf8');
