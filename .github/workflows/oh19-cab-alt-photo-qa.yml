@@ -5,6 +5,8 @@ on:
     paths:
       - 'engine/instruments/oh19-cab-alt-*'
       - 'engine/instruments/oh19-native-ticks-batch1.json'
+      - 'engine/instruments/oh19-three-pass-*'
+      - 'engine/instruments/oh19-numeric-ambiguity-audit-v1.cjs'
       - 'engine/instruments/oh19-photo-*.js'
       - 'engine/instruments/oh19-photo-*.cjs'
       - 'engine/instruments/oh19-source-pixel-intensity-v2.py'
@@ -17,6 +19,8 @@ on:
     paths:
       - 'engine/instruments/oh19-cab-alt-*'
       - 'engine/instruments/oh19-native-ticks-batch1.json'
+      - 'engine/instruments/oh19-three-pass-*'
+      - 'engine/instruments/oh19-numeric-ambiguity-audit-v1.cjs'
       - 'engine/instruments/oh19-photo-*.js'
       - 'engine/instruments/oh19-photo-*.cjs'
       - 'engine/instruments/oh19-source-pixel-intensity-v2.py'
@@ -41,6 +45,8 @@ jobs:
           node panel-mosaic-lab/cockpit/cabin-dual-needles.test.cjs
           node engine/instruments/oh19-cab-alt-54-gauge-qa-v1.test.cjs
           node --test engine/instruments/oh19-photo-evidence-v2.test.cjs
+          node --test engine/instruments/oh19-three-pass-integration.test.cjs
+          node engine/instruments/oh19-numeric-ambiguity-audit-v1.cjs
           node engine/instruments/gauge-visual-audit-v1.test.cjs
           node engine/instruments/cold-dark-indicator-v1.test.cjs
           node tests/cabin-field-elevation-v1.test.cjs
@@ -51,6 +57,7 @@ jobs:
           python3 -m pip install --quiet pillow
           python3 -m py_compile engine/instruments/oh19-source-pixel-intensity-v2.py
           python3 engine/instruments/oh19-source-pixel-intensity-v2.py
+          python3 engine/instruments/oh19-three-pass-pixel-qa-v1.py
           python3 engine/instruments/oh19-needle-tip-fit-v1.py
       - name: Upload OH19 original-image coordinate evidence
         uses: actions/upload-artifact@v4
