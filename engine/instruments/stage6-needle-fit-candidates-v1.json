@@ -11,7 +11,7 @@
     "registeredSprites": 38,
     "knownCandidateNativeTipRadii": 13,
     "spriteShapeOwnerLocked": 5,
-    "pointersWithPhotoDistanceComparisons": 5,
+    "pointersWithPhotoDistanceComparisons": 4,
     "finalApprovedNeedleFits": 0
   },
   "pointers": [
@@ -625,7 +625,8 @@
       "offsetAngleCalibrationApproved": false,
       "allTickTipReachApproved": false,
       "changesToMountedGeometry": false,
-      "ownerReviewRequired": true
+      "ownerReviewRequired": true,
+      "needleScaleMode": "diffPressure"
     },
     {
       "faceId": "oh.cabin.diff_pressure_altitude",
@@ -648,193 +649,17 @@
       "preservedSprite": true,
       "existingNeedleTipRadiusPx": 123,
       "radiusOrigin": "existing_legacy_needle_geometry_visual_model_not_final_per_tick",
-      "photographedNativeTipCandidates": [
-        {
-          "mode": "diffPressure",
-          "value": 0,
-          "point": {
-            "x": 492,
-            "y": 96
-          },
-          "sourceAngle": 0.64,
-          "photoRadiusPx": 269.0167281044062
-        },
-        {
-          "mode": "diffPressure",
-          "value": 1,
-          "point": {
-            "x": 620.5,
-            "y": 164
-          },
-          "sourceAngle": 33.19,
-          "photoRadiusPx": 240.19419226950515
-        },
-        {
-          "mode": "diffPressure",
-          "value": 2,
-          "point": {
-            "x": 708.5,
-            "y": 260
-          },
-          "sourceAngle": 64.44,
-          "photoRadiusPx": 243.32128965628962
-        },
-        {
-          "mode": "diffPressure",
-          "value": 3,
-          "point": {
-            "x": 728.5,
-            "y": 363
-          },
-          "sourceAngle": 89.52,
-          "photoRadiusPx": 239.5083505851101
-        },
-        {
-          "mode": "diffPressure",
-          "value": 4,
-          "point": {
-            "x": 686,
-            "y": 512.5
-          },
-          "sourceAngle": 126.82,
-          "photoRadiusPx": 246.1000812677639
-        },
-        {
-          "mode": "diffPressure",
-          "value": 5,
-          "point": {
-            "x": 574.5,
-            "y": 590.5
-          },
-          "sourceAngle": 159.24,
-          "photoRadiusPx": 241.16488135713294
-        },
-        {
-          "mode": "diffPressure",
-          "value": 6,
-          "point": {
-            "x": 430.5,
-            "y": 597
-          },
-          "sourceAngle": -165.85,
-          "photoRadiusPx": 239.2618858071632
-        },
-        {
-          "mode": "diffPressure",
-          "value": 7,
-          "point": {
-            "x": 315.5,
-            "y": 535
-          },
-          "sourceAngle": -134.42,
-          "photoRadiusPx": 242.90378753737045
-        },
-        {
-          "mode": "diffPressure",
-          "value": 8,
-          "point": {
-            "x": 248.5,
-            "y": 423.5
-          },
-          "sourceAngle": -103.67,
-          "photoRadiusPx": 247.512625940577
-        },
-        {
-          "mode": "diffPressure",
-          "value": 9,
-          "point": {
-            "x": 260,
-            "y": 280.5
-          },
-          "sourceAngle": -69.75,
-          "photoRadiusPx": 244.09270779767266
-        },
-        {
-          "mode": "diffPressure",
-          "value": 10,
-          "point": {
-            "x": 340.5,
-            "y": 173
-          },
-          "sourceAngle": -37.72,
-          "photoRadiusPx": 242.72669816070913
-        }
-      ],
-      "relativeRadialGaps": [
-        {
-          "mode": "diffPressure",
-          "value": 0,
-          "radialGapPx": -146.02,
-          "imageEvidence": "source_pixel_candidate_not_approved"
-        },
-        {
-          "mode": "diffPressure",
-          "value": 1,
-          "radialGapPx": -117.19,
-          "imageEvidence": "source_pixel_candidate_not_approved"
-        },
-        {
-          "mode": "diffPressure",
-          "value": 2,
-          "radialGapPx": -120.32,
-          "imageEvidence": "source_pixel_candidate_not_approved"
-        },
-        {
-          "mode": "diffPressure",
-          "value": 3,
-          "radialGapPx": -116.51,
-          "imageEvidence": "source_pixel_candidate_not_approved"
-        },
-        {
-          "mode": "diffPressure",
-          "value": 4,
-          "radialGapPx": -123.1,
-          "imageEvidence": "source_pixel_candidate_not_approved"
-        },
-        {
-          "mode": "diffPressure",
-          "value": 5,
-          "radialGapPx": -118.16,
-          "imageEvidence": "source_pixel_candidate_not_approved"
-        },
-        {
-          "mode": "diffPressure",
-          "value": 6,
-          "radialGapPx": -116.26,
-          "imageEvidence": "source_pixel_candidate_not_approved"
-        },
-        {
-          "mode": "diffPressure",
-          "value": 7,
-          "radialGapPx": -119.9,
-          "imageEvidence": "source_pixel_candidate_not_approved"
-        },
-        {
-          "mode": "diffPressure",
-          "value": 8,
-          "radialGapPx": -124.51,
-          "imageEvidence": "source_pixel_candidate_not_approved"
-        },
-        {
-          "mode": "diffPressure",
-          "value": 9,
-          "radialGapPx": -121.09,
-          "imageEvidence": "source_pixel_candidate_not_approved"
-        },
-        {
-          "mode": "diffPressure",
-          "value": 10,
-          "radialGapPx": -119.73,
-          "imageEvidence": "source_pixel_candidate_not_approved"
-        }
-      ],
+      "photographedNativeTipCandidates": [],
+      "relativeRadialGaps": [],
       "spriteLocalPivot": null,
       "spriteLocalTip": null,
       "spriteSourceSha256": null,
       "offsetAngleCalibrationApproved": false,
       "allTickTipReachApproved": false,
       "changesToMountedGeometry": false,
-      "ownerReviewRequired": true
+      "ownerReviewRequired": true,
+      "needleScaleMode": "cabinAltitude",
+      "sourcePixelTipGapState": "blocked_no_exact_cabin_altitude_inner_pixel_endpoint"
     },
     {
       "faceId": "oh.cabin.rate",
@@ -1107,7 +932,8 @@
       "offsetAngleCalibrationApproved": false,
       "allTickTipReachApproved": false,
       "changesToMountedGeometry": false,
-      "ownerReviewRequired": true
+      "ownerReviewRequired": true,
+      "needleScaleMode": "primary"
     },
     {
       "faceId": "oh.duct.pressure_lr",
@@ -1236,7 +1062,8 @@
       "offsetAngleCalibrationApproved": false,
       "allTickTipReachApproved": false,
       "changesToMountedGeometry": false,
-      "ownerReviewRequired": true
+      "ownerReviewRequired": true,
+      "needleScaleMode": "primary"
     },
     {
       "faceId": "oh.crew_oxygen.pressure",
