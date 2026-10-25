@@ -106,13 +106,14 @@
     },
     "oh.cabin.diff_pressure_altitude": {
       "panel": "OH19-DIFF",
-      "status": "LEGACY_TIP_REACH_NOT_MEASURED",
+      "status": "CAB_ALT_INNER_PHOTO_MAJOR_TICKS_PREVIEW_NOT_FULL_FIT",
       "pointers": [
         "press",
         "cabAlt"
       ],
       "photoSource": "panel-mosaic-lab/assets/locked/2026-10-23/OH19-PRESS-DIFF-ALT-HORN-d6719ce57cef.png",
-      "note": "Existing pointer and center known, but native pixel inner end of each printed tick not verified."
+      "note": "Original OH19 unaltered; major CAB ALT numeric anchors 0,3,10,15,20,25,30,35,40,50 x1000 ft visually crosschecked with photo and source-image radial candidate extraction; 0-3k 500-ft strokes added. Still no full 3-50k minor value QA, no approved pivot subpixel, inner tick tip reach and sweep QA. Pressure outer needle remains independent and unverified.",
+      "photoNumericMap": "engine/instruments/oh19-cab-alt-photo-anchors-v1.json"
     },
     "oh.cabin.rate": {
       "panel": "OH19-DIFF",
@@ -452,5 +453,12 @@
       "photoSource": "panel-mosaic-lab/assets/locked/2026-10-23/OH01-06-source-9d8ac0ac86bd.png",
       "note": "Oxygen gauge and sprite mounted/tested; pressure retained cold dark rather than forcing zero."
     }
+  },
+  "acceptance": {
+    "sourceAssetsUnchanged": true,
+    "photoTickValueValidationComplete": false,
+    "independentNeedleTipSweepApproved": false,
+    "physicalInputGroundAltitudeIntegrated": true,
+    "approved54GaugeCalibrationCount": 0
   }
 }
