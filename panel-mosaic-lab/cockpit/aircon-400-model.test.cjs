@@ -45,7 +45,7 @@ const css=fs.readFileSync(path.join(__dirname,'aircon-400-overlay.css'),'utf8');
 const stage=fs.readFileSync(path.join(__dirname,'overhead-stage.html'),'utf8');
 const bridge=fs.readFileSync(path.join(__dirname,'overhead-bridge.js'),'utf8');
 const shared=fs.readFileSync(path.join(__dirname,'../interactive-overhead/rotary-guards.js'),'utf8');
-for(const asset of ['aircon-400-model.js?v=AIRCON400-0002','aircon-400-overlay.js?v=AIRCON400-0002','aircon-400-overlay.css?v=AIRCON400-0002'])assert.ok(stage.includes(asset));
+for(const asset of ['aircon-400-model.js?v=AIRCON400-0003-SOCKET-FIT','aircon-400-overlay.js?v=AIRCON400-0003-SOCKET-FIT','aircon-400-overlay.css?v=AIRCON400-0003-SOCKET-FIT'])assert.ok(stage.includes(asset));
 for(const id of ['temperature-source','control-cabin-temp','pass-cabin-temp','duct-overheat-l','duct-overheat-r'])assert.ok(css.includes(id),'Old 300/500 overlay must be hidden for 400: '+id);
 assert.ok(overlay.includes('zoneFaults'),'Three caution outputs are distinct');
 assert.ok(overlay.includes('setAirconTemperature'),'Outer-zone controls retain pneumatic bridge');
