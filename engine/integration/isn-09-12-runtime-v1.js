@@ -15,7 +15,8 @@
  const pumpNames=Object.freeze({main1:['fuel.main1FwdPump','fuel.main1AftPump'],
   main2:['fuel.main2FwdPump','fuel.main2AftPump'],center:['fuel.centerLeftPump','fuel.centerRightPump']});
  const approx=Object.freeze({apuFuelKgHr:110,initialFuelKg:{main1:3500,center:0,main2:3500},
-  mainFuelPriority:'CENTER_BEFORE_MAIN',maxStepMs:1000});
+  mainFuelPriority:'CENTER_BEFORE_MAIN',maxStepMs:1000,
+   suctionPumpMotoringN2Pct:5,suctionTrainingHighAltitudeFt:10000});
  function checkedKg(x){if(!finite(x)||x<0||x>25000)throw Error('Fuel quantity must be finite kg between 0 and 25000');return x;}
  function anyPump(pumps,ids){
   const states=ids.map(id=>pumps?.[id]?.operating??null);
@@ -23,7 +24,7 @@
   return states.includes(null)?null:false;
  }
  class FuelNetwork{
-  constructor({initialFuelKg=approx.initialFuelKg,allowSuctionTraining=false}={}){
+  constructor({initialFuelKg=approx.initialFuelKg,allowSuctionTraining=true}={}){
    if(typeof allowSuctionTraining!=='boolean')throw Error('allowSuctionTraining boolean required');
    this.tanks={};for(const tank of TANK)this.tanks[tank]=checkedKg(initialFuelKg[tank]);
    this.initialFuelKg=cp(this.tanks);this.crossfeed='CLOSED';this.allowSuctionTraining=allowSuctionTraining;
@@ -31,11 +32,14 @@
   }
   setTank(id,kg){if(!TANK.includes(id))throw Error('Unknown tank');this.tanks[id]=checkedKg(kg);}
   setCrossfeed(v){if(!['OPEN','CLOSED'].includes(v))throw Error('Crossfeed requires OPEN/CLOSED');this.crossfeed=v;}
-  supply(engine,pumps,{pressureAltitudeFt=0,fuelStartLever='IDLE',fireSwitchPulled=false}={}){
+  supply(engine,pumps,{pressureAltitudeFt=0,fuelStartLever='IDLE',fireSwitchPulled=false,
+    engineDrivenPumpRotating=false,suctionPathFailed=false}={}){
    if(!IDS.includes(engine))throw Error('Unknown engine');
    if(!finite(pressureAltitudeFt))throw Error('Pressure altitude required');
    if(!['IDLE','CUTOFF'].includes(fuelStartLever))throw Error('Fuel lever required');
    if(typeof fireSwitchPulled!=='boolean')throw Error('Fire switch state required');
+   if(typeof engineDrivenPumpRotating!=='boolean'||typeof suctionPathFailed!=='boolean')
+    throw Error('Suction pump rotating and bypass fault require boolean');
    if(fuelStartLever==='CUTOFF'||fireSwitchPulled)return {available:false,tank:null,reason:'SHUTOFF_VALVE_CLOSED',quality:SOURCE};
    const own=engine==='engine1'?'main1':'main2',opposite=engine==='engine1'?'main2':'main1';
    // Center pumps can supply either engine. With unknown pump power prefer known
@@ -47,8 +51,18 @@
    const other=anyPump(pumps,pumpNames[opposite]);
    if(this.crossfeed==='OPEN'&&this.tanks[opposite]>0&&other===true)
     return {available:true,tank:opposite,reason:'OTHER_MAIN_CROSSFEED',quality:SOURCE};
-   if(this.allowSuctionTraining&&this.tanks[own]>0&&pressureAltitudeFt<=10000)
-    return {available:true,tank:own,reason:'EXPLICIT_LOW_ALTITUDE_SUCTION_TRAINING',quality:'UNVERIFIED_SIM_OPTION'};
+   // Classic main tank -> pump bypass check valve -> engine-driven suction.
+   // Center tank has NO pump bypass suction route. Only mechanical rotating
+   // engine pump makes flow possible; 5% N2 is a training threshold, NOT FCOM.
+   if(this.allowSuctionTraining&&this.tanks[own]>0&&!suctionPathFailed&&engineDrivenPumpRotating){
+    if(pressureAltitudeFt<=approx.suctionTrainingHighAltitudeFt)
+     return {available:true,tank:own,reason:'OWN_MAIN_ENGINE_DRIVEN_SUCTION',
+      quality:'FCOM_737CL_SUCTION_TOPOLOGY_TRAINING_N2_ENGAGEMENT'};
+    // Altitude is not an on/off certified suction limit. Without a calibrated
+    // dissolved-air model, retain UNKNOWN rather than false or guaranteed flow.
+    return {available:null,tank:own,reason:'SUCTION_FEED_HIGH_ALTITUDE_RISK_UNRESOLVED',
+     quality:'SUCTION_AIR_RELEASE_RISK_NOT_CALIBRATED'};
+   }
    const uncertain=(this.tanks.center>0&&center===null)||(this.tanks[own]>0&&main===null)||
     (this.crossfeed==='OPEN'&&this.tanks[opposite]>0&&other===null);
    return {available:uncertain?null:false,tank:null,reason:uncertain?'PUMP_POWER_UNRESOLVED':'NO_AVAILABLE_FUEL_PATH',quality:SOURCE};
@@ -87,7 +101,7 @@
    noInferredFireBell:true,noInferredOilWarnings:true};
  }
  class Runtime{
-  constructor({chain,thrustPlanner,initialFuelKg,allowSuctionTraining=false}={}){
+  constructor({chain,thrustPlanner,initialFuelKg,allowSuctionTraining=true}={}){
    if(!chain||typeof chain.get!=='function'||typeof chain.advance!=='function'||typeof chain.lever!=='function')
     throw Error('ISN training start Chain required');
    if(!thrustPlanner||typeof thrustPlanner.performance!=='function'||typeof thrustPlanner.applyToTrainingChain!=='function')
@@ -95,14 +109,30 @@
    this.chain=chain;this.planner=thrustPlanner;
    this.fuel=new FuelNetwork({initialFuelKg:initialFuelKg??approx.initialFuelKg,allowSuctionTraining});
    this.env={pressureAltitudeFt:0};this.fireSwitch={engine1:false,engine2:false};
+   this.suctionPathFailed={engine1:false,engine2:false};
    this.commandLog=[];this.lastPlan=null;this.elapsedMs=0;
   }
   pumps(){return this.chain.start?.core?.pack?.get()?.pumps??{};}
-  fuelPath(device){const obs=this.chain.get().observations?.[device];
+  fuelPath(device,{fuelStartLever}={}){
+   if(!IDS.includes(device))throw Error('Unknown engine');
+   const snap=this.chain.get(),obs=snap.observations?.[device];
+   const n2=obs?.feedback?.n2Percent?.value??null;
+   // Engine-driven suction requires rotation, not AC pump power. Keeping the
+   // independent 5% threshold simulated preserves IDLE-at-zero valve motion.
+   const rotating=Number.isFinite(n2)&&n2>=approx.suctionPumpMotoringN2Pct&&
+    ['MOTORING','AWAIT_FUEL_LEVER_IDLE','LIGHT_OFF_SEQUENCE','RUNNING'].includes(snap.phase[device]);
    return this.fuel.supply(device,this.pumps(),{pressureAltitudeFt:this.env.pressureAltitudeFt,
-    fuelStartLever:obs?.feedback?.fuelStartLever?.value??'CUTOFF',fireSwitchPulled:this.fireSwitch[device]});}
+    fuelStartLever:fuelStartLever??obs?.feedback?.fuelStartLever?.value??'CUTOFF',
+    fireSwitchPulled:this.fireSwitch[device],engineDrivenPumpRotating:rotating,
+    suctionPathFailed:this.suctionPathFailed[device]});
+  }
   setEnvironment({pressureAltitudeFt}){if(!finite(pressureAltitudeFt)||pressureAltitudeFt< -1000||pressureAltitudeFt>40000)throw Error('Invalid altitude');
    this.env.pressureAltitudeFt=pressureAltitudeFt;return this.get();}
+  setSuctionFeedFault(device,failed){
+   if(!IDS.includes(device)||typeof failed!=='boolean')throw Error('Invalid engine suction fault');
+   this.suctionPathFailed[device]=failed;this.refreshFuelDelivery();
+   return this.get();
+  }
   setFireSwitch(device,pulled){if(!IDS.includes(device)||typeof pulled!=='boolean')throw Error('Invalid engine fire switch');
    this.fireSwitch[device]=pulled;
    if(pulled&&this.chain.get().phase[device]==='RUNNING'){
@@ -116,8 +146,7 @@
   fuelLever(device,position){
    if(!IDS.includes(device)||!['CUTOFF','IDLE'].includes(position))throw Error('Invalid fuel lever');
    // IDLE is a mechanical valve command, never conditioned on recommended N2.
-   const supply=this.fuel.supply(device,this.pumps(),{pressureAltitudeFt:this.env.pressureAltitudeFt,
-    fuelStartLever:position,fireSwitchPulled:this.fireSwitch[device]});
+   const supply=this.fuelPath(device,{fuelStartLever:position});
    this.chain.setFuelAvailable(device,supply.available===true);
    this.chain.lever(device,position);
    const after=this.chain.get();
@@ -185,11 +214,11 @@
    return {schema:SCHEMA,quality:SOURCE,elapsedMs:this.elapsedMs,engines,
     modeLimitsN1Pct:this.lastPlan?.mode?.limitTable??null,
     lastPlan:this.lastPlan?cp(this.lastPlan):null,
-    fuel:this.fuel.get(),diagnostics:diagnostics(snap,paths),commands:cp(this.commandLog),
+    fuel:{...this.fuel.get(),suctionPathFailed:cp(this.suctionPathFailed)},diagnostics:diagnostics(snap,paths),commands:cp(this.commandLog),
     starter:{engine1:snap.observations?.engine1?.rules?.starter??null,
      engine2:snap.observations?.engine2?.rules?.starter??null},
     issues:['SOURCE_GATED_UNKNOWN_PUMP_POWER_IS_NOT_FALSE','NOT_INSTALLED_AIRFRAME_WIRING',
-     'NO_INFERRED_FIRE_WARNING','NUMERIC_FUEL_BURN_AND_APU_FLOW_SIMULATED']};}
+     'NO_INFERRED_FIRE_WARNING','737CL_MAIN_TANK_ENGINE_DRIVEN_SUCTION_FEED_MODELED','TRAINING_ONLY_N2_AND_ALTITUDE_SUCTION_BOUNDARIES','NUMERIC_FUEL_BURN_AND_APU_FLOW_SIMULATED']};}
  }
  return Object.freeze({SCHEMA,SOURCE,approx,FuelNetwork,diagnostics,Runtime});
 });
