@@ -22,3 +22,13 @@ jobs:
         run: node panel-mosaic-lab/all-overhead/runtime.test.cjs
       - name: Verify pixel-perfect atlas baseline and absolute region geometry
         run: node panel-mosaic-lab/all-overhead/atlas-layout.test.cjs
+      - name: Validate independently installed CPCS / DCPCS pressure and OH22
+        run: |
+          node --check engine/systems/cabin-pressure-plant-v1.js
+          node --check panel-mosaic-lab/cockpit/aircraft-settings.js
+          node --check panel-mosaic-lab/cockpit/pressurization-oh22.js
+          node tests/cpcs-v5.test.cjs
+          node tests/dcpcs-v4.test.cjs
+          node tests/aircraft-profile-v1.test.cjs
+          node tests/cabin-pressure-plant-v1.test.cjs
+          node panel-mosaic-lab/cockpit/pressurization-oh22.test.cjs
