@@ -47,7 +47,7 @@ for(const [scope,directory] of contexts){
    assert.match(tag,new RegExp('\\bheight="'+h+'"'));
    const box=tag.match(/viewBox="0 0 ([\d.]+) ([\d.]+)"/);assert.ok(box);
    assert.ok(Math.abs(Number(box[1])/Number(box[2])-w/h)<1e-5,id+' fit ratio');
-   assert.equal(row.url,'../'+e.derived.replace('panel-mosaic-lab/','').replace(/^assets\//,'assets/').replace(/^[^/]+\//,''));
+   assert.equal(row.url,'../'+e.derived.replace('panel-mosaic-lab/',''));
    states++;
   }
  }
