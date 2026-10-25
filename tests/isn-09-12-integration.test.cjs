@@ -30,7 +30,8 @@ function rig(fuel=0.06){
 }
 const noFuel=rig(0);
 const deny=noFuel.sim.fuelLever('engine1','IDLE');
-assert.equal(deny.accepted,false);
+assert.equal(deny.accepted,true);
+assert.equal(deny.fuelAvailable,false);
 assert.equal(noFuel.chain.get().phase.engine1,'AWAIT_FUEL_LEVER_IDLE');
 const {chain,sim}=rig();
 assert.equal(sim.fuelLever('engine1','IDLE').accepted,true);
@@ -56,6 +57,7 @@ assert.equal(sim.get().diagnostics.noInferredFireBell,true);
 assert.throws(()=>sim.planThrust('engine1',input,{apply:true}),/Cannot command stopped engine/);
 const r=rig(10);
 r.sim.setFireSwitch('engine1',true);
-assert.equal(r.sim.fuelLever('engine1','IDLE').accepted,false);
+assert.equal(r.sim.fuelLever('engine1','IDLE').accepted,true);
+assert.equal(r.sim.get().engines.engine1.fuelPath.available,false);
 assert.equal(r.chain.get().phase.engine1,'AWAIT_FUEL_LEVER_IDLE');
 console.log('PASS ISN-09/10/11/12 engine fuel + start gate + thrust command + fuel starvation integration.');
