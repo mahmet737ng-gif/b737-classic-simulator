@@ -10,6 +10,26 @@
   let storage = null;
   try { storage = window.localStorage; } catch (_) { /* browser storage may be restricted */ }
   const store = api.createStore({storage, emitter: window});
+  const airfieldModel=window.B737GroundAirfieldElevationV1;
+  if(!airfieldModel)throw Error('Ground airfield elevation registry not loaded');
+  const airfieldStoreKey='b737.pressurization.trainer-airfield.v1';
+  let storedGround=null;
+  try{storedGround=JSON.parse(storage?.getItem(airfieldStoreKey)||'null');}catch(_){}
+  function initialGround(){
+    try {
+      if(storedGround&&storedGround.icao&&storedGround.fieldElevationFt!=null)
+        return airfieldModel.resolve(storedGround.icao,storedGround.fieldElevationFt);
+    } catch(_){}
+    // Visible TRAINING SCENARIO, not an assertion about simulator position.
+    return airfieldModel.resolve('OIII');
+  }
+  let groundSelection=initialGround();
+  // Cold-dark policy can obtain the same selected ground baseline.
+  window.B737GroundAirfieldContext=()=>Object.freeze({
+    fieldElevationFt:groundSelection.fieldElevationFt,
+    cabinEqualized:true,cabinPressureStable:true,
+    groundAirportIcao:groundSelection.icao
+  });
   let activeSession = null;
   const pressureSessions = new Map();
   window.B737AircraftProfileStore = store;
@@ -17,7 +37,9 @@
   function getPressureSession(system){
     if(!['DCPCS','CPCS'].includes(system))throw Error('Unsupported pressurization system');
     if(!pressureSessions.has(system)){
-      pressureSessions.set(system,api.createPressurizationSession({...store.get(),pressurization:system},window));
+      pressureSessions.set(system,api.createPressurizationSession(
+        {...store.get(),pressurization:system},window,
+        {fieldElevationFt:groundSelection.fieldElevationFt}));
     }
     return pressureSessions.get(system);
   }
@@ -62,20 +84,97 @@
   // Standalone Unified trainer environment: explicit instructor inputs until
   // the upstream flight and PACK systems publish validated live adapters.
   // Do NOT silently interpret missing PACK data as a real electrical bus state.
-  const pressureEnvironment={aircraftAltitudeFt:0,onGround:true,packsAvailable:true,bleedAirAvailable:true};
-  let pressureRunning=true,packInstructorOverride=false,packSource='TRAINER_DEFAULT_UNVERIFIED';
+  const pressureEnvironment={aircraftAltitudeFt:groundSelection.fieldElevationFt??0,
+    onGround:true,packsAvailable:false,bleedAirAvailable:false};
+  let pressureRunning=true,packInstructorOverride=false,packSource='COLD_DARK_NO_BLEED';
   const pressureMount=byId('pressurePhysicsDiagnostics');
   const details=document.createElement('details');
   details.innerHTML='<summary>Cabin pressure · physical trainer / diagnostics</summary>'+
-    '<label style="display:block">Aircraft ALT (ft) <input id="pressureInstructorAltitude" type="number" min="-1000" max="40000" step="500" value="0" style="width:100%"></label>'+
+    '<label style="display:block">On-ground airport / CAB ALT baseline <select id="pressureGroundAirport" style="width:100%">'+
+      '<option value="OIII">OIII · Mehrabad · 3963 ft</option>'+
+      '<option value="OIAW">OIAW · Ahwaz · 66 ft</option>'+
+      '<option value="OIMM">OIMM · Mashhad · 3260 ft</option>'+
+      '<option value="CUSTOM">Other airport · explicit elevation</option>'+
+    '</select></label>'+
+    '<label style="display:block">Airport ICAO <input id="pressureGroundIcao" maxlength="4" placeholder="OIII" style="width:100%"></label>'+
+    '<label style="display:block">Field elevation (ft) <input id="pressureGroundElevation" type="number" min="-2000" max="14000" step="1" style="width:100%"></label>'+
+    '<button id="pressureApplyGroundAirport" type="button">Apply airport cold-dark baseline</button>'+
+    '<small id="pressureGroundStatus">Airport scenario elevations supplied for this trainer; live airport data may override.</small>'+
+    '<label style="display:block">Aircraft ALT (ft) <input id="pressureInstructorAltitude" type="number" min="-1000" max="40000" step="1" value="0" style="width:100%"></label>'+
     '<label style="display:block"><input id="pressureInstructorGround" type="checkbox" checked> On ground</label>'+
-    '<label style="display:block"><input id="pressureInstructorPacks" type="checkbox" checked> PACK / bleed source available (trainer override)</label>'+
+    '<label style="display:block"><input id="pressureInstructorPacks" type="checkbox"> PACK / bleed source available (trainer override)</label>'+
     '<button id="pressureTrainerRun" type="button">Pause physical model</button> '+
     '<button id="pressureTrainerReset" type="button">Reset selected model</button>'+
     '<output id="pressureTrainerReadout" style="display:block;white-space:pre-line;direction:ltr;text-align:left;font:12px/1.6 monospace"></output>'+
     '<small>Provisional physics only: mass flow, cabin volume, relief and valve rate not aircraft-calibrated. These inputs are instructor overrides, not actual avionics wiring.</small>';
   pressureMount?.append(details);
   const altitudeBox=byId('pressureInstructorAltitude'),groundBox=byId('pressureInstructorGround'),packsBox=byId('pressureInstructorPacks');
+  const groundAirportBox=byId('pressureGroundAirport');
+  const groundIcaoBox=byId('pressureGroundIcao');
+  const groundElevationBox=byId('pressureGroundElevation');
+  const groundStatus=byId('pressureGroundStatus');
+  function displayGroundSelection(){
+    const preset=!!airfieldModel.AIRFIELDS[groundSelection.icao];
+    if(groundAirportBox)groundAirportBox.value=preset?groundSelection.icao:'CUSTOM';
+    if(groundIcaoBox)groundIcaoBox.value=groundSelection.icao||'';
+    if(groundElevationBox)groundElevationBox.value=String(groundSelection.fieldElevationFt??'');
+    if(altitudeBox)altitudeBox.value=String(pressureEnvironment.aircraftAltitudeFt);
+    if(groundStatus)groundStatus.textContent=
+      (groundSelection.icao||'CUSTOM')+' · field '+groundSelection.fieldElevationFt+
+      ' ft · '+groundSelection.source+' · cabin initial = field when equalized';
+  }
+  function setGroundAirport(icao,overrideFt,source){
+    if(!pressureEnvironment.onGround)throw Error('Cannot change the cold-dark airport during flight');
+    const selection=airfieldModel.resolve(icao,overrideFt);
+    if(!selection.groundReferenceKnown)throw Error('Unknown airport elevation; supply a real value in feet');
+    // Preflight every existing installation before mutating either. CPCS
+    // and DCPCS continue to hold independent plant/controller state.
+    for(const [system,session] of pressureSessions){
+      const sensor=session.snapshot().input||session.snapshot().inputs;
+      if(!sensor.onGround||Math.abs(session.physical()?.differentialPsid||0)>0.05)
+        throw Error(system+' cannot reinitialize a non-equalized or airborne cabin');
+    }
+    for(const session of pressureSessions.values())session.rebaseGround(selection.fieldElevationFt);
+    groundSelection=selection;
+    pressureEnvironment.aircraftAltitudeFt=selection.fieldElevationFt;
+    pressureEnvironment.onGround=true;
+    groundBox.checked=true;
+    if(storage)try{storage.setItem(airfieldStoreKey,JSON.stringify({
+      icao:selection.icao,fieldElevationFt:selection.fieldElevationFt
+    }));}catch(_){}
+    displayGroundSelection();
+    publishPressureState();
+    updatePressureDiagnostics();
+    window.dispatchEvent(new CustomEvent('b737:cold-dark-state',{
+      detail:window.B737GroundAirfieldContext()
+    }));
+    window.dispatchEvent(new CustomEvent('b737:ground-airfield-changed',{
+      detail:{...selection,scenarioSource:source||'TRAINER_SELECTION'}
+    }));
+    return selection;
+  }
+  groundAirportBox?.addEventListener('change',()=>{
+    const code=groundAirportBox.value;
+    if(code==='CUSTOM'){groundIcaoBox.value='';groundElevationBox.value='';return;}
+    const selection=airfieldModel.resolve(code);
+    groundIcaoBox.value=code;
+    groundElevationBox.value=String(selection.fieldElevationFt);
+  });
+  byId('pressureApplyGroundAirport')?.addEventListener('click',()=>{
+    try{
+      const custom=groundAirportBox.value==='CUSTOM';
+      const code=custom?groundIcaoBox.value:groundAirportBox.value;
+      const ft=custom?(groundElevationBox.value.trim()?Number(groundElevationBox.value):null):undefined;
+      setGroundAirport(code,ft,'MANUAL_TRAINER');
+    }catch(error){if(groundStatus)groundStatus.textContent='AIRFIELD ERROR: '+error.message;}
+  });
+  window.addEventListener('b737:airport-ground-context',event=>{
+    const ctx=event.detail;
+    if(!ctx||ctx.onGround===false)return;
+    try{setGroundAirport(ctx.icao,ctx.fieldElevationFt,'EXTERNAL_AIRPORT_CONTEXT');}
+    catch(error){if(groundStatus)groundStatus.textContent='GROUND SOURCE REJECTED: '+error.message;}
+  });
+  displayGroundSelection();
   altitudeBox?.addEventListener('change',()=>{
     const altitude=Number(altitudeBox.value);
     if(!Number.isFinite(altitude)||altitude< -1000||altitude>40000){altitudeBox.value=String(pressureEnvironment.aircraftAltitudeFt);return;}
@@ -101,7 +200,8 @@
       '\\nCAB ALT: '+p.cabinAltitudeFt.toFixed(0)+' ft | RATE: '+p.cabinRateFtMin.toFixed(0)+' ft/min'+
       '\\nDIFF: '+p.differentialPsid.toFixed(2)+' psid | VALVE: '+(100*p.valveOpenFraction).toFixed(0)+'% open'+
       '\\nTARGET: '+p.targetCabinAltitudeFt.toFixed(0)+' ft | PACK: '+p.packFlowKgS.toFixed(2)+' kg/s ('+packSource+')'+
-      '\\nAUTO FAIL: '+Boolean(out.lamps.autoFail)+' | ALT: '+pressureEnvironment.aircraftAltitudeFt+' ft';
+      '\\nAUTO FAIL: '+Boolean(out.lamps.autoFail)+' | ALT: '+pressureEnvironment.aircraftAltitudeFt+' ft'+
+      '\\nAIRPORT: '+(groundSelection.icao||'OTHER')+' | FIELD: '+groundSelection.fieldElevationFt+' ft';
   }
   // Keep cabin physics isolated to the selected installation; browser tabs
   // in the background must not simulate a giant elapsed interval on return.
@@ -151,7 +251,13 @@
     read:system=>getPressureSession(system).read(),
     snapshot:system=>getPressureSession(system).snapshot(),
     dispatch:applyPressureCommand,
+    setGroundAirport:(icao,fieldElevationFt)=>setGroundAirport(icao,fieldElevationFt,'EXTERNAL_API'),
+    getGroundAirport:()=>({...groundSelection}),
     feed(system,key,value){
+      if(system===selectedPressure()&&key==='airportIcao')
+        return setGroundAirport(value,null,'EXTERNAL_ADAPTER');
+      if(system===selectedPressure()&&key==='fieldElevationFt')
+        return setGroundAirport(groundSelection.icao,value,'EXTERNAL_ADAPTER');
       if(system===selectedPressure()&&key==='packsAvailable'){
         packInstructorOverride=true;packSource='EXTERNAL_ADAPTER';pressureEnvironment.packsAvailable=Boolean(value);packsBox.checked=Boolean(value);return getPressureSession(system).read();
       }
