@@ -30,9 +30,12 @@ jobs:
           node engine/instruments/gauge-scale-engine-v2.test.cjs
           node engine/instruments/tick-inference-v1.test.cjs
           node engine/instruments/scale-tick-inference-v1.test.cjs
+          node engine/instruments/gauge-ism-target-v1.test.cjs
           node engine/instruments/scale-calibration-v1.test.cjs
           node engine/instruments/scale-audit-v1.test.cjs
       - name: Stage 4 preview logic syntax
         run: |
           node --check engine/instruments/gauge-scale-engine-v2.js
+          node --check engine/instruments/scale-tick-inference-v1.js
+          node --check engine/instruments/gauge-ism-target-v1.js
           node --check panel-mosaic-lab/cockpit/scale-calibration-lab/lab.js
