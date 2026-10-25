@@ -29,7 +29,7 @@ approx(sim.get().engines.engine1.startTimingTraining.motoringMs/1000,28,.01);
 approx(sim.get().engines.engine1.startTimingTraining.lightoffMs/1000,37,.01);
 assert.equal(sim.get().engines.engine1.starterDuctPsiTraining,35);
 assert.throws(()=>sim.setStartDuctPressure('engine1',15),/20\.\.50/);
-assert.throws(()=>sim.setStartDuctPressure('engine3',35),/Unknown engine/);
+assert.throws(()=>sim.setStartDuctPressure('engine3',35),/Expected engine1 or engine2/);
 sim.setStartDuctPressure('engine2',45);
 approx(sim.get().engines.engine2.startTimingTraining.motoringMs/1000,28*35/45,.01);
 approx(sim.get().engines.engine2.startTimingTraining.lightoffMs/1000,37*35/45,.01);
