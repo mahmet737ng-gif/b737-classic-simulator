@@ -11,13 +11,13 @@
  const FAULT_KEYS=Object.freeze(['n2Stall','egtHigh','noLightOff','hungStart','earlyCutout','flameOut']);
  const FAULT_TIMING=Object.freeze({earlyCutoutMs:650,flameOutAfterRunningMs:700});
  // Optional profile: old fast trainer unchanged; standalone ECU bench is
- // deliberately user-timed ~85 s APU and ~100 s engine (with timely IDLE).
+ // user-timed ~85 s APU and ~65 s engine (with timely IDLE at nominal duct psi).
  // These are simulator preferences, not measured EP-FSI start performance.
  const TIMING_PROFILES=Object.freeze({
   CLASSROOM_COMPRESSED:Object.freeze({apuDoorMs:400,apuReadyMs:1400,
    engineMotoringMs:850,engineLightoffMs:1000,engineIdleSettleMs:10000}),
   REALTIME_TRAINING:Object.freeze({apuDoorMs:9000,apuReadyMs:85000,
-   engineMotoringMs:40000,engineLightoffMs:50000,engineIdleSettleMs:10000})
+   engineMotoringMs:28000,engineLightoffMs:37000,engineIdleSettleMs:8000})
  });
  const copy=v=>JSON.parse(JSON.stringify(v));
  // The fault is a classroom curve. Queue its crossing before the normal
@@ -36,7 +36,11 @@
    this.effects=[];this.lastError='';this.controls={};this.guards={};this.started={engine1:false,engine2:false};
    this.dynamic={engine1:null,engine2:null};this.fuelAvailable={engine1:true,engine2:true}; // Legacy direct Chain tests use explicitly simulated fuel; ISN-12 replaces this with source resolution.
    this.operating={engine1:null,engine2:null};this.throttle={engine1:0,engine2:0};
-   this.flight={onGround:true};
+   this.flight={onGround:true,pressureAltitudeFt:0,iasKt:0};
+   // Pneumatics V6 exposes measured duct pressure as UNKNOWN unless a
+   // sensor is supplied. This is an independent ECU bench TRAINING input,
+   // not a fabricated actual pneumatic source or cockpit duct-gauge reading.
+   this.startDuctPsi={engine1:35,engine2:35};
    this.trainingFaults=Object.fromEntries(['engine1','engine2'].map(device=>
     [device,Object.fromEntries(FAULT_KEYS.map(key=>[key,false]))]));
    for(const device of ['engine1','engine2','apu'])this.obs(device,false);
@@ -62,7 +66,8 @@
    const operating=this.operating[device];
    if(this.phase[device]==='RUNNING'&&operating&&at>=operating.at){
     const values=Dynamics.stepRunning(operating.values,{
-     deltaMs:at-operating.at,throttle:this.throttle[device],onGround:this.flight.onGround});
+     deltaMs:at-operating.at,throttle:this.throttle[device],onGround:this.flight.onGround,
+     pressureAltitudeFt:this.flight.pressureAltitudeFt,iasKt:this.flight.iasKt});
     this.operating[device]={at,values};
     // Training feedback never replaces externally-owned sensor/instructor observations.
     const feedback=this.start.get().observation[device].feedback;
@@ -181,6 +186,27 @@
    // Right igniter uses AC STANDBY, which can be battery/inverter powered.
    return null;
   }
+  setStartDuctPressure(device,psi){
+   if(!['engine1','engine2'].includes(device)||!Number.isFinite(psi)||psi<20||psi>50)
+    throw Error('Training starter duct PSI must be 20..50 per engine');
+   if(['MOTORING','LIGHT_OFF_SEQUENCE','AWAIT_FUEL_LEVER_IDLE'].includes(this.phase[device]))
+    throw Error('Select training duct pressure before starting this engine');
+   this.startDuctPsi[device]=psi;return this.get();
+  }
+  startDuration(device){
+   if(!['engine1','engine2'].includes(device))throw Error('Unknown engine');
+   const ratio=this.timingProfile==='REALTIME_TRAINING'?35/this.startDuctPsi[device]:1;
+   return {motoringMs:Math.round(this.timing.engineMotoringMs*ratio),
+    lightoffMs:Math.round(this.timing.engineLightoffMs*ratio),
+    psi:this.startDuctPsi[device],quality:'OWNER_SELECTED_TRAINING_PRESSURE_RATE'};
+  }
+  setFlightConditions({pressureAltitudeFt=this.flight.pressureAltitudeFt,iasKt=this.flight.iasKt}={}){
+   if(!Number.isFinite(pressureAltitudeFt)||pressureAltitudeFt < -1000||pressureAltitudeFt>40000||
+     !Number.isFinite(iasKt)||iasKt<0||iasKt>600)
+    throw Error('Invalid engine flight conditions');
+   this.flight.pressureAltitudeFt=pressureAltitudeFt;this.flight.iasKt=iasKt;
+   return this.get();
+  }
   startEngine(device){
    const fuelLever=this.start.get().observation[device].feedback.fuelStartLever.value;
    if(!['OFF','BLOCKED'].includes(this.phase[device])){
@@ -199,8 +225,9 @@
    this.feedback(device,'startAirAvailable',true);this.feedback(device,'startValveOpen',true);
    this.feedback(device,'starterEngaged',true);
    this.phase[device]='MOTORING';
-   this.dynamic[device]={phase:'MOTORING',since:this.time};
-   if(this.trainingFaults[device].earlyCutout)this.schedule(device,Math.round(this.timing.engineMotoringMs*FAULT_TIMING.earlyCutoutMs/Dynamics.duration.motoringMs),()=>{
+   const startDuration=this.startDuration(device);
+   this.dynamic[device]={phase:'MOTORING',since:this.time,durationMs:startDuration.motoringMs};
+   if(this.trainingFaults[device].earlyCutout)this.schedule(device,Math.round(startDuration.motoringMs*FAULT_TIMING.earlyCutoutMs/Dynamics.duration.motoringMs),()=>{
     if(this.phase[device]!=='MOTORING')return;
     this.cancel(device);this.dynamic[device]=null;
     this.feedback(device,'startValveOpen',false);this.feedback(device,'startAirAvailable',false);
@@ -211,7 +238,7 @@
     this.lastError=device.toUpperCase()+': INJECTED EARLY STARTER CUTOUT — confirm START LEVER CUTOFF';
     this.effects.push({type:'ROTARY_RELEASE',id:device==='engine1'?'engine-start-1':'engine-start-2',position:'OFF'});
    });
-   this.schedule(device,this.timing.engineMotoringMs,()=>{if(this.phase[device]!=='MOTORING')return;
+   this.schedule(device,startDuration.motoringMs,()=>{if(this.phase[device]!=='MOTORING')return;
     if(this.trainingFaults[device].n2Stall){this.dynamic[device]=null;this.phase[device]='N2_STALLED';
      this.lastError=device.toUpperCase()+': TRAINING N2 STALL — START LEVER remains CUTOFF';return;}
     this.feedback(device,'n1RotationObserved',true);this.feedback(device,'maxMotoringObserved',false);
@@ -269,8 +296,8 @@
    if(!Number.isFinite(n2)||n2<5)return false;
    const previous=this.dynamic[device];
    const remainingMotoring=previous?.phase==='MOTORING'?
-    Math.max(0,this.timing.engineMotoringMs-(this.time-previous.since)):0;
-   const durationMs=this.timing.engineLightoffMs+remainingMotoring;
+    Math.max(0,previous.durationMs-(this.time-previous.since)):0;
+   const durationMs=this.startDuration(device).lightoffMs+remainingMotoring;
    this.cancel(device);
    this.lastError='';
    this.phase[device]='LIGHT_OFF_SEQUENCE';
@@ -370,10 +397,13 @@
    const apuConnected=Object.values(pack.electrical.source).includes('APU');
    projected['apu-gen-off-bus']=apu.running===true&&!apuConnected;
    projected['apu-low-pressure']=['INLET_DOOR','STARTING'].includes(this.phase.apu);
-   return {clockMs:this.time,phase:copy(this.phase),lastError:this.lastError,timingProfile:this.timingProfile,timing:copy(this.timing),trainingFaults:copy(this.trainingFaults),
+   return {clockMs:this.time,phase:copy(this.phase),lastError:this.lastError,timingProfile:this.timingProfile,timing:copy(this.timing),
+     trainingStartDuctPsi:copy(this.startDuctPsi),
+     effectiveEngineStartTiming:copy(Object.fromEntries(['engine1','engine2'].map(id=>[id,this.startDuration(id)]))),trainingFaults:copy(this.trainingFaults),
     runningEnvelope:{
      origin:ORIGIN,quality:'SIMULATION_APPROX_ONLY',
-     onGround:this.flight.onGround,throttle:copy(this.throttle),
+     onGround:this.flight.onGround,pressureAltitudeFt:this.flight.pressureAltitudeFt,
+      iasKt:this.flight.iasKt,throttle:copy(this.throttle),
      engines:copy(Object.fromEntries(['engine1','engine2'].map(d=>[d,this.phase[d]==='RUNNING'?
       this.operating[d]?.values??null:null]))),
      limits:copy(Dynamics.ENVELOPE)
