@@ -58,3 +58,12 @@ Implementation: \`engine/fmc/performance/isn-thrust-schedule-v1.cjs\`. Tests: \`
 Returns \`quality: SIM_ESTIMATE_NOT_AFM\`, \`atmosphere\`, \`navigation\`, \`required\`, \`limits\`, \`command\`, \`flags\`, and normalized applied \`inputs\`.
 
 **Integration next**: Add a single shared N1 schedule service. Reconcile current CDU v19 display surrogate (which uses different 92/94 starting TO/GA display values) with this user's revised ~97% train-only ceiling. Connect \`n1LimitPct\` to CDU reference pages and \`normalizedThrottle\` only to explicitly requested speed-hold training control; measured N1 should always override visual estimates, and manual throttle control must never be overwritten unintentionally.
+
+
+### Speed change versus speed hold (explicit acceleration model)
+
+V1 now also accepts optional \`targetIasKt\` and \`accelTimeSec\`. If target speed differs from current IAS, a positive 1–600 second horizon **must** be specified; there is no arbitrarily guessed acceleration. Extra required force is \`aircraftMassKg × ((targetIAS − IAS) / sqrt(densityRatio) / accelerationTime)\` in SI units. Normal \`N1 REQUIRED\` includes that acceleration force; \`n1HoldAtTargetPct\` shows the level-flight requirement once the target IAS is reached. \`command.speedDemand\` distinguishes the two cases.
+
+**Owner example:** 10,000 ft pressure altitude, −5°C OAT, 55 tonnes, clean, level flight, two engines, CRZ mode. At current 200 KIAS holding, \`n1RequiredPct ≈ 58.3\`. For \`iasKt:200, targetIasKt:240, accelTimeSec:40\`, \`n1RequiredPct ≈ 72.4\`, and \`n1HoldAtTargetPct ≈ 58.1\`. These are training-model outputs, not actual 737 spool/thrust timings. Steady wind changes estimated ground speed, **not** this IAS acceleration thrust in a constant-airmass approximation. Crosswind exceeding air-relative TAS now reports \`trackHoldPossible:false\` and \`groundSpeedKt:null\`, not a fabricated track solution.
+
+The engine dynamics module should continue to handle how quickly actual N1 follows a scheduled throttle; the planner merely publishes the normalized requested throttle and N1 limit for later integration with instructor-controlled speed hold and the CDU.
