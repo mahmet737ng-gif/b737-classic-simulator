@@ -1,0 +1,22 @@
+name: Gauge stages 3-4 candidate geometry QA
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'engine/instruments/stage34-native/**'
+      - '.github/workflows/gauge-stage34-registry-qa.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate tick positions, separate geometry classes and release gates
+        run: node --test engine/instruments/stage34-native/native-stage34-qa-v1.test.cjs
+      - name: Verify overhead immutable source imagery
+        run: python3 panel-mosaic-lab/verify-final-overhead.py
