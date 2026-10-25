@@ -50,9 +50,12 @@ html.oh22-pressure-config-active .lights-layer .mounted-light[data-light="press-
  pointer-events:none;text-align:center;
 }
 .oh22-pressure-controls [data-role="lamp"]{
+ /* The photographed panel supplies the amber/green metallic frames.  The
+    dedicated annunciator graphic fills only the INNER face, to avoid
+    duplicate outlines and lamps protruding outside their sockets. */
  display:flex;justify-content:center;align-items:center;white-space:normal;
- text-align:center;background:#070a0ce8;pointer-events:none;
- border-radius:1px;border:1px solid #333b40;
+ text-align:center;background:transparent;pointer-events:none;
+ border-radius:0;border:0;
  font:750 9px/1.15 ui-sans-serif,system-ui;color:#595d60;
 }
 .oh22-pressure-controls [data-role="lamp"].on.amber{
@@ -88,3 +91,21 @@ html.oh22-pressure-config-active .lights-layer .mounted-light[data-light="press-
  width:50%;height:100%;cursor:pointer;
 }
 .oh22-pressure-controls[data-system="CPCS"] [data-role="lamp"]{font-size:8px}
+.oh22-pressure-controls [data-role="lamp"].on.amber,
+.oh22-pressure-controls [data-role="lamp"].on.green{
+ background:transparent;border:0;
+}
+.oh22-pressure-controls[data-system="CPCS"] .oh22-pressure-digits{
+ font-size:18px;letter-spacing:.08em;color:#e8f5fb;
+}
+.oh22-pressure-controls .oh22-pressure-hotspot{
+ background:transparent!important;border:0!important;box-shadow:none!important;
+ color:transparent!important;
+}
+.oh22-pressure-controls .oh22-pressure-hotspot:hover{
+ outline:1px dashed #e9d19d8a;outline-offset:0;
+}
+.oh22-pressure-controls .oh22-pressure-hotspot:focus-visible{
+ outline:2px solid #ffe0a2;
+}
+
