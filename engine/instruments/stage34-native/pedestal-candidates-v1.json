@@ -1,6 +1,6 @@
 {
   "schema": "b737.stage3-4.candidate-native-pixels.v1",
-  "sourceRun": "https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/40221766933",
+  "sourceRun": "https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/40222250774",
   "group": "pedestal",
   "review": "CANDIDATE_ONLY_NOT_SIGNED_OFF",
   "count": 3,
@@ -24,8 +24,41 @@
         "y1": 957,
         "reason": "left stabilizer trim position window, vertical travel"
       },
-      "linearTickEndpoints": [],
-      "reviewState": "linear_travel_tick_mapping_pending"
+      "linearTravelAxis": "y",
+      "linearTickEndpoints": [
+        {
+          "strokePointA": [
+            234,
+            660
+          ],
+          "strokePointB": [
+            257,
+            660
+          ],
+          "travelAxisCoordPx": 660,
+          "lengthPx": 23,
+          "numericValue": null,
+          "physicalTickApproved": false,
+          "lengthClassCandidate": "short"
+        },
+        {
+          "strokePointA": [
+            214,
+            753
+          ],
+          "strokePointB": [
+            271,
+            755
+          ],
+          "travelAxisCoordPx": 754,
+          "lengthPx": 58,
+          "numericValue": null,
+          "physicalTickApproved": false,
+          "detector": "directional_morphology_candidate",
+          "lengthClassCandidate": "medium"
+        }
+      ],
+      "reviewState": "linear_tick_candidates_need_photo_confirmation"
     },
     {
       "id": "ped.stab_trim.right",
@@ -46,8 +79,9 @@
         "y1": 965,
         "reason": "right stabilizer trim position window, vertical travel"
       },
+      "linearTravelAxis": "y",
       "linearTickEndpoints": [],
-      "reviewState": "linear_travel_tick_mapping_pending"
+      "reviewState": "linear_tick_candidates_need_photo_confirmation"
     },
     {
       "id": "ped.rudder_trim",
@@ -68,8 +102,106 @@
         "y1": 808,
         "reason": "rudder trim transverse travel"
       },
-      "linearTickEndpoints": [],
-      "reviewState": "linear_travel_tick_mapping_pending"
+      "linearTravelAxis": "x",
+      "linearTickEndpoints": [
+        {
+          "strokePointA": [
+            555,
+            778
+          ],
+          "strokePointB": [
+            556,
+            808
+          ],
+          "travelAxisCoordPx": 555.5,
+          "lengthPx": 31,
+          "numericValue": null,
+          "physicalTickApproved": false,
+          "detector": "directional_morphology_candidate",
+          "lengthClassCandidate": "long"
+        },
+        {
+          "strokePointA": [
+            616,
+            745
+          ],
+          "strokePointB": [
+            616,
+            751
+          ],
+          "travelAxisCoordPx": 616,
+          "lengthPx": 7,
+          "numericValue": null,
+          "physicalTickApproved": false,
+          "detector": "directional_morphology_candidate",
+          "lengthClassCandidate": "short"
+        },
+        {
+          "strokePointA": [
+            623,
+            783
+          ],
+          "strokePointB": [
+            624,
+            791
+          ],
+          "travelAxisCoordPx": 623.5,
+          "lengthPx": 9,
+          "numericValue": null,
+          "physicalTickApproved": false,
+          "detector": "directional_morphology_candidate",
+          "lengthClassCandidate": "medium"
+        },
+        {
+          "strokePointA": [
+            631,
+            745
+          ],
+          "strokePointB": [
+            631,
+            751
+          ],
+          "travelAxisCoordPx": 631,
+          "lengthPx": 7,
+          "numericValue": null,
+          "physicalTickApproved": false,
+          "detector": "directional_morphology_candidate",
+          "lengthClassCandidate": "short"
+        },
+        {
+          "strokePointA": [
+            638,
+            745
+          ],
+          "strokePointB": [
+            639,
+            751
+          ],
+          "travelAxisCoordPx": 638.5,
+          "lengthPx": 7,
+          "numericValue": null,
+          "physicalTickApproved": false,
+          "detector": "directional_morphology_candidate",
+          "lengthClassCandidate": "short"
+        },
+        {
+          "strokePointA": [
+            669,
+            783
+          ],
+          "strokePointB": [
+            670,
+            791
+          ],
+          "travelAxisCoordPx": 669.5,
+          "lengthPx": 9,
+          "numericValue": null,
+          "physicalTickApproved": false,
+          "detector": "directional_morphology_candidate",
+          "lengthClassCandidate": "medium"
+        }
+      ],
+      "reviewState": "linear_tick_candidates_need_photo_confirmation"
     }
   ]
 }
