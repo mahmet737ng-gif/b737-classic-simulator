@@ -1,0 +1,46 @@
+name: B737 photo-specific CPCS and DCPCS annunciator vector build
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - tools/build-oh22-variant-faces.cjs
+      - .github/workflows/lamp-oh22-profile-fit.yml
+permissions:
+  contents: write
+concurrency:
+  group: oh22-photo-specific-lenses
+  cancel-in-progress: false
+jobs:
+  build-profile-variants:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Verify immutability of all original photographs
+        run: python3 panel-mosaic-lab/verify-final-overhead.py
+      - name: Generate native photometric CPCS/DCPCS lenses
+        run: node tools/build-oh22-variant-faces.cjs
+      - name: Test both independent panel registrations
+        run: |
+          node panel-mosaic-lab/lights-test/oh22-profile-faces.test.cjs
+          node --check panel-mosaic-lab/cockpit/pressurization-oh22.js
+          node panel-mosaic-lab/lights-test/instance-faces.test.cjs
+          python3 panel-mosaic-lab/verify-final-overhead.py
+      - name: Publish fitted lens derivatives without touching locked images
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add panel-mosaic-lab/assets/lights/oh22-profile-v1/ panel-mosaic-lab/lights-test/oh22-profile-faces-v1.json
+          if git diff --cached --quiet; then echo "Profile faces already generated"; exit 0; fi
+          git commit -m "feat(lamps): mount 14 source-faithful calibrated CPCS DCPCS lens states"
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git rebase origin/main
+            if git push origin HEAD:main; then echo "OH22_LAMP_SHA=$(git rev-parse HEAD)"; exit 0; fi
+            sleep 2
+          done
+          exit 1
