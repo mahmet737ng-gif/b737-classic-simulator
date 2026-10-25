@@ -68,7 +68,7 @@ html.oh22-pressure-config-active .lights-layer .mounted-light[data-light="press-
  background:#182a39b3;border-radius:2px;
 }
 .oh22-pressure-controls .oh22-pressure-gauge{
- position:absolute;left:72%;top:27%;width:9%;height:10%;transform:translate(-50%,-50%);
+ position:absolute;left:77%;top:26.9%;width:9%;height:10%;transform:translate(-50%,-50%);
  pointer-events:none;border-radius:50%;display:grid;place-items:center;
  font:700 8px/1.1 ui-monospace,monospace;color:#d8f3ff;
 }
