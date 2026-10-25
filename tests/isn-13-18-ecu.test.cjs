@@ -13,7 +13,9 @@ const Start=require('../engine/integration/isn-start-sequence-v1');
 const Chain=require('../engine/integration/isn-apu-start-chain-v1');
 const ThrustPlanner=require('../engine/integration/isn-thrust-performance-v1');
 const FuelRuntime=require('../engine/integration/isn-09-12-runtime-v1');
-const rig=()=>new B.Testbench({Electrical,Loads,TrainerCore,WarningEngine,Pneumatics,Pack,EngineAPU,Start,Chain,ThrustPlanner,FuelRuntime});
+// Legacy compressed course tests explicitly opt in. The web ECU bench now
+// defaults to the longer user-selected timing profile.
+const rig=()=>new B.Testbench({Electrical,Loads,TrainerCore,WarningEngine,Pneumatics,Pack,EngineAPU,Start,Chain,ThrustPlanner,FuelRuntime,timingProfile:'CLASSROOM_COMPRESSED'});
 const light=s=>s.engines.engine1.oil.lowPressureLamp;
 let oil=B.oilInitial();
 assert.equal(oil.lowPressureLamp,true);
