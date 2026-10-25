@@ -1,7 +1,7 @@
 (function(){
  'use strict';
  const model=window.B737CabinDualNeedlesModel,ns='http://www.w3.org/2000/svg';
- const sprites=Object.fromEntries(model.needles.map(needle=>[needle.id,new URL('./'+needle.asset+'?v=CDN-0003',document.baseURI).href]));
+ const sprites=Object.fromEntries(model.needles.map(needle=>[needle.id,new URL('./'+needle.asset+'?v=CDN-0004',document.baseURI).href]));
  const state=Object.fromEntries(model.needles.map(needle=>[needle.id,needle.initialAngle]));
  const blades=new Map(),inputs=new Map(),outputs=new Map();
  let frame=null,physical=null,physicalOutput=null;
@@ -15,31 +15,38 @@
  // Physical cabin altitude comes from the selected CPCS/DCPCS plant.
  // Needle offsets stay visual-only until the inner CAB ALT x1000-ft photo
  // graduations have measured pixel coordinates and release approval.
- function setMeasuredReadings(readings){
-  if(!readings||!Number.isFinite(readings.cabinAltitudeFt)||
-    !Number.isFinite(readings.differentialPsid))return null;
+ function setMeasuredReadings(readings,system='UNKNOWN'){
+  const mapping=model.resolvePhysicalReadings(readings);
+  if(mapping.status==='INVALID_SENSOR_SAMPLE')return null;
+  // These are the selected training plant's measured inputs, NOT certified
+  // aircraft bus feeds, and their angles remain source-photo QA candidates.
   physical=Object.freeze({
     cabinAltitudeFt:readings.cabinAltitudeFt,
     differentialPsid:readings.differentialPsid,
     cabinRateFtMin:Number.isFinite(readings.cabinRateFtMin)?readings.cabinRateFtMin:null,
     calibrationApproved:false,
-    source:'CABIN_PRESSURE_PLANT_PROVISIONAL'
+    operatingInstallation:system,
+    source:'CABIN_PRESSURE_PLANT_PROVISIONAL',
+    mappingStatus:mapping.status,
+    operationalNeedleAuthorized:false
   });
-  // Provisional CAB ALT inner-pointer display only: derived from the actual
-  // native-photo major long ticks, not the PRESS dial or a linear 0..50k sweep.
-  // Do not mark full calibration approved until every minor tick and physical
-  // needle tip-to-inner-tick contact has passed source-pixel QA.
-  if(Number.isFinite(readings.cabinAltitudeFt) && typeof model.cabinAltitudePreviewBearing==='function'){
-    state.cabAlt=model.cabinAltitudePreviewBearing(readings.cabinAltitudeFt);
-    paint('cabAlt');
+  // Update both visual previews INDEPENDENTLY from the one selected plant.
+  // Invalid/out-of-dial physical values retain their last pointer angle, not
+  // a fabricated zero or out-of-range sweep.
+  if(mapping.cabAltBearingDeg!==null){
+    state.cabAlt=model.angle('cabAlt',mapping.cabAltBearingDeg);paint('cabAlt');
+  }
+  if(mapping.pressBearingDeg!==null){
+    state.press=model.angle('press',mapping.pressBearingDeg);paint('press');
   }
   if(physicalOutput)physicalOutput.textContent=
-    'CAB ALT: '+physical.cabinAltitudeFt.toFixed(0)+' ft · DIFF PRESS: '+
+    system+' · CAB ALT: '+physical.cabinAltitudeFt.toFixed(0)+' ft · DIFF PRESS: '+
     physical.differentialPsid.toFixed(2)+' psi'+
-    '\nCAB ALT photo major-tick preview: '+state.cabAlt.toFixed(2)+
-    ' deg. Minor-tick and pointer-tip QA pending (NOT FINAL).';
+    '\\nCAB ALT '+state.cabAlt.toFixed(2)+'° · PRESS '+state.press.toFixed(2)+'°'+
+    '\\n'+mapping.status+' · PHOTO CANDIDATES ONLY (NOT FINAL).';
   return physical;
  }
+
  function mount(){
   const doc=frame?.contentDocument,host=doc?.getElementById('atlasAbsolute');if(!host)return false;
   const piece=host.querySelector(`.atlas-piece[data-key="${model.source.piece}"]`);if(!piece)return false;
@@ -90,8 +97,13 @@
  });
  window.addEventListener('b737:cabin-needle-angles',event=>{try{setAngles(event.detail);}catch(error){console.error(error);}});
  window.addEventListener('b737:pressurization-state',event=>{
-  const reading=event.detail?.output?.physical;
-  if(reading)setMeasuredReadings(reading);
+  const detail=event.detail;
+  if(detail?.system!=='CPCS'&&detail?.system!=='DCPCS')return;
+  // Ignore inactive installation's delayed or replayed pressure readings.
+  const selected=window.B737PressurizationIntegration?.getSelected?.();
+  if(selected&&detail.system!==selected)return;
+  const reading=detail.output?.physical;
+  if(reading)setMeasuredReadings(reading,detail.system);
  });
  window.addEventListener('b737:cockpit-mounted',connect);connect();if(document.querySelector('.inspector'))controls();
 })();
