@@ -1,0 +1,41 @@
+name: B737 lamp real-browser smoke and visual mounting QA
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - tools/test-lamp-browser-smoke.cjs
+      - .github/workflows/lamp-browser-smoke.yml
+      - panel-mosaic-lab/interactive-overhead/lights.js
+      - panel-mosaic-lab/cockpit/lights.js
+      - panel-mosaic-lab/interactive-overhead/instance-faces.json
+      - panel-mosaic-lab/cockpit/instance-faces.json
+permissions:
+  contents: read
+jobs:
+  browser-mounting:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check immutable photographic sources
+        run: python3 panel-mosaic-lab/verify-final-overhead.py
+      - name: Install headless browser for actual SVG asset decode
+        run: |
+          npm install --no-save --ignore-scripts playwright@1.58.2
+          npx playwright install --with-deps chromium
+      - name: Verify JavaScript parses
+        run: |
+          node --check tools/test-lamp-browser-smoke.cjs
+          node --check panel-mosaic-lab/interactive-overhead/lights.js
+          node --check panel-mosaic-lab/cockpit/lights.js
+      - name: Serve photograph panels and test real mounted lights
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m http.server 8788 --bind 127.0.0.1 >/tmp/b737-lamp-browser-http.log 2>&1 &
+          echo $! > /tmp/b737-lamp-browser-http.pid
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:8788/panel-mosaic-lab/interactive-overhead/lights.json >/dev/null; then break; fi
+            sleep 1
+          done
+          node tools/test-lamp-browser-smoke.cjs
