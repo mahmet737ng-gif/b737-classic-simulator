@@ -57,7 +57,34 @@ for(const [id,xy]of Object.entries(ideal)){
 }
 assert.deepEqual(readouts['flight-display'],[.32,.207]);
 assert.deepEqual(readouts['landing-display'],[.32,.498]);
-assert.ok(d.lamps.every(l=>Math.abs(l.xy[1]-.055)<.002),'Lamps must stay inside upper annunciator row');
+assert.ok(d.lamps.every(l=>Math.abs(l.xy[1]-.043)<.002),'DCPCS faces must align with photographed lamp row, not fall below housings');
+assert.ok(c.lamps.every(l=>Math.abs(l.xy[1]-.056)<.002),'CPCS has its OWN higher/deeper lamp row calibration');
+assert.notEqual(d.lampFaceCalibration.asset,c.lampFaceCalibration.asset,'CPCS/DCPCS must never share source-specific calibration');
+assert.deepEqual(oh22.lampFace('DCPCS','auto-fail'),[.219,.043,.157,.050]);
+assert.deepEqual(oh22.lampFace('CPCS','auto-fail'),[.233,.056,.159,.057]);
+assert.deepEqual(oh22.lampFace('DCPCS','manual'),[.782,.043,.153,.050]);
+assert.deepEqual(oh22.lampFace('CPCS','manual'),[.766,.056,.157,.057]);
+for(const name of ['CPCS','DCPCS']){
+  const cfg=oh22.config(name),faces=cfg.lamps.map(l=>oh22.lampFace(name,l.id));
+  assert.equal(faces.length,4,name+' needs four independently fitted lamp faces');
+  const centers=faces.map(f=>f[0]);
+  assert.ok(centers.every((v,i)=>i===0||v>centers[i-1]),'Actual physical left-to-right lamp order');
+  for(let i=0;i<faces.length;i++){
+    const [x,y,w,h]=faces[i];
+    assert.ok(x-w/2>=0&&x+w/2<=1&&y-h/2>=0&&y+h/2<=1,name+' face escaped OH22 plate');
+    if(i)assert.ok(faces[i-1][0]+faces[i-1][2]/2 < x-w/2,
+      name+' lamp graphics overlap each other instead of fitting separate sockets');
+  }
+}
+const geometryRenderer=fs.readFileSync(path.join(__dirname,'pressurization-oh22.js'),'utf8');
+assert.ok(geometryRenderer.includes('model.lampFace(system,l.id)'), 'Renderer MUST apply dimensions per lamp per system');
+assert.ok(geometryRenderer.includes("el.style.width=(w*100)+'%'"),'Lamp physical width must come from aperture registry');
+assert.ok(geometryRenderer.includes("el.style.height=(h*100)+'%'"),'Lamp physical height must come from aperture registry');
+assert.ok(geometryRenderer.includes("el.dataset.faceSystem=system"),'Lamp DOM must identify active installation');
+assert.ok(geometryRenderer.includes("el.classList.add('oh22-altn-face')"),'DCPCS ALTN must use exact legend, not ALTEN');
+const lampCss=fs.readFileSync(path.join(__dirname,'pressurization-oh22.css'),'utf8');
+assert.ok(lampCss.includes('box-sizing:border-box;overflow:hidden;'), 'Faces must be clipped to measured slots');
+
 assert.ok(c.controls.find(x=>x.id==='press-mode')?.xy[1]>.7,
   'CPCS MODE must be mounted at the real lower right selector (not the upper valve gauge)');
 assert.ok(!c.controls.some(x=>x.id==='flight-ground'),
