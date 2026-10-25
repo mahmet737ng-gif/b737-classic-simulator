@@ -14,6 +14,9 @@ const audit=new Map(original.instances.map(x=>[x.id,x]));
 const corrections=read('photo-position-corrections-v1.json');
 const correctionById=new Map(corrections.records.map(x=>[x.id,x]));
 assert.equal(correctionById.size,12);
+const finalCorrections=read('photo-position-corrections-v2.json');
+const latest=new Map(finalCorrections.records.map(c=>[c.id,c.newSourceRect]));
+assert.equal(latest.size,1);
 
 assert.equal(registry.summary.total,142);
 assert.equal(registry.records.length,142);
@@ -28,7 +31,7 @@ for(const record of registry.records){
  const prior=audit.get(record.id),source=code.get(record.id);
  assert.ok(prior&&source,record.id);
  assert.deepEqual(record.sourceRect,prior.sourceRect,record.id);
- assert.deepEqual(source.sourceRect,correctionById.get(record.id)?.sourceRect||record.sourceRect,record.id);
+ assert.deepEqual(source.sourceRect,latest.get(record.id)||correctionById.get(record.id)?.sourceRect||record.sourceRect,record.id);
  assert.deepEqual(record.sourceCenter,prior.sourceCenter,record.id);
  assert.equal(record.reviewedOriginalContactSheet,true);
  assert.equal(record.sourceRectChanged,false);
