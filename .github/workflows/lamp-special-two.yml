@@ -1,0 +1,25 @@
+name: B737 two complex annunciator colour pixel QA
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - tools/lamp-special-two-photo-qa.py
+      - .github/workflows/lamp-special-two.yml
+permissions:
+  contents: read
+jobs:
+  special-annunciator-photos:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Protect immutable original panel photographs
+        run: python3 panel-mosaic-lab/verify-final-overhead.py
+      - name: Install photo QA libraries
+        run: python3 -m pip install --disable-pip-version-check Pillow numpy
+      - name: Evaluate original four-side colour rim pixel evidence
+        run: python3 tools/lamp-special-two-photo-qa.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: b737-special-two-photo-colour-rim-evidence
+          path: /tmp/b737-lamp-special-two-colour-pixels.json
+          retention-days: 30
