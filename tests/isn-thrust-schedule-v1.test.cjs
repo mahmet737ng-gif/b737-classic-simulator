@@ -1,0 +1,47 @@
+'use strict';
+const assert=require('node:assert/strict');
+const V=require('../engine/fmc/performance/isn-thrust-schedule-v1.cjs');
+const run=o=>V.compute(o);
+const sample=run({});
+assert.equal(sample.quality,'SIM_ESTIMATE_NOT_AFM');
+assert.ok(sample.required.n1RequiredPct>32);
+assert.ok(sample.navigation.tasKt>240);
+assert.ok(sample.command.normalizedThrottle>=0);
+assert.ok(sample.limits.n1LimitPct>=sample.command.n1CommandPct);
+const hd=run({windSpeedKt:20,windFromDeg:90,trackDeg:90});
+const tl=run({windSpeedKt:20,windFromDeg:270,trackDeg:90});
+const cw=run({windSpeedKt:20,windFromDeg:180,trackDeg:90});
+assert.equal(hd.navigation.headwindKt,20);
+assert.equal(tl.navigation.headwindKt,-20);
+assert.equal(cw.navigation.headwindKt,0);
+assert.equal(hd.required.n1RequiredPct,tl.required.n1RequiredPct);
+assert.equal(hd.required.n1RequiredPct,cw.required.n1RequiredPct);
+assert.ok(hd.navigation.groundSpeedKt<sample.navigation.groundSpeedKt);
+assert.ok(tl.navigation.groundSpeedKt>sample.navigation.groundSpeedKt);
+for(const sp of [180,200,220,240,260,280,300])
+ assert.ok(Number.isFinite(run({iasKt:sp}).required.n1RequiredPct));
+for(const temp of [-25,-5,15,35])
+ assert.ok(Number.isFinite(run({oatC:temp}).required.n1RequiredPct));
+assert.ok(run({verticalSpeedFpm:1200}).required.n1RequiredPct>sample.required.n1RequiredPct);
+assert.ok(run({verticalSpeedFpm:-2000}).required.n1RequiredPct<=sample.required.n1RequiredPct);
+assert.ok(run({massKg:63000}).required.n1RequiredPct>=sample.required.n1RequiredPct);
+assert.ok(run({gearDown:true,flaps:30}).required.n1RequiredPct>sample.required.n1RequiredPct);
+assert.ok(run({engineAntiIce:true}).limits.n1LimitPct<sample.limits.n1LimitPct);
+assert.equal(run({weather:'RAIN'}).required.n1RequiredPct,sample.required.n1RequiredPct);
+assert.ok(run({weather:'ICING'}).flags.includes('ICING_SCENARIO_ANTIICE_NOT_SELECTED'));
+const modes=['TO','GA','CON','CLB','CRZ'].map(mode=>run({mode}).limits.n1LimitPct);
+for(let i=1;i<modes.length;i++)assert.ok(modes[i-1]>=modes[i]);
+const red1=run({mode:'CLB-1'});
+assert.ok(red1.limits.n1LimitPct<sample.limits.allModesN1Pct.CLB);
+assert.throws(()=>run({mode:'CLB-2'}),/CLB-2/);
+assert.ok(run({mode:'CLB-2',clb2Installed:true}).limits.n1LimitPct<red1.limits.n1LimitPct);
+assert.equal(run({mode:'CLB-2',clb2Installed:true,pressureAltitudeFt:15000}).limits.n1LimitPct,
+ run({mode:'CLB',pressureAltitudeFt:15000}).limits.n1LimitPct);
+assert.throws(()=>run({iasKt:500}),/iasKt/);
+assert.throws(()=>run({oatC:null}),/oatC/);
+assert.throws(()=>run({massKg:0}),/massKg/);
+assert.throws(()=>run({windSpeedKt:-4}),/windSpeedKt/);
+const absurd=run({verticalSpeedFpm:4500,operatingEngines:1,mode:'CRZ'});
+assert.ok(absurd.flags.includes('REQUIRED_N1_EXCEEDS_SELECTED_SIM_LIMIT'));
+assert.ok(absurd.command.n1CommandPct<=absurd.limits.n1LimitPct);
+console.log('PASS ISN thrust schedule: mode N1 limits, ISA/OAT/altitude, speed/weight/config, climb/descent, wind-only-GS, antiice, derates, impossible performance and invalid input');
