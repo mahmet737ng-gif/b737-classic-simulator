@@ -108,4 +108,11 @@ test('Unified UI publishes field altitude from correct selected airport for CAB 
  assert.ok(js.includes('b737:cold-dark-state'));
  assert.ok(js.includes('session.stepPhysics(1000'));
  assert.ok(js.includes("key:'cabinAltitudeFt',value:measured"));
+ const needle=fs.readFileSync(path.join(__dirname,'../panel-mosaic-lab/cockpit/cabin-dual-needles-unified.js'),'utf8');
+ assert.ok(needle.includes("event.detail?.output?.physical"));
+ assert.ok(needle.includes("setMeasuredReadings"));
+ assert.ok(needle.includes("calibrationApproved:false"));
+ const coldUi=fs.readFileSync(path.join(__dirname,'../panel-mosaic-lab/cockpit/cold-dark-indicators-unified.js'),'utf8');
+ assert.ok(coldUi.includes('B737GroundAirfieldContext?.()'));
+ assert.ok(coldUi.includes("cabin.cabAlt.value.toFixed(0)"));
 });
