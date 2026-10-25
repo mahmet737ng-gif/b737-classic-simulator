@@ -36,6 +36,6 @@ assert.ok(ui.includes('model.windowPath(needle)'),'Blade must stop at the traced
 assert.ok(ui.includes("new URL('./drive-amps-needle.svg?v=DAN-0001'"));
 assert.ok(ui.includes('window.B737UnifiedDriveAmpsNeedles'));
 const html=fs.readFileSync(path.join(__dirname,'index.html'),'utf8');
-assert.ok(html.includes('drive-amps-needle-model.js?v=DAN-0002'));
-assert.ok(html.includes('drive-amps-needle-unified.js?v=DAN-0002'));
+assert.ok(html.includes('drive-amps-needle-model.js?v=DAN-0003-CDARK'));
+assert.ok(html.includes('drive-amps-needle-unified.js?v=DAN-0003-CDARK'));
 console.log('PASS: one shared white needle on both OH11 drive gauges, two upper OH12 A.C. amps gauges and APU A.C. amps.');
