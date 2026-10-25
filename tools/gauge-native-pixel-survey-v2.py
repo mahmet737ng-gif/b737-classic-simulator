@@ -25,7 +25,7 @@ def extract_lines(gray,cx,cy,rmax):
                           minLineLength=min_length,maxLineGap=3)
     if lines is None:return []
     raw=[]
-    for x1,y1,x2,y2 in lines[:,0]:
+    for x1,y1,x2,y2 in np.asarray(lines).reshape((-1,4)):
         d1=math.hypot(x1-cx,y1-cy);d2=math.hypot(x2-cx,y2-cy)
         if min(d1,d2)<rmax*.25 or max(d1,d2)>rmax*1.18:continue
         length=math.hypot(x2-x1,y2-y1)
