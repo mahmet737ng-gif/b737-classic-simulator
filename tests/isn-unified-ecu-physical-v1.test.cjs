@@ -17,7 +17,7 @@ assert.match(router,/ecu\.engineStart\(ENGINE_START\[id\]\)/);
 assert.match(ui,/ecu\.fuelLever\(e\.detail\.device,e\.detail\.position\)/);
 assert.match(ui,/ecu\.setThrottle\('engine'\+id/);
 assert.match(ui,/ecu\.advance\(elapsed\)/);
-assert.match(ui,/ecu\.core\.refreshFuelDelivery\(\)/);
+assert.match(router,/ecu\.core\.refreshFuelDelivery\(\)/);
 assert.match(ui,/starterDuctPsiTraining/);
 for(const key of ['n1','n2','egt','fuel','oil'])assert.ok(ui.includes('data-field="'+key+'"'),key+' actual indication');
 assert.match(ui,/b737:unified-ecu-observation/);
