@@ -23,7 +23,7 @@
     "finalGeometricCalibration": 0,
     "withCandidateNumericPreview": 6,
     "logicalNeedles": 38,
-    "unapprovedSourceFeeds": 0,
+    "unapprovedSourceFeeds": 62,
     "sourceProviderMappedChannels": 23,
     "unmappedSourceChannels": 39,
     "unknownPerGaugeElectricalFeeds": 54,
@@ -3763,5 +3763,6 @@
       ],
       "acceptance": "BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA"
     }
-  ]
+  ],
+  "dispositionClarification": "All 62 signal channels lack independent actual aircraft per-instrument equipment-feed verification; provider mapping for 23 channels does not imply certified wiring."
 }
