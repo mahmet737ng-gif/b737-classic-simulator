@@ -60,8 +60,8 @@ assert.ok(ui.includes('window.B737UnifiedCabinNeedles'));
 assert.ok(ui.includes('needle.tipRadius/220'));
 assert.ok(ui.includes("min:'0',max:'360',step:'0.5'"));
 const html=fs.readFileSync(path.join(__dirname,'index.html'),'utf8');
-assert.ok(html.includes('cabin-dual-needles-model.js?v=CDN-0003'));
-assert.ok(html.includes('cabin-dual-needles-unified.js?v=CDN-0003'));
+assert.ok(html.includes('cabin-dual-needles-model.js?v=CDN-0004'));
+assert.ok(html.includes('cabin-dual-needles-unified.js?v=CDN-0004'));
 console.log('PASS: separate OH19 CAB ALT and PRESS needles share a pivot, rotate independently, and stack PRESS behind CAB ALT while preserving PSI outer and ALT inner printed scales.');
 
 
@@ -85,5 +85,14 @@ assert.ok(model.cabinAltitudePreviewBearing(66)<model.cabinAltitudePreviewBearin
 assert.ok(model.cabinAltitudePreviewBearing(3260)<model.cabinAltitudePreviewBearing(3963));
 assert.ok(model.cabinAltitudePreviewBearing(50000)>300,'Angle must unwrap beyond 180 degrees');
 assert.throws(()=>model.cabinAltitudePreviewBearing(NaN),/Invalid CAB ALT/);
-assert.ok(ui.includes('state.cabAlt=model.cabinAltitudePreviewBearing(readings.cabinAltitudeFt)'));
+assert.ok(ui.includes('model.resolvePhysicalReadings(readings)'));
+assert.ok(ui.includes("state.press=model.angle('press',mapping.pressBearingDeg)"));
+assert.ok(ui.includes("state.cabAlt=model.angle('cabAlt',mapping.cabAltBearingDeg)"));
+assert.ok(ui.includes("detail.system!==selected"));
+assert.deepEqual(model.pressurePhotoAnchors.map(x=>x.valuePsid),[0,1,2,3,4,5,6,7,8,9,10]);
+assert.equal(model.differentialPressurePreviewBearing(0),1.5);
+assert.equal(model.differentialPressurePreviewBearing(10),322.05);
+assert.equal(model.differentialPressurePreviewBearing(-.1),null);
+assert.equal(model.differentialPressurePreviewBearing(10.1),null);
+assert.equal(model.resolvePhysicalReadings({cabinAltitudeFt:3260,differentialPsid:5}).status,'BOTH_CANDIDATE_BEARINGS');
 assert.ok(ui.includes('NOT FINAL'));
