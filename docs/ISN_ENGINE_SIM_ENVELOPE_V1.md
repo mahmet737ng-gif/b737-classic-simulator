@@ -1,3 +1,5 @@
+> **SUPERSEDED fuel schedule — 2026-10-25:** The operating fuel envelope now uses about 4000 kg/h at sea-level full takeoff power and approximately 1000 kg/h at 35k ft cruise under illustrative speed/throttle assumptions, rather than the previous 2400 kg/h maximum. See [ISN_START_DUCT_AND_FUEL_V3.md](ISN_START_DUCT_AND_FUEL_V3.md).
+
 # ISN Engine Operating Envelope — simulator calibration V1
 
 Status: **IMPLEMENTED, SIMULATION_APPROX_ONLY; not an AFM/N1 calibration.** 
