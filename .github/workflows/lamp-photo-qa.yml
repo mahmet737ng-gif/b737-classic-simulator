@@ -33,6 +33,13 @@ jobs:
           for panel in ${{ matrix.panel_group }}; do
             python3 tools/lamp-photo-registration.py --only "$panel" --emit-preview
           done
+      - name: Archive annotated native-photo evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: lamp-native-pixel-evidence-${{ strategy.job-index }}
+          path: /tmp/b737-lamp-photo-qa/*.jpg
+          if-no-files-found: error
+          retention-days: 30
       - name: Run native glass-edge measurements for all mounted lamps
         if: matrix.panel_group == 'engine captain fo-inner fo-outer'
         run: python3 tools/lamp-photo-edge-qa.py
