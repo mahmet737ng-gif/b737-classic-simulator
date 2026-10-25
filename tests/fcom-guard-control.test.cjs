@@ -92,14 +92,18 @@ test('photo-matched three-position frames and actual JS source compile',()=>{
     const start=html.indexOf('<button class="toggle selector" data-control="'+id+'"');
     assert.ok(start>=0,id+' missing selector');
     const segment=html.slice(start,html.indexOf('</button>',start));
-    for(const [detent,filename] of [['left','nav-transfer-left-v3.webp'],['center','nav-transfer-center-v3.webp'],['right','nav-transfer-right-v3.webp']]){
+    for(const [detent,frameIndex] of [['left',0],['center',1],['right',2]]){
       assert.ok(segment.includes('class="nav-frame nav-'+detent+'"'),id+' '+detent);
-      assert.ok(segment.includes('assets/'+filename),id+' '+filename);
-      const buf=fs.readFileSync(path.join(dir,'assets',filename));
-      assert.ok(buf.length>1000,filename+' empty');
-      assert.equal(buf.toString('ascii',0,4),'RIFF');
-      assert.equal(buf.toString('ascii',8,12),'WEBP');
+      const offset=frameIndex*25;
+      assert.ok(css.includes('.toggle.selector .nav-'+detent+'{background-position:'+offset+'% 50%}'),id+' atlas frame '+frameIndex);
     }
+    const atlasPath=path.resolve(dir,'../shared-assets/toggle-switch-standard-v2/b737-toggle-five-positions.webp');
+    const atlas=fs.readFileSync(atlasPath);
+    assert.ok(atlas.length>1000,'owner-approved atlas missing');
+    assert.equal(atlas.toString('ascii',0,4),'RIFF');
+    assert.equal(atlas.toString('ascii',8,12),'WEBP');
+    assert.equal(require('node:crypto').createHash('sha256').update(atlas).digest('hex'),'3f18c9fc0835e877060f086c7bc67f96e191b93ad0569a07afb7e62296b0213c','five aligned fixed-bezel frames unchanged');
+    assert.ok(segment.includes('data:image/gif;base64,'),'legacy sprite image is not loaded');
     for(const [key,prefix] of [['x','--x'],['y','--y'],['width','--w'],['height','--h']]){
       const begin=segment.indexOf(prefix+':');
       assert.ok(begin>=0,id+' missing '+key);
