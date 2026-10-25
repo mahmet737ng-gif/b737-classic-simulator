@@ -1,0 +1,35 @@
+name: ISN 09-12 Engine and Fuel Contracts
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'engine/integration/isn-09-12-runtime-v1.js'
+      - 'engine/integration/isn-apu-start-chain-v1.js'
+      - 'engine/integration/isn-thrust-performance-v1.js'
+      - 'tests/isn-09-12-*.test.cjs'
+      - 'tests/isn-thrust-performance-v1.test.cjs'
+      - '.github/workflows/isn-09-12.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify immutable overhead
+        run: python3 panel-mosaic-lab/verify-final-overhead.py
+      - name: Syntax and operating envelopes
+        run: |
+          node --check engine/integration/isn-09-12-runtime-v1.js
+          node tests/isn-thrust-performance-v1.test.cjs
+          node tests/isn-engine-envelope-v1.test.cjs
+          node tests/isn-start-fcom-rules-v1.test.cjs
+      - name: Engine start and fuel integration
+        run: |
+          node tests/isn-09-12-integration.test.cjs
+          node tests/isn-apu-start-chain-v1.test.cjs
+          node tests/isn-cold-dark-two-engine.e2e.test.cjs
