@@ -68,7 +68,14 @@
     egtC:0,fuelFlowKgHr:400,origin:ORIGIN};
    if(faults.hungStart)return {n2Percent:25+(faultTargets.hungStartN2-25)*f,
     egtC:faultTargets.hungStartEgtC*f,fuelFlowKgHr:400-50*f,origin:ORIGIN};
-   return {n2Percent:25+21*f,egtC:faults.egtHigh?760*f:startEgt(elapsedMs/duration.lightoffMs),fuelFlowKgHr:400-50*f,origin:ORIGIN};
+   // Fuel can be introduced before the recommended N2 cue. Poor airflow at
+    // early light-off raises the simulated EGT peak; this is a conditional
+    // risk curve, not a guaranteed hot start or source-certified CFM profile.
+    const entryN2=clamp(Number.isFinite(faults.fuelEntryN2)?faults.fuelEntryN2:25,0,25);
+    const earlyEgtRise=clamp((20-entryN2)/20,0,1)*150;
+    return {n2Percent:entryN2+(46-entryN2)*f,
+     egtC:faults.egtHigh?760*f:startEgt(elapsedMs/duration.lightoffMs)*(1+earlyEgtRise/ENVELOPE.normalStartPeakEgtC),
+     fuelFlowKgHr:400-50*f,origin:ORIGIN};
   }
   throw Error('Unsupported training phase '+phase);
  }
