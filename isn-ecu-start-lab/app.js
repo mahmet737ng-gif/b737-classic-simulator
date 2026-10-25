@@ -21,7 +21,8 @@ function create(){pauseLive();sim=new window.B737ISN1318ECUTestbenchV1.Testbench
 function metrics(e){return [['N1',e.n1Percent,'%'],['N2',e.n2Percent,'%'],['EGT',e.egtC,'°C'],['FUEL FLOW',e.fuelFlowKgHr,'kg/h'],['OIL PRESS',e.oil.pressurePsi,'PSI'],['HYD PRESS',e.hydraulic?.engineDrivenPressurePsi??null,'PSI'],['OIL TEMP',e.oil.temperatureC,'°C'],['OIL QTY',e.oil.quantityPct,'%']].map(([name,value,unit])=>`<div class="metric"><span>${name}</span><b>${value==null?'—':html(Number(value).toFixed(1))} <small>${unit}</small></b></div>`).join('');}
 function engineCard(e,num){
  return `<section><h2>ENGINE ${num}</h2><div class="metrics">${metrics(e)}</div>
- <p>START VALVE <strong>${e.startValveOpen===null?'UNKNOWN':e.startValveOpen?'OPEN':'CLOSED'}</strong> · FUEL LEVER <strong>${html(e.fuelLever)}</strong></p>
+ <p>START VALVE <strong>${e.startValveOpen===null?'UNKNOWN':e.startValveOpen?'OPEN':'CLOSED'}</strong> · FUEL LEVER <strong>${html(e.fuelLever)}</strong> · PHASE <strong>${html(e.phase)}</strong></p>
+ <p>FUEL SUPPLY <strong class="${e.fuelSupplyReady===true?'ok':'amber'}">${e.fuelSupplyReady===true?'AVAILABLE':html(e.fuelSupplyReason||'UNAVAILABLE')}</strong></p>
  <p><span class="lamp ${e.oil.lowPressureLamp?'on':'off'}">LOW OIL PRESSURE ${e.oil.lowPressureLamp?'ON':'OFF'}</span>
  <span class="lamp ${e.oil.filterBypassLamp?'on':'off'}">OIL FILTER BYPASS ${e.oil.filterBypassLamp?'ON':'OFF'}</span></p></section>`;
 }
@@ -33,6 +34,9 @@ function render(){if(!sim)return;const s=sim.get();$('clock').textContent=`${(s.
  $('log').textContent=s.trace.slice(-40).map(x=>`${(x.tMs/1000).toFixed(2).padStart(7)}s ${x.type} ${JSON.stringify(x)}`).join('\n');
  document.querySelector('[data-act="play"]').textContent=runner?'❚❚ PAUSE':'▶ RUN LIVE';
  document.querySelector('[data-act="ground"]').textContent=s.aircraft.onGround?'GROUND → FLIGHT':'FLIGHT → GROUND';
+ const pumps=sim.start?.core?.pack?.get()?.pumps??{};
+ const activeMainPumps=['fuel.main1FwdPump','fuel.main1AftPump','fuel.main2FwdPump','fuel.main2AftPump'].filter(id=>pumps[id]?.switchOn===true).length;
+ document.querySelector('[data-act="fuel"]').textContent=`FUEL PUMP SWITCHES ${activeMainPumps}/4 ON`;
 }
 function action(type){if(type==='reset'){create();return;}if(!sim)throw Error('Simulator not initialized');
  const status=sim.get();switch(type){
