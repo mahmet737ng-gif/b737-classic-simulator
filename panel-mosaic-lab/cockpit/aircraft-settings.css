@@ -29,3 +29,9 @@
 .selected-pressure-dialog iframe{border:1px solid #375a6e;background:#0c1420;border-radius:7px;width:100%;height:calc(100% - 70px)}
 @media(max-width:1000px){.header-settings{margin-inline-start:auto}header nav{order:4}.aircraft-profile-header{display:none}}
 @media(max-width:540px){.profile-options{grid-template-columns:1fr}.aircraft-settings-dialog{padding:13px}.aircraft-settings-dialog fieldset{padding:9px}.header-settings button{padding:5px 9px}}
+
+/* Selected DCPCS artwork: owner uploaded source, no image alteration. */
+.aircraft-pressure-owner-preview{margin:13px auto 0;max-width:350px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px}
+.aircraft-pressure-owner-preview[hidden]{display:none}
+.aircraft-pressure-owner-preview img{display:block;max-height:390px;width:auto;max-width:100%;object-fit:contain;border:1px solid #537284;border-radius:6px;background:#111d29}
+.aircraft-pressure-owner-preview figcaption{font-size:11px;color:#bbd6de}
