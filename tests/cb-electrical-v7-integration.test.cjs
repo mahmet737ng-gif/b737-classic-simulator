@@ -10,10 +10,10 @@ const scope={window:{}};
 vm.runInNewContext(fs.readFileSync(path.join(__dirname,"../cb-panel-lab/catalog.js"),"utf8"),scope);
 const catalog=scope.window.CB_CATALOG;
 const init=()=>({cb:new CB.BreakerNetwork(catalog),electrical:V7.initialState(),trainer:Fuel.initialState()});
-const evaluate=x=>Effects.project({cbNetwork:x.cb,electricalV7Result:V7.evaluate(x.electrical),trainerResult:Fuel.derive(x.trainer)});
+const evaluate=x=>Effects.project({cbNetwork:x.cb,electricalV7Result:V7.evaluate(x.electrical),trainerResult:Fuel.derive(x.trainer),trainerState:x.trainer});
 const pump=name=>Effects.ALLOCATIONS.find(x=>x.load==="fuel."+name);
-test("Source-identified 9 circuits exist with exact keys and MRG folios",()=>{
-const x=init();A.equal(Effects.ALLOCATIONS.length,9);
+test("Source-identified 11 circuits exist with exact keys and MRG folios",()=>{
+const x=init();A.equal(Effects.ALLOCATIONS.length,11);
 for(const a of Effects.ALLOCATIONS){A(x.cb.state(a.key),a.key);A.match(a.location,/MRG p\.13[56]/);A.equal(a.bus,null);}
 });
 test("V7 original AC/DC system is not altered by CB projection",()=>{
@@ -91,4 +91,37 @@ A.equal(evaluate(x).overlay.fuel.rightFwd.operational,true);
 });
 test("Invalid projection without V7 source throws",()=>{
 const x=init();A.throws(()=>Effects.project({cbNetwork:x.cb,electricalV7Result:{}}),/Electrical V7/);
+});
+
+test("Hydraulic electric pump A at P6-12 C2 is on generator bus 2, not an invented transfer bus",()=>{
+const x=init(),src=Effects.ALLOCATIONS.find(a=>a.load==="hyd.elecA");
+A.equal(src.key,"P6-12|ALL|C2");A.equal(src.bus,"generator2");
+A.equal(evaluate(x).overlay.hyd.elecA.operating,true);
+});
+test("Hydraulic electric pump B at P6-11 C2 is on generator bus 1",()=>{
+const x=init(),src=Effects.ALLOCATIONS.find(a=>a.load==="hyd.elecB");
+A.equal(src.key,"P6-11|ALL|C2");A.equal(src.bus,"generator1");
+A.equal(evaluate(x).overlay.hyd.elecB.operating,true);
+});
+test("Pulling A electric pump CB does not remove engine-driven A hydraulic supply",()=>{
+const x=init();x.cb.action("P6-12|ALL|C2","PULL");const e=evaluate(x);
+A.equal(e.overlay.hyd.elecA.operating,false);A.equal(e.overlay.hyd.elecB.operating,true);
+A.equal(e.overlay.systemHyd.A,true);
+});
+test("GEN1 bus fault kills electric B pump even if transfer1 is crossfed from GEN2",()=>{
+const x=init();x.electrical=V7.apply(x.electrical,{type:"FAULT",id:"GEN1_FAILED",active:true,instructor:true});
+const e=evaluate(x);A.equal(e.overlay.bus.transfer1,true);A.equal(e.overlay.bus.generator1,false);
+A.equal(e.overlay.hyd.elecB.operating,false);A.equal(e.overlay.hyd.elecA.operating,true);
+});
+test("System B training supply goes away only when both engine-driven and electric B are unavailable",()=>{
+const x=init();x.electrical=V7.apply(x.electrical,{type:"FAULT",id:"GEN1_FAILED",active:true,instructor:true});
+A.equal(evaluate(x).overlay.systemHyd.B,true);
+x.trainer=Fuel.apply(x.trainer,{type:"CONTROL",path:"engineHyd.B",value:false});
+A.equal(evaluate(x).overlay.systemHyd.B,false);
+});
+test("Hydraulic CB reset restores its motor when generator bus is present",()=>{
+const x=init();x.cb.action("P6-11|ALL|C2","PULL");
+A.equal(evaluate(x).overlay.hyd.elecB.operating,false);
+x.cb.action("P6-11|ALL|C2","PUSH");
+A.equal(evaluate(x).overlay.hyd.elecB.operating,true);
 });
