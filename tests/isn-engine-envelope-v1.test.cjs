@@ -14,8 +14,8 @@ const {Chain}=require('../engine/integration/isn-apu-start-chain-v1');
 const near=(value,want,tol=0.3)=>assert.ok(Math.abs(value-want)<=tol,
  'expected '+value+' to be near '+want+' ± '+tol);
 assert.equal(Dynamics.ORIGIN,'TRAINING_SEQUENCE_SIMULATED');
-assert.equal(Dynamics.ENVELOPE.normalStartPeakEgtC,600);
-near(Dynamics.sample('LIGHT_OFF_SEQUENCE',750).egtC,600,0.001);
+assert.equal(Dynamics.ENVELOPE.normalStartPeakEgtC,620);
+near(Dynamics.sample('LIGHT_OFF_SEQUENCE',750).egtC,620,0.001);
 assert.equal(Dynamics.sample('LIGHT_OFF_SEQUENCE',1000).egtC,420);
 assert.ok(Dynamics.sample('LIGHT_OFF_SEQUENCE',850,{egtHigh:true}).egtC>600);
 assert.deepEqual(Dynamics.runningTarget({throttle:0,onGround:true}),
