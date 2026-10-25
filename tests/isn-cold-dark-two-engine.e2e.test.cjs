@@ -77,7 +77,7 @@ assert.equal(s.phase.engine2,'MOTORING');assert.equal(v.engines.engine2.n2.text,
 assert.equal(v.engines.engine2.startValve.text,'OPEN');
 assert.equal(lamps['main-start-valve-2'],'ON');assert.equal(lamps['main-start-valve-1'],'OFF');
 assert.equal(v.engines.engine2.egt.text,'—');
-c.chain.lever('engine2','IDLE');assert.equal(c.view().v.engines.engine2.lever,'CUTOFF','premature lever cannot move');
+c.chain.lever('engine2','IDLE');assert.equal(c.view().v.engines.engine2.lever,'IDLE','premature IDLE is mechanical lever motion, not an N2 interlock');
 c.chain.advance(425);({s,v}=c.view());
 assert.equal(s.phase.engine2,'MOTORING');assert.equal(v.engines.engine2.n2.value,12.5);
 assert.equal(lamps['main-start-valve-1'],'OFF');
