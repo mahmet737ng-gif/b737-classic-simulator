@@ -31,15 +31,21 @@
  // Owner-specified: PRESS lies underneath/inside the CAB ALT pointer assembly.
  // Immutable artwork: PRESS still reads the outer PSI graduations and CAB ALT
  // still reads the inner thousand-foot graduations on the source OH19 face.
- // Tip lengths remain PHOTO CANDIDATES, not calibrated physical end points.
+ // Tip scales were adjusted by source-image radial stroke QA and real SVG path
+ // endpoints (CAB ALT 217px, PRESS 221px from sprite centre). These are
+ // PREVIEW-ONLY fit estimates: 47 inner / 51 outer native strokes are candidates,
+ // hidden spindle axis and exact mechanical contacts remain uncertified.
  const needles=Object.freeze([
-  Object.freeze({id:'press',label:'PRESS · lower needle / outer PSI scale',asset:'cabin-diff-pressure-needle.svg',tipRadius:207,initialAngle:0,layer:0,stack:'rear',printedScale:'outer',valueSource:'differentialPsid'}),
-  Object.freeze({id:'cabAlt',label:'CAB ALT · upper needle / inner x1000 FT scale',asset:'cabin-altitude-needle.svg',tipRadius:123,initialAngle:0,layer:1,stack:'front',printedScale:'inner',valueSource:'cabinAltitudeFt'})
+  Object.freeze({id:'press',label:'PRESS · lower needle / outer PSI scale',asset:'cabin-diff-pressure-needle.svg',tipRadius:222.7,initialAngle:0,layer:0,stack:'rear',printedScale:'outer',valueSource:'differentialPsid'}),
+  Object.freeze({id:'cabAlt',label:'CAB ALT · upper needle / inner x1000 FT scale',asset:'cabin-altitude-needle.svg',tipRadius:114.3,initialAngle:0,layer:1,stack:'front',printedScale:'inner',valueSource:'cabinAltitudeFt'})
  ]);
  function angle(id,value){
   if(!needles.some(needle=>needle.id===id))throw Error('Unknown cabin gauge needle '+id);
   const n=Number(value);if(!Number.isFinite(n))throw Error('Cabin gauge angle must be finite');
-  return Math.max(-166,Math.min(166,n));
+  // OH19 native-photo scales rotate clockwise from the 12-o'clock reference
+  // through >320 deg; the old +/-166 deg QA slider obscured half the dial.
+  // QA control only. Production mechanical stops need separate source approval.
+  return Math.max(0,Math.min(360,n));
  }
  function placement(piece){
   if(!piece||![piece.x,piece.y,piece.w,piece.h].every(Number.isFinite)||piece.w<=0||piece.h<=0)throw Error('Invalid OH19 atlas placement');
