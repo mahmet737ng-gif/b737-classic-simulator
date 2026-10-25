@@ -1,0 +1,31 @@
+/* Variant-only elements over the frozen OH21 panel, in Unified iframe. */
+.aircon400-oh21-layer{position:absolute;inset:0;z-index:99;pointer-events:none}
+.aircon400-oh21-layer[hidden]{display:none!important}
+.aircon400-oh21-layer .aircon400-pack-face{
+ position:absolute;display:block;overflow:hidden;border:0!important;outline:0;
+ background:#070606!important;border-radius:1px;padding:0!important;margin:0!important;
+ pointer-events:none;box-sizing:border-box;
+}
+.aircon400-oh21-layer .aircon400-pack-face img{
+ position:absolute;inset:0;width:100%;height:100%;object-fit:fill;
+ max-width:none!important;max-height:none!important;pointer-events:none;opacity:0;
+}
+.aircon400-oh21-layer .aircon400-pack-face img.active{opacity:1}
+.aircon400-oh21-layer .aircon400-recirculation-label{
+ position:absolute;background:linear-gradient(#d8e5ef,#bfd3e2);
+ color:#303e49;font:800 33px/1 Arial,Helvetica,sans-serif;
+ display:flex;align-items:center;justify-content:center;
+ box-sizing:border-box;white-space:nowrap;pointer-events:none;
+ transform-origin:top left;
+ text-shadow:0 1px #f7fbff;
+}
+.aircon400-oh21-layer .aircon400-left-recirculation{
+ pointer-events:auto;z-index:1;touch-action:none;
+}
+.aircon400-oh21-layer .aircon400-left-recirculation:focus-visible{
+ outline:2px solid #f1dba0!important;outline-offset:4px;
+}
+html.b737-aircon400 #overheadLightLayer .mounted-light[data-light="pack-trip-l"],
+html.b737-aircon400 #overheadLightLayer .mounted-light[data-light="pack-trip-r"]{
+ visibility:hidden!important;pointer-events:none!important;
+}
