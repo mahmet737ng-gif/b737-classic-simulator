@@ -1,0 +1,29 @@
+'use strict';
+const assert=require('node:assert/strict'),crypto=require('node:crypto'),fs=require('node:fs'),path=require('node:path');
+const ROOT=path.resolve(__dirname,'../..');
+const get=p=>fs.readFileSync(path.join(ROOT,p),'utf8');
+const info=JSON.parse(get('panel-mosaic-lab/lights-test/oh22-profile-faces-v1.json'));
+const model=require(path.join(ROOT,'panel-mosaic-lab/cockpit/pressurization-oh22-model.js'));
+assert.equal(info.states,14);assert.equal(info.files.length,14);
+assert.equal(info.sourceImagesChanged,0);assert.equal(info.sourceGeometryChanged,0);
+const sha=s=>crypto.createHash('sha256').update(s).digest('hex');
+const glyphs=s=>[...s.matchAll(/<text\b[^>]*>.*?<\/text>/gs)].map(m=>m[0]);
+const combinations=new Set();
+for(const f of info.files){
+ const cfg=model.config(f.system);
+ const lamp=cfg.lamps.find(l=>l.id===f.lamp);assert.ok(lamp);
+ const source=get(f.source),derived=get(f.file);
+ assert.equal(sha(source),f.sourceSha);
+ assert.equal(sha(derived),f.sha256);
+ assert.deepEqual(glyphs(source),glyphs(derived),f.file+' text glyph source fidelity');
+ assert.match(derived,/data-fit="oh22-profile-uniform-glyphs"/);
+ assert.doesNotMatch(derived,/<g transform="scale\(/);
+ const h=derived.match(/^<svg\b[^>]*>/)?.[0],box=h?.match(/viewBox="0 0 ([\d.]+) ([\d.]+)"/);
+ assert.ok(box);
+ assert.ok(Math.abs(Number(box[1])/Number(box[2])-f.physicalRatio)<1e-5,f.file+' aspect in photo');
+ assert.deepEqual(f.faceNormalized,model.lampFace(f.system,f.lamp));
+ assert.deepEqual(f.parentFit,[cfg.lampFit.x,cfg.lampFit.y]);
+ combinations.add(f.system+':'+f.lamp+':'+f.state);
+}
+assert.equal(combinations.size,14);
+console.log('PASS: 14 CPCS/DCPCS photo-specific vector faces, source legends preserved, no source-image or installation-coordinate edits.');
