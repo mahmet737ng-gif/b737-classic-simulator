@@ -10,7 +10,7 @@
  const PROFILE_KEY='b737classic.aircraft-profile.v1';
  const knobAsset=new URL('../assets/locked/2026-10-23/Switches/Rotary/rotary-standard-v1.webp',document.baseURI).href;
  const toggleAsset=new URL('../assets/locked/2026-10-23/Switches/Toggle/b737-toggle-center.webp',document.baseURI).href;
- const lampBase=new URL('../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/',document.baseURI).href;
+ const faceBase=new URL('../assets/lights/oh22-profile-v1/',document.baseURI).href;
  const approvedLamps=Object.freeze({'auto-fail':'AUTO_FAIL','off-sched':'OFF_SCHED_DESCENT','standby':'STANDBY_GREEN','manual':'MANUAL_GREEN'});
 
  let system='DCPCS',layer=null,plate=null,received=null,fallback=null,controls=new Map(),lamps=new Map(),digits=new Map(),caption=null,gauge=null;
@@ -103,7 +103,7 @@
      approved.alt=l.label;
      approved.draggable=false;
      Object.assign(approved.style,{display:'block',width:'100%',height:'100%',maxWidth:'none',maxHeight:'none',objectFit:'fill',pointerEvents:'none'});
-     approved.src=lampBase+approvedLamps[l.id]+'_OFF.svg';
+     approved.src=faceBase+system+'_'+l.id+'_OFF.svg';
      el.replaceChildren(approved);
    } else if(l.id==='altn') {
      // Owner's DCPCS label is "ALTN", not the separately archived
@@ -171,7 +171,7 @@
    // engine's real fault/logic state.
    const lampTest=document.documentElement.classList.contains('cockpit-visual-test')||
      window.B737OverheadLights?.getState?.()?.lampTest===true;
-   for(const l of cfg.lamps){const n=lamps.get(l.id);if(!n)continue;const lit=lampTest||values[l.id];n.classList.toggle('on',lit);n.dataset.lit=String(lit);n.setAttribute('aria-label',l.label+' '+(lit?'ON':'OFF'));if(n.dataset.asset){const img=n.querySelector('img'),next=lampBase+n.dataset.asset+'_'+(lit?'ON':'OFF')+'.svg';if(img&&img.src!==next)img.src=next;}}
+   for(const l of cfg.lamps){const n=lamps.get(l.id);if(!n)continue;const lit=lampTest||values[l.id];n.classList.toggle('on',lit);n.dataset.lit=String(lit);n.setAttribute('aria-label',l.label+' '+(lit?'ON':'OFF'));if(n.dataset.asset){const img=n.querySelector('img'),next=faceBase+system+'_'+l.id+'_'+(lit?'ON':'OFF')+'.svg';if(img&&img.src!==next)img.src=next;}}
    for(const c of cfg.controls){
      const n=controls.get(c.id);if(!n)continue;
      const value=model.readControl(system,c,state),label=n.querySelector('.oh22-control-value');
