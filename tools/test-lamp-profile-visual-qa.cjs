@@ -64,6 +64,7 @@ const {chromium}=require('playwright');
     assert.equal(data.lamps.length,4,system+' annunciator count');
     assert.equal(new Set(data.lamps.map(x=>x.id)).size,4);
     assert.ok(data.lamps.every(x=>x.faceSystem===system&&x.bounds.w>0&&x.bounds.h>0));
+    assert.ok(data.lamps.filter(x=>x.source).every(x=>x.source.includes('/assets/lights/oh22-profile-v1/'+system+'_')),'CPCS/DCPCS must never stretch the old shared OH22 lettering');
     assert.equal(data.oh22BackgroundVisible,system==='DCPCS','OH22 owner-photo visibility');
     assert.equal(data.airconVisible,family==='B737-400','737-400 zone panel visibility');
     assert.equal(data.airconBackgroundVisible,family==='B737-400','737-400 OH20 owner photo');
@@ -74,7 +75,7 @@ const {chromium}=require('playwright');
       await page.evaluate(on=>{const w=window;w.B737OverheadLights.setLampTest(on);w.dispatchEvent(new CustomEvent('b737:pressure-light-test'));},lit);
       await page.waitForTimeout(100);
       const live=await page.evaluate(()=>{const d=document;return [...d.querySelectorAll('.oh22-pressure-controls [data-role="lamp"]')].map(n=>({id:n.dataset.lamp,lit:n.dataset.lit,on:n.classList.contains('on'),image:n.querySelector('img')?.src||null}))});
-      assert.equal(live.length,4);if(lit)assert.ok(live.every(x=>x.lit==='true'&&x.on),'OH22 visual test must light all four lamps');
+      assert.equal(live.length,4);if(lit){assert.ok(live.every(x=>x.lit==='true'&&x.on),'OH22 visual test must light all four lamps');assert.ok(live.filter(x=>x.image).every(x=>x.image.endsWith('_ON.svg')),'All installed CPCS/DCPCS light images must show ON artwork');}
       const tag=system+'_'+family.replace(/[^A-Za-z0-9]/g,'')+'_'+(lit?'ON':'OFF');
       await frame.locator('.atlas-piece[data-key="OH22"]').screenshot({path:path.join(out,tag+'_OH22.png'),timeout:20000});
       await frame.locator('.atlas-piece[data-key="OH20"]').screenshot({path:path.join(out,tag+'_OH20.png'),timeout:20000});
