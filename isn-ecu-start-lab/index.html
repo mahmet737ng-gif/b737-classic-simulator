@@ -21,6 +21,7 @@ label{display:inline-flex;align-items:center;gap:5px;font-size:.92rem}input[type
 </div><p class="subtle">Starter N2 25% → fuel lever IDLE → light-off → 46% cutout → stable 22/60 ground idle (32/78 flight idle). Start stages are intentionally time-compressed.</p>
 <div class="engines" id="engines"></div></section>
 <section><h2>3. Simulation clock and thrust</h2>
+<p class="subtle">The simulation clock starts automatically when APU START or ENG START GRD is accepted. RUN LIVE / PAUSE is optional; STEP remains available for manual testing.</p>
 <div class="controls"><button data-act="play">▶ RUN LIVE</button><button data-act="step">STEP +500 ms</button><button data-act="step5">STEP +5 sec</button><button data-act="ground">GROUND → FLIGHT</button>
 <label>Throttle ENG1 <input id="throttle1" type="range" min="0" max="100" step="1" value="0"></label><label>Throttle ENG2 <input id="throttle2" type="range" min="0" max="100" step="1" value="0"></label></div>
 <div class="controls"><label>IAS <input id="ias" type="number" value="200" min="100" max="360"> kt</label>
