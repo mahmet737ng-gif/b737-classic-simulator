@@ -89,7 +89,27 @@
    cleanup.setAttribute('aria-hidden','true');
    cleanup.dataset.placement=c.placementId;
    const art=document.createElement('span');art.className='toggle-art';
-   for(const key of frameKeys(c)){
+   // The four landing-light paddle levers use the approved top-down
+   // UP/CENTER/DOWN artwork, independent of all generic toggle images.
+   // Their photographed pivot position is constant in every detent.
+   const landing=c.visualFamily==='landing-triplet-v1';
+   if(landing){
+    button.dataset.visual='landing-triplet-v1';
+    const sprite=registry.specialAssets?.landingTriplet;
+    if(!sprite||sprite.order.join('/')!=='UP/CENTER/DOWN')throw Error('Approved landing-light paddle artwork missing');
+    const frames=c.states.length===3?[0,1,2]:[1,2]; // two inboard detents: OFF / ON
+    const size=p.diameter*(c.id.startsWith('landing-in-')?1.06:1.35);
+    for(const frame of frames){
+      const img=document.createElement('span');
+      img.className='toggle-frame landing-triplet-frame';img.setAttribute('aria-hidden','true');
+      Object.assign(img.style,{
+       left:(-size/2)+'px',top:(-size/2)+'px',width:size+'px',height:size+'px',
+       backgroundImage:'url("'+localURL(sprite.url)+'")',
+       backgroundSize:'300% 100%',backgroundPosition:(frame*50)+'% 50%',backgroundRepeat:'no-repeat'
+      });
+      art.append(img);
+    }
+   }else for(const key of frameKeys(c)){
     const a=calibration[key],sprite=registry.assets[key],scale=p.diameter/a.diameter,img=document.createElement('span');
     img.className='toggle-frame';img.setAttribute('aria-hidden','true');
     Object.assign(img.style,{
