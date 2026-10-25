@@ -88,3 +88,29 @@ test('Rejects unlabeled end limits, reversed values, and nonfinite signal',()=>{
  assert.throws(()=>mapValue(s,NaN),/finite/);
  assert.deepEqual(lengthClasses([{lengthPx:7},{lengthPx:7}]),['similar','similar']);
 });
+
+
+test('source screenshot graduation candidates remain synchronized with 53-face registry',()=>{
+ const p=require('./gauge-graduation-patterns-v1.json');
+ const registry=require('./gauge-survey-stage2-3.json');
+ for(const face of p.faces){
+   const entry=registry.faces.find(x=>x.id===face.id);
+   assert.ok(entry,'unknown face '+face.id);
+   assert.equal(entry.stage4.realReadingsEnabled,false);
+   if(face.modes)for(const mode of face.modes){
+     const registered=entry.scales.find(s=>s.mode===mode.name);
+     assert.deepEqual(registered.inferredTickValues,mode.inferredTickValues);
+   }
+   if(face.candidateAllTickValues)assert.deepEqual(
+     entry.scales[0].inferredTickValues,face.candidateAllTickValues);
+ }
+});
+test('OH09 uses 81 target positions without claiming 81 printed tick strokes',()=>{
+ const p=require('./gauge-graduation-patterns-v1.json');
+ const entry=p.faces.find(x=>x.id==='oh.fuel.temperature');
+ assert.equal(entry.integerTargets.count,81);
+ assert.equal(entry.inferredPrintedMinorTicks,null);
+ const f=require('./gauge-survey-stage2-3.json').faces.find(f=>f.id==='oh.fuel.temperature');
+ assert.equal(f.stage2.inferredIntegerTargets.count,81);
+ assert.equal(f.stage2.incrementInference.noClaimOf81PrintedStrokes,true);
+});
