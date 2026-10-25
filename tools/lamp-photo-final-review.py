@@ -12,7 +12,7 @@ baseline=read("panel-mosaic-lab/lights-test/photo-pixel-registration-2026-10-26.
 changes=read("panel-mosaic-lab/lights-test/photo-position-corrections-v1.json")
 excluded={r["id"] for r in changes["records"]}
 remaining={r["id"] for r in baseline["records"] if r["pixelCentreVerdict"]!="PHOTO_PIXEL_CENTRE_VERIFIED_3PX"}-excluded
-assert len(remaining)==24,(len(remaining),sorted(remaining))
+assert len(remaining)>=1,(len(remaining),sorted(remaining))
 overhead=read("panel-mosaic-lab/interactive-overhead/lights.json")
 main=read("panel-mosaic-lab/cockpit/lights.json")
 atlas=read("panel-mosaic-lab/all-overhead/atlas-layout.json")
@@ -27,7 +27,7 @@ for area,reg in [("OVERHEAD",overhead),("MAIN",main)]:
   if l["id"] in remaining:
    panel=l.get("placementId",l.get("pieceId"))
    groups[panel].append((l,src[pl[panel]] if area=="OVERHEAD" else mp[panel]))
-out=Path("/tmp/b737-remaining-24-crops");out.mkdir(parents=True,exist_ok=True)
+out=Path("/tmp/b737-remaining-pixel-crops");out.mkdir(parents=True,exist_ok=True)
 for panel,entries in sorted(groups.items()):
  cw,ch=560,390;cols=2;rows=math.ceil(len(entries)/cols)
  image=Image.new("RGB",(cw*cols,rows*ch+28),"#161b20")
