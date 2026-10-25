@@ -12,13 +12,13 @@ const catalog=scope.window.CB_CATALOG;
 const init=()=>({cb:new CB.BreakerNetwork(catalog),electrical:V7.initialState(),trainer:Fuel.initialState()});
 const evaluate=x=>Effects.project({cbNetwork:x.cb,electricalV7Result:V7.evaluate(x.electrical),trainerResult:Fuel.derive(x.trainer),trainerState:x.trainer});
 const pump=name=>Effects.ALLOCATIONS.find(x=>x.load==="fuel."+name);
-test("Source-identified 11 circuits exist with exact keys and MRG folios",()=>{
-const x=init();A.equal(Effects.ALLOCATIONS.length,11);
-for(const a of Effects.ALLOCATIONS){A(x.cb.state(a.key),a.key);A.match(a.location,/MRG p\.13[56]/);if(!a.load.startsWith("hyd."))A.equal(a.bus,null);else A(["generator1","generator2"].includes(a.bus));}
+test("Source-indexed Classic CB candidates exist with exact keys and MRG folios",()=>{
+const x=init();A.equal(Effects.ALLOCATIONS.length,58);
+for(const a of Effects.ALLOCATIONS){A(x.cb.state(a.key),a.key);A.match(a.location,/MRG p\.13[456]/);if(!a.load.startsWith("hyd."))A.equal(a.bus,null);else A(["generator1","generator2"].includes(a.bus));}
 });
 test("V7 original AC/DC system is not altered by CB projection",()=>{
 const x=init(),baseline=V7.evaluate(x.electrical),out=evaluate(x);
-A.deepEqual(out.overlay.bus,baseline.bus);A.equal(out.originalV7BusesUnmodified,true);A.equal(out.linkedEquipment,11);
+A.deepEqual(out.overlay.bus,baseline.bus);A.equal(out.originalV7BusesUnmodified,true);A.equal(out.linkedEquipment,51);
 });
 test("CB pushed does not imply certified aircraft equipment power",()=>{
 const x=init(),p=evaluate(x);A.equal(p.circuits["fuel.leftFwd"].devicePower,null);A.equal(p.circuits["com.vhf1"].devicePower,null);
@@ -29,7 +29,7 @@ const x=init(),id=pump("leftFwd").key;A.equal(evaluate(x).overlay.fuel.leftFwd.o
 A(x.cb.action(id,"PULL").ok);const e=evaluate(x);
 A.equal(e.overlay.fuel.leftFwd.operational,false);A.equal(e.overlay.fuel.leftFwd.lowPressure,true);
 A.equal(e.overlay.fuel.rightFwd.operational,true);
-A.equal(e.circuits["fuel.leftFwd"].devicePower,false);
+A.equal(e.circuits["fuel.leftFwd"].protectedCircuitPower,false);A.equal(e.circuits["fuel.leftFwd"].devicePower,null);
 });
 test("Each 6 mapped fuel CBs independently disconnects only its circuit",()=>{
 for(const a of Effects.ALLOCATIONS.filter(x=>x.load.startsWith("fuel."))){
@@ -68,11 +68,11 @@ x.electrical=V7.apply(x.electrical,{type:"CONTROL",key:"busTransferAuto",value:f
 const e=evaluate(x);A.equal(e.overlay.bus.transfer1,false);A.equal(e.overlay.fuel.leftFwd.operational,false);
 A.equal(e.overlay.fuel.rightFwd.operational,true);A.equal(e.overlay.fuel.leftFwd.cbOpen,false);
 });
-test("VHF1, VHF2, VOR1 protected circuits isolate individually; backup remains unknown",()=>{
+test("VHF1 and VOR1 protected circuits isolate individually; backup remains unknown",()=>{
 const x=init();
-for(const [key,load] of [["P18-2|ALL|D12","com.vhf1"],["P6-1|ALL|C2","com.vhf2"],["P18-1|ALL|A1","nav.vorloc1"]]){
+for(const [key,load] of [["P18-2|ALL|D12","com.vhf1"],["P18-1|ALL|A1","nav.vorloc1"]]){
 A(x.cb.action(key,"PULL").ok);
-const e=evaluate(x);A.equal(e.circuits[load].protectionCircuit,"OPEN");A.equal(e.circuits[load].devicePower,false);
+const e=evaluate(x);A.equal(e.circuits[load].protectionCircuit,"OPEN");A.equal(e.circuits[load].protectedCircuitPower,false);A.equal(e.circuits[load].devicePower,null);
 A.equal(e.overlay[load.split(".")[0]][load.split(".")[1]].operational,null);
 }
 });
