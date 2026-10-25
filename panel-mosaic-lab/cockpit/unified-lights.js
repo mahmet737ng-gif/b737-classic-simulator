@@ -72,7 +72,7 @@
    if(!c.face||c.face.width<=0||c.face.height<=0)throw Error('ابعاد نامعتبر: '+c.id);
    for(const state of c.states){
     const path=c.assets[state];
-    if(typeof path!=='string'||!/^[-a-zA-Z0-9_./]+\\.svg$/.test(path)||path.includes('..')||path.startsWith('/'))throw Error('مسیر SVG نامعتبر: '+c.id+' '+state);
+    if(typeof path!=='string'||!/^[-a-zA-Z0-9_./]+\.svg$/.test(path)||path.includes('..')||path.startsWith('/'))throw Error('مسیر SVG نامعتبر: '+c.id+' '+state);
    }
   }
  }
