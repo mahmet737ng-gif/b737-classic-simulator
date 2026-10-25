@@ -76,3 +76,33 @@ A standalone, self-contained HTML/ZIP was built from the **eleven original user-
 **Regression evidence**: 31 CB and CB↔V7 tests plus 47 existing Electrical V7 tests were executed in a JavaScript compatibility harness in this conversation and passed, covering independent Pump A/B/engine-driven supply, generator loss, crossfeed/auto-transfer, CB trip/reset, fuel warning, no inferred feeds, and CPCS/DCPCS variant isolation. That harness is not a replacement for a completed Node/GitHub Actions run nor screenshot acceptance. **No CI pass has been asserted.**
 
 **Important outstanding work**: Owner-specific EP-FSI physical wiring manual and effectivity, 533 remaining variant-candidate equipment mappings without verified index linkage, the source-vs-photo CB occupancy mismatch, downstream real FMC/AFDS/COM/pressurization outputs, complete overcurrent trip curves, and in-place photo CB sprites in Unified. There are **zero airframe-verified CB upstream-feed paths**. Do not mark all CBs complete.
+
+
+## 2026-10-26 — Next phase: Classic MRG index and photo QA gate
+
+**Committed implementation**
+- \`engine/cb/classic-mrg-index.v2.js\`: independently records 43 physical panel CB function candidates from the **Classic** MRG index pp.134–136 and catalogue-photo label, mirrored across CPCS/DCPCS for shared P6-4 CB keys (52 variant candidates). EXACT photo-label equality is checked; 48 variant candidates pass, 4 ambiguous MRG OCR positions for TR2/TR3 are quarantined.
+- \`engine/cb/electrical-v7-integration.js\`: 58 variant-key functional associations including original 10 non-disputed prior mappings; **51 active source-indexed functions per CPCS/DCPCS configuration**. The one previous VHF2 claim \`P6-1 C2\` was quarantined because the same MRG page also associates HF2 with that slot.
+- **Four additional source disagreements** are quarantined: \`P6-1 C2\` (HF2 vs VHF2), \`P18-1 B2\` (MRG transponder vs photo TCAS), \`P18-3 A12\` (MRG landing light positions mismatch photograph), and \`P6-3 D18\` (MRG aural warning vs photo pitot indication). Together with two TR positions in both variants: 8 quarantined variant keys. Exclusion is deterministic and covered by tests.
+- \`engine/cb/all-circuits-audit.v2.json\`: full 544-key alternative-variant audit: 58 indexed, 8 quarantined, **478 still without sufficient source index match**. These are candidate counts, not numbers of physically installed CBs simultaneously.
+- \`cb-panel-lab/v7-effects.js\` now displays only 51 active non-duplicated links, source QA, original Electrical V7 bus state and a separation between master caution **condition** and FUEL **lamp**.
+- \`tests/cb-source-audit-v2.test.cjs\`: 9 new source QA, CPCS/DCPCS isolation, source label drift, no collateral electrical bus loss, lamp warning separation, and 102 CB Pull/Push cycles in two configurations; CI via \`npm run test:cb-audit\`.
+
+**Meaning of effect labels**
+- \`protectedCircuitPower=false\` means the specific protective circuit is open.
+- \`devicePower=null\` always remains **UNKNOWN** without device-feed topology, including an opened indicator or control CB. Do not propagate it as a whole-device failure.
+- Fuel pump operational feedback is a **TRAINING-SURROGATE** projection; Hydraulic A/B uses generic Classic generator bus evidence from MRG p.330 but is not EP-FSI aircraft wiring validation.
+- FUEL warning condition remains TRUE after the P6-3/D10 lamp CB is opened; only \`fuelLampTraining\` is suppressed. No certified annunciator logic is claimed.
+- Generator, transfer, DC, battery and standby bus calculations in Electrical V7 are not altered by an indexed CB association alone.
+
+**Verification run in conversation**
+- 40 CB/source-audit/CB-V7 test cases executed in a JavaScript-compatible Node test harness: **40 pass / 0 fail**.
+- The 47 pre-existing Electrical V7 tests executed in the same compatibility harness: **47 pass / 0 fail**.
+- GitHub Actions configuration now runs these tests in Node 20 on relevant changes; a verified CI completion status was **not available** at the time of this report. Screenshot-based browser QA for the expanded online lab is also pending.
+- The locked cockpit artwork and original 11-panel photos were not edited or replaced by this phase.
+
+**Critical remaining gates**
+1. Airframe-specific EP-FSI WDM/ATA 24 feeder and protection tables: upstream bus, wire/pin/connector, backfeed, alternate feeds, optional equipment and effectivity review.
+2. Resolve eight quarantined variant keys by inspecting the MRG image and original panel photograph. Do not make irreversible assumptions from OCR.
+3. Reconcile 544 catalogue candidate keys with individual photographic face coordinates (previous approx. 475 across the two options).
+4. Route individually validated equipment loads to real downstream system engines (CPCS, DCPCS, FMC, AFDS, anti-ice, fuel, hydraulics, radios) with failures, regressions and owner acceptance. Until then, indexed associations are read-only effects / training overlays, not a certified shared electrical graph.
