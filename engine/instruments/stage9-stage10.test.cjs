@@ -4,6 +4,7 @@ const motion=require('./stage9-needle-dynamics-v1.js');
 const runtime=require('./stage10-needle-workbench-v1.js');
 const scaleEngine=require('./stage5-scale-mapping-v1.js');
 const subset=require('./stage10-preview-scale-subset-v1.json');
+const responseProfiles=require('./stage9-dynamics-registry-v1.json');
 const routes=require('./stage8-pointer-routing-v1.json');
 const contracts=require('./stage8-signal-contracts-v1.json');
 const signal=require('./stage8-ism-signal-bridge-v1.js');
@@ -74,7 +75,7 @@ test('Zero delta never advances, deterministic reset is idempotent',()=>{
  d.reset();assert.equal(d.snapshot().angleDeg,null);
 });
 test('Stage10 contains seven candidate scale modes and exactly 8 preview-capable sprites',()=>{
- const bridge=runtime.create({routes,scales:subset,scaleEngine,dynamics:motion,
+ const bridge=runtime.create({routes,scales:subset,scaleEngine,dynamics:motion,profileRegistry:responseProfiles,
   previewPowerPolicy:'training_qa_assume_power'});
  const p=bridge.getPreparedModels();
  assert.equal(p.count,8);
@@ -85,7 +86,7 @@ test('Stage10 contains seven candidate scale modes and exactly 8 preview-capable
 });
 test('Stage10 uses actual Stage8 cabin altitude source, but never moves a Unified sprite',()=>{
  const sensor=signal.create(contracts),routing=routeEngine.create(routes);
- const unit=runtime.create({routes,scales:subset,scaleEngine,dynamics:motion,
+ const unit=runtime.create({routes,scales:subset,scaleEngine,dynamics:motion,profileRegistry:responseProfiles,
   previewPowerPolicy:'training_qa_assume_power'});
  const snap=sensor.read({cabinPlant:{
   source:'PROVISIONAL_IDEAL_GAS_TRAINER',cabinAltitudeFt:3963,cabinRateFtMin:0,differentialPsid:0
@@ -110,7 +111,7 @@ test('Stage10 power evidence is enforced unless explicit QA-only synthetic-power
  const sample=sensor.read({cabinPlant:{source:'PROVISIONAL_IDEAL_GAS_TRAINER',
   cabinAltitudeFt:66,cabinRateFtMin:0,differentialPsid:0}});
  const pts=route.project(sample);
- const strictly=runtime.create({routes,scales:subset,scaleEngine,dynamics:motion});
+ const strictly=runtime.create({routes,scales:subset,scaleEngine,dynamics:motion,profileRegistry:responseProfiles});
  const result=strictly.evaluate(pts,{nowMs:10});
  assert.equal(result.pointers.cabAlt.status,'power_unverified');
  assert.equal(result.pointers.cabAlt.simulationAngleDeg,null);
@@ -121,17 +122,29 @@ test('Stage10 pending values remain blocked even when valid observed source is i
  const sensor=signal.create(contracts),routing=routeEngine.create(routes);
  const s=sensor.read({observed:{'oh.elec.cps':{primary:{
   value:410,unit:'Hz',valid:true,origin:'QA_INSTRUMENT_SENSOR',timeMs:1000}}}});
- const work=runtime.create({routes,scales:subset,scaleEngine,dynamics:motion,
+ const work=runtime.create({routes,scales:subset,scaleEngine,dynamics:motion,profileRegistry:responseProfiles,
   previewPowerPolicy:'training_qa_assume_power'});
  let preview=work.evaluate(routing.project(s),{nowMs:1000});
  assert.ok(Math.abs(preview.pointers.cps.simulationAngleDeg-41.805)<.03);
  assert.equal(preview.pointers.cps.liveNeedleAuthorized,false);
  assert.equal(preview.pointers.cps.sourceCandidateStatus,'preview_unverified');
- const without=runtime.create({routes,scales:subset,scaleEngine,dynamics:motion,
+ const without=runtime.create({routes,scales:subset,scaleEngine,dynamics:motion,profileRegistry:responseProfiles,
   previewPowerPolicy:'training_qa_assume_power'});
  const invalid=sensor.read({observed:{'oh.elec.cps':{primary:{
    value:0,unit:'Hz',valid:false,origin:'QA_INSTRUMENT_SENSOR'}}}});
  preview=without.evaluate(routing.project(invalid),{nowMs:2000});
  assert.equal(preview.pointers.cps.simulationAngleDeg,null);
  assert.equal(preview.pointers.cps.sourceStatus,'invalid_observed');
+});
+
+test('Every one of the 38 known pointers has exactly one stage9 response policy',()=>{
+ assert.equal(responseProfiles.pointers.length,38);
+ assert.equal(new Set(responseProfiles.pointers.map(x=>x.pointerId)).size,38);
+ assert.equal(responseProfiles.counts.previewResponseProfiles,8);
+ assert.equal(responseProfiles.counts.unresolvedResponseProfiles,30);
+ assert.equal(responseProfiles.counts.certifiedMechanicalResponseProfiles,0);
+ for(const p of responseProfiles.pointers)assert.equal(p.approvedForOperationalMotion,false);
+ const compiled=runtime.create({routes,scales:subset,scaleEngine,dynamics:motion,
+   profileRegistry:responseProfiles});
+ assert.equal(compiled.getPreparedModels().count,8);
 });
