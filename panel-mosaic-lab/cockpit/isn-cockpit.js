@@ -243,5 +243,16 @@
  byId('overheadFrame')?.contentWindow?.postMessage({type:'b737:cockpit-command',action:'report'},location.origin);
  render();
  }
- loadDependencies().then(init).catch(error=>console.error('ISN-03 Unified startup failed:',error));
+ loadDependencies().then(init).catch(error=>{
+  console.error('ISN-18 Unified ECU startup failed:',error);
+  // If an integration script fails or the new ECU init throws, never leave
+  // a silent, apparently functional overhead start panel.
+  const anchor=document.querySelector('.workbench .toolbar');
+  if(anchor&&!document.getElementById('isnIntegrationLoadError')){
+   const status=document.createElement('p');status.id='isnIntegrationLoadError';
+   status.className='isn-indication-error';status.setAttribute('role','alert');
+   status.textContent='UNIFIED ECU NOT CONNECTED — '+error.message;
+   anchor.after(status);
+  }
+ });
 })();
