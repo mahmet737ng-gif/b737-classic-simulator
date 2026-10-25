@@ -1,3 +1,5 @@
+> **SUPERSEDED timing — 2026-10-25:** Keep the oil/EGT/hydraulic calibrations in this file; replace the older 40+50=90s start timing with 28+37=65s at 35 PSI. APU stays 85s. See [ISN_START_DUCT_AND_FUEL_V3.md](ISN_START_DUCT_AND_FUEL_V3.md).
+
 # ISN ECU Start Spool Calibration V2 — 2026-10-25
 
 **Status:** code and deterministic CI test present; this is an owner-requested **simulator training calibration**, **NOT** a source-verified Boeing 737 Classic / CFM56-3 system-performance dataset. These values do not authorize operation, maintenance or aircraft-specific wiring claims. Applies to **both engines** in the standalone ISN-13–18 ECU bench and to the common training EGT start-dynamics curve.
