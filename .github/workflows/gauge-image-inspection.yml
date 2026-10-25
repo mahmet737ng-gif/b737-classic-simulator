@@ -5,6 +5,9 @@ on:
     paths:
       - 'engine/instruments/scan-source-images.py'
       - 'engine/instruments/scan-radial-ticks.py'
+      - 'engine/instruments/gauge-visual-audit-v1.test.cjs'
+      - 'engine/instruments/gauge-motion-visual-audit-v1.json'
+      - 'engine/instruments/photo-anchor-checkpoints-v1.json'
       - '.github/workflows/gauge-image-inspection.yml'
   workflow_dispatch:
 permissions:
@@ -23,6 +26,10 @@ jobs:
         run: |
           python3 engine/instruments/scan-source-images.py
           python3 engine/instruments/scan-radial-ticks.py
+      - name: Test photo-derived kinematics and fail-closed numeric maps
+        run: |
+          node engine/instruments/gauge-visual-audit-v1.test.cjs
+          node engine/instruments/gauge-scale-engine-v2.test.cjs
       - name: Commit preview evidence to inspection branch
         run: |
           git config user.name "github-actions[bot]"
