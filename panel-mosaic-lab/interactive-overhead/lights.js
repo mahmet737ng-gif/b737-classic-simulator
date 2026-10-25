@@ -39,7 +39,7 @@
   const ids=new Set([...Object.keys(t),...Object.keys(r.rotaries),...Object.keys(r.guards)]);model.validate(registry,layout,window.B737OverheadToggleModel.mapPoint,ids);
   layer=document.createElement('div');layer.id='overheadLightLayer';layer.className='lights-layer';
   for(const c of registry.lights){
-   const p=model.rectangle(c,plates.get(c.placementId),window.B737OverheadToggleModel.mapPoint),node=document.createElement('button');node.type='button';node.className='mounted-light';node.dataset.light=c.id;node.title=c.id;
+   const p=model.rectangle(c,plates.get(c.placementId),window.B737OverheadToggleModel.mapPoint),node=document.createElement('button');node.type='button';node.className='mounted-light';node.dataset.light=c.id;node.title=c.id+' · '+c.placementId+' · source ['+c.sourceRect.join(', ')+']';
    Object.assign(node.style,{left:p.x+'px',top:p.y+'px',width:p.w+'px',height:p.h+'px'});
    for(const state of c.states||['OFF','ON']){const img=document.createElement('img');if(window.B737ImageLoader)window.B737ImageLoader.assign(img,url(registry.assets[c.asset][state].url));else img.src=url(registry.assets[c.asset][state].url);img.alt='';img.draggable=false;img.dataset.frame=state;img.className='light-face';img.onerror=()=>{node.dataset.missing='true';byId('lightsStatus').textContent='خطای بارگذاری فایل چراغ: '+c.asset;};node.append(img);}
    node.addEventListener('pointerdown',e=>e.stopPropagation());node.addEventListener('click',e=>{e.stopPropagation();choose(c);});widgets.set(c.id,node);layer.append(node);
@@ -53,5 +53,6 @@
  async function start(){try{const responses=await Promise.all([fetch(url('lights.json'),{cache:'no-store'}),fetch(url('../all-overhead/atlas-layout.json'),{cache:'no-store'})]);if(responses.some(r=>!r.ok))throw Error('Lights registry unavailable');registry=await responses[0].json();const layout=await responses[1].json();const check=()=>!!(window.B737OverheadToggles&&window.B737RotaryGuards&&byId('atlasAbsolute').querySelector('.atlas-piece'));
   if(check())mount(layout);else {const obs=new MutationObserver(()=>{if(check()){obs.disconnect();mount(layout);}});obs.observe(byId('atlasAbsolute'),{childList:true,subtree:true});}
  }catch(error){console.error(error);const p=document.createElement('p');p.setAttribute('role','alert');p.textContent='خطا در نصب چراغ‌ها: '+error.message;byId('toggleInspector').before(p);}}
+ if(new URLSearchParams(location.search).has('debugLights'))document.documentElement.dataset.lightGeometryDebug='true';
  start();
 })();
