@@ -10,7 +10,7 @@
  const pivot=Object.freeze({x:489,y:365});
  const needles=Object.freeze([
   Object.freeze({id:'cabAlt',label:'CAB ALT · inner x1000 FT',asset:'cabin-altitude-needle.svg',tipRadius:123,initialAngle:0,layer:0}),
-  Object.freeze({id:'press',label:'PRESS · outer DIFF PRESS PSI',asset:'cabin-diff-pressure-needle.svg',tipRadius:207,initialAngle:0,layer:1})
+  Object.freeze({id:'press',label:'PRESS · outer DIFF PRESS PSI',asset:'cabin-diff-pressure-needle.svg',tipRadius:230,initialAngle:0,layer:1})
  ]);
  function angle(id,value){
   if(!needles.some(needle=>needle.id===id))throw Error('Unknown cabin gauge needle '+id);
