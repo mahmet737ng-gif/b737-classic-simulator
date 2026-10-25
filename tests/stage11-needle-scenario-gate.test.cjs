@@ -3,7 +3,10 @@
  * Physically sourced classroom simulation, NOT an approved flight test.
  * Every snapshot remains non-renderable until per-gauge photo QA and wiring.
  */
-const test=require('node:test');
+const nodeTest=require('node:test');
+const completed=new Set();
+const test=(name,fn)=>nodeTest(name,async(...args)=>{await fn(...args);completed.add(name.slice(0,2));});
+test.after=nodeTest.after;
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const path=require('node:path');
@@ -155,7 +158,7 @@ test('04 — APU and engine1 start, independent engine2 indications and real tel
  const state=rig.get();
  const o=capture('engine1_stable','ENG1_RUNNING_ENG2_OFF',state);
  assert.ok(o.snap.signals['eng.n2.1'].channels.primary.value>25);
- assert.equal(o.snap.signals['eng.n2.2'].channels.primary.value,0);
+ assert.equal(o.snap.signals['eng.n2.2'].channels.primary.value,null,'A stopped engine N2 source may be genuinely absent; never synthesize zero');
  assert.ok(o.snap.signals['eng.fuel_flow.1'].channels.primary.value>0);
  assert.equal(o.snap.signals['eng.fuel_flow.2'].channels.primary.value,0);
  assert.equal(o.preview.pointers.captIAS.status,'blocked');
@@ -278,14 +281,14 @@ test.after(()=>{
  if(!reportPath)return;
  const dest=path.resolve(reportPath);
  fs.mkdirSync(path.dirname(dest),{recursive:true});
- const ok=report.coverage&&report.scenes.length>=10&&
+ const ok=report.coverage&&completed.size===10&&report.scenes.length>=10&&
    report.scenes.every(x=>x.operationalNeedlesMoved===0);
  report.releaseApproved=false;
  report.scenarioEvidencePassed=Boolean(ok);
  report.sceneCount=report.scenes.length;
  report.label=ok?'STAGE11_SCENARIO_QA_PASS_RELEASE_STILL_BLOCKED':'STAGE11_INCOMPLETE';
  fs.writeFileSync(dest,JSON.stringify(report,null,2)+'\n');
- if(!ok)throw Error('Stage11 evidence incomplete');
+ if(!ok)throw Error('Stage11 evidence incomplete; passing scene count alone is not sufficient');
  console.log('STAGE11_SCENARIO_REPORT='+dest);
  console.log('STAGE11_SCENE_COUNT='+report.sceneCount);
  console.log('STAGE11_GATE='+report.label);
