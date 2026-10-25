@@ -16,26 +16,58 @@
   "labelMultiplierFt": 1000,
   "direction": "clockwise",
   "bearingsReference": "clockwise_from_12_oclock_screen_coordinates",
-  "status": "MAJOR_LABELS_VISUALLY_CROSSCHECKED; TICK_ENDPOINTS_AND_MINOR_VALUES_UNAPPROVED",
+  "status": "0-3k MINOR MARKS VISUALLY CHECKED; 3-50k MINOR VALUES/TIP FIT UNAPPROVED",
   "origin": "2026-10-25 OH19 read-only photo inspection, GitHub Actions run 40210391430",
   "review": {
     "majorLabelsPhotoChecked": true,
     "minorTickSequenceVerified": false,
     "pivotApproved": false,
     "needleTipInnerTickFitApproved": false,
-    "productionApproved": false
+    "productionApproved": false,
+    "innerZeroToThreeShortStrokesVisuallyChecked": true,
+    "innerThreeToTenNumericMinorLabelsUnknown": true
   },
   "marks": [
     {
       "valueFt": 0,
       "angleDeg": 2.71,
-      "evidence": "source-photo-long-tick-radial-scan-plus-visual-label-check",
+      "evidence": "source-photo-white-inner-graduation-0-to-3-thousands-visual-plus-radial",
+      "positionStatus": "candidate_angular_center_not_exact_inner_endpoint"
+    },
+    {
+      "valueFt": 500,
+      "angleDeg": 13.59,
+      "evidence": "source-photo-white-inner-graduation-0-to-3-thousands-visual-plus-radial",
+      "positionStatus": "candidate_angular_center_not_exact_inner_endpoint"
+    },
+    {
+      "valueFt": 1000,
+      "angleDeg": 22.37,
+      "evidence": "source-photo-white-inner-graduation-0-to-3-thousands-visual-plus-radial",
+      "positionStatus": "candidate_angular_center_not_exact_inner_endpoint"
+    },
+    {
+      "valueFt": 1500,
+      "angleDeg": 31.32,
+      "evidence": "source-photo-white-inner-graduation-0-to-3-thousands-visual-plus-radial",
+      "positionStatus": "candidate_angular_center_not_exact_inner_endpoint"
+    },
+    {
+      "valueFt": 2000,
+      "angleDeg": 40.34,
+      "evidence": "source-photo-white-inner-graduation-0-to-3-thousands-visual-plus-radial",
+      "positionStatus": "candidate_angular_center_not_exact_inner_endpoint"
+    },
+    {
+      "valueFt": 2500,
+      "angleDeg": 50.2,
+      "evidence": "source-photo-white-inner-graduation-0-to-3-thousands-visual-plus-radial",
       "positionStatus": "candidate_angular_center_not_exact_inner_endpoint"
     },
     {
       "valueFt": 3000,
       "angleDeg": 59.98,
-      "evidence": "source-photo-long-tick-radial-scan-plus-visual-label-check",
+      "evidence": "source-photo-white-inner-graduation-0-to-3-thousands-visual-plus-radial",
       "positionStatus": "candidate_angular_center_not_exact_inner_endpoint"
     },
     {
