@@ -10,6 +10,9 @@
  const PROFILE_KEY='b737classic.aircraft-profile.v1';
  const knobAsset=new URL('../assets/locked/2026-10-23/Switches/Rotary/rotary-standard-v1.webp',document.baseURI).href;
  const toggleAsset=new URL('../assets/locked/2026-10-23/Switches/Toggle/b737-toggle-center.webp',document.baseURI).href;
+ const lampBase=new URL('../assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/',document.baseURI).href;
+ const approvedLamps=Object.freeze({'auto-fail':'AUTO_FAIL','off-sched':'OFF_SCHED_DESCENT','standby':'STANDBY_GREEN','manual':'MANUAL_GREEN'});
+
  let system='DCPCS',layer=null,plate=null,received=null,fallback=null,controls=new Map(),lamps=new Map(),digits=new Map(),caption=null,gauge=null;
  let activeSpring=null,holdTimer=null,observer=null;
  function notify(kind,additional={}){if(parent!==window)parent.postMessage({type:'b737:cockpit-overhead',kind,system,...additional},location.origin);}
@@ -75,6 +78,15 @@
    el.textContent=l.label;el.title=l.label+' · '+system+' logic';pos(el,l.xy);
    el.style.width=system==='DCPCS'?'18%':'16%';el.style.height=system==='DCPCS'?'7%':'6%';
    el.classList.add(l.id==='auto-fail'||l.id==='off-sched'?'amber':'green');
+   if(approvedLamps[l.id]){
+     el.dataset.asset=approvedLamps[l.id];
+     const approved=root.createElement('img');
+     approved.alt=l.label;
+     approved.draggable=false;
+     Object.assign(approved.style,{display:'block',width:'100%',height:'100%',maxWidth:'none',maxHeight:'none',objectFit:'fill',pointerEvents:'none'});
+     approved.src=lampBase+approvedLamps[l.id]+'_OFF.svg';
+     el.replaceChildren(approved);
+   }
    return el;
  }
  function build(){
@@ -126,7 +138,7 @@
    if(!received)return;
    const {state,output}=received,cfg=model.config(system);
    const values=model.lamps(system,output);
-   for(const l of cfg.lamps){const n=lamps.get(l.id);if(!n)continue;const lit=values[l.id];n.classList.toggle('on',lit);n.dataset.lit=String(lit);n.setAttribute('aria-label',l.label+' '+(lit?'ON':'OFF'));}
+   for(const l of cfg.lamps){const n=lamps.get(l.id);if(!n)continue;const lit=values[l.id];n.classList.toggle('on',lit);n.dataset.lit=String(lit);n.setAttribute('aria-label',l.label+' '+(lit?'ON':'OFF'));if(n.dataset.asset){const img=n.querySelector('img'),next=lampBase+n.dataset.asset+'_'+(lit?'ON':'OFF')+'.svg';if(img&&img.src!==next)img.src=next;}}
    for(const c of cfg.controls){
      const n=controls.get(c.id);if(!n)continue;
      const value=model.readControl(system,c,state),label=n.querySelector('.oh22-control-value');
