@@ -1,0 +1,2861 @@
+{
+  "oh.elec.dc_amps": {
+    "panel": "OH10",
+    "centerEstimate": [
+      310,
+      192
+    ],
+    "ring": [
+      78,
+      175
+    ],
+    "imageSize": [
+      1095,
+      1436
+    ],
+    "candidates": [
+      {
+        "x": 169.0,
+        "y": 240.0,
+        "angle": -108.8,
+        "radius": 148.9,
+        "length": 10.8
+      },
+      {
+        "x": 216.0,
+        "y": 198.0,
+        "angle": -93.65,
+        "radius": 94.2,
+        "length": 28.0
+      },
+      {
+        "x": 212.5,
+        "y": 168.0,
+        "angle": -76.17,
+        "radius": 100.4,
+        "length": 11.0
+      },
+      {
+        "x": 226.5,
+        "y": 127.0,
+        "angle": -52.1,
+        "radius": 105.8,
+        "length": 27.8
+      },
+      {
+        "x": 311.5,
+        "y": 110.5,
+        "angle": 1.05,
+        "radius": 81.5,
+        "length": 27.0
+      },
+      {
+        "x": 362.0,
+        "y": 26.0,
+        "angle": 17.39,
+        "radius": 174.0,
+        "length": 10.2
+      },
+      {
+        "x": 381.5,
+        "y": 109.0,
+        "angle": 40.74,
+        "radius": 109.6,
+        "length": 11.2
+      },
+      {
+        "x": 409.5,
+        "y": 133.5,
+        "angle": 59.55,
+        "radius": 115.4,
+        "length": 10.3
+      },
+      {
+        "x": 423.0,
+        "y": 142.5,
+        "angle": 66.34,
+        "radius": 123.4,
+        "length": 13.9
+      },
+      {
+        "x": 384.5,
+        "y": 166.0,
+        "angle": 70.76,
+        "radius": 78.9,
+        "length": 19.7
+      },
+      {
+        "x": 397.5,
+        "y": 170.5,
+        "angle": 76.2,
+        "radius": 90.1,
+        "length": 9.1
+      },
+      {
+        "x": 400.0,
+        "y": 199.0,
+        "angle": 94.45,
+        "radius": 90.3,
+        "length": 30.0
+      }
+    ],
+    "note": "Radial bright-line detections: UNSUPERVISED, includes false positives, no values assigned; not an approved calibration"
+  },
+  "oh.elec.cps": {
+    "panel": "OH10",
+    "centerEstimate": [
+      780,
+      192
+    ],
+    "ring": [
+      78,
+      175
+    ],
+    "imageSize": [
+      1095,
+      1436
+    ],
+    "candidates": [
+      {
+        "x": 682.0,
+        "y": 165.5,
+        "angle": -74.87,
+        "radius": 101.5,
+        "length": 12.0
+      },
+      {
+        "x": 656.0,
+        "y": 149.5,
+        "angle": -71.08,
+        "radius": 131.1,
+        "length": 10.0
+      },
+      {
+        "x": 716.5,
+        "y": 119.5,
+        "angle": -41.21,
+        "radius": 96.4,
+        "length": 33.6
+      },
+      {
+        "x": 778.0,
+        "y": 106.0,
+        "angle": -1.33,
+        "radius": 86.0,
+        "length": 34.2
+      },
+      {
+        "x": 862.0,
+        "y": 179.5,
+        "angle": 81.33,
+        "radius": 82.9,
+        "length": 16.0
+      },
+      {
+        "x": 898.5,
+        "y": 181.5,
+        "angle": 84.94,
+        "radius": 119.0,
+        "length": 13.0
+      },
+      {
+        "x": 887.5,
+        "y": 198.0,
+        "angle": 93.19,
+        "radius": 107.7,
+        "length": 59.0
+      },
+      {
+        "x": 909.5,
+        "y": 238.0,
+        "angle": 109.56,
+        "radius": 137.4,
+        "length": 10.8
+      }
+    ],
+    "note": "Radial bright-line detections: UNSUPERVISED, includes false positives, no values assigned; not an approved calibration"
+  },
+  "oh.elec.dc_volts": {
+    "panel": "OH10",
+    "centerEstimate": [
+      310,
+      613
+    ],
+    "ring": [
+      78,
+      175
+    ],
+    "imageSize": [
+      1095,
+      1436
+    ],
+    "candidates": [
+      {
+        "x": 171.5,
+        "y": 671.0,
+        "angle": -112.72,
+        "radius": 150.2,
+        "length": 12.5
+      },
+      {
+        "x": 217.5,
+        "y": 629.0,
+        "angle": -99.81,
+        "radius": 93.9,
+        "length": 21.4
+      },
+      {
+        "x": 203.5,
+        "y": 612.5,
+        "angle": -89.73,
+        "radius": 106.5,
+        "length": 13.0
+      },
+      {
+        "x": 203.0,
+        "y": 597.0,
+        "angle": -81.5,
+        "radius": 108.2,
+        "length": 12.0
+      },
+      {
+        "x": 266.0,
+        "y": 528.0,
+        "angle": -27.37,
+        "radius": 95.7,
+        "length": 13.4
+      },
+      {
+        "x": 295.0,
+        "y": 527.0,
+        "angle": -9.89,
+        "radius": 87.3,
+        "length": 10.2
+      },
+      {
+        "x": 310.5,
+        "y": 530.5,
+        "angle": 0.35,
+        "radius": 82.5,
+        "length": 33.4
+      },
+      {
+        "x": 354.0,
+        "y": 529.0,
+        "angle": 27.65,
+        "radius": 94.8,
+        "length": 17.1
+      },
+      {
+        "x": 402.5,
+        "y": 609.0,
+        "angle": 87.52,
+        "radius": 92.6,
+        "length": 15.1
+      },
+      {
+        "x": 444.5,
+        "y": 632.0,
+        "angle": 98.04,
+        "radius": 135.8,
+        "length": 19.0
+      },
+      {
+        "x": 388.5,
+        "y": 629.5,
+        "angle": 101.87,
+        "radius": 80.2,
+        "length": 11.4
+      }
+    ],
+    "note": "Radial bright-line detections: UNSUPERVISED, includes false positives, no values assigned; not an approved calibration"
+  },
+  "oh.elec.ac_volts": {
+    "panel": "OH10",
+    "centerEstimate": [
+      780,
+      613
+    ],
+    "ring": [
+      78,
+      175
+    ],
+    "imageSize": [
+      1095,
+      1436
+    ],
+    "candidates": [
+      {
+        "x": 627.5,
+        "y": 631.0,
+        "angle": -96.73,
+        "radius": 153.6,
+        "length": 21.0
+      },
+      {
+        "x": 687.0,
+        "y": 613.0,
+        "angle": -90.0,
+        "radius": 93.0,
+        "length": 12.0
+      },
+      {
+        "x": 696.5,
+        "y": 605.0,
+        "angle": -84.53,
+        "radius": 83.9,
+        "length": 11.7
+      },
+      {
+        "x": 657.5,
+        "y": 588.0,
+        "angle": -78.47,
+        "radius": 125.0,
+        "length": 18.0
+      },
+      {
+        "x": 738.0,
+        "y": 546.5,
+        "angle": -32.28,
+        "radius": 78.7,
+        "length": 31.4
+      },
+      {
+        "x": 730.0,
+        "y": 517.0,
+        "angle": -27.51,
+        "radius": 108.2,
+        "length": 14.6
+      },
+      {
+        "x": 722.5,
+        "y": 452.0,
+        "angle": -19.65,
+        "radius": 171.0,
+        "length": 10.0
+      },
+      {
+        "x": 774.0,
+        "y": 535.0,
+        "angle": -4.4,
+        "radius": 78.2,
+        "length": 16.1
+      },
+      {
+        "x": 813.0,
+        "y": 532.0,
+        "angle": 22.17,
+        "radius": 87.5,
+        "length": 10.8
+      },
+      {
+        "x": 865.0,
+        "y": 463.5,
+        "angle": 29.62,
+        "radius": 172.0,
+        "length": 12.0
+      },
+      {
+        "x": 897.0,
+        "y": 572.0,
+        "angle": 70.69,
+        "radius": 124.0,
+        "length": 14.4
+      },
+      {
+        "x": 896.0,
+        "y": 597.0,
+        "angle": 82.15,
+        "radius": 117.1,
+        "length": 12.0
+      },
+      {
+        "x": 887.5,
+        "y": 609.0,
+        "angle": 87.87,
+        "radius": 107.6,
+        "length": 11.0
+      },
+      {
+        "x": 866.5,
+        "y": 629.0,
+        "angle": 100.48,
+        "radius": 88.0,
+        "length": 23.3
+      }
+    ],
+    "note": "Radial bright-line detections: UNSUPERVISED, includes false positives, no values assigned; not an approved calibration"
+  },
+  "oh.drive_oil.1": {
+    "panel": "OH11",
+    "centerEstimate": [
+      339,
+      1009
+    ],
+    "ring": [
+      88,
+      184
+    ],
+    "imageSize": [
+      1203,
+      1308
+    ],
+    "candidates": [
+      {
+        "x": 337.0,
+        "y": 1148.5,
+        "angle": -179.18,
+        "radius": 139.5,
+        "length": 37.5
+      },
+      {
+        "x": 307.0,
+        "y": 1118.0,
+        "angle": -163.64,
+        "radius": 113.6,
+        "length": 14.6
+      },
+      {
+        "x": 296.0,
+        "y": 1105.5,
+        "angle": -155.98,
+        "radius": 105.6,
+        "length": 21.4
+      },
+      {
+        "x": 285.5,
+        "y": 1109.0,
+        "angle": -151.85,
+        "radius": 113.4,
+        "length": 21.9
+      },
+      {
+        "x": 270.0,
+        "y": 1074.5,
+        "angle": -133.51,
+        "radius": 95.1,
+        "length": 56.1
+      },
+      {
+        "x": 205.5,
+        "y": 960.5,
+        "angle": -70.03,
+        "radius": 142.0,
+        "length": 13.9
+      },
+      {
+        "x": 286.0,
+        "y": 914.0,
+        "angle": -29.16,
+        "radius": 108.8,
+        "length": 31.6
+      },
+      {
+        "x": 317.0,
+        "y": 857.5,
+        "angle": -8.26,
+        "radius": 153.1,
+        "length": 17.0
+      },
+      {
+        "x": 331.5,
+        "y": 857.0,
+        "angle": -2.82,
+        "radius": 152.2,
+        "length": 18.0
+      },
+      {
+        "x": 355.0,
+        "y": 860.0,
+        "angle": 6.13,
+        "radius": 149.9,
+        "length": 12.0
+      },
+      {
+        "x": 397.0,
+        "y": 882.5,
+        "angle": 24.63,
+        "radius": 139.2,
+        "length": 20.6
+      },
+      {
+        "x": 393.5,
+        "y": 915.5,
+        "angle": 30.24,
+        "radius": 108.2,
+        "length": 17.0
+      },
+      {
+        "x": 439.0,
+        "y": 932.5,
+        "angle": 52.58,
+        "radius": 125.9,
+        "length": 9.4
+      },
+      {
+        "x": 487.0,
+        "y": 939.0,
+        "angle": 64.69,
+        "radius": 163.7,
+        "length": 15.2
+      },
+      {
+        "x": 467.0,
+        "y": 967.0,
+        "angle": 71.83,
+        "radius": 134.7,
+        "length": 12.6
+      },
+      {
+        "x": 446.5,
+        "y": 981.5,
+        "angle": 75.65,
+        "radius": 111.0,
+        "length": 11.4
+      },
+      {
+        "x": 447.0,
+        "y": 989.5,
+        "angle": 79.77,
+        "radius": 109.7,
+        "length": 10.4
+      },
+      {
+        "x": 451.0,
+        "y": 996.5,
+        "angle": 83.63,
+        "radius": 112.7,
+        "length": 18.2
+      },
+      {
+        "x": 436.5,
+        "y": 1013.0,
+        "angle": 92.35,
+        "radius": 97.6,
+        "length": 35.0
+      },
+      {
+        "x": 508.5,
+        "y": 1058.0,
+        "angle": 106.12,
+        "radius": 176.4,
+        "length": 17.0
+      },
+      {
+        "x": 443.5,
+        "y": 1057.0,
+        "angle": 114.67,
+        "radius": 115.0,
+        "length": 21.4
+      },
+      {
+        "x": 442.0,
+        "y": 1063.5,
+        "angle": 117.88,
+        "radius": 116.5,
+        "length": 18.7
+      },
+      {
+        "x": 443.0,
+        "y": 1083.5,
+        "angle": 125.62,
+        "radius": 127.9,
+        "length": 22.8
+      },
+      {
+        "x": 437.0,
+        "y": 1101.0,
+        "angle": 133.19,
+        "radius": 134.4,
+        "length": 10.0
+      },
+      {
+        "x": 423.5,
+        "y": 1106.0,
+        "angle": 138.94,
+        "radius": 128.6,
+        "length": 21.9
+      },
+      {
+        "x": 405.0,
+        "y": 1117.5,
+        "angle": 148.69,
+        "radius": 127.0,
+        "length": 26.9
+      },
+      {
+        "x": 380.5,
+        "y": 1109.5,
+        "angle": 157.56,
+        "radius": 108.7,
+        "length": 32.6
+      },
+      {
+        "x": 374.5,
+        "y": 1114.0,
+        "angle": 161.32,
+        "radius": 110.8,
+        "length": 22.6
+      },
+      {
+        "x": 360.5,
+        "y": 1108.5,
+        "angle": 167.81,
+        "radius": 101.8,
+        "length": 33.1
+      },
+      {
+        "x": 340.5,
+        "y": 1113.5,
+        "angle": 179.18,
+        "radius": 104.5,
+        "length": 58.1
+      }
+    ],
+    "note": "Radial bright-line detections: UNSUPERVISED, includes false positives, no values assigned; not an approved calibration"
+  },
+  "oh.drive_oil.2": {
+    "panel": "OH11",
+    "centerEstimate": [
+      858,
+      1009
+    ],
+    "ring": [
+      88,
+      184
+    ],
+    "imageSize": [
+      1203,
+      1308
+    ],
+    "candidates": [
+      {
+        "x": 850.0,
+        "y": 1148.0,
+        "angle": -176.71,
+        "radius": 139.2,
+        "length": 24.0
+      },
+      {
+        "x": 829.0,
+        "y": 1124.5,
+        "angle": -165.91,
+        "radius": 119.1,
+        "length": 11.2
+      },
+      {
+        "x": 817.0,
+        "y": 1111.5,
+        "angle": -158.2,
+        "radius": 110.4,
+        "length": 25.9
+      },
+      {
+        "x": 802.5,
+        "y": 1099.5,
+        "angle": -148.48,
+        "radius": 106.2,
+        "length": 12.7
+      },
+      {
+        "x": 774.5,
+        "y": 1103.5,
+        "angle": -138.54,
+        "radius": 126.1,
+        "length": 18.6
+      },
+      {
+        "x": 784.5,
+        "y": 1078.0,
+        "angle": -133.19,
+        "radius": 100.8,
+        "length": 9.4
+      },
+      {
+        "x": 784.0,
+        "y": 1070.0,
+        "angle": -129.5,
+        "radius": 95.9,
+        "length": 10.0
+      },
+      {
+        "x": 780.0,
+        "y": 1062.5,
+        "angle": -124.45,
+        "radius": 94.6,
+        "length": 40.7
+      },
+      {
+        "x": 759.0,
+        "y": 1058.5,
+        "angle": -116.57,
+        "radius": 110.7,
+        "length": 23.1
+      },
+      {
+        "x": 700.5,
+        "y": 1059.5,
+        "angle": -107.78,
+        "radius": 165.4,
+        "length": 12.1
+      },
+      {
+        "x": 702.0,
+        "y": 1014.0,
+        "angle": -91.84,
+        "radius": 156.1,
+        "length": 38.0
+      },
+      {
+        "x": 730.0,
+        "y": 970.0,
+        "angle": -73.05,
+        "radius": 133.8,
+        "length": 20.6
+      },
+      {
+        "x": 706.5,
+        "y": 934.0,
+        "angle": -63.66,
+        "radius": 169.0,
+        "length": 10.8
+      },
+      {
+        "x": 802.5,
+        "y": 905.5,
+        "angle": -28.2,
+        "radius": 117.4,
+        "length": 13.0
+      },
+      {
+        "x": 843.0,
+        "y": 855.0,
+        "angle": -5.56,
+        "radius": 154.7,
+        "length": 14.1
+      },
+      {
+        "x": 852.0,
+        "y": 860.5,
+        "angle": -2.31,
+        "radius": 148.6,
+        "length": 9.2
+      },
+      {
+        "x": 875.5,
+        "y": 855.0,
+        "angle": 6.48,
+        "radius": 155.0,
+        "length": 14.0
+      },
+      {
+        "x": 915.0,
+        "y": 918.0,
+        "angle": 32.06,
+        "radius": 107.4,
+        "length": 21.5
+      },
+      {
+        "x": 994.0,
+        "y": 962.0,
+        "angle": 70.94,
+        "radius": 143.9,
+        "length": 10.8
+      },
+      {
+        "x": 999.5,
+        "y": 982.0,
+        "angle": 79.2,
+        "radius": 144.1,
+        "length": 11.0
+      },
+      {
+        "x": 982.5,
+        "y": 998.5,
+        "angle": 85.18,
+        "radius": 124.9,
+        "length": 11.0
+      },
+      {
+        "x": 970.0,
+        "y": 1013.0,
+        "angle": 92.05,
+        "radius": 112.1,
+        "length": 52.0
+      },
+      {
+        "x": 1038.0,
+        "y": 1030.0,
+        "angle": 96.65,
+        "radius": 181.2,
+        "length": 10.0
+      },
+      {
+        "x": 1023.0,
+        "y": 1056.5,
+        "angle": 106.06,
+        "radius": 171.7,
+        "length": 35.3
+      },
+      {
+        "x": 935.0,
+        "y": 1068.0,
+        "angle": 127.46,
+        "radius": 97.0,
+        "length": 25.6
+      },
+      {
+        "x": 932.5,
+        "y": 1073.0,
+        "angle": 130.66,
+        "radius": 98.2,
+        "length": 17.8
+      },
+      {
+        "x": 917.0,
+        "y": 1078.5,
+        "angle": 139.67,
+        "radius": 91.2,
+        "length": 10.8
+      },
+      {
+        "x": 907.0,
+        "y": 1116.5,
+        "angle": 155.5,
+        "radius": 118.1,
+        "length": 10.8
+      },
+      {
+        "x": 896.5,
+        "y": 1111.5,
+        "angle": 159.41,
+        "radius": 109.5,
+        "length": 12.1
+      },
+      {
+        "x": 884.0,
+        "y": 1120.5,
+        "angle": 166.87,
+        "radius": 114.5,
+        "length": 17.1
+      },
+      {
+        "x": 865.0,
+        "y": 1153.0,
+        "angle": 177.22,
+        "radius": 144.2,
+        "length": 26.7
+      }
+    ],
+    "note": "Radial bright-line detections: UNSUPERVISED, includes false positives, no values assigned; not an approved calibration"
+  },
+  "oh.ac_amps.1": {
+    "panel": "OH12",
+    "centerEstimate": [
+      261,
+      252
+    ],
+    "ring": [
+      80,
+      174
+    ],
+    "imageSize": [
+      1024,
+      1536
+    ],
+    "candidates": [
+      {
+        "x": 259.0,
+        "y": 335.5,
+        "angle": -178.63,
+        "radius": 83.5,
+        "length": 9.0
+      },
+      {
+        "x": 254.5,
+        "y": 337.0,
+        "angle": -175.63,
+        "radius": 85.2,
+        "length": 10.0
+      },
+      {
+        "x": 240.0,
+        "y": 377.5,
+        "angle": -170.5,
+        "radius": 127.2,
+        "length": 16.2
+      },
+      {
+        "x": 182.0,
+        "y": 270.0,
+        "angle": -102.84,
+        "radius": 81.0,
+        "length": 44.7
+      },
+      {
+        "x": 165.5,
+        "y": 265.0,
+        "angle": -97.75,
+        "radius": 96.4,
+        "length": 52.0
+      },
+      {
+        "x": 123.0,
+        "y": 257.0,
+        "angle": -92.08,
+        "radius": 138.1,
+        "length": 61.2
+      },
+      {
+        "x": 160.0,
+        "y": 235.0,
+        "angle": -80.45,
+        "radius": 102.4,
+        "length": 12.0
+      },
+      {
+        "x": 160.5,
+        "y": 219.5,
+        "angle": -72.08,
+        "radius": 105.6,
+        "length": 13.0
+      },
+      {
+        "x": 159.5,
+        "y": 206.0,
+        "angle": -65.62,
+        "radius": 111.4,
+        "length": 9.2
+      },
+      {
+        "x": 416.0,
+        "y": 200.0,
+        "angle": 71.45,
+        "radius": 163.5,
+        "length": 10.2
+      },
+      {
+        "x": 389.0,
+        "y": 228.5,
+        "angle": 79.6,
+        "radius": 130.1,
+        "length": 12.4
+      },
+      {
+        "x": 401.5,
+        "y": 282.0,
+        "angle": 102.05,
+        "radius": 143.7,
+        "length": 20.6
+      },
+      {
+        "x": 410.0,
+        "y": 303.0,
+        "angle": 108.9,
+        "radius": 157.5,
+        "length": 21.6
+      },
+      {
+        "x": 407.0,
+        "y": 311.5,
+        "angle": 112.17,
+        "radius": 157.7,
+        "length": 22.2
+      },
+      {
+        "x": 382.0,
+        "y": 321.5,
+        "angle": 119.87,
+        "radius": 139.5,
+        "length": 27.6
+      },
+      {
+        "x": 365.0,
+        "y": 339.0,
+        "angle": 129.91,
+        "radius": 135.6,
+        "length": 37.2
+      },
+      {
+        "x": 296.5,
+        "y": 330.5,
+        "angle": 155.67,
+        "radius": 86.2,
+        "length": 33.7
+      },
+      {
+        "x": 292.5,
+        "y": 378.0,
+        "angle": 165.96,
+        "radius": 129.9,
+        "length": 44.6
+      },
+      {
+        "x": 274.0,
+        "y": 363.5,
+        "angle": 173.35,
+        "radius": 112.3,
+        "length": 53.0
+      }
+    ],
+    "note": "Radial bright-line detections: UNSUPERVISED, includes false positives, no values assigned; not an approved calibration"
+  },
+  "oh.ac_amps.2": {
+    "panel": "OH12",
+    "centerEstimate": [
+      753,
+      252
+    ],
+    "ring": [
+      80,
+      174
+    ],
+    "imageSize": [
+      1024,
+      1536
+    ],
+    "candidates": [
+      {
+        "x": 752.0,
+        "y": 353.5,
+        "angle": -179.44,
+        "radius": 101.5,
+        "length": 15.1
+      },
+      {
+        "x": 738.0,
+        "y": 360.5,
+        "angle": -172.13,
+        "radius": 109.5,
+        "length": 21.8
+      },
+      {
+        "x": 708.5,
+        "y": 365.0,
+        "angle": -158.51,
+        "radius": 121.4,
+        "length": 61.6
+      },
+      {
+        "x": 674.0,
+        "y": 382.5,
+        "angle": -148.81,
+        "radius": 152.5,
+        "length": 12.0
+      },
+      {
+        "x": 687.5,
+        "y": 342.5,
+        "angle": -144.1,
+        "radius": 111.7,
+        "length": 38.2
+      },
+      {
+        "x": 644.5,
+        "y": 356.0,
+        "angle": -133.79,
+        "radius": 150.3,
+        "length": 31.4
+      },
+      {
+        "x": 625.5,
+        "y": 325.0,
+        "angle": -119.79,
+        "radius": 146.9,
+        "length": 36.7
+      },
+      {
+        "x": 617.5,
+        "y": 288.0,
+        "angle": -104.88,
+        "radius": 140.2,
+        "length": 53.6
+      },
+      {
+        "x": 643.5,
+        "y": 203.5,
+        "angle": -66.11,
+        "radius": 119.8,
+        "length": 12.1
+      },
+      {
+        "x": 650.0,
+        "y": 190.0,
+        "angle": -58.95,
+        "radius": 120.2,
+        "length": 11.7
+      },
+      {
+        "x": 630.0,
+        "y": 146.5,
+        "angle": -49.38,
+        "radius": 162.0,
+        "length": 9.4
+      },
+      {
+        "x": 682.0,
+        "y": 165.5,
+        "angle": -39.38,
+        "radius": 111.9,
+        "length": 14.3
+      },
+      {
+        "x": 694.0,
+        "y": 165.0,
+        "angle": -34.14,
+        "radius": 105.1,
+        "length": 23.4
+      },
+      {
+        "x": 699.0,
+        "y": 131.5,
+        "angle": -24.14,
+        "radius": 132.0,
+        "length": 17.5
+      },
+      {
+        "x": 717.5,
+        "y": 152.0,
+        "angle": -19.54,
+        "radius": 106.1,
+        "length": 14.3
+      },
+      {
+        "x": 730.5,
+        "y": 149.5,
+        "angle": -12.38,
+        "radius": 104.9,
+        "length": 13.3
+      },
+      {
+        "x": 737.0,
+        "y": 124.5,
+        "angle": -7.15,
+        "radius": 128.5,
+        "length": 21.4
+      },
+      {
+        "x": 777.0,
+        "y": 126.0,
+        "angle": 10.78,
+        "radius": 128.3,
+        "length": 18.1
+      },
+      {
+        "x": 795.5,
+        "y": 152.5,
+        "angle": 23.13,
+        "radius": 108.2,
+        "length": 13.3
+      },
+      {
+        "x": 844.5,
+        "y": 149.0,
+        "angle": 41.62,
+        "radius": 137.8,
+        "length": 16.6
+      },
+      {
+        "x": 863.0,
+        "y": 194.0,
+        "angle": 62.2,
+        "radius": 124.4,
+        "length": 12.8
+      },
+      {
+        "x": 868.5,
+        "y": 207.0,
+        "angle": 68.71,
+        "radius": 124.0,
+        "length": 25.2
+      },
+      {
+        "x": 838.0,
+        "y": 225.5,
+        "angle": 72.68,
+        "radius": 89.0,
+        "length": 9.4
+      },
+      {
+        "x": 876.5,
+        "y": 226.0,
+        "angle": 78.11,
+        "radius": 126.2,
+        "length": 11.2
+      },
+      {
+        "x": 857.5,
+        "y": 240.0,
+        "angle": 83.45,
+        "radius": 105.2,
+        "length": 13.0
+      },
+      {
+        "x": 871.5,
+        "y": 258.0,
+        "angle": 92.9,
+        "radius": 118.7,
+        "length": 31.0
+      },
+      {
+        "x": 897.0,
+        "y": 276.5,
+        "angle": 99.66,
+        "radius": 146.1,
+        "length": 10.0
+      },
+      {
+        "x": 803.0,
+        "y": 332.5,
+        "angle": 148.15,
+        "radius": 94.8,
+        "length": 19.9
+      },
+      {
+        "x": 789.0,
+        "y": 324.5,
+        "angle": 153.59,
+        "radius": 80.9,
+        "length": 13.6
+      },
+      {
+        "x": 770.0,
+        "y": 345.0,
+        "angle": 169.64,
+        "radius": 94.5,
+        "length": 38.0
+      },
+      {
+        "x": 756.0,
+        "y": 359.5,
+        "angle": 178.4,
+        "radius": 107.5,
+        "length": 13.0
+      }
+    ],
+    "note": "Radial bright-line detections: UNSUPERVISED, includes false positives, no values assigned; not an approved calibration"
+  },
+  "oh.ac_amps.apu": {
+    "panel": "OH12",
+    "centerEstimate": [
+      726,
+      1350
+    ],
+    "ring": [
+      78,
+      172
+    ],
+    "imageSize": [
+      1024,
+      1536
+    ],
+    "candidates": [
+      {
+        "x": 669.5,
+        "y": 1229.0,
+        "angle": -25.03,
+        "radius": 133.5,
+        "length": 28.2
+      },
+      {
+        "x": 712.5,
+        "y": 1188.0,
+        "angle": -4.76,
+        "radius": 162.6,
+        "length": 20.6
+      },
+      {
+        "x": 731.5,
+        "y": 1218.0,
+        "angle": 2.39,
+        "radius": 132.1,
+        "length": 28.0
+      },
+      {
+        "x": 752.0,
+        "y": 1190.0,
+        "angle": 9.23,
+        "radius": 162.1,
+        "length": 19.0
+      },
+      {
+        "x": 843.5,
+        "y": 1272.0,
+        "angle": 56.42,
+        "radius": 141.0,
+        "length": 26.2
+      },
+      {
+        "x": 829.0,
+        "y": 1291.0,
+        "angle": 60.2,
+        "radius": 118.7,
+        "length": 10.8
+      },
+      {
+        "x": 846.0,
+        "y": 1327.0,
+        "angle": 79.15,
+        "radius": 122.2,
+        "length": 30.0
+      }
+    ],
+    "note": "Radial bright-line detections: UNSUPERVISED, includes false positives, no values assigned; not an approved calibration"
+  },
+  "oh.apu.egt": {
+    "panel": "OH12",
+    "centerEstimate": [
+      294,
+      1325
+    ],
+    "ring": [
+      100,
+      183
+    ],
+    "imageSize": [
+      1024,
+      1536
+    ],
+    "candidates": [
+      {
+        "x": 289.0,
+        "y": 1445.5,
+        "angle": -177.62,
+        "radius": 120.6,
+        "length": 31.3
+      },
+      {
+        "x": 278.5,
+        "y": 1443.0,
+        "angle": -172.52,
+        "radius": 119.0,
+        "length": 30.8
+      },
+      {
+        "x": 263.5,
+        "y": 1439.0,
+        "angle": -165.02,
+        "radius": 118.0,
+        "length": 28.9
+      },
+      {
+        "x": 238.0,
+        "y": 1429.5,
+        "angle": -151.81,
+        "radius": 118.6,
+        "length": 26.2
+      },
+      {
+        "x": 225.5,
+        "y": 1422.0,
+        "angle": -144.77,
+        "radius": 118.7,
+        "length": 19.4
+      },
+      {
+        "x": 218.0,
+        "y": 1414.0,
+        "angle": -139.5,
+        "radius": 117.0,
+        "length": 24.1
+      },
+      {
+        "x": 195.5,
+        "y": 1394.0,
+        "angle": -125.01,
+        "radius": 120.3,
+        "length": 13.5
+      },
+      {
+        "x": 129.5,
+        "y": 1311.5,
+        "angle": -85.31,
+        "radius": 165.1,
+        "length": 9.5
+      },
+      {
+        "x": 180.5,
+        "y": 1270.0,
+        "angle": -64.15,
+        "radius": 126.1,
+        "length": 13.6
+      },
+      {
+        "x": 226.0,
+        "y": 1220.5,
+        "angle": -33.05,
+        "radius": 124.7,
+        "length": 22.5
+      },
+      {
+        "x": 233.0,
+        "y": 1211.0,
+        "angle": -28.15,
+        "radius": 129.3,
+        "length": 32.2
+      },
+      {
+        "x": 247.0,
+        "y": 1207.5,
+        "angle": -21.8,
+        "radius": 126.6,
+        "length": 22.5
+      },
+      {
+        "x": 258.5,
+        "y": 1195.5,
+        "angle": -15.33,
+        "radius": 134.3,
+        "length": 11.4
+      },
+      {
+        "x": 270.5,
+        "y": 1197.5,
+        "angle": -10.44,
+        "radius": 129.6,
+        "length": 23.2
+      },
+      {
+        "x": 284.0,
+        "y": 1194.0,
+        "angle": -4.37,
+        "radius": 131.4,
+        "length": 19.0
+      },
+      {
+        "x": 296.0,
+        "y": 1191.0,
+        "angle": 0.86,
+        "radius": 134.0,
+        "length": 30.0
+      },
+      {
+        "x": 321.5,
+        "y": 1195.5,
+        "angle": 11.99,
+        "radius": 132.4,
+        "length": 23.5
+      },
+      {
+        "x": 403.0,
+        "y": 1391.0,
+        "angle": 121.2,
+        "radius": 127.4,
+        "length": 15.2
+      },
+      {
+        "x": 396.5,
+        "y": 1401.5,
+        "angle": 126.74,
+        "radius": 127.9,
+        "length": 22.7
+      },
+      {
+        "x": 373.0,
+        "y": 1415.5,
+        "angle": 138.88,
+        "radius": 120.1,
+        "length": 12.2
+      },
+      {
+        "x": 367.0,
+        "y": 1430.5,
+        "angle": 145.32,
+        "radius": 128.3,
+        "length": 33.1
+      },
+      {
+        "x": 351.5,
+        "y": 1430.5,
+        "angle": 151.41,
+        "radius": 120.2,
+        "length": 17.7
+      },
+      {
+        "x": 341.5,
+        "y": 1437.0,
+        "angle": 157.02,
+        "radius": 121.7,
+        "length": 24.5
+      },
+      {
+        "x": 328.0,
+        "y": 1441.0,
+        "angle": 163.66,
+        "radius": 120.9,
+        "length": 24.3
+      },
+      {
+        "x": 317.5,
+        "y": 1444.5,
+        "angle": 168.87,
+        "radius": 121.8,
+        "length": 31.1
+      },
+      {
+        "x": 306.0,
+        "y": 1446.5,
+        "angle": 174.36,
+        "radius": 122.1,
+        "length": 33.0
+      }
+    ],
+    "note": "Radial bright-line detections: UNSUPERVISED, includes false positives, no values assigned; not an approved calibration"
+  },
+  "oh.cabin.diff_pressure.outer": {
+    "panel": "OH19-DIFF",
+    "centerEstimate": [
+      489,
+      365
+    ],
+    "ring": [
+      214,
+      272
+    ],
+    "imageSize": [
+      1267,
+      1241
+    ],
+    "candidates": [
+      {
+        "x": 459.0,
+        "y": 602.0,
+        "angle": -172.79,
+        "radius": 238.9,
+        "length": 16.1
+      },
+      {
+        "x": 430.5,
+        "y": 597.0,
+        "angle": -165.85,
+        "radius": 239.3,
+        "length": 26.5
+      },
+      {
+        "x": 357.0,
+        "y": 564.5,
+        "angle": -146.51,
+        "radius": 239.2,
+        "length": 20.8
+      },
+      {
+        "x": 315.5,
+        "y": 535.0,
+        "angle": -134.42,
+        "radius": 242.9,
+        "length": 27.6
+      },
+      {
+        "x": 300.5,
+        "y": 513.5,
+        "angle": -128.23,
+        "radius": 240.0,
+        "length": 19.8
+      },
+      {
+        "x": 273.0,
+        "y": 469.0,
+        "angle": -115.71,
+        "radius": 239.7,
+        "length": 20.6
+      },
+      {
+        "x": 248.5,
+        "y": 423.5,
+        "angle": -103.67,
+        "radius": 247.5,
+        "length": 15.8
+      },
+      {
+        "x": 245.5,
+        "y": 392.5,
+        "angle": -96.44,
+        "radius": 245.0,
+        "length": 11.0
+      },
+      {
+        "x": 254.5,
+        "y": 308.5,
+        "angle": -76.45,
+        "radius": 241.2,
+        "length": 21.6
+      },
+      {
+        "x": 260.0,
+        "y": 280.5,
+        "angle": -69.75,
+        "radius": 244.1,
+        "length": 27.5
+      },
+      {
+        "x": 278.5,
+        "y": 258.0,
+        "angle": -63.06,
+        "radius": 236.1,
+        "length": 12.0
+      },
+      {
+        "x": 288.0,
+        "y": 233.5,
+        "angle": -56.81,
+        "radius": 240.2,
+        "length": 20.5
+      },
+      {
+        "x": 300.0,
+        "y": 212.0,
+        "angle": -51.01,
+        "radius": 243.2,
+        "length": 12.8
+      },
+      {
+        "x": 320.5,
+        "y": 196.0,
+        "angle": -44.92,
+        "radius": 238.6,
+        "length": 17.7
+      },
+      {
+        "x": 340.5,
+        "y": 173.0,
+        "angle": -37.72,
+        "radius": 242.7,
+        "length": 27.3
+      },
+      {
+        "x": 429.0,
+        "y": 132.0,
+        "angle": -14.44,
+        "radius": 240.6,
+        "length": 16.5
+      },
+      {
+        "x": 492.0,
+        "y": 96.0,
+        "angle": 0.64,
+        "radius": 269.0,
+        "length": 18.1
+      },
+      {
+        "x": 545.5,
+        "y": 129.5,
+        "angle": 13.49,
+        "radius": 242.2,
+        "length": 11.0
+      },
+      {
+        "x": 573.5,
+        "y": 134.0,
+        "angle": 20.09,
+        "radius": 246.0,
+        "length": 10.4
+      },
+      {
+        "x": 592.5,
+        "y": 153.0,
+        "angle": 26.02,
+        "radius": 235.9,
+        "length": 13.0
+      },
+      {
+        "x": 620.5,
+        "y": 164.0,
+        "angle": 33.19,
+        "radius": 240.2,
+        "length": 22.2
+      },
+      {
+        "x": 638.0,
+        "y": 177.0,
+        "angle": 38.4,
+        "radius": 239.9,
+        "length": 20.0
+      },
+      {
+        "x": 658.5,
+        "y": 196.0,
+        "angle": 45.08,
+        "radius": 239.4,
+        "length": 20.6
+      },
+      {
+        "x": 678.0,
+        "y": 217.0,
+        "angle": 51.94,
+        "radius": 240.1,
+        "length": 21.3
+      },
+      {
+        "x": 691.5,
+        "y": 236.5,
+        "angle": 57.6,
+        "radius": 239.8,
+        "length": 19.8
+      },
+      {
+        "x": 708.5,
+        "y": 260.0,
+        "angle": 64.44,
+        "radius": 243.3,
+        "length": 28.0
+      },
+      {
+        "x": 712.0,
+        "y": 287.5,
+        "angle": 70.84,
+        "radius": 236.1,
+        "length": 12.4
+      },
+      {
+        "x": 723.0,
+        "y": 310.0,
+        "angle": 76.77,
+        "radius": 240.4,
+        "length": 20.1
+      },
+      {
+        "x": 722.5,
+        "y": 335.0,
+        "angle": 82.68,
+        "radius": 235.4,
+        "length": 11.0
+      },
+      {
+        "x": 728.5,
+        "y": 363.0,
+        "angle": 89.52,
+        "radius": 239.5,
+        "length": 19.1
+      },
+      {
+        "x": 724.0,
+        "y": 392.5,
+        "angle": 96.67,
+        "radius": 236.6,
+        "length": 14.3
+      },
+      {
+        "x": 724.0,
+        "y": 415.0,
+        "angle": 102.01,
+        "radius": 240.3,
+        "length": 20.1
+      },
+      {
+        "x": 717.5,
+        "y": 440.5,
+        "angle": 108.28,
+        "radius": 240.7,
+        "length": 20.2
+      },
+      {
+        "x": 706.5,
+        "y": 467.0,
+        "angle": 115.12,
+        "radius": 240.2,
+        "length": 20.8
+      },
+      {
+        "x": 693.5,
+        "y": 491.0,
+        "angle": 121.64,
+        "radius": 240.2,
+        "length": 21.5
+      },
+      {
+        "x": 686.0,
+        "y": 512.5,
+        "angle": 126.82,
+        "radius": 246.1,
+        "length": 33.2
+      },
+      {
+        "x": 661.5,
+        "y": 525.5,
+        "angle": 132.94,
+        "radius": 235.6,
+        "length": 13.0
+      },
+      {
+        "x": 646.0,
+        "y": 545.5,
+        "angle": 138.98,
+        "radius": 239.2,
+        "length": 19.2
+      },
+      {
+        "x": 623.5,
+        "y": 566.0,
+        "angle": 146.21,
+        "radius": 241.8,
+        "length": 12.0
+      },
+      {
+        "x": 598.0,
+        "y": 574.0,
+        "angle": 152.46,
+        "radius": 235.7,
+        "length": 18.4
+      },
+      {
+        "x": 574.5,
+        "y": 590.5,
+        "angle": 159.24,
+        "radius": 241.2,
+        "length": 30.0
+      },
+      {
+        "x": 517.0,
+        "y": 595.0,
+        "angle": 173.06,
+        "radius": 231.7,
+        "length": 10.8
+      }
+    ],
+    "note": "Radial bright-line detections: UNSUPERVISED, includes false positives, no values assigned; not an approved calibration"
+  },
+  "oh.cabin.diff_pressure.inner": {
+    "panel": "OH19-DIFF",
+    "centerEstimate": [
+      489,
+      365
+    ],
+    "ring": [
+      105,
+      159
+    ],
+    "imageSize": [
+      1267,
+      1241
+    ],
+    "candidates": [
+      {
+        "x": 360.0,
+        "y": 331.0,
+        "angle": -75.23,
+        "radius": 133.4,
+        "length": 27.2
+      },
+      {
+        "x": 369.5,
+        "y": 320.5,
+        "angle": -69.58,
+        "radius": 127.5,
+        "length": 13.9
+      },
+      {
+        "x": 374.0,
+        "y": 287.0,
+        "angle": -55.85,
+        "radius": 139.0,
+        "length": 11.3
+      },
+      {
+        "x": 396.0,
+        "y": 264.0,
+        "angle": -42.64,
+        "radius": 137.3,
+        "length": 12.8
+      },
+      {
+        "x": 415.5,
+        "y": 252.5,
+        "angle": -33.16,
+        "radius": 134.4,
+        "length": 21.4
+      },
+      {
+        "x": 447.0,
+        "y": 263.0,
+        "angle": -22.38,
+        "radius": 110.3,
+        "length": 17.1
+      },
+      {
+        "x": 463.5,
+        "y": 256.5,
+        "angle": -13.23,
+        "radius": 111.5,
+        "length": 17.7
+      },
+      {
+        "x": 480.0,
+        "y": 253.0,
+        "angle": -4.59,
+        "radius": 112.4,
+        "length": 18.1
+      },
+      {
+        "x": 495.5,
+        "y": 227.0,
+        "angle": 2.7,
+        "radius": 138.2,
+        "length": 28.4
+      },
+      {
+        "x": 522.0,
+        "y": 235.0,
+        "angle": 14.24,
+        "radius": 134.1,
+        "length": 16.5
+      },
+      {
+        "x": 540.5,
+        "y": 239.5,
+        "angle": 22.31,
+        "radius": 135.7,
+        "length": 14.8
+      },
+      {
+        "x": 559.0,
+        "y": 248.5,
+        "angle": 31.0,
+        "radius": 135.9,
+        "length": 16.2
+      },
+      {
+        "x": 577.0,
+        "y": 261.0,
+        "angle": 40.24,
+        "radius": 136.2,
+        "length": 16.1
+      },
+      {
+        "x": 592.5,
+        "y": 278.5,
+        "angle": 50.11,
+        "radius": 134.9,
+        "length": 12.7
+      },
+      {
+        "x": 609.5,
+        "y": 296.5,
+        "angle": 60.38,
+        "radius": 138.6,
+        "length": 22.1
+      },
+      {
+        "x": 616.0,
+        "y": 317.0,
+        "angle": 69.3,
+        "radius": 135.8,
+        "length": 16.5
+      },
+      {
+        "x": 621.5,
+        "y": 339.5,
+        "angle": 79.11,
+        "radius": 134.9,
+        "length": 15.3
+      },
+      {
+        "x": 623.5,
+        "y": 362.5,
+        "angle": 88.94,
+        "radius": 134.5,
+        "length": 15.0
+      },
+      {
+        "x": 621.0,
+        "y": 385.0,
+        "angle": 98.62,
+        "radius": 133.5,
+        "length": 16.5
+      },
+      {
+        "x": 622.0,
+        "y": 409.5,
+        "angle": 108.5,
+        "radius": 140.2,
+        "length": 30.9
+      },
+      {
+        "x": 594.5,
+        "y": 444.5,
+        "angle": 127.0,
+        "radius": 132.1,
+        "length": 18.4
+      },
+      {
+        "x": 574.5,
+        "y": 460.5,
+        "angle": 138.16,
+        "radius": 128.2,
+        "length": 14.2
+      },
+      {
+        "x": 561.5,
+        "y": 477.5,
+        "angle": 147.2,
+        "radius": 133.8,
+        "length": 11.4
+      },
+      {
+        "x": 544.0,
+        "y": 484.5,
+        "angle": 155.29,
+        "radius": 131.5,
+        "length": 25.9
+      },
+      {
+        "x": 492.5,
+        "y": 492.0,
+        "angle": 178.42,
+        "radius": 127.0,
+        "length": 10.0
+      }
+    ],
+    "note": "Radial bright-line detections: UNSUPERVISED, includes false positives, no values assigned; not an approved calibration"
+  },
+  "oh.cabin.rate": {
+    "panel": "OH19-DIFF",
+    "centerEstimate": [
+      520,
+      950
+    ],
+    "ring": [
+      114,
+      187
+    ],
+    "imageSize": [
+      1267,
+      1241
+    ],
+    "candidates": [
+      {
+        "x": 482.5,
+        "y": 1096.0,
+        "angle": -165.6,
+        "radius": 150.7,
+        "length": 21.2
+      },
+      {
+        "x": 429.5,
+        "y": 1030.0,
+        "angle": -131.48,
+        "radius": 120.8,
+        "length": 23.3
+      },
+      {
+        "x": 424.5,
+        "y": 1020.0,
+        "angle": -126.24,
+        "radius": 118.4,
+        "length": 16.3
+      },
+      {
+        "x": 407.5,
+        "y": 996.5,
+        "angle": -112.46,
+        "radius": 121.7,
+        "length": 24.0
+      },
+      {
+        "x": 398.0,
+        "y": 949.0,
+        "angle": -89.53,
+        "radius": 122.0,
+        "length": 34.1
+      },
+      {
+        "x": 411.5,
+        "y": 895.5,
+        "angle": -63.33,
+        "radius": 121.4,
+        "length": 17.5
+      },
+      {
+        "x": 419.5,
+        "y": 884.0,
+        "angle": -56.71,
+        "radius": 120.2,
+        "length": 16.4
+      },
+      {
+        "x": 427.0,
+        "y": 873.0,
+        "angle": -50.38,
+        "radius": 120.7,
+        "length": 17.0
+      },
+      {
+        "x": 434.5,
+        "y": 858.5,
+        "angle": -43.06,
+        "radius": 125.2,
+        "length": 24.0
+      },
+      {
+        "x": 447.0,
+        "y": 851.5,
+        "angle": -36.54,
+        "radius": 122.6,
+        "length": 18.0
+      },
+      {
+        "x": 457.0,
+        "y": 844.0,
+        "angle": -30.72,
+        "radius": 123.3,
+        "length": 16.1
+      },
+      {
+        "x": 471.0,
+        "y": 841.0,
+        "angle": -24.21,
+        "radius": 119.5,
+        "length": 10.2
+      },
+      {
+        "x": 479.5,
+        "y": 833.0,
+        "angle": -19.09,
+        "radius": 123.8,
+        "length": 16.8
+      },
+      {
+        "x": 494.0,
+        "y": 832.5,
+        "angle": -12.48,
+        "radius": 120.3,
+        "length": 11.0
+      },
+      {
+        "x": 505.5,
+        "y": 825.5,
+        "angle": -6.64,
+        "radius": 125.3,
+        "length": 19.2
+      },
+      {
+        "x": 531.0,
+        "y": 825.5,
+        "angle": 5.05,
+        "radius": 125.0,
+        "length": 17.5
+      },
+      {
+        "x": 544.5,
+        "y": 824.5,
+        "angle": 11.05,
+        "radius": 127.9,
+        "length": 11.4
+      },
+      {
+        "x": 556.5,
+        "y": 831.0,
+        "angle": 17.05,
+        "radius": 124.5,
+        "length": 14.3
+      },
+      {
+        "x": 567.5,
+        "y": 832.5,
+        "angle": 22.01,
+        "radius": 126.7,
+        "length": 17.5
+      },
+      {
+        "x": 580.0,
+        "y": 838.5,
+        "angle": 28.29,
+        "radius": 126.6,
+        "length": 16.4
+      },
+      {
+        "x": 593.0,
+        "y": 840.0,
+        "angle": 33.57,
+        "radius": 132.0,
+        "length": 28.6
+      },
+      {
+        "x": 602.5,
+        "y": 853.5,
+        "angle": 40.53,
+        "radius": 127.0,
+        "length": 18.4
+      },
+      {
+        "x": 614.5,
+        "y": 861.0,
+        "angle": 46.72,
+        "radius": 129.8,
+        "length": 23.3
+      },
+      {
+        "x": 624.5,
+        "y": 877.0,
+        "angle": 55.06,
+        "radius": 127.5,
+        "length": 16.4
+      },
+      {
+        "x": 637.5,
+        "y": 887.0,
+        "angle": 61.8,
+        "radius": 133.3,
+        "length": 29.7
+      },
+      {
+        "x": 641.0,
+        "y": 906.5,
+        "angle": 70.23,
+        "radius": 128.6,
+        "length": 19.3
+      },
+      {
+        "x": 644.5,
+        "y": 922.5,
+        "angle": 77.54,
+        "radius": 127.5,
+        "length": 17.3
+      },
+      {
+        "x": 648.5,
+        "y": 938.0,
+        "angle": 84.66,
+        "radius": 129.1,
+        "length": 21.4
+      },
+      {
+        "x": 644.0,
+        "y": 947.0,
+        "angle": 88.61,
+        "radius": 124.0,
+        "length": 10.0
+      },
+      {
+        "x": 636.5,
+        "y": 996.5,
+        "angle": 111.76,
+        "radius": 125.4,
+        "length": 17.5
+      },
+      {
+        "x": 628.0,
+        "y": 1012.0,
+        "angle": 119.86,
+        "radius": 124.5,
+        "length": 17.2
+      },
+      {
+        "x": 622.5,
+        "y": 1028.0,
+        "angle": 127.27,
+        "radius": 128.8,
+        "length": 28.0
+      },
+      {
+        "x": 588.5,
+        "y": 1059.0,
+        "angle": 147.85,
+        "radius": 128.7,
+        "length": 29.4
+      },
+      {
+        "x": 540.5,
+        "y": 1067.0,
+        "angle": 170.06,
+        "radius": 118.8,
+        "length": 18.2
+      }
+    ],
+    "note": "Radial bright-line detections: UNSUPERVISED, includes false positives, no values assigned; not an approved calibration"
+  },
+  "oh.cabin.temperature": {
+    "panel": "OH20",
+    "centerEstimate": [
+      618,
+      681
+    ],
+    "ring": [
+      122,
+      187
+    ],
+    "imageSize": [
+      1254,
+      1254
+    ],
+    "candidates": [
+      {
+        "x": 561.5,
+        "y": 857.0,
+        "angle": -162.2,
+        "radius": 184.8,
+        "length": 10.0
+      },
+      {
+        "x": 525.0,
+        "y": 842.5,
+        "angle": -150.06,
+        "radius": 186.4,
+        "length": 10.8
+      },
+      {
+        "x": 515.0,
+        "y": 792.5,
+        "angle": -137.27,
+        "radius": 151.8,
+        "length": 30.6
+      },
+      {
+        "x": 499.0,
+        "y": 790.0,
+        "angle": -132.49,
+        "radius": 161.4,
+        "length": 15.6
+      },
+      {
+        "x": 483.0,
+        "y": 768.0,
+        "angle": -122.8,
+        "radius": 160.6,
+        "length": 17.0
+      },
+      {
+        "x": 475.0,
+        "y": 758.0,
+        "angle": -118.3,
+        "radius": 162.4,
+        "length": 17.1
+      },
+      {
+        "x": 474.0,
+        "y": 744.0,
+        "angle": -113.63,
+        "radius": 157.2,
+        "length": 29.1
+      },
+      {
+        "x": 459.0,
+        "y": 722.0,
+        "angle": -104.46,
+        "radius": 164.2,
+        "length": 16.5
+      },
+      {
+        "x": 455.5,
+        "y": 709.0,
+        "angle": -99.78,
+        "radius": 164.9,
+        "length": 17.0
+      },
+      {
+        "x": 462.5,
+        "y": 680.0,
+        "angle": -89.63,
+        "radius": 155.5,
+        "length": 31.3
+      },
+      {
+        "x": 454.5,
+        "y": 666.0,
+        "angle": -84.76,
+        "radius": 164.2,
+        "length": 17.0
+      },
+      {
+        "x": 458.0,
+        "y": 656.0,
+        "angle": -81.12,
+        "radius": 161.9,
+        "length": 14.0
+      },
+      {
+        "x": 459.5,
+        "y": 640.0,
+        "angle": -75.5,
+        "radius": 163.7,
+        "length": 17.1
+      },
+      {
+        "x": 478.0,
+        "y": 620.5,
+        "angle": -66.63,
+        "radius": 152.5,
+        "length": 26.5
+      },
+      {
+        "x": 529.0,
+        "y": 597.5,
+        "angle": -46.83,
+        "radius": 122.0,
+        "length": 18.4
+      },
+      {
+        "x": 515.5,
+        "y": 561.5,
+        "angle": -40.62,
+        "radius": 157.4,
+        "length": 28.6
+      },
+      {
+        "x": 524.0,
+        "y": 548.5,
+        "angle": -35.35,
+        "radius": 162.5,
+        "length": 19.2
+      },
+      {
+        "x": 548.5,
+        "y": 535.0,
+        "angle": -25.46,
+        "radius": 161.7,
+        "length": 18.4
+      },
+      {
+        "x": 563.0,
+        "y": 530.0,
+        "angle": -20.01,
+        "radius": 160.7,
+        "length": 16.1
+      },
+      {
+        "x": 619.5,
+        "y": 518.0,
+        "angle": 0.53,
+        "radius": 163.0,
+        "length": 14.0
+      },
+      {
+        "x": 679.5,
+        "y": 538.5,
+        "angle": 23.34,
+        "radius": 155.2,
+        "length": 11.4
+      },
+      {
+        "x": 693.0,
+        "y": 541.0,
+        "angle": 28.18,
+        "radius": 158.8,
+        "length": 18.4
+      },
+      {
+        "x": 706.0,
+        "y": 549.0,
+        "angle": 33.69,
+        "radius": 158.6,
+        "length": 18.4
+      },
+      {
+        "x": 710.0,
+        "y": 560.5,
+        "angle": 37.36,
+        "radius": 151.6,
+        "length": 33.3
+      },
+      {
+        "x": 769.5,
+        "y": 638.0,
+        "angle": 74.15,
+        "radius": 157.5,
+        "length": 17.0
+      },
+      {
+        "x": 758.5,
+        "y": 674.5,
+        "angle": 87.35,
+        "radius": 140.7,
+        "length": 17.3
+      },
+      {
+        "x": 777.5,
+        "y": 685.5,
+        "angle": 91.62,
+        "radius": 159.6,
+        "length": 9.1
+      },
+      {
+        "x": 771.5,
+        "y": 697.0,
+        "angle": 95.95,
+        "radius": 154.3,
+        "length": 15.5
+      },
+      {
+        "x": 771.0,
+        "y": 708.0,
+        "angle": 100.01,
+        "radius": 155.4,
+        "length": 16.5
+      },
+      {
+        "x": 768.0,
+        "y": 719.5,
+        "angle": 104.4,
+        "radius": 154.9,
+        "length": 18.2
+      },
+      {
+        "x": 757.5,
+        "y": 730.5,
+        "angle": 109.54,
+        "radius": 148.0,
+        "length": 30.4
+      },
+      {
+        "x": 682.5,
+        "y": 855.5,
+        "angle": 159.71,
+        "radius": 186.0,
+        "length": 10.3
+      },
+      {
+        "x": 672.0,
+        "y": 859.5,
+        "angle": 163.17,
+        "radius": 186.5,
+        "length": 9.2
+      },
+      {
+        "x": 657.5,
+        "y": 861.5,
+        "angle": 167.66,
+        "radius": 184.8,
+        "length": 11.0
+      }
+    ],
+    "note": "Radial bright-line detections: UNSUPERVISED, includes false positives, no values assigned; not an approved calibration"
+  },
+  "oh.duct.pressure_lr": {
+    "panel": "OH21",
+    "centerEstimate": [
+      544,
+      439
+    ],
+    "ring": [
+      110,
+      172
+    ],
+    "imageSize": [
+      1122,
+      1402
+    ],
+    "candidates": [
+      {
+        "x": 478.5,
+        "y": 562.5,
+        "angle": -152.06,
+        "radius": 139.8,
+        "length": 19.2
+      },
+      {
+        "x": 423.0,
+        "y": 515.0,
+        "angle": -122.13,
+        "radius": 142.9,
+        "length": 19.8
+      },
+      {
+        "x": 412.0,
+        "y": 504.0,
+        "angle": -116.22,
+        "radius": 147.1,
+        "length": 11.7
+      },
+      {
+        "x": 405.5,
+        "y": 491.0,
+        "angle": -110.58,
+        "radius": 147.9,
+        "length": 11.7
+      },
+      {
+        "x": 400.5,
+        "y": 475.0,
+        "angle": -104.08,
+        "radius": 147.9,
+        "length": 11.2
+      },
+      {
+        "x": 401.5,
+        "y": 445.0,
+        "angle": -92.41,
+        "radius": 142.6,
+        "length": 11.0
+      },
+      {
+        "x": 420.5,
+        "y": 374.5,
+        "angle": -62.42,
+        "radius": 139.3,
+        "length": 13.9
+      },
+      {
+        "x": 451.5,
+        "y": 322.0,
+        "angle": -38.33,
+        "radius": 149.1,
+        "length": 14.9
+      },
+      {
+        "x": 479.0,
+        "y": 305.5,
+        "angle": -25.96,
+        "radius": 148.5,
+        "length": 16.2
+      },
+      {
+        "x": 542.0,
+        "y": 295.5,
+        "angle": -0.8,
+        "radius": 143.5,
+        "length": 25.0
+      },
+      {
+        "x": 571.0,
+        "y": 295.0,
+        "angle": 10.62,
+        "radius": 146.5,
+        "length": 10.0
+      },
+      {
+        "x": 608.5,
+        "y": 318.5,
+        "angle": 28.16,
+        "radius": 136.7,
+        "length": 10.3
+      },
+      {
+        "x": 666.5,
+        "y": 367.0,
+        "angle": 59.55,
+        "radius": 142.1,
+        "length": 25.9
+      },
+      {
+        "x": 684.0,
+        "y": 393.5,
+        "angle": 72.0,
+        "radius": 147.2,
+        "length": 16.3
+      },
+      {
+        "x": 689.0,
+        "y": 409.5,
+        "angle": 78.5,
+        "radius": 148.0,
+        "length": 13.0
+      },
+      {
+        "x": 691.5,
+        "y": 426.0,
+        "angle": 84.96,
+        "radius": 148.1,
+        "length": 15.0
+      },
+      {
+        "x": 687.0,
+        "y": 442.0,
+        "angle": 91.2,
+        "radius": 143.0,
+        "length": 26.0
+      },
+      {
+        "x": 690.5,
+        "y": 456.5,
+        "angle": 96.81,
+        "radius": 147.5,
+        "length": 15.3
+      },
+      {
+        "x": 688.0,
+        "y": 473.0,
+        "angle": 103.28,
+        "radius": 148.0,
+        "length": 16.1
+      },
+      {
+        "x": 683.5,
+        "y": 488.5,
+        "angle": 109.54,
+        "radius": 148.0,
+        "length": 15.3
+      },
+      {
+        "x": 677.5,
+        "y": 503.5,
+        "angle": 115.79,
+        "radius": 148.3,
+        "length": 14.8
+      },
+      {
+        "x": 665.5,
+        "y": 514.0,
+        "angle": 121.69,
+        "radius": 142.8,
+        "length": 25.1
+      },
+      {
+        "x": 662.5,
+        "y": 531.0,
+        "angle": 127.82,
+        "radius": 150.0,
+        "length": 12.5
+      },
+      {
+        "x": 595.5,
+        "y": 536.5,
+        "angle": 152.16,
+        "radius": 110.3,
+        "length": 17.7
+      },
+      {
+        "x": 587.0,
+        "y": 542.5,
+        "angle": 157.44,
+        "radius": 112.1,
+        "length": 16.2
+      },
+      {
+        "x": 578.5,
+        "y": 545.0,
+        "angle": 161.97,
+        "radius": 111.5,
+        "length": 10.0
+      }
+    ],
+    "note": "Radial bright-line detections: UNSUPERVISED, includes false positives, no values assigned; not an approved calibration"
+  },
+  "eng.n1.1": {
+    "panel": "ENGINE",
+    "centerEstimate": [
+      535,
+      540
+    ],
+    "ring": [
+      40,
+      87
+    ],
+    "imageSize": [
+      1235,
+      1274
+    ],
+    "candidates": [
+      {
+        "x": 506.5,
+        "y": 574.0,
+        "angle": -140.03,
+        "radius": 44.4,
+        "length": 19.1
+      },
+      {
+        "x": 581.5,
+        "y": 542.0,
+        "angle": 92.46,
+        "radius": 46.5,
+        "length": 13.6
+      },
+      {
+        "x": 568.0,
+        "y": 575.0,
+        "angle": 136.68,
+        "radius": 48.1,
+        "length": 17.0
+      },
+      {
+        "x": 537.0,
+        "y": 590.5,
+        "angle": 177.73,
+        "radius": 50.5,
+        "length": 13.0
+      }
+    ],
+    "note": "Radial bright-line detections: UNSUPERVISED, includes false positives, no values assigned; not an approved calibration"
+  },
+  "eng.n1.2": {
+    "panel": "ENGINE",
+    "centerEstimate": [
+      724,
+      540
+    ],
+    "ring": [
+      40,
+      87
+    ],
+    "imageSize": [
+      1235,
+      1274
+    ],
+    "candidates": [
+      {
+        "x": 755.0,
+        "y": 574.0,
+        "angle": 137.64,
+        "radius": 46.0,
+        "length": 17.0
+      }
+    ],
+    "note": "Radial bright-line detections: UNSUPERVISED, includes false positives, no values assigned; not an approved calibration"
+  },
+  "eng.egt.1": {
+    "panel": "ENGINE",
+    "centerEstimate": [
+      535,
+      723
+    ],
+    "ring": [
+      40,
+      89
+    ],
+    "imageSize": [
+      1235,
+      1274
+    ],
+    "candidates": [],
+    "note": "Radial bright-line detections: UNSUPERVISED, includes false positives, no values assigned; not an approved calibration"
+  },
+  "eng.egt.2": {
+    "panel": "ENGINE",
+    "centerEstimate": [
+      724,
+      723
+    ],
+    "ring": [
+      40,
+      89
+    ],
+    "imageSize": [
+      1235,
+      1274
+    ],
+    "candidates": [],
+    "note": "Radial bright-line detections: UNSUPERVISED, includes false positives, no values assigned; not an approved calibration"
+  },
+  "eng.n2.1": {
+    "panel": "ENGINE",
+    "centerEstimate": [
+      535,
+      900
+    ],
+    "ring": [
+      40,
+      89
+    ],
+    "imageSize": [
+      1235,
+      1274
+    ],
+    "candidates": [],
+    "note": "Radial bright-line detections: UNSUPERVISED, includes false positives, no values assigned; not an approved calibration"
+  },
+  "eng.n2.2": {
+    "panel": "ENGINE",
+    "centerEstimate": [
+      724,
+      900
+    ],
+    "ring": [
+      40,
+      89
+    ],
+    "imageSize": [
+      1235,
+      1274
+    ],
+    "candidates": [],
+    "note": "Radial bright-line detections: UNSUPERVISED, includes false positives, no values assigned; not an approved calibration"
+  }
+}
