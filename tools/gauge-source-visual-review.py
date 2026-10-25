@@ -50,6 +50,36 @@ for start in range(0,len(faces),4):
     end=(radius+length*math.sin(phi),radius-length*math.cos(phi))
     cd.line((radius,radius,*end),fill=color,width=3)
     cd.ellipse((end[0]-4,end[1]-4,end[0]+4,end[1]+4),fill=color)
+  # Green ray = currently installed visual resting needle tip when such a
+  # pose exists. This is QA instrumentation, not an approval of numeric scales.
+  currentPointers={
+    'oh.fuel.temperature':[(24,136)],
+    'oh.elec.dc_amps':[(0,85)],
+    'oh.elec.cps':[(-54,85)],
+    'oh.elec.dc_volts':[(-70,85)],
+    'oh.elec.ac_volts':[(-70,85)],
+    'oh.drive_oil.1':[(-46,98)],
+    'oh.drive_oil.2':[(-46,98)],
+    'oh.ac_amps.1':[(-45,102)],
+    'oh.ac_amps.2':[(-45,102)],
+    'oh.ac_amps.apu':[(-47,124)],
+    'oh.apu.egt':[(127,124)],
+    'oh.cabin.diff_pressure_altitude':[(0,207),(0,123)],
+    'oh.cabin.rate':[(-90,139)],
+    'oh.cabin.temperature':[(-90,158)],
+    'oh.duct.pressure_lr':[(-150,148)],
+    'oh.crew_oxygen.pressure':[(24.8,55)],
+    'eng.n2.1':[(-45,55)],
+    'eng.n2.2':[(-45,55)]
+  }
+  if f['id'] in currentPointers:
+   import math
+   cd=ImageDraw.Draw(crop)
+   for angle,length in currentPointers[f['id']]:
+    t=math.radians(angle)
+    xx=radius+length*math.sin(t);yy=radius-length*math.cos(t)
+    cd.line((radius,radius,xx,yy),fill='#28ff70',width=2)
+    cd.ellipse((xx-4,yy-4,xx+4,yy+4),fill='#28ff70')
   crop=crop.resize((436,436),Image.Resampling.LANCZOS)
   # Crosshair is diagnostic only; a tiny ring keeps the actual pivot visible.
   cx=cy=218
