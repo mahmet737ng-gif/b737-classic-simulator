@@ -63,7 +63,8 @@ function project({cbNetwork,electricalV7Result,trainerResult=null,trainerState=n
    const bus=id==="elecA"?"generator2":"generator1";
    const source=electricalV7Result.bus[bus];
    const raw=trainerResult&&trainerResult.hyd&&trainerResult.hyd[id];
-   const running=motorOpen?false:source===null?null:!source?false:raw?Boolean(raw.switchOn&&!raw.overheat&&source):null;
+   const instructorFailed=Boolean(trainerState&&trainerState.faults&&(trainerState.faults[id+"Failed"]||trainerState.faults[id+"Overheat"]));
+   const running=motorOpen?false:source===null?null:!source?false:raw?Boolean(raw.switchOn&&!raw.overheat&&!instructorFailed&&source):null;
    overlay.hyd[id]={operating:running,lowPressure:running===null?null:!running,cbOpen:motorOpen,feedBus:bus,
      source:"CLASSIC_MRG_P330_GENERIC; AIRFRAME_EFFECTIVITY_UNVERIFIED",
      effectClassification:motorOpen?"PROTECTED_ELECTRIC_PUMP_CIRCUIT_OPEN":"GENERATOR_BUS_SUPPLY_TEST"};
