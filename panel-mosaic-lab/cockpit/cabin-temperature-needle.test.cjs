@@ -22,5 +22,5 @@ assert.ok(ui.includes('model.needle.asset'));
 assert.ok(ui.includes('window.B737UnifiedCabinTemperatureNeedle'));
 const html=fs.readFileSync(path.join(__dirname,'index.html'),'utf8');
 assert.ok(html.includes('cabin-temperature-needle-model.js?v=CTN-0001'));
-assert.ok(html.includes('cabin-temperature-needle-unified.js?v=CTN-0001'));
+assert.ok(html.includes('cabin-temperature-needle-unified.js?v=CTN-0002-AIRCON400'));
 console.log('PASS: OH20 cabin temperature reuses the exact CABIN CLIMB needle asset and aligns to inset artwork.');
