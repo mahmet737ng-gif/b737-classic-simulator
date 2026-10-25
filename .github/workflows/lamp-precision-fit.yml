@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - tools/build-lamp-precision-faces.py
+      - panel-mosaic-lab/lights-test/phase1-geometry-audit.test.cjs
       - .github/workflows/lamp-precision-fit.yml
 permissions:
   contents: write
