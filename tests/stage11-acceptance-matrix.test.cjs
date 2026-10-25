@@ -6,6 +6,7 @@ const review=require('../engine/instruments/stage34-native/qa-review-queue-v1.js
 const sources=require('../engine/instruments/stage8-signal-contracts-v1.json');
 const routes=require('../engine/instruments/stage8-pointer-routing-v1.json');
 const owners=require('../engine/instruments/stage6-needle-fit-candidates-v1.json');
+const high=require('../engine/instruments/stage11-highrisk-pivot-triage-v1.json');
 test('54 faces each retain source-proven photo geometry blockers and distinct band contexts',()=>{
  assert.equal(m.faces.length,54);
  assert.equal(new Set(m.faces.map(x=>x.id)).size,54);
@@ -62,4 +63,24 @@ test('Photo-review and flight-QA gaps cannot be promoted via scenario success',(
  assert.equal(m.counts.withCandidateNumericPreview,6);
  for(const f of m.faces)assert.equal(f.acceptance,
   'BLOCKED_AWAITING_FULL_NATIVE_GEOMETRY_SYSTEM_WIRING_AND_VISUAL_FLIGHT_QA');
+});
+
+test('15 high-priority pivot versus rim conflicts stay noncertified and never relocate actual needles',()=>{
+ assert.equal(high.numberOfHighRisk,15);
+ assert.equal(high.instruments.length,15);
+ assert.equal(high.centerDisplacementOver20px,11);
+ assert.equal(high.verifiedShaftCenters,0);
+ const originals=new Map(review.faces.filter(x=>x.priority==='high').map(x=>[x.id,x]));
+ for(const q of high.instruments){
+  const base=originals.get(q.id);
+  assert.ok(base,q.id);
+  assert.equal(q.certified,false);
+  assert.equal(q.activeVisualChange,false);
+  if(q.rimCenterCandidate){
+   assert.ok(q.workingPivot);
+   assert.equal(Number(Math.hypot(q.workingPivot.x-q.rimCenterCandidate.x,
+    q.workingPivot.y-q.rimCenterCandidate.y).toFixed(2)),q.rimVsPivotPx);
+  }
+ }
+ assert.equal(m.counts.operationalNeedlesReleased,0);
 });
