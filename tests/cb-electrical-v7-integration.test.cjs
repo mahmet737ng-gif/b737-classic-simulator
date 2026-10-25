@@ -125,3 +125,14 @@ A.equal(evaluate(x).overlay.hyd.elecB.operating,false);
 x.cb.action("P6-11|ALL|C2","PUSH");
 A.equal(evaluate(x).overlay.hyd.elecB.operating,true);
 });
+
+test("Instructor motor failure is not overridden by a closed CB and good GEN bus",()=>{
+const x=init();x.trainer=Fuel.apply(x.trainer,{type:"FAULT",id:"elecAFailed",active:true});
+A.equal(evaluate(x).overlay.hyd.elecA.operating,false);
+A.equal(evaluate(x).overlay.hyd.elecB.operating,true);
+});
+test("Hydraulic overheat fault overrides CB electrical readiness and generator source",()=>{
+const x=init();x.trainer=Fuel.apply(x.trainer,{type:"FAULT",id:"elecBOverheat",active:true});
+A.equal(evaluate(x).overlay.hyd.elecB.operating,false);
+A.equal(evaluate(x).overlay.systemHyd.B,true);
+});
