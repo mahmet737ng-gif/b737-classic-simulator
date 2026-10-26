@@ -4,7 +4,7 @@ const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
 const g=require('../geometry-v2.js');
 const file=fs.readFileSync(path.join(__dirname,'../index.html'),'utf8');
 assert.equal(g.collisions().length,0,'Fire panel overlay collision');
-assert.equal(Object.keys(g.slots).length,18);
+assert.equal(Object.keys(g.slots).length,19);
 for(const [key,p] of Object.entries(g.slots)){
  for(const field of ['x','y','w','h'])assert.ok(Number.isFinite(p[field]),key+': invalid '+field);
  assert.ok(p.w>0&&p.h>0,key+': empty bbox');
@@ -12,6 +12,16 @@ for(const [key,p] of Object.entries(g.slots)){
  assert.ok(p.y-p.h/2>=0&&p.y+p.h/2<=100,key+': vertical overflow');
 }
 assert.equal(g.slots.APU_BOTTLE_DISCHARGED.assetPending,false);
+const allHandles=['HANDLE_ENG1','HANDLE_APU','HANDLE_ENG2'].map(id=>g.slots[id]);
+assert.equal(new Set(allHandles.map(p=>p.y)).size,1,'All fire handles must share a horizontal baseline');
+assert.equal(new Set(allHandles.map(p=>p.w)).size,1,'All fire handles must share the same width');
+assert.equal(new Set(allHandles.map(p=>p.h)).size,1,'All fire handles must share the same height');
+assert.equal(g.slots.BELL_CUTOUT.type,'pushbutton','BELL CUTOUT must be a push button');
+assert.equal(g.slots.BELL_CUTOUT.x,g.slots.HANDLE_APU.x,'BELL CUTOUT must center over APU handle');
+assert.ok(g.slots.BELL_CUTOUT.y+g.slots.BELL_CUTOUT.h/2<g.slots.HANDLE_APU.y-g.slots.HANDLE_APU.h/2,'BELL CUTOUT must be physically above APU handle');
+assert.match(file,/bellButton\.addEventListener\('click'/,'Bell button must be clickable');
+assert.doesNotMatch(file,/BLACKOUT/i,'Do not mislabel BELL CUTOUT as BLACKOUT');
+
 for(const key of ['ENG1_OVERHEAT','ENG2_OVERHEAT','FAULT','APU_DET_INOP','WHEEL_WELL','L_BOTTLE_DISCHARGED','R_BOTTLE_DISCHARGED'])assert.ok(g.slots[key],key);
 assert.match(file,/geometry-v2\.js/);
 assert.match(file,/const g=slotGeometry\[id\]/);
@@ -29,4 +39,4 @@ assert.doesNotMatch(file,/\.asset\.lamp\{width:13%/);
 const inline=file.match(/<script>\s*([\s\S]*?)<\/script>/i);
 assert.ok(inline,'HTML UI script missing');
 new vm.Script(inline[1],{filename:'fire-protection-lab/index.html'});
-console.log('PASS Fire Protection V3: 18 geometry slots, zero intersections, responsive overlay and inline JS syntax.');
+console.log('PASS Fire Protection V3.2: 19 geometry slots, zero intersections, responsive overlay and inline JS syntax.');
