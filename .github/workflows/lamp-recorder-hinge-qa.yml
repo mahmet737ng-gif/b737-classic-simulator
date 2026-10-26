@@ -1,0 +1,17 @@
+name: B737 flight recorder hinged guard source pixel QA
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - tools/qa-flight-recorder-hinge.py
+      - .github/workflows/lamp-recorder-hinge-qa.yml
+permissions:
+  contents: read
+jobs:
+  inspect-recorder:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 panel-mosaic-lab/verify-final-overhead.py
+      - run: python3 -m pip install Pillow
+      - run: python3 tools/qa-flight-recorder-hinge.py
