@@ -19,6 +19,14 @@ for(const row of audit.records){
  assert.equal(sha(revised),row.sha256,row.id+' derivative hash');
  assert.deepEqual(line(revised),line(original),row.id+' original words/order/case');
  assert.deepEqual(line(revised),row.legends,row.id+' auditable labels');
+ const firstLineSet=[...revised.matchAll(/<text\\b[^>]*>.*?<\\/text>/gs)].slice(0,row.legends.length);
+ assert.equal(firstLineSet.length,row.legends.length);
+ for(let i=0;i<row.legends.length;i++){
+  const text=firstLineSet[i][0],font=Number(text.match(/font-size="([\\d.]+)"/)[1]);
+  assert.equal(font,row.targetSizes[i],row.id+' size must be bound to actual line '+i+' not regex character offset');
+  assert.ok(text.includes('>'+row.legends[i]+'</text>'),row.id+' label and font association');
+ }
+
  assert.ok(row.targetSizes.length===row.legends.length);
  assert.equal(row.sourcePhotoModified,false);assert.equal(row.sourceRectModified,false);
  assert.ok(revised.includes('data-fit="mip-native-ratio-no-letter-stretch"'));
