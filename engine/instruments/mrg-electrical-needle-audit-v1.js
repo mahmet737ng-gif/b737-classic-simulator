@@ -1,4 +1,4 @@
-/* B737 Classic MRG 142-161: electrical-gauge numeric QA, NOT needle rotation.
+/* B737 Classic MRG 142-188: electrical-gauge numeric and generic source-feed QA, NOT needle rotation.
  * Source: Classic-only pages of MRG Electrical; NG rows explicitly excluded.
  * Meter selections describe a bus reading versus TR current, not identical sensor signals.
  */
@@ -34,7 +34,7 @@ function rangeResult(value,range,eligible=true){
  if(!finite(value))return {status:"NO_OBSERVATION",range,observed:null};
  return {status:value>=range[0]&&value<=range[1]?"WITHIN_MRG_REFERENCE":"OUTSIDE_MRG_REFERENCE",range,observed:value};
 }
-function evaluate({selector="TR1",electrical=null,observed={},drive=null}={}){
+function evaluate({selector="TR1",electrical=null,observed={},drive=null,consumerIndex=null,consumerAudit=null,variant="DCPCS"}={}){
  if(!SELECTORS.includes(selector))throw Error("Unsupported Classic meter selector");
  if(electrical&&(electrical.schema!=="B737_ELECTRICAL_V7_RESULT"||!electrical.feed||!electrical.bus))throw Error("Expected Electrical V7 evaluation");
  const exp=EXPECTED[selector];
@@ -48,6 +48,8 @@ function evaluate({selector="TR1",electrical=null,observed={},drive=null}={}){
  else if(exp.tr&&trPowered===false)amps=rangeResult(observed.dcAmps,[0,0],true);
  else if(exp.tr)amps=rangeResult(observed.dcAmps,exp.amps,trPowered===true);
  else amps=rangeResult(observed.dcAmps,exp.amps,feed===true);
+ const needlePowerSourceCandidates=consumerIndex&&consumerAudit?
+   consumerAudit.needleSources(consumerIndex,electrical,variant):null;
  const driveState=drive?{
    lowOilPressure:finite(drive.oilPressurePsi)?drive.oilPressurePsi<OIL_LIMITS.classicCsdLowPressurePsi:null,
    highOilTemp:finite(drive.oilTempC)?drive.oilTempC>OIL_LIMITS.classicCsdHighTempC:null,
@@ -65,7 +67,7 @@ function evaluate({selector="TR1",electrical=null,observed={},drive=null}={}){
    selectedVoltageSource:exp.voltageRepresents,dcBusVoltageObserved:volts,
    selectedTRAmpsObserved:amps,standbyDcAmpsDisplayed:exp.amps!==null,
    upstreamBus:feed,trSourceAvailable:trPowered,
-   drive:driveState,sourceLimits:OIL_LIMITS,qa,
+   drive:driveState,sourceLimits:OIL_LIMITS,needlePowerSourceCandidates,qa,
    targetAngleDeg:null,geometryCertification:"BLOCKED_PENDING_NATIVE_OH10_OH11_OH12_TICK_AND_PIVOT_QA",
    note:"This is an observation/range audit, not an authoritative sensor simulator or an angle map."};
 }
