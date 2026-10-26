@@ -9,7 +9,7 @@
  m.validate();
  const PROFILE_KEY='b737classic.aircraft-profile.v1',STORE_KEY='b737classic.aircon400-recirculation.v1';
  const asset=name=>new URL('../cockpit/assets/'+name,document.baseURI).href;
- let family='B737-300-500',plate=null,layer=null,left=null,packNodes=new Map();
+ let family='B737-300-500',plate=null,layer=null,underlay=null,left=null,rightToggle=null,rightOriginal=null,packNodes=new Map();
  let leftValue='AUTO';
  try{leftValue=m.normalizeSwitch(localStorage.getItem(STORE_KEY));}catch(_){}
  function storedFamily(){
@@ -62,25 +62,54 @@
   renderLeft();publishLeft();
   return true;
  }
+ // Share actual title font metrics and secondary detent font metrics.
  function addLabels(g){
+  const grouped=new Map();
+  for(const item of m.labels){
+   const rect=g.rect(item.rect);
+   const ctx=document.createElement('canvas').getContext('2d');
+   const maxHeight=rect.h*.72;ctx.font='800 '+maxHeight+'px Arial';
+   const width=ctx.measureText(item.text).width;
+   const candidate=maxHeight*Math.min(1,(rect.w-10)/Math.max(1,width))*.94;
+   grouped.set(item.kind,Math.min(grouped.get(item.kind)??Infinity,candidate));
+  }
   for(const item of m.labels){
    const node=document.createElement('span');node.className='aircon400-recirculation-label';
    node.textContent=item.text;node.dataset.airconLabel=item.text;
-   node.dataset.labelKind=item.kind;
-   const rect=g.rect(item.rect);
-   fit(node,rect);
-   // Font is bounded by BOTH the glass height and the available width. This
-   // fixes the previous unrestricted text spilling across screws and OFF/AUTO.
-   const maxHeight=rect.h*.72;
-   const ctx=document.createElement('canvas').getContext('2d');
-   ctx.font='800 '+maxHeight+'px Arial';
-   const natural=ctx.measureText(item.text).width;
-   // Preserve explicit 3px inner margin on both sides even for AUTO.
-   const fitRatio=Math.min(1,(rect.w-10)/Math.max(1,natural));
-   node.style.fontSize=Math.max(5,maxHeight*fitRatio*.95).toFixed(2)+'px';
+   node.dataset.labelKind=item.kind;node.dataset.labelId=item.id;
+   fit(node,g.rect(item.rect));
+   node.style.fontSize=grouped.get(item.kind).toFixed(2)+'px';
    layer.append(node);
   }
  }
+ function installRightCover(g){
+  underlay?.remove();
+  underlay=document.createElement('div');
+  underlay.className='aircon400-oh21-underlay';
+  underlay.id='aircon400Oh21Underlay';
+  const patch=document.createElement('span');
+  patch.className='aircon400-native-recirc-cover';
+  fit(patch,g.rect(m.nativeRightCover));
+  underlay.append(patch);host.append(underlay);
+ }
+ function placeRight(g){
+  if(!rightToggle)return;
+  if(!rightOriginal){
+   rightOriginal={left:rightToggle.style.left,top:rightToggle.style.top,title:rightToggle.getAttribute('title')};
+  }
+  if(family==='B737-400'){
+   const point=g.point(m.switches[1].sourcePoint);
+   rightToggle.style.left=point.x+'px';rightToggle.style.top=point.y+'px';
+   // Native tooltip was the unexpected third "RECIRC FAN" label.
+   rightToggle.removeAttribute('title');
+   rightToggle.setAttribute('aria-label','R RECIRC FAN — '+(window.B737OverheadToggles?.getState()?.['recirc-fan']||'AUTO'));
+  }else{
+   rightToggle.style.left=rightOriginal.left;rightToggle.style.top=rightOriginal.top;
+   if(rightOriginal.title===null)rightToggle.removeAttribute('title');
+   else rightToggle.setAttribute('title',rightOriginal.title);
+  }
+ }
+
  function addLeft(g,right){
   const point=g.point(m.switches[0].sourcePoint);
   // Reuse the approved physical toggle artwork/size, not a new unrelated switch.
@@ -130,10 +159,11 @@
   const right=document.getElementById('toggle-recirc-fan');
   if(!next||!right||!window.B737OverheadLights||!window.B737OverheadToggles)return false;
   if(layer?.isConnected&&plate===next)return true;
-  plate=next;layer?.remove();left=null;packNodes=new Map();
+  plate=next;layer?.remove();underlay?.remove();left=null;packNodes=new Map();rightToggle=right;
   layer=document.createElement('div');layer.id='aircon400Oh21Overlay';
   layer.className='aircon400-oh21-layer';
   const g=m.geometry(absolutePlacement(plate));
+  installRightCover(g);
   addLabels(g);addLeft(g,right);for(const p of m.packs)addPack(g,p);
   host.append(layer);
   applyFamily(family);
@@ -142,6 +172,8 @@
  function applyFamily(value){
   family=m.variant(value);
   if(layer)layer.hidden=family!=='B737-400';
+  if(underlay)underlay.hidden=family!=='B737-400';
+  if(plate&&rightToggle)placeRight(m.geometry(absolutePlacement(plate)));
   window.B737OverheadLights?.setAircraftFamily?.(family);
   if(family==='B737-400'){
    window.B737OverheadLights?.setAircon400LeftRecirc?.(leftValue);
@@ -160,7 +192,12 @@
  });
  window.addEventListener('storage',e=>{if(e.key===PROFILE_KEY)applyFamily(storedFamily());});
  window.addEventListener('b737:overhead-light-state',paint);
- window.addEventListener('b737:switch-change',e=>{if(e.detail?.id==='recirc-fan')paint();});
+ window.addEventListener('b737:switch-change',e=>{
+   if(e.detail?.id==='recirc-fan'){
+    if(family==='B737-400')rightToggle?.setAttribute('aria-label','R RECIRC FAN — '+e.detail.next);
+    paint();
+   }
+  });
  for(const id of ['toggleVisibility','lightVisibility'])
   document.getElementById(id)?.addEventListener('change',()=>queueMicrotask(paint));
  document.getElementById('resetToggles')?.addEventListener('click',()=>{
