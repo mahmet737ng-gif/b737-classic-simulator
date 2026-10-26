@@ -1,0 +1,26 @@
+'use strict';
+const assert=require('node:assert/strict');
+const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
+const g=require('../geometry-v2.js');
+const file=fs.readFileSync(path.join(__dirname,'../index.html'),'utf8');
+assert.equal(g.collisions().length,0,'Fire panel overlay collision');
+assert.equal(Object.keys(g.slots).length,11);
+for(const [key,p] of Object.entries(g.slots)){
+ for(const field of ['x','y','w','h'])assert.ok(Number.isFinite(p[field]),key+': invalid '+field);
+ assert.ok(p.w>0&&p.h>0,key+': empty bbox');
+ assert.ok(p.x-p.w/2>=0&&p.x+p.w/2<=100,key+': horizontal overflow');
+ assert.ok(p.y-p.h/2>=0&&p.y+p.h/2<=100,key+': vertical overflow');
+}
+assert.equal(g.slots.APU_BOTTLE_DISCHARGED.assetPending,true);
+for(const key of ['ENG1_OVERHEAT','ENG2_OVERHEAT','FAULT','APU_DET_INOP','WHEEL_WELL','L_BOTTLE_DISCHARGED','R_BOTTLE_DISCHARGED'])assert.ok(g.slots[key],key);
+assert.match(file,/geometry-v2\.js/);
+assert.match(file,/const g=slotGeometry\[id\]/);
+assert.match(file,/el\.style\.width=g\.w\+'%'/);
+assert.match(file,/margin-block:-4\.35%/);
+assert.match(file,/if\(!name\)continue/);
+assert.match(file,/style\.visibility=\(on\|\|st\.pulled/);
+assert.doesNotMatch(file,/\.asset\.lamp\{width:13%/);
+const inline=file.match(/<script>\s*([\s\S]*?)<\/script>/i);
+assert.ok(inline,'HTML UI script missing');
+new vm.Script(inline[1],{filename:'fire-protection-lab/index.html'});
+console.log('PASS Fire Protection V2: 11 geometry slots, zero intersections, responsive overlay and inline JS syntax.');
