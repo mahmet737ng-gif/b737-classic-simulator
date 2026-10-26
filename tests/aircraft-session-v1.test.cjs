@@ -146,4 +146,31 @@ test('source conflict UNKNOWN survives runtime, including projected Loads',()=>{
  assert.equal(v.bus.acStandby,null);assert.ok(v.qa.some(x=>x.level==='SOURCE_CONFLICT'));
  assert.equal(s.snapshot().systems.electrical.loads.loads['dcpcs.controller1'].powered,null);
 });
+test('rejects empty runtime and overlapping ownership domain prefixes',()=>{
+ assert.throws(()=>new Session({adapters:[]}),/At least one/);
+ const dummy=(id,owns)=>({id,owns,dependsOn:[],initialState:()=>({}),apply:s=>s,project:s=>s});
+ assert.throws(()=>new Session({adapters:[dummy('outer',['elec']),dummy('inner',['elec.bus'])]}),/overlapping/);
+});
+test('clock events are replayable, including a final standalone tick',()=>{
+ const s=factory();s.dispatch(cockpit('b','batterySwitch',true));s.advance(500);s.advance(500);
+ const log=s.exportReplay(),target=s.snapshot(),fresh=factory();
+ assert.equal(log.filter(e=>e.kind==='TICK').length,2);
+ assert.deepEqual(fresh.replay(log),target);
+});
+test('truncated replay history never masquerades as a complete deterministic recording',()=>{
+ const adapter={id:'simple',owns:['simple'],dependsOn:[],
+  initialState:()=>({n:0}),apply:(st)=>({n:st.n+1}),project:st=>st};
+ const s=new Session({adapters:[adapter]});
+ for(let i=0;i<1002;i++)s.dispatch(cmd('ev'+i,'COCKPIT',{type:'BUMP'},'simple'));
+ assert.equal(s.audit().replayHistoryComplete,false);
+ assert.throws(()=>s.exportReplay(),/truncated/);
+ assert.equal(s.snapshot().systems.simple.n,1002);
+});
+test('no-op clock cannot create replay gap and replay exports are detached',()=>{
+ const s=factory();s.advance(0);assert.equal(s.audit().replayHistoryComplete,true);
+ s.dispatch(cockpit('test','batterySwitch',true));
+ const log=s.exportReplay();log[0].command.action.value=false;
+ assert.deepEqual(s.exportReplay()[0].command.action.value,true);
+});
+
 console.log('Aircraft Session v1 adversarial test suite loaded');
