@@ -13,7 +13,7 @@ assert.ok(Math.abs(throttle.x+throttle.w/2-pedestal.nativeWidth/2)<1e-9,'Throttl
 assert.ok(throttle.maskPolygon?.length>=30,'Silhouette mask hides white canvas without altering the approved source image');
 assert.ok(Math.abs(fire.y-(throttle.y+throttle.h))<1e-9,'Fire follows throttle without overlap');
 assert.ok(Math.abs(radio.y-(fire.y+fire.h))<1e-9,'Radio follows fire without overlap');
-const fireBare='panel-mosaic-lab/cockpit/assets/FIRE_PROTECTION_BARE_STANDARD_SLOTS_V2_ORIGINAL.svg';
+const fireBare='panel-mosaic-lab/cockpit/assets/fire-v6/FIRE_PANEL_BARE.webp';
 assert.equal(fire.asset,fireBare,'Unified pedestal must show the newly uploaded bare Fire Protection texture');
 assert.equal(fire.presentation,'contain','New bare panel must preserve exact aspect ratio');
 assert.equal(fire.sourceWindow,undefined,'Full 2172x724 fire panel must not be cropped');
@@ -21,8 +21,11 @@ assert.equal(fire.x,244,'Original fire panel position must not shift');
 assert.equal(fire.y,740.9857819905213,'Fire panel remains immediately below throttle');
 assert.equal(fire.w,685,'Fire panel reserved width unchanged');
 assert.equal(fire.h,170.10287081339712,'Fire panel reserved height unchanged');
-assert.equal(a.assets[fireBare].sha256,'4f1719e49ae624579a012214c846ba07007c7ceb39ed917fee37687397173f0c','Bare source artifact checksum');
-assert.equal(a.assets[fireBare].sourcePngSha256,'ebce4ad11a50d70d232f67e2e7f2c3c8528b0822f3d2fd3b899cdd5854a6561c','Original PNG pixels preserved exactly within SVG');
+assert.equal(a.assets[fireBare].sha256,'0667fc8267a7812dc558529ec98aa6e7252683b2b4941257e73dcf4c4a0fa14f','Approved Fire V6 source image integrity');
+assert.equal(a.assets[fireBare].gitBlobSha,'9b5451a8c1a2598de9a5ee5ae166fee8382d0b38','Approved Fire V6 Git blob integrity');
+const priorFire='panel-mosaic-lab/cockpit/assets/FIRE_PROTECTION_BARE_STANDARD_SLOTS_V2_ORIGINAL.svg';
+assert.equal(a.assets[priorFire].sha256,'4f1719e49ae624579a012214c846ba07007c7ceb39ed917fee37687397173f0c','Previous approved base retained for rollback');
+assert.equal(a.assets[priorFire].sourcePngSha256,'ebce4ad11a50d70d232f67e2e7f2c3c8528b0822f3d2fd3b899cdd5854a6561c','Previous original PNG source remains unchanged');
 assert.ok(fs.readFileSync(path.join(__dirname,'app.js'),'utf8').includes("if(p.presentation==='contain')img.style.objectFit='contain'"),'Unified must letterbox instead of stretching Fire');
 
 assert.ok(a.canvas.height>=pedestal.y+pedestal.h,'Whole pedestal remains inside canvas');
