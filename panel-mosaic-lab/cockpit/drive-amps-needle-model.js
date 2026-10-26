@@ -5,7 +5,7 @@
  if(root)root.B737DriveAmpsNeedleModel=model;
 })(typeof globalThis==='object'?globalThis:this,function(){
  'use strict';
- // Registered to the unchanged OH11 (1203x1308) and OH12 (1024x1536) artwork.
+ // Native original 1203x1308 / 1024x1536 photo fitted bezel centres;\n // each centre independently matched across four Hough sensitivity settings.\n // BEZEL-only provisional registration; physical spindle still unapproved.\n // See engine/instruments/native-bezel-centre-evidence-v1.json.
  // SOURCE NATIVE PIXELS: locked OH11/OH12 originals were checked side-by-side with
  // candidate pointer rays. 128/135px proposals crossed beyond the inner tick;
  // 64px proposals stopped short. Original near-98/102px reach is the
@@ -20,11 +20,11 @@
   OH12_APU:Object.freeze({top:1130,offset:0,edge:Object.freeze([[563,1324],[590,1326],[625,1326],[648,1325],[666,1318],[685,1310],[705,1305],[725,1303],[745,1305],[765,1311],[784,1319],[803,1325],[835,1326],[879,1326]])})
  });
  const needles=Object.freeze([
-  Object.freeze({id:'driveOil1',label:'GEN DRIVE OIL TEMP 1',piece:'OH11',x:266,y:1021,tipRadius:98,initialAngle:-46}),
-  Object.freeze({id:'driveOil2',label:'GEN DRIVE OIL TEMP 2',piece:'OH11',x:781,y:1021,tipRadius:98,initialAngle:-46}),
-  Object.freeze({id:'acAmps1',label:'A.C. AMPS 1',piece:'OH12',x:210,y:265,tipRadius:102,initialAngle:-45}),
-  Object.freeze({id:'acAmps2',label:'A.C. AMPS 2',piece:'OH12',x:705,y:265,tipRadius:102,initialAngle:-45}),
-  Object.freeze({id:'apuAcAmps',label:'APU A.C. AMPS',piece:'OH12',window:'OH12_APU',x:724,y:1334,tipRadius:124,initialAngle:-47})
+  Object.freeze({id:'driveOil1',label:'GEN DRIVE OIL TEMP 1',piece:'OH11',x:326.4,y:1016.6,tipRadius:98,initialAngle:-46}),
+  Object.freeze({id:'driveOil2',label:'GEN DRIVE OIL TEMP 2',piece:'OH11',x:861.8,y:1023.8,tipRadius:98,initialAngle:-46}),
+  Object.freeze({id:'acAmps1',label:'A.C. AMPS 1',piece:'OH12',x:261,y:252.2,tipRadius:102,initialAngle:-45}),
+  Object.freeze({id:'acAmps2',label:'A.C. AMPS 2',piece:'OH12',x:753.4,y:252.2,tipRadius:102,initialAngle:-45}),
+  Object.freeze({id:'apuAcAmps',label:'APU A.C. AMPS',piece:'OH12',window:'OH12_APU',x:720.8,y:1322.4,tipRadius:124,initialAngle:-47})
  ]);
  function angle(value){const n=Number(value);if(!Number.isFinite(n))throw Error('Needle angle must be finite');return Math.max(-90,Math.min(90,n));}
  function windowPath(needle){
