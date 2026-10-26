@@ -12,7 +12,8 @@
   ['B737ISNThrustPerformanceV1','../../engine/integration/isn-thrust-performance-v1.js'],
   ['B737ISN0912RuntimeV1','../../engine/integration/isn-09-12-runtime-v1.js'],
   ['B737ISNAPULoadDynamicsV1','../../engine/integration/isn-apu-load-dynamics-v1.js'],
-  ['B737ISN1318ECUTestbenchV1','../../engine/integration/isn-13-18-ecu-testbench-v1.js']
+  ['B737ISN1318ECUTestbenchV1','../../engine/integration/isn-13-18-ecu-testbench-v1.js'],
+  ['B737UnifiedAuthorityDiagnosticsV1','../../engine/runtime/unified-authority-diagnostics-v1.js']
  ];
  async function loadDependencies(){for(const [global,path] of deps){if(window[global])continue;
   await new Promise((resolve,reject)=>{const script=document.createElement('script');
@@ -232,6 +233,7 @@
   render();
  },100);
  window.B737ISNCockpitV1=Object.freeze({getState:()=>bridge.get(),getStartState:()=>chain.get(),getECUState:()=>ecu.get(),
+   getArchitectureAudit:()=>window.B737UnifiedAuthorityDiagnosticsV1.audit({bridge:bridge.get(),ecu:ecu.get()}),
    // Pass only source-observed pneumatic supply to pressurization. UNKNOWN
    // must never become a fabricated zero PACK or an invented DC bus mapping.
    getPressurizationAir:()=>startSession.core.complete()
