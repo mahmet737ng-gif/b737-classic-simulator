@@ -1,0 +1,33 @@
+/* Fire protection small white-capped silver switches.
+ * Visual shape inferred from owner-supplied 1000166701/6702.mp4.
+ * This is additional non-locked, non-approved artwork; geometry QA is ongoing.
+ */
+.asset.physical-switch{
+  border:0!important;background:transparent!important;
+  z-index:5;cursor:pointer;pointer-events:auto;touch-action:none;
+  overflow:visible;
+}
+.asset.physical-switch .switch-ring{
+ position:absolute;inset:20% 14%;border-radius:50%;
+ background:radial-gradient(circle at 45% 31%,#a3a8a4 0%,#363f45 29%,#0b1116 58%,#a8a9a3 74%,#1b252a 94%);
+ border:1px solid #252a2f;box-shadow:inset 1px 2px 2px #ffffff38,0 2px 2px #0008;
+}
+.asset.physical-switch .switch-lever{
+ position:absolute;left:50%;top:49%;height:87%;width:39%;
+ transform:translate(-50%,-66%) rotate(var(--switch-angle,0deg));
+ transform-origin:50% 72%;
+ transition:transform .13s cubic-bezier(.24,.8,.4,1);
+ border:1px solid #697679;border-radius:45% 45% 30% 30%;
+ background:linear-gradient(90deg,#647176 0%,#f6f8ee 24%,#fffef7 49%,#f1f0e6 75%,#718186 100%);
+ box-shadow:2px 3px 2px #0008,inset 0 2px 1px #fff;
+}
+.asset.physical-switch .switch-lever:before{
+ content:'';position:absolute;top:-4%;left:-19%;width:138%;height:41%;
+ border-radius:48%;
+ background:radial-gradient(ellipse at 38% 27%,#fff 0%,#fbf9f3 43%,#bec9c6 95%);
+ box-shadow:0 1px 2px #0006;
+}
+.asset.physical-switch[aria-pressed="true"] .switch-ring{filter:brightness(1.18)}
+#board.edit .asset.physical-switch{outline:1px dashed #8bcce4!important}
+.asset.physical-switch:focus-visible{outline:2px solid #f6d590!important;outline-offset:2px}
+@media(prefers-reduced-motion:reduce){.asset.physical-switch .switch-lever{transition:none}}
