@@ -20,10 +20,13 @@
  // Plate-printed title lenses, with measured room above the two socket axes.
  // The former y=123 titles collided with OFF legends. Both are now above them.
  const labels=Object.freeze([
-  Object.freeze({text:'L RECIRC FAN',kind:'title',rect:Object.freeze([105,28,284,64])}),
-  Object.freeze({text:'R RECIRC FAN',kind:'title',rect:Object.freeze([709,28,321,64])}),
-  Object.freeze({text:'OFF',kind:'detent',rect:Object.freeze([262,137,118,61])}),
-  Object.freeze({text:'AUTO',kind:'detent',rect:Object.freeze([261,259,145,61])})
+  // Original RECIRC FAN text occupies x~701..1023, y~122..174. Cover
+  // precisely THAT engraved face on the right, not the RAM DOOR row above.
+  Object.freeze({text:'L RECIRC FAN',kind:'title',rect:Object.freeze([25,122,320,52])}),
+  Object.freeze({text:'R RECIRC FAN',kind:'title',rect:Object.freeze([701,122,322,52])}),
+  // The left detents mirror the right-hand native OFF/AUTO labels.
+  Object.freeze({text:'OFF',kind:'detent',rect:Object.freeze([238,176,112,52])}),
+  Object.freeze({text:'AUTO',kind:'detent',rect:Object.freeze([238,247,118,52])})
  ]);
  function geometry(placement){
   const {x,y,w,h}=placement;
@@ -41,7 +44,7 @@
   for(const c of [...packs,...labels]){const [x,y,w,h]=c.rect;if(x<0||y<0||x+w>source.width||y+h>source.height)throw Error('OH21 variant geometry exceeds source');}
   // Collision guard for original right hand OFF/AUTO legends and screw heads.
   const intersects=(a,b)=>a[0]<b[0]+b[2]&&a[0]+a[2]>b[0]&&a[1]<b[1]+b[3]&&a[1]+a[3]>b[1];
-  const rightLegends=[[665,135,105,80],[662,268,153,80]],leftSocket=[121,169,128,145];
+  const rightLegends=[[697,179,115,55],[690,247,128,55]],leftSocket=[121,175,114,140];
   for(const label of labels.filter(x=>x.kind==='title')){
    if(rightLegends.some(b=>intersects(label.rect,b))||intersects(label.rect,leftSocket))
     throw Error('Air conditioning title collides with an existing legend or left socket: '+label.text);
