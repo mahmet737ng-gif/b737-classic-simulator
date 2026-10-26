@@ -1,7 +1,7 @@
 name: MCP owner 13 precise placement and hostile QA
 on:
   push:
-    branches: [main, mcp-owner-13-precision]
+    branches: [main, mcp-owner-13-precision, mcp-owner13-aperture-correction-20261027]
     paths:
       - 'panel-mosaic-lab/cockpit/mcp-owner13-*'
       - 'panel-mosaic-lab/cockpit/assets/mcp-switches/owner13-*'
