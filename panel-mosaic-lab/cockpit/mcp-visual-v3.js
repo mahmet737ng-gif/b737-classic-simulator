@@ -130,7 +130,7 @@ function mountKnob(parent,n){
  if(n.type==="ias"){
   el.style.backgroundImage='url("'+ASSET_URL+'")';
  }else if(n.type==="course"){
-  el.innerHTML='<span class="mcp-v3-course-face"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M56 49 C62 39 69 25 77 23 Q83 23 83 30 C79 40 67 54 60 59 L72 70 Q74 77 67 78 L54 66 L46 79 Q42 83 37 78 L37 62 L23 59 Q19 56 22 49 L36 47 L41 36 Q48 27 55 32 L54 44 Z" fill="#db3626" stroke="#84211b" stroke-width="3.2"/><path d="M58 46 C68 38 73 31 77 28 M44 63 L42 75" fill="none" stroke="#ff7950" stroke-width="4.1" stroke-linecap="round" opacity=".65"/></svg></span>';
+  el.innerHTML='<span class="mcp-v3-course-face" aria-hidden="true"></span>';
  }else el.innerHTML='<span class="mcp-v3-plain-face"></span>';
  let last=null;
  on(el,"pointerdown",e=>{if(e.pointerType==="mouse"&&e.button!==0)return;e.stopPropagation();e.preventDefault();last=e.clientX;el.setPointerCapture(e.pointerId)});

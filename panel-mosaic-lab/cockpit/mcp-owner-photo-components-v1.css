@@ -1,0 +1,36 @@
+/* MCP-PHOTO-0001: ACTUAL prior photoreal control images, NOT generated CSS approximations.
+   Image-derived 80x80 transparent thumbnails. Preserve existing source x/y pivots,
+   user-approved IAS/MACH, and all AFDS/light electrical dependencies. */
+[data-piece="mcp"]>.mcp-v3-knob.mcp-v3-course,
+[data-piece="mcp"]>.mcp-v3-knob.mcp-v3-plain{
+ background:none!important;border:0!important;box-shadow:none!important;
+}
+[data-piece="mcp"]>.mcp-v3-course .mcp-v3-course-face{
+ position:absolute;inset:0!important;width:100%!important;height:100%!important;
+ border:0!important;box-shadow:none!important;
+ background:transparent url("./assets/mcp-switches/COURSE_PHOTO_80.webp") center/contain no-repeat!important;
+ transform:rotate(var(--mcp-turn,0deg));
+ transform-origin:50% 50%;
+}
+[data-piece="mcp"]>.mcp-v3-plain .mcp-v3-plain-face{
+ position:absolute;inset:0!important;width:100%!important;height:100%!important;
+ border:0!important;box-shadow:none!important;
+ transform:rotate(var(--mcp-turn,0deg));transform-origin:center;
+ background:transparent url("./assets/mcp-switches/HEADING_PHOTO_80.webp") center/contain no-repeat!important;
+}
+[data-piece="mcp"]>.mcp-v3-plain[data-control="altitude"] .mcp-v3-plain-face{
+ background-image:url("./assets/mcp-switches/ALTITUDE_PHOTO_80.webp")!important;
+}
+[data-piece="mcp"]>.mcp-hw-push .mcp-hw-push-bezel{
+ inset:0!important;width:100%!important;height:100%!important;
+ background:transparent url("./assets/mcp-switches/ROUND_PUSH_80.webp") center/contain no-repeat!important;
+ border:0!important;box-shadow:none!important;border-radius:0!important;
+}
+[data-piece="mcp"]>.mcp-hw-push .mcp-hw-push-cap{display:none!important}
+[data-piece="mcp"]>.mcp-hw-push[data-state="true"] .mcp-hw-push-bezel{
+ filter:brightness(.8) drop-shadow(0 1px 1px #0009);
+ transform:scale(.96);
+}
+@media(prefers-reduced-motion:reduce){
+ [data-piece="mcp"]>.mcp-hw-push .mcp-hw-push-bezel{transition:none}
+}

@@ -1,0 +1,37 @@
+{
+  "schema": "b737.mcp.actual-previous-image-derivatives.v1",
+  "revision": "MCP-PHOTO-0001",
+  "nativeCell": [
+    80,
+    80
+  ],
+  "sourceImagePolicy": "Previously generated visual artwork, downsampled with alpha to 80x80 WebP for frontend. Originals in conversation; never edit locked MCP photo.",
+  "referencePaths": [
+    {
+      "file": "COURSE_PHOTO_80.webp",
+      "sha": "dce602b0b318c9052552547f1a535255e5f00499",
+      "source": "weathered_aircraft_cockpit_control_knob.png",
+      "fit": "COURSE L / COURSE R"
+    },
+    {
+      "file": "HEADING_PHOTO_80.webp",
+      "sha": "39df21f3a007ace9f9656288655442197853d0ce",
+      "source": "weathered_avionics_control_knob.png",
+      "fit": "HEADING"
+    },
+    {
+      "file": "ALTITUDE_PHOTO_80.webp",
+      "sha": "b2dd48c858a61ce0be363bcc7239971c99552998",
+      "source": "weathered_gray_industrial_control_knob.png",
+      "fit": "ALTITUDE"
+    },
+    {
+      "file": "ROUND_PUSH_80.webp",
+      "sha": "862d7f057c7b1f0c0134b14e430b93b526178155",
+      "source": "weathered_cockpit_pushbutton_knob.png",
+      "fit": "C/O, SPD INTV, ALT INTV"
+    }
+  ],
+  "ownerPhotoCoordinatesUnchanged": true,
+  "AFDSConnectionsUnchanged": true
+}
