@@ -24,6 +24,18 @@ const base='http://127.0.0.1:8788/panel-mosaic-lab/cockpit/overhead-stage.html';
     !!document.getElementById('toggle-recirc-fan')&&
     !!document.querySelector('.atlas-piece[data-key="OH21"]')&&
     !!document.querySelector('#aircon400Oh21Overlay .aircon400-recirculation-label'),null,{timeout:45000});
+   // Real evidence requires full decode of original OH21 photograph.
+   const plate=page.locator('.atlas-piece[data-key="OH21"]');
+   await plate.scrollIntoViewIfNeeded({timeout:30000});
+   await page.evaluate(()=>window.B737ImageLoader?.refresh());
+   await page.waitForFunction(()=>{
+    const photos=[...document.querySelectorAll('.atlas-piece[data-key="OH21"] img.atlas-photo')];
+    return photos.length>0&&photos.every(im=>im.complete&&im.naturalWidth>=500&&im.naturalHeight>=500);
+   },null,{timeout:45000});
+   const decoded=await page.evaluate(()=>[...document.querySelectorAll('.atlas-piece[data-key="OH21"] img.atlas-photo')].map(im=>({
+    src:im.currentSrc,width:im.naturalWidth,height:im.naturalHeight,ready:im.dataset.perfReady||'raw'
+   })));
+   assert.ok(decoded.every(x=>x.width>=500&&x.height>=500),'Original OH21 photograph must decode: '+JSON.stringify(decoded));
    const data=await page.evaluate(()=>{
     const model=window.B737Aircon400Oh21;
     const overlay=document.getElementById('aircon400Oh21Overlay');
@@ -71,11 +83,11 @@ const base='http://127.0.0.1:8788/panel-mosaic-lab/cockpit/overhead-stage.html';
     assert.equal(updated.pneumatic.L.selectedMode,updated.controls.left);
     assert.equal(updated.pneumatic.R.selectedMode,before.right);
    }
-   await page.locator('.atlas-piece[data-key="OH21"]').screenshot({
+   await plate.screenshot({
     path:'artifacts/aircon400-oh21/'+(family==='B737-400'?'400':'300-500')+'.png',
     animations:'disabled',timeout:45000
    });
-   console.log('LIVE_BROWSER_OH21_PASS',family,JSON.stringify({labels:data.labels,errors:errors.slice(0,3)}));
+   console.log('LIVE_BROWSER_OH21_PASS',family,JSON.stringify({photo:decoded,labels:data.labels,errors:errors.slice(0,3)}));
    await page.close();
   }
  }finally{await browser.close();}
