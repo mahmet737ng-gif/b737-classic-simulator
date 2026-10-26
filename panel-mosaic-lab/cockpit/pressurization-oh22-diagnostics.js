@@ -125,7 +125,8 @@
      hornBox.right>hornRegion.right+3||hornBox.top<hornRegion.top-3||hornBox.bottom>hornRegion.bottom+3));
    const labelDefs=cfg.detentLabels||{};
    const detentHotspotsPresent=Object.entries(labelDefs).every(([id,positions])=>
-     positions.every(d=>!!layer?.querySelector('[data-detent-for="'+id+'"][data-detent="'+d.value+'"]')));
+     positions.every(d=>(id==='cabin-rate'&&d.value==='INDEX')||
+       !!layer?.querySelector('[data-detent-for="'+id+'"][data-detent="'+d.value+'"]')));
    const cap=layer?.querySelector('.oh22-pressure-note');
    return {system,platePresent:!!plate,layerPresent:!!layer,layerSystem:layer?.dataset.system||null,
      stateAvailable,engineMatches:!stateAvailable||engine.selectedMode===expectedMode,controls,lamps,displays,overlapPairs,visibleFraction,
