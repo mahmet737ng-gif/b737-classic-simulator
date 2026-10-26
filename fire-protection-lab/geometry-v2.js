@@ -17,6 +17,10 @@
   EXT_L:                  {x:86.5,y:64.5,w:2.9,h:8.2,slot:'EXT L TEST',type:'green-lens'},
   EXT_R:                  {x:92.0,y:64.5,w:2.9,h:8.2,slot:'EXT R TEST',type:'green-lens'},
   EXT_APU:                {x:89.3,y:74.0,w:2.9,h:8.2,slot:'EXT APU TEST',type:'green-lens'},
+  SELECTOR_ENG1:          {x:14.2,y:33.4,w:4.0,h:11.7,slot:'ENG1 OVHT DET SELECTOR',type:'rotary',evidence:'video-6702-04s'},
+  SELECTOR_ENG2:          {x:64.3,y:33.4,w:4.0,h:11.7,slot:'ENG2 OVHT DET SELECTOR',type:'rotary',evidence:'video-6702-11s'},
+  TEST_DETECTOR:          {x:13.2,y:71.3,w:4.2,h:11.1,slot:'FAULT INOP / OVHT FIRE TEST',type:'spring-switch',evidence:'video-6702-04s'},
+  TEST_EXT:               {x:89.2,y:48.2,w:4.0,h:10.5,slot:'EXT TEST 1 / 2',type:'spring-switch',evidence:'video-6702-16s'},
   HANDLE_ENG1:            {x:21.3,y:65.0,w:8.8,h:49.0,slot:'ENGINE 1 HANDLE',type:'handle'},
   HANDLE_APU:             {x:49.9,y:65.0,w:10.8,h:49.0,slot:'APU HANDLE',type:'handle'},
   HANDLE_ENG2:            {x:78.9,y:65.0,w:10.8,h:49.0,slot:'ENGINE 2 HANDLE',type:'handle'}
@@ -24,5 +28,5 @@
  function rect(g){return {l:g.x-g.w/2,r:g.x+g.w/2,t:g.y-g.h/2,b:g.y+g.h/2};}
  function overlap(a,b){return Math.min(a.r,b.r)>Math.max(a.l,b.l)&&Math.min(a.b,b.b)>Math.max(a.t,b.t);}
  function collisions(){const keys=Object.keys(slots).filter(k=>!slots[k].assetPending);const found=[];for(let i=0;i<keys.length;i++)for(let j=i+1;j<keys.length;j++){const A=keys[i],B=keys[j];if(overlap(rect(slots[A]),rect(slots[B])))found.push([A,B]);}return found;}
- return Object.freeze({BASE,slots,collisions,version:'3.0.0',status:'screenshot anchored; 4-lamp center stack and 3 EXT lenses; final high-res pixel QA pending'});
+ return Object.freeze({BASE,slots,collisions,version:'3.1.0',status:'video reference 6701/6702: four physical switches, central stack, green EXT lenses; registration remains provisional'});
 });
