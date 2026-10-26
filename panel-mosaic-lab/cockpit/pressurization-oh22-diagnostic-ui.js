@@ -87,5 +87,10 @@
    totals.textContent='';results.replaceChildren();status.textContent='Selected profile changed — scan the new OH22 installation.';
    if(overlay)send('pressurization-diagnostics-overlay',{enabled:true});
  });
+ const overhead=frame();
+ // A mount-time read-only scan is useful for a screenshot-driven audit.
+ // The Scan button remains available after zoom/profile changes.
+ if(overhead)overhead.addEventListener('load',()=>window.setTimeout(scan,350));
+ window.setTimeout(()=>{if(!last)scan();},1400);
  window.B737UnifiedOH22Diagnostics=Object.freeze({scan,getLatest:()=>last});
 })();
