@@ -307,3 +307,12 @@ Also committed the same user-accepted visual N1 estimator to `cdu-standalone-v6/
 - `tests/cb-source-audit-v2.test.cjs`: nine source/behavior regression tests, 102 per-variant CB pull/push sequences; test path linked in npm and Actions.
 - Test evidence: 40 CB-related test cases and 47 electrical V7 baseline cases PASSED in JavaScript-compatible harness; Node CI and browser screenshot completion status not independently available.
 - Do not classify upstream feeds as VERIFIED until EP-FSI WDM/ATA24 installed circuit information is checked. Do not edit locked cockpit artwork.
+
+
+## 2026-10-26 — MRG Classic Electrical 142–161 → Needle numerical QA
+
+- Ten owner-provided screenshot spreads mapped to MRG Classic printed pages 142–161; only Classic passages ingested, no NG-only data.
+- 21 source facts and screenshot provenance staged in `engine/instruments/mrg-classic-electrical-reference-v1.json` (NOT a claim of private SQLite modification).
+- Numeric QA in `engine/instruments/mrg-electrical-needle-audit-v1.js`: TR1/2 bus voltage 24–30 V, TR current 20–25 A; TR3 current 10–15 A; battery 22–30 V; standby DC indication separate from AC standby lamp; CSD <120 psi and >157°C.
+- Read-only numeric inspector in `panel-mosaic-lab/cockpit/mrg-electrical-needle-qa-unified.js`, no live gauge rotation or locked artwork change. OH10 DC AMPS and CPS center discrepancies remain unresolved.
+- 14 source-specific MRG tests and 47 Electrical V7 baseline tests passed in JS compatibility execution; independent CI still unconfirmed. See `docs/MRG_CLASSIC_ELECTRICAL_NEEDLE_AUDIT_2026-10-26.md`.
