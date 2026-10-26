@@ -1,0 +1,41 @@
+name: B737 MCP actual native switch visual QA
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - tools/test-mcp-photo-native-assets.cjs
+      - .github/workflows/mcp-native-photo-browser.yml
+      - panel-mosaic-lab/cockpit/mcp-front-actual-photo-v3.css
+      - panel-mosaic-lab/cockpit/assets/mcp-switches/native/**
+permissions:
+  contents: read
+jobs:
+  browser-image-qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify source cockpit photographic assets
+        run: python3 panel-mosaic-lab/verify-final-overhead.py
+      - name: Install real browser
+        run: |
+          npm install --no-save --ignore-scripts playwright@1.58.2
+          npx playwright install --with-deps chromium
+      - name: Decode and inspect real four ON/OFF source-state images
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check tools/test-mcp-photo-native-assets.cjs
+          python3 -m http.server 8788 --bind 127.0.0.1 >/tmp/mcp-native-http.log 2>&1 &
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:8788/panel-mosaic-lab/cockpit/index.html >/dev/null; then break; fi
+            sleep 1
+          done
+          node tools/test-mcp-photo-native-assets.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mcp-native-switch-states-full-panels
+          path: /tmp/mcp-native-*.png
+          if-no-files-found: warn
+          retention-days: 30
