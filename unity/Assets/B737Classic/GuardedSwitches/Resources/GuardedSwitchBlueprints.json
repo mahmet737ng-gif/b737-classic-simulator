@@ -39,14 +39,17 @@
         "requiresCalibratedSocket": true
       },
       "geometry": {
-        "previewWidth": 0.115,
+        "previewWidth": 0.101875,
         "previewHeight": 0.163,
         "previewThickness": 0.013,
         "previewCornerRadius": 0.011,
         "previewUnits": "SCENE_PREVIEW_UNITS_NOT_METERS_NOT_MILLIMETRES",
         "approvedDimensionsMm": null,
         "approval": "UNVERIFIED_DO_NOT_USE_AS_FACTORY_DIMENSIONS",
-        "engineUnitScaleToMm": null
+        "engineUnitScaleToMm": null,
+        "contourProfile": "black-shouldered-cap",
+        "coverAspectSource": "OWNER_SCREENSHOT_APPROXIMATE_ASPECT_RATIO_NOT_METRIC",
+        "referenceAspectRatioHint": 0.647
       },
       "material": {
         "materialIdentity": "guard-cover-flight-control-a-v1",
@@ -54,7 +57,8 @@
         "colorSource": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION",
         "sharedAcrossPoses": true,
         "metallic": 0.1,
-        "roughness": 0.68
+        "roughness": 0.68,
+        "colorAuthenticity": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION"
       },
       "motion": {
         "openAngleDegrees": 110,
@@ -78,7 +82,19 @@
         "737-400",
         "737-500"
       ],
-      "notes": null
+      "notes": null,
+      "referenceScreenshotEvidence": {
+        "evidenceFile": "GuardReferenceEvidence_20261026.json",
+        "screenshotName": "image(20261026-161115).png",
+        "approximateCoverRectPx": [
+          480,
+          545,
+          55,
+          85
+        ],
+        "visibility": "complete",
+        "pose": "CLOSED_REFERENCE_ONLY"
+      }
     },
     {
       "controlId": "flight-control-b",
@@ -101,14 +117,17 @@
         "requiresCalibratedSocket": true
       },
       "geometry": {
-        "previewWidth": 0.115,
+        "previewWidth": 0.101875,
         "previewHeight": 0.163,
         "previewThickness": 0.013,
         "previewCornerRadius": 0.011,
         "previewUnits": "SCENE_PREVIEW_UNITS_NOT_METERS_NOT_MILLIMETRES",
         "approvedDimensionsMm": null,
         "approval": "UNVERIFIED_DO_NOT_USE_AS_FACTORY_DIMENSIONS",
-        "engineUnitScaleToMm": null
+        "engineUnitScaleToMm": null,
+        "contourProfile": "black-shouldered-cap",
+        "coverAspectSource": "OWNER_SCREENSHOT_APPROXIMATE_ASPECT_RATIO_NOT_METRIC",
+        "referenceAspectRatioHint": 0.6
       },
       "material": {
         "materialIdentity": "guard-cover-flight-control-b-v1",
@@ -116,7 +135,8 @@
         "colorSource": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION",
         "sharedAcrossPoses": true,
         "metallic": 0.1,
-        "roughness": 0.68
+        "roughness": 0.68,
+        "colorAuthenticity": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION"
       },
       "motion": {
         "openAngleDegrees": 110,
@@ -140,7 +160,19 @@
         "737-400",
         "737-500"
       ],
-      "notes": null
+      "notes": null,
+      "referenceScreenshotEvidence": {
+        "evidenceFile": "GuardReferenceEvidence_20261026.json",
+        "screenshotName": "image(20261026-161115).png",
+        "approximateCoverRectPx": [
+          543,
+          545,
+          51,
+          85
+        ],
+        "visibility": "complete",
+        "pose": "CLOSED_REFERENCE_ONLY"
+      }
     },
     {
       "controlId": "spoiler-a",
@@ -163,14 +195,17 @@
         "requiresCalibratedSocket": true
       },
       "geometry": {
-        "previewWidth": 0.107,
+        "previewWidth": 0.113668,
         "previewHeight": 0.157,
         "previewThickness": 0.013,
         "previewCornerRadius": 0.01,
         "previewUnits": "SCENE_PREVIEW_UNITS_NOT_METERS_NOT_MILLIMETRES",
         "approvedDimensionsMm": null,
         "approval": "UNVERIFIED_DO_NOT_USE_AS_FACTORY_DIMENSIONS",
-        "engineUnitScaleToMm": null
+        "engineUnitScaleToMm": null,
+        "contourProfile": "black-shouldered-cap",
+        "coverAspectSource": "OWNER_SCREENSHOT_APPROXIMATE_ASPECT_RATIO_NOT_METRIC",
+        "referenceAspectRatioHint": 0.724
       },
       "material": {
         "materialIdentity": "guard-cover-spoiler-a-v1",
@@ -178,7 +213,8 @@
         "colorSource": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION",
         "sharedAcrossPoses": true,
         "metallic": 0.1,
-        "roughness": 0.68
+        "roughness": 0.68,
+        "colorAuthenticity": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION"
       },
       "motion": {
         "openAngleDegrees": 110,
@@ -202,7 +238,19 @@
         "737-400",
         "737-500"
       ],
-      "notes": null
+      "notes": null,
+      "referenceScreenshotEvidence": {
+        "evidenceFile": "GuardReferenceEvidence_20261026.json",
+        "screenshotName": "image(20261026-161115).png",
+        "approximateCoverRectPx": [
+          480,
+          704,
+          55,
+          76
+        ],
+        "visibility": "complete",
+        "pose": "CLOSED_REFERENCE_ONLY"
+      }
     },
     {
       "controlId": "spoiler-b",
@@ -225,14 +273,17 @@
         "requiresCalibratedSocket": true
       },
       "geometry": {
-        "previewWidth": 0.107,
+        "previewWidth": 0.113668,
         "previewHeight": 0.157,
         "previewThickness": 0.013,
         "previewCornerRadius": 0.01,
         "previewUnits": "SCENE_PREVIEW_UNITS_NOT_METERS_NOT_MILLIMETRES",
         "approvedDimensionsMm": null,
         "approval": "UNVERIFIED_DO_NOT_USE_AS_FACTORY_DIMENSIONS",
-        "engineUnitScaleToMm": null
+        "engineUnitScaleToMm": null,
+        "contourProfile": "black-shouldered-cap",
+        "coverAspectSource": "OWNER_SCREENSHOT_APPROXIMATE_ASPECT_RATIO_NOT_METRIC",
+        "referenceAspectRatioHint": 0.724
       },
       "material": {
         "materialIdentity": "guard-cover-spoiler-b-v1",
@@ -240,7 +291,8 @@
         "colorSource": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION",
         "sharedAcrossPoses": true,
         "metallic": 0.1,
-        "roughness": 0.68
+        "roughness": 0.68,
+        "colorAuthenticity": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION"
       },
       "motion": {
         "openAngleDegrees": 110,
@@ -264,7 +316,19 @@
         "737-400",
         "737-500"
       ],
-      "notes": null
+      "notes": null,
+      "referenceScreenshotEvidence": {
+        "evidenceFile": "GuardReferenceEvidence_20261026.json",
+        "screenshotName": "image(20261026-161115).png",
+        "approximateCoverRectPx": [
+          533,
+          704,
+          55,
+          76
+        ],
+        "visibility": "complete",
+        "pose": "CLOSED_REFERENCE_ONLY"
+      }
     },
     {
       "controlId": "alternate-flaps-master",
@@ -287,14 +351,17 @@
         "requiresCalibratedSocket": true
       },
       "geometry": {
-        "previewWidth": 0.101,
+        "previewWidth": 0.056502,
         "previewHeight": 0.129,
         "previewThickness": 0.013,
         "previewCornerRadius": 0.01,
         "previewUnits": "SCENE_PREVIEW_UNITS_NOT_METERS_NOT_MILLIMETRES",
         "approvedDimensionsMm": null,
         "approval": "UNVERIFIED_DO_NOT_USE_AS_FACTORY_DIMENSIONS",
-        "engineUnitScaleToMm": null
+        "engineUnitScaleToMm": null,
+        "contourProfile": "red-tapered-long-cap",
+        "coverAspectSource": "OWNER_SCREENSHOT_APPROXIMATE_ASPECT_RATIO_NOT_METRIC",
+        "referenceAspectRatioHint": 0.438
       },
       "material": {
         "materialIdentity": "guard-cover-alternate-flaps-master-v1",
@@ -302,7 +369,8 @@
         "colorSource": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION",
         "sharedAcrossPoses": true,
         "metallic": 0.1,
-        "roughness": 0.68
+        "roughness": 0.68,
+        "colorAuthenticity": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION"
       },
       "motion": {
         "openAngleDegrees": 108,
@@ -326,7 +394,19 @@
         "737-400",
         "737-500"
       ],
-      "notes": null
+      "notes": null,
+      "referenceScreenshotEvidence": {
+        "evidenceFile": "GuardReferenceEvidence_20261026.json",
+        "screenshotName": "image(20261026-161115).png",
+        "approximateCoverRectPx": [
+          589,
+          614,
+          42,
+          96
+        ],
+        "visibility": "complete",
+        "pose": "CLOSED_REFERENCE_ONLY"
+      }
     },
     {
       "controlId": "battery-master",
@@ -356,7 +436,10 @@
         "previewUnits": "SCENE_PREVIEW_UNITS_NOT_METERS_NOT_MILLIMETRES",
         "approvedDimensionsMm": null,
         "approval": "UNVERIFIED_DO_NOT_USE_AS_FACTORY_DIMENSIONS",
-        "engineUnitScaleToMm": null
+        "engineUnitScaleToMm": null,
+        "contourProfile": "black-electrical-guard",
+        "coverAspectSource": "AUTHOR_PREVIEW_NOT_MEASURED",
+        "referenceAspectRatioHint": null
       },
       "material": {
         "materialIdentity": "guard-cover-battery-master-v1",
@@ -364,7 +447,8 @@
         "colorSource": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION",
         "sharedAcrossPoses": true,
         "metallic": 0.1,
-        "roughness": 0.68
+        "roughness": 0.68,
+        "colorAuthenticity": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION"
       },
       "motion": {
         "openAngleDegrees": 110,
@@ -388,7 +472,19 @@
         "737-400",
         "737-500"
       ],
-      "notes": null
+      "notes": null,
+      "referenceScreenshotEvidence": {
+        "evidenceFile": "GuardReferenceEvidence_20261026.json",
+        "screenshotName": "image(20261026-161115).png",
+        "approximateCoverRectPx": [
+          756,
+          661,
+          39,
+          69
+        ],
+        "visibility": "partial",
+        "pose": "CLOSED_REFERENCE_ONLY"
+      }
     },
     {
       "controlId": "generator-disconnect-1",
@@ -416,14 +512,17 @@
         "requiresCalibratedSocket": true
       },
       "geometry": {
-        "previewWidth": 0.141,
+        "previewWidth": 0.105435,
         "previewHeight": 0.213,
         "previewThickness": 0.018,
         "previewCornerRadius": 0.015,
         "previewUnits": "SCENE_PREVIEW_UNITS_NOT_METERS_NOT_MILLIMETRES",
         "approvedDimensionsMm": null,
         "approval": "UNVERIFIED_DO_NOT_USE_AS_FACTORY_DIMENSIONS",
-        "engineUnitScaleToMm": null
+        "engineUnitScaleToMm": null,
+        "contourProfile": "red-tapered-long-cap",
+        "coverAspectSource": "OWNER_SCREENSHOT_APPROXIMATE_ASPECT_RATIO_NOT_METRIC",
+        "referenceAspectRatioHint": 0.495
       },
       "material": {
         "materialIdentity": "guard-cover-generator-disconnect-1-v1",
@@ -431,7 +530,8 @@
         "colorSource": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION",
         "sharedAcrossPoses": true,
         "metallic": 0.1,
-        "roughness": 0.68
+        "roughness": 0.68,
+        "colorAuthenticity": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION"
       },
       "motion": {
         "openAngleDegrees": 110,
@@ -455,7 +555,19 @@
         "737-400",
         "737-500"
       ],
-      "notes": null
+      "notes": null,
+      "referenceScreenshotEvidence": {
+        "evidenceFile": "GuardReferenceEvidence_20261026.json",
+        "screenshotName": "image(20261026-161115).png",
+        "approximateCoverRectPx": [
+          744,
+          800,
+          45,
+          91
+        ],
+        "visibility": "complete",
+        "pose": "CLOSED_REFERENCE_ONLY"
+      }
     },
     {
       "controlId": "generator-disconnect-2",
@@ -483,14 +595,17 @@
         "requiresCalibratedSocket": true
       },
       "geometry": {
-        "previewWidth": 0.141,
+        "previewWidth": 0.105435,
         "previewHeight": 0.213,
         "previewThickness": 0.018,
         "previewCornerRadius": 0.015,
         "previewUnits": "SCENE_PREVIEW_UNITS_NOT_METERS_NOT_MILLIMETRES",
         "approvedDimensionsMm": null,
         "approval": "UNVERIFIED_DO_NOT_USE_AS_FACTORY_DIMENSIONS",
-        "engineUnitScaleToMm": null
+        "engineUnitScaleToMm": null,
+        "contourProfile": "red-tapered-long-cap",
+        "coverAspectSource": "OWNER_SCREENSHOT_APPROXIMATE_ASPECT_RATIO_NOT_METRIC",
+        "referenceAspectRatioHint": 0.495
       },
       "material": {
         "materialIdentity": "guard-cover-generator-disconnect-2-v1",
@@ -498,7 +613,8 @@
         "colorSource": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION",
         "sharedAcrossPoses": true,
         "metallic": 0.1,
-        "roughness": 0.68
+        "roughness": 0.68,
+        "colorAuthenticity": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION"
       },
       "motion": {
         "openAngleDegrees": 110,
@@ -522,7 +638,19 @@
         "737-400",
         "737-500"
       ],
-      "notes": null
+      "notes": null,
+      "referenceScreenshotEvidence": {
+        "evidenceFile": "GuardReferenceEvidence_20261026.json",
+        "screenshotName": "image(20261026-161115).png",
+        "approximateCoverRectPx": [
+          898,
+          800,
+          45,
+          91
+        ],
+        "visibility": "complete",
+        "pose": "CLOSED_REFERENCE_ONLY"
+      }
     },
     {
       "controlId": "standby-power",
@@ -550,14 +678,17 @@
         "requiresCalibratedSocket": true
       },
       "geometry": {
-        "previewWidth": 0.256,
+        "previewWidth": 0.186842,
         "previewHeight": 0.103,
         "previewThickness": 0.014,
         "previewCornerRadius": 0.012,
         "previewUnits": "SCENE_PREVIEW_UNITS_NOT_METERS_NOT_MILLIMETRES",
         "approvedDimensionsMm": null,
         "approval": "UNVERIFIED_DO_NOT_USE_AS_FACTORY_DIMENSIONS",
-        "engineUnitScaleToMm": null
+        "engineUnitScaleToMm": null,
+        "contourProfile": "wide-low-profile",
+        "coverAspectSource": "OWNER_SCREENSHOT_APPROXIMATE_ASPECT_RATIO_NOT_METRIC",
+        "referenceAspectRatioHint": 1.814
       },
       "material": {
         "materialIdentity": "guard-cover-standby-power-v1",
@@ -565,7 +696,8 @@
         "colorSource": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION",
         "sharedAcrossPoses": true,
         "metallic": 0.1,
-        "roughness": 0.68
+        "roughness": 0.68,
+        "colorAuthenticity": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION"
       },
       "motion": {
         "openAngleDegrees": 105,
@@ -589,7 +721,19 @@
         "737-400",
         "737-500"
       ],
-      "notes": null
+      "notes": null,
+      "referenceScreenshotEvidence": {
+        "evidenceFile": "GuardReferenceEvidence_20261026.json",
+        "screenshotName": "image(20261026-161115).png",
+        "approximateCoverRectPx": [
+          822,
+          774,
+          78,
+          43
+        ],
+        "visibility": "complete",
+        "pose": "CLOSED_REFERENCE_ONLY"
+      }
     },
     {
       "controlId": "emergency-exit-lights",
@@ -619,7 +763,10 @@
         "previewUnits": "SCENE_PREVIEW_UNITS_NOT_METERS_NOT_MILLIMETRES",
         "approvedDimensionsMm": null,
         "approval": "UNVERIFIED_DO_NOT_USE_AS_FACTORY_DIMENSIONS",
-        "engineUnitScaleToMm": null
+        "engineUnitScaleToMm": null,
+        "contourProfile": "black-vertical-exit",
+        "coverAspectSource": "AUTHOR_PREVIEW_NOT_MEASURED",
+        "referenceAspectRatioHint": null
       },
       "material": {
         "materialIdentity": "guard-cover-emergency-exit-lights-v1",
@@ -627,7 +774,8 @@
         "colorSource": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION",
         "sharedAcrossPoses": true,
         "metallic": 0.1,
-        "roughness": 0.68
+        "roughness": 0.68,
+        "colorAuthenticity": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION"
       },
       "motion": {
         "openAngleDegrees": 110,
@@ -651,7 +799,19 @@
         "737-400",
         "737-500"
       ],
-      "notes": null
+      "notes": null,
+      "referenceScreenshotEvidence": {
+        "evidenceFile": "GuardReferenceEvidence_20261026.json",
+        "screenshotName": "image(20261026-161115).png",
+        "approximateCoverRectPx": [
+          1028,
+          947,
+          47,
+          99
+        ],
+        "visibility": "bottom-clipped",
+        "pose": "CLOSED_REFERENCE_ONLY"
+      }
     },
     {
       "controlId": "passenger-oxygen",
@@ -674,22 +834,26 @@
         "requiresCalibratedSocket": true
       },
       "geometry": {
-        "previewWidth": 0.069,
+        "previewWidth": 0.048504,
         "previewHeight": 0.094,
         "previewThickness": 0.01,
         "previewCornerRadius": 0.008,
         "previewUnits": "SCENE_PREVIEW_UNITS_NOT_METERS_NOT_MILLIMETRES",
         "approvedDimensionsMm": null,
         "approval": "UNVERIFIED_DO_NOT_USE_AS_FACTORY_DIMENSIONS",
-        "engineUnitScaleToMm": null
+        "engineUnitScaleToMm": null,
+        "contourProfile": "black-vertical-oxygen",
+        "coverAspectSource": "OWNER_SCREENSHOT_APPROXIMATE_ASPECT_RATIO_NOT_METRIC",
+        "referenceAspectRatioHint": 0.516
       },
       "material": {
         "materialIdentity": "guard-cover-passenger-oxygen-v1",
-        "swatchHex": "#A32123",
-        "colorSource": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION",
+        "swatchHex": "#242426",
+        "colorSource": "OWNER_SCREENSHOT_2026_10_26_NEAR_BLACK_NOT_RED__STILL_UNVERIFIED_HARDWARE",
         "sharedAcrossPoses": true,
         "metallic": 0.1,
-        "roughness": 0.68
+        "roughness": 0.68,
+        "colorAuthenticity": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION"
       },
       "motion": {
         "openAngleDegrees": 108,
@@ -713,7 +877,19 @@
         "737-400",
         "737-500"
       ],
-      "notes": null
+      "notes": null,
+      "referenceScreenshotEvidence": {
+        "evidenceFile": "GuardReferenceEvidence_20261026.json",
+        "screenshotName": "image(20261026-161115).png",
+        "approximateCoverRectPx": [
+          1290,
+          91,
+          48,
+          93
+        ],
+        "visibility": "complete",
+        "pose": "CLOSED_REFERENCE_ONLY"
+      }
     },
     {
       "controlId": "flight-recorder-test",
@@ -748,7 +924,10 @@
         "previewUnits": "SCENE_PREVIEW_UNITS_NOT_METERS_NOT_MILLIMETRES",
         "approvedDimensionsMm": null,
         "approval": "UNVERIFIED_DO_NOT_USE_AS_FACTORY_DIMENSIONS",
-        "engineUnitScaleToMm": null
+        "engineUnitScaleToMm": null,
+        "contourProfile": "low-profile-recorder",
+        "coverAspectSource": "AUTHOR_PREVIEW_NOT_MEASURED",
+        "referenceAspectRatioHint": null
       },
       "material": {
         "materialIdentity": "guard-cover-flight-recorder-test-v1",
@@ -756,7 +935,8 @@
         "colorSource": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION",
         "sharedAcrossPoses": true,
         "metallic": 0.1,
-        "roughness": 0.68
+        "roughness": 0.68,
+        "colorAuthenticity": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION"
       },
       "motion": {
         "openAngleDegrees": 105,
@@ -780,7 +960,8 @@
         "737-400",
         "737-500"
       ],
-      "notes": "Owner explicitly validated left hinge with right free edge moving LEFT"
+      "notes": "Owner explicitly validated left hinge with right free edge moving LEFT",
+      "referenceScreenshotEvidence": null
     },
     {
       "controlId": "bus-transfer",
@@ -807,7 +988,10 @@
         "previewUnits": "SCENE_PREVIEW_UNITS_NOT_METERS_NOT_MILLIMETRES",
         "approvedDimensionsMm": null,
         "approval": "UNVERIFIED_DO_NOT_USE_AS_FACTORY_DIMENSIONS",
-        "engineUnitScaleToMm": null
+        "engineUnitScaleToMm": null,
+        "contourProfile": "wide-low-profile",
+        "coverAspectSource": "AUTHOR_PREVIEW_NOT_MEASURED",
+        "referenceAspectRatioHint": null
       },
       "material": {
         "materialIdentity": "guard-cover-bus-transfer-v1",
@@ -815,7 +999,8 @@
         "colorSource": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION",
         "sharedAcrossPoses": true,
         "metallic": 0.1,
-        "roughness": 0.68
+        "roughness": 0.68,
+        "colorAuthenticity": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION"
       },
       "motion": {
         "openAngleDegrees": 105,
@@ -839,7 +1024,8 @@
         "737-400",
         "737-500"
       ],
-      "notes": null
+      "notes": null,
+      "referenceScreenshotEvidence": null
     },
     {
       "controlId": "antiskid",
@@ -856,22 +1042,26 @@
         "requiresCalibratedSocket": true
       },
       "geometry": {
-        "previewWidth": 0.089,
+        "previewWidth": 0.054522,
         "previewHeight": 0.117,
         "previewThickness": 0.012,
         "previewCornerRadius": 0.01,
         "previewUnits": "SCENE_PREVIEW_UNITS_NOT_METERS_NOT_MILLIMETRES",
         "approvedDimensionsMm": null,
         "approval": "UNVERIFIED_DO_NOT_USE_AS_FACTORY_DIMENSIONS",
-        "engineUnitScaleToMm": null
+        "engineUnitScaleToMm": null,
+        "contourProfile": "silver-satin-inset",
+        "coverAspectSource": "OWNER_SCREENSHOT_APPROXIMATE_ASPECT_RATIO_NOT_METRIC",
+        "referenceAspectRatioHint": 0.466
       },
       "material": {
         "materialIdentity": "guard-cover-antiskid-v1",
-        "swatchHex": "#202125",
-        "colorSource": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION",
+        "swatchHex": "#74777B",
+        "colorSource": "OWNER_SCREENSHOT_2026_10_26_SATIN_GRAY_METAL_FACE__STILL_UNVERIFIED_HARDWARE",
         "sharedAcrossPoses": true,
-        "metallic": 0.1,
-        "roughness": 0.68
+        "metallic": 0.5,
+        "roughness": 0.45,
+        "colorAuthenticity": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION"
       },
       "motion": {
         "openAngleDegrees": 108,
@@ -895,7 +1085,19 @@
         "737-400",
         "737-500"
       ],
-      "notes": null
+      "notes": null,
+      "referenceScreenshotEvidence": {
+        "evidenceFile": "GuardReferenceEvidence_20261026.json",
+        "screenshotName": "image(20261026-161143).png",
+        "approximateCoverRectPx": [
+          1236,
+          560,
+          41,
+          88
+        ],
+        "visibility": "complete",
+        "pose": "CLOSED_REFERENCE_ONLY"
+      }
     },
     {
       "controlId": "gpws-flap-inhibit",
@@ -919,7 +1121,10 @@
         "previewUnits": "SCENE_PREVIEW_UNITS_NOT_METERS_NOT_MILLIMETRES",
         "approvedDimensionsMm": null,
         "approval": "UNVERIFIED_DO_NOT_USE_AS_FACTORY_DIMENSIONS",
-        "engineUnitScaleToMm": null
+        "engineUnitScaleToMm": null,
+        "contourProfile": "shared-gpws-tentative",
+        "coverAspectSource": "AUTHOR_PREVIEW_NOT_MEASURED",
+        "referenceAspectRatioHint": null
       },
       "material": {
         "materialIdentity": "guard-cover-gpws-flap-inhibit-v1",
@@ -927,7 +1132,8 @@
         "colorSource": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION",
         "sharedAcrossPoses": true,
         "metallic": 0.1,
-        "roughness": 0.68
+        "roughness": 0.68,
+        "colorAuthenticity": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION"
       },
       "motion": {
         "openAngleDegrees": 110,
@@ -951,7 +1157,26 @@
         "737-400",
         "737-500"
       ],
-      "notes": null
+      "notes": null,
+      "referenceScreenshotEvidence": {
+        "evidenceFile": "GuardReferenceEvidence_20261026.json",
+        "screenshotName": "image(20261026-161143).png",
+        "approximateCoverRectPx": [
+          1516,
+          953,
+          114,
+          90
+        ],
+        "visibility": "bottom-clipped",
+        "pose": "CLOSED_REFERENCE_ONLY"
+      },
+      "hardwareGrouping": {
+        "visibleHousingCandidate": "gpws-flap-gear-combined",
+        "candidatePhysicalCoverCount": 1,
+        "source": "USER_MIP_SCREENSHOT_2026_10_26",
+        "confirmation": "UNVERIFIED_2_LOGICAL_CONTROLS_MAY_SHARE_1_COVER",
+        "mountingLockout": "DO_NOT_PLACE_TWO_OVERLAPPING_GUARDS_ON_PANEL_UNTIL_VERIFIED"
+      }
     },
     {
       "controlId": "gpws-gear-inhibit",
@@ -975,7 +1200,10 @@
         "previewUnits": "SCENE_PREVIEW_UNITS_NOT_METERS_NOT_MILLIMETRES",
         "approvedDimensionsMm": null,
         "approval": "UNVERIFIED_DO_NOT_USE_AS_FACTORY_DIMENSIONS",
-        "engineUnitScaleToMm": null
+        "engineUnitScaleToMm": null,
+        "contourProfile": "shared-gpws-tentative",
+        "coverAspectSource": "AUTHOR_PREVIEW_NOT_MEASURED",
+        "referenceAspectRatioHint": null
       },
       "material": {
         "materialIdentity": "guard-cover-gpws-gear-inhibit-v1",
@@ -983,7 +1211,8 @@
         "colorSource": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION",
         "sharedAcrossPoses": true,
         "metallic": 0.1,
-        "roughness": 0.68
+        "roughness": 0.68,
+        "colorAuthenticity": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION"
       },
       "motion": {
         "openAngleDegrees": 110,
@@ -1007,7 +1236,26 @@
         "737-400",
         "737-500"
       ],
-      "notes": null
+      "notes": null,
+      "referenceScreenshotEvidence": {
+        "evidenceFile": "GuardReferenceEvidence_20261026.json",
+        "screenshotName": "image(20261026-161143).png",
+        "approximateCoverRectPx": [
+          1516,
+          953,
+          114,
+          90
+        ],
+        "visibility": "bottom-clipped",
+        "pose": "CLOSED_REFERENCE_ONLY"
+      },
+      "hardwareGrouping": {
+        "visibleHousingCandidate": "gpws-flap-gear-combined",
+        "candidatePhysicalCoverCount": 1,
+        "source": "USER_MIP_SCREENSHOT_2026_10_26",
+        "confirmation": "UNVERIFIED_2_LOGICAL_CONTROLS_MAY_SHARE_1_COVER",
+        "mountingLockout": "DO_NOT_PLACE_TWO_OVERLAPPING_GUARDS_ON_PANEL_UNTIL_VERIFIED"
+      }
     },
     {
       "controlId": "gpws-terrain-inhibit",
@@ -1031,7 +1279,10 @@
         "previewUnits": "SCENE_PREVIEW_UNITS_NOT_METERS_NOT_MILLIMETRES",
         "approvedDimensionsMm": null,
         "approval": "UNVERIFIED_DO_NOT_USE_AS_FACTORY_DIMENSIONS",
-        "engineUnitScaleToMm": null
+        "engineUnitScaleToMm": null,
+        "contourProfile": "gpws-unknown",
+        "coverAspectSource": "AUTHOR_PREVIEW_NOT_MEASURED",
+        "referenceAspectRatioHint": null
       },
       "material": {
         "materialIdentity": "guard-cover-gpws-terrain-inhibit-v1",
@@ -1039,7 +1290,8 @@
         "colorSource": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION",
         "sharedAcrossPoses": true,
         "metallic": 0.1,
-        "roughness": 0.68
+        "roughness": 0.68,
+        "colorAuthenticity": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION"
       },
       "motion": {
         "openAngleDegrees": 110,
@@ -1063,7 +1315,11 @@
         "737-400",
         "737-500"
       ],
-      "notes": null
+      "notes": null,
+      "referenceScreenshotEvidence": null
     }
-  ]
+  ],
+  "referenceImageEvidence": "Resources/GuardReferenceEvidence_20261026.json",
+  "catalogRevision": "v1.1 photo-constrained provisional contour/ratio; actual mm still unverified",
+  "visualUnifiedRule": "State transitions must preserve the exact same mesh, contourProfile, material, RGBA, thickness, UV/texture and localScale. Only fixed-hinge localRotation and physically induced light/shadow/projection change."
 }
