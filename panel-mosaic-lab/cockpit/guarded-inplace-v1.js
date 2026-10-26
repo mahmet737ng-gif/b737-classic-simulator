@@ -33,7 +33,7 @@ function guardedSize(node,c,legacy){
  const g=c.geometry;
  if(legacy.presentation==='flight-recorder-left-hinge'){
   const w=node.clientWidth,h=node.clientHeight;
-  assert(w>5&&h>5,'recorder's original reference socket unavailable');
+  assert(w>5&&h>5,'flight recorder original reference socket unavailable');
   return {left:0,top:0,w,h,method:'EXACT_PRIOR_SOURCE_RECT'};
  }
  if(Array.isArray(legacy.mountingRectSource)){
