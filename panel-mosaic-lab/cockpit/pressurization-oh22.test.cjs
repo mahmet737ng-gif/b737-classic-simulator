@@ -71,7 +71,8 @@ for(const id of ['CPCS','DCPCS']){
  const cfg=oh22.config(id);
  assert.ok(cfg.lampFit.x>1&&cfg.lampFit.y>1,id+' lamp face must grow');
  for(const knob of cfg.controls.filter(x=>x.appearance!=='hotspot')){
-  assert.ok(cfg.controlFit[knob.id]>=.12, id+' '+knob.id+' must use its fitted aperture');
+  const min=knob.visualFamily==='Small Silver'?.075:.12;
+   assert.ok(cfg.controlFit[knob.id]>=min,id+' '+knob.id+' must fit its own photographed socket');
  }
  const expanded=cfg.lamps.map(l=>({x:l.face[0],y:l.face[1],w:l.face[2]*cfg.lampFit.x,h:l.face[3]*cfg.lampFit.y}));
  expanded.forEach((f,i)=>{
