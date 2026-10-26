@@ -91,3 +91,38 @@ test("Meter readings outside Classic MRG normal range are flagged, not clamped",
  A.equal(a.selectedTRAmpsObserved.status,"OUTSIDE_MRG_REFERENCE");
  A.equal(a.dcBusVoltageObserved.observed,31);
 });
+
+
+test("MRG Classic BAT OFF ON GROUND when both SYS BUS are APU-sourced demands APU shutdown and deenergizes source",()=>{
+ let s=E.apply(base(),{type:"CONTROL",key:"apuRunning",value:true});
+ s=E.apply(s,{type:"SELECT_SOURCE",side:1,source:"APU"});
+ s=E.apply(s,{type:"SELECT_SOURCE",side:2,source:"APU"});
+ s=E.apply(s,{type:"CONTROL",key:"batterySwitch",value:false});
+ const e=E.evaluate(s);
+ A.equal(e.apuAutomaticShutdownRequested,true);
+ A.equal(e.bus.generator1,false);A.equal(e.bus.generator2,false);
+ A(e.qa.some(x=>x.id==="CLASSIC_MRG_P148_APU_GROUND_BATTERY_OFF"));
+ const observed=M.evaluate({selector:"TR1",electrical:e,observed:{dcVolts:27}});
+ A.notEqual(observed.dcBusVoltageObserved.status,"WITHIN_MRG_REFERENCE");
+ A(observed.qa.some(x=>x.startsWith("CLASSIC_MRG_P148_APU_BAT_OFF_ON_GROUND")));
+});
+test("Classic BAT OFF in flight must not automatically terminate selected APU AC source",()=>{
+ let s=E.apply(base(),{type:"CONTROL",key:"onGround",value:false});
+ s=E.apply(s,{type:"CONTROL",key:"apuRunning",value:true});
+ s=E.apply(s,{type:"SELECT_SOURCE",side:1,source:"APU"});
+ s=E.apply(s,{type:"CONTROL",key:"batterySwitch",value:false});
+ const e=E.evaluate(s);A.equal(e.apuAutomaticShutdownRequested,false);
+ A.equal(e.source[1],"APU");A.equal(e.bus.generator1,true);
+});
+test("Classic engine-driven generators remain on AC system with BAT switch OFF",()=>{
+ let s=E.apply(base(),{type:"CONTROL",key:"batterySwitch",value:false});
+ const e=E.evaluate(s);A.equal(e.bus.generator1,true);A.equal(e.bus.generator2,true);
+ A.equal(e.apuAutomaticShutdownRequested,false);
+});
+test("Classic BAT OFF breaks externally-powered SYS BUS from external AC source",()=>{
+ let s=E.apply(base(),{type:"CONTROL",key:"groundPowerAttached",value:true});
+ s=E.apply(s,{type:"SELECT_SOURCE",side:1,source:"EXT"});
+ s=E.apply(s,{type:"CONTROL",key:"batterySwitch",value:false});
+ const e=E.evaluate(s);A.equal(e.source[1],null);
+ A.equal(e.apuAutomaticShutdownRequested,false);
+});
