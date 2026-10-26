@@ -1,0 +1,260 @@
+{
+  "schema": "b737classic.mrg-electrical-needle-source.v1",
+  "timestamp": "2026-10-26",
+  "aircraft": "B737 Classic only; airframe EP-FSI effectivity still requires checking",
+  "document": "MRG IV.6 Electrical",
+  "screenshots": [
+    {
+      "filename": "image(20261026-002410).png",
+      "printedPages": [
+        142,
+        143
+      ]
+    },
+    {
+      "filename": "image(20261026-002426).png",
+      "printedPages": [
+        144,
+        145
+      ]
+    },
+    {
+      "filename": "image(20261026-002438).png",
+      "printedPages": [
+        146,
+        147
+      ]
+    },
+    {
+      "filename": "image(20261026-002440).png",
+      "printedPages": [
+        148,
+        149
+      ]
+    },
+    {
+      "filename": "image(20261026-002444).png",
+      "printedPages": [
+        150,
+        151
+      ]
+    },
+    {
+      "filename": "image(20261026-002458).png",
+      "printedPages": [
+        152
+      ]
+    },
+    {
+      "filename": "image(20261026-002512).png",
+      "printedPages": [
+        154,
+        155
+      ]
+    },
+    {
+      "filename": "image(20261026-002519).png",
+      "printedPages": [
+        156,
+        157
+      ]
+    },
+    {
+      "filename": "image(20261026-002524).png",
+      "printedPages": [
+        158,
+        159
+      ]
+    },
+    {
+      "filename": "image(20261026-002536).png",
+      "printedPages": [
+        160,
+        161
+      ]
+    }
+  ],
+  "facts": [
+    {
+      "id": "CSD_LOW_OIL_PRESSURE",
+      "printedPages": "142-143",
+      "content": "CSD oil pressure <120 psi",
+      "aircraft": "CL",
+      "angleVerified": false
+    },
+    {
+      "id": "CSD_HIGH_OIL_TEMPERATURE",
+      "printedPages": "142-143",
+      "content": "CSD oil temperature >157 degC, not NG IDG limit",
+      "aircraft": "CL",
+      "angleVerified": false
+    },
+    {
+      "id": "CSD_SPEED",
+      "printedPages": "143",
+      "content": "Classic CSD governor 6000 RPM reference",
+      "aircraft": "CL",
+      "angleVerified": false
+    },
+    {
+      "id": "TR1_DC_BUS_VOLTS",
+      "printedPages": "148,161",
+      "content": "24-30 V DC BUS1 reading, not direct TR1 output",
+      "aircraft": "CL",
+      "angleVerified": false
+    },
+    {
+      "id": "TR2_DC_BUS_VOLTS",
+      "printedPages": "148,161",
+      "content": "24-30 V DC BUS2 reading, not direct TR2 output",
+      "aircraft": "CL",
+      "angleVerified": false
+    },
+    {
+      "id": "TR3_DC_BUS_VOLTS",
+      "printedPages": "148,161",
+      "content": "24-30 V reference; exact measured bus requires confirmation",
+      "aircraft": "CL",
+      "angleVerified": false
+    },
+    {
+      "id": "TR1_DC_AMPS",
+      "printedPages": "148,161",
+      "content": "20-25 A normal",
+      "aircraft": "CL",
+      "angleVerified": false
+    },
+    {
+      "id": "TR2_DC_AMPS",
+      "printedPages": "148,161",
+      "content": "20-25 A normal",
+      "aircraft": "CL",
+      "angleVerified": false
+    },
+    {
+      "id": "TR3_DC_AMPS",
+      "printedPages": "148,161",
+      "content": "10-15 A normal",
+      "aircraft": "CL",
+      "angleVerified": false
+    },
+    {
+      "id": "BATTERY_DC_VOLTS",
+      "printedPages": "148",
+      "content": "22-30 V nominal",
+      "aircraft": "CL",
+      "angleVerified": false
+    },
+    {
+      "id": "BATTERY_DC_AMPS",
+      "printedPages": "148",
+      "content": "0 A nominal MRG table",
+      "aircraft": "CL",
+      "angleVerified": false
+    },
+    {
+      "id": "BAT_BUS_AND_STBY_AMPS",
+      "printedPages": "148",
+      "content": "No current indication",
+      "aircraft": "CL",
+      "angleVerified": false
+    },
+    {
+      "id": "TR_BACKUP",
+      "printedPages": "151,161-162",
+      "content": "TR1/2 can back each other; DC volts normal when failed TR current zero",
+      "aircraft": "CL",
+      "angleVerified": false
+    },
+    {
+      "id": "TR3_DISCONNECT",
+      "printedPages": "151,161-162",
+      "content": "TR3 disconnect relay opens on glideslope capture or BUS XFR OFF",
+      "aircraft": "CL",
+      "angleVerified": false
+    },
+    {
+      "id": "STBY_OFF_LIGHT",
+      "printedPages": "159",
+      "content": "Classic STBY PWR OFF primarily AC standby; DC standby may be powered",
+      "aircraft": "CL",
+      "angleVerified": false
+    },
+    {
+      "id": "BAT_OFF_EXTERNAL_POWER",
+      "printedPages": "148",
+      "content": "Battery switch OFF disconnects EXT AC from CL SYS BUS",
+      "aircraft": "CL",
+      "angleVerified": false
+    },
+    {
+      "id": "BAT_OFF_APU_GROUND",
+      "printedPages": "148",
+      "content": "APU on-ground auto shutdown triggered by battery switch OFF",
+      "aircraft": "CL",
+      "angleVerified": false
+    },
+    {
+      "id": "AC_NOMINAL",
+      "printedPages": "152",
+      "content": "115VAC schematic nominal, no tolerance/angle proven",
+      "aircraft": "CL",
+      "angleVerified": false
+    },
+    {
+      "id": "TWO_PHASE",
+      "printedPages": "154",
+      "content": "Heavy loads can fail on two-phase generator despite other AC loads working",
+      "aircraft": "CL",
+      "angleVerified": false
+    },
+    {
+      "id": "RESIDUAL_VOLTS",
+      "printedPages": "149",
+      "content": "12-15 VAC in flight can signal GCR trip while generator still rotates",
+      "aircraft": "CL",
+      "angleVerified": false
+    },
+    {
+      "id": "FUEL_PRESSURE_ANNUNCIATION",
+      "printedPages": "146",
+      "content": "Fuel boost pump low pressure can arise from AC motor or DC control loss; distinct branches",
+      "aircraft": "CL",
+      "angleVerified": false
+    }
+  ],
+  "excludeNG": [
+    "IDG 165psi/182degC limits",
+    "NG 24,000 RPM generator architecture",
+    "NG-only standby/DC bus wiring",
+    "NG SOURCE OFF assumptions"
+  ],
+  "geometry": {
+    "faces": 54,
+    "fullyCertified": 0,
+    "OH10_DC_AMPS_pivots": [
+      [
+        310,
+        168
+      ],
+      [
+        310,
+        192
+      ]
+    ],
+    "OH10_CPS_pivots": [
+      [
+        715,
+        190
+      ],
+      [
+        780,
+        192
+      ]
+    ],
+    "photoTickSignoffRequired": true
+  },
+  "technicalDatabaseSync": "VERSION_CONTROLLED_STAGING_ONLY; private SQLite not changed",
+  "engine": "engine/instruments/mrg-electrical-needle-audit-v1.js",
+  "note": "Source facts can validate numeric sensor values and system logic; no facts imply a physical angle or fully specified circuit."
+}
