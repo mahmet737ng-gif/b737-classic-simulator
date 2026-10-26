@@ -112,3 +112,83 @@
 @media(prefers-reduced-motion:reduce){
  .g17-native-hinge-pivot,.g17-native-shaft{transition:none!important}
 }
+
+/* Photo-constrained V2 surfaces:
+ * All front, side, rim and paint layers belong to the ONE physical cover.
+ * The texture is NEVER replaced on OPEN, and dimensions NEVER change.
+ * Photo references: owner-approved FLT CONTROL, alternate flaps, oxygen caps.
+ */
+.g17-native-hardware .g17-native-cover{
+  border:0!important;border-radius:var(--g17-radius,6px)!important;
+  background-color:var(--g17-base)!important;
+  box-shadow:inset 2px 2px 4px #ffffff21,
+             inset -4px -3px 6px #000a,
+             1px 3px 3px #010305!important;
+  transform:translateZ(0)!important;
+  backface-visibility:visible
+}
+.g17-native-hardware .g17-native-cover[data-surface="black"]{
+ background:url("./guard-textures/black-molded-v2.svg") center/100% 100% no-repeat,
+            var(--g17-base,#202125)!important
+}
+.g17-native-hardware .g17-native-cover[data-surface="red"]{
+ background:url("./guard-textures/red-molded-v2.svg") center/100% 100% no-repeat,
+            var(--g17-base,#A32123)!important
+}
+.g17-native-hardware .g17-native-cover[data-surface="horizontal"]{
+ background:url("./guard-textures/black-horizontal-v2.svg") center/100% 100% no-repeat,
+            var(--g17-base,#242426)!important
+}
+/* A formed return lip gives the door physical depth, including when swung
+   out. The lip rotates as part of the same lid/pivot, not as a second sprite. */
+.g17-native-hardware .g17-native-cover::before{
+ content:'';display:block;position:absolute;z-index:-1;inset:1px;
+ border-radius:inherit;border:2px solid #0a0e11;
+ background:linear-gradient(95deg,#07090a 0%,var(--g17-base) 34%,#0a0c0d 100%);
+ box-shadow:1px 2px 3px #0009;
+ transform:translateZ(-3px);pointer-events:none
+}
+.g17-native-hardware .g17-native-cover[data-surface="red"]::before{
+ border-color:#390907;
+ background:linear-gradient(95deg,#480e0b,#b52a20 32%,#510e0b 100%)
+}
+.g17-native-hardware .g17-native-cover::after{
+ content:'';position:absolute;inset:4% 6%;pointer-events:none;
+ border:1px solid #ffffff0c;border-radius:inherit;
+ box-shadow:inset 1px 0 #ffffff11
+}
+.g17-native-hardware .g17-native-hinge-pivot{will-change:transform}
+/* hinge barrels are anchored to the measured cap edge, independent of
+   the cover's rotation. Two side knuckles and steel pin stay in one place */
+.g17-native-hardware .g17-native-fixed-hinge{
+ display:block;border-radius:5px;
+ background:linear-gradient(180deg,#040709,#879298 20%,#20262c 40%,#c7cbc8 58%,#151c20 90%);
+ border:1px solid #111a20;box-shadow:0 1px 2px #000a
+}
+.g17-native-hardware .g17-native-fixed-hinge::before,
+.g17-native-hardware .g17-native-fixed-hinge::after{
+ content:'';position:absolute;border-radius:50%;
+ border:1px solid #080b0d;background:radial-gradient(circle at 32% 30%,#9ca3a5,#41484d 52%,#101518 82%);
+ box-shadow:0 1px 2px #0008
+}
+.g17-native-hardware[data-hinge="up"] .g17-native-fixed-hinge::before,
+.g17-native-hardware[data-hinge="down"] .g17-native-fixed-hinge::before{
+ width:8px;height:8px;top:-2px;left:-6px
+}
+.g17-native-hardware[data-hinge="up"] .g17-native-fixed-hinge::after,
+.g17-native-hardware[data-hinge="down"] .g17-native-fixed-hinge::after{
+ width:8px;height:8px;top:-2px;right:-6px
+}
+.g17-native-hardware[data-hinge="left"] .g17-native-fixed-hinge::before,
+.g17-native-hardware[data-hinge="right"] .g17-native-fixed-hinge::before{
+ width:8px;height:8px;top:-6px;left:-2px
+}
+.g17-native-hardware[data-hinge="left"] .g17-native-fixed-hinge::after,
+.g17-native-hardware[data-hinge="right"] .g17-native-fixed-hinge::after{
+ width:8px;height:8px;bottom:-6px;left:-2px
+}
+/* Standby-power and recorder are short covers, not stretched portraits. */
+.g17-native-hardware[data-surface="horizontal"] .g17-native-well{border-radius:7px}
+.g17-native-hardware[data-surface="red"] .g17-native-well{background:#11191d}
+/* Shield true visible body from generic backgrounds, without changing the
+   original engine hitboxes, switch state, owner hinges or locked atlas. */
