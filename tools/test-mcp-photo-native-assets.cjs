@@ -14,7 +14,7 @@ const {chromium}=require('playwright');
   await page.goto(base,{waitUntil:'domcontentloaded',timeout:60000});
   await page.waitForSelector('[data-piece="mcp"] .mcp-hw-at .mcp-hw-real-face',{timeout:60000});
   const results=[];
-  for(const [state,hardware] of [['OFF',{AT_ARM:'OFF',FD_LEFT:'OFF',FD_RIGHT:'OFF'}],['ON',{AT_ARM:'ARM',FD_LEFT:'ON',FD_RIGHT:'ON'}]]){
+  for(const [state,hardware] of (part==='cockpit'?[['OFF',{AT_ARM:'OFF',FD_LEFT:'OFF',FD_RIGHT:'OFF'}]]:[['OFF',{AT_ARM:'OFF',FD_LEFT:'OFF',FD_RIGHT:'OFF'}],['ON',{AT_ARM:'ARM',FD_LEFT:'ON',FD_RIGHT:'ON'}]])){
    await page.evaluate(values=>{
     for(const [key,st]of Object.entries(values))window.B737McpHardwareV1.setState(key,st);
    },hardware);
@@ -44,6 +44,8 @@ const {chromium}=require('playwright');
    results.push({state,faces:data});
    console.log('MCP_NATIVE_RENDER_PASS',part,state,JSON.stringify(data));
   }
+  // Unified is controlled by AFDS and may forbid ARM/ON while MCP POWER is UNKNOWN.
+  // Validate real OFF assets in Unified; exercise both states on the independent MCP hardware lab.
   assert.ok(!errs.some(x=>/mcp|SyntaxError/.test(x)),JSON.stringify(errs));
   const file='/tmp/mcp-native-'+part+'.png';
   await page.locator('[data-piece="mcp"]').first().screenshot({path:file,animations:'disabled'});
