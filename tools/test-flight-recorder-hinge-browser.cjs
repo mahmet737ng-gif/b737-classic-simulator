@@ -10,6 +10,7 @@ const {chromium}=require('playwright');
   await page.goto('http://127.0.0.1:8788/panel-mosaic-lab/interactive-overhead/?standalone=1&debugLights=1',{waitUntil:'domcontentloaded'});
   await page.waitForFunction(()=>window.B737RotaryGuards&&window.B737OverheadLights&&document.querySelector('.recorder-hinge-unit')&&document.querySelector('[data-light="flight-recorder-off"]'),null,{timeout:60000});
   const guard=page.locator('.recorder-hinge-unit'),lamp=page.locator('.mounted-light[data-light="flight-recorder-off"]'),cover=guard.locator('.recorder-hinge-cover'),lever=guard.locator('.recorder-hinge-lever');
+  await guard.scrollIntoViewIfNeeded({timeout:10000});
   const datum=await page.evaluate(()=>{
    const g=document.querySelector('.recorder-hinge-unit'),l=document.querySelector('[data-light="flight-recorder-off"]');
    const a=g.getBoundingClientRect(),b=l.getBoundingClientRect();
@@ -21,12 +22,19 @@ const {chromium}=require('playwright');
   assert.deepEqual(datum.sourceGuard,[1365,438,113,34]);assert.deepEqual(datum.sourceLamp,[1485,439,40,31]);
   assert.ok(datum.displayGap>3&&datum.displayGap<20,'Hinged guard is left of the OFF lamp with gap, not overlapping');
   assert.ok(Math.abs(datum.centerYDifference)<2,'Flight recorder guard must be vertically centred with OFF lamp');
+  console.log('FLIGHT_HINGE_GEOMETRY',JSON.stringify(datum));
   const sample=async(label)=>{
+   await guard.scrollIntoViewIfNeeded({timeout:10000});
    const a=await guard.boundingBox(),b=await lamp.boundingBox();
    const x=Math.floor(Math.min(a.x,b.x)-24),y=Math.floor(Math.min(a.y,b.y)-55);
    const width=Math.ceil(Math.max(a.x+a.width,b.x+b.width)-x+24),height=Math.ceil(Math.max(a.y+a.height,b.y+b.height)-y+35);
    const bytes=await page.screenshot({path:path.join(out,label+'.png'),clip:{x:Math.max(0,x),y:Math.max(0,y),width,height},animations:'disabled'});
-   if(label.endsWith('-ON'))console.log('FLIGHT_HINGE_CHROMIUM_PREVIEW',bytes.toString('base64'));
+   console.log('FLIGHT_HINGE_CLIP',label,JSON.stringify({x,y,width,height,shotBytes:bytes.length}));
+   if(label.endsWith('-ON')){
+    const whole=await page.locator('.atlas-piece[data-key="UPPER"]').screenshot({type:'jpeg',quality:72,animations:'disabled',timeout:25000});
+    console.log('FLIGHT_HINGE_UPPER_PREVIEW',whole.toString('base64'));
+    console.log('FLIGHT_HINGE_CHROMIUM_PREVIEW',bytes.toString('base64'));
+   }
   };
   await page.evaluate(()=>window.B737OverheadLights.setScenario({onGround:true,engine1Running:false,engine2Running:false}));
   await page.waitForFunction(()=>window.B737OverheadLights.getState().lights['flight-recorder-off']===true);
