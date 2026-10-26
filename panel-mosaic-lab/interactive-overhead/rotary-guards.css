@@ -26,3 +26,18 @@
 #rgGuardAction{width:100%;margin:0 0 8px;font-size:12px;padding:7px}
 .mounted-toggle[aria-disabled=true]{cursor:not-allowed}
 @media(prefers-reduced-motion:reduce){.rotary-picture,.guard-picture,.mounted-rotary.detent-motion .rotary-picture,.mounted-rotary.detent-motion.dragging .rotary-picture{transition:none}}
+
+/* Flight Recorder — TEST/NORMAL hinged horizontally at left, photo UPPER x1365–1478.
+   Right OFF lamp starts at source x1485. These are separate calibrated sockets. */
+.recorder-hinge-unit{overflow:visible;z-index:1;transform:none!important;pointer-events:none}
+.recorder-hinge-unit .recorder-hinge-cradle{position:absolute;inset:4% 1%;border:1px solid #191c1f;border-radius:4px;background:linear-gradient(180deg,#151b1e 0%,#030505 32%,#111619 100%);box-shadow:inset 0 1px 2px #3b4545,0 1px 1px #111;pointer-events:none}
+.recorder-hinge-unit .recorder-hinge-pivot{position:absolute;z-index:5;left:2%;top:11%;height:78%;width:9%;border-radius:4px;background:linear-gradient(90deg,#08090a,#566069 43%,#1e2429 60%,#060707);box-shadow:inset 1px 0 #9ba2a6,1px 0 2px #060707;pointer-events:none}
+.recorder-hinge-unit .recorder-hinge-cover{position:absolute!important;z-index:4;left:10%!important;top:7%!important;width:88%!important;height:86%!important;margin:0!important;padding:0!important;border-radius:4px!important;border:1px solid #283039!important;background:linear-gradient(180deg,#272d30 0%,#14191c 13%,#06090a 42%,#181e22 83%,#030506 100%)!important;box-shadow:inset 0 1px #546068,inset 0 -1px #050505,0 2px 4px #030303!important;cursor:pointer;pointer-events:auto;transform-origin:0 20%;transition:transform 190ms ease,filter 190ms ease}
+.recorder-hinge-unit .recorder-hinge-cover::after{content:'';position:absolute;left:14%;top:19%;width:64%;height:62%;border:1px solid #343e40;border-radius:3px;background:linear-gradient(180deg,#171d1e,#080c0e);box-shadow:inset 1px 1px #20282b}
+.recorder-hinge-unit[data-guard="open"] .recorder-hinge-cover{transform:translateY(-74%) rotate(-9deg);filter:brightness(1.18)}
+.recorder-hinge-unit .recorder-hinge-lever{position:absolute!important;z-index:3;left:30%!important;top:16%!important;width:63%!important;height:68%!important;margin:0!important;padding:0!important;background:linear-gradient(180deg,#343d40,#07090c 28%,#13181c 65%,#050708)!important;border:1px solid #242b30!important;border-radius:3px!important;box-shadow:inset 0 1px #6c7475!important;pointer-events:auto;cursor:pointer}
+.recorder-hinge-unit .recorder-hinge-lever::after{content:'';display:block;position:absolute;left:62%;top:11%;width:21%;height:78%;border-radius:3px;background:linear-gradient(90deg,#0c0d0e,#4a565b,#08090a)}
+.recorder-hinge-unit[data-value="test"] .recorder-hinge-lever::after{left:11%}
+.recorder-hinge-unit .recorder-hinge-lever:disabled{pointer-events:none;cursor:default}
+.recorder-hinge-unit button:focus-visible{outline:2px solid #f8d591!important;outline-offset:2px}
+@media(prefers-reduced-motion:reduce){.recorder-hinge-unit .recorder-hinge-cover{transition:none}}
