@@ -81,7 +81,11 @@
   if(!s||s.schema!=='b737-electrical/7')throw Error('Invalid Electrical V7 state');
   if(!['UNKNOWN','INHIBIT_6_20_11','TRANSFER_6_10_7'].includes(groundAutoPolicy))throw Error('Invalid source-conflict policy');
   const c=s.config,f=s.faults;
-  const ready={GEN1:c.engine1Running&&!f.GEN1_FAILED,GEN2:c.engine2Running&&!f.GEN2_FAILED,APU:c.apuRunning&&!f.APU_FAILED,EXT:c.onGround&&c.batterySwitch&&c.groundPowerAttached&&c.groundPowerQualityGood};
+  const apuOnSystemBus=Object.values(s.source).includes('APU');
+  // MRG Classic IV.6 printed p.148: BAT OFF on GND with APU GEN on SYS BUS requests APU auto shutdown.
+  // Model AC output loss here; actual APU engine-plant shutdown is a separate integration contract.
+  const apuShutdownDemand=Boolean(c.onGround&&!c.batterySwitch&&c.apuRunning&&apuOnSystemBus);
+  const ready={GEN1:c.engine1Running&&!f.GEN1_FAILED,GEN2:c.engine2Running&&!f.GEN2_FAILED,APU:c.apuRunning&&!f.APU_FAILED&&!apuShutdownDemand,EXT:c.onGround&&c.batterySwitch&&c.groundPowerAttached&&c.groundPowerQualityGood};
   const powered={};for(const side of [1,2]){const source=s.source[side];powered[side]=source&&ready[source]?source:null;}
   // No AC paralleling; each generator bus has at most one source.
   const gen={1:powered[1]!==null,2:powered[2]!==null};
@@ -124,9 +128,10 @@
   const galleyShed=c.onGround?false:distinctSources.size===1;
   const qa=[];
   if(standbyGap)qa.push({id:'STANDBY_GROUND_AUTO_CONFLICT',detail:standbyGap,level:'SOURCE_CONFLICT'});
+  if(apuShutdownDemand)qa.push({id:'CLASSIC_MRG_P148_APU_GROUND_BATTERY_OFF',detail:'APU generator SYS BUS deenergized; APU engine auto-shutdown request must be applied to upstream plant',level:'SOURCE_MATCH_PLANT_INTEGRATION_PENDING'});
   if(dcTr3BackupUnknown)qa.push({id:'TR3_BACKUP_ROUTE',detail:'TR3 supply to DC 1/2 needs installation wiring QA',level:'UNKNOWN'});
   if(!c.onGround&&s.source[1]==='APU'&&s.source[2]==='APU')qa.push({id:'APU_FLIGHT_DUAL_FEED',detail:'APU dual flight buses not supported; reconnect by selection',level:'INVALID'});
-  return {schema:'B737_ELECTRICAL_V7_RESULT',revision:s.rev,source:{...powered},bus,feed:{transferSource,tie,tr,standbyFeed},lamps,galleyShed,qa,trace:{...REF},accuracy:{equipmentBusMap:'NOT_VERIFIED_FOR_EP_FSI',standbyGroundAuto:'CONFLICT_REQUIRES_REVIEW',tr3AutomaticFeed:'INCOMPLETE',model:'EDUCATIONAL_DISCRETE_ONLY'}};
+  return {schema:'B737_ELECTRICAL_V7_RESULT',revision:s.rev,source:{...powered},bus,feed:{transferSource,tie,tr,standbyFeed},lamps,galleyShed,apuAutomaticShutdownRequested:apuShutdownDemand,qa,trace:{...REF},accuracy:{equipmentBusMap:'NOT_VERIFIED_FOR_EP_FSI',standbyGroundAuto:'CONFLICT_REQUIRES_REVIEW',tr3AutomaticFeed:'INCOMPLETE',model:'EDUCATIONAL_DISCRETE_ONLY'}};
  }
  function execute(commands){let s=initialState();for(const c of commands)s=apply(s,c);return evaluate(s);}
  return Object.freeze({REF,FAULTS,CONTROL_KEYS,initialState,apply,evaluate,execute});
