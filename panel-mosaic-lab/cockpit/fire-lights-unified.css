@@ -1,0 +1,18 @@
+/* FIRELAMP-0001. Relative to the fire-protection texture only.
+   Never paints/overrides a panel, handle, switch or adjacent texture. */
+.texture-piece[data-piece="fire-protection"] .fire-lamps-mounted {
+  position:absolute;inset:0;overflow:hidden;z-index:1;
+  pointer-events:none;user-select:none;
+}
+.texture-piece[data-piece="fire-protection"] .fire-lamp{
+  position:absolute;display:block;overflow:hidden;
+  box-sizing:border-box;pointer-events:none;line-height:0;
+}
+.texture-piece[data-piece="fire-protection"] .fire-lamp img{
+  display:block;width:100%;height:100%;object-fit:fill;
+  max-width:none;pointer-events:none;user-select:none;
+  image-rendering:auto;
+}
+.texture-piece[data-piece="fire-protection"] .fire-lamp[data-kind="round"]{
+  border-radius:50%;
+}
