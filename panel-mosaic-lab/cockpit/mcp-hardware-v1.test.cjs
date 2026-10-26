@@ -37,8 +37,8 @@ const toggles=Object.fromEntries(controls.filter(c=>c.kind==="toggle").map(c=>[c
 assert.deepEqual([toggles.AT_ARM.x,toggles.AT_ARM.y,toggles.AT_ARM.w,toggles.AT_ARM.h],[357,181,66,68]);
 assert.deepEqual([toggles.FD_LEFT.x,toggles.FD_LEFT.y,toggles.FD_LEFT.w,toggles.FD_LEFT.h],[203,321,36,51]);
 assert.deepEqual([toggles.FD_RIGHT.x,toggles.FD_RIGHT.y,toggles.FD_RIGHT.w,toggles.FD_RIGHT.h],[1903,321,36,51]);
-assert.match(js,/mcp-hw-at-paddle/);
-assert.match(js,/mcp-hw-fd-shaft/);
+assert.match(js,/AT_ARM_OFF\\.svg/);\nassert.match(js,/AT_ARM_UP\\.svg/);
+assert.match(js,/mcp-hw-silver-atlas/);
 assert.doesNotMatch(js,/mcp-hw-toggle-foot/);
 assert.match(reference,/\.mcp-hw-at-paddle/);
 assert.match(reference,/\.mcp-hw-fd-shaft/);
@@ -46,3 +46,21 @@ assert.match(css,/mcp-hw-wheel-tread/);
 assert.match(css,/mcp-hw-push-cap/);
 assert.match(css,/mcp-v3-plain-face/);
 console.log("MCP-0005 phase2 mechanical controls geometry, interaction and styling: PASS");
+
+const sprite=fs.readFileSync(path.join(root,"mcp-authentic-sprites-v2.css"),"utf8");
+for(const page of [unified,standalone]){
+ assert.match(page,/mcp-authentic-sprites-v2\.css\?v=MCP-SPRITE-0002/);
+}
+assert.match(sprite,/Small_Silver_5Positions\.webp/);
+assert.match(sprite,/mcp-hw-at-off/);
+assert.match(sprite,/mcp-hw-at-up/);
+assert.match(sprite,/background-position:75% center/);
+assert.match(sprite,/background-position:100% center/);
+const frontRoot=path.join(root,"assets","mcp-switches");
+for(const f of ["AT_ARM_OFF.svg","AT_ARM_UP.svg"]){
+ const content=fs.readFileSync(path.join(frontRoot,f),"utf8");
+ assert.match(content,/<svg/);
+ assert.match(content,/width="256"/);
+ assert.match(content,/height="260"/);
+ assert.match(content,/linearGradient id="face"/);
+}
