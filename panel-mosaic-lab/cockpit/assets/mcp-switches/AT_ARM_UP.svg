@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="260" viewBox="0 0 256 260" role="img" aria-label="B737 A/T ARM silver horizontal paddle ARM UP"><title>A/T ARM UP front view</title><defs>
+ <radialGradient id="pivot" cx=".4" cy=".35" r=".78"><stop stop-color="#9faba9"/><stop offset=".18" stop-color="#424e50"/><stop offset=".37" stop-color="#121b1e"/><stop offset=".76" stop-color="#080c0e"/><stop offset="1" stop-color="#626c6c"/></radialGradient>
+ <linearGradient id="stem" x1="0" x2="1"><stop stop-color="#292c2b"/><stop offset=".13" stop-color="#8c9592"/><stop offset=".31" stop-color="#eef0e7"/><stop offset=".53" stop-color="#afb6b4"/><stop offset=".79" stop-color="#50575a"/><stop offset="1" stop-color="#151d20"/></linearGradient>
+ <linearGradient id="face" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#faf8ee"/><stop offset=".12" stop-color="#dddeda"/><stop offset=".31" stop-color="#a9afaa"/><stop offset=".57" stop-color="#667174"/><stop offset=".8" stop-color="#353d40"/><stop offset="1" stop-color="#919997"/></linearGradient>
+ <linearGradient id="edge" x1="0" x2="1"><stop stop-color="#292f31"/><stop offset=".15" stop-color="#bcc5c3"/><stop offset=".49" stop-color="#f1f2e9"/><stop offset=".83" stop-color="#697273"/><stop offset="1" stop-color="#242d31"/></linearGradient>
+ <filter id="shadow" x="-30%" y="-40%" width="170%" height="190%"><feGaussianBlur stdDeviation="3"/></filter>
+ </defs>
+<ellipse cx="129" cy="143" rx="42" ry="37" fill="#000" opacity=".5" filter="url(#shadow)"/>
+<circle cx="128" cy="136" r="39" fill="url(#pivot)" stroke="#495051" stroke-width="2"/>
+<circle cx="128" cy="136" r="23" fill="#241a17" stroke="#535451" stroke-width="3"/>
+<path d="M114 135 L109 95 Q113 77 128 76 Q144 77 146 95 L141 135 Z" fill="url(#stem)" stroke="#323a3c" stroke-width="2"/><path d="M117 123 L115 96 L125 83 L126 134 Z" fill="#f8f8ee" opacity=".46"/>
+<ellipse cx="128" cy="136" rx="16" ry="13" fill="#292f2e" stroke="#a0a9a5" stroke-width="2"/>
+<g transform="translate(0 65)"><path d="M49 -13 L210 -13 L220 -7 L220 9 L210 16 L49 16 L39 9 L39 -6 Z" fill="url(#face)" stroke="#22292b" stroke-width="2.6"/><path d="M50 -9 H211 L216 -5 H44 Z" fill="#fcfff8" opacity=".76"/><path d="M43 9 L216 9 L208 13 H51 Z" fill="#1e2629" opacity=".83"/><path d="M56 -3 H204" stroke="#f7f9f1" stroke-width="1.2" opacity=".48"/><path d="M42 -10 L47 -12 L47 13 L42 9 Z" fill="#454b4a" opacity=".6"/><path d="M217 -8 L221 -5 L221 10 L216 13 Z" fill="#4b5455"/></g>
+</svg>

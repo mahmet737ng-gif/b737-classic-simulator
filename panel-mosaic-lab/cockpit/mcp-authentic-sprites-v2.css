@@ -1,0 +1,43 @@
+/* MCP-SPRITE-0002: actual two-state art, not CSS-generated bar or stem.
+   A/T OFF and UP are separate orthographic transparency assets, sourced
+   from the previously specified broad/thin silver horizontal paddle.
+   F/D L & R are cropped from the existing SMALL SILVER 5-state sprite atlas.
+   Do not alter locked source images or MCP photo-registered coordinates. */
+[data-piece="mcp"]>.mcp-hw-at,[data-piece="mcp"]>.mcp-hw-fd{
+  overflow:visible!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  transform:translate(-50%,-50%)!important;
+  border:0!important;
+}
+[data-piece="mcp"]>.mcp-hw-at .mcp-hw-switch-art{
+  display:block;position:absolute;
+  inset:0;width:100%;height:100%;
+  object-fit:fill;
+  pointer-events:none;
+  user-select:none;
+  filter:drop-shadow(1px 2px 1px #0008);
+}
+[data-piece="mcp"]>.mcp-hw-at[data-state="OFF"] .mcp-hw-at-up,
+[data-piece="mcp"]>.mcp-hw-at[data-state="ARM"] .mcp-hw-at-off{display:none}
+[data-piece="mcp"]>.mcp-hw-fd .mcp-hw-silver-atlas{
+  display:block;position:absolute;
+  width:100%;height:70%;
+  left:0;top:15%;
+  pointer-events:none;
+  background-image:url("../../shared-assets/toggle-switch-small/Small_Silver_5Positions.webp");
+  background-size:500% auto;
+  background-repeat:no-repeat;
+  background-position:100% center;
+  filter:drop-shadow(0 1px 1px #0009);
+}
+[data-piece="mcp"]>.mcp-hw-fd[data-state="OFF"] .mcp-hw-silver-atlas{
+  background-position:100% center;
+}
+[data-piece="mcp"]>.mcp-hw-fd[data-state="ON"] .mcp-hw-silver-atlas{
+  background-position:75% center;
+}
+[data-piece="mcp"]>.mcp-hw-fd:focus-visible,
+[data-piece="mcp"]>.mcp-hw-at:focus-visible{
+  outline:1px solid #f6e8bd!important;outline-offset:2px;
+}
