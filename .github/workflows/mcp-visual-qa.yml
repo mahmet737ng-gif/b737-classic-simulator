@@ -7,6 +7,8 @@ on:
       - 'panel-mosaic-lab/cockpit/mcp-visual-v3.css'
       - 'panel-mosaic-lab/cockpit/mcp-hardware-v1.js'
       - 'panel-mosaic-lab/cockpit/mcp-hardware-v1.css'
+      - 'panel-mosaic-lab/cockpit/mcp-owner-photo-components-v1.css'
+      - 'panel-mosaic-lab/cockpit/mcp-authentic-sprites-v2.css'
       - 'panel-mosaic-lab/cockpit/mcp-toggle-reference-v2.css'
       - 'panel-mosaic-lab/cockpit/mcp-*.test.cjs'
       - 'panel-mosaic-lab/cockpit/index.html'

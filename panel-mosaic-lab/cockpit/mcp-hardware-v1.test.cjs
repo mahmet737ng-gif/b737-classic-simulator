@@ -73,7 +73,7 @@ for(const page of [unified,standalone]){
  const owner=page.indexOf('mcp-owner-photo-components-v1.css');
  const fake=page.indexOf('mcp-front-reference-v1.css');
  assert.ok(authentic>fake&&owner>authentic,'Original MCP photo modules should override generic procedural CSS');
- assert.match(page,/mcp-owner-photo-components-v1\.css\?v=MCP-PHOTO-0001/);
+ assert.match(page,/mcp-owner-photo-components-v1\.css\?v=MCP-PHOTO-0002/);
 }
 assert.match(js,/AT_ART_ROOT/);
 const photo=fs.readFileSync(path.join(root,'mcp-owner-photo-components-v1.css'),'utf8');

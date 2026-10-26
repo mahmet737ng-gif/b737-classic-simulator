@@ -8,6 +8,9 @@ on:
       - panel-mosaic-lab/cockpit/mcp-front-reference-v1.css
       - panel-mosaic-lab/cockpit/mcp-visual-v3.js
       - panel-mosaic-lab/cockpit/mcp-authentic-sprites-v2.css
+      - panel-mosaic-lab/cockpit/mcp-owner-photo-components-v1.css
+      - panel-mosaic-lab/cockpit/index.html
+      - panel-mosaic-lab/mcp-panel/index.html
       - panel-mosaic-lab/cockpit/mcp-hardware-v1.js
       - panel-mosaic-lab/cockpit/assets/mcp-switches/**
       - panel-mosaic-lab/cockpit/mcp-hardware-v1.test.cjs
