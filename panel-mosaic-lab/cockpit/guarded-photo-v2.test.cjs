@@ -54,7 +54,7 @@ test('True cover identity: OPEN switches only fixed hinge rotation, NEVER change
  assert.ok(css.includes('[data-hinge=right][data-open=true] .g17-native-hinge-pivot{transform:rotateY(110deg)'));
  assert.ok(!css.includes('.g17-native-cover.open{background:'));
  assert.ok(js.includes("node.classList.add('g17-native-upgraded')"));
- assert.ok(stage.includes('G17-PHOTO-0002'));
+ assert.ok(stage.includes('G17-PHOTO-0003'));
 });
 test('Independent installation protects other switches if one native node is absent or fails',()=>{
  assert.ok(js.includes("const receipt=new Map(),failures=new Map()"));
