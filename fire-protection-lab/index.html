@@ -18,7 +18,7 @@ h2{font-size:16px;margin:0 0 12px}.small{font-size:11px;color:var(--muted)}
 .asset{position:absolute;translate:-50% -50%;border:1px solid transparent;display:grid;place-items:center;touch-action:none;z-index:2;user-select:none;transition:filter 180ms}
 .asset img{display:block;max-height:100%;width:100%;height:100%;object-fit:contain;pointer-events:none}
 .asset.handle{z-index:3;cursor:pointer}.asset.handle img{width:100%;height:100%}
-.asset.lamp{cursor:default;overflow:hidden;border-radius:2px}.asset.lamp img{width:100%;height:100%;object-fit:cover;filter:brightness(1.85)}.asset.lamp.on img{filter:none}
+.asset.lamp{cursor:default;overflow:hidden;border-radius:2px}.asset.lamp img{width:100%;height:100%;object-fit:cover;filter:brightness(1.85)}.asset.lamp.on img{filter:none}.asset.lamp[data-id="APU_BOTTLE_DISCHARGED"] img{object-fit:fill}
 .asset.placeholder{display:none}
 .asset.placeholder.on{display:none}.asset.green-lens{border-radius:50%;background:radial-gradient(circle,#121d17 20%,#070c09 61%,#2a352a 82%,#060a08 100%);border:1px solid #28352c;box-shadow:inset 0 1px 3px #000c;pointer-events:none}.asset.green-lens.on{background:radial-gradient(circle at 38% 32%,#d8ffdf 0%,#81ed91 19%,#118e33 45%,#084a25 70%,#081b0e 95%);box-shadow:0 0 10px #70f5928a,inset 0 1px 2px #d8ffe9}
 #board.edit .asset{outline:1px dashed #85d6e3;cursor:grab;background:#1b384744}#board.edit .asset:active{cursor:grabbing}
@@ -194,6 +194,7 @@ function render(){
 let logLines=[];
 function send(cmd){
  const o=e.dispatch(cmd);
+ if(cmd.type==='TICK'){render();return;}
  document.getElementById('message').textContent=(o.result.accepted?'ACCEPTED: ':'REJECTED: ')+o.result.reason;
  logLines.unshift((new Date()).toLocaleTimeString('en-GB')+'  '+JSON.stringify(cmd)+'  '+(o.result.accepted?'OK':o.result.reason));
  logLines=logLines.slice(0,12);document.getElementById('log').textContent=logLines.join('\n');render();
@@ -222,7 +223,7 @@ document.getElementById('edit').onclick=()=>{
  edit=!edit;board.classList.toggle('edit',edit);document.getElementById('edit').setAttribute('aria-pressed',String(edit));
 };
 document.getElementById('layout-reset').onclick=()=>{positions=JSON.parse(JSON.stringify(allPositions));for(const id of Object.keys(nodes))move(id);try{localStorage.removeItem(layoutsKey);}catch(_){}};
-let clock=0;setInterval(()=>{const current=e.getState();if(Object.values(current.pending).some(t=>t!==null)){clock+=0.25;send({type:'TICK',seconds:0.25});}},250);
+setInterval(()=>{const current=e.getState();if(Object.values(current.pending).some(t=>t!==null))send({type:'TICK',seconds:0.25});},250);
 document.getElementById('base').addEventListener('error',()=>{document.getElementById('message').textContent='BACKGROUND ASSET ERROR — check GitHub file path';});
 render();
 })();
