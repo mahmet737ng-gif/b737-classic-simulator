@@ -7,7 +7,7 @@ const visual=fs.readFileSync(path.join(root,"mcp-visual-v3.js"),"utf8");
 const unified=fs.readFileSync(path.join(root,"index.html"),"utf8");
 const standalone=fs.readFileSync(path.join(root,"../mcp-panel/index.html"),"utf8");
 for(const page of [unified,standalone]){
- assert.match(page,/mcp-hardware-v1\.js\?v=MCP-SPRITE-0002/);
+ assert.match(page,/mcp-hardware-v1\.js\?v=MCP-PHOTO-0003/);
  assert.match(page,/mcp-hardware-v1\.css\?v=MCP-0005-HARDWARE/);
  assert.match(page,/mcp-visual-v3\.js\?v=MCP-0005-PIXEL-QA/);
 }
