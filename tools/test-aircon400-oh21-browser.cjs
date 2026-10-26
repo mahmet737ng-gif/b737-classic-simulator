@@ -22,7 +22,8 @@ const base='http://127.0.0.1:8788/panel-mosaic-lab/cockpit/overhead-stage.html';
    assert.equal(response.status(),200,'overhead browser route');
    await page.waitForFunction(()=>window.B737Aircon400Oh21&&window.B737OverheadLights&&
     !!document.getElementById('toggle-recirc-fan')&&
-    !!document.querySelector('.atlas-piece[data-key="OH21"]'),null,{timeout:45000});
+    !!document.querySelector('.atlas-piece[data-key="OH21"]')&&
+    !!document.querySelector('#aircon400Oh21Overlay .aircon400-recirculation-label'),null,{timeout:45000});
    const data=await page.evaluate(()=>{
     const model=window.B737Aircon400Oh21;
     const overlay=document.getElementById('aircon400Oh21Overlay');
