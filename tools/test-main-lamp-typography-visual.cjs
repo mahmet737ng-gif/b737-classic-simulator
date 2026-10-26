@@ -96,6 +96,10 @@ assert.equal(Object.keys(j.instances).length,30);
    const filepath=path.join(OUT,'mip-all-30-'+Math.round(scale*100)+'pct.png');
    await page.screenshot({path:filepath,fullPage:true,animations:'disabled'});
    console.log('MIP_VISUAL_MATRIX_IMAGE',Math.round(scale*100)+'pct',fs.statSync(filepath).size);
+   if(scale===1||scale===.50){
+    const preview=await page.screenshot({type:'jpeg',quality:70,fullPage:true,animations:'disabled'});
+    console.log('MIP_VISUAL_MATRIX_PREVIEW',Math.round(scale*100)+'pct',preview.toString('base64'));
+   }
   }
   const report={schema:'b737.mip.typography.chromium-visual-v1',date:'2026-10-26',
     mountedPositions:30,lightStatesChecked:checks.success.length,
