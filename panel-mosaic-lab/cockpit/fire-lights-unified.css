@@ -1,7 +1,7 @@
 /* FIRELAMP-0005. Relative to the fire-protection texture only.
    Never paints/overrides a panel, handle, switch or adjacent texture. */
 .texture-piece[data-piece="fire-protection"] .fire-lamps-mounted {
-  position:absolute;inset:auto;overflow:hidden;z-index:1;
+  position:absolute;inset:auto;overflow:hidden;z-index:auto;
   pointer-events:none;user-select:none;
 }
 .texture-piece[data-piece="fire-protection"] .fire-lamp{
@@ -28,11 +28,14 @@
   /* The outer frame is transparent: do NOT paint over the existing metal
      or four mounting fasteners. Only inset SVG glass is opaque. */
 }
-.texture-piece[data-piece="fire-protection"] .fire-lamp[data-kind="rect"] img{
-  position:absolute;object-fit:contain;
-  /* Black database SVG backing is optically transparent; existing physical
-     panel metalwork and four mounting screw heads remain visible. */
+.texture-piece[data-piece="fire-protection"] .fire-lamp[data-kind="rect"]{
+  /* Blend the entire mounted image with the underlying original panel.
+     IMPORTANT: the parent layer must NOT create an isolated z-index context,
+     otherwise Chrome compositing paints opaque black panels over the screws. */
   mix-blend-mode:screen;
+}
+.texture-piece[data-piece="fire-protection"] .fire-lamp[data-kind="rect"] img{
+  position:absolute;object-fit:contain;mix-blend-mode:normal;
 }
 .texture-piece[data-piece="fire-protection"] .fire-lamp[data-kind="round"] img{
   mix-blend-mode:normal;
