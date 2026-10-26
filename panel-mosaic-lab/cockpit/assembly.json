@@ -140,6 +140,17 @@
       "sourceStatus": "owner-approved extracted bare Fire Protection plate; individual 11 lamp overlays are independent",
       "sha256": "0667fc8267a7812dc558529ec98aa6e7252683b2b4941257e73dcf4c4a0fa14f",
       "gitBlobSha": "9b5451a8c1a2598de9a5ee5ae166fee8382d0b38"
+    },
+    "panel-mosaic-lab/cockpit/assets/fire-v6-generated/weathered_boeing_737_apu_panel_shell.webp": {
+      "path": "panel-mosaic-lab/cockpit/assets/fire-v6-generated/weathered_boeing_737_apu_panel_shell.webp",
+      "url": "./assets/fire-v6-generated/weathered_boeing_737_apu_panel_shell.webp",
+      "dimensions": [
+        2172,
+        724
+      ],
+      "bytes": 122904,
+      "gitBlobSha": "16eb38ba44a6f7961bf9120a27b80fd9bd9a71f9",
+      "sourceStatus": "owner-selected regenerated shell, previous locked base retained"
     }
   },
   "regions": [
@@ -401,13 +412,13 @@
         {
           "id": "fire-protection",
           "label": "FIRE PROTECTION — BELOW THROTTLE QUADRANT",
-          "asset": "panel-mosaic-lab/cockpit/assets/fire-v6/FIRE_PANEL_BARE.webp",
+          "asset": "panel-mosaic-lab/cockpit/assets/fire-v6-generated/weathered_boeing_737_apu_panel_shell.webp",
           "x": 244,
           "y": 740.9857819905213,
           "w": 685,
           "h": 170.10287081339712,
           "presentation": "contain",
-          "layoutStatus": "Owner-approved Fire Protection V6 shell mounted; 11 separate ON/OFF picture assets. All pedestal placement dimensions unchanged."
+          "layoutStatus": "FIRELAMP-0006 new approved shell; only Fire Protection placement asset changed; rest of scene untouched"
         },
         {
           "id": "pedestal-radio",
