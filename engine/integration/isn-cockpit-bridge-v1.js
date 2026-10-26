@@ -45,7 +45,10 @@
    if(own(PUMPS,id)){
     if(next==='ON'||next==='OFF')this.send({type:'PUMP_SWITCH',id:PUMPS[id],value:next==='ON'});
    }else if(id==='battery-master'){
-    if(next==='on'||next==='off')this.electrical({type:'CONTROL',key:'batterySwitch',value:next==='on'});
+    // ISN03_START_SESSION has the physical ECU/Chain as sole live battery writer.
+    // Bridge follows the same pack instance and must never send it twice.
+    if(this.sourceOwner==='LEGACY_SCENARIO'&&(next==='on'||next==='off'))
+     this.electrical({type:'CONTROL',key:'batterySwitch',value:next==='on'});
    }else if(id==='standby-power'){
     if(['auto','off','bat'].includes(next))this.electrical({type:'CONTROL',key:'standbySelector',value:next.toUpperCase()});
    }else if(/^generator-disconnect-[12]$/.test(id)){
