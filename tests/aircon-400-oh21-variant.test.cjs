@@ -9,6 +9,22 @@ assert.deepEqual(V.switches.map(c=>c.label),['L RECIRC FAN','R RECIRC FAN']);
 assert.deepEqual(V.packs.map(c=>c.label),['PACK','PACK']);
 assert.deepEqual(V.packs.map(c=>c.legacyId),['pack-trip-l','pack-trip-r']);
 assert.equal(V.switches[1].id,'recirc-fan','reuse the existing right physical socket');
+assert.equal(V.labels.length,4,'both RECIRC titles and left OFF/AUTO legends must exist');
+assert.deepEqual(V.labels.filter(x=>x.kind==='title').map(x=>x.text),
+ ['L RECIRC FAN','R RECIRC FAN']);
+assert.deepEqual(V.labels.filter(x=>x.kind==='detent').map(x=>x.text),['OFF','AUTO']);
+// The previously shipped titles were at y=123, overlapping the native
+// right OFF legend. They must be above the socket/legend row.
+for(const item of V.labels.filter(x=>x.kind==='title')){
+ const [x,y,w,h]=item.rect;
+ assert.ok(y+h<110,'RECIRC title must be above OFF/AUTO: '+item.text);
+ assert.ok(w>=270&&w<350,'RECIRC title must stay a compact engraved lens');
+}
+for(const item of V.labels.filter(x=>x.kind==='detent')){
+ const [x,y,w,h]=item.rect;
+ assert.ok(x>=250&&x+w<430,'Left OFF/AUTO cannot cover left screw or central instrument');
+ assert.ok(h<=65,'Legacy-proportioned detent glass');
+}
 const g=V.geometry({x:1724,y:1751,w:493,h:701});
 const left=g.point(V.switches[0].sourcePoint),right=g.point(V.switches[1].sourcePoint);
 assert.ok(left.x<right.x&&Math.abs(left.y-right.y)<.01,'dual toggles share a row');
@@ -51,6 +67,17 @@ for(const name of ['aircon-400-oh21-model.js','aircon-400-oh21-overlay.js','airc
 const overlay=fs.readFileSync(path.join(base,'aircon-400-oh21-overlay.js'),'utf8');
 assert.ok(overlay.includes("toggle-recirc-fan-l-400"));
 assert.ok(overlay.includes("setAircon400LeftRecirc"));
+assert.match(overlay,/maxWidth=Math\.max\(5,\(rect\.w-7\)/,'Text must fit the lens width');
+assert.ok(overlay.includes('dataset.labelKind=item.kind'),'Use different title/detent treatments');
+const css=fs.readFileSync(path.join(base,'aircon-400-oh21-overlay.css'),'utf8');
+assert.ok(css.includes('overflow:hidden;white-space:nowrap'),'Prevent text from spilling across real source');
+assert.ok(!css.includes('linear-gradient(#d8e5ef,#bfd3e2)'),'Reject the giant pale labels seen in failed screenshot');
+assert.ok(css.includes('background:#4c6070'),'Use dark, photo-matched lens');
+const labels=V.labels;
+for(let i=0;i<labels.length;i++)for(let j=i+1;j<labels.length;j++){
+ const [x,y,w,h]=labels[i].rect,[a,b,v,k]=labels[j].rect;
+ assert.ok(!(x<a+v&&x+w>a&&y<b+k&&y+h>b),'No 400 engraved labels may overlap');
+}
 const lights=fs.readFileSync(path.join(__dirname,'../panel-mosaic-lab/interactive-overhead/lights-model.js'),'utf8');
 assert.ok(lights.includes('recircL:recirc400Left'));
 assert.ok(lights.includes("recircR:control('recirc-fan')"));
