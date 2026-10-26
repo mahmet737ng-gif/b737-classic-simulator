@@ -10,6 +10,8 @@
  const PROFILE_KEY='b737classic.aircraft-profile.v1';
  const knobAsset=new URL('../assets/locked/2026-10-23/Switches/Rotary/rotary-standard-v1.webp',document.baseURI).href;
  const toggleAsset=new URL('../assets/locked/2026-10-23/Switches/Toggle/b737-toggle-center.webp',document.baseURI).href;
+ const smallSilverAsset=new URL('../../shared-assets/toggle-switch-small/Small_Silver_5Positions.webp',document.baseURI).href;
+ const smallSilverFrame=(c,value)=>c.id==='flight-ground'?(value==='FLT'?0:2):(value==='CLOSE'?0:value==='OPEN'?2:1);
  const faceBase=new URL('../assets/lights/oh22-profile-v1/',document.baseURI).href;
  const approvedLamps=Object.freeze({'auto-fail':'AUTO_FAIL','off-sched':'OFF_SCHED_DESCENT','standby':'STANDBY_GREEN','manual':'MANUAL_GREEN'});
 
@@ -37,21 +39,34 @@
    // A common tiny width made the CPCS/DCPCS mechanisms float in their bezels.
    const size=hotspot?11:model.config(system).controlFit[c.id]*100;
    el.dataset.fitSystem=system;
+   if(c.visualFamily==='Small Silver')el.dataset.visualFamily='Small Silver';
    el.style.width=size+'%';
    if(hotspot){el.style.height=(size*.34)+'%';}
    else{el.style.height='auto';el.style.aspectRatio='1 / 1';}
    if(hotspot)el.classList.add('oh22-pressure-hotspot');
    const value=root.createElement('span');value.className='oh22-control-value';value.dataset.value='';
    if(!hotspot){
-     const img=root.createElement('img');img.src=c.kind==='spring'?toggleAsset:knobAsset;img.alt='';img.draggable=false;
-     el.append(img);
+     if(c.visualFamily==='Small Silver'){
+       // No nut or bezel rotation: fixed top-down atlas, pose selected per state.
+       el.classList.add('oh22-pressure-small-silver');
+       const face=root.createElement('span');face.className='oh22-small-silver-face';
+       face.setAttribute('aria-hidden','true');face.style.backgroundImage='url("'+smallSilverAsset+'")';
+       el.append(face);
+     }else{
+       const img=root.createElement('img');img.src=c.kind==='spring'?toggleAsset:knobAsset;img.alt='';img.draggable=false;
+       el.append(img);
+     }
    }
    el.append(value);
    const go=(input)=>dispatch(c,input);
    const values=c.states||[];
    function step(dir){
      if(c.kind==='altitude'){const before=Number(model.readControl(system,c,received?.state));go(Math.max(c.min,Math.min(c.max,(Number.isFinite(before)?before:0)+c.step*dir)));return;}
-     if(c.kind==='selector'){const before=model.readControl(system,c,received?.state),index=Math.max(0,values.indexOf(before)),next=Math.max(0,Math.min(values.length-1,index+dir));go(values[next]);return;}
+     if(c.kind==='selector'){
+       const before=model.readControl(system,c,received?.state);
+       if(c.id==='flight-ground'){go(before==='FLT'?'GRD':'FLT');return;}
+       const index=Math.max(0,values.indexOf(before)),next=Math.max(0,Math.min(values.length-1,index+dir));go(values[next]);return;
+     }
      if(c.kind==='momentary')go('CHECK');
    }
    if(c.kind==='spring'){
@@ -182,7 +197,12 @@
      if(c.kind==='altitude')angle=-155+310*(Number(value)-c.min)/(c.max-c.min);
      else if(c.kind==='selector')angle=(system==='DCPCS'&&c.id==='press-mode'?-45:-65)+(system==='DCPCS'&&c.id==='press-mode'?90:130)*(c.states.indexOf(value)/Math.max(1,c.states.length-1));
      else if(c.kind==='spring')angle=value==='CLOSE'?-24:value==='OPEN'?24:0;
-     const img=n.querySelector('img');if(img)img.style.transform='rotate('+angle+'deg)';
+     if(c.visualFamily==='Small Silver'){
+       const face=n.querySelector('.oh22-small-silver-face');
+       if(face)face.style.backgroundPosition=(smallSilverFrame(c,value)*25)+'% 50%';
+     }else{
+       const img=n.querySelector('img');if(img)img.style.transform='rotate('+angle+'deg)';
+     }
    }
    for(const d of cfg.displays){
      const el=digits.get(d.id);

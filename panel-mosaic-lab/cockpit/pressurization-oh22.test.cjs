@@ -13,7 +13,7 @@ assert.deepEqual(c.modes,['AUTO','STBY','MAN_AC','MAN_DC']);
 assert.ok(c.controls.some(x=>x.id==='cabin-rate'));
 assert.ok(!d.controls.some(x=>x.id==='cabin-rate'));
 assert.ok(!d.controls.some(x=>x.id==='flight-ground'));
-assert.ok(!c.controls.some(x=>x.id==='flight-ground'), 'FLT/GRD engine input must not masquerade as a physical OH22 selector');
+assert.ok(c.controls.some(x=>x.id==='flight-ground'), 'Owner specified physical CPCS FLT/GRD selector');
 assert.ok(c.controls.some(x=>x.id==='standby-alt'));
 assert.ok(!d.controls.some(x=>x.id==='standby-alt'));
 assert.deepEqual(Object.keys(oh22.lamps('DCPCS',{lamps:{autoFail:true,altn:false,manual:false,offSchedDescent:false}})),['auto-fail','off-sched','altn','manual']);
@@ -33,8 +33,12 @@ ds=dcpcs.apply(ds,oh22.command('DCPCS','flight-alt',32000,ds));
 assert.equal(ds.input.flightAltitudeFt,32000);
 ds=dcpcs.apply(ds,oh22.command('DCPCS','landing-alt',250,ds));
 assert.equal(ds.input.landingAltitudeFt,250);
-cs=cpcs.apply(cs,{type:'FLIGHT_GROUND',value:'FLT'});
+cs=cpcs.apply(cs,oh22.command('CPCS','flight-ground','FLT',cs));
 assert.equal(cs.flightGround,'FLT');
+assert.equal(oh22.readControl('CPCS',c.controls.find(x=>x.id==='flight-ground'),cs),'FLT');
+cs=cpcs.apply(cs,oh22.command('CPCS','flight-ground','GRD',cs));
+assert.equal(cs.flightGround,'GRD');
+assert.throws(()=>oh22.command('DCPCS','flight-ground','FLT',ds),/Unknown/);
 cs=cpcs.apply(cs,oh22.command('CPCS','manual-valve','OPEN',cs));
 assert.equal(cs.valveSwitch,'OPEN');
 assert.equal(ds.selector,'ALTN','CPCS commands must not corrupt independent DCPCS engine');
@@ -104,8 +108,16 @@ assert.ok(lampCss.includes('box-sizing:border-box;overflow:hidden;'), 'Faces mus
 
 assert.ok(c.controls.find(x=>x.id==='press-mode')?.xy[1]>.7,
   'CPCS MODE must be mounted at the real lower right selector (not the upper valve gauge)');
-assert.ok(!c.controls.some(x=>x.id==='flight-ground'),
-  'CPCS FLT/GRD is an engine input, not a knob at the MODE socket');
+assert.ok(c.controls.some(x=>x.id==='flight-ground'&&x.visualFamily==='Small Silver'&&x.xy[0]<c.controls.find(z=>z.id==='press-mode').xy[0]),
+  'CPCS Small Silver FLT/GRD must remain separate from MODE');
+for(const sys of ['CPCS','DCPCS']){
+ const valve=oh22.config(sys).controls.find(x=>x.id==='manual-valve');
+ assert.equal(valve.visualFamily,'Small Silver',sys+' OPEN/CLOSE');
+ assert.deepEqual(valve.states,['CLOSE','NEUTRAL','OPEN'],sys+' spring center');
+}
+assert.equal(oh22.config('CPCS').controlFit['flight-ground'],.125);
+assert.ok(!oh22.config('DCPCS').controls.some(x=>x.id==='flight-ground'));
+
 assert.equal(c.controls.find(x=>x.id==='auto-check')?.appearance,'hotspot',
   'CPCS AUTO CHECK is a selector action, not a floating duplicate knob');
 assert.equal(c.displays.length,3,'CPCS must show FLT ALT, LAND ALT, standby cabin altitude');
@@ -123,6 +135,10 @@ assert.ok(skin.includes('font:700 21px'),'Digital altitude text must fit its ded
 // Independent annunciators must illuminate under either overhead lamp test,
 // including the cockpit all-lights visual test, without fault-latching engines.
 const actuatorSource=fs.readFileSync(path.join(__dirname,'pressurization-oh22.js'),'utf8');
+assert.ok(actuatorSource.includes('Small_Silver_5Positions.webp'),'Use approved shared Small Silver artwork');
+assert.ok(actuatorSource.includes("const face=n.querySelector('.oh22-small-silver-face')"),'Fixed bezel must use sprite frames');
+assert.ok(actuatorSource.includes("go(before==='FLT'?'GRD':'FLT')"),'Reversible CPCS flight/ground');
+assert.ok(fs.readFileSync(path.join(__dirname,'pressurization-oh22.css'),'utf8').includes('background-size:500% 100%'),'Preserve five-state atlas geometry');
 assert.ok(actuatorSource.includes("document.documentElement.classList.contains('cockpit-visual-test')"),
   'OH22 must follow the global visual lamp-test mode');
 assert.ok(actuatorSource.includes('window.B737OverheadLights?.getState?.()?.lampTest===true'),

@@ -125,3 +125,12 @@ html.oh22-pressure-config-active .lights-layer .mounted-light[data-light="press-
  max-width:none;max-height:none;pointer-events:none;
 }
 
+
+/* Selected CPCS/DCPCS Small Silver toggle faces; invariant metal nut/pivot. */
+.oh22-pressure-controls .oh22-pressure-small-silver{overflow:visible;touch-action:none}
+.oh22-pressure-controls .oh22-small-silver-face{
+ position:absolute;left:50%;top:50%;display:block;width:262.5641025641%;height:262.5641025641%;
+ transform:translate(-50%,-50%);pointer-events:none;background-size:500% 100%;
+ background-repeat:no-repeat;background-position:25% 50%;
+ border:0;box-shadow:none;filter:none;opacity:1;user-select:none;
+}

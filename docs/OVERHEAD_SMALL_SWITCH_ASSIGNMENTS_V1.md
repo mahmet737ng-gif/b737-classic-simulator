@@ -1,6 +1,6 @@
 # OVERHEAD-SMALL-001 — owner-directed overhead sizing
 
-User instruction: 2026-10-26. **Small** means the existing approved **Small White** five-pose toggle family. The Standard five-pose artwork remains immutable, and the Silver alternative is NOT selected.
+User instruction: 2026-10-26. **Small** means the existing approved **Small White** five-pose toggle family. The Standard five-pose artwork remains immutable. **Small Silver** is used only for the separately ordered pressure-panel switches.
 
 ## 21 Small White toggle IDs
 
@@ -42,3 +42,11 @@ These three remain rotary selectors; their original pivot, states, detent angles
 - The Small White source remains the same existing 5120x1024 RGBA WebP with five 1024px cells LEFT/CENTER/RIGHT/UP/DOWN; metal-bezel center (512,512), metal-bezel diameter 390px, invariant in every frame.
 - Standard assets and controls that the owner did not designate stay unchanged.
 - Verify with `node panel-mosaic-lab/interactive-overhead/test.cjs`, `node panel-mosaic-lab/interactive-overhead/rotary-guards.test.cjs`, and `python3 panel-mosaic-lab/verify-final-overhead.py`.
+
+## Owner addition — CPCS/DCPCS Small Silver (2026-10-26)
+
+- CPCS and DCPCS: `manual-valve` CLOSE/NEUTRAL/OPEN uses Small Silver; original spring-return and source-linked logic preserved.
+- CPCS only: physical `flight-ground` FLT/GRD selector uses Small Silver and existing `FLIGHT_GROUND` engine command; DCPCS omits this selector.
+- Five-pose Silver WebP has invariant metal nut/pivot. Swap sprite frames only; never rotate the nut or whole base.
+- CPCS FLT/GRD source coordinate is provisional pending the owner's image pixel QA. Frozen mosaic and CPCS/DCPCS owner backgrounds are unchanged.
+- Validate: `node panel-mosaic-lab/cockpit/pressurization-oh22.test.cjs`.

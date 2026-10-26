@@ -20,7 +20,7 @@
        {id:'flight-alt',kind:'altitude',label:'FLT ALT',xy:[.325,.372],unit:'ft',key:'flightAltitudeFt',step:500,min:-1000,max:37000},
        {id:'landing-alt',kind:'altitude',label:'LAND ALT',xy:[.325,.676],unit:'ft',key:'landingAltitudeFt',step:50,min:-1000,max:14000},
        {id:'press-mode',kind:'selector',label:'MODE',xy:[.72,.678],states:['AUTO','ALTN','MAN']},
-       {id:'manual-valve',kind:'spring',label:'MANUAL VALVE',xy:[.72,.453],states:['CLOSE','NEUTRAL','OPEN']}
+       {id:'manual-valve',kind:'spring',label:'MANUAL VALVE',xy:[.72,.453],states:['CLOSE','NEUTRAL','OPEN'],visualFamily:'Small Silver'}
      ],
      displays:[{id:'flight-display',xy:[.32,.207],field:'flightAltitudeFt'},{id:'landing-display',xy:[.32,.498],field:'landingAltitudeFt'}],
      // Inner rectangles of the four DCPCS lamp apertures, measured against
@@ -38,7 +38,7 @@
    CPCS:Object.freeze({
      engine:'B737CPCSV5',backgroundAsset:null,
      modes:['AUTO','STBY','MAN_AC','MAN_DC'],modePosition:[.805,.735],
-     controlFit:Object.freeze({'flight-alt':.162,'landing-alt':.162,'standby-alt':.150,'cabin-rate':.154,'press-mode':.160,'manual-valve':.125}),
+     controlFit:Object.freeze({'flight-alt':.162,'landing-alt':.162,'standby-alt':.150,'cabin-rate':.154,'press-mode':.160,'manual-valve':.125,'flight-ground':.125}),
      lampFit:Object.freeze({x:1.075,y:1.13}),
      controls:[
        {id:'flight-alt',kind:'altitude',label:'FLT ALT',xy:[.288,.429],key:'flightAltitudeFt',unit:'ft',step:500,min:-1000,max:37000},
@@ -46,7 +46,9 @@
        {id:'standby-alt',kind:'altitude',label:'STBY CABIN ALT',xy:[.584,.598],key:'standbyCabinAltitudeFt',unit:'ft',step:50,min:-1000,max:14000},
        {id:'cabin-rate',kind:'selector',label:'CABIN RATE',xy:[.553,.270],states:['DECR','INDEX','INCR']},
        {id:'press-mode',kind:'selector',label:'MODE',xy:[.805,.735],states:['AUTO','STBY','MAN_AC','MAN_DC']},
-       {id:'manual-valve',kind:'spring',label:'MANUAL VALVE',xy:[.813,.475],states:['CLOSE','NEUTRAL','OPEN']},
+       {id:'manual-valve',kind:'spring',label:'MANUAL VALVE',xy:[.813,.475],states:['CLOSE','NEUTRAL','OPEN'],visualFamily:'Small Silver'},
+       // Provisional CPCS socket distinct from the mode selector; pending photo-pixel QA.
+       {id:'flight-ground',kind:'selector',label:'FLT/GRD',xy:[.585,.795],states:['FLT','GRD'],visualFamily:'Small Silver',visualCalibration:'CPCS-local-provisional'},
        {id:'auto-check',kind:'momentary',label:'AUTO CHECK',xy:[.74,.805],appearance:'hotspot'}
      ],
      displays:[
