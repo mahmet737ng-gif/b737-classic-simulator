@@ -273,10 +273,12 @@
       "visibility": "complete",
       "extraction": "VISUAL_MANUAL_BOUNDS_FROM_WINDOWS_PDF_VIEWER_SCREENSHOT",
       "evidenceTier": "SCREENSHOT_REFERENCE_NONMETRIC",
-      "notes": "slender satin-gray metallic face and black recessed bezel",
+      "notes": "Physical BLACK guarded cover confirmed by owner. Bright gray screenshot appearance is LIGHT REFLECTION on the black surface, not actual silver/satin-gray material.",
       "aspectRatioApprox": 0.466,
       "geometryApproval": "PENDING_ACTUAL_PANEL_MEASUREMENT",
-      "hingeEvidence": "NOT_DERIVED_FROM_IMAGE_USE_OWNER_QUIZ"
+      "hingeEvidence": "NOT_DERIVED_FROM_IMAGE_USE_OWNER_QUIZ",
+      "ownerOverride": "BLACK_BASE_SPECULAR_HIGHLIGHTS",
+      "baseColorIdentity": "black"
     },
     {
       "controlId": "gpws-flap-inhibit",
@@ -294,10 +296,13 @@
       "visibility": "bottom-clipped",
       "extraction": "VISUAL_MANUAL_BOUNDS_FROM_WINDOWS_PDF_VIEWER_SCREENSHOT",
       "evidenceTier": "SCREENSHOT_REFERENCE_NONMETRIC",
-      "notes": "appears one broad black guard across FLAP/GEAR text; physical cover association unresolved",
+      "notes": "Partially visible GPWS panel region only; owner confirms THREE SEPARATE identical covers (FLAP / GEAR / TERRAIN). Screenshot rectangle is NOT an individual cover rect.",
       "aspectRatioApprox": null,
       "geometryApproval": "PENDING_ACTUAL_PANEL_MEASUREMENT",
-      "hingeEvidence": "NOT_DERIVED_FROM_IMAGE_USE_OWNER_QUIZ"
+      "hingeEvidence": "NOT_DERIVED_FROM_IMAGE_USE_OWNER_QUIZ",
+      "regionMeaning": "PARTIAL_SHARED_PANEL_VIEW_NOT_INDIVIDUAL_GUARD_BOUNDS",
+      "individualCoverBoundsConfirmed": false,
+      "ownerOverride": "THREE_SEPARATE_SAME_SHAPE_SAME_SIZE"
     },
     {
       "controlId": "gpws-gear-inhibit",
@@ -315,10 +320,13 @@
       "visibility": "bottom-clipped",
       "extraction": "VISUAL_MANUAL_BOUNDS_FROM_WINDOWS_PDF_VIEWER_SCREENSHOT",
       "evidenceTier": "SCREENSHOT_REFERENCE_NONMETRIC",
-      "notes": "same VISIBLE bounding area as FLAP INHIBIT; do not fabricate distinct real physical housing before validation",
+      "notes": "Partially visible GPWS panel region only; owner confirms THREE SEPARATE identical covers (FLAP / GEAR / TERRAIN). Screenshot rectangle is NOT an individual cover rect.",
       "aspectRatioApprox": null,
       "geometryApproval": "PENDING_ACTUAL_PANEL_MEASUREMENT",
-      "hingeEvidence": "NOT_DERIVED_FROM_IMAGE_USE_OWNER_QUIZ"
+      "hingeEvidence": "NOT_DERIVED_FROM_IMAGE_USE_OWNER_QUIZ",
+      "regionMeaning": "PARTIAL_SHARED_PANEL_VIEW_NOT_INDIVIDUAL_GUARD_BOUNDS",
+      "individualCoverBoundsConfirmed": false,
+      "ownerOverride": "THREE_SEPARATE_SAME_SHAPE_SAME_SIZE"
     }
   ],
   "unmatchedControlIds": [
@@ -327,11 +335,36 @@
     "gpws-terrain-inhibit"
   ],
   "warnings": [
-    "GPWS single broad black visible guard appears to span FLAP INHIBIT and GEAR INHIBIT; not enough image evidence to certify separate physical covers.",
+    "OWNER CORRECTION SUPERSEDES EARLIER SWATCH: ANTISKID is BLACK with reflected light; not a silver face.",
+    "OWNER CORRECTION SUPERSEDES EARLIER INFERENCE: GPWS has THREE SEPARATE equal-size/equal-form guarded switches; do not combine them.",
     "Emergency Exit Lights lower end is cut off by the screenshot viewport.",
     "No screenshot determines hardware depth, actual dimensions in mm, fixed hinge direction or mechanical lever action.",
     "The PASSENGER OXYGEN cover in this screenshot is visibly near-black; earlier red default is inconsistent and must be replaced in provisional catalog.",
     "Do not upload copyrighted/private reference images to public GitHub."
   ],
-  "releaseGate": "PREVIEW_REFERENCE_ONLY"
+  "releaseGate": "PREVIEW_REFERENCE_ONLY",
+  "ownerCorrection": {
+    "date": "2026-10-26",
+    "antiskid": "Cover is physically BLACK. Gray/light look in MIP screenshot is specular reflection, NOT a silver or satin-grey base material.",
+    "groundProximity": "Three SEPARATE guarded switches FLAP INHIBIT, GEAR INHIBIT, TERRAIN INHIBIT, all identical in shape and size. One dark cropped region in screenshot cannot refute the owner's explicit identification.",
+    "priority": "Owner's explicit hardware correction outranks speculative visual interpretation in this registry."
+  },
+  "gpwsAssembly": {
+    "physicalCoverCount": 3,
+    "logicalControlIds": [
+      "gpws-flap-inhibit",
+      "gpws-gear-inhibit",
+      "gpws-terrain-inhibit"
+    ],
+    "allIndependent": true,
+    "allSamePhysicalShapeAndSize": true,
+    "hingeDirectionsPerPreviouslyRecordedOwnerQuiz": [
+      "Up",
+      "Up",
+      "Up"
+    ],
+    "screenshotCoverage": "PARTIALLY_CLIPPED; cannot individually measure all three guard socket rectangles from this screenshot",
+    "evidence": "OWNER_DIRECT_CORRECTION_2026_10_26",
+    "measurementApproval": "UNVERIFIED_MM_AND_NATIVE_PIXEL_SOCKET"
+  }
 }
