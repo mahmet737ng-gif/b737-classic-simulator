@@ -1,0 +1,26 @@
+name: Fire Protection Panel QA
+on:
+  push:
+    paths:
+      - 'fire-protection-lab/**'
+      - '.github/workflows/fire-protection-panel.yml'
+  pull_request:
+    paths:
+      - 'fire-protection-lab/**'
+      - '.github/workflows/fire-protection-panel.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check Fire Protection model and data paths
+        run: |
+          node --check fire-protection-lab/engine.js
+          node fire-protection-lab/tests/engine.test.cjs
+          node fire-protection-lab/tests/assets.test.cjs
