@@ -1,8 +1,8 @@
 {
   "schema": "b737.guarded17.coordinate-audit.v2",
-  "revision": "2026-10-27-calibration-baseline",
+  "revision": "2026-10-27-bus-transfer-owner-screenshot-register",
   "source": {
-    "blueprintSha": "0fdbeebb727bcf9f4df44477378611b3c9211440",
+    "blueprintSha": "01e83a1b6def47943caa7d3601f15562e152ca21",
     "atlasSha": "3ab3d3707e3fde37abd10f61a81db284fc426658",
     "specSha": "7eca11af654cb535c6f24f8a5ad4dffd6a79cf99"
   },
@@ -11,16 +11,17 @@
     "overhead": "atlasAbsolute 2220x3312 pixel reference, not full 4400x8100 unified canvas",
     "rotationCCW": "As owner commanded: Up 0, Down 180, Left 90"
   },
-  "status": "PARTIAL_GEOMETRY_AUDIT__NOT_PIXEL_APPROVED",
+  "status": "PARTIAL_GEOMETRY_AUDIT__13_POINTS_NUMERIC__ZERO_PIXEL_APPROVED",
   "summary": {
     "total": 17,
-    "insideCrop": 12,
+    "insideCrop": 13,
     "outOfCrop": 0,
-    "missingNativePoint": 1,
+    "missingNativePoint": 0,
     "noUnifiedPlacement": 4,
-    "pixelVerified": 0
+    "pixelVerified": 0,
+    "screenshotLocatedNotPixelVerified": 1
   },
-  "limitation": "Calculated atlas positions are exact transforms of older approximate source points. They are NOT independent pixel confirmation of the visible switch. GitHub binary image files were not readable for visual comparison through the connector, so coordinates are never guessed. Bus Transfer has no source point; antiskid and 3 GPWS controls have no registered image/placement in the Unified geometry.",
+  "limitation": "All 13 overhead source coordinates fit atlas crop, but only BUS TRANSFER is newly identified from the owner's marked screenshot (rectangle x596..849,y753..857). Its OH12 native center [509,534] remains an estimate requiring direct source image visual proof. Four other controls have no registered Unified panel (ANTISKID, GPWS FLAP/GEAR/TERRAIN).",
   "controls": [
     {
       "id": "flight-control-a",
@@ -470,12 +471,15 @@
         "AUTO"
       ],
       "statesCount": 2,
-      "sourceCenterNativePx": null,
+      "sourceCenterNativePx": [
+        509,
+        534
+      ],
       "sourceDimensionsPx": [
         1024,
         1536
       ],
-      "sourceEvidence": "UNLOCATED",
+      "sourceEvidence": "OWNER_MARKED_SCREENSHOT_OH12_GRD_PWR_ANCHORED_ESTIMATE__NOT_PIXEL_APPROVED",
       "placementAvailable": true,
       "sourceImage": {
         "url": "../../assets/locked/2026-10-23/OH12-BUS-TRANS-09319c17e7d0.png",
@@ -483,9 +487,71 @@
         "height": 1536,
         "panelAssetId": "OH12"
       },
-      "atlasPointPx": null,
-      "reviewStatus": "NATIVE_POINT_MISSING",
-      "reviewedPixelEvidence": null
+      "atlasPointPx": {
+        "x": 746.5469,
+        "y": 2511.5234
+      },
+      "reviewStatus": "OWNER_MARKED_SCREENSHOT_ESTIMATE_PENDING_SOURCE_NATIVE_PIXEL_VERIFICATION",
+      "reviewedPixelEvidence": null,
+      "sourceRectNativePx": [
+        325,
+        460,
+        368,
+        148
+      ],
+      "unifiedGlobalPointPx": {
+        "x": 1836.5469,
+        "y": 2621.5234
+      },
+      "cropBoundsPass": true,
+      "screenshotEvidence": {
+        "evidenceType": "OWNER_MARKED_SCREENSHOT_RED_RECTANGLE_2026_10_27",
+        "screenshotDimensionsPx": [
+          1920,
+          1080
+        ],
+        "screenshotRectInclusivePx": [
+          596,
+          753,
+          849,
+          857
+        ],
+        "screenshotCenterPx": [
+          722.5,
+          805
+        ],
+        "target": "bus-transfer socket / empty housing, not nearby GRD PWR toggle",
+        "anchor": {
+          "controlId": "ground-power",
+          "panelId": "OH12",
+          "registeredSourcePointPx": [
+            512,
+            285.7
+          ],
+          "screenshotAnchorPx": [
+            724.5,
+            630.5
+          ]
+        },
+        "nativePanelDimensionsPx": [
+          1024,
+          1536
+        ],
+        "nativeCenterEstimatedPx": [
+          509,
+          534
+        ],
+        "nativeRectEstimatedPx": [
+          325,
+          460,
+          368,
+          148
+        ],
+        "mapping": "Approximate screenshot-to-source mapping anchored on registered GRD PWR pivot and OH12 plate width; screenshot 144% zoom; not native-image feature matching.",
+        "estimatedErrorNativePx": "approx. +/- 10-15 px each axis; unverified registered GRD PWR datum may add further bias",
+        "pixelApproval": "NOT_APPROVED_PENDING_DIRECT_SOURCE_BITMAP_OVERLAY",
+        "operator": "assistant-from-user-marked-screenshot"
+      }
     },
     {
       "id": "antiskid",
