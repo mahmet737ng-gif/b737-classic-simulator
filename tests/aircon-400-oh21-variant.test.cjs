@@ -17,12 +17,12 @@ assert.deepEqual(V.labels.filter(x=>x.kind==='detent').map(x=>x.text),['OFF','AU
 // right OFF legend. They must be above the socket/legend row.
 for(const item of V.labels.filter(x=>x.kind==='title')){
  const [x,y,w,h]=item.rect;
- assert.ok(y+h<110,'RECIRC title must be above OFF/AUTO: '+item.text);
+ assert.ok(y>=115&&y+h<=175,'RECIRC title must replace native title glass, not the RAM DOOR row: '+item.text);
  assert.ok(w>=270&&w<350,'RECIRC title must stay a compact engraved lens');
 }
 for(const item of V.labels.filter(x=>x.kind==='detent')){
  const [x,y,w,h]=item.rect;
- assert.ok(x>=250&&x+w<430,'Left OFF/AUTO cannot cover left screw or central instrument');
+ assert.ok(x>=235&&x+w<380,'Left OFF/AUTO cannot cover left screw or central instrument');
  assert.ok(h<=65,'Legacy-proportioned detent glass');
 }
 const g=V.geometry({x:1724,y:1751,w:493,h:701});
