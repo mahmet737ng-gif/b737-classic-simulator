@@ -6,6 +6,8 @@ on:
     paths:
       - 'engine/runtime/**'
       - 'tests/aircraft-session-v1.test.cjs'
+      - 'tests/unified-authority-diagnostics-v1.test.cjs'
+      - 'panel-mosaic-lab/cockpit/isn-cockpit.js'
       - '.github/workflows/aircraft-architecture-v1.yml'
   pull_request:
     paths:
@@ -25,7 +27,7 @@ jobs:
           node-version: '22'
       - name: Strict runtime and Electrical source regression
         run: |
-          node --test tests/aircraft-session-v1.test.cjs
+          node --test tests/aircraft-session-v1.test.cjs tests/unified-authority-diagnostics-v1.test.cjs
           node tests/electrical-v7.test.cjs
           node tests/electrical-loads-v8.test.cjs
           node tests/systems-integration-v2.test.cjs
