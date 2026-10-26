@@ -47,9 +47,9 @@
  function controls(){
   const section=document.createElement('section');section.id='unifiedDriveAmpsNeedles';
   const title=document.createElement('h2');title.textContent='GEN DRIVE / A.C. AMPS · 5 Needles';section.append(title);
-  const note=document.createElement('p');note.className='muted';note.textContent='پنج عقربه از تصویر مشترک؛ نوک نیدل‌های OH11 و OH12 پس از بررسی مستقیم تصویر اصلی تا لبهٔ داخلی خط صفر کوتاه و هم‌زاویه شد. نقشهٔ عددی کامل خطوط هنوز تأیید نشده.';section.append(note);
+  const note=document.createElement('p');note.className='muted';note.textContent='مقدار اسلایدرهای این بخش زاویهٔ تستی نیدل (°) است، نه درجهٔ دما یا آمپر. مرکز ۵ گیج براساس عکس اصلی و قوس قاب تصحیح شد؛ شمارش و ارزش عددی همهٔ خطوط هنوز نیازمند ممیزی است.';section.append(note);
   for(const needle of model.needles){
-   const label=document.createElement('label');label.textContent=needle.label;label.style.display='block';label.style.direction='ltr';
+   const label=document.createElement('label');label.textContent=needle.label+' · QA ANGLE (°), NOT INSTRUMENT READING';label.style.display='block';label.style.direction='ltr';
    const input=document.createElement('input');Object.assign(input,{type:'range',min:'-90',max:'90',step:'1'});input.style.width='100%';input.style.accentColor='#edf0e8';
    const output=document.createElement('output');output.style.display='block';output.style.textAlign='left';output.style.direction='ltr';
    input.addEventListener('input',()=>setAngle(needle.id,Number(input.value)));
