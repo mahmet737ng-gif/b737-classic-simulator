@@ -31,7 +31,7 @@ assert.equal(map.map.fdOn,9);
 assert.equal(map.map.courseL,0);
 assert.equal(map.map.courseR,0);
 assert.match(src,/const W=2172,H=433/);
-assert.match(src,/bankRing:\{x:860,y:245,d:112\}/);
+assert.match(src,/bankRing:\{x:860,y:245,d:100\}/);
 assert.match(src,/pendingOwnerArtwork/);
 assert.match(style,/--owner-bsize/);
 assert.match(style,/mcp-owner13-push/);
