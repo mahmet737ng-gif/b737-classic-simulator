@@ -44,8 +44,10 @@ namespace B737Classic.GuardedSwitches
                     else if (contourProfile == "black-vertical-oxygen" ||
                              contourProfile == "black-vertical-exit")
                         widthFactor = Mathf.Lerp(0.965f, 1f, topT);
-                    else if (contourProfile == "silver-satin-inset")
+                    else if (contourProfile == "black-antiskid-inset")
                         widthFactor = Mathf.Lerp(0.975f, 0.94f, topT);
+                    else if (contourProfile == "gpws-three-identical")
+                        widthFactor = 0.97f + 0.03f * (1f - Mathf.Abs(topT * 2f - 1f));
                     pt.x *= widthFactor;
                     outline.Add(pt);
                 }
