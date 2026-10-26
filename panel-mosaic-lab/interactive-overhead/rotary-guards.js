@@ -34,6 +34,16 @@
    const value=engine.rotary(c.id),index=c.mode==='continuous'?value:c.states.indexOf(value);
    widget.dataset.value=String(value);widget.setAttribute('aria-valuenow',String(index));widget.setAttribute('aria-valuetext',String(value));widget.setAttribute('aria-label',c.label+' — '+value);
    for(const target of legendWidgets.get(c.id)||[])target.setAttribute('aria-pressed',String(target.dataset.detent===String(value)));
+  }else if(c.presentation==='flight-recorder-left-hinge'){
+   const current=engine.guard(c.id),index=c.states.indexOf(current.value);
+   widget.dataset.guard=current.guard;widget.dataset.value=current.value;
+   const cover=widget.querySelector('.recorder-hinge-cover'),lever=widget.querySelector('.recorder-hinge-lever');
+   cover.setAttribute('aria-expanded',String(current.guard==='open'));
+   cover.setAttribute('aria-label',(current.guard==='open'?'Close':'Open')+' Flight Recorder left hinged guard');
+   lever.disabled=current.guard!=='open';
+   lever.setAttribute('aria-valuenow',String(index));
+   lever.setAttribute('aria-valuetext',name(current.value));
+   lever.setAttribute('aria-label','FLIGHT RECORDER '+name(current.value));
   }else{
    const current=engine.guard(c.id),index=c.states.indexOf(current.value),frame=current.guard==='closed'?'CLOSED':index===0?'Open_UP':index===c.states.length-1?'Open_DOWN':'Open_CENTER';
    widget.dataset.guard=current.guard;widget.dataset.value=current.value;
@@ -108,6 +118,30 @@
   }
   legendWidgets.set(c.id,targets);
  }
+ function recorderHinged(c,placement){
+  const [x,y,w,h]=c.sourceRect,point=window.B737OverheadToggleModel.mapPoint;
+  const a=point({...c,sourcePoint:[x,y],bezelSourceDiameter:0},placement);
+  const b=point({...c,sourcePoint:[x+w,y+h],bezelSourceDiameter:0},placement);
+  const group=document.createElement('div');group.className='guard-node recorder-hinge-unit';group.dataset.control=c.id;
+  group.dataset.sourceRect=c.sourceRect.join(',');
+  Object.assign(group.style,{left:a.x+'px',top:a.y+'px',width:(b.x-a.x)+'px',height:(b.y-a.y)+'px'});
+  const hinge=document.createElement('span');hinge.className='recorder-hinge-pivot';hinge.setAttribute('aria-hidden','true');
+  const cradle=document.createElement('span');cradle.className='recorder-hinge-cradle';cradle.setAttribute('aria-hidden','true');
+  const lever=document.createElement('button');lever.type='button';lever.className='recorder-hinge-lever';lever.setAttribute('role','slider');
+  lever.setAttribute('aria-orientation','horizontal');lever.setAttribute('aria-valuemin','0');lever.setAttribute('aria-valuemax','1');
+  const cover=document.createElement('button');cover.type='button';cover.className='recorder-hinge-cover';
+  cover.title='FLIGHT RECORDER TEST/NORMAL — left hinge';
+  for(const control of [cover,lever])control.addEventListener('pointerdown',e=>{e.stopPropagation();choose(c);});
+  cover.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();choose(c);
+   engine.guardAction(c.id,engine.guard(c.id).guard==='closed'?'open':'close');});
+  lever.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();choose(c);
+   engine.guardAction(c.id,'set',engine.guard(c.id).value==='normal'?'test':'normal');});
+  lever.addEventListener('keydown',e=>{
+   if(!['ArrowLeft','ArrowRight','Home','End'].includes(e.key))return;e.preventDefault();e.stopPropagation();choose(c);
+   engine.guardAction(c.id,'set',e.key==='ArrowLeft'||e.key==='Home'?'test':'normal');
+  });
+  group.append(cradle,lever,hinge,cover);return group;
+ }
  function guarded(c,p){
   const group=document.createElement('div');group.className='guard-node';group.dataset.control=c.id;
   Object.assign(group.style,{left:p.x+'px',top:p.y+'px',transform:'rotate('+c.rotation+'deg)'});
@@ -164,12 +198,12 @@
   byId('atlasAbsolute').append(svg);
  }
  function mount(layout){
-  const section=document.createElement('section');section.className='rg-inspector';section.innerHTML='<strong>۲۰ روتری‌ناب · ۱۱ گارد · LGT-0001</strong><h3 id="rgSelected">یک ناب یا گارد را انتخاب کن</h3><button id="rgGuardAction" class="hidden"></button><div id="rgStates" class="rg-actions"></div><p id="rgValue" role="status" aria-live="polite"></p>';
+  const section=document.createElement('section');section.className='rg-inspector';section.innerHTML='<strong>۲۰ روتری‌ناب · ۱۲ گارد · LGT-0002</strong><h3 id="rgSelected">یک ناب یا گارد را انتخاب کن</h3><button id="rgGuardAction" class="hidden"></button><div id="rgStates" class="rg-actions"></div><p id="rgValue" role="status" aria-live="polite"></p>';
   byId('toggleInspector').after(section);
   mountEngineStartLabelCorrection(layout);
   layer=document.createElement('div');layer.className='rg-layer';layer.id='rotaryGuardLayer';const placements=new Map(layout.placements.map(p=>[p.id,p]));
   layer.dataset.debugDetents=String(new URLSearchParams(location.search).get('debugDetents')==='1');
-  for(const c of [...registry.rotaries,...registry.guards]){const p=points.mapPoint(c,placements.get(c.placementId)),node=c.kind==='rotary'?rotary(c,p):guarded(c,p);widgets.set(c.id,node);layer.append(node);render(c);}
+  for(const c of [...registry.rotaries,...registry.guards]){const p=points.mapPoint(c,placements.get(c.placementId)),node=c.kind==='rotary'?rotary(c,p):c.presentation==='flight-recorder-left-hinge'?recorderHinged(c,placements.get(c.placementId)):guarded(c,p);widgets.set(c.id,node);layer.append(node);render(c);}
   for(const c of registry.rotaries)if(c.legendAreas)mountLegendTargets(c,placements.get(c.placementId));
   layer.classList.toggle('hidden',!byId('toggleVisibility').checked);byId('atlasAbsolute').append(layer);interlocks();
   byId('resetToggles').addEventListener('click',()=>{engine.reset();interlocks();persist();});
