@@ -15,6 +15,7 @@ PANELS={
  'OH12':('OH12-BUS-TRANS-09319c17e7d0.png',(1024,1536)),
  'OH20':('OH20-AIR-CONDITIONING-0734da6a7726.png',(1254,1254)),
  'OH21':('OH21-BLEED-AIR-cc78219607a3.png',(1122,1402)),
+ 'OH20-400':('Boeing-Style Environmental Control Panel.png',(1122,1402)),
 }
 GAUGES=[
  ('OH10','dcAmps',310,168,85,216, 'ANGLE_ONLY_NOT_AMPS'),
@@ -28,6 +29,7 @@ GAUGES=[
  ('OH12','apuAcAmps',724,1334,124,220,'ANGLE_ONLY_NOT_AMPS'),
  ('OH20','cabinTemp',618,681,158,220,'CANDIDATE_SIX_MAJOR_NUMBERS'),
  ('OH21','ductPressure',544,439,148,220,'APPROX_LINEAR_PSI_0_TO_100'),
+ ('OH20-400','cabinTemp400',284,268,158,220,'ALTERNATE_400_PHOTO_SEPARATE_SCALE_PENDING'),
 ]
 OUT.mkdir(parents=True,exist_ok=True)
 registered=[]
