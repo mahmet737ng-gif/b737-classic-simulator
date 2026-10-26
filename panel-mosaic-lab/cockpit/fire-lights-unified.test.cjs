@@ -1,90 +1,51 @@
 'use strict';
-const assert=require('node:assert/strict');
-const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
-const dir=__dirname,root=path.resolve(dir,'../..');
-const M=require('./fire-lights-model.js');
-const frameAudit=JSON.parse(fs.readFileSync(path.join(root,'fire-protection-lab/reference/unified-11-indicator-frame-glass-v4.json'),'utf8'));
-const glassAudit=JSON.parse(fs.readFileSync(path.join(root,'fire-protection-lab/reference/unified-11-indicator-aperture-audit-v3.json'),'utf8'));
-const assembly=JSON.parse(fs.readFileSync(path.join(dir,'assembly.json'),'utf8'));
-const html=fs.readFileSync(path.join(dir,'index.html'),'utf8');
-const css=fs.readFileSync(path.join(dir,'fire-lights-unified.css'),'utf8');
-const ui=fs.readFileSync(path.join(dir,'fire-lights-unified.js'),'utf8');
-let count=0;
-function check(value,label){count++;assert.ok(value,label);}
-function corners(b){return {tl:[b.left,b.top],tr:[b.left+b.width,b.top],bl:[b.left,b.top+b.height],br:[b.left+b.width,b.top+b.height]};}
-function dist(a,b){return Math.hypot(a[0]-b[0],a[1]-b[1]);}
-function separate(a,b){return a.left>=b.left+b.width||b.left>=a.left+a.width||a.top>=b.top+b.height||b.top>=a.top+a.height;}
-check(M.validate(),'Valid lamp model');
-check(M.version==='FIRELAMP-0005','V5 full-housing legend projection with independently audited physical inset');
-check(frameAudit.placements.length===8&&glassAudit.corners.length===8,'Eight independent outer and inner measurements');
-check(M.SLOTS.length===11,'11 lamps');
-check(M.SLOTS.filter(x=>x.type==='round').length===3,'Three circles unchanged');
-let maxFrame=0,maxGlass=0,maxCircle=0;
-for(const slot of M.SLOTS){
- const outer=M.region(slot),inner=M.faceRegion(slot);
- check(outer.left>=0&&outer.top>=0&&outer.left+outer.width<=2172&&outer.top+outer.height<=724,'Outer within 2172×724 '+slot.id);
- check(inner.left>=outer.left&&inner.top>=outer.top&&inner.left+inner.width<=outer.left+outer.width&&inner.top+inner.height<=outer.top+outer.height,'Glass fully within frame '+slot.id);
- if(slot.type==='rect'){
-  const outerReference=frameAudit.placements.find(p=>p.id===slot.id);
-  const glassReference=glassAudit.corners.find(p=>p.id===slot.id);
-  check(Boolean(outerReference&&glassReference),'Independent photo and glass measurements '+slot.id);
-  const fc=corners(outer),gc=corners(inner);
-  for(const c of ['tl','tr','bl','br']){
-   const ef=dist(fc[c],outerReference.frameCorners[c]),eg=dist(gc[c],glassReference.aperture[c]);
-   maxFrame=Math.max(maxFrame,ef);maxGlass=Math.max(maxGlass,eg);
-   check(ef<=frameAudit.acceptance.maxFrameCornerDeltaPx,slot.id+' frame '+c+' mismatch '+ef.toFixed(2));
-   check(eg<=frameAudit.acceptance.maxGlassCornerDeltaPx,slot.id+' face '+c+' mismatch '+eg.toFixed(2));
-  }
-  // Four fasteners remain visible because the mounted image fills only
-  // the inner aperture (not the frame). No opaque paint on outer wrapper.
-  const fp=M.facePercent(slot);
-  check(Number.parseFloat(fp.left)>0&&Number.parseFloat(fp.top)>0,'Inlaid glass offset '+slot.id);
-  check(Number.parseFloat(fp.width)<100&&Number.parseFloat(fp.height)<100,'Glass smaller than housing '+slot.id);
-  for(const state of [false,true]){
-   const src=path.resolve(dir,M.file(slot,state));
-   check(fs.existsSync(src),'ON/OFF face asset '+slot.id+' '+state);
-   check(fs.readFileSync(src,'utf8').includes('scale(0.75)'),'Locked-source-derived 75% legend '+slot.id+' '+state);
-  }
- } else {
-  const ref=glassAudit.rounds.find(x=>x.id===slot.id);
-  check(Boolean(ref),'Reference circle '+slot.id);
-  const e=dist([slot.cx,slot.cy],ref.center);maxCircle=Math.max(maxCircle,e);
-  check(e<=2,'Round indicator center '+slot.id);
-  check(slot.radius===30&&ref.visibleBezelRadius===30,'Approved 60px circle '+slot.id);
-  check(outer.width===60&&outer.height===60,'Exact 60px surface '+slot.id);
+const assert=require('node:assert/strict'), fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
+const dir=__dirname,root=path.resolve(dir,'../..'), M=require('./fire-lights-model.js');
+const manifest=JSON.parse(fs.readFileSync(path.join(root,'fire-protection-lab/reference/unified-fire-approved-v6.json'),'utf8'));
+const asm=JSON.parse(fs.readFileSync(path.join(dir,'assembly.json'),'utf8'));
+const html=fs.readFileSync(path.join(dir,'index.html'),'utf8'),js=fs.readFileSync(path.join(dir,'fire-lights-unified.js'),'utf8'),css=fs.readFileSync(path.join(dir,'fire-lights-unified.css'),'utf8');
+let checked=0;function ok(value,why){checked++;assert.ok(value,why);}
+const b=s=>M.region(s);
+ok(M.validate(),'V6 11 lamp coordinate model');
+ok(M.version==='FIRELAMP-0006'&&manifest.version===M.version,'Version and manifest match');
+ok(M.SLOTS.length===11&&M.SLOTS.filter(x=>x.type==='rect').length===8&&M.SLOTS.filter(x=>x.type==='round').length===3,'Eight rectangle and three separate round lamps');
+ok(M.BASE.width===2172&&M.BASE.height===724,'Natural pixel coordinate canvas');
+const p=asm.regions.find(r=>r.id==='pedestal').placements.find(r=>r.id==='fire-protection');
+ok(p.asset===manifest.panel.path,'Only the approved Fire bare panel referenced in Unified');
+ok(p.presentation==='contain'&&p.w===685&&p.h===170.10287081339712,'Original native placement untouched');
+ok(asm.assets[p.asset].url==='./assets/fire-v6/FIRE_PANEL_BARE.webp','Approved Fire webp URL is active');
+const plate=path.join(root,p.asset);ok(fs.existsSync(plate),'New bare panel file physically present');
+function webpFile(file){
+ ok(fs.existsSync(file),'Missing image: '+file);
+ const h=fs.readFileSync(file).subarray(0,12);
+ ok(h.toString('ascii',0,4)==='RIFF'&&h.toString('ascii',8,12)==='WEBP','Malformed WebP file '+file);
+}
+webpFile(plate);
+for(const lamp of M.SLOTS){
+ const registered=manifest.indicators.find(s=>s.id===lamp.id),r=b(lamp);
+ ok(!!registered,'Approved lamp slot '+lamp.id);
+ ok([r.left,r.top,r.width,r.height].every((v,i)=>registered.bounds[i]===v),'Four corners match approved source '+lamp.id);
+ ok(r.left>=0&&r.top>=0&&r.left+r.width<=2172&&r.top+r.height<=724,'Inside panel '+lamp.id);
+ for(const state of [true,false]){
+  const pathname=M.file(lamp,state);
+  ok(pathname.endsWith(lamp.id+'_'+(state?'ON':'OFF')+'.webp'),'Individual ON/OFF crop filename '+lamp.id);
+  webpFile(path.resolve(dir,pathname));
  }
+ if(lamp.type==='round')ok(r.width>=70&&r.height>=70,'Green lens retains approved full-size face');
 }
 for(let i=0;i<M.SLOTS.length;i++)for(let j=i+1;j<M.SLOTS.length;j++){
- check(separate(M.region(M.SLOTS[i]),M.region(M.SLOTS[j])),'Outer frames overlap '+M.SLOTS[i].id+' '+M.SLOTS[j].id);
+ const a=b(M.SLOTS[i]),c=b(M.SLOTS[j]);
+ ok(!(a.left<c.left+c.width&&c.left<a.left+a.width&&a.top<c.top+c.height&&c.top<a.top+a.height),'Physical lamp intersection '+M.SLOTS[i].id+' and '+M.SLOTS[j].id);
 }
-const L=M.region(M.map.L_BOTTLE_DISCHARGED),R=M.region(M.map.R_BOTTLE_DISCHARGED);
-check(L.top===R.top&&L.width===R.width&&L.height===R.height,'Two bottle frames same size and aligned');
-check(L.left+L.width<R.left,'Bottle lamps side by side, no overlap');
-const marker=frameAudit.independentScreenshotCheck;
-const scaleWheel=marker.wheelWellSelection[2]/M.region(M.map.WHEEL_WELL).width;
-const scaleEngine2=marker.engine2Selection[2]/M.region(M.map.ENG2_OVERHEAT).width;
-check(Math.abs(scaleWheel-scaleEngine2)<0.02,'Two independent Paint selection outlines support same image scale');
-const physical=assembly.regions.find(x=>x.id==='pedestal').placements.find(x=>x.id==='fire-protection');
-check(physical.asset.endsWith('FIRE_PROTECTION_BARE_STANDARD_SLOTS_V2_ORIGINAL.svg'),'Locked source unchanged');
-check(physical.presentation==='contain','Letterboxed panel source');
-const scale=Math.min(physical.w/2172,physical.h/724);
-check((physical.w-2172*scale)/2>0,'Horizontal contain padding exists');
-check(ui.includes('const legend=model.legendPercent(slot)'),'Renderer renders actual lamp artwork at full measured housing size');
-check(ui.includes('width:legend.width,height:legend.height'),'Rendered image dimensions are set from legend bounds, not stale glass bounds');
-for(const lamp of M.SLOTS.filter(x=>x.type==='rect')){ const shape=M.legendPercent(lamp);check(shape.width==='100%'&&shape.height==='100%','Visible artwork fills outer housing '+lamp.id);const frame=M.region(lamp),glass=M.faceRegion(lamp);check(frame.width*frame.height>glass.width*glass.height*1.25,'Significant visible size increase from previous revision '+lamp.id); }
-check(ui.includes("node.dataset.geometry=slot.type==='rect'?'housing-sized-screen-lit-legend'"),'Visible full-housing legend geometry');
-check(ui.includes('Math.min(hostW/model.BASE.width,hostH/model.BASE.height)'),'Contain compensation');
-check(ui.includes('bottle-slots-horizontal-patch.svg'),'Same localized bottle patch');
-check(css.includes('z-index:1;background:transparent;'),'Physical lamp wrapper has no opaque black layer');
-check(css.includes('position:absolute;inset:auto;overflow:hidden;z-index:auto;'),'Lamp mount must not isolate screen blending against photographic base');
-check(css.includes('mix-blend-mode:screen;'),'Full housing layer blends dark database backing optically into existing panel, preserving screws');
-check(css.includes(".fire-lamp[data-kind=\"rect\"]"),'Blend limited to rectangular lamps');
-check(!/\.fire-lamp\[data-kind="rect"\] img\s*\{[^}]*mix-blend-mode:screen/s.test(css),'Do not blend only the child image inside an isolated parent');
-check(!css.includes('z-index:1;background:#050505;'),'Removed former opaque housing black fill');
-check(css.includes('.texture-piece[data-piece="fire-protection"]'),'Scoped to Fire Panel');
-check(!css.includes('data-piece="throttle-quadrant"'),'No unrelated panel touch');
-for(const file of ['fire-lights-model.js','fire-lights-unified.js','fire-lights-unified.css']){
- check(html.includes(file+'?v=FIRELAMP-0005'),'Unified loads V4 '+file);
+ok(M.map.L_BOTTLE_DISCHARGED.cy===M.map.R_BOTTLE_DISCHARGED.cy,'Horizontal bottle row');
+ok(js.includes('fire-v6/FIRE_PANEL_BARE.webp'),'Base asset guard recognizes only approved V6');
+ok(!js.includes('bottle-slots-horizontal-patch.svg'),'Old bottle background patch is no longer used');
+ok(js.includes("const p=model.percent(slot)"),'Each ON/OFF asset mounted at own geometric coordinates');
+ok(js.includes("const wanted=model.file(s,vals[s.id])"),'Independent per-lamp runtime state switching');
+ok(css.includes('mix-blend-mode:normal;'),'Original photo-style crop not screen-blended into panel');
+ok(!css.includes('mix-blend-mode:screen;'),'Legacy unnatural screen blending disabled');
+for(const filename of ['fire-lights-model.js','fire-lights-unified.js','fire-lights-unified.css']){
+ ok(html.includes(filename+'?v=FIRELAMP-0006'),'Cache-busted Unified V6 asset '+filename);
 }
-new vm.Script(ui,{filename:'fire-lights-unified.js'});
-console.log('PASS FIRELAMP-0005 '+count+' assertions, 32 frame corners error='+maxFrame+'px, 32 glass corners error='+maxGlass+'px, 3 circle centers error='+maxCircle+'px, Paint selection scale cross-check PASS.');
+new vm.Script(js,{filename:'fire-lights-unified.js'});
+console.log('PASS FIRELAMP-0006 '+checked+' checks: 1 new photographic bare panel and 22 individual ON/OFF image crops registered, zero intersections, no prior fire bottle patch.');
