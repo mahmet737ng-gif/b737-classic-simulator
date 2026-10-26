@@ -103,6 +103,17 @@ const base='http://127.0.0.1:8788/panel-mosaic-lab/cockpit/overhead-stage.html';
     assert.equal(updated.controls.right,before.right,'R position must not change');
     assert.equal(updated.pneumatic.L.selectedMode,updated.controls.left);
     assert.equal(updated.pneumatic.R.selectedMode,before.right);
+    // Test the native right RECIRC toggle as a REAL switch. In OFF both
+    // physical handles point up, the worst-case title collision geometry.
+    await page.evaluate(()=>document.getElementById('toggle-recirc-fan').click());
+    const bothOff=await page.evaluate(()=>({
+     controls:window.B737Aircon400Oh21.getState(),
+     pneumatic:window.B737OverheadLights.getState().pneumatic.recircFans
+    }));
+    assert.equal(bothOff.controls.left,'OFF','L OFF after user action');
+    assert.equal(bothOff.controls.right,'OFF','R OFF after user action');
+    assert.equal(bothOff.pneumatic.L.selectedMode,'OFF');
+    assert.equal(bothOff.pneumatic.R.selectedMode,'OFF');
    }
    await plate.screenshot({
     path:'artifacts/aircon400-oh21/'+(family==='B737-400'?'400':'300-500')+'.png',
