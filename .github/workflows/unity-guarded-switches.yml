@@ -6,6 +6,7 @@ on:
       - 'tests/unity-guarded-switch-blueprint.test.cjs'
       - 'unity/preview/**'
       - 'tests/unity-guard-preview.test.cjs'
+      - 'tests/unity-guarded-actuator-appearance.test.cjs'
       - 'tests/unity-guard-owner-reference.test.cjs'
       - 'engine/maps/guarded-switch-owner-hinge-quiz-v1.json'
       - '.github/workflows/unity-guarded-switches.yml'
@@ -15,6 +16,7 @@ on:
       - 'tests/unity-guarded-switch-blueprint.test.cjs'
       - 'unity/preview/**'
       - 'tests/unity-guard-preview.test.cjs'
+      - 'tests/unity-guarded-actuator-appearance.test.cjs'
       - 'tests/unity-guard-owner-reference.test.cjs'
       - 'engine/maps/guarded-switch-owner-hinge-quiz-v1.json'
       - '.github/workflows/unity-guarded-switches.yml'
@@ -33,6 +35,8 @@ jobs:
         run: node --test tests/unity-guard-preview.test.cjs
       - name: Verify owner's Boeing 737CL reference photo geometry and guarded material profiles
         run: node --test tests/unity-guard-owner-reference.test.cjs
+      - name: Guarded actuator appearance, FCOM detents and visual state identity
+        run: node --test tests/unity-guarded-actuator-appearance.test.cjs
       - name: Verify completed owner hinge quiz
         run: node --test tests/guarded-hinge-owner-quiz.test.cjs
       - name: Protect frozen overhead mosaic source bytes
