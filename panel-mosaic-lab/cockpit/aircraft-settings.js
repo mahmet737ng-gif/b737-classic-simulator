@@ -84,6 +84,20 @@
         byId('activeProfileStatus').textContent='OH22 '+msg.system+': '+error.message;
         publishPressureState();
       }
+    } else if(msg.kind==='pressurization-horn-cutout'){
+      // The physical cutout button belongs to OH19-DIFF, immediately next
+      // to CPCS OH22. Route it to the EXISTING ISN cabin warning controller.
+      // Never create an independent horn clock or silence unrelated alarms.
+      if(msg.system!=='CPCS'||msg.system!==selectedPressure()||msg.sourcePiece!=='OH19-DIFF')return;
+      const warning=window.B737ISNCockpitV1;
+      if(typeof warning?.instructor==='function'){
+        try{
+          warning.instructor({type:'CUTOUT_CABIN'});
+          byId('activeProfileStatus').textContent='CPCS ALT HORN CUTOUT → ISN WarningEngine (cabin horn only)';
+        }catch(error){byId('activeProfileStatus').textContent='ALT HORN CUTOUT REJECTED: '+error.message;}
+      }else{
+        byId('activeProfileStatus').textContent='ALT HORN CUTOUT NOT READY: ISN warning owner has not initialized';
+      }
     }
   });
   // Future simulator sensor adapters can inject sourced inputs to the selected

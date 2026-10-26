@@ -45,7 +45,9 @@
    if(s.visibleFraction!=null&&s.visibleFraction<0.75)add('INFO','ZOOM_VIEW_CLIPPING','OH22 is partly outside the current viewer. Zoom out or use FIT to inspect every lamp and switch','VIEW',{visibleFraction:round(s.visibleFraction)});
    if(system==='CPCS'){
      if(!s.valveIndicatorPresent)add('WARNING','CPCS_VALVE_INDICATOR_UNMAPPED','CPCS valve-position aperture has no mapped source indication','VALVE');
-     if(!s.hornCutoutPresent)add('WARNING','CPCS_HORN_CUTOUT_UNWIRED','ALT HORN CUTOUT is visible on the photo but has no dedicated OH22 activation control','HORN');
+     if(!s.hornCutoutPresent)add('WARNING','CPCS_HORN_CUTOUT_UNWIRED','ALT HORN CUTOUT on neighbouring OH19 has no interactive click region','HORN');
+     if(s.hornCutoutPresent&&s.hornCutoutOutside)add('ERROR','CPCS_HORN_TARGET_OUTSIDE_OH19','Cabin horn button click surface is outside the OH19 photo circle','HORN');
+     if(!s.detentHotspotsPresent)add('WARNING','CPCS_DETENT_HIT_TARGETS_MISSING','Direct-click rotary detent legends not available for every label','MODE');
      if(!s.detentCalibrated)add('WARNING','CPCS_DETENT_NOT_PHOTO_VERIFIED','CPCS rotary angle/end-stop geometry is not yet source-photo calibrated','MODE');
    } else if(!s.detentCalibrated)add('WARNING','DCPCS_DETENT_NOT_PHOTO_VERIFIED','DCPCS rotary angle/end-stop geometry is not yet source-photo calibrated','MODE');
    if(s.noPhysics)add('WARNING','PHYSICAL_FEEDBACK_UNAVAILABLE','No cabin pressure feedback has reached the selected controller','ENGINE');
@@ -87,7 +89,7 @@
      }
      return {id:c.id,present:!!el,enabled:!!el&&root.getComputedStyle(el).pointerEvents!=='none'&&!el.disabled,
        centerErrorPx:centerError(el,c.xy,p),outsidePlate:!!(r&&p&&(r.left<p.left-3||r.right>p.right+3||r.top<p.top-3||r.bottom>p.bottom+3)),
-       assetBroken:!!(img&&img.complete&&img.naturalWidth===0),calibrationProvisional:!!c.visualCalibration&&/provisional/i.test(c.visualCalibration),
+       assetBroken:!!(img&&img.complete&&img.naturalWidth===0),calibrationProvisional:!!c.visualCalibration&&/provisional|screenshot-position-only/i.test(c.visualCalibration),
        spriteOverscale};
    });
    const displays=cfg.displays.map(d=>{
@@ -115,10 +117,21 @@
    }
    const view=rect(doc.querySelector('#viewport'));
    const visibleFraction=p&&view?overlap(p,view)/Math.max(1,area(p)):null;
+   // The physical pushbutton is on the OH19-DIFF tile, NOT OH22.
+   const hornPlate=doc.querySelector('#atlasAbsolute .atlas-piece[data-key="OH19-DIFF"]');
+   const horn=hornPlate?.querySelector('.oh22-physical-horn-cutout');
+   const hornBox=rect(horn),hornRegion=rect(hornPlate);
+   const hornOutside=!!(hornBox&&hornRegion&&(hornBox.left<hornRegion.left-3||
+     hornBox.right>hornRegion.right+3||hornBox.top<hornRegion.top-3||hornBox.bottom>hornRegion.bottom+3));
+   const labelDefs=cfg.detentLabels||{};
+   const detentHotspotsPresent=Object.entries(labelDefs).every(([id,positions])=>
+     positions.every(d=>(id==='cabin-rate'&&d.value==='INDEX')||
+       !!layer?.querySelector('[data-detent-for="'+id+'"][data-detent="'+d.value+'"]')));
    const cap=layer?.querySelector('.oh22-pressure-note');
    return {system,platePresent:!!plate,layerPresent:!!layer,layerSystem:layer?.dataset.system||null,
      stateAvailable,engineMatches:!stateAvailable||engine.selectedMode===expectedMode,controls,lamps,displays,overlapPairs,visibleFraction,
-     lampTestActive,valveIndicatorPresent:!!layer?.querySelector('.oh22-pressure-gauge'),hornCutoutPresent:!!layer?.querySelector('[data-control="horn-cutout"]'),
+     lampTestActive,valveIndicatorPresent:system==='CPCS'?!!layer?.querySelector('.oh22-pressure-gauge[data-system="CPCS"] .oh22-valve-pointer'):!!layer?.querySelector('.oh22-pressure-gauge'),
+     hornCutoutPresent:!!horn,hornCutoutOutside:hornOutside,detentHotspotsPresent,
      detentCalibrated:false,noPhysics:!engine.physical,unknownBus:true,clockMs:state.clockMs??null,outputMode:engine.operatingMode||null,
      layerCaption:cap?.textContent||null};
  }

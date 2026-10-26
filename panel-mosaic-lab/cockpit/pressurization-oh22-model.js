@@ -38,7 +38,19 @@
    CPCS:Object.freeze({
      engine:'B737CPCSV5',backgroundAsset:null,
      modes:['AUTO','STBY','MAN_AC','MAN_DC'],modePosition:[.805,.735],
-     controlFit:Object.freeze({'flight-alt':.162,'landing-alt':.162,'standby-alt':.150,'cabin-rate':.154,'press-mode':.160,'manual-valve':.125,'flight-ground':.125}),
+     // Anchors measured from the supplied 2026-10-26 Unified 159% screenshot.
+     // Source pixels still require independent 1:1 original-photo signoff.
+     controlFit:Object.freeze({'flight-alt':.162,'landing-alt':.162,'standby-alt':.150,'cabin-rate':.154,'press-mode':.160,'manual-valve':.083,'flight-ground':.082}),
+     valveIndicator:Object.freeze({xy:[.812,.282],diameter:.148,axis:'LEFT_CLOSED_RIGHT_OPEN',evidence:'2026-10-26-CPCS-SCREENSHOT'}),
+     hornCutout:Object.freeze({piece:'OH19-DIFF',xy:[.790,.278],diameter:.092,source:'2026-10-26-UNIFIED-SCREENSHOT'}),
+     // Each legend gets a separate, directly selectable detent hotspot.
+     detentLabels:Object.freeze({
+       'cabin-rate':Object.freeze([{value:'DECR',xy:[.453,.322]},{value:'INDEX',xy:[.553,.263]},{value:'INCR',xy:[.658,.323]}]),
+       'press-mode':Object.freeze([{value:'AUTO',xy:[.679,.728]},{value:'STBY',xy:[.730,.637]},{value:'MAN_AC',xy:[.890,.643]},{value:'MAN_DC',xy:[.927,.744]}])
+     }),
+     // Relative graphic poses, not an undocumented electrical detent angle.
+     detentPoses:Object.freeze({'cabin-rate':Object.freeze({DECR:-65,INDEX:0,INCR:65}),
+       'press-mode':Object.freeze({AUTO:-65,STBY:-25,MAN_AC:25,MAN_DC:65})}),
      lampFit:Object.freeze({x:1.075,y:1.13}),
      controls:[
        {id:'flight-alt',kind:'altitude',label:'FLT ALT',xy:[.288,.429],key:'flightAltitudeFt',unit:'ft',step:500,min:-1000,max:37000},
@@ -48,7 +60,7 @@
        {id:'press-mode',kind:'selector',label:'MODE',xy:[.805,.735],states:['AUTO','STBY','MAN_AC','MAN_DC']},
        {id:'manual-valve',kind:'spring',label:'MANUAL VALVE',xy:[.813,.475],states:['CLOSE','NEUTRAL','OPEN'],visualFamily:'Small Silver'},
        // Provisional CPCS socket distinct from the mode selector; pending photo-pixel QA.
-       {id:'flight-ground',kind:'selector',label:'FLT/GRD',xy:[.585,.795],states:['FLT','GRD'],visualFamily:'Small Silver',visualCalibration:'CPCS-local-provisional'},
+       {id:'flight-ground',kind:'selector',label:'FLT/GRD',xy:[.585,.795],states:['FLT','GRD'],visualFamily:'Small Silver',visualCalibration:'2026-10-26-screenshot-position-only'},
        {id:'auto-check',kind:'momentary',label:'AUTO CHECK',xy:[.74,.805],appearance:'hotspot'}
      ],
      displays:[
@@ -77,6 +89,15 @@
      for(const control of c.controls)if(control.appearance!=='hotspot'&&!(c.controlFit[control.id]>.07&&c.controlFit[control.id]<.19))throw Error('Missing '+system+' actuator fit '+control.id);
      for(const part of [...c.controls,...c.lamps,...c.displays]){if(!validPoint(part.xy)||ids.has(part.id))throw Error('Invalid '+system+' OH22 '+part.id);ids.add(part.id);}
      if(!c.controls.some(c=>c.id==='press-mode')||!c.controls.some(c=>c.id==='manual-valve'))throw Error('Missing '+system+' controls');
+     if(system==='CPCS'&&(!validPoint(c.valveIndicator?.xy)||!validPoint(c.hornCutout?.xy)||
+       c.hornCutout.piece!=='OH19-DIFF'||!(c.valveIndicator.diameter>0&&c.valveIndicator.diameter<.2)))
+       throw Error('Missing measured CPCS valve/horn geometry');
+     if(c.detentLabels)for(const [id,labels] of Object.entries(c.detentLabels)){
+       const control=c.controls.find(v=>v.id===id);
+       if(!control||labels.length!==control.states.length||
+          !labels.every((d,i)=>d.value===control.states[i]&&validPoint(d.xy)))
+         throw Error('Invalid label-specific detents for '+id);
+     }
      if(!c.lampFaceCalibration?.asset||c.lamps.length!==4)throw Error('Missing unique '+system+' lamp calibration');
      for(const lamp of c.lamps){if(!validFace(lamp.face)||Math.abs(lamp.face[0]-lamp.xy[0])>.000001||Math.abs(lamp.face[1]-lamp.xy[1])>.000001)throw Error('Invalid '+system+' lamp aperture '+lamp.id);}
    }return true;}
