@@ -1,0 +1,69 @@
+{
+  "schema": "b737.photo-observed-mark-divisions.v1",
+  "sourceMaterial": "Actual native locked source PNG zoom visually counted, not an inferred regression",
+  "reviewed": "2026-10-26",
+  "cases": [
+    {
+      "panel": "OH11",
+      "instruments": [
+        "driveOil1",
+        "driveOil2"
+      ],
+      "printedScale": "GEN DRIVE TEMP RISE",
+      "unit": "RISE_Celsius",
+      "printedAnchors": [
+        10,
+        20
+      ],
+      "intermediateTicksCount": 1,
+      "intervals": 2,
+      "perTickUnit": 5,
+      "verifiedPoints": [
+        10,
+        15,
+        20
+      ],
+      "pixelAnglesIndividuallySignedOff": false,
+      "sourcePhoto": "OH11-STANDBY-8b7d36ff3182.png",
+      "degreeLabelCertainty": "PRINTED_10_AND_20_REVIEWED",
+      "status": "PHOTO_DIVISIONS_REVIEWED_PIVOT_AND_ANGLE_QA_PENDING"
+    },
+    {
+      "panel": "OH12",
+      "instruments": [
+        "acAmps1",
+        "acAmps2",
+        "apuAcAmps"
+      ],
+      "printedScale": "A.C. AMPS",
+      "unit": "A",
+      "printedAnchors": [
+        50,
+        100
+      ],
+      "intermediateTicksCount": 4,
+      "intervals": 5,
+      "perTickUnit": 10,
+      "verifiedPoints": [
+        50,
+        60,
+        70,
+        80,
+        90,
+        100
+      ],
+      "pixelAnglesIndividuallySignedOff": false,
+      "sourcePhoto": "OH12-BUS-TRANS-09319c17e7d0.png",
+      "degreeLabelCertainty": "PRINTED_50_AND_100_REVIEWED",
+      "status": "PHOTO_DIVISIONS_REVIEWED_PIVOT_AND_ANGLE_QA_PENDING"
+    }
+  ],
+  "exclusions": [
+    "Do not assume every section uses the same minor tick count without visual inspection.",
+    "OH11 inner oil temperature 80/120/160 is a separate legend from RISE 0/10/20/30.",
+    "Do not use raw angle test sliders as the instrument values.",
+    "OH20 for B737-400 uses a separate 1122x1402 photo; do not reuse 300/500 temperature graduation registry.",
+    "Calibrated shaft and exact pixel angles are not yet approved."
+  ],
+  "overallOperationalCalibrationApproved": false
+}
