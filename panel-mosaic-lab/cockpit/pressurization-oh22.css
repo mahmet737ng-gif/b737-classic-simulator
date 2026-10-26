@@ -129,8 +129,55 @@ html.oh22-pressure-config-active .lights-layer .mounted-light[data-light="press-
 /* Selected CPCS/DCPCS Small Silver toggle faces; invariant metal nut/pivot. */
 .oh22-pressure-controls .oh22-pressure-small-silver{overflow:visible;touch-action:none}
 .oh22-pressure-controls .oh22-small-silver-face{
- position:absolute;left:50%;top:50%;display:block;width:262.5641025641%;height:262.5641025641%;
+ position:absolute;left:50%;top:50%;display:block;width:100%;height:100%;
  transform:translate(-50%,-50%);pointer-events:none;background-size:500% 100%;
  background-repeat:no-repeat;background-position:25% 50%;
  border:0;box-shadow:none;filter:none;opacity:1;user-select:none;
+}
+
+/* OH22-CPCS photo-specific amendments · 2026-10-26
+   Original overhead assets remain unchanged; the fittings below are overlays. */
+.oh22-pressure-controls [data-role="actuator"].oh22-pressure-small-silver{
+  border:0;overflow:visible;touch-action:none;
+}
+.oh22-pressure-controls .oh22-detent-label-hotspot{
+  position:absolute;transform:translate(-50%,-50%);
+  padding:0;margin:0;border:0;background:transparent;color:transparent;
+  pointer-events:auto;cursor:pointer;z-index:7;
+}
+.oh22-pressure-controls .oh22-detent-label-hotspot:focus-visible,
+.oh22-pressure-controls .oh22-detent-label-hotspot:hover{
+  outline:1px dashed #e8d299;border-radius:3px;
+}
+.oh22-physical-horn-cutout{
+  display:block;position:absolute;transform:translate(-50%,-50%);
+  border:0;background:transparent;border-radius:50%;
+  padding:0;margin:0;cursor:pointer;pointer-events:auto;z-index:1100;
+  touch-action:manipulation;
+}
+.oh22-physical-horn-cutout:focus-visible{
+  outline:2px solid #e1d6a7;outline-offset:2px;
+}
+.oh22-pressure-controls .oh22-pressure-gauge[data-system="CPCS"]{
+  display:block;position:absolute;border:none;border-radius:50%;
+  background:transparent;pointer-events:none;overflow:hidden;
+}
+.oh22-pressure-controls .oh22-pressure-gauge[data-system="CPCS"] .oh22-valve-pointer{
+  position:absolute;left:50%;top:50%;
+  width:5.5%;height:36%;
+  transform-origin:50% 100%;
+  border-radius:40% 40% 25% 25%;
+  background:linear-gradient(90deg,#79818a,#f9faf5 40%,#fbfcf5 65%,#778087);
+  box-shadow:0 0 2px #000b;
+  transition:transform 180ms ease-out;
+}
+.oh22-pressure-controls .oh22-pressure-gauge[data-system="CPCS"] .oh22-valve-hub{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:11%;height:11%;border-radius:50%;
+  background:radial-gradient(circle at 35% 35%,#f8fcfb,#89919c 58%,#2c333d);
+  box-shadow:0 0 2px #040608;
+}
+html.oh22-diagnostic-visible .oh22-physical-horn-cutout,
+html.oh22-diagnostic-visible .oh22-pressure-controls .oh22-detent-label-hotspot{
+  outline:2px dashed #f4cb61!important;outline-offset:2px;
 }
