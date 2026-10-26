@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - tools/test-lamp-photometric-qa.cjs
+      - tools/test-lamp-readability-qa.cjs
       - .github/workflows/lamp-photometric-qa.yml
 permissions:
   contents: read
@@ -30,6 +31,7 @@ jobs:
             sleep 1
           done
           node tools/test-lamp-photometric-qa.cjs
+          node tools/test-lamp-readability-qa.cjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
