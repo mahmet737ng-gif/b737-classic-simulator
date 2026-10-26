@@ -116,7 +116,7 @@ for(const sys of ['CPCS','DCPCS']){
  assert.equal(valve.visualFamily,'Small Silver',sys+' OPEN/CLOSE');
  assert.deepEqual(valve.states,['CLOSE','NEUTRAL','OPEN'],sys+' spring center');
 }
-assert.equal(oh22.config('CPCS').controlFit['flight-ground'],.125);
+assert.equal(oh22.config('CPCS').controlFit['flight-ground'],.082); // 2026-10-26 photo-scale Small Silver correction
 assert.ok(!oh22.config('DCPCS').controls.some(x=>x.id==='flight-ground'));
 
 assert.equal(c.controls.find(x=>x.id==='auto-check')?.appearance,'hotspot',
