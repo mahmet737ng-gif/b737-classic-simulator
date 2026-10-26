@@ -40,8 +40,8 @@ assert.match(src,/function addPushButtons/);
 assert.match(style,/pointer-events:none/);
 for(const file of ['panel-mosaic-lab/cockpit/index.html','panel-mosaic-lab/mcp-panel/index.html']){
  const html=fs.readFileSync(path.join(root,file),'utf8');
- assert.match(html,/mcp-owner13-v1\.js\?v=OWNER13-0001/);
- assert.match(html,/mcp-owner13-v1\.css\?v=OWNER13-0001/);
+ assert.match(html,/mcp-owner13-v1\.js\?v=OWNER13-0002/);
+ assert.match(html,/mcp-owner13-v1\.css\?v=OWNER13-0002/);
 }
 console.log(JSON.stringify({status:'PASS',sourceNames:13,previewAtlasPixels:[192,192],transparentParts:4,
  verifiedSHA256:true,immutableMcpBackground:true,previewOnly:true,sourceCutoutAudit:'NOT_YET_CERTIFIED'}));
