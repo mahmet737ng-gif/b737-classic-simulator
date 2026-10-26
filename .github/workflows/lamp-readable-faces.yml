@@ -1,0 +1,47 @@
+name: B737 small-text lens derivatives and source photo guard QA
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - tools/build-lamp-readability-faces.cjs
+      - panel-mosaic-lab/lights-test/readability-derivatives.test.cjs
+      - .github/workflows/lamp-readable-faces.yml
+permissions:
+  contents: write
+concurrency:
+  group: b737-lamp-readability-derived-assets
+  cancel-in-progress: false
+jobs:
+  build-readability:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Guard original source imagery
+        run: python3 panel-mosaic-lab/verify-final-overhead.py
+      - name: Build standalone readable legends without editing approved photos
+        run: node tools/build-lamp-readability-faces.cjs
+      - name: Regression checks for original text and flight recorder behavior
+        run: |
+          node panel-mosaic-lab/lights-test/readability-derivatives.test.cjs
+          node panel-mosaic-lab/interactive-overhead/lights.test.cjs
+          node panel-mosaic-lab/interactive-overhead/rotary-guards.test.cjs
+          node --check panel-mosaic-lab/interactive-overhead/rotary-guards.js
+          python3 panel-mosaic-lab/verify-final-overhead.py
+      - name: Commit text-fit state derivatives while keeping original artwork untouched
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add panel-mosaic-lab/assets/lights/readability-v1/ panel-mosaic-lab/interactive-overhead/readability-faces.json panel-mosaic-lab/cockpit/readability-faces.json panel-mosaic-lab/lights-test/readability-derivatives-v1.json
+          if git diff --cached --quiet; then echo "No new text derivatives"; exit 0; fi
+          git commit -m "feat(lamps): source-faithful readable lettering for six compact warning lamps"
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git rebase origin/main
+            if git push origin HEAD:main; then echo "READABILITY_SHA=$(git rev-parse HEAD)"; exit 0; fi
+            sleep 2
+          done
+          exit 1
