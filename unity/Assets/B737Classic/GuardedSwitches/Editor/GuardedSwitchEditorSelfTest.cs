@@ -126,14 +126,13 @@ namespace B737Classic.GuardedSwitches.Editor
                         Require(mat.HasProperty("_Metallic") == baseMaterial.HasProperty("_Metallic"),
                             "matching metalness contract");
                     }
-                    Quaternion[] rest = views.Select(v => v.GetComponentInChildren<MeshFilter>()
-                        .transform.parent.localRotation).ToArray();
+                    Quaternion[] rest = covers.Select(c => c.transform.parent.localRotation).ToArray();
                     views[0].SetOpen(true, true);
                     Require(views[0].InvariantsHold(), "GPWS first cover mesh/material locked");
                     Require(!views[1].TargetIsOpen && !views[2].TargetIsOpen,
                         "opening first lid does not trigger the other switches");
-                    Require(views[1].GetComponentInChildren<MeshFilter>().transform.parent.localRotation == rest[1] &&
-                            views[2].GetComponentInChildren<MeshFilter>().transform.parent.localRotation == rest[2],
+                    Require(covers[1].transform.parent.localRotation == rest[1] &&
+                            covers[2].transform.parent.localRotation == rest[2],
                         "independent hinge pivots");
                     tripletChecks++;
                 }
