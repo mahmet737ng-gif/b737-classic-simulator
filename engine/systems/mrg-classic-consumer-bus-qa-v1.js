@@ -81,5 +81,30 @@ function needleSources(index,electrical,variant="DCPCS"){
  }
  return output;
 }
-return Object.freeze({BUS_TO_V7,NEEDLE_REFERENCES,validate,variantRows,busPath,project,needleSources});
+
+const V8_ITEM_NAMES=Object.freeze({
+ "dcpcs.controller1":"Pressuriz. Control Auto 1 (DCPCS)",
+ "dcpcs.controller2":"Pressuriz. Control Auto 2 (DCPCS)",
+ "fuel.main1FwdPump":"Fuel Boost Pump - Main Tank 1 Forward",
+ "fuel.main1AftPump":"Fuel Boost Pump - Main Tank 1 Aft",
+ "fuel.main2FwdPump":"Fuel Boost Pump - Main Tank 2 Forward",
+ "fuel.main2AftPump":"Fuel Boost Pump - Main Tank 2 Aft",
+ "fuel.centerLeftPump":"Fuel Boost Pump - Center Tank Left",
+ "fuel.centerRightPump":"Fuel Boost Pump - Center Tank Right",
+ "hyd.electricPumpA":"Electric Hydraulic Pump 2 Sys A",
+ "hyd.electricPumpB":"Electric Hydraulic Pump 1 Sys B"
+});
+function v8CandidateSources(index,electrical,variant="DCPCS"){
+ const rows=variantRows(index,variant),out={};
+ for(const [id,item] of Object.entries(V8_ITEM_NAMES)){
+  if(id.startsWith("dcpcs.")&&variant!=="DCPCS")continue;
+  const found=rows.filter(x=>x.item.toUpperCase()===item.toUpperCase());
+  out[id]={loadId:id,sourceItemName:item,
+   references:found.map(row=>({id:row.id,page:row.printedPage,bus:row.feedBus,electricClass:row.feedVoltage,...busPath(row.feedBus,row.feedVoltage,electrical)})),
+   assignedBus:null,powered:null,installedWiringConfirmed:false,
+   sourceStatus:found.length?"GENERIC_CLASSIC_MRG_ONLY":"UNMATCHED_SOURCE_LABEL"};
+ }
+ return out;
+}
+return Object.freeze({BUS_TO_V7,NEEDLE_REFERENCES,V8_ITEM_NAMES,validate,variantRows,busPath,project,needleSources,v8CandidateSources});
 });
