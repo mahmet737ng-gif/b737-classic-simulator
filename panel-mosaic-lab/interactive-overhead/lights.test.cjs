@@ -32,7 +32,7 @@ e.update({faults:{'flight-recorder-off':false}},time);
 assert.equal(g.guardAction('flight-recorder-test','close').ok,true);sync();
 assert.deepEqual(g.guard('flight-recorder-test'),{value:'normal',guard:'closed'});
 assert.equal(on('flight-recorder-off'),true,'Closing guard reverts to NORMAL and stops ground recording');
-e.update({engine1Running:true},time);sync();assert.equal(on('flight-recorder-off'),false);
+e.update({engine1Running:true,engine2Running:true},time);sync();assert.equal(on('flight-recorder-off'),false);
 t.set('yaw-damper','OFF');sync();assert.equal(on('yaw-damper'),true);t.set('yaw-damper','ON');sync();assert.equal(on('yaw-damper'),false);
 g.guardAction('emergency-exit-lights','open');g.guardAction('emergency-exit-lights','set','on');sync();assert.equal(on('emergency-not-armed'),true);g.guardAction('emergency-exit-lights','close');sync();assert.equal(on('emergency-not-armed'),false);
 t.set('window-power-test','OVHT');sync();assert.equal(on('window-l-side-overheat'),true);t.release('window-power-test');sync();assert.equal(on('window-l-side-overheat'),false);assert.equal(on('probe-capt-ps'),true);t.set('pitot-a','ON');sync();assert.equal(on('probe-capt-ps'),false);
