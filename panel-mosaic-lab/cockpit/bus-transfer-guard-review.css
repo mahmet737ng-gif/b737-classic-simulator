@@ -1,0 +1,8 @@
+.bus-transfer-guard-review-dialog{border:1px solid #51616d;border-radius:15px;padding:0;background:#121b24;color:#f0f3f7;width:min(1060px,94vw);max-width:94vw;max-height:94vh;overflow:hidden;box-shadow:0 16px 75px #000b}
+.bus-transfer-guard-review-dialog::backdrop{background:#03070ac2;backdrop-filter:blur(3px)}
+.bus-transfer-review-top{padding:12px 18px;display:flex;align-items:center;justify-content:space-between;gap:20px;background:#202b34;direction:ltr}
+.bus-transfer-review-top strong{font-size:15px;letter-spacing:.35px}
+.bus-transfer-review-top button{font-size:23px;background:#3a4d58;color:white;border-radius:9px;border:1px solid #667984;cursor:pointer;width:39px;height:35px}
+.bus-transfer-review-notice{font-size:12px;color:#c6ccd4;margin:0;padding:8px 18px;line-height:1.7}
+.bus-transfer-guard-review-dialog iframe{border:none;width:100%;height:min(650px,75vh);display:block;background:#121923}
+@media(max-width:800px){.bus-transfer-review-top strong{font-size:12px}.bus-transfer-guard-review-dialog iframe{height:70vh}.bus-transfer-review-notice{font-size:11px}}
