@@ -93,6 +93,54 @@ namespace B737Classic.GuardedSwitches.Editor
 
             Debug.Log("UNITY COVER IDENTITY PASS: " + tested +
                       " instances (17 guards x 3 repetitions), fixed hinge and body identity.");
+
+            // Independent GPWS validation: there are three physically separate
+            // covers, but their procedural shape, bounds, thickness and material
+            // must match exactly. Opening ONE must not move the other two.
+            int tripletChecks = 0;
+            for (int pass = 1; pass <= 3; ++pass)
+            {
+                GameObject group = GpwsGuardTripletPreview.Create(data);
+                try
+                {
+                    GuardSwitchView[] views = group.GetComponentsInChildren<GuardSwitchView>(true);
+                    Require(views.Length == 3, "exactly three independently mounted GPWS covers");
+                    Require(views.Select(v => v.ControlId).Distinct().Count() == 3, "unique switch identities");
+                    MeshFilter[] covers = group.GetComponentsInChildren<MeshFilter>(true)
+                        .Where(x => x.gameObject.name == "OneImmutableGuardCover").ToArray();
+                    Require(covers.Length == 3, "three distinct GPWS cover meshes");
+                    Vector3[] vertices = covers[0].sharedMesh.vertices;
+                    int[] triangles = covers[0].sharedMesh.triangles;
+                    Material baseMaterial = covers[0].GetComponent<MeshRenderer>().sharedMaterial;
+                    for (int i = 1; i < 3; ++i)
+                    {
+                        MeshFilter mf = covers[i];
+                        Require(mf.sharedMesh != covers[0].sharedMesh, "each GPWS lid has its own mesh instance");
+                        Require(mf.sharedMesh.vertexCount == vertices.Length, "identical vertex count");
+                        Vector3[] compared = mf.sharedMesh.vertices;
+                        for (int k = 0; k < vertices.Length; ++k)
+                            Require(compared[k] == vertices[k], "identical lid shape and dimensions");
+                        Require(mf.sharedMesh.triangles.SequenceEqual(triangles), "identical topology");
+                        Material mat = mf.GetComponent<MeshRenderer>().sharedMaterial;
+                        Require(mat.color == baseMaterial.color, "identical BLACK base color");
+                        Require(mat.HasProperty("_Metallic") == baseMaterial.HasProperty("_Metallic"),
+                            "matching metalness contract");
+                    }
+                    Quaternion[] rest = views.Select(v => v.GetComponentInChildren<MeshFilter>()
+                        .transform.parent.localRotation).ToArray();
+                    views[0].SetOpen(true, true);
+                    Require(views[0].InvariantsHold(), "GPWS first cover mesh/material locked");
+                    Require(!views[1].TargetIsOpen && !views[2].TargetIsOpen,
+                        "opening first lid does not trigger the other switches");
+                    Require(views[1].GetComponentInChildren<MeshFilter>().transform.parent.localRotation == rest[1] &&
+                            views[2].GetComponentInChildren<MeshFilter>().transform.parent.localRotation == rest[2],
+                        "independent hinge pivots");
+                    tripletChecks++;
+                }
+                finally { UnityEngine.Object.DestroyImmediate(group); }
+            }
+            Debug.Log("GPWS TRIPLET PASS: " + tripletChecks +
+                      " independent three-guard groups; identical body shape and material.");
         }
 
         private static Vector3 FreeEdge(GuardHinge hinge, float width, float height)
