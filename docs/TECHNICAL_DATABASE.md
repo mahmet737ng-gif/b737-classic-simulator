@@ -1,3 +1,7 @@
+## Guarded Switch FCOM / hardware-source audit — Phase 1 & 2 (2026-10-26)
+
+Machine-readable, source-folio-traced inventory: [17 cockpit guarded/protected controls](../engine/maps/guarded-switches-fcom-visual-audit-v1.json), with [visual / source audit](GUARDED_SWITCH_PHASE1_PHASE2_AUDIT_2026-10-26.md) and Node regression checks in `tests/guarded-switch-phase12-audit.test.cjs`. **12 guards installed in the overlay, 5 missing, 6 top-vs-bottom metadata conflicts, zero approved 737 Classic hardware hinge/photo sign-offs.** The FCOM original remains private. No actual aircraft source geometry or mm values have been invented.
+
 # Technical Database — Boeing 737 sources
 
 ## General chart, table and text reader V1 (2026-10-25)
