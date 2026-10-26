@@ -29,6 +29,6 @@ assert.ok(ui.includes("new URL('./ac-dc-metering-needle.svg?v=MET-0001'"));
 assert.ok(ui.includes('for(const meter of model.meters)'));
 assert.ok(ui.includes('window.B737UnifiedAcDcMetering'));
 const html=fs.readFileSync(path.join(__dirname,'index.html'),'utf8');
-assert.ok(html.includes('ac-dc-metering-model.js?v=MET-0002-CDARK'));
-assert.ok(html.includes('ac-dc-metering-unified.js?v=MET-0002-CDARK'));
+assert.ok(html.includes('ac-dc-metering-model.js?v=MET-0003-ARC-QA'));
+assert.ok(html.includes('ac-dc-metering-unified.js?v=MET-0003-ARC-QA'));
 console.log('PASS: one transparent AC/DC metering needle reused on four OH10 gauges with separate pivots/angles.');
