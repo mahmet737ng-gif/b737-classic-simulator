@@ -16,7 +16,7 @@ test('Phase 1 completeness: 17 cockpit protected controls plus cabin excluded',(
  assert.equal(new Set(audit.controls.map(c=>c.id)).size,17);
  assert.equal(audit.excludedCabinControl.location,'AFT_FLIGHT_ATTENDANT_PANEL_OUTSIDE_COCKPIT_SCOPE');
  for(const c of audit.controls){
-  assert.ok(c.fcom.folio&&/^\\d+\\./.test(c.fcom.folio),c.id+' source page');
+  assert.ok(c.fcom.folio&&/^\d+\./.test(c.fcom.folio),c.id+' source page');
   if(c.documentedStates){
    assert.equal(c.numberOfPositionsConfirmed,c.documentedStates.length);
    assert.ok(c.documentedStates.includes(c.protectedState),c.id+' protected');
