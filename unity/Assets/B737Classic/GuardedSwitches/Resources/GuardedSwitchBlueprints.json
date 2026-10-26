@@ -1346,10 +1346,18 @@
       "hingeDirection": "Left",
       "physicalFamily": "bus-transfer-horizontal",
       "sourceMount": {
-        "sourceRectNativePx": null,
-        "sourceCenterNativePx": null,
-        "sourcePointEvidence": "UNLOCATED",
-        "rectEvidence": "UNMEASURED",
+        "sourceRectNativePx": [
+          325,
+          460,
+          368,
+          148
+        ],
+        "sourceCenterNativePx": [
+          509,
+          534
+        ],
+        "sourcePointEvidence": "OWNER_MARKED_SCREENSHOT_OH12_GRD_PWR_ANCHORED_ESTIMATE__NOT_PIXEL_APPROVED",
+        "rectEvidence": "OWNER_RED_BOX_SCREENSHOT_TRANSFORM_ESTIMATE__NOT_PIXEL_APPROVED",
         "panelSourceDimensionsPx": [
           1024,
           1536
@@ -1400,8 +1408,55 @@
         "737-400",
         "737-500"
       ],
-      "notes": "OWNER CONFIRMED: exact Passenger Oxygen guard family rotated 90 degrees. Bus transfer wider than tall, hinge on LEFT; when open, same mesh rotates around left fixed hinge only, never resizes or changes color. Not physically calibrated for mounting on OH12.",
-      "referenceScreenshotEvidence": null,
+      "notes": "OWNER CONFIRMED: exact Passenger Oxygen guard family rotated 90 degrees. Bus transfer wider than tall, hinge on LEFT; when open, same mesh rotates around left fixed hinge only, never resizes or changes color. Not physically calibrated for mounting on OH12. Owner's marked bus-transfer red rectangle on 1920x1080 Unified screenshot: screenshot center (722.5,805), native OH12 1024x1536 estimated center (509,534) and mounting rect [325,460,368,148]. These are provisional calibrated geometry from screenshot, NOT pixel-approved measurements. Keep hinged guard left, 2 detents, use small silver switch.",
+      "referenceScreenshotEvidence": {
+        "evidenceType": "OWNER_MARKED_SCREENSHOT_RED_RECTANGLE_2026_10_27",
+        "screenshotDimensionsPx": [
+          1920,
+          1080
+        ],
+        "screenshotRectInclusivePx": [
+          596,
+          753,
+          849,
+          857
+        ],
+        "screenshotCenterPx": [
+          722.5,
+          805
+        ],
+        "target": "bus-transfer socket / empty housing, not nearby GRD PWR toggle",
+        "anchor": {
+          "controlId": "ground-power",
+          "panelId": "OH12",
+          "registeredSourcePointPx": [
+            512,
+            285.7
+          ],
+          "screenshotAnchorPx": [
+            724.5,
+            630.5
+          ]
+        },
+        "nativePanelDimensionsPx": [
+          1024,
+          1536
+        ],
+        "nativeCenterEstimatedPx": [
+          509,
+          534
+        ],
+        "nativeRectEstimatedPx": [
+          325,
+          460,
+          368,
+          148
+        ],
+        "mapping": "Approximate screenshot-to-source mapping anchored on registered GRD PWR pivot and OH12 plate width; screenshot 144% zoom; not native-image feature matching.",
+        "estimatedErrorNativePx": "approx. +/- 10-15 px each axis; unverified registered GRD PWR datum may add further bias",
+        "pixelApproval": "NOT_APPROVED_PENDING_DIRECT_SOURCE_BITMAP_OVERLAY",
+        "operator": "assistant-from-user-marked-screenshot"
+      },
       "switchAppearance": {
         "schema": "b737-classic/guarded-underlying-switch-preview/v1",
         "designStage": "DRAFT_VISUAL_NOT_HARDWARE_CERTIFIED",
@@ -1438,7 +1493,7 @@
         "rotationDegrees": 90,
         "physicalGuardIndependent": true,
         "ownerConfirmed": true,
-        "mountingSite": "OH12_PENDING_NATIVE_PIXEL_CALIBRATION",
+        "mountingSite": "OH12_OWNER_SCREENSHOT_ESTIMATE_PENDING_NATIVE_BITMAP_PIXEL_VERIFICATION",
         "exactSizeApproval": "UNMEASURED"
       }
     },
