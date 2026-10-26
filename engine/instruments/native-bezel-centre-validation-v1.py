@@ -33,6 +33,11 @@ for panel,ref in data['sourcePhotos'].items():
   oldScore,nOld=circumference_edge(im,*old,r)
   newScore,nNew=circumference_edge(im,*current,r)
   assert nOld>=120 and nNew>=120,'Circle fell outside source PNG'
+  if gauge['moveVisualMountToBezelCandidate']:
+   assert newScore > oldScore + 5, (
+      panel,gauge['id'],'candidate must improve original arc contrast',oldScore,newScore)
+  if gauge['id']=='apuAcAmps':
+   assert oldScore > newScore, 'APU rollback must be backed by source pixels'
   # Apparent bezel centre extracted from actual image; reject too-close-to-edge.
   assert 0<current[0]<im.width and 0<current[1]<im.height
   d.ellipse((old[0]-9,old[1]-9,old[0]+9,old[1]+9),outline='#ff3a3a',width=3)
@@ -49,11 +54,11 @@ for panel,ref in data['sourcePhotos'].items():
       visualMountMoved=gauge['moveVisualMountToBezelCandidate']))
  paint.save(OUT/(panel+'_OLD_VS_FITTED_CENTRE.png'))
 report=dict(schema='b737.native-photo.gauge-ring-check.v1',originalImages=5,
- registeredGauges=11,bezelCentreMoved=9,sourceArtworkUnmodified=True,
+ registeredGauges=11,bezelCentreMoved=8,sourceArtworkUnmodified=True,
  photometricMetrics='gray radial edge contrast: original PNG, 2-degree steps',
  mechanicalPivotCertified=False,numericGraduationsAllCertified=False,
  gauges=scores)
 OUT.mkdir(parents=True,exist_ok=True)
 (OUT/'OH10_12_RIM_EVIDENCE.json').write_text(json.dumps(report,indent=2)+'\n')
-print('Original-photo arc validation 11/11; mounted preview centres changed 9/11')
+print('Original-photo arc validation 11/11; 8 preview centres improved, 1 APU shift rejected, 2 existing hubs retained')
 for r in scores:print(r['panel'],r['id'],'old/new rim contrast',r['oldCircumferenceEdgeStrength'],r['newCircumferenceEdgeStrength'])
