@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Unified B737 Classic · BUS TRANSFER owner-approved guard</title>
+<style>
+:root{color-scheme:dark;--case:#242426;--metal:#5a5e62;--face:#32383f;--accent:#92d9de}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(ellipse at 50% 0,#30363d,#11161b 70%);font:14px/1.5 system-ui,Arial,sans-serif;color:#edf1f5}
+main{width:min(1100px,100%);margin:auto;padding:24px 16px 40px}
+h1{font-size:clamp(22px,3vw,34px);margin:4px 0 8px;letter-spacing:.3px;direction:ltr;text-align:center}
+.kicker{font-weight:700;color:#87bac5;letter-spacing:1px;text-transform:uppercase;text-align:center;font-size:11px}
+.intro{color:#b4bec9;text-align:center;margin:4px 0 20px}
+.comparison{display:grid;grid-template-columns:1fr 1fr;gap:18px;direction:ltr}
+.station{background:#161e26;border:1px solid #51606b;border-radius:14px;padding:12px 10px 18px;overflow:hidden}
+.station h2{margin:0 0 12px;font-size:13px;letter-spacing:2px;text-align:center;color:#d6e5e8}
+.panel{height:306px;position:relative;background:linear-gradient(145deg,#272d34,#3e444c 40%,#272d34 90%);border:2px solid #161a1e;border-radius:12px;box-shadow:inset 0 0 2px #acb4b955, inset 2px 3px 14px #13192177;perspective:880px;overflow:visible}
+.titles{font:700 22px/1.25 'Arial Narrow',Arial,sans-serif;letter-spacing:1.5px;color:#cfd0d2;text-shadow:0 1px 3px #15191d;position:absolute;left:0;right:0;top:17px;text-align:center}
+.detents{position:absolute;right:9%;top:31%;font:600 16px/2.4 'Arial Narrow',Arial,sans-serif;color:#d7d8d9;letter-spacing:1px;display:flex;flex-direction:column}
+.detents small{font-size:10px;color:#c5c9c9}
+.screw{position:absolute;width:19px;height:19px;border-radius:50%;background:radial-gradient(circle at 32% 27%,#929ba3,#484d51 55%,#101316);box-shadow:0 0 0 2px #242a30,1px 2px 4px #0009}
+.screw:after{content:"";position:absolute;width:11px;height:2px;background:#13181b;top:8px;left:4px;transform:rotate(-30deg);box-shadow:0 -1px #b4b7b73b}
+.tl{left:16px;top:18px}.tr{right:16px;top:18px}.bl{left:16px;bottom:18px}.br{right:16px;bottom:18px}
+.mount{position:absolute;left:13%;top:42%;width:62%;height:39%;border-radius:12px;border:2px solid #121518;background:linear-gradient(127deg,#101316,#292e32,#111619);box-shadow:0 0 0 3px #4b51553b, inset 2px 2px 7px #020405, 2px 4px 7px #070a0c77;transform-style:preserve-3d}
+.socket{position:absolute;left:53%;top:50%;width:48px;height:48px;transform:translate(-50%,-50%);border-radius:50%;background:conic-gradient(#a5abb0,#171b1e,#dfe1e1,#676e72,#b9bdbd);box-shadow:0 2px 5px #000,0 0 0 4px #111719}
+.socket:before{content:"";position:absolute;inset:9px;border-radius:50%;background:radial-gradient(#080d10,#20262a);box-shadow:inset 1px 3px 4px #000}
+.lever{position:absolute;left:56%;top:45%;width:25px;height:36px;transform:translate(-50%,-50%) rotate(-30deg);border-radius:11px 11px 8px 8px;background:linear-gradient(95deg,#11181b 0,#858b8e 20%,#e8e8e6 50%,#676b6e 79%,#1e2327);box-shadow:3px 4px 6px #0009}
+.lever:after{content:"";position:absolute;left:2px;right:2px;top:-11px;height:22px;border-radius:50% 50% 22% 22%;background:linear-gradient(100deg,#343a3e,#c4c6c7,#42474c)}
+.hinge{position:absolute;left:-13px;top:13%;width:22px;height:74%;background:linear-gradient(90deg,#16191b,#67676c 18%,#1d1e20 45%,#b2b0ab 58%,#282c2f 76%,#171a1d);border:1px solid #0c0e11;border-radius:8px;box-shadow:2px 3px 3px #000a;z-index:5}
+.hinge:before,.hinge:after{content:"";position:absolute;left:-2px;right:-2px;height:11px;background:linear-gradient(#777d82,#20252a);border-radius:4px;border:1px solid #15171b}
+.hinge:before{top:6%}.hinge:after{bottom:6%}
+.cover{position:absolute;left:0;top:0;width:100%;height:100%;transform-origin:0% 50%;transform:rotateY(0deg);transition:transform .65s cubic-bezier(.23,.72,.15,1);border:0;border-radius:9px;cursor:pointer;background:linear-gradient(115deg,#0d1012,#28282b 25%,var(--case) 44%,#3f3d3b 64%,#1a1c1f 84%,#080a0b);box-shadow:inset 2px 3px 3px #ffffff17,inset -5px -5px 10px #000b,5px 7px 9px #000a,0 0 0 1px #0e1012;backface-visibility:visible;z-index:4;transform-style:preserve-3d}
+.cover:after{content:"";position:absolute;inset:5px;border:1px solid #f7f2de26;border-radius:6px}
+.cover.open{transform:rotateY(-108deg)}
+.station.opened .cover{transform:rotateY(-108deg)}
+.station.opened .cover:after{border-color:#f7f2de2e}
+.station.closed .cover{transform:rotateY(0deg)}
+.badge{font:600 10px monospace;position:absolute;left:14px;bottom:12px;color:#c9d0d4;letter-spacing:.7px}
+.controls{margin-top:18px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:center}
+button.action{font:inherit;background:#2d404d;color:#dceaf0;border:1px solid #56717c;padding:8px 13px;border-radius:7px;cursor:pointer}
+button.action:hover{background:#40586a}
+.status{min-width:250px;text-align:center;color:#a4c6cb}
+.note{background:#282a26;border:1px solid #585844;color:#d7d3b3;padding:12px 14px;border-radius:9px;margin-top:18px;font-size:12px}
+a{color:#8bdbe5}
+@media(max-width:760px){.comparison{grid-template-columns:1fr}.panel{height:278px}.titles{font-size:19px}.mount{left:11%;width:68%}}
+</style>
+</head>
+<body><main>
+<div class="kicker">OWNER CONFIRMED · 2026-10-26 · B737 CLASSIC</div>
+<h1>BUS TRANSFER · LEFT-HINGED GUARD</h1>
+<p class="intro">پوشش مشکیِ خانوادهٔ PASSENGER OXYGEN، ۹۰ درجه چرخیده؛ عرض بیشتر از ارتفاع؛ بازشدن از سمت راست به چپ</p>
+<section class="comparison" aria-label="حالت باز و بسته با یک هندسهٔ ثابت">
+<div class="station closed"><h2>CLOSED</h2><div class="panel">
+<div class="titles">BUS TRANSFER</div><div class="detents"><span>OFF</span><span>AUTO</span></div>
+<i class="screw tl"></i><i class="screw tr"></i><i class="screw bl"></i><i class="screw br"></i>
+<div class="mount"><span class="socket"></span><span class="lever"></span><button type="button" class="cover" aria-label="بازکردن یا بستن گارد بسته"></button><span class="hinge"></span></div>
+<span class="badge">LEFT HINGE · 90° FORM ROTATION</span>
+</div></div>
+<div class="station opened"><h2>OPEN</h2><div class="panel">
+<div class="titles">BUS TRANSFER</div><div class="detents"><span>OFF</span><span>AUTO</span></div>
+<i class="screw tl"></i><i class="screw tr"></i><i class="screw bl"></i><i class="screw br"></i>
+<div class="mount"><span class="socket"></span><span class="lever"></span><button type="button" class="cover open" aria-label="بازکردن یا بستن گارد باز"></button><span class="hinge"></span></div>
+<span class="badge">SAME COVER · SAME SIZE · SAME COLOR</span>
+</div></div>
+</section>
+<div class="controls"><button id="toggleBoth" type="button" class="action">تغییر وضعیت دو نما</button>
+<button id="reset" type="button" class="action">CLOSED / OPEN</button>
+<span id="status" class="status" role="status">Ready · Geometry locked</span></div>
+<div class="note">این تست تصویریِ اصلاح BUS TRANSFER در Unified است؛ گارد بسته/باز همان رنگ، فرم، ضخامت و اندازه را دارد و فقط حول محور Left می‌چرخد. نصب پیکسلی آن روی OH12 هنوز کالیبره و تأیید نشده؛ به‌جای جایگذاری حدسی روی تصویر قفل‌شده، این نمای بازرسی مستقل اضافه شده است. رنگ و شکل بازتابی همچنان پیش‌نمایش هستند و خود عکس تولیدشده، دارایی منتشرشده در این صفحه نیست.</div>
+</main>
+<script>
+(function(){
+'use strict';
+const stations=[...document.querySelectorAll('.station')];
+function render(s,opened){s.classList.toggle('opened',opened);s.classList.toggle('closed',!opened);s.querySelector('h2').textContent=opened?'OPEN':'CLOSED';const cover=s.querySelector('.cover');cover.classList.toggle('open',opened);cover.setAttribute('aria-expanded',String(opened));}
+stations.forEach(s=>s.querySelector('.cover').addEventListener('click',()=>render(s,!s.classList.contains('opened'))));
+document.getElementById('toggleBoth').addEventListener('click',()=>{for(const s of stations)render(s,!s.classList.contains('opened'));document.getElementById('status').textContent='Same cover transformed about fixed LEFT hinge';});
+document.getElementById('reset').addEventListener('click',()=>{render(stations[0],false);render(stations[1],true);document.getElementById('status').textContent='Ready · Geometry locked';});
+})();
+</script></body></html>
