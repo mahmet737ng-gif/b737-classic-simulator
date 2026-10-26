@@ -66,7 +66,17 @@
      }
      hitAreasByPanel.set(c.placementId,collection);
     }
-   }else if(!c.states.includes(c.default.value)||(!c.closePolicy.preserve&&!c.states.includes(c.closePolicy.force)))throw Error('Missing per-control guard policy: '+c.id);
+   }else {
+    if(!c.states.includes(c.default.value)||(!c.closePolicy.preserve&&!c.states.includes(c.closePolicy.force)))throw Error('Missing per-control guard policy: '+c.id);
+    // Housing measurements must be in original plate pixels, not screen/CSS pixels.
+    if(c.mountingRectSource){
+     const r=c.mountingRectSource,[sw,sh]=slots.get(c.placementId).sourceDimensions;
+     if(!Array.isArray(r)||r.length!==4||r.some(n=>!Number.isFinite(n))||r[2]<=0||r[3]<=0||
+        r[0]<0||r[1]<0||r[0]+r[2]>sw||r[1]+r[3]>sh)throw Error('Invalid guard mounting rectangle: '+c.id);
+     const [cx,cy]=c.sourcePoint;
+     if(Math.abs(r[0]+r[2]/2-cx)>r[2]*.08||Math.abs(r[1]+r[3]/2-cy)>r[3]*.08)throw Error('Guard pivot not centered in measured mounting rectangle: '+c.id);
+    }
+   }
   }
   return true;
  }
