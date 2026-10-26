@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>B737 Classic · Guarded Switch Hardware Studio V2</title>
+<style>
+:root{color-scheme:dark;--panel:#1a2129;--ink:#f5f7fb;--muted:#a9b4be;--line:#42505d}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 45% -15%,#34414a,transparent 48%),#0e1218;color:var(--ink);font:14px/1.5 system-ui,"Segoe UI",Arial,sans-serif}
+main{width:min(1450px,100%);padding:24px;margin:auto}
+header{display:flex;justify-content:space-between;gap:18px;align-items:center;flex-wrap:wrap}a{color:#a4dbe2}h1{font-size:clamp(24px,3vw,39px);margin:2px 0 4px;line-height:1.3}p{color:var(--muted);margin:4px 0 8px}
+.tag{font:700 10px system-ui;letter-spacing:1.3px;color:#8acdd5}
+.note{background:#332b1e;border:1px solid #796942;border-radius:10px;padding:10px 13px;color:#f1ddae;margin:18px 0}
+.toolbar{display:flex;align-items:center;flex-wrap:wrap;gap:9px;margin:10px 0 18px}button,select{background:#293742;border:1px solid #65727d;border-radius:8px;color:var(--ink);padding:8px 13px;font:inherit;cursor:pointer}button:hover{border-color:#a5d3d6}button:focus-visible,select:focus-visible{outline:2px solid #9cdae0;outline-offset:3px}
+#cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(335px,1fr));gap:15px}
+.card{border:1px solid var(--line);background:linear-gradient(135deg,#242e35,#141b21);padding:16px;border-radius:14px}
+.card-head{display:flex;align-items:start;justify-content:space-between;gap:12px}.card h2{margin:0;font:700 13px system-ui;text-align:left;direction:ltr}.location{font:10px monospace;color:#8fcad4}.detail{color:var(--muted);font:11px/1.6 system-ui;direction:ltr;text-align:right;margin:6px 0 8px;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.cases{display:grid;grid-template-columns:1fr 1fr;gap:8px;direction:ltr}
+.scene{height:216px;background:radial-gradient(circle at 60% 48%,#35404a,#10161a 66%);border:1px solid #3d4c55;border-radius:9px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;perspective:480px}
+.scene-title{position:absolute;top:9px;left:10px;letter-spacing:1px;font:700 10px system-ui;color:#c1d4d9}
+.plate{--face:#12181C;--ring:#8B9299;--shaft:#B6BDC3;--grip:#373A3F;--s:1;--len:18px;--head:12px;--tilt:0deg;position:relative;width:85px;height:120px;transform:scale(var(--s));transform-origin:center;display:flex;justify-content:center;align-items:center}
+.panel-well{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:79px;height:106px;border:2px solid #59626b;border-radius:13px;background:linear-gradient(125deg,#080c0f,var(--face) 41%,#2b343b);box-shadow:inset 3px 6px 11px #020609,0 4px 11px #000a}
+.bolt{position:absolute;width:6px;height:6px;background:linear-gradient(#ccd1d6,#4c545e);border-radius:50%;box-shadow:0 1px 2px #0009;z-index:1}
+.bolt.a{top:13px;left:13px}.bolt.b{top:13px;right:13px}.bolt.c{bottom:13px;left:13px}.bolt.d{bottom:13px;right:13px}
+.ring{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:43px;height:43px;border-radius:50%;background:conic-gradient(from 25deg,#171b1f,var(--ring),#20262a,#d4d7dc,#464e54,#161a1f);box-shadow:0 0 0 3px #070a0d,0 3px 6px #000b, inset 0 1px 3px #eceef08c}
+.socket{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:24px;height:24px;border-radius:50%;background:radial-gradient(#030506,#151a1d 52%,#020405 75%);box-shadow:inset 1px 2px 6px #000}
+.handle{position:absolute;top:50%;left:50%;width:58px;height:80px;transform:translate(-50%,-50%) rotate(var(--tilt));transform-origin:50% 67%;transition:transform .24s cubic-bezier(.15,.82,.32,1);z-index:3;pointer-events:none}
+.shaft{position:absolute;left:50%;top:44%;width:11px;height:var(--len);transform:translateX(-50%);border-radius:8px 8px 3px 3px;background:linear-gradient(90deg,#282f35,var(--shaft) 26%,#f5f6f7 54%,#66717a 78%,#242b31);box-shadow:3px 5px 8px #0306098c}
+.shaft-ring{position:absolute;top:58%;left:50%;transform:translateX(-50%);width:17px;height:7px;border-radius:10px;background:linear-gradient(90deg,#20262a,#d4dbe0,#3f4a52);box-shadow:0 1px 3px #0008}
+.grip{position:absolute;top:29%;left:50%;width:var(--head);height:28px;transform:translate(-50%,-10%);border-radius:7px;background:linear-gradient(90deg,#090d10,var(--grip) 28%,#ffffff41 53%,var(--grip) 73%,#0b0e12);box-shadow:2px 5px 10px #0009,inset 0 0 1px #fff8}
+.flat .grip{border-radius:3px;width:29px;height:18px;top:34%;background:linear-gradient(110deg,#111619,var(--grip) 42%,#d4d8d86d 55%,var(--grip) 74%,#111719)}
+.plunger .grip{border-radius:50%;width:25px;height:25px;top:31%;box-shadow:0 0 0 3px #686e75,1px 4px 10px #000}
+.plunger .shaft{height:13px}
+.gpws .grip{width:13px;height:19px;top:34%}
+.recorder .grip{width:16px;height:12px;top:36%;border-radius:4px}
+.slim .grip{width:14px;height:24px}
+.marker{position:absolute;left:50%;bottom:7px;transform:translateX(-50%);font:700 9px system-ui;color:#aebac1;max-width:75px;text-align:center;white-space:nowrap}
+.state{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:12px}
+.detents{display:flex;flex-wrap:wrap;gap:6px}.detents button{font:700 10px system-ui;padding:6px 9px;border:1px solid #586b79;border-radius:6px}
+.detents button[aria-pressed=true]{background:#a6cdd5;color:#10171b;border-color:#a6cdd5}
+.badge{font:600 10px system-ui;display:inline-block;padding:3px 8px;border-radius:6px;border:1px solid #6e6d51;color:#e4d29f}
+.group-label{margin:10px 0 3px;color:#a1bac4;font-size:11px}
+@media(max-width:700px){main{padding:14px}#cards{grid-template-columns:1fr}.scene{height:202px}}
+</style>
+</head>
+<body>
+<main>
+<header><div><div class="tag">B737 Classic · Switch Appearance V2 · Unity Blueprint</div>
+<h1>طراحی ظاهری خود سوئیچ‌ها</h1>
+<p>نشیمن، حلقه فلزی، پایه، شفت، دسته و حالت‌های ظاهری هر ۱۷ کنترل؛ مستقل از درپوش. جهت لولاهای تأییدشده بدون تغییر است.</p>
+</div><a href="./">بازگشت به مقایسهٔ درپوش‌ها</a></header>
+<div class="note">این‌ها پیش‌نمایش‌های سه‌بعدی‌نما از مشخصات Unity هستند؛ هنوز کالیبراسیون قطعه واقعی و آزمون داخل Unity Editor انجام نشده است. نمایش GEN DRIVE یک فشار لحظه‌ای است، نه دو وضعیت مکانیکی پایدار.</div>
+<div class="toolbar"><label for="filter">پنل:</label><select id="filter"><option value="all">همهٔ ۱۷ سوئیچ</option></select>
+<button id="gpws" type="button">سه سوئیچ GPWS</button><button id="reset" type="button">بازنشانی وضعیت‌ها</button>
+</div>
+<div id="count" class="group-label" role="status"></div>
+<section id="cards" aria-label="بازبینی ظاهر ۱۷ سوییچ"></section>
+</main>
+<script>
+'use strict';
+const units=[];
+function create(tag,cls,text){const e=document.createElement(tag);if(cls)e.className=cls;if(text!==undefined)e.textContent=text;return e;}
+function stage(spec,label){
+ const a=spec.switchAppearance,g=spec.geometry;
+ const stage=create('div','scene');
+ stage.append(create('span','scene-title',label));
+ const plate=create('div','plate '+(a.family==='gpws-mini-identical'?'gpws':'')+' '+(a.family==='mini-silver-test'?'recorder':'')+
+     (a.family==='slim-three-position'?' slim':'')+
+     (a.family==='wide-micro-toggle'?' flat':'')+
+     (a.momentary?' plunger':''));
+ plate.style.setProperty('--face',a.faceHex);
+ plate.style.setProperty('--ring',a.ringHex);
+ plate.style.setProperty('--shaft',a.shaftHex);
+ plate.style.setProperty('--grip',a.gripHex);
+ plate.style.setProperty('--len',Math.round(12+33*a.shaftRelativeScale)+'px');
+ plate.style.setProperty('--head',Math.round(11+22*a.gripRelativeScale)+'px');
+ plate.style.setProperty('--s',Math.max(.77,Math.min(1.08,12*Math.min(g.previewWidth,g.previewHeight))));
+ plate.append(create('div','panel-well'));
+ for(const pos of ['a','b','c','d'])plate.append(create('i','bolt '+pos));
+ plate.append(create('div','ring'),create('div','socket'));
+ const handle=create('div','handle');
+ handle.append(create('span','shaft'),create('span','shaft-ring'),create('span','grip'));
+ plate.append(handle);
+ const state=create('div','marker',a.initialState);
+ plate.append(state);stage.append(plate);
+ return {stage,plate,state};
+}
+function card(spec){
+ const a=spec.switchAppearance,box=create('article','card');
+ const head=create('div','card-head');
+ head.append(create('span','location',spec.panelId),create('h2','',spec.displayName));
+ const info=create('div','detail');
+ info.append(create('span','',a.family),create('span','',spec.hingeDirection+' hinge'));
+ const cases=create('div','cases');
+ const one=stage(spec,'ISOLATED'),two=stage(spec,'INSTALLED · GUARD OPEN');
+ cases.append(one.stage,two.stage);
+ box.append(head,info,cases);
+ const group=create('div','state');
+ const buttons=create('div','detents');
+ const status=create('span','badge',a.momentary?'MOMENTARY':'FCOM STATES');
+ let selected=-1,release=null;
+ function set(index){
+   selected=index;
+   const n=a.detentLabels.length;
+   let t=a.momentary?(index===0?0:a.detentTiltDegrees):
+     n===2?(index===0?-a.detentTiltDegrees:a.detentTiltDegrees):(index-1)*a.detentTiltDegrees;
+   if(a.detentAxis==='horizontal'){ /* Side-to-side detent tilt shown as clockwise/anticlockwise in the 2D view. */ }
+   for(const v of [one,two]){
+     v.plate.style.setProperty('--tilt',t+'deg');
+     v.state.textContent=a.detentLabels[index];
+   }
+   [...buttons.children].forEach((b,i)=>b.setAttribute('aria-pressed',String(i===index)));
+ }
+ for(let i=0;i<a.detentLabels.length;i++){
+   const b=create('button','',a.detentLabels[i]);b.type='button';
+   b.addEventListener('click',()=>{
+     if(release!==null){clearTimeout(release);release=null;}
+     set(i);
+     if(a.momentary&&i===1)release=setTimeout(()=>{set(0);release=null;},360);
+   });buttons.append(b);
+ }
+ set(Math.max(0,a.detentLabels.indexOf(a.initialState)));
+ group.append(buttons,status);box.append(group);
+ const foot=create('div','group-label','پیش‌نمایش هندسه؛ تغییر وضعیت فقط زاویه دسته، نه رنگ/شکل قطعه');
+ box.append(foot);
+ return {box,panel:spec.panelId,reset:()=>{if(release!==null){clearTimeout(release);release=null;}set(Math.max(0,a.detentLabels.indexOf(a.initialState)));}};
+}
+function filter(){const p=document.getElementById('filter').value;let count=0;
+ for(const u of units){u.box.hidden=p!=='all'&&u.panel!==p;if(!u.box.hidden)count++;}
+ document.getElementById('count').textContent=count+' کنترل قابل مشاهده · ظاهر خود سوئیچ‌ها از رجیستری Unity خوانده شده است';}
+async function init(){
+ try{
+ const resp=await fetch('../Assets/B737Classic/GuardedSwitches/Resources/GuardedSwitchBlueprints.json',{cache:'no-store'});
+ if(!resp.ok)throw new Error(resp.status);
+ const data=await resp.json();
+ if(data.controls.length!==17||data.controls.some(c=>!c.switchAppearance))throw new Error('17 switch appearances required');
+ for(const p of [...new Set(data.controls.map(c=>c.panelId))]){
+   const option=create('option','',p);option.value=p;document.getElementById('filter').append(option);
+ }
+ for(const c of data.controls){const unit=card(c);units.push(unit);document.getElementById('cards').append(unit.box);}
+ filter();
+ }catch(e){document.getElementById('count').textContent='خطای بارگذاری طرح سوئیچ‌ها: '+e.message;}
+}
+document.getElementById('filter').addEventListener('change',filter);
+document.getElementById('gpws').addEventListener('click',()=>{document.getElementById('filter').value='GROUND_PROXIMITY_PANEL';filter();});
+document.getElementById('reset').addEventListener('click',()=>units.forEach(x=>x.reset()));
+init();
+</script>
+</body>
+</html>
