@@ -40,13 +40,18 @@ label{font-size:12px;color:#bfd0db}.checks{display:grid;grid-template-columns:1f
 #message{font:12px Consolas,monospace;direction:ltr;color:#d0eac3}details.group{border-top:1px solid #3a5260;padding-top:10px}details.group summary{font-weight:700;cursor:pointer;color:#b8d9e5;list-style-position:inside}details.group[open] summary{margin-bottom:10px}
 @media(max-width:1060px){main{grid-template-columns:1fr}.control-panel{grid-row:2}.bottom{grid-row:3}}
 @media(max-width:650px){.viewer,.control-panel,.bottom{padding:10px}}
+#board .asset.bell-push{z-index:6;cursor:pointer;border:0;border-radius:50%;background:radial-gradient(circle at 35% 27%,#69747b 0%,#242e35 30%,#070c10 60%,#53626c 75%,#171e24 92%);box-shadow:0 2px 3px #000b,inset 0 1px 2px #b5c0c055;touch-action:manipulation}
+#board .asset.bell-push .bell-core{display:block;border-radius:50%;width:65%;height:65%;background:radial-gradient(circle at 38% 27%,#acb6ba,#6f777a 29%,#12191d 72%);box-shadow:inset 0 2px 3px #e5e5e56b,0 1px 2px #000b}
+#board .asset.bell-push:active .bell-core{transform:scale(.9);filter:brightness(.86)}
+#board .asset.bell-push:before{content:'BELL CUTOUT';position:absolute;bottom:107%;left:50%;transform:translateX(-50%);white-space:nowrap;color:#f5f5ee;text-shadow:0 1px 2px #000;letter-spacing:.025em;font:bold clamp(8px,1vw,13px) Arial,sans-serif}
+#board.edit .asset.bell-push{outline:1px dashed #85d6e3}
 </style>
 <link rel="stylesheet" href="./hardware.css">
 </head>
 <body>
 <header>
 <div><h1>B737 CLASSIC · FIRE PROTECTION</h1><p>پنل آزمایشی مستقل با تصاویر اصلی دیتابیس، تست خرابی‌ها، حلقه‌های تشخیص و هندل‌های اطفای حریق</p></div>
-<div class="row"><a href="../fire-handle-lab/" target="_blank" rel="noopener">Fire Handle Lab</a><span class="status">FCOM 8.10 / 8.20 · V3 QA</span></div>
+<div class="row"><a href="../fire-handle-lab/" target="_blank" rel="noopener">Fire Handle Lab</a><span class="status">FCOM 8.10 / 8.20 · V3.2 QA</span></div>
 </header>
 <main>
 <section class="viewer">
@@ -91,9 +96,9 @@ const lamps=[
  ['WHEEL_WELL','WHEEL_WELL_RED',50,27],
  ['APU_BOTTLE_DISCHARGED','APU_BOTTLE_DISCHARGED',50,90]
 ];
-const handles=[['ENG1',21.3,65],['APU',49.9,65],['ENG2',78.9,65]];
+const handles=[['ENG1',22.5,65],['APU',49.9,65],['ENG2',78.9,65]];
 const allPositions={};const slotGeometry=window.B737FirePanelGeometry?.slots||{};for(const [id,slot] of Object.entries(slotGeometry)){if(!slot.assetPending)allPositions[id]={x:slot.x,y:slot.y};}
-const layoutsKey='b737.fireProtection.preview.layout.v3';let positions={...allPositions};
+const layoutsKey='b737.fireProtection.preview.layout.v4';let positions={...allPositions};
 try{const p=JSON.parse(localStorage.getItem(layoutsKey));if(p&&typeof p==='object')for(const [id,pt] of Object.entries(p)){if(allPositions[id]&&Number.isFinite(pt.x)&&Number.isFinite(pt.y))positions[id]={x:pt.x,y:pt.y};}}catch(_){}
 const board=document.getElementById('board'),overlays=document.getElementById('overlays');
 let edit=false,selected=null;const nodes={};
@@ -107,6 +112,13 @@ function addAsset(id,className,title){
   if(!edit||selected!==id||!el.hasPointerCapture(ev.pointerId))return;
   const rect=board.getBoundingClientRect();
   positions[id]={x:Math.max(0,Math.min(100,((ev.clientX-rect.left)/rect.width)*100)),y:Math.max(0,Math.min(100,((ev.clientY-rect.top)/rect.height)*100))};
+  if(id.startsWith('HANDLE_')){
+    for(const unit of ['ENG1','ENG2','APU']){
+      const other='HANDLE_'+unit;
+      positions[other].y=positions[id].y;
+      if(nodes[other])move(other);
+    }
+  }
   move(id);
  });
  function stop(){if(selected===id){selected=null;el.classList.remove('selected');try{localStorage.setItem(layoutsKey,JSON.stringify(positions));}catch(_){}}}
@@ -130,6 +142,14 @@ for(const [id,aria] of [
 for(const [unit] of handles){
  const el=addAsset('HANDLE_'+unit,'handle','FIRE HANDLE '+unit);const img=document.createElement('img');img.alt='Approved '+unit+' fire handle';el.appendChild(img);
 }
+const bellButton=addAsset('BELL_CUTOUT','bell-push','BELL CUTOUT — push to silence fire warning bell');
+bellButton.setAttribute('role','button');
+bellButton.setAttribute('tabindex','0');
+bellButton.innerHTML='<span class="bell-core"></span>';
+bellButton.addEventListener('click',()=>{if(!edit)send({type:'BELL_CUTOUT'});});
+bellButton.addEventListener('keydown',ev=>{
+ if(!edit&&(ev.key==='Enter'||ev.key===' ')){ev.preventDefault();send({type:'BELL_CUTOUT'});}
+});
 const scenarios=[
  ['ENG1_FIRE','ENG 1 FIRE'],['ENG2_FIRE','ENG 2 FIRE'],['APU_FIRE','APU FIRE'],['WHEEL_FIRE','WHEEL WELL FIRE'],
  ['ENG1_OVERHEAT','ENG 1 OVERHEAT'],['ENG2_OVERHEAT','ENG 2 OVERHEAT'],
