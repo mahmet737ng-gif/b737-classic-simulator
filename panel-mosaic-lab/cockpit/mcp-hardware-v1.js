@@ -1,4 +1,4 @@
-/* MCP-0005 / Hardware phase 2. Photo is never modified.
+/* MCP-0006 / Hardware phase 2 — photo-reference A/T paddle and small F/D silver toggles. Photo is never modified.
    Coordinates reference the 2172 x 433 blank MCP source image.
    Controls are visual training controls; AFDS authority is not claimed. */
 (function(){
@@ -6,9 +6,9 @@
 const W=2172,H=433;
 const attached=new WeakSet(), all=[];
 const controls=Object.freeze([
- {id:"AT_ARM",kind:"toggle",x:357,y:181,w:73,h:90,caption:"A/T ARM",state:"OFF"},
- {id:"FD_LEFT",kind:"toggle",x:210,y:350,w:54,h:76,caption:"F/D captain",state:"OFF"},
- {id:"FD_RIGHT",kind:"toggle",x:1990,y:350,w:54,h:76,caption:"F/D first officer",state:"OFF"},
+ {id:"AT_ARM",kind:"toggle",x:357,y:181,w:66,h:68,caption:"A/T ARM",state:"OFF"},
+ {id:"FD_LEFT",kind:"toggle",x:203,y:321,w:36,h:51,caption:"F/D captain",state:"OFF"},
+ {id:"FD_RIGHT",kind:"toggle",x:1903,y:321,w:36,h:51,caption:"F/D first officer",state:"OFF"},
  {id:"VS_WHEEL",kind:"wheel",x:1490,y:281,w:49,h:177,caption:"VERT SPEED wheel",state:0},
  {id:"CO",kind:"push",x:460,y:246,w:52,h:52,caption:"C/O",state:false},
  {id:"SPD_INTV",kind:"push",x:735,y:260,w:41,h:41,caption:"SPD INTV",state:false},
@@ -43,14 +43,14 @@ function draw(){
 }
 function on(el,event,listener,options){el.addEventListener(event,listener,options);}
 function mountControl(parent,c){
- const el=document.createElement("span");el.className="mcp-hw mcp-hw-"+c.kind;el.dataset.mcpHardware=c.id;
+ const el=document.createElement("span");el.className="mcp-hw mcp-hw-"+c.kind+(c.id==="AT_ARM"?" mcp-hw-at":c.id.startsWith("FD_")?" mcp-hw-fd":"");el.dataset.mcpHardware=c.id;
  el.tabIndex=0;el.setAttribute("role",c.kind==="wheel"?"slider":"button");
  el.style.left=(c.x/W*100)+"%";
  el.style.top=(c.y/H*100)+"%";
  el.style.width=(c.w/W*100)+"%";
  el.style.height=(c.h/H*100)+"%";
  if(c.kind==="toggle"){
-  el.innerHTML='<span class="mcp-hw-toggle-foot"><span class="mcp-hw-toggle-metal"><span class="mcp-hw-toggle-head"></span></span></span>';
+  el.innerHTML=c.id==='AT_ARM'?'<span class="mcp-hw-at-hub"></span><span class="mcp-hw-at-paddle"></span>':'<span class="mcp-hw-fd-base"></span><span class="mcp-hw-fd-shaft"></span><span class="mcp-hw-fd-tip"></span>';
   on(el,"click",e=>{e.stopPropagation();change(c.id,state[c.id]==="OFF"?(c.id==="AT_ARM"?"ARM":"ON"):"OFF","click")});
   on(el,"keydown",e=>{if(e.key===" "||e.key==="Enter"){e.preventDefault();e.stopPropagation();change(c.id,state[c.id]==="OFF"?(c.id==="AT_ARM"?"ARM":"ON"):"OFF","keyboard")}});
  }else if(c.kind==="wheel"){
