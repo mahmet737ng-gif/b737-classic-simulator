@@ -1,7 +1,7 @@
 {
   "schema": "b737.native-photo-gauge-bezel-centres.v1",
   "status": "BEZEL_ARC_CENTRE_FITTED_SHAFT_UNCERTIFIED",
-  "method": "OpenCV Hough circle rim fitting on immutable original native PNG crop. Each result stable across four Hough accumulator sensitivity thresholds: 70/55/44/35. Cross checked visually with printed arc; bezel circle is not proof of hidden shaft. IMPORTANT: APU AC AMPS proposed bezel centre was rejected on source-image radial contrast and rolled back; 8 gauge centres changed, not 9.",
+  "method": "OpenCV Hough circle rim fitting on immutable original native PNG crop. Each result stable across four Hough accumulator sensitivity thresholds: 70/55/44/35. Cross checked visually with printed arc; bezel circle is not proof of hidden shaft. IMPORTANT: APU AC AMPS proposed bezel centre was rejected on source-image radial contrast and rolled back; 8 gauge centres changed, not 9. FINAL OH12 UPDATE: 2 A.C. AMPS true radial-stroke pivot candidates supersede the rim positions; 6 other visual bezel-shifted needles retain original preview. Source 21 tick evidence per gauge in oh12-ac-amps-photo-graduations-v1.json.",
   "verifiedBy": "original full resolution PNG image decoded from GitHub Actions source photos",
   "sourcePhotos": {
     "OH10": {
@@ -167,10 +167,18 @@
       ],
       "bezelRadiusPx": 168.2,
       "deltaFromOldPx": 52.58,
-      "moveVisualMountToBezelCandidate": true,
+      "moveVisualMountToBezelCandidate": false,
       "shaftPivotCertified": false,
       "phase": "PHOTO_QA_PREVIEW",
-      "status": "BEZEL_CENTRE_PROVISIONAL"
+      "status": "PHOTO_RADIAL_STROKE_PIVOT_SUPERSEDES_BEZEL_CENTRE",
+      "radialStrokePhotoCenterPx": [
+        266.515,
+        296.991
+      ],
+      "radialLineRmsPx": 2.79,
+      "all21NumericGraduationsIdentified": true,
+      "originalBezelCenterIsNotMechanicalPivot": true,
+      "note": "Native OH12 original 21 white graduation axes intersect 44–45px below fitted bezel center. Bezel registration superseded, actual hidden spindle still not certified."
     },
     {
       "panel": "OH12",
@@ -185,10 +193,18 @@
       ],
       "bezelRadiusPx": 168.1,
       "deltaFromOldPx": 50.06,
-      "moveVisualMountToBezelCandidate": true,
+      "moveVisualMountToBezelCandidate": false,
       "shaftPivotCertified": false,
       "phase": "PHOTO_QA_PREVIEW",
-      "status": "BEZEL_CENTRE_PROVISIONAL"
+      "status": "PHOTO_RADIAL_STROKE_PIVOT_SUPERSEDES_BEZEL_CENTRE",
+      "radialStrokePhotoCenterPx": [
+        753.481,
+        297.342
+      ],
+      "radialLineRmsPx": 1.95,
+      "all21NumericGraduationsIdentified": true,
+      "originalBezelCenterIsNotMechanicalPivot": true,
+      "note": "Native OH12 original 21 white graduation axes intersect 44–45px below fitted bezel center. Bezel registration superseded, actual hidden spindle still not certified."
     },
     {
       "panel": "OH12",
