@@ -1,6 +1,17 @@
 /* Variant-only elements over the frozen OH21 panel, in Unified iframe. */
 .aircon400-oh21-layer{position:absolute;inset:0;z-index:99;pointer-events:none}
 .aircon400-oh21-layer[hidden]{display:none!important}
+.aircon400-oh21-underlay{position:absolute;inset:0;z-index:65;pointer-events:none}
+.aircon400-oh21-underlay[hidden]{display:none!important}
+.aircon400-native-recirc-cover{
+ position:absolute;display:block;pointer-events:none;
+ /* Underlay only the 300/500 native R recirc switch and its printed detents.
+    Fine blue metal feather removes a hard rectangular cutout. */
+ background:linear-gradient(180deg,#b2c2cb 0%,#aec1cc 38%,#acc0cb 70%,#abc0cc 100%);
+ -webkit-mask-image:linear-gradient(to right,transparent 0%,black 6%,black 94%,transparent 100%);
+ mask-image:linear-gradient(to right,transparent 0%,black 6%,black 94%,transparent 100%);
+}
+
 .aircon400-oh21-layer .aircon400-pack-face{
  position:absolute;display:block;overflow:hidden;border:0!important;outline:0;
  background:#070606!important;border-radius:1px;padding:0!important;margin:0!important;
