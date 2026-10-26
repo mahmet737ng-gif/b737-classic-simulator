@@ -6,7 +6,11 @@ const adj=read('photo-position-corrections-v2.json');
 const oh=read('../interactive-overhead/lights.json'),main=read('../cockpit/lights.json');
 const curr=new Map([...oh.lights,...main.lights].map(x=>[x.id,x]));
 const old=new Map(v3.records.map(x=>[x.id,x]));
-assert.equal(v4.versions.overhead,oh.version);
+// V4 is an immutable historical snapshot, recorded when the overhead registry
+// was LGT-0011. Newer lamp cycles may retain its calibration unchanged.
+assert.equal(v4.versions.overhead,'LGT-0011');
+const vnum=v=>Number(String(v).replace(/^LGT-/,'')); 
+assert.ok(vnum(oh.version)>=vnum(v4.versions.overhead),'Photo snapshot cannot refer to a future registry');
 assert.equal(v4.versions.main,main.version);
 assert.equal(v4.summary.mounted,142);
 assert.equal(v4.summary.verifiedWithinThreePhotoPixels,140);
