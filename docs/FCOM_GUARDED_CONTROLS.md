@@ -1,3 +1,5 @@
+> **2026-10-26 coverage note:** This file is a focused six-control flight-controls registry, **not a complete 737 Classic guarded-switch inventory**. The full 17-control cockpit audit (12 currently mounted / 5 missing) is in [Phases 1–2 audit](GUARDED_SWITCH_PHASE1_PHASE2_AUDIT_2026-10-26.md) and [structured JSON](../engine/maps/guarded-switches-fcom-visual-audit-v1.json). Top hinges here are **unverified mechanical assertions** and conflict with currently installed bottom-hinge assets; do not label them photographically certified.
+
 # Flight Controls — guarded switches and horizontal navigation selectors
 Source: user-provided Sepehran B737 Classic FCOM. No source manual text is reproduced.
 
