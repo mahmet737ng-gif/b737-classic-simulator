@@ -1,0 +1,81 @@
+{
+  "schema": "b737_fire_panel_video_evidence_v1",
+  "review_date": "2026-10-26",
+  "mode": "every decoded frame processed; representative close-up frames visually examined",
+  "publication_policy": "metadata only; original owner-supplied clips and frame images retained outside public repository",
+  "videos": [
+    {
+      "name": "1000166701.mp4",
+      "sha256": "9013fb95a4fe8722101fc7c588979d5707ee2c425587567370106e91a98a9f47",
+      "width": 720,
+      "height": 1280,
+      "decoded_frames": 222,
+      "nominal_fps": 29.704,
+      "duration_s": 7.546,
+      "observations": [
+        {
+          "time_s": 0.5,
+          "event": "Panel visible; three fire handles, test selectors, wheel-well central lamp visible"
+        },
+        {
+          "time_s": 3.5,
+          "event": "Three fire handles strongly illuminated red/pink; associated engine overheat indications visible"
+        },
+        {
+          "time_s": 6.5,
+          "event": "Fire handle illumination has ceased after test release"
+        }
+      ]
+    },
+    {
+      "name": "1000166702.mp4",
+      "sha256": "d82c83b03596275ab97d406514fddff98e70c9425ec8c25428163c8d2126ed7d",
+      "width": 932,
+      "height": 1920,
+      "decoded_frames": 689,
+      "nominal_fps": 29.923,
+      "duration_s": 23.081,
+      "observations": [
+        {
+          "time_s": 4,
+          "event": "Finger presses left fault/inop detector test. Central FAULT and APU DET INOP legends illuminated; unlit bottom lens seen beneath them."
+        },
+        {
+          "time_s": 10,
+          "event": "Test of OVHT/FIRE observed; three fire handles illuminated and both ENG OVERHEAT indications visible."
+        },
+        {
+          "time_s": 14,
+          "event": "Finger operates right-side extinguisher test selector near three round green lenses."
+        },
+        {
+          "time_s": 16,
+          "event": "Three green extinguisher test lenses illuminated in triangular grouping."
+        },
+        {
+          "time_s": 20,
+          "event": "Test released; green lenses no longer illuminated."
+        }
+      ]
+    }
+  ],
+  "layout_observed": {
+    "central_column_top_down": [
+      "WHEEL_WELL",
+      "FAULT",
+      "APU_DET_INOP",
+      "APU_BOTTLE_DISCHARGED"
+    ],
+    "engine_overheat": "Separate ENG1 and ENG2 overheat lamps below corresponding OVHT DET selectors",
+    "test_controls": "Two independent OVHT DET selectors, left spring-loaded FAULT/INOP ↔ OVHT/FIRE test, right EXT 1 ↔ 2 test",
+    "handles": [
+      "ENG1",
+      "APU",
+      "ENG2"
+    ],
+    "ext_lens_group": "Three green lenses arranged as two upper and one lower near right EXT selector",
+    "warning_light_note": "Camera exposure/color casts can make amber legends appear red; FCOM retains authority for actual colors."
+  },
+  "source_priority": "737 Classic Sepehran FCOM chapter 8 governs simulator logic. Visual video references do not prove all 737NG and Classic systems are identical.",
+  "acceptance": "Every-slot video match provisional pending full-resolution original-to-overlay alignment and in-browser validation"
+}
