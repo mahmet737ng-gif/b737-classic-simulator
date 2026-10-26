@@ -1,0 +1,31 @@
+name: Aircraft State Architecture V1
+on:
+  push:
+    branches:
+      - architecture/state-owner-runtime-v1-20261026
+    paths:
+      - 'engine/runtime/**'
+      - 'tests/aircraft-session-v1.test.cjs'
+      - '.github/workflows/aircraft-architecture-v1.yml'
+  pull_request:
+    paths:
+      - 'engine/runtime/**'
+      - 'tests/aircraft-session-v1.test.cjs'
+      - '.github/workflows/aircraft-architecture-v1.yml'
+  workflow_dispatch:
+jobs:
+  adversarial-runtime:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Strict runtime and Electrical source regression
+        run: |
+          node --test tests/aircraft-session-v1.test.cjs
+          node tests/electrical-v7.test.cjs
+          node tests/electrical-loads-v8.test.cjs
+          node tests/systems-integration-v2.test.cjs
