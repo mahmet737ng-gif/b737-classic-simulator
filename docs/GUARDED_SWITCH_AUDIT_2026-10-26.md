@@ -52,13 +52,20 @@ Independent geometry validation passes 1/2/3: **PASS** each time. Tested origina
 ## Release gates — all are required
 - [x] No change to frozen/locked overhead mosaic or approved sprite bytes in above commits.
 - [x] All three OH11 rectangles mapped/centered and arithmetic validated in three consecutive independent passes.
-- [ ] Run full repository Node CI/test suite and the frozen overhead verifier in checked-out repository.
+- [x] GitHub Actions: Interactive overhead toggle QA passed at e9b4361 (includes updated three-pass tests); Panel Mosaic Atlas QA passed at e9b4361; deployment at 4e19d6a succeeded, including FINAL overhead lock, interactive overhead controls, and Unified cockpit checks. This verifies the CI suites those workflows execute; it is not evidence that every possible integration test was run.
 - [ ] Capture real browser screenshots at 100%, 161%, 200% and landscape/portrait; compare native opening outlines, lever centers, text collisions and guard frame across closed/open states.
 - [ ] For each of 12 guards, photo-confirm hinge side, vertical/horizontal sweep, cover shape, mounting footprint, detents, guarded detent, material and color.
 - [ ] Replace mechanically incorrect source sprites with separate *versioned* correct hardware-approved assets, not modifications of locked originals.
 - [ ] Verify state-machine transitions: closed blocks switching; open permits all legal detents; special single-use disconnect / oxygen safety behaviors; simultaneous noninterference of neighbors.
 - [ ] Run regression in 737-300, -400 and -500 profiles and CPCS/DCPCS configurations.
 - [ ] Only mark FINISHED after all visual and functional gates pass. Mathematical three-pass reproducibility does **not** establish 0% accuracy.
+
+## Confirmed GitHub Actions evidence
+- Interactive overhead toggle QA — PASS: https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/40337626224
+- Panel Mosaic Atlas QA — PASS: https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/40337626156
+- GitHub Pages deployment — PASS at audit-document commit: https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/40338677388
+- The successful deploy workflow explicitly passed `Enforce FINAL overhead UPD-0012 lock`, `Verify interactive overhead lights and controls`, `Verify unified cockpit assembly`, and `Run actions/deploy-pages@v4`.
+- **Browser photorealism, measured true hinge geometry, interaction-state screenshots and hardware validation are still UNVERIFIED.**
 
 ## High-priority operator observations
 - The two owner's marked GEN DRIVE DISCONNECT openings are **narrow and tall**; the red guard *lid itself* occupies only part of each recess. Do not overscale the lid merely to fill the outer black backplate.
