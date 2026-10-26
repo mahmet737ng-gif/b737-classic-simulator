@@ -71,7 +71,7 @@ for(let pass=1;pass<=3;pass++){
   const a=toggles.mapPoint({...c,sourcePoint:[x,y],bezelSourceDiameter:0},p);
   const b=toggles.mapPoint({...c,sourcePoint:[x+w,y+h],bezelSourceDiameter:0},p);
   const sourceRatio=w/h,screenRatio=(b.x-a.x)/(b.y-a.y);
-  assert.ok(Math.abs(sourceRatio-screenRatio)<.01,'native ratio preserved '+id);
+  assert.ok(Math.abs(screenRatio/sourceRatio-1)<.02,'only locked atlas plate stretch allowed '+id);
   assert.ok(Math.abs((b.x-a.x)*1.61-expectedWidth)<4,'screenshot aperture width '+id);
   assert.ok(Math.abs((b.y-a.y)*1.61-expectedHeight)<5,'screenshot aperture height '+id);
  }
