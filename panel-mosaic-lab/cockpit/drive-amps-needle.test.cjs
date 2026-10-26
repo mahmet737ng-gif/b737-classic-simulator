@@ -13,7 +13,7 @@ assert.equal(model.needles[4].window,'OH12_APU');
 for(const needle of model.needles.slice(0,2)){assert.equal(needle.tipRadius,98);assert.equal(needle.initialAngle,-46);}
 for(const needle of model.needles.slice(2,4)){assert.equal(needle.tipRadius,102);assert.equal(needle.initialAngle,-45);}
 assert.equal(model.needles[4].tipRadius,124);assert.equal(model.needles[4].initialAngle,-47);
-assert.equal(model.needles[3].x,705,'A.C. AMPS 2 pivot must match native OH12 panel');
+assert.equal(model.needles[3].x,753.4,'A.C. AMPS 2 fitted bezel center must match immutable OH12 source evidence');
 
 for(const [name,source]of Object.entries(model.panels)){
  const piece=atlas.placements.find(p=>p.id===name);assert.ok(piece,name);
@@ -38,6 +38,6 @@ assert.ok(ui.includes('model.windowPath(needle)'),'Blade must stop at the traced
 assert.ok(ui.includes("new URL('./drive-amps-needle.svg?v=DAN-0001'"));
 assert.ok(ui.includes('window.B737UnifiedDriveAmpsNeedles'));
 const html=fs.readFileSync(path.join(__dirname,'index.html'),'utf8');
-assert.ok(html.includes('drive-amps-needle-model.js?v=DAN-0004-SOURCEQA'));
-assert.ok(html.includes('drive-amps-needle-unified.js?v=DAN-0004-SOURCEQA'));
+assert.ok(html.includes('drive-amps-needle-model.js?v=DAN-0005-ARC-QA'));
+assert.ok(html.includes('drive-amps-needle-unified.js?v=DAN-0005-ARC-QA'));
 console.log('PASS: one shared white needle on both OH11 drive gauges, two upper OH12 A.C. amps gauges and APU A.C. amps.');
