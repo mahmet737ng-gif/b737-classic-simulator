@@ -52,7 +52,9 @@
    if(!packet?.toggles||!packet?.guards||!packet?.rotaries||!packet?.context)
     throw Error('Full physical cockpit snapshot required');
    // Bridge writes only its own controls; ECU/Chain owns Battery and pneumatic/start state.
+   const before=this.bridge.get().rejected.length;
    this.bridge.synchronize(packet);
+   const syncRejected=this.bridge.get().rejected.slice(before);
    const recovery=this.physical.synchronize(this.ecu,packet);
    this.positions.clear();
    for(const [id,kind] of Object.entries(KEYS)){
@@ -60,7 +62,9 @@
     if(typeof val==='string')this.positions.set(id,val);
    }
    this.initialized=true;
-   return this._record({accepted:true,type:'SYNCHRONIZE',recovered:recovery.recovered||[],owner:'SHARED_ECU_PACK'});
+   return this._record({accepted:true,type:'SYNCHRONIZE',recovered:recovery.recovered||[],
+    owner:'SHARED_ECU_PACK',warnings:syncRejected.map(x=>({reason:'BRIDGE_REJECTED_ON_SYNC',
+     detail:x.reason,commandType:x.command?.type||'UNKNOWN'}))});
   }
   dispatch(event){
    if(!this.initialized)return this._record({accepted:false,reason:'NOT_SYNCHRONIZED'});
