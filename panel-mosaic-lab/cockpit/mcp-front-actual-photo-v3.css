@@ -1,10 +1,11 @@
-/* MCP-PHOTO-0003: install the approved generated, straight-on photographic
- * switch artwork, not artificial CSS bezel/handle approximations.
- * Source: previous transparent product-asset renders in the B737 project;
- * 4 separate FRONT states packed in one unchanged-alpha 160x160 WebP:
- *   [A/T OFF, A/T ARM]  [F/D OFF, F/D ON].
- * Parent boxes/pivots and the AFDS electrical state handling are unchanged.
- */
+/* MCP-NATIVE-0004. Rectification of rejected 160×160 (80px/cell) thumbnail.
+ * A/T ARM: the project's existing 256×260 per-state original broad horizontal
+ * silver paddle SVG — never scaled horizontally or recolored.
+ * F/D capt + FO: original 5-pose, high-resolution Small Silver switch artwork;
+ * independently extracted FRONT ON (up) and OFF (down) with common source
+ * crop and unchanged physical pivot from full resolution.
+ * NO procedural fake switches or low-resolution four-pose sprites.
+ * Native geometry / AFDS controller state unchanged. */
 [data-piece="mcp"]>.mcp-hw-at,
 [data-piece="mcp"]>.mcp-hw-fd{
   isolation:isolate;overflow:visible!important;background:transparent!important;
@@ -12,19 +13,40 @@
 }
 [data-piece="mcp"]>.mcp-hw-at .mcp-hw-real-face,
 [data-piece="mcp"]>.mcp-hw-fd .mcp-hw-real-face{
-  position:absolute;display:block;left:50%;top:50%;width:129%;height:auto;
-  aspect-ratio:1/1;box-sizing:border-box;pointer-events:none;
-  transform:translate(-50%,-50%);background-color:transparent;
-  background-image:url("./assets/mcp-switches/MCP_FRONT_OWNER_PHOTOS_4POSE.webp");
-  background-repeat:no-repeat;background-size:200% 200%;
-  image-rendering:auto;filter:drop-shadow(0 1px 1px #0008);
+  display:block!important;
+  position:absolute;left:50%!important;top:50%!important;
+  box-sizing:border-box;pointer-events:none;
+  background-color:transparent!important;
+  background-repeat:no-repeat!important;
+  background-position:center center!important;
+  background-size:contain!important;
+  image-rendering:auto!important;
+  filter:drop-shadow(0 1px 1px #0009);
+  transform:translate(-50%,-50%)!important;
 }
-[data-piece="mcp"]>.mcp-hw-fd .mcp-hw-real-face{width:119%}
-[data-piece="mcp"]>.mcp-hw-at[data-state="OFF"] .mcp-hw-real-face{background-position:0% 0%}
-[data-piece="mcp"]>.mcp-hw-at[data-state="ARM"] .mcp-hw-real-face{background-position:100% 0%}
-[data-piece="mcp"]>.mcp-hw-fd[data-state="OFF"] .mcp-hw-real-face{background-position:0% 100%}
-[data-piece="mcp"]>.mcp-hw-fd[data-state="ON"] .mcp-hw-real-face{background-position:100% 100%}
-/* Explicit guard against old generated faux knob, paddle and sprite layers. */
+/* 256×260 SVG — full front view A/T wide metal paddle, source center pivot. */
+[data-piece="mcp"]>.mcp-hw-at .mcp-hw-real-face{
+  width:112%!important;height:112%!important;
+  aspect-ratio:256/260!important;
+}
+[data-piece="mcp"]>.mcp-hw-at[data-state="OFF"] .mcp-hw-real-face{
+  background-image:url("./assets/mcp-switches/AT_ARM_OFF.svg")!important;
+}
+[data-piece="mcp"]>.mcp-hw-at[data-state="ARM"] .mcp-hw-real-face{
+  background-image:url("./assets/mcp-switches/AT_ARM_UP.svg")!important;
+}
+/* Same high-resolution silver original ON/OFF for BOTH small F/D switches.
+ * The two states share a single source crop to prevent pivot wobble. */
+[data-piece="mcp"]>.mcp-hw-fd .mcp-hw-real-face{
+  width:139%!important;height:130%!important;
+}
+[data-piece="mcp"]>.mcp-hw-fd[data-state="OFF"] .mcp-hw-real-face{
+  background-image:url("./assets/mcp-switches/native/FD_OFF_NATIVE.png")!important;
+}
+[data-piece="mcp"]>.mcp-hw-fd[data-state="ON"] .mcp-hw-real-face{
+  background-image:url("./assets/mcp-switches/native/FD_ON_NATIVE.png")!important;
+}
+/* Retire all old CSS approximations and rejected 80px-per-pose sprite. */
 [data-piece="mcp"]>.mcp-hw-at .mcp-hw-at-hub,
 [data-piece="mcp"]>.mcp-hw-at .mcp-hw-at-paddle,
 [data-piece="mcp"]>.mcp-hw-fd .mcp-hw-fd-base,
