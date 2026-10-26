@@ -21,7 +21,23 @@ async function doPage(browser,p){
  await page.waitForFunction(()=>!!(window.B737McpHardwareV1&&window.B737McpVisualV3&&document.querySelector('[data-piece="mcp"] .mcp-hw-at')&&document.querySelectorAll('[data-piece="mcp"] .mcp-hw-fd').length>=2),null,{timeout:60000});
  const report={page:p,states:{},knobs:[]};
  async function state(name,mapping){
-  await page.evaluate(values=>{for(const [id,val]of Object.entries(values))window.B737McpHardwareV1.setState(id,val)},mapping);
+  if(p==='unified'){
+   // Unified intentionally projects hardware from the AFDS source of truth;
+   // method="external" writes are not authoritative and may be replaced.
+   // Exercise real physical click handlers, never bypass/duplicate AFDS.
+   await page.evaluate(values=>{
+     const original=window.B737McpHardwareV1.getState();
+     for(const [id,desired] of Object.entries(values)){
+       if(original[id]===desired)continue;
+       const element=document.querySelector('[data-piece="mcp"] [data-mcp-hardware="'+id+'"]');
+       if(!element)throw Error('Missing installed real control '+id);
+       element.click();
+     }
+   },mapping);
+  }else{
+   // Standalone visual laboratory validates pure ON/OFF material states.
+   await page.evaluate(values=>{for(const [id,val]of Object.entries(values))window.B737McpHardwareV1.setState(id,val)},mapping);
+  }
   await page.waitForTimeout(190);
   const a=await page.evaluate(()=>{
    const target=document.querySelector('[data-piece="mcp"]');
