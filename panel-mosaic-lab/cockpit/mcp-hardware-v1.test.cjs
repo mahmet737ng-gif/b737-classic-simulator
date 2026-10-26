@@ -37,9 +37,9 @@ const toggles=Object.fromEntries(controls.filter(c=>c.kind==="toggle").map(c=>[c
 assert.deepEqual([toggles.AT_ARM.x,toggles.AT_ARM.y,toggles.AT_ARM.w,toggles.AT_ARM.h],[357,181,66,68]);
 assert.deepEqual([toggles.FD_LEFT.x,toggles.FD_LEFT.y,toggles.FD_LEFT.w,toggles.FD_LEFT.h],[203,321,36,51]);
 assert.deepEqual([toggles.FD_RIGHT.x,toggles.FD_RIGHT.y,toggles.FD_RIGHT.w,toggles.FD_RIGHT.h],[1903,321,36,51]);
-assert.match(js,/AT_ARM_OFF\.svg/);
-assert.match(js,/AT_ARM_UP\.svg/);
-assert.match(js,/mcp-hw-silver-atlas/);
+assert.match(js,/mcp-hw-real-face/);
+assert.doesNotMatch(js,/mcp-hw-silver-atlas/);
+assert.doesNotMatch(js,/AT_ARM_OFF|AT_ARM_UP/);
 assert.doesNotMatch(js,/mcp-hw-toggle-foot/);
 assert.match(reference,/\.mcp-hw-at-paddle/);
 assert.match(reference,/\.mcp-hw-fd-shaft/);
@@ -72,10 +72,18 @@ for(const page of [unified,standalone]){
  const authentic=page.indexOf('mcp-authentic-sprites-v2.css');
  const owner=page.indexOf('mcp-owner-photo-components-v1.css');
  const fake=page.indexOf('mcp-front-reference-v1.css');
- assert.ok(authentic>fake&&owner>authentic,'Original MCP photo modules should override generic procedural CSS');
+ const restored=page.indexOf('mcp-front-actual-photo-v3.css');
+ assert.equal(fake,-1,'Artificial switch CSS must not load');
+ assert.ok(authentic>=0&&owner>authentic&&restored>owner,'Original photo knob/button layer and restored switch photo must load last');
  assert.match(page,/mcp-owner-photo-components-v1\.css\?v=MCP-PHOTO-0002/);
+ assert.ok(page.includes('mcp-front-actual-photo-v3.css?v=MCP-PHOTO-0003'));
 }
-assert.match(js,/AT_ART_ROOT/);
+const physical=fs.readFileSync(path.join(root,'assets/mcp-switches/MCP_FRONT_OWNER_PHOTOS_4POSE.webp'));
+assert.ok(physical.length>2000);assert.equal(physical.toString('ascii',0,4),'RIFF');
+assert.equal(physical.toString('ascii',8,12),'WEBP');
+const installed=fs.readFileSync(path.join(root,'mcp-front-actual-photo-v3.css'),'utf8');
+assert.match(installed,/MCP_FRONT_OWNER_PHOTOS_4POSE\.webp/);
+for(const pos of ['0% 0%','100% 0%','0% 100%','100% 100%'])assert.ok(installed.includes('background-position:'+pos));
 const photo=fs.readFileSync(path.join(root,'mcp-owner-photo-components-v1.css'),'utf8');
 for(const f of ['COURSE_PHOTO_80.webp','HEADING_PHOTO_80.webp','ALTITUDE_PHOTO_80.webp','ROUND_PUSH_80.webp'])assert.ok(photo.includes(f),'Missing original generated photo '+f);
 const manifest=JSON.parse(fs.readFileSync(path.join(root,'mcp-photo-asset-manifest-v1.json'),'utf8'));
