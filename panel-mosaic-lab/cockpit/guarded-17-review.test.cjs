@@ -81,7 +81,7 @@ test('Unified guarded lab controls and syntax are valid and non-destructive',()=
  assert.ok(launcher.includes("params.get('guarded17')==='1'"));
  assert.ok(js.includes("switchSpec.momentary"));
  assert.ok(js.includes("all.some(x=>x.isOpen())"));
- assert.ok(js.includes("button.disabled=!open"));
+ assert.ok(js.includes("buttons.forEach(b=>b.disabled=!open)"),'closed guards must disable actuator inputs');
  assert.ok(html.includes('پیش‌نمایش هندسی'));
  assert.ok(html.includes('فرمانی به سیستم هواپیما نمی‌فرستند'));
 });
