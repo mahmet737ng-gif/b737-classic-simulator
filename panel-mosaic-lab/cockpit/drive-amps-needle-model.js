@@ -5,7 +5,10 @@
  if(root)root.B737DriveAmpsNeedleModel=model;
 })(typeof globalThis==='object'?globalThis:this,function(){
  'use strict';
- // Native original 1203x1308 / 1024x1536 photo fitted bezel centres;\n // each centre independently matched across four Hough sensitivity settings.\n // BEZEL-only provisional registration; physical spindle still unapproved.\n // See engine/instruments/native-bezel-centre-evidence-v1.json.
+ // Native original 1203x1308 / 1024x1536 photo fitted bezel centres; 
+ // each centre independently matched across four Hough sensitivity settings. 
+ // BEZEL-only provisional registration; physical spindle still unapproved. 
+ // See engine/instruments/native-bezel-centre-evidence-v1.json.
  // SOURCE NATIVE PIXELS: locked OH11/OH12 originals were checked side-by-side with
  // candidate pointer rays. 128/135px proposals crossed beyond the inner tick;
  // 64px proposals stopped short. Original near-98/102px reach is the
