@@ -55,3 +55,36 @@ for(const c of reg.rotaries){
 const rotaryView=fs.readFileSync(path.join(__dirname,'rotary-guards.js'),'utf8');
 assert.ok(rotaryView.includes('*(c.renderScale||1)'),'Small rotary images must honor render scale');
 console.log('PASS Small rotary art for both engine start selectors and ignition, detents unchanged.');
+
+/* OH11 owner screenshot aperture checks. Run three independent geometry passes;
+   numbers are screenshot-calibrated, not real-world millimetres. */
+const geometryCases=[
+ ['generator-disconnect-1',[154,334,200,418],132,281],
+ ['generator-disconnect-2',[847,334,200,418],132,281],
+ ['standby-power',[391,232,421,184],280,123]
+];
+for(let pass=1;pass<=3;pass++){
+ for(const [id,rect,expectedWidth,expectedHeight] of geometryCases){
+  const c=reg.guards.find(item=>item.id===id),p=layout.placements.find(item=>item.id===c.placementId);
+  assert.deepEqual(c.mountingRectSource,rect,'pass '+pass+' source rectangle '+id);
+  const [x,y,w,h]=rect;
+  const a=toggles.mapPoint({...c,sourcePoint:[x,y],bezelSourceDiameter:0},p);
+  const b=toggles.mapPoint({...c,sourcePoint:[x+w,y+h],bezelSourceDiameter:0},p);
+  const sourceRatio=w/h,screenRatio=(b.x-a.x)/(b.y-a.y);
+  assert.ok(Math.abs(sourceRatio-screenRatio)<.01,'native ratio preserved '+id);
+  assert.ok(Math.abs((b.x-a.x)*1.61-expectedWidth)<4,'screenshot aperture width '+id);
+  assert.ok(Math.abs((b.y-a.y)*1.61-expectedHeight)<5,'screenshot aperture height '+id);
+ }
+ const cases=geometryCases.map(([id,r])=>({id,r}));
+ for(let i=0;i<cases.length;i++)for(let j=i+1;j<cases.length;j++){
+  const a=cases[i].r,b=cases[j].r;
+  assert.ok(a[0]+a[2]<=b[0]||b[0]+b[2]<=a[0]||a[1]+a[3]<=b[1]||b[1]+b[3]<=a[1],'guard recess overlap '+cases[i].id+' '+cases[j].id);
+ }
+}
+const calibratedSource=fs.readFileSync(path.join(__dirname,'rotary-guards.js'),'utf8');
+const calibratedStyles=fs.readFileSync(path.join(__dirname,'rotary-guards.css'),'utf8');
+assert.match(calibratedSource,/guarded\(c,p,placements.get\(c.placementId\)\)/);
+assert.match(calibratedSource,/calibrated-horizontal-standby/);
+assert.match(calibratedStyles,/guard-housing--horizontal/);
+assert.equal(reg.guards.find(c=>c.id==='standby-power').rotation,0,'wide switch is not a -90° rotated narrow sprite');
+console.log('PASS: three independent OH11 aperture-mapping geometry checks; no recess overlaps; source assets unchanged.');
