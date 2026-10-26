@@ -20,10 +20,12 @@ const additional=[
   source:'./assets/737-400-PACK_FITTED_'+state+'.svg'}))
 ];
 const ro=read('panel-mosaic-lab/interactive-overhead/readability-faces.json'),rm=read('panel-mosaic-lab/cockpit/readability-faces.json');
+const mipType=read('panel-mosaic-lab/cockpit/typography-faces.json');
+if(Object.keys(mipType.instances).length!==30)throw Error('Incomplete 30-light type map');
 const fixtures=[];
 for(const [kind,reg,overrides] of [['oh',oh,oi],['main',main,mi]]){
  for(const lamp of reg.lights){
-  const states=(kind==='oh'?ro:rm).instances[lamp.id]?.states||overrides.instances[lamp.id]?.states||reg.assets[lamp.asset];
+  const states=(kind==='main'?mipType.instances[lamp.id]?.states:null)||(kind==='oh'?ro:rm).instances[lamp.id]?.states||overrides.instances[lamp.id]?.states||reg.assets[lamp.asset];
   if(!states)throw Error('Missing optical state '+lamp.id);
   for(const [state,f] of Object.entries(states)){
    fixtures.push({id:lamp.id,asset:lamp.asset,state,kind,source:f.url,photoROI:lamp.sourceRect});
