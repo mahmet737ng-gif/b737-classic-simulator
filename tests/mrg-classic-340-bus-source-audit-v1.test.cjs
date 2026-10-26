@@ -18,7 +18,7 @@ test("Two variant pressurization branches never co-activate",()=>{
  a(!c.some(x=>x.applicability==="DCPCS"));a(!d.some(x=>x.applicability==="CPCS"));
  a(c.some(x=>x.item==="Pressuriz. Control Auto (CPCS)"));
  a(d.some(x=>x.item==="Pressuriz. Control Auto 2 (DCPCS)"));
- a.equal(M.variantRows(INDEX,"CPCS").length-M.variantRows(INDEX,"DCPCS").length,2);
+ a.equal(M.variantRows(INDEX,"CPCS").length-M.variantRows(INDEX,"DCPCS").length,3);
 });
 test("Generator hydraulic pump motors and their DC control feeds are separate",()=>{
  a.equal(find("Electric Hydraulic Pump 1 Sys B").feedBus,"generator1");
