@@ -24,9 +24,9 @@ let loaded=false,bankAngle=20;const mounted=new WeakSet();
  * very different transparent margins. Geometric centering uses full source
  * canvas and normalized alpha ROI (not a 48x48 transparent thumbnail box). */
 const photoZoom=Object.freeze([
- [1.20,1.20],[2.78,1.19],[1.83,1.58],[1.83,1.49],
+ [1.20,1.17],[2.78,1.19],[1.83,1.58],[1.83,1.49],
  [1.08,1.08],[1.18,2.21],[1.18,2.21],[2.16,2.18],
- [2.94,1.73],[2.94,1.73],[1.23,1.22],[1.43,1.44],[1.28,1.31]
+ [2.94,1.73],[2.94,1.73],[1.23,1.17],[1.43,1.28],[1.28,1.31]
 ]);
 function cell(node,index){
  const col=index%4,row=Math.floor(index/4),[sx,sy]=photoZoom[index];
