@@ -31,31 +31,37 @@ const make=(tag,className)=>{const el=document.createElement(tag);el.className=c
 const assert=(b,m)=>{if(!b)throw new Error('Guard install: '+m);};
 function guardedSize(node,c,legacy){
  const g=c.geometry;
+ // Physical detail is derived from each control's own documented native
+ // source-position, plus proportional PHOTO preview limits; not one giant
+ // generic rectangle. Source coordinates are never treated as millimetres.
  if(legacy.presentation==='flight-recorder-left-hinge'){
   const w=node.clientWidth,h=node.clientHeight;
-  assert(w>5&&h>5,'flight recorder original reference socket unavailable');
-  return {left:0,top:0,w,h,method:'EXACT_PRIOR_SOURCE_RECT'};
+  assert(w>5&&h>5,'flight recorder native source window unavailable');
+  return {left:0,top:0,w,h,capW:w*.90,capH:h*.80,method:'NATIVE_SOURCE_RECT_RECORDER'};
  }
  if(Array.isArray(legacy.mountingRectSource)){
   const x=Number(node.dataset.mountLeft),y=Number(node.dataset.mountTop),
    w=Number(node.dataset.mountWidth),h=Number(node.dataset.mountHeight);
-  assert([x,y,w,h].every(Number.isFinite)&&w>5&&h>5,'native OH11 reference socket unavailable');
-  return {left:x,top:y,w,h,method:'OWNER_MARKED_SOURCE_RECT_APPROX'};
+  assert([x,y,w,h].every(Number.isFinite)&&w>5&&h>5,'OH11 native mounting rectangle unavailable');
+  const wide=c.controlId==='standby-power';
+  return {left:x,top:y,w,h,capW:w*(wide?.88:.58),capH:h*(wide?.76:.78),
+    method:wide?'OWNER_MARKED_WIDE_SWITCH_SLOT':'OWNER_MARKED_GEN_RECESS__NARROW_CAP'};
  }
- // Legacy sourcePoint is documented, unlike the width/height. Keep the
- // pivot centered on that sourcePoint. The perimeter remains UNVERIFIED.
- const [width,height]=[g.previewWidth,g.previewHeight];
- const diam=legacy.bezelSourceDiameter;
- // Previous renderer scales source bezel into the current atlas in one axis.
- const scale=Number(node.dataset.scale);
- assert(Number.isFinite(scale)&&scale>0,'missing native atlas sprite scaling');
- // p.diameter is already mapped from the native source bezel into atlas
- // coordinates. Re-multiplying by source diameter shrinks small guards and
- // makes the OH14 emergency light guard oversized. Keep one common scale.
- const projectedBezel=scale*261;
- const w=Math.max(13,projectedBezel*.94);
- const h=w*(height/width);
- return {left:-w/2,top:-h/2,w,h,method:'SOURCE_CENTER_CONFIRMED_DIMENSION_UNVERIFIED'};
+ const d=Number(node.dataset.scale)*261;
+ assert(Number.isFinite(d)&&d>5,'guard center/source scale missing '+c.controlId);
+ // Each candidate is constrained to screenshot-based native-source proportions.
+ // No unmeasured individual switch can expand to the original 261x359 sprite.
+ const factors={
+  'flight-control-a':[.60,.90],'flight-control-b':[.60,.90],
+  'spoiler-a':[.61,.86],'spoiler-b':[.61,.86],
+  'alternate-flaps-master':[.47,1.02],
+  'battery-master':[.68,.92],
+  'emergency-exit-lights':[.59,.98],
+  'passenger-oxygen':[.57,.97]
+ };
+ const factor=factors[c.controlId]||[.57,.90];
+ const capW=d*factor[0],capH=d*factor[1];
+ return {left:-capW/2,top:-capH/2,w:capW,h:capH,capW,capH,method:'NATIVE_SOURCE_CENTER__PHOTO_CONSTRAINED_PREVIEW_SIZE'};
 }
 function validData(blueprint,owner,old,upper){
  assert(blueprint.controls.length===17&&owner.summary.ownerConfirmed===17,'need all 17 owner answers');
@@ -78,8 +84,10 @@ function validData(blueprint,owner,old,upper){
 function build(node,c,legacy){
  const slot=guardedSize(node,c,legacy),coverRatio=c.geometry.previewWidth/c.geometry.previewHeight;
  const horizontal=coverRatio>1.3;
- const lgW=Math.max(16,slot.w*(horizontal?.88:.73));
- const lgH=Math.max(16,slot.h*(horizontal?.82:.84));
+ const lgW=slot.capW;
+ const lgH=slot.capH;
+ // Geometry is resolved before touching the legacy artwork; failures
+ // preserve the last functional guard rather than partially overwriting it.
  const root=make('div','g17-native-hardware');
  root.dataset.control=c.controlId;root.dataset.hinge=c.hingeDirection.toLowerCase();
  root.dataset.calibration=slot.method;
@@ -93,8 +101,13 @@ function build(node,c,legacy){
  grip.setAttribute('aria-label',c.displayName+' · underlying switch');
  const pivot=make('span','g17-native-hinge-pivot');
  const lid=make('button','g17-native-cover');lid.type='button';
+ const surface=c.material.swatchHex.toLowerCase().startsWith('#a3')||
+  c.geometry.contourProfile==='red-tapered-long-cap'?'red':
+  horizontal?'horizontal':'black';
+ lid.dataset.surface=surface;
+ root.dataset.surface=surface;
  const fixed=make('span','g17-native-fixed-hinge');
- const fracW=lgW/slot.w,fracH=lgH/slot.h;
+ // One immutable cover; surface texture never changes across open and closed.
  const left=(slot.w-lgW)/2,top=(slot.h-lgH)/2;
  Object.assign(pivot.style,{left:left+'px',top:top+'px',width:lgW+'px',height:lgH+'px'});
  lid.style.clipPath=shape[c.geometry.contourProfile]||'none';
@@ -125,6 +138,20 @@ function build(node,c,legacy){
   grip.setAttribute('aria-disabled',String(!isOpen));
   detent(val);
  }
+ // Align physical knuckles with the actual movable cover edge, not the
+ // outer recess border. The knuckles stay fixed while the cover rotates.
+ const hinge=c.hingeDirection.toLowerCase();
+ const hStyle={};
+ if(hinge==='up'||hinge==='down'){
+  hStyle.width=(lgW*.60)+'px';hStyle.height=Math.max(3,Math.min(7,lgW*.08))+'px';
+  hStyle.left=(left+lgW*.20)+'px';
+  hStyle[hinge==='up'?'top':'bottom']=(hinge==='up'?top-3:slot.h-top-lgH-3)+'px';
+ }else{
+  hStyle.width=Math.max(3,Math.min(7,lgH*.09))+'px';hStyle.height=(lgH*.60)+'px';
+  hStyle.top=(top+lgH*.20)+'px';
+  hStyle[hinge==='left'?'left':'right']=(hinge==='left'?left-3:slot.w-left-lgW-3)+'px';
+ }
+ Object.assign(fixed.style,hStyle);
  pivot.append(lid);root.append(well,ring,shaft,grip,pivot,fixed);
  node.classList.add('g17-native-upgraded');
  node.append(root);
@@ -146,22 +173,39 @@ async function start(){
   for(const r of requests)if(!r.ok)throw Error('source fetch HTTP '+r.status);
   const [blueprint,owner,legacy,upper]=await Promise.all(requests.map(r=>r.json()));
   const {original,available,pending}=validData(blueprint,owner,legacy,upper);
-  let finished=false;
+  // Install individually: a late or missing legacy node must NOT prevent
+  // correctly anchored neighbors from receiving their photo-constrained cap.
+  const receipt=new Map(),failures=new Map();
   const mount=()=>{
-   if(finished)return;
    const nodes=new Map([...document.querySelectorAll('#rotaryGuardLayer .guard-node[data-control]')].map(n=>[n.dataset.control,n]));
-   if(original.some(x=>!nodes.has(x.id)))return;
-   const receipt=[];
-   for(const guard of original)receipt.push(build(nodes.get(guard.id),available.get(guard.id),guard));
-   finished=true;marker(pending);
-   window.B737NativeGuards=Object.freeze({installed:receipt.length, pending:pending.map(p=>p.controlId),placements:receipt,
-     ownerHinges:owner.questions.map(x=>({id:x.controlId,hinge:x.selection})),version:'NATIVE-G17-0001'});
-   window.dispatchEvent(new CustomEvent('b737:native-guards-installed',{detail:{installed:receipt.length,pending:pending.length}}));
+   for(const guard of original){
+    if(receipt.has(guard.id)||!nodes.has(guard.id))continue;
+    try{
+     const node=nodes.get(guard.id);
+     if(node.classList.contains('g17-native-upgraded'))continue;
+     const result=build(node,available.get(guard.id),guard);
+     receipt.set(guard.id,result);failures.delete(guard.id);
+    }catch(e){failures.set(guard.id,String(e.message));console.error('Guard surface validation',guard.id,e);}
+   }
+   marker(pending);
+   window.B737NativeGuards=Object.freeze({installed:receipt.size,
+    pending:pending.map(p=>p.controlId),placements:[...receipt.values()],
+    mountingFailures:[...failures.entries()].map(([id,reason])=>({id,reason})),
+    ownerHinges:owner.questions.map(x=>({id:x.controlId,hinge:x.selection})),
+    version:'NATIVE-G17-PHOTO-V2'});
+   if(receipt.size===original.length){
+    window.dispatchEvent(new CustomEvent('b737:native-guards-installed',
+     {detail:{installed:receipt.size,pending:pending.length}}));
+    return true;
+   }
+   return false;
   };
-  mount();
-  if(!finished){
-   const observer=new MutationObserver(()=>{mount();if(finished)observer.disconnect();});
-   observer.observe(document.getElementById('atlasAbsolute'),{childList:true,subtree:true});
+  if(!mount()){
+   const target=document.getElementById('atlasAbsolute');
+   if(target){
+    const observer=new MutationObserver(()=>{if(mount())observer.disconnect();});
+    observer.observe(target,{childList:true,subtree:true});
+   }
   }
  }catch(error){console.error(error);const el=document.getElementById('toggleInspector');if(el){const note=document.createElement('p');note.textContent='خطای نصب گاردها: '+error.message;note.setAttribute('role','alert');el.append(note);}}
 }
