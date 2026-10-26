@@ -27,7 +27,7 @@
   Object.freeze({id:'driveOil2',label:'GEN DRIVE OIL TEMP 2',piece:'OH11',x:861.8,y:1023.8,tipRadius:98,initialAngle:-46}),
   Object.freeze({id:'acAmps1',label:'A.C. AMPS 1',piece:'OH12',x:261,y:252.2,tipRadius:102,initialAngle:-45}),
   Object.freeze({id:'acAmps2',label:'A.C. AMPS 2',piece:'OH12',x:753.4,y:252.2,tipRadius:102,initialAngle:-45}),
-  Object.freeze({id:'apuAcAmps',label:'APU A.C. AMPS',piece:'OH12',window:'OH12_APU',x:720.8,y:1322.4,tipRadius:124,initialAngle:-47})
+  Object.freeze({id:'apuAcAmps',label:'APU A.C. AMPS',piece:'OH12',window:'OH12_APU',x:724,y:1334,tipRadius:124,initialAngle:-47})
  ]);
  function angle(value){const n=Number(value);if(!Number.isFinite(n))throw Error('Needle angle must be finite');return Math.max(-90,Math.min(90,n));}
  function windowPath(needle){
