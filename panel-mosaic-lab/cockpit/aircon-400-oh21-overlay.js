@@ -66,9 +66,14 @@
   for(const item of m.labels){
    const node=document.createElement('span');node.className='aircon400-recirculation-label';
    node.textContent=item.text;node.dataset.airconLabel=item.text;
+   node.dataset.labelKind=item.kind;
    const rect=g.rect(item.rect);
    fit(node,rect);
-   node.style.fontSize=Math.max(8,Math.round(rect.h*.50))+'px';
+   // Font is bounded by BOTH the glass height and the available width. This
+   // fixes the previous unrestricted text spilling across screws and OFF/AUTO.
+   const maxHeight=rect.h*(item.kind==='title'?.51:.55);
+   const maxWidth=Math.max(5,(rect.w-7)/(item.text.length*(item.kind==='title'?.69:.66)));
+   node.style.fontSize=Math.max(5,Math.min(maxHeight,maxWidth)).toFixed(2)+'px';
    layer.append(node);
   }
  }
