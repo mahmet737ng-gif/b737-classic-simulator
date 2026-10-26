@@ -1,4 +1,4 @@
-/* FIRELAMP-0003. Relative to the fire-protection texture only.
+/* FIRELAMP-0004. Relative to the fire-protection texture only.
    Never paints/overrides a panel, handle, switch or adjacent texture. */
 .texture-piece[data-piece="fire-protection"] .fire-lamps-mounted {
   position:absolute;inset:auto;overflow:hidden;z-index:1;
@@ -24,5 +24,10 @@
   border:0;max-width:none;user-select:none;
 }
 .texture-piece[data-piece="fire-protection"] .fire-lamp {
-  z-index:1;background:#050505;
+  z-index:1;background:transparent;
+  /* The outer frame is transparent: do NOT paint over the existing metal
+     or four mounting fasteners. Only inset SVG glass is opaque. */
+}
+.texture-piece[data-piece="fire-protection"] .fire-lamp[data-kind="rect"] img{
+  position:absolute;object-fit:fill;
 }
