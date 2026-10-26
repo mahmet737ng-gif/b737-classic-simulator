@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>B737 Classic • Guarded Switch Pixel Calibration (17)</title>
+<style>
+:root{color-scheme:dark;font:14px system-ui,-apple-system,Segoe UI,Arial,sans-serif;background:#0e1218;color:#ecf1f6}
+*{box-sizing:border-box}body{margin:0}header{position:sticky;top:0;z-index:20;display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:12px 16px;background:#192331;border-bottom:1px solid #384656}
+h1{font-size:17px;margin:0 14px 0 0}button,select{font:inherit;background:#27384a;color:#fff;border:1px solid #51647a;border-radius:7px;padding:8px 10px;cursor:pointer}button:hover{background:#36516c}button:disabled{cursor:not-allowed;opacity:.4}
+main{display:grid;grid-template-columns:minmax(0,1fr) 345px;min-height:calc(100vh - 60px)}#viewport{height:calc(100vh - 76px);overflow:auto;position:relative;background:#0a0c10;direction:ltr}
+#stage{position:relative;transform-origin:0 0;display:none;user-select:none}#plate{width:100%;height:100%;display:block;pointer-events:none}
+#pins{position:absolute;inset:0;pointer-events:none}.pin{position:absolute;transform:translate(-50%,-50%);width:21px;height:21px;border:1px solid #e9bf37;outline:1px solid #080808;border-radius:50%;filter:drop-shadow(0 0 2px #000);background:transparent}.pin:before,.pin:after{content:"";position:absolute;background:#f0d66d}.pin:before{width:1px;height:34px;top:-7px;left:9px}.pin:after{height:1px;width:34px;top:9px;left:-7px}.pin.current{border-color:#17e6ad}.pin.current:before,.pin.current:after{background:#17e6ad}
+.pin small{position:absolute;left:22px;top:0;width:max-content;max-width:195px;padding:4px 6px;border-radius:3px;background:#151e27e8;color:#fff;font:11px/1.3 system-ui}
+aside{padding:16px;background:#141b23;border-left:1px solid #324254;max-height:calc(100vh - 76px);overflow:auto}h2{font-size:16px}p{line-height:1.5;margin:8px 0 14px}.muted{color:#a5b3c3}.error{color:#ffac99}.good{color:#8aefbd}.warning{color:#f3d28c}
+.status{padding:9px;border-radius:6px;border:1px solid #496075;background:#202d3b;margin:10px 0}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}.two>*{width:100%}
+#coordinate{font:16px ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.1px}#list{padding-left:20px}#list li{margin:6px 0;line-height:1.4}
+#zoom{min-width:50px;text-align:center}#hint{position:absolute;top:20px;left:20px;max-width:540px;padding:12px;border:1px solid #536a80;border-radius:8px;background:#1c2836f0;line-height:1.6}
+label{display:flex;align-items:center;gap:7px;margin-top:10px}#footer{display:block;border-top:1px solid #415065;margin-top:24px;padding-top:10px;font-size:11px;color:#a5b5c3}
+@media(max-width:830px){main{display:block}#viewport{height:64vh}aside{max-height:none;height:auto;border-left:0}header{position:static}}
+</style></head><body>
+<header>
+<h1>Guarded Switch · Pixel Calibration</h1>
+<select id="chooser" aria-label="Select guarded switch"></select>
+<button id="minus" aria-label="Zoom out">−</button><output id="zoom">100%</output><button id="plus" aria-label="Zoom in">+</button>
+<button id="reset">Reset point</button><button id="export">Export corrections JSON</button>
+</header>
+<main><div id="viewport"><div id="stage"><img id="plate" alt="Original approved locked panel bitmap"><div id="pins"></div></div><div id="hint">Loading approved image references and calibration coordinates…</div></div>
+<aside>
+<h2 id="label">Guarded Switch</h2>
+<div id="status" class="status">Awaiting report…</div>
+<p><strong>Selected control:</strong> <span id="id">—</span></p>
+<p><strong>Panel / hinge / switch:</strong> <span id="meta">—</span></p>
+<p><strong>Current source coordinate:</strong> <span id="coordinate">—</span></p>
+<p id="dimensionCheck" class="muted">Source bitmap dimensions are checked in-browser.</p>
+<p id="details" class="muted">The gold crosshair shows the old approximate point; green is a locally corrected point.</p>
+<div class="two"><button id="confirm">Confirm current pixel center</button><button id="undo">Undo correction</button></div>
+<p class="warning">Click the exact center of the underlying switch socket in the original bitmap. Coordinates are always measured against source bitmap pixels, not browser CSS pixels or the 2220 × 3312 mosaic.</p>
+<h2>Verification ledger</h2><ol id="list"></ol>
+<small id="footer">Read-only calibration sandbox. Locked source images, approved production positions and original blueprints are NEVER overwritten by this page. Export evidence before any production commit. Corrected points are not published merely by clicking.</small>
+</aside></main>
+<script>
+'use strict';
+const $=id=>document.getElementById(id);
+let report=null,current=null,scale=1,loaded=false,dimensionOK=false;
+const edits=new Map(),verified=new Map();
+function row(){return report.controls.find(c=>c.id===current)}
+function zoom(factor){scale=Math.max(.3,Math.min(5,+(scale*factor).toFixed(3)));$('stage').style.transform='scale('+scale+')';$('zoom').textContent=Math.round(scale*100)+'%';}
+function pin(x,y,name,cls){const marker=document.createElement('div');marker.className='pin '+(cls||'');marker.style.left=x+'px';marker.style.top=y+'px';const tag=document.createElement('small');tag.textContent=name;marker.append(tag);$('pins').append(marker);}
+function renderPins(){
+ $('pins').replaceChildren();
+ const c=row();if(!c?.sourceImage)return;
+ for(const o of report.controls.filter(x=>x.sourceImage?.panelAssetId===c.sourceImage.panelAssetId&&x.sourceCenterNativePx)){
+  const pos=edits.get(o.id)||o.sourceCenterNativePx;pin(pos[0],pos[1],o.name+(verified.has(o.id)?' [REVIEWED]':''),o.id===current?'current':'');
+ }
+ if(!c.sourceCenterNativePx&&edits.has(c.id)){const p=edits.get(c.id);pin(p[0],p[1],c.name,'current');}
+}
+function renderLedger(){
+ $('list').replaceChildren();
+ for(const c of report.controls){const li=document.createElement('li');li.textContent=c.name+' — '+(verified.has(c.id)?'CONFIRMED':!c.placementAvailable?'NO REGISTERED PANEL':!c.sourceCenterNativePx&&!edits.has(c.id)?'NATIVE POINT MISSING':'UNVERIFIED');li.className=verified.has(c.id)?'good':c.atlasPointPx?'muted':'warning';$('list').append(li);}
+}
+function render(){
+ const c=row();if(!c)return;
+ $('label').textContent=c.name;$('id').textContent=c.id;$('meta').textContent=c.panelId+' / '+c.hinge+' / '+c.statesCount+' detents';
+ const p=edits.get(c.id)||c.sourceCenterNativePx;
+ $('coordinate').textContent=p?'('+p[0]+', '+p[1]+')':'NOT MEASURED';
+ const existing=verified.has(c.id),note=existing?'PIXEL CONFIRMED ON THIS BROWSER (NOT YET COMMITTED)':c.reviewStatus.replaceAll('_',' ');
+ $('status').textContent=note;$('status').className='status '+(existing?'good':c.sourceImage?'warning':'error');
+ $('confirm').disabled=!loaded||!dimensionOK||!p;
+ $('undo').disabled=!edits.has(c.id);
+ $('stage').style.display=c.sourceImage?'block':'none';
+ $('dimensionCheck').textContent=c.sourceImage?'Expected source '+c.sourceImage.width+' × '+c.sourceImage.height+' px; '+(loaded?(dimensionOK?'actual bitmap dimensions MATCH':'actual bitmap dimensions DO NOT MATCH'):'loading…'):'NO APPROVED PANEL IMAGE REGISTERED';
+ $('details').textContent=c.sourceImage?'Click bitmap to calibrate socket center. The old point is a numeric hint, not independent visual proof.':'No registered image/placement; cannot produce a valid pixel coordinate. Register the original panel image and its placement first.';
+ if(c.sourceImage){$('stage').style.width=c.sourceImage.width+'px';$('stage').style.height=c.sourceImage.height+'px';renderPins();}
+ $('hint').style.display=c.sourceImage?'none':'block';
+ $('hint').textContent=c.sourceImage?'':'This switch does not have an approved source-panel bitmap and placement in Unified. Do not fabricate coordinates.';
+ renderLedger();
+}
+function choose(id){
+ current=id;loaded=false;dimensionOK=false;
+ const c=row();$('viewport').scrollTo(0,0);
+ if(!c.sourceImage){$('plate').removeAttribute('src');render();return;}
+ $('plate').onload=()=>{
+   if(id!==current)return;
+   loaded=true;dimensionOK=$('plate').naturalWidth===c.sourceImage.width&&$('plate').naturalHeight===c.sourceImage.height;
+   render();
+ };
+ $('plate').onerror=()=>{if(id!==current)return;loaded=false;dimensionOK=false;render();$('dimensionCheck').textContent='IMAGE FAILED TO LOAD';};
+ $('plate').src=c.sourceImage.url;
+ render();
+}
+$('stage').addEventListener('click',e=>{
+ const c=row();if(!loaded||!dimensionOK||!c.sourceImage)return;
+ const rect=$('stage').getBoundingClientRect(),x=(e.clientX-rect.left)/scale,y=(e.clientY-rect.top)/scale;
+ if(x<0||y<0||x>=c.sourceImage.width||y>=c.sourceImage.height)return;
+ edits.set(c.id,[+x.toFixed(2),+y.toFixed(2)]);verified.delete(c.id);render();
+});
+$('chooser').addEventListener('change',e=>choose(e.target.value));
+$('plus').addEventListener('click',()=>zoom(1.4));
+$('minus').addEventListener('click',()=>zoom(1/1.4));
+$('reset').addEventListener('click',()=>{scale=1;zoom(1);$('viewport').scrollTo(0,0);});
+$('undo').addEventListener('click',()=>{edits.delete(current);verified.delete(current);render()});
+$('confirm').addEventListener('click',()=>{
+ const c=row();if(!loaded||!dimensionOK||!(edits.has(current)||c.sourceCenterNativePx))return;
+ verified.set(current,new Date().toISOString());render();
+});
+$('export').addEventListener('click',()=>{
+ const exported={schema:'b737.guarded17.owner.pixel-calibration.v1',sourceReportRevision:report.revision,
+  important:'Only entries marked CONFIRMED have visual review evidence; do not merge others into locked production.',
+  entries:report.controls.map(c=>({id:c.id,panelId:c.panelId,sourceCenterNativePx:edits.get(c.id)||c.sourceCenterNativePx,reviewStatus:verified.has(c.id)?'PIXEL_VISUALLY_CONFIRMED_IN_CALIBRATION_TOOL':'UNVERIFIED',reviewedAt:verified.get(c.id)||null,sourceDimensionsPx:c.sourceImage?[c.sourceImage.width,c.sourceImage.height]:null}))};
+ const blob=new Blob([JSON.stringify(exported,null,2)+'\n'],{type:'application/json'});
+ const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='guard-17-pixel-review-corrections.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+});
+fetch('./coordinate-audit-v2.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw Error('HTTP '+r.status);return r.json()}).then(data=>{
+ if(data.controls.length!==17)throw Error('Expected 17 guards');
+ report=data;
+ for(const c of data.controls){const option=document.createElement('option');option.value=c.id;option.textContent=c.name+' • '+c.panelId;$('chooser').append(option);}
+ choose(report.controls[0].id);
+}).catch(err=>{$('hint').textContent='Calibration data unavailable: '+err.message;$('status').textContent=String(err);});
+</script></body></html>
