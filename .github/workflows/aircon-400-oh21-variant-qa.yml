@@ -9,6 +9,7 @@ on:
       - "panel-mosaic-lab/interactive-overhead/lights*.js"
       - "engine/systems/pneumatics-v6.js"
       - "tests/aircon-400-oh21-variant.test.cjs"
+      - "tools/test-aircon400-oh21-browser.cjs"
       - ".github/workflows/aircon-400-oh21-variant-qa.yml"
   workflow_dispatch:
 permissions:
@@ -32,3 +33,23 @@ jobs:
           node panel-mosaic-lab/interactive-overhead/lights.test.cjs
       - name: Verify frozen final overhead is unchanged
         run: python3 panel-mosaic-lab/verify-final-overhead.py
+      - name: Install Chromium for real photo-pixel checks
+        run: |
+          npm install --no-save --ignore-scripts playwright@1.58.2
+          npx playwright install --with-deps chromium
+      - name: Verify 737-400 and 300/500 in real headless browser
+        run: |
+          set -euo pipefail
+          python3 -m http.server 8788 --bind 127.0.0.1 > /tmp/aircon400-http.log 2>&1 &
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:8788/panel-mosaic-lab/cockpit/overhead-stage.html >/dev/null; then break; fi
+            sleep 1
+          done
+          node tools/test-aircon400-oh21-browser.cjs
+      - name: Save actual 737-400 and 300/500 photo screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: aircon400-oh21-visual-evidence
+          path: artifacts/aircon400-oh21/
+          if-no-files-found: ignore
