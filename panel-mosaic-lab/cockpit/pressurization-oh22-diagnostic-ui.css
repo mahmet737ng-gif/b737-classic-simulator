@@ -1,0 +1,14 @@
+/* Read-only pressure OH22 inspector, isolated from locked aircraft photos. */
+.oh22-diagnostic-console{margin:12px 0;padding:12px;border:1px solid #476278;border-radius:9px;background:#0f2230;color:#d8e8f3}
+.oh22-diagnostic-console h3{margin:0 0 5px;font-size:13px;direction:ltr}
+.oh22-diagnostic-console p{font-size:12px}
+.oh22-diagnostic-console small{display:block;opacity:.78;line-height:1.5}
+.oh22-diag-actions{display:flex;gap:5px;flex-wrap:wrap;margin:9px 0}
+.oh22-diag-actions button{font-size:11px;padding:6px 7px}
+.oh22-diag-results{max-height:230px;overflow:auto;background:#0a1b26;border:1px solid #334b5b;border-radius:5px;padding:4px 8px}
+.oh22-diag-results p{border-bottom:1px solid #2c475b;line-height:1.5;margin:4px 0;padding:5px 0;font:11px/1.55 ui-monospace,Consolas,monospace;overflow-wrap:anywhere}
+.oh22-diag-results p:last-child{border-bottom:0}
+.oh22-diag-critical,.oh22-diag-error{color:#ffb8a6}
+.oh22-diag-warning{color:#ffe0a0}
+.oh22-diag-info{color:#a6cbe3}
+#oh22DiagTotals{font:12px/1.7 ui-monospace,Consolas,monospace;margin-bottom:6px}
