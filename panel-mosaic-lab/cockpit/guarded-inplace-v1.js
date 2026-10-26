@@ -165,6 +165,9 @@ function marker(pending,installed){
  if(!parent)return;
  let output=document.getElementById('g17-native-install-status');
  if(!output){output=document.createElement('div');output.id='g17-native-install-status';output.className='g17-native-install-status';parent.prepend(output);}
+ output.dataset.installed=String(installed);
+ output.dataset.expected='12';
+ output.dataset.skin='moulded-photo-v2';
  output.textContent='گاردهای واقعاً آماده روی Overhead: '+installed+'/۱۲ نقطهٔ موجود؛ پنج مورد نیازمند مختصات معتبر: '+pending.map(p=>p.displayName).join('، ')+'. پیش‌نمایش هر ۱۷ گارد در Unified موجود است.';
 }
 async function start(){
