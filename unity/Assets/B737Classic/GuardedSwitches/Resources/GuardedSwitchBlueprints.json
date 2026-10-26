@@ -1357,26 +1357,26 @@
         "requiresCalibratedSocket": true
       },
       "geometry": {
-        "previewWidth": 0.151,
-        "previewHeight": 0.102,
-        "previewThickness": 0.013,
-        "previewCornerRadius": 0.012,
+        "previewWidth": 0.094,
+        "previewHeight": 0.048504,
+        "previewThickness": 0.01,
+        "previewCornerRadius": 0.008,
         "previewUnits": "SCENE_PREVIEW_UNITS_NOT_METERS_NOT_MILLIMETRES",
         "approvedDimensionsMm": null,
         "approval": "UNVERIFIED_DO_NOT_USE_AS_FACTORY_DIMENSIONS",
         "engineUnitScaleToMm": null,
-        "contourProfile": "wide-low-profile",
-        "coverAspectSource": "AUTHOR_PREVIEW_NOT_MEASURED",
-        "referenceAspectRatioHint": null
+        "contourProfile": "black-horizontal-oxygen-rotated-90",
+        "coverAspectSource": "OWNER_CONFIRMED_90_DEG_ROTATION_OF_PASSENGER_OXYGEN_FORM_NOT_METRIC",
+        "referenceAspectRatioHint": 1.938
       },
       "material": {
         "materialIdentity": "guard-cover-bus-transfer-v1",
-        "swatchHex": "#202125",
-        "colorSource": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION",
+        "swatchHex": "#242426",
+        "colorSource": "OWNER_DIRECT_CONFIRMATION_BUS_TRANSFER_IS_PASSENGER_OXYGEN_COVER_ROTATED_90_DEG",
         "sharedAcrossPoses": true,
         "metallic": 0.1,
         "roughness": 0.68,
-        "colorAuthenticity": "PROVISIONAL_SIMULATOR_COLOR_UNVERIFIED"
+        "colorAuthenticity": "OWNER_APPROVED_FORM_AND_BLACK_BASE_COLOR_DIMENSIONS_UNMEASURED"
       },
       "motion": {
         "openAngleDegrees": 105,
@@ -1400,7 +1400,7 @@
         "737-400",
         "737-500"
       ],
-      "notes": null,
+      "notes": "OWNER CONFIRMED: exact Passenger Oxygen guard family rotated 90 degrees. Bus transfer wider than tall, hinge on LEFT; when open, same mesh rotates around left fixed hinge only, never resizes or changes color. Not physically calibrated for mounting on OH12.",
       "referenceScreenshotEvidence": null,
       "switchAppearance": {
         "schema": "b737-classic/guarded-underlying-switch-preview/v1",
@@ -1432,6 +1432,14 @@
         "confidence": "AUTHOR_PROVISIONAL_INTERPRETATION_OF_FCOM_STATES_AND_REFERENCE",
         "sourceFcomFolio": "6.10.9",
         "appearanceNotes": "Distinct photographed guard socket from underlying actuator; actuator geometry requires close-up confirmation."
+      },
+      "hardwareGrouping": {
+        "sourceDesignControlId": "passenger-oxygen",
+        "rotationDegrees": 90,
+        "physicalGuardIndependent": true,
+        "ownerConfirmed": true,
+        "mountingSite": "OH12_PENDING_NATIVE_PIXEL_CALIBRATION",
+        "exactSizeApproval": "UNMEASURED"
       }
     },
     {
@@ -1892,7 +1900,7 @@
     }
   ],
   "referenceImageEvidence": "Resources/GuardReferenceEvidence_20261026.json",
-  "catalogRevision": "v1.2 owner corrections: BLACK antiskid specular, THREE separate identically sized GPWS covers",
+  "catalogRevision": "v1.3 owner approved BUS TRANSFER horizontal Passenger Oxygen cover rotated 90 degrees; left hinge; no sprite state swapping",
   "visualUnifiedRule": "State transitions must preserve the exact same mesh, contourProfile, material, RGBA, thickness, UV/texture and localScale. Only fixed-hinge localRotation and physically induced light/shadow/projection change.",
   "ownerCorrections": {
     "date": "2026-10-26",
