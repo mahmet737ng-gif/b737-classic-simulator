@@ -58,7 +58,7 @@
         "sharedAcrossPoses": true,
         "metallic": 0.1,
         "roughness": 0.68,
-        "colorAuthenticity": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION"
+        "colorAuthenticity": "PROVISIONAL_SIMULATOR_COLOR_UNVERIFIED"
       },
       "motion": {
         "openAngleDegrees": 110,
@@ -136,7 +136,7 @@
         "sharedAcrossPoses": true,
         "metallic": 0.1,
         "roughness": 0.68,
-        "colorAuthenticity": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION"
+        "colorAuthenticity": "PROVISIONAL_SIMULATOR_COLOR_UNVERIFIED"
       },
       "motion": {
         "openAngleDegrees": 110,
@@ -214,7 +214,7 @@
         "sharedAcrossPoses": true,
         "metallic": 0.1,
         "roughness": 0.68,
-        "colorAuthenticity": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION"
+        "colorAuthenticity": "PROVISIONAL_SIMULATOR_COLOR_UNVERIFIED"
       },
       "motion": {
         "openAngleDegrees": 110,
@@ -292,7 +292,7 @@
         "sharedAcrossPoses": true,
         "metallic": 0.1,
         "roughness": 0.68,
-        "colorAuthenticity": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION"
+        "colorAuthenticity": "PROVISIONAL_SIMULATOR_COLOR_UNVERIFIED"
       },
       "motion": {
         "openAngleDegrees": 110,
@@ -370,7 +370,7 @@
         "sharedAcrossPoses": true,
         "metallic": 0.1,
         "roughness": 0.68,
-        "colorAuthenticity": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION"
+        "colorAuthenticity": "PROVISIONAL_SIMULATOR_COLOR_UNVERIFIED"
       },
       "motion": {
         "openAngleDegrees": 108,
@@ -448,7 +448,7 @@
         "sharedAcrossPoses": true,
         "metallic": 0.1,
         "roughness": 0.68,
-        "colorAuthenticity": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION"
+        "colorAuthenticity": "PROVISIONAL_SIMULATOR_COLOR_UNVERIFIED"
       },
       "motion": {
         "openAngleDegrees": 110,
@@ -531,7 +531,7 @@
         "sharedAcrossPoses": true,
         "metallic": 0.1,
         "roughness": 0.68,
-        "colorAuthenticity": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION"
+        "colorAuthenticity": "PROVISIONAL_SIMULATOR_COLOR_UNVERIFIED"
       },
       "motion": {
         "openAngleDegrees": 110,
@@ -614,7 +614,7 @@
         "sharedAcrossPoses": true,
         "metallic": 0.1,
         "roughness": 0.68,
-        "colorAuthenticity": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION"
+        "colorAuthenticity": "PROVISIONAL_SIMULATOR_COLOR_UNVERIFIED"
       },
       "motion": {
         "openAngleDegrees": 110,
@@ -697,7 +697,7 @@
         "sharedAcrossPoses": true,
         "metallic": 0.1,
         "roughness": 0.68,
-        "colorAuthenticity": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION"
+        "colorAuthenticity": "PROVISIONAL_SIMULATOR_COLOR_UNVERIFIED"
       },
       "motion": {
         "openAngleDegrees": 105,
@@ -775,7 +775,7 @@
         "sharedAcrossPoses": true,
         "metallic": 0.1,
         "roughness": 0.68,
-        "colorAuthenticity": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION"
+        "colorAuthenticity": "PROVISIONAL_SIMULATOR_COLOR_UNVERIFIED"
       },
       "motion": {
         "openAngleDegrees": 110,
@@ -853,7 +853,7 @@
         "sharedAcrossPoses": true,
         "metallic": 0.1,
         "roughness": 0.68,
-        "colorAuthenticity": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION"
+        "colorAuthenticity": "SCREENSHOT_COLOR_APPROXIMATE_NOT_PHYSICALLY_CERTIFIED"
       },
       "motion": {
         "openAngleDegrees": 108,
@@ -936,7 +936,7 @@
         "sharedAcrossPoses": true,
         "metallic": 0.1,
         "roughness": 0.68,
-        "colorAuthenticity": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION"
+        "colorAuthenticity": "PROVISIONAL_SIMULATOR_COLOR_UNVERIFIED"
       },
       "motion": {
         "openAngleDegrees": 105,
@@ -1000,7 +1000,7 @@
         "sharedAcrossPoses": true,
         "metallic": 0.1,
         "roughness": 0.68,
-        "colorAuthenticity": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION"
+        "colorAuthenticity": "PROVISIONAL_SIMULATOR_COLOR_UNVERIFIED"
       },
       "motion": {
         "openAngleDegrees": 105,
@@ -1061,7 +1061,7 @@
         "sharedAcrossPoses": true,
         "metallic": 0.5,
         "roughness": 0.45,
-        "colorAuthenticity": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION"
+        "colorAuthenticity": "SCREENSHOT_COLOR_APPROXIMATE_NOT_PHYSICALLY_CERTIFIED"
       },
       "motion": {
         "openAngleDegrees": 108,
@@ -1133,7 +1133,7 @@
         "sharedAcrossPoses": true,
         "metallic": 0.1,
         "roughness": 0.68,
-        "colorAuthenticity": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION"
+        "colorAuthenticity": "PROVISIONAL_SIMULATOR_COLOR_UNVERIFIED"
       },
       "motion": {
         "openAngleDegrees": 110,
@@ -1212,7 +1212,7 @@
         "sharedAcrossPoses": true,
         "metallic": 0.1,
         "roughness": 0.68,
-        "colorAuthenticity": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION"
+        "colorAuthenticity": "PROVISIONAL_SIMULATOR_COLOR_UNVERIFIED"
       },
       "motion": {
         "openAngleDegrees": 110,
@@ -1291,7 +1291,7 @@
         "sharedAcrossPoses": true,
         "metallic": 0.1,
         "roughness": 0.68,
-        "colorAuthenticity": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION"
+        "colorAuthenticity": "PROVISIONAL_SIMULATOR_COLOR_UNVERIFIED"
       },
       "motion": {
         "openAngleDegrees": 110,
