@@ -37,3 +37,29 @@ B. Remove hardcoded variant from the warning session through per-profile injecti
 C. Connect owner-run Engine/APU session to Electrical as read-only derived inputs.
 D. Connect CB-kernel and pressurization with supported fault semantics, without guessing wires.
 E. Run real browser/Unity unified tests and source-provenance acceptance.
+
+## Adversarial execution evidence (GitHub Actions)
+- CI `Aircraft State Architecture V1` first run **FAILED 3/20**: inherited V7 hot-start default in COLD_DARK, zero-step revision changed, and UNKNOWN standby test affected by hot start. Production logic was fixed, not weakened tests.
+- After the fixes: **24/24 dedicated adversarial tests PASS**, Electrical V7 **47 PASS**, Electrical Loads V8 **47 PASS**, pre-existing integrated training/rule tests **40 PASS** (workflow run 40385710124).
+- Second-pass vulnerabilities discovered and corrected: owner names overlapping by namespace prefix (`elec` vs `elec.bus`), unbounded O(n) duplicate-ID Map cloning on each command, no explicit indication when capped history could not replay a complete session. Added `exportReplay()` strict completeness guard and staged IDs.
+- Read-only diagnostics for existing live Unified: `engine/runtime/unified-authority-diagnostics-v1.js`, exposed by `window.B737ISNCockpitV1.getArchitectureAudit()`; no parallel engine and no change to locked cockpit artwork.
+- Strict audit remains BLOCKED when BUS TRANSFER physical wiring is absent, when ECU snapshot is missing, when any projected annunciator disagrees with Electrical V7, or when the legacy Bridge recorded rejected inputs.
+- The legacy ISN warning session is still hardcoded to 737-400 and must not be called profile-accurate for 737-300 or 737-500.
+- Because the architecture host is new and not yet the active Unified owner, the full Work 1 **is still in progress**. Passing CI is not a substitute for a real browser/Unity end-to-end test.
+
+## Actual live Unified integration boundary
+`panel-mosaic-lab/cockpit/isn-cockpit.js` already runs `ISN1318ECUTestbenchV1`, which embeds the existing ISN pack and Electrical V7 state. Swapping in an independent new Electrical Session beside it would **introduce the exact dual-owner defect this task is meant to solve**. For this reason the new Session remains a tested, opt-in architecture candidate while the actual live Unified receives a **read-only authority diagnostic** first. A migration adapter must delegate to the existing ISN ECU, not instantiate a competing engine.
+
+## Remaining release blockers for this Work 1
+1. Authoritative unified control-state registry and exhaustive physical switch/guard/rotary wiring; missing BUS TRANSFER real cockpit event.
+2. Engine/APU ECU as upstream state owner wired into the Aircraft Session without duplicating Electrical.
+3. Source-traced CB and actual pressurization profile ownership; maintain UNKNOWN where documentation is incomplete.
+4. Variant-aware warning source; remove the hardcoded 737-400 warning configuration.
+5. Live browser/Unity visual, operator-path and profile isolation evidence, plus independent expert source review.
+
+## Quick diagnostic use in current live Unified
+From the Unified browser JavaScript console:
+```js
+window.B737ISNCockpitV1.getArchitectureAudit()
+```
+The output is a read-only diagnostic with `findings`, `checks`, and `status`; it never modifies electrical state, changes indicators, or passes operational certification.
