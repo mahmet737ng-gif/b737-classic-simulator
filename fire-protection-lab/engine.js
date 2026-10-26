@@ -21,7 +21,7 @@ function selected(s,unit){const choice=s.selectors[unit],l=s.loops[unit];if(choi
 function fault(s,unit){const choice=s.selectors[unit],l=s.loops[unit];return choice==='NORMAL'?(!l.A&&!l.B):!l[choice];}
 function sensed(s,unit,kind){
  const paths=selected(s,unit);if(paths.length===0)return false;
- return paths.every(loop=>s.sensing[unit][loop][kind]||s.engineFire[unit]||(kind==='overheat'&&s.engineOverheat[unit]));
+ return paths.every(loop=>s.sensing[unit][loop][kind]||s.engineFire[unit]||(kind==='overheat'&&(s.engineOverheat[unit]||s.sensing[unit][loop].fire)));
 }
 function evaluate(s){
  const powered=s.power.batteryBus,testFire=s.test==='OVHT_FIRE'&&powered,testFault=s.test==='FAULT_INOP'&&powered;
