@@ -211,6 +211,32 @@
  byId('isnReset').onclick=()=>{bridge.reset();
   for(const device of ['engine1','engine2','apu'])chain.obs(device,chain.get().sources[device].running);
   chain.syncPower();render();};
+ // BUS TRANSFER: drive the existing single-owner Pack from the separate
+ // approved SHAPE REVIEW. The true OH12 source socket is still UNLOCATED.
+ window.addEventListener('message',e=>{
+  const frame=byId('busTransferGuardReviewDialog')?.querySelector('iframe');
+  if(e.origin!==location.origin||!frame||e.source!==frame.contentWindow)return;
+  const type=e.data?.type;
+  if(type!=='b737:bus-transfer-preview-ready'&&type!=='b737:bus-transfer-preview-command')return;
+  const liveValue=()=>session.electricalState.config.busTransferAuto?'auto':'off';
+  const send=(fields={})=>frame.contentWindow.postMessage({
+   type:'b737:bus-transfer-preview-state',value:liveValue(),...fields
+  },location.origin);
+  if(type==='b737:bus-transfer-preview-ready'){send();return;}
+  const sequence=e.data.sequence;
+  if(!Number.isSafeInteger(sequence)||sequence<1||!['auto','off'].includes(e.data.value)){
+   send({sequence,accepted:false,reason:'Invalid preview command'});return;
+  }
+  // Do not trust a self-reported 'guard open' bit. Inspect the actual
+  // same-origin guard preview before permitting a simulated detent.
+  if(!frame.contentDocument?.querySelector('.station.opened')){
+   send({sequence,accepted:false,reason:'GUARD_MUST_BE_OPEN'});return;
+  }
+  const result=liveGateway.dispatch({id:'bus-transfer',kind:'guarded',
+   next:{value:e.data.value,guard:'open'}});
+  send({sequence,accepted:result.accepted,reason:result.reason||null});
+  render();
+ });
  window.addEventListener('message',e=>{
   if(e.origin!==location.origin||e.source!==byId('overheadFrame')?.contentWindow||e.data?.type!=='b737:cockpit-overhead')return;
   try{
