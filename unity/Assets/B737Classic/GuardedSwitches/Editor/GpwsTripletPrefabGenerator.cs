@@ -14,11 +14,11 @@ namespace B737Classic.GuardedSwitches.Editor
     public static class GpwsTripletPrefabGenerator
     {
         private const string Root = "Assets/B737Classic/GuardedSwitches";
-        private const string Generated = Root + "/GeneratedPreviews_v1";
+        private const string Generated = Root + "/GeneratedPreviews_v2";
         private const string Catalog = Root + "/Resources/GuardedSwitchBlueprints.json";
         private const string Target = Generated + "/GPWS_3_Independent_Identical_PREVIEW.prefab";
 
-        [MenuItem("B737 Classic/Guarded Switches/Generate GPWS 3-Cover PREVIEW Assembly")]
+        [MenuItem("B737 Classic/Guarded Switches/Generate independent GPWS triplet V2 PREVIEW")]
         public static void Generate()
         {
             if (AssetDatabase.LoadAssetAtPath<GameObject>(Target) != null)
