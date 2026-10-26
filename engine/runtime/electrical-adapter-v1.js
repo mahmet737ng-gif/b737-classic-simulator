@@ -9,7 +9,16 @@
   if(!Electrical?.initialState||!Electrical?.apply||!Electrical?.evaluate||!Loads?.project)throw Error('Electrical V7 and Loads V8 required');
   return Object.freeze({
    id:'electrical',owns:['electrical','electricalLoads'],dependsOn:[],
-   initialState:()=>Electrical.initialState(),
+   initialState:({scenario})=>{
+    // Electrical V7's legacy default is ENGINES RUNNING; never leak it into COLD_DARK.
+    if(!['COLD_DARK','ENGINES_RUNNING'].includes(scenario))throw Error('Unsupported electrical scenario '+scenario);
+    const s=Electrical.initialState();
+    if(scenario==='COLD_DARK'){
+     s.config={...s.config,batterySwitch:false,apuRunning:false,engine1Running:false,engine2Running:false,groundPowerAttached:false};
+     s.source={1:null,2:null};
+    }
+    return s;
+   },
    apply(state,c){
     const a=c.action;
     if(a.type==='CONTROL'){
