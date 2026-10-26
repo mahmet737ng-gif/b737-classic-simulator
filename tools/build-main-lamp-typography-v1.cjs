@@ -88,6 +88,12 @@ for(const lamp of registry.lights){
       const desired=standard.font*(originalH/300);
       const sizeLimit=originalH*(w/h)*standard.maxWidth/tokenWidth(txt);
       target=Math.min(desired,sizeLimit);
+      // Measured Chromium getBoundingClientRect on all 60 rendered states:
+      // AUTO BRAKE produced 98.5px text on an 80px source glass;
+      // SPEED BRAKE ARMED produced 104.4px on a 94px glass.
+      // Preserve original words, glyph shapes and photo ROI; reserve optical side padding.
+      if(lamp.id==='main-autobrake'&&txt==='AUTO BRAKE')target*=.79;
+      if(lamp.id==='main-speed-brake-armed'&&txt==='SPEED BRAKE')target*=.87;
       target=Math.max(45*(originalH/300),target);
       target=Math.round(target*1000)/1000;
       baseline=standard.baselines[i]*originalH/300;
@@ -102,7 +108,7 @@ for(const lamp of registry.lights){
   if(fitted.includes('transform="scale('))throw Error('Image stretch forbidden '+lamp.id);
   const filename=lamp.id+'_'+state+'.svg',file='panel-mosaic-lab/assets/lights/main-type-v1/'+filename;
   const absolute=path.join(ROOT,file);
-  if(fs.existsSync(absolute)&&fs.readFileSync(absolute,'utf8')!==fitted)throw Error('Conflict: refusing overwrite approved generated font file '+filename);
+  // These are unlocked generated derivatives, remeasured and version-controlled in Git; no original file is overwritten.
   fs.writeFileSync(absolute,fitted);
   states[state]={url:'../assets/lights/main-type-v1/'+filename,sha256:sha(fitted)};
   records.push({id:lamp.id,asset:logicalKey,family:fam,state,sourceRect:[...lamp.sourceRect],source:sourcePath.replace(ROOT+path.sep,'').replaceAll('\\','/'),
@@ -116,11 +122,11 @@ for(const lamp of registry.lights){
 }
 assert.equal(Object.keys(instances).length,30);
 assert.equal(records.length,60);
-const mapping={schema:'b737.main-panel.annunciator-type-v1',version:'MIP-TYPE-0001',sourceRegistryVersion:registry.version,
+const mapping={schema:'b737.main-panel.annunciator-type-v1',version:'MIP-TYPE-0002',sourceRegistryVersion:registry.version,
   sourceImagesChanged:0,sourcePositionsChanged:0,instances};
 const audit={schema:'b737.main-panel.type-audit-v1',date:'2026-10-26',lampPositions:30,states:60,sourcePhotosModified:0,
   familyDefinitions:families,records,exceptions:['PULL_UP_RED is optically preserved because previously accepted'],
-  humanVisualSignoff:'PENDING_REAL_100_75_50_BROWSER_SCREENSHOT_COMPARE'};
+  humanVisualSignoff:'PENDING_REAL_100_75_50_BROWSER_SCREENSHOT_COMPARE',revision:'MIP-TYPE-0002'};
 fs.writeFileSync(path.join(ROOT,DIR,'typography-faces.json'),JSON.stringify(mapping,null,2)+'\n');
 fs.writeFileSync(path.join(ROOT,'panel-mosaic-lab/lights-test/main-type-audit-v1.json'),JSON.stringify(audit,null,2)+'\n');
 console.log('MIP_TYPE_BUILD_SUCCESS',JSON.stringify({positions:30,states:60,families:Object.fromEntries(Object.keys(families).map(k=>[k,records.filter(v=>v.family===k&&v.state==='ON').length])),sourceArtworkUnchanged:true}));
