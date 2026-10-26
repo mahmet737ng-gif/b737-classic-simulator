@@ -18,7 +18,7 @@ Manual test bars changed pointer angles rather than actual displayed amperage/vo
 | OH12 A.C. AMPS 1 | 21 | 266.515, 296.991 | 2.790 px | 0 to 200 A; 10 A/mark | 2.617 px |
 | OH12 A.C. AMPS 2 | 21 | 753.481, 297.342 | 1.950 px | 0 to 200 A; 10 A/mark | 4.060 px |
 
-**Total real marked native-pixel tick stroke candidates reidentified: 80/80.** The two panels' original bitmap files and original four shared pointer SVG paths were not modified.
+**Total real marked native-pixel tick stroke candidates reidentified: 80/80.** The two panels' original bitmap files and original two shared pointer SVG files were not modified.
 
 ## Unified behavior and guardrails
 - Four **real numeric manual QA controls**: `DC AMPS`, `DC VOLTS`, `A.C. AMPS 1`, `A.C. AMPS 2`. Test bar value is now physical scale number A/V, and the pointer maps to that number's specific registered angular ray.
