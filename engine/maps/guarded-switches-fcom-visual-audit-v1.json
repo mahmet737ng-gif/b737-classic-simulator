@@ -1,0 +1,866 @@
+{
+  "schema": "b737-classic/guarded-control-fcom-visual-audit/v1",
+  "version": "1.0.0",
+  "auditDate": "2026-10-26",
+  "phase1": "SOURCE_DATA_EXTRACTED_FOR_CURRENT_AND_NEWLY_IDENTIFIED_COCKPIT_GUARDS",
+  "phase2": "PHOTO_ASSET_TRIAGE_COMPLETED_HARDWARE_CERTIFICATION_OPEN",
+  "manual": "Sepehran Boeing 737 Classic FCOM D6-27370-300/400/500-SHI",
+  "documentName": "SEPEHRAN AIRLINES 737CL FCOM_241021_135227.pdf",
+  "sourceAvailability": "private ChatGPT Library; do not publish original manual or copied page images",
+  "manualScope": "737-300/-400/-500; effectivity notes override generic family assumptions",
+  "sourcePriority": [
+    "Sepehran Classic FCOM exact folio and effectivity",
+    "User-supplied variant-specific real-aircraft photograph",
+    "User-supplied approved panel images (for illustrated slot only)",
+    "Third-party OEM/classic cockpit photos when identity established",
+    "NG photos and hobby-simulator images: resemblance references only, NEVER confirm 737 Classic physical hardware"
+  ],
+  "evidenceRules": {
+    "fcomCannotProve": [
+      "actual hinge side",
+      "actual external color",
+      "actual millimetre dimensions",
+      "cover shape and 3D swept volume",
+      "mechanical lever movement driven by guard closure"
+    ],
+    "simulatorInferences": [
+      "guard close force to protected state",
+      "generator NORMAL / DISCONNECT stable detents"
+    ],
+    "noHallucinatedDimensions": true,
+    "markedApOH11Geometry": "OWNER_SCREENSHOT_APPROXIMATE_NOT_MANUFACTURER_DIMENSIONS"
+  },
+  "counts": {
+    "inCockpitFcomDocumented": 17,
+    "currentlyMounted": 12,
+    "notInstalled": 5,
+    "hardwareFullyVerified": 0,
+    "hingeConflicts": 6
+  },
+  "controls": [
+    {
+      "id": "flight-control-a",
+      "panel": "OH07",
+      "documentedStates": [
+        "STBY RUD",
+        "OFF",
+        "ON"
+      ],
+      "protectedState": "ON",
+      "numberOfPositionsConfirmed": 3,
+      "fcom": {
+        "folio": "9.10.1",
+        "pdfPage": 1246,
+        "confirmation": "FCOM_TEXT_CONFIRMED",
+        "notes": null
+      },
+      "function": "Select standby rudder/isolated/normal hydraulic feed",
+      "effectivity": "737CL FCOM baseline, verify installed equipment",
+      "implementation": {
+        "status": "INSTALLED_REQUIRES_AUDIT",
+        "overlayRegistry": "panel-mosaic-lab/interactive-overhead/rotary-guards.json",
+        "overlayId": "flight-control-a",
+        "codeStates": [
+          "stby",
+          "off",
+          "on"
+        ]
+      },
+      "visual": {
+        "housingType": "BLACK VERTICAL; SPECIFIC PIVOT UNVERIFIED",
+        "colorInCurrentMockup": "black",
+        "colorAuthenticity": "UNVERIFIED_CLASSIC_HARDWARE",
+        "hingeInLiveArtwork": "bottom",
+        "claimedHingeInSecondRegistry": "top",
+        "actualHinge": "UNVERIFIED_HARDWARE",
+        "hingeEvidence": "NONE_FOR_SPECIFIC_737CL_VARIANT",
+        "auditDisposition": "MISMATCH_LIVE_SPRITE_VS_SECOND_REGISTRY",
+        "material": "NOT_MEASURED",
+        "dimensionsMm": null,
+        "mountingSource": null
+      },
+      "risk": "HIGH",
+      "operatorNotes": [
+        "Top hinge recorded in flight-controls registry is a claim, not FCOM physical evidence."
+      ],
+      "requiredNextEvidence": [
+        "Classic airframe-specific close-up with open and closed guard, lateral hinge view and native panel socket dimensions"
+      ]
+    },
+    {
+      "id": "flight-control-b",
+      "panel": "OH07",
+      "documentedStates": [
+        "STBY RUD",
+        "OFF",
+        "ON"
+      ],
+      "protectedState": "ON",
+      "numberOfPositionsConfirmed": 3,
+      "fcom": {
+        "folio": "9.10.1",
+        "pdfPage": 1246,
+        "confirmation": "FCOM_TEXT_CONFIRMED",
+        "notes": null
+      },
+      "function": "B system flight-control hydraulic feed",
+      "effectivity": "737CL FCOM baseline, verify installed equipment",
+      "implementation": {
+        "status": "INSTALLED_REQUIRES_AUDIT",
+        "overlayRegistry": "panel-mosaic-lab/interactive-overhead/rotary-guards.json",
+        "overlayId": "flight-control-b",
+        "codeStates": [
+          "stby",
+          "off",
+          "on"
+        ]
+      },
+      "visual": {
+        "housingType": "BLACK VERTICAL; SPECIFIC PIVOT UNVERIFIED",
+        "colorInCurrentMockup": "black",
+        "colorAuthenticity": "UNVERIFIED_CLASSIC_HARDWARE",
+        "hingeInLiveArtwork": "bottom",
+        "claimedHingeInSecondRegistry": "top",
+        "actualHinge": "UNVERIFIED_HARDWARE",
+        "hingeEvidence": "NONE_FOR_SPECIFIC_737CL_VARIANT",
+        "auditDisposition": "MISMATCH_LIVE_SPRITE_VS_SECOND_REGISTRY",
+        "material": "NOT_MEASURED",
+        "dimensionsMm": null,
+        "mountingSource": null
+      },
+      "risk": "HIGH",
+      "operatorNotes": [
+        "Same hinge conflict as flight control A."
+      ],
+      "requiredNextEvidence": [
+        "Classic airframe-specific close-up with open and closed guard, lateral hinge view and native panel socket dimensions"
+      ]
+    },
+    {
+      "id": "spoiler-a",
+      "panel": "OH07",
+      "documentedStates": [
+        "OFF",
+        "ON"
+      ],
+      "protectedState": "ON",
+      "numberOfPositionsConfirmed": 2,
+      "fcom": {
+        "folio": "9.10.2",
+        "pdfPage": 1247,
+        "confirmation": "FCOM_TEXT_CONFIRMED",
+        "notes": null
+      },
+      "function": "Maintenance isolation of spoiler A hydraulic shutoff valve",
+      "effectivity": "737CL FCOM baseline, verify installed equipment",
+      "implementation": {
+        "status": "INSTALLED_REQUIRES_AUDIT",
+        "overlayRegistry": "panel-mosaic-lab/interactive-overhead/rotary-guards.json",
+        "overlayId": "spoiler-a",
+        "codeStates": [
+          "off",
+          "on"
+        ]
+      },
+      "visual": {
+        "housingType": "BLACK VERTICAL; SPECIFIC PIVOT UNVERIFIED",
+        "colorInCurrentMockup": "black",
+        "colorAuthenticity": "UNVERIFIED_CLASSIC_HARDWARE",
+        "hingeInLiveArtwork": "bottom",
+        "claimedHingeInSecondRegistry": "top",
+        "actualHinge": "UNVERIFIED_HARDWARE",
+        "hingeEvidence": "NONE_FOR_SPECIFIC_737CL_VARIANT",
+        "auditDisposition": "MISMATCH_LIVE_SPRITE_VS_SECOND_REGISTRY",
+        "material": "NOT_MEASURED",
+        "dimensionsMm": null,
+        "mountingSource": null
+      },
+      "risk": "HIGH",
+      "operatorNotes": [],
+      "requiredNextEvidence": [
+        "Classic airframe-specific close-up with open and closed guard, lateral hinge view and native panel socket dimensions"
+      ]
+    },
+    {
+      "id": "spoiler-b",
+      "panel": "OH07",
+      "documentedStates": [
+        "OFF",
+        "ON"
+      ],
+      "protectedState": "ON",
+      "numberOfPositionsConfirmed": 2,
+      "fcom": {
+        "folio": "9.10.2",
+        "pdfPage": 1247,
+        "confirmation": "FCOM_TEXT_CONFIRMED",
+        "notes": null
+      },
+      "function": "Maintenance isolation of spoiler B hydraulic shutoff valve",
+      "effectivity": "737CL FCOM baseline, verify installed equipment",
+      "implementation": {
+        "status": "INSTALLED_REQUIRES_AUDIT",
+        "overlayRegistry": "panel-mosaic-lab/interactive-overhead/rotary-guards.json",
+        "overlayId": "spoiler-b",
+        "codeStates": [
+          "off",
+          "on"
+        ]
+      },
+      "visual": {
+        "housingType": "BLACK VERTICAL; SPECIFIC PIVOT UNVERIFIED",
+        "colorInCurrentMockup": "black",
+        "colorAuthenticity": "UNVERIFIED_CLASSIC_HARDWARE",
+        "hingeInLiveArtwork": "bottom",
+        "claimedHingeInSecondRegistry": "top",
+        "actualHinge": "UNVERIFIED_HARDWARE",
+        "hingeEvidence": "NONE_FOR_SPECIFIC_737CL_VARIANT",
+        "auditDisposition": "MISMATCH_LIVE_SPRITE_VS_SECOND_REGISTRY",
+        "material": "NOT_MEASURED",
+        "dimensionsMm": null,
+        "mountingSource": null
+      },
+      "risk": "HIGH",
+      "operatorNotes": [],
+      "requiredNextEvidence": [
+        "Classic airframe-specific close-up with open and closed guard, lateral hinge view and native panel socket dimensions"
+      ]
+    },
+    {
+      "id": "alternate-flaps-master",
+      "panel": "OH07",
+      "documentedStates": [
+        "OFF",
+        "ARM"
+      ],
+      "protectedState": "OFF",
+      "numberOfPositionsConfirmed": 2,
+      "fcom": {
+        "folio": "9.10.2–9.10.3",
+        "pdfPage": 1247,
+        "confirmation": "FCOM_TEXT_CONFIRMED",
+        "notes": null
+      },
+      "function": "ARM activates standby pump and arms alternate flaps position switch",
+      "effectivity": "737CL FCOM baseline, verify installed equipment",
+      "implementation": {
+        "status": "INSTALLED_REQUIRES_AUDIT",
+        "overlayRegistry": "panel-mosaic-lab/interactive-overhead/rotary-guards.json",
+        "overlayId": "alternate-flaps-master",
+        "codeStates": [
+          "off",
+          "arm"
+        ]
+      },
+      "visual": {
+        "housingType": "RED VERTICAL; SPECIFIC PIVOT UNVERIFIED",
+        "colorInCurrentMockup": "red",
+        "colorAuthenticity": "UNVERIFIED_CLASSIC_HARDWARE",
+        "hingeInLiveArtwork": "bottom",
+        "claimedHingeInSecondRegistry": "top",
+        "actualHinge": "UNVERIFIED_HARDWARE",
+        "hingeEvidence": "NONE_FOR_SPECIFIC_737CL_VARIANT",
+        "auditDisposition": "MISMATCH_LIVE_SPRITE_VS_SECOND_REGISTRY",
+        "material": "NOT_MEASURED",
+        "dimensionsMm": null,
+        "mountingSource": null
+      },
+      "risk": "HIGH",
+      "operatorNotes": [],
+      "requiredNextEvidence": [
+        "Classic airframe-specific close-up with open and closed guard, lateral hinge view and native panel socket dimensions"
+      ]
+    },
+    {
+      "id": "battery-master",
+      "panel": "OH10",
+      "documentedStates": [
+        "OFF",
+        "ON"
+      ],
+      "protectedState": "ON",
+      "numberOfPositionsConfirmed": 2,
+      "fcom": {
+        "folio": "6.10.5",
+        "pdfPage": 1144,
+        "confirmation": "FCOM_TEXT_CONFIRMED",
+        "notes": null
+      },
+      "function": "Energizes switched hot battery bus; normal guarded ON",
+      "effectivity": "737CL FCOM baseline, verify installed equipment",
+      "implementation": {
+        "status": "INSTALLED_REQUIRES_AUDIT",
+        "overlayRegistry": "panel-mosaic-lab/interactive-overhead/rotary-guards.json",
+        "overlayId": "battery-master",
+        "codeStates": [
+          "off",
+          "on"
+        ]
+      },
+      "visual": {
+        "housingType": "BLACK VERTICAL; ANGLE/FOOTPRINT UNKNOWN",
+        "colorInCurrentMockup": "black",
+        "colorAuthenticity": "UNVERIFIED_CLASSIC_HARDWARE",
+        "hingeInLiveArtwork": "bottom",
+        "claimedHingeInSecondRegistry": null,
+        "actualHinge": "UNVERIFIED_HARDWARE",
+        "hingeEvidence": "NONE_FOR_SPECIFIC_737CL_VARIANT",
+        "auditDisposition": "NEEDS_PHOTO_HINGE_FIT_VALIDATION",
+        "material": "NOT_MEASURED",
+        "dimensionsMm": null,
+        "mountingSource": null
+      },
+      "risk": "HIGH",
+      "operatorNotes": [],
+      "requiredNextEvidence": [
+        "Classic airframe-specific close-up with open and closed guard, lateral hinge view and native panel socket dimensions"
+      ]
+    },
+    {
+      "id": "generator-disconnect-1",
+      "panel": "OH11",
+      "documentedStates": null,
+      "protectedState": null,
+      "numberOfPositionsConfirmed": null,
+      "fcom": {
+        "folio": "6.10.6",
+        "pdfPage": 1145,
+        "confirmation": "FCOM_ACTION_ONLY",
+        "notes": "FCOM documents guarded/safetied DISCONNECT action, not two stable lever detents; NORMAL / DISCONNECT in runtime are simulation logical states."
+      },
+      "function": "Disconnect generator drive; cannot re-engage in flight",
+      "effectivity": "737CL FCOM baseline, verify installed equipment",
+      "implementation": {
+        "status": "INSTALLED_REQUIRES_AUDIT",
+        "overlayRegistry": "panel-mosaic-lab/interactive-overhead/rotary-guards.json",
+        "overlayId": "generator-disconnect-1",
+        "codeStates": [
+          "normal",
+          "disconnect"
+        ]
+      },
+      "visual": {
+        "housingType": "RED LONG VERTICAL CAP OVER RECESSED SLOT",
+        "colorInCurrentMockup": "red",
+        "colorAuthenticity": "UNVERIFIED_CLASSIC_HARDWARE",
+        "hingeInLiveArtwork": "bottom",
+        "claimedHingeInSecondRegistry": null,
+        "actualHinge": "UNVERIFIED_HARDWARE",
+        "hingeEvidence": "NONE_FOR_SPECIFIC_737CL_VARIANT",
+        "auditDisposition": "SOURCE_APERTURE_MAPPED_NOT_HARDWARE_APPROVED",
+        "material": "NOT_MEASURED",
+        "dimensionsMm": null,
+        "mountingSource": [
+          154,
+          334,
+          200,
+          418
+        ]
+      },
+      "risk": "CRITICAL",
+      "operatorNotes": [
+        "Never assume NORMAL and DISCONNECT are both mechanically stable detents from FCOM wording.",
+        "Closed guard must not reconnect disconnected generator drive."
+      ],
+      "requiredNextEvidence": [
+        "Classic airframe-specific close-up with open and closed guard, lateral hinge view and native panel socket dimensions"
+      ]
+    },
+    {
+      "id": "generator-disconnect-2",
+      "panel": "OH11",
+      "documentedStates": null,
+      "protectedState": null,
+      "numberOfPositionsConfirmed": null,
+      "fcom": {
+        "folio": "6.10.6",
+        "pdfPage": 1145,
+        "confirmation": "FCOM_ACTION_ONLY",
+        "notes": "FCOM documents guarded/safetied DISCONNECT action, not two stable lever detents; NORMAL / DISCONNECT in runtime are simulation logical states."
+      },
+      "function": "Disconnect generator drive; cannot re-engage in flight",
+      "effectivity": "737CL FCOM baseline, verify installed equipment",
+      "implementation": {
+        "status": "INSTALLED_REQUIRES_AUDIT",
+        "overlayRegistry": "panel-mosaic-lab/interactive-overhead/rotary-guards.json",
+        "overlayId": "generator-disconnect-2",
+        "codeStates": [
+          "normal",
+          "disconnect"
+        ]
+      },
+      "visual": {
+        "housingType": "RED LONG VERTICAL CAP OVER RECESSED SLOT",
+        "colorInCurrentMockup": "red",
+        "colorAuthenticity": "UNVERIFIED_CLASSIC_HARDWARE",
+        "hingeInLiveArtwork": "bottom",
+        "claimedHingeInSecondRegistry": null,
+        "actualHinge": "UNVERIFIED_HARDWARE",
+        "hingeEvidence": "NONE_FOR_SPECIFIC_737CL_VARIANT",
+        "auditDisposition": "SOURCE_APERTURE_MAPPED_NOT_HARDWARE_APPROVED",
+        "material": "NOT_MEASURED",
+        "dimensionsMm": null,
+        "mountingSource": [
+          847,
+          334,
+          200,
+          418
+        ]
+      },
+      "risk": "CRITICAL",
+      "operatorNotes": [
+        "Never assume NORMAL and DISCONNECT are both mechanically stable detents from FCOM wording.",
+        "Closed guard must not reconnect disconnected generator drive."
+      ],
+      "requiredNextEvidence": [
+        "Classic airframe-specific close-up with open and closed guard, lateral hinge view and native panel socket dimensions"
+      ]
+    },
+    {
+      "id": "standby-power",
+      "panel": "OH11",
+      "documentedStates": [
+        "BAT",
+        "OFF",
+        "AUTO"
+      ],
+      "protectedState": "AUTO",
+      "numberOfPositionsConfirmed": 3,
+      "fcom": {
+        "folio": "6.10.7",
+        "pdfPage": 1146,
+        "confirmation": "FCOM_TEXT_CONFIRMED",
+        "notes": null
+      },
+      "function": "AC/DC standby source selection; OFF centered; AUTO protected",
+      "effectivity": "737CL FCOM baseline, verify installed equipment",
+      "implementation": {
+        "status": "INSTALLED_REQUIRES_AUDIT",
+        "overlayRegistry": "panel-mosaic-lab/interactive-overhead/rotary-guards.json",
+        "overlayId": "standby-power",
+        "codeStates": [
+          "bat",
+          "off",
+          "auto"
+        ]
+      },
+      "visual": {
+        "housingType": "WIDE HORIZONTAL GUARD OVER THREE-DETENT TOGGLE",
+        "colorInCurrentMockup": "black",
+        "colorAuthenticity": "UNVERIFIED_CLASSIC_HARDWARE",
+        "hingeInLiveArtwork": "bottom (legacy art, no longer rotated)",
+        "claimedHingeInSecondRegistry": null,
+        "actualHinge": "UNVERIFIED_HARDWARE",
+        "hingeEvidence": "NONE_FOR_SPECIFIC_737CL_VARIANT",
+        "auditDisposition": "WIDE_HOUSING_MAPPED_MECHANICS_UNVERIFIED",
+        "material": "NOT_MEASURED",
+        "dimensionsMm": null,
+        "mountingSource": [
+          391,
+          232,
+          421,
+          184
+        ]
+      },
+      "risk": "HIGH",
+      "operatorNotes": [
+        "Wide artwork must be independently made, not 90° rotated portrait art.",
+        "BAT position is explicitly unguarded per FCOM; AUTO guarded."
+      ],
+      "requiredNextEvidence": [
+        "Classic airframe-specific close-up with open and closed guard, lateral hinge view and native panel socket dimensions"
+      ]
+    },
+    {
+      "id": "emergency-exit-lights",
+      "panel": "OH14",
+      "documentedStates": [
+        "OFF",
+        "ARMED",
+        "ON"
+      ],
+      "protectedState": "ARMED",
+      "numberOfPositionsConfirmed": 3,
+      "fcom": {
+        "folio": "1.30.9; 1.40.5",
+        "pdfPage": 922,
+        "confirmation": "FCOM_TEXT_CONFIRMED",
+        "notes": null
+      },
+      "function": "ARMED supplies automatic cabin and exterior emergency lighting on failure",
+      "effectivity": "737CL FCOM baseline, verify installed equipment",
+      "implementation": {
+        "status": "INSTALLED_REQUIRES_AUDIT",
+        "overlayRegistry": "panel-mosaic-lab/interactive-overhead/rotary-guards.json",
+        "overlayId": "emergency-exit-lights",
+        "codeStates": [
+          "off",
+          "armed",
+          "on"
+        ]
+      },
+      "visual": {
+        "housingType": "BLACK VERTICAL; SPECIFIC PIVOT UNVERIFIED",
+        "colorInCurrentMockup": "black",
+        "colorAuthenticity": "UNVERIFIED_CLASSIC_HARDWARE",
+        "hingeInLiveArtwork": "bottom",
+        "claimedHingeInSecondRegistry": "top",
+        "actualHinge": "UNVERIFIED_HARDWARE",
+        "hingeEvidence": "NONE_FOR_SPECIFIC_737CL_VARIANT",
+        "auditDisposition": "MISMATCH_LIVE_SPRITE_VS_SECOND_REGISTRY",
+        "material": "NOT_MEASURED",
+        "dimensionsMm": null,
+        "mountingSource": null
+      },
+      "risk": "HIGH",
+      "operatorNotes": [],
+      "requiredNextEvidence": [
+        "Classic airframe-specific close-up with open and closed guard, lateral hinge view and native panel socket dimensions"
+      ]
+    },
+    {
+      "id": "passenger-oxygen",
+      "panel": "UPPER",
+      "documentedStates": [
+        "NORMAL",
+        "ON"
+      ],
+      "protectedState": "NORMAL",
+      "numberOfPositionsConfirmed": 2,
+      "fcom": {
+        "folio": "1.30.20–1.30.21; NP.21.3",
+        "pdfPage": 933,
+        "confirmation": "FCOM_TEXT_CONFIRMED",
+        "notes": "NORMAL/ON in controls; Guard closed in NP.21.3. Guard normally protecting NORMAL is supported by procedures; hinge not specified."
+      },
+      "function": "Manual oxygen mask deployment if automatic trigger fails",
+      "effectivity": "737CL FCOM baseline, verify installed equipment",
+      "implementation": {
+        "status": "INSTALLED_REQUIRES_AUDIT",
+        "overlayRegistry": "panel-mosaic-lab/interactive-overhead/lights-controls.json",
+        "overlayId": "passenger-oxygen",
+        "codeStates": [
+          "normal",
+          "on"
+        ]
+      },
+      "visual": {
+        "housingType": "RED GUARD; SHAPE UNVERIFIED",
+        "colorInCurrentMockup": "red",
+        "colorAuthenticity": "UNVERIFIED_CLASSIC_HARDWARE",
+        "hingeInLiveArtwork": "bottom",
+        "claimedHingeInSecondRegistry": null,
+        "actualHinge": "UNVERIFIED_HARDWARE",
+        "hingeEvidence": "NONE_FOR_SPECIFIC_737CL_VARIANT",
+        "auditDisposition": "HARDWARE_MECHANICS_UNVERIFIED",
+        "material": "NOT_MEASURED",
+        "dimensionsMm": null,
+        "mountingSource": null
+      },
+      "risk": "CRITICAL",
+      "operatorNotes": [
+        "Activation releases passenger masks; do not reset deployment simply by closing the guard."
+      ],
+      "requiredNextEvidence": [
+        "Classic airframe-specific close-up with open and closed guard, lateral hinge view and native panel socket dimensions"
+      ]
+    },
+    {
+      "id": "flight-recorder-test",
+      "panel": "UPPER",
+      "documentedStates": [
+        "TEST",
+        "NORMAL"
+      ],
+      "protectedState": "NORMAL",
+      "numberOfPositionsConfirmed": 2,
+      "fcom": {
+        "folio": "10.10.20",
+        "pdfPage": 1305,
+        "confirmation": "FCOM_TEXT_CONFIRMED",
+        "notes": null
+      },
+      "function": "TEST bypasses air/ground and engine oil pressure switches for ground test",
+      "effectivity": "737CL FCOM baseline, verify installed equipment",
+      "implementation": {
+        "status": "INSTALLED_REQUIRES_AUDIT",
+        "overlayRegistry": "panel-mosaic-lab/interactive-overhead/lights-controls.json",
+        "overlayId": "flight-recorder-test",
+        "codeStates": [
+          "test",
+          "normal"
+        ]
+      },
+      "visual": {
+        "housingType": "WIDE SHORT LEFT-HINGED GUARD",
+        "colorInCurrentMockup": "black",
+        "colorAuthenticity": "UNVERIFIED_CLASSIC_HARDWARE",
+        "hingeInLiveArtwork": "custom left",
+        "claimedHingeInSecondRegistry": null,
+        "actualHinge": "LEFT_VERTICAL_AXIS_OPEN_FREE_EDGE_TOWARD_LEFT",
+        "hingeEvidence": "OWNER_EXPLICIT_REFERENCE_2026_10_26",
+        "auditDisposition": "OWNER_HINGE_DIRECTION_SPECIFIED_STILL_REQUIRES_PHOTO_COMPARE",
+        "material": "NOT_MEASURED",
+        "dimensionsMm": null,
+        "mountingSource": [
+          1365,
+          438,
+          113,
+          34
+        ]
+      },
+      "risk": "HIGH",
+      "operatorNotes": [
+        "Unlike generic guards, free/right edge swings to left; must not rise vertically."
+      ],
+      "requiredNextEvidence": [
+        "Classic airframe-specific close-up with open and closed guard, lateral hinge view and native panel socket dimensions"
+      ]
+    },
+    {
+      "id": "bus-transfer",
+      "panel": "OH12",
+      "documentedStates": [
+        "OFF",
+        "AUTO"
+      ],
+      "protectedState": "AUTO",
+      "numberOfPositionsConfirmed": 2,
+      "fcom": {
+        "folio": "6.10.9",
+        "pdfPage": 1148,
+        "confirmation": "FCOM_TEXT_CONFIRMED",
+        "notes": null
+      },
+      "function": "Automatic AC transfer bus switching and DC TR parallel operation",
+      "effectivity": "737CL FCOM baseline, verify installed equipment",
+      "implementation": {
+        "status": "MISSING_FROM_GUARDED_REGISTRY",
+        "overlayRegistry": null,
+        "overlayId": null,
+        "codeStates": null
+      },
+      "visual": {
+        "housingType": "NOT_RECONSTRUCTED",
+        "colorInCurrentMockup": null,
+        "colorAuthenticity": "UNVERIFIED_CLASSIC_HARDWARE",
+        "hingeInLiveArtwork": null,
+        "claimedHingeInSecondRegistry": null,
+        "actualHinge": "UNVERIFIED_HARDWARE",
+        "hingeEvidence": "NONE_FOR_SPECIFIC_737CL_VARIANT",
+        "auditDisposition": "NOT_MOUNTED",
+        "material": "NOT_MEASURED",
+        "dimensionsMm": null,
+        "mountingSource": null
+      },
+      "risk": "CRITICAL",
+      "operatorNotes": [],
+      "requiredNextEvidence": [
+        "Classic airframe-specific close-up with open and closed guard, lateral hinge view and native panel socket dimensions"
+      ]
+    },
+    {
+      "id": "antiskid",
+      "panel": "CENTER_INSTRUMENT",
+      "documentedStates": [
+        "OFF",
+        "ON"
+      ],
+      "protectedState": "ON",
+      "numberOfPositionsConfirmed": 2,
+      "fcom": {
+        "folio": "14.10.5",
+        "pdfPage": 1860,
+        "confirmation": "FCOM_TEXT_CONFIRMED",
+        "notes": null
+      },
+      "function": "OFF disables antiskid and can trigger ANTISKID INOP / AUTO BRAKE DISARM",
+      "effectivity": "737CL FCOM baseline, verify installed equipment",
+      "implementation": {
+        "status": "MISSING_FROM_GUARDED_REGISTRY",
+        "overlayRegistry": null,
+        "overlayId": null,
+        "codeStates": null
+      },
+      "visual": {
+        "housingType": "NOT_RECONSTRUCTED",
+        "colorInCurrentMockup": null,
+        "colorAuthenticity": "UNVERIFIED_CLASSIC_HARDWARE",
+        "hingeInLiveArtwork": null,
+        "claimedHingeInSecondRegistry": null,
+        "actualHinge": "UNVERIFIED_HARDWARE",
+        "hingeEvidence": "NONE_FOR_SPECIFIC_737CL_VARIANT",
+        "auditDisposition": "NOT_MOUNTED",
+        "material": "NOT_MEASURED",
+        "dimensionsMm": null,
+        "mountingSource": null
+      },
+      "risk": "CRITICAL",
+      "operatorNotes": [],
+      "requiredNextEvidence": [
+        "Classic airframe-specific close-up with open and closed guard, lateral hinge view and native panel socket dimensions"
+      ]
+    },
+    {
+      "id": "gpws-flap-inhibit",
+      "panel": "GROUND_PROXIMITY_PANEL",
+      "documentedStates": [
+        "FLAP INHIBIT",
+        "NORMAL"
+      ],
+      "protectedState": "NORMAL",
+      "numberOfPositionsConfirmed": 2,
+      "fcom": {
+        "folio": "15.10.10",
+        "pdfPage": null,
+        "confirmation": "FCOM_TEXT_CONFIRMED",
+        "notes": null
+      },
+      "function": "Suppresses certain GPWS flap alerts when inhibit selected",
+      "effectivity": "737CL FCOM baseline, verify installed equipment",
+      "implementation": {
+        "status": "MISSING_FROM_GUARDED_REGISTRY",
+        "overlayRegistry": null,
+        "overlayId": null,
+        "codeStates": null
+      },
+      "visual": {
+        "housingType": "NOT_RECONSTRUCTED",
+        "colorInCurrentMockup": null,
+        "colorAuthenticity": "UNVERIFIED_CLASSIC_HARDWARE",
+        "hingeInLiveArtwork": null,
+        "claimedHingeInSecondRegistry": null,
+        "actualHinge": "UNVERIFIED_HARDWARE",
+        "hingeEvidence": "NONE_FOR_SPECIFIC_737CL_VARIANT",
+        "auditDisposition": "NOT_MOUNTED",
+        "material": "NOT_MEASURED",
+        "dimensionsMm": null,
+        "mountingSource": null
+      },
+      "risk": "HIGH",
+      "operatorNotes": [],
+      "requiredNextEvidence": [
+        "Classic airframe-specific close-up with open and closed guard, lateral hinge view and native panel socket dimensions"
+      ]
+    },
+    {
+      "id": "gpws-gear-inhibit",
+      "panel": "GROUND_PROXIMITY_PANEL",
+      "documentedStates": [
+        "GEAR INHIBIT",
+        "NORMAL"
+      ],
+      "protectedState": "NORMAL",
+      "numberOfPositionsConfirmed": 2,
+      "fcom": {
+        "folio": "15.10.10",
+        "pdfPage": null,
+        "confirmation": "FCOM_TEXT_CONFIRMED",
+        "notes": null
+      },
+      "function": "Suppresses certain GPWS gear alerts when inhibit selected",
+      "effectivity": "737CL FCOM baseline, verify installed equipment",
+      "implementation": {
+        "status": "MISSING_FROM_GUARDED_REGISTRY",
+        "overlayRegistry": null,
+        "overlayId": null,
+        "codeStates": null
+      },
+      "visual": {
+        "housingType": "NOT_RECONSTRUCTED",
+        "colorInCurrentMockup": null,
+        "colorAuthenticity": "UNVERIFIED_CLASSIC_HARDWARE",
+        "hingeInLiveArtwork": null,
+        "claimedHingeInSecondRegistry": null,
+        "actualHinge": "UNVERIFIED_HARDWARE",
+        "hingeEvidence": "NONE_FOR_SPECIFIC_737CL_VARIANT",
+        "auditDisposition": "NOT_MOUNTED",
+        "material": "NOT_MEASURED",
+        "dimensionsMm": null,
+        "mountingSource": null
+      },
+      "risk": "HIGH",
+      "operatorNotes": [],
+      "requiredNextEvidence": [
+        "Classic airframe-specific close-up with open and closed guard, lateral hinge view and native panel socket dimensions"
+      ]
+    },
+    {
+      "id": "gpws-terrain-inhibit",
+      "panel": "GROUND_PROXIMITY_PANEL",
+      "documentedStates": [
+        "TERR INHIBIT",
+        "NORMAL"
+      ],
+      "protectedState": "NORMAL",
+      "numberOfPositionsConfirmed": 2,
+      "fcom": {
+        "folio": "15.10.10",
+        "pdfPage": null,
+        "confirmation": "FCOM_TEXT_CONFIRMED",
+        "notes": null
+      },
+      "function": "Disables optional enhanced terrain alerts only for relevant installed equipment",
+      "effectivity": "Optional GPWS terrain configurations FSA/FSE/FSK/FSL/FST/FSV/FSG/FSB or FSF/FSQ/FSI/FSU per FCOM 15.10.10; do not install unconditionally",
+      "implementation": {
+        "status": "MISSING_FROM_GUARDED_REGISTRY",
+        "overlayRegistry": null,
+        "overlayId": null,
+        "codeStates": null
+      },
+      "visual": {
+        "housingType": "NOT_RECONSTRUCTED",
+        "colorInCurrentMockup": null,
+        "colorAuthenticity": "UNVERIFIED_CLASSIC_HARDWARE",
+        "hingeInLiveArtwork": null,
+        "claimedHingeInSecondRegistry": null,
+        "actualHinge": "UNVERIFIED_HARDWARE",
+        "hingeEvidence": "NONE_FOR_SPECIFIC_737CL_VARIANT",
+        "auditDisposition": "NOT_MOUNTED",
+        "material": "NOT_MEASURED",
+        "dimensionsMm": null,
+        "mountingSource": null
+      },
+      "risk": "HIGH",
+      "operatorNotes": [],
+      "requiredNextEvidence": [
+        "Classic airframe-specific close-up with open and closed guard, lateral hinge view and native panel socket dimensions"
+      ]
+    }
+  ],
+  "excludedCabinControl": {
+    "id": "aft-attendant-emergency-exit-lights",
+    "location": "AFT_FLIGHT_ATTENDANT_PANEL_OUTSIDE_COCKPIT_SCOPE",
+    "states": [
+      "NORM",
+      "ON"
+    ],
+    "color": "red",
+    "guarded": true,
+    "source": {
+      "folio": "1.30.10",
+      "pdfPage": 923
+    },
+    "reason": "Not on flight-deck cockpit Unified; separate cabin systems future scope"
+  },
+  "modelRiskFlags": [
+    "Missing BUS TRANSFER, ANTISKID, GPWS FLAP/GEAR/TERRAIN inhibits from live guarded registry",
+    "Existing six flight-control/exit top-vs-bottom internal hinge conflicts; true hinge still unproven",
+    "GEN DRIVE code states conflate disconnect action with confirmed 2-detent mechanics",
+    "Passenger oxygen discharge must latch independent of graphics",
+    "FCOM folios do not specify material, exact size, hinge or appearance"
+  ],
+  "phase3Input": "For each control, obtain variant-matched real hardware photo/open-closed and measure native socket; no pixel-perfect or 0% error claims until verified.",
+  "sourcesAdditional": [
+    {
+      "role": "photographic resemblance only",
+      "url": "https://www.flaps2approach.com/overhead-panels-oem",
+      "variant": "OEM simulator; do not treat as Classic aircraft type certificate"
+    },
+    {
+      "role": "mismatched NG comparison EXCLUDED from classic certification",
+      "url": "https://www.cpflight.com/en/cockpit-737ng.php",
+      "variant": "737NG"
+    }
+  ]
+}
