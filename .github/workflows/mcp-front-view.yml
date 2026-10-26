@@ -1,0 +1,47 @@
+name: B737 MCP front-view switch orientation QA
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - tools/test-mcp-front-view.cjs
+      - .github/workflows/mcp-front-view.yml
+      - panel-mosaic-lab/cockpit/mcp-front-reference-v1.css
+      - panel-mosaic-lab/cockpit/mcp-visual-v3.js
+permissions:
+  contents: read
+jobs:
+  mcp-front-view:
+    runs-on: ubuntu-latest
+    timeout-minutes: 14
+    steps:
+      - uses: actions/checkout@v4
+      - name: Original Boeing reference photos unchanged
+        run: python3 panel-mosaic-lab/verify-final-overhead.py
+      - name: Install Chromium for real MCP switch geometry
+        run: |
+          npm install --no-save --ignore-scripts playwright@1.58.2
+          npx playwright install --with-deps chromium
+      - name: Static MCP and AFDS integration tests
+        run: |
+          node --check panel-mosaic-lab/cockpit/mcp-visual-v3.js
+          node --check tools/test-mcp-front-view.cjs
+          node panel-mosaic-lab/cockpit/mcp-visual-v3.test.cjs
+          node panel-mosaic-lab/cockpit/mcp-hardware-v1.test.cjs
+          node panel-mosaic-lab/cockpit/mcp-afds-bridge-v1.test.cjs
+      - name: Render ON-up and OFF-down for A/T and both Flight Directors
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m http.server 8788 --bind 127.0.0.1 >/tmp/mcp-photo-http.log 2>&1 &
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:8788/panel-mosaic-lab/mcp-panel/index.html >/dev/null; then break; fi
+            sleep 1
+          done
+          node tools/test-mcp-front-view.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: b737-mcp-reference-frontview-ON-OFF
+          path: /tmp/b737-mcp-front-view
+          if-no-files-found: warn
+          retention-days: 30
