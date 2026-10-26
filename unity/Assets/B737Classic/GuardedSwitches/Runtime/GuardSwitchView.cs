@@ -16,10 +16,11 @@ namespace B737Classic.GuardedSwitches
         public event Action<GuardSwitchView, bool> GuardPoseRequested;
         public event Action<GuardSwitchView> UnderlyingSwitchRequested;
 
-        private Transform _pivot;
-        private Transform _cover;
-        private MeshFilter _filter;
-        private MeshRenderer _renderer;
+        [SerializeField] private GuardBlueprint _blueprint;
+        [SerializeField] private Transform _pivot;
+        [SerializeField] private Transform _cover;
+        [SerializeField] private MeshFilter _filter;
+        [SerializeField] private MeshRenderer _renderer;
         private Mesh _lockedMesh;
         private Material _lockedMaterial;
         private Color _lockedColor;
@@ -55,6 +56,14 @@ namespace B737Classic.GuardedSwitches
             }
         }
 
+        private void Awake()
+        {
+            // Prefab loading clears private runtime caches. Rebind them from
+            // serialized blueprint and component references on every instance.
+            if (!_initialized && _blueprint != null)
+                Initialize(_blueprint, _pivot, _cover, _filter, _renderer);
+        }
+
         public void Initialize(
             GuardBlueprint spec, Transform pivot, Transform cover,
             MeshFilter filter, MeshRenderer renderer)
@@ -63,6 +72,7 @@ namespace B737Classic.GuardedSwitches
             if (spec == null || pivot == null || cover == null || filter == null || renderer == null)
                 throw new ArgumentNullException(nameof(spec));
 
+            _blueprint = spec;
             ControlId = spec.controlId;
             if (!Enum.TryParse(spec.hingeDirection, false, out GuardHinge direction))
                 throw new InvalidOperationException("Missing owner-verified hinge direction.");
