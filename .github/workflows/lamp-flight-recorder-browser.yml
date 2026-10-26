@@ -1,0 +1,54 @@
+name: B737 flight recorder guarded hinge and readable warning lamps
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - tools/test-flight-recorder-hinge-browser.cjs
+      - panel-mosaic-lab/interactive-overhead/lights.js
+      - panel-mosaic-lab/interactive-overhead/lights-model.js
+      - panel-mosaic-lab/interactive-overhead/rotary-guards.js
+      - panel-mosaic-lab/interactive-overhead/rotary-guards.css
+      - panel-mosaic-lab/interactive-overhead/lights-controls.json
+      - panel-mosaic-lab/interactive-overhead/lights.json
+      - panel-mosaic-lab/interactive-overhead/readability-faces.json
+      - panel-mosaic-lab/cockpit/readability-faces.json
+      - .github/workflows/lamp-flight-recorder-browser.yml
+permissions:
+  contents: read
+jobs:
+  live-flight-recorder:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate untouched locked source images and source control geometry
+        run: python3 panel-mosaic-lab/verify-final-overhead.py
+      - name: Install actual Chromium to test interactive guarded switch
+        run: |
+          npm install --no-save --ignore-scripts playwright@1.58.2
+          npx playwright install --with-deps chromium
+      - name: Verify control JavaScript, lens model and approved guard
+        run: |
+          node --check panel-mosaic-lab/interactive-overhead/rotary-guards.js
+          node --check panel-mosaic-lab/interactive-overhead/lights.js
+          node --check panel-mosaic-lab/cockpit/lights.js
+          node panel-mosaic-lab/interactive-overhead/lights.test.cjs
+          node panel-mosaic-lab/interactive-overhead/rotary-guards.test.cjs
+          node panel-mosaic-lab/lights-test/readability-derivatives.test.cjs
+      - name: Render switch and 40-pixel flight recorder lamp in real overhead
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m http.server 8788 --bind 127.0.0.1 >/tmp/b737-flight-recorder-http.log 2>&1 &
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:8788/panel-mosaic-lab/interactive-overhead/lights.json >/dev/null; then break; fi
+            sleep 1
+          done
+          node tools/test-flight-recorder-hinge-browser.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: b737-flight-recorder-left-hinge-guard-screenshots
+          path: /tmp/b737-flight-recorder-hinge/
+          if-no-files-found: warn
+          retention-days: 30
