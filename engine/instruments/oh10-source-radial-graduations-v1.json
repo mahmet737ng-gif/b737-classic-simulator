@@ -1,0 +1,529 @@
+{
+  "schema": "b737.oh10.native-graduation-photo-qa.v1",
+  "originalPhoto": "panel-mosaic-lab/assets/locked/2026-10-23/OH10-ELEC-LOSSLESS-9a1ca4d6cfb2.png",
+  "originalSHA": "9a1ca4d6cfb277ec1404f3a464e957d81be9d9689a0810883364342d57b0f1ea",
+  "imageNativeSize": [
+    1095,
+    1436
+  ],
+  "sourceOriginalUnmodified": true,
+  "sourceNumericMarksClassification": "VISUALLY_VERIFIED_SOURCE_PRINTED_MAJOR_AND_PHOTO_RAY_COMPONENTS",
+  "allMechanicalShaftsCertified": false,
+  "gauges": [
+    {
+      "id": "dcAmps",
+      "unit": "A",
+      "rimCenterPx": [
+        300.8,
+        203.4
+      ],
+      "radialIntersectionCenterPx": [
+        308.453,
+        281.608
+      ],
+      "radialAxisRmsPx": 2.183,
+      "sourceCrop": {
+        "x": 65,
+        "y": 0,
+        "w": 490,
+        "h": 413
+      },
+      "sourceOriginalPaintedTipPx": 141,
+      "sourcePrintedMajorValues": [
+        -50,
+        0,
+        50
+      ],
+      "sourceMarks": [
+        {
+          "value": -50,
+          "angleDeg": -27.85,
+          "nativeCentroidPx": [
+            226,
+            125.5
+          ],
+          "nativeInnerRadiusPx": 160.87,
+          "isMajor": true,
+          "componentId": 20
+        },
+        {
+          "value": -40,
+          "angleDeg": -22.24,
+          "nativeCentroidPx": [
+            239.3,
+            112.4
+          ],
+          "nativeInnerRadiusPx": 173.43,
+          "isMajor": false,
+          "componentId": 17
+        },
+        {
+          "value": -30,
+          "angleDeg": -16.76,
+          "nativeCentroidPx": [
+            255.8,
+            106.7
+          ],
+          "nativeInnerRadiusPx": 173.12,
+          "isMajor": false,
+          "componentId": 11
+        },
+        {
+          "value": -20,
+          "angleDeg": -11.27,
+          "nativeCentroidPx": [
+            272.7,
+            102
+          ],
+          "nativeInnerRadiusPx": 173.27,
+          "isMajor": false,
+          "componentId": 9
+        },
+        {
+          "value": -10,
+          "angleDeg": -5.58,
+          "nativeCentroidPx": [
+            290.6,
+            99.3
+          ],
+          "nativeInnerRadiusPx": 173.3,
+          "isMajor": false,
+          "componentId": 7
+        },
+        {
+          "value": 0,
+          "angleDeg": 0.36,
+          "nativeCentroidPx": [
+            309.5,
+            117
+          ],
+          "nativeInnerRadiusPx": 144.61,
+          "isMajor": true,
+          "componentId": 12
+        },
+        {
+          "value": 10,
+          "angleDeg": 6.22,
+          "nativeCentroidPx": [
+            328.3,
+            99.1
+          ],
+          "nativeInnerRadiusPx": 173.71,
+          "isMajor": false,
+          "componentId": 8
+        },
+        {
+          "value": 20,
+          "angleDeg": 11.88,
+          "nativeCentroidPx": [
+            346.3,
+            101.7
+          ],
+          "nativeInnerRadiusPx": 174.07,
+          "isMajor": false,
+          "componentId": 10
+        },
+        {
+          "value": 30,
+          "angleDeg": 17.5,
+          "nativeCentroidPx": [
+            363.8,
+            106.2
+          ],
+          "nativeInnerRadiusPx": 174.05,
+          "isMajor": false,
+          "componentId": 13
+        },
+        {
+          "value": 40,
+          "angleDeg": 22.97,
+          "nativeCentroidPx": [
+            380.1,
+            112.6
+          ],
+          "nativeInnerRadiusPx": 174.23,
+          "isMajor": false,
+          "componentId": 18
+        },
+        {
+          "value": 50,
+          "angleDeg": 28.76,
+          "nativeCentroidPx": [
+            394,
+            125.8
+          ],
+          "nativeInnerRadiusPx": 162.33,
+          "isMajor": true,
+          "componentId": 21
+        }
+      ],
+      "measuredNumericMarkInterval": 10,
+      "mechanicalSpindleVerified": false,
+      "powerSourceVerified": false,
+      "manualPreviewAvailable": true,
+      "reasonManualInactive": null
+    },
+    {
+      "id": "dcVolts",
+      "unit": "V",
+      "rimCenterPx": [
+        303.6,
+        625.6
+      ],
+      "radialIntersectionCenterPx": [
+        310.307,
+        682.818
+      ],
+      "radialAxisRmsPx": 1.654,
+      "sourceCrop": {
+        "x": 87,
+        "y": 355,
+        "w": 490,
+        "h": 490
+      },
+      "sourceOriginalPaintedTipPx": 131,
+      "sourcePrintedMajorValues": [
+        0,
+        20,
+        40
+      ],
+      "sourceMarks": [
+        {
+          "value": 0,
+          "angleDeg": -26.62,
+          "nativeCentroidPx": [
+            242.4,
+            547.3
+          ],
+          "nativeInnerRadiusPx": 134.14,
+          "isMajor": true,
+          "componentId": 13
+        },
+        {
+          "value": 4,
+          "angleDeg": -21.22,
+          "nativeCentroidPx": [
+            252.6,
+            534.1
+          ],
+          "nativeInnerRadiusPx": 150.93,
+          "isMajor": false,
+          "componentId": 10
+        },
+        {
+          "value": 8,
+          "angleDeg": -16.16,
+          "nativeCentroidPx": [
+            265.9,
+            529.5
+          ],
+          "nativeInnerRadiusPx": 150.59,
+          "isMajor": false,
+          "componentId": 9
+        },
+        {
+          "value": 12,
+          "angleDeg": -11,
+          "nativeCentroidPx": [
+            279.9,
+            526.3
+          ],
+          "nativeInnerRadiusPx": 150.69,
+          "isMajor": false,
+          "componentId": 6
+        },
+        {
+          "value": 16,
+          "angleDeg": -5.9,
+          "nativeCentroidPx": [
+            293.9,
+            523.8
+          ],
+          "nativeInnerRadiusPx": 150.7,
+          "isMajor": false,
+          "componentId": 4
+        },
+        {
+          "value": 20,
+          "angleDeg": -0.29,
+          "nativeCentroidPx": [
+            309.5,
+            530.5
+          ],
+          "nativeInnerRadiusPx": 135.82,
+          "isMajor": true,
+          "componentId": 3
+        },
+        {
+          "value": 24,
+          "angleDeg": 5.7,
+          "nativeCentroidPx": [
+            326.2,
+            523.3
+          ],
+          "nativeInnerRadiusPx": 151.44,
+          "isMajor": false,
+          "componentId": 5
+        },
+        {
+          "value": 28,
+          "angleDeg": 10.98,
+          "nativeCentroidPx": [
+            340.8,
+            525.5
+          ],
+          "nativeInnerRadiusPx": 151.37,
+          "isMajor": false,
+          "componentId": 7
+        },
+        {
+          "value": 32,
+          "angleDeg": 16.08,
+          "nativeCentroidPx": [
+            354.7,
+            528.7
+          ],
+          "nativeInnerRadiusPx": 151.66,
+          "isMajor": false,
+          "componentId": 8
+        },
+        {
+          "value": 36,
+          "angleDeg": 21.05,
+          "nativeCentroidPx": [
+            367.8,
+            533.3
+          ],
+          "nativeInnerRadiusPx": 151.64,
+          "isMajor": false,
+          "componentId": 11
+        },
+        {
+          "value": 40,
+          "angleDeg": 26.47,
+          "nativeCentroidPx": [
+            378.2,
+            546.4
+          ],
+          "nativeInnerRadiusPx": 134.32,
+          "isMajor": true,
+          "componentId": 12
+        }
+      ],
+      "measuredNumericMarkInterval": 4,
+      "mechanicalSpindleVerified": false,
+      "powerSourceVerified": false,
+      "manualPreviewAvailable": true,
+      "reasonManualInactive": null
+    },
+    {
+      "id": "acVolts",
+      "unit": "V",
+      "rimCenterPx": [
+        775.4,
+        626.4
+      ],
+      "radialIntersectionCenterPx": [
+        785.143,
+        702.386
+      ],
+      "radialAxisRmsPx": 4.42,
+      "sourceCrop": {
+        "x": 470,
+        "y": 375,
+        "w": 490,
+        "h": 490
+      },
+      "sourceOriginalPaintedTipPx": 143,
+      "sourcePrintedMajorValues": [
+        100,
+        110,
+        120,
+        130
+      ],
+      "sourceMarks": [
+        {
+          "value": 100,
+          "angleDeg": -48.08,
+          "nativeCentroidPx": [
+            658.1,
+            588.3
+          ],
+          "nativeInnerRadiusPx": 160.4,
+          "isMajor": true,
+          "componentId": 27
+        },
+        {
+          "value": 102,
+          "angleDeg": -41.89,
+          "nativeCentroidPx": [
+            671,
+            575.1
+          ],
+          "nativeInnerRadiusPx": 162.5,
+          "isMajor": false,
+          "componentId": 23
+        },
+        {
+          "value": 104,
+          "angleDeg": -35.84,
+          "nativeCentroidPx": [
+            685,
+            563.7
+          ],
+          "nativeInnerRadiusPx": 162.45,
+          "isMajor": false,
+          "componentId": 20
+        },
+        {
+          "value": 106,
+          "angleDeg": -29.77,
+          "nativeCentroidPx": [
+            700.1,
+            553.7
+          ],
+          "nativeInnerRadiusPx": 162.65,
+          "isMajor": false,
+          "componentId": 18
+        },
+        {
+          "value": 108,
+          "angleDeg": -23.63,
+          "nativeCentroidPx": [
+            716.8,
+            546.1
+          ],
+          "nativeInnerRadiusPx": 162.06,
+          "isMajor": false,
+          "componentId": 16
+        },
+        {
+          "value": 110,
+          "angleDeg": -17.02,
+          "nativeCentroidPx": [
+            737.5,
+            546.7
+          ],
+          "nativeInnerRadiusPx": 146.51,
+          "isMajor": true,
+          "componentId": 14
+        },
+        {
+          "value": 112,
+          "angleDeg": -9.78,
+          "nativeCentroidPx": [
+            756.4,
+            535.5
+          ],
+          "nativeInnerRadiusPx": 160.53,
+          "isMajor": false,
+          "componentId": 11
+        },
+        {
+          "value": 114,
+          "angleDeg": -3.47,
+          "nativeCentroidPx": [
+            774.9,
+            533.6
+          ],
+          "nativeInnerRadiusPx": 160.59,
+          "isMajor": false,
+          "componentId": 9
+        },
+        {
+          "value": 116,
+          "angleDeg": 3.05,
+          "nativeCentroidPx": [
+            794.1,
+            533.6
+          ],
+          "nativeInnerRadiusPx": 160.53,
+          "isMajor": false,
+          "componentId": 10
+        },
+        {
+          "value": 118,
+          "angleDeg": 9.16,
+          "nativeCentroidPx": [
+            812.1,
+            535.3
+          ],
+          "nativeInnerRadiusPx": 160.48,
+          "isMajor": false,
+          "componentId": 12
+        },
+        {
+          "value": 120,
+          "angleDeg": 16.42,
+          "nativeCentroidPx": [
+            831.3,
+            545.9
+          ],
+          "nativeInnerRadiusPx": 147.08,
+          "isMajor": true,
+          "componentId": 13
+        },
+        {
+          "value": 122,
+          "angleDeg": 22.97,
+          "nativeCentroidPx": [
+            852,
+            544.6
+          ],
+          "nativeInnerRadiusPx": 162.86,
+          "isMajor": false,
+          "componentId": 15
+        },
+        {
+          "value": 124,
+          "angleDeg": 28.86,
+          "nativeCentroidPx": [
+            868.1,
+            551.9
+          ],
+          "nativeInnerRadiusPx": 163.64,
+          "isMajor": false,
+          "componentId": 17
+        },
+        {
+          "value": 126,
+          "angleDeg": 34.68,
+          "nativeCentroidPx": [
+            883,
+            561
+          ],
+          "nativeInnerRadiusPx": 163.61,
+          "isMajor": false,
+          "componentId": 19
+        },
+        {
+          "value": 128,
+          "angleDeg": 40.62,
+          "nativeCentroidPx": [
+            897.2,
+            571.8
+          ],
+          "nativeInnerRadiusPx": 163.23,
+          "isMajor": false,
+          "componentId": 22
+        },
+        {
+          "value": 130,
+          "angleDeg": 46.8,
+          "nativeCentroidPx": [
+            910.3,
+            584.8
+          ],
+          "nativeInnerRadiusPx": 162.13,
+          "isMajor": true,
+          "componentId": 26
+        }
+      ],
+      "measuredNumericMarkInterval": 2,
+      "mechanicalSpindleVerified": false,
+      "powerSourceVerified": false,
+      "manualPreviewAvailable": false,
+      "reasonManualInactive": "Zero volts is not printed on 100–130 V face; preserve unpowered left-stop, disallow claims of live calibrated feed until power source verified"
+    }
+  ]
+}
