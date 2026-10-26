@@ -31,6 +31,8 @@ namespace B737Classic.GuardedSwitches
                     entry.geometry.previewWidth <= 0f || entry.geometry.previewHeight <= 0f ||
                     entry.geometry.previewThickness <= 0f || entry.geometry.previewCornerRadius <= 0f)
                     throw new InvalidOperationException("Missing preview geometry: " + entry.controlId);
+                if (string.IsNullOrEmpty(entry.geometry.contourProfile))
+                    throw new InvalidOperationException("Missing control-specific cover contour: " + entry.controlId);
                 if (entry.geometry.approval != "UNVERIFIED_DO_NOT_USE_AS_FACTORY_DIMENSIONS")
                     throw new InvalidOperationException("Preview may not be labelled aircraft-certified: " + entry.controlId);
                 if (!entry.material.sharedAcrossPoses)
@@ -72,6 +74,10 @@ namespace B737Classic.GuardedSwitches
         public float previewHeight;
         public float previewThickness;
         public float previewCornerRadius;
+        // Reference-informed visual contour, authored ONCE and invariant in pose.
+        public string contourProfile;
+        public float referenceAspectRatioHint;
+        public string coverAspectSource;
         public string approval;
     }
 
