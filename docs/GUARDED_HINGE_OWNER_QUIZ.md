@@ -14,22 +14,13 @@ Exactly 17 flight-deck guarded/protected controls are listed; the aft cabin atte
 
 The answer defines where the *physical guard cover's hinge* sits, **not** the direction of the toggle/lever or its detent labels. Switch mechanical detents and FCOM protected positions remain separately sourced in [Phase 1/2 registry](../engine/maps/guarded-switches-fcom-visual-audit-v1.json).
 
-## Chat quiz persistence protocol
+## Chat quiz persistence protocol — single Finish button
 
-An interactive choice sends a new user conversation turn, asking the assistant to persist the *single selected control* by its stable `controlId` and exact `Up|Down|Left|Right` direction. **The local UI itself cannot write the GitHub repository directly.** The assistant must make the GitHub `fetch_file` then `update_file` call and confirm actual commit SHA before saying the choice is saved.
+The 17 questions are displayed together with four directions. Selecting an option changes **local quiz state only**, and does not call GitHub. **Finish is enabled only after all 17 questions have an answer.** One explicit Finish submits a single complete payload with every `controlId` and exact `Up|Down|Left|Right` to the conversation.
 
-Update only the matching question:
-- `selection`: exact enum
-- `answerStatus`: `OWNER_QUIZ_CONFIRMED`
-- `answerSource`: `OWNER_CHAT_QUIZ`
-- `reviewedAt`: ISO timestamp (when available, exact)
-- recompute `summary.ownerConfirmed`, `summary.unanswered`
+The assistant must then read the latest `engine/maps/guarded-switch-owner-hinge-quiz-v1.json`, merge and validate all 17 answers, and update that one file in **ONE GitHub commit**. Update each question's `selection`, `answerStatus=OWNER_QUIZ_CONFIRMED`, `answerSource=OWNER_CHAT_BULK_QUIZ`, `reviewedAt` and recompute `summary.ownerConfirmed`, `summary.unanswered`. Report success **only after a real commit exists** and CI is checked. Do not save per answer during quiz interaction. Edits in the same quiz are allowed before Finish.
 
-Respect previous explicit owner confirmation that **FLIGHT RECORDER** is `Left`; already seeded in the JSON file, but the owner can change it via quiz.
-
-Every answer is **replaceable** by the owner by selecting a different option: never keep stale previous answer. Never guess an unanswered direction from historical assets, FCOM position names, adjacent guards or present UI.
-
-Verify `node --test tests/guarded-hinge-owner-quiz.test.cjs` and `python3 panel-mosaic-lab/verify-final-overhead.py`; GitHub Action `Flight controls FCOM guard and selector checks` runs them on change.
+Previously established owner answers may be preselected (e.g., FLIGHT RECORDER=Left, and the user recently chose FLT CONTROL A=Up). The latter selection was not yet committed; present it as an in-form draft until Finish. The user can override either selection.
 
 ## New asset design policy
 - **Do NOT use** old red/black generic `Red_Guarded_*.png` / `Black_Guarded_*.png` as the source of the replacement. Keep old files untouched for audit/frozen preservation.
