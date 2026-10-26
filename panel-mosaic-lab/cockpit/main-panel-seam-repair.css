@@ -1,0 +1,14 @@
+/* Seam join only — the locked source images and all instrument positions stay untouched.
+ * Native 8px upper/24px lower cosmetic ribbon hides the source-photo doubling
+ * between ENGINE/STANDBY and F/O INNER. It cannot intercept a pointer event. */
+#region-main .main-panel-seam-repair{
+ position:absolute;inset:0;z-index:1;pointer-events:none;
+}
+#region-main .main-panel-seam-strip{
+ display:block;position:absolute;box-sizing:border-box;pointer-events:none;
+ border:none;border-radius:0;outline:0;box-shadow:none;
+ background:linear-gradient(90deg,#808d92 0%,#88979e 44%,#8d9da7 77%,#90a2af 100%);
+}
+#region-main .main-panel-seam-upper{
+ background:linear-gradient(90deg,#7a878c 0%,#899aa5 100%);
+}

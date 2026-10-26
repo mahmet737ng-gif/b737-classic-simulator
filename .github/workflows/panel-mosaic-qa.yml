@@ -20,6 +20,10 @@ jobs:
         run: node panel-mosaic-lab/all-overhead/test.cjs
       - name: Exercise mosaic/gallery/atlas viewer mode controls
         run: node panel-mosaic-lab/all-overhead/runtime.test.cjs
+      - name: Verify main ENGINE / F-O visual seam without panel relocation
+        run: |
+          node --check panel-mosaic-lab/cockpit/main-panel-seam-repair.js
+          node panel-mosaic-lab/cockpit/main-panel-seam-repair.test.cjs
       - name: Verify pixel-perfect atlas baseline and absolute region geometry
         run: node panel-mosaic-lab/all-overhead/atlas-layout.test.cjs
       - name: Validate independently installed CPCS / DCPCS pressure and OH22
