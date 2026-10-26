@@ -16,9 +16,9 @@ namespace B737Classic.GuardedSwitches.Editor
     {
         private const string Root = "Assets/B737Classic/GuardedSwitches";
         private const string CatalogPath = Root + "/Resources/GuardedSwitchBlueprints.json";
-        private const string Generated = Root + "/GeneratedPreviews_v1";
+        private const string Generated = Root + "/GeneratedPreviews_v2";
 
-        [MenuItem("B737 Classic/Guarded Switches/Generate 17 PREVIEW Prefabs")]
+        [MenuItem("B737 Classic/Guarded Switches/Generate 17 corrected V2 PREVIEW Prefabs")]
         public static void Generate()
         {
             TextAsset source = AssetDatabase.LoadAssetAtPath<TextAsset>(CatalogPath);
@@ -27,7 +27,7 @@ namespace B737Classic.GuardedSwitches.Editor
 
             GuardBlueprintCatalog catalog = GuardBlueprintCatalog.Load(source);
             if (!AssetDatabase.IsValidFolder(Generated))
-                AssetDatabase.CreateFolder(Root, "GeneratedPreviews_v1");
+                AssetDatabase.CreateFolder(Root, "GeneratedPreviews_v2");
 
             int created = 0;
             int skipped = 0;
@@ -84,7 +84,7 @@ namespace B737Classic.GuardedSwitches.Editor
                       $"{skipped} preserved. Not certified for cockpit mounting.");
         }
 
-        [MenuItem("B737 Classic/Guarded Switches/Verify generated preview identity")]
+        [MenuItem("B737 Classic/Guarded Switches/Verify 17 corrected V2 PREVIEW Prefabs")]
         public static void VerifyGenerated()
         {
             var source = AssetDatabase.LoadAssetAtPath<TextAsset>(CatalogPath);
