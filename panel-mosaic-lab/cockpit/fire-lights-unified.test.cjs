@@ -3,7 +3,7 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
 const dir=__dirname,root=path.resolve(dir,'../..');
 const M=require('./fire-lights-model.js');
-const source=JSON.parse(fs.readFileSync(path.join(root,'fire-protection-lab/reference/as-built-11-indicator-pixel-map.json'),'utf8'));
+const source=JSON.parse(fs.readFileSync(path.join(root,'fire-protection-lab/reference/unified-11-indicator-placement-v2.json'),'utf8'));
 const assembly=JSON.parse(fs.readFileSync(path.join(dir,'assembly.json'),'utf8'));
 const html=fs.readFileSync(path.join(dir,'index.html'),'utf8');
 const css=fs.readFileSync(path.join(dir,'fire-lights-unified.css'),'utf8');
@@ -14,16 +14,16 @@ check(M.SLOTS.length===11,'8 rectangle + 3 round lamps');
 check(M.SLOTS.filter(s=>s.type==='rect').length===8,'exactly 8 rectangles');
 check(M.SLOTS.filter(s=>s.type==='round').length===3,'exactly 3 circular lamps');
 check(M.BASE.width===2172&&M.BASE.height===724,'original panel resolution');
-const srcSlots=[...source.rectangles,...source.rounds];
+const srcSlots=source.lights;
 for(const slot of M.SLOTS){
  const expected=srcSlots.find(s=>s.id===slot.id);
  check(Boolean(expected),slot.id+' in measured manifest');
  check(expected.center[0]===slot.cx&&expected.center[1]===slot.cy,slot.id+' exact measured center');
  if(slot.type==='rect')check(M.region(slot).width===208&&M.region(slot).height===105,'uniform standard annunciator size '+slot.id);
- else check(M.region(slot).width===42&&M.region(slot).height===42,'green circle diameter '+slot.id);
+ else check(M.region(slot).width===60&&M.region(slot).height===60,'green circle diameter '+slot.id);
  for(const on of [false,true]){
   const file=M.file(slot,on);
-  check(!file.startsWith('data:'),'No synthesized or inline light sprite '+slot.id);
+  check(!file.startsWith('data:'),'No inline light sprite '+slot.id);
   check(fs.existsSync(path.resolve(dir,file)),slot.id+' DB artwork '+(on?'ON':'OFF')+': '+file);
  }
  const g=M.region(slot);
@@ -48,4 +48,9 @@ const green=fs.readFileSync(relativeGreen,'utf8');
 check(green.includes('#36f35f'),'green on illumination derives from DB color');
 const black=fs.readFileSync(path.resolve(dir,M.file(M.map.EXT_L,false)),'utf8');
 check(black.includes('#050e0b'),'black/off lens present');
-console.log('PASS FIRELAMP-0001: '+checks+' checks, 22 mounted source pairs, eleven pixel-matched sockets, no locked artwork mutations.');
+check(M.version==='FIRELAMP-0002','correct runtime version');
+check(M.map.L_BOTTLE_DISCHARGED.cy===M.map.R_BOTTLE_DISCHARGED.cy,'Bottle lamps same row');
+check(M.map.L_BOTTLE_DISCHARGED.cx===1653&&M.map.R_BOTTLE_DISCHARGED.cx===1864,'Bottle x positions');
+check(source.roundDiameter===60&&source.legendScale===0.75,'Lens and legend standards');
+for(const item of M.SLOTS){const expected=source.lights.find(x=>x.id===item.id);const g=M.region(item);check(g.left===expected.bounds[0]&&g.top===expected.bounds[1]&&g.width===expected.bounds[2]&&g.height===expected.bounds[3],'Exact bounding box '+item.id);if(item.type==='rect')for(const on of [false,true])check(fs.readFileSync(path.resolve(dir,M.file(item,on)),'utf8').includes('scale(0.75)'),'Reference-based 75% text '+item.id);}
+console.log('PASS FIRELAMP-0002: '+checks+' checks, 22 mounted source pairs, eleven pixel-matched sockets, no locked artwork mutations.');
