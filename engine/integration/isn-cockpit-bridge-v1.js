@@ -38,14 +38,17 @@
  class Bridge{
   constructor(session,{sourceOwner='LEGACY_SCENARIO'}={}){if(!session?.send||!session?.get)throw Error('ISN-01 session required');
    if(!['LEGACY_SCENARIO','ISN03_START_SESSION'].includes(sourceOwner))throw Error('Invalid source state owner');
-   this.sourceOwner=sourceOwner;this.session=session;this.snapshot=null;this.inputs={toggles:{},guards:{},rotaries:{},context:{}};this.initialized=false;this.rejected=[];}
-  send(command){try{return this.session.send(command);}catch(error){this.rejected.push({command:copy(command),reason:error.message});if(this.rejected.length>30)this.rejected.shift();return this.session.get();}}
+   this.sourceOwner=sourceOwner;this.session=session;this.snapshot=null;this.inputs={toggles:{},guards:{},rotaries:{},context:{}};this.initialized=false;this.rejected=[];this.rejectedTotal=0;}
+  send(command){try{return this.session.send(command);}catch(error){this.rejectedTotal++;this.rejected.push({command:copy(command),reason:error.message});if(this.rejected.length>30)this.rejected.shift();return this.session.get();}}
   electrical(action){this.send({type:'ELECTRICAL',action});}
   control(id,next){
    if(own(PUMPS,id)){
     if(next==='ON'||next==='OFF')this.send({type:'PUMP_SWITCH',id:PUMPS[id],value:next==='ON'});
    }else if(id==='battery-master'){
-    if(next==='on'||next==='off')this.electrical({type:'CONTROL',key:'batterySwitch',value:next==='on'});
+    // ISN03_START_SESSION has the physical ECU/Chain as sole live battery writer.
+    // Bridge follows the same pack instance and must never send it twice.
+    if(this.sourceOwner==='LEGACY_SCENARIO'&&(next==='on'||next==='off'))
+     this.electrical({type:'CONTROL',key:'batterySwitch',value:next==='on'});
    }else if(id==='standby-power'){
     if(['auto','off','bat'].includes(next))this.electrical({type:'CONTROL',key:'standbySelector',value:next.toUpperCase()});
    }else if(/^generator-disconnect-[12]$/.test(id)){
@@ -100,9 +103,9 @@
   }
   instructor(command){this.send(command);this.snapshot=this.session.get();return this.get();}
   replay(){const commands=this.session.events.map(e=>copy(e.command));this.session.replay(commands);this.snapshot=this.session.get();return this.get();}
-  reset(){this.session.reset();this.initialized=false;const last=copy(this.inputs);this.inputs={toggles:{},guards:{},rotaries:{},context:{}};this.rejected=[];return this.synchronize(last);}
+  reset(){this.session.reset();this.initialized=false;const last=copy(this.inputs);this.inputs={toggles:{},guards:{},rotaries:{},context:{}};this.rejected=[];this.rejectedTotal=0;return this.synchronize(last);}
   get(){const state=this.session.get();return {state,lamps:projectLamps(state),initialized:this.initialized,
-   rejected:copy(this.rejected),inputs:copy(this.inputs),coverage:{pumpControls:Object.keys(PUMPS).length,pumpLamps:Object.keys(LAMPS).length,electricalLamps:Object.keys(ELECTRICAL_LAMPS).length,busTransferPhysicalControl:false}};}
+   rejected:copy(this.rejected),rejectedTotal:this.rejectedTotal,inputs:copy(this.inputs),coverage:{pumpControls:Object.keys(PUMPS).length,pumpLamps:Object.keys(LAMPS).length,electricalLamps:Object.keys(ELECTRICAL_LAMPS).length,busTransferPhysicalControl:false}};}
  }
  return Object.freeze({PUMPS,LAMPS,ELECTRICAL_LAMPS,GUARDED,SCENARIO,projectLamps,Bridge});
 });

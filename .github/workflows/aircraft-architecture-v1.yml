@@ -1,0 +1,76 @@
+name: Aircraft State Architecture V1
+on:
+  push:
+    branches:
+      - architecture/state-owner-runtime-v1-20261026
+    paths:
+      - 'engine/runtime/**'
+      - 'tests/aircraft-session-v1.test.cjs'
+      - 'tests/unified-authority-diagnostics-v1.test.cjs'
+      - 'tests/unified-live-gateway-v1.test.cjs'
+      - 'engine/integration/isn-cockpit-bridge-v1.js'
+      - 'panel-mosaic-lab/cockpit/isn-cockpit.js'
+      - 'tools/unified-live-gateway-browser-smoke.cjs'
+      - '.github/workflows/aircraft-architecture-v1.yml'
+  pull_request:
+    paths:
+      - 'engine/runtime/**'
+      - 'tests/aircraft-session-v1.test.cjs'
+      - '.github/workflows/aircraft-architecture-v1.yml'
+  workflow_dispatch:
+jobs:
+  adversarial-runtime:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Strict runtime and Electrical source regression
+        run: |
+          node --test tests/aircraft-session-v1.test.cjs tests/unified-authority-diagnostics-v1.test.cjs tests/unified-live-gateway-v1.test.cjs
+          node tests/electrical-v7.test.cjs
+          node tests/electrical-loads-v8.test.cjs
+          node tests/systems-integration-v2.test.cjs
+          node tests/isn-cockpit-bridge-v1.test.cjs
+          node tests/isn-unified-real-overhead-events-v1.test.cjs
+          node tests/isn-unified-ecu-physical-v1.test.cjs
+
+  live-chromium:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify approved cockpit sources unchanged
+        run: python3 panel-mosaic-lab/verify-final-overhead.py
+      - name: Install Chromium for actual Unified browser test
+        run: |
+          npm install --no-save --ignore-scripts playwright@1.58.2
+          npx playwright install --with-deps chromium
+      - name: Start real Unified Cockpit and test embedded-overhead event channel
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check tools/unified-live-gateway-browser-smoke.cjs
+          python3 -m http.server 8788 --bind 127.0.0.1 >/tmp/b737-aircraft-session-http.log 2>&1 &
+          for i in $(seq 1 40); do
+            if curl -fsS http://127.0.0.1:8788/panel-mosaic-lab/cockpit/index.html >/dev/null; then break; fi
+            sleep 1
+          done
+          node tools/unified-live-gateway-browser-smoke.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: b737-unified-live-architecture-browser-proof
+          path: |
+            /tmp/b737-unified-live-gateway-proof.png
+            /tmp/b737-aircraft-session-http.log
+          if-no-files-found: ignore
+          retention-days: 14
