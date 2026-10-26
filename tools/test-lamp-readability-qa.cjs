@@ -10,6 +10,8 @@ const oh=get('panel-mosaic-lab/interactive-overhead/lights.json');
 const main=get('panel-mosaic-lab/cockpit/lights.json');
 const ohFits=get('panel-mosaic-lab/interactive-overhead/instance-faces.json');
 const mainFits=get('panel-mosaic-lab/cockpit/instance-faces.json');
+const ohReadable=get('panel-mosaic-lab/interactive-overhead/readability-faces.json');
+const mainReadable=get('panel-mosaic-lab/cockpit/readability-faces.json');
 const selections=[
  'flight-recorder-off','irs-l-align','wing-valve-l','cowl-valve-1',
  'fuel-valve-closed-1','ground-power-available','ram-door-r','window-l-fwd-on',
@@ -18,7 +20,7 @@ const data=selections.map(id=>{
  const scope=id.startsWith('main-')?'main':'overhead';
  const reg=scope==='main'?main:oh,fit=scope==='main'?mainFits:ohFits;
  const lamp=reg.lights.find(x=>x.id===id);assert.ok(lamp,id);
- const frames=fit.instances[id]?.states||reg.assets[lamp.asset];
+ const frames=(scope==='main'?mainReadable:ohReadable).instances[id]?.states||fit.instances[id]?.states||reg.assets[lamp.asset];
  const states=Object.keys(frames);
  return {id,scope,sourceRect:lamp.sourceRect,
    frames:states.map(state=>({state,url:frames[state].url}))};
