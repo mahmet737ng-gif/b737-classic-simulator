@@ -1,0 +1,179 @@
+{
+  "schema": "fire_panel_reference_photo_lamp_locations_v1",
+  "reference": {
+    "filename": "image(20261026-160525).png",
+    "width": 1920,
+    "height": 1080,
+    "photo_panel_bounds_px_approx": [
+      293,
+      555,
+      1733,
+      942
+    ],
+    "method": "Manual visual placement from owner's screenshot; image-space boxes (not physical dimensions)"
+  },
+  "lamps": [
+    {
+      "id": "ENG1_OVERHEAT",
+      "box_px": [
+        414,
+        689,
+        551,
+        786
+      ],
+      "center_px": [
+        482.5,
+        737.5
+      ],
+      "center_pct_of_approx_panel": [
+        13.16,
+        47.16
+      ],
+      "confidence": "visible"
+    },
+    {
+      "id": "WHEEL_WELL",
+      "box_px": [
+        757,
+        582,
+        904,
+        646
+      ],
+      "center_px": [
+        830.5,
+        614
+      ],
+      "center_pct_of_approx_panel": [
+        37.33,
+        15.25
+      ],
+      "confidence": "partially_occluded_estimate"
+    },
+    {
+      "id": "FAULT",
+      "box_px": [
+        757,
+        650,
+        906,
+        724
+      ],
+      "center_px": [
+        831.5,
+        687
+      ],
+      "center_pct_of_approx_panel": [
+        37.4,
+        34.11
+      ],
+      "confidence": "visible"
+    },
+    {
+      "id": "APU_DET_INOP",
+      "box_px": [
+        757,
+        723,
+        907,
+        795
+      ],
+      "center_px": [
+        832,
+        759
+      ],
+      "center_pct_of_approx_panel": [
+        37.43,
+        52.71
+      ],
+      "confidence": "visible"
+    },
+    {
+      "id": "APU_BOTTLE_DISCHARGED",
+      "box_px": [
+        757,
+        796,
+        907,
+        879
+      ],
+      "center_px": [
+        832,
+        837.5
+      ],
+      "center_pct_of_approx_panel": [
+        37.43,
+        73
+      ],
+      "confidence": "visible"
+    },
+    {
+      "id": "ENG2_OVERHEAT",
+      "box_px": [
+        1157,
+        705,
+        1300,
+        794
+      ],
+      "center_px": [
+        1228.5,
+        749.5
+      ],
+      "center_pct_of_approx_panel": [
+        64.97,
+        50.26
+      ],
+      "confidence": "visible"
+    },
+    {
+      "id": "L_BOTTLE_DISCHARGED",
+      "box_px": [
+        1321,
+        595,
+        1456,
+        662
+      ],
+      "center_px": [
+        1388.5,
+        628.5
+      ],
+      "center_pct_of_approx_panel": [
+        76.08,
+        18.99
+      ],
+      "confidence": "visible"
+    },
+    {
+      "id": "R_BOTTLE_DISCHARGED",
+      "box_px": [
+        1462,
+        595,
+        1596,
+        662
+      ],
+      "center_px": [
+        1529,
+        628.5
+      ],
+      "center_pct_of_approx_panel": [
+        85.83,
+        18.99
+      ],
+      "confidence": "visible"
+    }
+  ],
+  "required_topology": {
+    "central_column_top_to_bottom": [
+      "WHEEL_WELL",
+      "FAULT",
+      "APU_DET_INOP",
+      "APU_BOTTLE_DISCHARGED"
+    ],
+    "engine_overheat": "One lamp immediately under each OVHT DET selector",
+    "bottle_discharge": "L and R alongside one another in same top horizontal row, above ENG 2 fire handle",
+    "total": 8
+  },
+  "size_rule": "All cutouts must share the actual approved low-pressure lamp footprint; image perspective makes reference screenshot widths unequal. Do not infer physical scale from picture.",
+  "known_issues": [
+    "Current stripped generated texture places bottle discharge cutouts vertically, contradicting the reference",
+    "Wheel Well position partly hidden by throttle/overhead obstruction",
+    "Generated fire-handle cutouts and lamp positions may require a new plate geometry to match the true photograph"
+  ],
+  "release_gate": "Measurement / placement plan only; no approved art overwritten and no Unified change"
+}
