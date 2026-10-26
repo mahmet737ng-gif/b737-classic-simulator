@@ -1,0 +1,622 @@
+{
+  "schema": "b737.oh12.ac-amps.native-radial-photo-calibration.v1",
+  "status": "TWENTY_ONE_NATIVE_TICKS_PER_GAUGE_VERIFIED_SHAFT_HIDDEN",
+  "photo": "panel-mosaic-lab/assets/locked/2026-10-23/OH12-BUS-TRANS-09319c17e7d0.png",
+  "sha256": "709cb15a86f9038ca082136c4db59af83c7800107dfe320182bf7f4c56837e9f",
+  "imageSizePx": [
+    1024,
+    1536
+  ],
+  "units": "A",
+  "independentGauges": 2,
+  "verifiedPrintedMajorAmps": [
+    0,
+    50,
+    100,
+    150,
+    200
+  ],
+  "intervalCountBetweenAdjacentMajors": 5,
+  "minorIncrementAmps": 10,
+  "method": "Source PNG crop, grayscale >163, connected-component segmentation, 21 elongated white radial stroke contours per gauge, PCA line-axis fit and least-squares intersection; 0/50/100/150/200 printed legends visually checked against source.",
+  "registeredSoftwareMotionPreview": true,
+  "hiddenPhysicalShaftCertified": false,
+  "actualAircraftSensorFeedCertified": false,
+  "generalGaugeProductionRelease": false,
+  "gauge": [
+    {
+      "id": "acAmps1",
+      "sourcePanel": "OH12",
+      "crop": {
+        "x": 0,
+        "y": 20,
+        "width": 455,
+        "height": 490
+      },
+      "bezelCandidatePivotPx": [
+        261,
+        252.2
+      ],
+      "radialLineIntersectionPivotPx": [
+        266.515,
+        296.991
+      ],
+      "radialFitRmsPx": 2.79,
+      "numericTickCount": 21,
+      "nativeStrokeComponentIdsAtThreshold163": [
+        44,
+        38,
+        36,
+        32,
+        30,
+        27,
+        25,
+        21,
+        18,
+        19,
+        17,
+        20,
+        22,
+        26,
+        28,
+        31,
+        33,
+        37,
+        39,
+        45,
+        48
+      ],
+      "strokes": [
+        {
+          "index": 0,
+          "valueA": 0,
+          "sourceCentroidPx": [
+            155.7,
+            202.4
+          ],
+          "angleDeg": -49.51,
+          "innerStrokeRadiusPx": 132.2,
+          "category": "PRINTED_MAJOR_LONG",
+          "isPhysicallyShaftCertified": false
+        },
+        {
+          "index": 1,
+          "valueA": 10,
+          "sourceCentroidPx": [
+            162.4,
+            188.6
+          ],
+          "angleDeg": -43.85,
+          "innerStrokeRadiusPx": 143.2,
+          "category": "MINOR_BETWEEN_MAJOR_LABELS",
+          "isPhysicallyShaftCertified": false
+        },
+        {
+          "index": 2,
+          "valueA": 20,
+          "sourceCentroidPx": [
+            172.7,
+            179.9
+          ],
+          "angleDeg": -38.7,
+          "innerStrokeRadiusPx": 142.6,
+          "category": "MINOR_BETWEEN_MAJOR_LABELS",
+          "isPhysicallyShaftCertified": false
+        },
+        {
+          "index": 3,
+          "valueA": 30,
+          "sourceCentroidPx": [
+            183.9,
+            172.4
+          ],
+          "angleDeg": -33.54,
+          "innerStrokeRadiusPx": 142,
+          "category": "MINOR_BETWEEN_MAJOR_LABELS",
+          "isPhysicallyShaftCertified": false
+        },
+        {
+          "index": 4,
+          "valueA": 40,
+          "sourceCentroidPx": [
+            195.3,
+            166.2
+          ],
+          "angleDeg": -28.56,
+          "innerStrokeRadiusPx": 141.6,
+          "category": "MINOR_BETWEEN_MAJOR_LABELS",
+          "isPhysicallyShaftCertified": false
+        },
+        {
+          "index": 5,
+          "valueA": 50,
+          "sourceCentroidPx": [
+            209.5,
+            166.1
+          ],
+          "angleDeg": -23.53,
+          "innerStrokeRadiusPx": 128.7,
+          "category": "PRINTED_MAJOR_LONG",
+          "isPhysicallyShaftCertified": false
+        },
+        {
+          "index": 6,
+          "valueA": 60,
+          "sourceCentroidPx": [
+            220.2,
+            155.6
+          ],
+          "angleDeg": -18.14,
+          "innerStrokeRadiusPx": 141.2,
+          "category": "MINOR_BETWEEN_MAJOR_LABELS",
+          "isPhysicallyShaftCertified": false
+        },
+        {
+          "index": 7,
+          "valueA": 70,
+          "sourceCentroidPx": [
+            233.1,
+            152.3
+          ],
+          "angleDeg": -13.02,
+          "innerStrokeRadiusPx": 141.3,
+          "category": "MINOR_BETWEEN_MAJOR_LABELS",
+          "isPhysicallyShaftCertified": false
+        },
+        {
+          "index": 8,
+          "valueA": 80,
+          "sourceCentroidPx": [
+            245.5,
+            149.9
+          ],
+          "angleDeg": -8.12,
+          "innerStrokeRadiusPx": 141.2,
+          "category": "MINOR_BETWEEN_MAJOR_LABELS",
+          "isPhysicallyShaftCertified": false
+        },
+        {
+          "index": 9,
+          "valueA": 90,
+          "sourceCentroidPx": [
+            258,
+            149
+          ],
+          "angleDeg": -3.28,
+          "innerStrokeRadiusPx": 141.1,
+          "category": "MINOR_BETWEEN_MAJOR_LABELS",
+          "isPhysicallyShaftCertified": false
+        },
+        {
+          "index": 10,
+          "valueA": 100,
+          "sourceCentroidPx": [
+            270.8,
+            154.4
+          ],
+          "angleDeg": 1.73,
+          "innerStrokeRadiusPx": 128,
+          "category": "PRINTED_MAJOR_LONG",
+          "isPhysicallyShaftCertified": false
+        },
+        {
+          "index": 11,
+          "valueA": 110,
+          "sourceCentroidPx": [
+            284.8,
+            149.8
+          ],
+          "angleDeg": 7.07,
+          "innerStrokeRadiusPx": 141,
+          "category": "MINOR_BETWEEN_MAJOR_LABELS",
+          "isPhysicallyShaftCertified": false
+        },
+        {
+          "index": 12,
+          "valueA": 120,
+          "sourceCentroidPx": [
+            298.8,
+            152.2
+          ],
+          "angleDeg": 12.56,
+          "innerStrokeRadiusPx": 141.1,
+          "category": "MINOR_BETWEEN_MAJOR_LABELS",
+          "isPhysicallyShaftCertified": false
+        },
+        {
+          "index": 13,
+          "valueA": 130,
+          "sourceCentroidPx": [
+            311.7,
+            155.4
+          ],
+          "angleDeg": 17.7,
+          "innerStrokeRadiusPx": 141.5,
+          "category": "MINOR_BETWEEN_MAJOR_LABELS",
+          "isPhysicallyShaftCertified": false
+        },
+        {
+          "index": 14,
+          "valueA": 140,
+          "sourceCentroidPx": [
+            323.7,
+            159.9
+          ],
+          "angleDeg": 22.65,
+          "innerStrokeRadiusPx": 141.3,
+          "category": "MINOR_BETWEEN_MAJOR_LABELS",
+          "isPhysicallyShaftCertified": false
+        },
+        {
+          "index": 15,
+          "valueA": 150,
+          "sourceCentroidPx": [
+            332.7,
+            171.1
+          ],
+          "angleDeg": 27.72,
+          "innerStrokeRadiusPx": 128.6,
+          "category": "PRINTED_MAJOR_LONG",
+          "isPhysicallyShaftCertified": false
+        },
+        {
+          "index": 16,
+          "valueA": 160,
+          "sourceCentroidPx": [
+            347.6,
+            172.2
+          ],
+          "angleDeg": 33.02,
+          "innerStrokeRadiusPx": 141.7,
+          "category": "MINOR_BETWEEN_MAJOR_LABELS",
+          "isPhysicallyShaftCertified": false
+        },
+        {
+          "index": 17,
+          "valueA": 170,
+          "sourceCentroidPx": [
+            358.7,
+            179.6
+          ],
+          "angleDeg": 38.12,
+          "innerStrokeRadiusPx": 142.3,
+          "category": "MINOR_BETWEEN_MAJOR_LABELS",
+          "isPhysicallyShaftCertified": false
+        },
+        {
+          "index": 18,
+          "valueA": 180,
+          "sourceCentroidPx": [
+            368.9,
+            188
+          ],
+          "angleDeg": 43.21,
+          "innerStrokeRadiusPx": 143.2,
+          "category": "MINOR_BETWEEN_MAJOR_LABELS",
+          "isPhysicallyShaftCertified": false
+        },
+        {
+          "index": 19,
+          "valueA": 190,
+          "sourceCentroidPx": [
+            378.2,
+            197.2
+          ],
+          "angleDeg": 48.23,
+          "innerStrokeRadiusPx": 142.6,
+          "category": "MINOR_BETWEEN_MAJOR_LABELS",
+          "isPhysicallyShaftCertified": false
+        },
+        {
+          "index": 20,
+          "valueA": 200,
+          "sourceCentroidPx": [
+            383.1,
+            209.9
+          ],
+          "angleDeg": 53.23,
+          "innerStrokeRadiusPx": 131.8,
+          "category": "PRINTED_MAJOR_LONG",
+          "isPhysicallyShaftCertified": false
+        }
+      ]
+    },
+    {
+      "id": "acAmps2",
+      "sourcePanel": "OH12",
+      "crop": {
+        "x": 460,
+        "y": 20,
+        "width": 490,
+        "height": 490
+      },
+      "bezelCandidatePivotPx": [
+        753.4,
+        252.2
+      ],
+      "radialLineIntersectionPivotPx": [
+        753.481,
+        297.342
+      ],
+      "radialFitRmsPx": 1.95,
+      "numericTickCount": 21,
+      "nativeStrokeComponentIdsAtThreshold163": [
+        50,
+        42,
+        39,
+        35,
+        30,
+        28,
+        26,
+        24,
+        21,
+        17,
+        18,
+        19,
+        22,
+        25,
+        27,
+        29,
+        32,
+        38,
+        41,
+        45,
+        54
+      ],
+      "strokes": [
+        {
+          "index": 0,
+          "valueA": 0,
+          "sourceCentroidPx": [
+            643.3,
+            203.2
+          ],
+          "angleDeg": -49.5,
+          "innerStrokeRadiusPx": 131.7,
+          "category": "PRINTED_MAJOR_LONG",
+          "isPhysicallyShaftCertified": false
+        },
+        {
+          "index": 1,
+          "valueA": 10,
+          "sourceCentroidPx": [
+            649.1,
+            188.8
+          ],
+          "angleDeg": -43.88,
+          "innerStrokeRadiusPx": 142.8,
+          "category": "MINOR_BETWEEN_MAJOR_LABELS",
+          "isPhysicallyShaftCertified": false
+        },
+        {
+          "index": 2,
+          "valueA": 20,
+          "sourceCentroidPx": [
+            659.5,
+            180.2
+          ],
+          "angleDeg": -38.75,
+          "innerStrokeRadiusPx": 142.8,
+          "category": "MINOR_BETWEEN_MAJOR_LABELS",
+          "isPhysicallyShaftCertified": false
+        },
+        {
+          "index": 3,
+          "valueA": 30,
+          "sourceCentroidPx": [
+            670,
+            172.2
+          ],
+          "angleDeg": -33.69,
+          "innerStrokeRadiusPx": 143.1,
+          "category": "MINOR_BETWEEN_MAJOR_LABELS",
+          "isPhysicallyShaftCertified": false
+        },
+        {
+          "index": 4,
+          "valueA": 40,
+          "sourceCentroidPx": [
+            681.3,
+            165.4
+          ],
+          "angleDeg": -28.68,
+          "innerStrokeRadiusPx": 142.8,
+          "category": "MINOR_BETWEEN_MAJOR_LABELS",
+          "isPhysicallyShaftCertified": false
+        },
+        {
+          "index": 5,
+          "valueA": 50,
+          "sourceCentroidPx": [
+            695.7,
+            165.6
+          ],
+          "angleDeg": -23.67,
+          "innerStrokeRadiusPx": 129.5,
+          "category": "PRINTED_MAJOR_LONG",
+          "isPhysicallyShaftCertified": false
+        },
+        {
+          "index": 6,
+          "valueA": 60,
+          "sourceCentroidPx": [
+            705.9,
+            155.2
+          ],
+          "angleDeg": -18.49,
+          "innerStrokeRadiusPx": 142.5,
+          "category": "MINOR_BETWEEN_MAJOR_LABELS",
+          "isPhysicallyShaftCertified": false
+        },
+        {
+          "index": 7,
+          "valueA": 70,
+          "sourceCentroidPx": [
+            718.1,
+            151.8
+          ],
+          "angleDeg": -13.67,
+          "innerStrokeRadiusPx": 142.6,
+          "category": "MINOR_BETWEEN_MAJOR_LABELS",
+          "isPhysicallyShaftCertified": false
+        },
+        {
+          "index": 8,
+          "valueA": 80,
+          "sourceCentroidPx": [
+            730.6,
+            149.2
+          ],
+          "angleDeg": -8.76,
+          "innerStrokeRadiusPx": 142.8,
+          "category": "MINOR_BETWEEN_MAJOR_LABELS",
+          "isPhysicallyShaftCertified": false
+        },
+        {
+          "index": 9,
+          "valueA": 90,
+          "sourceCentroidPx": [
+            743.1,
+            147.8
+          ],
+          "angleDeg": -3.96,
+          "innerStrokeRadiusPx": 142.7,
+          "category": "MINOR_BETWEEN_MAJOR_LABELS",
+          "isPhysicallyShaftCertified": false
+        },
+        {
+          "index": 10,
+          "valueA": 100,
+          "sourceCentroidPx": [
+            756,
+            153.5
+          ],
+          "angleDeg": 1,
+          "innerStrokeRadiusPx": 130.3,
+          "category": "PRINTED_MAJOR_LONG",
+          "isPhysicallyShaftCertified": false
+        },
+        {
+          "index": 11,
+          "valueA": 110,
+          "sourceCentroidPx": [
+            769.8,
+            147.9
+          ],
+          "angleDeg": 6.23,
+          "innerStrokeRadiusPx": 143.1,
+          "category": "MINOR_BETWEEN_MAJOR_LABELS",
+          "isPhysicallyShaftCertified": false
+        },
+        {
+          "index": 12,
+          "valueA": 120,
+          "sourceCentroidPx": [
+            783.7,
+            149.8
+          ],
+          "angleDeg": 11.57,
+          "innerStrokeRadiusPx": 143.2,
+          "category": "MINOR_BETWEEN_MAJOR_LABELS",
+          "isPhysicallyShaftCertified": false
+        },
+        {
+          "index": 13,
+          "valueA": 130,
+          "sourceCentroidPx": [
+            796.4,
+            153.3
+          ],
+          "angleDeg": 16.58,
+          "innerStrokeRadiusPx": 143.2,
+          "category": "MINOR_BETWEEN_MAJOR_LABELS",
+          "isPhysicallyShaftCertified": false
+        },
+        {
+          "index": 14,
+          "valueA": 140,
+          "sourceCentroidPx": [
+            808.6,
+            157.6
+          ],
+          "angleDeg": 21.54,
+          "innerStrokeRadiusPx": 143.3,
+          "category": "MINOR_BETWEEN_MAJOR_LABELS",
+          "isPhysicallyShaftCertified": false
+        },
+        {
+          "index": 15,
+          "valueA": 150,
+          "sourceCentroidPx": [
+            818.1,
+            168.2
+          ],
+          "angleDeg": 26.58,
+          "innerStrokeRadiusPx": 130.2,
+          "category": "PRINTED_MAJOR_LONG",
+          "isPhysicallyShaftCertified": false
+        },
+        {
+          "index": 16,
+          "valueA": 160,
+          "sourceCentroidPx": [
+            832.5,
+            169.4
+          ],
+          "angleDeg": 31.71,
+          "innerStrokeRadiusPx": 143.3,
+          "category": "MINOR_BETWEEN_MAJOR_LABELS",
+          "isPhysicallyShaftCertified": false
+        },
+        {
+          "index": 17,
+          "valueA": 170,
+          "sourceCentroidPx": [
+            844,
+            176.5
+          ],
+          "angleDeg": 36.84,
+          "innerStrokeRadiusPx": 143.6,
+          "category": "MINOR_BETWEEN_MAJOR_LABELS",
+          "isPhysicallyShaftCertified": false
+        },
+        {
+          "index": 18,
+          "valueA": 180,
+          "sourceCentroidPx": [
+            854.1,
+            185.3
+          ],
+          "angleDeg": 41.92,
+          "innerStrokeRadiusPx": 144.3,
+          "category": "MINOR_BETWEEN_MAJOR_LABELS",
+          "isPhysicallyShaftCertified": false
+        },
+        {
+          "index": 19,
+          "valueA": 190,
+          "sourceCentroidPx": [
+            863.5,
+            194.3
+          ],
+          "angleDeg": 46.87,
+          "innerStrokeRadiusPx": 144.2,
+          "category": "MINOR_BETWEEN_MAJOR_LABELS",
+          "isPhysicallyShaftCertified": false
+        },
+        {
+          "index": 20,
+          "valueA": 200,
+          "sourceCentroidPx": [
+            868.3,
+            207.1
+          ],
+          "angleDeg": 51.83,
+          "innerStrokeRadiusPx": 132.4,
+          "category": "PRINTED_MAJOR_LONG",
+          "isPhysicallyShaftCertified": false
+        }
+      ]
+    }
+  ]
+}
