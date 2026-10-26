@@ -1,0 +1,64 @@
+{
+  "schema": "b737.lamps.readability-face-overrides.v1",
+  "revision": "READABILITY-0001",
+  "sourceRegistrationVersion": "LGT-0012",
+  "instances": {
+    "flight-recorder-off": {
+      "asset": "OFF_LAMP",
+      "sourceRect": [
+        1485,
+        439,
+        40,
+        31
+      ],
+      "states": {
+        "OFF": {
+          "url": "../assets/lights/readability-v1/flight-recorder-off_OFF.svg",
+          "sha256": "15589c9302546cf7fc58568166c1c1d914537fba03e0724b0dd5525e3c4b1d36"
+        },
+        "ON": {
+          "url": "../assets/lights/readability-v1/flight-recorder-off_ON.svg",
+          "sha256": "a693e57c91de31cc83ab3cc50cce5cd8291f029cc5368671b53d0373bb32525b"
+        }
+      }
+    },
+    "irs-l-align": {
+      "asset": "ALIGN_WHITE",
+      "sourceRect": [
+        428,
+        535,
+        64,
+        32
+      ],
+      "states": {
+        "ON": {
+          "url": "../assets/lights/readability-v1/irs-l-align_ON.svg",
+          "sha256": "998c25acb76dd2e85df5bdcc5b06894dbb5a3513358e89f5ad47b1b91f1032b9"
+        },
+        "OFF": {
+          "url": "../assets/lights/readability-v1/irs-l-align_OFF.svg",
+          "sha256": "3c3778ba18c90b50102e9136a47b8c6e2548157db0a5846f99c7108bc9f8bd5d"
+        }
+      }
+    },
+    "irs-r-align": {
+      "asset": "ALIGN_WHITE",
+      "sourceRect": [
+        604,
+        535,
+        64,
+        32
+      ],
+      "states": {
+        "ON": {
+          "url": "../assets/lights/readability-v1/irs-r-align_ON.svg",
+          "sha256": "998c25acb76dd2e85df5bdcc5b06894dbb5a3513358e89f5ad47b1b91f1032b9"
+        },
+        "OFF": {
+          "url": "../assets/lights/readability-v1/irs-r-align_OFF.svg",
+          "sha256": "3c3778ba18c90b50102e9136a47b8c6e2548157db0a5846f99c7108bc9f8bd5d"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,282 @@
+{
+  "schema": "b737.lamps.readability-derivatives.v1",
+  "date": "2026-10-26",
+  "originalPhotoChanges": 0,
+  "originalArtworkChanges": 0,
+  "states": [
+    {
+      "scope": "overhead",
+      "id": "flight-recorder-off",
+      "asset": "OFF_LAMP",
+      "state": "OFF",
+      "sourceRect": [
+        1485,
+        439,
+        40,
+        31
+      ],
+      "originalSource": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_flight-recorder-off_OFF_40x31.svg",
+      "originalSha256": "738f0e94256908eac1096fed012aaacca17d6c3f14318dd5e81c22f4546b470a",
+      "derived": "panel-mosaic-lab/assets/lights/readability-v1/flight-recorder-off_OFF.svg",
+      "derivedSha256": "15589c9302546cf7fc58568166c1c1d914537fba03e0724b0dd5525e3c4b1d36",
+      "legend": [
+        "OFF"
+      ],
+      "geometryChanged": false,
+      "readabilityStatus": "QA_REQUIRED"
+    },
+    {
+      "scope": "overhead",
+      "id": "flight-recorder-off",
+      "asset": "OFF_LAMP",
+      "state": "ON",
+      "sourceRect": [
+        1485,
+        439,
+        40,
+        31
+      ],
+      "originalSource": "panel-mosaic-lab/assets/lights/instance-fit-v1/OVERHEAD_flight-recorder-off_ON_40x31.svg",
+      "originalSha256": "4aa480d9a14d351c215a7fee036e603db3e30b8592680cfe47c041f67bbbed6d",
+      "derived": "panel-mosaic-lab/assets/lights/readability-v1/flight-recorder-off_ON.svg",
+      "derivedSha256": "a693e57c91de31cc83ab3cc50cce5cd8291f029cc5368671b53d0373bb32525b",
+      "legend": [
+        "OFF",
+        "OFF",
+        "OFF"
+      ],
+      "geometryChanged": false,
+      "readabilityStatus": "QA_REQUIRED"
+    },
+    {
+      "scope": "overhead",
+      "id": "irs-l-align",
+      "asset": "ALIGN_WHITE",
+      "state": "ON",
+      "sourceRect": [
+        428,
+        535,
+        64,
+        32
+      ],
+      "originalSource": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/black-white-v1/mounted/ALIGN_WHITE_ON.svg",
+      "originalSha256": "9a3db74bb9e16ff5345deaf318053ce716d59b013bb90c68004fa4d38a2897a9",
+      "derived": "panel-mosaic-lab/assets/lights/readability-v1/irs-l-align_ON.svg",
+      "derivedSha256": "998c25acb76dd2e85df5bdcc5b06894dbb5a3513358e89f5ad47b1b91f1032b9",
+      "legend": [
+        "ALIGN",
+        "ALIGN"
+      ],
+      "geometryChanged": false,
+      "readabilityStatus": "QA_REQUIRED"
+    },
+    {
+      "scope": "overhead",
+      "id": "irs-l-align",
+      "asset": "ALIGN_WHITE",
+      "state": "OFF",
+      "sourceRect": [
+        428,
+        535,
+        64,
+        32
+      ],
+      "originalSource": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/black-white-v1/mounted/ALIGN_WHITE_OFF.svg",
+      "originalSha256": "82ee529e8a2786fa49be85b4c6b19a1cb9a230fde718831f12d034f9cbc5d30b",
+      "derived": "panel-mosaic-lab/assets/lights/readability-v1/irs-l-align_OFF.svg",
+      "derivedSha256": "3c3778ba18c90b50102e9136a47b8c6e2548157db0a5846f99c7108bc9f8bd5d",
+      "legend": [
+        "ALIGN"
+      ],
+      "geometryChanged": false,
+      "readabilityStatus": "QA_REQUIRED"
+    },
+    {
+      "scope": "overhead",
+      "id": "irs-r-align",
+      "asset": "ALIGN_WHITE",
+      "state": "ON",
+      "sourceRect": [
+        604,
+        535,
+        64,
+        32
+      ],
+      "originalSource": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/black-white-v1/mounted/ALIGN_WHITE_ON.svg",
+      "originalSha256": "9a3db74bb9e16ff5345deaf318053ce716d59b013bb90c68004fa4d38a2897a9",
+      "derived": "panel-mosaic-lab/assets/lights/readability-v1/irs-r-align_ON.svg",
+      "derivedSha256": "998c25acb76dd2e85df5bdcc5b06894dbb5a3513358e89f5ad47b1b91f1032b9",
+      "legend": [
+        "ALIGN",
+        "ALIGN"
+      ],
+      "geometryChanged": false,
+      "readabilityStatus": "QA_REQUIRED"
+    },
+    {
+      "scope": "overhead",
+      "id": "irs-r-align",
+      "asset": "ALIGN_WHITE",
+      "state": "OFF",
+      "sourceRect": [
+        604,
+        535,
+        64,
+        32
+      ],
+      "originalSource": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/black-white-v1/mounted/ALIGN_WHITE_OFF.svg",
+      "originalSha256": "82ee529e8a2786fa49be85b4c6b19a1cb9a230fde718831f12d034f9cbc5d30b",
+      "derived": "panel-mosaic-lab/assets/lights/readability-v1/irs-r-align_OFF.svg",
+      "derivedSha256": "3c3778ba18c90b50102e9136a47b8c6e2548157db0a5846f99c7108bc9f8bd5d",
+      "legend": [
+        "ALIGN"
+      ],
+      "geometryChanged": false,
+      "readabilityStatus": "QA_REQUIRED"
+    },
+    {
+      "scope": "main",
+      "id": "main-stab-trim",
+      "asset": "STAB_OUT_OF_TRIM",
+      "state": "OFF",
+      "sourceRect": [
+        255,
+        740,
+        88,
+        59
+      ],
+      "originalSource": "panel-mosaic-lab/assets/lights/precision-fit-v1/STAB_OUT_OF_TRIM_OFF_88x59.svg",
+      "originalSha256": "47d79eb15579d22687f0564e36e403bb8ef7c9244a2286d0d416155d650fd129",
+      "derived": "panel-mosaic-lab/assets/lights/readability-v1/main-stab-trim_OFF.svg",
+      "derivedSha256": "7387e3249f5c360cda36760c1d9caa5a51d9a7675c8d48e1368cf35f037f710c",
+      "legend": [
+        "STAB",
+        "OUT OF",
+        "TRIM"
+      ],
+      "geometryChanged": false,
+      "readabilityStatus": "QA_REQUIRED"
+    },
+    {
+      "scope": "main",
+      "id": "main-stab-trim",
+      "asset": "STAB_OUT_OF_TRIM",
+      "state": "ON",
+      "sourceRect": [
+        255,
+        740,
+        88,
+        59
+      ],
+      "originalSource": "panel-mosaic-lab/assets/lights/precision-fit-v1/STAB_OUT_OF_TRIM_ON_88x59.svg",
+      "originalSha256": "36a2a11ea9e31c75f66dee09721e4a691441e900f337a4577a21c6390c6ce6c5",
+      "derived": "panel-mosaic-lab/assets/lights/readability-v1/main-stab-trim_ON.svg",
+      "derivedSha256": "67f1b088a2f548e1b98c39c7002f9dc2469dbada7923e28075aeb64a652b61b4",
+      "legend": [
+        "STAB",
+        "OUT OF",
+        "TRIM",
+        "STAB",
+        "OUT OF",
+        "TRIM",
+        "STAB",
+        "OUT OF",
+        "TRIM"
+      ],
+      "geometryChanged": false,
+      "readabilityStatus": "QA_REQUIRED"
+    },
+    {
+      "scope": "main",
+      "id": "main-antiskid",
+      "asset": "ANTI_SKID_INOP",
+      "state": "OFF",
+      "sourceRect": [
+        59,
+        507,
+        82,
+        32
+      ],
+      "originalSource": "panel-mosaic-lab/assets/lights/precision-fit-v1/ANTI_SKID_INOP_OFF_82x32.svg",
+      "originalSha256": "1b4990a893b3d384ae7364045d278390217276ca8ada6210d6e4715f36f4b8f7",
+      "derived": "panel-mosaic-lab/assets/lights/readability-v1/main-antiskid_OFF.svg",
+      "derivedSha256": "ff74f1df982e6c6dec5f21a606e9a785466c9bcb7a6b02920697f19223d69df7",
+      "legend": [
+        "ANTI SKID",
+        "INOP"
+      ],
+      "geometryChanged": false,
+      "readabilityStatus": "QA_REQUIRED"
+    },
+    {
+      "scope": "main",
+      "id": "main-antiskid",
+      "asset": "ANTI_SKID_INOP",
+      "state": "ON",
+      "sourceRect": [
+        59,
+        507,
+        82,
+        32
+      ],
+      "originalSource": "panel-mosaic-lab/assets/lights/precision-fit-v1/ANTI_SKID_INOP_ON_82x32.svg",
+      "originalSha256": "ec601a6ef6dd7a83d9946e141034314a4a933b1c19a600e1a105d4be82ac141c",
+      "derived": "panel-mosaic-lab/assets/lights/readability-v1/main-antiskid_ON.svg",
+      "derivedSha256": "031a1861da3616b42cb2b34edd322a46c95fa8de38b496157f6644325a6992f8",
+      "legend": [
+        "ANTI SKID",
+        "INOP",
+        "ANTI SKID",
+        "INOP",
+        "ANTI SKID",
+        "INOP"
+      ],
+      "geometryChanged": false,
+      "readabilityStatus": "QA_REQUIRED"
+    },
+    {
+      "scope": "main",
+      "id": "main-at-lim",
+      "asset": "A_T_LIM_WHITE",
+      "state": "OFF",
+      "sourceRect": [
+        590,
+        257,
+        82,
+        35
+      ],
+      "originalSource": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/black-white-v1/mounted/A_T_LIM_WHITE_OFF.svg",
+      "originalSha256": "2db20e9200b8ce678af2735a3647194438db0fc091ca4bf661d43bce01a43211",
+      "derived": "panel-mosaic-lab/assets/lights/readability-v1/main-at-lim_OFF.svg",
+      "derivedSha256": "66dadeafa6d90c25a3d08a8ff6e7cd836dab44890ecaf42957523a67cbbd45f4",
+      "legend": [
+        "A/T LIM"
+      ],
+      "geometryChanged": false,
+      "readabilityStatus": "QA_REQUIRED"
+    },
+    {
+      "scope": "main",
+      "id": "main-at-lim",
+      "asset": "A_T_LIM_WHITE",
+      "state": "ON",
+      "sourceRect": [
+        590,
+        257,
+        82,
+        35
+      ],
+      "originalSource": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/black-white-v1/mounted/A_T_LIM_WHITE_ON.svg",
+      "originalSha256": "551b562a6cceb99081b2a47ec1a84c852573ebc59542db1ef5f32b88dbe07b8c",
+      "derived": "panel-mosaic-lab/assets/lights/readability-v1/main-at-lim_ON.svg",
+      "derivedSha256": "d686045986ee557a2fba7fee661c8f5b39fe78056a3833984339787f79c5c178",
+      "legend": [
+        "A/T LIM",
+        "A/T LIM"
+      ],
+      "geometryChanged": false,
+      "readabilityStatus": "QA_REQUIRED"
+    }
+  ],
+  "status": "SMALL_SCALE_COMPARISON_REQUIRED"
+}
