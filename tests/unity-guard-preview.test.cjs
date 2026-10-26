@@ -32,6 +32,9 @@ test('Open/closed preview body inherits identical shape, dimensions, material an
  }
  assert.equal([...stylesheet.matchAll(/\.cover\.hinge-[a-z]+\.open\{/g)].length,4);
  assert.match(script,/mat\.swatchHex/);
+ assert.ok(script.includes('frame.append(under,cover,hinge)'),'fixed hinge must be sibling, not inside rotating guard');
+ assert.ok(!script.includes('cover.append(hinge)'),'hinge barrel cannot rotate with lid');
+ assert.ok(script.includes('cover.style.clipPath=profiles[g.contourProfile]'),'same contour used in both poses');
 });
 
 test('Browser mockup is independent of immutable original overhead and old guards',()=>{
