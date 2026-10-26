@@ -1,0 +1,48 @@
+name: B737 Main Instrument Panel 30-lamp typography family build
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - tools/build-main-lamp-typography-v1.cjs
+      - panel-mosaic-lab/lights-test/main-typography.test.cjs
+      - .github/workflows/main-lamp-typography.yml
+permissions:
+  contents: write
+concurrency:
+  group: mip-30-lamp-typography
+  cancel-in-progress: false
+jobs:
+  unify-typography:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Verify owner-locked reference images
+        run: python3 panel-mosaic-lab/verify-final-overhead.py
+      - name: Generate 30 typography families and all 60 dark/off/illuminated faces
+        run: node tools/build-main-lamp-typography-v1.cjs
+      - name: Validate preservation, model, fonts, and source pixel geometry
+        run: |
+          node panel-mosaic-lab/lights-test/main-typography.test.cjs
+          node panel-mosaic-lab/cockpit/lights.test.cjs
+          node --check panel-mosaic-lab/cockpit/lights.js
+          node panel-mosaic-lab/lights-test/photo-pixel-registration-v4.test.cjs
+          python3 panel-mosaic-lab/verify-final-overhead.py
+      - name: Publish standalone per-socket vector derivatives and locked family mapping
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add panel-mosaic-lab/assets/lights/main-type-v1/ panel-mosaic-lab/cockpit/typography-faces.json panel-mosaic-lab/lights-test/main-type-audit-v1.json
+          if git diff --cached --quiet; then echo "No generated font changes"; exit 0; fi
+          git commit -m "feat(MIP): source-safe family typography for all 30 annunciators in 60 light states"
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git rebase origin/main
+            if git push origin HEAD:main; then echo "MIP_TYPO_SHA=$(git rev-parse HEAD)"; exit 0; fi
+            sleep 2
+          done
+          exit 1
