@@ -14,13 +14,13 @@ main{max-width:1500px;margin:auto;padding:18px;display:grid;grid-template-column
 .row{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center}
 h2{font-size:16px;margin:0 0 12px}.small{font-size:11px;color:var(--muted)}
 .board-wrap{background:#080d11;border:1px solid #45535e;padding:8px;border-radius:10px;max-width:100%;overflow:auto}
-#board{position:relative;direction:ltr;max-width:100%;margin:auto;min-height:320px}#base{display:block;width:100%;height:auto;user-select:none;pointer-events:none}
+#board{position:relative;direction:ltr;max-width:100%;margin:auto;min-height:0;margin-block:-4.35%}#base{display:block;width:100%;height:auto;user-select:none;pointer-events:none}
 .asset{position:absolute;translate:-50% -50%;border:1px solid transparent;display:grid;place-items:center;touch-action:none;z-index:2;user-select:none;transition:filter 180ms}
-.asset img{display:block;max-height:100%;width:100%;object-fit:contain;pointer-events:none}
-.asset.handle{width:13%;height:28%;z-index:3;cursor:pointer}.asset.handle img{width:100%;height:100%}
-.asset.lamp{width:13%;height:9%;cursor:default}.asset.lamp img{width:100%;height:100%}
-.asset.placeholder{background:#131619;color:#eac88c;border:1px solid #9e8152;font:bold 10px/1.2 Consolas,monospace;min-width:80px;padding:4px;text-align:center;border-radius:3px}
-.asset.placeholder.on{background:#71521f;color:#ffdd83;box-shadow:0 0 14px #ffe39977}
+.asset img{display:block;max-height:100%;width:100%;height:100%;object-fit:contain;pointer-events:none}
+.asset.handle{z-index:3;cursor:pointer}.asset.handle img{width:100%;height:100%}
+.asset.lamp{cursor:default;overflow:hidden;border-radius:2px}.asset.lamp img{width:100%;height:100%;object-fit:cover;filter:brightness(1.85)}.asset.lamp.on img{filter:none}
+.asset.placeholder{display:none}
+.asset.placeholder.on{display:none}
 #board.edit .asset{outline:1px dashed #85d6e3;cursor:grab;background:#1b384744}#board.edit .asset:active{cursor:grabbing}
 .asset.selected{outline:2px solid #ffe69e!important}
 .legend{margin-top:10px;display:flex;flex-wrap:wrap;gap:7px}.legend span{font:11px/1.4 Consolas,monospace;border:1px solid #3e5665;border-radius:5px;padding:5px 7px}
@@ -37,9 +37,9 @@ label{font-size:12px;color:#bfd0db}.checks{display:grid;grid-template-columns:1f
 .indicator{font:11px/1.4 Consolas,monospace;direction:ltr;text-align:center;padding:6px 3px;background:#111b22;border:1px solid #344a55;border-radius:5px;color:#768994}
 .indicator.on.red{color:#ffaaa2;background:#4d1719;border-color:#f96555}.indicator.on.amber{color:#ffe6a8;background:#62441c;border-color:#ebbc62}.indicator.on.green{color:#b0ffd6;background:#164b38;border-color:#73ca9b}
 .bottom{grid-column:1/-1}.bottom p{font-size:12px;color:#b7cad4;margin:4px 0}
-#message{font:12px Consolas,monospace;direction:ltr;color:#d0eac3}
+#message{font:12px Consolas,monospace;direction:ltr;color:#d0eac3}details.group{border-top:1px solid #3a5260;padding-top:10px}details.group summary{font-weight:700;cursor:pointer;color:#b8d9e5;list-style-position:inside}details.group[open] summary{margin-bottom:10px}
 @media(max-width:1060px){main{grid-template-columns:1fr}.control-panel{grid-row:2}.bottom{grid-row:3}}
-@media(max-width:650px){.viewer,.control-panel,.bottom{padding:10px}.asset.lamp{width:16%}.asset.handle{width:17%}}
+@media(max-width:650px){.viewer,.control-panel,.bottom{padding:10px}}
 </style>
 </head>
 <body>
@@ -51,9 +51,9 @@ label{font-size:12px;color:#bfd0db}.checks{display:grid;grid-template-columns:1f
 <section class="viewer">
 <div class="row"><h2>تصویر پایه و لایه‌های دینامیک</h2><div class="row"><button id="edit" aria-pressed="false">تنظیم موقعیت تصاویر</button><button id="layout-reset">بازنشانی چیدمان</button></div></div>
 <div class="board-wrap"><div id="board"><img id="base" src="../panel-mosaic-lab/assets/locked/2026-10-23/Fire_Protection_Panel_Blank_With_Buttons.png" alt="Approved Fire Protection blank cockpit background"><div id="overlays"></div></div></div>
-<p class="small">موقعیت‌های اولیه هنوز تأیید پیکسلی نشده‌اند. دکمه «تنظیم موقعیت تصاویر» را فعال کنید و چراغ‌ها/هندل‌ها را جابه‌جا کنید. این تغییر فقط در مرورگر شما ذخیره می‌شود؛ تصاویر قفل‌شده دست‌نخورده می‌مانند.</p>
+<p class="small">موقعیت‌ها از روی تصویر ارسالی اندازه‌گیری و برای هر خانه مستقل تنظیم شده‌اند. تأیید پیکسلی نهایی همچنان باز است؛ ویرایش موقعیت تنها در مرورگر ذخیره می‌شود و هیچ تصویر قفل‌شده‌ای تغییر نمی‌کند.</p>
 <div class="legend"><span>RED · Fire / Wheel Well</span><span>AMBER · OVHT / Fault / Bottle</span><span>GREEN · EXT circuit tests</span></div>
-<div class="group"><h3>خروجی‌های سیستم و هشدار</h3><div id="indicators" class="indicators"></div></div>
+<details class="group"><summary>خروجی‌های سیستم و هشدار (باز کردن)</summary><div id="indicators" class="indicators"></div></details>
 </section>
 <aside class="control-panel">
 <div class="row"><h2>Fire Protection · Test Bench</h2><button id="reset" class="reset">RESET ALL</button></div>
@@ -62,8 +62,8 @@ label{font-size:12px;color:#bfd0db}.checks{display:grid;grid-template-columns:1f
 <h3>Spring-loaded Tests</h3><div class="buttons" id="tests"><button data-test="EXT_1">EXT 1</button><button data-test="EXT_2">EXT 2</button><button data-test="FAULT_INOP">FAULT/INOP</button><button data-test="OVHT_FIRE">OVHT/FIRE</button></div>
 <button id="cutout">FIRE WARN · BELL CUTOUT</button>
 </div>
-<div class="group"><h3>Inject Fault / Fire</h3><div id="scenario-checks" class="checks"></div></div>
-<div class="group"><h3>Detector Loop Integrity</h3><div id="integrity-checks" class="checks"></div></div>
+<details class="group"><summary>Inject Fault / Fire</summary><div id="scenario-checks" class="checks"></div></details>
+<details class="group"><summary>Detector Loop Integrity</summary><div id="integrity-checks" class="checks"></div></details>
 <div class="group"><h3>Extinguishing Handles</h3><div id="handles"></div></div>
 <div class="group"><h3>Event / Interlock feedback</h3><div id="message">Ready</div><pre id="log">READY · cold & dark indications</pre></div>
 </aside>
@@ -73,7 +73,7 @@ label{font-size:12px;color:#bfd0db}.checks{display:grid;grid-template-columns:1f
 <p>خروجی قطع سوخت، هیدرولیک، Bleed و Generator در وضعیت شبیه‌ساز این آزمایشگاه محاسبه می‌شود، اما هنوز به موتورهای اصلی هواپیما متصل نشده است. این صفحه جایگزین بازبینی تصویری، استانداردهای ایمنی یا اعتبارسنجی عملکرد هواپیمای واقعی نیست.</p>
 </section>
 </main>
-<script src="./engine.js"></script>
+<script src="./engine.js"></script><script src="./geometry-v2.js"></script>
 <script>
 (function(){
 'use strict';
@@ -90,15 +90,15 @@ const lamps=[
  ['WHEEL_WELL','WHEEL_WELL_RED',50,27],
  ['APU_BOTTLE_DISCHARGED',null,50,90]
 ];
-const handles=[['ENG1',21,50],['APU',50,50],['ENG2',79,50]];
-const allPositions={};[...lamps.map(x=>[x[0],x[2],x[3]]),...handles.map(x=>['HANDLE_'+x[0],x[1],x[2]])].forEach(x=>allPositions[x[0]]={x:x[1],y:x[2]});
-const layoutsKey='b737.fireProtection.preview.layout.v1';let positions={...allPositions};
+const handles=[['ENG1',20.8,65],['APU',49.9,65],['ENG2',78.9,65]];
+const allPositions={};const slotGeometry=window.B737FirePanelGeometry?.slots||{};for(const [id,slot] of Object.entries(slotGeometry)){if(!slot.assetPending)allPositions[id]={x:slot.x,y:slot.y};}
+const layoutsKey='b737.fireProtection.preview.layout.v2';let positions={...allPositions};
 try{const p=JSON.parse(localStorage.getItem(layoutsKey));if(p&&typeof p==='object')for(const [id,pt] of Object.entries(p)){if(allPositions[id]&&Number.isFinite(pt.x)&&Number.isFinite(pt.y))positions[id]={x:pt.x,y:pt.y};}}catch(_){}
 const board=document.getElementById('board'),overlays=document.getElementById('overlays');
 let edit=false,selected=null;const nodes={};
 function addAsset(id,className,title){
  const el=document.createElement('div');el.className='asset '+className;el.dataset.id=id;el.title=title||id;el.setAttribute('role','img');el.setAttribute('aria-label',title||id);
- overlays.appendChild(el);nodes[id]=el;move(id);
+ const g=slotGeometry[id];if(g){el.style.width=g.w+'%';el.style.height=g.h+'%';}overlays.appendChild(el);nodes[id]=el;move(id);
  el.addEventListener('pointerdown',ev=>{
   if(!edit)return;ev.preventDefault();ev.stopPropagation();selected=id;el.classList.add('selected');el.setPointerCapture(ev.pointerId);
  });
@@ -114,7 +114,7 @@ function addAsset(id,className,title){
 }
 function move(id){if(!nodes[id])return;nodes[id].style.left=positions[id].x+'%';nodes[id].style.top=positions[id].y+'%';}
 for(const [id,name] of lamps){
- const el=addAsset(id,name?'lamp':'lamp placeholder',id);if(name){const img=document.createElement('img');img.alt=id;el.appendChild(img);}
+ if(!name)continue;const el=addAsset(id,'lamp',id);if(name){const img=document.createElement('img');img.alt=id;el.appendChild(img);}
  else el.textContent='APU BOTTLE\nDISCHARGED';
 }
 for(const [unit] of handles){
@@ -168,7 +168,7 @@ function assetUrl(id,state){
 }
 function render(){
  const s=e.getState(),d=e.evaluate(),ind=d.indications;
- for(const [id,name] of lamps){const el=nodes[id],on=Boolean(ind[id]);el.classList.toggle('on',on);if(name)el.querySelector('img').src=assetUrl(id,on);}
+ for(const [id,name] of lamps){const el=nodes[id],on=Boolean(ind[id]);if(!el)continue;el.classList.toggle('on',on);if(name)el.querySelector('img').src=assetUrl(id,on);}
  for(const [unit] of handles){const el=nodes['HANDLE_'+unit],st=s.handles[unit],on=Boolean(ind[unit+'_FIRE']);
  el.querySelector('img').src=handleBase+'FIRE_HANDEL_'+unit+'_'+(on?'ON':'OFF')+'.webp';
  el.style.rotate=st.angle+'deg';el.title=unit+' · '+(st.pulled?'PULLED':'IN')+' · '+st.angle+'°';}
