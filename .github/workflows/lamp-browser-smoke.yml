@@ -10,6 +10,8 @@ on:
       - panel-mosaic-lab/cockpit/lights.js
       - panel-mosaic-lab/interactive-overhead/instance-faces.json
       - panel-mosaic-lab/cockpit/instance-faces.json
+      - panel-mosaic-lab/cockpit/typography-faces.json
+      - panel-mosaic-lab/assets/lights/main-type-v1/**
 permissions:
   contents: read
 jobs:
