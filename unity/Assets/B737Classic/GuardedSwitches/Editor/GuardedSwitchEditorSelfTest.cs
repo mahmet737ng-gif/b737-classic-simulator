@@ -82,6 +82,27 @@ namespace B737Classic.GuardedSwitches.Editor
                         Require(controller.InvariantsHold(), spec.controlId + " close-after-open identity");
                         Require(Quaternion.Angle(closed, pivot.localRotation) < 0.001f,
                             spec.controlId + " returns to exact closed pose");
+
+                        // Test the physical toggle under the cover, too.
+                        GuardActuatorView actuator=root.GetComponentInChildren<GuardActuatorView>(true);
+                        Require(actuator!=null, spec.controlId + " must have independent switch hardware");
+                        Require(actuator.InvariantsHold(), spec.controlId + " hardware visual identity");
+                        Require(!actuator.CyclePreview(),
+                            spec.controlId + " inaccessible under closed guard");
+                        controller.SetOpen(true,true);
+                        Require(actuator.DetentLabels.Length==spec.switchAppearance.detentLabels.Length,
+                            spec.controlId + " FCOM states");
+                        for(int detent=0;detent<actuator.DetentLabels.Length;detent++)
+                        {
+                            actuator.SetIndex(detent,true);
+                            Require(actuator.InvariantsHold(),
+                                spec.controlId + " mesh/material/size fixed at detent "+detent);
+                            Require(actuator.StateLabel==spec.switchAppearance.detentLabels[detent],
+                                spec.controlId + " label aligned with current detent");
+                        }
+                        Require(actuator.CyclePreview(),spec.controlId + " operable only when open");
+                        Require(actuator.InvariantsHold(),spec.controlId + " immutable post-interaction");
+                        controller.SetOpen(false,true);
                         tested++;
                     }
                     finally
@@ -91,8 +112,9 @@ namespace B737Classic.GuardedSwitches.Editor
                 }
             }
 
-            Debug.Log("UNITY COVER IDENTITY PASS: " + tested +
-                      " instances (17 guards x 3 repetitions), fixed hinge and body identity.");
+            Debug.Log("UNITY COVER + ACTUATOR IDENTITY PASS: " + tested +
+                      " instances (17 guarded controls x 3 repetitions); stationary materials, " +
+                      "detents and unchanged meshes verified.");
 
             // Independent GPWS validation: there are three physically separate
             // covers, but their procedural shape, bounds, thickness and material
