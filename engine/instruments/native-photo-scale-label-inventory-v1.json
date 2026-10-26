@@ -1,0 +1,186 @@
+{
+  "schema": "b737.source-photo-printed-gauge-values.review-v1",
+  "evidence": "Original full-resolution immutable photographs opened and visually inspected 2026-10-26; labels are visually transcribed, not OCR guesses. Per-line pixel bearings NOT fully signed off.",
+  "classifications": [
+    {
+      "panel": "OH10",
+      "instruments": [
+        "dcAmps"
+      ],
+      "sourceVariant": "classic",
+      "scale": "DC AMPS",
+      "printedNumberLabels": [
+        -50,
+        0,
+        50
+      ],
+      "unit": "A",
+      "valueIntervalsKnownFully": false
+    },
+    {
+      "panel": "OH10",
+      "instruments": [
+        "cps"
+      ],
+      "sourceVariant": "classic",
+      "scale": "CPS (frequency)",
+      "printedNumberLabels": [
+        0,
+        400,
+        420
+      ],
+      "unit": "CPS",
+      "valueIntervalsKnownFully": false,
+      "warning": "Nonuniform numeric span: 0->400 and 400->420 must be measured independently"
+    },
+    {
+      "panel": "OH10",
+      "instruments": [
+        "dcVolts"
+      ],
+      "sourceVariant": "classic",
+      "scale": "DC VOLTS",
+      "printedNumberLabels": [
+        0,
+        20,
+        40
+      ],
+      "unit": "V",
+      "valueIntervalsKnownFully": false
+    },
+    {
+      "panel": "OH10",
+      "instruments": [
+        "acVolts"
+      ],
+      "sourceVariant": "classic",
+      "scale": "AC VOLTS",
+      "printedNumberLabels": [
+        100,
+        110,
+        120,
+        130
+      ],
+      "unit": "V",
+      "valueIntervalsKnownFully": false
+    },
+    {
+      "panel": "OH11",
+      "instruments": [
+        "driveOil1",
+        "driveOil2"
+      ],
+      "sourceVariant": "classic",
+      "scale": "GEN DRIVE TEMP RISE",
+      "printedNumberLabels": [
+        0,
+        10,
+        20,
+        30
+      ],
+      "unit": "RISE_Celsius",
+      "valueIntervalsKnownFully": false,
+      "reviewedInterval": "10..20 has 1 intermediate tick, step 5"
+    },
+    {
+      "panel": "OH11",
+      "instruments": [
+        "driveOil1",
+        "driveOil2"
+      ],
+      "sourceVariant": "classic",
+      "scale": "GEN DRIVE OIL TEMP INNER",
+      "printedNumberLabels": [
+        80,
+        120,
+        160
+      ],
+      "unit": "C",
+      "valueIntervalsKnownFully": false,
+      "warning": "Printed inner numbers belong to a distinct adjacent scale; do not overwrite TEMP RISE mapping"
+    },
+    {
+      "panel": "OH12",
+      "instruments": [
+        "acAmps1",
+        "acAmps2",
+        "apuAcAmps"
+      ],
+      "sourceVariant": "classic",
+      "scale": "A.C. AMPS",
+      "printedNumberLabels": [
+        0,
+        50,
+        100,
+        150,
+        200
+      ],
+      "unit": "A",
+      "valueIntervalsKnownFully": false,
+      "reviewedInterval": "50..100 has 4 intermediate ticks, step 10 A"
+    },
+    {
+      "panel": "OH20",
+      "instruments": [
+        "cabinTemp"
+      ],
+      "sourceVariant": "300/500",
+      "scale": "CABIN AIR TEMP",
+      "printedNumberLabels": [
+        0,
+        20,
+        40,
+        60,
+        80,
+        100
+      ],
+      "unit": "C",
+      "valueIntervalsKnownFully": false
+    },
+    {
+      "panel": "OH20-400",
+      "instruments": [
+        "cabinTemp400"
+      ],
+      "sourceVariant": "400",
+      "scale": "AIR TEMP",
+      "printedNumberLabels": [
+        0,
+        20,
+        40,
+        60,
+        80,
+        100
+      ],
+      "unit": "C",
+      "valueIntervalsKnownFully": false,
+      "warning": "Distinct owner source photo and pivot at native 284,268"
+    },
+    {
+      "panel": "OH21",
+      "instruments": [
+        "ductPressure_L",
+        "ductPressure_R"
+      ],
+      "sourceVariant": "classic",
+      "scale": "DUCT PRESSURE",
+      "printedNumberLabels": [
+        20,
+        40,
+        60,
+        80,
+        100
+      ],
+      "unit": "PSI",
+      "valueIntervalsKnownFully": false,
+      "warning": "No printed zero conclusively registered as a numeric anchor"
+    }
+  ],
+  "sourcePanels": 6,
+  "physicalNeedleInstances": 12,
+  "individualNumberAnchorsPhotoRead": true,
+  "allPrintedStrokesNumbered": false,
+  "allAngleCoordinatesPhotoCertified": false,
+  "allowedUse": "PHOTO_REVIEW_AND_UNIT_TESTS_ONLY",
+  "releaseApproved": false
+}
