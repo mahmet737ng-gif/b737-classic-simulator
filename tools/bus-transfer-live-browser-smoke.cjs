@@ -25,13 +25,13 @@ const assert=require('node:assert/strict'),{chromium}=require('playwright');
   assert.equal(off.electrical.feed.tie,false);assert.equal(off.electrical.revision,original+1);
   assert.equal(off.loads.coverage.loadsKnownBus,0);
   // Close both reference covers: must not be able to switch, even though control visible.
-  await frame.locator('.station.opened .cover').click();
+  await frame.locator('#busTransferGuardClose').click();
   await frame.locator('.station.opened .cover').count().then(n=>assert.equal(n,0));
   await frame.locator('#busTransferLiveAuto').click();
-  await frame.locator('#busTransferLiveStatus').getByText('اول گارد').waitFor().catch(()=>{});
+  assert.match(await frame.locator('#busTransferLiveStatus').innerText(),/اول گارد/);
   assert.equal((await snap()).electrical.revision,off.electrical.revision);
   // Open one physical preview cover and restore AUTO.
-  await frame.locator('.station.closed .cover').first().click();
+  await frame.locator('#busTransferGuardOpen').click();
   await frame.locator('#busTransferLiveAuto').click();
   await frame.locator('#busTransferLiveAuto[aria-pressed="true"]').waitFor();
   const auto=await snap();assert.equal(auto.electrical.feed.tie,true);
