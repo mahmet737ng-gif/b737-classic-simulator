@@ -94,6 +94,38 @@
         ],
         "visibility": "complete",
         "pose": "CLOSED_REFERENCE_ONLY"
+      },
+      "switchAppearance": {
+        "schema": "b737-classic/guarded-underlying-switch-preview/v1",
+        "designStage": "DRAFT_VISUAL_NOT_HARDWARE_CERTIFIED",
+        "family": "satin-mini-toggle",
+        "actuatorType": "metal-shaft",
+        "detentAxis": "vertical",
+        "detentLabels": [
+          "STBY RUD",
+          "OFF",
+          "ON"
+        ],
+        "initialState": "ON",
+        "momentary": false,
+        "shaftRelativeScale": 0.22,
+        "gripRelativeScale": 0.24,
+        "shaftLengthScale": 1,
+        "faceHex": "#12181C",
+        "ringHex": "#8B9299",
+        "shaftHex": "#B6BDC3",
+        "gripHex": "#373A3F",
+        "shaftMetallic": 0.74,
+        "shaftRoughness": 0.27,
+        "gripMetallic": 0.2,
+        "gripRoughness": 0.67,
+        "detentTiltDegrees": 21,
+        "transformOnlyAnimation": true,
+        "meshMaterialInvariant": true,
+        "dimensions": "RELATIVE_TO_GUARD_PREVIEW_NOT_MEASURED",
+        "confidence": "AUTHOR_PROVISIONAL_INTERPRETATION_OF_FCOM_STATES_AND_REFERENCE",
+        "sourceFcomFolio": "9.10.1",
+        "appearanceNotes": "Distinct photographed guard socket from underlying actuator; actuator geometry requires close-up confirmation."
       }
     },
     {
@@ -172,6 +204,38 @@
         ],
         "visibility": "complete",
         "pose": "CLOSED_REFERENCE_ONLY"
+      },
+      "switchAppearance": {
+        "schema": "b737-classic/guarded-underlying-switch-preview/v1",
+        "designStage": "DRAFT_VISUAL_NOT_HARDWARE_CERTIFIED",
+        "family": "satin-mini-toggle",
+        "actuatorType": "metal-shaft",
+        "detentAxis": "vertical",
+        "detentLabels": [
+          "STBY RUD",
+          "OFF",
+          "ON"
+        ],
+        "initialState": "ON",
+        "momentary": false,
+        "shaftRelativeScale": 0.22,
+        "gripRelativeScale": 0.24,
+        "shaftLengthScale": 1,
+        "faceHex": "#12181C",
+        "ringHex": "#8B9299",
+        "shaftHex": "#B6BDC3",
+        "gripHex": "#373A3F",
+        "shaftMetallic": 0.74,
+        "shaftRoughness": 0.27,
+        "gripMetallic": 0.2,
+        "gripRoughness": 0.67,
+        "detentTiltDegrees": 21,
+        "transformOnlyAnimation": true,
+        "meshMaterialInvariant": true,
+        "dimensions": "RELATIVE_TO_GUARD_PREVIEW_NOT_MEASURED",
+        "confidence": "AUTHOR_PROVISIONAL_INTERPRETATION_OF_FCOM_STATES_AND_REFERENCE",
+        "sourceFcomFolio": "9.10.1",
+        "appearanceNotes": "Distinct photographed guard socket from underlying actuator; actuator geometry requires close-up confirmation."
       }
     },
     {
@@ -250,6 +314,37 @@
         ],
         "visibility": "complete",
         "pose": "CLOSED_REFERENCE_ONLY"
+      },
+      "switchAppearance": {
+        "schema": "b737-classic/guarded-underlying-switch-preview/v1",
+        "designStage": "DRAFT_VISUAL_NOT_HARDWARE_CERTIFIED",
+        "family": "satin-mini-toggle",
+        "actuatorType": "metal-shaft",
+        "detentAxis": "vertical",
+        "detentLabels": [
+          "OFF",
+          "ON"
+        ],
+        "initialState": "ON",
+        "momentary": false,
+        "shaftRelativeScale": 0.24,
+        "gripRelativeScale": 0.25,
+        "shaftLengthScale": 1,
+        "faceHex": "#12181C",
+        "ringHex": "#8B9299",
+        "shaftHex": "#B6BDC3",
+        "gripHex": "#373A3F",
+        "shaftMetallic": 0.74,
+        "shaftRoughness": 0.27,
+        "gripMetallic": 0.2,
+        "gripRoughness": 0.67,
+        "detentTiltDegrees": 21,
+        "transformOnlyAnimation": true,
+        "meshMaterialInvariant": true,
+        "dimensions": "RELATIVE_TO_GUARD_PREVIEW_NOT_MEASURED",
+        "confidence": "AUTHOR_PROVISIONAL_INTERPRETATION_OF_FCOM_STATES_AND_REFERENCE",
+        "sourceFcomFolio": "9.10.2",
+        "appearanceNotes": "Distinct photographed guard socket from underlying actuator; actuator geometry requires close-up confirmation."
       }
     },
     {
@@ -328,6 +423,37 @@
         ],
         "visibility": "complete",
         "pose": "CLOSED_REFERENCE_ONLY"
+      },
+      "switchAppearance": {
+        "schema": "b737-classic/guarded-underlying-switch-preview/v1",
+        "designStage": "DRAFT_VISUAL_NOT_HARDWARE_CERTIFIED",
+        "family": "satin-mini-toggle",
+        "actuatorType": "metal-shaft",
+        "detentAxis": "vertical",
+        "detentLabels": [
+          "OFF",
+          "ON"
+        ],
+        "initialState": "ON",
+        "momentary": false,
+        "shaftRelativeScale": 0.24,
+        "gripRelativeScale": 0.25,
+        "shaftLengthScale": 1,
+        "faceHex": "#12181C",
+        "ringHex": "#8B9299",
+        "shaftHex": "#B6BDC3",
+        "gripHex": "#373A3F",
+        "shaftMetallic": 0.74,
+        "shaftRoughness": 0.27,
+        "gripMetallic": 0.2,
+        "gripRoughness": 0.67,
+        "detentTiltDegrees": 21,
+        "transformOnlyAnimation": true,
+        "meshMaterialInvariant": true,
+        "dimensions": "RELATIVE_TO_GUARD_PREVIEW_NOT_MEASURED",
+        "confidence": "AUTHOR_PROVISIONAL_INTERPRETATION_OF_FCOM_STATES_AND_REFERENCE",
+        "sourceFcomFolio": "9.10.2",
+        "appearanceNotes": "Distinct photographed guard socket from underlying actuator; actuator geometry requires close-up confirmation."
       }
     },
     {
@@ -406,6 +532,37 @@
         ],
         "visibility": "complete",
         "pose": "CLOSED_REFERENCE_ONLY"
+      },
+      "switchAppearance": {
+        "schema": "b737-classic/guarded-underlying-switch-preview/v1",
+        "designStage": "DRAFT_VISUAL_NOT_HARDWARE_CERTIFIED",
+        "family": "short-toggle",
+        "actuatorType": "metal-shaft",
+        "detentAxis": "vertical",
+        "detentLabels": [
+          "OFF",
+          "ARM"
+        ],
+        "initialState": "OFF",
+        "momentary": false,
+        "shaftRelativeScale": 0.22,
+        "gripRelativeScale": 0.25,
+        "shaftLengthScale": 1,
+        "faceHex": "#12181C",
+        "ringHex": "#8B9299",
+        "shaftHex": "#B6BDC3",
+        "gripHex": "#373A3F",
+        "shaftMetallic": 0.74,
+        "shaftRoughness": 0.27,
+        "gripMetallic": 0.2,
+        "gripRoughness": 0.67,
+        "detentTiltDegrees": 21,
+        "transformOnlyAnimation": true,
+        "meshMaterialInvariant": true,
+        "dimensions": "RELATIVE_TO_GUARD_PREVIEW_NOT_MEASURED",
+        "confidence": "AUTHOR_PROVISIONAL_INTERPRETATION_OF_FCOM_STATES_AND_REFERENCE",
+        "sourceFcomFolio": "9.10.2–9.10.3",
+        "appearanceNotes": "Distinct photographed guard socket from underlying actuator; actuator geometry requires close-up confirmation."
       }
     },
     {
@@ -484,6 +641,37 @@
         ],
         "visibility": "partial",
         "pose": "CLOSED_REFERENCE_ONLY"
+      },
+      "switchAppearance": {
+        "schema": "b737-classic/guarded-underlying-switch-preview/v1",
+        "designStage": "DRAFT_VISUAL_NOT_HARDWARE_CERTIFIED",
+        "family": "recessed-toggle",
+        "actuatorType": "metal-shaft",
+        "detentAxis": "vertical",
+        "detentLabels": [
+          "OFF",
+          "ON"
+        ],
+        "initialState": "ON",
+        "momentary": false,
+        "shaftRelativeScale": 0.25,
+        "gripRelativeScale": 0.22,
+        "shaftLengthScale": 1,
+        "faceHex": "#12181C",
+        "ringHex": "#8B9299",
+        "shaftHex": "#B6BDC3",
+        "gripHex": "#373A3F",
+        "shaftMetallic": 0.74,
+        "shaftRoughness": 0.27,
+        "gripMetallic": 0.2,
+        "gripRoughness": 0.67,
+        "detentTiltDegrees": 21,
+        "transformOnlyAnimation": true,
+        "meshMaterialInvariant": true,
+        "dimensions": "RELATIVE_TO_GUARD_PREVIEW_NOT_MEASURED",
+        "confidence": "AUTHOR_PROVISIONAL_INTERPRETATION_OF_FCOM_STATES_AND_REFERENCE",
+        "sourceFcomFolio": "6.10.5",
+        "appearanceNotes": "Distinct photographed guard socket from underlying actuator; actuator geometry requires close-up confirmation."
       }
     },
     {
@@ -567,6 +755,37 @@
         ],
         "visibility": "complete",
         "pose": "CLOSED_REFERENCE_ONLY"
+      },
+      "switchAppearance": {
+        "schema": "b737-classic/guarded-underlying-switch-preview/v1",
+        "designStage": "DRAFT_VISUAL_NOT_HARDWARE_CERTIFIED",
+        "family": "spring-release-plunger",
+        "actuatorType": "metal-plunger",
+        "detentAxis": "vertical",
+        "detentLabels": [
+          "REST",
+          "ACTUATE"
+        ],
+        "initialState": "REST",
+        "momentary": true,
+        "shaftRelativeScale": 0.28,
+        "gripRelativeScale": 0.24,
+        "shaftLengthScale": 1,
+        "faceHex": "#12181C",
+        "ringHex": "#8B9299",
+        "shaftHex": "#B6BDC3",
+        "gripHex": "#373A3F",
+        "shaftMetallic": 0.74,
+        "shaftRoughness": 0.27,
+        "gripMetallic": 0.2,
+        "gripRoughness": 0.67,
+        "detentTiltDegrees": 13,
+        "transformOnlyAnimation": true,
+        "meshMaterialInvariant": true,
+        "dimensions": "RELATIVE_TO_GUARD_PREVIEW_NOT_MEASURED",
+        "confidence": "AUTHOR_PROVISIONAL_INTERPRETATION_OF_FCOM_STATES_AND_REFERENCE",
+        "sourceFcomFolio": "6.10.6",
+        "appearanceNotes": "Visual spring-return action ONLY: FCOM does not prove two mechanically stable detents."
       }
     },
     {
@@ -650,6 +869,37 @@
         ],
         "visibility": "complete",
         "pose": "CLOSED_REFERENCE_ONLY"
+      },
+      "switchAppearance": {
+        "schema": "b737-classic/guarded-underlying-switch-preview/v1",
+        "designStage": "DRAFT_VISUAL_NOT_HARDWARE_CERTIFIED",
+        "family": "spring-release-plunger",
+        "actuatorType": "metal-plunger",
+        "detentAxis": "vertical",
+        "detentLabels": [
+          "REST",
+          "ACTUATE"
+        ],
+        "initialState": "REST",
+        "momentary": true,
+        "shaftRelativeScale": 0.28,
+        "gripRelativeScale": 0.24,
+        "shaftLengthScale": 1,
+        "faceHex": "#12181C",
+        "ringHex": "#8B9299",
+        "shaftHex": "#B6BDC3",
+        "gripHex": "#373A3F",
+        "shaftMetallic": 0.74,
+        "shaftRoughness": 0.27,
+        "gripMetallic": 0.2,
+        "gripRoughness": 0.67,
+        "detentTiltDegrees": 13,
+        "transformOnlyAnimation": true,
+        "meshMaterialInvariant": true,
+        "dimensions": "RELATIVE_TO_GUARD_PREVIEW_NOT_MEASURED",
+        "confidence": "AUTHOR_PROVISIONAL_INTERPRETATION_OF_FCOM_STATES_AND_REFERENCE",
+        "sourceFcomFolio": "6.10.6",
+        "appearanceNotes": "Visual spring-return action ONLY: FCOM does not prove two mechanically stable detents."
       }
     },
     {
@@ -733,6 +983,38 @@
         ],
         "visibility": "complete",
         "pose": "CLOSED_REFERENCE_ONLY"
+      },
+      "switchAppearance": {
+        "schema": "b737-classic/guarded-underlying-switch-preview/v1",
+        "designStage": "DRAFT_VISUAL_NOT_HARDWARE_CERTIFIED",
+        "family": "wide-micro-toggle",
+        "actuatorType": "metal-shaft",
+        "detentAxis": "horizontal",
+        "detentLabels": [
+          "BAT",
+          "OFF",
+          "AUTO"
+        ],
+        "initialState": "AUTO",
+        "momentary": false,
+        "shaftRelativeScale": 0.19,
+        "gripRelativeScale": 0.31,
+        "shaftLengthScale": 1,
+        "faceHex": "#12181C",
+        "ringHex": "#8B9299",
+        "shaftHex": "#B6BDC3",
+        "gripHex": "#373A3F",
+        "shaftMetallic": 0.74,
+        "shaftRoughness": 0.27,
+        "gripMetallic": 0.2,
+        "gripRoughness": 0.67,
+        "detentTiltDegrees": 21,
+        "transformOnlyAnimation": true,
+        "meshMaterialInvariant": true,
+        "dimensions": "RELATIVE_TO_GUARD_PREVIEW_NOT_MEASURED",
+        "confidence": "AUTHOR_PROVISIONAL_INTERPRETATION_OF_FCOM_STATES_AND_REFERENCE",
+        "sourceFcomFolio": "6.10.7",
+        "appearanceNotes": "Distinct photographed guard socket from underlying actuator; actuator geometry requires close-up confirmation."
       }
     },
     {
@@ -811,6 +1093,38 @@
         ],
         "visibility": "bottom-clipped",
         "pose": "CLOSED_REFERENCE_ONLY"
+      },
+      "switchAppearance": {
+        "schema": "b737-classic/guarded-underlying-switch-preview/v1",
+        "designStage": "DRAFT_VISUAL_NOT_HARDWARE_CERTIFIED",
+        "family": "slim-three-position",
+        "actuatorType": "metal-shaft",
+        "detentAxis": "vertical",
+        "detentLabels": [
+          "OFF",
+          "ARMED",
+          "ON"
+        ],
+        "initialState": "ARMED",
+        "momentary": false,
+        "shaftRelativeScale": 0.24,
+        "gripRelativeScale": 0.25,
+        "shaftLengthScale": 1,
+        "faceHex": "#12181C",
+        "ringHex": "#8B9299",
+        "shaftHex": "#B6BDC3",
+        "gripHex": "#373A3F",
+        "shaftMetallic": 0.74,
+        "shaftRoughness": 0.27,
+        "gripMetallic": 0.2,
+        "gripRoughness": 0.67,
+        "detentTiltDegrees": 21,
+        "transformOnlyAnimation": true,
+        "meshMaterialInvariant": true,
+        "dimensions": "RELATIVE_TO_GUARD_PREVIEW_NOT_MEASURED",
+        "confidence": "AUTHOR_PROVISIONAL_INTERPRETATION_OF_FCOM_STATES_AND_REFERENCE",
+        "sourceFcomFolio": "1.30.9; 1.40.5",
+        "appearanceNotes": "Distinct photographed guard socket from underlying actuator; actuator geometry requires close-up confirmation."
       }
     },
     {
@@ -889,6 +1203,37 @@
         ],
         "visibility": "complete",
         "pose": "CLOSED_REFERENCE_ONLY"
+      },
+      "switchAppearance": {
+        "schema": "b737-classic/guarded-underlying-switch-preview/v1",
+        "designStage": "DRAFT_VISUAL_NOT_HARDWARE_CERTIFIED",
+        "family": "black-tip-toggle",
+        "actuatorType": "metal-shaft",
+        "detentAxis": "vertical",
+        "detentLabels": [
+          "NORMAL",
+          "ON"
+        ],
+        "initialState": "NORMAL",
+        "momentary": false,
+        "shaftRelativeScale": 0.22,
+        "gripRelativeScale": 0.24,
+        "shaftLengthScale": 1,
+        "faceHex": "#12181C",
+        "ringHex": "#8B9299",
+        "shaftHex": "#B6BDC3",
+        "gripHex": "#373A3F",
+        "shaftMetallic": 0.74,
+        "shaftRoughness": 0.27,
+        "gripMetallic": 0.2,
+        "gripRoughness": 0.67,
+        "detentTiltDegrees": 21,
+        "transformOnlyAnimation": true,
+        "meshMaterialInvariant": true,
+        "dimensions": "RELATIVE_TO_GUARD_PREVIEW_NOT_MEASURED",
+        "confidence": "AUTHOR_PROVISIONAL_INTERPRETATION_OF_FCOM_STATES_AND_REFERENCE",
+        "sourceFcomFolio": "1.30.20–1.30.21; NP.21.3",
+        "appearanceNotes": "Distinct photographed guard socket from underlying actuator; actuator geometry requires close-up confirmation."
       }
     },
     {
@@ -961,7 +1306,38 @@
         "737-500"
       ],
       "notes": "Owner explicitly validated left hinge with right free edge moving LEFT",
-      "referenceScreenshotEvidence": null
+      "referenceScreenshotEvidence": null,
+      "switchAppearance": {
+        "schema": "b737-classic/guarded-underlying-switch-preview/v1",
+        "designStage": "DRAFT_VISUAL_NOT_HARDWARE_CERTIFIED",
+        "family": "mini-silver-test",
+        "actuatorType": "metal-shaft",
+        "detentAxis": "horizontal",
+        "detentLabels": [
+          "TEST",
+          "NORMAL"
+        ],
+        "initialState": "NORMAL",
+        "momentary": false,
+        "shaftRelativeScale": 0.28,
+        "gripRelativeScale": 0.35,
+        "shaftLengthScale": 0.8,
+        "faceHex": "#12181C",
+        "ringHex": "#8B9299",
+        "shaftHex": "#B6BDC3",
+        "gripHex": "#A7ACAF",
+        "shaftMetallic": 0.74,
+        "shaftRoughness": 0.27,
+        "gripMetallic": 0.57,
+        "gripRoughness": 0.37,
+        "detentTiltDegrees": 21,
+        "transformOnlyAnimation": true,
+        "meshMaterialInvariant": true,
+        "dimensions": "RELATIVE_TO_GUARD_PREVIEW_NOT_MEASURED",
+        "confidence": "AUTHOR_PROVISIONAL_INTERPRETATION_OF_FCOM_STATES_AND_REFERENCE",
+        "sourceFcomFolio": "10.10.20",
+        "appearanceNotes": "Distinct photographed guard socket from underlying actuator; actuator geometry requires close-up confirmation."
+      }
     },
     {
       "controlId": "bus-transfer",
@@ -1025,7 +1401,38 @@
         "737-500"
       ],
       "notes": null,
-      "referenceScreenshotEvidence": null
+      "referenceScreenshotEvidence": null,
+      "switchAppearance": {
+        "schema": "b737-classic/guarded-underlying-switch-preview/v1",
+        "designStage": "DRAFT_VISUAL_NOT_HARDWARE_CERTIFIED",
+        "family": "wide-micro-toggle",
+        "actuatorType": "metal-shaft",
+        "detentAxis": "horizontal",
+        "detentLabels": [
+          "OFF",
+          "AUTO"
+        ],
+        "initialState": "AUTO",
+        "momentary": false,
+        "shaftRelativeScale": 0.21,
+        "gripRelativeScale": 0.28,
+        "shaftLengthScale": 1,
+        "faceHex": "#12181C",
+        "ringHex": "#8B9299",
+        "shaftHex": "#B6BDC3",
+        "gripHex": "#373A3F",
+        "shaftMetallic": 0.74,
+        "shaftRoughness": 0.27,
+        "gripMetallic": 0.2,
+        "gripRoughness": 0.67,
+        "detentTiltDegrees": 21,
+        "transformOnlyAnimation": true,
+        "meshMaterialInvariant": true,
+        "dimensions": "RELATIVE_TO_GUARD_PREVIEW_NOT_MEASURED",
+        "confidence": "AUTHOR_PROVISIONAL_INTERPRETATION_OF_FCOM_STATES_AND_REFERENCE",
+        "sourceFcomFolio": "6.10.9",
+        "appearanceNotes": "Distinct photographed guard socket from underlying actuator; actuator geometry requires close-up confirmation."
+      }
     },
     {
       "controlId": "antiskid",
@@ -1097,6 +1504,37 @@
         ],
         "visibility": "complete",
         "pose": "CLOSED_REFERENCE_ONLY"
+      },
+      "switchAppearance": {
+        "schema": "b737-classic/guarded-underlying-switch-preview/v1",
+        "designStage": "DRAFT_VISUAL_NOT_HARDWARE_CERTIFIED",
+        "family": "black-tip-toggle",
+        "actuatorType": "metal-shaft",
+        "detentAxis": "vertical",
+        "detentLabels": [
+          "OFF",
+          "ON"
+        ],
+        "initialState": "ON",
+        "momentary": false,
+        "shaftRelativeScale": 0.26,
+        "gripRelativeScale": 0.22,
+        "shaftLengthScale": 1,
+        "faceHex": "#12181C",
+        "ringHex": "#8B9299",
+        "shaftHex": "#B6BDC3",
+        "gripHex": "#171A1C",
+        "shaftMetallic": 0.74,
+        "shaftRoughness": 0.27,
+        "gripMetallic": 0.2,
+        "gripRoughness": 0.67,
+        "detentTiltDegrees": 21,
+        "transformOnlyAnimation": true,
+        "meshMaterialInvariant": true,
+        "dimensions": "RELATIVE_TO_GUARD_PREVIEW_NOT_MEASURED",
+        "confidence": "AUTHOR_PROVISIONAL_INTERPRETATION_OF_FCOM_STATES_AND_REFERENCE",
+        "sourceFcomFolio": "14.10.5",
+        "appearanceNotes": "Distinct photographed guard socket from underlying actuator; actuator geometry requires close-up confirmation."
       }
     },
     {
@@ -1188,6 +1626,37 @@
         "evidence": "OWNER_EXPLICIT_CORRECTION_2026_10_26",
         "overlapPolicy": "THREE_SEPARATE_HARDWARE_MOUNTS_REQUIRED__NO_PIXEL_COORDS_ASSUMED",
         "calibratedSocketStatus": "PENDING_DISTINCT_SOURCE_SOCKET_MEASUREMENTS"
+      },
+      "switchAppearance": {
+        "schema": "b737-classic/guarded-underlying-switch-preview/v1",
+        "designStage": "DRAFT_VISUAL_NOT_HARDWARE_CERTIFIED",
+        "family": "gpws-mini-identical",
+        "actuatorType": "metal-shaft",
+        "detentAxis": "vertical",
+        "detentLabels": [
+          "FLAP INHIBIT",
+          "NORMAL"
+        ],
+        "initialState": "NORMAL",
+        "momentary": false,
+        "shaftRelativeScale": 0.24,
+        "gripRelativeScale": 0.25,
+        "shaftLengthScale": 1,
+        "faceHex": "#12181C",
+        "ringHex": "#8B9299",
+        "shaftHex": "#B6BDC3",
+        "gripHex": "#303438",
+        "shaftMetallic": 0.74,
+        "shaftRoughness": 0.27,
+        "gripMetallic": 0.2,
+        "gripRoughness": 0.67,
+        "detentTiltDegrees": 21,
+        "transformOnlyAnimation": true,
+        "meshMaterialInvariant": true,
+        "dimensions": "RELATIVE_TO_GUARD_PREVIEW_NOT_MEASURED",
+        "confidence": "AUTHOR_PROVISIONAL_INTERPRETATION_OF_FCOM_STATES_AND_REFERENCE",
+        "sourceFcomFolio": "15.10.10",
+        "appearanceNotes": "Three independent GPWS switches share identical shape, size and material; each control has its own object."
       }
     },
     {
@@ -1279,6 +1748,37 @@
         "evidence": "OWNER_EXPLICIT_CORRECTION_2026_10_26",
         "overlapPolicy": "THREE_SEPARATE_HARDWARE_MOUNTS_REQUIRED__NO_PIXEL_COORDS_ASSUMED",
         "calibratedSocketStatus": "PENDING_DISTINCT_SOURCE_SOCKET_MEASUREMENTS"
+      },
+      "switchAppearance": {
+        "schema": "b737-classic/guarded-underlying-switch-preview/v1",
+        "designStage": "DRAFT_VISUAL_NOT_HARDWARE_CERTIFIED",
+        "family": "gpws-mini-identical",
+        "actuatorType": "metal-shaft",
+        "detentAxis": "vertical",
+        "detentLabels": [
+          "GEAR INHIBIT",
+          "NORMAL"
+        ],
+        "initialState": "NORMAL",
+        "momentary": false,
+        "shaftRelativeScale": 0.24,
+        "gripRelativeScale": 0.25,
+        "shaftLengthScale": 1,
+        "faceHex": "#12181C",
+        "ringHex": "#8B9299",
+        "shaftHex": "#B6BDC3",
+        "gripHex": "#303438",
+        "shaftMetallic": 0.74,
+        "shaftRoughness": 0.27,
+        "gripMetallic": 0.2,
+        "gripRoughness": 0.67,
+        "detentTiltDegrees": 21,
+        "transformOnlyAnimation": true,
+        "meshMaterialInvariant": true,
+        "dimensions": "RELATIVE_TO_GUARD_PREVIEW_NOT_MEASURED",
+        "confidence": "AUTHOR_PROVISIONAL_INTERPRETATION_OF_FCOM_STATES_AND_REFERENCE",
+        "sourceFcomFolio": "15.10.10",
+        "appearanceNotes": "Three independent GPWS switches share identical shape, size and material; each control has its own object."
       }
     },
     {
@@ -1357,6 +1857,37 @@
         "evidence": "OWNER_EXPLICIT_CORRECTION_2026_10_26",
         "overlapPolicy": "THREE_SEPARATE_HARDWARE_MOUNTS_REQUIRED__NO_PIXEL_COORDS_ASSUMED",
         "calibratedSocketStatus": "PENDING_DISTINCT_SOURCE_SOCKET_MEASUREMENTS"
+      },
+      "switchAppearance": {
+        "schema": "b737-classic/guarded-underlying-switch-preview/v1",
+        "designStage": "DRAFT_VISUAL_NOT_HARDWARE_CERTIFIED",
+        "family": "gpws-mini-identical",
+        "actuatorType": "metal-shaft",
+        "detentAxis": "vertical",
+        "detentLabels": [
+          "TERR INHIBIT",
+          "NORMAL"
+        ],
+        "initialState": "NORMAL",
+        "momentary": false,
+        "shaftRelativeScale": 0.24,
+        "gripRelativeScale": 0.25,
+        "shaftLengthScale": 1,
+        "faceHex": "#12181C",
+        "ringHex": "#8B9299",
+        "shaftHex": "#B6BDC3",
+        "gripHex": "#303438",
+        "shaftMetallic": 0.74,
+        "shaftRoughness": 0.27,
+        "gripMetallic": 0.2,
+        "gripRoughness": 0.67,
+        "detentTiltDegrees": 21,
+        "transformOnlyAnimation": true,
+        "meshMaterialInvariant": true,
+        "dimensions": "RELATIVE_TO_GUARD_PREVIEW_NOT_MEASURED",
+        "confidence": "AUTHOR_PROVISIONAL_INTERPRETATION_OF_FCOM_STATES_AND_REFERENCE",
+        "sourceFcomFolio": "15.10.10",
+        "appearanceNotes": "Three independent GPWS switches share identical shape, size and material; each control has its own object."
       }
     }
   ],
@@ -1384,5 +1915,7 @@
       "hinge": "Up",
       "source": "OWNER_DIRECT_STATEMENT"
     }
-  }
+  },
+  "switchVisualRevision": "v1: 17 independent provisional underlying switch models; static identity across movement; no old generic capsule",
+  "switchVisualCaution": "Actuator exterior is provisional from FCOM control names and partial photographs, NOT hardware-approved; momentary generator disconnect has a single resting state and transient actuation."
 }
