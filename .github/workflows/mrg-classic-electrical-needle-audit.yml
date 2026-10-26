@@ -10,6 +10,7 @@ on:
       - "panel-mosaic-lab/cockpit/mrg-electrical-needle-qa-unified.js"
       - "panel-mosaic-lab/cockpit/index.html"
       - "engine/systems/electrical-v7.js"
+      - "engine/systems/electrical-loads-v8.js"
       - "tests/mrg-electrical-needle-audit-v1.test.cjs"
       - "engine/instruments/needle-zero-reference-stage1-v1.json"
       - "engine/instruments/needle-zero-reference-stage1-v1.test.cjs"
@@ -34,5 +35,7 @@ jobs:
         run: npm run test:mrg-bus
       - name: Existing electrical source bus regression
         run: node tests/electrical-v7.test.cjs
+      - name: Electrical Loads V8 baseline stays source gated
+        run: node tests/electrical-loads-v8.test.cjs
       - name: Geometry QA stays source-locked
         run: node --test engine/instruments/needle-zero-reference-stage1-v1.test.cjs
