@@ -13,6 +13,9 @@ on:
       - 'engine/instruments/native-bezel-centre-evidence-v1.json'
       - 'engine/instruments/native-bezel-centre-v1.test.cjs'
       - 'engine/instruments/native-bezel-centre-validation-v1.py'
+      - 'engine/instruments/native-verified-division-intervals-v1.json'
+      - 'engine/instruments/native-photo-scale-label-inventory-v1.json'
+      - 'engine/instruments/native-source-scale-inventory-v1.test.cjs'
       - 'panel-mosaic-lab/cockpit/ac-dc-metering-*'
       - 'panel-mosaic-lab/cockpit/drive-amps-needle-*'
       - 'engine/instruments/native-arc-scale-v1.js'
@@ -63,7 +66,7 @@ jobs:
           if-no-files-found: error
       - name: Exercise all 11 real-photo pivot records and approved geometric minor-division engine
         run: |
-          node --test engine/instruments/native-arc-scale-v1.test.cjs engine/instruments/native-bezel-centre-v1.test.cjs
+          node --test engine/instruments/native-arc-scale-v1.test.cjs engine/instruments/native-bezel-centre-v1.test.cjs engine/instruments/native-source-scale-inventory-v1.test.cjs
           node panel-mosaic-lab/cockpit/ac-dc-metering.test.cjs
           node panel-mosaic-lab/cockpit/drive-amps-needle.test.cjs
       - name: Inspect 11 native OH10 OH11 OH12 OH20 OH21 source gauge pivots and arcs
