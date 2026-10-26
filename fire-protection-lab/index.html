@@ -41,6 +41,7 @@ label{font-size:12px;color:#bfd0db}.checks{display:grid;grid-template-columns:1f
 @media(max-width:1060px){main{grid-template-columns:1fr}.control-panel{grid-row:2}.bottom{grid-row:3}}
 @media(max-width:650px){.viewer,.control-panel,.bottom{padding:10px}}
 </style>
+<link rel="stylesheet" href="./hardware.css">
 </head>
 <body>
 <header>
@@ -115,6 +116,17 @@ function addAsset(id,className,title){
 function move(id){if(!nodes[id])return;nodes[id].style.left=positions[id].x+'%';nodes[id].style.top=positions[id].y+'%';}
 for(const [id,name] of lamps){const el=addAsset(id,'lamp',id);const img=document.createElement('img');img.alt=id;el.appendChild(img);}
 for(const name of ['EXT_L','EXT_R','EXT_APU'])addAsset(name,'green-lens',name);
+for(const [id,aria] of [
+ ['SELECTOR_ENG1','ENG 1 OVHT DET selector: choose A, Normal, or B'],
+ ['SELECTOR_ENG2','ENG 2 OVHT DET selector: choose A, Normal, or B'],
+ ['TEST_DETECTOR','Momentary detection test, FAULT INOP or OVHT FIRE'],
+ ['TEST_EXT','Momentary extinguisher circuit test 1 or 2']]){
+ const el=addAsset(id,'physical-switch',aria);
+ el.setAttribute('role','button');el.setAttribute('tabindex','0');
+ el.innerHTML='<span class="switch-ring"></span><span class="switch-lever"></span>';
+ el.dataset.kind=id.startsWith('SELECTOR_')?'selector':'spring';
+}
+
 for(const [unit] of handles){
  const el=addAsset('HANDLE_'+unit,'handle','FIRE HANDLE '+unit);const img=document.createElement('img');img.alt='Approved '+unit+' fire handle';el.appendChild(img);
 }
@@ -174,6 +186,15 @@ function render(){
  el.style.rotate=st.angle+'deg';el.title=unit+' · '+(st.pulled?'PULLED':'IN')+' · '+st.angle+'°';}
  for(const [id] of indicatorNames)document.getElementById('ind-'+id).classList.toggle('on',Boolean(ind[id]));
  document.querySelectorAll('[data-selector]').forEach(b=>b.setAttribute('aria-pressed',String(s.selectors[b.dataset.unit]===b.dataset.selector)));
+ for(const unit of ['ENG1','ENG2']){
+  const node=nodes['SELECTOR_'+unit],value=s.selectors[unit];
+  node.style.setProperty('--switch-angle',(value==='A'?-30:value==='B'?30:0)+'deg');
+  node.setAttribute('aria-valuetext',unit+' '+value);
+ }
+ for(const [id,l,r] of [['TEST_DETECTOR','FAULT_INOP','OVHT_FIRE'],['TEST_EXT','EXT_1','EXT_2']]){
+  const node=nodes[id],angle=s.test===l?-30:s.test===r?30:0;
+  node.style.setProperty('--switch-angle',angle+'deg');node.setAttribute('aria-pressed',String(angle!==0));
+ }
  for(const id of ['EXT_L','EXT_R','EXT_APU'])nodes[id].classList.toggle('on',!!ind[id]);
  document.querySelectorAll('[data-test]').forEach(b=>b.setAttribute('aria-pressed',String(s.test===b.dataset.test)));
  for(const [id,key] of [['ac-power','acTransfer1'],['battery-power','batteryBus'],['hot-power','hotBatteryBus'],['ground','onGround']]){const b=document.getElementById(id);b.setAttribute('aria-pressed',String(s.power[key]));b.textContent=(key==='acTransfer1'?'AC TRANSFER 1':key==='batteryBus'?'BATTERY BUS':key==='hotBatteryBus'?'HOT BATTERY':'GROUND')+' · '+(s.power[key]?'ON':'OFF');}
@@ -200,6 +221,51 @@ function send(cmd){
  logLines=logLines.slice(0,12);document.getElementById('log').textContent=logLines.join('\n');render();
 }
 document.querySelectorAll('[data-selector]').forEach(b=>b.onclick=()=>send({type:'SELECT_LOOP',unit:b.dataset.unit,value:b.dataset.selector}));
+function selectorChoose(node,clientX){
+ const side=(clientX-node.getBoundingClientRect().left)/node.getBoundingClientRect().width;
+ const value=side<0.34?'A':side>0.66?'B':'NORMAL';
+ send({type:'SELECT_LOOP',unit:node.dataset.id.split('_')[1],value});
+}
+for(const unit of ['ENG1','ENG2']){
+ const node=nodes['SELECTOR_'+unit];
+ node.addEventListener('click',ev=>{if(!edit)selectorChoose(node,ev.clientX);});
+ node.addEventListener('keydown',ev=>{
+  if(!['ArrowLeft','ArrowRight','Home','Enter',' '].includes(ev.key)||edit)return;
+  ev.preventDefault();const options=['A','NORMAL','B'];
+  const current=e.getState().selectors[unit],index=options.indexOf(current);
+  const target=ev.key==='Home'?'NORMAL':ev.key==='Enter'||ev.key===' '?options[(index+1)%3]:
+    options[Math.max(0,Math.min(2,index+(ev.key==='ArrowRight'?1:-1)))];
+  send({type:'SELECT_LOOP',unit,value:target});
+ });
+}
+function fireTestFromPointer(node,clientX){
+ const rect=node.getBoundingClientRect(),left=(clientX-rect.left)/rect.width<0.5;
+ return node.dataset.id==='TEST_EXT'?(left?'EXT_1':'EXT_2'):(left?'FAULT_INOP':'OVHT_FIRE');
+}
+let physicalTest=null;
+for(const id of ['TEST_DETECTOR','TEST_EXT']){
+ const node=nodes[id];
+ node.addEventListener('pointerdown',ev=>{
+  if(edit||physicalTest)return;
+  ev.preventDefault();ev.stopPropagation();
+  const value=fireTestFromPointer(node,ev.clientX);
+  physicalTest={id,pointerId:ev.pointerId};
+  node.setPointerCapture(ev.pointerId);
+  send({type:'TEST',value});
+ });
+ const end=()=>{if(physicalTest?.id===id){physicalTest=null;send({type:'TEST',value:null});}};
+ node.addEventListener('pointerup',end);node.addEventListener('pointercancel',end);
+ node.addEventListener('lostpointercapture',end);
+ node.addEventListener('keydown',ev=>{
+  if(edit||!['ArrowLeft','ArrowRight','Enter',' '].includes(ev.key)||physicalTest)return;
+  ev.preventDefault();
+  const left=ev.key==='ArrowLeft';
+  send({type:'TEST',value:id==='TEST_EXT'?(left?'EXT_1':'EXT_2'):(left?'FAULT_INOP':'OVHT_FIRE')});
+ });
+ node.addEventListener('keyup',ev=>{if(['ArrowLeft','ArrowRight','Enter',' '].includes(ev.key)){ev.preventDefault();send({type:'TEST',value:null});}});
+ node.addEventListener('blur',()=>{if(e.getState().test)send({type:'TEST',value:null});});
+}
+
 let heldTest=null;
 for(const b of document.querySelectorAll('[data-test]')){
  const start=ev=>{ev.preventDefault();if(heldTest)return;heldTest={button:b,value:b.dataset.test,id:ev.pointerId};b.setPointerCapture(ev.pointerId);send({type:'TEST',value:b.dataset.test});};
