@@ -64,7 +64,7 @@ test('Each guard pose changes ONLY fixed hinge rotation; identical CSS body in b
   const regex=new RegExp('\\.mount-root\\.hinge-'+direction+' \\.guard-cover\\.open\\{([^}]+)\\}');
   const rule=css.match(regex);
   assert.ok(rule,direction+' open rule');
-  assert.match(rule[1],/transform:rotate[XY]\\(/);
+  assert.match(rule[1],/transform:rotate[XY]\(/);
   assert.doesNotMatch(rule[1],/width|height|background|border-radius|font|scale|clip-path|color/,direction);
  }
  assert.ok(js.includes("const closed=makePose(c,false,'CLOSED'),opened=makePose(c,true,'OPEN')"));
