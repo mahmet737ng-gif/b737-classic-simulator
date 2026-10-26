@@ -90,7 +90,7 @@ const lamps=[
  ['WHEEL_WELL','WHEEL_WELL_RED',50,27],
  ['APU_BOTTLE_DISCHARGED',null,50,90]
 ];
-const handles=[['ENG1',20.8,65],['APU',49.9,65],['ENG2',78.9,65]];
+const handles=[['ENG1',21.3,65],['APU',49.9,65],['ENG2',78.9,65]];
 const allPositions={};const slotGeometry=window.B737FirePanelGeometry?.slots||{};for(const [id,slot] of Object.entries(slotGeometry)){if(!slot.assetPending)allPositions[id]={x:slot.x,y:slot.y};}
 const layoutsKey='b737.fireProtection.preview.layout.v2';let positions={...allPositions};
 try{const p=JSON.parse(localStorage.getItem(layoutsKey));if(p&&typeof p==='object')for(const [id,pt] of Object.entries(p)){if(allPositions[id]&&Number.isFinite(pt.x)&&Number.isFinite(pt.y))positions[id]={x:pt.x,y:pt.y};}}catch(_){}
@@ -171,6 +171,7 @@ function render(){
  for(const [id,name] of lamps){const el=nodes[id],on=Boolean(ind[id]);if(!el)continue;el.classList.toggle('on',on);if(name)el.querySelector('img').src=assetUrl(id,on);}
  for(const [unit] of handles){const el=nodes['HANDLE_'+unit],st=s.handles[unit],on=Boolean(ind[unit+'_FIRE']);
  el.querySelector('img').src=handleBase+'FIRE_HANDEL_'+unit+'_'+(on?'ON':'OFF')+'.webp';
+ el.querySelector('img').style.visibility=(on||st.pulled||st.angle!==0)?'visible':'hidden';
  el.style.rotate=st.angle+'deg';el.title=unit+' · '+(st.pulled?'PULLED':'IN')+' · '+st.angle+'°';}
  for(const [id] of indicatorNames)document.getElementById('ind-'+id).classList.toggle('on',Boolean(ind[id]));
  document.querySelectorAll('[data-selector]').forEach(b=>b.setAttribute('aria-pressed',String(s.selector===b.dataset.selector)));
