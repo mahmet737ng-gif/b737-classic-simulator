@@ -4,12 +4,16 @@ on:
     paths:
       - 'unity/Assets/B737Classic/GuardedSwitches/**'
       - 'tests/unity-guarded-switch-blueprint.test.cjs'
+      - 'unity/preview/**'
+      - 'tests/unity-guard-preview.test.cjs'
       - 'engine/maps/guarded-switch-owner-hinge-quiz-v1.json'
       - '.github/workflows/unity-guarded-switches.yml'
   pull_request:
     paths:
       - 'unity/Assets/B737Classic/GuardedSwitches/**'
       - 'tests/unity-guarded-switch-blueprint.test.cjs'
+      - 'unity/preview/**'
+      - 'tests/unity-guard-preview.test.cjs'
       - 'engine/maps/guarded-switch-owner-hinge-quiz-v1.json'
       - '.github/workflows/unity-guarded-switches.yml'
   workflow_dispatch:
@@ -23,6 +27,8 @@ jobs:
           node-version: '22'
       - name: 17 guarded-switch single-cover geometry and owner hinge audit
         run: node --test tests/unity-guarded-switch-blueprint.test.cjs
+      - name: Check standalone 17-guard browser comparison
+        run: node --test tests/unity-guard-preview.test.cjs
       - name: Verify completed owner hinge quiz
         run: node --test tests/guarded-hinge-owner-quiz.test.cjs
       - name: Protect frozen overhead mosaic source bytes
