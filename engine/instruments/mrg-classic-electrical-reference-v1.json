@@ -256,5 +256,101 @@
   },
   "technicalDatabaseSync": "VERSION_CONTROLLED_STAGING_ONLY; private SQLite not changed",
   "engine": "engine/instruments/mrg-electrical-needle-audit-v1.js",
-  "note": "Source facts can validate numeric sensor values and system logic; no facts imply a physical angle or fully specified circuit."
+  "note": "Source facts can validate numeric sensor values and system logic; no facts imply a physical angle or fully specified circuit.",
+  "additionalScreenshots": [
+    {
+      "filename": "image(20261026-002607).png",
+      "printedPages": [
+        162,
+        163
+      ]
+    },
+    {
+      "filename": "image(20261026-002615).png",
+      "printedPages": [
+        164,
+        165
+      ]
+    },
+    {
+      "filename": "image(20261026-002619).png",
+      "printedPages": [
+        166,
+        167
+      ]
+    },
+    {
+      "filename": "image(20261026-002640).png",
+      "printedPages": [
+        172,
+        173
+      ]
+    },
+    {
+      "filename": "image(20261026-002645).png",
+      "printedPages": [
+        174,
+        175
+      ]
+    },
+    {
+      "filename": "image(20261026-002750).png",
+      "printedPages": [
+        182,
+        183
+      ]
+    },
+    {
+      "filename": "image(20261026-002757).png",
+      "printedPages": [
+        184,
+        185
+      ]
+    },
+    {
+      "filename": "image(20261026-002800).png",
+      "printedPages": [
+        186,
+        187
+      ]
+    },
+    {
+      "filename": "image(20261026-002809).png",
+      "printedPages": [
+        188
+      ]
+    }
+  ],
+  "additionalSourceIndex": {
+    "path": "engine/systems/mrg-classic-340-consumer-bus-index-v1.json",
+    "rows": 340,
+    "sourcePages": [
+      182,
+      183,
+      184,
+      185,
+      186,
+      187,
+      188
+    ],
+    "physicalEPFSIWireApproval": 0
+  },
+  "additionalFaultMatrix": {
+    "path": "engine/systems/mrg-classic-bus-failure-effects-v1.json",
+    "effects": 35,
+    "sourcePages": [
+      162,
+      163,
+      164,
+      165,
+      166,
+      167
+    ]
+  },
+  "additionalNeedleCandidateFeeds": {
+    "path": "engine/systems/mrg-classic-consumer-bus-qa-v1.js",
+    "gaugeIds": 17,
+    "liveAngleChanges": 0
+  },
+  "techDatabaseSyncNote": "VERSION_CONTROLLED_STAGING_ONLY; new index and fault matrix published in GitHub but private SQLite NOT written"
 }
