@@ -16,11 +16,11 @@ test('source-specific 11-gauge original photo and SHA256 provenance stays record
  assert.ok(ev.gauges.every(x=>!x.shaftPivotCertified));
  assert.equal(ev.allGraduationsCertified,false);
 });
-test('six remaining OH10/OH11 bezel previews remain centred on original rim scans',()=>{
+test('three remaining CPS/GEN DRIVE photo bezel previews stay at provisional rim candidates',()=>{
  const positions=new Map([...ac.meters.map(x=>['OH10:'+x.id,[x.x,x.y]]),
  ...drv.needles.map(x=>[x.piece+':'+x.id,[x.x,x.y]])]);
  const eligible=ev.gauges.filter(x=>x.moveVisualMountToBezelCandidate);
- assert.equal(eligible.length,6);
+ assert.equal(eligible.length,3);
  for(const r of eligible){
   const actual=positions.get(r.panel+':'+r.id);
   assert.ok(actual,r.panel+':'+r.id);
@@ -41,6 +41,18 @@ test('OH12 A.C. AMPS pointers use real 21-white-stroke radial intersections, NOT
   assert.ok(nearly(n.x,r.radialStrokePhotoCenterPx[0]));
   assert.ok(nearly(n.y,r.radialStrokePhotoCenterPx[1]));
   assert.ok(!r.shaftPivotCertified);
+ }
+});
+test('OH10 three photo tick-intersection calibrated centres now replace metal rims',()=>{
+ const cases=[['dcAmps',[308.453,281.608]],['dcVolts',[310.307,682.818]],['acVolts',[785.143,702.386]]];
+ for(const [id,pivot] of cases){
+  const r=ev.gauges.find(x=>x.id===id),n=ac.meters.find(x=>x.id===id);
+  assert.ok(r&&n);
+  assert.equal(r.moveVisualMountToBezelCandidate,false);
+  assert.equal(r.status,'PHOTO_RADIAL_STROKE_PIVOT_SUPERSEDES_BEZEL_CENTRE');
+  assert.deepEqual(r.radialStrokePhotoCenterPx,pivot);
+  assert.ok(nearly(n.x,pivot[0])&&nearly(n.y,pivot[1]));
+  assert.equal(r.shaftPivotCertified,false);
  }
 });
 test('APU AMPS previous pivot is kept after photo rim contrast decreased',()=>{
