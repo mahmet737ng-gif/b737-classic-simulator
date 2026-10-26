@@ -1,0 +1,204 @@
+{
+  "schema": "B737Classic.Unified.FireProtection.IndependentAssets.V6",
+  "version": "FIRELAMP-0006",
+  "panel": {
+    "path": "panel-mosaic-lab/cockpit/assets/fire-v6/FIRE_PANEL_BARE.webp",
+    "size": [
+      2172,
+      724
+    ],
+    "approvedSource": "weathered_boeing_737_apu_panel_shell.png"
+  },
+  "status": "IMPLEMENTED_GITHUB; LIVE_BROWSER_QA_PENDING",
+  "assetRoot": "panel-mosaic-lab/cockpit/assets/fire-v6/",
+  "indicators": [
+    {
+      "id": "ENG1_OVERHEAT",
+      "type": "rect",
+      "bounds": [
+        182,
+        289,
+        243,
+        110
+      ],
+      "center": [
+        303.5,
+        344
+      ],
+      "on": "ENG1_OVERHEAT_ON.webp",
+      "off": "ENG1_OVERHEAT_OFF.webp"
+    },
+    {
+      "id": "WHEEL_WELL",
+      "type": "rect",
+      "bounds": [
+        682,
+        104,
+        261,
+        114
+      ],
+      "center": [
+        812.5,
+        161
+      ],
+      "on": "WHEEL_WELL_ON.webp",
+      "off": "WHEEL_WELL_OFF.webp"
+    },
+    {
+      "id": "FAULT",
+      "type": "rect",
+      "bounds": [
+        682,
+        218,
+        261,
+        115
+      ],
+      "center": [
+        812.5,
+        275.5
+      ],
+      "on": "FAULT_ON.webp",
+      "off": "FAULT_OFF.webp"
+    },
+    {
+      "id": "APU_DET_INOP",
+      "type": "rect",
+      "bounds": [
+        682,
+        333,
+        261,
+        119
+      ],
+      "center": [
+        812.5,
+        392.5
+      ],
+      "on": "APU_DET_INOP_ON.webp",
+      "off": "APU_DET_INOP_OFF.webp"
+    },
+    {
+      "id": "APU_BOTTLE_DISCHARGED",
+      "type": "rect",
+      "bounds": [
+        682,
+        453,
+        261,
+        121
+      ],
+      "center": [
+        812.5,
+        513.5
+      ],
+      "on": "APU_BOTTLE_DISCHARGED_ON.webp",
+      "off": "APU_BOTTLE_DISCHARGED_OFF.webp"
+    },
+    {
+      "id": "ENG2_OVERHEAT",
+      "type": "rect",
+      "bounds": [
+        1236,
+        289,
+        246,
+        111
+      ],
+      "center": [
+        1359,
+        344.5
+      ],
+      "on": "ENG2_OVERHEAT_ON.webp",
+      "off": "ENG2_OVERHEAT_OFF.webp"
+    },
+    {
+      "id": "L_BOTTLE_DISCHARGED",
+      "type": "rect",
+      "bounds": [
+        1698,
+        103,
+        176,
+        117
+      ],
+      "center": [
+        1786,
+        161.5
+      ],
+      "on": "L_BOTTLE_DISCHARGED_ON.webp",
+      "off": "L_BOTTLE_DISCHARGED_OFF.webp"
+    },
+    {
+      "id": "R_BOTTLE_DISCHARGED",
+      "type": "rect",
+      "bounds": [
+        1875,
+        103,
+        181,
+        117
+      ],
+      "center": [
+        1965.5,
+        161.5
+      ],
+      "on": "R_BOTTLE_DISCHARGED_ON.webp",
+      "off": "R_BOTTLE_DISCHARGED_OFF.webp"
+    },
+    {
+      "id": "EXT_L",
+      "type": "round",
+      "bounds": [
+        1763,
+        373,
+        72,
+        73
+      ],
+      "center": [
+        1799,
+        409.5
+      ],
+      "on": "EXT_L_ON.webp",
+      "off": "EXT_L_OFF.webp"
+    },
+    {
+      "id": "EXT_R",
+      "type": "round",
+      "bounds": [
+        1859,
+        373,
+        72,
+        73
+      ],
+      "center": [
+        1895,
+        409.5
+      ],
+      "on": "EXT_R_ON.webp",
+      "off": "EXT_R_OFF.webp"
+    },
+    {
+      "id": "EXT_APU",
+      "type": "round",
+      "bounds": [
+        1810,
+        467,
+        72,
+        73
+      ],
+      "center": [
+        1846,
+        503.5
+      ],
+      "on": "EXT_APU_ON.webp",
+      "off": "EXT_APU_OFF.webp"
+    }
+  ],
+  "provenance": {
+    "originalUserApprovedSource": "Individual image generation outputs from approved fire-panel work; alpha-cropped to largest physical foreground component",
+    "encoding": "WebP q90 transparency preserving",
+    "on": "Image crop derived directly from approved appearance",
+    "off": "Same cropped image with internal illumination selectively darkened; not independently approved as photographic reference"
+  },
+  "retired": [
+    "fire-lamps-v2/*",
+    "fire-lamps-v3/bottle-slots-horizontal-patch.svg",
+    "FIRE_PROTECTION_BARE_STANDARD_SLOTS_V2_ORIGINAL.svg (retained only for rollback)"
+  ],
+  "scope": "Fire panel background image and lamp overlays ONLY; no fire handle, switch, toolbar, cockpit native geometry changes"
+}
