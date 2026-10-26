@@ -102,7 +102,9 @@
    }
    const snapshot=freeze({schema:'b737-aircraft-snapshot/1',profile:this.profile,scenario:this.scenario,
     revision:this.revision+1,timeMs,systems:projected});
-   this.states=states;this.timeMs=timeMs;this.revision++;this.current=snapshot;return this.snapshot();
+   this.states=states;this.timeMs=timeMs;this.revision++;this.current=snapshot;
+   this.events.push({kind:'TICK',revision:this.revision,timeMs,dtMs:ms});
+   this.events=this.events.slice(-1000);return this.snapshot();
   }
   replay(commands){
    if(!Array.isArray(commands))fail('Replay command list required');
