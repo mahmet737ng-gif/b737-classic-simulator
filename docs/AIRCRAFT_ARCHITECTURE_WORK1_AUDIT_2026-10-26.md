@@ -63,3 +63,31 @@ From the Unified browser JavaScript console:
 window.B737ISNCockpitV1.getArchitectureAudit()
 ```
 The output is a read-only diagnostic with `findings`, `checks`, and `status`; it never modifies electrical state, changes indicators, or passes operational certification.
+
+## Next milestone: live Unified single-authority control routing
+
+Implemented on this PR branch (not yet merged to `main`):
+- `engine/runtime/unified-live-gateway-v1.js` is installed into the real `panel-mosaic-lab/cockpit/isn-cockpit.js` event path (overhead iframe snapshot and physical control events).
+- Existing ECU `ISN1318ECUTestbenchV1` and its *same* `ISNElectricalPackV1` remain the only active owners of the power model. The isolated `AircraftSessionV1` is **not** instantiated a second time.
+- In live `ISN03_START_SESSION` ownership mode, `isn-cockpit-bridge-v1.js` no longer writes Battery a second time; the physical ECU/Chain writes it once. The LEGACY_SCENARIO bridge's original behavior is preserved.
+- The gateway translates actual physically registered detents, rejects wrong event kinds or unknown states before dispatch, identifies the control owner, suppresses duplicate held-value events (including APU START snapshot recovery), and publishes a read-only live ECU/Pack snapshot.
+- For generator, ground power, standby and pump detents handled by the Bridge, a successful control application now synchronizes the same ECU Chain's power feedback and fuel flow immediately; no second electrical model is constructed.
+- Previously swallowed bridge failures are surfaced in gateway diagnostics; a monotonically increasing rejected-event counter ensures the legacy 30-event ring buffer cannot hide new errors.
+- `window.B737ISNCockpitV1.getLiveGatewayState()` and `.getAircraftSnapshot()` now expose the current live routing/aircraft projection without mutating panel artwork.
+- `tests/unified-live-gateway-v1.test.cjs` exercises actual ECU + Pack + physical registry controls and faults; it includes Battery single-write, standby selection, APU start, APU generator bus power, invalid detents, source rejection and counter overflow, and detached outputs.
+- Browser smoke in `tools/unified-live-gateway-browser-smoke.cjs` runs the actual cockpit page in headless Chromium and injects a same-origin **child-frame physical event message** into the actual parent listener. It does **not** pretend that a guard was manually clicked; full pixel/guard-interaction acceptance remains separate.
+
+### Hostile findings during this milestone
+1. **P0 fixed:** physical Battery writes were duplicated by Bridge + ECU; eliminated for the real active shared-ECU mode.
+2. **P0 fixed:** Bridge-only generator/source control updated V7 but could leave cached Chain feedback stale after routing simplification; explicit power/fuel feedback refresh restored.
+3. **P1 fixed:** unsupported physical detent or event-kind could be mislabeled as accepted; source-registry-verified allowed detents enforced.
+4. **P1 fixed:** Legacy Bridge source-selection error was swallowed; gateway now reports rejection. A real Ground Power toggle must include OFF→ON when the registry default is already ON, otherwise a fake duplicate test has no value.
+5. **P1 fixed:** error ring length reaches 30, so checking its length cannot identify a new rejection; monotonic rejectedTotal used.
+6. **P1 fixed:** missed first-frame APU START could replay on both synchronization and pending event loop; gateway deduplicates held START positions.
+7. **Open:** battery gate currently follows actual ECU state, but physical guard mechanics/pixel-perfect geometry are separate and unverified.
+8. **Open P0:** 17 guards and BUS TRANSFER physical surface mapping remain incomplete; only mapped subset of controls is handled by this gateway.
+9. **Open P1:** selected aircraft profile remains incompletely threaded into legacy pack Warning Engine; potential 737-400 hardcode.
+10. **Open P0:** no airframe-specific complete wiring certification or real aircraft acceptance; source-gated downstream LRU power stays UNKNOWN.
+
+### Work 1 completion gate
+**Partial implementation, not full completion**: until the real browser workflow and test-on-device run are green and all critical physical controls and system dependencies migrate without a parallel owner, do not claim Work 1 or its Unified interface is 100% finished.
