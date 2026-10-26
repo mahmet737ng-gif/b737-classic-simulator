@@ -50,7 +50,7 @@ console.log("MCP-0005 phase2 mechanical controls geometry, interaction and styli
 
 const sprite=fs.readFileSync(path.join(root,"mcp-authentic-sprites-v2.css"),"utf8");
 for(const page of [unified,standalone]){
- assert.match(page,/mcp-authentic-sprites-v2\.css\?v=MCP-SPRITE-0002/);
+ assert.match(page,/mcp-authentic-sprites-v2\.css\?v=MCP-SPRITE-0003/);
 }
 assert.match(sprite,/Small_Silver_5Positions\.webp/);
 assert.match(sprite,/mcp-hw-at-off/);
@@ -65,3 +65,18 @@ for(const f of ["AT_ARM_OFF.svg","AT_ARM_UP.svg"]){
  assert.match(content,/height="260"/);
  assert.match(content,/linearGradient id="face"/);
 }
+
+// The user-approved original photo derivatives MUST be loaded after generic
+// CSS. Otherwise the previous fake gradients can cover the reference art.
+for(const page of [unified,standalone]){
+ const authentic=page.indexOf('mcp-authentic-sprites-v2.css');
+ const owner=page.indexOf('mcp-owner-photo-components-v1.css');
+ const fake=page.indexOf('mcp-front-reference-v1.css');
+ assert.ok(authentic>fake&&owner>authentic,'Original MCP photo modules should override generic procedural CSS');
+ assert.match(page,/mcp-owner-photo-components-v1\.css\?v=MCP-PHOTO-0001/);
+}
+assert.match(js,/AT_ART_ROOT/);
+const photo=fs.readFileSync(path.join(root,'mcp-owner-photo-components-v1.css'),'utf8');
+for(const f of ['COURSE_PHOTO_80.webp','HEADING_PHOTO_80.webp','ALTITUDE_PHOTO_80.webp','ROUND_PUSH_80.webp'])assert.ok(photo.includes(f),'Missing original generated photo '+f);
+const manifest=JSON.parse(fs.readFileSync(path.join(root,'mcp-photo-asset-manifest-v1.json'),'utf8'));
+assert.equal(manifest.referencePaths.length,4);
