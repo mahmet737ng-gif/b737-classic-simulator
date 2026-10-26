@@ -25,9 +25,10 @@ const {chromium}=require('playwright');
   console.log('FLIGHT_HINGE_GEOMETRY',JSON.stringify(datum));
   const sample=async(label)=>{
    await guard.scrollIntoViewIfNeeded({timeout:10000});
-   const a=await guard.boundingBox(),b=await lamp.boundingBox();
-   const x=Math.floor(Math.min(a.x,b.x)-24),y=Math.floor(Math.min(a.y,b.y)-55);
-   const width=Math.ceil(Math.max(a.x+a.width,b.x+b.width)-x+24),height=Math.ceil(Math.max(a.y+a.height,b.y+b.height)-y+35);
+   const a=await guard.boundingBox(),b=await lamp.boundingBox(),c=await cover.boundingBox();
+   const x=Math.floor(Math.min(a.x,b.x,c.x)-24),y=Math.floor(Math.min(a.y,b.y,c.y)-55);
+   const width=Math.ceil(Math.max(a.x+a.width,b.x+b.width,c.x+c.width)-x+24);
+   const height=Math.ceil(Math.max(a.y+a.height,b.y+b.height,c.y+c.height)-y+35);
    const bytes=await page.screenshot({path:path.join(out,label+'.png'),clip:{x:Math.max(0,x),y:Math.max(0,y),width,height},animations:'disabled'});
    console.log('FLIGHT_HINGE_CLIP',label,JSON.stringify({x,y,width,height,shotBytes:bytes.length}));
    if(label.endsWith('-ON')){
@@ -39,8 +40,29 @@ const {chromium}=require('playwright');
   await page.evaluate(()=>window.B737OverheadLights.setScenario({onGround:true,engine1Running:false,engine2Running:false}));
   await page.waitForFunction(()=>window.B737OverheadLights.getState().lights['flight-recorder-off']===true);
   await sample('NORMAL-ground-OFF-ON');
+  const closed=await cover.boundingBox();
   assert.equal(await lever.isDisabled(),true,'Lever cannot be moved with hinged cover closed');
   await cover.click();
+  await page.waitForTimeout(450); // Let the realistic hinge rotation finish.
+  const opened=await cover.boundingBox();
+  const motion=await cover.evaluate(e=>({css:getComputedStyle(e).transform,
+    origin:getComputedStyle(e).transformOrigin,mode:e.parentElement.dataset.guard}));
+  assert.equal(motion.mode,'open');
+  assert.match(motion.css,/^matrix3d\(/,'Cover must rotate in the horizontal plane around the fixed left vertical hinge');
+  assert.ok(opened.x<closed.x-12,'The right-hand free edge must swing LEFT, not upward');
+  assert.ok(opened.x+opened.width<closed.x+closed.width*.5,'The free edge must retreat across the left hinge');
+  assert.ok(Math.abs((opened.y+opened.height/2)-(closed.y+closed.height/2))<4,
+    'The hinged cover must NOT rise upward or drop downward');
+  console.log('FLIGHT_HINGE_DIRECTION_PASS',JSON.stringify({
+    closed:{x:closed.x,y:closed.y,w:closed.width,h:closed.height},
+    open:{x:opened.x,y:opened.y,w:opened.width,h:opened.height},
+    sidewaysShift:+(opened.x-closed.x).toFixed(2),
+    verticalCenterShift:+((opened.y+opened.height/2)-(closed.y+closed.height/2)).toFixed(2),
+    transform:motion.css,origin:motion.origin}));
+  await sample('GUARD-OPEN-right-edge-folded-LEFT');
+  const preview=await page.locator('.atlas-piece[data-key="UPPER"]').screenshot({type:'jpeg',quality:77,
+    animations:'disabled',timeout:25000});
+  console.log('FLIGHT_HINGE_OPEN_PANEL_PREVIEW',preview.toString('base64'));
   assert.equal(await lever.isDisabled(),false,'Opening left hinge unlocks TEST position');
   await lever.click();
   await page.waitForFunction(()=>window.B737OverheadLights.getState().lights['flight-recorder-off']===false);
@@ -51,7 +73,7 @@ const {chromium}=require('playwright');
   await page.waitForFunction(()=>window.B737OverheadLights.getState().lights['flight-recorder-off']===true);
   assert.ok(!errors.some(x=>/recorder|guard|lamp|lights/.test(x)),JSON.stringify(errors));
   fs.writeFileSync(path.join(out,'evidence.json'),JSON.stringify({schema:'b737.flight-recorder.left-hinge.v1',sourcePlacement:datum,
-   switchStates:'NORMAL(closed) -> OPEN -> TEST(light out) -> CLOSE/NORMAL(light on)',originalSourcePixelsChanged:0,errors},null,2)+'\n');
-  console.log('FLIGHT_HINGE_BROWSER_PASS',JSON.stringify({displayGap:datum.displayGap,dy:datum.centerYDifference,states:4,images:2,jsErrors:errors.length}));
+   switchStates:'NORMAL(closed) -> OPEN (horizontal left fold) -> TEST(light out) -> CLOSE/NORMAL(light on)',movement:{closed,opened,motion},originalSourcePixelsChanged:0,errors},null,2)+'\n');
+  console.log('FLIGHT_HINGE_BROWSER_PASS',JSON.stringify({displayGap:datum.displayGap,dy:datum.centerYDifference,states:4,images:3,openDirection:'RIGHT_EDGE_SWINGS_LEFT_NO_UPWARD_LIFT',jsErrors:errors.length}));
  }finally{await browser.close()}
 })().catch(e=>{console.error('FLIGHT_HINGE_BROWSER_FAILURE',e.stack||String(e));process.exitCode=1});
