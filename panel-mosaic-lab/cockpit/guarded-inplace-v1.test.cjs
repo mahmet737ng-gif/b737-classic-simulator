@@ -32,7 +32,7 @@ test('Mount all 12 already anchored overhead guards on existing native source po
  assert.deepEqual(missing.map(x=>x.controlId).sort(),
   ['bus-transfer','antiskid','gpws-flap-inhibit','gpws-gear-inhibit','gpws-terrain-inhibit'].sort());
  assert.match(js,/pending\.length===5/);
- assert.match(js,/PENDING/); 
+ assert.match(js,/pending\.map\(p=>p\.displayName\)/); 
 });
 test('Retain legacy visual states through engine delegates rather than alternative logic or changed atlases',()=>{
  assert.ok(js.includes("node.querySelector('.guard-hit.guard-cover, .recorder-hinge-cover')"));
