@@ -5,6 +5,8 @@ on:
       - 'flight-controls-panel/**'
       - 'tests/fcom-guard-control.test.cjs'
       - 'tests/guarded-switch-phase12-audit.test.cjs'
+      - 'tests/guarded-hinge-owner-quiz.test.cjs'
+      - 'engine/maps/guarded-switch-owner-hinge-quiz-v1.json'
       - 'engine/maps/guarded-switches-fcom-visual-audit-v1.json'
       - 'docs/GUARDED_SWITCH_PHASE1_PHASE2_AUDIT_2026-10-26.md'
       - '.github/workflows/flight-control-guards.yml'
@@ -13,6 +15,8 @@ on:
       - 'flight-controls-panel/**'
       - 'tests/fcom-guard-control.test.cjs'
       - 'tests/guarded-switch-phase12-audit.test.cjs'
+      - 'tests/guarded-hinge-owner-quiz.test.cjs'
+      - 'engine/maps/guarded-switch-owner-hinge-quiz-v1.json'
       - 'engine/maps/guarded-switches-fcom-visual-audit-v1.json'
       - 'docs/GUARDED_SWITCH_PHASE1_PHASE2_AUDIT_2026-10-26.md'
       - '.github/workflows/flight-control-guards.yml'
@@ -27,4 +31,5 @@ jobs:
           node-version: '22'
       - run: node --test tests/fcom-guard-control.test.cjs
       - run: node --test tests/guarded-switch-phase12-audit.test.cjs
+      - run: node --test tests/guarded-hinge-owner-quiz.test.cjs
       - run: python3 panel-mosaic-lab/verify-final-overhead.py
