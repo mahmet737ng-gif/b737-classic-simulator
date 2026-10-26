@@ -38,7 +38,7 @@ const {chromium}=require('playwright');
    const img=target.locator('img').first();
    await img.waitFor({state:'attached',timeout:10000});
    const src=await img.getAttribute('src');
-   assert.ok(src&&src.includes('/assets/lights/instance-fit-v1/'),kind+' expected fitted lens '+id+' '+src);
+   assert.ok(src&&src.includes(kind==='main'?'/assets/lights/main-type-v1/':'/assets/lights/instance-fit-v1/'),kind+' expected per-lamp fitted typography '+id+' '+src);
    const good=await page.evaluate(async url=>{
     const image=new Image();image.src=url;
     try{await image.decode();return {loaded:true,w:image.naturalWidth,h:image.naturalHeight}}
@@ -48,7 +48,7 @@ const {chromium}=require('playwright');
    assert.ok(good.w>0&&good.h>0);
    diagnostics.push({kind,id,image:src.substring(src.lastIndexOf('/')+1),size:[good.w,good.h]});
   }
-  const fullManifestURL=new URL('instance-faces.json',page.url()).href;
+  const fullManifestURL=new URL(kind==='main'?'typography-faces.json':'instance-faces.json',page.url()).href;
   const allFaces=await page.evaluate(async manifestURL=>{
     const response=await fetch(manifestURL,{cache:'no-store'});
     if(!response.ok)return {error:'manifest status '+response.status};
@@ -65,7 +65,7 @@ const {chromium}=require('playwright');
     return {total:results.length,failed:results.filter(x=>!x.loaded)};
   },fullManifestURL);
   assert.ok(!allFaces.error,kind+' '+allFaces.error);
-  assert.equal(allFaces.total,kind==='overhead'?70:4,'all source SVG states counted');
+  assert.equal(allFaces.total,kind==='overhead'?70:60,'all source SVG states counted');
   assert.deepEqual(allFaces.failed,[],kind+' cannot display one or more physical face states');
   console.log('BROWSER_ALL_INSTANCE_STATES_PASS',kind,JSON.stringify({states:allFaces.total,bad:allFaces.failed.length}));
   const bad=errors.filter(msg=>/lights|instance.face|cannot|SyntaxError/.test(msg));
