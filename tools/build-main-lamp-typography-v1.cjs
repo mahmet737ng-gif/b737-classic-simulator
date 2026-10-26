@@ -76,9 +76,11 @@ for(const lamp of registry.lights){
   const start=fitted.indexOf(larger)+larger.length;
   fitted=fitted.slice(0,start)+'\n<g transform="translate('+dx.toFixed(6)+' 0)" data-fit="mip-native-ratio-no-letter-stretch">'+fitted.slice(start);
   fitted=fitted.replace('</svg>','</g>\n</svg>');
-  let sizes=[],sourceSizes=[];
-  fitted=fitted.replace(/<text\b[^>]*>.*?<\/text>/gs,(textNode,index)=>{
-    const i=index%lines.length,txt=lines[i],origSize=Number(textNode.match(/font-size="([\d.]+)"/)?.[1]);
+  let sizes=[],sourceSizes=[],textOrdinal=0;
+  fitted=fitted.replace(/<text\b[^>]*>.*?<\/text>/gs,textNode=>{
+    // String.replace's second callback argument is the CHARACTER OFFSET,
+    // not the ordinal occurrence. Using it swapped line-1 and line-2 sizes!
+    const i=(textOrdinal++)%lines.length,txt=lines[i],origSize=Number(textNode.match(/font-size="([\d.]+)"/)?.[1]);
     if(!origSize)throw Error('Missing font-size '+lamp.id);
     sourceSizes.push(origSize);
     let target=origSize,baseline=Number(textNode.match(/ y="([\d.]+)"/)?.[1]);
@@ -122,11 +124,11 @@ for(const lamp of registry.lights){
 }
 assert.equal(Object.keys(instances).length,30);
 assert.equal(records.length,60);
-const mapping={schema:'b737.main-panel.annunciator-type-v1',version:'MIP-TYPE-0002',sourceRegistryVersion:registry.version,
+const mapping={schema:'b737.main-panel.annunciator-type-v1',version:'MIP-TYPE-0003',sourceRegistryVersion:registry.version,
   sourceImagesChanged:0,sourcePositionsChanged:0,instances};
 const audit={schema:'b737.main-panel.type-audit-v1',date:'2026-10-26',lampPositions:30,states:60,sourcePhotosModified:0,
   familyDefinitions:families,records,exceptions:['PULL_UP_RED is optically preserved because previously accepted'],
-  humanVisualSignoff:'PENDING_REAL_100_75_50_BROWSER_SCREENSHOT_COMPARE',revision:'MIP-TYPE-0002'};
+  humanVisualSignoff:'PENDING_REAL_100_75_50_BROWSER_SCREENSHOT_COMPARE',revision:'MIP-TYPE-0003'};
 fs.writeFileSync(path.join(ROOT,DIR,'typography-faces.json'),JSON.stringify(mapping,null,2)+'\n');
 fs.writeFileSync(path.join(ROOT,'panel-mosaic-lab/lights-test/main-type-audit-v1.json'),JSON.stringify(audit,null,2)+'\n');
 console.log('MIP_TYPE_BUILD_SUCCESS',JSON.stringify({positions:30,states:60,families:Object.fromEntries(Object.keys(families).map(k=>[k,records.filter(v=>v.family===k&&v.state==='ON').length])),sourceArtworkUnchanged:true}));
