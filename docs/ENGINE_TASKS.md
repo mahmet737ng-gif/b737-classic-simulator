@@ -318,3 +318,5 @@ Also committed the same user-accepted visual N1 estimator to `cdu-standalone-v6/
 - 18 source-specific MRG tests and 47 Electrical V7 baseline tests passed in JS compatibility execution; independent CI still unconfirmed. See `docs/MRG_CLASSIC_ELECTRICAL_NEEDLE_AUDIT_2026-10-26.md`.
 
 - Source-driven V7 correction: `apuAutomaticShutdownRequested` flag and generator-bus supply loss on ground when BAT OFF with APU GEN selected; actual APU physical shutdown integration remains pending. Protected by ground/flight/engine/external-power MRG tests.
+
+- NEW: MRG Classic pp.162-188: **340** bus/item source rows, **35** conditional failed-bus INOP effects, **17** read-only gauge feed candidates, **10** optional V8 consumer source candidates. Provenance: `docs/MRG_CLASSIC_ELECTRICAL_BUS_CONSUMERS_2026-10-26.md`. Input MRG screenshots mapped 26 Oct 2026, explicit NG excluded. **139** related tests executed (25+20+47+47 PASS). No installed EP-FSI CB wiring, no needle geometry or live gauge angles approved.
