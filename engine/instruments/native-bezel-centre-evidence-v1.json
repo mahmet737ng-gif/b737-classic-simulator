@@ -1,7 +1,7 @@
 {
   "schema": "b737.native-photo-gauge-bezel-centres.v1",
   "status": "BEZEL_ARC_CENTRE_FITTED_SHAFT_UNCERTIFIED",
-  "method": "OpenCV Hough circle rim fitting on immutable original native PNG crop. Each result stable across four Hough accumulator sensitivity thresholds: 70/55/44/35. Cross checked visually with printed arc; bezel circle is not proof of hidden shaft. IMPORTANT: APU AC AMPS proposed bezel centre was rejected on source-image radial contrast and rolled back; 8 gauge centres changed, not 9. FINAL OH12 UPDATE: 2 A.C. AMPS true radial-stroke pivot candidates supersede the rim positions; 6 other visual bezel-shifted needles retain original preview. Source 21 tick evidence per gauge in oh12-ac-amps-photo-graduations-v1.json.",
+  "method": "OpenCV Hough circle rim fitting on immutable original native PNG crop. Each result stable across four Hough accumulator sensitivity thresholds: 70/55/44/35. Cross checked visually with printed arc; bezel circle is not proof of hidden shaft. IMPORTANT: APU AC AMPS proposed bezel centre was rejected on source-image radial contrast and rolled back; 8 gauge centres changed, not 9. FINAL OH12 UPDATE: 2 A.C. AMPS true radial-stroke pivot candidates supersede the rim positions; 6 other visual bezel-shifted needles retain original preview. Source 21 tick evidence per gauge in oh12-ac-amps-photo-graduations-v1.json. POST OH10 UPDATE: three OH10 source-photo radial tick intersections supersede wrong cosmetic bezel centers. Three remaining OH10/11 bezel-fit candidate pivots are CPS, GEN DRIVE OIL TEMP 1/2.",
   "verifiedBy": "original full resolution PNG image decoded from GitHub Actions source photos",
   "sourcePhotos": {
     "OH10": {
@@ -59,10 +59,17 @@
       ],
       "bezelRadiusPx": 178.6,
       "deltaFromOldPx": 36.58,
-      "moveVisualMountToBezelCandidate": true,
+      "moveVisualMountToBezelCandidate": false,
       "shaftPivotCertified": false,
       "phase": "PHOTO_QA_PREVIEW",
-      "status": "BEZEL_CENTRE_PROVISIONAL"
+      "status": "PHOTO_RADIAL_STROKE_PIVOT_SUPERSEDES_BEZEL_CENTRE",
+      "radialStrokePhotoCenterPx": [
+        308.453,
+        281.608
+      ],
+      "allNativeNumericGraduationsIdentified": true,
+      "originalBezelCenterIsNotMechanicalPivot": true,
+      "mechanicalShaftCertification": false
     },
     {
       "panel": "OH10",
@@ -95,10 +102,17 @@
       ],
       "bezelRadiusPx": 189.5,
       "deltaFromOldPx": 38.24,
-      "moveVisualMountToBezelCandidate": true,
+      "moveVisualMountToBezelCandidate": false,
       "shaftPivotCertified": false,
       "phase": "PHOTO_QA_PREVIEW",
-      "status": "BEZEL_CENTRE_PROVISIONAL"
+      "status": "PHOTO_RADIAL_STROKE_PIVOT_SUPERSEDES_BEZEL_CENTRE",
+      "radialStrokePhotoCenterPx": [
+        310.307,
+        682.818
+      ],
+      "allNativeNumericGraduationsIdentified": true,
+      "originalBezelCenterIsNotMechanicalPivot": true,
+      "mechanicalShaftCertification": false
     },
     {
       "panel": "OH10",
@@ -113,10 +127,17 @@
       ],
       "bezelRadiusPx": 182,
       "deltaFromOldPx": 60.74,
-      "moveVisualMountToBezelCandidate": true,
+      "moveVisualMountToBezelCandidate": false,
       "shaftPivotCertified": false,
       "phase": "PHOTO_QA_PREVIEW",
-      "status": "BEZEL_CENTRE_PROVISIONAL"
+      "status": "PHOTO_RADIAL_STROKE_PIVOT_SUPERSEDES_BEZEL_CENTRE",
+      "radialStrokePhotoCenterPx": [
+        785.143,
+        702.386
+      ],
+      "allNativeNumericGraduationsIdentified": true,
+      "originalBezelCenterIsNotMechanicalPivot": true,
+      "mechanicalShaftCertification": false
     },
     {
       "panel": "OH11",
