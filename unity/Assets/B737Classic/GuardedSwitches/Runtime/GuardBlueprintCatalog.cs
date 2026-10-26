@@ -27,7 +27,7 @@ namespace B737Classic.GuardedSwitches
                     throw new InvalidOperationException("Missing or duplicated guard identity.");
                 if (!Enum.TryParse(entry.hingeDirection, false, out GuardHinge _))
                     throw new InvalidOperationException("Unconfirmed hinge: " + entry.controlId);
-                if (entry.geometry == null || entry.material == null || entry.motion == null ||
+                if (entry.geometry == null || entry.material == null || entry.motion == null || entry.switchAppearance == null ||
                     entry.geometry.previewWidth <= 0f || entry.geometry.previewHeight <= 0f ||
                     entry.geometry.previewThickness <= 0f || entry.geometry.previewCornerRadius <= 0f)
                     throw new InvalidOperationException("Missing preview geometry: " + entry.controlId);
@@ -37,6 +37,17 @@ namespace B737Classic.GuardedSwitches
                     throw new InvalidOperationException("Preview may not be labelled aircraft-certified: " + entry.controlId);
                 if (!entry.material.sharedAcrossPoses)
                     throw new InvalidOperationException("Open and closed material must be identical: " + entry.controlId);
+                GuardActuatorAppearance actuator = entry.switchAppearance;
+                if (actuator.detentLabels == null || actuator.detentLabels.Length < 2 ||
+                    actuator.detentLabels.Length > 3 ||
+                    Array.IndexOf(actuator.detentLabels, actuator.initialState) < 0 ||
+                    actuator.shaftRelativeScale <= 0f || actuator.gripRelativeScale <= 0f ||
+                    actuator.detentTiltDegrees <= 0f || !actuator.meshMaterialInvariant ||
+                    !actuator.transformOnlyAnimation)
+                    throw new InvalidOperationException("Invalid static guarded actuator definition: " + entry.controlId);
+                if (actuator.momentary && (actuator.detentLabels.Length != 2 ||
+                    actuator.detentLabels[0] != "REST" || actuator.detentLabels[1] != "ACTUATE"))
+                    throw new InvalidOperationException("Transient generator drive release cannot be modelled as stable positions: " + entry.controlId);
             }
             return catalog;
         }
@@ -56,6 +67,34 @@ namespace B737Classic.GuardedSwitches
         public GuardPreviewGeometry geometry;
         public GuardCoverMaterial material;
         public GuardMotion motion;
+        public GuardActuatorAppearance switchAppearance;
+    }
+
+    [Serializable]
+    public sealed class GuardActuatorAppearance
+    {
+        public string family;
+        public string actuatorType;
+        public string detentAxis;
+        public string[] detentLabels;
+        public string initialState;
+        public bool momentary;
+        public float shaftRelativeScale;
+        public float gripRelativeScale;
+        public float shaftLengthScale;
+        public string faceHex;
+        public string ringHex;
+        public string shaftHex;
+        public string gripHex;
+        public float shaftMetallic;
+        public float shaftRoughness;
+        public float gripMetallic;
+        public float gripRoughness;
+        public float detentTiltDegrees;
+        public bool transformOnlyAnimation;
+        public bool meshMaterialInvariant;
+        public string designStage;
+        public string dimensions;
     }
 
     [Serializable]
