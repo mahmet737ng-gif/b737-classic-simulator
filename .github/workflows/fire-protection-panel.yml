@@ -24,3 +24,4 @@ jobs:
           node --check fire-protection-lab/engine.js
           node fire-protection-lab/tests/engine.test.cjs
           node fire-protection-lab/tests/assets.test.cjs
+          node fire-protection-lab/tests/geometry-v2.test.cjs
