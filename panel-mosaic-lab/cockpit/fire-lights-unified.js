@@ -1,4 +1,4 @@
-/* Installs 8 rectangular / 3 round light faces from the B737 database
+/* FIRELAMP-0006 installs 8 rectangular / 3 round independently cropped approved images
  * in the exact letterboxed 2172×724 source-image rectangle; hardware unchanged. Separate from
  * immutable Fire Protection artwork and from the switches/handles.
  */
@@ -40,7 +40,7 @@ function attach(){
  const host=win.document.querySelector('#region-pedestal .texture-piece[data-piece="fire-protection"]');
  if(!host)return false;
  const base=host.querySelector(':scope > img');
- if(!base||!(base.dataset.perfSource||base.getAttribute('src')||'').includes('FIRE_PROTECTION_BARE_STANDARD_SLOTS_V2_ORIGINAL.svg')){
+ if(!base||!(base.dataset.perfSource||base.getAttribute('src')||'').includes('fire-v6/FIRE_PANEL_BARE.webp')){
   win.console.warn('FIRELAMP: fire plate asset not recognized; mounting skipped without changing other panels');
   return false;
  }
@@ -58,19 +58,9 @@ function attach(){
    left:((hostW-imageW)/2)+'px',top:((hostH-imageH)/2)+'px',
    width:imageW+'px',height:imageH+'px'
  });
- // The previous base contains a vertically stacked L/R bottle socket pair.
- // Only this measured right-side fragment is visually patched to the
- // side-by-side configuration; all other image pixels are untouched.
- const patch=win.document.createElement('img');
- patch.className='fire-bottle-slot-patch';
- patch.alt='';patch.draggable=false;patch.decoding='async';
- patch.src='./assets/fire-lamps-v3/bottle-slots-horizontal-patch.svg';
- const patchBox={left:1688,top:82,width:392,height:279};
- for(const [key,value]of Object.entries(patchBox)){
-   const axis=(key==='left'||key==='width')?model.BASE.width:model.BASE.height;
-   patch.style[key]=(value/axis*100)+'%';
- }
- layer.append(patch);
+ // The new owner-approved bare panel already has both bottle cutouts horizontal.
+ // Do not overlay the obsolete V3 bottle patch.
+
  layer.setAttribute('aria-hidden','true');
  for(const slot of model.SLOTS){
   const node=win.document.createElement('span');node.className='fire-lamp';
@@ -79,14 +69,10 @@ function attach(){
   for(const [key,value]of Object.entries(p))node.style[key]=value;
   const img=win.document.createElement('img');
   img.alt='';img.decoding='async';img.draggable=false;
-  // The previous renderer made a transparent outer frame and left its
-  // real ON/OFF artwork at the old small size. This is why V4 looked unchanged.
-  // V5 paints the source legend at the FULL four-corner housing dimensions,
-  // screen-blended so opaque black in the original database SVG cannot cover
-  // existing metal, bezel and mounting screws in the photographic panel.
-  const legend=model.legendPercent(slot);
-  Object.assign(img.style,{position:'absolute',left:legend.left,top:legend.top,width:legend.width,height:legend.height});
-  node.dataset.geometry=slot.type==='rect'?'housing-sized-screen-lit-legend':'round-lens';
+  // Full independent PNG/WebP crop including its original finished lamp bezel.
+  // Alpha is preserved; no artificial SVG legend, CSS blend, or corner screws.
+  Object.assign(img.style,{position:'absolute',left:'0%',top:'0%',width:'100%',height:'100%'});
+  node.dataset.geometry=slot.type==='rect'?'approved-cropped-annunciator':'approved-green-lens';
   node.dataset.version=model.version;
   node.append(img);layer.append(node);faceNodes.set(slot.id,img);
  }
