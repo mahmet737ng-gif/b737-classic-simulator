@@ -122,6 +122,9 @@
    detentHits=[];
    for(const [controlId,positions] of Object.entries(cfg.detentLabels||{})){
      for(const detent of positions){
+       // INDEX sits in the center of the CABIN RATE knob. Do not place
+       // a transparent label target over its interactive rotating handle.
+       if(controlId==='cabin-rate'&&detent.value==='INDEX')continue;
        const btn=root.createElement('button');btn.type='button';
        btn.className='oh22-detent-label-hotspot';
        btn.dataset.detentFor=controlId;btn.dataset.detent=detent.value;
