@@ -32,3 +32,6 @@ jobs:
           node tests/aircraft-profile-v1.test.cjs
           node tests/cabin-pressure-plant-v1.test.cjs
           node panel-mosaic-lab/cockpit/pressurization-oh22.test.cjs
+          node --check panel-mosaic-lab/cockpit/pressurization-oh22-diagnostics.js
+          node --check panel-mosaic-lab/cockpit/pressurization-oh22-diagnostic-ui.js
+          node panel-mosaic-lab/cockpit/pressurization-oh22-diagnostics.test.cjs
