@@ -52,9 +52,10 @@
    if(!packet?.toggles||!packet?.guards||!packet?.rotaries||!packet?.context)
     throw Error('Full physical cockpit snapshot required');
    // Bridge writes only its own controls; ECU/Chain owns Battery and pneumatic/start state.
-   const before=this.bridge.get().rejected.length;
+   const before=this.bridge.get().rejectedTotal;
    this.bridge.synchronize(packet);
-   const syncRejected=this.bridge.get().rejected.slice(before);
+   const now=this.bridge.get(),rejectedDelta=now.rejectedTotal-before;
+   const syncRejected=now.rejected.slice(-Math.min(rejectedDelta,30));
    const recovery=this.physical.synchronize(this.ecu,packet);
    this.positions.clear();
    for(const [id,kind] of Object.entries(KEYS)){
@@ -79,7 +80,7 @@
    if(!allowed.includes(val))return this._record({accepted:false,id:event.id,value:val,reason:'INVALID_DETENT'});
    if(this.positions.get(event.id)===val)
     return this._record({accepted:true,duplicate:true,id:event.id,value:val,owner:owner(event.id)});
-   const before=this.bridge.get().rejected.length;
+   const before=this.bridge.get().rejectedTotal;
    try{
     if(owner(event.id)==='ISN_ECU_CHAIN'){
      const r=this.physical.dispatch(this.ecu,event);
@@ -89,7 +90,7 @@
      if(expected==='guarded')this.bridge.handleEvent(event);
     }else this.bridge.handleEvent(event);
     const rejected=this.bridge.get().rejected;
-    if(rejected.length>before)throw Error(rejected.at(-1)?.reason||'Bridge rejected cockpit command');
+    if(this.bridge.get().rejectedTotal>before)throw Error(rejected.at(-1)?.reason||'Bridge rejected cockpit command');
     this.positions.set(event.id,val);
     return this._record({accepted:true,id:event.id,value:val,owner:owner(event.id),
      electricalRevision:this.ecu.start.core.pack.electricalState.rev});
