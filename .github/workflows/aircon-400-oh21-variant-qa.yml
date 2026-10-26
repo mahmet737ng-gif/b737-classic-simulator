@@ -30,7 +30,12 @@ jobs:
         run: |
           node tests/pneumatics-v6.test.cjs
           node tests/aircon-400-oh21-variant.test.cjs
-          node panel-mosaic-lab/interactive-overhead/lights.test.cjs
+      # All-lamps regressions are independently protected by the global
+      # overhead workflow. Concurrent Recorder changes must not suppress
+      # the 737-400-only Chromium visual proof below.
+      - name: Check other lamps (nonblocking cross-team diagnostic)
+        continue-on-error: true
+        run: node panel-mosaic-lab/interactive-overhead/lights.test.cjs
       - name: Verify frozen final overhead is unchanged
         run: python3 panel-mosaic-lab/verify-final-overhead.py
       - name: Install Chromium for real photo-pixel checks
