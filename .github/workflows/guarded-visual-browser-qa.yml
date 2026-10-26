@@ -1,0 +1,67 @@
+name: Guarded cockpit visual browser QA
+on:
+  push:
+    paths:
+      - 'panel-mosaic-lab/cockpit/guarded-inplace-v1.css'
+      - 'panel-mosaic-lab/cockpit/guarded-inplace-v1.js'
+      - 'panel-mosaic-lab/cockpit/guard-textures/**'
+      - 'panel-mosaic-lab/cockpit/overhead-stage.html'
+      - '.github/workflows/guarded-visual-browser-qa.yml'
+  workflow_dispatch:
+jobs:
+  chromium-native-overhead:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate reference geometry, color and 3D shapes
+        run: |
+          node --test panel-mosaic-lab/cockpit/guarded-inplace-v1.test.cjs
+          node --test panel-mosaic-lab/cockpit/guarded-photo-v2.test.cjs
+          python3 panel-mosaic-lab/verify-final-overhead.py
+      - name: Render actual overhead stage in headless Chrome and capture DOM
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/guard-static.log 2>&1 &
+          sleep 2
+          CHROME=$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)
+          if [ -z "$CHROME" ]; then echo "No Chromium engine available"; exit 2; fi
+          echo "Browser: $CHROME"
+          "$CHROME" --headless --disable-gpu --disable-dev-shm-usage --no-sandbox \
+            --hide-scrollbars --virtual-time-budget=18000 --window-size=1920,1080 \
+            --dump-dom 'http://127.0.0.1:8765/panel-mosaic-lab/cockpit/overhead-stage.html' \
+            > /tmp/guard-overhead-dom.html 2> /tmp/guard-chrome-stderr.log
+          if grep -q 'data-installed="12"' /tmp/guard-overhead-dom.html; then
+            echo "PASS: 12 native guarded switches mounted with SVG V2 skin."
+          else
+            echo "WARNING: not all 12 source-anchored guards are present in headless DOM."
+            grep -oE '.{0,70}g17-native-install-status.{0,280}' /tmp/guard-overhead-dom.html | head -c 1800 || true
+            tail -20 /tmp/guard-chrome-stderr.log || true
+            exit 1
+          fi
+          grep -q 'data-surface="red"' /tmp/guard-overhead-dom.html || { echo "FAIL: red covers missing"; exit 1; }
+          grep -q 'data-surface="black"' /tmp/guard-overhead-dom.html || { echo "FAIL: black covers missing"; exit 1; }
+          grep -q 'data-surface="horizontal"' /tmp/guard-overhead-dom.html || { echo "FAIL: wide cover missing"; exit 1; }
+      - name: Save photo-style Overhead screenshot for visual inspection
+        if: always()
+        run: |
+          CHROME=$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)
+          if [ -n "$CHROME" ]; then
+            "$CHROME" --headless --disable-gpu --disable-dev-shm-usage --no-sandbox \
+              --hide-scrollbars --virtual-time-budget=18000 --window-size=1920,1080 \
+              --screenshot=/tmp/guarded-overhead-v2.png \
+              'http://127.0.0.1:8765/panel-mosaic-lab/cockpit/overhead-stage.html' || true
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: b737-guard-photo-v2-browser-proof
+          path: |
+            /tmp/guarded-overhead-v2.png
+            /tmp/guard-overhead-dom.html
+            /tmp/guard-chrome-stderr.log
+            /tmp/guard-static.log
+          if-no-files-found: ignore
+          retention-days: 7
