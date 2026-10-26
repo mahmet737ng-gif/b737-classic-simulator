@@ -160,12 +160,12 @@ function build(node,c,legacy){
  sync();
  return {id:c.controlId,panel:c.panelId,method:slot.method,hinge:c.hingeDirection,rect:{x:slot.left,y:slot.top,w:slot.w,h:slot.h}};
 }
-function marker(pending){
+function marker(pending,installed){
  const parent=document.getElementById('toggleInspector');
  if(!parent)return;
  let output=document.getElementById('g17-native-install-status');
  if(!output){output=document.createElement('div');output.id='g17-native-install-status';output.className='g17-native-install-status';parent.prepend(output);}
- output.textContent='گاردهای نصب‌شده روی نقاط مستند Overhead: ۱۲/۱۷ · پنج کنترل بدون مختصات معتبر: '+pending.map(p=>p.displayName).join('، ')+'. پیش‌نمایش همه ۱۷ مورد در Unified موجود است.';
+ output.textContent='گاردهای واقعاً آماده روی Overhead: '+installed+'/۱۲ نقطهٔ موجود؛ پنج مورد نیازمند مختصات معتبر: '+pending.map(p=>p.displayName).join('، ')+'. پیش‌نمایش هر ۱۷ گارد در Unified موجود است.';
 }
 async function start(){
  try{
@@ -187,7 +187,7 @@ async function start(){
      receipt.set(guard.id,result);failures.delete(guard.id);
     }catch(e){failures.set(guard.id,String(e.message));console.error('Guard surface validation',guard.id,e);}
    }
-   marker(pending);
+   marker(pending,receipt.size);
    window.B737NativeGuards=Object.freeze({installed:receipt.size,
     pending:pending.map(p=>p.controlId),placements:[...receipt.values()],
     mountingFailures:[...failures.entries()].map(([id,reason])=>({id,reason})),
