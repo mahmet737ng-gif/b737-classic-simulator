@@ -16,11 +16,11 @@ test('source-specific 11-gauge original photo and SHA256 provenance stays record
  assert.ok(ev.gauges.every(x=>!x.shaftPivotCertified));
  assert.equal(ev.allGraduationsCertified,false);
 });
-test('8 moved OH10/OH11/OH12 bezel-centre candidates agree with verified native photos',()=>{
+test('six remaining OH10/OH11 bezel previews remain centred on original rim scans',()=>{
  const positions=new Map([...ac.meters.map(x=>['OH10:'+x.id,[x.x,x.y]]),
  ...drv.needles.map(x=>[x.piece+':'+x.id,[x.x,x.y]])]);
  const eligible=ev.gauges.filter(x=>x.moveVisualMountToBezelCandidate);
- assert.equal(eligible.length,8);
+ assert.equal(eligible.length,6);
  for(const r of eligible){
   const actual=positions.get(r.panel+':'+r.id);
   assert.ok(actual,r.panel+':'+r.id);
@@ -28,6 +28,19 @@ test('8 moved OH10/OH11/OH12 bezel-centre candidates agree with verified native 
   assert.ok(nearly(actual[1],r.bezelArcCentrePx[1]));
   assert.ok(r.deltaFromOldPx>10);
   assert.equal(r.status,'BEZEL_CENTRE_PROVISIONAL');
+ }
+});
+test('OH12 A.C. AMPS pointers use real 21-white-stroke radial intersections, NOT bezel center',()=>{
+ const radial=ev.gauges.filter(x=>x.id==='acAmps1'||x.id==='acAmps2');
+ assert.equal(radial.length,2);
+ for(const r of radial){
+  assert.equal(r.moveVisualMountToBezelCandidate,false);
+  assert.equal(r.all21NumericGraduationsIdentified,true);
+  assert.equal(r.originalBezelCenterIsNotMechanicalPivot,true);
+  const n=drv.needles.find(x=>x.id===r.id);
+  assert.ok(nearly(n.x,r.radialStrokePhotoCenterPx[0]));
+  assert.ok(nearly(n.y,r.radialStrokePhotoCenterPx[1]));
+  assert.ok(!r.shaftPivotCertified);
  }
 });
 test('APU AMPS previous pivot is kept after photo rim contrast decreased',()=>{
