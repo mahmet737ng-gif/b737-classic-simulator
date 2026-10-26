@@ -4,6 +4,7 @@ const E=require("../engine/systems/electrical-v7.js");
 const M=require("../engine/systems/mrg-classic-consumer-bus-qa-v1.js");
 const INDEX=require("../engine/systems/mrg-classic-340-consumer-bus-index-v1.json");
 const FAILURES=require("../engine/systems/mrg-classic-bus-failure-effects-v1.json");
+const LoadsV8=require("../engine/systems/electrical-loads-v8.js");
 const electrical=()=>E.evaluate(E.initialState());
 const find=(text)=>INDEX.rows.find(x=>x.item===text);
 test("MRG Classic source index has 340 cited records across 182-188",()=>{
@@ -136,4 +137,22 @@ test("Duplicated OCR source index row is quarantined rather than duplicated in i
  const duplicates=INDEX.rows.filter(x=>x.item==="Fuel Pump Control - Main Tank 1 Fwd"&&x.feedBus==="dc2");
  a.equal(duplicates.length,2);
  a(duplicates.every(x=>x.sourceConfidence==="DUPLICATED_LABEL_REQUIRES_PAGE_PHOTO_REVIEW"));
+});
+
+test("V8 opt-in exposes ten source-indexed Classic candidates but no installed bus assignments",()=>{
+ const p=LoadsV8.project(electrical(),{mrgIndex:INDEX,mrgAudit:M,variant:"DCPCS"});
+ a.equal(Object.keys(p.genericClCandidateFeeds).length,10);
+ a.equal(p.coverage.loadsKnownBus,0);
+ a(Object.values(p.loads).every(x=>x.assignedBus===null));
+ a(Object.values(p.genericClCandidateFeeds).every(x=>x.assignedBus===null&&x.powered===null&&x.installedWiringConfirmed===false));
+ a.equal(p.genericClCandidateFeeds["fuel.centerLeftPump"].references[0].bus,"main2");
+ a.equal(p.genericClCandidateFeeds["hyd.electricPumpA"].references[0].bus,"generator2");
+});
+test("V8 default projection is unchanged in source-gated mode; CPCS omits DCPCS candidates",()=>{
+ const d=LoadsV8.project(electrical());
+ a.equal(d.genericClCandidateFeeds,null);
+ const c=LoadsV8.project(electrical(),{mrgIndex:INDEX,mrgAudit:M,variant:"CPCS"});
+ a.equal(Object.keys(c.genericClCandidateFeeds).length,8);
+ a.equal(c.genericClCandidateFeeds["dcpcs.controller1"],undefined);
+ a.equal(c.loads["dcpcs.controller1"].assignedBus,null);
 });
