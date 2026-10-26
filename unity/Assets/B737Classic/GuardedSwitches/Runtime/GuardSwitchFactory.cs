@@ -83,7 +83,7 @@ namespace B737Classic.GuardedSwitches
             MeshFilter mf = cover.AddComponent<MeshFilter>();
             mf.sharedMesh = GuardCoverMesh.Create(
                 spec.controlId, g.previewWidth, g.previewHeight,
-                g.previewThickness, g.previewCornerRadius);
+                g.previewThickness, g.previewCornerRadius, g.contourProfile);
             MeshRenderer mr = cover.AddComponent<MeshRenderer>();
             mr.sharedMaterial = lid;
             MeshCollider hit = cover.AddComponent<MeshCollider>();
