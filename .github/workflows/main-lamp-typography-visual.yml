@@ -1,4 +1,5 @@
 name: B737 Main Instrument Panel 30-lamp three-scale visual QA
+# MIP-TYPE-0003 regenerated from measured source-pixel text bounds
 on:
   workflow_dispatch:
   push:
