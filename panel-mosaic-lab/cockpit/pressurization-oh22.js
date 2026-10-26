@@ -16,13 +16,13 @@
  const approvedLamps=Object.freeze({'auto-fail':'AUTO_FAIL','off-sched':'OFF_SCHED_DESCENT','standby':'STANDBY_GREEN','manual':'MANUAL_GREEN'});
 
  let system='DCPCS',layer=null,plate=null,received=null,fallback=null,controls=new Map(),lamps=new Map(),digits=new Map(),caption=null,gauge=null;
- let activeSpring=null,holdTimer=null,observer=null;
+ let activeSpring=null,holdTimer=null,observer=null,hornOverlay=null,detentHits=[];
  function notify(kind,additional={}){if(parent!==window)parent.postMessage({type:'b737:cockpit-overhead',kind,system,...additional},location.origin);}
  function savedSystem(){try{return JSON.parse(localStorage.getItem(PROFILE_KEY)||'null')?.pressurization==='CPCS'?'CPCS':'DCPCS';}catch(_){return 'DCPCS';}}
  function mount(){
    const target=atlas.querySelector('.atlas-piece[data-key="OH22"]');
    if(!target)return false;
-   if(target===plate&&layer?.isConnected)return true;
+   if(target===plate&&layer?.isConnected){syncHornButton();return true;}
    plate=target;
    window.document.documentElement.classList.add('oh22-pressure-config-active');
    build();
@@ -98,6 +98,45 @@
    el.addEventListener('pointerdown',e=>e.stopPropagation());
    return el;
  }
+ function syncHornButton(){
+   if(hornOverlay){hornOverlay.remove();hornOverlay=null;}
+   if(system!=='CPCS')return;
+   const geom=model.config(system).hornCutout;
+   const host=atlas.querySelector('.atlas-piece[data-key="'+geom.piece+'"]');
+   if(!host)return;
+   const button=root.createElement('button');button.type='button';
+   button.className='oh22-physical-horn-cutout';button.dataset.control='horn-cutout';
+   button.setAttribute('aria-label','ALT HORN CUTOUT — silence cabin-altitude warning horn');
+   button.title='ALT HORN CUTOUT · physical OH19 button / CPCS';
+   button.style.left=geom.xy[0]*100+'%';button.style.top=geom.xy[1]*100+'%';
+   button.style.width=geom.diameter*100+'%';button.style.aspectRatio='1 / 1';
+   // This is a transparent click surface over the photographed OH19 button;
+   // the original brass rim and black button are never repainted.
+   button.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();
+     notify('pressurization-horn-cutout',{sourcePiece:geom.piece});
+   });
+   button.addEventListener('pointerdown',event=>event.stopPropagation());
+   host.append(button);hornOverlay=button;
+ }
+ function installDetents(cfg){
+   detentHits=[];
+   for(const [controlId,positions] of Object.entries(cfg.detentLabels||{})){
+     for(const detent of positions){
+       const btn=root.createElement('button');btn.type='button';
+       btn.className='oh22-detent-label-hotspot';
+       btn.dataset.detentFor=controlId;btn.dataset.detent=detent.value;
+       btn.setAttribute('aria-label',controlId+' → '+detent.value);
+       btn.title=controlId+' · '+detent.value;
+       pos(btn,detent.xy);btn.style.width='7%';btn.style.height='5%';
+       btn.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();
+         const c=cfg.controls.find(v=>v.id===controlId);
+         if(c)dispatch(c,detent.value);
+       });
+       btn.addEventListener('pointerdown',event=>event.stopPropagation());
+       layer.append(btn);detentHits.push(btn);
+     }
+   }
+ }
  function createLamp(l){
    const el=root.createElement('span');el.dataset.role='lamp';el.dataset.lamp=l.id;
    el.title=l.label+' · '+system+' logic';
@@ -133,7 +172,7 @@
  function build(){
    if(layer)layer.remove();
    if(holdTimer!==null){clearInterval(holdTimer);holdTimer=null;activeSpring=null;}
-   controls.clear();lamps.clear();digits.clear();
+   controls.clear();lamps.clear();digits.clear();detentHits=[];
    layer=root.createElement('div');layer.className='oh22-pressure-controls';layer.dataset.system=system;
    const cfg=model.config(system);
    for(const lamp of cfg.lamps){const node=createLamp(lamp);layer.append(node);lamps.set(lamp.id,node);}
@@ -144,12 +183,23 @@
      layer.append(node);digits.set(display.id,node);
    }
    for(const control of cfg.controls){const node=createActuator(control);layer.append(node);controls.set(control.id,node);}
-   if(system==='DCPCS'){
-     gauge=root.createElement('output');gauge.className='oh22-pressure-gauge';gauge.dataset.known='false';gauge.textContent='—';gauge.title='Actual outflow valve position is not calculated';
-     layer.append(gauge);
-   }else gauge=null;
+   installDetents(cfg);
+   gauge=root.createElement('output');gauge.className='oh22-pressure-gauge';gauge.dataset.system=system;
+   gauge.dataset.known='false';gauge.title='Valve indication pending pressure model';
+   if(system==='CPCS'){
+     const g=cfg.valveIndicator;
+     pos(gauge,g.xy);gauge.style.width=g.diameter*100+'%';
+     gauge.style.height='auto';gauge.style.aspectRatio='1 / 1';
+     const pointer=root.createElement('span');pointer.className='oh22-valve-pointer';
+     pointer.setAttribute('aria-hidden','true');
+     const pin=root.createElement('span');pin.className='oh22-valve-hub';
+     pin.setAttribute('aria-hidden','true');
+     gauge.append(pointer,pin);
+   }
+   layer.append(gauge);
    caption=root.createElement('output');caption.className='oh22-pressure-note';caption.textContent=system+' · waiting for selected engine';layer.append(caption);
    plate.append(layer);
+   syncHornButton();
    received=null;
    requestState();
  }
@@ -195,7 +245,11 @@
      n.setAttribute('aria-valuetext',String(value));
      let angle=0;
      if(c.kind==='altitude')angle=-155+310*(Number(value)-c.min)/(c.max-c.min);
-     else if(c.kind==='selector')angle=(system==='DCPCS'&&c.id==='press-mode'?-45:-65)+(system==='DCPCS'&&c.id==='press-mode'?90:130)*(c.states.indexOf(value)/Math.max(1,c.states.length-1));
+     else if(c.kind==='selector'){
+       const measured=cfg.detentPoses?.[c.id]?.[value];
+       angle=Number.isFinite(measured)?measured:
+         (system==='DCPCS'&&c.id==='press-mode'?-45:-65)+(system==='DCPCS'&&c.id==='press-mode'?90:130)*(c.states.indexOf(value)/Math.max(1,c.states.length-1));
+     }
      else if(c.kind==='spring')angle=value==='CLOSE'?-24:value==='OPEN'?24:0;
      if(c.visualFamily==='Small Silver'){
        const face=n.querySelector('.oh22-small-silver-face');
@@ -209,13 +263,28 @@
      if(el){const v=model.readDisplay(system,d,state);el.textContent=v===null?'—':String(v);}
    }
    if(gauge){
-     const manual=output.operatingMode==='MAN';
-     const modelFraction=output.physical?.valveOpenFraction;
-     const physicalKnown=typeof modelFraction==='number'&&Number.isFinite(modelFraction);
-     gauge.dataset.known=String(physicalKnown||manual);
-     gauge.textContent=physicalKnown?Math.round(modelFraction*100)+'%':manual?Math.round(output.manualValveFraction*100)+'%':'';
-     gauge.title=physicalKnown?'Training plant estimated outflow opening; not aircraft-measured':
-       manual?'Illustrative MAN motor stroke only':'Actual valve position unknown without a pressure plant';
+     const frac=output.physical?.valveOpenFraction;
+     const physicalKnown=typeof frac==='number'&&Number.isFinite(frac);
+     if(system==='CPCS'){
+       // Native CPCS AC-powered VALVE aperture is a circular indicator.
+       // Needle uses the independent cabin plant's estimated valve travel.
+       // With AC lost the source-defined presentation is FULL LEFT.
+       const powered=state.inputs?.acPowerAvailable===true;
+       const pointer=gauge.querySelector('.oh22-valve-pointer');
+       const percent=physicalKnown?Math.max(0,Math.min(1,frac)):null;
+       gauge.dataset.known=String(physicalKnown&&powered);
+       gauge.dataset.powered=String(powered);
+       if(pointer)pointer.style.transform='translate(-50%,-100%) rotate('+(!powered?-75:percent===null?-75:-75+150*percent)+'deg)';
+       gauge.title=!powered?'CPCS VALVE indicator unpowered — needle at full left':
+         percent===null?'Valve travel unknown — source not connected':
+         'CPCS VALVE · estimated '+Math.round(percent*100)+'% open (trainer physics, not measured aircraft position)';
+     }else{
+       const manual=output.operatingMode==='MAN';
+       gauge.dataset.known=String(physicalKnown||manual);
+       gauge.textContent=physicalKnown?Math.round(frac*100)+'%':manual?Math.round(output.manualValveFraction*100)+'%':'';
+       gauge.title=physicalKnown?'Training plant estimated outflow opening; not aircraft-measured':
+         manual?'Illustrative MAN motor stroke only':'Actual valve position unknown without a pressure plant';
+     }
    }
    caption.textContent=system+'  ·  '+(output.operatingMode||'UNKNOWN')+'  ·  '+(output.outflowCommand||output.outflow?.command||'NOT CALCULATED');
    layer.dataset.mode=output.operatingMode||'UNKNOWN';
