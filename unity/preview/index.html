@@ -61,14 +61,23 @@ function mountVisual(control,initialOpen){
  preview.style.setProperty('--open-pos',m.openAngleDegrees+'deg');
  preview.style.setProperty('--open-neg',-m.openAngleDegrees+'deg');
  const stamp=node('span','stamp',initialOpen?'OPEN':'CLOSED');
- const frame=node('div','frame');
+ // Hinge barrel belongs to the FIXED mounting frame, not the cover.
+ const frame=node('div','frame hinge-'+control.hingeDirection.toLowerCase());
  const under=node('span','switch');
  const cover=node('button','cover hinge-'+control.hingeDirection.toLowerCase()+(initialOpen?' open':''));cover.type='button';
+ const profiles={
+  'red-tapered-long-cap':'polygon(0 0,100% 0,95% 100%,5% 100%)',
+  'black-shouldered-cap':'polygon(5% 0,95% 0,100% 11%,100% 89%,95% 100%,5% 100%,0 89%,0 11%)',
+  'black-vertical-oxygen':'polygon(2% 0,98% 0,100% 100%,0 100%)',
+  'black-vertical-exit':'polygon(2% 0,98% 0,100% 100%,0 100%)',
+  'silver-satin-inset':'polygon(4% 0,96% 0,100% 100%,0 100%)'
+ };
+ if(profiles[g.contourProfile])cover.style.clipPath=profiles[g.contourProfile];
  cover.setAttribute('aria-label',control.displayName+'؛ تغییر حالت گارد');
- const hinge=node('span','hinge-line');cover.append(hinge);
+ const hinge=node('span','hinge-line');
  const setOpen=value=>{cover.classList.toggle('open',value);stamp.textContent=value?'OPEN':'CLOSED';};
  cover.addEventListener('click',()=>setOpen(!cover.classList.contains('open')));
- frame.append(under,cover);preview.append(stamp,frame);
+ frame.append(under,cover,hinge);preview.append(stamp,frame);
  return {element:preview,setOpen};
 }
 function card(spec){
