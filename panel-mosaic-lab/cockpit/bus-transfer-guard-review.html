@@ -66,6 +66,13 @@ a{color:#8bdbe5}
 <div class="controls"><button id="toggleBoth" type="button" class="action">تغییر وضعیت دو نما</button>
 <button id="reset" type="button" class="action">CLOSED / OPEN</button>
 <span id="status" class="status" role="status">Ready · Geometry locked</span></div>
+<section aria-label="BUS TRANSFER live trainer control" style="margin-top:18px;padding:14px;background:#19252b;border:1px solid #526e78;border-radius:11px;text-align:center">
+ <strong>BUS TRANSFER — کنترل آزمایشی متصل به برق</strong>
+ <p style="color:#ccd8dd;font-size:12px">برای تغییر حالت، یکی از گاردهای بالا باید باز باشد. این صفحه هنوز روی جای واقعی OH12 نصب نشده است.</p>
+ <div class="controls"><button type="button" class="action" id="busTransferLiveAuto" disabled>AUTO</button>
+ <button type="button" class="action" id="busTransferLiveOff" disabled>OFF</button>
+ <span id="busTransferLiveStatus" role="status" class="status">در انتظار اتصال به Unified…</span></div>
+</section>
 <div class="note">این تست تصویریِ اصلاح BUS TRANSFER در Unified است؛ گارد بسته/باز همان رنگ، فرم، ضخامت و اندازه را دارد و فقط حول محور Left می‌چرخد. نصب پیکسلی آن روی OH12 هنوز کالیبره و تأیید نشده؛ به‌جای جایگذاری حدسی روی تصویر قفل‌شده، این نمای بازرسی مستقل اضافه شده است. رنگ و شکل بازتابی همچنان پیش‌نمایش هستند و خود عکس تولیدشده، دارایی منتشرشده در این صفحه نیست.</div>
 </main>
 <script>
@@ -77,4 +84,5 @@ stations.forEach(s=>s.querySelector('.cover').addEventListener('click',()=>rende
 document.getElementById('toggleBoth').addEventListener('click',()=>{for(const s of stations)render(s,!s.classList.contains('opened'));document.getElementById('status').textContent='Same cover transformed about fixed LEFT hinge';});
 document.getElementById('reset').addEventListener('click',()=>{render(stations[0],false);render(stations[1],true);document.getElementById('status').textContent='Ready · Geometry locked';});
 })();
-</script></body></html>
+</script>
+<script src="./bus-transfer-live-preview-v1.js?v=BUS-001" defer></script></body></html>
