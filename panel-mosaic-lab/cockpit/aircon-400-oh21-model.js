@@ -17,9 +17,13 @@
   Object.freeze({side:'L',id:'pack-400-l',legacyId:'pack-trip-l',label:'PACK',rect:Object.freeze([243,862,180,66])}),
   Object.freeze({side:'R',id:'pack-400-r',legacyId:'pack-trip-r',label:'PACK',rect:Object.freeze([701,862,180,66])})
  ]);
+ // Plate-printed title lenses, with measured room above the two socket axes.
+ // The former y=123 titles collided with OFF legends. Both are now above them.
  const labels=Object.freeze([
-  Object.freeze({text:'L RECIRC FAN',rect:Object.freeze([45,123,292,72])}),
-  Object.freeze({text:'R RECIRC FAN',rect:Object.freeze([724,123,305,72])})
+  Object.freeze({text:'L RECIRC FAN',kind:'title',rect:Object.freeze([105,28,284,64])}),
+  Object.freeze({text:'R RECIRC FAN',kind:'title',rect:Object.freeze([709,28,321,64])}),
+  Object.freeze({text:'OFF',kind:'detent',rect:Object.freeze([262,137,118,61])}),
+  Object.freeze({text:'AUTO',kind:'detent',rect:Object.freeze([261,259,145,61])})
  ]);
  function geometry(placement){
   const {x,y,w,h}=placement;
@@ -35,6 +39,16 @@
   const xs=switches.map(s=>s.sourcePoint[0]);
   if(xs[0]>=xs[1]||switches[1].id!=='recirc-fan'||packs.length!==2)throw Error('Invalid dual RECIRC installation');
   for(const c of [...packs,...labels]){const [x,y,w,h]=c.rect;if(x<0||y<0||x+w>source.width||y+h>source.height)throw Error('OH21 variant geometry exceeds source');}
+  // Collision guard for original right hand OFF/AUTO legends and screw heads.
+  const intersects=(a,b)=>a[0]<b[0]+b[2]&&a[0]+a[2]>b[0]&&a[1]<b[1]+b[3]&&a[1]+a[3]>b[1];
+  const rightLegends=[[665,135,105,80],[662,268,153,80]],leftSocket=[121,169,128,145];
+  for(const label of labels.filter(x=>x.kind==='title')){
+   if(rightLegends.some(b=>intersects(label.rect,b))||intersects(label.rect,leftSocket))
+    throw Error('Air conditioning title collides with an existing legend or left socket: '+label.text);
+  }
+  for(const label of labels.filter(x=>x.kind==='detent')){
+   if(intersects(label.rect,leftSocket))throw Error('Left recirc detent collides with socket: '+label.text);
+  }
   return true;
  }
  return Object.freeze({source,switches,packs,labels,geometry,normalizeSwitch,variant,validate});
