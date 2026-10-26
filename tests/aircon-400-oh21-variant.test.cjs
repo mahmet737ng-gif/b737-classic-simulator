@@ -9,25 +9,29 @@ assert.deepEqual(V.switches.map(c=>c.label),['L RECIRC FAN','R RECIRC FAN']);
 assert.deepEqual(V.packs.map(c=>c.label),['PACK','PACK']);
 assert.deepEqual(V.packs.map(c=>c.legacyId),['pack-trip-l','pack-trip-r']);
 assert.equal(V.switches[1].id,'recirc-fan','reuse the existing right physical socket');
-assert.equal(V.labels.length,4,'both RECIRC titles and left OFF/AUTO legends must exist');
+assert.equal(V.labels.length,6,'matching RECIRC titles and OFF/AUTO legends on both sides');
 assert.deepEqual(V.labels.filter(x=>x.kind==='title').map(x=>x.text),
  ['L RECIRC FAN','R RECIRC FAN']);
-assert.deepEqual(V.labels.filter(x=>x.kind==='detent').map(x=>x.text),['OFF','AUTO']);
+assert.deepEqual(V.labels.filter(x=>x.kind==='detent').map(x=>x.text),['OFF','AUTO','OFF','AUTO']);
 // The previously shipped titles were at y=123, overlapping the native
 // right OFF legend. They must be above the socket/legend row.
 for(const item of V.labels.filter(x=>x.kind==='title')){
  const [x,y,w,h]=item.rect;
- assert.ok(y>=115&&y+h<=175,'RECIRC title must replace native title glass, not the RAM DOOR row: '+item.text);
- assert.ok(w>=270&&w<350,'RECIRC title must stay a compact engraved lens');
+ assert.ok(y>=115&&y+h<=175,'RECIRC title must be in the native label row: '+item.text);
+ assert.equal(w,325,'Both RECIRC titles must have identical width');
 }
 for(const item of V.labels.filter(x=>x.kind==='detent')){
  const [x,y,w,h]=item.rect;
- assert.ok(x>=235&&x+w<380,'Left OFF/AUTO cannot cover left screw or central instrument');
- assert.ok(h<=65,'Legacy-proportioned detent glass');
+ assert.ok((x>=250&&x+w<=380)||(x>=700&&x+w<=825),'Detent legends must stay beside the corresponding switch');
+ assert.equal(h,56,'Both detent sets must share identical glass height');
 }
 const g=V.geometry({x:1724,y:1751,w:493,h:701});
 const left=g.point(V.switches[0].sourcePoint),right=g.point(V.switches[1].sourcePoint);
 assert.ok(left.x<right.x&&Math.abs(left.y-right.y)<.01,'dual toggles share a row');
+assert.equal(V.switches[0].sourcePoint[1],269.33,'left lever must clear title with OFF up');
+assert.equal(V.switches[1].sourcePoint[1],269.33,'right lever must clear title with OFF up');
+assert.deepEqual(V.labels.filter(x=>x.kind==='title').map(x=>x.rect.slice(1)),[[120,325,50],[120,325,50]]);
+assert.deepEqual(V.nativeRightCover,[677,113,350,228]);
 for(const lamp of V.packs){
  const box=g.rect(lamp.rect);
  assert.ok(box.x>=1724&&box.y>=1751&&box.x+box.w<=2217&&box.y+box.h<=2452);
@@ -67,12 +71,15 @@ for(const name of ['aircon-400-oh21-model.js','aircon-400-oh21-overlay.js','airc
 const overlay=fs.readFileSync(path.join(base,'aircon-400-oh21-overlay.js'),'utf8');
 assert.ok(overlay.includes("toggle-recirc-fan-l-400"));
 assert.ok(overlay.includes("setAircon400LeftRecirc"));
-assert.ok(overlay.includes('ctx.measureText(item.text)')&&overlay.includes('fitRatio'),'Text must use measured glyph width, not letter-count guesses');
+assert.ok(overlay.includes('ctx.measureText(item.text)')&&overlay.includes('grouped.set(item.kind'),'Same measured font size must apply to both sides');
 assert.ok(overlay.includes('dataset.labelKind=item.kind'),'Use different title/detent treatments');
+assert.ok(overlay.includes("rightToggle.removeAttribute('title')"),'Avoid duplicate native browser RECIRC FAN tooltip');
+assert.ok(overlay.includes('installRightCover(g)')&&overlay.includes('placeRight('),'Mask legacy right hardware and reposition the live right toggle');
 const css=fs.readFileSync(path.join(base,'aircon-400-oh21-overlay.css'),'utf8');
 assert.ok(css.includes('overflow:hidden;white-space:nowrap'),'Prevent text from spilling across real source');
 assert.ok(!css.includes('linear-gradient(#d8e5ef,#bfd3e2)'),'Reject the giant pale labels seen in failed screenshot');
 assert.ok(css.includes('background:#4c6070'),'Use dark, photo-matched lens');
+assert.ok(css.includes('.aircon400-native-recirc-cover'),'737-400 must cover legacy right RECIRC print');
 const labels=V.labels;
 for(let i=0;i<labels.length;i++)for(let j=i+1;j<labels.length;j++){
  const [x,y,w,h]=labels[i].rect,[a,b,v,k]=labels[j].rect;
