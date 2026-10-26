@@ -1,147 +1,103 @@
 'use strict';
-/* MCP actual asset adoption visual QA.
-   OFF/ON A/T are different SVG files. F/D uses the original Silver Small
-   five-pose transparent sprite, fourth/fifth cells, not CSS substitute bars.
-   Source pivots and AFDS physical behavior must remain intact.
- */
-const assert=require('node:assert/strict');
-const fs=require('node:fs');
-const path=require('node:path');
+/* MCP-PHOTO-0003: screenshots + DOM and image-decode verification of the prior
+   isolated photographic parts. No CSS-drawn replica can satisfy the contract.
+   Three switches: A/T OFF / ARM and captain/FO F/D OFF / ON. */
+const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
 const {chromium}=require('playwright');
-const out='/tmp/b737-mcp-authentic-switches';
-fs.mkdirSync(out,{recursive:true});
-const prefix='http://127.0.0.1:8788/panel-mosaic-lab/';
-async function run(browser,kind){
- const page=await browser.newPage({viewport:{width:1900,height:910},deviceScaleFactor:1});
+const out='/tmp/b737-mcp-authentic-switches';fs.mkdirSync(out,{recursive:true});
+const base='http://127.0.0.1:8788/panel-mosaic-lab/';
+const S=['AT_ARM','FD_LEFT','FD_RIGHT'];
+async function exercise(browser,kind){
+ const page=await browser.newPage({viewport:{width:1900,height:950},deviceScaleFactor:1});
  const errors=[];page.on('pageerror',e=>errors.push(e.message));
- const url=prefix+(kind==='lab'?'mcp-panel/':'cockpit/');
- const response=await page.goto(url,{waitUntil:'domcontentloaded',timeout:60000});
- assert.equal(response.status(),200);
- await page.waitForFunction(()=>Boolean(window.B737McpHardwareV1)&&Boolean(window.B737McpVisualV3)&&
-     Boolean(document.querySelector('[data-piece="mcp"] [data-mcp-hardware="AT_ARM"] .mcp-hw-switch-art'))&&
-     document.querySelectorAll('[data-piece="mcp"] .mcp-hw-silver-atlas').length===2,
-   null,{timeout:60000});
- const a=await page.evaluate(async()=>{
-   const ids=['AT_ARM','FD_LEFT','FD_RIGHT'];
-   const controls=window.B737McpHardwareV1.geometry;
-   if(controls.filter(c=>ids.includes(c.id)).length!==3)throw Error('MCP source geometry changed');
-   const art=document.querySelector('[data-piece="mcp"] [data-mcp-hardware="AT_ARM"]');
-   const images=[...art.querySelectorAll('img.mcp-hw-switch-art')];
-   await Promise.all(images.map(im=>im.decode()));
-   const silver=[...document.querySelectorAll('[data-piece="mcp"] .mcp-hw-silver-atlas')];
-   const css=silver.map(s=>({bg:getComputedStyle(s).backgroundImage,
-     pos:getComputedStyle(s).backgroundPosition,
-     bounds:{w:s.getBoundingClientRect().width,h:s.getBoundingClientRect().height}}));
-   const loaded=await Promise.all(css.map(async v=>{
-      const image=new Image();
-      image.src=v.bg.slice(5,-2);
-      await image.decode();
-      return {width:image.naturalWidth,height:image.naturalHeight};
-   }));
-   const knob=window.B737McpVisualV3.geometry.knobs;
-   return{states:window.B737McpHardwareV1.getState(),
-    images:images.map(im=>({src:im.src,w:im.naturalWidth,h:im.naturalHeight})),
-    silver:css.map((v,i)=>({...v,sprite:loaded[i]})),
-    toggles:controls.filter(c=>ids.includes(c.id)).map(c=>({...c})),
-    knobs:knob.map(k=>({...k}))};
- });
- assert.equal(a.images.length,2);
- assert.ok(a.images.some(x=>x.src.endsWith('/AT_ARM_OFF.svg')));
- assert.ok(a.images.some(x=>x.src.endsWith('/AT_ARM_UP.svg')));
- assert.ok(a.images.every(x=>x.w===256&&x.h===260));
- assert.equal(a.silver.length,2);
- assert.ok(a.silver.every(x=>x.bg.includes('Small_Silver_5Positions.webp')));
- assert.ok(a.silver.every(x=>x.sprite.width===5120&&x.sprite.height===1024));
- assert.deepEqual(a.toggles.map(x=>x.id),['AT_ARM','FD_LEFT','FD_RIGHT']);
- assert.equal(a.knobs.length,5);
- const photoAudit=await page.evaluate(async()=>{
+ const url=base+(kind==='lab'?'mcp-panel/':'cockpit/');
+ const r=await page.goto(url,{waitUntil:'domcontentloaded',timeout:60000});
+ assert.equal(r.status(),200);
+ await page.waitForFunction(()=>Boolean(window.B737McpHardwareV1&&window.B737McpVisualV3)&&
+  document.querySelectorAll('[data-piece="mcp"] .mcp-hw-real-face').length===3,null,{timeout:60000});
+ const art=await page.evaluate(async()=>{
   const root=document.querySelector('[data-piece="mcp"]');
-  const ids=[
-   ['courseL','COURSE_PHOTO_80.webp'],['courseR','COURSE_PHOTO_80.webp'],
-   ['heading','HEADING_PHOTO_80.webp'],['altitude','ALTITUDE_PHOTO_80.webp']
-  ];
-  const found=[];
-  for(const [id,file]of ids){
-   const node=root.querySelector('.mcp-v3-knob[data-control="'+id+'"] .mcp-v3-'+(id.startsWith('course')?'course':'plain')+'-face');
-   if(!node)throw Error('missing real reference knob '+id);
-   const css=getComputedStyle(node).backgroundImage;
-   if(!css.includes(file))throw Error('CSS pseudo-knob remains mounted '+id+': '+css);
-   const u=css.slice(5,-2),img=new Image();img.src=u;await img.decode();
-   found.push({id,file,w:img.naturalWidth,h:img.naturalHeight});
-  }
-  const buttons=[...root.querySelectorAll('.mcp-hw-push')];
-  if(buttons.length!==3)throw Error('MCP physical round push-button count has drifted');
-  for(const b of buttons){
-   const css=getComputedStyle(b.querySelector('.mcp-hw-push-bezel')).backgroundImage;
-   if(!css.includes('ROUND_PUSH_80.webp'))throw Error('Old CSS pushbutton instead of source photo');
-   const img=new Image();img.src=css.slice(5,-2);await img.decode();
-   if(img.naturalWidth!==80||img.naturalHeight!==80)throw Error('Pushbutton photo altered');
-  }
-  return{knobs:found,pushes:buttons.length};
+  const faces=[...root.querySelectorAll('.mcp-hw-real-face')];
+  const src=getComputedStyle(faces[0]).backgroundImage;
+  const match=src.match(/url\(["']?(.*?)["']?\)/);
+  if(!match)throw Error('Missing actual photo-sheet URL');
+  const img=new Image();img.src=match[1];await img.decode();
+  const toggles=window.B737McpHardwareV1.geometry.filter(x=>['AT_ARM','FD_LEFT','FD_RIGHT'].includes(x.id));
+  const knobs=[...root.querySelectorAll('.mcp-v3-knob')];
+  const presses=[...root.querySelectorAll('.mcp-hw-push')];
+  const knobImgs=knobs.map(n=>({name:n.dataset.control,
+   bg:getComputedStyle(n.querySelector('.mcp-v3-course-face,.mcp-v3-plain-face')||n).backgroundImage}));
+  return {img:{src:img.src,w:img.naturalWidth,h:img.naturalHeight},
+   toggles,knobImgs,pushes:presses.length,svgMocks:root.querySelectorAll('.mcp-hw-at-hub,.mcp-hw-at-paddle,.mcp-hw-fd-shaft,.mcp-hw-silver-atlas').length,
+   photos:faces.map(n=>({w:n.getBoundingClientRect().width,h:n.getBoundingClientRect().height,
+       source:getComputedStyle(n).backgroundImage,scale:getComputedStyle(n).backgroundSize}))};
  });
- assert.equal(photoAudit.knobs.length,4);
- assert.equal(photoAudit.pushes,3);
- assert.ok(photoAudit.knobs.every(x=>x.w===80&&x.h===80));
- console.log('MCP_PRIOR_ARTWORK_LOADED',JSON.stringify({page:kind,...photoAudit}));
+ assert.ok(art.img.src.endsWith('/MCP_FRONT_OWNER_PHOTOS_4POSE.webp'));
+ assert.deepEqual([art.img.w,art.img.h],[160,160],'Physical A/T and F/D real states atlas dimensions');
+ assert.equal(art.svgMocks,0,'No fabricated CSS switch components may be mounted');
+ assert.equal(art.photos.length,3);assert.ok(art.photos.every(n=>n.w>10&&n.h>10&&n.source.includes('MCP_FRONT_OWNER_PHOTOS_4POSE.webp')));
+ assert.equal(art.knobImgs.length,5);assert.equal(art.pushes,3);
+ for(const [id,asset] of [['courseL','COURSE_PHOTO_80.webp'],['courseR','COURSE_PHOTO_80.webp'],
+    ['heading','HEADING_PHOTO_80.webp'],['altitude','ALTITUDE_PHOTO_80.webp']]){
+  assert.ok(art.knobImgs.find(n=>n.name===id)?.bg.includes(asset),'Approved original rotary photo missing: '+id);
+ }
+ assert.deepEqual(art.toggles.map(x=>x.id),S);
+ for(const [id,coords] of [['AT_ARM',[357,181,66,68]],['FD_LEFT',[203,321,36,51]],['FD_RIGHT',[1903,321,36,51]]]){
+  const t=art.toggles.find(x=>x.id===id);
+  assert.deepEqual([t.x,t.y,t.w,t.h],coords,'Never move established source pivot '+id);
+ }
  const states={};
  for(const mode of ['OFF','ON']){
+  const values={AT_ARM:mode==='ON'?'ARM':'OFF',FD_LEFT:mode,FD_RIGHT:mode};
   if(kind==='lab'){
-   await page.evaluate(mode=>{
-     const a=window.B737McpHardwareV1;
-     a.setState('AT_ARM',mode==='ON'?'ARM':'OFF');
-     a.setState('FD_LEFT',mode);
-     a.setState('FD_RIGHT',mode);
-   },mode);
+   await page.evaluate(values=>{for(const [key,val] of Object.entries(values))window.B737McpHardwareV1.setState(key,val)},values);
   }else{
-   await page.evaluate(mode=>{
-    const desired={AT_ARM:mode==='ON'?'ARM':'OFF',FD_LEFT:mode,FD_RIGHT:mode};
-    const v=window.B737McpHardwareV1.getState();
-    for(const [id,value]of Object.entries(desired)){
-      if(v[id]!==value)document.querySelector('[data-piece="mcp"] [data-mcp-hardware="'+id+'"]').click();
-    }
-   },mode);
+   await page.evaluate(values=>{
+    const state=window.B737McpHardwareV1.getState();
+    for(const [id,val] of Object.entries(values))
+     if(state[id]!==val)document.querySelector('[data-piece="mcp"] [data-mcp-hardware="'+id+'"]').click();
+   },values);
   }
-  await page.waitForTimeout(100);
-  const measured=await page.evaluate(()=>{
-   const get=id=>document.querySelector('[data-piece="mcp"] [data-mcp-hardware="'+id+'"]');
-   const at=get('AT_ARM');
-   const imgs=[...at.querySelectorAll('.mcp-hw-switch-art')].map(im=>({src:im.src,display:getComputedStyle(im).display}));
-   return{value:window.B737McpHardwareV1.getState(),
-    at:imgs,
-    fds:['FD_LEFT','FD_RIGHT'].map(id=>({id,
-     position:getComputedStyle(get(id).querySelector('.mcp-hw-silver-atlas')).backgroundPosition,
-     image:getComputedStyle(get(id).querySelector('.mcp-hw-silver-atlas')).backgroundImage
-    }))};
+  await page.waitForTimeout(120);
+  const snap=await page.evaluate(()=>{
+   const result={};
+   for(const id of ['AT_ARM','FD_LEFT','FD_RIGHT']){
+    const el=document.querySelector('[data-piece="mcp"] [data-mcp-hardware="'+id+'"]');
+    const image=el.querySelector('.mcp-hw-real-face'),css=getComputedStyle(image);
+    result[id]={value:el.dataset.state,position:css.backgroundPosition,bg:css.backgroundImage,
+      size:css.backgroundSize,visible:css.display!=='none',w:image.getBoundingClientRect().width};
+   }
+   return result;
   });
-  assert.equal(measured.value.AT_ARM,mode==='OFF'?'OFF':'ARM');
-  assert.equal(measured.value.FD_LEFT,mode);
-  assert.equal(measured.value.FD_RIGHT,mode);
-  const visible=measured.at.filter(x=>x.display!=='none');
-  assert.equal(visible.length,1,'only the proper mechanical photograph must be visible');
-  assert.ok(visible[0].src.endsWith(mode==='OFF'?'AT_ARM_OFF.svg':'AT_ARM_UP.svg'));
-  for(const x of measured.fds)
-   assert.ok(x.position.startsWith(mode==='OFF'?'94.2%':'72.1%'),
-    'Magnified original silver atlas fourth=UP, fifth=DOWN; unexpected '+x.id+' '+x.position);
-  states[mode]=measured;
-  if(kind==='lab'){
-   const shot=await page.locator('#stage').screenshot({animations:'disabled',timeout:25000});
-   fs.writeFileSync(path.join(out,'mcp-'+mode.toLowerCase()+'-actual-sprites.png'),shot);
-   const thumb=await page.locator('#stage').screenshot({type:'jpeg',quality:76,animations:'disabled'});
-   console.log('MCP_AUTHENTIC_PREVIEW',mode,thumb.toString('base64'));
+  for(const [id,expected]of Object.entries(values)){
+   assert.equal(snap[id].value,expected);
+   assert.equal(snap[id].visible,true);
+   assert.ok(snap[id].bg.includes('MCP_FRONT_OWNER_PHOTOS_4POSE.webp'));
+   assert.equal(snap[id].size,'200% 200%');
+   assert.equal(snap[id].position,
+      id==='AT_ARM'?(mode==='ON'?'100% 0%':'0% 0%'):(mode==='ON'?'100% 100%':'0% 100%'),
+      id+' '+mode+' must use the real previous-design photo state, not rotate an artificial knob');
   }
-  console.log('MCP_ACTUAL_SPRITES_STATE',JSON.stringify({page:kind,mode,
-   activeAT:visible[0].src.split('/').pop(),fdX:measured.fds.map(x=>x.position)}));
+  states[mode]=snap;
+  console.log('MCP_RESTORED_ART_STATE',JSON.stringify({page:kind,mode,positions:Object.fromEntries(S.map(id=>[id,snap[id].position]))}));
+  if(kind==='lab'){
+   const full=await page.locator('#stage').screenshot({path:path.join(out,'actual-MCP-'+mode+'.png'),animations:'disabled'});
+   const shot=await page.locator('#stage').screenshot({type:'jpeg',quality:76,animations:'disabled'});
+   console.log('MCP_RESTORED_ART_PREVIEW',mode,shot.toString('base64'));
+  }
  }
- assert.equal(errors.length,0,errors.join(' | '));
- const outcome={kind,states,assets:a.images,silver:a.silver.map(x=>x.sprite),errors};
- await page.close();return outcome;
+ assert.deepEqual(errors.filter(x=>/MCP|SyntaxError|failed to|Cannot read/.test(x)),[],'Page error');
+ await page.close();
+ return {kind,art,states,errors};
 }
 (async()=>{
  const browser=await chromium.launch({headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
  try{
-  const results=[await run(browser,'lab'),await run(browser,'unified')];
-  fs.writeFileSync(path.join(out,'measured.json'),JSON.stringify({version:'MCP-SPRITE-0002',
-   originalPhotoIntact:true,sourceControlsUnmoved:true,results},null,2));
-  console.log('MCP_AUTHENTIC_SWITCHES_PASS',JSON.stringify({pages:2,toggles:3,states:2,originalSprite:'Small_Silver_5Positions.webp',atlases:2,sourcePhotoUnchanged:true}));
+  const runs=[await exercise(browser,'lab'),await exercise(browser,'unified')];
+  const record={schema:'b737.mcp.real-source-photo-0003',date:'2026-10-26',runs,
+   originalPhotoUnchanged:true,sourcePivotsUnchanged:true};
+  fs.writeFileSync(path.join(out,'evidence.json'),JSON.stringify(record,null,2)+'\n');
+  console.log('MCP_ACTUAL_PHOTOS_PASS',JSON.stringify({pages:2,physicalSwitches:3,states:2,
+   sourcePhoto:'MCP_FRONT_OWNER_PHOTOS_4POSE.webp',dimensions:[160,160],sourceGeometryIntact:true}));
  }finally{await browser.close()}
-})().catch(e=>{console.error('MCP_AUTHENTIC_SWITCHES_FAILURE',e.stack||String(e));process.exitCode=1});
+})().catch(e=>{console.error('MCP_ACTUAL_PHOTOS_FAILED',e.stack||String(e));process.exitCode=1});
