@@ -54,11 +54,11 @@ for panel,ref in data['sourcePhotos'].items():
       visualMountMoved=gauge['moveVisualMountToBezelCandidate']))
  paint.save(OUT/(panel+'_OLD_VS_FITTED_CENTRE.png'))
 report=dict(schema='b737.native-photo.gauge-ring-check.v1',originalImages=5,
- registeredGauges=11,bezelCentreMoved=8,sourceArtworkUnmodified=True,
+ registeredGauges=11,bezelCentreMoved=6,radialStrokeCentresSupersedingRim=2,sourceArtworkUnmodified=True,
  photometricMetrics='gray radial edge contrast: original PNG, 2-degree steps',
  mechanicalPivotCertified=False,numericGraduationsAllCertified=False,
  gauges=scores)
 OUT.mkdir(parents=True,exist_ok=True)
 (OUT/'OH10_12_RIM_EVIDENCE.json').write_text(json.dumps(report,indent=2)+'\n')
-print('Original-photo arc validation 11/11; 8 preview centres improved, 1 APU shift rejected, 2 existing hubs retained')
+print('Original-photo ring validation 11/11; 6 bezel previews, 2 AC AMPS radial source pivots, 1 APU rollback, 2 hubs retained')
 for r in scores:print(r['panel'],r['id'],'old/new rim contrast',r['oldCircumferenceEdgeStrength'],r['newCircumferenceEdgeStrength'])
