@@ -1,0 +1,47 @@
+name: MCP owner 13 precise placement and hostile QA
+on:
+  push:
+    branches: [main, mcp-owner-13-precision]
+    paths:
+      - 'panel-mosaic-lab/cockpit/mcp-owner13-*'
+      - 'panel-mosaic-lab/cockpit/assets/mcp-switches/owner13-*'
+      - 'panel-mosaic-lab/cockpit/index.html'
+      - 'panel-mosaic-lab/mcp-panel/index.html'
+      - 'tests/mcp-owner13-*'
+      - '.github/workflows/mcp-owner13-qa.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  static-and-browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify immutable overhead mosaic
+        run: python3 panel-mosaic-lab/verify-final-overhead.py
+      - name: Verify uploaded owner image identity and visual geometry
+        run: |
+          node --check panel-mosaic-lab/cockpit/mcp-owner13-v1.js
+          node tests/mcp-owner13-preview.test.cjs
+      - name: Install Chromium
+        run: |
+          npm install --no-save --ignore-scripts playwright@1.58.2
+          npx playwright install --with-deps chromium
+      - name: Capture exact source-coordinate overlay state and test controls
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m http.server 8788 --bind 127.0.0.1 >/tmp/mcp-owner13-http.log 2>&1 &
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:8788/panel-mosaic-lab/mcp-panel/ >/dev/null; then break; fi
+            sleep 1
+          done
+          node tests/mcp-owner13-browser.test.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mcp-owner-13-browser-screenshots-and-audit
+          path: /tmp/b737-owner13
+          if-no-files-found: warn
+          retention-days: 30

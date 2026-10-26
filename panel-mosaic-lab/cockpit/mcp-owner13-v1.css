@@ -1,0 +1,27 @@
+/* MCP owner photo mounting. Defined exclusively over existing 2172 x 433 owner blank panel.
+   No procedural imitation of knobs and switches. The compressed atlas is a preview. */
+[data-piece="mcp"].mcp-owner13-active .mcp-owner13-art{
+ position:absolute;inset:0;display:block;border:0!important;
+ box-sizing:border-box;pointer-events:none;background-image:var(--mcp-owner13-url)!important;
+ background-repeat:no-repeat!important;background-size:400% 400%!important;
+ box-shadow:none!important;filter:none!important;transform-origin:center;
+}
+[data-piece="mcp"].mcp-owner13-active .mcp-v3-knob[data-control="speed"]{
+ background:none!important;
+}
+[data-piece="mcp"].mcp-owner13-active .mcp-v3-knob:not([data-control="speed"])>.mcp-owner13-art{
+ transform:rotate(var(--mcp-turn,0deg));
+}
+[data-piece="mcp"].mcp-owner13-active .mcp-v3-knob[data-control="heading"]>.mcp-owner13-inner{
+ width:53%!important;height:53%!important;left:23.5%!important;top:23.5%!important;
+ transform:none!important;z-index:3;
+}
+[data-piece="mcp"].mcp-owner13-active>.mcp-owner13-bank{
+ inset:auto;z-index:3!important;pointer-events:auto!important;cursor:ns-resize;
+ transform:translate(-50%,-50%) rotate(var(--bank-turn,0deg));touch-action:none;
+}
+[data-piece="mcp"].mcp-owner13-active>.mcp-owner13-bank:focus-visible{
+ outline:1px solid #f6e8bd;outline-offset:2px;
+}
+[data-piece="mcp"].mcp-owner13-active>.mcp-hw>.mcp-owner13-art{z-index:2}
+[data-piece="mcp"].mcp-owner13-active>.mcp-v3-knob>.mcp-owner13-art{z-index:2}
