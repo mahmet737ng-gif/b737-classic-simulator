@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="69" height="34" viewBox="0 0 608.823529 300" role="img" aria-label="LEFT_GEAR_2LINE_GREEN mounted OFF">
+<defs>
+  <linearGradient id="metal" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#41454a"/><stop offset=".17" stop-color="#14181a"/><stop offset=".83" stop-color="#0b0d0e"/><stop offset="1" stop-color="#34383c"/></linearGradient>
+  <filter id="textGlow" x="-45%" y="-80%" width="190%" height="260%"><feGaussianBlur stdDeviation="8.5"/></filter>
+  <filter id="textSoft" x="-25%" y="-35%" width="150%" height="170%"><feGaussianBlur stdDeviation="2.1"/></filter>
+ </defs>
+<rect width="608.823529" height="300" fill="#0c0b0c"/>
+<g transform="translate(4.411765 0)" data-fit="mip-native-ratio-no-letter-stretch">
+<g font-family="Arial, Liberation Sans, Helvetica, sans-serif" font-weight="700" text-anchor="middle" fill="#13291b" opacity=".47"><text x="300" y="135.000" font-size="111">LEFT</text><text x="300" y="253.000" font-size="111">GEAR</text></g>
+</g>
+</svg>

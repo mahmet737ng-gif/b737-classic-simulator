@@ -1,0 +1,2512 @@
+{
+  "schema": "b737.main-panel.type-audit-v1",
+  "date": "2026-10-26",
+  "lampPositions": 30,
+  "states": 60,
+  "sourcePhotosModified": 0,
+  "familyDefinitions": {
+    "single-white": {
+      "font": 145,
+      "baselines": [
+        206
+      ],
+      "maxWidth": 0.84,
+      "weight": 700
+    },
+    "single-amber": {
+      "font": 145,
+      "baselines": [
+        206
+      ],
+      "maxWidth": 0.84,
+      "weight": 700
+    },
+    "two-white": {
+      "font": 111,
+      "baselines": [
+        135,
+        253
+      ],
+      "maxWidth": 0.85,
+      "weight": 700
+    },
+    "two-amber": {
+      "font": 111,
+      "baselines": [
+        135,
+        253
+      ],
+      "maxWidth": 0.85,
+      "weight": 700
+    },
+    "two-green": {
+      "font": 111,
+      "baselines": [
+        135,
+        253
+      ],
+      "maxWidth": 0.85,
+      "weight": 700
+    },
+    "two-red": {
+      "font": 111,
+      "baselines": [
+        135,
+        253
+      ],
+      "maxWidth": 0.85,
+      "weight": 700
+    },
+    "three-amber": {
+      "font": 105,
+      "baselines": [
+        99,
+        190,
+        281
+      ],
+      "maxWidth": 0.85,
+      "weight": 700
+    },
+    "special-critical-red": {
+      "font": null,
+      "baselines": null,
+      "maxWidth": 0.88,
+      "weight": 700,
+      "preserveExisting": true
+    }
+  },
+  "records": [
+    {
+      "id": "main-at-lim",
+      "asset": "A_T_LIM_WHITE",
+      "family": "single-white",
+      "state": "OFF",
+      "sourceRect": [
+        590,
+        257,
+        82,
+        35
+      ],
+      "source": "panel-mosaic-lab/assets/lights/readability-v1/main-at-lim_OFF.svg",
+      "sourceSha256": "66dadeafa6d90c25a3d08a8ff6e7cd836dab44890ecaf42957523a67cbbd45f4",
+      "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-at-lim_OFF.svg",
+      "sha256": "e85f981aae5dc19232a01d90f010ecdd42c04ca3029299cef505c3e7ef006ffd",
+      "legends": [
+        "A/T LIM"
+      ],
+      "fontFamily": "Arial, Liberation Sans, Helvetica, sans-serif",
+      "fontWeight": 700,
+      "originalSizes": [
+        162
+      ],
+      "targetSizes": [
+        145
+      ],
+      "baselines": [
+        206
+      ],
+      "viewBox": [
+        702.857143,
+        300
+      ],
+      "sourcePhotoModified": false,
+      "sourceRectModified": false,
+      "allPaintLayersRetained": true
+    },
+    {
+      "id": "main-at-lim",
+      "asset": "A_T_LIM_WHITE",
+      "family": "single-white",
+      "state": "ON",
+      "sourceRect": [
+        590,
+        257,
+        82,
+        35
+      ],
+      "source": "panel-mosaic-lab/assets/lights/readability-v1/main-at-lim_ON.svg",
+      "sourceSha256": "d686045986ee557a2fba7fee661c8f5b39fe78056a3833984339787f79c5c178",
+      "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-at-lim_ON.svg",
+      "sha256": "bf51d5d243248f081038cbce1a6ad5df50d8553b98fda4bcf5d7ec59b872aa00",
+      "legends": [
+        "A/T LIM"
+      ],
+      "fontFamily": "Arial, Liberation Sans, Helvetica, sans-serif",
+      "fontWeight": 700,
+      "originalSizes": [
+        162
+      ],
+      "targetSizes": [
+        145
+      ],
+      "baselines": [
+        206
+      ],
+      "viewBox": [
+        702.857143,
+        300
+      ],
+      "sourcePhotoModified": false,
+      "sourceRectModified": false,
+      "allPaintLayersRetained": true
+    },
+    {
+      "id": "main-reverser-1",
+      "asset": "REVERSER_UNLOCKED",
+      "family": "two-amber",
+      "state": "OFF",
+      "sourceRect": [
+        493,
+        257,
+        82,
+        35
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/REVERSER_UNLOCKED_OFF.svg",
+      "sourceSha256": "b92b310d97303ba9f3c5d8b48534b706978586f14c8da90f3d1ebd32d6112f76",
+      "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-reverser-1_OFF.svg",
+      "sha256": "25078bf515e7b860314e093f7cc4784eab6a6a381a767b1155b14ba79ddbb8f9",
+      "legends": [
+        "REVERSER",
+        "UNLOCKED"
+      ],
+      "fontFamily": "Arial, Liberation Sans, Helvetica, sans-serif",
+      "fontWeight": 700,
+      "originalSizes": [
+        85,
+        83
+      ],
+      "targetSizes": [
+        111,
+        111
+      ],
+      "baselines": [
+        135,
+        253
+      ],
+      "viewBox": [
+        702.857143,
+        300
+      ],
+      "sourcePhotoModified": false,
+      "sourceRectModified": false,
+      "allPaintLayersRetained": true
+    },
+    {
+      "id": "main-reverser-1",
+      "asset": "REVERSER_UNLOCKED",
+      "family": "two-amber",
+      "state": "ON",
+      "sourceRect": [
+        493,
+        257,
+        82,
+        35
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/REVERSER_UNLOCKED_ON.svg",
+      "sourceSha256": "fde16ef72e23d121baf130cbb5649daebc0f1cd9f6c338ce4c2877cbb708894a",
+      "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-reverser-1_ON.svg",
+      "sha256": "460b167f356d79639d50b54ba6dad94ce3201aef3eeea478b50ad89faffab623",
+      "legends": [
+        "REVERSER",
+        "UNLOCKED"
+      ],
+      "fontFamily": "Arial, Liberation Sans, Helvetica, sans-serif",
+      "fontWeight": 700,
+      "originalSizes": [
+        85,
+        83
+      ],
+      "targetSizes": [
+        111,
+        111
+      ],
+      "baselines": [
+        135,
+        253
+      ],
+      "viewBox": [
+        702.857143,
+        300
+      ],
+      "sourcePhotoModified": false,
+      "sourceRectModified": false,
+      "allPaintLayersRetained": true
+    },
+    {
+      "id": "main-reverser-2",
+      "asset": "REVERSER_UNLOCKED",
+      "family": "two-amber",
+      "state": "OFF",
+      "sourceRect": [
+        687,
+        257,
+        82,
+        35
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/REVERSER_UNLOCKED_OFF.svg",
+      "sourceSha256": "b92b310d97303ba9f3c5d8b48534b706978586f14c8da90f3d1ebd32d6112f76",
+      "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-reverser-2_OFF.svg",
+      "sha256": "25078bf515e7b860314e093f7cc4784eab6a6a381a767b1155b14ba79ddbb8f9",
+      "legends": [
+        "REVERSER",
+        "UNLOCKED"
+      ],
+      "fontFamily": "Arial, Liberation Sans, Helvetica, sans-serif",
+      "fontWeight": 700,
+      "originalSizes": [
+        85,
+        83
+      ],
+      "targetSizes": [
+        111,
+        111
+      ],
+      "baselines": [
+        135,
+        253
+      ],
+      "viewBox": [
+        702.857143,
+        300
+      ],
+      "sourcePhotoModified": false,
+      "sourceRectModified": false,
+      "allPaintLayersRetained": true
+    },
+    {
+      "id": "main-reverser-2",
+      "asset": "REVERSER_UNLOCKED",
+      "family": "two-amber",
+      "state": "ON",
+      "sourceRect": [
+        687,
+        257,
+        82,
+        35
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/REVERSER_UNLOCKED_ON.svg",
+      "sourceSha256": "fde16ef72e23d121baf130cbb5649daebc0f1cd9f6c338ce4c2877cbb708894a",
+      "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-reverser-2_ON.svg",
+      "sha256": "460b167f356d79639d50b54ba6dad94ce3201aef3eeea478b50ad89faffab623",
+      "legends": [
+        "REVERSER",
+        "UNLOCKED"
+      ],
+      "fontFamily": "Arial, Liberation Sans, Helvetica, sans-serif",
+      "fontWeight": 700,
+      "originalSizes": [
+        85,
+        83
+      ],
+      "targetSizes": [
+        111,
+        111
+      ],
+      "baselines": [
+        135,
+        253
+      ],
+      "viewBox": [
+        702.857143,
+        300
+      ],
+      "sourcePhotoModified": false,
+      "sourceRectModified": false,
+      "allPaintLayersRetained": true
+    },
+    {
+      "id": "main-start-valve-1",
+      "asset": "START_VALVE_OPEN",
+      "family": "two-amber",
+      "state": "OFF",
+      "sourceRect": [
+        900,
+        209,
+        82,
+        35
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/START_VALVE_OPEN_OFF.svg",
+      "sourceSha256": "5baf6d7345836f54f7474d2995a7b2e7eaf11a9dc2b9eac41d153bdeea2a7241",
+      "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-start-valve-1_OFF.svg",
+      "sha256": "144133b854863034e9fc762192dae8ab181b904dc89dd9abc0731cba99d3e3d4",
+      "legends": [
+        "START",
+        "VALVE OPEN"
+      ],
+      "fontFamily": "Arial, Liberation Sans, Helvetica, sans-serif",
+      "fontWeight": 700,
+      "originalSizes": [
+        110,
+        74
+      ],
+      "targetSizes": [
+        111,
+        111
+      ],
+      "baselines": [
+        135,
+        253
+      ],
+      "viewBox": [
+        702.857143,
+        300
+      ],
+      "sourcePhotoModified": false,
+      "sourceRectModified": false,
+      "allPaintLayersRetained": true
+    },
+    {
+      "id": "main-start-valve-1",
+      "asset": "START_VALVE_OPEN",
+      "family": "two-amber",
+      "state": "ON",
+      "sourceRect": [
+        900,
+        209,
+        82,
+        35
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/START_VALVE_OPEN_ON.svg",
+      "sourceSha256": "41bcdaa9e230a0920f956a13fbe5d93b98570f9e3605fd79adedf48842d2b782",
+      "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-start-valve-1_ON.svg",
+      "sha256": "72f0b2cf3d056562de346a26cc2f3e5a770461b21a2ef95748963784a35e5502",
+      "legends": [
+        "START",
+        "VALVE OPEN"
+      ],
+      "fontFamily": "Arial, Liberation Sans, Helvetica, sans-serif",
+      "fontWeight": 700,
+      "originalSizes": [
+        110,
+        74
+      ],
+      "targetSizes": [
+        111,
+        111
+      ],
+      "baselines": [
+        135,
+        253
+      ],
+      "viewBox": [
+        702.857143,
+        300
+      ],
+      "sourcePhotoModified": false,
+      "sourceRectModified": false,
+      "allPaintLayersRetained": true
+    },
+    {
+      "id": "main-start-valve-2",
+      "asset": "START_VALVE_OPEN",
+      "family": "two-amber",
+      "state": "OFF",
+      "sourceRect": [
+        1088,
+        209,
+        82,
+        35
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/START_VALVE_OPEN_OFF.svg",
+      "sourceSha256": "5baf6d7345836f54f7474d2995a7b2e7eaf11a9dc2b9eac41d153bdeea2a7241",
+      "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-start-valve-2_OFF.svg",
+      "sha256": "144133b854863034e9fc762192dae8ab181b904dc89dd9abc0731cba99d3e3d4",
+      "legends": [
+        "START",
+        "VALVE OPEN"
+      ],
+      "fontFamily": "Arial, Liberation Sans, Helvetica, sans-serif",
+      "fontWeight": 700,
+      "originalSizes": [
+        110,
+        74
+      ],
+      "targetSizes": [
+        111,
+        111
+      ],
+      "baselines": [
+        135,
+        253
+      ],
+      "viewBox": [
+        702.857143,
+        300
+      ],
+      "sourcePhotoModified": false,
+      "sourceRectModified": false,
+      "allPaintLayersRetained": true
+    },
+    {
+      "id": "main-start-valve-2",
+      "asset": "START_VALVE_OPEN",
+      "family": "two-amber",
+      "state": "ON",
+      "sourceRect": [
+        1088,
+        209,
+        82,
+        35
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/START_VALVE_OPEN_ON.svg",
+      "sourceSha256": "41bcdaa9e230a0920f956a13fbe5d93b98570f9e3605fd79adedf48842d2b782",
+      "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-start-valve-2_ON.svg",
+      "sha256": "72f0b2cf3d056562de346a26cc2f3e5a770461b21a2ef95748963784a35e5502",
+      "legends": [
+        "START",
+        "VALVE OPEN"
+      ],
+      "fontFamily": "Arial, Liberation Sans, Helvetica, sans-serif",
+      "fontWeight": 700,
+      "originalSizes": [
+        110,
+        74
+      ],
+      "targetSizes": [
+        111,
+        111
+      ],
+      "baselines": [
+        135,
+        253
+      ],
+      "viewBox": [
+        702.857143,
+        300
+      ],
+      "sourcePhotoModified": false,
+      "sourceRectModified": false,
+      "allPaintLayersRetained": true
+    },
+    {
+      "id": "main-low-oil-1",
+      "asset": "LOW_OIL_PRESSURE",
+      "family": "two-amber",
+      "state": "OFF",
+      "sourceRect": [
+        854,
+        258,
+        80,
+        34
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/LOW_OIL_PRESSURE_OFF.svg",
+      "sourceSha256": "b156be091388345715a80b51bc15ccf5adf14bc6cf08a0654777c5ee93bbd767",
+      "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-low-oil-1_OFF.svg",
+      "sha256": "077cb16cfd0d8b82e91b1a5314b3df0f456a3ee0bad996cd91ba8e928ef30979",
+      "legends": [
+        "LOW OIL",
+        "PRESSURE"
+      ],
+      "fontFamily": "Arial, Liberation Sans, Helvetica, sans-serif",
+      "fontWeight": 700,
+      "originalSizes": [
+        110,
+        85
+      ],
+      "targetSizes": [
+        111,
+        111
+      ],
+      "baselines": [
+        135,
+        253
+      ],
+      "viewBox": [
+        705.882353,
+        300
+      ],
+      "sourcePhotoModified": false,
+      "sourceRectModified": false,
+      "allPaintLayersRetained": true
+    },
+    {
+      "id": "main-low-oil-1",
+      "asset": "LOW_OIL_PRESSURE",
+      "family": "two-amber",
+      "state": "ON",
+      "sourceRect": [
+        854,
+        258,
+        80,
+        34
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/LOW_OIL_PRESSURE_ON.svg",
+      "sourceSha256": "7df6b8da4f6107c9caa86d0b301db7322ca566cd3ba7725f2f2309c6e5e55acc",
+      "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-low-oil-1_ON.svg",
+      "sha256": "38739258d1218a2ac1906b3cc4081c98c0dd760b021812520dec0d1ca14c42e2",
+      "legends": [
+        "LOW OIL",
+        "PRESSURE"
+      ],
+      "fontFamily": "Arial, Liberation Sans, Helvetica, sans-serif",
+      "fontWeight": 700,
+      "originalSizes": [
+        110,
+        85
+      ],
+      "targetSizes": [
+        111,
+        111
+      ],
+      "baselines": [
+        135,
+        253
+      ],
+      "viewBox": [
+        705.882353,
+        300
+      ],
+      "sourcePhotoModified": false,
+      "sourceRectModified": false,
+      "allPaintLayersRetained": true
+    },
+    {
+      "id": "main-oil-filter-1",
+      "asset": "OIL_FILTER_BYPASS",
+      "family": "two-amber",
+      "state": "OFF",
+      "sourceRect": [
+        949,
+        258,
+        79,
+        34
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/OIL_FILTER_BYPASS_OFF.svg",
+      "sourceSha256": "a2638d4524638fda018d6efbbdd085bd339f9846c42c43001b5a26221039cf28",
+      "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-oil-filter-1_OFF.svg",
+      "sha256": "537b7d78a4e5a8c6be11112cf9cc6b15e34f0775501247c3e86c2bc13c208357",
+      "legends": [
+        "OIL FILTER",
+        "BYPASS"
+      ],
+      "fontFamily": "Arial, Liberation Sans, Helvetica, sans-serif",
+      "fontWeight": 700,
+      "originalSizes": [
+        87,
+        110
+      ],
+      "targetSizes": [
+        111,
+        111
+      ],
+      "baselines": [
+        135,
+        253
+      ],
+      "viewBox": [
+        697.058824,
+        300
+      ],
+      "sourcePhotoModified": false,
+      "sourceRectModified": false,
+      "allPaintLayersRetained": true
+    },
+    {
+      "id": "main-oil-filter-1",
+      "asset": "OIL_FILTER_BYPASS",
+      "family": "two-amber",
+      "state": "ON",
+      "sourceRect": [
+        949,
+        258,
+        79,
+        34
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/OIL_FILTER_BYPASS_ON.svg",
+      "sourceSha256": "12761aee2968bda0dbd7cdd66b38fe24bbd28ade74a12e7ad8d871c5ddcbb504",
+      "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-oil-filter-1_ON.svg",
+      "sha256": "278c17913f4a1296139f94f601676e0f1c0fa75c2527c9abc9d64fed184ee94a",
+      "legends": [
+        "OIL FILTER",
+        "BYPASS"
+      ],
+      "fontFamily": "Arial, Liberation Sans, Helvetica, sans-serif",
+      "fontWeight": 700,
+      "originalSizes": [
+        87,
+        110
+      ],
+      "targetSizes": [
+        111,
+        111
+      ],
+      "baselines": [
+        135,
+        253
+      ],
+      "viewBox": [
+        697.058824,
+        300
+      ],
+      "sourcePhotoModified": false,
+      "sourceRectModified": false,
+      "allPaintLayersRetained": true
+    },
+    {
+      "id": "main-low-oil-2",
+      "asset": "LOW_OIL_PRESSURE",
+      "family": "two-amber",
+      "state": "OFF",
+      "sourceRect": [
+        1041,
+        258,
+        80,
+        34
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/LOW_OIL_PRESSURE_OFF.svg",
+      "sourceSha256": "b156be091388345715a80b51bc15ccf5adf14bc6cf08a0654777c5ee93bbd767",
+      "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-low-oil-2_OFF.svg",
+      "sha256": "077cb16cfd0d8b82e91b1a5314b3df0f456a3ee0bad996cd91ba8e928ef30979",
+      "legends": [
+        "LOW OIL",
+        "PRESSURE"
+      ],
+      "fontFamily": "Arial, Liberation Sans, Helvetica, sans-serif",
+      "fontWeight": 700,
+      "originalSizes": [
+        110,
+        85
+      ],
+      "targetSizes": [
+        111,
+        111
+      ],
+      "baselines": [
+        135,
+        253
+      ],
+      "viewBox": [
+        705.882353,
+        300
+      ],
+      "sourcePhotoModified": false,
+      "sourceRectModified": false,
+      "allPaintLayersRetained": true
+    },
+    {
+      "id": "main-low-oil-2",
+      "asset": "LOW_OIL_PRESSURE",
+      "family": "two-amber",
+      "state": "ON",
+      "sourceRect": [
+        1041,
+        258,
+        80,
+        34
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/LOW_OIL_PRESSURE_ON.svg",
+      "sourceSha256": "7df6b8da4f6107c9caa86d0b301db7322ca566cd3ba7725f2f2309c6e5e55acc",
+      "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-low-oil-2_ON.svg",
+      "sha256": "38739258d1218a2ac1906b3cc4081c98c0dd760b021812520dec0d1ca14c42e2",
+      "legends": [
+        "LOW OIL",
+        "PRESSURE"
+      ],
+      "fontFamily": "Arial, Liberation Sans, Helvetica, sans-serif",
+      "fontWeight": 700,
+      "originalSizes": [
+        110,
+        85
+      ],
+      "targetSizes": [
+        111,
+        111
+      ],
+      "baselines": [
+        135,
+        253
+      ],
+      "viewBox": [
+        705.882353,
+        300
+      ],
+      "sourcePhotoModified": false,
+      "sourceRectModified": false,
+      "allPaintLayersRetained": true
+    },
+    {
+      "id": "main-oil-filter-2",
+      "asset": "OIL_FILTER_BYPASS",
+      "family": "two-amber",
+      "state": "OFF",
+      "sourceRect": [
+        1136,
+        258,
+        79,
+        34
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/OIL_FILTER_BYPASS_OFF.svg",
+      "sourceSha256": "a2638d4524638fda018d6efbbdd085bd339f9846c42c43001b5a26221039cf28",
+      "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-oil-filter-2_OFF.svg",
+      "sha256": "537b7d78a4e5a8c6be11112cf9cc6b15e34f0775501247c3e86c2bc13c208357",
+      "legends": [
+        "OIL FILTER",
+        "BYPASS"
+      ],
+      "fontFamily": "Arial, Liberation Sans, Helvetica, sans-serif",
+      "fontWeight": 700,
+      "originalSizes": [
+        87,
+        110
+      ],
+      "targetSizes": [
+        111,
+        111
+      ],
+      "baselines": [
+        135,
+        253
+      ],
+      "viewBox": [
+        697.058824,
+        300
+      ],
+      "sourcePhotoModified": false,
+      "sourceRectModified": false,
+      "allPaintLayersRetained": true
+    },
+    {
+      "id": "main-oil-filter-2",
+      "asset": "OIL_FILTER_BYPASS",
+      "family": "two-amber",
+      "state": "ON",
+      "sourceRect": [
+        1136,
+        258,
+        79,
+        34
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/OIL_FILTER_BYPASS_ON.svg",
+      "sourceSha256": "12761aee2968bda0dbd7cdd66b38fe24bbd28ade74a12e7ad8d871c5ddcbb504",
+      "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-oil-filter-2_ON.svg",
+      "sha256": "278c17913f4a1296139f94f601676e0f1c0fa75c2527c9abc9d64fed184ee94a",
+      "legends": [
+        "OIL FILTER",
+        "BYPASS"
+      ],
+      "fontFamily": "Arial, Liberation Sans, Helvetica, sans-serif",
+      "fontWeight": 700,
+      "originalSizes": [
+        87,
+        110
+      ],
+      "targetSizes": [
+        111,
+        111
+      ],
+      "baselines": [
+        135,
+        253
+      ],
+      "viewBox": [
+        697.058824,
+        300
+      ],
+      "sourcePhotoModified": false,
+      "sourceRectModified": false,
+      "allPaintLayersRetained": true
+    },
+    {
+      "id": "main-altitude-captain",
+      "asset": "ALTITUDE_ALERT",
+      "family": "two-amber",
+      "state": "OFF",
+      "sourceRect": [
+        2784,
+        486,
+        161,
+        68
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/ALTITUDE_ALERT_OFF.svg",
+      "sourceSha256": "137ee664ff814782e644b14dbaf1658a71d76bf467bfe2381834a434ea74aafc",
+      "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-altitude-captain_OFF.svg",
+      "sha256": "cee21759fc8d81bf35ce2be37bf20f2e81d5b3e9a732a563b4c4194e5c7e6382",
+      "legends": [
+        "ALTITUDE",
+        "ALERT"
+      ],
+      "fontFamily": "Arial, Liberation Sans, Helvetica, sans-serif",
+      "fontWeight": 700,
+      "originalSizes": [
+        96,
+        110
+      ],
+      "targetSizes": [
+        111,
+        111
+      ],
+      "baselines": [
+        135,
+        253
+      ],
+      "viewBox": [
+        710.294118,
+        300
+      ],
+      "sourcePhotoModified": false,
+      "sourceRectModified": false,
+      "allPaintLayersRetained": true
+    },
+    {
+      "id": "main-altitude-captain",
+      "asset": "ALTITUDE_ALERT",
+      "family": "two-amber",
+      "state": "ON",
+      "sourceRect": [
+        2784,
+        486,
+        161,
+        68
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/ALTITUDE_ALERT_ON.svg",
+      "sourceSha256": "88a960a22990726e91c0b0a46434451fd308b1e0a7e29cac7cc1927e78f0c7ff",
+      "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-altitude-captain_ON.svg",
+      "sha256": "667f69443b09afdbfc95a83f6e410cf1b9cb038c08619d2531fca0a9539f7c96",
+      "legends": [
+        "ALTITUDE",
+        "ALERT"
+      ],
+      "fontFamily": "Arial, Liberation Sans, Helvetica, sans-serif",
+      "fontWeight": 700,
+      "originalSizes": [
+        96,
+        110
+      ],
+      "targetSizes": [
+        111,
+        111
+      ],
+      "baselines": [
+        135,
+        253
+      ],
+      "viewBox": [
+        710.294118,
+        300
+      ],
+      "sourcePhotoModified": false,
+      "sourceRectModified": false,
+      "allPaintLayersRetained": true
+    },
+    {
+      "id": "main-altitude-fo",
+      "asset": "ALTITUDE_ALERT",
+      "family": "two-amber",
+      "state": "OFF",
+      "sourceRect": [
+        505,
+        178,
+        67,
+        27
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/ALTITUDE_ALERT_OFF.svg",
+      "sourceSha256": "137ee664ff814782e644b14dbaf1658a71d76bf467bfe2381834a434ea74aafc",
+      "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-altitude-fo_OFF.svg",
+      "sha256": "5fcc41c85af813ec3ee340c8f748a3ef1027a05a74c303c0598aee2b2e357bf6",
+      "legends": [
+        "ALTITUDE",
+        "ALERT"
+      ],
+      "fontFamily": "Arial, Liberation Sans, Helvetica, sans-serif",
+      "fontWeight": 700,
+      "originalSizes": [
+        96,
+        110
+      ],
+      "targetSizes": [
+        111,
+        111
+      ],
+      "baselines": [
+        135,
+        253
+      ],
+      "viewBox": [
+        744.444444,
+        300
+      ],
+      "sourcePhotoModified": false,
+      "sourceRectModified": false,
+      "allPaintLayersRetained": true
+    },
+    {
+      "id": "main-altitude-fo",
+      "asset": "ALTITUDE_ALERT",
+      "family": "two-amber",
+      "state": "ON",
+      "sourceRect": [
+        505,
+        178,
+        67,
+        27
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/ALTITUDE_ALERT_ON.svg",
+      "sourceSha256": "88a960a22990726e91c0b0a46434451fd308b1e0a7e29cac7cc1927e78f0c7ff",
+      "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-altitude-fo_ON.svg",
+      "sha256": "d0feb5c2f7924e36c079fdd6ed8ab841a40f301082764e7b0ae40eaad856e732",
+      "legends": [
+        "ALTITUDE",
+        "ALERT"
+      ],
+      "fontFamily": "Arial, Liberation Sans, Helvetica, sans-serif",
+      "fontWeight": 700,
+      "originalSizes": [
+        96,
+        110
+      ],
+      "targetSizes": [
+        111,
+        111
+      ],
+      "baselines": [
+        135,
+        253
+      ],
+      "viewBox": [
+        744.444444,
+        300
+      ],
+      "sourcePhotoModified": false,
+      "sourceRectModified": false,
+      "allPaintLayersRetained": true
+    },
+    {
+      "id": "main-pull-up-captain",
+      "asset": "PULL_UP_RED",
+      "family": "special-critical-red",
+      "state": "OFF",
+      "sourceRect": [
+        1284,
+        389,
+        164,
+        68
+      ],
+      "source": "panel-mosaic-lab/assets/lights/instance-fit-v1/COCKPIT_main-pull-up-captain_OFF_164x68.svg",
+      "sourceSha256": "59147f4c0abc48773261109dc76921e9c08387d15e6bf6833dce041f0531fb4c",
+      "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-pull-up-captain_OFF.svg",
+      "sha256": "157f88ff9af0568ae33dd40787ef804a9fec005064b654001491a8bd843017f8",
+      "legends": [
+        "PULL UP"
+      ],
+      "fontFamily": "Arial, Liberation Sans, Helvetica, sans-serif",
+      "fontWeight": 700,
+      "originalSizes": [
+        109
+      ],
+      "targetSizes": [
+        109
+      ],
+      "baselines": null,
+      "viewBox": [
+        723.529412,
+        300
+      ],
+      "sourcePhotoModified": false,
+      "sourceRectModified": false,
+      "allPaintLayersRetained": true
+    },
+    {
+      "id": "main-pull-up-captain",
+      "asset": "PULL_UP_RED",
+      "family": "special-critical-red",
+      "state": "ON",
+      "sourceRect": [
+        1284,
+        389,
+        164,
+        68
+      ],
+      "source": "panel-mosaic-lab/assets/lights/instance-fit-v1/COCKPIT_main-pull-up-captain_ON_164x68.svg",
+      "sourceSha256": "07d2fabe65a94490faad2c5504ba25942c9173b03f63382ee6280ff542bc3eb6",
+      "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-pull-up-captain_ON.svg",
+      "sha256": "c14dcfda1a604510efce68ff2de8ec8f28be59d75a063682150a7201de1bb6dc",
+      "legends": [
+        "PULL UP"
+      ],
+      "fontFamily": "Arial, Liberation Sans, Helvetica, sans-serif",
+      "fontWeight": 700,
+      "originalSizes": [
+        109
+      ],
+      "targetSizes": [
+        109
+      ],
+      "baselines": null,
+      "viewBox": [
+        723.529412,
+        300
+      ],
+      "sourcePhotoModified": false,
+      "sourceRectModified": false,
+      "allPaintLayersRetained": true
+    },
+    {
+      "id": "main-below-gs-captain",
+      "asset": "BELOW_GS_P_INHIBIT",
+      "family": "two-amber",
+      "state": "OFF",
+      "sourceRect": [
+        1284,
+        491,
+        164,
+        62
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/BELOW_GS_P_INHIBIT_OFF.svg",
+      "sourceSha256": "009065544f8370dada5fbee03aae68acab8c518e9316b57b38bdd5d5a75d041c",
+      "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-below-gs-captain_OFF.svg",
+      "sha256": "e49e414f34b92f890c0f478eba71b947c975a3730d101fb3e15c26b2f6a24db3",
+      "legends": [
+        "BELOW G/S",
+        "P-INHIBIT"
+      ],
+      "fontFamily": "Arial, Liberation Sans, Helvetica, sans-serif",
+      "fontWeight": 700,
+      "originalSizes": [
+        82,
+        101
+      ],
+      "targetSizes": [
+        111,
+        111
+      ],
+      "baselines": [
+        135,
+        253
+      ],
+      "viewBox": [
+        793.548387,
+        300
+      ],
+      "sourcePhotoModified": false,
+      "sourceRectModified": false,
+      "allPaintLayersRetained": true
+    },
+    {
+      "id": "main-below-gs-captain",
+      "asset": "BELOW_GS_P_INHIBIT",
+      "family": "two-amber",
+      "state": "ON",
+      "sourceRect": [
+        1284,
+        491,
+        164,
+        62
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/BELOW_GS_P_INHIBIT_ON.svg",
+      "sourceSha256": "12a7459939c88381e9a257182a7704dacc3afd90ae2550124108ba0b8706a010",
+      "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-below-gs-captain_ON.svg",
+      "sha256": "4327282bb094f38f36b46943c17ca3061dd51de3ffde19ae778bf428d65a5c57",
+      "legends": [
+        "BELOW G/S",
+        "P-INHIBIT"
+      ],
+      "fontFamily": "Arial, Liberation Sans, Helvetica, sans-serif",
+      "fontWeight": 700,
+      "originalSizes": [
+        82,
+        101
+      ],
+      "targetSizes": [
+        111,
+        111
+      ],
+      "baselines": [
+        135,
+        253
+      ],
+      "viewBox": [
+        793.548387,
+        300
+      ],
+      "sourcePhotoModified": false,
+      "sourceRectModified": false,
+      "allPaintLayersRetained": true
+    },
+    {
+      "id": "main-pull-up-fo",
+      "asset": "PULL_UP_RED",
+      "family": "special-critical-red",
+      "state": "OFF",
+      "sourceRect": [
+        820,
+        314,
+        67,
+        27
+      ],
+      "source": "panel-mosaic-lab/assets/lights/instance-fit-v1/COCKPIT_main-pull-up-fo_OFF_67x27.svg",
+      "sourceSha256": "476d1514b6ba4a0f0b8f0d4fe5a39764b2af4b33d5032f4f43f57d8b6f893a6a",
+      "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-pull-up-fo_OFF.svg",
+      "sha256": "efaf3077b485886f4848dc88aaa1aaec16ed7b1c14f6732e72bff0fd8798be54",
+      "legends": [
+        "PULL UP"
+      ],
+      "fontFamily": "Arial, Liberation Sans, Helvetica, sans-serif",
+      "fontWeight": 700,
+      "originalSizes": [
+        109
+      ],
+      "targetSizes": [
+        109
+      ],
+      "baselines": null,
+      "viewBox": [
+        744.444444,
+        300
+      ],
+      "sourcePhotoModified": false,
+      "sourceRectModified": false,
+      "allPaintLayersRetained": true
+    },
+    {
+      "id": "main-pull-up-fo",
+      "asset": "PULL_UP_RED",
+      "family": "special-critical-red",
+      "state": "ON",
+      "sourceRect": [
+        820,
+        314,
+        67,
+        27
+      ],
+      "source": "panel-mosaic-lab/assets/lights/instance-fit-v1/COCKPIT_main-pull-up-fo_ON_67x27.svg",
+      "sourceSha256": "5590a9d7d17b2921b2e846149cd4ec7c35cb83b5fc4a02b444b7fb99023e4803",
+      "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-pull-up-fo_ON.svg",
+      "sha256": "678dbc201c959dc9b8773cd409bb0e3da5d7cf1a44af7eb54afcfaed866b5cba",
+      "legends": [
+        "PULL UP"
+      ],
+      "fontFamily": "Arial, Liberation Sans, Helvetica, sans-serif",
+      "fontWeight": 700,
+      "originalSizes": [
+        109
+      ],
+      "targetSizes": [
+        109
+      ],
+      "baselines": null,
+      "viewBox": [
+        744.444444,
+        300
+      ],
+      "sourcePhotoModified": false,
+      "sourceRectModified": false,
+      "allPaintLayersRetained": true
+    },
+    {
+      "id": "main-below-gs-fo",
+      "asset": "BELOW_GS_P_INHIBIT",
+      "family": "two-amber",
+      "state": "OFF",
+      "sourceRect": [
+        820,
+        356,
+        67,
+        27
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/BELOW_GS_P_INHIBIT_OFF.svg",
+      "sourceSha256": "009065544f8370dada5fbee03aae68acab8c518e9316b57b38bdd5d5a75d041c",
+      "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-below-gs-fo_OFF.svg",
+      "sha256": "7791ae7409d56d4a95a818b4a134d1cf28be06e207c521b35e48d9ceef885a7f",
+      "legends": [
+        "BELOW G/S",
+        "P-INHIBIT"
+      ],
+      "fontFamily": "Arial, Liberation Sans, Helvetica, sans-serif",
+      "fontWeight": 700,
+      "originalSizes": [
+        82,
+        101
+      ],
+      "targetSizes": [
+        111,
+        111
+      ],
+      "baselines": [
+        135,
+        253
+      ],
+      "viewBox": [
+        744.444444,
+        300
+      ],
+      "sourcePhotoModified": false,
+      "sourceRectModified": false,
+      "allPaintLayersRetained": true
+    },
+    {
+      "id": "main-below-gs-fo",
+      "asset": "BELOW_GS_P_INHIBIT",
+      "family": "two-amber",
+      "state": "ON",
+      "sourceRect": [
+        820,
+        356,
+        67,
+        27
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/BELOW_GS_P_INHIBIT_ON.svg",
+      "sourceSha256": "12a7459939c88381e9a257182a7704dacc3afd90ae2550124108ba0b8706a010",
+      "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-below-gs-fo_ON.svg",
+      "sha256": "9fb7f62125d3f2a1a5f88bd6e2b7ab18cb9bd12d549af609920e499bbaf555e4",
+      "legends": [
+        "BELOW G/S",
+        "P-INHIBIT"
+      ],
+      "fontFamily": "Arial, Liberation Sans, Helvetica, sans-serif",
+      "fontWeight": 700,
+      "originalSizes": [
+        82,
+        101
+      ],
+      "targetSizes": [
+        111,
+        111
+      ],
+      "baselines": [
+        135,
+        253
+      ],
+      "viewBox": [
+        744.444444,
+        300
+      ],
+      "sourcePhotoModified": false,
+      "sourceRectModified": false,
+      "allPaintLayersRetained": true
+    },
+    {
+      "id": "main-gear-nose-red",
+      "asset": "NOSE_GEAR_2LINE_RED",
+      "family": "two-red",
+      "state": "OFF",
+      "sourceRect": [
+        250,
+        150,
+        70,
+        31
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/NOSE_GEAR_2LINE_RED_OFF.svg",
+      "sourceSha256": "1d386cdc5a66d93f8cebdac0c4f9a269eb3b623245b5c14bc27c7e046334943e",
+      "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-gear-nose-red_OFF.svg",
+      "sha256": "75b020fc66706ad1bd3309e140bb57bbc3ebdfc998fc39727a2c0786fc069d67",
+      "legends": [
+        "NOSE",
+        "GEAR"
+      ],
+      "fontFamily": "Arial, Liberation Sans, Helvetica, sans-serif",
+      "fontWeight": 700,
+      "originalSizes": [
+        110,
+        110
+      ],
+      "targetSizes": [
+        111,
+        111
+      ],
+      "baselines": [
+        135,
+        253
+      ],
+      "viewBox": [
+        677.419355,
+        300
+      ],
+      "sourcePhotoModified": false,
+      "sourceRectModified": false,
+      "allPaintLayersRetained": true
+    },
+    {
+      "id": "main-gear-nose-red",
+      "asset": "NOSE_GEAR_2LINE_RED",
+      "family": "two-red",
+      "state": "ON",
+      "sourceRect": [
+        250,
+        150,
+        70,
+        31
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/NOSE_GEAR_2LINE_RED_ON.svg",
+      "sourceSha256": "9d3753e301a0e30a76180f2cc612cd8df1285f7c53ded53724462371cfebd3d4",
+      "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-gear-nose-red_ON.svg",
+      "sha256": "b4e84d792065baeb69885706ab6a0ad2a6aee6069c28b940b1eee8e8a1cfb844",
+      "legends": [
+        "NOSE",
+        "GEAR"
+      ],
+      "fontFamily": "Arial, Liberation Sans, Helvetica, sans-serif",
+      "fontWeight": 700,
+      "originalSizes": [
+        110,
+        110
+      ],
+      "targetSizes": [
+        111,
+        111
+      ],
+      "baselines": [
+        135,
+        253
+      ],
+      "viewBox": [
+        677.419355,
+        300
+      ],
+      "sourcePhotoModified": false,
+      "sourceRectModified": false,
+      "allPaintLayersRetained": true
+    },
+    {
+      "id": "main-gear-nose-green",
+      "asset": "NOSE_GEAR_2LINE_GREEN",
+      "family": "two-green",
+      "state": "OFF",
+      "sourceRect": [
+        250,
+        194,
+        70,
+        32
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/NOSE_GEAR_2LINE_GREEN_OFF.svg",
+      "sourceSha256": "5a9572c4f8808f0ddc48aa619c3a89842c7c33a06dfb00e7b992f734cec8f7ed",
+      "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-gear-nose-green_OFF.svg",
+      "sha256": "eeff9f06d22a6d55c0adc65094f2f4c828cd398ec5629dd7fc46688baa862555",
+      "legends": [
+        "NOSE",
+        "GEAR"
+      ],
+      "fontFamily": "Arial, Liberation Sans, Helvetica, sans-serif",
+      "fontWeight": 700,
+      "originalSizes": [
+        110,
+        110
+      ],
+      "targetSizes": [
+        111,
+        111
+      ],
+      "baselines": [
+        135,
+        253
+      ],
+      "viewBox": [
+        656.25,
+        300
+      ],
+      "sourcePhotoModified": false,
+      "sourceRectModified": false,
+      "allPaintLayersRetained": true
+    },
+    {
+      "id": "main-gear-nose-green",
+      "asset": "NOSE_GEAR_2LINE_GREEN",
+      "family": "two-green",
+      "state": "ON",
+      "sourceRect": [
+        250,
+        194,
+        70,
+        32
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/NOSE_GEAR_2LINE_GREEN_ON.svg",
+      "sourceSha256": "23d470748f5b6d4ef38ce9541d9bcea3fb5ea564fb0fdc0d4c173cc40950108c",
+      "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-gear-nose-green_ON.svg",
+      "sha256": "18af8b147f46a2d9e22e3f02e677ad171b477a79434caaee39088213660afbf3",
+      "legends": [
+        "NOSE",
+        "GEAR"
+      ],
+      "fontFamily": "Arial, Liberation Sans, Helvetica, sans-serif",
+      "fontWeight": 700,
+      "originalSizes": [
+        110,
+        110
+      ],
+      "targetSizes": [
+        111,
+        111
+      ],
+      "baselines": [
+        135,
+        253
+      ],
+      "viewBox": [
+        656.25,
+        300
+      ],
+      "sourcePhotoModified": false,
+      "sourceRectModified": false,
+      "allPaintLayersRetained": true
+    },
+    {
+      "id": "main-gear-left-red",
+      "asset": "LEFT_GEAR_2LINE_RED",
+      "family": "two-red",
+      "state": "OFF",
+      "sourceRect": [
+        210,
+        238,
+        69,
+        34
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/LEFT_GEAR_2LINE_RED_OFF.svg",
+      "sourceSha256": "acc4e1f5948f2ce898659279ecba3d66b9617fd55f81c227284182e0af02c947",
+      "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-gear-left-red_OFF.svg",
+      "sha256": "a5a4244c2e226e24fd2f5ae63c42ca9724b4fc84f8f95a08bd8d7f42620b0b8e",
+      "legends": [
+        "LEFT",
+        "GEAR"
+      ],
+      "fontFamily": "Arial, Liberation Sans, Helvetica, sans-serif",
+      "fontWeight": 700,
+      "originalSizes": [
+        110,
+        110
+      ],
+      "targetSizes": [
+        111,
+        111
+      ],
+      "baselines": [
+        135,
+        253
+      ],
+      "viewBox": [
+        608.823529,
+        300
+      ],
+      "sourcePhotoModified": false,
+      "sourceRectModified": false,
+      "allPaintLayersRetained": true
+    },
+    {
+      "id": "main-gear-left-red",
+      "asset": "LEFT_GEAR_2LINE_RED",
+      "family": "two-red",
+      "state": "ON",
+      "sourceRect": [
+        210,
+        238,
+        69,
+        34
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/LEFT_GEAR_2LINE_RED_ON.svg",
+      "sourceSha256": "91aabb8dc13689d93179e20f095a531e97ba6c152bb4880875637ec500fd2e5d",
+      "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-gear-left-red_ON.svg",
+      "sha256": "f9d1612e5534dc4dda227b665ade9881ee7cc719032a722b3b26804f111311d2",
+      "legends": [
+        "LEFT",
+        "GEAR"
+      ],
+      "fontFamily": "Arial, Liberation Sans, Helvetica, sans-serif",
+      "fontWeight": 700,
+      "originalSizes": [
+        110,
+        110
+      ],
+      "targetSizes": [
+        111,
+        111
+      ],
+      "baselines": [
+        135,
+        253
+      ],
+      "viewBox": [
+        608.823529,
+        300
+      ],
+      "sourcePhotoModified": false,
+      "sourceRectModified": false,
+      "allPaintLayersRetained": true
+    },
+    {
+      "id": "main-gear-left-green",
+      "asset": "LEFT_GEAR_2LINE_GREEN",
+      "family": "two-green",
+      "state": "OFF",
+      "sourceRect": [
+        210,
+        282,
+        69,
+        34
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/LEFT_GEAR_2LINE_GREEN_OFF.svg",
+      "sourceSha256": "253eeddf120418615523ecfaeb187b6b24c805231de55ef2db7012272d4c43b9",
+      "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-gear-left-green_OFF.svg",
+      "sha256": "322314525a16547049708c25055debee3714b85d90cc9c6261651d6420774b19",
+      "legends": [
+        "LEFT",
+        "GEAR"
+      ],
+      "fontFamily": "Arial, Liberation Sans, Helvetica, sans-serif",
+      "fontWeight": 700,
+      "originalSizes": [
+        110,
+        110
+      ],
+      "targetSizes": [
+        111,
+        111
+      ],
+      "baselines": [
+        135,
+        253
+      ],
+      "viewBox": [
+        608.823529,
+        300
+      ],
+      "sourcePhotoModified": false,
+      "sourceRectModified": false,
+      "allPaintLayersRetained": true
+    },
+    {
+      "id": "main-gear-left-green",
+      "asset": "LEFT_GEAR_2LINE_GREEN",
+      "family": "two-green",
+      "state": "ON",
+      "sourceRect": [
+        210,
+        282,
+        69,
+        34
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/LEFT_GEAR_2LINE_GREEN_ON.svg",
+      "sourceSha256": "74fbb50018f87d072f7f78b3ceb29cafb5f820dafb26be5c402afa5a6589813b",
+      "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-gear-left-green_ON.svg",
+      "sha256": "d6b60a0d277ff12284dfde55894add0e8ad63305cfa086c2b1cef4628d4845fb",
+      "legends": [
+        "LEFT",
+        "GEAR"
+      ],
+      "fontFamily": "Arial, Liberation Sans, Helvetica, sans-serif",
+      "fontWeight": 700,
+      "originalSizes": [
+        110,
+        110
+      ],
+      "targetSizes": [
+        111,
+        111
+      ],
+      "baselines": [
+        135,
+        253
+      ],
+      "viewBox": [
+        608.823529,
+        300
+      ],
+      "sourcePhotoModified": false,
+      "sourceRectModified": false,
+      "allPaintLayersRetained": true
+    },
+    {
+      "id": "main-gear-right-red",
+      "asset": "RIGHT_GEAR_2LINE_RED",
+      "family": "two-red",
+      "state": "OFF",
+      "sourceRect": [
+        295,
+        238,
+        68,
+        34
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/RIGHT_GEAR_2LINE_RED_OFF.svg",
+      "sourceSha256": "3070908aee7cfe157699a48f4359394dcc1429d58b0f3914aa7f9927ae431c8e",
+      "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-gear-right-red_OFF.svg",
+      "sha256": "1c65760050b6b24af8c459fb901d531250d4c2c7b4f7732b40fbba0f5a73f38b",
+      "legends": [
+        "RIGHT",
+        "GEAR"
+      ],
+      "fontFamily": "Arial, Liberation Sans, Helvetica, sans-serif",
+      "fontWeight": 700,
+      "originalSizes": [
+        110,
+        110
+      ],
+      "targetSizes": [
+        111,
+        111
+      ],
+      "baselines": [
+        135,
+        253
+      ],
+      "viewBox": [
+        600,
+        300
+      ],
+      "sourcePhotoModified": false,
+      "sourceRectModified": false,
+      "allPaintLayersRetained": true
+    },
+    {
+      "id": "main-gear-right-red",
+      "asset": "RIGHT_GEAR_2LINE_RED",
+      "family": "two-red",
+      "state": "ON",
+      "sourceRect": [
+        295,
+        238,
+        68,
+        34
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/RIGHT_GEAR_2LINE_RED_ON.svg",
+      "sourceSha256": "4eb284b8c61e000e82bef1a8bf54eda77adeafe18d172c5fadf10985dafc6a5b",
+      "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-gear-right-red_ON.svg",
+      "sha256": "dbcc6d63e11667f31bea78c34112f33747884fcb65a7d6d82d0cd00e3b37e376",
+      "legends": [
+        "RIGHT",
+        "GEAR"
+      ],
+      "fontFamily": "Arial, Liberation Sans, Helvetica, sans-serif",
+      "fontWeight": 700,
+      "originalSizes": [
+        110,
+        110
+      ],
+      "targetSizes": [
+        111,
+        111
+      ],
+      "baselines": [
+        135,
+        253
+      ],
+      "viewBox": [
+        600,
+        300
+      ],
+      "sourcePhotoModified": false,
+      "sourceRectModified": false,
+      "allPaintLayersRetained": true
+    },
+    {
+      "id": "main-gear-right-green",
+      "asset": "RIGHT_GEAR_2LINE_GREEN",
+      "family": "two-green",
+      "state": "OFF",
+      "sourceRect": [
+        295,
+        282,
+        68,
+        34
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/RIGHT_GEAR_2LINE_GREEN_OFF.svg",
+      "sourceSha256": "749b19105156b9663f9f0630222cd39f37c9016c35ba79401c1780fabfa05d31",
+      "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-gear-right-green_OFF.svg",
+      "sha256": "16b2ad2dd7743e9c82b0f923bbe1e8b93a31d47a7a5447642ad94de3d1e9eaf7",
+      "legends": [
+        "RIGHT",
+        "GEAR"
+      ],
+      "fontFamily": "Arial, Liberation Sans, Helvetica, sans-serif",
+      "fontWeight": 700,
+      "originalSizes": [
+        110,
+        110
+      ],
+      "targetSizes": [
+        111,
+        111
+      ],
+      "baselines": [
+        135,
+        253
+      ],
+      "viewBox": [
+        600,
+        300
+      ],
+      "sourcePhotoModified": false,
+      "sourceRectModified": false,
+      "allPaintLayersRetained": true
+    },
+    {
+      "id": "main-gear-right-green",
+      "asset": "RIGHT_GEAR_2LINE_GREEN",
+      "family": "two-green",
+      "state": "ON",
+      "sourceRect": [
+        295,
+        282,
+        68,
+        34
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/RIGHT_GEAR_2LINE_GREEN_ON.svg",
+      "sourceSha256": "61b3aeb2713b5d382fbc4bba46f6764d1e1ac8bed723bda2a512ef2940378020",
+      "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-gear-right-green_ON.svg",
+      "sha256": "cfdd357bc3ef3d741467952f1c0e7850fbcc5e658be2f20adc9190f9edd06096",
+      "legends": [
+        "RIGHT",
+        "GEAR"
+      ],
+      "fontFamily": "Arial, Liberation Sans, Helvetica, sans-serif",
+      "fontWeight": 700,
+      "originalSizes": [
+        110,
+        110
+      ],
+      "targetSizes": [
+        111,
+        111
+      ],
+      "baselines": [
+        135,
+        253
+      ],
+      "viewBox": [
+        600,
+        300
+      ],
+      "sourcePhotoModified": false,
+      "sourceRectModified": false,
+      "allPaintLayersRetained": true
+    },
+    {
+      "id": "main-le-transit",
+      "asset": "LE_FLAPS_TRANSIT",
+      "family": "two-amber",
+      "state": "OFF",
+      "sourceRect": [
+        25,
+        404,
+        71,
+        29
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/LE_FLAPS_TRANSIT_OFF.svg",
+      "sourceSha256": "bfff5f9739244486062ea69b59ccd61d6d03d5f5ef91a36ef65737aa106dde46",
+      "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-le-transit_OFF.svg",
+      "sha256": "e250d6199cc360e440d7f512176c792299ac9eb1dc1f9f31b1f47c3e18e746b0",
+      "legends": [
+        "LE FLAPS",
+        "TRANSIT"
+      ],
+      "fontFamily": "Arial, Liberation Sans, Helvetica, sans-serif",
+      "fontWeight": 700,
+      "originalSizes": [
+        96,
+        108
+      ],
+      "targetSizes": [
+        111,
+        111
+      ],
+      "baselines": [
+        135,
+        253
+      ],
+      "viewBox": [
+        734.482759,
+        300
+      ],
+      "sourcePhotoModified": false,
+      "sourceRectModified": false,
+      "allPaintLayersRetained": true
+    },
+    {
+      "id": "main-le-transit",
+      "asset": "LE_FLAPS_TRANSIT",
+      "family": "two-amber",
+      "state": "ON",
+      "sourceRect": [
+        25,
+        404,
+        71,
+        29
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/LE_FLAPS_TRANSIT_ON.svg",
+      "sourceSha256": "782ec9d94def4f882f832ec1f30b6ca53c408be7a6e2bb0abe2c9008f62defe6",
+      "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-le-transit_ON.svg",
+      "sha256": "ef14a5102190a45e8f34ef22888152be2cae1237d975846bbdd5bb31daa41908",
+      "legends": [
+        "LE FLAPS",
+        "TRANSIT"
+      ],
+      "fontFamily": "Arial, Liberation Sans, Helvetica, sans-serif",
+      "fontWeight": 700,
+      "originalSizes": [
+        96,
+        108
+      ],
+      "targetSizes": [
+        111,
+        111
+      ],
+      "baselines": [
+        135,
+        253
+      ],
+      "viewBox": [
+        734.482759,
+        300
+      ],
+      "sourcePhotoModified": false,
+      "sourceRectModified": false,
+      "allPaintLayersRetained": true
+    },
+    {
+      "id": "main-le-extended",
+      "asset": "LE_FLAPS_EXT_GREEN",
+      "family": "two-green",
+      "state": "OFF",
+      "sourceRect": [
+        107,
+        404,
+        67,
+        29
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/LE_FLAPS_EXT_GREEN_OFF.svg",
+      "sourceSha256": "09c27ba5f1f0c73f81c3e4852e9be01caca9857d1581bbc5394dd800b65b7de8",
+      "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-le-extended_OFF.svg",
+      "sha256": "b6777c3c6b3bd68b8087af2d86b6feee46e4dccb1cdb9c2fd9e8eb685578798d",
+      "legends": [
+        "LE FLAPS",
+        "EXT"
+      ],
+      "fontFamily": "Arial, Liberation Sans, Helvetica, sans-serif",
+      "fontWeight": 700,
+      "originalSizes": [
+        96,
+        110
+      ],
+      "targetSizes": [
+        111,
+        111
+      ],
+      "baselines": [
+        135,
+        253
+      ],
+      "viewBox": [
+        693.103448,
+        300
+      ],
+      "sourcePhotoModified": false,
+      "sourceRectModified": false,
+      "allPaintLayersRetained": true
+    },
+    {
+      "id": "main-le-extended",
+      "asset": "LE_FLAPS_EXT_GREEN",
+      "family": "two-green",
+      "state": "ON",
+      "sourceRect": [
+        107,
+        404,
+        67,
+        29
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/LE_FLAPS_EXT_GREEN_ON.svg",
+      "sourceSha256": "7498f28c304578d4eb7a18b161b0d68833c830da8c4eeffe4e8add22dca75cdf",
+      "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-le-extended_ON.svg",
+      "sha256": "7dc819929fd4662ec34b8b483c9ed815fbb7cc0e69812415ccee30ef182ed6fc",
+      "legends": [
+        "LE FLAPS",
+        "EXT"
+      ],
+      "fontFamily": "Arial, Liberation Sans, Helvetica, sans-serif",
+      "fontWeight": 700,
+      "originalSizes": [
+        96,
+        110
+      ],
+      "targetSizes": [
+        111,
+        111
+      ],
+      "baselines": [
+        135,
+        253
+      ],
+      "viewBox": [
+        693.103448,
+        300
+      ],
+      "sourcePhotoModified": false,
+      "sourceRectModified": false,
+      "allPaintLayersRetained": true
+    },
+    {
+      "id": "main-antiskid",
+      "asset": "ANTI_SKID_INOP",
+      "family": "two-amber",
+      "state": "OFF",
+      "sourceRect": [
+        59,
+        507,
+        82,
+        32
+      ],
+      "source": "panel-mosaic-lab/assets/lights/readability-v1/main-antiskid_OFF.svg",
+      "sourceSha256": "ff74f1df982e6c6dec5f21a606e9a785466c9bcb7a6b02920697f19223d69df7",
+      "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-antiskid_OFF.svg",
+      "sha256": "419893655fda1f902694e418931a2d88b6538b37120e970e8af32b84c5d1163c",
+      "legends": [
+        "ANTI SKID",
+        "INOP"
+      ],
+      "fontFamily": "Arial, Liberation Sans, Helvetica, sans-serif",
+      "fontWeight": 700,
+      "originalSizes": [
+        128,
+        158
+      ],
+      "targetSizes": [
+        111,
+        111
+      ],
+      "baselines": [
+        135,
+        253
+      ],
+      "viewBox": [
+        768.75,
+        300
+      ],
+      "sourcePhotoModified": false,
+      "sourceRectModified": false,
+      "allPaintLayersRetained": true
+    },
+    {
+      "id": "main-antiskid",
+      "asset": "ANTI_SKID_INOP",
+      "family": "two-amber",
+      "state": "ON",
+      "sourceRect": [
+        59,
+        507,
+        82,
+        32
+      ],
+      "source": "panel-mosaic-lab/assets/lights/readability-v1/main-antiskid_ON.svg",
+      "sourceSha256": "031a1861da3616b42cb2b34edd322a46c95fa8de38b496157f6644325a6992f8",
+      "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-antiskid_ON.svg",
+      "sha256": "3131c67aec30b3b9bb69e0af0d011499339636b341bc96f1d41791f97bc1fcfa",
+      "legends": [
+        "ANTI SKID",
+        "INOP"
+      ],
+      "fontFamily": "Arial, Liberation Sans, Helvetica, sans-serif",
+      "fontWeight": 700,
+      "originalSizes": [
+        128,
+        158
+      ],
+      "targetSizes": [
+        111,
+        111
+      ],
+      "baselines": [
+        135,
+        253
+      ],
+      "viewBox": [
+        768.75,
+        300
+      ],
+      "sourcePhotoModified": false,
+      "sourceRectModified": false,
+      "allPaintLayersRetained": true
+    },
+    {
+      "id": "main-autobrake",
+      "asset": "AUTO_BRAKE_DISARM",
+      "family": "two-amber",
+      "state": "OFF",
+      "sourceRect": [
+        63,
+        767,
+        80,
+        40
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/AUTO_BRAKE_DISARM_OFF.svg",
+      "sourceSha256": "e38cc68682a5df2de64ecaf56b1eb900c303e6e4500352b05c66decf57516b53",
+      "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-autobrake_OFF.svg",
+      "sha256": "46a835d9e832ddb1fd436ef2f8d3a39db9af744aede8db7f4e8cdf6b3f175f03",
+      "legends": [
+        "AUTO BRAKE",
+        "DISARM"
+      ],
+      "fontFamily": "Arial, Liberation Sans, Helvetica, sans-serif",
+      "fontWeight": 700,
+      "originalSizes": [
+        70,
+        110
+      ],
+      "targetSizes": [
+        80.824,
+        80.824
+      ],
+      "baselines": [
+        135,
+        253
+      ],
+      "viewBox": [
+        600,
+        300
+      ],
+      "sourcePhotoModified": false,
+      "sourceRectModified": false,
+      "allPaintLayersRetained": true
+    },
+    {
+      "id": "main-autobrake",
+      "asset": "AUTO_BRAKE_DISARM",
+      "family": "two-amber",
+      "state": "ON",
+      "sourceRect": [
+        63,
+        767,
+        80,
+        40
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/AUTO_BRAKE_DISARM_ON.svg",
+      "sourceSha256": "e062d61c26b4fe2d546615c59295b0456ba62b6831c2a98272c45abae22cbdf6",
+      "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-autobrake_ON.svg",
+      "sha256": "f26c42d82d3019cc14d0f44dc86160c1d29fce33bfc3b1cdf6833d39dac3d353",
+      "legends": [
+        "AUTO BRAKE",
+        "DISARM"
+      ],
+      "fontFamily": "Arial, Liberation Sans, Helvetica, sans-serif",
+      "fontWeight": 700,
+      "originalSizes": [
+        70,
+        110
+      ],
+      "targetSizes": [
+        80.824,
+        80.824
+      ],
+      "baselines": [
+        135,
+        253
+      ],
+      "viewBox": [
+        600,
+        300
+      ],
+      "sourcePhotoModified": false,
+      "sourceRectModified": false,
+      "allPaintLayersRetained": true
+    },
+    {
+      "id": "main-brake-temp",
+      "asset": "BRAKE_TEMP",
+      "family": "two-amber",
+      "state": "OFF",
+      "sourceRect": [
+        600,
+        1236,
+        65,
+        31
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/BRAKE_TEMP_OFF.svg",
+      "sourceSha256": "a7280753feac47e6890e55f515dd9f288666ac361a283d8fe4141807a6e5d306",
+      "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-brake-temp_OFF.svg",
+      "sha256": "3db2b50bfe6257fad14d72867e75196e353a7c34c68d4c5270f5a38d3b2280b5",
+      "legends": [
+        "BRAKE",
+        "TEMP"
+      ],
+      "fontFamily": "Arial, Liberation Sans, Helvetica, sans-serif",
+      "fontWeight": 700,
+      "originalSizes": [
+        110,
+        110
+      ],
+      "targetSizes": [
+        111,
+        111
+      ],
+      "baselines": [
+        135,
+        253
+      ],
+      "viewBox": [
+        629.032258,
+        300
+      ],
+      "sourcePhotoModified": false,
+      "sourceRectModified": false,
+      "allPaintLayersRetained": true
+    },
+    {
+      "id": "main-brake-temp",
+      "asset": "BRAKE_TEMP",
+      "family": "two-amber",
+      "state": "ON",
+      "sourceRect": [
+        600,
+        1236,
+        65,
+        31
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/BRAKE_TEMP_ON.svg",
+      "sourceSha256": "87318cd16515eebd6dc0b5ee20318b7ee0921f5edabd7c385db8433a2eca051d",
+      "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-brake-temp_ON.svg",
+      "sha256": "f971ca2cf317bd7caa13c137f3661f4e9524c36690b49062d9d966871c161c77",
+      "legends": [
+        "BRAKE",
+        "TEMP"
+      ],
+      "fontFamily": "Arial, Liberation Sans, Helvetica, sans-serif",
+      "fontWeight": 700,
+      "originalSizes": [
+        110,
+        110
+      ],
+      "targetSizes": [
+        111,
+        111
+      ],
+      "baselines": [
+        135,
+        253
+      ],
+      "viewBox": [
+        629.032258,
+        300
+      ],
+      "sourcePhotoModified": false,
+      "sourceRectModified": false,
+      "allPaintLayersRetained": true
+    },
+    {
+      "id": "main-stab-trim",
+      "asset": "STAB_OUT_OF_TRIM",
+      "family": "three-amber",
+      "state": "OFF",
+      "sourceRect": [
+        255,
+        740,
+        88,
+        59
+      ],
+      "source": "panel-mosaic-lab/assets/lights/readability-v1/main-stab-trim_OFF.svg",
+      "sourceSha256": "7387e3249f5c360cda36760c1d9caa5a51d9a7675c8d48e1368cf35f037f710c",
+      "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-stab-trim_OFF.svg",
+      "sha256": "50661bc51f34bb52ebe93c7f208dc517f75bbeed1573249b5de7b12eeb7aa89f",
+      "legends": [
+        "STAB",
+        "OUT OF",
+        "TRIM"
+      ],
+      "fontFamily": "Arial, Liberation Sans, Helvetica, sans-serif",
+      "fontWeight": 700,
+      "originalSizes": [
+        103,
+        74,
+        103
+      ],
+      "targetSizes": [
+        105,
+        105,
+        105
+      ],
+      "baselines": [
+        99,
+        190,
+        281
+      ],
+      "viewBox": [
+        447.457627,
+        300
+      ],
+      "sourcePhotoModified": false,
+      "sourceRectModified": false,
+      "allPaintLayersRetained": true
+    },
+    {
+      "id": "main-stab-trim",
+      "asset": "STAB_OUT_OF_TRIM",
+      "family": "three-amber",
+      "state": "ON",
+      "sourceRect": [
+        255,
+        740,
+        88,
+        59
+      ],
+      "source": "panel-mosaic-lab/assets/lights/readability-v1/main-stab-trim_ON.svg",
+      "sourceSha256": "67f1b088a2f548e1b98c39c7002f9dc2469dbada7923e28075aeb64a652b61b4",
+      "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-stab-trim_ON.svg",
+      "sha256": "670f9fab4f43517c5bd9ac375fe56941eae680899d6c88026138948260876dc4",
+      "legends": [
+        "STAB",
+        "OUT OF",
+        "TRIM"
+      ],
+      "fontFamily": "Arial, Liberation Sans, Helvetica, sans-serif",
+      "fontWeight": 700,
+      "originalSizes": [
+        103,
+        74,
+        103
+      ],
+      "targetSizes": [
+        105,
+        105,
+        105
+      ],
+      "baselines": [
+        99,
+        190,
+        281
+      ],
+      "viewBox": [
+        447.457627,
+        300
+      ],
+      "sourcePhotoModified": false,
+      "sourceRectModified": false,
+      "allPaintLayersRetained": true
+    },
+    {
+      "id": "main-speed-brake-do-not-arm",
+      "asset": "SPEED_BRAKE_DO_NOT_ARMED_AMBER",
+      "family": "two-amber",
+      "state": "OFF",
+      "sourceRect": [
+        22,
+        740,
+        94,
+        39
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/SPEED_BRAKE_DO_NOT_ARMED_AMBER_OFF.svg",
+      "sourceSha256": "a44e59d7e9c93a7269d5565d66ae84db00196bc82a825476bd76782e855b8bd7",
+      "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-speed-brake-do-not-arm_OFF.svg",
+      "sha256": "750df78989db34377ee865541f089a0afd755ad8a2394d61f26aefb1f20ef93b",
+      "legends": [
+        "SPEED BRAKE",
+        "DO NOT ARMED"
+      ],
+      "fontFamily": "Arial, Liberation Sans, Helvetica, sans-serif",
+      "fontWeight": 700,
+      "originalSizes": [
+        64,
+        59
+      ],
+      "targetSizes": [
+        86.322,
+        81.514
+      ],
+      "baselines": [
+        135,
+        253
+      ],
+      "viewBox": [
+        723.076923,
+        300
+      ],
+      "sourcePhotoModified": false,
+      "sourceRectModified": false,
+      "allPaintLayersRetained": true
+    },
+    {
+      "id": "main-speed-brake-do-not-arm",
+      "asset": "SPEED_BRAKE_DO_NOT_ARMED_AMBER",
+      "family": "two-amber",
+      "state": "ON",
+      "sourceRect": [
+        22,
+        740,
+        94,
+        39
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/SPEED_BRAKE_DO_NOT_ARMED_AMBER_ON.svg",
+      "sourceSha256": "eb20faf86c7e506c93cd6a0bc1d5e6d25b5815f0e360938a841dd68971714e8c",
+      "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-speed-brake-do-not-arm_ON.svg",
+      "sha256": "7abf654aaef0c6abed6dac8780d9e25f462b73e3bc2c961c62e56e44757d12ee",
+      "legends": [
+        "SPEED BRAKE",
+        "DO NOT ARMED"
+      ],
+      "fontFamily": "Arial, Liberation Sans, Helvetica, sans-serif",
+      "fontWeight": 700,
+      "originalSizes": [
+        64,
+        59
+      ],
+      "targetSizes": [
+        86.322,
+        81.514
+      ],
+      "baselines": [
+        135,
+        253
+      ],
+      "viewBox": [
+        723.076923,
+        300
+      ],
+      "sourcePhotoModified": false,
+      "sourceRectModified": false,
+      "allPaintLayersRetained": true
+    },
+    {
+      "id": "main-speed-brake-armed",
+      "asset": "SPEED_BRAKE_ARMED_GREEN",
+      "family": "two-green",
+      "state": "OFF",
+      "sourceRect": [
+        22,
+        789,
+        94,
+        39
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/SPEED_BRAKE_ARMED_GREEN_OFF.svg",
+      "sourceSha256": "8115a31c2bbbf7d2402d058acef39ede22e9ee53ddb7ba4282134ebc11779634",
+      "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-speed-brake-armed_OFF.svg",
+      "sha256": "55680fb8fabfe8d8dbde4ef6383c55fd9325fea724d26baafdededfbee3917d0",
+      "legends": [
+        "SPEED BRAKE",
+        "ARMED"
+      ],
+      "fontFamily": "Arial, Liberation Sans, Helvetica, sans-serif",
+      "fontWeight": 700,
+      "originalSizes": [
+        64,
+        110
+      ],
+      "targetSizes": [
+        111,
+        86.322
+      ],
+      "baselines": [
+        135,
+        253
+      ],
+      "viewBox": [
+        723.076923,
+        300
+      ],
+      "sourcePhotoModified": false,
+      "sourceRectModified": false,
+      "allPaintLayersRetained": true
+    },
+    {
+      "id": "main-speed-brake-armed",
+      "asset": "SPEED_BRAKE_ARMED_GREEN",
+      "family": "two-green",
+      "state": "ON",
+      "sourceRect": [
+        22,
+        789,
+        94,
+        39
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/SPEED_BRAKE_ARMED_GREEN_ON.svg",
+      "sourceSha256": "f1f46f554eb5173a9434c72ae81253a9ef249a6c6a10c0f3e980b4596b634267",
+      "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-speed-brake-armed_ON.svg",
+      "sha256": "106f3aef7a3306f2b1ae3430da8db90bf1d236357997d8a18ba83f85f732dcb2",
+      "legends": [
+        "SPEED BRAKE",
+        "ARMED"
+      ],
+      "fontFamily": "Arial, Liberation Sans, Helvetica, sans-serif",
+      "fontWeight": 700,
+      "originalSizes": [
+        64,
+        110
+      ],
+      "targetSizes": [
+        111,
+        86.322
+      ],
+      "baselines": [
+        135,
+        253
+      ],
+      "viewBox": [
+        723.076923,
+        300
+      ],
+      "sourcePhotoModified": false,
+      "sourceRectModified": false,
+      "allPaintLayersRetained": true
+    },
+    {
+      "id": "main-gpws-inop",
+      "asset": "INOP",
+      "family": "single-amber",
+      "state": "OFF",
+      "sourceRect": [
+        485,
+        1405,
+        70,
+        32
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/INOP_OFF.svg",
+      "sourceSha256": "3cb847909063d78079d950f63ae76d7239d737c98843739a96cfd9e8e035db5f",
+      "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-gpws-inop_OFF.svg",
+      "sha256": "547ea8124d40a7319893b5e0046448ff27a70fe63d949c68ce629a3ba53c5cdf",
+      "legends": [
+        "INOP"
+      ],
+      "fontFamily": "Arial, Liberation Sans, Helvetica, sans-serif",
+      "fontWeight": 700,
+      "originalSizes": [
+        156
+      ],
+      "targetSizes": [
+        145
+      ],
+      "baselines": [
+        206
+      ],
+      "viewBox": [
+        656.25,
+        300
+      ],
+      "sourcePhotoModified": false,
+      "sourceRectModified": false,
+      "allPaintLayersRetained": true
+    },
+    {
+      "id": "main-gpws-inop",
+      "asset": "INOP",
+      "family": "single-amber",
+      "state": "ON",
+      "sourceRect": [
+        485,
+        1405,
+        70,
+        32
+      ],
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/INOP_ON.svg",
+      "sourceSha256": "2a5a25a5c18af2ad20689562ebfb60a71063f3bde2e3ad89c81a7fc21eecd729",
+      "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-gpws-inop_ON.svg",
+      "sha256": "489a8b793ba76dca0a5f6701fd2f2f945d71c6d1be4b9699c929074f8349275d",
+      "legends": [
+        "INOP"
+      ],
+      "fontFamily": "Arial, Liberation Sans, Helvetica, sans-serif",
+      "fontWeight": 700,
+      "originalSizes": [
+        156
+      ],
+      "targetSizes": [
+        145
+      ],
+      "baselines": [
+        206
+      ],
+      "viewBox": [
+        656.25,
+        300
+      ],
+      "sourcePhotoModified": false,
+      "sourceRectModified": false,
+      "allPaintLayersRetained": true
+    }
+  ],
+  "exceptions": [
+    "PULL_UP_RED is optically preserved because previously accepted"
+  ],
+  "humanVisualSignoff": "PENDING_REAL_100_75_50_BROWSER_SCREENSHOT_COMPARE"
+}

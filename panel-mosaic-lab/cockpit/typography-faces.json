@@ -1,0 +1,609 @@
+{
+  "schema": "b737.main-panel.annunciator-type-v1",
+  "version": "MIP-TYPE-0001",
+  "sourceRegistryVersion": "LGT-0012",
+  "sourceImagesChanged": 0,
+  "sourcePositionsChanged": 0,
+  "instances": {
+    "main-at-lim": {
+      "asset": "A_T_LIM_WHITE",
+      "sourceRect": [
+        590,
+        257,
+        82,
+        35
+      ],
+      "family": "single-white",
+      "states": {
+        "OFF": {
+          "url": "../assets/lights/main-type-v1/main-at-lim_OFF.svg",
+          "sha256": "e85f981aae5dc19232a01d90f010ecdd42c04ca3029299cef505c3e7ef006ffd"
+        },
+        "ON": {
+          "url": "../assets/lights/main-type-v1/main-at-lim_ON.svg",
+          "sha256": "bf51d5d243248f081038cbce1a6ad5df50d8553b98fda4bcf5d7ec59b872aa00"
+        }
+      }
+    },
+    "main-reverser-1": {
+      "asset": "REVERSER_UNLOCKED",
+      "sourceRect": [
+        493,
+        257,
+        82,
+        35
+      ],
+      "family": "two-amber",
+      "states": {
+        "OFF": {
+          "url": "../assets/lights/main-type-v1/main-reverser-1_OFF.svg",
+          "sha256": "25078bf515e7b860314e093f7cc4784eab6a6a381a767b1155b14ba79ddbb8f9"
+        },
+        "ON": {
+          "url": "../assets/lights/main-type-v1/main-reverser-1_ON.svg",
+          "sha256": "460b167f356d79639d50b54ba6dad94ce3201aef3eeea478b50ad89faffab623"
+        }
+      }
+    },
+    "main-reverser-2": {
+      "asset": "REVERSER_UNLOCKED",
+      "sourceRect": [
+        687,
+        257,
+        82,
+        35
+      ],
+      "family": "two-amber",
+      "states": {
+        "OFF": {
+          "url": "../assets/lights/main-type-v1/main-reverser-2_OFF.svg",
+          "sha256": "25078bf515e7b860314e093f7cc4784eab6a6a381a767b1155b14ba79ddbb8f9"
+        },
+        "ON": {
+          "url": "../assets/lights/main-type-v1/main-reverser-2_ON.svg",
+          "sha256": "460b167f356d79639d50b54ba6dad94ce3201aef3eeea478b50ad89faffab623"
+        }
+      }
+    },
+    "main-start-valve-1": {
+      "asset": "START_VALVE_OPEN",
+      "sourceRect": [
+        900,
+        209,
+        82,
+        35
+      ],
+      "family": "two-amber",
+      "states": {
+        "OFF": {
+          "url": "../assets/lights/main-type-v1/main-start-valve-1_OFF.svg",
+          "sha256": "144133b854863034e9fc762192dae8ab181b904dc89dd9abc0731cba99d3e3d4"
+        },
+        "ON": {
+          "url": "../assets/lights/main-type-v1/main-start-valve-1_ON.svg",
+          "sha256": "72f0b2cf3d056562de346a26cc2f3e5a770461b21a2ef95748963784a35e5502"
+        }
+      }
+    },
+    "main-start-valve-2": {
+      "asset": "START_VALVE_OPEN",
+      "sourceRect": [
+        1088,
+        209,
+        82,
+        35
+      ],
+      "family": "two-amber",
+      "states": {
+        "OFF": {
+          "url": "../assets/lights/main-type-v1/main-start-valve-2_OFF.svg",
+          "sha256": "144133b854863034e9fc762192dae8ab181b904dc89dd9abc0731cba99d3e3d4"
+        },
+        "ON": {
+          "url": "../assets/lights/main-type-v1/main-start-valve-2_ON.svg",
+          "sha256": "72f0b2cf3d056562de346a26cc2f3e5a770461b21a2ef95748963784a35e5502"
+        }
+      }
+    },
+    "main-low-oil-1": {
+      "asset": "LOW_OIL_PRESSURE",
+      "sourceRect": [
+        854,
+        258,
+        80,
+        34
+      ],
+      "family": "two-amber",
+      "states": {
+        "OFF": {
+          "url": "../assets/lights/main-type-v1/main-low-oil-1_OFF.svg",
+          "sha256": "077cb16cfd0d8b82e91b1a5314b3df0f456a3ee0bad996cd91ba8e928ef30979"
+        },
+        "ON": {
+          "url": "../assets/lights/main-type-v1/main-low-oil-1_ON.svg",
+          "sha256": "38739258d1218a2ac1906b3cc4081c98c0dd760b021812520dec0d1ca14c42e2"
+        }
+      }
+    },
+    "main-oil-filter-1": {
+      "asset": "OIL_FILTER_BYPASS",
+      "sourceRect": [
+        949,
+        258,
+        79,
+        34
+      ],
+      "family": "two-amber",
+      "states": {
+        "OFF": {
+          "url": "../assets/lights/main-type-v1/main-oil-filter-1_OFF.svg",
+          "sha256": "537b7d78a4e5a8c6be11112cf9cc6b15e34f0775501247c3e86c2bc13c208357"
+        },
+        "ON": {
+          "url": "../assets/lights/main-type-v1/main-oil-filter-1_ON.svg",
+          "sha256": "278c17913f4a1296139f94f601676e0f1c0fa75c2527c9abc9d64fed184ee94a"
+        }
+      }
+    },
+    "main-low-oil-2": {
+      "asset": "LOW_OIL_PRESSURE",
+      "sourceRect": [
+        1041,
+        258,
+        80,
+        34
+      ],
+      "family": "two-amber",
+      "states": {
+        "OFF": {
+          "url": "../assets/lights/main-type-v1/main-low-oil-2_OFF.svg",
+          "sha256": "077cb16cfd0d8b82e91b1a5314b3df0f456a3ee0bad996cd91ba8e928ef30979"
+        },
+        "ON": {
+          "url": "../assets/lights/main-type-v1/main-low-oil-2_ON.svg",
+          "sha256": "38739258d1218a2ac1906b3cc4081c98c0dd760b021812520dec0d1ca14c42e2"
+        }
+      }
+    },
+    "main-oil-filter-2": {
+      "asset": "OIL_FILTER_BYPASS",
+      "sourceRect": [
+        1136,
+        258,
+        79,
+        34
+      ],
+      "family": "two-amber",
+      "states": {
+        "OFF": {
+          "url": "../assets/lights/main-type-v1/main-oil-filter-2_OFF.svg",
+          "sha256": "537b7d78a4e5a8c6be11112cf9cc6b15e34f0775501247c3e86c2bc13c208357"
+        },
+        "ON": {
+          "url": "../assets/lights/main-type-v1/main-oil-filter-2_ON.svg",
+          "sha256": "278c17913f4a1296139f94f601676e0f1c0fa75c2527c9abc9d64fed184ee94a"
+        }
+      }
+    },
+    "main-altitude-captain": {
+      "asset": "ALTITUDE_ALERT",
+      "sourceRect": [
+        2784,
+        486,
+        161,
+        68
+      ],
+      "family": "two-amber",
+      "states": {
+        "OFF": {
+          "url": "../assets/lights/main-type-v1/main-altitude-captain_OFF.svg",
+          "sha256": "cee21759fc8d81bf35ce2be37bf20f2e81d5b3e9a732a563b4c4194e5c7e6382"
+        },
+        "ON": {
+          "url": "../assets/lights/main-type-v1/main-altitude-captain_ON.svg",
+          "sha256": "667f69443b09afdbfc95a83f6e410cf1b9cb038c08619d2531fca0a9539f7c96"
+        }
+      }
+    },
+    "main-altitude-fo": {
+      "asset": "ALTITUDE_ALERT",
+      "sourceRect": [
+        505,
+        178,
+        67,
+        27
+      ],
+      "family": "two-amber",
+      "states": {
+        "OFF": {
+          "url": "../assets/lights/main-type-v1/main-altitude-fo_OFF.svg",
+          "sha256": "5fcc41c85af813ec3ee340c8f748a3ef1027a05a74c303c0598aee2b2e357bf6"
+        },
+        "ON": {
+          "url": "../assets/lights/main-type-v1/main-altitude-fo_ON.svg",
+          "sha256": "d0feb5c2f7924e36c079fdd6ed8ab841a40f301082764e7b0ae40eaad856e732"
+        }
+      }
+    },
+    "main-pull-up-captain": {
+      "asset": "PULL_UP_RED",
+      "sourceRect": [
+        1284,
+        389,
+        164,
+        68
+      ],
+      "family": "special-critical-red",
+      "states": {
+        "OFF": {
+          "url": "../assets/lights/main-type-v1/main-pull-up-captain_OFF.svg",
+          "sha256": "157f88ff9af0568ae33dd40787ef804a9fec005064b654001491a8bd843017f8"
+        },
+        "ON": {
+          "url": "../assets/lights/main-type-v1/main-pull-up-captain_ON.svg",
+          "sha256": "c14dcfda1a604510efce68ff2de8ec8f28be59d75a063682150a7201de1bb6dc"
+        }
+      }
+    },
+    "main-below-gs-captain": {
+      "asset": "BELOW_GS_P_INHIBIT",
+      "sourceRect": [
+        1284,
+        491,
+        164,
+        62
+      ],
+      "family": "two-amber",
+      "states": {
+        "OFF": {
+          "url": "../assets/lights/main-type-v1/main-below-gs-captain_OFF.svg",
+          "sha256": "e49e414f34b92f890c0f478eba71b947c975a3730d101fb3e15c26b2f6a24db3"
+        },
+        "ON": {
+          "url": "../assets/lights/main-type-v1/main-below-gs-captain_ON.svg",
+          "sha256": "4327282bb094f38f36b46943c17ca3061dd51de3ffde19ae778bf428d65a5c57"
+        }
+      }
+    },
+    "main-pull-up-fo": {
+      "asset": "PULL_UP_RED",
+      "sourceRect": [
+        820,
+        314,
+        67,
+        27
+      ],
+      "family": "special-critical-red",
+      "states": {
+        "OFF": {
+          "url": "../assets/lights/main-type-v1/main-pull-up-fo_OFF.svg",
+          "sha256": "efaf3077b485886f4848dc88aaa1aaec16ed7b1c14f6732e72bff0fd8798be54"
+        },
+        "ON": {
+          "url": "../assets/lights/main-type-v1/main-pull-up-fo_ON.svg",
+          "sha256": "678dbc201c959dc9b8773cd409bb0e3da5d7cf1a44af7eb54afcfaed866b5cba"
+        }
+      }
+    },
+    "main-below-gs-fo": {
+      "asset": "BELOW_GS_P_INHIBIT",
+      "sourceRect": [
+        820,
+        356,
+        67,
+        27
+      ],
+      "family": "two-amber",
+      "states": {
+        "OFF": {
+          "url": "../assets/lights/main-type-v1/main-below-gs-fo_OFF.svg",
+          "sha256": "7791ae7409d56d4a95a818b4a134d1cf28be06e207c521b35e48d9ceef885a7f"
+        },
+        "ON": {
+          "url": "../assets/lights/main-type-v1/main-below-gs-fo_ON.svg",
+          "sha256": "9fb7f62125d3f2a1a5f88bd6e2b7ab18cb9bd12d549af609920e499bbaf555e4"
+        }
+      }
+    },
+    "main-gear-nose-red": {
+      "asset": "NOSE_GEAR_2LINE_RED",
+      "sourceRect": [
+        250,
+        150,
+        70,
+        31
+      ],
+      "family": "two-red",
+      "states": {
+        "OFF": {
+          "url": "../assets/lights/main-type-v1/main-gear-nose-red_OFF.svg",
+          "sha256": "75b020fc66706ad1bd3309e140bb57bbc3ebdfc998fc39727a2c0786fc069d67"
+        },
+        "ON": {
+          "url": "../assets/lights/main-type-v1/main-gear-nose-red_ON.svg",
+          "sha256": "b4e84d792065baeb69885706ab6a0ad2a6aee6069c28b940b1eee8e8a1cfb844"
+        }
+      }
+    },
+    "main-gear-nose-green": {
+      "asset": "NOSE_GEAR_2LINE_GREEN",
+      "sourceRect": [
+        250,
+        194,
+        70,
+        32
+      ],
+      "family": "two-green",
+      "states": {
+        "OFF": {
+          "url": "../assets/lights/main-type-v1/main-gear-nose-green_OFF.svg",
+          "sha256": "eeff9f06d22a6d55c0adc65094f2f4c828cd398ec5629dd7fc46688baa862555"
+        },
+        "ON": {
+          "url": "../assets/lights/main-type-v1/main-gear-nose-green_ON.svg",
+          "sha256": "18af8b147f46a2d9e22e3f02e677ad171b477a79434caaee39088213660afbf3"
+        }
+      }
+    },
+    "main-gear-left-red": {
+      "asset": "LEFT_GEAR_2LINE_RED",
+      "sourceRect": [
+        210,
+        238,
+        69,
+        34
+      ],
+      "family": "two-red",
+      "states": {
+        "OFF": {
+          "url": "../assets/lights/main-type-v1/main-gear-left-red_OFF.svg",
+          "sha256": "a5a4244c2e226e24fd2f5ae63c42ca9724b4fc84f8f95a08bd8d7f42620b0b8e"
+        },
+        "ON": {
+          "url": "../assets/lights/main-type-v1/main-gear-left-red_ON.svg",
+          "sha256": "f9d1612e5534dc4dda227b665ade9881ee7cc719032a722b3b26804f111311d2"
+        }
+      }
+    },
+    "main-gear-left-green": {
+      "asset": "LEFT_GEAR_2LINE_GREEN",
+      "sourceRect": [
+        210,
+        282,
+        69,
+        34
+      ],
+      "family": "two-green",
+      "states": {
+        "OFF": {
+          "url": "../assets/lights/main-type-v1/main-gear-left-green_OFF.svg",
+          "sha256": "322314525a16547049708c25055debee3714b85d90cc9c6261651d6420774b19"
+        },
+        "ON": {
+          "url": "../assets/lights/main-type-v1/main-gear-left-green_ON.svg",
+          "sha256": "d6b60a0d277ff12284dfde55894add0e8ad63305cfa086c2b1cef4628d4845fb"
+        }
+      }
+    },
+    "main-gear-right-red": {
+      "asset": "RIGHT_GEAR_2LINE_RED",
+      "sourceRect": [
+        295,
+        238,
+        68,
+        34
+      ],
+      "family": "two-red",
+      "states": {
+        "OFF": {
+          "url": "../assets/lights/main-type-v1/main-gear-right-red_OFF.svg",
+          "sha256": "1c65760050b6b24af8c459fb901d531250d4c2c7b4f7732b40fbba0f5a73f38b"
+        },
+        "ON": {
+          "url": "../assets/lights/main-type-v1/main-gear-right-red_ON.svg",
+          "sha256": "dbcc6d63e11667f31bea78c34112f33747884fcb65a7d6d82d0cd00e3b37e376"
+        }
+      }
+    },
+    "main-gear-right-green": {
+      "asset": "RIGHT_GEAR_2LINE_GREEN",
+      "sourceRect": [
+        295,
+        282,
+        68,
+        34
+      ],
+      "family": "two-green",
+      "states": {
+        "OFF": {
+          "url": "../assets/lights/main-type-v1/main-gear-right-green_OFF.svg",
+          "sha256": "16b2ad2dd7743e9c82b0f923bbe1e8b93a31d47a7a5447642ad94de3d1e9eaf7"
+        },
+        "ON": {
+          "url": "../assets/lights/main-type-v1/main-gear-right-green_ON.svg",
+          "sha256": "cfdd357bc3ef3d741467952f1c0e7850fbcc5e658be2f20adc9190f9edd06096"
+        }
+      }
+    },
+    "main-le-transit": {
+      "asset": "LE_FLAPS_TRANSIT",
+      "sourceRect": [
+        25,
+        404,
+        71,
+        29
+      ],
+      "family": "two-amber",
+      "states": {
+        "OFF": {
+          "url": "../assets/lights/main-type-v1/main-le-transit_OFF.svg",
+          "sha256": "e250d6199cc360e440d7f512176c792299ac9eb1dc1f9f31b1f47c3e18e746b0"
+        },
+        "ON": {
+          "url": "../assets/lights/main-type-v1/main-le-transit_ON.svg",
+          "sha256": "ef14a5102190a45e8f34ef22888152be2cae1237d975846bbdd5bb31daa41908"
+        }
+      }
+    },
+    "main-le-extended": {
+      "asset": "LE_FLAPS_EXT_GREEN",
+      "sourceRect": [
+        107,
+        404,
+        67,
+        29
+      ],
+      "family": "two-green",
+      "states": {
+        "OFF": {
+          "url": "../assets/lights/main-type-v1/main-le-extended_OFF.svg",
+          "sha256": "b6777c3c6b3bd68b8087af2d86b6feee46e4dccb1cdb9c2fd9e8eb685578798d"
+        },
+        "ON": {
+          "url": "../assets/lights/main-type-v1/main-le-extended_ON.svg",
+          "sha256": "7dc819929fd4662ec34b8b483c9ed815fbb7cc0e69812415ccee30ef182ed6fc"
+        }
+      }
+    },
+    "main-antiskid": {
+      "asset": "ANTI_SKID_INOP",
+      "sourceRect": [
+        59,
+        507,
+        82,
+        32
+      ],
+      "family": "two-amber",
+      "states": {
+        "OFF": {
+          "url": "../assets/lights/main-type-v1/main-antiskid_OFF.svg",
+          "sha256": "419893655fda1f902694e418931a2d88b6538b37120e970e8af32b84c5d1163c"
+        },
+        "ON": {
+          "url": "../assets/lights/main-type-v1/main-antiskid_ON.svg",
+          "sha256": "3131c67aec30b3b9bb69e0af0d011499339636b341bc96f1d41791f97bc1fcfa"
+        }
+      }
+    },
+    "main-autobrake": {
+      "asset": "AUTO_BRAKE_DISARM",
+      "sourceRect": [
+        63,
+        767,
+        80,
+        40
+      ],
+      "family": "two-amber",
+      "states": {
+        "OFF": {
+          "url": "../assets/lights/main-type-v1/main-autobrake_OFF.svg",
+          "sha256": "46a835d9e832ddb1fd436ef2f8d3a39db9af744aede8db7f4e8cdf6b3f175f03"
+        },
+        "ON": {
+          "url": "../assets/lights/main-type-v1/main-autobrake_ON.svg",
+          "sha256": "f26c42d82d3019cc14d0f44dc86160c1d29fce33bfc3b1cdf6833d39dac3d353"
+        }
+      }
+    },
+    "main-brake-temp": {
+      "asset": "BRAKE_TEMP",
+      "sourceRect": [
+        600,
+        1236,
+        65,
+        31
+      ],
+      "family": "two-amber",
+      "states": {
+        "OFF": {
+          "url": "../assets/lights/main-type-v1/main-brake-temp_OFF.svg",
+          "sha256": "3db2b50bfe6257fad14d72867e75196e353a7c34c68d4c5270f5a38d3b2280b5"
+        },
+        "ON": {
+          "url": "../assets/lights/main-type-v1/main-brake-temp_ON.svg",
+          "sha256": "f971ca2cf317bd7caa13c137f3661f4e9524c36690b49062d9d966871c161c77"
+        }
+      }
+    },
+    "main-stab-trim": {
+      "asset": "STAB_OUT_OF_TRIM",
+      "sourceRect": [
+        255,
+        740,
+        88,
+        59
+      ],
+      "family": "three-amber",
+      "states": {
+        "OFF": {
+          "url": "../assets/lights/main-type-v1/main-stab-trim_OFF.svg",
+          "sha256": "50661bc51f34bb52ebe93c7f208dc517f75bbeed1573249b5de7b12eeb7aa89f"
+        },
+        "ON": {
+          "url": "../assets/lights/main-type-v1/main-stab-trim_ON.svg",
+          "sha256": "670f9fab4f43517c5bd9ac375fe56941eae680899d6c88026138948260876dc4"
+        }
+      }
+    },
+    "main-speed-brake-do-not-arm": {
+      "asset": "SPEED_BRAKE_DO_NOT_ARMED_AMBER",
+      "sourceRect": [
+        22,
+        740,
+        94,
+        39
+      ],
+      "family": "two-amber",
+      "states": {
+        "OFF": {
+          "url": "../assets/lights/main-type-v1/main-speed-brake-do-not-arm_OFF.svg",
+          "sha256": "750df78989db34377ee865541f089a0afd755ad8a2394d61f26aefb1f20ef93b"
+        },
+        "ON": {
+          "url": "../assets/lights/main-type-v1/main-speed-brake-do-not-arm_ON.svg",
+          "sha256": "7abf654aaef0c6abed6dac8780d9e25f462b73e3bc2c961c62e56e44757d12ee"
+        }
+      }
+    },
+    "main-speed-brake-armed": {
+      "asset": "SPEED_BRAKE_ARMED_GREEN",
+      "sourceRect": [
+        22,
+        789,
+        94,
+        39
+      ],
+      "family": "two-green",
+      "states": {
+        "OFF": {
+          "url": "../assets/lights/main-type-v1/main-speed-brake-armed_OFF.svg",
+          "sha256": "55680fb8fabfe8d8dbde4ef6383c55fd9325fea724d26baafdededfbee3917d0"
+        },
+        "ON": {
+          "url": "../assets/lights/main-type-v1/main-speed-brake-armed_ON.svg",
+          "sha256": "106f3aef7a3306f2b1ae3430da8db90bf1d236357997d8a18ba83f85f732dcb2"
+        }
+      }
+    },
+    "main-gpws-inop": {
+      "asset": "INOP",
+      "sourceRect": [
+        485,
+        1405,
+        70,
+        32
+      ],
+      "family": "single-amber",
+      "states": {
+        "OFF": {
+          "url": "../assets/lights/main-type-v1/main-gpws-inop_OFF.svg",
+          "sha256": "547ea8124d40a7319893b5e0046448ff27a70fe63d949c68ce629a3ba53c5cdf"
+        },
+        "ON": {
+          "url": "../assets/lights/main-type-v1/main-gpws-inop_ON.svg",
+          "sha256": "489a8b793ba76dca0a5f6701fd2f2f945d71c6d1be4b9699c929074f8349275d"
+        }
+      }
+    }
+  }
+}
