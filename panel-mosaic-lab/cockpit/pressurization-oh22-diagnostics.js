@@ -89,7 +89,7 @@
      }
      return {id:c.id,present:!!el,enabled:!!el&&root.getComputedStyle(el).pointerEvents!=='none'&&!el.disabled,
        centerErrorPx:centerError(el,c.xy,p),outsidePlate:!!(r&&p&&(r.left<p.left-3||r.right>p.right+3||r.top<p.top-3||r.bottom>p.bottom+3)),
-       assetBroken:!!(img&&img.complete&&img.naturalWidth===0),calibrationProvisional:!!c.visualCalibration&&/provisional/i.test(c.visualCalibration),
+       assetBroken:!!(img&&img.complete&&img.naturalWidth===0),calibrationProvisional:!!c.visualCalibration&&/provisional|screenshot-position-only/i.test(c.visualCalibration),
        spriteOverscale};
    });
    const displays=cfg.displays.map(d=>{
