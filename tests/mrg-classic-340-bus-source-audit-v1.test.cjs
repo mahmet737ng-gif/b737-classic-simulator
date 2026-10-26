@@ -3,6 +3,7 @@ const {test}=require("node:test"),a=require("node:assert/strict");
 const E=require("../engine/systems/electrical-v7.js");
 const M=require("../engine/systems/mrg-classic-consumer-bus-qa-v1.js");
 const INDEX=require("../engine/systems/mrg-classic-340-consumer-bus-index-v1.json");
+const FAILURES=require("../engine/systems/mrg-classic-bus-failure-effects-v1.json");
 const electrical=()=>E.evaluate(E.initialState());
 const find=(text)=>INDEX.rows.find(x=>x.item===text);
 test("MRG Classic source index has 340 cited records across 182-188",()=>{
@@ -105,4 +106,34 @@ test("Does not infer physically installed sensor power or 54 gauge angle from ge
 test("Reject NG/test-only and malformed indices",()=>{
  a.throws(()=>M.variantRows(INDEX,"NG"),/CPCS or DCPCS/);
  a.throws(()=>M.validate({rows:[]}),/340-row/);
+});
+
+test("Classic MRG failure table has 35 page-cited non-zero-forcing INOP effects",()=>{
+ a.equal(FAILURES.effects.length,35);
+ a(FAILURES.effects.every(f=>f.epFsiInstalledConfirmation===false&&f.impact==="INOP_NOT_FORCED_ZERO"));
+ a(FAILURES.effects.every(f=>f.printedPage>=162&&f.printedPage<=167&&f.pdfPage===f.printedPage+9));
+});
+test("DC BUS 1/2 faults isolate drive oil temperature needles by side",()=>{
+ const f=FAILURES.effects;
+ a(f.some(e=>e.bus==="dc1"&&e.systemIndicator==="oh.drive_oil.1"&&e.effect==="ENGINE_1_CSD_OIL_TEMP_INDICATION_INOP"));
+ a(f.some(e=>e.bus==="dc2"&&e.systemIndicator==="oh.drive_oil.2"&&e.effect==="ENGINE_2_CSD_OIL_TEMP_INDICATION_INOP"));
+ a(!f.some(e=>e.bus==="dc1"&&e.systemIndicator==="oh.drive_oil.2"));
+});
+test("Transfer 1 and 2 loss correspond to distinct engine oil pressure/temperature groups",()=>{
+ const f=FAILURES.effects;
+ for(const n of [1,2]){
+  a(f.some(e=>e.bus==="transfer"+n&&e.systemIndicator==="eng.oil_pressure."+n));
+  a(f.some(e=>e.bus==="transfer"+n&&e.systemIndicator==="eng.oil_temperature."+n));
+ }
+});
+test("Special instrument effects distinguish non-EIS N2 and CPCS/DCPCS channels",()=>{
+ const f=FAILURES.effects;
+ a(f.some(e=>e.systemIndicator==="eng.n2.1"&&e.variant==="NON_EIS_ONLY"));
+ a(f.some(e=>e.systemIndicator==="air.cpcs.manualAC"&&e.variant==="CPCS_ONLY"));
+ a(f.some(e=>e.systemIndicator==="air.dcpcs.auto2"&&e.variant==="DCPCS_ONLY"));
+});
+test("Duplicated OCR source index row is quarantined rather than duplicated in installed loads",()=>{
+ const duplicates=INDEX.rows.filter(x=>x.item==="Fuel Pump Control - Main Tank 1 Fwd"&&x.feedBus==="dc2");
+ a.equal(duplicates.length,2);
+ a(duplicates.every(x=>x.sourceConfidence==="DUPLICATED_LABEL_REQUIRES_PAGE_PHOTO_REVIEW"));
 });
