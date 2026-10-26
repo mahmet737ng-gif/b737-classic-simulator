@@ -7,6 +7,10 @@ on:
       - .github/workflows/mcp-front-view.yml
       - panel-mosaic-lab/cockpit/mcp-front-reference-v1.css
       - panel-mosaic-lab/cockpit/mcp-visual-v3.js
+      - panel-mosaic-lab/cockpit/mcp-authentic-sprites-v2.css
+      - panel-mosaic-lab/cockpit/mcp-hardware-v1.js
+      - panel-mosaic-lab/cockpit/assets/mcp-switches/**
+      - panel-mosaic-lab/cockpit/mcp-hardware-v1.test.cjs
 permissions:
   contents: read
 jobs:
@@ -28,7 +32,7 @@ jobs:
           node panel-mosaic-lab/cockpit/mcp-visual-v3.test.cjs
           node panel-mosaic-lab/cockpit/mcp-hardware-v1.test.cjs
           node panel-mosaic-lab/cockpit/mcp-afds-bridge-v1.test.cjs
-      - name: Render ON-up and OFF-down for A/T and both Flight Directors
+      - name: Render actual A/T two SVGs and approved Small Silver F/D atlas cells
         shell: bash
         run: |
           set -euo pipefail
@@ -41,7 +45,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: b737-mcp-reference-frontview-ON-OFF
-          path: /tmp/b737-mcp-front-view
+          name: b737-mcp-actual-photo-derived-sprites-ON-OFF
+          path: /tmp/b737-mcp-authentic-switches
           if-no-files-found: warn
           retention-days: 30
