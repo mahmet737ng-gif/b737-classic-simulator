@@ -30,7 +30,7 @@ const src=fs.readFileSync(path.join(__dirname,'pressurization-oh22.js'),'utf8');
 const css=fs.readFileSync(path.join(__dirname,'pressurization-oh22.css'),'utf8');
 const runtime=fs.readFileSync(path.join(__dirname,'aircraft-settings.js'),'utf8');
 const skin=fs.readFileSync(path.join(__dirname,'pressurization-oh22-diagnostics.js'),'utf8');
-for(const item of ['syncHornButton()','pressurization-horn-cutout','OH19-DIFF','installDetents(cfg)',
+for(const item of ['syncHornButton()','pressurization-horn-cutout','geom.piece','installDetents(cfg)',
  'className=\'oh22-valve-pointer\'','output.physical?.valveOpenFraction','state.inputs?.acPowerAvailable'])
  assert.ok(src.includes(item),'Missing OH22 visual or physical implementation '+item);
 assert.ok(css.includes('width:100%;height:100%'),'Remove 262% sprite enlargement');
