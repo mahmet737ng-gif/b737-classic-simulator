@@ -1,3 +1,5 @@
+> **Scope update, 2026-10-26:** The 12 entries below were the *installed* live interactive guard registry, **not all Classic cockpit guarded controls**. The expanded Phase 1–2 audit identifies **17** flight-deck guarded/protected controls in the available FCOM (12 installed + 5 missing): [FCOM / visual audit](GUARDED_SWITCH_PHASE1_PHASE2_AUDIT_2026-10-26.md) and [machine registry](../engine/maps/guarded-switches-fcom-visual-audit-v1.json). Six internal hinge contradictions are NOT real-hardware hinge confirmation.
+
 # 737 Classic — Guarded Switch Audit (2026-10-26)
 **Status: PARTIALLY CORRECTED / NOT PIXEL-OR-HARDWARE APPROVED**
 
