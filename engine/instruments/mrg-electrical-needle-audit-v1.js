@@ -57,6 +57,7 @@ function evaluate({selector="TR1",electrical=null,observed={},drive=null}={}){
  const qa=[];
  if(exp.voltageRepresents.includes("UNCONFIRMED"))qa.push("TR3_DISPLAY_VOLTAGE_BUS_MAPPING_NOT_SOURCE_PROVEN");
  if(electrical?.bus.dc1===null||electrical?.bus.dc2===null)qa.push("DC_BUS_STATE_UNKNOWN_NEEDS_WIRING_QA");
+ if(electrical?.apuAutomaticShutdownRequested===true)qa.push("CLASSIC_MRG_P148_APU_BAT_OFF_ON_GROUND_AC_GENERATOR_LOSS; APU_PHYSICAL_SHUTDOWN_ENGINE_LINK_PENDING");
  if(exp.tr&&trPowered===false&&feed===true)qa.push("TR_OPEN_BUT_DC_BUS_BACKFED: DC_VOLTS_MAY_READ_NORMAL_WITH_TR_AMPS_ZERO");
  if(selector==="STBY_PWR"&&electrical?.lamps?.standbyPowerOff===true)
    qa.push("CLASSIC_STANDBY_PWR_OFF_LAMP_PROVES_AC_STANDBY_OFF_ONLY; DC_STANDBY_MUST_BE_MEASURED");
