@@ -1,0 +1,39 @@
+name: B737 lamp luminance and DIM BRIGHT contrast CI
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - tools/test-lamp-photometric-qa.cjs
+      - .github/workflows/lamp-photometric-qa.yml
+permissions:
+  contents: read
+jobs:
+  photometric-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 14
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify immutable source artwork
+        run: python3 panel-mosaic-lab/verify-final-overhead.py
+      - name: Install browser
+        run: |
+          npm install --no-save --ignore-scripts playwright@1.58.2
+          npx playwright install --with-deps chromium
+      - name: Measure original-size OFF ON and blue DIM BRIGHT intensities
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check tools/test-lamp-photometric-qa.cjs
+          python3 -m http.server 8788 --bind 127.0.0.1 >/tmp/b737-lamp-qa-http.log 2>&1 &
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:8788/panel-mosaic-lab/cockpit/index.html >/dev/null; then break; fi
+            sleep 1
+          done
+          node tools/test-lamp-photometric-qa.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: b737-all-lamp-native-pixel-contrast-measurements
+          path: /tmp/b737-lamp-photometric-qa
+          if-no-files-found: error
+          retention-days: 30
