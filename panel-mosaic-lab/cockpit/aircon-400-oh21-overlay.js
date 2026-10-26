@@ -71,7 +71,7 @@
    fit(node,rect);
    // Font is bounded by BOTH the glass height and the available width. This
    // fixes the previous unrestricted text spilling across screws and OFF/AUTO.
-   const maxHeight=rect.h*(item.kind==='title'?.51:.55);
+   const maxHeight=rect.h*(item.kind==='title'?.72:.72);
    const maxWidth=Math.max(5,(rect.w-7)/(item.text.length*(item.kind==='title'?.69:.66)));
    node.style.fontSize=Math.max(5,Math.min(maxHeight,maxWidth)).toFixed(2)+'px';
    layer.append(node);
