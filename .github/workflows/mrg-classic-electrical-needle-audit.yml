@@ -1,0 +1,31 @@
+name: MRG Classic Electrical Needle Numeric QA
+on:
+  push:
+    paths:
+      - "engine/instruments/mrg-electrical-needle-audit-v1.js"
+      - "panel-mosaic-lab/cockpit/mrg-electrical-needle-qa-unified.js"
+      - "panel-mosaic-lab/cockpit/index.html"
+      - "engine/systems/electrical-v7.js"
+      - "tests/mrg-electrical-needle-audit-v1.test.cjs"
+      - "engine/instruments/needle-zero-reference-stage1-v1.json"
+      - "engine/instruments/needle-zero-reference-stage1-v1.test.cjs"
+      - ".github/workflows/mrg-classic-electrical-needle-audit.yml"
+  workflow_dispatch:
+jobs:
+  mrg-needle-source-qa:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Verify unmodified source-based needle models
+        run: |
+          node --check engine/instruments/mrg-electrical-needle-audit-v1.js
+          node --check panel-mosaic-lab/cockpit/mrg-electrical-needle-qa-unified.js
+      - name: Classic MRG numeric meter and CSD limits
+        run: npm run test:mrg-needle
+      - name: Existing electrical source bus regression
+        run: node tests/electrical-v7.test.cjs
+      - name: Geometry QA stays source-locked
+        run: node --test engine/instruments/needle-zero-reference-stage1-v1.test.cjs
