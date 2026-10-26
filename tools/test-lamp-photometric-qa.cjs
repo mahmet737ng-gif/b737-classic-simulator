@@ -15,7 +15,7 @@ const mi=read('panel-mosaic-lab/cockpit/instance-faces.json');
 const face14=read('panel-mosaic-lab/lights-test/oh22-profile-faces-v1.json');
 const additional=[
  ...face14.files.map(f=>({id:f.system+'-'+f.lamp,asset:f.asset,state:f.state,
-  source:'../../'+f.file.replace('panel-mosaic-lab/',''),kind:'oh22-'+f.system})),
+  source:'../'+f.file.replace('panel-mosaic-lab/',''),kind:'oh22-'+f.system})),
  ...['OFF','ON'].map(state=>({id:'737400-pack',asset:'PACK',state,kind:'737400-oh21',
   source:'../assets/737-400-PACK_FITTED_'+state+'.svg'}))
 ];
