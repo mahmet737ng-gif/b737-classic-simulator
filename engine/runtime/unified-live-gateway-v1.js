@@ -7,7 +7,7 @@
  const copy=v=>JSON.parse(JSON.stringify(v));
  const BRIDGE_TOGGLE=new Set(['fuel-center-l','fuel-center-r','fuel-1-aft','fuel-1-fwd','fuel-2-fwd','fuel-2-aft',
   'hyd-elec-2','hyd-elec-1','gen-1','gen-2','apu-gen-1','apu-gen-2','ground-power']);
- const BRIDGE_GUARD=new Set(['standby-power','generator-disconnect-1','generator-disconnect-2']);
+ const BRIDGE_GUARD=new Set(['standby-power','generator-disconnect-1','generator-disconnect-2','bus-transfer']);
  const ECU_TOGGLE=new Set(['apu-start','bleed-apu','bleed-eng-1','bleed-eng-2','pack-l','pack-r','isolation-valve']);
  const ECU_ROTARY=new Set(['ignition-source','engine-start-1','engine-start-2']);
  const ECU_GUARD=new Set(['battery-master']);
@@ -19,7 +19,7 @@
   ...[...ECU_GUARD].map(id=>[id,'guarded'])
  ]));
  const DETENTS=Object.freeze({
-  'battery-master':['off','on'],'standby-power':['bat','off','auto'],
+  'battery-master':['off','on'],'standby-power':['bat','off','auto'],'bus-transfer':['auto','off'],
   'generator-disconnect-1':['normal','disconnect'],'generator-disconnect-2':['normal','disconnect'],
   'gen-1':['OFF','NEUTRAL','ON'],'gen-2':['OFF','NEUTRAL','ON'],
   'apu-gen-1':['OFF','NEUTRAL','ON'],'apu-gen-2':['OFF','NEUTRAL','ON'],
@@ -62,6 +62,9 @@
     const val=kind==='guarded'?packet.guards[id]?.value:packet[kind==='rotary'?'rotaries':'toggles'][id];
     if(typeof val==='string')this.positions.set(id,val);
    }
+   // Preview controller is not in the mounted OH12 registry. Keep its
+   // detent synchronized from the *same* Electrical Pack, never guess a pixel mount.
+   this.positions.set('bus-transfer',this.ecu.start.core.pack.electricalState.config.busTransferAuto?'auto':'off');
    this.initialized=true;
    return this._record({accepted:true,type:'SYNCHRONIZE',recovered:recovery.recovered||[],
     owner:'SHARED_ECU_PACK',warnings:syncRejected.map(x=>({reason:'BRIDGE_REJECTED_ON_SYNC',
@@ -76,6 +79,8 @@
    if(expected!==event.kind)return this._record({accepted:false,id:event.id,reason:'WRONG_EVENT_KIND'});
    const val=expected==='guarded'?event.next?.value:event.next;
    if(typeof val!=='string'||!val.length)return this._record({accepted:false,id:event.id,reason:'INVALID_DETENT'});
+   if(event.id==='bus-transfer'&&event.next?.guard!=='open')
+    return this._record({accepted:false,id:event.id,reason:'GUARD_MUST_BE_OPEN'});
    const allowed=DETENTS[event.id]||['OFF','ON']; // pump controls
    if(!allowed.includes(val))return this._record({accepted:false,id:event.id,value:val,reason:'INVALID_DETENT'});
    if(this.positions.get(event.id)===val)

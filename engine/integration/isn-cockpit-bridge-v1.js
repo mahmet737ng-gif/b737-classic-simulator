@@ -22,7 +22,7 @@
   'transferBusOff1':'transferBusOff1','transferBusOff2':'transferBusOff2',
   'genOffBus1':'gen-off-bus-1','genOffBus2':'gen-off-bus-2'
  });
- const GUARDED=Object.freeze({'battery-master':'batterySwitch','standby-power':'standbySelector',
+ const GUARDED=Object.freeze({'battery-master':'batterySwitch','standby-power':'standbySelector','bus-transfer':'busTransferAuto',
   'generator-disconnect-1':'GEN1_FAILED','generator-disconnect-2':'GEN2_FAILED'});
  const SCENARIO=Object.freeze(['engine1Running','engine2Running','apuRunning','groundPowerAttached','onGround']);
  const copy=v=>JSON.parse(JSON.stringify(v));
@@ -49,6 +49,8 @@
     // Bridge follows the same pack instance and must never send it twice.
     if(this.sourceOwner==='LEGACY_SCENARIO'&&(next==='on'||next==='off'))
      this.electrical({type:'CONTROL',key:'batterySwitch',value:next==='on'});
+   }else if(id==='bus-transfer'){
+    if(next==='auto'||next==='off')this.electrical({type:'CONTROL',key:'busTransferAuto',value:next==='auto'});
    }else if(id==='standby-power'){
     if(['auto','off','bat'].includes(next))this.electrical({type:'CONTROL',key:'standbySelector',value:next.toUpperCase()});
    }else if(/^generator-disconnect-[12]$/.test(id)){
@@ -77,7 +79,7 @@
     this.electrical({type:'CONTROL',key,value:next.context[key]});
     if(key==='onGround')this.send({type:'WARNING_SENSOR',key:'onGround',value:next.context[key]});
    }
-   const guardIds=['battery-master','standby-power','generator-disconnect-1','generator-disconnect-2'];
+   const guardIds=['battery-master','standby-power','generator-disconnect-1','generator-disconnect-2','bus-transfer'];
    for(const id of guardIds){const value=next.guards[id]?.value,previous=this.inputs.guards[id]?.value;if(value!==undefined&&value!==previous)this.control(id,value);}
    // Binary toggles are level signals, not inferred power sources.
    for(const id of Object.keys(PUMPS))if(own(next.toggles,id)&&next.toggles[id]!==this.inputs.toggles[id])this.control(id,next.toggles[id]);
@@ -105,7 +107,7 @@
   replay(){const commands=this.session.events.map(e=>copy(e.command));this.session.replay(commands);this.snapshot=this.session.get();return this.get();}
   reset(){this.session.reset();this.initialized=false;const last=copy(this.inputs);this.inputs={toggles:{},guards:{},rotaries:{},context:{}};this.rejected=[];this.rejectedTotal=0;return this.synchronize(last);}
   get(){const state=this.session.get();return {state,lamps:projectLamps(state),initialized:this.initialized,
-   rejected:copy(this.rejected),rejectedTotal:this.rejectedTotal,inputs:copy(this.inputs),coverage:{pumpControls:Object.keys(PUMPS).length,pumpLamps:Object.keys(LAMPS).length,electricalLamps:Object.keys(ELECTRICAL_LAMPS).length,busTransferPhysicalControl:false}};}
+   rejected:copy(this.rejected),rejectedTotal:this.rejectedTotal,inputs:copy(this.inputs),coverage:{pumpControls:Object.keys(PUMPS).length,pumpLamps:Object.keys(LAMPS).length,electricalLamps:Object.keys(ELECTRICAL_LAMPS).length,busTransferPhysicalControl:false,busTransferPreviewControl:true}};}
  }
  return Object.freeze({PUMPS,LAMPS,ELECTRICAL_LAMPS,GUARDED,SCENARIO,projectLamps,Bridge});
 });

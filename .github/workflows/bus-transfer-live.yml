@@ -1,0 +1,72 @@
+name: B737 BUS TRANSFER Live Electrical Gate
+on:
+  push:
+    branches: [architecture/bus-transfer-live-control-v1-20261027]
+    paths:
+      - 'engine/integration/isn-cockpit-bridge-v1.js'
+      - 'engine/runtime/unified-live-gateway-v1.js'
+      - 'panel-mosaic-lab/cockpit/bus-transfer-guard-review.html'
+      - 'panel-mosaic-lab/cockpit/bus-transfer-live-preview-v1.js'
+      - 'panel-mosaic-lab/cockpit/isn-cockpit.js'
+      - 'tests/unified-live-gateway-v1.test.cjs'
+      - 'tools/bus-transfer-live-browser-smoke.cjs'
+      - '.github/workflows/bus-transfer-live.yml'
+  pull_request:
+    paths:
+      - 'engine/integration/isn-cockpit-bridge-v1.js'
+      - 'engine/runtime/unified-live-gateway-v1.js'
+      - 'panel-mosaic-lab/cockpit/bus-transfer*'
+      - 'panel-mosaic-lab/cockpit/isn-cockpit.js'
+      - 'tests/unified-live-gateway-v1.test.cjs'
+      - 'tools/bus-transfer-live-browser-smoke.cjs'
+permissions:
+  contents: read
+jobs:
+  hostile-node:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - name: Source and hostile control test
+        run: |
+          node --check engine/runtime/unified-live-gateway-v1.js
+          node --check panel-mosaic-lab/cockpit/bus-transfer-live-preview-v1.js
+          node --check panel-mosaic-lab/cockpit/isn-cockpit.js
+          node --test tests/unified-live-gateway-v1.test.cjs
+          node tests/isn-cockpit-bridge-v1.test.cjs
+          node tests/electrical-v7.test.cjs
+          node --test panel-mosaic-lab/cockpit/bus-transfer-guard-review.test.cjs
+  real-browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - name: Check unchanged approved source images
+        run: python3 panel-mosaic-lab/verify-final-overhead.py
+      - name: Install Chromium
+        run: |
+          npm install --no-save --ignore-scripts playwright@1.58.2
+          npx playwright install --with-deps chromium
+      - name: Exercise BUS TRANSFER review iframe and Electrical V7
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m http.server 8788 --bind 127.0.0.1 >/tmp/b737-bus-transfer-http.log 2>&1 &
+          for i in $(seq 1 45); do
+            if curl -fsS http://127.0.0.1:8788/panel-mosaic-lab/cockpit/index.html >/dev/null; then break; fi
+            sleep 1
+          done
+          node tools/bus-transfer-live-browser-smoke.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: bus-transfer-physical-preview-electrical-browser-proof
+          path: |
+            /tmp/b737-bus-transfer-live-proof.png
+            /tmp/b737-bus-transfer-http.log
+          if-no-files-found: ignore
+          retention-days: 14

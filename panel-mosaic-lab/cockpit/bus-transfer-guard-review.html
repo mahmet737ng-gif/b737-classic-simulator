@@ -13,6 +13,7 @@ h1{font-size:clamp(22px,3vw,34px);margin:4px 0 8px;letter-spacing:.3px;direction
 .intro{color:#b4bec9;text-align:center;margin:4px 0 20px}
 .comparison{display:grid;grid-template-columns:1fr 1fr;gap:18px;direction:ltr}
 .station{background:#161e26;border:1px solid #51606b;border-radius:14px;padding:12px 10px 18px;overflow:hidden}
+.station.opened{position:relative;z-index:2} .station.closed{position:relative;z-index:1}
 .station h2{margin:0 0 12px;font-size:13px;letter-spacing:2px;text-align:center;color:#d6e5e8}
 .panel{height:306px;position:relative;background:linear-gradient(145deg,#272d34,#3e444c 40%,#272d34 90%);border:2px solid #161a1e;border-radius:12px;box-shadow:inset 0 0 2px #acb4b955, inset 2px 3px 14px #13192177;perspective:880px;overflow:visible}
 .titles{font:700 22px/1.25 'Arial Narrow',Arial,sans-serif;letter-spacing:1.5px;color:#cfd0d2;text-shadow:0 1px 3px #15191d;position:absolute;left:0;right:0;top:17px;text-align:center}
@@ -66,6 +67,14 @@ a{color:#8bdbe5}
 <div class="controls"><button id="toggleBoth" type="button" class="action">تغییر وضعیت دو نما</button>
 <button id="reset" type="button" class="action">CLOSED / OPEN</button>
 <span id="status" class="status" role="status">Ready · Geometry locked</span></div>
+<section aria-label="BUS TRANSFER live trainer control" style="margin-top:18px;padding:14px;background:#19252b;border:1px solid #526e78;border-radius:11px;text-align:center">
+ <strong>BUS TRANSFER — کنترل آزمایشی متصل به برق</strong>
+ <p style="color:#ccd8dd;font-size:12px">برای تغییر حالت، یکی از گاردهای بالا باید باز باشد. این صفحه هنوز روی جای واقعی OH12 نصب نشده است.</p>
+ <div class="controls"><button type="button" class="action" id="busTransferGuardOpen">بازکردن گارد</button><button type="button" class="action" id="busTransferGuardClose">بستن گارد</button></div>
+ <div class="controls"><button type="button" class="action" id="busTransferLiveAuto" disabled>AUTO</button>
+ <button type="button" class="action" id="busTransferLiveOff" disabled>OFF</button>
+ <span id="busTransferLiveStatus" role="status" class="status">در انتظار اتصال به Unified…</span></div>
+</section>
 <div class="note">این تست تصویریِ اصلاح BUS TRANSFER در Unified است؛ گارد بسته/باز همان رنگ، فرم، ضخامت و اندازه را دارد و فقط حول محور Left می‌چرخد. نصب پیکسلی آن روی OH12 هنوز کالیبره و تأیید نشده؛ به‌جای جایگذاری حدسی روی تصویر قفل‌شده، این نمای بازرسی مستقل اضافه شده است. رنگ و شکل بازتابی همچنان پیش‌نمایش هستند و خود عکس تولیدشده، دارایی منتشرشده در این صفحه نیست.</div>
 </main>
 <script>
@@ -77,4 +86,5 @@ stations.forEach(s=>s.querySelector('.cover').addEventListener('click',()=>rende
 document.getElementById('toggleBoth').addEventListener('click',()=>{for(const s of stations)render(s,!s.classList.contains('opened'));document.getElementById('status').textContent='Same cover transformed about fixed LEFT hinge';});
 document.getElementById('reset').addEventListener('click',()=>{render(stations[0],false);render(stations[1],true);document.getElementById('status').textContent='Ready · Geometry locked';});
 })();
-</script></body></html>
+</script>
+<script src="./bus-transfer-live-preview-v1.js?v=BUS-001" defer></script></body></html>

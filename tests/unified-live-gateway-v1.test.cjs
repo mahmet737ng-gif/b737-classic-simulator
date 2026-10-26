@@ -35,8 +35,17 @@ const event=(id,next,kind='toggle')=>({id,next,kind});
 test('physical control detents are source-registry matched',()=>{
  const real=new Map([...registry.controls,...rotary.guards,...rotary.rotaries].map(x=>[x.id,x]));
  for(const [id,kind] of Object.entries(Gateway.KEYS)){
-  assert.ok(real.has(id),'missing real mounted ID '+id);
-  assert.deepEqual(Gateway.DETENTS[id]||['OFF','ON'],real.get(id).states,id);
+  if(id==='bus-transfer'){
+   // Unmounted approved guard review. Never invent a source pixel socket.
+   const blueprints=JSON.parse(fs.readFileSync(path.join(__dirname,'../unity/Assets/B737Classic/GuardedSwitches/Resources/GuardedSwitchBlueprints.json')));
+   const bt=blueprints.controls.find(x=>x.controlId===id);
+   assert.ok(bt&&bt.sourceMount.requiresCalibratedSocket);
+   assert.equal(bt.sourceMount.sourceCenterNativePx,null);
+   assert.deepEqual(Gateway.DETENTS[id],['auto','off']);
+  }else{
+   assert.ok(real.has(id),'missing real mounted ID '+id);
+   assert.deepEqual(Gateway.DETENTS[id]||['OFF','ON'],real.get(id).states,id);
+  }
   assert.ok(['guarded','toggle','rotary'].includes(kind));
  }
 });
@@ -136,6 +145,41 @@ test('APU GEN physical switch propagates same-pack source into ECU and live bus 
  const y=r.gateway.dispatch(event('apu-gen-1','NEUTRAL'));
  assert.equal(y.accepted,true);
  assert.equal(r.gateway.snapshot().electrical.source[1],'APU','spring return must not disconnect');
+});
+test('BUS TRANSFER preview control changes the same Electrical V7 source once',()=>{
+ const r=setup(),before=r.ecu.start.core.pack.electricalState.rev;
+ assert.equal(r.ecu.start.core.pack.electricalState.config.busTransferAuto,true);
+ const off=r.gateway.dispatch(event('bus-transfer',{value:'off',guard:'open'},'guarded'));
+ assert.equal(off.accepted,true);
+ assert.equal(off.owner,'ISN_PACK_BRIDGE');
+ assert.equal(r.ecu.start.core.pack.electricalState.rev,before+1);
+ assert.equal(r.ecu.start.core.pack.electricalState.config.busTransferAuto,false);
+ assert.equal(r.gateway.snapshot().electrical.feed.tie,false);
+ assert.equal(r.gateway.snapshot().loads.coverage.loadsKnownBus,0);
+ const repeat=r.gateway.dispatch(event('bus-transfer',{value:'off',guard:'open'},'guarded'));
+ assert.equal(repeat.duplicate,true);
+ assert.equal(r.ecu.start.core.pack.electricalState.rev,before+1);
+ const auto=r.gateway.dispatch(event('bus-transfer',{value:'auto',guard:'open'},'guarded'));
+ assert.equal(auto.accepted,true);
+ assert.equal(r.gateway.snapshot().electrical.feed.tie,true);
+ assert.equal(r.ecu.start.core.pack.electricalState.rev,before+2);
+});
+test('BUS TRANSFER guard must be OPEN even if a fake event claims a new state',()=>{
+ const r=setup(),before=r.ecu.start.core.pack.electricalState.rev;
+ const no=r.gateway.dispatch(event('bus-transfer',{value:'off',guard:'closed'},'guarded'));
+ assert.equal(no.accepted,false);assert.equal(no.reason,'GUARD_MUST_BE_OPEN');
+ assert.equal(r.ecu.start.core.pack.electricalState.rev,before);
+ assert.equal(r.gateway.dispatch(event('bus-transfer',{value:'BROKEN',guard:'open'},'guarded')).reason,'INVALID_DETENT');
+ assert.equal(r.ecu.start.core.pack.electricalState.rev,before);
+});
+test('BUS TRANSFER rehydrates from the single real Electrical Pack on iframe refresh',()=>{
+ const r=setup();
+ r.gateway.dispatch(event('bus-transfer',{value:'off',guard:'open'},'guarded'));
+ const s=r.gateway.synchronize(r.controls);
+ assert.equal(s.accepted,true);
+ const n=r.ecu.start.core.pack.electricalState.rev;
+ const same=r.gateway.dispatch(event('bus-transfer',{value:'off',guard:'open'},'guarded'));
+ assert.equal(same.duplicate,true);assert.equal(r.ecu.start.core.pack.electricalState.rev,n);
 });
 test('wrong kind and impossible detent cannot mutate physical owner',()=>{
  const r=setup(),before=r.gateway.snapshot().electrical;
