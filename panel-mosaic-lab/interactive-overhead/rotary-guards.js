@@ -44,6 +44,14 @@
    lever.setAttribute('aria-valuenow',String(index));
    lever.setAttribute('aria-valuetext',name(current.value));
    lever.setAttribute('aria-label','FLIGHT RECORDER '+name(current.value));
+  }else if(c.presentation==='calibrated-horizontal-standby'){
+   const current=engine.guard(c.id),index=c.states.indexOf(current.value),cover=widget.querySelector('.guard-cover'),lever=widget.querySelector('.guard-lever');
+   widget.dataset.guard=current.guard;widget.dataset.value=current.value;
+   const left=Number(widget.dataset.mountLeft),top=Number(widget.dataset.mountTop),w=Number(widget.dataset.mountWidth),h=Number(widget.dataset.mountHeight);
+   Object.assign(cover.style,current.guard==='closed'?{left:left+'px',top:top+'px',width:w+'px',height:h+'px'}:{left:left+'px',top:top+'px',width:w+'px',height:(h*.22)+'px'});
+   Object.assign(lever.style,{left:(left+w*.13)+'px',top:(top+h*.31)+'px',width:(w*.74)+'px',height:(h*.53)+'px'});
+   cover.setAttribute('aria-expanded',String(current.guard==='open'));cover.setAttribute('aria-label',(current.guard==='closed'?'OPEN ':'CLOSE ')+c.label+' GUARD');
+   lever.disabled=current.guard!=='open';lever.setAttribute('aria-disabled',String(current.guard!=='open'));lever.setAttribute('aria-valuenow',String(index));lever.setAttribute('aria-valuetext',name(current.value));lever.setAttribute('aria-label',c.label+' — '+name(current.value));
   }else{
    const current=engine.guard(c.id),index=c.states.indexOf(current.value),frame=current.guard==='closed'?'CLOSED':index===0?'Open_UP':index===c.states.length-1?'Open_DOWN':'Open_CENTER';
    widget.dataset.guard=current.guard;widget.dataset.value=current.value;
@@ -142,12 +150,25 @@
   });
   group.append(cradle,lever,hinge,cover);return group;
  }
- function guarded(c,p){
+ function guarded(c,p,placement){
   const group=document.createElement('div');group.className='guard-node';group.dataset.control=c.id;
   Object.assign(group.style,{left:p.x+'px',top:p.y+'px',transform:'rotate('+c.rotation+'deg)'});
   const scale=p.diameter/261;group.dataset.scale=String(scale);
+  // The exterior housing uses owner-marked native pixel recess geometry, independently
+  // of the approved, aspect-preserved original switch/guard artwork.
+  if(c.mountingRectSource){
+   const [rx,ry,rw,rh]=c.mountingRectSource;
+   const a=points.mapPoint({...c,sourcePoint:[rx,ry],bezelSourceDiameter:0},placement);
+   const b=points.mapPoint({...c,sourcePoint:[rx+rw,ry+rh],bezelSourceDiameter:0},placement);
+   const left=a.x-p.x,top=a.y-p.y,w=b.x-a.x,h=b.y-a.y;
+   Object.assign(group.dataset,{mountLeft:String(left),mountTop:String(top),mountWidth:String(w),mountHeight:String(h)});
+   const housing=document.createElement('span');
+   housing.className='guard-housing '+(c.presentation==='calibrated-horizontal-standby'?'guard-housing--horizontal':'guard-housing--vertical');
+   Object.assign(housing.style,{left:left+'px',top:top+'px',width:w+'px',height:h+'px'});
+   housing.setAttribute('aria-hidden','true');group.append(housing);
+  }
   const dimensions={CLOSED:[261,c.color==='red'?354:359],Open_UP:[c.color==='red'?254:256,c.color==='red'?466:470],Open_CENTER:[254,c.color==='red'?467:469],Open_DOWN:[c.color==='red'?253:256,c.color==='red'?468:471]};
-  for(const frame of ['CLOSED','Open_UP','Open_CENTER','Open_DOWN']){
+  for(const frame of (c.presentation==='calibrated-horizontal-standby'?[]:['CLOSED','Open_UP','Open_CENTER','Open_DOWN'])){
    const img=document.createElement('img'),[w,h]=dimensions[frame];img.className='guard-picture';img.dataset.frame=frame;if(window.B737ImageLoader)window.B737ImageLoader.assign(img,url(registry.assets[c.color+'-'+frame].url));else img.src=url(registry.assets[c.color+'-'+frame].url);img.alt='';img.draggable=false;
    Object.assign(img.style,{left:(-(frame==='CLOSED'?130.5:w/2)*scale)+'px',top:(-(frame==='CLOSED'?179.5:230)*scale)+'px',width:(w*scale)+'px',height:(h*scale)+'px'});group.append(img);
   }
@@ -203,7 +224,7 @@
   mountEngineStartLabelCorrection(layout);
   layer=document.createElement('div');layer.className='rg-layer';layer.id='rotaryGuardLayer';const placements=new Map(layout.placements.map(p=>[p.id,p]));
   layer.dataset.debugDetents=String(new URLSearchParams(location.search).get('debugDetents')==='1');
-  for(const c of [...registry.rotaries,...registry.guards]){const p=points.mapPoint(c,placements.get(c.placementId)),node=c.kind==='rotary'?rotary(c,p):c.presentation==='flight-recorder-left-hinge'?recorderHinged(c,placements.get(c.placementId)):guarded(c,p);widgets.set(c.id,node);layer.append(node);render(c);}
+  for(const c of [...registry.rotaries,...registry.guards]){const p=points.mapPoint(c,placements.get(c.placementId)),node=c.kind==='rotary'?rotary(c,p):c.presentation==='flight-recorder-left-hinge'?recorderHinged(c,placements.get(c.placementId)):guarded(c,p,placements.get(c.placementId));widgets.set(c.id,node);layer.append(node);render(c);}
   for(const c of registry.rotaries)if(c.legendAreas)mountLegendTargets(c,placements.get(c.placementId));
   layer.classList.toggle('hidden',!byId('toggleVisibility').checked);byId('atlasAbsolute').append(layer);interlocks();
   byId('resetToggles').addEventListener('click',()=>{engine.reset();interlocks();persist();});
