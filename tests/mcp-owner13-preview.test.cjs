@@ -37,7 +37,7 @@ assert.match(style,/--owner-bsize/);
 assert.match(style,/mcp-owner13-push/);
 assert.match(src,/const photoZoom/);
 assert.match(src,/function addPushButtons/);
-assert.match(src,/pointer-events:none/);
+assert.match(style,/pointer-events:none/);
 for(const file of ['panel-mosaic-lab/cockpit/index.html','panel-mosaic-lab/mcp-panel/index.html']){
  const html=fs.readFileSync(path.join(root,file),'utf8');
  assert.match(html,/mcp-owner13-v1\.js\?v=OWNER13-0001/);
