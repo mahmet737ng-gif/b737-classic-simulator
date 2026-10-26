@@ -12,6 +12,9 @@ on:
       - 'engine/instruments/source-arc-contact-audit-v1.py'
       - 'engine/instruments/native-bezel-centre-evidence-v1.json'
       - 'engine/instruments/native-bezel-centre-v1.test.cjs'
+      - 'engine/instruments/oh12-ac-amps-photo-graduations-v1.json'
+      - 'engine/instruments/oh12-ac-amps-original-photo-qa-v1.py'
+      - 'engine/instruments/oh12-ac-amps-photo-calibration-v1.test.cjs'
       - 'engine/instruments/native-bezel-centre-validation-v1.py'
       - 'engine/instruments/native-verified-division-intervals-v1.json'
       - 'engine/instruments/native-photo-scale-label-inventory-v1.json'
@@ -69,10 +72,15 @@ jobs:
           node --test engine/instruments/native-arc-scale-v1.test.cjs engine/instruments/native-bezel-centre-v1.test.cjs engine/instruments/native-source-scale-inventory-v1.test.cjs
           node panel-mosaic-lab/cockpit/ac-dc-metering.test.cjs
           node panel-mosaic-lab/cockpit/drive-amps-needle.test.cjs
+          node --test engine/instruments/oh12-ac-amps-photo-calibration-v1.test.cjs
       - name: Inspect 11 native OH10 OH11 OH12 OH20 OH21 source gauge pivots and arcs
         run: python3 engine/instruments/source-arc-contact-audit-v1.py
       - name: Native-source fitted circles and SHA256 photo evidence
         run: python3 engine/instruments/native-bezel-centre-validation-v1.py
+      - name: Refit 42 OH12 original photo white strokes and assert actual A scale needle clearance
+        run: |
+          python3 -m pip install --quiet opencv-python-headless
+          python3 engine/instruments/oh12-ac-amps-original-photo-qa-v1.py
       - name: Preserve native panel pivot and arc review sheets
         uses: actions/upload-artifact@v4
         with:
