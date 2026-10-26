@@ -57,6 +57,16 @@ The first pass caught 3 bounds violations in two lamp designs, rather than treat
 4. **Optical QA:** real Chromium `getBoundingClientRect()` for all 60 states plus full 30-lamp ON/OFF photographic contact sheets at **100%, 75%, 50%**. Any cropping is a CI failure. Independently inspect screenshots for actual reading quality — **browser checks automated, expert reference-photo visual sign-off remains explicitly separate**.
 5. **Lock:** `main-typography.test.cjs` prevents spelling changes, font assignment swaps, original image edits, inconsistent socket ratios or missing state hashes. Pages deployment requires the test. The *generator contract* is locked, not presumed aviation-certified for unreadable physically tiny source lamps.
 
+## Optical acceptance execution result
+
+- **60/60** mounted source-proportion OFF/ON lens SVGs decoded in real Chromium.
+- **0** cropped or protruding text bounding boxes after correcting three initially detected violations (AUTO BRAKE ON and SPEED BRAKE ARMED OFF/ON).
+- All **30** names, source rectangles, source SVG wording/capitalization and lamp electrical data preserved; original reference photographs unchanged.
+- Three source-scale contact sheets produced at **100% / 75% / 50%**. At 100% the text and line spacing visibly match the chosen family templates; at 50% physically short source sockets can still be too small for easy recognition. Thus **digital geometry passes**, but **small-screen human readability is not universally certified**.
+- Updated 307-state B737 lamp photometric CI confirms **zero missing assets, zero OFF/ON inversion, zero contrast warnings**, and the original **seven blue DIM/BRIGHT pairs** still correctly increase brightness without recoloring.
+
+Verified runs: [complete MIP three-scale visual QA](https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/40355959817), [307 lamp state optical regression](https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/40356784894), and [Pages deployment success](https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/40356785240).
+
 ## Live evidence
 
 - [Source-to-derived line-by-line face audit](../panel-mosaic-lab/lights-test/main-type-audit-v1.json)
