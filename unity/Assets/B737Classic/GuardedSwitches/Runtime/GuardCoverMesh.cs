@@ -49,6 +49,14 @@ namespace B737Classic.GuardedSwitches
                     else if (contourProfile == "gpws-three-identical")
                         widthFactor = 0.97f + 0.03f * (1f - Mathf.Abs(topT * 2f - 1f));
                     pt.x *= widthFactor;
+                    // Bus Transfer is the PASS OXYGEN cap rotated 90 degrees.
+                    // Rotate its slight longitudinal taper with the body;
+                    // use a unique mesh instance but preserve its source shape.
+                    if (contourProfile == "black-horizontal-oxygen-rotated-90")
+                    {
+                        float along = Mathf.Clamp01(pt.x / width + 0.5f);
+                        pt.y *= Mathf.Lerp(0.965f, 1f, along);
+                    }
                     outline.Add(pt);
                 }
             }
