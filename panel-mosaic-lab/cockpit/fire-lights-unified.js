@@ -79,12 +79,15 @@ function attach(){
   for(const [key,value]of Object.entries(p))node.style[key]=value;
   const img=win.document.createElement('img');
   img.alt='';img.decoding='async';img.draggable=false;
-  // Full housing occupies the four measured outer corners; ONLY the black
-  // glass sprite occupies the separately measured inset face, preserving
-  // all four hardware screws / the metal bezel underneath.
-  const inset=model.facePercent(slot);
-  Object.assign(img.style,{position:'absolute',left:inset.left,top:inset.top,width:inset.width,height:inset.height});
-  node.dataset.geometry=slot.type==='rect'?'outer-frame-plus-inset-glass':'round-lens';
+  // The previous renderer made a transparent outer frame and left its
+  // real ON/OFF artwork at the old small size. This is why V4 looked unchanged.
+  // V5 paints the source legend at the FULL four-corner housing dimensions,
+  // screen-blended so opaque black in the original database SVG cannot cover
+  // existing metal, bezel and mounting screws in the photographic panel.
+  const legend=model.legendPercent(slot);
+  Object.assign(img.style,{position:'absolute',left:legend.left,top:legend.top,width:legend.width,height:legend.height});
+  node.dataset.geometry=slot.type==='rect'?'housing-sized-screen-lit-legend':'round-lens';
+  node.dataset.version=model.version;
   node.append(img);layer.append(node);faceNodes.set(slot.id,img);
  }
  host.append(layer);attached=true;
@@ -115,7 +118,8 @@ win.B737UnifiedFireLights=Object.freeze({
  visualTest(active){visualTest=Boolean(active);return draw();},
  dispatch,indications:()=>Object.freeze({...current()}),
  getState:()=>unit?.getState()||null,
- positions:()=>model.SLOTS.map(s=>({id:s.id,center:[s.cx,s.cy],frameBounds:model.region(s),glassBounds:model.faceRegion(s)})),
+ positions:()=>model.SLOTS.map(s=>({id:s.id,center:[s.cx,s.cy],frameBounds:model.region(s),glassBounds:model.faceRegion(s),legendPercent:model.legendPercent(s)})),
+ version:()=>model.version,
  registration:()=>lastRegistration?Object.freeze({...lastRegistration}):null
 });
 })(window);
