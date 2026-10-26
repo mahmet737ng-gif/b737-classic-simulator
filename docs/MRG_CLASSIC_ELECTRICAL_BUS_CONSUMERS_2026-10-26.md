@@ -55,6 +55,11 @@ The original 54-face instrument geometry registry, photographic artworks and CPC
 
 \`npm run test:mrg-bus\` for source index/failure regressions; \`npm run test:mrg-needle\` for live numeric inspection contract; \`node tests/electrical-v7.test.cjs\` for the original source distribution baseline.
 
-The execution harness validated 23 new MRG bus/failure tests, 20 MRG needle tests and 47 Electrical V7 tests (**90/90 logical cases passed**). Automated Actions have been configured separately; successful CI execution and browser visual acceptance were not independently verified here.
+The execution harness validated 25 MRG bus/failure/V8 candidate tests, 20 MRG needle tests, 47 Electrical V7 tests and 47 Electrical Loads V8 tests (**139/139 logical cases passed**). Automated Actions have been configured separately; successful CI execution and browser visual acceptance were not independently verified here.
 
 **Unresolved engineering gates:** actual EP-FSI ATA24 Electrical Load Analysis/WDM, installation/option effectivity, 28 VAC/electronic bus converters, explicit multi-source fallback, fault flags vs needle park/hold modes, and full major/minor-tick/pivot QA for all 54 faces.
+
+
+### V8 read-only candidate references
+
+The adapter `engine/systems/electrical-loads-v8.js` accepts an OPTIONAL source-index/options argument; default source-gated behavior is not changed. When supplied the new Classic index and read-only source audit, it exposes ten `genericClCandidateFeeds` records: 6 fuel motors, 2 hydraulic motors, and 2 DCPCS AUTO controllers. These are additional independent references only; `loadsKnownBus` remains zero and each `loads[id].assignedBus` stays null. CPCS variant omits the DCPCS controller entries. V8’s original 47 regression cases continue to pass.
