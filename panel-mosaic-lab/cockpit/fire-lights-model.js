@@ -48,6 +48,15 @@ function facePercent(slot){
  return {left:((glass.left-frame.left)/frame.width*100)+'%',top:((glass.top-frame.top)/frame.height*100)+'%',
  width:(glass.width/frame.width*100)+'%',height:(glass.height/frame.height*100)+'%'};
 }
+/* The photographic panel already contains its metal bezel and four screws.
+ * Put the database legend on the WHOLE measured housing as a transparent
+ * lighting pass (screen blend), without repainting metal. Inset glass geometry
+ * remains independently measurable and unchanged for strict QA. */
+function legendPercent(slot){
+ return slot.type==='rect'
+  ? {left:'0%',top:'0%',width:'100%',height:'100%'}
+  : facePercent(slot);
+}
 function validate(){
  if(SLOTS.length!==11||new Set(SLOTS.map(s=>s.id)).size!==11)throw Error('Fire lamp slot count/ID');
  for(const slot of SLOTS){
@@ -63,5 +72,5 @@ function validate(){
  return true;
 }
 validate();
-return Object.freeze({BASE,SLOTS,map,RECT_SIZE,file,region,faceRegion,percent,facePercent,validate,source:'fire-protection-lab/reference/unified-11-indicator-frame-glass-v4.json',version:'FIRELAMP-0004'});
+return Object.freeze({BASE,SLOTS,map,RECT_SIZE,file,region,faceRegion,percent,facePercent,legendPercent,validate,source:'fire-protection-lab/reference/unified-11-indicator-frame-glass-v4.json',version:'FIRELAMP-0005'});
 });
