@@ -12,7 +12,7 @@ namespace B737Classic.GuardedSwitches
     /// </summary>
     public static class GuardCoverMesh
     {
-        public static Mesh Create(string identity, float width, float height, float thickness, float radius)
+        public static Mesh Create(string identity, float width, float height, float thickness, float radius, string contourProfile = null)
         {
             if (width <= 0f || height <= 0f || thickness <= 0f)
                 throw new ArgumentOutOfRangeException(nameof(width), "Positive cover dimensions required.");
@@ -30,8 +30,24 @@ namespace B737Classic.GuardedSwitches
                 for (int s = 0; s <= segmentsPerCorner; ++s)
                 {
                     float radians = (corner * 90f + s * 90f / segmentsPerCorner) * Mathf.Deg2Rad;
-                    outline.Add(corners[corner] +
-                                new Vector2(Mathf.Cos(radians), Mathf.Sin(radians)) * radius);
+                    Vector2 pt = corners[corner] +
+                        new Vector2(Mathf.Cos(radians), Mathf.Sin(radians)) * radius;
+                    // Manufactured ONCE while authoring the mesh. In the runtime,
+                    // changing the cover pose never recalculates these vertices.
+                    // These contour variations remain photographic PREVIEWS only.
+                    float topT = Mathf.Clamp01(pt.y / height + 0.5f);
+                    float widthFactor = 1f;
+                    if (contourProfile == "red-tapered-long-cap")
+                        widthFactor = Mathf.Lerp(0.91f, 1f, topT);
+                    else if (contourProfile == "black-shouldered-cap")
+                        widthFactor = 0.945f + 0.055f * (1f - Mathf.Abs(topT * 2f - 1f));
+                    else if (contourProfile == "black-vertical-oxygen" ||
+                             contourProfile == "black-vertical-exit")
+                        widthFactor = Mathf.Lerp(0.965f, 1f, topT);
+                    else if (contourProfile == "silver-satin-inset")
+                        widthFactor = Mathf.Lerp(0.975f, 0.94f, topT);
+                    pt.x *= widthFactor;
+                    outline.Add(pt);
                 }
             }
 
