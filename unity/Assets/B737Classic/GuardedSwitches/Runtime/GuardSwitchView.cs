@@ -151,15 +151,4 @@ namespace B737Classic.GuardedSwitches
         }
     }
 
-    public sealed class GuardPreviewClickTarget : MonoBehaviour
-    {
-        public GuardSwitchView target;
-        public bool underlyingSwitch;
-        private void OnMouseDown()
-        {
-            if (target == null) return;
-            if (underlyingSwitch) target.TryRequestUnderlyingSwitch();
-            else target.ToggleOpen();
-        }
-    }
 }
