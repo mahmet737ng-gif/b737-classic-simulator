@@ -10,6 +10,8 @@ on:
       - 'engine/instruments/stage10-preview-scale-subset-v1.json'
       - 'engine/instruments/stage9-stage10.test.cjs'
       - 'engine/instruments/source-arc-contact-audit-v1.py'
+      - 'engine/instruments/native-arc-scale-v1.js'
+      - 'engine/instruments/native-arc-scale-v1.test.cjs'
       - 'engine/instruments/oh19-photo-evidence-v2.js'
       - 'engine/instruments/oh19-photo-evidence-v2.test.cjs'
       - 'engine/instruments/oh19-native-ticks-batch1.json'
@@ -54,6 +56,8 @@ jobs:
           path: artifacts/oh19-pixel-qa/
           retention-days: 30
           if-no-files-found: error
+      - name: Assert photographic ARC geometry and honest minor division counting
+        run: node --test engine/instruments/native-arc-scale-v1.test.cjs
       - name: Inspect 11 native OH10 OH11 OH12 OH20 OH21 source gauge pivots and arcs
         run: python3 engine/instruments/source-arc-contact-audit-v1.py
       - name: Preserve native panel pivot and arc review sheets
