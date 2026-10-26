@@ -69,6 +69,7 @@ jobs:
           node panel-mosaic-lab/cockpit/fuel-temperature-needle.test.cjs
           node panel-mosaic-lab/cockpit/performance.test.cjs
           node panel-mosaic-lab/cockpit/test.cjs
+          node --test panel-mosaic-lab/cockpit/bus-transfer-guard-review.test.cjs
           node panel-mosaic-lab/cockpit/unified-annunciators.test.cjs
           node panel-mosaic-lab/cockpit/lights.test.cjs
           node tests/aircraft-profile-v1.test.cjs
