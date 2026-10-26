@@ -1,0 +1,195 @@
+{
+  "schema": "b737.fire-protection.as-built-indicator-geometry.v1",
+  "canvas": {
+    "width": 2172,
+    "height": 724,
+    "origin": "top-left",
+    "units": "px"
+  },
+  "description": "Actual apertures on fire_protection_bare_panel_standard_slots_v2.png, not reference-corrected remaster",
+  "confidence": "Inserted lamp-module bounds exact to sprite placement; engine frame edges approximate ±3 px; round opening centers/radii ~±2 px",
+  "rectangles": [
+    {
+      "id": "ENG1_OVERHEAT",
+      "bounds": [
+        176,
+        296,
+        404,
+        410
+      ],
+      "center": [
+        290,
+        353
+      ],
+      "size": [
+        228,
+        114
+      ],
+      "status": "AS_BUILT"
+    },
+    {
+      "id": "WHEEL_WELL",
+      "bounds": [
+        681,
+        101,
+        889,
+        206
+      ],
+      "center": [
+        785,
+        153.5
+      ],
+      "size": [
+        208,
+        105
+      ],
+      "status": "AS_BUILT"
+    },
+    {
+      "id": "FAULT",
+      "bounds": [
+        681,
+        220,
+        889,
+        325
+      ],
+      "center": [
+        785,
+        272.5
+      ],
+      "size": [
+        208,
+        105
+      ],
+      "status": "AS_BUILT"
+    },
+    {
+      "id": "APU_DET_INOP",
+      "bounds": [
+        681,
+        339,
+        889,
+        444
+      ],
+      "center": [
+        785,
+        391.5
+      ],
+      "size": [
+        208,
+        105
+      ],
+      "status": "AS_BUILT"
+    },
+    {
+      "id": "APU_BOTTLE_DISCHARGED",
+      "bounds": [
+        681,
+        458,
+        889,
+        563
+      ],
+      "center": [
+        785,
+        510.5
+      ],
+      "size": [
+        208,
+        105
+      ],
+      "status": "AS_BUILT"
+    },
+    {
+      "id": "ENG2_OVERHEAT",
+      "bounds": [
+        1258,
+        293,
+        1494,
+        418
+      ],
+      "center": [
+        1376,
+        355.5
+      ],
+      "size": [
+        236,
+        125
+      ],
+      "status": "AS_BUILT"
+    },
+    {
+      "id": "L_BOTTLE_DISCHARGED",
+      "bounds": [
+        1700,
+        97,
+        1908,
+        202
+      ],
+      "center": [
+        1804,
+        149.5
+      ],
+      "size": [
+        208,
+        105
+      ],
+      "status": "WRONG_ALIGNMENT_REQUIRES_FIX"
+    },
+    {
+      "id": "R_BOTTLE_DISCHARGED",
+      "bounds": [
+        1700,
+        228,
+        1908,
+        333
+      ],
+      "center": [
+        1804,
+        280.5
+      ],
+      "size": [
+        208,
+        105
+      ],
+      "status": "WRONG_ALIGNMENT_REQUIRES_FIX"
+    }
+  ],
+  "rounds": [
+    {
+      "id": "EXT_L",
+      "center": [
+        1832,
+        416
+      ],
+      "radius": 21,
+      "off": "black",
+      "on": "green"
+    },
+    {
+      "id": "EXT_R",
+      "center": [
+        1927,
+        416
+      ],
+      "radius": 21,
+      "off": "black",
+      "on": "green"
+    },
+    {
+      "id": "EXT_APU",
+      "center": [
+        1881,
+        504
+      ],
+      "radius": 21,
+      "off": "black",
+      "on": "green"
+    }
+  ],
+  "qa": [
+    "The L/R BOTTLE DISCHARGED cutouts in the current bare panel are vertically stacked at x=1804. Real cockpit reference shows horizontal side-by-side bottle annunciators. Do not treat current positions as final.",
+    "The separate EXT TEST switch cutout near (2062,516) is not one of the three green annunciator positions.",
+    "Other switches and fire handles are outside the scope of this geometry map."
+  ],
+  "production_status": "MEASURED_AS_BUILT; QA NOT APPROVED"
+}
