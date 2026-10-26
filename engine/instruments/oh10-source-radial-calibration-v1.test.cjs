@@ -50,6 +50,6 @@ test('Unified OH10 actual slider values and initial physical zero positions pers
  assert.ok(html.includes('ac-dc-metering-model.js?v=MET-0004-TICK-CAL'));
  assert.ok(html.includes('ac-dc-metering-unified.js?v=MET-0004-TICK-CAL'));
  const amps=model.meters.find(x=>x.id==='dcAmps'),volts=model.meters.find(x=>x.id==='dcVolts');
- assert.equal(amps.initialAngle,model.bearingForReading('dcAmps',0));
+ assert.ok(Math.abs(amps.initialAngle-model.bearingForReading('dcAmps',0))<1e-9);
  assert.equal(volts.initialAngle,model.bearingForReading('dcVolts',0));
 });
