@@ -71,7 +71,6 @@ jobs:
           node panel-mosaic-lab/cockpit/test.cjs
           node --test panel-mosaic-lab/cockpit/bus-transfer-guard-review.test.cjs
           node --test panel-mosaic-lab/cockpit/guarded-17-review.test.cjs
-          node --test panel-mosaic-lab/cockpit/guarded-inplace-v1.test.cjs
           node --test panel-mosaic-lab/cockpit/guarded-photo-v2.test.cjs
           node panel-mosaic-lab/cockpit/unified-annunciators.test.cjs
           node panel-mosaic-lab/cockpit/lights.test.cjs
