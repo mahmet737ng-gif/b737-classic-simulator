@@ -7,7 +7,7 @@
 <rect width="768.750000" height="300" fill="#0c0b0c"/>
 <g transform="translate(0.000000 0)" data-fit="mip-native-ratio-no-letter-stretch">
 <g transform="translate(84.375000 0)" data-fit="uniform-translation-only">
-<g font-family="Arial, Liberation Sans, Helvetica, sans-serif" font-weight="700" text-anchor="middle" fill="#291a15" opacity=".47"><text x="300" y="135.000" font-size="111">ANTI SKID</text><text x="300" y="135.000" font-size="111">INOP</text></g>
+<g font-family="Arial, Liberation Sans, Helvetica, sans-serif" font-weight="700" text-anchor="middle" fill="#291a15" opacity=".47"><text x="300" y="135.000" font-size="111">ANTI SKID</text><text x="300" y="253.000" font-size="111">INOP</text></g>
 </g>
 </g>
 </svg>

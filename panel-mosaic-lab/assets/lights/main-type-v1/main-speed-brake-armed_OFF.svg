@@ -6,6 +6,6 @@
  </defs>
 <rect width="723.076923" height="300" fill="#0c0b0c"/>
 <g transform="translate(61.538462 0)" data-fit="mip-native-ratio-no-letter-stretch">
-<g font-family="Arial, Liberation Sans, Helvetica, sans-serif" font-weight="700" text-anchor="middle" fill="#13291b" opacity=".47"><text x="300" y="253.000" font-size="111">SPEED BRAKE</text><text x="300" y="135.000" font-size="75.1">ARMED</text></g>
+<g font-family="Arial, Liberation Sans, Helvetica, sans-serif" font-weight="700" text-anchor="middle" fill="#13291b" opacity=".47"><text x="300" y="135.000" font-size="75.1">SPEED BRAKE</text><text x="300" y="253.000" font-size="111">ARMED</text></g>
 </g>
 </svg>

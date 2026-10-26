@@ -6,8 +6,8 @@
  </defs>
 <rect width="600.000000" height="300" fill="#20080d"/>
 <g transform="translate(0.000000 0)" data-fit="mip-native-ratio-no-letter-stretch">
-<g font-family="Arial, Liberation Sans, Helvetica, sans-serif" font-weight="700" text-anchor="middle" fill="#f00b27" opacity="0.92" filter="url(#textGlow)"><text x="300" y="253.000" font-size="111">RIGHT</text><text x="300" y="253.000" font-size="111">GEAR</text></g>
-     <g font-family="Arial, Liberation Sans, Helvetica, sans-serif" font-weight="700" text-anchor="middle" fill="#ff333f" opacity="0.82" filter="url(#textSoft)"><text x="300" y="135.000" font-size="111">RIGHT</text><text x="300" y="135.000" font-size="111">GEAR</text></g>
-     <g font-family="Arial, Liberation Sans, Helvetica, sans-serif" font-weight="700" text-anchor="middle" fill="#ff7077"><text x="300" y="135.000" font-size="111">RIGHT</text><text x="300" y="135.000" font-size="111">GEAR</text></g>
+<g font-family="Arial, Liberation Sans, Helvetica, sans-serif" font-weight="700" text-anchor="middle" fill="#f00b27" opacity="0.92" filter="url(#textGlow)"><text x="300" y="135.000" font-size="111">RIGHT</text><text x="300" y="253.000" font-size="111">GEAR</text></g>
+     <g font-family="Arial, Liberation Sans, Helvetica, sans-serif" font-weight="700" text-anchor="middle" fill="#ff333f" opacity="0.82" filter="url(#textSoft)"><text x="300" y="135.000" font-size="111">RIGHT</text><text x="300" y="253.000" font-size="111">GEAR</text></g>
+     <g font-family="Arial, Liberation Sans, Helvetica, sans-serif" font-weight="700" text-anchor="middle" fill="#ff7077"><text x="300" y="135.000" font-size="111">RIGHT</text><text x="300" y="253.000" font-size="111">GEAR</text></g>
 </g>
 </svg>

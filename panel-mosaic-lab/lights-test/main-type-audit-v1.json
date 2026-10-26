@@ -164,7 +164,7 @@
       "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/REVERSER_UNLOCKED_OFF.svg",
       "sourceSha256": "b92b310d97303ba9f3c5d8b48534b706978586f14c8da90f3d1ebd32d6112f76",
       "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-reverser-1_OFF.svg",
-      "sha256": "25078bf515e7b860314e093f7cc4784eab6a6a381a767b1155b14ba79ddbb8f9",
+      "sha256": "57dae61d07107e79cdc6e1dcf59b80be5e5f366bcb8efc6d15fe79a1dbed9898",
       "legends": [
         "REVERSER",
         "UNLOCKED"
@@ -176,7 +176,7 @@
         83
       ],
       "targetSizes": [
-        111,
+        109.821,
         111
       ],
       "baselines": [
@@ -205,7 +205,7 @@
       "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/REVERSER_UNLOCKED_ON.svg",
       "sourceSha256": "fde16ef72e23d121baf130cbb5649daebc0f1cd9f6c338ce4c2877cbb708894a",
       "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-reverser-1_ON.svg",
-      "sha256": "460b167f356d79639d50b54ba6dad94ce3201aef3eeea478b50ad89faffab623",
+      "sha256": "334af488e7b1ca797b49eba060e8b9ac0dcc0fe89bedd2cab7c1bfca9a42b50a",
       "legends": [
         "REVERSER",
         "UNLOCKED"
@@ -217,7 +217,7 @@
         83
       ],
       "targetSizes": [
-        111,
+        109.821,
         111
       ],
       "baselines": [
@@ -246,7 +246,7 @@
       "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/REVERSER_UNLOCKED_OFF.svg",
       "sourceSha256": "b92b310d97303ba9f3c5d8b48534b706978586f14c8da90f3d1ebd32d6112f76",
       "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-reverser-2_OFF.svg",
-      "sha256": "25078bf515e7b860314e093f7cc4784eab6a6a381a767b1155b14ba79ddbb8f9",
+      "sha256": "57dae61d07107e79cdc6e1dcf59b80be5e5f366bcb8efc6d15fe79a1dbed9898",
       "legends": [
         "REVERSER",
         "UNLOCKED"
@@ -258,7 +258,7 @@
         83
       ],
       "targetSizes": [
-        111,
+        109.821,
         111
       ],
       "baselines": [
@@ -287,7 +287,7 @@
       "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/REVERSER_UNLOCKED_ON.svg",
       "sourceSha256": "fde16ef72e23d121baf130cbb5649daebc0f1cd9f6c338ce4c2877cbb708894a",
       "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-reverser-2_ON.svg",
-      "sha256": "460b167f356d79639d50b54ba6dad94ce3201aef3eeea478b50ad89faffab623",
+      "sha256": "334af488e7b1ca797b49eba060e8b9ac0dcc0fe89bedd2cab7c1bfca9a42b50a",
       "legends": [
         "REVERSER",
         "UNLOCKED"
@@ -299,7 +299,7 @@
         83
       ],
       "targetSizes": [
-        111,
+        109.821,
         111
       ],
       "baselines": [
@@ -328,7 +328,7 @@
       "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/START_VALVE_OPEN_OFF.svg",
       "sourceSha256": "5baf6d7345836f54f7474d2995a7b2e7eaf11a9dc2b9eac41d153bdeea2a7241",
       "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-start-valve-1_OFF.svg",
-      "sha256": "144133b854863034e9fc762192dae8ab181b904dc89dd9abc0731cba99d3e3d4",
+      "sha256": "d15eab933ea9fce1a1d95b031bc5d3074cd721b823ad4acdfd3bc1fd2f627661",
       "legends": [
         "START",
         "VALVE OPEN"
@@ -341,7 +341,7 @@
       ],
       "targetSizes": [
         111,
-        111
+        94.68
       ],
       "baselines": [
         135,
@@ -369,7 +369,7 @@
       "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/START_VALVE_OPEN_ON.svg",
       "sourceSha256": "41bcdaa9e230a0920f956a13fbe5d93b98570f9e3605fd79adedf48842d2b782",
       "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-start-valve-1_ON.svg",
-      "sha256": "72f0b2cf3d056562de346a26cc2f3e5a770461b21a2ef95748963784a35e5502",
+      "sha256": "bf9072b9e1e2f7f403695ecdd3488cafcbe62725f2d1b45444e7ca41d74c4da6",
       "legends": [
         "START",
         "VALVE OPEN"
@@ -382,7 +382,7 @@
       ],
       "targetSizes": [
         111,
-        111
+        94.68
       ],
       "baselines": [
         135,
@@ -410,7 +410,7 @@
       "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/START_VALVE_OPEN_OFF.svg",
       "sourceSha256": "5baf6d7345836f54f7474d2995a7b2e7eaf11a9dc2b9eac41d153bdeea2a7241",
       "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-start-valve-2_OFF.svg",
-      "sha256": "144133b854863034e9fc762192dae8ab181b904dc89dd9abc0731cba99d3e3d4",
+      "sha256": "d15eab933ea9fce1a1d95b031bc5d3074cd721b823ad4acdfd3bc1fd2f627661",
       "legends": [
         "START",
         "VALVE OPEN"
@@ -423,7 +423,7 @@
       ],
       "targetSizes": [
         111,
-        111
+        94.68
       ],
       "baselines": [
         135,
@@ -451,7 +451,7 @@
       "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/START_VALVE_OPEN_ON.svg",
       "sourceSha256": "41bcdaa9e230a0920f956a13fbe5d93b98570f9e3605fd79adedf48842d2b782",
       "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-start-valve-2_ON.svg",
-      "sha256": "72f0b2cf3d056562de346a26cc2f3e5a770461b21a2ef95748963784a35e5502",
+      "sha256": "bf9072b9e1e2f7f403695ecdd3488cafcbe62725f2d1b45444e7ca41d74c4da6",
       "legends": [
         "START",
         "VALVE OPEN"
@@ -464,7 +464,7 @@
       ],
       "targetSizes": [
         111,
-        111
+        94.68
       ],
       "baselines": [
         135,
@@ -492,7 +492,7 @@
       "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/LOW_OIL_PRESSURE_OFF.svg",
       "sourceSha256": "b156be091388345715a80b51bc15ccf5adf14bc6cf08a0654777c5ee93bbd767",
       "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-low-oil-1_OFF.svg",
-      "sha256": "077cb16cfd0d8b82e91b1a5314b3df0f456a3ee0bad996cd91ba8e928ef30979",
+      "sha256": "25390592ba977ae5744291a9b9d355890b0c2e7ac9ef4f0e743662171d181588",
       "legends": [
         "LOW OIL",
         "PRESSURE"
@@ -505,7 +505,7 @@
       ],
       "targetSizes": [
         111,
-        111
+        110.294
       ],
       "baselines": [
         135,
@@ -533,7 +533,7 @@
       "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/LOW_OIL_PRESSURE_ON.svg",
       "sourceSha256": "7df6b8da4f6107c9caa86d0b301db7322ca566cd3ba7725f2f2309c6e5e55acc",
       "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-low-oil-1_ON.svg",
-      "sha256": "38739258d1218a2ac1906b3cc4081c98c0dd760b021812520dec0d1ca14c42e2",
+      "sha256": "37263b76fdb85a264e544cf27da98431b862ba0a32cb76e61489ab659732a455",
       "legends": [
         "LOW OIL",
         "PRESSURE"
@@ -546,7 +546,7 @@
       ],
       "targetSizes": [
         111,
-        111
+        110.294
       ],
       "baselines": [
         135,
@@ -574,7 +574,7 @@
       "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/OIL_FILTER_BYPASS_OFF.svg",
       "sourceSha256": "a2638d4524638fda018d6efbbdd085bd339f9846c42c43001b5a26221039cf28",
       "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-oil-filter-1_OFF.svg",
-      "sha256": "537b7d78a4e5a8c6be11112cf9cc6b15e34f0775501247c3e86c2bc13c208357",
+      "sha256": "1351b2a02079a1eb7c950de9236412414675db438f519a12a6d4fafc1ff3cfaa",
       "legends": [
         "OIL FILTER",
         "BYPASS"
@@ -615,7 +615,7 @@
       "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/OIL_FILTER_BYPASS_ON.svg",
       "sourceSha256": "12761aee2968bda0dbd7cdd66b38fe24bbd28ade74a12e7ad8d871c5ddcbb504",
       "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-oil-filter-1_ON.svg",
-      "sha256": "278c17913f4a1296139f94f601676e0f1c0fa75c2527c9abc9d64fed184ee94a",
+      "sha256": "e07d351039784f965e6b63b2e48d9f9d816a688c1fcb626bf4714409b4435afe",
       "legends": [
         "OIL FILTER",
         "BYPASS"
@@ -656,7 +656,7 @@
       "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/LOW_OIL_PRESSURE_OFF.svg",
       "sourceSha256": "b156be091388345715a80b51bc15ccf5adf14bc6cf08a0654777c5ee93bbd767",
       "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-low-oil-2_OFF.svg",
-      "sha256": "077cb16cfd0d8b82e91b1a5314b3df0f456a3ee0bad996cd91ba8e928ef30979",
+      "sha256": "25390592ba977ae5744291a9b9d355890b0c2e7ac9ef4f0e743662171d181588",
       "legends": [
         "LOW OIL",
         "PRESSURE"
@@ -669,7 +669,7 @@
       ],
       "targetSizes": [
         111,
-        111
+        110.294
       ],
       "baselines": [
         135,
@@ -697,7 +697,7 @@
       "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/LOW_OIL_PRESSURE_ON.svg",
       "sourceSha256": "7df6b8da4f6107c9caa86d0b301db7322ca566cd3ba7725f2f2309c6e5e55acc",
       "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-low-oil-2_ON.svg",
-      "sha256": "38739258d1218a2ac1906b3cc4081c98c0dd760b021812520dec0d1ca14c42e2",
+      "sha256": "37263b76fdb85a264e544cf27da98431b862ba0a32cb76e61489ab659732a455",
       "legends": [
         "LOW OIL",
         "PRESSURE"
@@ -710,7 +710,7 @@
       ],
       "targetSizes": [
         111,
-        111
+        110.294
       ],
       "baselines": [
         135,
@@ -738,7 +738,7 @@
       "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/OIL_FILTER_BYPASS_OFF.svg",
       "sourceSha256": "a2638d4524638fda018d6efbbdd085bd339f9846c42c43001b5a26221039cf28",
       "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-oil-filter-2_OFF.svg",
-      "sha256": "537b7d78a4e5a8c6be11112cf9cc6b15e34f0775501247c3e86c2bc13c208357",
+      "sha256": "1351b2a02079a1eb7c950de9236412414675db438f519a12a6d4fafc1ff3cfaa",
       "legends": [
         "OIL FILTER",
         "BYPASS"
@@ -779,7 +779,7 @@
       "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/OIL_FILTER_BYPASS_ON.svg",
       "sourceSha256": "12761aee2968bda0dbd7cdd66b38fe24bbd28ade74a12e7ad8d871c5ddcbb504",
       "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-oil-filter-2_ON.svg",
-      "sha256": "278c17913f4a1296139f94f601676e0f1c0fa75c2527c9abc9d64fed184ee94a",
+      "sha256": "e07d351039784f965e6b63b2e48d9f9d816a688c1fcb626bf4714409b4435afe",
       "legends": [
         "OIL FILTER",
         "BYPASS"
@@ -820,7 +820,7 @@
       "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/ALTITUDE_ALERT_OFF.svg",
       "sourceSha256": "137ee664ff814782e644b14dbaf1658a71d76bf467bfe2381834a434ea74aafc",
       "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-altitude-captain_OFF.svg",
-      "sha256": "cee21759fc8d81bf35ce2be37bf20f2e81d5b3e9a732a563b4c4194e5c7e6382",
+      "sha256": "22cbefea4da5d68ba171d4da6c9ee40a78b319971fbc742353f430b764daf007",
       "legends": [
         "ALTITUDE",
         "ALERT"
@@ -861,7 +861,7 @@
       "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/ALTITUDE_ALERT_ON.svg",
       "sourceSha256": "88a960a22990726e91c0b0a46434451fd308b1e0a7e29cac7cc1927e78f0c7ff",
       "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-altitude-captain_ON.svg",
-      "sha256": "667f69443b09afdbfc95a83f6e410cf1b9cb038c08619d2531fca0a9539f7c96",
+      "sha256": "a9c16e2ca5a15bb0dd8c970c82c2dd4d3042221dd8b385fe54266d90d1a1f289",
       "legends": [
         "ALTITUDE",
         "ALERT"
@@ -902,7 +902,7 @@
       "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/ALTITUDE_ALERT_OFF.svg",
       "sourceSha256": "137ee664ff814782e644b14dbaf1658a71d76bf467bfe2381834a434ea74aafc",
       "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-altitude-fo_OFF.svg",
-      "sha256": "5fcc41c85af813ec3ee340c8f748a3ef1027a05a74c303c0598aee2b2e357bf6",
+      "sha256": "7cf1a9af19538b0209b56fe7787d49a84223de4f744a4fce49a8e9ba3872e958",
       "legends": [
         "ALTITUDE",
         "ALERT"
@@ -943,7 +943,7 @@
       "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/ALTITUDE_ALERT_ON.svg",
       "sourceSha256": "88a960a22990726e91c0b0a46434451fd308b1e0a7e29cac7cc1927e78f0c7ff",
       "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-altitude-fo_ON.svg",
-      "sha256": "d0feb5c2f7924e36c079fdd6ed8ab841a40f301082764e7b0ae40eaad856e732",
+      "sha256": "ae5758522dc6766b17e2f9302d016f743731235c79826958eddfcffc0d9e4b61",
       "legends": [
         "ALTITUDE",
         "ALERT"
@@ -1054,7 +1054,7 @@
       "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/BELOW_GS_P_INHIBIT_OFF.svg",
       "sourceSha256": "009065544f8370dada5fbee03aae68acab8c518e9316b57b38bdd5d5a75d041c",
       "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-below-gs-captain_OFF.svg",
-      "sha256": "e49e414f34b92f890c0f478eba71b947c975a3730d101fb3e15c26b2f6a24db3",
+      "sha256": "4a3705a497dbd6115ccc49e1eb7acc79f0fec3b3eedb3f08a0a852645f7619c4",
       "legends": [
         "BELOW G/S",
         "P-INHIBIT"
@@ -1095,7 +1095,7 @@
       "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/BELOW_GS_P_INHIBIT_ON.svg",
       "sourceSha256": "12a7459939c88381e9a257182a7704dacc3afd90ae2550124108ba0b8706a010",
       "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-below-gs-captain_ON.svg",
-      "sha256": "4327282bb094f38f36b46943c17ca3061dd51de3ffde19ae778bf428d65a5c57",
+      "sha256": "c29ffcccc56f7037e209c954c369d8c7936c2ed8d682c092738e60c47aec4123",
       "legends": [
         "BELOW G/S",
         "P-INHIBIT"
@@ -1247,7 +1247,7 @@
       "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/BELOW_GS_P_INHIBIT_ON.svg",
       "sourceSha256": "12a7459939c88381e9a257182a7704dacc3afd90ae2550124108ba0b8706a010",
       "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-below-gs-fo_ON.svg",
-      "sha256": "9fb7f62125d3f2a1a5f88bd6e2b7ab18cb9bd12d549af609920e499bbaf555e4",
+      "sha256": "130445e99c237af0ea82b23452cb29928eafae169fb50f9eaa6650bae0d61eda",
       "legends": [
         "BELOW G/S",
         "P-INHIBIT"
@@ -1288,7 +1288,7 @@
       "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/NOSE_GEAR_2LINE_RED_OFF.svg",
       "sourceSha256": "1d386cdc5a66d93f8cebdac0c4f9a269eb3b623245b5c14bc27c7e046334943e",
       "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-gear-nose-red_OFF.svg",
-      "sha256": "75b020fc66706ad1bd3309e140bb57bbc3ebdfc998fc39727a2c0786fc069d67",
+      "sha256": "f381fe7409041d8b7934cabd00211d8e0714dc73f6be379cf5a5b74e4e41f1c2",
       "legends": [
         "NOSE",
         "GEAR"
@@ -1329,7 +1329,7 @@
       "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/NOSE_GEAR_2LINE_RED_ON.svg",
       "sourceSha256": "9d3753e301a0e30a76180f2cc612cd8df1285f7c53ded53724462371cfebd3d4",
       "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-gear-nose-red_ON.svg",
-      "sha256": "b4e84d792065baeb69885706ab6a0ad2a6aee6069c28b940b1eee8e8a1cfb844",
+      "sha256": "e6426349986bd43a281b45714fed1577f06a464ba8f8c8384c3884d026c99bfd",
       "legends": [
         "NOSE",
         "GEAR"
@@ -1370,7 +1370,7 @@
       "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/NOSE_GEAR_2LINE_GREEN_OFF.svg",
       "sourceSha256": "5a9572c4f8808f0ddc48aa619c3a89842c7c33a06dfb00e7b992f734cec8f7ed",
       "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-gear-nose-green_OFF.svg",
-      "sha256": "eeff9f06d22a6d55c0adc65094f2f4c828cd398ec5629dd7fc46688baa862555",
+      "sha256": "af2d57cdfed4260b20529fb8b5dc19a5b6d781850018fc6743ffae28ace82ab3",
       "legends": [
         "NOSE",
         "GEAR"
@@ -1411,7 +1411,7 @@
       "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/NOSE_GEAR_2LINE_GREEN_ON.svg",
       "sourceSha256": "23d470748f5b6d4ef38ce9541d9bcea3fb5ea564fb0fdc0d4c173cc40950108c",
       "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-gear-nose-green_ON.svg",
-      "sha256": "18af8b147f46a2d9e22e3f02e677ad171b477a79434caaee39088213660afbf3",
+      "sha256": "d8bc40ab0199a90603d571627257f8d0af216cde3dd12a260081f5e2e98a5d5e",
       "legends": [
         "NOSE",
         "GEAR"
@@ -1493,7 +1493,7 @@
       "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/LEFT_GEAR_2LINE_RED_ON.svg",
       "sourceSha256": "91aabb8dc13689d93179e20f095a531e97ba6c152bb4880875637ec500fd2e5d",
       "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-gear-left-red_ON.svg",
-      "sha256": "f9d1612e5534dc4dda227b665ade9881ee7cc719032a722b3b26804f111311d2",
+      "sha256": "f4483c49eab235f5dd5641f6d602a588929666df67c16cf3cf6c21b8ce76addb",
       "legends": [
         "LEFT",
         "GEAR"
@@ -1575,7 +1575,7 @@
       "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/LEFT_GEAR_2LINE_GREEN_ON.svg",
       "sourceSha256": "74fbb50018f87d072f7f78b3ceb29cafb5f820dafb26be5c402afa5a6589813b",
       "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-gear-left-green_ON.svg",
-      "sha256": "d6b60a0d277ff12284dfde55894add0e8ad63305cfa086c2b1cef4628d4845fb",
+      "sha256": "8a6cd12cdd562af2c541305d5de83ff45c5696171cdaf6ea0d179df34dd0d033",
       "legends": [
         "LEFT",
         "GEAR"
@@ -1616,7 +1616,7 @@
       "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/RIGHT_GEAR_2LINE_RED_OFF.svg",
       "sourceSha256": "3070908aee7cfe157699a48f4359394dcc1429d58b0f3914aa7f9927ae431c8e",
       "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-gear-right-red_OFF.svg",
-      "sha256": "1c65760050b6b24af8c459fb901d531250d4c2c7b4f7732b40fbba0f5a73f38b",
+      "sha256": "b3192a5b809d1e3adbe55af37fa3ed53a8cbdd1fafb5cc9d05eb03eef17e6b0d",
       "legends": [
         "RIGHT",
         "GEAR"
@@ -1657,7 +1657,7 @@
       "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/RIGHT_GEAR_2LINE_RED_ON.svg",
       "sourceSha256": "4eb284b8c61e000e82bef1a8bf54eda77adeafe18d172c5fadf10985dafc6a5b",
       "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-gear-right-red_ON.svg",
-      "sha256": "dbcc6d63e11667f31bea78c34112f33747884fcb65a7d6d82d0cd00e3b37e376",
+      "sha256": "2523f3783c116fa36e4c88f097a0c35383758a2db643cb59ecc397a9a8dbe353",
       "legends": [
         "RIGHT",
         "GEAR"
@@ -1698,7 +1698,7 @@
       "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/RIGHT_GEAR_2LINE_GREEN_OFF.svg",
       "sourceSha256": "749b19105156b9663f9f0630222cd39f37c9016c35ba79401c1780fabfa05d31",
       "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-gear-right-green_OFF.svg",
-      "sha256": "16b2ad2dd7743e9c82b0f923bbe1e8b93a31d47a7a5447642ad94de3d1e9eaf7",
+      "sha256": "436679f913a44c62db37fc01e2011ae1908e975d0a9141a9980f5af07bfb333a",
       "legends": [
         "RIGHT",
         "GEAR"
@@ -1739,7 +1739,7 @@
       "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/RIGHT_GEAR_2LINE_GREEN_ON.svg",
       "sourceSha256": "61b3aeb2713b5d382fbc4bba46f6764d1e1ac8bed723bda2a512ef2940378020",
       "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-gear-right-green_ON.svg",
-      "sha256": "cfdd357bc3ef3d741467952f1c0e7850fbcc5e658be2f20adc9190f9edd06096",
+      "sha256": "fe72558ce086fe21e11738cdbbfc614e1f65295bd2a745d114f70a9951fee6dc",
       "legends": [
         "RIGHT",
         "GEAR"
@@ -1780,7 +1780,7 @@
       "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/LE_FLAPS_TRANSIT_OFF.svg",
       "sourceSha256": "bfff5f9739244486062ea69b59ccd61d6d03d5f5ef91a36ef65737aa106dde46",
       "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-le-transit_OFF.svg",
-      "sha256": "e250d6199cc360e440d7f512176c792299ac9eb1dc1f9f31b1f47c3e18e746b0",
+      "sha256": "02268222f5999e988465a7783fb76513c45673477e73b608fc465d319c7ad3af",
       "legends": [
         "LE FLAPS",
         "TRANSIT"
@@ -1821,7 +1821,7 @@
       "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/LE_FLAPS_TRANSIT_ON.svg",
       "sourceSha256": "782ec9d94def4f882f832ec1f30b6ca53c408be7a6e2bb0abe2c9008f62defe6",
       "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-le-transit_ON.svg",
-      "sha256": "ef14a5102190a45e8f34ef22888152be2cae1237d975846bbdd5bb31daa41908",
+      "sha256": "f62ead778eb1c8196ead79b69be55d91d62719781816efed81db4c61e9fc05b3",
       "legends": [
         "LE FLAPS",
         "TRANSIT"
@@ -1862,7 +1862,7 @@
       "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/LE_FLAPS_EXT_GREEN_OFF.svg",
       "sourceSha256": "09c27ba5f1f0c73f81c3e4852e9be01caca9857d1581bbc5394dd800b65b7de8",
       "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-le-extended_OFF.svg",
-      "sha256": "b6777c3c6b3bd68b8087af2d86b6feee46e4dccb1cdb9c2fd9e8eb685578798d",
+      "sha256": "72835244ec3b06bc312370e9f1df385f693b3ba84d7c1ff10dff1690c4fdb4d3",
       "legends": [
         "LE FLAPS",
         "EXT"
@@ -1903,7 +1903,7 @@
       "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/LE_FLAPS_EXT_GREEN_ON.svg",
       "sourceSha256": "7498f28c304578d4eb7a18b161b0d68833c830da8c4eeffe4e8add22dca75cdf",
       "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-le-extended_ON.svg",
-      "sha256": "7dc819929fd4662ec34b8b483c9ed815fbb7cc0e69812415ccee30ef182ed6fc",
+      "sha256": "cae7f0ef27876654fa05dc6db750518f3f538852ebdfc0d6c4af10272f48df95",
       "legends": [
         "LE FLAPS",
         "EXT"
@@ -1944,7 +1944,7 @@
       "source": "panel-mosaic-lab/assets/lights/readability-v1/main-antiskid_OFF.svg",
       "sourceSha256": "ff74f1df982e6c6dec5f21a606e9a785466c9bcb7a6b02920697f19223d69df7",
       "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-antiskid_OFF.svg",
-      "sha256": "419893655fda1f902694e418931a2d88b6538b37120e970e8af32b84c5d1163c",
+      "sha256": "a000ec65c442f1774c0b94bbf9a8ef20093151ee42a8b77ab0cfefab57d2bb0b",
       "legends": [
         "ANTI SKID",
         "INOP"
@@ -1985,7 +1985,7 @@
       "source": "panel-mosaic-lab/assets/lights/readability-v1/main-antiskid_ON.svg",
       "sourceSha256": "031a1861da3616b42cb2b34edd322a46c95fa8de38b496157f6644325a6992f8",
       "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-antiskid_ON.svg",
-      "sha256": "3131c67aec30b3b9bb69e0af0d011499339636b341bc96f1d41791f97bc1fcfa",
+      "sha256": "5b57bf1f64692162130429fb9fa66c404ab81d84b9423176871ebee9019b49a2",
       "legends": [
         "ANTI SKID",
         "INOP"
@@ -2026,7 +2026,7 @@
       "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/AUTO_BRAKE_DISARM_OFF.svg",
       "sourceSha256": "e38cc68682a5df2de64ecaf56b1eb900c303e6e4500352b05c66decf57516b53",
       "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-autobrake_OFF.svg",
-      "sha256": "a30cc913f8b5da1d3260e801207d1245363868513fe195f8e53c9e2faf81d137",
+      "sha256": "ff0ab9a0226f47fe05e6fb8e8f69da2e0d17d0f235878ffd901dd005c43ad1a5",
       "legends": [
         "AUTO BRAKE",
         "DISARM"
@@ -2039,7 +2039,7 @@
       ],
       "targetSizes": [
         63.851,
-        63.851
+        111
       ],
       "baselines": [
         135,
@@ -2067,7 +2067,7 @@
       "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/AUTO_BRAKE_DISARM_ON.svg",
       "sourceSha256": "e062d61c26b4fe2d546615c59295b0456ba62b6831c2a98272c45abae22cbdf6",
       "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-autobrake_ON.svg",
-      "sha256": "6887d1fcb9462ea32a78b5b0c8ecf228ec97341b6a5359b48cd95cc3c920b6a1",
+      "sha256": "7a52677303afb787a33d72dfba30f1afc310574f0ee1e62a042324da64f1ba9d",
       "legends": [
         "AUTO BRAKE",
         "DISARM"
@@ -2080,7 +2080,7 @@
       ],
       "targetSizes": [
         63.851,
-        63.851
+        111
       ],
       "baselines": [
         135,
@@ -2108,7 +2108,7 @@
       "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/BRAKE_TEMP_OFF.svg",
       "sourceSha256": "a7280753feac47e6890e55f515dd9f288666ac361a283d8fe4141807a6e5d306",
       "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-brake-temp_OFF.svg",
-      "sha256": "3db2b50bfe6257fad14d72867e75196e353a7c34c68d4c5270f5a38d3b2280b5",
+      "sha256": "d42fe609572dd82fe06447b4dc94f024d613e0f60298f048991cea02e146639d",
       "legends": [
         "BRAKE",
         "TEMP"
@@ -2149,7 +2149,7 @@
       "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/BRAKE_TEMP_ON.svg",
       "sourceSha256": "87318cd16515eebd6dc0b5ee20318b7ee0921f5edabd7c385db8433a2eca051d",
       "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-brake-temp_ON.svg",
-      "sha256": "f971ca2cf317bd7caa13c137f3661f4e9524c36690b49062d9d966871c161c77",
+      "sha256": "9510e0e5675c189f049744a9d308483fc12b1f57310fbcaa3b79b15b6bcd6c84",
       "legends": [
         "BRAKE",
         "TEMP"
@@ -2190,7 +2190,7 @@
       "source": "panel-mosaic-lab/assets/lights/readability-v1/main-stab-trim_OFF.svg",
       "sourceSha256": "7387e3249f5c360cda36760c1d9caa5a51d9a7675c8d48e1368cf35f037f710c",
       "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-stab-trim_OFF.svg",
-      "sha256": "50661bc51f34bb52ebe93c7f208dc517f75bbeed1573249b5de7b12eeb7aa89f",
+      "sha256": "09522a2e826d81742561440d7c30cd0f6b0f5e5dbf876bc664d4349e7ab1fdbe",
       "legends": [
         "STAB",
         "OUT OF",
@@ -2235,7 +2235,7 @@
       "source": "panel-mosaic-lab/assets/lights/readability-v1/main-stab-trim_ON.svg",
       "sourceSha256": "67f1b088a2f548e1b98c39c7002f9dc2469dbada7923e28075aeb64a652b61b4",
       "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-stab-trim_ON.svg",
-      "sha256": "670f9fab4f43517c5bd9ac375fe56941eae680899d6c88026138948260876dc4",
+      "sha256": "1155296b4ded9ba1aa70df2e25ac6cac25894073f16e0c943ac9e42ded02099f",
       "legends": [
         "STAB",
         "OUT OF",
@@ -2321,7 +2321,7 @@
       "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/SPEED_BRAKE_DO_NOT_ARMED_AMBER_ON.svg",
       "sourceSha256": "eb20faf86c7e506c93cd6a0bc1d5e6d25b5815f0e360938a841dd68971714e8c",
       "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-speed-brake-do-not-arm_ON.svg",
-      "sha256": "7abf654aaef0c6abed6dac8780d9e25f462b73e3bc2c961c62e56e44757d12ee",
+      "sha256": "8ee4a0d58285c2d4897826fbf560e5fbe4d436e02bf8686008c6b243c29d9551",
       "legends": [
         "SPEED BRAKE",
         "DO NOT ARMED"
@@ -2362,7 +2362,7 @@
       "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/SPEED_BRAKE_ARMED_GREEN_OFF.svg",
       "sourceSha256": "8115a31c2bbbf7d2402d058acef39ede22e9ee53ddb7ba4282134ebc11779634",
       "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-speed-brake-armed_OFF.svg",
-      "sha256": "038381d38982fa90574560c9b44a1cb4a30234fe211c24a005322b5edcf14ddd",
+      "sha256": "78e380db0abaeb30298c61dae7c2a925c94875ee2dded17f3553852e3f0caae9",
       "legends": [
         "SPEED BRAKE",
         "ARMED"
@@ -2374,8 +2374,8 @@
         110
       ],
       "targetSizes": [
-        111,
-        75.1
+        75.1,
+        111
       ],
       "baselines": [
         135,
@@ -2403,7 +2403,7 @@
       "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/SPEED_BRAKE_ARMED_GREEN_ON.svg",
       "sourceSha256": "f1f46f554eb5173a9434c72ae81253a9ef249a6c6a10c0f3e980b4596b634267",
       "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-speed-brake-armed_ON.svg",
-      "sha256": "857aed7af6a01c84e7fc20a8791a8b574289e9e0b5b194fb60ba852608a3ffec",
+      "sha256": "3406d31654b50a36229feacd8177e24f5f6f8a544edd46cc79dd1cd2f6c82d0f",
       "legends": [
         "SPEED BRAKE",
         "ARMED"
@@ -2415,8 +2415,8 @@
         110
       ],
       "targetSizes": [
-        111,
-        75.1
+        75.1,
+        111
       ],
       "baselines": [
         135,
@@ -2509,5 +2509,5 @@
     "PULL_UP_RED is optically preserved because previously accepted"
   ],
   "humanVisualSignoff": "PENDING_REAL_100_75_50_BROWSER_SCREENSHOT_COMPARE",
-  "revision": "MIP-TYPE-0002"
+  "revision": "MIP-TYPE-0003"
 }

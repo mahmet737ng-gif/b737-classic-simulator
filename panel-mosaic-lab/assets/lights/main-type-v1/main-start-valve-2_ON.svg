@@ -6,8 +6,8 @@
  </defs>
 <rect width="702.857143" height="300" fill="#260f09"/>
 <g transform="translate(51.428571 0)" data-fit="mip-native-ratio-no-letter-stretch">
-<g font-family="Arial, Liberation Sans, Helvetica, sans-serif" font-weight="700" text-anchor="middle" fill="#ff5b09" opacity="0.92" filter="url(#textGlow)"><text x="300" y="135.000" font-size="111">START</text><text x="300" y="135.000" font-size="111">VALVE OPEN</text></g>
-     <g font-family="Arial, Liberation Sans, Helvetica, sans-serif" font-weight="700" text-anchor="middle" fill="#ff990f" opacity="0.82" filter="url(#textSoft)"><text x="300" y="135.000" font-size="111">START</text><text x="300" y="135.000" font-size="111">VALVE OPEN</text></g>
-     <g font-family="Arial, Liberation Sans, Helvetica, sans-serif" font-weight="700" text-anchor="middle" fill="#ffda68"><text x="300" y="253.000" font-size="94.68">START</text><text x="300" y="253.000" font-size="94.68">VALVE OPEN</text></g>
+<g font-family="Arial, Liberation Sans, Helvetica, sans-serif" font-weight="700" text-anchor="middle" fill="#ff5b09" opacity="0.92" filter="url(#textGlow)"><text x="300" y="135.000" font-size="111">START</text><text x="300" y="253.000" font-size="94.68">VALVE OPEN</text></g>
+     <g font-family="Arial, Liberation Sans, Helvetica, sans-serif" font-weight="700" text-anchor="middle" fill="#ff990f" opacity="0.82" filter="url(#textSoft)"><text x="300" y="135.000" font-size="111">START</text><text x="300" y="253.000" font-size="94.68">VALVE OPEN</text></g>
+     <g font-family="Arial, Liberation Sans, Helvetica, sans-serif" font-weight="700" text-anchor="middle" fill="#ffda68"><text x="300" y="135.000" font-size="111">START</text><text x="300" y="253.000" font-size="94.68">VALVE OPEN</text></g>
 </g>
 </svg>

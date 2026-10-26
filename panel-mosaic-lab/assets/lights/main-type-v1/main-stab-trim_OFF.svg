@@ -7,7 +7,7 @@
 <rect width="447.457627" height="300" fill="#050505"/>
 <g transform="translate(0.000000 0)" data-fit="mip-native-ratio-no-letter-stretch">
 <g transform="translate(73.728814 0)" data-fit="uniform-translation-only">
-<g font-family="Arial, Liberation Sans, Helvetica, sans-serif" font-weight="700" text-anchor="middle" fill="#28210d" opacity=".47"><text x="150" y="281.000" font-size="105">STAB</text><text x="150" y="99.000" font-size="105">OUT OF</text><text x="150" y="281.000" font-size="105">TRIM</text></g>
+<g font-family="Arial, Liberation Sans, Helvetica, sans-serif" font-weight="700" text-anchor="middle" fill="#28210d" opacity=".47"><text x="150" y="99.000" font-size="105">STAB</text><text x="150" y="190.000" font-size="105">OUT OF</text><text x="150" y="281.000" font-size="105">TRIM</text></g>
 </g>
 </g>
 </svg>
