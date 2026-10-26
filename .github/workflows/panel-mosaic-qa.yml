@@ -35,3 +35,4 @@ jobs:
           node --check panel-mosaic-lab/cockpit/pressurization-oh22-diagnostics.js
           node --check panel-mosaic-lab/cockpit/pressurization-oh22-diagnostic-ui.js
           node panel-mosaic-lab/cockpit/pressurization-oh22-diagnostics.test.cjs
+          node panel-mosaic-lab/cockpit/pressurization-oh22-cpcs-fixes.test.cjs
