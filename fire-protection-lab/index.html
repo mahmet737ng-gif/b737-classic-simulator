@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>B737 Classic | Fire Protection Panel</title>
+<style>
+:root{color-scheme:dark;--bg:#0b1118;--panel:#17232e;--border:#365061;--text:#eef5fb;--muted:#a6b8c4;--cyan:#80d2df}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -20%,#253a45,#0b1118 60%);font:14px/1.65 system-ui,Tahoma,sans-serif;color:var(--text)}
+header{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:19px max(18px,calc((100vw - 1470px)/2));border-bottom:1px solid var(--border);background:#15212ac7}
+header h1{margin:0;font-size:23px;direction:ltr}header p{margin:2px 0 0;color:var(--muted);font-size:12px}
+header a{color:#9fe9ec}.status{padding:4px 11px;border:1px solid #496675;border-radius:6px;font:12px Consolas,monospace;color:#acdfe6;direction:ltr}
+main{max-width:1500px;margin:auto;padding:18px;display:grid;grid-template-columns:minmax(0,1fr) 352px;gap:18px;align-items:start}
+.viewer,.control-panel,.bottom{background:#14212c;border:1px solid var(--border);border-radius:12px;padding:14px;box-shadow:0 18px 45px #0003}
+.row{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center}
+h2{font-size:16px;margin:0 0 12px}.small{font-size:11px;color:var(--muted)}
+.board-wrap{background:#080d11;border:1px solid #45535e;padding:8px;border-radius:10px;max-width:100%;overflow:auto}
+#board{position:relative;direction:ltr;max-width:100%;margin:auto;min-height:320px}#base{display:block;width:100%;height:auto;user-select:none;pointer-events:none}
+.asset{position:absolute;translate:-50% -50%;border:1px solid transparent;display:grid;place-items:center;touch-action:none;z-index:2;user-select:none;transition:filter 180ms}
+.asset img{display:block;max-height:100%;width:100%;object-fit:contain;pointer-events:none}
+.asset.handle{width:13%;height:28%;z-index:3;cursor:pointer}.asset.handle img{width:100%;height:100%}
+.asset.lamp{width:13%;height:9%;cursor:default}.asset.lamp img{width:100%;height:100%}
+.asset.placeholder{background:#131619;color:#eac88c;border:1px solid #9e8152;font:bold 10px/1.2 Consolas,monospace;min-width:80px;padding:4px;text-align:center;border-radius:3px}
+.asset.placeholder.on{background:#71521f;color:#ffdd83;box-shadow:0 0 14px #ffe39977}
+#board.edit .asset{outline:1px dashed #85d6e3;cursor:grab;background:#1b384744}#board.edit .asset:active{cursor:grabbing}
+.asset.selected{outline:2px solid #ffe69e!important}
+.legend{margin-top:10px;display:flex;flex-wrap:wrap;gap:7px}.legend span{font:11px/1.4 Consolas,monospace;border:1px solid #3e5665;border-radius:5px;padding:5px 7px}
+button,select{background:#243744;color:#f2fafb;border:1px solid #567484;border-radius:6px;padding:8px 10px;font:600 12px/1.4 Tahoma,system-ui,sans-serif;cursor:pointer;min-height:34px}
+button:hover{background:#355361}button:focus-visible,select:focus-visible{outline:2px solid #f2d28b;outline-offset:2px}
+button[aria-pressed=true]{border-color:#8ce1e7;background:#135b70}button.danger{border-color:#ba7265;color:#ffe1d8}button.reset{border-color:#e5b46b}
+.group{border-top:1px solid #3a5260;margin-top:13px;padding-top:12px}.group h3{font-size:13px;margin:0 0 9px;color:#d7e5eb}
+.group .buttons{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}.group .buttons button{flex:1;min-width:55px}
+label{font-size:12px;color:#bfd0db}.checks{display:grid;grid-template-columns:1fr 1fr;gap:6px}.checks label{display:flex;gap:5px;align-items:center;border:1px solid #304a58;border-radius:5px;padding:4px 5px}.checks input{accent-color:#70bdd0}
+.handle-controls{border:1px solid #395563;border-radius:8px;padding:8px;margin-bottom:9px}.handle-controls strong{direction:ltr;display:inline-block;color:#f2e8e0}
+.handle-controls .note{font:11px Consolas,monospace;color:#9cbdc5;direction:ltr}
+#log{font:12px/1.5 Consolas,monospace;direction:ltr;white-space:pre-wrap;word-break:break-word;background:#08121b;padding:10px;border:1px solid #334d57;border-radius:6px;max-height:135px;overflow:auto}
+.indicators{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.indicator{font:11px/1.4 Consolas,monospace;direction:ltr;text-align:center;padding:6px 3px;background:#111b22;border:1px solid #344a55;border-radius:5px;color:#768994}
+.indicator.on.red{color:#ffaaa2;background:#4d1719;border-color:#f96555}.indicator.on.amber{color:#ffe6a8;background:#62441c;border-color:#ebbc62}.indicator.on.green{color:#b0ffd6;background:#164b38;border-color:#73ca9b}
+.bottom{grid-column:1/-1}.bottom p{font-size:12px;color:#b7cad4;margin:4px 0}
+#message{font:12px Consolas,monospace;direction:ltr;color:#d0eac3}
+@media(max-width:1060px){main{grid-template-columns:1fr}.control-panel{grid-row:2}.bottom{grid-row:3}}
+@media(max-width:650px){.viewer,.control-panel,.bottom{padding:10px}.asset.lamp{width:16%}.asset.handle{width:17%}}
+</style>
+</head>
+<body>
+<header>
+<div><h1>B737 CLASSIC · FIRE PROTECTION</h1><p>پنل آزمایشی مستقل با تصاویر اصلی دیتابیس، تست خرابی‌ها، حلقه‌های تشخیص و هندل‌های اطفای حریق</p></div>
+<div class="row"><a href="../fire-handle-lab/" target="_blank" rel="noopener">Fire Handle Lab</a><span class="status">FCOM 8.10 · PREVIEW V1</span></div>
+</header>
+<main>
+<section class="viewer">
+<div class="row"><h2>تصویر پایه و لایه‌های دینامیک</h2><div class="row"><button id="edit" aria-pressed="false">تنظیم موقعیت تصاویر</button><button id="layout-reset">بازنشانی چیدمان</button></div></div>
+<div class="board-wrap"><div id="board"><img id="base" src="../panel-mosaic-lab/assets/locked/2026-10-23/Fire_Protection_Panel_Blank_With_Buttons.png" alt="Approved Fire Protection blank cockpit background"><div id="overlays"></div></div></div>
+<p class="small">موقعیت‌های اولیه هنوز تأیید پیکسلی نشده‌اند. دکمه «تنظیم موقعیت تصاویر» را فعال کنید و چراغ‌ها/هندل‌ها را جابه‌جا کنید. این تغییر فقط در مرورگر شما ذخیره می‌شود؛ تصاویر قفل‌شده دست‌نخورده می‌مانند.</p>
+<div class="legend"><span>RED · Fire / Wheel Well</span><span>AMBER · OVHT / Fault / Bottle</span><span>GREEN · EXT circuit tests</span></div>
+<div class="group"><h3>خروجی‌های سیستم و هشدار</h3><div id="indicators" class="indicators"></div></div>
+</section>
+<aside class="control-panel">
+<div class="row"><h2>Fire Protection · Test Bench</h2><button id="reset" class="reset">RESET ALL</button></div>
+<div class="group">
+<h3>Overheat Detector Selector</h3><div class="buttons" id="loop-controls"><button data-selector="A">A</button><button data-selector="NORMAL">NORMAL</button><button data-selector="B">B</button></div>
+<h3>Spring-loaded Tests</h3><div class="buttons" id="tests"><button data-test="EXT_1">EXT 1</button><button data-test="EXT_2">EXT 2</button><button data-test="FAULT_INOP">FAULT/INOP</button><button data-test="OVHT_FIRE">OVHT/FIRE</button></div>
+<button id="cutout">FIRE WARN · BELL CUTOUT</button>
+</div>
+<div class="group"><h3>Inject Fault / Fire</h3><div id="scenario-checks" class="checks"></div></div>
+<div class="group"><h3>Detector Loop Integrity</h3><div id="integrity-checks" class="checks"></div></div>
+<div class="group"><h3>Extinguishing Handles</h3><div id="handles"></div></div>
+<div class="group"><h3>Event / Interlock feedback</h3><div id="message">Ready</div><pre id="log">READY · cold & dark indications</pre></div>
+</aside>
+<section class="bottom">
+<h2>محدوده اعتبار نسخه</h2>
+<p>منطق نمایشی بر اساس FCOM فصل ۸، صفحات چاپی 8.10.1 تا 8.10.4 است. تصاویر واقعی ENG 1/2 OVERHEAT، FAULT، APU DET INOP، BOTTLE DISCHARGED، WHEEL WELL و هندل‌های FIRE مستقیماً از دیتابیس مخزن بارگذاری می‌شوند. چراغ APU BOTTLE DISCHARGED و چراغ‌های سبز EXT TEST تا تأیید تصویر اختصاصی به صورت متنی/رنگی نمایش داده می‌شوند.</p>
+<p>خروجی قطع سوخت، هیدرولیک، Bleed و Generator در وضعیت شبیه‌ساز این آزمایشگاه محاسبه می‌شود، اما هنوز به موتورهای اصلی هواپیما متصل نشده است. این صفحه جایگزین بازبینی تصویری، استانداردهای ایمنی یا اعتبارسنجی عملکرد هواپیمای واقعی نیست.</p>
+</section>
+</main>
+<script src="./engine.js"></script>
+<script>
+(function(){
+'use strict';
+const api=window.B737FireProtection,e=api.createEngine(),root='../panel-mosaic-lab/assets/locked/2026-10-23/';
+const lampBase=root+'LIGHTS/black-amber-v1/mounted/',normalLights=root+'LIGHTS/';
+const handleBase=root;
+const lamps=[
+ ['ENG1_OVERHEAT','ENG_1_OVERHEAT',20,19],
+ ['ENG2_OVERHEAT','ENG_2_OVERHEAT',80,19],
+ ['FAULT','FAULT',50,12],
+ ['APU_DET_INOP','APU_DET_INOP',50,81],
+ ['L_BOTTLE_DISCHARGED','L_BOTTLE_DISCHARGED',20,78],
+ ['R_BOTTLE_DISCHARGED','R_BOTTLE_DISCHARGED',80,78],
+ ['WHEEL_WELL','WHEEL_WELL_RED',50,27],
+ ['APU_BOTTLE_DISCHARGED',null,50,90]
+];
+const handles=[['ENG1',21,50],['APU',50,50],['ENG2',79,50]];
+const allPositions={};[...lamps.map(x=>[x[0],x[2],x[3]]),...handles.map(x=>['HANDLE_'+x[0],x[1],x[2]])].forEach(x=>allPositions[x[0]]={x:x[1],y:x[2]});
+const layoutsKey='b737.fireProtection.preview.layout.v1';let positions={...allPositions};
+try{const p=JSON.parse(localStorage.getItem(layoutsKey));if(p&&typeof p==='object')for(const [id,pt] of Object.entries(p)){if(allPositions[id]&&Number.isFinite(pt.x)&&Number.isFinite(pt.y))positions[id]={x:pt.x,y:pt.y};}}catch(_){}
+const board=document.getElementById('board'),overlays=document.getElementById('overlays');
+let edit=false,selected=null;const nodes={};
+function addAsset(id,className,title){
+ const el=document.createElement('div');el.className='asset '+className;el.dataset.id=id;el.title=title||id;el.setAttribute('role','img');el.setAttribute('aria-label',title||id);
+ overlays.appendChild(el);nodes[id]=el;move(id);
+ el.addEventListener('pointerdown',ev=>{
+  if(!edit)return;ev.preventDefault();ev.stopPropagation();selected=id;el.classList.add('selected');el.setPointerCapture(ev.pointerId);
+ });
+ el.addEventListener('pointermove',ev=>{
+  if(!edit||selected!==id||!el.hasPointerCapture(ev.pointerId))return;
+  const rect=board.getBoundingClientRect();
+  positions[id]={x:Math.max(0,Math.min(100,((ev.clientX-rect.left)/rect.width)*100)),y:Math.max(0,Math.min(100,((ev.clientY-rect.top)/rect.height)*100))};
+  move(id);
+ });
+ function stop(){if(selected===id){selected=null;el.classList.remove('selected');try{localStorage.setItem(layoutsKey,JSON.stringify(positions));}catch(_){}}}
+ el.addEventListener('pointerup',stop);el.addEventListener('pointercancel',stop);
+ return el;
+}
+function move(id){if(!nodes[id])return;nodes[id].style.left=positions[id].x+'%';nodes[id].style.top=positions[id].y+'%';}
+for(const [id,name] of lamps){
+ const el=addAsset(id,name?'lamp':'lamp placeholder',id);if(name){const img=document.createElement('img');img.alt=id;el.appendChild(img);}
+ else el.textContent='APU BOTTLE\nDISCHARGED';
+}
+for(const [unit] of handles){
+ const el=addAsset('HANDLE_'+unit,'handle','FIRE HANDLE '+unit);const img=document.createElement('img');img.alt='Approved '+unit+' fire handle';el.appendChild(img);
+}
+const scenarios=[
+ ['ENG1_FIRE','ENG 1 FIRE'],['ENG2_FIRE','ENG 2 FIRE'],['APU_FIRE','APU FIRE'],['WHEEL_FIRE','WHEEL WELL FIRE'],
+ ['ENG1_OVERHEAT','ENG 1 OVERHEAT'],['ENG2_OVERHEAT','ENG 2 OVERHEAT'],
+ ['L_BOTTLE_LOW','LEFT BOTTLE LOW'],['R_BOTTLE_LOW','RIGHT BOTTLE LOW'],['APU_BOTTLE_LOW','APU BOTTLE LOW']
+];
+const checks=document.getElementById('scenario-checks');
+for(const [id,label] of scenarios){
+ const tag=document.createElement('label');const input=document.createElement('input');input.type='checkbox';input.dataset.scenario=id;
+ const t=document.createElement('span');t.textContent=label;tag.append(input,t);checks.appendChild(tag);
+ input.addEventListener('change',()=>{const parts=id.split('_');if(id==='WHEEL_FIRE')send({type:'SET_WHEEL_FIRE',active:input.checked});else if(id.endsWith('BOTTLE_LOW'))send({type:'SET_BOTTLE_LOW',bottle:parts[0],active:input.checked});else send({type:id.endsWith('OVERHEAT')?'SET_OVERHEAT':'SET_FIRE',unit:parts[0],active:input.checked});});
+}
+const integrity=document.getElementById('integrity-checks');
+for(const [id,label,makeCommand] of [
+ ['ENG1_A','ENG 1 LOOP A',x=>({type:'SET_LOOP',unit:'ENG1',loop:'A',healthy:x})],
+ ['ENG1_B','ENG 1 LOOP B',x=>({type:'SET_LOOP',unit:'ENG1',loop:'B',healthy:x})],
+ ['ENG2_A','ENG 2 LOOP A',x=>({type:'SET_LOOP',unit:'ENG2',loop:'A',healthy:x})],
+ ['ENG2_B','ENG 2 LOOP B',x=>({type:'SET_LOOP',unit:'ENG2',loop:'B',healthy:x})],
+ ['APU','APU DETECTOR',x=>({type:'SET_APU_DETECTOR',healthy:x})],
+ ['CIR_L','L BOTTLE CIRCUIT',x=>({type:'SET_CIRCUIT',bottle:'L',healthy:x})],
+ ['CIR_R','R BOTTLE CIRCUIT',x=>({type:'SET_CIRCUIT',bottle:'R',healthy:x})],
+ ['CIR_APU','APU BOTTLE CIRCUIT',x=>({type:'SET_CIRCUIT',bottle:'APU',healthy:x})]
+ ]){
+ const tag=document.createElement('label'),input=document.createElement('input');input.type='checkbox';input.checked=true;input.dataset.health=id;
+ const span=document.createElement('span');span.textContent=label;tag.append(input,span);integrity.appendChild(tag);input.addEventListener('change',()=>send(makeCommand(input.checked)));
+}
+const handleControls=document.getElementById('handles');
+for(const unit of api.UNITS){
+ const el=document.createElement('div');el.className='handle-controls';el.dataset.unit=unit;
+ const h=document.createElement('div');const strong=document.createElement('strong');strong.textContent=unit;const note=document.createElement('span');note.className='note';h.append(strong,' · ',note);
+ const buttons=document.createElement('div');buttons.className='buttons';
+ const defs=[['OVERRIDE','LOCK OVERRIDE'],['PULL','PULL / RETURN'],['LEFT','↶ −45°'],['CENTER','0°'],['RIGHT','+45° ↷']];
+ for(const [action,label] of defs){const b=document.createElement('button');b.type='button';b.dataset.unit=unit;b.dataset.handleAction=action;b.textContent=label;buttons.appendChild(b);}
+ el.append(h,buttons);handleControls.appendChild(el);
+}
+const indicatorNames=[
+ ['MASTER_FIRE_WARN','RED'],['FIRE_BELL','RED'],['MASTER_CAUTION','AMBER'],['OVHT_DET','AMBER'],
+ ['ENG1_FIRE','RED'],['ENG2_FIRE','RED'],['APU_FIRE','RED'],['WHEEL_WELL','RED'],
+ ['ENG1_OVERHEAT','AMBER'],['ENG2_OVERHEAT','AMBER'],['FAULT','AMBER'],['APU_DET_INOP','AMBER'],
+ ['L_BOTTLE_DISCHARGED','AMBER'],['R_BOTTLE_DISCHARGED','AMBER'],['APU_BOTTLE_DISCHARGED','AMBER'],
+ ['EXT_L','GREEN'],['EXT_R','GREEN'],['EXT_APU','GREEN']
+];
+for(const [name,color] of indicatorNames){const el=document.createElement('span');el.className='indicator '+color.toLowerCase();el.id='ind-'+name;el.textContent=name.replaceAll('_',' ');document.getElementById('indicators').appendChild(el);}
+function assetUrl(id,state){
+ if(id==='WHEEL_WELL')return normalLights+'WHEEL_WELL_RED_'+(state?'ON':'OFF')+'.svg';
+ const entry=lamps.find(x=>x[0]===id);return lampBase+entry[1]+'_'+(state?'ON':'OFF')+'.svg';
+}
+function render(){
+ const s=e.getState(),d=e.evaluate(),ind=d.indications;
+ for(const [id,name] of lamps){const el=nodes[id],on=Boolean(ind[id]);el.classList.toggle('on',on);if(name)el.querySelector('img').src=assetUrl(id,on);}
+ for(const [unit] of handles){const el=nodes['HANDLE_'+unit],st=s.handles[unit],on=Boolean(ind[unit+'_FIRE']);
+ el.querySelector('img').src=handleBase+'FIRE_HANDEL_'+unit+'_'+(on?'ON':'OFF')+'.webp';
+ el.style.rotate=st.angle+'deg';el.title=unit+' · '+(st.pulled?'PULLED':'IN')+' · '+st.angle+'°';}
+ for(const [id] of indicatorNames)document.getElementById('ind-'+id).classList.toggle('on',Boolean(ind[id]));
+ document.querySelectorAll('[data-selector]').forEach(b=>b.setAttribute('aria-pressed',String(s.selector===b.dataset.selector)));
+ document.querySelectorAll('[data-test]').forEach(b=>b.setAttribute('aria-pressed',String(s.test===b.dataset.test)));
+ document.querySelectorAll('.handle-controls').forEach(el=>{
+  const unit=el.dataset.unit,st=s.handles[unit];
+  el.querySelector('.note').textContent=(st.pulled?'PULLED':'LOCKED / IN')+' · '+st.angle+'°'+(st.override?' · OVERRIDE':'');
+  el.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(
+   b.dataset.handleAction==='OVERRIDE'?st.override:b.dataset.handleAction==='PULL'?st.pulled:
+   b.dataset.handleAction==='LEFT'?st.angle===-45:b.dataset.handleAction==='RIGHT'?st.angle===45:st.angle===0)));
+ });
+ document.querySelectorAll('[data-scenario]').forEach(input=>{
+  const id=input.dataset.scenario,parts=id.split('_');
+  input.checked=id==='WHEEL_FIRE'?s.wheelWellFire:id.endsWith('BOTTLE_LOW')?s.bottles[parts[0]]:id.endsWith('OVERHEAT')?s.engineOverheat[parts[0]]:(parts[0]==='APU'?s.apuFire:s.engineFire[parts[0]]);
+ });
+ for(const [id,x] of Object.entries({ENG1_A:s.loops.ENG1.A,ENG1_B:s.loops.ENG1.B,ENG2_A:s.loops.ENG2.A,ENG2_B:s.loops.ENG2.B,APU:s.apuDetector,CIR_L:s.circuits.L,CIR_R:s.circuits.R,CIR_APU:s.circuits.APU})){const node=document.querySelector('[data-health="'+id+'"]');if(node)node.checked=x;}
+ window.dispatchEvent(new CustomEvent('b737:fire-protection-state',{detail:{model:s,indications:ind,outputs:d.outputs,visual_test_only:true}}));
+}
+let logLines=[];
+function send(cmd){
+ const o=e.dispatch(cmd);
+ document.getElementById('message').textContent=(o.result.accepted?'ACCEPTED: ':'REJECTED: ')+o.result.reason;
+ logLines.unshift((new Date()).toLocaleTimeString('en-GB')+'  '+JSON.stringify(cmd)+'  '+(o.result.accepted?'OK':o.result.reason));
+ logLines=logLines.slice(0,12);document.getElementById('log').textContent=logLines.join('\n');render();
+}
+document.querySelectorAll('[data-selector]').forEach(b=>b.onclick=()=>send({type:'SELECT_LOOP',value:b.dataset.selector}));
+let heldTest=null;
+for(const b of document.querySelectorAll('[data-test]')){
+ const start=ev=>{ev.preventDefault();if(heldTest)return;heldTest={button:b,value:b.dataset.test,id:ev.pointerId};b.setPointerCapture(ev.pointerId);send({type:'TEST',value:b.dataset.test});};
+ const stop=()=>{if(heldTest&&heldTest.button===b){heldTest=null;send({type:'TEST',value:null});}};
+ b.addEventListener('pointerdown',start);b.addEventListener('pointerup',stop);b.addEventListener('pointercancel',stop);
+ b.addEventListener('keydown',ev=>{if((ev.key==='Enter'||ev.key===' ')&&!heldTest){ev.preventDefault();send({type:'TEST',value:b.dataset.test});}});
+ b.addEventListener('keyup',ev=>{if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();send({type:'TEST',value:null});}});
+ b.addEventListener('blur',()=>{if(heldTest&&heldTest.button===b)stop()});
+}
+document.getElementById('cutout').onclick=()=>send({type:'BELL_CUTOUT'});
+document.getElementById('reset').onclick=()=>{send({type:'RESET'});};
+handleControls.addEventListener('click',ev=>{
+ const b=ev.target.closest('[data-handle-action]');if(!b)return;
+ const unit=b.dataset.unit,action=b.dataset.handleAction,st=e.getState().handles[unit];
+ if(action==='OVERRIDE')send({type:'OVERRIDE',unit,enabled:!st.override});
+ else if(action==='PULL')send({type:'PULL',unit,pulled:!st.pulled});
+ else send({type:'ROTATE',unit,angle:action==='LEFT'?-45:action==='RIGHT'?45:0});
+});
+document.getElementById('edit').onclick=()=>{
+ edit=!edit;board.classList.toggle('edit',edit);document.getElementById('edit').setAttribute('aria-pressed',String(edit));
+};
+document.getElementById('layout-reset').onclick=()=>{positions=JSON.parse(JSON.stringify(allPositions));for(const id of Object.keys(nodes))move(id);try{localStorage.removeItem(layoutsKey);}catch(_){}};
+document.getElementById('base').addEventListener('error',()=>{document.getElementById('message').textContent='BACKGROUND ASSET ERROR — check GitHub file path';});
+render();
+})();
+</script>
+</body></html>
