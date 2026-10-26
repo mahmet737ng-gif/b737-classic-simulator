@@ -14,7 +14,7 @@
   APU_BOTTLE_DISCHARGED:  {x:36.2,y:69.3,w:9.5,h:10.3,slot:'APU BOTTLE',assetPending:true},
   L_BOTTLE_DISCHARGED:    {x:76.8,y:29.0,w:7.8,h:9.7,slot:'L BOTTLE DISCHARGED'},
   R_BOTTLE_DISCHARGED:    {x:85.9,y:29.0,w:7.8,h:9.7,slot:'R BOTTLE DISCHARGED'},
-  HANDLE_ENG1:            {x:20.8,y:65.0,w:10.8,h:49.0,slot:'ENGINE 1 HANDLE',type:'handle'},
+  HANDLE_ENG1:            {x:21.3,y:65.0,w:8.8,h:49.0,slot:'ENGINE 1 HANDLE',type:'handle'},
   HANDLE_APU:             {x:49.9,y:65.0,w:10.8,h:49.0,slot:'APU HANDLE',type:'handle'},
   HANDLE_ENG2:            {x:78.9,y:65.0,w:10.8,h:49.0,slot:'ENGINE 2 HANDLE',type:'handle'}
  };
