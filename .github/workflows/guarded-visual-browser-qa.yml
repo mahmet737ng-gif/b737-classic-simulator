@@ -1,4 +1,5 @@
 name: Guarded cockpit visual browser QA
+# Rendered-pose regression v3: the open cover must remain visible and keep its identity.
 on:
   push:
     paths:
