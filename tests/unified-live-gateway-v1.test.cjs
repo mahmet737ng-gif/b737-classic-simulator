@@ -75,10 +75,19 @@ test('standby selector routes only through Bridge and does not fabricate system 
 });
 test('source selection impossible is rejected not declared successful',()=>{
  const r=setup();const before=r.gateway.snapshot();
+ // Real registry defaults ground-power to ON; a fresh physical OFF->ON detent is required.
+ assert.equal(r.gateway.dispatch(event('ground-power','OFF')).accepted,true);
  const s=r.gateway.dispatch(event('ground-power','ON'));
  assert.equal(s.accepted,false);assert.match(s.reason,/conditions not met/);
  assert.deepEqual(r.gateway.snapshot().electrical.source,before.electrical.source);
  assert.ok(r.gateway.get().latestFailure);
+});
+test('initial physical sync reports rejected legacy source commands, not a false clean result',()=>{
+ const r=setup(),history=r.gateway.get().recentEvents;
+ const first=history.find(e=>e.type==='SYNCHRONIZE');
+ assert.equal(first.accepted,true,'other valid controls must still synchronize');
+ assert.ok(Array.isArray(first.warnings));
+ if(r.bridge.get().rejected.length)assert.ok(first.warnings.some(w=>w.reason==='BRIDGE_REJECTED_ON_SYNC'));
 });
 test('physical APU START uses ECU once and spring release is not another START',()=>{
  const r=setup();r.gateway.dispatch(event('battery-master',{value:'on'},'guarded'));
