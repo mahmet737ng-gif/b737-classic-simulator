@@ -10,6 +10,11 @@ on:
       - 'engine/instruments/stage10-preview-scale-subset-v1.json'
       - 'engine/instruments/stage9-stage10.test.cjs'
       - 'engine/instruments/source-arc-contact-audit-v1.py'
+      - 'engine/instruments/native-bezel-centre-evidence-v1.json'
+      - 'engine/instruments/native-bezel-centre-v1.test.cjs'
+      - 'engine/instruments/native-bezel-centre-validation-v1.py'
+      - 'panel-mosaic-lab/cockpit/ac-dc-metering-*'
+      - 'panel-mosaic-lab/cockpit/drive-amps-needle-*'
       - 'engine/instruments/native-arc-scale-v1.js'
       - 'engine/instruments/native-arc-scale-v1.test.cjs'
       - 'engine/instruments/oh19-photo-evidence-v2.js'
@@ -56,10 +61,15 @@ jobs:
           path: artifacts/oh19-pixel-qa/
           retention-days: 30
           if-no-files-found: error
-      - name: Assert photographic ARC geometry and honest minor division counting
-        run: node --test engine/instruments/native-arc-scale-v1.test.cjs
+      - name: Exercise all 11 real-photo pivot records and approved geometric minor-division engine
+        run: |
+          node --test engine/instruments/native-arc-scale-v1.test.cjs engine/instruments/native-bezel-centre-v1.test.cjs
+          node panel-mosaic-lab/cockpit/ac-dc-metering.test.cjs
+          node panel-mosaic-lab/cockpit/drive-amps-needle.test.cjs
       - name: Inspect 11 native OH10 OH11 OH12 OH20 OH21 source gauge pivots and arcs
         run: python3 engine/instruments/source-arc-contact-audit-v1.py
+      - name: Native-source fitted circles and SHA256 photo evidence
+        run: python3 engine/instruments/native-bezel-centre-validation-v1.py
       - name: Preserve native panel pivot and arc review sheets
         uses: actions/upload-artifact@v4
         with:
