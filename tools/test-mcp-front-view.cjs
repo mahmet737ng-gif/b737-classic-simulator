@@ -47,7 +47,7 @@ async function doPage(browser,p){
     const h=e.querySelector(id==='AT_ARM'?'.mcp-hw-at-paddle':'.mcp-hw-fd-tip');
     const b=e.getBoundingClientRect(),c=h.getBoundingClientRect();
     return [id,{state:e.dataset.state,controlCenterY:b.y+b.height/2,capCenterY:c.y+c.height/2,
-     capDelta:+((c.y+c.height/2)-(b.y+b.height/2)).toFixed(2),capBox:{x:c.x,y:c.y,w:c.width,h:c.height},
+     controlHeight:b.height,capDelta:+((c.y+c.height/2)-(b.y+b.height/2)).toFixed(2),capBox:{x:c.x,y:c.y,w:c.width,h:c.height},
      role:e.getAttribute('role'),pressed:e.getAttribute('aria-pressed')}];
    }));
    const knobs=[...target.querySelectorAll('.mcp-v3-knob')].map(n=>({id:n.dataset.control,background:getComputedStyle(n).backgroundImage,width:n.getBoundingClientRect().width}));
@@ -77,7 +77,7 @@ async function doPage(browser,p){
  await state('ON',{AT_ARM:'ARM',FD_LEFT:'ON',FD_RIGHT:'ON'});
  for(const id of ['AT_ARM','FD_LEFT','FD_RIGHT']){
   const a=report.states.OFF[id].capDelta,b=report.states.ON[id].capDelta;
-  assert.ok(a-b>8,p+' '+id+' state transition must be visually material');
+  assert.ok(a-b>report.states.OFF[id].controlHeight*.19,p+' '+id+' must move at least 19% of its scaled front-face height (not eight arbitrary screen px)');
  }
  assert.ok(!errors.filter(x=>/mcp|SyntaxError/.test(x)).length,p+' script issues '+JSON.stringify(errors));
  report.errors=errors;
