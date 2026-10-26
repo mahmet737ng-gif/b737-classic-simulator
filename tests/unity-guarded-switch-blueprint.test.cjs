@@ -81,7 +81,7 @@ test('Unity runtime renders the same cover mesh/material/scale in both poses',()
   assert.ok(view.includes(assertion),assertion);
  assert.ok(view.includes('_pivot.localRotation = Quaternion.SlerpUnclamped'), 'pose only changes hinge pivot');
  assert.equal(view.includes('_renderer.material ='),false,'do not instantiate new materials per pose');
- assert.equal(view.includes('_cover.localScale ='),false,'do not rescale cover during animation');
+ assert.doesNotMatch(view, /_cover\\.localScale\\s*=(?!=)/,'do not rescale cover during animation');
  assert.ok(factory.includes('GuardCoverMesh.Create('),'independent cover mesh per guard');
  assert.ok(factory.includes('mf.sharedMesh = GuardCoverMesh.Create('));
  assert.ok(factory.includes('mr.sharedMaterial = lid'));
