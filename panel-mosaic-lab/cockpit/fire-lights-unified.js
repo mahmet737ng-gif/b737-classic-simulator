@@ -71,6 +71,8 @@ function patch(values){
 function clearOverrides(){for(const key of Object.keys(overrides))delete overrides[key];return draw();}
 function dispatch(cmd){if(!unit)throw Error('Fire protection behavior core not loaded');const x=unit.dispatch(cmd);draw();return x;}
 win.addEventListener('b737:cockpit-mounted',attach);
+win.document.addEventListener('DOMContentLoaded',attach,{once:true});
+win.addEventListener('load',attach,{once:true});
 win.addEventListener('b737:visual-test',e=>{visualTest=Boolean(e.detail?.active);draw();});
 win.addEventListener('b737:fire-protection-state',e=>{if(e.detail?.indications&&typeof e.detail.indications==='object'){external={...e.detail.indications};draw();}});
 if(win.document.readyState==='complete')attach();
