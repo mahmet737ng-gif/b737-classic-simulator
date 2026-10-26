@@ -1,0 +1,41 @@
+name: B737 Main Instrument Panel 30-lamp three-scale visual QA
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - tools/test-main-lamp-typography-visual.cjs
+      - .github/workflows/main-lamp-typography-visual.yml
+      - panel-mosaic-lab/cockpit/typography-faces.json
+      - panel-mosaic-lab/assets/lights/main-type-v1/**
+permissions:
+  contents: read
+jobs:
+  main-lamp-visual:
+    runs-on: ubuntu-latest
+    timeout-minutes: 13
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify locked source cockpit photographs unchanged
+        run: python3 panel-mosaic-lab/verify-final-overhead.py
+      - name: Install Chromium
+        run: |
+          npm install --no-save --ignore-scripts playwright@1.58.2
+          npx playwright install --with-deps chromium
+      - name: Generate 30-lamp matrix, verify optical text box at each socket and run load test
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check tools/test-main-lamp-typography-visual.cjs
+          python3 -m http.server 8788 --bind 127.0.0.1 >/tmp/b737-mip-font-http.log 2>&1 &
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:8788/panel-mosaic-lab/cockpit/lights.json >/dev/null; then break; fi
+            sleep 1
+          done
+          node tools/test-main-lamp-typography-visual.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: b737-main-all-30-lamps-100-75-50-percent-OFF-ON
+          path: /tmp/b737-main-typography-review
+          if-no-files-found: error
+          retention-days: 30
