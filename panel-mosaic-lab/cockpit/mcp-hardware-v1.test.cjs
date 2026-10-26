@@ -55,8 +55,8 @@ for(const page of [unified,standalone]){
 assert.match(sprite,/Small_Silver_5Positions\.webp/);
 assert.match(sprite,/mcp-hw-at-off/);
 assert.match(sprite,/mcp-hw-at-up/);
-assert.match(sprite,/background-position:75% center/);
-assert.match(sprite,/background-position:100% center/);
+assert.match(sprite,/background-position:72\.1% center/);
+assert.match(sprite,/background-position:94\.2% center/);
 const frontRoot=path.join(root,"assets","mcp-switches");
 for(const f of ["AT_ARM_OFF.svg","AT_ARM_UP.svg"]){
  const content=fs.readFileSync(path.join(frontRoot,f),"utf8");

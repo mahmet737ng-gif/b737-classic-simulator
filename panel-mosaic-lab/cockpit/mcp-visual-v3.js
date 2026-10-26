@@ -130,7 +130,7 @@ function mountKnob(parent,n){
  if(n.type==="ias"){
   el.style.backgroundImage='url("'+ASSET_URL+'")';
  }else if(n.type==="course"){
-  el.innerHTML='<span class="mcp-v3-course-face"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M43 20 Q50 15 57 20 L58 38 L79 43 Q85 50 79 57 L58 59 L57 81 Q50 85 43 81 L42 59 L21 57 Q15 50 21 43 L42 38 Z" fill="#d84226" stroke="#8a281d" stroke-width="2.6"/><path d="M42 37 L58 60 M58 37 L42 60" stroke="#f77846" stroke-width="3" opacity=".85"/></svg></span>';
+  el.innerHTML='<span class="mcp-v3-course-face"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M56 49 C62 39 69 25 77 23 Q83 23 83 30 C79 40 67 54 60 59 L72 70 Q74 77 67 78 L54 66 L46 79 Q42 83 37 78 L37 62 L23 59 Q19 56 22 49 L36 47 L41 36 Q48 27 55 32 L54 44 Z" fill="#db3626" stroke="#84211b" stroke-width="3.2"/><path d="M58 46 C68 38 73 31 77 28 M44 63 L42 75" fill="none" stroke="#ff7950" stroke-width="4.1" stroke-linecap="round" opacity=".65"/></svg></span>';
  }else el.innerHTML='<span class="mcp-v3-plain-face"></span>';
  let last=null;
  on(el,"pointerdown",e=>{if(e.pointerType==="mouse"&&e.button!==0)return;e.stopPropagation();e.preventDefault();last=e.clientX;el.setPointerCapture(e.pointerId)});

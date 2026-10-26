@@ -91,8 +91,8 @@ async function run(browser,kind){
   assert.equal(visible.length,1,'only the proper mechanical photograph must be visible');
   assert.ok(visible[0].src.endsWith(mode==='OFF'?'AT_ARM_OFF.svg':'AT_ARM_UP.svg'));
   for(const x of measured.fds)
-   assert.ok(x.position.startsWith(mode==='OFF'?'100%':'75%'),
-    'Silver atlas fourth=UP, fifth=DOWN; unexpected '+x.id+' '+x.position);
+   assert.ok(x.position.startsWith(mode==='OFF'?'94.2%':'72.1%'),
+    'Magnified original silver atlas fourth=UP, fifth=DOWN; unexpected '+x.id+' '+x.position);
   states[mode]=measured;
   if(kind==='lab'){
    const shot=await page.locator('#stage').screenshot({animations:'disabled',timeout:25000});

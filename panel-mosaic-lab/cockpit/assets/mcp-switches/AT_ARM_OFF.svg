@@ -2,7 +2,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="256" height="260" viewBox="0 0 256 260" role="img" aria-label="B737 A/T ARM silver horizontal paddle OFF DOWN"><title>A/T ARM OFF DOWN front view</title><defs>
  <radialGradient id="pivot" cx=".4" cy=".35" r=".78"><stop stop-color="#9faba9"/><stop offset=".18" stop-color="#424e50"/><stop offset=".37" stop-color="#121b1e"/><stop offset=".76" stop-color="#080c0e"/><stop offset="1" stop-color="#626c6c"/></radialGradient>
  <linearGradient id="stem" x1="0" x2="1"><stop stop-color="#292c2b"/><stop offset=".13" stop-color="#8c9592"/><stop offset=".31" stop-color="#eef0e7"/><stop offset=".53" stop-color="#afb6b4"/><stop offset=".79" stop-color="#50575a"/><stop offset="1" stop-color="#151d20"/></linearGradient>
- <linearGradient id="face" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#faf8ee"/><stop offset=".12" stop-color="#dddeda"/><stop offset=".31" stop-color="#a9afaa"/><stop offset=".57" stop-color="#667174"/><stop offset=".8" stop-color="#353d40"/><stop offset="1" stop-color="#919997"/></linearGradient>
+ <linearGradient id="face" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#faf8ee"/><stop offset=".12" stop-color="#dddeda"/><stop offset=".31" stop-color="#a9afaa"/><stop offset=".57" stop-color="#b7c0bd"/><stop offset=".8" stop-color="#778183"/><stop offset="1" stop-color="#919997"/></linearGradient>
  <linearGradient id="edge" x1="0" x2="1"><stop stop-color="#292f31"/><stop offset=".15" stop-color="#bcc5c3"/><stop offset=".49" stop-color="#f1f2e9"/><stop offset=".83" stop-color="#697273"/><stop offset="1" stop-color="#242d31"/></linearGradient>
  <filter id="shadow" x="-30%" y="-40%" width="170%" height="190%"><feGaussianBlur stdDeviation="3"/></filter>
  </defs>
@@ -11,5 +11,5 @@
 <circle cx="128" cy="136" r="23" fill="#241a17" stroke="#535451" stroke-width="3"/>
 <path d="M113 136 L106 172 Q107 198 127 202 Q147 201 149 171 L142 136 Z" fill="url(#stem)" stroke="#242d32" stroke-width="2"/><path d="M117 139 L114 177 L126 191 L125 136 Z" fill="#f4f5ea" opacity=".43"/>
 <ellipse cx="128" cy="136" rx="16" ry="13" fill="#292f2e" stroke="#a0a9a5" stroke-width="2"/>
-<g transform="translate(0 193)"><path d="M49 -13 L210 -13 L220 -7 L220 9 L210 16 L49 16 L39 9 L39 -6 Z" fill="url(#face)" stroke="#22292b" stroke-width="2.6"/><path d="M50 -9 H211 L216 -5 H44 Z" fill="#fcfff8" opacity=".76"/><path d="M43 9 L216 9 L208 13 H51 Z" fill="#1e2629" opacity=".83"/><path d="M56 -3 H204" stroke="#f7f9f1" stroke-width="1.2" opacity=".48"/><path d="M42 -10 L47 -12 L47 13 L42 9 Z" fill="#454b4a" opacity=".6"/><path d="M217 -8 L221 -5 L221 10 L216 13 Z" fill="#4b5455"/></g>
+<g transform="translate(0 193)"><path d="M49 -22 L210 -22 L220 -12 L220 14 L210 24 L49 24 L39 14 L39 -12 Z" fill="url(#face)" stroke="#22292b" stroke-width="2.6"/><path d="M50 -16 H211 L216 -10 H44 Z" fill="#fcfff8" opacity=".76"/><path d="M43 16 L216 16 L208 21 H51 Z" fill="#1e2629" opacity=".83"/><path d="M56 -8 H204" stroke="#f7f9f1" stroke-width="1.2" opacity=".48"/><path d="M42 -18 L47 -21 L47 21 L42 16 Z" fill="#454b4a" opacity=".6"/><path d="M217 -16 L221 -11 L221 16 L216 21 Z" fill="#4b5455"/></g>
 </svg>
