@@ -1,0 +1,77 @@
+{
+  "schema": "b737-state-ownership/1",
+  "baseline": "88bed66e9a46773da28b1349cbd5fb94fc7b007a",
+  "policy": "one active write owner per runtime domain; legacy labs do not write Aircraft Session",
+  "owners": [
+    {
+      "path": "electrical",
+      "owner": "engine/systems/electrical-v7.js",
+      "runtimeAdapter": "electrical",
+      "status": "WIRED_V1",
+      "notes": "Do not run trainer/core.js electrical as a parallel authority"
+    },
+    {
+      "path": "electricalLoads",
+      "owner": "engine/systems/electrical-loads-v8.js",
+      "runtimeAdapter": "electrical",
+      "status": "WIRED_V1",
+      "notes": "UNKNOWN downstream feeds retained"
+    },
+    {
+      "path": "physicalControls",
+      "owner": "Unified control registry",
+      "status": "BRIDGE_PENDING",
+      "notes": "Physical position not engine power; existing ISN cockpit bridge is partial"
+    },
+    {
+      "path": "engines",
+      "owner": "engine/integration/isn-engine-apu-v1.js",
+      "status": "BRIDGE_PENDING",
+      "notes": "Stop treating engineRunning scenario input as authoritative in Unified"
+    },
+    {
+      "path": "apu",
+      "owner": "engine/integration/isn-engine-apu-v1.js",
+      "status": "BRIDGE_PENDING",
+      "notes": "One engine/APU startup state owner"
+    },
+    {
+      "path": "fuelHydPumps",
+      "owner": "engine/integration/isn-electrical-pack-v1.js",
+      "status": "BRIDGE_PENDING",
+      "notes": "Source-gated evidence; avoid standalone duplicate Electrical state"
+    },
+    {
+      "path": "circuitBreakers",
+      "owner": "engine/cb/cb-kernel.js",
+      "status": "BRIDGE_PENDING",
+      "notes": "Unknown wiring must not be promoted to equipment-wide fault"
+    },
+    {
+      "path": "pressurization",
+      "owner": "engine/systems/cpcs-v5.js or dcpcs-v4.js selected per installation",
+      "status": "BRIDGE_PENDING",
+      "notes": "Only selected profile controls runtime"
+    },
+    {
+      "path": "annunciations",
+      "owner": "Projection of source systems / warning engine",
+      "status": "BRIDGE_PENDING",
+      "notes": "Never set light state directly from UI"
+    },
+    {
+      "path": "aircraftProfile",
+      "owner": "engine/config/aircraft-profile-v1.js",
+      "status": "BRIDGE_PENDING",
+      "notes": "Warn when selected profile effectivity unverified"
+    }
+  ],
+  "blockedFindings": [
+    "Trainer Core and Electrical V7 are parallel calculation paths; do not execute both as live sources",
+    "ISN electrical pack defaults warning engine to 737-400; variant propagation not complete",
+    "ISN cockpit bridge reports busTransferPhysicalControl:false",
+    "ISN cockpit bridge catches command exceptions and returns state; strict runtime must reject failures",
+    "Electrical V7 engine/APU onGround scenario signals are temporary inputs until upstream adapters are wired",
+    "Ground AUTO standby policy has contradictory source references and must remain UNKNOWN"
+  ]
+}
