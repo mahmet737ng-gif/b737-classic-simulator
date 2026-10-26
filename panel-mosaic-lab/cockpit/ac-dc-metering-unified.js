@@ -66,9 +66,9 @@
  function controls(){
   const section=document.createElement('section');section.id='unifiedAcDcMeteringNeedles';
   const title=document.createElement('h2');title.textContent='AC / DC Metering · 4 Needles';section.append(title);
-  const note=document.createElement('p');note.className='muted';note.textContent='چهار عقربه از یک فایل مشترک؛ زاویه‌ها صرفاً برای تست تصویری مستقل‌اند.';section.append(note);
+  const note=document.createElement('p');note.className='muted';note.textContent='توجه: اسلایدرهای این بخش فقط زاویهٔ نیدل را برحسب درجه تغییر می‌دهند؛ مقدار AMPS، CPS و VOLTS نیستند. مرکز قاب از عکس اصلی اصلاح شده؛ شناسایی همهٔ درجات و مرکز مکانیکی محور هنوز در ممیزی است.';section.append(note);
   for(const meter of model.meters){
-   const label=document.createElement('label');label.textContent=meter.label;label.style.display='block';label.style.direction='ltr';
+   const label=document.createElement('label');label.textContent=meter.label+' · QA ANGLE (°), NOT '+meter.label+' VALUE';label.style.display='block';label.style.direction='ltr';
    const input=document.createElement('input');Object.assign(input,{type:'range',min:'-70',max:'70',step:'1'});input.style.width='100%';input.style.accentColor='#edf0e8';
    const output=document.createElement('output');output.style.display='block';output.style.textAlign='left';output.style.direction='ltr';
    input.addEventListener('input',()=>setAngle(meter.id,Number(input.value)));
