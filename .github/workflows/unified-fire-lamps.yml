@@ -1,0 +1,33 @@
+name: Unified Fire Lamp Mount QA
+on:
+  push:
+    paths:
+      - 'panel-mosaic-lab/cockpit/fire-lights*'
+      - 'panel-mosaic-lab/cockpit/index.html'
+      - 'panel-mosaic-lab/cockpit/assembly.json'
+      - 'fire-protection-lab/reference/as-built-11-indicator-pixel-map.json'
+      - 'fire-protection-lab/assets/EXT_TEST_CIRCULAR_GREEN_*'
+      - '.github/workflows/unified-fire-lamps.yml'
+  pull_request:
+    paths:
+      - 'panel-mosaic-lab/cockpit/fire-lights*'
+      - 'panel-mosaic-lab/cockpit/index.html'
+      - 'panel-mosaic-lab/cockpit/assembly.json'
+      - 'fire-protection-lab/reference/as-built-11-indicator-pixel-map.json'
+      - 'fire-protection-lab/assets/EXT_TEST_CIRCULAR_GREEN_*'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  static-qa:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check Fire Protection lamp mounting and exact pixel centers
+        run: |
+          node --check panel-mosaic-lab/cockpit/fire-lights-model.js
+          node --check panel-mosaic-lab/cockpit/fire-lights-unified.js
+          node panel-mosaic-lab/cockpit/fire-lights-unified.test.cjs
