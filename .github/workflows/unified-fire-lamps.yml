@@ -6,6 +6,7 @@ on:
       - 'panel-mosaic-lab/cockpit/index.html'
       - 'panel-mosaic-lab/cockpit/assembly.json'
       - 'fire-protection-lab/reference/unified-11-indicator-aperture-audit-v3.json'
+      - 'fire-protection-lab/reference/unified-11-indicator-frame-glass-v4.json'
       - 'panel-mosaic-lab/cockpit/assets/fire-lamps-v3/**'
       - 'fire-protection-lab/assets/EXT_TEST_CIRCULAR_GREEN_*'
       - '.github/workflows/unified-fire-lamps.yml'
@@ -15,6 +16,7 @@ on:
       - 'panel-mosaic-lab/cockpit/index.html'
       - 'panel-mosaic-lab/cockpit/assembly.json'
       - 'fire-protection-lab/reference/unified-11-indicator-aperture-audit-v3.json'
+      - 'fire-protection-lab/reference/unified-11-indicator-frame-glass-v4.json'
       - 'panel-mosaic-lab/cockpit/assets/fire-lamps-v3/**'
       - 'fire-protection-lab/assets/EXT_TEST_CIRCULAR_GREEN_*'
   workflow_dispatch:
