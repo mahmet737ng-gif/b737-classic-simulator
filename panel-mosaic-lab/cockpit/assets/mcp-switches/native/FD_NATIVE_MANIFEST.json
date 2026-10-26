@@ -1,0 +1,28 @@
+{
+  "schema": "b737.mcp.fdpair.native.atlas-v1",
+  "original": "shared-assets/toggle-switch-small/Small_Silver_5Positions.webp",
+  "sourceDimensions": [
+    5120,
+    1024
+  ],
+  "cellDimensions": [
+    1024,
+    1024
+  ],
+  "singleCrop": [
+    280,
+    126,
+    743,
+    940
+  ],
+  "outputSize": [
+    463,
+    814
+  ],
+  "stateIndex": {
+    "ON": 3,
+    "OFF": 4
+  },
+  "sourceUntouched": true,
+  "note": "F/D front view uses original high-resolution SMALL SILVER 5-poses, original shared crop and mechanical pivot in both states"
+}
