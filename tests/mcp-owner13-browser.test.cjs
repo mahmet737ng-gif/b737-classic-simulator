@@ -6,11 +6,23 @@ const out='/tmp/b737-owner13';fs.mkdirSync(out,{recursive:true});
  const browser=await chromium.launch({headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
  try{
   const page=await browser.newPage({viewport:{width:1900,height:1000},deviceScaleFactor:1});
-  const errors=[];page.on('pageerror',e=>errors.push(e.message));
+  const errors=[];const consoleErrors=[];page.on('pageerror',e=>errors.push(e.message));page.on("console",m=>{if(["error","warning"].includes(m.type()))consoleErrors.push(m.text())});page.on("requestfailed",req=>consoleErrors.push(req.url()+" "+req.failure()?.errorText));
   const u='http://127.0.0.1:8788/panel-mosaic-lab/mcp-panel/';
   assert.equal((await page.goto(u,{waitUntil:'domcontentloaded',timeout:60000})).status(),200);
-  await page.waitForFunction(()=>window.B737McpOwner13V1?.getState().loaded===true&&
-    document.querySelector('[data-piece="mcp"].mcp-owner13-active'),null,{timeout:60000});
+  try{await page.waitForFunction(()=>window.B737McpOwner13V1?.getState().loaded===true&&
+    document.querySelector('[data-piece="mcp"].mcp-owner13-active'),null,{timeout:12000});}
+  catch(e){
+   const diagnostic=await page.evaluate(()=>({
+    ready:document.readyState,owner:window.B737McpOwner13V1?.getState?.(),
+    hardware:!!window.B737McpHardwareV1,visual:!!window.B737McpVisualV3,
+    stageCount:document.querySelectorAll('[data-piece="mcp"]').length,
+    knobs:document.querySelectorAll('[data-piece="mcp"] .mcp-v3-knob').length,
+    hardwareCount:document.querySelectorAll('[data-piece="mcp"] .mcp-hw').length,
+    refs:performance.getEntriesByType('resource').filter(x=>x.name.includes('owner13')).map(x=>({url:x.name,status:x.responseStatus}))
+   }));
+   console.log('OWNER13_BROWSER_DIAGNOSTIC',JSON.stringify({diagnostic,errors,consoleErrors}));
+   throw e;
+  }
   const v=await page.evaluate(()=>{
    const root=document.querySelector('[data-piece="mcp"]');
    return {report:window.B737McpOwner13V1.audit(),
