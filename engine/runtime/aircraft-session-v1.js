@@ -110,7 +110,10 @@
    if(!Array.isArray(commands))fail('Replay command list required');
    const fresh=new Session({adapters:this.adapters,profile:this.profile,scenario:this.scenario});
    // Replay is atomic relative to the original session.
-   for(const item of commands){if(plain(item)&&'command'in item){
+   for(const item of commands){if(plain(item)&&item.kind==='TICK'){
+    if(!Number.isSafeInteger(item.dtMs)||item.dtMs<=0||item.dtMs>1000||item.timeMs!==fresh.timeMs+item.dtMs)fail('Invalid replay tick');
+    fresh.advance(item.dtMs);
+   }else if(plain(item)&&'command'in item){
     if(!Number.isSafeInteger(item.timeMs)||item.timeMs<fresh.timeMs)fail('Invalid replay clock');
     while(fresh.timeMs<item.timeMs)fresh.advance(Math.min(1000,item.timeMs-fresh.timeMs));
     fresh.dispatch(item.command);
