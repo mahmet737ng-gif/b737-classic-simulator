@@ -34,7 +34,12 @@ From \`engine/instruments/needle-zero-reference-stage1-v1.json\`:
 
 - \`engine/instruments/mrg-electrical-needle-audit-v1.js\`: numeric source monitor with observation-required, read-only ranges; preserves UNKNOWN and zero-amp TR with voltage present.
 - \`panel-mosaic-lab/cockpit/mrg-electrical-needle-qa-unified.js\`: optional Unified *inspector* QA with manually entered meter observations and an isolated TR1 failure demonstration; **does not modify the live needle angles or original panel images**.
-- \`tests/mrg-electrical-needle-audit-v1.test.cjs\`: 14 MRG source/fault/standby/geometry regression tests.
+- \`tests/mrg-electrical-needle-audit-v1.test.cjs\`: 18 MRG source/fault/standby/geometry/battery-switch regression tests.
 - To test: \`npm run test:mrg-needle\`. Labels \`WITHIN_MRG_REFERENCE\` and \`OUTSIDE_MRG_REFERENCE\` are QA bands, **not calibrated glass pointer angles**.
 
 The rule for promotion remains: confirm 54 native image pivots and every printed major/minor tick independently; use actual observed system quantity plus sensor power routing; only then unlock a value→angle calibration for the corresponding needle. Source ranges never determine 0°.
+
+
+## V7 correction after audit
+
+Classic MRG printed p.148 specifically states BAT OFF with the APU generator supplying system buses **on ground** causes APU automatic shutdown / AC power loss; in flight APU continues to supply. `engine/systems/electrical-v7.js` now gates the affected APU generator output on ground and emits `apuAutomaticShutdownRequested`, leaving the separate APU plant physical spool/stop integration pending. Tests protect both ground and flight branches and ensure BAT OFF does not turn off engine-driven generator AC. The MRG regression suite now comprises **18 tests**, with **47 legacy Electrical V7 tests** passing in the same compatible JavaScript test harness.
