@@ -1,5 +1,5 @@
 {
-  "version": "LGT-0001",
+  "version": "LGT-0002",
   "rotaries": [
     {
       "id": "irs-mode-l",
@@ -89,6 +89,41 @@
       "axis": "vertical",
       "assetFamily": "original-approved-guarded-v2",
       "logicStatus": "SIM_APPROX_ONLY; deployment latch resets only through explicit scenario reset"
+    },
+    {
+      "id": "flight-recorder-test",
+      "label": "FLIGHT RECORDER TEST / NORMAL",
+      "kind": "guarded",
+      "placementId": "UPPER",
+      "sourcePoint": [
+        1421.5,
+        455
+      ],
+      "sourceRect": [
+        1365,
+        438,
+        113,
+        34
+      ],
+      "bezelSourceDiameter": 113,
+      "color": "black",
+      "states": [
+        "test",
+        "normal"
+      ],
+      "default": {
+        "value": "normal",
+        "guard": "closed"
+      },
+      "closePolicy": {
+        "force": "normal"
+      },
+      "rotation": 0,
+      "axis": "horizontal",
+      "presentation": "flight-recorder-left-hinge",
+      "assetFamily": "photo-anchored-flight-recorder-guard-v1",
+      "hinge": "LEFT",
+      "sourceStatus": "SOURCE_PHOTO_OH06; original pixels unchanged"
     }
   ]
 }
