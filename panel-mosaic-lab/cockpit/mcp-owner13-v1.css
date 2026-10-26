@@ -18,14 +18,14 @@
  transform:translate(-50%,-50%)!important;z-index:4;
 }
 [data-piece="mcp"].mcp-owner13-active .mcp-v3-knob[data-control="heading"]>.mcp-owner13-bank{
- position:absolute;inset:auto!important;z-index:3!important;pointer-events:none!important;
+ position:absolute;left:50%!important;top:50%!important;right:auto!important;bottom:auto!important;z-index:3!important;pointer-events:none!important;
  transform:translate(-50%,-50%) rotate(var(--bank-turn,0deg))!important;
 }
 [data-piece="mcp"].mcp-owner13-active .mcp-v3-knob[data-control="heading"]>.mcp-owner13-art:not(.mcp-owner13-bank):not(.mcp-owner13-inner){
  display:none!important;
 }
 [data-piece="mcp"].mcp-owner13-active>.mcp-owner13-push{
- inset:auto!important;position:absolute;z-index:5;
+ position:absolute;z-index:5;
  transform:translate(-50%,-50%)!important;pointer-events:none!important;
  border-radius:0;
 }
