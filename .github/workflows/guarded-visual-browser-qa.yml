@@ -54,12 +54,17 @@ jobs:
               --screenshot=/tmp/guarded-overhead-v2.png \
               'http://127.0.0.1:8765/panel-mosaic-lab/cockpit/overhead-stage.html' || true
           fi
+      - name: Capture six ACTUAL guarded overhead assemblies in closed and open state
+        run: |
+          CHROME=$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)
+          CHROME_BIN="$CHROME" node panel-mosaic-lab/cockpit/guarded-visual-cdp.cjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: b737-guard-photo-v2-browser-proof
           path: |
             /tmp/guarded-overhead-v2.png
+            /tmp/guard-captures-v2/
             /tmp/guard-overhead-dom.html
             /tmp/guard-chrome-stderr.log
             /tmp/guard-static.log
