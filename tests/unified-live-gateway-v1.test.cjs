@@ -120,6 +120,23 @@ test('hold START snapshot does not dispatch pending duplicate start',()=>{
  assert.equal(r.gateway.dispatch(event('apu-start','START')).duplicate,true);
  assert.equal(r.ecu.trace.filter(x=>x.type==='APU_START_REQUEST').length,n);
 });
+test('APU GEN physical switch propagates same-pack source into ECU and live bus projection',()=>{
+ const r=setup();
+ r.gateway.dispatch(event('battery-master',{value:'on',guard:'open'},'guarded'));
+ r.gateway.dispatch(event('apu-start','START'));r.ecu.advance(85000);
+ assert.equal(r.ecu.get().apu.phase,'READY');
+ // Default momentary switch rests at NEUTRAL. ON is the actual physical pulse.
+ const n=r.ecu.start.core.pack.electricalState.rev;
+ const x=r.gateway.dispatch(event('apu-gen-1','ON'));
+ assert.equal(x.accepted,true);
+ assert.equal(r.ecu.start.core.pack.electricalState.rev,n+1);
+ assert.equal(r.ecu.chain.get().selectedSources[1],'APU');
+ assert.equal(r.gateway.snapshot().electrical.source[1],'APU');
+ assert.equal(r.gateway.snapshot().electrical.bus.transfer1,true);
+ const y=r.gateway.dispatch(event('apu-gen-1','NEUTRAL'));
+ assert.equal(y.accepted,true);
+ assert.equal(r.gateway.snapshot().electrical.source[1],'APU','spring return must not disconnect');
+});
 test('wrong kind and impossible detent cannot mutate physical owner',()=>{
  const r=setup(),before=r.gateway.snapshot().electrical;
  assert.equal(r.gateway.dispatch(event('battery-master','ON','toggle')).reason,'WRONG_EVENT_KIND');
