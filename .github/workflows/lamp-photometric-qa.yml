@@ -5,6 +5,11 @@ on:
     paths:
       - tools/test-lamp-photometric-qa.cjs
       - tools/test-lamp-readability-qa.cjs
+      - panel-mosaic-lab/interactive-overhead/lights.json
+      - panel-mosaic-lab/cockpit/lights.json
+      - panel-mosaic-lab/assets/lights/**
+      - panel-mosaic-lab/cockpit/assets/737-400-PACK_FITTED_*.svg
+      - panel-mosaic-lab/cockpit/pressurization-oh22.js
       - .github/workflows/lamp-photometric-qa.yml
 permissions:
   contents: read
