@@ -7,9 +7,11 @@ permissions:
   contents: read
   pages: write
   id-token: write
+# Preserve an active deployment while newer parallel cockpit updates arrive.
+# GitHub retains the latest pending run without interrupting in-progress pages.
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false
 jobs:
   deploy:
     environment:
