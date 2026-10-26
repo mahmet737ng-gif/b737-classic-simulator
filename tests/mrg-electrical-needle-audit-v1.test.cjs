@@ -1,6 +1,8 @@
 "use strict";
 const {test}=require("node:test"),A=require("node:assert/strict");
 const M=require("../engine/instruments/mrg-electrical-needle-audit-v1.js");
+const B=require("../engine/systems/mrg-classic-consumer-bus-qa-v1.js");
+const busIndex=require("../engine/systems/mrg-classic-340-consumer-bus-index-v1.json");
 const E=require("../engine/systems/electrical-v7.js");
 const base=()=>E.initialState();
 const audit=(s,selector,observed={},drive=null)=>M.evaluate({selector,electrical:E.evaluate(s),observed,drive});
@@ -125,4 +127,19 @@ test("Classic BAT OFF breaks externally-powered SYS BUS from external AC source"
  s=E.apply(s,{type:"CONTROL",key:"batterySwitch",value:false});
  const e=E.evaluate(s);A.equal(e.source[1],null);
  A.equal(e.apuAutomaticShutdownRequested,false);
+});
+
+test("MRG needle numeric audit receives Classic generic source candidates for 17 faces",()=>{
+ const a=M.evaluate({selector:"TR1",electrical:E.evaluate(base()),consumerIndex:busIndex,consumerAudit:B,variant:"DCPCS"});
+ A.equal(Object.keys(a.needlePowerSourceCandidates).length,17);
+ A.equal(a.needlePowerSourceCandidates["oh.drive_oil.1"].evidence[0].feedBus,"dc1");
+ A.equal(a.needlePowerSourceCandidates["oh.drive_oil.2"].evidence[0].feedBus,"dc2");
+ A.equal(a.targetAngleDeg,null);
+});
+test("MRG source feed metadata cannot convert a simulated EGT/N1 gauge to zero",()=>{
+ let s=E.apply(base(),{type:"FAULT",id:"GEN1_FAILED",active:true,instructor:true});
+ const r=M.evaluate({selector:"TR2",electrical:E.evaluate(s),consumerIndex:busIndex,consumerAudit:B});
+ A.equal(r.needlePowerSourceCandidates["eng.n1.1"].gaugePower,null);
+ A.equal(r.needlePowerSourceCandidates["eng.egt.1"].gaugePower,null);
+ A.equal(r.targetAngleDeg,null);
 });
