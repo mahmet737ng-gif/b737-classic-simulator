@@ -1468,7 +1468,15 @@
       "rotation": 0,
       "axis": "vertical",
       "assetFamily": "original-approved-guarded-v2",
-      "hinge": "bottom per approved asset manifest"
+      "hinge": "bottom per approved asset manifest",
+      "mountingRectSource": [
+        154,
+        334,
+        200,
+        418
+      ],
+      "mountingEvidence": "owner screenshot rectangle approximate; OH11-native pixels",
+      "presentation": "calibrated-vertical-recess"
     },
     {
       "id": "generator-disconnect-2",
@@ -1495,7 +1503,15 @@
       "rotation": 0,
       "axis": "vertical",
       "assetFamily": "original-approved-guarded-v2",
-      "hinge": "bottom per approved asset manifest"
+      "hinge": "bottom per approved asset manifest",
+      "mountingRectSource": [
+        847,
+        334,
+        200,
+        418
+      ],
+      "mountingEvidence": "owner screenshot rectangle approximate; OH11-native pixels",
+      "presentation": "calibrated-vertical-recess"
     },
     {
       "id": "standby-power",
@@ -1520,10 +1536,18 @@
       "closePolicy": {
         "force": "auto"
       },
-      "rotation": -90,
+      "rotation": 0,
       "axis": "horizontal",
       "assetFamily": "original-approved-guarded-v2",
-      "hinge": "bottom per approved asset manifest"
+      "hinge": "not established by FCOM; photographic verification pending",
+      "mountingRectSource": [
+        391,
+        232,
+        421,
+        184
+      ],
+      "mountingEvidence": "owner screenshot rectangle approximate; OH11-native pixels",
+      "presentation": "calibrated-horizontal-standby"
     },
     {
       "id": "emergency-exit-lights",
