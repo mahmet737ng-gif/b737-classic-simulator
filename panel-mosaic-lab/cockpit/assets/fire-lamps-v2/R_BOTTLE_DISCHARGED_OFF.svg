@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="300" viewBox="0 0 600 300" role="img" aria-label="R BOTTLE DISCHARGED amber annunciator OFF">
+<!-- 75% lettering derived from panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/black-amber-v1/mounted/R_BOTTLE_DISCHARGED_OFF.svg; original untouched -->
+ <rect width="600" height="300" fill="#050505"/>
+ <g transform="translate(300 150) scale(0.75) translate(-300 -150)" fill="#34291b" font-family="Arial, Liberation Sans, Helvetica, sans-serif" font-weight="700" text-anchor="middle">
+  <text x="300" y="125" font-size="92">R BOTTLE</text>
+  <text x="300" y="223" font-size="73">DISCHARGED</text>
+ </g>
+</svg>
