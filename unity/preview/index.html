@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>B737 Classic — 17 Guard Identity Lab</title>
+<style>
+:root{color-scheme:dark;--bg:#101419;--card:#1b2229;--ink:#eef3f7;--muted:#a0aeba;--stroke:#394754;--blue:#71c0cf;--good:#a1e1bd}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 20% -20%,#263643,#101419 65%);color:var(--ink);font:14px/1.65 system-ui,Segoe UI,Arial,sans-serif}
+main{max-width:1480px;margin:auto;padding:28px 22px 52px}header{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;flex-wrap:wrap}
+h1{font-size:clamp(24px,3vw,38px);line-height:1.25;margin:4px 0 7px}header p{margin:0;color:var(--muted);max-width:760px}
+.tag{display:inline-block;font:600 10px system-ui;letter-spacing:1.6px;text-transform:uppercase;color:var(--blue)}
+.info{border:1px solid #806b32;border-radius:10px;color:#f5db9b;background:#322c20;padding:11px 15px;margin:20px 0 24px}
+.actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}button,select{background:#283741;border:1px solid #47606b;border-radius:8px;color:#eef9fc;padding:9px 13px;cursor:pointer;font:inherit}
+button:hover{border-color:#b0dae2}button:focus-visible,select:focus-visible{outline:3px solid #91cede;outline-offset:2px}
+.summary{color:var(--muted);font-size:12px;margin:10px 0 15px}.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px}
+.card{border:1px solid var(--stroke);border-radius:15px;background:linear-gradient(160deg,#202a32,#161c23);padding:16px;min-height:330px;box-shadow:0 8px 30px #090e1255}
+.heading{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}.heading h2{font-size:14px;direction:ltr;text-align:left;margin:0;font-weight:700;line-height:1.35}.panel{font:11px monospace;color:var(--blue);white-space:nowrap}
+.meta{font-size:11px;color:var(--muted);margin:5px 0 12px;display:flex;gap:9px;flex-wrap:wrap;direction:ltr;justify-content:flex-end}
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:6px;direction:ltr}
+.preview{background:#11171c;border:1px solid #33444d;border-radius:10px;min-height:220px;position:relative;display:flex;align-items:center;justify-content:center;perspective:700px;overflow:visible}
+.stamp{position:absolute;top:9px;left:10px;font:700 10px system-ui;letter-spacing:1px;color:#aec8d2;z-index:4}
+.frame{width:calc(var(--w) + 20px);height:calc(var(--h) + 20px);position:relative;transform-style:preserve-3d;max-width:90%;display:flex;align-items:center;justify-content:center;background:linear-gradient(145deg,#0a0d10,#30353b);border:2px solid #4b535a;border-radius:calc(var(--r) + 6px);box-shadow:inset 2px 2px 9px #030609,0 2px 8px #0009}
+.switch{position:absolute;top:50%;left:50%;width:12px;height:32px;transform:translate(-50%,-50%);border-radius:7px;background:linear-gradient(90deg,#5c6673,#d6dce0,#717e87);box-shadow:1px 2px 4px #000c}
+.cover{position:absolute;top:50%;left:50%;width:var(--w);height:var(--h);border-radius:var(--r);border:2px solid #c5c8c922;background:var(--swatch);box-shadow:inset 3px 2px 5px #ffffff16,inset -4px -3px 6px #0006,3px 5px 9px #0009;transform:translate(-50%,-50%) rotateX(0deg) rotateY(0deg);transform-style:preserve-3d;backface-visibility:visible;transition:transform 450ms cubic-bezier(.2,.75,.2,1);cursor:pointer}
+.cover::after{content:"";position:absolute;inset:4px;border:1px solid #fff2;border-radius:inherit;pointer-events:none}
+.hinge-line{position:absolute;background:linear-gradient(#3c4148,#b2bcc6,#363d46);border-radius:20px;z-index:3;box-shadow:0 0 0 1px #0009}
+.hinge-up .hinge-line{width:70%;height:8px;left:15%;top:-5px}.hinge-down .hinge-line{width:70%;height:8px;left:15%;bottom:-5px}
+.hinge-left .hinge-line{width:8px;height:70%;left:-5px;top:15%}.hinge-right .hinge-line{width:8px;height:70%;right:-5px;top:15%}
+.cover.hinge-up{transform-origin:50% 0%}.cover.hinge-down{transform-origin:50% 100%}.cover.hinge-left{transform-origin:0% 50%}.cover.hinge-right{transform-origin:100% 50%}
+.cover.hinge-up.open{transform:translate(-50%,-50%) rotateX(var(--open-neg))}
+.cover.hinge-down.open{transform:translate(-50%,-50%) rotateX(var(--open-pos))}
+.cover.hinge-left.open{transform:translate(-50%,-50%) rotateY(var(--open-neg))}
+.cover.hinge-right.open{transform:translate(-50%,-50%) rotateY(var(--open-pos))}
+.note{font-size:11px;color:var(--muted);margin-top:10px}.pill{background:#243b30;color:var(--good);border-radius:5px;padding:2px 7px;display:inline-block;font-size:11px}
+footer{color:var(--muted);margin:20px 0;font-size:12px}
+@media(max-width:720px){main{padding:16px}.tiles{grid-template-columns:1fr}.preview{min-height:210px}.card{min-height:300px}}
+</style>
+</head>
+<body>
+<main>
+<header><div><span class="tag">Unity-first · Owner direction lock · preview geometry</span><h1>آزمایشگاه ۱۷ گارد Boeing 737 Classic</h1>
+<p>نمای مقایسه‌ای باز و بسته از <b>یک شکل و یک رنگ پایه</b> برای هر کنترل. جهت لولا از پاسخ‌های ثبت‌شده مالک می‌آید؛ هیچ تصویر قدیمی باز/بسته استفاده نمی‌شود.</p></div>
+<div class="actions"><button id="open-all" type="button">بازکردن همه</button><button id="reset" type="button">بازنشانی مقایسه</button></div>
+</header>
+<div class="info">این فقط پیش‌نمایش وب مبتنی بر همان بلوپرینت Unity است. اندازه‌های پوشش، ضخامت، رنگ هواپیمای واقعی و محل دقیق نصب هنوز تأیید نشده‌اند؛ نمایش زیر تأیید فیزیکی یا بازسازی قطعی Boeing نیست.</div>
+<div class="actions"><label for="panel">فیلتر پنل:</label><select id="panel"><option value="all">همهٔ کنترل‌ها</option></select></div>
+<div id="summary" class="summary" role="status"></div>
+<section id="tiles" class="tiles" aria-label="مقایسه حالت‌های باز و بسته"></section>
+<footer>همان Cover در هر دو نما، با ابعاد، شعاع لبه، رنگ و پوشش یکسان رسم می‌شود. تفاوت زاویه، نورپردازی و سایه در نتیجهٔ حرکت طبیعی مجاز است. قطعات نهایی باید با عکس و ابعاد واقعی کالیبره شوند.</footer>
+</main>
+<script>
+'use strict';
+const cards=[];
+function node(tag,className,text){const e=document.createElement(tag);if(className)e.className=className;if(text!==undefined)e.textContent=text;return e;}
+function mountVisual(control,initialOpen){
+ const g=control.geometry,mat=control.material,m=control.motion;
+ const preview=node('div','preview');preview.style.setProperty('--w',Math.round(g.previewWidth*700)+'px');preview.style.setProperty('--h',Math.round(g.previewHeight*700)+'px');
+ preview.style.setProperty('--r',Math.round(g.previewCornerRadius*700)+'px');
+ preview.style.setProperty('--swatch',mat.swatchHex);
+ preview.style.setProperty('--open-pos',m.openAngleDegrees+'deg');
+ preview.style.setProperty('--open-neg',-m.openAngleDegrees+'deg');
+ const stamp=node('span','stamp',initialOpen?'OPEN':'CLOSED');
+ const frame=node('div','frame');
+ const under=node('span','switch');
+ const cover=node('button','cover hinge-'+control.hingeDirection.toLowerCase()+(initialOpen?' open':''));cover.type='button';
+ cover.setAttribute('aria-label',control.displayName+'؛ تغییر حالت گارد');
+ const hinge=node('span','hinge-line');cover.append(hinge);
+ const setOpen=value=>{cover.classList.toggle('open',value);stamp.textContent=value?'OPEN':'CLOSED';};
+ cover.addEventListener('click',()=>setOpen(!cover.classList.contains('open')));
+ frame.append(under,cover);preview.append(stamp,frame);
+ return {element:preview,setOpen};
+}
+function card(spec){
+ const e=node('article','card');
+ const head=node('div','heading');head.append(node('span','panel',spec.panelId),node('h2','',spec.displayName));
+ const label=node('div','meta');label.append(node('span','',spec.hingeDirection+' hinge'),node('span','',spec.physicalFamily));
+ const duo=node('div','duo');
+ const closed=mountVisual(spec,false),opened=mountVisual(spec,true);duo.append(closed.element,opened.element);
+ e.append(head,label,duo);
+ const note=node('div','note',spec.sourceMount.sourceRectNativePx?'کادر منبع: تقریبی، نه اندازهٔ واقعی گارد':'اندازهٔ فیزیکی و نشیمن: تأییدنشده');
+ e.append(note);
+ return {element:e,panel:spec.panelId,closed,opened};
+}
+function updateFilter(){const v=document.getElementById('panel').value;let shown=0;for(const card of cards){card.element.hidden=v!=='all'&&card.panel!==v;if(!card.element.hidden)shown++;}
+ document.getElementById('summary').textContent=shown+' کنترل از ۱۷ · منبع جهت لولا: پاسخ مالک · مدل سه‌بعدی یونیتی: مستقل از این صفحه';}
+async function start(){
+ try{
+  const response=await fetch('../Assets/B737Classic/GuardedSwitches/Resources/GuardedSwitchBlueprints.json',{cache:'no-store'});
+  if(!response.ok)throw new Error('HTTP '+response.status);
+  const catalog=await response.json();
+  if(catalog.controls.length!==17)throw new Error('فهرست باید دقیقاً ۱۷ کنترل داشته باشد');
+  const panels=[...new Set(catalog.controls.map(x=>x.panelId))];
+  const select=document.getElementById('panel');
+  for(const p of panels){const option=node('option','',p);option.value=p;select.append(option);}
+  for(const control of catalog.controls){const item=card(control);cards.push(item);document.getElementById('tiles').append(item.element);}
+  updateFilter();
+ }catch(err){document.getElementById('summary').textContent='خطای بارگذاری بلوپرینت: '+String(err.message);}
+}
+document.getElementById('panel').addEventListener('change',updateFilter);
+document.getElementById('open-all').addEventListener('click',()=>cards.forEach(c=>{c.closed.setOpen(true);c.opened.setOpen(true);}));
+document.getElementById('reset').addEventListener('click',()=>cards.forEach(c=>{c.closed.setOpen(false);c.opened.setOpen(true);}));
+start();
+</script>
+</body>
+</html>
