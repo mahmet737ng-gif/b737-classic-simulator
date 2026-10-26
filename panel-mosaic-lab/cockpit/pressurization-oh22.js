@@ -241,5 +241,6 @@
  const mo=new MutationObserver(()=>{if(mount()){mo.disconnect();window.document.documentElement.classList.add('oh22-pressure-config-active');}});
  mo.observe(atlas,{childList:true,subtree:true});
  system=savedSystem();mount();
- window.B737OH22Pressurization=Object.freeze({getSystem:()=>system,requestState,setSystem});
+ window.B737OH22Pressurization=Object.freeze({getSystem:()=>system,requestState,setSystem,
+  getDiagnosticSnapshot:()=>received?{system,state:received.state,output:received.output}:null});
 })();
