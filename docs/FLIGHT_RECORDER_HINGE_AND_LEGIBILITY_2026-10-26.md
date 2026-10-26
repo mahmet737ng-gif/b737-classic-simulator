@@ -1,6 +1,6 @@
 # B737 Classic — FLIGHT RECORDER hinge-left guarded switch and compact annunciator readability
 
-**Implemented 2026-10-26** in `mahmet737ng-gif/b737-classic-simulator`.
+**Implemented and source-photo visually verified in Chromium 2026-10-26** in `mahmet737ng-gif/b737-classic-simulator`.
 
 ## FLIGHT RECORDER: first install the switch, then align the OFF lamp
 
@@ -42,7 +42,7 @@ Original legend text, line breaks, ON/OFF colors and original SVG fingerprints a
 - [Visual annotated source-photo hinge inspection](https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/40251522134)
 - [Flight recorder interaction and source-coordinate regression test](../panel-mosaic-lab/lights-test/flight-recorder-hinge.test.cjs)
 - [Photo-locked guarded state/electrical warning checks](../panel-mosaic-lab/interactive-overhead/lights.test.cjs)
-- [Independent live Chromium guarded-switch audit](https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/40253162535)
+- [Independent live Chromium guarded-switch audit](https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/40253902882)
 - [Twelve readability derivatives and source fingerprints](../panel-mosaic-lab/lights-test/readability-derivatives-v1.json)
 - [33%/50% screenshots and full photometric measurements](https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/40253503931)
 
@@ -50,6 +50,14 @@ Original legend text, line breaks, ON/OFF colors and original SVG fingerprints a
 
 ### Remaining approval conditions
 
-1. Inspect the **real rendered** hinge/lever and OFF lens simultaneously in Unified at normal 1× zoom and under correct lighting; confirm ergonomic tap targets do not overlap other controls.
+1. **Completed in Chromium:** original UPPER panel source screenshot inspected with the mounted left hinge and bright amber OFF lamp visible together. The switch and lamp are adjacent without overlap. Measured live-panel gap **5.71 CSS pixels**, vertical-centre difference **0.36 CSS pixels**. Guard open / TEST / close-to-NORMAL interactions passed and zero lamp-related JavaScript errors occurred. Further human hardware-faithfulness review at each target device zoom remains worthwhile.
 2. Certify the exact recorder OFF inner-glass edge only if a clearer source photo justifies a geometry adjustment.
 3. Complete human recognizability and brightness acceptance for the five improved small legends at real screen pixel density, independently of the successful normalized pixel QA.
+
+## Final browser release confirmation
+
+- [Passed guarded-switch geometry and ON/OFF interaction with actual OH06 screenshots](https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/40253902882)
+- [Passed Pages build and deployment of the same commit](https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/40253902783)
+- [Passed 307-state OFF/ON/DIM/BRIGHT + 33%/50% readability optical QA after derived type enlargement](https://github.com/mahmet737ng-gif/b737-classic-simulator/actions/runs/40253503931)
+
+The source-photo-glass precision count remains **140/142**; installing the switch and proving its 7px separation does **not** falsely certify the ambiguous left border of the tiny recorder annunciator.
