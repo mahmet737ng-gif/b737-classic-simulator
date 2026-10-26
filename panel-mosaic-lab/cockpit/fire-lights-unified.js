@@ -1,5 +1,5 @@
 /* Installs 8 rectangular / 3 round light faces from the B737 database
- * at their measured 2172×724 source-image pixel centers. Separate from
+ * in the exact letterboxed 2172×724 source-image rectangle; hardware unchanged. Separate from
  * immutable Fire Protection artwork and from the switches/handles.
  */
 (function(win){
@@ -8,6 +8,7 @@ const model=win.B737UnifiedFireLampModel;
 if(!model)throw Error('FIRELAMP model missing');
 const unit=win.B737FireProtection?.createEngine?.()||null;
 const faceNodes=new Map();
+let lastRegistration=null;
 const overrides={};
 let external=null, visualTest=false, attached=false;
 const ids=new Set(model.SLOTS.map(s=>s.id));
@@ -46,6 +47,30 @@ function attach(){
  const layer=win.document.createElement('div');
  layer.className='fire-lamps-mounted';
  layer.dataset.coordinateBase='2172x724';
+ // The approved base is object-fit: contain. Pixel registration MUST be
+ // performed in its fitted image rectangle, not in the whole texture button.
+ // Otherwise, a 4:1 host causes a 3:1 image to be centered with side bars.
+ const hostW=host.clientWidth,hostH=host.clientHeight;
+ const scale=Math.min(hostW/model.BASE.width,hostH/model.BASE.height);
+ const imageW=model.BASE.width*scale,imageH=model.BASE.height*scale;
+ Object.assign(layer.style,{
+   inset:'auto',
+   left:((hostW-imageW)/2)+'px',top:((hostH-imageH)/2)+'px',
+   width:imageW+'px',height:imageH+'px'
+ });
+ // The previous base contains a vertically stacked L/R bottle socket pair.
+ // Only this measured right-side fragment is visually patched to the
+ // side-by-side configuration; all other image pixels are untouched.
+ const patch=win.document.createElement('img');
+ patch.className='fire-bottle-slot-patch';
+ patch.alt='';patch.draggable=false;patch.decoding='async';
+ patch.src='./assets/fire-lamps-v3/bottle-slots-horizontal-patch.svg';
+ const patchBox={left:1688,top:82,width:392,height:279};
+ for(const [key,value]of Object.entries(patchBox)){
+   const axis=(key==='left'||key==='width')?model.BASE.width:model.BASE.height;
+   patch.style[key]=(value/axis*100)+'%';
+ }
+ layer.append(patch);
  layer.setAttribute('aria-hidden','true');
  for(const slot of model.SLOTS){
   const node=win.document.createElement('span');node.className='fire-lamp';
@@ -56,7 +81,8 @@ function attach(){
   img.alt='';img.decoding='async';img.draggable=false;
   node.append(img);layer.append(node);faceNodes.set(slot.id,img);
  }
- host.append(layer);attached=true;draw();
+ host.append(layer);attached=true;
+ lastRegistration={hostWidth:hostW,hostHeight:hostH,imageWidth:imageW,imageHeight:imageH,offsetX:(hostW-imageW)/2,offsetY:(hostH-imageH)/2};draw();
  win.dispatchEvent(new win.CustomEvent('b737:unified-fire-lamps-mounted',{detail:{count:model.SLOTS.length,base:model.BASE,source:model.source}}));
  return true;
 }
@@ -83,6 +109,7 @@ win.B737UnifiedFireLights=Object.freeze({
  visualTest(active){visualTest=Boolean(active);return draw();},
  dispatch,indications:()=>Object.freeze({...current()}),
  getState:()=>unit?.getState()||null,
- positions:()=>model.SLOTS.map(s=>({id:s.id,center:[s.cx,s.cy],bounds:model.region(s)}))
+ positions:()=>model.SLOTS.map(s=>({id:s.id,center:[s.cx,s.cy],bounds:model.region(s)})),
+ registration:()=>lastRegistration?Object.freeze({...lastRegistration}):null
 });
 })(window);
