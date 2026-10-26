@@ -79,6 +79,12 @@ function attach(){
   for(const [key,value]of Object.entries(p))node.style[key]=value;
   const img=win.document.createElement('img');
   img.alt='';img.decoding='async';img.draggable=false;
+  // Full housing occupies the four measured outer corners; ONLY the black
+  // glass sprite occupies the separately measured inset face, preserving
+  // all four hardware screws / the metal bezel underneath.
+  const inset=model.facePercent(slot);
+  Object.assign(img.style,{position:'absolute',left:inset.left,top:inset.top,width:inset.width,height:inset.height});
+  node.dataset.geometry=slot.type==='rect'?'outer-frame-plus-inset-glass':'round-lens';
   node.append(img);layer.append(node);faceNodes.set(slot.id,img);
  }
  host.append(layer);attached=true;
@@ -109,7 +115,7 @@ win.B737UnifiedFireLights=Object.freeze({
  visualTest(active){visualTest=Boolean(active);return draw();},
  dispatch,indications:()=>Object.freeze({...current()}),
  getState:()=>unit?.getState()||null,
- positions:()=>model.SLOTS.map(s=>({id:s.id,center:[s.cx,s.cy],bounds:model.region(s)})),
+ positions:()=>model.SLOTS.map(s=>({id:s.id,center:[s.cx,s.cy],frameBounds:model.region(s),glassBounds:model.faceRegion(s)})),
  registration:()=>lastRegistration?Object.freeze({...lastRegistration}):null
 });
 })(window);
