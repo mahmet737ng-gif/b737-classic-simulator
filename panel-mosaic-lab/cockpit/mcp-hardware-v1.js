@@ -4,7 +4,8 @@
 (function(){
 "use strict";
 const W=2172,H=433;
-const AT_ART_ROOT=new URL("./assets/mcp-switches/",document.currentScript.src).href;
+/* MCP-PHOTO-0003: the original generated orthographic switch renders are
+   mounted from a single 4-state photo sheet, not procedural CSS substitutes. */
 const attached=new WeakSet(), all=[];
 const controls=Object.freeze([
  {id:"AT_ARM",kind:"toggle",x:357,y:181,w:66,h:68,caption:"A/T ARM",state:"OFF"},
@@ -51,9 +52,7 @@ function mountControl(parent,c){
  el.style.width=(c.w/W*100)+"%";
  el.style.height=(c.h/H*100)+"%";
  if(c.kind==="toggle"){
-  el.innerHTML=c.id==='AT_ARM'
-   ?'<img class="mcp-hw-switch-art mcp-hw-at-off" src="'+AT_ART_ROOT+'AT_ARM_OFF.svg" alt="" aria-hidden="true" draggable="false"><img class="mcp-hw-switch-art mcp-hw-at-up" src="'+AT_ART_ROOT+'AT_ARM_UP.svg" alt="" aria-hidden="true" draggable="false">'
-   :'<span class="mcp-hw-silver-atlas" aria-hidden="true"></span>';
+  el.innerHTML='<span class="mcp-hw-real-face" aria-hidden="true"></span>';
   on(el,"click",e=>{e.stopPropagation();change(c.id,state[c.id]==="OFF"?(c.id==="AT_ARM"?"ARM":"ON"):"OFF","click")});
   on(el,"keydown",e=>{if(e.key===" "||e.key==="Enter"){e.preventDefault();e.stopPropagation();change(c.id,state[c.id]==="OFF"?(c.id==="AT_ARM"?"ARM":"ON"):"OFF","keyboard")}});
  }else if(c.kind==="wheel"){
