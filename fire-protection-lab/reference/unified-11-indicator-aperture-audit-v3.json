@@ -1,0 +1,295 @@
+{
+  "schema": "b737.classic.fire.indicator_aperture_audit.v3",
+  "base": {
+    "dimensions": [
+      2172,
+      724
+    ],
+    "image": "panel-mosaic-lab/cockpit/assets/FIRE_PROTECTION_BARE_STANDARD_SLOTS_V2_ORIGINAL.svg",
+    "presentation": "contain",
+    "hostRenderingWarning": "Do not use the host 685x170 for image-space percentages; panel image natural aspect 3:1 must be fitted."
+  },
+  "localPatch": {
+    "file": "panel-mosaic-lab/cockpit/assets/fire-lamps-v3/bottle-slots-horizontal-patch.svg",
+    "rect": [
+      1688,
+      82,
+      392,
+      279
+    ],
+    "scope": "Only the right upper bottle region; old stacked R frame covered.",
+    "outOfPatchPixelsAltered": false
+  },
+  "photoExtraction": {
+    "source": "fire_protection_bare_panel_standard_slots_v2.png, original 2172x724",
+    "method": "pixel darkness connected-component audit for central slots and manual screw-safe recess for engine slots; photo resampling of L/R bottle frame; screenshot transform manually cross-checked",
+    "positionTolerancePx": 3
+  },
+  "corners": [
+    {
+      "id": "ENG1_OVERHEAT",
+      "aperture": {
+        "tl": [
+          215,
+          317
+        ],
+        "tr": [
+          371,
+          317
+        ],
+        "bl": [
+          215,
+          379
+        ],
+        "br": [
+          371,
+          379
+        ]
+      },
+      "targetBounds": [
+        215,
+        317,
+        156,
+        62
+      ],
+      "method": "manual safe dark face inside engine-1 four-corner recess; physical screws remain visible"
+    },
+    {
+      "id": "WHEEL_WELL",
+      "aperture": {
+        "tl": [
+          718,
+          119
+        ],
+        "tr": [
+          852,
+          119
+        ],
+        "bl": [
+          718,
+          188
+        ],
+        "br": [
+          852,
+          188
+        ]
+      },
+      "targetBounds": [
+        718,
+        119,
+        134,
+        69
+      ],
+      "method": "threshold-23 component inner face x719..850, y120..186, perimeter margin <=2px"
+    },
+    {
+      "id": "FAULT",
+      "aperture": {
+        "tl": [
+          718,
+          238
+        ],
+        "tr": [
+          852,
+          238
+        ],
+        "bl": [
+          718,
+          307
+        ],
+        "br": [
+          852,
+          307
+        ]
+      },
+      "targetBounds": [
+        718,
+        238,
+        134,
+        69
+      ],
+      "method": "threshold-23 inner dark face y239..305"
+    },
+    {
+      "id": "APU_DET_INOP",
+      "aperture": {
+        "tl": [
+          718,
+          357
+        ],
+        "tr": [
+          852,
+          357
+        ],
+        "bl": [
+          718,
+          426
+        ],
+        "br": [
+          852,
+          426
+        ]
+      },
+      "targetBounds": [
+        718,
+        357,
+        134,
+        69
+      ],
+      "method": "threshold-23 inner dark face y358..424"
+    },
+    {
+      "id": "APU_BOTTLE_DISCHARGED",
+      "aperture": {
+        "tl": [
+          718,
+          476
+        ],
+        "tr": [
+          852,
+          476
+        ],
+        "bl": [
+          718,
+          545
+        ],
+        "br": [
+          852,
+          545
+        ]
+      },
+      "targetBounds": [
+        718,
+        476,
+        134,
+        69
+      ],
+      "method": "threshold-23 inner dark face y477..543"
+    },
+    {
+      "id": "ENG2_OVERHEAT",
+      "aperture": {
+        "tl": [
+          1297,
+          318
+        ],
+        "tr": [
+          1457,
+          318
+        ],
+        "bl": [
+          1297,
+          383
+        ],
+        "br": [
+          1457,
+          383
+        ]
+      },
+      "targetBounds": [
+        1297,
+        318,
+        160,
+        65
+      ],
+      "method": "manual safe dark face inside engine-2 four-corner recess, screws remain visible"
+    },
+    {
+      "id": "L_BOTTLE_DISCHARGED",
+      "aperture": {
+        "tl": [
+          1747,
+          117
+        ],
+        "tr": [
+          1860,
+          117
+        ],
+        "bl": [
+          1747,
+          183
+        ],
+        "br": [
+          1860,
+          183
+        ]
+      },
+      "targetBounds": [
+        1747,
+        117,
+        113,
+        66
+      ],
+      "method": "frame cropped from original L source and resized to 175x99, new upper horizontal socket"
+    },
+    {
+      "id": "R_BOTTLE_DISCHARGED",
+      "aperture": {
+        "tl": [
+          1927,
+          117
+        ],
+        "tr": [
+          2040,
+          117
+        ],
+        "bl": [
+          1927,
+          183
+        ],
+        "br": [
+          2040,
+          183
+        ]
+      },
+      "targetBounds": [
+        1927,
+        117,
+        113,
+        66
+      ],
+      "method": "exact cloned frame in upper row, 180px to the right"
+    }
+  ],
+  "rounds": [
+    {
+      "id": "EXT_L",
+      "center": [
+        1832,
+        416
+      ],
+      "innerLensRadius": 21,
+      "visibleBezelRadius": 30,
+      "source": "Hough-circle calibrated with original photograph"
+    },
+    {
+      "id": "EXT_R",
+      "center": [
+        1927,
+        416
+      ],
+      "innerLensRadius": 21,
+      "visibleBezelRadius": 30,
+      "source": "Hough-circle calibrated with original photograph"
+    },
+    {
+      "id": "EXT_APU",
+      "center": [
+        1881,
+        504
+      ],
+      "innerLensRadius": 21,
+      "visibleBezelRadius": 30,
+      "source": "Hough-circle calibrated with original photograph"
+    }
+  ],
+  "qaThresholds": {
+    "maxCornerErrorPx": 3,
+    "maxCircleCenterErrorPx": 2,
+    "bottleSameRow": true,
+    "strictSourceImageRect": true,
+    "noChangeOutsidePatch": true,
+    "keepAllOriginalLockedAssets": true
+  },
+  "status": "READY_FOR_AUTOMATED_QA; not flight-certified"
+}
