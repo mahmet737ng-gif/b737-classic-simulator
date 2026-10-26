@@ -25,7 +25,6 @@ namespace B737Classic.GuardedSwitches
             // Each component is a distinct body, not flattened screenshot art.
             Material surround = NewMaterial("Mount_" + spec.controlId, "#111418", 0.30f, 0.75f);
             Material metal = NewMaterial("Hinge_" + spec.controlId, "#777C84", 0.70f, 0.34f);
-            Material lever = NewMaterial("Lever_" + spec.controlId, "#B3B7BC", 0.65f, 0.33f);
             Material lid = NewMaterial(
                 "Cover_" + spec.controlId,
                 spec.material.swatchHex,
@@ -39,15 +38,8 @@ namespace B737Classic.GuardedSwitches
             mount.transform.localScale = new Vector3(g.previewWidth + 0.025f, g.previewHeight + 0.025f, 0.017f);
             mount.GetComponent<MeshRenderer>().sharedMaterial = surround;
 
-            GameObject toggle = GameObject.CreatePrimitive(PrimitiveType.Capsule);
-            toggle.name = "UnderlyingSwitch_Provisional";
-            toggle.transform.SetParent(root.transform, false);
-            toggle.transform.localPosition = Vector3.zero;
-            toggle.transform.localScale = new Vector3(
-                Mathf.Min(0.027f, g.previewWidth * 0.24f),
-                Mathf.Min(0.028f, g.previewHeight * 0.25f),
-                0.014f);
-            toggle.GetComponent<MeshRenderer>().sharedMaterial = lever;
+            // Switch hardware is now built independently by GuardActuatorFactory.
+            // No generic pill-shaped lever remains in the guarded cover assembly.
 
             Vector3 anchor = GuardSwitchView.LocalPivot(g.previewWidth, g.previewHeight, direction);
             GameObject fixedKnuckle = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
@@ -97,9 +89,9 @@ namespace B737Classic.GuardedSwitches
             GuardPreviewClickTarget clickCover = cover.AddComponent<GuardPreviewClickTarget>();
             clickCover.target = view;
             clickCover.underlyingSwitch = false;
-            GuardPreviewClickTarget clickSwitch = toggle.AddComponent<GuardPreviewClickTarget>();
-            clickSwitch.target = view;
-            clickSwitch.underlyingSwitch = true;
+            // Dedicated socket + ring + satin stem + shaped grip + detent pivot.
+            // The actuator remains physically separate from the moving guard.
+            GuardActuatorFactory.CreatePreview(spec, root.transform, view);
 
             return root;
         }
