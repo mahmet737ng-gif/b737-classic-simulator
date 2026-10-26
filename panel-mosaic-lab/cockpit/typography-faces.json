@@ -1,6 +1,6 @@
 {
   "schema": "b737.main-panel.annunciator-type-v1",
-  "version": "MIP-TYPE-0001",
+  "version": "MIP-TYPE-0002",
   "sourceRegistryVersion": "LGT-0012",
   "sourceImagesChanged": 0,
   "sourcePositionsChanged": 0,
@@ -497,11 +497,11 @@
       "states": {
         "OFF": {
           "url": "../assets/lights/main-type-v1/main-autobrake_OFF.svg",
-          "sha256": "46a835d9e832ddb1fd436ef2f8d3a39db9af744aede8db7f4e8cdf6b3f175f03"
+          "sha256": "a30cc913f8b5da1d3260e801207d1245363868513fe195f8e53c9e2faf81d137"
         },
         "ON": {
           "url": "../assets/lights/main-type-v1/main-autobrake_ON.svg",
-          "sha256": "f26c42d82d3019cc14d0f44dc86160c1d29fce33bfc3b1cdf6833d39dac3d353"
+          "sha256": "6887d1fcb9462ea32a78b5b0c8ecf228ec97341b6a5359b48cd95cc3c920b6a1"
         }
       }
     },
@@ -577,11 +577,11 @@
       "states": {
         "OFF": {
           "url": "../assets/lights/main-type-v1/main-speed-brake-armed_OFF.svg",
-          "sha256": "55680fb8fabfe8d8dbde4ef6383c55fd9325fea724d26baafdededfbee3917d0"
+          "sha256": "038381d38982fa90574560c9b44a1cb4a30234fe211c24a005322b5edcf14ddd"
         },
         "ON": {
           "url": "../assets/lights/main-type-v1/main-speed-brake-armed_ON.svg",
-          "sha256": "106f3aef7a3306f2b1ae3430da8db90bf1d236357997d8a18ba83f85f732dcb2"
+          "sha256": "857aed7af6a01c84e7fc20a8791a8b574289e9e0b5b194fb60ba852608a3ffec"
         }
       }
     },

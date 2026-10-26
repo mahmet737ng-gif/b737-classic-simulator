@@ -2026,7 +2026,7 @@
       "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/AUTO_BRAKE_DISARM_OFF.svg",
       "sourceSha256": "e38cc68682a5df2de64ecaf56b1eb900c303e6e4500352b05c66decf57516b53",
       "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-autobrake_OFF.svg",
-      "sha256": "46a835d9e832ddb1fd436ef2f8d3a39db9af744aede8db7f4e8cdf6b3f175f03",
+      "sha256": "a30cc913f8b5da1d3260e801207d1245363868513fe195f8e53c9e2faf81d137",
       "legends": [
         "AUTO BRAKE",
         "DISARM"
@@ -2038,8 +2038,8 @@
         110
       ],
       "targetSizes": [
-        80.824,
-        80.824
+        63.851,
+        63.851
       ],
       "baselines": [
         135,
@@ -2067,7 +2067,7 @@
       "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/AUTO_BRAKE_DISARM_ON.svg",
       "sourceSha256": "e062d61c26b4fe2d546615c59295b0456ba62b6831c2a98272c45abae22cbdf6",
       "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-autobrake_ON.svg",
-      "sha256": "f26c42d82d3019cc14d0f44dc86160c1d29fce33bfc3b1cdf6833d39dac3d353",
+      "sha256": "6887d1fcb9462ea32a78b5b0c8ecf228ec97341b6a5359b48cd95cc3c920b6a1",
       "legends": [
         "AUTO BRAKE",
         "DISARM"
@@ -2079,8 +2079,8 @@
         110
       ],
       "targetSizes": [
-        80.824,
-        80.824
+        63.851,
+        63.851
       ],
       "baselines": [
         135,
@@ -2362,7 +2362,7 @@
       "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/SPEED_BRAKE_ARMED_GREEN_OFF.svg",
       "sourceSha256": "8115a31c2bbbf7d2402d058acef39ede22e9ee53ddb7ba4282134ebc11779634",
       "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-speed-brake-armed_OFF.svg",
-      "sha256": "55680fb8fabfe8d8dbde4ef6383c55fd9325fea724d26baafdededfbee3917d0",
+      "sha256": "038381d38982fa90574560c9b44a1cb4a30234fe211c24a005322b5edcf14ddd",
       "legends": [
         "SPEED BRAKE",
         "ARMED"
@@ -2375,7 +2375,7 @@
       ],
       "targetSizes": [
         111,
-        86.322
+        75.1
       ],
       "baselines": [
         135,
@@ -2403,7 +2403,7 @@
       "source": "panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS/unified-mounted-v1/SPEED_BRAKE_ARMED_GREEN_ON.svg",
       "sourceSha256": "f1f46f554eb5173a9434c72ae81253a9ef249a6c6a10c0f3e980b4596b634267",
       "file": "panel-mosaic-lab/assets/lights/main-type-v1/main-speed-brake-armed_ON.svg",
-      "sha256": "106f3aef7a3306f2b1ae3430da8db90bf1d236357997d8a18ba83f85f732dcb2",
+      "sha256": "857aed7af6a01c84e7fc20a8791a8b574289e9e0b5b194fb60ba852608a3ffec",
       "legends": [
         "SPEED BRAKE",
         "ARMED"
@@ -2416,7 +2416,7 @@
       ],
       "targetSizes": [
         111,
-        86.322
+        75.1
       ],
       "baselines": [
         135,
@@ -2508,5 +2508,6 @@
   "exceptions": [
     "PULL_UP_RED is optically preserved because previously accepted"
   ],
-  "humanVisualSignoff": "PENDING_REAL_100_75_50_BROWSER_SCREENSHOT_COMPARE"
+  "humanVisualSignoff": "PENDING_REAL_100_75_50_BROWSER_SCREENSHOT_COMPARE",
+  "revision": "MIP-TYPE-0002"
 }
