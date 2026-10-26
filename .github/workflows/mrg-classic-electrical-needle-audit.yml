@@ -3,6 +3,10 @@ on:
   push:
     paths:
       - "engine/instruments/mrg-electrical-needle-audit-v1.js"
+      - "engine/systems/mrg-classic-340-consumer-bus-index-v1.json"
+      - "engine/systems/mrg-classic-consumer-bus-qa-v1.js"
+      - "engine/systems/mrg-classic-bus-failure-effects-v1.json"
+      - "tests/mrg-classic-340-bus-source-audit-v1.test.cjs"
       - "panel-mosaic-lab/cockpit/mrg-electrical-needle-qa-unified.js"
       - "panel-mosaic-lab/cockpit/index.html"
       - "engine/systems/electrical-v7.js"
@@ -22,9 +26,12 @@ jobs:
       - name: Verify unmodified source-based needle models
         run: |
           node --check engine/instruments/mrg-electrical-needle-audit-v1.js
+          node --check engine/systems/mrg-classic-consumer-bus-qa-v1.js
           node --check panel-mosaic-lab/cockpit/mrg-electrical-needle-qa-unified.js
       - name: Classic MRG numeric meter and CSD limits
         run: npm run test:mrg-needle
+      - name: Test 340 Classic source rows and 35 failure effects
+        run: npm run test:mrg-bus
       - name: Existing electrical source bus regression
         run: node tests/electrical-v7.test.cjs
       - name: Geometry QA stays source-locked
