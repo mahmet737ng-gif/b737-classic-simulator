@@ -412,13 +412,13 @@
         {
           "id": "fire-protection",
           "label": "FIRE PROTECTION — BELOW THROTTLE QUADRANT",
-          "asset": "panel-mosaic-lab/cockpit/assets/fire-v6-generated/weathered_boeing_737_apu_panel_shell.webp",
+          "asset": "panel-mosaic-lab/cockpit/assets/fire-v6/FIRE_PANEL_BARE.webp",
           "x": 244,
           "y": 740.9857819905213,
           "w": 685,
           "h": 170.10287081339712,
           "presentation": "contain",
-          "layoutStatus": "FIRELAMP-0006 new approved shell; only Fire Protection placement asset changed; rest of scene untouched"
+          "layoutStatus": "FIRELAMP-0006 individually separated ON/OFF lights; base V6 approved shell; adjacent panels unmodified"
         },
         {
           "id": "pedestal-radio",
