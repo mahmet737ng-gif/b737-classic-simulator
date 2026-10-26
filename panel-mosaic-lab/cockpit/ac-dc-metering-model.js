@@ -5,8 +5,12 @@
  if(root)root.B737AcDcMeteringModel=model;
 })(typeof globalThis==='object'?globalThis:this,function(){
  'use strict';
- // Display-centre candidates fit from intact OH10 original circular metal rims;\n // 4 strong Hough thresholds give the same centre. DO NOT mistake a bezel\n // centre for a photographed shaft: require arc/tip confirmation for release.\n // See engine/instruments/native-bezel-centre-evidence-v1.json.
- // Initial angles now represent provisional cold-dark mechanical resting positions.\n // DC AMPS is center-zero; unpowered AC/DC voltmeters rest at their leftmost stop pending exact source-tick survey.
+ // Display-centre candidates fit from intact OH10 original circular metal rims; 
+ // 4 strong Hough thresholds give the same centre. DO NOT mistake a bezel 
+ // centre for a photographed shaft: require arc/tip confirmation for release. 
+ // See engine/instruments/native-bezel-centre-evidence-v1.json.
+ // Initial angles now represent provisional cold-dark mechanical resting positions. 
+ // DC AMPS is center-zero; unpowered AC/DC voltmeters rest at their leftmost stop pending exact source-tick survey.
  const source=Object.freeze({piece:'OH10',width:1095,height:1436,tipRadius:85,spriteTipRadius:216});
  const meters=Object.freeze([
   Object.freeze({id:'dcAmps',label:'DC AMPS',x:300.8,y:203.4,initialAngle:0}),
