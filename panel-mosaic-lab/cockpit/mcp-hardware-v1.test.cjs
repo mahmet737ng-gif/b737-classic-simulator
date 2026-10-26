@@ -7,7 +7,7 @@ const visual=fs.readFileSync(path.join(root,"mcp-visual-v3.js"),"utf8");
 const unified=fs.readFileSync(path.join(root,"index.html"),"utf8");
 const standalone=fs.readFileSync(path.join(root,"../mcp-panel/index.html"),"utf8");
 for(const page of [unified,standalone]){
- assert.match(page,/mcp-hardware-v1\.js\?v=MCP-0006-SMALL-SILVER/);
+ assert.match(page,/mcp-hardware-v1\.js\?v=MCP-SPRITE-0002/);
  assert.match(page,/mcp-hardware-v1\.css\?v=MCP-0005-HARDWARE/);
  assert.match(page,/mcp-visual-v3\.js\?v=MCP-0005-PIXEL-QA/);
 }
@@ -37,7 +37,8 @@ const toggles=Object.fromEntries(controls.filter(c=>c.kind==="toggle").map(c=>[c
 assert.deepEqual([toggles.AT_ARM.x,toggles.AT_ARM.y,toggles.AT_ARM.w,toggles.AT_ARM.h],[357,181,66,68]);
 assert.deepEqual([toggles.FD_LEFT.x,toggles.FD_LEFT.y,toggles.FD_LEFT.w,toggles.FD_LEFT.h],[203,321,36,51]);
 assert.deepEqual([toggles.FD_RIGHT.x,toggles.FD_RIGHT.y,toggles.FD_RIGHT.w,toggles.FD_RIGHT.h],[1903,321,36,51]);
-assert.match(js,/AT_ARM_OFF\\.svg/);\nassert.match(js,/AT_ARM_UP\\.svg/);
+assert.match(js,/AT_ARM_OFF\.svg/);
+assert.match(js,/AT_ARM_UP\.svg/);
 assert.match(js,/mcp-hw-silver-atlas/);
 assert.doesNotMatch(js,/mcp-hw-toggle-foot/);
 assert.match(reference,/\.mcp-hw-at-paddle/);
