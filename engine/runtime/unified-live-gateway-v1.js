@@ -18,6 +18,18 @@
   ...[...ECU_ROTARY].map(id=>[id,'rotary']),
   ...[...ECU_GUARD].map(id=>[id,'guarded'])
  ]));
+ const DETENTS=Object.freeze({
+  'battery-master':['off','on'],'standby-power':['bat','off','auto'],
+  'generator-disconnect-1':['normal','disconnect'],'generator-disconnect-2':['normal','disconnect'],
+  'gen-1':['OFF','NEUTRAL','ON'],'gen-2':['OFF','NEUTRAL','ON'],
+  'apu-gen-1':['OFF','NEUTRAL','ON'],'apu-gen-2':['OFF','NEUTRAL','ON'],
+  'ground-power':['OFF','ON'],'apu-start':['OFF','ON','START'],
+  'bleed-apu':['OFF','ON'],'bleed-eng-1':['OFF','ON'],'bleed-eng-2':['OFF','ON'],
+  'pack-l':['OFF','AUTO','HIGH'],'pack-r':['OFF','AUTO','HIGH'],
+  'isolation-valve':['CLOSE','AUTO','OPEN'],
+  'ignition-source':['IGN L','BOTH','IGN R'],
+  'engine-start-1':['GRD','OFF','CONT','FLT'],'engine-start-2':['GRD','OFF','CONT','FLT']
+ });
  const owner=id=>BRIDGE_TOGGLE.has(id)||BRIDGE_GUARD.has(id)?'ISN_PACK_BRIDGE':'ISN_ECU_CHAIN';
  class Gateway{
   constructor({bridge,ecu,physical}={}){
@@ -59,6 +71,8 @@
    if(expected!==event.kind)return this._record({accepted:false,id:event.id,reason:'WRONG_EVENT_KIND'});
    const val=expected==='guarded'?event.next?.value:event.next;
    if(typeof val!=='string'||!val.length)return this._record({accepted:false,id:event.id,reason:'INVALID_DETENT'});
+   const allowed=DETENTS[event.id]||['OFF','ON']; // pump controls
+   if(!allowed.includes(val))return this._record({accepted:false,id:event.id,value:val,reason:'INVALID_DETENT'});
    if(this.positions.get(event.id)===val)
     return this._record({accepted:true,duplicate:true,id:event.id,value:val,owner:owner(event.id)});
    const before=this.bridge.get().rejected.length;
@@ -85,7 +99,7 @@
   }
   snapshot(){
    const pack=this.bridge.get(),e=this.ecu.get();
-   return {schema:'b737-unified-live-snapshot/1',singleElectricalOwner:pack.state.electrical.revision===this.ecu.start.core.pack.electricalState.rev,
+   return {schema:'b737-unified-live-snapshot/1',singleElectricalOwner:this.bridge.session===this.ecu.start.core.pack,
     engineSource:'ISN13_18_ECU',electricalSource:'ELECTRICAL_V7_EXISTING_PACK',
     electrical:copy(pack.state.electrical),loads:copy(pack.state.loads),
     engines:copy(e.engines),apu:copy(e.apu),lamps:copy(pack.lamps),
@@ -97,5 +111,5 @@
    mappedPhysicalControls:Object.keys(KEYS).length,
    latestFailure:copy(this.lastFailure),recentEvents:copy(this.log)};}
  }
- return Object.freeze({Gateway,KEYS,owner});
+ return Object.freeze({Gateway,KEYS,DETENTS,owner});
 });
