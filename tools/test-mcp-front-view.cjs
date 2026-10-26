@@ -54,6 +54,35 @@ async function run(browser,kind){
  assert.ok(a.silver.every(x=>x.sprite.width===5120&&x.sprite.height===1024));
  assert.deepEqual(a.toggles.map(x=>x.id),['AT_ARM','FD_LEFT','FD_RIGHT']);
  assert.equal(a.knobs.length,5);
+ const photoAudit=await page.evaluate(async()=>{
+  const root=document.querySelector('[data-piece="mcp"]');
+  const ids=[
+   ['courseL','COURSE_PHOTO_80.webp'],['courseR','COURSE_PHOTO_80.webp'],
+   ['heading','HEADING_PHOTO_80.webp'],['altitude','ALTITUDE_PHOTO_80.webp']
+  ];
+  const found=[];
+  for(const [id,file]of ids){
+   const node=root.querySelector('.mcp-v3-knob[data-control="'+id+'"] .mcp-v3-'+(id.startsWith('course')?'course':'plain')+'-face');
+   if(!node)throw Error('missing real reference knob '+id);
+   const css=getComputedStyle(node).backgroundImage;
+   if(!css.includes(file))throw Error('CSS pseudo-knob remains mounted '+id+': '+css);
+   const u=css.slice(5,-2),img=new Image();img.src=u;await img.decode();
+   found.push({id,file,w:img.naturalWidth,h:img.naturalHeight});
+  }
+  const buttons=[...root.querySelectorAll('.mcp-hw-push')];
+  if(buttons.length!==3)throw Error('MCP physical round push-button count has drifted');
+  for(const b of buttons){
+   const css=getComputedStyle(b.querySelector('.mcp-hw-push-bezel')).backgroundImage;
+   if(!css.includes('ROUND_PUSH_80.webp'))throw Error('Old CSS pushbutton instead of source photo');
+   const img=new Image();img.src=css.slice(5,-2);await img.decode();
+   if(img.naturalWidth!==80||img.naturalHeight!==80)throw Error('Pushbutton photo altered');
+  }
+  return{knobs:found,pushes:buttons.length};
+ });
+ assert.equal(photoAudit.knobs.length,4);
+ assert.equal(photoAudit.pushes,3);
+ assert.ok(photoAudit.knobs.every(x=>x.w===80&&x.h===80));
+ console.log('MCP_PRIOR_ARTWORK_LOADED',JSON.stringify({page:kind,...photoAudit}));
  const states={};
  for(const mode of ['OFF','ON']){
   if(kind==='lab'){
