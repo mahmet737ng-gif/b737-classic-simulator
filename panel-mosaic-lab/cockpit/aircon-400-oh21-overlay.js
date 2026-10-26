@@ -71,9 +71,13 @@
    fit(node,rect);
    // Font is bounded by BOTH the glass height and the available width. This
    // fixes the previous unrestricted text spilling across screws and OFF/AUTO.
-   const maxHeight=rect.h*(item.kind==='title'?.72:.72);
-   const maxWidth=Math.max(5,(rect.w-7)/(item.text.length*(item.kind==='title'?.69:.66)));
-   node.style.fontSize=Math.max(5,Math.min(maxHeight,maxWidth)).toFixed(2)+'px';
+   const maxHeight=rect.h*.72;
+   const ctx=document.createElement('canvas').getContext('2d');
+   ctx.font='800 '+maxHeight+'px Arial';
+   const natural=ctx.measureText(item.text).width;
+   // Preserve explicit 3px inner margin on both sides even for AUTO.
+   const fitRatio=Math.min(1,(rect.w-10)/Math.max(1,natural));
+   node.style.fontSize=Math.max(5,maxHeight*fitRatio*.95).toFixed(2)+'px';
    layer.append(node);
   }
  }
