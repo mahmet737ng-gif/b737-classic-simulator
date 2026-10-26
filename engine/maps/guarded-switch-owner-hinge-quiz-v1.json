@@ -13,7 +13,7 @@
   "semantic": "Answer names hinge location and the direction the cover swings OPEN: Up=hinge top, pull bottom and rotate upward; Down=hinge bottom, pull top and rotate downward; Left=hinge left, pull right edge and rotate left; Right=hinge right, pull left edge and rotate right.",
   "oldAssetsPolicy": "DISREGARD in all fresh designs: do not alter/delete frozen originals. Do not reuse any currently approved red/black guard PNG as new basis.",
   "newDesignPolicy": "Unique independent 3D-like photorealistic guard/hinge/underlying switch per control, perspective-fixed; identical dimensions and shape in open and closed positions; animation through a true fixed hinge axis, not sprite distortion; all geometries fitted only after exact native socket measurement.",
-  "answerRecording": "Answers are persisted to this file ONLY by explicit GitHub connector commits after the user selects an answer in ChatGPT; the in-chat quiz submits a new turn and does not write to GitHub by itself. No success claim before a GitHub commit.",
+  "answerRecording": "BATCH_SUBMISSION_ONLY: the quiz holds all selections locally until the user taps Finish; the finished quiz sends exactly one conversation message containing ALL 17 controlId=>Up|Down|Left|Right answers. The assistant must fetch this JSON and update all answers together in ONE GitHub commit, verify the new commit and test. Do not commit on individual option selection.",
   "validation": {
     "answerValuesExactly": [
       "Up",
@@ -464,5 +464,12 @@
       ],
       "note": null
     }
-  ]
+  ],
+  "batchSubmitPolicy": {
+    "requiredCount": 17,
+    "sendAllTogether": true,
+    "writeCountBeforeFinish": 0,
+    "oneCommitPerCompletedQuiz": true,
+    "allowPreseededAnswersToBeEdited": true
+  }
 }
