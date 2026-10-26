@@ -5,7 +5,8 @@ on:
       - 'panel-mosaic-lab/cockpit/fire-lights*'
       - 'panel-mosaic-lab/cockpit/index.html'
       - 'panel-mosaic-lab/cockpit/assembly.json'
-      - 'fire-protection-lab/reference/as-built-11-indicator-pixel-map.json'
+      - 'fire-protection-lab/reference/unified-11-indicator-aperture-audit-v3.json'
+      - 'panel-mosaic-lab/cockpit/assets/fire-lamps-v3/**'
       - 'fire-protection-lab/assets/EXT_TEST_CIRCULAR_GREEN_*'
       - '.github/workflows/unified-fire-lamps.yml'
   pull_request:
@@ -13,7 +14,8 @@ on:
       - 'panel-mosaic-lab/cockpit/fire-lights*'
       - 'panel-mosaic-lab/cockpit/index.html'
       - 'panel-mosaic-lab/cockpit/assembly.json'
-      - 'fire-protection-lab/reference/as-built-11-indicator-pixel-map.json'
+      - 'fire-protection-lab/reference/unified-11-indicator-aperture-audit-v3.json'
+      - 'panel-mosaic-lab/cockpit/assets/fire-lamps-v3/**'
       - 'fire-protection-lab/assets/EXT_TEST_CIRCULAR_GREEN_*'
   workflow_dispatch:
 permissions:
