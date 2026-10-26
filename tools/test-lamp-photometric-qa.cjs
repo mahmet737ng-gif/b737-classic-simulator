@@ -17,7 +17,7 @@ const additional=[
  ...face14.files.map(f=>({id:f.system+'-'+f.lamp,asset:f.asset,state:f.state,
   source:'../'+f.file.replace('panel-mosaic-lab/',''),kind:'oh22-'+f.system})),
  ...['OFF','ON'].map(state=>({id:'737400-pack',asset:'PACK',state,kind:'737400-oh21',
-  source:'../assets/737-400-PACK_FITTED_'+state+'.svg'}))
+  source:'./assets/737-400-PACK_FITTED_'+state+'.svg'}))
 ];
 const fixtures=[];
 for(const [kind,reg,overrides] of [['oh',oh,oi],['main',main,mi]]){
@@ -122,6 +122,7 @@ assert.equal(three,7);assert.ok(total>=300);
   const p=path.join(OUT,'measurements.json');
   fs.writeFileSync(p,JSON.stringify({schema:'b737.lamp.optical-browser-baseline.v1',
    date:'2026-10-26',note:'Browser-normalized pixels, not aircraft-certified brightness; p98 highlight and energy measured in linear-light sRGB.',stats,rows:result},null,2)+'\n');
+  console.log('PHOTOMETRIC_BLUE_DIM_BRIGHT',JSON.stringify(stats.ratios.filter(r=>r.brightToDim!==undefined)));
   console.log('PHOTOMETRIC_QA_SUMMARY',JSON.stringify({mounted:stats.mounted,states:result.length,decodeFailed:faults.length,
     failures:stats.failures.length,warnings:stats.warnings.length,threeStateBlue:three,
     worst:stats.ratios.sort((a,b)=>a.onToOff-b.onToOff).slice(0,18)}));
