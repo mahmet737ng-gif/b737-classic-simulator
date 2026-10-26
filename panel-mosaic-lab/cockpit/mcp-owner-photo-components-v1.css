@@ -1,11 +1,11 @@
-/* MCP-PHOTO-0001: ACTUAL prior photoreal control images, NOT generated CSS approximations.
+/* MCP-PHOTO-0002: ACTUAL prior photoreal control images, NOT generated CSS approximations.
    Image-derived 80x80 transparent thumbnails. Preserve existing source x/y pivots,
    user-approved IAS/MACH, and all AFDS/light electrical dependencies. */
 [data-piece="mcp"]>.mcp-v3-knob.mcp-v3-course,
 [data-piece="mcp"]>.mcp-v3-knob.mcp-v3-plain{
  background:none!important;border:0!important;box-shadow:none!important;
 }
-[data-piece="mcp"]>.mcp-v3-course .mcp-v3-course-face{
+[data-piece="mcp"]>.mcp-v3-knob.mcp-v3-course .mcp-v3-course-face{
  position:absolute;inset:0!important;width:100%!important;height:100%!important;
  border:0!important;box-shadow:none!important;
  background:transparent url("./assets/mcp-switches/COURSE_PHOTO_80.webp") center/contain no-repeat!important;
@@ -34,3 +34,8 @@
 @media(prefers-reduced-motion:reduce){
  [data-piece="mcp"]>.mcp-hw-push .mcp-hw-push-bezel{transition:none}
 }
+ 
+/* Important: the historical MCP-SPRITE-0002 course-face gradient has specificity
+   [data-piece] + .mcp-v3-knob + .mcp-v3-course + .mcp-v3-course-face.
+   The owner-image selector above must MATCH that specificity (and load last),
+   otherwise the real COURSE image remains hidden by the fake CSS gradient. */
