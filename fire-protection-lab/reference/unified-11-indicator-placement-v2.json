@@ -1,0 +1,180 @@
+{
+  "schema": "b737.fire-protection.unified-indicators.v2",
+  "version": "FIRELAMP-0002",
+  "canvas": {
+    "width": 2172,
+    "height": 724,
+    "origin": "top-left",
+    "units": "px"
+  },
+  "scope": "Fire Protection lamp overlay only; locked artwork, switches, handles, throttle quadrant and radio panels unchanged",
+  "status": "Owner-approved placement spec for Unified implementation; final screenshot pixel QA pending",
+  "rectSize": {
+    "width": 208,
+    "height": 105
+  },
+  "roundDiameter": 60,
+  "legendScale": 0.75,
+  "assetPolicy": "Original database SVG images copied into separate 75%-lettering variants (black backing preserved); database originals remain immutable",
+  "lights": [
+    {
+      "id": "ENG1_OVERHEAT",
+      "type": "rect",
+      "center": [
+        287,
+        342
+      ],
+      "bounds": [
+        183,
+        289.5,
+        208,
+        105
+      ]
+    },
+    {
+      "id": "WHEEL_WELL",
+      "type": "rect",
+      "center": [
+        812,
+        110
+      ],
+      "bounds": [
+        708,
+        57.5,
+        208,
+        105
+      ]
+    },
+    {
+      "id": "FAULT",
+      "type": "rect",
+      "center": [
+        813,
+        247
+      ],
+      "bounds": [
+        709,
+        194.5,
+        208,
+        105
+      ]
+    },
+    {
+      "id": "APU_DET_INOP",
+      "type": "rect",
+      "center": [
+        813,
+        382
+      ],
+      "bounds": [
+        709,
+        329.5,
+        208,
+        105
+      ]
+    },
+    {
+      "id": "APU_BOTTLE_DISCHARGED",
+      "type": "rect",
+      "center": [
+        813,
+        529
+      ],
+      "bounds": [
+        709,
+        476.5,
+        208,
+        105
+      ]
+    },
+    {
+      "id": "ENG2_OVERHEAT",
+      "type": "rect",
+      "center": [
+        1412,
+        365
+      ],
+      "bounds": [
+        1308,
+        312.5,
+        208,
+        105
+      ]
+    },
+    {
+      "id": "L_BOTTLE_DISCHARGED",
+      "type": "rect",
+      "center": [
+        1653,
+        138
+      ],
+      "bounds": [
+        1549,
+        85.5,
+        208,
+        105
+      ]
+    },
+    {
+      "id": "R_BOTTLE_DISCHARGED",
+      "type": "rect",
+      "center": [
+        1864,
+        138
+      ],
+      "bounds": [
+        1760,
+        85.5,
+        208,
+        105
+      ]
+    },
+    {
+      "id": "EXT_L",
+      "type": "round",
+      "center": [
+        1739,
+        400
+      ],
+      "bounds": [
+        1709,
+        370,
+        60,
+        60
+      ]
+    },
+    {
+      "id": "EXT_R",
+      "type": "round",
+      "center": [
+        1872,
+        400
+      ],
+      "bounds": [
+        1842,
+        370,
+        60,
+        60
+      ]
+    },
+    {
+      "id": "EXT_APU",
+      "type": "round",
+      "center": [
+        1807,
+        550
+      ],
+      "bounds": [
+        1777,
+        520,
+        60,
+        60
+      ]
+    }
+  ],
+  "notes": [
+    "L and R bottle lights are horizontally adjacent at y=138; old vertical socket layout in bare background is a separate base-art defect and is NOT edited by this lamp-only change.",
+    "The EXT test 60px circles are larger than previous 42px lens assets.",
+    "Text is scaled to 75% inside derived ON/OFF faces, not CSS-transformed on the panel."
+  ]
+}
