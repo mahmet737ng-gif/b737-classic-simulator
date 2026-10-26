@@ -10,13 +10,16 @@
  const freeze=x=>{if(x&&typeof x==='object'&&!Object.isFrozen(x)){Object.freeze(x);for(const v of Object.values(x))freeze(v);}return x;};
  const fail=m=>{throw Error(m);};
  function sort(adapters){
+  if(!Array.isArray(adapters)||adapters.length===0)fail('At least one system adapter required');
   const ids=new Set(), owners=new Set();
   for(const a of adapters){
    if(!a||typeof a.id!=='string'||!a.id||ids.has(a.id))fail('Duplicate or invalid system ID');
    if(!Array.isArray(a.owns)||!a.owns.length||!Array.isArray(a.dependsOn)||
       !['initialState','apply','project'].every(k=>typeof a[k]==='function'))fail('Invalid adapter '+a.id);
    ids.add(a.id);
-   for(const p of a.owns){if(typeof p!=='string'||!p||owners.has(p))fail('Duplicate or invalid state owner '+p);owners.add(p);}
+   for(const p of a.owns){if(typeof p!=='string'||!p||[...owners].some(existing=>existing===p||existing.startsWith(p+'.')||p.startsWith(existing+'.')))
+    fail('Duplicate or overlapping state owner '+p);
+   owners.add(p);}
   }
   for(const a of adapters)for(const d of a.dependsOn)if(!ids.has(d)||d===a.id)fail('Missing or self dependency '+d);
   const remaining=[...adapters],ordered=[];
@@ -61,26 +64,32 @@
   snapshot(){return copy(this.current);}
   audit(){return {owners:this.adapters.flatMap(a=>a.owns.map(path=>({path,owner:a.id}))),
    order:this.adapters.map(a=>a.id),events:this.events.length,revision:this.revision,
+   replayHistoryComplete:this.events.length===this.revision,
    commandsSeen:this.seen.size};}
+  exportReplay(){
+   if(this.events.length!==this.revision)fail('Replay history incomplete (event log truncated)');
+   return copy(this.events);
+  }
   _runBatch(commands,{record=true}={}){
    if(!Array.isArray(commands)||!commands.length)fail('Nonempty command batch required');
-   const states=copy(this.states),seen=new Map(this.seen),events=this.events.map(copy);
+   const states=copy(this.states),stagedIds=new Map(),events=this.events.slice();
    let rev=this.revision;let applied=0;
    for(const raw of commands){
     const c=envelope(raw);const serialized=JSON.stringify(c);
-    if(seen.has(c.id)){
-     if(seen.get(c.id)!==serialized)fail('Command ID collision '+c.id);
+    if(stagedIds.has(c.id)||this.seen.has(c.id)){
+     if((stagedIds.has(c.id)?stagedIds.get(c.id):this.seen.get(c.id))!==serialized)fail('Command ID collision '+c.id);
      continue; // Idempotent retry, no side effects.
     }
-    if(seen.size>=10000)fail('Command ID capacity exceeded; reset session');
+    if(this.seen.size+stagedIds.size>=10000)fail('Command ID capacity exceeded; reset session');
     const adapter=this.byId.get(c.target);if(!adapter)fail('Unknown system '+c.target);
     const next=adapter.apply(freeze(copy(states[adapter.id])),freeze(copy(c)),{profile:this.profile,scenario:this.scenario,timeMs:this.timeMs});
     if(!plain(next))fail('Invalid next state for '+adapter.id);
-    states[adapter.id]=copy(next);seen.set(c.id,serialized);rev++;applied++;
+    states[adapter.id]=copy(next);stagedIds.set(c.id,serialized);rev++;applied++;
     if(record)events.push({revision:rev,timeMs:this.timeMs,command:c});
    }
    const snapshot=this._project(states,this.timeMs,rev); // projection failure rolls back the whole batch
-   this.states=states;this.current=snapshot;this.revision=rev;this.seen=seen;
+   this.states=states;this.current=snapshot;this.revision=rev;
+   for(const [key,value] of stagedIds)this.seen.set(key,value); // Commit IDs only after successful projection.
    this.events=events.slice(-1000);return {applied,duplicate:commands.length-applied,snapshot:this.snapshot()};
   }
   dispatch(command){return this._runBatch([command]);}
