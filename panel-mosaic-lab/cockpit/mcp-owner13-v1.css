@@ -3,7 +3,9 @@
 [data-piece="mcp"].mcp-owner13-active .mcp-owner13-art{
  position:absolute;inset:0;display:block;border:0!important;
  box-sizing:border-box;pointer-events:none;background-image:var(--mcp-owner13-url)!important;
- background-repeat:no-repeat!important;background-size:400% 400%!important;
+ background-repeat:no-repeat!important;
+ background-size:var(--owner-bsize,400% 400%)!important;
+ background-position:var(--owner-bpos,center center)!important;
  box-shadow:none!important;filter:none!important;transform-origin:center;
 }
 [data-piece="mcp"].mcp-owner13-active .mcp-v3-knob[data-control="speed"]{
@@ -13,15 +15,19 @@
  transform:rotate(var(--mcp-turn,0deg));
 }
 [data-piece="mcp"].mcp-owner13-active .mcp-v3-knob[data-control="heading"]>.mcp-owner13-inner{
- width:53%!important;height:53%!important;left:23.5%!important;top:23.5%!important;
- transform:none!important;z-index:3;
+ transform:translate(-50%,-50%)!important;z-index:4;
 }
-[data-piece="mcp"].mcp-owner13-active>.mcp-owner13-bank{
- inset:auto;z-index:3!important;pointer-events:auto!important;cursor:ns-resize;
- transform:translate(-50%,-50%) rotate(var(--bank-turn,0deg));touch-action:none;
+[data-piece="mcp"].mcp-owner13-active .mcp-v3-knob[data-control="heading"]>.mcp-owner13-bank{
+ position:absolute;inset:auto!important;z-index:3!important;pointer-events:none!important;
+ transform:translate(-50%,-50%) rotate(var(--bank-turn,0deg))!important;
 }
-[data-piece="mcp"].mcp-owner13-active>.mcp-owner13-bank:focus-visible{
- outline:1px solid #f6e8bd;outline-offset:2px;
+[data-piece="mcp"].mcp-owner13-active .mcp-v3-knob[data-control="heading"]>.mcp-owner13-art:not(.mcp-owner13-bank):not(.mcp-owner13-inner){
+ display:none!important;
+}
+[data-piece="mcp"].mcp-owner13-active>.mcp-owner13-push{
+ inset:auto!important;position:absolute;z-index:5;
+ transform:translate(-50%,-50%)!important;pointer-events:none!important;
+ border-radius:0;
 }
 [data-piece="mcp"].mcp-owner13-active>.mcp-hw>.mcp-owner13-art{z-index:2}
 [data-piece="mcp"].mcp-owner13-active>.mcp-v3-knob>.mcp-owner13-art{z-index:2}
