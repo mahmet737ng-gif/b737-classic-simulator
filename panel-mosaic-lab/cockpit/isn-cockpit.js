@@ -13,6 +13,7 @@
   ['B737ISN0912RuntimeV1','../../engine/integration/isn-09-12-runtime-v1.js'],
   ['B737ISNAPULoadDynamicsV1','../../engine/integration/isn-apu-load-dynamics-v1.js'],
   ['B737ISN1318ECUTestbenchV1','../../engine/integration/isn-13-18-ecu-testbench-v1.js'],
+  ['B737UnifiedLiveGatewayV1','../../engine/runtime/unified-live-gateway-v1.js'],
   ['B737UnifiedAuthorityDiagnosticsV1','../../engine/runtime/unified-authority-diagnostics-v1.js']
  ];
  async function loadDependencies(){for(const [global,path] of deps){if(window[global])continue;
@@ -78,6 +79,9 @@
  const numeric=(value,unit='')=>Number.isFinite(value)?Number(value).toFixed(1)+(unit?' '+unit:''):'—';
  const physical=window.B737ISNUnifiedControlRouterV1;
  function ecuCommandFromOverhead(event){return physical.dispatch(ecu,event);}
+ const liveGateway=new window.B737UnifiedLiveGatewayV1.Gateway({bridge,ecu,physical:{
+  dispatch:(_ecu,event)=>ecuCommandFromOverhead(event),synchronize:(current,packet)=>physical.synchronize(current,packet)
+ }});
  for(const id of [1,2]){
   byId('unifiedStarterDuct'+id).addEventListener('change',event=>{
    try{ecu.setStartDuctPressure('engine'+id,Number(event.target.value));render();}
@@ -179,7 +183,9 @@
   const trace=byId('isnTrace');trace.replaceChildren();for(const event of [...state.recentEvents].reverse().slice(0,25)){
    const box=document.createElement('p');box.textContent='#'+event.seq+' '+event.command.type+' · '+(event.command.id||event.command.action?.type||'')+' → '+(event.changes.length?event.changes.map(c=>c.path+' '+stateName(c.from)+'→'+stateName(c.to)+' ['+c.evidence+']').join(' | '):'NO OUTPUT CHANGE');trace.append(box);
   }
-  byId('isnError').textContent=rejected.length?'آخرین فرمان ردشده: '+rejected.at(-1).reason:'BUS TRANSFER: ورودی آزمایشی؛ ارتباط واقعیِ سوییچ هنوز موجود نیست.';
+  const liveFailure=liveGateway.get().latestFailure;
+  byId('isnError').textContent=liveFailure?'فرمان فیزیکی رد شد: '+liveFailure.id+' · '+liveFailure.reason:
+   rejected.length?'آخرین فرمان ردشده: '+rejected.at(-1).reason:'BUS TRANSFER: ورودی آزمایشی؛ ارتباط واقعیِ سوییچ هنوز موجود نیست.';
   renderStart();
   postProjection();
  }
@@ -209,14 +215,12 @@
   if(e.origin!==location.origin||e.source!==byId('overheadFrame')?.contentWindow||e.data?.type!=='b737:cockpit-overhead')return;
   try{
    if(e.data.kind==='controls-state'){
-    bridge.synchronize(e.data);
-    physical.synchronize(ecu,e.data);
-    for(const event of pendingEvents.splice(0)){bridge.handleEvent(event);ecuCommandFromOverhead(event);}
+    liveGateway.synchronize(e.data);
+    for(const event of pendingEvents.splice(0))liveGateway.dispatch(event);
     render();
    }else if(e.data.kind==='control-event'){
-    if(!bridge.initialized){if(pendingEvents.length<50)pendingEvents.push(e.data.event);}
-    else bridge.handleEvent(e.data.event);
-    ecuCommandFromOverhead(e.data.event);
+    if(!liveGateway.initialized){if(pendingEvents.length<50)pendingEvents.push(e.data.event);}
+    else liveGateway.dispatch(e.data.event);
     render();
    }
   }catch(error){byId('isnError').textContent='خطای ارتباط ISN: '+error.message;}
@@ -234,6 +238,7 @@
  },100);
  window.B737ISNCockpitV1=Object.freeze({getState:()=>bridge.get(),getStartState:()=>chain.get(),getECUState:()=>ecu.get(),
    getArchitectureAudit:()=>window.B737UnifiedAuthorityDiagnosticsV1.audit({bridge:bridge.get(),ecu:ecu.get()}),
+   getLiveGatewayState:()=>liveGateway.get(),getAircraftSnapshot:()=>liveGateway.snapshot(),
    // Pass only source-observed pneumatic supply to pressurization. UNKNOWN
    // must never become a fabricated zero PACK or an invented DC bus mapping.
    getPressurizationAir:()=>startSession.core.complete()
