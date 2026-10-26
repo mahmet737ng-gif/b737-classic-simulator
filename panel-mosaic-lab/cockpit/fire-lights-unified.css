@@ -1,42 +1,18 @@
-/* FIRELAMP-0005. Relative to the fire-protection texture only.
-   Never paints/overrides a panel, handle, switch or adjacent texture. */
-.texture-piece[data-piece="fire-protection"] .fire-lamps-mounted {
-  position:absolute;inset:auto;overflow:hidden;z-index:auto;
+/* FIRELAMP-0006: Independent cropped photo assets on approved Fire bare panel.
+   Only Fire Protection, no alteration of handles / switches / adjacent panels. */
+.texture-piece[data-piece="fire-protection"] .fire-lamps-mounted{
+  position:absolute;inset:auto;overflow:hidden;z-index:1;
   pointer-events:none;user-select:none;
 }
 .texture-piece[data-piece="fire-protection"] .fire-lamp{
-  position:absolute;display:block;overflow:hidden;
-  box-sizing:border-box;pointer-events:none;line-height:0;
+  position:absolute;display:block;box-sizing:border-box;overflow:visible;
+  line-height:0;background:transparent;pointer-events:none;
 }
 .texture-piece[data-piece="fire-protection"] .fire-lamp img{
-  display:block;width:100%;height:100%;object-fit:fill;
-  max-width:none;pointer-events:none;user-select:none;
-  image-rendering:auto;
+  display:block;position:absolute;left:0;top:0;width:100%;height:100%;
+  max-width:none;object-fit:fill;image-rendering:auto;
+  mix-blend-mode:normal;pointer-events:none;user-select:none;
 }
 .texture-piece[data-piece="fire-protection"] .fire-lamp[data-kind="round"]{
   border-radius:50%;
-}
-
-/* Source-image coordinates and fragment must share the same FITTED 3:1 rectangle;
-   the host button has a different aspect ratio and must not be used for positioning. */
-.texture-piece[data-piece="fire-protection"] .fire-bottle-slot-patch {
-  position:absolute;display:block;object-fit:fill;pointer-events:none;z-index:0;
-  border:0;max-width:none;user-select:none;
-}
-.texture-piece[data-piece="fire-protection"] .fire-lamp {
-  z-index:1;background:transparent;
-  /* The outer frame is transparent: do NOT paint over the existing metal
-     or four mounting fasteners. Only inset SVG glass is opaque. */
-}
-.texture-piece[data-piece="fire-protection"] .fire-lamp[data-kind="rect"]{
-  /* Blend the entire mounted image with the underlying original panel.
-     IMPORTANT: the parent layer must NOT create an isolated z-index context,
-     otherwise Chrome compositing paints opaque black panels over the screws. */
-  mix-blend-mode:screen;
-}
-.texture-piece[data-piece="fire-protection"] .fire-lamp[data-kind="rect"] img{
-  position:absolute;object-fit:contain;mix-blend-mode:normal;
-}
-.texture-piece[data-piece="fire-protection"] .fire-lamp[data-kind="round"] img{
-  mix-blend-mode:normal;
 }
