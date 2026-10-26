@@ -49,7 +49,11 @@ function guardedSize(node,c,legacy){
  // Previous renderer scales source bezel into the current atlas in one axis.
  const scale=Number(node.dataset.scale);
  assert(Number.isFinite(scale)&&scale>0,'missing native atlas sprite scaling');
- const w=Math.min(diam*scale*.88,Math.max(20,diam*scale*.88));
+ // p.diameter is already mapped from the native source bezel into atlas
+ // coordinates. Re-multiplying by source diameter shrinks small guards and
+ // makes the OH14 emergency light guard oversized. Keep one common scale.
+ const projectedBezel=scale*261;
+ const w=Math.max(13,projectedBezel*.94);
  const h=w*(height/width);
  return {left:-w/2,top:-h/2,w,h,method:'SOURCE_CENTER_CONFIRMED_DIMENSION_UNVERIFIED'};
 }
