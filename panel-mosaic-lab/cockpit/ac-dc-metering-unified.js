@@ -13,17 +13,28 @@
   for(const [key,value]of Object.entries(attrs))element.setAttribute(key,String(value));
   parent.append(element);return element;
  };
+ const calibrated=id=>Boolean(model.photoScale[id]?.readoutApprovedForPreview);
  function paint(id){
   const blade=mounted.get(id);
   if(blade)blade.style.transform=`rotate(${state[id]}deg)`;
   const output=outputs.get(id),input=inputs.get(id);
-  if(output)output.textContent=`${state[id]}°`;
-  if(input)input.value=String(state[id]);
+  const v=calibrated(id)?model.readingForBearing(id,state[id]):null;
+  if(output)output.textContent=calibrated(id)?
+    (v===null?'OUTSIDE PRINTED SCALE':v.toFixed(1)+' '+model.photoScale[id].unit+' · '+state[id].toFixed(2)+'°'):
+    (state[id]+'° · ANGLE QA ONLY');
+  if(input)input.value=String(calibrated(id)?(v===null?'':v):state[id]);
  }
  function setAngle(id,value){
   if(!model.meters.some(meter=>meter.id===id))throw Error('Unknown AC/DC meter '+id);
   state[id]=model.angle(value);paint(id);return state[id];
  }
+ function setReading(id,value){
+  if(!calibrated(id))throw Error('Uncalibrated/parked OH10 meter has no numerical test authority: '+id);
+  const numeric=Number(value),bearing=model.bearingForReading(id,numeric);
+  if(bearing===null)throw Error('Reading outside photographed '+id+' scale');
+  setAngle(id,bearing);return numeric;
+ }
+ function getReadings(){return Object.fromEntries(Object.keys(model.photoScale).map(id=>[id,calibrated(id)?model.readingForBearing(id,state[id]):null]));}
  function setAngles(values){
   for(const [id,value]of Object.entries(values||{}))setAngle(id,value);
   return {...state};
@@ -66,12 +77,16 @@
  function controls(){
   const section=document.createElement('section');section.id='unifiedAcDcMeteringNeedles';
   const title=document.createElement('h2');title.textContent='AC / DC Metering · 4 Needles';section.append(title);
-  const note=document.createElement('p');note.className='muted';note.textContent='توجه: اسلایدرهای این بخش فقط زاویهٔ نیدل را برحسب درجه تغییر می‌دهند؛ مقدار AMPS، CPS و VOLTS نیستند. مرکز قاب از عکس اصلی اصلاح شده؛ شناسایی همهٔ درجات و مرکز مکانیکی محور هنوز در ممیزی است.';section.append(note);
+  const note=document.createElement('p');note.className='muted';note.textContent='DC AMPS و DC VOLTS: محور از امتداد خطوط چاپ‌شده و اسکیل واقعی -50..+50 A / 0..40 V کالیبره شده و اسلایدر خودِ مقدار را نشان می‌دهد. CPS و AC VOLTS: فقط زاویهٔ تست، چون استراحتِ بی‌برق AC و تغذیهٔ سنسور هنوز تأیید نشده است. همهٔ منابع آموزش‌اند.';section.append(note);
   for(const meter of model.meters){
-   const label=document.createElement('label');label.textContent=meter.label+' · QA ANGLE (°), NOT '+meter.label+' VALUE';label.style.display='block';label.style.direction='ltr';
-   const input=document.createElement('input');Object.assign(input,{type:'range',min:'-70',max:'70',step:'1'});input.style.width='100%';input.style.accentColor='#edf0e8';
+   const label=document.createElement('label');label.textContent=meter.label+(calibrated(meter.id)?' · PHOTO CALIBRATED ('+model.photoScale[meter.id].unit+')':' · QA ANGLE (°) ONLY');label.style.display='block';label.style.direction='ltr';
+   const input=document.createElement('input');const readingScale=calibrated(meter.id)?model.photoScale[meter.id]:null;
+   Object.assign(input,{type:'range',
+    min:readingScale?String(readingScale.values[0]):'-70',
+    max:readingScale?String(readingScale.values.at(-1)):'70',
+    step:'1'});input.style.width='100%';input.style.accentColor='#edf0e8';
    const output=document.createElement('output');output.style.display='block';output.style.textAlign='left';output.style.direction='ltr';
-   input.addEventListener('input',()=>setAngle(meter.id,Number(input.value)));
+   input.addEventListener('input',()=>calibrated(meter.id)?setReading(meter.id,Number(input.value)):setAngle(meter.id,Number(input.value)));
    label.append(input,output);section.append(label);inputs.set(meter.id,input);outputs.set(meter.id,output);paint(meter.id);
   }
   const reset=document.createElement('button');reset.type='button';reset.textContent='بازگشت به تصویر مرجع';
@@ -79,7 +94,7 @@
   const previous=document.querySelector('#unifiedFuelTemperatureNeedle');
   if(previous)previous.after(section);else document.querySelector('.overhead-tools').before(section);
  }
- window.B737UnifiedAcDcMetering=Object.freeze({getAngles:()=>({...state}),setAngle,setAngles});
+ window.B737UnifiedAcDcMetering=Object.freeze({getAngles:()=>({...state}),getReadings,setReading,setAngle,setAngles});
  window.addEventListener('b737:ac-dc-metering-angles',event=>{try{setAngles(event.detail);}catch(error){console.error(error);}});
  window.addEventListener('b737:cockpit-mounted',connectFrame);
  connectFrame();
