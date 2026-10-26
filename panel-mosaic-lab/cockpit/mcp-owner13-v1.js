@@ -5,7 +5,7 @@
  * Existing motor, AFDS and equipment logic remain in the mounted controllers. */
 (function(){
 "use strict";
-const W=2172,H=433,URL="./assets/mcp-switches/owner13-photo-part";
+const W=2172,H=433,URL=new URL("./assets/mcp-switches/owner13-photo-part",document.currentScript.src).href;
 const SOURCE=Object.freeze({
  courseL:0,courseR:0,speed:4,heading:10,headingSEL:11,bankRing:12,
  AT_ARM:{OFF:2,ARM:3},FD_LEFT:{OFF:8,ON:9},FD_RIGHT:{OFF:8,ON:9},
@@ -111,7 +111,7 @@ async function load(){
   const parts=await Promise.all([0,1,2,3].map(async i=>{
    const response=await fetch(URL+i+".b64",{cache:"no-cache"});
    if(!response.ok)throw Error("Missing owner reference photo part "+i);
-   return (await response.text()).replace(/\\s+/g,"");
+   return (await response.text()).replace(/[^A-Za-z0-9+/=]/g,"");
   }));
   const base64=parts.join("");
   if(base64.length<1000||!/^[A-Za-z0-9+/]+=*$/.test(base64))throw Error("Invalid atlas payload");
