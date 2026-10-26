@@ -5,6 +5,9 @@ on:
     paths:
       - tools/build-lamp-readability-faces.cjs
       - panel-mosaic-lab/lights-test/readability-derivatives.test.cjs
+      - panel-mosaic-lab/interactive-overhead/lights.test.cjs
+      - panel-mosaic-lab/interactive-overhead/lights-model.js
+      - panel-mosaic-lab/interactive-overhead/rotary-guards.js
       - .github/workflows/lamp-readable-faces.yml
 permissions:
   contents: write
