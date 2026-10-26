@@ -115,6 +115,19 @@
       "bytes": 1825903,
       "sha256": "9f3db84357a88909210c055b3a3fc174ed0e830db5c31306c6466fcd72c536cd",
       "gitBlobSha": "f5ab7cb55bc407944111e9409b3892fdb1244f94"
+    },
+    "panel-mosaic-lab/cockpit/assets/FIRE_PROTECTION_BARE_STANDARD_SLOTS_V2_ORIGINAL.svg": {
+      "path": "panel-mosaic-lab/cockpit/assets/FIRE_PROTECTION_BARE_STANDARD_SLOTS_V2_ORIGINAL.svg",
+      "url": "./assets/FIRE_PROTECTION_BARE_STANDARD_SLOTS_V2_ORIGINAL.svg",
+      "dimensions": [
+        2172,
+        724
+      ],
+      "bytes": 2749711,
+      "sha256": "4f1719e49ae624579a012214c846ba07007c7ceb39ed917fee37687397173f0c",
+      "gitBlobSha": "bf9596d549dd2ef44df6a977d77e6efc94699fba",
+      "sourcePngSha256": "ebce4ad11a50d70d232f67e2e7f2c3c8528b0822f3d2fd3b899cdd5854a6561c",
+      "sourceStatus": "byte-exact-original-pixels-in-self-contained-SVG"
     }
   },
   "regions": [
@@ -376,19 +389,13 @@
         {
           "id": "fire-protection",
           "label": "FIRE PROTECTION — BELOW THROTTLE QUADRANT",
-          "asset": "panel-mosaic-lab/assets/locked/2026-10-23/Fire_Protection_Panel_Blank_With_Buttons.png",
+          "asset": "panel-mosaic-lab/cockpit/assets/FIRE_PROTECTION_BARE_STANDARD_SLOTS_V2_ORIGINAL.svg",
           "x": 244,
           "y": 740.9857819905213,
           "w": 685,
           "h": 170.10287081339712,
-          "sourceWindow": {
-            "x": 15,
-            "y": 107,
-            "w": 2090,
-            "h": 519
-          },
-          "presentation": "Original fire plate, source crop unchanged, now installed immediately after the new standalone throttle quadrant",
-          "layoutStatus": "reflowed below complete throttle plate without overlap"
+          "presentation": "contain",
+          "layoutStatus": "owner requested bare Fire Protection v2 base installed; no distortion, no neighbor geometry changed"
         },
         {
           "id": "pedestal-radio",
