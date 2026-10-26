@@ -25,10 +25,40 @@
  const needles=Object.freeze([
   Object.freeze({id:'driveOil1',label:'GEN DRIVE OIL TEMP 1',piece:'OH11',x:326.4,y:1016.6,tipRadius:98,initialAngle:-46}),
   Object.freeze({id:'driveOil2',label:'GEN DRIVE OIL TEMP 2',piece:'OH11',x:861.8,y:1023.8,tipRadius:98,initialAngle:-46}),
-  Object.freeze({id:'acAmps1',label:'A.C. AMPS 1',piece:'OH12',x:261,y:252.2,tipRadius:102,initialAngle:-45}),
-  Object.freeze({id:'acAmps2',label:'A.C. AMPS 2',piece:'OH12',x:753.4,y:252.2,tipRadius:102,initialAngle:-45}),
+  Object.freeze({id:'acAmps1',label:'A.C. AMPS 1',piece:'OH12',x:266.515,y:296.991,tipRadius:125,initialAngle:-49.51}),
+  Object.freeze({id:'acAmps2',label:'A.C. AMPS 2',piece:'OH12',x:753.481,y:297.342,tipRadius:125,initialAngle:-49.5}),
   Object.freeze({id:'apuAcAmps',label:'APU A.C. AMPS',piece:'OH12',window:'OH12_APU',x:724,y:1334,tipRadius:124,initialAngle:-47})
  ]);
+
+ // Source-native OH12 original white radial stroke axis intersections (21
+ // source lines / gauge). Physical shaft is covered by the lower fairing:
+ // this is an ARC-FITTED VISUAL PIVOT, not a hidden spindle certification.
+ // Each interval is 10 A from the true printed 0/50/100/150/200 graduations.
+ // Source ledger with per-line pixel endpoints and checksum:
+ // engine/instruments/oh12-ac-amps-photo-graduations-v1.json
+ const ampPhotoAngles=Object.freeze({
+  acAmps1:Object.freeze([-49.51,-43.85,-38.7,-33.54,-28.56,-23.53,-18.14,-13.02,-8.12,-3.28,1.73,7.07,12.56,17.7,22.65,27.72,33.02,38.12,43.21,48.23,53.23]),
+  acAmps2:Object.freeze([-49.5,-43.88,-38.75,-33.69,-28.68,-23.67,-18.49,-13.67,-8.76,-3.96,1.0,6.23,11.57,16.58,21.54,26.58,31.71,36.84,41.92,46.87,51.83])
+ });
+ const ampPhotoStatuses=Object.freeze({numericalMinorMarksObserved:21,majorMarksObserved:5,
+  perMinorAmperes:10,sourcePhotoReviewed:true,physicalHiddenShaftCertified:false,
+  sourcePhotoCalibrationNotCertifiedForFlight:true});
+ function bearingForAmps(id,amps){
+  if(!Object.hasOwn(ampPhotoAngles,id))throw Error('Unknown AC AMPS photo gauge '+id);
+  if(typeof amps!=='number'||!Number.isFinite(amps))throw Error('A.C. AMPS must be finite');
+  if(amps<0||amps>200)return null;
+  const a=ampPhotoAngles[id],index=Math.min(19,Math.floor(amps/10)),t=(amps-index*10)/10;
+  return a[index]+t*(a[index+1]-a[index]);
+ }
+ function ampsForBearing(id,degrees){
+  if(!Object.hasOwn(ampPhotoAngles,id))throw Error('Unknown AC AMPS photo gauge '+id);
+  if(typeof degrees!=='number'||!Number.isFinite(degrees))throw Error('A.C. AMPS bearing must be finite');
+  const a=ampPhotoAngles[id];
+  if(degrees<a[0]-1e-7||degrees>a[20]+1e-7)return null;
+  for(let i=0;i<20;i++)if(degrees<=a[i+1])return i*10+
+     10*(degrees-a[i])/(a[i+1]-a[i]);
+  return 200;
+ }
  function angle(value){const n=Number(value);if(!Number.isFinite(n))throw Error('Needle angle must be finite');return Math.max(-90,Math.min(90,n));}
  function windowPath(needle){
   if(!needles.includes(needle))throw Error('Invalid drive/amps needle');
@@ -43,5 +73,5 @@
   if(!source||!needles.includes(needle)||!piece||![piece.x,piece.y,piece.w,piece.h].every(Number.isFinite)||piece.w<=0||piece.h<=0)throw Error('Invalid drive/amps needle placement');
   return {x:piece.x+needle.x*piece.w/source.width,y:piece.y+needle.y*piece.h/source.height,size:512*needle.tipRadius/220*piece.w/source.width};
  }
- return Object.freeze({panels,needles,angle,placement,windowPath});
+ return Object.freeze({panels,needles,angle,placement,windowPath,ampPhotoAngles,ampPhotoStatuses,bearingForAmps,ampsForBearing});
 });
