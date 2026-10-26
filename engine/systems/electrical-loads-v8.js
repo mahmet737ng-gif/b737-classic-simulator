@@ -40,7 +40,7 @@
   const impossible=values.every(x=>x.value===false);
   return {couldBeAvailable:impossible?false:null,buses:values,reason:impossible?'ALL_POSSIBLE_CLASS_BUSES_OFF':'BUS_TO_EQUIPMENT_WIRING_NOT_VERIFIED'};
  }
- function project(electrical){const e=electricalInput(electrical);
+ function project(electrical,{mrgIndex=null,mrgAudit=null,variant="DCPCS"}={}){const e=electricalInput(electrical);
   const upstream=Object.fromEntries(VERIFIED.map(item=>{
    const energized=tri(e.bus[item.upstream]);
    const key='TR'+item.id.match(/TR([123])/)[1];
@@ -54,7 +54,8 @@
     status:possibility.couldBeAvailable===false?'PROVEN_GLOBAL_CLASS_POWER_LOSS':'UNVERIFIED_EQUIPMENT_FEED',
     reason:possibility.reason,provenance:'SOURCE_FUNCTION_ONLY_NO_EP_FSI_WIRING',powerBusCandidateCount:possibility.buses.length}];
   }));
-  return {schema:'B737_ELECTRICAL_LOADS_V8',electricalRevision:e.revision,upstream,loads,
+  const genericClCandidateFeeds=mrgIndex&&mrgAudit?mrgAudit.v8CandidateSources(mrgIndex,e,variant):null;
+  return {schema:'B737_ELECTRICAL_LOADS_V8',electricalRevision:e.revision,upstream,loads,genericClCandidateFeeds,
    classEvidence:{AC115:possibleClass(e,'AC115'),DC:possibleClass(e,'DC')},
    coverage:{verifiedUpstream:VERIFIED.length,loadsKnownBus:0,loadsPending:LOADS.length},
    qa:['EP_FSI_WIRING_SCHEDULE_NOT_IN_INDEX','NO_AUTOMATIC_LRU_POWER_TRUE','CPCS_NON_FSI_CONFIGURATION','CROSS_SYSTEM_MUTATION_BLOCKED_WHEN_FEED_UNKNOWN']};
