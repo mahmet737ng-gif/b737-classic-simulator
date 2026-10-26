@@ -1,0 +1,538 @@
+{
+  "schema": "b737.classic.fire.lamp-frame-and-glass-corners.v4",
+  "version": "FIRELAMP-0004",
+  "source": {
+    "bareImage": "fire_bottle_horizontal_bare_v7_composite.png",
+    "naturalSize": [
+      2172,
+      724
+    ],
+    "userMarkup": "image(20261026-195653).png",
+    "method": "OpenCV grayscale connected-frame threshold 35-55 plus manual bezel boundary and user cyan selection-box cross-check",
+    "confidence": "Frame axis-aligned edge extraction, approximately ±2-3 source pixels; artwork shape itself preserved"
+  },
+  "allowedChanges": "Fire lamp overlay model/renderer/styles, no handles, switches, cockpit/assembly.json, locked art, or mosaic geometry",
+  "distinctSizes": "frameBounds correspond to user's four-corner highlighted housing; glassBounds are independently audited black face between visible corner screws. The source face SVG must NOT cover frame screws.",
+  "placements": [
+    {
+      "id": "ENG1_OVERHEAT",
+      "frameBounds": [
+        177,
+        296,
+        227,
+        119
+      ],
+      "frameCorners": {
+        "tl": [
+          177,
+          296
+        ],
+        "tr": [
+          404,
+          296
+        ],
+        "bl": [
+          177,
+          415
+        ],
+        "br": [
+          404,
+          415
+        ]
+      },
+      "glassBounds": [
+        215,
+        317,
+        156,
+        62
+      ],
+      "glassCorners": {
+        "tl": [
+          215,
+          317
+        ],
+        "tr": [
+          371,
+          317
+        ],
+        "bl": [
+          215,
+          379
+        ],
+        "br": [
+          371,
+          379
+        ]
+      },
+      "frameSize": [
+        227,
+        119
+      ],
+      "glassSize": [
+        156,
+        62
+      ]
+    },
+    {
+      "id": "WHEEL_WELL",
+      "frameBounds": [
+        681,
+        101,
+        208,
+        105
+      ],
+      "frameCorners": {
+        "tl": [
+          681,
+          101
+        ],
+        "tr": [
+          889,
+          101
+        ],
+        "bl": [
+          681,
+          206
+        ],
+        "br": [
+          889,
+          206
+        ]
+      },
+      "glassBounds": [
+        718,
+        119,
+        134,
+        69
+      ],
+      "glassCorners": {
+        "tl": [
+          718,
+          119
+        ],
+        "tr": [
+          852,
+          119
+        ],
+        "bl": [
+          718,
+          188
+        ],
+        "br": [
+          852,
+          188
+        ]
+      },
+      "frameSize": [
+        208,
+        105
+      ],
+      "glassSize": [
+        134,
+        69
+      ]
+    },
+    {
+      "id": "FAULT",
+      "frameBounds": [
+        681,
+        220,
+        208,
+        105
+      ],
+      "frameCorners": {
+        "tl": [
+          681,
+          220
+        ],
+        "tr": [
+          889,
+          220
+        ],
+        "bl": [
+          681,
+          325
+        ],
+        "br": [
+          889,
+          325
+        ]
+      },
+      "glassBounds": [
+        718,
+        238,
+        134,
+        69
+      ],
+      "glassCorners": {
+        "tl": [
+          718,
+          238
+        ],
+        "tr": [
+          852,
+          238
+        ],
+        "bl": [
+          718,
+          307
+        ],
+        "br": [
+          852,
+          307
+        ]
+      },
+      "frameSize": [
+        208,
+        105
+      ],
+      "glassSize": [
+        134,
+        69
+      ]
+    },
+    {
+      "id": "APU_DET_INOP",
+      "frameBounds": [
+        681,
+        339,
+        208,
+        105
+      ],
+      "frameCorners": {
+        "tl": [
+          681,
+          339
+        ],
+        "tr": [
+          889,
+          339
+        ],
+        "bl": [
+          681,
+          444
+        ],
+        "br": [
+          889,
+          444
+        ]
+      },
+      "glassBounds": [
+        718,
+        357,
+        134,
+        69
+      ],
+      "glassCorners": {
+        "tl": [
+          718,
+          357
+        ],
+        "tr": [
+          852,
+          357
+        ],
+        "bl": [
+          718,
+          426
+        ],
+        "br": [
+          852,
+          426
+        ]
+      },
+      "frameSize": [
+        208,
+        105
+      ],
+      "glassSize": [
+        134,
+        69
+      ]
+    },
+    {
+      "id": "APU_BOTTLE_DISCHARGED",
+      "frameBounds": [
+        681,
+        458,
+        208,
+        105
+      ],
+      "frameCorners": {
+        "tl": [
+          681,
+          458
+        ],
+        "tr": [
+          889,
+          458
+        ],
+        "bl": [
+          681,
+          563
+        ],
+        "br": [
+          889,
+          563
+        ]
+      },
+      "glassBounds": [
+        718,
+        476,
+        134,
+        69
+      ],
+      "glassCorners": {
+        "tl": [
+          718,
+          476
+        ],
+        "tr": [
+          852,
+          476
+        ],
+        "bl": [
+          718,
+          545
+        ],
+        "br": [
+          852,
+          545
+        ]
+      },
+      "frameSize": [
+        208,
+        105
+      ],
+      "glassSize": [
+        134,
+        69
+      ]
+    },
+    {
+      "id": "ENG2_OVERHEAT",
+      "frameBounds": [
+        1258,
+        294,
+        237,
+        121
+      ],
+      "frameCorners": {
+        "tl": [
+          1258,
+          294
+        ],
+        "tr": [
+          1495,
+          294
+        ],
+        "bl": [
+          1258,
+          415
+        ],
+        "br": [
+          1495,
+          415
+        ]
+      },
+      "glassBounds": [
+        1297,
+        318,
+        160,
+        65
+      ],
+      "glassCorners": {
+        "tl": [
+          1297,
+          318
+        ],
+        "tr": [
+          1457,
+          318
+        ],
+        "bl": [
+          1297,
+          383
+        ],
+        "br": [
+          1457,
+          383
+        ]
+      },
+      "frameSize": [
+        237,
+        121
+      ],
+      "glassSize": [
+        160,
+        65
+      ]
+    },
+    {
+      "id": "L_BOTTLE_DISCHARGED",
+      "frameBounds": [
+        1716,
+        100,
+        175,
+        99
+      ],
+      "frameCorners": {
+        "tl": [
+          1716,
+          100
+        ],
+        "tr": [
+          1891,
+          100
+        ],
+        "bl": [
+          1716,
+          199
+        ],
+        "br": [
+          1891,
+          199
+        ]
+      },
+      "glassBounds": [
+        1747,
+        117,
+        113,
+        66
+      ],
+      "glassCorners": {
+        "tl": [
+          1747,
+          117
+        ],
+        "tr": [
+          1860,
+          117
+        ],
+        "bl": [
+          1747,
+          183
+        ],
+        "br": [
+          1860,
+          183
+        ]
+      },
+      "frameSize": [
+        175,
+        99
+      ],
+      "glassSize": [
+        113,
+        66
+      ]
+    },
+    {
+      "id": "R_BOTTLE_DISCHARGED",
+      "frameBounds": [
+        1896,
+        100,
+        175,
+        99
+      ],
+      "frameCorners": {
+        "tl": [
+          1896,
+          100
+        ],
+        "tr": [
+          2071,
+          100
+        ],
+        "bl": [
+          1896,
+          199
+        ],
+        "br": [
+          2071,
+          199
+        ]
+      },
+      "glassBounds": [
+        1927,
+        117,
+        113,
+        66
+      ],
+      "glassCorners": {
+        "tl": [
+          1927,
+          117
+        ],
+        "tr": [
+          2040,
+          117
+        ],
+        "bl": [
+          1927,
+          183
+        ],
+        "br": [
+          2040,
+          183
+        ]
+      },
+      "frameSize": [
+        175,
+        99
+      ],
+      "glassSize": [
+        113,
+        66
+      ]
+    }
+  ],
+  "rounds": [
+    {
+      "id": "EXT_L",
+      "center": [
+        1832,
+        416
+      ],
+      "diameter": 60
+    },
+    {
+      "id": "EXT_R",
+      "center": [
+        1927,
+        416
+      ],
+      "diameter": 60
+    },
+    {
+      "id": "EXT_APU",
+      "center": [
+        1881,
+        504
+      ],
+      "diameter": 60
+    }
+  ],
+  "independentScreenshotCheck": {
+    "wheelWellSelection": [
+      705,
+      696,
+      103,
+      55
+    ],
+    "engine2Selection": [
+      988,
+      791,
+      120,
+      59
+    ],
+    "source": "User's second screenshot with cyan outlines in Paint; x/y are pixels in 1920×1080 uploaded screenshot. Screenshot scale is ~0.5 source-pixels/pixel depending axis; width 103≈208×0.495 and 120≈237×0.506"
+  },
+  "acceptance": {
+    "maxFrameCornerDeltaPx": 3,
+    "maxGlassCornerDeltaPx": 2,
+    "noMetalOrScrewOcclusion": true,
+    "frameAndGlassBothAccountedFor": true,
+    "keepGreenCentersUnchanged": true
+  }
+}
