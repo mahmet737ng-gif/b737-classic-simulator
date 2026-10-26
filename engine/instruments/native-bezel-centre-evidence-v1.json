@@ -1,7 +1,7 @@
 {
   "schema": "b737.native-photo-gauge-bezel-centres.v1",
   "status": "BEZEL_ARC_CENTRE_FITTED_SHAFT_UNCERTIFIED",
-  "method": "OpenCV Hough circle rim fitting on immutable original native PNG crop. Each result stable across four Hough accumulator sensitivity thresholds: 70/55/44/35. Cross checked visually with printed arc; bezel circle is not proof of hidden shaft.",
+  "method": "OpenCV Hough circle rim fitting on immutable original native PNG crop. Each result stable across four Hough accumulator sensitivity thresholds: 70/55/44/35. Cross checked visually with printed arc; bezel circle is not proof of hidden shaft. IMPORTANT: APU AC AMPS proposed bezel centre was rejected on source-image radial contrast and rolled back; 8 gauge centres changed, not 9.",
   "verifiedBy": "original full resolution PNG image decoded from GitHub Actions source photos",
   "sourcePhotos": {
     "OH10": {
@@ -203,10 +203,11 @@
       ],
       "bezelRadiusPx": 171.6,
       "deltaFromOldPx": 12.03,
-      "moveVisualMountToBezelCandidate": true,
+      "moveVisualMountToBezelCandidate": false,
       "shaftPivotCertified": false,
       "phase": "PHOTO_QA_PREVIEW",
-      "status": "BEZEL_CENTRE_PROVISIONAL"
+      "status": "OLD_PIVOT_KEPT_AFTER_RIM_CONTRAST_WORSENED",
+      "note": "Native original OH12 rim-edge contrast 74.370 old vs 64.696 proposed; do not shift until central physical spindle independently measured."
     },
     {
       "panel": "OH20",
