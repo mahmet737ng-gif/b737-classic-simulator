@@ -1050,18 +1050,18 @@
         "approvedDimensionsMm": null,
         "approval": "UNVERIFIED_DO_NOT_USE_AS_FACTORY_DIMENSIONS",
         "engineUnitScaleToMm": null,
-        "contourProfile": "silver-satin-inset",
+        "contourProfile": "black-antiskid-inset",
         "coverAspectSource": "OWNER_SCREENSHOT_APPROXIMATE_ASPECT_RATIO_NOT_METRIC",
         "referenceAspectRatioHint": 0.466
       },
       "material": {
         "materialIdentity": "guard-cover-antiskid-v1",
-        "swatchHex": "#74777B",
-        "colorSource": "OWNER_SCREENSHOT_2026_10_26_SATIN_GRAY_METAL_FACE__STILL_UNVERIFIED_HARDWARE",
+        "swatchHex": "#202125",
+        "colorSource": "OWNER_DIRECT_CORRECTION_2026_10_26_BLACK_COVER_BRIGHT_HIGHLIGHTS_FROM_REFLECTION",
         "sharedAcrossPoses": true,
-        "metallic": 0.5,
-        "roughness": 0.45,
-        "colorAuthenticity": "SCREENSHOT_COLOR_APPROXIMATE_NOT_PHYSICALLY_CERTIFIED"
+        "metallic": 0.18,
+        "roughness": 0.39,
+        "colorAuthenticity": "OWNER_CONFIRMED_BLACK__HIGHLIGHT_IS_LIGHTING_NOT_MATERIAL_COLOR"
       },
       "motion": {
         "openAngleDegrees": 108,
@@ -1085,7 +1085,7 @@
         "737-400",
         "737-500"
       ],
-      "notes": null,
+      "notes": "Owner confirms physically BLACK guard, photograph gray appearance is light reflection. Keep black base color invariant; specular light changes naturally with pose.",
       "referenceScreenshotEvidence": {
         "evidenceFile": "GuardReferenceEvidence_20261026.json",
         "screenshotName": "image(20261026-161143).png",
@@ -1122,18 +1122,18 @@
         "approvedDimensionsMm": null,
         "approval": "UNVERIFIED_DO_NOT_USE_AS_FACTORY_DIMENSIONS",
         "engineUnitScaleToMm": null,
-        "contourProfile": "shared-gpws-tentative",
-        "coverAspectSource": "AUTHOR_PREVIEW_NOT_MEASURED",
+        "contourProfile": "gpws-three-identical",
+        "coverAspectSource": "OWNER_CONFIRMED_EQUAL_SIZES__ABSOLUTE_PHYSICAL_SIZE_UNMEASURED",
         "referenceAspectRatioHint": null
       },
       "material": {
         "materialIdentity": "guard-cover-gpws-flap-inhibit-v1",
         "swatchHex": "#202125",
-        "colorSource": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION",
+        "colorSource": "OWNER_EXPLICIT_BLACK_MATCHING_THREE_GPWS_COVERS",
         "sharedAcrossPoses": true,
         "metallic": 0.1,
         "roughness": 0.68,
-        "colorAuthenticity": "PROVISIONAL_SIMULATOR_COLOR_UNVERIFIED"
+        "colorAuthenticity": "OWNER_CONFIRMED_UNIFORM_APPEARANCE_NOT_PHYSICALLY_MEASURED"
       },
       "motion": {
         "openAngleDegrees": 110,
@@ -1157,7 +1157,7 @@
         "737-400",
         "737-500"
       ],
-      "notes": null,
+      "notes": "Three separate, mechanically independent, BLACK GPWS guards; all identical geometry and size; Up hinges are owner-confirmed. Positions and absolute dimensions await independent panel calibration.",
       "referenceScreenshotEvidence": {
         "evidenceFile": "GuardReferenceEvidence_20261026.json",
         "screenshotName": "image(20261026-161143).png",
@@ -1168,14 +1168,26 @@
           90
         ],
         "visibility": "bottom-clipped",
-        "pose": "CLOSED_REFERENCE_ONLY"
+        "pose": "CLOSED_REFERENCE_ONLY",
+        "regionInterpretation": "PARTIAL_GPWS_PANEL_REGION_NOT_INDIVIDUAL_COVER",
+        "individualCoverBoundsConfirmed": false
       },
       "hardwareGrouping": {
-        "visibleHousingCandidate": "gpws-flap-gear-combined",
-        "candidatePhysicalCoverCount": 1,
-        "source": "USER_MIP_SCREENSHOT_2026_10_26",
-        "confirmation": "UNVERIFIED_2_LOGICAL_CONTROLS_MAY_SHARE_1_COVER",
-        "mountingLockout": "DO_NOT_PLACE_TWO_OVERLAPPING_GUARDS_ON_PANEL_UNTIL_VERIFIED"
+        "assemblyId": "gpws-three-individual-equal-covers",
+        "physicalCoverCount": 3,
+        "independentCovers": true,
+        "identicalShapeAndSize": true,
+        "identicalBaseMaterial": true,
+        "individualControlId": "gpws-flap-inhibit",
+        "groupMemberOrder": 1,
+        "sharedAppearanceKey": "gpws-three-identical-v1",
+        "pairedControlIds": [
+          "gpws-gear-inhibit",
+          "gpws-terrain-inhibit"
+        ],
+        "evidence": "OWNER_EXPLICIT_CORRECTION_2026_10_26",
+        "overlapPolicy": "THREE_SEPARATE_HARDWARE_MOUNTS_REQUIRED__NO_PIXEL_COORDS_ASSUMED",
+        "calibratedSocketStatus": "PENDING_DISTINCT_SOURCE_SOCKET_MEASUREMENTS"
       }
     },
     {
@@ -1201,18 +1213,18 @@
         "approvedDimensionsMm": null,
         "approval": "UNVERIFIED_DO_NOT_USE_AS_FACTORY_DIMENSIONS",
         "engineUnitScaleToMm": null,
-        "contourProfile": "shared-gpws-tentative",
-        "coverAspectSource": "AUTHOR_PREVIEW_NOT_MEASURED",
+        "contourProfile": "gpws-three-identical",
+        "coverAspectSource": "OWNER_CONFIRMED_EQUAL_SIZES__ABSOLUTE_PHYSICAL_SIZE_UNMEASURED",
         "referenceAspectRatioHint": null
       },
       "material": {
         "materialIdentity": "guard-cover-gpws-gear-inhibit-v1",
         "swatchHex": "#202125",
-        "colorSource": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION",
+        "colorSource": "OWNER_EXPLICIT_BLACK_MATCHING_THREE_GPWS_COVERS",
         "sharedAcrossPoses": true,
         "metallic": 0.1,
         "roughness": 0.68,
-        "colorAuthenticity": "PROVISIONAL_SIMULATOR_COLOR_UNVERIFIED"
+        "colorAuthenticity": "OWNER_CONFIRMED_UNIFORM_APPEARANCE_NOT_PHYSICALLY_MEASURED"
       },
       "motion": {
         "openAngleDegrees": 110,
@@ -1236,7 +1248,7 @@
         "737-400",
         "737-500"
       ],
-      "notes": null,
+      "notes": "Three separate, mechanically independent, BLACK GPWS guards; all identical geometry and size; Up hinges are owner-confirmed. Positions and absolute dimensions await independent panel calibration.",
       "referenceScreenshotEvidence": {
         "evidenceFile": "GuardReferenceEvidence_20261026.json",
         "screenshotName": "image(20261026-161143).png",
@@ -1247,14 +1259,26 @@
           90
         ],
         "visibility": "bottom-clipped",
-        "pose": "CLOSED_REFERENCE_ONLY"
+        "pose": "CLOSED_REFERENCE_ONLY",
+        "regionInterpretation": "PARTIAL_GPWS_PANEL_REGION_NOT_INDIVIDUAL_COVER",
+        "individualCoverBoundsConfirmed": false
       },
       "hardwareGrouping": {
-        "visibleHousingCandidate": "gpws-flap-gear-combined",
-        "candidatePhysicalCoverCount": 1,
-        "source": "USER_MIP_SCREENSHOT_2026_10_26",
-        "confirmation": "UNVERIFIED_2_LOGICAL_CONTROLS_MAY_SHARE_1_COVER",
-        "mountingLockout": "DO_NOT_PLACE_TWO_OVERLAPPING_GUARDS_ON_PANEL_UNTIL_VERIFIED"
+        "assemblyId": "gpws-three-individual-equal-covers",
+        "physicalCoverCount": 3,
+        "independentCovers": true,
+        "identicalShapeAndSize": true,
+        "identicalBaseMaterial": true,
+        "individualControlId": "gpws-gear-inhibit",
+        "groupMemberOrder": 2,
+        "sharedAppearanceKey": "gpws-three-identical-v1",
+        "pairedControlIds": [
+          "gpws-flap-inhibit",
+          "gpws-terrain-inhibit"
+        ],
+        "evidence": "OWNER_EXPLICIT_CORRECTION_2026_10_26",
+        "overlapPolicy": "THREE_SEPARATE_HARDWARE_MOUNTS_REQUIRED__NO_PIXEL_COORDS_ASSUMED",
+        "calibratedSocketStatus": "PENDING_DISTINCT_SOURCE_SOCKET_MEASUREMENTS"
       }
     },
     {
@@ -1280,18 +1304,18 @@
         "approvedDimensionsMm": null,
         "approval": "UNVERIFIED_DO_NOT_USE_AS_FACTORY_DIMENSIONS",
         "engineUnitScaleToMm": null,
-        "contourProfile": "gpws-unknown",
-        "coverAspectSource": "AUTHOR_PREVIEW_NOT_MEASURED",
+        "contourProfile": "gpws-three-identical",
+        "coverAspectSource": "OWNER_CONFIRMED_EQUAL_SIZES__ABSOLUTE_PHYSICAL_SIZE_UNMEASURED",
         "referenceAspectRatioHint": null
       },
       "material": {
         "materialIdentity": "guard-cover-gpws-terrain-inhibit-v1",
         "swatchHex": "#202125",
-        "colorSource": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION",
+        "colorSource": "OWNER_EXPLICIT_BLACK_MATCHING_THREE_GPWS_COVERS",
         "sharedAcrossPoses": true,
         "metallic": 0.1,
         "roughness": 0.68,
-        "colorAuthenticity": "PROVISIONAL_SIMULATOR_COLOR_UNVERIFIED"
+        "colorAuthenticity": "OWNER_CONFIRMED_UNIFORM_APPEARANCE_NOT_PHYSICALLY_MEASURED"
       },
       "motion": {
         "openAngleDegrees": 110,
@@ -1315,11 +1339,50 @@
         "737-400",
         "737-500"
       ],
-      "notes": null,
-      "referenceScreenshotEvidence": null
+      "notes": "Three separate, mechanically independent, BLACK GPWS guards; all identical geometry and size; Up hinges are owner-confirmed. Positions and absolute dimensions await independent panel calibration.",
+      "referenceScreenshotEvidence": null,
+      "hardwareGrouping": {
+        "assemblyId": "gpws-three-individual-equal-covers",
+        "physicalCoverCount": 3,
+        "independentCovers": true,
+        "identicalShapeAndSize": true,
+        "identicalBaseMaterial": true,
+        "individualControlId": "gpws-terrain-inhibit",
+        "groupMemberOrder": 3,
+        "sharedAppearanceKey": "gpws-three-identical-v1",
+        "pairedControlIds": [
+          "gpws-flap-inhibit",
+          "gpws-gear-inhibit"
+        ],
+        "evidence": "OWNER_EXPLICIT_CORRECTION_2026_10_26",
+        "overlapPolicy": "THREE_SEPARATE_HARDWARE_MOUNTS_REQUIRED__NO_PIXEL_COORDS_ASSUMED",
+        "calibratedSocketStatus": "PENDING_DISTINCT_SOURCE_SOCKET_MEASUREMENTS"
+      }
     }
   ],
   "referenceImageEvidence": "Resources/GuardReferenceEvidence_20261026.json",
-  "catalogRevision": "v1.1 photo-constrained provisional contour/ratio; actual mm still unverified",
-  "visualUnifiedRule": "State transitions must preserve the exact same mesh, contourProfile, material, RGBA, thickness, UV/texture and localScale. Only fixed-hinge localRotation and physically induced light/shadow/projection change."
+  "catalogRevision": "v1.2 owner corrections: BLACK antiskid specular, THREE separate identically sized GPWS covers",
+  "visualUnifiedRule": "State transitions must preserve the exact same mesh, contourProfile, material, RGBA, thickness, UV/texture and localScale. Only fixed-hinge localRotation and physically induced light/shadow/projection change.",
+  "ownerCorrections": {
+    "date": "2026-10-26",
+    "antiskid": {
+      "baseColor": "BLACK",
+      "appearanceExplanation": "SPECULAR_REFLECTION_LIGHTENS_PHOTO_ONLY",
+      "hinge": "Down",
+      "size": "KEEP_UNVERIFIED_PREVIEW"
+    },
+    "gpws": {
+      "controls": [
+        "gpws-flap-inhibit",
+        "gpws-gear-inhibit",
+        "gpws-terrain-inhibit"
+      ],
+      "count": 3,
+      "separatePhysicalGuards": true,
+      "sameGeometry": true,
+      "sameMaterial": true,
+      "hinge": "Up",
+      "source": "OWNER_DIRECT_STATEMENT"
+    }
+  }
 }
