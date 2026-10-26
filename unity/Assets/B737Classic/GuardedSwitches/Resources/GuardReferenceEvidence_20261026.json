@@ -1,0 +1,337 @@
+{
+  "schema": "b737-classic/guard-screenshot-reference-evidence/v1",
+  "recordedOn": "2026-10-26",
+  "references": [
+    {
+      "id": "upper-overhead",
+      "uploadedFilename": "image(20261026-161115).png",
+      "dimensionsPx": [
+        1920,
+        1080
+      ],
+      "view": "Adobe Acrobat Windows PDF-viewer screenshot; 737 Classic overhead control collage; screen contains UI chrome and cropping",
+      "status": "PRIVATE_USER_SUPPLIED_SCREENSHOT; do not copy image into public repo"
+    },
+    {
+      "id": "main-instrument",
+      "uploadedFilename": "image(20261026-161143).png",
+      "dimensionsPx": [
+        1920,
+        1080
+      ],
+      "view": "Windows Acrobat screenshot of 737 Classic main panel; ANTISKID and GPWS near right lower portion; GPWS guard bottom truncated",
+      "status": "PRIVATE_USER_SUPPLIED_SCREENSHOT; do not copy image into public repo"
+    }
+  ],
+  "measuringConvention": "rect=[x,y,width,height] in original 1920x1080 screen pixels including Acrobat UI, NOT native aircraft panel-source coordinates; approximate manual trace. Contains screenshot cropping, shading and perspective.",
+  "userConfirmedHingesUnaffected": true,
+  "controls": [
+    {
+      "controlId": "flight-control-a",
+      "referenceScreenshot": "image(20261026-161115).png",
+      "screenshotSizePx": [
+        1920,
+        1080
+      ],
+      "approximateCoverRectPx": [
+        480,
+        545,
+        55,
+        85
+      ],
+      "visibility": "complete",
+      "extraction": "VISUAL_MANUAL_BOUNDS_FROM_WINDOWS_PDF_VIEWER_SCREENSHOT",
+      "evidenceTier": "SCREENSHOT_REFERENCE_NONMETRIC",
+      "notes": "matte black tall guard; adjacent A/B sibling pair",
+      "aspectRatioApprox": 0.647,
+      "geometryApproval": "PENDING_ACTUAL_PANEL_MEASUREMENT",
+      "hingeEvidence": "NOT_DERIVED_FROM_IMAGE_USE_OWNER_QUIZ"
+    },
+    {
+      "controlId": "flight-control-b",
+      "referenceScreenshot": "image(20261026-161115).png",
+      "screenshotSizePx": [
+        1920,
+        1080
+      ],
+      "approximateCoverRectPx": [
+        543,
+        545,
+        51,
+        85
+      ],
+      "visibility": "complete",
+      "extraction": "VISUAL_MANUAL_BOUNDS_FROM_WINDOWS_PDF_VIEWER_SCREENSHOT",
+      "evidenceTier": "SCREENSHOT_REFERENCE_NONMETRIC",
+      "notes": "matte black tall guard; separate cover from A",
+      "aspectRatioApprox": 0.6,
+      "geometryApproval": "PENDING_ACTUAL_PANEL_MEASUREMENT",
+      "hingeEvidence": "NOT_DERIVED_FROM_IMAGE_USE_OWNER_QUIZ"
+    },
+    {
+      "controlId": "spoiler-a",
+      "referenceScreenshot": "image(20261026-161115).png",
+      "screenshotSizePx": [
+        1920,
+        1080
+      ],
+      "approximateCoverRectPx": [
+        480,
+        704,
+        55,
+        76
+      ],
+      "visibility": "complete",
+      "extraction": "VISUAL_MANUAL_BOUNDS_FROM_WINDOWS_PDF_VIEWER_SCREENSHOT",
+      "evidenceTier": "SCREENSHOT_REFERENCE_NONMETRIC",
+      "notes": "black short pair, separate A/B lids",
+      "aspectRatioApprox": 0.724,
+      "geometryApproval": "PENDING_ACTUAL_PANEL_MEASUREMENT",
+      "hingeEvidence": "NOT_DERIVED_FROM_IMAGE_USE_OWNER_QUIZ"
+    },
+    {
+      "controlId": "spoiler-b",
+      "referenceScreenshot": "image(20261026-161115).png",
+      "screenshotSizePx": [
+        1920,
+        1080
+      ],
+      "approximateCoverRectPx": [
+        533,
+        704,
+        55,
+        76
+      ],
+      "visibility": "complete",
+      "extraction": "VISUAL_MANUAL_BOUNDS_FROM_WINDOWS_PDF_VIEWER_SCREENSHOT",
+      "evidenceTier": "SCREENSHOT_REFERENCE_NONMETRIC",
+      "notes": "black short pair, separate A/B lids",
+      "aspectRatioApprox": 0.724,
+      "geometryApproval": "PENDING_ACTUAL_PANEL_MEASUREMENT",
+      "hingeEvidence": "NOT_DERIVED_FROM_IMAGE_USE_OWNER_QUIZ"
+    },
+    {
+      "controlId": "alternate-flaps-master",
+      "referenceScreenshot": "image(20261026-161115).png",
+      "screenshotSizePx": [
+        1920,
+        1080
+      ],
+      "approximateCoverRectPx": [
+        589,
+        614,
+        42,
+        96
+      ],
+      "visibility": "complete",
+      "extraction": "VISUAL_MANUAL_BOUNDS_FROM_WINDOWS_PDF_VIEWER_SCREENSHOT",
+      "evidenceTier": "SCREENSHOT_REFERENCE_NONMETRIC",
+      "notes": "red long/narrow lid; lower part dark recess",
+      "aspectRatioApprox": 0.438,
+      "geometryApproval": "PENDING_ACTUAL_PANEL_MEASUREMENT",
+      "hingeEvidence": "NOT_DERIVED_FROM_IMAGE_USE_OWNER_QUIZ"
+    },
+    {
+      "controlId": "battery-master",
+      "referenceScreenshot": "image(20261026-161115).png",
+      "screenshotSizePx": [
+        1920,
+        1080
+      ],
+      "approximateCoverRectPx": [
+        756,
+        661,
+        39,
+        69
+      ],
+      "visibility": "partial",
+      "extraction": "VISUAL_MANUAL_BOUNDS_FROM_WINDOWS_PDF_VIEWER_SCREENSHOT",
+      "evidenceTier": "SCREENSHOT_REFERENCE_NONMETRIC",
+      "notes": "black electrical BAT/ON guarded control; component ambiguity requires native reference",
+      "aspectRatioApprox": null,
+      "geometryApproval": "PENDING_ACTUAL_PANEL_MEASUREMENT",
+      "hingeEvidence": "NOT_DERIVED_FROM_IMAGE_USE_OWNER_QUIZ"
+    },
+    {
+      "controlId": "generator-disconnect-1",
+      "referenceScreenshot": "image(20261026-161115).png",
+      "screenshotSizePx": [
+        1920,
+        1080
+      ],
+      "approximateCoverRectPx": [
+        744,
+        800,
+        45,
+        91
+      ],
+      "visibility": "complete",
+      "extraction": "VISUAL_MANUAL_BOUNDS_FROM_WINDOWS_PDF_VIEWER_SCREENSHOT",
+      "evidenceTier": "SCREENSHOT_REFERENCE_NONMETRIC",
+      "notes": "red narrow cap in darker vertical well",
+      "aspectRatioApprox": 0.495,
+      "geometryApproval": "PENDING_ACTUAL_PANEL_MEASUREMENT",
+      "hingeEvidence": "NOT_DERIVED_FROM_IMAGE_USE_OWNER_QUIZ"
+    },
+    {
+      "controlId": "generator-disconnect-2",
+      "referenceScreenshot": "image(20261026-161115).png",
+      "screenshotSizePx": [
+        1920,
+        1080
+      ],
+      "approximateCoverRectPx": [
+        898,
+        800,
+        45,
+        91
+      ],
+      "visibility": "complete",
+      "extraction": "VISUAL_MANUAL_BOUNDS_FROM_WINDOWS_PDF_VIEWER_SCREENSHOT",
+      "evidenceTier": "SCREENSHOT_REFERENCE_NONMETRIC",
+      "notes": "separate red narrow cap and mounting well",
+      "aspectRatioApprox": 0.495,
+      "geometryApproval": "PENDING_ACTUAL_PANEL_MEASUREMENT",
+      "hingeEvidence": "NOT_DERIVED_FROM_IMAGE_USE_OWNER_QUIZ"
+    },
+    {
+      "controlId": "standby-power",
+      "referenceScreenshot": "image(20261026-161115).png",
+      "screenshotSizePx": [
+        1920,
+        1080
+      ],
+      "approximateCoverRectPx": [
+        822,
+        774,
+        78,
+        43
+      ],
+      "visibility": "complete",
+      "extraction": "VISUAL_MANUAL_BOUNDS_FROM_WINDOWS_PDF_VIEWER_SCREENSHOT",
+      "evidenceTier": "SCREENSHOT_REFERENCE_NONMETRIC",
+      "notes": "wide black horizontal lid, different from upright caps",
+      "aspectRatioApprox": 1.814,
+      "geometryApproval": "PENDING_ACTUAL_PANEL_MEASUREMENT",
+      "hingeEvidence": "NOT_DERIVED_FROM_IMAGE_USE_OWNER_QUIZ"
+    },
+    {
+      "controlId": "emergency-exit-lights",
+      "referenceScreenshot": "image(20261026-161115).png",
+      "screenshotSizePx": [
+        1920,
+        1080
+      ],
+      "approximateCoverRectPx": [
+        1028,
+        947,
+        47,
+        99
+      ],
+      "visibility": "bottom-clipped",
+      "extraction": "VISUAL_MANUAL_BOUNDS_FROM_WINDOWS_PDF_VIEWER_SCREENSHOT",
+      "evidenceTier": "SCREENSHOT_REFERENCE_NONMETRIC",
+      "notes": "black long vertical cover; lower section beyond screenshot edge",
+      "aspectRatioApprox": null,
+      "geometryApproval": "PENDING_ACTUAL_PANEL_MEASUREMENT",
+      "hingeEvidence": "NOT_DERIVED_FROM_IMAGE_USE_OWNER_QUIZ"
+    },
+    {
+      "controlId": "passenger-oxygen",
+      "referenceScreenshot": "image(20261026-161115).png",
+      "screenshotSizePx": [
+        1920,
+        1080
+      ],
+      "approximateCoverRectPx": [
+        1290,
+        91,
+        48,
+        93
+      ],
+      "visibility": "complete",
+      "extraction": "VISUAL_MANUAL_BOUNDS_FROM_WINDOWS_PDF_VIEWER_SCREENSHOT",
+      "evidenceTier": "SCREENSHOT_REFERENCE_NONMETRIC",
+      "notes": "near-black dark rectangular guard, NOT red in supplied photo",
+      "aspectRatioApprox": 0.516,
+      "geometryApproval": "PENDING_ACTUAL_PANEL_MEASUREMENT",
+      "hingeEvidence": "NOT_DERIVED_FROM_IMAGE_USE_OWNER_QUIZ"
+    },
+    {
+      "controlId": "antiskid",
+      "referenceScreenshot": "image(20261026-161143).png",
+      "screenshotSizePx": [
+        1920,
+        1080
+      ],
+      "approximateCoverRectPx": [
+        1236,
+        560,
+        41,
+        88
+      ],
+      "visibility": "complete",
+      "extraction": "VISUAL_MANUAL_BOUNDS_FROM_WINDOWS_PDF_VIEWER_SCREENSHOT",
+      "evidenceTier": "SCREENSHOT_REFERENCE_NONMETRIC",
+      "notes": "slender satin-gray metallic face and black recessed bezel",
+      "aspectRatioApprox": 0.466,
+      "geometryApproval": "PENDING_ACTUAL_PANEL_MEASUREMENT",
+      "hingeEvidence": "NOT_DERIVED_FROM_IMAGE_USE_OWNER_QUIZ"
+    },
+    {
+      "controlId": "gpws-flap-inhibit",
+      "referenceScreenshot": "image(20261026-161143).png",
+      "screenshotSizePx": [
+        1920,
+        1080
+      ],
+      "approximateCoverRectPx": [
+        1516,
+        953,
+        114,
+        90
+      ],
+      "visibility": "bottom-clipped",
+      "extraction": "VISUAL_MANUAL_BOUNDS_FROM_WINDOWS_PDF_VIEWER_SCREENSHOT",
+      "evidenceTier": "SCREENSHOT_REFERENCE_NONMETRIC",
+      "notes": "appears one broad black guard across FLAP/GEAR text; physical cover association unresolved",
+      "aspectRatioApprox": null,
+      "geometryApproval": "PENDING_ACTUAL_PANEL_MEASUREMENT",
+      "hingeEvidence": "NOT_DERIVED_FROM_IMAGE_USE_OWNER_QUIZ"
+    },
+    {
+      "controlId": "gpws-gear-inhibit",
+      "referenceScreenshot": "image(20261026-161143).png",
+      "screenshotSizePx": [
+        1920,
+        1080
+      ],
+      "approximateCoverRectPx": [
+        1516,
+        953,
+        114,
+        90
+      ],
+      "visibility": "bottom-clipped",
+      "extraction": "VISUAL_MANUAL_BOUNDS_FROM_WINDOWS_PDF_VIEWER_SCREENSHOT",
+      "evidenceTier": "SCREENSHOT_REFERENCE_NONMETRIC",
+      "notes": "same VISIBLE bounding area as FLAP INHIBIT; do not fabricate distinct real physical housing before validation",
+      "aspectRatioApprox": null,
+      "geometryApproval": "PENDING_ACTUAL_PANEL_MEASUREMENT",
+      "hingeEvidence": "NOT_DERIVED_FROM_IMAGE_USE_OWNER_QUIZ"
+    }
+  ],
+  "unmatchedControlIds": [
+    "bus-transfer",
+    "flight-recorder-test",
+    "gpws-terrain-inhibit"
+  ],
+  "warnings": [
+    "GPWS single broad black visible guard appears to span FLAP INHIBIT and GEAR INHIBIT; not enough image evidence to certify separate physical covers.",
+    "Emergency Exit Lights lower end is cut off by the screenshot viewport.",
+    "No screenshot determines hardware depth, actual dimensions in mm, fixed hinge direction or mechanical lever action.",
+    "The PASSENGER OXYGEN cover in this screenshot is visibly near-black; earlier red default is inconsistent and must be replaced in provisional catalog.",
+    "Do not upload copyrighted/private reference images to public GitHub."
+  ],
+  "releaseGate": "PREVIEW_REFERENCE_ONLY"
+}
