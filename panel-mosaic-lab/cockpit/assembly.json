@@ -128,6 +128,16 @@
       "gitBlobSha": "bf9596d549dd2ef44df6a977d77e6efc94699fba",
       "sourcePngSha256": "ebce4ad11a50d70d232f67e2e7f2c3c8528b0822f3d2fd3b899cdd5854a6561c",
       "sourceStatus": "byte-exact-original-pixels-in-self-contained-SVG"
+    },
+    "panel-mosaic-lab/cockpit/assets/fire-v6/FIRE_PANEL_BARE.webp": {
+      "path": "panel-mosaic-lab/cockpit/assets/fire-v6/FIRE_PANEL_BARE.webp",
+      "url": "./assets/fire-v6/FIRE_PANEL_BARE.webp",
+      "dimensions": [
+        2172,
+        724
+      ],
+      "bytes": 380034,
+      "sourceStatus": "owner-approved extracted bare Fire Protection plate; individual 11 lamp overlays are independent"
     }
   },
   "regions": [
@@ -389,13 +399,13 @@
         {
           "id": "fire-protection",
           "label": "FIRE PROTECTION — BELOW THROTTLE QUADRANT",
-          "asset": "panel-mosaic-lab/cockpit/assets/FIRE_PROTECTION_BARE_STANDARD_SLOTS_V2_ORIGINAL.svg",
+          "asset": "panel-mosaic-lab/cockpit/assets/fire-v6/FIRE_PANEL_BARE.webp",
           "x": 244,
           "y": 740.9857819905213,
           "w": 685,
           "h": 170.10287081339712,
           "presentation": "contain",
-          "layoutStatus": "owner requested bare Fire Protection v2 base installed; no distortion, no neighbor geometry changed"
+          "layoutStatus": "Owner-approved Fire Protection V6 shell mounted; 11 separate ON/OFF picture assets. All pedestal placement dimensions unchanged."
         },
         {
           "id": "pedestal-radio",
