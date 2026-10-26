@@ -60,14 +60,14 @@ assert.equal(three,7);assert.ok(total>=300);
      ctx.drawImage(image,0,0,w,h);
      const rgba=ctx.getImageData(0,0,w,h).data;
      const values=[],blue=[],rgbEnergy=[];
-     let totalL=0,high=0,localContrast=0,cyanBlue=0;
+     let totalL=0,high=0,localContrast=0,cyanBlue=0,emR=0,emG=0,emB=0,emCount=0;
      // Count only central 90% of the lamp face to exclude photographic bezels.
      for(let y=3;y<h-3;y++)for(let x=4;x<w-4;x++){
       let i=(y*w+x)*4,r=rgba[i],g=rgba[i+1],b=rgba[i+2];
       const l=lumi(r,g,b);values.push(l);totalL+=l;
       if(l>.18)high++;
       blue.push(Math.max(0,b-(r+g)/2)/255);
-      rgbEnergy.push([r,g,b]);
+      rgbEnergy.push([r,g,b]);if(l>.12){emR+=r;emG+=g;emB+=b;emCount++;}
      }
      values.sort((a,b)=>a-b);
      let bg=values[Math.floor(values.length*.12)]||0;
@@ -88,7 +88,7 @@ assert.equal(three,7);assert.ok(total>=300);
          highlightPower:+(power/values.length).toFixed(6),
          signalPixels:highContrastPixels,pixelCount:values.length,
          meanLuma:+(totalL/values.length).toFixed(6),
-         blueExcess:+(blue.reduce((a,b)=>a+b,0)/blue.length).toFixed(6)}});
+         blueExcess:+(blue.reduce((a,b)=>a+b,0)/blue.length).toFixed(6),emissiveRGB:emCount?[Math.round(emR/emCount),Math.round(emG/emCount),Math.round(emB/emCount)]:[0,0,0]}});
     }catch(e){rows.push({id:job.id,asset:job.asset,state:job.state,kind:job.kind,error:String(e),source:job.source})}
    }
    return rows;
@@ -115,6 +115,11 @@ assert.equal(three,7);assert.ok(total>=300);
     const dim=states.DIM_BLUE.metrics,bright=states.BRIGHT_BLUE.metrics;
     const r=bright.highlightEnergy/Math.max(.0001,dim.highlightEnergy);
     stats.ratios.at(-1).brightToDim=+r.toFixed(3);
+    stats.ratios.at(-1).dimRGB=dim.emissiveRGB;
+    stats.ratios.at(-1).brightRGB=bright.emissiveRGB;
+    stats.ratios.at(-1).dimBlueExcess=dim.blueExcess;
+    stats.ratios.at(-1).brightBlueExcess=bright.blueExcess;
+    if(dim.blueExcess<=off.blueExcess||bright.blueExcess<=off.blueExcess)stats.warnings.push({type:'BLUE_HUE_NOT_ABOVE_OFF',id:key,off:off.blueExcess,dim:dim.blueExcess,bright:bright.blueExcess});
     if(r<1.07)stats.failures.push({type:'BRIGHT_BLUE_NOT_STRONGER_THAN_DIM_BLUE',id:key,ratio:r});
    }
   }
