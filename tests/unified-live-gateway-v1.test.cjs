@@ -89,6 +89,17 @@ test('initial physical sync reports rejected legacy source commands, not a false
  assert.ok(Array.isArray(first.warnings));
  if(r.bridge.get().rejected.length)assert.ok(first.warnings.some(w=>w.reason==='BRIDGE_REJECTED_ON_SYNC'));
 });
+test('legacy Bridge error ring full cannot hide new rejected physical commands',()=>{
+ const r=setup();
+ for(let k=0;k<35;k++)r.bridge.instructor({type:'ELECTRICAL',
+  action:{type:'SELECT_SOURCE',side:1,source:'EXT'}});
+ assert.equal(r.bridge.get().rejected.length,30);
+ assert.ok(r.bridge.get().rejectedTotal>=35);
+ assert.equal(r.gateway.dispatch(event('ground-power','OFF')).accepted,true);
+ const rejected=r.gateway.dispatch(event('ground-power','ON'));
+ assert.equal(rejected.accepted,false);
+ assert.match(rejected.reason,/conditions not met/);
+});
 test('physical APU START uses ECU once and spring release is not another START',()=>{
  const r=setup();r.gateway.dispatch(event('battery-master',{value:'on'},'guarded'));
  assert.equal(r.gateway.dispatch(event('apu-start','START')).accepted,true);
