@@ -1,6 +1,6 @@
 {
   "schema": "b737.overhead.lights.v1",
-  "version": "LGT-0011",
+  "version": "LGT-0012",
   "baseVersion": "UPD-0012-OVH-measured-seams",
   "assets": {
     "ALIGN_WHITE": {
@@ -986,7 +986,9 @@
         31
       ],
       "rule": "recorder",
-      "controls": [],
+      "controls": [
+        "flight-recorder-test"
+      ],
       "sensor": "recorder-off",
       "provenance": {
         "source_id": "FCOM-SEPEHRAN-1937",
@@ -994,6 +996,26 @@
         "physical_pdf_page": null,
         "status": "SIM_APPROX_ONLY",
         "basis": "Existing simulator rules and frozen guide sockets; private page-level source unavailable in this session."
+      },
+      "photoAnchor": {
+        "controlId": "flight-recorder-test",
+        "hinge": "LEFT",
+        "guardSourceRect": [
+          1365,
+          438,
+          113,
+          34
+        ],
+        "lampSourceRect": [
+          1485,
+          439,
+          40,
+          31
+        ],
+        "horizontalGapPx": 7,
+        "verticalCenterDifferencePx": -0.5,
+        "geometryDecision": "source photo position retained after installing control to the left",
+        "imageUnchanged": true
       }
     },
     {
@@ -3349,7 +3371,7 @@
   ],
   "sourceStatus": "Public source-located electrical engine and previous fuel/flight-control models reused; private Technical Database retrieval returned no results. Remaining predicates are explicit simulator approximations, not source-verified aircraft rules. LGT-0002 reuses existing source-located Pneumatics V6 for 9 added pneumatic lamps and trip reset. New other sensor mappings remain explicit simulator approximations.",
   "unavailableLegends": [],
-  "previousVersion": "LGT-0010",
+  "previousVersion": "LGT-0011",
   "preservedLampCount": 84,
   "bluePaletteStatus": "Preview; original supplied assets unchanged; exact blue palette pending owner visual approval per INFORMATION_LIGHTS_SPEC.json",
   "pixelRegistrationRevision": "LPR-0003",
