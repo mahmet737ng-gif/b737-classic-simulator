@@ -37,6 +37,30 @@
 - آزمون واقعی داخل Unity Editor: منوی **`Test 17 preview guards x3`**، علاوه بر ۵۱ آزمون اصلی، سه دور مقایسهٔ هندسه و حرکت مستقل سه گارد GPWS را اجرا می‌کند.
 - محل دقیق سه حفره و ابعاد فیزیکی همچنان نیازمند برداشت پیکسلی مجزاست. منبع تصویری مرجع در پایین قاب بریده شده است؛ از مستطیل مشترکِ تصویر، اندازهٔ هر درپوش نتیجه‌گیری نمی‌شود.
 
+## مرحله جدید — طراحی ظاهری خود سوئیچ‌های زیر گارد (Switch Hardware Preview V2)
+
+این مرحله فراتر از طراحی درپوش است؛ برای **هر ۱۷ کنترل** یک مجموعهٔ جدا شامل `MountRing_Fixed`، `DarkRecess_Fixed`، `ShaftBearing_Fixed`، `TaperedSatinShaft`، `GripFerrule` و دستهٔ اختصاصی ساخته می‌شود. دیگر کپسول عمومی `UnderlyingSwitch_Provisional` به‌جای همهٔ کنترل‌ها وجود ندارد.
+
+مدل‌ها با توجه به عملکرد و تناسبات مرجع در چند خانوادهٔ اولیه تقسیم شده‌اند:
+- FLT CONTROL A/B و SPOILER A/B: mini-toggle با شفت فلزی ساتن؛ ۲ یا ۳ وضعیت طبق FCOM.
+- ALTERNATE FLAPS و BATTERY: دستهٔ فلزی کوچک با قاب ویژهٔ خودشان.
+- GEN DRIVE DISCONNECT 1/2: **اکچویتور لحظه‌ای** با برگشت نمایشی؛ `REST / ACTUATE` دو دیتنت پایدار FCOM محسوب نمی‌شود.
+- STANDBY POWER و BUS TRANSFER: دستهٔ افقی اختصاصی با وضعیت‌های مستند و قاب مستقل.
+- EMER EXIT LIGHTS: شفت باریک سه‌وضعیتی.
+- PASSENGER OXYGEN و ANTISKID: دستهٔ تیره با پایه و شفت فلزی؛ **ANTISKID درپوش مشکی** با بازتاب نور دارد.
+- FLIGHT RECORDER: دستهٔ کوتاه آزمایشی مستقل؛ لولای درپوش Left بدون تغییر.
+- GPWS FLAP / GEAR / TERRAIN: سه دستهٔ مستقل، هم‌فرم، هم‌اندازه و هم‌رنگ با وضعیت‌های مستقل.
+
+در حالت حرکت دستهٔ سوئیچ نیز `MeshFilter.sharedMesh`، `MeshRenderer.sharedMaterial`، `Material.color`، نسبت‌ها و `localScale` تغییر نمی‌کنند. فقط `SwitchShaftPivot_DetentsOnly.localRotation` عوض می‌شود. این قوانین مستقل از چرخش درپوش `HingePivot_FixedAxis` هستند.
+
+رفتار دیتنت فعلاً **فقط نمایشی** است و به منطق برق، هیدرولیک، اکسیژن یا سایر سیستم‌های شبیه‌ساز متصل نشده. گارد بسته اجازهٔ درخواست کلیک سوئیچ را نمی‌دهد. بعد از باز شدن، می‌توان وضعیت نمایشی دسته را تغییر داد؛ پوشش‌های GEN DRIVE عمل لحظه‌ای با بازگشت خودکار نشان می‌دهند.
+
+**بازبینی ظاهری:**
+[نمای تعاملی ۱۷ دستهٔ سوئیچ](https://mahmet737ng-gif.github.io/b737-classic-simulator/unity/preview/switches.html)
+و [مقایسهٔ باز/بستهٔ ۱۷ درپوش](https://mahmet737ng-gif.github.io/b737-classic-simulator/unity/preview/).
+
+**آماده‌سازی و اعتبارسنجی:** هنگام واردکردن در Unity، ساخت Prefabهای V2 زیر `Assets/B737Classic/GuardedSwitches/GeneratedPreviews_v2/` هم اکنون سخت‌افزار زیر هر گارد را در همان Prefab می‌گنجاند. آزمون `Test 17 preview guards x3` در هر سه پاس علاوه بر درپوش، صحت شفت، متریال ثابت و وضعیت‌های هر سوئیچ را کنترل می‌کند. هنوز Unity Editor روی محیط متصل اجرا نشده و اشکال واقعی دسته‌ها، رنگ جزئیات و ابعاد فیزیکی باید از عکس نزدیک هر قطعه به‌طور مستقل تأیید شوند.
+
 ## وارد کردن به Unity
 
 این مخزن فعلاً پروژهٔ کامل Unity با `ProjectSettings/` و `Packages/` ندارد. بنابراین از پوشهٔ `unity/Assets/B737Classic/GuardedSwitches/` کپی بگیر و **داخل مسیر `Assets/B737Classic/GuardedSwitches/` یک پروژهٔ Unity موجود** قرار بده. فایل‌های `Runtime/*.cs` و `Editor/*.cs` و `Resources/GuardedSwitchBlueprints.json` همگی باید وارد شوند.
