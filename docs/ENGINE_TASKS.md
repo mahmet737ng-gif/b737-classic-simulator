@@ -315,4 +315,6 @@ Also committed the same user-accepted visual N1 estimator to `cdu-standalone-v6/
 - 21 source facts and screenshot provenance staged in `engine/instruments/mrg-classic-electrical-reference-v1.json` (NOT a claim of private SQLite modification).
 - Numeric QA in `engine/instruments/mrg-electrical-needle-audit-v1.js`: TR1/2 bus voltage 24–30 V, TR current 20–25 A; TR3 current 10–15 A; battery 22–30 V; standby DC indication separate from AC standby lamp; CSD <120 psi and >157°C.
 - Read-only numeric inspector in `panel-mosaic-lab/cockpit/mrg-electrical-needle-qa-unified.js`, no live gauge rotation or locked artwork change. OH10 DC AMPS and CPS center discrepancies remain unresolved.
-- 14 source-specific MRG tests and 47 Electrical V7 baseline tests passed in JS compatibility execution; independent CI still unconfirmed. See `docs/MRG_CLASSIC_ELECTRICAL_NEEDLE_AUDIT_2026-10-26.md`.
+- 18 source-specific MRG tests and 47 Electrical V7 baseline tests passed in JS compatibility execution; independent CI still unconfirmed. See `docs/MRG_CLASSIC_ELECTRICAL_NEEDLE_AUDIT_2026-10-26.md`.
+
+- Source-driven V7 correction: `apuAutomaticShutdownRequested` flag and generator-bus supply loss on ground when BAT OFF with APU GEN selected; actual APU physical shutdown integration remains pending. Protected by ground/flight/engine/external-power MRG tests.
