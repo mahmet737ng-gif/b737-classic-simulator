@@ -92,6 +92,26 @@ test('Unity runtime renders the same cover mesh/material/scale in both poses',()
  assert.ok(!editor.includes('Red_Guarded_CLOSED.png'));
 });
 
+test('Owner GPWS triplet is three independent cover assemblies with exactly matching base shapes',()=>{
+ const names=['gpws-flap-inhibit','gpws-gear-inhibit','gpws-terrain-inhibit'];
+ const entries=names.map(id=>catalog.controls.find(x=>x.controlId===id));
+ assert.equal(entries.length,3);
+ assert.equal(new Set(entries.map(x=>x.controlId)).size,3);
+ assert.equal(new Set(entries.map(x=>JSON.stringify([x.geometry.previewWidth,x.geometry.previewHeight,x.geometry.previewThickness,x.geometry.previewCornerRadius,x.geometry.contourProfile]))).size,1);
+ assert.equal(new Set(entries.map(x=>JSON.stringify([x.material.swatchHex,x.material.metallic,x.material.roughness]))).size,1);
+ assert.equal(new Set(entries.map(x=>x.material.materialIdentity)).size,3);
+ const runtime=code('Runtime/GpwsGuardTripletPreview.cs');
+ const editor=code('Editor/GpwsTripletPrefabGenerator.cs');
+ const tests=code('Editor/GuardedSwitchEditorSelfTest.cs');
+ assert.ok(runtime.includes('GuardSwitchFactory.CreatePreview(controls[i])'));
+ assert.ok(runtime.includes('AssertEqualCover(controls[0], controls[i])'));
+ assert.ok(editor.includes('GPWS_3_Independent_Identical_PREVIEW.prefab'));
+ assert.ok(editor.includes('GeneratedPreviews_v2'),'must never silently overwrite earlier v1 assets');
+ assert.ok(tests.includes('gpws')||tests.includes('GPWS'));
+ assert.ok(tests.includes('opening first lid does not trigger the other switches'));
+ assert.equal(catalog.controls.find(x=>x.controlId==='antiskid').material.swatchHex,'#202125');
+});
+
 test('Unity prefab references rebind after loading; no fake certified size claims',()=>{
  const cat=code('Runtime/GuardBlueprintCatalog.cs'),view=code('Runtime/GuardSwitchView.cs');
  assert.ok(view.includes('[SerializeField] private GuardBlueprint _blueprint'));
