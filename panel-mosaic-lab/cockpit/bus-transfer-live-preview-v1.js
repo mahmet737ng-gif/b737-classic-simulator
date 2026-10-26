@@ -23,6 +23,18 @@
   awaiting=true;sequence++;show();statusText('فرمان به سیستم برق فرستاده شد…');
   send({type:'b737:bus-transfer-preview-command',value:next,guard:'open',sequence});
  }
+ // The 3D opened cover can overlap its neighbor's pointer hitbox in Chromium.
+ // Accessible controls activate the SAME already-approved cover toggle; no
+ // substitute artwork and no bypass of guard logic.
+ document.getElementById('busTransferGuardOpen')?.addEventListener('click',()=>{
+  const s=document.querySelectorAll('.station')[1];
+  if(s&&!s.classList.contains('opened'))s.querySelector('.cover')?.click();
+  statusText('گارد باز شد. می‌توانی AUTO یا OFF را انتخاب کنی.');
+ });
+ document.getElementById('busTransferGuardClose')?.addEventListener('click',()=>{
+  document.querySelectorAll('.station.opened .cover').forEach(c=>c.click());
+  statusText('گارد بسته شد. تغییر حالت مجاز نیست.');
+ });
  auto.addEventListener('click',()=>command('auto'));
  off.addEventListener('click',()=>command('off'));
  window.addEventListener('message',event=>{
