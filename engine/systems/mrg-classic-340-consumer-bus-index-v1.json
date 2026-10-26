@@ -16,7 +16,8 @@
       "187": 48,
       "188": 43
     },
-    "physicalBusAssignmentsVerifiedEPFSI": 0
+    "physicalBusAssignmentsVerifiedEPFSI": 0,
+    "rowsWithOpenPhotoReview": 6
   },
   "rows": [
     {
@@ -1780,8 +1781,9 @@
       "pdfPage": 193,
       "originalBus": "DC Bus 2 - 28v de",
       "applicability": "CL_GENERAL",
-      "sourceConfidence": "PRINTED_INDEX_READABLE",
-      "epFsiWiringConfirmed": false
+      "sourceConfidence": "DUPLICATED_LABEL_REQUIRES_PAGE_PHOTO_REVIEW",
+      "epFsiWiringConfirmed": false,
+      "note": "Exact same printed index item occurs twice; keep both with separate source-row identifiers, do not merge or create two automatically powered loads"
     },
     {
       "id": "MRG-CL-184-048",
@@ -1792,8 +1794,9 @@
       "pdfPage": 193,
       "originalBus": "DC Bus 2 - 28v de",
       "applicability": "CL_GENERAL",
-      "sourceConfidence": "PRINTED_INDEX_READABLE",
-      "epFsiWiringConfirmed": false
+      "sourceConfidence": "DUPLICATED_LABEL_REQUIRES_PAGE_PHOTO_REVIEW",
+      "epFsiWiringConfirmed": false,
+      "note": "Exact same printed index item occurs twice; keep both with separate source-row identifiers, do not merge or create two automatically powered loads"
     },
     {
       "id": "MRG-CL-184-049",
@@ -4109,5 +4112,21 @@
     "Resolve OCR/photo-flagged labels",
     "Validate ground/air and other alternative feeds",
     "Reconcile multi-bus FMC, FCC and Window Heat circuit channels"
+  ],
+  "reviewWarnings": [
+    {
+      "item": "Fuel Pump Control - Main Tank 1 Fwd",
+      "printedPage": 184,
+      "rowIds": [
+        "MRG-CL-184-047",
+        "MRG-CL-184-048"
+      ],
+      "issue": "DUPLICATE_SOURCE_LABEL_UNRESOLVED"
+    },
+    {
+      "item": "Air Condition Mix Valve Pas Ind (600-700)",
+      "printedPage": 182,
+      "issue": "OCR_TRANSCRIPTION_CANDIDATE_REVIEW"
+    }
   ]
 }
