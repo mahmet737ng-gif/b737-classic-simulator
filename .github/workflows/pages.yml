@@ -43,6 +43,7 @@ jobs:
           node panel-mosaic-lab/lights-test/photo-pixel-registration-v5.test.cjs
           node panel-mosaic-lab/lights-test/instance-faces.test.cjs
           node panel-mosaic-lab/lights-test/readability-derivatives.test.cjs
+          node panel-mosaic-lab/lights-test/flight-recorder-hinge.test.cjs
           node panel-mosaic-lab/lights-test/oh22-profile-faces.test.cjs
           node panel-mosaic-lab/lights-test/oh21-pack-face.test.cjs
           node panel-mosaic-lab/lights-test/atlas-stage-adapter.test.cjs
