@@ -109,7 +109,7 @@
      case 'ram-door':active=context.onGround&&v!=='OFF'||fault(c.id);break;
      case 'press-mode':active=v===c.sensor;break;
      case 'oxygen':active=oxygen||context.passengerOxygenDeployed;break;
-     case 'recorder':active=fault(c.sensor);break;
+     case 'recorder':active=fault(c.sensor)||(context.onGround&&!context.engine1Running&&!context.engine2Running&&control('flight-recorder-test')!=='test');break;
      default:throw Error('Unknown lamp predicate '+c.rule);
     }
     const states=c.states||['OFF','ON'],bright=states.at(-1);
