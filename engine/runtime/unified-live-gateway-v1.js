@@ -88,7 +88,15 @@
      // Mirror physical detent for diagnostic/reconciliation only; sourceOwner
      // prevents the bridge from double-writing Battery to the same pack.
      if(expected==='guarded')this.bridge.handleEvent(event);
-    }else this.bridge.handleEvent(event);
+    }else {
+     this.bridge.handleEvent(event);
+     const rejected=this.bridge.get().rejected;
+     if(this.bridge.get().rejectedTotal>before)throw Error(rejected.at(-1)?.reason||'Bridge rejected cockpit command');
+     // The Bridge and ECU share one Pack, but the ECU caches power feedback.
+     // A generator/source/standby/pump detent must refresh the dependent Chain.
+     this.ecu.chain.syncPower();
+     this.ecu.core.refreshFuelDelivery();
+    }
     const rejected=this.bridge.get().rejected;
     if(this.bridge.get().rejectedTotal>before)throw Error(rejected.at(-1)?.reason||'Bridge rejected cockpit command');
     this.positions.set(event.id,val);
