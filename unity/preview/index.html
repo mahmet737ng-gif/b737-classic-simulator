@@ -24,6 +24,7 @@ button:hover{border-color:#b0dae2}button:focus-visible,select:focus-visible{outl
 .switch{position:absolute;top:50%;left:50%;width:12px;height:32px;transform:translate(-50%,-50%);border-radius:7px;background:linear-gradient(90deg,#5c6673,#d6dce0,#717e87);box-shadow:1px 2px 4px #000c}
 .cover{position:absolute;top:50%;left:50%;width:var(--w);height:var(--h);border-radius:var(--r);border:2px solid #c5c8c922;background:var(--swatch);box-shadow:inset 3px 2px 5px #ffffff16,inset -4px -3px 6px #0006,3px 5px 9px #0009;transform:translate(-50%,-50%) rotateX(0deg) rotateY(0deg);transform-style:preserve-3d;backface-visibility:visible;transition:transform 450ms cubic-bezier(.2,.75,.2,1);cursor:pointer}
 .cover::after{content:"";position:absolute;inset:4px;border:1px solid #fff2;border-radius:inherit;pointer-events:none}
+.cover.reflective-black::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(112deg,transparent 0%,#ffffff07 24%,#ffffff38 44%,#ffffff09 60%,transparent 82%);}
 .hinge-line{position:absolute;background:linear-gradient(#3c4148,#b2bcc6,#363d46);border-radius:20px;z-index:3;box-shadow:0 0 0 1px #0009}
 .hinge-up .hinge-line{width:70%;height:8px;left:15%;top:-5px}.hinge-down .hinge-line{width:70%;height:8px;left:15%;bottom:-5px}
 .hinge-left .hinge-line{width:8px;height:70%;left:-5px;top:15%}.hinge-right .hinge-line{width:8px;height:70%;right:-5px;top:15%}
@@ -41,7 +42,7 @@ footer{color:var(--muted);margin:20px 0;font-size:12px}
 <main>
 <header><div><span class="tag">Unity-first · Owner direction lock · preview geometry</span><h1>آزمایشگاه ۱۷ گارد Boeing 737 Classic</h1>
 <p>نمای مقایسه‌ای باز و بسته از <b>یک شکل و یک رنگ پایه</b> برای هر کنترل. جهت لولا از پاسخ‌های ثبت‌شده مالک می‌آید؛ هیچ تصویر قدیمی باز/بسته استفاده نمی‌شود.</p></div>
-<div class="actions"><button id="open-all" type="button">بازکردن همه</button><button id="reset" type="button">بازنشانی مقایسه</button></div>
+<div class="actions"><button id="gpws-only" type="button">مقایسه ۳ گارد GPWS</button><button id="open-all" type="button">بازکردن همه</button><button id="reset" type="button">بازنشانی مقایسه</button></div>
 </header>
 <div class="info">این فقط پیش‌نمایش وب مبتنی بر همان بلوپرینت Unity است. اندازه‌های پوشش، ضخامت، رنگ هواپیمای واقعی و محل دقیق نصب هنوز تأیید نشده‌اند؛ نمایش زیر تأیید فیزیکی یا بازسازی قطعی Boeing نیست.</div>
 <div class="actions"><label for="panel">فیلتر پنل:</label><select id="panel"><option value="all">همهٔ کنترل‌ها</option></select></div>
@@ -70,9 +71,11 @@ function mountVisual(control,initialOpen){
   'black-shouldered-cap':'polygon(5% 0,95% 0,100% 11%,100% 89%,95% 100%,5% 100%,0 89%,0 11%)',
   'black-vertical-oxygen':'polygon(2% 0,98% 0,100% 100%,0 100%)',
   'black-vertical-exit':'polygon(2% 0,98% 0,100% 100%,0 100%)',
-  'silver-satin-inset':'polygon(4% 0,96% 0,100% 100%,0 100%)'
+  'black-antiskid-inset':'polygon(4% 0,96% 0,100% 100%,0 100%)',
+  'gpws-three-identical':'polygon(3% 0,97% 0,100% 10%,100% 90%,97% 100%,3% 100%,0 90%,0 10%)'
  };
  if(profiles[g.contourProfile])cover.style.clipPath=profiles[g.contourProfile];
+ if(control.controlId==='antiskid')cover.classList.add('reflective-black');
  cover.setAttribute('aria-label',control.displayName+'؛ تغییر حالت گارد');
  const hinge=node('span','hinge-line');
  const setOpen=value=>{cover.classList.toggle('open',value);stamp.textContent=value?'OPEN':'CLOSED';};
@@ -106,6 +109,9 @@ async function start(){
   updateFilter();
  }catch(err){document.getElementById('summary').textContent='خطای بارگذاری بلوپرینت: '+String(err.message);}
 }
+document.getElementById('gpws-only').addEventListener('click',()=>{
+ document.getElementById('panel').value='GROUND_PROXIMITY_PANEL';updateFilter();
+});
 document.getElementById('panel').addEventListener('change',updateFilter);
 document.getElementById('open-all').addEventListener('click',()=>cards.forEach(c=>{c.closed.setOpen(true);c.opened.setOpen(true);}));
 document.getElementById('reset').addEventListener('click',()=>cards.forEach(c=>{c.closed.setOpen(false);c.opened.setOpen(true);}));
