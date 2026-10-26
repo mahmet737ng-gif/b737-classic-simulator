@@ -1,7 +1,7 @@
-/* FIRELAMP-0001. Relative to the fire-protection texture only.
+/* FIRELAMP-0003. Relative to the fire-protection texture only.
    Never paints/overrides a panel, handle, switch or adjacent texture. */
 .texture-piece[data-piece="fire-protection"] .fire-lamps-mounted {
-  position:absolute;inset:0;overflow:hidden;z-index:1;
+  position:absolute;inset:auto;overflow:hidden;z-index:1;
   pointer-events:none;user-select:none;
 }
 .texture-piece[data-piece="fire-protection"] .fire-lamp{
@@ -15,4 +15,14 @@
 }
 .texture-piece[data-piece="fire-protection"] .fire-lamp[data-kind="round"]{
   border-radius:50%;
+}
+
+/* Source-image coordinates and fragment must share the same FITTED 3:1 rectangle;
+   the host button has a different aspect ratio and must not be used for positioning. */
+.texture-piece[data-piece="fire-protection"] .fire-bottle-slot-patch {
+  position:absolute;display:block;object-fit:fill;pointer-events:none;z-index:0;
+  border:0;max-width:none;user-select:none;
+}
+.texture-piece[data-piece="fire-protection"] .fire-lamp {
+  z-index:1;background:#050505;
 }
