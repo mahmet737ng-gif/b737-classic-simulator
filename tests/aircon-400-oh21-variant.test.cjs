@@ -67,7 +67,7 @@ for(const name of ['aircon-400-oh21-model.js','aircon-400-oh21-overlay.js','airc
 const overlay=fs.readFileSync(path.join(base,'aircon-400-oh21-overlay.js'),'utf8');
 assert.ok(overlay.includes("toggle-recirc-fan-l-400"));
 assert.ok(overlay.includes("setAircon400LeftRecirc"));
-assert.match(overlay,/maxWidth=Math\.max\(5,\(rect\.w-7\)/,'Text must fit the lens width');
+assert.ok(overlay.includes('ctx.measureText(item.text)')&&overlay.includes('fitRatio'),'Text must use measured glyph width, not letter-count guesses');
 assert.ok(overlay.includes('dataset.labelKind=item.kind'),'Use different title/detent treatments');
 const css=fs.readFileSync(path.join(base,'aircon-400-oh21-overlay.css'),'utf8');
 assert.ok(css.includes('overflow:hidden;white-space:nowrap'),'Prevent text from spilling across real source');
