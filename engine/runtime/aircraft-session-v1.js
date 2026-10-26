@@ -87,6 +87,7 @@
   dispatchBatch(commands){return this._runBatch(commands);}
   advance(ms){
    if(!Number.isSafeInteger(ms)||ms<0||ms>1000)fail('Clock step must be 0..1000 integer milliseconds');
+   if(ms===0)return this.snapshot(); // no phantom revision/event
    const states=copy(this.states),timeMs=this.timeMs+ms;
    if(!Number.isSafeInteger(timeMs))fail('Simulation clock overflow');
    const projected={};
