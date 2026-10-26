@@ -1,0 +1,251 @@
+{
+  "schema": "b737.native-photo-gauge-bezel-centres.v1",
+  "status": "BEZEL_ARC_CENTRE_FITTED_SHAFT_UNCERTIFIED",
+  "method": "OpenCV Hough circle rim fitting on immutable original native PNG crop. Each result stable across four Hough accumulator sensitivity thresholds: 70/55/44/35. Cross checked visually with printed arc; bezel circle is not proof of hidden shaft.",
+  "verifiedBy": "original full resolution PNG image decoded from GitHub Actions source photos",
+  "sourcePhotos": {
+    "OH10": {
+      "asset": "panel-mosaic-lab/assets/locked/2026-10-23/OH10-ELEC-LOSSLESS-9a1ca4d6cfb2.png",
+      "sha256": "9a1ca4d6cfb277ec1404f3a464e957d81be9d9689a0810883364342d57b0f1ea",
+      "size": [
+        1095,
+        1436
+      ]
+    },
+    "OH11": {
+      "asset": "panel-mosaic-lab/assets/locked/2026-10-23/OH11-STANDBY-8b7d36ff3182.png",
+      "sha256": "86cf2f1de81146756adf694b1fe01067a271c32990c1fda7752eb913442a6708",
+      "size": [
+        1203,
+        1308
+      ]
+    },
+    "OH12": {
+      "asset": "panel-mosaic-lab/assets/locked/2026-10-23/OH12-BUS-TRANS-09319c17e7d0.png",
+      "sha256": "709cb15a86f9038ca082136c4db59af83c7800107dfe320182bf7f4c56837e9f",
+      "size": [
+        1024,
+        1536
+      ]
+    },
+    "OH20": {
+      "asset": "panel-mosaic-lab/assets/locked/2026-10-23/OH20-AIR-CONDITIONING-0734da6a7726.png",
+      "sha256": "94669d21f0be8aa538b2ff3b0684683409cadf6d9fc4b55390e7147abe506121",
+      "size": [
+        1254,
+        1254
+      ]
+    },
+    "OH21": {
+      "asset": "panel-mosaic-lab/assets/locked/2026-10-23/OH21-BLEED-AIR-cc78219607a3.png",
+      "sha256": "4efe8c59579e8675825ed4dabf393648cfa7f11f6c09d831d137c23f70ecfe1e",
+      "size": [
+        1122,
+        1402
+      ]
+    }
+  },
+  "gauges": [
+    {
+      "panel": "OH10",
+      "id": "dcAmps",
+      "oldPivotPx": [
+        310,
+        168
+      ],
+      "bezelArcCentrePx": [
+        300.8,
+        203.4
+      ],
+      "bezelRadiusPx": 178.6,
+      "deltaFromOldPx": 36.58,
+      "moveVisualMountToBezelCandidate": true,
+      "shaftPivotCertified": false,
+      "phase": "PHOTO_QA_PREVIEW",
+      "status": "BEZEL_CENTRE_PROVISIONAL"
+    },
+    {
+      "panel": "OH10",
+      "id": "cps",
+      "oldPivotPx": [
+        715,
+        190
+      ],
+      "bezelArcCentrePx": [
+        774.2,
+        191.4
+      ],
+      "bezelRadiusPx": 189.7,
+      "deltaFromOldPx": 59.22,
+      "moveVisualMountToBezelCandidate": true,
+      "shaftPivotCertified": false,
+      "phase": "PHOTO_QA_PREVIEW",
+      "status": "BEZEL_CENTRE_PROVISIONAL"
+    },
+    {
+      "panel": "OH10",
+      "id": "dcVolts",
+      "oldPivotPx": [
+        332,
+        600
+      ],
+      "bezelArcCentrePx": [
+        303.6,
+        625.6
+      ],
+      "bezelRadiusPx": 189.5,
+      "deltaFromOldPx": 38.24,
+      "moveVisualMountToBezelCandidate": true,
+      "shaftPivotCertified": false,
+      "phase": "PHOTO_QA_PREVIEW",
+      "status": "BEZEL_CENTRE_PROVISIONAL"
+    },
+    {
+      "panel": "OH10",
+      "id": "acVolts",
+      "oldPivotPx": [
+        715,
+        620
+      ],
+      "bezelArcCentrePx": [
+        775.4,
+        626.4
+      ],
+      "bezelRadiusPx": 182,
+      "deltaFromOldPx": 60.74,
+      "moveVisualMountToBezelCandidate": true,
+      "shaftPivotCertified": false,
+      "phase": "PHOTO_QA_PREVIEW",
+      "status": "BEZEL_CENTRE_PROVISIONAL"
+    },
+    {
+      "panel": "OH11",
+      "id": "driveOil1",
+      "oldPivotPx": [
+        266,
+        1021
+      ],
+      "bezelArcCentrePx": [
+        326.4,
+        1016.6
+      ],
+      "bezelRadiusPx": 204.5,
+      "deltaFromOldPx": 60.56,
+      "moveVisualMountToBezelCandidate": true,
+      "shaftPivotCertified": false,
+      "phase": "PHOTO_QA_PREVIEW",
+      "status": "BEZEL_CENTRE_PROVISIONAL"
+    },
+    {
+      "panel": "OH11",
+      "id": "driveOil2",
+      "oldPivotPx": [
+        781,
+        1021
+      ],
+      "bezelArcCentrePx": [
+        861.8,
+        1023.8
+      ],
+      "bezelRadiusPx": 202.9,
+      "deltaFromOldPx": 80.85,
+      "moveVisualMountToBezelCandidate": true,
+      "shaftPivotCertified": false,
+      "phase": "PHOTO_QA_PREVIEW",
+      "status": "BEZEL_CENTRE_PROVISIONAL"
+    },
+    {
+      "panel": "OH12",
+      "id": "acAmps1",
+      "oldPivotPx": [
+        210,
+        265
+      ],
+      "bezelArcCentrePx": [
+        261,
+        252.2
+      ],
+      "bezelRadiusPx": 168.2,
+      "deltaFromOldPx": 52.58,
+      "moveVisualMountToBezelCandidate": true,
+      "shaftPivotCertified": false,
+      "phase": "PHOTO_QA_PREVIEW",
+      "status": "BEZEL_CENTRE_PROVISIONAL"
+    },
+    {
+      "panel": "OH12",
+      "id": "acAmps2",
+      "oldPivotPx": [
+        705,
+        265
+      ],
+      "bezelArcCentrePx": [
+        753.4,
+        252.2
+      ],
+      "bezelRadiusPx": 168.1,
+      "deltaFromOldPx": 50.06,
+      "moveVisualMountToBezelCandidate": true,
+      "shaftPivotCertified": false,
+      "phase": "PHOTO_QA_PREVIEW",
+      "status": "BEZEL_CENTRE_PROVISIONAL"
+    },
+    {
+      "panel": "OH12",
+      "id": "apuAcAmps",
+      "oldPivotPx": [
+        724,
+        1334
+      ],
+      "bezelArcCentrePx": [
+        720.8,
+        1322.4
+      ],
+      "bezelRadiusPx": 171.6,
+      "deltaFromOldPx": 12.03,
+      "moveVisualMountToBezelCandidate": true,
+      "shaftPivotCertified": false,
+      "phase": "PHOTO_QA_PREVIEW",
+      "status": "BEZEL_CENTRE_PROVISIONAL"
+    },
+    {
+      "panel": "OH20",
+      "id": "cabinTemp",
+      "oldPivotPx": [
+        618,
+        681
+      ],
+      "bezelArcCentrePx": [
+        613.6,
+        667
+      ],
+      "bezelRadiusPx": 203.2,
+      "deltaFromOldPx": 14.68,
+      "moveVisualMountToBezelCandidate": false,
+      "shaftPivotCertified": false,
+      "phase": "PHOTO_QA_PREVIEW",
+      "status": "VISIBLE_HUB_NEAR_618_679_USE_OLD_PIVOT"
+    },
+    {
+      "panel": "OH21",
+      "id": "ductPressure",
+      "oldPivotPx": [
+        544,
+        439
+      ],
+      "bezelArcCentrePx": [
+        539.6,
+        433.4
+      ],
+      "bezelRadiusPx": 171.5,
+      "deltaFromOldPx": 7.12,
+      "moveVisualMountToBezelCandidate": false,
+      "shaftPivotCertified": false,
+      "phase": "PHOTO_QA_PREVIEW",
+      "status": "VISIBLE_HUB_NEAR_544_438_USE_OLD_PIVOT"
+    }
+  ],
+  "unreviewedNumericStrokesMustRemainUnknown": true,
+  "allPhysicalShaftsCertified": false,
+  "allGraduationsCertified": false
+}
