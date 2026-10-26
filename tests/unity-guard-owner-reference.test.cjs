@@ -42,24 +42,50 @@ test('Two owner screenshots add 14 conservative visual sightings without changin
  assert.deepEqual(evidence.unmatchedControlIds.sort(),
  ['bus-transfer','flight-recorder-test','gpws-terrain-inhibit'].sort());
 });
-test('Oxygen dark-cover photo and ANTISKID satin-gray face supersede old default swatch only in new blueprint',()=>{
+test('Owner-authenticated ANTISKID black base, specular reflection, and oxygen black cover',()=>{
  const oxy=byId.get('passenger-oxygen'),anti=byId.get('antiskid');
  assert.equal(oxy.material.swatchHex,'#242426');
  assert.match(oxy.material.colorSource,/OWNER_SCREENSHOT/);
- assert.equal(anti.material.swatchHex,'#74777B');
- assert.match(anti.material.colorSource,/OWNER_SCREENSHOT/);
+ assert.equal(anti.material.swatchHex,'#202125');
+ assert.match(anti.material.colorSource,/OWNER_DIRECT_CORRECTION/);
+ assert.match(anti.material.colorSource,/REFLECTION/);
+ assert.equal(anti.geometry.contourProfile,'black-antiskid-inset');
+ assert.equal(evidence.ownerCorrection.antiskid.includes('physically BLACK'),true);
  for(const id of ['alternate-flaps-master','generator-disconnect-1','generator-disconnect-2']){
   assert.equal(byId.get(id).geometry.contourProfile,'red-tapered-long-cap');
  }
 });
-test('GPWS provisional shared black outer guard is not misrepresented as two certified independent housings',()=>{
- const f=byId.get('gpws-flap-inhibit'),g=byId.get('gpws-gear-inhibit');
- assert.equal(f.hardwareGrouping.visibleHousingCandidate,'gpws-flap-gear-combined');
- assert.equal(g.hardwareGrouping.visibleHousingCandidate,'gpws-flap-gear-combined');
- assert.match(f.hardwareGrouping.mountingLockout,/DO_NOT_PLACE_TWO_OVERLAPPING_GUARDS/);
- assert.match(g.hardwareGrouping.confirmation,/UNVERIFIED/);
- assert.equal(f.geometry.approvedDimensionsMm,null);
- assert.equal(g.geometry.approvedDimensionsMm,null);
+test('Owner correction: three separate GPWS covers exactly the same geometry and base material',()=>{
+ const ids=['gpws-flap-inhibit','gpws-gear-inhibit','gpws-terrain-inhibit'];
+ const three=ids.map(id=>byId.get(id));
+ assert.equal(new Set(three.map(x=>x.controlId)).size,3);
+ assert.equal(evidence.gpwsAssembly.physicalCoverCount,3);
+ assert.equal(evidence.gpwsAssembly.allIndependent,true);
+ assert.equal(evidence.gpwsAssembly.allSamePhysicalShapeAndSize,true);
+ const shape=x=>JSON.stringify([x.geometry.previewWidth,x.geometry.previewHeight,x.geometry.previewThickness,x.geometry.previewCornerRadius,x.geometry.contourProfile]);
+ const appearance=x=>JSON.stringify([x.material.swatchHex,x.material.metallic,x.material.roughness]);
+ assert.equal(new Set(three.map(shape)).size,1);
+ assert.equal(new Set(three.map(appearance)).size,1);
+ assert.equal(new Set(three.map(x=>x.material.materialIdentity)).size,3);
+ assert.equal(new Set(three.map(x=>x.identityContract.coverGeometrySource)).size,3);
+ for(const c of three){
+  assert.equal(c.hingeDirection,'Up');
+  assert.equal(c.geometry.contourProfile,'gpws-three-identical');
+  assert.equal(c.material.swatchHex,'#202125');
+  assert.equal(c.hardwareGrouping.physicalCoverCount,3);
+  assert.equal(c.hardwareGrouping.independentCovers,true);
+  assert.equal(c.hardwareGrouping.identicalShapeAndSize,true);
+  assert.equal(c.hardwareGrouping.identicalBaseMaterial,true);
+  assert.equal(c.hardwareGrouping.assemblyId,'gpws-three-individual-equal-covers');
+  assert.equal(c.hardwareGrouping.calibratedSocketStatus,'PENDING_DISTINCT_SOURCE_SOCKET_MEASUREMENTS');
+  assert.equal(c.geometry.approvedDimensionsMm,null);
+ }
+ for(const id of ids.slice(0,2)){
+  const e=evidence.controls.find(x=>x.controlId===id);
+  assert.equal(e.regionMeaning,'PARTIAL_SHARED_PANEL_VIEW_NOT_INDIVIDUAL_GUARD_BOUNDS');
+  assert.equal(e.individualCoverBoundsConfirmed,false);
+ }
+ assert.ok(!JSON.stringify(three).includes('gpws-flap-gear-combined'));
 });
 test('Changed contour is manufactured exactly once; opening only rotates fixed pivot and never replaces mesh',()=>{
  const mesh=fs.readFileSync(path.join(root,'unity/Assets/B737Classic/GuardedSwitches/Runtime/GuardCoverMesh.cs'),'utf8');
@@ -67,7 +93,9 @@ test('Changed contour is manufactured exactly once; opening only rotates fixed p
  const animator=fs.readFileSync(path.join(root,'unity/Assets/B737Classic/GuardedSwitches/Runtime/GuardSwitchView.cs'),'utf8');
  assert.ok(mesh.includes('contourProfile == "red-tapered-long-cap"'));
  assert.ok(mesh.includes('contourProfile == "black-shouldered-cap"'));
- assert.ok(mesh.includes('contourProfile == "silver-satin-inset"'));
+ assert.ok(mesh.includes('contourProfile == "black-antiskid-inset"'));
+ assert.ok(mesh.includes('contourProfile == "gpws-three-identical"'));
+ assert.ok(!mesh.includes('silver-satin-inset'));
  assert.ok(factory.includes('g.previewThickness, g.previewCornerRadius, g.contourProfile'));
  assert.ok(animator.includes('_pivot.localRotation = Quaternion.SlerpUnclamped'));
  assert.ok(animator.includes('_filter.sharedMesh == _lockedMesh'));
