@@ -37,3 +37,8 @@
 ```bash
 node --test engine/instruments/needle-zero-reference-stage1-v1.test.cjs
 ```
+
+
+## 2026-10-26 — MRG Classic Electrical 142–161 cross-audit
+
+See [`MRG_CLASSIC_ELECTRICAL_NEEDLE_AUDIT_2026-10-26.md`](MRG_CLASSIC_ELECTRICAL_NEEDLE_AUDIT_2026-10-26.md) and `engine/instruments/mrg-electrical-needle-audit-v1.js`. New source-confirmed **numeric** reference windows are TR1/TR2 24–30 V and 20–25 A, TR3 24–30 V and 10–15 A, BATTERY 22–30 V and normally 0 A; DC voltage on the selector is the respective DC BUS reading, not necessarily output of the selected TR. TR failure with bus backup must not move DC VOLTS and DC AMPS identically. MRG Classic CSD thresholds: oil pressure <120 psi; oil temperature >157 °C. NG IDG thresholds are excluded. New values are independent of native-pixel pointer geometry. The OH10 pivot conflicts and all 54-face full-scale certifications stay **UNRESOLVED**. The default angle calibration is not promoted or altered by this source audit.
