@@ -48,8 +48,8 @@ test('True cover identity: OPEN switches only fixed hinge rotation, NEVER change
  assert.ok(js.includes("pivot.append(lid)"));
  assert.ok(js.includes("lid.dataset.surface=surface"));
  assert.ok(js.includes("root.dataset.surface=surface"));
- assert.ok(css.includes('[data-hinge=up][data-open=true] .g17-native-hinge-pivot{transform:rotateX(-110deg)'));
- assert.ok(css.includes('[data-hinge=down][data-open=true] .g17-native-hinge-pivot{transform:rotateX(110deg)'));
+ assert.ok(css.includes('[data-hinge=up][data-open=true] .g17-native-hinge-pivot{transform:rotateX(-68deg)'));
+ assert.ok(css.includes('[data-hinge=down][data-open=true] .g17-native-hinge-pivot{transform:rotateX(68deg)'));
  assert.ok(css.includes('[data-hinge=left][data-open=true] .g17-native-hinge-pivot{transform:rotateY(-110deg)'));
  assert.ok(css.includes('[data-hinge=right][data-open=true] .g17-native-hinge-pivot{transform:rotateY(110deg)'));
  assert.ok(!css.includes('.g17-native-cover.open{background:'));
