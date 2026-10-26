@@ -1,0 +1,1069 @@
+{
+  "schema": "b737-classic/unity-guard-single-mesh-blueprints/v1",
+  "version": 1,
+  "generatedDate": "2026-10-26",
+  "fromOwnerAnswers": "engine/maps/guarded-switch-owner-hinge-quiz-v1.json",
+  "scope": "17 B737 Classic flight-deck guarded controls",
+  "axisConvention": "Unity world: panel is XY plane, +Z points toward viewer; Up=top hinge negative local X; Down=bottom hinge positive X; Left=left hinge negative local Y; Right=right hinge positive Y.",
+  "designIntent": "One unique procedural cover Mesh and one stable shared Material per control; open and closed are rotations of the same Transform about a constant pivot; materials, meshes, UVs, thickness, and scale are never state-swapped.",
+  "visibleStatePolicy": "Lighting and cast shadows may change as object rotates. Texture/color identity never changes.",
+  "approvalStatus": "PARAMETRIC_PREVIEW_ONLY",
+  "dimensionProvenance": "Only approximate owner-marked OH11 apertures and existing recorder sourceRect; other sizes are authoring preview proportions. No measured real-world sizes or approved pixel footprints.",
+  "oldLockedAssetsPolicy": "DO_NOT_EDIT_OR_DELETE; never load locked open/closed guard sprites in new build",
+  "factoryGates": [
+    "All 17 hinge values exactly match owner answers",
+    "Each control unique ID/material identity and new mesh",
+    "Each cover uses identical sharedMesh/sharedMaterial/localScale when opened/closed",
+    "All physical widths UNVERIFIED until source photos and socket survey",
+    "Existing mosaic locked hashes unmodified"
+  ],
+  "controls": [
+    {
+      "controlId": "flight-control-a",
+      "displayName": "FLT CONTROL A",
+      "panelId": "OH07",
+      "hingeDirection": "Up",
+      "physicalFamily": "flight-control",
+      "sourceMount": {
+        "sourceRectNativePx": null,
+        "sourceCenterNativePx": [
+          196.29,
+          227.44
+        ],
+        "sourcePointEvidence": "EXISTING_OVERLAY_NUMERICAL_HINT_NOT_REMEASURED",
+        "rectEvidence": "UNMEASURED",
+        "panelSourceDimensionsPx": [
+          913,
+          1723
+        ],
+        "requiresCalibratedSocket": true
+      },
+      "geometry": {
+        "previewWidth": 0.115,
+        "previewHeight": 0.163,
+        "previewThickness": 0.013,
+        "previewCornerRadius": 0.011,
+        "previewUnits": "SCENE_PREVIEW_UNITS_NOT_METERS_NOT_MILLIMETRES",
+        "approvedDimensionsMm": null,
+        "approval": "UNVERIFIED_DO_NOT_USE_AS_FACTORY_DIMENSIONS",
+        "engineUnitScaleToMm": null
+      },
+      "material": {
+        "materialIdentity": "guard-cover-flight-control-a-v1",
+        "swatchHex": "#202125",
+        "colorSource": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION",
+        "sharedAcrossPoses": true,
+        "metallic": 0.1,
+        "roughness": 0.68
+      },
+      "motion": {
+        "openAngleDegrees": 110,
+        "angleEvidence": "PREVIEW_ANGLE_UNVERIFIED",
+        "durationSeconds": 0.3,
+        "anchorEdge": "Up",
+        "frontNormal": "+Z",
+        "closedAngleDegrees": 0
+      },
+      "identityContract": {
+        "coverGeometrySource": "procedural/flight-control-a-v1",
+        "meshRefSameOpenClosed": true,
+        "materialRefSameOpenClosed": true,
+        "scaleSameOpenClosed": true,
+        "permittedPoseProperty": "HINGE_PIVOT_LOCAL_ROTATION_ONLY",
+        "oldGenericImageAllowed": false
+      },
+      "currentDesignState": "UNITY_PREVIEW_NOT_REAL_HARDWARE_APPROVED",
+      "variants": [
+        "737-300",
+        "737-400",
+        "737-500"
+      ],
+      "notes": null
+    },
+    {
+      "controlId": "flight-control-b",
+      "displayName": "FLT CONTROL B",
+      "panelId": "OH07",
+      "hingeDirection": "Up",
+      "physicalFamily": "flight-control",
+      "sourceMount": {
+        "sourceRectNativePx": null,
+        "sourceCenterNativePx": [
+          388.02,
+          227.44
+        ],
+        "sourcePointEvidence": "EXISTING_OVERLAY_NUMERICAL_HINT_NOT_REMEASURED",
+        "rectEvidence": "UNMEASURED",
+        "panelSourceDimensionsPx": [
+          913,
+          1723
+        ],
+        "requiresCalibratedSocket": true
+      },
+      "geometry": {
+        "previewWidth": 0.115,
+        "previewHeight": 0.163,
+        "previewThickness": 0.013,
+        "previewCornerRadius": 0.011,
+        "previewUnits": "SCENE_PREVIEW_UNITS_NOT_METERS_NOT_MILLIMETRES",
+        "approvedDimensionsMm": null,
+        "approval": "UNVERIFIED_DO_NOT_USE_AS_FACTORY_DIMENSIONS",
+        "engineUnitScaleToMm": null
+      },
+      "material": {
+        "materialIdentity": "guard-cover-flight-control-b-v1",
+        "swatchHex": "#202125",
+        "colorSource": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION",
+        "sharedAcrossPoses": true,
+        "metallic": 0.1,
+        "roughness": 0.68
+      },
+      "motion": {
+        "openAngleDegrees": 110,
+        "angleEvidence": "PREVIEW_ANGLE_UNVERIFIED",
+        "durationSeconds": 0.3,
+        "anchorEdge": "Up",
+        "frontNormal": "+Z",
+        "closedAngleDegrees": 0
+      },
+      "identityContract": {
+        "coverGeometrySource": "procedural/flight-control-b-v1",
+        "meshRefSameOpenClosed": true,
+        "materialRefSameOpenClosed": true,
+        "scaleSameOpenClosed": true,
+        "permittedPoseProperty": "HINGE_PIVOT_LOCAL_ROTATION_ONLY",
+        "oldGenericImageAllowed": false
+      },
+      "currentDesignState": "UNITY_PREVIEW_NOT_REAL_HARDWARE_APPROVED",
+      "variants": [
+        "737-300",
+        "737-400",
+        "737-500"
+      ],
+      "notes": null
+    },
+    {
+      "controlId": "spoiler-a",
+      "displayName": "FLIGHT SPOILER A",
+      "panelId": "OH07",
+      "hingeDirection": "Up",
+      "physicalFamily": "spoiler",
+      "sourceMount": {
+        "sourceRectNativePx": null,
+        "sourceCenterNativePx": [
+          196.29,
+          783.97
+        ],
+        "sourcePointEvidence": "EXISTING_OVERLAY_NUMERICAL_HINT_NOT_REMEASURED",
+        "rectEvidence": "UNMEASURED",
+        "panelSourceDimensionsPx": [
+          913,
+          1723
+        ],
+        "requiresCalibratedSocket": true
+      },
+      "geometry": {
+        "previewWidth": 0.107,
+        "previewHeight": 0.157,
+        "previewThickness": 0.013,
+        "previewCornerRadius": 0.01,
+        "previewUnits": "SCENE_PREVIEW_UNITS_NOT_METERS_NOT_MILLIMETRES",
+        "approvedDimensionsMm": null,
+        "approval": "UNVERIFIED_DO_NOT_USE_AS_FACTORY_DIMENSIONS",
+        "engineUnitScaleToMm": null
+      },
+      "material": {
+        "materialIdentity": "guard-cover-spoiler-a-v1",
+        "swatchHex": "#202125",
+        "colorSource": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION",
+        "sharedAcrossPoses": true,
+        "metallic": 0.1,
+        "roughness": 0.68
+      },
+      "motion": {
+        "openAngleDegrees": 110,
+        "angleEvidence": "PREVIEW_ANGLE_UNVERIFIED",
+        "durationSeconds": 0.3,
+        "anchorEdge": "Up",
+        "frontNormal": "+Z",
+        "closedAngleDegrees": 0
+      },
+      "identityContract": {
+        "coverGeometrySource": "procedural/spoiler-a-v1",
+        "meshRefSameOpenClosed": true,
+        "materialRefSameOpenClosed": true,
+        "scaleSameOpenClosed": true,
+        "permittedPoseProperty": "HINGE_PIVOT_LOCAL_ROTATION_ONLY",
+        "oldGenericImageAllowed": false
+      },
+      "currentDesignState": "UNITY_PREVIEW_NOT_REAL_HARDWARE_APPROVED",
+      "variants": [
+        "737-300",
+        "737-400",
+        "737-500"
+      ],
+      "notes": null
+    },
+    {
+      "controlId": "spoiler-b",
+      "displayName": "FLIGHT SPOILER B",
+      "panelId": "OH07",
+      "hingeDirection": "Up",
+      "physicalFamily": "spoiler",
+      "sourceMount": {
+        "sourceRectNativePx": null,
+        "sourceCenterNativePx": [
+          388.02,
+          783.97
+        ],
+        "sourcePointEvidence": "EXISTING_OVERLAY_NUMERICAL_HINT_NOT_REMEASURED",
+        "rectEvidence": "UNMEASURED",
+        "panelSourceDimensionsPx": [
+          913,
+          1723
+        ],
+        "requiresCalibratedSocket": true
+      },
+      "geometry": {
+        "previewWidth": 0.107,
+        "previewHeight": 0.157,
+        "previewThickness": 0.013,
+        "previewCornerRadius": 0.01,
+        "previewUnits": "SCENE_PREVIEW_UNITS_NOT_METERS_NOT_MILLIMETRES",
+        "approvedDimensionsMm": null,
+        "approval": "UNVERIFIED_DO_NOT_USE_AS_FACTORY_DIMENSIONS",
+        "engineUnitScaleToMm": null
+      },
+      "material": {
+        "materialIdentity": "guard-cover-spoiler-b-v1",
+        "swatchHex": "#202125",
+        "colorSource": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION",
+        "sharedAcrossPoses": true,
+        "metallic": 0.1,
+        "roughness": 0.68
+      },
+      "motion": {
+        "openAngleDegrees": 110,
+        "angleEvidence": "PREVIEW_ANGLE_UNVERIFIED",
+        "durationSeconds": 0.3,
+        "anchorEdge": "Up",
+        "frontNormal": "+Z",
+        "closedAngleDegrees": 0
+      },
+      "identityContract": {
+        "coverGeometrySource": "procedural/spoiler-b-v1",
+        "meshRefSameOpenClosed": true,
+        "materialRefSameOpenClosed": true,
+        "scaleSameOpenClosed": true,
+        "permittedPoseProperty": "HINGE_PIVOT_LOCAL_ROTATION_ONLY",
+        "oldGenericImageAllowed": false
+      },
+      "currentDesignState": "UNITY_PREVIEW_NOT_REAL_HARDWARE_APPROVED",
+      "variants": [
+        "737-300",
+        "737-400",
+        "737-500"
+      ],
+      "notes": null
+    },
+    {
+      "controlId": "alternate-flaps-master",
+      "displayName": "ALTERNATE FLAPS MASTER",
+      "panelId": "OH07",
+      "hingeDirection": "Down",
+      "physicalFamily": "alternate-flaps",
+      "sourceMount": {
+        "sourceRectNativePx": null,
+        "sourceCenterNativePx": [
+          588.88,
+          534.13
+        ],
+        "sourcePointEvidence": "EXISTING_OVERLAY_NUMERICAL_HINT_NOT_REMEASURED",
+        "rectEvidence": "UNMEASURED",
+        "panelSourceDimensionsPx": [
+          913,
+          1723
+        ],
+        "requiresCalibratedSocket": true
+      },
+      "geometry": {
+        "previewWidth": 0.101,
+        "previewHeight": 0.129,
+        "previewThickness": 0.013,
+        "previewCornerRadius": 0.01,
+        "previewUnits": "SCENE_PREVIEW_UNITS_NOT_METERS_NOT_MILLIMETRES",
+        "approvedDimensionsMm": null,
+        "approval": "UNVERIFIED_DO_NOT_USE_AS_FACTORY_DIMENSIONS",
+        "engineUnitScaleToMm": null
+      },
+      "material": {
+        "materialIdentity": "guard-cover-alternate-flaps-master-v1",
+        "swatchHex": "#A32123",
+        "colorSource": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION",
+        "sharedAcrossPoses": true,
+        "metallic": 0.1,
+        "roughness": 0.68
+      },
+      "motion": {
+        "openAngleDegrees": 108,
+        "angleEvidence": "PREVIEW_ANGLE_UNVERIFIED",
+        "durationSeconds": 0.3,
+        "anchorEdge": "Down",
+        "frontNormal": "+Z",
+        "closedAngleDegrees": 0
+      },
+      "identityContract": {
+        "coverGeometrySource": "procedural/alternate-flaps-master-v1",
+        "meshRefSameOpenClosed": true,
+        "materialRefSameOpenClosed": true,
+        "scaleSameOpenClosed": true,
+        "permittedPoseProperty": "HINGE_PIVOT_LOCAL_ROTATION_ONLY",
+        "oldGenericImageAllowed": false
+      },
+      "currentDesignState": "UNITY_PREVIEW_NOT_REAL_HARDWARE_APPROVED",
+      "variants": [
+        "737-300",
+        "737-400",
+        "737-500"
+      ],
+      "notes": null
+    },
+    {
+      "controlId": "battery-master",
+      "displayName": "BATTERY",
+      "panelId": "OH10",
+      "hingeDirection": "Up",
+      "physicalFamily": "battery",
+      "sourceMount": {
+        "sourceRectNativePx": null,
+        "sourceCenterNativePx": [
+          260.61,
+          1246.45
+        ],
+        "sourcePointEvidence": "EXISTING_OVERLAY_NUMERICAL_HINT_NOT_REMEASURED",
+        "rectEvidence": "UNMEASURED",
+        "panelSourceDimensionsPx": [
+          1095,
+          1436
+        ],
+        "requiresCalibratedSocket": true
+      },
+      "geometry": {
+        "previewWidth": 0.084,
+        "previewHeight": 0.112,
+        "previewThickness": 0.012,
+        "previewCornerRadius": 0.009,
+        "previewUnits": "SCENE_PREVIEW_UNITS_NOT_METERS_NOT_MILLIMETRES",
+        "approvedDimensionsMm": null,
+        "approval": "UNVERIFIED_DO_NOT_USE_AS_FACTORY_DIMENSIONS",
+        "engineUnitScaleToMm": null
+      },
+      "material": {
+        "materialIdentity": "guard-cover-battery-master-v1",
+        "swatchHex": "#202125",
+        "colorSource": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION",
+        "sharedAcrossPoses": true,
+        "metallic": 0.1,
+        "roughness": 0.68
+      },
+      "motion": {
+        "openAngleDegrees": 110,
+        "angleEvidence": "PREVIEW_ANGLE_UNVERIFIED",
+        "durationSeconds": 0.3,
+        "anchorEdge": "Up",
+        "frontNormal": "+Z",
+        "closedAngleDegrees": 0
+      },
+      "identityContract": {
+        "coverGeometrySource": "procedural/battery-master-v1",
+        "meshRefSameOpenClosed": true,
+        "materialRefSameOpenClosed": true,
+        "scaleSameOpenClosed": true,
+        "permittedPoseProperty": "HINGE_PIVOT_LOCAL_ROTATION_ONLY",
+        "oldGenericImageAllowed": false
+      },
+      "currentDesignState": "UNITY_PREVIEW_NOT_REAL_HARDWARE_APPROVED",
+      "variants": [
+        "737-300",
+        "737-400",
+        "737-500"
+      ],
+      "notes": null
+    },
+    {
+      "controlId": "generator-disconnect-1",
+      "displayName": "GEN 1 DRIVE DISCONNECT",
+      "panelId": "OH11",
+      "hingeDirection": "Up",
+      "physicalFamily": "drive-disconnect",
+      "sourceMount": {
+        "sourceRectNativePx": [
+          154,
+          334,
+          200,
+          418
+        ],
+        "sourceCenterNativePx": [
+          253.83,
+          542.82
+        ],
+        "sourcePointEvidence": "EXISTING_OVERLAY_NUMERICAL_HINT_NOT_REMEASURED",
+        "rectEvidence": "OWNER_SCREENSHOT_APPROXIMATE_NOT_HARDWARE_DIMENSION",
+        "panelSourceDimensionsPx": [
+          1203,
+          1308
+        ],
+        "requiresCalibratedSocket": true
+      },
+      "geometry": {
+        "previewWidth": 0.141,
+        "previewHeight": 0.213,
+        "previewThickness": 0.018,
+        "previewCornerRadius": 0.015,
+        "previewUnits": "SCENE_PREVIEW_UNITS_NOT_METERS_NOT_MILLIMETRES",
+        "approvedDimensionsMm": null,
+        "approval": "UNVERIFIED_DO_NOT_USE_AS_FACTORY_DIMENSIONS",
+        "engineUnitScaleToMm": null
+      },
+      "material": {
+        "materialIdentity": "guard-cover-generator-disconnect-1-v1",
+        "swatchHex": "#A32123",
+        "colorSource": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION",
+        "sharedAcrossPoses": true,
+        "metallic": 0.1,
+        "roughness": 0.68
+      },
+      "motion": {
+        "openAngleDegrees": 110,
+        "angleEvidence": "PREVIEW_ANGLE_UNVERIFIED",
+        "durationSeconds": 0.3,
+        "anchorEdge": "Up",
+        "frontNormal": "+Z",
+        "closedAngleDegrees": 0
+      },
+      "identityContract": {
+        "coverGeometrySource": "procedural/generator-disconnect-1-v1",
+        "meshRefSameOpenClosed": true,
+        "materialRefSameOpenClosed": true,
+        "scaleSameOpenClosed": true,
+        "permittedPoseProperty": "HINGE_PIVOT_LOCAL_ROTATION_ONLY",
+        "oldGenericImageAllowed": false
+      },
+      "currentDesignState": "UNITY_PREVIEW_NOT_REAL_HARDWARE_APPROVED",
+      "variants": [
+        "737-300",
+        "737-400",
+        "737-500"
+      ],
+      "notes": null
+    },
+    {
+      "controlId": "generator-disconnect-2",
+      "displayName": "GEN 2 DRIVE DISCONNECT",
+      "panelId": "OH11",
+      "hingeDirection": "Up",
+      "physicalFamily": "drive-disconnect",
+      "sourceMount": {
+        "sourceRectNativePx": [
+          847,
+          334,
+          200,
+          418
+        ],
+        "sourceCenterNativePx": [
+          946.76,
+          542.82
+        ],
+        "sourcePointEvidence": "EXISTING_OVERLAY_NUMERICAL_HINT_NOT_REMEASURED",
+        "rectEvidence": "OWNER_SCREENSHOT_APPROXIMATE_NOT_HARDWARE_DIMENSION",
+        "panelSourceDimensionsPx": [
+          1203,
+          1308
+        ],
+        "requiresCalibratedSocket": true
+      },
+      "geometry": {
+        "previewWidth": 0.141,
+        "previewHeight": 0.213,
+        "previewThickness": 0.018,
+        "previewCornerRadius": 0.015,
+        "previewUnits": "SCENE_PREVIEW_UNITS_NOT_METERS_NOT_MILLIMETRES",
+        "approvedDimensionsMm": null,
+        "approval": "UNVERIFIED_DO_NOT_USE_AS_FACTORY_DIMENSIONS",
+        "engineUnitScaleToMm": null
+      },
+      "material": {
+        "materialIdentity": "guard-cover-generator-disconnect-2-v1",
+        "swatchHex": "#A32123",
+        "colorSource": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION",
+        "sharedAcrossPoses": true,
+        "metallic": 0.1,
+        "roughness": 0.68
+      },
+      "motion": {
+        "openAngleDegrees": 110,
+        "angleEvidence": "PREVIEW_ANGLE_UNVERIFIED",
+        "durationSeconds": 0.3,
+        "anchorEdge": "Up",
+        "frontNormal": "+Z",
+        "closedAngleDegrees": 0
+      },
+      "identityContract": {
+        "coverGeometrySource": "procedural/generator-disconnect-2-v1",
+        "meshRefSameOpenClosed": true,
+        "materialRefSameOpenClosed": true,
+        "scaleSameOpenClosed": true,
+        "permittedPoseProperty": "HINGE_PIVOT_LOCAL_ROTATION_ONLY",
+        "oldGenericImageAllowed": false
+      },
+      "currentDesignState": "UNITY_PREVIEW_NOT_REAL_HARDWARE_APPROVED",
+      "variants": [
+        "737-300",
+        "737-400",
+        "737-500"
+      ],
+      "notes": null
+    },
+    {
+      "controlId": "standby-power",
+      "displayName": "STANDBY POWER",
+      "panelId": "OH11",
+      "hingeDirection": "Left",
+      "physicalFamily": "standby-horizontal",
+      "sourceMount": {
+        "sourceRectNativePx": [
+          391,
+          232,
+          421,
+          184
+        ],
+        "sourceCenterNativePx": [
+          601.5,
+          324.38
+        ],
+        "sourcePointEvidence": "EXISTING_OVERLAY_NUMERICAL_HINT_NOT_REMEASURED",
+        "rectEvidence": "OWNER_SCREENSHOT_APPROXIMATE_NOT_HARDWARE_DIMENSION",
+        "panelSourceDimensionsPx": [
+          1203,
+          1308
+        ],
+        "requiresCalibratedSocket": true
+      },
+      "geometry": {
+        "previewWidth": 0.256,
+        "previewHeight": 0.103,
+        "previewThickness": 0.014,
+        "previewCornerRadius": 0.012,
+        "previewUnits": "SCENE_PREVIEW_UNITS_NOT_METERS_NOT_MILLIMETRES",
+        "approvedDimensionsMm": null,
+        "approval": "UNVERIFIED_DO_NOT_USE_AS_FACTORY_DIMENSIONS",
+        "engineUnitScaleToMm": null
+      },
+      "material": {
+        "materialIdentity": "guard-cover-standby-power-v1",
+        "swatchHex": "#202125",
+        "colorSource": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION",
+        "sharedAcrossPoses": true,
+        "metallic": 0.1,
+        "roughness": 0.68
+      },
+      "motion": {
+        "openAngleDegrees": 105,
+        "angleEvidence": "PREVIEW_ANGLE_UNVERIFIED",
+        "durationSeconds": 0.3,
+        "anchorEdge": "Left",
+        "frontNormal": "+Z",
+        "closedAngleDegrees": 0
+      },
+      "identityContract": {
+        "coverGeometrySource": "procedural/standby-power-v1",
+        "meshRefSameOpenClosed": true,
+        "materialRefSameOpenClosed": true,
+        "scaleSameOpenClosed": true,
+        "permittedPoseProperty": "HINGE_PIVOT_LOCAL_ROTATION_ONLY",
+        "oldGenericImageAllowed": false
+      },
+      "currentDesignState": "UNITY_PREVIEW_NOT_REAL_HARDWARE_APPROVED",
+      "variants": [
+        "737-300",
+        "737-400",
+        "737-500"
+      ],
+      "notes": null
+    },
+    {
+      "controlId": "emergency-exit-lights",
+      "displayName": "EMER EXIT LIGHTS",
+      "panelId": "OH14",
+      "hingeDirection": "Up",
+      "physicalFamily": "emergency-light",
+      "sourceMount": {
+        "sourceRectNativePx": null,
+        "sourceCenterNativePx": [
+          597.14,
+          518.26
+        ],
+        "sourcePointEvidence": "EXISTING_OVERLAY_NUMERICAL_HINT_NOT_REMEASURED",
+        "rectEvidence": "UNMEASURED",
+        "panelSourceDimensionsPx": [
+          1074,
+          1464
+        ],
+        "requiresCalibratedSocket": true
+      },
+      "geometry": {
+        "previewWidth": 0.17,
+        "previewHeight": 0.19,
+        "previewThickness": 0.014,
+        "previewCornerRadius": 0.014,
+        "previewUnits": "SCENE_PREVIEW_UNITS_NOT_METERS_NOT_MILLIMETRES",
+        "approvedDimensionsMm": null,
+        "approval": "UNVERIFIED_DO_NOT_USE_AS_FACTORY_DIMENSIONS",
+        "engineUnitScaleToMm": null
+      },
+      "material": {
+        "materialIdentity": "guard-cover-emergency-exit-lights-v1",
+        "swatchHex": "#202125",
+        "colorSource": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION",
+        "sharedAcrossPoses": true,
+        "metallic": 0.1,
+        "roughness": 0.68
+      },
+      "motion": {
+        "openAngleDegrees": 110,
+        "angleEvidence": "PREVIEW_ANGLE_UNVERIFIED",
+        "durationSeconds": 0.3,
+        "anchorEdge": "Up",
+        "frontNormal": "+Z",
+        "closedAngleDegrees": 0
+      },
+      "identityContract": {
+        "coverGeometrySource": "procedural/emergency-exit-lights-v1",
+        "meshRefSameOpenClosed": true,
+        "materialRefSameOpenClosed": true,
+        "scaleSameOpenClosed": true,
+        "permittedPoseProperty": "HINGE_PIVOT_LOCAL_ROTATION_ONLY",
+        "oldGenericImageAllowed": false
+      },
+      "currentDesignState": "UNITY_PREVIEW_NOT_REAL_HARDWARE_APPROVED",
+      "variants": [
+        "737-300",
+        "737-400",
+        "737-500"
+      ],
+      "notes": null
+    },
+    {
+      "controlId": "passenger-oxygen",
+      "displayName": "PASSENGER OXYGEN",
+      "panelId": "UPPER",
+      "hingeDirection": "Down",
+      "physicalFamily": "passenger-oxygen",
+      "sourceMount": {
+        "sourceRectNativePx": null,
+        "sourceCenterNativePx": [
+          1295,
+          612
+        ],
+        "sourcePointEvidence": "EXISTING_OVERLAY_NUMERICAL_HINT_NOT_REMEASURED",
+        "rectEvidence": "UNMEASURED",
+        "panelSourceDimensionsPx": [
+          1731,
+          909
+        ],
+        "requiresCalibratedSocket": true
+      },
+      "geometry": {
+        "previewWidth": 0.069,
+        "previewHeight": 0.094,
+        "previewThickness": 0.01,
+        "previewCornerRadius": 0.008,
+        "previewUnits": "SCENE_PREVIEW_UNITS_NOT_METERS_NOT_MILLIMETRES",
+        "approvedDimensionsMm": null,
+        "approval": "UNVERIFIED_DO_NOT_USE_AS_FACTORY_DIMENSIONS",
+        "engineUnitScaleToMm": null
+      },
+      "material": {
+        "materialIdentity": "guard-cover-passenger-oxygen-v1",
+        "swatchHex": "#A32123",
+        "colorSource": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION",
+        "sharedAcrossPoses": true,
+        "metallic": 0.1,
+        "roughness": 0.68
+      },
+      "motion": {
+        "openAngleDegrees": 108,
+        "angleEvidence": "PREVIEW_ANGLE_UNVERIFIED",
+        "durationSeconds": 0.3,
+        "anchorEdge": "Down",
+        "frontNormal": "+Z",
+        "closedAngleDegrees": 0
+      },
+      "identityContract": {
+        "coverGeometrySource": "procedural/passenger-oxygen-v1",
+        "meshRefSameOpenClosed": true,
+        "materialRefSameOpenClosed": true,
+        "scaleSameOpenClosed": true,
+        "permittedPoseProperty": "HINGE_PIVOT_LOCAL_ROTATION_ONLY",
+        "oldGenericImageAllowed": false
+      },
+      "currentDesignState": "UNITY_PREVIEW_NOT_REAL_HARDWARE_APPROVED",
+      "variants": [
+        "737-300",
+        "737-400",
+        "737-500"
+      ],
+      "notes": null
+    },
+    {
+      "controlId": "flight-recorder-test",
+      "displayName": "FLIGHT RECORDER — TEST/NORMAL",
+      "panelId": "UPPER",
+      "hingeDirection": "Left",
+      "physicalFamily": "recorder-low-profile",
+      "sourceMount": {
+        "sourceRectNativePx": [
+          1365,
+          438,
+          113,
+          34
+        ],
+        "sourceCenterNativePx": [
+          1421.5,
+          455
+        ],
+        "sourcePointEvidence": "EXISTING_OVERLAY_NUMERICAL_HINT_NOT_REMEASURED",
+        "rectEvidence": "EXISTING_SOURCE_RECT_REFERENCE_NOT_VERIFIED",
+        "panelSourceDimensionsPx": [
+          1731,
+          909
+        ],
+        "requiresCalibratedSocket": true
+      },
+      "geometry": {
+        "previewWidth": 0.091,
+        "previewHeight": 0.029,
+        "previewThickness": 0.007,
+        "previewCornerRadius": 0.004,
+        "previewUnits": "SCENE_PREVIEW_UNITS_NOT_METERS_NOT_MILLIMETRES",
+        "approvedDimensionsMm": null,
+        "approval": "UNVERIFIED_DO_NOT_USE_AS_FACTORY_DIMENSIONS",
+        "engineUnitScaleToMm": null
+      },
+      "material": {
+        "materialIdentity": "guard-cover-flight-recorder-test-v1",
+        "swatchHex": "#202125",
+        "colorSource": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION",
+        "sharedAcrossPoses": true,
+        "metallic": 0.1,
+        "roughness": 0.68
+      },
+      "motion": {
+        "openAngleDegrees": 105,
+        "angleEvidence": "PREVIEW_ANGLE_UNVERIFIED",
+        "durationSeconds": 0.3,
+        "anchorEdge": "Left",
+        "frontNormal": "+Z",
+        "closedAngleDegrees": 0
+      },
+      "identityContract": {
+        "coverGeometrySource": "procedural/flight-recorder-test-v1",
+        "meshRefSameOpenClosed": true,
+        "materialRefSameOpenClosed": true,
+        "scaleSameOpenClosed": true,
+        "permittedPoseProperty": "HINGE_PIVOT_LOCAL_ROTATION_ONLY",
+        "oldGenericImageAllowed": false
+      },
+      "currentDesignState": "UNITY_PREVIEW_NOT_REAL_HARDWARE_APPROVED",
+      "variants": [
+        "737-300",
+        "737-400",
+        "737-500"
+      ],
+      "notes": "Owner explicitly validated left hinge with right free edge moving LEFT"
+    },
+    {
+      "controlId": "bus-transfer",
+      "displayName": "BUS TRANSFER",
+      "panelId": "OH12",
+      "hingeDirection": "Left",
+      "physicalFamily": "bus-transfer-horizontal",
+      "sourceMount": {
+        "sourceRectNativePx": null,
+        "sourceCenterNativePx": null,
+        "sourcePointEvidence": "UNLOCATED",
+        "rectEvidence": "UNMEASURED",
+        "panelSourceDimensionsPx": [
+          1024,
+          1536
+        ],
+        "requiresCalibratedSocket": true
+      },
+      "geometry": {
+        "previewWidth": 0.151,
+        "previewHeight": 0.102,
+        "previewThickness": 0.013,
+        "previewCornerRadius": 0.012,
+        "previewUnits": "SCENE_PREVIEW_UNITS_NOT_METERS_NOT_MILLIMETRES",
+        "approvedDimensionsMm": null,
+        "approval": "UNVERIFIED_DO_NOT_USE_AS_FACTORY_DIMENSIONS",
+        "engineUnitScaleToMm": null
+      },
+      "material": {
+        "materialIdentity": "guard-cover-bus-transfer-v1",
+        "swatchHex": "#202125",
+        "colorSource": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION",
+        "sharedAcrossPoses": true,
+        "metallic": 0.1,
+        "roughness": 0.68
+      },
+      "motion": {
+        "openAngleDegrees": 105,
+        "angleEvidence": "PREVIEW_ANGLE_UNVERIFIED",
+        "durationSeconds": 0.3,
+        "anchorEdge": "Left",
+        "frontNormal": "+Z",
+        "closedAngleDegrees": 0
+      },
+      "identityContract": {
+        "coverGeometrySource": "procedural/bus-transfer-v1",
+        "meshRefSameOpenClosed": true,
+        "materialRefSameOpenClosed": true,
+        "scaleSameOpenClosed": true,
+        "permittedPoseProperty": "HINGE_PIVOT_LOCAL_ROTATION_ONLY",
+        "oldGenericImageAllowed": false
+      },
+      "currentDesignState": "UNITY_PREVIEW_NOT_REAL_HARDWARE_APPROVED",
+      "variants": [
+        "737-300",
+        "737-400",
+        "737-500"
+      ],
+      "notes": null
+    },
+    {
+      "controlId": "antiskid",
+      "displayName": "ANTISKID",
+      "panelId": "CENTER_INSTRUMENT",
+      "hingeDirection": "Down",
+      "physicalFamily": "antiskid",
+      "sourceMount": {
+        "sourceRectNativePx": null,
+        "sourceCenterNativePx": null,
+        "sourcePointEvidence": "UNLOCATED",
+        "rectEvidence": "UNMEASURED",
+        "panelSourceDimensionsPx": null,
+        "requiresCalibratedSocket": true
+      },
+      "geometry": {
+        "previewWidth": 0.089,
+        "previewHeight": 0.117,
+        "previewThickness": 0.012,
+        "previewCornerRadius": 0.01,
+        "previewUnits": "SCENE_PREVIEW_UNITS_NOT_METERS_NOT_MILLIMETRES",
+        "approvedDimensionsMm": null,
+        "approval": "UNVERIFIED_DO_NOT_USE_AS_FACTORY_DIMENSIONS",
+        "engineUnitScaleToMm": null
+      },
+      "material": {
+        "materialIdentity": "guard-cover-antiskid-v1",
+        "swatchHex": "#202125",
+        "colorSource": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION",
+        "sharedAcrossPoses": true,
+        "metallic": 0.1,
+        "roughness": 0.68
+      },
+      "motion": {
+        "openAngleDegrees": 108,
+        "angleEvidence": "PREVIEW_ANGLE_UNVERIFIED",
+        "durationSeconds": 0.3,
+        "anchorEdge": "Down",
+        "frontNormal": "+Z",
+        "closedAngleDegrees": 0
+      },
+      "identityContract": {
+        "coverGeometrySource": "procedural/antiskid-v1",
+        "meshRefSameOpenClosed": true,
+        "materialRefSameOpenClosed": true,
+        "scaleSameOpenClosed": true,
+        "permittedPoseProperty": "HINGE_PIVOT_LOCAL_ROTATION_ONLY",
+        "oldGenericImageAllowed": false
+      },
+      "currentDesignState": "UNITY_PREVIEW_NOT_REAL_HARDWARE_APPROVED",
+      "variants": [
+        "737-300",
+        "737-400",
+        "737-500"
+      ],
+      "notes": null
+    },
+    {
+      "controlId": "gpws-flap-inhibit",
+      "displayName": "GPWS FLAP INHIBIT",
+      "panelId": "GROUND_PROXIMITY_PANEL",
+      "hingeDirection": "Up",
+      "physicalFamily": "gpws-inhibit",
+      "sourceMount": {
+        "sourceRectNativePx": null,
+        "sourceCenterNativePx": null,
+        "sourcePointEvidence": "UNLOCATED",
+        "rectEvidence": "UNMEASURED",
+        "panelSourceDimensionsPx": null,
+        "requiresCalibratedSocket": true
+      },
+      "geometry": {
+        "previewWidth": 0.092,
+        "previewHeight": 0.112,
+        "previewThickness": 0.011,
+        "previewCornerRadius": 0.009,
+        "previewUnits": "SCENE_PREVIEW_UNITS_NOT_METERS_NOT_MILLIMETRES",
+        "approvedDimensionsMm": null,
+        "approval": "UNVERIFIED_DO_NOT_USE_AS_FACTORY_DIMENSIONS",
+        "engineUnitScaleToMm": null
+      },
+      "material": {
+        "materialIdentity": "guard-cover-gpws-flap-inhibit-v1",
+        "swatchHex": "#202125",
+        "colorSource": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION",
+        "sharedAcrossPoses": true,
+        "metallic": 0.1,
+        "roughness": 0.68
+      },
+      "motion": {
+        "openAngleDegrees": 110,
+        "angleEvidence": "PREVIEW_ANGLE_UNVERIFIED",
+        "durationSeconds": 0.3,
+        "anchorEdge": "Up",
+        "frontNormal": "+Z",
+        "closedAngleDegrees": 0
+      },
+      "identityContract": {
+        "coverGeometrySource": "procedural/gpws-flap-inhibit-v1",
+        "meshRefSameOpenClosed": true,
+        "materialRefSameOpenClosed": true,
+        "scaleSameOpenClosed": true,
+        "permittedPoseProperty": "HINGE_PIVOT_LOCAL_ROTATION_ONLY",
+        "oldGenericImageAllowed": false
+      },
+      "currentDesignState": "UNITY_PREVIEW_NOT_REAL_HARDWARE_APPROVED",
+      "variants": [
+        "737-300",
+        "737-400",
+        "737-500"
+      ],
+      "notes": null
+    },
+    {
+      "controlId": "gpws-gear-inhibit",
+      "displayName": "GPWS GEAR INHIBIT",
+      "panelId": "GROUND_PROXIMITY_PANEL",
+      "hingeDirection": "Up",
+      "physicalFamily": "gpws-inhibit",
+      "sourceMount": {
+        "sourceRectNativePx": null,
+        "sourceCenterNativePx": null,
+        "sourcePointEvidence": "UNLOCATED",
+        "rectEvidence": "UNMEASURED",
+        "panelSourceDimensionsPx": null,
+        "requiresCalibratedSocket": true
+      },
+      "geometry": {
+        "previewWidth": 0.092,
+        "previewHeight": 0.112,
+        "previewThickness": 0.011,
+        "previewCornerRadius": 0.009,
+        "previewUnits": "SCENE_PREVIEW_UNITS_NOT_METERS_NOT_MILLIMETRES",
+        "approvedDimensionsMm": null,
+        "approval": "UNVERIFIED_DO_NOT_USE_AS_FACTORY_DIMENSIONS",
+        "engineUnitScaleToMm": null
+      },
+      "material": {
+        "materialIdentity": "guard-cover-gpws-gear-inhibit-v1",
+        "swatchHex": "#202125",
+        "colorSource": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION",
+        "sharedAcrossPoses": true,
+        "metallic": 0.1,
+        "roughness": 0.68
+      },
+      "motion": {
+        "openAngleDegrees": 110,
+        "angleEvidence": "PREVIEW_ANGLE_UNVERIFIED",
+        "durationSeconds": 0.3,
+        "anchorEdge": "Up",
+        "frontNormal": "+Z",
+        "closedAngleDegrees": 0
+      },
+      "identityContract": {
+        "coverGeometrySource": "procedural/gpws-gear-inhibit-v1",
+        "meshRefSameOpenClosed": true,
+        "materialRefSameOpenClosed": true,
+        "scaleSameOpenClosed": true,
+        "permittedPoseProperty": "HINGE_PIVOT_LOCAL_ROTATION_ONLY",
+        "oldGenericImageAllowed": false
+      },
+      "currentDesignState": "UNITY_PREVIEW_NOT_REAL_HARDWARE_APPROVED",
+      "variants": [
+        "737-300",
+        "737-400",
+        "737-500"
+      ],
+      "notes": null
+    },
+    {
+      "controlId": "gpws-terrain-inhibit",
+      "displayName": "GPWS TERRAIN INHIBIT",
+      "panelId": "GROUND_PROXIMITY_PANEL",
+      "hingeDirection": "Up",
+      "physicalFamily": "gpws-inhibit",
+      "sourceMount": {
+        "sourceRectNativePx": null,
+        "sourceCenterNativePx": null,
+        "sourcePointEvidence": "UNLOCATED",
+        "rectEvidence": "UNMEASURED",
+        "panelSourceDimensionsPx": null,
+        "requiresCalibratedSocket": true
+      },
+      "geometry": {
+        "previewWidth": 0.092,
+        "previewHeight": 0.112,
+        "previewThickness": 0.011,
+        "previewCornerRadius": 0.009,
+        "previewUnits": "SCENE_PREVIEW_UNITS_NOT_METERS_NOT_MILLIMETRES",
+        "approvedDimensionsMm": null,
+        "approval": "UNVERIFIED_DO_NOT_USE_AS_FACTORY_DIMENSIONS",
+        "engineUnitScaleToMm": null
+      },
+      "material": {
+        "materialIdentity": "guard-cover-gpws-terrain-inhibit-v1",
+        "swatchHex": "#202125",
+        "colorSource": "CURRENT_SIMULATOR_COLOR_REFERENCE_NOT_737CL_HARDWARE_CERTIFICATION",
+        "sharedAcrossPoses": true,
+        "metallic": 0.1,
+        "roughness": 0.68
+      },
+      "motion": {
+        "openAngleDegrees": 110,
+        "angleEvidence": "PREVIEW_ANGLE_UNVERIFIED",
+        "durationSeconds": 0.3,
+        "anchorEdge": "Up",
+        "frontNormal": "+Z",
+        "closedAngleDegrees": 0
+      },
+      "identityContract": {
+        "coverGeometrySource": "procedural/gpws-terrain-inhibit-v1",
+        "meshRefSameOpenClosed": true,
+        "materialRefSameOpenClosed": true,
+        "scaleSameOpenClosed": true,
+        "permittedPoseProperty": "HINGE_PIVOT_LOCAL_ROTATION_ONLY",
+        "oldGenericImageAllowed": false
+      },
+      "currentDesignState": "UNITY_PREVIEW_NOT_REAL_HARDWARE_APPROVED",
+      "variants": [
+        "737-300",
+        "737-400",
+        "737-500"
+      ],
+      "notes": null
+    }
+  ]
+}
