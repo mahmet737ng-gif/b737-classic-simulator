@@ -70,6 +70,7 @@ const data=selections.map(id=>{
    await page.setViewportSize({width,height});
    const file=path.join(out,'readability-'+Math.round(multiplier*100)+'pct.png');
    await page.screenshot({path:file,fullPage:true,animations:'disabled'});
+   console.log('READABILITY_CONTACT_SHEET',Math.round(multiplier*100)+'pct',fs.readFileSync(file).toString('base64'));
    const errors=result.filter(r=>r.error);
    assert.equal(errors.length,0,'All legend states must decode at '+multiplier);
    responses.push({scale:multiplier,rendered:result.length,errors});
