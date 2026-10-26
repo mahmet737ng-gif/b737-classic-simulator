@@ -1,0 +1,56 @@
+name: MCP approved full-resolution silver front-view asset extraction
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - tools/build-mcp-native-front-fd.py
+      - .github/workflows/mcp-native-front-assets.yml
+permissions:
+  contents: write
+concurrency:
+  group: mcp-native-front-silver
+  cancel-in-progress: false
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - run: python3 -m pip install Pillow
+      - name: Extract from original 5-position high-res silver atlas
+        run: python3 tools/build-mcp-native-front-fd.py
+      - name: Verify equal dimensions and native nonempty silver poses
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from PIL import Image
+          import pathlib,json
+          root=pathlib.Path('panel-mosaic-lab/cockpit/assets/mcp-switches/native')
+          meta=json.loads((root/'FD_NATIVE_MANIFEST.json').read_text())
+          off=Image.open(root/'FD_OFF_NATIVE.png').convert('RGBA')
+          on=Image.open(root/'FD_ON_NATIVE.png').convert('RGBA')
+          assert on.size==off.size, (on.size,off.size)
+          assert on.size[0]>150 and on.size[1]>150
+          assert on.getchannel('A').getbbox() and off.getchannel('A').getbbox()
+          assert meta['sourceUntouched'] is True
+          print('MCP_REAL_ASSETS_PASS',meta['outputSize'])
+          PY
+          python3 panel-mosaic-lab/verify-final-overhead.py
+      - name: Publish only new native silver F/D images
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add panel-mosaic-lab/cockpit/assets/mcp-switches/native/
+          if git diff --cached --quiet; then echo 'Already extracted'; exit 0; fi
+          git commit -m 'assets(MCP): genuine high-res silver F/D orthographic OFF and ON'
+          for n in 1 2 3 4 5; do
+            git fetch origin main
+            git rebase origin/main
+            if git push origin HEAD:main; then exit 0; fi
+            sleep 2
+          done
+          exit 1
