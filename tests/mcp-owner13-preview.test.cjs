@@ -41,7 +41,23 @@ assert.match(style,/pointer-events:none/);
 for(const file of ['panel-mosaic-lab/cockpit/index.html','panel-mosaic-lab/mcp-panel/index.html']){
  const html=fs.readFileSync(path.join(root,file),'utf8');
  assert.match(html,/mcp-owner13-v1\.js\?v=OWNER13-0002/);
- assert.match(html,/mcp-owner13-v1\.css\?v=OWNER13-0002/);
+ assert.match(html,/mcp-owner13-v1\.css\?v=AT-PADDLE-20261027-R2/);
 }
-console.log(JSON.stringify({status:'PASS',sourceNames:13,previewAtlasPixels:[192,192],transparentParts:4,
+
+/* Revision R2: assert the new owner-provided two-state photographic A/T assets
+ * are deployed intact, including the OFF photo with the bezel registered. */
+const assetRoot=path.join(root,'panel-mosaic-lab/cockpit/assets/mcp-switches');
+for(const [name,expectedSha] of Object.entries({
+ 'AT_ARM_ON_MCP.webp':'0277f5459b02fa42407dacf9f18078c5c601ed4da2659e3d70809c4929bca7bf',
+ 'AT_ARM_OFF_MCP_V2.webp':'73ffe48c1673b0303dfa03284cb0a09d4bbff1ccadb2febb93ae55709aab60cb'
+})){
+ const raw=fs.readFileSync(path.join(assetRoot,name));
+ assert.equal(raw.subarray(0,4).toString('ascii'),'RIFF');
+ assert.equal(raw.subarray(8,12).toString('ascii'),'WEBP');
+ assert.equal(crypto.createHash('sha256').update(raw).digest('hex'),expectedSha,name+' photo bytes changed');
+ assert.ok(style.includes(name),'MCP CSS must use '+name);
+}
+assert.match(style,/AT-PADDLE-20261027/);
+assert.match(style,/data-mcp-hardware="AT_ARM"/);
+\nconsole.log(JSON.stringify({status:'PASS',sourceNames:13,previewAtlasPixels:[192,192],transparentParts:4,
  verifiedSHA256:true,immutableMcpBackground:true,previewOnly:true,sourceCutoutAudit:'NOT_YET_CERTIFIED'}));

@@ -39,7 +39,7 @@
  position:absolute!important;display:block!important;box-sizing:border-box!important;
  left:0!important;right:auto!important;top:-35%!important;bottom:auto!important;
  width:100%!important;height:132%!important;border:0!important;
- background:url("./assets/mcp-switches/AT_ARM_OFF_MCP.webp") center/100% 100% no-repeat!important;
+ background:url("./assets/mcp-switches/AT_ARM_OFF_MCP_V2.webp") center/100% 100% no-repeat!important;
  pointer-events:none!important;filter:none!important;box-shadow:none!important;
  transform:none!important;
 }
@@ -51,7 +51,7 @@
 [data-piece="mcp"].mcp-owner13-active > .mcp-hw[data-mcp-hardware="AT_ARM"] > .mcp-owner13-art {
  inset:auto!important;left:0!important;right:auto!important;
  top:-35%!important;bottom:auto!important;width:100%!important;height:132%!important;
- background-image:url("./assets/mcp-switches/AT_ARM_OFF_MCP.webp")!important;
+ background-image:url("./assets/mcp-switches/AT_ARM_OFF_MCP_V2.webp")!important;
  background-size:100% 100%!important;background-position:center center!important;
  background-repeat:no-repeat!important;transform:none!important;filter:none!important;
 }

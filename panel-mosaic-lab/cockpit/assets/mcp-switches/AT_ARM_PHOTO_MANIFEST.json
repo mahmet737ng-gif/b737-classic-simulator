@@ -6,7 +6,7 @@
   ],
   "mapping": {
     "ARM": "AT_ARM_ON_MCP.webp",
-    "OFF": "AT_ARM_OFF_MCP.webp"
+    "OFF": "AT_ARM_OFF_MCP_V2.webp"
   },
   "renderSize": [
     108,
@@ -30,5 +30,8 @@
     ],
     "outerRingFrozenAcrossStateSwitch": true
   },
-  "notes": "MCP-size WebP derivatives from user-provided 1254x1254 images. Original source files were not changed. Each state has one complete photographic raster; not a mechanically interpolated animation."
+  "notes": "MCP-size WebP derivatives from user-provided 1254x1254 images. Original source files were not changed. Each state has one complete photographic raster; not a mechanically interpolated animation.",
+  "offReferenceRingRegistrationPxY": 30,
+  "offRendering": "OFF paddle registered on ON static bezel photo; changed region confined to masked paddle silhouettes before scaling.",
+  "fixedMcpBezel": true
 }
