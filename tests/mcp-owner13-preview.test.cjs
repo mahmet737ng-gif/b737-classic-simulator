@@ -59,5 +59,6 @@ for(const [name,expectedSha] of Object.entries({
 }
 assert.match(style,/AT-PADDLE-20261027/);
 assert.match(style,/data-mcp-hardware="AT_ARM"/);
-\nconsole.log(JSON.stringify({status:'PASS',sourceNames:13,previewAtlasPixels:[192,192],transparentParts:4,
+
+console.log(JSON.stringify({status:'PASS',sourceNames:13,previewAtlasPixels:[192,192],transparentParts:4,
  verifiedSHA256:true,immutableMcpBackground:true,previewOnly:true,sourceCutoutAudit:'NOT_YET_CERTIFIED'}));
