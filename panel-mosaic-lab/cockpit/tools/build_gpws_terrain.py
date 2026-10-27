@@ -102,7 +102,7 @@ for region in assembly["regions"]:
     if region["id"]!="main":continue
     for p in region["placements"]:
         if p["id"]=="fo-inner":
-            assert p["asset"]=="panel-mosaic-lab/assets/locked/2026-10-23/B737_Right_Main_Instruments_Blank.png"
+            assert p["asset"] in {"panel-mosaic-lab/assets/locked/2026-10-23/B737_Right_Main_Instruments_Blank.png","panel-mosaic-lab/cockpit/assets/B737_Right_Main_Instruments_GPWS_TERRAIN_V2.png"}
             p["asset"]="panel-mosaic-lab/cockpit/assets/B737_Right_Main_Instruments_GPWS_TERRAIN_V2.png"
             p["presentation"]="Original panel 918x1713, only GPWS region optically amended: third TERRAIN socket right of GEAR, matching labeled three-column arrangement"
             replaced=True
