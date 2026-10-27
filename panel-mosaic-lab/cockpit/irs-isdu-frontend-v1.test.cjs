@@ -13,7 +13,7 @@ assert.match(js,/irsIsduOpen/);
 assert.match(js,/data-isdu-variant/);
 assert.match(js,/VISUAL ONLY|VISUAL PREVIEW/);
 assert.match(js,/irs-isdu-source/);
-assert.match(css,/irs-honeywell-fcom-keypad\.svg/);
+assert.match(css,/irs-honeywell-fcom-keypad\.avif/);
 const match=asset.match(/data:image\/avif;base64,([A-Za-z0-9+/=]+)/);
 assert(match,'A real embedded FCOM source crop is required');
 const bytes=Buffer.from(match[1],'base64');
