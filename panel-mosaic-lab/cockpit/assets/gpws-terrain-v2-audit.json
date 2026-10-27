@@ -19,5 +19,11 @@
     "TERRAIN INHIBIT"
   ],
   "terrainPlacement": "RIGHT_OF_GEAR_INHIBIT",
-  "fonts": "DejaVuSansCondensed, DejaVuSansCondensed-Bold; source is photo-textured; direct source exact glyph reproduction unavailable"
+  "fonts": "DejaVuSansCondensed, DejaVuSansCondensed-Bold; source is photo-textured; direct source exact glyph reproduction unavailable",
+  "qa": {
+    "phase": "pixel-location-and-label-audit",
+    "gitBlobRegistration": "d46939b49cc71b40da77503c165f7d7c6ddf2f9e",
+    "assetInAssembly": "CKP-0012-THROTTLE-FIT / GPWS-TERRAIN-THIRD-SOCKET-V2",
+    "remainingCondition": "Owner visual review before locking exact typography"
+  }
 }
