@@ -30,7 +30,9 @@
           lens.className='irs-cue-lens';
           lens.dataset.side=side;
           lens.setAttribute('aria-hidden','true');
-          button.append(lens);
+          // Keep light inside the BLACK moving cap, never inside stationary metal.
+          const cap=button.querySelector('.irs-photo-key-cap');
+          (cap||button).append(lens);
         }
         lens.dataset.lit=String(state[key][i]);
       }
