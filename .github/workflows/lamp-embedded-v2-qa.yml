@@ -1,0 +1,35 @@
+name: Unified embedded Overhead V2 real-browser regression
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - panel-mosaic-lab/cockpit/overhead-stage.html
+      - tools/test-lamp-browser-smoke.cjs
+      - .github/workflows/lamp-embedded-v2-qa.yml
+permissions:
+  contents: read
+jobs:
+  inspect-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Chromium for read-only mounting QA
+        run: |
+          npm install --no-save --ignore-scripts playwright@1.58.2
+          npx playwright install --with-deps chromium
+      - name: Parse scripts without changing approved source assets
+        run: |
+          node --check tools/test-lamp-browser-smoke.cjs
+          node --check panel-mosaic-lab/interactive-overhead/lights.js
+          node --check panel-mosaic-lab/lights-reference-v2/live-mount.js
+      - name: Verify live Unified iframe lights and BRIGHT lamp test
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m http.server 8788 --bind 127.0.0.1 >/tmp/b737-lamp-embedded-qa-http.log 2>&1 &
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:8788/panel-mosaic-lab/interactive-overhead/lights.json >/dev/null; then break; fi
+            sleep 1
+          done
+          node tools/test-lamp-browser-smoke.cjs
