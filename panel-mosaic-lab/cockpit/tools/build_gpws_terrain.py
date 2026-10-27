@@ -121,7 +121,7 @@ for a,b in zip(caption_bounds,caption_bounds[1:]):
 # NORMAL lettering remains precisely centered beneath each of the three sockets.
 # Enforce unchanged RGB values outside the narrow GPWS change rectangle.
 modified=np.array(photo)
-change_rect=(600,1393,918,1595)
+change_rect=(600,1388,918,1595)
 x1,y1,x2,y2=change_rect
 outside=np.ones(old.shape[:2],bool)
 outside[y1:y2,x1:x2]=False
