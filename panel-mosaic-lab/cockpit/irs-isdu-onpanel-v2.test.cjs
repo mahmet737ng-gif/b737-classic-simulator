@@ -8,7 +8,7 @@ assert(photo.length>9000,'Owner keycap photo sprite is missing/placeholder');
 assert.equal(photo.toString('ascii',4,12),'ftypavif');
 assert.match(html,/irs-isdu-onpanel-v2\.js\?v=IRS-UI-0003/);
 assert.match(html,/irs-isdu-onpanel-v2\.css\?v=IRS-UI-0003/);
-assert.match(js,/src='\.\/assets\/irs-owner-keycaps-v3\.avif'/);
+assert.match(js,/const SRC='\.\/assets\/irs-owner-keycaps-v3\.avif'/);
 assert.match(css,/background-size:300% 400%/);
 assert.match(js,/dataset\.backend='DISCONNECTED'/);
 assert.match(js,/b737:irs-visual-key/);
