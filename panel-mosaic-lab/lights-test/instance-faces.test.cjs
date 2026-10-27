@@ -58,6 +58,7 @@ const mainJS=get('panel-mosaic-lab/cockpit/lights.js');
 assert.match(overheadJS,/fetch\(url\('instance-faces\.json'\)/);
 assert.match(mainJS,/fetch\(url\('instance-faces\.json'\)/);
 assert.match(overheadJS,/instanceFaces\?\.instances/);
-assert.match(overheadJS,/else img\.src=url\(face\.url\)/,'No-image-loader fallback must use per-socket face rather than old shared gallery lens');
+assert.match(overheadJS,/const source=window\.B737LampAppearance\.resolve\('OH',c\.asset,state\)\|\|url\(face\.url\)/,'New mounted v2 lens must retain original per-socket fallback');
+assert.match(overheadJS,/else img\.src=source/,'No-image-loader fallback must use resolved v2 source or exact prior face');
 assert.match(mainJS,/instanceFaces\?\.instances/);
 console.log('PASS: 37 independently fitting shared-annunciator instances / 74 signed light states, 68 + 23 original model assets intact; original source glyph and photographic aperture unchanged.');
