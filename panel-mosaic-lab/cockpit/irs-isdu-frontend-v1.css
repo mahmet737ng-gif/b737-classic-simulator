@@ -28,3 +28,9 @@
 .irs-isdu-disclaimer{color:#bdcbd4;font:13px/1.8 Tahoma,Arial,sans-serif;text-align:center;margin:15px 6px 4px}
 .irs-isdu-key-status{text-align:center;font:12px/1.6 monospace;color:#8bdbe8;margin:8px}
 @media(max-width:600px){.irs-isdu-dialog{padding:12px}.irs-isdu-unit{padding:14px 10px}.irs-isdu-lower{gap:12px}.irs-isdu-readouts{margin-bottom:12px}.irs-isdu-lcd{min-height:44px;font-size:16px}.irs-isdu-control select{min-width:96px}.irs-isdu-keypad{padding:5px}.irs-isdu-key{min-height:50px;font-size:16px;padding:5px}.irs-isdu-selectors{min-height:230px}}
+/* The Honeywell keypad is the ACTUAL cropped source image, not redrawn key faces.
+   Transparent hit areas implement UI-only visual click feedback. */
+.irs-isdu-keypad.irs-isdu-source{background:#fff url('./assets/irs-honeywell-fcom-keypad.svg') center/100% 100% no-repeat;border:0;position:relative;aspect-ratio:263/330;grid-template-rows:repeat(4,minmax(0,1fr));gap:0;padding:7.2% 9.5% 7.4%;box-shadow:none}
+.irs-isdu-keypad.irs-isdu-source .irs-isdu-key{opacity:0;background:transparent;color:transparent;border:0;outline:none;box-shadow:none;min-height:0;margin:0;padding:0}
+.irs-isdu-keypad.irs-isdu-source .irs-isdu-key:focus-visible,.irs-isdu-keypad.irs-isdu-source .irs-isdu-key.is-pressed{opacity:.35;background:#62b4df;outline:2px solid #007ada;transform:none;box-shadow:none}
+.irs-isdu-keypad.irs-isdu-source .irs-isdu-key span{visibility:hidden}
