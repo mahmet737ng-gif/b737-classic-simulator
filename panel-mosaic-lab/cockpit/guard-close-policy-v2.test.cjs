@@ -41,5 +41,6 @@ for(const id of ['generator-disconnect-1','generator-disconnect-2','passenger-ox
  assert.equal(p.initialState(c,s).effects[c.irreversible.effect],true,'persisted effect');
 }
 assert.equal(byId['battery-master'].rectPx[0]+byId['battery-master'].rectPx[2]/2,260);
-assert.equal(byId['passenger-oxygen'].rectPx[0]+byId['passenger-oxygen'].rectPx[2]/2,1290);
+// Owner 2026-10-28 position-only correction intentionally shifts PASS OXY 2 source px to the left.
+assert.equal(byId['passenger-oxygen'].rectPx[0]+byId['passenger-oxygen'].rectPx[2]/2,1288);
 console.log('PASS: 18 FCOM guarded detents, eight immutable geometries, close/open and irreversible latches');
