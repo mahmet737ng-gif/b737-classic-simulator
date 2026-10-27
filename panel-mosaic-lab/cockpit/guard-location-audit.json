@@ -116,10 +116,11 @@
         918,
         1713
       ],
-      "image": "./assets/gpws-terrain-qa-preview.webp",
+      "image": "./assets/B737_Right_Main_Instruments_GPWS_TERRAIN_V2.png",
       "fullAsset": "./assets/B737_Right_Main_Instruments_GPWS_TERRAIN_V2.png",
       "scope": "main-live-derived-photo",
-      "pixelNote": "source native rectangles given in 918x1713; this small QA preview is cropped and should not be used directly for native panel position mapping"
+      "pixelNote": "source native rectangles given in 918x1713; this small QA preview is cropped and should not be used directly for native panel position mapping",
+      "preview": "./assets/gpws-terrain-qa-preview.webp"
     }
   },
   "records": [
