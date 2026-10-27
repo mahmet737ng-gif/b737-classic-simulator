@@ -32,7 +32,7 @@
   const settings=Object.freeze({version:'IRS-ISDU-BEZEL-FIX-0004',
     sourcePhoto:'Aviation Keypad Panel Close-Up.png',
     referencePhoto:'OH01-06-original-9d8ac0ac86bd.png',
-    referencePhotoSha256:'9d8ac0ac86bdb92c040e9bdd97811ca381535d949bff94aa5b1a01e5eba733',
+    referencePhotoSha256:'9d8ac0ac86bdb92c040e9bdd97811ca381535d949bff94aa5b1a01e5de8e23df',
     atlasSource:'OH-02',
     sourceColumns:SOURCE_COLS,sourceRows:SOURCE_ROWS,
     columns:COL_CENTERS,rows:ROW_CENTERS,keyWidth:KEY_W,keyHeight:KEY_H,
