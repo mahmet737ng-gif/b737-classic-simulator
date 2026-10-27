@@ -67,11 +67,39 @@
   region.append(station);
   return station;
  }
+ function focusIRS(){
+  install();
+  const native=document.getElementById('native');
+  const vp=document.getElementById('viewport');
+  const scene=document.getElementById('scene');
+  const region=document.getElementById('region-overhead');
+  if(!native||!vp||!scene||!region)return;
+  const ref=document.getElementById('reference');
+  if(scene.classList.contains('reference-mode')&&ref)ref.click();
+  native.click();
+  const zoom=Number.parseFloat(scene.style.getPropertyValue('--zoom'))||1;
+  const x=Number.parseFloat(region.style.left)||0,y=Number.parseFloat(region.style.top)||0;
+  const sx=Number.parseFloat(scene.style.left)||0,sy=Number.parseFloat(scene.style.top)||0;
+  vp.scrollLeft=Math.max(0,(x+geom.x+geom.w/2)*zoom+sx-vp.clientWidth/2);
+  vp.scrollTop=Math.max(0,(y+geom.y+geom.h/2)*zoom+sy-vp.clientHeight/2);
+  document.getElementById('irsPanelJump')?.setAttribute('aria-pressed','true');
+ }
+ function addJump(){
+  if(document.getElementById('irsPanelJump'))return;
+  const nav=document.querySelector('header nav');
+  if(!nav)return;
+  const b=document.createElement('button');
+  b.id='irsPanelJump';b.type='button';b.textContent='IRS KEYPAD';b.setAttribute('aria-pressed','false');
+  b.addEventListener('click',focusIRS);
+  nav.append(b);
+ }
  function whenReady(){
+  addJump();
   const observer=new MutationObserver(()=>{if(install())observer.disconnect();});
   observer.observe(document.documentElement,{childList:true,subtree:true});
   install();
+  window.addEventListener('b737:cockpit-mounted',install);
  }
- root.B737ISDUOnPanel=Object.freeze({install,getElement:()=>station,geometry:settings,getLastKey:()=>last});
+ root.B737ISDUOnPanel=Object.freeze({install,focus:focusIRS,getElement:()=>station,geometry:settings,getLastKey:()=>last});
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',whenReady,{once:true});else whenReady();
 })(window);
