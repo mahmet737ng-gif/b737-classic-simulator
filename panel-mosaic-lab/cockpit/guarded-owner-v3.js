@@ -14,7 +14,7 @@ const BP=url('../../unity/Assets/B737Classic/GuardedSwitches/Resources/GuardedSw
 const OWNER=url('../../engine/maps/guarded-switch-owner-hinge-quiz-v1.json');
 const BASE=url('../interactive-overhead/rotary-guards.json');
 const UPPER=url('../interactive-overhead/lights-controls.json');
-const names=new Map();
+/* Old visual guard assets were removed from the ACTIVE registry. */
 const mounted=new Map(),errors=new Map();
 function assert(ok,msg){if(!ok)throw Error('GUARD-OWNER-V3: '+msg);}
 function element(name,className){const e=document.createElement(name);e.className=className;return e;}
@@ -144,7 +144,7 @@ async function init(){
       let status=document.getElementById('g17-owner-status');
       if(!status){const inspector=document.getElementById('toggleInspector');if(inspector){status=element('p','g17-owner-status');status.id='g17-owner-status';inspector.prepend(status)}}
       if(status)status.textContent='Owner photo guards mounted: '+mounted.size+'/13; QA: source-centered approximations need visual sign-off.';
-      if(mounted.size===13){window.dispatchEvent(new CustomEvent('b737:owner-guards-installed',{detail:result}));return true}
+      if(status){status.dataset.installed=String(mounted.size);status.dataset.expected='13';status.dataset.ownerMaster='4';}if(mounted.size===13){window.dispatchEvent(new CustomEvent('b737:owner-guards-installed',{detail:result}));return true}
       return false;
     };
     if(install())return;

@@ -34,17 +34,17 @@ jobs:
             --hide-scrollbars --virtual-time-budget=18000 --window-size=1920,1080 \
             --dump-dom 'http://127.0.0.1:8765/panel-mosaic-lab/cockpit/overhead-stage.html' \
             > /tmp/guard-overhead-dom.html 2> /tmp/guard-chrome-stderr.log
-          if grep -q 'data-installed="12"' /tmp/guard-overhead-dom.html; then
-            echo "PASS: 12 native guarded switches mounted with SVG V2 skin."
+          if grep -q 'data-installed="13"' /tmp/guard-overhead-dom.html; then
+            echo "PASS: 13 owner master photo guards mounted in browser."
           else
-            echo "WARNING: not all 12 source-anchored guards are present in headless DOM."
-            grep -oE '.{0,70}g17-native-install-status.{0,280}' /tmp/guard-overhead-dom.html | head -c 1800 || true
+            echo "WARNING: photo guards did not install at all 13 anchors."
+            grep -oE '.{0,70}g17-owner-status.{0,280}' /tmp/guard-overhead-dom.html | head -c 1800 || true
             tail -20 /tmp/guard-chrome-stderr.log || true
             exit 1
           fi
-          grep -q 'data-surface="red"' /tmp/guard-overhead-dom.html || { echo "FAIL: red covers missing"; exit 1; }
-          grep -q 'data-surface="black"' /tmp/guard-overhead-dom.html || { echo "FAIL: black covers missing"; exit 1; }
-          grep -q 'data-surface="horizontal"' /tmp/guard-overhead-dom.html || { echo "FAIL: wide cover missing"; exit 1; }
+          grep -q 'data-color="red"' /tmp/guard-overhead-dom.html || { echo "FAIL: red covers missing"; exit 1; }
+          grep -q 'data-color="black"' /tmp/guard-overhead-dom.html || { echo "FAIL: black covers missing"; exit 1; }
+          grep -q 'data-hinge="left"' /tmp/guard-overhead-dom.html || { echo "FAIL: wide cover missing"; exit 1; }
       - name: Save photo-style Overhead screenshot for visual inspection
         if: always()
         run: |

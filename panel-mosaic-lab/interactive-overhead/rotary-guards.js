@@ -37,6 +37,8 @@
   }else if(c.presentation==='flight-recorder-left-hinge'){
    const current=engine.guard(c.id),index=c.states.indexOf(current.value);
    widget.dataset.guard=current.guard;widget.dataset.value=current.value;
+   const recImage=widget.querySelector('.owner-recorder-guard-photo');
+   if(recImage)recImage.src=url(registry.assets['owner-'+c.color+'-'+(current.guard==='closed'?'closed':'open')].url);
    const cover=widget.querySelector('.recorder-hinge-cover'),lever=widget.querySelector('.recorder-hinge-lever');
    cover.setAttribute('aria-expanded',String(current.guard==='open'));
    cover.setAttribute('aria-label',(current.guard==='open'?'Close':'Open')+' Flight Recorder left hinged guard');
@@ -47,6 +49,8 @@
   }else if(c.presentation==='calibrated-horizontal-standby'){
    const current=engine.guard(c.id),index=c.states.indexOf(current.value),cover=widget.querySelector('.guard-cover'),lever=widget.querySelector('.guard-lever');
    widget.dataset.guard=current.guard;widget.dataset.value=current.value;
+   const busPicture=widget.querySelector('.guard-picture');
+   if(busPicture)busPicture.src=url(registry.assets['owner-'+c.color+'-'+(current.guard==='closed'?'closed':'open')].url);
    const left=Number(widget.dataset.mountLeft),top=Number(widget.dataset.mountTop),w=Number(widget.dataset.mountWidth),h=Number(widget.dataset.mountHeight);
    Object.assign(cover.style,current.guard==='closed'?{left:left+'px',top:top+'px',width:w+'px',height:h+'px'}:{left:left+'px',top:top+'px',width:w+'px',height:(h*.22)+'px'});
    Object.assign(lever.style,{left:(left+w*.13)+'px',top:(top+h*.31)+'px',width:(w*.74)+'px',height:(h*.53)+'px'});
@@ -148,7 +152,10 @@
    if(!['ArrowLeft','ArrowRight','Home','End'].includes(e.key))return;e.preventDefault();e.stopPropagation();choose(c);
    engine.guardAction(c.id,'set',e.key==='ArrowLeft'||e.key==='Home'?'test':'normal');
   });
-  group.append(cradle,lever,hinge,cover);return group;
+  const ownerPic=document.createElement('img');ownerPic.className='owner-recorder-guard-photo';ownerPic.alt='';ownerPic.draggable=false;
+  ownerPic.src=url(registry.assets['owner-'+c.color+'-closed'].url);
+  Object.assign(ownerPic.style,{position:'absolute',left:'0',top:'0',width:'100%',height:'100%',objectFit:'contain',transform:'rotate(-90deg)',pointerEvents:'none'});
+  group.append(cradle,lever,hinge,cover,ownerPic);return group;
  }
  function guarded(c,p,placement){
   const group=document.createElement('div');group.className='guard-node';group.dataset.control=c.id;
@@ -169,8 +176,15 @@
   }
   const dimensions={CLOSED:[261,c.color==='red'?354:359],Open_UP:[c.color==='red'?254:256,c.color==='red'?466:470],Open_CENTER:[254,c.color==='red'?467:469],Open_DOWN:[c.color==='red'?253:256,c.color==='red'?468:471]};
   for(const frame of (c.presentation==='calibrated-horizontal-standby'?[]:['CLOSED','Open_UP','Open_CENTER','Open_DOWN'])){
-   const img=document.createElement('img'),[w,h]=dimensions[frame];img.className='guard-picture';img.dataset.frame=frame;if(window.B737ImageLoader)window.B737ImageLoader.assign(img,url(registry.assets[c.color+'-'+frame].url));else img.src=url(registry.assets[c.color+'-'+frame].url);img.alt='';img.draggable=false;
+   const img=document.createElement('img'),[w,h]=dimensions[frame];img.className='guard-picture';img.dataset.frame=frame;if(window.B737ImageLoader)window.B737ImageLoader.assign(img,url(registry.assets['owner-'+c.color+'-'+(frame==='CLOSED'?'closed':'open')].url));else img.src=url(registry.assets[c.color+'-'+frame].url);img.alt='';img.draggable=false;
    Object.assign(img.style,{left:(-(frame==='CLOSED'?130.5:w/2)*scale)+'px',top:(-(frame==='CLOSED'?179.5:230)*scale)+'px',width:(w*scale)+'px',height:(h*scale)+'px'});group.append(img);
+  }
+  if(c.presentation==='calibrated-horizontal-standby'){
+    const pic=document.createElement('img');pic.className='guard-picture active';pic.dataset.frame='CLOSED';
+    pic.src=url(registry.assets['owner-'+c.color+'-closed'].url);pic.alt='';pic.draggable=false;
+    const l=Number(group.dataset.mountLeft),t=Number(group.dataset.mountTop),w=Number(group.dataset.mountWidth),h=Number(group.dataset.mountHeight);
+    Object.assign(pic.style,{left:l+'px',top:t+'px',width:w+'px',height:h+'px'});
+    group.append(pic);
   }
   const cover=document.createElement('button'),lever=document.createElement('button');cover.type=lever.type='button';cover.className='guard-hit guard-cover';lever.className='guard-hit guard-lever';
   lever.setAttribute('role','slider');lever.setAttribute('aria-orientation',c.axis);lever.setAttribute('aria-valuemin','0');lever.setAttribute('aria-valuemax',String(c.states.length-1));
@@ -219,7 +233,7 @@
   byId('atlasAbsolute').append(svg);
  }
  function mount(layout){
-  const section=document.createElement('section');section.className='rg-inspector';section.innerHTML='<strong>۲۰ روتری‌ناب · ۱۲ گارد · LGT-0002</strong><h3 id="rgSelected">یک ناب یا گارد را انتخاب کن</h3><button id="rgGuardAction" class="hidden"></button><div id="rgStates" class="rg-actions"></div><p id="rgValue" role="status" aria-live="polite"></p>';
+  const section=document.createElement('section');section.className='rg-inspector';section.innerHTML='<strong>۲۰ روتری‌ناب · ۱۳ گارد · OWNER-PHOTO-0004</strong><h3 id="rgSelected">یک ناب یا گارد را انتخاب کن</h3><button id="rgGuardAction" class="hidden"></button><div id="rgStates" class="rg-actions"></div><p id="rgValue" role="status" aria-live="polite"></p>';
   byId('toggleInspector').after(section);
   mountEngineStartLabelCorrection(layout);
   layer=document.createElement('div');layer.className='rg-layer';layer.id='rotaryGuardLayer';const placements=new Map(layout.placements.map(p=>[p.id,p]));

@@ -1,5 +1,5 @@
 {
-  "version": "LGT-0002",
+  "version": "LGT-0003-OWNER4",
   "rotaries": [
     {
       "id": "irs-mode-l",
@@ -87,8 +87,9 @@
       },
       "rotation": 0,
       "axis": "vertical",
-      "assetFamily": "original-approved-guarded-v2",
-      "logicStatus": "SIM_APPROX_ONLY; deployment latch resets only through explicit scenario reset"
+      "assetFamily": "owner-four-photo-master",
+      "logicStatus": "SIM_APPROX_ONLY; deployment latch resets only through explicit scenario reset",
+      "ownerHinge": "Down"
     },
     {
       "id": "flight-recorder-test",
@@ -121,9 +122,10 @@
       "rotation": 0,
       "axis": "horizontal",
       "presentation": "flight-recorder-left-hinge",
-      "assetFamily": "photo-anchored-flight-recorder-guard-v1",
+      "assetFamily": "owner-four-photo-master",
       "hinge": "LEFT",
-      "sourceStatus": "SOURCE_PHOTO_OH06; original pixels unchanged"
+      "sourceStatus": "SOURCE_PHOTO_OH06; original pixels unchanged",
+      "ownerHinge": "Left"
     }
   ]
 }

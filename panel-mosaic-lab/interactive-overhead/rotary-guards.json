@@ -1,6 +1,6 @@
 {
   "schema": "b737.overhead-rotary-guard-overlay.v1",
-  "version": "RM-0004-BUS-TRANSFER-13",
+  "version": "RM-0005-OWNER-PHOTO-13",
   "baseVersion": "UPD-0012-OVH-measured-seams",
   "assets": {
     "rotary-standard": {
@@ -11,37 +11,21 @@
       "url": "../../panel-mosaic-lab/assets/locked/2026-10-23/Switches/Rotary/Cross_Feed_Knob.png",
       "sha256": "eec1a9daca2d25a1d527c937b710f167aa0c2b076508974d9a71f105bcf01ef6"
     },
-    "black-CLOSED": {
-      "url": "../../panel-mosaic-lab/assets/locked/2026-10-23/Black_Guarded_CLOSED.png",
-      "sha256": "b45a6d74fbf052ab82baadf820cc79d94fce5055584442946fa15c4e3b760d6e"
+    "owner-red-closed": {
+      "url": "../cockpit/guard-owner-v3/red-closed.webp",
+      "sha256": "81d76a32fe2d4bd7e29f22241e4cf457e1f9155989d73bc293ae5f5fa5d1ba24"
     },
-    "black-Open_UP": {
-      "url": "../../panel-mosaic-lab/assets/locked/2026-10-23/Black_Guarded_Open_UP.png",
-      "sha256": "b778402772007645ec9284fbbc33e01f7641d77760877bb2a11e91cb2d57b506"
+    "owner-red-open": {
+      "url": "../cockpit/guard-owner-v3/red-open.webp",
+      "sha256": "d78f409f8ab5a763adea9b00efdfa2516566d6fd7035ce0a4458357471f87c5e"
     },
-    "black-Open_CENTER": {
-      "url": "../../panel-mosaic-lab/assets/locked/2026-10-23/Black_Guarded_Open_CENTER.png",
-      "sha256": "d0b2d4937d587dd22e58ea1a0987c69f7b5f77223c3537b5c84b24e43a21bdc4"
+    "owner-black-closed": {
+      "url": "../cockpit/guard-owner-v3/black-closed.webp",
+      "sha256": "32568a52b1c99a16ba79414885a9637a27f4c9f54176d5271c1ccc2b1f549a6c"
     },
-    "black-Open_DOWN": {
-      "url": "../../panel-mosaic-lab/assets/locked/2026-10-23/Black_Guarded_Open_DOWN.png",
-      "sha256": "ed4d782015ec8efe388a74923a037d4103a64f9dba26ee90366ed8ebe1cd546f"
-    },
-    "red-CLOSED": {
-      "url": "../../panel-mosaic-lab/assets/locked/2026-10-23/Red_Guarded_CLOSED.png",
-      "sha256": "554334563caa4981b0595d04fbd4f38bd7d3f81ddac117dde06d3f2d0174a79b"
-    },
-    "red-Open_UP": {
-      "url": "../../panel-mosaic-lab/assets/locked/2026-10-23/Red_Guarded_Open_UP.png",
-      "sha256": "d8b07ca446ed83ea831b9b70f16dbd048dad58631f8d187ff29de33e00bccaa7"
-    },
-    "red-Open_CENTER": {
-      "url": "../../panel-mosaic-lab/assets/locked/2026-10-23/Red_Guarded_Open_CENTER.png",
-      "sha256": "53d53dbe3b496061555f71d86d18c7b66ab34624af007607db872f1ef6c39c55"
-    },
-    "red-Open_DOWN": {
-      "url": "../../panel-mosaic-lab/assets/locked/2026-10-23/Red_Guarded_Open_DOWN.png",
-      "sha256": "e59af36c10954b16c7b950e2957b85dbcca62a6b708dada37f16f06142ac7e07"
+    "owner-black-open": {
+      "url": "../cockpit/guard-owner-v3/black-open.webp",
+      "sha256": "b33dadb896d3d30f530416fafe9adb7df24f19e69aeec98797b09ce8bbe80187"
     }
   },
   "rotaries": [
@@ -1299,9 +1283,10 @@
       },
       "rotation": 0,
       "axis": "vertical",
-      "assetFamily": "original-approved-guarded-v2",
+      "assetFamily": "owner-four-photo-master",
       "hinge": "bottom per approved asset manifest",
-      "mechanicsId": "flightA"
+      "mechanicsId": "flightA",
+      "ownerHinge": "Up"
     },
     {
       "id": "flight-control-b",
@@ -1328,9 +1313,10 @@
       },
       "rotation": 0,
       "axis": "vertical",
-      "assetFamily": "original-approved-guarded-v2",
+      "assetFamily": "owner-four-photo-master",
       "hinge": "bottom per approved asset manifest",
-      "mechanicsId": "flightB"
+      "mechanicsId": "flightB",
+      "ownerHinge": "Up"
     },
     {
       "id": "spoiler-a",
@@ -1356,9 +1342,10 @@
       },
       "rotation": 0,
       "axis": "vertical",
-      "assetFamily": "original-approved-guarded-v2",
+      "assetFamily": "owner-four-photo-master",
       "hinge": "bottom per approved asset manifest",
-      "mechanicsId": "spoilerA"
+      "mechanicsId": "spoilerA",
+      "ownerHinge": "Up"
     },
     {
       "id": "spoiler-b",
@@ -1384,9 +1371,10 @@
       },
       "rotation": 0,
       "axis": "vertical",
-      "assetFamily": "original-approved-guarded-v2",
+      "assetFamily": "owner-four-photo-master",
       "hinge": "bottom per approved asset manifest",
-      "mechanicsId": "spoilerB"
+      "mechanicsId": "spoilerB",
+      "ownerHinge": "Up"
     },
     {
       "id": "alternate-flaps-master",
@@ -1412,9 +1400,10 @@
       },
       "rotation": 0,
       "axis": "vertical",
-      "assetFamily": "original-approved-guarded-v2",
+      "assetFamily": "owner-four-photo-master",
       "hinge": "bottom per approved asset manifest",
-      "mechanicsId": "alternateFlapsArm"
+      "mechanicsId": "alternateFlapsArm",
+      "ownerHinge": "Down"
     },
     {
       "id": "battery-master",
@@ -1440,8 +1429,9 @@
       },
       "rotation": 0,
       "axis": "vertical",
-      "assetFamily": "original-approved-guarded-v2",
-      "hinge": "bottom per approved asset manifest"
+      "assetFamily": "owner-four-photo-master",
+      "hinge": "bottom per approved asset manifest",
+      "ownerHinge": "Up"
     },
     {
       "id": "generator-disconnect-1",
@@ -1467,7 +1457,7 @@
       },
       "rotation": 0,
       "axis": "vertical",
-      "assetFamily": "original-approved-guarded-v2",
+      "assetFamily": "owner-four-photo-master",
       "hinge": "bottom per approved asset manifest",
       "mountingRectSource": [
         154,
@@ -1476,7 +1466,8 @@
         418
       ],
       "mountingEvidence": "owner screenshot rectangle approximate; OH11-native pixels",
-      "presentation": "calibrated-vertical-recess"
+      "presentation": "calibrated-vertical-recess",
+      "ownerHinge": "Up"
     },
     {
       "id": "generator-disconnect-2",
@@ -1502,7 +1493,7 @@
       },
       "rotation": 0,
       "axis": "vertical",
-      "assetFamily": "original-approved-guarded-v2",
+      "assetFamily": "owner-four-photo-master",
       "hinge": "bottom per approved asset manifest",
       "mountingRectSource": [
         847,
@@ -1511,7 +1502,8 @@
         418
       ],
       "mountingEvidence": "owner screenshot rectangle approximate; OH11-native pixels",
-      "presentation": "calibrated-vertical-recess"
+      "presentation": "calibrated-vertical-recess",
+      "ownerHinge": "Up"
     },
     {
       "id": "standby-power",
@@ -1538,7 +1530,7 @@
       },
       "rotation": 0,
       "axis": "horizontal",
-      "assetFamily": "original-approved-guarded-v2",
+      "assetFamily": "owner-four-photo-master",
       "hinge": "not established by FCOM; photographic verification pending",
       "mountingRectSource": [
         391,
@@ -1547,7 +1539,8 @@
         184
       ],
       "mountingEvidence": "owner screenshot rectangle approximate; OH11-native pixels",
-      "presentation": "calibrated-horizontal-standby"
+      "presentation": "calibrated-horizontal-standby",
+      "ownerHinge": "Left"
     },
     {
       "id": "emergency-exit-lights",
@@ -1574,9 +1567,10 @@
       },
       "rotation": 0,
       "axis": "vertical",
-      "assetFamily": "original-approved-guarded-v2",
+      "assetFamily": "owner-four-photo-master",
       "hinge": "bottom per approved asset manifest",
-      "mechanicsId": "emergencyExitLights"
+      "mechanicsId": "emergencyExitLights",
+      "ownerHinge": "Up"
     },
     {
       "id": "bus-transfer",
@@ -1602,7 +1596,7 @@
       },
       "rotation": 0,
       "axis": "horizontal",
-      "assetFamily": "owner-red-black-photo-4",
+      "assetFamily": "owner-four-photo-master",
       "hinge": "left owner confirmed",
       "mountingRectSource": [
         325,
@@ -1612,7 +1606,8 @@
       ],
       "mountingEvidence": "OWNER_MARKED_UNIFIED_SCREENSHOT_2026-10-27_ESTIMATED_OH12_NATIVE_±15PX",
       "presentation": "calibrated-horizontal-standby",
-      "calibrationStatus": "SCREENSHOT_ESTIMATE_NOT_PIXEL_FINAL"
+      "calibrationStatus": "SCREENSHOT_ESTIMATE_NOT_PIXEL_FINAL",
+      "ownerHinge": "Left"
     }
   ],
   "interlocks": [
@@ -1628,5 +1623,27 @@
     "guideLibraryFileId": "libfile_555402960f948191b6501fa77d2b8246",
     "placement": "existing holes and panel labels in frozen UPD-0012 source images",
     "mechanics": "Six flight/lighting guarded controls reuse flight-controls-panel/fcom-control-mechanics.js. Other close policies and rotary detents are explicit simulator interaction assignments; no aircraft-system effects added."
+  },
+  "guardVisualPolicy": {
+    "activeMasterCount": 4,
+    "activeMasterKeys": [
+      "owner-red-closed",
+      "owner-red-open",
+      "owner-black-closed",
+      "owner-black-open"
+    ],
+    "retiredVisualKeys": [
+      "black-CLOSED",
+      "black-Open_UP",
+      "black-Open_CENTER",
+      "black-Open_DOWN",
+      "red-CLOSED",
+      "red-Open_UP",
+      "red-Open_CENTER",
+      "red-Open_DOWN"
+    ],
+    "preserveHistoricalLockedImageFiles": true,
+    "source": "FOUR_OWNER_UPLOADS_RED_BLACK_OPEN_CLOSED",
+    "notPixelApproved": true
   }
 }

@@ -1,83 +1,40 @@
 'use strict';
-const test=require('node:test');
-const assert=require('node:assert/strict');
-const fs=require('node:fs');
-const path=require('node:path');
-const vm=require('node:vm');
-const root=path.resolve(__dirname,'../..');
-const read=x=>fs.readFileSync(path.join(root,x),'utf8');
-const js=read('panel-mosaic-lab/cockpit/guarded-inplace-v1.js');
-const css=read('panel-mosaic-lab/cockpit/guarded-inplace-v1.css');
-const stage=read('panel-mosaic-lab/cockpit/overhead-stage.html');
-const data=JSON.parse(read('unity/Assets/B737Classic/GuardedSwitches/Resources/GuardedSwitchBlueprints.json'));
+const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
+const root=path.resolve(__dirname,'../..'),read=p=>fs.readFileSync(path.join(root,p),'utf8');
+const registry=JSON.parse(read('panel-mosaic-lab/interactive-overhead/rotary-guards.json'));
+const extra=JSON.parse(read('panel-mosaic-lab/interactive-overhead/lights-controls.json'));
+const blueprint=JSON.parse(read('unity/Assets/B737Classic/GuardedSwitches/Resources/GuardedSwitchBlueprints.json'));
 const owner=JSON.parse(read('engine/maps/guarded-switch-owner-hinge-quiz-v1.json'));
-
-test('Regression: approved visual identity uses moulded cover texture, NOT giant generic black box',()=>{
- assert.doesNotThrow(()=>new vm.Script(js));
- assert.ok(js.includes("PHOTO_CONSTRAINED_PREVIEW_SIZE"));
- assert.ok(js.includes("OWNER_MARKED_GEN_RECESS__NARROW_CAP"));
- assert.ok(js.includes("OWNER_MARKED_WIDE_SWITCH_SLOT"));
- assert.ok(js.includes("NATIVE_SOURCE_RECT_RECORDER"));
- assert.ok(js.includes("const factors={"));
- assert.ok(js.includes("'flight-control-a':[.60,.90]"));
- assert.ok(js.includes("'spoiler-a':[.61,.86]"));
- assert.ok(js.includes("'alternate-flaps-master':[.47,1.02]"));
- assert.ok(js.includes("const lgW=slot.capW;"));
- assert.ok(js.includes("const lgH=slot.capH;"));
- assert.ok(!js.includes("Math.max(16,slot.w*(horizontal?.88:.73))"));
-});
-test('Three real dimensional surface textures have sculpted lips and texture, stable through all poses',()=>{
- for(const asset of ['black-molded-v2.svg','red-molded-v2.svg','black-horizontal-v2.svg']){
-  const svg=read('panel-mosaic-lab/cockpit/guard-textures/'+asset);
-  assert.ok(svg.startsWith('<svg '));
-  assert.ok(svg.includes('<linearGradient'));
-  assert.ok(svg.includes('<path '));
-  assert.ok(svg.includes('filter="url(#grain)"'));
-  assert.ok(svg.includes('</svg>'));
-  assert.ok(css.includes('guard-textures/'+asset));
+const js=read('panel-mosaic-lab/cockpit/guarded-owner-v3.js'),css=read('panel-mosaic-lab/cockpit/guarded-owner-v3.css');
+test('exactly four approved RED/BLACK poses, no active old synthetic guard paths',()=>{
+ assert.equal(registry.guardVisualPolicy.activeMasterCount,4);
+ for(const key of ['owner-red-closed','owner-red-open','owner-black-closed','owner-black-open']){
+  const asset=registry.assets[key];assert.ok(asset,'Missing '+key);
+  assert.match(asset.url,/guard-owner-v3\/(red|black)-(closed|open)\.webp$/);
+  assert.ok(fs.statSync(path.resolve(root,'panel-mosaic-lab/interactive-overhead',asset.url)).size>500);
  }
- for(const surface of ['black','red','horizontal']){
-  assert.ok(css.includes('.g17-native-cover[data-surface="'+surface+'"]'));
+ assert.equal(Object.keys(registry.assets).filter(x=>/^(black|red)-/.test(x)).length,0);
+ assert.equal(registry.guardVisualPolicy.retiredVisualKeys.length,8);
+});
+test('hinges are controlled by owner 17 answers; one fixed rotation maps both open and closed photos',()=>{
+ assert.equal(owner.questions.length,17);assert.equal(blueprint.controls.length,17);
+ for(const c of blueprint.controls)assert.equal(c.hingeDirection,owner.questions.find(x=>x.controlId===c.controlId).selection);
+ assert.match(css,/data-hinge=down/);assert.match(css,/rotate\(180deg\)/);
+ assert.match(css,/data-hinge=left/);assert.match(css,/rotate\(-90deg\)/);
+ assert.match(js,/lid\.src=resolved\[color\]\[open\?'open':'closed'\]/);
+});
+test('no SVG guard backgrounds are used by owner production photographs',()=>{
+ assert.ok(!js.includes('guard-textures/'));assert.ok(!css.includes('guard-textures/'));
+ assert.match(css,/\.g17-owner-image/);
+ assert.match(css,/visibility:hidden!important/);
+ assert.match(js,/node\.classList\.add\('g17-owner-upgraded'\)/);
+});
+test('BUS TRANSFER horizontal/left; recorder left, oxygen down, 2/3 stops respect native engine',()=>{
+ for(const [id,hinge] of [['bus-transfer','Left'],['flight-recorder-test','Left'],['passenger-oxygen','Down']]){
+  const c=blueprint.controls.find(x=>x.controlId===id);assert.equal(c.hingeDirection,hinge);
  }
- assert.ok(css.includes('.g17-native-cover::before'));
- assert.ok(css.includes('transform:translateZ(-3px)'));
- assert.ok(css.includes('g17-native-fixed-hinge::before'));
- assert.ok(css.includes('g17-native-fixed-hinge::after'));
-});
-test('True cover identity: OPEN switches only fixed hinge rotation, NEVER changes texture or scale',()=>{
- assert.ok(js.includes("pivot.append(lid)"));
- assert.ok(js.includes("lid.dataset.surface=surface"));
- assert.ok(js.includes("root.dataset.surface=surface"));
- assert.ok(css.includes('[data-hinge=up][data-open=true] .g17-native-hinge-pivot{transform:rotateX(-68deg)'));
- assert.ok(css.includes('[data-hinge=down][data-open=true] .g17-native-hinge-pivot{transform:rotateX(68deg)'));
- assert.ok(css.includes('[data-hinge=left][data-open=true] .g17-native-hinge-pivot{transform:rotateY(-110deg)'));
- assert.ok(css.includes('[data-hinge=right][data-open=true] .g17-native-hinge-pivot{transform:rotateY(110deg)'));
- assert.ok(!css.includes('.g17-native-cover.open{background:'));
- assert.ok(js.includes("node.classList.add('g17-native-upgraded')"));
- assert.ok(!stage.includes('guarded-inplace-v1.css') && !stage.includes('guarded-inplace-v1.js'), 'rejected flat guard surface must not remain on live Unified');
-});
-test('Independent installation protects other switches if one native node is absent or fails',()=>{
- assert.ok(js.includes("const receipt=new Map(),failures=new Map()"));
- assert.ok(js.includes("for(const guard of original)"));
- assert.ok(js.includes("if(receipt.has(guard.id)||!nodes.has(guard.id))continue"));
- assert.ok(js.includes("catch(e){failures.set(guard.id"));
- assert.ok(js.includes("installed:receipt.size"));
- assert.ok(js.includes("mountingFailures:[...failures.entries()]"));
- assert.ok(js.includes("marker(pending,receipt.size)"));
- assert.ok(!js.includes("if(original.some(x=>!nodes.has(x.id)))return"));
-});
-test('Owner physical colors and directions remain authoritative; no physical mm invented',()=>{
- assert.equal(data.controls.length,17);
- assert.equal(owner.questions.length,17);
- for(const c of data.controls){
-  assert.equal(c.hingeDirection,owner.questions.find(q=>q.controlId===c.controlId).selection);
-  assert.equal(c.geometry.approvedDimensionsMm,null);
- }
- assert.equal(data.controls.find(c=>c.controlId==='alternate-flaps-master').material.swatchHex,'#A32123');
- assert.equal(data.controls.find(c=>c.controlId==='generator-disconnect-1').material.swatchHex,'#A32123');
- assert.equal(data.controls.find(c=>c.controlId==='antiskid').material.swatchHex,'#202125');
- const bus=data.controls.find(c=>c.controlId==='bus-transfer'),oxy=data.controls.find(c=>c.controlId==='passenger-oxygen');
- assert.equal(bus.hingeDirection,'Left');
- assert.equal(bus.geometry.previewWidth,oxy.geometry.previewHeight);
- assert.equal(bus.geometry.previewHeight,oxy.geometry.previewWidth);
+ const all=[...registry.guards,...extra.guards];assert.equal(all.length,13);
+ for(const c of all)assert.ok([2,3].includes(c.states.length));
+ assert.ok(js.includes('originalSwitch.click()'));assert.ok(js.includes('originalCover.click()'));
+ assert.ok(js.includes("actuator.disabled=!open"));
 });
