@@ -10,6 +10,7 @@
  const colors={TRANSIT:'#ffa600',EXT:'#35ef15',FULL_EXT:'#35ef15'};
  const devices=[...left,...right];
  const states=new Map(devices.map(id=>[id,'RETRACTED']));
+ const overrides=new Map();
  const instances=new Set();
  let lampTest=false,brightness='BRIGHT';
  const metrics={source:{width:432,height:195},atlas:{x:.0065,y:.063,w:.213,h:.202},lampCount:36};
@@ -19,7 +20,7 @@
   for(const instance of instances){
    const test=lampTest;
    for(const [key,el] of instance.lamps){
-    const [id,level]=key.split('|'),on=test||states.get(id)===level;
+    const [id,level]=key.split('|'),on=test||(overrides.has(key)?overrides.get(key):states.get(id)===level);
     el.dataset.lit=String(on);
     el.setAttribute('fill',on?colors[level]:(level==='TRANSIT'?'#4b3410':'#1c391f'));
     el.style.opacity=on?(brightness==='BRIGHT'?'1':'.49'):'1';
@@ -33,7 +34,13 @@
  function setDevice(id,state){
   id=String(id||'').toUpperCase();state=String(state||'').toUpperCase();
   if(!isValid(id,state))return false;
-  states.set(id,state);recolor();emit('b737:le-devices-state',{id,state});return true;
+  states.set(id,state);for(const level of levels)overrides.delete(id+'|'+level);recolor();emit('b737:le-devices-state',{id,state});return true;
+ }
+ function setWindow(device,level,lit){
+  device=String(device||'').toUpperCase();level=String(level||'').toUpperCase();
+  if(!devices.includes(device)||!levels.includes(level))return false;
+  const key=device+'|'+level;if(lit===null)overrides.delete(key);else overrides.set(key,!!lit);
+  recolor();emit('b737:le-window-state',{id:'LE_'+device+'_'+level,device,level,lit});return true;
  }
  function setBrightness(value){if(!['BRIGHT','DIM'].includes(value))return false;brightness=value;recolor();return true;}
  function makeSvg(name,attrs){const n=document.createElementNS(ns,name);for(const [k,v] of Object.entries(attrs||{}))n.setAttribute(k,String(v));return n;}
@@ -56,9 +63,9 @@
   const lamps=new Map();
   for(const [side,ids] of [['left',left],['right',right]]){
    ids.forEach((id,index)=>levels.forEach((level,row)=>{
-    const path=makeSvg('path',{d:coords(side,index,row),stroke:'#f7f8ef','stroke-width':'2.3','stroke-linejoin':'round','vector-effect':'non-scaling-stroke','data-device':id,'data-level':level,'role':'button','tabindex':'0','aria-label':id.replace('_',' ')+' '+level});
+    const path=makeSvg('path',{id:'LE_'+id+'_'+level,d:coords(side,index,row),stroke:'#f7f8ef','stroke-width':'2.3','stroke-linejoin':'round','vector-effect':'non-scaling-stroke','data-device':id,'data-level':level,'role':'button','tabindex':'0','aria-label':id.replace('_',' ')+' '+level});
     const title=makeSvg('title');title.textContent=id.replace('_',' ')+' — '+level+' (select demo state)';path.append(title);
-    const toggle=event=>{event.stopPropagation();setDevice(id,states.get(id)===level?'RETRACTED':level);};
+    const toggle=event=>{event.stopPropagation();const key=id+'|'+level;const lit=overrides.has(key)?overrides.get(key):states.get(id)===level;setWindow(id,level,!lit);};
     path.addEventListener('click',toggle);
     path.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle(e);}});
     lights.append(path);lamps.set(id+'|'+level,path);
@@ -92,12 +99,13 @@
  }
  window.B737LeadingEdgeDevices=Object.freeze({
   devices:Object.freeze([...devices]),levels:Object.freeze([...levels]),
-  setDevice,setLampTest,setBrightness,
-  snapshot:()=>({devices:Object.fromEntries(states),lampTest,brightness,windows:36,placement:metrics}),
-  reset:()=>{for(const id of devices)states.set(id,'RETRACTED');setLampTest(false);recolor();}
+  setDevice,setWindow,setLampTest,setBrightness,
+  snapshot:()=>({devices:Object.fromEntries(states),windowOverrides:Object.fromEntries(overrides),lampTest,brightness,windows:36,placement:metrics}),
+  reset:()=>{for(const id of devices)states.set(id,'RETRACTED');overrides.clear();setLampTest(false);recolor();}
  });
  window.addEventListener('b737:le-devices-command',e=>{
   const d=e.detail||{};if(d.action==='set-device')setDevice(d.id,d.state);
+  if(d.action==='set-window')setWindow(d.id,d.level,d.lit);
   if(d.action==='lamp-test')setLampTest(d.active);
   if(d.action==='brightness')setBrightness(d.value);
  });
