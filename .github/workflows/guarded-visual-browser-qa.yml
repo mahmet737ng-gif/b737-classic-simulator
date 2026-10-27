@@ -37,4 +37,8 @@ jobs:
             exit 1
           fi
           grep -q 'id="rotaryGuardLayer"' /tmp/overhead-reset-dom.html || { echo "FAIL: Rotary layer did not load"; tail -20 /tmp/overhead-reset-browser.log; exit 1; }
+          grep -q 'data-old-guard-apertures="13"' /tmp/overhead-reset-dom.html || { echo 'FAIL: 13 image-backed old-guard apertures were not masked'; exit 1; }
+          grep -q 'data-old-guard-visuals-removed="true"' /tmp/overhead-reset-dom.html || { echo 'FAIL: mask coverage or live guard count not clean'; exit 1; }
+          test "$(grep -o 'class="b737-removed-old-guard"' /tmp/overhead-reset-dom.html | wc -l)" -eq 13 || { echo 'FAIL: expected exactly 13 retired photo guard slots'; exit 1; }
+          echo 'PASS: all 13 original photographic guard-cover positions are covered in the Unified overhead DOM.'
           echo 'PASS: zero guarded-switch DOM instances; rotaries remain available'
