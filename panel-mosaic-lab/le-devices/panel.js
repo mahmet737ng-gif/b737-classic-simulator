@@ -1,4 +1,4 @@
-/* LEDEV-0001 — independent 32-window, front-end-only B737 Classic annunciator.
+/* LEDEV-0003 — independent 32-window, front-end-only B737 Classic annunciator.
    Additive to UPPER atlas; never mutates locked OH01-06 source or guarded switches. */
 (function(){
  'use strict';
@@ -16,7 +16,7 @@
  const overrides=new Map();
  const instances=new Set();
  let lampTest=false,brightness='BRIGHT';
- const metrics={source:{width:432,height:195},atlas:{x:.0065,y:.063,w:.213,h:.202},lampCount};
+ const metrics={source:{width:432,height:195},atlas:{x:.001,y:.622,w:.220,h:.207},lampCount};
  const isValid=(id,state)=>devices.includes(id)&&['RETRACTED',...activeLevels(id)].includes(state);
  function emit(type,detail){window.dispatchEvent(new CustomEvent(type,{detail}));}
  function recolor(){
@@ -61,12 +61,12 @@
   host.setAttribute('role','group');
   host.setAttribute('aria-label','LE DEVICES — leading edge flaps and slats indicator');
   host.dir='ltr';
-  const art=document.createElement('img');art.className='b737-le-devices__background';art.src=new URL('panel-background.svg',assetBase).href;art.alt='';art.draggable=false;
+  const art=document.createElement('img');art.className='b737-le-devices__background';art.src=new URL('panel-background.svg?v=LEDEV-0003',assetBase).href;art.alt='';art.draggable=false;
   const lights=makeSvg('svg',{viewBox:'0 0 432 195',class:'b737-le-devices__lamps','aria-label':'12 leading-edge devices, 32 independent light segments'});
   const lamps=new Map();
   for(const [side,ids] of [['left',left],['right',right]]){
    ids.forEach((id,index)=>activeLevels(id).forEach(level=>{
-    const row=levels.indexOf(level),span=(id.startsWith('FLAP_')&&level==='FULL_EXT')?2:1;
+    const row=(id.startsWith('FLAP_')&&level==='FULL_EXT')?1:levels.indexOf(level),span=1;
     const path=makeSvg('path',{id:'LE_'+id+'_'+level,d:coords(side,index,row,span),stroke:'#f7f8ef','stroke-width':'2.3','stroke-linejoin':'round','vector-effect':'non-scaling-stroke','data-device':id,'data-level':level,'role':'button','tabindex':'0','aria-label':id.replace('_',' ')+' '+level});
     const title=makeSvg('title');title.textContent=id.replace('_',' ')+' — '+level+' (select demo state)';path.append(title);
     const toggle=event=>{event.stopPropagation();const key=id+'|'+level;const lit=overrides.has(key)?overrides.get(key):states.get(id)===level;setWindow(id,level,!lit);};
@@ -76,7 +76,7 @@
    }));
   }
   const test=document.createElement('button');test.className='b737-le-devices__test';test.type='button';test.setAttribute('aria-label','LE DEVICES TEST momentary recessed pushbutton');test.title='Press and hold to illuminate all 32 windows';
-  const cap=document.createElement('img');cap.src=new URL('recessed-test-button.svg',assetBase).href;cap.alt='';cap.draggable=false;test.append(cap);
+  const cap=document.createElement('img');cap.src=new URL('recessed-test-button.svg?v=LEDEV-0003',assetBase).href;cap.alt='';cap.draggable=false;test.append(cap);
   test.addEventListener('pointerdown',e=>{if(e.button!==0&&e.pointerType==='mouse')return;e.stopPropagation();e.preventDefault();try{test.setPointerCapture(e.pointerId);}catch(_){}setLampTest(true);});
   for(const name of ['pointerup','pointercancel','lostpointercapture'])test.addEventListener(name,e=>{e.stopPropagation();setLampTest(false);});
   test.addEventListener('keydown',e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();if(!e.repeat)setLampTest(true);}});
@@ -91,9 +91,11 @@
   if(!frame||root.querySelector('[data-b737-le-devices-atlas]'))return;
   const px=n=>Number.parseFloat(n)||0;
   const x=px(frame.style.left),y=px(frame.style.top),w=px(frame.style.width),h=px(frame.style.height);
+  if(!(w>0&&h>0))return;
   const host=document.createElement('div');host.dataset.b737LeDevicesAtlas='';
   host.style.position='absolute';host.style.left=(x+metrics.atlas.x*w)+'px';host.style.top=(y+metrics.atlas.y*h)+'px';
-  host.style.width=(metrics.atlas.w*w)+'px';host.style.height=(metrics.atlas.h*h)+'px';host.style.zIndex='12';
+  host.style.width=(metrics.atlas.w*w)+'px';host.style.height=(metrics.atlas.h*h)+'px';host.style.zIndex='65';
+  host.dataset.leDevicesMountedAt='OH-01-photo-registration';
   root.append(host);mount(host);
  }
  function initialize(){

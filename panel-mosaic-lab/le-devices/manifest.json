@@ -1,6 +1,6 @@
 {
   "schema": "b737.le-devices-front-end.v1",
-  "version": "LEDEV-0002",
+  "version": "LEDEV-0003",
   "scope": "front-end-only",
   "source": "Owner unified blue-grey overhead screenshot 2026-10-28, replacing inaccurate dark face",
   "sourceImageSize": [
@@ -430,17 +430,20 @@
       "panel-mosaic-lab/all-overhead/index.html"
     ],
     "atlas": "UPPER",
-    "coordinateStatus": "provisional visual fit; atlas source image ROI not independently measured"
+    "coordinateStatus": "provisional visual fit; atlas source image ROI not independently measured",
+    "version": "LEDEV-0003",
+    "unifiedMount": "panel-mosaic-lab/cockpit/overhead-stage.html"
   },
   "protectedAssets": "Locked OH01-06 source and all guarded switches remain untouched.",
   "backend": "Not connected. Future aircraft model writes via B737LeadingEdgeDevices.setDevice(id,state).",
   "greenWindowRules": {
-    "flaps": "one full-span FULL_EXT green lamp per FLAP_1..4; RETRACTED lamps dark",
+    "flaps": "Exactly one normal-size FULL_EXT green window at first green row (row=1), directly below amber. Nothing in bottom row. Retracted lamp OFF.",
     "slats": "two separate green lamps EXT and FULL_EXT per SLAT_1..8; RETRACTED lamps dark",
     "transit": "12 existing amber lamps unchanged in number, ordering, and coordinate geometry"
   },
   "qa": {
     "sourcePhoto": "Owner screenshot compared for metal tone, panel text, screw locations, and recessed test",
-    "upperPlacement": "provisional until actual unified screenshot reinspection"
+    "upperPlacement": "provisional until actual unified screenshot reinspection",
+    "unifiedLocation": "Measured approximate fit from owner overhead screenshot (OH01 lower segment). Atlas x=.001 y=.622 w=.220 h=.207; visual review still required."
   }
 }

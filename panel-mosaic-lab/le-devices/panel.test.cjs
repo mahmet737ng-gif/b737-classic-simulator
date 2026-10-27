@@ -38,3 +38,24 @@ test('background is separate from active bulbs; recessed pushbutton has own asse
  assert.ok(!svg.includes('#ffa600')&&!svg.includes('#35ef15'),'bright lamp colors must not be baked into static background');
  assert.match(testArt,/Recessed momentary TEST pushbutton/);
 });
+test('unified placement registered at lower OH01 instead of upper blank panel; cached artwork versioned',()=>{const s=fs.readFileSync(path.join(dir,'panel.js'),'utf8');
+ const match=s.match(/atlas:\{x:([.\\d]+),y:([.\\d]+),w:([.\\d]+),h:([.\\d]+)\}/);
+ assert.ok(match,'registered atlas bounds are required');
+ const y=Number(match[2]),w=Number(match[3]),h=Number(match[4]);
+ assert.ok(y>0.58&&y<0.68,'LE panel must sit on actual lower OH01 photograph');
+ assert.ok(w>.18&&w<.25&&h>.17&&h<.23,'avoid oversized panel');
+ assert.match(s,/panel-background.svg\\?v=LEDEV-0003/);
+ assert.match(s,/level==='FULL_EXT'\\)\\?1:levels.indexOf\\(level\\),span=1/);
+});
+test('standalone flap green segments have same height as slat green segments',()=>{
+ const files=fs.readdirSync(path.join(dir,'segments')).filter(x=>x.endsWith('.svg'));
+ assert.equal(files.length,96,'32 lamps times three brightness states');
+ for(const side of ['FLAP_1','FLAP_2','FLAP_3','FLAP_4']){
+  const xml=fs.readFileSync(path.join(dir,'segments','LE_'+side+'_FULL_EXT_BRIGHT.svg'),'utf8');
+  const d=xml.match(/<path d="([^"]+)"/);assert.ok(d);
+  const ns=d[1].match(/-?\\d+\\.\\d+/g).map(Number);
+  assert.equal(ns.length,8);
+  assert.ok(Math.abs((ns[7]-ns[1])-22)<.04,'green lamp must be one row tall, never double-height');
+  assert.ok(!files.some(f=>f.startsWith('LE_'+side+'_EXT_')),'FLAP has no extra EXT-only window');
+ }
+});
