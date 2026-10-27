@@ -1,178 +1,149 @@
 #!/usr/bin/env python3
-"""Derive the owner-requested three-position GPWS background.
-Modify only the isolated panel photograph's GPWS zone, never the locked master.
+"""B737 Classic GPWS v3: TERRAIN left of FLAP, typography matched with intact source photo.
+
+Take original native 918x1713 panel; leave every pixel outside the GPWS rectangle
+unchanged, including screws, INOP, SYS TEST and the rest of the cockpit.
 """
 from pathlib import Path
-import hashlib, json
 from PIL import Image, ImageDraw, ImageFont
 import numpy as np
-import cv2
+import cv2, hashlib, json
 
 ROOT=Path(__file__).resolve().parents[3]
 SOURCE=ROOT/"panel-mosaic-lab/assets/locked/2026-10-23/B737_Right_Main_Instruments_Blank.png"
-OUT=ROOT/"panel-mosaic-lab/cockpit/assets/B737_Right_Main_Instruments_GPWS_TERRAIN_V2.png"
-PREVIEW=ROOT/"panel-mosaic-lab/cockpit/assets/gpws-terrain-qa-preview.webp"
+OUT=ROOT/"panel-mosaic-lab/cockpit/assets/B737_Right_Main_Instruments_GPWS_TERRAIN_LEFT_V3.png"
+PREVIEW=ROOT/"panel-mosaic-lab/cockpit/assets/gpws-terrain-left-v3-preview.webp"
+REPORT=ROOT/"panel-mosaic-lab/cockpit/assets/gpws-terrain-left-v3-audit.json"
 MANIFEST=ROOT/"panel-mosaic-lab/cockpit/assembly.json"
-REPORT=ROOT/"panel-mosaic-lab/cockpit/assets/gpws-terrain-v2-audit.json"
+sourcebytes=SOURCE.read_bytes()
+base=Image.open(SOURCE)
+old=np.array(base.convert("RGB"))
+assert old.shape[:2]==(1713,918),"Source master photo dimensions drifted"
+arr=old.copy()
 
-raw=SOURCE.read_bytes()
-before=Image.open(SOURCE).convert("RGB")
-assert before.size==(918,1713), f"Unexpected master dims {before.size}"
-arr=np.array(before)
-old=arr.copy()
-
-# The source is kept as a permanent locked master.
-# Suppress old side legends using undisturbed blue-grey metal from the LOWER
-# region of the SAME panel, never from an area containing switch hardware.
-def transplant_same_photo(dst_box,src_box,edge=6):
-    x1,y1,x2,y2=dst_box
-    a,b,c,d=src_box
-    assert x2-x1==c-a and y2-y1==d-b
-    patch=old[b:d,a:c].copy()
-    target=arr[y1:y2,x1:x2].copy()
-    h,w=patch.shape[:2]
-    weight=np.ones((h,w),dtype=np.float32)
-    for k in range(edge):
-        v=(k+1)/(edge+1)
-        weight[:,k]=np.minimum(weight[:,k],v)
-        weight[:,-k-1]=np.minimum(weight[:,-k-1],v)
-        weight[k,:]=np.minimum(weight[k,:],v)
-        weight[-k-1,:]=np.minimum(weight[-k-1,:],v)
-    arr[y1:y2,x1:x2]=np.clip(patch*weight[:,:,None]+target*(1-weight[:,:,None]),0,255).astype('uint8')
-
-# Previously FLAP INHIBIT was BESIDE its socket; no black pixels are
-# allowed in this restoration region.
-transplant_same_photo((608,1412,678,1468),(608,1587,678,1643),edge=5)
-# Previously GEAR INHIBIT was beside the GEAR socket in the new terrain column.
-# Clean its heading before adding the actual third socket.
-transplant_same_photo((816,1413,893,1435),(816,1588,893,1610),edge=5)
-
-# Clone the native GEAR recess exactly (including its bevel and shadows)
-# into the empty right-hand TERRAIN position, without scale/stretching.
+# Reuse the source's existing GEAR well geometry WITHOUT resizing or redrawing.
+# The original FLAP and GEAR wells remain pixel-for-pixel unchanged.
 donor=(742,1431,817,1552)
-dx=78
-sx1,sy1,sx2,sy2=donor
-patch=old[sy1:sy2,sx1:sx2].copy()
-ph,pw=patch.shape[:2]
-assert sx2+dx<918
-feather=np.ones((ph,pw),dtype=np.float32)
-for i in range(6):
-    v=(i+1)/7
-    feather[:,i]=np.minimum(feather[:,i],v)
-    feather[:,-i-1]=np.minimum(feather[:,-i-1],v)
-    feather[i,:]=np.minimum(feather[i,:],v)
-    feather[-i-1,:]=np.minimum(feather[-i-1,:],v)
-# The old GEAR letters behind the new top bezel must be FULLY occluded.
-feather[:9,:]=1.0
-dst=arr[sy1:sy2,sx1+dx:sx2+dx]
-arr[sy1:sy2,sx1+dx:sx2+dx]=np.clip(patch*feather[:,:,None]+dst*(1-feather[:,:,None]),0,255).astype('uint8')
+dx=-140
+x1,y1,x2,y2=donor
+assert x1+dx==602 and x2+dx==677
+patch=old[y1:y2,x1:x2].copy()
+dst=arr[y1:y2,x1+dx:x2+dx].copy()
+h,w=patch.shape[:2]
+alpha=np.ones((h,w),dtype=np.float32)
+for k in range(4):
+    t=(k+1)/5
+    alpha[:,k]=np.minimum(alpha[:,k],t)
+    alpha[:,-1-k]=np.minimum(alpha[:,-1-k],t)
+    alpha[k,:]=np.minimum(alpha[k,:],t)
+    alpha[-1-k,:]=np.minimum(alpha[-1-k,:],t)
+arr[y1:y2,x1+dx:x2+dx]=np.clip(patch*alpha[:,:,None]+dst*(1-alpha[:,:,None]),0,255).astype(np.uint8)
 
-# Three bottom captions use EXACTLY the lettering raster from the original
-# FLAP NORMAL photo, with white glyph alpha isolated from its metal backdrop.
-# First clean the former two misaligned NORMAL words from a metal-only region.
-normal_band=(647,1553,893,1581)
-nx1,ny1,nx2,ny2=normal_band
-metal=old[1596:1624,nx1:nx2].copy()
-assert metal.shape==arr[ny1:ny2,nx1:nx2].shape
-arr[ny1:ny2,nx1:nx2]=metal
+# The old FLAP INHIBIT SIDE label was in the area of the third well.
+# Only the few exposed letters immediately above that well are removed;
+# never inpaint the nearby real metallic screw or adjacent original wells.
+roi=(608,1413,676,1431)
+rx1,ry1,rx2,ry2=roi
+pixels=old[ry1:ry2,rx1:rx2]
+bright=np.all(pixels>156,axis=2).astype(np.uint8)*255
+bright=cv2.dilate(bright,np.ones((3,3),dtype=np.uint8))
+mask=np.zeros(old.shape[:2],dtype=np.uint8)
+mask[ry1:ry2,rx1:rx2]=bright
+if int(mask.sum())>0:
+    arr=cv2.inpaint(arr,mask,2,cv2.INPAINT_TELEA)
+
+# Keep three NORMAL labels identical by sampling the actual photographic
+# letter shapes from the untouched original switch's legend.
+y0=1556
+label_strip=(593,1553,821,1581)
+nx1,ny1,nx2,ny2=label_strip
+clean_metal=old[1596:1624,nx1:nx2].copy()
+assert clean_metal.shape==arr[ny1:ny2,nx1:nx2].shape
+arr[ny1:ny2,nx1:nx2]=clean_metal
 glyphs=old[1553:1581,656:738].copy()
 lum=glyphs.mean(axis=2)
-g_alpha=np.clip((lum.astype(float)-117)/94,0,1)
-# All three are proportional 80% copies of the ORIGINAL font pixels.
-# This creates a real gap between adjacent NORMAL labels.
+a=np.clip((lum.astype(float)-117)/94,0,1)
 outw,outh=64,22
 glyphs=cv2.resize(glyphs,(outw,outh),interpolation=cv2.INTER_AREA)
-g_alpha=cv2.resize(g_alpha.astype(np.float32),(outw,outh),interpolation=cv2.INTER_AREA)[:,:,None]
-y0=1556
-for caption_center in (709,779,857):
-    ix1=round(caption_center-outw/2)
-    under=arr[y0:y0+outh,ix1:ix1+outw]
-    arr[y0:y0+outh,ix1:ix1+outw]=np.clip(glyphs*g_alpha+under*(1-g_alpha),0,255).astype('uint8')
+a=cv2.resize(a.astype(np.float32),(outw,outh),interpolation=cv2.INTER_AREA)[:,:,None]
+for cx in (638,709,779):
+    lx=int(round(cx-outw/2))
+    below=arr[y0:y0+outh,lx:lx+outw]
+    arr[y0:y0+outh,lx:lx+outw]=np.clip(glyphs*a+below*(1-a),0,255).astype(np.uint8)
+
 photo=Image.fromarray(arr)
 draw=ImageDraw.Draw(photo)
-font_path="/usr/share/fonts/truetype/dejavu/DejaVuSansCondensed.ttf"
-font_bold="/usr/share/fonts/truetype/dejavu/DejaVuSansCondensed-Bold.ttf"
-small=ImageFont.truetype(font_bold,14)
-tiny=ImageFont.truetype(font_path,12)
-normal=ImageFont.truetype(font_path,12)
-ink=(211,220,222)
-def center(text,x,y,font):
-    bb=draw.textbbox((0,0),text,font=font)
-    xp=x-(bb[2]-bb[0])/2
-    draw.text((round(xp),y),text,font=font,fill=ink,stroke_width=0)
-# Keep source screws and metal 100% unchanged.
-# Two rows are compactly set in the clean 19-pixel band between the preserved
-# GROUND PROXIMITY heading and the original mounting screw heads.
-label_name_font=ImageFont.truetype(font_path,12)
-label_inhibit_font=ImageFont.truetype(font_path,8)
-caption_centers={"FLAP":709,"GEAR":779,"TERRAIN":857}
-caption_bounds=[]
-for title,cx in caption_centers.items():
-    row_boxes=[]
-    for text_value,y,font in ((title,1383,label_name_font),("INHIBIT",1393,label_inhibit_font)):
-        bb=draw.textbbox((0,0),text_value,font=font)
-        left=round(cx-(bb[2]-bb[0])/2)
-        top=y+bb[1]
-        right=left+(bb[2]-bb[0])
-        bottom=y+bb[3]
-        assert 675<=left<right<=900 and 1384<=top<bottom<=1403,(title,text_value,left,top,right,bottom)
-        row_boxes.append([left,top,right,bottom])
-        draw.text((left,y),text_value,font=font,fill=ink)
-    caption_bounds.append(row_boxes)
-for a,b in zip(caption_bounds,caption_bounds[1:]):
-    for row in range(2):
-        assert a[row][2]+6<b[row][0],"Caption overlap with adjacent column"
-# NORMAL lettering remains precisely centered beneath each of the three sockets.
-# Enforce unchanged RGB values outside the narrow GPWS change rectangle.
+# The rest of the panel uses condensed, slightly slanted light gray capitals.
+name_font=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSansCondensed-BoldOblique.ttf",14)
+sub_font=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSansCondensed-Oblique.ttf",10)
+ink=(221,228,230)
+captions=[("TERRAIN",638),("FLAP",709),("GEAR",779)]
+bounds=[]
+for label,cx in captions:
+    col=[]
+    for text,y,font in ((label,1380,name_font),("INHIBIT",1392,sub_font)):
+        bb=draw.textbbox((0,0),text,font=font)
+        width=bb[2]-bb[0]; height=bb[3]-bb[1]
+        left=round(cx-width/2); right=left+width
+        top=y+bb[1]; bottom=y+bb[3]
+        assert 600<=left<right<=817 and 1381<=top<bottom<=1404,(text,left,top,right,bottom)
+        draw.text((left,y),text,font=font,fill=ink)
+        col.append([left,top,right,bottom])
+    bounds.append(col)
+for a,b in zip(bounds,bounds[1:]):
+    for row in range(2):assert a[row][2]+5<b[row][0],"captions collide"
+
+# If requested fonts or clone affect even a single pixel outside the region,
+# block the build. Original photo and all mounted hardware are preserved.
+rect=(590,1378,820,1593)
 modified=np.array(photo)
-change_rect=(600,1382,918,1595)
-x1,y1,x2,y2=change_rect
-outside=np.ones(old.shape[:2],bool)
-outside[y1:y2,x1:x2]=False
-assert np.array_equal(modified[outside],old[outside]),'Unexpected edits outside GPWS'
-assert sum(1 for i in range(3) if i)==2
+x1,y1,x2,y2=rect
+outside=np.ones(old.shape[:2],dtype=bool);outside[y1:y2,x1:x2]=False
+assert np.array_equal(modified[outside],old[outside]),"Unexpected modified pixel outside permitted GPWS zone"
 OUT.parent.mkdir(parents=True,exist_ok=True)
-# Preserve the original alpha channel exactly if the blank panel is RGBA.
-if "A" in Image.open(SOURCE).getbands():
-    photo.putalpha(Image.open(SOURCE).getchannel("A"))
+if "A" in base.getbands():
+    photo.putalpha(base.getchannel("A"))
 photo.save(OUT,optimize=True)
-# QA preview is a small dedicated image, not a re-rendered cockpit.
-crop=photo.crop((540,1320,918,1640))
-crop.save(PREVIEW,format="WEBP",quality=96)
-assembly=json.loads(MANIFEST.read_text())
-replaced=False
-for region in assembly["regions"]:
-    if region["id"]!="main":continue
-    for p in region["placements"]:
-        if p["id"]=="fo-inner":
-            assert p["asset"] in {"panel-mosaic-lab/assets/locked/2026-10-23/B737_Right_Main_Instruments_Blank.png","panel-mosaic-lab/cockpit/assets/B737_Right_Main_Instruments_GPWS_TERRAIN_V2.png"}
-            p["asset"]="panel-mosaic-lab/cockpit/assets/B737_Right_Main_Instruments_GPWS_TERRAIN_V2.png"
-            p["presentation"]="Original panel 918x1713, only GPWS region optically amended: third TERRAIN socket right of GEAR, matching labeled three-column arrangement"
-            replaced=True
-assert replaced
-# Keep original asset record unchanged; register a new explicit derivative record.
-rel="panel-mosaic-lab/cockpit/assets/B737_Right_Main_Instruments_GPWS_TERRAIN_V2.png"
-out_bytes=OUT.read_bytes()
-assembly["assets"][rel]={
-    "path":rel,"url":"./assets/B737_Right_Main_Instruments_GPWS_TERRAIN_V2.png",
-    "dimensions":[918,1713],"bytes":len(out_bytes),
-    "sha256":hashlib.sha256(out_bytes).hexdigest(),
-    "gitBlobSha":hashlib.sha1(b"blob "+str(len(out_bytes)).encode()+b"\0"+out_bytes).hexdigest(),
-    "sourceOriginalUnchanged":True,
-    "sourcePanel":"panel-mosaic-lab/assets/locked/2026-10-23/B737_Right_Main_Instruments_Blank.png",
-    "nativeChangedAreaPx":list(change_rect)
+photo.crop((530,1320,918,1640)).save(PREVIEW,"WEBP",quality=98)
+assembled=json.loads(MANIFEST.read_text())
+item=next(p for area in assembled["regions"] if area["id"]=="main" for p in area["placements"] if p["id"]=="fo-inner")
+allowed={
+ "panel-mosaic-lab/assets/locked/2026-10-23/B737_Right_Main_Instruments_Blank.png",
+ "panel-mosaic-lab/cockpit/assets/B737_Right_Main_Instruments_GPWS_TERRAIN_V2.png",
+ "panel-mosaic-lab/cockpit/assets/B737_Right_Main_Instruments_GPWS_TERRAIN_LEFT_V3.png"
 }
-# The approved CKP assembly revision is a fixed provenance field used by
-# unrelated light calibration QA: retain it while adding an independent revision.
-assembly["version"]="CKP-0012-THROTTLE-FIT"
-assembly["gpwsBackgroundRevision"]="GPWS-TERRAIN-THIRD-SOCKET-V2"
-MANIFEST.write_text(json.dumps(assembly,ensure_ascii=False,indent=2)+"\n")
-r={"sourceSha256":hashlib.sha256(raw).hexdigest(),"derivativeSha256":hashlib.sha256(out_bytes).hexdigest(),
-   "sourceSize":before.size,"generatedPixelsChanged":int(np.any(old!=modified,axis=2).sum()),
-   "changeRectNativePx":list(change_rect),"sourceUnmodified":hashlib.sha256(SOURCE.read_bytes()).hexdigest()==hashlib.sha256(raw).hexdigest(),
-   "switches":["FLAP INHIBIT","GEAR INHIBIT","TERRAIN INHIBIT"],"terrainPlacement":"RIGHT_OF_GEAR_INHIBIT",
-   "fonts":"DejaVuSansCondensed 10px from system font; original photo backdrop unchanged outside GPWS region",
-   "captionBoundsNativePx":caption_bounds,"captionText":[x+" INHIBIT" for x in caption_centers],
-   "captionLayout":"TWO_ROWS_COMPACT_CENTERED_ABOVE_SOCKETS_CLEAR_OF_MOUNTING_SCREWS"}
-REPORT.write_text(json.dumps(r,indent=2)+"\n")
-print("PASS GPWS third socket",r)
+assert item["asset"] in allowed
+key="panel-mosaic-lab/cockpit/assets/B737_Right_Main_Instruments_GPWS_TERRAIN_LEFT_V3.png"
+item["asset"]=key
+item["presentation"]="Native locked F/O panel derivative: GPWS order TERRAIN / FLAP / GEAR, source-matched inset wells, centrally aligned two-line stencil captions; all other source photo pixels retained"
+out=OUT.read_bytes()
+assembled["assets"][key]={
+  "path":key,"url":"./assets/B737_Right_Main_Instruments_GPWS_TERRAIN_LEFT_V3.png",
+  "dimensions":[918,1713],"bytes":len(out),
+  "sha256":hashlib.sha256(out).hexdigest(),
+  "gitBlobSha":hashlib.sha1(b"blob "+str(len(out)).encode()+b"\0"+out).hexdigest(),
+  "sourceOriginalUnchanged":True,
+  "sourcePanel":"panel-mosaic-lab/assets/locked/2026-10-23/B737_Right_Main_Instruments_Blank.png",
+  "nativeChangedAreaPx":list(rect)
+}
+# Stable interface version retained for independent cockpit light and panel QA.
+assembled["version"]="CKP-0012-THROTTLE-FIT"
+assembled["gpwsBackgroundRevision"]="GPWS-TERRAIN-LEFT-OF-FLAP-V3"
+MANIFEST.write_text(json.dumps(assembled,ensure_ascii=False,indent=2)+"\n")
+report={
+ "sourceSha256":hashlib.sha256(sourcebytes).hexdigest(),
+ "sourceUnmodified":SOURCE.read_bytes()==sourcebytes,
+ "derivativeSha256":hashlib.sha256(out).hexdigest(),
+ "gitBlobSha":assembled["assets"][key]["gitBlobSha"],
+ "orderLeftToRight":["TERRAIN INHIBIT","FLAP INHIBIT","GEAR INHIBIT"],
+ "centersNativePx":[638,709,779],
+ "normalLegendCentersNativePx":[638,709,779],
+ "captionBoundsNativePx":bounds,
+ "nativeAllowedChangeRectPx":list(rect),
+ "pixelsDifferent":int(np.any(modified!=old,axis=2).sum()),
+ "unrelatedSourcePixelsIdentical":True,
+ "pixelExactTypography":False,
+ "font":"DejaVu Sans Condensed Bold Oblique name 14px / Oblique secondary 10px, with original photo NORMAL letter glyphs"
+}
+REPORT.write_text(json.dumps(report,indent=2)+"\n")
+print("PASS TERRAIN LEFT / FLAP CENTER / GEAR RIGHT",report)
