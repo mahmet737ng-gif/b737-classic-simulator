@@ -1,0 +1,28 @@
+/* ISDU-CUE-0001 — luminous overlays for the TWO original lenses below each
+ * ENT and CLR label. OFF = owner source photograph, byte-for-byte unchanged.
+ * No electrical, alignment or entry/clear logic is assumed.
+ */
+#region-overhead .irs-photo-key .irs-cue-lens{
+ position:absolute;z-index:4;top:65.2%;width:10.7%;height:16.4%;
+ display:block;pointer-events:none;opacity:0;visibility:hidden;
+ transform:translate(-50%,-50%);
+ background:transparent url('./assets/irs-isdu-white-cue-on-v1.svg') 50% 50% / 100% 100% no-repeat;
+ filter:drop-shadow(0 0 1px rgba(255,255,246,.94));
+}
+#region-overhead .irs-photo-key .irs-cue-lens[data-side="left"]{left:38.5%}
+#region-overhead .irs-photo-key .irs-cue-lens[data-side="right"]{left:62.4%}
+#region-overhead .irs-photo-key .irs-cue-lens[data-lit="true"]{opacity:1;visibility:visible}
+#region-overhead .irs-photo-key:is(:active,.is-depressed) .irs-cue-lens[data-lit="true"]{
+ transform:translate(-50%,-50%) translateY(1.5px) scale(.97);
+ filter:brightness(.84) drop-shadow(0 0 1px #fff);
+}
+#irsCueTestOpen{white-space:nowrap}
+#irsCueTestPanel{direction:rtl}
+#irsCueTestPanel p{margin:3px 0 8px;color:#a8c4d4;font-size:11px;line-height:1.65}
+#irsCueTestPanel .irs-cue-pair{display:flex;align-items:center;gap:6px;margin:6px 0}
+#irsCueTestPanel .irs-cue-name{width:36px;text-align:left;direction:ltr;font:700 12px monospace;color:#eef5ef;flex:0 0 auto}
+#irsCueTestPanel .irs-cue-pair button{flex:1;min-width:0;margin:0;padding:7px 2px;font-size:11px}
+#irsCueTestPanel button[aria-pressed="true"]{background:#e0e7e8!important;border-color:#fff!important;color:#14212c!important}
+#irsCueTestPanel .irs-cue-actions{display:flex;gap:6px;margin:9px 0 0}
+#irsCueTestPanel .irs-cue-actions button{flex:1;margin:0;padding:7px 3px}
+#irsCueTestStatus{font:11px/1.6 monospace;direction:ltr;text-align:center;color:#9bdce1;min-height:17px}
