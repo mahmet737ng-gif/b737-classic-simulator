@@ -77,7 +77,7 @@
      case 'sensor':active=fault(c.sensor);break;
      case 'fuel-pressure':active=(c.id.includes('center')?isOn(id):true)&&(!isOn(id)||!context.fuelAvailable||fault(c.id)||now-(switchTime[id]??-1000)<720);break;
      case 'hyd-pressure':active=!hyd(id);break;
-     case 'flight-pressure':active=v!=='on'||!(c.id.endsWith('a')?pressureA:pressureB)||fault(c.id);break;
+     case 'flight-pressure':active=(v!==undefined&&v!=='on')||!(c.id.endsWith('a')?pressureA:pressureB)||fault(c.id);break;
      case 'standby-pressure':active=standbyCommand&&(context.standbyPumpFailed||fault(c.id));break;
      case 'standby-rudder':active=standbyCommand&&!context.standbyPumpFailed&&!fault('stby-pressure');break;
      case 'yaw':active=!isOn(id)||fault(c.id);break;
