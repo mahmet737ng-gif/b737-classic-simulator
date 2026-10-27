@@ -82,7 +82,7 @@
      case 'standby-rudder':active=standbyCommand&&!context.standbyPumpFailed&&!fault('stby-pressure');break;
      case 'yaw':active=!isOn(id)||fault(c.id);break;
      case 'emergency':active=v!=='armed';break;
-     case 'drive-pressure':active=!context['engine'+id.at(-1)+'Running']||v==='disconnect'||fault(c.id);break;
+     case 'drive-pressure':{const side=/^drive-(\d+)-/.exec(c.id)?.[1];active=side?(!context['engine'+side+'Running']||v==='disconnect'||fault(c.id)):fault(c.id);break;}
      case 'drive-temperature':active=fault(c.id);break;
      case 'electrical':active=e.lamps[c.sensor];break;
      case 'standby-power':active=e.lamps.standbyPowerOff;break;
