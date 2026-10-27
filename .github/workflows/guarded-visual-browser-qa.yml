@@ -7,6 +7,13 @@ on:
       - 'panel-mosaic-lab/cockpit/guarded-inplace-v1.js'
       - 'panel-mosaic-lab/cockpit/guard-textures/**'
       - 'panel-mosaic-lab/cockpit/overhead-stage.html'
+      - 'panel-mosaic-lab/cockpit/guarded-owner-v3.js'
+      - 'panel-mosaic-lab/cockpit/guarded-owner-v3.css'
+      - 'panel-mosaic-lab/cockpit/guard-owner-v3/**'
+      - 'panel-mosaic-lab/interactive-overhead/rotary-guards.json'
+      - 'panel-mosaic-lab/interactive-overhead/lights-controls.json'
+      - 'panel-mosaic-lab/interactive-overhead/rotary-guards.js'
+      - 'panel-mosaic-lab/cockpit/guarded-visual-cdp.cjs'
       - '.github/workflows/guarded-visual-browser-qa.yml'
   workflow_dispatch:
 jobs:

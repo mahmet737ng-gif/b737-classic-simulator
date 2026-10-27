@@ -63,13 +63,13 @@ async function focus(id){
  const node=document.querySelector('#rotaryGuardLayer .guard-node[data-control="${id}"]');
  if(!node)return {found:false};
  node.scrollIntoView({behavior:'instant',block:'center',inline:'center'});
- const cover=node.querySelector('.g17-native-cover'),hardware=node.querySelector('.g17-native-hardware');
+ const cover=node.querySelector('.g17-owner-cover-hit'),hardware=node.querySelector('.g17-owner-hardware');
  const pos=(cover||node).getBoundingClientRect();
  const cs=cover?getComputedStyle(cover):null;
  return {found:true,id:'${id}',calibration:hardware?.dataset.calibration,
-  hinge:hardware?.dataset.hinge,surface:hardware?.dataset.surface,
+  hinge:hardware?.dataset.hinge,surface:hardware?.dataset.color,
   coverWidth:pos.width,coverHeight:pos.height,screenX:pos.x,screenY:pos.y,
-  texture:cs?.backgroundImage,guardOpen:hardware?.dataset.open};
+  texture:cs?.backgroundImage,guardOpen:hardware?.dataset.open,photo:node.querySelector('.g17-owner-image')?.getAttribute('src'),photoLoaded:!!node.querySelector('.g17-owner-image')?.naturalWidth};
  })()`;
  const info=await evaluate(expr);
  if(!info.found)throw Error('Guard not found in live browser: '+id);
@@ -80,30 +80,31 @@ async function main(){
  await connect();await call('Page.enable');await call('Runtime.enable');
  let ready=false;
  for(let i=0;i<45;i++){
-  const status=await evaluate('window.B737NativeGuards && ({installed:window.B737NativeGuards.installed,failures:window.B737NativeGuards.mountingFailures})');
-  if(status&&status.installed===12){ready=true;break;}
+  const status=await evaluate('window.B737OwnerGuards && ({installed:window.B737OwnerGuards.installed,failures:window.B737OwnerGuards.mountingFailures})');
+  if(status&&status.installed===13){ready=true;break;}
   await delay(500);
  }
- if(!ready)throw Error('Native guards did not report 12 mounted objects');
+ if(!ready)throw Error('Native guards did not report 13 mounted owner-photo objects');
  const samples=[
   'flight-control-a','spoiler-a','alternate-flaps-master',
   'generator-disconnect-1','standby-power','passenger-oxygen'
  ];
- const report={samples:[],version:'NATIVE-G17-PHOTO-V2',ownerProof:'PREVIEW_NOT_FINAL_PIXEL_CALIBRATION'};
+ const report={samples:[],version:'OWNER-G17-FOUR-MASTER-V4',ownerProof:'PREVIEW_NOT_FINAL_PIXEL_CALIBRATION'};
  for(const id of samples){
   const initial=await focus(id);
   report.samples.push(initial);
   await capture(id+'-closed');
   const toggled=await evaluate(`(function(){
-   const btn=document.querySelector('.g17-native-hardware[data-control="${id}"] .g17-native-cover');
+   const btn=document.querySelector('.g17-owner-hardware[data-control="${id}"] .g17-owner-cover-hit');
    if(!btn)return false;btn.click();return true;
   })()`);
   if(!toggled)throw Error('No guard click for '+id);
   await delay(700);
   const open=await focus(id);
+  if(open.guardOpen!=='true'||!open.photoLoaded||!open.photo?.includes('-open.webp'))throw Error('Owner OPEN photograph or toggle state failed '+id+' '+JSON.stringify(open));
   report.samples.push({...open,pose:'OPEN'});
   await capture(id+'-open');
-  await evaluate(`(function(){const btn=document.querySelector('.g17-native-hardware[data-control="${id}"] .g17-native-cover');btn.click()})()`);
+  await evaluate(`(function(){const btn=document.querySelector('.g17-owner-hardware[data-control="${id}"] .g17-owner-cover-hit');btn.click()})()`);
  }
  fs.writeFileSync(path.join(out,'measurements.json'),JSON.stringify(report,null,2));
  console.log('PHOTO QA: captured '+report.samples.length+' actual overhead poses for '+samples.length+' representative guards.');
