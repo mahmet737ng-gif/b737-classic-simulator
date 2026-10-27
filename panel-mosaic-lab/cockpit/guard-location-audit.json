@@ -1,6 +1,6 @@
 {
   "schema": "b737-classic/guard-placement-audit/v2",
-  "version": "2026-10-27-owner18-antiskid-screenshot-terrain-left-r1",
+  "version": "2026-10-28-owner18-bottom-hinge-fit-r2",
   "scope": "MEASUREMENT-AND-REVIEW-ONLY_NOT_LIVE_INSTALLATION",
   "declaredByOwner": {
     "mainGuards": 17,
@@ -8,7 +8,7 @@
     "mainHinges": {
       "top": 11,
       "left": 3,
-      "right": 3
+      "bottom": 3
     },
     "mainColors": {
       "red": 3,
@@ -26,17 +26,17 @@
     "left": -90,
     "right": 90,
     "bottom": 180,
-    "rotationNote": "Sprite's original closed/open upright presentation is the 0-degree top hinge; same transform applies to both frames. No 180-degree bottom hinge in this newly requested mapping."
+    "rotationNote": "TOP 0°, LEFT -90°, RIGHT +90°, BOTTOM +180°. The same transform applies to the approved closed and open photo assets."
   },
   "legacyConflict": {
-    "savedOwnerQuiz": "11 top, 3 left, 3 bottom from 2026-10-26; latest message says 11 top, 3 left, 3 right",
-    "newRightAssignments": "Temporarily mapping prior 3 bottom cases (alternate-flaps-master, passenger-oxygen, antiskid) to right hinges. Owner has confirmed totals but not explicitly re-identified the three individual right hinges in this message.",
+    "savedOwnerQuiz": "Resolved 2026-10-28: original three BOTTOM guards had been incorrectly classified as RIGHT.",
+    "newRightAssignments": "CORRECTED: alternate-flaps-master, passenger-oxygen, antiskid = BOTTOM, not RIGHT.",
     "savedColorDistribution": "Previous registered graphics have four red items (alternate-flaps-master, both generator disconnects, passenger-oxygen). Latest message says three red.",
     "newBlackAssignment": "Passenger oxygen provisionally black, so exactly 3 red across 17; requires owner visual confirmation.",
     "latestGPWSTerrainUpdate": "New third background cavity to RIGHT of GEAR; label TERRAIN INHIBIT above it; original panel locked and untouched"
   },
   "physicalDimensionsMillimeters": "UNKNOWN_DO_NOT_FABRICATE",
-  "pixelPrecision": "AUDIT_ESTIMATE_ONLY_UNLESS_EXPLICITLY_CALIBRATED; USER_APPROVAL_REQUIRED",
+  "pixelPrecision": "SOURCE-PIXEL_FIT_FROM_OWNER_FEEDBACK; NOT_YET_BROWSER_PIXEL_CERTIFIED",
   "sources": {
     "UPPER": {
       "label": "OH01–OH06 overhead upper",
@@ -129,8 +129,8 @@
       "label": "FLT CONTROL A",
       "panel": "OH07",
       "rectPx": [
-        135,
-        100,
+        126,
+        91,
         165,
         265
       ],
@@ -143,16 +143,16 @@
       ],
       "confidence": "photo-preview-estimated",
       "source": "OH07-08",
-      "notes": "",
+      "notes": "Owner correction: small left/up position shift or enlarged fitted aperture; estimated until full-resolution browser audit",
       "overheadCanvasRectPx": [
-        76.49,
-        1337.99,
+        71.59,
+        1332.86,
         89.82,
         151.02
       ],
       "unifiedMosaicCanvasRectPx": [
-        1166.49,
-        1447.99,
+        1161.59,
+        1442.86,
         89.82,
         151.02
       ]
@@ -162,8 +162,8 @@
       "label": "FLT CONTROL B",
       "panel": "OH07",
       "rectPx": [
-        305,
-        100,
+        296,
+        91,
         165,
         265
       ],
@@ -176,16 +176,16 @@
       ],
       "confidence": "photo-preview-estimated",
       "source": "OH07-08",
-      "notes": "",
+      "notes": "Owner correction: small left/up position shift or enlarged fitted aperture; estimated until full-resolution browser audit",
       "overheadCanvasRectPx": [
-        169.03,
-        1337.99,
+        164.13,
+        1332.86,
         89.82,
         151.02
       ],
       "unifiedMosaicCanvasRectPx": [
-        1259.03,
-        1447.99,
+        1254.13,
+        1442.86,
         89.82,
         151.02
       ]
@@ -195,8 +195,8 @@
       "label": "SPOILER A",
       "panel": "OH07",
       "rectPx": [
-        135,
-        655,
+        126,
+        646,
         165,
         275
       ],
@@ -208,16 +208,16 @@
       ],
       "confidence": "photo-preview-estimated",
       "source": "OH07-08",
-      "notes": "",
+      "notes": "Owner correction: small left/up position shift or enlarged fitted aperture; estimated until full-resolution browser audit",
       "overheadCanvasRectPx": [
-        76.49,
-        1654.29,
+        71.59,
+        1649.16,
         89.82,
         156.72
       ],
       "unifiedMosaicCanvasRectPx": [
-        1166.49,
-        1764.29,
+        1161.59,
+        1759.16,
         89.82,
         156.72
       ]
@@ -227,8 +227,8 @@
       "label": "SPOILER B",
       "panel": "OH07",
       "rectPx": [
-        304,
-        655,
+        295,
+        646,
         165,
         275
       ],
@@ -240,16 +240,16 @@
       ],
       "confidence": "photo-preview-estimated",
       "source": "OH07-08",
-      "notes": "",
+      "notes": "Owner correction: small left/up position shift or enlarged fitted aperture; estimated until full-resolution browser audit",
       "overheadCanvasRectPx": [
-        168.49,
-        1654.29,
+        163.59,
+        1649.16,
         89.82,
         156.72
       ],
       "unifiedMosaicCanvasRectPx": [
-        1258.49,
-        1764.29,
+        1253.59,
+        1759.16,
         89.82,
         156.72
       ]
@@ -264,7 +264,7 @@
         135,
         277
       ],
-      "hinge": "right",
+      "hinge": "bottom",
       "color": "red",
       "states": [
         "OFF",
@@ -272,7 +272,7 @@
       ],
       "confidence": "photo-preview-estimated",
       "source": "OH07-08",
-      "notes": "Hinge right is newly requested; former saved owner quiz said bottom. Color remains provisional.",
+      "notes": "Hinge right is newly requested; former saved owner quiz said bottom. Color remains provisional. | Owner-confirmed BOTTOM hinge; old RIGHT hinge was incorrect",
       "overheadCanvasRectPx": [
         284.43,
         1513.52,
@@ -291,10 +291,10 @@
       "label": "BATTERY MASTER",
       "panel": "OH10",
       "rectPx": [
-        186,
+        172,
         1141,
-        156,
-        201
+        176,
+        211
       ],
       "hinge": "top",
       "color": "black",
@@ -304,18 +304,18 @@
       ],
       "confidence": "photo-preview-estimated",
       "source": "OH10",
-      "notes": "",
+      "notes": "Owner correction: small left/up position shift or enlarged fitted aperture; estimated until full-resolution browser audit",
       "overheadCanvasRectPx": [
-        584.25,
+        577.91,
         1564.95,
-        70.66,
-        94.06
+        79.72,
+        98.74
       ],
       "unifiedMosaicCanvasRectPx": [
-        1674.25,
+        1667.91,
         1674.95,
-        70.66,
-        94.06
+        79.72,
+        98.74
       ]
     },
     {
@@ -490,7 +490,7 @@
         100,
         180
       ],
-      "hinge": "right",
+      "hinge": "bottom",
       "color": "black",
       "states": [
         "NORMAL",
@@ -498,7 +498,7 @@
       ],
       "confidence": "photo-preview-estimated",
       "source": "UPPER",
-      "notes": "Hinge right and black color are provisional reconciliations of newly specified 11/3/3 and 3-red totals; previous records said bottom and red.",
+      "notes": "Hinge right and black color are provisional reconciliations of newly specified 11/3/3 and 3-red totals; previous records said bottom and red. | Owner-confirmed BOTTOM hinge; old RIGHT hinge was incorrect",
       "overheadCanvasRectPx": [
         1589,
         602.74,
@@ -517,10 +517,10 @@
       "label": "FLIGHT RECORDER TEST",
       "panel": "UPPER",
       "rectPx": [
-        1365,
-        438,
-        113,
-        34
+        1351,
+        428,
+        141,
+        54
       ],
       "hinge": "left",
       "color": "black",
@@ -530,18 +530,18 @@
       ],
       "confidence": "prior-source-location-calibrated-size-provisional",
       "source": "UPPER",
-      "notes": "",
+      "notes": "Owner correction: small left/up position shift or enlarged fitted aperture; estimated until full-resolution browser audit",
       "overheadCanvasRectPx": [
-        1748.88,
-        494,
-        144.53,
-        38.11
+        1730.97,
+        482.79,
+        180.34,
+        60.53
       ],
       "unifiedMosaicCanvasRectPx": [
-        2838.88,
-        604,
-        144.53,
-        38.11
+        2820.97,
+        592.79,
+        180.34,
+        60.53
       ]
     },
     {
@@ -554,7 +554,7 @@
         102,
         168
       ],
-      "hinge": "right",
+      "hinge": "bottom",
       "color": "black",
       "states": [
         "OFF",
@@ -562,7 +562,7 @@
       ],
       "confidence": "user-screenshot-20261027-antiskid-highlight-estimate",
       "source": "FO_INNER_BACKGROUND",
-      "notes": "Confirmed ANTISKID recess location by user red box in live Unified main panel screenshot; native source dimensions approximated pending pixel alignment; same original FO INNER panel as GPWS",
+      "notes": "Confirmed ANTISKID recess location by user red box in live Unified main panel screenshot; native source dimensions approximated pending pixel alignment; same original FO INNER panel as GPWS | Owner-confirmed BOTTOM hinge; old RIGHT hinge was incorrect",
       "mainReferenceRectPx": [
         1243,
         345,

@@ -1,5 +1,5 @@
 /* Owner-supplied 18 guarded switches, no reconstructed guard hardware.
- * Renders eight approved photo masters with source-mapped placement + 0/-90/+90 rotation.
+ * Renders eight approved photo masters with source-mapped placement + 0/-90/+90/180-degree rotation.
  * The original cockpit and overhead atlas images remain byte-identical.
  */
 (function(){
@@ -70,6 +70,11 @@ function configure(c,box){
  mounted.set(c.id,btn);
  return btn;
 }
+function rotationFor(c){
+ const angle=config.rules.rotateDegrees[c.hinge];
+ if(!Number.isFinite(angle))throw Error('Unmapped guard hinge '+c.id+': '+c.hinge);
+ return angle;
+}
 function resizeSprite(btn,w,h,angle){
  css(btn,{left:'0px',top:'0px',width:w+'px',height:h+'px'});
  const image=btn.firstElementChild;
@@ -88,7 +93,7 @@ function mainPlacement(c){
  x=piece.offsetLeft+x*rx;y=piece.offsetTop+y*ry;
  w*=rx;h*=ry;
  const btn=configure(c,native);
- resizeSprite(btn,w,h,config.rules.rotateDegrees[c.hinge]||0);
+ resizeSprite(btn,w,h,rotationFor(c));
  css(btn,{left:x+'px',top:y+'px'});
  return true;
 }
@@ -106,7 +111,7 @@ function overheadPlacement(c){
   const a=map(x,y),b=map(x+w,y+h);
   const left=a.x-placement.x,top=a.y-placement.y;
   const btn=configure(c,windowEl);
-  resizeSprite(btn,b.x-a.x,b.y-a.y,config.rules.rotateDegrees[c.hinge]||0);
+  resizeSprite(btn,b.x-a.x,b.y-a.y,rotationFor(c));
   css(btn,{left:left+'px',top:top+'px'});
   return true;
  }catch(e){errors.push('map:'+c.id+':'+String(e));return false}
