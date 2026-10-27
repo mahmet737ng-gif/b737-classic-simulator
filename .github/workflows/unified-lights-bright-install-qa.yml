@@ -1,0 +1,20 @@
+name: Unified annunciator DIM BRIGHT installation QA
+on:
+  push:
+    paths:
+      - 'panel-mosaic-lab/lights-reference-v2/**'
+      - 'panel-mosaic-lab/cockpit/lights.js'
+      - 'panel-mosaic-lab/cockpit/index.html'
+      - 'panel-mosaic-lab/cockpit/unified-lights.js'
+      - 'panel-mosaic-lab/interactive-overhead/lights.js'
+      - 'panel-mosaic-lab/interactive-overhead/index.html'
+  workflow_dispatch:
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node panel-mosaic-lab/lights-reference-v2/live-mount.test.cjs

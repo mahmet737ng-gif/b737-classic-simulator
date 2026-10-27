@@ -12,14 +12,15 @@
   const card=cards.get(c.id);if(!card)return;
   const state=states.get(c.id)||'OFF',file=c.assets[state];
   if(!file){card.health.textContent='MISSING '+state;card.health.classList.add('bad');return;}
+  const mountedV2=window.B737LampAppearance?.resolve('OH',c.id,state)||window.B737LampAppearance?.resolve('MP',c.id,state);
   card.image.onload=()=>{
    const w=card.image.naturalWidth,h=card.image.naturalHeight;
-   const matches=!registered.has(c.id)||(w===c.face.width&&h===c.face.height);
-   card.health.textContent=matches?state+' · '+w+'×'+h:'SIZE MISMATCH · '+w+'×'+h;
+   const matches=mountedV2?(w>0&&h>0):(!registered.has(c.id)||(w===c.face.width&&h===c.face.height));
+   card.health.textContent=matches?state+' · '+w+'×'+h+(mountedV2?' · '+window.B737LampAppearance.getMode():''):'SIZE MISMATCH · '+w+'×'+h;
    card.health.classList.toggle('bad',!matches);
   };
   card.image.onerror=()=>{card.health.textContent='MISSING '+file;card.health.classList.add('bad');};
-  card.image.src=assetRoot+file.split('/').map(encodeURIComponent).join('/')+'?v='+encodeURIComponent(version);
+  card.image.src=mountedV2||assetRoot+file.split('/').map(encodeURIComponent).join('/')+'?v='+encodeURIComponent(version);
   card.image.alt=c.lines.join(' ')+' '+state;
   card.stage.setAttribute('aria-label',c.id+' · '+state+' · کلیک برای حالت بعدی');
   for(const button of card.buttons)button.setAttribute('aria-pressed',String(button.dataset.state===state));
@@ -116,7 +117,7 @@
  const resolve=(id,state='OFF')=>{
   const c=find(id);if(!c)return null;
   const frame=model.normalize(c,state);if(!frame)return null;
-  return {id:c.id,state:frame,url:new URL(assetRoot+c.assets[frame],location.href).href,
+  return {id:c.id,state:frame,url:window.B737LampAppearance?.resolve('OH',id,frame)||window.B737LampAppearance?.resolve('MP',id,frame)||new URL(assetRoot+c.assets[frame],location.href).href,
    face:{...c.face},scope:c.scope||'ASSET_TEST_ONLY',
    mountedCockpitInstances:[...(c.mountedCockpitInstances||[])]};
  };
@@ -129,6 +130,7 @@
   whenReady:()=>loadPromise||Promise.resolve(),
   status:()=>({ready:loaded,version,count:lights.length,error:loadError})
  });
+ window.addEventListener('b737:lamp-brightness-change',()=>{if(loaded)render();});
  // Preload metadata only: images stay lazy until the user opens the test library.
  sync({renderNow:false,force:false});
 })();
