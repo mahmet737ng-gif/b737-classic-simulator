@@ -1,0 +1,26 @@
+name: IRS ISDU front-end source and lock QA
+on:
+  push:
+    paths:
+      - 'panel-mosaic-lab/cockpit/index.html'
+      - 'panel-mosaic-lab/cockpit/irs-isdu-frontend-v1.js'
+      - 'panel-mosaic-lab/cockpit/irs-isdu-frontend-v1.css'
+      - 'panel-mosaic-lab/cockpit/assets/irs-honeywell-fcom-keypad.svg'
+      - 'panel-mosaic-lab/cockpit/irs-isdu-frontend-v1.test.cjs'
+      - '.github/workflows/irs-isdu-frontend-v1.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  irs-ui:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Lint IRS frontend
+        run: node --check panel-mosaic-lab/cockpit/irs-isdu-frontend-v1.js
+      - name: Verify actual Honeywell keypad source and browser mount
+        run: node panel-mosaic-lab/cockpit/irs-isdu-frontend-v1.test.cjs
+      - name: Enforce frozen overhead
+        run: python3 panel-mosaic-lab/verify-final-overhead.py
+      - name: Enforce immutable owner18 guarded switches
+        run: python3 panel-mosaic-lab/cockpit/verify-guard-redzone.py --negative-self-test
