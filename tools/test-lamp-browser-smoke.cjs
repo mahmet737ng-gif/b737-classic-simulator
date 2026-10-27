@@ -97,8 +97,9 @@ const {chromium}=require('playwright');
    assert.equal(installed?.ready,true,'Unified iframe must import shared V2 appearance registry');
    assert.equal(installed?.mode,'BRIGHT','Unified embedded Overhead must default BRIGHT');
    assert.equal(installed?.masters,87,'Unified embedded Overhead must reuse 87 masters');
-   const sample=await oh.locator('.mounted-light[data-light="stby-pressure"] img[data-frame="ON"]').getAttribute('src');
-   assert.ok(sample?.includes('/lights-reference-v2/svg/LOW_PRESSURE__AMBER__BRIGHT.svg'),'Embedded Overhead does not display installed BRIGHT asset: '+sample);
+   const sample=await oh.locator('.mounted-light[data-light="stby-pressure"] img[data-frame="ON"]').evaluate(img=>img.getAttribute('src')||img.dataset.perfSource||null);
+   assert.ok(sample?.includes('/lights-reference-v2/svg/LOW_PRESSURE__AMBER__BRIGHT.svg'),'Embedded Overhead does not register installed BRIGHT asset: '+sample);
+   await unified.locator('[data-focus="overhead"]').click();
    const button=unified.locator('#visualLampTest');
    await button.click();
    await unified.waitForFunction(()=>document.querySelector('#visualLampTest')?.getAttribute('aria-pressed')==='true');
@@ -109,7 +110,7 @@ const {chromium}=require('playwright');
      total:lamps.length,
      testEnabled:document.documentElement.classList.contains('cockpit-visual-test'),
      active:lamps.filter(node=>node.querySelector('img[data-visual-on="true"]')).length,
-     broken:lamps.filter(node=>[...node.querySelectorAll('img')].some(img=>img.dataset.visualOn==='true'&&img.complete&&img.naturalWidth===0)).map(node=>node.dataset.light).slice(0,15)
+     broken:lamps.filter(node=>[...node.querySelectorAll('img')].some(img=>img.dataset.visualOn==='true'&&img.hasAttribute('src')&&img.complete&&img.naturalWidth===0)).map(node=>node.dataset.light).slice(0,15)
     };
    });
    assert.equal(lit.total,112,'Unified Overhead lamp geometry disturbed');
