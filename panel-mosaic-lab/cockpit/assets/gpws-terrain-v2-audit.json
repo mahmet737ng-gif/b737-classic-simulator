@@ -19,17 +19,5 @@
     "TERRAIN INHIBIT"
   ],
   "terrainPlacement": "RIGHT_OF_GEAR_INHIBIT",
-  "fonts": "DejaVuSansCondensed, DejaVuSansCondensed-Bold; source is photo-textured; direct source exact glyph reproduction unavailable",
-  "qa": {
-    "step": "final-photo-derived-three-slot-review",
-    "placement": "right of GEAR",
-    "switchCutouts": 3,
-    "labelsAbove": [
-      "FLAP INHIBIT",
-      "GEAR INHIBIT",
-      "TERRAIN INHIBIT"
-    ],
-    "originalImageBytesModified": false,
-    "visualCaveat": "Font reproduction is a close stencil-like match rather than a verified exact extraction of the lettering font; compare at 100% before locking."
-  }
+  "fonts": "DejaVuSansCondensed, DejaVuSansCondensed-Bold; source is photo-textured; direct source exact glyph reproduction unavailable"
 }
