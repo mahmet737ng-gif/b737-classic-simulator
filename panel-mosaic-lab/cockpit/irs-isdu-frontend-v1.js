@@ -27,7 +27,7 @@
       </div><button class="irs-isdu-close" type="button" aria-label="Close IRS display">×</button></div>
       <div class="irs-isdu-tabs" role="group" aria-label="ISDU equipment variant" dir="ltr">
         <button type="button" data-isdu-variant="honeywell" aria-pressed="true">Honeywell</button>
-        <button type="button" data-isdu-variant="litton" aria-pressed="false">Litton</button>
+        <button type="button" data-isdu-variant="litton" aria-pressed="false">Litton · draft</button>
       </div>
       <div class="irs-isdu-unit" data-isdu-unit="honeywell" dir="ltr">
         <div class="irs-isdu-top-label">IRS DISPLAY</div>
@@ -83,7 +83,7 @@
       if(!valueSets[kind]) return;
       unit.dataset.isduUnit=kind;
       dlg.querySelectorAll('[data-isdu-variant]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.isduVariant===kind)));
-      status.textContent=kind.toUpperCase()+' · VISUAL PREVIEW · NO IRS BACKEND';
+      status.textContent=kind==='honeywell'?'HONEYWELL · FCOM SOURCE KEYPAD · UI ONLY':'LITTON · DRAWN PLACEHOLDER · SOURCE IMAGE PENDING';
       renderPad(kind);
     }
     dlg.querySelectorAll('[data-isdu-variant]').forEach(btn=>btn.addEventListener('click',()=>selectVariant(btn.dataset.isduVariant)));
