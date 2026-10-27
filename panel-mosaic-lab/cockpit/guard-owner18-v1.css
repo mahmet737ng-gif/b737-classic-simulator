@@ -10,7 +10,7 @@
 }
 .owner18-guard-control .owner18-switch-photo{
  display:block;position:absolute;left:50%;top:50%;
- object-fit:fill;max-width:none;max-height:none;
+ object-fit:contain;max-width:none;max-height:none;
  margin:0;padding:0;pointer-events:none;user-select:none;
  transform-origin:center center;
  filter:none;
