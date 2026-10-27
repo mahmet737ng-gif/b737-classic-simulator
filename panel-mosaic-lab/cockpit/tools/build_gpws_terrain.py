@@ -147,7 +147,10 @@ assembly["assets"][rel]={
     "sourcePanel":"panel-mosaic-lab/assets/locked/2026-10-23/B737_Right_Main_Instruments_Blank.png",
     "nativeChangedAreaPx":list(change_rect)
 }
-assembly["version"]="CKP-0013-GPWS-TERRAIN-THIRD-SOCKET"
+# The approved CKP assembly revision is a fixed provenance field used by
+# unrelated light calibration QA: retain it while adding an independent revision.
+assembly["version"]="CKP-0012-THROTTLE-FIT"
+assembly["gpwsBackgroundRevision"]="GPWS-TERRAIN-THIRD-SOCKET-V2"
 MANIFEST.write_text(json.dumps(assembly,ensure_ascii=False,indent=2)+"\n")
 r={"sourceSha256":hashlib.sha256(raw).hexdigest(),"derivativeSha256":hashlib.sha256(out_bytes).hexdigest(),
    "sourceSize":before.size,"generatedPixelsChanged":int(np.any(old!=modified,axis=2).sum()),
