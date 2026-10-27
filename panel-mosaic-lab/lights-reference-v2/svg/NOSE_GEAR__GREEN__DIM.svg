@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="270" viewBox="0 0 600 270" role="img" aria-label="NOSE GEAR ON night-dim">
+<defs><linearGradient id="frame" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#414141"/><stop offset=".035" stop-color="#27292a"/><stop offset=".20" stop-color="#0c0c0d"/><stop offset=".83" stop-color="#060607"/><stop offset="1" stop-color="#333638"/></linearGradient>
+<linearGradient id="face" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#040806"/><stop offset=".65" stop-color="#010101"/><stop offset="1" stop-color="#050202"/></linearGradient>
+<linearGradient id="thinRim" x1="0" y1="0" x2=".95" y2="1"><stop stop-color="#adffc2"/><stop offset=".14" stop-color="#38b761"/><stop offset=".49" stop-color="#38b761" stop-opacity=".77"/><stop offset=".83" stop-color="#33d46a" stop-opacity=".57"/><stop offset="1" stop-color="#38b761" stop-opacity=".88"/></linearGradient>
+<linearGradient id="topLight" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#ffffff" stop-opacity=".07"/><stop offset=".13" stop-color="#ffffff" stop-opacity=".014"/><stop offset=".75" stop-color="#ffffff" stop-opacity="0"/><stop offset="1" stop-color="#ffffff" stop-opacity=".013"/></linearGradient>
+<pattern id="lensgrain" width="11" height="11" patternUnits="userSpaceOnUse"><circle cx="3" cy="3" r=".5" fill="#d5a0a0" opacity=".045"/><circle cx="8" cy="9" r=".42" fill="#687881" opacity=".04"/></pattern>
+<filter id="bloom" x="-50%" y="-60%" width="200%" height="220%"><feGaussianBlur stdDeviation="3.15"/></filter><filter id="bloomFar" x="-50%" y="-60%" width="200%" height="220%"><feGaussianBlur stdDeviation="6.5"/></filter></defs>
+<rect x="0" y="0" width="600" height="270" rx="4" fill="#101113"/>
+<rect x="1" y="1" width="598" height="268" rx="4" fill="url(#frame)" stroke="#4a4c4f" stroke-width="1.45"/>
+<rect x="7" y="7" width="586" height="256" rx="2" fill="#020202" stroke="#000000" stroke-width="4"/>
+<rect x="17" y="16" width="566" height="238" rx="2" fill="url(#face)" stroke="#130908" stroke-width="3"/>
+<rect x="22" y="22" width="556" height="226" rx="1.9" fill="none" stroke="#33d46a" opacity="0.120" stroke-width="8" filter="url(#bloomFar)"/>
+<rect x="22" y="22" width="556" height="226" rx="1.4" fill="none" stroke="url(#thinRim)" opacity="0.860" stroke-width="2"/>
+<rect x="25" y="25" width="550" height="220" rx="1.1" fill="url(#lensgrain)"/>
+<rect x="24" y="24" width="552" height="222" rx="1.2" fill="url(#topLight)"/>
+<g fill="#33d46a" opacity="0.340" filter="url(#bloom)" font-family="Liberation Sans Narrow,Arial Narrow,Liberation Sans,Arial,sans-serif" font-stretch="condensed" font-weight="700" text-anchor="middle" letter-spacing="1.2"><text x="300" y="113" font-size="95">NOSE</text><text x="300" y="202" font-size="95">GEAR</text></g>
+<g fill="#55e878" opacity="0.940" font-family="Liberation Sans Narrow,Arial Narrow,Liberation Sans,Arial,sans-serif" font-stretch="condensed" font-weight="700" text-anchor="middle" letter-spacing="1.2"><text x="300" y="113" font-size="95">NOSE</text><text x="300" y="202" font-size="95">GEAR</text></g>
+<g fill="#adffc2" opacity="0.200" font-family="Liberation Sans Narrow,Arial Narrow,Liberation Sans,Arial,sans-serif" font-stretch="condensed" font-weight="700" text-anchor="middle" letter-spacing="1.2"><text x="300" y="113" font-size="95">NOSE</text><text x="300" y="202" font-size="95">GEAR</text></g></svg>

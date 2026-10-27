@@ -1,0 +1,2489 @@
+{
+  "schema": "b737.classic.annunciator.global-dimmer.v2",
+  "source": "b737-classic-simulator main original OH/MP registries and reference-style v1",
+  "baselineLampSlots": 142,
+  "originalTypes": 91,
+  "masters": [
+    {
+      "id": "ALIGN__WHITE",
+      "legend": "ALIGN",
+      "lines": [
+        "ALIGN"
+      ],
+      "color": "white",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "OH",
+          "originalAsset": "ALIGN_WHITE"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/ALIGN__WHITE__OFF.svg",
+        "DIM": "svg/ALIGN__WHITE__DIM.svg",
+        "BRIGHT": "svg/ALIGN__WHITE__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "ON_DC__AMBER",
+      "legend": "ON DC",
+      "lines": [
+        "ON DC"
+      ],
+      "color": "amber",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "OH",
+          "originalAsset": "ON_DC_LAMP"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/ON_DC__AMBER__OFF.svg",
+        "DIM": "svg/ON_DC__AMBER__DIM.svg",
+        "BRIGHT": "svg/ON_DC__AMBER__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "FAULT__AMBER",
+      "legend": "FAULT",
+      "lines": [
+        "FAULT"
+      ],
+      "color": "amber",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "OH",
+          "originalAsset": "FAULT"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/FAULT__AMBER__OFF.svg",
+        "DIM": "svg/FAULT__AMBER__DIM.svg",
+        "BRIGHT": "svg/FAULT__AMBER__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "DC_FAIL__AMBER",
+      "legend": "DC FAIL",
+      "lines": [
+        "DC FAIL"
+      ],
+      "color": "amber",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "OH",
+          "originalAsset": "DC_FAIL"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/DC_FAIL__AMBER__OFF.svg",
+        "DIM": "svg/DC_FAIL__AMBER__DIM.svg",
+        "BRIGHT": "svg/DC_FAIL__AMBER__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "REVERSER__AMBER",
+      "legend": "REVERSER",
+      "lines": [
+        "REVERSER"
+      ],
+      "color": "amber",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "OH",
+          "originalAsset": "REVERSER"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/REVERSER__AMBER__OFF.svg",
+        "DIM": "svg/REVERSER__AMBER__DIM.svg",
+        "BRIGHT": "svg/REVERSER__AMBER__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "LOW_IDLE__AMBER",
+      "legend": "LOW IDLE",
+      "lines": [
+        "LOW IDLE"
+      ],
+      "color": "amber",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "OH",
+          "originalAsset": "LOW_IDLE"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/LOW_IDLE__AMBER__OFF.svg",
+        "DIM": "svg/LOW_IDLE__AMBER__DIM.svg",
+        "BRIGHT": "svg/LOW_IDLE__AMBER__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "PASS_OXY_ON__AMBER",
+      "legend": "PASS OXY ON",
+      "lines": [
+        "PASS OXY",
+        "ON"
+      ],
+      "color": "amber",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "OH",
+          "originalAsset": "PASS_OXY_ON_LAMP"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/PASS_OXY_ON__AMBER__OFF.svg",
+        "DIM": "svg/PASS_OXY_ON__AMBER__DIM.svg",
+        "BRIGHT": "svg/PASS_OXY_ON__AMBER__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "OFF__AMBER",
+      "legend": "OFF",
+      "lines": [
+        "OFF"
+      ],
+      "color": "amber",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "OH",
+          "originalAsset": "OFF_LAMP"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/OFF__AMBER__OFF.svg",
+        "DIM": "svg/OFF__AMBER__DIM.svg",
+        "BRIGHT": "svg/OFF__AMBER__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "LOW_QUANTITY__AMBER",
+      "legend": "LOW QUANTITY",
+      "lines": [
+        "LOW",
+        "QUANTITY"
+      ],
+      "color": "amber",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "OH",
+          "originalAsset": "LOW_QUANTITY"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/LOW_QUANTITY__AMBER__OFF.svg",
+        "DIM": "svg/LOW_QUANTITY__AMBER__DIM.svg",
+        "BRIGHT": "svg/LOW_QUANTITY__AMBER__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "LOW_PRESSURE__AMBER",
+      "legend": "LOW PRESSURE",
+      "lines": [
+        "LOW",
+        "PRESSURE"
+      ],
+      "color": "amber",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "OH",
+          "originalAsset": "LOW_PRESSURE"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/LOW_PRESSURE__AMBER__OFF.svg",
+        "DIM": "svg/LOW_PRESSURE__AMBER__DIM.svg",
+        "BRIGHT": "svg/LOW_PRESSURE__AMBER__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "STBY_RUD_ON__AMBER",
+      "legend": "STBY RUD ON",
+      "lines": [
+        "STBY",
+        "RUD ON"
+      ],
+      "color": "amber",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "OH",
+          "originalAsset": "STBY_RUD_ON_LAMP"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/STBY_RUD_ON__AMBER__OFF.svg",
+        "DIM": "svg/STBY_RUD_ON__AMBER__DIM.svg",
+        "BRIGHT": "svg/STBY_RUD_ON__AMBER__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "FEEL_DIFF_PRESS__AMBER",
+      "legend": "FEEL DIFF PRESS",
+      "lines": [
+        "FEEL",
+        "DIFF PRESS"
+      ],
+      "color": "amber",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "OH",
+          "originalAsset": "FEEL_DIFF_PRESS"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/FEEL_DIFF_PRESS__AMBER__OFF.svg",
+        "DIM": "svg/FEEL_DIFF_PRESS__AMBER__DIM.svg",
+        "BRIGHT": "svg/FEEL_DIFF_PRESS__AMBER__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "SPEED_TRIM_FAIL__AMBER",
+      "legend": "SPEED TRIM FAIL",
+      "lines": [
+        "SPEED TRIM",
+        "FAIL"
+      ],
+      "color": "amber",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "OH",
+          "originalAsset": "SPEED_TRIM_FAIL"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/SPEED_TRIM_FAIL__AMBER__OFF.svg",
+        "DIM": "svg/SPEED_TRIM_FAIL__AMBER__DIM.svg",
+        "BRIGHT": "svg/SPEED_TRIM_FAIL__AMBER__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "MACH_TRIM_FAIL__AMBER",
+      "legend": "MACH TRIM FAIL",
+      "lines": [
+        "MACH TRIM",
+        "FAIL"
+      ],
+      "color": "amber",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "OH",
+          "originalAsset": "MACH_TRIM_FAIL"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/MACH_TRIM_FAIL__AMBER__OFF.svg",
+        "DIM": "svg/MACH_TRIM_FAIL__AMBER__DIM.svg",
+        "BRIGHT": "svg/MACH_TRIM_FAIL__AMBER__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "AUTO_SLAT_FAIL__AMBER",
+      "legend": "AUTO SLAT FAIL",
+      "lines": [
+        "AUTO SLAT",
+        "FAIL"
+      ],
+      "color": "amber",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "OH",
+          "originalAsset": "AUTO_SLAT_FAIL"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/AUTO_SLAT_FAIL__AMBER__OFF.svg",
+        "DIM": "svg/AUTO_SLAT_FAIL__AMBER__DIM.svg",
+        "BRIGHT": "svg/AUTO_SLAT_FAIL__AMBER__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "YAW_DAMPER__AMBER",
+      "legend": "YAW DAMPER",
+      "lines": [
+        "YAW",
+        "DAMPER"
+      ],
+      "color": "amber",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "OH",
+          "originalAsset": "YAW_DAMPER"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/YAW_DAMPER__AMBER__OFF.svg",
+        "DIM": "svg/YAW_DAMPER__AMBER__DIM.svg",
+        "BRIGHT": "svg/YAW_DAMPER__AMBER__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "FILTER_BYPASS__AMBER",
+      "legend": "FILTER BYPASS",
+      "lines": [
+        "FILTER",
+        "BYPASS"
+      ],
+      "color": "amber",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "OH",
+          "originalAsset": "FILTER_BYPASS"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/FILTER_BYPASS__AMBER__OFF.svg",
+        "DIM": "svg/FILTER_BYPASS__AMBER__DIM.svg",
+        "BRIGHT": "svg/FILTER_BYPASS__AMBER__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "LOW_OIL_PRESSURE__AMBER",
+      "legend": "LOW OIL PRESSURE",
+      "lines": [
+        "LOW OIL",
+        "PRESSURE"
+      ],
+      "color": "amber",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "OH",
+          "originalAsset": "LOW_OIL_PRESSURE"
+        },
+        {
+          "panel": "MP",
+          "originalAsset": "LOW_OIL_PRESSURE"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/LOW_OIL_PRESSURE__AMBER__OFF.svg",
+        "DIM": "svg/LOW_OIL_PRESSURE__AMBER__DIM.svg",
+        "BRIGHT": "svg/LOW_OIL_PRESSURE__AMBER__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "HIGH_OIL_TEMP__AMBER",
+      "legend": "HIGH OIL TEMP",
+      "lines": [
+        "HIGH OIL",
+        "TEMP"
+      ],
+      "color": "amber",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "OH",
+          "originalAsset": "HIGH_OIL_TEMP"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/HIGH_OIL_TEMP__AMBER__OFF.svg",
+        "DIM": "svg/HIGH_OIL_TEMP__AMBER__DIM.svg",
+        "BRIGHT": "svg/HIGH_OIL_TEMP__AMBER__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "STANDBY_PWR_OFF__AMBER",
+      "legend": "STANDBY PWR OFF",
+      "lines": [
+        "STANDBY",
+        "PWR OFF"
+      ],
+      "color": "amber",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "OH",
+          "originalAsset": "STANDBY_PWR_OFF_LAMP"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/STANDBY_PWR_OFF__AMBER__OFF.svg",
+        "DIM": "svg/STANDBY_PWR_OFF__AMBER__DIM.svg",
+        "BRIGHT": "svg/STANDBY_PWR_OFF__AMBER__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "TRANSFER_BUS_OFF__AMBER",
+      "legend": "TRANSFER BUS OFF",
+      "lines": [
+        "TRANSFER",
+        "BUS OFF"
+      ],
+      "color": "amber",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "OH",
+          "originalAsset": "TRANSFER_BUS_OFF_LAMP"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/TRANSFER_BUS_OFF__AMBER__OFF.svg",
+        "DIM": "svg/TRANSFER_BUS_OFF__AMBER__DIM.svg",
+        "BRIGHT": "svg/TRANSFER_BUS_OFF__AMBER__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "BUS_OFF__AMBER",
+      "legend": "BUS OFF",
+      "lines": [
+        "BUS",
+        "OFF"
+      ],
+      "color": "amber",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "OH",
+          "originalAsset": "BUS_OFF_LAMP"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/BUS_OFF__AMBER__OFF.svg",
+        "DIM": "svg/BUS_OFF__AMBER__DIM.svg",
+        "BRIGHT": "svg/BUS_OFF__AMBER__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "OVER_SPEED__AMBER",
+      "legend": "OVER SPEED",
+      "lines": [
+        "OVER",
+        "SPEED"
+      ],
+      "color": "amber",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "OH",
+          "originalAsset": "OVER_SPEED"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/OVER_SPEED__AMBER__OFF.svg",
+        "DIM": "svg/OVER_SPEED__AMBER__DIM.svg",
+        "BRIGHT": "svg/OVER_SPEED__AMBER__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "NOT_ARMED__AMBER__VERTICAL",
+      "legend": "NOT ARMED",
+      "lines": [
+        "NOT",
+        "ARMED"
+      ],
+      "color": "amber",
+      "orientation": "vertical",
+      "sourceAliases": [
+        {
+          "panel": "OH",
+          "originalAsset": "NOT_ARMED_VERTICAL"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/NOT_ARMED__AMBER__VERTICAL__OFF.svg",
+        "DIM": "svg/NOT_ARMED__AMBER__VERTICAL__DIM.svg",
+        "BRIGHT": "svg/NOT_ARMED__AMBER__VERTICAL__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "OVERHEAT__AMBER",
+      "legend": "OVERHEAT",
+      "lines": [
+        "OVERHEAT"
+      ],
+      "color": "amber",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "OH",
+          "originalAsset": "OVERHEAT"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/OVERHEAT__AMBER__OFF.svg",
+        "DIM": "svg/OVERHEAT__AMBER__DIM.svg",
+        "BRIGHT": "svg/OVERHEAT__AMBER__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "CAPT_P_S_1_AUX_STATIC__AMBER",
+      "legend": "CAPT P/S 1 AUX STATIC",
+      "lines": [
+        "CAPT P/S",
+        "1 AUX STATIC"
+      ],
+      "color": "amber",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "OH",
+          "originalAsset": "CAPT_PS_1_AUX_STATIC"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/CAPT_P_S_1_AUX_STATIC__AMBER__OFF.svg",
+        "DIM": "svg/CAPT_P_S_1_AUX_STATIC__AMBER__DIM.svg",
+        "BRIGHT": "svg/CAPT_P_S_1_AUX_STATIC__AMBER__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "F_O_STATIC_2_AUX_P_S__AMBER",
+      "legend": "F/O STATIC 2 AUX P/S",
+      "lines": [
+        "F/O STATIC",
+        "2 AUX P/S"
+      ],
+      "color": "amber",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "OH",
+          "originalAsset": "FO_STATIC_2_AUX_PS"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/F_O_STATIC_2_AUX_P_S__AMBER__OFF.svg",
+        "DIM": "svg/F_O_STATIC_2_AUX_P_S__AMBER__DIM.svg",
+        "BRIGHT": "svg/F_O_STATIC_2_AUX_P_S__AMBER__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "L_ELEV_PITOT__AMBER",
+      "legend": "L ELEV PITOT",
+      "lines": [
+        "L ELEV",
+        "PITOT"
+      ],
+      "color": "amber",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "OH",
+          "originalAsset": "L_ELEV_PITOT"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/L_ELEV_PITOT__AMBER__OFF.svg",
+        "DIM": "svg/L_ELEV_PITOT__AMBER__DIM.svg",
+        "BRIGHT": "svg/L_ELEV_PITOT__AMBER__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "L_ALPHA_VANE__AMBER",
+      "legend": "L ALPHA VANE",
+      "lines": [
+        "L ALPHA",
+        "VANE"
+      ],
+      "color": "amber",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "OH",
+          "originalAsset": "L_ALPHA_VANE"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/L_ALPHA_VANE__AMBER__OFF.svg",
+        "DIM": "svg/L_ALPHA_VANE__AMBER__DIM.svg",
+        "BRIGHT": "svg/L_ALPHA_VANE__AMBER__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "TEMP_PROBE__AMBER",
+      "legend": "TEMP PROBE",
+      "lines": [
+        "TEMP",
+        "PROBE"
+      ],
+      "color": "amber",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "OH",
+          "originalAsset": "TEMP_PROBE"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/TEMP_PROBE__AMBER__OFF.svg",
+        "DIM": "svg/TEMP_PROBE__AMBER__DIM.svg",
+        "BRIGHT": "svg/TEMP_PROBE__AMBER__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "F_O_P_S_2_AUX_STATIC__AMBER",
+      "legend": "F/O P/S 2 AUX STATIC",
+      "lines": [
+        "F/O P/S",
+        "2 AUX STATIC"
+      ],
+      "color": "amber",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "OH",
+          "originalAsset": "FO_PS_2_AUX_STATIC"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/F_O_P_S_2_AUX_STATIC__AMBER__OFF.svg",
+        "DIM": "svg/F_O_P_S_2_AUX_STATIC__AMBER__DIM.svg",
+        "BRIGHT": "svg/F_O_P_S_2_AUX_STATIC__AMBER__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "CAPT_STATIC_1_AUX_P_S__AMBER",
+      "legend": "CAPT STATIC 1 AUX P/S",
+      "lines": [
+        "CAPT STATIC",
+        "1 AUX P/S"
+      ],
+      "color": "amber",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "OH",
+          "originalAsset": "CAPT_STATIC_1_AUX_PS"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/CAPT_STATIC_1_AUX_P_S__AMBER__OFF.svg",
+        "DIM": "svg/CAPT_STATIC_1_AUX_P_S__AMBER__DIM.svg",
+        "BRIGHT": "svg/CAPT_STATIC_1_AUX_P_S__AMBER__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "R_ELEV_PITOT__AMBER",
+      "legend": "R ELEV PITOT",
+      "lines": [
+        "R ELEV",
+        "PITOT"
+      ],
+      "color": "amber",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "OH",
+          "originalAsset": "R_ELEV_PITOT"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/R_ELEV_PITOT__AMBER__OFF.svg",
+        "DIM": "svg/R_ELEV_PITOT__AMBER__DIM.svg",
+        "BRIGHT": "svg/R_ELEV_PITOT__AMBER__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "R_ALPHA_VANE__AMBER",
+      "legend": "R ALPHA VANE",
+      "lines": [
+        "R ALPHA",
+        "VANE"
+      ],
+      "color": "amber",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "OH",
+          "originalAsset": "R_ALPHA_VANE"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/R_ALPHA_VANE__AMBER__OFF.svg",
+        "DIM": "svg/R_ALPHA_VANE__AMBER__DIM.svg",
+        "BRIGHT": "svg/R_ALPHA_VANE__AMBER__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "COWL_ANTI_ICE__AMBER",
+      "legend": "COWL ANTI ICE",
+      "lines": [
+        "COWL",
+        "ANTI ICE"
+      ],
+      "color": "amber",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "OH",
+          "originalAsset": "COWL_ANTI_ICE"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/COWL_ANTI_ICE__AMBER__OFF.svg",
+        "DIM": "svg/COWL_ANTI_ICE__AMBER__DIM.svg",
+        "BRIGHT": "svg/COWL_ANTI_ICE__AMBER__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "FWD_ENTRY__AMBER",
+      "legend": "FWD ENTRY",
+      "lines": [
+        "FWD",
+        "ENTRY"
+      ],
+      "color": "amber",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "OH",
+          "originalAsset": "FWD_ENTRY"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/FWD_ENTRY__AMBER__OFF.svg",
+        "DIM": "svg/FWD_ENTRY__AMBER__DIM.svg",
+        "BRIGHT": "svg/FWD_ENTRY__AMBER__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "AFT_ENTRY__AMBER",
+      "legend": "AFT ENTRY",
+      "lines": [
+        "AFT",
+        "ENTRY"
+      ],
+      "color": "amber",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "OH",
+          "originalAsset": "AFT_ENTRY"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/AFT_ENTRY__AMBER__OFF.svg",
+        "DIM": "svg/AFT_ENTRY__AMBER__DIM.svg",
+        "BRIGHT": "svg/AFT_ENTRY__AMBER__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "AIR_STAIR__AMBER",
+      "legend": "AIR STAIR",
+      "lines": [
+        "AIR",
+        "STAIR"
+      ],
+      "color": "amber",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "OH",
+          "originalAsset": "AIR_STAIR"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/AIR_STAIR__AMBER__OFF.svg",
+        "DIM": "svg/AIR_STAIR__AMBER__DIM.svg",
+        "BRIGHT": "svg/AIR_STAIR__AMBER__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "EQUIP__AMBER",
+      "legend": "EQUIP",
+      "lines": [
+        "EQUIP"
+      ],
+      "color": "amber",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "OH",
+          "originalAsset": "EQUIP"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/EQUIP__AMBER__OFF.svg",
+        "DIM": "svg/EQUIP__AMBER__DIM.svg",
+        "BRIGHT": "svg/EQUIP__AMBER__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "FWD_CARGO__AMBER",
+      "legend": "FWD CARGO",
+      "lines": [
+        "FWD",
+        "CARGO"
+      ],
+      "color": "amber",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "OH",
+          "originalAsset": "FWD_CARGO"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/FWD_CARGO__AMBER__OFF.svg",
+        "DIM": "svg/FWD_CARGO__AMBER__DIM.svg",
+        "BRIGHT": "svg/FWD_CARGO__AMBER__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "AFT_CARGO__AMBER",
+      "legend": "AFT CARGO",
+      "lines": [
+        "AFT",
+        "CARGO"
+      ],
+      "color": "amber",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "OH",
+          "originalAsset": "AFT_CARGO"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/AFT_CARGO__AMBER__OFF.svg",
+        "DIM": "svg/AFT_CARGO__AMBER__DIM.svg",
+        "BRIGHT": "svg/AFT_CARGO__AMBER__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "FWD_SERVICE__AMBER",
+      "legend": "FWD SERVICE",
+      "lines": [
+        "FWD",
+        "SERVICE"
+      ],
+      "color": "amber",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "OH",
+          "originalAsset": "FWD_SERVICE"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/FWD_SERVICE__AMBER__OFF.svg",
+        "DIM": "svg/FWD_SERVICE__AMBER__DIM.svg",
+        "BRIGHT": "svg/FWD_SERVICE__AMBER__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "AFT_SERVICE__AMBER",
+      "legend": "AFT SERVICE",
+      "lines": [
+        "AFT",
+        "SERVICE"
+      ],
+      "color": "amber",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "OH",
+          "originalAsset": "AFT_SERVICE"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/AFT_SERVICE__AMBER__OFF.svg",
+        "DIM": "svg/AFT_SERVICE__AMBER__DIM.svg",
+        "BRIGHT": "svg/AFT_SERVICE__AMBER__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "DUCT_OVERHEAT__AMBER",
+      "legend": "DUCT OVERHEAT",
+      "lines": [
+        "DUCT",
+        "OVERHEAT"
+      ],
+      "color": "amber",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "OH",
+          "originalAsset": "DUCT_OVERHEAT"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/DUCT_OVERHEAT__AMBER__OFF.svg",
+        "DIM": "svg/DUCT_OVERHEAT__AMBER__DIM.svg",
+        "BRIGHT": "svg/DUCT_OVERHEAT__AMBER__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "DUAL_BLEED__AMBER",
+      "legend": "DUAL BLEED",
+      "lines": [
+        "DUAL",
+        "BLEED"
+      ],
+      "color": "amber",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "OH",
+          "originalAsset": "DUAL_BLEED"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/DUAL_BLEED__AMBER__OFF.svg",
+        "DIM": "svg/DUAL_BLEED__AMBER__DIM.svg",
+        "BRIGHT": "svg/DUAL_BLEED__AMBER__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "PACK_TRIP_OFF__AMBER",
+      "legend": "PACK TRIP OFF",
+      "lines": [
+        "PACK",
+        "TRIP OFF"
+      ],
+      "color": "amber",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "OH",
+          "originalAsset": "PACK_TRIP_OFF"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/PACK_TRIP_OFF__AMBER__OFF.svg",
+        "DIM": "svg/PACK_TRIP_OFF__AMBER__DIM.svg",
+        "BRIGHT": "svg/PACK_TRIP_OFF__AMBER__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "WING_BODY_OVERHEAT__AMBER",
+      "legend": "WING-BODY OVERHEAT",
+      "lines": [
+        "WING-BODY",
+        "OVERHEAT"
+      ],
+      "color": "amber",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "OH",
+          "originalAsset": "WING_BODY_OVERHEAT"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/WING_BODY_OVERHEAT__AMBER__OFF.svg",
+        "DIM": "svg/WING_BODY_OVERHEAT__AMBER__DIM.svg",
+        "BRIGHT": "svg/WING_BODY_OVERHEAT__AMBER__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "BLEED_TRIP_OFF__AMBER",
+      "legend": "BLEED TRIP OFF",
+      "lines": [
+        "BLEED",
+        "TRIP OFF"
+      ],
+      "color": "amber",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "OH",
+          "originalAsset": "BLEED_TRIP_OFF"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/BLEED_TRIP_OFF__AMBER__OFF.svg",
+        "DIM": "svg/BLEED_TRIP_OFF__AMBER__DIM.svg",
+        "BRIGHT": "svg/BLEED_TRIP_OFF__AMBER__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "AUTO_FAIL__AMBER",
+      "legend": "AUTO FAIL",
+      "lines": [
+        "AUTO",
+        "FAIL"
+      ],
+      "color": "amber",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "OH",
+          "originalAsset": "AUTO_FAIL"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/AUTO_FAIL__AMBER__OFF.svg",
+        "DIM": "svg/AUTO_FAIL__AMBER__DIM.svg",
+        "BRIGHT": "svg/AUTO_FAIL__AMBER__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "OFF_SCHED_DESCENT__AMBER",
+      "legend": "OFF SCHED DESCENT",
+      "lines": [
+        "OFF SCHED",
+        "DESCENT"
+      ],
+      "color": "amber",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "OH",
+          "originalAsset": "OFF_SCHED_DESCENT"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/OFF_SCHED_DESCENT__AMBER__OFF.svg",
+        "DIM": "svg/OFF_SCHED_DESCENT__AMBER__DIM.svg",
+        "BRIGHT": "svg/OFF_SCHED_DESCENT__AMBER__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "ON__GREEN",
+      "legend": "ON",
+      "lines": [
+        "ON"
+      ],
+      "color": "green",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "OH",
+          "originalAsset": "ON_GREEN"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/ON__GREEN__OFF.svg",
+        "DIM": "svg/ON__GREEN__DIM.svg",
+        "BRIGHT": "svg/ON__GREEN__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "L_VALVE_OPEN__BLUE",
+      "legend": "L VALVE OPEN",
+      "lines": [
+        "L VALVE",
+        "OPEN"
+      ],
+      "color": "blue",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "OH",
+          "originalAsset": "L_VALVE_OPEN"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT",
+        "BLUE_DIM__GLOBAL_DIM",
+        "BLUE_DIM__GLOBAL_BRIGHT",
+        "BLUE_BRIGHT__GLOBAL_DIM",
+        "BLUE_BRIGHT__GLOBAL_BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/L_VALVE_OPEN__BLUE__OFF.svg",
+        "DIM": "svg/L_VALVE_OPEN__BLUE__DIM.svg",
+        "BRIGHT": "svg/L_VALVE_OPEN__BLUE__BRIGHT.svg",
+        "BLUE_DIM__GLOBAL_DIM": "svg/L_VALVE_OPEN__BLUE__BLUE_DIM__GLOBAL_DIM.svg",
+        "BLUE_DIM__GLOBAL_BRIGHT": "svg/L_VALVE_OPEN__BLUE__BLUE_DIM__GLOBAL_BRIGHT.svg",
+        "BLUE_BRIGHT__GLOBAL_DIM": "svg/L_VALVE_OPEN__BLUE__BLUE_BRIGHT__GLOBAL_DIM.svg",
+        "BLUE_BRIGHT__GLOBAL_BRIGHT": "svg/L_VALVE_OPEN__BLUE__BLUE_BRIGHT__GLOBAL_BRIGHT.svg"
+      }
+    },
+    {
+      "id": "R_VALVE_OPEN__BLUE",
+      "legend": "R VALVE OPEN",
+      "lines": [
+        "R VALVE",
+        "OPEN"
+      ],
+      "color": "blue",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "OH",
+          "originalAsset": "R_VALVE_OPEN"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT",
+        "BLUE_DIM__GLOBAL_DIM",
+        "BLUE_DIM__GLOBAL_BRIGHT",
+        "BLUE_BRIGHT__GLOBAL_DIM",
+        "BLUE_BRIGHT__GLOBAL_BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/R_VALVE_OPEN__BLUE__OFF.svg",
+        "DIM": "svg/R_VALVE_OPEN__BLUE__DIM.svg",
+        "BRIGHT": "svg/R_VALVE_OPEN__BLUE__BRIGHT.svg",
+        "BLUE_DIM__GLOBAL_DIM": "svg/R_VALVE_OPEN__BLUE__BLUE_DIM__GLOBAL_DIM.svg",
+        "BLUE_DIM__GLOBAL_BRIGHT": "svg/R_VALVE_OPEN__BLUE__BLUE_DIM__GLOBAL_BRIGHT.svg",
+        "BLUE_BRIGHT__GLOBAL_DIM": "svg/R_VALVE_OPEN__BLUE__BLUE_BRIGHT__GLOBAL_DIM.svg",
+        "BLUE_BRIGHT__GLOBAL_BRIGHT": "svg/R_VALVE_OPEN__BLUE__BLUE_BRIGHT__GLOBAL_BRIGHT.svg"
+      }
+    },
+    {
+      "id": "COWL_VALVE_OPEN__BLUE",
+      "legend": "COWL VALVE OPEN",
+      "lines": [
+        "COWL VALVE",
+        "OPEN"
+      ],
+      "color": "blue",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "OH",
+          "originalAsset": "COWL_VALVE_OPEN"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT",
+        "BLUE_DIM__GLOBAL_DIM",
+        "BLUE_DIM__GLOBAL_BRIGHT",
+        "BLUE_BRIGHT__GLOBAL_DIM",
+        "BLUE_BRIGHT__GLOBAL_BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/COWL_VALVE_OPEN__BLUE__OFF.svg",
+        "DIM": "svg/COWL_VALVE_OPEN__BLUE__DIM.svg",
+        "BRIGHT": "svg/COWL_VALVE_OPEN__BLUE__BRIGHT.svg",
+        "BLUE_DIM__GLOBAL_DIM": "svg/COWL_VALVE_OPEN__BLUE__BLUE_DIM__GLOBAL_DIM.svg",
+        "BLUE_DIM__GLOBAL_BRIGHT": "svg/COWL_VALVE_OPEN__BLUE__BLUE_DIM__GLOBAL_BRIGHT.svg",
+        "BLUE_BRIGHT__GLOBAL_DIM": "svg/COWL_VALVE_OPEN__BLUE__BLUE_BRIGHT__GLOBAL_DIM.svg",
+        "BLUE_BRIGHT__GLOBAL_BRIGHT": "svg/COWL_VALVE_OPEN__BLUE__BLUE_BRIGHT__GLOBAL_BRIGHT.svg"
+      }
+    },
+    {
+      "id": "VALVE_OPEN__BLUE",
+      "legend": "VALVE OPEN",
+      "lines": [
+        "VALVE",
+        "OPEN"
+      ],
+      "color": "blue",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "OH",
+          "originalAsset": "VALVE_OPEN"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT",
+        "BLUE_DIM__GLOBAL_DIM",
+        "BLUE_DIM__GLOBAL_BRIGHT",
+        "BLUE_BRIGHT__GLOBAL_DIM",
+        "BLUE_BRIGHT__GLOBAL_BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/VALVE_OPEN__BLUE__OFF.svg",
+        "DIM": "svg/VALVE_OPEN__BLUE__DIM.svg",
+        "BRIGHT": "svg/VALVE_OPEN__BLUE__BRIGHT.svg",
+        "BLUE_DIM__GLOBAL_DIM": "svg/VALVE_OPEN__BLUE__BLUE_DIM__GLOBAL_DIM.svg",
+        "BLUE_DIM__GLOBAL_BRIGHT": "svg/VALVE_OPEN__BLUE__BLUE_DIM__GLOBAL_BRIGHT.svg",
+        "BLUE_BRIGHT__GLOBAL_DIM": "svg/VALVE_OPEN__BLUE__BLUE_BRIGHT__GLOBAL_DIM.svg",
+        "BLUE_BRIGHT__GLOBAL_BRIGHT": "svg/VALVE_OPEN__BLUE__BLUE_BRIGHT__GLOBAL_BRIGHT.svg"
+      }
+    },
+    {
+      "id": "FUEL_VALVE_CLOSED__BLUE",
+      "legend": "FUEL VALVE CLOSED",
+      "lines": [
+        "FUEL VALVE",
+        "CLOSED"
+      ],
+      "color": "blue",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "OH",
+          "originalAsset": "FUEL_VALVE_CLOSED"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT",
+        "BLUE_DIM__GLOBAL_DIM",
+        "BLUE_DIM__GLOBAL_BRIGHT",
+        "BLUE_BRIGHT__GLOBAL_DIM",
+        "BLUE_BRIGHT__GLOBAL_BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/FUEL_VALVE_CLOSED__BLUE__OFF.svg",
+        "DIM": "svg/FUEL_VALVE_CLOSED__BLUE__DIM.svg",
+        "BRIGHT": "svg/FUEL_VALVE_CLOSED__BLUE__BRIGHT.svg",
+        "BLUE_DIM__GLOBAL_DIM": "svg/FUEL_VALVE_CLOSED__BLUE__BLUE_DIM__GLOBAL_DIM.svg",
+        "BLUE_DIM__GLOBAL_BRIGHT": "svg/FUEL_VALVE_CLOSED__BLUE__BLUE_DIM__GLOBAL_BRIGHT.svg",
+        "BLUE_BRIGHT__GLOBAL_DIM": "svg/FUEL_VALVE_CLOSED__BLUE__BLUE_BRIGHT__GLOBAL_DIM.svg",
+        "BLUE_BRIGHT__GLOBAL_BRIGHT": "svg/FUEL_VALVE_CLOSED__BLUE__BLUE_BRIGHT__GLOBAL_BRIGHT.svg"
+      }
+    },
+    {
+      "id": "GEN_OFF_BUS__BLUE",
+      "legend": "GEN OFF BUS",
+      "lines": [
+        "GEN OFF",
+        "BUS"
+      ],
+      "color": "blue",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "OH",
+          "originalAsset": "GEN_OFF_BUS"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT",
+        "BLUE_DIM__GLOBAL_DIM",
+        "BLUE_DIM__GLOBAL_BRIGHT",
+        "BLUE_BRIGHT__GLOBAL_DIM",
+        "BLUE_BRIGHT__GLOBAL_BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/GEN_OFF_BUS__BLUE__OFF.svg",
+        "DIM": "svg/GEN_OFF_BUS__BLUE__DIM.svg",
+        "BRIGHT": "svg/GEN_OFF_BUS__BLUE__BRIGHT.svg",
+        "BLUE_DIM__GLOBAL_DIM": "svg/GEN_OFF_BUS__BLUE__BLUE_DIM__GLOBAL_DIM.svg",
+        "BLUE_DIM__GLOBAL_BRIGHT": "svg/GEN_OFF_BUS__BLUE__BLUE_DIM__GLOBAL_BRIGHT.svg",
+        "BLUE_BRIGHT__GLOBAL_DIM": "svg/GEN_OFF_BUS__BLUE__BLUE_BRIGHT__GLOBAL_DIM.svg",
+        "BLUE_BRIGHT__GLOBAL_BRIGHT": "svg/GEN_OFF_BUS__BLUE__BLUE_BRIGHT__GLOBAL_BRIGHT.svg"
+      }
+    },
+    {
+      "id": "APU_GEN_OFF_BUS__BLUE",
+      "legend": "APU GEN OFF BUS",
+      "lines": [
+        "APU GEN",
+        "OFF BUS"
+      ],
+      "color": "blue",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "OH",
+          "originalAsset": "APU_GEN_OFF_BUS"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT",
+        "BLUE_DIM__GLOBAL_DIM",
+        "BLUE_DIM__GLOBAL_BRIGHT",
+        "BLUE_BRIGHT__GLOBAL_DIM",
+        "BLUE_BRIGHT__GLOBAL_BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/APU_GEN_OFF_BUS__BLUE__OFF.svg",
+        "DIM": "svg/APU_GEN_OFF_BUS__BLUE__DIM.svg",
+        "BRIGHT": "svg/APU_GEN_OFF_BUS__BLUE__BRIGHT.svg",
+        "BLUE_DIM__GLOBAL_DIM": "svg/APU_GEN_OFF_BUS__BLUE__BLUE_DIM__GLOBAL_DIM.svg",
+        "BLUE_DIM__GLOBAL_BRIGHT": "svg/APU_GEN_OFF_BUS__BLUE__BLUE_DIM__GLOBAL_BRIGHT.svg",
+        "BLUE_BRIGHT__GLOBAL_DIM": "svg/APU_GEN_OFF_BUS__BLUE__BLUE_BRIGHT__GLOBAL_DIM.svg",
+        "BLUE_BRIGHT__GLOBAL_BRIGHT": "svg/APU_GEN_OFF_BUS__BLUE__BLUE_BRIGHT__GLOBAL_BRIGHT.svg"
+      }
+    },
+    {
+      "id": "GRD_POWER_AVAILABLE__BLUE",
+      "legend": "GRD POWER AVAILABLE",
+      "lines": [
+        "GRD POWER",
+        "AVAILABLE"
+      ],
+      "color": "blue",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "OH",
+          "originalAsset": "GRD_POWER_AVAILABLE"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT",
+        "BLUE_DIM__GLOBAL_DIM",
+        "BLUE_DIM__GLOBAL_BRIGHT",
+        "BLUE_BRIGHT__GLOBAL_DIM",
+        "BLUE_BRIGHT__GLOBAL_BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/GRD_POWER_AVAILABLE__BLUE__OFF.svg",
+        "DIM": "svg/GRD_POWER_AVAILABLE__BLUE__DIM.svg",
+        "BRIGHT": "svg/GRD_POWER_AVAILABLE__BLUE__BRIGHT.svg",
+        "BLUE_DIM__GLOBAL_DIM": "svg/GRD_POWER_AVAILABLE__BLUE__BLUE_DIM__GLOBAL_DIM.svg",
+        "BLUE_DIM__GLOBAL_BRIGHT": "svg/GRD_POWER_AVAILABLE__BLUE__BLUE_DIM__GLOBAL_BRIGHT.svg",
+        "BLUE_BRIGHT__GLOBAL_DIM": "svg/GRD_POWER_AVAILABLE__BLUE__BLUE_BRIGHT__GLOBAL_DIM.svg",
+        "BLUE_BRIGHT__GLOBAL_BRIGHT": "svg/GRD_POWER_AVAILABLE__BLUE__BLUE_BRIGHT__GLOBAL_BRIGHT.svg"
+      }
+    },
+    {
+      "id": "LOW_OIL_QUANTITY__BLUE",
+      "legend": "LOW OIL QUANTITY",
+      "lines": [
+        "LOW OIL",
+        "QUANTITY"
+      ],
+      "color": "blue",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "OH",
+          "originalAsset": "LOW_OIL_QUANTITY"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT",
+        "BLUE_DIM__GLOBAL_DIM",
+        "BLUE_DIM__GLOBAL_BRIGHT",
+        "BLUE_BRIGHT__GLOBAL_DIM",
+        "BLUE_BRIGHT__GLOBAL_BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/LOW_OIL_QUANTITY__BLUE__OFF.svg",
+        "DIM": "svg/LOW_OIL_QUANTITY__BLUE__DIM.svg",
+        "BRIGHT": "svg/LOW_OIL_QUANTITY__BLUE__BRIGHT.svg",
+        "BLUE_DIM__GLOBAL_DIM": "svg/LOW_OIL_QUANTITY__BLUE__BLUE_DIM__GLOBAL_DIM.svg",
+        "BLUE_DIM__GLOBAL_BRIGHT": "svg/LOW_OIL_QUANTITY__BLUE__BLUE_DIM__GLOBAL_BRIGHT.svg",
+        "BLUE_BRIGHT__GLOBAL_DIM": "svg/LOW_OIL_QUANTITY__BLUE__BLUE_BRIGHT__GLOBAL_DIM.svg",
+        "BLUE_BRIGHT__GLOBAL_BRIGHT": "svg/LOW_OIL_QUANTITY__BLUE__BLUE_BRIGHT__GLOBAL_BRIGHT.svg"
+      }
+    },
+    {
+      "id": "RAM_DOOR_FULL_OPEN__BLUE",
+      "legend": "RAM DOOR FULL OPEN",
+      "lines": [
+        "RAM DOOR",
+        "FULL OPEN"
+      ],
+      "color": "blue",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "OH",
+          "originalAsset": "RAM_DOOR_FULL_OPEN"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT",
+        "BLUE_DIM__GLOBAL_DIM",
+        "BLUE_DIM__GLOBAL_BRIGHT",
+        "BLUE_BRIGHT__GLOBAL_DIM",
+        "BLUE_BRIGHT__GLOBAL_BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/RAM_DOOR_FULL_OPEN__BLUE__OFF.svg",
+        "DIM": "svg/RAM_DOOR_FULL_OPEN__BLUE__DIM.svg",
+        "BRIGHT": "svg/RAM_DOOR_FULL_OPEN__BLUE__BRIGHT.svg",
+        "BLUE_DIM__GLOBAL_DIM": "svg/RAM_DOOR_FULL_OPEN__BLUE__BLUE_DIM__GLOBAL_DIM.svg",
+        "BLUE_DIM__GLOBAL_BRIGHT": "svg/RAM_DOOR_FULL_OPEN__BLUE__BLUE_DIM__GLOBAL_BRIGHT.svg",
+        "BLUE_BRIGHT__GLOBAL_DIM": "svg/RAM_DOOR_FULL_OPEN__BLUE__BLUE_BRIGHT__GLOBAL_DIM.svg",
+        "BLUE_BRIGHT__GLOBAL_BRIGHT": "svg/RAM_DOOR_FULL_OPEN__BLUE__BLUE_BRIGHT__GLOBAL_BRIGHT.svg"
+      }
+    },
+    {
+      "id": "STANDBY__GREEN",
+      "legend": "STANDBY",
+      "lines": [
+        "STANDBY"
+      ],
+      "color": "green",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "OH",
+          "originalAsset": "STANDBY_GREEN"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/STANDBY__GREEN__OFF.svg",
+        "DIM": "svg/STANDBY__GREEN__DIM.svg",
+        "BRIGHT": "svg/STANDBY__GREEN__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "MANUAL__GREEN",
+      "legend": "MANUAL",
+      "lines": [
+        "MANUAL"
+      ],
+      "color": "green",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "OH",
+          "originalAsset": "MANUAL_GREEN"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/MANUAL__GREEN__OFF.svg",
+        "DIM": "svg/MANUAL__GREEN__DIM.svg",
+        "BRIGHT": "svg/MANUAL__GREEN__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "CALL__BLUE",
+      "legend": "CALL",
+      "lines": [
+        "CALL"
+      ],
+      "color": "blue",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "OH",
+          "originalAsset": "CALL"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT",
+        "BLUE_DIM__GLOBAL_DIM",
+        "BLUE_DIM__GLOBAL_BRIGHT",
+        "BLUE_BRIGHT__GLOBAL_DIM",
+        "BLUE_BRIGHT__GLOBAL_BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/CALL__BLUE__OFF.svg",
+        "DIM": "svg/CALL__BLUE__DIM.svg",
+        "BRIGHT": "svg/CALL__BLUE__BRIGHT.svg",
+        "BLUE_DIM__GLOBAL_DIM": "svg/CALL__BLUE__BLUE_DIM__GLOBAL_DIM.svg",
+        "BLUE_DIM__GLOBAL_BRIGHT": "svg/CALL__BLUE__BLUE_DIM__GLOBAL_BRIGHT.svg",
+        "BLUE_BRIGHT__GLOBAL_DIM": "svg/CALL__BLUE__BLUE_BRIGHT__GLOBAL_DIM.svg",
+        "BLUE_BRIGHT__GLOBAL_BRIGHT": "svg/CALL__BLUE__BLUE_BRIGHT__GLOBAL_BRIGHT.svg"
+      }
+    },
+    {
+      "id": "INOP__AMBER",
+      "legend": "INOP",
+      "lines": [
+        "INOP"
+      ],
+      "color": "amber",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "OH",
+          "originalAsset": "INOP"
+        },
+        {
+          "panel": "MP",
+          "originalAsset": "INOP"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/INOP__AMBER__OFF.svg",
+        "DIM": "svg/INOP__AMBER__DIM.svg",
+        "BRIGHT": "svg/INOP__AMBER__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "LEFT_GEAR__GREEN",
+      "legend": "LEFT GEAR",
+      "lines": [
+        "LEFT",
+        "GEAR"
+      ],
+      "color": "green",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "OH",
+          "originalAsset": "LEFT_GEAR_2LINE_GREEN"
+        },
+        {
+          "panel": "MP",
+          "originalAsset": "LEFT_GEAR_2LINE_GREEN"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/LEFT_GEAR__GREEN__OFF.svg",
+        "DIM": "svg/LEFT_GEAR__GREEN__DIM.svg",
+        "BRIGHT": "svg/LEFT_GEAR__GREEN__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "RIGHT_GEAR__GREEN",
+      "legend": "RIGHT GEAR",
+      "lines": [
+        "RIGHT",
+        "GEAR"
+      ],
+      "color": "green",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "OH",
+          "originalAsset": "RIGHT_GEAR_2LINE_GREEN"
+        },
+        {
+          "panel": "MP",
+          "originalAsset": "RIGHT_GEAR_2LINE_GREEN"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/RIGHT_GEAR__GREEN__OFF.svg",
+        "DIM": "svg/RIGHT_GEAR__GREEN__DIM.svg",
+        "BRIGHT": "svg/RIGHT_GEAR__GREEN__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "NOSE_GEAR__GREEN",
+      "legend": "NOSE GEAR",
+      "lines": [
+        "NOSE",
+        "GEAR"
+      ],
+      "color": "green",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "OH",
+          "originalAsset": "NOSE_GEAR_2LINE_GREEN"
+        },
+        {
+          "panel": "MP",
+          "originalAsset": "NOSE_GEAR_2LINE_GREEN"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/NOSE_GEAR__GREEN__OFF.svg",
+        "DIM": "svg/NOSE_GEAR__GREEN__DIM.svg",
+        "BRIGHT": "svg/NOSE_GEAR__GREEN__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "A_T_LIM__WHITE",
+      "legend": "A/T LIM",
+      "lines": [
+        "A/T LIM"
+      ],
+      "color": "white",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "MP",
+          "originalAsset": "A_T_LIM_WHITE"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/A_T_LIM__WHITE__OFF.svg",
+        "DIM": "svg/A_T_LIM__WHITE__DIM.svg",
+        "BRIGHT": "svg/A_T_LIM__WHITE__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "REVERSER_UNLOCKED__AMBER",
+      "legend": "REVERSER UNLOCKED",
+      "lines": [
+        "REVERSER",
+        "UNLOCKED"
+      ],
+      "color": "amber",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "MP",
+          "originalAsset": "REVERSER_UNLOCKED"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/REVERSER_UNLOCKED__AMBER__OFF.svg",
+        "DIM": "svg/REVERSER_UNLOCKED__AMBER__DIM.svg",
+        "BRIGHT": "svg/REVERSER_UNLOCKED__AMBER__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "START_VALVE_OPEN__AMBER",
+      "legend": "START VALVE OPEN",
+      "lines": [
+        "START",
+        "VALVE OPEN"
+      ],
+      "color": "amber",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "MP",
+          "originalAsset": "START_VALVE_OPEN"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/START_VALVE_OPEN__AMBER__OFF.svg",
+        "DIM": "svg/START_VALVE_OPEN__AMBER__DIM.svg",
+        "BRIGHT": "svg/START_VALVE_OPEN__AMBER__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "OIL_FILTER_BYPASS__AMBER",
+      "legend": "OIL FILTER BYPASS",
+      "lines": [
+        "OIL FILTER",
+        "BYPASS"
+      ],
+      "color": "amber",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "MP",
+          "originalAsset": "OIL_FILTER_BYPASS"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/OIL_FILTER_BYPASS__AMBER__OFF.svg",
+        "DIM": "svg/OIL_FILTER_BYPASS__AMBER__DIM.svg",
+        "BRIGHT": "svg/OIL_FILTER_BYPASS__AMBER__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "ALTITUDE_ALERT__AMBER",
+      "legend": "ALTITUDE ALERT",
+      "lines": [
+        "ALTITUDE",
+        "ALERT"
+      ],
+      "color": "amber",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "MP",
+          "originalAsset": "ALTITUDE_ALERT"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/ALTITUDE_ALERT__AMBER__OFF.svg",
+        "DIM": "svg/ALTITUDE_ALERT__AMBER__DIM.svg",
+        "BRIGHT": "svg/ALTITUDE_ALERT__AMBER__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "PULL_UP__RED",
+      "legend": "PULL UP",
+      "lines": [
+        "PULL UP"
+      ],
+      "color": "red",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "MP",
+          "originalAsset": "PULL_UP_RED"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/PULL_UP__RED__OFF.svg",
+        "DIM": "svg/PULL_UP__RED__DIM.svg",
+        "BRIGHT": "svg/PULL_UP__RED__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "BELOW_G_S_P_INHIBIT__AMBER",
+      "legend": "BELOW G/S P-INHIBIT",
+      "lines": [
+        "BELOW G/S",
+        "P-INHIBIT"
+      ],
+      "color": "amber",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "MP",
+          "originalAsset": "BELOW_GS_P_INHIBIT"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/BELOW_G_S_P_INHIBIT__AMBER__OFF.svg",
+        "DIM": "svg/BELOW_G_S_P_INHIBIT__AMBER__DIM.svg",
+        "BRIGHT": "svg/BELOW_G_S_P_INHIBIT__AMBER__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "NOSE_GEAR__RED",
+      "legend": "NOSE GEAR",
+      "lines": [
+        "NOSE",
+        "GEAR"
+      ],
+      "color": "red",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "MP",
+          "originalAsset": "NOSE_GEAR_2LINE_RED"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/NOSE_GEAR__RED__OFF.svg",
+        "DIM": "svg/NOSE_GEAR__RED__DIM.svg",
+        "BRIGHT": "svg/NOSE_GEAR__RED__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "LEFT_GEAR__RED",
+      "legend": "LEFT GEAR",
+      "lines": [
+        "LEFT",
+        "GEAR"
+      ],
+      "color": "red",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "MP",
+          "originalAsset": "LEFT_GEAR_2LINE_RED"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/LEFT_GEAR__RED__OFF.svg",
+        "DIM": "svg/LEFT_GEAR__RED__DIM.svg",
+        "BRIGHT": "svg/LEFT_GEAR__RED__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "RIGHT_GEAR__RED",
+      "legend": "RIGHT GEAR",
+      "lines": [
+        "RIGHT",
+        "GEAR"
+      ],
+      "color": "red",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "MP",
+          "originalAsset": "RIGHT_GEAR_2LINE_RED"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/RIGHT_GEAR__RED__OFF.svg",
+        "DIM": "svg/RIGHT_GEAR__RED__DIM.svg",
+        "BRIGHT": "svg/RIGHT_GEAR__RED__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "LE_FLAPS_TRANSIT__AMBER",
+      "legend": "LE FLAPS TRANSIT",
+      "lines": [
+        "LE FLAPS",
+        "TRANSIT"
+      ],
+      "color": "amber",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "MP",
+          "originalAsset": "LE_FLAPS_TRANSIT"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/LE_FLAPS_TRANSIT__AMBER__OFF.svg",
+        "DIM": "svg/LE_FLAPS_TRANSIT__AMBER__DIM.svg",
+        "BRIGHT": "svg/LE_FLAPS_TRANSIT__AMBER__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "LE_FLAPS_EXT__GREEN",
+      "legend": "LE FLAPS EXT",
+      "lines": [
+        "LE FLAPS",
+        "EXT"
+      ],
+      "color": "green",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "MP",
+          "originalAsset": "LE_FLAPS_EXT_GREEN"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/LE_FLAPS_EXT__GREEN__OFF.svg",
+        "DIM": "svg/LE_FLAPS_EXT__GREEN__DIM.svg",
+        "BRIGHT": "svg/LE_FLAPS_EXT__GREEN__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "ANTI_SKID_INOP__AMBER",
+      "legend": "ANTI SKID INOP",
+      "lines": [
+        "ANTI SKID",
+        "INOP"
+      ],
+      "color": "amber",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "MP",
+          "originalAsset": "ANTI_SKID_INOP"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/ANTI_SKID_INOP__AMBER__OFF.svg",
+        "DIM": "svg/ANTI_SKID_INOP__AMBER__DIM.svg",
+        "BRIGHT": "svg/ANTI_SKID_INOP__AMBER__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "AUTO_BRAKE_DISARM__AMBER",
+      "legend": "AUTO BRAKE DISARM",
+      "lines": [
+        "AUTO BRAKE",
+        "DISARM"
+      ],
+      "color": "amber",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "MP",
+          "originalAsset": "AUTO_BRAKE_DISARM"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/AUTO_BRAKE_DISARM__AMBER__OFF.svg",
+        "DIM": "svg/AUTO_BRAKE_DISARM__AMBER__DIM.svg",
+        "BRIGHT": "svg/AUTO_BRAKE_DISARM__AMBER__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "BRAKE_TEMP__AMBER",
+      "legend": "BRAKE TEMP",
+      "lines": [
+        "BRAKE",
+        "TEMP"
+      ],
+      "color": "amber",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "MP",
+          "originalAsset": "BRAKE_TEMP"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/BRAKE_TEMP__AMBER__OFF.svg",
+        "DIM": "svg/BRAKE_TEMP__AMBER__DIM.svg",
+        "BRIGHT": "svg/BRAKE_TEMP__AMBER__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "STAB_OUT_OF_TRIM__AMBER",
+      "legend": "STAB OUT OF TRIM",
+      "lines": [
+        "STAB",
+        "OUT OF",
+        "TRIM"
+      ],
+      "color": "amber",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "MP",
+          "originalAsset": "STAB_OUT_OF_TRIM"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/STAB_OUT_OF_TRIM__AMBER__OFF.svg",
+        "DIM": "svg/STAB_OUT_OF_TRIM__AMBER__DIM.svg",
+        "BRIGHT": "svg/STAB_OUT_OF_TRIM__AMBER__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "SPEED_BRAKE_DO_NOT_ARMED__AMBER",
+      "legend": "SPEED BRAKE DO NOT ARMED",
+      "lines": [
+        "SPEED BRAKE",
+        "DO NOT ARMED"
+      ],
+      "color": "amber",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "MP",
+          "originalAsset": "SPEED_BRAKE_DO_NOT_ARMED_AMBER"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/SPEED_BRAKE_DO_NOT_ARMED__AMBER__OFF.svg",
+        "DIM": "svg/SPEED_BRAKE_DO_NOT_ARMED__AMBER__DIM.svg",
+        "BRIGHT": "svg/SPEED_BRAKE_DO_NOT_ARMED__AMBER__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "SPEED_BRAKE_ARMED__GREEN",
+      "legend": "SPEED BRAKE ARMED",
+      "lines": [
+        "SPEED BRAKE",
+        "ARMED"
+      ],
+      "color": "green",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "MP",
+          "originalAsset": "SPEED_BRAKE_ARMED_GREEN"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/SPEED_BRAKE_ARMED__GREEN__OFF.svg",
+        "DIM": "svg/SPEED_BRAKE_ARMED__GREEN__DIM.svg",
+        "BRIGHT": "svg/SPEED_BRAKE_ARMED__GREEN__BRIGHT.svg"
+      }
+    },
+    {
+      "id": "PACK__AMBER",
+      "legend": "PACK",
+      "lines": [
+        "PACK"
+      ],
+      "color": "amber",
+      "orientation": "horizontal",
+      "sourceAliases": [
+        {
+          "panel": "OH400",
+          "originalAsset": "PACK_FITTED"
+        }
+      ],
+      "states": [
+        "OFF",
+        "DIM",
+        "BRIGHT"
+      ],
+      "assets": {
+        "OFF": "svg/PACK__AMBER__OFF.svg",
+        "DIM": "svg/PACK__AMBER__DIM.svg",
+        "BRIGHT": "svg/PACK__AMBER__BRIGHT.svg"
+      }
+    }
+  ],
+  "sourceAssetToMaster": {
+    "OH:ALIGN_WHITE": "ALIGN__WHITE",
+    "OH:ON_DC_LAMP": "ON_DC__AMBER",
+    "OH:FAULT": "FAULT__AMBER",
+    "OH:DC_FAIL": "DC_FAIL__AMBER",
+    "OH:REVERSER": "REVERSER__AMBER",
+    "OH:LOW_IDLE": "LOW_IDLE__AMBER",
+    "OH:PASS_OXY_ON_LAMP": "PASS_OXY_ON__AMBER",
+    "OH:OFF_LAMP": "OFF__AMBER",
+    "OH:LOW_QUANTITY": "LOW_QUANTITY__AMBER",
+    "OH:LOW_PRESSURE": "LOW_PRESSURE__AMBER",
+    "OH:STBY_RUD_ON_LAMP": "STBY_RUD_ON__AMBER",
+    "OH:FEEL_DIFF_PRESS": "FEEL_DIFF_PRESS__AMBER",
+    "OH:SPEED_TRIM_FAIL": "SPEED_TRIM_FAIL__AMBER",
+    "OH:MACH_TRIM_FAIL": "MACH_TRIM_FAIL__AMBER",
+    "OH:AUTO_SLAT_FAIL": "AUTO_SLAT_FAIL__AMBER",
+    "OH:YAW_DAMPER": "YAW_DAMPER__AMBER",
+    "OH:FILTER_BYPASS": "FILTER_BYPASS__AMBER",
+    "OH:LOW_OIL_PRESSURE": "LOW_OIL_PRESSURE__AMBER",
+    "OH:HIGH_OIL_TEMP": "HIGH_OIL_TEMP__AMBER",
+    "OH:STANDBY_PWR_OFF_LAMP": "STANDBY_PWR_OFF__AMBER",
+    "OH:TRANSFER_BUS_OFF_LAMP": "TRANSFER_BUS_OFF__AMBER",
+    "OH:BUS_OFF_LAMP": "BUS_OFF__AMBER",
+    "OH:OVER_SPEED": "OVER_SPEED__AMBER",
+    "OH:NOT_ARMED_VERTICAL": "NOT_ARMED__AMBER__VERTICAL",
+    "OH:OVERHEAT": "OVERHEAT__AMBER",
+    "OH:CAPT_PS_1_AUX_STATIC": "CAPT_P_S_1_AUX_STATIC__AMBER",
+    "OH:FO_STATIC_2_AUX_PS": "F_O_STATIC_2_AUX_P_S__AMBER",
+    "OH:L_ELEV_PITOT": "L_ELEV_PITOT__AMBER",
+    "OH:L_ALPHA_VANE": "L_ALPHA_VANE__AMBER",
+    "OH:TEMP_PROBE": "TEMP_PROBE__AMBER",
+    "OH:FO_PS_2_AUX_STATIC": "F_O_P_S_2_AUX_STATIC__AMBER",
+    "OH:CAPT_STATIC_1_AUX_PS": "CAPT_STATIC_1_AUX_P_S__AMBER",
+    "OH:R_ELEV_PITOT": "R_ELEV_PITOT__AMBER",
+    "OH:R_ALPHA_VANE": "R_ALPHA_VANE__AMBER",
+    "OH:COWL_ANTI_ICE": "COWL_ANTI_ICE__AMBER",
+    "OH:FWD_ENTRY": "FWD_ENTRY__AMBER",
+    "OH:AFT_ENTRY": "AFT_ENTRY__AMBER",
+    "OH:AIR_STAIR": "AIR_STAIR__AMBER",
+    "OH:EQUIP": "EQUIP__AMBER",
+    "OH:FWD_CARGO": "FWD_CARGO__AMBER",
+    "OH:AFT_CARGO": "AFT_CARGO__AMBER",
+    "OH:FWD_SERVICE": "FWD_SERVICE__AMBER",
+    "OH:AFT_SERVICE": "AFT_SERVICE__AMBER",
+    "OH:DUCT_OVERHEAT": "DUCT_OVERHEAT__AMBER",
+    "OH:DUAL_BLEED": "DUAL_BLEED__AMBER",
+    "OH:PACK_TRIP_OFF": "PACK_TRIP_OFF__AMBER",
+    "OH:WING_BODY_OVERHEAT": "WING_BODY_OVERHEAT__AMBER",
+    "OH:BLEED_TRIP_OFF": "BLEED_TRIP_OFF__AMBER",
+    "OH:AUTO_FAIL": "AUTO_FAIL__AMBER",
+    "OH:OFF_SCHED_DESCENT": "OFF_SCHED_DESCENT__AMBER",
+    "OH:ON_GREEN": "ON__GREEN",
+    "OH:L_VALVE_OPEN": "L_VALVE_OPEN__BLUE",
+    "OH:R_VALVE_OPEN": "R_VALVE_OPEN__BLUE",
+    "OH:COWL_VALVE_OPEN": "COWL_VALVE_OPEN__BLUE",
+    "OH:VALVE_OPEN": "VALVE_OPEN__BLUE",
+    "OH:FUEL_VALVE_CLOSED": "FUEL_VALVE_CLOSED__BLUE",
+    "OH:GEN_OFF_BUS": "GEN_OFF_BUS__BLUE",
+    "OH:APU_GEN_OFF_BUS": "APU_GEN_OFF_BUS__BLUE",
+    "OH:GRD_POWER_AVAILABLE": "GRD_POWER_AVAILABLE__BLUE",
+    "OH:LOW_OIL_QUANTITY": "LOW_OIL_QUANTITY__BLUE",
+    "OH:RAM_DOOR_FULL_OPEN": "RAM_DOOR_FULL_OPEN__BLUE",
+    "OH:STANDBY_GREEN": "STANDBY__GREEN",
+    "OH:MANUAL_GREEN": "MANUAL__GREEN",
+    "OH:CALL": "CALL__BLUE",
+    "OH:INOP": "INOP__AMBER",
+    "OH:LEFT_GEAR_2LINE_GREEN": "LEFT_GEAR__GREEN",
+    "OH:RIGHT_GEAR_2LINE_GREEN": "RIGHT_GEAR__GREEN",
+    "OH:NOSE_GEAR_2LINE_GREEN": "NOSE_GEAR__GREEN",
+    "MP:A_T_LIM_WHITE": "A_T_LIM__WHITE",
+    "MP:REVERSER_UNLOCKED": "REVERSER_UNLOCKED__AMBER",
+    "MP:START_VALVE_OPEN": "START_VALVE_OPEN__AMBER",
+    "MP:LOW_OIL_PRESSURE": "LOW_OIL_PRESSURE__AMBER",
+    "MP:OIL_FILTER_BYPASS": "OIL_FILTER_BYPASS__AMBER",
+    "MP:ALTITUDE_ALERT": "ALTITUDE_ALERT__AMBER",
+    "MP:PULL_UP_RED": "PULL_UP__RED",
+    "MP:BELOW_GS_P_INHIBIT": "BELOW_G_S_P_INHIBIT__AMBER",
+    "MP:NOSE_GEAR_2LINE_RED": "NOSE_GEAR__RED",
+    "MP:NOSE_GEAR_2LINE_GREEN": "NOSE_GEAR__GREEN",
+    "MP:LEFT_GEAR_2LINE_RED": "LEFT_GEAR__RED",
+    "MP:LEFT_GEAR_2LINE_GREEN": "LEFT_GEAR__GREEN",
+    "MP:RIGHT_GEAR_2LINE_RED": "RIGHT_GEAR__RED",
+    "MP:RIGHT_GEAR_2LINE_GREEN": "RIGHT_GEAR__GREEN",
+    "MP:LE_FLAPS_TRANSIT": "LE_FLAPS_TRANSIT__AMBER",
+    "MP:LE_FLAPS_EXT_GREEN": "LE_FLAPS_EXT__GREEN",
+    "MP:ANTI_SKID_INOP": "ANTI_SKID_INOP__AMBER",
+    "MP:AUTO_BRAKE_DISARM": "AUTO_BRAKE_DISARM__AMBER",
+    "MP:BRAKE_TEMP": "BRAKE_TEMP__AMBER",
+    "MP:STAB_OUT_OF_TRIM": "STAB_OUT_OF_TRIM__AMBER",
+    "MP:SPEED_BRAKE_DO_NOT_ARMED_AMBER": "SPEED_BRAKE_DO_NOT_ARMED__AMBER",
+    "MP:SPEED_BRAKE_ARMED_GREEN": "SPEED_BRAKE_ARMED__GREEN",
+    "MP:INOP": "INOP__AMBER"
+  },
+  "variantAliases": {
+    "OH400:PACK_FITTED": "PACK__AMBER"
+  },
+  "globalBrightnessModes": [
+    "DIM",
+    "BRIGHT"
+  ],
+  "mapping": {
+    "ON": {
+      "DIM": "DIM",
+      "BRIGHT": "BRIGHT"
+    },
+    "OFF": {
+      "DIM": "OFF",
+      "BRIGHT": "OFF"
+    },
+    "DIM_BLUE": {
+      "DIM": "BLUE_DIM__GLOBAL_DIM",
+      "BRIGHT": "BLUE_DIM__GLOBAL_BRIGHT"
+    },
+    "BRIGHT_BLUE": {
+      "DIM": "BLUE_BRIGHT__GLOBAL_DIM",
+      "BRIGHT": "BLUE_BRIGHT__GLOBAL_BRIGHT"
+    }
+  },
+  "ownerRestrictions": {
+    "unchanged": "Text, font, letter spacing and size, source geometry and signal logic except owner-requested special designs.",
+    "exceptions": {
+      "NOT_ARMED": "NOT starts one letter lower than ARMED",
+      "STAB_OUT_OF_TRIM": "Master 403:270 matched to source panel aperture 88:59 at (255,740)"
+    }
+  },
+  "safeDeployment": "ADD_ONLY_NOT_APPLIED_TO_LIVE_UNIFIED",
+  "separateFirePanelLights": 11
+}
