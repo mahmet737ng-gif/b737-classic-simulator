@@ -21,9 +21,34 @@ assert before.size==(918,1713), f"Unexpected master dims {before.size}"
 arr=np.array(before)
 old=arr.copy()
 
-# The existing two recesses and lettering are inside the GPWS plate.
-# Clone ONLY the original GEAR opening to the right for the third matching opening.
-# All coordinates are native 918x1713 pixels, calibrated from preview of this exact file.
+# The source is kept as a permanent locked master.
+# Suppress old side legends using undisturbed blue-grey metal from the LOWER
+# region of the SAME panel, never from an area containing switch hardware.
+def transplant_same_photo(dst_box,src_box,edge=6):
+    x1,y1,x2,y2=dst_box
+    a,b,c,d=src_box
+    assert x2-x1==c-a and y2-y1==d-b
+    patch=old[b:d,a:c].copy()
+    target=arr[y1:y2,x1:x2].copy()
+    h,w=patch.shape[:2]
+    weight=np.ones((h,w),dtype=np.float32)
+    for k in range(edge):
+        v=(k+1)/(edge+1)
+        weight[:,k]=np.minimum(weight[:,k],v)
+        weight[:,-k-1]=np.minimum(weight[:,-k-1],v)
+        weight[k,:]=np.minimum(weight[k,:],v)
+        weight[-k-1,:]=np.minimum(weight[-k-1,:],v)
+    arr[y1:y2,x1:x2]=np.clip(patch*weight[:,:,None]+target*(1-weight[:,:,None]),0,255).astype('uint8')
+
+# Previously FLAP INHIBIT was BESIDE its socket; no black pixels are
+# allowed in this restoration region.
+transplant_same_photo((608,1412,678,1468),(608,1587,678,1643),edge=5)
+# Previously GEAR INHIBIT was beside the GEAR socket in the new terrain column.
+# Clean its heading before adding the actual third socket.
+transplant_same_photo((816,1413,893,1435),(816,1588,893,1610),edge=5)
+
+# Clone the native GEAR recess exactly (including its bevel and shadows)
+# into the empty right-hand TERRAIN position, without scale/stretching.
 donor=(742,1431,817,1552)
 dx=78
 sx1,sy1,sx2,sy2=donor
@@ -31,8 +56,8 @@ patch=old[sy1:sy2,sx1:sx2].copy()
 ph,pw=patch.shape[:2]
 assert sx2+dx<918
 feather=np.ones((ph,pw),dtype=np.float32)
-for i in range(8):
-    v=(i+1)/9
+for i in range(6):
+    v=(i+1)/7
     feather[:,i]=np.minimum(feather[:,i],v)
     feather[:,-i-1]=np.minimum(feather[:,-i-1],v)
     feather[i,:]=np.minimum(feather[i,:],v)
@@ -40,24 +65,9 @@ for i in range(8):
 dst=arr[sy1:sy2,sx1+dx:sx2+dx]
 arr[sy1:sy2,sx1+dx:sx2+dx]=np.clip(patch*feather[:,:,None]+dst*(1-feather[:,:,None]),0,255).astype('uint8')
 
-# Replace only the old FLAP label printed BESIDE the first guard.
-# A nearby piece of the SAME untouched metal photograph is used (not inpainting):
-# inpainting near the black sockets leaked black into the bluish metal paint.
-label_rect=(620,1420,677,1460)
-lx1,ly1,lx2,ly2=label_rect
-w,h=lx2-lx1,ly2-ly1
-metal=old[ly1:ly2,540:540+w].copy()
-target=arr[ly1:ly2,lx1:lx2].copy()
-fade=np.ones((h,w),dtype=np.float32)
-for i in range(9):
-    amount=(i+1)/10
-    fade[:,i]=np.minimum(fade[:,i],amount)
-    fade[:,-i-1]=np.minimum(fade[:,-i-1],amount)
-    fade[i,:]=np.minimum(fade[i,:],amount)
-    fade[-i-1,:]=np.minimum(fade[-i-1,:],amount)
-arr[ly1:ly2,lx1:lx2]=np.clip(metal*fade[:,:,None]+target*(1-fade[:,:,None]),0,255).astype('uint8')
-# GEAR original side label is naturally obscured by the new third socket,
-# but the photograph's native screws and NORMAL markings are preserved.
+# Add the center NORMAL inscription by borrowing the complete source-photo
+# word/lettering (including its real font and photometric pixels).
+transplant_same_photo((739,1542,816,1570),(663,1542,740,1570),edge=3)
 photo=Image.fromarray(arr)
 draw=ImageDraw.Draw(photo)
 font_path="/usr/share/fonts/truetype/dejavu/DejaVuSansCondensed.ttf"
@@ -78,7 +88,7 @@ for title,cx in [('FLAP',709),('GEAR',779),('TERRAIN',857)]:
     center(title,caption_x,1391,small)
     center('INHIBIT',caption_x,1405,tiny)
 # The two native NORMAL labels remain; the middle column gains its own label.
-center('NORMAL',779,1571,normal)
+# Center NORMAL was photo-cloned from the matching original caption above.
 # Enforce unchanged RGB values outside the narrow GPWS change rectangle.
 modified=np.array(photo)
 change_rect=(600,1393,918,1595)
