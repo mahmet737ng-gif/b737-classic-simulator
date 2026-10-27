@@ -50,13 +50,14 @@ for x1,y1,x2,y2 in [
     (648,1547,737,1581),   # old NORMAL for FLAP, redraw aligned
     (806,1547,912,1581),   # old NORMAL for GEAR, redraw aligned
 ]:
-    yy,xx=np.ogrid[y1:y2,x1:x2]
-    mask[y1:y2,x1:x2]=np.where(bright[y1:y2,x1:x2],255,mask[y1:y2,x1:x2])
+    # Heal each previous side-label as one continuous rectangular patch.
+    # Pixel-threshold-only masking left conspicuous turquoise flecks.
+    mask[y1:y2,x1:x2]=255
 # Protect recess interiors, original screws, and relevant controls.
 for x1,y1,x2,y2 in [(681,1431,738,1550),(744,1431,813,1550),(820,1431,899,1550)]:
     mask[y1:y2,x1:x2]=0
 mask=cv2.dilate(mask,cv2.getStructuringElement(cv2.MORPH_ELLIPSE,(3,3)))
-arr=cv2.inpaint(arr,mask,3,cv2.INPAINT_TELEA)
+arr=cv2.inpaint(arr,mask,9,cv2.INPAINT_TELEA)
 photo=Image.fromarray(arr)
 draw=ImageDraw.Draw(photo)
 font_path="/usr/share/fonts/truetype/dejavu/DejaVuSansCondensed.ttf"
@@ -72,8 +73,11 @@ def center(text,x,y,font):
 # Label each guarded cavity in the original stencil-like capital typography.
 # Both rows are ABOVE rather than beside the switches.
 for title,cx in [('FLAP',709),('GEAR',779),('TERRAIN',857)]:
-    center(title,cx,1398,small)
-    center('INHIBIT',cx,1415,tiny)
+    # GEAR is near a pre-existing mounting screw: shift its caption slightly
+    # left, but never repaint or move the screw itself.
+    caption_x=cx-13 if title=='GEAR' else cx
+    center(title,caption_x,1391,small)
+    center('INHIBIT',caption_x,1405,tiny)
     center('NORMAL',cx,1571,normal)
 
 # Enforce unchanged RGB values outside the narrow GPWS change rectangle.
