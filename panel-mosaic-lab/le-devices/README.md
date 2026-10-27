@@ -29,3 +29,10 @@ Rebuilt blue-grey face and four screw locations from the Unified screenshot. 12 
 - Independent window count remains 32 (12 amber + 4 elongated flap green + 16 regular slat green).
 - The overlay is attached inside the actual UPPER photo-frame rather than appended as detached overlay in the atlas root, so registration tracks real upper plate.
 - The frozen overhead atlas HTML and all 18 red-zone guarded switches remain unmodified.
+
+## LEDEV-0005 — owner photo master (no decorative redraw)
+- The visible plate is the user's **actual 432×195 photographic reference**, encoded as `panel-photo-unlit-v5.webp`. All charcoal paint, font glyphs, screw heads, trims, shadows and recessed TEST cavity remain photographic and unchanged except image encoding.
+- Only the interior of the 2 lamp banks is made dark to avoid baking ON lamps into the artwork. The 32 individual SVG windows are subsequently drawn over those dark wells. Exactly one continuous 50.5px tall FLAP green window per FLAP is preserved.
+- Overlay remains inside the photo UPPER atlas item, registered to x=.001, y=.616, width=.220, height=.207 of the upper tile (upward fine tuning by 0.006 of tile height to conceal source legends). Does not change UPPER locked image, atlas or protected guarded switches.
+- The native TEST ring is painted only once in the photo; its hit target is transparent and spring-return.
+- Live screenshot still required to attest subpixel seam alignment.

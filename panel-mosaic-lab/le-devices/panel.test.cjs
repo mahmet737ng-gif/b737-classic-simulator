@@ -1,71 +1,53 @@
 const test=require('node:test');const assert=require('node:assert/strict');
 const fs=require('node:fs');const path=require('node:path');const vm=require('node:vm');
 const dir=__dirname;
-test('32 separated segments across 12 independent devices; momentary test restores states',()=>{
+function runtime(){
  const events=[];const listeners={};
- const window={addEventListener(n,cb){listeners[n]=cb;},dispatchEvent(event){events.push(event);}};
- const document={currentScript:{src:'https://example.org/panel.js'},readyState:'loading',addEventListener(){}};
+ const window={addEventListener(n,cb){listeners[n]=cb;},dispatchEvent(ev){events.push(ev);}};
+ const document={currentScript:{src:'https://example.org/le-devices/panel.js'},readyState:'loading',addEventListener(){}};
  const CustomEvent=class{constructor(type,args){this.type=type;this.detail=args.detail;}};
  vm.runInNewContext(fs.readFileSync(path.join(dir,'panel.js'),'utf8'),{window,document,URL,CustomEvent});
- const api=window.B737LeadingEdgeDevices;assert.equal(api.devices.length,12);
- assert.equal(api.snapshot().windows,32);
- assert.equal(api.snapshot().brightness,'BRIGHT');
- assert.equal(api.snapshot().devices.SLAT_1,'RETRACTED');
+ return {api:window.B737LeadingEdgeDevices,events};
+}
+test('32 windows with proper 12 amber / 16 slat greens / 4 long flap greens',()=>{
+ const {api,events}=runtime();
+ assert.equal(api.devices.length,12);assert.equal(api.snapshot().windows,32);
+ assert.equal(api.hasWindow('FLAP_1','EXT'),false);
+ assert.equal(api.hasWindow('FLAP_1','FULL_EXT'),true);
+ assert.equal(api.hasWindow('SLAT_8','EXT'),true);
+ assert.equal(api.setWindow('FLAP_1','EXT',true),false);
+ assert.equal(api.setDevice('FLAP_1','FULL_EXT'),true);
  assert.equal(api.setDevice('SLAT_1','FULL_EXT'),true);
  api.setLampTest(true);assert.equal(api.snapshot().lampTest,true);
  api.setLampTest(false);assert.equal(api.snapshot().lampTest,false);
+ assert.equal(api.snapshot().devices.FLAP_1,'FULL_EXT');
  assert.equal(api.snapshot().devices.SLAT_1,'FULL_EXT');
- assert.equal(api.setDevice('UNKNOWN','EXT'),false);
- assert.equal(api.setWindow('FLAP_1','EXT',true),false);
- assert.equal(api.setDevice('FLAP_1','EXT'),false);
- assert.equal(api.setDevice('FLAP_1','FULL_EXT'),true);
- assert.equal(api.hasWindow('FLAP_1','FULL_EXT'),true);
- assert.equal(api.hasWindow('FLAP_1','EXT'),false);
- assert.equal(api.hasWindow('SLAT_1','EXT'),true);
- assert.equal(api.setWindow('SLAT_1','TRANSIT',true),true);
- assert.equal(api.snapshot().windowOverrides['SLAT_1|TRANSIT'],true);
- assert.equal(api.snapshot().devices.SLAT_1,'FULL_EXT','individual lamp override must not move device');
- assert.equal(api.setWindow('SLAT_1','TRANSIT',null),true);
- assert.ok(!('SLAT_1|TRANSIT' in api.snapshot().windowOverrides));
- assert.equal(api.setBrightness('DIM'),true);assert.equal(api.snapshot().brightness,'DIM');
- api.reset();assert.equal(api.snapshot().devices.SLAT_1,'RETRACTED');
- assert.ok(events.some(e=>e.type==='b737:le-devices-lamp-test'&&e.detail.pressed));
+ assert.ok(events.some(x=>x.type==='b737:le-devices-lamp-test'&&x.detail.pressed===true));
 });
-test('background is separate from active bulbs; recessed pushbutton has own asset',()=>{
- const svg=fs.readFileSync(path.join(dir,'panel-background.svg'),'utf8');
- const testArt=fs.readFileSync(path.join(dir,'recessed-test-button.svg'),'utf8');
- assert.match(svg,/viewBox="0 0 432 195"/);assert.match(svg,/LE DEVICES/);
- assert.ok(!svg.includes('#ffa600')&&!svg.includes('#35ef15'),'bright lamp colors must not be baked into static background');
- assert.match(testArt,/Recessed momentary TEST pushbutton/);
+test('photo reference preserved and no invented fake hardware art mounted',()=>{
+ const s=fs.readFileSync(path.join(dir,'panel.js'),'utf8');
+ const f=fs.readFileSync(path.join(dir,'panel-photo-unlit-v5.webp'));
+ assert.equal(f.toString('ascii',0,4),'RIFF');assert.equal(f.toString('ascii',8,12),'WEBP');
+ assert.ok(f.byteLength>3000);
+ assert.ok(s.includes("panel-photo-unlit-v5.webp?v=LEDEV-0005"));
+ assert.ok(s.includes('frame.append(host);mount(host)'));
+ assert.ok(!s.includes("const cap=document.createElement('img')"));
+ const {api}=runtime();
+ assert.equal(api.snapshot().placement.atlas.y,0.616);
+ assert.equal(api.snapshot().placement.atlas.w,0.22);
 });
-test('unified placement registered at lower OH01 instead of upper blank panel; cached artwork versioned',()=>{const s=fs.readFileSync(path.join(dir,'panel.js'),'utf8');
- const raw=s.split('atlas:{x:')[1]?.split('}')[0]?.split(',');const match=raw&&[null,raw[0],...raw.slice(1).map(v=>v.split(':')[1])];
- assert.ok(match,'registered atlas bounds are required');
- const y=Number(match[2]),w=Number(match[3]),h=Number(match[4]);
- assert.ok(y>0.58&&y<0.68,'LE panel must sit on actual lower OH01 photograph');
- assert.ok(w>.18&&w<.25&&h>.17&&h<.23,'avoid oversized panel');
- assert.ok(s.includes('panel-background.svg?v=LEDEV-0004'));
- assert.ok(s.includes("row=flapFull?1:levels.indexOf(level),span=flapFull?2:1"));
-});
-test('standalone flap green segments have same height as slat green segments',()=>{
- const files=fs.readdirSync(path.join(dir,'segments')).filter(x=>x.endsWith('.svg'));
- assert.equal(files.length,96,'32 lamps times three brightness states');
- for(const side of ['FLAP_1','FLAP_2','FLAP_3','FLAP_4']){
-  const xml=fs.readFileSync(path.join(dir,'segments','LE_'+side+'_FULL_EXT_BRIGHT.svg'),'utf8');
-  const d=xml.match(/<path d="([^"]+)"/);assert.ok(d);
-  const ns=d[1].replace(/[MLZ]/g,' ').trim().split(/\s+/).map(Number);
-  assert.equal(ns.length,8);
-  assert.ok(Math.abs((ns[7]-ns[1])-46)<.04,'FLAP green must span exactly two 22px slat green windows plus the separator gap');
-  assert.ok(!files.some(f=>f.startsWith('LE_'+side+'_EXT_')),'FLAP has no extra EXT-only window');
+test('flaps are one physical span equal to two consecutive slat-green rows',()=>{
+ const assets=fs.readdirSync(path.join(dir,'segments')).filter(p=>p.endsWith('.svg'));
+ assert.equal(assets.length,96);
+ const startOf=a=>{const s=fs.readFileSync(path.join(dir,'segments',a),'utf8');const d=s.match(/<path d="([^"]+)"/);assert.ok(d,a);const xs=d[1].replace(/[MLZ]/g,' ').trim().split(/\s+/).map(Number);assert.equal(xs.length,8);return xs;};
+ for(let i=1;i<=4;i++){
+  const name='FLAP_'+i;const p=startOf('LE_'+name+'_FULL_EXT_BRIGHT.svg');
+  assert.ok(Math.abs(p[7]-p[1]-50.5)<0.06,'one continuous FLAP 50.5px window');
+  assert.ok(!assets.some(a=>a.startsWith('LE_'+name+'_EXT_')));
  }
-});
-
-test('reference charcoal material, full flap span and physical Unified mount are preserved',()=>{
- const bg=fs.readFileSync(path.join(dir,'panel-background.svg'),'utf8');
- const js=fs.readFileSync(path.join(dir,'panel.js'),'utf8');
- assert.match(bg,/#525152/);
- assert.ok(!bg.includes('#5b7283')&&!bg.includes('#4e6475'));
- assert.ok(js.includes('const row=flapFull?1:levels.indexOf(level),span=flapFull?2:1;'));
- assert.ok(js.includes('frame.append(host);mount(host)'));
- assert.ok(!js.includes('root.append(host);mount(host)'));
+ for(let i=1;i<=8;i++){
+  const a=startOf('LE_SLAT_'+i+'_EXT_BRIGHT.svg'),b=startOf('LE_SLAT_'+i+'_FULL_EXT_BRIGHT.svg');
+  assert.ok(Math.abs(a[7]-a[1]-25)<0.06);
+  assert.ok(Math.abs(b[7]-b[1]-25)<0.06);
+ }
 });

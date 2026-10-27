@@ -1,14 +1,14 @@
 {
   "schema": "b737.le-devices-front-end.v1",
-  "version": "LEDEV-0004",
+  "version": "LEDEV-0005",
   "scope": "front-end-only",
-  "source": "Owner supplied 432x195 charcoal-grey original LE DEVICES reference, 2026-10-28",
+  "source": "Owner-supplied 432×195 LE DEVICES photographic panel. Original non-lamp pixels preserved: font, screws, material, perimeter; only colored lamp interiors are darkened for independent SVG reillumination.",
   "sourceImageSize": [
     432,
     195
   ],
-  "background": "panel-background.svg",
-  "testButton": "recessed-test-button.svg",
+  "background": "panel-photo-unlit-v5.webp",
+  "testButton": "Original owner-photo recessed TEST socket (transparent momentary interactive hit target)",
   "windowCount": 32,
   "columns": 12,
   "states": [
@@ -447,6 +447,10 @@
     "unifiedLocation": "Measured approximate fit from owner overhead screenshot (OH01 lower segment). Atlas x=.001 y=.622 w=.220 h=.207; visual review still required.",
     "sourcePaint": "charcoal grey reference #525152 (not blue grey), 8 recessed screw heads and central legend layout",
     "flapLampHeight": "2 green SLAT cells (span=2), starting row 1",
-    "unifiedMount": "inside .atlas-piece[data-key=UPPER] to ensure correct overlay and retained viewport positioning"
+    "unifiedMount": "inside .atlas-piece[data-key=UPPER] to ensure correct overlay and retained viewport positioning",
+    "photographicBackground": "Exact supplied reference photo with only lamp banks darkened (webp q75); no synthetic typography, screws or material gradients",
+    "geometry": "Lamp bank polygons registered to original photo with 25.5px row stride, 25px slat green height, one 50.5px FLAP green segment",
+    "unifiedOverlay": "Inside locked UPPER photo frame, x=.001, y=.616, w=.220, h=.207; 0.006 UPPER-height upward correction for exposed source lettering; requires live visual signoff.",
+    "testButton": "Photo-native recessed button with invisible click target"
   }
 }

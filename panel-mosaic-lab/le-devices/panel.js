@@ -1,4 +1,4 @@
-/* LEDEV-0004 — independent 32-window, front-end-only B737 Classic annunciator.
+/* LEDEV-0005 — independent 32-window, front-end-only B737 Classic annunciator.
    Additive to UPPER atlas; never mutates locked OH01-06 source or guarded switches. */
 (function(){
  'use strict';
@@ -7,7 +7,7 @@
  const left=['SLAT_1','SLAT_2','SLAT_3','SLAT_4','FLAP_1','FLAP_2'];
  const right=['FLAP_3','FLAP_4','SLAT_5','SLAT_6','SLAT_7','SLAT_8'];
  const levels=['TRANSIT','EXT','FULL_EXT'];
- const colors={TRANSIT:'#fd9a07',EXT:'#44f01b',FULL_EXT:'#44f01b'};
+ const colors={TRANSIT:'#fc9b0a',EXT:'#44ef19',FULL_EXT:'#44ef19'};
  const activeLevels=id=>id.startsWith('FLAP_')?['TRANSIT','FULL_EXT']:levels;
  const hasWindow=(id,level)=>devices.includes(id)&&activeLevels(id).includes(level);
  const lampCount=32;
@@ -16,7 +16,7 @@
  const overrides=new Map();
  const instances=new Set();
  let lampTest=false,brightness='BRIGHT';
- const metrics={source:{width:432,height:195},atlas:{x:.001,y:.622,w:.220,h:.207},lampCount};
+ const metrics={source:{width:432,height:195},atlas:{x:.001,y:.616,w:.220,h:.207},lampCount};
  const isValid=(id,state)=>devices.includes(id)&&['RETRACTED',...activeLevels(id)].includes(state);
  function emit(type,detail){window.dispatchEvent(new CustomEvent(type,{detail}));}
  function recolor(){
@@ -25,7 +25,7 @@
    for(const [key,el] of instance.lamps){
     const [id,level]=key.split('|'),on=test||(overrides.has(key)?overrides.get(key):states.get(id)===level);
     el.dataset.lit=String(on);
-    el.setAttribute('fill',on?colors[level]:(level==='TRANSIT'?'#332d19':'#243326'));
+    el.setAttribute('fill',on?colors[level]:'transparent');
     el.style.opacity='1';
     el.setAttribute('fill-opacity',on?(brightness==='BRIGHT'?'1':'.52'):'1');
    }
@@ -50,10 +50,10 @@
  function makeSvg(name,attrs){const n=document.createElementNS(ns,name);for(const [k,v] of Object.entries(attrs||{}))n.setAttribute(k,String(v));return n;}
  function coords(side,i,row,span=1){
   const x=side==='left'?[47,69,92,115,138,161,184]:[250,273,296,319,342,365,388];
-  const x0=x[i]+1.1,x1=x[i+1]-1.1;
+  const x0=x[i]+0.8,x1=x[i+1]-0.8;
   const top=x=>side==='left'?23+(x-47)*.346:70.8-(x-250)*.346;
-  const a=top(x0)+row*24+1.2,b=top(x1)+row*24+1.2;
-  return 'M'+x0.toFixed(2)+' '+a.toFixed(2)+' L'+x1.toFixed(2)+' '+b.toFixed(2)+' L'+x1.toFixed(2)+' '+(b+22+(span-1)*24).toFixed(2)+' L'+x0.toFixed(2)+' '+(a+22+(span-1)*24).toFixed(2)+' Z';
+  const a=top(x0)+row*25.5+0.6,b=top(x1)+row*25.5+0.6;
+  return 'M'+x0.toFixed(2)+' '+a.toFixed(2)+' L'+x1.toFixed(2)+' '+b.toFixed(2)+' L'+x1.toFixed(2)+' '+(b+25+(span-1)*25.5).toFixed(2)+' L'+x0.toFixed(2)+' '+(a+25+(span-1)*25.5).toFixed(2)+' Z';
  }
  function mount(host){
   if(host.dataset.b737LeMounted==='1')return;
@@ -62,14 +62,14 @@
   host.setAttribute('role','group');
   host.setAttribute('aria-label','LE DEVICES — leading edge flaps and slats indicator');
   host.dir='ltr';
-  const art=document.createElement('img');art.className='b737-le-devices__background';art.src=new URL('panel-background.svg?v=LEDEV-0004',assetBase).href;art.alt='';art.draggable=false;
+  const art=document.createElement('img');art.className='b737-le-devices__background';art.src=new URL('panel-photo-unlit-v5.webp?v=LEDEV-0005',assetBase).href;art.alt='';art.draggable=false;
   const lights=makeSvg('svg',{viewBox:'0 0 432 195',class:'b737-le-devices__lamps','aria-label':'12 leading-edge devices, 32 independent light segments'});
   const lamps=new Map();
   for(const [side,ids] of [['left',left],['right',right]]){
    ids.forEach((id,index)=>activeLevels(id).forEach(level=>{
     const flapFull=id.startsWith('FLAP_')&&level==='FULL_EXT';
     const row=flapFull?1:levels.indexOf(level),span=flapFull?2:1;
-    const path=makeSvg('path',{id:'LE_'+id+'_'+level,d:coords(side,index,row,span),stroke:'#fafafa','stroke-width':'2.1','stroke-linejoin':'round','data-device':id,'data-level':level,'role':'button','tabindex':'0','aria-label':id.replace('_',' ')+' '+level});
+    const path=makeSvg('path',{id:'LE_'+id+'_'+level,d:coords(side,index,row,span),stroke:'#fafafa','stroke-width':'1.9','stroke-linejoin':'round','data-device':id,'data-level':level,'role':'button','tabindex':'0','aria-label':id.replace('_',' ')+' '+level});
     const title=makeSvg('title');title.textContent=id.replace('_',' ')+' — '+level+' (select demo state)';path.append(title);
     const toggle=event=>{event.stopPropagation();const key=id+'|'+level;const lit=overrides.has(key)?overrides.get(key):states.get(id)===level;setWindow(id,level,!lit);};
     path.addEventListener('click',toggle);
@@ -78,7 +78,8 @@
    }));
   }
   const test=document.createElement('button');test.className='b737-le-devices__test';test.type='button';test.setAttribute('aria-label','LE DEVICES TEST momentary recessed pushbutton');test.title='Press and hold to illuminate all 32 windows';
-  const cap=document.createElement('img');cap.src=new URL('recessed-test-button.svg?v=LEDEV-0004',assetBase).href;cap.alt='';cap.draggable=false;test.append(cap);
+  // TEST hardware appearance comes directly from the untouched photographic reference background.
+  // The transparent momentary hit target prevents double-rendering its ring.
   test.addEventListener('pointerdown',e=>{if(e.button!==0&&e.pointerType==='mouse')return;e.stopPropagation();e.preventDefault();try{test.setPointerCapture(e.pointerId);}catch(_){}setLampTest(true);});
   for(const name of ['pointerup','pointercancel','lostpointercapture'])test.addEventListener(name,e=>{e.stopPropagation();setLampTest(false);});
   test.addEventListener('keydown',e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();if(!e.repeat)setLampTest(true);}});
