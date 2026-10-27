@@ -1,15 +1,19 @@
-/* IRS-ISDU-KEYCAPS-0003 / exclusively additive unfrozen OH02 parent overlay.
-   No rectangular source cutout: each owner-photo key is independent.
-   3x4 source sprite contains 12 crops, each visible through its own button. */
+/* IRS-ISDU-BEZEL-FIX-0004 — source-pixel measured, unfrozen OH02 overlay only.
+   Twelve independent keys. Original OH01-25 frozen artwork is never edited. */
 #region-overhead .irs-photo-keypad{position:absolute;inset:0;z-index:122;pointer-events:none;direction:ltr}
-#region-overhead .irs-photo-key{position:absolute;display:block;box-sizing:border-box;appearance:none;border:0!important;border-radius:0!important;margin:0!important;padding:0!important;outline:0;background:transparent!important;box-shadow:none!important;overflow:visible;pointer-events:auto;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
-#region-overhead .irs-photo-key-face{position:absolute;inset:0;display:block;background-image:url("./assets/irs-owner-keycaps-v3.avif");background-repeat:no-repeat;background-size:300% 400%;transform:translateY(0);transition:transform 65ms ease-out,filter 65ms ease-out;filter:none;pointer-events:none;user-select:none}
-#region-overhead .irs-photo-key:is(:active,.is-depressed) .irs-photo-key-face{transform:translateY(1.5px) scale(.97);filter:brightness(.79)}
-#region-overhead .irs-photo-key:focus-visible{outline:2px solid #8fd5f4!important;outline-offset:1px}
-#region-overhead .irs-photo-key-fallback{position:absolute;inset:3px;display:none;place-items:center;font:bold 11px/1.05 Arial,sans-serif;white-space:pre-wrap;color:#f9f3dc;background:#171717;border:2px solid #666;text-align:center;pointer-events:none}
-#region-overhead .irs-photo-keypad[data-art=fallback] .irs-photo-key-face{display:none}
+#region-overhead .irs-photo-key{position:absolute;display:block;box-sizing:border-box;margin:0;padding:0;border:0;background:transparent;overflow:visible;pointer-events:none;isolation:isolate}
+#region-overhead .irs-photo-key-bezel,#region-overhead .irs-photo-key-cap{position:absolute;inset:0;display:block;pointer-events:none;user-select:none;background-image:url('./assets/irs-owner-keycaps-v3.avif');background-repeat:no-repeat;background-size:300% 400%;transform-origin:50% 50%;backface-visibility:hidden}
+/* The source-photo metal frame, including all corners, is immovable. */
+#region-overhead .irs-photo-key-bezel{z-index:1;mask-image:url('./assets/irs-key-fixed-metal-mask-v4.svg');-webkit-mask-image:url('./assets/irs-key-fixed-metal-mask-v4.svg');mask-mode:alpha;mask-size:100% 100%;-webkit-mask-size:100% 100%;mask-repeat:no-repeat;-webkit-mask-repeat:no-repeat;transform:none!important;transition:none!important;filter:none!important}
+/* The central black cap is the ONLY movable visual material. */
+#region-overhead .irs-photo-key-cap{z-index:2;mask-image:url('./assets/irs-key-black-cap-mask-v4.svg');-webkit-mask-image:url('./assets/irs-key-black-cap-mask-v4.svg');mask-mode:alpha;mask-size:100% 100%;-webkit-mask-size:100% 100%;mask-repeat:no-repeat;-webkit-mask-repeat:no-repeat;transform:translate3d(0,0,0);transition:transform 80ms ease-out,filter 80ms ease-out;filter:none}
+#region-overhead .irs-photo-key.is-depressed .irs-photo-key-cap{transform:translate3d(0,1.65px,0) scale(.975);filter:brightness(.79)}
+/* Only the center black cap can be clicked. The bezel is not a hit target. */
+#region-overhead .irs-photo-key-press{position:absolute;z-index:3;top:17%;bottom:17%;left:18%;right:18%;width:auto;height:auto;display:block;appearance:none;padding:0!important;margin:0!important;border:0!important;border-radius:10%!important;outline:0;background:transparent!important;box-shadow:none!important;pointer-events:auto;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+#region-overhead .irs-photo-key-press:focus-visible{outline:2px solid #8fd5f4!important;outline-offset:0}
+#region-overhead .irs-photo-key-fallback{position:absolute;inset:3px;z-index:4;display:none;place-items:center;font:bold 11px/1.05 Arial,sans-serif;white-space:pre-wrap;color:#f9f3dc;background:#171717;border:2px solid #666;text-align:center;pointer-events:none}
+#region-overhead .irs-photo-keypad[data-art=fallback] .irs-photo-key-bezel,#region-overhead .irs-photo-keypad[data-art=fallback] .irs-photo-key-cap{display:none}
 #region-overhead .irs-photo-keypad[data-art=fallback] .irs-photo-key-fallback{display:grid}
-.pan-mode #region-overhead .irs-photo-keypad,.pan-mode #region-overhead .irs-photo-key{pointer-events:none}
+.pan-mode #region-overhead .irs-photo-keypad,.pan-mode #region-overhead .irs-photo-key-press{pointer-events:none}
 .reference-mode #region-overhead .irs-photo-keypad{display:none}
-/* Retire the old line-drawing modal trigger. It must no longer compete with the mounted keypad. */
 #irsIsduOpen{display:none!important}
