@@ -1,13 +1,15 @@
-/* Source-keypad addon sits on the OUTSIDE of the frozen overhead iframe. */
-#region-overhead .irs-panel-keypad{position:absolute;box-sizing:border-box;z-index:122;pointer-events:auto;isolation:isolate;overflow:hidden;border:1px solid #39444d;background:#d9dcdd;box-shadow:0 2px 4px #0009;cursor:default;touch-action:manipulation}
-#region-overhead .irs-panel-source-art{position:absolute;inset:0;overflow:hidden;background:#dfe0df;pointer-events:none}
-#region-overhead .irs-panel-source-art img{position:absolute;display:block;left:-3.4%;top:-5.6%;width:111%;height:107.8%;max-width:none;object-fit:fill;pointer-events:none;user-select:none}
-#region-overhead .irs-panel-key-grid{position:absolute;inset:7.0% 4% 1.4%;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(4,minmax(0,1fr));gap:1.8%;pointer-events:auto}
-#region-overhead .irs-panel-key{appearance:none;min-width:0;min-height:0;padding:0!important;margin:0!important;border:0!important;border-radius:0!important;outline:0;background:transparent!important;color:transparent!important;font:bold 25px/1 monospace!important;box-shadow:none!important;letter-spacing:0;cursor:pointer;pointer-events:auto;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
-#region-overhead .irs-panel-key:active,#region-overhead .irs-panel-key.isdu-pressed{outline:2px solid #427fbd!important;outline-offset:-2px;background:#4cb2e74a!important}
-#region-overhead .irs-panel-key:focus-visible{outline:3px solid #0075c9!important;outline-offset:-3px}
-#region-overhead .irs-panel-keypad[data-art=fallback] .irs-panel-key{background:linear-gradient(135deg,#e5e6e6,#9aa4aa)!important;color:#161e24!important;outline:1px solid #303b43}
-.pan-mode #region-overhead .irs-panel-keypad{pointer-events:none}
-.pan-mode #region-overhead .irs-panel-key-grid{pointer-events:none}
-.pan-mode #region-overhead .irs-panel-key{pointer-events:none}
-.reference-mode #region-overhead .irs-panel-keypad{display:none}
+/* IRS-ISDU-KEYCAPS-0003 / exclusively additive unfrozen OH02 parent overlay.
+   No rectangular source cutout: each owner-photo key is independent.
+   3x4 source sprite contains 12 crops, each visible through its own button. */
+#region-overhead .irs-photo-keypad{position:absolute;inset:0;z-index:122;pointer-events:none;direction:ltr}
+#region-overhead .irs-photo-key{position:absolute;display:block;box-sizing:border-box;appearance:none;border:0!important;border-radius:0!important;margin:0!important;padding:0!important;outline:0;background:transparent!important;box-shadow:none!important;overflow:visible;pointer-events:auto;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+#region-overhead .irs-photo-key-face{position:absolute;inset:0;display:block;background-image:url("./assets/irs-owner-keycaps-v3.avif");background-repeat:no-repeat;background-size:300% 400%;transform:translateY(0);transition:transform 65ms ease-out,filter 65ms ease-out;filter:none;pointer-events:none;user-select:none}
+#region-overhead .irs-photo-key:is(:active,.is-depressed) .irs-photo-key-face{transform:translateY(1.5px) scale(.97);filter:brightness(.79)}
+#region-overhead .irs-photo-key:focus-visible{outline:2px solid #8fd5f4!important;outline-offset:1px}
+#region-overhead .irs-photo-key-fallback{position:absolute;inset:3px;display:none;place-items:center;font:bold 11px/1.05 Arial,sans-serif;white-space:pre-wrap;color:#f9f3dc;background:#171717;border:2px solid #666;text-align:center;pointer-events:none}
+#region-overhead .irs-photo-keypad[data-art=fallback] .irs-photo-key-face{display:none}
+#region-overhead .irs-photo-keypad[data-art=fallback] .irs-photo-key-fallback{display:grid}
+.pan-mode #region-overhead .irs-photo-keypad,.pan-mode #region-overhead .irs-photo-key{pointer-events:none}
+.reference-mode #region-overhead .irs-photo-keypad{display:none}
+/* Retire the old line-drawing modal trigger. It must no longer compete with the mounted keypad. */
+#irsIsduOpen{display:none!important}

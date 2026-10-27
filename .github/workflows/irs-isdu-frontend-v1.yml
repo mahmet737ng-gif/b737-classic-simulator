@@ -11,6 +11,7 @@ on:
       - 'panel-mosaic-lab/cockpit/irs-isdu-onpanel-v2.css'
       - 'panel-mosaic-lab/cockpit/irs-isdu-onpanel-v2.test.cjs'
       - 'panel-mosaic-lab/cockpit/assets/irs-honeywell-fcom-keypad.avif'
+      - 'panel-mosaic-lab/cockpit/assets/irs-owner-keycaps-v3.avif'
       - '.github/workflows/irs-isdu-frontend-v1.yml'
   workflow_dispatch:
 permissions:

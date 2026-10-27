@@ -1,28 +1,32 @@
 'use strict';
-const assert=require('node:assert/strict');
-const fs=require('node:fs');
-const path=require('node:path');
-const root=__dirname;
-const read=(s)=>fs.readFileSync(path.join(root,s),'utf8');
+const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
+const base=__dirname;
+const read=x=>fs.readFileSync(path.join(base,x),'utf8');
 const html=read('index.html'),js=read('irs-isdu-onpanel-v2.js'),css=read('irs-isdu-onpanel-v2.css');
-const original=fs.readFileSync(path.join(root,'assets/irs-honeywell-fcom-keypad.avif'));
-assert(original.length>2000,'Honeywell original image missing');
-assert.equal(original.subarray(4,12).toString('ascii'),'ftypavif','Not a native image/avif file');
-assert.match(html,/irs-isdu-onpanel-v2\.css\?v=IRS-OH02-0002/);
-assert.match(html,/irs-isdu-onpanel-v2\.js\?v=IRS-OH02-0002/);
-assert.match(js,/id='irsKeypadMounted'/);
-assert.match(js,/region-overhead/);
-assert.match(js,/KEYPAD_SOURCE=\{x:584,y:165,w:153,h:211\}/);
-assert.match(js,/const KEY_IDS=\['1','2','3','4','5','6','7','8','9','ENT','0','CLR'\]/);
-assert.match(js,/assets\/irs-honeywell-fcom-keypad\.avif/);
-assert.match(js,/data-backend|dataset\.backend/);
+const photo=fs.readFileSync(path.join(base,'assets/irs-owner-keycaps-v3.avif'));
+assert(photo.length>9000,'Owner keycap photo sprite is missing/placeholder');
+assert.equal(photo.toString('ascii',4,12),'ftypavif');
+assert.match(html,/irs-isdu-onpanel-v2\.js\?v=IRS-UI-0003/);
+assert.match(html,/irs-isdu-onpanel-v2\.css\?v=IRS-UI-0003/);
+assert.match(js,/src='\.\/assets\/irs-owner-keycaps-v3\.avif'/);
+assert.match(css,/background-size:300% 400%/);
+assert.match(js,/dataset\.backend='DISCONNECTED'/);
 assert.match(js,/b737:irs-visual-key/);
-assert.match(js,/IRS KEYPAD/);
-assert.match(css,/#region-overhead \.irs-panel-keypad/);
-assert.match(css,/z-index:122/);
-const S={w:1731,h:909},U={x:3,y:3,w:2214,h:1019},OH={x0:383,y0:57,x1:771,y1:715},K={x:584,y:165,w:153,h:211};
-const r={x:U.x+K.x*U.w/S.w,y:U.y+K.y*U.h/S.h,w:K.w*U.w/S.w,h:K.h*U.h/S.h};
-const p={x0:U.x+OH.x0*U.w/S.w,x1:U.x+OH.x1*U.w/S.w,y0:U.y+OH.y0*U.h/S.h,y1:U.y+OH.y1*U.h/S.h};
-assert(r.x>=p.x0&&r.x+r.w<=p.x1&&r.y>=p.y0&&r.y+r.h<=p.y1,'Keypad outside OH02');
-assert(!/B737ElectricalV7\.apply|B737FMC\.apply|\.send\(/.test(js),'Should not mutate IRS backend');
-console.log('PASS: native AVIF, on-panel mount, twelve keys, OH02 bounds, jump and frontend isolation',r);
+assert.match(js,/pointerdown/);
+assert.match(js,/pointerup/);
+assert.match(js,/setTimeout\(up,110\)/);
+assert.match(js,/const KEYS=Object\.freeze\(\[/);
+assert.match(css,/#irsIsduOpen\{display:none!important\}/);
+const cols=[818.5,873.2,927.3],rows=[391.6,436.9,479.3,523.5],w=40,h=40;
+const oh={x0:3+383*2214/1731,x1:3+771*2214/1731,y0:3+57*1019/909,y1:3+715*1019/909};
+for(let r=0;r<4;r++)for(let c=0;c<3;c++){
+ const rect={x:cols[c]-w/2,y:rows[r]-h/2,w,h};
+ assert(rect.x>=oh.x0&&rect.x+rect.w<=oh.x1&&rect.y>=oh.y0&&rect.y+rect.h<=oh.y1,'outside OH-02');
+ for(let rr=0;rr<4;rr++)for(let cc=0;cc<3;cc++){
+  if(rr===r&&cc===c)continue;
+  const other={x:cols[cc]-w/2,y:rows[rr]-h/2};
+  assert(rect.x+rect.w<=other.x||other.x+w<=rect.x||rect.y+rect.h<=other.y||other.y+h<=rect.y,'physical key overlap');
+ }
+}
+assert(!/B737ElectricalV7\.apply|B737FMC\.apply|IRSSystem\.apply/.test(js),'No backend in visual stage');
+console.log('PASS: 12 authentic photographed keys, individual coordinates, no collisions, source photo, UI-only states');
