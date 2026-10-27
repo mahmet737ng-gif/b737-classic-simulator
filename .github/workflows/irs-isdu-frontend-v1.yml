@@ -16,6 +16,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Lint IRS frontend
         run: node --check panel-mosaic-lab/cockpit/irs-isdu-frontend-v1.js
       - name: Verify actual Honeywell keypad source and browser mount
