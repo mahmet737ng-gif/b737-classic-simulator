@@ -13,7 +13,8 @@
 #region-overhead .irs-photo-key .irs-cue-lens[data-side="right"]{left:62.4%}
 #region-overhead .irs-photo-key .irs-cue-lens[data-lit="true"]{opacity:1;visibility:visible}
 #region-overhead .irs-photo-key:is(:active,.is-depressed) .irs-cue-lens[data-lit="true"]{
- transform:translate(-50%,-50%) translateY(1.5px) scale(.97);
+ /* Lens already moves with its parent black cap; never move it twice. */
+ transform:translate(-50%,-50%);
  filter:brightness(.84) drop-shadow(0 0 1px #fff);
 }
 #irsCueTestOpen{white-space:nowrap}
