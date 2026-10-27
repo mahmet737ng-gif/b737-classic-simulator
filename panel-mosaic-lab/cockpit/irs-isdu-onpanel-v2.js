@@ -1,10 +1,11 @@
-/* IRS ISDU owner-photo keypad v3 — frontend only.
+/* IRS ISDU owner-photo keypad v4 — source-measured stationary bezel, moving black cap.
  * Photo: user-supplied "Aviation Keypad Panel Close-Up.png".
  * 12 independently clickable source-image keys, each cropped from the photo.
  * Placement: OH-02 in Unified's unfrozen parent overlay. NEVER alter frozen
  * UPD-0012 overhead mosaic, its pixel geometry, or owner18 guarded switches.
- * Key centers registered to user Unified screenshot at zoom 179%.
- * A screenshot measurement is a draft fit until live pixel inspection.
+ * Physical key centers measured from immutable OH01-06 ORIGINAL 1731 × 909 RGBA source;
+ * exact source-to-atlas mapping: nativeX=3+sourceX*2214/1731;
+ * nativeY=3+sourceY*1019/909. The original background and owner18 locks are untouched.
  */
 (function(root){
   'use strict';
@@ -15,12 +16,29 @@
     ['ENT','ENT',0,3],['0','0',1,3],['CLR','CLR',2,3]
   ]);
   // Native atlas units; distinct mechanical centers for all twelve keys.
-  const COL_CENTERS=Object.freeze([818.5,873.2,927.3]);
-  const ROW_CENTERS=Object.freeze([391.6,436.9,479.3,523.5]);
-  const KEY_W=40.0, KEY_H=40.0;
+  // Dark-well bounding boxes were pixel-segmented on the actual locked source:
+  // cols (source px) centers [638,678.5,720], row centers [343.5,383.5,425,465.5].
+  // Physical source dark wells: x=622..654 / 663..694 / 704..736;
+  // y=327..360 / 368..400 / 409..441 / 449..481.
+  // Each larger metal bezel masks its ORIGINAL background well and old metallic perimeter.
+  const SOURCE_COLS=Object.freeze([638.0,678.5,720.0]);
+  const SOURCE_ROWS=Object.freeze([343.5,383.5,425.0,465.5]);
+  const sourceToNativeX=x=>3+x*2214/1731;
+  const sourceToNativeY=y=>3+y*1019/909;
+  const COL_CENTERS=Object.freeze(SOURCE_COLS.map(sourceToNativeX));
+  const ROW_CENTERS=Object.freeze(SOURCE_ROWS.map(sourceToNativeY));
+  const KEY_W=50.4, KEY_H=44.7;
   const SRC='./assets/irs-owner-keycaps-v3.avif';
-  const SCREENSHOT={zoom:1.79,centersPxX:[799,897,992],centersPxY:[643,723,799,879]};
-  const settings=Object.freeze({version:'IRS-ISDU-KEYCAPS-0003',sourcePhoto:'Aviation Keypad Panel Close-Up.png',atlasSource:'OH-02',columns:COL_CENTERS,rows:ROW_CENTERS,keyWidth:KEY_W,keyHeight:KEY_H,screenshotCalibration:SCREENSHOT,verification:'screenshot-registered; live physical fit not yet owner-approved'});
+  const settings=Object.freeze({version:'IRS-ISDU-BEZEL-FIX-0004',
+    sourcePhoto:'Aviation Keypad Panel Close-Up.png',
+    referencePhoto:'OH01-06-original-9d8ac0ac86bd.png',
+    referencePhotoSha256:'9d8ac0ac86bdb92c040e9bdd97811ca381535d949bff94aa5b1a01e5eba733',
+    atlasSource:'OH-02',
+    sourceColumns:SOURCE_COLS,sourceRows:SOURCE_ROWS,
+    columns:COL_CENTERS,rows:ROW_CENTERS,keyWidth:KEY_W,keyHeight:KEY_H,
+    mechanicalBoundary:'photo metal bezel remains fixed; only black cap moves',
+    acceptance:'source-pixel-registered, browser screenshot visual QA recommended'
+  });
   let station=null,last=null;
   function keyRect(col,row){
     return {left:COL_CENTERS[col]-KEY_W/2,top:ROW_CENTERS[row]-KEY_H/2,width:KEY_W,height:KEY_H};
@@ -29,12 +47,12 @@
     const region=document.getElementById('region-overhead');
     if(!region)return null;
     let old=region.querySelector('#irsKeypadMounted');
-    if(old && old.dataset.version==='IRS-ISDU-KEYCAPS-0003'){station=old;return old;}
+    if(old && old.dataset.version==='IRS-ISDU-BEZEL-FIX-0004'){station=old;return old;}
     if(old)old.remove();
     station=document.createElement('div');
     station.id='irsKeypadMounted';
     station.className='irs-photo-keypad';
-    station.dataset.version='IRS-ISDU-KEYCAPS-0003';
+    station.dataset.version='IRS-ISDU-BEZEL-FIX-0004';
     station.dataset.mount='OH-02-UNIFIED';
     station.dataset.backend='DISCONNECTED';
     station.setAttribute('role','group');
@@ -45,36 +63,47 @@
     photo.onerror=()=>{if(station?.isConnected)station.dataset.art='fallback';};
     photo.src=SRC;
     for(const [id,legend,col,row] of KEYS){
-      const key=document.createElement('button');
-      const face=document.createElement('span');
+      const key=document.createElement('div');
+      const bezel=document.createElement('span');
+      const blackCap=document.createElement('span');
+      const press=document.createElement('button');
       const p=keyRect(col,row);
       Object.assign(key.style,{left:p.left+'px',top:p.top+'px',width:p.width+'px',height:p.height+'px'});
       key.className='irs-photo-key';
-      key.type='button';
       key.dataset.isduKey=id;
       key.dataset.col=String(col);
       key.dataset.row=String(row);
-      key.setAttribute('aria-label','IRS '+legend);
-      key.setAttribute('title','IRS '+legend);
-      key.setAttribute('aria-pressed','false');
-      face.className='irs-photo-key-face';
-      face.style.backgroundPosition=(col*50)+'% '+(row*(100/3))+'%';
-      face.setAttribute('aria-hidden','true');
+      // Both full-resolution source layers use the ORIGINAL sprite:
+      // a non-moving metal shell and a movable central black-button crop.
+      // At rest their opaque/transparent masks reconstruct the exact source pixels.
+      bezel.className='irs-photo-key-bezel';
+      blackCap.className='irs-photo-key-cap';
+      const spritePosition=(col*50)+'% '+(row*(100/3))+'%';
+      bezel.style.backgroundPosition=spritePosition;
+      blackCap.style.backgroundPosition=spritePosition;
+      bezel.setAttribute('aria-hidden','true');
+      blackCap.setAttribute('aria-hidden','true');
+      // ONLY the black inner cap is interactive. The surrounding bezel has no hit target.
+      press.className='irs-photo-key-press';
+      press.type='button';
+      press.setAttribute('aria-label','IRS '+legend);
+      press.setAttribute('title','IRS '+legend);
+      press.setAttribute('aria-pressed','false');
       const fallback=document.createElement('span');
       fallback.className='irs-photo-key-fallback';
       fallback.textContent=legend;
       fallback.setAttribute('aria-hidden','true');
-      key.append(face,fallback);
+      key.append(bezel,blackCap,press,fallback);
       const up=()=>{
         key.classList.remove('is-depressed');
-        key.setAttribute('aria-pressed','false');
+        press.setAttribute('aria-pressed','false');
       };
-      key.addEventListener('pointerdown',()=>key.classList.add('is-depressed'));
-      key.addEventListener('pointerup',up);
-      key.addEventListener('pointercancel',up);
-      key.addEventListener('pointerleave',up);
-      key.addEventListener('blur',up);
-      key.addEventListener('click',event=>{
+      press.addEventListener('pointerdown',()=>key.classList.add('is-depressed'));
+      press.addEventListener('pointerup',up);
+      press.addEventListener('pointercancel',up);
+      press.addEventListener('pointerleave',up);
+      press.addEventListener('blur',up);
+      press.addEventListener('click',event=>{
         event.stopPropagation();
         last=id;
         station.dataset.lastKey=id;
