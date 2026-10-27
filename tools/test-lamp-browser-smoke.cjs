@@ -38,7 +38,11 @@ const {chromium}=require('playwright');
    const img=target.locator('img').first();
    await img.waitFor({state:'attached',timeout:10000});
    const src=await img.getAttribute('src');
-   assert.ok(src&&src.includes(kind==='main'?'/assets/lights/main-type-v1/':'/assets/lights/instance-fit-v1/'),kind+' expected per-lamp fitted typography '+id+' '+src);
+   assert.ok(src&&src.includes('/lights-reference-v2/svg/'),kind+' expected installed reference-style v2 lamp '+id+' '+src);
+   const installed=await page.evaluate(()=>window.B737LampAppearance?.status());
+   assert.equal(installed?.mode,'BRIGHT',kind+' default global brightness');
+   assert.equal(installed?.ready,true,kind+' shared lamp library failed to load');
+   assert.equal(installed?.masters,87,kind+' missing shared lamp design');
    const good=await page.evaluate(async url=>{
     const image=new Image();image.src=url;
     try{await image.decode();return {loaded:true,w:image.naturalWidth,h:image.naturalHeight}}
