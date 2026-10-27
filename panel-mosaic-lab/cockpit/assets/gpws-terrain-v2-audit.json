@@ -1,14 +1,14 @@
 {
   "sourceSha256": "171bf9e8d21347e7a522ebc86b19cfe0b967f0503d26c483d8f3d685f719576a",
-  "derivativeSha256": "2693598113d8929743db9978ba77ff55f49945b87d9481658e2140464d0c0a38",
+  "derivativeSha256": "f7c3b3406b533ec606332666781a25f158fd69eb4b5b11a3b405a2ddaa5ee830",
   "sourceSize": [
     918,
     1713
   ],
-  "generatedPixelsChanged": 21873,
+  "generatedPixelsChanged": 21784,
   "changeRectNativePx": [
     600,
-    1388,
+    1382,
     918,
     1595
   ],
@@ -22,22 +22,46 @@
   "fonts": "DejaVuSansCondensed 10px from system font; original photo backdrop unchanged outside GPWS region",
   "captionBoundsNativePx": [
     [
-      680,
-      1390,
-      739,
-      1398
+      [
+        696,
+        1386,
+        723,
+        1395
+      ],
+      [
+        696,
+        1395,
+        723,
+        1401
+      ]
     ],
     [
-      748,
-      1390,
-      810,
-      1399
+      [
+        764,
+        1386,
+        795,
+        1396
+      ],
+      [
+        766,
+        1395,
+        793,
+        1401
+      ]
     ],
     [
-      819,
-      1390,
-      895,
-      1398
+      [
+        833,
+        1386,
+        881,
+        1395
+      ],
+      [
+        844,
+        1395,
+        871,
+        1401
+      ]
     ]
   ],
   "captionText": [
@@ -45,5 +69,5 @@
     "GEAR INHIBIT",
     "TERRAIN INHIBIT"
   ],
-  "captionLayout": "ONE_ROW_CENTERED_ABOVE_SOCKETS_CLEAR_OF_MOUNTING_SCREWS"
+  "captionLayout": "TWO_ROWS_COMPACT_CENTERED_ABOVE_SOCKETS_CLEAR_OF_MOUNTING_SCREWS"
 }
