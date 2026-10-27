@@ -1,6 +1,6 @@
 {
   "schema": "b737-classic/guard-placement-audit/v2",
-  "version": "2026-10-27-guard-18-locations",
+  "version": "2026-10-27-guard-18-locations-gpws-triple-socket",
   "scope": "MEASUREMENT-AND-REVIEW-ONLY_NOT_LIVE_INSTALLATION",
   "declaredByOwner": {
     "mainGuards": 17,
@@ -32,7 +32,8 @@
     "savedOwnerQuiz": "11 top, 3 left, 3 bottom from 2026-10-26; latest message says 11 top, 3 left, 3 right",
     "newRightAssignments": "Temporarily mapping prior 3 bottom cases (alternate-flaps-master, passenger-oxygen, antiskid) to right hinges. Owner has confirmed totals but not explicitly re-identified the three individual right hinges in this message.",
     "savedColorDistribution": "Previous registered graphics have four red items (alternate-flaps-master, both generator disconnects, passenger-oxygen). Latest message says three red.",
-    "newBlackAssignment": "Passenger oxygen provisionally black, so exactly 3 red across 17; requires owner visual confirmation."
+    "newBlackAssignment": "Passenger oxygen provisionally black, so exactly 3 red across 17; requires owner visual confirmation.",
+    "latestGPWSTerrainUpdate": "New third background cavity to RIGHT of GEAR; label TERRAIN INHIBIT above it; original panel locked and untouched"
   },
   "physicalDimensionsMillimeters": "UNKNOWN_DO_NOT_FABRICATE",
   "pixelPrecision": "AUDIT_ESTIMATE_ONLY_UNLESS_EXPLICITLY_CALIBRATED; USER_APPROVAL_REQUIRED",
@@ -108,6 +109,17 @@
       ],
       "image": "./performance/7a41044771faad1d59f5-q96-768.webp",
       "scope": "pedestal"
+    },
+    "FO_INNER_BACKGROUND": {
+      "label": "FO INNER — GPWS INHIBIT 3-SOCKET BACKGROUND",
+      "natural": [
+        918,
+        1713
+      ],
+      "image": "./assets/gpws-terrain-qa-preview.webp",
+      "fullAsset": "./assets/B737_Right_Main_Instruments_GPWS_TERRAIN_V2.png",
+      "scope": "main-live-derived-photo",
+      "pixelNote": "source native rectangles given in 918x1713; this small QA preview is cropped and should not be used directly for native panel position mapping"
     }
   },
   "records": [
@@ -561,12 +573,12 @@
     {
       "id": "gpws-flap-inhibit",
       "label": "GPWS FLAP INHIBIT",
-      "panel": "MAIN_REFERENCE",
+      "panel": "FO_INNER_BACKGROUND",
       "rectPx": [
-        1455,
-        699,
-        58,
-        82
+        679,
+        1431,
+        61,
+        121
       ],
       "hinge": "top",
       "color": "black",
@@ -574,8 +586,8 @@
         "INHIBIT",
         "NORMAL"
       ],
-      "confidence": "reference-photo-only-estimated",
-      "source": "MAIN_REFERENCE",
+      "confidence": "source-original-existing-cavity-preview-estimate",
+      "source": "FO_INNER_BACKGROUND",
       "notes": "Ground proximity panel visible in full main instrument reference; location on current separately composed main layers not registered.",
       "mainReferenceRectPx": [
         1455,
@@ -583,17 +595,22 @@
         58,
         82
       ],
-      "unifiedMosaicCanvasRectPx": null
+      "unifiedMosaicCanvasRectPx": [
+        1597.15,
+        4266.88,
+        24.72,
+        49.03
+      ]
     },
     {
       "id": "gpws-gear-inhibit",
       "label": "GPWS GEAR INHIBIT",
-      "panel": "MAIN_REFERENCE",
+      "panel": "FO_INNER_BACKGROUND",
       "rectPx": [
-        1515,
-        699,
-        58,
-        82
+        742,
+        1431,
+        75,
+        121
       ],
       "hinge": "top",
       "color": "black",
@@ -601,8 +618,8 @@
         "INHIBIT",
         "NORMAL"
       ],
-      "confidence": "reference-photo-only-estimated",
-      "source": "MAIN_REFERENCE",
+      "confidence": "source-original-existing-cavity-preview-estimate",
+      "source": "FO_INNER_BACKGROUND",
       "notes": "Ground proximity panel visible in full main instrument reference; location on current separately composed main layers not registered.",
       "mainReferenceRectPx": [
         1515,
@@ -610,22 +627,39 @@
         58,
         82
       ],
-      "unifiedMosaicCanvasRectPx": null
+      "unifiedMosaicCanvasRectPx": [
+        1622.68,
+        4266.88,
+        30.39,
+        49.03
+      ]
     },
     {
       "id": "gpws-terrain-inhibit",
       "label": "GPWS TERRAIN INHIBIT",
-      "panel": "MAIN_REFERENCE",
-      "rectPx": null,
+      "panel": "FO_INNER_BACKGROUND",
+      "rectPx": [
+        820,
+        1431,
+        75,
+        121
+      ],
       "hinge": "top",
       "color": "black",
       "states": [
         "INHIBIT",
         "NORMAL"
       ],
-      "confidence": "not-found-in-current-reference",
-      "source": "MAIN_REFERENCE",
-      "notes": "No individually identifiable TERRAIN INHIBIT housing in current B737 Classic main panel photo; confirm exact panel/effectivity before placement."
+      "confidence": "source-derived-cavity-position-native-verified",
+      "source": "FO_INNER_BACKGROUND",
+      "notes": "New third cavity to the right of Gear Inhibit in updated 918x1713 GPWS right-main blank image; no original photo changed. Font and plate fit visual QA conducted; underlying switch sprite not installed.",
+      "mainReferenceRectPx": null,
+      "unifiedMosaicCanvasRectPx": [
+        1654.29,
+        4266.88,
+        30.39,
+        49.03
+      ]
     },
     {
       "id": "stab-trim",
@@ -659,8 +693,11 @@
     "plusStabTrim": 1,
     "foundOverheadNative": 13,
     "mainReferenceApprox": 3,
-    "mainReferenceMissing": 1,
+    "mainReferenceMissing": 0,
     "pedestalApprox": 1,
-    "livePlacementApproved": 0
+    "livePlacementApproved": 0,
+    "foundMainActiveNative": 3,
+    "verifiedBackgroundSlotAdded": true,
+    "currentSourcePath": "panel-mosaic-lab/cockpit/assets/B737_Right_Main_Instruments_GPWS_TERRAIN_V2.png"
   }
 }
