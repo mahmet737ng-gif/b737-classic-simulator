@@ -15,7 +15,7 @@ assert.equal(cfg.controls.filter(x=>x.states.length===2).length,14);
 const snap=Object.fromEntries(cfg.controls.map(x=>[x.id,x]));
 assert.equal(snap.antiskid.panel,'FO_INNER_BACKGROUND');
 assert.deepEqual(snap.antiskid.rectPx,[55,560,102,168]);
-assert.deepEqual(snap['battery-master'].rectPx,[184,1131,152,230]);
+assert.deepEqual(snap['battery-master'].rectPx,[184,1140,152,230]);
 assert.deepEqual(snap['passenger-oxygen'].rectPx,[1247,547,82,146]);
 assert.equal(cfg.rules.rotateDegrees.bottom,180);
 assert.deepEqual(snap['emergency-exit-lights'].rectPx,[450,152,300,710]);
