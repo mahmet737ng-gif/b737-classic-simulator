@@ -1,0 +1,179 @@
+{
+  "version": "OWNER18-ARTWORK-20261027",
+  "sourcesUnchanged": true,
+  "commonCropNative": [
+    356,
+    26,
+    900,
+    1216
+  ],
+  "outputSize": [
+    544,
+    1190
+  ],
+  "assets": {
+    "Black_Guarded_CLOSED.png": {
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceSha256": "db144b7ae28606591d68390e805d462d8e5f3e122364fc16e508ada3247cb4d0",
+      "artworkBBoxNative": [
+        377,
+        75,
+        878,
+        1177
+      ],
+      "transparentFraction": 0.6522,
+      "spriteSha256": "2d719a71cafe7737a6e05b28124fbb611e5964f0159b4ab680f2b8683b859f95",
+      "runtimeSize": [
+        544,
+        1190
+      ],
+      "runtimeTransparentFraction": 0.15516
+    },
+    "Black_Guarded_Open_UP.png": {
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceSha256": "a7b1d0928b91dcd648305a127f5e08b62c877173b0b3b16c94139c13a8caf41a",
+      "artworkBBoxNative": [
+        359,
+        29,
+        896,
+        1214
+      ],
+      "transparentFraction": 0.61287,
+      "spriteSha256": "020b4c8b160935fc966374ebf0f7956a1e72d415fbc7edb4be05fb7742d213db",
+      "runtimeSize": [
+        544,
+        1190
+      ],
+      "runtimeTransparentFraction": 0.0596
+    },
+    "Black_Guarded_Open_CENTER.png": {
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceSha256": "b91cb0e3b8bbc9d75f5e2ca634c6c60221b2f05c4c2c29537e84913dbf1dc0f4",
+      "artworkBBoxNative": [
+        357,
+        26,
+        898,
+        1216
+      ],
+      "transparentFraction": 0.66229,
+      "spriteSha256": "3b02f013b691eba077049a320d44ea691a717590c1e4b928b8c81fee489a4435",
+      "runtimeSize": [
+        544,
+        1190
+      ],
+      "runtimeTransparentFraction": 0.17966
+    },
+    "Black_Guarded_Open_DOWN.png": {
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceSha256": "11eaef71ffdf9cb3496be0f5017526c3886116a12361c904aec9af6e2c19d517",
+      "artworkBBoxNative": [
+        358,
+        27,
+        898,
+        1216
+      ],
+      "transparentFraction": 0.65298,
+      "spriteSha256": "c60a35464a7fa8e23c4b512d036731005f7215fc0270189f0c08f039b649fd3e",
+      "runtimeSize": [
+        544,
+        1190
+      ],
+      "runtimeTransparentFraction": 0.15705
+    },
+    "Red_Guarded_CLOSED.png": {
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceSha256": "210d29a10503f3295d92f27587841f968ee8208be74a9cd959ff73dbfb0b7e93",
+      "artworkBBoxNative": [
+        378,
+        77,
+        876,
+        1175
+      ],
+      "transparentFraction": 0.65557,
+      "spriteSha256": "d7cc4b921e2122cb4c82c3dfab614366bb41f7ef7797a06c4ef1fc7c81192c0a",
+      "runtimeSize": [
+        544,
+        1190
+      ],
+      "runtimeTransparentFraction": 0.16333
+    },
+    "Red_Guarded_Open_UP.png": {
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceSha256": "83323417e9a77cf927b0cf4d56706dcb2df6a05eda787dd01ce52859e7a30180",
+      "artworkBBoxNative": [
+        359,
+        30,
+        896,
+        1213
+      ],
+      "transparentFraction": 0.61446,
+      "spriteSha256": "5f03739ee08d433c034cef6be0d4623b0d28a8a2ed5df711a67042e64439aa2e",
+      "runtimeSize": [
+        544,
+        1190
+      ],
+      "runtimeTransparentFraction": 0.06348
+    },
+    "Red_Guarded_Open_CENTER.png": {
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceSha256": "570b8fec1b90323ec4c122f349adbb2ef9839c2302a21958ad7ba2809a738a9f",
+      "artworkBBoxNative": [
+        356,
+        26,
+        899,
+        1216
+      ],
+      "transparentFraction": 0.6253,
+      "spriteSha256": "e431af0b06cc5db6da62fc3ddb3d4fef227edc570019e8bcc6949f6c020ae239",
+      "runtimeSize": [
+        544,
+        1190
+      ],
+      "runtimeTransparentFraction": 0.08981
+    },
+    "Red_Guarded_Open_DOWN.png": {
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceSha256": "11ddcbd767f61f6aa95a60f7414d8d0c7ccfced6d218546adc88ba20a77bda99",
+      "artworkBBoxNative": [
+        357,
+        26,
+        900,
+        1215
+      ],
+      "transparentFraction": 0.62471,
+      "spriteSha256": "94aba0c1ec1f66f7b48e69d9193480793d22f5e8ab5f2f0366515bfb12125048",
+      "runtimeSize": [
+        544,
+        1190
+      ],
+      "runtimeTransparentFraction": 0.08838
+    }
+  },
+  "count": 8,
+  "alphaOnlyBackgroundRemoval": true,
+  "sourceGeometryUnaltered": true
+}
