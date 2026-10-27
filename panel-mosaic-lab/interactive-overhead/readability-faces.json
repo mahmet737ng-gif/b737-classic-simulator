@@ -1,7 +1,7 @@
 {
   "schema": "b737.lamps.readability-face-overrides.v1",
   "revision": "READABILITY-0001",
-  "sourceRegistrationVersion": "LGT-0012-GUARDS-CLEARED",
+  "sourceRegistrationVersion": "LGT-0012",
   "instances": {
     "flight-recorder-off": {
       "asset": "OFF_LAMP",
