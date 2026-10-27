@@ -63,6 +63,8 @@
     };
     function renderPad(kind) {
       pad.replaceChildren();
+      pad.classList.toggle('irs-isdu-source',kind==='honeywell');
+      pad.title=kind==='honeywell'?'FCOM source-image keypad; click targets are visually transparent':'Litton: source-informed provisional frontend geometry';
       for (const [val,compass] of valueSets[kind]) {
         const key=document.createElement('button');
         key.type='button'; key.className='irs-isdu-key';
