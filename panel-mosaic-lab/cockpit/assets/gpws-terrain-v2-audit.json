@@ -1,14 +1,14 @@
 {
   "sourceSha256": "171bf9e8d21347e7a522ebc86b19cfe0b967f0503d26c483d8f3d685f719576a",
-  "derivativeSha256": "44e629b37c8f1b85ad378a7838c8d36a5f4694769c7399103d1d22415c609437",
+  "derivativeSha256": "2693598113d8929743db9978ba77ff55f49945b87d9481658e2140464d0c0a38",
   "sourceSize": [
     918,
     1713
   ],
-  "generatedPixelsChanged": 22448,
+  "generatedPixelsChanged": 21873,
   "changeRectNativePx": [
     600,
-    1393,
+    1388,
     918,
     1595
   ],
@@ -19,11 +19,31 @@
     "TERRAIN INHIBIT"
   ],
   "terrainPlacement": "RIGHT_OF_GEAR_INHIBIT",
-  "fonts": "DejaVuSansCondensed, DejaVuSansCondensed-Bold; source is photo-textured; direct source exact glyph reproduction unavailable",
-  "qa": {
-    "phase": "pixel-location-and-label-audit",
-    "gitBlobRegistration": "d46939b49cc71b40da77503c165f7d7c6ddf2f9e",
-    "assetInAssembly": "CKP-0012-THROTTLE-FIT / GPWS-TERRAIN-THIRD-SOCKET-V2",
-    "remainingCondition": "Owner visual review before locking exact typography"
-  }
+  "fonts": "DejaVuSansCondensed 10px from system font; original photo backdrop unchanged outside GPWS region",
+  "captionBoundsNativePx": [
+    [
+      680,
+      1390,
+      739,
+      1398
+    ],
+    [
+      748,
+      1390,
+      810,
+      1399
+    ],
+    [
+      819,
+      1390,
+      895,
+      1398
+    ]
+  ],
+  "captionText": [
+    "FLAP INHIBIT",
+    "GEAR INHIBIT",
+    "TERRAIN INHIBIT"
+  ],
+  "captionLayout": "ONE_ROW_CENTERED_ABOVE_SOCKETS_CLEAR_OF_MOUNTING_SCREWS"
 }

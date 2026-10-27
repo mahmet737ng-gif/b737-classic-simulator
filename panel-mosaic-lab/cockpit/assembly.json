@@ -148,14 +148,14 @@
         918,
         1713
       ],
-      "bytes": 1826567,
-      "sha256": "44e629b37c8f1b85ad378a7838c8d36a5f4694769c7399103d1d22415c609437",
-      "gitBlobSha": "d46939b49cc71b40da77503c165f7d7c6ddf2f9e",
+      "bytes": 1826164,
+      "sha256": "2693598113d8929743db9978ba77ff55f49945b87d9481658e2140464d0c0a38",
+      "gitBlobSha": "059f98f800b5ca2ba1d57d657df555f6de3aff72",
       "sourceOriginalUnchanged": true,
       "sourcePanel": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Right_Main_Instruments_Blank.png",
       "nativeChangedAreaPx": [
         600,
-        1393,
+        1388,
         918,
         1595
       ]
