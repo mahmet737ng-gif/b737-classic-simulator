@@ -16,6 +16,11 @@ test('36 separated segments across 12 independent devices; momentary test restor
  api.setLampTest(false);assert.equal(api.snapshot().lampTest,false);
  assert.equal(api.snapshot().devices.SLAT_1,'FULL_EXT');
  assert.equal(api.setDevice('UNKNOWN','EXT'),false);
+ assert.equal(api.setWindow('SLAT_1','TRANSIT',true),true);
+ assert.equal(api.snapshot().windowOverrides['SLAT_1|TRANSIT'],true);
+ assert.equal(api.snapshot().devices.SLAT_1,'FULL_EXT','individual lamp override must not move device');
+ assert.equal(api.setWindow('SLAT_1','TRANSIT',null),true);
+ assert.ok(!('SLAT_1|TRANSIT' in api.snapshot().windowOverrides));
  assert.equal(api.setBrightness('DIM'),true);assert.equal(api.snapshot().brightness,'DIM');
  api.reset();assert.equal(api.snapshot().devices.SLAT_1,'RETRACTED');
  assert.ok(events.some(e=>e.type==='b737:le-devices-lamp-test'&&e.detail.pressed));
