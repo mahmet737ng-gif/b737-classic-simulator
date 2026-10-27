@@ -1,0 +1,23 @@
+name: LE DEVICES front-end QA
+on:
+  push:
+    paths:
+      - 'panel-mosaic-lab/le-devices/**'
+      - 'panel-mosaic-lab/cockpit/overhead-stage.html'
+      - '.github/workflows/le-devices-qa.yml'
+  pull_request:
+    paths:
+      - 'panel-mosaic-lab/le-devices/**'
+      - 'panel-mosaic-lab/cockpit/overhead-stage.html'
+jobs:
+  le-devices:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify editable annunciator component
+        run: |
+          node --check panel-mosaic-lab/le-devices/panel.js
+          node --test panel-mosaic-lab/le-devices/panel.test.cjs
