@@ -1,3 +1,5 @@
+> **FINAL RED ZONE 2026-10-28:** All 18 physical guarded controls are owner locked to `730815ed6ece9beb30950b96ba536e1ce3f2c4ca`. The authoritative runtime/technical database snapshot is [guard-owner18-redzone-v1.json](../engine/maps/guard-owner18-redzone-v1.json). The historical six-control draft below is not an authorization to revise owner-approved visuals, geometry, images or close behavior.
+
 > **2026-10-26 coverage note:** This file is a focused six-control flight-controls registry, **not a complete 737 Classic guarded-switch inventory**. The full 17-control cockpit audit (12 currently mounted / 5 missing) is in [Phases 1–2 audit](GUARDED_SWITCH_PHASE1_PHASE2_AUDIT_2026-10-26.md) and [structured JSON](../engine/maps/guarded-switches-fcom-visual-audit-v1.json). Top hinges here are **unverified mechanical assertions** and conflict with currently installed bottom-hinge assets; do not label them photographically certified.
 
 # Flight Controls — guarded switches and horizontal navigation selectors

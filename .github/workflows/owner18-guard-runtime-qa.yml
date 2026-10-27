@@ -16,9 +16,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Block unapproved changes to all 18 OWNER FINAL RED ZONE guarded switches
+        run: |
+          test "$(git hash-object panel-mosaic-lab/cockpit/guard-redzone-lock.json)" = "beb7caa9dd5d888f4135a0b757c181b061c701dc" || { echo "OWNER18: manifest is no longer the owner-approved lock"; exit 1; }
+          test "$(git hash-object engine/maps/guard-owner18-redzone-v1.json)" = "beb7caa9dd5d888f4135a0b757c181b061c701dc" || { echo "OWNER18: engine is no longer the owner-approved lock"; exit 1; }
+          test "$(git hash-object panel-mosaic-lab/cockpit/verify-guard-redzone.py)" = "6e4c322fd4297525f7db2a700991f741b5563824" || { echo "OWNER18: verifier is no longer the owner-approved lock"; exit 1; }
+          test "$(git hash-object .github/CODEOWNERS)" = "ab715d1a6098d0e0c1c5319aea7eb44d1539cec0" || { echo "OWNER18: codeowners is no longer the owner-approved lock"; exit 1; }
+          python3 panel-mosaic-lab/cockpit/verify-guard-redzone.py --negative-self-test
       - name: Verify all 18 source locations, sprite files, hinges and legal detents
         run: |
           node --check panel-mosaic-lab/cockpit/guard-close-policy-v2.js

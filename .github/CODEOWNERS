@@ -1,0 +1,15 @@
+# OWNER18 RED ZONE — Require owner approval (effective when branch rules are enabled)
+# This file is not itself a substitute for a protected branch / mandatory review.
+/panel-mosaic-lab/cockpit/guard-owner18-v1.* @mahmet737ng-gif
+/panel-mosaic-lab/cockpit/guard-close-policy-v2.js @mahmet737ng-gif
+/panel-mosaic-lab/cockpit/guard-location-audit.json @mahmet737ng-gif
+/panel-mosaic-lab/cockpit/no-old-guards.* @mahmet737ng-gif
+/panel-mosaic-lab/cockpit/tools/build_owner18_artwork.py @mahmet737ng-gif
+/panel-mosaic-lab/assets/locked/2026-10-23/Switches/guard/ @mahmet737ng-gif
+/panel-mosaic-lab/cockpit/guard-redzone-lock.json @mahmet737ng-gif
+/panel-mosaic-lab/cockpit/verify-guard-redzone.py @mahmet737ng-gif
+/engine/maps/guard-owner18-redzone-v1.json @mahmet737ng-gif
+/.github/workflows/owner18-guard-redzone.yml @mahmet737ng-gif
+/.github/workflows/pages.yml @mahmet737ng-gif
+/.github/CODEOWNERS @mahmet737ng-gif
+/AGENTS.md @mahmet737ng-gif
