@@ -95,7 +95,7 @@ for a,b in zip(bounds,bounds[1:]):
 
 # If requested fonts or clone affect even a single pixel outside the region,
 # block the build. Original photo and all mounted hardware are preserved.
-rect=(590,1378,820,1593)
+rect=(590,1378,824,1595)
 modified=np.array(photo)
 x1,y1,x2,y2=rect
 outside=np.ones(old.shape[:2],dtype=bool);outside[y1:y2,x1:x2]=False
