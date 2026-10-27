@@ -100,24 +100,28 @@ def center(text,x,y,font):
     bb=draw.textbbox((0,0),text,font=font)
     xp=x-(bb[2]-bb[0])/2
     draw.text((round(xp),y),text,font=font,fill=ink,stroke_width=0)
-# Exact source-panel mounting screws occupy the second-row label height.
-# Therefore three complete one-line captions are placed in the clean metal band
-# BETWEEN the original GROUND PROXIMITY heading and the mounting screws.
-# Do not layer INHIBIT over screws/cavity rims or shift the screw positions.
-label_font=ImageFont.truetype(font_path,10)
-caption_centers={"FLAP INHIBIT":709,"GEAR INHIBIT":779,"TERRAIN INHIBIT":857}
+# Keep source screws and metal 100% unchanged.
+# Two rows are compactly set in the clean 19-pixel band between the preserved
+# GROUND PROXIMITY heading and the original mounting screw heads.
+label_name_font=ImageFont.truetype(font_path,12)
+label_inhibit_font=ImageFont.truetype(font_path,8)
+caption_centers={"FLAP":709,"GEAR":779,"TERRAIN":857}
 caption_bounds=[]
 for title,cx in caption_centers.items():
-    bb=draw.textbbox((0,0),title,font=label_font)
-    left=round(cx-(bb[2]-bb[0])/2)
-    top=1388+bb[1]
-    right=left+(bb[2]-bb[0])
-    bottom=1388+bb[3]
-    assert 675<=left<right<=900 and 1389<=top<bottom<=1402,(title,left,top,right,bottom)
-    caption_bounds.append([left,top,right,bottom])
-    draw.text((left,1388),title,font=label_font,fill=ink)
+    row_boxes=[]
+    for text_value,y,font in ((title,1383,label_name_font),("INHIBIT",1393,label_inhibit_font)):
+        bb=draw.textbbox((0,0),text_value,font=font)
+        left=round(cx-(bb[2]-bb[0])/2)
+        top=y+bb[1]
+        right=left+(bb[2]-bb[0])
+        bottom=y+bb[3]
+        assert 675<=left<right<=900 and 1384<=top<bottom<=1403,(title,text_value,left,top,right,bottom)
+        row_boxes.append([left,top,right,bottom])
+        draw.text((left,y),text_value,font=font,fill=ink)
+    caption_bounds.append(row_boxes)
 for a,b in zip(caption_bounds,caption_bounds[1:]):
-    assert a[2]+6<b[0],"Caption overlap with neighbor"
+    for row in range(2):
+        assert a[row][2]+6<b[row][0],"Caption overlap with adjacent column"
 # NORMAL lettering remains precisely centered beneath each of the three sockets.
 # Enforce unchanged RGB values outside the narrow GPWS change rectangle.
 modified=np.array(photo)
@@ -168,7 +172,7 @@ r={"sourceSha256":hashlib.sha256(raw).hexdigest(),"derivativeSha256":hashlib.sha
    "changeRectNativePx":list(change_rect),"sourceUnmodified":hashlib.sha256(SOURCE.read_bytes()).hexdigest()==hashlib.sha256(raw).hexdigest(),
    "switches":["FLAP INHIBIT","GEAR INHIBIT","TERRAIN INHIBIT"],"terrainPlacement":"RIGHT_OF_GEAR_INHIBIT",
    "fonts":"DejaVuSansCondensed 10px from system font; original photo backdrop unchanged outside GPWS region",
-   "captionBoundsNativePx":caption_bounds,"captionText":list(caption_centers.keys()),
-   "captionLayout":"ONE_ROW_CENTERED_ABOVE_SOCKETS_CLEAR_OF_MOUNTING_SCREWS"}
+   "captionBoundsNativePx":caption_bounds,"captionText":[x+" INHIBIT" for x in caption_centers],
+   "captionLayout":"TWO_ROWS_COMPACT_CENTERED_ABOVE_SOCKETS_CLEAR_OF_MOUNTING_SCREWS"}
 REPORT.write_text(json.dumps(r,indent=2)+"\n")
 print("PASS GPWS third socket",r)
