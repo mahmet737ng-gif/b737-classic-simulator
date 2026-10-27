@@ -37,7 +37,7 @@
   Object.assign(station.style,{left:geom.x+'px',top:geom.y+'px',width:geom.w+'px',height:geom.h+'px'});
   const photo=document.createElement('div');photo.className='irs-panel-source-art';
   const img=document.createElement('img');
-  img.src='./assets/irs-honeywell-fcom-keypad.svg';
+  img.src='./assets/irs-honeywell-fcom-keypad.avif';
   img.alt='Source image: Honeywell ISDU 12-button keypad';
   img.draggable=false;
   img.addEventListener('load',()=>{station.dataset.art='loaded';});
