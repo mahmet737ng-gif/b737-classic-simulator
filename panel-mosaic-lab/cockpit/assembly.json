@@ -1,6 +1,6 @@
 {
   "schema": "b737.shared-cockpit-mosaic.v1",
-  "version": "CKP-0013-GPWS-TERRAIN-THIRD-SOCKET",
+  "version": "CKP-0012-THROTTLE-FIT",
   "canvas": {
     "width": 4400,
     "height": 8100
@@ -523,5 +523,6 @@
     "version": "PERF-0001",
     "manifest": "performance/manifest.json",
     "policy": "View-dependent 384/768/1536 WebP previews; original byte-identical textures at detailed zoom; source asset hashes and geometry remain authoritative."
-  }
+  },
+  "gpwsBackgroundRevision": "GPWS-TERRAIN-THIRD-SOCKET-V2"
 }
