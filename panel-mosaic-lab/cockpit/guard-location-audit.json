@@ -1,6 +1,6 @@
 {
   "schema": "b737-classic/guard-placement-audit/v2",
-  "version": "2026-10-28-LOCK-AND-FCOM-CLOSE",
+  "version": "2026-10-28-three-location-only-R4",
   "scope": "MEASUREMENT-AND-REVIEW-ONLY_NOT_LIVE_INSTALLATION",
   "declaredByOwner": {
     "mainGuards": 17,
@@ -36,7 +36,7 @@
     "latestGPWSTerrainUpdate": "New third background cavity to RIGHT of GEAR; label TERRAIN INHIBIT above it; original panel locked and untouched"
   },
   "physicalDimensionsMillimeters": "UNKNOWN_DO_NOT_FABRICATE",
-  "pixelPrecision": "OWNER_8_LOCKED; BATTERY/PASS_OXY_VISUAL_QA_PENDING",
+  "pixelPrecision": "THREE_SCREENSHOT_ALIGNMENT_ESTIMATES; USER_VISUAL_ACCEPTANCE_PENDING",
   "sources": {
     "UPPER": {
       "label": "OH01–OH06 overhead upper",
@@ -342,7 +342,7 @@
       "panel": "OH10",
       "rectPx": [
         184,
-        1131,
+        1140,
         152,
         230
       ],
@@ -354,16 +354,16 @@
       ],
       "confidence": "photo-preview-estimated",
       "source": "OH10",
-      "notes": "Owner correction: small left/up position shift or enlarged fitted aperture; estimated until full-resolution browser audit | 2026-10-28 owner's narrower/taller BAT or smaller PASS OXY, center unchanged",
+      "notes": "Owner correction: small left/up position shift or enlarged fitted aperture; estimated until full-resolution browser audit | 2026-10-28 owner's narrower/taller BAT or smaller PASS OXY, center unchanged | 2026-10-28 screenshot review: translation only, sprite dimensions and hinge unchanged",
       "overheadCanvasRectPx": [
         583.35,
-        1560.27,
+        1564.48,
         68.85,
         107.63
       ],
       "unifiedMosaicCanvasRectPx": [
         1673.35,
-        1670.27,
+        1674.48,
         68.85,
         107.63
       ]
@@ -491,7 +491,7 @@
       "panel": "OH14",
       "rectPx": [
         450,
-        174,
+        152,
         300,
         710
       ],
@@ -504,16 +504,16 @@
       ],
       "confidence": "photo-preview-estimated",
       "source": "OH14",
-      "notes": "Large outer bezel: guard sprite requires separate inner-hardware fitting.",
+      "notes": "Large outer bezel: guard sprite requires separate inner-hardware fitting. | 2026-10-28 screenshot review: translation only, sprite dimensions and hinge unchanged",
       "overheadCanvasRectPx": [
         1094.46,
-        2111.73,
+        2105.57,
         65.64,
         198.84
       ],
       "unifiedMosaicCanvasRectPx": [
         2184.46,
-        2221.73,
+        2215.57,
         65.64,
         198.84
       ]
@@ -565,8 +565,8 @@
       "label": "PASS OXYGEN",
       "panel": "UPPER",
       "rectPx": [
-        1249,
-        552,
+        1247,
+        547,
         82,
         146
       ],
@@ -578,16 +578,16 @@
       ],
       "confidence": "photo-preview-estimated",
       "source": "UPPER",
-      "notes": "Hinge right and black color are provisional reconciliations of newly specified 11/3/3 and 3-red totals; previous records said bottom and red. | Owner-confirmed BOTTOM hinge; old RIGHT hinge was incorrect | 2026-10-28 owner's narrower/taller BAT or smaller PASS OXY, center unchanged",
+      "notes": "Hinge right and black color are provisional reconciliations of newly specified 11/3/3 and 3-red totals; previous records said bottom and red. | Owner-confirmed BOTTOM hinge; old RIGHT hinge was incorrect | 2026-10-28 owner's narrower/taller BAT or smaller PASS OXY, center unchanged | 2026-10-28 screenshot review: translation only, sprite dimensions and hinge unchanged",
       "overheadCanvasRectPx": [
-        1600.51,
-        621.8,
+        1597.95,
+        616.19,
         104.88,
         163.67
       ],
       "unifiedMosaicCanvasRectPx": [
-        2690.51,
-        731.8,
+        2687.95,
+        726.19,
         104.88,
         163.67
       ]
