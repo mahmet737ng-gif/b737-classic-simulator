@@ -10,6 +10,10 @@ on:
       - 'panel-mosaic-lab/cockpit/irs-isdu-onpanel-v2.js'
       - 'panel-mosaic-lab/cockpit/irs-isdu-onpanel-v2.css'
       - 'panel-mosaic-lab/cockpit/irs-isdu-onpanel-v2.test.cjs'
+      - 'panel-mosaic-lab/cockpit/irs-isdu-cues-v1.js'
+      - 'panel-mosaic-lab/cockpit/irs-isdu-cues-v1.css'
+      - 'panel-mosaic-lab/cockpit/irs-isdu-cues-v1.test.cjs'
+      - 'panel-mosaic-lab/cockpit/assets/irs-isdu-white-cue-on-v1.svg'
       - 'panel-mosaic-lab/cockpit/assets/irs-honeywell-fcom-keypad.avif'
       - 'panel-mosaic-lab/cockpit/assets/irs-owner-keycaps-v3.avif'
       - '.github/workflows/irs-isdu-frontend-v1.yml'
@@ -27,10 +31,12 @@ jobs:
         run: |
           node --check panel-mosaic-lab/cockpit/irs-isdu-frontend-v1.js
           node --check panel-mosaic-lab/cockpit/irs-isdu-onpanel-v2.js
+          node --check panel-mosaic-lab/cockpit/irs-isdu-cues-v1.js
       - name: Verify actual Honeywell keypad source and browser mount
         run: |
           node panel-mosaic-lab/cockpit/irs-isdu-frontend-v1.test.cjs
           node panel-mosaic-lab/cockpit/irs-isdu-onpanel-v2.test.cjs
+          node panel-mosaic-lab/cockpit/irs-isdu-cues-v1.test.cjs
       - name: Enforce frozen overhead
         run: python3 panel-mosaic-lab/verify-final-overhead.py
       - name: Enforce immutable owner18 guarded switches
