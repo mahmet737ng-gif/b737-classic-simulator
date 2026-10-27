@@ -1,11 +1,11 @@
 {
   "sourceSha256": "171bf9e8d21347e7a522ebc86b19cfe0b967f0503d26c483d8f3d685f719576a",
-  "derivativeSha256": "4f67199ad56a0ee95553081e68e2adfaf7d3f50b8b1e531d4f799a92eb3ec1f9",
+  "derivativeSha256": "44e629b37c8f1b85ad378a7838c8d36a5f4694769c7399103d1d22415c609437",
   "sourceSize": [
     918,
     1713
   ],
-  "generatedPixelsChanged": 22836,
+  "generatedPixelsChanged": 22448,
   "changeRectNativePx": [
     600,
     1393,
