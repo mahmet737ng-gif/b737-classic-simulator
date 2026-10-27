@@ -40,24 +40,24 @@ for i in range(8):
 dst=arr[sy1:sy2,sx1+dx:sx2+dx]
 arr[sy1:sy2,sx1+dx:sx2+dx]=np.clip(patch*feather[:,:,None]+dst*(1-feather[:,:,None]),0,255).astype('uint8')
 
-# Erase ONLY tiny legacy side-printed legends (not the heading or cavity).
-# Restrict inpaint to bright letter shapes to avoid repainting original metallic surface.
-bright=(old[:,:,0]>140)&(old[:,:,1]>140)&(old[:,:,2]>140)
-mask=np.zeros(old.shape[:2],np.uint8)
-for x1,y1,x2,y2 in [
-    (617,1420,690,1467),   # old side FLAP/INHIBIT legend
-    (802,1415,914,1462),   # old side GEAR/INHIBIT legend (outside opening)
-    (648,1547,737,1581),   # old NORMAL for FLAP, redraw aligned
-    (806,1547,912,1581),   # old NORMAL for GEAR, redraw aligned
-]:
-    # Heal each previous side-label as one continuous rectangular patch.
-    # Pixel-threshold-only masking left conspicuous turquoise flecks.
-    mask[y1:y2,x1:x2]=255
-# Protect recess interiors, original screws, and relevant controls.
-for x1,y1,x2,y2 in [(681,1431,738,1550),(744,1431,813,1550),(820,1431,899,1550)]:
-    mask[y1:y2,x1:x2]=0
-mask=cv2.dilate(mask,cv2.getStructuringElement(cv2.MORPH_ELLIPSE,(3,3)))
-arr=cv2.inpaint(arr,mask,9,cv2.INPAINT_TELEA)
+# Replace only the old FLAP label printed BESIDE the first guard.
+# A nearby piece of the SAME untouched metal photograph is used (not inpainting):
+# inpainting near the black sockets leaked black into the bluish metal paint.
+label_rect=(620,1420,677,1460)
+lx1,ly1,lx2,ly2=label_rect
+w,h=lx2-lx1,ly2-ly1
+metal=old[ly1:ly2,540:540+w].copy()
+target=arr[ly1:ly2,lx1:lx2].copy()
+fade=np.ones((h,w),dtype=np.float32)
+for i in range(9):
+    amount=(i+1)/10
+    fade[:,i]=np.minimum(fade[:,i],amount)
+    fade[:,-i-1]=np.minimum(fade[:,-i-1],amount)
+    fade[i,:]=np.minimum(fade[i,:],amount)
+    fade[-i-1,:]=np.minimum(fade[-i-1,:],amount)
+arr[ly1:ly2,lx1:lx2]=np.clip(metal*fade[:,:,None]+target*(1-fade[:,:,None]),0,255).astype('uint8')
+# GEAR original side label is naturally obscured by the new third socket,
+# but the photograph's native screws and NORMAL markings are preserved.
 photo=Image.fromarray(arr)
 draw=ImageDraw.Draw(photo)
 font_path="/usr/share/fonts/truetype/dejavu/DejaVuSansCondensed.ttf"
@@ -73,13 +73,12 @@ def center(text,x,y,font):
 # Label each guarded cavity in the original stencil-like capital typography.
 # Both rows are ABOVE rather than beside the switches.
 for title,cx in [('FLAP',709),('GEAR',779),('TERRAIN',857)]:
-    # GEAR is near a pre-existing mounting screw: shift its caption slightly
-    # left, but never repaint or move the screw itself.
+    # Original silver screw above GEAR must stay untouched.
     caption_x=cx-13 if title=='GEAR' else cx
     center(title,caption_x,1391,small)
     center('INHIBIT',caption_x,1405,tiny)
-    center('NORMAL',cx,1571,normal)
-
+# The two native NORMAL labels remain; the middle column gains its own label.
+center('NORMAL',779,1571,normal)
 # Enforce unchanged RGB values outside the narrow GPWS change rectangle.
 modified=np.array(photo)
 change_rect=(600,1393,918,1595)
