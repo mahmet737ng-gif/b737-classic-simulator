@@ -62,12 +62,26 @@ for i in range(6):
     feather[:,-i-1]=np.minimum(feather[:,-i-1],v)
     feather[i,:]=np.minimum(feather[i,:],v)
     feather[-i-1,:]=np.minimum(feather[-i-1,:],v)
+# The old GEAR letters behind the new top bezel must be FULLY occluded.
+feather[:9,:]=1.0
 dst=arr[sy1:sy2,sx1+dx:sx2+dx]
 arr[sy1:sy2,sx1+dx:sx2+dx]=np.clip(patch*feather[:,:,None]+dst*(1-feather[:,:,None]),0,255).astype('uint8')
 
-# Add the center NORMAL inscription by borrowing the complete source-photo
-# word/lettering (including its real font and photometric pixels).
-transplant_same_photo((739,1542,816,1570),(663,1542,740,1570),edge=3)
+# Three bottom captions use EXACTLY the lettering raster from the original
+# FLAP NORMAL photo, with white glyph alpha isolated from its metal backdrop.
+# First clean the former two misaligned NORMAL words from a metal-only region.
+normal_band=(647,1553,907,1581)
+nx1,ny1,nx2,ny2=normal_band
+metal=old[1596:1624,nx1:nx2].copy()
+assert metal.shape==arr[ny1:ny2,nx1:nx2].shape
+arr[ny1:ny2,nx1:nx2]=metal
+glyphs=old[1553:1581,656:738].copy()
+lum=glyphs.mean(axis=2)
+g_alpha=np.clip((lum.astype(float)-117)/94,0,1)[:,:,None]
+for caption_center in (709,779,857):
+    ix1=round(caption_center-glyphs.shape[1]/2)
+    under=arr[1553:1581,ix1:ix1+glyphs.shape[1]]
+    arr[1553:1581,ix1:ix1+glyphs.shape[1]]=np.clip(glyphs*g_alpha+under*(1-g_alpha),0,255).astype('uint8')
 photo=Image.fromarray(arr)
 draw=ImageDraw.Draw(photo)
 font_path="/usr/share/fonts/truetype/dejavu/DejaVuSansCondensed.ttf"
