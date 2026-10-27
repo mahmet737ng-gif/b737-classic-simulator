@@ -82,6 +82,45 @@ const {chromium}=require('playwright');
     ['ram-door-r','ram-door-l','stby-pressure','pack-trip-l','window-r-fwd-on']);
   await inspect(base+'/cockpit/?debugLights=1','main',30,
     ['main-pull-up-captain','main-pull-up-fo']);
+  // Critical Unified regression: the overhead iframe is not the standalone overhead route.
+  // The shared V2 asset resolver must load there before lights.js (112 actual installed lamps).
+  const unified=await browser.newPage({viewport:{width:1660,height:1000},deviceScaleFactor:1});
+  const errors=[];
+  unified.on('pageerror',e=>errors.push(String(e)));
+  try{
+   const response=await unified.goto(base+'/cockpit/?debugLights=1',{waitUntil:'domcontentloaded',timeout:60000});
+   assert.equal(response.status(),200,'Unified root route');
+   const oh=unified.frameLocator('#overheadFrame');
+   await oh.locator('.mounted-light[data-light]').first().waitFor({state:'attached',timeout:40000});
+   assert.equal(await oh.locator('.mounted-light[data-light]').count(),112,'Unified embedded Overhead must mount all 112 light sockets');
+   const installed=await oh.locator('body').evaluate(()=>window.B737LampAppearance?.status()||null);
+   assert.equal(installed?.ready,true,'Unified iframe must import shared V2 appearance registry');
+   assert.equal(installed?.mode,'BRIGHT','Unified embedded Overhead must default BRIGHT');
+   assert.equal(installed?.masters,87,'Unified embedded Overhead must reuse 87 masters');
+   const sample=await oh.locator('.mounted-light[data-light="stby-pressure"] img[data-frame="ON"]').getAttribute('src');
+   assert.ok(sample?.includes('/lights-reference-v2/svg/LOW_PRESSURE__AMBER__BRIGHT.svg'),'Embedded Overhead does not display installed BRIGHT asset: '+sample);
+   const button=unified.locator('#visualLampTest');
+   await button.click();
+   await unified.waitForFunction(()=>document.querySelector('#visualLampTest')?.getAttribute('aria-pressed')==='true');
+   await oh.locator('.mounted-light[data-light="stby-pressure"] img[data-visual-on="true"]').waitFor({state:'attached',timeout:8000});
+   const lit=await oh.locator('body').evaluate(()=>{
+    const lamps=[...document.querySelectorAll('.mounted-light[data-light]')];
+    return {
+     total:lamps.length,
+     testEnabled:document.documentElement.classList.contains('cockpit-visual-test'),
+     active:lamps.filter(node=>node.querySelector('img[data-visual-on="true"]')).length,
+     broken:lamps.filter(node=>[...node.querySelectorAll('img')].some(img=>img.dataset.visualOn==='true'&&img.complete&&img.naturalWidth===0)).map(node=>node.dataset.light).slice(0,15)
+    };
+   });
+   assert.equal(lit.total,112,'Unified Overhead lamp geometry disturbed');
+   assert.equal(lit.testEnabled,true,'Unified cockpit did not forward visual lamp test into Overhead');
+   assert.equal(lit.active,112,'All 112 Overhead annunciators must illuminate during unified visual test');
+   assert.deepEqual(lit.broken,[],'Some active Unified V2 SVGs are broken');
+   const serious=errors.filter(x=>/LampAppearance|Cannot read properties of undefined|LGT-GLOBAL/i.test(x));
+   assert.deepEqual(serious,[],'Unified overhead has a lamp runtime exception');
+   await button.click();
+   console.log('UNIFIED_EMBEDDED_OVERHEAD_PASS',JSON.stringify({total:lit.total,active:lit.active,defaultMode:installed.mode,masters:installed.masters}));
+  }finally{await unified.close();}
   console.log('BROWSER_SMOKE_SUCCESS',JSON.stringify({total:142,sampled:diagnostics.length,srcDecodePass:true}));
  }finally{await browser.close()}
 })().catch(error=>{console.error('BROWSER_SMOKE_FAILED',error.stack||String(error));process.exitCode=1});
