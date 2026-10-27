@@ -7,6 +7,10 @@ on:
       - 'panel-mosaic-lab/cockpit/irs-isdu-frontend-v1.css'
       - 'panel-mosaic-lab/cockpit/assets/irs-honeywell-fcom-keypad.svg'
       - 'panel-mosaic-lab/cockpit/irs-isdu-frontend-v1.test.cjs'
+      - 'panel-mosaic-lab/cockpit/irs-isdu-onpanel-v2.js'
+      - 'panel-mosaic-lab/cockpit/irs-isdu-onpanel-v2.css'
+      - 'panel-mosaic-lab/cockpit/irs-isdu-onpanel-v2.test.cjs'
+      - 'panel-mosaic-lab/cockpit/assets/irs-honeywell-fcom-keypad.avif'
       - '.github/workflows/irs-isdu-frontend-v1.yml'
   workflow_dispatch:
 permissions:
@@ -19,9 +23,13 @@ jobs:
         with:
           fetch-depth: 0
       - name: Lint IRS frontend
-        run: node --check panel-mosaic-lab/cockpit/irs-isdu-frontend-v1.js
+        run: |
+          node --check panel-mosaic-lab/cockpit/irs-isdu-frontend-v1.js
+          node --check panel-mosaic-lab/cockpit/irs-isdu-onpanel-v2.js
       - name: Verify actual Honeywell keypad source and browser mount
-        run: node panel-mosaic-lab/cockpit/irs-isdu-frontend-v1.test.cjs
+        run: |
+          node panel-mosaic-lab/cockpit/irs-isdu-frontend-v1.test.cjs
+          node panel-mosaic-lab/cockpit/irs-isdu-onpanel-v2.test.cjs
       - name: Enforce frozen overhead
         run: python3 panel-mosaic-lab/verify-final-overhead.py
       - name: Enforce immutable owner18 guarded switches
