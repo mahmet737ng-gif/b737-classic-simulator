@@ -159,6 +159,25 @@
         918,
         1595
       ]
+    },
+    "panel-mosaic-lab/cockpit/assets/B737_Right_Main_Instruments_GPWS_TERRAIN_LEFT_V3.png": {
+      "path": "panel-mosaic-lab/cockpit/assets/B737_Right_Main_Instruments_GPWS_TERRAIN_LEFT_V3.png",
+      "url": "./assets/B737_Right_Main_Instruments_GPWS_TERRAIN_LEFT_V3.png",
+      "dimensions": [
+        918,
+        1713
+      ],
+      "bytes": 1833782,
+      "sha256": "21acac8ea8b037be9bbb6d426b633dcccae077f2fd7a4131370237e66d18cbfd",
+      "gitBlobSha": "5e3aa8fec6e2b2f365e64064234c93f3ec5126f1",
+      "sourceOriginalUnchanged": true,
+      "sourcePanel": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Right_Main_Instruments_Blank.png",
+      "nativeChangedAreaPx": [
+        590,
+        1378,
+        824,
+        1595
+      ]
     }
   },
   "regions": [
@@ -216,12 +235,12 @@
         {
           "id": "fo-inner",
           "label": "F/O INNER / LANDING GEAR",
-          "asset": "panel-mosaic-lab/cockpit/assets/B737_Right_Main_Instruments_GPWS_TERRAIN_V2.png",
+          "asset": "panel-mosaic-lab/cockpit/assets/B737_Right_Main_Instruments_GPWS_TERRAIN_LEFT_V3.png",
           "x": 1222,
           "y": 127,
           "w": 372,
           "h": 694.156862745098,
-          "presentation": "Original panel 918x1713, only GPWS region optically amended: third TERRAIN socket right of GEAR, matching labeled three-column arrangement"
+          "presentation": "Native locked F/O panel derivative: GPWS order TERRAIN / FLAP / GEAR, source-matched inset wells, centrally aligned two-line stencil captions; all other source photo pixels retained"
         },
         {
           "id": "fo-outer",
@@ -525,5 +544,5 @@
     "manifest": "performance/manifest.json",
     "policy": "View-dependent 384/768/1536 WebP previews; original byte-identical textures at detailed zoom; source asset hashes and geometry remain authoritative."
   },
-  "gpwsBackgroundRevision": "GPWS-TERRAIN-THIRD-SOCKET-V2"
+  "gpwsBackgroundRevision": "GPWS-TERRAIN-LEFT-OF-FLAP-V3"
 }

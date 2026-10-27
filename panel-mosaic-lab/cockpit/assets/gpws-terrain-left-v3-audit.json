@@ -1,0 +1,75 @@
+{
+  "sourceSha256": "171bf9e8d21347e7a522ebc86b19cfe0b967f0503d26c483d8f3d685f719576a",
+  "sourceUnmodified": true,
+  "derivativeSha256": "21acac8ea8b037be9bbb6d426b633dcccae077f2fd7a4131370237e66d18cbfd",
+  "gitBlobSha": "5e3aa8fec6e2b2f365e64064234c93f3ec5126f1",
+  "orderLeftToRight": [
+    "TERRAIN INHIBIT",
+    "FLAP INHIBIT",
+    "GEAR INHIBIT"
+  ],
+  "centersNativePx": [
+    638,
+    709,
+    779
+  ],
+  "normalLegendCentersNativePx": [
+    638,
+    709,
+    779
+  ],
+  "captionBoundsNativePx": [
+    [
+      [
+        607,
+        1382,
+        669,
+        1393
+      ],
+      [
+        620,
+        1394,
+        655,
+        1402
+      ]
+    ],
+    [
+      [
+        691,
+        1382,
+        727,
+        1393
+      ],
+      [
+        692,
+        1394,
+        727,
+        1402
+      ]
+    ],
+    [
+      [
+        760,
+        1382,
+        798,
+        1394
+      ],
+      [
+        762,
+        1394,
+        797,
+        1402
+      ]
+    ]
+  ],
+  "nativeAllowedChangeRectPx": [
+    590,
+    1378,
+    824,
+    1595
+  ],
+  "pixelsDifferent": 16981,
+  "unrelatedSourcePixelsIdentical": true,
+  "pixelExactTypography": false,
+  "font": "DejaVu Sans Condensed Bold Oblique name 14px / Oblique secondary 10px, with original photo NORMAL letter glyphs"
+}
