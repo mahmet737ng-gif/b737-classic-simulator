@@ -37,6 +37,8 @@ for k in range(4):
     alpha[:,-1-k]=np.minimum(alpha[:,-1-k],t)
     alpha[k,:]=np.minimum(alpha[k,:],t)
     alpha[-1-k,:]=np.minimum(alpha[-1-k,:],t)
+# Occlude former side lettering at the new third-well top, even at feather edges.
+alpha[:8,:]=1.0
 arr[y1:y2,x1+dx:x2+dx]=np.clip(patch*alpha[:,:,None]+dst*(1-alpha[:,:,None]),0,255).astype(np.uint8)
 
 # The old FLAP INHIBIT SIDE label was in the area of the third well.
@@ -52,10 +54,23 @@ mask[ry1:ry2,rx1:rx2]=bright
 if int(mask.sum())>0:
     arr=cv2.inpaint(arr,mask,2,cv2.INPAINT_TELEA)
 
+# The original photo prints GEAR / INHIBIT beside the right-hand well.
+# In the new left-to-right order it is obsolete. Remove letter-shaped pixels
+# ONLY in that side-label patch, without painting over the real panel fasteners.
+gear_roi=(826,1421,875,1464)
+gx1,gy1,gx2,gy2=gear_roi
+letter_pixels=old[gy1:gy2,gx1:gx2]
+intense=np.all(letter_pixels>143,axis=2).astype(np.uint8)*255
+intense=cv2.dilate(intense,np.ones((3,3),dtype=np.uint8),iterations=1)
+text_mask=np.zeros(old.shape[:2],np.uint8)
+text_mask[gy1:gy2,gx1:gx2]=intense
+assert np.count_nonzero(text_mask)>20,"Expected original right-side GEAR/INHIBIT lettering"
+arr=cv2.inpaint(arr,text_mask,3,cv2.INPAINT_TELEA)
+
 # Keep three NORMAL labels identical by sampling the actual photographic
 # letter shapes from the untouched original switch's legend.
 y0=1556
-label_strip=(593,1553,821,1581)
+label_strip=(593,1553,899,1581)
 nx1,ny1,nx2,ny2=label_strip
 clean_metal=old[1596:1624,nx1:nx2].copy()
 assert clean_metal.shape==arr[ny1:ny2,nx1:nx2].shape
@@ -95,7 +110,7 @@ for a,b in zip(bounds,bounds[1:]):
 
 # If requested fonts or clone affect even a single pixel outside the region,
 # block the build. Original photo and all mounted hardware are preserved.
-rect=(590,1378,824,1595)
+rect=(590,1378,909,1595)
 modified=np.array(photo)
 x1,y1,x2,y2=rect
 outside=np.ones(old.shape[:2],dtype=bool);outside[y1:y2,x1:x2]=False
