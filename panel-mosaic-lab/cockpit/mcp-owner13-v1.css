@@ -31,3 +31,30 @@
 }
 [data-piece="mcp"].mcp-owner13-active>.mcp-hw>.mcp-owner13-art{z-index:2}
 [data-piece="mcp"].mcp-owner13-active>.mcp-v3-knob>.mcp-owner13-art{z-index:2}
+
+/* AT-PADDLE-20261027: owner-supplied ON/ARM + OFF photos.
+   Fixed physical center coordinates; only the state-dependent raster changes.
+   Do not animate the entire bezel/disk or modify frozen panel pixels. */
+[data-piece="mcp"] > .mcp-hw[data-mcp-hardware="AT_ARM"] > .mcp-hw-real-face {
+ position:absolute!important;display:block!important;box-sizing:border-box!important;
+ left:0!important;right:auto!important;top:-35%!important;bottom:auto!important;
+ width:100%!important;height:132%!important;border:0!important;
+ background:url("./assets/mcp-switches/AT_ARM_OFF_MCP.webp") center/100% 100% no-repeat!important;
+ pointer-events:none!important;filter:none!important;box-shadow:none!important;
+ transform:none!important;
+}
+[data-piece="mcp"] > .mcp-hw[data-mcp-hardware="AT_ARM"][data-state="ARM"] > .mcp-hw-real-face {
+ background-image:url("./assets/mcp-switches/AT_ARM_ON_MCP.webp")!important;
+}
+/* The owner-photo atlas creates a separate visible .mcp-owner13-art; override
+   exactly that AT control while keeping every other owner13 cell unchanged. */
+[data-piece="mcp"].mcp-owner13-active > .mcp-hw[data-mcp-hardware="AT_ARM"] > .mcp-owner13-art {
+ inset:auto!important;left:0!important;right:auto!important;
+ top:-35%!important;bottom:auto!important;width:100%!important;height:132%!important;
+ background-image:url("./assets/mcp-switches/AT_ARM_OFF_MCP.webp")!important;
+ background-size:100% 100%!important;background-position:center center!important;
+ background-repeat:no-repeat!important;transform:none!important;filter:none!important;
+}
+[data-piece="mcp"].mcp-owner13-active > .mcp-hw[data-mcp-hardware="AT_ARM"][data-state="ARM"] > .mcp-owner13-art {
+ background-image:url("./assets/mcp-switches/AT_ARM_ON_MCP.webp")!important;
+}

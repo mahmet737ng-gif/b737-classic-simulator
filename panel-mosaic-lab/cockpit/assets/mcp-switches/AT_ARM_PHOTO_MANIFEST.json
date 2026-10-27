@@ -1,0 +1,34 @@
+{
+  "schema": "b737.mcp.owner-at-two-state.v1",
+  "sourceFiles": [
+    "Worn Toggle Switch in on Position.png",
+    "Worn Toggle Switch in Off Position(1).png"
+  ],
+  "mapping": {
+    "ARM": "AT_ARM_ON_MCP.webp",
+    "OFF": "AT_ARM_OFF_MCP.webp"
+  },
+  "renderSize": [
+    108,
+    147
+  ],
+  "frameSourceCrop": [
+    310,
+    154,
+    944,
+    1020
+  ],
+  "anchor": {
+    "control": "AT_ARM",
+    "sourcePanel": [
+      2172,
+      433
+    ],
+    "center": [
+      357,
+      181
+    ],
+    "outerRingFrozenAcrossStateSwitch": true
+  },
+  "notes": "MCP-size WebP derivatives from user-provided 1254x1254 images. Original source files were not changed. Each state has one complete photographic raster; not a mechanically interpolated animation."
+}
