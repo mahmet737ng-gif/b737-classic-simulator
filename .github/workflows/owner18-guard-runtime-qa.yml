@@ -1,0 +1,42 @@
+name: Owner18 Guard Pixel + Unified Mount QA
+on:
+  push:
+    paths:
+      - 'panel-mosaic-lab/cockpit/guard-owner18-v1.*'
+      - 'panel-mosaic-lab/cockpit/owner18-guard-install.test.cjs'
+      - 'panel-mosaic-lab/cockpit/index.html'
+      - 'panel-mosaic-lab/cockpit/overhead-stage.html'
+      - 'panel-mosaic-lab/assets/locked/2026-10-23/Switches/guard/runtime/*'
+      - '.github/workflows/owner18-guard-runtime-qa.yml'
+  workflow_dispatch:
+jobs:
+  validate-owner18:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify all 18 source locations, sprite files, hinges and legal detents
+        run: |
+          node --check panel-mosaic-lab/cockpit/guard-owner18-v1.js
+          node panel-mosaic-lab/cockpit/owner18-guard-install.test.cjs
+      - name: Mount 13 overhead and 5 main/pedestal controls in headless Chromium
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/owner18-http.log 2>&1 &
+          sleep 2
+          CHROME=$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)
+          test -n "$CHROME" || { echo "Chromium unavailable"; exit 2; }
+          "$CHROME" --headless --disable-gpu --disable-dev-shm-usage --no-sandbox --hide-scrollbars --virtual-time-budget=32000 --window-size=1440,900 --dump-dom "http://127.0.0.1:8765/panel-mosaic-lab/cockpit/overhead-stage.html" >/tmp/owner18-overhead.html 2>/tmp/owner18-overhead-browser.log
+          "$CHROME" --headless --disable-gpu --disable-dev-shm-usage --no-sandbox --hide-scrollbars --virtual-time-budget=45000 --window-size=1440,900 --dump-dom "http://127.0.0.1:8765/panel-mosaic-lab/cockpit/" >/tmp/owner18-main.html 2>/tmp/owner18-main-browser.log
+          if ! grep -q 'data-owner-guard-installed="13"' /tmp/owner18-overhead.html; then
+            echo "FAIL: overhead did not mount 13"; grep -o 'data-owner-guard-[^ >]*' /tmp/owner18-overhead.html | head; tail -20 /tmp/owner18-overhead-browser.log; exit 1;
+          fi
+          if ! grep -q 'data-owner-guard-complete="true"' /tmp/owner18-overhead.html; then echo "FAIL: overhead 13 owner sprite mount incomplete"; exit 1; fi
+          if ! grep -q 'data-owner-guard-installed="5"' /tmp/owner18-main.html; then
+            echo "FAIL: main and pedestal did not mount 5"; grep -o 'data-owner-guard-[^ >]*' /tmp/owner18-main.html | head; tail -20 /tmp/owner18-main-browser.log; exit 1;
+          fi
+          if ! grep -q 'data-owner-guard-complete="true"' /tmp/owner18-main.html; then echo "FAIL: main 5 owner sprite mount incomplete"; exit 1; fi
+          test "$(grep -o 'class="owner18-guard-control"' /tmp/owner18-overhead.html | wc -l)" -eq 13 || { echo "FAIL overhead count"; exit 1; }
+          test "$(grep -o 'class="owner18-guard-control"' /tmp/owner18-main.html | wc -l)" -eq 5 || { echo "FAIL main count"; exit 1; }
+          echo "PASS: 18 live source-mapped guarded switches; 13 overhead, 4 main, 1 pedestal. 8 original sprites retained."
