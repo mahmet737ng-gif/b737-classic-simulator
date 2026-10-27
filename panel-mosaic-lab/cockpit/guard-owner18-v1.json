@@ -1,0 +1,453 @@
+{
+  "schema": "b737/owner18-guard-runtime/v1",
+  "version": "GUARD-OWNER18-20261027",
+  "primaryCount": 17,
+  "total": 18,
+  "artworkRoot": "../assets/locked/2026-10-23/Switches/guard/",
+  "imageFiles": {
+    "black": {
+      "closed": "Black_Guarded_CLOSED.png",
+      "open_up": "Black_Guarded_Open_UP.png",
+      "open_center": "Black_Guarded_Open_CENTER.png",
+      "open_down": "Black_Guarded_Open_DOWN.png"
+    },
+    "red": {
+      "closed": "Red_Guarded_CLOSED.png",
+      "open_up": "Red_Guarded_Open_UP.png",
+      "open_center": "Red_Guarded_Open_CENTER.png",
+      "open_down": "Red_Guarded_Open_DOWN.png"
+    }
+  },
+  "rules": {
+    "rotateDegrees": {
+      "top": 0,
+      "left": -90,
+      "right": 90
+    },
+    "twoStateImages": [
+      "UP",
+      "DOWN"
+    ],
+    "threeStateImages": [
+      "UP",
+      "CENTER",
+      "DOWN"
+    ],
+    "tapClosed": "open",
+    "tapOpen": "next-detent",
+    "doubleTap": "close",
+    "escape": "close",
+    "rightClick": "close",
+    "statePersistence": "sessionStorage"
+  },
+  "controls": [
+    {
+      "id": "flight-control-a",
+      "label": "FLT CONTROL A",
+      "panel": "OH07",
+      "rectPx": [
+        135,
+        100,
+        165,
+        265
+      ],
+      "hinge": "top",
+      "hingeConfidence": "audit-owner-count-mapped",
+      "color": "black",
+      "states": [
+        "STBY RUD",
+        "OFF",
+        "ON"
+      ],
+      "confidence": "photo-preview-estimated",
+      "closedInitially": true,
+      "initialState": "STBY RUD",
+      "axis": "vertical"
+    },
+    {
+      "id": "flight-control-b",
+      "label": "FLT CONTROL B",
+      "panel": "OH07",
+      "rectPx": [
+        305,
+        100,
+        165,
+        265
+      ],
+      "hinge": "top",
+      "hingeConfidence": "audit-owner-count-mapped",
+      "color": "black",
+      "states": [
+        "STBY RUD",
+        "OFF",
+        "ON"
+      ],
+      "confidence": "photo-preview-estimated",
+      "closedInitially": true,
+      "initialState": "STBY RUD",
+      "axis": "vertical"
+    },
+    {
+      "id": "spoiler-a",
+      "label": "SPOILER A",
+      "panel": "OH07",
+      "rectPx": [
+        135,
+        655,
+        165,
+        275
+      ],
+      "hinge": "top",
+      "hingeConfidence": "audit-owner-count-mapped",
+      "color": "black",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "confidence": "photo-preview-estimated",
+      "closedInitially": true,
+      "initialState": "OFF",
+      "axis": "vertical"
+    },
+    {
+      "id": "spoiler-b",
+      "label": "SPOILER B",
+      "panel": "OH07",
+      "rectPx": [
+        304,
+        655,
+        165,
+        275
+      ],
+      "hinge": "top",
+      "hingeConfidence": "audit-owner-count-mapped",
+      "color": "black",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "confidence": "photo-preview-estimated",
+      "closedInitially": true,
+      "initialState": "OFF",
+      "axis": "vertical"
+    },
+    {
+      "id": "alternate-flaps-master",
+      "label": "ALTERNATE FLAPS MASTER",
+      "panel": "OH07",
+      "rectPx": [
+        517,
+        408,
+        135,
+        277
+      ],
+      "hinge": "right",
+      "hingeConfidence": "audit-owner-count-mapped",
+      "color": "red",
+      "states": [
+        "OFF",
+        "ARM"
+      ],
+      "confidence": "photo-preview-estimated",
+      "closedInitially": true,
+      "initialState": "OFF",
+      "axis": "horizontal"
+    },
+    {
+      "id": "battery-master",
+      "label": "BATTERY MASTER",
+      "panel": "OH10",
+      "rectPx": [
+        186,
+        1141,
+        156,
+        201
+      ],
+      "hinge": "top",
+      "hingeConfidence": "audit-owner-count-mapped",
+      "color": "black",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "confidence": "photo-preview-estimated",
+      "closedInitially": true,
+      "initialState": "OFF",
+      "axis": "vertical"
+    },
+    {
+      "id": "generator-disconnect-1",
+      "label": "GEN DRIVE DISCONNECT 1",
+      "panel": "OH11",
+      "rectPx": [
+        154,
+        334,
+        200,
+        418
+      ],
+      "hinge": "top",
+      "hingeConfidence": "audit-owner-count-mapped",
+      "color": "red",
+      "states": [
+        "NORMAL",
+        "DISCONNECT"
+      ],
+      "confidence": "prior-native-aperture-calibrated",
+      "closedInitially": true,
+      "initialState": "NORMAL",
+      "axis": "vertical"
+    },
+    {
+      "id": "generator-disconnect-2",
+      "label": "GEN DRIVE DISCONNECT 2",
+      "panel": "OH11",
+      "rectPx": [
+        847,
+        334,
+        200,
+        418
+      ],
+      "hinge": "top",
+      "hingeConfidence": "audit-owner-count-mapped",
+      "color": "red",
+      "states": [
+        "NORMAL",
+        "DISCONNECT"
+      ],
+      "confidence": "prior-native-aperture-calibrated",
+      "closedInitially": true,
+      "initialState": "NORMAL",
+      "axis": "vertical"
+    },
+    {
+      "id": "standby-power",
+      "label": "STANDBY POWER",
+      "panel": "OH11",
+      "rectPx": [
+        391,
+        232,
+        421,
+        184
+      ],
+      "hinge": "left",
+      "hingeConfidence": "audit-owner-count-mapped",
+      "color": "black",
+      "states": [
+        "BAT",
+        "OFF",
+        "AUTO"
+      ],
+      "confidence": "prior-native-aperture-calibrated",
+      "closedInitially": true,
+      "initialState": "BAT",
+      "axis": "horizontal"
+    },
+    {
+      "id": "emergency-exit-lights",
+      "label": "EMER EXIT LIGHTS",
+      "panel": "OH14",
+      "rectPx": [
+        450,
+        174,
+        300,
+        710
+      ],
+      "hinge": "top",
+      "hingeConfidence": "audit-owner-count-mapped",
+      "color": "black",
+      "states": [
+        "OFF",
+        "ARMED",
+        "ON"
+      ],
+      "confidence": "photo-preview-estimated",
+      "closedInitially": true,
+      "initialState": "OFF",
+      "axis": "vertical"
+    },
+    {
+      "id": "bus-transfer",
+      "label": "BUS TRANSFER",
+      "panel": "OH12",
+      "rectPx": [
+        325,
+        460,
+        368,
+        148
+      ],
+      "hinge": "left",
+      "hingeConfidence": "audit-owner-count-mapped",
+      "color": "black",
+      "states": [
+        "OFF",
+        "AUTO"
+      ],
+      "confidence": "prior-native-aperture-estimated",
+      "closedInitially": true,
+      "initialState": "OFF",
+      "axis": "horizontal"
+    },
+    {
+      "id": "passenger-oxygen",
+      "label": "PASS OXYGEN",
+      "panel": "UPPER",
+      "rectPx": [
+        1240,
+        535,
+        100,
+        180
+      ],
+      "hinge": "right",
+      "hingeConfidence": "audit-owner-count-mapped",
+      "color": "black",
+      "states": [
+        "NORMAL",
+        "ON"
+      ],
+      "confidence": "photo-preview-estimated",
+      "closedInitially": true,
+      "initialState": "NORMAL",
+      "axis": "horizontal"
+    },
+    {
+      "id": "flight-recorder-test",
+      "label": "FLIGHT RECORDER TEST",
+      "panel": "UPPER",
+      "rectPx": [
+        1365,
+        438,
+        113,
+        34
+      ],
+      "hinge": "left",
+      "hingeConfidence": "audit-owner-count-mapped",
+      "color": "black",
+      "states": [
+        "TEST",
+        "NORMAL"
+      ],
+      "confidence": "prior-source-location-calibrated-size-provisional",
+      "closedInitially": true,
+      "initialState": "NORMAL",
+      "axis": "horizontal"
+    },
+    {
+      "id": "antiskid",
+      "label": "ANTI-SKID",
+      "panel": "FO_INNER_BACKGROUND",
+      "rectPx": [
+        55,
+        560,
+        102,
+        168
+      ],
+      "hinge": "right",
+      "hingeConfidence": "audit-owner-count-mapped",
+      "color": "black",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "confidence": "user-screenshot-20261027-antiskid-highlight-estimate",
+      "closedInitially": true,
+      "initialState": "OFF",
+      "axis": "horizontal"
+    },
+    {
+      "id": "gpws-flap-inhibit",
+      "label": "GPWS FLAP INHIBIT",
+      "panel": "FO_INNER_BACKGROUND",
+      "rectPx": [
+        679,
+        1431,
+        61,
+        121
+      ],
+      "hinge": "top",
+      "hingeConfidence": "audit-owner-count-mapped",
+      "color": "black",
+      "states": [
+        "INHIBIT",
+        "NORMAL"
+      ],
+      "confidence": "source-original-existing-cavity-preview-estimate",
+      "closedInitially": true,
+      "initialState": "NORMAL",
+      "axis": "vertical"
+    },
+    {
+      "id": "gpws-gear-inhibit",
+      "label": "GPWS GEAR INHIBIT",
+      "panel": "FO_INNER_BACKGROUND",
+      "rectPx": [
+        742,
+        1431,
+        75,
+        121
+      ],
+      "hinge": "top",
+      "hingeConfidence": "audit-owner-count-mapped",
+      "color": "black",
+      "states": [
+        "INHIBIT",
+        "NORMAL"
+      ],
+      "confidence": "source-original-existing-cavity-preview-estimate",
+      "closedInitially": true,
+      "initialState": "NORMAL",
+      "axis": "vertical"
+    },
+    {
+      "id": "gpws-terrain-inhibit",
+      "label": "GPWS TERRAIN INHIBIT",
+      "panel": "FO_INNER_BACKGROUND",
+      "rectPx": [
+        602,
+        1431,
+        75,
+        121
+      ],
+      "hinge": "top",
+      "hingeConfidence": "audit-owner-count-mapped",
+      "color": "black",
+      "states": [
+        "INHIBIT",
+        "NORMAL"
+      ],
+      "confidence": "source-derived-cavity-position-native-verified",
+      "closedInitially": true,
+      "initialState": "NORMAL",
+      "axis": "vertical"
+    },
+    {
+      "id": "stab-trim",
+      "label": "STAB TRIM",
+      "panel": "PEDESTAL_RADIO",
+      "rectPx": [
+        798,
+        1153,
+        89,
+        155
+      ],
+      "hinge": "top",
+      "hingeConfidence": "UNCONFIRMED_STAB_TRIM_TEMP_TOP",
+      "color": "black",
+      "states": [
+        "OVERRIDE",
+        "NORMAL"
+      ],
+      "confidence": "pedestal-blank-photo-estimated",
+      "closedInitially": true,
+      "initialState": "NORMAL",
+      "axis": "vertical"
+    }
+  ],
+  "source": "panel-mosaic-lab/cockpit/guard-location-audit.json",
+  "originalPanelPhotosModified": false,
+  "warnings": [
+    "ANTISKID bounding rectangle estimated from screenshot, not source pixel-certified",
+    "STAB TRIM hinge assumed TOP until owner provides orientation",
+    "Three former BOTTOM guards provisionally mapped RIGHT to reconcile newest 11/3/3 directions",
+    "PASS OXYGEN black is a current count-based provisional color choice"
+  ]
+}

@@ -1,6 +1,6 @@
 {
   "schema": "b737-classic/guard-placement-audit/v2",
-  "version": "2026-10-27-guard-18-locations-gpws-triple-socket",
+  "version": "2026-10-27-owner18-antiskid-screenshot-terrain-left-r1",
   "scope": "MEASUREMENT-AND-REVIEW-ONLY_NOT_LIVE_INSTALLATION",
   "declaredByOwner": {
     "mainGuards": 17,
@@ -116,8 +116,8 @@
         918,
         1713
       ],
-      "image": "./assets/B737_Right_Main_Instruments_GPWS_TERRAIN_V2.png",
-      "fullAsset": "./assets/B737_Right_Main_Instruments_GPWS_TERRAIN_V2.png",
+      "image": "./assets/B737_Right_Main_Instruments_GPWS_TERRAIN_LEFT_V3.png",
+      "fullAsset": "./assets/B737_Right_Main_Instruments_GPWS_TERRAIN_LEFT_V3.png",
       "scope": "main-live-derived-photo",
       "pixelNote": "source native rectangles given in 918x1713; this small QA preview is cropped and should not be used directly for native panel position mapping",
       "preview": "./assets/gpws-terrain-qa-preview.webp"
@@ -547,12 +547,12 @@
     {
       "id": "antiskid",
       "label": "ANTI-SKID",
-      "panel": "MAIN_REFERENCE",
+      "panel": "FO_INNER_BACKGROUND",
       "rectPx": [
-        1243,
-        345,
         55,
-        93
+        560,
+        102,
+        168
       ],
       "hinge": "right",
       "color": "black",
@@ -560,16 +560,21 @@
         "OFF",
         "ON"
       ],
-      "confidence": "reference-photo-only-estimated",
-      "source": "MAIN_REFERENCE",
-      "notes": "Center instrument anti-skid panel. No verified matching source slot in the current composited main-panel layers.",
+      "confidence": "user-screenshot-20261027-antiskid-highlight-estimate",
+      "source": "FO_INNER_BACKGROUND",
+      "notes": "Confirmed ANTISKID recess location by user red box in live Unified main panel screenshot; native source dimensions approximated pending pixel alignment; same original FO INNER panel as GPWS",
       "mainReferenceRectPx": [
         1243,
         345,
         55,
         93
       ],
-      "unifiedMosaicCanvasRectPx": null
+      "unifiedMosaicCanvasRectPx": [
+        2588.58,
+        4267.86,
+        82.67,
+        136.16
+      ]
     },
     {
       "id": "gpws-flap-inhibit",
@@ -589,7 +594,7 @@
       ],
       "confidence": "source-original-existing-cavity-preview-estimate",
       "source": "FO_INNER_BACKGROUND",
-      "notes": "Ground proximity panel visible in full main instrument reference; location on current separately composed main layers not registered.",
+      "notes": "Latest owner order left to right is TERRAIN / FLAP / GEAR; native base: GPWS-TERRAIN-LEFT-OF-FLAP-V3",
       "mainReferenceRectPx": [
         1455,
         699,
@@ -597,10 +602,10 @@
         82
       ],
       "unifiedMosaicCanvasRectPx": [
-        1597.15,
-        4266.88,
-        24.72,
-        49.03
+        3094.3,
+        4973.76,
+        49.44,
+        98.07
       ]
     },
     {
@@ -621,7 +626,7 @@
       ],
       "confidence": "source-original-existing-cavity-preview-estimate",
       "source": "FO_INNER_BACKGROUND",
-      "notes": "Ground proximity panel visible in full main instrument reference; location on current separately composed main layers not registered.",
+      "notes": "Latest owner order left to right is TERRAIN / FLAP / GEAR; native base: GPWS-TERRAIN-LEFT-OF-FLAP-V3",
       "mainReferenceRectPx": [
         1515,
         699,
@@ -629,10 +634,10 @@
         82
       ],
       "unifiedMosaicCanvasRectPx": [
-        1622.68,
-        4266.88,
-        30.39,
-        49.03
+        3145.36,
+        4973.76,
+        60.78,
+        98.07
       ]
     },
     {
@@ -640,7 +645,7 @@
       "label": "GPWS TERRAIN INHIBIT",
       "panel": "FO_INNER_BACKGROUND",
       "rectPx": [
-        820,
+        602,
         1431,
         75,
         121
@@ -653,13 +658,13 @@
       ],
       "confidence": "source-derived-cavity-position-native-verified",
       "source": "FO_INNER_BACKGROUND",
-      "notes": "New third cavity to the right of Gear Inhibit in updated 918x1713 GPWS right-main blank image; no original photo changed. Font and plate fit visual QA conducted; underlying switch sprite not installed.",
+      "notes": "Latest owner order left to right is TERRAIN / FLAP / GEAR; native base: GPWS-TERRAIN-LEFT-OF-FLAP-V3",
       "mainReferenceRectPx": null,
       "unifiedMosaicCanvasRectPx": [
-        1654.29,
-        4266.88,
-        30.39,
-        49.03
+        3031.9,
+        4973.76,
+        60.78,
+        98.07
       ]
     },
     {
@@ -697,7 +702,7 @@
     "mainReferenceMissing": 0,
     "pedestalApprox": 1,
     "livePlacementApproved": 0,
-    "foundMainActiveNative": 3,
+    "foundMainActiveNative": 4,
     "verifiedBackgroundSlotAdded": true,
     "currentSourcePath": "panel-mosaic-lab/cockpit/assets/B737_Right_Main_Instruments_GPWS_TERRAIN_V2.png"
   }

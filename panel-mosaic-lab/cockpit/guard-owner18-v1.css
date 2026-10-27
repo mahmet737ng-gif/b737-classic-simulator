@@ -1,0 +1,23 @@
+/* Owner-original RGBA photographic guarded-switch assets.
+   Exact original panel photographs remain immutable. Coordinates are native-image-based. */
+.owner18-guard-control{
+ position:absolute;display:block;box-sizing:border-box;
+ margin:0;padding:0;border:0;outline:none;border-radius:0;
+ background:transparent;box-shadow:none;
+ appearance:none;cursor:pointer;overflow:visible;
+ z-index:35;touch-action:manipulation;
+ transform:none;transform-origin:center;
+}
+.owner18-guard-control .owner18-switch-photo{
+ display:block;position:absolute;left:50%;top:50%;
+ object-fit:fill;max-width:none;max-height:none;
+ margin:0;padding:0;pointer-events:none;user-select:none;
+ transform-origin:center center;
+ filter:none;
+}
+.owner18-guard-control[data-cover="closed"] .owner18-switch-photo{transition:filter .07s ease-out}
+.owner18-guard-control:focus-visible{outline:2px solid #87dcea;outline-offset:2px}
+#atlasAbsolute .atlas-image-window>.owner18-guard-control{z-index:50}
+#region-main .region-native>.owner18-guard-control,
+#region-pedestal .region-native>.owner18-guard-control{z-index:55}
+body.pan-mode .owner18-guard-control{pointer-events:none}
