@@ -1,0 +1,37 @@
+name: Build B737 Classic GPWS third guarded socket
+on:
+  push:
+    paths:
+      - 'panel-mosaic-lab/cockpit/tools/build_gpws_terrain.py'
+      - '.github/workflows/build-gpws-terrain.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  build-gpws-terrain-background:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact source photograph
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install image verification and editing dependencies
+        run: pip install --disable-pip-version-check pillow numpy opencv-python-headless
+      - name: Recreate only modified background from original source image
+        run: python panel-mosaic-lab/cockpit/tools/build_gpws_terrain.py
+      - name: Commit derived background, preview, assembly and audit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add panel-mosaic-lab/cockpit/assets/B737_Right_Main_Instruments_GPWS_TERRAIN_V2.png
+          git add panel-mosaic-lab/cockpit/assets/gpws-terrain-qa-preview.webp
+          git add panel-mosaic-lab/cockpit/assets/gpws-terrain-v2-audit.json
+          git add panel-mosaic-lab/cockpit/assembly.json
+          git diff --cached --stat
+          git diff --cached --quiet && exit 0
+          git commit -m "Install GPWS terrain-inhibit third socket and aligned labels on main panel photo derivative"
+          git push origin HEAD:main
