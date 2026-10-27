@@ -100,15 +100,25 @@ def center(text,x,y,font):
     bb=draw.textbbox((0,0),text,font=font)
     xp=x-(bb[2]-bb[0])/2
     draw.text((round(xp),y),text,font=font,fill=ink,stroke_width=0)
-# Label each guarded cavity in the original stencil-like capital typography.
-# Both rows are ABOVE rather than beside the switches.
-for title,cx in [('FLAP',709),('GEAR',779),('TERRAIN',857)]:
-    # Original silver screw above GEAR must stay untouched.
-    caption_x=cx-13 if title=='GEAR' else cx
-    center(title,caption_x,1391,small)
-    center('INHIBIT',caption_x,1405,tiny)
-# The two native NORMAL labels remain; the middle column gains its own label.
-# Center NORMAL was photo-cloned from the matching original caption above.
+# Exact source-panel mounting screws occupy the second-row label height.
+# Therefore three complete one-line captions are placed in the clean metal band
+# BETWEEN the original GROUND PROXIMITY heading and the mounting screws.
+# Do not layer INHIBIT over screws/cavity rims or shift the screw positions.
+label_font=ImageFont.truetype(font_path,10)
+caption_centers={"FLAP INHIBIT":709,"GEAR INHIBIT":779,"TERRAIN INHIBIT":857}
+caption_bounds=[]
+for title,cx in caption_centers.items():
+    bb=draw.textbbox((0,0),title,font=label_font)
+    left=round(cx-(bb[2]-bb[0])/2)
+    top=1388+bb[1]
+    right=left+(bb[2]-bb[0])
+    bottom=1388+bb[3]
+    assert 675<=left<right<=900 and 1389<=top<bottom<=1402,(title,left,top,right,bottom)
+    caption_bounds.append([left,top,right,bottom])
+    draw.text((left,1388),title,font=label_font,fill=ink)
+for a,b in zip(caption_bounds,caption_bounds[1:]):
+    assert a[2]+6<b[0],"Caption overlap with neighbor"
+# NORMAL lettering remains precisely centered beneath each of the three sockets.
 # Enforce unchanged RGB values outside the narrow GPWS change rectangle.
 modified=np.array(photo)
 change_rect=(600,1393,918,1595)
@@ -157,6 +167,8 @@ r={"sourceSha256":hashlib.sha256(raw).hexdigest(),"derivativeSha256":hashlib.sha
    "sourceSize":before.size,"generatedPixelsChanged":int(np.any(old!=modified,axis=2).sum()),
    "changeRectNativePx":list(change_rect),"sourceUnmodified":hashlib.sha256(SOURCE.read_bytes()).hexdigest()==hashlib.sha256(raw).hexdigest(),
    "switches":["FLAP INHIBIT","GEAR INHIBIT","TERRAIN INHIBIT"],"terrainPlacement":"RIGHT_OF_GEAR_INHIBIT",
-   "fonts":"DejaVuSansCondensed, DejaVuSansCondensed-Bold; source is photo-textured; direct source exact glyph reproduction unavailable"}
+   "fonts":"DejaVuSansCondensed 10px from system font; original photo backdrop unchanged outside GPWS region",
+   "captionBoundsNativePx":caption_bounds,"captionText":list(caption_centers.keys()),
+   "captionLayout":"ONE_ROW_CENTERED_ABOVE_SOCKETS_CLEAR_OF_MOUNTING_SCREWS"}
 REPORT.write_text(json.dumps(r,indent=2)+"\n")
 print("PASS GPWS third socket",r)
