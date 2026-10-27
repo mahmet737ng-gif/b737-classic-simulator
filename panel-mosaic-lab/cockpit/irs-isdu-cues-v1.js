@@ -8,6 +8,10 @@
   const KEYS=Object.freeze(['ENT','CLR']);
   const SIDES=Object.freeze(['left','right']);
   const state={ENT:[false,false],CLR:[false,false]};
+  // Kept separate from manual states: global lamp test temporarily forces ON,
+  // then restores each lamp to exactly its prior manually selected state.
+  let globalLampTest=false;
+  function effectiveLit(key,index){return globalLampTest||state[key][index];}
   let panel=null;
   function validate(key){if(!KEYS.includes(key))throw new RangeError('Unknown ISDU cue '+key);}
   function validSide(side){
@@ -34,14 +38,20 @@
           const cap=button.querySelector('.irs-photo-key-cap');
           (cap||button).append(lens);
         }
-        lens.dataset.lit=String(state[key][i]);
+        lens.dataset.lit=String(effectiveLit(key,i));
       }
-      button.dataset.cueLeft=String(state[key][0]);
-      button.dataset.cueRight=String(state[key][1]);
+      button.dataset.cueLeft=String(effectiveLit(key,0));
+      button.dataset.cueRight=String(effectiveLit(key,1));
     }
     return true;
   }
-  function snapshot(){return {ENT:[...state.ENT],CLR:[...state.CLR],frontendOnly:true};}
+  function snapshot(){
+    return {
+      ENT:[...state.ENT],CLR:[...state.CLR],
+      effective:{ENT:[0,1].map(i=>effectiveLit('ENT',i)),CLR:[0,1].map(i=>effectiveLit('CLR',i))},
+      globalLampTest,frontendOnly:true
+    };
+  }
   function render(){
     mountLenses();
     if(!panel||!panel.isConnected)return;
@@ -49,17 +59,24 @@
       for(let i=0;i<2;i++){
         const b=panel.querySelector('[data-irs-cue-key="'+key+'"][data-irs-cue-index="'+i+'"]');
         if(b){
-          b.setAttribute('aria-pressed',String(state[key][i]));
-          b.textContent=(i===0?'چپ':'راست')+(state[key][i]?' · ON':' · OFF');
+          b.setAttribute('aria-pressed',String(effectiveLit(key,i)));
+          b.textContent=(i===0?'چپ':'راست')+(effectiveLit(key,i)?' · ON':' · OFF');
         }
       }
     }
-    const n=state.ENT.filter(Boolean).length+state.CLR.filter(Boolean).length;
+    const n=[...KEYS].reduce((total,key)=>total+[0,1].filter(i=>effectiveLit(key,i)).length,0);
     const status=panel.querySelector('#irsCueTestStatus');
-    if(status)status.textContent='WHITE CUES '+n+'/4 ON · VISUAL ONLY';
+    if(status)status.textContent='WHITE CUES '+n+'/4 ON · '+(globalLampTest?'GLOBAL LAMP TEST':'VISUAL ONLY');
   }
   function notify(){
     root.dispatchEvent(new CustomEvent('b737:irs-cue-visual-change',{detail:snapshot()}));
+  }
+  function setGlobalLampTest(active){
+    if(typeof active!=='boolean')throw new TypeError('Global visual test must be boolean');
+    globalLampTest=active;
+    render();
+    notify();
+    return snapshot();
   }
   function setCueLamp(key,side,lit){
     validate(key);
@@ -157,6 +174,12 @@
   }
   function boot(){
     makeTestPanel();makeLauncher();
+    // The app is the one authority for the global lamp-test mode.
+    // Read its current state in case the IRS module mounted after the test began.
+    globalLampTest=document.documentElement?.dataset?.lampVisualTest==='true';
+    root.addEventListener('b737:visual-test',event=>{
+      if(typeof event.detail?.active==='boolean')setGlobalLampTest(event.detail.active);
+    });
     const observer=new MutationObserver(()=>{
       if(mountLenses()){observer.disconnect();render();}
     });
@@ -164,7 +187,7 @@
     root.addEventListener('b737:cockpit-mounted',()=>{mountLenses();render();});
     render();
   }
-  root.B737ISDUCues=Object.freeze({setCueLamp,setCue,setAll,reset:()=>setAll(false),getState:snapshot,mountLenses});
+  root.B737ISDUCues=Object.freeze({setCueLamp,setCue,setAll,reset:()=>setAll(false),setGlobalLampTest,getState:snapshot,mountLenses});
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});
   else boot();
 })(window);
