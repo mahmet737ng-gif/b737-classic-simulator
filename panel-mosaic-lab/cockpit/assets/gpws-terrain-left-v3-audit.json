@@ -1,8 +1,8 @@
 {
   "sourceSha256": "171bf9e8d21347e7a522ebc86b19cfe0b967f0503d26c483d8f3d685f719576a",
   "sourceUnmodified": true,
-  "derivativeSha256": "b9d716f6f6d9233b72a3d99571d3fc53335bb39b5d6420d2aa0716c09886d8ce",
-  "gitBlobSha": "d02db3b53fd55d6abfba73f7869cc00e616761e3",
+  "derivativeSha256": "ef79688bb0caaeb7de57c6ed24194118e37d39d65aa25391e63517be96284e0f",
+  "gitBlobSha": "5b03c883362b193b7589962b280ef909eea68313",
   "orderLeftToRight": [
     "TERRAIN INHIBIT",
     "FLAP INHIBIT",
@@ -68,7 +68,7 @@
     909,
     1595
   ],
-  "pixelsDifferent": 20350,
+  "pixelsDifferent": 29288,
   "unrelatedSourcePixelsIdentical": true,
   "pixelExactTypography": false,
   "font": "DejaVu Sans Condensed Bold Oblique name 14px / Oblique secondary 10px, with original photo NORMAL letter glyphs"
