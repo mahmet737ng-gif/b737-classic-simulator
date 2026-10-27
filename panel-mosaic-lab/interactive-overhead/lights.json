@@ -1,6 +1,6 @@
 {
   "schema": "b737.overhead.lights.v1",
-  "version": "LGT-0012-GUARDS-CLEARED",
+  "version": "LGT-0012",
   "baseVersion": "UPD-0012-OVH-measured-seams",
   "assets": {
     "ALIGN_WHITE": {
