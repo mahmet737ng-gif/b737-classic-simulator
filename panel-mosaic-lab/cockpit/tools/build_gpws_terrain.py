@@ -54,27 +54,35 @@ mask[ry1:ry2,rx1:rx2]=bright
 if int(mask.sum())>0:
     arr=cv2.inpaint(arr,mask,2,cv2.INPAINT_TELEA)
 
-# The original photo prints GEAR / INHIBIT beside the right-hand well.
-# In the new left-to-right order it is obsolete. Remove letter-shaped pixels
-# ONLY in that side-label patch, without painting over the real panel fasteners.
-gear_roi=(826,1421,875,1464)
-gx1,gy1,gx2,gy2=gear_roi
-letter_pixels=old[gy1:gy2,gx1:gx2]
-intense=np.all(letter_pixels>143,axis=2).astype(np.uint8)*255
-intense=cv2.dilate(intense,np.ones((3,3),dtype=np.uint8),iterations=1)
-text_mask=np.zeros(old.shape[:2],np.uint8)
-text_mask[gy1:gy2,gx1:gx2]=intense
-assert np.count_nonzero(text_mask)>20,"Expected original right-side GEAR/INHIBIT lettering"
-arr=cv2.inpaint(arr,text_mask,3,cv2.INPAINT_TELEA)
+# Clone clean metallic texture from an unobstructed part of the SAME photo
+# and smoothly merge at the edges. Avoid inpainting only white pixels: it left
+# dark ghosts and stray letters in the earlier review.
+def clean_photo_region(destination,source,feather=9):
+    dx1,dy1,dx2,dy2=destination
+    sx1,sy1,sx2,sy2=source
+    h,w=dy2-dy1,dx2-dx1
+    assert (h,w)==(sy2-sy1,sx2-sx1)
+    patch=old[sy1:sy2,sx1:sx2].astype(np.float32)
+    target=arr[dy1:dy2,dx1:dx2].astype(np.float32)
+    # Match local illumination using color along a border without typography.
+    correct=np.median(target[:3,:,:].reshape(-1,3)-patch[:3,:,:].reshape(-1,3),axis=0)
+    patch=np.clip(patch+correct.reshape(1,1,3),0,255)
+    yy,xx=np.ogrid[:h,:w]
+    distance=np.minimum.reduce(np.broadcast_arrays(xx,yy,w-1-xx,h-1-yy)).astype(np.float32)
+    alpha=np.clip((distance+0.5)/float(feather),0,1)[:,:,None]
+    arr[dy1:dy2,dx1:dx2]=np.clip(patch*alpha+target*(1-alpha),0,255).astype(np.uint8)
 
-# Keep three NORMAL labels identical by sampling the actual photographic
-# letter shapes from the untouched original switch's legend.
+# Original GEAR / INHIBIT was placed to the RIGHT of the existing GEAR well.
+# Remove BOTH old side legends, retaining adjacent true metal screw heads.
+clean_photo_region((816,1425,889,1480),(816,1597,889,1652),feather=8)
+
+# The old side-printed NORMAL must not remain as a ghost fourth legend.
+# Clean a larger strip with soft edges, then reuse the photographic NORMAL
+# lettering on exactly the three requested new coordinates.
 y0=1556
-label_strip=(593,1553,899,1581)
+label_strip=(590,1543,900,1594)
 nx1,ny1,nx2,ny2=label_strip
-clean_metal=old[1596:1624,nx1:nx2].copy()
-assert clean_metal.shape==arr[ny1:ny2,nx1:nx2].shape
-arr[ny1:ny2,nx1:nx2]=clean_metal
+clean_photo_region(label_strip,(590,1600,900,1651),feather=9)
 glyphs=old[1553:1581,656:738].copy()
 lum=glyphs.mean(axis=2)
 a=np.clip((lum.astype(float)-117)/94,0,1)
