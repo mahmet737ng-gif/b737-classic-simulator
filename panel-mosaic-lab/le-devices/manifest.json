@@ -1,0 +1,305 @@
+{
+  "schema": "b737.le-devices-front-end.v1",
+  "version": "LEDEV-0001",
+  "scope": "front-end-only",
+  "source": "owner reference image (432x195), 2026-10-28",
+  "sourceImageSize": [
+    432,
+    195
+  ],
+  "background": "panel-background.svg",
+  "testButton": "recessed-test-button.svg",
+  "windowCount": 36,
+  "columns": 12,
+  "states": [
+    "RETRACTED",
+    "TRANSIT",
+    "EXT",
+    "FULL_EXT"
+  ],
+  "illumination": "BRIGHT (default); DIM optional",
+  "physicalTest": "momentary recessed button; override 36 lamps until release",
+  "deviceOrder": {
+    "leftOutboardToInboard": [
+      "SLAT_1",
+      "SLAT_2",
+      "SLAT_3",
+      "SLAT_4",
+      "FLAP_1",
+      "FLAP_2"
+    ],
+    "rightInboardToOutboard": [
+      "FLAP_3",
+      "FLAP_4",
+      "SLAT_5",
+      "SLAT_6",
+      "SLAT_7",
+      "SLAT_8"
+    ]
+  },
+  "windows": [
+    {
+      "id": "LE_SLAT_1_TRANSIT",
+      "device": "SLAT_1",
+      "level": "TRANSIT",
+      "color": "AMBER",
+      "defaultLit": false
+    },
+    {
+      "id": "LE_SLAT_1_EXT",
+      "device": "SLAT_1",
+      "level": "EXT",
+      "color": "GREEN",
+      "defaultLit": false
+    },
+    {
+      "id": "LE_SLAT_1_FULL_EXT",
+      "device": "SLAT_1",
+      "level": "FULL_EXT",
+      "color": "GREEN",
+      "defaultLit": false
+    },
+    {
+      "id": "LE_SLAT_2_TRANSIT",
+      "device": "SLAT_2",
+      "level": "TRANSIT",
+      "color": "AMBER",
+      "defaultLit": false
+    },
+    {
+      "id": "LE_SLAT_2_EXT",
+      "device": "SLAT_2",
+      "level": "EXT",
+      "color": "GREEN",
+      "defaultLit": false
+    },
+    {
+      "id": "LE_SLAT_2_FULL_EXT",
+      "device": "SLAT_2",
+      "level": "FULL_EXT",
+      "color": "GREEN",
+      "defaultLit": false
+    },
+    {
+      "id": "LE_SLAT_3_TRANSIT",
+      "device": "SLAT_3",
+      "level": "TRANSIT",
+      "color": "AMBER",
+      "defaultLit": false
+    },
+    {
+      "id": "LE_SLAT_3_EXT",
+      "device": "SLAT_3",
+      "level": "EXT",
+      "color": "GREEN",
+      "defaultLit": false
+    },
+    {
+      "id": "LE_SLAT_3_FULL_EXT",
+      "device": "SLAT_3",
+      "level": "FULL_EXT",
+      "color": "GREEN",
+      "defaultLit": false
+    },
+    {
+      "id": "LE_SLAT_4_TRANSIT",
+      "device": "SLAT_4",
+      "level": "TRANSIT",
+      "color": "AMBER",
+      "defaultLit": false
+    },
+    {
+      "id": "LE_SLAT_4_EXT",
+      "device": "SLAT_4",
+      "level": "EXT",
+      "color": "GREEN",
+      "defaultLit": false
+    },
+    {
+      "id": "LE_SLAT_4_FULL_EXT",
+      "device": "SLAT_4",
+      "level": "FULL_EXT",
+      "color": "GREEN",
+      "defaultLit": false
+    },
+    {
+      "id": "LE_FLAP_1_TRANSIT",
+      "device": "FLAP_1",
+      "level": "TRANSIT",
+      "color": "AMBER",
+      "defaultLit": false
+    },
+    {
+      "id": "LE_FLAP_1_EXT",
+      "device": "FLAP_1",
+      "level": "EXT",
+      "color": "GREEN",
+      "defaultLit": false
+    },
+    {
+      "id": "LE_FLAP_1_FULL_EXT",
+      "device": "FLAP_1",
+      "level": "FULL_EXT",
+      "color": "GREEN",
+      "defaultLit": false
+    },
+    {
+      "id": "LE_FLAP_2_TRANSIT",
+      "device": "FLAP_2",
+      "level": "TRANSIT",
+      "color": "AMBER",
+      "defaultLit": false
+    },
+    {
+      "id": "LE_FLAP_2_EXT",
+      "device": "FLAP_2",
+      "level": "EXT",
+      "color": "GREEN",
+      "defaultLit": false
+    },
+    {
+      "id": "LE_FLAP_2_FULL_EXT",
+      "device": "FLAP_2",
+      "level": "FULL_EXT",
+      "color": "GREEN",
+      "defaultLit": false
+    },
+    {
+      "id": "LE_FLAP_3_TRANSIT",
+      "device": "FLAP_3",
+      "level": "TRANSIT",
+      "color": "AMBER",
+      "defaultLit": false
+    },
+    {
+      "id": "LE_FLAP_3_EXT",
+      "device": "FLAP_3",
+      "level": "EXT",
+      "color": "GREEN",
+      "defaultLit": false
+    },
+    {
+      "id": "LE_FLAP_3_FULL_EXT",
+      "device": "FLAP_3",
+      "level": "FULL_EXT",
+      "color": "GREEN",
+      "defaultLit": false
+    },
+    {
+      "id": "LE_FLAP_4_TRANSIT",
+      "device": "FLAP_4",
+      "level": "TRANSIT",
+      "color": "AMBER",
+      "defaultLit": false
+    },
+    {
+      "id": "LE_FLAP_4_EXT",
+      "device": "FLAP_4",
+      "level": "EXT",
+      "color": "GREEN",
+      "defaultLit": false
+    },
+    {
+      "id": "LE_FLAP_4_FULL_EXT",
+      "device": "FLAP_4",
+      "level": "FULL_EXT",
+      "color": "GREEN",
+      "defaultLit": false
+    },
+    {
+      "id": "LE_SLAT_5_TRANSIT",
+      "device": "SLAT_5",
+      "level": "TRANSIT",
+      "color": "AMBER",
+      "defaultLit": false
+    },
+    {
+      "id": "LE_SLAT_5_EXT",
+      "device": "SLAT_5",
+      "level": "EXT",
+      "color": "GREEN",
+      "defaultLit": false
+    },
+    {
+      "id": "LE_SLAT_5_FULL_EXT",
+      "device": "SLAT_5",
+      "level": "FULL_EXT",
+      "color": "GREEN",
+      "defaultLit": false
+    },
+    {
+      "id": "LE_SLAT_6_TRANSIT",
+      "device": "SLAT_6",
+      "level": "TRANSIT",
+      "color": "AMBER",
+      "defaultLit": false
+    },
+    {
+      "id": "LE_SLAT_6_EXT",
+      "device": "SLAT_6",
+      "level": "EXT",
+      "color": "GREEN",
+      "defaultLit": false
+    },
+    {
+      "id": "LE_SLAT_6_FULL_EXT",
+      "device": "SLAT_6",
+      "level": "FULL_EXT",
+      "color": "GREEN",
+      "defaultLit": false
+    },
+    {
+      "id": "LE_SLAT_7_TRANSIT",
+      "device": "SLAT_7",
+      "level": "TRANSIT",
+      "color": "AMBER",
+      "defaultLit": false
+    },
+    {
+      "id": "LE_SLAT_7_EXT",
+      "device": "SLAT_7",
+      "level": "EXT",
+      "color": "GREEN",
+      "defaultLit": false
+    },
+    {
+      "id": "LE_SLAT_7_FULL_EXT",
+      "device": "SLAT_7",
+      "level": "FULL_EXT",
+      "color": "GREEN",
+      "defaultLit": false
+    },
+    {
+      "id": "LE_SLAT_8_TRANSIT",
+      "device": "SLAT_8",
+      "level": "TRANSIT",
+      "color": "AMBER",
+      "defaultLit": false
+    },
+    {
+      "id": "LE_SLAT_8_EXT",
+      "device": "SLAT_8",
+      "level": "EXT",
+      "color": "GREEN",
+      "defaultLit": false
+    },
+    {
+      "id": "LE_SLAT_8_FULL_EXT",
+      "device": "SLAT_8",
+      "level": "FULL_EXT",
+      "color": "GREEN",
+      "defaultLit": false
+    }
+  ],
+  "deployment": {
+    "module": "panel-mosaic-lab/le-devices/panel.js",
+    "mounts": [
+      "panel-mosaic-lab/cockpit/overhead-stage.html",
+      "panel-mosaic-lab/all-overhead/index.html"
+    ],
+    "atlas": "UPPER",
+    "coordinateStatus": "provisional visual fit; atlas source image ROI not independently measured"
+  },
+  "protectedAssets": "Locked OH01-06 source and all guarded switches remain untouched.",
+  "backend": "Not connected. Future aircraft model writes via B737LeadingEdgeDevices.setDevice(id,state)."
+}
