@@ -1,0 +1,666 @@
+{
+  "schema": "b737-classic/guard-placement-audit/v2",
+  "version": "2026-10-27-guard-18-locations",
+  "scope": "MEASUREMENT-AND-REVIEW-ONLY_NOT_LIVE_INSTALLATION",
+  "declaredByOwner": {
+    "mainGuards": 17,
+    "totalIncludingStabTrim": 18,
+    "mainHinges": {
+      "top": 11,
+      "left": 3,
+      "right": 3
+    },
+    "mainColors": {
+      "red": 3,
+      "black": 14
+    }
+  },
+  "coordinateConventions": {
+    "rectPx": "[left,top,width,height] in the original source image's native pixels, not physical millimeters",
+    "overheadCanvasRectPx": "approximate projected rect on 2220x3312 overhead mosaic. Canvas top-left as origin.",
+    "unifiedMosaicCanvasRectPx": "approximate rect in full 4400x8100 cockpit assembly, from assembly.json. Reference-only panels intentionally lack active mapping.",
+    "imageResolution": "All preview photos are scaled derivatives of user-locked original panels; original image files never edited."
+  },
+  "orientationRule": {
+    "top": 0,
+    "left": -90,
+    "right": 90,
+    "bottom": 180,
+    "rotationNote": "Sprite's original closed/open upright presentation is the 0-degree top hinge; same transform applies to both frames. No 180-degree bottom hinge in this newly requested mapping."
+  },
+  "legacyConflict": {
+    "savedOwnerQuiz": "11 top, 3 left, 3 bottom from 2026-10-26; latest message says 11 top, 3 left, 3 right",
+    "newRightAssignments": "Temporarily mapping prior 3 bottom cases (alternate-flaps-master, passenger-oxygen, antiskid) to right hinges. Owner has confirmed totals but not explicitly re-identified the three individual right hinges in this message.",
+    "savedColorDistribution": "Previous registered graphics have four red items (alternate-flaps-master, both generator disconnects, passenger-oxygen). Latest message says three red.",
+    "newBlackAssignment": "Passenger oxygen provisionally black, so exactly 3 red across 17; requires owner visual confirmation."
+  },
+  "physicalDimensionsMillimeters": "UNKNOWN_DO_NOT_FABRICATE",
+  "pixelPrecision": "AUDIT_ESTIMATE_ONLY_UNLESS_EXPLICITLY_CALIBRATED; USER_APPROVAL_REQUIRED",
+  "sources": {
+    "UPPER": {
+      "label": "OH01–OH06 overhead upper",
+      "natural": [
+        1731,
+        909
+      ],
+      "image": "./performance/9d8ac0ac86bdb92c040e-q96-768.webp",
+      "scope": "overhead"
+    },
+    "OH07": {
+      "label": "OH07 FLT CONTROL / SPOILER / ALT FLAPS",
+      "natural": [
+        913,
+        1723
+      ],
+      "image": "./performance/c8245831458450691a9d-q96-768.webp",
+      "scope": "overhead"
+    },
+    "OH10": {
+      "label": "OH10 ELECTRICAL / BATTERY",
+      "natural": [
+        1095,
+        1436
+      ],
+      "image": "./performance/9a1ca4d6cfb277ec1404-q96-768.webp",
+      "scope": "overhead"
+    },
+    "OH11": {
+      "label": "OH11 GEN DRIVE / STANDBY POWER",
+      "natural": [
+        1203,
+        1308
+      ],
+      "image": "./performance/86cf2f1de81146756adf-q96-768.webp",
+      "scope": "overhead"
+    },
+    "OH12": {
+      "label": "OH12 BUS TRANSFER",
+      "natural": [
+        1024,
+        1536
+      ],
+      "image": "./performance/709cb15a86f9038ca082-q96-768.webp",
+      "scope": "overhead"
+    },
+    "OH14": {
+      "label": "OH14 EMER EXIT",
+      "natural": [
+        1074,
+        1464
+      ],
+      "image": "./performance/7a707630ada8d1ae84a7-q96-768.webp",
+      "scope": "overhead"
+    },
+    "MAIN_REFERENCE": {
+      "label": "MAIN INSTRUMENT PHOTO / ANTI-SKID / GROUND PROXIMITY",
+      "natural": [
+        2100,
+        914
+      ],
+      "image": "../../assets/main-panel.webp",
+      "scope": "reference-only"
+    },
+    "PEDESTAL_RADIO": {
+      "label": "PEDESTAL RADIO / STAB TRIM (bottom right)",
+      "natural": [
+        1122,
+        1402
+      ],
+      "image": "./performance/7a41044771faad1d59f5-q96-768.webp",
+      "scope": "pedestal"
+    }
+  },
+  "records": [
+    {
+      "id": "flight-control-a",
+      "label": "FLT CONTROL A",
+      "panel": "OH07",
+      "rectPx": [
+        135,
+        100,
+        165,
+        265
+      ],
+      "hinge": "top",
+      "color": "black",
+      "states": [
+        "STBY RUD",
+        "OFF",
+        "ON"
+      ],
+      "confidence": "photo-preview-estimated",
+      "source": "OH07-08",
+      "notes": "",
+      "overheadCanvasRectPx": [
+        76.49,
+        1337.99,
+        89.82,
+        151.02
+      ],
+      "unifiedMosaicCanvasRectPx": [
+        1166.49,
+        1447.99,
+        89.82,
+        151.02
+      ]
+    },
+    {
+      "id": "flight-control-b",
+      "label": "FLT CONTROL B",
+      "panel": "OH07",
+      "rectPx": [
+        305,
+        100,
+        165,
+        265
+      ],
+      "hinge": "top",
+      "color": "black",
+      "states": [
+        "STBY RUD",
+        "OFF",
+        "ON"
+      ],
+      "confidence": "photo-preview-estimated",
+      "source": "OH07-08",
+      "notes": "",
+      "overheadCanvasRectPx": [
+        169.03,
+        1337.99,
+        89.82,
+        151.02
+      ],
+      "unifiedMosaicCanvasRectPx": [
+        1259.03,
+        1447.99,
+        89.82,
+        151.02
+      ]
+    },
+    {
+      "id": "spoiler-a",
+      "label": "SPOILER A",
+      "panel": "OH07",
+      "rectPx": [
+        135,
+        655,
+        165,
+        275
+      ],
+      "hinge": "top",
+      "color": "black",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "confidence": "photo-preview-estimated",
+      "source": "OH07-08",
+      "notes": "",
+      "overheadCanvasRectPx": [
+        76.49,
+        1654.29,
+        89.82,
+        156.72
+      ],
+      "unifiedMosaicCanvasRectPx": [
+        1166.49,
+        1764.29,
+        89.82,
+        156.72
+      ]
+    },
+    {
+      "id": "spoiler-b",
+      "label": "SPOILER B",
+      "panel": "OH07",
+      "rectPx": [
+        304,
+        655,
+        165,
+        275
+      ],
+      "hinge": "top",
+      "color": "black",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "confidence": "photo-preview-estimated",
+      "source": "OH07-08",
+      "notes": "",
+      "overheadCanvasRectPx": [
+        168.49,
+        1654.29,
+        89.82,
+        156.72
+      ],
+      "unifiedMosaicCanvasRectPx": [
+        1258.49,
+        1764.29,
+        89.82,
+        156.72
+      ]
+    },
+    {
+      "id": "alternate-flaps-master",
+      "label": "ALTERNATE FLAPS MASTER",
+      "panel": "OH07",
+      "rectPx": [
+        517,
+        408,
+        135,
+        277
+      ],
+      "hinge": "right",
+      "color": "red",
+      "states": [
+        "OFF",
+        "ARM"
+      ],
+      "confidence": "photo-preview-estimated",
+      "source": "OH07-08",
+      "notes": "Hinge right is newly requested; former saved owner quiz said bottom. Color remains provisional.",
+      "overheadCanvasRectPx": [
+        284.43,
+        1513.52,
+        73.49,
+        157.86
+      ],
+      "unifiedMosaicCanvasRectPx": [
+        1374.43,
+        1623.52,
+        73.49,
+        157.86
+      ]
+    },
+    {
+      "id": "battery-master",
+      "label": "BATTERY MASTER",
+      "panel": "OH10",
+      "rectPx": [
+        186,
+        1141,
+        156,
+        201
+      ],
+      "hinge": "top",
+      "color": "black",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "confidence": "photo-preview-estimated",
+      "source": "OH10",
+      "notes": "",
+      "overheadCanvasRectPx": [
+        584.25,
+        1564.95,
+        70.66,
+        94.06
+      ],
+      "unifiedMosaicCanvasRectPx": [
+        1674.25,
+        1674.95,
+        70.66,
+        94.06
+      ]
+    },
+    {
+      "id": "generator-disconnect-1",
+      "label": "GEN DRIVE DISCONNECT 1",
+      "panel": "OH11",
+      "rectPx": [
+        154,
+        334,
+        200,
+        418
+      ],
+      "hinge": "top",
+      "color": "red",
+      "states": [
+        "NORMAL",
+        "DISCONNECT"
+      ],
+      "confidence": "prior-native-aperture-calibrated",
+      "source": "OH11",
+      "notes": "",
+      "overheadCanvasRectPx": [
+        563.49,
+        1842.17,
+        82.46,
+        174.17
+      ],
+      "unifiedMosaicCanvasRectPx": [
+        1653.49,
+        1952.17,
+        82.46,
+        174.17
+      ]
+    },
+    {
+      "id": "generator-disconnect-2",
+      "label": "GEN DRIVE DISCONNECT 2",
+      "panel": "OH11",
+      "rectPx": [
+        847,
+        334,
+        200,
+        418
+      ],
+      "hinge": "top",
+      "color": "red",
+      "states": [
+        "NORMAL",
+        "DISCONNECT"
+      ],
+      "confidence": "prior-native-aperture-calibrated",
+      "source": "OH11",
+      "notes": "",
+      "overheadCanvasRectPx": [
+        849.22,
+        1842.17,
+        82.46,
+        174.17
+      ],
+      "unifiedMosaicCanvasRectPx": [
+        1939.22,
+        1952.17,
+        82.46,
+        174.17
+      ]
+    },
+    {
+      "id": "standby-power",
+      "label": "STANDBY POWER",
+      "panel": "OH11",
+      "rectPx": [
+        391,
+        232,
+        421,
+        184
+      ],
+      "hinge": "left",
+      "color": "black",
+      "states": [
+        "BAT",
+        "OFF",
+        "AUTO"
+      ],
+      "confidence": "prior-native-aperture-calibrated",
+      "source": "OH11",
+      "notes": "",
+      "overheadCanvasRectPx": [
+        661.21,
+        1799.67,
+        173.58,
+        76.67
+      ],
+      "unifiedMosaicCanvasRectPx": [
+        1751.21,
+        1909.67,
+        173.58,
+        76.67
+      ]
+    },
+    {
+      "id": "emergency-exit-lights",
+      "label": "EMER EXIT LIGHTS",
+      "panel": "OH14",
+      "rectPx": [
+        450,
+        174,
+        300,
+        710
+      ],
+      "hinge": "top",
+      "color": "black",
+      "states": [
+        "OFF",
+        "ARMED",
+        "ON"
+      ],
+      "confidence": "photo-preview-estimated",
+      "source": "OH14",
+      "notes": "Large outer bezel: guard sprite requires separate inner-hardware fitting.",
+      "overheadCanvasRectPx": [
+        1094.46,
+        2111.73,
+        65.64,
+        198.84
+      ],
+      "unifiedMosaicCanvasRectPx": [
+        2184.46,
+        2221.73,
+        65.64,
+        198.84
+      ]
+    },
+    {
+      "id": "bus-transfer",
+      "label": "BUS TRANSFER",
+      "panel": "OH12",
+      "rectPx": [
+        325,
+        460,
+        368,
+        148
+      ],
+      "hinge": "left",
+      "color": "black",
+      "states": [
+        "OFF",
+        "AUTO"
+      ],
+      "confidence": "prior-native-aperture-estimated",
+      "source": "OH12",
+      "notes": "",
+      "overheadCanvasRectPx": [
+        657.42,
+        2475.01,
+        178.25,
+        73.04
+      ],
+      "unifiedMosaicCanvasRectPx": [
+        1747.42,
+        2585.01,
+        178.25,
+        73.04
+      ]
+    },
+    {
+      "id": "passenger-oxygen",
+      "label": "PASS OXYGEN",
+      "panel": "UPPER",
+      "rectPx": [
+        1240,
+        535,
+        100,
+        180
+      ],
+      "hinge": "right",
+      "color": "black",
+      "states": [
+        "NORMAL",
+        "ON"
+      ],
+      "confidence": "photo-preview-estimated",
+      "source": "UPPER",
+      "notes": "Hinge right and black color are provisional reconciliations of newly specified 11/3/3 and 3-red totals; previous records said bottom and red.",
+      "overheadCanvasRectPx": [
+        1589,
+        602.74,
+        127.9,
+        201.78
+      ],
+      "unifiedMosaicCanvasRectPx": [
+        2679,
+        712.74,
+        127.9,
+        201.78
+      ]
+    },
+    {
+      "id": "flight-recorder-test",
+      "label": "FLIGHT RECORDER TEST",
+      "panel": "UPPER",
+      "rectPx": [
+        1365,
+        438,
+        113,
+        34
+      ],
+      "hinge": "left",
+      "color": "black",
+      "states": [
+        "TEST",
+        "NORMAL"
+      ],
+      "confidence": "prior-source-location-calibrated-size-provisional",
+      "source": "UPPER",
+      "notes": "",
+      "overheadCanvasRectPx": [
+        1748.88,
+        494,
+        144.53,
+        38.11
+      ],
+      "unifiedMosaicCanvasRectPx": [
+        2838.88,
+        604,
+        144.53,
+        38.11
+      ]
+    },
+    {
+      "id": "antiskid",
+      "label": "ANTI-SKID",
+      "panel": "MAIN_REFERENCE",
+      "rectPx": [
+        1243,
+        345,
+        55,
+        93
+      ],
+      "hinge": "right",
+      "color": "black",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "confidence": "reference-photo-only-estimated",
+      "source": "MAIN_REFERENCE",
+      "notes": "Center instrument anti-skid panel. No verified matching source slot in the current composited main-panel layers.",
+      "mainReferenceRectPx": [
+        1243,
+        345,
+        55,
+        93
+      ],
+      "unifiedMosaicCanvasRectPx": null
+    },
+    {
+      "id": "gpws-flap-inhibit",
+      "label": "GPWS FLAP INHIBIT",
+      "panel": "MAIN_REFERENCE",
+      "rectPx": [
+        1455,
+        699,
+        58,
+        82
+      ],
+      "hinge": "top",
+      "color": "black",
+      "states": [
+        "INHIBIT",
+        "NORMAL"
+      ],
+      "confidence": "reference-photo-only-estimated",
+      "source": "MAIN_REFERENCE",
+      "notes": "Ground proximity panel visible in full main instrument reference; location on current separately composed main layers not registered.",
+      "mainReferenceRectPx": [
+        1455,
+        699,
+        58,
+        82
+      ],
+      "unifiedMosaicCanvasRectPx": null
+    },
+    {
+      "id": "gpws-gear-inhibit",
+      "label": "GPWS GEAR INHIBIT",
+      "panel": "MAIN_REFERENCE",
+      "rectPx": [
+        1515,
+        699,
+        58,
+        82
+      ],
+      "hinge": "top",
+      "color": "black",
+      "states": [
+        "INHIBIT",
+        "NORMAL"
+      ],
+      "confidence": "reference-photo-only-estimated",
+      "source": "MAIN_REFERENCE",
+      "notes": "Ground proximity panel visible in full main instrument reference; location on current separately composed main layers not registered.",
+      "mainReferenceRectPx": [
+        1515,
+        699,
+        58,
+        82
+      ],
+      "unifiedMosaicCanvasRectPx": null
+    },
+    {
+      "id": "gpws-terrain-inhibit",
+      "label": "GPWS TERRAIN INHIBIT",
+      "panel": "MAIN_REFERENCE",
+      "rectPx": null,
+      "hinge": "top",
+      "color": "black",
+      "states": [
+        "INHIBIT",
+        "NORMAL"
+      ],
+      "confidence": "not-found-in-current-reference",
+      "source": "MAIN_REFERENCE",
+      "notes": "No individually identifiable TERRAIN INHIBIT housing in current B737 Classic main panel photo; confirm exact panel/effectivity before placement."
+    },
+    {
+      "id": "stab-trim",
+      "label": "STAB TRIM",
+      "panel": "PEDESTAL_RADIO",
+      "rectPx": [
+        798,
+        1153,
+        89,
+        155
+      ],
+      "hinge": null,
+      "color": "black",
+      "states": [
+        "OVERRIDE",
+        "NORMAL"
+      ],
+      "confidence": "pedestal-blank-photo-estimated",
+      "source": "PEDESTAL_RADIO",
+      "notes": "18th guard, lower right pedestal; hinge orientation not provided; black appearance from pedestal reference; approximate slot region.",
+      "unifiedMosaicCanvasRectPx": [
+        2399.13,
+        7610.93,
+        85.67,
+        149.2
+      ]
+    }
+  ],
+  "verification": {
+    "expected17": 17,
+    "plusStabTrim": 1,
+    "foundOverheadNative": 13,
+    "mainReferenceApprox": 3,
+    "mainReferenceMissing": 1,
+    "pedestalApprox": 1,
+    "livePlacementApproved": 0
+  }
+}
