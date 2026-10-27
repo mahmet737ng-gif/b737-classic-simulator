@@ -34,10 +34,12 @@ assert.equal(Adapter.PUMPS['hyd-elec-1'],'hyd.electricPumpB');
 assert.equal(TrainerCore.LABELS.elecA,'ELEC 2 / SYS A');
 assert.equal(TrainerCore.LABELS.elecB,'ELEC 1 / SYS B');
 for(const id of Object.values(Adapter.ELECTRICAL_LAMPS))assert.ok(mountedLamps.has(id),'real electrical lamp '+id);
-for(const id of ['battery-master','standby-power','generator-disconnect-1','generator-disconnect-2'])assert.ok(guardsMap.has(id),'actual guarded control '+id);
+assert.equal(guardsMap.size,0,'No old graphical guarded controls are mounted; integration accepts separately injected electrical training scenarios');
 assert.equal(controls.has('bus-transfer'),false,'no invented physical BUS TRANSFER switch');
 const initial={toggles:Object.fromEntries(registry.controls.map(c=>[c.id,c.default])),
- guards:Object.fromEntries(guardsMap.entries().map(([id,c])=>[id,c.default])),
+ // Integration fixtures describe electrical test signals, not a visual guarded-switch installation.
+ guards:{'battery-master':{value:'on',guard:'closed'},'standby-power':{value:'auto',guard:'closed'},
+         'generator-disconnect-1':{value:'normal',guard:'closed'},'generator-disconnect-2':{value:'normal',guard:'closed'}},
  rotaries:{},context:{onGround:true,engine1Running:true,engine2Running:true,apuRunning:false,groundPowerAttached:false}};
 const bridge=make();let r=bridge.synchronize(initial),s=r.state;
 assert.equal(r.initialized,true);
