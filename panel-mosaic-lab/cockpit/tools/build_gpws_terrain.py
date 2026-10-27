@@ -75,6 +75,9 @@ def clean_photo_region(destination,source,feather=9):
 # Original GEAR / INHIBIT was placed to the RIGHT of the existing GEAR well.
 # Remove BOTH old side legends, retaining adjacent true metal screw heads.
 clean_photo_region((816,1425,889,1480),(690,1597,763,1652),feather=8)
+# A second smaller feathered pass clears the very TOP of the formerly
+# side-printed letters; no metal screws exist in this coordinate window.
+clean_photo_region((813,1414,870,1457),(685,1601,742,1644),feather=6)
 
 # The old side-printed NORMAL must not remain as a ghost fourth legend.
 # Clean a larger strip with soft edges, then reuse the photographic NORMAL
@@ -85,7 +88,7 @@ nx1,ny1,nx2,ny2=label_strip
 # Do not copy the far-right panel border back into the body: its source
 # contains deep black rivet shadows. Borrow clean interior panel paint instead.
 clean_photo_region((590,1543,814,1594),(590,1600,814,1651),feather=9)
-clean_photo_region((809,1543,900,1594),(690,1600,781,1651),feather=9)
+clean_photo_region((793,1541,900,1594),(687,1599,794,1652),feather=6)
 glyphs=old[1553:1581,656:738].copy()
 lum=glyphs.mean(axis=2)
 a=np.clip((lum.astype(float)-117)/94,0,1)
