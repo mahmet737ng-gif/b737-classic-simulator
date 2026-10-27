@@ -150,7 +150,15 @@ async function init(){
     if(install())return;
     const root=document.getElementById('atlasAbsolute');
     if(root){const mo=new MutationObserver(()=>{if(install())mo.disconnect()});mo.observe(root,{childList:true,subtree:true})}
-  }catch(e){console.error('Owner photographic guard install:',e);window.B737OwnerGuards={installed:0,error:String(e)}}
+  }catch(e){
+    console.error('Owner photographic guard install:',e);
+    window.B737OwnerGuards={installed:0,error:String(e)};
+    const parent=document.getElementById('toggleInspector')||document.body;
+    let status=document.getElementById('g17-owner-status');
+    if(!status){status=document.createElement('p');status.id='g17-owner-status';parent.prepend(status)}
+    status.dataset.installed='0';status.dataset.expected='13';status.dataset.error=String(e);
+    status.textContent='Owner guard installation failed: '+String(e);
+  }
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();

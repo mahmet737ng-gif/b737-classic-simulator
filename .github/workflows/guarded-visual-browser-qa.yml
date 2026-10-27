@@ -39,6 +39,10 @@ jobs:
           else
             echo "WARNING: photo guards did not install at all 13 anchors."
             grep -oE '.{0,70}g17-owner-status.{0,280}' /tmp/guard-overhead-dom.html | head -c 1800 || true
+            echo '\n---- Browser guard diagnostics ----'
+            grep -oE '.{0,60}(g17-owner-status|rotaryGuardLayer|guard-node|OWNER-PHOTO-0004|guarded-owner-v3).{0,240}' /tmp/guard-overhead-dom.html | head -c 3500 || true
+            echo '\n---- dump-dom file size ----'
+            wc -c /tmp/guard-overhead-dom.html || true
             tail -20 /tmp/guard-chrome-stderr.log || true
             exit 1
           fi
