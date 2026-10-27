@@ -1,14 +1,14 @@
 const test=require('node:test');const assert=require('node:assert/strict');
 const fs=require('node:fs');const path=require('node:path');const vm=require('node:vm');
 const dir=__dirname;
-test('36 separated segments across 12 independent devices; momentary test restores states',()=>{
+test('32 separated segments across 12 independent devices; momentary test restores states',()=>{
  const events=[];const listeners={};
  const window={addEventListener(n,cb){listeners[n]=cb;},dispatchEvent(event){events.push(event);}};
  const document={currentScript:{src:'https://example.org/panel.js'},readyState:'loading',addEventListener(){}};
  const CustomEvent=class{constructor(type,args){this.type=type;this.detail=args.detail;}};
  vm.runInNewContext(fs.readFileSync(path.join(dir,'panel.js'),'utf8'),{window,document,URL,CustomEvent});
  const api=window.B737LeadingEdgeDevices;assert.equal(api.devices.length,12);
- assert.equal(api.snapshot().windows,36);
+ assert.equal(api.snapshot().windows,32);
  assert.equal(api.snapshot().brightness,'BRIGHT');
  assert.equal(api.snapshot().devices.SLAT_1,'RETRACTED');
  assert.equal(api.setDevice('SLAT_1','FULL_EXT'),true);
@@ -16,6 +16,12 @@ test('36 separated segments across 12 independent devices; momentary test restor
  api.setLampTest(false);assert.equal(api.snapshot().lampTest,false);
  assert.equal(api.snapshot().devices.SLAT_1,'FULL_EXT');
  assert.equal(api.setDevice('UNKNOWN','EXT'),false);
+ assert.equal(api.setWindow('FLAP_1','EXT',true),false);
+ assert.equal(api.setDevice('FLAP_1','EXT'),false);
+ assert.equal(api.setDevice('FLAP_1','FULL_EXT'),true);
+ assert.equal(api.hasWindow('FLAP_1','FULL_EXT'),true);
+ assert.equal(api.hasWindow('FLAP_1','EXT'),false);
+ assert.equal(api.hasWindow('SLAT_1','EXT'),true);
  assert.equal(api.setWindow('SLAT_1','TRANSIT',true),true);
  assert.equal(api.snapshot().windowOverrides['SLAT_1|TRANSIT'],true);
  assert.equal(api.snapshot().devices.SLAT_1,'FULL_EXT','individual lamp override must not move device');

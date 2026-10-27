@@ -1,15 +1,15 @@
 {
   "schema": "b737.le-devices-front-end.v1",
-  "version": "LEDEV-0001",
+  "version": "LEDEV-0002",
   "scope": "front-end-only",
-  "source": "owner reference image (432x195), 2026-10-28",
+  "source": "Owner unified blue-grey overhead screenshot 2026-10-28, replacing inaccurate dark face",
   "sourceImageSize": [
     432,
     195
   ],
   "background": "panel-background.svg",
   "testButton": "recessed-test-button.svg",
-  "windowCount": 36,
+  "windowCount": 32,
   "columns": 12,
   "states": [
     "RETRACTED",
@@ -195,18 +195,6 @@
       }
     },
     {
-      "id": "LE_FLAP_1_EXT",
-      "device": "FLAP_1",
-      "level": "EXT",
-      "color": "GREEN",
-      "defaultLit": false,
-      "assets": {
-        "BRIGHT": "segments/LE_FLAP_1_EXT_BRIGHT.svg",
-        "DIM": "segments/LE_FLAP_1_EXT_DIM.svg",
-        "OFF": "segments/LE_FLAP_1_EXT_OFF.svg"
-      }
-    },
-    {
       "id": "LE_FLAP_1_FULL_EXT",
       "device": "FLAP_1",
       "level": "FULL_EXT",
@@ -228,18 +216,6 @@
         "BRIGHT": "segments/LE_FLAP_2_TRANSIT_BRIGHT.svg",
         "DIM": "segments/LE_FLAP_2_TRANSIT_DIM.svg",
         "OFF": "segments/LE_FLAP_2_TRANSIT_OFF.svg"
-      }
-    },
-    {
-      "id": "LE_FLAP_2_EXT",
-      "device": "FLAP_2",
-      "level": "EXT",
-      "color": "GREEN",
-      "defaultLit": false,
-      "assets": {
-        "BRIGHT": "segments/LE_FLAP_2_EXT_BRIGHT.svg",
-        "DIM": "segments/LE_FLAP_2_EXT_DIM.svg",
-        "OFF": "segments/LE_FLAP_2_EXT_OFF.svg"
       }
     },
     {
@@ -267,18 +243,6 @@
       }
     },
     {
-      "id": "LE_FLAP_3_EXT",
-      "device": "FLAP_3",
-      "level": "EXT",
-      "color": "GREEN",
-      "defaultLit": false,
-      "assets": {
-        "BRIGHT": "segments/LE_FLAP_3_EXT_BRIGHT.svg",
-        "DIM": "segments/LE_FLAP_3_EXT_DIM.svg",
-        "OFF": "segments/LE_FLAP_3_EXT_OFF.svg"
-      }
-    },
-    {
       "id": "LE_FLAP_3_FULL_EXT",
       "device": "FLAP_3",
       "level": "FULL_EXT",
@@ -300,18 +264,6 @@
         "BRIGHT": "segments/LE_FLAP_4_TRANSIT_BRIGHT.svg",
         "DIM": "segments/LE_FLAP_4_TRANSIT_DIM.svg",
         "OFF": "segments/LE_FLAP_4_TRANSIT_OFF.svg"
-      }
-    },
-    {
-      "id": "LE_FLAP_4_EXT",
-      "device": "FLAP_4",
-      "level": "EXT",
-      "color": "GREEN",
-      "defaultLit": false,
-      "assets": {
-        "BRIGHT": "segments/LE_FLAP_4_EXT_BRIGHT.svg",
-        "DIM": "segments/LE_FLAP_4_EXT_DIM.svg",
-        "OFF": "segments/LE_FLAP_4_EXT_OFF.svg"
       }
     },
     {
@@ -481,5 +433,14 @@
     "coordinateStatus": "provisional visual fit; atlas source image ROI not independently measured"
   },
   "protectedAssets": "Locked OH01-06 source and all guarded switches remain untouched.",
-  "backend": "Not connected. Future aircraft model writes via B737LeadingEdgeDevices.setDevice(id,state)."
+  "backend": "Not connected. Future aircraft model writes via B737LeadingEdgeDevices.setDevice(id,state).",
+  "greenWindowRules": {
+    "flaps": "one full-span FULL_EXT green lamp per FLAP_1..4; RETRACTED lamps dark",
+    "slats": "two separate green lamps EXT and FULL_EXT per SLAT_1..8; RETRACTED lamps dark",
+    "transit": "12 existing amber lamps unchanged in number, ordering, and coordinate geometry"
+  },
+  "qa": {
+    "sourcePhoto": "Owner screenshot compared for metal tone, panel text, screw locations, and recessed test",
+    "upperPlacement": "provisional until actual unified screenshot reinspection"
+  }
 }
