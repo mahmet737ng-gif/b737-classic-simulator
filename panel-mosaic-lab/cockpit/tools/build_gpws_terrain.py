@@ -143,6 +143,7 @@ assembly["assets"][rel]={
     "path":rel,"url":"./assets/B737_Right_Main_Instruments_GPWS_TERRAIN_V2.png",
     "dimensions":[918,1713],"bytes":len(out_bytes),
     "sha256":hashlib.sha256(out_bytes).hexdigest(),
+    "gitBlobSha":hashlib.sha1(b"blob "+str(len(out_bytes)).encode()+b"\\0"+out_bytes).hexdigest(),
     "sourceOriginalUnchanged":True,
     "sourcePanel":"panel-mosaic-lab/assets/locked/2026-10-23/B737_Right_Main_Instruments_Blank.png",
     "nativeChangedAreaPx":list(change_rect)
