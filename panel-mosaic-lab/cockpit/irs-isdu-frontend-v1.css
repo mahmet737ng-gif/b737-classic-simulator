@@ -1,0 +1,30 @@
+/* IRS ISDU source-informed FRONTEND ONLY: isolated from frozen mosaic. */
+.irs-isdu-open{white-space:nowrap}
+.irs-isdu-dialog{color:#e9f0f4;background:#14202b;border:1px solid #577084;border-radius:14px;max-width:min(94vw,850px);width:760px;max-height:94vh;overflow:auto;padding:22px;box-shadow:0 22px 90px #000a}
+.irs-isdu-dialog::backdrop{background:#01080dd9;backdrop-filter:blur(2px)}
+.irs-isdu-head{display:flex;align-items:start;justify-content:space-between;gap:12px}
+.irs-isdu-head h2{font:700 19px/1.3 system-ui;margin:0}
+.irs-isdu-head small{display:block;margin-top:3px;color:#a1b7c4}
+.irs-isdu-close{background:#243646;border:1px solid #7891a2;color:white;border-radius:10px;font:24px/1 Arial;padding:4px 12px}
+.irs-isdu-tabs{display:flex;gap:8px;justify-content:center;margin:18px 0}
+.irs-isdu-tabs button{font:700 14px/1.2 system-ui;background:#24384a;color:#e1edf4;border:1px solid #61798d;border-radius:8px;padding:10px 22px}
+.irs-isdu-tabs button[aria-pressed=true]{background:#dbe6ec;color:#14202b}
+.irs-isdu-unit{width:min(100%,690px);margin:auto;--isdu-brightness:.82;background:linear-gradient(125deg,#666f75,#878d92 52%,#646c72);border:3px solid #343b40;border-radius:7px;box-shadow:inset 0 3px 5px #cfd7db55,inset 0 -3px 9px #0004,0 10px 20px #0008;padding:19px 32px 15px;font:700 14px/1.15 Arial,Helvetica,sans-serif;letter-spacing:.02em;color:#11181c}
+.irs-isdu-top-label{letter-spacing:.18em;font-size:14px;text-align:center;margin-bottom:5px}
+.irs-isdu-readouts{display:grid;grid-template-columns:1fr 1fr;gap:9px;max-width:490px;margin:0 auto 25px;background:#2b353a;padding:8px;border-radius:3px;border:2px solid #202930}
+.irs-isdu-lcd{display:flex;justify-content:center;align-items:center;min-height:74px;background:linear-gradient(#17231e,#1e3029);color:rgba(174,247,193,var(--isdu-brightness));text-shadow:0 0 10px #b1ffa588;white-space:nowrap;font:normal clamp(16px,4vw,32px)/1.2 monospace;letter-spacing:.08em;border:2px solid #151d1b;box-shadow:inset 0 2px 7px #0008}
+.irs-isdu-lower{display:grid;grid-template-columns:1fr 1fr;gap:32px}
+.irs-isdu-selectors{display:flex;flex-direction:column;align-items:center;justify-content:space-around;min-height:300px;gap:8px}
+.irs-isdu-control{display:flex;flex-direction:column;align-items:center;gap:7px;color:#172026;font:700 13px/1.2 Arial;letter-spacing:.12em}
+.irs-isdu-control select{background:radial-gradient(circle at 32% 23%,#d7dadd,#697278);border:4px solid #404a50;border-radius:48%;color:#111;min-width:120px;height:48px;padding:0 5px;font:700 12px Arial;text-align:center;box-shadow:0 2px 4px #0008}
+.irs-isdu-brightness{width:118px;accent-color:#334653}
+.irs-isdu-keypad{background:#333b40;border:3px solid #222a2f;padding:7px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;min-width:0}
+.irs-isdu-key{position:relative;min-height:68px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(145deg,#e0e3e4,#a9afb3);border:4px double #313a40;outline:2px solid #596267;outline-offset:-7px;color:#10171b;font:700 21px/1.05 Arial;box-shadow:1px 2px 3px #0008;user-select:none;padding:8px}
+.irs-isdu-key:is(:active,.is-pressed){background:#8e989e;transform:translateY(1px);box-shadow:inset 1px 2px 5px #0008}
+.irs-isdu-key .irs-isdu-compass{font:700 12px/1 Arial;margin-bottom:2px}
+.irs-isdu-key[data-key="ENT"],.irs-isdu-key[data-key="CLR"]{font-size:16px}
+.irs-isdu-key:focus-visible,.irs-isdu-dialog button:focus-visible{outline:3px solid #007ade;outline-offset:1px}
+.irs-isdu-unit-footer{text-align:center;letter-spacing:.25em;font-size:11px;margin-top:14px}
+.irs-isdu-disclaimer{color:#bdcbd4;font:13px/1.8 Tahoma,Arial,sans-serif;text-align:center;margin:15px 6px 4px}
+.irs-isdu-key-status{text-align:center;font:12px/1.6 monospace;color:#8bdbe8;margin:8px}
+@media(max-width:600px){.irs-isdu-dialog{padding:12px}.irs-isdu-unit{padding:14px 10px}.irs-isdu-lower{gap:12px}.irs-isdu-readouts{margin-bottom:12px}.irs-isdu-lcd{min-height:44px;font-size:16px}.irs-isdu-control select{min-width:96px}.irs-isdu-keypad{padding:5px}.irs-isdu-key{min-height:50px;font-size:16px;padding:5px}.irs-isdu-selectors{min-height:230px}}
