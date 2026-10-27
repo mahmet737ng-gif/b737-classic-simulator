@@ -1,6 +1,6 @@
 {
   "schema": "b737.shared-cockpit-mosaic.v1",
-  "version": "CKP-0012-THROTTLE-FIT",
+  "version": "CKP-0013-GPWS-TERRAIN-THIRD-SOCKET",
   "canvas": {
     "width": 4400,
     "height": 8100
@@ -140,6 +140,24 @@
       "sourceStatus": "owner-approved extracted bare Fire Protection plate; individual 11 lamp overlays are independent",
       "sha256": "0667fc8267a7812dc558529ec98aa6e7252683b2b4941257e73dcf4c4a0fa14f",
       "gitBlobSha": "9b5451a8c1a2598de9a5ee5ae166fee8382d0b38"
+    },
+    "panel-mosaic-lab/cockpit/assets/B737_Right_Main_Instruments_GPWS_TERRAIN_V2.png": {
+      "path": "panel-mosaic-lab/cockpit/assets/B737_Right_Main_Instruments_GPWS_TERRAIN_V2.png",
+      "url": "./assets/B737_Right_Main_Instruments_GPWS_TERRAIN_V2.png",
+      "dimensions": [
+        918,
+        1713
+      ],
+      "bytes": 1829024,
+      "sha256": "9c72e9c5de4ad81c7b801a98af421752229f0e05049cb530398e1fdbc34c3322",
+      "sourceOriginalUnchanged": true,
+      "sourcePanel": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Right_Main_Instruments_Blank.png",
+      "nativeChangedAreaPx": [
+        600,
+        1393,
+        918,
+        1595
+      ]
     }
   },
   "regions": [
@@ -197,12 +215,12 @@
         {
           "id": "fo-inner",
           "label": "F/O INNER / LANDING GEAR",
-          "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Right_Main_Instruments_Blank.png",
+          "asset": "panel-mosaic-lab/cockpit/assets/B737_Right_Main_Instruments_GPWS_TERRAIN_V2.png",
           "x": 1222,
           "y": 127,
           "w": 372,
           "h": 694.156862745098,
-          "presentation": "complete source, uniform scale; no source crop or mutation"
+          "presentation": "Original panel 918x1713, only GPWS region optically amended: third TERRAIN socket right of GEAR, matching labeled three-column arrangement"
         },
         {
           "id": "fo-outer",
