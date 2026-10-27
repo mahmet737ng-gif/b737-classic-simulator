@@ -22,3 +22,10 @@ Rebuilt blue-grey face and four screw locations from the Unified screenshot. 12 
 - Four FLAP single-green cells now occupy row 1 (same height as SLAT green cells, no row-span).
 - Unified atlas OH-01 top-left footprint registered from owner's overhead screenshot: fractions x=.001, y=.622, w=.220, h=.207 of UPPER. Previously y=.063 positioned artwork over the wrong part of the atlas.
 - Versioned panel image and JS/CSS URLs prevent browser caching of earlier grey artwork.
+
+## LEDEV-0004 owner-approved geometry correction
+- The 432×195 owner reference is **charcoal grey** (~#525152), with grey 3D screws and central TRANSIT / EXT / FULL EXT lettering. No blue-grey paint, side legends or extra decoration.
+- Each flap's **ONE** green FULL EXT window spans **TWO** slat-green rows including their intervening gap. It starts immediately below amber and ends at the bottom bank edge. It is not two separate green lamps.
+- Independent window count remains 32 (12 amber + 4 elongated flap green + 16 regular slat green).
+- The overlay is attached inside the actual UPPER photo-frame rather than appended as detached overlay in the atlas root, so registration tracks real upper plate.
+- The frozen overhead atlas HTML and all 18 red-zone guarded switches remain unmodified.

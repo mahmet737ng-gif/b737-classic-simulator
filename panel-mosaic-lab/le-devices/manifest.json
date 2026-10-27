@@ -1,8 +1,8 @@
 {
   "schema": "b737.le-devices-front-end.v1",
-  "version": "LEDEV-0003",
+  "version": "LEDEV-0004",
   "scope": "front-end-only",
-  "source": "Owner unified blue-grey overhead screenshot 2026-10-28, replacing inaccurate dark face",
+  "source": "Owner supplied 432x195 charcoal-grey original LE DEVICES reference, 2026-10-28",
   "sourceImageSize": [
     432,
     195
@@ -437,13 +437,16 @@
   "protectedAssets": "Locked OH01-06 source and all guarded switches remain untouched.",
   "backend": "Not connected. Future aircraft model writes via B737LeadingEdgeDevices.setDevice(id,state).",
   "greenWindowRules": {
-    "flaps": "Exactly one normal-size FULL_EXT green window at first green row (row=1), directly below amber. Nothing in bottom row. Retracted lamp OFF.",
-    "slats": "two separate green lamps EXT and FULL_EXT per SLAT_1..8; RETRACTED lamps dark",
-    "transit": "12 existing amber lamps unchanged in number, ordering, and coordinate geometry"
+    "flaps": "FLAP_1 through FLAP_4: exactly one contiguous green FULL_EXT lamp each, row=1 with span=2, same total height as two stacked SLAT green lamps, not two independent lamps.",
+    "slats": "SLAT_1 through SLAT_8: separate EXT and FULL_EXT lamps in rows 1 and 2, both regular height.",
+    "transit": "All twelve AMBER lamps unchanged in physical location and count."
   },
   "qa": {
     "sourcePhoto": "Owner screenshot compared for metal tone, panel text, screw locations, and recessed test",
     "upperPlacement": "provisional until actual unified screenshot reinspection",
-    "unifiedLocation": "Measured approximate fit from owner overhead screenshot (OH01 lower segment). Atlas x=.001 y=.622 w=.220 h=.207; visual review still required."
+    "unifiedLocation": "Measured approximate fit from owner overhead screenshot (OH01 lower segment). Atlas x=.001 y=.622 w=.220 h=.207; visual review still required.",
+    "sourcePaint": "charcoal grey reference #525152 (not blue grey), 8 recessed screw heads and central legend layout",
+    "flapLampHeight": "2 green SLAT cells (span=2), starting row 1",
+    "unifiedMount": "inside .atlas-piece[data-key=UPPER] to ensure correct overlay and retained viewport positioning"
   }
 }

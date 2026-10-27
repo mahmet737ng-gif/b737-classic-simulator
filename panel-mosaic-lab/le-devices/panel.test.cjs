@@ -44,8 +44,8 @@ test('unified placement registered at lower OH01 instead of upper blank panel; c
  const y=Number(match[2]),w=Number(match[3]),h=Number(match[4]);
  assert.ok(y>0.58&&y<0.68,'LE panel must sit on actual lower OH01 photograph');
  assert.ok(w>.18&&w<.25&&h>.17&&h<.23,'avoid oversized panel');
- assert.ok(s.includes('panel-background.svg?v=LEDEV-0003'));
- assert.ok(s.includes("level==='FULL_EXT')?1:levels.indexOf(level),span=1"));
+ assert.ok(s.includes('panel-background.svg?v=LEDEV-0004'));
+ assert.ok(s.includes("row=flapFull?1:levels.indexOf(level),span=flapFull?2:1"));
 });
 test('standalone flap green segments have same height as slat green segments',()=>{
  const files=fs.readdirSync(path.join(dir,'segments')).filter(x=>x.endsWith('.svg'));
@@ -55,7 +55,17 @@ test('standalone flap green segments have same height as slat green segments',()
   const d=xml.match(/<path d="([^"]+)"/);assert.ok(d);
   const ns=d[1].replace(/[MLZ]/g,' ').trim().split(/\s+/).map(Number);
   assert.equal(ns.length,8);
-  assert.ok(Math.abs((ns[7]-ns[1])-22)<.04,'green lamp must be one row tall, never double-height');
+  assert.ok(Math.abs((ns[7]-ns[1])-46)<.04,'FLAP green must span exactly two 22px slat green windows plus the separator gap');
   assert.ok(!files.some(f=>f.startsWith('LE_'+side+'_EXT_')),'FLAP has no extra EXT-only window');
  }
+});
+
+test('reference charcoal material, full flap span and physical Unified mount are preserved',()=>{
+ const bg=fs.readFileSync(path.join(dir,'panel-background.svg'),'utf8');
+ const js=fs.readFileSync(path.join(dir,'panel.js'),'utf8');
+ assert.match(bg,/#525152/);
+ assert.ok(!bg.includes('#5b7283')&&!bg.includes('#4e6475'));
+ assert.ok(js.includes('const row=flapFull?1:levels.indexOf(level),span=flapFull?2:1;'));
+ assert.ok(js.includes('frame.append(host);mount(host)'));
+ assert.ok(!js.includes('root.append(host);mount(host)'));
 });

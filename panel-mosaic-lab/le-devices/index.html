@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>B737 Classic · LE DEVICES Test · LEDEV-0003</title>
-<link rel="stylesheet" href="./panel.css?v=LEDEV-0003">
+<title>B737 Classic · LE DEVICES Test · LEDEV-0004</title>
+<link rel="stylesheet" href="./panel.css?v=LEDEV-0004">
 <style>
 :root{font-family:Arial,sans-serif;color:#e6eef2;background:#101b23}*{box-sizing:border-box}body{margin:0;padding:24px}
 main{max-width:950px;margin:auto}h1{font-size:23px;margin:0 0 5px}p{color:#b8c9d0;line-height:1.6}
@@ -12,16 +12,16 @@ button,select{font:inherit;padding:9px 12px;border-radius:7px;background:#1d3444
 button:hover{background:#29526c}.status{padding:10px;color:#b5ffc0;font:13px/1.5 ui-monospace,monospace}
 a{color:#9addff}nav{display:flex;gap:20px;margin:14px 0}.detail{font-size:13px;color:#9fb1be}
 </style></head><body><main><h1>LE DEVICES — individual lights / recessed TEST</h1>
-<p>32 isolated light windows across 12 leading edge devices. The upper amber row means TRANSIT; SLAT lights have separate green EXT and FULL EXT windows, while each FLAP has only one normal-sized FULL EXT green window. Press and hold the recessed round TEST button to illuminate all windows, then release to restore states.</p>
+<p>32 isolated light windows across 12 leading edge devices. The upper amber row means TRANSIT; SLAT lights have separate green EXT and FULL EXT windows, while each FLAP has only one uninterrupted FULL EXT green window exactly two SLAT lamps tall. Press and hold the recessed round TEST button to illuminate all windows, then release to restore states.</p>
 <nav><a href="../cockpit/">Unified Cockpit</a><a href="../all-overhead/">Full Overhead Mosaic</a></nav>
 <div class="unit"><div data-b737-le-devices></div></div>
-<div class="status" data-le-devices-status role="status">LEDEV-0003</div>
+<div class="status" data-le-devices-status role="status">LEDEV-0004</div>
 <div class="controls"><label>Device <select id="device"></select></label>
 <button data-state="RETRACTED">Retracted</button><button data-state="TRANSIT">Transit</button>
 <button data-state="EXT">Extended</button><button data-state="FULL_EXT">Full Ext</button>
 <button id="bright">BRIGHT</button><button id="dim">DIM</button><button id="reset">Reset</button></div>
 <p class="detail">Each individual window can also be clicked to activate its associated state. This is a front-end demonstration; live hydraulic/slat/flap inputs are not connected yet.</p>
-<script src="./panel.js?v=LEDEV-0003" defer></script>
+<script src="./panel.js?v=LEDEV-0004" defer></script>
 <script>
 document.addEventListener('DOMContentLoaded',()=>{
  const api=window.B737LeadingEdgeDevices,sel=document.getElementById('device');
