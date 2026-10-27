@@ -1,6 +1,6 @@
 {
   "schema": "b737-classic/guard-placement-audit/v2",
-  "version": "2026-10-28-owner18-bottom-hinge-fit-r2",
+  "version": "2026-10-28-LOCK-AND-FCOM-CLOSE",
   "scope": "MEASUREMENT-AND-REVIEW-ONLY_NOT_LIVE_INSTALLATION",
   "declaredByOwner": {
     "mainGuards": 17,
@@ -36,7 +36,7 @@
     "latestGPWSTerrainUpdate": "New third background cavity to RIGHT of GEAR; label TERRAIN INHIBIT above it; original panel locked and untouched"
   },
   "physicalDimensionsMillimeters": "UNKNOWN_DO_NOT_FABRICATE",
-  "pixelPrecision": "SOURCE-PIXEL_FIT_FROM_OWNER_FEEDBACK; NOT_YET_BROWSER_PIXEL_CERTIFIED",
+  "pixelPrecision": "OWNER_8_LOCKED; BATTERY/PASS_OXY_VISUAL_QA_PENDING",
   "sources": {
     "UPPER": {
       "label": "OH01–OH06 overhead upper",
@@ -155,7 +155,17 @@
         1442.86,
         89.82,
         151.02
-      ]
+      ],
+      "geometryLock": {
+        "rectPx": [
+          126,
+          91,
+          165,
+          265
+        ],
+        "hinge": "top",
+        "approvedOn": "2026-10-28"
+      }
     },
     {
       "id": "flight-control-b",
@@ -188,7 +198,17 @@
         1442.86,
         89.82,
         151.02
-      ]
+      ],
+      "geometryLock": {
+        "rectPx": [
+          296,
+          91,
+          165,
+          265
+        ],
+        "hinge": "top",
+        "approvedOn": "2026-10-28"
+      }
     },
     {
       "id": "spoiler-a",
@@ -220,7 +240,17 @@
         1759.16,
         89.82,
         156.72
-      ]
+      ],
+      "geometryLock": {
+        "rectPx": [
+          126,
+          646,
+          165,
+          275
+        ],
+        "hinge": "top",
+        "approvedOn": "2026-10-28"
+      }
     },
     {
       "id": "spoiler-b",
@@ -252,7 +282,17 @@
         1759.16,
         89.82,
         156.72
-      ]
+      ],
+      "geometryLock": {
+        "rectPx": [
+          295,
+          646,
+          165,
+          275
+        ],
+        "hinge": "top",
+        "approvedOn": "2026-10-28"
+      }
     },
     {
       "id": "alternate-flaps-master",
@@ -284,17 +324,27 @@
         1623.52,
         73.49,
         157.86
-      ]
+      ],
+      "geometryLock": {
+        "rectPx": [
+          517,
+          408,
+          135,
+          277
+        ],
+        "hinge": "bottom",
+        "approvedOn": "2026-10-28"
+      }
     },
     {
       "id": "battery-master",
       "label": "BATTERY MASTER",
       "panel": "OH10",
       "rectPx": [
-        172,
-        1141,
-        176,
-        211
+        184,
+        1131,
+        152,
+        230
       ],
       "hinge": "top",
       "color": "black",
@@ -304,18 +354,18 @@
       ],
       "confidence": "photo-preview-estimated",
       "source": "OH10",
-      "notes": "Owner correction: small left/up position shift or enlarged fitted aperture; estimated until full-resolution browser audit",
+      "notes": "Owner correction: small left/up position shift or enlarged fitted aperture; estimated until full-resolution browser audit | 2026-10-28 owner's narrower/taller BAT or smaller PASS OXY, center unchanged",
       "overheadCanvasRectPx": [
-        577.91,
-        1564.95,
-        79.72,
-        98.74
+        583.35,
+        1560.27,
+        68.85,
+        107.63
       ],
       "unifiedMosaicCanvasRectPx": [
-        1667.91,
-        1674.95,
-        79.72,
-        98.74
+        1673.35,
+        1670.27,
+        68.85,
+        107.63
       ]
     },
     {
@@ -348,7 +398,17 @@
         1952.17,
         82.46,
         174.17
-      ]
+      ],
+      "geometryLock": {
+        "rectPx": [
+          154,
+          334,
+          200,
+          418
+        ],
+        "hinge": "top",
+        "approvedOn": "2026-10-28"
+      }
     },
     {
       "id": "generator-disconnect-2",
@@ -380,7 +440,17 @@
         1952.17,
         82.46,
         174.17
-      ]
+      ],
+      "geometryLock": {
+        "rectPx": [
+          847,
+          334,
+          200,
+          418
+        ],
+        "hinge": "top",
+        "approvedOn": "2026-10-28"
+      }
     },
     {
       "id": "standby-power",
@@ -478,17 +548,27 @@
         2585.01,
         178.25,
         73.04
-      ]
+      ],
+      "geometryLock": {
+        "rectPx": [
+          325,
+          460,
+          368,
+          148
+        ],
+        "hinge": "left",
+        "approvedOn": "2026-10-28"
+      }
     },
     {
       "id": "passenger-oxygen",
       "label": "PASS OXYGEN",
       "panel": "UPPER",
       "rectPx": [
-        1240,
-        535,
-        100,
-        180
+        1249,
+        552,
+        82,
+        146
       ],
       "hinge": "bottom",
       "color": "black",
@@ -498,18 +578,18 @@
       ],
       "confidence": "photo-preview-estimated",
       "source": "UPPER",
-      "notes": "Hinge right and black color are provisional reconciliations of newly specified 11/3/3 and 3-red totals; previous records said bottom and red. | Owner-confirmed BOTTOM hinge; old RIGHT hinge was incorrect",
+      "notes": "Hinge right and black color are provisional reconciliations of newly specified 11/3/3 and 3-red totals; previous records said bottom and red. | Owner-confirmed BOTTOM hinge; old RIGHT hinge was incorrect | 2026-10-28 owner's narrower/taller BAT or smaller PASS OXY, center unchanged",
       "overheadCanvasRectPx": [
-        1589,
-        602.74,
-        127.9,
-        201.78
+        1600.51,
+        621.8,
+        104.88,
+        163.67
       ],
       "unifiedMosaicCanvasRectPx": [
-        2679,
-        712.74,
-        127.9,
-        201.78
+        2690.51,
+        731.8,
+        104.88,
+        163.67
       ]
     },
     {
@@ -705,5 +785,79 @@
     "foundMainActiveNative": 4,
     "verifiedBackgroundSlotAdded": true,
     "currentSourcePath": "panel-mosaic-lab/cockpit/assets/B737_Right_Main_Instruments_GPWS_TERRAIN_V2.png"
+  },
+  "ownerApprovedGeometry": {
+    "flight-control-a": {
+      "rectPx": [
+        126,
+        91,
+        165,
+        265
+      ],
+      "hinge": "top"
+    },
+    "flight-control-b": {
+      "rectPx": [
+        296,
+        91,
+        165,
+        265
+      ],
+      "hinge": "top"
+    },
+    "spoiler-a": {
+      "rectPx": [
+        126,
+        646,
+        165,
+        275
+      ],
+      "hinge": "top"
+    },
+    "spoiler-b": {
+      "rectPx": [
+        295,
+        646,
+        165,
+        275
+      ],
+      "hinge": "top"
+    },
+    "alternate-flaps-master": {
+      "rectPx": [
+        517,
+        408,
+        135,
+        277
+      ],
+      "hinge": "bottom"
+    },
+    "generator-disconnect-1": {
+      "rectPx": [
+        154,
+        334,
+        200,
+        418
+      ],
+      "hinge": "top"
+    },
+    "generator-disconnect-2": {
+      "rectPx": [
+        847,
+        334,
+        200,
+        418
+      ],
+      "hinge": "top"
+    },
+    "bus-transfer": {
+      "rectPx": [
+        325,
+        460,
+        368,
+        148
+      ],
+      "hinge": "left"
+    }
   }
 }

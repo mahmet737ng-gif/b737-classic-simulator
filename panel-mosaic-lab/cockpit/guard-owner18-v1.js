@@ -20,15 +20,19 @@ function assetPath(c,position,closed){
  return new URL(config.artworkRoot+'runtime/'+map[key],script).href;
 }
 function save(id,v){statuses[id]=v;try{sessionStorage.setItem(STORE,JSON.stringify(statuses))}catch{}}
-function notify(c,status){
+function notify(c,status,action,previous=null,triggeredEffect=null){
  const detail={id:c.id,label:c.label,closed:status.closed,value:c.states[status.index],axis:c.axis,
-  hinges:c.hinge,positions:c.states.slice(),source:'owner18-photo-v1'};
+  hinges:c.hinge,positions:c.states.slice(),source:'owner18-photo-v1',action,
+  previousValue:previous?c.states[previous.index]:null,closeTarget:c.closePolicy.target,
+  latchedEffects:{...status.effects},triggeredEffect};
  window.dispatchEvent(new CustomEvent('b737:guard-changed',{detail}));
  try{if(window.parent&&window.parent!==window)window.parent.dispatchEvent(new CustomEvent('b737:guard-changed',{detail}))}catch{}
 }
 function configure(c,box){
  const state=statuses[c.id];
- const status={index:Number.isInteger(state?.index)&&state.index>=0&&state.index<c.states.length?state.index:Math.max(0,c.states.indexOf(c.initialState)),closed:typeof state?.closed==='boolean'?state.closed:true};
+ const policy=window.B737GuardClosePolicy;
+ if(!policy)throw Error('Guard close policy module missing');
+ let status=policy.initialState(c,state);
  const img=document.createElement('img');img.className='owner18-switch-photo';img.draggable=false;
  img.alt='';img.setAttribute('aria-hidden','true');
  const btn=document.createElement('button');btn.type='button';btn.className='owner18-guard-control';
@@ -46,11 +50,12 @@ function configure(c,box){
   btn.setAttribute('aria-pressed',String(!status.closed));
   save(c.id,status);
  }
- function change(action){
-  if(action==='close'){status.closed=true}
-  else if(status.closed){status.closed=false}
-  else status.index=(status.index+1)%c.states.length;
-  render();notify(c,status);
+ function change(action,detent){
+  const r=policy.transition(c,status,action,detent);
+  if(!r.accepted)return false;
+  status=r.next;render();
+  if(r.changed)notify(c,status,action,r.previous,r.triggeredEffect);
+  return true;
  }
  btn.addEventListener('pointerdown',e=>{e.stopPropagation()});
  btn.addEventListener('pointerup',e=>{e.stopPropagation()});
@@ -61,10 +66,13 @@ function configure(c,box){
    e.stopPropagation();e.preventDefault();if(e.detail>=2)return;change('cycle');
  });
  btn._set=(position,close)=>{
-  const idx=c.states.indexOf(position);if(idx<0)throw Error('Invalid detent '+c.id+' / '+position);
-  status.index=idx;status.closed=!!close;render();notify(c,status);
+  if(!c.states.includes(position))throw Error('Invalid detent '+c.id+' / '+position);
+  if(status.closed)change('open');
+  if(!change('set',position))throw Error('Guard manipulation rejected '+c.id);
+  if(close)change('close');
  };
- btn._state=()=>({value:c.states[status.index],closed:status.closed});
+ btn._state=()=>({value:c.states[status.index],closed:status.closed,
+   closeTarget:c.closePolicy.target,effects:{...status.effects}});
  img.onerror=()=>{errors.push('image:'+c.id+':'+img.src);report()};
  render();
  mounted.set(c.id,btn);
@@ -143,6 +151,7 @@ async function init(){
   const response=await fetch(manifestURL,{cache:'no-store'});if(!response.ok)throw Error('owner18 manifest unavailable');
   config=await response.json();
   if(config.controls.length!==18)throw Error('18 controls expected');
+  window.B737GuardClosePolicy.validate(config.controls);
   if(currentMode==='overhead'){
    const r=await fetch(new URL('../all-overhead/atlas-layout.json',script));
    if(!r.ok)throw Error('atlas layout missing');sourceLayout=await r.json();

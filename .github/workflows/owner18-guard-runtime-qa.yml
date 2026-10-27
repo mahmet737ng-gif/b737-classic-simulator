@@ -3,6 +3,8 @@ on:
   push:
     paths:
       - 'panel-mosaic-lab/cockpit/guard-owner18-v1.*'
+      - 'panel-mosaic-lab/cockpit/guard-close-policy-v2.js'
+      - 'panel-mosaic-lab/cockpit/guard-close-policy-v2.test.cjs'
       - 'panel-mosaic-lab/cockpit/owner18-guard-install.test.cjs'
       - 'panel-mosaic-lab/cockpit/index.html'
       - 'panel-mosaic-lab/cockpit/overhead-stage.html'
@@ -19,6 +21,8 @@ jobs:
           node-version: '22'
       - name: Verify all 18 source locations, sprite files, hinges and legal detents
         run: |
+          node --check panel-mosaic-lab/cockpit/guard-close-policy-v2.js
+          node panel-mosaic-lab/cockpit/guard-close-policy-v2.test.cjs
           node --check panel-mosaic-lab/cockpit/guard-owner18-v1.js
           node panel-mosaic-lab/cockpit/owner18-guard-install.test.cjs
       - name: Mount 13 overhead and 5 main/pedestal controls in headless Chromium
