@@ -1,6 +1,6 @@
 {
   "schema": "b737.overhead-rotary-guard-overlay.v1",
-  "version": "RG-0001",
+  "version": "RM-0004-BUS-TRANSFER-13",
   "baseVersion": "UPD-0012-OVH-measured-seams",
   "assets": {
     "rotary-standard": {
@@ -1577,6 +1577,42 @@
       "assetFamily": "original-approved-guarded-v2",
       "hinge": "bottom per approved asset manifest",
       "mechanicsId": "emergencyExitLights"
+    },
+    {
+      "id": "bus-transfer",
+      "label": "BUS TRANSFER",
+      "kind": "guarded",
+      "placementId": "OH12",
+      "sourcePoint": [
+        509,
+        534
+      ],
+      "bezelSourceDiameter": 275,
+      "color": "black",
+      "states": [
+        "off",
+        "auto"
+      ],
+      "default": {
+        "value": "auto",
+        "guard": "closed"
+      },
+      "closePolicy": {
+        "force": "auto"
+      },
+      "rotation": 0,
+      "axis": "horizontal",
+      "assetFamily": "owner-red-black-photo-4",
+      "hinge": "left owner confirmed",
+      "mountingRectSource": [
+        325,
+        460,
+        368,
+        148
+      ],
+      "mountingEvidence": "OWNER_MARKED_UNIFIED_SCREENSHOT_2026-10-27_ESTIMATED_OH12_NATIVE_±15PX",
+      "presentation": "calibrated-horizontal-standby",
+      "calibrationStatus": "SCREENSHOT_ESTIMATE_NOT_PIXEL_FINAL"
     }
   ],
   "interlocks": [
