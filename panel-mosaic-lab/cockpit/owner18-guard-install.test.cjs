@@ -33,6 +33,19 @@ for(const id of ['alternate-flaps-master','passenger-oxygen','antiskid']){
 for(const [id,rect] of Object.entries({"flight-control-a":[126,91,165,265],"flight-control-b":[296,91,165,265],"spoiler-a":[126,646,165,275],"spoiler-b":[295,646,165,275],"battery-master":[184,1140,152,230],"flight-recorder-test":[1351,428,141,54]}))
  assert.deepEqual(snap[id].rectPx,rect,id+' resized or moved per owner feedback');
 assert.equal(snap['stab-trim'].panel,'PEDESTAL_RADIO');
+const physicalFits={"battery-master":{"mode":"hardware-fill","widthScale":1.02,"heightScale":0.9,"offsetX":0,"offsetY":-0.05},"emergency-exit-lights":{"mode":"hardware-fill","widthScale":1,"heightScale":1,"offsetX":0,"offsetY":0},"passenger-oxygen":{"mode":"hardware-fill","widthScale":1,"heightScale":1,"offsetX":0,"offsetY":0}};
+for(const [id,expected] of Object.entries(physicalFits)){
+ assert.deepEqual(snap[id].photoFit,expected,id+' physical bitmap-fit specification');
+ assert.deepEqual(audit.photoFitting[id].mode,expected.mode);
+}
+assert.equal(cfg.controls.filter(c=>Boolean(c.photoFit)).length,3,'Only the three screenshot-defective switches may fit photo separately');
+const photoCSS=read('panel-mosaic-lab/cockpit/guard-owner18-v1.css');
+assert.ok(photoCSS.includes('button.owner18-guard-control:hover'),'Prevent global button-hover blue rectangle');
+assert.ok(photoCSS.includes('button.owner18-guard-control[aria-pressed="true"]'),'Prevent pressed blue rectangle');
+const photoRuntime=read('panel-mosaic-lab/cockpit/guard-owner18-v1.js');
+assert.ok(photoRuntime.includes("objectFit:'fill'"),'Actual guard bitmap should fill owner-selected aperture');
+assert.ok(photoRuntime.includes("btn.dataset.photoFit='original'"),'Keep all other sprites at their approved geometry');
+
 const approved={"flight-control-a":{"rectPx":[126,91,165,265],"hinge":"top"},"flight-control-b":{"rectPx":[296,91,165,265],"hinge":"top"},"spoiler-a":{"rectPx":[126,646,165,275],"hinge":"top"},"spoiler-b":{"rectPx":[295,646,165,275],"hinge":"top"},"alternate-flaps-master":{"rectPx":[517,408,135,277],"hinge":"bottom"},"generator-disconnect-1":{"rectPx":[154,334,200,418],"hinge":"top"},"generator-disconnect-2":{"rectPx":[847,334,200,418],"hinge":"top"},"bus-transfer":{"rectPx":[325,460,368,148],"hinge":"left"}};
 for(const [id,geometry] of Object.entries(approved)){
  const c=snap[id];
@@ -56,8 +69,8 @@ for(const color of ['black','red'])for(const state of ['closed','open_up','open_
 const main=read('panel-mosaic-lab/cockpit/index.html');
 const overhead=read('panel-mosaic-lab/cockpit/overhead-stage.html');
 for(const [html,context] of [[main,'main'],[overhead,'overhead']]){
- assert.ok(html.includes('guard-owner18-v1.js?v=OWNER18-003'),context+' missing scripts');
- assert.ok(html.includes('guard-owner18-v1.css?v=OWNER18-003'),context+' missing styles');
+ assert.ok(html.includes('guard-owner18-v1.js?v=OWNER18-004'),context+' missing scripts');
+ assert.ok(html.includes('guard-owner18-v1.css?v=OWNER18-004'),context+' missing styles');
 }
 const code=read('panel-mosaic-lab/cockpit/guard-owner18-v1.js');
 for(const x of ['owner18-guard-control','b737:guard-changed','sessionStorage','overheadPlacement','mainPlacement','twoStateImages','dblclick']){

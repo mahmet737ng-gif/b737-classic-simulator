@@ -1,6 +1,6 @@
 {
   "schema": "b737/owner18-guard-runtime/v1",
-  "version": "GUARD-OWNER18-20261028-3-PLACEMENT-R4",
+  "version": "GUARD-OWNER18-20261028-PHOTO-PHYSICAL-FIT-R5",
   "primaryCount": 17,
   "total": 18,
   "artworkRoot": "../assets/locked/2026-10-23/Switches/guard/",
@@ -41,7 +41,8 @@
     "rightClick": "close",
     "statePersistence": "sessionStorage",
     "closeOnGuard": "return-to-individual-FCOM-protected-detent",
-    "onCloseIrreversible": "retain irreversible event latch (no system reset)"
+    "onCloseIrreversible": "retain irreversible event latch (no system reset)",
+    "hoverBackground": "transparent, no hover/pressed fill"
   },
   "controls": [
     {
@@ -277,6 +278,13 @@
         "target": "ON",
         "fcomFolio": "6.10.5",
         "fcom": "Sepehran Airlines 737CL FCOM"
+      },
+      "photoFit": {
+        "mode": "hardware-fill",
+        "widthScale": 1.02,
+        "heightScale": 0.9,
+        "offsetX": 0,
+        "offsetY": -0.05
       }
     },
     {
@@ -427,6 +435,13 @@
         "target": "ARMED",
         "fcomFolio": "1.40.5",
         "fcom": "Sepehran Airlines 737CL FCOM"
+      },
+      "photoFit": {
+        "mode": "hardware-fill",
+        "widthScale": 1,
+        "heightScale": 1,
+        "offsetX": 0,
+        "offsetY": 0
       }
     },
     {
@@ -501,6 +516,13 @@
         "detent": "ON",
         "effect": "passenger-oxygen-masks-deployed",
         "fcomFolio": "1.30.21"
+      },
+      "photoFit": {
+        "mode": "hardware-fill",
+        "widthScale": 1,
+        "heightScale": 1,
+        "offsetX": 0,
+        "offsetY": 0
       }
     },
     {
@@ -679,6 +701,6 @@
     "STAB TRIM hinge assumed TOP until owner provides orientation",
     "PASS OXYGEN black is a current count-based provisional color choice",
     "Fit nudges and enlarged photo sprites require post-deployment visual pixel review; original artwork unchanged",
-    "Battery and PASS OXY size adjustments still require visual pixel audit after deployment"
+    "Three owner-specified photo bodies fitted to physical apertures; no hardware source image changed, pending visual acceptance"
   ]
 }

@@ -1,6 +1,6 @@
 {
   "schema": "b737-classic/guard-placement-audit/v2",
-  "version": "2026-10-28-three-location-only-R4",
+  "version": "2026-10-28-three-physical-photo-fits-R5",
   "scope": "MEASUREMENT-AND-REVIEW-ONLY_NOT_LIVE_INSTALLATION",
   "declaredByOwner": {
     "mainGuards": 17,
@@ -858,6 +858,38 @@
         148
       ],
       "hinge": "left"
+    }
+  },
+  "photoFitting": {
+    "battery-master": {
+      "mode": "hardware-fill",
+      "widthScale": 1.02,
+      "heightScale": 0.9,
+      "offsetX": 0,
+      "offsetY": -0.05,
+      "photoFramesIntact": true,
+      "basePhotoUnchanged": true,
+      "comment": "Hardware bitmap fitted inside existing fixed source-image aperture; no change to hitbox, default state or hinge"
+    },
+    "emergency-exit-lights": {
+      "mode": "hardware-fill",
+      "widthScale": 1,
+      "heightScale": 1,
+      "offsetX": 0,
+      "offsetY": 0,
+      "photoFramesIntact": true,
+      "basePhotoUnchanged": true,
+      "comment": "Hardware bitmap fitted inside existing fixed source-image aperture; no change to hitbox, default state or hinge"
+    },
+    "passenger-oxygen": {
+      "mode": "hardware-fill",
+      "widthScale": 1,
+      "heightScale": 1,
+      "offsetX": 0,
+      "offsetY": 0,
+      "photoFramesIntact": true,
+      "basePhotoUnchanged": true,
+      "comment": "Hardware bitmap fitted inside existing fixed source-image aperture; no change to hitbox, default state or hinge"
     }
   }
 }

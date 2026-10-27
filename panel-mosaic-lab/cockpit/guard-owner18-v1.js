@@ -83,11 +83,31 @@ function rotationFor(c){
  if(!Number.isFinite(angle))throw Error('Unmapped guard hinge '+c.id+': '+c.hinge);
  return angle;
 }
-function resizeSprite(btn,w,h,angle){
+function resizeSprite(btn,w,h,angle,control){
  css(btn,{left:'0px',top:'0px',width:w+'px',height:h+'px'});
  const image=btn.firstElementChild;
- css(image,{width:(Math.abs(angle)===90?h:w)+'px',height:(Math.abs(angle)===90?w:h)+'px',
-  transform:'translate(-50%, -50%) rotate('+angle+'deg)'});
+ const fit=control.photoFit;
+ const width=Math.abs(angle)===90?h:w;
+ const height=Math.abs(angle)===90?w:h;
+ // For the three owner-selected switches, scale the physical guard PHOTO, not the
+ // interactive hitbox. The shared locked source PNG and all other switches are unchanged.
+ if(fit?.mode==='hardware-fill'){
+  btn.dataset.photoFit='hardware-fill';
+  css(image,{
+   width:(width*fit.widthScale)+'px',
+   height:(height*fit.heightScale)+'px',
+   left:'calc(50% + '+(w*fit.offsetX)+'px)',
+   top:'calc(50% + '+(h*fit.offsetY)+'px)',
+   objectFit:'fill',
+   transform:'translate(-50%, -50%) rotate('+angle+'deg)'
+  });
+ }else{
+  btn.dataset.photoFit='original';
+  css(image,{
+   width:width+'px',height:height+'px',left:'50%',top:'50%',objectFit:'contain',
+   transform:'translate(-50%, -50%) rotate('+angle+'deg)'
+  });
+ }
 }
 function mainPlacement(c){
  const pieceId=c.panel==='FO_INNER_BACKGROUND'?'fo-inner':'pedestal-radio';
@@ -101,7 +121,7 @@ function mainPlacement(c){
  x=piece.offsetLeft+x*rx;y=piece.offsetTop+y*ry;
  w*=rx;h*=ry;
  const btn=configure(c,native);
- resizeSprite(btn,w,h,rotationFor(c));
+ resizeSprite(btn,w,h,rotationFor(c),c);
  css(btn,{left:x+'px',top:y+'px'});
  return true;
 }
@@ -119,7 +139,7 @@ function overheadPlacement(c){
   const a=map(x,y),b=map(x+w,y+h);
   const left=a.x-placement.x,top=a.y-placement.y;
   const btn=configure(c,windowEl);
-  resizeSprite(btn,b.x-a.x,b.y-a.y,rotationFor(c));
+  resizeSprite(btn,b.x-a.x,b.y-a.y,rotationFor(c),c);
   css(btn,{left:left+'px',top:top+'px'});
   return true;
  }catch(e){errors.push('map:'+c.id+':'+String(e));return false}

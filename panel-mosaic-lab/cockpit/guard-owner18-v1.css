@@ -21,3 +21,15 @@
 #region-main .region-native>.owner18-guard-control,
 #region-pedestal .region-native>.owner18-guard-control{z-index:55}
 body.pan-mode .owner18-guard-control{pointer-events:none}
+
+/* Chrome's global button:hover and button[aria-pressed=true] were painting
+   a dark-blue rectangle BEHIND the guard bitmap. Never paint the interaction
+   target; only the actual guard photo may be visible. */
+button.owner18-guard-control:hover,
+button.owner18-guard-control:active,
+button.owner18-guard-control[aria-pressed="true"],
+button.owner18-guard-control:focus:not(:focus-visible){
+ background:transparent;
+ border:0;
+ box-shadow:none;
+}
