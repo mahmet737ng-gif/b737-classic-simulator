@@ -34,6 +34,7 @@ jobs:
         run: |
           node panel-mosaic-lab/interactive-overhead/test.cjs
           node panel-mosaic-lab/interactive-overhead/rotary-guards.test.cjs
+          node panel-mosaic-lab/interactive-overhead/no-old-guards.test.cjs
           node panel-mosaic-lab/interactive-overhead/lights.test.cjs
           node panel-mosaic-lab/lights-test/phase1-geometry-audit.test.cjs
           node panel-mosaic-lab/lights-test/photo-pixel-registration.test.cjs
@@ -46,7 +47,7 @@ jobs:
           node panel-mosaic-lab/lights-test/instance-faces.test.cjs
           node panel-mosaic-lab/lights-test/readability-derivatives.test.cjs
           node panel-mosaic-lab/lights-test/main-typography.test.cjs
-          node panel-mosaic-lab/lights-test/flight-recorder-hinge.test.cjs
+
           node panel-mosaic-lab/lights-test/oh22-profile-faces.test.cjs
           node panel-mosaic-lab/lights-test/oh21-pack-face.test.cjs
           node panel-mosaic-lab/lights-test/atlas-stage-adapter.test.cjs
@@ -69,9 +70,7 @@ jobs:
           node panel-mosaic-lab/cockpit/fuel-temperature-needle.test.cjs
           node panel-mosaic-lab/cockpit/performance.test.cjs
           node panel-mosaic-lab/cockpit/test.cjs
-          node --test panel-mosaic-lab/cockpit/bus-transfer-guard-review.test.cjs
-          node --test panel-mosaic-lab/cockpit/guarded-17-review.test.cjs
-          node --test panel-mosaic-lab/cockpit/guarded-photo-v2.test.cjs
+
           node panel-mosaic-lab/cockpit/unified-annunciators.test.cjs
           node panel-mosaic-lab/cockpit/lights.test.cjs
           node tests/aircraft-profile-v1.test.cjs

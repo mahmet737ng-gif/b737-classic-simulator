@@ -2,13 +2,14 @@
  'use strict';
  const scriptURL=document.currentScript.src,url=p=>new URL(p,scriptURL).href;
  const model=window.B737RotaryGuardModel,points=window.B737OverheadToggleModel,motion=window.B737RotaryMotionRM0002;
- const STORAGE='b737-overhead-rotary-guards-RG-0001',byId=id=>document.getElementById(id);
+ const STORAGE='b737-overhead-rotary-guards-RG-0006-GUARDS-CLEARED',byId=id=>document.getElementById(id);
  const SWIPE={firstThreshold:12,nextThreshold:28,minTravelPixels:9,tapSlopPixels:2.5};
  let registry,engine,layer,selected=null;
  const widgets=new Map(),angles=new Map(),legendWidgets=new Map();
  const persist=()=>{try{localStorage.setItem(STORAGE,JSON.stringify(engine.snapshot()));}catch{}};
  const name=value=>String(value).toUpperCase();
  function interlocks(){
+  if(!registry.interlocks.length){window.B737OverheadToggles.setInterlock('alternate-flaps-position',true);return;}
   for(const rule of registry.interlocks)window.B737OverheadToggles.setInterlock(rule.targetToggle,engine.guard(rule.sourceGuard).value===rule.enabledValue);
  }
  function stateValue(c){return c.kind==='rotary'?engine.rotary(c.id):engine.guard(c.id).value;}
@@ -233,7 +234,7 @@
   byId('atlasAbsolute').append(svg);
  }
  function mount(layout){
-  const section=document.createElement('section');section.className='rg-inspector';section.innerHTML='<strong>۲۰ روتری‌ناب · ۱۳ گارد · OWNER-PHOTO-0004</strong><h3 id="rgSelected">یک ناب یا گارد را انتخاب کن</h3><button id="rgGuardAction" class="hidden"></button><div id="rgStates" class="rg-actions"></div><p id="rgValue" role="status" aria-live="polite"></p>';
+  const section=document.createElement('section');section.className='rg-inspector';section.innerHTML='<strong>۲۰ روتری‌ناب · ۰ گارد · منتظر نسخه جدید</strong><h3 id="rgSelected">یک ناب یا گارد را انتخاب کن</h3><button id="rgGuardAction" class="hidden"></button><div id="rgStates" class="rg-actions"></div><p id="rgValue" role="status" aria-live="polite"></p>';
   byId('toggleInspector').after(section);
   mountEngineStartLabelCorrection(layout);
   layer=document.createElement('div');layer.className='rg-layer';layer.id='rotaryGuardLayer';const placements=new Map(layout.placements.map(p=>[p.id,p]));

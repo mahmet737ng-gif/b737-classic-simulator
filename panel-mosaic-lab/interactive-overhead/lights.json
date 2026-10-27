@@ -1,6 +1,6 @@
 {
   "schema": "b737.overhead.lights.v1",
-  "version": "LGT-0012",
+  "version": "LGT-0012-GUARDS-CLEARED",
   "baseVersion": "UPD-0012-OVH-measured-seams",
   "assets": {
     "ALIGN_WHITE": {
@@ -963,9 +963,7 @@
         44
       ],
       "rule": "oxygen",
-      "controls": [
-        "passenger-oxygen"
-      ],
+      "controls": [],
       "sensor": null,
       "provenance": {
         "source_id": "FCOM-SEPEHRAN-1937",
@@ -986,9 +984,7 @@
         31
       ],
       "rule": "recorder",
-      "controls": [
-        "flight-recorder-test"
-      ],
+      "controls": [],
       "sensor": "recorder-off",
       "provenance": {
         "source_id": "FCOM-SEPEHRAN-1937",
@@ -1029,11 +1025,7 @@
         62
       ],
       "rule": "sensor",
-      "controls": [
-        "flight-control-a",
-        "flight-control-b",
-        "alternate-flaps-master"
-      ],
+      "controls": [],
       "sensor": "stby-quantity",
       "provenance": {
         "source_id": "FCOM-SEPEHRAN-1937",
@@ -1054,11 +1046,7 @@
         62
       ],
       "rule": "standby-pressure",
-      "controls": [
-        "flight-control-a",
-        "flight-control-b",
-        "alternate-flaps-master"
-      ],
+      "controls": [],
       "sensor": null,
       "provenance": {
         "source_id": "FCOM-SEPEHRAN-1937",
@@ -1079,11 +1067,7 @@
         62
       ],
       "rule": "standby-rudder",
-      "controls": [
-        "flight-control-a",
-        "flight-control-b",
-        "alternate-flaps-master"
-      ],
+      "controls": [],
       "sensor": null,
       "provenance": {
         "source_id": "FCOM-SEPEHRAN-1937",
@@ -1104,9 +1088,7 @@
         63
       ],
       "rule": "flight-pressure",
-      "controls": [
-        "flight-control-a"
-      ],
+      "controls": [],
       "sensor": null,
       "provenance": {
         "source_id": "FCOM-SEPEHRAN-1937",
@@ -1127,9 +1109,7 @@
         63
       ],
       "rule": "flight-pressure",
-      "controls": [
-        "flight-control-b"
-      ],
+      "controls": [],
       "sensor": null,
       "provenance": {
         "source_id": "FCOM-SEPEHRAN-1937",
@@ -1437,9 +1417,7 @@
         77
       ],
       "rule": "drive-pressure",
-      "controls": [
-        "generator-disconnect-1"
-      ],
+      "controls": [],
       "sensor": null,
       "provenance": {
         "source_id": "FCOM-SEPEHRAN-1937",
@@ -1460,9 +1438,7 @@
         77
       ],
       "rule": "drive-temperature",
-      "controls": [
-        "generator-disconnect-1"
-      ],
+      "controls": [],
       "sensor": null,
       "provenance": {
         "source_id": "FCOM-SEPEHRAN-1937",
@@ -1483,9 +1459,7 @@
         77
       ],
       "rule": "drive-pressure",
-      "controls": [
-        "generator-disconnect-2"
-      ],
+      "controls": [],
       "sensor": null,
       "provenance": {
         "source_id": "FCOM-SEPEHRAN-1937",
@@ -1506,9 +1480,7 @@
         77
       ],
       "rule": "drive-temperature",
-      "controls": [
-        "generator-disconnect-2"
-      ],
+      "controls": [],
       "sensor": null,
       "provenance": {
         "source_id": "FCOM-SEPEHRAN-1937",
@@ -1529,9 +1501,7 @@
         78
       ],
       "rule": "standby-power",
-      "controls": [
-        "standby-power"
-      ],
+      "controls": [],
       "sensor": null,
       "provenance": {
         "source_id": "FCOM-SEPEHRAN-1937",
@@ -1751,9 +1721,7 @@
         317
       ],
       "rule": "emergency",
-      "controls": [
-        "emergency-exit-lights"
-      ],
+      "controls": [],
       "sensor": null,
       "provenance": {
         "source_id": "FCOM-SEPEHRAN-1937",

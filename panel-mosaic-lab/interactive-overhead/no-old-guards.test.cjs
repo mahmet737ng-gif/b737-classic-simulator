@@ -1,0 +1,15 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
+const root=path.resolve(__dirname,'../..');
+const read=p=>fs.readFileSync(path.join(root,p),'utf8');const json=p=>JSON.parse(read(p));
+const lower=json('panel-mosaic-lab/interactive-overhead/rotary-guards.json');
+const upper=json('panel-mosaic-lab/interactive-overhead/lights-controls.json');
+const lights=json('panel-mosaic-lab/interactive-overhead/lights.json');
+const cockpit=read('panel-mosaic-lab/cockpit/index.html'),overhead=read('panel-mosaic-lab/cockpit/overhead-stage.html');
+assert.equal(lower.guards.length+upper.guards.length,0,'Guard registry must remain empty until replacement');
+assert.equal(lower.guardReset.activeCount,0);assert.equal(lower.interlocks.length,0);
+assert.deepEqual(Object.keys(lower.assets).filter(x=>/^(owner-|red-|black-)/.test(x)),[]);
+assert.ok(lights.lights.every(l=>l.controls.every(id=>!['flight-control-a','flight-control-b','spoiler-a','spoiler-b','alternate-flaps-master','battery-master','generator-disconnect-1','generator-disconnect-2','standby-power','emergency-exit-lights','passenger-oxygen','flight-recorder-test','bus-transfer'].includes(id))));
+for(const html of [cockpit,overhead])assert.ok(!/(guarded-owner-v3|guarded-17-unified|guarded17Open|busTransferGuardReview|bus-transfer-guard-review)/.test(html),'Previous guard UI still active');
+assert.equal(lower.rotaries.length+upper.rotaries.length,20,'Rotary controls must not be removed');
+console.log('PASS: Unified cleared of active guarded-switch registry, image references and previews; 20 non-guard rotaries preserved.');

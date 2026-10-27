@@ -1,5 +1,5 @@
 {
-  "version": "LGT-0003-OWNER4",
+  "version": "LGT-0004-GUARDS-CLEARED",
   "rotaries": [
     {
       "id": "irs-mode-l",
@@ -62,70 +62,5 @@
       "default": "OFF"
     }
   ],
-  "guards": [
-    {
-      "id": "passenger-oxygen",
-      "label": "PASSENGER OXYGEN",
-      "kind": "guarded",
-      "placementId": "UPPER",
-      "sourcePoint": [
-        1295,
-        612
-      ],
-      "bezelSourceDiameter": 83,
-      "color": "red",
-      "states": [
-        "normal",
-        "on"
-      ],
-      "default": {
-        "value": "normal",
-        "guard": "closed"
-      },
-      "closePolicy": {
-        "preserve": true
-      },
-      "rotation": 0,
-      "axis": "vertical",
-      "assetFamily": "owner-four-photo-master",
-      "logicStatus": "SIM_APPROX_ONLY; deployment latch resets only through explicit scenario reset",
-      "ownerHinge": "Down"
-    },
-    {
-      "id": "flight-recorder-test",
-      "label": "FLIGHT RECORDER TEST / NORMAL",
-      "kind": "guarded",
-      "placementId": "UPPER",
-      "sourcePoint": [
-        1421.5,
-        455
-      ],
-      "sourceRect": [
-        1365,
-        438,
-        113,
-        34
-      ],
-      "bezelSourceDiameter": 113,
-      "color": "black",
-      "states": [
-        "test",
-        "normal"
-      ],
-      "default": {
-        "value": "normal",
-        "guard": "closed"
-      },
-      "closePolicy": {
-        "force": "normal"
-      },
-      "rotation": 0,
-      "axis": "horizontal",
-      "presentation": "flight-recorder-left-hinge",
-      "assetFamily": "owner-four-photo-master",
-      "hinge": "LEFT",
-      "sourceStatus": "SOURCE_PHOTO_OH06; original pixels unchanged",
-      "ownerHinge": "Left"
-    }
-  ]
+  "guards": []
 }

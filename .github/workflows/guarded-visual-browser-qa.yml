@@ -1,84 +1,40 @@
-name: Guarded cockpit visual browser QA
-# Rendered-pose regression v3: the open cover must remain visible and keep its identity.
+name: Unified active guards cleared QA
 on:
   push:
     paths:
-      - 'panel-mosaic-lab/cockpit/guarded-inplace-v1.css'
-      - 'panel-mosaic-lab/cockpit/guarded-inplace-v1.js'
-      - 'panel-mosaic-lab/cockpit/guard-textures/**'
+      - 'panel-mosaic-lab/cockpit/index.html'
       - 'panel-mosaic-lab/cockpit/overhead-stage.html'
-      - 'panel-mosaic-lab/cockpit/guarded-owner-v3.js'
-      - 'panel-mosaic-lab/cockpit/guarded-owner-v3.css'
-      - 'panel-mosaic-lab/cockpit/guard-owner-v3/**'
       - 'panel-mosaic-lab/interactive-overhead/rotary-guards.json'
       - 'panel-mosaic-lab/interactive-overhead/lights-controls.json'
-      - 'panel-mosaic-lab/interactive-overhead/rotary-guards.js'
-      - 'panel-mosaic-lab/cockpit/guarded-visual-cdp.cjs'
+      - 'panel-mosaic-lab/interactive-overhead/no-old-guards.test.cjs'
       - '.github/workflows/guarded-visual-browser-qa.yml'
   workflow_dispatch:
 jobs:
-  chromium-native-overhead:
+  guard-empty:
     runs-on: ubuntu-latest
-    timeout-minutes: 8
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Validate reference geometry, color and 3D shapes
+      - name: Assert active guard registry and preview entrypoints are empty
         run: |
-          node --test panel-mosaic-lab/cockpit/guarded-inplace-v1.test.cjs
-          node --test panel-mosaic-lab/cockpit/guarded-photo-v2.test.cjs
-          python3 panel-mosaic-lab/verify-final-overhead.py
-      - name: Render actual overhead stage in headless Chrome and capture DOM
+          node panel-mosaic-lab/interactive-overhead/no-old-guards.test.cjs
+          node panel-mosaic-lab/interactive-overhead/rotary-guards.test.cjs
+      - name: Assert old guard nodes are absent in rendered overhead
         run: |
-          python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/guard-static.log 2>&1 &
+          python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/overhead-reset-server.log 2>&1 &
           sleep 2
           CHROME=$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)
-          if [ -z "$CHROME" ]; then echo "No Chromium engine available"; exit 2; fi
-          echo "Browser: $CHROME"
-          "$CHROME" --headless --disable-gpu --disable-dev-shm-usage --no-sandbox \
-            --hide-scrollbars --virtual-time-budget=18000 --window-size=1920,1080 \
-            --dump-dom 'http://127.0.0.1:8765/panel-mosaic-lab/cockpit/overhead-stage.html' \
-            > /tmp/guard-overhead-dom.html 2> /tmp/guard-chrome-stderr.log
-          if grep -q 'data-installed="13"' /tmp/guard-overhead-dom.html; then
-            echo "PASS: 13 owner master photo guards mounted in browser."
-          else
-            echo "WARNING: photo guards did not install at all 13 anchors."
-            grep -oE '.{0,70}g17-owner-status.{0,280}' /tmp/guard-overhead-dom.html | head -c 1800 || true
-            echo '\n---- Browser guard diagnostics ----'
-            grep -oE '.{0,60}(g17-owner-status|rotaryGuardLayer|guard-node|OWNER-PHOTO-0004|guarded-owner-v3).{0,240}' /tmp/guard-overhead-dom.html | head -c 3500 || true
-            echo '\n---- dump-dom file size ----'
-            wc -c /tmp/guard-overhead-dom.html || true
-            tail -20 /tmp/guard-chrome-stderr.log || true
+          test -n "$CHROME" || { echo "Chromium unavailable"; exit 2; }
+          "$CHROME" --headless --disable-gpu --disable-dev-shm-usage --no-sandbox --hide-scrollbars --virtual-time-budget=18000 --window-size=1440,900 --dump-dom "http://127.0.0.1:8765/panel-mosaic-lab/cockpit/overhead-stage.html" >/tmp/overhead-reset-dom.html 2>/tmp/overhead-reset-browser.log
+          if grep -q 'class="guard-node' /tmp/overhead-reset-dom.html; then
+            echo 'FAIL: Old guarded controls still mounted'
             exit 1
           fi
-          grep -q 'data-color="red"' /tmp/guard-overhead-dom.html || { echo "FAIL: red covers missing"; exit 1; }
-          grep -q 'data-color="black"' /tmp/guard-overhead-dom.html || { echo "FAIL: black covers missing"; exit 1; }
-          grep -q 'data-hinge="left"' /tmp/guard-overhead-dom.html || { echo "FAIL: wide cover missing"; exit 1; }
-      - name: Save photo-style Overhead screenshot for visual inspection
-        if: always()
-        run: |
-          CHROME=$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)
-          if [ -n "$CHROME" ]; then
-            "$CHROME" --headless --disable-gpu --disable-dev-shm-usage --no-sandbox \
-              --hide-scrollbars --virtual-time-budget=18000 --window-size=1920,1080 \
-              --screenshot=/tmp/guarded-overhead-v2.png \
-              'http://127.0.0.1:8765/panel-mosaic-lab/cockpit/overhead-stage.html' || true
+          if grep -q 'g17-owner-hardware' /tmp/overhead-reset-dom.html; then
+            echo 'FAIL: Old owner sprites still mounted'
+            exit 1
           fi
-      - name: Capture six ACTUAL guarded overhead assemblies in closed and open state
-        run: |
-          CHROME=$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)
-          CHROME_BIN="$CHROME" node panel-mosaic-lab/cockpit/guarded-visual-cdp.cjs
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: b737-guard-photo-v2-browser-proof
-          path: |
-            /tmp/guarded-overhead-v2.png
-            /tmp/guard-captures-v2/
-            /tmp/guard-overhead-dom.html
-            /tmp/guard-chrome-stderr.log
-            /tmp/guard-static.log
-          if-no-files-found: ignore
-          retention-days: 7
+          grep -q 'id="rotaryGuardLayer"' /tmp/overhead-reset-dom.html || { echo "FAIL: Rotary layer did not load"; tail -20 /tmp/overhead-reset-browser.log; exit 1; }
+          echo 'PASS: zero guarded-switch DOM instances; rotaries remain available'
