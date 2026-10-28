@@ -42,11 +42,11 @@ button{cursor:pointer}button:hover{background:#24475a}label{display:grid;gap:3px
 <section class="viewer">
 <div class="bar">
 <button id="previous">قبلی</button><button id="next">بعدی</button>
-<button id="kind" aria-pressed="true">چراغ جدید</button><button id="blueMode" aria-pressed="false">آبی DIM / BRIGHT</button>
+<button id="kind" aria-pressed="true">چراغ جدید</button><button id="unified" aria-pressed="false">نمای یکپارچه (تست)</button><button id="blueMode" aria-pressed="false">آبی DIM / BRIGHT</button>
 <strong id="activeName" dir="ltr">—</strong>
 <a target="_blank" href="../cockpit/?debugLights=1">یونیفاید اصلی</a>
 </div>
-<div id="photoViewport"><div id="photoSpace"><img id="photo" alt="Original untouched source cockpit panel">
+<div id="photoViewport"><iframe id="unifiedFrame" title="Unified cockpit with non-destructive lamp-fit preview" style="display:none;width:100%;height:100%;min-height:420px;border:0;background:#0c151a"></iframe><div id="photoSpace"><img id="photo" alt="Original untouched source cockpit panel">
 <div id="lampOverlay"><img id="face" alt="Calibrated fitted annunciator"></div>
 <div id="originalBox"></div><div id="originCross"></div>
 </div></div>
@@ -125,7 +125,7 @@ function sourceURL(row){
  const source=assembly.assets[p.asset];
  return {url:new URL(source.url,new URL(baseMP,location.href)).href,key:row.pieceId};
 }
-function visualSVG(row,inf,pix){
+function visualSVG(row,inf,pix,forcedState){
  // Font family, text sizes, letter spacing and strokes are inherited from the accepted v2 master style.
  // Only the canvas width/height is adapted to its photographed native source-rectangle ratio.
  const vert=row.asset==='NOT_ARMED_VERTICAL';
@@ -133,7 +133,7 @@ function visualSVG(row,inf,pix){
  const scale=vert?1:Math.min(1,(W-56)/(600-56)); // preserve letter proportions; cannot stretch glyphs
  const font=vert?83:inf.lines.length===1?110:inf.lines.length===2?95:72;
  const presets={amber:['#e98233','#f28e3d','#ffb665'],red:['#ee2035','#ff444b','#ff858a'],green:['#07cd39','#43ee71','#baffc1'],blue:['#348dfa','#70b7ff','#d9f1ff'],white:['#b9c9d3','#ffffff','#ffffff']};
- const c=presets[row.palette],state=Q('state').value;
+ const c=presets[row.palette],state=forcedState||Q('state').value;
  const on=state!=='OFF',b=state==='BRIGHT',phase=(row.palette==='blue'&&blueDim)?0.65:1;
  const border=on?(b?0.98:0.5)*phase:0.11;
  const glow=on?(b?0.52:0.22)*phase:0.0;
@@ -200,7 +200,7 @@ async function originalSource(row){
 }
 function go(step){const all=validRows();if(!all.length)return;let i=all.indexOf(selected);pick(all[(i+step+all.length)%all.length]).catch(error=>errorBox(error))}
 function errorBox(err){Q('status').textContent='خطا: '+err.message;console.error(err)}
-function redraw(){if(selected)pick(selected).catch(errorBox)}
+function redraw(){if(unifiedOn){syncUnified();return;}if(selected)pick(selected).catch(errorBox)}
 function exportCSV(){
  const headers=['bank','lamp_id','photo','asset','source_x','source_y','source_width','source_height','fit_x','fit_y','fit_width','fit_height','border_extension_l','border_extension_r','border_extension_t','border_extension_b'];
  const vals=rows.map(x=>{const r=pxRect(x);return [x.bank,x.id,x.photoKey,x.asset,...x.sourceRect,...[r.x,r.y,r.w,r.h,r.p.l,r.p.r,r.p.t,r.p.b].map(n=>Number(n.toFixed(3)))].join(',')});
@@ -219,6 +219,7 @@ async function init(){
  Q('state').onchange=redraw;
  Q('pad').oninput=()=>{Q('padValue').textContent=Q('pad').value;redraw()};
  Q('zoom').onchange=redraw;
+ Q('unified').onclick=toggleUnified;
  Q('previous').onclick=()=>go(-1);Q('next').onclick=()=>go(1);
  Q('kind').onclick=()=>{showNew=!showNew;Q('kind').setAttribute('aria-pressed',String(showNew));Q('kind').textContent=showNew?'چراغ جدید':'چراغ قبلی';redraw()};
  Q('geo').onclick=()=>{showDebug=!showDebug;redraw()};
@@ -227,6 +228,69 @@ async function init(){
  const hint=new URLSearchParams(location.search).get('light');
  const target=rows.find(x=>x.id===hint)||rows.find(x=>x.id==='main-stab-trim')||rows[0];await pick(target);
 }
+
+let unifiedOn=false,unifiedWork=false,unifiedTimer=null;
+function collectLampNodes(doc,out){
+ if(!doc)return;
+ try {
+  for(const node of doc.querySelectorAll('[data-cockpit-light],.mounted-light[data-light]'))out.push(node);
+  for(const f of doc.querySelectorAll('iframe')){try{if(f.contentDocument)collectLampNodes(f.contentDocument,out)}catch(e){}}
+ }catch(e){}
+}
+async function syncUnified(){
+ if(!unifiedOn||unifiedWork)return;
+ const frame=Q('unifiedFrame');
+ if(!frame.contentDocument)return;
+ const nodes=[];collectLampNodes(frame.contentDocument,nodes);
+ if(!nodes.length){Q('status').textContent='یونیفاید در حال بارگذاری موقعیت چراغ‌ها است…';return}
+ unifiedWork=true;let added=0,visible=0,failed=0;
+ try{
+  // Preserve physical controls, originals, power bus inputs, and all event listeners.
+  for(const node of nodes){
+   const id=node.dataset.cockpitLight||node.dataset.light,row=byId.get(id);
+   if(!row){failed++;continue}
+   const state0=node.dataset.frame||'OFF';
+   const state=state0==='OFF'||state0==='UNKNOWN'?'OFF':Q('state').value==='DIM'?'DIM':'BRIGHT';
+   const p=pxRect(row),factor=node.offsetWidth/row.sourceRect[2],key=state+'/'+p.x+'/'+p.y+'/'+p.w+'/'+p.h+'/'+blueDim+'/'+factor;
+   let art=node.querySelector(':scope > img[data-lamp-fit-qa="true"]');
+   if(!art){
+    art=node.ownerDocument.createElement('img');
+    art.dataset.lampFitQa='true';
+    art.alt='';
+    Object.assign(art.style,{position:'absolute',display:'block',pointerEvents:'none',maxWidth:'none',maxHeight:'none',margin:'0',padding:'0',border:'0',zIndex:'12',borderRadius:'0'});
+    art.style.setProperty('object-fit','fill','important');
+    node.style.setProperty('overflow','visible','important');
+    node.appendChild(art);added++;
+   }
+   if(art.dataset.lastFitKey===key){visible++;continue}
+   const inf=await loadInfo(row);
+   Object.assign(art.style,{left:(-p.p.l*factor)+'px',top:(-p.p.t*(node.offsetHeight/row.sourceRect[3]))+'px',width:(p.w*factor)+'px',height:(p.h*(node.offsetHeight/row.sourceRect[3]))+'px'});
+   art.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(visualSVG(row,inf,p,state));
+   art.dataset.lastFitKey=key;visible++;
+  }
+  Q('status').textContent='یونیفاید آزمایشی: '+visible+' چراغ از ۱۴۲ با طرح متناسبِ جایگاه نصب شدند'+(failed?' | مورد نامشخص: '+failed:'')+'. بدون تغییر در منطق یا منابع قفل‌شده.';
+ }catch(e){errorBox(e)}finally{unifiedWork=false}
+}
+function toggleUnified(){
+ unifiedOn=!unifiedOn;
+ Q('unified').setAttribute('aria-pressed',String(unifiedOn));
+ Q('unified').textContent=unifiedOn?'بازگشت به عکس مرجع':'نمای یکپارچه (تست)';
+ Q('photoSpace').style.display=unifiedOn?'none':'block';
+ Q('unifiedFrame').style.display=unifiedOn?'block':'none';
+ if(unifiedOn){
+  if(!Q('unifiedFrame').src||Q('unifiedFrame').src==='about:blank'){
+   Q('unifiedFrame').src='../cockpit/?debugLights=0';
+  }
+  clearInterval(unifiedTimer);
+  unifiedTimer=setInterval(syncUnified,1200);
+  Q('unifiedFrame').addEventListener('load',syncUnified,{once:true});
+  syncUnified();
+ }else{
+  clearInterval(unifiedTimer);
+  if(selected)pick(selected).catch(errorBox);
+ }
+}
+
 init().catch(errorBox);
 })();
 </script></body></html>
