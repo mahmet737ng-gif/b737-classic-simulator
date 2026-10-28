@@ -56,7 +56,7 @@ test('renderer uses off/on independent optical silhouettes; original user sprite
  assert(script.includes('registeredSocket(host,b)'));
  assert(script.includes('calibrateObserverHost(host)'));
  assert(script.includes("host.dataset.seat==='OBS'"));
- assert(script.includes('imageOriginX+slot.x/1122*hostW'),'OBS must align physical rendered background, not outer iframe box');
+ assert(script.includes('faceViewport.point(slot.x,slot.y)'),'OBS/CPT/FO must use the painted SVG viewport');
  assert(script.includes('obsLiveMasks.get(name)'),'OBS visible photo center must work even if global fetch fails');
  assert(html.includes('asp-socket-registration-v2.js?v=ASP-CENTER-0002'));
  assert(html.includes('asp-controls-v1.js?v=ASP-OBS-CENTER-0004'));
@@ -72,4 +72,28 @@ test('renderer uses off/on independent optical silhouettes; original user sprite
   const buf=fs.readFileSync(path.join(__dirname,'assets/asp-controls-v1',name));
   assert.equal(crypto.createHash('sha256').update(buf).digest('hex'),m.sha256);
  }
+});
+
+test('SVG meet aspect ratio registration centers all 60 photo sockets and 9 physical controls with no ad hoc shift',()=>{
+ const dims=[[1122,888],[480,345],[483,316],[375,297],[600,360],[379*2214/1731,283*1019/909],[400,400],[900,500]];
+ for(const [w,h] of dims){
+  const frame=reg.viewport(w,h);
+  assert(Math.abs(frame.padX*2+1122*frame.scale-w)<1e-10);
+  assert(Math.abs(frame.padY*2+888*frame.scale-h)<1e-10);
+  for(const s of model.sockets){const p=frame.point(s.x,s.y);
+   assert(Math.abs((p.x-frame.padX)/frame.scale-s.x)<1e-9);
+   assert(Math.abs((p.y-frame.padY)/frame.scale-s.y)<1e-9);
+  }
+  for(const x of [145,410,980]){const p=frame.point(x,747);
+   assert(Math.abs(p.x-(frame.padX+x*frame.scale))<1e-10);
+   assert(Math.abs(p.y-(frame.padY+747*frame.scale))<1e-10);
+  }
+ }
+ const view=reg.viewport(600,360);
+ assert(view.padX>0,'wide physical ASP must have equal horizontal letterboxing');
+ assert.notEqual(view.point(115,166).x,115/1122*600,'stretch arithmetic must not be used');
+ const a=read('asp-controls-v1.js'),b=read('asp-physical-controls-v1.js');
+ assert(a.includes('faceViewport.point(slot.x,slot.y)'));
+ assert(b.includes('frame.point(slot.x,slot.y)'));
+ assert(a.includes("preserveAspectRatio','xMidYMid meet"));
 });

@@ -57,8 +57,18 @@
   if(x1<=x0||y1<=y0)throw Error('Degenerate ASP visible silhouette');
   return Object.freeze({x:x0,y:y0,w:x1-x0+stride,h:y1-y0+stride,cx:(x0+x1)/2,cy:(y0+y1)/2,width,height,coverage:count*stride*stride/(width*height)});
  }
+ // An <img> sourced from the approved ASP SVG honors viewBox's default
+ // preserveAspectRatio=xMidYMid meet. CSS object-fit:fill does NOT remove
+ // the internal viewBox letterbox on rectangular Unified viewports.
+ function viewport(width,height,originX=0,originY=0){
+  if(!(width>0&&height>0))throw Error('Invalid ASP viewport');
+  const scale=Math.min(width/W,height/H);
+  const padX=(width-W*scale)/2,padY=(height-H*scale)/2;
+  return Object.freeze({scale,padX,padY,width,height,
+   point(x,y){return {x:originX+padX+x*scale,y:originY+padY+y*scale};}});
+ }
  function fit(slot,silhouette,hostWidth,hostHeight,kind){
-  const sx=hostWidth/W,sy=hostHeight/H,uniform=Math.min(sx,sy);
+  const frame=viewport(hostWidth,hostHeight),uniform=frame.scale;
   if(!(sx>0&&sy>0&&uniform>0))throw Error('Invalid ASP host dimensions');
   // Respect the original knob/mic proportions. Do not stretch the PNG.
   const allowance=kind==='mic'?{x:.88,y:.92}:{x:1.03,y:1.03};
@@ -68,8 +78,8 @@
    left:w/2-silhouette.cx*scale,top:h/2-silhouette.cy*scale,
    imageW:silhouette.width*scale,imageH:silhouette.height*scale,
    hitW:w,hitH:h,
-   centerX:slot.x*sx,centerY:slot.y*sy,
-   visibleCenterX:slot.x*sx,visibleCenterY:slot.y*sy,
+   centerX:frame.point(slot.x,slot.y).x,centerY:frame.point(slot.x,slot.y).y,
+   visibleCenterX:frame.point(slot.x,slot.y).x,visibleCenterY:frame.point(slot.x,slot.y).y,
    visibleW:silhouette.w*scale,visibleH:silhouette.h*scale,
    scale
   });
@@ -82,5 +92,5 @@
    return Object.freeze({...q,channel:m.channel});
   });
  }
- return Object.freeze({version:'ASP-CENTER-0002',viewBox:Object.freeze([W,H]),extract,mask,fit,compareSockets});
+ return Object.freeze({version:'ASP-CENTER-0002',viewBox:Object.freeze([W,H]),extract,mask,fit,compareSockets,viewport});
 });

@@ -125,13 +125,14 @@
   const face=OBS_FRAME&&host.dataset.seat==='OBS'?host.querySelector(':scope > img'):null;
   const hostW=face?.offsetWidth||rawW,hostH=face?.offsetHeight||rawH;
   const imageOriginX=face?.offsetLeft||0,imageOriginY=face?.offsetTop||0;
-  const unit=Math.min(hostW/1122,hostH/888);
+  const faceViewport=registrar.viewport(hostW,hostH,imageOriginX,imageOriginY);
+  const unit=faceViewport.scale;
   for(const b of host.querySelectorAll('.asp-photo-control')){
    const slot=registeredSocket(host,b),kind=b.dataset.kind,source=SOURCE[kind];
    if(!slot)continue;
    const nativeW=slot.w*unit,nativeH=slot.h*unit;
-   if(face){b.style.left=(imageOriginX+slot.x/1122*hostW)+'px';b.style.top=(imageOriginY+slot.y/888*hostH)+'px';}
-   else{b.style.left=slot.x/1122*100+'%';b.style.top=slot.y/888*100+'%';}
+   const center=faceViewport.point(slot.x,slot.y);
+   b.style.left=center.x+'px';b.style.top=center.y+'px';
    b.style.width=nativeW+'px';b.style.height=nativeH+'px';
    b.dataset.cx=String(slot.x);b.dataset.cy=String(slot.y);
    for(const img of b.querySelectorAll('.asp-control-image')){
@@ -160,7 +161,7 @@
   // on the nonuniformly mapped OH-04 face.
   const colors=host.dataset.region==='aft-overhead'?['#597083','#566e81','#526b7e']:['#6f7783','#727c89','#707987'];
   const id='asp-patch-'+host.dataset.seat;
-  const svg=document.createElementNS(ns,'svg');svg.setAttribute('viewBox','0 0 1122 888');svg.setAttribute('preserveAspectRatio','none');svg.setAttribute('aria-hidden','true');svg.classList.add('asp-socket-patches');
+  const svg=document.createElementNS(ns,'svg');svg.setAttribute('viewBox','0 0 1122 888');svg.setAttribute('preserveAspectRatio','xMidYMid meet');svg.setAttribute('aria-hidden','true');svg.classList.add('asp-socket-patches');
   const clips=model.sockets.map(s=>s.kind==='mic'?'<rect x="'+(s.x-53.5)+'" y="110.5" width="107" height="111"/>':'<rect x="'+(s.x-49)+'" y="'+(s.y-49)+'" width="98" height="98"/>').join('');
   svg.innerHTML='<defs><clipPath id="'+id+'-clip">'+clips+'</clipPath><linearGradient id="'+id+'-p" gradientUnits="userSpaceOnUse" x1="2" y1="2" x2="46.72" y2="886"><stop stop-color="'+colors[0]+'"/><stop offset=".55" stop-color="'+colors[1]+'"/><stop offset="1" stop-color="'+colors[2]+'"/></linearGradient><filter id="'+id+'-grain"><feTurbulence type="fractalNoise" baseFrequency=".31" numOctaves="2" seed="6"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="linear" slope=".055"/></feComponentTransfer></filter></defs><g clip-path="url(#'+id+'-clip)"><rect x="2" y="2" width="1118" height="884" fill="url(#'+id+'-p)"/><rect x="25" y="26" width="1072" height="826" filter="url(#'+id+'-grain)"/></g>';
   host.append(svg);
@@ -195,9 +196,11 @@
  }
  function audit(){
   return [...mounted].map(([seat,host])=>{
-   const r=host.getBoundingClientRect();
+   const face=host.querySelector(':scope > img')||host;
+   const r=face.getBoundingClientRect(),frame=registrar.viewport(r.width,r.height);
    const controls=[...host.querySelectorAll('.asp-photo-control')].map(b=>{
-    const box=b.getBoundingClientRect(),expected={x:r.left+r.width*Number(b.dataset.cx)/1122,y:r.top+r.height*Number(b.dataset.cy)/888};
+    const box=b.getBoundingClientRect(),p=frame.point(Number(b.dataset.cx),Number(b.dataset.cy));
+    const expected={x:r.left+p.x,y:r.top+p.y};
     const imageMeasurements=[...b.querySelectorAll('.asp-control-image')].map(img=>{
      const name=ASSETS[b.dataset.kind][img.classList.contains('asp-image-on')?1:0];
      const shape=measured?.masks[name],rect=img.getBoundingClientRect();

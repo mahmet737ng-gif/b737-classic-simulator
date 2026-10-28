@@ -66,7 +66,9 @@
   const checks=controls.map(b=>{
    const hit=b.getBoundingClientRect();
    const x=Number(b.dataset.cx),y=Number(b.dataset.cy);
-   const expectedX=panel.left+panel.width*x/1122,expectedY=panel.top+panel.height*y/888;
+   const frame=root.B737ASPSocketRegistrationV2?.viewport(panel.width,panel.height);
+   const at=frame?.point(x,y)||{x:panel.width*x/1122,y:panel.height*y/888};
+   const expectedX=panel.left+at.x,expectedY=panel.top+at.y;
    return {kind:b.dataset.kind,channel:b.dataset.channel,
     expected:[expectedX,expectedY],actual:[hit.left+hit.width/2,hit.top+hit.height/2],
     errorCssPx:Math.hypot(expectedX-hit.left-hit.width/2,expectedY-hit.top-hit.height/2)};

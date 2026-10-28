@@ -65,12 +65,24 @@
    }
   }
  }
+ function positionSwitch(host,b){
+  const slot=Model.CONTROLS[b.dataset.aspPhysicalKind];
+  const img=host.querySelector(':scope > img');
+  const w=img?.offsetWidth||host.clientWidth,h=img?.offsetHeight||host.clientHeight;
+  if(!(w>0&&h>0))return;
+  const originX=img?.offsetLeft||0,originY=img?.offsetTop||0;
+  const frame=root.B737ASPSocketRegistrationV2.viewport(w,h,originX,originY);
+  const p=frame.point(slot.x,slot.y);
+  b.style.left=p.x+'px';b.style.top=p.y+'px';
+  b.style.width=112*frame.scale+'px';b.style.height=112*frame.scale+'px';
+  b.dataset.aspRegistration='SVG-xMidYMid-meet';
+ }
  function makeSwitch(host,seat,kind){
   const c=Model.CONTROLS[kind];
   const button=document.createElement('button');
   button.type='button';button.className='asp-physical-switch';
   button.dataset.aspPhysicalKind=kind;button.dataset.seat=seat;
-  button.style.left=(c.x/1122*100)+'%';button.style.top=(c.y/888*100)+'%';
+  positionSwitch(host,button);
   button.title=kind==='PTT'?'Hold upper half for R/T or lower for I/C; release returns neutral':
    'Top: '+c.positions[0]+' · Bottom: '+c.positions[c.positions.length-1];
   button.innerHTML='<span class="asp-physical-base"></span><span class="asp-physical-lever"></span>';
@@ -134,6 +146,9 @@
     if(!host.querySelector('[data-asp-physical-kind="'+kind+'"]'))makeSwitch(host,seat,kind);
    }
    mounted.set(seat,host);
+   new ResizeObserver(()=>{
+    for(const b of host.querySelectorAll('[data-asp-physical-kind]'))positionSwitch(host,b);
+   }).observe(host);
   }
   project();
   return localSeats.every(s=>mounted.get(s)?.isConnected);
