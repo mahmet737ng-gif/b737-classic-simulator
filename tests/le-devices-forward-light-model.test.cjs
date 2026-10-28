@@ -33,3 +33,19 @@ test('DC1 loss extinguishes only forward LE annunciators',()=>{
  m.update({leCenterPowered:true});
  assert.equal(m.evaluate().frames['main-le-transit'],'ON');
 });
+
+test('live direct forward annunciations honor EXT hold with lever already 40, then TRANSIT and FULL',()=>{
+ const m=Light.controller(reg);m.setOverheadPower(true);
+ let s=m.update({trailingFlaps:40,leadingEdge:'INTERMEDIATE',leDirectValid:true,
+   leDirectTransit:false,leDirectExtended:true});
+ assert.equal(s.frames['main-le-transit'],'OFF');
+ assert.equal(s.frames['main-le-extended'],'ON');
+ s=m.update({leDirectTransit:true,leDirectExtended:false});
+ assert.equal(s.frames['main-le-transit'],'ON');
+ assert.equal(s.frames['main-le-extended'],'OFF');
+ s=m.update({leDirectTransit:false,leDirectExtended:true,leadingEdge:'FULL'});
+ assert.equal(s.frames['main-le-transit'],'OFF');
+ assert.equal(s.frames['main-le-extended'],'ON');
+ s=m.update({leCenterPowered:false});
+ assert.equal(s.frames['main-le-extended'],'OFF');
+});

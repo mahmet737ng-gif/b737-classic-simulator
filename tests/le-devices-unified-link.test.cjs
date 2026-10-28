@@ -76,3 +76,18 @@ test('flap indicator remains on measured position during lever demand and follow
  assert.equal(h.needles.at(-1),1);
  assert.equal(h.window.B737LEDevicesUnifiedLink.getState().actualTe,1);
 });
+
+test('up-to-40 initial intermediate stage uses center direct lamps, not the lever 40 shortcut',()=>{
+ const h=setup();h.message('ready');
+ h.signal('b737:flap-detent-visual-test',{detent:40,visualOnly:true});
+ const s={lever:40,revision:40,leStage:'EXT',tePosition:1,
+   center:{power:true,transit:false,extended:true},mismatch:[],autoslatInhibit:false};
+ h.message('le-devices-projection',s);
+ assert.equal(h.lampPatches.at(-1).leadingEdge,'INTERMEDIATE');
+ assert.equal(h.lampPatches.at(-1).leDirectValid,true);
+ assert.equal(h.lampPatches.at(-1).leDirectExtended,true);
+ h.message('le-devices-projection',{...s,revision:41,leStage:'FULL',
+   center:{power:true,transit:true,extended:false}});
+ assert.equal(h.lampPatches.at(-1).leDirectTransit,true);
+ assert.equal(h.lampPatches.at(-1).leDirectExtended,false);
+});

@@ -34,7 +34,7 @@ test('physical lever 0->1 moves actual TE smoothly over twenty seconds',()=>{
  assert.equal(s.trainer.flapActuator().actual,0);
  s.ticks(50); // ten seconds
  assert.ok(Math.abs(s.trainer.flapActuator().actual-.5)<.0002);
- assert.equal(s.frames.FLAP_1,'TRANSIT');
+ assert.equal(s.frames.FLAP_1,'FULL_EXT','leading-edge flaps finish first-stage extension in about ten seconds');
  s.ticks(50);
  assert.ok(Math.abs(s.trainer.flapActuator().actual-1)<.0002);
  assert.equal(s.frames.FLAP_1,'FULL_EXT');

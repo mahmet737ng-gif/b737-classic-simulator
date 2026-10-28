@@ -204,9 +204,77 @@ test('optional timed LE motion advances slower, honors hydraulic pressure, while
  a=LE.apply(a,lever(1));b=LE.apply(b,lever(1));
  a=LE.apply(a,{type:'TICK',seconds:5,motionProfile:'TIMED',pressureFactor:1});
  b=LE.apply(b,{type:'TICK',seconds:5});
- assert.equal(a.position.SLAT_1,.25);
+ assert.equal(a.position.SLAT_1,.5);
  assert.equal(b.position.SLAT_1,1);
  a=LE.apply(a,{type:'TICK',seconds:5,motionProfile:'TIMED',pressureFactor:.5});
- assert.equal(a.position.SLAT_1,.375);
+ assert.equal(a.position.SLAT_1,.75);
  assert.throws(()=>LE.apply(a,{type:'TICK',seconds:1,motionProfile:'TIMED',pressureFactor:-1}));
+});
+
+test('FOLLOW_TE UP to 40: ten-second initial EXT/LE-flaps-full then hold until actual TE >5',()=>{
+ let s=LE.initialState();
+ const follow=(pos,cmd=40)=>{s=LE.apply(s,{type:'FOLLOW_TE',position:pos,command:cmd});};
+ follow(0);
+ assert.equal(LE.evaluate(s).leStage,'EXT');
+ assert.equal(LE.evaluate(s).overhead.windows['SLAT_2|TRANSIT'],true);
+ s=LE.apply(s,{type:'TICK',seconds:10,motionProfile:'TIMED',pressureFactor:1});
+ follow(.5);
+ let p=LE.evaluate(s);
+ assert.equal(p.leStage,'EXT');
+ for(const id of LE.SLATS){assert.equal(p.overhead.windows[id+'|EXT'],true);assert.equal(p.overhead.windows[id+'|FULL_EXT'],false);}
+ for(const id of LE.FLAPS){assert.equal(p.overhead.windows[id+'|FULL_EXT'],true);}
+ assert.equal(p.center.extended,true);
+ assert.equal(p.center.transit,false);
+ follow(5);p=LE.evaluate(s);
+ assert.equal(p.leStage,'EXT');
+ assert.equal(p.overhead.windows['SLAT_2|EXT'],true);
+ follow(5.02);p=LE.evaluate(s);
+ assert.equal(p.leStage,'FULL');
+ assert.equal(p.overhead.windows['SLAT_2|EXT'],false);
+ assert.equal(p.overhead.windows['SLAT_2|TRANSIT'],true);
+ assert.equal(p.center.transit,true);
+ assert.equal(p.center.extended,false);
+ s=LE.apply(s,{type:'TICK',seconds:6,motionProfile:'TIMED',pressureFactor:1});
+ p=LE.evaluate(s);
+ assert.equal(p.overhead.windows['SLAT_2|FULL_EXT'],true);
+ assert.equal(p.center.transit,false);
+ assert.equal(p.center.extended,true);
+});
+test('FOLLOW_TE descending 40 to UP: 10 threshold then 1 threshold, no premature loss of FULL',()=>{
+ let s=LE.initialState();
+ const follow=(pos,cmd)=>{s=LE.apply(s,{type:'FOLLOW_TE',position:pos,command:cmd});};
+ follow(40,40);
+ s=LE.apply(s,{type:'TICK',seconds:20,motionProfile:'TIMED',pressureFactor:1});
+ assert.equal(LE.evaluate(s).overhead.windows['SLAT_1|FULL_EXT'],true);
+ follow(30,0);assert.equal(LE.evaluate(s).leStage,'FULL');
+ follow(10,0);assert.equal(LE.evaluate(s).leStage,'FULL');
+ assert.equal(LE.evaluate(s).overhead.windows['SLAT_1|FULL_EXT'],true);
+ follow(9.99,0);
+ assert.equal(LE.evaluate(s).leStage,'EXT');
+ assert.equal(LE.evaluate(s).overhead.windows['SLAT_1|TRANSIT'],true);
+ s=LE.apply(s,{type:'TICK',seconds:6,motionProfile:'TIMED',pressureFactor:1});
+ assert.equal(LE.evaluate(s).overhead.windows['SLAT_1|EXT'],true);
+ assert.equal(LE.evaluate(s).center.extended,true);
+ follow(1,0);
+ assert.equal(LE.evaluate(s).overhead.windows['SLAT_1|EXT'],true);
+ follow(.99,0);
+ assert.equal(LE.evaluate(s).leStage,'RETRACTED');
+ assert.equal(LE.evaluate(s).overhead.windows['SLAT_1|TRANSIT'],true);
+ assert.equal(LE.evaluate(s).center.transit,true);
+ s=LE.apply(s,{type:'TICK',seconds:10,motionProfile:'TIMED',pressureFactor:1});
+ assert.equal(LE.evaluate(s).overhead.windows['SLAT_1|TRANSIT'],false);
+ assert.equal(LE.evaluate(s).overhead.windows['SLAT_1|EXT'],false);
+ assert.equal(LE.evaluate(s).center.extended,false);
+ assert.equal(LE.evaluate(s).center.transit,false);
+});
+test('FOLLOW_TE jammed SLAT 2 stays amber when stage changes EXT to FULL',()=>{
+ let s=LE.initialState();
+ for(const a of [{type:'FOLLOW_TE',position:0,command:40},{type:'TICK',seconds:10,motionProfile:'TIMED',pressureFactor:1},
+ {type:'JAM',device:'SLAT_2',value:true},{type:'FOLLOW_TE',position:5.01,command:40},
+ {type:'TICK',seconds:6,motionProfile:'TIMED',pressureFactor:1}])s=LE.apply(s,a);
+ const p=LE.evaluate(s);
+ assert.equal(p.overhead.windows['SLAT_2|TRANSIT'],true);
+ assert.equal(p.overhead.windows['SLAT_2|EXT'],false);
+ assert.equal(p.overhead.windows['SLAT_1|FULL_EXT'],true);
+ assert.equal(p.center.transit,true);
 });

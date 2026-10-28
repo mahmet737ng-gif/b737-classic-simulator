@@ -23,13 +23,15 @@
   }
   if(!center||![true,false,null].includes(center.power))return false;
   const leadingEdge=center.transit?'DISAGREE':
-   center.extended?(p.lever>=10?'FULL':'INTERMEDIATE'):
-   p.lever===0&&p.mismatch?.length===0?'RETRACTED':'TRANSIT';
+   center.extended?(p.leStage==='EXT'?'INTERMEDIATE':'FULL'):
+   p.leStage==='RETRACTED'&&!p.mismatch?.length?'RETRACTED':'TRANSIT';
   window.B737CockpitLights.setInputs({
    trailingFlaps:lever,
    leadingEdge,
    autoslatInFlight:!!p.autoslatInhibit,
-   leCenterPowered:center.power===true
+   leCenterPowered:center.power===true,
+   leDirectValid:true,leDirectTransit:center.transit===true,
+   leDirectExtended:center.extended===true
   });
   return true;
  }

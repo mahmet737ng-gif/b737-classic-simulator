@@ -24,10 +24,16 @@
    position:Object.fromEntries(DEVICES.map(id=>[id,0])),
    jams:Object.fromEntries(DEVICES.map(id=>[id,false])),
    sensor:Object.fromEntries(DEVICES.map(id=>[id,null])),
-   lampFailures:[],testPressed:false,elapsedSeconds:0};
+   lampFailures:[],testPressed:false,elapsedSeconds:0,
+   followActualTE:false,teActual:0,leStage:'RETRACTED'};
  }
  function target(s,id){
   if(s.alternateExtend)return id.startsWith('SLAT_')?2:1;
+  if(s.followActualTE){
+   if(id.startsWith('FLAP_'))return s.leStage==='RETRACTED'?0:1;
+   if(s.autoslatsRequested&&!s.onGround)return 2;
+   return s.leStage==='FULL'?2:s.leStage==='EXT'?1:0;
+  }
   if(!s.lever)return 0;
   if(id.startsWith('FLAP_'))return 1;
   return s.lever>=10||(s.autoslatsRequested&&!s.onGround)?2:1;
@@ -45,6 +51,30 @@
    case 'FLAP_LEVER':
     if(!DETENTS.includes(val))throw Error('Invalid trailing-edge flap detent');
     s.lever=val;break;
+   case 'FOLLOW_TE':{
+    // Stage changes are driven by actual trailing-edge travel, not lever demand.
+    // Extension: UP -> EXT immediately; EXT -> FULL only after actual TE passes 5.
+    // Retraction: keep FULL through TE 10; below 10 -> EXT; below 1 -> RETRACTED.
+    if(!finite(action.position)||action.position<0||action.position>40||
+       !DETENTS.includes(action.command))throw Error('Invalid actual TE stage input');
+    const actual=action.position,command=action.command,eps=1e-6;
+    if(!s.followActualTE)
+     s.leStage=actual<=eps?'RETRACTED':actual<=5?'EXT':'FULL';
+    s.followActualTE=true;s.teActual=actual;s.lever=command;
+    if(command>actual+eps){
+     if(s.leStage==='RETRACTED')s.leStage='EXT';
+     if(actual>5+eps)s.leStage='FULL';
+    }else if(command<actual-eps){
+     if(s.leStage==='FULL'&&actual<10-eps)s.leStage='EXT';
+     if(s.leStage==='EXT'&&actual<1-eps)s.leStage='RETRACTED';
+    }else{
+     // When TE reaches its commanded stop, preserve the established stage.
+     if(actual<=eps)s.leStage='RETRACTED';
+     else if(actual<=5&&s.leStage==='RETRACTED')s.leStage='EXT';
+     else if(actual>5&&s.leStage==='EXT')s.leStage='FULL';
+    }
+    break;
+   }
    case 'GROUND':
     if(typeof val!=='boolean')throw Error('GROUND must be boolean');
     s.onGround=val;break;
@@ -98,7 +128,9 @@
      if(!s.hydraulic.B&&desired<cur)continue;
      if(!s.hydraulic.B&&desired>cur&&!(s.alternateExtend&&s.hydraulic.standby)&&
         !(id.startsWith('SLAT_')&&s.autoslatsRequested&&!s.onGround&&s.hydraulic.A&&s.ptuAvailable&&desired===2))continue;
-     const phase=cur>1.000001||(Math.abs(cur-1)<.000001&&desired>1)?1/16:1/20;
+     // Initial LE phase reaches EXT / full LE flap in ~10 seconds.
+     // Subsequent EXT <-> FULL slat motion takes ~6 seconds (provisional).
+     const phase=cur>1.000001||(Math.abs(cur-1)<.000001&&desired>1)?1/6:1/10;
      const speed=timed?phase*pf:.20;
      const step=Math.min(Math.abs(desired-cur),speed*dt);
      s.position[id]=Number((cur+Math.sign(desired-cur)*step).toFixed(6));
@@ -156,6 +188,7 @@
   return {schema:'b737-le-classic-result/1',revision:s.revision,scenario:s.mode,lever:s.lever,
    onGround:s.onGround,hydraulic:copy(s.hydraulic),power:copy(s.power),
    position:copy(s.position),expected,indication,overhead,center,
+   leStage:s.followActualTE?s.leStage:null,teActual:s.followActualTE?s.teActual:null,
    faults:{jams:DEVICES.filter(id=>s.jams[id]),sensorFaults:DEVICES.filter(id=>s.sensor[id]!==null),lampFailures:[...s.lampFailures]},
    mismatch:mismatched,improperIndications:improper,autoslatInhibit,alternateExtend:s.alternateExtend,
    constraints:['NO_REAL_WIRING_MAP','TRAINING_RATE_ONLY','NO_HYDRAULIC_PLANT_CONNECTED','MRG_CLASSIC_BUS_SURROGATES']};

@@ -26,6 +26,7 @@
   }
   const flap=actuator.evaluate(te);
   const detail={revision:latest.revision,lever:latest.lever,scenario:mode,
+   leStage:latest.leStage,
    tePosition:flap.actual,teTarget:flap.command,teMoving:flap.moving,
    hydraulicPsi:flap.pressurePsi,
    center:latest.center,overheadPower:latest.overhead.power,
@@ -45,17 +46,21 @@
   const tick=action.type==='TICK';
   const physicalTick=tick&&physicalMotion;
   const pf=actuator.evaluate(te).pressureFactor;
+  if(action.type==='RESET'){
+   state=engine.apply(state,action);
+   mode=action.mode||'NORMAL';te=actuator.initialState();physicalMotion=false;stopMotion();
+   return paint();
+  }
+  if(action.type==='FLAP_LEVER')
+   te=actuator.apply(te,{type:'COMMAND',value:action.value});
+  else if(action.type==='HYDRAULIC'&&action.system==='B')
+   te=actuator.apply(te,{type:'HYDRAULIC',value:action.value});
+  else if(physicalTick)
+   te=actuator.apply(te,{type:'TICK',seconds:action.seconds});
+  if(physicalMotion)
+   state=engine.apply(state,{type:'FOLLOW_TE',position:te.actual,command:te.command});
   const actualAction=physicalTick?{...action,motionProfile:'TIMED',pressureFactor:pf}:action;
   state=engine.apply(state,actualAction);
-  if(action.type==='RESET'){
-   mode=action.mode||'NORMAL';te=actuator.initialState();physicalMotion=false;stopMotion();
-  } else if(action.type==='FLAP_LEVER'){
-   te=actuator.apply(te,{type:'COMMAND',value:action.value});
-  } else if(action.type==='HYDRAULIC'&&action.system==='B'){
-   te=actuator.apply(te,{type:'HYDRAULIC',value:action.value});
-  } else if(tick&&physicalMotion){
-   te=actuator.apply(te,{type:'TICK',seconds:action.seconds});
-  }
   return paint();
  }
  function authorize(action){
@@ -118,8 +123,9 @@
   if(e.data.action==='le-devices'&&e.data.command){
    try{
     const cmd=e.data.command;
+    if(e.data.originator==='physical-flap-lever'&&cmd.type==='FLAP_LEVER')physicalMotion=true;
     authorize(cmd);
-    if(e.data.originator==='physical-flap-lever'&&cmd.type==='FLAP_LEVER'){physicalMotion=true;runMotion();}
+    if(e.data.originator==='physical-flap-lever'&&cmd.type==='FLAP_LEVER')runMotion();
     if(physicalMotion&&cmd.type==='HYDRAULIC'&&cmd.system==='B'&&cmd.value===true)runMotion();
    }catch(err){console.warn('Invalid LE cockpit command',err.message);}
   }
