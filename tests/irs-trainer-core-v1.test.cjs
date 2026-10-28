@@ -62,7 +62,7 @@ s=tick(s,{dtSec:5,stationary:false,valid:false,altitudeFt:12000});
 approx(distanceNm(status(s,'L').position,prior),0,0.000001);
 assert.equal(status(s,'L').warning,'NAV_FRAME_MISSING');
 assert.throws(()=>tick(s,{dtSec:200,stationary:false,valid:true,gsKt:180,trueTrackDeg:0}),/substep/);
-assert.throws(()=>apply(s,{type:'FMC_SET_IRS_POS',position:'N35395 E051254'}),/only during alignment/);
+assert.throws(()=>apply(s,{type:'FMC_SET_IRS_POS',position:'N35395 E051254'}),/No powered IRS is eligible/);
 // A separately entered selected-side PPOS must not change the other system.
 let t=initialState();
 t=apply(t,{type:'POWER',side:'R',available:true});
