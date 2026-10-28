@@ -116,7 +116,7 @@ h1{font-size:32px;margin:0 0 8px;font-weight:720} .subtitle{color:var(--muted);m
 'use strict';
 const root=document,qs=s=>root.querySelector(s),qsa=s=>Array.from(root.querySelectorAll(s)),storageKey='b737classic.aircraft-profile.v1',repo='mahmet737ng-gif/b737-classic-simulator';
 const defaults={schema:'b737-classic-aircraft-profile/1',aircraftFamily:'B737-300-500',pressurization:'DCPCS',engineInstruments:'CONVENTIONAL'};
-let profile=Object.assign({},defaults),started=false,frameReady=false,poll=0,lastHead=null,toastTimer=0,primedAll=false;
+let profile=Object.assign({},defaults),started=false,frameReady=false,poll=0,lastHead=null,toastTimer=0,primedAll=false,allReadyTicks=0;
 try {const stored=JSON.parse(localStorage.getItem(storageKey));for(const k of ['aircraftFamily','pressurization','engineInstruments'])if(stored&&typeof stored[k]==='string')profile[k]=stored[k];}catch{}
 const allowed={aircraftFamily:['B737-300-500','B737-400'],pressurization:['CPCS','DCPCS'],engineInstruments:['EIS','CONVENTIONAL']};
 for(const k in allowed)if(!allowed[k].includes(profile[k]))profile[k]=defaults[k];
@@ -129,7 +129,7 @@ function cwin(){try{return qs('#cockpit').contentWindow;}catch{return null;}}
 function goView(name){let w=cwin();try{const b=w?.document?.querySelector('[data-focus="'+name+'"]');if(b){b.click();return true;}}catch{}return false;}
 qsa('[data-view]').forEach(b=>b.addEventListener('click',()=>{goView(b.dataset.view);qsa('[data-view]').forEach(x=>x.classList.toggle('active',x===b));}));
 function begin(){
- localStorage.setItem(storageKey,JSON.stringify(profile));started=true;frameReady=false;primedAll=false;checkCount=0;qs('#fallback').classList.remove('show');
+ localStorage.setItem(storageKey,JSON.stringify(profile));started=true;frameReady=false;primedAll=false;allReadyTicks=0;checkCount=0;qs('#fallback').classList.remove('show');
  qs('#setup').classList.add('hide');qs('#workspace').classList.remove('hide');qs('#loadcover').classList.remove('hide');
  qs('#headprofile').textContent=profile.aircraftFamily.replace('B','')+' · '+profile.pressurization+' · '+profile.engineInstruments;
  qs('#cockpit').src=src();clearInterval(poll);poll=setInterval(checkReady,250);
@@ -141,7 +141,7 @@ function sceneVisibleImagesReady(w){const d=w.document,v=d.getElementById('viewp
 let checkCount=0;function checkReady(){if(!started)return;checkCount++;let w=cwin(),good=0;
  for(const [id,test] of probes){let ok=false;try{ok=frameReady&&Boolean(test(w));}catch{}qs('#'+id).textContent=ok?'READY':'WAITING';if(ok)good++;}
  qs('#progress').style.width=(good*25)+'%';
- if(good===4){if(!primedAll){primedAll=true;goView('all');return;}if(!sceneVisibleImagesReady(w)){qs('#progress').style.width='93%';return;}clearInterval(poll);qs('#loadcover').classList.add('hide');qsa('[data-view]').forEach(x=>x.classList.toggle('active',x.dataset.view==='all'));attachKeys();notify('نمای اصلی و تصاویر قابل‌مشاهده آماده‌اند. کنترل‌ها به همان یونیفاید قبلی متصل‌اند.');}
+ if(good===4){allReadyTicks++;if(!primedAll){primedAll=true;goView('all');return;}const texturesOk=sceneVisibleImagesReady(w);if(!texturesOk&&allReadyTicks<13){qs('#progress').style.width='96%';return;}clearInterval(poll);qs('#progress').style.width='100%';qs('#loadcover').classList.add('hide');qsa('[data-view]').forEach(x=>x.classList.toggle('active',x.dataset.view==='all'));attachKeys();notify(texturesOk?'نمای اصلی و تصاویر قابل‌مشاهده آماده‌اند.':'بخش‌های اصلی READY هستند؛ بررسی کامل تصاویر انجام نشد، ولی برای جلوگیری از گیرکردن لودینگ وارد نمای کابین شدیم.');}else{allReadyTicks=0;}
  if(checkCount>70&&good<4)qs('#fallback').classList.add('show');
 }
 qs('#openPartial').addEventListener('click',()=>{clearInterval(poll);qs('#loadcover').classList.add('hide');notify('ورود با هشدار: آماده‌بودن تمام زیرسیستم‌ها تأیید نشده است.');});
