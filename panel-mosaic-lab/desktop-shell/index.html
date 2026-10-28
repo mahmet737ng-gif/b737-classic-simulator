@@ -129,14 +129,14 @@ function cwin(){try{return qs('#cockpit').contentWindow;}catch{return null;}}
 function goView(name){let w=cwin();try{const b=w?.document?.querySelector('[data-focus="'+name+'"]');if(b){b.click();return true;}}catch{}return false;}
 qsa('[data-view]').forEach(b=>b.addEventListener('click',()=>{goView(b.dataset.view);qsa('[data-view]').forEach(x=>x.classList.toggle('active',x===b));}));
 function begin(){
- localStorage.setItem(storageKey,JSON.stringify(profile));started=true;frameReady=false;
+ localStorage.setItem(storageKey,JSON.stringify(profile));started=true;frameReady=false;checkCount=0;qs('#fallback').classList.remove('show');
  qs('#setup').classList.add('hide');qs('#workspace').classList.remove('hide');qs('#loadcover').classList.remove('hide');
  qs('#headprofile').textContent=profile.aircraftFamily.replace('B','')+' · '+profile.pressurization+' · '+profile.engineInstruments;
  qs('#cockpit').src=src();clearInterval(poll);poll=setInterval(checkReady,250);
 }
 qs('#start').addEventListener('click',begin);
 qs('#cockpit').addEventListener('load',()=>{frameReady=true;attachKeys();checkReady();});
-const probes=[['readyConfig',w=>!!(w.B737AircraftProfileStore&&w.B737AircraftProfileStore.get()?.aircraftFamily===profile.aircraftFamily&&w.B737AircraftProfileStore.get()?.pressurization===profile.pressurization)],['readyMain',w=>!!(w.document.querySelector('#region-main .texture-piece img')&&w.document.querySelector('#region-pedestal'))],['readyOverhead',w=>!!(w.document.querySelector('#overheadFrame')?.contentWindow?.document?.body&&w.B737FlapVisualTest&&w.document.getElementById('throttle-position-controls'))],['readyCdu',w=>!!(w.document.querySelector('.cdu-station[data-seat="CAPT"].ready')&&w.document.querySelector('.cdu-station[data-seat="FO"].ready'))]];
+const probes=[['readyConfig',w=>!!(w.B737AircraftProfileStore&&w.B737AircraftProfileStore.get()?.aircraftFamily===profile.aircraftFamily&&w.B737AircraftProfileStore.get()?.pressurization===profile.pressurization)],['readyMain',w=>{const images=[...w.document.querySelectorAll('#region-main .texture-piece img')];return images.length===5&&images.every(img=>img.complete&&img.naturalWidth>0)&&!!w.document.querySelector('#region-pedestal');}],['readyOverhead',w=>!!(w.document.querySelector('#overheadStatus')?.textContent?.includes('متصل')&&w.B737FlapVisualTest&&w.document.getElementById('throttle-position-controls'))],['readyCdu',w=>!!(w.document.querySelector('.cdu-station[data-seat="CAPT"].ready')&&w.document.querySelector('.cdu-station[data-seat="FO"].ready'))]];
 let checkCount=0;function checkReady(){if(!started)return;checkCount++;let w=cwin(),good=0;
  for(const [id,test] of probes){let ok=false;try{ok=frameReady&&Boolean(test(w));}catch{}qs('#'+id).textContent=ok?'READY':'WAITING';if(ok)good++;}
  qs('#progress').style.width=(good*25)+'%';
