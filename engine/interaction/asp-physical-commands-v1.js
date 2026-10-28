@@ -27,9 +27,12 @@
  function visualFromBackend(backend,seat){
   if(!backend||backend.schema!=='b737-asp-audio-v1')throw Error('ASP V1 backend required');
   if(!SEATS.includes(seat))throw Error('Unknown station');
-  const s=backend.stations[seat];validate(seat,'PTT',s.ptt);
+  const s=backend.stations[seat];
+  // WHEEL_MIC, WHEEL_INT and HAND key other physical microphones; ASP PTT stays neutral.
+  const physicalPtt=['ASP_RT','ASP_IC'].includes(s.ptt)?s.ptt:null;
+  validate(seat,'PTT',physicalPtt);
   validate(seat,'MASK_BOOM',s.microphone);validate(seat,'ALT_NORM',s.mode);
-  return {seat,PTT:s.ptt,MASK_BOOM:s.microphone,ALT_NORM:s.mode,
+  return {seat,PTT:physicalPtt,MASK_BOOM:s.microphone,ALT_NORM:s.mode,
    mic:s.mic,receivers:{...s.receivers},volumes:{...s.volumes}};
  }
  return Object.freeze({version:'ASP-PHYSICAL-0001',SEATS,CONTROLS,validate,command,topBottom,visualFromBackend});

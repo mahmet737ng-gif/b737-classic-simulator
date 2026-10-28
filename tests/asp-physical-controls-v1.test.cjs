@@ -89,3 +89,11 @@ test('only additive assets and three cockpit ASP faces are involved',()=>{
  assert(css.includes('.asp-bare-mounted .asp-physical-switch'));
  assert(!js.includes('guard-owner18'));assert(!js.includes('irs-'));
 });
+
+test('external wheel/hand PTT must not move the physical ASP spring switch',()=>{
+ let s=Core.initialState();
+ for(const source of ['WHEEL_MIC','WHEEL_INT','HAND']){
+  s=Core.apply(s,{seat:'OBS',type:'PTT',value:source});
+  assert.equal(M.visualFromBackend(s,'OBS').PTT,null);
+ }
+});
