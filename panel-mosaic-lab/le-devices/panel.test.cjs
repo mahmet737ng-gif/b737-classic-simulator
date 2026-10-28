@@ -54,3 +54,12 @@ test('approved PNG bytes, exact aperture polygons and physical plate registratio
  assert.ok(js.includes("['pointerup','pointercancel','lostpointercapture']"));assert.ok(js.includes("test.addEventListener('blur'"));
  assert.ok(!js.includes("stroke:'#fafafa'"),'fixed white artwork must not be redrawn by lamp masks');
 });
+
+test('panel exposes an overhead whole-bus power gate without modifying approved geometry',()=>{
+ const {api}=runtime();api.setDevice('FLAP_1','FULL_EXT');
+ assert.equal(api.setPower(false),true);assert.equal(api.snapshot().power,false);
+ assert.equal(api.setPower(null),true);assert.equal(api.snapshot().power,null);
+ assert.equal(api.setPower(true),true);assert.equal(api.snapshot().power,true);
+ assert.equal(api.setPower('BATTERY'),false);
+ assert.equal(api.snapshot().windows,26);
+});

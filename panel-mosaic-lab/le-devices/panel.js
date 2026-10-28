@@ -16,20 +16,21 @@
  const states=new Map(devices.map(id=>[id,'RETRACTED']));
  const overrides=new Map();
  const instances=new Set();
- let lampTest=false,globalLampTest=false,brightness='BRIGHT';
+ let lampTest=false,globalLampTest=false,brightness='BRIGHT',panelPower=true;
  const metrics={source:{width:1984,height:793},atlas:{x:3/1731,y:540/909,w:383/1731,h:188/909},nativePanelRect:{x:3,y:540,w:383,h:188,sourceWidth:1731,sourceHeight:909},lampCount};
  const isValid=(id,state)=>devices.includes(id)&&['RETRACTED',...activeLevels(id)].includes(state);
  function emit(type,detail){window.dispatchEvent(new CustomEvent(type,{detail}));}
  function recolor(){
   for(const instance of instances){
-   const test=lampTest||globalLampTest;
+   const test=globalLampTest||(lampTest&&panelPower===true);
    for(const [key,el] of instance.lamps){
-    const [id,level]=key.split('|'),on=test||(overrides.has(key)?overrides.get(key):states.get(id)===level);
+    const [id,level]=key.split('|'),on=globalLampTest||(panelPower===true&&(test||(overrides.has(key)?overrides.get(key):states.get(id)===level)));
     el.dataset.lit=String(on);
     el.setAttribute('fill',on?colors[level]:'transparent');
     el.style.opacity='1';
     el.setAttribute('fill-opacity',on?(brightness==='BRIGHT'?'1':'.52'):'1');
    }
+   instance.host.dataset.power=panelPower===null?'UNKNOWN':panelPower?'ON':'OFF';
    instance.button.classList.toggle('pressed',lampTest);
    instance.button.setAttribute('aria-pressed',String(lampTest));
    if(instance.output)instance.output.textContent=test?'TEST · ALL 26 ON':'READY · '+brightness+' · 26 INDEPENDENT WINDOWS';
@@ -109,7 +110,8 @@
  window.B737LeadingEdgeDevices=Object.freeze({
   devices:Object.freeze([...devices]),levels:Object.freeze([...levels]),hasWindow,
   setDevice,setWindow,setLampTest,setGlobalLampTest,setBrightness,
-  snapshot:()=>({devices:Object.fromEntries(states),windowOverrides:Object.fromEntries(overrides),lampTest,globalLampTest,effectiveLampTest:lampTest||globalLampTest,brightness,windows:lampCount,placement:metrics}),
+  setPower:value=>{if(![true,false,null].includes(value))return false;panelPower=value;recolor();return true;},
+  snapshot:()=>({devices:Object.fromEntries(states),windowOverrides:Object.fromEntries(overrides),lampTest,globalLampTest,effectiveLampTest:lampTest||globalLampTest,brightness,power:panelPower,windows:lampCount,placement:metrics}),
   reset:()=>{for(const id of devices)states.set(id,'RETRACTED');overrides.clear();setLampTest(false);recolor();}
  });
  window.addEventListener('b737:le-devices-command',e=>{
