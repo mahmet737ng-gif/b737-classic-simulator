@@ -1,7 +1,7 @@
 # IRS electrical and annunciator backend V2 — 2026-10-28
 
 ## Scope and owner lock
-All 93 owner-frozen IRS physical/front-end source files, including the live Unified mounting JS, HTML imports, panel, switch graphics, lamps and ISDU display, remain unchanged. This upgrade is a **backend-only** electrical source projector with a pure handshake into the existing IRS state engine. It is NOT yet a live replacement for the legacy physical lamp wiring in the frozen cockpit.
+The owner RED ZONE protects **only the physical front-end artwork, geometry and pixel alignment**, not IRS functionality. The existing 93 pinned presentation/mounting sources remain byte-preserved. Backend switch/keypad behavior, mode logic, power, CB, alignment, annunciator ON/OFF rules and display content may be revised freely with functional QA. See [IRS FRONT-END-ONLY RED ZONE / BACKEND POLICY](IRS_FRONTEND_REDZONE_BACKEND_POLICY_V1.md). This V2 module is currently an independent electrical projector and has not yet replaced the legacy physical-lamp runtime driver.
 
 Source-of-truth: `engine/systems/irs-electrical-evidence-v2.js`.
 Tests: `tests/irs-electrical-evidence-v2.test.cjs`.
@@ -40,7 +40,7 @@ Call `B737IRSElectricalEvidenceV2.evaluate(snapshot,{electrical,modes,unitStates
 
 For backend-only integration, `reconcileCore(B737IRSTrainerCoreV1,irsCoreState,evaluation)` forwards only proven power booleans to the existing independent IRS state machine, causing stateful NAV invalidation and full re-alignment after real power loss. It does NOT mutate switches or panel DOM, nor modify the frozen live wrapper.
 
-To connect these new lamp outputs to the **physical** owner-frozen Unified panel, a separate owner-approved integration strategy and a red-zone-safe path is required; no frozen file may be modified automatically.
+**No special approval is required to change the backend rules for what a switch, button or lamp does.** To show the updated backend results on the physical Unified panel, add a behavior adapter/event contract that drives its existing artwork without touching the pinned front-end geometry. Since the legacy Unified mount JS mixes rendering and events and is presently pinned as one blob, an appropriate unprotected integration hook must first be used or created; never claim physical wiring is complete until a live integration test proves it. Changing the protected visual source bytes or geometry is a different request and still requires separate owner approval.
 
 ## Reference and verification boundary
 Internal project: `docs/IRS_TRAINER_ARCHITECTURE_V1.md`, §Electrical architecture and FCOM 11.20.7–10. Cross-check of classic-era cue behavior: [B737 Operations Manual DC FAIL](https://www.easymanua.ls/boeing/737/manual?p=373) and [ON DC](https://www.easymanua.ls/boeing/737/manual?p=375). Airframe-specific FCOM/WDM effectivity and CB-to-IRU wiring remain unresolved.
