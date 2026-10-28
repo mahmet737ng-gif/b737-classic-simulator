@@ -14,6 +14,7 @@ on:
       - 'panel-mosaic-lab/cockpit/cdu-stage.html'
       - 'panel-mosaic-lab/cockpit/index.html'
       - 'tests/irs-trainer-core-v1.test.cjs'
+      - 'tests/irs-align-annunciator-v2.test.cjs'
       - 'docs/IRS_TRAINER_ARCHITECTURE_V1.md'
       - 'engine/contracts/irs-hdg-sts-seven-minute-v1.cjs'
       - '.github/workflows/irs-trainer-core-v1.yml'
@@ -34,6 +35,8 @@ jobs:
           node --check panel-mosaic-lab/cockpit/cdu-irs-adapter-v1.js
           node --check tests/irs-trainer-core-v1.test.cjs
           node tests/irs-trainer-core-v1.test.cjs
+          node --check tests/irs-align-annunciator-v2.test.cjs
+          node tests/irs-align-annunciator-v2.test.cjs
           node --check engine/systems/irs-electrical-evidence-v2.js
           node tests/irs-electrical-evidence-v2.test.cjs
           node --check engine/systems/irs-trainer-web-v1.js
