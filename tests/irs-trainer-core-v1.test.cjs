@@ -150,4 +150,87 @@ assert.equal(status(b,'L').phase,'OFF');
 s=apply(s,{type:'POWER',side:'L',available:false});
 assert.equal(status(s,'L').positionValid,false);
 assert.equal(status(s,'R').positionValid,true);
+// V2 electrical continuity: OFF is not an electrical fault and a restored
+// NAV/ALIGN selector must automatically restart the 3.5s self-test + FULL
+// alignment; no stale FMC coordinates or elapsed time may carry through.
+const idleOff=apply(initialState(),{type:'POWER',side:'L',available:false});
+assert.equal(status(idleOff,'L').mode,'OFF');
+assert.equal(status(idleOff,'L').phase,'OFF','Unpowered OFF remains OFF');
+let restart=initialState();
+restart=apply(restart,{type:'POWER',side:'L',available:true});
+restart=apply(restart,{type:'POWER',side:'R',available:true});
+restart=apply(restart,{type:'SELECT_MODE',side:'L',mode:'NAV'});
+restart=apply(restart,{type:'SELECT_MODE',side:'R',mode:'NAV'});
+restart=apply(restart,{type:'FMC_SET_IRS_POS',position:'N35395 E051254'});
+restart=tick(restart,{...frame,dtSec:3.5});
+for(let i=0;i<120;i++)restart=tick(restart,frame);
+assert.equal(status(restart,'L').phase,'NAV_READY');
+assert.equal(status(restart,'R').phase,'NAV_READY');
+restart=apply(restart,{type:'POWER',side:'R',available:false});
+assert.equal(status(restart,'L').phase,'NAV_READY','L unaffected by right failure');
+assert.equal(status(restart,'R').phase,'POWER_LOST');
+assert.equal(status(restart,'R').positionValid,false);
+assert.equal(status(restart,'R').entrySource,null,'No stale FMC entry after power loss');
+restart=apply(restart,{type:'POWER',side:'R',available:true});
+assert.equal(status(restart,'R').phase,'SELFTEST','Power restores while NAV selected');
+assert.equal(status(restart,'R').onDcLamp,true,'Fresh 3.5s ON DC power test');
+assert.equal(status(restart,'R').alignLamp,false);
+assert.equal(status(restart,'L').phase,'NAV_READY');
+assert.equal(status(restart,'R').entrySource,null);
+const beforeRepeat=restart.units.R.powerTestElapsedSec;
+restart=apply(restart,{type:'POWER',side:'R',available:true});
+assert.equal(restart.units.R.powerTestElapsedSec,beforeRepeat,'Stable power must not restart');
+restart=tick(restart,{...frame,dtSec:3.5});
+assert.equal(status(restart,'R').phase,'ALIGNING');
+assert.equal(status(restart,'R').alignSecondsRemaining,600,'Full alignment required after R outage');
+for(let i=0;i<120;i++)restart=tick(restart,frame);
+assert.equal(status(restart,'R').phase,'WAIT_POSITION','No stale solution after alignment');
+assert.equal(status(restart,'R').positionValid,false);
+restart=apply(restart,{type:'FMC_SET_IRS_POS',sides:['R'],position:'N35395 E051254'});
+assert.equal(status(restart,'R').phase,'NAV_READY');
+assert.equal(status(restart,'L').phase,'NAV_READY');
+
+// Power removed during a selected ALIGN: restore triggers full normal alignment
+// regardless of where its countdown had reached.
+let partial=initialState();
+partial=apply(partial,{type:'POWER',side:'L',available:true});
+partial=apply(partial,{type:'SELECT_MODE',side:'L',mode:'ALIGN'});
+partial=apply(partial,{type:'FMC_SET_IRS_POS',sides:['L'],position:'N35395 E051254'});
+partial=tick(partial,{...frame,dtSec:3.5});
+for(let i=0;i<20;i++)partial=tick(partial,frame);
+assert.equal(status(partial,'L').alignSecondsRemaining,500);
+partial=apply(partial,{type:'POWER',side:'L',available:false});
+partial=apply(partial,{type:'POWER',side:'L',available:true});
+assert.equal(status(partial,'L').phase,'SELFTEST');
+partial=tick(partial,{...frame,dtSec:3.5});
+assert.equal(status(partial,'L').alignSecondsRemaining,600);
+assert.equal(status(partial,'L').entrySource,null);
+
+// OFF with no supply remains OFF, and mode selection cannot start an
+// unpowered unit. It is safe to turn OFF during a completed power failure.
+partial=apply(partial,{type:'POWER',side:'L',available:false});
+partial=apply(partial,{type:'SELECT_MODE',side:'L',mode:'OFF'});
+assert.equal(status(partial,'L').phase,'OFF');
+assert.throws(()=>apply(partial,{type:'SELECT_MODE',side:'L',mode:'NAV'}),/power/i);
+partial=apply(partial,{type:'POWER',side:'L',available:true});
+assert.equal(status(partial,'L').phase,'OFF','Power restored with selector OFF is inert');
+
+// NAV selected before 30s fast realignment is complete becomes NAV_READY
+// only at completion; no indefinite ALIGN_READY with NAV selected.
+let quick=initialState();
+quick=apply(quick,{type:'POWER',side:'L',available:true});
+quick=apply(quick,{type:'SELECT_MODE',side:'L',mode:'NAV'});
+quick=apply(quick,{type:'FMC_SET_IRS_POS',sides:['L'],position:'N35395 E051254'});
+quick=tick(quick,{...frame,dtSec:3.5});
+for(let i=0;i<120;i++)quick=tick(quick,frame);
+assert.equal(status(quick,'L').phase,'NAV_READY');
+quick=apply(quick,{type:'SELECT_MODE',side:'L',mode:'ALIGN'});
+assert.equal(status(quick,'L').phase,'FAST_REALIGN');
+for(let i=0;i<3;i++)quick=tick(quick,frame);
+quick=apply(quick,{type:'SELECT_MODE',side:'L',mode:'NAV'});
+assert.equal(status(quick,'L').positionValid,false,'Do not bypass remaining fast align');
+for(let i=0;i<3;i++)quick=tick(quick,frame);
+assert.equal(status(quick,'L').phase,'NAV_READY');
+assert.equal(status(quick,'L').positionValid,true);
+assert.equal(hdgStsCountdown(quick,'L').visible,false);
 console.log('PASS IRS Trainer: FMC/ISDU lat/lon gates, 10/17min alignment, owner 7 count, independent L/R drift ~1NM, actual geodesic motion, missing frame validity, electrical/phase failures and owner-locked UI untouched');
