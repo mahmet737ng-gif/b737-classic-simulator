@@ -1,0 +1,25 @@
+name: Annunciator 142-socket non-destructive fit QA
+on:
+  push:
+    paths:
+      - 'panel-mosaic-lab/lamp-socket-fit-v3/**'
+      - 'panel-mosaic-lab/lights-reference-v2/**'
+      - 'panel-mosaic-lab/interactive-overhead/lights.json'
+      - 'panel-mosaic-lab/cockpit/lights.json'
+      - 'panel-mosaic-lab/cockpit/index.html'
+      - 'panel-mosaic-lab/interactive-overhead/index.html'
+  workflow_dispatch:
+jobs:
+  socket-fit-audit:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate opt-in runtime JavaScript
+        run: node --check panel-mosaic-lab/lamp-socket-fit-v3/live-fit.js
+      - name: Validate 142 socket rectangles, collisions and unchanged master typography
+        run: node panel-mosaic-lab/lamp-socket-fit-v3/fit.test.cjs
