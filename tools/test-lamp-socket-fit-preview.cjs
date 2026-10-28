@@ -46,7 +46,7 @@ for(const lamp of entries){
  const audit=auditById.get(lamp.id);
  assert.ok(audit,'Missing original pixel audit record '+lamp.id);
  if(JSON.stringify(audit.currentSourceRect)!==JSON.stringify(lamp.sourceRect))misregistered.push(lamp.id);
- if(audit.finalPixelVerdict!=='PHOTO_PIXEL_CENTRE_CONFIRMED_3PX')uncertified.push(lamp.id);
+ if(audit.finalGeometryVerdict!=='PHOTO_PIXEL_CENTRE_CONFIRMED_3PX')uncertified.push(lamp.id);
  sources++;
 }
 assert.equal(sources,142);
