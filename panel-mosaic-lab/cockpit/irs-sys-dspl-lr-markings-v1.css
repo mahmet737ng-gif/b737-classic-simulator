@@ -1,0 +1,15 @@
+/* IRS-SYS-LR-MARKINGS-0001 · only independent OH02 parent-layer artwork.
+ * 125: behind existing knob (126), above frozen source frame (iframe).
+ * All text, patch and ticks are mouse-transparent; normal knob remains usable.
+ */
+#region-overhead .irs-sys-dspl-lr-markings{
+ position:absolute;box-sizing:border-box;display:block;z-index:125;
+ border:0;background:transparent;padding:0;margin:0;pointer-events:none;
+ overflow:visible;direction:ltr;isolation:isolate
+}
+#region-overhead .irs-sys-dspl-lr-markings img{
+ position:absolute;display:block;inset:0;width:100%;height:100%;
+ object-fit:fill;max-width:none;pointer-events:none;user-select:none;
+ -webkit-user-drag:none
+}
+.reference-mode #region-overhead .irs-sys-dspl-lr-markings{display:none}
