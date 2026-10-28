@@ -18,6 +18,11 @@ for(const [bank,db] of [['OH',overhead],['MP',cockpit]]){
   assert(s,'Missing socket '+c.id);
   assert.equal(s.panel,bank);
   assert.deepEqual(s.sourceRect,c.sourceRect,'Original pixel coordinates changed for '+c.id);
+  for(const v of Object.values(s.edgeExtension))
+   assert.equal(v,2.5,'Every source socket edge must retain exactly 2.5 px coverage: '+c.id);
+  const [bx,by,bw,bh]=s.sourceRect;
+  assert.deepEqual(s.fittedRect,[bx-2.5,by-2.5,bw+5,bh+5],
+   'Persisted fitted rectangle must use 2.5 px on all four edges: '+c.id);
   const [x,y,w,h]=s.fittedRect;
   assert(x>=0&&y>=0&&w>0&&h>0,'Invalid or negative bounds: '+c.id);
   assert(w>=c.sourceRect[2]&&h>=c.sourceRect[3],'Fit shrank socket '+c.id);
