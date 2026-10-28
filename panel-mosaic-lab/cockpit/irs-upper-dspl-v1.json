@@ -1,0 +1,85 @@
+{
+  "version": "IRS-UPPER-DSPL-0001",
+  "ownerReference": "image(20261028-022751).png",
+  "sourceCenter": [
+    471.454545,
+    368.699675
+  ],
+  "mapping": {
+    "source": [
+      1731,
+      909
+    ],
+    "atlas": [
+      2214,
+      1019
+    ],
+    "origin": [
+      3,
+      3
+    ]
+  },
+  "renderSize": [
+    88,
+    79
+  ],
+  "sourceSpritePivots": {
+    "outer": [
+      513.32,
+      444.26
+    ],
+    "inner": [
+      1336.99,
+      458.5
+    ]
+  },
+  "spriteCanvas": [
+    1024,
+    1024
+  ],
+  "spritePivot": [
+    512,
+    512
+  ],
+  "innerLayerScale": 1.25,
+  "blackReferenceLine": {
+    "layer": "outer mode rotor",
+    "svgLine": [
+      115,
+      512,
+      245,
+      512
+    ],
+    "stroke": "#101010",
+    "strokeWidth": 18
+  },
+  "modes": [
+    "TEST",
+    "TK/GS",
+    "PPOS",
+    "WIND",
+    "HDG/STS"
+  ],
+  "modeAnglesFromLeft": [
+    0,
+    35,
+    65,
+    125,
+    150
+  ],
+  "default": {
+    "mode": "PPOS",
+    "brightness": 82
+  },
+  "scope": "Independent upper coaxial selector and brightness control; lower SYS DSPL owner lock preserved",
+  "assets": {
+    "irs-upper-mode-outer-v1.png": {
+      "sha256": "be1bc30441b0c2426dce07be65e8e7bea3a84dab4cf77fcd6534a9d0596d15a4",
+      "bytes": 541026
+    },
+    "irs-upper-brt-inner-v1.png": {
+      "sha256": "4d83959c59c211e4aacd68c9cdc5b89da22634b0241bd5644893477a44b835c9",
+      "bytes": 305515
+    }
+  }
+}

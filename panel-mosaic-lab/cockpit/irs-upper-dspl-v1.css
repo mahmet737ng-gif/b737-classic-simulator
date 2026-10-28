@@ -1,0 +1,15 @@
+/* Independently layered photographic controls; fixed lower SYS DSPL is outside this scope. */
+#region-overhead .irs-upper-dspl-mount{position:absolute;z-index:127;direction:ltr;isolation:isolate;pointer-events:none;background:transparent;border:0;padding:0}
+#region-overhead .irs-upper-mode-rotor,#region-overhead .irs-upper-brt-rotor{position:absolute;display:block;pointer-events:none;transform-origin:50% 50%;transition:transform 110ms ease-out}
+#region-overhead .irs-upper-mode-rotor{inset:0;z-index:1}
+#region-overhead .irs-upper-brt-rotor{left:-12.5%;top:-12.5%;width:125%;height:125%;z-index:2}
+#region-overhead .irs-upper-photo,#region-overhead .irs-upper-mode-index{position:absolute;display:block;inset:0;width:100%;height:100%;max-width:none;pointer-events:none;user-select:none}
+#region-overhead .irs-upper-control{position:absolute;appearance:none;background:transparent!important;border:0!important;box-shadow:none!important;margin:0!important;padding:0!important;border-radius:50%!important;outline:none;pointer-events:auto;cursor:grab;touch-action:none;-webkit-tap-highlight-color:transparent}
+#region-overhead .irs-upper-mode-control{inset:0;width:100%;height:100%;clip-path:circle(43% at 50% 50%);z-index:3}
+#region-overhead .irs-upper-brt-control{left:25%;top:25%;width:50%;height:50%;z-index:4}
+#region-overhead .irs-upper-control:active{cursor:grabbing}
+#region-overhead .irs-upper-control:focus-visible{outline:1px solid #a4e8f4!important;outline-offset:1px!important}
+#region-overhead .irs-upper-display-dimmer{position:absolute;z-index:122;pointer-events:none;background:#000;border:0;transition:opacity 80ms linear}
+.pan-mode #region-overhead .irs-upper-control{pointer-events:none}
+.reference-mode #region-overhead .irs-upper-dspl-mount,.reference-mode #region-overhead .irs-upper-display-dimmer{display:none}
+@media(prefers-reduced-motion:reduce){#region-overhead .irs-upper-mode-rotor,#region-overhead .irs-upper-brt-rotor,#region-overhead .irs-upper-display-dimmer{transition:none}}
