@@ -32,7 +32,7 @@
   const img=document.createElement('img');
   img.src='../cockpit/assets/asp-bare-aft-overhead-v3.svg?v=ASP-COLOR-0003';
   img.alt='Observer ASP bare face on OH-04';img.draggable=false;
-  Object.assign(img.style,{display:'block',width:'100%',height:'100%',maxWidth:'none',
+  Object.assign(img.style,{position:'absolute',inset:'0',left:'0px',top:'0px',display:'block',width:'100%',height:'100%',maxWidth:'none',
    objectFit:'fill',border:'0',margin:'0',padding:'0',pointerEvents:'none'});
   el.append(img);layer.append(el);host=el;
   root.dispatchEvent(new CustomEvent('b737:asp-observer-mounted',{detail:{seat:'OBS',panel:'OH-04',nativeRect:{...box}}}));
@@ -58,11 +58,29 @@
   parent.postMessage({type:'b737:asp-obs-control',detail:{seat:'OBS',kind:d.kind,
    channel:d.channel,selected:d.selected,volume:d.volume,angle:d.angle}},root.location.origin);
  });
- root.B737ASPObserverOverhead=Object.freeze({install,getBounds:()=>({...box}),
-  audit:()=>({mounted:!!host,rect:{...box},
-   count:host?.querySelectorAll('.asp-photo-control').length||0,
-   registration:host?.dataset.aspRegistration||null,
-   imageNative:true})});
+ function audit(){
+  if(!host||!host.isConnected)return {mounted:false,count:0,pass:false};
+  const face=host.querySelector(':scope > img');
+  if(!face)return {mounted:true,count:0,pass:false,reason:'No physical OBS photo'};
+  const panel=face.getBoundingClientRect(),controls=[...host.querySelectorAll('.asp-photo-control')];
+  const checks=controls.map(b=>{
+   const hit=b.getBoundingClientRect();
+   const x=Number(b.dataset.cx),y=Number(b.dataset.cy);
+   const expectedX=panel.left+panel.width*x/1122,expectedY=panel.top+panel.height*y/888;
+   return {kind:b.dataset.kind,channel:b.dataset.channel,
+    expected:[expectedX,expectedY],actual:[hit.left+hit.width/2,hit.top+hit.height/2],
+    errorCssPx:Math.hypot(expectedX-hit.left-hit.width/2,expectedY-hit.top-hit.height/2)};
+  });
+  const parent=host.getBoundingClientRect();
+  const imageOffsetPx=Math.hypot(panel.left-parent.left,panel.top-parent.top);
+  const maxErrorCssPx=Math.max(0,...checks.map(x=>x.errorCssPx));
+  return {mounted:true,photoAnchored:imageOffsetPx<.25,
+   photoOffsetCssPx:imageOffsetPx,rect:{...box},count:controls.length,
+   maxErrorCssPx,checks,
+   registration:host.dataset.aspRegistration||null,
+   imageNative:true,pass:controls.length===20&&imageOffsetPx<.25&&maxErrorCssPx<.25};
+ }
+ root.B737ASPObserverOverhead=Object.freeze({install,getBounds:()=>({...box}),audit});
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});
  else boot();
 })(window);
