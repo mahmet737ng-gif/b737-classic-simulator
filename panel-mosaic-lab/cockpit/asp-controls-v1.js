@@ -9,6 +9,8 @@
  // Common source-space pivots; transparent padding is excluded from sizing.
  const SOURCE=Object.freeze({mic:{size:1254,pivot:[627,626.5],extent:1015},volume:{size:1254,pivot:[627,621],extent:990}});
  const registrar=root.B737ASPSocketRegistrationV2;
+ const OBS_FRAME=root.B737ASPOnlyObserver===true;
+ const assetRoot=OBS_FRAME?'../cockpit/':'./';
  let measured=null,measureError='',geometrySource=null;
  // The imported photographic PNGs are NOT known to have centered subjects.
  // Detect the actual alpha silhouette of EACH OFF and ON sprite exactly once.
@@ -24,10 +26,10 @@
  }
  async function prepareRegistration(){
   if(!registrar)throw Error('ASP registration helper unavailable');
-  const base='./assets/asp-controls-v1/';
+  const base=assetRoot+'assets/asp-controls-v1/';
   const names=[...ASSETS.mic,...ASSETS.volume];
   const shapes=await Promise.all(names.map(n=>silhouette(base+n)));
-  const urls=['./assets/asp-bare-pedestal-v3.svg','./assets/asp-bare-aft-overhead-v3.svg'];
+  const urls=[assetRoot+'assets/asp-bare-pedestal-v3.svg',assetRoot+'assets/asp-bare-aft-overhead-v3.svg'];
   const svg=await Promise.all(urls.map(async url=>{const r=await fetch(url,{cache:'no-store'});if(!r.ok)throw Error(url+' HTTP '+r.status);return registrar.extract(await r.text());}));
   const panels=Object.freeze({'pedestal':registrar.compareSockets(model.sockets,svg[0]),'aft-overhead':registrar.compareSockets(model.sockets,svg[1])});
   return {panels,masks:Object.freeze(Object.fromEntries(names.map((name,i)=>[name,shapes[i]])))};
@@ -132,13 +134,13 @@
     button.title=s.kind==='mic'?'Press to select / deselect':'Press: select / deselect · Drag / wheel: volume · 270° travel';
     if(s.kind==='volume'){button.setAttribute('role','slider');button.setAttribute('aria-valuemin','0');button.setAttribute('aria-valuemax','100');}
     const rotor=document.createElement('span');rotor.className='asp-control-rotor';
-    ASSETS[s.kind].forEach((name,i)=>{const img=document.createElement('img');img.src='./assets/asp-controls-v1/'+name;img.alt='';img.draggable=false;img.className='asp-control-image asp-image-'+(i?'on':'off');rotor.append(img);});
+    ASSETS[s.kind].forEach((name,i)=>{const img=document.createElement('img');img.src=assetRoot+'assets/asp-controls-v1/'+name;img.alt='';img.draggable=false;img.className='asp-control-image asp-image-'+(i?'on':'off');rotor.append(img);});
     button.append(rotor);host.append(button);wire(button);paint(button);
    }
    host.dataset.aspControlsVersion=model.version;host.dataset.aspLampTest=String(document.documentElement.dataset.lampVisualTest==='true');
    sizeControls(host);new ResizeObserver(()=>sizeControls(host)).observe(host);mounted.set(host.dataset.seat,host);
   }
-  if(mounted.size===3){observer?.disconnect();return true;}return false;
+  if(mounted.size===(OBS_FRAME?1:3)){observer?.disconnect();return true;}return false;
  }
  function audit(){
   return [...mounted].map(([seat,host])=>{
