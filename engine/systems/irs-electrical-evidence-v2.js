@@ -31,7 +31,7 @@ function evaluate(state,{electrical=null,modes={L:'OFF',R:'OFF'},unitStates=null
  const cbFlag=cbEvidence===null?'NO_IRS_CB_EVIDENCE':
   'CB_PRESENT_BUT_EQUIPMENT_ROUTE_UNVERIFIED';
  const bus=electrical?.bus||null;
- const acL=tri(bus?.acStandby),acR=tri(bus?.transfer2),dc=tri(bus?.switchedHotBattery);
+ const acL=tri(bus?.acStandby),acR=tri(bus?.transfer2),dc=tri(bus?.switchedHotBattery),batteryBus=tri(bus?.battery);
  let elapsed=state.rightBackupElapsedSec;
  const rShutdown=modes.R==='OFF'&&unitStates?.R?.phase==='SHUTDOWN';
  if((modes.R==='OFF'&&!rShutdown)||acR===true){elapsed=0;}
@@ -66,7 +66,7 @@ function evaluate(state,{electrical=null,modes={L:'OFF',R:'OFF'},unitStates=null
   // separate FCOM + wiring confirmation, so the confidence remains PROVISIONAL.
   const dcFailLamp=power===true?(dc===false?true:dc===true?false:null):power===false?false:null;
   return Object.freeze({side,mode,powered:power,source,reason,shutdownPowered,normalBus:evidence,
-   normalAcAvailable:ac,backupDcAvailable:dc,
+   normalAcAvailable:ac,backupDcAvailable:dc,initialBatteryBusAvailable:batteryBus,
    onDcLamp,dcFailLamp,alignLamp,faultLamp,
    electricalConfidence:electrical?'SOURCE_BUS_ONLY_NO_CB_PROVENANCE':'NO_ELECTRICAL_V7_DATA',
    lampConfidence:{onDc:'BACKUP_OR_CORE_SELFTEST',dcFail:'PROVISIONAL_REQUIRES_SOURCE_LAMP_QA'},
@@ -97,7 +97,13 @@ function reconcileCore(core,current,projection){
   throw new TypeError('Current IRS state and power evidence required');
  let updated=current;
  for(const side of ['L','R']){
-  const powered=projection.units[side]?.powered===true;
+  const candidate=projection.units[side];
+  // Initial IRS energization (and energization after a complete loss)
+  // requires an explicitly live BATTERY BUS, even when AC is available.
+  // An already-running IRS on good AC is not killed merely because DC fails.
+  const starting=!updated.units[side].powered&&candidate?.powered===true;
+  const powered=candidate?.powered===true&&
+    (!starting||candidate.initialBatteryBusAvailable===true);
   if(updated.units[side].powered!==powered)
    updated=core.apply(updated,{type:'POWER',side,available:powered});
  }
