@@ -39,12 +39,17 @@
   return true;
  }
  function boot(){
-  if(!install()){
-   watch=new MutationObserver(()=>{
-    if(install()){watch.disconnect();watch=null;}
-   });
-   watch.observe(document.documentElement,{childList:true,subtree:true});
-  }
+  install();
+  // The atlas renderer calls #atlasAbsolute.replaceChildren() asynchronously.
+  // Keep one lightweight observer on that atlas and restore OBS whenever an
+  // atlas redraw replaces our additive panel. Disconnecting after the first
+  // mount would cause precisely the owner-reported "OBS unchanged" failure.
+  const atlasRoot=document.getElementById('atlasAbsolute');
+  watch=new MutationObserver(()=>{
+   if(!document.querySelector('#atlasAbsolute > .asp-bare-mounted[data-seat="OBS"]'))install();
+  });
+  if(atlasRoot)watch.observe(atlasRoot,{childList:true});
+  else watch.observe(document.documentElement,{childList:true,subtree:true});
  }
  // Relay only physical OBS inputs. Backend remains authoritative in parent.
  root.addEventListener('b737:asp-control',event=>{
