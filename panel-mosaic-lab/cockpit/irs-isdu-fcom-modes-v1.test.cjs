@@ -2,7 +2,7 @@
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const path=require('node:path');
-const contract=JSON.parse(fs.readFileSync(path.join(__dirname,'../../../engine/contracts/irs-isdu-fcom-modes-v1.json'),'utf8'));
+const contract=JSON.parse(fs.readFileSync(path.join(__dirname,'../../engine/contracts/irs-isdu-fcom-modes-v1.json'),'utf8'));
 assert.equal(contract.schema,'b737-classic.isdu.display-modes.fcom.v1');
 assert.equal(contract.implementation,'REFERENCE_ONLY_DO_NOT_ASSERT_LIVE_IRS');
 assert.deepEqual(contract.validModesClockwise,['TEST','TK/GS','PPOS','WIND','HDG/STS']);
