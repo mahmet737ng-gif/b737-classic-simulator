@@ -16,7 +16,10 @@ const json=async path=>{
 };
 const masterRoot=new URL('lights-reference-v2/',root);
 const clamp=(v,lo,hi)=>Math.max(lo,Math.min(hi,v));
-const maxPad=clamp(Number(query.get('fitPad')||'2.5')||2.5,0,6);
+let padRequested=query.get('fitPad');
+try { if(!padRequested&&win.parent!==win)padRequested=new URLSearchParams(win.parent.location.search).get('fitPad'); }catch(_){}
+const maxPad=clamp(Number(padRequested||'2.5')||2.5,0,6);
+const pageScope=win.location.pathname.includes('/interactive-overhead/')?'OH':'MP';
 const own=new Map(), records=new Map(), nodes=new Map(), pending=new Map();
 const sourceCache=new Map(), blobURLs=new Map(), errors=[];
 let manifest, ready=false, mounts=0, renders=0, retries=0;
@@ -205,8 +208,9 @@ async function start(){
   scheduleScan();
   setTimeout(()=>{watch.disconnect();scheduleScan();},12000);
   win.B737SocketFit=Object.freeze({
-   status:()=>({opted:true,sourceCount:records.size,mounted:mounts,renders,
-     errors:[...errors],unmounted:[...records.keys()].filter(id=>!nodes.has(id)),
+   status:()=>({opted:true,sourceCount:records.size,scope:pageScope,
+     expectedLocal:pageScope==='OH'?112:30,mounted:mounts,renders,
+     errors:[...errors],unmounted:[...records.values()].filter(r=>r.bank===pageScope&&!nodes.has(r.id)).map(r=>r.id),
      maxPad,mode:win.B737LampAppearance?.getMode?.()||'BRIGHT'}),
    bounds:id=>own.get(id)||null,
    refresh:()=>{for(const id of nodes.keys()){nodes.get(id).signature='';update(id);}scheduleScan();}
