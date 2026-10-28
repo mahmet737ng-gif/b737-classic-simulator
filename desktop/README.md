@@ -26,3 +26,9 @@ Never overwrite or modify the owner-approved IRS / OWNER18 guarded switch / lock
 
 Release tag: `cockpit-pro-desktop-v0.1.0-beta.1`.
 
+
+## RECESS-0002 overhead buttons
+- Included automatically by `extraResources: ../ → app-content`: `recessed-overhead-v2.js`, `recessed-overhead-v2.css`, `recessed-overhead-v2.json`, `assets/recessed-pushbutton-v2.svg`, and the existing LE DEVICES control logic.
+- The final static overhead iframe mounts all recessed controls locally. Fixed bezel / black moving cap, 79% concentric press, momentary release; no network dependency.
+- QA limitations: source-photo pixel placement for RESIDUAL VOLTS is still provisional; bench press/release event is implemented, while individual warning-system responses require separate backend wiring.
+- Existing NSIS installers are immutable snapshots. Rebuild Windows Setup from the updated repository before expecting these new controls in an installed executable.
