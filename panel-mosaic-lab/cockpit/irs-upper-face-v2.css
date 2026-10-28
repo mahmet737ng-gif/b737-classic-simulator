@@ -12,3 +12,9 @@
 #region-overhead .irs-upper-face-v2 img.irs-upper-five-labels{z-index:2}
 #region-overhead .irs-upper-face-v2 img.irs-upper-old-text-clean{z-index:1}
 .reference-mode #region-overhead .irs-upper-face-v2{display:none}
+
+/* QA screenshot: legacy cleaned alpha patch left ghosts and new vector font
+   was sharper than the locked photographed lettering. Show the ORIGINAL
+   five printed stencil labels; no duplicate art is rendered. This does not
+   modify the frozen image or lower SYS DSPL area. */
+#region-overhead .irs-upper-face-v2{display:none!important}
