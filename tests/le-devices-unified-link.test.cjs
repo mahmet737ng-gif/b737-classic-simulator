@@ -3,7 +3,8 @@ const script=fs.readFileSync(path.resolve(__dirname,'../panel-mosaic-lab/cockpit
 function setup(){
  const listeners={},commands=[],lampPatches=[],needles=[];
  const contentWindow={postMessage:(payload,origin)=>commands.push({payload,origin})};
- const document={getElementById:(id)=>id==='overheadFrame'?{contentWindow}:null};
+ const document={getElementById:(id)=>id==='overheadFrame'?{contentWindow}:null,
+  addEventListener:(name,fn)=>(listeners[name]??=[]).push(fn)};
  const window={addEventListener:(name,fn)=>(listeners[name]??=[]).push(fn),
   B737FlapNeedles:{setCommon(v){needles.push(v);}},
   B737CockpitLights:{setInputs(p){lampPatches.push({...p});}}};
@@ -49,4 +50,13 @@ test('reject unrelated iframe and stale projection',()=>{
  assert.equal(h.lampPatches.length,length);
  h.message('le-devices-projection',{...p,revision:6,lever:1},'https://example.test',{});
  assert.equal(h.lampPatches.length,length);
+});
+
+test('flap commands really originate on document, not window bubbling',()=>{
+ const h=setup();h.message('ready');
+ h.signal('b737:flap-ready',{position:5});
+ assert.equal(h.commands.at(-1).payload.command.value,5);
+ h.signal('b737:flap-detent-visual-test',{detent:15,visualOnly:true});
+ assert.equal(h.commands.at(-1).payload.command.value,15);
+ assert.equal(h.needles.at(-1),15);
 });

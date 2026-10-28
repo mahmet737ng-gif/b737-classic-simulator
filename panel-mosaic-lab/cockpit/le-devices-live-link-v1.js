@@ -1,4 +1,4 @@
-/* LEDEV-LINK-0001: physical Flap Lever -> indication of LE devices + flap L/R needles + two forward lamps.
+/* LEDEV-LINK-0002: physical Flap Lever -> indication of LE devices + flap L/R needles + two forward lamps.
    No new graphics, no simulated second Electrical runtime. Only the approved lever
    'b737:flap-detent-visual-test' event is promoted to the LE training command.
 */
@@ -41,11 +41,11 @@
   sendLever();
   return true;
  }
- window.addEventListener('b737:flap-detent-visual-test',event=>{
+ document.addEventListener('b737:flap-detent-visual-test',event=>{
   if(event.detail?.visualOnly!==true)return;
   setLever(event.detail.detent);
  });
- window.addEventListener('b737:flap-ready',event=>setLever(event.detail?.position??0));
+ document.addEventListener('b737:flap-ready',event=>setLever(event.detail?.position??0));
  window.addEventListener('b737:cockpit-lights-ready',()=>updateIndication());
  window.addEventListener('message',event=>{
   if(event.origin!==location.origin||event.source!==frame()?.contentWindow||
