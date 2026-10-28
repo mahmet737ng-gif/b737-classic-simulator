@@ -27,7 +27,7 @@
  object-fit:contain;user-select:none;pointer-events:none;
  transform-origin:50% 50%;transform:rotate(var(--outer-rotation,-10deg));
  transition:transform 165ms cubic-bezier(.2,.6,.12,1);
- filter:drop-shadow(0 1.5px 1px #10202b70);
+ filter:brightness(1.06) contrast(1.13) drop-shadow(0 2px 1.4px #10202b80);
  /* Photographic outer ivory collar only: inner black knob has its own axis.
     The source crop's old white ticks are outside the actual collar and masked. */
  -webkit-mask-image:radial-gradient(circle at 50% 50%,transparent 0 22.1%,#000 23.7% 45.9%,transparent 48.5%);
@@ -44,7 +44,7 @@
  position:absolute;inset:0;width:100%;height:100%;display:block;
  user-select:none;pointer-events:none;object-fit:contain;
  transform-origin:50% 50%;transform:rotate(var(--inner-rotation,68deg));
- filter:drop-shadow(0 0 .7px rgba(2,8,12,.55))
+ filter:brightness(1.13) contrast(1.08) drop-shadow(0 0 .7px rgba(2,8,12,.55));
  transition:transform 115ms ease-out
 }
 #region-overhead .irs-upper-outer:focus-visible,#region-overhead .irs-upper-brt:focus-visible{
@@ -62,3 +62,8 @@
 @media(prefers-reduced-motion:reduce){
  #region-overhead .irs-upper-outer img,#region-overhead .irs-upper-brt img{transition:none}
 }
+
+/* Let the photograph retain its real metal edge, not the artificial empty ring.
+   The small BRT inner photo remains separately interactive. */
+#region-overhead .irs-upper-outer img{mask-image:radial-gradient(circle at center,transparent 0 21%,#000 23.5% 50%,transparent 53%);-webkit-mask-image:radial-gradient(circle at center,transparent 0 21%,#000 23.5% 50%,transparent 53%)}
+#region-overhead .irs-upper-brt img{image-rendering:auto;filter:brightness(1.1) contrast(1.2) drop-shadow(0 1px 1.3px #101820)}
