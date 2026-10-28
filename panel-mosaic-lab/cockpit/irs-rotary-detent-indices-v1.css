@@ -1,6 +1,6 @@
-/* IRS-INDEX-0001: additive geometry only, no image resampling or original asset edits.
-   Fixed white marks are on the stationary base; black reference mark is on the
-   rotating outer knob. Owner-approved LOWER SYS DSPL is explicitly untouched. */
+/* IRS-INDEX-0002: only the separate upper DSPL SEL keeps its existing fixed
+   tick/reference overlay. L/R MSU selectors display no injected marks and
+   use the approved rotary photograph. LOWER SYS DSPL remains locked. */
 #region-overhead #irsUpperDsplMounted .irs-rotary-fixed-ticks-upper {
  position:absolute;inset:0;z-index:0;display:block;
  width:100%;height:100%;overflow:visible;
@@ -11,22 +11,4 @@
  width:100%;height:100%;overflow:visible;
  pointer-events:none;user-select:none;
  filter:drop-shadow(0 0 .45px rgba(245,245,242,.62))
-}
-/* The two physical mode selector bodies remain 100% the approved existing size. */
-#region-overhead #irsTrainerMSU .irs-msu-mini .irs-rotary-fixed-ticks-msu {
- position:absolute;inset:0;z-index:2;display:block;
- width:100%;height:100%;overflow:visible;
- pointer-events:none;user-select:none
-}
-#region-overhead #irsTrainerMSU .irs-msu-mini .irs-rotary-reference-pointer-msu {
- position:absolute;inset:0;z-index:4;display:block;
- width:100%;height:100%;overflow:visible;
- transform-origin:50% 50%;
- transform:rotate(var(--irs-msu-angle,-115deg));
- transition:transform 130ms cubic-bezier(.2,.7,.2,1);
- pointer-events:none;user-select:none;
- filter:drop-shadow(0 0 .35px rgba(252,252,250,.65))
-}
-@media(prefers-reduced-motion:reduce) {
- #region-overhead #irsTrainerMSU .irs-msu-mini .irs-rotary-reference-pointer-msu{transition:none}
 }
