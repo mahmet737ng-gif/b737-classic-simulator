@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" width="160" height="160">
+<title>737 Classic IRS outer five-position display-selector knob, front view</title>
+<defs>
+<radialGradient id="base" cx=".36" cy=".24" r=".85"><stop stop-color="#fdfdf8"/><stop offset=".32" stop-color="#edf0eb"/><stop offset=".7" stop-color="#c1c9c8"/><stop offset=".92" stop-color="#8b999d"/><stop offset="1" stop-color="#59676a"/></radialGradient>
+<linearGradient id="grip" x1=".1" y1=".1" x2=".85" y2=".9"><stop stop-color="#fefefa"/><stop offset=".23" stop-color="#eaeeeb"/><stop offset=".58" stop-color="#d6dcd8"/><stop offset=".85" stop-color="#a7b3b5"/><stop offset="1" stop-color="#798b92"/></linearGradient>
+<linearGradient id="rim" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#67777e"/><stop offset=".13" stop-color="#f8faf6"/><stop offset=".4" stop-color="#edf0ea"/><stop offset=".8" stop-color="#9caaa9"/><stop offset="1" stop-color="#72808a"/></linearGradient>
+<filter id="shadow"><feGaussianBlur stdDeviation="2"/></filter>
+<filter id="grain"><feTurbulence type="fractalNoise" baseFrequency=".29" numOctaves="2" seed="3" result="n"/><feColorMatrix in="n" type="saturate" values="0" result="mono"/><feComponentTransfer in="mono" result="a"><feFuncA type="linear" slope=".055" intercept="0"/></feComponentTransfer><feBlend in="SourceGraphic" in2="a" mode="multiply"/></filter>
+</defs>
+<ellipse cx="80" cy="87" rx="61" ry="61" fill="#101c23" opacity=".34" filter="url(#shadow)"/>
+<circle cx="80" cy="80" r="58.5" fill="url(#rim)" stroke="#70828b" stroke-width="1.1"/>
+<circle cx="80" cy="80" r="55" fill="url(#base)" stroke="#fafefc" stroke-width="1.4"/>
+<circle cx="80" cy="80" r="52" fill="none" stroke="#798b90" stroke-opacity=".55" stroke-width="1.2"/>
+<!-- Raised outer finger grip: broad ivory lever reaching toward the chosen detent -->
+<path d="M48 103 C48 89 51 74 53 57 L59 32 Q60 24 70 23 L90 23 Q100 24 102 32 L108 57 C111 75 113 91 111 106 Q107 128 82 137 C57 135 48 121 48 103Z"
+ fill="url(#grip)" stroke="#859397" stroke-width="1.45" filter="url(#grain)"/>
+<path d="M59 57 L66 33 Q70 29 75 29 L84 29" stroke="#fffefa" stroke-width="2.9" opacity=".8" fill="none" stroke-linecap="round"/>
+<path d="M102 57 C105 79 108 100 104 113" stroke="#687a81" stroke-opacity=".55" stroke-width="2.3" fill="none"/>
+<path d="M53 107 C57 119 65 126 77 128" stroke="#fcfefa" stroke-opacity=".7" stroke-width="3.2" fill="none"/>
+<!-- Selector pointer is a raised narrow ivory tip, not the inner BRT spindle -->
+<path d="M73 32 Q74 25 80 20 Q87 25 88 32Z" fill="#fafaf5" stroke="#8d9d9f" stroke-width="1"/>
+<path d="M80 23 L80 37" stroke="#44575c" stroke-width="2.4" stroke-linecap="round"/>
+<!-- Central aperture where separately controlled brightness spindle is seated -->
+<circle cx="80" cy="76" r="30" fill="#738086" stroke="#fbfffd" stroke-width="2.3"/>
+<circle cx="80" cy="76" r="27" fill="#17252b" stroke="#53666a" stroke-width="2.5"/>
+<circle cx="80" cy="76" r="25" fill="#071013" stroke="#29363a" stroke-width="1"/>
+</svg>
