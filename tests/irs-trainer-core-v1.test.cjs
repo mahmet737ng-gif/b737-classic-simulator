@@ -46,7 +46,11 @@ for(let i=0;i<720;i++){
 const c=comparison(s);
 assert(c.left.positionValid&&c.right.positionValid);
 assert(c.separationNm>0.10&&c.separationNm<1.25,'Independent smooth drift should be on order of one NM after 1 hour: '+c.separationNm);
-const trueDestination=move(reference,75,180);
+// Constant TRUE TRACK means a rhumb-like curve: integrate the reference at
+// the SAME 5-second increments. A single 180NM great-circle leg would have
+// evolving true track, so it is not an apples-to-apples reference.
+let trueDestination=reference;
+for(let i=0;i<720;i++)trueDestination=move(trueDestination,75,180*5/3600);
 assert(distanceNm(c.left.position,trueDestination)<1.1);
 assert(distanceNm(c.right.position,trueDestination)<1.1);
 approx(c.left.gsKt,180,0.001);approx(c.left.trueTrackDeg,75,0.001);
