@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0a111d">
+<title>Cockpit Pro · Desktop Shell Preview V1</title>
+<style>
+:root{color-scheme:dark;--bg:#080e18;--panel:#111c2a;--panel2:#162335;--line:#2d4055;--ink:#eef3f8;--muted:#9eaebd;--gold:#d8ad70;--blue:#83b7d8;--ok:#6ed1b4}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font:15px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink)}
+button,input{font:inherit}button{cursor:pointer}button:focus-visible,a:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+button:disabled{opacity:.38;cursor:not-allowed}a{color:#b9d9ec} .hide{display:none!important}
+#setup{min-height:100vh;display:grid;grid-template-columns:minmax(300px,.8fr) minmax(600px,1.4fr);background:radial-gradient(circle at 21% 15%,#24425d55,transparent 38%),linear-gradient(128deg,#09121f,#0b111b 48%,#080d14)}
+.presentation{padding:clamp(36px,6vw,90px);border-left:1px solid #ffffff14;display:flex;flex-direction:column;justify-content:space-between;min-height:100vh;position:relative;overflow:hidden}
+.presentation:after{content:"";position:absolute;width:430px;height:430px;border:1px solid #d1b2822c;border-radius:50%;bottom:-190px;left:-200px;box-shadow:0 0 0 60px #9ebdd008,0 0 0 130px #9ebdd006;pointer-events:none}
+.brandmark{display:flex;gap:15px;align-items:center;direction:ltr}.monogram{width:61px;height:61px;border:1px solid #d8ad70;display:grid;place-items:center;border-radius:15px;color:var(--gold);font-weight:850;letter-spacing:-5px;font-size:28px;box-shadow:inset 0 0 15px #b7a58a18;background:#ffffff05;padding-right:5px}
+.brandmark b{font-size:22px;letter-spacing:1.7px}.brandmark b span{color:var(--gold)}.brandmark small{display:block;color:var(--muted);letter-spacing:3px;font-size:10px}
+.eyebrow{color:var(--gold);font-weight:700;letter-spacing:2px;font-size:11px}.hero{font-weight:750;font-size:clamp(33px,4vw,60px);line-height:1.13;letter-spacing:-1.2px;margin:19px 0}.hero em{font-style:normal;color:#d5b88d}
+.presentation p{max-width:430px;color:#c0cbd5;font-size:16px}.mini{display:flex;flex-wrap:wrap;gap:11px;direction:ltr}.mini span{border:1px solid #58718375;border-radius:30px;padding:6px 12px;color:#c3d4e4;font-size:12px}
+.copyright{color:#6d7c8c;font-size:12px}
+.configure{display:flex;align-items:center;justify-content:center;padding:45px clamp(20px,5vw,90px)}
+.formbox{width:100%;max-width:720px}.step{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:25px;color:#b9c6d3}.step small{font-size:11px;letter-spacing:1px;color:#7fa8c4}
+h1{font-size:32px;margin:0 0 8px;font-weight:720} .subtitle{color:var(--muted);margin:0 0 38px}.section{margin:0 0 25px}.section header{display:flex;justify-content:space-between;align-items:center;margin-bottom:11px}.section header b{font-size:14px}.section header small{color:var(--muted);font-size:12px}
+.picks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+.pick{background:#111d2b;border:1px solid #33485b;border-radius:12px;padding:17px;text-align:right;color:var(--ink);transition:background .15s,border-color .15s,box-shadow .15s}
+.pick:hover{background:#1b2d3e}.pick[aria-pressed=true]{background:#1b2b39;border-color:var(--gold);box-shadow:inset 0 0 0 1px #d8ad703f,0 0 22px #c5a06e10}
+.pick b{display:flex;align-items:center;justify-content:space-between;gap:10px;direction:ltr;font-size:20px;letter-spacing:.4px}.pick[aria-pressed=true] b:after{content:"✓";font-size:13px;color:var(--gold)}
+.pick small{display:block;margin-top:6px;color:#92a2b0;font-size:12px}
+.start{margin-top:22px;display:flex;align-items:center;gap:20px;border-top:1px solid #2a3949;padding-top:27px}
+.primary{border:0;border-radius:10px;background:linear-gradient(130deg,#e2c399,#ba8f5c);color:#172231;font-weight:800;padding:13px 31px;font-size:16px;box-shadow:0 8px 35px #d6b37d20}
+.primary:hover{filter:brightness(1.08)}.note{font-size:12px;color:#93a2af;line-height:1.8}
+#workspace{height:100vh;min-height:560px;display:grid;grid-template-rows:72px minmax(0,1fr);grid-template-columns:75px minmax(0,1fr);direction:ltr}
+.top{grid-column:1/-1;background:#0d1826;border-bottom:1px solid #263748;display:flex;align-items:center;gap:13px;padding:0 18px;direction:ltr}
+.top .branding{min-width:205px;font-size:18px;font-weight:800;letter-spacing:1px}.top .branding span{color:var(--gold)}.top .small{font-size:10px;color:var(--muted);font-weight:400;letter-spacing:1.8px;display:block}
+.spacer{flex:1}.modes{display:flex;align-items:center;gap:7px;direction:ltr}
+.soft,.mode{border:1px solid #385165;background:#142536;color:#d4e0e9;padding:10px 12px;border-radius:9px;font-size:12px;font-weight:700}
+.mode[aria-pressed=true]{border-color:#ccaa75;background:#2d2a27;color:#f3d3a0}.soft:hover,.mode:hover{border-color:#79a0bd}
+.tray{background:#0e1926;border-right:1px solid #27394b;display:flex;flex-direction:column;align-items:center;gap:16px;padding:20px 7px}
+.tool{color:#b2cadd;background:transparent;border:1px solid #2f4559;width:54px;height:56px;border-radius:11px;display:grid;place-items:center;gap:1px;position:relative}
+.tool:hover,.tool.active{background:#1a2e42;border-color:var(--gold)}
+.tool strong{font-size:15px;line-height:1}.tool small{color:#829ba9;font-size:9px}.cbglyph{display:grid;grid-template-columns:repeat(3,5px);gap:3px;opacity:.54}.cbglyph i{background:#aac3d1;border-radius:50%;width:5px;height:5px}
+.stretch{flex:1}#view{position:relative;min-width:0;background:#070d15;overflow:hidden}#cockpit{width:100%;height:100%;border:0;background:#07111a}
+#loadcover{position:absolute;inset:0;background:radial-gradient(circle at 50% 38%,#1d3743,#071019 58%);z-index:4;display:grid;place-items:center;text-align:center}
+.loadcard{width:min(490px,85%);padding:30px;border:1px solid #38536a;border-radius:18px;background:#122232df;box-shadow:0 20px 100px #0008}
+.loadcard .brandmark{justify-content:center}.loadcard h2{font-size:21px;margin:25px 0 5px}.loadcard p{font-size:12px;color:#a4bacb}.bar{height:5px;background:#293a4a;border-radius:8px;margin:25px 0 19px;overflow:hidden}.bar i{height:100%;display:block;width:0;background:linear-gradient(90deg,#719fbd,#dab479);transition:width .35s}
+.checkline{display:flex;justify-content:space-between;padding:4px 0;font-size:12px;color:#a9b9c7}.checkline span:last-child{color:#d4b079}
+#fallback{display:none;margin-top:20px}#fallback.show{display:block}#fallback button{margin:5px;border:1px solid #a7acbb;background:transparent;color:white;border-radius:8px;padding:8px 14px}
+.overlay{position:absolute;inset:0;background:#03070a99;z-index:5;display:flex;justify-content:flex-start;direction:ltr}
+.drawer{background:#101e2d;border-right:1px solid #48647a;width:min(620px,93vw);height:100%;box-shadow:12px 0 35px #0008;overflow:auto;padding:24px;direction:rtl}
+.drawer header{display:flex;align-items:center;justify-content:space-between;padding-bottom:16px;border-bottom:1px solid #365065;margin-bottom:16px}
+.drawer h2{font-size:22px;margin:0}.close{background:#26394d;color:white;border:1px solid #516a80;padding:6px 12px;border-radius:7px}.drawer p{color:#aabbc9;font-size:13px}
+.cb-list{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.cb-list button{background:#182b3d;border:1px solid #435b70;color:#e4edf5;border-radius:9px;padding:12px;font-weight:bold}.cb-list button:hover{border-color:var(--gold)}
+#cbframe{width:100%;height:min(590px,63vh);border:1px solid #3d5469;border-radius:9px;margin-top:15px;background:#07121e}
+.keylist{width:100%;border-collapse:collapse;text-align:right}.keylist th,.keylist td{border-bottom:1px solid #314457;padding:9px;font-size:13px}.keylist td:first-child{font-weight:800;color:#edcc9b;direction:ltr}.tag{color:#81cfb4;font-size:11px}
+.toast{position:absolute;bottom:24px;left:95px;z-index:8;max-width:min(520px,80%);border:1px solid #57748a;border-radius:10px;background:#172f41;color:#f4f6fa;padding:12px 17px;direction:rtl;box-shadow:0 9px 40px #0008;display:none}.toast.show{display:block}
+@media(max-width:940px){#setup{grid-template-columns:1fr}.presentation{min-height:260px;padding:26px}.presentation .hero{font-size:34px}.configure{padding:28px}.top{padding:0 8px;gap:6px}.top .branding{min-width:auto;font-size:13px}.top .small{display:none}.soft,.mode{padding:8px;font-size:10px}.top .modes{overflow-x:auto}.presentation p{font-size:13px}}
+@media(max-width:600px){#workspace{grid-template-columns:58px minmax(0,1fr)}.tray{padding:10px 2px}.tool{width:45px}.picks{grid-template-columns:1fr}.start{flex-direction:column;align-items:stretch}.top .branding{display:none}}
+</style>
+</head>
+<body>
+<main id="setup">
+  <aside class="presentation">
+    <div class="brandmark"><div class="monogram">CP</div><div><b>COCKPIT <span>PRO</span></b><small>B737 CLASSIC · DESKTOP</small></div></div>
+    <div><div class="eyebrow">SIMULATION · PROCEDURES · SYSTEMS</div><div class="hero">Your aircraft.<br><em>Your configuration.</em></div><p>یک فضای یکپارچه برای تمرین پنل‌ها، سوئیچ‌ها، سیستم‌ها و رویه‌های Boeing 737 Classic؛ بدون تصویر تزئینی از هواپیما یا کابین.</p></div>
+    <div><div class="mini"><span>300 / 400 / 500</span><span>Offline-oriented</span><span>Systems Trainer</span></div><p class="copyright">Cockpit Pro · Desktop shell preview 001 · Approved cockpit assets remain unchanged.</p></div>
+  </aside>
+  <section class="configure"><div class="formbox">
+    <div class="step"><small>01 / INITIAL CONFIGURATION</small><span>PRE-FLIGHT SETUP</span></div>
+    <h1>پیکربندی هواپیما</h1><p class="subtitle">مدل و تجهیزات را مشخص کن؛ همین انتخاب‌ها در پروفایل اصلی یونیفاید ذخیره می‌شوند.</p>
+    <div class="section"><header><b>Aircraft Variant</b><small>خانوادهٔ هواپیما</small></header><div class="picks" data-group="aircraftFamily">
+      <button class="pick" data-value="B737-300-500" aria-pressed="true"><b>737-300 / 500</b><small>Classic · مشترک در پنل‌های مربوطه</small></button>
+      <button class="pick" data-value="B737-400" aria-pressed="false"><b>737-400</b><small>Classic · پنل‌های اختصاصی سری 400</small></button>
+    </div></div>
+    <div class="section"><header><b>Cabin Pressurization</b><small>سیستم کنترل فشار کابین</small></header><div class="picks" data-group="pressurization">
+      <button class="pick" data-value="CPCS" aria-pressed="false"><b>CPCS</b><small>Conventional Pressurization Control</small></button>
+      <button class="pick" data-value="DCPCS" aria-pressed="true"><b>DCPCS</b><small>Digital Cabin Pressure Control</small></button>
+    </div></div>
+    <div class="section"><header><b>Engine Indication</b><small>نوع نشان‌دهنده‌های موتور</small></header><div class="picks" data-group="engineInstruments">
+      <button class="pick" data-value="CONVENTIONAL" aria-pressed="true"><b>CONVENTIONAL</b><small>نشان‌دهنده‌های متداول عقربه‌ای</small></button>
+      <button class="pick" data-value="EIS" aria-pressed="false"><b>EIS</b><small>Electronic Engine Instruments</small></button>
+    </div></div>
+    <div class="start"><button id="start" class="primary">START SIMULATOR →</button><div class="note">فقط منابع تأییدشده بارگذاری می‌شوند. انتخاب EIS فعلاً در دیتابیس وجود دارد، اما نصب همهٔ تصاویر ویژهٔ آن هنوز تأیید نشده است.</div></div>
+  </div></section>
+</main>
+<section id="workspace" class="hide">
+  <header class="top"><div class="branding">COCKPIT <span>PRO</span><small id="headprofile">B737 CLASSIC</small></div>
+    <div class="modes"><button class="mode" data-mode="COLD_DARK" aria-pressed="false">COLD & DARK</button><button class="mode" data-mode="READY_START" aria-pressed="false">READY FOR START</button><button class="mode" data-mode="READY_TAKEOFF" aria-pressed="false">READY FOR TAKEOFF</button></div>
+    <div class="spacer"></div><button class="soft" id="update">↻ UPDATE</button><button class="soft" id="settings">⚙ SETUP</button>
+  </header>
+  <nav class="tray" aria-label="Cockpit tools">
+    <button class="tool" data-view="all" title="تمام کابین"><strong>▦</strong><small>ALL</small></button>
+    <button class="tool" data-view="overhead" title="Overhead"><strong>▤</strong><small>OH</small></button>
+    <button class="tool" data-view="main" title="Main Panel"><strong>▧</strong><small>MAIN</small></button>
+    <button class="tool" data-view="pedestal" title="Pedestal"><strong>▥</strong><small>PED</small></button>
+    <button class="tool" id="cbTool" title="Circuit Breaker Panels"><span class="cbglyph" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span><small>CB</small></button>
+    <button class="tool" id="audioTool" title="Audio & Warnings"><strong>♪</strong><small>AUDIO</small></button>
+    <button class="tool" id="keysTool" title="FSX Keyboard"><strong>⌨</strong><small>KEYS</small></button>
+    <div class="stretch"></div><button class="tool" id="homeTool" title="Configuration"><strong>⌂</strong><small>HOME</small></button>
+  </nav>
+  <div id="view"><iframe id="cockpit" title="Live Unified Boeing 737 Classic Cockpit" src="about:blank"></iframe>
+    <div id="loadcover"><div class="loadcard">
+      <div class="brandmark"><div class="monogram">CP</div><div><b>COCKPIT <span>PRO</span></b><small>SYSTEM INITIALIZATION</small></div></div>
+      <h2>آماده‌سازی کابین</h2><p>نمای اصلی فقط پس از تأیید آماده‌بودن بخش‌های قابل‌بررسی باز می‌شود.</p>
+      <div class="bar"><i id="progress"></i></div>
+      <div class="checkline"><span>Aircraft configuration</span><span id="readyConfig">WAITING</span></div>
+      <div class="checkline"><span>Cabin and images</span><span id="readyMain">WAITING</span></div>
+      <div class="checkline"><span>Overhead / controls</span><span id="readyOverhead">WAITING</span></div>
+      <div class="checkline"><span>Captain & first officer CDU</span><span id="readyCdu">WAITING</span></div>
+      <div id="fallback"><p>بعضی قسمت‌ها هنوز آماده نیستند. می‌توانی خطا را بررسی کنی یا با هشدار وارد شوی.</p><button id="openPartial">ورود با هشدار</button><button id="retry">تلاش مجدد</button></div>
+    </div></div>
+    <div class="overlay hide" id="drawerShade"><section class="drawer"><header><h2 id="drawerTitle">پنل‌ها</h2><button class="close" id="drawerClose">× بستن</button></header><div id="drawerBody"></div></section></div>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  </div>
+</section>
+<script>
+(function(){
+'use strict';
+const root=document,qs=s=>root.querySelector(s),qsa=s=>Array.from(root.querySelectorAll(s)),storageKey='b737classic.aircraft-profile.v1',repo='mahmet737ng-gif/b737-classic-simulator';
+const defaults={schema:'b737-classic-aircraft-profile/1',aircraftFamily:'B737-300-500',pressurization:'DCPCS',engineInstruments:'CONVENTIONAL'};
+let profile=Object.assign({},defaults),started=false,frameReady=false,poll=0,lastHead=null,toastTimer=0;
+try {const stored=JSON.parse(localStorage.getItem(storageKey));for(const k of ['aircraftFamily','pressurization','engineInstruments'])if(stored&&typeof stored[k]==='string')profile[k]=stored[k];}catch{}
+const allowed={aircraftFamily:['B737-300-500','B737-400'],pressurization:['CPCS','DCPCS'],engineInstruments:['EIS','CONVENTIONAL']};
+for(const k in allowed)if(!allowed[k].includes(profile[k]))profile[k]=defaults[k];
+function paintPicks(){qsa('[data-group]').forEach(group=>{const key=group.dataset.group;group.querySelectorAll('[data-value]').forEach(b=>b.setAttribute('aria-pressed',String(profile[key]===b.dataset.value)));});}
+paintPicks();
+qsa('[data-group] .pick').forEach(button=>button.addEventListener('click',()=>{profile[button.closest('[data-group]').dataset.group]=button.dataset.value;paintPicks();}));
+function notify(message){const t=qs('#toast');t.textContent=message;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),5800);}
+function src(){return '../cockpit/index.html?desktop-shell=001';}
+function cwin(){try{return qs('#cockpit').contentWindow;}catch{return null;}}
+function goView(name){let w=cwin();try{const b=w?.document?.querySelector('[data-focus="'+name+'"]');if(b){b.click();return true;}}catch{}return false;}
+qsa('[data-view]').forEach(b=>b.addEventListener('click',()=>{goView(b.dataset.view);qsa('[data-view]').forEach(x=>x.classList.toggle('active',x===b));}));
+function begin(){
+ localStorage.setItem(storageKey,JSON.stringify(profile));started=true;frameReady=false;
+ qs('#setup').classList.add('hide');qs('#workspace').classList.remove('hide');qs('#loadcover').classList.remove('hide');
+ qs('#headprofile').textContent=profile.aircraftFamily.replace('B','')+' · '+profile.pressurization+' · '+profile.engineInstruments;
+ qs('#cockpit').src=src();clearInterval(poll);poll=setInterval(checkReady,250);
+}
+qs('#start').addEventListener('click',begin);
+qs('#cockpit').addEventListener('load',()=>{frameReady=true;attachKeys();checkReady();});
+const probes=[['readyConfig',w=>!!(w.B737AircraftProfileStore&&w.B737AircraftProfileStore.get()?.aircraftFamily===profile.aircraftFamily&&w.B737AircraftProfileStore.get()?.pressurization===profile.pressurization)],['readyMain',w=>!!(w.document.querySelector('#region-main .texture-piece img')&&w.document.querySelector('#region-pedestal'))],['readyOverhead',w=>!!(w.document.querySelector('#overheadFrame')?.contentWindow?.document?.body&&w.B737FlapVisualTest&&w.document.getElementById('throttle-position-controls'))],['readyCdu',w=>!!(w.document.querySelector('.cdu-station[data-seat="CAPT"].ready')&&w.document.querySelector('.cdu-station[data-seat="FO"].ready'))]];
+let checkCount=0;function checkReady(){if(!started)return;checkCount++;let w=cwin(),good=0;
+ for(const [id,test] of probes){let ok=false;try{ok=frameReady&&Boolean(test(w));}catch{}qs('#'+id).textContent=ok?'READY':'WAITING';if(ok)good++;}
+ qs('#progress').style.width=(good*25)+'%';
+ if(good===4){clearInterval(poll);qs('#loadcover').classList.add('hide');goView('all');qsa('[data-view]').forEach(x=>x.classList.toggle('active',x.dataset.view==='all'));attachKeys();notify('نمای اصلی آماده است. کنترل‌های موجود به همان یونیفاید قبلی متصل‌اند.');}
+ if(checkCount>70&&good<4)qs('#fallback').classList.add('show');
+}
+qs('#openPartial').addEventListener('click',()=>{clearInterval(poll);qs('#loadcover').classList.add('hide');notify('ورود با هشدار: آماده‌بودن تمام زیرسیستم‌ها تأیید نشده است.');});
+qs('#retry').addEventListener('click',()=>{checkCount=0;qs('#fallback').classList.remove('show');checkReady();});
+qs('#settings').addEventListener('click',()=>{if(!confirm('بازگشت به صفحه انتخاب و بارگذاری دوباره کابین؟'))return;qs('#workspace').classList.add('hide');qs('#setup').classList.remove('hide');qs('#cockpit').src='about:blank';started=false;clearInterval(poll);});
+qs('#homeTool').addEventListener('click',()=>qs('#settings').click());
+function drawer(title,html){qs('#drawerTitle').textContent=title;qs('#drawerBody').innerHTML=html;qs('#drawerShade').classList.remove('hide');}
+function closeDrawer(){qs('#drawerShade').classList.add('hide');qs('#cbframe')?.setAttribute('src','about:blank');}
+qs('#drawerClose').addEventListener('click',closeDrawer);
+qs('#drawerShade').addEventListener('click',e=>{if(e.target.id==='drawerShade')closeDrawer();});
+qs('#cbTool').addEventListener('click',()=>{drawer('CIRCUIT BREAKER PANELS','<p>پنل‌های CB موجود در پروژه؛ با انتخاب هر پنل، صفحهٔ آزمایشگاهی فعلی باز می‌شود. همهٔ ارتباطات الکتریکی هنوز تأیید نشده‌اند.</p><div class="cb-list">'+['P18-1','P18-2','P6-1','P6-3','P6-4','P6-5','P6-6','P6-7'].map(n=>'<button type="button" data-cb="'+n+'">'+n+'</button>').join('')+'</div><iframe id="cbframe" title="CB panels laboratory" src="about:blank"></iframe>');qs('#cbframe').src='../../cb-panel-lab/';qsa('[data-cb]').forEach(b=>b.addEventListener('click',()=>{notify('پنل '+b.dataset.cb+': از ابزار جست‌وجو در CB Lab استفاده کن؛ انتخاب مستقیم هنوز به رابط آزمایشگاه متصل نیست.');}));});
+qs('#audioTool').addEventListener('click',()=>{drawer('AUDIO & WARNINGS','<p>تست‌های موتور، Stall Warning و Takeoff Configuration باید از موتور هشدار موجود اجرا شوند؛ فایل‌های ضبط‌شدهٔ اختصاصی هنوز در مخزن عمومی قرار نگرفته‌اند.</p><div class="cb-list"><button data-audio="engine">ENGINE / APU</button><button data-audio="stall">STALL WARNING</button><button data-audio="toc">TAKEOFF CONFIG</button></div><p id="audioInfo" class="tag">تست‌های صوتی تنها در صورت وجود فایل مجاز و اتصال به موتور هشدار قابل اجرا هستند.</p>');qsa('[data-audio]').forEach(b=>b.onclick=()=>{const paths={engine:'../../isn-ecu-start-lab/',stall:'../../stall-warning-lab/',toc:'../cockpit/'};window.open(paths[b.dataset.audio], '_blank','noopener');});});
+const map=[['F1','تراست موتورهای 1 و 2 → IDLE'],['F2','کاهش یک مرحله تراست (از 5 مرحلهٔ فعلی)'],['F3','افزایش یک مرحله تراست (از 5 مرحلهٔ فعلی)'],['F4','تراست کامل در تست مرحله‌ای'],['F5','فلپ UP'],['F6','فلپ یک Detent کمتر'],['F7','فلپ یک Detent بیشتر'],['F8','فلپ تا 40 با رعایت Gate مکانیکی'],['/ · Numpad /','Spoiler Toggle · اتصال Backend در انتظار'],['G','Landing Gear · اتصال Backend در انتظار']];
+qs('#keysTool').addEventListener('click',()=>{drawer('FSX-STYLE KEYBOARD COMMANDS','<p>کلیدهای فلپ و تراست به کنترل فعلی یونیفاید متصل‌اند. بخش‌هایی که موتور فرمان مطمئن ندارند، عمداً بدون فرمان جعلی باقی مانده‌اند.</p><table class="keylist"><thead><tr><th>KEY</th><th>عملکرد</th></tr></thead><tbody>'+map.map(row=>'<tr><td>'+row[0]+'</td><td>'+row[1]+'</td></tr>').join('')+'</tbody></table>');});
+function keyboard(e){if(e.altKey||e.ctrlKey||e.metaKey||e.repeat)return;const tag=(e.target?.tagName||'').toUpperCase();if(['INPUT','TEXTAREA','SELECT'].includes(tag)||e.target?.isContentEditable)return;
+ const key=e.key; if(!['F1','F2','F3','F4','F5','F6','F7','F8','/','G','g'].includes(key)&&e.code!=='NumpadDivide')return;
+ if(qs('#workspace').classList.contains('hide')||!qs('#loadcover').classList.contains('hide'))return;
+ const w=cwin();if(!w)return;
+ if(/^F[1-4]$/.test(key)){const ss=[...w.document.querySelectorAll('#throttle-position-controls select')];if(ss.length<2){notify('کنترل‌های تراست هنوز آماده نیستند');return;}e.preventDefault();for(const sel of ss){let v=Number(sel.value);v=key==='F1'?0:key==='F4'?100:Math.max(0,Math.min(100,v+(key==='F3'?25:-25)));sel.value=String(v);sel.dispatchEvent(new Event('change',{bubbles:true}));}return;}
+ if(/^F[5-8]$/.test(key)){const f=w.B737FlapVisualTest;if(!f){notify('مکانیزم فلپ هنوز آماده نیست');return;}e.preventDefault();let target=key==='F5'?0:key==='F8'?40:f.positions[Math.max(0,Math.min(f.positions.length-1,f.positions.indexOf(f.position)+(key==='F7'?1:-1)))];const ok=f.request(target);if(!ok)notify('اهرم فلپ در حال حرکت است');return;}
+ e.preventDefault();notify('برای '+(key==='/'?'Spoiler':'Landing Gear')+' هنوز فرمان تأییدشدهٔ مرکزی وجود ندارد؛ از شبیه‌سازی ساختگی استفاده نمی‌کنیم.');
+}
+document.addEventListener('keydown',keyboard,true);
+const bound=new WeakSet();
+function attachKeys(){const w=cwin();if(!w)return;const frames=[w];try{for(const f of w.document.querySelectorAll('iframe'))if(f.contentWindow)frames.push(f.contentWindow);}catch{}
+ for(const current of frames){try{if(!bound.has(current.document)){current.document.addEventListener('keydown',keyboard,true);bound.add(current.document);}}catch{}}
+}
+setInterval(()=>{if(started){attachKeys();}},1800);
+qsa('[data-mode]').forEach(button=>button.addEventListener('click',()=>{const engine=cwin()?.B737ScenarioPresetV1;if(!engine?.apply){notify('برای '+button.textContent+' هنوز preset معتبر به موتور برق، موتور و کنترل‌ها متصل نشده؛ وضعیت هواپیما تغییر نکرد.');return;}try{engine.apply(button.dataset.mode);qsa('[data-mode]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));notify('Preset توسط موتور مرکزی اعمال شد.');}catch(err){notify('Preset اجرا نشد: '+err.message);}}));
+qs('#update').addEventListener('click',async()=>{const b=qs('#update');b.disabled=true;b.textContent='CHECKING…';try{const r=await fetch('https://api.github.com/repos/'+repo+'/commits/main',{cache:'no-store'});if(!r.ok)throw Error('HTTP '+r.status);const j=await r.json();const latest=j.sha;if(!lastHead){lastHead=latest;notify('آخرین نسخهٔ GitHub شناسایی شد. این نسخهٔ وب فقط بررسی می‌کند؛ دانلود انتخابی فایل‌ها مخصوص updater ویندوز است.');}else if(latest!==lastHead){if(confirm('نسخهٔ جدید در GitHub دیده شد. صفحهٔ وب برای دریافت فایل‌های جدید بارگذاری مجدد شود؟')){location.reload();return;}}else notify('تغییر جدیدی نسبت به آخرین بررسی این جلسه پیدا نشد.');}catch(error){notify('بررسی GitHub ممکن نشد: '+error.message);}finally{b.disabled=false;b.textContent='↻ UPDATE';}});
+})();
+</script>
+</body></html>
