@@ -20,6 +20,11 @@ on:
       - 'panel-mosaic-lab/cockpit/irs-sys-dspl-lr-markings-v1.js'
       - 'panel-mosaic-lab/cockpit/irs-sys-dspl-lr-markings-v1.css'
       - 'panel-mosaic-lab/cockpit/irs-sys-dspl-lr-markings-v1.test.cjs'
+      - 'panel-mosaic-lab/cockpit/irs-dspl-sel-upper-v1.js'
+      - 'panel-mosaic-lab/cockpit/irs-dspl-sel-upper-v1.css'
+      - 'panel-mosaic-lab/cockpit/irs-dspl-sel-upper-v1.test.cjs'
+      - 'panel-mosaic-lab/cockpit/assets/irs-dspl-sel-outer-v1.svg'
+      - 'panel-mosaic-lab/cockpit/assets/irs-dspl-sel-inner-brt-v1.svg'
       - 'panel-mosaic-lab/cockpit/irs-sys-dspl-owner-lock-v1.json'
       - 'panel-mosaic-lab/cockpit/verify-irs-sys-dspl-owner-lock-v1.py'
       - 'panel-mosaic-lab/cockpit/assets/irs-sys-dspl-lr-markings-v1.svg'
@@ -50,6 +55,7 @@ jobs:
           node --check panel-mosaic-lab/cockpit/irs-isdu-cues-v1.js
           node --check panel-mosaic-lab/cockpit/irs-sys-dspl-v1.js
           node --check panel-mosaic-lab/cockpit/irs-sys-dspl-lr-markings-v1.js
+          node --check panel-mosaic-lab/cockpit/irs-dspl-sel-upper-v1.js
       - name: Verify actual Honeywell keypad source and browser mount
         run: |
           node panel-mosaic-lab/cockpit/irs-isdu-frontend-v1.test.cjs
@@ -58,6 +64,7 @@ jobs:
           node panel-mosaic-lab/cockpit/irs-isdu-global-test-v1.test.cjs
           node panel-mosaic-lab/cockpit/irs-sys-dspl-v1.test.cjs
           node panel-mosaic-lab/cockpit/irs-sys-dspl-lr-markings-v1.test.cjs
+          node panel-mosaic-lab/cockpit/irs-dspl-sel-upper-v1.test.cjs
       - name: Enforce frozen overhead
         run: python3 panel-mosaic-lab/verify-final-overhead.py
       - name: Enforce immutable owner18 guarded switches
