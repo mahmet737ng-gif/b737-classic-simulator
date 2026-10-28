@@ -1,0 +1,20 @@
+name: RECESS-0002 overhead recessed-button static QA
+on:
+  push:
+    paths:
+      - 'panel-mosaic-lab/cockpit/recessed-overhead-v2.*'
+      - 'panel-mosaic-lab/cockpit/assets/recessed-pushbutton-v2.svg'
+      - 'panel-mosaic-lab/cockpit/overhead-stage.html'
+      - 'tests/recessed-overhead-v2.test.cjs'
+      - '.github/workflows/recessed-overhead-v2-qa.yml'
+  workflow_dispatch:
+jobs:
+  recessed-qa:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate 13 buttons and integration contract
+        run: node tests/recessed-overhead-v2.test.cjs
