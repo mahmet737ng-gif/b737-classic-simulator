@@ -32,3 +32,19 @@ test('no remote runtime dependency for the static shell',()=>{
  assert.match(html,/function sceneVisibleImagesReady/);
  assert.match(html,/function checkReady/);
 });
+
+test('recessed buttons ship with local Cockpit Pro installer, no external URL',()=>{
+ const files=[
+  'panel-mosaic-lab/cockpit/recessed-overhead-v2.js',
+  'panel-mosaic-lab/cockpit/recessed-overhead-v2.css',
+  'panel-mosaic-lab/cockpit/recessed-overhead-v2.json',
+  'panel-mosaic-lab/cockpit/assets/recessed-pushbutton-v2.svg'
+ ];
+ for(const file of files)assert.ok(fs.existsSync(path.join(root,file)),'Missing packaged recessed asset '+file);
+ const stage=fs.readFileSync(path.join(root,'panel-mosaic-lab/cockpit/overhead-stage.html'),'utf8');
+ assert.match(stage,/recessed-overhead-v2\.js/);assert.match(stage,/recessed-overhead-v2\.css/);
+ const pkg=JSON.parse(fs.readFileSync(path.join(root,'desktop/package.json'),'utf8'));
+ const bundle=pkg.build.extraResources.find(x=>x.to==='app-content');
+ assert.ok(bundle,'Offline resources mapping absent');
+ assert.ok(bundle.filter.includes('**/*'),'Offline bundling must include local recessed sprites and scripts');
+});
