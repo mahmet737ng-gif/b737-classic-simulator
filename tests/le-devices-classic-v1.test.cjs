@@ -38,7 +38,7 @@ test('hydraulic B loss freezes devices; standby alternate extends but cannot ret
  assert.equal(s.position.SLAT_1,2,'standby hydraulic cannot retract');
 });
 test('jam or wrong sensor leads to improper LE indication and center TRANSIT',()=>{
- const p=run([lever(10),{type:'JAM',device:'FLAP_2',value:true},tick(15)],'NON_NORMAL');
+ const p=run([lever(10),{type:'JAM',device:'FLAP_2',value:true},tick(15)]);
  assert.deepEqual(p.mismatch,['FLAP_2']);assert.equal(p.center.transit,true);
  const faulty=run([lever(1),tick(15),{type:'SENSOR',device:'SLAT_1',value:'TRANSIT'}]);
  assert.equal(faulty.overhead.windows['SLAT_1|TRANSIT'],true);
@@ -78,4 +78,10 @@ test('invalid values are rejected; immutable prior states and deterministic repl
  assert.throws(()=>LE.apply(s,lever(7)));
  assert.throws(()=>LE.apply(s,{type:'TICK',seconds:-1}));
  assert.deepEqual(LE.execute([lever(2),tick(8)]),LE.execute([lever(2),tick(8)]));
+});
+test('non-normal preset freezes all LE devices until hydraulic supply is restored',()=>{
+ const noB=run([lever(15),tick(20)],'NON_NORMAL');
+ assert.equal(noB.mismatch.length,10);
+ assert.equal(noB.overhead.windows['SLAT_1|TRANSIT'],false,'retracted frozen slat has no false amber');
+ assert.equal(noB.center.transit,true,'forward amber warns of improper LE position');
 });
