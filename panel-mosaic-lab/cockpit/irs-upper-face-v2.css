@@ -1,0 +1,14 @@
+/* IRS upper five-label source clean-up, registered against ORIGINAL OH01-06.
+ * Above frozen photo, below photographed upper selector. NOT the lower SYS DSPL.
+ */
+#region-overhead .irs-upper-face-v2{
+ position:absolute;z-index:127;box-sizing:border-box;display:block;pointer-events:none;
+ background:transparent;isolation:isolate;overflow:visible
+}
+#region-overhead .irs-upper-face-v2 img{
+ position:absolute;inset:0;width:100%;height:100%;display:block;object-fit:fill;
+ user-select:none;pointer-events:none;max-width:none
+}
+#region-overhead .irs-upper-face-v2 img.irs-upper-five-labels{z-index:2}
+#region-overhead .irs-upper-face-v2 img.irs-upper-old-text-clean{z-index:1}
+.reference-mode #region-overhead .irs-upper-face-v2{display:none}
