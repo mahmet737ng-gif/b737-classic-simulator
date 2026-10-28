@@ -90,7 +90,7 @@ trainer.setMode('L','OFF');trainer.setMode('L','NAV');
 const keys=['2','3','5','3','9','5','ENT','6','0','5','1','2','5','4','ENT'];
 for(const key of keys)trainer.pressISDU(key);
 assert.equal(trainer.getState().units.L.entrySource,'ISDU');
-assert.equal(trainer.getState().units.R.entrySource,'FMC','Selected L ISDU must not silently update R');
+assert.equal(trainer.getState().units.R.entrySource,null,'R lost electrical feed: stale FMC initialization must be cleared; L ISDU must not update R');
 assert.equal(trainer.getCoreState().units.L.enteredPosition.lat,35+39.5/60);
 assert.equal(trainer.getCoreState().units.L.enteredPosition.lon,51+25.4/60);
 assert(cueChanges.some(x=>x[0]==='ENT'&&x[1]===true));
