@@ -1,0 +1,46 @@
+{
+  "version": "ASP-CONTROLS-0001",
+  "assetPolicy": "Byte-identical approved generated PNGs; original alpha and full resolution retained. No resampling or lossy encoding.",
+  "stations": [
+    "CAPT",
+    "FO",
+    "OBS"
+  ],
+  "geometrySource": "Existing asp-bare-pedestal-v3.svg and asp-bare-aft-overhead-v3.svg, viewBox 1122 888. Control centers are exact SVG aperture centers; round controls use uniform physical scaling even on nonuniformly mapped OH-04.",
+  "selection": "Each MIC and receiver push remains illuminated until pressed again. Rotating does not change selection.",
+  "rotation": {
+    "sweepDegrees": 270,
+    "spriteArrow": "down",
+    "cssMinimumDegrees": 45,
+    "cssMaximumDegrees": 315,
+    "minimumDirection": "45 degrees below left horizontal",
+    "maximumDirection": "45 degrees below right horizontal",
+    "hardStops": true
+  },
+  "assets": {
+    "mic-off.png": {
+      "bytes": 1204850,
+      "sha256": "b68d4f30f7dcef356c1aa194cd7fed55241091f5d74f9efc0147f22f48dc2b2b",
+      "width": 1254,
+      "height": 1254
+    },
+    "mic-on.png": {
+      "bytes": 1085487,
+      "sha256": "0bb7a727395212b5b578d56186d19565eee8afe7248920f9a5bd96a78a123874",
+      "width": 1254,
+      "height": 1254
+    },
+    "volume-glass-off.png": {
+      "bytes": 1755809,
+      "sha256": "9f67035dc7fcdc2ca861d9d48ad4c9dd93309a718a9a4c5fb29445ac8f852276",
+      "width": 1254,
+      "height": 1254
+    },
+    "volume-glass-on.png": {
+      "bytes": 1612833,
+      "sha256": "450d942811e7b3e6359f503b7095b15363910198ef1d4c1d115e412f5eae2a24",
+      "width": 1254,
+      "height": 1254
+    }
+  }
+}

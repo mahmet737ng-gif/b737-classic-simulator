@@ -1,0 +1,14 @@
+/* Scoped to the three additive ASP faces; no shared switch styles. */
+.asp-bare-mounted .asp-socket-patches{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1}
+.asp-bare-mounted .asp-photo-control{position:absolute;transform:translate(-50%,-50%);box-sizing:border-box;margin:0;padding:0;min-width:0;min-height:0;border:0;background:transparent;box-shadow:none;border-radius:0;z-index:2;cursor:pointer;touch-action:none;user-select:none;-webkit-tap-highlight-color:transparent;outline:none;overflow:visible;direction:ltr}
+.asp-bare-mounted .asp-photo-control[data-kind="volume"]{border-radius:50%;background:#101418;cursor:grab}
+.asp-bare-mounted .asp-photo-control[data-kind="volume"]:active{cursor:grabbing}
+.asp-bare-mounted .asp-photo-control:focus-visible{outline:1.5px solid #8bd5ed;outline-offset:2px}
+.asp-bare-mounted .asp-control-rotor{position:absolute;inset:0;transform-origin:50% 50%;pointer-events:none}
+.asp-bare-mounted .asp-photo-control .asp-control-image{position:absolute;display:block;max-width:none;max-height:none;object-fit:fill;border:0;margin:0;padding:0;pointer-events:none;user-select:none;image-rendering:auto}
+.asp-bare-mounted .asp-photo-control .asp-image-on{opacity:0}
+.asp-bare-mounted .asp-photo-control[data-selected="true"] .asp-image-on,
+.asp-bare-mounted[data-asp-lamp-test="true"] .asp-photo-control .asp-image-on{opacity:1}
+.asp-bare-mounted .asp-photo-control[data-selected="true"] .asp-image-off,
+.asp-bare-mounted[data-asp-lamp-test="true"] .asp-photo-control .asp-image-off{opacity:0}
+.reference-mode .asp-bare-mounted .asp-photo-control,.reference-mode .asp-bare-mounted .asp-socket-patches{display:none}
