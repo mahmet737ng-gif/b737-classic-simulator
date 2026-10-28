@@ -277,6 +277,15 @@ function mountMsu(){
   const size=69;b.style.left=(atlas(x)-size/2)+'px';b.style.top=(alto(668)-size/2)+'px';
   b.style.width=size+'px';b.style.height=size+'px';b.title='IRS '+side+' mode selector';
   b.setAttribute('aria-label','IRS '+side+' selector: click to advance OFF ALIGN NAV ATT; wheel or arrows to select');
+  // Approved 288x279 transparent RGBA rotary sprite, shared with all ordinary
+  // cockpit rotaries. Rotate the full sprite about the owner-locked 50%/44%
+  // pivot; never redraw the knob with a CSS gradient or fake detent marks.
+  const photo=document.createElement('img');
+  photo.className='irs-msu-owner-photo';
+  photo.alt='';
+  photo.draggable=false;
+  photo.src='../assets/locked/2026-10-23/Switches/Rotary/rotary-standard-v1.webp';
+  b.append(photo);
   b.addEventListener('click',e=>{e.stopPropagation();const ix=MODES.indexOf(state.units[side].mode);try{mode(side,MODES[(ix+1)%4])}catch(err){show(cleanErr(err));}});
   b.addEventListener('wheel',e=>{e.preventDefault();e.stopPropagation();const ix=MODES.indexOf(state.units[side].mode);try{mode(side,MODES[Math.max(0,Math.min(3,ix+(e.deltaY>0?1:-1)))])}catch(err){show(cleanErr(err));}},{passive:false});
   b.addEventListener('keydown',e=>{if(!['ArrowRight','ArrowLeft','ArrowUp','ArrowDown'].includes(e.key))return;e.preventDefault();const ix=MODES.indexOf(state.units[side].mode);mode(side,MODES[Math.max(0,Math.min(3,ix+(['ArrowRight','ArrowDown'].includes(e.key)?1:-1)))]);});
