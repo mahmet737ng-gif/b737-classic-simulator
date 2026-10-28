@@ -29,7 +29,9 @@ function fixture(){
  outer.classes.push('irs-upper-mode-rotor');upperMount.appendChild(outer);
  const left=new Element('button'),right=new Element('button');
  left.attrs['data-msu-mini']='L';right.attrs['data-msu-mini']='R';
- left.dataset.mode='OFF';right.dataset.mode='NAV';msuMount.appendChild(left);msuMount.appendChild(right);
+ left.dataset.mode='OFF';right.dataset.mode='NAV';
+ for(const knob of [left,right]){const photo=new Element('img');photo.classes.push('irs-msu-owner-photo');knob.appendChild(photo);}
+ msuMount.appendChild(left);msuMount.appendChild(right);
  const map=new Map([['irsUpperDsplMounted',upperMount],['irsTrainerMSU',msuMount]]);
  const document={readyState:'complete',getElementById:k=>map.get(k),
   createElementNS:(_ns,tag)=>new Element(tag),documentElement:new Element('html')};
@@ -41,8 +43,8 @@ function fixture(){
 }
 test('exact five stationary DSPL SEL ticks match all five existing angular detents',()=>{
  const f=fixture();const a=f.window.B737IRSRotaryIndices.audit();
- assert.deepEqual(Array.from(a,x=>x.tickCount),[5,4,4]);
- assert.deepEqual(Array.from(a,x=>x.pointerCount),[1,1,1]);assert(a.every(x=>x.pass));
+ assert.deepEqual(Array.from(a,x=>x.tickCount),[5,0,0]);
+ assert.deepEqual(Array.from(a,x=>x.pointerCount),[1,0,0]);assert(a.every(x=>x.pass));
  const fixed=f.upperMount.querySelector('[data-irs-tick-bank="upper"]');
  assert.equal(f.upperMount.childNodes[0],fixed,'Fixed tick plate must be before the moving rotor');
  assert.equal(f.outer.querySelectorAll('.irs-rotary-reference-pointer').length,1,'Reference pointer must be on moving outer rotor');
@@ -60,29 +62,53 @@ test('exact five stationary DSPL SEL ticks match all five existing angular deten
  assert.equal(ink.attrs.stroke,'#07090a');
  assert(Number(ink.attrs['stroke-width'])>=3.5,'Black index must be visible when scaled down');
 });
-test('four white ticks and single black pointer are independently installed on both MSU rotaries',()=>{
+test('IRS L/R reuse the approved photo: no extra white ticks or fake pointer on either selector',()=>{
  const f=fixture();
- for(const side of [f.left,f.right]){
-  const lines=side.querySelectorAll('.irs-detent-tick');
-  assert.equal(lines.length,4);
-  assert.deepEqual(lines.map(x=>x.attrs['data-detent-mode']),['OFF','ALIGN','NAV','ATT']);
-  assert.equal(side.querySelectorAll('.irs-index-ink').length,1);
+ for(const knob of [f.left,f.right]){
+  assert.equal(knob.querySelectorAll('.irs-detent-tick').length,0);
+  assert.equal(knob.querySelectorAll('.irs-index-ink').length,0);
+  assert(knob.querySelector('.irs-msu-owner-photo'));
+  assert.equal(knob.dataset.irsIndexVersion,'IRS-INDEX-0002');
  }
- for(const [mode,angle]of [['OFF',-115],['ALIGN',-40],['NAV',24],['ATT',88]]){
-  assert(msu.includes('.irs-msu-mini[data-mode="'+mode+'"]{--irs-msu-angle:'+angle+'deg}'));
- }
- assert(css.includes('rotate(var(--irs-msu-angle,-115deg))'),'Pointer should follow the existing angular state');
+ const app=fs.readFileSync(path.join(base,'irs-trainer-unified-v1.js'),'utf8');
+ const manifest=JSON.parse(fs.readFileSync(path.join(base,'../assets/locked/2026-10-23/Switches/Rotary/rotary-standard-v1.json'),'utf8'));
+ assert.equal(manifest.status,'approved');
+ assert.equal(manifest.rendering.rotate_entire_sprite,true);
+ assert.equal(manifest.rendering.css_transform_origin,'50% 44%');
+ assert(app.includes("photo.src='../assets/locked/2026-10-23/Switches/Rotary/rotary-standard-v1.webp'"));
+ assert(app.includes("b.append(photo)"),'Each actual MSU hotspot must mount one photographic sprite');
+ assert(msu.includes('transform-origin:50% 44%'));
+ assert(msu.includes('transform:rotate(var(--irs-msu-angle,-70deg))'));
+ assert(!msu.includes('background:radial-gradient(circle at 34%'),'No gradient cartoon circular selector');
+ assert(!css.includes('.irs-rotary-fixed-ticks-msu'),'No extra painted MSU white lines');
+ assert(!css.includes('.irs-rotary-reference-pointer-msu'),'No overlaid MSU reference pointer');
 });
-test('extra visual marks do not change detents or duplicate on repeated cockpit mounts',()=>{
- const f=fixture();f.events.get('b737:cockpit-mounted')();f.window.B737IRSRotaryIndices.install();
+
+test('four deterministic positions aim the photo pointer at OFF ALIGN NAV ATT labels',()=>{
+ const angle={OFF:-70,ALIGN:-38,NAV:25,ATT:69};
+ const expectedRay={OFF:-160,ALIGN:-128,NAV:-65,ATT:-21};
+ for(const mode of ['OFF','ALIGN','NAV','ATT']){
+  const needleRay=-90+angle[mode]; // approved photo pointer is upright at 0 rotation
+  assert.equal(needleRay,expectedRay[mode]);
+  assert(msu.includes('.irs-msu-mini[data-mode="'+mode+'"]{--irs-msu-angle:'+angle[mode]+'deg}'));
+ }
+ assert.deepEqual(Object.keys(angle),['OFF','ALIGN','NAV','ATT']);
+ assert(!code.includes("appendChild(tickFace('msu'"));
+ assert(!code.includes("appendChild(pointerFace('msu'"));
+});
+
+test('repeated cockpit mounts keep photographic selectors isolated from locked SYS DSPL and 18 guards',()=>{
+ const f=fixture();
+ f.events.get('b737:cockpit-mounted')();f.window.B737IRSRotaryIndices.install();
  assert.equal(f.upperMount.querySelectorAll('.irs-detent-tick').length,5);
- assert.equal(f.msuMount.querySelectorAll('.irs-detent-tick').length,8);
- assert.equal(f.msuMount.querySelectorAll('.irs-index-ink').length,2);
+ assert.equal(f.msuMount.querySelectorAll('.irs-detent-tick').length,0);
+ assert.equal(f.msuMount.querySelectorAll('.irs-index-ink').length,0);
+ assert.equal(f.msuMount.querySelectorAll('.irs-msu-owner-photo').length,2);
  assert(upper.includes('const ANGLES=Object.freeze([0,35,65,125,150])'));
- assert(upper.includes('irs-upper-mode-rotor'));
  assert(!code.includes('irsSysDsplMounted'),'Must never modify locked lower SYS DSPL');
- assert(!code.includes('dispatchEvent'),'Must not synthesize control events or electrical state');
- assert(!/\.irs-sys-dspl|#irsSysDsplMounted/.test(css),'Must not style locked SYS DSPL');
- assert(page.includes('irs-rotary-detent-indices-v1.js?v=IRS-INDEX-0001'));
- assert(page.includes('irs-rotary-detent-indices-v1.css?v=IRS-INDEX-0001'));
+ assert(!code.includes('dispatchEvent'),'No synthetic control events');
+ assert(!/\\.irs-sys-dspl|#irsSysDsplMounted/.test(css),'No styling of owner-locked SYS DSPL');
+ assert(page.includes('irs-rotary-detent-indices-v1.js?v=IRS-INDEX-0002'));
+ assert(page.includes('irs-rotary-detent-indices-v1.css?v=IRS-INDEX-0002'));
+ assert(page.includes('irs-trainer-unified-v1.css?v=IRS-LIVE-0002-MSU-PHOTO'));
 });
