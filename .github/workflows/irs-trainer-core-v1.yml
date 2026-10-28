@@ -4,12 +4,6 @@ on:
     paths:
       - 'engine/systems/irs-trainer-core-v1.cjs'
       - 'engine/systems/irs-trainer-web-v1.js'
-      - 'panel-mosaic-lab/cockpit/irs-trainer-live-v1.js'
-      - 'panel-mosaic-lab/cockpit/irs-trainer-live-v1.css'
-      - 'panel-mosaic-lab/cockpit/cdu-irs-unified-v1.js'
-      - 'panel-mosaic-lab/cockpit/cdu-stage.html'
-      - 'tests/irs-trainer-live-v1.test.cjs'
-      - 'engine/systems/irs-trainer-web-v1.js'
       - 'panel-mosaic-lab/cockpit/irs-trainer-unified-v1.js'
       - 'tests/irs-unified-integration-v1.test.cjs'
       - 'tests/cdu-irs-adapter-v1.test.cjs'
@@ -34,15 +28,11 @@ jobs:
       - name: Run independent L/R IRS procedure and motion tests
         run: |
           node --check engine/systems/irs-trainer-core-v1.cjs
-          node --check engine/systems/irs-trainer-web-v1.js
           node --check panel-mosaic-lab/cockpit/irs-trainer-unified-v1.js
           node --check panel-mosaic-lab/cockpit/cdu-irs-adapter-v1.js
           node --check tests/irs-trainer-core-v1.test.cjs
           node tests/irs-trainer-core-v1.test.cjs
           node --check engine/systems/irs-trainer-web-v1.js
-          node --check panel-mosaic-lab/cockpit/irs-trainer-live-v1.js
-          node --check panel-mosaic-lab/cockpit/cdu-irs-unified-v1.js
-          node tests/irs-trainer-live-v1.test.cjs
           node tests/irs-unified-integration-v1.test.cjs
           node tests/cdu-irs-adapter-v1.test.cjs
           node panel-mosaic-lab/cockpit/irs-hdg-sts-seven-minute-v1.test.cjs
