@@ -1,0 +1,157 @@
+{
+  "schema": "b737.recessed-overhead.v2",
+  "version": "RECESS-0002",
+  "implementation": "independent additive overlay; locked atlas files and guards unmodified",
+  "photoBasis": {
+    "UPPER": [
+      1731,
+      909
+    ],
+    "OH10": [
+      1095,
+      1436
+    ],
+    "OH15": [
+      1280,
+      1229
+    ],
+    "OH18": [
+      816,
+      1926
+    ],
+    "OH21": [
+      1122,
+      1402
+    ]
+  },
+  "behavior": {
+    "capScaleOnPress": 0.79,
+    "axis": "concentric straight-in",
+    "bezel": "fixed",
+    "input": "press hold release",
+    "activation": "black cap only",
+    "backend": "publish events; system reactions only when connected"
+  },
+  "buttons": [
+    {
+      "id": "mach-airspeed-1",
+      "piece": "UPPER",
+      "label": "MACH AIRSPEED WARNING TEST NO 1",
+      "cx": 1610,
+      "cy": 458,
+      "d": 40,
+      "quality": "photo"
+    },
+    {
+      "id": "mach-airspeed-2",
+      "piece": "UPPER",
+      "label": "MACH AIRSPEED WARNING TEST NO 2",
+      "cx": 1674,
+      "cy": 458,
+      "d": 40,
+      "quality": "photo"
+    },
+    {
+      "id": "stall-warning-1",
+      "piece": "UPPER",
+      "label": "STALL WARNING TEST NO 1",
+      "cx": 1478,
+      "cy": 592,
+      "d": 42,
+      "quality": "photo"
+    },
+    {
+      "id": "stall-warning-2",
+      "piece": "UPPER",
+      "label": "STALL WARNING TEST NO 2",
+      "cx": 1609,
+      "cy": 592,
+      "d": 42,
+      "quality": "photo"
+    },
+    {
+      "id": "pitot-static-tat-test",
+      "piece": "OH15",
+      "label": "PITOT STATIC HEAT / TAT TEST",
+      "cx": 638,
+      "cy": 1027,
+      "d": 122,
+      "quality": "photo"
+    },
+    {
+      "id": "residual-volts",
+      "piece": "OH10",
+      "label": "AC DC METERING RESIDUAL VOLTS",
+      "cx": 925,
+      "cy": 1228,
+      "d": 112,
+      "quality": "provisional",
+      "note": "lower-right AC meter controls; image-space center requires owner photo pixel QA"
+    },
+    {
+      "id": "aircon-ovht-test",
+      "piece": "OH21",
+      "label": "AIR CONDITIONING OVERHEAT TEST",
+      "cx": 925,
+      "cy": 472,
+      "d": 108,
+      "quality": "photo"
+    },
+    {
+      "id": "trip-reset",
+      "piece": "OH21",
+      "label": "PACK / BLEED TRIP RESET",
+      "cx": 559,
+      "cy": 1051,
+      "d": 109,
+      "quality": "photo"
+    },
+    {
+      "id": "attend",
+      "piece": "OH18",
+      "label": "ATTEND",
+      "cx": 160,
+      "cy": 400,
+      "d": 192,
+      "quality": "photo"
+    },
+    {
+      "id": "ground-call",
+      "piece": "OH18",
+      "label": "GRD CALL",
+      "cx": 615,
+      "cy": 400,
+      "d": 192,
+      "quality": "photo"
+    },
+    {
+      "id": "rain-repellent-left",
+      "piece": "OH18",
+      "label": "RAIN REPELLENT LEFT",
+      "cx": 236,
+      "cy": 1035,
+      "d": 176,
+      "quality": "photo"
+    },
+    {
+      "id": "rain-repellent-right",
+      "piece": "OH18",
+      "label": "RAIN REPELLENT RIGHT",
+      "cx": 550,
+      "cy": 1035,
+      "d": 176,
+      "quality": "photo"
+    }
+  ],
+  "legacyIntegrated": {
+    "id": "le-devices-test",
+    "piece": "UPPER",
+    "existingSelector": ".b737-le-devices__test",
+    "label": "LE DEVICES TEST",
+    "expectedLocation": [
+      191,
+      689
+    ],
+    "stateEngine": "b737:le-devices-lamp-test"
+  }
+}
