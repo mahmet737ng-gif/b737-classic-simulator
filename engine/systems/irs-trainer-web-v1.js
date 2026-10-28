@@ -42,7 +42,9 @@ const CAL=Object.freeze({
   northAlignHoldLatitude:50,
   originVerifyThresholdNm:4,
   defaultDriftRateNmPerHour:0.42,
-  trainingSeparationTargetNm:1.0
+  trainingSeparationTargetNm:1.0,
+  // FCOM specifies flashing, not its frequency; 1Hz is training calibration.
+  alignFlashPeriodSeconds:1
 });
 function finite(v){return typeof v==='number'&&Number.isFinite(v);}
 function checkPosition(p){
@@ -91,14 +93,19 @@ function unit(id){
   position:null,basePosition:null,alignmentElapsedSec:0,alignmentDurationSec:CAL.normalAlignSeconds,powerTestElapsedSec:0,
   valid:false,lastWarning:null,groundSpeedKt:null,trueTrackDeg:null,trueHeadingDeg:null,
   altitudeFt:null,windFromDeg:null,windKt:null,northDriftNm:0,eastDriftNm:0,
-  navigationElapsedSec:0,alignFault:null};
+  navigationElapsedSec:0,alignFault:null,alignBlockCode:null,
+  alignMessage:null,alignFlashElapsedSec:0,
+  internalChecks:{storedPositionConsistent:null,computedLatitudeConsistent:null},
+  lastRejectedPosition:null,lastRejectReason:null,computedRejectCount:0};
 }
 function initialState(options={}){
  return {schema:'b737-classic.irs-trainer.v1',revision:0,
   config:{normalAlignSeconds:options.normalAlignSeconds??CAL.normalAlignSeconds,
    highLatitudeAlignSeconds:options.highLatitudeAlignSeconds??CAL.highLatitudeAlignSeconds,
    northAlignHoldLatitude:options.northAlignHoldLatitude??CAL.northAlignHoldLatitude,
-   driftRateNmPerHour:options.driftRateNmPerHour??CAL.defaultDriftRateNmPerHour},
+   driftRateNmPerHour:options.driftRateNmPerHour??CAL.defaultDriftRateNmPerHour,
+   // Post-Jan-1990 FCOM auto full restart is the training default.
+   motionRecoveryPolicy:options.motionRecoveryPolicy??'AUTO_FULL_RESTART'},
   units:{L:unit('L'),R:unit('R')},events:[],referenceOnly:true};
 }
 function clone(s){
@@ -118,12 +125,27 @@ function requiresAlignHold(latitude,config){
  // latitude rule below 70d12m SOUTH remains independently protected.
  return latitude>=config.northAlignHoldLatitude||latitude< -CAL.boundaryNormalLatitude;
 }
+function samePosition(a,b){
+ return !!a&&!!b&&Math.abs(a.lat-b.lat)<1e-9&&Math.abs(a.lon-b.lon)<1e-9;
+}
+function blockAlignment(s,u,code,message,phase='WAIT_POSITION'){
+ u.phase=phase;u.valid=false;u.alignBlockCode=code;u.alignMessage=message;
+ if(code!==8){u.initialized=false;u.enteredPosition=null;u.entrySource=null;}
+ u.alignFlashElapsedSec=0;
+ emit(s,u.id,'IRS_ALIGN_FLASH',String(code).padStart(2,'0')+' '+message);
+}
+function clearAlignmentBlock(u){
+ u.alignBlockCode=null;u.alignMessage=null;u.alignFlashElapsedSec=0;
+}
 function begin(u,config,mode){
  u.mode=mode;u.phase='SELFTEST';u.powerTestElapsedSec=0;u.valid=false;u.initialized=false;
  u.alignmentElapsedSec=0;u.alignmentDurationSec=config.normalAlignSeconds;
  u.alignStartMode=mode;
  u.enteredPosition=null;u.position=null;u.basePosition=null;u.entryPending={lat:null,lon:null};
- u.lastWarning=null;u.alignFault=null;u.northDriftNm=0;u.eastDriftNm=0;
+ u.lastWarning=null;u.alignFault=null;clearAlignmentBlock(u);
+ u.internalChecks={storedPositionConsistent:null,computedLatitudeConsistent:null};
+ u.lastRejectedPosition=null;u.lastRejectReason=null;u.computedRejectCount=0;
+ u.northDriftNm=0;u.eastDriftNm=0;
  u.navigationElapsedSec=0;
 }
 function writePosition(s,side,p,source,origin){
@@ -133,9 +155,26 @@ function writePosition(s,side,p,source,origin){
  }
  const lat=Math.abs(pos.lat);
  if(lat>CAL.boundaryHighLatitude)throw new RangeError('IRS alignment latitude beyond supported region');
+ const checks=u.internalChecks||{};
+ const repeat=samePosition(u.lastRejectedPosition,pos);
+ // FCOM has internal checks but no published numeric comparison threshold
+ // here. Only explicit trusted evidence can fail one; 4NM ORIGIN is a CDU
+ // advisory, never evidence for a failed IRS internal comparison.
+ if(checks.storedPositionConsistent===false&&
+    !(repeat&&u.lastRejectReason==='STORED')){
+   u.lastRejectedPosition=pos;u.lastRejectReason='STORED';
+   blockAlignment(s,u,12,'ENTER IRS POS');return;
+ }
+ if(checks.computedLatitudeConsistent===false){
+   u.computedRejectCount=repeat&&u.lastRejectReason==='COMPUTED'?u.computedRejectCount+1:1;
+   u.lastRejectedPosition=pos;u.lastRejectReason='COMPUTED';
+   if(u.computedRejectCount>=2){u.alignFault='INTERNAL_POSITION_CHECK_FAILURE';emit(s,side,'IRS_POSITION_CHECK_FAULT');}
+   blockAlignment(s,u,4,'ENTER IRS POS');return;
+ }
  u.enteredPosition=pos;u.initialized=true;u.entrySource=source;
  u.alignmentDurationSec=lat>CAL.boundaryNormalLatitude?s.config.highLatitudeAlignSeconds:s.config.normalAlignSeconds;
- u.lastWarning=null;
+ u.lastWarning=null;u.alignFault=null;clearAlignmentBlock(u);
+ u.lastRejectedPosition=null;u.lastRejectReason=null;u.computedRejectCount=0;
  // Between 50N and 70d12m N: 10min, but requires OFF->ALIGN and manual
  // NAV selection. Beyond 70d12m: published 17min high-lat procedure.
  if(requiresAlignHold(pos.lat,s.config)&&(u.mode!=='ALIGN'||u.alignStartMode!=='ALIGN')){
@@ -199,6 +238,7 @@ function apply(state,cmd){
         u.phase='POWER_LOST';u.alignmentElapsedSec=0;u.initialized=false;
         u.entrySource=null;u.entryPending={lat:null,lon:null};
         u.enteredPosition=null;u.powerTestElapsedSec=0;u.alignFault=null;
+        clearAlignmentBlock(u);
       }
       emit(s,u.id,'POWER_LOST');
     }else{
@@ -241,6 +281,23 @@ function apply(state,cmd){
     }else u.mode=cmd.mode;
     break;
    }
+   case 'SET_ALIGNMENT_CHECKS':{
+    // Instructor/telemetry evidence, not invented sensor comparison values.
+    if(!u.powered||!['SELFTEST','ALIGNING','WAIT_POSITION','ALIGN_READY','HIGH_LAT_READY'].includes(u.phase))
+     throw new Error('Alignment comparison evidence requires powered aligning IRS');
+    if(!cmd.evidence||typeof cmd.evidence!=='object'||Array.isArray(cmd.evidence))
+     throw new TypeError('Explicit alignment comparison evidence object required');
+    const keys=['storedPositionConsistent','computedLatitudeConsistent'];
+    if(!keys.some(k=>Object.prototype.hasOwnProperty.call(cmd.evidence,k)))
+     throw new TypeError('No recognized IRS position comparison evidence');
+    for(const key of keys)if(Object.prototype.hasOwnProperty.call(cmd.evidence,key)){
+     const value=cmd.evidence[key];
+     if(value!==true&&value!==false&&value!==null)
+      throw new TypeError('IRS position evidence must be true, false or null');
+     u.internalChecks[key]=value;
+    }
+    emit(s,u.id,'IRS_POSITION_CHECK_EVIDENCE');break;
+   }
    case 'ISDU_LAT_ENT':{
     if(!u.powered||!['SELFTEST','ALIGNING','ALIGN_READY','WAIT_POSITION','HIGH_LAT_READY','FAST_REALIGN'].includes(u.phase))
       throw new Error('ISDU position entry requires selected powered IRS in ALIGN');
@@ -280,6 +337,19 @@ function tick(state,frame){
  for(const side of SIDES){
   const u=s.units[side];
   if(!u.powered)continue;
+  if(u.alignBlockCode!==null)
+   u.alignFlashElapsedSec=(u.alignFlashElapsedSec+dt)%CAL.alignFlashPeriodSeconds;
+  if(u.phase==='BLOCKED_MOVEMENT'){
+   // Effectivity switch: older aircraft require OFF cycling. An automatic
+   // full restart on stationary aircraft re-requests present position.
+   if(frame.stationary===true&&s.config.motionRecoveryPolicy==='AUTO_FULL_RESTART'){
+    u.phase='ALIGNING';u.alignmentElapsedSec=0;u.valid=false;
+    u.initialized=false;u.enteredPosition=null;u.entrySource=null;
+    u.entryPending={lat:null,lon:null};clearAlignmentBlock(u);
+    emit(s,side,'IRS_MOTION_AUTO_FULL_REALIGN');
+   }
+   continue;
+  }
   if(u.phase==='SHUTDOWN'){
    u.alignmentElapsedSec+=dt;
    if(u.alignmentElapsedSec>=CAL.shutdownSeconds){u.phase='OFF';u.position=null;u.valid=false;}
@@ -291,16 +361,16 @@ function tick(state,frame){
      u.phase='ALIGNING';
      const leftover=u.powerTestElapsedSec-CAL.powerTestSeconds;
      u.alignmentElapsedSec=frame.stationary===true?Math.max(0,leftover):0;
-     if(frame.stationary!==true){u.phase='BLOCKED_MOVEMENT';u.alignFault='IRS MOTION';}
+     if(frame.stationary!==true)blockAlignment(s,u,3,'IRS MOTION','BLOCKED_MOVEMENT');
      emit(s,side,'SELFTEST_COMPLETE');
    }
    continue;
   }
   if(['ALIGNING','FAST_REALIGN'].includes(u.phase)){
-   if(frame.stationary!==true){u.phase='BLOCKED_MOVEMENT';u.alignFault='IRS MOTION';u.valid=false;emit(s,side,'IRS_MOTION');continue;}
+   if(frame.stationary!==true){blockAlignment(s,u,3,'IRS MOTION','BLOCKED_MOVEMENT');continue;}
    u.alignmentElapsedSec+=dt;
    if(u.alignmentElapsedSec>=u.alignmentDurationSec){
-    if(!u.initialized){u.phase='WAIT_POSITION';u.valid=false;emit(s,side,'ENTER_IRS_POSITION');}
+    if(!u.initialized){blockAlignment(s,u,8,'ENTER IRS POS');emit(s,side,'ENTER_IRS_POSITION');}
     else if(u.phase==='FAST_REALIGN'){if(u.mode==='NAV')ready(s,u);else{u.phase='ALIGN_READY';u.valid=false;emit(s,side,'FAST_REALIGN_READY_WAIT_NAV');}}
     else ready(s,u);
    }
@@ -334,11 +404,19 @@ function status(s,side){
  const u=get(s,side);
  const remaining=(u.phase==='ALIGNING'&&u.powered)
   ?Math.max(0,u.alignmentDurationSec-u.alignmentElapsedSec):null;
+ const alignCommanded=u.powered&&['ALIGNING','WAIT_POSITION','HIGH_LAT_READY','ALIGN_READY',
+  'FAST_REALIGN','SHUTDOWN','BLOCKED_MOVEMENT'].includes(u.phase);
+ const flashing=alignCommanded&&u.alignBlockCode!==null;
+ // Existing RED ZONE renderer already reads alignLamp on each render.
+ const lit=alignCommanded&&(!flashing||u.alignFlashElapsedSec<CAL.alignFlashPeriodSeconds/2);
  return {
   id:side,mode:u.mode,phase:u.phase,powered:u.powered,
   onDcLamp:u.powered&&u.phase==='SELFTEST',
-  alignLamp:u.powered&&['ALIGNING','WAIT_POSITION','HIGH_LAT_READY','ALIGN_READY','FAST_REALIGN','SHUTDOWN'].includes(u.phase),
-  faultLamp:u.alignFault!==null,
+  alignLamp:lit,alignLampMode:!alignCommanded?'OFF':flashing?'FLASHING':'STEADY',
+  alignLampFlashing:flashing,alignStatusCode:u.alignBlockCode,
+  alignStatusText:u.alignBlockCode===null?null:String(u.alignBlockCode).padStart(2,'0'),
+  cduMessage:u.alignMessage||(u.lastWarning==='VERIFY POSITION'?'VERIFY POSITION':null),
+  faultLamp:u.powered&&u.alignFault!==null,
   positionValid:u.valid&&u.phase==='NAV_READY'&&!!u.position,
   position:u.valid&&u.phase==='NAV_READY'?u.position:null,
   gsKt:u.valid?u.groundSpeedKt:null,trueTrackDeg:u.valid?u.trueTrackDeg:null,
@@ -355,6 +433,13 @@ function comparison(s){
   note:'1 NM is an educational target, not a hard FCOM sensor limit or permanent offset'};
 }
 function hdgStsCountdown(s,selectedIRS){
+ const selected=get(s,selectedIRS);
+ // The existing HDG/STS renderer uses value as text: publish two digits
+ // when an MRG alignment status code has priority over the minute timer.
+ if(selected.powered&&selected.alignBlockCode!==null){
+  const code=String(selected.alignBlockCode).padStart(2,'0');
+  return {visible:true,value:code,text:code,source:selectedIRS,kind:'STATUS_CODE'};
+ }
  const irsStates={};
  for(const id of SIDES){
   const x=s.units[id],out=status(s,id);
