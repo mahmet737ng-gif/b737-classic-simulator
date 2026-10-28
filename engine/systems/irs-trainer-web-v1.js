@@ -41,6 +41,7 @@ const CAL=Object.freeze({
   // Owner training policy: >=50N must use OFF -> ALIGN; FCOM is 70d12m.
   northAlignHoldLatitude:50,
   originVerifyThresholdNm:4,
+  ownerComputedLatitudeToleranceNm:4,
   defaultDriftRateNmPerHour:0.42,
   trainingSeparationTargetNm:1.0,
   // FCOM specifies flashing, not its frequency; 1Hz is training calibration.
@@ -96,7 +97,8 @@ function unit(id){
   navigationElapsedSec:0,alignFault:null,alignBlockCode:null,
   alignMessage:null,alignFlashElapsedSec:0,
   internalChecks:{storedPositionConsistent:null,computedLatitudeConsistent:null},
-  lastRejectedPosition:null,lastRejectReason:null,computedRejectCount:0};
+  lastRejectedPosition:null,lastRejectReason:null,computedRejectCount:0,
+  computedLatitudeDeg:null,computedLatitudeSource:null,latitudeComparisonNm:null};
 }
 function initialState(options={}){
  return {schema:'b737-classic.irs-trainer.v1',revision:0,
@@ -105,7 +107,9 @@ function initialState(options={}){
    northAlignHoldLatitude:options.northAlignHoldLatitude??CAL.northAlignHoldLatitude,
    driftRateNmPerHour:options.driftRateNmPerHour??CAL.defaultDriftRateNmPerHour,
    // Post-Jan-1990 FCOM auto full restart is the training default.
-   motionRecoveryPolicy:options.motionRecoveryPolicy??'AUTO_FULL_RESTART'},
+   motionRecoveryPolicy:options.motionRecoveryPolicy??'AUTO_FULL_RESTART',
+   latitudeComparisonPolicy:options.latitudeComparisonPolicy??'OWNER_4NM',
+   requireIndependentLatitude:options.requireIndependentLatitude===true},
   units:{L:unit('L'),R:unit('R')},events:[],referenceOnly:true};
 }
 function clone(s){
@@ -145,6 +149,7 @@ function begin(u,config,mode){
  u.lastWarning=null;u.alignFault=null;clearAlignmentBlock(u);
  u.internalChecks={storedPositionConsistent:null,computedLatitudeConsistent:null};
  u.lastRejectedPosition=null;u.lastRejectReason=null;u.computedRejectCount=0;
+ u.computedLatitudeDeg=null;u.computedLatitudeSource=null;u.latitudeComparisonNm=null;
  u.northDriftNm=0;u.eastDriftNm=0;
  u.navigationElapsedSec=0;
 }
@@ -178,7 +183,7 @@ function writePosition(s,side,p,source,origin){
  u.enteredPosition=pos;u.initialized=true;u.entrySource=source;
  u.alignmentDurationSec=lat>CAL.boundaryNormalLatitude?s.config.highLatitudeAlignSeconds:s.config.normalAlignSeconds;
  u.lastWarning=null;u.alignFault=null;clearAlignmentBlock(u);
- u.lastRejectedPosition=null;u.lastRejectReason=null;u.computedRejectCount=0;
+ // Keep rejected-entry history until successful independent comparison.
  // Between 50N and 70d12m N: 10min, but requires OFF->ALIGN and manual
  // NAV selection. Beyond 70d12m: published 17min high-lat procedure.
  if(requiresAlignHold(pos.lat,s.config)&&(u.mode!=='ALIGN'||u.alignStartMode!=='ALIGN')){
@@ -189,15 +194,48 @@ function writePosition(s,side,p,source,origin){
  }
  // A late high-lat position may extend the timer after WAIT_POSITION; resume
  // timing rather than remaining indefinitely in the waiting phase.
- if(u.phase==='WAIT_POSITION'&&u.alignmentElapsedSec<u.alignmentDurationSec)u.phase='ALIGNING';
+ if(['WAIT_POSITION','WAIT_LATITUDE_SENSOR'].includes(u.phase)&&u.alignmentElapsedSec<u.alignmentDurationSec)u.phase='ALIGNING';
  if(origin&&distanceNm(pos,checkPosition(origin))>CAL.originVerifyThresholdNm)u.lastWarning='VERIFY POSITION';
  // A wrong-position internal comparison must be modeled separately; the >4NM
  // origin check is a CDU warning and must NOT falsely be treated as IRS fault.
  if(u.alignmentElapsedSec>=u.alignmentDurationSec)ready(s,u);
  emit(s,side,'IRS_POSITION_ACCEPTED',source);
 }
+function independentLatitudeCheck(s,u){
+ const entered=u.enteredPosition,computed=u.computedLatitudeDeg;
+ if(!entered)return false;
+ if(!finite(computed)){
+  u.latitudeComparisonNm=null;
+  if(s.config.requireIndependentLatitude){
+   u.phase='WAIT_LATITUDE_SENSOR';u.valid=false;u.alignMessage='IRS LATITUDE NOT AVAILABLE';
+   emit(s,u.id,'IRS_COMPUTED_LATITUDE_MISSING');return false;
+  }
+  return true; // Compatibility-only legacy bench without a real sensor.
+ }
+ const deltaNm=Math.abs(entered.lat-computed)*60; // latitude minutes -> NM
+ u.latitudeComparisonNm=deltaNm;
+ const policy=s.config.latitudeComparisonPolicy;
+ const passed=policy==='CLASSIC_SIN_COS'
+  ? Math.abs(Math.sin(entered.lat*DEG)-Math.sin(computed*DEG))<=0.15&&
+    Math.abs(Math.cos(entered.lat*DEG)-Math.cos(computed*DEG))<=0.01234
+  : deltaNm<=CAL.ownerComputedLatitudeToleranceNm+1e-9;
+ if(passed)return true;
+ const repeated=samePosition(u.lastRejectedPosition,entered)&&u.lastRejectReason==='COMPUTED_NUMERIC';
+ u.computedRejectCount=repeated?u.computedRejectCount+1:1;
+ u.lastRejectedPosition={...entered};u.lastRejectReason='COMPUTED_NUMERIC';
+ if(u.computedRejectCount>=2){
+  u.alignFault='INTERNAL_POSITION_CHECK_FAILURE';
+  emit(s,u.id,'IRS_POSITION_CHECK_FAULT');
+ }
+ blockAlignment(s,u,2,'ENTER IRS POS');
+ emit(s,u.id,'IRS_COMPUTED_LATITUDE_MISMATCH',String(deltaNm));
+ return false;
+}
 function ready(s,u){
  if(!u.initialized||!u.enteredPosition)return;
+ if(!independentLatitudeCheck(s,u))return;
+ u.lastRejectedPosition=null;u.lastRejectReason=null;u.computedRejectCount=0;
+ u.alignMessage=null;clearAlignmentBlock(u);
  if(u.mode==='ALIGN'){
   u.phase=u.alignmentDurationSec>=s.config.highLatitudeAlignSeconds?'HIGH_LAT_READY':'ALIGN_READY';u.valid=false;emit(s,u.id,'READY_WAIT_NAV');
  }else{
@@ -242,6 +280,7 @@ function apply(state,cmd){
         u.phase='POWER_LOST';u.alignmentElapsedSec=0;u.initialized=false;
         u.entrySource=null;u.entryPending={lat:null,lon:null};
         u.enteredPosition=null;u.powerTestElapsedSec=0;u.alignFault=null;
+        u.computedLatitudeDeg=null;u.computedLatitudeSource=null;u.latitudeComparisonNm=null;
         clearAlignmentBlock(u);
       }
       emit(s,u.id,'POWER_LOST');
@@ -285,7 +324,23 @@ function apply(state,cmd){
     }else u.mode=cmd.mode;
     break;
    }
-   case 'SET_ALIGNMENT_CHECKS':{
+   case 'SET_COMPUTED_LATITUDE':{
+     // Only a separate simulator-sensor or instructor-sensor port may provide
+     // this value. Never calculate it by copying the entered FMC/ISDU PPOS.
+     if(!u.powered||!['SELFTEST','ALIGNING','WAIT_POSITION','WAIT_LATITUDE_SENSOR',
+          'ALIGN_READY','HIGH_LAT_READY'].includes(u.phase))
+      throw new Error('Independent latitude only during powered alignment');
+     if(!finite(cmd.latitudeDeg)||Math.abs(cmd.latitudeDeg)>90)
+      throw new RangeError('Computed latitude requires valid signed degrees');
+     if(!['SIMULATOR_SENSOR','INSTRUCTOR_SENSOR'].includes(cmd.source))
+      throw new TypeError('Independent latitude needs sensor provenance');
+     u.computedLatitudeDeg=cmd.latitudeDeg;u.computedLatitudeSource=cmd.source;
+     u.latitudeComparisonNm=null;
+     emit(s,u.id,'IRS_COMPUTED_LATITUDE_RECEIVED',cmd.source);
+     if(u.phase==='WAIT_LATITUDE_SENSOR'&&u.initialized&&u.alignmentElapsedSec>=u.alignmentDurationSec)ready(s,u);
+     break;
+    }
+    case 'SET_ALIGNMENT_CHECKS':{
     // Instructor/telemetry evidence, not invented sensor comparison values.
     if(!u.powered||!['SELFTEST','ALIGNING','WAIT_POSITION','ALIGN_READY','HIGH_LAT_READY'].includes(u.phase))
      throw new Error('Alignment comparison evidence requires powered aligning IRS');
@@ -427,7 +482,11 @@ function status(s,side){
   trueHeadingDeg:u.valid?u.trueHeadingDeg:null,warning:u.lastWarning,
   alignSecondsRemaining:remaining,entrySource:u.entrySource,
   navDriftNm:Math.hypot(u.northDriftNm,u.eastDriftNm),
-  trace:'SIMULATOR_REFERENCE_WITH_SYNTHETIC_IRS_DRIFT_NOT_REAL_NAVIGATION'
+  computedLatitudeDeg:u.computedLatitudeDeg,computedLatitudeSource:u.computedLatitudeSource,
+   latitudeComparisonNm:u.latitudeComparisonNm,
+   latitudeComparisonPolicy:s.config.latitudeComparisonPolicy,
+   independentLatitudeRequired:s.config.requireIndependentLatitude,
+   trace:'SIMULATOR_REFERENCE_WITH_SYNTHETIC_IRS_DRIFT_NOT_REAL_NAVIGATION'
  };
 }
 function comparison(s){
