@@ -152,7 +152,7 @@ function visualSVG(row,inf,pix,forcedState){
  let lenEstimate=Math.max(...inf.lines.map(s=>s.length));
  let squeeze=vert?1:Math.min(1,Math.max(0.72,(W-45)/(lenEstimate*font*0.54)));
  // Fit lettering uniformly when needed; glyph height and baseline remain unaffected on ordinary sockets.
- let transformation=(!vert&&squeeze<.995)?'transform="translate('+cx+' 0) scale('+squeeze+' 1) translate('+(-cx)+' 0)"':'';
+ let transformation=(!vert&&squeeze<.995)?'transform="translate('+cx+' '+(H/2)+') scale('+squeeze+') translate('+(-cx)+' '+(-H/2)+')"':'';
  const draw=(fill,opacity,filter)=>'<g '+gAttrs+' '+transformation+' fill="'+fill+'" opacity="'+opacity+'" '+(filter?'filter="url(#bloom)"':'')+'>'+textNodes+'</g>';
  const iw=W-44,ih=H-44;
  return '<svg xmlns="http://www.w3.org/2000/svg" width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'">'
