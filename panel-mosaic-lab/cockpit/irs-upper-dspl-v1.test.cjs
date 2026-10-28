@@ -56,5 +56,5 @@ test('actual source bore registration, alpha PNGs and mount idempotence are pres
  const g=api.geometry;assert.ok(Math.abs(g.center.x-(3+471.454545*2214/1731))<1e-7);assert.ok(Math.abs(g.center.y-(3+368.699675*1019/909))<1e-7);
  const meta=JSON.parse(fs.readFileSync(path.join(base,'irs-upper-dspl-v1.json')));
  for(const [name,spec]of Object.entries(meta.assets)){const b=fs.readFileSync(path.join(base,'assets',name));assert.equal(b.toString('ascii',1,4),'PNG');assert.equal(b.readUInt32BE(16),1774);assert.equal(b.readUInt32BE(20),887);assert.equal(b[25],6,'RGBA alpha PNG');assert.equal(crypto.createHash('sha256').update(b).digest('hex'),spec.sha256);}
- const html=fs.readFileSync(path.join(base,'index.html'),'utf8');assert.equal(html.split('irs-upper-dspl-v1.js?v=IRS-UPPER-0002').length-1,1);assert.equal(html.split('irs-upper-dspl-v1.css?v=IRS-UPPER-0002').length-1,1);
+ const html=fs.readFileSync(path.join(base,'index.html'),'utf8');assert.equal(html.split('irs-upper-dspl-v1.js?v=IRS-UPPER-0003').length-1,1);assert.equal(html.split('irs-upper-dspl-v1.css?v=IRS-UPPER-0003').length-1,1);
 });

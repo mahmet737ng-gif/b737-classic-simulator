@@ -20,3 +20,6 @@
 #region-overhead .irs-upper-photo{inset:auto;width:173.2421875%;height:86.62109375%;image-rendering:auto}
 #region-overhead .irs-upper-photo-outer{left:-.12890625%;top:6.615234375%;clip-path:inset(0 50% 0 0)}
 #region-overhead .irs-upper-photo-inner{left:-80.5654296875%;top:5.224609375%;clip-path:inset(0 0 0 50%)}
+
+/* Replace only the older UPPER control visual; its existing IRS controller remains authoritative. */
+#region-overhead #irsUpperDsplSelMounted{display:none!important}

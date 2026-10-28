@@ -1,5 +1,5 @@
 {
-  "version": "IRS-UPPER-DSPL-0002",
+  "version": "IRS-UPPER-DSPL-0003",
   "ownerReference": "image(20261028-022751).png",
   "sourceCenter": [
     471.454545,
@@ -86,5 +86,7 @@
     1774,
     887
   ],
-  "originalPngPreservedByteForByte": true
+  "originalPngPreservedByteForByte": true,
+  "existingUpperControllerPreserved": true,
+  "replacedVisual": "#irsUpperDsplSelMounted"
 }

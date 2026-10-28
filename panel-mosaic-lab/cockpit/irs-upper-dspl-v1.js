@@ -1,4 +1,4 @@
-/* IRS-UPPER-DSPL-0002 — independent coaxial DSPL SEL / BRT.
+/* IRS-UPPER-DSPL-0003 — independent coaxial DSPL SEL / BRT.
  * Owner reference: image(20261028-022751).png. Photographic alpha layers.
  * Lower SYS DSPL, its four mount tags, OWNER18 and frozen mosaic are untouched.
  */
@@ -11,7 +11,7 @@
  const map=Object.freeze({sourceWidth:1731,sourceHeight:909,width:2214,height:1019,x:3,y:3});
  const size=Object.freeze({width:88,height:79});
  const center=Object.freeze({x:map.x+source.x*map.width/map.sourceWidth,y:map.y+source.y*map.height/map.sourceHeight});
- const geometry=Object.freeze({version:'IRS-UPPER-DSPL-0002',source,map,size,center,pivot:[.5,.5],modeAngles:ANGLES,outerAsset:'irs-upper-owner-original-v2.png',innerAsset:'irs-upper-owner-original-v2.png'});
+ const geometry=Object.freeze({version:'IRS-UPPER-DSPL-0003',source,map,size,center,pivot:[.5,.5],modeAngles:ANGLES,outerAsset:'irs-upper-owner-original-v2.png',innerAsset:'irs-upper-owner-original-v2.png'});
  let mode='PPOS',brightness=82,element=null,displayMask=null;
  const tracks=new Map(),ignoreClick={mode:false,brightness:false};
  const clamp=(x,lo,hi)=>Math.max(lo,Math.min(hi,x));
@@ -32,11 +32,11 @@
  }
  function setMode(value,input='api'){
   const next=String(value).toUpperCase();if(!MODES.includes(next))throw new RangeError('Unknown IRS DSPL SEL mode: '+value);
-  const changed=next!==mode;mode=next;render();if(changed)notify('mode',input);return mode;
+  const changed=next!==mode;mode=next;render();const existing=root.B737IRSUpperSelector;if(existing?.getMode?.()!==next)existing?.setMode?.(next,'owner-original-photo');if(changed)notify('mode',input);return mode;
  }
  function setBrightness(value,input='api'){
   const n=Number(value);if(!Number.isFinite(n))throw new TypeError('IRS brightness must be a finite number');
-  const next=Math.round(clamp(n,0,100)),changed=next!==brightness;brightness=next;render();if(changed)notify('brightness',input);return brightness;
+  const next=Math.round(clamp(n,0,100)),changed=next!==brightness;brightness=next;render();const existing=root.B737IRSUpperSelector;if(existing?.getBrightness?.()!==next)existing?.setBrightness?.(next,'owner-original-photo');if(changed)notify('brightness',input);return brightness;
  }
  function step(part,direction,input){
   if(part==='mode')setMode(MODES[clamp(MODES.indexOf(mode)+direction,0,MODES.length-1)],input);
@@ -110,6 +110,9 @@
   region.append(displayMask,element);render();return element;
  }
  function boot(){
+  const existing=root.B737IRSUpperSelector;
+  if(existing?.getMode&&existing?.getBrightness){mode=existing.getMode();brightness=existing.getBrightness();}
+  root.addEventListener('b737:irs-upper-visual-change',event=>{const d=event.detail||{};if(MODES.includes(d.mode))mode=d.mode;if(Number.isFinite(d.brightness))brightness=clamp(d.brightness,0,100);render();});
   mount();
   if(!element){const observer=new MutationObserver(()=>{if(mount())observer.disconnect();});observer.observe(document.documentElement,{childList:true,subtree:true});}
   root.addEventListener('b737:cockpit-mounted',mount);
