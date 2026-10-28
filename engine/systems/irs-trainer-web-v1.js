@@ -38,6 +38,8 @@ const CAL=Object.freeze({
   powerTestSeconds:3.5,
   boundaryNormalLatitude:70.2,
   boundaryHighLatitude:78.25,
+  // Owner training policy: >=50N must use OFF -> ALIGN; FCOM is 70d12m.
+  northAlignHoldLatitude:50,
   originVerifyThresholdNm:4,
   defaultDriftRateNmPerHour:0.42,
   trainingSeparationTargetNm:1.0
@@ -95,6 +97,7 @@ function initialState(options={}){
  return {schema:'b737-classic.irs-trainer.v1',revision:0,
   config:{normalAlignSeconds:options.normalAlignSeconds??CAL.normalAlignSeconds,
    highLatitudeAlignSeconds:options.highLatitudeAlignSeconds??CAL.highLatitudeAlignSeconds,
+   northAlignHoldLatitude:options.northAlignHoldLatitude??CAL.northAlignHoldLatitude,
    driftRateNmPerHour:options.driftRateNmPerHour??CAL.defaultDriftRateNmPerHour},
   units:{L:unit('L'),R:unit('R')},events:[],referenceOnly:true};
 }
@@ -110,9 +113,15 @@ function emit(s,side,type,detail=''){
  s.events.push({side,type,detail});
  if(s.events.length>120)s.events.shift();
 }
+function requiresAlignHold(latitude,config){
+ // Project: 50N or above requires manual ALIGN hold. The published high
+ // latitude rule below 70d12m SOUTH remains independently protected.
+ return latitude>=config.northAlignHoldLatitude||latitude< -CAL.boundaryNormalLatitude;
+}
 function begin(u,config,mode){
  u.mode=mode;u.phase='SELFTEST';u.powerTestElapsedSec=0;u.valid=false;u.initialized=false;
  u.alignmentElapsedSec=0;u.alignmentDurationSec=config.normalAlignSeconds;
+ u.alignStartMode=mode;
  u.enteredPosition=null;u.position=null;u.basePosition=null;u.entryPending={lat:null,lon:null};
  u.lastWarning=null;u.alignFault=null;u.northDriftNm=0;u.eastDriftNm=0;
  u.navigationElapsedSec=0;
@@ -127,14 +136,17 @@ function writePosition(s,side,p,source,origin){
  u.enteredPosition=pos;u.initialized=true;u.entrySource=source;
  u.alignmentDurationSec=lat>CAL.boundaryNormalLatitude?s.config.highLatitudeAlignSeconds:s.config.normalAlignSeconds;
  u.lastWarning=null;
- // Above 70°12', FCOM requires OFF -> ALIGN and manual NAV after 17 min.
- // Never let an incorrectly selected OFF -> NAV unit become high-lat NAV ready.
- if(lat>CAL.boundaryNormalLatitude&&u.mode!=='ALIGN'){
+ // Between 50N and 70d12m N: 10min, but requires OFF->ALIGN and manual
+ // NAV selection. Beyond 70d12m: published 17min high-lat procedure.
+ if(requiresAlignHold(pos.lat,s.config)&&(u.mode!=='ALIGN'||u.alignStartMode!=='ALIGN')){
    u.phase='MODE_MISMATCH';u.valid=false;
    u.lastWarning='HIGH_LAT_SELECT_ALIGN';
    emit(s,side,'HIGH_LAT_MODE_REQUIRED');
    return;
  }
+ // A late high-lat position may extend the timer after WAIT_POSITION; resume
+ // timing rather than remaining indefinitely in the waiting phase.
+ if(u.phase==='WAIT_POSITION'&&u.alignmentElapsedSec<u.alignmentDurationSec)u.phase='ALIGNING';
  if(origin&&distanceNm(pos,checkPosition(origin))>CAL.originVerifyThresholdNm)u.lastWarning='VERIFY POSITION';
  // A wrong-position internal comparison must be modeled separately; the >4NM
  // origin check is a CDU warning and must NOT falsely be treated as IRS fault.
@@ -213,6 +225,14 @@ function apply(state,cmd){
     if(u.mode==='OFF'||u.phase==='OFF'||u.phase==='SHUTDOWN'||u.phase==='POWER_LOST'){
       begin(u,s.config,cmd.mode);emit(s,u.id,'START_ALIGN');
     }else if(cmd.mode==='NAV'){
+      // Keep the physical selector on ALIGN for an entered >=50N airport
+      // until alignment is complete and position validity is established.
+      if(u.mode==='ALIGN'&&u.enteredPosition&&
+         requiresAlignHold(u.enteredPosition.lat,s.config)&&
+         (!u.initialized||u.alignmentElapsedSec<u.alignmentDurationSec||
+          !['ALIGN_READY','HIGH_LAT_READY'].includes(u.phase))){
+       throw new Error('HIGH_LAT_ALIGN_HOLD_REQUIRED: keep selector on ALIGN until complete');
+      }
       u.mode='NAV';
       if(['HIGH_LAT_READY','ALIGN_READY'].includes(u.phase))ready(s,u);
     }else if(cmd.mode==='ALIGN'&&u.mode==='NAV'&&u.phase==='NAV_READY'){
