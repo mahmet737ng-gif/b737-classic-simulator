@@ -6,9 +6,9 @@ const Power=require('../engine/systems/irs-electrical-evidence-v2.js');
 const Core=require('../engine/systems/irs-trainer-core-v1.cjs');
 const Electrical=require('../engine/systems/electrical-v7.js');
 const root=path.join(__dirname,'..');
-const V7=(acStandby,transfer2,switchedHotBattery)=>({
+const V7=(acStandby,transfer2,switchedHotBattery,battery=true)=>({
  schema:'B737_ELECTRICAL_V7_RESULT',
- bus:{acStandby,transfer2,switchedHotBattery}
+ bus:{acStandby,transfer2,switchedHotBattery,battery}
 });
 const normal=Electrical.evaluate(Electrical.initialState());
 assert.equal(normal.schema,'B737_ELECTRICAL_V7_RESULT');
@@ -88,6 +88,47 @@ assert.equal(JSON.stringify(backup),baseline,'Power projection may not rewrite u
 assert.throws(()=>Power.evaluate(Power.initialState(),{electrical:{bus:{acStandby:true}},modes}),/V7/);
 assert.throws(()=>Power.evaluate(Power.initialState(),{electrical:normal,modes,dtSec:200}),/0 and 5/);
 assert.throws(()=>Power.evaluate(Power.initialState(),{electrical:normal,modes:{L:'NAV',R:'CRUISE'}}),/IRS MODE/);
+// Source-specific 737 initial power gating: battery BUS must be known live
+// when energizing a previously unpowered IRS. It is NOT a continuous DC
+// requirement for a unit already running normally on AC.
+let coldStart=Core.initialState();
+coldStart=Core.apply(coldStart,{type:'POWER',side:'L',available:true});
+coldStart=Core.apply(coldStart,{type:'SELECT_MODE',side:'L',mode:'NAV'});
+coldStart=Core.apply(coldStart,{type:'POWER',side:'L',available:false});
+let noBattery=Power.evaluate(Power.initialState(),{electrical:V7(true,true,false,false),modes,dtSec:1});
+assert.equal(noBattery.units.L.powered,true,'Normal AC BUS can exist without DC');
+coldStart=Power.reconcileCore(Core,coldStart,noBattery).coreState;
+assert.equal(Core.status(coldStart,'L').powered,false,'Initial BATTERY BUS absence blocks cold IRS startup');
+let batteryAvailable=Power.evaluate(noBattery.state,{electrical:V7(true,true,true,true),modes,dtSec:1});
+coldStart=Power.reconcileCore(Core,coldStart,batteryAvailable).coreState;
+assert.equal(Core.status(coldStart,'L').phase,'SELFTEST');
+noBattery=Power.evaluate(batteryAvailable.state,{electrical:V7(true,true,false,false),modes,dtSec:1});
+coldStart=Power.reconcileCore(Core,coldStart,noBattery).coreState;
+assert.equal(Core.status(coldStart,'L').powered,true,'Running IRS remains on AC after DC battery loss');
+assert.equal(noBattery.units.L.dcFailLamp,true);
+
+// OFF physical selection is a 30-second POWERED shutdown, not immediate
+// disconnection from an otherwise live AC bus.
+let shutdown=Core.initialState();
+shutdown=Core.apply(shutdown,{type:'POWER',side:'L',available:true});
+shutdown=Core.apply(shutdown,{type:'SELECT_MODE',side:'L',mode:'NAV'});
+shutdown=Core.apply(shutdown,{type:'SELECT_MODE',side:'L',mode:'OFF'});
+const stopModes={L:'OFF',R:'OFF'};
+let projected=Power.evaluate(Power.initialState(),{electrical:V7(true,true,true),modes:stopModes,
+ unitStates:{L:Core.status(shutdown,'L')},dtSec:1});
+assert.equal(projected.units.L.shutdownPowered,true);
+assert.equal(projected.units.L.powered,true);
+assert.equal(projected.units.L.alignLamp,true);
+shutdown=Power.reconcileCore(Core,shutdown,projected).coreState;
+assert.equal(Core.status(shutdown,'L').phase,'SHUTDOWN');
+for(let i=0;i<6;i++)shutdown=Core.tick(shutdown,{dtSec:5,stationary:true});
+assert.equal(Core.status(shutdown,'L').phase,'OFF');
+projected=Power.evaluate(projected.state,{electrical:V7(true,true,true),modes:stopModes,
+ unitStates:{L:Core.status(shutdown,'L')},dtSec:0});
+assert.equal(projected.units.L.powered,false);
+shutdown=Power.reconcileCore(Core,shutdown,projected).coreState;
+assert.equal(Core.status(shutdown,'L').phase,'OFF');
+assert.equal(Core.status(shutdown,'L').powered,false);
 // Audit the real 544-candidate photograph index: the seven IRS-name CBs
 // are visually located, but *not* source-indexed or wired to any unit.
 const candidateAudit=JSON.parse(fs.readFileSync(path.join(root,'engine/cb/all-circuits-audit.v2.json'),'utf8'));
