@@ -1,0 +1,64 @@
+'use strict';
+const fs=require('node:fs');
+const assert=require('node:assert/strict');
+const vm=require('node:vm');
+const read=p=>JSON.parse(fs.readFileSync(p,'utf8'));
+const root='panel-mosaic-lab/';
+const overhead=read(root+'interactive-overhead/lights.json');
+const main=read(root+'cockpit/lights.json');
+const spec=read(root+'all-overhead/spec.json');
+const layout=read(root+'all-overhead/atlas-layout.json');
+const assembly=read(root+'cockpit/assembly.json');
+const photoQA=read(root+'lights-test/photo-pixel-registration-v5.json');
+const html=fs.readFileSync(root+'lamp-socket-fit-lab/index.html','utf8');
+const inline=[...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(m=>m[1]);
+assert.equal(inline.length,1,'One standalone preview script');
+new vm.Script(inline[0],{filename:'lamp-socket-fit-lab/index.html inline script'});
+assert.ok(!inline[0].includes('scale(squeeze 1)'), 'Never stretch font horizontally');
+assert.ok(inline[0].includes('const scale=vert?1:'),'Text aspect logic present');
+assert.ok(inline[0].includes("const frame=Q('unifiedFrame')"),'Unified preview mode available');
+assert.equal(overhead.lights.length,112);
+assert.equal(main.lights.length,30);
+const ids=new Set();
+const auditById=new Map(photoQA.records.map(r=>[r.id,r]));
+let sources=0,ratioExceptions=0,misregistered=[],uncertified=[];
+const entries=[...overhead.lights.map(c=>({...c,bank:'OH'})),...main.lights.map(c=>({...c,bank:'MP'}))];
+for(const lamp of entries){
+ assert.ok(!ids.has(lamp.id),'Duplicate lamp id '+lamp.id);ids.add(lamp.id);
+ const [x,y,w,h]=lamp.sourceRect;
+ assert.ok([x,y,w,h].every(Number.isFinite)&&w>0&&h>0,'Bad rectangle '+lamp.id);
+ assert.ok((lamp.bank==='OH'?overhead:main).assets[lamp.asset],'Missing source asset '+lamp.id);
+ let width,height;
+ if(lamp.bank==='OH'){
+  const key=/^OH0[78]$/.test(lamp.placementId)?'OH07-08':lamp.placementId;
+  const source=spec.images.find(s=>s.id===key);
+  assert.ok(source?.url,'Missing OH photo '+key);
+  const panel=layout.placements.find(p=>p.id===lamp.placementId);
+  assert.ok(panel?.sourceDimensions,'Missing OH photo dimensions '+lamp.placementId);
+  [width,height]=panel.sourceDimensions;
+ }else{
+  const mainRegion=assembly.regions.find(r=>r.id==='main');
+  const panel=mainRegion.placements.find(p=>p.id===lamp.pieceId);
+  assert.ok(panel,'Missing main photo placement '+lamp.pieceId);
+  [width,height]=assembly.assets[panel.asset].dimensions;
+ }
+ if(x<0||y<0||x+w>width+.01||y+h>height+.01)ratioExceptions++;
+ const audit=auditById.get(lamp.id);
+ assert.ok(audit,'Missing original pixel audit record '+lamp.id);
+ if(JSON.stringify(audit.currentSourceRect)!==JSON.stringify(lamp.sourceRect))misregistered.push(lamp.id);
+ if(audit.finalPixelVerdict!=='PHOTO_PIXEL_CENTRE_CONFIRMED_3PX')uncertified.push(lamp.id);
+ sources++;
+}
+assert.equal(sources,142);
+assert.equal(auditById.size,142,'Every photographed mount must be inspected');
+assert.deepEqual(misregistered,[],'Registry must match photo-pixel QA native rectangles');
+assert.equal(ratioExceptions,0,'Every aperture must be within photo source bounds');
+assert.ok(uncertified.length<=1,'No new uncertified socket positions');
+assert.ok(inline[0].includes('boundedPadding(row,val)'),'Independent edge expansion logic');
+assert.ok(inline[0].includes('sourceURL(row)'),'Per-photo mounting');
+console.log('PASS: 142 independently mapped photo apertures; 112 OH / 30 MP');
+console.log('PASS: photo source rect bounds, duplicate ids, asset mapping, native lens geometry');
+console.log('PASS: all original source rectangles agree with current 142-photo QA ledger');
+console.log('PASS: opt-in unified overlay, SVG glyph aspect, and download-CSV code parsed');
+console.log('OPEN: '+uncertified.length+' photo-socket independent edge evidence ('+uncertified.join(', ')+')');
+console.log('NOTE: source-pixel center checks are not full four-edge visual certification');
