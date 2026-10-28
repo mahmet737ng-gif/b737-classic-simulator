@@ -6,7 +6,7 @@ const read=p=>fs.readFileSync(path.join(base,p),'utf8');
 const html=read('panel-mosaic-lab/cockpit/index.html');
 const stage=read('panel-mosaic-lab/cockpit/cdu-stage.html');
 const bridge=read('panel-mosaic-lab/cockpit/irs-trainer-live-v1.js');
-const cdu=read('panel-mosaic-lab/cockpit/cdu-irs-unified-v1.js');
+const cdu=read('panel-mosaic-lab/cockpit/cdu-irs-adapter-v1.js');
 const engine=read('engine/systems/irs-trainer-web-v1.js');
 for(const src of [
 '../../engine/systems/irs-trainer-web-v1.js?v=IRS-LIVE-0001',
@@ -22,7 +22,8 @@ for(const phrase of [
 "document.getElementById('irsSegmentDisplayMounted')","irs-live-msu-lamp",
 "b737:cockpit-mounted","INSTRUCTOR TEST POWER","ELECTRICAL BUS STATE"
 ])assert(bridge.includes(phrase),'Missing cockpit integration boundary '+phrase);
-for(const phrase of ["POS_INIT","LSK_R4","POS_REF","b737:irs-cdu-position-result","b737:irs-trainer-cdu-state","source!==parent","location.origin"])assert(cdu.includes(phrase),'Missing CDU boundary '+phrase);
+for(const phrase of ["POS_INIT","LSK_R4","POS_REF","setFmcPosition","B737IRSTrainerUnified"])assert(cdu.includes(phrase),'Missing CDU boundary '+phrase);
+assert(bridge.includes('root.B737IRSTrainerUnified=Object.freeze('));
 assert(engine.includes("powerTestSeconds:3.5"));
 assert(engine.includes("u.phase='SELFTEST'"));
 assert(engine.includes("u.phase='ALIGNING'"));
