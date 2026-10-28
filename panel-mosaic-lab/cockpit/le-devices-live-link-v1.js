@@ -5,7 +5,7 @@
 (function(){
  'use strict';
  const allowed=new Set([0,1,2,5,10,15,25,30,40]);
- let lever=0,ready=false,lastProjection=null,lastProjectedRevision=-1;
+ let lever=0,actualTe=0,ready=false,lastProjection=null,lastProjectedRevision=-1;
  const frame=()=>document.getElementById('overheadFrame');
  function sendLever(){
   const child=frame()?.contentWindow;
@@ -17,6 +17,10 @@
  function updateIndication(){
   if(!lastProjection||!window.B737CockpitLights)return false;
   const p=lastProjection,center=p.center;
+  if(Number.isFinite(p.tePosition)&&p.tePosition>=0&&p.tePosition<=40){
+   actualTe=p.tePosition;
+   window.B737FlapNeedles?.setCommon(actualTe);
+  }
   if(!center||![true,false,null].includes(center.power))return false;
   const leadingEdge=center.transit?'DISAGREE':
    center.extended?(p.lever>=10?'FULL':'INTERMEDIATE'):
@@ -34,8 +38,8 @@
   if(!allowed.has(n))return false;
   if(n===lever){sendLever();return true;}
   lever=n;
-  // The physically operated lever is authoritative for the two gauge needles.
-  window.B737FlapNeedles?.setCommon(n);
+  // Lever is the command, never the indication. L/R needles follow actualTe
+  // published by the shared flap actuator inside the overhead physics bridge.
   // Both forward lamps live in the original panel; no duplicate image/overlay.
   window.B737CockpitLights?.setInputs({trailingFlaps:n,leadingEdge:'TRANSIT'});
   sendLever();
@@ -61,7 +65,7 @@
   updateIndication();
  });
  window.B737LEDevicesUnifiedLink=Object.freeze({
-  getState:()=>({lever,overheadReady:ready,projection:lastProjection,
+  getState:()=>({lever,actualTe,overheadReady:ready,projection:lastProjection,
     centerLightsReady:!!window.B737CockpitLights}),
   // For QA and simulator model integration; physical handler remains the only lever DOM owner.
   syncLever:setLever

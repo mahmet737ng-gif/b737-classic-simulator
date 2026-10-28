@@ -3,6 +3,8 @@ on:
   push:
     paths:
       - 'engine/systems/le-devices-classic-v1.js'
+      - 'engine/systems/te-flap-actuator-v1.js'
+      - 'tests/te-flap-actuator-v1.test.cjs'
       - 'tests/le-devices-classic-v1.test.cjs'
       - 'panel-mosaic-lab/le-devices/trainer-bridge-v1.js'
       - 'panel-mosaic-lab/cockpit/le-devices-live-link-v1.js'
@@ -30,6 +32,7 @@ jobs:
         with:
           node-version: '22'
       - run: node --check engine/systems/le-devices-classic-v1.js
+      - run: node --check engine/systems/te-flap-actuator-v1.js
       - run: node --check panel-mosaic-lab/le-devices/trainer-bridge-v1.js
       - run: node --check panel-mosaic-lab/cockpit/le-devices-live-link-v1.js
-      - run: node --test tests/le-devices-classic-v1.test.cjs tests/le-devices-classic-bridge.test.cjs tests/le-devices-unified-link.test.cjs tests/le-devices-forward-light-model.test.cjs panel-mosaic-lab/le-devices/panel.test.cjs
+      - run: node --test tests/te-flap-actuator-v1.test.cjs tests/le-devices-classic-v1.test.cjs tests/le-devices-classic-bridge.test.cjs tests/le-devices-unified-link.test.cjs tests/le-devices-forward-light-model.test.cjs panel-mosaic-lab/le-devices/panel.test.cjs

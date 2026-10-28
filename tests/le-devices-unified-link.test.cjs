@@ -60,3 +60,19 @@ test('flap commands really originate on document, not window bubbling',()=>{
  assert.equal(h.commands.at(-1).payload.command.value,15);
  assert.equal(h.needles.at(-1),15);
 });
+
+test('flap indicator remains on measured position during lever demand and follows gradual projections',()=>{
+ const h=setup();h.message('ready');
+ h.signal('b737:flap-detent-visual-test',{detent:1,visualOnly:true});
+ assert.equal(h.needles.length,0,'needle must never jump to a new commanded detent');
+ const base={revision:5,lever:1,mismatch:[],autoslatInhibit:false,
+  center:{power:true,transit:true,extended:false}};
+ h.message('le-devices-projection',{...base,tePosition:.25});
+ assert.equal(h.needles.at(-1),.25);
+ h.message('le-devices-projection',{...base,revision:6,tePosition:.5});
+ assert.equal(h.needles.at(-1),.5);
+ h.message('le-devices-projection',{...base,revision:7,tePosition:1,
+  center:{power:true,transit:false,extended:true}});
+ assert.equal(h.needles.at(-1),1);
+ assert.equal(h.window.B737LEDevicesUnifiedLink.getState().actualTe,1);
+});

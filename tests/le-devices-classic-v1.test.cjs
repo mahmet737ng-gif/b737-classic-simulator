@@ -198,3 +198,15 @@ test('retraction: FULL EXT -> EXT at FLAPS 5/1 -> fully RETRACTED at UP',()=>{
  assert.equal(p.center.transit,false);
  assert.equal(p.center.extended,false);
 });
+
+test('optional timed LE motion advances slower, honors hydraulic pressure, while old manual TICK stays compatible',()=>{
+ let a=LE.initialState(),b=LE.initialState();
+ a=LE.apply(a,lever(1));b=LE.apply(b,lever(1));
+ a=LE.apply(a,{type:'TICK',seconds:5,motionProfile:'TIMED',pressureFactor:1});
+ b=LE.apply(b,{type:'TICK',seconds:5});
+ assert.equal(a.position.SLAT_1,.25);
+ assert.equal(b.position.SLAT_1,1);
+ a=LE.apply(a,{type:'TICK',seconds:5,motionProfile:'TIMED',pressureFactor:.5});
+ assert.equal(a.position.SLAT_1,.375);
+ assert.throws(()=>LE.apply(a,{type:'TICK',seconds:1,motionProfile:'TIMED',pressureFactor:-1}));
+});

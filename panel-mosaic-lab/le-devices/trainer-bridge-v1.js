@@ -5,9 +5,11 @@
 */
 (function(){
  'use strict';
- const engine=window.B737LEDevicesClassicV1, panel=window.B737LeadingEdgeDevices;
- if(!engine||!panel){console.warn('LE trainer dependency not available');return;}
- let state=engine.initialState(),source='TRAINER_PRESET',mode='NORMAL';
+ const engine=window.B737LEDevicesClassicV1, panel=window.B737LeadingEdgeDevices,
+  actuator=window.B737TEFlapActuatorV1;
+ if(!engine||!panel||!actuator){console.warn('LE trainer dependency not available');return;}
+ let state=engine.initialState(),te=actuator.initialState(),
+  source='TRAINER_PRESET',mode='NORMAL',physicalMotion=false;
  let latest=null;
  function paint(){
   latest=engine.evaluate(state);
@@ -22,7 +24,10 @@
    // Null is an unknown feed: panel power gating keeps all real lamps dark.
    panel.setWindow(id,level,lit===null?false:lit);
   }
+  const flap=actuator.evaluate(te);
   const detail={revision:latest.revision,lever:latest.lever,scenario:mode,
+   tePosition:flap.actual,teTarget:flap.command,teMoving:flap.moving,
+   hydraulicPsi:flap.pressurePsi,
    center:latest.center,overheadPower:latest.overhead.power,
    autoslatInhibit:latest.autoslatInhibit,mismatch:latest.mismatch,source};
   window.dispatchEvent(new CustomEvent('b737:le-classic-projection',{detail}));
@@ -33,8 +38,24 @@
   return latest;
  }
  function apply(action){
-  state=engine.apply(state,action);
-  if(action.type==='RESET')mode=action.mode||'NORMAL';
+  if(action.type==='HYDRAULIC_PRESSURE'){
+   te=actuator.apply(te,{type:'PRESSURE',psi:action.psi});
+   return paint();
+  }
+  const tick=action.type==='TICK';
+  const physicalTick=tick&&physicalMotion;
+  const pf=actuator.evaluate(te).pressureFactor;
+  const actualAction=physicalTick?{...action,motionProfile:'TIMED',pressureFactor:pf}:action;
+  state=engine.apply(state,actualAction);
+  if(action.type==='RESET'){
+   mode=action.mode||'NORMAL';te=actuator.initialState();physicalMotion=false;stopMotion();
+  } else if(action.type==='FLAP_LEVER'){
+   te=actuator.apply(te,{type:'COMMAND',value:action.value});
+  } else if(action.type==='HYDRAULIC'&&action.system==='B'){
+   te=actuator.apply(te,{type:'HYDRAULIC',value:action.value});
+  } else if(tick&&physicalMotion){
+   te=actuator.apply(te,{type:'TICK',seconds:action.seconds});
+  }
   return paint();
  }
  function authorize(action){
@@ -59,16 +80,19 @@
   // This is only activated by physical lever commands coming from Unified.
   // A jam or hydraulic failure must not create an infinite animation loop.
   motionTimer=setInterval(()=>{
-   const prior=JSON.stringify(state.position);
+   const prior=JSON.stringify(state.position)+'|'+te.actual;
    try{apply({type:'TICK',seconds:0.2});}
    catch(error){stopMotion();console.error('LE motion tick failed',error);return;}
-   if(JSON.stringify(state.position)===prior)stopMotion();
+   if(JSON.stringify(state.position)+'|'+te.actual===prior)stopMotion();
   },200);
  }
  const api=Object.freeze({
   dispatch:authorize,advance:seconds=>apply({type:'TICK',seconds}),
   setElectricalSnapshot:buses,
   snapshot:()=>latest,
+  flapActuator:()=>actuator.evaluate(te),
+  setHydraulicPressure:psi=>{const result=apply({type:'HYDRAULIC_PRESSURE',psi});if(physicalMotion)runMotion();return result;},
+  calibrateFlapSegment:(from,to,seconds)=>{te=actuator.apply(te,{type:'CALIBRATE',from,to,seconds});return actuator.evaluate(te);},
   reset:scenario=>{source='TRAINER_PRESET';return apply({type:'RESET',mode:scenario||'NORMAL'});},
   powerOrigin:()=>source,
   info:Object.freeze({scope:'TRAINING',version:'LEDEV-LOGIC-V1',autobindToAircraft:false})
@@ -95,7 +119,8 @@
    try{
     const cmd=e.data.command;
     authorize(cmd);
-    if(e.data.originator==='physical-flap-lever'&&cmd.type==='FLAP_LEVER')runMotion();
+    if(e.data.originator==='physical-flap-lever'&&cmd.type==='FLAP_LEVER'){physicalMotion=true;runMotion();}
+    if(physicalMotion&&cmd.type==='HYDRAULIC'&&cmd.system==='B'&&cmd.value===true)runMotion();
    }catch(err){console.warn('Invalid LE cockpit command',err.message);}
   }
  });

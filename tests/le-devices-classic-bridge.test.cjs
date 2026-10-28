@@ -1,6 +1,7 @@
 const test=require('node:test'),assert=require('node:assert/strict');
 const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
 const engine=require('../engine/systems/le-devices-classic-v1.js');
+const flapActuator=require('../engine/systems/te-flap-actuator-v1.js');
 const bridgePath=path.resolve(__dirname,'../panel-mosaic-lab/le-devices/trainer-bridge-v1.js');
 function setup(){
  const events={},windows={},states={},power=[];
@@ -9,7 +10,7 @@ function setup(){
   setDevice(id,value){states[id]=value;return true;},
   setWindow(id,level,value){windows[id+'|'+level]=value;return true;}
  };
- const app={B737LEDevicesClassicV1:engine,B737LeadingEdgeDevices:panel,
+ const app={B737LEDevicesClassicV1:engine,B737TEFlapActuatorV1:flapActuator,B737LeadingEdgeDevices:panel,
   dispatchEvent(evt){for(const listener of events[evt.type]||[])listener(evt);},
   addEventListener(type,listener){(events[type]??=[]).push(listener);}};
  const CustomEvent=class{constructor(type,args){this.type=type;this.detail=args.detail;}};

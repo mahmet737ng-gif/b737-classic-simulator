@@ -85,7 +85,12 @@
    case 'TICK':{
     const dt=action.seconds;
     if(!finite(dt)||dt<0||dt>60)throw Error('TICK seconds must be between 0 and 60');
-    const speed=.20; // training rate: one detent per 5 seconds, NOT an aircraft limitation.
+    // Only the live physical handle uses the slower configurable trainer profile.
+    // Existing instructor TICK tests keep their original 5 s/level behavior.
+    const timed=action.motionProfile==='TIMED';
+    if(action.motionProfile!==undefined&&!['TIMED'].includes(action.motionProfile))throw Error('Unknown LE motion profile');
+    const pf=action.pressureFactor===undefined?1:action.pressureFactor;
+    if(typeof pf!=='number'||!Number.isFinite(pf)||pf<0||pf>1.1)throw Error('Invalid pressure factor');
     for(const id of DEVICES){
      if(s.jams[id]||!driveAvailable(s))continue;
      const desired=target(s,id),cur=s.position[id];
@@ -93,6 +98,8 @@
      if(!s.hydraulic.B&&desired<cur)continue;
      if(!s.hydraulic.B&&desired>cur&&!(s.alternateExtend&&s.hydraulic.standby)&&
         !(id.startsWith('SLAT_')&&s.autoslatsRequested&&!s.onGround&&s.hydraulic.A&&s.ptuAvailable&&desired===2))continue;
+     const phase=cur>1.000001||(Math.abs(cur-1)<.000001&&desired>1)?1/16:1/20;
+     const speed=timed?phase*pf:.20;
      const step=Math.min(Math.abs(desired-cur),speed*dt);
      s.position[id]=Number((cur+Math.sign(desired-cur)*step).toFixed(6));
     }
