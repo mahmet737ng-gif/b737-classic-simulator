@@ -41,8 +41,8 @@ function fixture(){
 }
 test('exact five stationary DSPL SEL ticks match all five existing angular detents',()=>{
  const f=fixture();const a=f.window.B737IRSRotaryIndices.audit();
- assert.deepEqual(a.map(x=>x.tickCount),[5,4,4]);
- assert.deepEqual(a.map(x=>x.pointerCount),[1,1,1]);assert(a.every(x=>x.pass));
+ assert.deepEqual(Array.from(a,x=>x.tickCount),[5,4,4]);
+ assert.deepEqual(Array.from(a,x=>x.pointerCount),[1,1,1]);assert(a.every(x=>x.pass));
  const fixed=f.upperMount.querySelector('[data-irs-tick-bank="upper"]');
  assert.equal(f.upperMount.childNodes[0],fixed,'Fixed tick plate must be before the moving rotor');
  assert.equal(f.outer.querySelectorAll('.irs-rotary-reference-pointer').length,1,'Reference pointer must be on moving outer rotor');
