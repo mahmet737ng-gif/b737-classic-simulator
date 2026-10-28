@@ -19,7 +19,7 @@
 | Loading cover | Waits for saved profile, five main image assets, overhead-ready status, mounted flap/throttle controls, both CDU stations; then focuses ALL and waits for visible textures | `app.js`, `performance-loader.js`, `flap-lever-test.js`, `throttle-levers.js` |
 | Flaps F5-F8 | Calls existing `B737FlapVisualTest.request()` / mechanical gates | Existing nine-detent visual trainer. Position changes are flagged as visual-only events. |
 | Thrust F1-F4 | Drives two existing throttle select controls and their change events | Existing `throttle-levers.js` five-position trainer. **Not continuous FSX thrust or reverse-thrust simulation** |
-| CB | Opens real independent `cb-panel-lab/` in the drawer | **Electrical CB bus effects are not yet comprehensively certified** |
+| CB | Opens real `cb-panel-lab/`, selects the requested panel by its live `panelSelect`, and propagates selected CPCS/DCPCS variant | **Electrical CB bus effects are not yet comprehensively certified** |
 | Audio | Opens existing test labs; identifies missing user-recorded assets | Public `audio/user-recordings/manifest.json` explicitly excludes raw user MP3 bytes |
 | Update | Checks latest GitHub SHA and offers webpage reload when commit changed within same session | **This is not a signed offline Windows differential patcher** |
 
@@ -29,7 +29,7 @@
 2. **Spoiler / and Shift+/:** default FSX bindings have been researched; no single certified spoiler command-owner was found, so the shell explicitly refuses fake state changes.
 3. **Landing gear G:** requires a validated central gear command and indication mapping.
 4. **Audio completeness:** package licensed/owner-owned source audio with immutable hashes and verify playback, warning priorities, cockpit buses, mute and gain. Avoid claiming the private user MP3s are shipped.
-5. **CB selection + effects:** add a direct panel selector API, real CB/electrical bus coupling, and effectivity verification; do not infer bus wiring from photographs alone.
+5. **CB effects:** the existing direct panel dropdown is wired to the shell; next add verified CB/electrical bus coupling, authoritative panel effectivity, and cross-frame state snapshots. Do not infer bus wiring from photographs alone.
 6. **Updates:** build a signed, versioned hash manifest and native Electron updater; compare installed package hashes, download changed files only, validate checksums/signatures/locks, stage atomically, roll back on failure. Re-render image assets safely; program JS/binary changes require isolated controlled reload or restart (do not hot-swap a running engine object without a migration protocol).
 7. **Windows packaging:** create Electron application process/preload, offline asset bundle, updater service and native keyboard interception (`webContents.before-input-event`) so browser-reserved keys work.
 8. **Full readiness contract:** expose one authoritative dependency health barrier from electrical, engine, CDU, IRS, overhead, CB and audio owners; the shell currently gates **only observable components**, and its UI does not claim that all aircraft-system state machines are validated.
@@ -57,7 +57,7 @@ The shell currently implements F1-F8 using the trainer's existing available disc
 - [ ] F1/F2/F3/F4 move both throttle controls within existing five accepted detents
 - [ ] F5/F6/F7/F8 follow existing nine flap positions and gated detents
 - [ ] Keypress in FMC/CDU and text inputs is not stolen by FSX shortcuts
-- [ ] CB opens the real lab; warned that disconnected electrical traces remain unresolved
+- [ ] CB opens the real lab, requested P6/P18 panel is selected, and CPCS/DCPCS variant matches startup; disconnected electrical traces remain unresolved
 - [ ] Audio labs are openable; actual included audio bytes audited
 - [ ] Mode clicks refuse state mutations until backends are hooked
 - [ ] Offline EXE, signed updater, atomic rollback and scenario tests pass before official release
