@@ -69,7 +69,7 @@
  }
  function fit(slot,silhouette,hostWidth,hostHeight,kind){
   const frame=viewport(hostWidth,hostHeight),uniform=frame.scale;
-  if(!(sx>0&&sy>0&&uniform>0))throw Error('Invalid ASP host dimensions');
+  if(!(uniform>0))throw Error('Invalid ASP host dimensions');
   // Respect the original knob/mic proportions. Do not stretch the PNG.
   const allowance=kind==='mic'?{x:.88,y:.92}:{x:1.03,y:1.03};
   const scale=Math.min(slot.w*uniform*allowance.x/silhouette.w,slot.h*uniform*allowance.y/silhouette.h);
