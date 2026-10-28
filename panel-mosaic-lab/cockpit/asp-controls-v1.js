@@ -8,6 +8,34 @@
  const ASSETS=Object.freeze({mic:['mic-off.png','mic-on.png'],volume:['volume-glass-off.png','volume-glass-on.png']});
  // Common source-space pivots; transparent padding is excluded from sizing.
  const SOURCE=Object.freeze({mic:{size:1254,pivot:[627,626.5],extent:1015},volume:{size:1254,pivot:[627,621],extent:990}});
+ const registrar=root.B737ASPSocketRegistrationV2;
+ let measured=null,measureError='',geometrySource=null;
+ // The imported photographic PNGs are NOT known to have centered subjects.
+ // Detect the actual alpha silhouette of EACH OFF and ON sprite exactly once.
+ async function silhouette(url){
+  const photo=new Image();photo.src=url;
+  if(photo.decode)await photo.decode();
+  else await new Promise((resolve,reject)=>{photo.onload=resolve;photo.onerror=reject;});
+  const cv=document.createElement('canvas');cv.width=photo.naturalWidth;cv.height=photo.naturalHeight;
+  const ctx=cv.getContext('2d',{willReadFrequently:true});
+  if(!ctx)throw Error('ASP: missing Canvas2D for alpha registration');
+  ctx.clearRect(0,0,cv.width,cv.height);ctx.drawImage(photo,0,0);
+  return registrar.mask(ctx.getImageData(0,0,cv.width,cv.height));
+ }
+ async function prepareRegistration(){
+  if(!registrar)throw Error('ASP registration helper unavailable');
+  const base='./assets/asp-controls-v1/';
+  const names=[...ASSETS.mic,...ASSETS.volume];
+  const shapes=await Promise.all(names.map(n=>silhouette(base+n)));
+  const urls=['./assets/asp-bare-pedestal-v3.svg','./assets/asp-bare-aft-overhead-v3.svg'];
+  const svg=await Promise.all(urls.map(async url=>{const r=await fetch(url,{cache:'no-store'});if(!r.ok)throw Error(url+' HTTP '+r.status);return registrar.extract(await r.text());}));
+  const panels=Object.freeze({'pedestal':registrar.compareSockets(model.sockets,svg[0]),'aft-overhead':registrar.compareSockets(model.sockets,svg[1])});
+  return {panels,masks:Object.freeze(Object.fromEntries(names.map((name,i)=>[name,shapes[i]])))};
+ }
+ function registeredSocket(host,button){
+  return measured?.panels[host.dataset.region]?.find(s=>s.channel===button.dataset.channel&&s.kind===button.dataset.kind)
+   ||model.sockets.find(s=>s.channel===button.dataset.channel&&s.kind===button.dataset.kind);
+ }
  let observer;
  function preventPan(e){e.stopPropagation();}
  function paint(button){
@@ -52,15 +80,36 @@
   });
  }
  function sizeControls(host){
-  const style=getComputedStyle(host),unit=Math.min(parseFloat(style.width)/1122,parseFloat(style.height)/888);
+  const style=getComputedStyle(host),hostW=parseFloat(style.width),hostH=parseFloat(style.height);
+  if(!(hostW>0&&hostH>0))return;
+  const unit=Math.min(hostW/1122,hostH/888);
   for(const b of host.querySelectorAll('.asp-photo-control')){
-   const source=SOURCE[b.dataset.kind],socket=model.sockets.find(s=>s.kind===b.dataset.kind&&s.channel===b.dataset.channel);
-   const w=socket.w*unit,h=socket.h*unit,scale=(b.dataset.kind==='mic'?104:96)*unit/source.extent;
-   b.style.width=w+'px';b.style.height=h+'px';
-   for(const img of b.querySelectorAll('.asp-control-image'))Object.assign(img.style,{width:source.size*scale+'px',height:source.size*scale+'px',left:w/2-source.pivot[0]*scale+'px',top:h/2-source.pivot[1]*scale+'px'});
+   const slot=registeredSocket(host,b),kind=b.dataset.kind,source=SOURCE[kind];
+   if(!slot)continue;
+   const nativeW=slot.w*unit,nativeH=slot.h*unit;
+   b.style.left=slot.x/1122*100+'%';b.style.top=slot.y/888*100+'%';
+   b.style.width=nativeW+'px';b.style.height=nativeH+'px';
+   b.dataset.cx=String(slot.x);b.dataset.cy=String(slot.y);
+   for(const img of b.querySelectorAll('.asp-control-image')){
+    const name=ASSETS[kind][img.classList.contains('asp-image-on')?1:0];
+    const silhouette=measured?.masks[name];
+    if(silhouette){
+     const box=registrar.fit(slot,silhouette,hostW,hostH,kind);
+     Object.assign(img.style,{width:box.imageW+'px',height:box.imageH+'px',left:box.left+'px',top:box.top+'px'});
+     img.dataset.aspMeasured='true';
+     img.dataset.aspSourceCenter=silhouette.cx.toFixed(3)+','+silhouette.cy.toFixed(3);
+     img.dataset.aspVisibleSize=box.visibleW.toFixed(3)+'x'+box.visibleH.toFixed(3);
+    }else{
+     // Only temporary until real bitmap alpha measurement finishes.
+     const scale=(kind==='mic'?104:96)*unit/source.extent;
+     Object.assign(img.style,{width:source.size*scale+'px',height:source.size*scale+'px',
+      left:nativeW/2-source.pivot[0]*scale+'px',top:nativeH/2-source.pivot[1]*scale+'px'});
+    }
+   }
   }
+  host.dataset.aspRegistration=measured?'alpha-and-photo-centers-v2':'loading-actual-alpha';
  }
- function socketPatches(host){
+  function socketPatches(host){
   // Paint only the old empty apertures. Source panel, lettering and positions
   // remain untouched. This also prevents an elliptical hole behind round glass
   // on the nonuniformly mapped OH-04 face.
@@ -96,12 +145,40 @@
    const r=host.getBoundingClientRect();
    const controls=[...host.querySelectorAll('.asp-photo-control')].map(b=>{
     const box=b.getBoundingClientRect(),expected={x:r.left+r.width*Number(b.dataset.cx)/1122,y:r.top+r.height*Number(b.dataset.cy)/888};
-    return {kind:b.dataset.kind,channel:b.dataset.channel,errorCssPx:Math.hypot(box.left+box.width/2-expected.x,box.top+box.height/2-expected.y),roundnessCssPx:b.dataset.kind==='volume'?Math.abs(box.width-box.height):null};
-   });return {seat,count:controls.length,controls};
+    const imageMeasurements=[...b.querySelectorAll('.asp-control-image')].map(img=>{
+     const name=ASSETS[b.dataset.kind][img.classList.contains('asp-image-on')?1:0];
+     const shape=measured?.masks[name],rect=img.getBoundingClientRect();
+     if(!shape)return {name,registered:false};
+     const sx=rect.width/shape.width,sy=rect.height/shape.height;
+     const actual={x:rect.left+shape.cx*sx,y:rect.top+shape.cy*sy};
+     const errorCssPx=Math.hypot(actual.x-expected.x,actual.y-expected.y);
+     return {name,registered:true,sourcePixelCenter:[shape.cx,shape.cy],visibleSize:[shape.w,shape.h],
+      expected,actual,errorCssPx};
+    });
+    return {kind:b.dataset.kind,channel:b.dataset.channel,socket:{x:Number(b.dataset.cx),y:Number(b.dataset.cy)},
+     hitCenterErrorCssPx:Math.hypot(box.left+box.width/2-expected.x,box.top+box.height/2-expected.y),
+     imageMeasurements,roundnessCssPx:b.dataset.kind==='volume'?Math.abs(box.width-box.height):null};
+   });
+   return {seat,count:controls.length,registration:host.dataset.aspRegistration,
+    maxImageCenterErrorCssPx:Math.max(0,...controls.flatMap(c=>c.imageMeasurements.map(i=>i.errorCssPx||0))),
+    controls};
   });
  }
- root.B737ASPControls=Object.freeze({version:model.version,audit});
- root.addEventListener('b737:cockpit-mounted',mount);
+  root.B737ASPControls=Object.freeze({version:'ASP-CENTER-0002',audit,getCalibrationStatus:()=>({ready:!!measured,error:measureError,stations:mounted.size})});
+ // Live geometry uses original photo apertures AND image-derived alpha centers.
+ // Each of CAPT / FO / OBS is calibrated separately after the same four PNGs decode.
+ prepareRegistration().then(data=>{
+  measured=data;
+  for(const host of mounted.values())sizeControls(host);
+  root.dispatchEvent(new CustomEvent('b737:asp-centers-calibrated',{
+   detail:{version:registrar.version,stations:[...mounted.keys()],count:model.sockets.length*mounted.size}
+  }));
+ }).catch(error=>{
+  measureError=String(error.message||error);
+  console.error('ASP-CENTER-0002 failed to measure real alpha:',error);
+  for(const host of mounted.values())host.dataset.aspRegistration='ERROR:'+measureError;
+ });
+  root.addEventListener('b737:cockpit-mounted',mount);
  root.addEventListener('b737:visual-test',e=>{for(const host of mounted.values())host.dataset.aspLampTest=String(e.detail?.active===true);});
  if(!mount()){observer=new MutationObserver(mount);observer.observe(document.documentElement,{childList:true,subtree:true});}
 })(window);
