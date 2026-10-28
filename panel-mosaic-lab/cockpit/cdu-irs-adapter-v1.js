@@ -1,0 +1,72 @@
+/* Unified CDU 4R -> independent IRS core; additive content adapter.
+ * Does not edit approved CDU photo, hotspot sizes, original engine or typography.
+ * Shared FMC POS INIT state synchronizes through existing CAPT/FO CDU sessions.
+ */
+(function(){
+'use strict';
+if(typeof state==='undefined'||typeof update!=='function'||typeof send!=='function')return;
+if(!new URLSearchParams(location.search).get('seat'))return;
+const original=send,originalUpdate=update;
+function parentIRS(){try{return parent.B737IRSTrainerUnified||null}catch{return null}}
+function inputFormat(raw){
+ const s=String(raw||'').trim().toUpperCase().replace(/[\s./]+/g,'');
+ const match=s.match(/^([NS]\d{5})([EW]\d{6})$/);
+ if(!match)throw Error('INVALID IRS POSITION · NDDMMm EDDDMMm');
+ return match[1]+' '+match[2];
+}
+function fmt(p){
+ if(!p||!Number.isFinite(p.lat)||!Number.isFinite(p.lon))return ['-----','-----'];
+ const f=(num,deg)=>{
+  const c=num<0?(deg===2?'S':'W'):(deg===2?'N':'E');
+  let x=Math.abs(num),d=Math.floor(x),m=Math.round((x-d)*600);
+  if(m===600){d++;m=0;}
+  return c+String(d).padStart(deg,'0')+String(Math.floor(m/10)).padStart(2,'0')+'.'+m%10;
+ };
+ return [f(p.lat,2),f(p.lon,3)];
+}
+function patchPositionPages(){
+ const trainer=parentIRS();if(!trainer)return;
+ const b=document.getElementById('fmc-lines'),snapshot=trainer.getState();
+ if(!b||!snapshot)return;
+ const pairs=[...b.querySelectorAll('.fmc-pairline')];
+ const paint=(idx,left,right)=>{if(!pairs[idx])return;
+  const l=pairs[idx].querySelector('.fmc-left'),r=pairs[idx].querySelector('.fmc-right');
+  if(l)l.textContent=left;if(r)r.textContent=right;
+ };
+ if(state.page==='POS_REF'&&pairs.length>=8){
+  const L=snapshot.units.L,R=snapshot.units.R;
+  paint(2,'IRS L LAT','IRS L LON');paint(3,...fmt(L.positionValid?L.position:null));
+  paint(4,'IRS R LAT','IRS R LON');paint(5,...fmt(R.positionValid?R.position:null));
+  paint(6,'IRS L GS','IRS R GS');paint(7,
+   L.positionValid&&Number.isFinite(L.gsKt)?L.gsKt.toFixed(1)+' KT':'-----',
+   R.positionValid&&Number.isFinite(R.gsKt)?R.gsKt.toFixed(1)+' KT':'-----');
+ }
+}
+update=function(){originalUpdate();patchPositionPages();};
+window.updateStage5View=update;
+send=function(key){
+ const normalized=String(key).replace(/^CDU_CAPT_/,'');
+ if(state.page==='POS_INIT'&&normalized==='LSK_R4'){
+  try{
+   const input=inputFormat(state.scratch);
+   const t=parentIRS();if(!t)throw Error('IRS TRAINER NOT READY');
+   const result=t.setFmcPosition(input);
+   if(!result.ok)throw Error('IRS POSITION NOT ACCEPTED');
+   // LSK 4R commits without CDU EXEC, as on the FCOM POS INIT page.
+   state.active.IRS_POS=input;delete state.pending.IRS_POS;
+   state.scratch='';state.message='';
+  }catch(e){state.message=String(e.message||e).slice(0,32);}
+  update();return;
+ }
+ return original(key);
+};
+const previousRender=parentIRS()?.getState?.();
+let lastSig='';
+setInterval(()=>{
+ if(!['POS_REF','POS_INIT'].includes(state.page))return;
+ const t=parentIRS(),data=t?.getState?.();if(!data)return;
+ const signature=JSON.stringify({L:data.units.L,R:data.units.R,last:data.lastCDUSource});
+ if(signature!==lastSig){lastSig=signature;patchPositionPages();}
+},1100);
+window.B737CDUIRSAdapterV1=Object.freeze({inputFormat,patchPositionPages});
+})();
