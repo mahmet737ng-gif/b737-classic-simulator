@@ -95,4 +95,42 @@ assert.equal(frozen.status,'FINAL_FROZEN_RED_ZONE');
 assert.equal(Object.keys(frozen.protectedBlobs).length,93);
 const cbBridge=fs.readFileSync(path.join(root,'engine/cb/electrical-v7-integration.js'),'utf8');
 assert(!/load:\s*["']irs[.]/i.test(cbBridge),'MRG circuit->IRS route must not be guessed');
+// Full L/R navigation core bridge remains purely backend-controlled: a DC
+// cutoff invalidates only R; recovering AC restarts a fresh 3.5 second
+// self-test without reusing the old FMC position.
+let live=Core.initialState();
+for(const side of ['L','R']){
+ live=Core.apply(live,{type:'POWER',side,available:true});
+ live=Core.apply(live,{type:'SELECT_MODE',side,mode:'NAV'});
+}
+live=Core.apply(live,{type:'FMC_SET_IRS_POS',position:'N35395 E051254'});
+live=Core.tick(live,{dtSec:3.5,stationary:true});
+for(let i=0;i<120;i++)live=Core.tick(live,{dtSec:5,stationary:true});
+assert.equal(Core.status(live,'L').phase,'NAV_READY');
+assert.equal(Core.status(live,'R').phase,'NAV_READY');
+let sourced=Power.initialState(),last;
+for(let i=0;i<60;i++){
+ last=Power.evaluate(sourced,{electrical:V7(true,false,true),modes,dtSec:5,
+  unitStates:{L:Core.status(live,'L'),R:Core.status(live,'R')}});
+ sourced=last.state;
+}
+live=Power.reconcileCore(Core,live,last).coreState;
+assert.equal(Core.status(live,'L').positionValid,true);
+assert.equal(Core.status(live,'R').phase,'POWER_LOST');
+assert.equal(Core.status(live,'R').positionValid,false);
+last=Power.evaluate(sourced,{electrical:V7(true,true,true),modes,dtSec:1});
+const paired=Power.reconcileCore(Core,live,last);
+assert.equal(paired.panelMutated,false);
+live=paired.coreState;
+assert.equal(Core.status(live,'L').phase,'NAV_READY');
+assert.equal(Core.status(live,'R').phase,'SELFTEST');
+assert.equal(Core.status(live,'R').onDcLamp,true);
+assert.equal(Core.status(live,'R').entrySource,null,'Old FMC position invalid after complete power loss');
+assert.equal(Core.status(live,'R').positionValid,false);
+const unchanged=Power.reconcileCore(Core,live,last).coreState;
+assert.equal(unchanged.revision,live.revision,'No repeated electrical level should restart IRS');
+const unknownEvidence=Power.evaluate(Power.initialState(),{modes,dtSec:0});
+live=Power.reconcileCore(Core,live,unknownEvidence).coreState;
+assert.equal(Core.status(live,'L').powered,false,'Unknown feed cannot provide proven power');
+assert.equal(Core.status(live,'R').powered,false);
 console.log('PASS IRS electrical evidence: AC standby/transfer2, independent L/R DC, startup cue, 300s R cutoff, DC FAIL training gate, unknown fail-closed, unknown CB quarantine and owner lock');
