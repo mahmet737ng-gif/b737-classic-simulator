@@ -35,7 +35,7 @@ test('20 original photographed sockets remain exact when mapped into OH-04 nonun
 });
 test('observer panel is mounted inside the actual overhead iframe and follows atlas layout',()=>{
  assert(overhead.includes('<base href="../all-overhead/">'));
- assert(overhead.includes('asp-observer-overhead-v3.js?v=ASP-OBS-IFRAME-0003'));
+ assert(overhead.includes('asp-observer-overhead-v3.js?v=ASP-OBS-IFRAME-0004'));
  const order=['asp-controls-model-v1.js','asp-socket-registration-v2.js','asp-observer-overhead-v3.js','asp-controls-v1.js'];
  for(let i=1;i<order.length;i++)assert(overhead.indexOf(order[i-1])<overhead.indexOf(order[i]),'Overhead script order: '+order[i]);
  assert(overhead.includes('asp-controls-v1.css?v=ASP-CENTER-0003-OBS'));
