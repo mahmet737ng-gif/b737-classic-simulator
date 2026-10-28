@@ -67,3 +67,37 @@ The manifest and verifier Git blob IDs are pinned in BOTH
 `.github/workflows/pages.yml` and
 `.github/workflows/irs-isdu-frontend-v1.yml`.
 Do not bypass this check or rewrite owner-approved hashes.
+
+## IRS ISDU 13-SEG DISPLAY OWNER FINAL LOCK (2026-10-28)
+
+The owner APPROVED the current single-line 13-position illuminated IRS display
+and explicitly requested it to be FINALIZED and LOCKED. This covers its 6+7
+cell allocation, 4 upper point lamps and 2 lower decimal point lamps, the
+filament/segment glyphs, every pixel/color/glow/brightness/font/scale/detail,
+absolute position, TEST sequence, keypad display behavior and two HTML
+mount tags. The COMPLETE frozen inventory and hashes are recorded in:
+`panel-mosaic-lab/cockpit/irs-13seg-owner-lock-v1.json`.
+
+**ABSOLUTELY DO NOT modify, regenerate, rename, move, resize, reskin or
+reinterpret this approved visual component** through automatic code cleanup,
+layout refactor, IRS backend wiring, data cycle changes, FCOM-effectivity
+reconciliation, UI testing or any other inferred improvement. Any proposed
+change requires a **specific direct request** from the owner and a **separate
+informed approval of the exact proposed alteration**, prior to modifying
+any protected file or render behavior.
+
+Required immutable-asset gate:
+`python3 panel-mosaic-lab/cockpit/verify-irs-13seg-owner-lock-v1.py --negative-self-test`.
+Manifest and verifier blob hashes are PINNED separately in BOTH
+`.github/workflows/pages.yml` and
+`.github/workflows/irs-isdu-frontend-v1.yml`.
+Do not weaken, bypass or rewrite the approved hashes to force a passing build.
+
+**FCOM five-mode reference content** belongs in NEW, additive logic only:
+`engine/contracts/irs-isdu-fcom-modes-v1.json` and
+`docs/IRS_ISDU_FCOM_MODES_AND_DISPLAY_LOCK.md`.
+The currently locked display is frontend-only: no real navigation outputs
+are authorized or implied. Future powered/navigation-data bindings must
+expose reliable validity and must not alter the exact locked front-end.
+The separately locked LOWER IRS SYS DSPL L/R switch stays independently
+frozen at all times.
