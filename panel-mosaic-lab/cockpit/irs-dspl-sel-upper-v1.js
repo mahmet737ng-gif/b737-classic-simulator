@@ -15,15 +15,15 @@
  const DETENTS=Object.freeze([-79,-46,-10,27,61]);
  const SOURCE=Object.freeze({x:471.48,y:368.69,w:1731,h:909});
  const ATLAS=Object.freeze({x:3,y:3,w:2214,h:1019});
- const SIZE=Object.freeze({width:100,height:100});
+ const SIZE=Object.freeze({width:88,height:88});
  const CENTER=Object.freeze({x:ATLAS.x+SOURCE.x*ATLAS.w/SOURCE.w,y:ATLAS.y+SOURCE.y*ATLAS.h/SOURCE.h});
  const POSITION=Object.freeze({left:CENTER.x-SIZE.width/2,top:CENTER.y-SIZE.height/2});
  const GEOMETRY=Object.freeze({
   schema:'irs.upper-dual-concentric.frontend.v1',
   upperSourceCenter:SOURCE,canvasCenter:CENTER,position:POSITION,size:SIZE,
   detentAngles:DETENTS,modes:MODES,
-  outerVisual:'irs-dspl-sel-outer-v1.svg',
-  innerVisual:'irs-dspl-sel-inner-brt-v1.svg',
+  outerVisual:'irs-upper-outer-photo-v2.avif',
+  innerVisual:'irs-upper-inner-photo-v2.avif',
   lockedLowerSelectorPreserved:true
  });
  let mount=null,mode='PPOS',brightness=78,tracking=null,suppressClick=false;
@@ -143,7 +143,7 @@
   mount.id='irsUpperDsplSelMounted';
   mount.className='irs-upper-selector-mount';
   mount.dataset.frontendOnly='true';
-  mount.dataset.module='IRS-UPPER-DSPL-SEL-BRT-V1';
+  mount.dataset.module='IRS-UPPER-DSPL-SEL-BRT-V2-PHOTO';
   Object.assign(mount.style,{left:POSITION.left+'px',top:POSITION.top+'px',width:SIZE.width+'px',height:SIZE.height+'px'});
   for(const [index,angle] of DETENTS.entries()){
    const tick=document.createElement('span');
@@ -177,7 +177,7 @@
    }
   });
   const outerImg=document.createElement('img');
-  outerImg.src='./assets/irs-dspl-sel-outer-v1.svg';outerImg.alt='';outerImg.draggable=false;outerImg.setAttribute('aria-hidden','true');
+  outerImg.src='./assets/irs-upper-outer-photo-v2.avif';outerImg.alt='';outerImg.draggable=false;outerImg.setAttribute('aria-hidden','true');
   outer.append(outerImg);
   const inner=document.createElement('button');
   inner.type='button';inner.className='irs-upper-brt';inner.setAttribute('role','slider');
@@ -197,7 +197,7 @@
    }
   });
   const innerImg=document.createElement('img');
-  innerImg.src='./assets/irs-dspl-sel-inner-brt-v1.svg';innerImg.alt='';innerImg.draggable=false;innerImg.setAttribute('aria-hidden','true');
+  innerImg.src='./assets/irs-upper-inner-photo-v2.avif';innerImg.alt='';innerImg.draggable=false;innerImg.setAttribute('aria-hidden','true');
   inner.append(innerImg);
   mount.append(outer,inner);
   region.append(mount);
