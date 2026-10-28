@@ -233,4 +233,84 @@ for(let i=0;i<3;i++)quick=tick(quick,frame);
 assert.equal(status(quick,'L').phase,'NAV_READY');
 assert.equal(status(quick,'L').positionValid,true);
 assert.equal(hdgStsCountdown(quick,'L').visible,false);
+
+// Owner latitude policy (separate from published FCOM threshold):
+// <50N direct OFF->NAV starts a normal 600s alignment and AUTO-enters NAV.
+// At >=50N OFF->NAV is disallowed; OFF->ALIGN must be HELD, then manual NAV.
+assert.equal(irs.CAL.northAlignHoldLatitude,50);
+assert.equal(irs.CAL.boundaryNormalLatitude,70.2,'Published 70 degrees 12 minutes stays unchanged');
+function ownerRun(mode,position,options={}){
+ let a=initialState(options);
+ a=apply(a,{type:'POWER',side:'L',available:true});
+ a=apply(a,{type:'SELECT_MODE',side:'L',mode});
+ a=apply(a,{type:'FMC_SET_IRS_POS',sides:['L'],position});
+ return a;
+}
+let below50=ownerRun('NAV','N49595 E010000');
+assert.equal(status(below50,'L').phase,'SELFTEST');
+below50=tick(below50,{...frame,dtSec:3.5});
+assert.equal(status(below50,'L').alignSecondsRemaining,600);
+for(let i=0;i<120;i++)below50=tick(below50,frame);
+assert.equal(status(below50,'L').phase,'NAV_READY','49°59.5 N direct OFF->NAV automatically becomes NAV');
+assert.equal(status(below50,'L').positionValid,true);
+let exactly50=ownerRun('NAV','N50000 E010000');
+assert.equal(status(exactly50,'L').phase,'MODE_MISMATCH','50°00.0 N direct OFF->NAV must be rejected');
+assert.equal(status(exactly50,'L').warning,'HIGH_LAT_SELECT_ALIGN');
+assert.equal(status(exactly50,'L').positionValid,false);
+let northHigh=ownerRun('ALIGN','N50100 E010000');
+northHigh=tick(northHigh,{...frame,dtSec:3.5});
+assert.equal(status(northHigh,'L').alignSecondsRemaining,600,
+ '50–70°12N still has the normal 10min timer, not an invented 17min timer');
+for(let i=0;i<20;i++)northHigh=tick(northHigh,frame);
+const beforeReject=northHigh.revision;
+assert.throws(()=>apply(northHigh,{type:'SELECT_MODE',side:'L',mode:'NAV'}),
+ /HIGH_LAT_ALIGN_HOLD_REQUIRED/,'North ≥50 must remain on ALIGN until completion');
+assert.equal(northHigh.revision,beforeReject,'Rejected action does not change source state');
+assert.equal(status(northHigh,'L').mode,'ALIGN');
+for(let i=20;i<120;i++)northHigh=tick(northHigh,frame);
+assert.equal(status(northHigh,'L').phase,'ALIGN_READY');
+assert.equal(status(northHigh,'L').alignLamp,true);
+assert.equal(status(northHigh,'L').positionValid,false);
+northHigh=apply(northHigh,{type:'SELECT_MODE',side:'L',mode:'NAV'});
+assert.equal(status(northHigh,'L').phase,'NAV_READY');
+assert.equal(status(northHigh,'L').positionValid,true);
+// FCOM (70°12' and above) remains the separate 17-min duration boundary.
+let fcomHigh=ownerRun('ALIGN','N71123 E010000');
+fcomHigh=tick(fcomHigh,{...frame,dtSec:3.5});
+assert.equal(status(fcomHigh,'L').alignSecondsRemaining,1020);
+for(let i=0;i<120;i++)fcomHigh=tick(fcomHigh,frame);
+assert.equal(status(fcomHigh,'L').phase,'ALIGNING','71N needs more than 10min');
+assert.throws(()=>apply(fcomHigh,{type:'SELECT_MODE',side:'L',mode:'NAV'}),/HIGH_LAT_ALIGN_HOLD_REQUIRED/);
+for(let i=120;i<204;i++)fcomHigh=tick(fcomHigh,frame);
+assert.equal(status(fcomHigh,'L').phase,'HIGH_LAT_READY');
+fcomHigh=apply(fcomHigh,{type:'SELECT_MODE',side:'L',mode:'NAV'});
+assert.equal(status(fcomHigh,'L').phase,'NAV_READY');
+// A 50°N rule does not erroneously forbid Southern mid-latitudes.
+let southMid=ownerRun('NAV','S50100 E010000');
+southMid=tick(southMid,{...frame,dtSec:3.5});
+for(let i=0;i<120;i++)southMid=tick(southMid,frame);
+assert.equal(status(southMid,'L').phase,'NAV_READY');
+let southPolar=ownerRun('NAV','S71123 E010000');
+assert.equal(status(southPolar,'L').phase,'MODE_MISMATCH',
+ 'Preserve separate published 70°12 S high-latitude requirement');
+// Validated high-lat PPOS may arrive after the 600s timer; complete the
+// remaining 420s of the 17-minute high-lat profile without getting stuck.
+let delayed=initialState();
+delayed=apply(delayed,{type:'POWER',side:'L',available:true});
+delayed=apply(delayed,{type:'SELECT_MODE',side:'L',mode:'ALIGN'});
+delayed=tick(delayed,{...frame,dtSec:3.5});
+for(let i=0;i<120;i++)delayed=tick(delayed,frame);
+assert.equal(status(delayed,'L').phase,'WAIT_POSITION');
+delayed=apply(delayed,{type:'FMC_SET_IRS_POS',sides:['L'],position:'N71123 E010000'});
+assert.equal(status(delayed,'L').phase,'ALIGNING','Late 71N PPOS must resume alignment');
+assert.equal(status(delayed,'L').alignSecondsRemaining,420);
+for(let i=0;i<84;i++)delayed=tick(delayed,frame);
+assert.equal(status(delayed,'L').phase,'HIGH_LAT_READY');
+assert.equal(status(delayed,'L').positionValid,false);
+delayed=apply(delayed,{type:'SELECT_MODE',side:'L',mode:'NAV'});
+assert.equal(status(delayed,'L').positionValid,true);
+// FCOM calibration remains explicitly available for source comparisons
+// without changing the owner-selected 50N training default.
+let reference=ownerRun('NAV','N50100 E010000',{northAlignHoldLatitude:70.2});
+assert.equal(status(reference,'L').phase,'SELFTEST');
 console.log('PASS IRS Trainer: FMC/ISDU lat/lon gates, 10/17min alignment, owner 7 count, independent L/R drift ~1NM, actual geodesic motion, missing frame validity, electrical/phase failures and owner-locked UI untouched');
