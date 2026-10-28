@@ -5,6 +5,9 @@ on:
     paths:
       - 'engine/systems/asp-audio-v1.js'
       - 'panel-mosaic-lab/cockpit/asp-audio-runtime-v1.js'
+      - 'panel-mosaic-lab/cockpit/asp-controls-v1.js'
+      - 'panel-mosaic-lab/cockpit/asp-socket-registration-v2.js'
+      - 'panel-mosaic-lab/cockpit/asp-socket-registration-v2.test.cjs'
       - 'panel-mosaic-lab/cockpit/index.html'
       - 'tests/asp-audio-v1.test.cjs'
       - 'tests/asp-audio-routing-v2.test.cjs'
@@ -35,6 +38,11 @@ jobs:
         run: node --test tests/asp-audio-routing-v2.test.cjs
       - name: Existing ASP controls pixel/angle QA
         run: node --test panel-mosaic-lab/cockpit/asp-controls-v1.test.cjs
+      - name: Pixel-source aperture and actual alpha-center regression (60 controls)
+        run: |
+          node --check panel-mosaic-lab/cockpit/asp-socket-registration-v2.js
+          node --check panel-mosaic-lab/cockpit/asp-controls-v1.js
+          node --test panel-mosaic-lab/cockpit/asp-socket-registration-v2.test.cjs
       - name: Frozen overhead baseline
         run: python3 panel-mosaic-lab/verify-final-overhead.py
       - name: Owner18 guarded switches red zone
