@@ -47,6 +47,7 @@ display.press('CLR');assert.equal(display.getState().lastEntered,'');
 listeners['document:b737:irs-visual-key']({detail:{key:'9'}});
 assert.equal(display.getState().digits,'9');
 display.modeChange('HDG/STS');assert.equal(display.getState().mode,'HDG/STS');
+currentMode='TEST';
 listeners['window:b737:irs-upper-visual-change']({detail:{type:'mode',mode:'TEST',brightness:100}});
 assert.equal(display.getState().testActive,true);
 assert.deepEqual(mounted.children.map(x=>x.textContent),['8888888','8888888']);
