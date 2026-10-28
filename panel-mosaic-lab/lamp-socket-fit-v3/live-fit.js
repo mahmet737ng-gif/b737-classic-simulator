@@ -18,7 +18,7 @@ const masterRoot=new URL('lights-reference-v2/',root);
 const clamp=(v,lo,hi)=>Math.max(lo,Math.min(hi,v));
 let padRequested=query.get('fitPad');
 try { if(!padRequested&&win.parent!==win)padRequested=new URLSearchParams(win.parent.location.search).get('fitPad'); }catch(_){}
-const maxPad=clamp(Number(padRequested||'2.5')||2.5,0,6);
+const maxPad=clamp(padRequested===null?2.5:Number(padRequested),0,6);
 const pageScope=win.location.pathname.includes('/interactive-overhead/')?'OH':'MP';
 const own=new Map(), records=new Map(), nodes=new Map(), pending=new Map();
 const sourceCache=new Map(), blobURLs=new Map(), errors=[];
@@ -126,7 +126,8 @@ async function update(id){
   const r=await face(row,frame);
   if(token!==obj.serial)return;
   const [ox,oy,ow,oh]=row.sourceRect;
-  const fx=obj.node.offsetWidth/ow,fy=obj.node.offsetHeight/oh;
+  const fx=(parseFloat(obj.node.style.width)||obj.node.offsetWidth)/ow;
+  const fy=(parseFloat(obj.node.style.height)||obj.node.offsetHeight)/oh;
   const p=r.shape.p;
   Object.assign(obj.img.style,{
    left:(-p.l*fx)+'px',top:(-p.t*fy)+'px',
