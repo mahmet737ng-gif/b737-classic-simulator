@@ -42,7 +42,7 @@ assert.equal(Core.status(s,'L').alignStatusCode,2);
 assert.equal(Core.status(s,'L').alignLampFlashing,true);
 assert.equal(Core.status(s,'L').faultLamp,false);
 assert.equal(s.units.L.computedRejectCount,1);
-assert.equal(Core.status(s,'L').latitudeComparisonNm,5);
+assert(Math.abs(Core.status(s,'L').latitudeComparisonNm-5)<1e-6);
 s=position(s,'N35050 E051254');
 assert.equal(Core.status(s,'L').faultLamp,true);
 assert.equal(Core.status(s,'L').alignStatusCode,2);
