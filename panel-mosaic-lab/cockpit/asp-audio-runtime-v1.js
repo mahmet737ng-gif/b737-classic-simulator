@@ -56,7 +56,7 @@
    if(!host||host.querySelector('[data-asp-alt-norm]'))continue;
    const b=document.createElement('button');b.type='button';
    b.dataset.aspAltNorm=seat;
-   b.style.cssText='position:absolute;left:84.6%;top:79.8%;width:8.7%;height:8.2%;transform:translate(-50%,-50%);margin:0;padding:0;opacity:0;border:0;background:transparent;cursor:pointer;z-index:5;touch-action:manipulation';
+   b.style.cssText='position:absolute;left:87.34402852%;top:84.12162162%;width:8.7%;height:8.2%;transform:translate(-50%,-50%);margin:0;padding:0;opacity:0;border:0;background:transparent;cursor:pointer;z-index:5;touch-action:manipulation';
    b.addEventListener('pointerdown',e=>e.stopPropagation());
    b.addEventListener('click',e=>{e.stopPropagation();setMode(seat,state.stations[seat].mode==='NORM'?'ALT':'NORM');});
    host.append(b);

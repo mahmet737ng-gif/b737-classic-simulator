@@ -1,0 +1,32 @@
+name: ASP Audio NORM ALT source and CB quarantine QA
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'engine/systems/asp-audio-v1.js'
+      - 'panel-mosaic-lab/cockpit/asp-audio-runtime-v1.js'
+      - 'panel-mosaic-lab/cockpit/index.html'
+      - 'tests/asp-audio-v1.test.cjs'
+      - '.github/workflows/asp-audio-v1.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  asp-audio-qa:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Javascript syntax
+        run: |
+          node --check engine/systems/asp-audio-v1.js
+          node --check panel-mosaic-lab/cockpit/asp-audio-runtime-v1.js
+      - name: FCOM MRG normal alternate independent stations and protected-asset geometry tests
+        run: node --test tests/asp-audio-v1.test.cjs
+      - name: Existing ASP controls pixel/angle QA
+        run: node --test panel-mosaic-lab/cockpit/asp-controls-v1.test.cjs
+      - name: Frozen overhead baseline
+        run: python3 panel-mosaic-lab/verify-final-overhead.py
+      - name: Owner18 guarded switches red zone
+        run: python3 panel-mosaic-lab/cockpit/verify-guard-redzone.py --negative-self-test
+      - name: IRS full frontend red zone
+        run: python3 panel-mosaic-lab/cockpit/verify-irs-complete-redzone-v1.py --negative-self-test
