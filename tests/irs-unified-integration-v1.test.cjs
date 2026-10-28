@@ -100,6 +100,43 @@ const stamp=Date.now();
 trainer.publishMotion({valid:true,gsKt:150,trueTrackDeg:90,trueHeadingDeg:88,altitudeFt:8000,sourceTimestampMs:stamp});
 assert.equal(trainer.getState().motionSource,'EXTERNAL_TELEMETRY');
 assert.throws(()=>trainer.publishMotion({valid:true,gsKt:150,trueTrackDeg:90,sourceTimestampMs:stamp}),/Out of order/);
+// Test the ACTUAL FROZEN Unified bridge (no UI files modified): its AC
+// STANDBY / AC TRANSFER 2 / SWITCHED HOT BATTERY selection must keep each
+// independent IRS energized only while an acceptable feed remains available.
+trainer.stopMotion();
+const bus={acStandby:true,transfer2:true,switchedHotBattery:true};
+root.B737ISNCockpitV1={getState(){return {state:{electrical:{bus}}};}};
+trainer.setPowerMode('AIRCRAFT');
+assert.equal(trainer.getState().units.L.powered,true);
+assert.equal(trainer.getState().units.R.powered,true);
+bus.transfer2=false; // right loses normal AC but has switched-hot DC
+now+=2000;interval();
+assert.equal(trainer.getState().units.R.powered,true,'R initially backed by DC');
+for(let i=1;i<150;i++){now+=2000;interval();}
+assert.equal(trainer.getPowerDiagnostics().rightDcElapsedSec,300);
+assert.equal(trainer.getState().units.R.phase,'POWER_LOST','R backup expires at five minutes');
+assert.equal(trainer.getState().units.L.powered,true,'L independent of R backup');
+bus.transfer2=true; // restored AC while the physical R selector remains NAV
+now+=2000;interval();
+assert.equal(trainer.getState().units.R.phase,'SELFTEST','R must automatically repeat ON DC and alignment');
+assert.equal(trainer.getState().units.R.onDcLamp,true);
+assert.equal(trainer.getState().units.R.positionValid,false);
+assert.equal(trainer.getPowerDiagnostics().rightDcElapsedSec,0);
+bus.acStandby=false; // left on switched-hot backup (no five-minute limit)
+now+=2000;interval();
+assert.equal(trainer.getState().units.L.powered,true);
+bus.switchedHotBattery=false; // both left feeds now invalid
+now+=2000;interval();
+assert.equal(trainer.getState().units.L.phase,'POWER_LOST');
+assert.equal(trainer.getState().units.R.powered,true,'R continues on TRANSFER 2');
+bus.acStandby=true;
+now+=2000;interval();
+assert.equal(trainer.getState().units.L.phase,'SELFTEST');
+assert.equal(trainer.getState().units.L.onDcLamp,true);
+// Missing upstream bus values must never fabricate device power.
+bus.acStandby=undefined;bus.switchedHotBattery=true;
+now+=2000;interval();
+assert.equal(trainer.getState().units.L.powered,false,'Unknown AC + known battery cannot prove selector path');
 const lock=JSON.parse(read('panel-mosaic-lab/cockpit/irs-sys-dspl-owner-lock-v1.json'));
 for(const tag of lock.indexMounts)assert.equal(html.split(tag).length-1,1);
 console.log('PASS Unified IRS end-to-end: OFF=>3.5s ON DC=>ALIGN, exact FMC 4R L/R, selected ISDU keypad latitude+longitude ENT, power fail-closed, source-valid simulator updates and all frozen UI mounts preserved');
