@@ -29,7 +29,7 @@ class CustomEvent{constructor(type,opts){this.type=type;this.detail=opts.detail;
 const events=[],listeners={};
 function element(tag){
  const x={tag,className:'',children:[],dataset:{},events:{},attrs:{},
-  style:{setProperty(key,val){this[key]=val;}},append(child){this.children.push(child);},
+  style:{setProperty(key,val){this[key]=val;}},append(...children){this.children.push(...children);},
   setAttribute(k,v){this.attrs[k]=v;},getBoundingClientRect(){return {left:0,top:0,width:100,height:100};},
   setPointerCapture(){},addEventListener(name,fn){this.events[name]=fn;},
   querySelector(q){if(q==='#irsUpperDsplSelMounted')return this.children.find(c=>c.id==='irsUpperDsplSelMounted')||null;
