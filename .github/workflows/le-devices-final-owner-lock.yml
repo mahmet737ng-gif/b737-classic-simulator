@@ -1,0 +1,43 @@
+name: LE DEVICES OWNER FINAL invariant and 4 future integration ports
+on:
+  push:
+    paths:
+      - 'engine/locks/le-devices-final-lock-v1.json'
+      - 'engine/locks/verify-le-devices-final-v1.cjs'
+      - 'engine/systems/le-devices-classic-v1.js'
+      - 'engine/systems/te-flap-actuator-v1.js'
+      - 'engine/integrations/le-devices-external-ports-v1.js'
+      - 'panel-mosaic-lab/le-devices/**'
+      - 'panel-mosaic-lab/cockpit/le-devices-live-link-v1.js'
+      - 'panel-mosaic-lab/cockpit/overhead-stage.html'
+      - 'tests/le-devices-external-ports-v1.test.cjs'
+      - '.github/workflows/le-devices-final-owner-lock.yml'
+  pull_request:
+    paths:
+      - 'engine/locks/**'
+      - 'engine/systems/le-devices-classic-v1.js'
+      - 'engine/systems/te-flap-actuator-v1.js'
+      - 'panel-mosaic-lab/le-devices/**'
+      - 'panel-mosaic-lab/cockpit/le-devices-live-link-v1.js'
+      - 'engine/integrations/le-devices-external-ports-v1.js'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  final-lock:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check pinned owner-approved manifest and verifier
+        run: |
+          test "$(git hash-object engine/locks/le-devices-final-lock-v1.json)" = "da949ec9853f3d6b2eea58ea293630d72712da00"
+          test "$(git hash-object engine/locks/verify-le-devices-final-v1.cjs)" = "540fd49c9ab7c807d5da9cce224f37a92cd084a6"
+      - name: Detect unauthorized modifications and inventory changes
+        run: node engine/locks/verify-le-devices-final-v1.cjs --negative-self-test
+      - name: Check four future integration ports and core regression
+        run: |
+          node --check engine/integrations/le-devices-external-ports-v1.js
+          node --test tests/le-devices-external-ports-v1.test.cjs tests/le-devices-classic-v1.test.cjs tests/te-flap-live-bridge.test.cjs
