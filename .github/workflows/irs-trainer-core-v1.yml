@@ -1,0 +1,31 @@
+name: IRS dual independent trainer core V1 QA
+on:
+  push:
+    paths:
+      - 'engine/systems/irs-trainer-core-v1.cjs'
+      - 'tests/irs-trainer-core-v1.test.cjs'
+      - 'docs/IRS_TRAINER_ARCHITECTURE_V1.md'
+      - 'engine/contracts/irs-hdg-sts-seven-minute-v1.cjs'
+      - '.github/workflows/irs-trainer-core-v1.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  irs-trainer:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run independent L/R IRS procedure and motion tests
+        run: |
+          node --check engine/systems/irs-trainer-core-v1.cjs
+          node --check tests/irs-trainer-core-v1.test.cjs
+          node tests/irs-trainer-core-v1.test.cjs
+          node panel-mosaic-lab/cockpit/irs-hdg-sts-seven-minute-v1.test.cjs
+      - name: Protect owner-approved 13-cell display and SYS DSPL selector
+        run: |
+          python3 panel-mosaic-lab/cockpit/verify-irs-13seg-owner-lock-v1.py --negative-self-test
+          python3 panel-mosaic-lab/cockpit/verify-irs-sys-dspl-owner-lock-v1.py
+      - name: Protect immutable overhead and 18 guarded switches
+        run: |
+          python3 panel-mosaic-lab/verify-final-overhead.py
+          python3 panel-mosaic-lab/cockpit/verify-guard-redzone.py --negative-self-test
