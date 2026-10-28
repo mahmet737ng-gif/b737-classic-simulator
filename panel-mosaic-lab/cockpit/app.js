@@ -68,3 +68,6 @@
  async function start(){try{const r=await fetch('./assembly.json',{cache:'no-store'});if(!r.ok)throw Error('Assembly unavailable');assembly=await r.json();model.validate(assembly);mount();window.dispatchEvent(new CustomEvent('b737:cockpit-mounted'));focus('main');byId('loading').classList.add('hidden');}catch(e){byId('loading').textContent='خطای اتصال پنل‌ها: '+e.message;console.error(e);}}
  start();
 })();
+
+/* ASP-BARE-0001: visual overlay, separate from locked regions. */
+(()=>{const s=document.createElement('script');s.src='./asp-bare-overlay-v1.js?v=ASP-BARE-0001';s.defer=true;document.head.appendChild(s);})();
