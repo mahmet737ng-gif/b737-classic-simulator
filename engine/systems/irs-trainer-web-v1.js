@@ -169,13 +169,45 @@ function apply(state,cmd){
   switch(cmd.type){
    case 'POWER':{
     if(typeof cmd.available!=='boolean')throw new TypeError('Explicit true/false IRS power required');
+    // Electrical bus sampling is level-triggered. A repeated identical feed
+    // must not restart alignment or erase an already-entered FMC position.
+    if(u.powered===cmd.available)break;
     u.powered=cmd.available;
-    if(!u.powered){u.valid=false;u.phase='POWER_LOST';u.position=null;}
-    emit(s,u.id,u.powered?'POWER_ON':'POWER_LOST');break;
+    if(!u.powered){
+      u.valid=false;u.position=null;u.basePosition=null;
+      u.groundSpeedKt=null;u.trueTrackDeg=null;u.trueHeadingDeg=null;
+      u.altitudeFt=null;u.windFromDeg=null;u.windKt=null;
+      // OFF is a selector position, not an electrical fault. Actual loss
+      // while OFF simply ends the 30s powered shutdown sequence.
+      if(u.mode==='OFF'){
+        u.phase='OFF';u.alignmentElapsedSec=0;
+      }else{
+        // Any uninterrupted-alignment guarantee is lost without power.
+        // Do not reuse a stale initial position on power restoration.
+        u.phase='POWER_LOST';u.alignmentElapsedSec=0;u.initialized=false;
+        u.entrySource=null;u.entryPending={lat:null,lon:null};
+        u.enteredPosition=null;u.powerTestElapsedSec=0;u.alignFault=null;
+      }
+      emit(s,u.id,'POWER_LOST');
+    }else{
+      // The physical MSU selector remains where the crew left it. When AC
+      // (or eligible backup DC) returns to a selected NAV/ALIGN IRS, restart
+      // the initial ON DC self-test and the full alignment automatically.
+      if(u.mode==='NAV'||u.mode==='ALIGN'){
+        begin(u,s.config,u.mode);
+        emit(s,u.id,'POWER_RESTORED_RESTART_ALIGN');
+      }else if(u.mode==='ATT'){
+        u.phase='ATT';u.valid=false;
+      }else{
+        u.phase='OFF';u.valid=false;
+      }
+      emit(s,u.id,'POWER_ON');
+    }
+    break;
    }
    case 'SELECT_MODE':{
     if(!MODES.includes(cmd.mode))throw new RangeError('Unknown IRS mode');
-    if(cmd.mode==='OFF'){u.mode='OFF';u.valid=false;u.phase='SHUTDOWN';u.alignmentElapsedSec=0;emit(s,u.id,'SHUTDOWN');break;}
+    if(cmd.mode==='OFF'){u.mode='OFF';u.valid=false;u.phase=u.powered?'SHUTDOWN':'OFF';u.alignmentElapsedSec=0;emit(s,u.id,u.powered?'SHUTDOWN':'OFF');break;}
     if(!u.powered)throw new Error('IRS requires power for mode selection');
     if(cmd.mode==='ATT'){u.mode='ATT';u.phase='ATT';u.valid=false;emit(s,u.id,'ATT_ONLY');break;}
     if(u.mode==='OFF'||u.phase==='OFF'||u.phase==='SHUTDOWN'||u.phase==='POWER_LOST'){
@@ -249,7 +281,7 @@ function tick(state,frame){
    u.alignmentElapsedSec+=dt;
    if(u.alignmentElapsedSec>=u.alignmentDurationSec){
     if(!u.initialized){u.phase='WAIT_POSITION';u.valid=false;emit(s,side,'ENTER_IRS_POSITION');}
-    else if(u.phase==='FAST_REALIGN'){u.phase='ALIGN_READY';u.valid=false;}
+    else if(u.phase==='FAST_REALIGN'){if(u.mode==='NAV')ready(s,u);else{u.phase='ALIGN_READY';u.valid=false;emit(s,side,'FAST_REALIGN_READY_WAIT_NAV');}}
     else ready(s,u);
    }
    continue;
