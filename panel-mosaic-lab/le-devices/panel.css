@@ -1,16 +1,14 @@
-/* LEDEV-0005: scoped, additive; no existing guards, switches or tiles modified. */
-.b737-le-devices{position:relative;display:block;overflow:visible;isolation:isolate;direction:ltr;user-select:none;touch-action:pan-x pan-y;aspect-ratio:432 / 195;background:#525152;}
+/* LEDEV-0006: scoped to the owner's restored panel, with measured lamp masks. */
+.b737-le-devices{position:relative;display:block;overflow:hidden;isolation:isolate;direction:ltr;user-select:none;touch-action:pan-x pan-y;aspect-ratio:1984 / 793;background:#455969;}
 .b737-le-devices__background,.b737-le-devices__lamps{position:absolute;inset:0;width:100%;height:100%;display:block;}
 .b737-le-devices__background{pointer-events:none;image-rendering:auto;}
-.b737-le-devices__lamps{overflow:visible;}
-.b737-le-devices__lamps path{pointer-events:all;cursor:pointer;transition:fill 90ms ease-out,opacity 110ms ease;filter:none;}
-.b737-le-devices__lamps path[data-lit="true"]{filter:drop-shadow(0 0 1px currentColor);}
-.b737-le-devices__lamps path:focus-visible{outline:none;stroke:#d4f9fe;stroke-width:3.5;}
-.b737-le-devices__test{position:absolute;left:45.37%;top:71.28%;width:9.26%;height:20.51%;border:0;margin:0;padding:0;background:transparent;display:block;cursor:pointer;touch-action:none;outline:none;}
-.b737-le-devices__test{border-radius:50%!important;-webkit-tap-highlight-color:transparent;}
-/* The photo contains the actual recessed pushbutton; no synthetic duplicate knob. */
-.b737-le-devices__test.pressed{box-shadow:inset 0 0 7px #0007;}
-.b737-le-devices__test:focus-visible{outline:2px solid #d4f9fe;outline-offset:1px;border-radius:50%;}
+.b737-le-devices__lamps{overflow:hidden;}
+.b737-le-devices__lamps path{pointer-events:all;cursor:pointer;transition:fill 80ms ease-out,fill-opacity 80ms ease;filter:none;}
+.b737-le-devices__lamps path:focus-visible{outline:none;stroke:#d4f9fe;stroke-width:3;}
+.b737-le-devices .b737-le-devices__test{position:absolute;left:49.9244%;top:86.8687%;width:6.801%;height:auto;aspect-ratio:1;transform:translate(-50%,-50%);border:0;border-radius:50%;margin:0;padding:0;background:transparent;display:block;cursor:pointer;touch-action:none;outline:none;-webkit-tap-highlight-color:transparent;}
+.b737-le-devices__test-cap{display:block;width:100%;height:100%;pointer-events:none;transition:filter 60ms;}
+.b737-le-devices__test.pressed .b737-le-devices__test-cap{filter:brightness(.65);}
+.b737-le-devices__test:focus-visible{outline:2px solid #d4f9fe;outline-offset:1px;}
 [data-b737-le-devices-atlas]{aspect-ratio:auto;box-sizing:border-box;}
 [data-b737-le-devices-atlas].b737-le-devices{aspect-ratio:auto;}
-@media(prefers-reduced-motion:reduce){.b737-le-devices__lamps path{transition:none}}
+@media(prefers-reduced-motion:reduce){.b737-le-devices__lamps path,.b737-le-devices__test-cap{transition:none}}

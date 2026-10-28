@@ -1,0 +1,1723 @@
+{
+  "schema_version": 1,
+  "asset": "LE_DEVICES_panel.png",
+  "canvas_px": [
+    1984,
+    793
+  ],
+  "coordinate_system": "pixel origin at upper left; x right, y down; normalized coordinates 0..1",
+  "indicator_count": 26,
+  "button_count": 1,
+  "indicators": [
+    {
+      "bbox_px": [
+        417,
+        104,
+        81,
+        116
+      ],
+      "center_px": [
+        456.84,
+        161.79
+      ],
+      "polygon_px": [
+        [
+          417.0,
+          106.0
+        ],
+        [
+          497.0,
+          134.0
+        ],
+        [
+          492.0,
+          219.0
+        ],
+        [
+          417.0,
+          190.0
+        ]
+      ],
+      "id": "SLAT_1_TRANSIT",
+      "device": "slat",
+      "device_number": 1,
+      "state": "transit",
+      "bank": "left",
+      "column_from_left": 1,
+      "color_when_active": "amber",
+      "polygon_normalized": [
+        [
+          0.2101815,
+          0.1336696
+        ],
+        [
+          0.250504,
+          0.1689786
+        ],
+        [
+          0.2479839,
+          0.2761665
+        ],
+        [
+          0.2101815,
+          0.2395965
+        ]
+      ],
+      "center_normalized": [
+        0.2302621,
+        0.2040227
+      ],
+      "bbox_normalized": [
+        0.2101815,
+        0.1311475,
+        0.0408266,
+        0.1462799
+      ]
+    },
+    {
+      "bbox_px": [
+        417,
+        210,
+        80,
+        125
+      ],
+      "center_px": [
+        456.51,
+        272.0
+      ],
+      "polygon_px": [
+        [
+          419.0,
+          210.0
+        ],
+        [
+          496.0,
+          239.0
+        ],
+        [
+          494.0,
+          334.0
+        ],
+        [
+          417.0,
+          304.0
+        ]
+      ],
+      "id": "SLAT_1_EXT",
+      "device": "slat",
+      "device_number": 1,
+      "state": "ext",
+      "bank": "left",
+      "column_from_left": 1,
+      "color_when_active": "green",
+      "polygon_normalized": [
+        [
+          0.2111895,
+          0.2648172
+        ],
+        [
+          0.25,
+          0.3013871
+        ],
+        [
+          0.2489919,
+          0.4211854
+        ],
+        [
+          0.2101815,
+          0.3833544
+        ]
+      ],
+      "center_normalized": [
+        0.2300958,
+        0.3430013
+      ],
+      "bbox_normalized": [
+        0.2101815,
+        0.2648172,
+        0.0403226,
+        0.1576293
+      ]
+    },
+    {
+      "bbox_px": [
+        416,
+        325,
+        81,
+        118
+      ],
+      "center_px": [
+        456.08,
+        383.15
+      ],
+      "polygon_px": [
+        [
+          421.0,
+          325.0
+        ],
+        [
+          496.0,
+          353.0
+        ],
+        [
+          494.0,
+          442.0
+        ],
+        [
+          416.0,
+          413.0
+        ]
+      ],
+      "id": "SLAT_1_FULL_EXT",
+      "device": "slat",
+      "device_number": 1,
+      "state": "full_ext",
+      "bank": "left",
+      "column_from_left": 1,
+      "color_when_active": "green",
+      "polygon_normalized": [
+        [
+          0.2121976,
+          0.4098361
+        ],
+        [
+          0.25,
+          0.445145
+        ],
+        [
+          0.2489919,
+          0.557377
+        ],
+        [
+          0.2096774,
+          0.5208071
+        ]
+      ],
+      "center_normalized": [
+        0.229879,
+        0.4831652
+      ],
+      "bbox_normalized": [
+        0.2096774,
+        0.4098361,
+        0.0408266,
+        0.148802
+      ]
+    },
+    {
+      "bbox_px": [
+        513,
+        140,
+        95,
+        120
+      ],
+      "center_px": [
+        559.79,
+        199.48
+      ],
+      "polygon_px": [
+        [
+          514.0,
+          142.0
+        ],
+        [
+          607.0,
+          175.0
+        ],
+        [
+          604.0,
+          259.0
+        ],
+        [
+          513.0,
+          225.0
+        ]
+      ],
+      "id": "SLAT_2_TRANSIT",
+      "device": "slat",
+      "device_number": 2,
+      "state": "transit",
+      "bank": "left",
+      "column_from_left": 2,
+      "color_when_active": "amber",
+      "polygon_normalized": [
+        [
+          0.2590726,
+          0.1790668
+        ],
+        [
+          0.3059476,
+          0.220681
+        ],
+        [
+          0.3044355,
+          0.3266078
+        ],
+        [
+          0.2585685,
+          0.2837327
+        ]
+      ],
+      "center_normalized": [
+        0.2821522,
+        0.2515511
+      ],
+      "bbox_normalized": [
+        0.2585685,
+        0.1765448,
+        0.0478831,
+        0.1513241
+      ]
+    },
+    {
+      "bbox_px": [
+        513,
+        245,
+        94,
+        128
+      ],
+      "center_px": [
+        559.19,
+        308.41
+      ],
+      "polygon_px": [
+        [
+          513.0,
+          247.0
+        ],
+        [
+          606.0,
+          278.0
+        ],
+        [
+          601.0,
+          372.0
+        ],
+        [
+          513.0,
+          339.0
+        ]
+      ],
+      "id": "SLAT_2_EXT",
+      "device": "slat",
+      "device_number": 2,
+      "state": "ext",
+      "bank": "left",
+      "column_from_left": 2,
+      "color_when_active": "green",
+      "polygon_normalized": [
+        [
+          0.2585685,
+          0.3114754
+        ],
+        [
+          0.3054435,
+          0.3505675
+        ],
+        [
+          0.3029234,
+          0.4691047
+        ],
+        [
+          0.2585685,
+          0.4274905
+        ]
+      ],
+      "center_normalized": [
+        0.2818498,
+        0.3889155
+      ],
+      "bbox_normalized": [
+        0.2585685,
+        0.3089533,
+        0.047379,
+        0.1614124
+      ]
+    },
+    {
+      "bbox_px": [
+        513,
+        359,
+        93,
+        122
+      ],
+      "center_px": [
+        558.47,
+        419.45
+      ],
+      "polygon_px": [
+        [
+          513.0,
+          361.0
+        ],
+        [
+          605.0,
+          393.0
+        ],
+        [
+          602.0,
+          480.0
+        ],
+        [
+          513.0,
+          447.0
+        ]
+      ],
+      "id": "SLAT_2_FULL_EXT",
+      "device": "slat",
+      "device_number": 2,
+      "state": "full_ext",
+      "bank": "left",
+      "column_from_left": 2,
+      "color_when_active": "green",
+      "polygon_normalized": [
+        [
+          0.2585685,
+          0.4552333
+        ],
+        [
+          0.3049395,
+          0.4955864
+        ],
+        [
+          0.3034274,
+          0.6052963
+        ],
+        [
+          0.2585685,
+          0.5636822
+        ]
+      ],
+      "center_normalized": [
+        0.2814869,
+        0.5289407
+      ],
+      "bbox_normalized": [
+        0.2585685,
+        0.4527112,
+        0.046875,
+        0.1538462
+      ]
+    },
+    {
+      "bbox_px": [
+        622,
+        180,
+        97,
+        119
+      ],
+      "center_px": [
+        670.39,
+        239.35
+      ],
+      "polygon_px": [
+        [
+          624.0,
+          182.0
+        ],
+        [
+          718.0,
+          216.0
+        ],
+        [
+          716.0,
+          298.0
+        ],
+        [
+          622.0,
+          263.0
+        ]
+      ],
+      "id": "SLAT_3_TRANSIT",
+      "device": "slat",
+      "device_number": 3,
+      "state": "transit",
+      "bank": "left",
+      "column_from_left": 3,
+      "color_when_active": "amber",
+      "polygon_normalized": [
+        [
+          0.3145161,
+          0.2295082
+        ],
+        [
+          0.3618952,
+          0.2723834
+        ],
+        [
+          0.3608871,
+          0.3757881
+        ],
+        [
+          0.3135081,
+          0.331652
+        ]
+      ],
+      "center_normalized": [
+        0.3378982,
+        0.3018285
+      ],
+      "bbox_normalized": [
+        0.3135081,
+        0.2269861,
+        0.0488911,
+        0.1500631
+      ]
+    },
+    {
+      "bbox_px": [
+        621,
+        283,
+        98,
+        132
+      ],
+      "center_px": [
+        669.69,
+        348.46
+      ],
+      "polygon_px": [
+        [
+          625.0,
+          283.0
+        ],
+        [
+          718.0,
+          318.0
+        ],
+        [
+          718.0,
+          412.0
+        ],
+        [
+          621.0,
+          379.0
+        ]
+      ],
+      "id": "SLAT_3_EXT",
+      "device": "slat",
+      "device_number": 3,
+      "state": "ext",
+      "bank": "left",
+      "column_from_left": 3,
+      "color_when_active": "green",
+      "polygon_normalized": [
+        [
+          0.3150202,
+          0.3568726
+        ],
+        [
+          0.3618952,
+          0.4010088
+        ],
+        [
+          0.3618952,
+          0.519546
+        ],
+        [
+          0.313004,
+          0.4779319
+        ]
+      ],
+      "center_normalized": [
+        0.3375454,
+        0.4394199
+      ],
+      "bbox_normalized": [
+        0.313004,
+        0.3568726,
+        0.0493952,
+        0.1664565
+      ]
+    },
+    {
+      "bbox_px": [
+        621,
+        399,
+        98,
+        122
+      ],
+      "center_px": [
+        669.47,
+        459.38
+      ],
+      "polygon_px": [
+        [
+          621.0,
+          401.0
+        ],
+        [
+          718.0,
+          434.0
+        ],
+        [
+          715.0,
+          520.0
+        ],
+        [
+          621.0,
+          485.0
+        ]
+      ],
+      "id": "SLAT_3_FULL_EXT",
+      "device": "slat",
+      "device_number": 3,
+      "state": "full_ext",
+      "bank": "left",
+      "column_from_left": 3,
+      "color_when_active": "green",
+      "polygon_normalized": [
+        [
+          0.313004,
+          0.5056747
+        ],
+        [
+          0.3618952,
+          0.5472888
+        ],
+        [
+          0.3603831,
+          0.6557377
+        ],
+        [
+          0.313004,
+          0.6116015
+        ]
+      ],
+      "center_normalized": [
+        0.3374345,
+        0.5792938
+      ],
+      "bbox_normalized": [
+        0.313004,
+        0.5031526,
+        0.0493952,
+        0.1538462
+      ]
+    },
+    {
+      "bbox_px": [
+        735,
+        222,
+        85,
+        112
+      ],
+      "center_px": [
+        776.64,
+        277.87
+      ],
+      "polygon_px": [
+        [
+          735.0,
+          224.0
+        ],
+        [
+          819.0,
+          254.0
+        ],
+        [
+          818.0,
+          331.0
+        ],
+        [
+          735.0,
+          303.0
+        ]
+      ],
+      "id": "FLAP_1_TRANSIT",
+      "device": "flap",
+      "device_number": 1,
+      "state": "transit",
+      "bank": "left",
+      "column_from_left": 4,
+      "color_when_active": "amber",
+      "polygon_normalized": [
+        [
+          0.3704637,
+          0.2824716
+        ],
+        [
+          0.4128024,
+          0.3203026
+        ],
+        [
+          0.4122984,
+          0.4174023
+        ],
+        [
+          0.3704637,
+          0.3820933
+        ]
+      ],
+      "center_normalized": [
+        0.3914516,
+        0.3504035
+      ],
+      "bbox_normalized": [
+        0.3704637,
+        0.2799496,
+        0.0428427,
+        0.1412358
+      ]
+    },
+    {
+      "bbox_px": [
+        735,
+        323,
+        84,
+        233
+      ],
+      "center_px": [
+        776.22,
+        438.61
+      ],
+      "polygon_px": [
+        [
+          735.0,
+          325.0
+        ],
+        [
+          818.0,
+          353.0
+        ],
+        [
+          817.0,
+          553.0
+        ],
+        [
+          735.0,
+          525.0
+        ]
+      ],
+      "id": "FLAP_1_EXT",
+      "device": "flap",
+      "device_number": 1,
+      "state": "ext",
+      "bank": "left",
+      "column_from_left": 4,
+      "color_when_active": "green",
+      "polygon_normalized": [
+        [
+          0.3704637,
+          0.4098361
+        ],
+        [
+          0.4122984,
+          0.445145
+        ],
+        [
+          0.4117944,
+          0.6973518
+        ],
+        [
+          0.3704637,
+          0.6620429
+        ]
+      ],
+      "center_normalized": [
+        0.3912399,
+        0.5531021
+      ],
+      "bbox_normalized": [
+        0.3704637,
+        0.407314,
+        0.0423387,
+        0.2938209
+      ]
+    },
+    {
+      "bbox_px": [
+        835,
+        260,
+        78,
+        108
+      ],
+      "center_px": [
+        873.47,
+        313.76
+      ],
+      "polygon_px": [
+        [
+          839.0,
+          260.0
+        ],
+        [
+          907.0,
+          285.0
+        ],
+        [
+          912.0,
+          365.0
+        ],
+        [
+          835.0,
+          339.0
+        ]
+      ],
+      "id": "FLAP_2_TRANSIT",
+      "device": "flap",
+      "device_number": 2,
+      "state": "transit",
+      "bank": "left",
+      "column_from_left": 5,
+      "color_when_active": "amber",
+      "polygon_normalized": [
+        [
+          0.4228831,
+          0.3278689
+        ],
+        [
+          0.4571573,
+          0.3593947
+        ],
+        [
+          0.4596774,
+          0.4602774
+        ],
+        [
+          0.4208669,
+          0.4274905
+        ]
+      ],
+      "center_normalized": [
+        0.4402571,
+        0.395662
+      ],
+      "bbox_normalized": [
+        0.4208669,
+        0.3278689,
+        0.0393145,
+        0.1361917
+      ]
+    },
+    {
+      "bbox_px": [
+        833,
+        359,
+        80,
+        231
+      ],
+      "center_px": [
+        872.85,
+        474.11
+      ],
+      "polygon_px": [
+        [
+          839.0,
+          359.0
+        ],
+        [
+          912.0,
+          387.0
+        ],
+        [
+          912.0,
+          585.0
+        ],
+        [
+          833.0,
+          560.0
+        ]
+      ],
+      "id": "FLAP_2_EXT",
+      "device": "flap",
+      "device_number": 2,
+      "state": "ext",
+      "bank": "left",
+      "column_from_left": 5,
+      "color_when_active": "green",
+      "polygon_normalized": [
+        [
+          0.4228831,
+          0.4527112
+        ],
+        [
+          0.4596774,
+          0.4880202
+        ],
+        [
+          0.4596774,
+          0.7377049
+        ],
+        [
+          0.4198589,
+          0.7061791
+        ]
+      ],
+      "center_normalized": [
+        0.4399446,
+        0.5978689
+      ],
+      "bbox_normalized": [
+        0.4198589,
+        0.4527112,
+        0.0403226,
+        0.2912989
+      ]
+    },
+    {
+      "bbox_px": [
+        1075,
+        260,
+        80,
+        109
+      ],
+      "center_px": [
+        1114.55,
+        314.04
+      ],
+      "polygon_px": [
+        [
+          1075.0,
+          290.0
+        ],
+        [
+          1154.0,
+          262.0
+        ],
+        [
+          1154.0,
+          338.0
+        ],
+        [
+          1077.0,
+          368.0
+        ]
+      ],
+      "id": "FLAP_3_TRANSIT",
+      "device": "flap",
+      "device_number": 3,
+      "state": "transit",
+      "bank": "right",
+      "column_from_left": 1,
+      "color_when_active": "amber",
+      "polygon_normalized": [
+        [
+          0.5418347,
+          0.3656999
+        ],
+        [
+          0.5816532,
+          0.3303909
+        ],
+        [
+          0.5816532,
+          0.4262295
+        ],
+        [
+          0.5428427,
+          0.4640605
+        ]
+      ],
+      "center_normalized": [
+        0.5617692,
+        0.3960151
+      ],
+      "bbox_normalized": [
+        0.5418347,
+        0.3278689,
+        0.0403226,
+        0.1374527
+      ]
+    },
+    {
+      "bbox_px": [
+        1074,
+        359,
+        81,
+        229
+      ],
+      "center_px": [
+        1114.04,
+        473.24
+      ],
+      "polygon_px": [
+        [
+          1079.0,
+          385.0
+        ],
+        [
+          1154.0,
+          361.0
+        ],
+        [
+          1154.0,
+          558.0
+        ],
+        [
+          1074.0,
+          585.0
+        ]
+      ],
+      "id": "FLAP_3_EXT",
+      "device": "flap",
+      "device_number": 3,
+      "state": "ext",
+      "bank": "right",
+      "column_from_left": 1,
+      "color_when_active": "green",
+      "polygon_normalized": [
+        [
+          0.5438508,
+          0.4854981
+        ],
+        [
+          0.5816532,
+          0.4552333
+        ],
+        [
+          0.5816532,
+          0.703657
+        ],
+        [
+          0.5413306,
+          0.7377049
+        ]
+      ],
+      "center_normalized": [
+        0.5615121,
+        0.5967718
+      ],
+      "bbox_normalized": [
+        0.5413306,
+        0.4527112,
+        0.0408266,
+        0.2887768
+      ]
+    },
+    {
+      "bbox_px": [
+        1170,
+        221,
+        86,
+        113
+      ],
+      "center_px": [
+        1212.9,
+        277.43
+      ],
+      "polygon_px": [
+        [
+          1170.0,
+          254.0
+        ],
+        [
+          1253.0,
+          221.0
+        ],
+        [
+          1255.0,
+          302.0
+        ],
+        [
+          1171.0,
+          331.0
+        ]
+      ],
+      "id": "FLAP_4_TRANSIT",
+      "device": "flap",
+      "device_number": 4,
+      "state": "transit",
+      "bank": "right",
+      "column_from_left": 2,
+      "color_when_active": "amber",
+      "polygon_normalized": [
+        [
+          0.5897177,
+          0.3203026
+        ],
+        [
+          0.6315524,
+          0.2786885
+        ],
+        [
+          0.6325605,
+          0.3808323
+        ],
+        [
+          0.5902218,
+          0.4174023
+        ]
+      ],
+      "center_normalized": [
+        0.6113407,
+        0.3498487
+      ],
+      "bbox_normalized": [
+        0.5897177,
+        0.2786885,
+        0.0433468,
+        0.1424968
+      ]
+    },
+    {
+      "bbox_px": [
+        1170,
+        323,
+        86,
+        230
+      ],
+      "center_px": [
+        1212.55,
+        437.57
+      ],
+      "polygon_px": [
+        [
+          1170.0,
+          354.0
+        ],
+        [
+          1255.0,
+          325.0
+        ],
+        [
+          1255.0,
+          522.0
+        ],
+        [
+          1175.0,
+          552.0
+        ]
+      ],
+      "id": "FLAP_4_EXT",
+      "device": "flap",
+      "device_number": 4,
+      "state": "ext",
+      "bank": "right",
+      "column_from_left": 2,
+      "color_when_active": "green",
+      "polygon_normalized": [
+        [
+          0.5897177,
+          0.4464061
+        ],
+        [
+          0.6325605,
+          0.4098361
+        ],
+        [
+          0.6325605,
+          0.6582598
+        ],
+        [
+          0.5922379,
+          0.6960908
+        ]
+      ],
+      "center_normalized": [
+        0.6111643,
+        0.5517907
+      ],
+      "bbox_normalized": [
+        0.5897177,
+        0.407314,
+        0.0433468,
+        0.2900378
+      ]
+    },
+    {
+      "bbox_px": [
+        1272,
+        181,
+        92,
+        117
+      ],
+      "center_px": [
+        1317.45,
+        239.17
+      ],
+      "polygon_px": [
+        [
+          1272.0,
+          215.0
+        ],
+        [
+          1362.0,
+          183.0
+        ],
+        [
+          1363.0,
+          263.0
+        ],
+        [
+          1272.0,
+          295.0
+        ]
+      ],
+      "id": "SLAT_4_TRANSIT",
+      "device": "slat",
+      "device_number": 4,
+      "state": "transit",
+      "bank": "right",
+      "column_from_left": 3,
+      "color_when_active": "amber",
+      "polygon_normalized": [
+        [
+          0.641129,
+          0.2711223
+        ],
+        [
+          0.6864919,
+          0.2307692
+        ],
+        [
+          0.686996,
+          0.331652
+        ],
+        [
+          0.641129,
+          0.372005
+        ]
+      ],
+      "center_normalized": [
+        0.6640373,
+        0.3016015
+      ],
+      "bbox_normalized": [
+        0.641129,
+        0.2282472,
+        0.046371,
+        0.147541
+      ]
+    },
+    {
+      "bbox_px": [
+        1271,
+        284,
+        94,
+        128
+      ],
+      "center_px": [
+        1317.71,
+        347.45
+      ],
+      "polygon_px": [
+        [
+          1275.0,
+          314.0
+        ],
+        [
+          1360.0,
+          284.0
+        ],
+        [
+          1364.0,
+          378.0
+        ],
+        [
+          1272.0,
+          409.0
+        ]
+      ],
+      "id": "SLAT_4_EXT",
+      "device": "slat",
+      "device_number": 4,
+      "state": "ext",
+      "bank": "right",
+      "column_from_left": 3,
+      "color_when_active": "green",
+      "polygon_normalized": [
+        [
+          0.6426411,
+          0.3959647
+        ],
+        [
+          0.6854839,
+          0.3581337
+        ],
+        [
+          0.6875,
+          0.4766709
+        ],
+        [
+          0.641129,
+          0.5157629
+        ]
+      ],
+      "center_normalized": [
+        0.6641683,
+        0.4381463
+      ],
+      "bbox_normalized": [
+        0.640625,
+        0.3581337,
+        0.047379,
+        0.1614124
+      ]
+    },
+    {
+      "bbox_px": [
+        1272,
+        398,
+        94,
+        121
+      ],
+      "center_px": [
+        1318.04,
+        457.8
+      ],
+      "polygon_px": [
+        [
+          1272.0,
+          431.0
+        ],
+        [
+          1364.0,
+          400.0
+        ],
+        [
+          1365.0,
+          483.0
+        ],
+        [
+          1275.0,
+          518.0
+        ]
+      ],
+      "id": "SLAT_4_FULL_EXT",
+      "device": "slat",
+      "device_number": 4,
+      "state": "full_ext",
+      "bank": "right",
+      "column_from_left": 3,
+      "color_when_active": "green",
+      "polygon_normalized": [
+        [
+          0.641129,
+          0.5435057
+        ],
+        [
+          0.6875,
+          0.5044136
+        ],
+        [
+          0.688004,
+          0.6090794
+        ],
+        [
+          0.6426411,
+          0.6532156
+        ]
+      ],
+      "center_normalized": [
+        0.6643347,
+        0.5773014
+      ],
+      "bbox_normalized": [
+        0.641129,
+        0.5018916,
+        0.047379,
+        0.1525851
+      ]
+    },
+    {
+      "bbox_px": [
+        1379,
+        140,
+        91,
+        120
+      ],
+      "center_px": [
+        1424.07,
+        199.64
+      ],
+      "polygon_px": [
+        [
+          1379.0,
+          175.0
+        ],
+        [
+          1467.0,
+          140.0
+        ],
+        [
+          1469.0,
+          225.0
+        ],
+        [
+          1381.0,
+          259.0
+        ]
+      ],
+      "id": "SLAT_5_TRANSIT",
+      "device": "slat",
+      "device_number": 5,
+      "state": "transit",
+      "bank": "right",
+      "column_from_left": 4,
+      "color_when_active": "amber",
+      "polygon_normalized": [
+        [
+          0.6950605,
+          0.220681
+        ],
+        [
+          0.7394153,
+          0.1765448
+        ],
+        [
+          0.7404234,
+          0.2837327
+        ],
+        [
+          0.6960685,
+          0.3266078
+        ]
+      ],
+      "center_normalized": [
+        0.7177772,
+        0.2517528
+      ],
+      "bbox_normalized": [
+        0.6950605,
+        0.1765448,
+        0.0458669,
+        0.1513241
+      ]
+    },
+    {
+      "bbox_px": [
+        1379,
+        246,
+        91,
+        126
+      ],
+      "center_px": [
+        1424.35,
+        308.35
+      ],
+      "polygon_px": [
+        [
+          1379.0,
+          278.0
+        ],
+        [
+          1469.0,
+          248.0
+        ],
+        [
+          1469.0,
+          338.0
+        ],
+        [
+          1381.0,
+          369.0
+        ]
+      ],
+      "id": "SLAT_5_EXT",
+      "device": "slat",
+      "device_number": 5,
+      "state": "ext",
+      "bank": "right",
+      "column_from_left": 4,
+      "color_when_active": "green",
+      "polygon_normalized": [
+        [
+          0.6950605,
+          0.3505675
+        ],
+        [
+          0.7404234,
+          0.3127364
+        ],
+        [
+          0.7404234,
+          0.4262295
+        ],
+        [
+          0.6960685,
+          0.4653216
+        ]
+      ],
+      "center_normalized": [
+        0.7179183,
+        0.3888398
+      ],
+      "bbox_normalized": [
+        0.6950605,
+        0.3102144,
+        0.0458669,
+        0.1588903
+      ]
+    },
+    {
+      "bbox_px": [
+        1380,
+        359,
+        90,
+        121
+      ],
+      "center_px": [
+        1425.04,
+        419.15
+      ],
+      "polygon_px": [
+        [
+          1380.0,
+          392.0
+        ],
+        [
+          1469.0,
+          361.0
+        ],
+        [
+          1469.0,
+          447.0
+        ],
+        [
+          1381.0,
+          477.0
+        ]
+      ],
+      "id": "SLAT_5_FULL_EXT",
+      "device": "slat",
+      "device_number": 5,
+      "state": "full_ext",
+      "bank": "right",
+      "column_from_left": 4,
+      "color_when_active": "green",
+      "polygon_normalized": [
+        [
+          0.6955645,
+          0.4943253
+        ],
+        [
+          0.7404234,
+          0.4552333
+        ],
+        [
+          0.7404234,
+          0.5636822
+        ],
+        [
+          0.6960685,
+          0.6015132
+        ]
+      ],
+      "center_normalized": [
+        0.7182661,
+        0.5285624
+      ],
+      "bbox_normalized": [
+        0.6955645,
+        0.4527112,
+        0.0453629,
+        0.1525851
+      ]
+    },
+    {
+      "bbox_px": [
+        1485,
+        105,
+        81,
+        116
+      ],
+      "center_px": [
+        1525.18,
+        162.56
+      ],
+      "polygon_px": [
+        [
+          1485.0,
+          134.0
+        ],
+        [
+          1564.0,
+          107.0
+        ],
+        [
+          1565.0,
+          191.0
+        ],
+        [
+          1486.0,
+          218.0
+        ]
+      ],
+      "id": "SLAT_6_TRANSIT",
+      "device": "slat",
+      "device_number": 6,
+      "state": "transit",
+      "bank": "right",
+      "column_from_left": 5,
+      "color_when_active": "amber",
+      "polygon_normalized": [
+        [
+          0.7484879,
+          0.1689786
+        ],
+        [
+          0.7883065,
+          0.1349306
+        ],
+        [
+          0.7888105,
+          0.2408575
+        ],
+        [
+          0.7489919,
+          0.2749054
+        ]
+      ],
+      "center_normalized": [
+        0.7687399,
+        0.2049937
+      ],
+      "bbox_normalized": [
+        0.7484879,
+        0.1324086,
+        0.0408266,
+        0.1462799
+      ]
+    },
+    {
+      "bbox_px": [
+        1486,
+        211,
+        81,
+        123
+      ],
+      "center_px": [
+        1525.77,
+        271.98
+      ],
+      "polygon_px": [
+        [
+          1486.0,
+          240.0
+        ],
+        [
+          1565.0,
+          213.0
+        ],
+        [
+          1566.0,
+          303.0
+        ],
+        [
+          1488.0,
+          333.0
+        ]
+      ],
+      "id": "SLAT_6_EXT",
+      "device": "slat",
+      "device_number": 6,
+      "state": "ext",
+      "bank": "right",
+      "column_from_left": 5,
+      "color_when_active": "green",
+      "polygon_normalized": [
+        [
+          0.7489919,
+          0.3026482
+        ],
+        [
+          0.7888105,
+          0.2686003
+        ],
+        [
+          0.7893145,
+          0.3820933
+        ],
+        [
+          0.75,
+          0.4199243
+        ]
+      ],
+      "center_normalized": [
+        0.7690373,
+        0.342976
+      ],
+      "bbox_normalized": [
+        0.7489919,
+        0.2660782,
+        0.0408266,
+        0.1551072
+      ]
+    },
+    {
+      "bbox_px": [
+        1486,
+        323,
+        81,
+        120
+      ],
+      "center_px": [
+        1526.05,
+        382.98
+      ],
+      "polygon_px": [
+        [
+          1486.0,
+          353.0
+        ],
+        [
+          1564.0,
+          323.0
+        ],
+        [
+          1566.0,
+          413.0
+        ],
+        [
+          1486.0,
+          440.0
+        ]
+      ],
+      "id": "SLAT_6_FULL_EXT",
+      "device": "slat",
+      "device_number": 6,
+      "state": "full_ext",
+      "bank": "right",
+      "column_from_left": 5,
+      "color_when_active": "green",
+      "polygon_normalized": [
+        [
+          0.7489919,
+          0.445145
+        ],
+        [
+          0.7883065,
+          0.407314
+        ],
+        [
+          0.7893145,
+          0.5208071
+        ],
+        [
+          0.7489919,
+          0.554855
+        ]
+      ],
+      "center_normalized": [
+        0.7691784,
+        0.4829508
+      ],
+      "bbox_normalized": [
+        0.7489919,
+        0.407314,
+        0.0408266,
+        0.1513241
+      ]
+    }
+  ],
+  "button": {
+    "id": "TEST_BUTTON",
+    "center_px": [
+      990.5,
+      688.87
+    ],
+    "bbox_px": [
+      922.54,
+      620.78,
+      134.93,
+      139.18
+    ],
+    "center_normalized": [
+      0.49924433249370276,
+      0.8686868686868687
+    ],
+    "note": "Empty circular mounting position in restored image, with no button installed."
+  },
+  "insertion": "Use each polygon as a clipping mask for its lamp. Normalized coordinates permit proportional resizing. Do not use original screenshot coordinates on the restored asset.",
+  "geometry": "Each bank has five columns. Outer three slat columns have 3 apertures each; inner two flap columns have 2 apertures each, including an undivided tall lower cell. Total 26."
+}

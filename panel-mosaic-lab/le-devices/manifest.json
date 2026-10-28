@@ -1,16 +1,16 @@
 {
   "schema": "b737.le-devices-front-end.v1",
-  "version": "LEDEV-0005",
+  "version": "LEDEV-0006",
   "scope": "front-end-only",
-  "source": "Owner-supplied 432×195 LE DEVICES photographic panel. Original non-lamp pixels preserved: font, screws, material, perimeter; only colored lamp interiors are darkened for independent SVG reillumination.",
+  "source": "Owner-approved final restored panel from this conversation; exact PNG bytes copied without repainting. Lamp polygons measured from its 26 empty apertures.",
   "sourceImageSize": [
-    432,
-    195
+    1984,
+    793
   ],
-  "background": "panel-photo-unlit-v5.webp",
-  "testButton": "Original owner-photo recessed TEST socket (transparent momentary interactive hit target)",
-  "windowCount": 32,
-  "columns": 12,
+  "background": "panel-owner-restored-v6.png",
+  "testButton": "recessed-test-button.svg; black momentary hardware centered on measured empty socket",
+  "windowCount": 26,
+  "columns": 10,
   "states": [
     "RETRACTED",
     "TRANSIT",
@@ -18,23 +18,21 @@
     "FULL_EXT"
   ],
   "illumination": "BRIGHT (default); DIM optional",
-  "physicalTest": "momentary recessed button; override 36 lamps until release",
+  "physicalTest": "momentary recessed button; illuminate all 26 windows while held, restore exact prior lamp states on release",
   "deviceOrder": {
     "leftOutboardToInboard": [
       "SLAT_1",
       "SLAT_2",
       "SLAT_3",
-      "SLAT_4",
       "FLAP_1",
       "FLAP_2"
     ],
     "rightInboardToOutboard": [
       "FLAP_3",
       "FLAP_4",
+      "SLAT_4",
       "SLAT_5",
-      "SLAT_6",
-      "SLAT_7",
-      "SLAT_8"
+      "SLAT_6"
     ]
   },
   "windows": [
@@ -44,11 +42,24 @@
       "level": "TRANSIT",
       "color": "AMBER",
       "defaultLit": false,
-      "assets": {
-        "BRIGHT": "segments/LE_SLAT_1_TRANSIT_BRIGHT.svg",
-        "DIM": "segments/LE_SLAT_1_TRANSIT_DIM.svg",
-        "OFF": "segments/LE_SLAT_1_TRANSIT_OFF.svg"
-      }
+      "polygon": [
+        [
+          417.0,
+          106.0
+        ],
+        [
+          497.0,
+          134.0
+        ],
+        [
+          492.0,
+          219.0
+        ],
+        [
+          417.0,
+          190.0
+        ]
+      ]
     },
     {
       "id": "LE_SLAT_1_EXT",
@@ -56,11 +67,24 @@
       "level": "EXT",
       "color": "GREEN",
       "defaultLit": false,
-      "assets": {
-        "BRIGHT": "segments/LE_SLAT_1_EXT_BRIGHT.svg",
-        "DIM": "segments/LE_SLAT_1_EXT_DIM.svg",
-        "OFF": "segments/LE_SLAT_1_EXT_OFF.svg"
-      }
+      "polygon": [
+        [
+          419.0,
+          210.0
+        ],
+        [
+          496.0,
+          239.0
+        ],
+        [
+          494.0,
+          334.0
+        ],
+        [
+          417.0,
+          304.0
+        ]
+      ]
     },
     {
       "id": "LE_SLAT_1_FULL_EXT",
@@ -68,11 +92,24 @@
       "level": "FULL_EXT",
       "color": "GREEN",
       "defaultLit": false,
-      "assets": {
-        "BRIGHT": "segments/LE_SLAT_1_FULL_EXT_BRIGHT.svg",
-        "DIM": "segments/LE_SLAT_1_FULL_EXT_DIM.svg",
-        "OFF": "segments/LE_SLAT_1_FULL_EXT_OFF.svg"
-      }
+      "polygon": [
+        [
+          421.0,
+          325.0
+        ],
+        [
+          496.0,
+          353.0
+        ],
+        [
+          494.0,
+          442.0
+        ],
+        [
+          416.0,
+          413.0
+        ]
+      ]
     },
     {
       "id": "LE_SLAT_2_TRANSIT",
@@ -80,11 +117,24 @@
       "level": "TRANSIT",
       "color": "AMBER",
       "defaultLit": false,
-      "assets": {
-        "BRIGHT": "segments/LE_SLAT_2_TRANSIT_BRIGHT.svg",
-        "DIM": "segments/LE_SLAT_2_TRANSIT_DIM.svg",
-        "OFF": "segments/LE_SLAT_2_TRANSIT_OFF.svg"
-      }
+      "polygon": [
+        [
+          514.0,
+          142.0
+        ],
+        [
+          607.0,
+          175.0
+        ],
+        [
+          604.0,
+          259.0
+        ],
+        [
+          513.0,
+          225.0
+        ]
+      ]
     },
     {
       "id": "LE_SLAT_2_EXT",
@@ -92,11 +142,24 @@
       "level": "EXT",
       "color": "GREEN",
       "defaultLit": false,
-      "assets": {
-        "BRIGHT": "segments/LE_SLAT_2_EXT_BRIGHT.svg",
-        "DIM": "segments/LE_SLAT_2_EXT_DIM.svg",
-        "OFF": "segments/LE_SLAT_2_EXT_OFF.svg"
-      }
+      "polygon": [
+        [
+          513.0,
+          247.0
+        ],
+        [
+          606.0,
+          278.0
+        ],
+        [
+          601.0,
+          372.0
+        ],
+        [
+          513.0,
+          339.0
+        ]
+      ]
     },
     {
       "id": "LE_SLAT_2_FULL_EXT",
@@ -104,11 +167,24 @@
       "level": "FULL_EXT",
       "color": "GREEN",
       "defaultLit": false,
-      "assets": {
-        "BRIGHT": "segments/LE_SLAT_2_FULL_EXT_BRIGHT.svg",
-        "DIM": "segments/LE_SLAT_2_FULL_EXT_DIM.svg",
-        "OFF": "segments/LE_SLAT_2_FULL_EXT_OFF.svg"
-      }
+      "polygon": [
+        [
+          513.0,
+          361.0
+        ],
+        [
+          605.0,
+          393.0
+        ],
+        [
+          602.0,
+          480.0
+        ],
+        [
+          513.0,
+          447.0
+        ]
+      ]
     },
     {
       "id": "LE_SLAT_3_TRANSIT",
@@ -116,11 +192,24 @@
       "level": "TRANSIT",
       "color": "AMBER",
       "defaultLit": false,
-      "assets": {
-        "BRIGHT": "segments/LE_SLAT_3_TRANSIT_BRIGHT.svg",
-        "DIM": "segments/LE_SLAT_3_TRANSIT_DIM.svg",
-        "OFF": "segments/LE_SLAT_3_TRANSIT_OFF.svg"
-      }
+      "polygon": [
+        [
+          624.0,
+          182.0
+        ],
+        [
+          718.0,
+          216.0
+        ],
+        [
+          716.0,
+          298.0
+        ],
+        [
+          622.0,
+          263.0
+        ]
+      ]
     },
     {
       "id": "LE_SLAT_3_EXT",
@@ -128,11 +217,24 @@
       "level": "EXT",
       "color": "GREEN",
       "defaultLit": false,
-      "assets": {
-        "BRIGHT": "segments/LE_SLAT_3_EXT_BRIGHT.svg",
-        "DIM": "segments/LE_SLAT_3_EXT_DIM.svg",
-        "OFF": "segments/LE_SLAT_3_EXT_OFF.svg"
-      }
+      "polygon": [
+        [
+          625.0,
+          283.0
+        ],
+        [
+          718.0,
+          318.0
+        ],
+        [
+          718.0,
+          412.0
+        ],
+        [
+          621.0,
+          379.0
+        ]
+      ]
     },
     {
       "id": "LE_SLAT_3_FULL_EXT",
@@ -140,47 +242,24 @@
       "level": "FULL_EXT",
       "color": "GREEN",
       "defaultLit": false,
-      "assets": {
-        "BRIGHT": "segments/LE_SLAT_3_FULL_EXT_BRIGHT.svg",
-        "DIM": "segments/LE_SLAT_3_FULL_EXT_DIM.svg",
-        "OFF": "segments/LE_SLAT_3_FULL_EXT_OFF.svg"
-      }
-    },
-    {
-      "id": "LE_SLAT_4_TRANSIT",
-      "device": "SLAT_4",
-      "level": "TRANSIT",
-      "color": "AMBER",
-      "defaultLit": false,
-      "assets": {
-        "BRIGHT": "segments/LE_SLAT_4_TRANSIT_BRIGHT.svg",
-        "DIM": "segments/LE_SLAT_4_TRANSIT_DIM.svg",
-        "OFF": "segments/LE_SLAT_4_TRANSIT_OFF.svg"
-      }
-    },
-    {
-      "id": "LE_SLAT_4_EXT",
-      "device": "SLAT_4",
-      "level": "EXT",
-      "color": "GREEN",
-      "defaultLit": false,
-      "assets": {
-        "BRIGHT": "segments/LE_SLAT_4_EXT_BRIGHT.svg",
-        "DIM": "segments/LE_SLAT_4_EXT_DIM.svg",
-        "OFF": "segments/LE_SLAT_4_EXT_OFF.svg"
-      }
-    },
-    {
-      "id": "LE_SLAT_4_FULL_EXT",
-      "device": "SLAT_4",
-      "level": "FULL_EXT",
-      "color": "GREEN",
-      "defaultLit": false,
-      "assets": {
-        "BRIGHT": "segments/LE_SLAT_4_FULL_EXT_BRIGHT.svg",
-        "DIM": "segments/LE_SLAT_4_FULL_EXT_DIM.svg",
-        "OFF": "segments/LE_SLAT_4_FULL_EXT_OFF.svg"
-      }
+      "polygon": [
+        [
+          621.0,
+          401.0
+        ],
+        [
+          718.0,
+          434.0
+        ],
+        [
+          715.0,
+          520.0
+        ],
+        [
+          621.0,
+          485.0
+        ]
+      ]
     },
     {
       "id": "LE_FLAP_1_TRANSIT",
@@ -188,11 +267,24 @@
       "level": "TRANSIT",
       "color": "AMBER",
       "defaultLit": false,
-      "assets": {
-        "BRIGHT": "segments/LE_FLAP_1_TRANSIT_BRIGHT.svg",
-        "DIM": "segments/LE_FLAP_1_TRANSIT_DIM.svg",
-        "OFF": "segments/LE_FLAP_1_TRANSIT_OFF.svg"
-      }
+      "polygon": [
+        [
+          735.0,
+          224.0
+        ],
+        [
+          819.0,
+          254.0
+        ],
+        [
+          818.0,
+          331.0
+        ],
+        [
+          735.0,
+          303.0
+        ]
+      ]
     },
     {
       "id": "LE_FLAP_1_FULL_EXT",
@@ -200,11 +292,24 @@
       "level": "FULL_EXT",
       "color": "GREEN",
       "defaultLit": false,
-      "assets": {
-        "BRIGHT": "segments/LE_FLAP_1_FULL_EXT_BRIGHT.svg",
-        "DIM": "segments/LE_FLAP_1_FULL_EXT_DIM.svg",
-        "OFF": "segments/LE_FLAP_1_FULL_EXT_OFF.svg"
-      }
+      "polygon": [
+        [
+          735.0,
+          325.0
+        ],
+        [
+          818.0,
+          353.0
+        ],
+        [
+          817.0,
+          553.0
+        ],
+        [
+          735.0,
+          525.0
+        ]
+      ]
     },
     {
       "id": "LE_FLAP_2_TRANSIT",
@@ -212,11 +317,24 @@
       "level": "TRANSIT",
       "color": "AMBER",
       "defaultLit": false,
-      "assets": {
-        "BRIGHT": "segments/LE_FLAP_2_TRANSIT_BRIGHT.svg",
-        "DIM": "segments/LE_FLAP_2_TRANSIT_DIM.svg",
-        "OFF": "segments/LE_FLAP_2_TRANSIT_OFF.svg"
-      }
+      "polygon": [
+        [
+          839.0,
+          260.0
+        ],
+        [
+          907.0,
+          285.0
+        ],
+        [
+          912.0,
+          365.0
+        ],
+        [
+          835.0,
+          339.0
+        ]
+      ]
     },
     {
       "id": "LE_FLAP_2_FULL_EXT",
@@ -224,11 +342,24 @@
       "level": "FULL_EXT",
       "color": "GREEN",
       "defaultLit": false,
-      "assets": {
-        "BRIGHT": "segments/LE_FLAP_2_FULL_EXT_BRIGHT.svg",
-        "DIM": "segments/LE_FLAP_2_FULL_EXT_DIM.svg",
-        "OFF": "segments/LE_FLAP_2_FULL_EXT_OFF.svg"
-      }
+      "polygon": [
+        [
+          839.0,
+          359.0
+        ],
+        [
+          912.0,
+          387.0
+        ],
+        [
+          912.0,
+          585.0
+        ],
+        [
+          833.0,
+          560.0
+        ]
+      ]
     },
     {
       "id": "LE_FLAP_3_TRANSIT",
@@ -236,11 +367,24 @@
       "level": "TRANSIT",
       "color": "AMBER",
       "defaultLit": false,
-      "assets": {
-        "BRIGHT": "segments/LE_FLAP_3_TRANSIT_BRIGHT.svg",
-        "DIM": "segments/LE_FLAP_3_TRANSIT_DIM.svg",
-        "OFF": "segments/LE_FLAP_3_TRANSIT_OFF.svg"
-      }
+      "polygon": [
+        [
+          1075.0,
+          290.0
+        ],
+        [
+          1154.0,
+          262.0
+        ],
+        [
+          1154.0,
+          338.0
+        ],
+        [
+          1077.0,
+          368.0
+        ]
+      ]
     },
     {
       "id": "LE_FLAP_3_FULL_EXT",
@@ -248,11 +392,24 @@
       "level": "FULL_EXT",
       "color": "GREEN",
       "defaultLit": false,
-      "assets": {
-        "BRIGHT": "segments/LE_FLAP_3_FULL_EXT_BRIGHT.svg",
-        "DIM": "segments/LE_FLAP_3_FULL_EXT_DIM.svg",
-        "OFF": "segments/LE_FLAP_3_FULL_EXT_OFF.svg"
-      }
+      "polygon": [
+        [
+          1079.0,
+          385.0
+        ],
+        [
+          1154.0,
+          361.0
+        ],
+        [
+          1154.0,
+          558.0
+        ],
+        [
+          1074.0,
+          585.0
+        ]
+      ]
     },
     {
       "id": "LE_FLAP_4_TRANSIT",
@@ -260,11 +417,24 @@
       "level": "TRANSIT",
       "color": "AMBER",
       "defaultLit": false,
-      "assets": {
-        "BRIGHT": "segments/LE_FLAP_4_TRANSIT_BRIGHT.svg",
-        "DIM": "segments/LE_FLAP_4_TRANSIT_DIM.svg",
-        "OFF": "segments/LE_FLAP_4_TRANSIT_OFF.svg"
-      }
+      "polygon": [
+        [
+          1170.0,
+          254.0
+        ],
+        [
+          1253.0,
+          221.0
+        ],
+        [
+          1255.0,
+          302.0
+        ],
+        [
+          1171.0,
+          331.0
+        ]
+      ]
     },
     {
       "id": "LE_FLAP_4_FULL_EXT",
@@ -272,11 +442,99 @@
       "level": "FULL_EXT",
       "color": "GREEN",
       "defaultLit": false,
-      "assets": {
-        "BRIGHT": "segments/LE_FLAP_4_FULL_EXT_BRIGHT.svg",
-        "DIM": "segments/LE_FLAP_4_FULL_EXT_DIM.svg",
-        "OFF": "segments/LE_FLAP_4_FULL_EXT_OFF.svg"
-      }
+      "polygon": [
+        [
+          1170.0,
+          354.0
+        ],
+        [
+          1255.0,
+          325.0
+        ],
+        [
+          1255.0,
+          522.0
+        ],
+        [
+          1175.0,
+          552.0
+        ]
+      ]
+    },
+    {
+      "id": "LE_SLAT_4_TRANSIT",
+      "device": "SLAT_4",
+      "level": "TRANSIT",
+      "color": "AMBER",
+      "defaultLit": false,
+      "polygon": [
+        [
+          1272.0,
+          215.0
+        ],
+        [
+          1362.0,
+          183.0
+        ],
+        [
+          1363.0,
+          263.0
+        ],
+        [
+          1272.0,
+          295.0
+        ]
+      ]
+    },
+    {
+      "id": "LE_SLAT_4_EXT",
+      "device": "SLAT_4",
+      "level": "EXT",
+      "color": "GREEN",
+      "defaultLit": false,
+      "polygon": [
+        [
+          1275.0,
+          314.0
+        ],
+        [
+          1360.0,
+          284.0
+        ],
+        [
+          1364.0,
+          378.0
+        ],
+        [
+          1272.0,
+          409.0
+        ]
+      ]
+    },
+    {
+      "id": "LE_SLAT_4_FULL_EXT",
+      "device": "SLAT_4",
+      "level": "FULL_EXT",
+      "color": "GREEN",
+      "defaultLit": false,
+      "polygon": [
+        [
+          1272.0,
+          431.0
+        ],
+        [
+          1364.0,
+          400.0
+        ],
+        [
+          1365.0,
+          483.0
+        ],
+        [
+          1275.0,
+          518.0
+        ]
+      ]
     },
     {
       "id": "LE_SLAT_5_TRANSIT",
@@ -284,11 +542,24 @@
       "level": "TRANSIT",
       "color": "AMBER",
       "defaultLit": false,
-      "assets": {
-        "BRIGHT": "segments/LE_SLAT_5_TRANSIT_BRIGHT.svg",
-        "DIM": "segments/LE_SLAT_5_TRANSIT_DIM.svg",
-        "OFF": "segments/LE_SLAT_5_TRANSIT_OFF.svg"
-      }
+      "polygon": [
+        [
+          1379.0,
+          175.0
+        ],
+        [
+          1467.0,
+          140.0
+        ],
+        [
+          1469.0,
+          225.0
+        ],
+        [
+          1381.0,
+          259.0
+        ]
+      ]
     },
     {
       "id": "LE_SLAT_5_EXT",
@@ -296,11 +567,24 @@
       "level": "EXT",
       "color": "GREEN",
       "defaultLit": false,
-      "assets": {
-        "BRIGHT": "segments/LE_SLAT_5_EXT_BRIGHT.svg",
-        "DIM": "segments/LE_SLAT_5_EXT_DIM.svg",
-        "OFF": "segments/LE_SLAT_5_EXT_OFF.svg"
-      }
+      "polygon": [
+        [
+          1379.0,
+          278.0
+        ],
+        [
+          1469.0,
+          248.0
+        ],
+        [
+          1469.0,
+          338.0
+        ],
+        [
+          1381.0,
+          369.0
+        ]
+      ]
     },
     {
       "id": "LE_SLAT_5_FULL_EXT",
@@ -308,11 +592,24 @@
       "level": "FULL_EXT",
       "color": "GREEN",
       "defaultLit": false,
-      "assets": {
-        "BRIGHT": "segments/LE_SLAT_5_FULL_EXT_BRIGHT.svg",
-        "DIM": "segments/LE_SLAT_5_FULL_EXT_DIM.svg",
-        "OFF": "segments/LE_SLAT_5_FULL_EXT_OFF.svg"
-      }
+      "polygon": [
+        [
+          1380.0,
+          392.0
+        ],
+        [
+          1469.0,
+          361.0
+        ],
+        [
+          1469.0,
+          447.0
+        ],
+        [
+          1381.0,
+          477.0
+        ]
+      ]
     },
     {
       "id": "LE_SLAT_6_TRANSIT",
@@ -320,11 +617,24 @@
       "level": "TRANSIT",
       "color": "AMBER",
       "defaultLit": false,
-      "assets": {
-        "BRIGHT": "segments/LE_SLAT_6_TRANSIT_BRIGHT.svg",
-        "DIM": "segments/LE_SLAT_6_TRANSIT_DIM.svg",
-        "OFF": "segments/LE_SLAT_6_TRANSIT_OFF.svg"
-      }
+      "polygon": [
+        [
+          1485.0,
+          134.0
+        ],
+        [
+          1564.0,
+          107.0
+        ],
+        [
+          1565.0,
+          191.0
+        ],
+        [
+          1486.0,
+          218.0
+        ]
+      ]
     },
     {
       "id": "LE_SLAT_6_EXT",
@@ -332,11 +642,24 @@
       "level": "EXT",
       "color": "GREEN",
       "defaultLit": false,
-      "assets": {
-        "BRIGHT": "segments/LE_SLAT_6_EXT_BRIGHT.svg",
-        "DIM": "segments/LE_SLAT_6_EXT_DIM.svg",
-        "OFF": "segments/LE_SLAT_6_EXT_OFF.svg"
-      }
+      "polygon": [
+        [
+          1486.0,
+          240.0
+        ],
+        [
+          1565.0,
+          213.0
+        ],
+        [
+          1566.0,
+          303.0
+        ],
+        [
+          1488.0,
+          333.0
+        ]
+      ]
     },
     {
       "id": "LE_SLAT_6_FULL_EXT",
@@ -344,113 +667,52 @@
       "level": "FULL_EXT",
       "color": "GREEN",
       "defaultLit": false,
-      "assets": {
-        "BRIGHT": "segments/LE_SLAT_6_FULL_EXT_BRIGHT.svg",
-        "DIM": "segments/LE_SLAT_6_FULL_EXT_DIM.svg",
-        "OFF": "segments/LE_SLAT_6_FULL_EXT_OFF.svg"
-      }
-    },
-    {
-      "id": "LE_SLAT_7_TRANSIT",
-      "device": "SLAT_7",
-      "level": "TRANSIT",
-      "color": "AMBER",
-      "defaultLit": false,
-      "assets": {
-        "BRIGHT": "segments/LE_SLAT_7_TRANSIT_BRIGHT.svg",
-        "DIM": "segments/LE_SLAT_7_TRANSIT_DIM.svg",
-        "OFF": "segments/LE_SLAT_7_TRANSIT_OFF.svg"
-      }
-    },
-    {
-      "id": "LE_SLAT_7_EXT",
-      "device": "SLAT_7",
-      "level": "EXT",
-      "color": "GREEN",
-      "defaultLit": false,
-      "assets": {
-        "BRIGHT": "segments/LE_SLAT_7_EXT_BRIGHT.svg",
-        "DIM": "segments/LE_SLAT_7_EXT_DIM.svg",
-        "OFF": "segments/LE_SLAT_7_EXT_OFF.svg"
-      }
-    },
-    {
-      "id": "LE_SLAT_7_FULL_EXT",
-      "device": "SLAT_7",
-      "level": "FULL_EXT",
-      "color": "GREEN",
-      "defaultLit": false,
-      "assets": {
-        "BRIGHT": "segments/LE_SLAT_7_FULL_EXT_BRIGHT.svg",
-        "DIM": "segments/LE_SLAT_7_FULL_EXT_DIM.svg",
-        "OFF": "segments/LE_SLAT_7_FULL_EXT_OFF.svg"
-      }
-    },
-    {
-      "id": "LE_SLAT_8_TRANSIT",
-      "device": "SLAT_8",
-      "level": "TRANSIT",
-      "color": "AMBER",
-      "defaultLit": false,
-      "assets": {
-        "BRIGHT": "segments/LE_SLAT_8_TRANSIT_BRIGHT.svg",
-        "DIM": "segments/LE_SLAT_8_TRANSIT_DIM.svg",
-        "OFF": "segments/LE_SLAT_8_TRANSIT_OFF.svg"
-      }
-    },
-    {
-      "id": "LE_SLAT_8_EXT",
-      "device": "SLAT_8",
-      "level": "EXT",
-      "color": "GREEN",
-      "defaultLit": false,
-      "assets": {
-        "BRIGHT": "segments/LE_SLAT_8_EXT_BRIGHT.svg",
-        "DIM": "segments/LE_SLAT_8_EXT_DIM.svg",
-        "OFF": "segments/LE_SLAT_8_EXT_OFF.svg"
-      }
-    },
-    {
-      "id": "LE_SLAT_8_FULL_EXT",
-      "device": "SLAT_8",
-      "level": "FULL_EXT",
-      "color": "GREEN",
-      "defaultLit": false,
-      "assets": {
-        "BRIGHT": "segments/LE_SLAT_8_FULL_EXT_BRIGHT.svg",
-        "DIM": "segments/LE_SLAT_8_FULL_EXT_DIM.svg",
-        "OFF": "segments/LE_SLAT_8_FULL_EXT_OFF.svg"
-      }
+      "polygon": [
+        [
+          1486.0,
+          353.0
+        ],
+        [
+          1564.0,
+          323.0
+        ],
+        [
+          1566.0,
+          413.0
+        ],
+        [
+          1486.0,
+          440.0
+        ]
+      ]
     }
   ],
   "deployment": {
     "module": "panel-mosaic-lab/le-devices/panel.js",
     "mounts": [
-      "panel-mosaic-lab/cockpit/overhead-stage.html",
-      "panel-mosaic-lab/all-overhead/index.html"
+      "panel-mosaic-lab/cockpit/overhead-stage.html"
     ],
     "atlas": "UPPER",
-    "coordinateStatus": "provisional visual fit; atlas source image ROI not independently measured",
-    "version": "LEDEV-0003",
-    "unifiedMount": "panel-mosaic-lab/cockpit/overhead-stage.html"
+    "version": "LEDEV-0006",
+    "coordinateStatus": "Registered to physical LE DEVICES plate in 1731x909 frozen OH01-06 background",
+    "nativePanelRect": {
+      "x": 3,
+      "y": 540,
+      "w": 383,
+      "h": 188
+    }
   },
   "protectedAssets": "Locked OH01-06 source and all guarded switches remain untouched.",
   "backend": "Not connected. Future aircraft model writes via B737LeadingEdgeDevices.setDevice(id,state).",
   "greenWindowRules": {
-    "flaps": "FLAP_1 through FLAP_4: exactly one contiguous green FULL_EXT lamp each, row=1 with span=2, same total height as two stacked SLAT green lamps, not two independent lamps.",
-    "slats": "SLAT_1 through SLAT_8: separate EXT and FULL_EXT lamps in rows 1 and 2, both regular height.",
-    "transit": "All twelve AMBER lamps unchanged in physical location and count."
+    "flaps": "Four continuous tall FULL_EXT green apertures, one per FLAP_1..4.",
+    "slats": "Six slats: 1,2,3 left and 4,5,6 right. Each has separate EXT and FULL_EXT green apertures.",
+    "transit": "Ten separate amber TRANSIT apertures."
   },
   "qa": {
-    "sourcePhoto": "Owner screenshot compared for metal tone, panel text, screw locations, and recessed test",
-    "upperPlacement": "provisional until actual unified screenshot reinspection",
-    "unifiedLocation": "Measured approximate fit from owner overhead screenshot (OH01 lower segment). Atlas x=.001 y=.622 w=.220 h=.207; visual review still required.",
-    "sourcePaint": "charcoal grey reference #525152 (not blue grey), 8 recessed screw heads and central legend layout",
-    "flapLampHeight": "2 green SLAT cells (span=2), starting row 1",
-    "unifiedMount": "inside .atlas-piece[data-key=UPPER] to ensure correct overlay and retained viewport positioning",
-    "photographicBackground": "Exact supplied reference photo with only lamp banks darkened (webp q75); no synthetic typography, screws or material gradients",
-    "geometry": "Lamp bank polygons registered to original photo with 25.5px row stride, 25px slat green height, one 50.5px FLAP green segment",
-    "unifiedOverlay": "Inside locked UPPER photo frame, x=.001, y=.616, w=.220, h=.207; 0.006 UPPER-height upward correction for exposed source lettering; requires live visual signoff.",
-    "testButton": "Photo-native recessed button with invisible click target"
+    "imageSha256": "e53e1dea31362cec0a706f9300b4c5e6c8cdcc9fa085fca2bddddd34f977f059",
+    "geometry": "26 polygons traced from approved PNG; source coordinate file retained separately.",
+    "testButton": "Black recessed SVG centered at normalized (0.499244,0.868687), physical press and hold plus keyboard and global visual test.",
+    "registration": "Native source panel x=3,y=540,w=383,h=188; frozen background and guards unchanged."
   }
 }
