@@ -1,0 +1,29 @@
+{
+  "schema": "cockpit-pro.brand-logo.v1",
+  "name": "Cockpit Pro",
+  "subbrand": "B737 CLASSIC",
+  "owner_approved_on": "2026-10-29",
+  "approved": true,
+  "lock_policy": "Do not alter approved composition, typography, colors, transparency, crop, outline, tail or frame without explicit owner instruction.",
+  "official_master": {
+    "file": "CockpitPro_Official_Logo.png",
+    "format": "image/png",
+    "width": 1254,
+    "height": 1254,
+    "color_mode": "RGBA",
+    "transparent_outer_background": true,
+    "sha256": "c8cee7bad43ac41dac2b85f7b3c543aea8a2a9b0acaea5a2cd505e2f64465cfc",
+    "library_path": "/B737/Branding/CockpitPro_Official_Logo.png"
+  },
+  "windows_icon": {
+    "file": "CockpitPro_Windows_Icon.ico",
+    "library_path": "/B737/Branding/CockpitPro_Windows_Icon.ico"
+  },
+  "usage": {
+    "brand_identity": "APPROVED",
+    "repository_png_asset": "NOT_YET_UPLOADED",
+    "unified_web_icon": "NOT_YET_WIRED",
+    "windows_exe_icon": "READY_AS_DERIVED_ASSET_NOT_YET_WIRED"
+  },
+  "notes": "Logo bytes match the exact owner-approved final cutout. This GitHub record does not imply the binary PNG or ICO has already been uploaded to the repository."
+}
