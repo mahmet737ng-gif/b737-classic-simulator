@@ -50,7 +50,23 @@
    for(const [name,ptt] of [['R/T','ASP_RT'],['I/C','ASP_IC'],['RELEASE',null]]){
     const b=document.createElement('button');b.type='button';b.textContent=seat+' '+name;
     b.style.cssText='margin:1px;padding:3px 5px;background:#274653;color:white;border:1px solid #728994;border-radius:4px';
-    b.onclick=()=>{Runtime.press(seat,ptt);refresh();};control.append(b);
+    if(ptt===null){
+     b.onclick=()=>{Runtime.press(seat,null);refresh();};
+    }else{
+     let active=false;
+     const press=()=>{if(active)return;active=true;Runtime.press(seat,ptt);refresh();};
+     const release=()=>{if(!active)return;active=false;Runtime.press(seat,null);refresh();};
+     b.addEventListener('pointerdown',e=>{if(e.pointerType==='mouse'&&e.button!==0)return;e.preventDefault();press();try{b.setPointerCapture(e.pointerId);}catch(_){}});
+     b.addEventListener('pointerup',release);
+     b.addEventListener('pointercancel',release);
+     b.addEventListener('lostpointercapture',release);
+     b.addEventListener('keydown',e=>{if((e.key===' '||e.key==='Enter')&&!e.repeat){e.preventDefault();press();}});
+     b.addEventListener('keyup',e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();release();}});
+     b.addEventListener('blur',release);
+     root.addEventListener('blur',release);
+     b.onclick=e=>e.preventDefault(); // no toggle-on-click
+    }
+    control.append(b);
    }panel.append(control);
   }
   const controls=document.createElement('div');controls.style.cssText='margin-top:6px;border-top:1px solid #465c69;padding-top:6px';
