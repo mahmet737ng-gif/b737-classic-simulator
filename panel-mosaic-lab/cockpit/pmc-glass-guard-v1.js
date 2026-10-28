@@ -39,8 +39,9 @@
    const cover=document.createElement('button');cover.type='button';cover.className='pmc-cover';cover.innerHTML=coverArt;
    const hinge=document.createElement('span');hinge.className='pmc-hinge';hinge.innerHTML=hingeArt(p.engine);hinge.setAttribute('aria-hidden','true');
    for(const node of [push,cover]){
-    // Native focus in a scaled iframe otherwise scrolls the outer cockpit.
-    node.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();node.focus({preventScroll:true});});
+    // Keep pointer activation from focusing a control in the scaled iframe;
+    // keyboard users can still reach both buttons with normal Tab navigation.
+    node.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();});
     for(const type of ['pointerup','dblclick'])node.addEventListener(type,e=>e.stopPropagation());
    }
    cover.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();state.cover(p.engine,!state.view(p.engine).open);render(p.engine);notify(p.engine,'cover');});
