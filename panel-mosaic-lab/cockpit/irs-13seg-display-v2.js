@@ -71,7 +71,7 @@ function render(){
   // 7 numeric filaments + additional hemisphere strokes.
   const cell=segments[i];
   if(!cell)continue;
-  cell.dataset.char=values[i];
+  cell.group.dataset.char=values[i];
   for(const [name,path] of cell.paths){
    const on=luminous&&wanted.has(name);
    path.setAttribute('data-on',String(on));
