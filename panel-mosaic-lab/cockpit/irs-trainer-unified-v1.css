@@ -1,0 +1,39 @@
+/* Additive IRS trainer controls; immutable source textures and owner-locked
+   ISDU/13seg renderer/SYS DSPL are NOT restyled or touched.
+*/
+#irsTrainerV1{border-top:1px solid #587083;padding:10px 5px 16px;font-size:12px;direction:ltr;text-align:left}
+#irsTrainerV1 h2{font-size:14px;margin:4px 0}
+#irsTrainerV1 h3{font-size:12px;margin:9px 0 3px;color:#dfe8e9}
+#irsTrainerV1 p{font-size:11px;line-height:1.5;opacity:.8;margin:6px 0}
+#irsTrainerV1 select,#irsTrainerV1 input{background:#142a36;color:#f8f7f1;border:1px solid #59798c;padding:5px;max-width:100%;border-radius:3px}
+#irsTrainerV1 select{width:100%}
+#irsTrainerV1 button{background:#1a3948;color:#fafafa;border:1px solid #648296;border-radius:3px;padding:5px;cursor:pointer;font-size:11px}
+#irsTrainerV1 .irs-msu-mode-row{display:flex;gap:3px;flex-wrap:wrap}
+#irsTrainerV1 .irs-msu-mode-row button{flex:1}
+#irsTrainerV1 .irs-msu-mode-row button[aria-pressed="true"]{background:#d6ac65;color:#1a1b1b}
+#irsTrainerV1 .irs-msu-lamps{display:grid;grid-template-columns:repeat(4,1fr);gap:3px;margin:5px 0}
+#irsTrainerV1 .irs-lab-lamp{border:1px solid #3c4448;background:#151b20;color:#707574;text-align:center;padding:4px 1px;font-size:9px;border-radius:2px}
+#irsTrainerV1 .irs-lab-lamp[data-lit="true"]{color:#ffcf95;background:#5a2b0d;border-color:#bd8249;box-shadow:inset 0 0 5px #ffae527f,0 0 4px #f5a44f6e;text-shadow:0 0 4px #f7c591}
+#irsTrainerV1 output{display:block;font:10px Consolas,monospace;white-space:normal;overflow-wrap:anywhere;color:#a1d5bb;margin:6px 0}
+#irsTrainerV1 .irs-motion-controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px}
+#irsTrainerV1 .irs-motion-controls label{display:flex;flex-direction:column;font-size:10px}
+#irsTrainerV1 .irs-motion-controls input{width:100%;box-sizing:border-box}
+#region-overhead .irs-msu-trainer-overlay{position:absolute;inset:0;pointer-events:none;z-index:130}
+#region-overhead .irs-msu-mini{position:absolute;border:0!important;background:transparent!important;pointer-events:auto;cursor:pointer;outline:none!important;padding:0!important;touch-action:manipulation}
+#region-overhead .irs-msu-mini::before{
+ content:"";position:absolute;width:80%;height:80%;top:10%;left:10%;border-radius:50%;
+ background:radial-gradient(circle at 34% 28%,#fff 0%,#d4dad4 42%,#89999c 90%,#61696a 100%);
+ border:1px solid #bec6c6;box-shadow:1px 2px 3px #080d16ad;
+}
+#region-overhead .irs-msu-mini::after{
+ content:"";position:absolute;width:8%;height:74%;top:13%;left:46%;border-radius:6px;
+ background:linear-gradient(90deg,#303636 0%,#141a1c 65%,#ededec 69%,#fff 100%);
+ transform:rotate(var(--irs-msu-angle,-100deg));box-shadow:1px 0 1px #24262699;
+}
+#region-overhead .irs-msu-mini[data-mode="OFF"]{--irs-msu-angle:-115deg}
+#region-overhead .irs-msu-mini[data-mode="ALIGN"]{--irs-msu-angle:-40deg}
+#region-overhead .irs-msu-mini[data-mode="NAV"]{--irs-msu-angle:24deg}
+#region-overhead .irs-msu-mini[data-mode="ATT"]{--irs-msu-angle:88deg}
+.reference-mode #region-overhead .irs-msu-trainer-overlay{display:none}
+.pan-mode #region-overhead .irs-msu-trainer-overlay{pointer-events:none}
+.pan-mode #region-overhead .irs-msu-mini{pointer-events:none}
