@@ -124,7 +124,12 @@
  }
  function mount(){
   for(const host of document.querySelectorAll('.asp-bare-mounted')){
-   if(mounted.has(host.dataset.seat))continue;
+   // Atlas redraw can replace the embedded OBS panel node.
+   // Preserve already-approved CAPT/FO identities, but re-register OBS if changed.
+   const previous=mounted.get(host.dataset.seat);
+   if(previous===host)continue;
+   if(previous&&OBS_FRAME&&host.dataset.seat==='OBS')mounted.delete('OBS');
+   else if(previous)continue;
    socketPatches(host);
    for(const s of model.sockets){
     const button=document.createElement('button');button.type='button';button.className='asp-photo-control';
@@ -180,6 +185,7 @@
   console.error('ASP-CENTER-0002 failed to measure real alpha:',error);
   for(const host of mounted.values())host.dataset.aspRegistration='ERROR:'+measureError;
  });
+  if(OBS_FRAME)root.addEventListener('b737:asp-observer-mounted',mount);
   root.addEventListener('b737:cockpit-mounted',mount);
  root.addEventListener('b737:visual-test',e=>{for(const host of mounted.values())host.dataset.aspLampTest=String(e.detail?.active===true);});
  if(!mount()){observer=new MutationObserver(mount);observer.observe(document.documentElement,{childList:true,subtree:true});}
