@@ -6,6 +6,7 @@ on:
       - 'panel-mosaic-lab/lights-reference-v2/**'
       - 'panel-mosaic-lab/interactive-overhead/lights.json'
       - 'panel-mosaic-lab/cockpit/lights.json'
+      - 'panel-mosaic-lab/cockpit/overhead-stage.html'
       - 'panel-mosaic-lab/cockpit/index.html'
       - 'panel-mosaic-lab/interactive-overhead/index.html'
   workflow_dispatch:
@@ -19,7 +20,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Validate opt-in runtime JavaScript
+      - name: Validate default runtime JavaScript
         run: node --check panel-mosaic-lab/lamp-socket-fit-v3/live-fit.js
+      - name: Validate alternate CPCS/DCPCS and B737-400 fit runtime
+        run: node --check panel-mosaic-lab/lamp-socket-fit-v3/variant-fit.js
       - name: Validate 142 socket rectangles, collisions and unchanged master typography
         run: node panel-mosaic-lab/lamp-socket-fit-v3/fit.test.cjs
+      - name: Validate 13 variant sockets across four alternate installations
+        run: node panel-mosaic-lab/lamp-socket-fit-v3/variant-fit.test.cjs
