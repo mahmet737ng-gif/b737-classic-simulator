@@ -1,0 +1,45 @@
+name: IRS QRH Test Lab — 27 scenarios and owner lock
+on:
+  push:
+    paths:
+      - 'panel-mosaic-lab/irs-test-lab/**'
+      - 'engine/systems/irs-trainer-web-v1.js'
+      - 'engine/systems/irs-electrical-evidence-v2.js'
+      - 'tests/irs-test-lab-v1.test.cjs'
+      - '.github/workflows/irs-qrh-lab-v1.yml'
+      - 'panel-mosaic-lab/cockpit/index.html'
+  pull_request:
+    paths:
+      - 'panel-mosaic-lab/irs-test-lab/**'
+      - 'engine/systems/irs-trainer-web-v1.js'
+      - 'engine/systems/irs-electrical-evidence-v2.js'
+      - 'tests/irs-test-lab-v1.test.cjs'
+      - '.github/workflows/irs-qrh-lab-v1.yml'
+      - 'panel-mosaic-lab/cockpit/index.html'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  qrh-lab:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Check QRH lab scripts and all 27 functional presets
+        run: |
+          node --check panel-mosaic-lab/irs-test-lab/scenarios.js
+          node --check panel-mosaic-lab/irs-test-lab/engine.js
+          node --check panel-mosaic-lab/irs-test-lab/lab.js
+          node --check tests/irs-test-lab-v1.test.cjs
+          node tests/irs-test-lab-v1.test.cjs
+      - name: Prove existing IRS and CDU remain healthy
+        run: |
+          node tests/irs-trainer-core-v1.test.cjs
+          node tests/irs-align-annunciator-v2.test.cjs
+          node tests/irs-electrical-evidence-v2.test.cjs
+          node tests/irs-unified-integration-v1.test.cjs
+          node tests/cdu-irs-adapter-v1.test.cjs
+      - name: Verify all 93 owner-frozen IRS physical blobs unchanged
+        run: |
+          python3 panel-mosaic-lab/cockpit/verify-irs-complete-redzone-v1.py --negative-self-test
