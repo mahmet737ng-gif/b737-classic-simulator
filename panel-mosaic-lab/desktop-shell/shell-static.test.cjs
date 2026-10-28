@@ -47,7 +47,8 @@ test('throttle shortcuts drive existing five-position panel selection, no fake e
 });
 test('do not fake presets, spoilers, full update mechanism or inaccessible audio',()=>{
  has('if(!engine?.apply)');
- has("برای '+(key==='/'?'Spoiler':'Landing Gear')");
+ has("Arm Spoilers");
+ has("Landing Gear");
  has("صوتی");
  has('https://api.github.com/repos/');
  has('این نسخهٔ وب فقط بررسی می‌کند');
