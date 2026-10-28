@@ -1,0 +1,23 @@
+/* Explicit owner selection: Small Silver on the 3 ASP physical toggles only.
+   Reuses the existing atlas; all detents and spring-return inputs stay intact. */
+.asp-bare-mounted .asp-physical-switch .asp-physical-base,
+.asp-bare-mounted .asp-physical-switch .asp-physical-lever{display:none}
+.asp-bare-mounted .asp-physical-switch::before{content:'';position:absolute;display:block;
+ left:50%;top:50%;width:121.9047619%;height:121.9047619%;transform:translate(-50%,-50%);
+ background-image:url('../../shared-assets/toggle-switch-small/Small_Silver_5Positions.webp');
+ background-size:500% 100%;background-repeat:no-repeat;background-position:25% 0;
+ pointer-events:none}
+.asp-bare-mounted .asp-physical-switch[data-detent="UP"]::before{background-position:75% 0}
+.asp-bare-mounted .asp-physical-switch[data-detent="DOWN"]::before{background-position:100% 0}
+.asp-bare-mounted .asp-physical-switch[data-detent="CENTER"]::before{background-position:25% 0}
+.asp-bare-mounted .asp-vbr-selector{position:absolute;z-index:12;display:block;box-sizing:border-box;
+ padding:0;margin:0;border:0;border-radius:0;background:transparent;box-shadow:none;
+ transform:translate(-50%,-50%);touch-action:none;user-select:none;cursor:grab;overflow:visible;
+ -webkit-tap-highlight-color:transparent;appearance:none;direction:ltr;outline:none}
+.asp-bare-mounted .asp-vbr-selector:hover,.asp-bare-mounted .asp-vbr-selector:active{background:transparent}
+.asp-bare-mounted .asp-vbr-selector:active{cursor:grabbing}
+.asp-bare-mounted .asp-vbr-selector:focus-visible{outline:1px solid #a9d6e8;outline-offset:0;border-radius:50%}
+.asp-bare-mounted .asp-vbr-rotor{position:absolute;inset:0;transform-origin:50% 50%;pointer-events:none;transition:transform 100ms ease-out}
+.asp-bare-mounted .asp-vbr-photo{position:absolute;display:block;max-width:none;max-height:none;border:0;margin:0;padding:0;pointer-events:none;user-select:none;image-rendering:auto}
+.reference-mode .asp-bare-mounted .asp-vbr-selector{display:none}
+@media(prefers-reduced-motion:reduce){.asp-bare-mounted .asp-vbr-rotor{transition:none}}

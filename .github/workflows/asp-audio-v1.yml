@@ -3,6 +3,8 @@ on:
   push:
     branches: [main]
     paths:
+      - 'panel-mosaic-lab/cockpit/asp-vbr-*'
+      - 'panel-mosaic-lab/cockpit/assets/asp-vbr-v1/**'
       - 'engine/systems/asp-audio-v1.js'
       - 'panel-mosaic-lab/cockpit/asp-audio-runtime-v1.js'
       - 'panel-mosaic-lab/cockpit/asp-controls-v1.js'
@@ -54,6 +56,11 @@ jobs:
         run: node --test tests/asp-audio-routing-v2.test.cjs
       - name: Physical PTT spring return / mask boom / OBS overhead bridge
         run: node --test tests/asp-physical-controls-v1.test.cjs
+      - name: Owner VBR detents and Small Silver scoped installation
+        run: |
+          node --check panel-mosaic-lab/cockpit/asp-vbr-model-v1.js
+          node --check panel-mosaic-lab/cockpit/asp-vbr-selector-v1.js
+          node --test panel-mosaic-lab/cockpit/asp-vbr-v1.test.cjs
       - name: Existing ASP controls pixel/angle QA
         run: node --test panel-mosaic-lab/cockpit/asp-controls-v1.test.cjs
       - name: Measure exact four owner ASP PNG silhouette centers

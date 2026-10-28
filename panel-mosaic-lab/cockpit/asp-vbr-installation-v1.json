@@ -1,0 +1,51 @@
+{
+  "version": "ASP-VBR-SILVER-0001",
+  "ownerImage": {
+    "path": "assets/asp-vbr-v1/vbr-selector-owner.png",
+    "sha256": "019d6417dd99cadda3db4c21e8b9339d845ed8844c3cf1e3332acd7f85c5f066",
+    "bytes": 948377,
+    "dimensions": [
+      1254,
+      1254
+    ],
+    "policy": "Byte-identical owner-selected generated image, no image modification or lossy encoding.",
+    "pivot": [
+      626.6753137115194,
+      601.4506340581195
+    ],
+    "pivotMethod": "Least squares circle fit to alpha silhouette side edges, excluding grip tip and upper notch.",
+    "sourceBaseDiameter": 808.6592505372294
+  },
+  "vbrSocket": {
+    "x": 702,
+    "y": 747,
+    "reference": "Fourth r31 circle in both approved ASP SVG faceplates",
+    "positions": {
+      "V": -45,
+      "B": 0,
+      "R": 45
+    },
+    "pointer": "Existing recessed upper notch; original teardrop grip preserved."
+  },
+  "toggles": {
+    "asset": "../../shared-assets/toggle-switch-small/Small_Silver_5Positions.webp",
+    "sha256": "5c37de64cf20e97d01085b1400b9b131965160618f851cccd019a4c1c4d89766",
+    "scope": [
+      "PTT",
+      "MASK_BOOM",
+      "ALT_NORM"
+    ],
+    "frames": {
+      "CENTER": 1,
+      "UP": 3,
+      "DOWN": 4
+    },
+    "baseRingDiameterNative": 52,
+    "behavior": "Existing single audio authority and PTT spring-return remain unchanged."
+  },
+  "stations": {
+    "CAPT": "Unified pedestal",
+    "FO": "Unified pedestal",
+    "OBS": "Real embedded overhead OH04, not hidden legacy parent overlay"
+  }
+}
