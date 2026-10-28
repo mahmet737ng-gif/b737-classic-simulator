@@ -70,7 +70,9 @@ test('actual iframe mount and downstream OBS audio event are recognized without 
  let found=null,msg=null,queue={};
  const atlas={children:[],querySelector:()=>found,append(n){found=n;this.children.push(n)}};
  const doc={readyState:'loading',getElementById:id=>id==='atlasAbsolute'?atlas:null,
-  createElement:tag=>({tag,dataset:{},style:{},append(n){this.child=n},querySelectorAll(){return []}}),
+  createElement:tag=>({tag,dataset:{},style:{},isConnected:true,append(n){this.child=n},
+   querySelector(q){return q===':scope > img'?this.child:null;},
+   getBoundingClientRect(){return {left:0,top:0,width:480,height:340};},querySelectorAll(){return []}}),
   addEventListener:(name,fn)=>{queue[name]=fn;}};
  const listeners={};
  const win={location:{origin:'https://example.org'},addEventListener:(name,fn)=>{listeners[name]=fn;},
