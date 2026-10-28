@@ -20,6 +20,8 @@ on:
       - 'panel-mosaic-lab/cockpit/irs-sys-dspl-lr-markings-v1.js'
       - 'panel-mosaic-lab/cockpit/irs-sys-dspl-lr-markings-v1.css'
       - 'panel-mosaic-lab/cockpit/irs-sys-dspl-lr-markings-v1.test.cjs'
+      - 'panel-mosaic-lab/cockpit/irs-sys-dspl-owner-lock-v1.json'
+      - 'panel-mosaic-lab/cockpit/verify-irs-sys-dspl-owner-lock-v1.py'
       - 'panel-mosaic-lab/cockpit/assets/irs-sys-dspl-lr-markings-v1.svg'
       - 'panel-mosaic-lab/cockpit/assets/irs-sys-dspl-selector-approved-v1.avif'
       - 'panel-mosaic-lab/cockpit/assets/irs-isdu-white-cue-on-v1.svg'
@@ -36,6 +38,11 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      - name: Fail-closed OWNER LOCK for approved lower IRS SYS DSPL L/R selector
+        run: |
+          test "$(git hash-object panel-mosaic-lab/cockpit/irs-sys-dspl-owner-lock-v1.json)" = "9a8ea6f179fe3bc3f826051f06b402c5d8b5e5fc" || { echo "IRS SYS DSPL owner manifest modification denied"; exit 1; }
+          test "$(git hash-object panel-mosaic-lab/cockpit/verify-irs-sys-dspl-owner-lock-v1.py)" = "f43f8540774f10233d455d28d4c15a2f38af8b25" || { echo "IRS SYS DSPL lock verifier modification denied"; exit 1; }
+          python3 panel-mosaic-lab/cockpit/verify-irs-sys-dspl-owner-lock-v1.py
       - name: Lint IRS frontend
         run: |
           node --check panel-mosaic-lab/cockpit/irs-isdu-frontend-v1.js
