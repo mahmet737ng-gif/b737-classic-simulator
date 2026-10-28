@@ -12,7 +12,7 @@ const MODES=['OFF','ALIGN','NAV','ATT'],SIDES=['L','R'];
 const atlas=x=>3+x*2214/1731,alto=y=>3+y*1019/909;
 let state=Core.initialState(),source='BENCH',simulatedMotion=null,selected='L',keys={lat:'',lon:'',stage:'LAT',enteredLat:false,heading:''};
 let lastT=0,clock=null,frameSeq=0,notified='',lastLiveTimestamp=0,lastError='',lastCDUSource='';
-let panel=null,widget=null;
+let panel=null,widget=null,rightDcElapsedSec=0;
 const get=(side)=>Core.status(state,side),current=()=>get(selected);
 const cleanErr=e=>(e?.message||String(e)).slice(0,130);
 const show=(message)=>{lastError=message||'';renderPanel();};
@@ -24,15 +24,20 @@ function electrical(){
  const truth=x=>x===true?true:x===false?false:null;
  const dc=truth(b.switchedHotBattery);
  const l=truth(b.acStandby),r=truth(b.transfer2);
- return {L:l===true||dc===true?true:l===false&&dc===false?false:null,
-         R:r===true||dc===true?true:r===false&&dc===false?false:null,
-         known:true,reason:'B737_ELECTRICAL_V7'};
+ return {L:l===true||l===false&&dc===true?true:l===false&&dc===false?false:null,
+         R:r===true||r===false&&dc===true?true:r===false&&dc===false?false:null,
+         acRight:r,dcBackup:dc,known:true,reason:'B737_ELECTRICAL_V7'};
 }
-function powered(side){if(source==='BENCH')return true;return electrical()[side];}
+function powered(side){
+ if(source==='BENCH')return true;
+ const live=electrical();
+ if(side==='R'&&live.acRight===false&&live.dcBackup===true&&rightDcElapsedSec>=300)return false;
+ return live[side]===true;
+}
 function syncPower(){
  for(const side of SIDES){
   const value=powered(side);
-  if(value===null)continue; // fail closed; unknown is not powered
+  // Unknown live source must never preserve stale BENCH power.
   if(state.units[side].powered!==value)state=Core.apply(state,{type:'POWER',side,available:value});
  }
 }
@@ -132,6 +137,11 @@ function motionFrame(){
  return simulatedMotion;
 }
 function tick(seconds){
+ if(source==='AIRCRAFT'){
+  const feed=electrical();
+  if(feed.acRight===false&&feed.dcBackup===true)rightDcElapsedSec+=seconds;
+  else rightDcElapsedSec=0;
+ }
  syncPower();
  const m=motionFrame();
  const stop=m?m.gsKt<1:true;
@@ -333,6 +343,11 @@ function boot(){
  });
  for(const n of ['b737:irs-dspl-sel-change','b737:irs-upper-visual-change'])root.addEventListener(n,()=>root.setTimeout(paintDisplay,0));
  root.addEventListener('b737:cockpit-mounted',()=>{mountMsu();update();});
+ // Explicit same-page simulator telemetry contract. External bridges must
+ // validate source identity and provide GS/TRK and timestamp per frame.
+ root.addEventListener('b737:simulator-telemetry',e=>{
+  try{validMotion(e.detail)}catch(err){show('TELEMETRY REJECTED: '+cleanErr(err));}
+ });
  syncPower();
  const step=()=>{
   const now=performance.now();
@@ -347,7 +362,9 @@ root.B737IRSTrainerUnified=Object.freeze({
   setMode:mode,setFmcPosition:fmcPosition,pressISDU:isduPress,getState:snapshot,
   publishMotion:validMotion,setPowerMode(x){if(!['BENCH','AIRCRAFT'].includes(x))throw RangeError('Power mode');source=x;syncPower();update();},
   setBenchMotion(frame){simulatedMotion={...frame,valid:true,source:'BENCH_SIM'};update();},
-  stopMotion(){simulatedMotion=null;update();},getCoreState:()=>JSON.parse(JSON.stringify(state)),paintDisplay
+  stopMotion(){simulatedMotion=null;update();},
+  getPowerDiagnostics:()=>({source,electrical:electrical(),rightDcElapsedSec}),
+  getCoreState:()=>JSON.parse(JSON.stringify(state)),paintDisplay
 });
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
 })(window);
