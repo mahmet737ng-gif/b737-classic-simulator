@@ -1,12 +1,13 @@
-/* LGT-SOCKET-FIT-003 — OPT-IN, non-destructive per-socket lens fitting.
-   Enable only with ?socketFit=1. Does not change approved photos,
-   sourceRect, electrical rules, lens master typography or guards. */
+/* LGT-SOCKET-FIT-004 — DEFAULT, non-destructive per-socket lens fitting.
+   All 142 OH/MP reference sockets use a locked 2.5-source-pixel edge
+   extension. ?socketFit=0 is a temporary diagnostics rollback only.
+   No approved photos, sourceRects, electrical rules, typography or guards changed. */
 (function(win){
 'use strict';
 const query=new URLSearchParams(win.location.search);
-let opted=query.get('socketFit')==='1';
-try { opted=opted||(win.parent!==win&&new URLSearchParams(win.parent.location.search).get('socketFit')==='1'); } catch(_){}
-if(!opted)return;
+let disabled=query.get('socketFit')==='0';
+try { if(win.parent!==win)disabled=disabled||new URLSearchParams(win.parent.location.search).get('socketFit')==='0'; } catch(_){}
+if(disabled)return;
 const script=document.currentScript.src;
 const root=new URL('../',script);
 const json=async path=>{
@@ -16,9 +17,8 @@ const json=async path=>{
 };
 const masterRoot=new URL('lights-reference-v2/',root);
 const clamp=(v,lo,hi)=>Math.max(lo,Math.min(hi,v));
-let padRequested=query.get('fitPad');
-try { if(!padRequested&&win.parent!==win)padRequested=new URLSearchParams(win.parent.location.search).get('fitPad'); }catch(_){}
-const maxPad=clamp(padRequested===null?2.5:Number(padRequested),0,6);
+// Fixed, registered geometry. Never silently inherit a varying laboratory slider.
+const maxPad=2.5;
 const pageScope=win.location.pathname.includes('/interactive-overhead/')?'OH':'MP';
 const own=new Map(), records=new Map(), nodes=new Map(), pending=new Map();
 const sourceCache=new Map(), blobURLs=new Map(), errors=[];
@@ -209,7 +209,7 @@ async function start(){
   scheduleScan();
   setTimeout(()=>{watch.disconnect();scheduleScan();},12000);
   win.B737SocketFit=Object.freeze({
-   status:()=>({opted:true,sourceCount:records.size,scope:pageScope,
+   status:()=>({enabledByDefault:true,edgeExtensionSourcePx:maxPad,sourceCount:records.size,scope:pageScope,
      expectedLocal:pageScope==='OH'?112:30,mounted:mounts,renders,
      errors:[...errors],unmounted:[...records.values()].filter(r=>r.bank===pageScope&&!nodes.has(r.id)).map(r=>r.id),
      maxPad,mode:win.B737LampAppearance?.getMode?.()||'BRIGHT'}),
