@@ -17,7 +17,8 @@ const get=(side)=>Core.status(state,side),current=()=>get(selected);
 const cleanErr=e=>(e?.message||String(e)).slice(0,130);
 const show=(message)=>{lastError=message||'';renderPanel();};
 function electrical(){
- const e=root.B737ISNCockpitV1?.getState?.()?.electrical||
+ const main=root.B737ISNCockpitV1?.getState?.();
+ const e=main?.state?.electrical||main?.electrical||
    root.B737ISNCockpitV1?.getECUState?.()?.electrical;
  const b=e?.bus;
  if(!b)return {L:null,R:null,known:false,reason:'NO_LIVE_ELECTRICAL_BUS'};
