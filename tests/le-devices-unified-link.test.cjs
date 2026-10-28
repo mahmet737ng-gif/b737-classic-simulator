@@ -21,7 +21,7 @@ test('handle 15 -> 5 -> 1 -> UP synchronizes indicator and sends physical comman
  h.message('ready');
  for(const d of [15,5,1,0])h.signal('b737:flap-detent-visual-test',{detent:d,visualOnly:true});
  assert.deepEqual(h.commands.map(x=>x.payload.command.value),[0,15,5,1,0]);
- assert.deepEqual(h.needles,[15,5,1,0]);
+ assert.deepEqual(h.needles,[],'the lever must not drive measured needles instantly');
  assert.deepEqual(h.lampPatches.filter(p=>Object.hasOwn(p,'trailingFlaps')).map(p=>p.trailingFlaps),[15,5,1,0]);
  assert.equal(h.commands.every(x=>x.payload.action==='le-devices'&&x.origin==='https://example.test'),true);
 });
@@ -58,7 +58,7 @@ test('flap commands really originate on document, not window bubbling',()=>{
  assert.equal(h.commands.at(-1).payload.command.value,5);
  h.signal('b737:flap-detent-visual-test',{detent:15,visualOnly:true});
  assert.equal(h.commands.at(-1).payload.command.value,15);
- assert.equal(h.needles.at(-1),15);
+ assert.equal(h.needles.length,0,'no immediate needle movement on commanded lever detent');
 });
 
 test('flap indicator remains on measured position during lever demand and follows gradual projections',()=>{
