@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>B737 Classic | 142 Annunciator Socket-Fit QA</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#0c141a;color:#e8f1f5;font:14px/1.65 system-ui,Tahoma,sans-serif}
+header{padding:15px 20px;background:#12232e;border-bottom:1px solid #395769}
+h1{font-size:18px;margin:0 0 4px}header p{margin:0;color:#9fbdcb}
+main{display:grid;grid-template-columns:310px minmax(0,1fr);height:calc(100vh - 88px);min-height:470px}
+aside{border-left:1px solid #304859;display:flex;flex-direction:column;min-height:0}
+.controls{padding:12px;display:grid;gap:8px;border-bottom:1px solid #304859}
+input,select,button{background:#193242;color:#edf5f9;border:1px solid #557181;border-radius:5px;padding:8px;font:inherit}
+button{cursor:pointer}button:hover{background:#24475a}label{display:grid;gap:3px;color:#b6cedb;font-size:12px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+#lampList{overflow:auto;padding:7px;flex:1}
+.item{display:block;width:100%;text-align:left;direction:ltr;border:0;border-bottom:1px solid #294151;border-radius:0;font:12px/1.4 monospace}
+.item.active{background:#3a5e71;color:white}
+.viewer{min-width:0;display:flex;flex-direction:column;overflow:hidden}
+.bar{display:flex;align-items:center;flex-wrap:wrap;gap:8px;padding:10px;background:#101e27;border-bottom:1px solid #314957}
+.bar button[aria-pressed=true]{background:#775522;border-color:#e6a947}
+#photoViewport{position:relative;flex:1;overflow:auto;background:#070b0e;direction:ltr;min-height:200px}
+#photoSpace{position:relative;margin:14px;transform-origin:0 0}
+#photo{position:absolute;left:0;top:0;max-width:none;user-select:none}
+#lampOverlay{position:absolute;pointer-events:none;z-index:3}
+#lampOverlay img{width:100%;height:100%;object-fit:fill;display:block}
+#originalBox{position:absolute;pointer-events:none;border:1px dashed #ffe066;z-index:4;display:none}
+#originCross{position:absolute;width:10px;height:10px;border:1px solid yellow;border-radius:50%;transform:translate(-50%,-50%);z-index:5;pointer-events:none;display:none}
+#details{background:#101e27;padding:7px 12px;font:12px/1.8 monospace;direction:ltr;text-align:left;color:#b1d2df;border-top:1px solid #365263;white-space:normal}
+#status{color:#eab56e}a{color:#8bdeff}
+@media(max-width:750px){main{grid-template-columns:1fr;grid-template-rows:260px 1fr;height:calc(100vh - 90px)}aside{border-left:0;border-bottom:1px solid #567;display:grid;grid-template-columns:185px minmax(0,1fr)}.controls{overflow:auto}#lampList{min-height:0}.bar{padding:5px}.bar button{padding:5px}}
+</style></head>
+<body><header><h1>737 Classic · ممیزی فیت واقعی ۱۴۲ چراغ روی عکس پنل</h1>
+<p>اندازه‌گیری از مستطیل‌های ثبت‌شده در عکس مرجع؛ حالت‌های OFF / DIM / BRIGHT با هندسهٔ مشترک. فایل‌های قفل‌شده و منطق سیستم‌ها تغییری نکرده‌اند.</p></header>
+<main><aside><div class="controls">
+<div class="two"><label>بخش<select id="panel"><option value="ALL">همهٔ چراغ‌ها</option><option value="OH">Overhead — 112</option><option value="MP">Main Panel — 30</option></select></label><label>حالت نور<select id="state"><option value="BRIGHT">BRIGHT</option><option value="DIM">DIM</option><option value="OFF">OFF</option></select></label></div>
+<label>جست‌وجو در نام چراغ<input id="search" type="search" placeholder="LOW PRESSURE, STAB..."></label>
+<label>افزایش پوشش لبهٔ قاب، پیکسل عکس اصلی: <output id="padValue">1.5</output><input id="pad" type="range" min="0" max="5" step="0.5" value="1.5"></label>
+<label>بزرگ‌نمایی عکس<select id="zoom"><option value="0.5">50%</option><option value="0.75">75%</option><option value="1" selected>100%</option><option value="1.5">150%</option><option value="2">200%</option><option value="3">300%</option></select></label>
+<div class="two"><button id="csv">خروجی CSV اندازه‌ها</button><button id="geo">نمایش مرز اصلی</button></div>
+<small id="status">در حال خواندن فایل‌های مرجع…</small>
+</div><div id="lampList"></div></aside>
+<section class="viewer">
+<div class="bar">
+<button id="previous">قبلی</button><button id="next">بعدی</button>
+<button id="kind" aria-pressed="true">چراغ جدید</button><button id="blueMode" aria-pressed="false">آبی DIM / BRIGHT</button>
+<strong id="activeName" dir="ltr">—</strong>
+<a target="_blank" href="../cockpit/?debugLights=1">یونیفاید اصلی</a>
+</div>
+<div id="photoViewport"><div id="photoSpace"><img id="photo" alt="Original untouched source cockpit panel">
+<div id="lampOverlay"><img id="face" alt="Calibrated fitted annunciator"></div>
+<div id="originalBox"></div><div id="originCross"></div>
+</div></div>
+<div id="details">Source-photo geometry: pending…</div>
+</section></main>
+<script>
+(function(){
+'use strict';
+const root='../', Q=id=>document.getElementById(id);
+const baseOH='../interactive-overhead/',baseMP='../cockpit/',baseSPEC='../all-overhead/';
+let oh,mp,spec,assembly,rows=[],selected=null,showNew=true,showDebug=false,blueDim=false,renderToken=0;
+const byId=new Map(),sourceCache=new Map();
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'}[c]));
+const fetchJSON=async url=>{const r=await fetch(url,{cache:'no-store'});if(!r.ok)throw Error(url+': '+r.status);return r.json()};
+function stateName(x){if(Q('state').value==='OFF')return 'OFF';if(x.palette==='blue')return (blueDim?'DIM_BLUE':'BRIGHT_BLUE')+' / CABIN '+Q('state').value;return Q('state').value}
+function appearanceKey(asset,source){if(asset.includes('RED'))return 'red';if(asset.includes('GREEN'))return 'green';if(asset.includes('WHITE'))return 'white';if(asset==='STAB_OUT_OF_TRIM')return 'amber';if(/DIM_BLUE|BRIGHT_BLUE/.test(Object.keys(source).join(',')))return 'blue';return 'amber'}
+function correctLabels(lines,asset){if(asset==='NOT_ARMED_VERTICAL')return ['NOT','ARMED'];return lines}
+function candidateSource(row){
+ const a=(row.bank==='OH'?oh:mp).assets[row.asset];
+ const c=a.BRIGHT_BLUE||a.ON||a.DIM_BLUE||a.OFF;
+ if(!c)throw Error('Missing source asset '+row.asset);
+ return new URL(c.url,row.bank==='OH'?new URL(baseOH,location.href):new URL(baseMP,location.href)).href;
+}
+async function loadInfo(row){
+ const src=candidateSource(row);
+ if(sourceCache.has(src))return sourceCache.get(src);
+ const r=await fetch(src);if(!r.ok)throw Error('SVG source '+r.status+' '+src);
+ const doc=new DOMParser().parseFromString(await r.text(),'image/svg+xml');
+ let group=doc.querySelector('g text');
+ let g=group?group.closest('g'):null;
+ let lines=g?[...g.querySelectorAll('text')].map(e=>e.textContent.trim()).filter(Boolean):[];
+ if(!lines.length)lines=[row.asset.replace(/_/g,' ')];
+ const inf={lines:correctLabels(lines,row.asset),src};
+ sourceCache.set(src,inf);
+ return inf;
+}
+function validRows(){
+ const p=Q('panel').value,t=Q('search').value.toLowerCase().trim();
+ return rows.filter(x=>(p==='ALL'||x.bank===p)&&(x.id.toLowerCase().includes(t)||x.asset.toLowerCase().includes(t)));
+}
+function list(){
+ const arr=validRows(),list=Q('lampList');list.replaceChildren();
+ const frag=document.createDocumentFragment();
+ for(const x of arr){const b=document.createElement('button');b.className='item'+(selected===x?' active':'');b.textContent=x.bank+' / '+x.id+'   ['+x.sourceRect[2]+'×'+x.sourceRect[3]+']';b.onclick=()=>pick(x);frag.appendChild(b);}list.appendChild(frag);
+ Q('status').textContent=arr.length+' از ۱۴۲ جایگاه | اندازه‌های عکس اصلی؛ تأیید چهار لبهٔ همهٔ جایگاه‌ها هنوز نهایی نیست.';
+}
+function boundedPadding(row,val){
+ const [x,y,w,h]=row.sourceRect;
+ let p={l:val,r:val,t:val,b:val};
+ for(const n of rows){if(row===n||row.bank!==n.bank||row.photoKey!==n.photoKey)continue;
+ const [X,Y,W,H]=n.sourceRect;
+ if(y<Y+H&&Y<y+h){
+  if(X>=x+w)p.r=Math.min(p.r,Math.max(0,(X-x-w)/2-0.1));
+  if(X+W<=x)p.l=Math.min(p.l,Math.max(0,(x-X-W)/2-0.1));
+ }
+ if(x<X+W&&X<x+w){
+  if(Y>=y+h)p.b=Math.min(p.b,Math.max(0,(Y-y-h)/2-0.1));
+  if(Y+H<=y)p.t=Math.min(p.t,Math.max(0,(y-Y-H)/2-0.1));
+ }}
+ p.l=Math.min(p.l,x);p.t=Math.min(p.t,y);
+ return p;
+}
+function pxRect(row){
+ const [x,y,w,h]=row.sourceRect,p=boundedPadding(row,Number(Q('pad').value));
+ return {x:x-p.l,y:y-p.t,w:w+p.l+p.r,h:h+p.t+p.b,p};
+}
+function sourceURL(row){
+ if(row.bank==='OH'){
+  const id=row.placementId==='OH07'||row.placementId==='OH08'?'OH07-08':row.placementId;
+  const source=spec.images.find(x=>x.id===id);
+  if(!source||!source.url)throw Error('Unmapped overhead source '+id);
+  return {url:new URL(source.url,new URL(baseSPEC,location.href)).href, key:id};
+ }
+ const p=assembly.regions.find(x=>x.id==='main').placements.find(x=>x.id===row.pieceId);
+ if(!p)throw Error('Missing main photo '+row.pieceId);
+ const source=assembly.assets[p.asset];
+ return {url:new URL(source.url,new URL(baseMP,location.href)).href,key:row.pieceId};
+}
+function visualSVG(row,inf,pix){
+ // Font family, text sizes, letter spacing and strokes are inherited from the accepted v2 master style.
+ // Only the canvas width/height is adapted to its photographed native source-rectangle ratio.
+ const vert=row.asset==='NOT_ARMED_VERTICAL';
+ const H=vert?600:270,W=Math.max(130,Math.round(H*pix.w/pix.h*100)/100),cx=W/2;
+ const scale=vert?1:Math.min(1,(W-56)/(600-56)); // preserve letter proportions; cannot stretch glyphs
+ const font=vert?83:inf.lines.length===1?110:inf.lines.length===2?95:72;
+ const presets={amber:['#e98233','#f28e3d','#ffb665'],red:['#ee2035','#ff444b','#ff858a'],green:['#07cd39','#43ee71','#baffc1'],blue:['#348dfa','#70b7ff','#d9f1ff'],white:['#b9c9d3','#ffffff','#ffffff']};
+ const c=presets[row.palette],state=Q('state').value;
+ const on=state!=='OFF',b=state==='BRIGHT',phase=(row.palette==='blue'&&blueDim)?0.65:1;
+ const border=on?(b?0.98:0.5)*phase:0.11;
+ const glow=on?(b?0.52:0.22)*phase:0.0;
+ const body=on?(b?1:0.73)*phase:0.045;
+ let nodes=[];
+ if(vert){
+  // Original front-facing two-column NOT / ARMED, with N below A, matching owner's approved correction.
+  for(const [s,x,yy] of [['N',W*.30,224],['O',W*.30,323],['T',W*.30,422],['A',W*.70,125],['R',W*.70,224],['M',W*.70,323],['E',W*.70,422],['D',W*.70,521]])nodes.push('<text x="'+x+'" y="'+yy+'">'+s+'</text>');
+ }else{
+  const n=inf.lines.length;
+  const ys=n===1?[178]:n===2?[113,202]:n===3?[88,163,238]:Array.from({length:n},(_,i)=>48+i*(170/Math.max(1,n-1)));
+  nodes=inf.lines.map((s,i)=>'<text x="'+cx+'" y="'+(ys[i]||237)+'">'+esc(s)+'</text>');
+ }
+ const textNodes=nodes.join('');
+ const gAttrs='font-family="Liberation Sans Narrow,Arial Narrow,Liberation Sans,Arial,sans-serif" font-stretch="condensed" font-weight="700" text-anchor="middle" letter-spacing="1.2" font-size="'+font+'"';
+ let lenEstimate=Math.max(...inf.lines.map(s=>s.length));
+ let squeeze=vert?1:Math.min(1,Math.max(0.72,(W-45)/(lenEstimate*font*0.54)));
+ // Fit lettering uniformly when needed; glyph height and baseline remain unaffected on ordinary sockets.
+ let transformation=(!vert&&squeeze<.995)?'transform="translate('+cx+' 0) scale('+squeeze+' 1) translate('+(-cx)+' 0)"':'';
+ const draw=(fill,opacity,filter)=>'<g '+gAttrs+' '+transformation+' fill="'+fill+'" opacity="'+opacity+'" '+(filter?'filter="url(#bloom)"':'')+'>'+textNodes+'</g>';
+ const iw=W-44,ih=H-44;
+ return '<svg xmlns="http://www.w3.org/2000/svg" width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'">'
+ +'<defs><linearGradient id="metal" x2="0" y2="1"><stop stop-color="#393b3c"/><stop offset=".2" stop-color="#171819"/><stop offset=".8" stop-color="#080909"/><stop offset="1" stop-color="#333536"/></linearGradient>'
+ +'<linearGradient id="glass" x2="0" y2="1"><stop stop-color="#090707"/><stop offset=".6" stop-color="#010101"/><stop offset="1" stop-color="#060303"/></linearGradient>'
+ +'<pattern id="grain" width="11" height="11" patternUnits="userSpaceOnUse"><circle cx="3" cy="3" r=".5" fill="#d5a0a0" opacity=".045"/><circle cx="8" cy="9" r=".42" fill="#687881" opacity=".04"/></pattern>'
+ +'<filter id="bloom" x="-50%" y="-60%" width="200%" height="220%"><feGaussianBlur stdDeviation="'+(b?'4.2':'3.15')+'"/></filter>'
+ +'<filter id="rimGlow"><feGaussianBlur stdDeviation="'+(b?'6':'3')+'"/></filter></defs>'
+ +'<rect width="'+W+'" height="'+H+'" fill="#0c0e0f"/>'
+ +'<rect x="0.6" y="0.6" width="'+(W-1.2)+'" height="'+(H-1.2)+'" rx="2" fill="url(#metal)" stroke="#44474a" stroke-width="1.2"/>'
+ +'<rect x="6" y="6" width="'+(W-12)+'" height="'+(H-12)+'" fill="#010102" stroke="#030303" stroke-width="3"/>'
+ +'<rect x="16" y="16" width="'+(W-32)+'" height="'+(H-32)+'" fill="url(#glass)" stroke="#100a09" stroke-width="3"/>'
+ +'<rect x="21" y="21" width="'+iw+'" height="'+ih+'" fill="none" rx="2" stroke="'+c[0]+'" stroke-width="9" opacity="'+(glow*0.65)+'" filter="url(#rimGlow)"/>'
+ +'<rect x="21" y="21" width="'+iw+'" height="'+ih+'" fill="none" rx="1.5" stroke="'+c[0]+'" stroke-width="'+(b?'4.5':'3.5')+'" opacity="'+border+'"/>'
+ +'<rect x="24" y="24" width="'+(W-48)+'" height="'+(H-48)+'" fill="url(#grain)"/>'
+ +draw(c[0],glow,true)+draw(c[1],body,false)+(on?draw(c[2],b?'0.22':'0.10',false):'')
+ +'</svg>';
+}
+async function pick(row){
+ selected=row;list();
+ const seq=++renderToken,phot=sourceURL(row),inf=await loadInfo(row);
+ if(seq!==renderToken)return;
+ Q('activeName').textContent=row.id+' · '+inf.lines.join(' / ');
+ let img=Q('photo');
+ if(img.src!==phot.url){img.src=phot.url;await new Promise((resolve,reject)=>{if(img.complete&&img.naturalWidth)resolve();else{img.onload=resolve;img.onerror=()=>reject(Error('Photo missing: '+phot.url))}});}
+ if(seq!==renderToken)return;
+ const zoom=Number(Q('zoom').value),space=Q('photoSpace'),vp=Q('photoViewport');
+ space.style.width=(img.naturalWidth*zoom)+'px';space.style.height=(img.naturalHeight*zoom)+'px';
+ img.style.width=(img.naturalWidth*zoom)+'px';img.style.height=(img.naturalHeight*zoom)+'px';
+ const p=pxRect(row),obj=Q('lampOverlay');
+ Object.assign(obj.style,{left:p.x*zoom+'px',top:p.y*zoom+'px',width:p.w*zoom+'px',height:p.h*zoom+'px'});
+ Q('face').src=showNew?'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(visualSVG(row,inf,p)):await originalSource(row);
+ Q('originalBox').style.display=showDebug?'block':'none';Q('originCross').style.display=showDebug?'block':'none';
+ Object.assign(Q('originalBox').style,{left:row.sourceRect[0]*zoom+'px',top:row.sourceRect[1]*zoom+'px',width:row.sourceRect[2]*zoom+'px',height:row.sourceRect[3]*zoom+'px'});
+ Object.assign(Q('originCross').style,{left:(row.sourceRect[0]+row.sourceRect[2]/2)*zoom+'px',top:(row.sourceRect[1]+row.sourceRect[3]/2)*zoom+'px'});
+ const text='SOURCE PHOTO: '+row.bank+'/'+phot.key+' | ID: '+row.id+' | native rect='+JSON.stringify(row.sourceRect)+' | fitted=['+[p.x,p.y,p.w,p.h].map(x=>Number(x.toFixed(2)))+'] | state='+stateName(row)+' | bounds based on registered rectangle; rim QA requires visual confirmation.';
+ Q('details').textContent=text;
+ vp.scrollLeft=Math.max(0,p.x*zoom-vp.clientWidth/2+p.w*zoom/2);
+ vp.scrollTop=Math.max(0,p.y*zoom-vp.clientHeight/2+p.h*zoom/2);
+}
+async function originalSource(row){
+ const a=(row.bank==='OH'?oh:mp).assets[row.asset],want=Q('state').value;
+ const x=a[want]||a[want==='BRIGHT'?'BRIGHT_BLUE':want==='DIM'?'DIM_BLUE':'OFF']||a.ON||a.OFF;
+ return new URL(x.url,row.bank==='OH'?new URL(baseOH,location.href):new URL(baseMP,location.href)).href;
+}
+function go(step){const all=validRows();if(!all.length)return;let i=all.indexOf(selected);pick(all[(i+step+all.length)%all.length]).catch(error=>errorBox(error))}
+function errorBox(err){Q('status').textContent='خطا: '+err.message;console.error(err)}
+function redraw(){if(selected)pick(selected).catch(errorBox)}
+function exportCSV(){
+ const headers=['bank','lamp_id','photo','asset','source_x','source_y','source_width','source_height','fit_x','fit_y','fit_width','fit_height','border_extension_l','border_extension_r','border_extension_t','border_extension_b'];
+ const vals=rows.map(x=>{const r=pxRect(x);return [x.bank,x.id,x.photoKey,x.asset,...x.sourceRect,...[r.x,r.y,r.w,r.h,r.p.l,r.p.r,r.p.t,r.p.b].map(n=>Number(n.toFixed(3)))].join(',')});
+ const file=new Blob([[headers.join(','),...vals].join('\n')],{type:'text/csv;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(file);a.download='B737-142-photo-socket-fit-measurements.csv';a.click();URL.revokeObjectURL(a.href);
+}
+async function init(){
+ [oh,mp,spec,assembly]=await Promise.all([fetchJSON(baseOH+'lights.json'),fetchJSON(baseMP+'lights.json'),fetchJSON(baseSPEC+'spec.json'),fetchJSON(baseMP+'assembly.json')]);
+ for(const [bank,data] of [['OH',oh],['MP',mp]]){
+  for(const x of data.lights){const row={...x,bank,palette:appearanceKey(x.asset,data.assets[x.asset])};
+   row.photoKey=bank==='OH'?(x.placementId==='OH07'||x.placementId==='OH08'?'OH07-08':x.placementId):x.pieceId;rows.push(row);byId.set(row.id,row);}
+ }
+ if(rows.length!==142||rows.filter(x=>x.bank==='OH').length!==112||rows.filter(x=>x.bank==='MP').length!==30)throw Error('Unexpected lamp registry '+rows.length);
+ list();
+ Q('panel').onchange=()=>{list();if(validRows().length)pick(validRows()[0]).catch(errorBox)};
+ Q('search').oninput=()=>{list();if(validRows().length&&!validRows().includes(selected))pick(validRows()[0]).catch(errorBox)};
+ Q('state').onchange=redraw;
+ Q('pad').oninput=()=>{Q('padValue').textContent=Q('pad').value;redraw()};
+ Q('zoom').onchange=redraw;
+ Q('previous').onclick=()=>go(-1);Q('next').onclick=()=>go(1);
+ Q('kind').onclick=()=>{showNew=!showNew;Q('kind').setAttribute('aria-pressed',String(showNew));Q('kind').textContent=showNew?'چراغ جدید':'چراغ قبلی';redraw()};
+ Q('geo').onclick=()=>{showDebug=!showDebug;redraw()};
+ Q('blueMode').onclick=()=>{blueDim=!blueDim;Q('blueMode').setAttribute('aria-pressed',String(blueDim));redraw()};
+ Q('csv').onclick=exportCSV;
+ const hint=new URLSearchParams(location.search).get('light');
+ const target=rows.find(x=>x.id===hint)||rows.find(x=>x.id==='main-stab-trim')||rows[0];await pick(target);
+}
+init().catch(errorBox);
+})();
+</script></body></html>
