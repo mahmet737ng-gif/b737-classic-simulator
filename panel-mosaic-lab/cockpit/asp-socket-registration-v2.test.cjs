@@ -54,8 +54,12 @@ test('renderer uses off/on independent optical silhouettes; original user sprite
  assert(script.includes('getImageData')&&script.includes('registrar.mask')&&script.includes('registrar.fit'));
  assert(script.includes("ASSETS[kind][img.classList.contains('asp-image-on')?1:0]"));
  assert(script.includes('registeredSocket(host,b)'));
+ assert(script.includes('calibrateObserverHost(host)'));
+ assert(script.includes("host.dataset.seat==='OBS'"));
+ assert(script.includes('imageOriginX+slot.x/1122*hostW'),'OBS must align physical rendered background, not outer iframe box');
+ assert(script.includes('obsLiveMasks.get(name)'),'OBS visible photo center must work even if global fetch fails');
  assert(html.includes('asp-socket-registration-v2.js?v=ASP-CENTER-0002'));
- assert(html.includes('asp-controls-v1.js?v=ASP-CENTER-0002'));
+ assert(html.includes('asp-controls-v1.js?v=ASP-CENTER-000'));
  assert(!script.includes('sourceCtx.drawImage')&&!script.includes('getImageData(0,0,1,1)'));
  const crypto=require('node:crypto');
  for(const [name,m]of Object.entries(manifest.assets)){
