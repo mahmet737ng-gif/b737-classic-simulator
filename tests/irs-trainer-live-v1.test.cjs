@@ -13,7 +13,7 @@ for(const src of [
 './irs-trainer-live-v1.js?v=IRS-LIVE-0001',
 './irs-trainer-live-v1.css?v=IRS-LIVE-0001'
 ])assert(html.includes(src),'Missing live cockpit module '+src);
-assert(stage.includes('./cdu-irs-unified-v1.js?v=IRS-LIVE-0001'),'CDU IRS iframe bridge missing');
+assert(stage.includes('../panel-mosaic-lab/cockpit/cdu-irs-unified-v1.js?v=IRS-LIVE-0001'),'CDU IRS iframe bridge missing');
 for(const phrase of [
 "b737:irs-visual-key","event.stopImmediatePropagation()",
 "b737:irs-cdu-position-set","FMC_SET_IRS_POS","ISDU_LAT_ENT","ISDU_LON_ENT",
