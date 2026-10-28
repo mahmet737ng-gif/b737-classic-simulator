@@ -340,6 +340,22 @@ function apply(state,cmd){
      if(u.phase==='WAIT_LATITUDE_SENSOR'&&u.initialized&&u.alignmentElapsedSec>=u.alignmentDurationSec)ready(s,u);
      break;
     }
+    case 'SET_COMPUTED_LATITUDE':{
+     // Independent instructor/simulator sensor reading; NEVER echo FMC/ISDU.
+     if(!u.powered||!['SELFTEST','ALIGNING','WAIT_POSITION','WAIT_LATITUDE_SENSOR',
+          'ALIGN_READY','HIGH_LAT_READY'].includes(u.phase))
+      throw new Error('Independent latitude only during powered alignment');
+     if(!finite(cmd.latitudeDeg)||Math.abs(cmd.latitudeDeg)>90)
+      throw new RangeError('Computed latitude requires valid signed degrees');
+     if(!['SIMULATOR_SENSOR','INSTRUCTOR_SENSOR'].includes(cmd.source))
+      throw new TypeError('Independent latitude needs sensor provenance');
+     u.computedLatitudeDeg=cmd.latitudeDeg;u.computedLatitudeSource=cmd.source;
+     u.latitudeComparisonNm=null;
+     emit(s,u.id,'IRS_COMPUTED_LATITUDE_RECEIVED',cmd.source);
+     if(u.phase==='WAIT_LATITUDE_SENSOR'&&u.initialized&&
+        u.alignmentElapsedSec>=u.alignmentDurationSec)ready(s,u);
+     break;
+    }
     case 'SET_ALIGNMENT_CHECKS':{
     // Instructor/telemetry evidence, not invented sensor comparison values.
     if(!u.powered||!['SELFTEST','ALIGNING','WAIT_POSITION','ALIGN_READY','HIGH_LAT_READY'].includes(u.phase))
@@ -464,7 +480,7 @@ function status(s,side){
  const remaining=(u.phase==='ALIGNING'&&u.powered)
   ?Math.max(0,u.alignmentDurationSec-u.alignmentElapsedSec):null;
  const alignCommanded=u.powered&&['ALIGNING','WAIT_POSITION','HIGH_LAT_READY','ALIGN_READY',
-  'FAST_REALIGN','SHUTDOWN','BLOCKED_MOVEMENT'].includes(u.phase);
+  'FAST_REALIGN','SHUTDOWN','BLOCKED_MOVEMENT','WAIT_LATITUDE_SENSOR'].includes(u.phase);
  const flashing=alignCommanded&&u.alignBlockCode!==null;
  // Existing RED ZONE renderer already reads alignLamp on each render.
  const lit=alignCommanded&&(!flashing||u.alignFlashElapsedSec<CAL.alignFlashPeriodSeconds/2);
