@@ -37,3 +37,14 @@
 .reference-mode #region-overhead .irs-msu-trainer-overlay{display:none}
 .pan-mode #region-overhead .irs-msu-trainer-overlay{pointer-events:none}
 .pan-mode #region-overhead .irs-msu-mini{pointer-events:none}
+
+#region-overhead .irs-msu-phys-lamp{
+ position:absolute;box-sizing:border-box;display:flex;align-items:center;
+ justify-content:center;pointer-events:none;color:#74716c;
+ font:bold 12.3px Arial,Helvetica,sans-serif;letter-spacing:.1px;
+ text-shadow:0 1px 1px #050608;opacity:.14;
+}
+#region-overhead .irs-msu-phys-lamp[data-lit="true"]{
+ color:#ffe5b6;opacity:1;text-shadow:0 0 3px #ffd39e,0 0 5px #e79d66;
+ background:radial-gradient(ellipse at center,#c5823f4f 0%,transparent 77%);
+}
