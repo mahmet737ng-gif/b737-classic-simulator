@@ -25,7 +25,7 @@ const LAMPS=[{id:'L',key:'alignLamp',cx:453,cy:542,label:'ALIGN'},
  {id:'R',key:'dcFailLamp',cx:700,cy:584,label:'DC FAIL'}];
 let state=Core.initialState(),powerMode='INSTRUCTOR',speed=1;
 let isdu={phase:'LAT_HEMISPHERE',latHem:'N',lonHem:'E',latDigits:'',lonDigits:'',latValue:null};
-let telemetry=null,telemetryReceivedAt=0,manualMotion=false;
+let telemetry=null,telemetryReceivedAt=0,manualMotion=false,rightBackupSeconds=0;
 let instructorMotion={gsKt:0,trueTrackDeg:0,trueHeadingDeg:0,altitudeFt:0,windKt:0,windFromDeg:0};
 let lastTick=performance.now(),lastPaint=0,message='Ready · training only',connected=false;
 const controls={};
@@ -104,7 +104,9 @@ function powerAvailability(id){
  if(!b)return null;
  const ac=id==='L'?b.acStandby:b.transfer2;
  const backup=b.switchedHotBattery;
- if(ac===true||backup===true)return true;
+ if(ac===true){if(id==='R')rightBackupSeconds=0;return true;}
+ // R IRS DC backup has a five-minute training cutoff, unless AC recovers.
+ if(backup===true&&ac===false)return id==='L'||rightBackupSeconds<300;
  if(ac===false&&backup===false)return false;
  return null;
 }
@@ -179,7 +181,11 @@ function motionFrame(dt){
 }
 function clock(){
  const now=performance.now(),realDelta=Math.max(.05,Math.min(1.0,(now-lastTick)/1000));
- lastTick=now;ensurePower();
+ lastTick=now;
+ const bus=powerMode==='ELECTRICAL'?root.B737ISNCockpitV1?.getState?.()?.state?.electrical?.bus:null;
+ if(bus?.transfer2===false&&bus?.switchedHotBattery===true&&state.units.R.mode!=='OFF')rightBackupSeconds+=realDelta*speed;
+ if(bus?.transfer2===true||powerMode!=='ELECTRICAL')rightBackupSeconds=0;
+ ensurePower();
  let remaining=realDelta*speed;
  while(remaining>0){
   const dt=Math.min(5,remaining);
@@ -190,7 +196,12 @@ function clock(){
 function lightValue(id,key){
  const s=sample(id);
  if(key==='dcFailLamp')return !s.powered&&state.units[id].mode!=='OFF';
- return key==='onDcLamp'?s.onDcLamp:key==='alignLamp'?s.alignLamp:s.faultLamp;
+ if(key==='onDcLamp'){
+  const bus=powerMode==='ELECTRICAL'?root.B737ISNCockpitV1?.getState?.()?.state?.electrical?.bus:null;
+  const ac=id==='L'?bus?.acStandby:bus?.transfer2;
+  return s.onDcLamp||(s.powered&&ac===false&&bus?.switchedHotBattery===true);
+ }
+ return key==='alignLamp'?s.alignLamp:s.faultLamp;
 }
 function addLamp(region,{id,key,cx,cy,label}){
  const b=document.createElement('span');
