@@ -13,6 +13,11 @@ on:
       - 'panel-mosaic-lab/cockpit/asp-observer-overhead-v3.test.cjs'
       - 'panel-mosaic-lab/cockpit/overhead-stage.html'
       - 'panel-mosaic-lab/cockpit/index.html'
+      - 'panel-mosaic-lab/cockpit/asp-alpha-reference-v2.py'
+      - 'panel-mosaic-lab/cockpit/asp-socket-registration-v2.js'
+      - 'panel-mosaic-lab/cockpit/asp-controls-v1.js'
+      - 'panel-mosaic-lab/cockpit/asp-observer-overhead-v3.js'
+      - 'panel-mosaic-lab/cockpit/overhead-stage.html'
       - 'tests/asp-audio-v1.test.cjs'
       - 'tests/asp-audio-routing-v2.test.cjs'
       - 'tests/asp-physical-controls-v1.test.cjs'
@@ -51,6 +56,8 @@ jobs:
         run: node --test tests/asp-physical-controls-v1.test.cjs
       - name: Existing ASP controls pixel/angle QA
         run: node --test panel-mosaic-lab/cockpit/asp-controls-v1.test.cjs
+      - name: Measure exact four owner ASP PNG silhouette centers
+        run: python3 panel-mosaic-lab/cockpit/asp-alpha-reference-v2.py
       - name: Pixel-source aperture and actual alpha-center regression (60 controls)
         run: |
           node --check panel-mosaic-lab/cockpit/asp-socket-registration-v2.js
