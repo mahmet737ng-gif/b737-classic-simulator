@@ -21,7 +21,7 @@
 <path d="M73 32 Q74 25 80 20 Q87 25 88 32Z" fill="#fafaf5" stroke="#8d9d9f" stroke-width="1"/>
 <path d="M80 23 L80 37" stroke="#44575c" stroke-width="2.4" stroke-linecap="round"/>
 <!-- Central aperture where separately controlled brightness spindle is seated -->
-<circle cx="80" cy="76" r="30" fill="#738086" stroke="#fbfffd" stroke-width="2.3"/>
-<circle cx="80" cy="76" r="27" fill="#17252b" stroke="#53666a" stroke-width="2.5"/>
-<circle cx="80" cy="76" r="25" fill="#071013" stroke="#29363a" stroke-width="1"/>
+<circle cx="80" cy="80" r="30" fill="#738086" stroke="#fbfffd" stroke-width="2.3"/>
+<circle cx="80" cy="80" r="27" fill="#17252b" stroke="#53666a" stroke-width="2.5"/>
+<circle cx="80" cy="80" r="25" fill="#071013" stroke="#29363a" stroke-width="1"/>
 </svg>
