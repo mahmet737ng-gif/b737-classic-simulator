@@ -87,7 +87,7 @@ function showCard(s){
  const item=catalogue.byId(s.activeScenario);
  by('scenario-title').textContent=item?.title||'IRS Ground Test';
  by('scenario-summary').textContent=item?.subtitle||'هر دو IRS را مستقل بررسی کنید. با انتخاب سناریو، خرابی و علائم همان مورد شبیه‌سازی می‌شود.';
- by('scenario-category').textContent=item?.group+' · '+item?.level||'LIVE TRAINER';
+ by('scenario-category').textContent=item?(item.group+' · '+item.level):'LIVE TRAINER';
  by('qrh-ref').textContent=item?.ref||'B737 Classic · FCOM / MRG';
  const result=lab.checkStatus();
  const qa=by('qa-status');qa.textContent=result===null?'READY':result?'MATCH':'CHECK';
@@ -138,7 +138,7 @@ function handleClick(node){
 document.addEventListener('click',e=>{
  const btn=e.target.closest('[data-action]');if(btn){handleClick(btn);return;}
  if(e.target.id==='reset'){playing=false;lab.reset();render();}
- if(e.target.id==='clear-log'){lab.reset();playing=false;render();}
+ if(e.target.id==='clear-log'){lab.clearLog();render();}
 });
 document.addEventListener('change',e=>{
  if(e.target.matches('[data-step]')){lab.progressStep(Number(e.target.dataset.step),e.target.checked);render();}
