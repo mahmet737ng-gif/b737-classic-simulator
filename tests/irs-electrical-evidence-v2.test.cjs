@@ -88,6 +88,21 @@ assert.equal(JSON.stringify(backup),baseline,'Power projection may not rewrite u
 assert.throws(()=>Power.evaluate(Power.initialState(),{electrical:{bus:{acStandby:true}},modes}),/V7/);
 assert.throws(()=>Power.evaluate(Power.initialState(),{electrical:normal,modes,dtSec:200}),/0 and 5/);
 assert.throws(()=>Power.evaluate(Power.initialState(),{electrical:normal,modes:{L:'NAV',R:'CRUISE'}}),/IRS MODE/);
+// Audit the real 544-candidate photograph index: the seven IRS-name CBs
+// are visually located, but *not* source-indexed or wired to any unit.
+const candidateAudit=JSON.parse(fs.readFileSync(path.join(root,'engine/cb/all-circuits-audit.v2.json'),'utf8'));
+const irsCandidates=candidateAudit.circuits.filter(c=>/\\bIRS\\b/i.test(c.photoLabel||''));
+assert.equal(irsCandidates.length,7,'Expected exactly seven IRS-labelled photo candidates');
+assert.deepEqual(irsCandidates.map(x=>x.id).sort(),[
+ 'P18-2|ALL|D2','P18-2|ALL|D3','P18-2|ALL|D4','P18-2|ALL|D5',
+ 'P6-1|ALL|D11','P6-1|ALL|D12','P6-1|ALL|D9'].sort());
+for(const c of irsCandidates){
+ assert.equal(c.status,'NOT_YET_SOURCE_INDEXED');
+ assert.equal(c.airframeConsumerFeedVerified,false);
+ assert.equal(c.airframeBus,null);
+ assert.equal(c.protectedEquipment,null);
+}
+assert.equal(candidateAudit.totals.epFsiVerifiedBusToEquipmentFeed,0);
 // Model proof: owners' 93 frozen IRS front-end files and lock snapshots are
 // deliberately not modified by this backend-only set of changes.
 const frozen=JSON.parse(fs.readFileSync(path.join(root,'panel-mosaic-lab/cockpit/irs-complete-redzone-lock-v1.json'),'utf8'));
