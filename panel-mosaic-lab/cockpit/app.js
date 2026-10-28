@@ -70,4 +70,4 @@
 })();
 
 /* ASP-BARE-0001: visual overlay, separate from locked regions. */
-(()=>{const s=document.createElement('script');s.src='./asp-bare-overlay-v1.js?v=ASP-BARE-0001';s.defer=true;document.head.appendChild(s);})();
+(()=>{const s=document.createElement('script');s.src='./asp-bare-overlay-v1.js?v=ASP-BARE-0002-AFT';s.defer=true;document.head.appendChild(s);})();
