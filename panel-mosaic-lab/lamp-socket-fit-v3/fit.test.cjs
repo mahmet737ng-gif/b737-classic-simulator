@@ -44,8 +44,13 @@ for(const master of manifest.masters){
 const script=fs.readFileSync(path.join(__dirname,'live-fit.js'),'utf8');
 assert(script.includes("new DOMParser()")&&script.includes("object-fit:fill"),'Missing non-raster fitting step');
 assert(script.includes("sourceRect")&&script.includes("scale("),'Fitting no longer source anchored');
+assert(script.includes('const maxPad=2.5;'),'Default coverage must be 2.5 native source px');
+assert(!script.includes('if(!opted)return'),'Production lamp fit must no longer be opt-in');
+assert(script.includes("query.get('socketFit')==='0'"),'Diagnostic rollback flag missing');
+const lab=fs.readFileSync(path.join(root,'lamp-socket-fit-lab/index.html'),'utf8');
+assert(lab.includes('id="padValue">2.5</output>')&&lab.includes('step="0.5" value="2.5"'),'Lab default must be 2.5 px');
 for(const p of ['cockpit/index.html','interactive-overhead/index.html']){
  const s=fs.readFileSync(path.join(root,p),'utf8');
- assert(s.includes('../lamp-socket-fit-v3/live-fit.js?v=LGT-SOCKET-FIT-003'),'Missing opt-in live loader '+p);
+ assert(s.includes('../lamp-socket-fit-v3/live-fit.js?v=LGT-SOCKET-FIT-004'),'Missing opt-in live loader '+p);
 }
 console.log('LGT-SOCKET-FIT-003 PASS: '+geom.slots.length+' preserved calibrated source rectangles, 0 overlaps, '+manifest.masters.length+' masters, SVG typography preserved, independent opt-in loaders.');
