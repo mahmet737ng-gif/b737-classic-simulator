@@ -12,7 +12,9 @@
  function paint(){
   latest=engine.evaluate(state);
   panel.setPower(latest.overhead.power);
-  for(const [id,status] of Object.entries(latest.indication)){
+  // Visual state must reflect desired-vs-observed agreement, not the last
+  // physical detent of a jammed device (which could still be EXT).
+  for(const [id,status] of Object.entries(latest.overhead.indication)){
    panel.setDevice(id,status);
   }
   for(const [key,lit] of Object.entries(latest.overhead.windows)){

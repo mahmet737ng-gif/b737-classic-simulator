@@ -34,3 +34,9 @@ Non-normal: jam one slat, observe its own amber and center transit mismatch.
 Emergency: lose B, select standby and alternate full extend, then attempt standby retract (should remain extended).
 Electrical: remove transfer1 (overhead dark; forward lamps conditional on dc1), remove dc1 (forward lamps dark; overhead independent).
 Momentary TEST, BRIGHT/DIM leave original physical state intact.
+
+## Mismatch annunciation rule — LEDEV-LOGIC-V2
+
+**Required simulator behavior:** an individual LE device displays green only if its sensed/observed position **agrees** with the position commanded for the current Trailing Edge Flap lever. A device stopped at a formerly valid detent, but not yet at the new commanded detent, displays amber TRANSIT with both green windows off, even if a mechanical JAM has stopped motion entirely. The independent forward LE FLAPS TRANSIT remains active as appropriate. The modeled physical position is retained separately in `indication` and `position`; `overhead.indication` is the *commanded-versus-observed annunciator* state for the front end. No artwork changes.
+
+**Acceptance case:** FLAPS 5, slats at EXT; jam SLAT 2; command FLAPS 15; all other slats reach FULL EXT. SLAT 2 stays physically EXT, its green EXT goes out and its amber TRANSIT stays on. Physical TEST temporarily illuminates lamps and releasing returns to this condition.

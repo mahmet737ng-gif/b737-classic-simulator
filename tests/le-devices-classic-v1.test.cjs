@@ -82,6 +82,79 @@ test('invalid values are rejected; immutable prior states and deterministic repl
 test('non-normal preset freezes all LE devices until hydraulic supply is restored',()=>{
  const noB=run([lever(15),tick(20)],'NON_NORMAL');
  assert.equal(noB.mismatch.length,10);
- assert.equal(noB.overhead.windows['SLAT_1|TRANSIT'],false,'retracted frozen slat has no false amber');
+ assert.equal(noB.overhead.windows['SLAT_1|TRANSIT'],true,'retracted frozen slat disagrees with commanded extension');
  assert.equal(noB.center.transit,true,'forward amber warns of improper LE position');
+});
+
+test('REGRESSION: FLAPS 5 -> 15, jam SLAT 2 at EXT: green OFF, amber ON; peers reach FULL',()=>{
+ let s=LE.initialState();
+ s=LE.apply(s,lever(5));
+ s=LE.apply(s,tick(10));
+ let p=LE.evaluate(s);
+ for(const id of LE.SLATS){
+  assert.equal(p.position[id],1);
+  assert.equal(p.overhead.windows[id+'|EXT'],true);
+  assert.equal(p.overhead.windows[id+'|TRANSIT'],false);
+ }
+ s=LE.apply(s,{type:'JAM',device:'SLAT_2',value:true});
+ s=LE.apply(s,lever(15));
+ p=LE.evaluate(s);
+ assert.equal(p.position.SLAT_2,1,'mechanically jammed slat remains at EXT');
+ assert.equal(p.indication.SLAT_2,'EXT','observed/mechanical position remains EXT for diagnostics');
+ assert.equal(p.overhead.indication.SLAT_2,'TRANSIT','command disagreement overrides observed detent');
+ assert.equal(p.overhead.windows['SLAT_2|EXT'],false,'stale green EXT must go out immediately');
+ assert.equal(p.overhead.windows['SLAT_2|FULL_EXT'],false);
+ assert.equal(p.overhead.windows['SLAT_2|TRANSIT'],true);
+ assert.equal(p.center.transit,true);
+ s=LE.apply(s,tick(5));
+ p=LE.evaluate(s);
+ for(const id of LE.SLATS.filter(x=>x!=='SLAT_2')){
+  assert.equal(p.position[id],2,id+' must complete transition');
+  assert.equal(p.overhead.windows[id+'|FULL_EXT'],true,id+' green FULL EXT on');
+  assert.equal(p.overhead.windows[id+'|TRANSIT'],false,id+' amber off');
+ }
+ assert.equal(p.position.SLAT_2,1,'jam persists after the others reach full');
+ assert.equal(p.overhead.indication.SLAT_2,'TRANSIT');
+ assert.equal(p.overhead.windows['SLAT_2|EXT'],false);
+ assert.equal(p.overhead.windows['SLAT_2|FULL_EXT'],false);
+ assert.equal(p.overhead.windows['SLAT_2|TRANSIT'],true);
+ assert.deepEqual(p.mismatch,['SLAT_2']);
+ assert.equal(p.center.extended,false);
+});
+test('uncommanded intermediate positions and other jammed devices do not show stale green',()=>{
+ let s=LE.initialState();
+ s=LE.apply(s,lever(15));s=LE.apply(s,tick(10));
+ s=LE.apply(s,{type:'JAM',device:'SLAT_4',value:true});
+ s=LE.apply(s,lever(0)); // retract requested; jam stays at FULL_EXT
+ const p=LE.evaluate(s);
+ assert.equal(p.indication.SLAT_4,'FULL_EXT');
+ assert.equal(p.overhead.windows['SLAT_4|FULL_EXT'],false);
+ assert.equal(p.overhead.windows['SLAT_4|TRANSIT'],true);
+ assert.equal(p.overhead.windows['SLAT_4|EXT'],false);
+});
+test('jam at the already-commanded detent leaves its valid green lamp on',()=>{
+ const p=run([lever(5),tick(10),{type:'JAM',device:'SLAT_2',value:true}]);
+ assert.equal(p.mismatch.length,0);
+ assert.equal(p.overhead.windows['SLAT_2|EXT'],true);
+ assert.equal(p.overhead.windows['SLAT_2|TRANSIT'],false);
+});
+test('sensor disagreement is annunciated as amber and extinguishes green',()=>{
+ const p=run([lever(15),tick(10),{type:'SENSOR',device:'SLAT_2',value:'EXT'}]);
+ assert.equal(p.position.SLAT_2,2);
+ assert.equal(p.indication.SLAT_2,'EXT'); // sensor-reported detent
+ assert.equal(p.overhead.indication.SLAT_2,'TRANSIT');
+ assert.equal(p.overhead.windows['SLAT_2|EXT'],false);
+ assert.equal(p.overhead.windows['SLAT_2|FULL_EXT'],false);
+ assert.equal(p.overhead.windows['SLAT_2|TRANSIT'],true);
+});
+test('with a jam, momentary TEST overrides all lamps then returns to amber-only mismatch',()=>{
+ let s=LE.initialState();
+ for(const command of [lever(5),tick(10),{type:'JAM',device:'SLAT_2',value:true},lever(15),tick(5)])s=LE.apply(s,command);
+ s=LE.apply(s,{type:'TEST',value:true});
+ let p=LE.evaluate(s);
+ assert.equal(Object.values(p.overhead.windows).filter(Boolean).length,26);
+ s=LE.apply(s,{type:'TEST',value:false});p=LE.evaluate(s);
+ assert.equal(p.overhead.windows['SLAT_2|EXT'],false);
+ assert.equal(p.overhead.windows['SLAT_2|FULL_EXT'],false);
+ assert.equal(p.overhead.windows['SLAT_2|TRANSIT'],true);
 });

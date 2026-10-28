@@ -124,9 +124,18 @@
   });
   const autoslatInhibit=!s.onGround&&s.autoslatsRequested&&[1,2,5].includes(s.lever);
   const allExpected=s.lever!==0&&mismatched.length===0&&improper.length===0;
-  const overhead={power:trit(s.power.transfer1),windows:{},indication};
+  // The observed sensor position and the indicated lamp are intentionally different
+  // when a LE device disagrees with the commanded flap configuration.
+  // A jammed slat remaining at EXT after FLAPS 5 -> 15 therefore loses EXT green
+  // and keeps TRANSIT amber, even if it is physically stationary.
+  const mismatchedSet=new Set(mismatched);
+  const improperSet=new Set(improper);
+  const annunciation=Object.fromEntries(DEVICES.map(id=>[
+   id,(mismatchedSet.has(id)||improperSet.has(id))?'TRANSIT':indication[id]
+  ]));
+  const overhead={power:trit(s.power.transfer1),windows:{},indication:annunciation,observed:indication};
   for(const id of DEVICES)for(const level of (id.startsWith('FLAP_')?['TRANSIT','FULL_EXT']:['TRANSIT','EXT','FULL_EXT'])){
-   const key=id+'|'+level,lit=s.testPressed||indication[id]===level;
+   const key=id+'|'+level,lit=s.testPressed||annunciation[id]===level;
    overhead.windows[key]=s.power.transfer1===null?null:
     s.power.transfer1===false?false:
     s.lampFailures.includes(key)?false:lit;
