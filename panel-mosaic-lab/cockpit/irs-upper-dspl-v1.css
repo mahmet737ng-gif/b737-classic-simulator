@@ -5,8 +5,8 @@
 #region-overhead .irs-upper-brt-rotor{inset:0;width:100%;height:100%;z-index:2}
 #region-overhead .irs-upper-photo,#region-overhead .irs-upper-mode-index{position:absolute;display:block;inset:0;width:100%;height:100%;max-width:none;pointer-events:none;user-select:none}
 #region-overhead .irs-upper-control{position:absolute;appearance:none;background:transparent!important;border:0!important;box-shadow:none!important;margin:0!important;padding:0!important;border-radius:50%!important;outline:none;pointer-events:auto;cursor:grab;touch-action:none;-webkit-tap-highlight-color:transparent}
-#region-overhead .irs-upper-mode-control{inset:0;width:100%;height:100%;clip-path:circle(43% at 50% 50%);z-index:3}
-#region-overhead .irs-upper-brt-control{left:28%;top:28%;width:44%;height:44%;z-index:4}
+#region-overhead .irs-upper-mode-control{inset:0;width:100%;height:100%;clip-path:circle(35% at 50% 50%);z-index:3}
+#region-overhead .irs-upper-brt-control{left:30.5%;top:30.5%;width:39%;height:39%;z-index:4}
 #region-overhead .irs-upper-control:active{cursor:grabbing}
 #region-overhead .irs-upper-control:focus-visible{outline:1px solid #a4e8f4!important;outline-offset:1px!important}
 #region-overhead .irs-upper-display-dimmer{position:absolute;z-index:122;pointer-events:none;background:#000;border:0;transition:opacity 80ms linear}
@@ -19,7 +19,12 @@
 #region-overhead .irs-upper-mode-rotor,#region-overhead .irs-upper-brt-rotor{overflow:hidden}
 #region-overhead .irs-upper-photo{inset:auto;width:173.2421875%;height:86.62109375%;image-rendering:auto}
 #region-overhead .irs-upper-photo-outer{left:-.12890625%;top:6.615234375%;clip-path:inset(0 50% 0 0)}
-#region-overhead .irs-upper-photo-inner{left:-80.5654296875%;top:5.224609375%;clip-path:inset(0 0 0 50%)}
+#region-overhead .irs-upper-photo-inner{left:-78.759765625%;top:7.958984375%;clip-path:inset(0 0 0 50%)}
 
 /* Replace only the older UPPER control visual; its existing IRS controller remains authoritative. */
 #region-overhead #irsUpperDsplSelMounted{display:none!important}
+
+/* Exact concentric circles. Opaque circular seats remove alpha-edge wobble;
+   original high-resolution photograph remains the surface texture. */
+#region-overhead .irs-upper-mode-rotor{clip-path:circle(35% at 50% 50%);background:#d8d0bc}
+#region-overhead .irs-upper-brt-rotor{clip-path:circle(19.5% at 50% 50%);background:#ded8c7}

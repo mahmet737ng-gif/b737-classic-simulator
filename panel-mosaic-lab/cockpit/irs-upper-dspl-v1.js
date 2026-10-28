@@ -1,4 +1,4 @@
-/* IRS-UPPER-DSPL-0003 — independent coaxial DSPL SEL / BRT.
+/* IRS-UPPER-DSPL-0004 — independent coaxial DSPL SEL / BRT.
  * Owner reference: image(20261028-022751).png. Photographic alpha layers.
  * Lower SYS DSPL, its four mount tags, OWNER18 and frozen mosaic are untouched.
  */
@@ -9,9 +9,9 @@
  const ANGLES=Object.freeze([0,35,65,125,150]);
  const source=Object.freeze({x:471.454545,y:368.699675});
  const map=Object.freeze({sourceWidth:1731,sourceHeight:909,width:2214,height:1019,x:3,y:3});
- const size=Object.freeze({width:88,height:79});
+ const size=Object.freeze({width:88,height:88});
  const center=Object.freeze({x:map.x+source.x*map.width/map.sourceWidth,y:map.y+source.y*map.height/map.sourceHeight});
- const geometry=Object.freeze({version:'IRS-UPPER-DSPL-0003',source,map,size,center,pivot:[.5,.5],modeAngles:ANGLES,outerAsset:'irs-upper-owner-original-v2.png',innerAsset:'irs-upper-owner-original-v2.png'});
+ const geometry=Object.freeze({version:'IRS-UPPER-DSPL-0004',source,map,size,center,pivot:[.5,.5],circles:Object.freeze({outerRadius:.35,innerRadius:.195}),modeAngles:ANGLES,outerAsset:'irs-upper-owner-original-v2.png',innerAsset:'irs-upper-owner-original-v2.png'});
  let mode='PPOS',brightness=82,element=null,displayMask=null;
  const tracks=new Map(),ignoreClick={mode:false,brightness:false};
  const clamp=(x,lo,hi)=>Math.max(lo,Math.min(hi,x));
@@ -101,7 +101,7 @@
   // The owner-requested black reference mark belongs ONLY to the outer rotor.
   const marker=document.createElementNS('http://www.w3.org/2000/svg','svg');marker.setAttribute('viewBox','0 0 1024 1024');marker.setAttribute('preserveAspectRatio','none');marker.setAttribute('class','irs-upper-mode-index');marker.setAttribute('aria-hidden','true');
   const line=document.createElementNS('http://www.w3.org/2000/svg','line');
-  for(const [key,value]of Object.entries({x1:104,y1:499,x2:152,y2:499,stroke:'#101010','stroke-width':14,'stroke-linecap':'round'}))line.setAttribute(key,String(value));marker.append(line);outer.append(marker);
+  for(const [key,value]of Object.entries({x1:174,y1:512,x2:250,y2:512,stroke:'#101010','stroke-width':14,'stroke-linecap':'round'}))line.setAttribute(key,String(value));marker.append(line);outer.append(marker);
   const inner=document.createElement('span');inner.className='irs-upper-brt-rotor';inner.append(photo('irs-upper-photo irs-upper-photo-inner','irs-upper-owner-original-v2.png'));
   element.append(outer,inner,control('mode','IRS DSPL SEL outer mode selector',0,4),control('brightness','IRS BRT inner brightness knob',0,100));
   // Dims only the existing display aperture; no invented navigation values.

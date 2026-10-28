@@ -1,5 +1,5 @@
 {
-  "version": "IRS-UPPER-DSPL-0003",
+  "version": "IRS-UPPER-DSPL-0004",
   "ownerReference": "image(20261028-022751).png",
   "sourceCenter": [
     471.454545,
@@ -21,7 +21,7 @@
   },
   "renderSize": [
     88,
-    79
+    88
   ],
   "sourceSpritePivots": {
     "outer": [
@@ -45,14 +45,14 @@
   "blackReferenceLine": {
     "layer": "outer mode rotor",
     "svgLine": [
-      104,
-      499,
-      152,
-      499
+      174,
+      512,
+      250,
+      512
     ],
     "stroke": "#101010",
     "strokeWidth": 14,
-    "scope": "projecting outer tab ONLY"
+    "scope": "flush radial reference mark on the smooth round outer rim; no projecting tab"
   },
   "modes": [
     "TEST",
@@ -88,5 +88,17 @@
   ],
   "originalPngPreservedByteForByte": true,
   "existingUpperControllerPreserved": true,
-  "replacedVisual": "#irsUpperDsplSelMounted"
+  "replacedVisual": "#irsUpperDsplSelMounted",
+  "perfectCircleRadii": {
+    "outer": 0.35,
+    "inner": 0.195
+  },
+  "circlePivot": [
+    0.5,
+    0.5
+  ],
+  "innerPhotoFaceCenter": [
+    1318.5,
+    430.5
+  ]
 }
