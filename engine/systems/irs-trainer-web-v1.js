@@ -75,9 +75,13 @@ function parseCoordinate(text,kind){
  return sign*(deg+mins/60);
 }
 function parseFmcPosition(text){
- const fields=String(text||'').toUpperCase().trim().split(/[\s/,]+/).filter(Boolean);
- if(fields.length!==2)throw new RangeError('Expected NDDMMm EDDDMMm coordinates');
- return checkPosition({lat:parseCoordinate(fields[0],'lat'),lon:parseCoordinate(fields[1],'lon')});
+ const raw=String(text||'').toUpperCase().trim();
+ // FMC scratchpad accepts compact, separated and decimal variants alike.
+ // Examples: N35395E051254 / N3539.5 E05125.4 / N35395/E051254.
+ const joined=raw.replace(/[\s/,]+/g,'');
+ const match=joined.match(/^([NS]\d{4}\.?\d)([EW]\d{5}\.?\d)$/);
+ if(!match)throw new RangeError('Expected NDDMMm EDDDMMm coordinates');
+ return checkPosition({lat:parseCoordinate(match[1],'lat'),lon:parseCoordinate(match[2],'lon')});
 }
 function unit(id){
  return {id,mode:'OFF',phase:'OFF',powered:false,
