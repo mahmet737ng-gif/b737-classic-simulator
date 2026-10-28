@@ -42,6 +42,26 @@ function patchPositionPages(){
    R.positionValid&&Number.isFinite(R.gsKt)?R.gsKt.toFixed(1)+' KT':'-----');
  }
 }
+// CDU scratchpad indications follow the actual L/R IRS core faults.
+// The CDU artwork is not touched; preserve unrelated FMC crew messages.
+let irsOwnedMessage='';
+const IRS_MESSAGES=new Set(['IRS MOTION','ENTER IRS POS','VERIFY POSITION']);
+function syncIrsAlerts(snapshot){
+ const units=[snapshot?.units?.L,snapshot?.units?.R].filter(Boolean);
+ const find=code=>units.find(u=>u.alignStatusCode===code);
+ const desired=find(3)?'IRS MOTION':
+   (find(4)||find(8)||find(12))?'ENTER IRS POS':
+   units.some(u=>u.cduMessage==='VERIFY POSITION')?'VERIFY POSITION':null;
+ if(desired){
+  if(state.message&&state.message!==irsOwnedMessage&&!IRS_MESSAGES.has(state.message))return false;
+  if(state.message===desired){irsOwnedMessage=desired;return false;}
+  state.message=desired;irsOwnedMessage=desired;return true;
+ }
+ if(irsOwnedMessage&&state.message===irsOwnedMessage){
+  state.message='';irsOwnedMessage='';return true;
+ }
+ irsOwnedMessage='';return false;
+}
 update=function(){originalUpdate();patchPositionPages();};
 window.updateStage5View=update;
 send=function(key){
@@ -63,10 +83,13 @@ send=function(key){
 const previousRender=parentIRS()?.getState?.();
 let lastSig='';
 setInterval(()=>{
- if(!['POS_REF','POS_INIT'].includes(state.page))return;
  const t=parentIRS(),data=t?.getState?.();if(!data)return;
- const signature=JSON.stringify({L:data.units.L,R:data.units.R,last:data.lastCDUSource});
- if(signature!==lastSig){lastSig=signature;patchPositionPages();}
+ const alertChanged=syncIrsAlerts(data);
+ if(['POS_REF','POS_INIT'].includes(state.page)){
+  const signature=JSON.stringify({L:data.units.L,R:data.units.R,last:data.lastCDUSource});
+  if(signature!==lastSig){lastSig=signature;patchPositionPages();}
+ }
+ if(alertChanged)update();
 },1100);
-window.B737CDUIRSAdapterV1=Object.freeze({inputFormat,patchPositionPages});
+window.B737CDUIRSAdapterV1=Object.freeze({inputFormat,patchPositionPages,syncIrsAlerts});
 })();
