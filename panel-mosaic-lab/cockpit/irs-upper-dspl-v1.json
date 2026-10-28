@@ -1,5 +1,5 @@
 {
-  "version": "IRS-UPPER-DSPL-0001",
+  "version": "IRS-UPPER-DSPL-0002",
   "ownerReference": "image(20261028-022751).png",
   "sourceCenter": [
     471.454545,
@@ -41,17 +41,18 @@
     512,
     512
   ],
-  "innerLayerScale": 1.25,
+  "innerLayerScale": 1,
   "blackReferenceLine": {
     "layer": "outer mode rotor",
     "svgLine": [
-      115,
-      512,
-      245,
-      512
+      104,
+      499,
+      152,
+      499
     ],
     "stroke": "#101010",
-    "strokeWidth": 18
+    "strokeWidth": 14,
+    "scope": "projecting outer tab ONLY"
   },
   "modes": [
     "TEST",
@@ -73,13 +74,17 @@
   },
   "scope": "Independent upper coaxial selector and brightness control; lower SYS DSPL owner lock preserved",
   "assets": {
-    "irs-upper-mode-outer-v1.png": {
-      "sha256": "be1bc30441b0c2426dce07be65e8e7bea3a84dab4cf77fcd6534a9d0596d15a4",
-      "bytes": 541026
-    },
-    "irs-upper-brt-inner-v1.png": {
-      "sha256": "4d83959c59c211e4aacd68c9cdc5b89da22634b0241bd5644893477a44b835c9",
-      "bytes": 305515
+    "irs-upper-owner-original-v2.png": {
+      "sha256": "ba59c059f27a7c20f650187a7105e97a1eda6fd57fae6d94f13b2b143e0aa902",
+      "bytes": 917732,
+      "width": 1774,
+      "height": 887,
+      "sameFileForBothRotors": true
     }
-  }
+  },
+  "spriteSheetSize": [
+    1774,
+    887
+  ],
+  "originalPngPreservedByteForByte": true
 }

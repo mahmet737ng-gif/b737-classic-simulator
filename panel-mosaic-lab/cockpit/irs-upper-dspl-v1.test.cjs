@@ -48,13 +48,13 @@ test('separate simultaneous pointers change their own knob only; drag does not a
 test('black reference line rotates with the OUTER part, while BRT image remains independent',()=>{
  const {root,api}=runtime();const outer=root.querySelector('.irs-upper-mode-rotor'),inner=root.querySelector('.irs-upper-brt-rotor');
  assert.ok(outer.querySelector('svg'));assert.equal(inner.querySelector('svg'),null);
- const line=outer.querySelector('line');assert.equal(line.attrs.stroke,'#101010');assert.equal(line.attrs.y1,line.attrs.y2);assert.equal(line.attrs.y1,'512');
+ const line=outer.querySelector('line');assert.equal(line.attrs.stroke,'#101010');assert.equal(line.attrs.y1,line.attrs.y2);assert.equal(line.attrs.y1,'499');assert.equal(line.attrs.x1,'104');assert.equal(line.attrs.x2,'152');
  const before=inner.style.transform;api.setMode('TEST');assert.equal(inner.style.transform,before);assert.equal(outer.style.transform,'rotate(0deg)');
 });
 test('actual source bore registration, alpha PNGs and mount idempotence are preserved',()=>{
  const {api,region}=runtime();api.mount();assert.equal(region.children.filter(n=>n.id==='irsUpperDsplMounted').length,1);
  const g=api.geometry;assert.ok(Math.abs(g.center.x-(3+471.454545*2214/1731))<1e-7);assert.ok(Math.abs(g.center.y-(3+368.699675*1019/909))<1e-7);
  const meta=JSON.parse(fs.readFileSync(path.join(base,'irs-upper-dspl-v1.json')));
- for(const [name,spec]of Object.entries(meta.assets)){const b=fs.readFileSync(path.join(base,'assets',name));assert.equal(b.toString('ascii',1,4),'PNG');assert.equal(b.readUInt32BE(16),1024);assert.equal(b.readUInt32BE(20),1024);assert.equal(b[25],6,'RGBA alpha PNG');assert.equal(crypto.createHash('sha256').update(b).digest('hex'),spec.sha256);}
- const html=fs.readFileSync(path.join(base,'index.html'),'utf8');assert.equal(html.split('irs-upper-dspl-v1.js?v=IRS-UPPER-0001').length-1,1);assert.equal(html.split('irs-upper-dspl-v1.css?v=IRS-UPPER-0001').length-1,1);
+ for(const [name,spec]of Object.entries(meta.assets)){const b=fs.readFileSync(path.join(base,'assets',name));assert.equal(b.toString('ascii',1,4),'PNG');assert.equal(b.readUInt32BE(16),1774);assert.equal(b.readUInt32BE(20),887);assert.equal(b[25],6,'RGBA alpha PNG');assert.equal(crypto.createHash('sha256').update(b).digest('hex'),spec.sha256);}
+ const html=fs.readFileSync(path.join(base,'index.html'),'utf8');assert.equal(html.split('irs-upper-dspl-v1.js?v=IRS-UPPER-0002').length-1,1);assert.equal(html.split('irs-upper-dspl-v1.css?v=IRS-UPPER-0002').length-1,1);
 });
