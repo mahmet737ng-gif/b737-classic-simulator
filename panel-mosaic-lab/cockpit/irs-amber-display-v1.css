@@ -1,0 +1,26 @@
+/* 737 Classic ISDU two-line amber luminous LCD, fitted INSIDE original black aperture.
+ * FCOM 11.10.15-17 format; NO REAL IRS NAV POSITION without backend.
+ */
+#region-overhead .irs-amber-display{
+ position:absolute;z-index:129;display:flex;flex-direction:column;justify-content:center;
+ box-sizing:border-box;overflow:hidden;background:transparent;padding:1px 7px;
+ direction:ltr;pointer-events:auto;cursor:pointer;isolation:isolate;
+ --irs-amber-power:.7
+}
+#region-overhead .irs-amber-display .irs-amber-line{
+ display:block;flex:1;min-height:0;white-space:pre;overflow:hidden;
+ color:rgb(255 164 39 / var(--irs-amber-power));
+ opacity:1;
+ font-family:"Lucida Console",Consolas,"Courier New",monospace;
+ font-variant-numeric:tabular-nums;
+ font-size:19.5px;font-weight:600;letter-spacing:2.5px;
+ line-height:1.06;text-align:center;
+ text-shadow:0 0 2.1px rgb(255 164 35 / calc(var(--irs-amber-power) * .75)),
+             0 0 7px rgb(255 126 9 / calc(var(--irs-amber-power) * .40));
+ font-smooth:never;
+}
+#region-overhead .irs-amber-display[data-active="false"] .irs-amber-line{visibility:hidden}
+#region-overhead .irs-amber-display[data-brightness="0"] .irs-amber-line{opacity:0}
+#region-overhead .irs-amber-display:focus-visible{outline:1px solid #c18b40}
+.pan-mode #region-overhead .irs-amber-display{pointer-events:none}
+.reference-mode #region-overhead .irs-amber-display{display:none}
