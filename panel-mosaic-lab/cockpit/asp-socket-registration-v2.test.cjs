@@ -59,7 +59,10 @@ test('renderer uses off/on independent optical silhouettes; original user sprite
  assert(script.includes('imageOriginX+slot.x/1122*hostW'),'OBS must align physical rendered background, not outer iframe box');
  assert(script.includes('obsLiveMasks.get(name)'),'OBS visible photo center must work even if global fetch fails');
  assert(html.includes('asp-socket-registration-v2.js?v=ASP-CENTER-0002'));
- assert(html.includes('asp-controls-v1.js?v=ASP-CENTER-000'));
+ assert(html.includes('asp-controls-v1.js?v=ASP-OBS-CENTER-0004'));
+ assert(read('overhead-stage.html').includes('asp-controls-v1.js?v=ASP-OBS-CENTER-0004'));
+ assert(read('overhead-stage.html').includes('asp-observer-overhead-v3.js?v=ASP-OBS-IFRAME-0004'));
+ assert(html.includes('app.js?v=CKP-0014-AIRCON400-ZONE-LEDEV-STAGED-V1-ASP-OBS-CENTER-0004'));
  assert(!script.includes('sourceCtx.drawImage')&&!script.includes('getImageData(0,0,1,1)'));
  const crypto=require('node:crypto');
  for(const [name,m]of Object.entries(manifest.assets)){
