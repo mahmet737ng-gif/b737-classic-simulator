@@ -22,10 +22,14 @@
    // Null is an unknown feed: panel power gating keeps all real lamps dark.
    panel.setWindow(id,level,lit===null?false:lit);
   }
-  window.dispatchEvent(new CustomEvent('b737:le-classic-projection',{
-   detail:{revision:latest.revision,scenario:mode,center:latest.center,overheadPower:latest.overhead.power,
-    mismatch:latest.mismatch,source}
-  }));
+  const detail={revision:latest.revision,lever:latest.lever,scenario:mode,
+   center:latest.center,overheadPower:latest.overhead.power,
+   autoslatInhibit:latest.autoslatInhibit,mismatch:latest.mismatch,source};
+  window.dispatchEvent(new CustomEvent('b737:le-classic-projection',{detail}));
+  if(parent!==window&&typeof parent.postMessage==='function'){
+   parent.postMessage({type:'b737:cockpit-overhead',kind:'le-devices-projection',
+    projection:detail},location.origin);
+  }
   return latest;
  }
  function apply(action){
@@ -48,6 +52,19 @@
   source='ELECTRICAL_OWNER_SNAPSHOT';
   return paint();
  }
+ let motionTimer=null;
+ function stopMotion(){if(motionTimer!==null){clearInterval(motionTimer);motionTimer=null;}}
+ function runMotion(){
+  if(motionTimer!==null)return;
+  // This is only activated by physical lever commands coming from Unified.
+  // A jam or hydraulic failure must not create an infinite animation loop.
+  motionTimer=setInterval(()=>{
+   const prior=JSON.stringify(state.position);
+   try{apply({type:'TICK',seconds:0.2});}
+   catch(error){stopMotion();console.error('LE motion tick failed',error);return;}
+   if(JSON.stringify(state.position)===prior)stopMotion();
+  },200);
+ }
  const api=Object.freeze({
   dispatch:authorize,advance:seconds=>apply({type:'TICK',seconds}),
   setElectricalSnapshot:buses,
@@ -63,6 +80,7 @@
  window.addEventListener('b737:electrical-buses',e=>{
   try{buses(e.detail);}catch(err){console.warn('Rejected LE bus handoff',err.message);}
  });
+ window.addEventListener('pagehide',stopMotion);
  window.addEventListener('b737:le-devices-lamp-test',e=>{
   if(typeof e.detail?.pressed==='boolean'){
    // Physical TEST is owned by the panel; do not repaint and erase manual demo lamp states.
@@ -74,7 +92,11 @@
  window.addEventListener('message',e=>{
   if(e.origin!==location.origin||e.source!==parent||e.data?.type!=='b737:cockpit-command')return;
   if(e.data.action==='le-devices'&&e.data.command){
-   try{authorize(e.data.command);}catch(err){console.warn('Invalid LE cockpit command',err.message);}
+   try{
+    const cmd=e.data.command;
+    authorize(cmd);
+    if(e.data.originator==='physical-flap-lever'&&cmd.type==='FLAP_LEVER')runMotion();
+   }catch(err){console.warn('Invalid LE cockpit command',err.message);}
   }
  });
  paint();

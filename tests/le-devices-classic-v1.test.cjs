@@ -158,3 +158,43 @@ test('with a jam, momentary TEST overrides all lamps then returns to amber-only 
  assert.equal(p.overhead.windows['SLAT_2|FULL_EXT'],false);
  assert.equal(p.overhead.windows['SLAT_2|TRANSIT'],true);
 });
+
+test('retraction: FULL EXT -> EXT at FLAPS 5/1 -> fully RETRACTED at UP',()=>{
+ let s=LE.initialState();
+ s=LE.apply(s,lever(15));s=LE.apply(s,tick(10));
+ for(const id of LE.SLATS)assert.equal(LE.evaluate(s).overhead.windows[id+'|FULL_EXT'],true);
+ s=LE.apply(s,lever(5));
+ let p=LE.evaluate(s);
+ for(const id of LE.SLATS){
+  assert.equal(p.overhead.windows[id+'|FULL_EXT'],false,'leave FULL green immediately');
+  assert.equal(p.overhead.windows[id+'|EXT'],false,'not at EXT yet');
+  assert.equal(p.overhead.windows[id+'|TRANSIT'],true);
+ }
+ s=LE.apply(s,tick(2));p=LE.evaluate(s);
+ assert.equal(p.overhead.windows['SLAT_1|TRANSIT'],true);
+ assert.equal(p.overhead.windows['SLAT_1|EXT'],false);
+ s=LE.apply(s,tick(3));p=LE.evaluate(s);
+ for(const id of LE.SLATS){
+  assert.equal(s.position[id],1);
+  assert.equal(p.overhead.windows[id+'|EXT'],true,'stable intermediate green at 5');
+  assert.equal(p.overhead.windows[id+'|FULL_EXT'],false);
+  assert.equal(p.overhead.windows[id+'|TRANSIT'],false);
+ }
+ s=LE.apply(s,lever(1));p=LE.evaluate(s);
+ assert.equal(p.overhead.windows['SLAT_2|EXT'],true,'still intermediate at FLAPS 1');
+ s=LE.apply(s,lever(0));p=LE.evaluate(s);
+ assert.equal(p.overhead.windows['SLAT_2|EXT'],false,'EXT extinguishes immediately on UP command');
+ assert.equal(p.overhead.windows['SLAT_2|TRANSIT'],true,'amber during retraction');
+ s=LE.apply(s,tick(2.5));p=LE.evaluate(s);
+ assert.equal(p.overhead.windows['SLAT_2|EXT'],false);
+ assert.equal(p.overhead.windows['SLAT_2|TRANSIT'],true);
+ s=LE.apply(s,tick(2.5));p=LE.evaluate(s);
+ for(const id of LE.SLATS){
+  assert.equal(p.indication[id],'RETRACTED');
+  assert.equal(p.overhead.windows[id+'|EXT'],false);
+  assert.equal(p.overhead.windows[id+'|FULL_EXT'],false);
+  assert.equal(p.overhead.windows[id+'|TRANSIT'],false);
+ }
+ assert.equal(p.center.transit,false);
+ assert.equal(p.center.extended,false);
+});

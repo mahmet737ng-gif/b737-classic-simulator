@@ -5,14 +5,20 @@ on:
       - 'engine/systems/le-devices-classic-v1.js'
       - 'tests/le-devices-classic-v1.test.cjs'
       - 'panel-mosaic-lab/le-devices/trainer-bridge-v1.js'
+      - 'panel-mosaic-lab/cockpit/le-devices-live-link-v1.js'
+      - 'panel-mosaic-lab/cockpit/lights-model.js'
       - 'panel-mosaic-lab/le-devices/panel.js'
       - 'tests/le-devices-classic-bridge.test.cjs'
+      - 'tests/le-devices-unified-link.test.cjs'
+      - 'tests/le-devices-forward-light-model.test.cjs'
       - '.github/workflows/le-devices-classic-qa.yml'
   pull_request:
     paths:
       - 'engine/systems/le-devices-classic-v1.js'
       - 'tests/le-devices-classic-v1.test.cjs'
       - 'panel-mosaic-lab/le-devices/trainer-bridge-v1.js'
+      - 'panel-mosaic-lab/cockpit/le-devices-live-link-v1.js'
+      - 'panel-mosaic-lab/cockpit/lights-model.js'
       - 'panel-mosaic-lab/le-devices/panel.js'
   workflow_dispatch:
 jobs:
@@ -25,4 +31,5 @@ jobs:
           node-version: '22'
       - run: node --check engine/systems/le-devices-classic-v1.js
       - run: node --check panel-mosaic-lab/le-devices/trainer-bridge-v1.js
-      - run: node --test tests/le-devices-classic-v1.test.cjs tests/le-devices-classic-bridge.test.cjs panel-mosaic-lab/le-devices/panel.test.cjs
+      - run: node --check panel-mosaic-lab/cockpit/le-devices-live-link-v1.js
+      - run: node --test tests/le-devices-classic-v1.test.cjs tests/le-devices-classic-bridge.test.cjs tests/le-devices-unified-link.test.cjs tests/le-devices-forward-light-model.test.cjs panel-mosaic-lab/le-devices/panel.test.cjs
