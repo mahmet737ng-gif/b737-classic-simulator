@@ -19,7 +19,7 @@ const masterRoot=new URL('lights-reference-v2/',root);
 const clamp=(v,lo,hi)=>Math.max(lo,Math.min(hi,v));
 // Fixed, registered geometry. Never silently inherit a varying laboratory slider.
 const maxPad=2.5;
-const pageScope=win.location.pathname.includes('/interactive-overhead/')?'OH':'MP';
+const pageScope=win.location.pathname.includes('/interactive-overhead/')||win.location.pathname.endsWith('/cockpit/overhead-stage.html')?'OH':'MP';
 const own=new Map(), records=new Map(), nodes=new Map(), pending=new Map();
 const sourceCache=new Map(), blobURLs=new Map(), errors=[];
 let manifest, ready=false, mounts=0, renders=0, retries=0;
