@@ -33,13 +33,19 @@ function evaluate(state,{electrical=null,modes={L:'OFF',R:'OFF'},unitStates=null
  const bus=electrical?.bus||null;
  const acL=tri(bus?.acStandby),acR=tri(bus?.transfer2),dc=tri(bus?.switchedHotBattery);
  let elapsed=state.rightBackupElapsedSec;
- if(modes.R==='OFF'||acR===true){elapsed=0;}
- else if(modes.R!=='OFF'&&acR===false&&dc===true){elapsed=Math.min(MAX_BACKUP_R,elapsed+dtSec);}
+ const rShutdown=modes.R==='OFF'&&unitStates?.R?.phase==='SHUTDOWN';
+ if((modes.R==='OFF'&&!rShutdown)||acR===true){elapsed=0;}
+ else if((modes.R!=='OFF'||rShutdown)&&acR===false&&dc===true){
+  elapsed=Math.min(MAX_BACKUP_R,elapsed+dtSec);
+ }
  // Unknown source does not reset or refill backup time.
  function sideProjection(side,ac){
   const mode=modes[side];
-  const active=mode!=='OFF';
   const core=unitStates?.[side]||null;
+  // OFF retains its electrical supply for the 30-second SHUTDOWN phase.
+  // Only the core may time that shutdown; do not forcibly drop power here.
+  const shutdownPowered=mode==='OFF'&&core?.phase==='SHUTDOWN';
+  const active=mode!=='OFF'||shutdownPowered;
   const evidence=side==='L'?'AC_STANDBY':'AC_TRANSFER_2';
   let power=null,source='UNKNOWN',reason='BUS_EVIDENCE_INCOMPLETE';
   if(!active){power=false;source='OFF';reason='MSU_SELECTOR_OFF';}
@@ -59,7 +65,7 @@ function evaluate(state,{electrical=null,modes={L:'OFF',R:'OFF'},unitStates=null
   // in this TRAINING projection. Installation-specific illumination requires
   // separate FCOM + wiring confirmation, so the confidence remains PROVISIONAL.
   const dcFailLamp=power===true?(dc===false?true:dc===true?false:null):power===false?false:null;
-  return Object.freeze({side,mode,powered:power,source,reason,normalBus:evidence,
+  return Object.freeze({side,mode,powered:power,source,reason,shutdownPowered,normalBus:evidence,
    normalAcAvailable:ac,backupDcAvailable:dc,
    onDcLamp,dcFailLamp,alignLamp,faultLamp,
    electricalConfidence:electrical?'SOURCE_BUS_ONLY_NO_CB_PROVENANCE':'NO_ELECTRICAL_V7_DATA',
