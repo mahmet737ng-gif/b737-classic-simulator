@@ -38,21 +38,27 @@ function variant(row){
   const entry=builtIn[n.dataset.lamp];
   return {bank:'OH',asset:entry.asset,lines:entry.label||null,
    name:system+'-'+n.dataset.lamp,srcW:face[2]*photo.naturalWidth,srcH:face[3]*photo.naturalHeight,
-   dx,dy,group:system,lit:n.dataset.lit==='true',dimensionKey:photo.naturalWidth+'x'+photo.naturalHeight};
+   dx,dy,layoutW:width,layoutH:height,group:system,lit:n.dataset.lit==='true',dimensionKey:photo.naturalWidth+'x'+photo.naturalHeight};
  }
  if(row.kind==='OH20'){
   const model=win.B737Aircon400Model,l=model?.lamps.find(l=>l.id===n.dataset.airconLamp);
   if(!l)return null;
-  const dx=photoPad*n.offsetWidth/l.rect[2],dy=photoPad*n.offsetHeight/l.rect[3];
+  // Inline pixel rectangles remain measurable while the 737-400 layer is hidden.
+  const width=parseFloat(n.style.width)||n.offsetWidth;
+  const height=parseFloat(n.style.height)||n.offsetHeight;
+  const dx=photoPad*width/l.rect[2],dy=photoPad*height/l.rect[3];
   return {bank:'OH',asset:'AUTO_FAIL',lines:['ZONE','TEMP'],name:l.id,
-   srcW:l.rect[2],srcH:l.rect[3],dx,dy,group:'OH20_400',lit:n.dataset.state==='ON',dimensionKey:'1122x1402'};
+   srcW:l.rect[2],srcH:l.rect[3],dx,dy,layoutW:width,layoutH:height,group:'OH20_400',lit:n.dataset.state==='ON',dimensionKey:'1122x1402'};
  }
  if(row.kind==='OH21'){
   const model=win.B737Aircon400Oh21Model,l=model?.packs.find(l=>l.side===n.dataset.airconPack);
   if(!l)return null;
-  const dx=photoPad*n.offsetWidth/l.rect[2],dy=photoPad*n.offsetHeight/l.rect[3];
+  // Inline pixel rectangles remain measurable while the 737-400 layer is hidden.
+  const width=parseFloat(n.style.width)||n.offsetWidth;
+  const height=parseFloat(n.style.height)||n.offsetHeight;
+  const dx=photoPad*width/l.rect[2],dy=photoPad*height/l.rect[3];
   return {bank:'OH400',asset:'PACK_FITTED',lines:null,name:l.id,
-   srcW:l.rect[2],srcH:l.rect[3],dx,dy,group:'OH21_400',lit:n.dataset.state==='ON',dimensionKey:'1122x1402'};
+   srcW:l.rect[2],srcH:l.rect[3],dx,dy,layoutW:width,layoutH:height,group:'OH21_400',lit:n.dataset.state==='ON',dimensionKey:'1122x1402'};
  }
  return null;
 }
@@ -94,7 +100,8 @@ async function getFace(cfg){
  if(!master)throw Error('No approved master: '+cfg.bank+':'+cfg.asset);
  const state=stateFor(cfg),source=master.assets[state];
  if(!source)throw Error('Missing master mode '+id+'/'+state);
- const aspect=(cfg.srcW+5)/(cfg.srcH+5);
+ // Match the real on-screen canvas ratio; original text/glyph metrics stay unchanged.
+ const aspect=(cfg.layoutW+2*cfg.dx)/(cfg.layoutH+2*cfg.dy);
  const key=id+'|'+state+'|'+aspect.toFixed(7)+'|'+(cfg.lines||[]).join('/');
  if(derived.has(key))return derived.get(key);
  const url=new URL(source,new URL('lights-reference-v2/',root));
@@ -118,7 +125,7 @@ async function refresh(row,force){
  try{
   const src=await getFace(cfg);
   if(token!==row.token||!row.node.isConnected)return;
-  const W=row.node.offsetWidth,H=row.node.offsetHeight;
+  const W=cfg.layoutW,H=cfg.layoutH;
   Object.assign(row.image.style,{
     left:-cfg.dx+'px',top:-cfg.dy+'px',
     width:W+2*cfg.dx+'px',height:H+2*cfg.dy+'px'
