@@ -112,6 +112,14 @@ function writePosition(s,side,p,source,origin){
  u.enteredPosition=pos;u.initialized=true;u.entrySource=source;
  u.alignmentDurationSec=lat>CAL.boundaryNormalLatitude?s.config.highLatitudeAlignSeconds:s.config.normalAlignSeconds;
  u.lastWarning=null;
+ // Above 70°12', FCOM requires OFF -> ALIGN and manual NAV after 17 min.
+ // Never let an incorrectly selected OFF -> NAV unit become high-lat NAV ready.
+ if(lat>CAL.boundaryNormalLatitude&&u.mode!=='ALIGN'){
+   u.phase='MODE_MISMATCH';u.valid=false;
+   u.lastWarning='HIGH_LAT_SELECT_ALIGN';
+   emit(s,side,'HIGH_LAT_MODE_REQUIRED');
+   return;
+ }
  if(origin&&distanceNm(pos,checkPosition(origin))>CAL.originVerifyThresholdNm)u.lastWarning='VERIFY POSITION';
  // A wrong-position internal comparison must be modeled separately; the >4NM
  // origin check is a CDU warning and must NOT falsely be treated as IRS fault.
@@ -133,9 +141,13 @@ function apply(state,cmd){
  if(!cmd||!cmd.type)throw new TypeError('IRS command with type required');
  if(cmd.type==='FMC_SET_IRS_POS'){
   const p=parseFmcPosition(cmd.position);
-  const sides=cmd.sides||SIDES;
-  // One FMC position command may initialize both units, but each decides
-  // readiness independently; don't overwrite a NAV-ready unit.
+  const sides=cmd.sides||SIDES.filter(id=>{
+   const u=s.units[id];
+   return u.powered&&['ALIGNING','ALIGN_READY','WAIT_POSITION','HIGH_LAT_READY','FAST_REALIGN'].includes(u.phase);
+  });
+  // FMC broadcast should initialize each ELIGIBLE IRS independently. If one
+  // unit is OFF/failed, the other must still receive SET IRS POS.
+  if(sides.length===0)throw new Error('No powered IRS is eligible for FMC position initialization');
   for(const id of sides)writePosition(s,id,p,'FMC',cmd.originPosition);
  }else{
   const u=get(s,cmd.side);
@@ -163,6 +175,8 @@ function apply(state,cmd){
     break;
    }
    case 'ISDU_LAT_ENT':{
+    if(!u.powered||!['ALIGNING','ALIGN_READY','WAIT_POSITION','HIGH_LAT_READY','FAST_REALIGN'].includes(u.phase))
+      throw new Error('ISDU position entry requires selected powered IRS in ALIGN');
     u.entryPending.lat=parseCoordinate(cmd.value,'lat');
     emit(s,u.id,'ISDU_LAT_ACCEPTED');break;
    }
