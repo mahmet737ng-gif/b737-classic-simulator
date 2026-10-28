@@ -1,0 +1,46 @@
+{
+  "schema": "b737.irs.isdu-13seg.owner-final-lock.v1",
+  "id": "IRS-ISDU-13SEG-OWNER-LOCK-0001",
+  "lockedAt": "2026-10-28",
+  "approval": "The owner explicitly approved the 13-position IRS filament display and ordered finalization and hard lock.",
+  "policy": "NO modifications to approved display JS, CSS, test, font/filament shape, cell count and spacing, color/glow/brightness behavior, numeric style, all 6 dots, source coordinate geometry, TEST animation, input rendering or Unified HTML mounts without a new precise direct owner request and separate informed confirmation. Upstream FCOM-mode data and eventual IRS backend integrations must be additive and must NOT alter this approved visual baseline.",
+  "frozenGitBlobs": {
+    "panel-mosaic-lab/cockpit/irs-13seg-display-v2.js": "3fdcfb94ba8853e347b924cdcb6f969ed6d8f89f",
+    "panel-mosaic-lab/cockpit/irs-13seg-display-v2.css": "94ac8c9c84ead211726119953e5ddd71d164908a",
+    "panel-mosaic-lab/cockpit/irs-13seg-display-v2.test.cjs": "2a529192791d0454c1be38ba1329abf2782b3f2e"
+  },
+  "frozenIndexMounts": [
+    "<link rel=\"stylesheet\" href=\"./irs-13seg-display-v2.css?v=IRS-FILAMENT-0002\">",
+    "<script src=\"./irs-13seg-display-v2.js?v=IRS-FILAMENT-0002\" defer></script>"
+  ],
+  "frozenGeometry": {
+    "source": {
+      "x": 434,
+      "y": 238,
+      "w": 299,
+      "h": 39
+    },
+    "atlas": {
+      "sw": 1731,
+      "sh": 909,
+      "w": 2214,
+      "h": 1019,
+      "ox": 3,
+      "oy": 3
+    },
+    "characterCount": 13,
+    "leftCells": 6,
+    "rightCells": 7,
+    "upperPoints": 4,
+    "lowerDecimalPoints": 2,
+    "colors": "approved warm amber filament appearance",
+    "testState": "all 13 characters + all six dots illuminate on TEST",
+    "brightness": "approved BRT dimming law"
+  },
+  "allowedFutureWork": [
+    "read-only IRS/Electrical state binding through independent adapter",
+    "FCOM mode content selection via new modules without alteration of rendering baseline",
+    "new backend tests and integration ports"
+  ],
+  "lockedLowerSelectorId": "IRS-SYS-DSPL-OWNER-LOCK-0001"
+}
