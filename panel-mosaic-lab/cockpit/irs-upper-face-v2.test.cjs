@@ -19,7 +19,7 @@ for(const file of photoNames){
    assert(meta.streams.some(s=>s.width>0&&s.height>0),'Invalid AVIF dimensions '+file);
  }
 }
-assert(html.includes('irs-upper-face-v2.js?v=IRS-AMBER-0001'));
+assert(html.includes('irs-upper-face-v2.js?v=IRS-UPPER-PHOTO-0002'));
 assert(html.includes('irs-upper-face-v2.css?v=IRS-AMBER-0001'));
 assert.match(js,/const ROI=Object\.freeze\(\{x:396,y:310,width:168,height:70\}\)/);
 assert.match(js,/w:2214,h:1019,sourceW:1731,sourceH:909/);
