@@ -150,6 +150,10 @@ function begin(u,config,mode){
 }
 function writePosition(s,side,p,source,origin){
  const u=get(s,side),pos=checkPosition(p);
+ // A twice-failed computed-latitude comparison is an IRS system FAULT.
+ // Do not silently extinguish that fault merely by entering another PPOS.
+ if(u.alignFault==='INTERNAL_POSITION_CHECK_FAILURE')
+  throw new Error('IRS INTERNAL FAULT: cycle selector OFF, then perform full alignment');
  if(!u.powered||!['SELFTEST','ALIGNING','ALIGN_READY','WAIT_POSITION','HIGH_LAT_READY','FAST_REALIGN'].includes(u.phase)){
   throw new Error('IRS position may be initialized only during alignment');
  }
