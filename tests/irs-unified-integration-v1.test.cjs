@@ -10,7 +10,7 @@ const frozen=JSON.parse(read('panel-mosaic-lab/cockpit/irs-13seg-owner-lock-v1.j
 for(const tag of frozen.frozenIndexMounts)assert.equal(html.split(tag).length-1,1,'Locked display changed');
 for(const file of ['../../engine/systems/irs-trainer-web-v1.js','./irs-trainer-unified-v1.js','./irs-trainer-unified-v1.css'])assert(html.includes(file));
 assert(cdu.includes('cdu-bridge.js?v=CDU-U3'));
-assert(cdu.includes('cdu-irs-adapter-v1.js?v=IRS-LIVE-0001'));
+assert(cdu.includes('cdu-irs-adapter-v1.js?v=IRS-LIVE-0003-ALIGN-ALERTS'));
 assert(cdu.indexOf('cdu-irs-adapter-v1.js')>cdu.indexOf('cdu-bridge.js'),'CDU adapter must load AFTER shared-session bridge');
 assert(bridge.includes("state.page==='POS_INIT'&&normalized==='LSK_R4'"));
 assert(bridge.includes("state.page==='POS_REF'"));
