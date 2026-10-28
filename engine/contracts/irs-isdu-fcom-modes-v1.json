@@ -1,0 +1,139 @@
+{
+  "schema": "b737-classic.isdu.display-modes.fcom.v1",
+  "basis": {
+    "manual": "Sepehran Airlines B737 Classic FCOM D6-27370-300/400/500-SHI",
+    "revision": "2020-10-15",
+    "pages": [
+      "11.10.15",
+      "11.10.16",
+      "11.10.17"
+    ],
+    "secondary": [
+      "11.20.7",
+      "11.20.8"
+    ],
+    "scope": "ISDU Display Selector, System Selector, BRT, key entry; reference-only"
+  },
+  "implementation": "REFERENCE_ONLY_DO_NOT_ASSERT_LIVE_IRS",
+  "validModesClockwise": [
+    "TEST",
+    "TK/GS",
+    "PPOS",
+    "WIND",
+    "HDG/STS"
+  ],
+  "displayFormat": {
+    "formFactor": "single row approved by owner",
+    "characters": 13,
+    "latitudeFieldPositions": 6,
+    "longitudeFieldPositions": 7,
+    "topIndicatorLights": 4,
+    "bottomFractionIndicatorLights": 2,
+    "finalCharacterTenthsPerWindow": true,
+    "existingPhotoAndSegmentArtOwnerLocked": true,
+    "note": "FCOM calls the two informational fields top and bottom lines; the owner-approved front-end presents two side-by-side fields. This JSON does not command modification of approved UI geometry."
+  },
+  "leftRightSource": {
+    "selector": "SYS DSPL",
+    "L": "left IRS",
+    "R": "right IRS",
+    "independentFromDisplayMode": true
+  },
+  "illumination": {
+    "BRT": "brightness of ISDU data displays",
+    "blackScreenWhenPoweredOff": true
+  },
+  "modes": {
+    "TEST": {
+      "type": "spring-loaded",
+      "returnsTo": "TK/GS",
+      "usage": "only during IRS alignment",
+      "behavior": [
+        "All ISDU data-display lights and MSU lamps illuminate momentarily",
+        "10 second self-test after momentary lamp illumination"
+      ],
+      "data": "all-segment lamp/self-test pattern, not navigation data",
+      "requiresActualAlignStateForRealSimulation": true
+    },
+    "TK/GS": {
+      "upperField": {
+        "name": "TRUE_TRACK",
+        "units": "degrees true"
+      },
+      "lowerField": {
+        "name": "GROUND_SPEED",
+        "units": "knots"
+      },
+      "notes": [
+        "True course over the ground, not aircraft nose heading"
+      ]
+    },
+    "PPOS": {
+      "upperField": {
+        "name": "PRESENT_LATITUDE",
+        "units": "geographic latitude"
+      },
+      "lowerField": {
+        "name": "PRESENT_LONGITUDE",
+        "units": "geographic longitude"
+      },
+      "notes": [
+        "Actual position requires a valid aligned IRS navigation solution"
+      ]
+    },
+    "WIND": {
+      "upperField": {
+        "name": "INFLIGHT_TRUE_WIND_DIRECTION",
+        "units": "degrees true"
+      },
+      "lowerField": {
+        "name": "INFLIGHT_WIND_SPEED",
+        "units": "knots"
+      },
+      "notes": [
+        "FCOM explicitly specifies inflight values"
+      ]
+    },
+    "HDG/STS": {
+      "upperField": {
+        "name": "TRUE_HEADING",
+        "units": "degrees true"
+      },
+      "lowerField": {
+        "name": "MAINTENANCE_STATUS_OR_ALIGNMENT_TIME",
+        "units": "status code or minutes"
+      },
+      "duringAlignment": {
+        "remainingMinutes": "display 10 until time remaining is 9 minutes, then count down in one-minute intervals"
+      },
+      "notes": [
+        "True heading differs from true track"
+      ]
+    }
+  },
+  "keyboard": {
+    "overrideDisplay": "Present-position or magnetic-heading keyboard entry overrides selected display temporarily",
+    "alphaKeys": [
+      "N",
+      "S",
+      "E",
+      "W"
+    ],
+    "alphaBehavior": "Arms keyboard for numeric entry",
+    "numericInput": "Present position allowed when ALIGN illuminated; magnetic heading when mode selector ATT",
+    "ENT": {
+      "whiteCue": "when N/S/E/W entries are being keyed",
+      "action": "submit keyed data after valid reasonableness check"
+    },
+    "CLR": {
+      "whiteCue": "on unsuccessful ENT attempt",
+      "action": "clear unentered/unaccepted data and extinguish cue when lit"
+    }
+  },
+  "futureIntegration": {
+    "mustNotFabricateLiveNav": "Show invalid/blank/unknown unless a valid connected IRS data source exists",
+    "allowAdditiveBackendAdapter": true,
+    "lowerSysDsplLock": "IRS-SYS-DSPL-OWNER-LOCK-0001",
+    "displayLock": "IRS-ISDU-13SEG-OWNER-LOCK-0001"
+  }
+}
