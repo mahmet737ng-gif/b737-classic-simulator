@@ -116,7 +116,11 @@ async function face(row,frame){
 async function update(id){
  const obj=nodes.get(id),row=records.get(id);
  if(!obj||!row)return;
- const frame=obj.node.dataset.frame||'OFF';
+ // The overhead bridge's visual-test switch does not change electrical frames.
+ // It marks the actual lit lens on data-visual-frame instead. The fitted SVG
+ // must honor that visual-only frame or its OFF overlay obscures lamp testing.
+ const visualOn=row.bank==='OH'&&document.documentElement.classList.contains('cockpit-visual-test');
+ const frame=visualOn&&obj.node.dataset.visualFrame||obj.node.dataset.frame||'OFF';
  const mode=win.B737LampAppearance?.getMode?.()||'BRIGHT';
  const sig=frame+'|'+mode;
  if(obj.signature===sig)return;
@@ -159,7 +163,8 @@ function attach(row,node){
  const o={node,img,serial:0,signature:''};
  nodes.set(row.id,o);mounts++;
  const observer=new MutationObserver(()=>update(row.id));
- observer.observe(node,{attributes:true,attributeFilter:['data-frame']});
+ // The electrical state and visual-only all-lamps-test are independent signals.
+ observer.observe(node,{attributes:true,attributeFilter:['data-frame','data-visual-frame']});
  o.observer=observer;
  update(row.id);
 }
