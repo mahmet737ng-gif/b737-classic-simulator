@@ -1,0 +1,38 @@
+/* IRS 13-position warm incandescent filament facsimile / OEM-inspired photograph.
+   ONLY the display overlay, NO modifications to locked lower L/R or overhead.
+   Original two-row text mock is hidden in favor of a single real segment row.
+*/
+#region-overhead .irs-amber-display{display:none!important;pointer-events:none!important}
+#region-overhead .irs-segment-display{
+ position:absolute;z-index:135;display:block;box-sizing:border-box;
+ border:0;margin:0;padding:0;background:transparent;overflow:hidden;
+ pointer-events:auto;cursor:pointer;direction:ltr;isolation:isolate;
+ --irs-filament-light:.82
+}
+#region-overhead .irs-segment-display .irs-segment-canvas{
+ display:block;width:100%;height:100%;overflow:visible;pointer-events:none
+}
+#region-overhead .irs-segment-display .irs-filament{
+ fill:#40220c;opacity:.07;stroke:none;stroke-width:0;
+ transition:fill .08s,opacity .08s;
+}
+#region-overhead .irs-segment-display .irs-filament[data-on="true"]{
+ fill:#ffca87;opacity:var(--irs-filament-light);
+ filter:drop-shadow(0 0 2px #ff9c48) drop-shadow(0 0 3.5px #fe7627);
+}
+#region-overhead .irs-segment-display .irs-fraction-dot{
+ fill:#613012;opacity:.06;transition:opacity .1s;
+}
+#region-overhead .irs-segment-display .irs-fraction-dot[data-on="true"]{
+ fill:#ffdfac;opacity:var(--irs-filament-light);
+ filter:drop-shadow(0 0 2.5px #ffb264) drop-shadow(0 0 4px #ff862a)
+}
+#region-overhead .irs-segment-display .irs-dot-halo{fill:#f6a15c;opacity:0}
+#region-overhead .irs-segment-display[data-brightness="0"] .irs-filament[data-on="true"],
+#region-overhead .irs-segment-display[data-brightness="0"] .irs-fraction-dot[data-on="true"]{opacity:0}
+#region-overhead .irs-segment-display:focus-visible{outline:1px solid #a97037;outline-offset:0}
+.pan-mode #region-overhead .irs-segment-display{pointer-events:none}
+.reference-mode #region-overhead .irs-segment-display{display:none}
+@media(prefers-reduced-motion:reduce){
+ #region-overhead .irs-segment-display .irs-filament{transition:none}
+}
