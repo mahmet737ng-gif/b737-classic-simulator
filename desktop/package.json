@@ -1,0 +1,71 @@
+{
+  "name": "cockpit-pro-desktop",
+  "productName": "Cockpit Pro",
+  "version": "0.1.0-beta.1",
+  "private": true,
+  "description": "Offline Boeing 737 Classic cockpit and systems trainer (educational; not for flight)",
+  "main": "main.cjs",
+  "author": "Cockpit Pro Project",
+  "license": "UNLICENSED",
+  "scripts": {
+    "start": "electron .",
+    "build:win": "electron-builder --win nsis --x64 --publish never",
+    "check": "node --check main.cjs"
+  },
+  "devDependencies": {
+    "electron": "45.1.0",
+    "electron-builder": "26.18.0"
+  },
+  "build": {
+    "appId": "com.cockpitpro.b737classic",
+    "productName": "Cockpit Pro",
+    "copyright": "Cockpit Pro",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.cjs",
+      "package.json"
+    ],
+    "asar": true,
+    "extraResources": [
+      {
+        "from": "../",
+        "to": "app-content",
+        "filter": [
+          "**/*",
+          "!.git/**",
+          "!.github/**",
+          "!desktop/**",
+          "!**/node_modules/**",
+          "!**/.DS_Store",
+          "!**/Thumbs.db"
+        ]
+      }
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "executableName": "CockpitPro",
+      "signAndEditExecutable": false
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "perMachine": false,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Cockpit Pro",
+      "artifactName": "CockpitPro-Setup-${version}.${ext}",
+      "deleteAppDataOnUninstall": false
+    },
+    "publish": null,
+    "compression": "normal"
+  }
+}
