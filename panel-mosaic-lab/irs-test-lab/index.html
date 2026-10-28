@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#081926">
+<meta name="description" content="B737 Classic IRS: dedicated FCOM/MRG/QRH procedure and non-normal test laboratory. Training only.">
+<title>IRS TEST LAB · B737 Classic Unified</title>
+<link rel="stylesheet" href="./lab.css?v=IRS-QRH-LAB-0001">
+</head>
+<body>
+<div class="app">
+ <header class="top">
+  <div class="identity">
+   <div class="mark" aria-hidden="true">IRS</div>
+   <div><strong>B737 CLASSIC <span>— IRS TEST LAB</span></strong><small>FCOM · MRG · QRH / Independent L &amp; R Trainer</small></div>
+  </div>
+  <div class="top-actions">
+   <span class="isolation"><span class="dot"></span> ISOLATED BENCH · NOT AIRCRAFT</span>
+   <a class="top-link" href="../cockpit/" target="_blank" rel="noopener">↗ بازکردن Unified</a>
+   <button id="reset" class="btn secondary" type="button">↺ Reset Lab</button>
+  </div>
+ </header>
+ <div class="notice" role="note"><strong>TRAINING ONLY — DO NOT USE FOR FLIGHT</strong> · سناریوها خلاصهٔ آموزشی از QRH/F​COM/MRG هستند؛ خطاهای INJECTED به‌صورت صریح مشخص‌اند. هیچ دستوری روی پنل قفل‌شدهٔ Unified اجرا نمی‌شود.</div>
+ <div class="layout">
+  <aside class="pane scenario-panel" aria-label="فهرست سناریوها">
+   <div class="pane-heading"><div><h2>Fault &amp; Procedure Library</h2><p>سناریوهای اختصاصی IRS و QRH</p></div><span class="count" id="total">27</span></div>
+   <label class="search-label">جست‌وجوی خطا <input id="search" type="search" placeholder="مثلاً DC FAIL ، 03 ، ATT..." autocomplete="off"></label>
+   <div id="groups" class="group-chips" aria-label="فیلتر دسته‌بندی"></div>
+   <div id="case-list" class="case-list"></div>
+   <div class="ref-box"><strong>منابع این آزمایشگاه</strong><p>QRH Classic 737-300/500 §§11.5, 11.6–9, 11.10؛ MRG IV.11 pp.298–300؛ FCOM §§11.10,11.20.</p><p>محدوده ۵۰°N برای نگه‌داشتن ALIGN، تنظیم اختصاصی پروژه است؛ آستانه FCOM برای High Latitude برابر 70°12′ است.</p></div>
+  </aside>
+  <main class="workspace">
+   <section class="pane hero">
+    <div><span class="eyebrow" id="scenario-category">LIVE TRAINER</span><h1 id="scenario-title">IRS Ground Test</h1><p id="scenario-summary">یک سناریو را از فهرست انتخاب کنید یا سوئیچ‌ها و منابع برق را به‌طور دستی آزمایش کنید.</p></div>
+    <div class="result">
+     <span class="result-hint">وضعیت آزمون</span>
+     <strong id="qa-status">READY</strong>
+     <small id="qrh-ref">B737 Classic</small>
+    </div>
+   </section>
+   <section class="panels" aria-label="پنل‌های وضعیت IRS">
+    <article class="irs-unit pane" id="unit-L">
+     <div class="unit-head"><span>IRS NO. 1</span><strong>LEFT / CAPTAIN</strong></div>
+     <div class="lights" id="lamps-L"></div>
+     <div class="digital" dir="ltr"><div class="digital-label">HDG/STS / STATUS CODE</div><div class="digit" id="digit-L">--</div></div>
+     <div class="unit-state" id="state-L"></div>
+    </article>
+    <article class="irs-unit pane" id="unit-R">
+     <div class="unit-head"><span>IRS NO. 2</span><strong>RIGHT / FIRST OFFICER</strong></div>
+     <div class="lights" id="lamps-R"></div>
+     <div class="digital" dir="ltr"><div class="digital-label">HDG/STS / STATUS CODE</div><div class="digit" id="digit-R">--</div></div>
+     <div class="unit-state" id="state-R"></div>
+    </article>
+   </section>
+   <section class="pane control-room">
+    <div class="section-title"><h2>Test Controls</h2><span>عملکرد واقعی موتور IRS، بدون تغییر ظاهر پنل</span></div>
+    <div class="controls-grid">
+     <div class="control-block"><div class="control-title">IRS MODE SELECTOR</div>
+      <div class="side-toggle" id="side-toggle"></div>
+      <div class="modes" id="modes"></div>
+      <p class="hint">با انتخاب OFF / ALIGN / NAV / ATT، فرمان به موتور همان IRS ارسال می‌شود.</p>
+     </div>
+     <div class="control-block"><div class="control-title">ELECTRICAL BUS / CB TEST</div>
+      <div id="bus-controls" class="bus-controls"></div>
+      <p class="hint">برق‌های تستی مستقل؛ مسیر CBهای بدون سند به دستگاه متصل نمی‌شوند.</p>
+     </div>
+     <div class="control-block"><div class="control-title">FMC POSITION / MOVEMENT</div>
+      <div class="form-row"><input id="position" dir="ltr" aria-label="FMC IRS position" value="N35395 E051254" spellcheck="false"><button class="btn primary" data-action="position" type="button">SET IRS POS</button></div>
+      <div class="form-row"><button class="btn secondary" data-action="motion" data-moving="true" type="button">↝ MOVE 7 KT</button><button class="btn secondary" data-action="motion" data-moving="false" type="button">■ STOP</button></div>
+      <p class="hint">فرمت NDDMMm EDDDMMm؛ مقادیر برای تمرین هستند، نه مختصات واقعی هواپیما.</p>
+     </div>
+    </div>
+    <div class="time-bar">
+     <span class="label">SIM CLOCK <strong dir="ltr" id="sim-clock">00:00.0</strong></span>
+     <button class="btn secondary" data-action="time" data-seconds="1" type="button">+1s</button>
+     <button class="btn secondary" data-action="time" data-seconds="30" type="button">+30s</button>
+     <button class="btn secondary" data-action="time" data-seconds="300" type="button">+5m</button>
+     <button class="btn secondary" data-action="time" data-seconds="600" type="button">+10m</button>
+     <button class="btn secondary" data-action="time" data-seconds="1020" type="button">+17m</button>
+     <button class="btn primary" data-action="play" id="play" type="button">▶ RUN</button>
+     <label class="speed">SPEED <select id="speed"><option value="1">1×</option><option value="10">10×</option><option value="60" selected>60×</option><option value="120">120×</option></select></label>
+    </div>
+    <div class="extra-bar">
+     <span>INSTRUCTOR INJECTIONS</span>
+     <button class="btn ghost" data-action="inject" data-kind="fault" type="button">Toggle FAULT (sim)</button>
+     <button class="btn ghost" data-action="inject" data-kind="dcFail" type="button">Toggle DC FAIL (sim)</button>
+     <button class="btn ghost" data-action="evidence" data-evidence="stored" type="button">Fail Stored PPOS (12)</button>
+     <button class="btn ghost" data-action="evidence" data-evidence="computed" type="button">Fail Computed Lat (04)</button>
+     <button class="btn ghost" data-action="clear-evidence" type="button">Clear comparison</button>
+     <label>IRS TRANSFER <select id="transfer"><option>NORMAL</option><option>BOTH ON L</option><option>BOTH ON R</option></select></label>
+    </div>
+   </section>
+   <section class="pane readout">
+    <div class="section-title"><h2>System Diagnostics</h2><span id="diagnostic-badge">LIVE BACKEND</span></div>
+    <div class="stats" id="stats"></div>
+    <div class="fault-line" id="fault-line" role="status" aria-live="polite">هیچ خطایی ثبت نشده است.</div>
+   </section>
+  </main>
+  <aside class="pane checklist-panel">
+   <div class="pane-heading"><div><h2>QRH Training Card</h2><p>راهنمای آموزشی سناریوی انتخاب‌شده</p></div></div>
+   <div id="scenario-detail"></div>
+   <div class="section-title small"><h2>Expected Indications</h2></div>
+   <div id="expected"></div>
+   <div class="section-title small"><h2>Training Steps</h2></div>
+   <div id="steps"></div>
+   <div class="section-title small"><h2>Event Timeline</h2><button class="btn ghost tiny" id="clear-log">Clear</button></div>
+   <div id="events" class="events"></div>
+   <div class="footer-note">QRH 2016 edition / FCOM Classic / MRG · نسخه تمرینی. پیش از تکیه بر هر رویه، Effectivity مدل هواپیما باید بررسی شود. پنل قفل‌شدهٔ اصلی تغییر نمی‌کند.</div>
+  </aside>
+ </div>
+</div>
+<script src="../../engine/systems/irs-trainer-web-v1.js?v=IRS-QRH-LAB-0001"></script>
+<script src="../../engine/systems/irs-electrical-evidence-v2.js?v=IRS-QRH-LAB-0001"></script>
+<script src="./scenarios.js?v=IRS-QRH-LAB-0001"></script>
+<script src="./engine.js?v=IRS-QRH-LAB-0001"></script>
+<script src="./lab.js?v=IRS-QRH-LAB-0001"></script>
+</body>
+</html>
