@@ -78,7 +78,7 @@ assert.throws(()=>trainer.setFmcPosition('N95995 E051254'),/degrees or minutes/i
 let fmc=trainer.setFmcPosition('N35395 E051254');assert(fmc.ok);
 assert.deepEqual(Array.from(fmc.sides),['L','R']);
 assert.equal(trainer.getState().units.R.entrySource,'FMC');
-now=1000;interval();now=2000;interval();now=3000;interval();now=4000;interval();
+now=1000;interval();now=2000;interval();now=3000;interval();now=4000;interval();now=5000;interval();
 assert.equal(trainer.getState().units.L.onDcLamp,false);
 assert.equal(trainer.getState().units.L.alignLamp,true);
 assert.equal(core.hdgStsCountdown(trainer.getCoreState(),'L').value,7);
