@@ -10,7 +10,7 @@ const msu=fs.readFileSync(path.join(base,'irs-trainer-unified-v1.css'),'utf8');
 const page=fs.readFileSync(path.join(base,'index.html'),'utf8');
 class Element{
  constructor(name){this.nodeName=name;this.childNodes=[];this.attrs={};this.dataset={};this.style={};this.classList={add:(...classes)=>{this.classes.push(...classes)}};this.classes=[];this.id='';}
- setAttribute(k,v){this.attrs[k]=String(v);}
+ setAttribute(k,v){this.attrs[k]=String(v);if(k==='class')this.classes=String(v).split(/\s+/).filter(Boolean);}
  appendChild(n){this.childNodes.push(n);return n;}
  insertBefore(n,ref){let i=this.childNodes.indexOf(ref);if(i<0)throw Error('Bad ref');this.childNodes.splice(i,0,n);return n;}
  querySelectorAll(selector){
