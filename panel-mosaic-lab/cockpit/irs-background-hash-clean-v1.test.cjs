@@ -60,11 +60,15 @@ test('renders four local repairs but leaves every external source pixel unchange
  assert.equal(api.apply(),true);
  assert.equal(updates,1,'No repeated inpainting after repaint');
 });
-test('real Unified includes the cleanup after the panel registration without touching five generated ticks',()=>{
+test('real Unified cleans old panel blemishes without regenerating L/R MSU ticks',()=>{
  const first=html.indexOf('irs-panel-registration-v1.js?v='),clean=html.indexOf('irs-background-hash-clean-v1.js?v=');
  assert(first>=0&&clean>first);
- assert(html.includes('irs-rotary-detent-indices-v1.js?v=IRS-INDEX-0001'));
- const photo=fs.readFileSync(path.join(d,'irs-rotary-detent-indices-v1.js'),'utf8');
- assert(photo.includes("setupUpper()")&&photo.includes("setupMsu()"));
- assert(photo.includes("tickFace('upper',angles)")&&photo.includes("tickFace('msu',MSU_ANGLES)"));
+ assert(html.includes('irs-rotary-detent-indices-v1.js?v=IRS-INDEX-0002'));
+ const indices=fs.readFileSync(path.join(d,'irs-rotary-detent-indices-v1.js'),'utf8');
+ assert(indices.includes('setupUpper()')&&indices.includes('setupMsu()'));
+ assert(indices.includes("tickFace('upper',angles)"));
+ assert(!indices.includes("tickFace('msu',MSU_ANGLES)"));
+ assert(indices.includes('.irs-msu-owner-photo'));
+ const photoCss=fs.readFileSync(path.join(d,'irs-trainer-unified-v1.css'),'utf8');
+ assert(photoCss.includes('--irs-msu-angle:-70deg'));
 });
