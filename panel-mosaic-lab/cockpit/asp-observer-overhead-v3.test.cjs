@@ -42,6 +42,8 @@ test('observer panel is mounted inside the actual overhead iframe and follows at
  assert(iframeModule.includes("getElementById('atlasAbsolute')"),'Must be inside native atlas, not outer parent region');
  assert(iframeModule.includes("root.B737ASPOnlyObserver=true"),'Scoped 1-station mode must load before shared controls');
  assert(iframeModule.includes('x:953,y:56,w:379,h:283'),'OH-04 atlas source bounds must not drift');
+ assert(iframeModule.includes("atlasRoot,{childList:true}"),'Observer panel must survive asynchronous atlas replaceChildren redraw');
+ assert(renderer.includes("root.addEventListener('b737:asp-observer-mounted',mount)"),'New OBS sprite controls must mount after atlas redraw');
  assert(iframeModule.includes('data-seat="OBS"'),'OBS controls are unique to observer');
  assert(main.includes('asp-observer-parent-bridge-v3.js?v=ASP-OBS-IFRAME-0003'));
  assert(bridge.includes("e.source!==iframe().contentWindow"),'Reject untrusted frames');
@@ -75,7 +77,7 @@ test('actual iframe mount and downstream OBS audio event are recognized without 
    dispatchEvent(){},console:{error(){}}};
  const parent={postMessage:(message,target)=>{msg={message,target}}};
  const CustomEvent=class{constructor(name,args){this.type=name;this.detail=args.detail}};
- vm.runInNewContext(iframeModule,{window:win,parent,document:doc,CustomEvent,MutationObserver:class{observe(){throw Error('No observer needed')}}});
+ vm.runInNewContext(iframeModule,{window:win,parent,document:doc,CustomEvent,MutationObserver:class{observe(node,options){assert(node);assert(options.childList);}}});
  assert.equal(typeof queue.DOMContentLoaded,'function');queue.DOMContentLoaded();
  assert.equal(win.B737ASPOnlyObserver,true);
  assert.equal(atlas.children.length,1);assert.equal(atlas.children[0].dataset.seat,'OBS');
