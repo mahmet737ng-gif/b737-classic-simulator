@@ -20,20 +20,29 @@
 #irsTrainerV1 .irs-motion-controls input{width:100%;box-sizing:border-box}
 #region-overhead .irs-msu-trainer-overlay{position:absolute;inset:0;pointer-events:none;z-index:130}
 #region-overhead .irs-msu-mini{position:absolute;border:0!important;background:transparent!important;pointer-events:auto;cursor:pointer;outline:none!important;padding:0!important;touch-action:manipulation}
-#region-overhead .irs-msu-mini::before{
- content:"";position:absolute;width:80%;height:80%;top:10%;left:10%;border-radius:50%;
- background:radial-gradient(circle at 34% 28%,#fff 0%,#d4dad4 42%,#89999c 90%,#61696a 100%);
- border:1px solid #bec6c6;box-shadow:1px 2px 3px #080d16ad;
+/* MSU-OWNER-PHOTO-0002 — use the already approved standard rotary sprite.
+   Only the L/R MSU selectors change. The photographed faceplate and printed
+   OFF/ALIGN/NAV/ATT legend remain untouched; no artificial white ticks. */
+#region-overhead .irs-msu-mini{overflow:visible;isolation:isolate}
+#region-overhead .irs-msu-mini::before,
+#region-overhead .irs-msu-mini::after{content:none!important;display:none!important}
+#region-overhead .irs-msu-mini .irs-msu-owner-photo{
+ position:absolute;left:0;top:6%;width:100%;height:100%;display:block;
+ max-width:none!important;max-height:none!important;object-fit:contain;
+ transform-origin:50% 44%;
+ transform:rotate(var(--irs-msu-angle,-70deg));
+ transition:transform 140ms cubic-bezier(.2,.85,.3,1);
+ pointer-events:none;user-select:none;-webkit-user-drag:none;
 }
-#region-overhead .irs-msu-mini::after{
- content:"";position:absolute;width:8%;height:74%;top:13%;left:46%;border-radius:6px;
- background:linear-gradient(90deg,#303636 0%,#141a1c 65%,#ededec 69%,#fff 100%);
- transform:rotate(var(--irs-msu-angle,-100deg));box-shadow:1px 0 1px #24262699;
+/* Photo's white leading index starts at twelve o'clock. These four measured
+   mode-ray offsets face the ORIGINAL panel legend, not injected tick SVGs. */
+#region-overhead .irs-msu-mini[data-mode="OFF"]{--irs-msu-angle:-70deg}
+#region-overhead .irs-msu-mini[data-mode="ALIGN"]{--irs-msu-angle:-38deg}
+#region-overhead .irs-msu-mini[data-mode="NAV"]{--irs-msu-angle:25deg}
+#region-overhead .irs-msu-mini[data-mode="ATT"]{--irs-msu-angle:69deg}
+@media(prefers-reduced-motion:reduce){
+ #region-overhead .irs-msu-mini .irs-msu-owner-photo{transition:none}
 }
-#region-overhead .irs-msu-mini[data-mode="OFF"]{--irs-msu-angle:-115deg}
-#region-overhead .irs-msu-mini[data-mode="ALIGN"]{--irs-msu-angle:-40deg}
-#region-overhead .irs-msu-mini[data-mode="NAV"]{--irs-msu-angle:24deg}
-#region-overhead .irs-msu-mini[data-mode="ATT"]{--irs-msu-angle:88deg}
 .reference-mode #region-overhead .irs-msu-trainer-overlay{display:none}
 .pan-mode #region-overhead .irs-msu-trainer-overlay{pointer-events:none}
 .pan-mode #region-overhead .irs-msu-mini{pointer-events:none}
