@@ -6,6 +6,7 @@ on:
       - 'engine/systems/irs-trainer-web-v1.js'
       - 'panel-mosaic-lab/cockpit/irs-trainer-unified-v1.js'
       - 'tests/irs-unified-integration-v1.test.cjs'
+      - 'tests/cdu-irs-adapter-v1.test.cjs'
       - 'panel-mosaic-lab/cockpit/irs-trainer-unified-v1.css'
       - 'panel-mosaic-lab/cockpit/cdu-irs-adapter-v1.js'
       - 'panel-mosaic-lab/cockpit/cdu-stage.html'
@@ -33,6 +34,7 @@ jobs:
           node --check tests/irs-trainer-core-v1.test.cjs
           node tests/irs-trainer-core-v1.test.cjs
           node tests/irs-unified-integration-v1.test.cjs
+          node tests/cdu-irs-adapter-v1.test.cjs
           node panel-mosaic-lab/cockpit/irs-hdg-sts-seven-minute-v1.test.cjs
       - name: Protect owner-approved 13-cell display and SYS DSPL selector
         run: |
