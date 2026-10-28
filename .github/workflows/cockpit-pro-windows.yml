@@ -1,0 +1,79 @@
+name: Cockpit Pro - Windows Offline Setup
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'desktop/**'
+      - '.github/workflows/cockpit-pro-windows.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: cockpit-pro-windows
+  cancel-in-progress: false
+jobs:
+  setup-x64:
+    runs-on: windows-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout ALL cockpit assets, programs and systems
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate offline app source and asset catalog
+        shell: pwsh
+        run: |
+          node --check desktop/main.cjs
+          node --test desktop/offline-smoke.test.cjs
+          node --test panel-mosaic-lab/desktop-shell/shell-static.test.cjs
+          $files = Get-ChildItem -Path . -Recurse -File | Where-Object { $_.FullName -notmatch '[\\/]\.git[\\/]' -and $_.FullName -notmatch '[\\/]node_modules[\\/]' }
+          Write-Output ("Offline file count = " + $files.Count)
+          if ($files.Count -lt 2500) { throw "Repository files incomplete; installer prohibited" }
+      - name: Install Electron packaging tools
+        working-directory: desktop
+        shell: pwsh
+        run: npm install --no-audit --no-fund
+      - name: Build 64-bit NSIS offline Setup
+        working-directory: desktop
+        shell: pwsh
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+        run: npm run build:win
+      - name: Validate installer and produce checksum
+        id: checks
+        shell: pwsh
+        run: |
+          $setup = Get-ChildItem desktop/dist/CockpitPro-Setup-*.exe | Select-Object -First 1
+          if (-not $setup -or $setup.Length -lt 80MB) { throw "Windows Setup missing or too small" }
+          $hash = Get-FileHash -Algorithm SHA256 $setup.FullName
+          "$($hash.Hash.ToLower())  $($setup.Name)" | Set-Content desktop/dist/CockpitPro-Setup-SHA256.txt -Encoding ascii
+          Write-Output ("INSTALLER=" + $setup.FullName)
+          Write-Output ("INSTALLER_SIZE_MB=" + [math]::Round($setup.Length / 1MB,1))
+          Write-Output ("SHA256=" + $hash.Hash)
+          "installer=$($setup.FullName)" >> $env:GITHUB_OUTPUT
+      - name: Upload setup as build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: CockpitPro-Setup-Windows-x64
+          path: |
+            desktop/dist/CockpitPro-Setup-*.exe
+            desktop/dist/CockpitPro-Setup-SHA256.txt
+          retention-days: 60
+          if-no-files-found: error
+      - name: Publish downloadable beta Windows Setup
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $tag = 'cockpit-pro-desktop-v0.1.0-beta.1'
+          gh release view $tag --repo ${{ github.repository }} 2>$null
+          if ($LASTEXITCODE -ne 0) {
+            gh release create $tag --repo ${{ github.repository }} --target "${{ github.sha }}" --title 'Cockpit Pro 0.1.0 beta 1 - Windows x64 Setup' --prerelease --notes 'Offline Windows installer bundling the complete public repository snapshot (all GitHub-hosted cockpit panels, simulator JavaScript engines, images, labs, datasets). No GitHub required to start/run. Known gaps: 10 privately supplied MP3 files and approved branding binary are NOT hosted in the public repo and therefore cannot be packed from that source; source contracts and engine-generated test audio are included. Some trainer integrations and full scenario modes remain under development. Unsigned build; Windows SmartScreen may warn.'
+            if ($LASTEXITCODE -ne 0) { throw 'Could not create release' }
+          }
+          gh release upload $tag "desktop/dist/CockpitPro-Setup-0.1.0-beta.1.exe" "desktop/dist/CockpitPro-Setup-SHA256.txt" --repo ${{ github.repository }} --clobber
+          if ($LASTEXITCODE -ne 0) { throw 'Could not upload installer to release' }
