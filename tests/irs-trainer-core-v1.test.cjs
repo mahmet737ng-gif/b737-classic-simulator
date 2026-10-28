@@ -311,6 +311,6 @@ delayed=apply(delayed,{type:'SELECT_MODE',side:'L',mode:'NAV'});
 assert.equal(status(delayed,'L').positionValid,true);
 // FCOM calibration remains explicitly available for source comparisons
 // without changing the owner-selected 50N training default.
-let reference=ownerRun('NAV','N50100 E010000',{northAlignHoldLatitude:70.2});
-assert.equal(status(reference,'L').phase,'SELFTEST');
+let fcomProfileCase=ownerRun('NAV','N50100 E010000',{northAlignHoldLatitude:70.2});
+assert.equal(status(fcomProfileCase,'L').phase,'SELFTEST');
 console.log('PASS IRS Trainer: FMC/ISDU lat/lon gates, 10/17min alignment, owner 7 count, independent L/R drift ~1NM, actual geodesic motion, missing frame validity, electrical/phase failures and owner-locked UI untouched');
