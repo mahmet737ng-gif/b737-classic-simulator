@@ -61,8 +61,11 @@ test('renderer uses off/on independent optical silhouettes; original user sprite
  assert(html.includes('asp-socket-registration-v2.js?v=ASP-CENTER-0002'));
  assert(html.includes('asp-controls-v1.js?v=ASP-OBS-CENTER-0004'));
  assert(read('overhead-stage.html').includes('asp-controls-v1.js?v=ASP-OBS-CENTER-0004'));
- assert(read('overhead-stage.html').includes('asp-observer-overhead-v3.js?v=ASP-OBS-IFRAME-0004'));
- assert(html.includes('app.js?v=CKP-0014-AIRCON400-ZONE-LEDEV-STAGED-V1-ASP-OBS-CENTER-0004'));
+ assert(read('overhead-stage.html').includes('asp-observer-overhead-v3.js?v=ASP-OBS-IFRAME-0005-FACE'));
+ assert(html.includes('app.js?v=CKP-0014-AIRCON400-ZONE-LEDEV-STAGED-V1-ASP-OBS-CENTER-0005-FACE'));
+ const observer=read('asp-observer-overhead-v3.js');
+ assert(observer.includes("position:'absolute',inset:'0',left:'0px',top:'0px'"),'OBS panel SVG must start at native photo origin');
+ assert(observer.includes('photoOffsetCssPx')&&observer.includes('maxErrorCssPx'),'OBS requires strict 20-socket visual fit audit');
  assert(!script.includes('sourceCtx.drawImage')&&!script.includes('getImageData(0,0,1,1)'));
  const crypto=require('node:crypto');
  for(const [name,m]of Object.entries(manifest.assets)){
