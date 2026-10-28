@@ -6,7 +6,7 @@ assert(index.includes('irs-13seg-display-v2.js?v=IRS-FILAMENT-0002'));
 assert(index.includes('irs-13seg-display-v2.css?v=IRS-FILAMENT-0002'));
 assert(js.includes('sourceRect:SOURCE'));
 assert.match(js,/const LEFT=Object\.freeze\(\[18,76,134,192,250,308\]\)/);
-assert.match(js,/const RIGHT=Object\.freeze\(\[430,488,546,604,662,720,778\]\)/);
+assert.match(js,/RIGHT=Object\.freeze\(\[430,488,546,604,662,720,778\]\)/);
 assert.match(js,/const TOP_DOTS=Object\.freeze\(\[179,370,624,801\]\)/);
 assert.match(js,/const BOTTOM_DOTS=Object\.freeze\(\[334,799\]\)/);
 assert(css.includes('.irs-amber-display{display:none!important'),'Old two-row renderer must be hidden');
