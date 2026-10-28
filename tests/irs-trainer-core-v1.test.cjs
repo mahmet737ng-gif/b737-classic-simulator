@@ -103,6 +103,21 @@ wrongHigh=apply(wrongHigh,{type:'FMC_SET_IRS_POS',sides:['L'],position:'N71123 E
 assert.equal(status(wrongHigh,'L').phase,'MODE_MISMATCH');
 assert.equal(status(wrongHigh,'L').warning,'HIGH_LAT_SELECT_ALIGN');
 assert.equal(status(wrongHigh,'L').positionValid,false);
+// At ordinary latitude OFF -> ALIGN also performs 3.5s ON DC, then ten
+// minutes and waits for the crew to select NAV (unlike OFF -> NAV auto entry).
+let normalAlign=initialState();
+normalAlign=apply(normalAlign,{type:'POWER',side:'L',available:true});
+normalAlign=apply(normalAlign,{type:'SELECT_MODE',side:'L',mode:'ALIGN'});
+assert.equal(status(normalAlign,'L').onDcLamp,true);
+normalAlign=apply(normalAlign,{type:'FMC_SET_IRS_POS',sides:['L'],position:'N35395 E051254'});
+normalAlign=tick(normalAlign,{...frame,dtSec:3.5});
+assert.equal(status(normalAlign,'L').phase,'ALIGNING');
+for(let i=0;i<120;i++)normalAlign=tick(normalAlign,frame);
+assert.equal(status(normalAlign,'L').phase,'ALIGN_READY');
+assert.equal(status(normalAlign,'L').positionValid,false);
+normalAlign=apply(normalAlign,{type:'SELECT_MODE',side:'L',mode:'NAV'});
+assert.equal(status(normalAlign,'L').phase,'NAV_READY');
+assert.equal(status(normalAlign,'L').positionValid,true);
 // High lat must wait 17 minutes and a NAV switch from ALIGN.
 let h=initialState();
 h=apply(h,{type:'POWER',side:'L',available:true});
