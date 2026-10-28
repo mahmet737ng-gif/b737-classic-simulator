@@ -132,7 +132,7 @@ assert.equal(Core.status(shutdown,'L').powered,false);
 // Audit the real 544-candidate photograph index: the seven IRS-name CBs
 // are visually located, but *not* source-indexed or wired to any unit.
 const candidateAudit=JSON.parse(fs.readFileSync(path.join(root,'engine/cb/all-circuits-audit.v2.json'),'utf8'));
-const irsCandidates=candidateAudit.circuits.filter(c=>/\\bIRS\\b/i.test(c.photoLabel||''));
+const irsCandidates=candidateAudit.circuits.filter(c=>/\bIRS\b/i.test(c.photoLabel||''));
 assert.equal(irsCandidates.length,7,'Expected exactly seven IRS-labelled photo candidates');
 assert.deepEqual(irsCandidates.map(x=>x.id).sort(),[
  'P18-2|ALL|D2','P18-2|ALL|D3','P18-2|ALL|D4','P18-2|ALL|D5',
