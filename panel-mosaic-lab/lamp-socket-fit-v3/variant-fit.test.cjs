@@ -10,7 +10,7 @@ const master=JSON.parse(file('lights-reference-v2/manifest.json'));
 const cpcs=require('../cockpit/pressurization-oh22-model.js');
 const zone=require('../cockpit/aircon-400-model.js');
 const pack=require('../cockpit/aircon-400-oh21-model.js');
-assert(page.includes('../lamp-socket-fit-v3/live-fit.js?v=LGT-SOCKET-FIT-005-EMBEDDED'),
+assert(page.includes('../lamp-socket-fit-v3/live-fit.js?v=LGT-SOCKET-FIT-006-VISUAL-TEST'),
  '142-lamp fit never reaches actual Unified overhead iframe');
 assert(page.includes('../lamp-socket-fit-v3/variant-fit.js?v=LGT-VARIANTS-FIT-001'),
  'DCPCS/737-400 overlays bypass the 2.5px renderer');
