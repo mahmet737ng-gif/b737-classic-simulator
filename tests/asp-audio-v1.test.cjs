@@ -70,7 +70,7 @@ test('input rejects invalid seat, detent, channels and volume',()=>{
  assert.throws(()=>run(s,'FO','SELECT_MIC',{channel:'ADF-1'}),/MIC/);
  assert.throws(()=>run(s,'OBS','VOLUME',{channel:'SPKR',value:150}),/volume/);
 });
-test('ALT/NORM pointer target tracks the native SVG aperture center exactly',()=>{ const code=fs.readFileSync(path.join(__dirname,'../panel-mosaic-lab/cockpit/asp-audio-runtime-v1.js'),'utf8'); assert.match(code,/left:87\\.34402852%;top:84\\.12162162%/); });
+test('ALT/NORM pointer target tracks the native SVG aperture center exactly',()=>{ const code=fs.readFileSync(path.join(__dirname,'../panel-mosaic-lab/cockpit/asp-audio-runtime-v1.js'),'utf8'); assert.match(code,/left:87\.34402852%;top:84\.12162162%/); });
 test('integration is additive: no pixel/position edits to owner-approved ASP or protected panels',()=>{
  const ui=fs.readFileSync(path.join(__dirname,'../panel-mosaic-lab/cockpit/asp-audio-runtime-v1.js'),'utf8');
  const bare=fs.readFileSync(path.join(__dirname,'../panel-mosaic-lab/cockpit/asp-bare-overlay-v1.js'),'utf8');
