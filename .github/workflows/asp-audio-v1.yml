@@ -5,6 +5,11 @@ on:
     paths:
       - 'panel-mosaic-lab/cockpit/asp-vbr-*'
       - 'panel-mosaic-lab/cockpit/assets/asp-vbr-v1/**'
+      - 'engine/systems/asp-audio-mix-v3.js'
+      - 'engine/integration/asp-cb-trace-v3.js'
+      - 'panel-mosaic-lab/cockpit/asp-pixel-audit-v3.js'
+      - 'panel-mosaic-lab/cockpit/asp-audible-bench-v3.js'
+      - 'tests/asp-audio-mix-v3.test.cjs'
       - 'engine/systems/asp-audio-v1.js'
       - 'panel-mosaic-lab/cockpit/asp-audio-runtime-v1.js'
       - 'panel-mosaic-lab/cockpit/asp-controls-v1.js'
@@ -44,6 +49,10 @@ jobs:
       - name: Javascript syntax
         run: |
           node --check engine/systems/asp-audio-v1.js
+          node --check engine/systems/asp-audio-mix-v3.js
+          node --check engine/integration/asp-cb-trace-v3.js
+          node --check panel-mosaic-lab/cockpit/asp-pixel-audit-v3.js
+          node --check panel-mosaic-lab/cockpit/asp-audible-bench-v3.js
           node --check panel-mosaic-lab/cockpit/asp-audio-runtime-v1.js
           node --check engine/systems/asp-audio-routing-v2.js
           node --check engine/integration/asp-electrical-cb-v2.js
@@ -52,6 +61,8 @@ jobs:
           node --check engine/interaction/asp-physical-commands-v1.js
       - name: FCOM MRG normal alternate independent stations and protected-asset geometry tests
         run: node --test tests/asp-audio-v1.test.cjs
+      - name: Four-stage ASP mix / shared RF / CB conflict / 72-center audit
+        run: node --test tests/asp-audio-mix-v3.test.cjs
       - name: Audio routing, MRG CB quarantine, RF fault isolation
         run: node --test tests/asp-audio-routing-v2.test.cjs
       - name: Physical PTT spring return / mask boom / OBS overhead bridge
