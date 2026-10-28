@@ -7,6 +7,10 @@ on:
       - 'panel-mosaic-lab/cockpit/asp-audio-runtime-v1.js'
       - 'panel-mosaic-lab/cockpit/index.html'
       - 'tests/asp-audio-v1.test.cjs'
+      - 'tests/asp-audio-routing-v2.test.cjs'
+      - 'engine/systems/asp-audio-routing-v2.js'
+      - 'engine/integration/asp-electrical-cb-v2.js'
+      - 'panel-mosaic-lab/cockpit/asp-audio-routing-live-v2.js'
       - '.github/workflows/asp-audio-v1.yml'
   workflow_dispatch:
 permissions:
@@ -22,8 +26,13 @@ jobs:
         run: |
           node --check engine/systems/asp-audio-v1.js
           node --check panel-mosaic-lab/cockpit/asp-audio-runtime-v1.js
+          node --check engine/systems/asp-audio-routing-v2.js
+          node --check engine/integration/asp-electrical-cb-v2.js
+          node --check panel-mosaic-lab/cockpit/asp-audio-routing-live-v2.js
       - name: FCOM MRG normal alternate independent stations and protected-asset geometry tests
         run: node --test tests/asp-audio-v1.test.cjs
+      - name: Audio routing, MRG CB quarantine, RF fault isolation
+        run: node --test tests/asp-audio-routing-v2.test.cjs
       - name: Existing ASP controls pixel/angle QA
         run: node --test panel-mosaic-lab/cockpit/asp-controls-v1.test.cjs
       - name: Frozen overhead baseline
