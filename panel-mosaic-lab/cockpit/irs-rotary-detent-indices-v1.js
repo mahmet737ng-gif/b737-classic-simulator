@@ -1,5 +1,5 @@
-/* IRS-INDEX-0001 — additive reference ticks and readable black index on
- * existing unfrozen upper DSPL SEL and IRS L/R MSU rotaries.
+/* IRS-INDEX-0002 — the upper DSPL SEL retains its cues, while L/R IRS MSU
+ * now use the approved photo rotary and the photo-printed markings.
  * DO NOT change original photos, knob size, detent angles, event handlers,
  * locked lower SYS DSPL, owner18 guards or aircraft control state.
  */
@@ -9,7 +9,7 @@
  // The upper rotor already uses the owner's exact five angular positions.
  const UPPER_MODES=Object.freeze(['TEST','TK/GS','PPOS','WIND','HDG/STS']);
  const MSU_MODES=Object.freeze(['OFF','ALIGN','NAV','ATT']);
- const MSU_ANGLES=Object.freeze([-115,-40,24,88]); // existing CSS detents; do not change
+ const MSU_ANGLES=Object.freeze([-70,-38,25,69]); // photographic pointer, four original label directions
  const upperBase=180; // existing upper reference pointer faces LEFT at angle 0
  const msuBase=-90;  // existing MSU lever tip faces UP before mode rotation
  let mountedUpper=false,mountedMsu=0,watch=null;
@@ -77,10 +77,11 @@
   for(const side of ['L','R']){
    const knob=rootPanel.querySelector('[data-msu-mini="'+side+'"]');
    if(!knob)continue;
-   if(!knob.querySelector('[data-irs-tick-bank="msu"]'))knob.appendChild(tickFace('msu',MSU_ANGLES));
-   if(!knob.querySelector('[data-irs-pointer="msu"]'))knob.appendChild(pointerFace('msu'));
-   knob.dataset.irsIndexVersion='IRS-INDEX-0001';
-   count++;
+   // The photographed panel already has marks. Remove synthetic MSU
+   // detent strokes and pointer instead of painting over approved artwork.
+   for(const old of [...knob.querySelectorAll('[data-irs-tick-bank="msu"]'),...knob.querySelectorAll('[data-irs-pointer="msu"]')])old.remove();
+   knob.dataset.irsIndexVersion='IRS-INDEX-0002';
+   if(knob.querySelector('.irs-msu-owner-photo'))count++;
   }
   mountedMsu=count;return count;
  }
@@ -100,13 +101,15 @@
   install,
   audit:()=>{
    const upper=document.getElementById('irsUpperDsplMounted'),msu=document.getElementById('irsTrainerMSU');
-   const entries=[{name:'UPPER DSPL SEL',el:upper,count:5},...['L','R'].map(n=>({name:'IRS '+n,el:msu?.querySelector('[data-msu-mini="'+n+'"]'),count:4}))];
+   const entries=[{name:'UPPER DSPL SEL',el:upper,count:5},...['L','R'].map(n=>({name:'IRS '+n,el:msu?.querySelector('[data-msu-mini="'+n+'"]'),count:0}))];
    return entries.map(x=>({
     name:x.name,ready:!!x.el,
     tickCount:x.el?.querySelectorAll('.irs-detent-tick').length||0,
     expected:x.count,pointerCount:x.el?.querySelectorAll('.irs-index-ink').length||0,
     mode:x.name==='UPPER DSPL SEL'?root.B737IRSDisplaySelector?.getState?.().mode:x.el?.dataset.mode,
-    pass:!!x.el&&x.el.querySelectorAll('.irs-detent-tick').length===x.count&&x.el.querySelectorAll('.irs-index-ink').length===1
+    pass:!!x.el&&(x.name==='UPPER DSPL SEL'
+     ?x.el.querySelectorAll('.irs-detent-tick').length===5&&x.el.querySelectorAll('.irs-index-ink').length===1
+     :x.el.querySelectorAll('.irs-detent-tick').length===0&&x.el.querySelectorAll('.irs-index-ink').length===0&&!!x.el.querySelector('.irs-msu-owner-photo'))
    }));
   },
   angles:Object.freeze({upperBase,upper:Object.freeze([0,35,65,125,150]),msuBase,msu:MSU_ANGLES})
