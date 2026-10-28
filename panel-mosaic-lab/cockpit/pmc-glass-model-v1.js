@@ -22,5 +22,5 @@
    snapshot(){return Object.fromEntries(sockets.map(p=>[p.engine,{on:states[p.engine].on}]));}
   });
  }
- return Object.freeze({version:'PMC-GLASS-0001',source,atlas,sockets,bounds,controller});
+ return Object.freeze({version:'PMC-GLASS-0002',source,atlas,sockets,bounds,controller});
 });

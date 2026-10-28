@@ -38,7 +38,11 @@
    push.innerHTML='<svg class="pmc-on-symbol" viewBox="0 0 50 50" aria-hidden="true"><circle cx="25" cy="25" r="22"/><text x="25" y="31">ON</text></svg><span class="pmc-divider" aria-hidden="true"></span><svg class="pmc-inop-symbol" viewBox="0 0 100 30" aria-hidden="true"><text x="50" y="22">INOP</text></svg>';
    const cover=document.createElement('button');cover.type='button';cover.className='pmc-cover';cover.innerHTML=coverArt;
    const hinge=document.createElement('span');hinge.className='pmc-hinge';hinge.innerHTML=hingeArt(p.engine);hinge.setAttribute('aria-hidden','true');
-   for(const node of [push,cover])for(const type of ['pointerdown','pointerup','dblclick'])node.addEventListener(type,e=>e.stopPropagation());
+   for(const node of [push,cover]){
+    // Native focus in a scaled iframe otherwise scrolls the outer cockpit.
+    node.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();node.focus({preventScroll:true});});
+    for(const type of ['pointerup','dblclick'])node.addEventListener(type,e=>e.stopPropagation());
+   }
    cover.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();state.cover(p.engine,!state.view(p.engine).open);render(p.engine);notify(p.engine,'cover');});
    push.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();if(state.press(p.engine)){persist();render(p.engine);notify(p.engine,'select');}});
    unit.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();e.stopPropagation();state.cover(p.engine,false);render(p.engine);cover.focus({preventScroll:true});}});
