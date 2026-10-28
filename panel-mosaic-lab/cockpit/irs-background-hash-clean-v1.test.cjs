@@ -72,3 +72,12 @@ test('real Unified cleans old panel blemishes without regenerating L/R MSU ticks
  const photoCss=fs.readFileSync(path.join(d,'irs-trainer-unified-v1.css'),'utf8');
  assert(photoCss.includes('--irs-msu-angle:-70deg'));
 });
+test('new owner-approved panel is never inpainted or regenerated at runtime',()=>{
+ const body={dataset:{irsPanelAsset:'irs-bare-panel-owner-v2.png'},complete:true,naturalWidth:1097,naturalHeight:1434,src:'owner-v2'};
+ const document={readyState:'complete',documentElement:{},querySelector:()=>body,createElement(){throw Error('New panel must not enter canvas');}};
+ const window={addEventListener(){},console};
+ vm.runInNewContext(code,{document,window,MutationObserver:class{observe(){throw Error('New panel must not be watched for repaint');}}});
+ assert.equal(window.B737IRSBackgroundHashClean.status().skipped,true);
+ assert.equal(window.B737IRSBackgroundHashClean.status().patched,0);
+ assert.equal(body.src,'owner-v2');
+});

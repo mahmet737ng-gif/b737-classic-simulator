@@ -16,16 +16,17 @@
  function imageLayer(kind,origin){
   const img=document.createElement('img');img.src=art.src;img.alt='';img.draggable=false;
   img.className='irs-registered-panel-'+kind;img.setAttribute('aria-hidden','true');
+  img.dataset.irsPanelAsset=geometry.asset;
   Object.assign(img.style,{left:px(origin.x),top:px(origin.y),width:px(geometry.image.width*geometry.scale.x),height:px(geometry.image.height*geometry.scale.y)});
   const split=100*geometry.topSplitY/geometry.image.height;
   img.style.clipPath=kind==='top'?'inset(0 0 '+(100-split)+'% 0)':'inset('+split+'% 0 0 0)';
   return img;
  }
  function preserveApprovedHeading(){
-  // Re-expose the exact existing SYS DSPL title pixels under its frozen L/R
-  // overlay. This small patch does not move, repaint or cover the locked knob.
+  // Preserve only the approved heading. Owner separately approved the new
+  // pictured 45-degree L/R stencils; their old overlay is now superseded.
   const p=document.createElement('div');p.className='irs-preserved-sys-heading';
-  const sx=2214/1731,sy=1019/909,x=423,y=413,w=110,h=34;
+  const sx=2214/1731,sy=1019/909,x=423,y=413,w=110,h=19;
   Object.assign(p.style,{left:px(3+x*sx),top:px(3+y*sy),width:px(w*sx),height:px(h*sy),backgroundImage:'url(../assets/locked/2026-10-23/OH01-06-source-9d8ac0ac86bd.png)',backgroundSize:'2214px 1019px',backgroundPosition:px(-x*sx)+' '+px(-y*sy)});
   p.setAttribute('aria-hidden','true');return p;
  }
@@ -43,6 +44,12 @@
    region.append(layer);
   }
   centered(upper,geometry.upper,88,88);
+  if(geometry.detents){
+   const d=geometry.detents;
+   root.B737IRSDisplaySelector?.setDetentAngles?.(['TEST','TK/GS','PPOS','WIND','HDG/STS'].map(k=>d.upper[k]));
+   for(const [side,value] of Object.entries(d.sys))region.style.setProperty('--irs-photo-sys-'+side,value+'deg');
+   for(const [side,values] of Object.entries(d.msu))for(const [mode,value] of Object.entries(values))region.style.setProperty('--irs-photo-'+side+'-'+mode,value+'deg');
+  }
   // The original mask's black-cap center is (69,70) in its 138px cell.
   // The new panel already contains its own metal bezel. Fit only the source
   // photo cap to the measured well; its original press/lens handlers survive.
@@ -82,7 +89,7 @@
  }
  async function boot(){
   try{
-   const response=await fetch('./irs-panel-registration-v1.json?v=IRS-PANEL-0001');
+   const response=await fetch('./irs-panel-registration-v1.json?v=IRS-PANEL-0002');
    if(!response.ok)throw Error('IRS panel registration '+response.status);
    geometry=await response.json();art=new Image();
    art.onload=()=>{

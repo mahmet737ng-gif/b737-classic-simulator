@@ -7,15 +7,20 @@
  const MODES=Object.freeze(['TEST','TK/GS','PPOS','WIND','HDG/STS']);
  // Relative to the photograph's left-facing pointer; align to existing stencils.
  const ANGLES=Object.freeze([0,35,65,125,150]);
+ let detentAngles=ANGLES;
  const source=Object.freeze({x:471.454545,y:368.699675});
  const map=Object.freeze({sourceWidth:1731,sourceHeight:909,width:2214,height:1019,x:3,y:3});
  const size=Object.freeze({width:88,height:88});
  const center=Object.freeze({x:map.x+source.x*map.width/map.sourceWidth,y:map.y+source.y*map.height/map.sourceHeight});
- const geometry=Object.freeze({version:'IRS-UPPER-DSPL-0004',source,map,size,center,pivot:[.5,.5],circles:Object.freeze({outerRadius:.35,innerRadius:.195}),modeAngles:ANGLES,outerAsset:'irs-upper-owner-original-v2.png',innerAsset:'irs-upper-owner-original-v2.png'});
+ const geometry=Object.freeze({version:'IRS-UPPER-DSPL-0004',source,map,size,center,pivot:[.5,.5],circles:Object.freeze({outerRadius:.35,innerRadius:.195}),get modeAngles(){return detentAngles;},outerAsset:'irs-upper-owner-original-v2.png',innerAsset:'irs-upper-owner-original-v2.png'});
  let mode='PPOS',brightness=82,element=null,displayMask=null;
  const tracks=new Map(),ignoreClick={mode:false,brightness:false};
  const clamp=(x,lo,hi)=>Math.max(lo,Math.min(hi,x));
- function snapshot(){return {mode,brightness,outerAngle:ANGLES[MODES.indexOf(mode)],innerAngle:(brightness-82)*2.7,frontendOnly:true};}
+ function snapshot(){return {mode,brightness,outerAngle:detentAngles[MODES.indexOf(mode)],innerAngle:(brightness-82)*2.7,frontendOnly:true};}
+ function setDetentAngles(values){
+  if(!Array.isArray(values)||values.length!==MODES.length||values.some((n,i)=>!Number.isFinite(n)||n<0||n>180||(i>0&&n<=values[i-1])))throw new RangeError('IRS requires five increasing measured detent angles within 0..180 degrees');
+  detentAngles=Object.freeze([...values]);render();return [...detentAngles];
+ }
  function notify(part,input){root.dispatchEvent(new CustomEvent('b737:irs-dspl-sel-change',{detail:{...snapshot(),part,input}}));}
  function render(){
   if(!element)return;
@@ -117,6 +122,6 @@
   if(!element){const observer=new MutationObserver(()=>{if(mount())observer.disconnect();});observer.observe(document.documentElement,{childList:true,subtree:true});}
   root.addEventListener('b737:cockpit-mounted',mount);
  }
- root.B737IRSDisplaySelector=Object.freeze({modes:MODES,setMode,setBrightness,getState:snapshot,mount,geometry,getElement:()=>element});
+ root.B737IRSDisplaySelector=Object.freeze({modes:MODES,setMode,setBrightness,setDetentAngles,getState:snapshot,mount,geometry,getElement:()=>element});
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
 })(window);

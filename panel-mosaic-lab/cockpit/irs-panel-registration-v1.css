@@ -13,3 +13,19 @@
  color:transparent;text-shadow:none;background-image:var(--irs-panel-lamp-on);opacity:1;
 }
 .reference-mode #irsBarePanelRegistered{display:none}
+
+/* Owner requested L/R 45 degrees upward, reviewed the resulting image, then
+   explicitly ordered that version uploaded and detented with the SAME knobs.
+   Source photographs, fixed SYS mount/size, logic and locked files stay intact. */
+#region-overhead.irs-panel-registered[data-irs-panel-version="IRS-PANEL-REGISTER-0002"] #irsSysDsplLRMarkings{display:none}
+#region-overhead.irs-panel-registered[data-irs-panel-version="IRS-PANEL-REGISTER-0002"] #irsUpperDsplMounted .irs-rotary-fixed-ticks-upper{display:none!important}
+#region-overhead.irs-panel-registered[data-irs-panel-version="IRS-PANEL-REGISTER-0002"] #irsSysDsplMounted[data-system="L"] .irs-sys-dspl-approved-photo{transform:rotate(var(--irs-photo-sys-L))}
+#region-overhead.irs-panel-registered[data-irs-panel-version="IRS-PANEL-REGISTER-0002"] #irsSysDsplMounted[data-system="R"] .irs-sys-dspl-approved-photo{transform:rotate(var(--irs-photo-sys-R))}
+#region-overhead.irs-panel-registered[data-irs-panel-version="IRS-PANEL-REGISTER-0002"] .irs-msu-mini[data-msu-mini="L"][data-mode="OFF"]{--irs-msu-angle:var(--irs-photo-L-OFF)}
+#region-overhead.irs-panel-registered[data-irs-panel-version="IRS-PANEL-REGISTER-0002"] .irs-msu-mini[data-msu-mini="L"][data-mode="ALIGN"]{--irs-msu-angle:var(--irs-photo-L-ALIGN)}
+#region-overhead.irs-panel-registered[data-irs-panel-version="IRS-PANEL-REGISTER-0002"] .irs-msu-mini[data-msu-mini="L"][data-mode="NAV"]{--irs-msu-angle:var(--irs-photo-L-NAV)}
+#region-overhead.irs-panel-registered[data-irs-panel-version="IRS-PANEL-REGISTER-0002"] .irs-msu-mini[data-msu-mini="L"][data-mode="ATT"]{--irs-msu-angle:var(--irs-photo-L-ATT)}
+#region-overhead.irs-panel-registered[data-irs-panel-version="IRS-PANEL-REGISTER-0002"] .irs-msu-mini[data-msu-mini="R"][data-mode="OFF"]{--irs-msu-angle:var(--irs-photo-R-OFF)}
+#region-overhead.irs-panel-registered[data-irs-panel-version="IRS-PANEL-REGISTER-0002"] .irs-msu-mini[data-msu-mini="R"][data-mode="ALIGN"]{--irs-msu-angle:var(--irs-photo-R-ALIGN)}
+#region-overhead.irs-panel-registered[data-irs-panel-version="IRS-PANEL-REGISTER-0002"] .irs-msu-mini[data-msu-mini="R"][data-mode="NAV"]{--irs-msu-angle:var(--irs-photo-R-NAV)}
+#region-overhead.irs-panel-registered[data-irs-panel-version="IRS-PANEL-REGISTER-0002"] .irs-msu-mini[data-msu-mini="R"][data-mode="ATT"]{--irs-msu-angle:var(--irs-photo-R-ATT)}

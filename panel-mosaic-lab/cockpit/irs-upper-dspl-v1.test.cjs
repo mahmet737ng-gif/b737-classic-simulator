@@ -20,6 +20,25 @@ function runtime(){
  const api=window.B737IRSDisplaySelector,root=api.getElement();
  return {api,root,region,events,outer:root.querySelector('.irs-upper-mode-control'),inner:root.querySelector('.irs-upper-brt-control')};
 }
+test('owner photo detents configure all five stops without changing brightness, state or either source sprite',()=>{
+ const {api,outer,root}=runtime();
+ const g=JSON.parse(fs.readFileSync(path.join(base,'irs-panel-registration-v1.json'),'utf8'));
+ const a=api.modes.map(k=>g.detents.upper[k]);
+ api.setBrightness(37);api.setMode('WIND');api.setDetentAngles(a);
+ assert.equal(api.getState().mode,'WIND');assert.equal(api.getState().brightness,37);
+ for(let i=0;i<api.modes.length;i++){
+  api.setMode(api.modes[i]);assert.equal(api.getState().outerAngle,a[i]);
+  assert.equal(root.querySelector('.irs-upper-mode-rotor').style.transform,'rotate('+a[i]+'deg)');
+ }
+ outer.fire('keydown',{key:'ArrowRight'});assert.equal(api.getState().mode,'HDG/STS');
+ outer.fire('keydown',{key:'Home'});outer.fire('keydown',{key:'ArrowLeft'});assert.equal(api.getState().mode,'TEST');
+ assert.equal(api.getState().brightness,37);
+ assert.throws(()=>api.setDetentAngles([0,10,9,30,40]));
+ assert.throws(()=>api.setDetentAngles([0,10,20,30,Infinity]));
+ assert.throws(()=>api.setDetentAngles([0,10]));
+ assert.equal(api.geometry.outerAsset,'irs-upper-owner-original-v2.png');
+ assert.equal(api.geometry.innerAsset,'irs-upper-owner-original-v2.png');
+});
 test('mode and brightness use independent state, pivots and rotor transforms',()=>{
  const {api,root}=runtime();const b=api.getState();
  assert.equal(b.mode,'PPOS');assert.equal(b.brightness,82);
@@ -56,7 +75,7 @@ test('actual source bore registration, alpha PNGs and mount idempotence are pres
  const g=api.geometry;assert.ok(Math.abs(g.center.x-(3+471.454545*2214/1731))<1e-7);assert.ok(Math.abs(g.center.y-(3+368.699675*1019/909))<1e-7);
  const meta=JSON.parse(fs.readFileSync(path.join(base,'irs-upper-dspl-v1.json')));
  for(const [name,spec]of Object.entries(meta.assets)){const b=fs.readFileSync(path.join(base,'assets',name));assert.equal(b.toString('ascii',1,4),'PNG');assert.equal(b.readUInt32BE(16),1774);assert.equal(b.readUInt32BE(20),887);assert.equal(b[25],6,'RGBA alpha PNG');assert.equal(crypto.createHash('sha256').update(b).digest('hex'),spec.sha256);}
- const html=fs.readFileSync(path.join(base,'index.html'),'utf8');assert.equal(html.split('irs-upper-dspl-v1.js?v=IRS-UPPER-0004').length-1,1);assert.equal(html.split('irs-upper-dspl-v1.css?v=IRS-UPPER-0004').length-1,1);
+ const html=fs.readFileSync(path.join(base,'index.html'),'utf8');assert.equal(html.split('irs-upper-dspl-v1.js?v=IRS-UPPER-0005').length-1,1);assert.equal(html.split('irs-upper-dspl-v1.css?v=IRS-UPPER-0004').length-1,1);
 });
 
 test('both visible rims are exact circles with one fixed pivot through a full turn',()=>{

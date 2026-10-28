@@ -79,6 +79,10 @@ function derive(image){
 function apply(){
  const body=document.querySelector('#irsBarePanelRegistered img.irs-registered-panel-body');
  if(!body||body.dataset.irsLegacyHashesClean==='true'||status.processing)return !!body&&body.dataset.irsLegacyHashesClean==='true';
+ if(body.dataset.irsPanelAsset&&body.dataset.irsPanelAsset!=='irs-bare-panel-owner-v1.png'){
+  status={installed:false,processing:false,reason:'New owner panel already contains its five printed detents; original PNG kept unchanged',patched:0,skipped:true};
+  if(watch){watch.disconnect();watch=null;}return true;
+ }
  if(!body.complete||!body.naturalWidth){
   if(!body.dataset.irsLegacyHashLoadHook){
    body.dataset.irsLegacyHashLoadHook='true';
@@ -107,8 +111,7 @@ function apply(){
  }
 }
 function boot(){
- apply();
- if(status.installed)return;
+ if(apply()||status.installed)return;
  watch=new MutationObserver(()=>{
   if(apply()){watch.disconnect();watch=null;}
  });
