@@ -33,4 +33,22 @@ assert.equal(rows[7].left.textContent,'190.0 KT');
 assert.equal(rows[7].right.textContent,'188.0 KT');
 vm.runInContext("state.page='INDEX';send('CDU_CAPT_LSK_L1')",realm);
 assert.deepEqual(forwarded,['CDU_CAPT_LSK_L1'],'Unrelated CDU LSKs remain untouched');
+// Live CDU indication bridge consumes IRS backend status outputs while
+// respecting the current scratchpad and independent L/R evidence.
+const sync=vm.runInContext('window.B737CDUIRSAdapterV1.syncIrsAlerts',realm);
+const message=()=>vm.runInContext('state.message',realm);
+vm.runInContext("state.message=''",realm);
+assert.equal(sync({units:{L:{alignStatusCode:3},R:{alignStatusCode:null}}}),true);
+assert.equal(message(),'IRS MOTION','MRG 03 is shown on CDU');
+assert.equal(sync({units:{L:{alignStatusCode:8},R:{alignStatusCode:null}}}),true);
+assert.equal(message(),'ENTER IRS POS','MRG 08 is shown on CDU');
+assert.equal(sync({units:{L:{alignStatusCode:12},R:{alignStatusCode:4}}}),false);
+assert.equal(message(),'ENTER IRS POS','MRG 04/12 route to entry prompt');
+assert.equal(sync({units:{L:{alignStatusCode:null},R:{cduMessage:'VERIFY POSITION'}}}),true);
+assert.equal(message(),'VERIFY POSITION','FMC origin advisory remains separate from IRS internal code 12');
+assert.equal(sync({units:{L:{alignStatusCode:null},R:{alignStatusCode:null}}}),true);
+assert.equal(message(),'','Resolved IRS message is cleared');
+vm.runInContext("state.message='UNRELATED FMC ADVISORY'",realm);
+assert.equal(sync({units:{L:{alignStatusCode:3},R:{}}}),false);
+assert.equal(message(),'UNRELATED FMC ADVISORY','Unrelated CDU message not overwritten');
 console.log('PASS CDU IRS Unified: actual POS INIT LSK 4R sends validated present-position to parent; bad entry retains warning; independent L/R POS REF; original keys remain intact');
