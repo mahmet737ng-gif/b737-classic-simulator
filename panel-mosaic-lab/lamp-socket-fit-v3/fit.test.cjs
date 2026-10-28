@@ -52,10 +52,15 @@ assert(script.includes("sourceRect")&&script.includes("scale("),'Fitting no long
 assert(script.includes('const maxPad=2.5;'),'Default coverage must be 2.5 native source px');
 assert(!script.includes('if(!opted)return'),'Production lamp fit must no longer be opt-in');
 assert(script.includes("query.get('socketFit')==='0'"),'Diagnostic rollback flag missing');
+assert(script.includes("document.documentElement.classList.contains('cockpit-visual-test')"),'Overhead visual lamp test must be recognized');
+assert(script.includes("obj.node.dataset.visualFrame||obj.node.dataset.frame"),'The bright visual frame must override electrical OFF during visual-only testing');
+assert(script.includes("attributeFilter:['data-frame','data-visual-frame']"),'Visual frame changes must trigger a fitted face refresh');
 const lab=fs.readFileSync(path.join(root,'lamp-socket-fit-lab/index.html'),'utf8');
 assert(lab.includes('id="padValue">2.5</output>')&&lab.includes('step="0.5" value="2.5"'),'Lab default must be 2.5 px');
 for(const p of ['cockpit/index.html','interactive-overhead/index.html']){
  const s=fs.readFileSync(path.join(root,p),'utf8');
- assert(s.includes('../lamp-socket-fit-v3/live-fit.js?v=LGT-SOCKET-FIT-004'),'Missing opt-in live loader '+p);
+ assert(s.includes('../lamp-socket-fit-v3/live-fit.js?v=LGT-SOCKET-FIT-'),'Missing live fitting loader '+p);
 }
+const embedded=fs.readFileSync(path.join(root,'cockpit/overhead-stage.html'),'utf8');
+assert(embedded.includes('../lamp-socket-fit-v3/live-fit.js?v=LGT-SOCKET-FIT-006-VISUAL-TEST'),'Embedded overhead must load the uncached visual-test fix');
 console.log('LGT-SOCKET-FIT-003 PASS: '+geom.slots.length+' preserved calibrated source rectangles, 0 overlaps, '+manifest.masters.length+' masters, SVG typography preserved, independent opt-in loaders.');
