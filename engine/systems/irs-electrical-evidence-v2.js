@@ -81,5 +81,22 @@ function evaluate(state,{electrical=null,modes={L:'OFF',R:'OFF'},unitStates=null
    visualOwnership:'FROZEN_93_BLOBS_NO_UI_MUTATION',
    note:'Lamp outputs are backend projections; frozen Unified display consumes legacy cues until independently authorized routing is implemented.'})});
 }
-return Object.freeze({MAX_BACKUP_R,initialState,evaluate});
+// Optional backend-only integration with the existing independent IRS core.
+// No external cockpit mount or owner-locked annunciator DOM is touched.
+// UNKNOWN source is deliberately treated as unavailable (fail closed).
+function reconcileCore(core,current,projection){
+ if(!core||typeof core.apply!=='function'||typeof core.status!=='function')
+  throw new TypeError('Valid IRS core API required');
+ if(!current||!current.units||!projection?.units)
+  throw new TypeError('Current IRS state and power evidence required');
+ let updated=current;
+ for(const side of ['L','R']){
+  const powered=projection.units[side]?.powered===true;
+  if(updated.units[side].powered!==powered)
+   updated=core.apply(updated,{type:'POWER',side,available:powered});
+ }
+ return Object.freeze({coreState:updated,source:projection.units,
+  evidence:'IRS_POWER_PROJECTION_V2',panelMutated:false});
+}
+return Object.freeze({MAX_BACKUP_R,initialState,evaluate,reconcileCore});
 });
