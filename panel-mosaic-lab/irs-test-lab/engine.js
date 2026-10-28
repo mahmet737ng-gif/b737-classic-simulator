@@ -194,6 +194,7 @@ function create(){
   checklist[index]=!!checked;record('QRH training step '+(index+1)+(checked?' CHECK':' UNCHECK'),'CHECKLIST');
   return snapshot();
  }
+ function clearLog(){log=[];return snapshot();}
  function checkStatus(){
   const s=snapshot();const L=s.units.L,R=s.units.R,side=s.selected,u=s.units[side];
   switch(activeScenario){
@@ -229,7 +230,7 @@ function create(){
  }
  fresh();
  return Object.freeze({snapshot,reset:fresh,scenario,select,setMode,setBus,setPos,checks,advance,
-  setMotion,inject,selectTransfer,progressStep,safe,checkStatus,Core,Electrical,Scenarios});
+  setMotion,inject,selectTransfer,progressStep,safe,checkStatus,clearLog,Core,Electrical,Scenarios});
 }
 return Object.freeze({create});
 });
