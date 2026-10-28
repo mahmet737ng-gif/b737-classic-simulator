@@ -140,7 +140,7 @@ function writePosition(s,side,p,source,origin){
 function ready(s,u){
  if(!u.initialized||!u.enteredPosition)return;
  if(u.mode==='ALIGN'){
-  u.phase='HIGH_LAT_READY';u.valid=false;emit(s,u.id,'READY_WAIT_NAV');
+  u.phase=u.alignmentDurationSec>=s.config.highLatitudeAlignSeconds?'HIGH_LAT_READY':'ALIGN_READY';u.valid=false;emit(s,u.id,'READY_WAIT_NAV');
  }else{
   u.phase='NAV_READY';u.valid=true;u.basePosition={...u.enteredPosition};
   u.position={...u.enteredPosition};u.navigationElapsedSec=0;
