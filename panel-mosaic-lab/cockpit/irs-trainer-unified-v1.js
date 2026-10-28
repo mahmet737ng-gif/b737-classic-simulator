@@ -126,6 +126,8 @@ function validMotion(frame){
  const n=['gsKt','trueTrackDeg'];
  if(!frame||frame.valid!==true||!n.every(k=>Number.isFinite(frame[k]))||
     frame.gsKt<0||frame.gsKt>750||!Number.isFinite(frame.sourceTimestampMs))throw Error('VALID GS/TRK and monotonic timestamp required');
+ const age=Date.now()-frame.sourceTimestampMs;
+ if(age>3000||age< -1000)throw Error('STALE OR FUTURE SIMULATOR FRAME');
  if(frame.sourceTimestampMs<=lastLiveTimestamp)throw Error('Out of order simulator motion');
  lastLiveTimestamp=frame.sourceTimestampMs;
  simulatedMotion=Object.freeze({...frame,source:'EXTERNAL_TELEMETRY'});
@@ -176,8 +178,14 @@ function displayValue(){
   return {chars:a+b,top:[],bottom:[5,12],brightness};
  }
  if(mode==='TEST')return {chars:'N88888W888888',top:[0,1,2,3],bottom:[5,12],brightness};
- if(mode==='PPOS'&&u.positionValid){
-  chars=positionFormat(u.position).replace(/\s/g,'');
+ const raw=state.units[selected];
+ // During ALIGN the crew may inspect the accepted reference coordinates.
+ // This is INPUT PREVIEW only; not a valid calculated inertial NAV solution.
+ const alignPreview=raw.initialized&&raw.enteredPosition&&
+  ['SELFTEST','ALIGNING','WAIT_POSITION','HIGH_LAT_READY','ALIGN_READY'].includes(raw.phase)?
+  raw.enteredPosition:null;
+ if(mode==='PPOS'&&(u.positionValid||alignPreview)){
+  chars=positionFormat(u.positionValid?u.position:alignPreview).replace(/\s/g,'');
   bottom=[5,12];
  }else if(mode==='TK/GS'&&u.positionValid&&Number.isFinite(u.trueTrackDeg)&&Number.isFinite(u.gsKt)){
   chars=String(Math.round(u.trueTrackDeg*10)).padStart(6,' ')+String(Math.round(u.gsKt*10)).padStart(7,' ');
