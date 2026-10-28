@@ -3,7 +3,8 @@ const flap=require('../engine/systems/te-flap-actuator-v1.js');
 const EPS=.0001;
 function goto(s,target,seconds){
  s=flap.apply(s,{type:'COMMAND',value:target});
- return flap.apply(s,{type:'TICK',seconds});
+ for(let remaining=seconds;remaining>0;){const dt=Math.min(60,remaining);s=flap.apply(s,{type:'TICK',seconds:dt});remaining-=dt;}
+ return s;
 }
 test('owner provisional segment durations, inclusive 15 to 40 in 4.5 seconds',()=>{
  const s=flap.initialState();
