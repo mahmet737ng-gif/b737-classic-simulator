@@ -242,6 +242,10 @@ function renderPanel(){
   widget.querySelector('[data-msu-mini="'+id+'"]').dataset.phase=u.phase;
   widget.querySelector('[data-msu-mini="'+id+'"]').dataset.mode=u.mode;
   widget.querySelector('[data-msu-mini="'+id+'"]').title='IRS '+id+': '+u.mode+' '+u.phase;
+  for(const [name,lit] of [['ALIGN',u.alignLamp],['ON DC',u.onDcLamp],['FAULT',u.faultLamp],['DC FAIL',u.phase==='POWER_LOST']]){
+   const lamp=widget.querySelector('[data-irs-physical="'+id+'-'+name+'"]');
+   if(lamp)lamp.dataset.lit=String(lit);
+  }
  }
 }
 function mountMsu(){
@@ -258,6 +262,19 @@ function mountMsu(){
   b.addEventListener('wheel',e=>{e.preventDefault();e.stopPropagation();const ix=MODES.indexOf(state.units[side].mode);try{mode(side,MODES[Math.max(0,Math.min(3,ix+(e.deltaY>0?1:-1)))])}catch(err){show(cleanErr(err));}},{passive:false});
   b.addEventListener('keydown',e=>{if(!['ArrowRight','ArrowLeft','ArrowUp','ArrowDown'].includes(e.key))return;e.preventDefault();const ix=MODES.indexOf(state.units[side].mode);mode(side,MODES[Math.max(0,Math.min(3,ix+(['ArrowRight','ArrowDown'].includes(e.key)?1:-1)))]);});
   box.append(b);
+ }
+ // Approved photo black wells are kept; add only illuminated lettering
+ // at source-measured lamp centers, never modify original mosaic textures.
+ for(const side of SIDES){
+  const xs=side==='L'?[458,533]:[635,708];
+  for(const [name,column,row] of [['ALIGN',0,0],['ON DC',1,0],['FAULT',0,1],['DC FAIL',1,1]]){
+   const lamp=document.createElement('span');lamp.className='irs-msu-phys-lamp';
+   lamp.dataset.irsPhysical=side+'-'+name;lamp.dataset.lit='false';
+   lamp.textContent=name;lamp.setAttribute('aria-hidden','true');
+   Object.assign(lamp.style,{left:(atlas(xs[column])-39)+'px',
+      top:(alto(row===0?551:590)-17)+'px',width:'78px',height:'34px'});
+   box.append(lamp);
+  }
  }
  region.append(box);widget=box;
 }
