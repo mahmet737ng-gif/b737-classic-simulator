@@ -4,6 +4,8 @@ on:
     paths:
       - 'engine/systems/irs-trainer-core-v1.cjs'
       - 'engine/systems/irs-trainer-web-v1.js'
+      - 'engine/systems/irs-electrical-evidence-v2.js'
+      - 'tests/irs-electrical-evidence-v2.test.cjs'
       - 'panel-mosaic-lab/cockpit/irs-trainer-unified-v1.js'
       - 'tests/irs-unified-integration-v1.test.cjs'
       - 'tests/cdu-irs-adapter-v1.test.cjs'
@@ -32,6 +34,8 @@ jobs:
           node --check panel-mosaic-lab/cockpit/cdu-irs-adapter-v1.js
           node --check tests/irs-trainer-core-v1.test.cjs
           node tests/irs-trainer-core-v1.test.cjs
+          node --check engine/systems/irs-electrical-evidence-v2.js
+          node tests/irs-electrical-evidence-v2.test.cjs
           node --check engine/systems/irs-trainer-web-v1.js
           node tests/irs-unified-integration-v1.test.cjs
           node tests/cdu-irs-adapter-v1.test.cjs
