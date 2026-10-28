@@ -81,6 +81,22 @@ a=apply(a,{type:'SELECT_MODE',side:'L',mode:'NAV'});
 a=apply(a,{type:'FMC_SET_IRS_POS',sides:['L'],position:'N35395 E051254',
  originPosition:{lat:36.50,lon:52.0}});
 assert.equal(status(a,'L').warning,'VERIFY POSITION');
+// FMC SET IRS POS must still initialize L if R is powered off or unavailable.
+let one=initialState();
+one=apply(one,{type:'POWER',side:'L',available:true});
+one=apply(one,{type:'SELECT_MODE',side:'L',mode:'NAV'});
+one=apply(one,{type:'FMC_SET_IRS_POS',position:'N35395 E051254'});
+assert.equal(status(one,'L').entrySource,'FMC');
+assert.equal(status(one,'R').entrySource,null,'No false R initialization while R is OFF');
+assert.throws(()=>apply(one,{type:'ISDU_LAT_ENT',side:'R',value:'N35395'}),/requires selected powered IRS in ALIGN/);
+// High latitude from an invalid OFF -> NAV selection cannot produce NAV READY.
+let wrongHigh=initialState();
+wrongHigh=apply(wrongHigh,{type:'POWER',side:'L',available:true});
+wrongHigh=apply(wrongHigh,{type:'SELECT_MODE',side:'L',mode:'NAV'});
+wrongHigh=apply(wrongHigh,{type:'FMC_SET_IRS_POS',sides:['L'],position:'N71123 E041234'});
+assert.equal(status(wrongHigh,'L').phase,'MODE_MISMATCH');
+assert.equal(status(wrongHigh,'L').warning,'HIGH_LAT_SELECT_ALIGN');
+assert.equal(status(wrongHigh,'L').positionValid,false);
 // High lat must wait 17 minutes and a NAV switch from ALIGN.
 let h=initialState();
 h=apply(h,{type:'POWER',side:'L',available:true});
