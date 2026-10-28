@@ -5,6 +5,7 @@ on:
     paths:
       - 'panel-mosaic-lab/lamp-socket-fit-lab/**'
       - 'tools/test-lamp-socket-fit-preview.cjs'
+      - '.github/workflows/lamp-socket-fit-qa.yml'
       - 'panel-mosaic-lab/interactive-overhead/lights.json'
       - 'panel-mosaic-lab/cockpit/lights.json'
       - 'panel-mosaic-lab/lights-test/photo-pixel-registration-v5.json'
