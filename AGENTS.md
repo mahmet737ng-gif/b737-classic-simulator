@@ -46,3 +46,24 @@ as denied. Routine pilot actuation of existing switches is not an asset change.
 Do not disable/bypass integrity scripts, update baselines, or erase this warning.
 Repository admin must additionally protect the main branch and require the
 RED ZONE status check plus CODEOWNERS review; CI alone cannot prevent pushes.
+
+## IRS SYS DSPL LOWER SELECTOR OWNER LOCK — APPROVED AND FROZEN (2026-10-28)
+
+The user explicitly approved and LOCKED the LOWER IRS SYS DSPL L/R selector, the
+exact ivory narrow-grip selector image, detent positions, behavior, size,
+placement, white L/R stencils and tick marks, original title and L-patch.
+**Do not touch or re-generate this component** for any reason during upper
+rotary / brightness work, frontend refactoring, simulator wiring or UI cleanup.
+Do NOT edit any of the six paths frozen in
+`panel-mosaic-lab/cockpit/irs-sys-dspl-owner-lock-v1.json`, or its four
+approved CSS/JS mount tags in Unified index.html. New upper DSPL SEL and BRT
+switch code MUST be independently additive. Not even a small pixel change is
+permitted without the user's specific direct request and an independent
+informed confirmation of precisely what would change.
+
+CI fail-closed check (required before deployment):
+`python3 panel-mosaic-lab/cockpit/verify-irs-sys-dspl-owner-lock-v1.py`
+The manifest and verifier Git blob IDs are pinned in BOTH
+`.github/workflows/pages.yml` and
+`.github/workflows/irs-isdu-frontend-v1.yml`.
+Do not bypass this check or rewrite owner-approved hashes.
