@@ -335,6 +335,15 @@ function boot(){
  root.setInterval(notifyCdu,1000);
  paint();shout('IRS TRAINER READY · POWER: INSTRUCTOR TEST');
 }
+// The already audited Unified CDU POS INIT adapter calls this same-origin
+// parent API, keeping the captain/FO shared FMC session unchanged.
+root.B737IRSTrainerUnified=Object.freeze({
+ getState:snapshot,
+ setFmcPosition(raw){
+  try{takePosition(raw,'FMC CDU');return {ok:true};}
+  catch(error){shout('FMC IRS POS REJECTED: '+error.message);return {ok:false,error:error.message};}
+ }
+});
 root.B737IRSLiveV1=Object.freeze({getState:()=>state,snapshot,setMode,apply,takePosition,
  isduKey:onKey,publishTelemetry,getReadout:readout,formatCoord,comparison,paint});
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
