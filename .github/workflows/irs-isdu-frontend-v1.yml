@@ -32,6 +32,7 @@ on:
       - 'panel-mosaic-lab/cockpit/irs-13seg-display-v2.js'
       - 'panel-mosaic-lab/cockpit/irs-13seg-display-v2.css'
       - 'panel-mosaic-lab/cockpit/irs-13seg-display-v2.test.cjs'
+      - 'panel-mosaic-lab/cockpit/irs-isdu-fcom-modes-v1.test.cjs'
       - 'panel-mosaic-lab/cockpit/irs-13seg-owner-lock-v1.json'
       - 'panel-mosaic-lab/cockpit/verify-irs-13seg-owner-lock-v1.py'
       - 'engine/contracts/irs-isdu-fcom-modes-v1.json'
@@ -93,6 +94,7 @@ jobs:
           node panel-mosaic-lab/cockpit/irs-upper-face-v2.test.cjs
           node panel-mosaic-lab/cockpit/irs-amber-display-v1.test.cjs
           node panel-mosaic-lab/cockpit/irs-13seg-display-v2.test.cjs
+          node panel-mosaic-lab/cockpit/irs-isdu-fcom-modes-v1.test.cjs
       - name: Enforce frozen overhead
         run: python3 panel-mosaic-lab/verify-final-overhead.py
       - name: Enforce immutable owner18 guarded switches
