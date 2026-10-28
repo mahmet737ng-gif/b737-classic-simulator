@@ -2,14 +2,18 @@
    Reuses the existing atlas; all detents and spring-return inputs stay intact. */
 .asp-bare-mounted .asp-physical-switch .asp-physical-base,
 .asp-bare-mounted .asp-physical-switch .asp-physical-lever{display:none}
-.asp-bare-mounted .asp-physical-switch::before{content:'';position:absolute;display:block;
+.asp-bare-mounted .asp-physical-switch::before,
+.asp-bare-mounted .asp-physical-switch::after{content:'';position:absolute;display:block;
  left:50%;top:50%;width:121.9047619%;height:121.9047619%;transform:translate(-50%,-50%);
  background-image:url('../../shared-assets/toggle-switch-small/Small_Silver_5Positions.webp');
  background-size:500% 100%;background-repeat:no-repeat;background-position:25% 0;
  pointer-events:none}
-.asp-bare-mounted .asp-physical-switch[data-detent="UP"]::before{background-position:75% 0}
-.asp-bare-mounted .asp-physical-switch[data-detent="DOWN"]::before{background-position:100% 0}
-.asp-bare-mounted .asp-physical-switch[data-detent="CENTER"]::before{background-position:25% 0}
+.asp-bare-mounted .asp-physical-switch[data-detent="UP"]::before,
+.asp-bare-mounted .asp-physical-switch[data-detent="UP"]::after{background-position:75% 0}
+.asp-bare-mounted .asp-physical-switch[data-detent="DOWN"]::before,
+.asp-bare-mounted .asp-physical-switch[data-detent="DOWN"]::after{background-position:100% 0}
+.asp-bare-mounted .asp-physical-switch[data-detent="CENTER"]::before,
+.asp-bare-mounted .asp-physical-switch[data-detent="CENTER"]::after{background-position:25% 0}
 .asp-bare-mounted .asp-vbr-selector{position:absolute;z-index:12;display:block;box-sizing:border-box;
  padding:0;margin:0;border:0;border-radius:0;background:transparent;box-shadow:none;
  transform:translate(-50%,-50%);touch-action:none;user-select:none;cursor:grab;overflow:visible;
@@ -21,3 +25,10 @@
 .asp-bare-mounted .asp-vbr-photo{position:absolute;display:block;max-width:none;max-height:none;border:0;margin:0;padding:0;pointer-events:none;user-select:none;image-rendering:auto}
 .reference-mode .asp-bare-mounted .asp-vbr-selector{display:none}
 @media(prefers-reduced-motion:reduce){.asp-bare-mounted .asp-vbr-rotor{transition:none}}
+
+/* ASP-BASE-MATTE-0001: tone only the bezel ring. The center cap,
+   silver grip and stem are excluded from the overlay in every used pose.
+   The original shared Small Silver atlas stays byte-identical. */
+.asp-bare-mounted .asp-physical-switch::after{filter:contrast(.72) brightness(.70);-webkit-mask-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%201024%201024%22%3E%3Cdefs%3E%3Cmask%20id%3D%22m%22%20maskUnits%3D%22userSpaceOnUse%22%3E%3Ccircle%20cx%3D%22512%22%20cy%3D%22512%22%20r%3D%22201%22%20fill%3D%22white%22%2F%3E%3Ccircle%20cx%3D%22512%22%20cy%3D%22512%22%20r%3D%22132%22%20fill%3D%22black%22%2F%3E%3C%2Fmask%3E%3C%2Fdefs%3E%3Crect%20width%3D%221024%22%20height%3D%221024%22%20fill%3D%22white%22%20mask%3D%22url%28%23m%29%22%2F%3E%3C%2Fsvg%3E");mask-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%201024%201024%22%3E%3Cdefs%3E%3Cmask%20id%3D%22m%22%20maskUnits%3D%22userSpaceOnUse%22%3E%3Ccircle%20cx%3D%22512%22%20cy%3D%22512%22%20r%3D%22201%22%20fill%3D%22white%22%2F%3E%3Ccircle%20cx%3D%22512%22%20cy%3D%22512%22%20r%3D%22132%22%20fill%3D%22black%22%2F%3E%3C%2Fmask%3E%3C%2Fdefs%3E%3Crect%20width%3D%221024%22%20height%3D%221024%22%20fill%3D%22white%22%20mask%3D%22url%28%23m%29%22%2F%3E%3C%2Fsvg%3E");-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
+.asp-bare-mounted .asp-physical-switch[data-detent="UP"]::after{-webkit-mask-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%201024%201024%22%3E%3Cdefs%3E%3Cmask%20id%3D%22m%22%20maskUnits%3D%22userSpaceOnUse%22%3E%3Ccircle%20cx%3D%22512%22%20cy%3D%22512%22%20r%3D%22201%22%20fill%3D%22white%22%2F%3E%3Ccircle%20cx%3D%22512%22%20cy%3D%22512%22%20r%3D%22100%22%20fill%3D%22black%22%2F%3E%3Crect%20x%3D%22416%22%20y%3D%220%22%20width%3D%22192%22%20height%3D%22512%22%20fill%3D%22black%22%2F%3E%3C%2Fmask%3E%3C%2Fdefs%3E%3Crect%20width%3D%221024%22%20height%3D%221024%22%20fill%3D%22white%22%20mask%3D%22url%28%23m%29%22%2F%3E%3C%2Fsvg%3E");mask-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%201024%201024%22%3E%3Cdefs%3E%3Cmask%20id%3D%22m%22%20maskUnits%3D%22userSpaceOnUse%22%3E%3Ccircle%20cx%3D%22512%22%20cy%3D%22512%22%20r%3D%22201%22%20fill%3D%22white%22%2F%3E%3Ccircle%20cx%3D%22512%22%20cy%3D%22512%22%20r%3D%22100%22%20fill%3D%22black%22%2F%3E%3Crect%20x%3D%22416%22%20y%3D%220%22%20width%3D%22192%22%20height%3D%22512%22%20fill%3D%22black%22%2F%3E%3C%2Fmask%3E%3C%2Fdefs%3E%3Crect%20width%3D%221024%22%20height%3D%221024%22%20fill%3D%22white%22%20mask%3D%22url%28%23m%29%22%2F%3E%3C%2Fsvg%3E");-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
+.asp-bare-mounted .asp-physical-switch[data-detent="DOWN"]::after{-webkit-mask-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%201024%201024%22%3E%3Cdefs%3E%3Cmask%20id%3D%22m%22%20maskUnits%3D%22userSpaceOnUse%22%3E%3Ccircle%20cx%3D%22512%22%20cy%3D%22512%22%20r%3D%22201%22%20fill%3D%22white%22%2F%3E%3Ccircle%20cx%3D%22512%22%20cy%3D%22512%22%20r%3D%22100%22%20fill%3D%22black%22%2F%3E%3Crect%20x%3D%22416%22%20y%3D%22512%22%20width%3D%22192%22%20height%3D%22512%22%20fill%3D%22black%22%2F%3E%3C%2Fmask%3E%3C%2Fdefs%3E%3Crect%20width%3D%221024%22%20height%3D%221024%22%20fill%3D%22white%22%20mask%3D%22url%28%23m%29%22%2F%3E%3C%2Fsvg%3E");mask-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%201024%201024%22%3E%3Cdefs%3E%3Cmask%20id%3D%22m%22%20maskUnits%3D%22userSpaceOnUse%22%3E%3Ccircle%20cx%3D%22512%22%20cy%3D%22512%22%20r%3D%22201%22%20fill%3D%22white%22%2F%3E%3Ccircle%20cx%3D%22512%22%20cy%3D%22512%22%20r%3D%22100%22%20fill%3D%22black%22%2F%3E%3Crect%20x%3D%22416%22%20y%3D%22512%22%20width%3D%22192%22%20height%3D%22512%22%20fill%3D%22black%22%2F%3E%3C%2Fmask%3E%3C%2Fdefs%3E%3Crect%20width%3D%221024%22%20height%3D%221024%22%20fill%3D%22white%22%20mask%3D%22url%28%23m%29%22%2F%3E%3C%2Fsvg%3E");-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
