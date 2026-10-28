@@ -162,7 +162,7 @@
    return indication[id]!==want;
   });
   const autoslatInhibit=!s.onGround&&s.autoslatsRequested&&[1,2,5].includes(s.lever);
-  const allExpected=s.lever!==0&&mismatched.length===0&&improper.length===0;
+  const allExpected=(s.followActualTE?s.leStage!=='RETRACTED':s.lever!==0)&&mismatched.length===0&&improper.length===0;
   // The observed sensor position and the indicated lamp are intentionally different
   // when a LE device disagrees with the commanded flap configuration.
   // A jammed slat remaining at EXT after FLAPS 5 -> 15 therefore loses EXT green

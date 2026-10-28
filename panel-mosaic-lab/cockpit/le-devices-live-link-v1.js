@@ -23,7 +23,7 @@
   }
   if(!center||![true,false,null].includes(center.power))return false;
   const leadingEdge=center.transit?'DISAGREE':
-   center.extended?(p.leStage==='EXT'?'INTERMEDIATE':'FULL'):
+   center.extended?(p.leStage==='EXT'||(p.leStage==null&&[1,2,5].includes(p.lever))?'INTERMEDIATE':'FULL'):
    p.leStage==='RETRACTED'&&!p.mismatch?.length?'RETRACTED':'TRANSIT';
   window.B737CockpitLights.setInputs({
    trailingFlaps:lever,
