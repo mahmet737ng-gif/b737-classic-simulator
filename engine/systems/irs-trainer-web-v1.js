@@ -276,7 +276,7 @@ function tick(state,frame){
 }
 function status(s,side){
  const u=get(s,side);
- const remaining=(u.phase==='ALIGNING'&&u.powered&&u.initialized)
+ const remaining=(u.phase==='ALIGNING'&&u.powered)
   ?Math.max(0,u.alignmentDurationSec-u.alignmentElapsedSec):null;
  return {
   id:side,mode:u.mode,phase:u.phase,powered:u.powered,
