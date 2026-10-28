@@ -31,7 +31,7 @@ function variant(row){
    plate?.querySelector('.atlas-image-window img');
   // On the DCPCS replacement, never substitute the CPCS photo dimensions.
   if(!photo?.naturalWidth||!photo?.naturalHeight)return null;
-  const face=cfg.lampFace?.[n.dataset.lamp]||g.face,fit=cfg.lampFit;
+  const face=g.face,fit=cfg.lampFit;
   const width=Math.max(1,n.offsetWidth),height=Math.max(1,n.offsetHeight);
   const dx=photoPad*width/(face[2]*photo.naturalWidth*fit.x);
   const dy=photoPad*height/(face[3]*photo.naturalHeight*fit.y);
@@ -167,6 +167,11 @@ function schedule(){
   ready=true;
   const watch=new MutationObserver(schedule);
   watch.observe(document.getElementById('atlasAbsolute'),{childList:true,subtree:true});
+  // DCPCS owner photo is loaded asynchronously. Native width/height become
+  // valid on the image load event (not on a childList mutation).
+  document.addEventListener('load',event=>{
+   if(event.target?.matches?.('.atlas-image-window img,.dcpcs-owner-oh22-background img'))schedule();
+  },true);
   win.addEventListener('b737:lamp-brightness-change',()=>{
    for(const node of document.querySelectorAll('.b737-special-lamp-fit-v1')){
     const holder=node.parentElement,row=profiles.get(holder);
