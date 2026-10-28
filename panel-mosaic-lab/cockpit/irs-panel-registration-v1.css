@@ -1,0 +1,15 @@
+/* Only the new independent IRS registration layer and its unfrozen controls. */
+#irsBarePanelRegistered{position:absolute;inset:0;z-index:121;pointer-events:none;direction:ltr}
+#irsBarePanelRegistered img{position:absolute;display:block;max-width:none;pointer-events:none;user-select:none;image-rendering:auto}
+#irsBarePanelRegistered .irs-preserved-sys-heading{position:absolute;pointer-events:none;background-repeat:no-repeat}
+#region-overhead.irs-panel-registered .irs-photo-key-bezel{display:none}
+#region-overhead.irs-panel-registered .irs-photo-key-press{left:18.115942029%;top:16.666666667%;width:63.768115942%;height:68.115942029%;right:auto;bottom:auto}
+#region-overhead.irs-panel-registered .irs-msu-phys-lamp{
+ font-size:0;opacity:1;text-shadow:none;color:transparent;overflow:hidden;
+ background-image:var(--irs-panel-lamp-off);background-position:center;background-size:100% 100%;background-repeat:no-repeat;
+}
+#region-overhead.irs-panel-registered .irs-msu-phys-lamp[data-lit="true"],
+#region-overhead.irs-panel-registered[data-irs-panel-test="true"] .irs-msu-phys-lamp{
+ color:transparent;text-shadow:none;background-image:var(--irs-panel-lamp-on);opacity:1;
+}
+.reference-mode #irsBarePanelRegistered{display:none}
