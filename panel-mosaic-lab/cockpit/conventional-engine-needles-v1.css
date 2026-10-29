@@ -1,0 +1,17 @@
+/* Only the optional Conventional photo-backed plate receives these
+   pointers. EIS keeps its own preexisting pointer and lamp layers. */
+#region-main .texture-piece[data-piece="engine"]>.conventional-engine-needle-layer-v1 {
+ position:absolute;inset:0;width:100%;height:100%;max-width:none;
+ overflow:hidden;pointer-events:none;display:none;z-index:43;
+}
+html[data-engine-indication="CONVENTIONAL"]
+#region-main .texture-piece[data-piece="engine"]>.conventional-engine-needle-layer-v1{
+ display:block;
+}
+.conventional-engine-needle-layer-v1 [data-needle-pivot]{
+ transition:transform .18s ease-out;
+ transform-box:view-box;
+}
+@media(prefers-reduced-motion:reduce){
+ .conventional-engine-needle-layer-v1 [data-needle-pivot]{transition:none}
+}
