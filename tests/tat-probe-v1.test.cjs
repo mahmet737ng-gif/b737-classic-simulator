@@ -114,3 +114,37 @@ test('Ground temperature probe A-ON bypass not allowed in flight: real heater/cu
  const heater=evalWith({onGround:false,switches:{'pitot-a':'ON'},buses:{main2:true,dc1:true}});
  assert.equal(heater.heaterPower,true);assert.equal(heater.amberOn,false);
 });
+
+test('TEMP PROBE STUCK OFF keeps amber ON despite ground A-ON indication bypass',()=>{
+ const fault=Core.injectFault(Core.initialState(),'PROBE_STUCK_OFF',true);
+ for(const a of ['ON','OFF']){
+  const x=evalWith({switches:{'pitot-a':a},testPressed:true},fault);
+  assert.equal(x.heaterPower,false);
+  assert.equal(x.amberOn,true,'STUCK OFF must illuminate amber in powered test circuit');
+  assert.equal(x.probeStuckOff,true);
+ }
+ const inhibited=evalWith({switches:{'pitot-a':'ON'}},fault);
+ assert.equal(inhibited.amberOn,true,'STUCK OFF overrides normal ground A-ON lamp bypass');
+});
+test('TEMP PROBE STUCK ON keeps heater supplied and amber OFF without TAT TEST on ground',()=>{
+ const fault=Core.injectFault(Core.initialState(),'PROBE_STUCK_ON',true);
+ const x=evalWith({switches:{'pitot-a':'OFF'},testPressed:false},fault);
+ assert.equal(x.heaterRequested,false,'normal test request is absent');
+ assert.equal(x.heaterPower,true,'stuck-ON heater remains energized on available supply');
+ assert.equal(x.amberOn,false,'stuck ON -> amber extinguished');
+ assert.equal(x.probeStuckOn,true);
+});
+test('Probe stuck ON cannot override a pulled C5 breaker or missing MAIN BUS 2',()=>{
+ const fault=Core.injectFault(Core.initialState(),'PROBE_STUCK_ON',true);
+ const pulled=evalWith({breakers:{[Core.CB_ID]:false}},fault);
+ assert.equal(pulled.heaterPower,false);
+ assert.equal(pulled.amberOn,true,'failed power feed means no heater current');
+ const noBus=evalWith({buses:{main2:false,dc1:true}},fault);
+ assert.equal(noBus.heaterPower,false);assert.equal(noBus.amberOn,true);
+});
+test('Separate stuck-INDICATOR failures retain their own physical lamp meanings',()=>{
+ const on=Core.injectFault(Core.initialState(),'INDICATOR_STUCK_ON',true);
+ const off=Core.injectFault(Core.initialState(),'INDICATOR_STUCK_OFF',true);
+ assert.equal(evalWith({testPressed:true},on).amberOn,true,'lamp stuck ON must illuminate');
+ assert.equal(evalWith({testPressed:false},off).amberOn,false,'lamp stuck OFF must remain dark');
+});
