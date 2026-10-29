@@ -7,7 +7,7 @@ const base=process.env.LIVE_SITE || 'https://mahmet737ng-gif.github.io/b737-clas
   for(const target of ['panel-mosaic-lab/cockpit/?v=LE-PHOTOLENS-0002','panel-mosaic-lab/le-devices/?v=LE-PHOTOLENS-0002']){
    const page=await browser.newPage({viewport:{width:1440,height:900},deviceScaleFactor:1});
    const errors=[],failed=[],http=[];
-   page.on('pageerror',e=>errors.push(String(e)));
+   page.on('pageerror',e=>errors.push(e.stack||String(e)));
    page.on('requestfailed',r=>failed.push({url:r.url(),error:r.failure()?.errorText}));
    page.on('response',r=>{if(r.status()>=400)http.push({status:r.status(),url:r.url()});});
    let response=null,loaded=false;
