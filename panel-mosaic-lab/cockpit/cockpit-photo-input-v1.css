@@ -1,0 +1,18 @@
+/* PHOTO-INPUT-0001 — noninteractive cockpit photos, only.
+   Scope: Unified parent stage. Does not modify controls, sprites or geometry. */
+#viewport, #scene, #sizer, #scene .region-label, #scene .texture-piece,
+#scene .texture-piece img, #scene .reference-image {
+  -webkit-user-select:none;
+  user-select:none;
+  -webkit-touch-callout:none;
+  -webkit-tap-highlight-color:transparent;
+}
+#scene .texture-piece {
+  /* Photo tiles cannot consume clicks, taps, long presses or hover. */
+  pointer-events:none !important;
+  cursor:inherit !important;
+}
+#scene .texture-piece.selected {
+  outline:none !important;
+}
+/* Never disable interactive instrument, annunciator, CDU or physical-switch overlays. */
