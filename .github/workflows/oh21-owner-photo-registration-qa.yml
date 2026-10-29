@@ -46,6 +46,7 @@ jobs:
             sleep 1
           done
           node tools/test-owner-oh21-photo-browser.cjs
+          node tools/test-owner-oh21-unified-embed.cjs
       - name: Preserve visual screenshots and geometry reports
         if: always()
         uses: actions/upload-artifact@v4
