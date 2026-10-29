@@ -12,8 +12,8 @@
  const SIDES=Object.freeze(['CONT','PASS']);
  const SELECTORS=Object.freeze(['MANUAL COOL','AUTO COOL','AUTO NORM','AUTO WARM','MANUAL WARM']);
  const GAUGES=Object.freeze({
-  CONT:Object.freeze({x:229,y:425,selector:'control-cabin-temp',pack:'pack-l'}),
-  PASS:Object.freeze({x:1027,y:425,selector:'pass-cabin-temp',pack:'pack-r'})
+  CONT:Object.freeze({x:224,y:425,selector:'control-cabin-temp',pack:'pack-l'}),
+  PASS:Object.freeze({x:1021,y:425,selector:'pass-cabin-temp',pack:'pack-r'})
  });
  const SOURCE=Object.freeze({width:1254,height:1254,piece:'OH20'});
  const CONFIG=Object.freeze({fullTravelSeconds:90,deadbandC:0.5,ductLimitC:60,overheatC:88,
