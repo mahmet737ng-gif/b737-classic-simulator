@@ -6,7 +6,7 @@
  const model=window.B737AirMixValve300500V1;
  if(!model){console.error('AIR-MIX-300500 model missing');return;}
  const SVG='http://www.w3.org/2000/svg',PROFILE='b737classic.aircraft-profile.v1',CB='b737classic.cb.v1';
- const sprite=new URL('./assets/air-mix-valve-300500-needle-v1.svg?v=AIR-MIX-300500-001',document.baseURI).href;
+ const sprite=new URL('./assets/air-mix-valve-300500-needle-v1.svg?v=AIR-MIX-300500-002',document.baseURI).href;
  const state={CONT:{cabinC:null,ductC:null,overheat:false,stuck:false,transmitterFailed:false,targetC:null},
   PASS:{cabinC:null,ductC:null,overheat:false,stuck:false,transmitterFailed:false,targetC:null}};
  let engine=model.create(),frame=null,layer=null,assemblies={},last=performance.now(),trainingPower=null;
@@ -28,7 +28,8 @@
    for(const side of model.SIDES){
     const p=model.GAUGES[side],g=createSvg(doc,layer,'g',{'data-air-mix-side':side,transform:'translate('+p.x+' '+p.y+')'});
     const rotary=createSvg(doc,g,'g',{'data-air-mix-rotor':side});
-    Object.assign(rotary.style,{transformOrigin:'0px 0px',transition:'transform 160ms linear'});
+    // Native SVG rotation around the actual gauge shaft; CSS transform-origin on <g> was not reliable.
+    rotary.setAttribute('transform','rotate(0 0 0)');
     createSvg(doc,rotary,'image',{href:sprite,x:-128,y:-128,width:256,height:256});
     assemblies[side]=g;
    }
@@ -54,13 +55,16 @@
   const w=child(),rot=w?.B737RotaryGuards?.getState?.()?.rotaries||{},tog=w?.B737OverheadToggles?.getState?.()||{},b=bus();
   const ac=b?Boolean(b.transfer1===true||b.transfer2===true):null;
   const power=trainingPower===null?ac:trainingPower;
+  // Bench override simulates BOTH 115V actuator and 28V indicator supply;
+  // it bypasses PACK OFF only for training, never in the normal cockpit mode.
   const result={};
   for(const side of model.SIDES){
    const meta=model.GAUGES[side],selector=rot[meta.selector];
    result[side]={...state[side],
     selector:model.SELECTORS.includes(selector)?selector:'AUTO NORM',
     packMode:['OFF','AUTO','HIGH'].includes(tog[meta.pack])?tog[meta.pack]:null,
-    actuatorPower:power,indicatorPower:bool(b?.dc2),indicatorCB:cbClosed()};
+    actuatorPower:power,indicatorPower:trainingPower===true?true:bool(b?.dc2),
+    indicatorCB:cbClosed(),benchBypassPack:trainingPower===true};
   }
   return result;
  }
@@ -69,14 +73,19 @@
   for(const side of model.SIDES){
    const g=assemblies[side],rotor=g?.querySelector('[data-air-mix-rotor]');if(!g||!rotor)continue;
    const value=model.indication(engine,x,side);
-   g.style.visibility=value.valid?'visible':'hidden';
-   rotor.style.transform='rotate('+((value.angle??0).toFixed(3))+'deg)';
+   // A mechanical pointer must not visually disappear just because supply is lost.
+   // For unknown/unpowered indication hold the last visibly observed needle angle.
+   g.style.visibility='visible';
+   if(value.valid)rotor.setAttribute('transform','rotate('+value.angle.toFixed(3)+' 0 0)');
+   g.setAttribute('data-selector',x[side].selector);
+   g.setAttribute('data-pack-mode',x[side].packMode||'UNKNOWN');
+   g.setAttribute('data-indication-valid',String(value.valid));
    g.setAttribute('data-air-mix-position',engine.positions[side].toFixed(5));
    g.setAttribute('data-air-mix-valid',String(value.valid));
    g.setAttribute('aria-label',side+' '+Math.round(engine.positions[side]*100)+' percent hot; '+value.reason);
   }
   const readout=$('airMix300500Readout');
-  if(readout)readout.textContent=model.SIDES.map(side=>side+' '+Math.round(engine.positions[side]*100)+'% HOT · '+engine.reason[side]+' · '+model.indication(engine,x,side).reason).join(' | ');
+  if(readout)readout.textContent=model.SIDES.map(side=>side+'  '+x[side].selector+'  / PACK '+(x[side].packMode||'UNKNOWN')+' / '+Math.round(engine.positions[side]*100)+'% HOT / '+engine.command[side]+' / '+engine.reason[side]+' / '+model.indication(engine,x,side).reason).join('\n');
  }
  function tick(){
   const now=performance.now(),dt=Math.max(0,Math.min(1,(now-last)/1000));last=now;
@@ -105,20 +114,20 @@
   const anchor=$('inspector');if(!anchor||$('airMix300500Lab'))return;
   const section=document.createElement('section');section.id='airMix300500Lab';section.dir='ltr';
   const h=document.createElement('h2');h.textContent='AIR MIX VALVE · 300/500';section.append(h);
-  const note=document.createElement('p');note.className='muted';note.textContent='Live OH20 selectors and P6-4 D3 indication CB. Sensor injection is training-only; AUTO setpoints and valve travel require aircraft calibration.';section.append(note);
+  const note=document.createElement('p');note.className='muted';note.textContent='Real selector positions drive independent COLD/HOT valves. PACK OFF drives COLD in normal mode. Training AC ON is a clearly marked bench override (115V actuator + 28V indicator, temporary PACK OFF bypass). The real P6-4/D3 CB still cuts the indication. Sensor and travel calibration are training-only.';section.append(note);
   for(const side of model.SIDES){
    const label=document.createElement('label');label.textContent=side+' CABIN SENSOR °C';label.style.display='block';
    const inp=document.createElement('input');Object.assign(inp,{type:'number',min:'-30',max:'70',step:'0.5',placeholder:'Unknown'});
    inp.style.width='85px';inp.addEventListener('change',()=>setInputs(side,{cabinC:inp.value===''?null:Number(inp.value)}));
    label.append(inp);section.append(label);
   }
-  const label=document.createElement('label');label.textContent='Instructor power override (115V actuator)';label.style.display='block';
+  const label=document.createElement('label');label.textContent='Power / Bench mode';label.style.display='block';
   const select=document.createElement('select');
-  for(const [v,name] of [['AUTO','Live electrical bus'],['ON','Training AC ON'],['OFF','Training AC OFF']]){
+  for(const [v,name] of [['AUTO','Aircraft power + real PACK logic'],['ON','Bench TEST: 115V + 28V, permit selector with PACK OFF'],['OFF','Instructor actuator power OFF']]){
    const opt=document.createElement('option');opt.value=v;opt.textContent=name;select.append(opt);
   }
   select.addEventListener('change',()=>{trainingPower=select.value==='AUTO'?null:select.value==='ON';tick();});label.append(select);section.append(label);
-  const read=document.createElement('p');read.id='airMix300500Readout';read.style.fontSize='11px';read.style.overflowWrap='anywhere';section.append(read);
+  const read=document.createElement('p');read.id='airMix300500Readout';read.style.fontSize='12px';read.style.lineHeight='1.7';read.style.whiteSpace='pre-line';read.style.overflowWrap='anywhere';section.append(read);
   const resetButton=document.createElement('button');resetButton.type='button';resetButton.textContent='Reset air-mix training state';
   resetButton.onclick=()=>{reset();select.value='AUTO';for(const input of section.querySelectorAll('input'))input.value='';};
   section.append(resetButton);anchor.append(section);
@@ -127,6 +136,12 @@
   setTrainingPower:v=>{if(v!==null&&typeof v!=='boolean')throw Error('Power must be boolean or null');trainingPower=v;tick();},
   resetOverheat:side=>model.resetOverheat(engine,side,inputs()),sync:()=>{connect();tick();}});
  window.addEventListener('b737:cockpit-mounted',connect);
+ window.addEventListener('message',event=>{
+  if(event.origin!==location.origin||event.source!==frame?.contentWindow)return;
+  const d=event.data;
+  if(d?.type==='b737:cockpit-overhead'&&d.kind==='control-event'&&
+     ['control-cabin-temp','pass-cabin-temp','pack-l','pack-r'].includes(d.event?.id))tick();
+ });
  window.addEventListener('b737:aircraft-profile-change',()=>{connect();tick();});
  window.addEventListener('storage',e=>{if(e.key===CB||e.key===PROFILE)tick();});
  window.addEventListener('b737:aircon300500-inputs',e=>{for(const [side,data] of Object.entries(e.detail||{}))if(model.SIDES.includes(side))setInputs(side,data);});
