@@ -1,0 +1,1458 @@
+{
+  "schema": "b737classic.lht-ata-unified-region-control-link.v1",
+  "source_id": "LHT-LAN-B737CL-MULTI-ATA-2813-20261029",
+  "source_sha256": "2d7ffa8b5aa9a13cf5e71ca4addeeee085aad511919b0b350a5ed5edc0afee6b",
+  "source_pages": 2813,
+  "section_count": 23,
+  "private_source_base": "/Technical Database/Sources/LHT-LAN-B737CL-MULTI-ATA-2813-20261029",
+  "reference_map": "engine/maps/technical-database-systems-panels.v1.json",
+  "reference_controls": [
+    "panel-mosaic-lab/interactive-overhead/registry.json",
+    "panel-mosaic-lab/interactive-overhead/rotary-guards.json",
+    "panel-mosaic-lab/interactive-overhead/lights.json"
+  ],
+  "policy": {
+    "public_metadata_only": true,
+    "source_pdf_not_distributed": true,
+    "read_only": true,
+    "no_control_laws_created": true,
+    "no_locked_assets_modified": true,
+    "functional_regions_not_physical_hitboxes": true,
+    "source_pages_semantics_unverified": true,
+    "notes": "Section ranges verified from consolidated PDF; subtypes and Unified runtime IDs must be matched to Lufthansa-specific printed pages and variant before sim-engine laws change."
+  },
+  "sections": [
+    {
+      "section_id": "section-01",
+      "ata": "32",
+      "title": "Landing Gear",
+      "pdf_pages": {
+        "start": 1,
+        "end": 240
+      },
+      "private_pdf_name": "section-01_ATA-32.pdf",
+      "subsystems": [
+        {
+          "id": "GEAR.GEAR_LEVER",
+          "region_ids": [
+            "MAIN-22"
+          ]
+        },
+        {
+          "id": "GEAR.GEAR_IND",
+          "region_ids": [
+            "MAIN-22"
+          ]
+        },
+        {
+          "id": "GEAR.AUTOBRAKE",
+          "region_ids": [
+            "MAIN-23"
+          ]
+        },
+        {
+          "id": "GEAR.ANTISKID",
+          "region_ids": [
+            "MAIN-23"
+          ]
+        },
+        {
+          "id": "GEAR.PARK_BRAKE",
+          "region_ids": [
+            "PEDESTAL-08"
+          ]
+        }
+      ],
+      "control_ports": [
+        {
+          "kind": "lamp",
+          "id": "gear-left-down"
+        },
+        {
+          "kind": "lamp",
+          "id": "gear-right-down"
+        },
+        {
+          "kind": "lamp",
+          "id": "gear-nose-down"
+        }
+      ],
+      "variant_scope": "SOURCE EQUIPMENT EFFECTIVITY NOT VALIDATED",
+      "mapping_status": "EXISTING_UNIFIED_IDS_MATCHED; SOURCE_LEVEL_RULES_PENDING_QA",
+      "runtime_binding": "READ_ONLY_CURRENT_STATE_WHEN_AVAILABLE"
+    },
+    {
+      "section_id": "section-02",
+      "ata": "34",
+      "title": "Navigation",
+      "pdf_pages": {
+        "start": 241,
+        "end": 732
+      },
+      "private_pdf_name": "section-02_ATA-34.pdf",
+      "subsystems": [
+        {
+          "id": "NAV.FMC",
+          "region_ids": [
+            "PEDESTAL-01",
+            "PEDESTAL-03"
+          ]
+        },
+        {
+          "id": "NAV.IRS_ISDU",
+          "region_ids": [
+            "OVERHEAD-03"
+          ]
+        },
+        {
+          "id": "NAV.IRS_MODE",
+          "region_ids": [
+            "OVERHEAD-04"
+          ]
+        },
+        {
+          "id": "NAV.VOR",
+          "region_ids": [
+            "MAIN-14",
+            "MAIN-27",
+            "PEDESTAL-17",
+            "PEDESTAL-18"
+          ]
+        },
+        {
+          "id": "NAV.NAV_SOURCE",
+          "region_ids": [
+            "MAIN-15",
+            "MAIN-28",
+            "OVERHEAD-14"
+          ]
+        }
+      ],
+      "control_ports": [
+        {
+          "kind": "toggle",
+          "id": "vhf-nav"
+        },
+        {
+          "kind": "toggle",
+          "id": "irs-transfer"
+        },
+        {
+          "kind": "toggle",
+          "id": "efi-transfer"
+        },
+        {
+          "kind": "lamp",
+          "id": "irs-l-align"
+        },
+        {
+          "kind": "lamp",
+          "id": "irs-r-align"
+        }
+      ],
+      "variant_scope": "SOURCE EQUIPMENT EFFECTIVITY NOT VALIDATED",
+      "mapping_status": "EXISTING_UNIFIED_IDS_MATCHED; SOURCE_LEVEL_RULES_PENDING_QA",
+      "runtime_binding": "READ_ONLY_CURRENT_STATE_WHEN_AVAILABLE"
+    },
+    {
+      "section_id": "section-03",
+      "ata": "31",
+      "title": "Instruments / Clocks / Recorders",
+      "pdf_pages": {
+        "start": 733,
+        "end": 814
+      },
+      "private_pdf_name": "section-03_ATA-31.pdf",
+      "subsystems": [
+        {
+          "id": "INST.CLOCK",
+          "region_ids": [
+            "MAIN-10",
+            "MAIN-30"
+          ]
+        },
+        {
+          "id": "INST.FLIGHT_REC",
+          "region_ids": [
+            "OVERHEAD-07"
+          ]
+        },
+        {
+          "id": "COM.RECORDER",
+          "region_ids": [
+            "OVERHEAD-07",
+            "OVERHEAD-33"
+          ]
+        }
+      ],
+      "control_ports": [
+        {
+          "kind": "lamp",
+          "id": "flight-recorder-off"
+        }
+      ],
+      "variant_scope": "SOURCE EQUIPMENT EFFECTIVITY NOT VALIDATED",
+      "mapping_status": "EXISTING_UNIFIED_IDS_MATCHED; SOURCE_LEVEL_RULES_PENDING_QA",
+      "runtime_binding": "READ_ONLY_CURRENT_STATE_WHEN_AVAILABLE"
+    },
+    {
+      "section_id": "section-04",
+      "ata": "38",
+      "title": "Water and Waste",
+      "pdf_pages": {
+        "start": 815,
+        "end": 868
+      },
+      "private_pdf_name": "section-04_ATA-38.pdf",
+      "subsystems": [
+        {
+          "id": "GEN.CABIN_SERVICE",
+          "region_ids": []
+        }
+      ],
+      "control_ports": [],
+      "variant_scope": "SOURCE EQUIPMENT EFFECTIVITY NOT VALIDATED",
+      "mapping_status": "EXISTING_UNIFIED_IDS_MATCHED; SOURCE_LEVEL_RULES_PENDING_QA",
+      "runtime_binding": "READ_ONLY_CURRENT_STATE_WHEN_AVAILABLE"
+    },
+    {
+      "section_id": "section-05",
+      "ata": "33",
+      "title": "Lights",
+      "pdf_pages": {
+        "start": 869,
+        "end": 937
+      },
+      "private_pdf_name": "section-05_ATA-33.pdf",
+      "subsystems": [
+        {
+          "id": "GEN.LIGHT_COCKPIT",
+          "region_ids": [
+            "MAIN-34",
+            "MAIN-35",
+            "OVERHEAD-10",
+            "OVERHEAD-23",
+            "PEDESTAL-27"
+          ]
+        },
+        {
+          "id": "GEN.LIGHT_EXTERIOR",
+          "region_ids": [
+            "OVERHEAD-40",
+            "OVERHEAD-41",
+            "OVERHEAD-44"
+          ]
+        },
+        {
+          "id": "GEN.EMER_LIGHT",
+          "region_ids": [
+            "OVERHEAD-25"
+          ]
+        },
+        {
+          "id": "GEN.PASS_SIGNS",
+          "region_ids": [
+            "OVERHEAD-25"
+          ]
+        }
+      ],
+      "control_ports": [
+        {
+          "kind": "toggle",
+          "id": "landing-out-l"
+        },
+        {
+          "kind": "toggle",
+          "id": "landing-out-r"
+        },
+        {
+          "kind": "toggle",
+          "id": "landing-in-l"
+        },
+        {
+          "kind": "toggle",
+          "id": "landing-in-r"
+        },
+        {
+          "kind": "toggle",
+          "id": "runway-turnoff-l"
+        },
+        {
+          "kind": "toggle",
+          "id": "runway-turnoff-r"
+        },
+        {
+          "kind": "toggle",
+          "id": "taxi"
+        },
+        {
+          "kind": "toggle",
+          "id": "logo"
+        },
+        {
+          "kind": "toggle",
+          "id": "strobe"
+        },
+        {
+          "kind": "toggle",
+          "id": "position-lights"
+        },
+        {
+          "kind": "toggle",
+          "id": "anti-collision"
+        },
+        {
+          "kind": "toggle",
+          "id": "wing-lights"
+        },
+        {
+          "kind": "toggle",
+          "id": "wheel-well"
+        },
+        {
+          "kind": "rotary",
+          "id": "panel-brightness"
+        },
+        {
+          "kind": "rotary",
+          "id": "circuit-brightness"
+        }
+      ],
+      "variant_scope": "SOURCE EQUIPMENT EFFECTIVITY NOT VALIDATED",
+      "mapping_status": "EXISTING_UNIFIED_IDS_MATCHED; SOURCE_LEVEL_RULES_PENDING_QA",
+      "runtime_binding": "READ_ONLY_CURRENT_STATE_WHEN_AVAILABLE"
+    },
+    {
+      "section_id": "section-06",
+      "ata": "35",
+      "title": "Oxygen",
+      "pdf_pages": {
+        "start": 938,
+        "end": 975
+      },
+      "private_pdf_name": "section-06_ATA-35.pdf",
+      "subsystems": [
+        {
+          "id": "GEN.OXY_CREW",
+          "region_ids": [
+            "OVERHEAD-06"
+          ]
+        },
+        {
+          "id": "GEN.OXY_PASS",
+          "region_ids": [
+            "OVERHEAD-06"
+          ]
+        }
+      ],
+      "control_ports": [
+        {
+          "kind": "lamp",
+          "id": "pass-oxygen"
+        }
+      ],
+      "variant_scope": "SOURCE EQUIPMENT EFFECTIVITY NOT VALIDATED",
+      "mapping_status": "EXISTING_UNIFIED_IDS_MATCHED; SOURCE_LEVEL_RULES_PENDING_QA",
+      "runtime_binding": "READ_ONLY_CURRENT_STATE_WHEN_AVAILABLE"
+    },
+    {
+      "section_id": "section-07",
+      "ata": "36",
+      "title": "Pneumatics",
+      "pdf_pages": {
+        "start": 976,
+        "end": 1010
+      },
+      "private_pdf_name": "section-07_ATA-36.pdf",
+      "subsystems": [
+        {
+          "id": "AIR.BLEED_ENG",
+          "region_ids": [
+            "OVERHEAD-38"
+          ]
+        },
+        {
+          "id": "AIR.BLEED_APU",
+          "region_ids": [
+            "OVERHEAD-38"
+          ]
+        },
+        {
+          "id": "AIR.BLEED_ISOLATION",
+          "region_ids": [
+            "OVERHEAD-38"
+          ]
+        },
+        {
+          "id": "AIR.BLEED_PRESSURE",
+          "region_ids": [
+            "OVERHEAD-38"
+          ]
+        }
+      ],
+      "control_ports": [
+        {
+          "kind": "toggle",
+          "id": "bleed-eng-1"
+        },
+        {
+          "kind": "toggle",
+          "id": "bleed-eng-2"
+        },
+        {
+          "kind": "toggle",
+          "id": "bleed-apu"
+        },
+        {
+          "kind": "toggle",
+          "id": "isolation-valve"
+        },
+        {
+          "kind": "lamp",
+          "id": "dual-bleed"
+        },
+        {
+          "kind": "lamp",
+          "id": "bleed-trip-l"
+        },
+        {
+          "kind": "lamp",
+          "id": "bleed-trip-r"
+        }
+      ],
+      "variant_scope": "SOURCE EQUIPMENT EFFECTIVITY NOT VALIDATED",
+      "mapping_status": "EXISTING_UNIFIED_IDS_MATCHED; SOURCE_LEVEL_RULES_PENDING_QA",
+      "runtime_binding": "READ_ONLY_CURRENT_STATE_WHEN_AVAILABLE"
+    },
+    {
+      "section_id": "section-08",
+      "ata": "30",
+      "title": "Wing Thermal Anti-Ice, inserted section",
+      "pdf_pages": {
+        "start": 1011,
+        "end": 1027
+      },
+      "private_pdf_name": "section-08_ATA-30.pdf",
+      "subsystems": [
+        {
+          "id": "ICE.WING_AICE",
+          "region_ids": [
+            "OVERHEAD-30"
+          ]
+        }
+      ],
+      "control_ports": [
+        {
+          "kind": "toggle",
+          "id": "wing-anti-ice"
+        },
+        {
+          "kind": "lamp",
+          "id": "wing-valve-l"
+        },
+        {
+          "kind": "lamp",
+          "id": "wing-valve-r"
+        }
+      ],
+      "variant_scope": "SOURCE EQUIPMENT EFFECTIVITY NOT VALIDATED",
+      "mapping_status": "EXISTING_UNIFIED_IDS_MATCHED; SOURCE_LEVEL_RULES_PENDING_QA",
+      "runtime_binding": "READ_ONLY_CURRENT_STATE_WHEN_AVAILABLE"
+    },
+    {
+      "section_id": "section-09",
+      "ata": "49",
+      "title": "Airborne Auxiliary Power - version 2005",
+      "pdf_pages": {
+        "start": 1028,
+        "end": 1116
+      },
+      "private_pdf_name": "section-09_ATA-49.pdf",
+      "subsystems": [
+        {
+          "id": "ENG.APU_START",
+          "region_ids": [
+            "OVERHEAD-42"
+          ]
+        },
+        {
+          "id": "ENG.APU_IND",
+          "region_ids": [
+            "OVERHEAD-22"
+          ]
+        },
+        {
+          "id": "ELEC.APU_GEN",
+          "region_ids": [
+            "OVERHEAD-21"
+          ]
+        },
+        {
+          "id": "AIR.BLEED_APU",
+          "region_ids": [
+            "OVERHEAD-38"
+          ]
+        }
+      ],
+      "control_ports": [
+        {
+          "kind": "toggle",
+          "id": "apu-start"
+        },
+        {
+          "kind": "toggle",
+          "id": "apu-gen-1"
+        },
+        {
+          "kind": "toggle",
+          "id": "apu-gen-2"
+        },
+        {
+          "kind": "toggle",
+          "id": "bleed-apu"
+        },
+        {
+          "kind": "lamp",
+          "id": "apu-low-pressure"
+        },
+        {
+          "kind": "lamp",
+          "id": "apu-high-oil-temp"
+        },
+        {
+          "kind": "lamp",
+          "id": "apu-overspeed"
+        },
+        {
+          "kind": "lamp",
+          "id": "apu-gen-off-bus"
+        }
+      ],
+      "variant_scope": "SOURCE EQUIPMENT EFFECTIVITY NOT VALIDATED",
+      "mapping_status": "EXISTING_UNIFIED_IDS_MATCHED; SOURCE_LEVEL_RULES_PENDING_QA",
+      "runtime_binding": "READ_ONLY_CURRENT_STATE_WHEN_AVAILABLE"
+    },
+    {
+      "section_id": "section-10",
+      "ata": "DOC",
+      "title": "Maintenance Documentation / Manuals",
+      "pdf_pages": {
+        "start": 1117,
+        "end": 1187
+      },
+      "private_pdf_name": "section-10_ATA-DOC.pdf",
+      "subsystems": [],
+      "control_ports": [],
+      "variant_scope": "SOURCE EQUIPMENT EFFECTIVITY NOT VALIDATED",
+      "mapping_status": "EXISTING_UNIFIED_IDS_MATCHED; SOURCE_LEVEL_RULES_PENDING_QA",
+      "runtime_binding": "READ_ONLY_CURRENT_STATE_WHEN_AVAILABLE"
+    },
+    {
+      "section_id": "section-11",
+      "ata": "49",
+      "title": "Airborne Auxiliary Power - APS 2000",
+      "pdf_pages": {
+        "start": 1188,
+        "end": 1291
+      },
+      "private_pdf_name": "section-11_ATA-49.pdf",
+      "subsystems": [
+        {
+          "id": "ENG.APU_START",
+          "region_ids": [
+            "OVERHEAD-42"
+          ]
+        },
+        {
+          "id": "ENG.APU_IND",
+          "region_ids": [
+            "OVERHEAD-22"
+          ]
+        },
+        {
+          "id": "ELEC.APU_GEN",
+          "region_ids": [
+            "OVERHEAD-21"
+          ]
+        },
+        {
+          "id": "AIR.BLEED_APU",
+          "region_ids": [
+            "OVERHEAD-38"
+          ]
+        }
+      ],
+      "control_ports": [
+        {
+          "kind": "toggle",
+          "id": "apu-start"
+        },
+        {
+          "kind": "toggle",
+          "id": "apu-gen-1"
+        },
+        {
+          "kind": "toggle",
+          "id": "apu-gen-2"
+        },
+        {
+          "kind": "toggle",
+          "id": "bleed-apu"
+        },
+        {
+          "kind": "lamp",
+          "id": "apu-low-pressure"
+        },
+        {
+          "kind": "lamp",
+          "id": "apu-high-oil-temp"
+        },
+        {
+          "kind": "lamp",
+          "id": "apu-overspeed"
+        }
+      ],
+      "variant_scope": "SOURCE EQUIPMENT EFFECTIVITY NOT VALIDATED",
+      "mapping_status": "EXISTING_UNIFIED_IDS_MATCHED; SOURCE_LEVEL_RULES_PENDING_QA",
+      "runtime_binding": "READ_ONLY_CURRENT_STATE_WHEN_AVAILABLE"
+    },
+    {
+      "section_id": "section-12",
+      "ata": "21",
+      "title": "Air Conditioning",
+      "pdf_pages": {
+        "start": 1292,
+        "end": 1422
+      },
+      "private_pdf_name": "section-12_ATA-21.pdf",
+      "subsystems": [
+        {
+          "id": "AIR.PACK_L",
+          "region_ids": [
+            "OVERHEAD-36"
+          ]
+        },
+        {
+          "id": "AIR.PACK_R",
+          "region_ids": [
+            "OVERHEAD-36"
+          ]
+        },
+        {
+          "id": "AIR.AIR_MIX",
+          "region_ids": [
+            "OVERHEAD-35"
+          ]
+        },
+        {
+          "id": "AIR.TRIM_AIR",
+          "region_ids": [
+            "OVERHEAD-35"
+          ]
+        },
+        {
+          "id": "AIR.RECIRC",
+          "region_ids": [
+            "OVERHEAD-37"
+          ]
+        },
+        {
+          "id": "AIR.PRESS_AUTO",
+          "region_ids": [
+            "OVERHEAD-39"
+          ]
+        },
+        {
+          "id": "AIR.PRESS_MAN",
+          "region_ids": [
+            "OVERHEAD-39"
+          ]
+        },
+        {
+          "id": "AIR.PRESS_SENS",
+          "region_ids": [
+            "OVERHEAD-34",
+            "OVERHEAD-39"
+          ]
+        }
+      ],
+      "control_ports": [
+        {
+          "kind": "toggle",
+          "id": "pack-l"
+        },
+        {
+          "kind": "toggle",
+          "id": "pack-r"
+        },
+        {
+          "kind": "toggle",
+          "id": "recirc-fan"
+        },
+        {
+          "kind": "toggle",
+          "id": "outflow-manual"
+        },
+        {
+          "kind": "rotary",
+          "id": "temperature-source"
+        },
+        {
+          "kind": "rotary",
+          "id": "control-cabin-temp"
+        },
+        {
+          "kind": "rotary",
+          "id": "pass-cabin-temp"
+        },
+        {
+          "kind": "rotary",
+          "id": "flight-alt"
+        },
+        {
+          "kind": "rotary",
+          "id": "cabin-alt"
+        },
+        {
+          "kind": "rotary",
+          "id": "landing-alt"
+        },
+        {
+          "kind": "rotary",
+          "id": "cabin-rate"
+        },
+        {
+          "kind": "rotary",
+          "id": "pressurization-mode"
+        },
+        {
+          "kind": "lamp",
+          "id": "pack-trip-l"
+        },
+        {
+          "kind": "lamp",
+          "id": "pack-trip-r"
+        },
+        {
+          "kind": "lamp",
+          "id": "duct-overheat-l"
+        },
+        {
+          "kind": "lamp",
+          "id": "duct-overheat-r"
+        },
+        {
+          "kind": "lamp",
+          "id": "press-auto-fail"
+        }
+      ],
+      "variant_scope": "SOURCE EQUIPMENT EFFECTIVITY NOT VALIDATED",
+      "mapping_status": "EXISTING_UNIFIED_IDS_MATCHED; SOURCE_LEVEL_RULES_PENDING_QA",
+      "runtime_binding": "READ_ONLY_CURRENT_STATE_WHEN_AVAILABLE"
+    },
+    {
+      "section_id": "section-13",
+      "ata": "22",
+      "title": "Autoflight",
+      "pdf_pages": {
+        "start": 1423,
+        "end": 1682
+      },
+      "private_pdf_name": "section-13_ATA-22.pdf",
+      "subsystems": [
+        {
+          "id": "AFDS.AT_ARM",
+          "region_ids": [
+            "MAIN-04"
+          ]
+        },
+        {
+          "id": "AFDS.MCP_SPEED",
+          "region_ids": [
+            "MAIN-04"
+          ]
+        },
+        {
+          "id": "AFDS.MCP_HEADING",
+          "region_ids": [
+            "MAIN-05"
+          ]
+        },
+        {
+          "id": "AFDS.MCP_ALT",
+          "region_ids": [
+            "MAIN-07"
+          ]
+        },
+        {
+          "id": "AFDS.MCP_VS",
+          "region_ids": [
+            "MAIN-07"
+          ]
+        },
+        {
+          "id": "AFDS.FMA",
+          "region_ids": [
+            "MAIN-12",
+            "MAIN-25",
+            "MAIN-32"
+          ]
+        }
+      ],
+      "control_ports": [],
+      "variant_scope": "SOURCE EQUIPMENT EFFECTIVITY NOT VALIDATED",
+      "mapping_status": "EXISTING_UNIFIED_IDS_MATCHED; SOURCE_LEVEL_RULES_PENDING_QA",
+      "runtime_binding": "READ_ONLY_CURRENT_STATE_WHEN_AVAILABLE"
+    },
+    {
+      "section_id": "section-14",
+      "ata": "23",
+      "title": "Communications",
+      "pdf_pages": {
+        "start": 1683,
+        "end": 1794
+      },
+      "private_pdf_name": "section-14_ATA-23.pdf",
+      "subsystems": [
+        {
+          "id": "COM.AUDIO",
+          "region_ids": [
+            "OVERHEAD-05",
+            "PEDESTAL-15",
+            "PEDESTAL-16",
+            "PEDESTAL-24",
+            "PEDESTAL-25"
+          ]
+        },
+        {
+          "id": "COM.INTERPHONE",
+          "region_ids": [
+            "OVERHEAD-09",
+            "PEDESTAL-24",
+            "PEDESTAL-25"
+          ]
+        },
+        {
+          "id": "COM.VHF",
+          "region_ids": [
+            "PEDESTAL-15",
+            "PEDESTAL-16"
+          ]
+        },
+        {
+          "id": "COM.PA",
+          "region_ids": [
+            "OVERHEAD-26",
+            "PEDESTAL-24",
+            "PEDESTAL-25"
+          ]
+        },
+        {
+          "id": "COM.CABIN_CALL",
+          "region_ids": [
+            "OVERHEAD-05",
+            "OVERHEAD-26"
+          ]
+        }
+      ],
+      "control_ports": [
+        {
+          "kind": "lamp",
+          "id": "ground-call"
+        }
+      ],
+      "variant_scope": "SOURCE EQUIPMENT EFFECTIVITY NOT VALIDATED",
+      "mapping_status": "EXISTING_UNIFIED_IDS_MATCHED; SOURCE_LEVEL_RULES_PENDING_QA",
+      "runtime_binding": "READ_ONLY_CURRENT_STATE_WHEN_AVAILABLE"
+    },
+    {
+      "section_id": "section-15",
+      "ata": "24",
+      "title": "Electrical Power",
+      "pdf_pages": {
+        "start": 1795,
+        "end": 1932
+      },
+      "private_pdf_name": "section-15_ATA-24.pdf",
+      "subsystems": [
+        {
+          "id": "ELEC.ENGINE_GEN",
+          "region_ids": [
+            "OVERHEAD-21"
+          ]
+        },
+        {
+          "id": "ELEC.APU_GEN",
+          "region_ids": [
+            "OVERHEAD-21"
+          ]
+        },
+        {
+          "id": "ELEC.AC_BUS",
+          "region_ids": [
+            "OVERHEAD-19",
+            "OVERHEAD-21"
+          ]
+        },
+        {
+          "id": "ELEC.DC_BUS",
+          "region_ids": [
+            "OVERHEAD-19"
+          ]
+        },
+        {
+          "id": "ELEC.BATTERY",
+          "region_ids": [
+            "OVERHEAD-19"
+          ]
+        },
+        {
+          "id": "ELEC.ELEC_METERS",
+          "region_ids": [
+            "OVERHEAD-18",
+            "OVERHEAD-22"
+          ]
+        },
+        {
+          "id": "ELEC.CIRCUIT_BREAK",
+          "region_ids": [
+            "OVERHEAD-23"
+          ]
+        }
+      ],
+      "control_ports": [
+        {
+          "kind": "toggle",
+          "id": "ground-power"
+        },
+        {
+          "kind": "toggle",
+          "id": "gen-1"
+        },
+        {
+          "kind": "toggle",
+          "id": "gen-2"
+        },
+        {
+          "kind": "toggle",
+          "id": "apu-gen-1"
+        },
+        {
+          "kind": "toggle",
+          "id": "apu-gen-2"
+        },
+        {
+          "kind": "rotary",
+          "id": "ac-meter"
+        },
+        {
+          "kind": "rotary",
+          "id": "dc-meter"
+        },
+        {
+          "kind": "lamp",
+          "id": "gen-off-bus-1"
+        },
+        {
+          "kind": "lamp",
+          "id": "gen-off-bus-2"
+        },
+        {
+          "kind": "lamp",
+          "id": "apu-gen-off-bus"
+        },
+        {
+          "kind": "lamp",
+          "id": "ground-power-available"
+        }
+      ],
+      "variant_scope": "SOURCE EQUIPMENT EFFECTIVITY NOT VALIDATED",
+      "mapping_status": "EXISTING_UNIFIED_IDS_MATCHED; SOURCE_LEVEL_RULES_PENDING_QA",
+      "runtime_binding": "READ_ONLY_CURRENT_STATE_WHEN_AVAILABLE"
+    },
+    {
+      "section_id": "section-16",
+      "ata": "25",
+      "title": "Equipment and Furnishings",
+      "pdf_pages": {
+        "start": 1933,
+        "end": 1994
+      },
+      "private_pdf_name": "section-16_ATA-25.pdf",
+      "subsystems": [
+        {
+          "id": "GEN.PASS_SIGNS",
+          "region_ids": [
+            "OVERHEAD-25"
+          ]
+        },
+        {
+          "id": "GEN.EMER_LIGHT",
+          "region_ids": [
+            "OVERHEAD-25"
+          ]
+        },
+        {
+          "id": "GEN.CABIN_SERVICE",
+          "region_ids": []
+        }
+      ],
+      "control_ports": [        {
+          "kind": "toggle",
+          "id": "no-smoking"
+        },
+        {
+          "kind": "toggle",
+          "id": "fasten-belts"
+        },
+        {
+          "kind": "toggle",
+          "id": "galley"
+        },
+        {
+          "kind": "lamp",
+          "id": "emergency-not-armed"
+        }
+      ],
+      "variant_scope": "SOURCE EQUIPMENT EFFECTIVITY NOT VALIDATED",
+      "mapping_status": "EXISTING_UNIFIED_IDS_MATCHED; SOURCE_LEVEL_RULES_PENDING_QA",
+      "runtime_binding": "READ_ONLY_CURRENT_STATE_WHEN_AVAILABLE"
+    },
+    {
+      "section_id": "section-17",
+      "ata": "26",
+      "title": "Fire Protection",
+      "pdf_pages": {
+        "start": 1995,
+        "end": 2062
+      },
+      "private_pdf_name": "section-17_ATA-26.pdf",
+      "subsystems": [
+        {
+          "id": "FIRE.ENG_DET",
+          "region_ids": [
+            "PEDESTAL-12",
+            "PEDESTAL-14"
+          ]
+        },
+        {
+          "id": "FIRE.ENG_EXT",
+          "region_ids": [
+            "PEDESTAL-12"
+          ]
+        },
+        {
+          "id": "FIRE.APU_DET",
+          "region_ids": [
+            "PEDESTAL-13"
+          ]
+        },
+        {
+          "id": "FIRE.APU_EXT",
+          "region_ids": [
+            "PEDESTAL-13"
+          ]
+        },
+        {
+          "id": "FIRE.CARGO_SMOKE",
+          "region_ids": [
+            "OVERHEAD-32",
+            "PEDESTAL-14"
+          ]
+        },
+        {
+          "id": "FIRE.FIRE_TEST",
+          "region_ids": [
+            "OVERHEAD-32",
+            "PEDESTAL-13",
+            "PEDESTAL-14"
+          ]
+        }
+      ],
+      "control_ports": [],
+      "variant_scope": "SOURCE EQUIPMENT EFFECTIVITY NOT VALIDATED",
+      "mapping_status": "EXISTING_UNIFIED_IDS_MATCHED; SOURCE_LEVEL_RULES_PENDING_QA",
+      "runtime_binding": "READ_ONLY_CURRENT_STATE_WHEN_AVAILABLE"
+    },
+    {
+      "section_id": "section-18",
+      "ata": "27",
+      "title": "Flight Controls",
+      "pdf_pages": {
+        "start": 2063,
+        "end": 2348
+      },
+      "private_pdf_name": "section-18_ATA-27.pdf",
+      "subsystems": [
+        {
+          "id": "FLT.FLAP_ALT",
+          "region_ids": [
+            "OVERHEAD-12"
+          ]
+        },
+        {
+          "id": "FLT.FLAP_LE",
+          "region_ids": [
+            "MAIN-21",
+            "OVERHEAD-02",
+            "OVERHEAD-12",
+            "PEDESTAL-09"
+          ]
+        },
+        {
+          "id": "FLT.LE_IND",
+          "region_ids": [
+            "MAIN-21",
+            "OVERHEAD-02"
+          ]
+        },
+        {
+          "id": "FLT.YAW_DAMP",
+          "region_ids": [
+            "OVERHEAD-11",
+            "OVERHEAD-13"
+          ]
+        },
+        {
+          "id": "FLT.STAB_TRIM",
+          "region_ids": [
+            "MAIN-31",
+            "PEDESTAL-10",
+            "PEDESTAL-11"
+          ]
+        },
+        {
+          "id": "FLT.FLIGHT_CTL_HYD",
+          "region_ids": [
+            "OVERHEAD-11",
+            "OVERHEAD-13"
+          ]
+        }
+      ],
+      "control_ports": [
+        {
+          "kind": "toggle",
+          "id": "yaw-damper"
+        },
+        {
+          "kind": "toggle",
+          "id": "alternate-flaps-position"
+        },
+        {
+          "kind": "lamp",
+          "id": "yaw-damper"
+        },
+        {
+          "kind": "lamp",
+          "id": "auto-slat"
+        },
+        {
+          "kind": "lamp",
+          "id": "speed-trim"
+        }
+      ],
+      "variant_scope": "SOURCE EQUIPMENT EFFECTIVITY NOT VALIDATED",
+      "mapping_status": "EXISTING_UNIFIED_IDS_MATCHED; SOURCE_LEVEL_RULES_PENDING_QA",
+      "runtime_binding": "READ_ONLY_CURRENT_STATE_WHEN_AVAILABLE"
+    },
+    {
+      "section_id": "section-19",
+      "ata": "31",
+      "title": "Independent Instruments, inserted pages",
+      "pdf_pages": {
+        "start": 2349,
+        "end": 2358
+      },
+      "private_pdf_name": "section-19_ATA-31.pdf",
+      "subsystems": [
+        {
+          "id": "INST.STANDBY",
+          "region_ids": [
+            "MAIN-12"
+          ]
+        },
+        {
+          "id": "INST.AIRSPEED",
+          "region_ids": [
+            "MAIN-11",
+            "MAIN-24"
+          ]
+        },
+        {
+          "id": "INST.ATTITUDE",
+          "region_ids": [
+            "MAIN-12",
+            "MAIN-25"
+          ]
+        },
+        {
+          "id": "INST.CLOCK",
+          "region_ids": [
+            "MAIN-10",
+            "MAIN-30"
+          ]
+        }
+      ],
+      "control_ports": [],
+      "variant_scope": "SOURCE EQUIPMENT EFFECTIVITY NOT VALIDATED",
+      "mapping_status": "EXISTING_UNIFIED_IDS_MATCHED; SOURCE_LEVEL_RULES_PENDING_QA",
+      "runtime_binding": "READ_ONLY_CURRENT_STATE_WHEN_AVAILABLE"
+    },
+    {
+      "section_id": "section-20",
+      "ata": "51-57",
+      "title": "Structures and Doors",
+      "pdf_pages": {
+        "start": 2359,
+        "end": 2429
+      },
+      "private_pdf_name": "section-20_ATA-51-57.pdf",
+      "subsystems": [
+        {
+          "id": "GEN.DOORS",
+          "region_ids": [
+            "PEDESTAL-28"
+          ]
+        }
+      ],
+      "control_ports": [
+        {
+          "kind": "lamp",
+          "id": "door-fwd-entry"
+        },
+        {
+          "kind": "lamp",
+          "id": "door-aft-entry"
+        },
+        {
+          "kind": "lamp",
+          "id": "door-fwd-cargo"
+        },
+        {
+          "kind": "lamp",
+          "id": "door-aft-cargo"
+        },
+        {
+          "kind": "lamp",
+          "id": "door-fwd-service"
+        },
+        {
+          "kind": "lamp",
+          "id": "door-aft-service"
+        }
+      ],
+      "variant_scope": "SOURCE EQUIPMENT EFFECTIVITY NOT VALIDATED",
+      "mapping_status": "EXISTING_UNIFIED_IDS_MATCHED; SOURCE_LEVEL_RULES_PENDING_QA",
+      "runtime_binding": "READ_ONLY_CURRENT_STATE_WHEN_AVAILABLE"
+    },
+    {
+      "section_id": "section-21",
+      "ata": "71-80",
+      "title": "Powerplant, engines and engine systems",
+      "pdf_pages": {
+        "start": 2430,
+        "end": 2695
+      },
+      "private_pdf_name": "section-21_ATA-71-80.pdf",
+      "subsystems": [
+        {
+          "id": "ENG.ENGINE_START",
+          "region_ids": [
+            "OVERHEAD-43"
+          ]
+        },
+        {
+          "id": "ENG.ENGINE_IGN",
+          "region_ids": [
+            "OVERHEAD-43"
+          ]
+        },
+        {
+          "id": "ENG.N1",
+          "region_ids": [
+            "MAIN-19"
+          ]
+        },
+        {
+          "id": "ENG.N2",
+          "region_ids": [
+            "MAIN-19"
+          ]
+        },
+        {
+          "id": "ENG.EGT",
+          "region_ids": [
+            "MAIN-19"
+          ]
+        },
+        {
+          "id": "ENG.ENGINE_OIL",
+          "region_ids": [
+            "MAIN-19"
+          ]
+        },
+        {
+          "id": "ENG.FUEL_CONTROL",
+          "region_ids": [
+            "PEDESTAL-07"
+          ]
+        },
+        {
+          "id": "ENG.REVERSERS",
+          "region_ids": [
+            "OVERHEAD-06",
+            "PEDESTAL-06"
+          ]
+        }
+      ],
+      "control_ports": [
+        {
+          "kind": "rotary",
+          "id": "engine-start-1"
+        },
+        {
+          "kind": "rotary",
+          "id": "engine-start-2"
+        },
+        {
+          "kind": "rotary",
+          "id": "ignition-source"
+        },
+        {
+          "kind": "lamp",
+          "id": "reverser-1"
+        },
+        {
+          "kind": "lamp",
+          "id": "reverser-2"
+        },
+        {
+          "kind": "lamp",
+          "id": "low-idle"
+        }
+      ],
+      "variant_scope": "SOURCE EQUIPMENT EFFECTIVITY NOT VALIDATED",
+      "mapping_status": "EXISTING_UNIFIED_IDS_MATCHED; SOURCE_LEVEL_RULES_PENDING_QA",
+      "runtime_binding": "READ_ONLY_CURRENT_STATE_WHEN_AVAILABLE"
+    },
+    {
+      "section_id": "section-22",
+      "ata": "26",
+      "title": "Lower Cargo Fire/Smoke, 737-300/500 only",
+      "pdf_pages": {
+        "start": 2696,
+        "end": 2719
+      },
+      "private_pdf_name": "section-22_ATA-26.pdf",
+      "subsystems": [
+        {
+          "id": "FIRE.CARGO_SMOKE",
+          "region_ids": [
+            "OVERHEAD-32",
+            "PEDESTAL-14"
+          ]
+        },
+        {
+          "id": "FIRE.CARGO_EXT",
+          "region_ids": [
+            "OVERHEAD-32"
+          ]
+        }
+      ],
+      "control_ports": [],
+      "variant_scope": "B737-300/500 ONLY; verify specific installed cargo-smoke system",
+      "mapping_status": "EXISTING_UNIFIED_IDS_MATCHED; SOURCE_LEVEL_RULES_PENDING_QA",
+      "runtime_binding": "READ_ONLY_CURRENT_STATE_WHEN_AVAILABLE"
+    },
+    {
+      "section_id": "section-23",
+      "ata": "28",
+      "title": "Fuel",
+      "pdf_pages": {
+        "start": 2720,
+        "end": 2813
+      },
+      "private_pdf_name": "section-23_ATA-28.pdf",
+      "subsystems": [
+        {
+          "id": "FUEL.PUMPS",
+          "region_ids": [
+            "OVERHEAD-17"
+          ]
+        },
+        {
+          "id": "FUEL.CROSSFEED",
+          "region_ids": [
+            "OVERHEAD-16"
+          ]
+        },
+        {
+          "id": "FUEL.QUANTITY",
+          "region_ids": [
+            "MAIN-20",
+            "OVERHEAD-16"
+          ]
+        },
+        {
+          "id": "FUEL.FILTER",
+          "region_ids": [
+            "OVERHEAD-17"
+          ]
+        }
+      ],
+      "control_ports": [
+        {
+          "kind": "toggle",
+          "id": "fuel-center-l"
+        },
+        {
+          "kind": "toggle",
+          "id": "fuel-center-r"
+        },
+        {
+          "kind": "toggle",
+          "id": "fuel-1-aft"
+        },
+        {
+          "kind": "toggle",
+          "id": "fuel-1-fwd"
+        },
+        {
+          "kind": "toggle",
+          "id": "fuel-2-fwd"
+        },
+        {
+          "kind": "toggle",
+          "id": "fuel-2-aft"
+        },
+        {
+          "kind": "rotary",
+          "id": "crossfeed"
+        },
+        {
+          "kind": "lamp",
+          "id": "crossfeed-valve"
+        },
+        {
+          "kind": "lamp",
+          "id": "fuel-center-l"
+        },
+        {
+          "kind": "lamp",
+          "id": "fuel-center-r"
+        },
+        {
+          "kind": "lamp",
+          "id": "fuel-1-fwd"
+        },
+        {
+          "kind": "lamp",
+          "id": "fuel-2-fwd"
+        }
+      ],
+      "variant_scope": "SOURCE EQUIPMENT EFFECTIVITY NOT VALIDATED",
+      "mapping_status": "EXISTING_UNIFIED_IDS_MATCHED; SOURCE_LEVEL_RULES_PENDING_QA",
+      "runtime_binding": "READ_ONLY_CURRENT_STATE_WHEN_AVAILABLE"
+    }
+  ]
+}
