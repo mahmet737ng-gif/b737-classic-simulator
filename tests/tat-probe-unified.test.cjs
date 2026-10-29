@@ -3,9 +3,10 @@ const test=require('node:test'),assert=require('node:assert/strict');
 const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
 const core=require('../engine/systems/tat-probe-v1.js');
 const source=fs.readFileSync(path.join(__dirname,'../panel-mosaic-lab/cockpit/tat-probe-unified-v1.js'),'utf8');
-function boot(){
+function boot(trainingPreference='0'){
  const sent=[],listeners={},timers=[],storage=new Map();
- let onGround=true,main2=true,pressed=false;
+ if(trainingPreference!==null)storage.set('b737.tat-probe.training-power.v1',trainingPreference);
+ let onGround=true,main2=true,dc1=true,pressed=false;
  const sw={'pitot-a':'OFF'};
  const faces=['ON','OFF'].map(frame=>({dataset:{frame},active:false,classList:{toggle(name,active){if(name==='active')this.active=!!active;}}}));
  const lamp={dataset:{},faces,querySelectorAll(sel){return sel==='.light-face'?faces:[];},
@@ -22,7 +23,7 @@ function boot(){
  const document={readyState:'complete',
   getElementById(id){return id==='overheadFrame'?el:null;}};
  const window={B737TATProbeV1:core,
-  B737ISNCockpitV1:{getStartState:()=>({electrical:{main2},runningEnvelope:{onGround}})},
+  B737ISNCockpitV1:{getStartState:()=>({electrical:{main2,dc1},runningEnvelope:{onGround}})},
   addEventListener(type,cb){listeners[type]=cb;}};
  const location={origin:'https://test.example'};
  const ctx={window,document,localStorage:{getItem:key=>storage.get(key)||null,setItem:(k,v)=>storage.set(k,v)},
@@ -30,7 +31,7 @@ function boot(){
  vm.runInNewContext(source,ctx,{filename:'tat-probe-unified-v1.js'});
  const api=window.B737TATProbeUnifiedV1;
  return {api,faces,sent,lamp,storage,listeners,timers,sw,
-  setMain2:v=>{main2=v;api.evaluate();},setGround:v=>{onGround=v;api.evaluate();},
+  setMain2:v=>{main2=v;api.evaluate();},setDC1:v=>{dc1=v;api.evaluate();},setGround:v=>{onGround=v;api.evaluate();},
   setSwitch:value=>{sw['pitot-a']=value;api.evaluate();},
   button(value,override={}){
    listeners.message({origin:override.origin||location.origin,
@@ -86,4 +87,45 @@ test('Air/ground gating matches TAT TEST on-ground only',()=>{
  assert.equal(h.api.getOutput().heaterPower,false);
  h.setSwitch('ON');
  assert.equal(h.api.getOutput().heaterPower,true);
+});
+
+test('Screenshot regression: on GROUND, changing PITOT HEAT A OFF to ON extinguishes TEMP PROBE without heating TAT',()=>{
+ const h=boot();
+ assert.equal(h.api.getOutput().amberOn,true,'ground A OFF -> TEMP PROBE amber');
+ h.setSwitch('ON');
+ assert.equal(h.api.getOutput().amberOn,false,'ground A ON -> TEMP PROBE dark');
+ assert.equal(h.api.getOutput().heaterPower,false,'TAT heater inhibited on the ground');
+ assert.equal(h.api.getOutput().groundIndicationBypass,true);
+ h.setSwitch('OFF');
+ assert.equal(h.api.getOutput().amberOn,true,'A OFF returns indicator amber');
+});
+test('With A ON, TAT TEST must still test actual current and reveal a pulled heater CB',()=>{
+ const h=boot();h.setSwitch('ON');h.button(true);
+ assert.equal(h.api.getOutput().heaterPower,true);
+ assert.equal(h.api.getOutput().amberOn,false);
+ h.storage.set('b737classic.cb.v1',JSON.stringify({breakers:[{id:core.CB_ID,pulled:true}]}));
+ h.api.evaluate();
+ assert.equal(h.api.getOutput().amberOn,true,'during test, current failure overrides A-ON bypass');
+ h.button(false);
+ assert.equal(h.api.getOutput().amberOn,false,'ground A-ON bypass restored after test release');
+});
+test('Isolated training TAT feed defaults ON in a cold-dark Unified cockpit, without aircraft electrical changes',()=>{
+ const h=boot(null);
+ h.setMain2(false);h.setDC1(false);
+ assert.equal(h.api.getOutput().trainingPower,true);
+ assert.equal(h.api.getOutput().lampPower,true);
+ assert.equal(h.api.getOutput().amberOn,true,'ground A OFF -> amber in classroom mode');
+ h.button(true);
+ assert.equal(h.api.getOutput().heaterPower,true);
+ assert.equal(h.api.getOutput().amberOn,false,'ground TAT press succeeds in classroom mode');
+ h.api.setTrainingPower(false);
+ assert.equal(h.api.getOutput().heaterPower,false);
+ assert.equal(h.api.getOutput().amberOn,false,'unpowered real DC indicator must stay dark');
+});
+test('Real-mode unpowered DC1 keeps the TEMP PROBE annunciator dark even while heater demand fails',()=>{
+ const h=boot();
+ h.setDC1(false);h.setMain2(false);
+ assert.equal(h.api.getOutput().lampPower,false);
+ assert.equal(h.lamp.dataset.frame,'OFF');
+ assert.equal(h.api.getOutput().amberDemand,true);
 });
