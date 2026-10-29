@@ -28,21 +28,35 @@
   const iframe=document.getElementById('overheadFrame');
   let doc;try{doc=iframe?.contentDocument;}catch{return;}
   if(!doc||doc.documentElement.classList.contains('cockpit-visual-test')||iframe?.contentWindow?.B737OverheadLights?.getState?.()?.lampTest)return;
+  const lamps={};
   for(const x of Object.values(out.channels)){
-   for(const [id,on] of [[Core.CHANNELS[x.id].onId,x.greenOn],[Core.CHANNELS[x.id].ovhtId,x.overheatOn]]){
-    const el=doc.querySelector('.mounted-light[data-light="'+id+'"]');if(!el)continue;
-    const frame=on?'ON':'OFF';
-    for(const face of el.querySelectorAll('.light-face'))face.classList.toggle('active',face.dataset.frame===frame);
-    el.dataset.frame=frame;el.dataset.state=frame;el.dataset.windowHeatEngine='v1';
-    el.setAttribute('aria-label',id+' — '+frame+' (Window Heat engine)');
-   }
+   lamps[Core.CHANNELS[x.id].onId]=x.greenOn;
+   lamps[Core.CHANNELS[x.id].ovhtId]=x.overheatOn;
+  }
+  // This is the stable projection owned by overhead-bridge, layered AFTER
+  // both LGT's internal display and ISN projections. It is resent while
+  // the live engine is running to recover frame reload/ready races.
+  try{iframe.contentWindow?.postMessage({type:'b737:cockpit-command',
+   action:'window-heat-projection',lamps,annunciations:out.annunciations},location.origin);}catch{}
+  // Immediate DOM fallback, including frames before the projection bridge
+  // becomes ready. Never alter approved source art or lamp dimensions.
+  for(const [id,on] of Object.entries(lamps)){
+   const el=doc.querySelector('.mounted-light[data-light="'+id+'"]');if(!el)continue;
+   const frame=on?'ON':'OFF';
+   for(const face of el.querySelectorAll('.light-face'))face.classList.toggle('active',face.dataset.frame===frame);
+   el.dataset.frame=frame;el.dataset.state=frame;el.dataset.windowHeatEngine='v1';
+   el.setAttribute('aria-label',id+' — '+frame+' (Window Heat engine)');
   }
  }
+
  function draw(out){
   if(!ui)return;
   const status=ui.querySelector('#wh-status');
   status.textContent=Object.keys(out.channels).map(id=>{const v=out.channels[id];return id.replace('_',' ')+' '+(v.overheatOn?'OVHT':v.greenOn?'ON':v.selected?'STBY/OFF':'OFF');}).join(' · ')+
    ' | ANTI-ICE '+(out.annunciations.antiIceCaution?'CAUTION':'NORMAL');
+  for(const id of ['wh-caution-master','wh-caution-anti-ice']){
+   const node=ui.querySelector('#'+id);if(node){const on=out.annunciations.antiIceCaution;node.textContent=id==='wh-caution-master'?'MASTER CAUTION':'ANTI-ICE';node.style.background=on?'#b67a18':'#26323b';node.style.color=on?'#fff0c5':'#889eaa';node.style.borderColor=on?'#f1b547':'#42525f';node.dataset.active=String(on);}
+  }
   const rows=ui.querySelector('#wh-rows');rows.replaceChildren();
   for(const [id,v]of Object.entries(out.channels)){
    const tr=document.createElement('tr');
@@ -60,6 +74,7 @@
   ui.innerHTML='<summary style="cursor:pointer;font-weight:700">WINDOW HEAT · Live System / Failure Test</summary>'+
    '<p style="font-size:12px">Real OH15 switches + Electrical V7 + CB Panel Lab. FCOM 3/SP.3 generic training.</p>'+
    '<p id="wh-status" role="status">Connecting overhead and electrical engine…</p>'+
+   '<div style="display:flex;gap:8px;margin:8px 0 12px 0"><span id="wh-caution-master" style="padding:5px 9px;border:1px solid #42525f;border-radius:4px;font-weight:700">MASTER CAUTION</span><span id="wh-caution-anti-ice" style="padding:5px 9px;border:1px solid #42525f;border-radius:4px;font-weight:700">ANTI-ICE</span></div>'+
    '<div style="overflow-x:auto"><table style="font-size:11px;width:100%;border-collapse:collapse"><thead><tr><th>CH</th><th>SW</th><th>CTRL</th><th>POWER</th><th>TEMP</th><th>GREEN</th><th>OVHT</th></tr></thead><tbody id="wh-rows"></tbody></table></div>'+
    '<p id="wh-aux"></p>'+
    '<div style="display:flex;flex-wrap:wrap;gap:5px"><select id="wh-channel" aria-label="Window channel"><option value="L_FWD">L FWD</option><option value="L_SIDE">L SIDE</option><option value="R_FWD">R FWD</option><option value="R_SIDE">R SIDE</option></select>'+
