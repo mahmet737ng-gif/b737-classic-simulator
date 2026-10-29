@@ -108,3 +108,44 @@ test('TEMP PROBE physical faults and indicator faults remain separately selectab
  h.api.applyScenario('tat-lamp-off');
  assert.equal(h.api.evaluate(0).tat.amberOn,false,'indicator stuck OFF means lamp itself dark');
 });
+
+test('Live OH15 bus-loss scenarios remove amber OVERHEAT and green ON for electrically dead channels',()=>{
+ const liveSwitches=Object.fromEntries(Object.values(wh.CHANNELS).map(c=>[c.switchId,'ON']));
+ liveSwitches['window-power-test']='OVHT';
+ for(const scenario of ['main1','main2','gen1','gen2','dc1','dc2','cold']){
+  const h=setup();h.api.open();
+  const stage=h.body.child.querySelector('#anti-live-stage');
+  stage.contentWindow={B737OverheadToggles:{getState:()=>liveSwitches}};
+  assert.equal(h.api.applyScenario(scenario),true);
+  const result=h.api.evaluate(0);
+  for(const [id,c] of Object.entries(wh.CHANNELS)){
+   const feeds=[c.heaterBus,c.controllerAC,c.controllerDC];
+   const down=scenario==='cold'||feeds.includes({
+    gen1:'generator1',gen2:'generator2',main1:'main1',
+    main2:'main2',dc1:'dc1',dc2:'dc2'
+   }[scenario]);
+   if(down){
+    assert.equal(result.window.channels[id].heaterPower,false,scenario+' '+id+' heater');
+    assert.equal(result.window.channels[id].greenOn,false,scenario+' '+id+' ON');
+    assert.equal(result.window.channels[id].overheatOn,false,scenario+' '+id+' OVERHEAT');
+   }else{
+    assert.equal(result.window.channels[id].overheatOn,true,scenario+' '+id+' powered OVHT test');
+   }
+  }
+ }
+});
+test('The live lab CB-loss scenarios suppress OVERHEAT on the affected channel while a powered test runs',()=>{
+ const liveSwitches=Object.fromEntries(Object.values(wh.CHANNELS).map(c=>[c.switchId,'ON']));
+ liveSwitches['window-power-test']='OVHT';
+ for(const id of ['wh-heater-cb','wh-control-cb']){
+  const h=setup();h.api.open();
+  const stage=h.body.child.querySelector('#anti-live-stage');
+  stage.contentWindow={B737OverheadToggles:{getState:()=>liveSwitches}};
+  assert.equal(h.api.applyScenario(id),true);
+  const result=h.api.evaluate(0);
+  assert.equal(result.window.channels.L_FWD.overheatOn,false,id);
+  assert.equal(result.window.channels.L_FWD.greenOn,false,id);
+  assert.equal(result.window.channels.L_FWD.heaterPower,false,id);
+  assert.equal(result.window.channels.L_SIDE.overheatOn,true,'other powered channel keeps valid OVHT test');
+ }
+});
