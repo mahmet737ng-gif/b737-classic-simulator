@@ -93,7 +93,7 @@
   if(!faults[channel])faults[channel]={};faults[channel][id]=active;saveFaults();tick(0);
  }
  function tick(forcedSeconds){
-  // Wall-clock time is important for the 90-second OVERHEAT test.
+  // Wall-clock time is important for the 60-second OVERHEAT test.
   // If the CB tab is active or this tab is briefly background-throttled,
   // catch up using elapsed real time rather than delaying the expiry.
   const now=performance.now(),dt=typeof forcedSeconds==='number'?forcedSeconds:Math.min(300,Math.max(0,(now-lastAt)/1000));lastAt=now;
