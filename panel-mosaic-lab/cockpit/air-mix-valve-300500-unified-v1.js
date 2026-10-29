@@ -61,6 +61,8 @@
   for(const side of model.SIDES){
    const meta=model.GAUGES[side],selector=rot[meta.selector];
    result[side]={...state[side],
+    cabinC:trainingPower===true&&state[side].cabinC===null?22:state[side].cabinC,
+    benchSensor:trainingPower===true&&state[side].cabinC===null,
     selector:model.SELECTORS.includes(selector)?selector:'AUTO NORM',
     packMode:['OFF','AUTO','HIGH'].includes(tog[meta.pack])?tog[meta.pack]:null,
     actuatorPower:power,indicatorPower:trainingPower===true?true:bool(b?.dc2),
@@ -85,7 +87,7 @@
    g.setAttribute('aria-label',side+' '+Math.round(engine.positions[side]*100)+' percent hot; '+value.reason);
   }
   const readout=$('airMix300500Readout');
-  if(readout)readout.textContent=model.SIDES.map(side=>side+'  '+x[side].selector+'  / PACK '+(x[side].packMode||'UNKNOWN')+' / '+Math.round(engine.positions[side]*100)+'% HOT / '+engine.command[side]+' / '+engine.reason[side]+' / '+model.indication(engine,x,side).reason).join('\n');
+  if(readout)readout.textContent=model.SIDES.map(side=>side+'  '+x[side].selector+'  / PACK '+(x[side].packMode||'UNKNOWN')+' / '+Math.round(engine.positions[side]*100)+'% HOT / '+engine.command[side]+' / '+engine.reason[side]+(x[side].benchSensor?' / BENCH 22°C':'')+' / '+model.indication(engine,x,side).reason).join('\n');
  }
  function tick(){
   const now=performance.now(),dt=Math.max(0,Math.min(1,(now-last)/1000));last=now;
@@ -114,7 +116,7 @@
   const anchor=$('inspector');if(!anchor||$('airMix300500Lab'))return;
   const section=document.createElement('section');section.id='airMix300500Lab';section.dir='ltr';
   const h=document.createElement('h2');h.textContent='AIR MIX VALVE · 300/500';section.append(h);
-  const note=document.createElement('p');note.className='muted';note.textContent='Real selector positions drive independent COLD/HOT valves. PACK OFF drives COLD in normal mode. Training AC ON is a clearly marked bench override (115V actuator + 28V indicator, temporary PACK OFF bypass). The real P6-4/D3 CB still cuts the indication. Sensor and travel calibration are training-only.';section.append(note);
+  const note=document.createElement('p');note.className='muted';note.textContent='Real selector positions drive independent COLD/HOT valves. PACK OFF drives COLD in normal mode. Training AC ON is a clearly marked bench override (115V actuator + 28V indicator, temporary PACK OFF bypass). The real P6-4/D3 CB still cuts indication. AUTO bench uses a labeled simulated 22°C cabin sensor until one is injected. Sensor and travel calibration are training-only.';section.append(note);
   for(const side of model.SIDES){
    const label=document.createElement('label');label.textContent=side+' CABIN SENSOR °C';label.style.display='block';
    const inp=document.createElement('input');Object.assign(inp,{type:'number',min:'-30',max:'70',step:'0.5',placeholder:'Unknown'});
