@@ -1,0 +1,18 @@
+/* Additive visual overlay for the 737 Classic engine piece ONLY.
+   No changes to main-panel geometry, ISN engine logic, guarded switches or IRS. */
+#region-main .texture-piece[data-piece="engine"]>.conventional-engine-panel-v1 {
+ position:absolute; inset:0; z-index:41; display:none; width:100%;height:100%;
+ max-width:none;max-height:none;object-fit:fill;pointer-events:none;
+ user-select:none;border:0;background:transparent;
+}
+html[data-engine-indication="CONVENTIONAL"] #region-main .texture-piece[data-piece="engine"]>.conventional-engine-panel-v1{
+ display:block;
+}
+/* Prevent the old EIS-specific gauge/lamp artwork appearing on the new
+   dial geometry. Source physics and alert states continue running unchanged.
+   Separate calibrated Conventional gauges/lamp mounts will be additive. */
+html[data-engine-indication="CONVENTIONAL"] #region-main .texture-piece[data-piece="engine"]>.isn-engine-gauges,
+html[data-engine-indication="CONVENTIONAL"] #region-main .texture-piece[data-piece="engine"]>[data-main-lamp],
+html[data-engine-indication="CONVENTIONAL"] #region-main .texture-piece[data-piece="engine"]>.main-lamp-overlay {
+ display:none !important;
+}
