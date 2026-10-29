@@ -1,0 +1,36 @@
+name: TAT Probe Heat — FCOM / MRG / Unified QA
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'engine/systems/tat-probe-v1.js'
+      - 'panel-mosaic-lab/cockpit/tat-probe-unified-v1.js'
+      - 'panel-mosaic-lab/cockpit/overhead-bridge.js'
+      - 'panel-mosaic-lab/cockpit/index.html'
+      - 'panel-mosaic-lab/cockpit/overhead-stage.html'
+      - 'tests/tat-probe-v1.test.cjs'
+      - 'tests/tat-probe-unified.test.cjs'
+      - '.github/workflows/tat-probe-v1.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  tat-probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Verify engine, bridge and test syntax
+        run: |
+          node --check engine/systems/tat-probe-v1.js
+          node --check panel-mosaic-lab/cockpit/tat-probe-unified-v1.js
+          node --check panel-mosaic-lab/cockpit/overhead-bridge.js
+          node --check tests/tat-probe-v1.test.cjs
+          node --check tests/tat-probe-unified.test.cjs
+      - name: Verify TAT logic, MRG-indexed CB and OH15 live switch integration
+        run: node --test tests/tat-probe-v1.test.cjs tests/tat-probe-unified.test.cjs
+      - name: Verify locked overhead atlas and guarded controls remain untouched
+        run: |
+          python3 panel-mosaic-lab/verify-final-overhead.py
+          python3 panel-mosaic-lab/cockpit/verify-guard-redzone.py --negative-self-test
