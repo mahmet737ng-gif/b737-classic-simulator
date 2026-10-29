@@ -38,3 +38,27 @@ test('stuck valve does not follow command',()=>{
  const x=live('MANUAL WARM','MANUAL COOL');x.PASS.stuck=true;
  const r=M.step(M.create(),x,90);assert.equal(r.positions.PASS,0.5);
 });
+
+test('bench mode moves on physical MANUAL WARM even if both PACK switches are OFF',()=>{
+ const x=live('MANUAL WARM','MANUAL COOL');
+ x.CONT.packMode='OFF';x.PASS.packMode='OFF';
+ x.CONT.benchBypassPack=true;x.PASS.benchBypassPack=true;
+ const s=M.step(M.create(),x,6);
+ assert.equal(s.positions.CONT,1);assert.equal(s.positions.PASS,0);
+ assert.equal(s.reason.CONT,'BENCH_MANUAL_WARM');
+ assert.equal(s.reason.PASS,'BENCH_MANUAL_COOL');
+});
+test('normal PACK OFF still takes priority over manual, bench fault priority still holds',()=>{
+ const x=live('MANUAL WARM','MANUAL COOL');x.CONT.packMode='OFF';
+ let s=M.step(M.create(),x,90);
+ assert.equal(s.positions.CONT,0);
+ assert.equal(s.reason.CONT,'PACK_OFF_FULL_COLD');
+ x.CONT.benchBypassPack=true;x.CONT.overheat=true;
+ s=M.step(M.create(),x,6);
+ assert.equal(s.positions.CONT,0);
+ assert.equal(s.reason.CONT,'DUCT_OVERHEAT_LATCH');
+});
+test('geometry and pointer sweep are symmetric on the approved source face',()=>{
+ assert.equal(M.SOURCE.width,1254);assert.equal(M.GAUGES.CONT.y,M.GAUGES.PASS.y);
+ assert.equal(M.angle(0),-55);assert.equal(M.angle(0.5),0);assert.equal(M.angle(1),55);
+});
