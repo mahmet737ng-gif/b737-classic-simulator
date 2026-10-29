@@ -19,7 +19,8 @@ test('owner-approved photo-derived pointer is a single broad, transparent white 
  assert.ok(!svg.includes('<circle'),'asset must not add a second pivot');
 });
 
-test('final metal pointer replaces reference only at runtime; archived white pointer remains unchanged',()=>{
+test('original full-size photo reference remains byte-for-byte the original and is active again',()=>{
+ assert.match(renderer,/air-mix-valve-300500-reference-needle-v2\.svg\?v=AIR-MIX-300500-RESTORED-SIZE-0001/);
  assert.match(finalSvg,/viewBox="0 0 256 256"/);
  assert.match(finalSvg,/fill="url\(#metal\)"/);
  assert.match(finalSvg,/<circle cx="128" cy="128"/);
@@ -27,7 +28,7 @@ test('final metal pointer replaces reference only at runtime; archived white poi
 });
 
 test('each OH20 gauge receives one calibrated moving image; baked photo needles remain masked',()=>{
- assert.match(renderer,/air-mix-valve-300500-needle-v1\.svg\?v=AIR-MIX-300500-FINAL-0001/);
+ assert.match(renderer,/air-mix-valve-300500-reference-needle-v2\.svg\?v=AIR-MIX-300500-RESTORED-SIZE-0001/);
  assert.match(renderer,/for\(const side of model\.SIDES\)/);
  assert.match(renderer,/concealPhotoNeedle\(doc,photographMask,side\)/);
  assert.match(renderer,/transform:'translate\(-2 2\)'/);
@@ -35,7 +36,7 @@ test('each OH20 gauge receives one calibrated moving image; baked photo needles 
  assert.equal((renderer.match(/createSvg\(doc,rotary,'image'/g)||[]).length,1);
  assert.match(renderer,/pointerEvents:'none'/);
  assert.match(renderer,/preserveAspectRatio:'none'/);
- assert.ok(!renderer.includes('air-mix-valve-300500-reference-needle-v2.svg'),'archived broad reference must not override approved final metal pointer');
+ assert.ok(!renderer.includes('air-mix-valve-300500-needle-v1.svg'),'smaller experimental needle must not be used');
 });
 
 test('final 128-degree COLD/HOT sweep and independent physics',()=>{
@@ -46,5 +47,5 @@ test('final 128-degree COLD/HOT sweep and independent physics',()=>{
  const inputs={CONT:{selector:'MANUAL COOL',packMode:'AUTO',actuatorPower:true,indicatorPower:true},PASS:{selector:'MANUAL WARM',packMode:'AUTO',actuatorPower:true,indicatorPower:true}};
  const after=model.step(model.create(),inputs,90);
  assert.deepEqual([after.positions.CONT,after.positions.PASS],[0,1]);
- assert.match(html,/air-mix-valve-300500-unified-v1\.js\?v=AIR-MIX-300500-FINAL-0001/);
+ assert.match(html,/air-mix-valve-300500-unified-v1\.js\?v=AIR-MIX-300500-RESTORED-SIZE-0001/);
 });
