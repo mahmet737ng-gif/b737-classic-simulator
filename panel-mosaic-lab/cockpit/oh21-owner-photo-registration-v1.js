@@ -29,6 +29,9 @@ function circle(node,[x,y],fit,diameter=100){if(!node)return;
 }
 function relocateRect(node,[x,y,w,h],fit){if(!node)return;setstyle(node,{left:(fit.x+x*fit.scale)+'px',top:(fit.y+y*fit.scale)+'px',width:(w*fit.scale)+'px',height:(h*fit.scale)+'px'});}
 function place(){if(!active||!detail||!layer)return false;const f=fit();if(!f)return false;
+ // Atlas reassembly may detach a candidate after loading. Re-attach only this
+ // optional photo layer, never modify any locked source image or atlas tile.
+ if(layer.parentNode!==host)host.append(layer);
  Object.assign(layer.style,{left:f.x+'px',top:f.y+'px',width:f.w+'px',height:f.h+'px'});
  for(const [id,xy]of Object.entries(detail.controls)){
   if(id==='aircon-ovht-test'||id==='trip-reset'){
@@ -80,6 +83,6 @@ async function boot(){try{const r=await fetch(MANIFEST,{cache:'no-store'});if(!r
   // not loading, so every existing owner control is eventually registered.
   setInterval(()=>{if(photoGroup(family())!==active)sync();else place()},950);
  }catch(error){console.warn('OH21 candidate registry unavailable; frozen background preserved',error)}}
-window.B737OH21OwnerPhotoV1=Object.freeze({status:()=>({active,asset:detail?.file||null,loaded:!!layer,version:'PHOTO-REG-20261030',panel:detail?.layout||null}),refresh:()=>place(),restore:revert});
+window.B737OH21OwnerPhotoV1=Object.freeze({status:()=>({active,asset:detail?.file||null,loaded:!!layer?.isConnected,version:'PHOTO-REG-20261030',panel:detail?.layout||null}),refresh:()=>place(),restore:revert});
 boot();
 })();
