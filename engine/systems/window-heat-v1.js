@@ -17,6 +17,11 @@
  'P18-3|ALL|F1':'WINDOW HEAT CONTROL L FRONT AC','P18-3|ALL|F3':'WINDOW HEAT CONTROL L SIDE AC','P18-3|ALL|E1':'WINDOW HEAT CONTROL R FRONT AC','P18-3|ALL|E3':'WINDOW HEAT CONTROL R SIDE AC' });
  const ALL_CBS=Object.freeze([...Object.keys(PHOTO_CB),AUX.L45.breaker,AUX.R45.breaker]);
  const FAULTS=Object.freeze(['HEATER_FAIL','CONTROLLER_FAIL','SENSOR_FAIL','STUCK_OVERHEAT','POWER_TEST_FAIL']);
+ // Generic owner-selected trainer: OVHT amber indications clear after 90 s,
+ // or earlier per channel on OFF->ON. FCOM specifies ~60 s ON light transition
+ // and switch reset; a 90 s timer is the training scenario, not an FCOM limit.
+ const OVHT_TEST_DURATION_SECONDS=90;
+ const OVHT_ON_EXPIRE_SECONDS=60;
  const copy=v=>JSON.parse(JSON.stringify(v));
  function initialState(){return {schema:'b737-window-heat/1',elapsed:0,test:'NEUTRAL',ovhtTestElapsed:null,channels:Object.fromEntries(Object.keys(CHANNELS).map(k=>[k,{temp:18,heating:false,overheat:false,ovhtTestLatched:false,ovhtTestGreen:false,lastGreen:null,lastSwitch:false}])),aux:{L45:{temp:18,heating:false,thermostatOn:true},R45:{temp:18,heating:false,thermostatOn:true}},faults:Object.fromEntries(Object.keys(CHANNELS).map(k=>[k,{}]))};}
  function injectFault(s,channel,fault,active){if(!CHANNELS[channel]||!FAULTS.includes(fault)||typeof active!=='boolean')throw Error('Invalid Window Heat instructor fault');const n=copy(s);n.faults[channel][fault]=active;return n;}
@@ -27,20 +32,21 @@
   if(!Number.isFinite(seconds)||seconds<0||seconds>300)throw Error('Invalid time step');
   const n=copy(s),sw=input.switches||{},b=input.buses||{},cb=input.breakers||{},test=['OVHT','PWR TEST'].includes(sw['window-power-test'])?sw['window-power-test']:'NEUTRAL';
   n.elapsed+=seconds;n.test=test;
-  // SP overheat-test condition persists until OFF -> ON reset; annunciation holds for training.
-  // This spring-loaded test only initiates the simulated trip. The trip stays
-  // latched after the selector returns to neutral, until each WINDOW HEAT
-  // switch is cycled OFF and then ON (FCOM SP.3.1–3.2).
-  if(test==='OVHT'&&n.ovhtTestElapsed===null)n.ovhtTestElapsed=0;
-  if(n.ovhtTestElapsed!==null)n.ovhtTestElapsed+=seconds;
+  // Spring detent starts the timer only on entry; holding OVHT cannot
+  // repeat the test. OFF->ON clears the associated channel independently.
+  const startingOvhtTest=test==='OVHT'&&s.test!=='OVHT';
+  if(startingOvhtTest)n.ovhtTestElapsed=0;
+  else if(n.ovhtTestElapsed!==null)n.ovhtTestElapsed+=seconds;
+  const ovhtExpired=n.ovhtTestElapsed!==null&&n.ovhtTestElapsed>=OVHT_TEST_DURATION_SECONDS;
   const outputs={},auxOut={};
   for(const [id,d] of Object.entries(CHANNELS)){
     const q=n.channels[id],f=n.faults[id]||{},selected=sw[d.switchId]==='ON';
-    if(!selected){q.ovhtTestLatched=false;q.ovhtTestGreen=false;q.overheat=false;q.lastGreen=false;q.lastSwitch=false;}
+    if(!selected||ovhtExpired){q.ovhtTestLatched=false;q.ovhtTestGreen=false;}
+    if(!selected){q.overheat=false;q.lastGreen=false;q.lastSwitch=false;}
     const controller=busOk(b,d.controllerAC)&&busOk(b,d.controllerDC)&&breakerClosed(cb,d.controllerCB)&&!f.CONTROLLER_FAIL&&!f.SENSOR_FAIL;
     const heaterBus=busOk(b,d.heaterBus),heaterCB=breakerClosed(cb,d.heaterCB);
     const supply=controller&&heaterBus&&heaterCB&&!f.HEATER_FAIL;
-    if(test==='OVHT'&&selected&&!q.ovhtTestLatched){
+    if(startingOvhtTest&&selected){
       // Preserve the PRE-TEST ON indication. SP.3.2 does not turn an
       // extinguished green light ON during the overheat test; instead,
       // illuminated ON lights go out after approximately one minute.
@@ -59,7 +65,7 @@
     if(q.temp>=d.cutout){q.overheat=true;}
     q.heating=heater&&!q.overheat;
     const overheat=selected&&(q.overheat||q.ovhtTestLatched||(!controller||!heaterBus||!heaterCB)&&q.temp<d.target-1.5);
-    const pendingOvhtTest=q.ovhtTestLatched&&n.ovhtTestElapsed!==null&&n.ovhtTestElapsed<60;
+    const pendingOvhtTest=q.ovhtTestLatched&&n.ovhtTestElapsed!==null&&n.ovhtTestElapsed<OVHT_ON_EXPIRE_SECONDS;
     const green=selected&&(q.ovhtTestLatched
       ?(pendingOvhtTest&&q.ovhtTestGreen&&supply)
       :(q.heating||test==='PWR TEST'&&supply&&!blocked&&!f.POWER_TEST_FAIL));
@@ -79,5 +85,5 @@
   const antiIceCaution=Object.values(outputs).some(v=>v.overheatOn);
   return {state:n,output:{schema:'B737_WINDOW_HEAT_V1_RESULT',channels:outputs,aux:auxOut,annunciations:{antiIceCaution,masterCautionRequest:antiIceCaution},test,elapsed:n.elapsed,notes:'generic simulator temperatures and timings; not dispatch authority'}};
  }
- return Object.freeze({CHANNELS,AUX,PHOTO_CB,ALL_CBS,FAULTS,initialState,injectFault,step});
+ return Object.freeze({CHANNELS,AUX,PHOTO_CB,ALL_CBS,FAULTS,OVHT_TEST_DURATION_SECONDS,OVHT_ON_EXPIRE_SECONDS,initialState,injectFault,step});
 });
