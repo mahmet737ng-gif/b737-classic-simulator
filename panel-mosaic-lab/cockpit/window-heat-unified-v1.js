@@ -6,10 +6,13 @@
  const Core=window.B737WindowHeatV1;if(!Core){console.error('Window Heat core unavailable');return;}
  const CB_KEY='b737classic.cb.v1',FAULT_KEY='b737.windowheat.faults.v1',TRAIN_KEY='b737.windowheat.training-power.v1';
  const TRAIN_BUSES=Object.freeze({generator1:true,generator2:true,main1:true,main2:true,dc1:true,dc2:true});
- let trainingPower=false;
- try{trainingPower=localStorage.getItem(TRAIN_KEY)==='1';}catch{}
- // TEST POWER is only an explicit instructor supply for Window Heat.
- // Never energize the aircraft network, never close CBs, never mask failures.
+ // The cockpit starts COLD & DARK, so keep an isolated Window Heat
+ // training supply enabled by default to preserve panel/switch practice.
+ // The user can explicitly turn it OFF to require aircraft AC/DC power.
+ let trainingPower=true;
+ try{trainingPower=localStorage.getItem(TRAIN_KEY)!=='0';}catch{}
+ // This supply energizes Window Heat only; it never changes aircraft buses,
+ // closes CBs, or masks controller/heater/sensor/overheat failures.
  let s=Core.initialState(),last=null,lastAt=performance.now(),child=null,previousCaution=null;
  let faults={};try{faults=JSON.parse(localStorage.getItem(FAULT_KEY)||'{}')||{};}catch{}
  for(const [ch,f] of Object.entries(faults)){if(!Core.CHANNELS[ch]||!f||typeof f!=='object')continue;
