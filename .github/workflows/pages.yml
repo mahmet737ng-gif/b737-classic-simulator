@@ -51,6 +51,7 @@ jobs:
           test "$(git hash-object engine/locks/verify-le-devices-final-v1.cjs)" = "540fd49c9ab7c807d5da9cce224f37a92cd084a6" || { echo "LEDEV: lock verifier changed"; exit 1; }
           node engine/locks/verify-le-devices-final-v1.cjs --negative-self-test
           node --test tests/le-devices-external-ports-v1.test.cjs tests/le-devices-classic-v1.test.cjs tests/le-devices-owner-sequence-v1.test.cjs tests/te-flap-live-bridge.test.cjs
+          node --test tests/le-devices-stagger-v1.test.cjs
       - name: Block altered or deleted locked panel image assets
         env:
           GITHUB_BASE_SHA: ${{ github.event.before }}
