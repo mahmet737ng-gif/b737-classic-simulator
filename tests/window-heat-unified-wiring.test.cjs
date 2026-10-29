@@ -8,8 +8,9 @@ const Core=require('../engine/systems/window-heat-v1.js');
 const code=fs.readFileSync(path.join(__dirname,'../panel-mosaic-lab/cockpit/window-heat-unified-v1.js'),'utf8');
 const busOn=Object.fromEntries(['generator1','generator2','main1','main2','dc1','dc2'].map(k=>[k,true]));
 const switchOn=Object.fromEntries(Object.values(Core.CHANNELS).map(c=>[c.switchId,'ON']));
-function mount(authority){
+function mount(authority,trainingPreference='0'){
  const timers=[],subscriptions=[],events=[],memory=new Map();
+ if(trainingPreference!==null)memory.set('b737.windowheat.training-power.v1',trainingPreference);
  const win={B737WindowHeatV1:Core,B737ISNCockpitV1:authority,addEventListener(type,cb){subscriptions.push([type,cb]);},
  dispatchEvent(e){events.push(e);return true;}};
  const frame={contentWindow:{B737OverheadToggles:{getState:()=>switchOn},B737OverheadLights:{getState:()=>({lampTest:false})},addEventListener(){}},
@@ -47,7 +48,7 @@ test('Window Heat has master caution request event on hot-window fault',()=>{
 
 function mountInteractiveOH15(){
  const timer=[],handlers={},childEvents={},outEvents=[];
- const sw={...switchOn},memory=new Map();
+ const sw={...switchOn},memory=new Map([['b737.windowheat.training-power.v1','0']]);
  let time=0;
  const frame={contentWindow:{
    B737OverheadToggles:{getState:()=>({...sw})},
@@ -141,4 +142,23 @@ test('Instructor Window Heat training supply does not mask a failed controller o
  trainer.injectFault('R_SIDE','STUCK_OVERHEAT',true);
  assert.equal(trainer.getOutput().channels.R_SIDE.overheatOn,true);
  assert.equal(trainer.getOutput().channels.R_SIDE.greenOn,false);
+});
+
+test('Cold-and-dark cockpit defaults to isolated Window Heat training power for panel practice',()=>{
+ const dark=Object.fromEntries(Object.keys(busOn).map(k=>[k,false]));
+ const {trainer,result}=mount({getStartState:()=>({electrical:dark})},null);
+ assert.ok(result,'No Window Heat evaluation');
+ assert.equal(trainer.getPowerDiagnostic().mode,'WINDOW_HEAT_TRAINING_SUPPLY');
+ assert.ok(Object.values(result.channels).every(x=>x.selected&&x.greenOn),
+   'All selected healthy Window Heat channels should illuminate green ON');
+ assert.ok(Object.values(result.channels).every(x=>x.controllerPower&&x.heaterPower));
+ assert.ok(Object.values(result.powerDiagnostic.effectiveBuses).every(Boolean),
+   'Training supply must be isolated to Window Heat outputs');
+});
+test('Explicitly disabling default training power restores cold-and-dark electrical gating',()=>{
+ const dark=Object.fromEntries(Object.keys(busOn).map(k=>[k,false]));
+ const {trainer,result}=mount({getStartState:()=>({electrical:dark})});
+ assert.ok(result);
+ assert.equal(trainer.getPowerDiagnostic().mode,'AIRCRAFT_ELECTRICAL');
+ assert.ok(Object.values(result.channels).every(x=>!x.greenOn));
 });
