@@ -6,8 +6,11 @@
  const Core=window.B737TATProbeV1;
  if(!Core){console.error('TAT core unavailable');return;}
  const CB_KEY='b737classic.cb.v1',FAULT_KEY='b737.tat-probe.faults.v1',TRAIN_KEY='b737.tat-probe.training-power.v1';
- let state=Core.initialState(),pressed=false,trainingPower=false,output=null,child=null,ui=null;
- try{trainingPower=localStorage.getItem(TRAIN_KEY)==='1';}catch{}
+ // The cockpit boots cold and dark. As with Window Heat, TAT training supply
+ // defaults ON for standalone classroom switch checks; OFF restores actual
+ // Main Bus 2 heater / DC1 annunciator gating with no invented aircraft feed.
+ let state=Core.initialState(),pressed=false,trainingPower=true,output=null,child=null,ui=null;
+ try{trainingPower=localStorage.getItem(TRAIN_KEY)!=='0';}catch{}
  try{
   const f=JSON.parse(localStorage.getItem(FAULT_KEY)||'{}');
   for(const id of Core.FAULTS)if(typeof f[id]==='boolean')state=Core.injectFault(state,id,f[id]);
@@ -60,6 +63,8 @@
    'tat-bus':o.liveMain2===null?'UNKNOWN':o.liveMain2?'ON':'OFF',
    'tat-cb':o.cbClosed?'IN':'OUT',
    'tat-heat':o.heaterPower?'HEATING':'OFF',
+   'tat-indicator-feed':o.lampPower?'POWERED':'UNPOWERED',
+   'tat-ground-inhibit':o.groundIndicationBypass?'ACTIVE':'INACTIVE',
    'tat-lamp':o.amberOn?'AMBER ON':'OFF'
   })){
    const node=ui.querySelector('#'+id);if(node)node.textContent=value;
@@ -108,12 +113,13 @@
   ui=document.createElement('section');ui.id='tat-probe-system-v1';ui.dir='ltr';
   ui.style.cssText='padding:12px;margin:16px 0 2px;border:1px solid #5d7887;border-radius:9px;color:inherit;font:12px/1.5 sans-serif';
   ui.innerHTML='<h3 style="margin:0 0 8px">TAT PROBE HEAT · FCOM 3.10.4 / MRG</h3>'+
-   '<p style="margin:0 0 9px">Ground: PITOT STATIC HEAT A OFF, press and hold the existing TAT TEST button on OH15. A healthy heated probe extinguishes TEMP PROBE amber. Release returns amber. No auto timer.</p>'+
-   '<label style="display:flex;gap:8px;align-items:center;margin:8px 0"><input type="checkbox" id="tat-training-power"> TAT TRAINING SUPPLY · isolated MAIN BUS 2 (demo only)</label>'+
+   '<p style="margin:0 0 9px">GROUND: with PITOT A OFF, TEMP PROBE is amber. Hold TAT TEST to energize the heater and extinguish amber (if healthy); release returns amber. With PITOT A ON, the TAT heater remains inhibited on ground BUT TEMP PROBE is dark. TAT TEST overrides ground inhibit to check real current. No timer.</p>'+
+   '<label style="display:flex;gap:8px;align-items:center;margin:8px 0"><input type="checkbox" id="tat-training-power"> TAT TRAINING SUPPLY · isolated MAIN BUS 2 + indicator DC (demo only, default ON)</label>'+
    '<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px">'+
     '<div>Ground: <strong id="tat-ground">—</strong></div><div>Switch: <strong id="tat-switch">—</strong></div><div>TAT TEST: <strong id="tat-button">—</strong></div>'+
     '<div>Actual MAIN2: <strong id="tat-bus">—</strong></div><div>CB P18-3 C5: <strong id="tat-cb">—</strong></div><div>Heater: <strong id="tat-heat">—</strong></div>'+
-    '<div>TEMP PROBE: <strong id="tat-lamp">—</strong></div></div>'+
+    '<div>TEMP PROBE: <strong id="tat-lamp">—</strong></div><div>Indicator DC: <strong id="tat-indicator-feed">—</strong></div>'+
+    '<div>Ground inhibit: <strong id="tat-ground-inhibit">—</strong></div></div>'+
    '<p id="tat-status" role="status" style="font-weight:700;margin:10px 0">Connecting…</p>'+
    '<div style="display:flex;gap:7px;flex-wrap:wrap"><select id="tat-fault" aria-label="TAT trainer failure">'+
     '<option value="HEATER_FAIL">Heater fail</option><option value="CURRENT_SENSE_FAIL">Current detector fail</option>'+
