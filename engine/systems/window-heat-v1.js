@@ -17,10 +17,10 @@
  'P18-3|ALL|F1':'WINDOW HEAT CONTROL L FRONT AC','P18-3|ALL|F3':'WINDOW HEAT CONTROL L SIDE AC','P18-3|ALL|E1':'WINDOW HEAT CONTROL R FRONT AC','P18-3|ALL|E3':'WINDOW HEAT CONTROL R SIDE AC' });
  const ALL_CBS=Object.freeze([...Object.keys(PHOTO_CB),AUX.L45.breaker,AUX.R45.breaker]);
  const FAULTS=Object.freeze(['HEATER_FAIL','CONTROLLER_FAIL','SENSOR_FAIL','STUCK_OVERHEAT','POWER_TEST_FAIL']);
- // Generic owner-selected trainer: OVHT amber indications clear after 90 s,
- // or earlier per channel on OFF->ON. FCOM specifies ~60 s ON light transition
- // and switch reset; a 90 s timer is the training scenario, not an FCOM limit.
- const OVHT_TEST_DURATION_SECONDS=90;
+ // Trainer behavior requested by the owner: clear test-generated amber after
+ // 60 seconds, or immediately for one channel when its own switch goes OFF.
+ // The timer is a simulator behavior choice; normal thermal overheat remains.
+ const OVHT_TEST_DURATION_SECONDS=60;
  const OVHT_ON_EXPIRE_SECONDS=60;
  const copy=v=>JSON.parse(JSON.stringify(v));
  function initialState(){return {schema:'b737-window-heat/1',elapsed:0,test:'NEUTRAL',ovhtTestElapsed:null,channels:Object.fromEntries(Object.keys(CHANNELS).map(k=>[k,{temp:18,heating:false,overheat:false,ovhtTestLatched:false,ovhtTestGreen:false,lastGreen:null,lastSwitch:false}])),aux:{L45:{temp:18,heating:false,thermostatOn:true},R45:{temp:18,heating:false,thermostatOn:true}},faults:Object.fromEntries(Object.keys(CHANNELS).map(k=>[k,{}]))};}
@@ -64,7 +64,10 @@
     q.temp=Math.max(-50,Math.min(100,q.temp+(heater?(test==='PWR TEST'?0.20:0.08):-0.025)*seconds));
     if(q.temp>=d.cutout){q.overheat=true;}
     q.heating=heater&&!q.overheat;
-    const overheat=selected&&(q.overheat||q.ovhtTestLatched||(!controller||!heaterBus||!heaterCB)&&q.temp<d.target-1.5);
+    // A loss of electrical feed/controller/CB is NOT an overheat indication.
+    // It suppresses normal heat/green ON; amber OVERHEAT is only a real
+    // thermal condition or the explicitly initiated OVHT test.
+    const overheat=selected&&(q.overheat||q.ovhtTestLatched);
     const pendingOvhtTest=q.ovhtTestLatched&&n.ovhtTestElapsed!==null&&n.ovhtTestElapsed<OVHT_ON_EXPIRE_SECONDS;
     const green=selected&&(q.ovhtTestLatched
       ?(pendingOvhtTest&&q.ovhtTestGreen&&supply)
