@@ -16,7 +16,13 @@
  function switches(){try{return document.getElementById('overheadFrame')?.contentWindow?.B737OverheadToggles?.getState?.()||{};}catch{return {};}}
  function buses(){try{
   const p=window.B737ISNCockpitV1;
-  return p?.getStartState?.()?.electrical?.bus||p?.getState?.()?.electrical?.bus||null;
+  // The chain.get() result exposes Electrical V7 BUS fields directly under
+  // .electrical. The alternate ISN bridge returns state.electrical.bus.
+  // Never incorrectly expect chain.get().electrical.bus.
+  const fromStart=p?.getStartState?.()?.electrical;
+  if(fromStart&&typeof fromStart==='object'&&Object.prototype.hasOwnProperty.call(fromStart,'generator1'))return fromStart;
+  const fromBridge=p?.getState?.()?.state?.electrical?.bus;
+  return fromBridge&&typeof fromBridge==='object'?fromBridge:null;
  }catch{return null;}}
  function applyLamps(out){
   const iframe=document.getElementById('overheadFrame');
