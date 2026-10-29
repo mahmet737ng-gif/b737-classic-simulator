@@ -1,0 +1,31 @@
+/* OH15 R ALPHA VANE lower blanking plate — additive, Unified embedded stage only.
+ * Owner-directed cosmetic correction. Source art and frozen 18 guarded switches
+ * are unchanged. Coordinates are registered to the OH15 native 1280 x 1229
+ * source artwork and scale with the locked atlas tile.
+ *
+ * Do not add an annunciator, lamp asset, label, control, or hit target here:
+ * this is a solid blanking plate in the vacant right-hand fifth socket.
+ */
+#atlasAbsolute .atlas-piece[data-key="OH15"] > .atlas-image-window::after {
+  content: "";
+  position: absolute;
+  box-sizing: border-box;
+  left: 69.35%;  /* 888 / 1280 */
+  top: 79.17%;   /* 973 / 1229 */
+  width: 20.20%; /* 259 / 1280 */
+  height: 7.16%; /*  88 / 1229 */
+  z-index: 3;
+  pointer-events: none;
+  user-select: none;
+  border-radius: 2px;
+  border: 1px solid rgba(38, 58, 72, .63);
+  background:
+    linear-gradient(180deg, rgba(29, 45, 57, .17) 0%, rgba(255,255,255,.035) 13%, transparent 40%, rgba(18,34,45,.07) 88%, rgba(12,25,37,.21) 100%),
+    linear-gradient(105deg, #607b8d 0%, #6a8597 20%, #647e8f 58%, #5b7687 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(159, 183, 196, .26),
+    inset 1px 0 1px rgba(144, 165, 177, .16),
+    inset -1px 0 2px rgba(31, 48, 60, .24),
+    inset 0 -1px 1px rgba(27, 42, 54, .26),
+    0 1px 2px rgba(24, 39, 51, .12);
+}
