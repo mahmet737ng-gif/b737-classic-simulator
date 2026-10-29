@@ -66,3 +66,53 @@ test('SP.3.2: actual fault is not masked by a successful overheat-test reset',()
  assert.equal(r.output.channels.R_SIDE.overheatOn,true,'real fault remains active');
  assert.equal(r.output.channels.R_SIDE.greenOn,false);
 });
+
+
+test('OWNER-90: amber lasts about 1.5 minutes, all clear automatically at 90 s',()=>{
+ let r=project(Core.initialState(),on,1);
+ r=project(r.state,{...on,'window-power-test':'OVHT'},0);
+ r=project(r.state,on,60);
+ assert.ok(all(r.output).every(x=>x.overheatOn&&!x.greenOn),'amber ON / green OFF at minute 1');
+ r=project(r.state,on,29.75);
+ assert.ok(all(r.output).every(x=>x.overheatOn),'all four amber still ON before 90');
+ r=project(r.state,on,.25);
+ assert.ok(all(r.output).every(x=>!x.overheatOn),'all four test amber OFF at exactly 90');
+ assert.ok(all(r.output).every(x=>x.greenOn),'heating resumes if still powered and cool');
+ assert.equal(r.output.annunciations.antiIceCaution,false);
+ assert.equal(r.output.annunciations.masterCautionRequest,false);
+ assert.equal(r.state.ovhtTestElapsed,null);
+});
+test('OWNER-90: early OFF/ON resets ONLY that window while three other amber remain',()=>{
+ let r=project(Core.initialState(),on,1);
+ r=project(r.state,{...on,'window-power-test':'OVHT'},0);
+ r=project(r.state,on,40);
+ r=project(r.state,{...on,'window-l-side':'OFF'},.25);
+ assert.equal(r.output.channels.L_SIDE.overheatOn,false,'OFF clears left side');
+ assert.ok(Object.entries(r.output.channels).filter(([id])=>id!=='L_SIDE').every(([,x])=>x.overheatOn),'other amber remains');
+ r=project(r.state,on,.25);
+ assert.equal(r.output.channels.L_SIDE.overheatOn,false,'ON must not reactivate amber');
+ assert.equal(r.output.channels.L_SIDE.greenOn,true,'ON restores normal heating');
+ r=project(r.state,on,49.5);
+ assert.ok(all(r.output).every(x=>!x.overheatOn),'remaining three expire at common 90s');
+});
+test('OWNER-90: held spring OVHT is edge-triggered, and retriggers only after neutral',()=>{
+ let r=project(Core.initialState(),on,1);
+ const held={...on,'window-power-test':'OVHT'};
+ r=project(r.state,held,0);
+ r=project(r.state,held,90);
+ assert.ok(all(r.output).every(x=>!x.overheatOn),'no amber after 90 while held');
+ r=project(r.state,held,10);
+ assert.ok(all(r.output).every(x=>!x.overheatOn),'held selector does not retrigger');
+ r=project(r.state,on,0); 
+ r=project(r.state,held,0);
+ assert.ok(all(r.output).every(x=>x.overheatOn),'new test activation after neutral');
+});
+test('OWNER-90: OVHT only starts for the channels whose own switches are ON',()=>{
+ const some={...on,'window-l-fwd':'OFF'};
+ let r=project(Core.initialState(),some,1);
+ r=project(r.state,{...some,'window-power-test':'OVHT'},0);
+ assert.equal(r.output.channels.L_FWD.overheatOn,false);
+ assert.ok(Object.entries(r.output.channels).filter(([id])=>id!=='L_FWD').every(([,x])=>x.overheatOn));
+ r=project(r.state,on,1);
+ assert.equal(r.output.channels.L_FWD.overheatOn,false,'late ON must not join already-running test');
+});
