@@ -149,3 +149,22 @@ test('The live lab CB-loss scenarios suppress OVERHEAT on the affected channel w
   assert.equal(result.window.channels.L_SIDE.overheatOn,true,'other powered channel keeps valid OVHT test');
  }
 });
+
+test('Live OH15 embedded heater cycling never blanks SIDE or flashes FWD ON lamps',()=>{
+ const h=setup();h.api.open();
+ const s=Object.fromEntries(Object.values(wh.CHANNELS).map(c=>[c.switchId,'ON']));
+ const stage=h.body.child.querySelector('#anti-live-stage');
+ stage.contentWindow={B737OverheadToggles:{getState:()=>s}};
+ let sawSideCycling=false,sawFwdCycling=false;
+ for(let t=0;t<500;t++){
+  const output=h.api.evaluate(1);
+  for(const [id,ch] of Object.entries(output.window.channels)){
+   assert.equal(ch.greenOn,true,'green ON must be continuously illuminated: '+id+' @'+t+'s');
+   assert.equal(ch.overheatOn,false,'no fake overheat from thermostat: '+id);
+   if(id.includes('SIDE')&&!ch.heaterPower)sawSideCycling=true;
+   if(id.includes('FWD')&&!ch.heaterPower)sawFwdCycling=true;
+  }
+ }
+ assert.ok(sawSideCycling,'side windows did reach thermostat cutoff');
+ assert.ok(sawFwdCycling,'forward windows did reach thermostat cutoff');
+});
