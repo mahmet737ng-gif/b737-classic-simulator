@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - feat/oh21-owner-photo-registration-20261030
+      - fix/pages-ledev-lock-oh21-release-20261030
   workflow_dispatch:
 permissions:
   contents: read
@@ -23,6 +24,9 @@ jobs:
           node tests/aircon-400-oh21-variant.test.cjs
       - name: Enforce original overhead/guard/IRS locks
         run: |
+          node engine/locks/verify-le-devices-final-v1.cjs --negative-self-test
+          node panel-mosaic-lab/cockpit/main-panel-seam-repair.test.cjs
+          node --check panel-mosaic-lab/cockpit/le-devices-lamp-stagger-external-v1.js
           python3 panel-mosaic-lab/verify-final-overhead.py
           python3 panel-mosaic-lab/cockpit/verify-guard-redzone.py --negative-self-test
           python3 panel-mosaic-lab/cockpit/verify-irs-sys-dspl-owner-lock-v1.py
