@@ -1,0 +1,349 @@
+{
+  "schema": "b737.owner.photo.panel-registration/1",
+  "version": "PHOTO-REG-20261030-CANDIDATE-WEBP100",
+  "locked_originals": "NEVER_WRITE",
+  "geometry_basis": "Owner-uploaded PNG source pixel coordinates; candidates must be validated against deployed atlas before activation",
+  "panels": {
+    "OH21_400": {
+      "file": "oh21-737-400-owner-20261030.q100.webp",
+      "aircraft": [
+        "B737-400"
+      ],
+      "region": "OH21",
+      "layout": "dual-recirc",
+      "controls": {
+        "recirc-fan-l": [
+          232,
+          269
+        ],
+        "recirc-fan": [
+          801,
+          269
+        ],
+        "pack-l": [
+          183,
+          765
+        ],
+        "pack-r": [
+          859,
+          765
+        ],
+        "isolation-valve": [
+          519,
+          840
+        ],
+        "bleed-eng-1": [
+          175,
+          1290
+        ],
+        "bleed-apu": [
+          430,
+          1290
+        ],
+        "bleed-eng-2": [
+          860,
+          1290
+        ],
+        "aircon-ovht-test": [
+          848,
+          521
+        ],
+        "trip-reset": [
+          519,
+          1109
+        ]
+      },
+      "gauge_pivots": {
+        "duct-pressure": [
+          517,
+          486
+        ]
+      },
+      "lights": {
+        "dual-bleed": [
+          158,
+          46,
+          165,
+          76
+        ],
+        "ram-door-l": [
+          350,
+          46,
+          165,
+          76
+        ],
+        "ram-door-r": [
+          710,
+          46,
+          165,
+          76
+        ],
+        "pack-trip-l": [
+          227,
+          909,
+          168,
+          80
+        ],
+        "wing-body-overheat-l": [
+          227,
+          999,
+          168,
+          80
+        ],
+        "bleed-trip-l": [
+          227,
+          1089,
+          168,
+          80
+        ],
+        "pack-trip-r": [
+          649,
+          909,
+          169,
+          80
+        ],
+        "wing-body-overheat-r": [
+          649,
+          999,
+          169,
+          80
+        ],
+        "bleed-trip-r": [
+          649,
+          1089,
+          169,
+          80
+        ]
+      },
+      "width": 1045,
+      "height": 1505,
+      "sha256": "68888486524df70c13f6024c5044b7381055d368b69d6a12010bb8eeafa05eff",
+      "status": "REFERENCE_MEASURED_NOT_FLIGHT_CERTIFIED",
+      "source_png_name": "oh21-737-400-owner-20261030.png",
+      "source_png_sha256": "02cb578a189054a6b104f005be0725e3bcd69c6a621776cbc7ac43b18f01f239",
+      "asset_status": "WEBP_QUALITY_100_DERIVATIVE_SOURCE_PNG_ARCHIVED"
+    },
+    "OH21_300500": {
+      "file": "oh21-737-300500-owner-20261030.q100.webp",
+      "aircraft": [
+        "B737-300",
+        "B737-500"
+      ],
+      "region": "OH21",
+      "layout": "single-recirc",
+      "controls": {
+        "recirc-fan": [
+          801,
+          269
+        ],
+        "pack-l": [
+          183,
+          765
+        ],
+        "pack-r": [
+          859,
+          765
+        ],
+        "isolation-valve": [
+          519,
+          840
+        ],
+        "bleed-eng-1": [
+          175,
+          1290
+        ],
+        "bleed-apu": [
+          430,
+          1290
+        ],
+        "bleed-eng-2": [
+          860,
+          1290
+        ],
+        "aircon-ovht-test": [
+          848,
+          521
+        ],
+        "trip-reset": [
+          519,
+          1109
+        ]
+      },
+      "gauge_pivots": {
+        "duct-pressure": [
+          517,
+          486
+        ]
+      },
+      "lights": {
+        "dual-bleed": [
+          158,
+          46,
+          165,
+          76
+        ],
+        "ram-door-l": [
+          350,
+          46,
+          165,
+          76
+        ],
+        "ram-door-r": [
+          710,
+          46,
+          165,
+          76
+        ],
+        "pack-trip-l": [
+          227,
+          909,
+          168,
+          80
+        ],
+        "wing-body-overheat-l": [
+          227,
+          999,
+          168,
+          80
+        ],
+        "bleed-trip-l": [
+          227,
+          1089,
+          168,
+          80
+        ],
+        "pack-trip-r": [
+          649,
+          909,
+          169,
+          80
+        ],
+        "wing-body-overheat-r": [
+          649,
+          999,
+          169,
+          80
+        ],
+        "bleed-trip-r": [
+          649,
+          1089,
+          169,
+          80
+        ]
+      },
+      "width": 1045,
+      "height": 1506,
+      "sha256": "754cfa32b415d06b90c30336e50a677852806a43e9ccdfe0bb17c111b20ab07a",
+      "status": "REFERENCE_MEASURED_NOT_FLIGHT_CERTIFIED",
+      "source_png_name": "oh21-737-300500-owner-20261030.png",
+      "source_png_sha256": "8610d625fc02bbc516fe76856849b5931800bd193fb935dc5a4d6777ded5f9a2",
+      "asset_status": "WEBP_QUALITY_100_DERIVATIVE_SOURCE_PNG_ARCHIVED"
+    },
+    "P2_CONVENTIONAL": {
+      "file": "p2-conventional-panorama-owner-20261030.q100.webp",
+      "aircraft": [
+        "B737-300",
+        "B737-400",
+        "B737-500"
+      ],
+      "region": "P2+adjacent",
+      "layout": "full-width-panorama",
+      "instrument_pivots": {
+        "n1_1": [
+          420,
+          424
+        ],
+        "n1_2": [
+          588,
+          424
+        ],
+        "egt_1": [
+          420,
+          580
+        ],
+        "egt_2": [
+          589,
+          580
+        ],
+        "n2_1": [
+          420,
+          742
+        ],
+        "n2_2": [
+          588,
+          742
+        ],
+        "fuelFlow_1": [
+          420,
+          901
+        ],
+        "fuelFlow_2": [
+          589,
+          901
+        ],
+        "oilPressure_1": [
+          791,
+          424
+        ],
+        "oilPressure_2": [
+          956,
+          424
+        ],
+        "oilTemp_1": [
+          791,
+          581
+        ],
+        "oilTemp_2": [
+          956,
+          581
+        ],
+        "oilQty_1": [
+          791,
+          742
+        ],
+        "oilQty_2": [
+          956,
+          742
+        ],
+        "vib_1": [
+          791,
+          902
+        ],
+        "vib_2": [
+          956,
+          902
+        ]
+      },
+      "registration_anchors": {
+        "flap": [
+          1127,
+          322
+        ],
+        "autoBrake": [
+          1128,
+          836
+        ]
+      },
+      "activation_policy": "STAGED_UNTIL_NATIVE_P2_GEOMETRY_MATCH_AND_NEEDLE_QA",
+      "width": 1463,
+      "height": 1075,
+      "sha256": "95a496eae310eb1e4062e684da582b2df384c2eaa741c1987bac7ce3f960481a",
+      "status": "REFERENCE_MEASURED_NOT_FLIGHT_CERTIFIED",
+      "source_png_name": "p2-conventional-panorama-owner-20261030.png",
+      "source_png_sha256": "e1b6452db215132cde1f9560861f1bb90b68e57ffc0425d1107eeb048d1450a5",
+      "asset_status": "WEBP_QUALITY_100_DERIVATIVE_SOURCE_PNG_ARCHIVED"
+    }
+  },
+  "acceptance": {
+    "required_controls_present": true,
+    "max_css_anchor_error_px": 1,
+    "min_zoom_levels": [
+      0.5,
+      1,
+      2
+    ],
+    "fallback": "LOCKED_SOURCE",
+    "rollback": "REVERT_ONLY_PHOTO_OVERLAY",
+    "productionActivation": "ONLY_AFTER_DEPLOYED_BROWSER_QA"
+  }
+}
