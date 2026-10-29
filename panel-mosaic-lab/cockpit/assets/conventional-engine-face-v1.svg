@@ -40,4 +40,10 @@
 <g transform="translate(631 1258)"><circle r="11.8" fill="#171b20" stroke="#828b8b" stroke-width="2"/><circle r="7" fill="#4b5254"/><path d="M-4.5 -4.5L4.5 4.5M4.5 -4.5L-4.5 4.5" stroke="#15191b" stroke-width="2.5"/></g>
 <g transform="translate(1221 14)"><circle r="11.8" fill="#171b20" stroke="#828b8b" stroke-width="2"/><circle r="7" fill="#4b5254"/><path d="M-4.5 -4.5L4.5 4.5M4.5 -4.5L-4.5 4.5" stroke="#15191b" stroke-width="2.5"/></g>
 <g transform="translate(1221 1258)"><circle r="11.8" fill="#171b20" stroke="#828b8b" stroke-width="2"/><circle r="7" fill="#4b5254"/><path d="M-4.5 -4.5L4.5 4.5M4.5 -4.5L-4.5 4.5" stroke="#15191b" stroke-width="2.5"/></g>
+<g data-conventional-red-lamp-socket="1"><circle cx="231" cy="333" r="14" fill="url(#hole)" stroke="#7b8587" stroke-width="2.7"/><circle cx="231" cy="333" r="10" fill="#030405"/></g>
+<g data-conventional-red-lamp-socket="1"><circle cx="526" cy="333" r="14" fill="url(#hole)" stroke="#7b8587" stroke-width="2.7"/><circle cx="526" cy="333" r="10" fill="#030405"/></g>
+<g data-conventional-red-lamp-socket="1"><circle cx="231" cy="603" r="14" fill="url(#hole)" stroke="#7b8587" stroke-width="2.7"/><circle cx="231" cy="603" r="10" fill="#030405"/></g>
+<g data-conventional-red-lamp-socket="1"><circle cx="526" cy="603" r="14" fill="url(#hole)" stroke="#7b8587" stroke-width="2.7"/><circle cx="526" cy="603" r="10" fill="#030405"/></g>
+<g data-conventional-red-lamp-socket="1"><circle cx="231" cy="873" r="14" fill="url(#hole)" stroke="#7b8587" stroke-width="2.7"/><circle cx="231" cy="873" r="10" fill="#030405"/></g>
+<g data-conventional-red-lamp-socket="1"><circle cx="526" cy="873" r="14" fill="url(#hole)" stroke="#7b8587" stroke-width="2.7"/><circle cx="526" cy="873" r="10" fill="#030405"/></g>
 </svg>
