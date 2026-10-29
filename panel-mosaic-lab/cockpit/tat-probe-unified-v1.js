@@ -3,7 +3,7 @@
  * P18-3 C5 is shared with CB Panel Lab through its persisted snapshot.
  */
 (function(){'use strict';
- const Core=window.B737TATProbeV1;
+ const Core=window.B737TATProbeV1,CbLink=window.B737TatCbLinkV1;
  if(!Core){console.error('TAT core unavailable');return;}
  const CB_KEY='b737classic.cb.v1',FAULT_KEY='b737.tat-probe.faults.v1',TRAIN_KEY='b737.tat-probe.training-power.v1';
  // The cockpit boots cold and dark. As with Window Heat, TAT training supply
@@ -36,6 +36,36 @@
    for(const cb of snapshot.breakers||[])if(cb.pulled||cb.tripped)out[cb.id]=false;
   }catch{}
   return out;
+ }
+ function cbStatus(){
+  try{
+   const snapshot=JSON.parse(localStorage.getItem(CB_KEY)||'null');
+   if(CbLink)return CbLink.read(snapshot);
+   const rec=snapshot?.breakers?.find(x=>x.id===Core.CB_ID);
+   return {key:Core.CB_ID,pulled:!!(rec?.pulled||rec?.tripped),tripped:!!rec?.tripped,fault:rec?.fault||null};
+  }catch{return {key:Core.CB_ID,pulled:false,tripped:false,fault:null};}
+ }
+ function setCbPulled(pulled){
+  if(typeof pulled!=='boolean'||!CbLink)return {ok:false,reason:'CB_LINK_UNAVAILABLE'};
+  // If the real CB Panel Lab is open, use its own kernel: it enforces
+  // fault and pull rules and persists the same shared state.
+  try{
+   const front=document.getElementById('cbPanelFrame')?.contentWindow?.B737_CB_LAB;
+   if(front&&typeof front.setPulled==='function'){
+    const ok=front.setPulled(Core.CB_ID,pulled);
+    if(ok){evaluate();return {ok:true,state:cbStatus(),source:'CB_PANEL_LAB'};}
+    return {ok:false,reason:'CB_KERNEL_REJECTED',state:cbStatus()};
+   }
+  }catch{}
+  try{
+   const raw=localStorage.getItem(CB_KEY);
+   const existing=raw?JSON.parse(raw):null;
+   const variant=JSON.parse(localStorage.getItem('b737classic.aircraft-profile.v1')||'{}').pressurization;
+   const result=CbLink.setPulled(existing,pulled,variant);
+   if(!result.ok)return result;
+   localStorage.setItem(CB_KEY,JSON.stringify(result.snapshot));
+   evaluate();return {ok:true,state:cbStatus(),source:'SHARED_CB_SNAPSHOT'};
+  }catch{return {ok:false,reason:'CB_STORAGE_ERROR'};}
  }
  function project(o){
   const f=frame();if(!f)return;
@@ -151,6 +181,7 @@
  }
  window.B737TATProbeUnifiedV1=Object.freeze({
   getOutput:()=>output,getState:()=>state,injectFault:fault,setTrainingPower,
+  getCbState:cbStatus,setCbPulled,
   evaluate,cbId:Core.CB_ID,reset:()=>{state=Core.initialState();pressed=false;try{localStorage.setItem(FAULT_KEY,'{}');}catch{}evaluate();}
  });
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
