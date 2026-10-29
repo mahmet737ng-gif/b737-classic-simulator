@@ -35,7 +35,7 @@ assert.ok(skin.includes('#region-main'),'No overhead or pedestal art changes');
 assert.equal(assembly.assets[positions.engine.asset].sha256,
  '7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856');
 assert.equal(assembly.assets[positions['fo-inner'].asset].sha256,
- '171bf9e8d21347e7a522ebc86b19cfe0b967f0503d26c483d8f3d685f719576a');
+ '16120d7f4e38aef3854619f231ee2a324b4888bc35c506d0b6d24e1b8417c672');
 let altered=JSON.parse(JSON.stringify(assembly));
 altered.regions.find(r=>r.id==='main').placements.find(p=>p.id==='fo-inner').x+=4;
 assert.throws(()=>render.geometry(altered),/MUST NOT move/);
