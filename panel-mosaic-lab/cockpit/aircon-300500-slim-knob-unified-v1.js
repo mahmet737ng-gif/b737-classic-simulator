@@ -5,7 +5,7 @@
 (function(){
  'use strict';
  const ids=['control-cabin-temp','pass-cabin-temp'];
- const asset=new URL('./assets/aircon-300500-approved-slim-temp-knob-v2.webp',document.baseURI).href;
+ const asset=new URL('./assets/aircon-300500-owner-approved-round-knob-v3.webp',document.baseURI).href;
  const originals=new WeakMap();
  const key='b737classic.aircraft-profile.v1';
  const propNames=['left','top','width','height','transform-origin','object-fit','scale'];
@@ -33,8 +33,8 @@
   const w=parseFloat(btn.style.width),h=parseFloat(btn.style.height);
   if(!Number.isFinite(w)||!Number.isFinite(h)||w<=0||h<=0)return false;
   // The physical pivot remains exactly the existing OH20 rotary socket center.
-  // Direct, transparent WebP (144x336): approved slim black knob; no SVG\n  // image nesting (which failed in the user's Chrome browser).
-  const imageW=w*.31,imageH=imageW*(336/144);
+  // Owner-approved transparent round knob (192x192): its full central base\n  // covers the recessed hole but leaves the panel's position labels visible.
+  const imageW=w*.60,imageH=imageW;
   img.style.setProperty('width',imageW+'px');
   img.style.setProperty('height',imageH+'px');
   img.style.setProperty('left',(w-imageW)/2+'px');
