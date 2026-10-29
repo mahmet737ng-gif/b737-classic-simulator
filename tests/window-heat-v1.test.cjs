@@ -109,3 +109,60 @@ test('PWR TEST leaves failed channels dark while healthy channels illuminate',()
  assert.equal(q.channels.R_SIDE.greenOn,false,'failed power-test circuit stays dark');
  assert.ok(Object.entries(q.channels).filter(([id])=>id!=='R_SIDE').every(([,x])=>x.greenOn));
 });
+test('Every lost electrical bus extinguishes BOTH green ON and amber OVERHEAT on only affected channels',()=>{
+ for(const busKey of Object.keys(bus())){
+  const active=run(undefined,{switches:{...sw(),'window-power-test':'OVHT'}},0);
+  const outage=run(active.state,{buses:{...bus(),[busKey]:false}},1).output;
+  for(const [id,c] of Object.entries(WH.CHANNELS)){
+   const affected=[c.controllerAC,c.controllerDC,c.heaterBus].includes(busKey);
+   assert.equal(outage.channels[id].indicationPowered,!affected,id+' '+busKey+' indication');
+   assert.equal(outage.channels[id].overheatOn,!affected,id+' '+busKey+' OVERHEAT');
+   assert.equal(outage.channels[id].greenOn,!affected,id+' '+busKey+' green ON');
+   if(affected)assert.equal(outage.channels[id].heaterPower,false,id+' '+busKey+' heat');
+  }
+ }
+});
+test('Each heater and controller CB pull cancels that channel OVERHEAT test, not the other three',()=>{
+ for(const [id,c] of Object.entries(WH.CHANNELS))for(const breakerId of [c.heaterCB,c.controllerCB]){
+  const testRunning=run(undefined,{switches:{...sw(),'window-power-test':'OVHT'}},0);
+  const pulled=run(testRunning.state,{breakers:{[breakerId]:false}},1).output;
+  assert.equal(pulled.channels[id].indicationPowered,false,id+' '+breakerId);
+  assert.equal(pulled.channels[id].greenOn,false,id+' '+breakerId);
+  assert.equal(pulled.channels[id].overheatOn,false,id+' '+breakerId);
+  for(const other of Object.keys(WH.CHANNELS).filter(key=>key!==id))
+   assert.equal(pulled.channels[other].overheatOn,true,other+' must keep its test');
+ }
+});
+test('Returning power does not relight an abandoned OVHT test or invent new OVERHEAT',()=>{
+ let r=run(undefined,{switches:{...sw(),'window-power-test':'OVHT'}},0);
+ assert.equal(r.output.channels.L_FWD.overheatOn,true);
+ r=run(r.state,{buses:{...bus(),main1:false}},10);
+ assert.equal(r.output.channels.L_FWD.overheatOn,false);
+ assert.equal(r.state.channels.L_FWD.ovhtTestLatched,false);
+ assert.equal(r.output.channels.L_SIDE.overheatOn,true);
+ r=run(r.state,{buses:bus()},1);
+ assert.equal(r.output.channels.L_FWD.overheatOn,false);
+ assert.equal(r.output.channels.R_SIDE.overheatOn,false);
+ assert.equal(r.output.channels.L_FWD.greenOn,true);
+ assert.equal(r.output.channels.L_SIDE.overheatOn,true);
+});
+test('True thermal overheat is retained unlit while unpowered and reappears only when power is restored',()=>{
+ const initial=WH.initialState();
+ initial.channels.L_FWD.temp=65;
+ let r=run(initial,{},0);
+ assert.equal(r.output.channels.L_FWD.overheatOn,true);
+ assert.equal(r.output.channels.L_FWD.heaterPower,false);
+ r=run(r.state,{buses:{...bus(),main1:false}},1);
+ assert.equal(r.output.channels.L_FWD.overheatOn,false);
+ assert.equal(r.state.channels.L_FWD.overheat,true,'actual hot temperature state remains');
+ r=run(r.state,{buses:bus()},1);
+ assert.equal(r.output.channels.L_FWD.overheatOn,true,'true thermal condition may illuminate only when supplied');
+});
+test('A stuck-overheat training fault never illuminates an electrically dead annunciator',()=>{
+ const fault=WH.injectFault(WH.initialState(),'R_FWD','STUCK_OVERHEAT',true);
+ let r=run(fault,{},0);
+ assert.equal(r.output.channels.R_FWD.overheatOn,true);
+ r=run(r.state,{breakers:{[WH.CHANNELS.R_FWD.controllerCB]:false}},0);
+ assert.equal(r.output.channels.R_FWD.overheatOn,false);
+ assert.equal(r.output.channels.R_FWD.greenOn,false);
+});
