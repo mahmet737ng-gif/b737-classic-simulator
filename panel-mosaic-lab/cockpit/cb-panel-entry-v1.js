@@ -8,7 +8,7 @@
  const frame=document.getElementById('cbPanelFrame');
  if(!open||!dialog||!close||!frame)return;
  function openCB(){
-  if(!frame.getAttribute('src'))frame.src=new URL('../../cb-panel-lab/?v=CB-RESULTS-0001',document.baseURI).href;
+  if(!frame.getAttribute('src'))frame.src=new URL('../../cb-panel-lab/?v=CB-FOUR-FLASH-0001',document.baseURI).href;
   if(typeof dialog.showModal==='function'&&!dialog.open)dialog.showModal();
   else if(typeof dialog.showModal!=='function')location.assign(frame.src);
  }
