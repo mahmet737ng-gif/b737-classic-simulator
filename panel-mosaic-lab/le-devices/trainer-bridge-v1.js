@@ -51,8 +51,11 @@
    mode=action.mode||'NORMAL';te=actuator.initialState();physicalMotion=false;stopMotion();
    return paint();
   }
-  if(action.type==='FLAP_LEVER')
+  if(action.type==='FLAP_LEVER'){
+   const firstExtension=physicalMotion&&te.command===0&&te.actual<1e-6&&action.value>0;
    te=actuator.apply(te,{type:'COMMAND',value:action.value});
+   if(firstExtension)state=engine.apply(state,{type:'START_LE_SEQUENCE'});
+  }
   else if(action.type==='HYDRAULIC'&&action.system==='B')
    te=actuator.apply(te,{type:'HYDRAULIC',value:action.value});
   else if(physicalTick)
