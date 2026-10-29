@@ -4,7 +4,12 @@
  */
 (function(){'use strict';
  const Core=window.B737WindowHeatV1;if(!Core){console.error('Window Heat core unavailable');return;}
- const CB_KEY='b737classic.cb.v1',FAULT_KEY='b737.windowheat.faults.v1';
+ const CB_KEY='b737classic.cb.v1',FAULT_KEY='b737.windowheat.faults.v1',TRAIN_KEY='b737.windowheat.training-power.v1';
+ const TRAIN_BUSES=Object.freeze({generator1:true,generator2:true,main1:true,main2:true,dc1:true,dc2:true});
+ let trainingPower=false;
+ try{trainingPower=localStorage.getItem(TRAIN_KEY)==='1';}catch{}
+ // TEST POWER is only an explicit instructor supply for Window Heat.
+ // Never energize the aircraft network, never close CBs, never mask failures.
  let s=Core.initialState(),last=null,lastAt=performance.now(),child=null,previousCaution=null;
  let faults={};try{faults=JSON.parse(localStorage.getItem(FAULT_KEY)||'{}')||{};}catch{}
  for(const [ch,f] of Object.entries(faults)){if(!Core.CHANNELS[ch]||!f||typeof f!=='object')continue;
@@ -49,8 +54,20 @@
   }
  }
 
+ function diagnosticPower(b){
+  const keys=['generator1','generator2','main1','main2','dc1','dc2'];
+  const off=keys.filter(k=>b?.[k]===false),unknown=keys.filter(k=>b?.[k]!==true&&b?.[k]!==false);
+  return {liveBuses:b||null,off,unknown,mode:trainingPower?'WINDOW_HEAT_TRAINING_SUPPLY':'AIRCRAFT_ELECTRICAL',
+   explanation:trainingPower?'TRAINING POWER ON · ONLY WINDOW HEAT · CBs and faults remain active'
+     :!b?'AIRCRAFT ELECTRICAL STATE NOT READY'
+     :off.length||unknown.length?'WINDOW HEAT FEED INCOMPLETE · OFF: '+(off.join(', ')||'none')+' · UNKNOWN: '+(unknown.join(', ')||'none')
+     :'WINDOW HEAT AC/DC FEEDS AVAILABLE'};
+ }
  function draw(out){
   if(!ui)return;
+  const live=buses(),power=diagnosticPower(live);
+  const powerStatus=ui.querySelector('#wh-power-status');
+  if(powerStatus)powerStatus.textContent=power.explanation;
   const status=ui.querySelector('#wh-status');
   status.textContent=Object.keys(out.channels).map(id=>{const v=out.channels[id];return id.replace('_',' ')+' '+(v.overheatOn?'OVHT':v.greenOn?'ON':v.selected?'STBY/OFF':'OFF');}).join(' · ')+
    ' | ANTI-ICE '+(out.annunciations.antiIceCaution?'CAUTION':'NORMAL');
@@ -74,6 +91,8 @@
   ui.innerHTML='<summary style="cursor:pointer;font-weight:700">WINDOW HEAT · Live System / Failure Test</summary>'+
    '<p style="font-size:12px">Real OH15 switches + Electrical V7 + CB Panel Lab. FCOM 3/SP.3 generic training.</p>'+
    '<p id="wh-status" role="status">Connecting overhead and electrical engine…</p>'+
+   '<label style="display:flex;align-items:center;gap:7px;padding:8px;border:1px solid #647785;border-radius:5px"><input id="wh-training-power" type="checkbox" aria-label="Enable training power for Window Heat only"> WINDOW HEAT TRAINING POWER · AC/DC (demo only)</label>'+
+   '<p id="wh-power-status" role="status" style="font-size:11px">Checking real AC/DC buses…</p>'+
    '<div style="display:flex;gap:8px;margin:8px 0 12px 0"><span id="wh-caution-master" style="padding:5px 9px;border:1px solid #42525f;border-radius:4px;font-weight:700">MASTER CAUTION</span><span id="wh-caution-anti-ice" style="padding:5px 9px;border:1px solid #42525f;border-radius:4px;font-weight:700">ANTI-ICE</span></div>'+
    '<div style="overflow-x:auto"><table style="font-size:11px;width:100%;border-collapse:collapse"><thead><tr><th>CH</th><th>SW</th><th>CTRL</th><th>POWER</th><th>TEMP</th><th>GREEN</th><th>OVHT</th></tr></thead><tbody id="wh-rows"></tbody></table></div>'+
    '<p id="wh-aux"></p>'+
@@ -82,12 +101,23 @@
    '<button type="button" id="wh-inject">Inject fault</button><button type="button" id="wh-clear">Clear fault</button><button type="button" id="wh-reset">Reset WH</button></div>'+
    '<p style="font-size:11px"><a href="../../cb-panel-lab/" target="_blank" rel="noopener">Open CB panels P6-11 / P6-12 / P18-3</a> (same browser origin; pulls sync live). Test POWER and OVHT with the real centre spring switch.</p>';
   anchor.append(ui);
+  const trainingCheckbox=ui.querySelector('#wh-training-power');
+  trainingCheckbox.checked=trainingPower;
+  trainingCheckbox.onchange=()=>setTrainingPower(!!trainingCheckbox.checked);
   const controls=()=>[ui.querySelector('#wh-channel').value,ui.querySelector('#wh-fault').value];
   ui.querySelector('#wh-inject').onclick=()=>{const [ch,f]=controls();fault(ch,f,true);};
   ui.querySelector('#wh-clear').onclick=()=>{const [ch,f]=controls();fault(ch,f,false);};
   ui.querySelector('#wh-reset').onclick=()=>{s=Core.initialState();faults={};saveFaults();tick(0);};
  }
  function saveFaults(){try{localStorage.setItem(FAULT_KEY,JSON.stringify(faults));}catch{}}
+ function setTrainingPower(active){
+  if(typeof active!=='boolean')throw Error('Window Heat training power expects boolean');
+  trainingPower=active;
+  try{localStorage.setItem(TRAIN_KEY,active?'1':'0');}catch{}
+  const control=ui?.querySelector('#wh-training-power');if(control)control.checked=active;
+  tick(0);
+  return diagnosticPower(buses());
+ }
  function fault(channel,id,active){
   s=Core.injectFault(s,channel,id,active);
   if(!faults[channel])faults[channel]={};faults[channel][id]=active;saveFaults();tick(0);
@@ -97,11 +127,13 @@
   // If the CB tab is active or this tab is briefly background-throttled,
   // catch up using elapsed real time rather than delaying the expiry.
   const now=performance.now(),dt=typeof forcedSeconds==='number'?forcedSeconds:Math.min(300,Math.max(0,(now-lastAt)/1000));lastAt=now;
-  const b=buses(),sw=switches();if(!b||!Object.keys(sw).length){
+  const live=buses(),b=trainingPower?TRAIN_BUSES:live,sw=switches();if(!b||!Object.keys(sw).length){
    if(ui)ui.querySelector('#wh-status').textContent='WAITING FOR LIVE ELECTRICAL / OVERHEAD AUTHORITY';
    return;
   }
   const r=Core.step(s,{buses:b,switches:sw,breakers:breaks()},dt);s=r.state;last=r.output;
+  last.powerDiagnostic=diagnosticPower(live);
+  last.powerDiagnostic.effectiveBuses={...b};
   applyLamps(last);draw(last);
   if(previousCaution!==last.annunciations.antiIceCaution){
    previousCaution=last.annunciations.antiIceCaution;
@@ -117,6 +149,9 @@
   }
  }
  function boot(){makeUI();linkOverhead();setInterval(()=>{linkOverhead();tick();},250);window.addEventListener('storage',e=>{if(e.key===CB_KEY)tick(0);if(e.key===FAULT_KEY){try{const next=JSON.parse(e.newValue||'{}');for(const ch of Object.keys(Core.CHANNELS))for(const f of Core.FAULTS)s=Core.injectFault(s,ch,f,!!next?.[ch]?.[f]);faults=next;}catch{}tick(0);}});}
- window.B737WindowHeatUnifiedV1=Object.freeze({getState:()=>s,getOutput:()=>last,injectFault:fault,reset:()=>{s=Core.initialState();faults={};saveFaults();tick(0);},evaluate:()=>tick(0),matchedCBs:Core.ALL_CBS});
+ window.B737WindowHeatUnifiedV1=Object.freeze({getState:()=>s,getOutput:()=>last,
+  getPowerDiagnostic:()=>diagnosticPower(buses()),setTrainingPower,injectFault:fault,
+  reset:()=>{s=Core.initialState();faults={};saveFaults();tick(0);},
+  evaluate:()=>tick(0),matchedCBs:Core.ALL_CBS});
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
 })();
