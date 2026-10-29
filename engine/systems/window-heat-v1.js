@@ -18,7 +18,7 @@
  const ALL_CBS=Object.freeze([...Object.keys(PHOTO_CB),AUX.L45.breaker,AUX.R45.breaker]);
  const FAULTS=Object.freeze(['HEATER_FAIL','CONTROLLER_FAIL','SENSOR_FAIL','STUCK_OVERHEAT','POWER_TEST_FAIL']);
  const copy=v=>JSON.parse(JSON.stringify(v));
- function initialState(){return {schema:'b737-window-heat/1',elapsed:0,test:'NEUTRAL',ovhtTestElapsed:null,channels:Object.fromEntries(Object.keys(CHANNELS).map(k=>[k,{temp:18,heating:false,overheat:false,ovhtTestLatched:false,lastSwitch:false}])),aux:{L45:{temp:18,heating:false,thermostatOn:true},R45:{temp:18,heating:false,thermostatOn:true}},faults:Object.fromEntries(Object.keys(CHANNELS).map(k=>[k,{}]))};}
+ function initialState(){return {schema:'b737-window-heat/1',elapsed:0,test:'NEUTRAL',ovhtTestElapsed:null,channels:Object.fromEntries(Object.keys(CHANNELS).map(k=>[k,{temp:18,heating:false,overheat:false,ovhtTestLatched:false,ovhtTestGreen:false,lastGreen:null,lastSwitch:false}])),aux:{L45:{temp:18,heating:false,thermostatOn:true},R45:{temp:18,heating:false,thermostatOn:true}},faults:Object.fromEntries(Object.keys(CHANNELS).map(k=>[k,{}]))};}
  function injectFault(s,channel,fault,active){if(!CHANNELS[channel]||!FAULTS.includes(fault)||typeof active!=='boolean')throw Error('Invalid Window Heat instructor fault');const n=copy(s);n.faults[channel][fault]=active;return n;}
  const breakerClosed=(cbs,key)=>!cbs||cbs[key]!==false;
  const busOk=(buses,key)=>!!buses&&buses[key]===true;
@@ -28,16 +28,26 @@
   const n=copy(s),sw=input.switches||{},b=input.buses||{},cb=input.breakers||{},test=['OVHT','PWR TEST'].includes(sw['window-power-test'])?sw['window-power-test']:'NEUTRAL';
   n.elapsed+=seconds;n.test=test;
   // SP overheat-test condition persists until OFF -> ON reset; annunciation holds for training.
+  // This spring-loaded test only initiates the simulated trip. The trip stays
+  // latched after the selector returns to neutral, until each WINDOW HEAT
+  // switch is cycled OFF and then ON (FCOM SP.3.1–3.2).
   if(test==='OVHT'&&n.ovhtTestElapsed===null)n.ovhtTestElapsed=0;
   if(n.ovhtTestElapsed!==null)n.ovhtTestElapsed+=seconds;
   const outputs={},auxOut={};
   for(const [id,d] of Object.entries(CHANNELS)){
     const q=n.channels[id],f=n.faults[id]||{},selected=sw[d.switchId]==='ON';
-    if(!selected){q.ovhtTestLatched=false;q.overheat=false;q.lastSwitch=false;}
-    if(test==='OVHT'&&selected)q.ovhtTestLatched=true;
+    if(!selected){q.ovhtTestLatched=false;q.ovhtTestGreen=false;q.overheat=false;q.lastGreen=false;q.lastSwitch=false;}
     const controller=busOk(b,d.controllerAC)&&busOk(b,d.controllerDC)&&breakerClosed(cb,d.controllerCB)&&!f.CONTROLLER_FAIL&&!f.SENSOR_FAIL;
     const heaterBus=busOk(b,d.heaterBus),heaterCB=breakerClosed(cb,d.heaterCB);
     const supply=controller&&heaterBus&&heaterCB&&!f.HEATER_FAIL;
+    if(test==='OVHT'&&selected&&!q.ovhtTestLatched){
+      // Preserve the PRE-TEST ON indication. SP.3.2 does not turn an
+      // extinguished green light ON during the overheat test; instead,
+      // illuminated ON lights go out after approximately one minute.
+      q.ovhtTestGreen=q.lastGreen===null
+        ?(supply&&q.temp<d.target-1.5&&!q.overheat):q.lastGreen;
+      q.ovhtTestLatched=true;
+    }
     const forcedOverheat=Boolean(f.STUCK_OVERHEAT||q.ovhtTestLatched);
     if(!forcedOverheat&&q.overheat&&q.temp<=d.restore)q.overheat=false;
     if(q.temp>=d.cutout||f.STUCK_OVERHEAT)q.overheat=true;
@@ -50,7 +60,10 @@
     q.heating=heater&&!q.overheat;
     const overheat=selected&&(q.overheat||q.ovhtTestLatched||(!controller||!heaterBus||!heaterCB)&&q.temp<d.target-1.5);
     const pendingOvhtTest=q.ovhtTestLatched&&n.ovhtTestElapsed!==null&&n.ovhtTestElapsed<60;
-    const green=selected&&((q.heating||test==='PWR TEST'&&supply&&!blocked&&!f.POWER_TEST_FAIL)||pendingOvhtTest&&supply);
+    const green=selected&&(q.ovhtTestLatched
+      ?(pendingOvhtTest&&q.ovhtTestGreen&&supply)
+      :(q.heating||test==='PWR TEST'&&supply&&!blocked&&!f.POWER_TEST_FAIL));
+    q.lastGreen=!!green;
     outputs[id]={id,selected,temperatureC:Math.round(q.temp*10)/10,heaterPower:q.heating,controllerPower:controller,heaterFeed:heaterBus,cbHeaterClosed:heaterCB,cbControllerClosed:breakerClosed(cb,d.controllerCB),normalTargetApproxC:d.target,overheatLimitC:d.cutout,restoreLimitC:d.restore,greenOn:!!green,overheatOn:!!overheat,warning:!!overheat,source:'FCOM+MRG_GENERIC_TRAINER'};
     q.lastSwitch=selected;
   }
