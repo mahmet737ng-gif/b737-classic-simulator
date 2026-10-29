@@ -1,0 +1,135 @@
+/* Unified 737-300/500, nonintrusive OH20 twin-needle renderer & backend adapter.
+ * Source/atlas/Owner18/400 panels remain untouched.
+ */
+(function(){
+ 'use strict';
+ const model=window.B737AirMixValve300500V1;
+ if(!model){console.error('AIR-MIX-300500 model missing');return;}
+ const SVG='http://www.w3.org/2000/svg',PROFILE='b737classic.aircraft-profile.v1',CB='b737classic.cb.v1';
+ const sprite=new URL('./assets/air-mix-valve-300500-needle-v1.svg?v=AIR-MIX-300500-001',document.baseURI).href;
+ const state={CONT:{cabinC:null,ductC:null,overheat:false,stuck:false,transmitterFailed:false,targetC:null},
+  PASS:{cabinC:null,ductC:null,overheat:false,stuck:false,transmitterFailed:false,targetC:null}};
+ let engine=model.create(),frame=null,layer=null,assemblies={},last=performance.now(),trainingPower=null;
+ const $=id=>document.getElementById(id);
+ function family(){return window.B737AircraftProfileStore?.get()?.aircraftFamily==='B737-400'?'B737-400':'B737-300-500';}
+ function child(){try{return frame?.contentWindow;}catch{return null;}}
+ function createSvg(doc,parent,tag,attrs={}){
+  const el=doc.createElementNS(SVG,tag);for(const [name,value]of Object.entries(attrs))el.setAttribute(name,String(value));parent.append(el);return el;
+ }
+ function syncLayer(){
+  const doc=frame?.contentDocument,host=doc?.getElementById('atlasAbsolute');
+  const plate=host?.querySelector('.atlas-piece[data-key="OH20"]'),strip=plate?.querySelector('.atlas-source-strip');
+  if(!plate||!strip)return false;
+  if(!layer||!layer.isConnected){
+   layer=createSvg(doc,host,'svg',{'data-air-mix-valve-300500':'true',viewBox:'0 0 1254 1254',preserveAspectRatio:'none',
+    'aria-label':'737-300/500 air mix valve position needles'});
+   Object.assign(layer.style,{position:'absolute',zIndex:'1007',pointerEvents:'none',overflow:'hidden'});
+   assemblies={};
+   for(const side of model.SIDES){
+    const p=model.GAUGES[side],g=createSvg(doc,layer,'g',{'data-air-mix-side':side,transform:'translate('+p.x+' '+p.y+')'});
+    const rotary=createSvg(doc,g,'g',{'data-air-mix-rotor':side});
+    Object.assign(rotary.style,{transformOrigin:'0px 0px',transition:'transform 160ms linear'});
+    createSvg(doc,rotary,'image',{href:sprite,x:-128,y:-128,width:256,height:256});
+    assemblies[side]=g;
+   }
+  }
+  const n=v=>Number.parseFloat(v)||0;
+  Object.assign(layer.style,{left:(n(plate.style.left)+n(strip.style.left))+'px',
+   top:(n(plate.style.top)+n(strip.style.top))+'px',width:strip.style.width,height:strip.style.height,
+   display:family()==='B737-300-500'?'block':'none'});
+  return true;
+ }
+ function cbClosed(){
+  try{
+   const s=JSON.parse(localStorage.getItem(CB)||'null'),variant=window.B737AircraftProfileStore?.get()?.pressurization==='DCPCS'?'DCPCS':'CPCS';
+   if(!s||!Array.isArray(s.breakers))return true; // no pulled CBs persisted
+   return !s.breakers.some(b=>b.id==='P6-4|'+variant+'|D3'&&(b.pulled||b.tripped));
+  }catch{return true;}
+ }
+ function bus(){
+  try{return window.B737ISNCockpitV1?.getState()?.state?.electrical?.bus||null;}catch{return null;}
+ }
+ function bool(v){return typeof v==='boolean'?v:null;}
+ function inputs(){
+  const w=child(),rot=w?.B737RotaryGuards?.getState?.()?.rotaries||{},tog=w?.B737OverheadToggles?.getState?.()||{},b=bus();
+  const ac=b?Boolean(b.transfer1===true||b.transfer2===true):null;
+  const power=trainingPower===null?ac:trainingPower;
+  const result={};
+  for(const side of model.SIDES){
+   const meta=model.GAUGES[side],selector=rot[meta.selector];
+   result[side]={...state[side],
+    selector:model.SELECTORS.includes(selector)?selector:'AUTO NORM',
+    packMode:['OFF','AUTO','HIGH'].includes(tog[meta.pack])?tog[meta.pack]:null,
+    actuatorPower:power,indicatorPower:bool(b?.dc2),indicatorCB:cbClosed()};
+  }
+  return result;
+ }
+ function render(x){
+  if(!syncLayer())return;
+  for(const side of model.SIDES){
+   const g=assemblies[side],rotor=g?.querySelector('[data-air-mix-rotor]');if(!g||!rotor)continue;
+   const value=model.indication(engine,x,side);
+   g.style.visibility=value.valid?'visible':'hidden';
+   rotor.style.transform='rotate('+((value.angle??0).toFixed(3))+'deg)';
+   g.setAttribute('data-air-mix-position',engine.positions[side].toFixed(5));
+   g.setAttribute('data-air-mix-valid',String(value.valid));
+   g.setAttribute('aria-label',side+' '+Math.round(engine.positions[side]*100)+' percent hot; '+value.reason);
+  }
+  const readout=$('airMix300500Readout');
+  if(readout)readout.textContent=model.SIDES.map(side=>side+' '+Math.round(engine.positions[side]*100)+'% HOT · '+engine.reason[side]+' · '+model.indication(engine,x,side).reason).join(' | ');
+ }
+ function tick(){
+  const now=performance.now(),dt=Math.max(0,Math.min(1,(now-last)/1000));last=now;
+  if(family()!=='B737-300-500'){if(layer)layer.style.display='none';return;}
+  const x=inputs();engine=model.step(engine,x,dt);render(x);
+  window.dispatchEvent(new CustomEvent('b737:air-mix-valve-300500-state',{detail:{positions:{...engine.positions},command:{...engine.command},reason:{...engine.reason},power:{CONT:x.CONT.indicatorPower,PASS:x.PASS.indicatorPower}}}));
+ }
+ function setInputs(side,data){
+  if(!model.SIDES.includes(side)||!data||typeof data!=='object')throw Error('Invalid air mix input');
+  const fields=['cabinC','ductC','overheat','stuck','transmitterFailed','targetC'];
+  for(const k of fields)if(Object.prototype.hasOwnProperty.call(data,k)){
+   const v=data[k];if(['cabinC','ductC','targetC'].includes(k)){if(v!==null&&!(typeof v==='number'&&Number.isFinite(v)))throw Error('Invalid '+k);}
+   else if(typeof v!=='boolean')throw Error('Invalid '+k);
+   state[side][k]=v;
+  }
+  tick();return getState();
+ }
+ function getState(){return {family:family(),engine:JSON.parse(JSON.stringify(engine)),inputs:inputs(),trainingPower};}
+ function reset(){engine=model.create();for(const side of model.SIDES)Object.assign(state[side],{cabinC:null,ductC:null,overheat:false,stuck:false,transmitterFailed:false,targetC:null});trainingPower=null;tick();}
+ function connect(){
+  const next=$('overheadFrame');if(!next)return;
+  if(next!==frame){frame=next;frame.addEventListener('load',()=>{layer=null;assemblies={};syncLayer();});}
+  syncLayer();
+ }
+ function panel(){
+  const anchor=$('inspector');if(!anchor||$('airMix300500Lab'))return;
+  const section=document.createElement('section');section.id='airMix300500Lab';section.dir='ltr';
+  const h=document.createElement('h2');h.textContent='AIR MIX VALVE · 300/500';section.append(h);
+  const note=document.createElement('p');note.className='muted';note.textContent='Live OH20 selectors and P6-4 D3 indication CB. Sensor injection is training-only; AUTO setpoints and valve travel require aircraft calibration.';section.append(note);
+  for(const side of model.SIDES){
+   const label=document.createElement('label');label.textContent=side+' CABIN SENSOR °C';label.style.display='block';
+   const inp=document.createElement('input');Object.assign(inp,{type:'number',min:'-30',max:'70',step:'0.5',placeholder:'Unknown'});
+   inp.style.width='85px';inp.addEventListener('change',()=>setInputs(side,{cabinC:inp.value===''?null:Number(inp.value)}));
+   label.append(inp);section.append(label);
+  }
+  const label=document.createElement('label');label.textContent='Instructor power override (115V actuator)';label.style.display='block';
+  const select=document.createElement('select');
+  for(const [v,name] of [['AUTO','Live electrical bus'],['ON','Training AC ON'],['OFF','Training AC OFF']]){
+   const opt=document.createElement('option');opt.value=v;opt.textContent=name;select.append(opt);
+  }
+  select.addEventListener('change',()=>{trainingPower=select.value==='AUTO'?null:select.value==='ON';tick();});label.append(select);section.append(label);
+  const read=document.createElement('p');read.id='airMix300500Readout';read.style.fontSize='11px';read.style.overflowWrap='anywhere';section.append(read);
+  const resetButton=document.createElement('button');resetButton.type='button';resetButton.textContent='Reset air-mix training state';
+  resetButton.onclick=()=>{reset();select.value='AUTO';for(const input of section.querySelectorAll('input'))input.value='';};
+  section.append(resetButton);anchor.append(section);
+ }
+ window.B737AirMix300500UnifiedV1=Object.freeze({getState,setInputs,reset,
+  setTrainingPower:v=>{if(v!==null&&typeof v!=='boolean')throw Error('Power must be boolean or null');trainingPower=v;tick();},
+  resetOverheat:side=>model.resetOverheat(engine,side,inputs()),sync:()=>{connect();tick();}});
+ window.addEventListener('b737:cockpit-mounted',connect);
+ window.addEventListener('b737:aircraft-profile-change',()=>{connect();tick();});
+ window.addEventListener('storage',e=>{if(e.key===CB||e.key===PROFILE)tick();});
+ window.addEventListener('b737:aircon300500-inputs',e=>{for(const [side,data] of Object.entries(e.detail||{}))if(model.SIDES.includes(side))setInputs(side,data);});
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{connect();panel();},{once:true});else{connect();panel();}
+ setInterval(tick,160);
+})();
