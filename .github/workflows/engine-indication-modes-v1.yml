@@ -8,6 +8,10 @@ on:
       - 'panel-mosaic-lab/cockpit/assets/conventional-engine-face-v1.svg'
       - 'panel-mosaic-lab/cockpit/index.html'
       - 'tests/engine-indication-modes-v1.test.cjs'
+      - 'tests/conventional-engine-needles-v1.test.cjs'
+      - 'panel-mosaic-lab/cockpit/conventional-engine-needles-v1.js'
+      - 'panel-mosaic-lab/cockpit/conventional-engine-needles-v1.css'
+      - 'panel-mosaic-lab/cockpit/assets/conventional-needle-photo-v1.svg'
       - '.github/workflows/engine-indication-modes-v1.yml'
   pull_request:
     paths:
@@ -17,6 +21,10 @@ on:
       - 'panel-mosaic-lab/cockpit/assets/conventional-engine-face-v1.svg'
       - 'panel-mosaic-lab/cockpit/index.html'
       - 'tests/engine-indication-modes-v1.test.cjs'
+      - 'tests/conventional-engine-needles-v1.test.cjs'
+      - 'panel-mosaic-lab/cockpit/conventional-engine-needles-v1.js'
+      - 'panel-mosaic-lab/cockpit/conventional-engine-needles-v1.css'
+      - 'panel-mosaic-lab/cockpit/assets/conventional-needle-photo-v1.svg'
       - '.github/workflows/engine-indication-modes-v1.yml'
 jobs:
   validate-engine-views:
@@ -29,7 +37,9 @@ jobs:
         with:
           node-version: '22'
       - name: EIS / Conventional view regression
-        run: node tests/engine-indication-modes-v1.test.cjs
+        run: |
+          node tests/engine-indication-modes-v1.test.cjs
+          node tests/conventional-engine-needles-v1.test.cjs
       - name: Frozen overhead check
         run: python3 panel-mosaic-lab/verify-final-overhead.py
       - name: Frozen guarded switches check
