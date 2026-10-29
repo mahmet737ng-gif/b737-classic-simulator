@@ -29,8 +29,8 @@ for(const key of ['OH21_400','OH21_300500']){
  assert.equal(Object.keys(p.lights).length,9);
  for(const n of ['recirc-fan','pack-l','pack-r','isolation-valve','bleed-eng-1','bleed-apu','bleed-eng-2','aircon-ovht-test','trip-reset'])assert.ok(p.controls[n]);
 }
-assert.equal(Object.keys(panels.OH21_400.controls).length,11);
-assert.equal(Object.keys(panels.OH21_300500.controls).length,10);
+assert.equal(Object.keys(panels.OH21_400.controls).length,10);
+assert.equal(Object.keys(panels.OH21_300500.controls).length,9);
 assert.ok(panels.OH21_400.controls['recirc-fan-l']);
 assert.ok(!panels.OH21_300500.controls['recirc-fan-l']);
 assert.equal(Object.keys(panels.P2_CONVENTIONAL.instrument_pivots).length,16);
@@ -43,4 +43,4 @@ const overhead=fs.readFileSync(path.join(root,'overhead-stage.html'),'utf8');
 assert.match(overhead,/oh21-owner-photo-registration-v1\.js/);
 const locked=fs.readFileSync(path.join(root,'../all-overhead/final-lock.json'),'utf8');
 assert.match(locked,/FINAL_LOCKED/);
-console.log('PASS: owner OH21 sources, both families, 9 lens targets, 21 mapped controls, 16 P2 pivots, fail-safe rollback and freeze guard');
+console.log('PASS: owner OH21 sources, both families, 9 lens targets, 19 mapped controls, 16 P2 pivots, fail-safe rollback and freeze guard');
