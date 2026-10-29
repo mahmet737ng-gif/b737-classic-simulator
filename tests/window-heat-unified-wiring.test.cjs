@@ -43,3 +43,59 @@ test('Window Heat has master caution request event on hot-window fault',()=>{
  assert.ok(result);
  assert.ok(events.some(e=>e.type==='b737:window-heat-annunciations'));
 });
+
+function mountInteractiveOH15(){
+ const timer=[],handlers={},childEvents={},outEvents=[];
+ const sw={...switchOn},memory=new Map();
+ let time=0;
+ const frame={contentWindow:{
+   B737OverheadToggles:{getState:()=>({...sw})},
+   B737OverheadLights:{getState:()=>({lampTest:false})},
+   addEventListener(type,callback){childEvents[type]=callback;},
+   postMessage(){}},
+   contentDocument:{documentElement:{classList:{contains:()=>false}},querySelector:()=>null}};
+ const win={B737WindowHeatV1:Core,
+ B737ISNCockpitV1:{getStartState:()=>({electrical:busOn})},
+ addEventListener(type,fn){handlers[type]=fn;},
+ dispatchEvent(ev){outEvents.push(ev);return true;}};
+ const doc={readyState:'complete',getElementById:id=>id==='overheadFrame'?frame:null,querySelector:()=>null};
+ const store={getItem:key=>memory.get(key)||null,setItem:(key,val)=>memory.set(key,val)};
+ vm.runInNewContext(code,{window:win,document:doc,localStorage:store,
+ performance:{now:()=>time},setInterval:fn=>{timer.push(fn);return 1;},
+ CustomEvent:class{constructor(type,data){this.type=type;this.detail=data.detail;}},
+ location:{origin:'https://example.test'}},
+ {filename:'window-heat-unified-v1.js'});
+ assert.equal(timer.length,1);
+ function change(id,value){sw[id]=value;childEvents['b737:switch-change']({detail:{id,next:value}});}
+ return {change,step(seconds){time+=1000*seconds;timer[0]();return win.B737WindowHeatUnifiedV1.getOutput();},
+ output:()=>win.B737WindowHeatUnifiedV1.getOutput(),events:outEvents};
+}
+test('Real OH15 spring test is sampled immediately even when held for less than 250 ms',()=>{
+ const h=mountInteractiveOH15();
+ h.step(0);
+ h.change('window-power-test','OVHT');
+ h.change('window-power-test','OFF');
+ const o=h.output();
+ assert.ok(o,'No Window Heat output');
+ assert.ok(Object.values(o.channels).every(x=>x.overheatOn),'four amber after short OVHT pulse');
+ h.step(59);
+ assert.ok(Object.values(h.output().channels).every(x=>x.overheatOn&&x.greenOn));
+ h.step(1);
+ assert.ok(Object.values(h.output().channels).every(x=>x.overheatOn&&!x.greenOn));
+ h.step(30);
+ assert.ok(Object.values(h.output().channels).every(x=>!x.overheatOn&&x.greenOn),'timer should expire at 90 sec');
+});
+test('Real OH15 OFF->ON clears only selected amber immediately',()=>{
+ const h=mountInteractiveOH15();
+ h.step(0);
+ h.change('window-power-test','OVHT');
+ h.change('window-power-test','OFF');
+ h.step(10);
+ h.change('window-l-side','OFF');
+ assert.equal(h.output().channels.L_SIDE.overheatOn,false);
+ assert.equal(h.output().channels.R_SIDE.overheatOn,true);
+ h.change('window-l-side','ON');
+ assert.equal(h.output().channels.L_SIDE.overheatOn,false);
+ assert.equal(h.output().channels.L_SIDE.greenOn,true);
+ assert.equal(h.output().channels.R_SIDE.overheatOn,true);
+});
