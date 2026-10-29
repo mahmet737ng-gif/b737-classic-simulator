@@ -4,7 +4,7 @@ const fs=require('node:fs');
 const {chromium}=require('playwright');
 const base='http://127.0.0.1:8788/panel-mosaic-lab/cockpit/overhead-stage.html';
 (async()=>{
- const browser=await chromium.launch({headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
+ const browser=await chromium.launch({headless:true,...(process.env.CHROME_PATH?{executablePath:process.env.CHROME_PATH}:{}),args:['--no-sandbox','--disable-dev-shm-usage']});
  fs.mkdirSync('artifacts/aircon400-oh21',{recursive:true});
  try{
   for(const family of ['B737-300-500','B737-400']){
@@ -52,7 +52,10 @@ const base='http://127.0.0.1:8788/panel-mosaic-lab/cockpit/overhead-stage.html';
     const rightToggle=document.querySelector('#toggle-recirc-fan');
     const leftToggle=document.querySelector('#toggle-recirc-fan-l-400');
     const cover=document.querySelector('#aircon400Oh21Underlay');
+    const candidate=window.B737OH21OwnerPhotoV1?.status?.();
+    const photo=document.querySelector('.owner-oh21-photo-layer-v1 img');
     return {state:model.getState(),hidden:overlay.hidden,
+     candidatePhoto:{active:candidate?.active,loaded:!!photo?.isConnected,decoded:!!photo?.naturalWidth},
      labels:labels.map(fontMeasure),
      left:!!leftToggle,right:!!rightToggle,
      switches:{left:leftToggle?.getBoundingClientRect().toJSON(),right:rightToggle?.getBoundingClientRect().toJSON()},
@@ -71,7 +74,8 @@ const base='http://127.0.0.1:8788/panel-mosaic-lab/cockpit/overhead-stage.html';
    if(family==='B737-400'){
     assert.equal(data.labels.length,6,'two identical titles and matching OFF/AUTO on BOTH sides');
     assert.equal(data.nativeTooltip,null,'The unexpected extra RECIRC FAN hover tooltip must be absent in 400');
-    assert.equal(data.coverHidden,false,'400 native-right-control cover must be visible');
+    assert.equal(data.coverHidden,false,'400 native-right-control cover must remain mounted (may be photo-hidden)');
+    if(data.candidatePhoto.active==='OH21_400')assert.ok(data.candidatePhoto.loaded&&data.candidatePhoto.decoded,'Owner 400 photo must be decoded and in the DOM');
     const titleLabels=data.labels.filter(x=>x.kind==='title');
     assert.equal(titleLabels.length,2);
     assert.equal(titleLabels[0].rect.width,titleLabels[1].rect.width,'Equal title widths');
@@ -84,7 +88,7 @@ const base='http://127.0.0.1:8788/panel-mosaic-lab/cockpit/overhead-stage.html';
     assert.equal(detents[1].rect.width,detents[3].rect.width);
     for(const l of data.labels){
      assert.ok(l.painted<=l.available-3,'Label overflows its lens: '+JSON.stringify(l));
-     assert.equal(l.visible,'visible');
+     assert.equal(l.visible,data.candidatePhoto.loaded?'hidden':'visible','Legacy labels must be covered by the user photo');
      assert.notEqual(l.background,'rgb(216, 229, 239)','No giant pale label background');
     }
     const rects=data.labels.map(l=>l.rect);
