@@ -1,0 +1,28 @@
+name: Diagnose real public Unified load
+on:
+  push:
+    branches: [diagnose/unified-live-load-20261030]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check public endpoints and static resources
+        run: |
+          set -e
+          for u in             https://mahmet737ng-gif.github.io/b737-classic-simulator/panel-mosaic-lab/cockpit/             https://mahmet737ng-gif.github.io/b737-classic-simulator/panel-mosaic-lab/le-devices/             https://mahmet737ng-gif.github.io/b737-classic-simulator/panel-mosaic-lab/le-devices/photo-lens-v2.js             https://mahmet737ng-gif.github.io/b737-classic-simulator/panel-mosaic-lab/le-devices/photo-lens-v2.css; do
+            echo "PROBE $u"
+            curl --max-time 25 --retry 2 -sSL -o /dev/null -w 'HTTP %{http_code} bytes %{size_download} time %{time_total}\n' "$u"
+          done
+      - name: Install Playwright
+        run: |
+          npm install --no-save --ignore-scripts playwright@1.58.2
+          if command -v google-chrome >/dev/null 2>&1; then echo "CHROME_PATH=$(command -v google-chrome)" >> "$GITHUB_ENV"; else npx playwright install --with-deps chromium; fi
+      - name: Probe actual public pages with Chrome
+        run: node tools/probe-unified-live-20261030.cjs
