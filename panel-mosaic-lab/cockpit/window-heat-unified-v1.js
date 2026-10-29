@@ -93,7 +93,10 @@
   if(!faults[channel])faults[channel]={};faults[channel][id]=active;saveFaults();tick(0);
  }
  function tick(forcedSeconds){
-  const now=performance.now(),dt=typeof forcedSeconds==='number'?forcedSeconds:Math.min(2,Math.max(0,(now-lastAt)/1000));lastAt=now;
+  // Wall-clock time is important for the 90-second OVERHEAT test.
+  // If the CB tab is active or this tab is briefly background-throttled,
+  // catch up using elapsed real time rather than delaying the expiry.
+  const now=performance.now(),dt=typeof forcedSeconds==='number'?forcedSeconds:Math.min(300,Math.max(0,(now-lastAt)/1000));lastAt=now;
   const b=buses(),sw=switches();if(!b||!Object.keys(sw).length){
    if(ui)ui.querySelector('#wh-status').textContent='WAITING FOR LIVE ELECTRICAL / OVERHEAD AUTHORITY';
    return;
@@ -113,7 +116,7 @@
    w.addEventListener('b737:overhead-light-state',()=>{if(last)applyLamps(last);});
   }
  }
- function boot(){makeUI();setInterval(()=>{linkOverhead();tick();},250);window.addEventListener('storage',e=>{if(e.key===CB_KEY)tick(0);if(e.key===FAULT_KEY){try{const next=JSON.parse(e.newValue||'{}');for(const ch of Object.keys(Core.CHANNELS))for(const f of Core.FAULTS)s=Core.injectFault(s,ch,f,!!next?.[ch]?.[f]);faults=next;}catch{}tick(0);}});}
+ function boot(){makeUI();linkOverhead();setInterval(()=>{linkOverhead();tick();},250);window.addEventListener('storage',e=>{if(e.key===CB_KEY)tick(0);if(e.key===FAULT_KEY){try{const next=JSON.parse(e.newValue||'{}');for(const ch of Object.keys(Core.CHANNELS))for(const f of Core.FAULTS)s=Core.injectFault(s,ch,f,!!next?.[ch]?.[f]);faults=next;}catch{}tick(0);}});}
  window.B737WindowHeatUnifiedV1=Object.freeze({getState:()=>s,getOutput:()=>last,injectFault:fault,reset:()=>{s=Core.initialState();faults={};saveFaults();tick(0);},evaluate:()=>tick(0),matchedCBs:Core.ALL_CBS});
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
 })();
