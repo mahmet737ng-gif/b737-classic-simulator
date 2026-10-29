@@ -171,6 +171,10 @@ function connect(){
  });
  w.addEventListener('b737:overhead-light-state',()=>{ /* tick owns scenario lamps */ });
  infoLine('LIVE OH15 READY · All switches and lamps are from the original Unified overhead renderer');
+ // The embedded original stage initializes asynchronously. Apply any
+ // scenario selected before it mounted its real controls.
+ if(current!=='normal')applyScenario(current);
+ else for(const id of [...Object.values(WH.CHANNELS).map(d=>d.switchId),'pitot-a','pitot-b'])nativeSwitch(id,'OFF');
  tick();return true;
 }
 function applyScenario(id){
@@ -180,6 +184,9 @@ function applyScenario(id){
  if(el)for(const b of el.querySelectorAll('button[data-scenario]'))
   b.setAttribute('aria-pressed',String(b.dataset.scenario===id));
  if(ready){
+  if(id==='normal'){
+   for(const key of [...Object.values(WH.CHANNELS).map(d=>d.switchId),'pitot-a','pitot-b'])nativeSwitch(key,'OFF');
+  }
   if(s.windowAll)for(const d of Object.values(WH.CHANNELS))nativeSwitch(d.switchId,s.windowAll);
   if(s.pitotOn){nativeSwitch('pitot-a','ON');nativeSwitch('pitot-b','ON');}
   if(s.channel)nativeSwitch(WH.CHANNELS[s.channel].switchId,'ON');
@@ -325,6 +332,11 @@ function installTripleTap(){
  setInterval(bind,500);
 }
 function boot(){installTripleTap();}
+// Events from the isolated overhead iframe must not pan/zoom or select
+// controls on the main Unified Cockpit view.
+window.addEventListener('message',e=>{
+ if(embedded&&e.source===embedded.contentWindow&&e.data?.type==='b737:cockpit-overhead')e.stopImmediatePropagation();
+},true);
 window.B737AntiIceTestLabV2=Object.freeze({open,applyScenario,evaluate,scenarioIds:scenarioList.map(x=>x.id),getTile:()=>({...TILE}),isReady:()=>ready});
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
 })();
