@@ -1,0 +1,21 @@
+/* Owner-approved visual-only 26-window lens correction, LE-PHOTOLENS-0002.
+ * Source switch geometry, original panel bitmap and LE timings are unchanged.
+ */
+.b737-le-devices.b737-le-photolens-ready-v2 .b737-le-devices__lamps path[data-device][data-level]{
+ fill:transparent !important; /* original 26 clickable quadrilaterals stay intact */
+}
+.b737-le-devices.b737-le-photolens-ready-v2 .b737-le-devices__lamps path[data-device][data-level]:focus-visible{
+ stroke:#dce9dd !important;stroke-width:2px !important;
+}
+.b737-le-devices .b737-le-photolens-v2{
+ position:absolute;inset:0;width:100%;height:100%;
+ display:block;pointer-events:none;user-select:none;overflow:hidden;
+}
+.b737-le-devices .b737-le-photolens-v2 path{
+ shape-rendering:geometricPrecision;pointer-events:none;
+}
+@media(prefers-reduced-motion:reduce){
+ .b737-le-devices .b737-le-photolens-v2 path{
+  transition-duration:0ms !important;transition-delay:0ms !important;
+ }
+}
