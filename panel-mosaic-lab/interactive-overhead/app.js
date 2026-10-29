@@ -1,7 +1,9 @@
 (function(){
  'use strict';
  const entryURL=document.currentScript.src,localURL=p=>new URL(p,entryURL).href;
- const STORAGE='b737-overhead-toggles-TGL-0001';
+ // ANTI ICE Lab uses the same locked sprites and toggle engine but a
+ // separate persistence namespace. Training never writes live cockpit toggles.
+ const STORAGE='b737-overhead-toggles-TGL-0001'+(new URLSearchParams(location.search).has('antiiceLab')?'-lab':'');
  const byId=id=>document.getElementById(id),model=window.B737OverheadToggleModel;
  // One directly supplied transparent atlas, no old sprite families or background repair.
  const SPRITE_CELL=1024,SPRITE_BEZEL=390;
