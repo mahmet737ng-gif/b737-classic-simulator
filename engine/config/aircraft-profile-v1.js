@@ -29,7 +29,7 @@
     ])
   });
   // Deliberate simulator defaults, not an EP-FSI installation declaration.
-  const DEFAULTS = Object.freeze({schema: SCHEMA, aircraftFamily: 'B737-300-500', pressurization: 'DCPCS', engineInstruments: 'CONVENTIONAL'});
+  const DEFAULTS = Object.freeze({schema: SCHEMA, aircraftFamily: 'B737-300-500', pressurization: 'DCPCS', engineInstruments: 'EIS'});
   const has = (object, key) => Object.prototype.hasOwnProperty.call(object, key);
 
   function validate(value) {
