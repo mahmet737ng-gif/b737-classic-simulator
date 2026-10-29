@@ -52,6 +52,12 @@ jobs:
           node engine/locks/verify-le-devices-final-v1.cjs --negative-self-test
           node --test tests/le-devices-external-ports-v1.test.cjs tests/le-devices-classic-v1.test.cjs tests/le-devices-owner-sequence-v1.test.cjs tests/te-flap-live-bridge.test.cjs
           node --test tests/le-devices-stagger-v1.test.cjs
+      - name: Enforce NEW owner-final LE PHOTOLENS V2 lock and exact aperture QA
+        run: |
+          test "$(git hash-object engine/locks/le-devices-photolens-final-v2.json)" = "606b6788b4cff11b43cdb806d4eb2e4df8557bae" || { echo "LE PHOTOLENS owner lock registry changed"; exit 1; }
+          test "$(git hash-object engine/locks/verify-le-devices-photolens-v2.cjs)" = "2bc43faa21e70c01875062080c2f6b573edaf6ce" || { echo "LE PHOTOLENS owner lock verifier changed"; exit 1; }
+          node --check panel-mosaic-lab/le-devices/photo-lens-v2.js
+          node engine/locks/verify-le-devices-photolens-v2.cjs --negative-self-test
       - name: Block altered or deleted locked panel image assets
         env:
           GITHUB_BASE_SHA: ${{ github.event.before }}
