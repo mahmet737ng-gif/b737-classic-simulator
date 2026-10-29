@@ -1,7 +1,7 @@
 {
   "schema": "b737.owner-lock/1",
   "id": "LEDEV-FINAL-2026-10-28",
-  "approvedBy": "Owner explicit request to finalize and leave only integration ports open",
+  "approvedBy": "Owner explicit 2026-10-29 authorization: temporarily unlock LE timing changes, publish the owner-approved 5/1.5/1.5/24/1.5-second sequence, and re-lock; all front-end assets remain unchanged",
   "scope": "LE DEVICES Classic front-end, staged movements, original annunciation + TE motion and assets",
   "requirement": "Any changes to frozen paths require new explicit owner approval, lock-version update and full regression review",
   "integrationPorts": [
@@ -12,8 +12,8 @@
   ],
   "timing": "Owner provisional travel schedule is intentionally retained; revisions require explicit owner direction",
   "frozenFiles": {
-    "engine/systems/le-devices-classic-v1.js": "abaaadf114ded8c5de624aab9cc141627c989c0b",
-    "engine/systems/te-flap-actuator-v1.js": "2c278889f9c4791906bdfc13f48093dd5481cdfd",
+    "engine/systems/le-devices-classic-v1.js": "57de6bc9aa1e56a3cefee2753d4893c639531446",
+    "engine/systems/te-flap-actuator-v1.js": "19bd8c09e05e309971a58c9b1a82ece0be1c83e1",
     "panel-mosaic-lab/cockpit/le-devices-live-link-v1.js": "dde5925c6a961c652961ab5695dc4b48faef8bcf",
     "panel-mosaic-lab/le-devices/manifest.json": "6af973abdfc79d14d03b4e15a9856db7b521cd34",
     "panel-mosaic-lab/le-devices/panel-background.svg": "93f1660a29ade9cc20ab0d0c383998a727e5cf31",
@@ -119,7 +119,7 @@
     "panel-mosaic-lab/le-devices/segments/LE_SLAT_8_TRANSIT_BRIGHT.svg": "8ad983500f47a31b40543c13e48088133bece007",
     "panel-mosaic-lab/le-devices/segments/LE_SLAT_8_TRANSIT_DIM.svg": "5740604f64cb4801f30980b55f874bde6067052f",
     "panel-mosaic-lab/le-devices/segments/LE_SLAT_8_TRANSIT_OFF.svg": "3dee76ecad2966394f9865920950c366649a55f7",
-    "panel-mosaic-lab/le-devices/trainer-bridge-v1.js": "83a3f24992cf47faa9f9bb7496d09f294b281a73"
+    "panel-mosaic-lab/le-devices/trainer-bridge-v1.js": "7704f635f9f358a954729ee2e5b2b5e2fe5d2573"
   },
   "frozenSegmentCount": 96,
   "frozenTotal": 108
