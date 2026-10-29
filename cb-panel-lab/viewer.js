@@ -114,8 +114,30 @@ function matchScore(rec,q){
  const words=q.split(' ');return words.every(w=>rec.searchable.includes(w))?40:0;
 }
 function searchResults(query){const q=normalize(query);if(!q)return [];return records.map(rec=>({rec,score:matchScore(rec,q)})).filter(v=>v.score>0).sort((a,b)=>b.score-a.score||a.rec.panelId.localeCompare(b.rec.panelId)||a.rec.position.localeCompare(b.rec.position)).map(x=>x.rec);}
-function clearResult(){if(ui.active){ui.active.panel.node.classList.remove('is-result');ui.active.button.classList.remove('is-hit');ui.active=null;}}
+// Four synchronized ON/OFF pulses; only the amber border and CB ring blink.
+const FLASH_COUNT=4,FLASH_MS=500;
+let flashTimer=0,flashGeneration=0;
+function clearResult(){
+ flashGeneration++;
+ if(flashTimer){clearTimeout(flashTimer);flashTimer=0;}
+ if(ui.active){
+  ui.active.panel.node.classList.remove('is-result','cb-flashing');
+  ui.active.button.classList.remove('is-hit','cb-flashing');
+  ui.active=null;
+ }
+}
 function highlight(rec){clearResult();ui.active=rec;rec.panel.node.classList.add('is-result');rec.button.classList.add('is-hit');}
+function blinkFour(rec){
+ if(ui.active!==rec)return;
+ const generation=++flashGeneration;
+ // Restart the four cycles reliably even when the same CB is searched again.
+ void rec.button.offsetWidth;
+ rec.panel.node.classList.add('cb-flashing');
+ rec.button.classList.add('cb-flashing');
+ flashTimer=setTimeout(()=>{
+  if(generation===flashGeneration&&ui.active===rec)clearResult();
+ },FLASH_COUNT*FLASH_MS+24);
+}
 function minFit(){return Math.min(viewport.clientWidth/(SCENE.width+140),viewport.clientHeight/(SCENE.height+130))*.97;}
 function renderCamera(){scene.style.transform='translate3d('+camera.x.toFixed(3)+'px,'+camera.y.toFixed(3)+'px,0) scale('+camera.scale.toFixed(6)+')';}
 function boundCamera(){
@@ -125,8 +147,8 @@ function boundCamera(){
 }
 function stopAnimation(){if(ui.animation){cancelAnimationFrame(ui.animation);ui.animation=0;}}
 function fit(){stopAnimation();fittedScale=minFit();camera.scale=fittedScale;camera.x=(viewport.clientWidth-SCENE.width*fittedScale)/2;camera.y=(viewport.clientHeight-SCENE.height*fittedScale)/2;boundCamera();renderCamera();}
-function focus(rec){
- stopAnimation();
+function focus(rec,onArrival){
+ stopAnimation();clearResult();
  const vw=viewport.clientWidth,vh=viewport.clientHeight,p=rec.panel;
  const fitScale=minFit(),targetScale=clamp(Math.min(vw/(p.w*1.10),vh/(p.h*1.65)),fitScale*1.48,1.55);
  const targetX=rec.x*.78+(p.x+p.w*.5)*.22,targetY=rec.y*.78+(p.y+p.h*.5)*.22;
@@ -137,7 +159,7 @@ function focus(rec){
   camera.scale=Math.exp(Math.log(startScale)+(Math.log(targetScale)-Math.log(startScale))*ease);
   const x=startX+(targetX-startX)*ease,y=startY+(targetY-startY)*ease;
   camera.x=vw*.5-x*camera.scale;camera.y=vh*.5-y*camera.scale;boundCamera();renderCamera();
-  if(t<1)ui.animation=requestAnimationFrame(frame);else ui.animation=0;
+  if(t<1)ui.animation=requestAnimationFrame(frame);else{ui.animation=0;if(onArrival)onArrival();}
  }
  ui.animation=requestAnimationFrame(frame);
 }
@@ -148,7 +170,7 @@ function find(){
  if(!ui.matches.length){clearResult();search.classList.add('not-found');emitStatus('No matching CB for '+raw);return;}
  search.classList.remove('not-found');
  ui.matchIndex=(ui.matchIndex+1)%ui.matches.length;
- const match=ui.matches[ui.matchIndex];highlight(match);focus(match);
+ const match=ui.matches[ui.matchIndex];focus(match,()=>{highlight(match);blinkFour(match);});
  emitStatus('Found '+match.panelId+' '+match.position+': '+match.label+'. Result '+(ui.matchIndex+1)+' of '+ui.matches.length);
 }
 function toggle(rec){
@@ -215,7 +237,7 @@ findBtn.addEventListener('click',find);
 search.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();find();}});
 search.addEventListener('input',()=>{search.classList.remove('not-found');if(normalize(search.value)!==ui.lastQuery)ui.matches=[];});
 window.addEventListener('storage',e=>{
- if(e.key===STORAGE){try{const snapshot=JSON.parse(e.newValue||'null');if(snapshot){network.restore(snapshot);mount();if(ui.active){const record=records.find(r=>r.key===ui.active.key);if(record)highlight(record);}if(ui.lastQuery)ui.matches=searchResults(ui.lastQuery);}}catch{}}
+ if(e.key===STORAGE){try{const snapshot=JSON.parse(e.newValue||'null');if(snapshot){network.restore(snapshot);clearResult();mount();if(ui.lastQuery)ui.matches=searchResults(ui.lastQuery);}}catch{}}
  if(e.key===PROFILE){const v=currentVariant();if(v!==network.variant){network.setVariant(v);persist();mount();clearResult();ui.matches=[];ui.matchIndex=-1;}}
 });
 window.addEventListener('resize',()=>{
@@ -230,7 +252,7 @@ window.B737_CB_LAB=Object.freeze({
 });
 window.B737_CB_MRG_VIEWER=Object.freeze({
  layout:()=>POSITIONS.map(p=>({...p})),find:query=>searchResults(query).map(x=>({panel:x.panelId,position:x.position,key:x.key})),
- camera:()=>({...camera}),focusByKey:key=>{const r=records.find(x=>x.key===key);if(!r)return false;highlight(r);focus(r);return true;},
+ camera:()=>({...camera}),focusByKey:key=>{const r=records.find(x=>x.key===key);if(!r)return false;focus(r,()=>{highlight(r);blinkFour(r);});return true;},
  breaker:key=>network.state(key),fit
 });
 mount();persist();requestAnimationFrame(()=>{fit();lastWidth=viewport.clientWidth;lastHeight=viewport.clientHeight;});
