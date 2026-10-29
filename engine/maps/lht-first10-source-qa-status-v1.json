@@ -1,0 +1,558 @@
+{
+  "schema": "b737classic.lht-first10-technical-qa-status-public.v1",
+  "source_id": "LHT-LAN-B737CL-MULTI-ATA-2813-20261029",
+  "source_sha256": "2d7ffa8b5aa9a13cf5e71ca4addeeee085aad511919b0b350a5ed5edc0afee6b",
+  "source_sections": [
+    "section-01",
+    "section-02",
+    "section-03",
+    "section-04",
+    "section-05",
+    "section-06",
+    "section-07",
+    "section-08",
+    "section-09",
+    "section-10"
+  ],
+  "pages_checked": 1187,
+  "split_page_text_mismatches": 0,
+  "rule_count": 40,
+  "rule_status_counts": {
+    "PARTIAL": 12,
+    "MISSING": 13,
+    "BLOCK": 8,
+    "CROSS_REFERENCE": 2,
+    "MATCH": 4,
+    "NOT_APPLICABLE": 1
+  },
+  "source_effectivity_unverified": true,
+  "operationally_approved": false,
+  "redzone_unchanged": true,
+  "cross_ata_header_ranges": [
+    {
+      "section_id": "section-02",
+      "source_section_ata": "34",
+      "header_ata": "22",
+      "pages": [
+        644,
+        645,
+        646,
+        647,
+        658,
+        659,
+        660,
+        661,
+        662,
+        663,
+        664,
+        665,
+        666,
+        667,
+        668,
+        669
+      ]
+    },
+    {
+      "section_id": "section-09",
+      "source_section_ata": "49",
+      "header_ata": "31",
+      "pages": [
+        1113,
+        1114
+      ]
+    }
+  ],
+  "blockers": [
+    {
+      "code": "TAILSKID_400_ONLY",
+      "section_id": "section-01",
+      "pdf_pages": [
+        228
+      ]
+    },
+    {
+      "code": "IRS_LATITUDE_CHECK",
+      "section_id": "section-02",
+      "pdf_pages": [
+        370
+      ]
+    },
+    {
+      "code": "IRS_VENDOR_EFFECTIVITY",
+      "section_id": "section-02",
+      "pdf_pages": [
+        364,
+        370
+      ]
+    },
+    {
+      "code": "OPTIONAL_COMPRESSOR",
+      "section_id": "section-04",
+      "pdf_pages": [
+        838,
+        841
+      ]
+    },
+    {
+      "code": "POSITION_LIGHT_DETENTS",
+      "section_id": "section-05",
+      "pdf_pages": [
+        918
+      ]
+    },
+    {
+      "code": "INCOMPLETE_ATA30_EXCERPT",
+      "section_id": "section-08",
+      "pdf_pages": [
+        1011,
+        1022
+      ]
+    },
+    {
+      "code": "WTAI_TWO_CONFIGURATIONS",
+      "section_id": "section-08",
+      "pdf_pages": [
+        1011,
+        1017,
+        1021
+      ]
+    },
+    {
+      "code": "APU_APS2000_IDENTITY",
+      "section_id": "section-09",
+      "pdf_pages": [
+        1031
+      ]
+    }
+  ],
+  "technical_checks": [
+    {
+      "section_id": "section-01",
+      "ata": "32",
+      "code": "BRAKING_PANEL_LOCATION",
+      "status": "PARTIAL",
+      "severity": "medium",
+      "pdf_pages": [
+        8,
+        124
+      ]
+    },
+    {
+      "section_id": "section-01",
+      "ata": "32",
+      "code": "RTO_SELFCHECK",
+      "status": "MISSING",
+      "severity": "high",
+      "pdf_pages": [
+        8,
+        196
+      ]
+    },
+    {
+      "section_id": "section-01",
+      "ata": "32",
+      "code": "AUTOBRAKE_HYDRAULICS",
+      "status": "MISSING",
+      "severity": "medium",
+      "pdf_pages": [
+        184
+      ]
+    },
+    {
+      "section_id": "section-01",
+      "ata": "32",
+      "code": "TAILSKID_400_ONLY",
+      "status": "BLOCK",
+      "severity": "high",
+      "pdf_pages": [
+        228
+      ]
+    },
+    {
+      "section_id": "section-02",
+      "ata": "34",
+      "code": "IRS_ALIGNMENT_CLOCK",
+      "status": "PARTIAL",
+      "severity": "high",
+      "pdf_pages": [
+        364
+      ]
+    },
+    {
+      "section_id": "section-02",
+      "ata": "34",
+      "code": "IRS_LATITUDE_CHECK",
+      "status": "BLOCK",
+      "severity": "high",
+      "pdf_pages": [
+        370
+      ]
+    },
+    {
+      "section_id": "section-02",
+      "ata": "34",
+      "code": "IRS_POSITION_INPUT",
+      "status": "PARTIAL",
+      "severity": "medium",
+      "pdf_pages": [
+        366,
+        368
+      ]
+    },
+    {
+      "section_id": "section-02",
+      "ata": "34",
+      "code": "FMS_BITE_ATA22_HEADERS",
+      "status": "CROSS_REFERENCE",
+      "severity": "high",
+      "pdf_pages": [
+        644,
+        658,
+        669
+      ]
+    },
+    {
+      "section_id": "section-02",
+      "ata": "34",
+      "code": "IRS_VENDOR_EFFECTIVITY",
+      "status": "BLOCK",
+      "severity": "medium",
+      "pdf_pages": [
+        364,
+        370
+      ]
+    },
+    {
+      "section_id": "section-03",
+      "ata": "31",
+      "code": "DUAL_CLOCK_FEATURES",
+      "status": "PARTIAL",
+      "severity": "medium",
+      "pdf_pages": [
+        736
+      ]
+    },
+    {
+      "section_id": "section-03",
+      "ata": "31",
+      "code": "DFDR_ACMS_SEPARATION",
+      "status": "MISSING",
+      "severity": "medium",
+      "pdf_pages": [
+        742
+      ]
+    },
+    {
+      "section_id": "section-03",
+      "ata": "31",
+      "code": "RECORDER_OFF_LAMP_EVIDENCE",
+      "status": "MISSING",
+      "severity": "medium",
+      "pdf_pages": [
+        742,
+        760
+      ]
+    },
+    {
+      "section_id": "section-04",
+      "ata": "38",
+      "code": "WATER_WASTE_NOT_FLIGHTDECK",
+      "status": "PARTIAL",
+      "severity": "low",
+      "pdf_pages": [
+        820,
+        822,
+        846
+      ]
+    },
+    {
+      "section_id": "section-04",
+      "ata": "38",
+      "code": "OPTIONAL_COMPRESSOR",
+      "status": "BLOCK",
+      "severity": "medium",
+      "pdf_pages": [
+        838,
+        841
+      ]
+    },
+    {
+      "section_id": "section-05",
+      "ata": "33",
+      "code": "COCKPIT_LIGHT_POWER",
+      "status": "MISSING",
+      "severity": "medium",
+      "pdf_pages": [
+        872
+      ]
+    },
+    {
+      "section_id": "section-05",
+      "ata": "33",
+      "code": "EXTERIOR_CONTROLS",
+      "status": "PARTIAL",
+      "severity": "low",
+      "pdf_pages": [
+        913
+      ]
+    },
+    {
+      "section_id": "section-05",
+      "ata": "33",
+      "code": "POSITION_LIGHT_DETENTS",
+      "status": "BLOCK",
+      "severity": "high",
+      "pdf_pages": [
+        918
+      ]
+    },
+    {
+      "section_id": "section-05",
+      "ata": "33",
+      "code": "POSITION_LIGHT_FEEDERS",
+      "status": "MISSING",
+      "severity": "medium",
+      "pdf_pages": [
+        918
+      ]
+    },
+    {
+      "section_id": "section-05",
+      "ata": "33",
+      "code": "EMER_LIGHT_BATTERIES",
+      "status": "MISSING",
+      "severity": "medium",
+      "pdf_pages": [
+        926
+      ]
+    },
+    {
+      "section_id": "section-06",
+      "ata": "35",
+      "code": "CREW_PASS_OXY_DISTINCTION",
+      "status": "PARTIAL",
+      "severity": "medium",
+      "pdf_pages": [
+        941,
+        947
+      ]
+    },
+    {
+      "section_id": "section-06",
+      "ata": "35",
+      "code": "CREW_OXY_PRESSURE_RANGE",
+      "status": "PARTIAL",
+      "severity": "medium",
+      "pdf_pages": [
+        951
+      ]
+    },
+    {
+      "section_id": "section-06",
+      "ata": "35",
+      "code": "PASSENGER_OXY_LATCH",
+      "status": "MISSING",
+      "severity": "high",
+      "pdf_pages": [
+        945,
+        969
+      ]
+    },
+    {
+      "section_id": "section-06",
+      "ata": "35",
+      "code": "PASS_OXY_GUARD_PORT",
+      "status": "MISSING",
+      "severity": "medium",
+      "pdf_pages": [
+        945,
+        969
+      ]
+    },
+    {
+      "section_id": "section-07",
+      "ata": "36",
+      "code": "DUAL_BLEED_TRUTH_TABLE",
+      "status": "MATCH",
+      "severity": "low",
+      "pdf_pages": [
+        981,
+        1007
+      ]
+    },
+    {
+      "section_id": "section-07",
+      "ata": "36",
+      "code": "ISOLATION_AUTO",
+      "status": "MATCH",
+      "severity": "low",
+      "pdf_pages": [
+        981
+      ]
+    },
+    {
+      "section_id": "section-07",
+      "ata": "36",
+      "code": "BLEED_TRIP_RESET",
+      "status": "MATCH",
+      "severity": "low",
+      "pdf_pages": [
+        981
+      ]
+    },
+    {
+      "section_id": "section-07",
+      "ata": "36",
+      "code": "HIGH_STAGE_33PSI",
+      "status": "MISSING",
+      "severity": "high",
+      "pdf_pages": [
+        979,
+        983,
+        987
+      ]
+    },
+    {
+      "section_id": "section-07",
+      "ata": "36",
+      "code": "DUCT_PRESSURE_SENSOR",
+      "status": "PARTIAL",
+      "severity": "medium",
+      "pdf_pages": [
+        981,
+        1010
+      ]
+    },
+    {
+      "section_id": "section-08",
+      "ata": "30",
+      "code": "INCOMPLETE_ATA30_EXCERPT",
+      "status": "BLOCK",
+      "severity": "high",
+      "pdf_pages": [
+        1011,
+        1022
+      ]
+    },
+    {
+      "section_id": "section-08",
+      "ata": "30",
+      "code": "WTAI_TWO_CONFIGURATIONS",
+      "status": "BLOCK",
+      "severity": "critical",
+      "pdf_pages": [
+        1011,
+        1017,
+        1021
+      ]
+    },
+    {
+      "section_id": "section-08",
+      "ata": "30",
+      "code": "WTAI_TAKEOFF_AUTO_TRIP",
+      "status": "MISSING",
+      "severity": "high",
+      "pdf_pages": [
+        1017,
+        1021
+      ]
+    },
+    {
+      "section_id": "section-08",
+      "ata": "30",
+      "code": "WTAI_VALVE_LAMPS",
+      "status": "PARTIAL",
+      "severity": "medium",
+      "pdf_pages": [
+        1011,
+        1021
+      ]
+    },
+    {
+      "section_id": "section-09",
+      "ata": "49",
+      "code": "APU_APS2000_IDENTITY",
+      "status": "BLOCK",
+      "severity": "critical",
+      "pdf_pages": [
+        1031
+      ]
+    },
+    {
+      "section_id": "section-09",
+      "ata": "49",
+      "code": "APU_START_SEQUENCE",
+      "status": "PARTIAL",
+      "severity": "high",
+      "pdf_pages": [
+        1065,
+        1097
+      ]
+    },
+    {
+      "section_id": "section-09",
+      "ata": "49",
+      "code": "APU_READY_TO_LOAD",
+      "status": "MISSING",
+      "severity": "high",
+      "pdf_pages": [
+        1065,
+        1072,
+        1097
+      ]
+    },
+    {
+      "section_id": "section-09",
+      "ata": "49",
+      "code": "APU_EGT_VARIABLE_LIMIT",
+      "status": "MISSING",
+      "severity": "high",
+      "pdf_pages": [
+        1065,
+        1066
+      ]
+    },
+    {
+      "section_id": "section-09",
+      "ata": "49",
+      "code": "APU_MCDU_ATA31_INSET",
+      "status": "CROSS_REFERENCE",
+      "severity": "medium",
+      "pdf_pages": [
+        1113,
+        1114
+      ]
+    },
+    {
+      "section_id": "section-10",
+      "ata": "DOC",
+      "code": "EFFECTIVITY_RULE",
+      "status": "MATCH",
+      "severity": "low",
+      "pdf_pages": [
+        1124
+      ]
+    },
+    {
+      "section_id": "section-10",
+      "ata": "DOC",
+      "code": "WDM_CB_LOCATION",
+      "status": "PARTIAL",
+      "severity": "medium",
+      "pdf_pages": [
+        1152
+      ]
+    },
+    {
+      "section_id": "section-10",
+      "ata": "DOC",
+      "code": "DOC_NO_COCKPIT_SYSTEM",
+      "status": "NOT_APPLICABLE",
+      "severity": "info",
+      "pdf_pages": [
+        1119,
+        1120
+      ]
+    }
+  ]
+}
