@@ -24,6 +24,7 @@ class Elem {
  constructor(tag){this.tag=tag;this.children=[];this.attrs={};this.dataset={};this.parentNode=null;}
  setAttribute(k,v){this.attrs[k]=String(v)}
  append(child){this.children.push(child);child.parentNode=this}
+ appendChild(child){this.append(child);return child}
  remove(){if(this.parentNode)this.parentNode.children=this.parentNode.children.filter(c=>c!==this);this.parentNode=null}
 }
 const host=new Elem('button');const listeners=new Map();
