@@ -27,15 +27,15 @@ function setup(){
   message,ticks:n=>{for(let i=0;i<n;i++){const step=timer;if(!step)break;step();}},
   isRunning:()=>!!timer};
 }
-test('physical lever 0->1 moves actual TE smoothly over twenty seconds',()=>{
+test('physical lever 0->1 moves actual TE smoothly over eleven seconds',()=>{
  const s=setup();
  s.message({type:'FLAP_LEVER',value:1});
  assert.equal(s.trainer.flapActuator().command,1);
  assert.equal(s.trainer.flapActuator().actual,0);
- s.ticks(50); // ten seconds
- assert.ok(Math.abs(s.trainer.flapActuator().actual-.5)<.0002);
+ s.ticks(50); // ten of eleven seconds
+ assert.ok(Math.abs(s.trainer.flapActuator().actual-10/11)<.0002);
  assert.equal(s.frames.FLAP_1,'FULL_EXT','leading-edge flaps finish first-stage extension in about ten seconds');
- s.ticks(50);
+ s.ticks(5);
  assert.ok(Math.abs(s.trainer.flapActuator().actual-1)<.0002);
  assert.equal(s.frames.FLAP_1,'FULL_EXT');
  const payload=s.messages.at(-1);
@@ -44,12 +44,12 @@ test('physical lever 0->1 moves actual TE smoothly over twenty seconds',()=>{
 });
 test('lower pressure slows the same actuator without resetting its actual position',()=>{
  const s=setup();s.message({type:'FLAP_LEVER',value:1});
- s.ticks(50);assert.ok(Math.abs(s.trainer.flapActuator().actual-.5)<.0002);
+ s.ticks(25);assert.ok(Math.abs(s.trainer.flapActuator().actual-5/11)<.0002);
  s.trainer.setHydraulicPressure(1500);
- s.ticks(50);assert.ok(Math.abs(s.trainer.flapActuator().actual-.75)<.0002);
+ s.ticks(25);assert.ok(Math.abs(s.trainer.flapActuator().actual-7.5/11)<.0002);
  s.message({type:'HYDRAULIC',system:'B',value:false});
  s.ticks(3);
- assert.ok(Math.abs(s.trainer.flapActuator().actual-.75)<.0002);
+ assert.ok(Math.abs(s.trainer.flapActuator().actual-7.5/11)<.0002);
  s.message({type:'HYDRAULIC',system:'B',value:true});
- s.ticks(50);assert.ok(Math.abs(s.trainer.flapActuator().actual-1)<.0002);
+ s.ticks(25);assert.ok(Math.abs(s.trainer.flapActuator().actual-1)<.0002);
 });
