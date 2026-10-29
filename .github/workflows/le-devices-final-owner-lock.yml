@@ -33,11 +33,11 @@ jobs:
           node-version: '22'
       - name: Check pinned owner-approved manifest and verifier
         run: |
-          test "$(git hash-object engine/locks/le-devices-final-lock-v1.json)" = "da949ec9853f3d6b2eea58ea293630d72712da00"
+          test "$(git hash-object engine/locks/le-devices-final-lock-v1.json)" = "dd556e3fcf1d88c983779280e2fdd082119356ad"
           test "$(git hash-object engine/locks/verify-le-devices-final-v1.cjs)" = "540fd49c9ab7c807d5da9cce224f37a92cd084a6"
       - name: Detect unauthorized modifications and inventory changes
         run: node engine/locks/verify-le-devices-final-v1.cjs --negative-self-test
       - name: Check four future integration ports and core regression
         run: |
           node --check engine/integrations/le-devices-external-ports-v1.js
-          node --test tests/le-devices-external-ports-v1.test.cjs tests/le-devices-classic-v1.test.cjs tests/te-flap-live-bridge.test.cjs
+          node --test tests/le-devices-external-ports-v1.test.cjs tests/le-devices-classic-v1.test.cjs tests/le-devices-owner-sequence-v1.test.cjs tests/te-flap-live-bridge.test.cjs
