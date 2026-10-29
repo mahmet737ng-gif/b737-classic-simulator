@@ -78,14 +78,17 @@
     // thermal condition or the explicitly initiated OVHT test.
     const overheat=selected&&indicationPowered&&(q.overheat||q.ovhtTestLatched);
     const pendingOvhtTest=q.ovhtTestLatched&&n.ovhtTestElapsed!==null&&n.ovhtTestElapsed<OVHT_ON_EXPIRE_SECONDS;
-    // POWER TEST checks every healthy green ON lamp, regardless of the
-    // corresponding window switch position. It is indication-only: an OFF
-    // window remains unselected and its heater does not run.
+    // Green ON means the selected window's heating control is available,
+    // NOT that current happens to be flowing through its thermostatically
+    // cycled heater at this precise instant. The 32C side windows reach
+    // their target before the 40C forward windows. Binding ON to q.heating
+    // incorrectly caused side lamps to go dark and forward lamps to flash.
+    // Keep the approved OVHT-test 60-second latch and OFF-switch PWR TEST.
     const green=test==='PWR TEST'
       ?(supply&&!blocked&&!f.POWER_TEST_FAIL)
       :selected&&(q.ovhtTestLatched
         ?(pendingOvhtTest&&q.ovhtTestGreen&&supply)
-        :q.heating);
+        :(supply&&!blocked));
     q.lastGreen=!!green;
     outputs[id]={id,selected,temperatureC:Math.round(q.temp*10)/10,heaterPower:q.heating,controllerPower:controller,heaterFeed:heaterBus,indicationPowered,cbHeaterClosed:heaterCB,cbControllerClosed:breakerClosed(cb,d.controllerCB),normalTargetApproxC:d.target,overheatLimitC:d.cutout,restoreLimitC:d.restore,greenOn:!!green,overheatOn:!!overheat,warning:!!overheat,source:'FCOM+MRG_GENERIC_TRAINER'};
     q.lastSwitch=selected;
