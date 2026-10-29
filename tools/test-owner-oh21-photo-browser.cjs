@@ -7,7 +7,7 @@ const registry=require('../panel-mosaic-lab/cockpit/panel-photo-registry.v1.json
 const origin=process.env.B737_TEST_ORIGIN||'http://127.0.0.1:8788';
 const output=path.resolve('artifacts/owner-oh21-qa');fs.mkdirSync(output,{recursive:true});
 (async()=>{
-const browser=await chromium.launch({headless:true});
+const browser=await chromium.launch(process.env.CHROME_PATH?{headless:true,executablePath:process.env.CHROME_PATH}:{headless:true});
 let failures=[];
 try{
  for(const [family,key] of [['B737-300-500','OH21_300500'],['B737-400','OH21_400']]){
