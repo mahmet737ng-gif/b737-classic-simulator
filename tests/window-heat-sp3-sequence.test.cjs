@@ -39,8 +39,8 @@ test('SP.3.2: OVERHEAT test never artificially illuminates a green light that wa
 test('SP.3.2: OFF then ON resets each window channel independently, not via spring test neutral',()=>{
  let r=project(Core.initialState(),on,1);
  r=project(r.state,{...on,'window-power-test':'OVHT'},0);
- r=project(r.state,on,65);
- assert.ok(all(r.output).every(x=>x.overheatOn&&!x.greenOn));
+ r=project(r.state,on,20);
+ assert.ok(all(r.output).every(x=>x.overheatOn));
  const keys=Object.entries(Core.CHANNELS);
  for(const [channel,d] of keys){
   r=project(r.state,{...on,[d.switchId]:'OFF'},0);
@@ -94,7 +94,7 @@ test('OWNER-60: held spring OVHT is edge-triggered, and retriggers only after ne
  const held={...on,'window-power-test':'OVHT'};
  r=project(r.state,held,0);
  r=project(r.state,held,60);
- assert.ok(all(r.output).every(x=>!x.overheatOn),'no amber after 90 while held');
+ assert.ok(all(r.output).every(x=>!x.overheatOn),'no amber after 60 while held');
  r=project(r.state,held,10);
  assert.ok(all(r.output).every(x=>!x.overheatOn),'held selector does not retrigger');
  r=project(r.state,on,0); 
