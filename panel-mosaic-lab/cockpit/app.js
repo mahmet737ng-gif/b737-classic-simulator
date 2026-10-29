@@ -22,6 +22,26 @@
   const gallery=byId('gallery');for(const r of assembly.regions)for(const p of r.placements||[]){if(p.referenceOnly)continue;const a=assembly.assets[p.asset],b=document.createElement('button');b.append(image(a,p.label),document.createTextNode(p.label));b.onclick=()=>{byId('galleryDialog').close();focus(r.id);select(r,p);};gallery.append(b);}
  }
  function applyZoom(value,left=vp.scrollLeft,top=vp.scrollTop,x=vp.clientWidth/2,y=vp.clientHeight/2){const next=model.clamp(value,.04,2),before={x:parseFloat(scene.style.left)||0,y:parseFloat(scene.style.top)||0},after={x:Math.max(0,(vp.clientWidth-assembly.canvas.width*next)/2),y:Math.max(0,(vp.clientHeight-assembly.canvas.height*next)/2)};const z=model.zoomAnchor(zoom,next,left,top,x,y,before,after);zoom=z.zoom;scene.style.left=after.x+'px';scene.style.top=after.y+'px';scene.style.transform='scale('+zoom+')';scene.style.setProperty('--zoom',String(zoom));sizer.style.width=Math.ceil(assembly.canvas.width*zoom)+'px';sizer.style.height=Math.ceil(assembly.canvas.height*zoom)+'px';vp.scrollLeft=z.left;vp.scrollTop=z.top;byId('zoomValue').textContent=Math.round(zoom*100)+'%';window.B737ImageLoader.refresh();window.dispatchEvent(new CustomEvent('b737:performance-view'));}
+ // Responsive two-finger zoom adapter for the outer canvas. This touches only
+ // viewport transforms, never protected cockpit artwork or switch geometry.
+ window.B737UnifiedPinchAdapterV1=Object.freeze({
+  begin(distance,x,y){
+   if(!assembly||!Number.isFinite(distance)||distance<2)return null;
+   return {distance,zoom,left:vp.scrollLeft,top:vp.scrollTop,x,y,
+     offsetX:parseFloat(scene.style.left)||0,offsetY:parseFloat(scene.style.top)||0};
+  },
+  move(start,distance,x,y){
+   if(!start||!assembly||![distance,x,y].every(Number.isFinite)||distance<2)return;
+   const next=model.clamp(start.zoom*distance/start.distance,.04,2);
+   const sourceX=(start.left+start.x-start.offsetX)/start.zoom;
+   const sourceY=(start.top+start.y-start.offsetY)/start.zoom;
+   // Keep the original point on the aircraft beneath the moving midpoint.
+   applyZoom(next,vp.scrollLeft,vp.scrollTop,x,y);
+   const afterX=parseFloat(scene.style.left)||0,afterY=parseFloat(scene.style.top)||0;
+   vp.scrollLeft=Math.max(0,sourceX*next+afterX-x);
+   vp.scrollTop=Math.max(0,sourceY*next+afterY-y);
+  }
+ });
  function focus(id){focused=id;const r=model.target(assembly,id);if(!r)return;const scale=model.fit(r,vp.clientWidth,vp.clientHeight);applyZoom(scale,0,0,0,0);vp.scrollLeft=Math.max(0,(r.x+r.w/2)*zoom-vp.clientWidth/2);vp.scrollTop=Math.max(0,r.y*zoom-38);for(const b of document.querySelectorAll('[data-focus]'))b.classList.toggle('active',b.dataset.focus===id);const labels={all:'تمام کاکپیت',overhead:'اورهد تعاملی',main:'مین‌پنل',pedestal:'پدستال','cdu-captain':'CDU کپتن','cdu-first-officer':'CDU فرست‌آفیسر','cdu-both':'CDU کپتن و فرست‌آفیسر'};byId('viewLabel').textContent=labels[id];byId('selectionTitle').textContent=r.label||'ALL COCKPIT';byId('selectionDescription').textContent=id.startsWith('cdu-')?'همان CDU تأییدشده با ۷۰ دکمه؛ صفحه مستقل و اطلاعات FMC مشترک است':id==='overhead'?'۱۱۰ چراغ و کنترل‌های تعاملی نسخهٔ تأییدشده':id==='pedestal'?'پنل جدید و خام Throttle Quadrant، فایر پنل و رادیوها در چیدمان مستقل و بدون هم‌پوشانی':'مونتاژ تصاویر اصلی با حفظ نسبت طول و عرض';byId('selectionSize').textContent='';byId('originalLink').hidden=true;}
  function command(action,extra={}){if(ready)frame.contentWindow.postMessage({type:'b737:cockpit-command',action,...extra},location.origin);}
  // Environment sensor values are supplied by ISN or an external simulator adapter.
