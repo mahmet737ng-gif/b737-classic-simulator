@@ -50,7 +50,15 @@ const airconParent=fs.readFileSync(path.join(__dirname,'app.js'),'utf8');
 assert.ok(airconSettings.includes("action:'aircon-background', family:selected.family.id"),'Settings swaps the visible OH20');
 assert.ok(airconParent.includes("command('aircon-background'"),'New overhead frames restore aircraft family');
 const html=fs.readFileSync(path.join(__dirname,'overhead-stage.html'),'utf8');for(const src of ['performance/overhead-renderer.js?v=PERF-0001','app.js?v=TGL-NEWREF-0002','rotary-motion-rm0002.js?v=RM-0004','rotary-guards.js?v=ISN-0003','rotary-guards-model.js?v=RM-0003','overhead-bridge.js?v=PRESS-OH22-0005-AIRCON400','lights.js?v=LGT-0006'])assert.ok(html.includes(src),src);assert.ok(!html.includes('data-cockpit-entry'));
-assert.equal(a.regions.find(r=>r.id==='overhead').embeddedUrl,'./overhead-stage.html?v=ISN-0003-PERF-0001-LGT-0006-PRESS-OH22-0007-SOCKET-FIT-AIRCON400-0005-SOCKET-CENTER-LANDING3','Unified must reload current overhead bridge and start cutout handling');
+assert.equal(a.regions.find(r=>r.id==='overhead').embeddedUrl,'./overhead-stage.html?v=ISN-0003-PERF-0001-LGT-0006-PRESS-OH22-0007-SOCKET-FIT-AIRCON400-0005-SOCKET-CENTER-LANDING3-WHEEL-PAN-0001','Unified must reload current overhead bridge and start cutout handling');
+// WHEEL-PAN-0001 changes navigation only; physical switch/atlas geometry stays locked.
+const wheelPan=require('./wheel-pan-model-v1');
+assert.deepEqual(wheelPan.normalize({deltaX:0,deltaY:3,deltaMode:1},{height:500}),{x:0,y:48});
+assert.ok(oh20Bridge.includes("kind:'wheel-pan'"),'OH iframe wheel must reach Unified viewport');
+assert.ok(oh20Bridge.includes('.mounted-rotary,.rg-detent-hit,.guard-node'),'Real rotary/guard wheel detents must remain owned by the controls');
+assert.ok(airconParent.includes("if(d.kind==='wheel-pan'){panWheel(d);return;}"),'Unified listens to same-origin iframe wheel pan');
+assert.ok(fs.readFileSync(path.join(__dirname,'cdu-bridge.js'),'utf8').includes("kind:'wheel-pan'"),'CDU iframe must forward wheel pan');
+assert.ok(fs.readFileSync(path.join(__dirname,'index.html'),'utf8').includes('wheel-pan-model-v1.js?v=WHEEL-PAN-0001'),'Wheel model cache-bust must be loaded');
 const interactive=fs.readFileSync(path.join(__dirname,'../interactive-overhead/rotary-guards.js'),'utf8');
 assert.ok(interactive.includes('mountEngineStartLabelCorrection(layout)'),'Unified corrects FLT spacing without changing the locked atlas image');
 assert.ok(interactive.includes('motion.createDetentGesture'),'Unified uses event-triggered hard-stop detents');
