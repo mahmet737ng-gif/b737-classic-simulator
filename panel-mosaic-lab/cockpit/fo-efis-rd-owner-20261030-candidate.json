@@ -1,0 +1,21 @@
+{
+  "status": "OWNER_APPROVED_INTEGRATED",
+  "source": "fo-efis-rd-owner-20261030-v1.png",
+  "dimensions": [
+    1286,
+    1223
+  ],
+  "sha256": "34aa9374760f8eb331ef359ad9a39b2954fd2398d0dbb8b9283e695a18744163",
+  "target": "panel-mosaic-lab/cockpit/",
+  "change": "Replace combined first-officer flight instrument artwork; retain existing inner landing-gear/antiskid area separately",
+  "requires_exact_guard_confirmation": [
+    "gpws-terrain-inhibit",
+    "gpws-flap-inhibit",
+    "gpws-gear-inhibit"
+  ],
+  "preserve": "All other Owner18 guards and IRS/overhead locks",
+  "reason": "Existing locked GPWS guard placement must be remapped to the selected image mounting apertures before activation",
+  "owner_confirmation": "2026-10-30: تایید هسست این تغییرات انجام بده. از من اجازه صریح داری",
+  "scope": "Only three GPWS guard position/size overrides; original assets, hinges, behavior and other guards unchanged",
+  "browser_qa": "Photo loaded; three guard images loaded and registered; TERRAIN open/close passed"
+}
