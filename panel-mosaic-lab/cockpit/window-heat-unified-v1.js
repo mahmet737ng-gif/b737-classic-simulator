@@ -92,7 +92,8 @@
   ui=document.createElement('details');ui.id='windowHeatTrainingV1';ui.dir='ltr';
   ui.style.cssText='margin-top:12px;padding:10px;border:1px solid #657383;border-radius:8px;color:inherit;font:12px/1.5 sans-serif';
   ui.innerHTML='<summary style="cursor:pointer;font-weight:700">WINDOW HEAT · Live System / Failure Test</summary>'+
-   '<p style="font-size:12px">Real OH15 switches + Electrical V7 + CB Panel Lab. FCOM 3/SP.3 generic training.</p>'+\n   '<p style="font-size:12px">POWER TEST checks all four green ON lamps even when the window switches are OFF. A failed feed, CB, controller or test circuit keeps its channel dark. OVERHEAT TEST behavior is unchanged.</p>'+
+   '<p style="font-size:12px">Real OH15 switches + Electrical V7 + CB Panel Lab. FCOM 3/SP.3 generic training.</p>'+
+   '<p style="font-size:12px">POWER TEST checks all four green ON lamps even when the window switches are OFF. A failed feed, CB, controller or test circuit keeps its channel dark. OVERHEAT TEST behavior is unchanged.</p>'+
    '<p id="wh-status" role="status">Connecting overhead and electrical engine…</p>'+
    '<label style="display:flex;align-items:center;gap:7px;padding:8px;border:1px solid #647785;border-radius:5px"><input id="wh-training-power" type="checkbox" aria-label="Enable training power for Window Heat only"> WINDOW HEAT TRAINING POWER · AC/DC (demo only)</label>'+
    '<p id="wh-power-status" role="status" style="font-size:11px">Checking real AC/DC buses…</p>'+
