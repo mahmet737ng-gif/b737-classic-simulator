@@ -92,7 +92,7 @@
   ui=document.createElement('details');ui.id='windowHeatTrainingV1';ui.dir='ltr';
   ui.style.cssText='margin-top:12px;padding:10px;border:1px solid #657383;border-radius:8px;color:inherit;font:12px/1.5 sans-serif';
   ui.innerHTML='<summary style="cursor:pointer;font-weight:700">WINDOW HEAT · Live System / Failure Test</summary>'+
-   '<p style="font-size:12px">Real OH15 switches + Electrical V7 + CB Panel Lab. FCOM 3/SP.3 generic training.</p>'+
+   '<p style="font-size:12px">Real OH15 switches + Electrical V7 + CB Panel Lab. FCOM 3/SP.3 generic training.</p>'+\n   '<p style="font-size:12px">POWER TEST checks all four green ON lamps even when the window switches are OFF. A failed feed, CB, controller or test circuit keeps its channel dark. OVERHEAT TEST behavior is unchanged.</p>'+
    '<p id="wh-status" role="status">Connecting overhead and electrical engine…</p>'+
    '<label style="display:flex;align-items:center;gap:7px;padding:8px;border:1px solid #647785;border-radius:5px"><input id="wh-training-power" type="checkbox" aria-label="Enable training power for Window Heat only"> WINDOW HEAT TRAINING POWER · AC/DC (demo only)</label>'+
    '<p id="wh-power-status" role="status" style="font-size:11px">Checking real AC/DC buses…</p>'+
@@ -103,7 +103,24 @@
    '<select id="wh-fault" aria-label="Failure"><option value="HEATER_FAIL">Heater fail</option><option value="CONTROLLER_FAIL">Controller fail</option><option value="SENSOR_FAIL">Sensor fail</option><option value="STUCK_OVERHEAT">Stuck OVHT</option><option value="POWER_TEST_FAIL">Power test fail</option></select>'+
    '<button type="button" id="wh-inject">Inject fault</button><button type="button" id="wh-clear">Clear fault</button><button type="button" id="wh-reset">Reset WH</button></div>'+
    '<p style="font-size:11px"><a href="../../cb-panel-lab/" target="_blank" rel="noopener">Open CB panels P6-11 / P6-12 / P18-3</a> (same browser origin; pulls sync live). Test POWER and OVHT with the real centre spring switch.</p>';
-  anchor.append(ui);
+  const lab=document.createElement('dialog');lab.id='windowHeatTestLabDialog';lab.dir='rtl';
+  lab.style.cssText='width:min(980px,94vw);max-width:980px;max-height:90vh;overflow:auto;padding:14px;background:#101f2b;color:#e1ecf4;border:1px solid #79d5df;border-radius:12px;box-shadow:0 18px 70px #000b';
+  lab.innerHTML='<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px"><strong style="font-size:16px;letter-spacing:.4px">WINDOW HEAT · TEST LAB</strong><button type="button" id="wh-lab-close" aria-label="Close Window Heat Test Lab">بستن ×</button></div>'+
+   '<p style="margin:0 0 10px;color:#9bb1c2;font-size:12px">برای ورود، روی عنوان «کاکپیت یکپارچه» سه بار پشت سر هم کلیک یا تپ کن. این آزمایشگاه فقط سیستم Window Heat را بررسی می‌کند.</p>';
+  lab.append(ui);ui.open=true;document.body.append(lab);
+  lab.querySelector('#wh-lab-close').onclick=()=>lab.close();
+  lab.addEventListener('click',e=>{if(e.target===lab)lab.close();});
+  const trigger=document.querySelector('#inspector h1');
+  if(trigger){
+   trigger.title='سه کلیک/تپ پشت سر هم برای بازکردن آزمایشگاه Window Heat';
+   trigger.style.userSelect='none';
+   let tapCount=0,lastTap=0,resetTapTimer=null;
+   trigger.addEventListener('click',()=>{
+    const now=performance.now();tapCount=now-lastTap<=1200?tapCount+1:1;lastTap=now;
+    clearTimeout(resetTapTimer);resetTapTimer=setTimeout(()=>{tapCount=0;},1200);
+    if(tapCount>=3){tapCount=0;clearTimeout(resetTapTimer);if(!lab.open)lab.showModal();}
+   });
+  }
   const trainingCheckbox=ui.querySelector('#wh-training-power');
   trainingCheckbox.checked=trainingPower;
   trainingCheckbox.onchange=()=>setTrainingPower(!!trainingCheckbox.checked);
