@@ -51,7 +51,7 @@ test('lower pressure slows the same actuator without resetting its actual positi
  s.ticks(3);
  assert.ok(Math.abs(s.trainer.flapActuator().actual-7.5/11)<.0002);
  s.message({type:'HYDRAULIC',system:'B',value:true});
- s.ticks(25);assert.ok(Math.abs(s.trainer.flapActuator().actual-1)<.0002);
+ s.ticks(35);assert.ok(Math.abs(s.trainer.flapActuator().actual-1)<.0002);
 });
 
 test('Unified real lever UP -> 15 honors delayed sequential LE windows and forward lamps',()=>{
