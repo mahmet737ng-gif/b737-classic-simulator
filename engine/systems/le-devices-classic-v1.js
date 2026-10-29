@@ -148,7 +148,7 @@
      // 32..33.5 s: six slats TRANSIT to FULL EXT when actual TE > 5.
      // Clock is pressure-scaled, and freezes without hydraulic drive.
      const seq=s.liveExtension;
-     const start=seq.elapsed,end=start+(driveAvailable(s)?dt*pf:0);
+     const start=seq.elapsed,end=Number((start+(driveAvailable(s)?dt*pf:0)).toFixed(6));
      if(seq.fullStart===null&&end>=32&&s.teActual>5+1e-6&&s.lever>5)
       seq.fullStart=Math.max(32,start);
      const cuts=[start,5,6.5,8,32,seq.fullStart,end]
