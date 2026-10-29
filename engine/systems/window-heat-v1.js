@@ -18,7 +18,7 @@
  const ALL_CBS=Object.freeze([...Object.keys(PHOTO_CB),AUX.L45.breaker,AUX.R45.breaker]);
  const FAULTS=Object.freeze(['HEATER_FAIL','CONTROLLER_FAIL','SENSOR_FAIL','STUCK_OVERHEAT','POWER_TEST_FAIL']);
  const copy=v=>JSON.parse(JSON.stringify(v));
- function initialState(){return {schema:'b737-window-heat/1',elapsed:0,test:'NEUTRAL',ovhtTestElapsed:null,channels:Object.fromEntries(Object.keys(CHANNELS).map(k=>[k,{temp:18,heating:false,overheat:false,ovhtTestLatched:false,lastSwitch:false}])),aux:{L45:{temp:18,heating:false},R45:{temp:18,heating:false}},faults:Object.fromEntries(Object.keys(CHANNELS).map(k=>[k,{}]))};}
+ function initialState(){return {schema:'b737-window-heat/1',elapsed:0,test:'NEUTRAL',ovhtTestElapsed:null,channels:Object.fromEntries(Object.keys(CHANNELS).map(k=>[k,{temp:18,heating:false,overheat:false,ovhtTestLatched:false,lastSwitch:false}])),aux:{L45:{temp:18,heating:false,thermostatOn:true},R45:{temp:18,heating:false,thermostatOn:true}},faults:Object.fromEntries(Object.keys(CHANNELS).map(k=>[k,{}]))};}
  function injectFault(s,channel,fault,active){if(!CHANNELS[channel]||!FAULTS.includes(fault)||typeof active!=='boolean')throw Error('Invalid Window Heat instructor fault');const n=copy(s);n.faults[channel][fault]=active;return n;}
  const breakerClosed=(cbs,key)=>!cbs||cbs[key]!==false;
  const busOk=(buses,key)=>!!buses&&buses[key]===true;
@@ -35,7 +35,7 @@
     const q=n.channels[id],f=n.faults[id]||{},selected=sw[d.switchId]==='ON';
     if(!selected){q.ovhtTestLatched=false;q.overheat=false;q.lastSwitch=false;}
     if(test==='OVHT'&&selected)q.ovhtTestLatched=true;
-    const controller=busOk(b,d.controllerAC)&&busOk(b,d.controllerDC)&&breakerClosed(cb,d.controllerCB)&&!f.CONTROLLER_FAIL;
+    const controller=busOk(b,d.controllerAC)&&busOk(b,d.controllerDC)&&breakerClosed(cb,d.controllerCB)&&!f.CONTROLLER_FAIL&&!f.SENSOR_FAIL;
     const heaterBus=busOk(b,d.heaterBus),heaterCB=breakerClosed(cb,d.heaterCB);
     const supply=controller&&heaterBus&&heaterCB&&!f.HEATER_FAIL;
     const forcedOverheat=Boolean(f.STUCK_OVERHEAT||q.ovhtTestLatched);
@@ -57,7 +57,8 @@
   // No electronic WHCU on L4/L5 and R4/R5; independent generator bus/CB and thermal cycling.
   for(const [id,d] of Object.entries(AUX)){
     const q=n.aux[id],selected=sw[d.switchId]==='ON',supply=busOk(b,d.bus)&&breakerClosed(cb,d.breaker);
-    q.heating=selected&&supply&&q.temp<38;
+    if(q.temp>=38)q.thermostatOn=false;else if(q.temp<=34)q.thermostatOn=true;
+    q.heating=selected&&supply&&q.thermostatOn;
     q.temp=Math.max(-50,Math.min(70,q.temp+(q.heating?0.06:-0.02)*seconds));
     auxOut[id]={selected,heaterPower:q.heating,temperatureC:Math.round(q.temp*10)/10,cbClosed:breakerClosed(cb,d.breaker),busPowered:busOk(b,d.bus),label:d.label,thermostatTargetApproxC:38};
   }
