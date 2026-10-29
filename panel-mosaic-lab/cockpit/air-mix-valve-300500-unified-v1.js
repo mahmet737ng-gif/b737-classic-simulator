@@ -1,4 +1,4 @@
-/* Unified 737-300/500, nonintrusive OH20 twin-needle renderer & backend adapter.
+/* Unified 737-300/500, nonintrusive OH20 pair of independent single-needle indicators & backend adapter.
  * Source/atlas/Owner18/400 panels remain untouched.
  */
 (function(){
@@ -6,7 +6,7 @@
  const model=window.B737AirMixValve300500V1;
  if(!model){console.error('AIR-MIX-300500 model missing');return;}
  const SVG='http://www.w3.org/2000/svg',PROFILE='b737classic.aircraft-profile.v1',CB='b737classic.cb.v1';
- const sprite=new URL('./assets/air-mix-valve-300500-needle-v1.svg?v=AIR-MIX-300500-003',document.baseURI).href;
+ const sprite=new URL('./assets/air-mix-valve-300500-reference-needle-v2.svg?v=AIR-MIX-300500-REFERENCE-NEEDLE-0002',document.baseURI).href;
  const state={CONT:{cabinC:null,ductC:null,overheat:false,stuck:false,transmitterFailed:false,targetC:null},
   PASS:{cabinC:null,ductC:null,overheat:false,stuck:false,transmitterFailed:false,targetC:null}};
  let engine=model.create(),frame=null,layer=null,assemblies={},last=performance.now(),trainingPower=null;
@@ -15,6 +15,26 @@
  function child(){try{return frame?.contentWindow;}catch{return null;}}
  function createSvg(doc,parent,tag,attrs={}){
   const el=doc.createElementNS(SVG,tag);for(const [name,value]of Object.entries(attrs))el.setAttribute(name,String(value));parent.append(el);return el;
+ }
+ // OH20 source photograph contains an upright white needle baked into EACH gauge.
+ // Occlude only that narrow, unchanging photo pointer with a feathered face-tone
+ // strip before mounting the owner-approved moving needle.  This is a separate
+ // overlay; the immutable OH20 photo, its tick marks, and the atlas are untouched.
+ function concealPhotoNeedle(doc,g,side){
+  const key='airMixPhotoPointerV2'+side;
+  const defs=createSvg(doc,g,'defs');
+  const face=createSvg(doc,defs,'linearGradient',{id:key+'Face',x1:'0',y1:'-81',x2:'0',y2:'12',gradientUnits:'userSpaceOnUse'});
+  for(const [offset,color] of [['0%','#272621'],['18%','#362f29'],['48%','#342d26'],['80%','#2d2823'],['100%','#272521']]){
+   createSvg(doc,face,'stop',{offset,'stop-color':color});
+  }
+  const fade=createSvg(doc,defs,'linearGradient',{id:key+'Fade',x1:'-12',y1:'0',x2:'12',y2:'0',gradientUnits:'userSpaceOnUse'});
+  for(const [offset,color] of [['0%','#000'],['18%','#fff'],['82%','#fff'],['100%','#000']]){
+   createSvg(doc,fade,'stop',{offset,'stop-color':color});
+  }
+  const mask=createSvg(doc,defs,'mask',{id:key+'Mask',x:'-12',y:'-81',width:'24',height:'93',maskUnits:'userSpaceOnUse',maskContentUnits:'userSpaceOnUse'});
+  createSvg(doc,mask,'rect',{x:-12,y:-81,width:24,height:93,fill:'url(#'+key+'Fade)'});
+  createSvg(doc,g,'rect',{'data-air-mix-concealed-photo-needle':side,x:-12,y:-81,width:24,height:93,
+   fill:'url(#'+key+'Face)',mask:'url(#'+key+'Mask)', 'pointer-events':'none'});
  }
  function syncLayer(){
   const doc=frame?.contentDocument,host=doc?.getElementById('atlasAbsolute');
@@ -27,6 +47,7 @@
    assemblies={};
    for(const side of model.SIDES){
     const p=model.GAUGES[side],g=createSvg(doc,layer,'g',{'data-air-mix-side':side,transform:'translate('+p.x+' '+p.y+')'});
+    concealPhotoNeedle(doc,g,side);
     const rotary=createSvg(doc,g,'g',{'data-air-mix-rotor':side});
     // Native SVG rotation around the actual gauge shaft; CSS transform-origin on <g> was not reliable.
     rotary.setAttribute('transform','rotate(0 0 0)');
