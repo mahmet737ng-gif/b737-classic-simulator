@@ -4,6 +4,11 @@ on:
     branches: [main]
     paths:
       - 'engine/systems/tat-probe-v1.js'
+      - 'engine/cb/tat-probe-cb-link-v1.js'
+      - 'panel-mosaic-lab/cockpit/tat-test-lab-v1.js'
+      - 'panel-mosaic-lab/cockpit/tat-test-lab-v1.css'
+      - 'tests/tat-probe-cb-link.test.cjs'
+      - 'tests/tat-test-lab-v1.test.cjs'
       - 'panel-mosaic-lab/cockpit/tat-probe-unified-v1.js'
       - 'panel-mosaic-lab/cockpit/overhead-bridge.js'
       - 'panel-mosaic-lab/cockpit/index.html'
@@ -24,12 +29,16 @@ jobs:
       - name: Verify engine, bridge and test syntax
         run: |
           node --check engine/systems/tat-probe-v1.js
+          node --check engine/cb/tat-probe-cb-link-v1.js
+          node --check panel-mosaic-lab/cockpit/tat-test-lab-v1.js
+          node --check tests/tat-probe-cb-link.test.cjs
+          node --check tests/tat-test-lab-v1.test.cjs
           node --check panel-mosaic-lab/cockpit/tat-probe-unified-v1.js
           node --check panel-mosaic-lab/cockpit/overhead-bridge.js
           node --check tests/tat-probe-v1.test.cjs
           node --check tests/tat-probe-unified.test.cjs
       - name: Verify TAT logic, MRG-indexed CB and OH15 live switch integration
-        run: node --test tests/tat-probe-v1.test.cjs tests/tat-probe-unified.test.cjs
+        run: node --test tests/tat-probe-v1.test.cjs tests/tat-probe-unified.test.cjs tests/tat-probe-cb-link.test.cjs tests/tat-test-lab-v1.test.cjs
       - name: Verify locked overhead atlas and guarded controls remain untouched
         run: |
           python3 panel-mosaic-lab/verify-final-overhead.py
