@@ -47,7 +47,7 @@
  function step(state,inputs,elapsedSeconds){
   const next={positions:{...state.positions},overheatLatched:{...state.overheatLatched},
    command:{...state.command},reason:{...state.reason}};
-  const dt=finite(elapsedSeconds)?Math.max(0,Math.min(1,elapsedSeconds)):0;
+  const dt=finite(elapsedSeconds)?Math.max(0,Math.min(3600,elapsedSeconds)):0;
   for(const side of SIDES){
    const v=sample(inputs,side);
    if(v.overheat||(v.ductC!==null&&v.ductC>=CONFIG.overheatC))next.overheatLatched[side]=true;
