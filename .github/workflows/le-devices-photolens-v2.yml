@@ -1,0 +1,62 @@
+name: LE DEVICES photometric lens V2 owner visual QA
+on:
+  push:
+    branches:
+      - fix/le-devices-photometric-lenses-20261030
+      - main
+    paths:
+      - 'panel-mosaic-lab/le-devices/photo-lens-v2.*'
+      - 'panel-mosaic-lab/cockpit/overhead-stage.html'
+      - 'panel-mosaic-lab/le-devices/index.html'
+      - 'panel-mosaic-lab/cockpit/assembly.json'
+      - 'engine/locks/le-devices-photolens-final-v2.json'
+      - 'engine/locks/verify-le-devices-photolens-v2.cjs'
+      - 'tests/le-devices-photo-lens-v2.test.cjs'
+      - 'tools/test-le-devices-photo-lens-browser-v2.cjs'
+      - '.github/workflows/le-devices-photolens-v2.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  owner-qa:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Owner v2 final lock, all 108 original LE assets, and 26 apertures
+        run: |
+          node --check panel-mosaic-lab/le-devices/photo-lens-v2.js
+          node engine/locks/verify-le-devices-photolens-v2.cjs --negative-self-test
+          node --test tests/le-devices-owner-sequence-v1.test.cjs tests/le-devices-stagger-v1.test.cjs
+          python3 panel-mosaic-lab/verify-final-overhead.py
+          python3 panel-mosaic-lab/cockpit/verify-guard-redzone.py --negative-self-test
+      - name: Install headless Chromium
+        run: |
+          npm install --no-save --ignore-scripts playwright@1.58.2
+          if command -v google-chrome >/dev/null 2>&1; then
+            echo "CHROME_PATH=$(command -v google-chrome)" >> "$GITHUB_ENV"
+          elif command -v chromium >/dev/null 2>&1; then
+            echo "CHROME_PATH=$(command -v chromium)" >> "$GITHUB_ENV"
+          else
+            npx playwright install --with-deps chromium
+          fi
+      - name: Real 26-lens brightness, optical inset, and embedded Unified browser QA
+        run: |
+          set -euo pipefail
+          python3 -m http.server 8788 --bind 127.0.0.1 >/tmp/led-photolens.log 2>&1 &
+          for i in $(seq 1 40); do
+            if curl -fsS http://127.0.0.1:8788/panel-mosaic-lab/le-devices/index.html >/dev/null; then break; fi
+            sleep 1
+          done
+          node tools/test-le-devices-photo-lens-browser-v2.cjs
+      - name: Record screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: le-photolens-v2-real-browser
+          path: artifacts/le-photolens-v2/
+          if-no-files-found: ignore
