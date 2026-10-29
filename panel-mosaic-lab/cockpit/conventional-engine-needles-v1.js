@@ -5,7 +5,8 @@
 (function(){
 'use strict';
 const svgNs='http://www.w3.org/2000/svg';
-const selector='#region-main .texture-piece[data-piece="engine"]';
+const getMount=()=>window.B737EngineIndicationModeV1?.wrap();
+const getLayout=()=>window.B737EngineIndicationModeV1?.layout();
 const PHOTO=new URL('./assets/conventional-needle-photo-v1.svg?v=CONV-NEEDLE-0001',document.baseURI).href;
 const ROWS=Object.freeze([
  Object.freeze({key:'n1',label:'N1',y:309,min:0,max:120,primary:true,scale:1}),
@@ -59,14 +60,15 @@ function paint(spec){
  rotor.parentNode.dataset.value=String(reading.value);
 }
 function mount(){
- const host=document.querySelector(selector);
- if(!host)return false;
- if(layer?.parentNode===host)return true;
+ const host=getMount(),layout=getLayout();
+ if(!host||!layout)return false;
+ if(layer?.parentNode===host){layer.style.transform=layout.cssMatrix;return true;}
  if(layer && layer.parentNode!==host){layer.remove();rotors.clear();}
  layer=node(host,'svg',{class:'conventional-engine-needle-layer-v1',
-    'data-conventional-needles':'CONV-NEEDLE-0002',viewBox:'0 0 1182 1330',preserveAspectRatio:'none',
+    'data-conventional-needles':'CONV-NEEDLE-FIT-0003',viewBox:'0 0 1182 1330',preserveAspectRatio:'none',
     'aria-label':'Sixteen independent conventional engine instrument needles',
     'aria-hidden':'true',focusable:'false'});
+ layer.style.transform=layout.cssMatrix; // Identical photo+pointer transform: no needle drift.
  const defs=node(layer,'defs');
  for(const spec of SPECS){
   const clipId='conv-needle-clip-'+spec.id.replace(/[^a-z0-9-]/g,'-');
