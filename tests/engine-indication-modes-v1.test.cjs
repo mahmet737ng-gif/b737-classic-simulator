@@ -13,7 +13,7 @@ const s = profile.createStore({storage});
 assert.equal(s.resolve().engineInstruments.id, 'EIS');
 s.set({engineInstruments:'CONVENTIONAL'});
 assert.equal(profile.createStore({storage}).resolve().engineInstruments.id,'CONVENTIONAL',
-  'User's Conventional choice must survive refresh');
+  "User's Conventional choice must survive refresh");
 s.set({engineInstruments:'EIS'});
 assert.equal(profile.createStore({storage}).resolve().engineInstruments.id,'EIS');
 const file = rel => fs.readFileSync(path.join(base,rel), 'utf8');
