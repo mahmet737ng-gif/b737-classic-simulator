@@ -58,6 +58,10 @@ jobs:
           test "$(git hash-object engine/locks/verify-le-devices-photolens-v2.cjs)" = "2bc43faa21e70c01875062080c2f6b573edaf6ce" || { echo "LE PHOTOLENS owner lock verifier changed"; exit 1; }
           node --check panel-mosaic-lab/le-devices/photo-lens-v2.js
           node engine/locks/verify-le-devices-photolens-v2.cjs --negative-self-test
+      - name: Enforce load-safe LE lens V3 owner lock
+        run: |
+          test "$(git hash-object engine/locks/le-photolens-runtime-v3-lock.json)" = "b25caa8f36ebcab335550fb97e9897c3240e8153" || { echo "V3 runtime owner lock registry changed"; exit 1; }
+          node tests/le-photolens-runtime-v3.test.cjs
       - name: Block altered or deleted locked panel image assets
         env:
           GITHUB_BASE_SHA: ${{ github.event.before }}
