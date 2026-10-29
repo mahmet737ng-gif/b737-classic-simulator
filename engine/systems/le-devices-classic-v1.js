@@ -25,10 +25,17 @@
    jams:Object.fromEntries(DEVICES.map(id=>[id,false])),
    sensor:Object.fromEntries(DEVICES.map(id=>[id,null])),
    lampFailures:[],testPressed:false,elapsedSeconds:0,
-   followActualTE:false,teActual:0,leStage:'RETRACTED'};
+   followActualTE:false,teActual:0,leStage:'RETRACTED',liveExtension:null};
  }
  function target(s,id){
   if(s.alternateExtend)return id.startsWith('SLAT_')?2:1;
+  // Owner-timed initial deployment is sequential; do not infer early movement from lever demand.
+  if(s.liveExtension){
+   const timeline=s.liveExtension;
+   if(id.startsWith('FLAP_'))return timeline.elapsed>=5?1:0;
+   if(timeline.elapsed<6.5)return 0;
+   return timeline.fullStart!==null&&timeline.elapsed>=timeline.fullStart?2:1;
+  }
   if(s.followActualTE){
    if(id.startsWith('FLAP_'))return s.leStage==='RETRACTED'?0:1;
    if(s.autoslatsRequested&&!s.onGround)return 2;
@@ -51,6 +58,10 @@
    case 'FLAP_LEVER':
     if(!DETENTS.includes(val))throw Error('Invalid trailing-edge flap detent');
     s.lever=val;break;
+   case 'START_LE_SEQUENCE':
+    if(s.mode!=='NORMAL'||s.alternateExtend)throw Error('Timed initial LE sequence requires normal drive');
+    s.followActualTE=true;s.leStage='RETRACTED';
+    s.liveExtension={elapsed:0,fullStart:null};break;
    case 'FOLLOW_TE':{
     // Stage changes are driven by actual trailing-edge travel, not lever demand.
     // Extension: UP -> EXT immediately; EXT -> FULL only after actual TE passes 5.
@@ -58,6 +69,15 @@
     if(!finite(action.position)||action.position<0||action.position>40||
        !DETENTS.includes(action.command))throw Error('Invalid actual TE stage input');
     const actual=action.position,command=action.command,eps=1e-6;
+    if(s.liveExtension){
+     s.followActualTE=true;s.teActual=actual;s.lever=command;
+     // A reversal aborts the initial extension clock without teleporting a device.
+     if(command===0||command<actual-eps){
+      const slat=s.position.SLAT_1;
+      s.leStage=slat>=1.5?'FULL':slat>=.5?'EXT':'RETRACTED';
+      s.liveExtension=null;
+     }else break;
+    }
     if(!s.followActualTE)
      s.leStage=actual<=eps?'RETRACTED':actual<=5?'EXT':'FULL';
     s.followActualTE=true;s.teActual=actual;s.lever=command;
@@ -121,6 +141,37 @@
     if(action.motionProfile!==undefined&&!['TIMED'].includes(action.motionProfile))throw Error('Unknown LE motion profile');
     const pf=action.pressureFactor===undefined?1:action.pressureFactor;
     if(typeof pf!=='number'||!Number.isFinite(pf)||pf<0||pf>1.1)throw Error('Invalid pressure factor');
+    if(timed&&s.liveExtension){
+     // First physical deployment, at nominal hydraulic pressure:
+     // 0..5 s: everything retracted; 5..6.5 s: four LE flaps TRANSIT;
+     // 6.5..8 s: six slats TRANSIT to EXT; 8..32 s: 24-second EXT hold;
+     // 32..33.5 s: six slats TRANSIT to FULL EXT when actual TE > 5.
+     // Clock is pressure-scaled, and freezes without hydraulic drive.
+     const seq=s.liveExtension;
+     const start=seq.elapsed,end=start+(driveAvailable(s)?dt*pf:0);
+     if(seq.fullStart===null&&end>=32&&s.teActual>5+1e-6&&s.lever>5)
+      seq.fullStart=Math.max(32,start);
+     const cuts=[start,5,6.5,8,32,seq.fullStart,end]
+      .filter(x=>x!==null&&x>start&&x<end).sort((a,b)=>a-b);
+     cuts.unshift(start);cuts.push(end);
+     for(let n=0;n<cuts.length-1;n++){
+      const from=cuts[n],to=cuts[n+1],mid=(from+to)/2;
+      const flapTarget=mid>=5?1:0;
+      const slatTarget=mid<6.5?0:(seq.fullStart!==null&&mid>=seq.fullStart?2:1);
+      for(const id of DEVICES){
+       if(s.jams[id]||!driveAvailable(s))continue;
+       const desired=id.startsWith('FLAP_')?flapTarget:slatTarget;
+       const cur=s.position[id];
+       if(!s.hydraulic.B&&desired<cur)continue;
+       if(!s.hydraulic.B&&desired>cur&&!(s.alternateExtend&&s.hydraulic.standby))continue;
+       const step=Math.min(Math.abs(desired-cur),(to-from)/1.5);
+       s.position[id]=Number((cur+Math.sign(desired-cur)*step).toFixed(6));
+      }
+     }
+     seq.elapsed=end;
+     s.leStage=end<6.5?'RETRACTED':seq.fullStart!==null&&end>=seq.fullStart?'FULL':'EXT';
+     s.elapsedSeconds+=dt;break;
+    }
     for(const id of DEVICES){
      if(s.jams[id]||!driveAvailable(s))continue;
      const desired=target(s,id),cur=s.position[id];
