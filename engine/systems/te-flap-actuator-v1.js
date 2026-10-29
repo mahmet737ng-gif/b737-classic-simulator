@@ -1,7 +1,8 @@
-/* B737 Classic simulated trailing-edge flap actuator, calibrated placeholder values.
- * Owner-supplied 2026-10-28 estimates, NOT aircraft-certified travel limits:
- * 0->1 20 s; 1->2 15 s; 2->5 12 s; 15->40 total 4.5 s.
- * Directional timings symmetric until owner supplies stopwatch data.
+/* B737 Classic simulated trailing-edge flap actuator, owner-calibrated trainer values.
+ * Owner-supplied 2026-10-29 segment times (seconds), NOT aircraft-certified limits:
+ * UP->1 11; 1->2 10.7; 2->5 9.4; 5->10 5.1; 10->15 5;
+ * 15->25 2.3; 25->30 2.3; 30->40 5 (UP->40 total 50.8).
+ * Retraction uses the same segment times until separately calibrated.
  */
 (function(root,factory){
  const api=factory();
@@ -10,7 +11,7 @@
 })(typeof globalThis!=='undefined'?globalThis:null,function(){
  'use strict';
  const STOPS=Object.freeze([0,1,2,5,10,15,25,30,40]);
- const DEFAULT_SECONDS=Object.freeze([20,15,12,9,7,2,1.25,1.25]);
+ const DEFAULT_SECONDS=Object.freeze([11,10.7,9.4,5.1,5,2.3,2.3,5]);
  const EPS=1e-8;
  function initialState(){
   return {schema:'b737-te-flap-actuator/1',revision:0,command:0,actual:0,
