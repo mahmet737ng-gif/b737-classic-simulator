@@ -84,12 +84,12 @@ test('Window Heat/TAT physics use original shared core exports, not mockup algor
 
 test('TEMP PROBE STUCK OFF preset lights amber and STUCK ON preset extinguishes amber',()=>{
  const h=setup();h.api.open();
- assert.equal(h.api.setScenario('tat-probe-off'),true);
+ assert.equal(h.api.applyScenario('tat-probe-off'),true);
  let result=h.api.evaluate(0);
  assert.equal(result.tat.probeStuckOff,true);
  assert.equal(result.tat.heaterPower,false);
  assert.equal(result.tat.amberOn,true,'STUCK OFF means probe unheated and amber illuminated');
- assert.equal(h.api.setScenario('tat-probe-on'),true);
+ assert.equal(h.api.applyScenario('tat-probe-on'),true);
  result=h.api.evaluate(0);
  assert.equal(result.tat.probeStuckOn,true);
  assert.equal(result.tat.heaterPower,true);
@@ -103,8 +103,8 @@ test('TEMP PROBE physical faults and indicator faults remain separately selectab
  assert.equal(ids.filter(x=>x==='tat-lamp-on').length,1);
  assert.equal(ids.filter(x=>x==='tat-lamp-off').length,1);
  assert.equal(ids.length,new Set(ids).size,'all scenario IDs must be unique');
- h.api.open();h.api.setScenario('tat-lamp-on');
+ h.api.open();h.api.applyScenario('tat-lamp-on');
  assert.equal(h.api.evaluate(0).tat.amberOn,true,'indicator stuck ON means lamp itself illuminated');
- h.api.setScenario('tat-lamp-off');
+ h.api.applyScenario('tat-lamp-off');
  assert.equal(h.api.evaluate(0).tat.amberOn,false,'indicator stuck OFF means lamp itself dark');
 });
