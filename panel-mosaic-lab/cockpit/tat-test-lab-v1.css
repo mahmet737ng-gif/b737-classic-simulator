@@ -1,0 +1,47 @@
+/* TAT TEST LAB — photo-backed OH15 scenario workspace. Additive styling only.
+   The bitmap remains the exact registered, approved OH15 source file. */
+.tatlab-dialog{box-sizing:border-box;width:min(1200px,96vw);max-width:1200px;max-height:94vh;overflow:auto;margin:auto;padding:0;border-radius:13px;border:1px solid #496a79;background:#101b26;color:#e9f4fb;font:13px/1.5 "Segoe UI",Arial,sans-serif;box-shadow:0 22px 90px #000d}
+.tatlab-dialog::backdrop{background:rgba(0,8,15,.81);backdrop-filter:blur(3px)}
+.tatlab-dialog *{box-sizing:border-box}
+.tatlab-header{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:13px 18px;background:#162a37;border-bottom:1px solid #365060;position:sticky;top:0;z-index:10}
+.tatlab-header strong{display:block;letter-spacing:.8px;font-size:17px}
+.tatlab-header small{display:block;color:#9bb4c7;font-size:11px}
+.tatlab-header button{font-size:25px;line-height:1;width:36px;height:35px;border:1px solid #688194;border-radius:6px;background:#243644;color:white;cursor:pointer}
+.tatlab-main{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(315px,.95fr);gap:0}
+.tatlab-stage{padding:14px;background:#0c151f;border-right:1px solid #324a59;text-align:center}
+.tatlab-photo{position:relative;display:block;width:min(100%,570px);margin:0 auto;aspect-ratio:1280/1229;overflow:hidden;background:#2a4355;border:2px solid #6a8393;border-radius:5px;box-shadow:0 8px 35px #0009;touch-action:pan-y}
+.tatlab-photo>img{width:100%;height:100%;object-fit:fill;display:block;pointer-events:none;user-select:none;-webkit-user-drag:none}
+.tatlab-photo>button{position:absolute;cursor:pointer;user-select:none;touch-action:none}
+.tatlab-photo .tatlab-toggle{width:9.53%;aspect-ratio:1;border:0;border-radius:50%;transform:translate(-50%,-50%);background:radial-gradient(circle at 35% 25%,#969a99 0%,#31323a 22%,#050b11 59%,#a6b1b6 69%,#252d34 82%,#090e15 100%);box-shadow:0 1px 4px #000e,inset 0 0 0 2px #6d7e86}
+.tatlab-toggle span{position:absolute;left:36%;top:36%;height:64%;width:29%;border-radius:65% 65% 30% 30%;background:linear-gradient(100deg,#9b9b94,#fffefa 43%,#d0d1cc 75%,#898985);box-shadow:0 2px 6px #080b11ba;transform-origin:50% 22%;transform:rotate(0deg);transition:transform .13s ease}
+.tatlab-toggle[data-position="OFF"] span{transform:rotate(180deg)}
+.tatlab-toggle[data-position="ON"] span{transform:rotate(0deg)}
+.tatlab-photo #tatlab-test{width:9.55%;aspect-ratio:1;border:0;border-radius:50%;transform:translate(-50%,-50%);background:radial-gradient(circle at 35% 30%,#fafaff 0,#e6e8e7 41%,#9ea4a5 62%,#34363d 70%,#848d98 82%,#151a20 100%);box-shadow:0 1px 4px #000d,inset 0 0 0 3px #64727a}
+.tatlab-photo #tatlab-test[data-pressed="true"]{background:radial-gradient(circle at 48% 43%,#b9bbc0,#77848e 56%,#2a3641 63%,#515e66 80%,#1c2228 100%);box-shadow:inset 0 3px 7px #101b25,0 0 0 3px #c4aa5b7c}
+.tatlab-photo .tatlab-amber{position:absolute;display:flex;align-items:center;justify-content:center;user-select:none;pointer-events:none;border:1px solid #282a29;border-radius:2px;background:linear-gradient(180deg,#030a0d,#0b1115);box-shadow:inset 0 1px 3px #000a}
+.tatlab-amber span{font-family:"Arial Narrow",Arial,sans-serif;font-stretch:condensed;color:#643517;font-size:clamp(7px,1.25vw,15px);font-weight:800;line-height:1.05;text-align:center;opacity:.70}
+.tatlab-amber[data-on="true"]{background:linear-gradient(180deg,#251208,#100b08 45%,#3b210d);box-shadow:0 0 15px #e7811b49,inset 0 1px 4px #f37a2b3f}
+.tatlab-amber[data-on="true"] span{color:#ffac48;opacity:1;text-shadow:0 0 5px #fa7111b7,0 0 8px #e85c10ad}
+.tatlab-lamp-label{font-weight:750;letter-spacing:.6px;color:#f0b467;margin:10px 0}
+.tatlab-help{color:#adc0cb;font-size:12px;max-width:570px;margin:5px auto}
+.tatlab-side{padding:18px;display:flex;flex-direction:column;gap:10px}
+.tatlab-side h3{font-size:13px;letter-spacing:.7px;margin:0 0 4px}
+.tatlab-scenarios{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.tatlab-scenarios button,.tatlab-side button{font:inherit;cursor:pointer}
+.tatlab-scenarios button{min-height:36px;padding:7px 8px;border-radius:5px;background:#203543;color:#d4e3ea;border:1px solid #446073;text-align:left;font-weight:650;font-size:11px}
+.tatlab-scenarios button[aria-pressed="true"]{color:#ffe6ae;background:#4a3b24;border-color:#e3ac49;box-shadow:inset 0 0 0 1px #d9ac5244}
+.tatlab-scenario-text{margin:0;background:#172936;padding:10px;border-radius:6px;color:#b8cdd8;min-height:51px}
+.tatlab-metrics{font:12px/1.6 monospace;color:#83cada}
+.tatlab-system-status{margin:0;font-weight:700;color:#e5c584}
+.tatlab-manual{border:1px solid #9e8257;background:#3c3122;border-radius:6px;padding:9px;color:#ffe8c1}
+.tatlab-manual[aria-pressed="true"]{background:#79511c}
+.tatlab-cb{margin-top:6px;padding:12px;border:1px solid #466578;border-radius:8px;background:#162a39}
+.tatlab-cb p{margin:5px 0;font-size:12px}
+#tatlab-cb-value[data-pulled="true"]{color:#fa858b}
+#tatlab-cb-value[data-pulled="false"]{color:#8bdcc0}
+.tatlab-cb-actions{display:flex;gap:8px;flex-wrap:wrap}
+.tatlab-cb-actions button,#tatlab-reset{border:1px solid #69849a;border-radius:6px;padding:9px;background:#243c4c;color:#e0eff6}
+.tatlab-cb-actions button:disabled{cursor:not-allowed;opacity:.55}
+#tatlab-reset{background:#26323f;color:#b9cad4}
+@media(max-width:810px){.tatlab-main{grid-template-columns:1fr}.tatlab-stage{border-right:0;border-bottom:1px solid #324a59}.tatlab-side{padding:12px}.tatlab-scenarios{grid-template-columns:repeat(2,1fr)}.tatlab-dialog{width:98vw;max-height:97vh}.tatlab-amber span{font-size:clamp(7px,2.3vw,13px)}}
+@media(prefers-reduced-motion:reduce){.tatlab-toggle span{transition:none}}
