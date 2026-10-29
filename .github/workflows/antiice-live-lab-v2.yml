@@ -1,0 +1,32 @@
+name: ANTI ICE — Live OH15 Embed QA
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'panel-mosaic-lab/cockpit/antiice-live-test-lab-v2.js'
+      - 'panel-mosaic-lab/cockpit/antiice-live-test-lab-v2.css'
+      - 'panel-mosaic-lab/cockpit/index.html'
+      - 'panel-mosaic-lab/interactive-overhead/app.js'
+      - 'tests/antiice-live-lab-v2.test.cjs'
+      - '.github/workflows/antiice-live-lab-v2.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  antiice-lab:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Syntax and unchanged original renderer contract
+        run: |
+          node --check panel-mosaic-lab/cockpit/antiice-live-test-lab-v2.js
+          node --check panel-mosaic-lab/interactive-overhead/app.js
+          node --check tests/antiice-live-lab-v2.test.cjs
+      - name: Live OH15 original embed, triple tap, CB and all scenario tests
+        run: node --test tests/antiice-live-lab-v2.test.cjs tests/tat-probe-v1.test.cjs tests/tat-probe-cb-link.test.cjs tests/window-heat-v1.test.cjs
+      - name: Locked original overhead atlas and guards unchanged
+        run: |
+          python3 panel-mosaic-lab/verify-final-overhead.py
+          python3 panel-mosaic-lab/cockpit/verify-guard-redzone.py --negative-self-test
