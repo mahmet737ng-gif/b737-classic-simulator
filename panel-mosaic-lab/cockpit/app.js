@@ -43,6 +43,7 @@
   }
  });
  function focus(id){focused=id;const r=model.target(assembly,id);if(!r)return;const scale=model.fit(r,vp.clientWidth,vp.clientHeight);applyZoom(scale,0,0,0,0);vp.scrollLeft=Math.max(0,(r.x+r.w/2)*zoom-vp.clientWidth/2);vp.scrollTop=Math.max(0,r.y*zoom-38);for(const b of document.querySelectorAll('[data-focus]'))b.classList.toggle('active',b.dataset.focus===id);const labels={all:'تمام کاکپیت',overhead:'اورهد تعاملی',main:'مین‌پنل',pedestal:'پدستال','cdu-captain':'CDU کپتن','cdu-first-officer':'CDU فرست‌آفیسر','cdu-both':'CDU کپتن و فرست‌آفیسر'};byId('viewLabel').textContent=labels[id];byId('selectionTitle').textContent=r.label||'ALL COCKPIT';byId('selectionDescription').textContent=id.startsWith('cdu-')?'همان CDU تأییدشده با ۷۰ دکمه؛ صفحه مستقل و اطلاعات FMC مشترک است':id==='overhead'?'۱۱۰ چراغ و کنترل‌های تعاملی نسخهٔ تأییدشده':id==='pedestal'?'پنل جدید و خام Throttle Quadrant، فایر پنل و رادیوها در چیدمان مستقل و بدون هم‌پوشانی':'مونتاژ تصاویر اصلی با حفظ نسبت طول و عرض';byId('selectionSize').textContent='';byId('originalLink').hidden=true;}
+ function panWheel(payload){return window.B737WheelPanModelV1?.pan(vp,payload)===true;}
  function command(action,extra={}){if(ready)frame.contentWindow.postMessage({type:'b737:cockpit-command',action,...extra},location.origin);}
  // Environment sensor values are supplied by ISN or an external simulator adapter.
  // Only the selected PRECHECK source updates the OH20 temperature pointer.
@@ -59,6 +60,7 @@
   if(d.kind==='visual-state'){visualOverheadCount=d.active?d.count:0;byId('visualLampStatus').textContent=visualTest?(visualOverheadCount===112?'تست تصویری ۱۴۲ چراغ فعال':'تست تصویری فعال · اورهد در حال اتصال'):'';}
   if(d.kind==='state'){snapshot=d;renderLights();}
   if(d.kind==='selected-light'){byId('lampSelect').value=d.id;renderLights();}
+  if(d.kind==='wheel-pan'){panWheel(d);return;}
   if(d.kind==='pan-start'){drag={x:d.screenX,y:d.screenY,left:vp.scrollLeft,top:vp.scrollTop,source:'iframe'};dragged=false;}
   if(d.kind==='pan-move'&&drag?.source==='iframe'){vp.scrollLeft=drag.left-(d.screenX-drag.x);vp.scrollTop=drag.top-(d.screenY-drag.y);}
   if(d.kind==='pan-end')drag=null;
@@ -69,6 +71,7 @@
   if(d.kind==='ready'&&d.controls===70){cduStates.set(d.seat,{...previous,ready:true});c.station.classList.add('ready');byId(d.seat==='CAPT'?'resetCduCaptain':'resetCduFirstOfficer').disabled=false;}
   if(d.kind==='state'&&typeof d.page==='string')cduStates.set(d.seat,{...previous,page:d.page.slice(0,50)});
   if(d.kind==='error')cduStates.set(d.seat,{error:true});
+  if(d.kind==='wheel-pan'){panWheel(d);return;}
   if(d.kind==='zoom'&&Number.isFinite(d.delta)){const r=c.child.getBoundingClientRect(),v=vp.getBoundingClientRect(),scaleX=r.width/c.item.nativeWidth,scaleY=r.height/c.item.nativeHeight;applyZoom(zoom*(d.delta<0?1.12:1/1.12),vp.scrollLeft,vp.scrollTop,r.left-v.left+d.clientX*scaleX,r.top-v.top+d.clientY*scaleY);}
   updateCduStatus();
  });
@@ -81,7 +84,12 @@
  byId('galleryOpen').onclick=()=>{byId('galleryDialog').showModal();window.B737ImageLoader.refresh();};byId('galleryClose').onclick=()=>byId('galleryDialog').close();
  byId('inspectorToggle').onclick=e=>{const active=!document.body.classList.contains('side-open');document.body.classList.toggle('side-open',active);e.currentTarget.setAttribute('aria-expanded',String(active));};
  byId('lampSelect').onchange=renderLights;byId('lampFault').onchange=e=>command('fault',{id:byId('lampSelect').value,active:e.target.checked});byId('resetScenario').onclick=()=>command('reset-scenario');byId('resetControls').onclick=()=>command('reset-controls');
- vp.addEventListener('wheel',e=>{if(e.ctrlKey||e.metaKey){e.preventDefault();const r=vp.getBoundingClientRect();applyZoom(zoom*(e.deltaY<0?1.12:1/1.12),vp.scrollLeft,vp.scrollTop,e.clientX-r.left,e.clientY-r.top);}},{passive:false});
+ vp.addEventListener('wheel',e=>{
+  if(e.ctrlKey||e.metaKey){e.preventDefault();const r=vp.getBoundingClientRect();applyZoom(zoom*(e.deltaY<0?1.12:1/1.12),vp.scrollLeft,vp.scrollTop,e.clientX-r.left,e.clientY-r.top);return;}
+  // Outer cockpit pans directly; embedded OH/CDU send same-origin wheel-pan messages.
+  if(e.target.closest('input,textarea,select,[contenteditable="true"]'))return;
+  if(panWheel(e))e.preventDefault();
+ },{passive:false});
  vp.addEventListener('pointerdown',e=>{if(e.pointerType!=='mouse'||e.button!==0)return;drag={x:e.clientX,y:e.clientY,left:vp.scrollLeft,top:vp.scrollTop,source:'parent',pointer:e.pointerId};dragged=false;});vp.addEventListener('pointermove',e=>{if(!drag||drag.source!=='parent'||drag.pointer!==e.pointerId)return;const dx=e.clientX-drag.x,dy=e.clientY-drag.y;if(Math.abs(dx)+Math.abs(dy)>5){dragged=true;vp.classList.add('dragging');vp.setPointerCapture(e.pointerId);vp.scrollLeft=drag.left-dx;vp.scrollTop=drag.top-dy;}});const stop=()=>{drag=null;vp.classList.remove('dragging');setTimeout(()=>dragged=false,0);};window.addEventListener('pointerup',stop);window.addEventListener('pointercancel',stop);
  vp.addEventListener('touchstart',e=>{if(e.touches.length===2){const a=e.touches;pinch={distance:Math.hypot(a[0].clientX-a[1].clientX,a[0].clientY-a[1].clientY),zoom,left:vp.scrollLeft,top:vp.scrollTop};}},{passive:true});vp.addEventListener('touchmove',e=>{if(e.touches.length===2&&pinch){e.preventDefault();const a=e.touches,r=vp.getBoundingClientRect();applyZoom(pinch.zoom*Math.hypot(a[0].clientX-a[1].clientX,a[0].clientY-a[1].clientY)/pinch.distance,pinch.left,pinch.top,(a[0].clientX+a[1].clientX)/2-r.left,(a[0].clientY+a[1].clientY)/2-r.top);}},{passive:false});vp.addEventListener('touchend',e=>{if(e.touches.length<2)pinch=null;},{passive:true});
  let resizeTimer;window.addEventListener('resize',()=>{clearTimeout(resizeTimer);resizeTimer=setTimeout(()=>{if(assembly)focus(focused);},120);});
