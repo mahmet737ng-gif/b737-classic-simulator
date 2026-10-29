@@ -1,0 +1,69 @@
+{
+  "schema": "b737-classic.panel-owner-effectivity/1",
+  "version": "OWNER-PANEL-20261030-REGISTERED-CANDIDATE",
+  "aircraft": [
+    {
+      "selection": "B737-300-500",
+      "models": [
+        "737-300",
+        "737-500"
+      ],
+      "overhead": {
+        "atlas": "OH21",
+        "candidate": "OH21_300500",
+        "recircFans": 1,
+        "source": "panel-mosaic-lab/cockpit/assets/oh21-737-300500-owner-20261030.q100.webp"
+      },
+      "engineInstruments": [
+        "EIS",
+        "CONVENTIONAL"
+      ],
+      "effectivity": "AIRFRAME_SPECIFIC_NOT_VERIFIED"
+    },
+    {
+      "selection": "B737-400",
+      "models": [
+        "737-400"
+      ],
+      "overhead": {
+        "atlas": "OH21",
+        "candidate": "OH21_400",
+        "recircFans": 2,
+        "source": "panel-mosaic-lab/cockpit/assets/oh21-737-400-owner-20261030.q100.webp"
+      },
+      "engineInstruments": [
+        "EIS",
+        "CONVENTIONAL"
+      ],
+      "effectivity": "AIRFRAME_SPECIFIC_NOT_VERIFIED"
+    }
+  ],
+  "preserved": [
+    "panel-mosaic-lab/all-overhead/final-lock.json",
+    "panel-mosaic-lab/assets/locked/2026-10-23/OH21-BLEED-AIR-cc78219607a3.png",
+    "panel-mosaic-lab/cockpit/assets/conventional-engine-panel-owner-20261029.png"
+  ],
+  "geometricSource": "panel-mosaic-lab/cockpit/panel-photo-registry.v1.json",
+  "componentOwner": {
+    "oh21": "panel-mosaic-lab/cockpit/oh21-owner-photo-registration-v1.js",
+    "backends": [
+      "engine/systems/pneumatics-v6.js",
+      "panel-mosaic-lab/interactive-overhead/lights-model.js"
+    ],
+    "p2": "panel-mosaic-lab/cockpit/engine-indication-mode-v1.js"
+  },
+  "rollbackPolicy": "Remove candidate runtime script reference; old atlas and backend remain intact",
+  "engineP2Panorama": {
+    "candidate": "panel-mosaic-lab/cockpit/assets/p2-conventional-panorama-owner-20261030.q100.webp",
+    "status": "STAGED_NOT_ACTIVE",
+    "reason": "Current Unified P2 has discrete ENGINE 461x475.56 and FO INNER 372x694.16 regions; the 1463x1075 panoramic image crosses them and must not be distorted or overwrite protected geometry."
+  },
+  "releaseGate": [
+    "OH21_BROWSER_BOTH_VARIANTS",
+    "OWNER18_GUARDS",
+    "FROZEN_UPD0012",
+    "IRS_LOCK",
+    "P2_GEOMETRY_AND_NEEDLE_CALIBRATION_BEFORE_P2_ACTIVATION"
+  ],
+  "dataIntegrity": "Old assets and technical data must not be removed or re-keyed"
+}
