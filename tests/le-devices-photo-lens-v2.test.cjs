@@ -29,7 +29,7 @@ assert.match(style,/focus-visible/,'original keyboard focus must remain visible'
 for(const hex of ['#ffd22a','#3ce5aa'])assert.ok(!script.includes(hex),'old neon color forbidden: '+hex);
 for(const path of ['panel-mosaic-lab/cockpit/overhead-stage.html','panel-mosaic-lab/le-devices/index.html']){
  const html=read(path);assert.match(html,/photo-lens-v3\.js\?v=LE-PHOTOLENS-0003/);
- assert.match(html,/photo-lens-v2\.css\?v=LE-PHOTOLENS-0003/);
+ assert.match(html,/photo-lens-v2\.css\?v=LE-PHOTOLENS-0002/);
 }
 const assembly=JSON.parse(read('panel-mosaic-lab/cockpit/assembly.json'));
 assert.match(assembly.regions.find(r=>r.id==='overhead').embeddedUrl,/LE-PHOTOLENS-0003/);
