@@ -24,4 +24,7 @@ test('Unified and stand-alone trainer both load stagger style without mutating a
   assert.ok(html.includes(stylesheet),p+' stagger style missing');
   assert.ok(html.includes('panel.js?v=LEDEV-0006'),p+' panel source must remain approved');
  }
+ const assembly=JSON.parse(read('panel-mosaic-lab/cockpit/assembly.json'));
+ const overhead=assembly.regions.find(r=>r.id==='overhead');
+ assert.ok(overhead && overhead.embeddedUrl.includes('LE-STAGGER-0008'),'Unified iframe URL must refresh');
 });
