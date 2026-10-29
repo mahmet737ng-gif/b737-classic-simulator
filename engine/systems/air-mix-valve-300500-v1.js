@@ -16,7 +16,7 @@
   PASS:Object.freeze({x:1021,y:425,selector:'pass-cabin-temp',pack:'pack-r'})
  });
  const SOURCE=Object.freeze({width:1254,height:1254,piece:'OH20'});
- const CONFIG=Object.freeze({fullTravelSeconds:90,deadbandC:0.5,ductLimitC:60,overheatC:88,
+ const CONFIG=Object.freeze({fullTravelSeconds:90,benchFullTravelSeconds:12,deadbandC:0.5,ductLimitC:60,overheatC:88,
   // Training approximations: actual AUTO knob trim mapping must be calibrated.
   targetC:Object.freeze({'AUTO COOL':20,'AUTO NORM':22,'AUTO WARM':24})});
  const clamp=n=>Math.max(0,Math.min(1,n));
@@ -67,7 +67,7 @@
    if(v.stuck){direction=0;reason='ACTUATOR_STUCK';}
    else if(v.actuatorPower!==true){direction=0;reason=v.actuatorPower===false?'ACTUATOR_UNPOWERED':'ACTUATOR_POWER_UNKNOWN';}
    const previous=clamp(next.positions[side]);
-   next.positions[side]=clamp(previous+direction*dt/CONFIG.fullTravelSeconds);
+   next.positions[side]=clamp(previous+direction*dt/(v.benchBypassPack?CONFIG.benchFullTravelSeconds:CONFIG.fullTravelSeconds));
    next.command[side]=direction<0?'COLD':direction>0?'HOT':'HOLD';
    next.reason[side]=v.benchBypassPack&&v.packMode==='OFF'&&reason!=='DUCT_OVERHEAT_LATCH'?'BENCH_'+reason:reason;
   }
