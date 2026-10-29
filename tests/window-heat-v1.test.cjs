@@ -88,3 +88,24 @@ test('the two 4/5 CBs remain separate from forward windows',()=>{
  const b=run(undefined,{breakers:{'P6-12|ALL|B7':false}}).output;
  assert.equal(b.aux.R45.heaterPower,false);assert.equal(b.channels.R_FWD.greenOn,true);
 });
+
+test('PWR TEST illuminates every healthy green ON lamp with all window switches OFF',()=>{
+ const allOff=Object.fromEntries(Object.values(WH.CHANNELS).map(c=>[c.switchId,'OFF']));
+ const r=run(undefined,{switches:{...allOff,'window-power-test':'PWR TEST'}},0).output;
+ assert.ok(Object.values(r.channels).every(x=>x.greenOn),'all four healthy ON lamps must illuminate');
+ assert.ok(Object.values(r.channels).every(x=>!x.selected),'PWR TEST must not turn the window switches ON');
+ assert.ok(Object.values(r.channels).every(x=>!x.heaterPower),'PWR TEST must not energize heaters whose switches are OFF');
+ assert.ok(Object.values(r.channels).every(x=>!x.overheatOn),'PWR TEST must not trigger OVERHEAT');
+});
+test('PWR TEST leaves failed channels dark while healthy channels illuminate',()=>{
+ const allOff=Object.fromEntries(Object.values(WH.CHANNELS).map(c=>[c.switchId,'OFF']));
+ const switches={...allOff,'window-power-test':'PWR TEST'};
+ const breaks={'P6-11|ALL|B9':false};
+ const r=run(undefined,{switches,breakers:breaks},0).output;
+ assert.equal(r.channels.L_FWD.greenOn,false,'open heater CB must fail its ON lamp test');
+ assert.ok(Object.entries(r.channels).filter(([id])=>id!=='L_FWD').every(([,x])=>x.greenOn));
+ let failed=WH.injectFault(WH.initialState(),'R_SIDE','POWER_TEST_FAIL',true);
+ const q=run(failed,{switches},0).output;
+ assert.equal(q.channels.R_SIDE.greenOn,false,'failed power-test circuit stays dark');
+ assert.ok(Object.entries(q.channels).filter(([id])=>id!=='R_SIDE').every(([,x])=>x.greenOn));
+});
