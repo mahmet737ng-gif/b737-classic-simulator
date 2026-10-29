@@ -45,9 +45,12 @@ const scenarioList=[
  {id:'tat-press',name:'TAT TEST healthy',onGround:true,action:'TAT TEST'},
  {id:'tat-heater',name:'TAT heater fail',tatFault:'HEATER_FAIL',action:'TAT TEST'},
  {id:'tat-detector',name:'TAT current sensor fail',tatFault:'CURRENT_SENSE_FAIL',action:'TAT TEST'},
- {id:'tat-lamp-on',name:'TEMP PROBE stuck ON',tatFault:'INDICATOR_STUCK_ON'},
- {id:'tat-lamp-off',name:'TEMP PROBE stuck OFF',tatFault:'INDICATOR_STUCK_OFF'},
- {id:'tat-lamp-off',name:'TEMP PROBE stuck OFF',tatFault:'INDICATOR_STUCK_OFF'},
+ // Probe heater STUCK states and annunciator STUCK states are separate
+ // failure classes: probe OFF => TEMP PROBE amber, probe ON => amber dark.
+ {id:'tat-probe-off',name:'TEMP PROBE STUCK OFF · amber ON',tatFault:'PROBE_STUCK_OFF',note:'Probe heater remains OFF; TEMP PROBE amber stays ON while indicator power is present.'},
+ {id:'tat-probe-on',name:'TEMP PROBE STUCK ON · amber OFF',tatFault:'PROBE_STUCK_ON',note:'Probe heater remains ON when its power feed is available; TEMP PROBE amber stays OFF.'},
+ {id:'tat-lamp-on',name:'TEMP PROBE INDICATOR STUCK ON',tatFault:'INDICATOR_STUCK_ON',note:'Separate indicator failure: amber lamp itself stuck illuminated.'},
+ {id:'tat-lamp-off',name:'TEMP PROBE INDICATOR STUCK OFF',tatFault:'INDICATOR_STUCK_OFF',note:'Separate indicator failure: amber lamp itself stuck extinguished.'},
  {id:'tat-cb',name:'TAT C5 CB open',virtualTatCB:true,action:'TAT TEST'},
  {id:'pitot-a-fail',name:'PITOT A indication fault',pitotFault:'probe-capt-ps'},
  {id:'pitot-b-fail',name:'PITOT B indication fault',pitotFault:'probe-fo-ps'},
