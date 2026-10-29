@@ -25,14 +25,16 @@ test('SP.3.2: ON lamps remain until 60s; amber test clears at 60s',()=>{
  assert.ok(all(r.output).every(x=>x.greenOn&&!x.overheatOn));
  assert.equal(r.output.annunciations.antiIceCaution,false);
 });
-test('SP.3.2: OVERHEAT test never artificially illuminates a green light that was OFF before testing',()=>{
- let s=Core.initialState();
- s.channels.L_FWD.temp=41;
- let r=project(s,on,1);
- assert.equal(r.output.channels.L_FWD.greenOn,false);
+test('SP.3.2: OVERHEAT test never artificially illuminates green ON on a heater-failed channel',()=>{
+ // Normal thermostat cutout is *not* a failed green ON lamp. The green
+ // indication remains ON while heat cycles. Use an actual unavailable
+ // heater circuit to validate the pretest-dark behavior.
+ let state=Core.injectFault(Core.initialState(),'L_FWD','HEATER_FAIL',true);
+ let r=project(state,on,1);
+ assert.equal(r.output.channels.L_FWD.greenOn,false,'heater failure before test');
  assert.equal(r.output.channels.L_SIDE.greenOn,true);
  r=project(r.state,{...on,'window-power-test':'OVHT'},0);
- assert.equal(r.output.channels.L_FWD.greenOn,false);
+ assert.equal(r.output.channels.L_FWD.greenOn,false,'test cannot falsely enable a failed green lamp');
  assert.equal(r.output.channels.L_SIDE.greenOn,true);
  assert.ok(all(r.output).every(x=>x.overheatOn));
 });
