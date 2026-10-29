@@ -1,0 +1,31 @@
+/* CB-ENTRY-0001: Unified header launcher, separate from all locked cockpit assets. */
+#cbPanelOpen{white-space:nowrap!important}
+#cbPanelDialog{
+ position:fixed!important;inset:0!important;width:100vw!important;max-width:100vw!important;
+ height:100vh!important;height:100dvh!important;max-height:100dvh!important;
+ margin:0!important;padding:0!important;border:0!important;border-radius:0!important;
+ background:#0b121a!important;color:#f0f4f5!important;overflow:hidden!important;
+ box-sizing:border-box;display:none;flex-direction:column;z-index:1000!important;
+}
+#cbPanelDialog[open]{display:flex!important}
+#cbPanelDialog::backdrop{background:#03080edb}
+#cbPanelDialog .cb-dialog-top{
+ flex:0 0 42px;height:42px;display:flex;align-items:center;justify-content:space-between;
+ background:#101e29;border-bottom:1px solid #3b5260;padding:4px 12px;gap:12px;
+ direction:ltr;font:700 13px/1.1 system-ui,Arial,sans-serif;
+}
+#cbPanelDialog #cbPanelClose{
+ width:35px;height:33px;min-width:35px;margin:0;padding:0;display:grid;place-items:center;
+ border:1px solid #557184;border-radius:6px;background:#1c3746;color:#e8f1f7;
+ font:26px/1 system-ui,Arial,sans-serif;touch-action:manipulation;
+}
+#cbPanelDialog #cbPanelFrame{display:block;flex:1 1 auto;width:100%;min-height:0;border:0;background:#0b1119}
+@media(max-width:430px){
+ body>header.unified-minimal-header .header-settings{gap:3px!important}
+ body>header.unified-minimal-header .header-settings button{
+   flex:1 1 0%!important;padding:4px 3px!important;
+   min-height:38px!important;font-size:clamp(9px,2.65vw,11px)!important;
+ }
+ body>header.unified-minimal-header #visualLampTest{flex:1.75 1 0%!important;max-width:none}
+ body>header.unified-minimal-header #cbPanelOpen{flex:0.8 1 0%!important}
+}
