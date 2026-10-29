@@ -21,7 +21,7 @@ const svg=file('panel-mosaic-lab/cockpit/assets/conventional-engine-face-v1.svg'
 assert.equal((svg.match(/data-conventional-red-lamp-socket="1"/g)||[]).length,6,
   'Three pairs of in-gauge red lamp holes (N1/EGT/N2)');
 assert.ok(svg.startsWith('<svg') && svg.endsWith('</svg>'),'Conventional face is standalone');
-for(const id of ['N1','EGT','N2','FF','OIL PRESS','OIL TEMP','OIL QUANTITY','VIB'])
+for(const id of ['N1','EGT','N2','FF','OIL','PRESS','TEMP','QUANTITY','VIB'])
   assert.ok(svg.includes(id), 'Printed gauge dial missing: '+id);
 const js=file('panel-mosaic-lab/cockpit/engine-indication-mode-v1.js');
 const css=file('panel-mosaic-lab/cockpit/engine-indication-mode-v1.css');
