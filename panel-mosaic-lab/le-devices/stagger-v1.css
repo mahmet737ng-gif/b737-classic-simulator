@@ -1,0 +1,37 @@
+/* LE-STAGGER-0008 — presentation-only timing, outside the owner-locked LE panel.
+ * 26 independent windows: 0..100 ms distributed startup/shutdown delay
+ * followed by an 18 ms visual rise/fall. Never changes physical sensor state.
+ * No pointer, dimensions, geometry, brightness or assets are modified.
+ */
+.b737-le-devices__lamps path[data-device][data-level] {
+  transition-property: fill;
+  transition-duration: 18ms;
+  transition-timing-function: linear;
+  transition-delay: var(--le-lamp-delay, 0ms);
+}
+.b737-le-devices__lamps path:nth-of-type(1) { --le-lamp-delay: 0ms; }
+.b737-le-devices__lamps path:nth-of-type(2) { --le-lamp-delay: 44ms; }
+.b737-le-devices__lamps path:nth-of-type(3) { --le-lamp-delay: 88ms; }
+.b737-le-devices__lamps path:nth-of-type(4) { --le-lamp-delay: 28ms; }
+.b737-le-devices__lamps path:nth-of-type(5) { --le-lamp-delay: 72ms; }
+.b737-le-devices__lamps path:nth-of-type(6) { --le-lamp-delay: 12ms; }
+.b737-le-devices__lamps path:nth-of-type(7) { --le-lamp-delay: 56ms; }
+.b737-le-devices__lamps path:nth-of-type(8) { --le-lamp-delay: 100ms; }
+.b737-le-devices__lamps path:nth-of-type(9) { --le-lamp-delay: 40ms; }
+.b737-le-devices__lamps path:nth-of-type(10) { --le-lamp-delay: 84ms; }
+.b737-le-devices__lamps path:nth-of-type(11) { --le-lamp-delay: 24ms; }
+.b737-le-devices__lamps path:nth-of-type(12) { --le-lamp-delay: 68ms; }
+.b737-le-devices__lamps path:nth-of-type(13) { --le-lamp-delay: 8ms; }
+.b737-le-devices__lamps path:nth-of-type(14) { --le-lamp-delay: 52ms; }
+.b737-le-devices__lamps path:nth-of-type(15) { --le-lamp-delay: 96ms; }
+.b737-le-devices__lamps path:nth-of-type(16) { --le-lamp-delay: 36ms; }
+.b737-le-devices__lamps path:nth-of-type(17) { --le-lamp-delay: 80ms; }
+.b737-le-devices__lamps path:nth-of-type(18) { --le-lamp-delay: 20ms; }
+.b737-le-devices__lamps path:nth-of-type(19) { --le-lamp-delay: 64ms; }
+.b737-le-devices__lamps path:nth-of-type(20) { --le-lamp-delay: 4ms; }
+.b737-le-devices__lamps path:nth-of-type(21) { --le-lamp-delay: 48ms; }
+.b737-le-devices__lamps path:nth-of-type(22) { --le-lamp-delay: 92ms; }
+.b737-le-devices__lamps path:nth-of-type(23) { --le-lamp-delay: 32ms; }
+.b737-le-devices__lamps path:nth-of-type(24) { --le-lamp-delay: 76ms; }
+.b737-le-devices__lamps path:nth-of-type(25) { --le-lamp-delay: 16ms; }
+.b737-le-devices__lamps path:nth-of-type(26) { --le-lamp-delay: 60ms; }
