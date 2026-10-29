@@ -45,8 +45,17 @@
     if(!selected){q.overheat=false;q.lastGreen=false;q.lastSwitch=false;}
     const controller=busOk(b,d.controllerAC)&&busOk(b,d.controllerDC)&&breakerClosed(cb,d.controllerCB)&&!f.CONTROLLER_FAIL&&!f.SENSOR_FAIL;
     const heaterBus=busOk(b,d.heaterBus),heaterCB=breakerClosed(cb,d.heaterCB);
-    const supply=controller&&heaterBus&&heaterCB&&!f.HEATER_FAIL;
-    if(startingOvhtTest&&selected){
+    // Only an electrically available channel may illuminate its green/amber
+    // annunciators. Loss of MAIN/GEN/DC or heater/controller CB does NOT
+    // represent a real thermal overheat. Keep real temperature state
+    // independent of lamp power so a genuine hot window can be indicated
+    // again when the electrical supply is restored.
+    const indicationPowered=controller&&heaterBus&&heaterCB;
+    const supply=indicationPowered&&!f.HEATER_FAIL;
+    // OVHT test is a powered, per-channel latch. A loss of supply cancels
+    // that channel's test without generating a deferred warning on restore.
+    if(!indicationPowered){q.ovhtTestLatched=false;q.ovhtTestGreen=false;}
+    if(startingOvhtTest&&selected&&indicationPowered){
       // Preserve the PRE-TEST ON indication. SP.3.2 does not turn an
       // extinguished green light ON during the overheat test; instead,
       // illuminated ON lights go out after approximately one minute.
@@ -67,7 +76,7 @@
     // A loss of electrical feed/controller/CB is NOT an overheat indication.
     // It suppresses normal heat/green ON; amber OVERHEAT is only a real
     // thermal condition or the explicitly initiated OVHT test.
-    const overheat=selected&&(q.overheat||q.ovhtTestLatched);
+    const overheat=selected&&indicationPowered&&(q.overheat||q.ovhtTestLatched);
     const pendingOvhtTest=q.ovhtTestLatched&&n.ovhtTestElapsed!==null&&n.ovhtTestElapsed<OVHT_ON_EXPIRE_SECONDS;
     // POWER TEST checks every healthy green ON lamp, regardless of the
     // corresponding window switch position. It is indication-only: an OFF
@@ -78,7 +87,7 @@
         ?(pendingOvhtTest&&q.ovhtTestGreen&&supply)
         :q.heating);
     q.lastGreen=!!green;
-    outputs[id]={id,selected,temperatureC:Math.round(q.temp*10)/10,heaterPower:q.heating,controllerPower:controller,heaterFeed:heaterBus,cbHeaterClosed:heaterCB,cbControllerClosed:breakerClosed(cb,d.controllerCB),normalTargetApproxC:d.target,overheatLimitC:d.cutout,restoreLimitC:d.restore,greenOn:!!green,overheatOn:!!overheat,warning:!!overheat,source:'FCOM+MRG_GENERIC_TRAINER'};
+    outputs[id]={id,selected,temperatureC:Math.round(q.temp*10)/10,heaterPower:q.heating,controllerPower:controller,heaterFeed:heaterBus,indicationPowered,cbHeaterClosed:heaterCB,cbControllerClosed:breakerClosed(cb,d.controllerCB),normalTargetApproxC:d.target,overheatLimitC:d.cutout,restoreLimitC:d.restore,greenOn:!!green,overheatOn:!!overheat,warning:!!overheat,source:'FCOM+MRG_GENERIC_TRAINER'};
     q.lastSwitch=selected;
   }
   // No electronic WHCU on L4/L5 and R4/R5; independent generator bus/CB and thermal cycling.
