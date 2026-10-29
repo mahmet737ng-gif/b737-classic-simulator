@@ -8,7 +8,7 @@ const panel=win.CB_CATALOG.panels.find(p=>p.id==='P18-3');
 const row=String(panel.breakers).split(';').find(x=>x.trim().startsWith('C5:'));
 const input=(v={})=>({
  onGround:true,switches:{'pitot-a':'OFF'},
- buses:{main2:true},breakers:{},testPressed:false,...v
+ buses:{main2:true,dc1:true},breakers:{},testPressed:false,...v
 });
 const evalWith=(params={},state=Core.initialState())=>Core.evaluate(state,input(params));
 test('photo-indexed TEMP PROBE CB exists on Classic P18-3 C5',()=>{
@@ -76,4 +76,41 @@ test('Indicator stuck ON / OFF faults remain independent from actual heat',()=>{
 test('Unknown on-ground / in-flight state cannot energize a heater',()=>{
  const unknown=evalWith({onGround:null,testPressed:true,switches:{'pitot-a':'ON'}});
  assert.equal(unknown.heaterPower,false);assert.equal(unknown.onGround,null);
+});
+
+test('Classic aspirated TAT on ground: PITOT A ON extinguishes amber while heater remains inhibited',()=>{
+ const o=evalWith({switches:{'pitot-a':'ON'}});
+ assert.equal(o.heaterPower,false,'ground inhibited temperature sensing probe is not heated');
+ assert.equal(o.groundIndicationBypass,true,'ground A-ON bypasses amber indication');
+ assert.equal(o.amberOn,false,'TEMP PROBE must go dark despite the heater being OFF');
+ const off=evalWith({switches:{'pitot-a':'OFF'}});
+ assert.equal(off.amberOn,true,'A OFF and test released goes amber when indicator is powered');
+});
+test('TAT TEST overrides A ON ground bypass and checks actual heater current',()=>{
+ const on={'pitot-a':'ON'};
+ const good=evalWith({switches:on,testPressed:true});
+ assert.equal(good.heaterPower,true);
+ assert.equal(good.groundIndicationBypass,false);
+ assert.equal(good.amberOn,false);
+ const failed=evalWith({switches:on,testPressed:true,breakers:{[Core.CB_ID]:false}});
+ assert.equal(failed.heaterPower,false);
+ assert.equal(failed.amberOn,true,'must expose failed test even if switch A stays ON');
+});
+test('Indicator power is not the heater bus: unpowered annunciator cannot falsely glow',()=>{
+ const dark=evalWith({buses:{main2:false,dc1:false}});
+ assert.equal(dark.lampPower,false);
+ assert.equal(dark.amberOn,false);
+ assert.equal(dark.amberDemand,true,'failure demand is distinct from powered lamp');
+ const dcOnly=evalWith({buses:{main2:false,dc1:true}});
+ assert.equal(dcOnly.lampPower,true);
+ assert.equal(dcOnly.amberOn,true);
+ const testNoAC=evalWith({buses:{main2:false,dc1:true},testPressed:true});
+ assert.equal(testNoAC.amberOn,true,'amber should indicate no heater current during test');
+});
+test('Ground temperature probe A-ON bypass not allowed in flight: real heater/current matters',()=>{
+ const noHeat=evalWith({onGround:false,switches:{'pitot-a':'ON'},buses:{main2:false,dc1:true}});
+ assert.equal(noHeat.groundIndicationBypass,false);
+ assert.equal(noHeat.amberOn,true);
+ const heater=evalWith({onGround:false,switches:{'pitot-a':'ON'},buses:{main2:true,dc1:true}});
+ assert.equal(heater.heaterPower,true);assert.equal(heater.amberOn,false);
 });
