@@ -1,0 +1,6 @@
+/* UNIFIED-PINCH-0001: suppress browser pinch and keep gestures inside
+   the embedded overhead. Original atlas assets/controls remain unchanged. */
+#viewport, #viewport #board, #viewport #assembly, #viewport #atlasAbsolute {
+  touch-action:none !important;
+  overscroll-behavior:contain !important;
+}
