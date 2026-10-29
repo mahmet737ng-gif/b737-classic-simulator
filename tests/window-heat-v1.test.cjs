@@ -46,9 +46,11 @@ test('Generator 1, Generator 2, and DC 2 produce indexed failures',()=>{
  const dc=run(undefined,{buses:{...bus(),dc2:false}}).output;
  assert.equal(dc.channels.L_SIDE.controllerPower,false);assert.equal(dc.channels.R_FWD.controllerPower,false);
 });
-test('Power test bypasses normal target but not power/CB/OVHT fault',()=>{
+test('Normal thermal regulation does not extinguish green ON; PWR TEST still checks feed/CB',()=>{
  const s=WH.initialState();s.channels.L_FWD.temp=40;
- assert.equal(run(s).output.channels.L_FWD.greenOn,false);
+ const steady=run(s);
+ assert.equal(steady.output.channels.L_FWD.heaterPower,false,'thermostat has opened the heater');
+ assert.equal(steady.output.channels.L_FWD.greenOn,true,'control circuit remains ON');
  assert.equal(run(s,{switches:{...sw(),'window-power-test':'PWR TEST'}}).output.channels.L_FWD.greenOn,true);
  assert.equal(run(s,{switches:{...sw(),'window-power-test':'PWR TEST'},breakers:{'P6-11|ALL|B9':false}}).output.channels.L_FWD.greenOn,false);
 });
@@ -165,4 +167,37 @@ test('A stuck-overheat training fault never illuminates an electrically dead ann
  r=run(r.state,{breakers:{[WH.CHANNELS.R_FWD.controllerCB]:false}},0);
  assert.equal(r.output.channels.R_FWD.overheatOn,false);
  assert.equal(r.output.channels.R_FWD.greenOn,false);
+});
+
+test('No ON-lamp flicker across 10 simulated minutes of thermostat cycling (4 healthy channels)',()=>{
+ let state=WH.initialState(),events={},cycling={},steps=0;
+ for(const id of Object.keys(WH.CHANNELS)){events[id]=0;cycling[id]=0;}
+ const switches=sw();
+ for(let i=0;i<2400;i++){
+  const result=run(state,{switches},.25);state=result.state;
+  for(const [id,ch] of Object.entries(result.output.channels)){
+   steps++;
+   if(!ch.heaterPower)cycling[id]++;
+   assert.equal(ch.greenOn,true,id+' green lamp must stay solid at t='+i*.25+'s');
+   assert.equal(ch.overheatOn,false,id+' should not overheat from normal target cycling');
+   if(!ch.heaterPower&&!ch.greenOn)events[id]++;
+  }
+ }
+ for(const id of Object.keys(WH.CHANNELS)){
+  assert.ok(cycling[id]>100,id+' must have actual heater thermostat OFF periods');
+  assert.equal(events[id],0,id+' must never flash green during regulator OFF periods');
+ }
+});
+test('Thermostat ON-lamp remains steady, but switching OFF and open CB correctly extinguish it',()=>{
+ const state=WH.initialState();
+ for(const id of Object.keys(WH.CHANNELS))state.channels[id].temp=WH.CHANNELS[id].target;
+ const normal=run(state,{},0).output;
+ for(const id of Object.keys(WH.CHANNELS)){
+  assert.equal(normal.channels[id].heaterPower,false,id+' warm-window heater off');
+  assert.equal(normal.channels[id].greenOn,true,id+' warm-window green on');
+  const swOff={...sw(),[WH.CHANNELS[id].switchId]:'OFF'};
+  assert.equal(run(state,{switches:swOff},0).output.channels[id].greenOn,false);
+  const cbOff={[WH.CHANNELS[id].controllerCB]:false};
+  assert.equal(run(state,{breakers:cbOff},0).output.channels[id].greenOn,false);
+ }
 });
