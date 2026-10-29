@@ -69,9 +69,14 @@
     // thermal condition or the explicitly initiated OVHT test.
     const overheat=selected&&(q.overheat||q.ovhtTestLatched);
     const pendingOvhtTest=q.ovhtTestLatched&&n.ovhtTestElapsed!==null&&n.ovhtTestElapsed<OVHT_ON_EXPIRE_SECONDS;
-    const green=selected&&(q.ovhtTestLatched
-      ?(pendingOvhtTest&&q.ovhtTestGreen&&supply)
-      :(q.heating||test==='PWR TEST'&&supply&&!blocked&&!f.POWER_TEST_FAIL));
+    // POWER TEST checks every healthy green ON lamp, regardless of the
+    // corresponding window switch position. It is indication-only: an OFF
+    // window remains unselected and its heater does not run.
+    const green=test==='PWR TEST'
+      ?(supply&&!blocked&&!f.POWER_TEST_FAIL)
+      :selected&&(q.ovhtTestLatched
+        ?(pendingOvhtTest&&q.ovhtTestGreen&&supply)
+        :q.heating);
     q.lastGreen=!!green;
     outputs[id]={id,selected,temperatureC:Math.round(q.temp*10)/10,heaterPower:q.heating,controllerPower:controller,heaterFeed:heaterBus,cbHeaterClosed:heaterCB,cbControllerClosed:breakerClosed(cb,d.controllerCB),normalTargetApproxC:d.target,overheatLimitC:d.cutout,restoreLimitC:d.restore,greenOn:!!green,overheatOn:!!overheat,warning:!!overheat,source:'FCOM+MRG_GENERIC_TRAINER'};
     q.lastSwitch=selected;
