@@ -38,10 +38,16 @@ jobs:
         run: node panel-mosaic-lab/interactive-overhead/lights.test.cjs
       - name: Verify frozen final overhead is unchanged
         run: python3 panel-mosaic-lab/verify-final-overhead.py
-      - name: Install Chromium for real photo-pixel checks
+      - name: Prepare installed Chrome for real photo-pixel checks
         run: |
           npm install --no-save --ignore-scripts playwright@1.58.2
-          npx playwright install --with-deps chromium
+          if command -v google-chrome >/dev/null 2>&1; then
+            echo "CHROME_PATH=$(command -v google-chrome)" >> "$GITHUB_ENV"
+          elif command -v chromium >/dev/null 2>&1; then
+            echo "CHROME_PATH=$(command -v chromium)" >> "$GITHUB_ENV"
+          else
+            npx playwright install chromium
+          fi
       - name: Verify 737-400 and 300/500 in real headless browser
         run: |
           set -euo pipefail
