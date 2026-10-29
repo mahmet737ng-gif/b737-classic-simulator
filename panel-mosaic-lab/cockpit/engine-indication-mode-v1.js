@@ -1,13 +1,13 @@
 /* CKP ENGINE DISPLAY MODE V1
  * Additive view-only bridge; never edits locked source photography or owner
  * switch/lamp registries. EIS is the unmodified Unified source appearance.
- * Conventional has its own overlaid face, ready for separately sourced instruments.
+ * Conventional uses the owner's final PNG without redrawing its pixels.
  */
 (function(){
 'use strict';
 const ROOT=document.documentElement;
 const ENGINE_PIECE='#region-main .texture-piece[data-piece="engine"]';
-const ASSET='./assets/conventional-engine-face-v1.svg?v=CONV-0001';
+const ASSET='./assets/conventional-engine-panel-owner-20261029.png?v=CONV-0002';
 let image=null,loaded=false,error=null,desired='EIS';
 const store=()=>window.B737AircraftProfileStore;
 const requested=()=>store()?.get()?.engineInstruments==='CONVENTIONAL'?'CONVENTIONAL':'EIS';
@@ -23,7 +23,7 @@ function mount(){
   image.decoding='async';
   image.draggable=false;
   image.onload=()=>{loaded=true;error=null;apply();};
-  image.onerror=()=>{loaded=false;error='Conventional panel SVG failed to load';apply();};
+  image.onerror=()=>{loaded=false;error='Conventional panel PNG failed to load';apply();};
   image.src=new URL(ASSET,document.baseURI).href;
  }
  host.appendChild(image);
@@ -46,7 +46,7 @@ window.addEventListener('b737:aircraft-profile-change',apply);
 window.addEventListener('b737:cockpit-mounted',apply);
 window.addEventListener('DOMContentLoaded',apply,{once:true});
 window.B737EngineIndicationModeV1=Object.freeze({
- status:()=>Object.freeze({requested:desired,display:ROOT.dataset.engineIndication||'EIS',assetLoaded:loaded,error}),
+ status:()=>Object.freeze({requested:desired,display:ROOT.dataset.engineIndication||'EIS',assetLoaded:loaded,asset:image?.src||null,version:'CONV-0002',error}),
  setMode(mode){if(mode!=='EIS'&&mode!=='CONVENTIONAL')throw Error('Unsupported engine indication');const s=store();if(!s)throw Error('Settings registry not initialized');s.set({engineInstruments:mode});apply();}
 });
 apply();

@@ -34,3 +34,40 @@ assert.ok(css.includes('data-engine-indication="CONVENTIONAL"'),'Conventional CS
 assert.ok(html.includes('engine-indication-mode-v1.js'),'Unified JS not installed');
 assert.ok(html.includes('engine-indication-mode-v1.css'),'Unified CSS not installed');
 console.log('PASS: default EIS, user preference persists, SVG face with six lamp sockets, reversible isolated Unified mount');
+
+// Exercise the actual mount: a drawn legacy SVG must never be requested.
+const vm=require('node:vm');
+const crypto=require('node:crypto');
+const png=fs.readFileSync(path.join(base,'panel-mosaic-lab/cockpit/assets/conventional-engine-panel-owner-20261029.png'));
+assert.equal(png.subarray(1,4).toString(),'PNG');
+assert.equal(png.readUInt32BE(16),1182);
+assert.equal(png.readUInt32BE(20),1330);
+assert.equal(crypto.createHash('sha256').update(png).digest('hex'),
+ 'd4ae225cddfe7697dec4c73b0f59aa3cd51ccc1234c63e6dc8323ce84c45f710',
+ 'The final owner image must be published byte for byte');
+let mountedImage=null;
+const host={dataset:{},appendChild(el){el.parentNode=this;mountedImage=el;}};
+const root={dataset:{}};
+const document={documentElement:root,baseURI:'https://example.test/panel-mosaic-lab/cockpit/',
+ querySelector:()=>host,getElementById:()=>null,
+ createElement:()=>({setAttribute(){}})};
+const window={B737AircraftProfileStore:s,addEventListener(){},dispatchEvent(){}};
+vm.runInNewContext(js,{document,window,URL,CustomEvent:class {constructor(type,init){this.type=type;this.detail=init.detail;}}});
+const api=window.B737EngineIndicationModeV1;
+assert.ok(mountedImage.src.endsWith('/assets/conventional-engine-panel-owner-20261029.png?v=CONV-0002'));
+assert.equal(api.status().display,'EIS');
+api.setMode('CONVENTIONAL');
+assert.equal(api.status().display,'EIS','Do not show a broken panel while image is loading');
+mountedImage.onload();
+assert.equal(api.status().display,'CONVENTIONAL');
+assert.equal(host.dataset.engineFace,'CONVENTIONAL');
+assert.equal(api.status().version,'CONV-0002');
+mountedImage.onerror();
+assert.equal(api.status().display,'EIS','Image load failure must fall back safely');
+mountedImage.onload();
+assert.equal(api.status().display,'CONVENTIONAL');
+api.setMode('EIS');
+assert.equal(api.status().display,'EIS');
+assert.ok(html.includes('engine-indication-mode-v1.js?v=CONV-0002'));
+assert.ok(html.includes('conventional-engine-needles-v1.js?v=CONV-NEEDLE-0002'));
+console.log('PASS: final original PNG, versioned Unified mount, EIS/Conventional switching and load-failure fallback.');

@@ -17,10 +17,21 @@ const ROWS=Object.freeze([
  Object.freeze({key:'oilQty',label:'Oil Quantity',y:849,min:0,max:4,primary:false,scale:.76}),
  Object.freeze({key:'vib',label:'Vibration',y:1112,min:0,max:5,primary:false,scale:.76})
 ]);
+// Physical shaft centers measured in the final owner's 1182 x 1330 PNG.
+const CENTERS=Object.freeze({
+ n1:[[144.19,450.85],[367.09,450.91]],
+ egt:[[143.71,668.94],[363.83,668.98]],
+ n2:[[140.15,888.81],[362.38,888.81]],
+ fuelFlow:[[132.38,1104.98],[354.25,1104.96]],
+ oilPressure:[[578.75,450.30],[799.29,450.59]],
+ oilTemp:[[578.73,669.32],[798.69,669.34]],
+ oilQty:[[578.58,888.72],[798.32,888.73]],
+ vib:[[574.40,1104.46],[794.50,1105.07]]
+});
 const SPECS=Object.freeze(ROWS.flatMap(row=>[1,2].map(engine=>Object.freeze({
  id:row.key+'_'+engine,signal:row.key,engine:'engine'+engine,
- cx:row.primary?(engine===1?158:453):(engine===1?793:1080),
- cy:row.y,min:row.min,max:row.max,primary:row.primary,scale:row.scale
+ cx:CENTERS[row.key][engine-1][0],cy:CENTERS[row.key][engine-1][1],
+ min:row.min,max:row.max,primary:row.primary,scale:row.scale*.77
 }))));
 let layer=null;
 const values=new Map();
@@ -53,7 +64,7 @@ function mount(){
  if(layer?.parentNode===host)return true;
  if(layer && layer.parentNode!==host){layer.remove();rotors.clear();}
  layer=node(host,'svg',{class:'conventional-engine-needle-layer-v1',
-    'data-conventional-needles':'CONV-NEEDLE-0001',viewBox:'0 0 1235 1274',
+    'data-conventional-needles':'CONV-NEEDLE-0002',viewBox:'0 0 1182 1330',preserveAspectRatio:'none',
     'aria-label':'Sixteen independent conventional engine instrument needles',
     'aria-hidden':'true',focusable:'false'});
  const defs=node(layer,'defs');

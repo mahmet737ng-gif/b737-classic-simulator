@@ -40,12 +40,17 @@ const api=win.B737ConventionalNeedlesV1;
 const specs=api.getSpecs();
 assert.equal(specs.length,16);
 assert.equal(new Set(specs.map(s=>s.id)).size,16);
-assert.deepEqual([...new Set(specs.map(s=>s.cx))].sort((a,b)=>a-b),[158,453,793,1080]);
-assert.deepEqual([...new Set(specs.map(s=>s.cy))].sort((a,b)=>a-b),[309,579,849,1112]);
+assert.deepEqual(JSON.parse(JSON.stringify(specs.map(s=>[s.cx,s.cy]))),[
+ [144.19,450.85],[367.09,450.91],[143.71,668.94],[363.83,668.98],
+ [140.15,888.81],[362.38,888.81],[132.38,1104.98],[354.25,1104.96],
+ [578.75,450.3],[799.29,450.59],[578.73,669.32],[798.69,669.34],
+ [578.58,888.72],[798.32,888.73],[574.4,1104.46],[794.5,1105.07]
+]);
 assert.equal(host.children.length,1);
 const layer=host.children[0],groups=layer.children.filter(c=>c.tag==='g');
 assert.equal(groups.length,16);
-assert.equal(layer.attrs.viewBox,'0 0 1235 1274');
+assert.equal(layer.attrs.viewBox,'0 0 1182 1330');
+assert.equal(layer.attrs.preserveAspectRatio,'none','Needles must share the stretched PNG coordinate system');
 for(const group of groups){
  const rotor=group.children[0];
  assert.equal(rotor.children[0].tag,'image');
