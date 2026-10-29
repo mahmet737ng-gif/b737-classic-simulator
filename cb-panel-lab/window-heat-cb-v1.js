@@ -17,6 +17,10 @@ function readSwitches(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')||
 function run(){
  const v7=adapter.evaluate()?.electrical?.bus;if(!v7){els.textContent='Electrical V7 awaiting data';return;}
  const cb={};for(const id of Core.ALL_CBS){const state=network.state(id);if(state)cb[id]=!(state.pulled||state.tripped);}
+ // Instructor faults set in the Unified trainer are shared for this read-only CB inspector.
+ try{const f=JSON.parse(localStorage.getItem('b737.windowheat.faults.v1')||'{}');
+  for(const ch of Object.keys(Core.CHANNELS))for(const type of Core.FAULTS)model=Core.injectFault(model,ch,type,!!f?.[ch]?.[type]);
+ }catch{}
  const now=performance.now(),dt=Math.min(2,Math.max(0,(now-last)/1000));last=now;
  const r=Core.step(model,{buses:v7,breakers:cb,switches:readSwitches()},dt);model=r.state;
  const rows=Object.entries(r.output.channels).map(([id,x])=>'<tr><td>'+id+'</td><td>'+(x.selected?'ON':'OFF')+'</td><td>'+(x.greenOn?'GREEN':'OFF')+'</td><td>'+(x.overheatOn?'OVHT':'OFF')+'</td><td>'+(x.heaterPower?'HEATING':'STOP')+'</td><td>'+x.temperatureC+'°C</td></tr>').join('');
