@@ -1,0 +1,6 @@
+/* UNIFIED-PINCH-0001: the cockpit handles its own two-finger zoom
+   and one-finger pan. Other website UI and dialogs keep native touch behavior. */
+#viewport {touch-action:none !important; overscroll-behavior:contain !important;}
+#viewport #scene, #viewport #sizer, #viewport .region, #viewport .region-native {
+  touch-action:none;
+}
