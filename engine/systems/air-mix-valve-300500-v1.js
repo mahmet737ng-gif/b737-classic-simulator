@@ -35,6 +35,7 @@
    indicatorPower:typeof v.indicatorPower==='boolean'?v.indicatorPower:null,
    indicatorCB:v.indicatorCB!==false,
    overheat:v.overheat===true,stuck:v.stuck===true,
+   benchBypassPack:v.benchBypassPack===true,
    transmitterFailed:v.transmitterFailed===true,
    targetC:finite(v.targetC)?v.targetC:null};
  }
@@ -53,7 +54,7 @@
    if(v.overheat||(v.ductC!==null&&v.ductC>=CONFIG.overheatC))next.overheatLatched[side]=true;
    let direction=0,reason='HOLD';
    if(next.overheatLatched[side]){direction=-1;reason='DUCT_OVERHEAT_LATCH';}
-   else if(v.packMode==='OFF'){direction=-1;reason='PACK_OFF_FULL_COLD';}
+   else if(v.packMode==='OFF'&&!v.benchBypassPack){direction=-1;reason='PACK_OFF_FULL_COLD';}
    else if(v.ductC!==null&&v.ductC>=CONFIG.ductLimitC){direction=-1;reason='DUCT_LIMIT_COOL';}
    else if(v.selector==='MANUAL COOL'){direction=-1;reason='MANUAL_COOL';}
    else if(v.selector==='MANUAL WARM'){direction=1;reason='MANUAL_WARM';}
@@ -68,7 +69,7 @@
    const previous=clamp(next.positions[side]);
    next.positions[side]=clamp(previous+direction*dt/CONFIG.fullTravelSeconds);
    next.command[side]=direction<0?'COLD':direction>0?'HOT':'HOLD';
-   next.reason[side]=reason;
+   next.reason[side]=v.benchBypassPack&&v.packMode==='OFF'&&reason!=='DUCT_OVERHEAT_LATCH'?'BENCH_'+reason:reason;
   }
   return next;
  }
