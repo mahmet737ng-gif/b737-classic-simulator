@@ -47,6 +47,7 @@ const scenarioList=[
  {id:'tat-detector',name:'TAT current sensor fail',tatFault:'CURRENT_SENSE_FAIL',action:'TAT TEST'},
  {id:'tat-lamp-on',name:'TEMP PROBE stuck ON',tatFault:'INDICATOR_STUCK_ON'},
  {id:'tat-lamp-off',name:'TEMP PROBE stuck OFF',tatFault:'INDICATOR_STUCK_OFF'},
+ {id:'tat-lamp-off',name:'TEMP PROBE stuck OFF',tatFault:'INDICATOR_STUCK_OFF'},
  {id:'tat-cb',name:'TAT C5 CB open',virtualTatCB:true,action:'TAT TEST'},
  {id:'pitot-a-fail',name:'PITOT A indication fault',pitotFault:'probe-capt-ps'},
  {id:'pitot-b-fail',name:'PITOT B indication fault',pitotFault:'probe-fo-ps'},
@@ -80,9 +81,9 @@ function getState(){
  if(scenario.virtualTatCB)breakers[TAT.CB_ID]=false;
  for(const [id,d] of Object.entries(WH.CHANNELS))for(const fault of WH.FAULTS)
   if(scenario.channel===id&&scenario.whFault===fault)faults[id+'|'+fault]=true;
- const pitotFault=scenario.pitotFault;
+ const pitotFaults=LAMP_IDS.filter(id=>id===scenario.pitotFault||!!faults['pitot|'+id]);
  const onGround=scenario.onGround!==false;
- return {bus,sw,breakers,pitotFault,onGround};
+ return {bus,sw,breakers,pitotFaults,onGround};
 }
 function evaluate(elapsed=0){
  const ctx=getState();let w=whState;
@@ -105,7 +106,7 @@ function evaluate(elapsed=0){
   const sw=ctx.sw[PITOT[id]]==='ON',power=ctx.bus[PITOT[id]==='pitot-a'?'dc1':'dc2'];
   // Pitot A/B and individual probe failure are GENERIC trainer logic; no
   // unverified aircraft WDM/individual CB wiring is claimed.
-  probes[id]=!!power&&(!sw||id===ctx.pitotFault);
+  probes[id]=!!power&&(!sw||ctx.pitotFaults.includes(id));
  }
  post('isn-projection',probes);
  post('window-heat-projection',wh);
@@ -193,10 +194,34 @@ function chooseFault(){
  const channel=query('anti-wh-channel')?.value,fault=query('anti-wh-fault')?.value;
  if(!WH.CHANNELS[channel]||!WH.FAULTS.includes(fault))return;
  current='manual';scenario={channel,whFault:fault,note:'Manually injected Window Heat fault. Other systems remain unchanged.'};
- faults={[channel+'|'+fault]:true};resetSimulation();nativeSwitch(WH.CHANNELS[channel].switchId,'ON');
- query('anti-scenario-desc').textContent=scenario.note;
+ const k=channel+'|'+fault;faults[k]=!faults[k];resetSimulation();nativeSwitch(WH.CHANNELS[channel].switchId,'ON');
+ query('anti-scenario-desc').textContent=scenario.note+' · '+(faults[k]?'FAULT ACTIVE: ':'FAULT CLEARED: ')+k;
  const buttons=query('anti-scenarios');if(buttons)for(const b of buttons.querySelectorAll('button[data-scenario]'))b.setAttribute('aria-pressed','false');
  tick();
+}
+function simulateCb(){
+ const channel=query('anti-wh-channel')?.value,type=query('anti-cb-type')?.value;
+ if(!WH.CHANNELS[channel]||!['heater','controller'].includes(type))return false;
+ current='manual';scenario={channel,cbType:type};
+ faults={};nativeSwitch(WH.CHANNELS[channel].switchId,'ON');
+ const key=WH.CHANNELS[channel][type==='heater'?'heaterCB':'controllerCB'];
+ query('anti-scenario-desc').textContent='SIMULATED CB OPEN: '+key+' (lab only, real CB unchanged).';
+ tick();return true;
+}
+function injectPitot(){
+ const id=query('anti-pitot-id')?.value;
+ if(!LAMP_IDS.includes(id))return false;
+ current='manual';faults['pitot|'+id]=!faults['pitot|'+id];scenario={onGround:true};
+ nativeSwitch(PITOT[id],'ON');
+ query('anti-scenario-desc').textContent=id+(faults['pitot|'+id]?' FAILURE INJECTED':' FAILURE CLEARED')+' · GENERIC probe trainer';
+ tick();return true;
+}
+function injectTat(){
+ const fault=query('anti-tat-fault')?.value;
+ if(!TAT.FAULTS.includes(fault))return false;
+ current='manual';scenario={onGround:true,tatFault:fault};
+ query('anti-scenario-desc').textContent='TAT '+fault+' · use original TAT TEST to verify indication';
+ tick();return true;
 }
 function crop(){
  const box=query('anti-live-crop'),canvas=query('anti-live-canvas');
@@ -213,6 +238,8 @@ function build(){
  const buttons=scenarioList.map(s=>'<button type="button" data-scenario="'+s.id+'" aria-pressed="false">'+s.name+'</button>').join('');
  const channelOptions=WH_IDS.map(id=>'<option value="'+id+'">'+id+'</option>').join('');
  const faultOptions=WH.FAULTS.map(id=>'<option value="'+id+'">'+id+'</option>').join('');
+ const pitotOptions=LAMP_IDS.map(id=>'<option value="'+id+'">'+id+'</option>').join('');
+ const tatFaultOptions=TAT.FAULTS.map(id=>'<option value="'+id+'">'+id+'</option>').join('');
  dialog.innerHTML='<header class="antiice-header"><div><strong>ANTI ICE · LIVE PANEL TEST LAB</strong><small>Exact Unified OH15 tile · same bitmap, original interactive switches, original light faces</small></div><button type="button" id="anti-close" aria-label="Close test lab">×</button></header>'+
  '<div class="antiice-main"><section class="antiice-visual"><div class="antiice-crop" id="anti-live-crop">'+
  '<div class="antiice-canvas" id="anti-live-canvas"><iframe id="anti-live-stage" title="Original live Unified ANTI ICE panel OH15" loading="eager"></iframe></div></div>'+
@@ -222,6 +249,9 @@ function build(){
  '</section><aside class="antiice-right"><h3>TRAINING SCENARIOS AND FAILURES</h3><div class="antiice-scenarios" id="anti-scenarios">'+buttons+'</div>'+
  '<p id="anti-scenario-desc" class="antiice-desc"></p>'+
  '<h3>WINDOW HEAT · MANUAL FAULT</h3><div class="antiice-selects"><select id="anti-wh-channel">'+channelOptions+'</select><select id="anti-wh-fault">'+faultOptions+'</select><button type="button" id="anti-inject">INJECT</button></div>'+
+ '<h3>WINDOW HEAT · VIRTUAL CB OPEN</h3><div class="antiice-selects"><select id="anti-cb-type"><option value="heater">HEATER CB</option><option value="controller">CONTROLLER CB</option></select><button type="button" id="anti-cb-fail">OPEN SELECTED CHANNEL CB</button></div>'+
+ '<h3>PITOT STATIC · INDIVIDUAL PROBE FAILURES</h3><div class="antiice-selects"><select id="anti-pitot-id">'+pitotOptions+'</select><button type="button" id="anti-probe-fail">TOGGLE PROBE FAULT</button></div>'+
+ '<h3>TAT · ALL MODELED FAULTS</h3><div class="antiice-selects"><select id="anti-tat-fault">'+tatFaultOptions+'</select><button type="button" id="anti-tat-fail">INJECT TAT FAULT</button></div>'+
  '<h3>REAL CB / VIRTUAL CB</h3><p class="antiice-note">P18-3 C5 is the actual TEMP PROBE CB. Preset open-CB scenarios are isolated: they do not change aircraft CB state.</p>'+
  '<div class="antiice-buttons"><button type="button" id="anti-real-cb">PULL REAL TAT C5</button><button type="button" id="anti-cb-view">FIND IN CB PANEL</button></div>'+
  '<button type="button" id="anti-reset">RESET LAB · CLEAR FAULTS</button><p id="anti-status" role="status"></p>'+
@@ -237,6 +267,9 @@ function build(){
  dialog.addEventListener('close',()=>{testHeld=false;});
  query('anti-scenarios').addEventListener('click',e=>{const id=e.target.closest('[data-scenario]')?.dataset.scenario;if(id)applyScenario(id);});
  query('anti-inject').onclick=chooseFault;
+ query('anti-cb-fail').onclick=simulateCb;
+ query('anti-probe-fail').onclick=injectPitot;
+ query('anti-tat-fail').onclick=injectTat;
  query('anti-reset').onclick=()=>{for(const d of Object.values(WH.CHANNELS))nativeSwitch(d.switchId,'OFF');nativeSwitch('pitot-a','OFF');nativeSwitch('pitot-b','OFF');applyScenario('normal');};
  query('anti-ovht').onclick=()=>{for(const d of Object.values(WH.CHANNELS))nativeSwitch(d.switchId,'ON');nativeMomentary('window-power-test','OVHT');};
  query('anti-power').onclick=()=>nativeMomentary('window-power-test','PWR TEST',650);
