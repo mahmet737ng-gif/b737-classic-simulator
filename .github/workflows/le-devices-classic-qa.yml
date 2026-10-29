@@ -7,6 +7,7 @@ on:
       - 'tests/te-flap-actuator-v1.test.cjs'
       - 'tests/te-flap-live-bridge.test.cjs'
       - 'tests/le-devices-classic-v1.test.cjs'
+      - 'tests/le-devices-owner-sequence-v1.test.cjs'
       - 'panel-mosaic-lab/le-devices/trainer-bridge-v1.js'
       - 'panel-mosaic-lab/cockpit/le-devices-live-link-v1.js'
       - 'panel-mosaic-lab/cockpit/lights-model.js'
@@ -19,6 +20,7 @@ on:
     paths:
       - 'engine/systems/le-devices-classic-v1.js'
       - 'tests/le-devices-classic-v1.test.cjs'
+      - 'tests/le-devices-owner-sequence-v1.test.cjs'
       - 'panel-mosaic-lab/le-devices/trainer-bridge-v1.js'
       - 'panel-mosaic-lab/cockpit/le-devices-live-link-v1.js'
       - 'panel-mosaic-lab/cockpit/lights-model.js'
@@ -36,4 +38,4 @@ jobs:
       - run: node --check engine/systems/te-flap-actuator-v1.js
       - run: node --check panel-mosaic-lab/le-devices/trainer-bridge-v1.js
       - run: node --check panel-mosaic-lab/cockpit/le-devices-live-link-v1.js
-      - run: node --test tests/te-flap-live-bridge.test.cjs tests/te-flap-actuator-v1.test.cjs tests/le-devices-classic-v1.test.cjs tests/le-devices-classic-bridge.test.cjs tests/le-devices-unified-link.test.cjs tests/le-devices-forward-light-model.test.cjs panel-mosaic-lab/le-devices/panel.test.cjs
+      - run: node --test tests/te-flap-live-bridge.test.cjs tests/te-flap-actuator-v1.test.cjs tests/le-devices-owner-sequence-v1.test.cjs tests/le-devices-classic-v1.test.cjs tests/le-devices-classic-bridge.test.cjs tests/le-devices-unified-link.test.cjs tests/le-devices-forward-light-model.test.cjs panel-mosaic-lab/le-devices/panel.test.cjs
