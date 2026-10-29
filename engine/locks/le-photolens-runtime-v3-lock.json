@@ -1,0 +1,23 @@
+{
+  "schema": "b737.owner-additive-runtime-lock/1",
+  "id": "LE-PHOTOLENS-V3-LOAD-SAFE-20261030",
+  "ownerAuthorization": "Follow-up to owner-requested LE lens redesign: fix the failure to load while preserving prior red-zone frozen assets",
+  "preservedLock": "engine/locks/le-devices-photolens-final-v2.json",
+  "asset": "panel-mosaic-lab/le-devices/photo-lens-v3.js",
+  "assetGitBlobSha": "13aaafbc016cebb00e0ee129cf86ce7af11b5cdb",
+  "scope": "bounded observer and remount-safe adapter for 26 existing LE lenses, plus OH22 message race guard",
+  "neverModify": [
+    "panel-mosaic-lab/le-devices/panel.js",
+    "panel-mosaic-lab/le-devices/photo-lens-v2.js",
+    "panel-mosaic-lab/le-devices/photo-lens-v2.css",
+    "panel-mosaic-lab/cockpit/irs-background-hash-clean-v1.js"
+  ],
+  "requiredChecks": [
+    "LE_OWNER_LOCK",
+    "LE_PHOTOLENS_V2_LOCK",
+    "26_LENS_PIXEL_QA",
+    "UNIFIED_IFRAME_LOAD",
+    "NO_NEW_BROWSER_ERROR"
+  ],
+  "status": "LOCKED_AFTER_CORRECTION"
+}
