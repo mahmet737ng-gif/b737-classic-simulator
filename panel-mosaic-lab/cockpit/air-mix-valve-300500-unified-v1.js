@@ -23,17 +23,26 @@
  function concealPhotoNeedle(doc,g,side){
   const key='airMixPhotoPointerV2'+side;
   const defs=createSvg(doc,g,'defs');
-  const face=createSvg(doc,defs,'linearGradient',{id:key+'Face',x1:'0',y1:'-81',x2:'0',y2:'12',gradientUnits:'userSpaceOnUse'});
+  const face=createSvg(doc,defs,'linearGradient',{id:key+'Face',x1:'0',y1:'-68',x2:'0',y2:'8',gradientUnits:'userSpaceOnUse'});
   for(const [offset,color] of [['0%','#272621'],['18%','#362f29'],['48%','#342d26'],['80%','#2d2823'],['100%','#272521']]){
    createSvg(doc,face,'stop',{offset,'stop-color':color});
   }
-  const fade=createSvg(doc,defs,'linearGradient',{id:key+'Fade',x1:'-12',y1:'0',x2:'12',y2:'0',gradientUnits:'userSpaceOnUse'});
+  // Two independent feather gradients keep the narrow concealer inside
+  // the original photograph's color field, without a hard rectangular seam.
+  const fade=createSvg(doc,defs,'linearGradient',{id:key+'Fade',x1:'-9',y1:'0',x2:'9',y2:'0',gradientUnits:'userSpaceOnUse'});
   for(const [offset,color] of [['0%','#000'],['18%','#fff'],['82%','#fff'],['100%','#000']]){
    createSvg(doc,fade,'stop',{offset,'stop-color':color});
   }
-  const mask=createSvg(doc,defs,'mask',{id:key+'Mask',x:'-12',y:'-81',width:'24',height:'93',maskUnits:'userSpaceOnUse',maskContentUnits:'userSpaceOnUse'});
-  createSvg(doc,mask,'rect',{x:-12,y:-81,width:24,height:93,fill:'url(#'+key+'Fade)'});
-  createSvg(doc,g,'rect',{'data-air-mix-concealed-photo-needle':side,x:-12,y:-81,width:24,height:93,
+  const endFade=createSvg(doc,defs,'linearGradient',{id:key+'EndFade',x1:'0',y1:'-68',x2:'0',y2:'8',gradientUnits:'userSpaceOnUse'});
+  for(const [offset,color] of [['0%','#000'],['8%','#fff'],['92%','#fff'],['100%','#000']]){
+   createSvg(doc,endFade,'stop',{offset,'stop-color':color});
+  }
+  const mask=createSvg(doc,defs,'mask',{id:key+'Mask',x:'-9',y:'-68',width:'18',height:'76',maskUnits:'userSpaceOnUse',maskContentUnits:'userSpaceOnUse'});
+  createSvg(doc,mask,'rect',{x:-9,y:-68,width:18,height:76,fill:'url(#'+key+'Fade)'});
+  const endMask=createSvg(doc,defs,'mask',{id:key+'EndMask',x:'-9',y:'-68',width:'18',height:'76',maskUnits:'userSpaceOnUse',maskContentUnits:'userSpaceOnUse'});
+  createSvg(doc,endMask,'rect',{x:-9,y:-68,width:18,height:76,fill:'url(#'+key+'EndFade)'});
+  const group=createSvg(doc,g,'g',{mask:'url(#'+key+'EndMask)'});
+  createSvg(doc,group,'rect',{'data-air-mix-concealed-photo-needle':side,x:-9,y:-68,width:18,height:76,
    fill:'url(#'+key+'Face)',mask:'url(#'+key+'Mask)', 'pointer-events':'none'});
  }
  function syncLayer(){
