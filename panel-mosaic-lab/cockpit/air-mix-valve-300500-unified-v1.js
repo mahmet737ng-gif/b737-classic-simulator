@@ -6,7 +6,7 @@
  const model=window.B737AirMixValve300500V1;
  if(!model){console.error('AIR-MIX-300500 model missing');return;}
  const SVG='http://www.w3.org/2000/svg',PROFILE='b737classic.aircraft-profile.v1',CB='b737classic.cb.v1';
- const sprite=new URL('./assets/air-mix-valve-300500-reference-needle-v2.svg?v=AIR-MIX-300500-REFERENCE-NEEDLE-0002',document.baseURI).href;
+ const sprite=new URL('./assets/air-mix-valve-300500-needle-v1.svg?v=AIR-MIX-300500-FINAL-0001',document.baseURI).href;
  const state={CONT:{cabinC:null,ductC:null,overheat:false,stuck:false,transmitterFailed:false,targetC:null},
   PASS:{cabinC:null,ductC:null,overheat:false,stuck:false,transmitterFailed:false,targetC:null}};
  let engine=model.create(),frame=null,layer=null,assemblies={},last=performance.now(),trainingPower=null;
@@ -56,7 +56,10 @@
    assemblies={};
    for(const side of model.SIDES){
     const p=model.GAUGES[side],g=createSvg(doc,layer,'g',{'data-air-mix-side':side,transform:'translate('+p.x+' '+p.y+')'});
-    concealPhotoNeedle(doc,g,side);
+    // Original photo pointer remains at the old source coordinate (224,425)/(1021,425).
+    // Keep its concealment fixed while the calibrated moving pivot shifts (+2,-2).
+    const photographMask=createSvg(doc,g,'g',{transform:'translate(-2 2)','data-photo-pointer-mask':side});
+    concealPhotoNeedle(doc,photographMask,side);
     const rotary=createSvg(doc,g,'g',{'data-air-mix-rotor':side});
     // Native SVG rotation around the actual gauge shaft; CSS transform-origin on <g> was not reliable.
     rotary.setAttribute('transform','rotate(0 0 0)');

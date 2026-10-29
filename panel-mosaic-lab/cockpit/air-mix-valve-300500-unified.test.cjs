@@ -35,16 +35,22 @@ function fixture(){
  vm.runInNewContext(fs.readFileSync(path.join(__dirname,'air-mix-valve-300500-unified-v1.js'),'utf8'),context);
  const api=win.B737AirMix300500UnifiedV1;
  const advance=(seconds)=>{for(let i=0;i<Math.ceil(seconds*4);i++){now+=250;timer();}};
- const rotor=side=>host.children[0].children.find(n=>n.attrs['data-air-mix-side']===side).children[0].attrs.transform;
- return {api,advance,rotor,host,setRotaries:r=>{rotaries=r;}};
+ const assembly=side=>host.children[0].children.find(n=>n.attrs['data-air-mix-side']===side);
+ const rotor=side=>assembly(side).children.find(n=>n.attrs['data-air-mix-rotor']===side).attrs.transform;
+ const conceal=side=>assembly(side).children.find(n=>n.attrs['data-photo-pointer-mask']===side).attrs.transform;
+ return {api,advance,rotor,conceal,assembly,host,setRotaries:r=>{rotaries=r;}};
 }
 test('native pivot rotation + selectors: bench PACK OFF responds in both directions',()=>{
  const f=fixture();f.api.setTrainingPower(true);f.advance(6);
  assert.equal(f.api.getState().engine.positions.CONT,1);
  assert.ok(f.api.getState().engine.positions.PASS<.00001);
- assert.equal(f.rotor('CONT'),'rotate(55.000 0 0)');
- assert.equal(f.rotor('PASS'),'rotate(-55.000 0 0)');
+ assert.equal(f.rotor('CONT'),'rotate(64.000 0 0)');
+ assert.equal(f.rotor('PASS'),'rotate(-64.000 0 0)');
  assert.equal(f.host.children.length,1,'one idempotent overlay layer');
+ assert.equal(f.assembly('CONT').attrs.transform,'translate(226 423)');
+ assert.equal(f.assembly('PASS').attrs.transform,'translate(1023 423)');
+ assert.equal(f.conceal('CONT'),'translate(-2 2)');
+ assert.equal(f.conceal('PASS'),'translate(-2 2)');
  f.setRotaries({'control-cabin-temp':'AUTO COOL','pass-cabin-temp':'AUTO WARM'});
  f.advance(4);
  assert.equal(f.api.getState().engine.command.CONT,'COLD');

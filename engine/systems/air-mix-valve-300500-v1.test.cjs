@@ -2,11 +2,11 @@ const test=require('node:test'),assert=require('node:assert/strict');
 const M=require('./air-mix-valve-300500-v1.js');
 const live=(c,p)=>({CONT:{selector:c,actuatorPower:true,indicatorPower:true,packMode:'AUTO'},
  PASS:{selector:p,actuatorPower:true,indicatorPower:true,packMode:'AUTO'}});
-test('two needles independent, endpoints / 110-degree arc',()=>{
+test('two needles independent, endpoints / 128-degree arc',()=>{
  let s=M.create();s=M.step(s,live('MANUAL COOL','MANUAL WARM'),90);
  assert.equal(s.positions.CONT,0);assert.equal(s.positions.PASS,1);
- assert.equal(M.indication(s,live('MANUAL COOL','MANUAL WARM'),'CONT').angle,-55);
- assert.equal(M.indication(s,live('MANUAL COOL','MANUAL WARM'),'PASS').angle,55);
+ assert.equal(M.indication(s,live('MANUAL COOL','MANUAL WARM'),'CONT').angle,-64);
+ assert.equal(M.indication(s,live('MANUAL COOL','MANUAL WARM'),'PASS').angle,64);
 });
 test('actuator power loss retains valve position',()=>{
  const s=M.create(),x=live('MANUAL COOL','MANUAL WARM');x.CONT.actuatorPower=false;
@@ -60,5 +60,9 @@ test('normal PACK OFF still takes priority over manual, bench fault priority sti
 });
 test('geometry and pointer sweep are symmetric on the approved source face',()=>{
  assert.equal(M.SOURCE.width,1254);assert.equal(M.GAUGES.CONT.y,M.GAUGES.PASS.y);
- assert.equal(M.angle(0),-55);assert.equal(M.angle(0.5),0);assert.equal(M.angle(1),55);
+ assert.equal(M.GAUGES.CONT.x,226);assert.equal(M.GAUGES.CONT.y,423);
+ assert.equal(M.GAUGES.PASS.x,1023);assert.equal(M.GAUGES.PASS.y,423);
+ assert.equal(M.angle(0),-64);assert.equal(M.angle(0.5),0);assert.equal(M.angle(1),64);
+ assert.equal(M.CONFIG.benchFullTravelSeconds,10);
+ for(const p of [0,.125,.25,.5,.75,.875,1])assert.ok(M.angle(p)>=-64&&M.angle(p)<=64);
 });

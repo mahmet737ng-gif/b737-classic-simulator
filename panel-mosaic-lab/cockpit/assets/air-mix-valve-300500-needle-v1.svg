@@ -1,29 +1,31 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
- <defs>
-  <linearGradient id="metal" x1="0%" y1="0%" x2="100%" y2="0%">
-   <stop offset="0" stop-color="#55595a"/>
-   <stop offset=".15" stop-color="#a5aca9"/>
-   <stop offset=".34" stop-color="#f6f5eb"/>
-   <stop offset=".58" stop-color="#e7e8e2"/>
-   <stop offset=".82" stop-color="#989e9e"/>
-   <stop offset="1" stop-color="#404749"/>
-  </linearGradient>
-  <radialGradient id="pin" cx="35%" cy="30%" r="75%">
-   <stop offset="0" stop-color="#f7f8f4"/><stop offset=".40" stop-color="#c9d0cc"/>
-   <stop offset="1" stop-color="#586065"/>
-  </radialGradient>
- </defs>
- <!-- Shaft-aligned pointer. 56 source pixels; thin metallic triangular profile,
-      no exaggerated large cap, no wide white plastic silhouette. -->
- <path d="M128.5 74 L129.2 84 L131.0 126 L130.1 131 L126.1 131 L125.2 126 L126.9 84 L127.5 74 Q127.9 71.6 128.5 74Z"
-       fill="#090d0e" stroke="#181c1d" stroke-width="1.1" stroke-linejoin="round" opacity=".76"
-       transform="translate(.7 .75)"/>
- <path d="M127.5 73.9 Q128 72.1 128.5 73.9 L129.3 84.5 L130.7 125.6
-          L129.85 131 L126.15 131 L125.3 125.6 L126.7 84.5Z"
-       fill="url(#metal)" stroke="#262a2c" stroke-width=".65" stroke-linejoin="round"/>
- <path d="M127.8 76 L127.45 90 L126.95 122" fill="none" stroke="#fbfaf3" stroke-opacity=".83" stroke-width=".64" stroke-linecap="round"/>
- <path d="M129.5 87 L129.9 126" fill="none" stroke="#4c5556" stroke-opacity=".65" stroke-width=".45"/>
- <circle cx="128" cy="128" r="5.5" fill="#202629" stroke="#abb1af" stroke-width=".75"/>
- <circle cx="128" cy="128" r="3.65" fill="#343b3d" stroke="#141819" stroke-width=".65"/>
- <circle cx="127.6" cy="127.5" r="1.72" fill="url(#pin)"/>
+  <defs>
+    <linearGradient id="metal" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0" stop-color="#4c5254"/>
+      <stop offset=".18" stop-color="#9da4a3"/>
+      <stop offset=".38" stop-color="#f4f3eb"/>
+      <stop offset=".62" stop-color="#ddddda"/>
+      <stop offset=".84" stop-color="#8e9596"/>
+      <stop offset="1" stop-color="#3f4648"/>
+    </linearGradient>
+    <radialGradient id="hub" cx="35%" cy="30%" r="75%">
+      <stop offset="0" stop-color="#f4f5f1"/>
+      <stop offset=".42" stop-color="#bfc6c4"/>
+      <stop offset="1" stop-color="#555d61"/>
+    </radialGradient>
+  </defs>
+  <!-- Metallic needle; tip and central shaft aligned to the 128/128 rotation pivot. -->
+  <path d="M128.7 87 L130.4 124.5 L129.3 131 L126.7 131 L125.6 124.5 L127.3 87 Q127.9 84.7 128.7 87Z"
+        fill="#0b0e10" opacity=".38" transform="translate(.9 1.1)"/>
+  <path d="M127.5 86.8 Q128 84.8 128.5 86.8
+           L130.2 124.5
+           L129.0 131
+           L127.0 131
+           L125.8 124.5 Z"
+        fill="url(#metal)" stroke="#202527" stroke-width=".7" stroke-linejoin="round"/>
+  <path d="M127.55 89 L127.2 103 L126.9 121"
+        fill="none" stroke="#faf9f2" stroke-width=".62" stroke-linecap="round" opacity=".92"/>
+  <circle cx="128" cy="128" r="5.2" fill="#1b2022" stroke="#a8aeac" stroke-width=".7"/>
+  <circle cx="128" cy="128" r="3.35" fill="#343b3d" stroke="#181c1d" stroke-width=".55"/>
+  <circle cx="127.7" cy="127.6" r="1.55" fill="url(#hub)"/>
 </svg>

@@ -12,11 +12,11 @@
  const SIDES=Object.freeze(['CONT','PASS']);
  const SELECTORS=Object.freeze(['MANUAL COOL','AUTO COOL','AUTO NORM','AUTO WARM','MANUAL WARM']);
  const GAUGES=Object.freeze({
-  CONT:Object.freeze({x:224,y:425,selector:'control-cabin-temp',pack:'pack-l'}),
-  PASS:Object.freeze({x:1021,y:425,selector:'pass-cabin-temp',pack:'pack-r'})
+  CONT:Object.freeze({x:226,y:423,selector:'control-cabin-temp',pack:'pack-l'}),
+  PASS:Object.freeze({x:1023,y:423,selector:'pass-cabin-temp',pack:'pack-r'})
  });
  const SOURCE=Object.freeze({width:1254,height:1254,piece:'OH20'});
- const CONFIG=Object.freeze({fullTravelSeconds:90,benchFullTravelSeconds:12,deadbandC:0.5,ductLimitC:60,overheatC:88,
+ const CONFIG=Object.freeze({fullTravelSeconds:90,benchFullTravelSeconds:10,deadbandC:0.5,ductLimitC:60,overheatC:88,
   // Training approximations: actual AUTO knob trim mapping must be calibrated.
   targetC:Object.freeze({'AUTO COOL':20,'AUTO NORM':22,'AUTO WARM':24})});
  const clamp=n=>Math.max(0,Math.min(1,n));
@@ -25,7 +25,7 @@
   return {positions:{CONT:0.5,PASS:0.5},overheatLatched:{CONT:false,PASS:false},
    command:{CONT:'HOLD',PASS:'HOLD'},reason:{CONT:'SENSOR_UNKNOWN',PASS:'SENSOR_UNKNOWN'}};
  }
- function angle(position){return -55+110*clamp(position);}
+ function angle(position){return -64+128*clamp(position);}
  function sample(inputs,side){
   const v=inputs?.[side]||{};
   return {selector:SELECTORS.includes(v.selector)?v.selector:'AUTO NORM',
