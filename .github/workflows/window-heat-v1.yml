@@ -1,0 +1,30 @@
+name: Window Heat V1 — Generic Classic Engine QA
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'engine/systems/window-heat-v1.js'
+      - 'panel-mosaic-lab/cockpit/window-heat-unified-v1.js'
+      - 'cb-panel-lab/window-heat-cb-v1.js'
+      - 'cb-panel-lab/catalog.js'
+      - 'tests/window-heat-v1.test.cjs'
+      - '.github/workflows/window-heat-v1.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  window-heat:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check Window Heat core and bridge syntax
+        run: |
+          node --check engine/systems/window-heat-v1.js
+          node --check panel-mosaic-lab/cockpit/window-heat-unified-v1.js
+          node --check cb-panel-lab/window-heat-cb-v1.js
+      - name: Validate physically identified CB catalog and FCOM test logic
+        run: node --test tests/window-heat-v1.test.cjs
+      - name: Preserve locked overhead and OWNER18 switch assets
+        run: |
+          python3 panel-mosaic-lab/verify-final-overhead.py
+          python3 panel-mosaic-lab/cockpit/verify-guard-redzone.py --negative-self-test
