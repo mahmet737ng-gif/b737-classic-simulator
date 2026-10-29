@@ -16,6 +16,15 @@
  const states=new Map(devices.map(id=>[id,'RETRACTED']));
  const overrides=new Map();
  const instances=new Set();
+ // Presentation-only lamp offsets: deterministic 0–78 ms, independent of LE physics.
+ const lampTimers=new WeakMap();
+ const lampOffset=key=>{let h=0;for(let i=0;i<key.length;i++)h=(h*33+key.charCodeAt(i))>>>0;return (h%27)*3;};
+ function paintLamp(el,on,level){
+  el.dataset.lit=String(on);
+  el.setAttribute('fill',on?colors[level]:'transparent');
+  el.style.opacity='1';
+  el.setAttribute('fill-opacity',on?(brightness==='BRIGHT'?'1':'.52'):'1');
+ }
  let lampTest=false,globalLampTest=false,brightness='BRIGHT',panelPower=true;
  const metrics={source:{width:1984,height:793},atlas:{x:3/1731,y:540/909,w:383/1731,h:188/909},nativePanelRect:{x:3,y:540,w:383,h:188,sourceWidth:1731,sourceHeight:909},lampCount};
  const isValid=(id,state)=>devices.includes(id)&&['RETRACTED',...activeLevels(id)].includes(state);
@@ -25,10 +34,16 @@
    const test=globalLampTest||(lampTest&&panelPower===true);
    for(const [key,el] of instance.lamps){
     const [id,level]=key.split('|'),on=globalLampTest||(panelPower===true&&(test||(overrides.has(key)?overrides.get(key):states.get(id)===level)));
-    el.dataset.lit=String(on);
-    el.setAttribute('fill',on?colors[level]:'transparent');
-    el.style.opacity='1';
-    el.setAttribute('fill-opacity',on?(brightness==='BRIGHT'?'1':'.52'):'1');
+    const pending=lampTimers.get(el);
+    if(pending!==undefined)clearTimeout(pending);
+    lampTimers.delete(el);
+    // Initial paint and brightness changes are immediate. Stagger only state flips.
+    if(el.dataset.lit===undefined||el.dataset.lit===String(on)){
+     paintLamp(el,on,level);
+    }else{
+     const timer=setTimeout(()=>{lampTimers.delete(el);if(el.isConnected)paintLamp(el,on,level);},lampOffset(key));
+     lampTimers.set(el,timer);
+    }
    }
    instance.host.dataset.power=panelPower===null?'UNKNOWN':panelPower?'ON':'OFF';
    instance.button.classList.toggle('pressed',lampTest);
