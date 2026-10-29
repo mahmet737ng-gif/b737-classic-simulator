@@ -52,16 +52,26 @@ test('Power test bypasses normal target but not power/CB/OVHT fault',()=>{
  assert.equal(run(s,{switches:{...sw(),'window-power-test':'PWR TEST'}}).output.channels.L_FWD.greenOn,true);
  assert.equal(run(s,{switches:{...sw(),'window-power-test':'PWR TEST'},breakers:{'P6-11|ALL|B9':false}}).output.channels.L_FWD.greenOn,false);
 });
-test('OVHT warning, 60-second indication, reset OFF→ON',()=>{
+test('OVHT test clears after 60 seconds; individual OFF cancels its channel immediately',()=>{
  let r=run(undefined,{switches:{...sw(),'window-power-test':'OVHT'}},0);
  assert.equal(r.output.annunciations.antiIceCaution,true);
- assert.equal(r.output.channels.L_FWD.overheatOn,true);
- r=run(r.state,{},61);
- assert.ok(Object.values(r.output.channels).every(x=>x.overheatOn&&!x.greenOn));
- r=run(r.state,{switches:{...sw(),'window-l-fwd':'OFF'}},0);
+ assert.ok(Object.values(r.output.channels).every(x=>x.overheatOn&&x.greenOn));
+ r=run(r.state,{},59);
+ assert.ok(Object.values(r.output.channels).every(x=>x.overheatOn&&x.greenOn));
  r=run(r.state,{},1);
+ assert.ok(Object.values(r.output.channels).every(x=>!x.overheatOn&&x.greenOn));
+ assert.equal(r.output.annunciations.antiIceCaution,false);
+ r=run(r.state,{switches:{...sw(),'window-power-test':'OVHT'}},0);
+ r=run(r.state,{switches:{...sw(),'window-power-test':'OFF','window-l-fwd':'OFF'}},0);
  assert.equal(r.output.channels.L_FWD.overheatOn,false);
- assert.equal(r.output.channels.L_SIDE.overheatOn,true);
+ r=run(r.state,{switches:{...sw(),'window-l-fwd':'ON'}},0);
+ assert.equal(r.output.channels.L_FWD.overheatOn,false,'ON must not re-trigger a test');
+ assert.ok(Object.entries(r.output.channels).filter(([id])=>id!=='L_FWD').every(([,x])=>x.overheatOn),'other channels keep their test');
+});
+test('Power/controller/CB loss does not falsely light OVERHEAT',()=>{
+ const r=run(undefined,{breakers:{'P6-11|ALL|B9':false}},0);
+ assert.equal(r.output.channels.L_FWD.greenOn,false);
+ assert.equal(r.output.channels.L_FWD.overheatOn,false);
 });
 test('Instructor heater, sensor and power-test failures',()=>{
  for(const fault of ['HEATER_FAIL','SENSOR_FAIL']){
