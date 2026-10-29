@@ -45,7 +45,7 @@ test('P18-3 C5 pulled prevents heat and keeps TEMP PROBE amber illuminated',()=>
 });
 test('MAIN BUS 2 loss or UNKNOWN inhibits heater without fabricated electrical supply',()=>{
  for(const main2 of [false,null,undefined]){
-  const x=evalWith({testPressed:true,buses:{main2}});
+  const x=evalWith({testPressed:true,buses:{main2,dc1:true}});
   assert.equal(x.heaterPower,false);
   assert.equal(x.amberOn,true);
  }
