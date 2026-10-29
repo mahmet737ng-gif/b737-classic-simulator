@@ -1,18 +1,22 @@
-/* Additive visual overlay for the 737 Classic engine piece ONLY.
-   No changes to main-panel geometry, ISN engine logic, guarded switches or IRS. */
-#region-main .texture-piece[data-piece="engine"]>.conventional-engine-panel-v1 {
- position:absolute; inset:0; z-index:41; display:none; width:100%;height:100%;
- max-width:none;max-height:none;object-fit:fill;pointer-events:none;
+/* CONV-FIT-0003: independent, photo-backed layer across ENGINE and
+   only the flap/anti-skid/autobrake strip of FO INNER.
+   It never changes approved source geometry, Owner18 guards or EIS.
+   Pointer events pass through to original hardware. */
+#region-main .region-native>.conventional-engine-photo-wrap-v1{
+ position:absolute;display:none;overflow:hidden;z-index:3;
+ pointer-events:none;user-select:none;padding:0;border:0;
+ background:linear-gradient(180deg,#3c4f56 0%,#34434b 55%,#29383f 100%);
+}
+#region-main .conventional-engine-photo-wrap-v1>.conventional-engine-panel-v1{
+ display:block;position:absolute;left:0;top:0;
+ width:1182px;height:1330px;max-width:none;max-height:none;
+ object-fit:fill;transform-origin:0 0;pointer-events:none;
  user-select:none;border:0;background:transparent;
 }
-html[data-engine-indication="CONVENTIONAL"] #region-main .texture-piece[data-piece="engine"]>.conventional-engine-panel-v1{
- display:block;
-}
-/* Prevent the old EIS-specific gauge/lamp artwork appearing on the new
-   dial geometry. Source physics and alert states continue running unchanged.
-   Separate calibrated Conventional gauges/lamp mounts will be additive. */
+html[data-engine-indication="CONVENTIONAL"] #region-main .region-native>.conventional-engine-photo-wrap-v1{display:block}
+/* The unmodified EIS photo is invisible ONLY when the independent owner
+   Conventional image has loaded. This prevents an exposed EIS edge. */
+html[data-engine-indication="CONVENTIONAL"] #region-main .texture-piece[data-piece="engine"]>img,
 html[data-engine-indication="CONVENTIONAL"] #region-main .texture-piece[data-piece="engine"]>.isn-engine-gauges,
 html[data-engine-indication="CONVENTIONAL"] #region-main .texture-piece[data-piece="engine"]>[data-main-lamp],
-html[data-engine-indication="CONVENTIONAL"] #region-main .texture-piece[data-piece="engine"]>.main-lamp-overlay {
- display:none !important;
-}
+html[data-engine-indication="CONVENTIONAL"] #region-main .texture-piece[data-piece="engine"]>.main-lamp-overlay{display:none!important}
