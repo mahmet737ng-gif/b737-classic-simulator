@@ -11,6 +11,13 @@ on:
       - "tests/aircon-400-oh21-variant.test.cjs"
       - "tools/test-aircon400-oh21-browser.cjs"
       - ".github/workflows/aircon-400-oh21-variant-qa.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "panel-mosaic-lab/cockpit/aircon-400-oh21-*"
+      - "panel-mosaic-lab/cockpit/oh21-owner-photo-registration-v1.js"
+      - "tools/test-aircon400-oh21-browser.cjs"
+      - ".github/workflows/aircon-400-oh21-variant-qa.yml"
   workflow_dispatch:
 permissions:
   contents: read
