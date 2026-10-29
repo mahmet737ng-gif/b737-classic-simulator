@@ -1,0 +1,49 @@
+name: Owner OH21 photo registration and 737 family pixel QA
+on:
+  push:
+    branches:
+      - feat/oh21-owner-photo-registration-20261030
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate photo installer code and source SHA256
+        run: |
+          node --check panel-mosaic-lab/cockpit/oh21-owner-photo-registration-v1.js
+          node tests/oh21-owner-photo-reg-v1.test.cjs
+          node tests/aircon-400-oh21-variant.test.cjs
+      - name: Enforce original overhead/guard/IRS locks
+        run: |
+          python3 panel-mosaic-lab/verify-final-overhead.py
+          python3 panel-mosaic-lab/cockpit/verify-guard-redzone.py --negative-self-test
+          python3 panel-mosaic-lab/cockpit/verify-irs-sys-dspl-owner-lock-v1.py
+          python3 panel-mosaic-lab/cockpit/verify-irs-13seg-owner-lock-v1.py --negative-self-test
+      - name: Install Chromium
+        run: |
+          npm install --no-save --ignore-scripts playwright@1.58.2
+          npx playwright install --with-deps chromium
+      - name: Run real embedded photo placement and interaction QA
+        run: |
+          set -euo pipefail
+          python3 -m http.server 8788 --bind 127.0.0.1 > /tmp/owner-oh21-http.log 2>&1 &
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:8788/panel-mosaic-lab/cockpit/overhead-stage.html > /dev/null; then break; fi
+            sleep 1
+          done
+          node tools/test-owner-oh21-photo-browser.cjs
+      - name: Preserve visual screenshots and geometry reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: owner-oh21-photo-browser-evidence
+          path: artifacts/owner-oh21-qa/
+          if-no-files-found: ignore
