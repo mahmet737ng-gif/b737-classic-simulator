@@ -38,6 +38,7 @@ function mount(){
  const document={
   readyState:'complete',body,
   querySelector(selector){if(selector==='.overhead-tools')return null;if(selector==='#inspector')return inspector;if(selector==='#inspector h1')return heading;return null;},
+  createElement(name){return fakeNode(name);},
   getElementById(id){return id==='overheadFrame'?frame:null;}
  };
  const window={
