@@ -1,7 +1,7 @@
 (function(){
  'use strict';
  const send=detail=>{if(parent!==window)parent.postMessage({type:'b737:cockpit-overhead',...detail},location.origin);};
- let ready=false,pending=false,projection=null;
+ let ready=false,pending=false,projection=null,windowHeatProjection=null;
  // DCPCS-OWNER-OH22: runtime-only replacement of the OH22 plate background.
  // Scale owner artwork edge-to-edge to the locked OH22 tile so the former
  // contain letterboxing above/below the panel disappears. Original PNG untouched.
@@ -89,19 +89,24 @@
  syncAirconPlate();
  window.addEventListener('storage',e=>{if(e.key===PROFILE_KEY){setPressurizationArtwork(savedPressurization());setAirframeArtwork(savedAirframe());}});
  function applyProjection(){
-  if(!ready||!projection||document.documentElement.classList.contains('cockpit-visual-test'))return;
+  if(!ready||(!projection&&!windowHeatProjection)||document.documentElement.classList.contains('cockpit-visual-test'))return;
   const base=window.B737OverheadLights.getState();
   if(base.lampTest)return;
+  // ISN provides the general panel projections; WINDOW HEAT is the owner
+  // of its eight real OH15 lamps and is layered AFTER ISN every time.
+  const merged={...(projection||{}),...(windowHeatProjection||{})};
   for(const node of document.querySelectorAll('.mounted-light')){
-   if(!Object.prototype.hasOwnProperty.call(projection,node.dataset.light))continue;
-   const v=projection[node.dataset.light];node.dataset.isnProjection=v===null?'UNKNOWN':v?'ON':'OFF';
+   if(!Object.prototype.hasOwnProperty.call(merged,node.dataset.light))continue;
+   const v=merged[node.dataset.light],isWH=windowHeatProjection&&Object.prototype.hasOwnProperty.call(windowHeatProjection,node.dataset.light);
+   node.dataset.isnProjection=v===null?'UNKNOWN':v?'ON':'OFF';
    const frame=base.power===false?'OFF':v===null?(base.frames[node.dataset.light]||'OFF'):v?'ON':'OFF';
    for(const face of node.querySelectorAll('.light-face'))face.classList.toggle('active',face.dataset.frame===frame);
    node.dataset.frame=frame;node.dataset.state=frame;
-   node.setAttribute('aria-label',node.dataset.light+(v===null?' — ISN UNKNOWN; legacy preview '+frame:' — ISN '+frame));
-   node.title=node.dataset.light+(v===null?' · ISN UNKNOWN (legacy trainer image)':' · ISN '+frame);
+   node.setAttribute('aria-label',node.dataset.light+(v===null?' — UNKNOWN '+frame:isWH?' — WINDOW HEAT '+frame:' — ISN '+frame));
+   node.title=node.dataset.light+(isWH?' · WINDOW HEAT '+frame:v===null?' · UNKNOWN':' · ISN '+frame);
   }
  }
+
  function visualTest(active){document.documentElement.classList.toggle('cockpit-visual-test',active);let count=0;for(const node of document.querySelectorAll('.mounted-light')){const faces=[...node.querySelectorAll('.light-face')],bright=faces.find(n=>n.dataset.frame==='BRIGHT_BLUE')||faces.find(n=>n.dataset.frame==='ON');for(const img of faces)img.dataset.visualOn=String(active&&img===bright);if(active&&bright){node.dataset.visualFrame=bright.dataset.frame;count++;}else delete node.dataset.visualFrame;}if(!active)applyProjection();
  // OH22 annunciators are separate from legacy .mounted-light nodes.
  // Keep light test purely visual: it must never latch a DCPCS or CPCS fault.
@@ -120,6 +125,17 @@
   if(d.action==='fault'&&typeof d.id==='string'&&typeof d.active==='boolean'){try{window.B737OverheadLights.setFault(d.id,d.active);}catch{}}
   if(d.action==='reset-scenario')window.B737OverheadLights.reset();
   if(d.action==='reset-controls')document.getElementById('resetToggles').click();
+  if(d.action==='window-heat-projection'&&d.lamps&&typeof d.lamps==='object'){
+   // Accept only four ON and four OVERHEAT lamps, never arbitrary cockpit
+   // nodes or locked artwork changes. This survives live rerenders by LGT/ISN.
+   const allowed=new Set(['window-l-side-on','window-l-fwd-on','window-r-fwd-on','window-r-side-on',
+    'window-l-side-overheat','window-l-fwd-overheat','window-r-fwd-overheat','window-r-side-overheat']);
+   const next={};for(const [id,value] of Object.entries(d.lamps)){
+    if(allowed.has(id)&&typeof value==='boolean')next[id]=value;
+   }
+   if(Object.keys(next).length===8){windowHeatProjection=next;applyProjection();}
+   return;
+  }
   if(d.action==='isn-projection'&&d.lamps&&typeof d.lamps==='object'){
    const ids=new Set(window.B737OverheadLights.getRegistry().lights.map(light=>light.id));
    projection={};for(const [id,v]of Object.entries(d.lamps))if(ids.has(id)&&(v===null||typeof v==='boolean'))projection[id]=v;
