@@ -5,7 +5,7 @@
 (function(){
  'use strict';
  const ids=['control-cabin-temp','pass-cabin-temp'];
- const asset=new URL('./assets/aircon-300500-approved-slim-temp-knob-v1.svg',document.baseURI).href;
+ const asset=new URL('./assets/aircon-300500-approved-slim-temp-knob-v2.webp',document.baseURI).href;
  const originals=new WeakMap();
  const key='b737classic.aircraft-profile.v1';
  const propNames=['left','top','width','height','transform-origin','object-fit','scale'];
@@ -33,8 +33,8 @@
   const w=parseFloat(btn.style.width),h=parseFloat(btn.style.height);
   if(!Number.isFinite(w)||!Number.isFinite(h)||w<=0||h<=0)return false;
   // The physical pivot remains exactly the existing OH20 rotary socket center.
-  // Source art 144x336 represents only the narrow knob, not the dial stencil.
-  const imageW=w*.25,imageH=imageW*(336/144);
+  // Direct, transparent WebP (144x336): approved slim black knob; no SVG\n  // image nesting (which failed in the user's Chrome browser).
+  const imageW=w*.31,imageH=imageW*(336/144);
   img.style.setProperty('width',imageW+'px');
   img.style.setProperty('height',imageH+'px');
   img.style.setProperty('left',(w-imageW)/2+'px');
