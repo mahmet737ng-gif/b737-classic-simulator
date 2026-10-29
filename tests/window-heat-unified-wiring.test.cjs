@@ -80,8 +80,6 @@ test('Real OH15 spring test is sampled immediately even when held for less than 
  assert.ok(Object.values(o.channels).every(x=>x.overheatOn),'four amber after short OVHT pulse');
  h.step(59);
  assert.ok(Object.values(h.output().channels).every(x=>x.overheatOn&&x.greenOn));
- h.step(59);
- assert.ok(Object.values(h.output().channels).every(x=>x.overheatOn&&x.greenOn));
  h.step(1);
  assert.ok(Object.values(h.output().channels).every(x=>!x.overheatOn&&x.greenOn),'timer should expire at 60 sec');
 });
