@@ -1,0 +1,25 @@
+{
+  "schema": "b737.owner-visual-lock/2",
+  "id": "LEDEV-PHOTOLENS-FINAL-2026-10-30",
+  "authorizedBy": "Owner direct request: correct non-photographic LE DEVICES colors and window geometry, unlock for correction then re-lock",
+  "scope": "Only additive 26 physical lens visuals; owner LEDEV-FINAL-2026-10-28 core and 108 locked files unchanged",
+  "coreLock": "engine/locks/le-devices-final-lock-v1.json",
+  "immutableFiles": {
+    "panel-mosaic-lab/le-devices/photo-lens-v2.js": "032eeb38c5065a31d4e2e147c1aa6d9840b7bc7b",
+    "panel-mosaic-lab/le-devices/photo-lens-v2.css": "cee6144338ac38574be39f675fe70dd71180e3a3"
+  },
+  "geometry": {
+    "windows": 26,
+    "sourceDimensions": [
+      1984,
+      793
+    ],
+    "insetSourcePixels": 4.1
+  },
+  "rules": [
+    "No modifications to pre-existing 108 owner-locked LE files",
+    "No geometry or activation-state changes to locked photo-panel and core switches",
+    "All future changes to the two new visual files require new explicit owner authorization and re-lock"
+  ],
+  "status": "FROZEN_AFTER_OWNER_APPROVED_VISUAL_CORRECTION"
+}
