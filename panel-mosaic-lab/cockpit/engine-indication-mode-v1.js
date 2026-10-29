@@ -7,14 +7,15 @@
 'use strict';
 const ROOT=document.documentElement;
 const ASSET='./assets/conventional-engine-panel-owner-20261029.png?v=CONV-0002';
-const VERSION='CONV-FIT-0003';
+const VERSION='CONV-FIT-0004-PIXEL-CENTERS';
 const W=1182,H=1330,FO_W=918,FO_H=1713;
-// Landmark estimates measured from the supplied mobile screenshot against
-// the owner's unmodified 1182x1330 photo. FO flap source center (95,291)
-// is independently fixed by flap-needles.js. The Auto Brake hole in FO
-// source is photo-measured at (104,932); do not edit the FO photo.
-const SOURCE=Object.freeze({flap:Object.freeze([1083,362]),auto:Object.freeze([1070,1088])});
-const FO=Object.freeze({flap:Object.freeze([95,291]),auto:Object.freeze([104,932])});
+// Pixel-center audit of the owner's original 1182x1330 PNG and the
+// unchanged 918x1713 FO reference image. The independently installed
+// FO flap needle pivot is at (95,291), within 2.5px of the photo center.
+// Photo-derived AUTO BRAKE hole center is (101.5,889.5) in FO source.
+// These source reference assets are read-only; only optional overlay moves.
+const SOURCE=Object.freeze({flap:Object.freeze([1055.5,367.5]),auto:Object.freeze([1044.5,1117.5])});
+const FO=Object.freeze({flap:Object.freeze([95,291]),auto:Object.freeze([101.5,889.5])});
 let wrap=null,image=null,loaded=false,error=null,desired='EIS',geometry=null;
 const store=()=>window.B737AircraftProfileStore;
 const requested=()=>store()?.get()?.engineInstruments==='CONVENTIONAL'?'CONVENTIONAL':'EIS';
