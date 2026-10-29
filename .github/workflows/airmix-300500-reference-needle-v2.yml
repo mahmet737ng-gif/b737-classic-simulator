@@ -1,0 +1,33 @@
+name: AIR MIX 300/500 - Owner Reference Needle V2 QA
+on:
+  push:
+    paths:
+      - 'panel-mosaic-lab/cockpit/assets/air-mix-valve-300500-reference-needle-v2.svg'
+      - 'panel-mosaic-lab/cockpit/air-mix-valve-300500-unified-v1.js'
+      - 'panel-mosaic-lab/cockpit/index.html'
+      - 'tests/airmix-300500-reference-needle-v2.test.cjs'
+      - '.github/workflows/airmix-300500-reference-needle-v2.yml'
+  pull_request:
+    paths:
+      - 'panel-mosaic-lab/cockpit/assets/air-mix-valve-300500-reference-needle-v2.svg'
+      - 'panel-mosaic-lab/cockpit/air-mix-valve-300500-unified-v1.js'
+      - 'panel-mosaic-lab/cockpit/index.html'
+      - 'tests/airmix-300500-reference-needle-v2.test.cjs'
+      - '.github/workflows/airmix-300500-reference-needle-v2.yml'
+permissions:
+  contents: read
+jobs:
+  single-reference-needle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Guard Red Zone verifier must see its approved historical commit
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --check panel-mosaic-lab/cockpit/air-mix-valve-300500-unified-v1.js
+      - run: node --test tests/airmix-300500-reference-needle-v2.test.cjs
+      - run: node --test engine/systems/air-mix-valve-300500-v1.test.cjs
+      - run: python3 panel-mosaic-lab/verify-final-overhead.py
+      - run: python3 panel-mosaic-lab/cockpit/verify-guard-redzone.py --negative-self-test
