@@ -33,8 +33,8 @@
   const w=parseFloat(btn.style.width),h=parseFloat(btn.style.height);
   if(!Number.isFinite(w)||!Number.isFinite(h)||w<=0||h<=0)return false;
   // The physical pivot remains exactly the existing OH20 rotary socket center.
-  // Owner-approved transparent round knob (192x192): its full central base\n  // covers the recessed hole but leaves the panel's position labels visible.
-  const imageW=w*.60,imageH=imageW;
+  // Owner-approved transparent round knob (192x192): its full central base\n  // covers the recessed hole at the reference-photo scale (diameter =\n  // original control hit-area width), without moving the socket/pivot.
+  const imageW=w,imageH=imageW;
   img.style.setProperty('width',imageW+'px');
   img.style.setProperty('height',imageH+'px');
   img.style.setProperty('left',(w-imageW)/2+'px');

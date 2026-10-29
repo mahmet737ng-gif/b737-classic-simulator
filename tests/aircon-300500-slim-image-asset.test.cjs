@@ -14,10 +14,10 @@ test('Two independent existing 300/500 control sockets receive image, preserving
  assert.match(js,/const ids=\['control-cabin-temp','pass-cabin-temp'\]/);
  assert.match(js,/aircon-300500-owner-approved-round-knob-v3\.webp/);
  assert.match(js,/transform-origin','50% 50%'/);
- assert.match(js,/const imageW=w\*\.60,imageH=imageW/,'full circle must hide center hole');
+ assert.match(js,/const imageW=w,imageH=imageW/,'reference-sized dial knob must hide center hole');
  assert.ok(!js.includes('style.setProperty(\'transform\''),'Do not override engine rotation');
  assert.ok(!js.includes('createElement(\'button\''),'Must reuse physical controls');
 });
 test('Unified loads cache-busted fix without editing locked overhead',()=>{
- assert.match(index,/aircon-300500-slim-knob-unified-v1\.js\?v=AIRCON-300500-ROUND-0003/);
+ assert.match(index,/aircon-300500-slim-knob-unified-v1\.js\?v=AIRCON-300500-ROUND-0004/);
 });
