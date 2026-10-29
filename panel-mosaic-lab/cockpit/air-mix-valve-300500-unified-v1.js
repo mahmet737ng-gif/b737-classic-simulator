@@ -6,7 +6,7 @@
  const model=window.B737AirMixValve300500V1;
  if(!model){console.error('AIR-MIX-300500 model missing');return;}
  const SVG='http://www.w3.org/2000/svg',PROFILE='b737classic.aircraft-profile.v1',CB='b737classic.cb.v1';
- const sprite=new URL('./assets/air-mix-valve-300500-needle-v1.svg?v=AIR-MIX-300500-002',document.baseURI).href;
+ const sprite=new URL('./assets/air-mix-valve-300500-needle-v1.svg?v=AIR-MIX-300500-003',document.baseURI).href;
  const state={CONT:{cabinC:null,ductC:null,overheat:false,stuck:false,transmitterFailed:false,targetC:null},
   PASS:{cabinC:null,ductC:null,overheat:false,stuck:false,transmitterFailed:false,targetC:null}};
  let engine=model.create(),frame=null,layer=null,assemblies={},last=performance.now(),trainingPower=null;
