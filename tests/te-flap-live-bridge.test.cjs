@@ -53,3 +53,32 @@ test('lower pressure slows the same actuator without resetting its actual positi
  s.message({type:'HYDRAULIC',system:'B',value:true});
  s.ticks(25);assert.ok(Math.abs(s.trainer.flapActuator().actual-1)<.0002);
 });
+
+test('Unified real lever UP -> 15 honors delayed sequential LE windows and forward lamps',()=>{
+ const s=setup();
+ s.message({type:'FLAP_LEVER',value:15});
+ s.ticks(24); // t=4.8
+ assert.equal(s.frames.FLAP_1,'RETRACTED');
+ assert.equal(s.frames.SLAT_1,'RETRACTED');
+ assert.equal(s.messages.at(-1).projection.center.transit,false);
+ s.ticks(1); // t=5
+ assert.equal(s.frames.FLAP_1,'TRANSIT');
+ assert.equal(s.frames.SLAT_1,'RETRACTED');
+ s.ticks(8); // t=6.6
+ assert.equal(s.frames.FLAP_1,'FULL_EXT');
+ assert.equal(s.frames.SLAT_1,'TRANSIT');
+ s.ticks(7); // t=8
+ assert.equal(s.frames.SLAT_1,'EXT');
+ assert.equal(s.messages.at(-1).projection.center.transit,false);
+ assert.equal(s.messages.at(-1).projection.center.extended,true);
+ s.ticks(119); // t=31.8
+ assert.equal(s.frames.SLAT_1,'EXT');
+ s.ticks(1); // t=32 exactly, 24 s EXT hold complete
+ assert.equal(s.frames.SLAT_1,'TRANSIT');
+ assert.equal(s.messages.at(-1).projection.center.transit,true);
+ s.ticks(8); // t=33.6, full after 1.5 s (200ms clock)
+ assert.equal(s.frames.SLAT_1,'FULL_EXT');
+ assert.equal(s.messages.at(-1).projection.center.transit,false);
+ assert.equal(s.messages.at(-1).projection.center.extended,true);
+ assert.ok(s.trainer.flapActuator().actual<15,'TE still advances on its independent time base');
+});
