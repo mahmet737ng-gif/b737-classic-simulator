@@ -1,7 +1,7 @@
 (function(){
  'use strict';
  const send=detail=>{if(parent!==window)parent.postMessage({type:'b737:cockpit-overhead',...detail},location.origin);};
- let ready=false,pending=false,projection=null,windowHeatProjection=null;
+ let ready=false,pending=false,projection=null,windowHeatProjection=null,tatProbeProjection=null;
  // DCPCS-OWNER-OH22: runtime-only replacement of the OH22 plate background.
  // Scale owner artwork edge-to-edge to the locked OH22 tile so the former
  // contain letterboxing above/below the panel disappears. Original PNG untouched.
@@ -89,23 +89,23 @@
  syncAirconPlate();
  window.addEventListener('storage',e=>{if(e.key===PROFILE_KEY){setPressurizationArtwork(savedPressurization());setAirframeArtwork(savedAirframe());}});
  function applyProjection(){
-  if(!ready||(!projection&&!windowHeatProjection)||document.documentElement.classList.contains('cockpit-visual-test'))return;
+  if(!ready||(!projection&&!windowHeatProjection&&!tatProbeProjection)||document.documentElement.classList.contains('cockpit-visual-test'))return;
   const base=window.B737OverheadLights.getState();
   if(base.lampTest)return;
   // ISN provides the general panel projections; WINDOW HEAT is the owner
   // of its eight real OH15 lamps and is layered AFTER ISN every time.
-  const merged={...(projection||{}),...(windowHeatProjection||{})};
+  const merged={...(projection||{}),...(windowHeatProjection||{}),...(tatProbeProjection||{})};
   for(const node of document.querySelectorAll('.mounted-light')){
    if(!Object.prototype.hasOwnProperty.call(merged,node.dataset.light))continue;
-   const v=merged[node.dataset.light],isWH=windowHeatProjection&&Object.prototype.hasOwnProperty.call(windowHeatProjection,node.dataset.light);
+   const v=merged[node.dataset.light],isWH=windowHeatProjection&&Object.prototype.hasOwnProperty.call(windowHeatProjection,node.dataset.light),isTAT=tatProbeProjection&&Object.prototype.hasOwnProperty.call(tatProbeProjection,node.dataset.light);
    node.dataset.isnProjection=v===null?'UNKNOWN':v?'ON':'OFF';
    // WH projection already includes authoritative electrical/CB gating;
    // the legacy overhead preview's separate battery flag must not mask it.
-   const frame=isWH?(v?'ON':'OFF'):base.power===false?'OFF':v===null?(base.frames[node.dataset.light]||'OFF'):v?'ON':'OFF';
+   const frame=isWH||isTAT?(v?'ON':'OFF'):base.power===false?'OFF':v===null?(base.frames[node.dataset.light]||'OFF'):v?'ON':'OFF';
    for(const face of node.querySelectorAll('.light-face'))face.classList.toggle('active',face.dataset.frame===frame);
    node.dataset.frame=frame;node.dataset.state=frame;
-   node.setAttribute('aria-label',node.dataset.light+(v===null?' — UNKNOWN '+frame:isWH?' — WINDOW HEAT '+frame:' — ISN '+frame));
-   node.title=node.dataset.light+(isWH?' · WINDOW HEAT '+frame:v===null?' · UNKNOWN':' · ISN '+frame);
+   node.setAttribute('aria-label',node.dataset.light+(v===null?' — UNKNOWN '+frame:isWH?' — WINDOW HEAT '+frame:isTAT?' — TAT PROBE '+frame:' — ISN '+frame));
+   node.title=node.dataset.light+(isWH?' · WINDOW HEAT '+frame:isTAT?' · TAT PROBE '+frame:v===null?' · UNKNOWN':' · ISN '+frame);
   }
  }
 
@@ -127,6 +127,15 @@
   if(d.action==='fault'&&typeof d.id==='string'&&typeof d.active==='boolean'){try{window.B737OverheadLights.setFault(d.id,d.active);}catch{}}
   if(d.action==='reset-scenario')window.B737OverheadLights.reset();
   if(d.action==='reset-controls')document.getElementById('resetToggles').click();
+  if(d.action==='tat-probe-projection'&&d.lamps&&typeof d.lamps==='object'){
+   // TAT owns only the existing TEMP PROBE annunciator. On receiving the
+   // signal, relight it after LGT/ISN. No new lamp faces or source art.
+   if(typeof d.lamps['probe-temp']==='boolean'){
+    tatProbeProjection={'probe-temp':d.lamps['probe-temp']};
+    applyProjection();
+   }
+   return;
+  }
   if(d.action==='window-heat-projection'&&d.lamps&&typeof d.lamps==='object'){
    // Accept only four ON and four OVERHEAT lamps, never arbitrary cockpit
    // nodes or locked artwork changes. This survives live rerenders by LGT/ISN.
