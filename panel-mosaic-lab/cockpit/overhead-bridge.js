@@ -99,7 +99,9 @@
    if(!Object.prototype.hasOwnProperty.call(merged,node.dataset.light))continue;
    const v=merged[node.dataset.light],isWH=windowHeatProjection&&Object.prototype.hasOwnProperty.call(windowHeatProjection,node.dataset.light);
    node.dataset.isnProjection=v===null?'UNKNOWN':v?'ON':'OFF';
-   const frame=base.power===false?'OFF':v===null?(base.frames[node.dataset.light]||'OFF'):v?'ON':'OFF';
+   // WH projection already includes authoritative electrical/CB gating;
+   // the legacy overhead preview's separate battery flag must not mask it.
+   const frame=isWH?(v?'ON':'OFF'):base.power===false?'OFF':v===null?(base.frames[node.dataset.light]||'OFF'):v?'ON':'OFF';
    for(const face of node.querySelectorAll('.light-face'))face.classList.toggle('active',face.dataset.frame===frame);
    node.dataset.frame=frame;node.dataset.state=frame;
    node.setAttribute('aria-label',node.dataset.light+(v===null?' — UNKNOWN '+frame:isWH?' — WINDOW HEAT '+frame:' — ISN '+frame));
