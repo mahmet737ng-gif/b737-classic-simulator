@@ -231,7 +231,10 @@
    paint();
  }
  function paint(){
-   if(!received)return;
+   // Atlas reconstruction can deliver a state message before the replacement
+   // OH22 plate/caption is attached; ignore that transient paint, never crash
+   // the Unified iframe. build() requests a fresh state after remount.
+   if(!received||!layer?.isConnected||!caption?.isConnected)return;
    const {state,output}=received,cfg=model.config(system);
    const values=model.lamps(system,output);
    // The parent "test all lights" switch and the native overhead lamp-test
