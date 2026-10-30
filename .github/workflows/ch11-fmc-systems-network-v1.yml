@@ -20,6 +20,9 @@ on:
       - 'engine/ch11/golden-screen-diff-v1.js'
       - 'engine/ch11/tests/golden-screen-diff-v1.test.cjs'
       - 'engine/ch11/tests/fcom-screen-compositor-v1.test.cjs'
+      - 'docs/CH11_SINGLE_WRITER_REBUILD_2026-10-30_FA.md'
+      - 'engine/ch11/tests/cdu-transition-ledger-v1.test.cjs'
+      - 'engine/ch11/cdu-transition-ledger-v1.js'
       - 'cdu-standalone-v6/engine/screen-compositor-v1.js'
       - 'cdu-standalone-v6/index.html'
       - 'engine/ch11/tests/cdu-24-column-grid-v1.test.cjs'
@@ -84,6 +87,8 @@ jobs:
       - run: node --test engine/ch11/tests/fcom-screen-compositor-v1.test.cjs
       - run: node --check engine/ch11/golden-screen-diff-v1.js
       - run: node --test engine/ch11/tests/golden-screen-diff-v1.test.cjs
+      - run: node --check engine/ch11/cdu-transition-ledger-v1.js
+      - run: node --test engine/ch11/tests/cdu-transition-ledger-v1.test.cjs
       - run: node --check panel-mosaic-lab/cockpit/app.js
       - run: node --test panel-mosaic-lab/cockpit/tests/cdu-embed-typography-v2.test.cjs
       - run: node tests/cdu-font-lock.test.cjs
