@@ -5,7 +5,8 @@
  'use strict';
  const INPUTS=Object.freeze(['electrical.buses','electrical.fmcFeeds','irs.left','irs.right','airdata.adc1','airdata.adc2',
   'navigation.gps1','navigation.gps2','navigation.vor1','navigation.vor2','navigation.dme1','navigation.dme2',
-  'fuel.quantity','propulsion.engine1','propulsion.engine2','pneumatics.state','antiice.state',
+  'fuel.quantity','fuel.pumps','flightcontext.state','apu.state','hydraulics.state',
+  'propulsion.engine1','propulsion.engine2','pneumatics.state','antiice.state',
   'aircraft.airground','environment.tat','clock.utc','crew.flightplan','aircraft.profile',
   'mcp.state','afds.state','autothrottle.state','navigation.database','performance.database','datalink.acars','cb.observations']);
  const copy=x=>JSON.parse(JSON.stringify(x));
@@ -36,6 +37,13 @@
     casKt:adc.value.casKt??null,tasKt:adc.value.tasKt??null,mach:adc.value.mach??null,origin:adc.origin}:
     {source:null,quality:'UNKNOWN'};
   if(!adc)issues.push('ADC_SIGNAL_MISSING');
+  data.trainingFlightContext=valid(inputs['flightcontext.state'])?{
+   pressureAltitudeFt:inputs['flightcontext.state'].value.pressureAltitudeFt??null,
+   iasKt:inputs['flightcontext.state'].value.iasKt??null,
+   oatC:inputs['flightcontext.state'].value.oatC??null,
+   origin:inputs['flightcontext.state'].origin,
+   note:'TRAINING_REFERENCE_NOT_AN_ADC_INPUT'}:{quality:'UNKNOWN'};
+
   data.fuel=valid(fuel)?{totalKg:fuel.value.totalKg??null,totalLb:fuel.value.totalLb??null,
     source:fuel.topic,origin:fuel.origin}: {totalKg:null,totalLb:null,source:null,quality:'UNKNOWN'};
   if(!valid(fuel))issues.push('FUEL_SUMMATION_MISSING');
@@ -62,7 +70,7 @@
   data.guidance={routeEvidenceReady:ready,canCommandAircraft:false,authority:'ADVISORY_ONLY',
    reason:ready?'INPUT_EVIDENCE_READY_NO_ACTUATOR_AUTHORITY':'SOURCE_OR_ROUTE_NOT_VERIFIED'};
   return {schema:'B737_FMC_COMPUTED_V1',inputs:INPUTS.length,position:data.position,
-   radioUpdate:data.radioUpdate,airData:data.airData,fuel:data.fuel,fmcFeeds:data.fmcFeeds,
+   radioUpdate:data.radioUpdate,airData:data.airData,trainingFlightContext:data.trainingFlightContext,fuel:data.fuel,fmcFeeds:data.fmcFeeds,
    route:data.route,mcp:data.mcp,autoflight:data.autoflight,predictions:data.predictions,
    guidance:data.guidance,issues,sourceQuality:Object.fromEntries(INPUTS.map(t=>[t,inputs[t].quality]))};
  }
