@@ -151,6 +151,9 @@ function pair(box,y,left,right){
  row.append(l,r);box.appendChild(row);
 }
 function paint(box){
+ // FCOM 11.40.32 must remain the native DEP/ARR INDEX even if an optional
+ // private laboratory has loaded reference-only procedures.
+ if(state.page==='DEP_ARR')return;
  const page=state.page,f=state.stage6View||{};
  const plan=summaryPlan();
  if(page==='DEP_ARR'&&prior()){
