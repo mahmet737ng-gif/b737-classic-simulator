@@ -23,6 +23,33 @@ var state={geometry:JSON.parse(JSON.stringify(initial)),selected:"dcAmps",calibr
 var dcOptions=["STBY PWR","BAT BUS","BAT","TR1","TR2","TR3","TEST"];
 var acOptions=["STBY PWR","GRD PWR","GEN1","APU GEN","GEN2","INV","TEST"];
 var sim={model:null,mode:"engines",dc:"BAT",ac:"GEN1",galley:true,resid:false};
+var needlePos={},needleVelocity={},needleTargets={},needleFrame=0,needleFrameTime=null;
+function photoAngle(id,data){
+ var M=window.B737AcDcMeteringModel,entry=id==="cpsFreq"?"cps":id,value=data[id];
+ return id==="acVolts"?M.limitAngle("acVolts",M.angleForAcVolts(value,{mode:data.residualScale?"RESIDUAL":"NORMAL"})):M.limitAngle(entry,M.angleForIndication(entry,value));
+}
+function animateNeedles(ts){
+ needleFrame=0;
+ if(!state.overlay){needleFrameTime=null;return;}
+ var M=window.B737AcDcMeteringModel;
+ var dt=needleFrameTime===null?1/60:Math.max(0,Math.min(M.motion.maxStepSeconds,(ts-needleFrameTime)/1000));
+ needleFrameTime=ts;var moving=false;
+ ["dcAmps","cpsFreq","dcVolts","acVolts"].forEach(function(id){
+  var target=needleTargets[id],key=id==="cpsFreq"?"cps":id;
+  if(!Number.isFinite(target))return;
+  var pos=needlePos[id];if(!Number.isFinite(pos))pos=M.limitAngle(key,M.meters.find(function(m){return m.id===key;}).initialAngle);
+  var adv=M.advanceNeedle(pos,needleVelocity[id]||0,target,dt);
+  needlePos[id]=M.limitAngle(key,adv.angle);needleVelocity[id]=adv.velocity;
+  var node=document.querySelector('[data-needle="'+id+'"]');
+  if(node)node.setAttribute("transform","rotate("+needlePos[id].toFixed(6)+")");
+  if(!adv.done)moving=true;
+ });
+ if(moving)needleFrame=requestAnimationFrame(animateNeedles);
+ else needleFrameTime=null;
+}
+function scheduleNeedles(){
+ if(state.overlay&&!needleFrame)needleFrame=requestAnimationFrame(animateNeedles);
+}
 function log(line){var p=$("events");if(!p)return;var stamp=new Date().toLocaleTimeString();p.textContent="["+stamp+"] "+line+"\n"+p.textContent.slice(0,1600);}
 function status(msg,ok){var e=$("status");e.textContent=msg;e.classList.toggle("ok",!!ok);}
 function safeStore(){try{localStorage.setItem(STORAGE,JSON.stringify(state.geometry));}catch(err){log("Local storage unavailable: "+err.message);}}
@@ -77,12 +104,9 @@ function meter(id,data){
  if(!state.overlay)return base;
  var M=window.B737AcDcMeteringModel;
  var key=id==="cpsFreq"?"cps":id,original=M.meters.find(function(m){return m.id===key;});
- var value=data[id],ang=original?original.initialAngle:0;
- if(id==="acVolts"){
-  ang=M.angleForAcVolts(value,{mode:data.residualScale?"RESIDUAL":"NORMAL"});
- }else{
-  ang=M.angleForIndication(key,value);
- }
+ var angle=Number.isFinite(needlePos[id])?needlePos[id]:M.limitAngle(key,original.initialAngle);
+ needleTargets[id]=photoAngle(id,data);
+ needlePos[id]=angle;
  // Exactly the existing Unified needle asset. It is opt-in because the
  // untouched source photograph may already show a parked needle.
  var ratio=p.r/216;
@@ -90,7 +114,7 @@ function meter(id,data){
  clip.appendChild(e("rect",{x:-p.r-16,y:-p.r-16,width:2*(p.r+16),height:p.r+2}));
  base.appendChild(clip);
  var upper=e("g",{"clip-path":"url(#oh10-needle-window-"+id+")"});
- var blade=e("g",{transform:"rotate("+ang+")"});
+ var blade=e("g",{"data-needle":id,transform:"rotate("+angle+")"});
  blade.appendChild(e("image",{href:"../panel-mosaic-lab/cockpit/ac-dc-metering-needle.svg?v=MET-0001",x:-256*ratio,y:-256*ratio,width:512*ratio,height:512*ratio}));
  upper.appendChild(blade);base.appendChild(upper);
  return base;
@@ -152,7 +176,7 @@ function render(){
  g.appendChild(photoHotspot("battery"));
  g.appendChild(photoHotspot("galley"));
  g.appendChild(photoHotspot("residual"));
- showMarkers();drawCoords();
+ showMarkers();drawCoords();scheduleNeedles();
  ["dcAmps","cpsFreq","dcVolts","acVolts"].forEach(function(id){
   var out={"dcAmps":"dcamps","cpsFreq":"freq","dcVolts":"dcvolts","acVolts":"acvolts"}[id];
   $(out).textContent=data[id]===null?"—":data[id].toFixed(0);
@@ -210,7 +234,7 @@ $("artwork").addEventListener("pointerdown",function(ev){
 ["pointerup","pointercancel","pointerleave"].forEach(function(name){$("board").addEventListener(name,function(){if(sim.resid){sim.resid=false;render();}});});
 $("operate").onclick=function(){state.calibration=false;state.showMarkers=$("markers").checked;this.classList.add("active");$("calibrate").classList.remove("active");render();};
 $("calibrate").onclick=function(){state.calibration=true;state.showMarkers=$("markers").checked;this.classList.add("active");$("operate").classList.remove("active");render();};
-$("overlay").onchange=function(){state.overlay=this.checked;render();};
+$("overlay").onchange=function(){state.overlay=this.checked;if(!this.checked&&needleFrame){cancelAnimationFrame(needleFrame);needleFrame=0;needleFrameTime=null;}render();};
 $("markers").onchange=function(){state.showMarkers=this.checked;render();};
 $("zoom").oninput=function(){zoomSet(Number(this.value)/100);};
 $("zoomin").onclick=function(){zoomSet(state.scale+.1);};
