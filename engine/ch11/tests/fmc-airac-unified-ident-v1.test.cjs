@@ -92,3 +92,12 @@ test('Both CDU seats use the same session NAVDB bank but independent page and sc
   assert.ok(item.embeddedUrl.includes('AIRAC-2611-0001'));
  }
 });
+
+test('Legacy NAVDB overlay cannot replace authoritative bank data when new adapter is mounted',()=>{
+ const legacy=read('panel-mosaic-lab/cockpit/cdu-airac-bank-receiver-v1.js');
+ assert.match(legacy,/B737CDUAiracIdentAdapterV1/);
+ assert.match(legacy,/SUPERSEDED_BY_FMC_BANKS_V1/);
+ const stage=read('panel-mosaic-lab/cockpit/cdu-stage.html');
+ assert.ok(stage.indexOf('cdu-airac-ident-adapter-v1.js')<
+   stage.indexOf('cdu-airac-bank-receiver-v1.js'));
+});
