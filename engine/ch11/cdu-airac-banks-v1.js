@@ -84,7 +84,7 @@
    dateStart:resolved[slot].start,dateEndExclusive:resolved[slot].endExclusive,
    sourceSha256:resolved[slot].sourceSha256,bank:slot
   }:null;
-  return Object.freeze({schema:VERSION,currentCalendarCycle:resolved.effectiveCalendarCycle,
+  return Object.freeze({schema:VERSION,calendarIsNotFmcInstall:true,currentCalendarCycle:resolved.effectiveCalendarCycle,
    ACTIVE:signed('ACTIVE'),INACTIVE:signed('INACTIVE'),
    NAV_DATA:resolved.ACTIVE?{
     quality:'VALID',origin:'VERIFIED_NAV_DATABASE',value:'AIRAC'+resolved.ACTIVE.cycle,
