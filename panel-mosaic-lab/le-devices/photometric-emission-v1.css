@@ -1,0 +1,29 @@
+/* LE-EMISSION-0001: additive photometric color grade for existing inset lenses.
+ * Parent/source quadrilaterals, 26 input targets, geometry, switch and timings
+ * are owner-locked and untouched. Lens gradient and restrained glow only.
+ * This panel physically uses AMBER (TRANSIT) and GREEN (EXT/FULL EXT), not red.
+ */
+
+/* Lit amber lens: warm filament/LED core, rich amber middle, aged dark rim. */
+.b737-le-devices .b737-le-photolens-v2 linearGradient[id^="leph"][id$="a"] stop:nth-child(1) { stop-color:#fff3bd; }
+.b737-le-devices .b737-le-photolens-v2 linearGradient[id^="leph"][id$="a"] stop:nth-child(2) { stop-color:#ffd257; }
+.b737-le-devices .b737-le-photolens-v2 linearGradient[id^="leph"][id$="a"] stop:nth-child(3) { stop-color:#e99b22; }
+.b737-le-devices .b737-le-photolens-v2 linearGradient[id^="leph"][id$="a"] stop:nth-child(4) { stop-color:#74420e; }
+
+/* Lit green lens: warm-white lamp center diffused through saturated green glass. */
+.b737-le-devices .b737-le-photolens-v2 linearGradient[id^="leph"][id$="g"] stop:nth-child(1) { stop-color:#ddffd0; }
+.b737-le-devices .b737-le-photolens-v2 linearGradient[id^="leph"][id$="g"] stop:nth-child(2) { stop-color:#86ec8a; }
+.b737-le-devices .b737-le-photolens-v2 linearGradient[id^="leph"][id$="g"] stop:nth-child(3) { stop-color:#26aa51; }
+.b737-le-devices .b737-le-photolens-v2 linearGradient[id^="leph"][id$="g"] stop:nth-child(4) { stop-color:#134c2b; }
+
+/* Restrained bloom: source polygons were inset 4.1px; keep halo small enough
+ * to stay inside the real socket rather than lighting adjacent panel graphics.
+ * The locked driver still owns opacity=0 OFF and reduced opacity in DIM.
+ */
+.b737-le-devices .b737-le-photolens-v2 g[data-lens-id$="|TRANSIT"] > path:first-child {
+  filter:drop-shadow(0 0 1.45px rgba(255,190,57,.52));
+}
+.b737-le-devices .b737-le-photolens-v2 g[data-lens-id$="|EXT"] > path:first-child,
+.b737-le-devices .b737-le-photolens-v2 g[data-lens-id$="|FULL_EXT"] > path:first-child {
+  filter:drop-shadow(0 0 1.45px rgba(73,239,105,.48));
+}
