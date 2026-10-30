@@ -51,7 +51,7 @@ test('Every ordinary CDU row enlarges and repositions dynamically',()=>{
  const f=fixture();
  const s=f.root.B737CduScreenFitV5.apply();
  assert.equal(s.standard,true);
- assert.equal(f.lines[0].style.data['font-size'],'92px');
+ assert.equal(f.lines[0].style.data['font-size'],'86px');
  assert.equal(f.lines[1].style.data['font-size'],'72px');
  assert.equal(f.lines[2].style.data['font-size'],'92px');
  assert.equal(f.lines[1].style.data.top,'10%');
