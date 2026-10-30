@@ -8,6 +8,7 @@ on:
       - 'panel-mosaic-lab/cockpit/fmc-systems-bridge-v1.js'
       - 'panel-mosaic-lab/cockpit/cdu-embed.css'
       - 'panel-mosaic-lab/cockpit/tests/cdu-embed-typography-v2.test.cjs'
+      - 'panel-mosaic-lab/cockpit/cdu-font-diagnostics-v3.js'
       - 'panel-mosaic-lab/cockpit/cdu-stage.html'
       - 'panel-mosaic-lab/cockpit/assembly.json'
       - 'panel-mosaic-lab/cockpit/index.html'
@@ -46,5 +47,7 @@ jobs:
       - run: node --test engine/runtime/tests/avionics-sensor-ingress-v2.test.cjs
       - run: node --test engine/ch11/tests/fmc-systems-network-v1.test.cjs
       - run: node --test cdu-standalone-v6/tests/ch11-position-pages-v1.test.cjs
+      - run: node --check panel-mosaic-lab/cockpit/cdu-font-diagnostics-v3.js
+      - run: node --check panel-mosaic-lab/cockpit/app.js
       - run: node --test panel-mosaic-lab/cockpit/tests/cdu-embed-typography-v2.test.cjs
       - run: node tests/cdu-font-lock.test.cjs
