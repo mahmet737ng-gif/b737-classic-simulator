@@ -10,7 +10,7 @@ var $=function(id){return document.getElementById(id);};
 var STORAGE="b737-oh10-photo-geometry-v1";
 var initial={
  dcAmps:{x:308.453,y:281.608,r:141,type:"meter"},
- cpsFreq:{x:774.2,y:191.4,r:85,type:"meter"},
+ cpsFreq:{x:774.2,y:191.4,r:141,type:"meter"},
  dcVolts:{x:310.307,y:682.818,r:131,type:"meter"},
  acVolts:{x:785.143,y:702.386,r:143,type:"meter"},
  dcSelector:{x:306,y:1029,r:84,type:"rotary"},
