@@ -330,10 +330,11 @@
 
   function render(detail) {
     const selected = detail.resolved;
-    const family = selected.family.label;
+    const family = selected.aircraftModel.label;
+    const installedEngine = selected.engineVariant;
     const pressure = selected.pressurization.id;
     const instruments = selected.engineInstruments.id === 'EIS' ? 'EIS' : 'CONVENTIONAL';
-    byId('aircraftProfileHeader').textContent = family + ' · ' + pressure + ' · ' + instruments;
+    byId('aircraftProfileHeader').textContent = family + ' · ' + installedEngine.label + ' (' + installedEngine.rating + ')' + ' · ' + pressure + ' · ' + instruments;
     byId('activeAircraftFamily').textContent = family;
     byId('activePressurization').textContent = pressure;
     byId('activeEngineInstruments').textContent = selected.engineInstruments.label;
@@ -366,6 +367,30 @@
   store.subscribe(render);
   render({resolved: store.resolve()});
   updatePressureDiagnostics();
+
+  // Preserve the established 300/500 vs 400 family selection used by
+  // physical cockpit panels; select an exact 737 variant for the CDU IDENT.
+  form.querySelectorAll('input[name="aircraftFamily"]').forEach(input=>{
+    input.addEventListener('change',()=>{
+      if(!input.checked)return;
+      const selected=form.querySelector('input[name="aircraftModel"]:checked');
+      if(input.value==='B737-400'){
+        const model=form.querySelector('input[name="aircraftModel"][value="737-400"]');
+        if(model)model.checked=true;
+      }else if(!selected||selected.value==='737-400'){
+        const model=form.querySelector('input[name="aircraftModel"][value="737-300"]');
+        if(model)model.checked=true;
+      }
+    });
+  });
+  form.querySelectorAll('input[name="aircraftModel"]').forEach(input=>{
+    input.addEventListener('change',()=>{
+      if(!input.checked)return;
+      const family=input.value==='737-400'?'B737-400':'B737-300-500';
+      const control=form.querySelector('input[name="aircraftFamily"][value="'+family+'"]');
+      if(control)control.checked=true;
+    });
+  });
 
   function showSettings() {
     const profile = store.get();
