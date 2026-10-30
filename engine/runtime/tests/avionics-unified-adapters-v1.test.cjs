@@ -1,9 +1,10 @@
 'use strict';
 const {test}=require('node:test'),assert=require('node:assert/strict'),vm=require('node:vm'),fs=require('node:fs'),path=require('node:path');
-const Net=require('../avionics-data-network-v1.js'),Fmc=require('../../integration/avionics-fmc-computer-v1.js');
+const Net=require('../avionics-data-network-v1.js'),Fmc=require('../../integration/avionics-fmc-computer-v1.js'),
+ Sensor=require('../../integration/avionics-sensor-ingress-v2.js');
 function mount(){
  const events=new Map(),root={
-  B737AvionicsDataNetworkV1:Net,B737AvionicsFmcComputerV1:Fmc,
+  B737AvionicsDataNetworkV1:Net,B737AvionicsFmcComputerV1:Fmc,B737AvionicsSensorIngressV2:Sensor,
   console:{warn(){},error(x){throw Error(x)}},
   document:{readyState:'complete',addEventListener(){}},
   addEventListener(type,cb){if(!events.has(type))events.set(type,[]);events.get(type).push(cb);},
@@ -60,4 +61,21 @@ test('external ADC publishes independently and cannot overwrite the IRS or FMC o
  a.publish('airdata.adc1',{pressureAltitudeFt:4500,casKt:210},{origin:'SIMULATOR_TELEMETRY'});
  assert.equal(n.getFmcInputs().airData.source,'airdata.adc1');
  assert.equal(n.getFmcInputs().airData.casKt,210);
+});
+
+test('Unified sensor ingest accepts installed device channel and propagates to FMC independently',()=>{
+ const n=mount().B737UnifiedAvionicsNetworkV1;
+ n.configureSensorIngress({sourceId:'XPLANE_115',equipment:{adc:[1,2],gps:[1],vor:[],dme:[1]}});
+ assert.equal(n.getSensorIngressDiagnostics().configured,true);
+ const report=n.ingestSensorFrame({schema:'B737_SENSOR_FRAME_V2',sourceId:'XPLANE_115',
+  sourceTimestampMs:Date.now(),sequence:1,sensors:{
+   adc1:{valid:true,pressureAltitudeFt:4500,casKt:215,mach:0.59},
+   gps1:{valid:true,fixValid:true,lat:35.63,lon:51.33},
+   dme1:{valid:true,stationIdent:'THR',distanceNm:12.8}
+  }});
+ assert.equal(report.accepted,true);
+ assert.equal(n.getSignal('airdata.adc1').value.casKt,215);
+ assert.equal(n.getFmcInputs().position.source,'navigation.gps1');
+ assert.equal(n.getFmcInputs().radioUpdate.fixComputed,false);
+ assert.throws(()=>n.connectExternal('ADC'),/OWNER_ALREADY_CONNECTED/);
 });
