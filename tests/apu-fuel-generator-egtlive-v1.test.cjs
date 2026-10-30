@@ -110,19 +110,19 @@ test('Unified EGT pointer tracks ECU start/steady/loads with exact frozen sprite
  };
  vm.runInNewContext(file,{window,CustomEvent:class{}});
  const bridge=window.B737APULiveMetersV1;
- assert.equal(bridge.bearingForEGT(0),-127);
- assert.equal(bridge.bearingForEGT(1000),127);
+ assert.equal(bridge.bearingForEGT(0),-241.5);
+ assert.equal(bridge.bearingForEGT(800),0.8);
  const model=require('../panel-mosaic-lab/cockpit/apu-egt-needle-model.js');
  assert.equal(bridge.bearingForEGT(0),model.needle.initialAngle,'Cold pointer must not jump at startup');
  assert.equal(bridge.bearingForEGT(-40),model.needle.initialAngle,'Negative ambient is clipped to cold end');
- assert.equal(bridge.bearingForEGT(1400),127,'Out-of-range temperatures clamp to hot end');
- for(const [lo,hi] of [[0,20],[20,390],[390,620],[620,950],[950,1000]])
+ assert.equal(bridge.bearingForEGT(1400),0.8,'Out-of-range temperatures clamp to photographed 8 mark');
+ for(const [lo,hi] of [[0,20],[20,390],[390,620],[620,750],[750,800]])
   assert.ok(bridge.bearingForEGT(hi)>bridge.bearingForEGT(lo),'EGT rising '+lo+' -> '+hi+' must rotate clockwise');
 
  assert.ok(bridge.bearingForEGT(620)>bridge.bearingForEGT(390),'Increasing EGT must rotate CLOCKWISE');
  handlers['b737:unified-ecu-observation']({detail:{apu:{phase:'STARTING',egtC:620,rpmPct:60,generator:{ready:false,voltageV:0,frequencyHz:0}}}});
  assert.equal(angles.length,1);
- assert.ok(angles[0]>0,'620°C APU EGT must be right of the 0° upright mark');
+ assert.ok(angles[0]>bridge.bearingForEGT(390),'620°C pointer must be clockwise beyond 390°C');
  const snap=bridge.snapshot();
  assert.equal(snap.egtC,620);assert.equal(snap.voltsV,0);
  handlers['b737:unified-ecu-observation']({detail:{apu:{phase:'READY',egtC:390,rpmPct:95.5,generator:{ready:true,voltageV:115,frequencyHz:400,currentEstimatedA:40}}}});
@@ -141,6 +141,66 @@ test('Actual OH09 crossfeed detent is connected to FuelNetwork with battery-bus 
  assert.match(src,/e\.data\.rotaries\?\.crossfeed/);
  assert.match(src,/e\.data\.event\?\.id==='crossfeed'/);
  assert.match(src,/chain\.get\(\)\.electrical\.battery!==true/);
+});
+test('Photo 0..8 x100 EGT major graduations are monotone and match supplied reference',()=>{
+ const text=fs.readFileSync(path.join(__dirname,'../panel-mosaic-lab/cockpit/apu-live-meter-unified-v1.js'),'utf8');
+ const window={addEventListener(){}};
+ vm.runInNewContext(text,{window});
+ const api=window.B737APULiveMetersV1;
+ const printed=[-241.5,-212.5,-183.8,-154.1,-121.1,-89.7,-59,-28.5,0.8];
+ for(let number=0;number<=8;number++){
+  assert.ok(Math.abs(api.bearingForEGT(number*100)-printed[number])<.00001,'Printed major '+number);
+  assert.ok(Math.abs(api.bearingForEGT(number*100+50)-printed[Math.min(8,number+1)]/2-printed[number]/2)<.0001||number===8,
+   'Interpolate minor ticks at '+number+'.5');
+ }
+ assert.equal(api.bearingForEGT(800),api.bearingForEGT(900),'Over-range EGT must stop on 8');
+ assert.ok(api.bearingForEGT(50)>api.bearingForEGT(0));
+ assert.ok(api.bearingForEGT(50)<api.bearingForEGT(100));
+});
+test('Shutdown EGT remains hot then crosses 50°C and cools much more slowly',()=>{
+ const s=sim();s.battery(true);s.startAPU();s.advance(1400);
+ const ready=s.get().apu.egtC;assert.ok(ready>380);
+ s.chain.event({id:'apu-start',kind:'toggle',next:'OFF'});
+ const stopped=s.get();
+ assert.equal(stopped.apu.phase,'STOPPING');
+ assert.ok(stopped.apu.egtC>=ready-1,'APU shutdown must not jump to 20°C');
+ assert.equal(stopped.apu.generator.ready,false);
+ s.advance(400);
+ assert.equal(s.get().apu.phase,'OFF');
+ s.advance(120000);
+ const fast=s.get().apu.egtC;
+ assert.ok(fast>50&&fast<160,'Fast thermal decay after 2 minutes must still be above 50°C');
+ s.advance(120000);
+ const threshold=s.get().apu.egtC;
+ assert.ok(threshold>47&&threshold<50,'Two-stage law has passed smoothly through 50°C after four minutes');
+ const before=threshold;
+ s.coolAPU(120000);
+ const slow=s.get().apu.egtC;
+ assert.ok(slow<before&&slow>45,'Below 50°C the 2-minute drop should only be a few degrees');
+ assert.ok(ready-fast>before-slow+100,'Above 50°C cooling should be much faster');
+ assert.equal(s.get().apu.generator.voltageV,0,'Shutdown remains electrically disconnected');
+});
+test('Analytic cooling is independent of clock step and crosses at 50°C without a jump',()=>{
+ const B=ECU,initial=390;
+ assert.equal(B.apuCoolingStep(20,10000),20);
+ assert.equal(B.apuCoolingStep(50,0),50);
+ assert.throws(()=>B.apuCoolingStep(390,-1));
+ let a=initial;
+ for(let i=0;i<240;i++)a=B.apuCoolingStep(a,1000);
+ let b=initial;b=B.apuCoolingStep(b,120000);b=B.apuCoolingStep(b,120000);
+ assert.ok(Math.abs(a-b)<.00001,'1000ms and 120000ms integration must agree');
+ const afterFast=B.apuCoolingStep(51,10000);
+ const afterSlow=B.apuCoolingStep(50,10000);
+ assert.ok(afterFast>=afterSlow&&afterFast<=51);
+ const threeMin=B.apuCoolingStep(B.apuCoolingStep(390,120000),60000);
+ assert.ok(threeMin<50&&threeMin>49,'Three-minute trace has just entered the slow cooling phase');
+});
+test('APU EGT passive cooling bridge continues after all engines stop without heavy 10Hz ECU loop',()=>{
+ const source=fs.readFileSync(path.join(__dirname,'../panel-mosaic-lab/cockpit/isn-cockpit.js'),'utf8');
+ assert.match(source,/ecu\.coolAPU\(slice\)/);
+ assert.match(source,/if\(coolingElapsed<1000\)return/);
+ assert.match(source,/ecu\.apuThermalEgtC/);
+ assert.match(source,/lastPassiveCoolingAt=now/);
 });
 test('Existing APU AC amp blade is driven by source-gated ATA24 current',()=>{
  const src=fs.readFileSync(path.join(__dirname,'../panel-mosaic-lab/cockpit/electrical-demand-live-unified-v1.js'),'utf8');

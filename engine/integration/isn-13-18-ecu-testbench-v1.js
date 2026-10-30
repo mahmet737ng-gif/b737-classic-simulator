@@ -20,6 +20,8 @@ const CONFIG=Object.freeze({oilPressureLampOnPsi:11.75,oilPressureLampOffPsi:13,
  oilTempCooldownMs:240000,oilInitialQuantityPct:85,
  oilLeakLossPctPerSec:0.20,oilNaturalLossPctPerHour:0.02,
  starterAirTrainingPsi:30,apuReadyEGTC:390,apuFuelKgHr:110,
+ // Educational thermodynamic inertia (not an airframe/APU empirical curve).
+ apuEGTChangeoverC:50,apuCoolFastTauMs:70000,apuCoolTailTauMs:1200000,
  engineN1WindDownMs:5200,engineN2WindDownMs:7200,engineEGTWindDownMs:12000,
  maxStepMs:250});
 const finite=x=>typeof x==='number'&&Number.isFinite(x);
@@ -74,7 +76,23 @@ function oilStep(previous,{n2Percent=0,throttle=0,engineRunning=false}={},dtMs){
    CONFIG.oilAmbientTempC+(CONFIG.apuStartPeakEGTC-CONFIG.oilAmbientTempC)*ease(p/peakAt):
    CONFIG.apuStartPeakEGTC+(CONFIG.apuReadyEGTC-CONFIG.apuStartPeakEGTC)*ease((p-peakAt)/(1-peakAt)));
  }
- function initialCoast(){return {n1:0,n2:0,egt:CONFIG.oilAmbientTempC,lastRunning:false};}
+ // Shutdown cool-down is independent of fuel/battery/electrical buses.
+ // Two analytic exponential stages preserve real elapsed time and yield the
+ // same result for 100ms ticks, throttled 1s ticks or tab-resume catch-up.
+ function apuCoolingStep(egtC,dtMs){
+  if(!finite(egtC)||!finite(dtMs)||dtMs<0||dtMs>120000)
+   throw Error('Valid APU EGT and 0..120000ms cooling duration required');
+  const ambient=CONFIG.oilAmbientTempC,transition=CONFIG.apuEGTChangeoverC;
+  if(egtC<=ambient)return ambient;
+  if(egtC<=transition)return smooth(egtC,ambient,dtMs,CONFIG.apuCoolTailTauMs);
+  const afterFast=smooth(egtC,ambient,dtMs,CONFIG.apuCoolFastTauMs);
+  if(afterFast>=transition)return afterFast;
+  // Crossed 50°C during this tick. Integrate exactly to the crossing
+  // then use the slower stage for the remaining fraction of this same tick.
+  const fastMs=CONFIG.apuCoolFastTauMs*Math.log((egtC-ambient)/(transition-ambient));
+  return smooth(transition,ambient,dtMs-fastMs,CONFIG.apuCoolTailTauMs);
+ }
+function initialCoast(){return {n1:0,n2:0,egt:CONFIG.oilAmbientTempC,lastRunning:false};}
 function coastStep(prev,{runningN1=null,n2=null,egtC=null,phase='OFF'}={},dtMs){
  const s={...prev};
  if(phase==='RUNNING'&&finite(runningN1)&&finite(n2)){
@@ -107,6 +125,7 @@ class Testbench{
    this.apuConsumers=Object.fromEntries(Object.keys(LoadDynamics.CATALOG).map(id=>[id,false]));
    this.apuLoadState=LoadDynamics.initial();
    this.apuPhysicalAmpsA=0;
+   this.apuThermalEgtC=CONFIG.oilAmbientTempC;
   this.aircraft={pressureAltitudeFt:0,oatC:15,iasKt:0,massKg:55000,onGround:true};
   this.chain.synchronize({toggles:{'apu-start':'OFF','bleed-apu':'OFF','bleed-eng-1':'OFF','bleed-eng-2':'OFF',
    'pack-l':'OFF','pack-r':'OFF','isolation-valve':'OPEN'},
@@ -209,6 +228,15 @@ class Testbench{
  setStartFault(engine,key,on){checkEngine(engine);this.chain.setTrainingFault(engine,key,on);
   this.log('INJECT_START',{engine,key,on});return this.get();}
  shutdown(engine){checkEngine(engine);this.fuelLever(engine,'CUTOFF');return this.get();}
+ // Lightweight passive heat decay while every engine and the APU is off:
+ // avoids running the full ECU/fuel/electrical simulator for 20 minutes.
+ coolAPU(ms){
+  if(!finite(ms)||ms<0||ms>120000)throw Error('Invalid passive APU cooling interval');
+  if(['READY','STARTING'].includes(this.chain.get().phase.apu))return this.get();
+  this.apuThermalEgtC=apuCoolingStep(this.apuThermalEgtC,ms);
+  this.elapsedMs+=ms;
+  return this.get();
+ }
  advance(ms){if(!finite(ms)||ms<0||ms>120000)throw Error('Invalid step duration');
   let remaining=ms;
   while(remaining>0){const dt=Math.min(remaining,CONFIG.maxStepMs);remaining-=dt;
@@ -228,6 +256,7 @@ class Testbench{
      switches:this.apuConsumers,bleedValveOpen:snap.bleed.apuBleedValveOpen,
      pumpSnapshot:this.start.core.pack.get(),physicalSourceAmpsA:this.apuPhysicalAmpsA});
     this.apuLoadState=LoadDynamics.step(this.apuLoadState,load,dt);
+    this.apuThermalEgtC=this.apuLoadState.egtC;
     // ISN-12 burns the estimated baseline 110 kg/h. Charge only the
     // simulated excess from electrical/pneumatic load, with no double count.
     const excessKgHr=Math.max(0,this.apuLoadState.fuelFlowKgHr-this.modules.FuelRuntime.approx.apuFuelKgHr);
@@ -239,7 +268,15 @@ class Testbench{
        this.chain.apuFuelStarve('APU_LOAD_FUEL_EXHAUSTED');
      }
     }
-   }else this.apuLoadState=LoadDynamics.initial();
+   }else{
+    this.apuLoadState=LoadDynamics.initial();
+    if(snap.phase.apu==='STARTING'){
+     const since=this.apuStartMs===null?0:Math.max(0,this.elapsedMs-this.apuStartMs);
+     const progress=clip((since-this.chain.timing.apuDoorMs)/
+      (this.chain.timing.apuReadyMs-this.chain.timing.apuDoorMs),0,1);
+     this.apuThermalEgtC=apuStartEGT(progress);
+    }else this.apuThermalEgtC=apuCoolingStep(this.apuThermalEgtC,dt);
+   }
   }
   return this.get();}
  get(){const base=this.core.get(),snap=this.chain.get();
@@ -288,8 +325,9 @@ class Testbench{
    const apuLoad=LoadDynamics.project(this.apuLoadState,apuDemand);
    const apuRPM=apuPhase==='READY'?apuLoad.rpmPct:
     apuPhase==='STARTING'?5+(CONFIG.apuRatedRpmPct-5)*ramp:0;
+   // Never snap APU EGT to ambient on OFF/STOPPING/FUEL_STARVATION.
    const apuEGT=apuPhase==='READY'?apuLoad.egtC:
-    apuPhase==='STARTING'?apuStartEGT(apuProgress):CONFIG.oilAmbientTempC;
+    apuPhase==='STARTING'?apuStartEGT(apuProgress):this.apuThermalEgtC;
    // APU rated generator capability does not close the GEN-to-BUS switch.
    const genReady=apuPhase==='READY'&&apuRPM>=CONFIG.apuGeneratorReadyRpmPct&&!this.apuFaults.generatorFailure;
    const generator={ready:genReady,voltageV:genReady?CONFIG.apuGenVoltageV:0,
@@ -322,5 +360,5 @@ class Testbench{
     'UNIFIED_APU_NEEDLES_USE_TRAINING_CALIBRATION_NOT_AIRCRAFT_CERTIFIED']};
  }
 }
-return Object.freeze({SCHEMA,ORIGIN,CONFIG,oilInitial,oilStep,hydraulicPressure,apuStartEGT,coastStep,Testbench});
+return Object.freeze({SCHEMA,ORIGIN,CONFIG,oilInitial,oilStep,hydraulicPressure,apuStartEGT,apuCoolingStep,coastStep,Testbench});
 });
