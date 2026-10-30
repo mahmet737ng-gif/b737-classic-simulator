@@ -289,17 +289,31 @@
   send({sequence,accepted:result.accepted,reason:result.reason||null});
   render();
  });
+ // OH09 rotary is the REAL CROSSFEED switch; only the shared FuelNetwork
+ // owns the valve's flow topology. The rotor graphic and detents are frozen.
+ function observeCrossfeed(detent){
+  if(!['CLOSED','OPEN'].includes(detent))return false;
+  if(ecu.core.fuel.crossfeed===detent)return false;
+  // Battery bus is required to motor the valve; an unpowered knob cannot
+  // silently change the fuel distribution manifold.
+  if(chain.get().electrical.battery!==true)return false;
+  ecu.core.fuel.setCrossfeed(detent);ecu.core.refreshFuelDelivery();return true;
+ }
  window.addEventListener('message',e=>{
   if(e.origin!==location.origin||e.source!==byId('overheadFrame')?.contentWindow||e.data?.type!=='b737:cockpit-overhead')return;
   try{
    if(e.data.kind==='controls-state'){
     lastPhysicalPacket=e.data;
     liveGateway.synchronize(mergeOwnerGuards(e.data));
+    observeCrossfeed(e.data.rotaries?.crossfeed);
     for(const event of pendingEvents.splice(0))liveGateway.dispatch(event);
     render();
    }else if(e.data.kind==='control-event'){
-    if(!liveGateway.initialized){if(pendingEvents.length<50)pendingEvents.push(e.data.event);}
-    else liveGateway.dispatch(e.data.event);
+    if(e.data.event?.id==='crossfeed'){
+     observeCrossfeed(e.data.event.next);
+    }else if(!liveGateway.initialized){
+     if(pendingEvents.length<50)pendingEvents.push(e.data.event);
+    }else liveGateway.dispatch(e.data.event);
     render();
    }
   }catch(error){byId('isnError').textContent='خطای ارتباط ISN: '+error.message;}
