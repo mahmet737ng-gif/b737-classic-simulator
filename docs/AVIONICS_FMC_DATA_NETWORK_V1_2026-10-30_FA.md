@@ -22,6 +22,10 @@
 | CDU | crew.flightplan | متصل | دادهٔ مشترک دو CDU از bridge قبلی؛ تایید LEGS جداگانه |
 | ENGINE | propulsion.engine1/engine2 | متصل | ISN ECU مدل آموزشی |
 | FUEL | fuel.quantity | متصل به مخازن **آموزشی** | جمع دقیق مدل main1+main2+center، نه خروجی Fuel Summation Unit واقعی |
+| FUEL | fuel.pumps | متصل به مشاهده‌های ISN | وضعیت پمپ‌های سوخت/هیدرولیک در بانک آموزشی، بدون ادعای مسیر CB |
+| FLIGHT_CONTEXT | flightcontext.state | متصل | IAS/Altitude/OAT مدل آموزشی؛ صراحتاً **نه ADC** |
+| APU | apu.state | متصل | RPM، EGT و وضعیت ژنراتور آموزشی |
+| HYDRAULICS | hydraulics.state | متصل | فشار مدل‌شدهٔ Engine-driven، نه گیج کالیبره‌شدهٔ هواپیما |
 | PNEUMATICS | pneumatics.state | جزئی | وضعیت discrete bleed از Engine Start Chain؛ فشار duct نامعلوم |
 | ANTIICE | antiice.state | جزئی | Window Heat و TAT Heater Output؛ Engine/Wing Anti-Ice نامعلوم |
 | AIRGROUND | aircraft.airground | متصل به مدل آموزشی | ECU Flight Context؛ سنسور Air/Ground واقعی مدل نشده |
@@ -76,6 +80,7 @@ adc.publish('airdata.adc1', {
 ### منطق FMC در نسخهٔ حاضر
 - GPS Position Valid اولویت دارد؛ در صورت فقدان دادهٔ GPS معتبر، IRS سالم سمت چپ یا راست می‌تواند مرجع موقعیت شود.
 - VOR/DME فقط `radioUpdate.availableCandidates` ارائه می‌کنند؛ Radio Fix بدون ایستگاه/هندسه/آنتن/ترتیب معتبر محاسبه نمی‌شود.
+- `flightcontext.state` برای اطلاع مصرف‌کننده‌ها از پارامترهای سناریوی تمرینی است و جایگزین `airdata.adc1/2` نمی‌شود.
 - عدم تأیید Feed، Route LEGS یا Position موجب غیرفعال شدن **شواهد آمادگی** می‌شود، نه اجرای فرمان پروازی.
 - بازخورد A/T و AFDS فقط وضعیت و مدهاست؛ مسیر Control از FMC قبلی و مجوزهایش جدا و محافظت‌شده باقی مانده.
 - Fuel Prediction، N1 Target و Top of Descent در این شبکه `null` می‌مانند تا جدول‌های AFM و دادهٔ معتبر برای عملکرد محاسباتی متصل شوند.
