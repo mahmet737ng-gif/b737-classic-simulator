@@ -1,0 +1,43 @@
+name: Private NAVDATA public bridge regression
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - feature/private-navdata-pages-2610-20261031
+    paths:
+      - 'navigation/navdata_public_bridge_v1.py'
+      - 'navigation/navdata_catalog_v1.py'
+      - 'navigation/tests/test_navdata_public_bridge_v1.py'
+      - 'navigation/tests/test_navdata_catalog_v1.py'
+      - 'panel-mosaic-lab/cockpit/navdata-public-connect-v1.js'
+      - 'panel-mosaic-lab/cockpit/index.html'
+      - 'cdu-standalone-v6/stage6-selector.js'
+      - 'cdu-standalone-v6/tests/stage6-public-bridge-v1.test.cjs'
+      - '.github/workflows/navdata-public-bridge-v1.yml'
+permissions:
+  contents: read
+jobs:
+  safe-public-private-bridge:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Python private-catalog synthetic integrity checks
+        run: python -m unittest discover -s navigation/tests -p 'test_navdata_catalog_v1.py' -v
+      - name: Python local gateway authorization, CORS and PNA tests
+        run: python -m unittest discover -s navigation/tests -p 'test_navdata_public_bridge_v1.py' -v
+      - name: Native CDU isolation + public bridge tests
+        run: |
+          node --test cdu-standalone-v6/tests/stage6-public-bridge-v1.test.cjs
+          node cdu-standalone-v6/tests/stage6-public-isolation.test.cjs
+      - name: Syntax and runtime isolation
+        run: |
+          node --check panel-mosaic-lab/cockpit/navdata-public-connect-v1.js
+          node --check cdu-standalone-v6/stage6-selector.js
