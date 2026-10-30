@@ -157,7 +157,7 @@ test('Photo 0..8 x100 EGT major graduations are monotone and match supplied refe
  assert.ok(api.bearingForEGT(50)>api.bearingForEGT(0));
  assert.ok(api.bearingForEGT(50)<api.bearingForEGT(100));
 });
-test('Shutdown EGT remains hot then crosses 50°C and cools much more slowly',()=>{
+test('Shutdown EGT reaches 50°C within 40 seconds, then cools very slowly',()=>{
  const s=sim();s.battery(true);s.startAPU();s.advance(1400);
  const ready=s.get().apu.egtC;assert.ok(ready>380);
  s.chain.event({id:'apu-start',kind:'toggle',next:'OFF'});
@@ -165,19 +165,15 @@ test('Shutdown EGT remains hot then crosses 50°C and cools much more slowly',()
  assert.equal(stopped.apu.phase,'STOPPING');
  assert.ok(stopped.apu.egtC>=ready-1,'APU shutdown must not jump to 20°C');
  assert.equal(stopped.apu.generator.ready,false);
- s.advance(400);
+ s.advance(400); // STOPPING -> OFF; 0.4s of the 40s limit has elapsed
  assert.equal(s.get().apu.phase,'OFF');
- s.advance(120000);
- const fast=s.get().apu.egtC;
- assert.ok(fast>50&&fast<160,'Fast thermal decay after 2 minutes must still be above 50°C');
- s.advance(120000);
- const threshold=s.get().apu.egtC;
- assert.ok(threshold>47&&threshold<50,'Two-stage law has passed smoothly through 50°C after four minutes');
- const before=threshold;
+ s.coolAPU(39600);
+ const at40=s.get().apu.egtC;
+ assert.ok(at40<=50&&at40>45,'Even a hot APU must reach 50°C within 40 seconds');
+ const before=at40;
  s.coolAPU(120000);
  const slow=s.get().apu.egtC;
- assert.ok(slow<before&&slow>45,'Below 50°C the 2-minute drop should only be a few degrees');
- assert.ok(ready-fast>before-slow+100,'Above 50°C cooling should be much faster');
+ assert.ok(slow<before&&slow>before-4,'Below 50°C the 2-minute drop should only be a few degrees');
  assert.equal(s.get().apu.generator.voltageV,0,'Shutdown remains electrically disconnected');
 });
 test('Analytic cooling is independent of clock step and crosses at 50°C without a jump',()=>{
@@ -191,9 +187,14 @@ test('Analytic cooling is independent of clock step and crosses at 50°C without
  assert.ok(Math.abs(a-b)<.00001,'1000ms and 120000ms integration must agree');
  const afterFast=B.apuCoolingStep(51,10000);
  const afterSlow=B.apuCoolingStep(50,10000);
- assert.ok(afterFast>=afterSlow&&afterFast<=51);
+ assert.ok(afterFast<afterSlow&&afterFast<51,'Crossing 50°C during a tick must transition continuously to the slow tail');
+ for(const hot of [390,620,800]){
+  const crossingMs=B.CONFIG.apuCoolFastTauMs*Math.log((hot-20)/(50-20));
+  assert.ok(crossingMs<=40000,'EGT '+hot+'°C must reach 50°C within 40 seconds');
+  assert.ok(B.apuCoolingStep(hot,40000)<=50,'40 seconds from '+hot+'°C must be at or below 50°C');
+ }
  const threeMin=B.apuCoolingStep(B.apuCoolingStep(390,120000),60000);
- assert.ok(threeMin<50&&threeMin>49,'Three-minute trace has just entered the slow cooling phase');
+ assert.ok(threeMin>45&&threeMin<48,'Three-minute trace remains in the slow cooling tail');
 });
 test('APU EGT passive cooling bridge continues after all engines stop without heavy 10Hz ECU loop',()=>{
  const source=fs.readFileSync(path.join(__dirname,'../panel-mosaic-lab/cockpit/isn-cockpit.js'),'utf8');
