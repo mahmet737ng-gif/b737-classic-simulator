@@ -1,0 +1,29 @@
+name: Window Heat OH15 live cold-dark regression
+on:
+  push:
+    branches: [fix/window-heat-dark-no-blink-20261031]
+  pull_request:
+    paths:
+      - 'engine/systems/window-heat-v1.js'
+      - 'panel-mosaic-lab/cockpit/window-heat-unified-v1.js'
+      - 'panel-mosaic-lab/cockpit/index.html'
+      - 'tests/window-heat-*.test.cjs'
+      - '.github/workflows/window-heat-dark-regression.yml'
+permissions:
+  contents: read
+jobs:
+  cold-dark:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Validate source-gated Window Heat and 60-second OVHT behavior
+        run: |
+          node --check panel-mosaic-lab/cockpit/window-heat-unified-v1.js
+          node --test tests/window-heat-unified-wiring.test.cjs tests/window-heat-sp3-sequence.test.cjs tests/window-heat-test-lab-access.test.cjs tests/antiice-live-lab-v2.test.cjs
+      - name: Preserve frozen panel and guarded-switch geometry
+        run: |
+          python3 panel-mosaic-lab/verify-final-overhead.py
+          python3 panel-mosaic-lab/cockpit/verify-guard-redzone.py --negative-self-test
+          python3 panel-mosaic-lab/cockpit/verify-irs-complete-redzone-v1.py --negative-self-test
