@@ -49,8 +49,10 @@
   createSheen(definitions,prefix+'s');
   for(const group of groups){
    const children=[...group.children].filter(el=>el.localName==='path');
-   if(children.length!==2)return;
-   const [face,sheen]=children;
+   if(children.length!==2&&children.length!==3)return;
+   // V3 owner-authorized optical correction adds a permanent OFF glass path.
+   // Keep dark glass untouched; only recolor live face and its reflection.
+   const [face,sheen]=children.length===3?children.slice(1):children;
    const amber=group.getAttribute('data-lens-id')?.endsWith('|TRANSIT');
    face.setAttribute('fill','url(#'+prefix+(amber?'a':'g')+')');
    sheen.setAttribute('fill','url(#'+prefix+'s)');
