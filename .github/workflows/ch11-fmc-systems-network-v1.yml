@@ -14,6 +14,10 @@ on:
       - 'panel-mosaic-lab/cockpit/tests/cdu-screen-fit-v5.test.cjs'
       - 'panel-mosaic-lab/cockpit/cdu-font-diagnostics-v5.js'
       - 'panel-mosaic-lab/cockpit/cdu-screen-fit-v5.js'
+      - 'engine/ch11/cdu-24-column-metrics-v1.js'
+      - 'engine/ch11/tests/cdu-24-column-grid-v1.test.cjs'
+      - 'panel-mosaic-lab/cockpit/cdu-screen-fit-v6.js'
+      - 'panel-mosaic-lab/cockpit/cdu-font-diagnostics-v6.js'
       - 'panel-mosaic-lab/cockpit/tests/cdu-screen-fit-v4.test.cjs'
       - 'panel-mosaic-lab/cockpit/cdu-stage.html'
       - 'panel-mosaic-lab/cockpit/assembly.json'
@@ -60,6 +64,10 @@ jobs:
       - run: node --check panel-mosaic-lab/cockpit/cdu-screen-fit-v5.js
       - run: node --check panel-mosaic-lab/cockpit/cdu-font-diagnostics-v5.js
       - run: node --test panel-mosaic-lab/cockpit/tests/cdu-screen-fit-v5.test.cjs
+      - run: node --check engine/ch11/cdu-24-column-metrics-v1.js
+      - run: node --check panel-mosaic-lab/cockpit/cdu-screen-fit-v6.js
+      - run: node --check panel-mosaic-lab/cockpit/cdu-font-diagnostics-v6.js
+      - run: node --test engine/ch11/tests/cdu-24-column-grid-v1.test.cjs
       - run: node --check panel-mosaic-lab/cockpit/app.js
       - run: node --test panel-mosaic-lab/cockpit/tests/cdu-embed-typography-v2.test.cjs
       - run: node tests/cdu-font-lock.test.cjs
