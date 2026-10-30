@@ -9,6 +9,11 @@
  let network=model.createState(),lastRouteSig='',lastMcpEvidence='INITIAL',lastPower='UNKNOWN';
  const seatState=new Map();const now=()=>performance.now();
  const emit=()=>{
+  for(const seat of ['CAPT','FO']){
+   const frame=document.getElementById('cduFrame'+seat);
+   const unit='CDU_'+seat;
+   if(frame?.contentWindow)frame.contentWindow.postMessage({type:'b737:fmc-cdu-power',seat,feed:network.power[unit].feed,reason:network.power[unit].feed==='ABSENT'?'CONFIRMED_POWER_LOSS':'FEED_NOT_CONFIRMED'},location.origin);
+  }
   const out={revision:network.revision,power:network.power,
    route:network.route,irs:network.irs,guidance:network.guidance,
    recovery:network.recovery,breakerCandidates:model.BREAKERS};
@@ -43,7 +48,13 @@
   }
  }
  function receive(e){
-  if(e.origin!==location.origin||e.data?.type!=='b737:fmc-cdu-snapshot')return;
+  if(e.origin!==location.origin)return;
+  if(e.data?.type==='b737:fmc-cdu-power-ready'){
+   const seat=e.data.seat,frame=document.getElementById('cduFrame'+seat);
+   if(['CAPT','FO'].includes(seat)&&frame?.contentWindow===e.source)emit();
+   return;
+  }
+  if(e.data?.type!=='b737:fmc-cdu-snapshot')return;
   const d=e.data,frame=document.getElementById('cduFrame'+d.seat);
   if(!['CAPT','FO'].includes(d.seat)||!frame||e.source!==frame.contentWindow)return;
   seatState.set(d.seat,d);
@@ -68,7 +79,7 @@
    const target=evaluated==='ABSENT'?'ABSENT':'UNKNOWN';
    if(network.power[unit].feed!==target)
     transition({type:'FEED',unit,evidence:target,nowMs:now(),
-     provenance:target==='ABSENT'?'ALL_POWER_BUSES_PROVEN_ABSENT':'DIRECT_VERIFIED_EQUIPMENT_FEED'});
+     provenance:target==='ABSENT'?'ALL_POWER_BUSES_PROVEN_ABSENT':'UPSTREAM_POWER_RESTORED_FEED_UNKNOWN'});
   }
   transmitToMCP();
  }
