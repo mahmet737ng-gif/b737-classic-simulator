@@ -50,7 +50,7 @@ test('Unified publishes known live/training models and leaves actual ADC and GPS
  assert.equal(n.getFmcInputs().airData.quality,'UNKNOWN');
  assert.equal(n.getFmcInputs().guidance.canCommandAircraft,false);
  assert.equal(w.intervalMs,250);
- assert.deepEqual(n.getDiagnostics().adapterErrors,[]);
+ assert.equal(n.getDiagnostics().adapterErrors.length,0);
 });
 test('external ADC publishes independently and cannot overwrite the IRS or FMC owner',()=>{
  const n=mount().B737UnifiedAvionicsNetworkV1;const a=n.connectExternal('ADC');
