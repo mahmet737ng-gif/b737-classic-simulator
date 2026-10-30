@@ -17,6 +17,7 @@
   if(HISTORY.length>100)HISTORY.shift();
  }
  function normalValue(result){
+  if(result.meterDamaged)return null;
   if(result.generator){
    const p=core.snapshot().plants[result.generator];
    if(p.normalVolts!==null)return p.normalVolts;
@@ -75,6 +76,12 @@
  root.addEventListener('b737:ac-dc-selector-change',event=>{
   if(event.detail?.side!=='AC')return;
   select(event.detail.position);
+ });
+ root.addEventListener('b737:ac-dc-source-measurement',event=>{
+  if(event.detail?.side==='AC'&&core.snapshot().pressed)refresh('LIVE_SOURCE_SENSOR_UPDATE');
+ });
+ root.addEventListener('b737:ac-dc-metering-readings',event=>{
+  if(core.snapshot().pressed)refresh('METER_INPUT_WHILE_HELD');
  });
  // This event is the documented external generator data entry point. An
  // Electrical V7 Boolean bus "online" MUST NOT be interpreted as GCR CLOSED.
