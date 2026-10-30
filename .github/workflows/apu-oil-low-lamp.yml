@@ -1,0 +1,31 @@
+name: Unified APU LOW OIL PRESSURE 4 PSI trainer regression
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'engine/integration/isn-13-18-ecu-testbench-v1.js'
+      - 'panel-mosaic-lab/cockpit/isn-cockpit.js'
+      - 'panel-mosaic-lab/cockpit/index.html'
+      - 'tests/apu-oil-low-lamp-v1.test.cjs'
+      - '.github/workflows/apu-oil-low-lamp.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  live-apu-oil:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate scripts
+        run: |
+          node --check engine/integration/isn-13-18-ecu-testbench-v1.js
+          node --check panel-mosaic-lab/cockpit/isn-cockpit.js
+      - name: Exact 4 PSI threshold and physical wiring regression
+        run: node --test tests/apu-oil-low-lamp-v1.test.cjs
+      - name: Existing APU fuel/EGT and engine ECU suites
+        run: |
+          node --test tests/apu-fuel-generator-egtlive-v1.test.cjs
+          node tests/isn-13-18-ecu.test.cjs
