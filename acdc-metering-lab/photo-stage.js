@@ -109,7 +109,7 @@ function showMarkers(){
  var g=$("calibration");g.replaceChildren();
  // Calibration never implicitly turns on visual guides. They appear only
  // when the user explicitly checks the guide option.
- if(!state.showMarkers)return;
+ if(!state.calibration||!state.showMarkers)return;
  Object.keys(state.geometry).forEach(function(id){
   var p=state.geometry[id],selected=id===state.selected;
   var m=e("g",{transform:"translate("+p.x+" "+p.y+")","data-marker":id,class:"calibration-marker",tabindex:"0",role:"button","aria-label":"Move "+id+" calibration marker"});
