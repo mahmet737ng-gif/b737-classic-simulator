@@ -24,6 +24,7 @@ on:
       - 'panel-mosaic-lab/cockpit/index.html'
       - 'cdu-standalone-v6/data/page-definitions.json'
       - 'cdu-standalone-v6/data/page-definitions.js'
+      - 'cdu-standalone-v6/tests/dep-arr-fcom-114032.test.cjs'
       - 'cdu-standalone-v6/engine/cdu-engine.js'
       - 'cdu-standalone-v6/app.js'
       - 'cdu-standalone-v6/tests/ch11-position-pages-v1.test.cjs'
@@ -57,6 +58,7 @@ jobs:
       - run: node --test engine/runtime/tests/avionics-sensor-ingress-v2.test.cjs
       - run: node --test engine/ch11/tests/fmc-systems-network-v1.test.cjs
       - run: node --test cdu-standalone-v6/tests/ch11-position-pages-v1.test.cjs
+      - run: node --test cdu-standalone-v6/tests/dep-arr-fcom-114032.test.cjs
       - run: node --check panel-mosaic-lab/cockpit/cdu-font-diagnostics-v3.js
       - run: node --check panel-mosaic-lab/cockpit/cdu-font-diagnostics-v4.js
       - run: node --check panel-mosaic-lab/cockpit/cdu-screen-fit-v4.js
