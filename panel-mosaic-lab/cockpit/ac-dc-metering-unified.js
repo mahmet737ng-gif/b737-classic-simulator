@@ -107,7 +107,7 @@
              w:parseFloat(piece.style.width),h:parseFloat(piece.style.height)};
   for(const meter of model.meters){
    const old=piece.querySelector('[data-metering-needle="'+meter.id+'"]');
-   if(old&&old.getAttribute('data-geometry-version')==='MET-0010-BAKED-POINTER-RESTORE'){
+   if(old&&old.getAttribute('data-geometry-version')==='MET-0011-DEPLOY-AND-CLEAN-QA'){
     const blade=old.querySelector('[data-needle-blade]');
     if(blade)mounted.set(meter.id,blade);
     continue;
@@ -115,7 +115,7 @@
    if(old)old.remove();
    const p=model.placement(box,meter);
    const layer=svg(doc,piece,'svg',{'data-metering-needle':meter.id,
-    'data-geometry-version':'MET-0010-BAKED-POINTER-RESTORE',
+    'data-geometry-version':'MET-0011-DEPLOY-AND-CLEAN-QA',
     viewBox:'0 0 512 512',preserveAspectRatio:'none',
     role:'img','aria-label':meter.label+' original pointer'});
    // Local photo coordinates: never position a pointer on the atlas root.
@@ -167,10 +167,35 @@
  }
  function controls(){
   const section=document.createElement('section');section.id='unifiedAcDcMeteringNeedles';
-  const title=document.createElement('h2');title.textContent='AC / DC METERING · ORIGINAL 4 NEEDLES';section.append(title);
+  const title=document.createElement('h2');title.textContent='AC / DC METERING · MET-0011 · ORIGINAL 4 NEEDLES';section.append(title);
   const note=document.createElement('p');note.className='muted';
   note.textContent='فقط همان چهار گیج و عقربه‌های قبلی؛ حرکت در تمام فریم‌ها داخل خط‌های چاپ‌شده و با شعاع ثابت نوک، سقف سرعت ۷۰ درجه بر ثانیه و شتاب نرم. DC AMPS و DC VOLTS از درجات عکس؛ CPS و AC VOLTS هنوز نیازمند ممیزی شعاع و محور دقیق تصویرند.';
   section.append(note);
+  const verify=document.createElement('button');verify.type='button';
+  verify.textContent='بررسی نسخه و وضعیت پاک‌سازی OH-10';
+  const status=document.createElement('pre');
+  status.style.cssText='direction:ltr;white-space:pre-wrap;overflow-wrap:anywhere;text-align:left;font-size:11px;line-height:1.55;max-width:100%;color:#e6e8dd';
+  function checkStatus(){
+    const cleaner=window.B737AcDcStaticCleaner;
+    const summary=cleaner?.getStatus();
+    const doc=frame?.contentDocument,oh10=doc?.querySelector('.atlas-piece[data-key="OH10"]');
+    const data={
+      build:'MET-0011-DEPLOY-AND-CLEAN-QA',
+      currentModelAxes:model.meters.map(m=>m.id+':'+m.tipRadiusX.toFixed(1)+'x'+m.tipRadiusY.toFixed(1)).join(' / '),
+      originalOH10Locked:true,
+      originalNeedleLocked:true,
+      sourceCleanerLoaded:Boolean(cleaner),
+      photoStatus:oh10?.dataset.staticNeedlePhoto||'OH10_NOT_MOUNTED',
+      cleanerState:summary?.status||'NOT_LOADED',
+      cleanedPixels:summary?.cleanedPixelCount||0,
+      unresolvedPixels:summary?.unresolvedPixels||0,
+      interactiveNeedles:oh10?.querySelectorAll('[data-metering-needle]').length||0,
+      photoSource:oh10?.querySelector('.atlas-photo')?.currentSrc?.startsWith('blob:')?'DERIVED_DISPLAY_BLOB':'ORIGINAL_SOURCE_OR_NOT_LOADED'
+    };
+    status.textContent=Object.entries(data).map(([k,v])=>k+': '+v).join('\n');
+  }
+  verify.addEventListener('click',checkStatus);section.append(verify,status);
+  checkStatus();
   for(const meter of model.meters){
    const sc=model.photoScale[meter.id];
    const label=document.createElement('label');
@@ -206,11 +231,11 @@
     nativeEllipse:{rx:meter.tipRadiusX,ry:meter.tipRadiusY},
     allowedAngles:b,angleTarget:state[meter.id],
     screenSprite:rect?{x:rect.x,y:rect.y,width:rect.width,height:rect.height}:null,
-    renderVersion:'MET-0010-BAKED-POINTER-RESTORE',staticPhotoStatus:node?.closest('.atlas-piece')?.dataset?.staticNeedlePhoto||'NOT_MOUNTED',photoPixelQACertified:false};
+    renderVersion:'MET-0011-DEPLOY-AND-CLEAN-QA',staticPhotoStatus:node?.closest('.atlas-piece')?.dataset?.staticNeedlePhoto||'NOT_MOUNTED',photoPixelQACertified:false};
   });
  }
  window.B737UnifiedAcDcMetering=Object.freeze({
-  version:'MET-0010-BAKED-POINTER-RESTORE',getAngles:()=>({...state}),getReadings,
+  version:'MET-0011-DEPLOY-AND-CLEAN-QA',getAngles:()=>({...state}),getReadings,
   getScaleMode:()=>acMode,getRenderAudit,setReading,setReadings,setAngle,setAngles
  });
  window.addEventListener('b737:ac-dc-metering-angles',event=>{try{setAngles(event.detail);}catch(error){console.error(error);}});
