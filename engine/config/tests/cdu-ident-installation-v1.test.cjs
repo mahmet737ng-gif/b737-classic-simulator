@@ -58,7 +58,7 @@ test('Both CDU seats accept a live parent-profile message and retain it after re
    B737CDUIdentInstallationV1:Install,state:{preflightEvidence:{}},
    update(){updates++;},
    addEventListener:(name,fn)=>listeners.set(name,fn)};
-  ctx.window=ctx;
+  ctx.window=ctx;ctx.URLSearchParams=URLSearchParams;
   vm.runInNewContext(js,ctx,{timeout:1000});
   assert.equal(messages[0].seat,seat);
   const installed=Install.select({...profileDefaults,engineVariant:'CFM56-3C1',aircraftModel:'737-500'});
