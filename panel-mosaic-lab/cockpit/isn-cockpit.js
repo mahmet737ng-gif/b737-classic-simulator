@@ -318,12 +318,26 @@
    }
   }catch(error){byId('isnError').textContent='خطای ارتباط ISN: '+error.message;}
  });
- let lastTime=performance.now();
+ let lastTime=performance.now(),lastPassiveCoolingAt=lastTime;
  setInterval(()=>{const now=performance.now(),elapsed=Math.max(0,Math.min(500,now-lastTime));lastTime=now;
   // Owner18 may mount asynchronously after the first iframe report.
   if(synchronizeOwnerGuards())render();
   const sources=chain.get().sources;
-  if(!chain.jobs.length&&!sources.engine1.running&&!sources.engine2.running&&!sources.apu.running)return;
+  const plantActive=!!chain.jobs.length||sources.engine1.running||sources.engine2.running||sources.apu.running;
+  if(!plantActive){
+   // When only the APU's thermal mass remains warm, keep its real-time EGT
+   // movement alive after shutdown WITHOUT running the expensive fuel/ECU/
+   // battery integrations at 10Hz. An idle 1Hz paint is sufficient.
+   const ambient=window.B737ISN1318ECUTestbenchV1.CONFIG.oilAmbientTempC;
+   if(ecu.apuThermalEgtC<=ambient+0.05){lastPassiveCoolingAt=now;return;}
+   const coolingElapsed=now-lastPassiveCoolingAt;
+   if(coolingElapsed<1000)return;
+   lastPassiveCoolingAt=now;
+   let left=Math.max(0,coolingElapsed);
+   while(left>0){const slice=Math.min(120000,left);ecu.coolAPU(slice);left-=slice;}
+   render();return;
+  }
+  lastPassiveCoolingAt=now;
   ecu.advance(elapsed);
   for(const effect of chain.consumeEffects())if(effect.type==='ROTARY_RELEASE'){
    byId('overheadFrame')?.contentWindow?.postMessage({type:'b737:cockpit-command',
