@@ -20,8 +20,8 @@ var initial={
  residual:{x:894,y:1299,r:39,type:"momentary"}
 };
 var state={geometry:JSON.parse(JSON.stringify(initial)),selected:"dcAmps",calibration:false,scale:.70,overlay:true,showMarkers:false,sourceOK:false};
-var dcOptions=["STBY PWR","BAT BUS","BAT","TR1","TR2","TR3","TEST"];
-var acOptions=["STBY PWR","GRD PWR","GEN1","APU GEN","GEN2","INV","TEST"];
+var dcOptions=["STBY PWR","BAT BUS","BAT","APU BAT","TR1","TR2","TR3"];
+var acOptions=["STBY PWR","GND PWR","GEN1","APU GEN","GEN2","INV","TEST"];
 var sim={model:null,mode:"engines",dc:"BAT",ac:"GEN1",galley:true,resid:false};
 var needlePos={},needleVelocity={},needleDirection={},needleTargets={},needleFrame=0,needleFrameTime=null;
 function photoAngle(id,data){
@@ -64,7 +64,7 @@ function setupElectrical(mode){
  function set(k,v){sim.model=E.apply(sim.model,{type:"CONTROL",key:k,value:v});}
  set("engine1Running",false);set("engine2Running",false);
  if(mode==="dark")set("batterySwitch",false);
- if(mode==="ground"){set("groundPowerAttached",true);sim.model=E.apply(sim.model,{type:"SELECT_SOURCE",source:"EXT",side:1});sim.model=E.apply(sim.model,{type:"SELECT_SOURCE",source:"EXT",side:2});sim.ac="GRD PWR";}
+ if(mode==="ground"){set("groundPowerAttached",true);sim.model=E.apply(sim.model,{type:"SELECT_SOURCE",source:"EXT",side:1});sim.model=E.apply(sim.model,{type:"SELECT_SOURCE",source:"EXT",side:2});sim.ac="GND PWR";}
  if(mode==="engines"){set("engine1Running",true);set("engine2Running",true);}
  document.querySelectorAll("[data-mode]").forEach(function(b){b.classList.toggle("active",b.dataset.mode===mode);});
  render();
@@ -80,13 +80,14 @@ function meterData(){
  case "BAT":amps=b.hotBattery?(t.TR3?0:-7):0;dcv=b.hotBattery?24:0;break;
  case "BAT BUS":dcv=b.battery?28:0;amps=null;break;
  case "STBY PWR":dcv=b.dcStandby===null?null:b.dcStandby?28:0;amps=null;break;
+ case "APU BAT":dcv=null;amps=null;break; // APU battery measurements unavailable in V7 Boolean bus model.
  }
  var powered=false;
  switch(sim.ac){
  case "GEN1":powered=r.source[1]==="GEN1";break;
  case "GEN2":powered=r.source[2]==="GEN2";break;
  case "APU GEN":powered=Object.values(r.source).includes("APU");break;
- case "GRD PWR":powered=Object.values(r.source).includes("EXT");break;
+ case "GND PWR":powered=Object.values(r.source).includes("EXT");break;
  case "STBY PWR":powered=b.acStandby===true;break;
  case "INV":powered=b.acStandby===true&&r.feed.standbyFeed.indexOf("BATTERY")>=0;break;
  }
