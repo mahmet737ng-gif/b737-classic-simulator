@@ -93,6 +93,21 @@
   try{if(data&&Core.generators.includes(data.source))configure(data.source,data.patch);}
   catch(e){console.error('RESID generator data rejected',e);}
  });
+ // Existing Unified ISN engine/APU session owns the observed drive/run state.
+ // This provides a live rotating/ceased input without inventing GCR status,
+ // generator output volts or exciter state from mere bus connectivity.
+ root.addEventListener('b737:unified-ecu-observation',()=>{
+  const sources=root.B737ISNCockpitV1?.getStartState?.()?.sources;
+  if(!sources)return;
+  let changed=false;
+  for(const [id,key] of [['GEN1','engine1'],['GEN2','engine2'],['APU GEN','apu']]){
+   const running=sources[key]?.running;
+   if(typeof running!=='boolean')continue;
+   const next=running?'RUNNING':'STOPPED';
+   if(core.snapshot().plants[id].drive!==next){core.configure(id,{drive:next});changed=true;}
+  }
+  if(changed)refresh('ISN_LIVE_ENGINE_APU_DRIVE');
+ });
  root.addEventListener('b737:electrical-v7-state',event=>{
   const state=event.detail?.state||event.detail;
   const cfg=state?.config;
