@@ -187,7 +187,7 @@ test('Analytic cooling is independent of clock step and crosses at 50°C without
  assert.ok(Math.abs(a-b)<.00001,'1000ms and 120000ms integration must agree');
  const afterFast=B.apuCoolingStep(51,10000);
  const afterSlow=B.apuCoolingStep(50,10000);
- assert.ok(afterFast<afterSlow&&afterFast<51,'Crossing 50°C during a tick must transition continuously to the slow tail');
+ assert.ok(afterFast>=afterSlow&&afterFast<51,'Crossing 50°C during a tick must transition continuously to the slow tail');
  for(const hot of [390,620,800]){
   const crossingMs=B.CONFIG.apuCoolFastTauMs*Math.log((hot-20)/(50-20));
   assert.ok(crossingMs<=40000,'EGT '+hot+'°C must reach 50°C within 40 seconds');
