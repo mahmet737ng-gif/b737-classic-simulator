@@ -17,6 +17,7 @@ from urllib.parse import urlsplit,parse_qs
 from npe_stage5_server import Stage5Service,Handler,Stage5Error
 from flight_plan_engine import RouteError
 from procedure_semantics import catalog, inspect
+from navdata_catalog_v1 import NavCatalog, CatalogError
 
 STAGE3_MEMBERS={
   'private_data/B737_NAVDB_WORLD_AIRAC2610_NPE_STAGE1.sqlite':'stage1.sqlite',
@@ -35,6 +36,28 @@ def safe_extract_known(archive,mapping,output):
                 shutil.copyfileobj(stream,to,2*1024*1024)
 
 class Stage6Service(Stage5Service):
+    def navdata_lookup(self,kind,ident=None,airport=None):
+        """Source-indexed, read-only lookup. NEVER installs/activates FMC data."""
+        if not self.compose_enabled:
+            raise Stage5Error('Private verified Stage1/2/3 source required')
+        with NavCatalog(self.stage1) as nav:
+            if kind=='airport' and ident is not None and airport is None:
+                result=nav.airport(ident)
+            elif kind=='runways' and airport is not None and ident is None:
+                result=nav.runways(airport,limit=100)
+            elif kind=='waypoints' and ident is not None and airport is None:
+                result=nav.fix(ident,'waypoints',limit=100)
+            elif kind=='navaids' and ident is not None and airport is None:
+                result=nav.fix(ident,'navaids',limit=100)
+            elif kind=='airways' and ident is not None and airport is None:
+                result=nav.airway(ident,limit=100)
+            elif kind=='procedures' and airport is not None and ident in ('SID','STAR','APP'):
+                result=nav.procedures(airport,ident,limit=100)
+            else:
+                raise Stage5Error('Invalid NAVDATA lookup kind/field combination')
+        return {'airac':'2610','kind':kind,'mode':'SOURCE_REFERENCE_ONLY',
+                'fmc_executable':False,'lookup':result}
+
     def catalog(self,airport,kind):
         if not self.compose_enabled:raise Stage5Error('Stage 3 private data required')
         return {'airac':'2610','airport':airport.upper(),'kind':kind,
@@ -84,6 +107,12 @@ class Stage6Handler(Handler):
         self.check_host()
         u=urlsplit(self.path)
         p=parse_qs(u.query)
+        if u.path=='/api/stage6/navdata' and self.command=='GET':
+            if set(p)-{'kind','ident','airport'} or any(len(v)!=1 for v in p.values()):
+                raise Stage5Error('Invalid NAVDATA query parameters')
+            return self.service.navdata_lookup(p.get('kind',[None])[0],
+                                               p.get('ident',[None])[0],
+                                               p.get('airport',[None])[0])
         if u.path=='/api/stage6/catalog' and self.command=='GET':
             if set(p)-{'airport','kind'}:raise Stage5Error('Invalid catalogue query')
             return self.service.catalog(p.get('airport',[''])[0],p.get('kind',[''])[0])
