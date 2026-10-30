@@ -85,3 +85,16 @@ test('UI explicitly renders airport center column and OTHER instead of generic O
  assert.match(app,/makeDepArrTriplet\(y\(6,-13\),'DEP','OTHER','ARR',true\)/);
  assert.match(app,/makeDepArrTriplet\(y\(6,10\),'<----','','---->'\)/);
 });
+
+test('Older AIRAC reference overlays cannot erase FCOM INDEX after it is rendered',()=>{
+ const stage5=fs.readFileSync(path.join(root,'cdu-standalone-v6/stage5-adapter.js'),'utf8');
+ const stage6=fs.readFileSync(path.join(root,'cdu-standalone-v6/stage6-selector.js'),'utf8');
+ assert.match(stage5,/function paint\(box\)\{[\s\S]*?if\(state\.page==='DEP_ARR'\)return;/);
+ assert.match(stage6,/function paint\(box\)\{[\s\S]*?if\(state\.page==='DEP_ARR'\)return;/);
+});
+test('Bundled live JS and JSON use the same FCOM INDEX definition',()=>{
+ const js=fs.readFileSync(path.join(root,'cdu-standalone-v6/data/page-definitions.js'),'utf8');
+ assert.ok(js.startsWith('window.CDU_PAGES='));
+ const jsPage=JSON.parse(js.slice('window.CDU_PAGES='.length).replace(/;\s*$/,'')).DEP_ARR;
+ assert.deepEqual(jsPage,pages.DEP_ARR);
+});
