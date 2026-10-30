@@ -27,9 +27,9 @@ const residual=manifest.buttons.find(b=>b.id==='residual-volts');
 assert.deepEqual([residual.piece,residual.cx,residual.cy,residual.d,residual.quality],
  ['OH10',917,1273,112,'screenshot-aligned'],
  'RESID VOLTS moves 8 native px left and 45 native px down without changing diameter');
-const codeButton=js.match(/\\{\"id\":\"residual-volts\"[^}]*\\}/);
-assert.ok(codeButton,'same RESID geometry must exist in live runtime registry');
-const installed=JSON.parse(codeButton[0]);
+const k=js.indexOf('"id":"residual-volts"');
+assert.ok(k>=0,'same RESID geometry must exist in live runtime registry');
+const installed=JSON.parse(js.slice(js.lastIndexOf('{',k),js.indexOf('}',k)+1));
 assert.deepEqual([installed.cx,installed.cy,installed.d,installed.quality],
  [residual.cx,residual.cy,residual.d,residual.quality],
  'runtime placement must exactly match image-space manifest');
@@ -38,7 +38,7 @@ const projectedX=853.5+(residual.cx-925)*sx;
 const projectedY=799.5+(residual.cy-1228)*sy;
 assert.ok(Math.hypot(projectedX-849.5,projectedY-822.5)<1,
  'button and socket circle centers must align within 1 screenshot pixel');
-assert.match(html,/recessed-overhead-v2\\.js\\?v=RECESS-0003-RESID-SOCKET-CENTER/,
+assert.ok(html.includes('recessed-overhead-v2.js?v=RECESS-0003-RESID-SOCKET-CENTER'),
  'new JS must load without stale cached RESID position');
 
 assert.match(css,/__cap\[data-pressed="true"\][^{]*\{[^}]*scale\(\.79\)/);
