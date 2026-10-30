@@ -11,6 +11,9 @@ on:
       - 'panel-mosaic-lab/cockpit/cdu-font-diagnostics-v3.js'
       - 'panel-mosaic-lab/cockpit/cdu-font-diagnostics-v4.js'
       - 'panel-mosaic-lab/cockpit/cdu-screen-fit-v4.js'
+      - 'panel-mosaic-lab/cockpit/tests/cdu-screen-fit-v5.test.cjs'
+      - 'panel-mosaic-lab/cockpit/cdu-font-diagnostics-v5.js'
+      - 'panel-mosaic-lab/cockpit/cdu-screen-fit-v5.js'
       - 'panel-mosaic-lab/cockpit/tests/cdu-screen-fit-v4.test.cjs'
       - 'panel-mosaic-lab/cockpit/cdu-stage.html'
       - 'panel-mosaic-lab/cockpit/assembly.json'
@@ -54,6 +57,9 @@ jobs:
       - run: node --check panel-mosaic-lab/cockpit/cdu-font-diagnostics-v4.js
       - run: node --check panel-mosaic-lab/cockpit/cdu-screen-fit-v4.js
       - run: node --test panel-mosaic-lab/cockpit/tests/cdu-screen-fit-v4.test.cjs
+      - run: node --check panel-mosaic-lab/cockpit/cdu-screen-fit-v5.js
+      - run: node --check panel-mosaic-lab/cockpit/cdu-font-diagnostics-v5.js
+      - run: node --test panel-mosaic-lab/cockpit/tests/cdu-screen-fit-v5.test.cjs
       - run: node --check panel-mosaic-lab/cockpit/app.js
       - run: node --test panel-mosaic-lab/cockpit/tests/cdu-embed-typography-v2.test.cjs
       - run: node tests/cdu-font-lock.test.cjs
