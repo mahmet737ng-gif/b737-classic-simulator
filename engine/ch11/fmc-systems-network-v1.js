@@ -46,7 +46,8 @@
   const s=clone(old),now=event.nowMs;
   if(event.type==='FEED'){
    if(!UNIT_IDS.includes(event.unit)||!STATES.includes(event.evidence)||!Number.isFinite(now)||now<0)invalid('FEED_EVENT_INVALID');
-   if(event.provenance!=='DIRECT_VERIFIED_EQUIPMENT_FEED'&&event.provenance!=='ALL_POWER_BUSES_PROVEN_ABSENT')invalid('FEED_PROVENANCE_REQUIRED');
+   if(!['DIRECT_VERIFIED_EQUIPMENT_FEED','ALL_POWER_BUSES_PROVEN_ABSENT','UPSTREAM_POWER_RESTORED_FEED_UNKNOWN'].includes(event.provenance))invalid('FEED_PROVENANCE_REQUIRED');
+   if(event.provenance==='UPSTREAM_POWER_RESTORED_FEED_UNKNOWN'&&event.evidence!=='UNKNOWN')invalid('RESTORATION_CANNOT_PROVE_FEED');
    if(event.provenance==='ALL_POWER_BUSES_PROVEN_ABSENT'&&event.evidence!=='ABSENT')invalid('GLOBAL_POWER_MAY_ONLY_PROVE_ABSENCE');
    const p=s.power[event.unit],previous=p.feed;
    if(previous!==event.evidence){
