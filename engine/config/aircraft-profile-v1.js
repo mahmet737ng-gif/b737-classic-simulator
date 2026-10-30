@@ -13,11 +13,21 @@
 
   const SCHEMA = 'b737-classic-aircraft-profile/1';
   const STORAGE_KEY = 'b737classic.aircraft-profile.v1';
-  const FIELDS = Object.freeze(['aircraftFamily', 'pressurization', 'engineInstruments']);
+  const FIELDS = Object.freeze(['aircraftFamily', 'aircraftModel', 'engineVariant', 'pressurization', 'engineInstruments']);
   const CATALOG = Object.freeze({
     aircraftFamily: Object.freeze([
       Object.freeze({id: 'B737-300-500', label: '737-300 / 737-500', variants: Object.freeze(['737-300', '737-500'])}),
       Object.freeze({id: 'B737-400', label: '737-400', variants: Object.freeze(['737-400'])})
+    ]),
+    aircraftModel: Object.freeze([
+      Object.freeze({id:'737-300',label:'Boeing 737-300',family:'B737-300-500'}),
+      Object.freeze({id:'737-400',label:'Boeing 737-400',family:'B737-400'}),
+      Object.freeze({id:'737-500',label:'Boeing 737-500',family:'B737-300-500'})
+    ]),
+    engineVariant: Object.freeze([
+      Object.freeze({id:'CFM56-3B1',label:'CFM56-3 B1',rating:'18.5K',ratingLbf:18500}),
+      Object.freeze({id:'CFM56-3B3',label:'CFM56-3 B3',rating:'20K',ratingLbf:20000}),
+      Object.freeze({id:'CFM56-3C1',label:'CFM56-3 C1',rating:'23.5K',ratingLbf:23500})
     ]),
     pressurization: Object.freeze([
       Object.freeze({id: 'DCPCS', label: 'DCPCS', engine: 'B737DCPCSV4', version: 4, lab: 'dcpcs-lab/', backgroundAsset: 'panel-mosaic-lab/assets/locked/2026-10-23/DCPCS_Background_Owner.png'}),
@@ -29,7 +39,7 @@
     ])
   });
   // Deliberate simulator defaults, not an EP-FSI installation declaration.
-  const DEFAULTS = Object.freeze({schema: SCHEMA, aircraftFamily: 'B737-300-500', pressurization: 'DCPCS', engineInstruments: 'EIS'});
+  const DEFAULTS = Object.freeze({schema: SCHEMA, aircraftFamily: 'B737-300-500', aircraftModel:'737-300', engineVariant:'CFM56-3B1', pressurization: 'DCPCS', engineInstruments: 'EIS'});
   const has = (object, key) => Object.prototype.hasOwnProperty.call(object, key);
 
   function validate(value) {
@@ -39,6 +49,8 @@
     for (const key of FIELDS) {
       if (!CATALOG[key].some(option => option.id === value[key])) throw Error('Invalid aircraft profile option: ' + key);
     }
+    if (CATALOG.aircraftModel.find(x=>x.id===value.aircraftModel).family!==value.aircraftFamily)
+      throw Error('Aircraft model and family selection must agree');
     return true;
   }
   function normalize(data) {
@@ -46,6 +58,11 @@
     if (data && data.schema === SCHEMA) for (const field of FIELDS) {
       if (CATALOG[field].some(option => option.id === data[field])) result[field] = data[field];
     }
+    // Migration: older saved profiles had no exact 300/500 model.
+    if(data?.schema===SCHEMA&&!CATALOG.aircraftModel.some(x=>x.id===data.aircraftModel))
+      result.aircraftModel=result.aircraftFamily==='B737-400'?'737-400':'737-300';
+    if(CATALOG.aircraftModel.find(x=>x.id===result.aircraftModel).family!==result.aircraftFamily)
+      result.aircraftModel=result.aircraftFamily==='B737-400'?'737-400':'737-300';
     return result;
   }
   function resolve(input) {
@@ -54,6 +71,8 @@
     return {
       profile: {...profile},
       family: byId('aircraftFamily'),
+      aircraftModel: byId('aircraftModel'),
+      engineVariant: byId('engineVariant'),
       pressurization: byId('pressurization'),
       engineInstruments: byId('engineInstruments'),
       configurationNote: 'Independent educational selections; not a serial-specific installation or verified performance model.'
@@ -78,6 +97,11 @@
       if (!patch || typeof patch !== 'object' || Array.isArray(patch)) throw Error('Invalid aircraft profile update');
       for (const key of Object.keys(patch)) if (!FIELDS.includes(key)) throw Error('Cannot update aircraft profile field: ' + key);
       const next = {...current, ...patch};
+      if (Object.hasOwn(patch,'aircraftModel')&&!Object.hasOwn(patch,'aircraftFamily'))
+        next.aircraftFamily=CATALOG.aircraftModel.find(x=>x.id===next.aircraftModel).family;
+      else if (Object.hasOwn(patch,'aircraftFamily')&&!Object.hasOwn(patch,'aircraftModel')&&
+         CATALOG.aircraftModel.find(x=>x.id===next.aircraftModel).family!==next.aircraftFamily)
+        next.aircraftModel=next.aircraftFamily==='B737-400'?'737-400':'737-300';
       validate(next);
       if (FIELDS.every(key => next[key] === current[key])) return {...current};
       if (storage) storage.setItem(STORAGE_KEY, JSON.stringify(next));
