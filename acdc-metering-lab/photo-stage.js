@@ -259,7 +259,7 @@ $("artwork").addEventListener("click",function(ev){
 $("artwork").addEventListener("pointerdown",function(ev){
  if(state.calibration)return;
  var t=ev.target.closest("[data-part=residual]");if(!t)return;
- sim.resid=true;render();ev.preventDefault();
+ sim.resid=true;$("board").setPointerCapture(ev.pointerId);render();ev.preventDefault();
 });
 ["pointerup","pointercancel","pointerleave"].forEach(function(name){$("board").addEventListener(name,function(){if(sim.resid){sim.resid=false;render();}});});
 $("operate").onclick=function(){state.calibration=false;state.showMarkers=$("markers").checked;this.classList.add("active");$("calibrate").classList.remove("active");render();};
@@ -328,6 +328,6 @@ async function init(){
  catch(err){log("Local geometry unavailable.");}
  setupElectrical("engines");zoomSet(.70);
 }
-if(!E){status("Electrical-V7 engine is missing; no readings can be produced.",false);log("ERROR ElectricalV7 not loaded.");}
+if(!E||!window.B737AcDcMeteringModel){status("Required electrical model or Unified photographic meter model is missing; no readings can be produced.",false);log("ERROR: electrical or calibrated meter source not loaded.");}
 else init();
 })();
