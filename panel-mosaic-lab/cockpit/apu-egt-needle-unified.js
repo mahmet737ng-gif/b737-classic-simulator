@@ -22,9 +22,9 @@
  function controls(){
   const section=document.createElement('section');section.id='unifiedApuEgtNeedle';
   const title=document.createElement('h2');title.textContent='APU EGT · 1 Needle';section.append(title);
-  const note=document.createElement('p');note.className='muted';note.textContent='عقربهٔ مستقل مطابق گیج سمت چپ APU؛ زاویه فعلاً صرفاً برای تست تصویری است.';section.append(note);
+  const note=document.createElement('p');note.className='muted';note.textContent='عقربهٔ مستقل مطابق گیج سمت چپ APU؛ زاویه بر اساس درجات ۰ تا ۸ (°C×100) عکس مرجع کالیبره شده است؛ برای بررسی بصری است.';section.append(note);
   const label=document.createElement('label');label.textContent=model.needle.label;label.style.display='block';label.style.direction='ltr';
-  input=document.createElement('input');Object.assign(input,{type:'range',min:'-145',max:'145',step:'1'});input.style.width='100%';input.style.accentColor='#edf0e8';
+  input=document.createElement('input');Object.assign(input,{type:'range',min:'-250',max:'145',step:'1'});input.style.width='100%';input.style.accentColor='#edf0e8';
   output=document.createElement('output');output.style.display='block';output.style.textAlign='left';output.style.direction='ltr';
   input.addEventListener('input',()=>setAngle(Number(input.value)));label.append(input,output);section.append(label);
   const reset=document.createElement('button');reset.type='button';reset.textContent='بازگشت به تصویر مرجع';reset.addEventListener('click',()=>setAngle(model.needle.initialAngle));section.append(reset);
