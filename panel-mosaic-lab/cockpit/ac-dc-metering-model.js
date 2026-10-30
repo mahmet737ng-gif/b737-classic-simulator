@@ -110,6 +110,14 @@
    acVolts:Object.freeze({mx:921.5,y:805.67,q:26.53,k:-1.36})
   })
  });
+ function blueBoundaryAt(id,xNative){
+  const edge=arcPhoto.occlusion[id];
+  if(!edge||typeof xNative!=='number'||!Number.isFinite(xNative))throw Error('Invalid OH10 face boundary query');
+  const screenX=arcPhoto.originX+arcPhoto.scaleX*xNative;
+  const t=(screenX-edge.mx)/110;
+  const screenY=edge.y+edge.q*t*t+edge.k*t;
+  return (screenY-arcPhoto.originY)/arcPhoto.scaleY;
+ }
  function blackWindowPath(id){
   const meter=meters.find(m=>m.id===id),edge=arcPhoto.occlusion[id];
   if(!meter||!edge)throw Error('Unknown gauge face occlusion: '+id);
@@ -118,10 +126,7 @@
   // black/blue interface at 33 x positions (less than 0.1px curve error).
   for(let i=0;i<=64;i++){
    const spriteX=i*8,nativeX=meter.x+(spriteX-256)/scale;
-   const screenX=arcPhoto.originX+arcPhoto.scaleX*nativeX;
-   const t=(screenX-edge.mx)/110;
-   const screenY=edge.y+edge.q*t*t+edge.k*t;
-   const nativeY=(screenY-arcPhoto.originY)/arcPhoto.scaleY;
+   const nativeY=blueBoundaryAt(id,nativeX);
    coords.push([spriteX,256+(nativeY-meter.y)*scale]);
   }
   const bottom=coords.slice().reverse().map(p=>'L '+p[0].toFixed(3)+' '+p[1].toFixed(3)).join(' ');
@@ -151,5 +156,5 @@
   const sizeX=nativeSize*piece.w/source.width,sizeY=nativeSize*piece.h/source.height;
   return {x:piece.x+meter.x*piece.w/source.width,y:piece.y+meter.y*piece.h/source.height,size:sizeX,sizeX,sizeY};
  }
- return Object.freeze({source,meters,angle,placement,photoScale,bearingForReading,readingForBearing,angleForIndication,angleForAcVolts,indicationModes,bounds,limitAngle,tipPoint,motion,advanceNeedle,arcPhoto,blackWindowPath});
+ return Object.freeze({source,meters,angle,placement,photoScale,bearingForReading,readingForBearing,angleForIndication,angleForAcVolts,indicationModes,bounds,limitAngle,tipPoint,motion,advanceNeedle,arcPhoto,blueBoundaryAt,blackWindowPath});
 });
