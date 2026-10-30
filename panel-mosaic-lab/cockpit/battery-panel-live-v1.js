@@ -85,7 +85,14 @@
   }catch(error){console.error('Live battery:',error);}
   finally{busy=false;}
  }
- function start(){tick();if(attached&&!timer)timer=setInterval(tick,1000);}
+ function start(){
+  // ECU observations can fire at 10 Hz; every old 'start()' invoked a full
+  // battery step, ECU render, panel repaint and another observation event.
+  // Bound this live integration to 2.5 Hz plus the existing 1 Hz timer.
+  // Physical meter-selector actions below still refresh immediately.
+  if(!attached||Date.now()-lastAt>=400)tick();
+  if(attached&&!timer)timer=setInterval(tick,1000);
+ }
  for(const name of ['b737:electrical-owner-ready','b737:unified-ecu-observation'])root.addEventListener(name,start);
  root.addEventListener('message',event=>{
   if(event.origin!==location.origin||event.source!==document.getElementById('overheadFrame')?.contentWindow)return;

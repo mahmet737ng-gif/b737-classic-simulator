@@ -17,11 +17,28 @@
   ['B737Owner18ElectricalInputV1','../../engine/runtime/owner18-electrical-input-v1.js'],
   ['B737UnifiedAuthorityDiagnosticsV1','../../engine/runtime/unified-authority-diagnostics-v1.js']
  ];
- async function loadDependencies(){for(const [global,path] of deps){if(window[global])continue;
-  await new Promise((resolve,reject)=>{const script=document.createElement('script');
-   script.src=new URL(path,moduleBase).href+'?v=ELEC-LIVE-0001';script.onload=resolve;
-   script.onerror=()=>reject(Error('Missing integration script '+path));document.head.append(script);});
- }}
+ async function loadDependencies(){
+  // Dynamic script async=false preserves evaluation order even though all
+  // scripts download concurrently. Previously each file had to finish before
+  // the next request started (14 serial round trips on a cold mobile load).
+  // Do not use async=true or Promise.all over independently executing scripts:
+  // ECU modules have ordered global dependencies and a single shared owner.
+  const requests=[];
+  for(const [global,path] of deps){
+   if(window[global])continue;
+   requests.push(new Promise((resolve,reject)=>{
+    const script=document.createElement('script');
+    script.async=false;
+    script.src=new URL(path,moduleBase).href+'?v=ELEC-LIVE-0001';
+    script.onload=resolve;
+    script.onerror=()=>reject(Error('Missing integration script '+path));
+    document.head.append(script);
+   }));
+  }
+  await Promise.all(requests);
+  for(const [global,path] of deps)if(!window[global])
+   throw Error('Integration module did not register '+global+' from '+path);
+ }
  function init(){
  const byId=id=>document.getElementById(id);
  const Pack=window.B737ISNElectricalPackV1,Adapter=window.B737ISNCockpitBridgeV1;
@@ -116,6 +133,8 @@
 
  function renderStart(){const s=chain.get(),live=ecu.get();
   const indication=window.B737ISNStartIndicationsV1.project(s);
+  // Closed instructor drawer: skip repaint, never skip ECU/needle events.
+  if(document.body.classList.contains('side-open')){
   const summary=['APU '+s.phase.apu,'ENG1 '+s.phase.engine1,'ENG2 '+s.phase.engine2,
    'APU GEN '+(Object.values(s.selectedSources).includes('APU')?'SELECTED':'NOT SELECTED'),
    'APU BLEED '+stateName(s.bleed.apuBleedValveOpen),
@@ -152,6 +171,7 @@
    input.checked=s.trainingFaults[device][key];
    input.disabled=!['OFF','BLOCKED'].includes(s.phase[device]);
   }
+  }
   // Existing N2/EGT needle registrations remain untouched; readings now
   // come from the shared ECU rather than the old disconnected start engine.
   for(const n of [1,2]){
@@ -163,9 +183,9 @@
   window.dispatchEvent(new CustomEvent('b737:unified-ecu-observation',{detail:live}));
   const levers={engine1:s.observations.engine1.feedback.fuelStartLever.value,
    engine2:s.observations.engine2.feedback.fuelStartLever.value};
-  byId('isnStartLeverStatus').textContent='ENG 1 '+levers.engine1+' · ENG 2 '+levers.engine2;
+  if(document.body.classList.contains('side-open'))byId('isnStartLeverStatus').textContent='ENG 1 '+levers.engine1+' · ENG 2 '+levers.engine2;
   window.dispatchEvent(new CustomEvent('b737:engine-start-lever-state',{detail:{levers}}));
-  byId('isnStartError').textContent=s.lastError||'';
+  if(document.body.classList.contains('side-open'))byId('isnStartError').textContent=s.lastError||'';
   if(window.B737CockpitLights?.setInputs){
    const startInputs={};for(const n of [1,2]){
     startInputs['startValve'+n+'Open']=s.observations['engine'+n].feedback.startValveOpen.value===true;
@@ -185,6 +205,8 @@
   f.contentWindow.postMessage({type:'b737:cockpit-command',action:'isn-projection',lamps},location.origin);
  }
  function render(){
+  // Instructor-only tables, trace and fault controls are not visible in the main cockpit.
+  if(document.body.classList.contains('side-open')){
   const {state,lamps,rejected,initialized}=bridge.get();
   byId('isnStatus').textContent=initialized?'۸ سوییچ پمپ متصل · ۸ چراغ Low Pressure + چراغ‌های برق · '+state.mode:'در انتظار همگام‌سازی اورهد…';
   byId('isnMode').textContent=state.mode==='SOURCE_GATED'?'Training Surrogate · فعال‌سازی آموزشی':'TRAINING SURROGATE · فعال (غیرمستند)';
@@ -205,9 +227,12 @@
   const liveFailure=liveGateway.get().latestFailure;
   byId('isnError').textContent=liveFailure?'فرمان فیزیکی رد شد: '+liveFailure.id+' · '+liveFailure.reason:
    rejected.length?'آخرین فرمان ردشده: '+rejected.at(-1).reason:(ownerElectricalGuards()['bus-transfer']?'BUS TRANSFER: متصل به گارد نصب‌شدهٔ Owner18.':'BUS TRANSFER: منتظر نصب گارد.');
+  }
   renderStart();
   postProjection();
  }
+ // Refresh once whenever Controls opens (also when the engines are stopped).
+ byId('inspectorToggle')?.addEventListener('click',()=>setTimeout(render,0));
  window.addEventListener('b737:engine-start-lever-command',e=>{
   if(e.detail?.source!=='PEDESTAL_PHYSICAL')return;
   try{ecu.fuelLever(e.detail.device,e.detail.position);render();}
