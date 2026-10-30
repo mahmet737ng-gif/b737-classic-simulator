@@ -1,6 +1,6 @@
 {
   "schema": "b737.recessed-overhead.v2",
-  "version": "RECESS-0002",
+  "version": "RECESS-0003-RESID-SOCKET-CENTER",
   "implementation": "independent additive overlay; locked atlas files and guards unmodified",
   "photoBasis": {
     "UPPER": [
@@ -82,11 +82,11 @@
       "id": "residual-volts",
       "piece": "OH10",
       "label": "AC DC METERING RESIDUAL VOLTS",
-      "cx": 925,
-      "cy": 1228,
+      "cx": 917,
+      "cy": 1273,
       "d": 112,
-      "quality": "provisional",
-      "note": "lower-right AC meter controls; image-space center requires owner photo pixel QA"
+      "quality": "screenshot-aligned",
+      "note": "OH10 socket alignment from owner 1920x1080 screenshot: overlay center (853.5,799.5), exposed socket center (849.5,822.5); 8 native px left, 45 native px down. Diameter 112 unchanged. Final full-native-pixel audit pending."
     },
     {
       "id": "aircon-ovht-test",
