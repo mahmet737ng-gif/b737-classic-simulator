@@ -35,5 +35,6 @@ assert.ok(html.includes('apu-egt-static-needle-cleaner-v1.js?v=EGT-APUAMPS-CLEAN
 assert.ok(html.includes('apu-egt-needle-model.js?v=EGT-0005-USER-ZERO'));
 assert.ok(html.includes('apu-live-meter-unified-v1.js?v=APU-EGT-COLDZERO3'));
 assert.equal(model.needle.initialAngle,-241.5,'Cold-resting EGT pointer must align with photo-derived 0°C mark');
-assert.ok(html.includes('apu-egt-needle-unified.js?v=EGT-0005-USER-ZERO'));
+assert.ok(html.includes('apu-egt-needle-unified.js?v=EGT-SMOOTH-0006'));
+assert.ok(html.includes('needle-motion-v1.js?v=NEEDLE-SMOOTH-0001'));
 console.log('PASS: APU EGT OH12 photograph, 0..8x100 scale, unchanged pointer art/pivot, correct cold rest and cache mounts.');
