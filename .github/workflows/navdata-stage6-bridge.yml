@@ -1,0 +1,36 @@
+name: B737 CDU NAVDATA Stage6 bridge
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'navigation/navdata_catalog_v1.py'
+      - 'navigation/npe_stage6_server.py'
+      - 'navigation/npe_stage5_server.py'
+      - 'navigation/tests/test_navdata_catalog_v1.py'
+      - 'navigation/tests/test_stage6_navdata_lookup_v1.py'
+      - 'cdu-standalone-v6/stage6-selector.js'
+      - 'cdu-standalone-v6/tests/stage6-navdata-lookup-v1.test.cjs'
+      - 'cdu-standalone-v6/engine/cdu-engine.js'
+      - '.github/workflows/navdata-stage6-bridge.yml'
+permissions:
+  contents: read
+jobs:
+  private-safe-source-bridge:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Indexed NAVDATA catalog tests (synthetic)
+        run: python -m unittest discover -s navigation/tests -p 'test_navdata_catalog_v1.py' -v
+      - name: Stage6 localhost API tests (synthetic)
+        run: python -m unittest discover -s navigation/tests -p 'test_stage6_navdata_lookup_v1.py' -v
+      - name: Native CDU source-only route and procedure tests (synthetic)
+        run: node --test cdu-standalone-v6/tests/stage6-navdata-lookup-v1.test.cjs
+      - name: Stage6 JavaScript parser check
+        run: node --check cdu-standalone-v6/stage6-selector.js
