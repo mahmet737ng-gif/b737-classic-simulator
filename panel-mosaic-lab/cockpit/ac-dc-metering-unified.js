@@ -7,6 +7,8 @@
  const samples=Object.fromEntries(model.meters.map(meter=>[meter.id,null]));
  let acMode='NORMAL';
  const mounted=new Map();
+ const current=Object.fromEntries(model.meters.map(meter=>[meter.id,{angle:model.limitAngle(meter.id,meter.initialAngle),velocity:0}]));
+ let animationFrame=0,lastFrameTime=null;
  const outputs=new Map();
  const inputs=new Map();
  let frame=null;
@@ -16,9 +18,32 @@
   parent.append(element);return element;
  };
  const photoVerified=id=>Boolean(model.photoScale[id]?.readoutApprovedForPreview);
+ function animate(time){
+  animationFrame=0;
+  const dt=lastFrameTime===null?1/60:Math.max(0,Math.min(model.motion.maxStepSeconds,(time-lastFrameTime)/1000));
+  lastFrameTime=time;
+  let moving=false;
+  for(const meter of model.meters){
+   const id=meter.id,blade=mounted.get(id);
+   if(!blade)continue;
+   const v=current[id];
+   const next=model.advanceNeedle(v.angle,v.velocity,model.limitAngle(id,state[id]),dt);
+   // At EVERY frame, the existing sprite rotates about its fixed 256,256
+   // pivot. The 216px master tip maps exactly to the native per-gauge radius.
+   const a=model.limitAngle(id,next.angle);
+   v.angle=a;v.velocity=next.velocity;
+   blade.style.transform='rotate('+a.toFixed(6)+'deg)';
+   if(!next.done)moving=true;
+  }
+  if(moving){animationFrame=requestAnimationFrame(animate);}
+  else lastFrameTime=null;
+ }
+ function requestMotion(){
+  if(!animationFrame&&mounted.size){lastFrameTime=null;animationFrame=requestAnimationFrame(animate);}
+ }
  function paint(id){
   const blade=mounted.get(id);
-  if(blade)blade.style.transform=`rotate(${state[id]}deg)`;
+  if(blade)requestMotion();
   const output=outputs.get(id),input=inputs.get(id),sc=model.photoScale[id],sample=samples[id];
   const residual=id==='acVolts'&&acMode==='RESIDUAL';
   const parked=sample!==null&&!residual&&sample<sc.values[0];
@@ -31,7 +56,7 @@
  }
  function setAngle(id,value){
   if(!model.meters.some(meter=>meter.id===id))throw Error('Unknown AC/DC meter '+id);
-  state[id]=model.angle(value);samples[id]=null;paint(id);return state[id];
+  state[id]=model.limitAngle(id,model.angle(value));samples[id]=null;paint(id);return state[id];
  }
  function setReading(id,value,{mode}={}){
   if(!model.meters.some(meter=>meter.id===id))throw Error('Unknown AC/DC meter '+id);
@@ -40,7 +65,7 @@
   if(id==='acVolts'&&value!==null&&(mode||acMode)==='RESIDUAL'&&(value<0||value>30))throw Error('Residual voltage must be 0–30V');
   if(id==='acVolts'&&mode!==undefined)acMode=mode;
   const angle=id==='acVolts'?model.angleForAcVolts(value,{mode:acMode}):model.angleForIndication(id,value);
-  state[id]=angle;samples[id]=value;paint(id);return angle;
+  state[id]=model.limitAngle(id,angle);samples[id]=value;paint(id);return state[id];
  }
  function setReadings(readings,{acVoltsMode}={}){
   if(!readings||typeof readings!=='object'||Array.isArray(readings))throw Error('Expected named meter samples');
@@ -77,9 +102,12 @@
    svg(doc,clip,'rect',{x:0,y:0,width:512,height:237});
    const windowGroup=svg(doc,layer,'g',{'clip-path':`url(#metering-window-${meter.id})`});
    const blade=svg(doc,windowGroup,'g');
-   Object.assign(blade.style,{transformOrigin:'256px 256px',transition:'transform 320ms ease-out'});
+   Object.assign(blade.style,{transformOrigin:'256px 256px',transition:'none'});
    svg(doc,blade,'image',{href:imageUrl,x:0,y:0,width:512,height:512});
-   mounted.set(meter.id,blade);paint(meter.id);
+   mounted.set(meter.id,blade);
+   current[meter.id]={angle:model.limitAngle(meter.id,state[meter.id]),velocity:0};
+   blade.style.transform='rotate('+current[meter.id].angle+'deg)';
+   paint(meter.id);
   }
   return true;
  }
@@ -94,14 +122,14 @@
   const next=document.getElementById('overheadFrame');
   if(!next||next===frame)return;
   frame=next;
-  frame.addEventListener('load',()=>{mounted.clear();bindFrame();});
+  frame.addEventListener('load',()=>{if(animationFrame)cancelAnimationFrame(animationFrame);animationFrame=0;lastFrameTime=null;mounted.clear();bindFrame();});
   bindFrame();
  }
  function controls(){
   const section=document.createElement('section');section.id='unifiedAcDcMeteringNeedles';
   const title=document.createElement('h2');title.textContent='AC / DC METERING · ORIGINAL 4 NEEDLES';section.append(title);
   const note=document.createElement('p');note.className='muted';
-  note.textContent='فقط همان چهار گیج و یک فایل عقربه قبلی استفاده می‌شود. DC AMPS / DC VOLTS: درجات خوانده‌شده از عکس. CPS و AC VOLTS: اسکیل آزمایشی و در انتظار ممیزی کامل. صفر برق در AC و فرکانس به معنی برگشت عقربه به استاپ است، نه نمایش مقدار 100V یا 360Hz.';
+  note.textContent='فقط همان چهار گیج و عقربه‌های قبلی؛ حرکت در تمام فریم‌ها داخل خط‌های چاپ‌شده و با شعاع ثابت نوک، سقف سرعت ۷۰ درجه بر ثانیه و شتاب نرم. DC AMPS و DC VOLTS از درجات عکس؛ CPS و AC VOLTS هنوز نیازمند ممیزی شعاع و محور دقیق تصویرند.';
   section.append(note);
   for(const meter of model.meters){
    const sc=model.photoScale[meter.id];
