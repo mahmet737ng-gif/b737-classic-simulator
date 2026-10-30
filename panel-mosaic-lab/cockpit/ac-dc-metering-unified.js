@@ -11,7 +11,7 @@
  let animationFrame=0,lastFrameTime=null;
  const outputs=new Map();
  const inputs=new Map();
- let frame=null;
+ let frame=null,frameObserver=null,observedHost=null;
  const svg=(doc,parent,tag,attrs={})=>{
   const element=doc.createElementNS(ns,tag);
   for(const [key,value]of Object.entries(attrs))element.setAttribute(key,String(value));
@@ -95,20 +95,34 @@
  function mount(doc,host){
   const piece=host.querySelector('.atlas-piece[data-key="OH10"]');
   if(!piece)return false;
-  const box={x:parseFloat(piece.style.left),y:parseFloat(piece.style.top),w:parseFloat(piece.style.width),h:parseFloat(piece.style.height)};
+  // Remove pre-MET-0009 siblings in atlasAbsolute. The new pointer layers are
+  // children of the actual OH10 article, so image/camera movement is shared.
+  host.querySelectorAll(':scope > [data-metering-needle]').forEach(node=>node.remove());
+  const box={x:parseFloat(piece.style.left),y:parseFloat(piece.style.top),
+             w:parseFloat(piece.style.width),h:parseFloat(piece.style.height)};
   for(const meter of model.meters){
-   if(host.querySelector(`[data-metering-needle="${meter.id}"]`))continue;
+   const old=piece.querySelector('[data-metering-needle="'+meter.id+'"]');
+   if(old&&old.getAttribute('data-geometry-version')==='MET-0009-PIECE-BOUND'){
+    const blade=old.querySelector('[data-needle-blade]');
+    if(blade)mounted.set(meter.id,blade);
+    continue;
+   }
+   if(old)old.remove();
    const p=model.placement(box,meter);
-   const layer=svg(doc,host,'svg',{'data-metering-needle':meter.id,viewBox:'0 0 512 512',preserveAspectRatio:'none',role:'img','aria-label':meter.label+' original pointer'});
-   Object.assign(layer.style,{position:'absolute',left:`${p.x-p.sizeX/2}px`,top:`${p.y-p.sizeY/2}px`,width:`${p.sizeX}px`,height:`${p.sizeY}px`,zIndex:'1000',pointerEvents:'none',overflow:'visible'});
+   const layer=svg(doc,piece,'svg',{'data-metering-needle':meter.id,
+    'data-geometry-version':'MET-0009-PIECE-BOUND',
+    viewBox:'0 0 512 512',preserveAspectRatio:'none',
+    role:'img','aria-label':meter.label+' original pointer'});
+   // Local photo coordinates: never position a pointer on the atlas root.
+   Object.assign(layer.style,{position:'absolute',
+    left:(p.x-box.x-p.sizeX/2)+'px',top:(p.y-box.y-p.sizeY/2)+'px',
+    width:p.sizeX+'px',height:p.sizeY+'px',
+    zIndex:'1000',pointerEvents:'none',overflow:'visible'});
    const defs=svg(doc,layer,'defs');
-   const clip=svg(doc,defs,'clipPath',{id:`metering-window-${meter.id}`,clipPathUnits:'userSpaceOnUse'});
-   // The ORIGINAL photo's BLUE curved face covers the lower needle body.
-   // Not a rectangular upper-half mask: the user-measured black/blue seam
-   // is a quadratic and is matched per gauge without drawing a new face.
+   const clip=svg(doc,defs,'clipPath',{id:'metering-window-'+meter.id,clipPathUnits:'userSpaceOnUse'});
    svg(doc,clip,'path',{d:model.blackWindowPath(meter.id)});
-   const windowGroup=svg(doc,layer,'g',{'clip-path':`url(#metering-window-${meter.id})`});
-   const blade=svg(doc,windowGroup,'g');
+   const visible=svg(doc,layer,'g',{'clip-path':'url(#metering-window-'+meter.id+')'});
+   const blade=svg(doc,visible,'g',{'data-needle-blade':meter.id});
    Object.assign(blade.style,{transformOrigin:'256px 256px',transition:'none'});
    svg(doc,blade,'image',{href:imageUrl,x:0,y:0,width:512,height:512});
    mounted.set(meter.id,blade);
@@ -121,15 +135,29 @@
  function bindFrame(){
   const doc=frame?.contentDocument,host=doc?.getElementById('atlasAbsolute');
   if(!host)return;
-  if(mount(doc,host))return;
-  const observer=new MutationObserver(()=>{if(mount(doc,host))observer.disconnect();});
-  observer.observe(host,{childList:true});
+  if(observedHost!==host){
+   if(frameObserver)frameObserver.disconnect();
+   observedHost=host;
+   // Keep this observer active. populateAssembly() replaces ALL atlas children
+   // after mode changes; a one-shot observer silently loses every pointer.
+   frameObserver=new MutationObserver(()=>mount(doc,host));
+   frameObserver.observe(host,{childList:true});
+  }
+  mount(doc,host);
  }
  function connectFrame(){
   const next=document.getElementById('overheadFrame');
   if(!next||next===frame)return;
+  if(frameObserver)frameObserver.disconnect();
+  frameObserver=null;observedHost=null;
   frame=next;
-  frame.addEventListener('load',()=>{if(animationFrame)cancelAnimationFrame(animationFrame);animationFrame=0;lastFrameTime=null;mounted.clear();bindFrame();});
+  frame.addEventListener('load',()=>{
+   if(animationFrame)cancelAnimationFrame(animationFrame);
+   animationFrame=0;lastFrameTime=null;mounted.clear();
+   if(frameObserver)frameObserver.disconnect();
+   frameObserver=null;observedHost=null;
+   bindFrame();
+  });
   bindFrame();
  }
  function controls(){
@@ -173,11 +201,11 @@
     nativeEllipse:{rx:meter.tipRadiusX,ry:meter.tipRadiusY},
     allowedAngles:b,angleTarget:state[meter.id],
     screenSprite:rect?{x:rect.x,y:rect.y,width:rect.width,height:rect.height}:null,
-    renderVersion:'MET-0008-SCREEN-ELLIPSE',photoPixelQACertified:false};
+    renderVersion:'MET-0009-PIECE-BOUND',photoPixelQACertified:false};
   });
  }
  window.B737UnifiedAcDcMetering=Object.freeze({
-  version:'MET-0008-SCREEN-ELLIPSE',getAngles:()=>({...state}),getReadings,
+  version:'MET-0009-PIECE-BOUND',getAngles:()=>({...state}),getReadings,
   getScaleMode:()=>acMode,getRenderAudit,setReading,setReadings,setAngle,setAngles
  });
  window.addEventListener('b737:ac-dc-metering-angles',event=>{try{setAngles(event.detail);}catch(error){console.error(error);}});
