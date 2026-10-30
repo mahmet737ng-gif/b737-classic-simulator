@@ -260,10 +260,11 @@ function paint(box){
   else for(let i=0;i<5;i++){
    const entry=list[(n-1)*5+i];if(entry===undefined)continue;
    const label=typeof entry==='string'?entry:entry.ident;
-   pair(box,13+i*14.5,'<'+label,typeof entry==='string'?'SELECT':('RWY '+entry.runways.length));
+   pair(box,13+i*14.5,'<'+label,
+     f.referenceOnly&&f.kind==='STAR'&&i===3?'APP>':
+     typeof entry==='string'?'SELECT':('RWY '+entry.runways.length));
   }
-  pair(box,91,'<RETURN L6',f.referenceOnly&&f.kind==='STAR'?'APP R4 / CLR R5':
-   f.mode==='CATALOG'?'NONE R5':'NO AUTO LEGS');return;
+  pair(box,91,'<RETURN L6',f.mode==='CATALOG'?'NONE R5':'NO AUTO LEGS');return;
  }
  if(!state.stage6PendingPlan||!['RTE','LEGS','ACTIVATE'].includes(page))return;
  model.validate(plan);box.replaceChildren();
