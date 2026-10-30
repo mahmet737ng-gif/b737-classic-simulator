@@ -77,16 +77,14 @@ function meter(id,data){
  if(!state.overlay)return base;
  var M=window.B737AcDcMeteringModel;
  var key=id==="cpsFreq"?"cps":id,original=M.meters.find(function(m){return m.id===key;});
- var ang=original?original.initialAngle:0;
- if(id==="dcAmps"||id==="dcVolts"){
-  var value=data[id],scale=M.photoScale[id];
-  if(value!==null){
-   var v=Math.max(scale.values[0],Math.min(scale.values[scale.values.length-1],value));
-   ang=M.bearingForReading(id,v);
-  }
+ var value=data[id],ang=original?original.initialAngle:0;
+ if(id==="acVolts"){
+  ang=M.angleForAcVolts(value,{mode:data.residualScale?"RESIDUAL":"NORMAL"});
+ }else{
+  ang=M.angleForIndication(key,value);
  }
- // Existing Unified approved needle artwork only. It is opt-in because the
- // original photograph may already show its needle: avoid double pointers.
+ // Exactly the existing Unified needle asset. It is opt-in because the
+ // untouched source photograph may already show a parked needle.
  var ratio=p.r/216;
  var clip=e("clipPath",{id:"oh10-needle-window-"+id,clipPathUnits:"userSpaceOnUse"});
  clip.appendChild(e("rect",{x:-p.r-16,y:-p.r-16,width:2*(p.r+16),height:p.r+2}));
