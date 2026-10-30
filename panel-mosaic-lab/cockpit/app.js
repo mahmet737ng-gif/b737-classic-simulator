@@ -71,7 +71,7 @@
   if(d.kind==='ready'&&d.controls===70){cduStates.set(d.seat,{...previous,ready:true});c.station.classList.add('ready');byId(d.seat==='CAPT'?'resetCduCaptain':'resetCduFirstOfficer').disabled=false;}
   if(d.kind==='state'&&typeof d.page==='string')cduStates.set(d.seat,{...previous,page:d.page.slice(0,50)});
   if(d.kind==='error')cduStates.set(d.seat,{...previous,error:true});
-  if(d.kind==='typography'&&d.version==='CDU-SCREEN-FIT-0004')cduStates.set(d.seat,{...previous,typography:{version:d.version,correct:d.correct===true,nativePx:d.nativePx,labelPx:d.labelPx,color:d.color}});
+  if(d.kind==='typography'&&d.version==='CDU-SCREEN-FIT-0005')cduStates.set(d.seat,{...previous,typography:{version:d.version,correct:d.correct===true,nativePx:d.nativePx,labelPx:d.labelPx,color:d.color}});
   if(d.kind==='wheel-pan'){panWheel(d);return;}
   if(d.kind==='zoom'&&Number.isFinite(d.delta)){const r=c.child.getBoundingClientRect(),v=vp.getBoundingClientRect(),scaleX=r.width/c.item.nativeWidth,scaleY=r.height/c.item.nativeHeight;applyZoom(zoom*(d.delta<0?1.12:1/1.12),vp.scrollLeft,vp.scrollTop,r.left-v.left+d.clientX*scaleX,r.top-v.top+d.clientY*scaleY);}
   updateCduStatus();
