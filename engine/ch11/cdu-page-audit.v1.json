@@ -1610,9 +1610,10 @@
         "folio_family": "11.40.32",
         "pdf_page_near": 1584,
         "source": "SEPEHRAN_737CL_FCOM_VOLUME_2_CH11",
-        "verification": "APPROXIMATE_TOPIC_REFERENCE_REQUIRES_FIELD_AUDIT"
+        "verification": "DEP_ARR_INDEX_LAYOUT_VERIFIED_ON_FCOM_FOLIO_11.40.32",
+        "behavior_folio": "11.40.33"
       },
-      "sourceStatus": "PARTIALLY_FCOM_GROUNDED",
+      "sourceStatus": "FCOM_INDEX_LAYOUT_VERIFIED_PROCEDURE_DATABASE_NOT_VERIFIED",
       "variant": "MENU_CDU",
       "layout": {
         "columns": 24,
@@ -1621,45 +1622,45 @@
           {
             "left": {
               "key": "L1",
-              "label": "<DEPARTURES",
+              "label": "<DEP",
               "field": null,
               "valueType": null,
               "required": false,
               "staticTrainerValue": null,
               "nextPage": "DEPARTURES",
-              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+              "sourceVerification": "FCOM_11.40.32_PROMPT_POSITION_VERIFIED"
             },
             "right": {
               "key": "R1",
-              "label": "ARRIVALS>",
+              "label": "ARR>",
               "field": null,
               "valueType": null,
               "required": false,
               "staticTrainerValue": null,
               "nextPage": "ARRIVALS",
-              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+              "sourceVerification": "FCOM_11.40.32_PROMPT_POSITION_VERIFIED"
             }
           },
           {
             "left": {
               "key": "L2",
-              "label": "ORIGIN",
+              "label": "",
               "field": null,
               "valueType": null,
               "required": false,
-              "staticTrainerValue": "{ORIGIN}",
+              "staticTrainerValue": null,
               "nextPage": null,
-              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+              "sourceVerification": "FCOM_11.40.32_PROMPT_POSITION_VERIFIED"
             },
             "right": {
               "key": "R2",
-              "label": "DEST",
+              "label": "ARR>",
               "field": null,
               "valueType": null,
               "required": false,
-              "staticTrainerValue": "{DEST}",
-              "nextPage": null,
-              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+              "staticTrainerValue": null,
+              "nextPage": "ARRIVALS",
+              "sourceVerification": "FCOM_11.40.32_PROMPT_POSITION_VERIFIED"
             }
           },
           {
@@ -1671,7 +1672,7 @@
               "required": false,
               "staticTrainerValue": null,
               "nextPage": null,
-              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+              "sourceVerification": "FCOM_11.40.32_PROMPT_POSITION_VERIFIED"
             },
             "right": {
               "key": "R3",
@@ -1681,7 +1682,7 @@
               "required": false,
               "staticTrainerValue": null,
               "nextPage": null,
-              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+              "sourceVerification": "FCOM_11.40.32_PROMPT_POSITION_VERIFIED"
             }
           },
           {
@@ -1693,7 +1694,7 @@
               "required": false,
               "staticTrainerValue": null,
               "nextPage": null,
-              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+              "sourceVerification": "FCOM_11.40.32_PROMPT_POSITION_VERIFIED"
             },
             "right": {
               "key": "R4",
@@ -1703,56 +1704,61 @@
               "required": false,
               "staticTrainerValue": null,
               "nextPage": null,
-              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+              "sourceVerification": "FCOM_11.40.32_PROMPT_POSITION_VERIFIED"
             }
           },
           {
             "left": {
               "key": "L5",
-              "label": "",
+              "label": "DEP",
               "field": null,
               "valueType": null,
               "required": false,
               "staticTrainerValue": null,
               "nextPage": null,
-              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+              "sourceVerification": "FCOM_11.40.32_PROMPT_POSITION_VERIFIED"
             },
             "right": {
               "key": "R5",
-              "label": "",
+              "label": "ARR",
               "field": null,
               "valueType": null,
               "required": false,
               "staticTrainerValue": null,
               "nextPage": null,
-              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+              "sourceVerification": "FCOM_11.40.32_PROMPT_POSITION_VERIFIED"
             }
           },
           {
             "left": {
               "key": "L6",
-              "label": "<RTE",
+              "label": "<----",
               "field": null,
               "valueType": null,
               "required": false,
               "staticTrainerValue": null,
-              "nextPage": "RTE",
-              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+              "nextPage": "DEPARTURES",
+              "sourceVerification": "FCOM_11.40.32_PROMPT_POSITION_VERIFIED"
             },
             "right": {
               "key": "R6",
-              "label": "INDEX>",
+              "label": "---->",
               "field": null,
               "valueType": null,
               "required": false,
               "staticTrainerValue": null,
-              "nextPage": "INDEX",
-              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+              "nextPage": "ARRIVALS",
+              "sourceVerification": "FCOM_11.40.32_PROMPT_POSITION_VERIFIED"
             }
           }
-        ]
+        ],
+        "centerFields": {
+          "row1": "{ORIGIN}",
+          "row2": "{DEST}",
+          "row5": "OTHER"
+        }
       },
-      "verification": "TRAINER_FIELD_LAYOUT_ONLY_NOT_MANUAL_COMPLETE"
+      "verification": "INDEX_LAYOUT_FCOM_11.40.32_NOT_FULL_PROCEDURE_AUDIT"
     },
     {
       "id": "DEPARTURES",
