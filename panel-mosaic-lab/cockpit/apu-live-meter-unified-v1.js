@@ -18,7 +18,9 @@
  const clamp=(x,lo,hi)=>Math.max(lo,Math.min(hi,x));
  function bearingForEGT(c){
   if(typeof c!=='number'||!Number.isFinite(c))throw Error('APU EGT must be finite °C');
-  const v=clamp(c,0,MAX_C),i=Math.min(7,Math.floor(v/100));
+  const v=clamp(c,0,MAX_C),major=v/100;
+  if(Number.isInteger(major))return EGT_DEG[major]; // exact labelled tick
+  const i=Math.min(7,Math.floor(major));
   return EGT_DEG[i]+(EGT_DEG[i+1]-EGT_DEG[i])*(v-EGT_C[i])/100;
  }
  function project(apu){
