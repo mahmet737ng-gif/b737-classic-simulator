@@ -16,7 +16,7 @@
   Object.freeze({id:'dcAmps',label:'DC AMPS',x:308.453,y:281.608,tipRadius:141,initialAngle:0.36}),
   Object.freeze({id:'cps',label:'CPS',x:774.2,y:191.4,tipRadius:141,initialAngle:-54}),
   Object.freeze({id:'dcVolts',label:'DC VOLTS',x:310.307,y:682.818,tipRadius:131,initialAngle:-26.62}),
-  Object.freeze({id:'acVolts',label:'A.C.',x:785.143,y:702.386,tipRadius:143,initialAngle:-70})
+  Object.freeze({id:'acVolts',label:'A.C.',x:785.143,y:702.386,tipRadius:143,initialAngle:-48.08})
  ]);
 
  // Source-original native OH10 white graduation intersections, not metal
@@ -56,9 +56,9 @@
   const meter=meters.find(m=>m.id===id);
   const sc=photoScale[id];
   if(!meter||!sc)throw Error('Unknown AC/DC metering indicator: '+id);
-  if(reading===null||reading===undefined)return meter.initialAngle;
+  if(reading===null||reading===undefined)return limitAngle(id,meter.initialAngle);
   if(typeof reading!=='number'||!Number.isFinite(reading))throw Error('Meter indication must be a finite numeric sample or null');
-  if(reading<sc.values[0])return meter.initialAngle;
+  if(reading<sc.values[0])return bounds(id).min;
   const limit=Math.min(sc.values[sc.values.length-1],reading);
   return bearingForReading(id,limit);
  }
@@ -72,10 +72,43 @@
   // Lufthansa ATA24: residual scale is 0..30V. The scale-track equivalence to
   // normal 100..130V is provisional until its native ticks are signed off.
   if(mode==='RESIDUAL'){
-   if(value<0)return meters.find(m=>m.id==='acVolts').initialAngle;
+   if(value<0)return bounds('acVolts').min;
    return angleForIndication('acVolts',100+Math.min(30,value));
   }
   return angleForIndication('acVolts',value);
+ }
+ 
+ // Native image: one immutable white pointer image with a 216px master pivot-to-tip
+ // distance. Native per-meter tip radii are calibrated parameters pointing at the
+ // INNER END of the existing white graduations; never redraw these graduations.
+ function bounds(id){
+  const sc=photoScale[id];
+  if(!sc)throw Error('Unknown OH10 needle travel bounds: '+id);
+  return Object.freeze({min:sc.angles[0],max:sc.angles[sc.angles.length-1]});
+ }
+ function limitAngle(id,value){
+  if(typeof value!=='number'||!Number.isFinite(value))throw Error('OH10 angle must be finite');
+  const b=bounds(id);
+  return Math.max(b.min,Math.min(b.max,value));
+ }
+ function tipPoint(id,bearing){
+  const meter=meters.find(m=>m.id===id);
+  if(!meter)throw Error('Unknown OH10 tip: '+id);
+  const a=limitAngle(id,bearing)*Math.PI/180, r=meter.tipRadius||source.tipRadius;
+  return Object.freeze({x:meter.x+r*Math.sin(a),y:meter.y-r*Math.cos(a),radius:r,angle:limitAngle(id,bearing)});
+ }
+ const motion=Object.freeze({maxSpeedDegPerSec:70,accelerationDegPerSec2:260,settleDeg:0.025,maxStepSeconds:0.05});
+ function advanceNeedle(current,velocity,target,dtSeconds){
+  if(![current,velocity,target,dtSeconds].every(v=>typeof v==='number'&&Number.isFinite(v)))throw Error('Non-finite OH10 animation argument');
+  if(dtSeconds<0)throw Error('Negative needle animation time');
+  const dt=Math.min(motion.maxStepSeconds,dtSeconds),dist=target-current,d=Math.abs(dist);
+  if(d<=motion.settleDeg)return {angle:target,velocity:0,done:true};
+  if(dt===0)return {angle:current,velocity:Math.min(motion.maxSpeedDegPerSec,Math.max(0,velocity)),done:false};
+  const dir=Math.sign(dist),brakingDistance=velocity*velocity/(2*motion.accelerationDegPerSec2);
+  const nextSpeed=Math.min(motion.maxSpeedDegPerSec,Math.max(5,velocity+(d<=brakingDistance+0.2?-motion.accelerationDegPerSec2:motion.accelerationDegPerSec2)*dt));
+  const step=Math.min(d,nextSpeed*dt),next=current+dir*step;
+  if(d-step<=motion.settleDeg)return {angle:target,velocity:0,done:true};
+  return {angle:next,velocity:nextSpeed,done:false};
  }
  const angle=value=>{
   const n=Number(value);
@@ -87,5 +120,5 @@
   const size=512*(meter.tipRadius||source.tipRadius)/source.spriteTipRadius*piece.w/source.width;
   return {x:piece.x+meter.x*piece.w/source.width,y:piece.y+meter.y*piece.h/source.height,size};
  }
- return Object.freeze({source,meters,angle,placement,photoScale,bearingForReading,readingForBearing,angleForIndication,angleForAcVolts,indicationModes});
+ return Object.freeze({source,meters,angle,placement,photoScale,bearingForReading,readingForBearing,angleForIndication,angleForAcVolts,indicationModes,bounds,limitAngle,tipPoint,motion,advanceNeedle});
 });
