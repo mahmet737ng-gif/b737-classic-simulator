@@ -73,7 +73,8 @@
   }
   if(errors.length&&typeof onError==='function')onError(errors);
   return {owner:used,reason:plan.reason,errors,frame,version:PROFILE.version,
-   preservedScratch:!!scratch,sourceVerified:used==='FCOM_NATIVE'&&state.page==='DEP_ARR',
+   preservedScratch:!!scratch,sourceVerified:false,
+   layoutAudited:used==='FCOM_NATIVE'&&state.page==='DEP_ARR',
    children:frame.childNodes.length};
  }
  return Object.freeze({PROFILE,CANONICAL,choose,compose});
