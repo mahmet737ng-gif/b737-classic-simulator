@@ -6,13 +6,13 @@
   shape-rendering:geometricPrecision;
   paint-order:normal;
 }
-.b737-le-devices .b737-le-photolens-v2.b737-le-smooth-glass-v1 g[data-lens-id$="|TRANSIT"] > path:first-child{
+.b737-le-devices .b737-le-photolens-v2.b737-le-smooth-glass-v1 g[data-lens-id$="|TRANSIT"] > path[data-optic-layer="illuminated-glass"]{
   filter:drop-shadow(0 0 1.1px rgba(245,164,51,.31));
 }
-.b737-le-devices .b737-le-photolens-v2.b737-le-smooth-glass-v1 g[data-lens-id$="|EXT"] > path:first-child,
-.b737-le-devices .b737-le-photolens-v2.b737-le-smooth-glass-v1 g[data-lens-id$="|FULL_EXT"] > path:first-child{
+.b737-le-devices .b737-le-photolens-v2.b737-le-smooth-glass-v1 g[data-lens-id$="|EXT"] > path[data-optic-layer="illuminated-glass"],
+.b737-le-devices .b737-le-photolens-v2.b737-le-smooth-glass-v1 g[data-lens-id$="|FULL_EXT"] > path[data-optic-layer="illuminated-glass"]{
   filter:drop-shadow(0 0 1.1px rgba(67,190,99,.29));
 }
-.b737-le-devices .b737-le-photolens-v2.b737-le-smooth-glass-v1 g[data-lens-id] > path:nth-child(2){
+.b737-le-devices .b737-le-photolens-v2.b737-le-smooth-glass-v1 g[data-lens-id] > path[data-optic-layer="soft-reflection"]{
   filter:none;
 }
