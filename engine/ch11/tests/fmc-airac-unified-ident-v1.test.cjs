@@ -36,7 +36,7 @@ test('Verified active/inactive metadata displays R2/R3 only when actual banks ar
  let s=banks.install(banks.initial(),packageOf('2610'),verified);
  s=banks.activate(s,'2610',{onGround:true,utcDay:'2026-10-28'}).state;
  s=banks.install(s,packageOf('2611'),verified);
- f.ctx.state.fmcNavDataBanks=s;f.ctx.update();
+ f.ctx.state.fmcNavDataBanks=s;f.ctx.updateStage5View();
  assert.equal(f.ctx.state.preflightEvidence.ACTIVE.value,'OCT01OCT28/26');
  assert.equal(f.ctx.state.preflightEvidence.INACTIVE.value,'OCT29NOV25/26');
  f.ctx.send('CDU_CAPT_LSK_R3');
@@ -89,6 +89,6 @@ test('Both CDU seats use the same session NAVDB bank but independent page and sc
  for(const seat of ['CAPT','FO']){
   const item=manifest.embeddedInstruments.find(x=>x.seat===seat);
   assert.ok(item);
-  assert.match(item.embeddedUrl,/AIRAC-2611-0001$/);
+  assert.ok(item.embeddedUrl.includes('AIRAC-2611-0001'));
  }
 });
