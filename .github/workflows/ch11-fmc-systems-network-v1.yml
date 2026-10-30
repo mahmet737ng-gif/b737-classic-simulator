@@ -9,6 +9,11 @@ on:
       - 'panel-mosaic-lab/cockpit/cdu-embed.css'
       - 'panel-mosaic-lab/cockpit/cdu-stage.html'
       - 'panel-mosaic-lab/cockpit/index.html'
+      - 'cdu-standalone-v6/data/page-definitions.json'
+      - 'cdu-standalone-v6/data/page-definitions.js'
+      - 'cdu-standalone-v6/engine/cdu-engine.js'
+      - 'cdu-standalone-v6/app.js'
+      - 'cdu-standalone-v6/tests/ch11-position-pages-v1.test.cjs'
       - '.github/workflows/ch11-fmc-systems-network-v1.yml'
   workflow_dispatch:
 jobs:
@@ -23,4 +28,5 @@ jobs:
       - run: node --check panel-mosaic-lab/cockpit/cdu-fmc-telemetry-v1.js
       - run: node --check panel-mosaic-lab/cockpit/fmc-systems-bridge-v1.js
       - run: node --test engine/ch11/tests/fmc-systems-network-v1.test.cjs
+      - run: node --test cdu-standalone-v6/tests/ch11-position-pages-v1.test.cjs
       - run: node tests/cdu-font-lock.test.cjs
