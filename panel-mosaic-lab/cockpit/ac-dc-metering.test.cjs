@@ -34,7 +34,7 @@ assert.ok(html.includes('ac-dc-metering-unified.js?v=MET-0005-ORIGINAL-SCALE'));
 
 /* MET-0005 regression: original, shared needle sprite and original OH10 panel ONLY. */
 const crypto=require('node:crypto');
-const gitBlob=crypto.createHash('sha1').update('blob '+Buffer.byteLength(sprite)+'\\0'+sprite).digest('hex');
+const gitBlob=crypto.createHash('sha1').update('blob '+Buffer.byteLength(sprite)+'\0'+sprite).digest('hex');
 assert.equal(gitBlob,'3706dc3134d1c7bb989d3de519bf64aa854e705a','the original OH10 needle asset must not change');
 assert.equal(model.meters.find(m=>m.id==='cps').tipRadius,141,'same sprite at longer photo-derived reach');
 const near=(a,b,label)=>assert.ok(Math.abs(a-b)<1e-7,label+': '+a+' versus '+b);
@@ -54,8 +54,8 @@ assert.throws(()=>model.angleForIndication('cps',NaN));
 assert.throws(()=>model.angleForAcVolts(100,{mode:'UNKNOWN'}));
 assert.match(ui,/b737:ac-dc-metering-readings/);
 assert.match(ui,/setReadings/);
-assert.match(ui,/ac-dc-metering-needle\\.svg\\?v=MET-0001/);
-assert.doesNotMatch(ui,/createElement\\(['"](?:canvas|circle)['"]/);
+assert.ok(ui.includes("new URL('./ac-dc-metering-needle.svg?v=MET-0001'"));
+assert.ok(!ui.includes("createElement('canvas'"));
 assert.ok(html.includes('ac-dc-metering-model.js?v=MET-0005-ORIGINAL-SCALE'));
 assert.ok(html.includes('ac-dc-metering-unified.js?v=MET-0005-ORIGINAL-SCALE'));
 console.log('PASS: one transparent AC/DC metering needle reused on four OH10 gauges with separate pivots/angles.');
