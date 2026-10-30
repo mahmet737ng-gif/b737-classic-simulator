@@ -11,9 +11,9 @@ assert.deepEqual(bodyScripts.slice(-integrationScripts.length),integrationScript
 assert.ok(read('panel-mosaic-lab/cockpit/cdu-bridge.js').includes("kind:'wheel-pan'"),'Shared FMC bridge also forwards wheel pan without changing CDU page engine');
 const telemetry=read('panel-mosaic-lab/cockpit/cdu-fmc-telemetry-v1.js');assert.ok(telemetry.includes('read-only')&&telemetry.includes('Chapter 11'),'FMC telemetry adapter must remain advisory-only and retain its scope');
 const approvedDepArrQueries={
- 'data/page-definitions.js':'data/page-definitions.js?v=DEPARR-FCOM-114032-0001',
- 'engine/cdu-engine.js?v=route-airport-20261023':'engine/cdu-engine.js?v=route-airport-20261023-DEPARR-FCOM-114032-0001',
- 'app.js?v=CH11-SCREEN-LEDGER-0001':'app.js?v=CH11-SCREEN-LEDGER-0001-DEPARR',
+ 'data/page-definitions.js?v=IDENT-POS-0001':'data/page-definitions.js?v=DEPARR-FCOM-114032-0001-IDENT-POS-0001',
+ 'engine/cdu-engine.js?v=route-airport-20261023-IDENT-POS-0001':'engine/cdu-engine.js?v=route-airport-20261023-IDENT-POS-0001-DEPARR-FCOM-114032-0001',
+ 'app.js?v=CH11-SCREEN-LEDGER-0001-IDENT-POS-0001':'app.js?v=CH11-SCREEN-LEDGER-0001-IDENT-POS-0001-DEPARR',
  'stage5-adapter.js':'stage5-adapter.js?v=DEPARR-FCOM-114032-0001',
  'stage6-selector.js?v=standalone-20261023b':'stage6-selector.js?v=standalone-20261023b-DEPARR-FCOM-114032-0001'
 };
