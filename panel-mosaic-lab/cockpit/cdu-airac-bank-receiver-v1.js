@@ -27,9 +27,10 @@
  root.addEventListener('message',e=>{
   if(e.origin!==root.location.origin||e.source!==root.parent||
      e.data?.type!=='b737:cdu-navdb-bank-snapshot-v1'||e.data.seat!==seat)return;
-  // Never take arbitrary source-backed display fields from the wire as truth.
-  // Rebuild them from explicitly verified bank records, if actually delivered.
-  const snap=e.data.snapshot;
+  // Never take pre-rendered ACTIVE/INACTIVE values from the wire.
+  // Both seats independently revalidate each source record and its cycle.
+  let snap;
+  try{snap=api.fcomIdent(e.data.bankRecords,e.data.asOf);}catch{return;}
   if(snap?.schema!==api.VERSION||!snap.calendarIsNotFmcInstall)return;
   last=snap;
   apply();update();
