@@ -51,14 +51,33 @@ function clearRoutePending(st){for(const key of Object.keys(st.pending)){if(isRo
 function choose(st,pages,page){if(!pages[page]){addMessage(st,'KEY INACTIVE');return;}st.page=page;st.message='';st.subpage=1;}
 function stageRouteField(st,cell){const f=cell.field; if(!f) return; if(st.scratch==='DELETE'){st.stagedRoute[f]=''; st.scratch=''; st.message=''; return;} if(!st.scratch){const existing=readValue(st,f,'RTE'); if(existing){st.scratch=String(existing)} else addMessage(st,'INVALID ENTRY'); return;} const value=clean(st.scratch); if(!validate(cell.format,value)){addMessage(st,'INVALID ENTRY');return;} const activeNow=st.active[f]??''; if(value===activeNow) delete st.stagedRoute[f]; else st.stagedRoute[f]=value; st.scratch=''; st.message=''; if(f==='RUNWAY'){const num=parseInt(value,10); if(!Number.isNaN(num)){st.ehsi.course=(num*10)%360;}}
 }
-function field(st,cell){const f=cell.field; if(!f)return; if(st.page==='RTE'&&isRouteField(f)){stageRouteField(st,cell);return;}
+function field(st,cell){const f=cell.field; if(!f)return;
+ if(st.depArrSelection?.referenceOnly&&['DEPARTURES','ARRIVALS'].includes(st.page)){addMessage(st,'NOT ON ROUTE');return;} if(st.page==='RTE'&&isRouteField(f)){stageRouteField(st,cell);return;}
  if(st.scratch==='DELETE'){ if(Object.prototype.hasOwnProperty.call(st.pending,f)||st.active[f]){st.pending[f]='';} st.scratch='';st.message='';return; }
  if(!st.scratch){const existing=readValue(st,f);if(existing){st.scratch=String(existing)}else addMessage(st,'INVALID ENTRY');return;}
  const value=clean(st.scratch); if(!validate(cell.format,value)){addMessage(st,'INVALID ENTRY');return;} if(st.active[f]===value)delete st.pending[f];else st.pending[f]=value; st.scratch='';st.message=''; }
 function activateStagedRoute(st,pages){ if(!hasStagedRoute(st)){addMessage(st,'KEY INACTIVE'); return;} for(const [f,v] of Object.entries(st.stagedRoute)){ if((st.active[f]??'')!==v) st.pending[f]=v; }
  st.stagedRoute={}; choose(st,pages,'ACTIVATE'); }
 function eraseRouteChanges(st,pages){ clearRoutePending(st); st.stagedRoute={}; st.scratch=''; st.message=''; choose(st,pages,'RTE'); }
+function selectDepArrAirport(st,pages,key){
+ const select={
+  L1:{source:'ORIGIN',mode:'DEP',page:'DEPARTURES'},
+  R1:{source:'ORIGIN',mode:'ARR',page:'ARRIVALS'},
+  R2:{source:'DEST',mode:'ARR',page:'ARRIVALS'},
+  L6:{source:'OTHER',mode:'DEP',page:'DEPARTURES'},
+  R6:{source:'OTHER',mode:'ARR',page:'ARRIVALS'}
+ }[key];
+ if(!select){addMessage(st,'KEY INACTIVE');return;}
+ const other=select.source==='OTHER';
+ const airport=clean(other?st.scratch:readValue(st,select.source,'RTE'));
+ if(!validate('ICAO',airport)){addMessage(st,'INVALID ENTRY');return;}
+ st.depArrSelection={airport,mode:select.mode,source:select.source,
+  referenceOnly:other,sourceFolio:'FCOM 11.40.32-33'};
+ if(other)st.scratch='';
+ choose(st,pages,select.page);
+}
 function pressLSK(st,pages,key){st.lastLSK=key;const def=pages[st.page];if(!def)return;
+ if(st.page==='DEP_ARR'){selectDepArrAirport(st,pages,key);return;}
  const [side,number]=[key[0],Number(key[1])];const item=def.rows[number-1]?.[side==='L'?0:1];
  if(!item){addMessage(st,'KEY INACTIVE');return;}
  if(st.page==='RTE' && key==='L5'){activateStagedRoute(st,pages);return;}
