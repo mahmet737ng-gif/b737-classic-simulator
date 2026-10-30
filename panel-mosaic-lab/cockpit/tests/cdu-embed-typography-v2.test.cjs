@@ -32,7 +32,7 @@ test('Source asset, keypad locations, and fonts remain outside scope of typograp
  for(const seat of ['CAPT','FO']){
   const item=cdus.find(x=>x.seat===seat);
   assert.ok(item,'missing '+seat+' CDU');
-  assert.match(item.embeddedUrl,/TYPE-REF-0003$/);
+  assert.match(item.embeddedUrl,/SCREEN-FIT-0004$/);
   assert.equal(item.nativeWidth,1199);
   assert.equal(item.nativeHeight,1312);
  }
@@ -43,7 +43,7 @@ test('Inline typography fallback and computed-style reports are mounted for both
  const html=read('panel-mosaic-lab/cockpit/cdu-stage.html');
  assert.match(html,/id="unified-cdu-font-profile-v4"/);
  assert.match(html,/#cdu-stage \.fmc-screen #fmc-lines\s*\{[^}]*font-size:54px!important;/s);
- assert.match(html,/cdu-font-diagnostics-v3\.js\?v=CDU-SCREEN-FIT-0004/);
+ assert.match(html,/cdu-font-diagnostics-v4\.js\?v=CDU-SCREEN-FIT-0004/);
  const js=read('panel-mosaic-lab/cockpit/cdu-font-diagnostics-v4.js');
  assert.match(js,/getComputedStyle/);
  assert.match(js,/kind:'typography'/);
