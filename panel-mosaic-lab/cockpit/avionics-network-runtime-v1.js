@@ -77,6 +77,25 @@
   // An ECU fuel-flow indication is NOT a fuel-quantity summation signal.
   // Fuel quantity stays UNKNOWN until an authoritative summation adapter is attached.
  }
+ function auxiliarySystems(){
+  const ecu=snapshotFns.ecu();
+  if(!ecu)return;
+  const aircraft=ecu.aircraft;
+  if(aircraft&&typeof aircraft==='object')
+   send('FLIGHT_CONTEXT','flightcontext.state',{
+    pressureAltitudeFt:aircraft.pressureAltitudeFt??null,iasKt:aircraft.iasKt??null,
+    oatC:aircraft.oatC??null,massKg:aircraft.massKg??null,onGround:aircraft.onGround??null,
+    source:'ISN13_18_TRAINING_FLIGHT_CONDITIONS_NOT_ADC'},'TRAINING_SCENARIO');
+  if(ecu.apu&&typeof ecu.apu==='object')
+   send('APU','apu.state',{...ecu.apu,source:'ISN13_18_APU_TRAINING_MODEL'},'TRAINING_SCENARIO');
+  if(ecu.hydraulics&&typeof ecu.hydraulics==='object')
+   send('HYDRAULICS','hydraulics.state',{...ecu.hydraulics,
+    source:'ISN13_18_ENGINE_DRIVEN_PRESSURE_TRAINING_MODEL'},'TRAINING_SCENARIO');
+  const pumps=root.B737ISNCockpitV1?.getState?.()?.state?.pumps;
+  if(pumps&&typeof pumps==='object')
+   send('FUEL','fuel.pumps',{observations:pumps,
+    note:'INCLUDES_HYDRAULIC_PUMPS; EQUIPMENT_FEED_ASSIGNMENTS_UNVERIFIED'},'TRAINING_SCENARIO');
+ }
  function fuelQuantity(){
   const fuel=snapshotFns.ecu()?.fuel;
   const t=fuel?.tanksKg;
@@ -118,7 +137,7 @@
   send('CLOCK','clock.utc',{isoUtc:time.toISOString(),epochMs:time.valueOf()},'LIVE_SYSTEM');
  }
  function refresh(){
-  for(const f of [electrical,irs,mcp,fmcFeedsAndRoute,engine,fuelQuantity,airGround,pneumatics,antiice,profile,clock])try{f()}catch(e){
+  for(const f of [electrical,irs,mcp,fmcFeedsAndRoute,engine,auxiliarySystems,fuelQuantity,airGround,pneumatics,antiice,profile,clock])try{f()}catch(e){
    faults.push({source:f.name,error:String(e.message||e)});if(faults.length>32)faults.shift();
   }
   return network.audit();
@@ -148,7 +167,7 @@
   getDiagnostics:()=>({...network.audit(),adapterErrors:clone(faults)}),
   getFmcInputs:()=>computer.getState(),subscribe:network.subscribe,
   connectExternal,refresh,topics:network.topics,
-  supportedSources:Object.freeze({LIVE:['ELECTRICAL','IRS','MCP','AFDS','AUTOTHROTTLE','FMC_FEEDS','CDU','ENGINE','FUEL','PNEUMATICS','ANTIICE','AIRGROUND','PROFILE','CLOCK'],
+  supportedSources:Object.freeze({LIVE:['ELECTRICAL','IRS','MCP','AFDS','AUTOTHROTTLE','FMC_FEEDS','CDU','ENGINE','FUEL','FLIGHT_CONTEXT','APU','HYDRAULICS','PNEUMATICS','ANTIICE','AIRGROUND','PROFILE','CLOCK'],
    AWAITING_SIGNAL:['ADC','GPS','VHF_NAV','DME','TAT','NAVDB','PERFDB','ACARS','CB']})
  });
  // Old FMC/IRS frontend and driver remain the authoritative writers.
