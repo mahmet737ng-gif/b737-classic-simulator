@@ -1,0 +1,130 @@
+{
+  "schema": "b737.oh10.screenshot-photoarc-fit.v1",
+  "reference": "User-provided screenshot from 2026-10-30 1920x1080; red circular overlays represent requested INNER tick-tip trajectory. Measured with robust least-squares on red pixels, not by assuming decorative bezel centers.",
+  "sourcePhoto": "panel-mosaic-lab/assets/locked/2026-10-23/OH10-ELEC-LOSSLESS-9a1ca4d6cfb2.png",
+  "sourcePhotoSha256": "9a1ca4d6cfb277ec1404f3a464e957d81be9d9689a0810883364342d57b0f1ea",
+  "screenshots": {
+    "width": 1920,
+    "height": 1080,
+    "source": "user uploaded image(20261030-143039).png",
+    "redMask": "R>150;R>1.5G;R>1.7B;G<120;B<120",
+    "fit": "robust least squares circular center/radius, residual median circa 1.2 screenshot pixels"
+  },
+  "screenshotToNative": {
+    "xOriginScreen": 216.8,
+    "yOriginScreen": 234,
+    "sourcePixelsPerScreenX": 1.1086474501108647,
+    "sourcePixelsPerScreenY": 1.075268817204301,
+    "scaleX": 0.902,
+    "scaleY": 0.93,
+    "basis": "Approximate placement derived from visible OH10 screenshot boundaries and atlas 1095x1436 native/496x672 placement. Requires screenshot-to-native image affine validation before final pixel certification."
+  },
+  "arcMeasurements": {
+    "dcAmps": {
+      "screenCircle": [
+        494.063,
+        487.053,
+        148.02
+      ],
+      "nativeCircle": [
+        307.397,
+        280.76,
+        167.86
+      ],
+      "angleMin": -46.66,
+      "angleMax": 44.26,
+      "redFitRmsPx": 1.55,
+      "seam": {
+        "screenXMid": 494.5,
+        "screenYAtMid": 404.03,
+        "quadPer110": 21.1,
+        "linearPer110": 1.38
+      }
+    },
+    "cps": {
+      "screenCircle": [
+        922.055,
+        469.977,
+        131.122
+      ],
+      "nativeCircle": [
+        781.896,
+        261.228,
+        148.53
+      ],
+      "angleMin": -54.21,
+      "angleMax": 46.78,
+      "redFitRmsPx": 1.57,
+      "seam": {
+        "screenXMid": 922,
+        "screenYAtMid": 402.04,
+        "quadPer110": 23.42,
+        "linearPer110": 0.06
+      }
+    },
+    "dcVolts": {
+      "screenCircle": [
+        497.115,
+        894.433,
+        157.538
+      ],
+      "nativeCircle": [
+        310.778,
+        719.453,
+        178.742
+      ],
+      "angleMin": -45.5,
+      "angleMax": 44.7,
+      "redFitRmsPx": 1.57,
+      "seam": {
+        "screenXMid": 494.5,
+        "screenYAtMid": 807.03,
+        "quadPer110": 22.32,
+        "linearPer110": 2.88
+      }
+    },
+    "acVolts": {
+      "screenCircle": [
+        925.147,
+        883.309,
+        138.487
+      ],
+      "nativeCircle": [
+        785.318,
+        706.045,
+        156.828
+      ],
+      "angleMin": -51.4,
+      "angleMax": 51.16,
+      "redFitRmsPx": 1.58,
+      "seam": {
+        "screenXMid": 921.5,
+        "screenYAtMid": 805.67,
+        "quadPer110": 26.53,
+        "linearPer110": -1.36
+      }
+    }
+  },
+  "operations": {
+    "reuseExistingNeedleSHA1": "3706dc3134d1c7bb989d3de519bf64aa854e705a",
+    "spritePivot": [
+      256,
+      256
+    ],
+    "spriteTip": [
+      256,
+      40
+    ],
+    "spriteTipRadius": 216,
+    "showNeedleOnlyAboveCurvedBlueFace": true,
+    "angleHardStops": true
+  },
+  "qa": {
+    "screenshotRedTraceFit": true,
+    "nativeSourceRegistrationVerified": false,
+    "physicalShaftCertified": false,
+    "allTickMarksPhysicallyValidated": false,
+    "sourceAssetUnchanged": true
+  },
+  "note": "Native centers and arc bounds are screenshot-derived provisional measurements. Never call them mechanically certified or pixel-perfect until native source image and browser overlay are compared."
+}
