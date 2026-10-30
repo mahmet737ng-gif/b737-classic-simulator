@@ -1,6 +1,6 @@
 {
   "schema": "b737.p5-13.photo-stage.geometry.v1",
-  "version": "UPD-2026-10-30-ACDC-03-USER-RED-ARC",
+  "version": "UPD-2026-10-30-ACDC-04-NATIVE-ELLIPSE",
   "source": {
     "path": "../panel-mosaic-lab/assets/locked/2026-10-23/OH10-ELEC-LOSSLESS-9a1ca4d6cfb2.png",
     "nativeWidth": 1095,
@@ -12,32 +12,36 @@
   "installation": "OH-10, preliminary atlas geometry rejected. Do not auto-mount into unified.",
   "markers": {
     "dcAmps": {
-      "x": 307.397,
-      "y": 280.76,
-      "r": 167.86,
+      "x": 307.386918,
+      "y": 272.1,
+      "r": 164.101996,
       "type": "meter",
-      "confidence": "OWNER_SCREENSHOT_ARC_FIT_PROVISIONAL_NATIVE_REGISTRATION"
+      "confidence": "SCREEN_RED_CIRCLE_PROJECTED_NATIVE_ELLIPSE_PROVISIONAL",
+      "rY": 159.16129
     },
     "cpsFreq": {
-      "x": 781.896,
-      "y": 261.228,
-      "r": 148.53,
+      "x": 781.879157,
+      "y": 253.73871,
+      "r": 145.368071,
       "type": "meter",
-      "confidence": "OWNER_SCREENSHOT_ARC_FIT_PROVISIONAL_NATIVE_REGISTRATION"
+      "confidence": "SCREEN_RED_CIRCLE_PROJECTED_NATIVE_ELLIPSE_PROVISIONAL",
+      "rY": 140.991398
     },
     "dcVolts": {
-      "x": 310.778,
-      "y": 719.453,
-      "r": 178.742,
+      "x": 310.77051,
+      "y": 710.143011,
+      "r": 174.654102,
       "type": "meter",
-      "confidence": "OWNER_SCREENSHOT_ARC_FIT_PROVISIONAL_NATIVE_REGISTRATION"
+      "confidence": "SCREEN_RED_CIRCLE_PROJECTED_NATIVE_ELLIPSE_PROVISIONAL",
+      "rY": 169.395699
     },
     "acVolts": {
-      "x": 785.318,
-      "y": 706.045,
-      "r": 156.828,
+      "x": 785.307095,
+      "y": 698.18172,
+      "r": 153.533259,
       "type": "meter",
-      "confidence": "OWNER_SCREENSHOT_ARC_FIT_PROVISIONAL_NATIVE_REGISTRATION"
+      "confidence": "SCREEN_RED_CIRCLE_PROJECTED_NATIVE_ELLIPSE_PROVISIONAL",
+      "rY": 148.910753
     },
     "dcSelector": {
       "x": 306,
@@ -82,6 +86,6 @@
     "acceptanceCenterMaxErrorPx": 0.5,
     "sizeMaxErrorPx": 0.5
   },
-  "sourceOfMeterCenters": "engine/instruments/oh10-user-arc-fit-v1.json (owner screenshot red arcs; affine screenshot→native registration provisional)",
-  "notes": "Per-meter r is now the native radius to the user's RED inner-tick arc (not bezel rim). Original blue lower foreground must hide needle completely. Locked bitmap untouched."
+  "sourceOfMeterCenters": "engine/instruments/oh10-user-arc-fit-v1.json robust screenshot red circle projection, native X/Y radii distinct",
+  "notes": "Each native meter has separate x radius r and y radius rY; no new gauge/needle. Earlier one-radius and y-pivot conversion were wrong. Still pending browser pixel QA."
 }
