@@ -1,0 +1,50 @@
+{
+  "schema": "B737_AIRAC_IMPORT_STATUS_V1",
+  "generatedOnUtcDate": "2026-10-31",
+  "softwareScope": "B737 Classic trainer",
+  "sourceCalendar": "EUROCONTROL RAD AIRAC 2026",
+  "calendar": {
+    "2610": {
+      "effective": "2026-10-01",
+      "lastValid": "2026-10-28",
+      "expiresExclusive": "2026-10-29"
+    },
+    "2611": {
+      "effective": "2026-10-29",
+      "lastValid": "2026-11-25",
+      "expiresExclusive": "2026-11-26"
+    },
+    "2612": {
+      "effective": "2026-11-26",
+      "lastValid": "2026-12-23",
+      "expiresExclusive": "2026-12-24"
+    }
+  },
+  "preservedPrivate2610": {
+    "cycle": "2610",
+    "revision": 1,
+    "marker": "//AIRAC Cycle : 2610 (01/OCT/2026 - 29/OCT/2026) - Ver.1",
+    "status": "PRIVATE_SOURCE_PRESENT_REFERENCE_ONLY",
+    "fmcActivated": false,
+    "fmcExecutable": false,
+    "publicDataFiles": [],
+    "dataLicense": "USER-SUPPLIED_RESTRICTED_DO_NOT_REDISTRIBUTE"
+  },
+  "requested2611": {
+    "cycle": "2611",
+    "status": "SOURCE_NOT_PROVIDED",
+    "privateArchiveImported": false,
+    "sourceIntegrityVerified": false,
+    "procedureInterpretationValidated": false,
+    "fmcInstalled": false,
+    "fmcExecutable": false,
+    "publicDataFiles": []
+  },
+  "fmcIdentCurrent": {
+    "active": null,
+    "inactive": null,
+    "reason": "NO_INSTALLED_VALIDATED_FMC_NAVDB_BANKS"
+  },
+  "policy": "AIRAC calendar entries are NOT actual FMC navigation datasets. Do not fabricate SID/STAR/FIX entries or display 2611 as installed.",
+  "nextPrivateSourceRequirement": "Obtain the licensed AIRAC 2611 PMDG-compatible archive; run private staged decoder and source/geometry/procedure regression; preserve 2610 separately and never ship licensed database in public GitHub Pages."
+}
