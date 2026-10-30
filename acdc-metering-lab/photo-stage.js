@@ -219,9 +219,9 @@ $("calibration").addEventListener("pointerdown",function(ev){
  var t=ev.target.closest("[data-marker]");if(!t)return;
  var id=t.getAttribute("data-marker"),pt=pointFromEvent(ev);
  state.selected=id;dragging={id:id,dx:pt.x-state.geometry[id].x,dy:pt.y-state.geometry[id].y};
- moved=false;t.setPointerCapture(ev.pointerId);ev.preventDefault();$("selected").textContent=id;showMarkers();
+ moved=false;$("board").setPointerCapture(ev.pointerId);ev.preventDefault();$("selected").textContent=id;showMarkers();
 });
-$("calibration").addEventListener("pointermove",function(ev){
+$("board").addEventListener("pointermove",function(ev){
  if(!dragging)return;
  var p=pointFromEvent(ev),v=state.geometry[dragging.id];
  v.x=Math.max(0,Math.min(W,Math.round((p.x-dragging.dx)*2)/2));
@@ -229,8 +229,8 @@ $("calibration").addEventListener("pointermove",function(ev){
  render();
 });
 function stopDrag(){if(!dragging)return;var id=dragging.id;dragging=null;if(moved){safeStore();log("Calibrated "+id+" → "+JSON.stringify(state.geometry[id]));}}
-$("calibration").addEventListener("pointerup",stopDrag);
-$("calibration").addEventListener("pointercancel",stopDrag);
+$("board").addEventListener("pointerup",stopDrag);
+$("board").addEventListener("pointercancel",stopDrag);
 $("artwork").addEventListener("click",function(ev){
  if(state.calibration)return;
  var t=ev.target.closest("[data-part]");if(!t)return;
