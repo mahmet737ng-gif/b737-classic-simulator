@@ -108,6 +108,55 @@ async function finishSelection(clear=false){
   core.choose(state,pages,'DEP_ARR');state.stage6View={mode:'MENU',page:1};state.message='';updates();
  }catch(e){f.mode='ERROR';f.error=e.message;error(e.message)}
 }
+function lookupUrl(kind,field,value){
+ return '/api/stage6/navdata?kind='+encodeURIComponent(kind)+'&'+field+'='+encodeURIComponent(value);
+}
+async function validateRteEntry(k){
+ const field=state.page==='RTE'?({LSK_L1:'ORIGIN',LSK_R1:'DEST',LSK_L3:'RUNWAY'})[k]:null;
+ const match=state.page==='FLIGHT_PLAN'?/^LSK_([LR])([1-4])$/.exec(k):null;
+ const name=field||(match?(match[1]==='L'?'VIA':'TO')+match[2]:null);
+ if(!name||!state.scratch||state.scratch==='DELETE')return false;
+ const input=String(state.scratch).trim().toUpperCase();
+ const type=field==='ORIGIN'||field==='DEST'?'ICAO':
+   field==='RUNWAY'?'RUNWAY':name.startsWith('VIA')?'AIRWAY':'WAYPOINT';
+ if(!core.validate(type,input))return false;
+ if(lookupBusy){error('NAV DATA LOOKUP BUSY');return true}
+ lookupBusy=true;const ticket=++lookupSerial,page=state.page,previous=state.scratch;
+ state.message='VERIFY NAV DATA';updates();
+ try{
+  let requests=[];
+  if(field==='ORIGIN'||field==='DEST')requests=[lookupUrl('airport','ident',input)];
+  else if(field==='RUNWAY'){
+   const airport=core.readValue(state,'ORIGIN','RTE');
+   if(!validAirport(airport))throw Error('ENTER ORIGIN FIRST');
+   requests=[lookupUrl('runways','airport',airport)];
+  }else if(name.startsWith('VIA'))requests=[lookupUrl('airways','ident',input)];
+  else requests=[lookupUrl('waypoints','ident',input),lookupUrl('navaids','ident',input)];
+  const results=await Promise.all(requests.map(u=>json(u)));
+  if(ticket!==lookupSerial||page!==state.page||previous!==state.scratch)return true;
+  for(const value of results)if(value.airac!=='2610'||value.mode!=='SOURCE_REFERENCE_ONLY'||
+   value.fmc_executable!==false||value.lookup?.fmc_executable!==false||
+   !Array.isArray(value.lookup?.rows))throw Error('NAV DATA SOURCE REJECTED');
+  let exact;
+  if(field==='RUNWAY'){
+   const entries=results[0].lookup;
+   if(entries.has_more)throw Error('RUNWAY CATALOG INCOMPLETE');
+   exact=entries.rows.filter(r=>r.runway_ident===input);
+  }else if(field==='ORIGIN'||field==='DEST')exact=results[0].lookup.rows.filter(r=>r.icao===input);
+  else if(name.startsWith('VIA'))exact=results[0].lookup.rows.filter(r=>r.ident===input);
+  else {
+   if(results.some(r=>r.lookup.has_more))throw Error('DUPLICATE WAYPOINT');
+   exact=results.flatMap(r=>r.lookup.rows).filter(r=>r.ident===input);
+  }
+  if(!exact.length)throw Error('NOT IN NAV DATA');
+  if(!field&&!name.startsWith('VIA')&&exact.length!==1)throw Error('DUPLICATE WAYPOINT');
+  if((field==='ORIGIN'||field==='DEST')&&exact.length!==1)throw Error('AMBIGUOUS AIRPORT');
+  state.message='';core.press(state,pages,'CDU_CAPT_'+k);updates();
+ }catch(e){
+  if(ticket===lookupSerial&&page===state.page&&previous===state.scratch)error(e.message);
+ }finally{lookupBusy=false}
+ return true;
+}
 function handlesStage6Key(k){
  if(lookupBusy&&/^LSK_[LR][1-6]$/.test(k)){error('NAV DATA LOOKUP BUSY');return true;}
  if((state.page==='RTE'||state.page==='FLIGHT_PLAN')&&state.scratch&&state.scratch!=='DELETE'){
