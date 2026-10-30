@@ -1,11 +1,11 @@
 {
   "schema": "b737.owner-additive-runtime-lock/1",
-  "id": "LE-PHOTOLENS-V3-LOAD-SAFE-20261030",
-  "ownerAuthorization": "Follow-up to owner-requested LE lens redesign: fix the failure to load while preserving prior red-zone frozen assets",
+  "id": "LE-PHOTOLENS-V4-REAL-OPTICAL-GLASS-20261030",
+  "ownerAuthorization": "Owner explicit 2026-10-30 authorization to unlock approved LE lamp front-end, eliminate the painted flat lamp texture visible in OFF, apply smooth realistic light in ON, then re-lock",
   "preservedLock": "engine/locks/le-devices-photolens-final-v2.json",
   "asset": "panel-mosaic-lab/le-devices/photo-lens-v3.js",
-  "assetGitBlobSha": "13aaafbc016cebb00e0ee129cf86ce7af11b5cdb",
-  "scope": "bounded observer and remount-safe adapter for 26 existing LE lenses, plus OH22 message race guard",
+  "assetGitBlobSha": "e31b19ae130be22384304ba0d7d9a9d0ea8b5e6a",
+  "scope": "Owner-authorized dark glass optical underlay for every LE aperture (OFF) and smooth luminance face (ON), 26 preserved click targets, timing and control",
   "neverModify": [
     "panel-mosaic-lab/le-devices/panel.js",
     "panel-mosaic-lab/le-devices/photo-lens-v2.js",
@@ -17,7 +17,11 @@
     "LE_PHOTOLENS_V2_LOCK",
     "26_LENS_PIXEL_QA",
     "UNIFIED_IFRAME_LOAD",
-    "NO_NEW_BROWSER_ERROR"
+    "NO_NEW_BROWSER_ERROR",
+    "26_DARK_OFF_GLASSES",
+    "SMOOTH_LIT_GLASS",
+    "BRIGHT_DIM",
+    "OWNER_RELOCK"
   ],
-  "status": "LOCKED_AFTER_CORRECTION"
+  "status": "RELOCKED_AFTER_OWNER_AUTHORIZED_OPTICAL_CORRECTION"
 }
