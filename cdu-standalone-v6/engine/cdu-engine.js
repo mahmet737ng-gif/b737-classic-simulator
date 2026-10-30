@@ -79,13 +79,13 @@ function press(st,pages,key,options={}){const k=key.replace(/^CDU_CAPT_/,'');st.
  if(k.startsWith('KEY_')){ if(st.message)st.message=''; let chr=k.slice(4); const sym={DOT:'.',SP:' ',SLASH:'/'}; if(chr==='PLUS_MINUS'){ if(st.scratch.startsWith('-'))st.scratch='+'+st.scratch.slice(1); else if(st.scratch.startsWith('+'))st.scratch='-'+st.scratch.slice(1); else st.scratch='-'+st.scratch; return st; } chr=sym[chr]??chr; if(st.scratch==='DELETE')st.scratch=''; if(st.scratch.length<24)st.scratch+=chr; return st; }
  const routes={INIT_REF:'INDEX',RTE:'RTE',CLB:'CLB',CRZ:'CRZ',DES:'DES',MENU:'MENU',LEGS:'LEGS',DEP_ARR:'DEP_ARR',HOLD:'HOLD',PROG:'PROG',N1_LIMIT:'N1_LIMIT',FIX:'FIX'};
  if(routes[k]){choose(st,pages,routes[k]);return st;}
- if(k==='NEXT_PAGE'||k==='PREV_PAGE'){ const pairs={RTE:['RTE','FLIGHT_PLAN'],FLIGHT_PLAN:['RTE','FLIGHT_PLAN'],PROG:['PROG','PROG2'],PROG2:['PROG','PROG2']}; if(pairs[st.page]){ const page=pairs[st.page];choose(st,pages,st.page===page[0]?page[1]:page[0]); }else addMessage(st,'END OF PAGES'); return st; }
+ if(k==='NEXT_PAGE'||k==='PREV_PAGE'){ const positions=['POS_INIT','POS_REF','POS_SHIFT']; if(positions.includes(st.page)){const offset=k==='NEXT_PAGE'?1:-1;choose(st,pages,positions[(positions.indexOf(st.page)+offset+positions.length)%positions.length]);return st;} const pairs={RTE:['RTE','FLIGHT_PLAN'],FLIGHT_PLAN:['RTE','FLIGHT_PLAN'],PROG:['PROG','PROG2'],PROG2:['PROG','PROG2']}; if(pairs[st.page]){ const page=pairs[st.page];choose(st,pages,st.page===page[0]?page[1]:page[0]); }else addMessage(st,'END OF PAGES'); return st; }
  addMessage(st,'KEY INACTIVE');return st;}
 function pairLine(left='',right=''){ let l=String(left).slice(0,11); let r=String(right).slice(0,11); return l.padEnd(12,' ')+r.padStart(12,' '); }
 function shown(st,val,pageName=''){return String(val??'').replace(/\{([A-Z_0-9]+)\}/g,(_,key)=>readValue(st,key,pageName)||'----');}
 function render(st,pages){const p=pages[st.page];if(!p)return Array(14).fill('');const lines=Array(14).fill('');const tag=(pendingCount(st)>0)?'MOD ':'ACT ';
  const title=(['MENU','INDEX','IDENT','POS_INIT','MESSAGES','MSG_RECALL','NAV_DATA','NAV_OPTIONS','SUPP_NAV','POS_REF','FIX','PROG','PROG2','HOLD','DEP_ARR','DEPARTURES','ARRIVALS'].includes(st.page)?'':tag)+p.title;
- lines[0]=title.slice(0,18).padEnd(20,' ')+('1/'+p.page_count).padStart(4,' ');
+ lines[0]=title.slice(0,18).padEnd(20,' ')+((p.page_number||1)+'/'+p.page_count).padStart(4,' ');
  for(let i=0;i<6;i++){
    const pair=p.rows[i];const left=pair[0],right=pair[1];
    lines[1+i*2]=pairLine(left.label,right.label);
