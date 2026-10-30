@@ -20,6 +20,9 @@
   if(result.meterDamaged)return null;
   if(result.generator){
    const p=core.snapshot().plants[result.generator];
+   // A remembered 115V is NOT evidence of continuing normal excitation after
+   // GCR opens, disconnect, generator failure or loss of drive.
+   if(p.gcr==='OPEN'||p.drive==='STOPPED'||p.drive==='DISCONNECTED'||p.failed)return null;
    if(p.normalVolts!==null)return p.normalVolts;
   }
   const read=selectors.getReadings();
