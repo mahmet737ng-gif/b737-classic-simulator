@@ -11,12 +11,12 @@
  // See engine/instruments/native-bezel-centre-evidence-v1.json.
  // Initial angles now represent provisional cold-dark mechanical resting positions. 
  // DC AMPS is center-zero; unpowered AC/DC voltmeters rest at their leftmost stop pending exact source-tick survey.
- const source=Object.freeze({piece:'OH10',width:1095,height:1436,tipRadius:85,spriteTipRadius:216,registration:'OWNER_SCREENSHOT_RED_ARC_FIT_NOT_SHAFT_CERTIFIED'});
+ const source=Object.freeze({piece:'OH10',width:1095,height:1436,tipRadius:85,spriteTipRadius:216,registration:'OWNER_SCREENSHOT_RED_ARC_FIT_NATIVE_ELLIPSE_NOT_SHAFT_CERTIFIED'});
  const meters=Object.freeze([
-  Object.freeze({id:'dcAmps',label:'DC AMPS',x:307.397,y:280.760,tipRadius:167.860,initialAngle:0}),
-  Object.freeze({id:'cps',label:'CPS',x:781.896,y:261.228,tipRadius:148.530,initialAngle:-54.21}),
-  Object.freeze({id:'dcVolts',label:'DC VOLTS',x:310.778,y:719.453,tipRadius:178.742,initialAngle:-45.50}),
-  Object.freeze({id:'acVolts',label:'A.C.',x:785.318,y:706.045,tipRadius:156.828,initialAngle:-51.40})
+  Object.freeze({id:'dcAmps',label:'DC AMPS',x:307.386918,y:272.100000,tipRadius:164.101996,tipRadiusX:164.101996,tipRadiusY:159.161290,initialAngle:0}),
+  Object.freeze({id:'cps',label:'CPS',x:781.879157,y:253.738710,tipRadius:145.368071,tipRadiusX:145.368071,tipRadiusY:140.991398,initialAngle:-54.21}),
+  Object.freeze({id:'dcVolts',label:'DC VOLTS',x:310.770510,y:710.143011,tipRadius:174.654102,tipRadiusX:174.654102,tipRadiusY:169.395699,initialAngle:-45.50}),
+  Object.freeze({id:'acVolts',label:'A.C.',x:785.307095,y:698.181720,tipRadius:153.533259,tipRadiusX:153.533259,tipRadiusY:148.910753,initialAngle:-51.40})
  ]);
 
  // Source-original native OH10 white graduation intersections, not metal
@@ -94,8 +94,10 @@
  function tipPoint(id,bearing){
   const meter=meters.find(m=>m.id===id);
   if(!meter)throw Error('Unknown OH10 tip: '+id);
-  const a=limitAngle(id,bearing)*Math.PI/180, r=meter.tipRadius||source.tipRadius;
-  return Object.freeze({x:meter.x+r*Math.sin(a),y:meter.y-r*Math.cos(a),radius:r,angle:limitAngle(id,bearing)});
+  const a=limitAngle(id,bearing)*Math.PI/180;
+  const rx=meter.tipRadiusX||meter.tipRadius||source.tipRadius;
+  const ry=meter.tipRadiusY||meter.tipRadius||source.tipRadius;
+  return Object.freeze({x:meter.x+rx*Math.sin(a),y:meter.y-ry*Math.cos(a),radiusX:rx,radiusY:ry,angle:limitAngle(id,bearing)});
  }
  // User's screenshot measured four red inner-tick arcs. The cover is a
  // curved BLUE physical foreground. The existing white needle is clipped to
@@ -121,13 +123,13 @@
  function blackWindowPath(id){
   const meter=meters.find(m=>m.id===id),edge=arcPhoto.occlusion[id];
   if(!meter||!edge)throw Error('Unknown gauge face occlusion: '+id);
-  const scale=source.spriteTipRadius/meter.tipRadius,coords=[];
+  const scaleX=source.spriteTipRadius/(meter.tipRadiusX||meter.tipRadius),scaleY=source.spriteTipRadius/(meter.tipRadiusY||meter.tipRadius),coords=[];
   // Native x to 512x512 centered sprite coordinates, sampling the traced
   // black/blue interface at 33 x positions (less than 0.1px curve error).
   for(let i=0;i<=64;i++){
-   const spriteX=i*8,nativeX=meter.x+(spriteX-256)/scale;
+   const spriteX=i*8,nativeX=meter.x+(spriteX-256)/scaleX;
    const nativeY=blueBoundaryAt(id,nativeX);
-   coords.push([spriteX,256+(nativeY-meter.y)*scale]);
+   coords.push([spriteX,256+(nativeY-meter.y)*scaleY]);
   }
   const bottom=coords.slice().reverse().map(p=>'L '+p[0].toFixed(3)+' '+p[1].toFixed(3)).join(' ');
   return 'M 0 0 L 512 0 '+bottom+' Z';
@@ -152,8 +154,8 @@
  };
  function placement(piece,meter){
   if(!piece||!meters.includes(meter)||![piece.x,piece.y,piece.w,piece.h].every(Number.isFinite)||piece.w<=0||piece.h<=0)throw Error('Invalid OH10 needle placement');
-  const nativeSize=512*(meter.tipRadius||source.tipRadius)/source.spriteTipRadius;
-  const sizeX=nativeSize*piece.w/source.width,sizeY=nativeSize*piece.h/source.height;
+  const sizeX=512*(meter.tipRadiusX||meter.tipRadius||source.tipRadius)/source.spriteTipRadius*piece.w/source.width;
+  const sizeY=512*(meter.tipRadiusY||meter.tipRadius||source.tipRadius)/source.spriteTipRadius*piece.h/source.height;
   return {x:piece.x+meter.x*piece.w/source.width,y:piece.y+meter.y*piece.h/source.height,size:sizeX,sizeX,sizeY};
  }
  return Object.freeze({source,meters,angle,placement,photoScale,bearingForReading,readingForBearing,angleForIndication,angleForAcVolts,indicationModes,bounds,limitAngle,tipPoint,motion,advanceNeedle,arcPhoto,blueBoundaryAt,blackWindowPath});
