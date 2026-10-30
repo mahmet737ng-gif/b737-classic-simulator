@@ -27,6 +27,13 @@ main,.cockpit-stack,.cockpit{display:block!important;width:1199px!important;max-
   font-size:2.00cqw!important;
   line-height:1!important;
 }
+/* Scratchpad is near the bottom edge of the original screen mask: keep its
+ * baseline visible instead of clipping it against the unchanged photo bezel. */
+.fmc-screen .fmc-lines .fmc-line.scratch{
+  height:5.3%!important;
+  font-size:2.30cqw!important;
+  line-height:1!important;
+}
 .fmc-screen .fmc-lines .fmc-line,
 .fmc-screen .fmc-lines .fmc-line *{
   color:#29ff31!important;
