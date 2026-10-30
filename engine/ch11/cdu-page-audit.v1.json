@@ -1,0 +1,6059 @@
+{
+  "schema": "b737-ch11-cdu-page-provenance/1",
+  "date": "2026-10-30",
+  "source": "Sepehran B737 Classic 300/400/500 FCOM Vol2 Ch11",
+  "copyright": "No scanned source pages, proprietary figures or proprietary manual tables published",
+  "summary": {
+    "fcomChapterPDFPages": 409,
+    "fcomRange": [
+      1414,
+      1822
+    ],
+    "fcomTOCPageCandidates": 45,
+    "existingInteractiveTrainingPageDefinitions": 37,
+    "sourceFiguresFullyManuallyValidated": 0,
+    "provenAirframeSpecificFmcBusWires": 0
+  },
+  "fcomTOCCandidates": [
+    {
+      "title": "Preflight Page Sequence",
+      "folio": "11.40.1",
+      "pdfPage": 1553,
+      "section": "11.40",
+      "sourceScreenStatus": "SOURCE_TOC_LOCATED_FIELD_LSK_AUDIT_PENDING",
+      "variant": "UNVERIFIED"
+    },
+    {
+      "title": "Page Entries and Sequence",
+      "folio": "11.40.3",
+      "pdfPage": 1555,
+      "section": "11.40",
+      "sourceScreenStatus": "SOURCE_TOC_LOCATED_FIELD_LSK_AUDIT_PENDING",
+      "variant": "UNVERIFIED"
+    },
+    {
+      "title": "Initialization/Reference Index Page",
+      "folio": "11.40.4",
+      "pdfPage": 1556,
+      "section": "11.40",
+      "sourceScreenStatus": "SOURCE_TOC_LOCATED_FIELD_LSK_AUDIT_PENDING",
+      "variant": "UNVERIFIED"
+    },
+    {
+      "title": "Identification Page",
+      "folio": "11.40.8",
+      "pdfPage": 1560,
+      "section": "11.40",
+      "sourceScreenStatus": "SOURCE_TOC_LOCATED_FIELD_LSK_AUDIT_PENDING",
+      "variant": "UNVERIFIED"
+    },
+    {
+      "title": "Position Initialization Page",
+      "folio": "11.40.11",
+      "pdfPage": 1563,
+      "section": "11.40",
+      "sourceScreenStatus": "SOURCE_TOC_LOCATED_FIELD_LSK_AUDIT_PENDING",
+      "variant": "UNVERIFIED"
+    },
+    {
+      "title": "Position Reference Page",
+      "folio": "11.40.13",
+      "pdfPage": 1565,
+      "section": "11.40",
+      "sourceScreenStatus": "SOURCE_TOC_LOCATED_FIELD_LSK_AUDIT_PENDING",
+      "variant": "UNVERIFIED"
+    },
+    {
+      "title": "Route Page",
+      "folio": "11.40.19",
+      "pdfPage": 1571,
+      "section": "11.40",
+      "sourceScreenStatus": "SOURCE_TOC_LOCATED_FIELD_LSK_AUDIT_PENDING",
+      "variant": "UNVERIFIED"
+    },
+    {
+      "title": "Departure/Arrival Index Page",
+      "folio": "11.40.32",
+      "pdfPage": 1584,
+      "section": "11.40",
+      "sourceScreenStatus": "SOURCE_TOC_LOCATED_FIELD_LSK_AUDIT_PENDING",
+      "variant": "UNVERIFIED"
+    },
+    {
+      "title": "Departures Page",
+      "folio": "11.40.34",
+      "pdfPage": 1586,
+      "section": "11.40",
+      "sourceScreenStatus": "SOURCE_TOC_LOCATED_FIELD_LSK_AUDIT_PENDING",
+      "variant": "UNVERIFIED"
+    },
+    {
+      "title": "Performance Initialization Page",
+      "folio": "11.40.37",
+      "pdfPage": 1589,
+      "section": "11.40",
+      "sourceScreenStatus": "SOURCE_TOC_LOCATED_FIELD_LSK_AUDIT_PENDING",
+      "variant": "UNVERIFIED"
+    },
+    {
+      "title": "Performance Limits Page",
+      "folio": "11.40.43",
+      "pdfPage": 1595,
+      "section": "11.40",
+      "sourceScreenStatus": "SOURCE_TOC_LOCATED_FIELD_LSK_AUDIT_PENDING",
+      "variant": "UNVERIFIED"
+    },
+    {
+      "title": "N1 LIMIT Page (Preflight)",
+      "folio": "11.40.46",
+      "pdfPage": 1598,
+      "section": "11.40",
+      "sourceScreenStatus": "SOURCE_TOC_LOCATED_FIELD_LSK_AUDIT_PENDING",
+      "variant": "UNVERIFIED"
+    },
+    {
+      "title": "Takeoff Page 1",
+      "folio": "11.40.51",
+      "pdfPage": 1603,
+      "section": "11.40",
+      "sourceScreenStatus": "SOURCE_TOC_LOCATED_FIELD_LSK_AUDIT_PENDING",
+      "variant": "UNVERIFIED"
+    },
+    {
+      "title": "Takeoff Reference Page",
+      "folio": "11.40.51",
+      "pdfPage": 1603,
+      "section": "11.40",
+      "sourceScreenStatus": "SOURCE_TOC_LOCATED_FIELD_LSK_AUDIT_PENDING",
+      "variant": "UNVERIFIED"
+    },
+    {
+      "title": "Takeoff Page 2",
+      "folio": "11.40.63",
+      "pdfPage": 1615,
+      "section": "11.40",
+      "sourceScreenStatus": "SOURCE_TOC_LOCATED_FIELD_LSK_AUDIT_PENDING",
+      "variant": "UNVERIFIED"
+    },
+    {
+      "title": "Takeoff Reference Page 2/2",
+      "folio": "11.40.63",
+      "pdfPage": 1615,
+      "section": "11.40",
+      "sourceScreenStatus": "SOURCE_TOC_LOCATED_FIELD_LSK_AUDIT_PENDING",
+      "variant": "UNVERIFIED"
+    },
+    {
+      "title": "Menu Page",
+      "folio": "11.40.70",
+      "pdfPage": 1622,
+      "section": "11.40",
+      "sourceScreenStatus": "SOURCE_TOC_LOCATED_FIELD_LSK_AUDIT_PENDING",
+      "variant": "UNVERIFIED"
+    },
+    {
+      "title": "Climb Page",
+      "folio": "11.41.3",
+      "pdfPage": 1627,
+      "section": "11.41",
+      "sourceScreenStatus": "SOURCE_TOC_LOCATED_FIELD_LSK_AUDIT_PENDING",
+      "variant": "UNVERIFIED"
+    },
+    {
+      "title": "RTA Climb Page",
+      "folio": "11.41.7",
+      "pdfPage": 1631,
+      "section": "11.41",
+      "sourceScreenStatus": "SOURCE_TOC_LOCATED_FIELD_LSK_AUDIT_PENDING",
+      "variant": "UNVERIFIED"
+    },
+    {
+      "title": "RTE LEGS Page",
+      "folio": "11.41.9",
+      "pdfPage": 1633,
+      "section": "11.41",
+      "sourceScreenStatus": "SOURCE_TOC_LOCATED_FIELD_LSK_AUDIT_PENDING",
+      "variant": "UNVERIFIED"
+    },
+    {
+      "title": "Progress Page 1",
+      "folio": "11.41.15",
+      "pdfPage": 1639,
+      "section": "11.41",
+      "sourceScreenStatus": "SOURCE_TOC_LOCATED_FIELD_LSK_AUDIT_PENDING",
+      "variant": "UNVERIFIED"
+    },
+    {
+      "title": "RTA Progress Page 2/3",
+      "folio": "11.41.21",
+      "pdfPage": 1645,
+      "section": "11.41",
+      "sourceScreenStatus": "SOURCE_TOC_LOCATED_FIELD_LSK_AUDIT_PENDING",
+      "variant": "UNVERIFIED"
+    },
+    {
+      "title": "Progress Page 3/3",
+      "folio": "11.41.27",
+      "pdfPage": 1651,
+      "section": "11.41",
+      "sourceScreenStatus": "SOURCE_TOC_LOCATED_FIELD_LSK_AUDIT_PENDING",
+      "variant": "UNVERIFIED"
+    },
+    {
+      "title": "Progress Page 2/4",
+      "folio": "11.41.30",
+      "pdfPage": 1654,
+      "section": "11.41",
+      "sourceScreenStatus": "SOURCE_TOC_LOCATED_FIELD_LSK_AUDIT_PENDING",
+      "variant": "UNVERIFIED"
+    },
+    {
+      "title": "RTA Progress Page 3/4",
+      "folio": "11.41.33",
+      "pdfPage": 1657,
+      "section": "11.41",
+      "sourceScreenStatus": "SOURCE_TOC_LOCATED_FIELD_LSK_AUDIT_PENDING",
+      "variant": "UNVERIFIED"
+    },
+    {
+      "title": "RNP Progress Page 4/4",
+      "folio": "11.41.38",
+      "pdfPage": 1662,
+      "section": "11.41",
+      "sourceScreenStatus": "SOURCE_TOC_LOCATED_FIELD_LSK_AUDIT_PENDING",
+      "variant": "UNVERIFIED"
+    },
+    {
+      "title": "Limit Page",
+      "folio": "11.41.41",
+      "pdfPage": 1665,
+      "section": "11.41",
+      "sourceScreenStatus": "SOURCE_TOC_LOCATED_FIELD_LSK_AUDIT_PENDING",
+      "variant": "UNVERIFIED"
+    },
+    {
+      "title": "N1 Limit Page",
+      "folio": "11.41.41",
+      "pdfPage": 1665,
+      "section": "11.41",
+      "sourceScreenStatus": "SOURCE_TOC_LOCATED_FIELD_LSK_AUDIT_PENDING",
+      "variant": "UNVERIFIED"
+    },
+    {
+      "title": "Engine Out Climb Page",
+      "folio": "11.41.45",
+      "pdfPage": 1669,
+      "section": "11.41",
+      "sourceScreenStatus": "SOURCE_TOC_LOCATED_FIELD_LSK_AUDIT_PENDING",
+      "variant": "UNVERIFIED"
+    },
+    {
+      "title": "Arrivals Page",
+      "folio": "11.41.48",
+      "pdfPage": 1672,
+      "section": "11.41",
+      "sourceScreenStatus": "SOURCE_TOC_LOCATED_FIELD_LSK_AUDIT_PENDING",
+      "variant": "UNVERIFIED"
+    },
+    {
+      "title": "RTE LEGS Page Modifications",
+      "folio": "11.42.2",
+      "pdfPage": 1676,
+      "section": "11.42",
+      "sourceScreenStatus": "SOURCE_TOC_LOCATED_FIELD_LSK_AUDIT_PENDING",
+      "variant": "UNVERIFIED"
+    },
+    {
+      "title": "Select Desired Waypoint Page",
+      "folio": "11.42.23",
+      "pdfPage": 1697,
+      "section": "11.42",
+      "sourceScreenStatus": "SOURCE_TOC_LOCATED_FIELD_LSK_AUDIT_PENDING",
+      "variant": "UNVERIFIED"
+    },
+    {
+      "title": "Cruise Page",
+      "folio": "11.42.29",
+      "pdfPage": 1703,
+      "section": "11.42",
+      "sourceScreenStatus": "SOURCE_TOC_LOCATED_FIELD_LSK_AUDIT_PENDING",
+      "variant": "UNVERIFIED"
+    },
+    {
+      "title": "Route Data (RTE DATA) Page",
+      "folio": "11.42.43",
+      "pdfPage": 1717,
+      "section": "11.42",
+      "sourceScreenStatus": "SOURCE_TOC_LOCATED_FIELD_LSK_AUDIT_PENDING",
+      "variant": "UNVERIFIED"
+    },
+    {
+      "title": "Position Shift Page",
+      "folio": "11.42.47",
+      "pdfPage": 1721,
+      "section": "11.42",
+      "sourceScreenStatus": "SOURCE_TOC_LOCATED_FIELD_LSK_AUDIT_PENDING",
+      "variant": "UNVERIFIED"
+    },
+    {
+      "title": "Reference Navigation Data (REF NAV DATA) Page",
+      "folio": "11.42.59",
+      "pdfPage": 1733,
+      "section": "11.42",
+      "sourceScreenStatus": "SOURCE_TOC_LOCATED_FIELD_LSK_AUDIT_PENDING",
+      "variant": "UNVERIFIED"
+    },
+    {
+      "title": "Fix Information Page",
+      "folio": "11.42.77",
+      "pdfPage": 1751,
+      "section": "11.42",
+      "sourceScreenStatus": "SOURCE_TOC_LOCATED_FIELD_LSK_AUDIT_PENDING",
+      "variant": "UNVERIFIED"
+    },
+    {
+      "title": "Fix Information Page",
+      "folio": "11.42.79",
+      "pdfPage": 1753,
+      "section": "11.42",
+      "sourceScreenStatus": "SOURCE_TOC_LOCATED_FIELD_LSK_AUDIT_PENDING",
+      "variant": "UNVERIFIED"
+    },
+    {
+      "title": "Descent Page (During Cruise)",
+      "folio": "11.43.2",
+      "pdfPage": 1756,
+      "section": "11.43",
+      "sourceScreenStatus": "SOURCE_TOC_LOCATED_FIELD_LSK_AUDIT_PENDING",
+      "variant": "UNVERIFIED"
+    },
+    {
+      "title": "Descent Page (During Descent)",
+      "folio": "11.43.9",
+      "pdfPage": 1763,
+      "section": "11.43",
+      "sourceScreenStatus": "SOURCE_TOC_LOCATED_FIELD_LSK_AUDIT_PENDING",
+      "variant": "UNVERIFIED"
+    },
+    {
+      "title": "RTA Descent Page",
+      "folio": "11.43.13",
+      "pdfPage": 1767,
+      "section": "11.43",
+      "sourceScreenStatus": "SOURCE_TOC_LOCATED_FIELD_LSK_AUDIT_PENDING",
+      "variant": "UNVERIFIED"
+    },
+    {
+      "title": "Descent Forecast Page",
+      "folio": "11.43.15",
+      "pdfPage": 1769,
+      "section": "11.43",
+      "sourceScreenStatus": "SOURCE_TOC_LOCATED_FIELD_LSK_AUDIT_PENDING",
+      "variant": "UNVERIFIED"
+    },
+    {
+      "title": "Arrivals Page – IFR Approaches",
+      "folio": "11.43.19",
+      "pdfPage": 1773,
+      "section": "11.43",
+      "sourceScreenStatus": "SOURCE_TOC_LOCATED_FIELD_LSK_AUDIT_PENDING",
+      "variant": "UNVERIFIED"
+    },
+    {
+      "title": "Approach Reference Page",
+      "folio": "11.43.27",
+      "pdfPage": 1781,
+      "section": "11.43",
+      "sourceScreenStatus": "SOURCE_TOC_LOCATED_FIELD_LSK_AUDIT_PENDING",
+      "variant": "UNVERIFIED"
+    },
+    {
+      "title": "HOLD Page",
+      "folio": "11.43.31",
+      "pdfPage": 1785,
+      "section": "11.43",
+      "sourceScreenStatus": "SOURCE_TOC_LOCATED_FIELD_LSK_AUDIT_PENDING",
+      "variant": "UNVERIFIED"
+    }
+  ],
+  "interactiveScreens": [
+    {
+      "id": "INDEX",
+      "title": "INIT/REF INDEX",
+      "subpage": 1,
+      "subpages": 1,
+      "source": {
+        "folio_family": "11.40.4",
+        "pdf_page_near": 1556,
+        "source": "SEPEHRAN_737CL_FCOM_VOLUME_2_CH11",
+        "verification": "APPROXIMATE_TOPIC_REFERENCE_REQUIRES_FIELD_AUDIT"
+      },
+      "sourceStatus": "PARTIALLY_FCOM_GROUNDED",
+      "variant": "MENU_CDU",
+      "layout": {
+        "columns": 24,
+        "rows": 14,
+        "lineSelect": [
+          {
+            "left": {
+              "key": "L1",
+              "label": "<IDENT",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "IDENT",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R1",
+              "label": "POS INIT>",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "POS_INIT",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L2",
+              "label": "<RTE",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "RTE",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R2",
+              "label": "PERF INIT>",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "PERF_INIT",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L3",
+              "label": "<TAKEOFF",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "TAKEOFF",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R3",
+              "label": "N1 LIMIT>",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "N1_LIMIT",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L4",
+              "label": "<APPROACH",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "APP_REF",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R4",
+              "label": "REF NAV DATA>",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "NAV_DATA",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L5",
+              "label": "<OFFSET",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "OFFSET",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R5",
+              "label": "PROGRESS>",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "PROG",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L6",
+              "label": "<MENU",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "MENU",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R6",
+              "label": "MSG RECALL>",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "MSG_RECALL",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          }
+        ]
+      },
+      "verification": "TRAINER_FIELD_LAYOUT_ONLY_NOT_MANUAL_COMPLETE"
+    },
+    {
+      "id": "MENU",
+      "title": "MENU",
+      "subpage": 1,
+      "subpages": 1,
+      "source": {
+        "folio_family": "11.40.70",
+        "pdf_page_near": 1622,
+        "source": "SEPEHRAN_737CL_FCOM_VOLUME_2_CH11",
+        "verification": "APPROXIMATE_TOPIC_REFERENCE_REQUIRES_FIELD_AUDIT"
+      },
+      "sourceStatus": "TRAINER_MENU_ONLY",
+      "variant": "MENU_CDU",
+      "layout": {
+        "columns": 24,
+        "rows": 14,
+        "lineSelect": [
+          {
+            "left": {
+              "key": "L1",
+              "label": "<FMC",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "INDEX",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R1",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "",
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L2",
+              "label": "<CDU MESSAGES",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "MESSAGES",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R2",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "",
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L3",
+              "label": "<MSG RECALL",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "MSG_RECALL",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R3",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "",
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L4",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R4",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L5",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R5",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L6",
+              "label": "<INDEX",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "INDEX",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R6",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          }
+        ]
+      },
+      "verification": "TRAINER_FIELD_LAYOUT_ONLY_NOT_MANUAL_COMPLETE"
+    },
+    {
+      "id": "IDENT",
+      "title": "IDENT",
+      "subpage": 1,
+      "subpages": 1,
+      "source": {
+        "folio_family": "11.40.8",
+        "pdf_page_near": 1560,
+        "source": "SEPEHRAN_737CL_FCOM_VOLUME_2_CH11",
+        "verification": "APPROXIMATE_TOPIC_REFERENCE_REQUIRES_FIELD_AUDIT"
+      },
+      "sourceStatus": "FCOM_11.40.8_LABELS_REVIEWED; AIRCRAFT_SOFTWARE_OPTION_NOT_PROVEN",
+      "variant": "MENU_CDU",
+      "layout": {
+        "columns": 24,
+        "rows": 14,
+        "lineSelect": [
+          {
+            "left": {
+              "key": "L1",
+              "label": "MODEL",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "737-300",
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R1",
+              "label": "ENG RATING",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "CFM56-3",
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L2",
+              "label": "NAV DATA",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "DEMO ONLY",
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R2",
+              "label": "ACTIVE",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "SIM",
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L3",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "VARIANT_GATE_REQUIRED"
+            },
+            "right": {
+              "key": "R3",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L4",
+              "label": "OP PROGRAM",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "TRAINER",
+              "nextPage": null,
+              "sourceVerification": "FCOM_11.40.8"
+            },
+            "right": {
+              "key": "R4",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L5",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R5",
+              "label": "SUPP DATA",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "-----",
+              "nextPage": null,
+              "sourceVerification": "FCOM_11.40.8"
+            }
+          },
+          {
+            "left": {
+              "key": "L6",
+              "label": "<INDEX",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "INDEX",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R6",
+              "label": "POS INIT>",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "POS_INIT",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          }
+        ]
+      },
+      "verification": "TRAINER_FIELD_LAYOUT_ONLY_NOT_MANUAL_COMPLETE"
+    },
+    {
+      "id": "POS_INIT",
+      "title": "POS INIT",
+      "subpage": 1,
+      "subpages": 3,
+      "source": {
+        "folio_family": "11.40.11",
+        "pdf_page_near": 1563,
+        "source": "SEPEHRAN_737CL_FCOM_VOLUME_2_CH11",
+        "verification": "FIELD_LOCATION_REVIEWED_ON_FCOM_PAGE"
+      },
+      "sourceStatus": "LOCATION_REVIEWED_AGAINST_FCOM_ILLUSTRATION; DYNAMIC_FUNCTIONS_PARTIAL",
+      "variant": "MENU_CDU",
+      "layout": {
+        "columns": 24,
+        "rows": 14,
+        "lineSelect": [
+          {
+            "left": {
+              "key": "L1",
+              "label": "LAST POS",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "N 00 00.0",
+              "nextPage": null,
+              "sourceVerification": "FCOM_ILLUSTRATION_REVIEWED"
+            },
+            "right": {
+              "key": "R1",
+              "label": "LAST POS",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "W 000 00.0",
+              "nextPage": null,
+              "sourceVerification": "FCOM_ILLUSTRATION_REVIEWED"
+            }
+          },
+          {
+            "left": {
+              "key": "L2",
+              "label": "REF AIRPORT",
+              "field": "REF_AIRPORT",
+              "valueType": "ICAO",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "FCOM_ILLUSTRATION_REVIEWED"
+            },
+            "right": {
+              "key": "R2",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "FCOM_ILLUSTRATION_REVIEWED"
+            }
+          },
+          {
+            "left": {
+              "key": "L3",
+              "label": "GATE",
+              "field": "GATE",
+              "valueType": "TEXT",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "FCOM_ILLUSTRATION_REVIEWED"
+            },
+            "right": {
+              "key": "R3",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "FCOM_ILLUSTRATION_REVIEWED"
+            }
+          },
+          {
+            "left": {
+              "key": "L4",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "FCOM_ILLUSTRATION_REVIEWED"
+            },
+            "right": {
+              "key": "R4",
+              "label": "SET IRS POS",
+              "field": "IRS_POS",
+              "valueType": "LATLON",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "FCOM_ILLUSTRATION_REVIEWED"
+            }
+          },
+          {
+            "left": {
+              "key": "L5",
+              "label": "GMT-MON/DY",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "TRAINER",
+              "nextPage": null,
+              "sourceVerification": "FCOM_ILLUSTRATION_REVIEWED"
+            },
+            "right": {
+              "key": "R5",
+              "label": "SET IRS HDG",
+              "field": "IRS_HDG",
+              "valueType": "HDG",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "FCOM_ILLUSTRATION_REVIEWED"
+            }
+          },
+          {
+            "left": {
+              "key": "L6",
+              "label": "<INDEX",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "INDEX",
+              "sourceVerification": "FCOM_ILLUSTRATION_REVIEWED"
+            },
+            "right": {
+              "key": "R6",
+              "label": "ROUTE>",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "RTE",
+              "sourceVerification": "FCOM_ILLUSTRATION_REVIEWED"
+            }
+          }
+        ]
+      },
+      "verification": "TRAINER_FIELD_LAYOUT_ONLY_NOT_MANUAL_COMPLETE"
+    },
+    {
+      "id": "POS_REF",
+      "title": "POS REF",
+      "subpage": 2,
+      "subpages": 3,
+      "source": {
+        "folio_family": "11.40.13",
+        "pdf_page_near": 1565,
+        "source": "SEPEHRAN_737CL_FCOM_VOLUME_2_CH11",
+        "verification": "FCOM_11.40.13_TO_11.40.17_OPTION_VARIANT_GATED"
+      },
+      "sourceStatus": "FCOM_FIELD_LABELS_AUDITED; SENSOR_VALUES_LIVE_OR_BLANK",
+      "variant": "MENU_CDU",
+      "layout": {
+        "columns": 24,
+        "rows": 14,
+        "lineSelect": [
+          {
+            "left": {
+              "key": "L1",
+              "label": "FMC POS",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "",
+              "nextPage": null,
+              "sourceVerification": "FCOM_11.40.13_TO_11.40.17_OPTION_VARIANT_GATED"
+            },
+            "right": {
+              "key": "R1",
+              "label": "GS",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "VARIANT_GATE_REQUIRED"
+            }
+          },
+          {
+            "left": {
+              "key": "L2",
+              "label": "IRS L",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "",
+              "nextPage": null,
+              "sourceVerification": "FCOM_11.40.13_TO_11.40.17_OPTION_VARIANT_GATED"
+            },
+            "right": {
+              "key": "R2",
+              "label": "GS",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "VARIANT_GATE_REQUIRED"
+            }
+          },
+          {
+            "left": {
+              "key": "L3",
+              "label": "IRS R",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "",
+              "nextPage": null,
+              "sourceVerification": "FCOM_11.40.13_TO_11.40.17_OPTION_VARIANT_GATED"
+            },
+            "right": {
+              "key": "R3",
+              "label": "GS",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "VARIANT_GATE_REQUIRED"
+            }
+          },
+          {
+            "left": {
+              "key": "L4",
+              "label": "GPS L",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "",
+              "nextPage": null,
+              "sourceVerification": "FCOM_11.40.13_TO_11.40.17_OPTION_VARIANT_GATED"
+            },
+            "right": {
+              "key": "R4",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "VARIANT_GATE_REQUIRED"
+            }
+          },
+          {
+            "left": {
+              "key": "L5",
+              "label": "GPS R",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "",
+              "nextPage": null,
+              "sourceVerification": "FCOM_11.40.13_TO_11.40.17_OPTION_VARIANT_GATED"
+            },
+            "right": {
+              "key": "R5",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "VARIANT_GATE_REQUIRED"
+            }
+          },
+          {
+            "left": {
+              "key": "L6",
+              "label": "RADIO",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "",
+              "nextPage": "POS_INIT",
+              "sourceVerification": "FCOM_11.40.13_TO_11.40.17_OPTION_VARIANT_GATED"
+            },
+            "right": {
+              "key": "R6",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "VARIANT_GATE_REQUIRED"
+            }
+          }
+        ]
+      },
+      "verification": "TRAINER_FIELD_LAYOUT_ONLY_NOT_MANUAL_COMPLETE"
+    },
+    {
+      "id": "RTE",
+      "title": "RTE",
+      "subpage": 1,
+      "subpages": 2,
+      "source": {
+        "folio_family": "11.40.21",
+        "pdf_page_near": 1573,
+        "source": "SEPEHRAN_737CL_FCOM_VOLUME_2_CH11",
+        "verification": "RTE_1_3_FIELDS_REVIEWED_FCOM_11.40.21"
+      },
+      "sourceStatus": "MAIN_ROUTE_FIELDS_FCOM_VERIFIED; ACTIVATE_PENDING_ROUTE_LOGIC",
+      "variant": "MENU_CDU",
+      "layout": {
+        "columns": 24,
+        "rows": 14,
+        "lineSelect": [
+          {
+            "left": {
+              "key": "L1",
+              "label": "ORIGIN",
+              "field": "ORIGIN",
+              "valueType": "ICAO",
+              "required": true,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R1",
+              "label": "DEST",
+              "field": "DEST",
+              "valueType": "ICAO",
+              "required": true,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L2",
+              "label": "CO ROUTE",
+              "field": "CO_ROUTE",
+              "valueType": "ROUTE",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R2",
+              "label": "FLT NO",
+              "field": "FLIGHT",
+              "valueType": "FLIGHT",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L3",
+              "label": "RUNWAY",
+              "field": "RUNWAY",
+              "valueType": "RUNWAY",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R3",
+              "label": "ROUTE>",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "FLIGHT_PLAN",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L4",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R4",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L5",
+              "label": "<ACTIVATE",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "ACTIVATE",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R5",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L6",
+              "label": "<INDEX",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "INDEX",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R6",
+              "label": "LEGS>",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "LEGS",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          }
+        ]
+      },
+      "verification": "TRAINER_FIELD_LAYOUT_ONLY_NOT_MANUAL_COMPLETE"
+    },
+    {
+      "id": "FLIGHT_PLAN",
+      "title": "RTE",
+      "subpage": 1,
+      "subpages": 2,
+      "source": {
+        "folio_family": "11.40.21",
+        "pdf_page_near": 1573,
+        "source": "SEPEHRAN_737CL_FCOM_VOLUME_2_CH11",
+        "verification": "APPROXIMATE_TOPIC_REFERENCE_REQUIRES_FIELD_AUDIT"
+      },
+      "sourceStatus": "PARTIALLY_FCOM_GROUNDED",
+      "variant": "MENU_CDU",
+      "layout": {
+        "columns": 24,
+        "rows": 14,
+        "lineSelect": [
+          {
+            "left": {
+              "key": "L1",
+              "label": "VIA",
+              "field": "VIA1",
+              "valueType": "AIRWAY",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R1",
+              "label": "TO",
+              "field": "TO1",
+              "valueType": "WAYPOINT",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L2",
+              "label": "VIA",
+              "field": "VIA2",
+              "valueType": "AIRWAY",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R2",
+              "label": "TO",
+              "field": "TO2",
+              "valueType": "WAYPOINT",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L3",
+              "label": "VIA",
+              "field": "VIA3",
+              "valueType": "AIRWAY",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R3",
+              "label": "TO",
+              "field": "TO3",
+              "valueType": "WAYPOINT",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L4",
+              "label": "VIA",
+              "field": "VIA4",
+              "valueType": "AIRWAY",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R4",
+              "label": "TO",
+              "field": "TO4",
+              "valueType": "WAYPOINT",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L5",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R5",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L6",
+              "label": "<RTE 1/2",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "RTE",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R6",
+              "label": "LEGS>",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "LEGS",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          }
+        ]
+      },
+      "verification": "TRAINER_FIELD_LAYOUT_ONLY_NOT_MANUAL_COMPLETE"
+    },
+    {
+      "id": "ACTIVATE",
+      "title": "RTE",
+      "subpage": 1,
+      "subpages": 1,
+      "source": {
+        "folio_family": "11.40.21",
+        "pdf_page_near": 1573,
+        "source": "SEPEHRAN_737CL_FCOM_VOLUME_2_CH11",
+        "verification": "APPROXIMATE_TOPIC_REFERENCE_REQUIRES_FIELD_AUDIT"
+      },
+      "sourceStatus": "TRAINER_STAGE_ONLY",
+      "variant": "MENU_CDU",
+      "layout": {
+        "columns": 24,
+        "rows": 14,
+        "lineSelect": [
+          {
+            "left": {
+              "key": "L1",
+              "label": "STATUS",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "MOD",
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R1",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L2",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R2",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L3",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R3",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L4",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R4",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L5",
+              "label": "<ERASE",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "RTE",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R5",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L6",
+              "label": "<RTE",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "RTE",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R6",
+              "label": "LEGS>",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "LEGS",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          }
+        ]
+      },
+      "verification": "TRAINER_FIELD_LAYOUT_ONLY_NOT_MANUAL_COMPLETE"
+    },
+    {
+      "id": "DEP_ARR",
+      "title": "DEP/ARR INDEX",
+      "subpage": 1,
+      "subpages": 1,
+      "source": {
+        "folio_family": "11.40.32",
+        "pdf_page_near": 1584,
+        "source": "SEPEHRAN_737CL_FCOM_VOLUME_2_CH11",
+        "verification": "APPROXIMATE_TOPIC_REFERENCE_REQUIRES_FIELD_AUDIT"
+      },
+      "sourceStatus": "PARTIALLY_FCOM_GROUNDED",
+      "variant": "MENU_CDU",
+      "layout": {
+        "columns": 24,
+        "rows": 14,
+        "lineSelect": [
+          {
+            "left": {
+              "key": "L1",
+              "label": "<DEPARTURES",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "DEPARTURES",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R1",
+              "label": "ARRIVALS>",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "ARRIVALS",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L2",
+              "label": "ORIGIN",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "{ORIGIN}",
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R2",
+              "label": "DEST",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "{DEST}",
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L3",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R3",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L4",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R4",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L5",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R5",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L6",
+              "label": "<RTE",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "RTE",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R6",
+              "label": "INDEX>",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "INDEX",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          }
+        ]
+      },
+      "verification": "TRAINER_FIELD_LAYOUT_ONLY_NOT_MANUAL_COMPLETE"
+    },
+    {
+      "id": "DEPARTURES",
+      "title": "DEPARTURES",
+      "subpage": 1,
+      "subpages": 1,
+      "source": {
+        "folio_family": "11.40.34",
+        "pdf_page_near": 1586,
+        "source": "SEPEHRAN_737CL_FCOM_VOLUME_2_CH11",
+        "verification": "APPROXIMATE_TOPIC_REFERENCE_REQUIRES_FIELD_AUDIT"
+      },
+      "sourceStatus": "NO_AIRAC_PROCEDURE_VALIDATION",
+      "variant": "MENU_CDU",
+      "layout": {
+        "columns": 24,
+        "rows": 14,
+        "lineSelect": [
+          {
+            "left": {
+              "key": "L1",
+              "label": "AIRPORT",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "{ORIGIN}",
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R1",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "",
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L2",
+              "label": "RUNWAY",
+              "field": "RUNWAY",
+              "valueType": "RUNWAY",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R2",
+              "label": "SID",
+              "field": "SID",
+              "valueType": "PROCEDURE",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L3",
+              "label": "TRANS",
+              "field": "DEP_TRANS",
+              "valueType": "WAYPOINT",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R3",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L4",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R4",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L5",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R5",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L6",
+              "label": "<INDEX",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "DEP_ARR",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R6",
+              "label": "RTE>",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "RTE",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          }
+        ]
+      },
+      "verification": "TRAINER_FIELD_LAYOUT_ONLY_NOT_MANUAL_COMPLETE"
+    },
+    {
+      "id": "ARRIVALS",
+      "title": "ARRIVALS",
+      "subpage": 1,
+      "subpages": 1,
+      "source": {
+        "folio_family": "11.43.19",
+        "pdf_page_near": 1773,
+        "source": "SEPEHRAN_737CL_FCOM_VOLUME_2_CH11",
+        "verification": "APPROXIMATE_TOPIC_REFERENCE_REQUIRES_FIELD_AUDIT"
+      },
+      "sourceStatus": "NO_AIRAC_PROCEDURE_VALIDATION",
+      "variant": "MENU_CDU",
+      "layout": {
+        "columns": 24,
+        "rows": 14,
+        "lineSelect": [
+          {
+            "left": {
+              "key": "L1",
+              "label": "AIRPORT",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "{DEST}",
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R1",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "",
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L2",
+              "label": "STAR",
+              "field": "STAR",
+              "valueType": "PROCEDURE",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R2",
+              "label": "APPROACH",
+              "field": "APP",
+              "valueType": "PROCEDURE",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L3",
+              "label": "TRANS",
+              "field": "ARR_TRANS",
+              "valueType": "WAYPOINT",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R3",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L4",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R4",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L5",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R5",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L6",
+              "label": "<INDEX",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "DEP_ARR",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R6",
+              "label": "LEGS>",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "LEGS",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          }
+        ]
+      },
+      "verification": "TRAINER_FIELD_LAYOUT_ONLY_NOT_MANUAL_COMPLETE"
+    },
+    {
+      "id": "PERF_INIT",
+      "title": "PERF INIT",
+      "subpage": 1,
+      "subpages": 1,
+      "source": {
+        "folio_family": "11.40.37",
+        "pdf_page_near": 1589,
+        "source": "SEPEHRAN_737CL_FCOM_VOLUME_2_CH11",
+        "verification": "PAGE_DRAWING_FIELD_LOCATION_REVIEWED"
+      },
+      "sourceStatus": "FIELD_POSITIONS_FCOM_PAGE_11.40.37_VERIFIED; FORMATS_AND_CALC_PARTIAL",
+      "variant": "MENU_CDU",
+      "layout": {
+        "columns": 24,
+        "rows": 14,
+        "lineSelect": [
+          {
+            "left": {
+              "key": "L1",
+              "label": "GW/CRZ CG",
+              "field": "GW_CG",
+              "valueType": "WEIGHT_CG",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "FCOM_ILLUSTRATION_VERIFIED"
+            },
+            "right": {
+              "key": "R1",
+              "label": "TRIP/CRZ ALT",
+              "field": "CRZ_ALT",
+              "valueType": "FL",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "FCOM_ILLUSTRATION_VERIFIED"
+            }
+          },
+          {
+            "left": {
+              "key": "L2",
+              "label": "FUEL",
+              "field": "FUEL",
+              "valueType": "WEIGHT",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "FCOM_ILLUSTRATION_VERIFIED"
+            },
+            "right": {
+              "key": "R2",
+              "label": "CRZ WIND",
+              "field": "CRZ_WIND",
+              "valueType": "WIND",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "FCOM_ILLUSTRATION_VERIFIED"
+            }
+          },
+          {
+            "left": {
+              "key": "L3",
+              "label": "ZFW",
+              "field": "ZFW",
+              "valueType": "WEIGHT",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "FCOM_ILLUSTRATION_VERIFIED"
+            },
+            "right": {
+              "key": "R3",
+              "label": "ISA DEV",
+              "field": "ISA_DEV",
+              "valueType": "TEMP",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "FCOM_ILLUSTRATION_VERIFIED"
+            }
+          },
+          {
+            "left": {
+              "key": "L4",
+              "label": "RESERVES",
+              "field": "RESERVES",
+              "valueType": "WEIGHT",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "FCOM_ILLUSTRATION_VERIFIED"
+            },
+            "right": {
+              "key": "R4",
+              "label": "T/C OAT",
+              "field": "TC_OAT",
+              "valueType": "TEMP",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "FCOM_ILLUSTRATION_VERIFIED"
+            }
+          },
+          {
+            "left": {
+              "key": "L5",
+              "label": "COST INDEX",
+              "field": "CI",
+              "valueType": "CI_CL",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "FCOM_ILLUSTRATION_VERIFIED"
+            },
+            "right": {
+              "key": "R5",
+              "label": "TRANS ALT",
+              "field": "TRANS_ALT",
+              "valueType": "ALT",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "FCOM_ILLUSTRATION_VERIFIED"
+            }
+          },
+          {
+            "left": {
+              "key": "L6",
+              "label": "<INDEX",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "INDEX",
+              "sourceVerification": "FCOM_ILLUSTRATION_VERIFIED"
+            },
+            "right": {
+              "key": "R6",
+              "label": "N1 LIMIT>",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "N1_LIMIT",
+              "sourceVerification": "FCOM_ILLUSTRATION_VERIFIED"
+            }
+          }
+        ]
+      },
+      "verification": "TRAINER_FIELD_LAYOUT_ONLY_NOT_MANUAL_COMPLETE"
+    },
+    {
+      "id": "N1_LIMIT",
+      "title": "N1 LIMIT",
+      "subpage": 1,
+      "subpages": 1,
+      "source": {
+        "folio_family": "11.40.46",
+        "pdf_page_near": 1598,
+        "source": "SEPEHRAN_737CL_FCOM_VOLUME_2_CH11",
+        "verification": "FIELD_LOCATION_REVIEWED_ON_FCOM_PAGE"
+      },
+      "sourceStatus": "LOCATION_REVIEWED_AGAINST_FCOM_ILLUSTRATION; DYNAMIC_FUNCTIONS_PARTIAL",
+      "variant": "MENU_CDU",
+      "layout": {
+        "columns": 24,
+        "rows": 14,
+        "lineSelect": [
+          {
+            "left": {
+              "key": "L1",
+              "label": "SEL/OAT",
+              "field": "SEL_TEMP",
+              "valueType": "TEMP",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "FCOM_ILLUSTRATION_REVIEWED"
+            },
+            "right": {
+              "key": "R1",
+              "label": "XXK N1",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "NOT CALCULATED",
+              "nextPage": null,
+              "sourceVerification": "FCOM_ILLUSTRATION_REVIEWED"
+            }
+          },
+          {
+            "left": {
+              "key": "L2",
+              "label": "TO RATING",
+              "field": "TO_DERATE",
+              "valueType": "DERATE",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "FCOM_ILLUSTRATION_REVIEWED"
+            },
+            "right": {
+              "key": "R2",
+              "label": "CLB RATING",
+              "field": "CLB_DERATE",
+              "valueType": "DERATE",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "FCOM_ILLUSTRATION_REVIEWED"
+            }
+          },
+          {
+            "left": {
+              "key": "L3",
+              "label": "TO-1",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "INACTIVE",
+              "nextPage": null,
+              "sourceVerification": "FCOM_ILLUSTRATION_REVIEWED"
+            },
+            "right": {
+              "key": "R3",
+              "label": "CLB-1",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "INACTIVE",
+              "nextPage": null,
+              "sourceVerification": "FCOM_ILLUSTRATION_REVIEWED"
+            }
+          },
+          {
+            "left": {
+              "key": "L4",
+              "label": "TO-2",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "INACTIVE",
+              "nextPage": null,
+              "sourceVerification": "FCOM_ILLUSTRATION_REVIEWED"
+            },
+            "right": {
+              "key": "R4",
+              "label": "CLB-2",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "INACTIVE",
+              "nextPage": null,
+              "sourceVerification": "FCOM_ILLUSTRATION_REVIEWED"
+            }
+          },
+          {
+            "left": {
+              "key": "L5",
+              "label": "<PERF INIT",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "PERF_INIT",
+              "sourceVerification": "FCOM_ILLUSTRATION_REVIEWED"
+            },
+            "right": {
+              "key": "R5",
+              "label": "TAKEOFF>",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "TAKEOFF",
+              "sourceVerification": "FCOM_ILLUSTRATION_REVIEWED"
+            }
+          },
+          {
+            "left": {
+              "key": "L6",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "FCOM_ILLUSTRATION_REVIEWED"
+            },
+            "right": {
+              "key": "R6",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "FCOM_ILLUSTRATION_REVIEWED"
+            }
+          }
+        ]
+      },
+      "verification": "TRAINER_FIELD_LAYOUT_ONLY_NOT_MANUAL_COMPLETE"
+    },
+    {
+      "id": "TAKEOFF",
+      "title": "TAKEOFF REF",
+      "subpage": 1,
+      "subpages": 1,
+      "source": {
+        "folio_family": "11.40.52",
+        "pdf_page_near": 1604,
+        "source": "SEPEHRAN_737CL_FCOM_VOLUME_2_CH11",
+        "verification": "FIELD_LOCATION_REVIEWED_ON_FCOM_PAGE"
+      },
+      "sourceStatus": "LOCATION_REVIEWED_AGAINST_FCOM_ILLUSTRATION; DYNAMIC_FUNCTIONS_PARTIAL",
+      "variant": "MENU_CDU",
+      "layout": {
+        "columns": 24,
+        "rows": 14,
+        "lineSelect": [
+          {
+            "left": {
+              "key": "L1",
+              "label": "OAT",
+              "field": "OAT",
+              "valueType": "TEMP",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "FCOM_ILLUSTRATION_REVIEWED"
+            },
+            "right": {
+              "key": "R1",
+              "label": "V1",
+              "field": "V1",
+              "valueType": "SPEED",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "FCOM_ILLUSTRATION_REVIEWED"
+            }
+          },
+          {
+            "left": {
+              "key": "L2",
+              "label": "SEL TEMP",
+              "field": "SEL_TEMP",
+              "valueType": "TEMP",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "FCOM_ILLUSTRATION_REVIEWED"
+            },
+            "right": {
+              "key": "R2",
+              "label": "VR",
+              "field": "VR",
+              "valueType": "SPEED",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "FCOM_ILLUSTRATION_REVIEWED"
+            }
+          },
+          {
+            "left": {
+              "key": "L3",
+              "label": "TO N1",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "TRAINER",
+              "nextPage": null,
+              "sourceVerification": "FCOM_ILLUSTRATION_REVIEWED"
+            },
+            "right": {
+              "key": "R3",
+              "label": "V2",
+              "field": "V2",
+              "valueType": "SPEED",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "FCOM_ILLUSTRATION_REVIEWED"
+            }
+          },
+          {
+            "left": {
+              "key": "L4",
+              "label": "<POS INIT",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "POS_INIT",
+              "sourceVerification": "FCOM_ILLUSTRATION_REVIEWED"
+            },
+            "right": {
+              "key": "R4",
+              "label": "ROUTE>",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "RTE",
+              "sourceVerification": "FCOM_ILLUSTRATION_REVIEWED"
+            }
+          },
+          {
+            "left": {
+              "key": "L5",
+              "label": "<PERF INIT",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "PERF_INIT",
+              "sourceVerification": "FCOM_ILLUSTRATION_REVIEWED"
+            },
+            "right": {
+              "key": "R5",
+              "label": "DEPARTURE>",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "DEPARTURES",
+              "sourceVerification": "FCOM_ILLUSTRATION_REVIEWED"
+            }
+          },
+          {
+            "left": {
+              "key": "L6",
+              "label": "<INDEX",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "INDEX",
+              "sourceVerification": "FCOM_ILLUSTRATION_REVIEWED"
+            },
+            "right": {
+              "key": "R6",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "FCOM_ILLUSTRATION_REVIEWED"
+            }
+          }
+        ]
+      },
+      "verification": "TRAINER_FIELD_LAYOUT_ONLY_NOT_MANUAL_COMPLETE"
+    },
+    {
+      "id": "LEGS",
+      "title": "RTE LEGS",
+      "subpage": 1,
+      "subpages": 2,
+      "source": {
+        "folio_family": "11.41.9",
+        "pdf_page_near": 1633,
+        "source": "SEPEHRAN_737CL_FCOM_VOLUME_2_CH11",
+        "verification": "APPROXIMATE_TOPIC_REFERENCE_REQUIRES_FIELD_AUDIT"
+      },
+      "sourceStatus": "PARTIALLY_FCOM_GROUNDED",
+      "variant": "MENU_CDU",
+      "layout": {
+        "columns": 24,
+        "rows": 14,
+        "lineSelect": [
+          {
+            "left": {
+              "key": "L1",
+              "label": "1ST WAYPOINT",
+              "field": "WPT1",
+              "valueType": "WAYPOINT",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R1",
+              "label": "SPD/ALT",
+              "field": "WPT1_CONSTRAINT",
+              "valueType": "CONSTRAINT",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L2",
+              "label": "2ND WAYPOINT",
+              "field": "WPT2",
+              "valueType": "WAYPOINT",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R2",
+              "label": "SPD/ALT",
+              "field": "WPT2_CONSTRAINT",
+              "valueType": "CONSTRAINT",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L3",
+              "label": "3RD WAYPOINT",
+              "field": "WPT3",
+              "valueType": "WAYPOINT",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R3",
+              "label": "SPD/ALT",
+              "field": "WPT3_CONSTRAINT",
+              "valueType": "CONSTRAINT",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L4",
+              "label": "4TH WAYPOINT",
+              "field": "WPT4",
+              "valueType": "WAYPOINT",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R4",
+              "label": "SPD/ALT",
+              "field": "WPT4_CONSTRAINT",
+              "valueType": "CONSTRAINT",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L5",
+              "label": "<OFFSET",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "OFFSET",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R5",
+              "label": "RTE DATA>",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "RTE_DATA",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L6",
+              "label": "<RTE",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "RTE",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R6",
+              "label": "PROGRESS>",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "PROG",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          }
+        ]
+      },
+      "verification": "TRAINER_FIELD_LAYOUT_ONLY_NOT_MANUAL_COMPLETE"
+    },
+    {
+      "id": "PROG",
+      "title": "PROGRESS",
+      "subpage": 1,
+      "subpages": 2,
+      "source": {
+        "folio_family": "11.41.15",
+        "pdf_page_near": 1639,
+        "source": "SEPEHRAN_737CL_FCOM_VOLUME_2_CH11",
+        "verification": "APPROXIMATE_TOPIC_REFERENCE_REQUIRES_FIELD_AUDIT"
+      },
+      "sourceStatus": "NO_FLIGHT_STATE_CALC",
+      "variant": "MENU_CDU",
+      "layout": {
+        "columns": 24,
+        "rows": 14,
+        "lineSelect": [
+          {
+            "left": {
+              "key": "L1",
+              "label": "TO",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "{DEST}",
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R1",
+              "label": "ETA/FUEL",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "---Z/---",
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L2",
+              "label": "NEXT",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "{WPT1}",
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R2",
+              "label": "DIST",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "---NM",
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L3",
+              "label": "FUEL QTY",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "SIMULATED",
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R3",
+              "label": "WIND",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "---",
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L4",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R4",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L5",
+              "label": "<NEXT",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "PROG2",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R5",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L6",
+              "label": "<LEGS",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "LEGS",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R6",
+              "label": "RTE>",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "RTE",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          }
+        ]
+      },
+      "verification": "TRAINER_FIELD_LAYOUT_ONLY_NOT_MANUAL_COMPLETE"
+    },
+    {
+      "id": "PROG2",
+      "title": "PROGRESS",
+      "subpage": 1,
+      "subpages": 2,
+      "source": {
+        "folio_family": "11.41.21",
+        "pdf_page_near": 1645,
+        "source": "SEPEHRAN_737CL_FCOM_VOLUME_2_CH11",
+        "verification": "APPROXIMATE_TOPIC_REFERENCE_REQUIRES_FIELD_AUDIT"
+      },
+      "sourceStatus": "NO_FLIGHT_STATE_CALC",
+      "variant": "MENU_CDU",
+      "layout": {
+        "columns": 24,
+        "rows": 14,
+        "lineSelect": [
+          {
+            "left": {
+              "key": "L1",
+              "label": "RNP",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "---",
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R1",
+              "label": "ANP",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "---",
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L2",
+              "label": "WIND",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "---",
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R2",
+              "label": "SAT",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "---",
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L3",
+              "label": "GPS",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "SIMULATED",
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R3",
+              "label": "IRS",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "SIMULATED",
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L4",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R4",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L5",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R5",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L6",
+              "label": "<PREV",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "PROG",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R6",
+              "label": "LEGS>",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "LEGS",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          }
+        ]
+      },
+      "verification": "TRAINER_FIELD_LAYOUT_ONLY_NOT_MANUAL_COMPLETE"
+    },
+    {
+      "id": "CLB",
+      "title": "ECON CLB",
+      "subpage": 1,
+      "subpages": 1,
+      "source": {
+        "folio_family": "11.41.3",
+        "pdf_page_near": 1627,
+        "source": "SEPEHRAN_737CL_FCOM_VOLUME_2_CH11",
+        "verification": "APPROXIMATE_TOPIC_REFERENCE_REQUIRES_FIELD_AUDIT"
+      },
+      "sourceStatus": "NO_VNAV_CALC",
+      "variant": "MENU_CDU",
+      "layout": {
+        "columns": 24,
+        "rows": 14,
+        "lineSelect": [
+          {
+            "left": {
+              "key": "L1",
+              "label": "CRZ ALT",
+              "field": "CRZ_ALT",
+              "valueType": "FL",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R1",
+              "label": "TGT SPD",
+              "field": "CLB_SPEED",
+              "valueType": "IASMACH",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L2",
+              "label": "SPD REST",
+              "field": "CLB_REST",
+              "valueType": "CONSTRAINT",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R2",
+              "label": "TO T/C",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "---",
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L3",
+              "label": "CLB THRUST",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "TRAINER",
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R3",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "",
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L4",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R4",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L5",
+              "label": "<MAX RATE",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "CLB_MAX_RATE",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R5",
+              "label": "MAX ANGLE>",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "CLB_MAX_ANGLE",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L6",
+              "label": "<INDEX",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "INDEX",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R6",
+              "label": "CRZ>",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "CRZ",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          }
+        ]
+      },
+      "verification": "TRAINER_FIELD_LAYOUT_ONLY_NOT_MANUAL_COMPLETE"
+    },
+    {
+      "id": "CLB_MAX_RATE",
+      "title": "MAX RATE CLB",
+      "subpage": 1,
+      "subpages": 1,
+      "source": {
+        "folio_family": "11.41.3",
+        "pdf_page_near": 1627,
+        "source": "SEPEHRAN_737CL_FCOM_VOLUME_2_CH11",
+        "verification": "APPROXIMATE_TOPIC_REFERENCE_REQUIRES_FIELD_AUDIT"
+      },
+      "sourceStatus": "ADVISORY_ONLY_NO_PERFORMANCE_CALC",
+      "variant": "MENU_CDU",
+      "layout": {
+        "columns": 24,
+        "rows": 14,
+        "lineSelect": [
+          {
+            "left": {
+              "key": "L1",
+              "label": "TGT SPD",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "TRAINER",
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R1",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "",
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L2",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R2",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L3",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R3",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L4",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R4",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L5",
+              "label": "<ERASE",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "CLB",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R5",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L6",
+              "label": "<ECON CLB",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "CLB",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R6",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          }
+        ]
+      },
+      "verification": "TRAINER_FIELD_LAYOUT_ONLY_NOT_MANUAL_COMPLETE"
+    },
+    {
+      "id": "CLB_MAX_ANGLE",
+      "title": "MAX ANGLE CLB",
+      "subpage": 1,
+      "subpages": 1,
+      "source": {
+        "folio_family": "11.41.3",
+        "pdf_page_near": 1627,
+        "source": "SEPEHRAN_737CL_FCOM_VOLUME_2_CH11",
+        "verification": "APPROXIMATE_TOPIC_REFERENCE_REQUIRES_FIELD_AUDIT"
+      },
+      "sourceStatus": "ADVISORY_ONLY_NO_PERFORMANCE_CALC",
+      "variant": "MENU_CDU",
+      "layout": {
+        "columns": 24,
+        "rows": 14,
+        "lineSelect": [
+          {
+            "left": {
+              "key": "L1",
+              "label": "TGT SPD",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "TRAINER",
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R1",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L2",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R2",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L3",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R3",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L4",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R4",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L5",
+              "label": "<ERASE",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "CLB",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R5",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L6",
+              "label": "<ECON CLB",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "CLB",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R6",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          }
+        ]
+      },
+      "verification": "TRAINER_FIELD_LAYOUT_ONLY_NOT_MANUAL_COMPLETE"
+    },
+    {
+      "id": "CRZ",
+      "title": "ECON CRZ",
+      "subpage": 1,
+      "subpages": 1,
+      "source": {
+        "folio_family": "11.42.29",
+        "pdf_page_near": 1703,
+        "source": "SEPEHRAN_737CL_FCOM_VOLUME_2_CH11",
+        "verification": "APPROXIMATE_TOPIC_REFERENCE_REQUIRES_FIELD_AUDIT"
+      },
+      "sourceStatus": "NO_OPT_ALT_OR_FUEL_CALC",
+      "variant": "MENU_CDU",
+      "layout": {
+        "columns": 24,
+        "rows": 14,
+        "lineSelect": [
+          {
+            "left": {
+              "key": "L1",
+              "label": "CRZ ALT",
+              "field": "CRZ_ALT",
+              "valueType": "FL",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R1",
+              "label": "OPT/MAX",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "---/---",
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L2",
+              "label": "TGT SPD",
+              "field": "CRZ_SPEED",
+              "valueType": "IASMACH",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R2",
+              "label": "TO T/D",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "---",
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L3",
+              "label": "TURB N1",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "---",
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R3",
+              "label": "ACTUAL WIND",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "---",
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L4",
+              "label": "FUEL AT DEST",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "---",
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R4",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L5",
+              "label": "<LRC",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "CRZ_LRC",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R5",
+              "label": "ENG OUT>",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "ENG_OUT",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L6",
+              "label": "<RTE DATA",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "RTE_DATA",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R6",
+              "label": "DES>",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "DES",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          }
+        ]
+      },
+      "verification": "TRAINER_FIELD_LAYOUT_ONLY_NOT_MANUAL_COMPLETE"
+    },
+    {
+      "id": "CRZ_LRC",
+      "title": "LRC CRZ",
+      "subpage": 1,
+      "subpages": 1,
+      "source": {
+        "folio_family": "11.42.29",
+        "pdf_page_near": 1703,
+        "source": "SEPEHRAN_737CL_FCOM_VOLUME_2_CH11",
+        "verification": "APPROXIMATE_TOPIC_REFERENCE_REQUIRES_FIELD_AUDIT"
+      },
+      "sourceStatus": "ADVISORY_ONLY",
+      "variant": "MENU_CDU",
+      "layout": {
+        "columns": 24,
+        "rows": 14,
+        "lineSelect": [
+          {
+            "left": {
+              "key": "L1",
+              "label": "CRZ ALT",
+              "field": "CRZ_ALT",
+              "valueType": "FL",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R1",
+              "label": "OPT/MAX",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "---/---",
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L2",
+              "label": "TGT SPD",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "TRAINER",
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R2",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L3",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R3",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L4",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R4",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L5",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R5",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L6",
+              "label": "<ECON",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "CRZ",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R6",
+              "label": "ENG OUT>",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "ENG_OUT",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          }
+        ]
+      },
+      "verification": "TRAINER_FIELD_LAYOUT_ONLY_NOT_MANUAL_COMPLETE"
+    },
+    {
+      "id": "ENG_OUT",
+      "title": "ENG OUT",
+      "subpage": 1,
+      "subpages": 1,
+      "source": {
+        "folio_family": "11.42.36",
+        "pdf_page_near": 1710,
+        "source": "SEPEHRAN_737CL_FCOM_VOLUME_2_CH11",
+        "verification": "APPROXIMATE_TOPIC_REFERENCE_REQUIRES_FIELD_AUDIT"
+      },
+      "sourceStatus": "NOT_FLIGHT_CALCULATED",
+      "variant": "MENU_CDU",
+      "layout": {
+        "columns": 24,
+        "rows": 14,
+        "lineSelect": [
+          {
+            "left": {
+              "key": "L1",
+              "label": "ENG FAIL",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "SELECT",
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R1",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L2",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R2",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L3",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R3",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L4",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R4",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L5",
+              "label": "<ERASE",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "CRZ",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R5",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L6",
+              "label": "<ECON CRZ",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "CRZ",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R6",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          }
+        ]
+      },
+      "verification": "TRAINER_FIELD_LAYOUT_ONLY_NOT_MANUAL_COMPLETE"
+    },
+    {
+      "id": "DES",
+      "title": "ECON DES",
+      "subpage": 1,
+      "subpages": 1,
+      "source": {
+        "folio_family": "11.43.2",
+        "pdf_page_near": 1756,
+        "source": "SEPEHRAN_737CL_FCOM_VOLUME_2_CH11",
+        "verification": "APPROXIMATE_TOPIC_REFERENCE_REQUIRES_FIELD_AUDIT"
+      },
+      "sourceStatus": "NO_VNAV_PATH_CALC",
+      "variant": "MENU_CDU",
+      "layout": {
+        "columns": 24,
+        "rows": 14,
+        "lineSelect": [
+          {
+            "left": {
+              "key": "L1",
+              "label": "TGT SPD",
+              "field": "DES_SPEED",
+              "valueType": "IASMACH",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R1",
+              "label": "TO T/D",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "---",
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L2",
+              "label": "SPD REST",
+              "field": "DES_REST",
+              "valueType": "CONSTRAINT",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R2",
+              "label": "AT",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "---",
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L3",
+              "label": "FORECAST",
+              "field": "DES_WIND",
+              "valueType": "WIND",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R3",
+              "label": "WPT/ALT",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "---",
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L4",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R4",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L5",
+              "label": "<FORECAST",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "DES_FORECAST",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R5",
+              "label": "DES RESTR>",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "DES_RESTR",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L6",
+              "label": "<INDEX",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "INDEX",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R6",
+              "label": "APP REF>",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "APP_REF",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          }
+        ]
+      },
+      "verification": "TRAINER_FIELD_LAYOUT_ONLY_NOT_MANUAL_COMPLETE"
+    },
+    {
+      "id": "DES_FORECAST",
+      "title": "DES FORECAST",
+      "subpage": 1,
+      "subpages": 1,
+      "source": {
+        "folio_family": "11.43.15",
+        "pdf_page_near": 1769,
+        "source": "SEPEHRAN_737CL_FCOM_VOLUME_2_CH11",
+        "verification": "APPROXIMATE_TOPIC_REFERENCE_REQUIRES_FIELD_AUDIT"
+      },
+      "sourceStatus": "PARTIALLY_FCOM_GROUNDED",
+      "variant": "MENU_CDU",
+      "layout": {
+        "columns": 24,
+        "rows": 14,
+        "lineSelect": [
+          {
+            "left": {
+              "key": "L1",
+              "label": "TRANS LVL",
+              "field": "TRANS_LVL",
+              "valueType": "FL",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R1",
+              "label": "QNH",
+              "field": "QNH",
+              "valueType": "QNH",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L2",
+              "label": "WIND 1",
+              "field": "DESC_WIND1",
+              "valueType": "WIND",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R2",
+              "label": "ALT 1",
+              "field": "DESC_ALT1",
+              "valueType": "FL",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L3",
+              "label": "WIND 2",
+              "field": "DESC_WIND2",
+              "valueType": "WIND",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R3",
+              "label": "ALT 2",
+              "field": "DESC_ALT2",
+              "valueType": "FL",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L4",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R4",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L5",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R5",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L6",
+              "label": "<DES",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "DES",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R6",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          }
+        ]
+      },
+      "verification": "TRAINER_FIELD_LAYOUT_ONLY_NOT_MANUAL_COMPLETE"
+    },
+    {
+      "id": "DES_RESTR",
+      "title": "DES REST",
+      "subpage": 1,
+      "subpages": 1,
+      "source": {
+        "folio_family": "11.43.2",
+        "pdf_page_near": 1756,
+        "source": "SEPEHRAN_737CL_FCOM_VOLUME_2_CH11",
+        "verification": "APPROXIMATE_TOPIC_REFERENCE_REQUIRES_FIELD_AUDIT"
+      },
+      "sourceStatus": "PARTIALLY_FCOM_GROUNDED",
+      "variant": "MENU_CDU",
+      "layout": {
+        "columns": 24,
+        "rows": 14,
+        "lineSelect": [
+          {
+            "left": {
+              "key": "L1",
+              "label": "SPD",
+              "field": "DES_REST_SPEED",
+              "valueType": "SPEED",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R1",
+              "label": "ALT",
+              "field": "DES_REST_ALT",
+              "valueType": "ALT",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L2",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R2",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L3",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R3",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L4",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R4",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L5",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R5",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L6",
+              "label": "<ECON DES",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "DES",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R6",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          }
+        ]
+      },
+      "verification": "TRAINER_FIELD_LAYOUT_ONLY_NOT_MANUAL_COMPLETE"
+    },
+    {
+      "id": "APP_REF",
+      "title": "APPROACH REF",
+      "subpage": 1,
+      "subpages": 1,
+      "source": {
+        "folio_family": "11.43.27",
+        "pdf_page_near": 1781,
+        "source": "SEPEHRAN_737CL_FCOM_VOLUME_2_CH11",
+        "verification": "FIELD_LOCATION_REVIEWED_ON_FCOM_PAGE"
+      },
+      "sourceStatus": "LOCATION_REVIEWED_AGAINST_FCOM_ILLUSTRATION; DYNAMIC_FUNCTIONS_PARTIAL",
+      "variant": "MENU_CDU",
+      "layout": {
+        "columns": 24,
+        "rows": 14,
+        "lineSelect": [
+          {
+            "left": {
+              "key": "L1",
+              "label": "GROSS WT",
+              "field": "LANDING_WEIGHT",
+              "valueType": "WEIGHT",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "FCOM_ILLUSTRATION_REVIEWED"
+            },
+            "right": {
+              "key": "R1",
+              "label": "FLAPS 15 VREF",
+              "field": "VREF15",
+              "valueType": "SPEED",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "FCOM_ILLUSTRATION_REVIEWED"
+            }
+          },
+          {
+            "left": {
+              "key": "L2",
+              "label": "GA N1",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "NOT CALCULATED",
+              "nextPage": null,
+              "sourceVerification": "FCOM_ILLUSTRATION_REVIEWED"
+            },
+            "right": {
+              "key": "R2",
+              "label": "FLAPS 30 VREF",
+              "field": "VREF30",
+              "valueType": "SPEED",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "FCOM_ILLUSTRATION_REVIEWED"
+            }
+          },
+          {
+            "left": {
+              "key": "L3",
+              "label": "RUNWAY",
+              "field": "APP_RUNWAY",
+              "valueType": "RUNWAY",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "FCOM_ILLUSTRATION_REVIEWED"
+            },
+            "right": {
+              "key": "R3",
+              "label": "FLAPS 40 VREF",
+              "field": "VREF40",
+              "valueType": "SPEED",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "FCOM_ILLUSTRATION_REVIEWED"
+            }
+          },
+          {
+            "left": {
+              "key": "L4",
+              "label": "ILS FREQ",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "NOT AVAILABLE",
+              "nextPage": null,
+              "sourceVerification": "FCOM_ILLUSTRATION_REVIEWED"
+            },
+            "right": {
+              "key": "R4",
+              "label": "FRONT CRS",
+              "field": "APP_CRS",
+              "valueType": "HDG",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "FCOM_ILLUSTRATION_REVIEWED"
+            }
+          },
+          {
+            "left": {
+              "key": "L5",
+              "label": "<INDEX",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "INDEX",
+              "sourceVerification": "FCOM_ILLUSTRATION_REVIEWED"
+            },
+            "right": {
+              "key": "R5",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "FCOM_ILLUSTRATION_REVIEWED"
+            }
+          },
+          {
+            "left": {
+              "key": "L6",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "FCOM_ILLUSTRATION_REVIEWED"
+            },
+            "right": {
+              "key": "R6",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "FCOM_ILLUSTRATION_REVIEWED"
+            }
+          }
+        ]
+      },
+      "verification": "TRAINER_FIELD_LAYOUT_ONLY_NOT_MANUAL_COMPLETE"
+    },
+    {
+      "id": "HOLD",
+      "title": "RTE HOLD",
+      "subpage": 1,
+      "subpages": 1,
+      "source": {
+        "folio_family": "11.43.31",
+        "pdf_page_near": 1785,
+        "source": "SEPEHRAN_737CL_FCOM_VOLUME_2_CH11",
+        "verification": "APPROXIMATE_TOPIC_REFERENCE_REQUIRES_FIELD_AUDIT"
+      },
+      "sourceStatus": "NO_HOLD_GEOMETRY",
+      "variant": "MENU_CDU",
+      "layout": {
+        "columns": 24,
+        "rows": 14,
+        "lineSelect": [
+          {
+            "left": {
+              "key": "L1",
+              "label": "HOLD AT",
+              "field": "HOLD_AT",
+              "valueType": "WAYPOINT",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R1",
+              "label": "STATUS",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "TRAINER",
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L2",
+              "label": "INBD CRS",
+              "field": "HOLD_INBD",
+              "valueType": "HDG",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R2",
+              "label": "TURN DIR",
+              "field": "TURN_DIR",
+              "valueType": "LR",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L3",
+              "label": "LEG TIME",
+              "field": "HOLD_TIME",
+              "valueType": "TIME",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R3",
+              "label": "LEG DIST",
+              "field": "HOLD_DIST",
+              "valueType": "DIST",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L4",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R4",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L5",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R5",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L6",
+              "label": "<LEGS",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "LEGS",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R6",
+              "label": "INDEX>",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "INDEX",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          }
+        ]
+      },
+      "verification": "TRAINER_FIELD_LAYOUT_ONLY_NOT_MANUAL_COMPLETE"
+    },
+    {
+      "id": "FIX",
+      "title": "FIX INFO",
+      "subpage": 1,
+      "subpages": 1,
+      "source": {
+        "folio_family": "11.42.77",
+        "pdf_page_near": 1751,
+        "source": "SEPEHRAN_737CL_FCOM_VOLUME_2_CH11",
+        "verification": "FIELD_LOCATION_REVIEWED_ON_FCOM_PAGE"
+      },
+      "sourceStatus": "LOCATION_REVIEWED_AGAINST_FCOM_ILLUSTRATION; DYNAMIC_FUNCTIONS_PARTIAL",
+      "variant": "MENU_CDU",
+      "layout": {
+        "columns": 24,
+        "rows": 14,
+        "lineSelect": [
+          {
+            "left": {
+              "key": "L1",
+              "label": "FIX",
+              "field": "FIX",
+              "valueType": "WAYPOINT",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "FCOM_ILLUSTRATION_REVIEWED"
+            },
+            "right": {
+              "key": "R1",
+              "label": "RAD/DIS FR",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "---",
+              "nextPage": null,
+              "sourceVerification": "FCOM_ILLUSTRATION_REVIEWED"
+            }
+          },
+          {
+            "left": {
+              "key": "L2",
+              "label": "RAD/DIS 1",
+              "field": "RAD_DIS1",
+              "valueType": "BEARDIST",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "FCOM_ILLUSTRATION_REVIEWED"
+            },
+            "right": {
+              "key": "R2",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "FCOM_ILLUSTRATION_REVIEWED"
+            }
+          },
+          {
+            "left": {
+              "key": "L3",
+              "label": "RAD/DIS 2",
+              "field": "RAD_DIS2",
+              "valueType": "BEARDIST",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "FCOM_ILLUSTRATION_REVIEWED"
+            },
+            "right": {
+              "key": "R3",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "FCOM_ILLUSTRATION_REVIEWED"
+            }
+          },
+          {
+            "left": {
+              "key": "L4",
+              "label": "RAD/DIS 3",
+              "field": "RAD_DIS3",
+              "valueType": "BEARDIST",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "FCOM_ILLUSTRATION_REVIEWED"
+            },
+            "right": {
+              "key": "R4",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "FCOM_ILLUSTRATION_REVIEWED"
+            }
+          },
+          {
+            "left": {
+              "key": "L5",
+              "label": "ABEAM",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "NO NAV DB",
+              "nextPage": null,
+              "sourceVerification": "FCOM_ILLUSTRATION_REVIEWED"
+            },
+            "right": {
+              "key": "R5",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "FCOM_ILLUSTRATION_REVIEWED"
+            }
+          },
+          {
+            "left": {
+              "key": "L6",
+              "label": "<INDEX",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "INDEX",
+              "sourceVerification": "FCOM_ILLUSTRATION_REVIEWED"
+            },
+            "right": {
+              "key": "R6",
+              "label": "LEGS>",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "LEGS",
+              "sourceVerification": "FCOM_ILLUSTRATION_REVIEWED"
+            }
+          }
+        ]
+      },
+      "verification": "TRAINER_FIELD_LAYOUT_ONLY_NOT_MANUAL_COMPLETE"
+    },
+    {
+      "id": "RTE_DATA",
+      "title": "RTE DATA",
+      "subpage": 1,
+      "subpages": 1,
+      "source": {
+        "folio_family": "11.42.43",
+        "pdf_page_near": 1717,
+        "source": "SEPEHRAN_737CL_FCOM_VOLUME_2_CH11",
+        "verification": "APPROXIMATE_TOPIC_REFERENCE_REQUIRES_FIELD_AUDIT"
+      },
+      "sourceStatus": "NO_FLIGHT_PREDICTION",
+      "variant": "MENU_CDU",
+      "layout": {
+        "columns": 24,
+        "rows": 14,
+        "lineSelect": [
+          {
+            "left": {
+              "key": "L1",
+              "label": "TO",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "{DEST}",
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R1",
+              "label": "ETA/FUEL",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "---",
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L2",
+              "label": "WPT",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "{WPT1}",
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R2",
+              "label": "DIST",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "---NM",
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L3",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R3",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L4",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R4",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L5",
+              "label": "<REF NAV DATA",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "NAV_DATA",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R5",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L6",
+              "label": "<LEGS",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "LEGS",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R6",
+              "label": "RTE>",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "RTE",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          }
+        ]
+      },
+      "verification": "TRAINER_FIELD_LAYOUT_ONLY_NOT_MANUAL_COMPLETE"
+    },
+    {
+      "id": "NAV_DATA",
+      "title": "REF NAV DATA",
+      "subpage": 1,
+      "subpages": 1,
+      "source": {
+        "folio_family": "11.42.59",
+        "pdf_page_near": 1733,
+        "source": "SEPEHRAN_737CL_FCOM_VOLUME_2_CH11",
+        "verification": "APPROXIMATE_TOPIC_REFERENCE_REQUIRES_FIELD_AUDIT"
+      },
+      "sourceStatus": "NO_NAVIGATION_DB",
+      "variant": "MENU_CDU",
+      "layout": {
+        "columns": 24,
+        "rows": 14,
+        "lineSelect": [
+          {
+            "left": {
+              "key": "L1",
+              "label": "IDENT",
+              "field": "NAVAID",
+              "valueType": "WAYPOINT",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R1",
+              "label": "LAT/LON",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "NOT LOADED",
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L2",
+              "label": "VOR FREQ",
+              "field": "VOR_FREQ",
+              "valueType": "FREQ",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R2",
+              "label": "CLASS",
+              "field": "NAV_CLASS",
+              "valueType": "CLASS",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L3",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R3",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L4",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R4",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L5",
+              "label": "<SUPP NAV",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "SUPP_NAV",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R5",
+              "label": "NAV OPTIONS>",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "NAV_OPTIONS",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L6",
+              "label": "<INDEX",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "INDEX",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R6",
+              "label": "FIX INFO>",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "FIX",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          }
+        ]
+      },
+      "verification": "TRAINER_FIELD_LAYOUT_ONLY_NOT_MANUAL_COMPLETE"
+    },
+    {
+      "id": "SUPP_NAV",
+      "title": "SUPP NAV DATA",
+      "subpage": 1,
+      "subpages": 1,
+      "source": {
+        "folio_family": "11.42.66",
+        "pdf_page_near": 1740,
+        "source": "SEPEHRAN_737CL_FCOM_VOLUME_2_CH11",
+        "verification": "APPROXIMATE_TOPIC_REFERENCE_REQUIRES_FIELD_AUDIT"
+      },
+      "sourceStatus": "TRAINER_LOCAL_DATA",
+      "variant": "MENU_CDU",
+      "layout": {
+        "columns": 24,
+        "rows": 14,
+        "lineSelect": [
+          {
+            "left": {
+              "key": "L1",
+              "label": "IDENT",
+              "field": "SUPP_IDENT",
+              "valueType": "WAYPOINT",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R1",
+              "label": "STATUS",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "LOCAL",
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L2",
+              "label": "LAT/LON",
+              "field": "SUPP_POS",
+              "valueType": "LATLON",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R2",
+              "label": "CLASS",
+              "field": "SUPP_CLASS",
+              "valueType": "CLASS",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L3",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R3",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L4",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R4",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L5",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R5",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L6",
+              "label": "<REF NAV",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "NAV_DATA",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R6",
+              "label": "INDEX>",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "INDEX",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          }
+        ]
+      },
+      "verification": "TRAINER_FIELD_LAYOUT_ONLY_NOT_MANUAL_COMPLETE"
+    },
+    {
+      "id": "NAV_OPTIONS",
+      "title": "NAV OPTIONS",
+      "subpage": 1,
+      "subpages": 1,
+      "source": {
+        "folio_family": "11.42.73",
+        "pdf_page_near": 1747,
+        "source": "SEPEHRAN_737CL_FCOM_VOLUME_2_CH11",
+        "verification": "APPROXIMATE_TOPIC_REFERENCE_REQUIRES_FIELD_AUDIT"
+      },
+      "sourceStatus": "NO_ACTUAL_SENSORS",
+      "variant": "MENU_CDU",
+      "layout": {
+        "columns": 24,
+        "rows": 14,
+        "lineSelect": [
+          {
+            "left": {
+              "key": "L1",
+              "label": "GPS",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "SIMULATED",
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R1",
+              "label": "IRS",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "SIMULATED",
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L2",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R2",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L3",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R3",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L4",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R4",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L5",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R5",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L6",
+              "label": "<REF NAV",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "NAV_DATA",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R6",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          }
+        ]
+      },
+      "verification": "TRAINER_FIELD_LAYOUT_ONLY_NOT_MANUAL_COMPLETE"
+    },
+    {
+      "id": "OFFSET",
+      "title": "OFFSET",
+      "subpage": 1,
+      "subpages": 1,
+      "source": {
+        "folio_family": "11.42.26",
+        "pdf_page_near": 1700,
+        "source": "SEPEHRAN_737CL_FCOM_VOLUME_2_CH11",
+        "verification": "APPROXIMATE_TOPIC_REFERENCE_REQUIRES_FIELD_AUDIT"
+      },
+      "sourceStatus": "NO_LNAV_GUIDANCE",
+      "variant": "MENU_CDU",
+      "layout": {
+        "columns": 24,
+        "rows": 14,
+        "lineSelect": [
+          {
+            "left": {
+              "key": "L1",
+              "label": "OFFSET",
+              "field": "OFFSET",
+              "valueType": "OFFSET",
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R1",
+              "label": "LNAV",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "NOT CONNECTED",
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L2",
+              "label": "START",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "---",
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R2",
+              "label": "END",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "---",
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L3",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R3",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L4",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R4",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L5",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R5",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L6",
+              "label": "<LEGS",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "LEGS",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R6",
+              "label": "INDEX>",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "INDEX",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          }
+        ]
+      },
+      "verification": "TRAINER_FIELD_LAYOUT_ONLY_NOT_MANUAL_COMPLETE"
+    },
+    {
+      "id": "MESSAGES",
+      "title": "FMC/CDU MESSAGES",
+      "subpage": 1,
+      "subpages": 1,
+      "source": {
+        "folio_family": "11.60.1",
+        "pdf_page_near": 1801,
+        "source": "SEPEHRAN_737CL_FCOM_VOLUME_2_CH11",
+        "verification": "APPROXIMATE_TOPIC_REFERENCE_REQUIRES_FIELD_AUDIT"
+      },
+      "sourceStatus": "TRAINER_MESSAGE_VIEW",
+      "variant": "MENU_CDU",
+      "layout": {
+        "columns": 24,
+        "rows": 14,
+        "lineSelect": [
+          {
+            "left": {
+              "key": "L1",
+              "label": "STATUS",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "SIMULATOR",
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R1",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L2",
+              "label": "<MSG RECALL",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "MSG_RECALL",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R2",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L3",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R3",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L4",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R4",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L5",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R5",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L6",
+              "label": "<MENU",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "MENU",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R6",
+              "label": "INDEX>",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "INDEX",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          }
+        ]
+      },
+      "verification": "TRAINER_FIELD_LAYOUT_ONLY_NOT_MANUAL_COMPLETE"
+    },
+    {
+      "id": "MSG_RECALL",
+      "title": "MSG RECALL",
+      "subpage": 1,
+      "subpages": 1,
+      "source": {
+        "folio_family": "11.60.1",
+        "pdf_page_near": 1801,
+        "source": "SEPEHRAN_737CL_FCOM_VOLUME_2_CH11",
+        "verification": "APPROXIMATE_TOPIC_REFERENCE_REQUIRES_FIELD_AUDIT"
+      },
+      "sourceStatus": "TRAINER_MESSAGE_VIEW",
+      "variant": "MENU_CDU",
+      "layout": {
+        "columns": 24,
+        "rows": 14,
+        "lineSelect": [
+          {
+            "left": {
+              "key": "L1",
+              "label": "LATEST",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "{MESSAGE}",
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R1",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L2",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R2",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L3",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R3",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L4",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R4",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L5",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R5",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          },
+          {
+            "left": {
+              "key": "L6",
+              "label": "<MESSAGES",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "MESSAGES",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            },
+            "right": {
+              "key": "R6",
+              "label": "INDEX>",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "INDEX",
+              "sourceVerification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
+          }
+        ]
+      },
+      "verification": "TRAINER_FIELD_LAYOUT_ONLY_NOT_MANUAL_COMPLETE"
+    },
+    {
+      "id": "POS_SHIFT",
+      "title": "POS SHIFT",
+      "subpage": 3,
+      "subpages": 3,
+      "source": {
+        "folio_family": "11.42.47",
+        "pdf_page_near": 1721,
+        "source": "SEPEHRAN_737CL_FCOM_VOLUME_2_CH11",
+        "verification": "PAGE_LOCATED_VARIANT_AND_VALUES_PENDING"
+      },
+      "sourceStatus": "FCOM_11.42.47_LABELS_REVIEWED; BEARING_DISTANCES_UNKNOWN",
+      "variant": "POSITION_3_OF_3_OPTION_GATED",
+      "layout": {
+        "columns": 24,
+        "rows": 14,
+        "lineSelect": [
+          {
+            "left": {
+              "key": "L1",
+              "label": "IRS-L",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "",
+              "nextPage": null,
+              "sourceVerification": "FCOM_11.42.47"
+            },
+            "right": {
+              "key": "R1",
+              "label": "IRS-R",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "",
+              "nextPage": null,
+              "sourceVerification": "FCOM_11.42.47"
+            }
+          },
+          {
+            "left": {
+              "key": "L2",
+              "label": "-----",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "",
+              "nextPage": null,
+              "sourceVerification": "FCOM_11.42.47"
+            },
+            "right": {
+              "key": "R2",
+              "label": "-----",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "",
+              "nextPage": null,
+              "sourceVerification": "FCOM_11.42.47"
+            }
+          },
+          {
+            "left": {
+              "key": "L3",
+              "label": "RNP/ACTUAL",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "",
+              "nextPage": null,
+              "sourceVerification": "FCOM_11.42.47"
+            },
+            "right": {
+              "key": "R3",
+              "label": "RADIO",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "",
+              "nextPage": null,
+              "sourceVerification": "FCOM_11.42.47"
+            }
+          },
+          {
+            "left": {
+              "key": "L4",
+              "label": "-----",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "",
+              "nextPage": null,
+              "sourceVerification": "FCOM_11.42.47"
+            },
+            "right": {
+              "key": "R4",
+              "label": "-----",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "",
+              "nextPage": null,
+              "sourceVerification": "FCOM_11.42.47"
+            }
+          },
+          {
+            "left": {
+              "key": "L5",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "VARIANT_GATE_REQUIRED"
+            },
+            "right": {
+              "key": "R5",
+              "label": "",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": null,
+              "sourceVerification": "VARIANT_GATE_REQUIRED"
+            }
+          },
+          {
+            "left": {
+              "key": "L6",
+              "label": "<INDEX",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": null,
+              "nextPage": "INDEX",
+              "sourceVerification": "FCOM_11.42.47"
+            },
+            "right": {
+              "key": "R6",
+              "label": "NAV STATUS>",
+              "field": null,
+              "valueType": null,
+              "required": false,
+              "staticTrainerValue": "",
+              "nextPage": null,
+              "sourceVerification": "FCOM_11.42.47"
+            }
+          }
+        ]
+      },
+      "verification": "TRAINER_FIELD_LAYOUT_ONLY_NOT_MANUAL_COMPLETE"
+    }
+  ],
+  "globalNavigation": {
+    "functionKeys": "IDENT via INIT/REF, RTE, DEP/ARR, LEGS, CLB, CRZ, DES, HOLD, PROG, FIX, N1 LIMIT as installed",
+    "dedicatedCycle": [
+      "POS_INIT",
+      "POS_REF",
+      "POS_SHIFT"
+    ],
+    "cycleKeys": [
+      "NEXT_PAGE",
+      "PREV_PAGE"
+    ],
+    "sharedFmcAcross": [
+      "CAPT",
+      "FO"
+    ],
+    "executableGuidance": "BLOCKED_PENDING_VERIFIED_ROUTE_SENSOR_AND_FEED"
+  }
+}
