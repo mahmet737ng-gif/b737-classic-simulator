@@ -13,6 +13,19 @@ t('generator bus and main bus do not automatically recover on transfer',()=>{con
 t('BUS TRANS OFF blocks cross feed',()=>{const o=ev(set(fault(start(),'GEN1_FAILED'),'busTransferAuto',false));assert.equal(o.bus.transfer1,false)});
 t('transfer bus off lamp reflects bus inactivity',()=>{const o=ev(set(fault(start(),'GEN1_FAILED'),'busTransferAuto',false));assert.equal(o.lamps.transferBusOff1,true)});
 t('generator off bus lamp reflects engine generator absent as a source',()=>{const o=ev(fault(start(),'GEN1_FAILED'));assert.equal(o.lamps.genOffBus1,true)});
+t('GEN1 and GEN2 OFF BUS only indicate when the respective engine is running',()=>{
+ let s=start();
+ s=set(s,'engine1Running',false);
+ s=set(s,'engine2Running',false);
+ assert.equal(ev(s).lamps.genOffBus1,false);
+ assert.equal(ev(s).lamps.genOffBus2,false);
+ s=set(s,'engine1Running',true);
+ assert.equal(ev(sel(s,1,'OFF')).lamps.genOffBus1,true);
+ assert.equal(ev(s).lamps.genOffBus1,false);
+ s=set(s,'engine2Running',true);
+ assert.equal(ev(sel(s,2,'OFF')).lamps.genOffBus2,true);
+ assert.equal(ev(s).lamps.genOffBus2,false);
+});
 t('TR1 draws from transfer1',()=>{const o=ev(set(fault(start(),'GEN1_FAILED'),'busTransferAuto',false));assert.equal(o.feed.tr.TR1,false)});
 t('TR2 draws from transfer2',()=>{const o=ev(fault(start(),'GEN2_FAILED'));assert.equal(o.feed.tr.TR2,true)});
 t('TR3 draws from main2, not transfer2',()=>{const o=ev(fault(start(),'GEN2_FAILED'));assert.equal(o.feed.tr.TR3,false)});
