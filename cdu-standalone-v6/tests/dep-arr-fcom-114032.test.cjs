@@ -105,11 +105,11 @@ test('Both Unified CDUs fetch versioned corrected page definitions, app and over
  for(const p of ['data/page-definitions.js','engine/cdu-engine.js','app.js','stage5-adapter.js','stage6-selector.js']){
   const at=html.indexOf('src="'+p);
   assert.ok(at>=0);
-  assert.ok(html.slice(at,at+200).includes('DEPARR-FCOM-114032-0001'));
+  assert.ok(html.slice(at,at+200).includes(p==='app.js'?'IDENT-POS-0001':'DEPARR-FCOM-114032-0001'));
  }
  for(const seat of ['CAPT','FO']){
   const item=manifest.embeddedInstruments.find(x=>x.seat===seat);
   assert.ok(item);
-  assert.match(item.embeddedUrl,/DEPARR-FCOM-114032-0001-CH11-COMPOSITOR-0001$/);
+  assert.match(item.embeddedUrl,/DEPARR-FCOM-114032-0001-CH11-COMPOSITOR-0001-FCOM-PREFLIGHT-0001$/);
  }
 });
