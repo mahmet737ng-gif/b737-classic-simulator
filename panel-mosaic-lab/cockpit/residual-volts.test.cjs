@@ -55,6 +55,9 @@ assert.match(integration,/event.source!==frame.contentWindow/,'only OH10 iframe 
 assert.match(integration,/b737:residual-volts-status/);
 assert.match(integration,/b737:residual-generator-state/);
 assert.match(integration,/b737:electrical-v7-state/);
+assert.match(integration,/b737:unified-ecu-observation/);
+assert.match(integration,/B737ISNCockpitV1/);
+assert.match(integration,/ISN_LIVE_ENGINE_APU_DRIVE/);
 assert.match(integration,/b737:ac-dc-selector-change/);
 assert.match(integration,/b737:ac-dc-source-measurement/);
 assert.match(integration,/pointercancel/);
