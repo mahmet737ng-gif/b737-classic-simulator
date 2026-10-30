@@ -110,16 +110,24 @@ test('Unified EGT pointer tracks ECU start/steady/loads with exact frozen sprite
  };
  vm.runInNewContext(file,{window,CustomEvent:class{}});
  const bridge=window.B737APULiveMetersV1;
- assert.equal(bridge.bearingForEGT(0),127);
- assert.equal(bridge.bearingForEGT(1000),-110);
- assert.ok(bridge.bearingForEGT(620)<bridge.bearingForEGT(390));
+ assert.equal(bridge.bearingForEGT(0),-127);
+ assert.equal(bridge.bearingForEGT(1000),127);
+ const model=require('../panel-mosaic-lab/cockpit/apu-egt-needle-model.js');
+ assert.equal(bridge.bearingForEGT(0),model.needle.initialAngle,'Cold pointer must not jump at startup');
+ assert.equal(bridge.bearingForEGT(-40),model.needle.initialAngle,'Negative ambient is clipped to cold end');
+ assert.equal(bridge.bearingForEGT(1400),127,'Out-of-range temperatures clamp to hot end');
+ for(const [lo,hi] of [[0,20],[20,390],[390,620],[620,950],[950,1000]])
+  assert.ok(bridge.bearingForEGT(hi)>bridge.bearingForEGT(lo),'EGT rising '+lo+' -> '+hi+' must rotate clockwise');
+
+ assert.ok(bridge.bearingForEGT(620)>bridge.bearingForEGT(390),'Increasing EGT must rotate CLOCKWISE');
  handlers['b737:unified-ecu-observation']({detail:{apu:{phase:'STARTING',egtC:620,rpmPct:60,generator:{ready:false,voltageV:0,frequencyHz:0}}}});
  assert.equal(angles.length,1);
- assert.ok(angles[0]<0);
+ assert.ok(angles[0]>0,'620°C APU EGT must be right of the 0° upright mark');
  const snap=bridge.snapshot();
  assert.equal(snap.egtC,620);assert.equal(snap.voltsV,0);
  handlers['b737:unified-ecu-observation']({detail:{apu:{phase:'READY',egtC:390,rpmPct:95.5,generator:{ready:true,voltageV:115,frequencyHz:400,currentEstimatedA:40}}}});
  assert.equal(angles.length,2);
+ assert.ok(angles[1]<angles[0],'EGT cool-down must rotate counterclockwise');
  assert.equal(bridge.snapshot().sourceAmpsA,40);
  assert.equal(bridge.snapshot().frequencyHz,400);
 });
