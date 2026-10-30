@@ -26,4 +26,15 @@ test('Source asset, keypad locations, and fonts remain outside scope of typograp
  assert.match(locked,/BoeingCDUSmall/);
  const html=read('panel-mosaic-lab/cockpit/cdu-stage.html');
  assert.match(html,/assets\/cdu-approved-unlit\.png/);
+ const manifest=JSON.parse(read('panel-mosaic-lab/cockpit/assembly.json'));
+ const cdus=manifest.embeddedInstruments;
+ assert.equal(cdus.length,2);
+ for(const seat of ['CAPT','FO']){
+  const item=cdus.find(x=>x.seat===seat);
+  assert.ok(item,'missing '+seat+' CDU');
+  assert.match(item.embeddedUrl,/TYPE-REF-0002$/);
+  assert.equal(item.nativeWidth,1199);
+  assert.equal(item.nativeHeight,1312);
+ }
+
 });
