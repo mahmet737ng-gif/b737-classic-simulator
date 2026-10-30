@@ -2,6 +2,8 @@
 const $=id=>document.getElementById(id);
 const map=window.CDU_MAP, pages=window.CDU_PAGES, core=window.CDU_ENGINE;
 const state=core.makeState('IDENT');
+const contract=window.B737FCOMScreenContractV1;
+if(!contract)throw Error('FCOM_CDU_SCREEN_CONTRACT_NOT_LOADED');
 const byId={};
 function n1EstimateV19(){
  const engine=window.EPFSI_ESTIMATED_N1_V19;
@@ -100,8 +102,15 @@ function update(){const box=$('fmc-lines'); const frame=document.createElement('
  const all=core.lights(state);if(state.stage6AwaitingExec)all.EXEC=true;
  for(const [l,on] of Object.entries(all)){const el=byId['CDU_CAPT_'+l+'_LIGHT'];if(el)el.classList.toggle('on',on)}
  $('page-now').textContent=state.page;$('scratch-now').textContent=state.message||state.scratch||'—';$('pending-now').textContent=core.pendingCount(state);$('key-now').textContent=state.lastKey;
- const ref=pages[state.page].source_ref;$('current-reference').textContent=`FCOM ${ref.folio_family} (near PDF p. ${ref.pdf_page_near}); field-by-field verification pending`;
- $('current-status').textContent=pages[state.page].source_status;
+ const review=contract.compile(pages,state.page);
+ box.dataset.layoutVerification=review.verification.layout;
+ box.dataset.behaviorVerification=review.verification.behavior;
+ box.dataset.sourceFolio=review.source.folio||'UNVERIFIED';
+ const ref=pages[state.page].source_ref;
+ $('current-reference').textContent='FCOM '+(ref?.folio_family||'UNKNOWN')+' / PDF near '+(ref?.pdf_page_near||'?')+
+   ' — layout '+review.verification.layout+'; behavior '+review.verification.behavior;
+ $('current-status').textContent='SOURCE: '+(pages[state.page].source_status||'UNVERIFIED')+
+   ' / unresolved static cell issues: '+review.issues.length;
  const status=$('n1-v6-est-status');
  if(status&&n1)status.textContent='SIM EST / '+n1.phase+': MAX '+n1.maxN1Pct.toFixed(1)+
   '% / PRESENT ENG1 '+n1.presentN1Pct[1].toFixed(1)+'% / ENG2 '+n1.presentN1Pct[2].toFixed(1)+'%';
@@ -128,5 +137,17 @@ function init(){if(!map||!pages||!core)throw Error('CDU data is missing');makeCo
  window.EHSI_ENGINE?.initControls(state,core,document,updateEHSI);
 
 }
+window.CDU_SCREEN_QA_V1=Object.freeze({
+ getCurrent:()=>contract.grid(pages,state.page,{
+   readValue:(field,page)=>core.readValue(state,field,page),
+   readScratch:()=>state.scratch,readMessage:()=>state.message
+ }),
+ getPage:id=>contract.compile(pages,id),
+ getMasterAudit:()=>contract.audit(pages),
+ getVisualOwner:()=>({
+   owner:document.getElementById('fmc-lines')?.dataset.screenOwner||null,
+   compositor:document.getElementById('fmc-lines')?.dataset.compositorVersion||null
+ })
+});
 window.updateStage5View=update;
 init();
