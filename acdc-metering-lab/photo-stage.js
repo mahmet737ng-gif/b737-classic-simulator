@@ -9,17 +9,17 @@ var E=window.B737ElectricalV7;
 var $=function(id){return document.getElementById(id);};
 var STORAGE="b737-oh10-photo-geometry-v1";
 var initial={
- dcAmps:{x:305,y:213,r:147,type:"meter"},
- cpsFreq:{x:786,y:213,r:147,type:"meter"},
- dcVolts:{x:305,y:552,r:147,type:"meter"},
- acVolts:{x:786,y:552,r:147,type:"meter"},
+ dcAmps:{x:308.453,y:281.608,r:141,type:"meter"},
+ cpsFreq:{x:774.2,y:191.4,r:85,type:"meter"},
+ dcVolts:{x:310.307,y:682.818,r:131,type:"meter"},
+ acVolts:{x:785.143,y:702.386,r:143,type:"meter"},
  dcSelector:{x:306,y:1029,r:84,type:"rotary"},
  acSelector:{x:783,y:1029,r:84,type:"rotary"},
  battery:{x:480,y:1295,r:51,type:"toggle"},
  galley:{x:727,y:1299,r:38,type:"toggle"},
  residual:{x:894,y:1299,r:39,type:"momentary"}
 };
-var state={geometry:JSON.parse(JSON.stringify(initial)),selected:"dcAmps",calibration:false,scale:.70,faces:true,overlay:true,showMarkers:false,sourceOK:false};
+var state={geometry:JSON.parse(JSON.stringify(initial)),selected:"dcAmps",calibration:false,scale:.70,faces:false,overlay:true,showMarkers:false,sourceOK:false};
 var dcOptions=["STBY PWR","BAT BUS","BAT","TR1","TR2","TR3","TEST"];
 var acOptions=["STBY PWR","GRD PWR","GEN1","APU GEN","GEN2","INV","TEST"];
 var sim={model:null,mode:"engines",dc:"BAT",ac:"GEN1",galley:true,resid:false};
@@ -94,23 +94,38 @@ var meterDefs={
  acVolts:{title:"AC VOLTS",min:100,max:130,labels:[100,110,120,130]}
 };
 function meter(id,data){
- var p=state.geometry[id],def=meterDefs[id],base=e("g",{transform:"translate("+p.x+" "+p.y+") scale("+(p.r/130)+")","data-part":id,"class":"control"});
+ var p=state.geometry[id],def=meterDefs[id],base=e("g",{transform:"translate("+p.x+" "+p.y+")","data-part":id,"class":"control"});
  if(state.faces){
-  base.appendChild(e("circle",{r:126,fill:"url(#bezel)",stroke:"#262e31","stroke-width":5}));
-  base.appendChild(e("circle",{r:118,fill:"#676c70",stroke:"#afb0a9","stroke-width":3}));
-  base.appendChild(e("path",{d:"M -117 0 A 117 117 0 0 1 117 0 L -117 0 Z",fill:"#181b1d"}));
-  base.appendChild(dialScale(def.min,def.max,def.labels));
-  base.appendChild(e("text",{x:0,y:45,fill:"#e7e4d8","text-anchor":"middle","font-size":"20","font-family":"Arial","font-weight":"bold"},def.title));
+  // Diagnostic face only; the real source already contains intact dials and legends.
+  var face=e("g",{transform:"scale("+(p.r/130)+")"});
+  face.appendChild(e("circle",{r:126,fill:"url(#bezel)",stroke:"#262e31","stroke-width":5}));
+  face.appendChild(e("circle",{r:118,fill:"#676c70",stroke:"#afb0a9","stroke-width":3}));
+  face.appendChild(e("path",{d:"M -117 0 A 117 117 0 0 1 117 0 L -117 0 Z",fill:"#181b1d"}));
+  face.appendChild(dialScale(def.min,def.max,def.labels));
+  face.appendChild(e("text",{x:0,y:45,fill:"#e7e4d8","text-anchor":"middle","font-size":"20","font-family":"Arial","font-weight":"bold"},def.title));
+  base.appendChild(face);
  }
  if(state.overlay){
-  var val=data[id],isResid=id==="acVolts"&&data.residualScale;
-  var ang=isResid?angle(val,0,30):angle(val,def.min,def.max);
-  var needle=e("g",{transform:"rotate("+ang+")"});
-  needle.appendChild(e("path",{d:"M -5 12 L -4 -98 Q 0 -114 4 -98 L 5 12 Z",fill:"#e9ebdc",stroke:"#181b1c","stroke-width":"2"}));
-  base.appendChild(needle);
-  base.appendChild(e("circle",{r:9,fill:"url(#silver)",stroke:"#2b3031","stroke-width":3}));
+  // Shared original Unified WHITE pointer; no independently recreated needle.
+  var M=window.B737AcDcMeteringModel;
+  var key=id==="cpsFreq"?"cps":id,original=M.meters.find(function(m){return m.id===key;});
+  var ang=original?original.initialAngle:0;
+  if(id==="dcAmps"||id==="dcVolts"){
+   var value=data[id],scale=M.photoScale[id];
+   if(value!==null){var v=Math.max(scale.values[0],Math.min(scale.values[scale.values.length-1],value));ang=M.bearingForReading(id,v);}
+  }
+  // CPS and AC VOLTS are still photo-calibration-only and remain at their measured
+  // reference rest angle. Never imply these indicators have validated live sensor mapping.
+  var ratio=p.r/216;
+  var clip=e("clipPath",{id:"oh10-needle-window-"+id,clipPathUnits:"userSpaceOnUse"});
+  clip.appendChild(e("rect",{x:-p.r-16,y:-p.r-16,width:2*(p.r+16),height:p.r+2}));
+  base.appendChild(clip);
+  var upper=e("g",{"clip-path":"url(#oh10-needle-window-"+id+")"});
+  var blade=e("g",{transform:"rotate("+ang+")"});
+  blade.appendChild(e("image",{href:"../panel-mosaic-lab/cockpit/ac-dc-metering-needle.svg?v=MET-0001",x:-256*ratio,y:-256*ratio,width:512*ratio,height:512*ratio}));
+  upper.appendChild(blade);base.appendChild(upper);
  }
- base.appendChild(e("circle",{r:130,class:"hit"}));
+ base.appendChild(e("circle",{r:p.r,class:"hit"}));
  return base;
 }
 function rotary(id,value,options){
