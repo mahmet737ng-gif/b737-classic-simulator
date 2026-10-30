@@ -86,14 +86,14 @@
   select.addEventListener('change',()=>safely(()=>{numericMode=select.value;refresh();}));
   const source=element('p','',panel);source.id='electricalLiveSources';source.dir='ltr';
   const scroll=element('div',undefined,panel);scroll.style.cssText='overflow-x:auto';
-  const table=element('table',undefined,scroll);table.style.cssText='width:100%;font-size:12px;direction:ltr;text-align:left;border-collapse:collapse';
+  const table=element('table',undefined,scroll);table.style.cssText='width:100%;table-layout:fixed;font-size:11px;direction:ltr;text-align:left;border-collapse:collapse';
   const head=element('tr',undefined,element('thead',undefined,table));
-  for(const text of ['Bus / unit','State','Feed','V','Hz'])element('th',text,head);
+  for(const [i,text]of ['Bus / unit','State','Feed','V','Hz'].entries()){const th=element('th',text,head);th.style.width=[28,18,28,14,12][i]+'%';th.style.whiteSpace='normal';}
   const body=element('tbody',undefined,table);
   for(const id of [...Object.values(Core.BUS_IDS),'TR1','TR2','TR3','INVERTER','CHARGER']){
    const row=element('tr',undefined,body);row.dataset.electricalNode=id;
    row.style.borderTop='1px solid #344c57';
-   const cols=Array.from({length:5},()=>element('td','',row));cols[0].textContent=id;busRows.set(id,{row,cols});
+   const cols=Array.from({length:5},()=>element('td','',row));cols[0].textContent=id;for(const cell of cols)cell.style.cssText='white-space:normal;overflow-wrap:anywhere;padding:4px 2px';busRows.set(id,{row,cols});
   }
   const fail=element('details',undefined,panel);element('summary','تزریق خرابی برق برای تست پنل',fail);
   for(const id of root.B737ElectricalV7.FAULTS){

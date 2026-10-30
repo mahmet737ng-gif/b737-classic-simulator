@@ -5,20 +5,24 @@ assert.equal(view.validateInstruments(assembly),true);assert.equal(items.length,
 for(const i of items){const box=view.target(assembly,i.id);assert.ok(box&&box.w>0&&box.h>0);assert.equal(box.x,100+i.x*2);const u=new URL(i.embeddedUrl,'https://example.test/panel-mosaic-lab/cockpit/');assert.equal(u.searchParams.get('seat'),i.seat);assert.equal(i.nativeWidth,1199);assert.equal(i.nativeHeight,1312);assert.equal(u.pathname,'/panel-mosaic-lab/cockpit/cdu-stage.html');}
 const source=assembly.cduSource;for(const [p,sha]of [[source.artwork,source.artworkSha256],[source.controlMap,source.controlMapSha256]])assert.equal(crypto.createHash('sha256').update(fs.readFileSync(path.join(root,p))).digest('hex'),sha);
 const map=JSON.parse(read(source.controlMap));assert.equal(map.controls.length,70);assert.equal(map.outputs.length,5);assert.equal(source.artworkSha256,'2c60c534e6e9cd80afa721f2d82801d7bdbc54dce4bbd39b8adb3470f2df0237');
-const embedded=read('panel-mosaic-lab/cockpit/cdu-stage.html'),original=read(source.page),scripts=s=>[...s.matchAll(/<script[^>]*src="([^"]+)"/g)].map(m=>m[1]);const omitted=new Set(['ehsi/ehsi-engine.js','ehsi/photo-panel.js','nav-map-overlay.js','stage5-map.js']);const integrationScripts=['../panel-mosaic-lab/cockpit/cdu-bridge.js?v=CDU-U3-WHEEL-PAN-0001','../panel-mosaic-lab/cockpit/cdu-irs-adapter-v1.js?v=IRS-LIVE-0003-ALIGN-ALERTS','../panel-mosaic-lab/cockpit/cdu-fmc-telemetry-v1.js?v=CH11-NET-0001'];
+const embedded=read('panel-mosaic-lab/cockpit/cdu-stage.html'),original=read(source.page),scripts=s=>[...s.matchAll(/<script[^>]*src="([^"]+)"/g)].map(m=>m[1]);const omitted=new Set(['ehsi/ehsi-engine.js','ehsi/photo-panel.js','nav-map-overlay.js','stage5-map.js']);const integrationScripts=['../panel-mosaic-lab/cockpit/cdu-bridge.js?v=CDU-U3-WHEEL-PAN-0001','../panel-mosaic-lab/cockpit/cdu-irs-adapter-v1.js?v=IRS-LIVE-0003-ALIGN-ALERTS','../panel-mosaic-lab/cockpit/cdu-fmc-telemetry-v1.js?v=CH11-NET-0001','../engine/ch11/cdu-24-column-metrics-v1.js?v=CDU-24COL-0006','../panel-mosaic-lab/cockpit/cdu-screen-fit-v6.js?v=CDU-24COL-0006','../panel-mosaic-lab/cockpit/cdu-font-diagnostics-v6.js?v=CDU-24COL-0006'];
 const bodyScripts=scripts(embedded).filter(src=>!src.includes('performance/manifest.js')&&!src.includes('performance-loader.js'));
-assert.deepEqual(bodyScripts.slice(-3),integrationScripts,'Only the three audited CDU bridge, IRS adapter and read-only Chapter 11 FMC telemetry scripts may be appended');
+assert.deepEqual(bodyScripts.slice(-integrationScripts.length),integrationScripts,'Only the six audited CDU integration and owner-requested 24-column typography scripts may be appended');
 assert.ok(read('panel-mosaic-lab/cockpit/cdu-bridge.js').includes("kind:'wheel-pan'"),'Shared FMC bridge also forwards wheel pan without changing CDU page engine');
 const telemetry=read('panel-mosaic-lab/cockpit/cdu-fmc-telemetry-v1.js');assert.ok(telemetry.includes('read-only')&&telemetry.includes('Chapter 11'),'FMC telemetry adapter must remain advisory-only and retain its scope');
-assert.deepEqual(bodyScripts.slice(0,-3),scripts(original).filter(src=>!omitted.has(src)),'Every original CDU application script must keep its exact order');for(const src of omitted)assert.ok(!scripts(embedded).includes(src),'Hidden EHSI/map code must not execute in Unified');assert.ok(embedded.includes('<base href="../../cdu-standalone-v6/">'));assert.ok(embedded.includes('href="../assets/fonts/boeing-cdu/cdu-screen.css"'));
+assert.deepEqual(bodyScripts.slice(0,-integrationScripts.length),scripts(original).filter(src=>!omitted.has(src)),'Every original CDU application script must keep its exact order');for(const src of omitted)assert.ok(!scripts(embedded).includes(src),'Hidden EHSI/map code must not execute in Unified');assert.ok(embedded.includes('<base href="../../cdu-standalone-v6/">'));assert.ok(embedded.includes('href="../assets/fonts/boeing-cdu/cdu-screen.css"'));
 const css=read('panel-mosaic-lab/cockpit/cdu-embed.css');
 assert.ok(!css.includes('font-family'),'Locked BoeingCDU font faces must not change');
 assert.ok(!css.includes('.hotspot'),'CDU key hotspot geometry must not change');
 const display=css.split('/* CDU on Unified: match the supplied 737 Classic reference screenshot.')[1];
 assert.ok(display&&display.includes('RGB(41,255,49)')&&display.includes('color:#29ff31'),
  'Owner green CDU monochrome reference RGB(41,255,49) must be retained');
-assert.ok(display.includes('font-size:2.60cqw')&&display.includes('font-size:2.00cqw')&&display.includes('font-size:2.30cqw'),
- 'Owner-approved Large, Small and scratchpad typography sizes must be retained');
+const metrics=require('../../engine/ch11/cdu-24-column-metrics-v1');
+assert.equal(metrics.COLUMNS,24,'Latest owner requirement is an exact 24-character scratchpad');
+assert.equal(metrics.TEST,'A'.repeat(24));assert.equal(metrics.TOO_LONG,'A'.repeat(25));
+const fit=read('panel-mosaic-lab/cockpit/cdu-screen-fit-v6.js');
+assert.ok(fit.includes('Metrics.calibrate(ctx,available,family)')&&fit.includes('root.document.fonts.ready'),
+ 'Typography must use the approved font advances after font loading, rather than the superseded small cqw sizes');
 assert.ok(!/(?:font-family|transform|position|letter-spacing)\\s*:/.test(display),
  'CDU display must not move hotspots, alter font family or character grid');
 require('./cdu-session.test.cjs');
