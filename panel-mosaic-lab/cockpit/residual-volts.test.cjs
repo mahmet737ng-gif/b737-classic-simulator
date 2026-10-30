@@ -48,6 +48,7 @@ const integration=fs.readFileSync(path.join(__dirname,'residual-volts-unified-v1
 const html=fs.readFileSync(path.join(__dirname,'index.html'),'utf8');
 const actualButton=fs.readFileSync(path.join(__dirname,'recessed-overhead-v2.js'),'utf8');
 assert.match(actualButton,/id":"residual-volts"/,'existing exact user-aligned OH10 recess retained');
+assert.match(actualButton,/'+'"cx":917,"cy":1273,"d":112'+'/, 'original native residual button center and diameter remain locked');
 assert.match(actualButton,/b737:cockpit-overhead/,'existing overhead message transport must remain unchanged');
 assert.match(integration,/data.kind!=='recessed-button'/);
 assert.match(integration,/event.origin!==root.location.origin/,'same origin only');
@@ -117,5 +118,15 @@ assert.equal(api.snapshot().result.status,'INHIBITED');
 assert.equal(reads.at(-1).v,null);
 api.press(false);
 assert.equal(api.snapshot().result.scale,'NORMAL');
+fakeWindow.B737ISNCockpitV1={getStartState:()=>({sources:{
+ engine1:{running:true},engine2:{running:false},apu:{running:true}}})};
+(events['b737:unified-ecu-observation']||[])[0]({detail:{}});
+assert.equal(api.snapshot().plants.GEN1.drive,'RUNNING','ISN observed GEN1 drive connected');
+assert.equal(api.snapshot().plants.GEN2.drive,'STOPPED','ISN observed GEN2 shutdown connected');
+assert.equal(api.snapshot().plants['APU GEN'].drive,'RUNNING','ISN observed APU drive connected');
+assert.equal(api.snapshot().plants.GEN2.gcr,'UNKNOWN','ISN bus/drive evidence must not invent GCR status');
+fakeWindow.dispatchEvent(new CustomEvent('b737:residual-generator-state',{detail:{
+ source:'GEN2',patch:{gcr:'OPEN',fieldExcited:false,measuredResidual:11,drive:'RUNNING'}}}));
+assert.equal(api.snapshot().plants.GEN2.measuredResidual,11,'authoritative measured residual source connected');
 assert.ok(reads.every(r=>r.id==='acVolts'),'RESID bridge does not modify DC/CPS pointers');
 console.log('PASS RESID: real OH10 momentary event bridge, GCR/drive/sensor safety, two scale restoration, instructor scenarios and unchanged cockpit art');
