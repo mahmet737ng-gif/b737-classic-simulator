@@ -53,7 +53,8 @@
   validate(s);const record=validSource(pkg,verifyPackage),next=copy(s);
   next.installed[record.cycle]=record;next.sourceStatus='BANKS_PRESENT';
   // Adding a bank never silently activates it.
-  if(!next.activeCycle&&next.inactiveCycle!==record.cycle)next.inactiveCycle=record.cycle;
+  if(record.cycle!==next.activeCycle&&next.inactiveCycle!==record.cycle)
+   next.inactiveCycle=record.cycle;
   return next;
  }
  function activate(s,cycle,{onGround,utcDay}={}){
