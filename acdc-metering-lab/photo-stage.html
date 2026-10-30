@@ -54,7 +54,7 @@ footer{padding:18px;text-align:center;color:#889eab;font-size:11px}
 <div class="stage">
 <div class="tools" role="toolbar" aria-label="Photo calibration controls">
 <button id="operate" class="active">تست عملکرد</button><button id="calibrate">کالیبراسیون پیکسلی</button>
-<span class="photo-label">نمای اصلی، بدون ترسیم مصنوعی</span><label><input id="overlay" type="checkbox"> نمایش آزمایشی عقربه‌ها</label>
+<span class="photo-label">نمای اصلی، بدون ترسیم مصنوعی</span><label><input id="overlay" type="checkbox" checked> نمایش عقربه‌های متحرک اصلی</label>
 <label><input id="markers" type="checkbox"> راهنمای ظریف کالیبراسیون</label>
 <button id="zoomout" title="Zoom out">−</button><input id="zoom" type="range" min="30" max="250" step="5" value="70"><button id="zoomin" title="Zoom in">+</button><b id="zoomlabel">70%</b>
 <button id="fit">FIT</button>
@@ -88,5 +88,5 @@ footer{padding:18px;text-align:center;color:#889eab;font-size:11px}
 </div>
 </main>
 <footer>Educational prototype only · source image is immutable · provisional geometry is not pixel-approved · do not use for real aircraft operations</footer>
-<script src="../engine/systems/electrical-v7.js"></script><script src="../panel-mosaic-lab/cockpit/ac-dc-metering-model.js?v=MET-0009-PIECE-BOUND"></script><script src="./photo-stage.js?v=OH10-PHOTO-STAGE-ELLIPSE-0008"></script>
+<script src="../engine/systems/electrical-v7.js"></script><script src="../panel-mosaic-lab/cockpit/ac-dc-metering-model.js?v=MET-0009-PIECE-BOUND"></script><script src="../panel-mosaic-lab/cockpit/ac-dc-static-needle-cleaner.js?v=MET-0010-BAKED-POINTER-RESTORE"></script><script src="./photo-stage.js?v=OH10-PHOTO-STAGE-CLEAN-0009"></script>
 </body></html>
