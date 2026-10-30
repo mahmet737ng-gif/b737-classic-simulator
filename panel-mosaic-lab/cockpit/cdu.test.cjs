@@ -12,13 +12,15 @@ assert.ok(read('panel-mosaic-lab/cockpit/cdu-bridge.js').includes("kind:'wheel-p
 const telemetry=read('panel-mosaic-lab/cockpit/cdu-fmc-telemetry-v1.js');assert.ok(telemetry.includes('read-only')&&telemetry.includes('Chapter 11'),'FMC telemetry adapter must remain advisory-only and retain its scope');
 assert.deepEqual(bodyScripts.slice(0,-3),scripts(original).filter(src=>!omitted.has(src)),'Every original CDU application script must keep its exact order');for(const src of omitted)assert.ok(!scripts(embedded).includes(src),'Hidden EHSI/map code must not execute in Unified');assert.ok(embedded.includes('<base href="../../cdu-standalone-v6/">'));assert.ok(embedded.includes('href="../assets/fonts/boeing-cdu/cdu-screen.css"'));
 const css=read('panel-mosaic-lab/cockpit/cdu-embed.css');
-for(const selector of ['font-family','font-size','.hotspot'])
- assert.ok(!css.includes(selector),'Embed must not rewrite approved CDU typography or key geometry: '+selector);
-const monochrome=css.split('/* EP-FSI requested green monochrome CDU display; approved BoeingCDU fonts unchanged. */')[1];
-assert.ok(monochrome&&monochrome.includes('.fmc-screen .fmc-lines .fmc-line')&&monochrome.includes('color:#40eb79'),
- 'Owner-requested green CDU text remains enabled');
-assert.ok(!/(?:font-family|font-size|transform|position|width|height|letter-spacing|line-height)\s*:/.test(monochrome),
- 'Monochrome display adjustment must never change fonts, character grid, screen dimensions or key positions');
+assert.ok(!css.includes('font-family'),'Locked BoeingCDU font faces must not change');
+assert.ok(!css.includes('.hotspot'),'CDU key hotspot geometry must not change');
+const display=css.split('/* CDU on Unified: match the supplied 737 Classic reference screenshot.')[1];
+assert.ok(display&&display.includes('RGB(41,255,49)')&&display.includes('color:#29ff31'),
+ 'Owner green CDU monochrome reference RGB(41,255,49) must be retained');
+assert.ok(display.includes('font-size:2.60cqw')&&display.includes('font-size:2.00cqw')&&display.includes('font-size:2.30cqw'),
+ 'Owner-approved Large, Small and scratchpad typography sizes must be retained');
+assert.ok(!/(?:font-family|transform|position|letter-spacing)\\s*:/.test(display),
+ 'CDU display must not move hotspots, alter font family or character grid');
 require('./cdu-session.test.cjs');
 // New CDU boxes must not cover any existing main-panel annunciator.
 const lights=JSON.parse(read('panel-mosaic-lab/cockpit/lights.json')),region=assembly.regions.find(r=>r.id==='main');for(const i of items)for(const light of lights.lights){const p=region.placements.find(p=>p.id===light.pieceId);if(!p)continue;const k=p.w/assembly.assets[p.asset].dimensions[0],[x,y,w,h]=light.sourceRect,b={x:p.x+x*k,y:p.y+y*k,w:w*k,h:h*k};assert.ok(!(i.x<b.x+b.w&&i.x+i.w>b.x&&i.y<b.y+b.h&&i.y+i.h>b.y),'CDU obscures light '+light.id);}
