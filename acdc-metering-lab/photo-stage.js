@@ -7,12 +7,12 @@
 var SVG="http://www.w3.org/2000/svg",W=1095,H=1436;
 var E=window.B737ElectricalV7;
 var $=function(id){return document.getElementById(id);};
-var STORAGE="b737-oh10-photo-geometry-v2-red-arc";
+var STORAGE="b737-oh10-photo-geometry-v3-ellipse";
 var initial={
- dcAmps:{x:307.397,y:280.760,r:167.860,type:"meter"},
- cpsFreq:{x:781.896,y:261.228,r:148.530,type:"meter"},
- dcVolts:{x:310.778,y:719.453,r:178.742,type:"meter"},
- acVolts:{x:785.318,y:706.045,r:156.828,type:"meter"},
+ dcAmps:{x:307.386918,y:272.100000,r:164.101996,rY:159.161290,type:"meter"},
+ cpsFreq:{x:781.879157,y:253.738710,r:145.368071,rY:140.991398,type:"meter"},
+ dcVolts:{x:310.770510,y:710.143011,r:174.654102,rY:169.395699,type:"meter"},
+ acVolts:{x:785.307095,y:698.181720,r:153.533259,rY:148.910753,type:"meter"},
  dcSelector:{x:306,y:1029,r:84,type:"rotary"},
  acSelector:{x:783,y:1029,r:84,type:"rotary"},
  battery:{x:480,y:1295,r:51,type:"toggle"},
@@ -44,7 +44,7 @@ function animateNeedles(ts){
   var adv=M.advanceNeedle(pos,needleVelocity[id]||0,target,dt);
   needlePos[id]=M.limitAngle(key,adv.angle);needleVelocity[id]=adv.velocity;
   var node=document.querySelector('[data-needle="'+id+'"]');
-  if(node)node.setAttribute("transform","rotate("+needlePos[id].toFixed(6)+")");
+  if(node)node.setAttribute("transform","rotate("+needlePos[id].toFixed(6)+" 256 256)");
   if(!adv.done)moving=true;
  });
  if(moving)needleFrame=requestAnimationFrame(animateNeedles);
@@ -57,7 +57,7 @@ function log(line){var p=$("events");if(!p)return;var stamp=new Date().toLocaleT
 function status(msg,ok){var e=$("status");e.textContent=msg;e.classList.toggle("ok",!!ok);}
 function safeStore(){try{localStorage.setItem(STORAGE,JSON.stringify(state.geometry));}catch(err){log("Local storage unavailable: "+err.message);}}
 function goodGeom(raw){if(!raw||typeof raw!=="object")return false;return Object.keys(initial).every(function(k){var p=raw[k];return p&&Number.isFinite(+p.x)&&Number.isFinite(+p.y)&&Number.isFinite(+p.r)&&+p.r>4&&+p.r<300&&+p.x>=0&&+p.x<=W&&+p.y>=0&&+p.y<=H;});}
-function useGeometry(raw){if(!goodGeom(raw))return false;Object.keys(initial).forEach(function(k){var p=raw[k];state.geometry[k]={x:+p.x,y:+p.y,r:+p.r,type:initial[k].type};});return true;}
+function useGeometry(raw){if(!goodGeom(raw))return false;Object.keys(initial).forEach(function(k){var p=raw[k];state.geometry[k]={x:+p.x,y:+p.y,r:+p.r,rY:initial[k].type==="meter"?(Number.isFinite(+p.rY)?+p.rY:+p.r*(.902/.930)):undefined,type:initial[k].type};});return true;}
 function geoExport(){return JSON.stringify({schema:"b737.p5-13.photo-stage.geometry.v1",source:{path:"../panel-mosaic-lab/assets/locked/2026-10-23/OH10-ELEC-LOSSLESS-9a1ca4d6cfb2.png",width:W,height:H,sha256:"9a1ca4d6cfb277ec1404f3a464e957d81be9d9689a0810883364342d57b0f1ea"},markers:state.geometry,status:"PROVISIONAL_NOT_APPROVED",unifiedMountAllowed:false},null,2);}
 function setupElectrical(mode){
  sim.mode=mode;sim.model=E.initialState();sim.dc="BAT";sim.ac="GEN1";sim.resid=false;sim.galley=true;
@@ -102,7 +102,8 @@ function meterData(){
 function e(tag,attrs,children){var el=document.createElementNS(SVG,tag);Object.keys(attrs||{}).forEach(function(k){el.setAttribute(k,String(attrs[k]));});if(children!=null)el.innerHTML=children;return el;}
 // The source photograph owns all dial scales and printed markings.
 function meter(id,data){
- // Authentic owner photo is the ONLY dial/bezel/legend layer. No HTML-drawn dials.
+ // Original photo, original sprite. The screen RED arc is circular, while
+ // the mapped native OH10 track is elliptical due to separate X/Y scales.
  var p=state.geometry[id],base=e("g",{transform:"translate("+p.x+" "+p.y+")","data-part":id,"pointer-events":"none"});
  if(!state.overlay)return base;
  var M=window.B737AcDcMeteringModel;
@@ -110,18 +111,17 @@ function meter(id,data){
  var angle=Number.isFinite(needlePos[id])?needlePos[id]:M.limitAngle(key,original.initialAngle);
  needleTargets[id]=photoAngle(id,data);
  needlePos[id]=angle;
- // Exactly the existing Unified needle asset. It is opt-in because the
- // untouched source photograph may already show a parked needle.
- var ratio=p.r/216;
+ // Scale AFTER rotation: the point follows x=rx*sin(angle), y=-ry*cos(angle).
+ // Scaling before rotation would make the tip drift off the annotated arc.
+ var rx=p.r/216,ry=(p.rY||p.r)/216;
+ var frame=e("g",{transform:"scale("+rx+" "+ry+") translate(-256 -256)"});
  var clip=e("clipPath",{id:"oh10-needle-window-"+id,clipPathUnits:"userSpaceOnUse"});
- // Same genuine curved black window mask as mounted Unified; suppresses
- // ALL visible needle below the PHOTO's blue scalloped edge.
- clip.appendChild(e("path",{d:M.blackWindowPath(key),transform:"translate("+(-256*ratio)+" "+(-256*ratio)+") scale("+ratio+")"}));
- base.appendChild(clip);
+ clip.appendChild(e("path",{d:M.blackWindowPath(key)}));
+ frame.appendChild(clip);
  var upper=e("g",{"clip-path":"url(#oh10-needle-window-"+id+")"});
- var blade=e("g",{"data-needle":id,transform:"rotate("+angle+")"});
- blade.appendChild(e("image",{href:"../panel-mosaic-lab/cockpit/ac-dc-metering-needle.svg?v=MET-0001",x:-256*ratio,y:-256*ratio,width:512*ratio,height:512*ratio}));
- upper.appendChild(blade);base.appendChild(upper);
+ var blade=e("g",{"data-needle":id,transform:"rotate("+angle+" 256 256)"});
+ blade.appendChild(e("image",{href:"../panel-mosaic-lab/cockpit/ac-dc-metering-needle.svg?v=MET-0001",x:0,y:0,width:512,height:512}));
+ upper.appendChild(blade);frame.appendChild(upper);base.appendChild(frame);
  return base;
 }
 function photoHotspot(id){
@@ -162,7 +162,7 @@ function drawCoords(){
    inp.addEventListener("change",function(){
     var v=Number(inp.value);
     if(!Number.isFinite(v)){inp.value=p[k];return;}
-    p[k]=Math.max(k==="r"?5:0,Math.min(k==="x"?W:k==="y"?H:290,v));
+    p[k]=Math.max(k==="r"?5:0,Math.min(k==="x"?W:k==="y"?H:290,v));if(k==="r"&&p.type==="meter")p.rY=p.r*(.902/.930);
     safeStore();render();
    });
    td.appendChild(inp);tr.appendChild(td);
@@ -254,7 +254,7 @@ function adjust(dx,dy,dr){
  var p=state.geometry[state.selected];if(!p)return;
  p.x=Math.round(Math.max(0,Math.min(W,p.x+dx))*2)/2;
  p.y=Math.round(Math.max(0,Math.min(H,p.y+dy))*2)/2;
- p.r=Math.round(Math.max(5,Math.min(290,p.r+dr))*2)/2;
+ p.r=Math.round(Math.max(5,Math.min(290,p.r+dr))*2)/2;if(p.type==="meter")p.rY=p.r*(.902/.930);
  safeStore();render();
 }
 $("left").onclick=function(){adjust(-.5,0,0);};
