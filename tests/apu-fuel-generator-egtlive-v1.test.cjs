@@ -20,6 +20,14 @@ test('APU suction feeds from main tank 1 with both AC pumps off',()=>{
  assert.equal(s.available,true);assert.equal(s.tank,'main1');
  assert.equal(s.reason,'MAIN1_SUCTION');assert.equal(s.pressurized,false);
 });
+test('100ms APU starter fuel use accumulates without rounding bias',()=>{
+ const f=new FuelRuntime.FuelNetwork({initialFuelKg:{main1:100,main2:0,center:0}});
+ const rate=FuelRuntime.approx.apuStartFuelKgHr,seconds=100;
+ for(let i=0;i<seconds*10;i++)f.consume('apu',rate*.1/3600,'main1');
+ const expected=rate*seconds/3600;
+ assert.ok(Math.abs(f.burnedKg.apu-expected)<.002,'Expected physical-time approximate burn, not 0.001kg per-tick quantization bias');
+ assert.ok(Math.abs((100-f.tanks.main1)-expected)<.002);
+});
 test('APU main-1/center pressurized feed and crossfeed use actual existing pump state',()=>{
  const f=new FuelRuntime.FuelNetwork({initialFuelKg:{main1:50,main2:40,center:20}});
  const on=id=>({[id]:{operating:true}});
