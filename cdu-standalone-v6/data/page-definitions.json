@@ -1077,12 +1077,12 @@
       "title": "DEP/ARR INDEX",
       "fcom_section": "11.40",
       "variant": "MENU_CDU",
-      "source_status": "PARTIALLY_FCOM_GROUNDED",
+      "source_status": "FCOM_INDEX_LAYOUT_VERIFIED_PROCEDURE_DATABASE_NOT_VERIFIED",
       "page_count": 1,
       "rows": [
         [
           {
-            "label": "<DEPARTURES",
+            "label": "<DEP",
             "required": false,
             "status": "TRAINER_IMPLEMENTATION",
             "action": {
@@ -1090,10 +1090,10 @@
               "page": "DEPARTURES"
             },
             "lsk": "L1",
-            "source_verification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            "source_verification": "FCOM_11.40.32_PROMPT_POSITION_VERIFIED"
           },
           {
-            "label": "ARRIVALS>",
+            "label": "ARR>",
             "required": false,
             "status": "TRAINER_IMPLEMENTATION",
             "action": {
@@ -1101,25 +1101,27 @@
               "page": "ARRIVALS"
             },
             "lsk": "R1",
-            "source_verification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            "source_verification": "FCOM_11.40.32_PROMPT_POSITION_VERIFIED"
           }
         ],
         [
           {
-            "label": "ORIGIN",
+            "label": "",
             "required": false,
             "status": "TRAINER_IMPLEMENTATION",
-            "value": "{ORIGIN}",
             "lsk": "L2",
-            "source_verification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            "source_verification": "FCOM_11.40.32_PROMPT_POSITION_VERIFIED"
           },
           {
-            "label": "DEST",
+            "label": "ARR>",
             "required": false,
             "status": "TRAINER_IMPLEMENTATION",
-            "value": "{DEST}",
+            "action": {
+              "type": "navigate",
+              "page": "ARRIVALS"
+            },
             "lsk": "R2",
-            "source_verification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            "source_verification": "FCOM_11.40.32_PROMPT_POSITION_VERIFIED"
           }
         ],
         [
@@ -1128,14 +1130,14 @@
             "required": false,
             "status": "TRAINER_IMPLEMENTATION",
             "lsk": "L3",
-            "source_verification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            "source_verification": "FCOM_11.40.32_PROMPT_POSITION_VERIFIED"
           },
           {
             "label": "",
             "required": false,
             "status": "TRAINER_IMPLEMENTATION",
             "lsk": "R3",
-            "source_verification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            "source_verification": "FCOM_11.40.32_PROMPT_POSITION_VERIFIED"
           }
         ],
         [
@@ -1144,54 +1146,54 @@
             "required": false,
             "status": "TRAINER_IMPLEMENTATION",
             "lsk": "L4",
-            "source_verification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            "source_verification": "FCOM_11.40.32_PROMPT_POSITION_VERIFIED"
           },
           {
             "label": "",
             "required": false,
             "status": "TRAINER_IMPLEMENTATION",
             "lsk": "R4",
-            "source_verification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            "source_verification": "FCOM_11.40.32_PROMPT_POSITION_VERIFIED"
           }
         ],
         [
           {
-            "label": "",
+            "label": "DEP",
             "required": false,
             "status": "TRAINER_IMPLEMENTATION",
             "lsk": "L5",
-            "source_verification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            "source_verification": "FCOM_11.40.32_PROMPT_POSITION_VERIFIED"
           },
           {
-            "label": "",
+            "label": "ARR",
             "required": false,
             "status": "TRAINER_IMPLEMENTATION",
             "lsk": "R5",
-            "source_verification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            "source_verification": "FCOM_11.40.32_PROMPT_POSITION_VERIFIED"
           }
         ],
         [
           {
-            "label": "<RTE",
+            "label": "<----",
             "required": false,
             "status": "TRAINER_IMPLEMENTATION",
             "action": {
               "type": "navigate",
-              "page": "RTE"
+              "page": "DEPARTURES"
             },
             "lsk": "L6",
-            "source_verification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            "source_verification": "FCOM_11.40.32_PROMPT_POSITION_VERIFIED"
           },
           {
-            "label": "INDEX>",
+            "label": "---->",
             "required": false,
             "status": "TRAINER_IMPLEMENTATION",
             "action": {
               "type": "navigate",
-              "page": "INDEX"
+              "page": "ARRIVALS"
             },
             "lsk": "R6",
-            "source_verification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            "source_verification": "FCOM_11.40.32_PROMPT_POSITION_VERIFIED"
           }
         ]
       ],
@@ -1199,9 +1201,16 @@
         "folio_family": "11.40.32",
         "pdf_page_near": 1584,
         "source": "SEPEHRAN_737CL_FCOM_VOLUME_2_CH11",
-        "verification": "APPROXIMATE_TOPIC_REFERENCE_REQUIRES_FIELD_AUDIT"
+        "verification": "DEP_ARR_INDEX_LAYOUT_VERIFIED_ON_FCOM_FOLIO_11.40.32",
+        "behavior_folio": "11.40.33"
       },
-      "id": "DEP_ARR"
+      "id": "DEP_ARR",
+      "center_fields": {
+        "row_1": "{ORIGIN}",
+        "row_2": "{DEST}",
+        "row_5": "OTHER"
+      },
+      "navigation_note": "L1 origin departure; R1 origin arrival; R2 destination arrival; L6/R6 read-only OTHER airport lookup."
     },
     "DEPARTURES": {
       "title": "DEPARTURES",
