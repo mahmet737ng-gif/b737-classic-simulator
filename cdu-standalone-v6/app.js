@@ -27,6 +27,36 @@ const TITLE_PLAIN=new Set(['MENU','INDEX','IDENT','POS_INIT','MESSAGES','MSG_REC
 function shown(val){return String(val??'').replace(/\{([A-Z_0-9]+)\}/g,(_,key)=>core.readValue(state,key,state.page)||'----');}
 function displayCell(cell){if(!cell)return ''; if(cell.field){const v=core.readValue(state,cell.field,state.page);return v||(cell.required?'□□□□':'-----');} return shown(cell.value||'');}
 function makePairRow(topPct,leftText,rightText,isScratch=false,isSmall=false){const d=document.createElement('div'); d.className='fmc-line'+(isScratch?' scratch':'')+(isSmall?' fmc-small':'')+' fmc-pairline'; d.style.top=topPct+'%'; const l=document.createElement('span'); l.className='fmc-left'; l.textContent=leftText||''; const r=document.createElement('span'); r.className='fmc-right'; r.textContent=rightText||''; if(isScratch){l.classList.add('full'); r.remove(); d.appendChild(l);} else {d.appendChild(l); d.appendChild(r);} return d;}
+/* FCOM Vol.2 11.40.32: DEP/ARR INDEX is a THREE-COLUMN origin/dest
+ * page, not a generic route-field menu. Keep the approved photo & LSK map.
+ */
+function makeDepArrTriplet(topPct,leftText,centerText,rightText,isSmall=false){
+ const row=makePairRow(topPct,leftText,rightText,false,isSmall);
+ row.classList.add('fmc-dep-arr-index');
+ const center=document.createElement('span');
+ center.className='fmc-center';
+ center.textContent=centerText||'';
+ Object.assign(center.style,{
+   position:'absolute',left:'32%',width:'36%',top:'0',textAlign:'center',
+   whiteSpace:'pre',overflow:'visible',font:'inherit',lineHeight:'inherit',color:'inherit'
+ });
+ row.appendChild(center);
+ return row;
+}
+function renderDepArrIndex(box,screenTop,screenHeight){
+ const airport=(name)=>String(core.readValue(state,name,'RTE')||'').toUpperCase();
+ const y=(number,dy=10)=>{
+  const lsk=map.controls.find(c=>c.id==='CDU_CAPT_LSK_L'+number);
+  const cy=(lsk.bbox_px[1]+lsk.bbox_px[3])/2;
+  return (cy+dy-screenTop)/screenHeight*100;
+ };
+ // L1 / R1: departure and arrival for ORIGIN; R2: DEST arrival only.
+ box.appendChild(makeDepArrTriplet(y(1),'<DEP',airport('ORIGIN'),'ARR>'));
+ box.appendChild(makeDepArrTriplet(y(2),'',airport('DEST'),'ARR>'));
+ // L6 / R6: reference-only OTHER airport entry via scratchpad.
+ box.appendChild(makeDepArrTriplet(y(6,-13),'DEP','OTHER','ARR',true));
+ box.appendChild(makeDepArrTriplet(y(6,10),'<----','','---->'));
+}
 function v19SafeN1(){const r=n1EstimateV19();return r?.status==='SIM_ESTIMATE'?r:null;}
 function update(){const box=$('fmc-lines'); box.replaceChildren();
  const screenTop=1312*0.0765, screenHeight=1312*0.375;
@@ -35,10 +65,13 @@ function update(){const box=$('fmc-lines'); box.replaceChildren();
  const ht=document.createElement('span'); ht.className='fmc-header-title'; ht.textContent=(TITLE_PLAIN.has(state.page)?'':tag)+page.title;
  const hc=document.createElement('span'); hc.className='fmc-header-count'; hc.textContent=(page.page_number||1)+'/'+page.page_count; header.appendChild(ht); header.appendChild(hc); box.appendChild(header);
  const n1=v19SafeN1();
- for(let row=1;row<=6;row++){ const pair=page.rows[row-1]; const lsk=map.controls.find(c=>c.id==='CDU_CAPT_LSK_L'+row); const cy=(lsk.bbox_px[1]+lsk.bbox_px[3])/2;
+ if(state.page==='DEP_ARR')renderDepArrIndex(box,screenTop,screenHeight);
+ else for(let row=1;row<=6;row++){ const pair=page.rows[row-1]; const lsk=map.controls.find(c=>c.id==='CDU_CAPT_LSK_L'+row); const cy=(lsk.bbox_px[1]+lsk.bbox_px[3])/2;
    const labelTop=((cy-13-screenTop)/screenHeight*100); const valueTop=((cy+10-screenTop)/screenHeight*100);
    let labelL=pair?.[0]?.label||'',labelR=pair?.[1]?.label||'';
    let valueL=displayCell(pair?.[0]),valueR=displayCell(pair?.[1]);
+   if(row===1&&state.depArrSelection&&['DEPARTURES','ARRIVALS'].includes(state.page))
+     valueL=state.depArrSelection.airport||valueL;
    if(n1&&state.page==='N1_LIMIT'&&row===1){labelR='20K N1 EST';valueR=n1.maxN1Pct.toFixed(1)+'% EST';}
    if(n1&&state.page==='TAKEOFF'&&row===3){labelL='TO N1 EST';valueL=n1.maxN1Pct.toFixed(1)+'% EST';}
    box.appendChild(makePairRow(labelTop,labelL,labelR,false,true));
