@@ -31,6 +31,10 @@
    el.textContent='FMC/CDU · electrical feeder: '+(lastPower==='ABSENT'?'GLOBAL POWER LOST':'UNVERIFIED')+
     ' · IRS: '+(network.irs.leftValid===true?'L VALID':'L UNKNOWN')+'/'+(network.irs.rightValid===true?'R VALID':'R UNKNOWN')+
     ' · LNAV/VNAV evidence: '+(ready===true?'VERIFIED':ready===false?'NOT READY':'UNVERIFIED')+
+    ' · FMC1 '+network.power.FMC1.feed+' / FMC2 '+network.power.FMC2.feed+
+    ' · A/T '+(latestAfds?.controls?.atArm?'ARM':'OFF/UNKNOWN')+
+    (network.recovery.reinitializePreflight?' · RECOVERY: RE-ENTER PREFLIGHT':'')+
+    (network.recovery.selectActiveWaypoint?' · RECOVERY: SELECT ACTIVE WPT/LEG':'')+
     ' · CB: PHOTO INDEX ONLY';
   }
  };
