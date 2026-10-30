@@ -37,7 +37,7 @@
   if(!model.meters.some(meter=>meter.id===id))throw Error('Unknown AC/DC meter '+id);
   if(value!==null&&(typeof value!=='number'||!Number.isFinite(value)))throw Error('Non-finite AC/DC meter reading');
   if(mode!==undefined&&(id!=='acVolts'||!['NORMAL','RESIDUAL'].includes(mode)))throw Error('Invalid meter scale mode');
-  if(id==='acVolts'&&value!==null&&mode==='RESIDUAL'&&(value<0||value>30))throw Error('Residual voltage must be 0–30V');
+  if(id==='acVolts'&&value!==null&&(mode||acMode)==='RESIDUAL'&&(value<0||value>30))throw Error('Residual voltage must be 0–30V');
   if(id==='acVolts'&&mode!==undefined)acMode=mode;
   const angle=id==='acVolts'?model.angleForAcVolts(value,{mode:acMode}):model.angleForIndication(id,value);
   state[id]=angle;samples[id]=value;paint(id);return angle;
@@ -52,7 +52,7 @@
    if(!model.meters.some(m=>m.id===id))throw Error('Unknown meter sample '+id);
    if(value!==null&&(typeof value!=='number'||!Number.isFinite(value)))throw Error('Meter sample must be finite or null');
   }
-  if(acVoltsMode==='RESIDUAL'&&entries.some(([id,value])=>id==='acVolts'&&value!==null&&(value<0||value>30)))throw Error('Residual sample out of 0–30V scale');
+  if((acVoltsMode||acMode)==='RESIDUAL'&&entries.some(([id,value])=>id==='acVolts'&&value!==null&&(value<0||value>30)))throw Error('Residual sample out of 0–30V scale');
   if(acVoltsMode!==undefined)acMode=acVoltsMode;
   for(const [id,value] of entries)setReading(id,value);
   return getReadings();
