@@ -18,6 +18,8 @@ on:
       - 'engine/integration/avionics-fmc-computer-v1.js'
       - 'engine/runtime/tests/avionics-data-network-v1.test.cjs'
       - 'engine/runtime/tests/avionics-unified-adapters-v1.test.cjs'
+      - 'engine/integration/avionics-sensor-ingress-v2.js'
+      - 'engine/runtime/tests/avionics-sensor-ingress-v2.test.cjs'
       - 'panel-mosaic-lab/cockpit/avionics-network-runtime-v1.js'
       - 'docs/AVIONICS_FMC_DATA_NETWORK_V1_2026-10-30_FA.md'
       - '.github/workflows/ch11-fmc-systems-network-v1.yml'
@@ -35,9 +37,11 @@ jobs:
       - run: node --check panel-mosaic-lab/cockpit/fmc-systems-bridge-v1.js
       - run: node --check engine/runtime/avionics-data-network-v1.js
       - run: node --check engine/integration/avionics-fmc-computer-v1.js
+      - run: node --check engine/integration/avionics-sensor-ingress-v2.js
       - run: node --check panel-mosaic-lab/cockpit/avionics-network-runtime-v1.js
       - run: node --test engine/runtime/tests/avionics-data-network-v1.test.cjs
       - run: node --test engine/runtime/tests/avionics-unified-adapters-v1.test.cjs
+      - run: node --test engine/runtime/tests/avionics-sensor-ingress-v2.test.cjs
       - run: node --test engine/ch11/tests/fmc-systems-network-v1.test.cjs
       - run: node --test cdu-standalone-v6/tests/ch11-position-pages-v1.test.cjs
       - run: node tests/cdu-font-lock.test.cjs
