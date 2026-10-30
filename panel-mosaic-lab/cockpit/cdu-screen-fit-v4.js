@@ -48,10 +48,10 @@
    header.style.setProperty('height','10.9%','important');
    size(header,FONT.header);fitSpans(header,FONT.header);
   }
-  for(let i=0;i<Math.min(pairs.length,12);i++){
+  for(let i=0;i<pairs.length;i++){
    const line=pairs[i],label=line.classList.contains('fmc-small');
    const row=Math.floor(i/2),target=label?TOP.label[row]:TOP.value[row];
-   if(target===undefined)continue;
+   if(standard&&target===undefined)continue;
    // Source-backed NAV/DEP overlays replace the ordinary 12 rows. Their own
    // carefully placed row coordinates must not be overwritten by this adapter.
    if(standard)line.style.setProperty('top',target+'%','important');
