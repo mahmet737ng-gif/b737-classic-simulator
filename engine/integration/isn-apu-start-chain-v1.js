@@ -415,7 +415,10 @@
      retryAllowed:phaseReady&&fuelCutoff&&this.canStartEngine(device)===null};
    }
    const apuConnected=Object.values(pack.electrical.source).includes('APU');
-   projected['apu-gen-off-bus']=apu.running===true&&!apuConnected;
+   // Engine running is not generator availability if the APU generator failed.
+   const apuGeneratorAvailable=apu.running===true&&
+     this.start.core.pack.electricalState.faults.APU_FAILED!==true;
+   projected['apu-gen-off-bus']=apuGeneratorAvailable&&!apuConnected;
    projected['apu-low-pressure']=['INLET_DOOR','STARTING'].includes(this.phase.apu);
    return {clockMs:this.time,phase:copy(this.phase),lastError:this.lastError,timingProfile:this.timingProfile,timing:copy(this.timing),
      trainingStartDuctPsi:copy(this.startDuctPsi),
