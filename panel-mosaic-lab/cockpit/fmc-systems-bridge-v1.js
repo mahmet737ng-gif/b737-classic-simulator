@@ -7,7 +7,7 @@
  const model=window.B737FmcSystemsV1;
  if(!model)throw Error('B737FmcSystemsV1 failed to load');
  let network=model.createState(),lastRouteSig='',lastMcpEvidence='INITIAL',lastPower='UNKNOWN';
- const seatState=new Map();const now=()=>performance.now();
+ const seatState=new Map();let latestAfds=null;const now=()=>performance.now();
  const emit=()=>{
   for(const seat of ['CAPT','FO']){
    const frame=document.getElementById('cduFrame'+seat);
@@ -16,7 +16,10 @@
   }
   const out={revision:network.revision,power:network.power,
    route:network.route,irs:network.irs,guidance:network.guidance,
-   recovery:network.recovery,breakerCandidates:model.BREAKERS};
+   recovery:network.recovery,breakerCandidates:model.BREAKERS,
+   afds:latestAfds?{mcpPowered:latestAfds.power,atArmed:latestAfds.controls?.atArm===true,
+    autothrottleMode:latestAfds.modes?.thrust||null,lateralMode:latestAfds.modes?.lateral||null,
+    verticalMode:latestAfds.modes?.vertical||null,source:'MCP_AFDS_BRIDGE_READ_ONLY'}:null};
   window.dispatchEvent(new CustomEvent('b737:fmc-systems-state',{detail:out}));
   let el=document.getElementById('fmcNetworkStatus');
   if(!el){
@@ -91,7 +94,7 @@
  window.addEventListener('message',receive);
  window.addEventListener('b737:cockpit-mounted',()=>{emit();refreshGlobalElectrical()});
  window.addEventListener('b737:isn-start-indications',refreshGlobalElectrical);
- window.addEventListener('b737:mcp-afds-state',()=>{}); // output observed; not back-fed as an electrical source
+ window.addEventListener('b737:mcp-afds-state',e=>{latestAfds=e.detail||null;emit()}); // A/T ARM/modes are observed, never commanded
  window.addEventListener('b737:irs-trainer-state',updateIRS);
  document.addEventListener('DOMContentLoaded',()=>{emit();refreshGlobalElectrical();updateIRS()});
  if(document.readyState!=='loading'){emit();refreshGlobalElectrical();updateIRS();}
@@ -105,7 +108,7 @@
    transition({type:'ROUTE',route:r});transmitToMCP();
   },
   setPhase:phase=>transition({type:'PHASE',phase}),
-  setFailure:failed=>transition({type:'FMC_FAILURE',failed:!!failed}),
+  setFailure:failed=>{const value=transition({type:'FMC_FAILURE',failed:!!failed});transmitToMCP();return value},
   acknowledgeRecovery:()=>transition({type:'ACK_RECOVERY'})
  });
 })();
