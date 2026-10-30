@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>B737 Classic — OH-10 Photo Overlay & Pixel Calibration</title>
+<style>
+:root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;background:#0d1721;color:#e8eff4;font:14px Tahoma,Arial,sans-serif}
+header{background:#172736;border-bottom:1px solid #375064;padding:16px max(16px,calc((100vw - 1540px)/2));display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+header b{font:700 16px Arial;direction:ltr}header small{display:block;color:#b2c6d6;margin-top:6px;font-size:11px}
+a{color:#93d8fa;text-decoration:none}a:hover{text-decoration:underline}
+button,select,input{font:inherit}button{border:1px solid #4a6a7a;color:#edf8ff;background:#244252;border-radius:7px;padding:9px 12px;cursor:pointer}
+button:hover{background:#316077}button:focus-visible{outline:2px solid #f8d27b}
+button.active{background:#1b7a86;border-color:#a4eff0}
+main{max-width:1540px;padding:17px;margin:auto}
+.notice{background:#1b2936;border:1px solid #45657c;padding:12px 15px;border-radius:9px;line-height:1.85;margin-bottom:14px}
+.notice strong{color:#f3d58f}.row{display:flex;flex-wrap:wrap;gap:9px;align-items:center}
+.work{display:grid;grid-template-columns:minmax(320px,1fr) 350px;gap:15px}
+.stage{min-width:0;background:#0a131c;border:1px solid #35516a;border-radius:12px;overflow:hidden}
+.tools{padding:10px;background:#1a2b3b;border-bottom:1px solid #3d5566;display:flex;flex-wrap:wrap;gap:9px;align-items:center}
+.tools label{font-size:12px;color:#d1dfea;display:flex;gap:4px;align-items:center}
+.tools input[type=range]{width:120px}#zoomout{font:700 18px Arial}#zoomin{font:700 18px Arial}
+.viewport{height:min(78vh,1030px);min-height:500px;overflow:auto;background:radial-gradient(#2c4352 1px,transparent 1px) 0 0/21px 21px,#0e1b27}
+.board-wrap{margin:24px auto;width:max-content;min-width:0;line-height:0}
+#board{display:block;background:#3c4549;border:1px solid #677079;box-shadow:0 9px 24px #0009;max-width:none;touch-action:pan-x pan-y}
+.control{cursor:pointer}.control .hit{fill:transparent}
+.hotspot-only .control:not(.active-control){pointer-events:none}
+.marker-cross{stroke:#ffe36c;stroke-width:3;vector-effect:non-scaling-stroke;pointer-events:none}
+.calibration-marker{cursor:move;touch-action:none}
+.calibration-marker circle{stroke:#ffe36c;stroke-width:3;fill:#131d2c66;vector-effect:non-scaling-stroke}
+.calibration-marker text{font:bold 19px Arial;paint-order:stroke;stroke:#0d1319;stroke-width:5;fill:#fff;pointer-events:none}
+.sidebar{display:flex;flex-direction:column;gap:12px;min-width:0}
+section{padding:13px 15px;border:1px solid #354f61;background:#192b3a;border-radius:10px}
+h2{font-size:15px;margin:0 0 12px;color:#eaf5fc}
+p{line-height:1.8;color:#b9ccda;font-size:12px}
+.status{font-size:12px;line-height:1.8;border:1px solid #746643;padding:10px;background:#3a3425;border-radius:7px;color:#ffecb3}
+.status.ok{background:#183d38;border-color:#358a7f;color:#b7f5e4}
+.metrics{display:grid;grid-template-columns:1fr 1fr;gap:9px;direction:ltr}
+.metric{background:#101f2b;border:1px solid #3e5568;padding:10px;border-radius:7px}
+.metric strong{font:700 22px monospace;display:block}.metric small{color:#99b3c5}
+#selected{color:#fff2bb;font-family:monospace}
+table{border-collapse:collapse;width:100%;font-size:12px;direction:ltr}
+th,td{border-bottom:1px solid #344b5b;padding:6px;text-align:left}
+td input{background:#10222f;border:1px solid #5b7082;border-radius:5px;color:#fff;padding:7px;width:72px;direction:ltr;font:12px monospace}
+td:first-child{width:100px}.mini{font:11px monospace;color:#9ac9db}
+#coordinates{max-height:240px;overflow:auto}
+#events{max-height:98px;overflow:auto;font:11px monospace;direction:ltr;color:#a7cbe0;white-space:pre-wrap}
+footer{padding:18px;text-align:center;color:#889eab;font-size:11px}
+@media(max-width:970px){.work{grid-template-columns:1fr}.viewport{height:65vh;min-height:360px}}
+</style></head>
+<body>
+<header><div><b>B737 CLASSIC · P5-13 · PHOTO-CALIBRATION LAB</b><small>OH-10 · 1095×1436 native pixels · real locked owner artwork, no replacement</small></div><div class="row"><a href="./">نسخه اول</a><a href="../panel-mosaic-lab/electrical-stack/">الکتریکال استک</a><a href="../panel-mosaic-lab/all-overhead/">Full Overhead</a></div></header>
+<main>
+<div class="notice"><strong>نسخه آزمایشی، نه نصب نهایی:</strong> تصویر اصلی پنل بدون هیچ دستکاری نمایش داده می‌شود. مرکز عقربه‌ها و کنترل‌ها فعلاً «پیشنهادی» هستند. در حالت کالیبراسیون می‌توانی هر نشانگر را حرکت بدهی، اندازه‌اش را اصلاح کنی و مختصات دقیق را خروجی بگیری. هیچ کنترل قفل‌شده یا نمای اصلی Unified در این صفحه تغییر نمی‌کند.</div>
+<div class="work">
+<div class="stage">
+<div class="tools" role="toolbar" aria-label="Photo calibration controls">
+<button id="operate" class="active">تست عملکرد</button><button id="calibrate">کالیبراسیون پیکسلی</button>
+<label><input id="face" type="checkbox" checked> صفحه‌های گیج</label><label><input id="overlay" type="checkbox" checked> عقربه‌ها و کلیدها</label>
+<label><input id="markers" type="checkbox"> نمایش مرکزها</label>
+<button id="zoomout" title="Zoom out">−</button><input id="zoom" type="range" min="30" max="250" step="5" value="70"><button id="zoomin" title="Zoom in">+</button><b id="zoomlabel">70%</b>
+<button id="fit">FIT</button>
+</div>
+<div class="viewport" id="viewport">
+<div class="board-wrap" id="boardWrap">
+<svg id="board" width="767" height="1005" viewBox="0 0 1095 1436" xmlns="http://www.w3.org/2000/svg" aria-label="Owner-locked OH10 source photograph with independent interactive overlays">
+<defs>
+<radialGradient id="silver"><stop stop-color="#d1d0c8"/><stop offset=".7" stop-color="#9e9d97"/><stop offset="1" stop-color="#333638"/></radialGradient>
+<linearGradient id="lever" x1="0" x2="1"><stop stop-color="#171a1c"/><stop offset=".28" stop-color="#626766"/><stop offset=".49" stop-color="#c8c7bf"/><stop offset=".78" stop-color="#6a6c67"/><stop offset="1" stop-color="#151819"/></linearGradient>
+<linearGradient id="bezel" x1="0" x2="1"><stop stop-color="#8b8f90"/><stop offset=".35" stop-color="#383f41"/><stop offset=".75" stop-color="#9ca2a1"/><stop offset="1" stop-color="#303337"/></linearGradient>
+<clipPath id="gaugeTop"><rect x="-175" y="-163" width="350" height="170"/></clipPath>
+</defs>
+<image id="reference" x="0" y="0" width="1095" height="1436" href="../panel-mosaic-lab/assets/locked/2026-10-23/OH10-ELEC-LOSSLESS-9a1ca4d6cfb2.png" preserveAspectRatio="none" />
+<g id="artwork"></g><g id="calibration"></g>
+</svg>
+</div></div>
+</div>
+<div class="sidebar">
+<section><h2>پیش‌نمایش سیستم برق</h2>
+<div class="row"><button data-mode="dark">Cold &amp; Dark</button><button data-mode="ground">Ground Power</button><button data-mode="engines" class="active">Engines Running</button></div>
+<div class="row" style="margin-top:8px"><button id="genfail">GEN 1 FAIL</button><button id="trfail">TR 1 FAIL</button><button id="restart">Reset</button></div>
+<p>چهار نمایشگر به وضعیت باس‌های موتور برق V7 وصل‌اند. مقدار آمپر و مقدار دقیق ولتاژ برای دمو هستند، نه شبیه‌سازی کالیبره جریان بار.</p>
+<div class="metrics"><div class="metric"><strong id="dcamps">—</strong><small>DC AMPS</small></div><div class="metric"><strong id="freq">—</strong><small>CPS FREQ</small></div><div class="metric"><strong id="dcvolts">—</strong><small>DC VOLTS</small></div><div class="metric"><strong id="acvolts">—</strong><small>AC VOLTS</small></div></div>
+<p id="selectorstate" class="mini"></p><div class="status" id="status">در حال بارگذاری...</div></section>
+<section><h2>تطبیق محل دقیق قطعات</h2>
+<div>قطعه انتخاب‌شده: <b id="selected">—</b></div>
+<div class="row" style="margin:9px 0"><button id="left">←</button><button id="right">→</button><button id="up">↑</button><button id="down">↓</button><button id="smaller">اندازه −</button><button id="bigger">اندازه +</button></div>
+<p>ابتدا «کالیبراسیون پیکسلی» را بزن؛ نشانگر زرد را با ماوس بکش. کلیدهای جهت‌دار 0.5 پیکسل حرکت می‌دهند (Shift: پنج پیکسل). «اندازه» شعاع قطعه را تغییر می‌دهد.</p>
+<div id="coordinates"><table><thead><tr><th>PART</th><th>X px</th><th>Y px</th><th>R px</th></tr></thead><tbody id="coordrows"></tbody></table></div>
+<div class="row" style="margin-top:12px"><button id="export">خروجی JSON</button><button id="copy">کپی مختصات</button><button id="resetgeometry">بازگشت به نقاط اولیه</button></div>
+<p class="mini" id="sourceStatus"></p></section>
+<section><h2>ثبت ممیزی</h2>
+<div id="events" aria-live="polite"></div><p>مختصات تغییر یافته فقط روی همین دستگاه ذخیره می‌شوند. نصب در Unified تا زمان تأیید مرکز و ابعاد تمام قطعات و کنترل رنگ و یکپارچگی قفل است.</p></section>
+</div>
+</div>
+</main>
+<footer>Educational prototype only · source image is immutable · provisional geometry is not pixel-approved · do not use for real aircraft operations</footer>
+<script src="../engine/systems/electrical-v7.js"></script><script src="./photo-stage.js"></script>
+</body></html>
