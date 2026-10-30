@@ -1,3 +1,19 @@
+
+## MET-0005 — Original OH10 gauges and original shared needle; scale-only update (2026-10-30)
+
+Owner directive: **no new gauge / no new needle asset**. The 1095×1436 locked original OH10 photo, all four meter bezels and labels, all previously approved artwork and the existing `ac-dc-metering-needle.svg` blob (`3706dc3134d1c7bb989d3de519bf64aa854e705a`) are unchanged. Only the independent numerical scale-to-angle model and its existing needle mounts were updated. The CPS sprite's displayed reach uses `tipRadius: 141` for a longer existing pointer, not a new sprite. The CPS shaft location remains provisional.
+
+- `dcAmps` interpolates native photographed −50…+50 A ticks (center zero).
+- `dcVolts` interpolates photographed 0…40 V ticks.
+- `cps` accepts 360…420 Hz using a **provisional**, manual-anchored angle map; 0 Hz / no AC parks at the existing `−54°` stop rather than displaying 360 Hz.
+- `acVolts` accepts 100…130 V using the existing **photo-tick map pending shaft/stop signoff**; power loss (0 V) returns to the existing `−70°` rest instead of suggesting 100 V. `RESIDUAL` mode uses the separate 0…30 V interpretation (not yet photo-certified).
+- Existing `B737UnifiedAcDcMetering.setReading(id,value,{mode})`, `setReadings({dcAmps,cps,dcVolts,acVolts},{acVoltsMode})`, `setAngle`, `getReadings` and `getAngles` enable direct test-lab input or qualified electrical/measurement backends. A `b737:ac-dc-metering-readings` event forwards explicit samples. Unsupported/unknown values are not invented.
+- **Limits:** electrical V7 only models discrete source/bus power. It cannot derive physically calibrated amperage, frequency, and AC voltage from Boolean bus states. A real source/selector measurement adapter must send instrument measurements for genuine automatic tracking. CPS and AC VOLTS remain marked provisional, not certified.
+- Shared original needle uses existing SVG 512×512, same pivots and upper-half gauge clip window, smooth 320 ms transitions. No static dial art or meter background is generated.
+- QA: added scale mapping, mechanical parking, residual volts mode and original blob fingerprint tests to the existing Pages workflow; local code-level angle examples passed, but real browser and GitHub Actions results remain to be confirmed.
+
+For comparison, the old cartoon-design lab now redirects to `acdc-metering-lab/photo-stage.html`, which uses the locked photo only.
+
 # Unified cockpit — CKP-0012
 
 ## CDN-0001 — independent cabin PRESS and CAB ALT needles on OH19
