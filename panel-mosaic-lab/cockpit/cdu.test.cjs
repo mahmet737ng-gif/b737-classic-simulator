@@ -17,7 +17,7 @@ for(const selector of ['font-family','font-size','.hotspot'])
 const monochrome=css.split('/* EP-FSI requested green monochrome CDU display; approved BoeingCDU fonts unchanged. */')[1];
 assert.ok(monochrome&&monochrome.includes('.fmc-screen .fmc-lines .fmc-line')&&monochrome.includes('color:#40eb79'),
  'Owner-requested green CDU text remains enabled');
-assert.ok(!/(?:font-family|font-size|transform|position|width|height|letter-spacing|line-height)\\s*:/.test(monochrome),
+assert.ok(!/(?:font-family|font-size|transform|position|width|height|letter-spacing|line-height)\s*:/.test(monochrome),
  'Monochrome display adjustment must never change fonts, character grid, screen dimensions or key positions');
 require('./cdu-session.test.cjs');
 // New CDU boxes must not cover any existing main-panel annunciator.
