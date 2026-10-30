@@ -58,7 +58,7 @@
     }
    }
   }
-  if(used!=='FCOM_NATIVE'&&state.page==='LEGS'&&state.stage10Advisory){
+  if(state.page==='LEGS'&&state.stage10Advisory){
    try{renderers.STAGE10_ADVISORY?.(frame);}
    catch(err){errors.push('ADVISORY_ERROR:'+String(err?.message||err));}
   }
