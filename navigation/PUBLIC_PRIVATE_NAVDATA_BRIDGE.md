@@ -49,7 +49,7 @@ API responses are source reference only with `fmc_executable:false`. There is no
 ## Verification
 
 - The source ZIP / Stage1 SQLite used earlier was verified in the project's private-data audit; the new standalone bridge source code and synthetic tests are version-controlled.
-- New Python tests cover request authorization, CORS/PNA preflight, read-only scope, source lookup, missing/invalid tokens, mismatched Host/Origin and malicious query parameters.
+- New Python tests cover request authorization, CORS and local-access preflight, read-only scope, source lookup, missing/invalid tokens, mismatched Host/Origin and malicious query parameters.
 - New Node tests cover initial public isolation, same-origin/consent attach, disconnect and in-memory secret handling.
 - `.github/workflows/navdata-public-bridge-v1.yml` runs these tests without requiring or publishing any licensed DB.
 - **Production Windows/browser acceptance must be performed on the owner's machine** after starting the private service. Browser local-network permission policies vary; a GitHub code merge alone does not prove that the browser has granted the required local access.
