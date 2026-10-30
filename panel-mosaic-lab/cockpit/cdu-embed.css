@@ -11,27 +11,27 @@ main,.cockpit-stack,.cockpit{display:block!important;width:1199px!important;max-
  * approved BoeingCDULarge/Small binaries, keymap and artwork stay unchanged.
  *
  * The smaller intermediate profile still looked tiny at Unified's 866px source crop.
- * Geometry and per-field fit are controlled by cdu-screen-fit-v4.js.
+ * Geometry and per-field fit are controlled by cdu-screen-fit-v5.js.
  */
 .fmc-screen .fmc-lines{
-  font-size:54px!important;
+  font-size:92px!important;
   color:#29ff31!important;
 }
 .fmc-screen .fmc-lines .fmc-line{
-  height:11.0%!important;
+  height:12.0%!important;
   font-size:inherit!important;
   line-height:1.02!important;
 }
 .fmc-screen .fmc-lines .fmc-line.fmc-small{
   height:8.0%!important;
-  font-size:39px!important;
+  font-size:72px!important;
   line-height:1!important;
 }
 /* Scratchpad is near the bottom edge of the original screen mask: keep its
  * baseline visible instead of clipping it against the unchanged photo bezel. */
 .fmc-screen .fmc-lines .fmc-line.scratch{
   height:6.1%!important;
-  font-size:42px!important;
+  font-size:72px!important;
   line-height:1!important;
 }
 .fmc-screen .fmc-lines .fmc-line,
