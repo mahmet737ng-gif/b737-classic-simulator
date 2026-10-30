@@ -62,11 +62,13 @@
  function calibrate(){
   const scratch=box.querySelector('.fmc-line.scratch');
   const left=scratch?.querySelector('.fmc-left.full');
-  const small=box.querySelector('.fmc-line.fmc-small .fmc-left');
-  if(!left||!small)return {ready:false,reason:'MISSING_CDU_TEXT_OR_SCRATCHPAD'};
+  // Reference-only NAVDB overlays sometimes have no explicitly small labels.
+  // That must NOT disable the 24-column scratchpad calibration for that page.
+  const small=box.querySelector('.fmc-line.fmc-small .fmc-left')||left;
+  if(!left)return {ready:false,reason:'MISSING_CDU_SCRATCHPAD'};
   const available=left.getBoundingClientRect().width;
   if(!(available>100))return {ready:false,reason:'SCREEN_WIDTH_NOT_MEASURABLE'};
-  const family=fontFace(left),smallFamily=fontFace(small);
+  const family=fontFace(left),smallFamily=small===left?'BoeingCDUSmall':fontFace(small);
   const fonts=root.document.fonts;
   if(fonts&&typeof fonts.check==='function'&&
      (!fonts.check('100px "BoeingCDULarge"',Metrics.TEST)||
