@@ -1,4 +1,4 @@
-/* LE-PHOTOLENS-0002. Owner-directed 2026-10-30 visual correction.
+/* LE-PHOTOLENS-0004. Owner-directed unlock, real OFF glass covering painted bitmap and smooth lit optics.
  * The original final-locked LED engine, 26 input targets, hardware and state
  * remain unchanged. All new lenses are inset inside photo source apertures.
  */
@@ -42,14 +42,22 @@ function install(source){
  gradient(defs,id+'g',[['0%','#a6c9ae','.98'],['30%','#79ab87','.96'],['72%','#467e64','.95'],['100%','#285547','.91']]);
  gradient(defs,id+'h',[['0%','#ffffff','.16'],['26%','#fff8d9','.08'],['70%','#c7e0d4','.02'],['100%','#000000','0']]);
  const segments=parts.map((original,i)=>{
-  const d=insetPolygon(original.getAttribute('d')),g=svg('g',{'data-lens-id':original.dataset.device+'|'+original.dataset.level});
-  const face=svg('path',{d,fill:'url(#'+id+(original.dataset.level==='TRANSIT'?'a':'g')+')'});
-  const sheen=svg('path',{d,fill:'url(#'+id+'h)'});
+  const aperture=original.getAttribute('d'),d=insetPolygon(aperture);
+  const g=svg('g',{'data-lens-id':original.dataset.device+'|'+original.dataset.level});
+  const amber=original.dataset.level==='TRANSIT';
+  // A real opaque, smooth, dark glass lens covers the painted green/amber
+  // bitmap underneath even while OFF. Its aperture remains fully inside the
+  // owner-approved clickable polygon and does not cover the white legends.
+  const dark=svg('path',{d:insetPolygon(aperture,0.65),
+    fill:amber?'#30251a':'#20342b','data-optic-layer':'unlit-glass'});
+  const face=svg('path',{d,fill:'url(#'+id+(amber?'a':'g')+')','data-optic-layer':'illuminated-glass'});
+  const sheen=svg('path',{d,fill:'url(#'+id+'h)','data-optic-layer':'soft-reflection'});
   const delay=((i*11)%26)*4+'ms';
   face.style.transition='opacity 72ms ease-out '+delay;
   sheen.style.transition='opacity 72ms ease-out '+delay;
-  face.style.opacity='0';sheen.style.opacity='0';g.append(face,sheen);lens.append(g);
-  return {original,face,sheen};
+  face.style.opacity='0';sheen.style.opacity='0';
+  g.append(dark,face,sheen);lens.append(g);
+  return {original,dark,face,sheen};
  });
  source.insertAdjacentElement('afterend',lens);
  source.parentNode.classList.add('b737-le-photolens-ready-v2');
