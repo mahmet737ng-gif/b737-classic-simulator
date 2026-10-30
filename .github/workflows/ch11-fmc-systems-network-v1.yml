@@ -25,6 +25,8 @@ on:
       - 'cdu-standalone-v6/data/page-definitions.json'
       - 'cdu-standalone-v6/data/page-definitions.js'
       - 'cdu-standalone-v6/tests/dep-arr-fcom-114032.test.cjs'
+      - 'cdu-standalone-v6/stage5-adapter.js'
+      - 'cdu-standalone-v6/stage6-selector.js'
       - 'cdu-standalone-v6/engine/cdu-engine.js'
       - 'cdu-standalone-v6/app.js'
       - 'cdu-standalone-v6/tests/ch11-position-pages-v1.test.cjs'
