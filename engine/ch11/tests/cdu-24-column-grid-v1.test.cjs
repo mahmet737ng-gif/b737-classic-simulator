@@ -41,7 +41,7 @@ function fixture(seat='CAPT'){
  const doc={getElementById:id=>id==='fmc-lines'?box:id==='fmc-screen'?screen:null,
   createElement:()=>({getContext:()=>ctx}),
   documentElement:{dataset:{}},fonts:{ready:new Promise(()=>{}),load:()=>new Promise(()=>{})}};
- const root={location:{search:'?seat='+seat},document:doc,
+ const root={location:{search:'?seat='+seat},document:doc,B737CDU24ColumnMetricsV1:metrics,
   getComputedStyle:elem=>({fontFamily:elem===small.children[0]?'BoeingCDUSmall':'BoeingCDULarge',
     top:elem.style.values.top||'450px'}),requestAnimationFrame:cb=>cb(),
   addEventListener(){}};
