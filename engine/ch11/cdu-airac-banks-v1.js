@@ -78,9 +78,11 @@
  }
  function fcomIdent(readout,asOfIso){
   const resolved=install(readout,asOfIso);
+  const stamp=iso=>{const mo=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];return iso.slice(8,10)+mo[Number(iso.slice(5,7))-1];};
   const signed=slot=>resolved[slot]?{
    quality:'VALID',origin:'VERIFIED_NAV_DATABASE',
-   value:resolved[slot].cycle,airac:resolved[slot].cycle,
+   value:stamp(resolved[slot].start)+'-'+stamp(CALENDAR[resolved[slot].cycle].lastValid),
+   airac:resolved[slot].cycle,
    dateStart:resolved[slot].start,dateEndExclusive:resolved[slot].endExclusive,
    sourceSha256:resolved[slot].sourceSha256,bank:slot
   }:null;
