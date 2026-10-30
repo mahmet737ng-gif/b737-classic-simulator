@@ -14,7 +14,8 @@
 })(typeof window==='undefined'?null:window,function(model,state,core,pages,fetcher,refresh){
 'use strict';
 const TYPES=['SID','STAR','APP'];
-let serial=0;
+let serial=0,lookupSerial=0;
+let lookupBusy=false;
 const copy=x=>JSON.parse(JSON.stringify(x));
 const summaryPlan=()=>state.stage6PendingPlan||state.stage5Committed||null;
 const prior=()=>state.stage5Committed||null;
@@ -44,24 +45,27 @@ async function json(url,options){
 function openMenu(){state.stage6View={mode:'MENU',page:1};core.choose(state,pages,'DEP_ARR');updates()}
 function selected(kind){return state.stage6Selections?.[kind]===null?null:state.stage6Selections?.[kind]||
  prior()?.[({SID:'selected_departure',STAR:'selected_arrival',APP:'selected_approach'})[kind]]||null}
-async function openCatalog(kind){
+async function openCatalog(kind,options={}){
  try{
-  const p=guardedPlan();if(!TYPES.includes(kind))throw Error('Invalid kind');
-  const airport=kind==='SID'?p.origin:p.destination;
+  if(!TYPES.includes(kind))throw Error('Invalid kind');
+  const referenceOnly=options.referenceOnly===true;
+  const p=referenceOnly?null:guardedPlan();
+  const airport=referenceOnly?options.airport:(kind==='SID'?p.origin:p.destination);
+  if(!validAirport(airport))throw Error('ENTER VALID AIRPORT');
   const ticket=++serial;
-  state.stage6View={mode:'LOADING',kind,airport,page:1,items:[]};
+  state.stage6View={mode:'LOADING',kind,airport,page:1,items:[],referenceOnly};
   core.choose(state,pages,kind==='SID'?'DEPARTURES':'ARRIVALS');updates();
   const result=await json('/api/stage6/catalog?airport='+encodeURIComponent(airport)+'&kind='+kind);
   if(serial!==ticket)return;
   if(result.airac!=='2610'||result.airport!==airport||result.kind!==kind||result.fmc_executable!==false||!Array.isArray(result.items))throw Error('Invalid AIRAC catalogue');
   for(const entry of result.items){if(!/^[A-Z0-9._-]{2,12}$/.test(entry.ident)||!Array.isArray(entry.runways)||!Array.isArray(entry.transitions)||entry.status!=='SOURCE_ONLY_NOT_FMC_EXECUTABLE')throw Error('Invalid source item');}
-  state.stage6View={mode:'CATALOG',kind,airport,page:1,items:result.items};updates();
+  state.stage6View={mode:'CATALOG',kind,airport,page:1,items:result.items,referenceOnly};updates();
  }catch(e){state.stage6View={mode:'ERROR',kind,items:[],error:e.message,page:1};error(e.message)}
 }
 function makeChoice(item){
  const screen=state.stage6View;
  if(!screen||!screen.kind)throw Error('No selected procedure kind');
- if(!screen.items?.some(x=>x.ident===item.ident))throw Error('Source item not in catalogue');
+ if(screen.items?.filter(x=>x.ident===item.ident).length!==1)throw Error('AMBIGUOUS PROCEDURE');
  screen.selected={ident:item.ident};screen.runways=item.runways;screen.transitions=item.transitions;
  if(item.runways.length){screen.mode='RUNWAY';screen.page=1;updates();return;}
  if(item.transitions.length){screen.mode='TRANSITION';screen.page=1;updates();return;}
@@ -82,8 +86,18 @@ function pickVariant(value){
 async function finishSelection(clear=false){
  const f=state.stage6View;
  try{
-  guardedPlan();const kind=f.kind;
+  if(!f.referenceOnly)guardedPlan();
+  const kind=f.kind;
   const requested=clear?null:copy(f.selected);
+  if(f.referenceOnly){
+   const airport=f.airport;
+   if(!validAirport(airport))throw Error('INVALID SOURCE AIRPORT');
+   state.navdataReferenceProcedures=state.navdataReferenceProcedures||{};
+   state.navdataReferenceProcedures[kind+'@'+airport]=requested;
+   state.stage6View={mode:'MENU',page:1,referenceOnly:true};
+   core.choose(state,pages,'DEP_ARR');
+   state.message=kind+' SOURCE ONLY';updates();return;
+  }
   const selections={...(state.stage6Selections||{}),[kind]:requested};
   f.mode='COMPOSING';updates();
   const output=await json('/api/stage6/compose',{method:'POST',headers:{'Content-Type':'application/json'},
@@ -95,6 +109,23 @@ async function finishSelection(clear=false){
  }catch(e){f.mode='ERROR';f.error=e.message;error(e.message)}
 }
 function handlesStage6Key(k){
+ if(lookupBusy&&/^LSK_[LR][1-6]$/.test(k)){error('NAV DATA LOOKUP BUSY');return true;}
+ if((state.page==='RTE'||state.page==='FLIGHT_PLAN')&&state.scratch&&state.scratch!=='DELETE'){
+  const routeKey=state.page==='RTE'?['LSK_L1','LSK_R1','LSK_L3'].includes(k):
+   /^LSK_[LR][1-4]$/.test(k);
+  if(routeKey){void validateRteEntry(k);return true;}
+ }
+ if(state.page==='DEP_ARR'&&['LSK_L1','LSK_R1','LSK_R2'].includes(k)&&
+    !prior()&&!state.stage5Pending){
+  const isDeparture=k==='LSK_L1';
+  const fromOrigin=k!=='LSK_R2';
+  const airport=core.readValue(state,fromOrigin?'ORIGIN':'DEST','RTE');
+  if(!validAirport(airport))return false;
+  state.depArrSelection={airport,mode:isDeparture?'DEP':'ARR',
+    source:fromOrigin?'ORIGIN':'DEST',referenceOnly:true,sourceFolio:'FCOM 11.40.32-33'};
+  void openCatalog(isDeparture?'SID':'STAR',{referenceOnly:true,airport});
+  return true;
+ }
  if(state.page==='RTE'&&k==='LSK_L5'&&state.stage6PendingPlan){
   try{guardedPlan();state.stage6AwaitingExec=true;core.choose(state,pages,'ACTIVATE');state.message='';}
   catch(e){error(e.message)}
@@ -129,6 +160,9 @@ function handlesStage6Key(k){
  if(k==='NEXT_PAGE'||k==='PREV_PAGE'){
   const source=f.mode==='CATALOG'?f.items:f.mode==='RUNWAY'?f.runways:f.mode==='TRANSITION'?f.transitions:[];
   const total=Math.max(1,Math.ceil(source.length/5));f.page=Math.max(1,Math.min(total,(f.page||1)+(k==='NEXT_PAGE'?1:-1)));updates();return true;
+ }
+ if(k==='LSK_R4'&&f.referenceOnly&&f.mode==='CATALOG'&&f.kind==='STAR'){
+  void openCatalog('APP',{referenceOnly:true,airport:f.airport});return true;
  }
  if(k==='LSK_R5'&&f.mode==='CATALOG'){void finishSelection(true);return true}
  const m=/^LSK_L([1-5])$/.exec(k);
@@ -174,7 +208,8 @@ function paint(box){
    const label=typeof entry==='string'?entry:entry.ident;
    pair(box,13+i*14.5,'<'+label,typeof entry==='string'?'SELECT':('RWY '+entry.runways.length));
   }
-  pair(box,91,'<RETURN L6',f.mode==='CATALOG'?'NONE R5':'NO AUTO LEGS');return;
+  pair(box,91,'<RETURN L6',f.referenceOnly&&f.kind==='STAR'?'APP R4 / CLR R5':
+   f.mode==='CATALOG'?'NONE R5':'NO AUTO LEGS');return;
  }
  if(!state.stage6PendingPlan||!['RTE','LEGS','ACTIVATE'].includes(page))return;
  model.validate(plan);box.replaceChildren();
