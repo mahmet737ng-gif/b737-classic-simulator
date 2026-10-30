@@ -2,6 +2,8 @@
 const $=id=>document.getElementById(id);
 const map=window.CDU_MAP, pages=window.CDU_PAGES, core=window.CDU_ENGINE;
 const state=core.makeState('IDENT');
+const preflight=window.B737CDUPreflightEvidenceV1;
+if(!preflight)throw Error('FCOM_CDU_PREFLIGHT_EVIDENCE_NOT_LOADED');
 const contract=window.B737FCOMScreenContractV1;
 if(!contract)throw Error('FCOM_CDU_SCREEN_CONTRACT_NOT_LOADED');
 const procedureLedger=window.B737CDUTransitionLedgerV1?.create({
@@ -76,12 +78,34 @@ function update(){const box=$('fmc-lines'); const frame=document.createElement('
    const labelTop=((cy-13-screenTop)/screenHeight*100); const valueTop=((cy+10-screenTop)/screenHeight*100);
    let labelL=pair?.[0]?.label||'',labelR=pair?.[1]?.label||'';
    let valueL=displayCell(pair?.[0]),valueR=displayCell(pair?.[1]);
+   if(state.page==='IDENT'){
+     const sources=state.preflightEvidence||{};
+     const ids=[['MODEL','ENG_RATING'],['NAV_DATA','ACTIVE'],[null,'INACTIVE'],
+       ['OP_PROGRAM',null],[null,'SUPP_DATA'],[null,null]][row-1];
+     valueL=ids[0]?preflight.identValue(ids[0],sources):valueL;
+     valueR=ids[1]?preflight.identValue(ids[1],sources):valueR;
+   }
+   if(state.page==='POS_INIT'){
+     const sources=state.preflightEvidence||{};
+     if(row===1){valueL=preflight.lastPosition(sources);valueR='';}
+     if(row===3&&!core.readValue(state,'REF_AIRPORT','POS_INIT'))valueL='-----';
+     if(row===4){valueR=preflight.irsPositionPrompt(sources);}
+     if(row===5){
+       valueL=preflight.clock(sources);
+       if(!preflight.irsHeadingAvailable(sources)){labelR='';valueR='';}
+       else valueR=preflight.posValue('IRS_HDG',sources,state.active);
+     }
+   }
    if(row===1&&state.depArrSelection&&['DEPARTURES','ARRIVALS'].includes(state.page))
      valueL=state.depArrSelection.airport||valueL;
    if(n1&&state.page==='N1_LIMIT'&&row===1){labelR='20K N1 EST';valueR=n1.maxN1Pct.toFixed(1)+'% EST';}
    if(n1&&state.page==='TAKEOFF'&&row===3){labelL='TO N1 EST';valueL=n1.maxN1Pct.toFixed(1)+'% EST';}
    frame.appendChild(makePairRow(labelTop,labelL,labelR,false,true));
-   frame.appendChild(makePairRow(valueTop,valueL,valueR));
+   const valueLine=makePairRow(valueTop,valueL,valueR);
+   if(state.page==='POS_INIT'&&row===1){
+     valueLine.querySelector('.fmc-left')?.classList.add('full');
+   }
+   frame.appendChild(valueLine);
  }
  frame.appendChild(makePairRow(((565-screenTop)/screenHeight*100), state.message||state.scratch||'', '', true));
  const renderers={
