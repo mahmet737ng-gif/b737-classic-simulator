@@ -8,36 +8,36 @@
     "sha256": "9a1ca4d6cfb277ec1404f3a464e957d81be9d9689a0810883364342d57b0f1ea",
     "immutable": true
   },
-  "origin": "Provisional initial hotspots scaled from separate design lab; NOT photo-verified.",
+  "origin": "Meter pivot candidates imported from actual Unified model. Rotary/BAT/GALLEY/RESID centers remain provisional.",
   "installation": "OH-10, preliminary atlas geometry rejected. Do not auto-mount into unified.",
   "markers": {
     "dcAmps": {
-      "x": 305,
-      "y": 213,
-      "r": 147,
+      "x": 308.453,
+      "y": 281.608,
+      "r": 141,
       "type": "meter",
-      "confidence": "PROVISIONAL"
+      "confidence": "MEASURED_BEZEL_CENTER__NEEDLE_PIVOT_QA_PENDING"
     },
     "cpsFreq": {
-      "x": 786,
-      "y": 213,
-      "r": 147,
+      "x": 774.2,
+      "y": 191.4,
+      "r": 85,
       "type": "meter",
-      "confidence": "PROVISIONAL"
+      "confidence": "MEASURED_BEZEL_CENTER__NEEDLE_PIVOT_QA_PENDING"
     },
     "dcVolts": {
-      "x": 305,
-      "y": 552,
-      "r": 147,
+      "x": 310.307,
+      "y": 682.818,
+      "r": 131,
       "type": "meter",
-      "confidence": "PROVISIONAL"
+      "confidence": "MEASURED_BEZEL_CENTER__NEEDLE_PIVOT_QA_PENDING"
     },
     "acVolts": {
-      "x": 786,
-      "y": 552,
-      "r": 147,
+      "x": 785.143,
+      "y": 702.386,
+      "r": 143,
       "type": "meter",
-      "confidence": "PROVISIONAL"
+      "confidence": "MEASURED_BEZEL_CENTER__NEEDLE_PIVOT_QA_PENDING"
     },
     "dcSelector": {
       "x": 306,
@@ -81,5 +81,7 @@
     "unifiedMountAllowed": false,
     "acceptanceCenterMaxErrorPx": 0.5,
     "sizeMaxErrorPx": 0.5
-  }
+  },
+  "sourceOfMeterCenters": "panel-mosaic-lab/cockpit/ac-dc-metering-model.js (MET-0004-TICK-CAL)",
+  "notes": "For meters only, r means proposed WHITE NEEDLE TIP reach in native photo pixels. For other controls, r is approximate visual radius."
 }
