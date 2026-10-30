@@ -17,7 +17,7 @@ var initial={
  acSelector:{x:783,y:1029,r:84,type:"rotary"},
  battery:{x:480,y:1295,r:51,type:"toggle"},
  galley:{x:727,y:1299,r:38,type:"toggle"},
- residual:{x:894,y:1299,r:39,type:"momentary"}
+ residual:{x:917,y:1273,r:39,type:"momentary"}
 };
 var state={geometry:JSON.parse(JSON.stringify(initial)),selected:"dcAmps",calibration:false,scale:.70,overlay:true,showMarkers:false,sourceOK:false};
 var dcOptions=["STBY PWR","BAT BUS","BAT","APU BAT","TR1","TR2","TR3"];
