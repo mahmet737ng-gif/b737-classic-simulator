@@ -25,10 +25,10 @@
  // its unpowered parked position and actual AC bus sensor feed are resolved.
  const photoScale=Object.freeze({
   // CPS end/center visual anchors are TRAINING PROVISIONAL until all native tick rays and its true shaft are audited.
-  cps:Object.freeze({unit:'Hz',values:Object.freeze([360,380,400,410,420]),angles:Object.freeze([-54.21,-27.105,0,23.39,46.78]),readoutApprovedForPreview:false,accuracy:'PROVISIONAL_MANUAL_ANCHORS'}),
-  dcAmps:Object.freeze({unit:'A',values:Object.freeze([-50,-40,-30,-20,-10,0,10,20,30,40,50]),angles:Object.freeze([-46.66,-37.3809,-28.3169,-19.2363,-9.8249,0,9.1325,17.9534,26.7118,35.2366,44.26]),readoutApprovedForPreview:true}),
-  dcVolts:Object.freeze({unit:'V',values:Object.freeze([0,4,8,12,16,20,24,28,32,36,40]),angles:Object.freeze([-45.5,-36.1684,-27.4244,-18.5076,-9.6945,0,10.0057,18.8254,27.3445,35.6464,44.7]),readoutApprovedForPreview:true}),
-  acVolts:Object.freeze({unit:'V',values:Object.freeze([100,102,104,106,108,110,112,114,116,118,120,122,124,126,128,130]),angles:Object.freeze([-51.4,-44.7535,-38.2574,-31.7398,-25.147,-18.0496,-10.2757,-3.5004,3.5478,10.1972,18.0981,25.2263,31.6363,37.9701,44.4344,51.16]),readoutApprovedForPreview:false,accuracy:'PHOTO_TICKS_UNVERIFIED_SHAFT_PARK'})
+  cps:Object.freeze({unit:'Hz',values:Object.freeze([360,380,400,410,420]),angles:Object.freeze([-54.21,-27.105,0,23.39,46.78]),readoutApprovedForPreview:false,accuracy:'OWNER_RED_ARC_PROVISIONAL_NATIVE_REGISTRATION'}),
+  dcAmps:Object.freeze({unit:'A',values:Object.freeze([-50,-40,-30,-20,-10,0,10,20,30,40,50]),angles:Object.freeze([-46.66,-37.3809,-28.3169,-19.2363,-9.8249,0,9.1325,17.9534,26.7118,35.2366,44.26]),readoutApprovedForPreview:false,accuracy:'OWNER_RED_ARC_PROVISIONAL_NATIVE_REGISTRATION'}),
+  dcVolts:Object.freeze({unit:'V',values:Object.freeze([0,4,8,12,16,20,24,28,32,36,40]),angles:Object.freeze([-45.5,-36.1684,-27.4244,-18.5076,-9.6945,0,10.0057,18.8254,27.3445,35.6464,44.7]),readoutApprovedForPreview:false,accuracy:'OWNER_RED_ARC_PROVISIONAL_NATIVE_REGISTRATION'}),
+  acVolts:Object.freeze({unit:'V',values:Object.freeze([100,102,104,106,108,110,112,114,116,118,120,122,124,126,128,130]),angles:Object.freeze([-51.4,-44.7535,-38.2574,-31.7398,-25.147,-18.0496,-10.2757,-3.5004,3.5478,10.1972,18.0981,25.2263,31.6363,37.9701,44.4344,51.16]),readoutApprovedForPreview:false,accuracy:'OWNER_RED_ARC_PROVISIONAL_NATIVE_REGISTRATION'})
  });
  function bearingForReading(id,value){
   const sc=photoScale[id];if(!sc)throw Error('Unknown photographic OH10 scale '+id);
