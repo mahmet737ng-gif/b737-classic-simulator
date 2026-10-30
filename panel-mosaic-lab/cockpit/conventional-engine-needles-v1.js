@@ -20,19 +20,15 @@ const ROWS=Object.freeze([
 ]);
 // Physical shaft centers measured in the final owner's 1182 x 1330 PNG.
 const CENTERS=Object.freeze({
- n1:[[144.19,450.85],[367.09,450.91]],
- egt:[[143.71,668.94],[363.83,668.98]],
- n2:[[140.15,888.81],[362.38,888.81]],
- fuelFlow:[[132.38,1104.98],[354.25,1104.96]],
- oilPressure:[[578.75,450.30],[799.29,450.59]],
- oilTemp:[[578.73,669.32],[798.69,669.34]],
- oilQty:[[578.58,888.72],[798.32,888.73]],
- vib:[[574.40,1104.46],[794.50,1105.07]]
+ n1:[[427,427],[600,427]], egt:[[427,596],[600,596]],
+ n2:[[425,747],[600,747]], fuelFlow:[[426,910],[600,910]],
+ oilPressure:[[805,431],[973,431]], oilTemp:[[805,591],[973,591]],
+ oilQty:[[803,748],[970,748]], vib:[[803,909],[970,909]]
 });
 const SPECS=Object.freeze(ROWS.flatMap(row=>[1,2].map(engine=>Object.freeze({
  id:row.key+'_'+engine,signal:row.key,engine:'engine'+engine,
  cx:CENTERS[row.key][engine-1][0],cy:CENTERS[row.key][engine-1][1],
- min:row.min,max:row.max,primary:row.primary,scale:row.scale*.77
+ min:row.min,max:row.max,primary:row.primary,scale:row.scale*.51
 }))));
 let layer=null;
 const values=new Map();
@@ -65,15 +61,16 @@ function mount(){
  if(layer?.parentNode===host){layer.style.transform=layout.cssMatrix;return true;}
  if(layer && layer.parentNode!==host){layer.remove();rotors.clear();}
  layer=node(host,'svg',{class:'conventional-engine-needle-layer-v1',
-    'data-conventional-needles':'CONV-NEEDLE-FIT-0003',viewBox:'0 0 1182 1330',preserveAspectRatio:'none',
+    'data-conventional-needles':'CONV-NEEDLE-FIT-0003',viewBox:'0 0 1463 1075',preserveAspectRatio:'none',
     'aria-label':'Sixteen independent conventional engine instrument needles',
     'aria-hidden':'true',focusable:'false'});
+ layer.style.width='1463px';layer.style.height='1075px';
  layer.style.transform=layout.cssMatrix; // Identical photo+pointer transform: no needle drift.
  const defs=node(layer,'defs');
  for(const spec of SPECS){
   const clipId='conv-needle-clip-'+spec.id.replace(/[^a-z0-9-]/g,'-');
   const clip=node(defs,'clipPath',{id:clipId});
-  node(clip,'circle',{cx:spec.cx,cy:spec.cy,r:101});
+  node(clip,'circle',{cx:spec.cx,cy:spec.cy,r:65});
   const group=node(layer,'g',{'data-conventional-needle':spec.id,'clip-path':'url(#'+clipId+')'});
   const pivot=node(group,'g',{'data-needle-pivot':spec.id});
   node(pivot,'image',{href:PHOTO,x:-40,y:-140,width:80,height:160,'preserveAspectRatio':'xMidYMid meet',

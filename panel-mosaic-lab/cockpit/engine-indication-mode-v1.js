@@ -6,42 +6,25 @@
 (function(){
 'use strict';
 const ROOT=document.documentElement;
-const ASSET='./assets/conventional-engine-panel-owner-20261029.png?v=CONV-0002';
-const VERSION='CONV-FIT-0004-PIXEL-CENTERS';
-const W=1182,H=1330,FO_W=918,FO_H=1713;
-// Pixel-center audit of the owner's original 1182x1330 PNG and the
-// unchanged 918x1713 FO reference image. The independently installed
-// FO flap needle pivot is at (95,291), within 2.5px of the photo center.
-// Photo-derived AUTO BRAKE hole center is (101.5,889.5) in FO source.
-// These source reference assets are read-only; only optional overlay moves.
-const SOURCE=Object.freeze({flap:Object.freeze([1055.5,367.5]),auto:Object.freeze([1044.5,1117.5])});
-const FO=Object.freeze({flap:Object.freeze([95,291]),auto:Object.freeze([101.5,889.5])});
+const ASSET='./assets/p2-conventional-full-owner-20261030.png?v=CONV-FULL-0001';
+const VERSION='CONV-FULL-0001';
+const W=1463,H=1075,FO_W=918,FO_H=1713;
+// Full owner panorama, installed only when Conventional is selected.
 let wrap=null,image=null,loaded=false,error=null,desired='EIS',geometry=null;
 const store=()=>window.B737AircraftProfileStore;
 const requested=()=>store()?.get()?.engineInstruments==='CONVENTIONAL'?'CONVENTIONAL':'EIS';
 function rect(node){if(!node)return null;const s=node.style;const r={x:parseFloat(s.left),y:parseFloat(s.top),w:parseFloat(s.width),h:parseFloat(s.height)};return Object.values(r).every(Number.isFinite)?r:null;}
 function compute(engine,fo){
  if(!engine||!fo||fo.x<engine.x+engine.w-1||fo.x>engine.x+engine.w+1) return null;
- const sx=engine.w/W, foSX=fo.w/FO_W, foSY=fo.h/FO_H;
- const fx=fo.x+FO.flap[0]*foSX, fy=fo.y+FO.flap[1]*foSY;
- const ax=fo.x+FO.auto[0]*foSX, ay=fo.y+FO.auto[1]*foSY;
- const sy=(ay-fy)/(SOURCE.auto[1]-SOURCE.flap[1]);
- const skewX=(ax-fx-sx*(SOURCE.auto[0]-SOURCE.flap[0]))/(SOURCE.auto[1]-SOURCE.flap[1]);
- const translateX=fx-engine.x-sx*SOURCE.flap[0]-skewX*SOURCE.flap[1];
- const translateY=fy-engine.y-sy*SOURCE.flap[1];
- // The photographed flap/auto-brake column occupies only the left strip
- // of FO INNER. Stop before the separate landing-gear hardware.
- const left=engine.x,top=Math.min(engine.y,engine.y+translateY);
- const right=fo.x+fo.w*(.218),bottom=engine.y+engine.h;
- const matrix=[sx,0,skewX,sy,engine.x-left+translateX,engine.y-top+translateY];
- const map=(x,y)=>[left+matrix[0]*x+matrix[2]*y+matrix[4],top+matrix[3]*y+matrix[5]];
- const flap=map(...SOURCE.flap),auto=map(...SOURCE.auto);
- const errorPx=Math.max(Math.hypot(flap[0]-fx,flap[1]-fy),Math.hypot(auto[0]-ax,auto[1]-ay));
+ // Complete owner panorama: fuel quantity through landing gear, ending exactly
+ // at the separately approved F/O flight panel. No guard control is moved.
+ const left=engine.x,top=engine.y,right=1374,bottom=engine.y+engine.h;
+ const sx=(right-left)/W,sy=(bottom-top)/H;
+ const matrix=[sx,0,0,sy,0,0];
  return Object.freeze({version:VERSION,x:left,y:top,w:right-left,h:bottom-top,
-  matrix:Object.freeze(matrix),cssMatrix:'matrix('+matrix.map(v=>Number(v.toFixed(8))).join(',')+')',
-  anchors:Object.freeze({flap:Object.freeze(flap),auto:Object.freeze(auto)}),
-  targets:Object.freeze({flap:Object.freeze([fx,fy]),auto:Object.freeze([ax,ay])}),
-  errorPx:Number(errorPx.toFixed(8)),redZone:'NO_GUARD_OR_FO_ART_MODIFICATIONS'});
+  sourceWidth:W,sourceHeight:H,matrix:Object.freeze(matrix),
+  cssMatrix:'matrix('+matrix.map(v=>Number(v.toFixed(8))).join(',')+')',
+  redZone:'NO_GUARD_CONTROL_MODIFICATIONS'});
 }
 function mount(){
  const native=document.querySelector('#region-main .region-native');
@@ -59,10 +42,11 @@ function mount(){
  if(!image){
   image=document.createElement('img');image.className='conventional-engine-panel-v1';
   image.alt='';image.decoding='async';image.draggable=false;
-  image.onload=()=>{loaded=true;error=null;apply();};
+  image.onload=()=>{loaded=true;error=null;window.B737ConventionalFullPaintV1?.apply(image);apply();};
   image.onerror=()=>{loaded=false;error='Conventional original PNG failed to load';apply();};
   image.src=new URL(ASSET,document.baseURI).href;
  }
+ image.style.width=W+'px';image.style.height=H+'px';
  image.style.transform=next.cssMatrix;
  if(image.parentNode!==wrap)wrap.insertBefore(image,wrap.firstChild);
  if(wrap.parentNode!==native)native.appendChild(wrap);
