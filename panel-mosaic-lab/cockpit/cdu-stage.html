@@ -1,5 +1,23 @@
 <!doctype html>
-<html lang="fa" dir="rtl"><head><base href="../../cdu-standalone-v6/"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>B737 Classic CDU | Standalone Trainer v6</title><script>performance.setResourceTimingBufferSize(3000)</script><script src="../panel-mosaic-lab/cockpit/performance/manifest.js?v=PERF-0001"></script><script src="../panel-mosaic-lab/cockpit/performance-loader.js?v=PERF-0001"></script><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="../assets/fonts/boeing-cdu/cdu-screen.css"><link rel="stylesheet" href="../panel-mosaic-lab/cockpit/cdu-embed.css?v=CDU-TYPE-REF-0002"></head>
+<html lang="fa" dir="rtl"><head><base href="../../cdu-standalone-v6/"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>B737 Classic CDU | Standalone Trainer v6</title><script>performance.setResourceTimingBufferSize(3000)</script><script src="../panel-mosaic-lab/cockpit/performance/manifest.js?v=PERF-0001"></script><script src="../panel-mosaic-lab/cockpit/performance-loader.js?v=PERF-0001"></script><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="../assets/fonts/boeing-cdu/cdu-screen.css"><link rel="stylesheet" href="../panel-mosaic-lab/cockpit/cdu-embed.css?v=CDU-TYPE-REF-0003"><style id="unified-cdu-font-profile-v3">
+/* Inline deployment-safe profile: only iframe-mounted CDU text, NOT the approved bitmap. */
+html body #cdu-stage .fmc-screen #fmc-lines{
+  font-size:34px!important;color:#29ff31!important;
+}
+html body #cdu-stage .fmc-screen #fmc-lines .fmc-line{
+  font-size:34px!important;line-height:1.02!important;height:7.4%!important;
+  color:#29ff31!important;text-shadow:0 0 1px rgba(41,255,49,.13)!important;
+}
+html body #cdu-stage .fmc-screen #fmc-lines .fmc-line.fmc-small{
+  font-size:26px!important;line-height:1!important;height:5.8%!important;
+}
+html body #cdu-stage .fmc-screen #fmc-lines .fmc-line.scratch{
+  font-size:29px!important;line-height:1!important;height:6.6%!important;
+}
+html body #cdu-stage .fmc-screen #fmc-lines .fmc-line *{
+  color:#29ff31!important;text-shadow:0 0 1px rgba(41,255,49,.13)!important;
+}
+</style></head>
 <body>
 <header><div><h1>737 Classic • CDU Standalone Trainer</h1><p>آزمایش CDU بدون برق هواپیما — تصویر اصلی تأییدشده، باکس‌بندی مستقل هر دکمه</p></div><div class="actions"><a href="efis-test/index.html" style="display:inline-flex;align-items:center;padding:9px 13px;background:#264b57;border:1px solid #5d9da6;border-radius:6px;color:white;text-decoration:none;font-weight:bold">EFIS KNOB TEST ↗</a><button id="efis-jump" type="button" onclick="document.getElementById('ehsi-anchor').scrollIntoView({behavior:'smooth',block:'start'})">EHSI / EFIS</button><button id="reset" type="button">بازنشانی CDU</button><button id="overlay-toggle" type="button">نمایش باکس‌ها</button><button id="info-toggle" type="button">راهنمای کلیدها</button></div></header>
 <main><div class="cockpit-stack"><div class="cockpit"><div class="cdu-stage" id="cdu-stage" dir="ltr" aria-label="Interactive Boeing 737 Classic CDU"><img class="base" data-perf-source="assets/cdu-approved-unlit.png" draggable="false" alt="CDU approved unlit front panel"><div class="fmc-screen" id="fmc-screen" aria-label="FMC CDU screen"><div class="fmc-lines" id="fmc-lines"></div></div><div id="annunciators" aria-live="polite"></div><div id="clickmap"></div></div></div>
