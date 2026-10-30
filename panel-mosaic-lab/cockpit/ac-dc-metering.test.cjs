@@ -36,7 +36,7 @@ assert.ok(html.includes('ac-dc-metering-unified.js?v=MET-0007-RED-ARC-CLIP'));
 const crypto=require('node:crypto');
 const gitBlob=crypto.createHash('sha1').update('blob '+Buffer.byteLength(sprite)+'\0'+sprite).digest('hex');
 assert.equal(gitBlob,'3706dc3134d1c7bb989d3de519bf64aa854e705a','the original OH10 needle asset must not change');
-assert.equal(model.meters.find(m=>m.id==='cps').tipRadius,148.530,'same sprite at longer photo-derived reach');
+assert.equal(model.meters.find(m=>m.id==='cps').tipRadius,145.368071,'same sprite at longer photo-derived reach');
 const near=(a,b,label)=>assert.ok(Math.abs(a-b)<1e-7,label+': '+a+' versus '+b);
 near(model.angleForIndication('dcAmps',0),0,'0 DC AMPS center-zero');
 near(model.angleForIndication('dcAmps',-50),-46.66,'-50 DC AMPS');
@@ -64,14 +64,14 @@ assert.ok(html.includes('ac-dc-metering-unified.js?v=MET-0007-RED-ARC-CLIP'));
 const ids=['dcAmps','cps','dcVolts','acVolts'];
 for(const id of ids){
  const m=model.meters.find(x=>x.id===id),bounds=model.bounds(id),r=m.tipRadius;
- assert.ok(r>0&&r<230,id+' tip lies inside source dial');
+ assert.ok(r>0&&r<230,id+' horizontal reference reach');
  near(model.limitAngle(id,bounds.min-999),bounds.min,id+' left stop');
  near(model.limitAngle(id,bounds.max+999),bounds.max,id+' right stop');
  const frames=360;
  for(let i=0;i<=frames;i++){
   const angle=bounds.min+(bounds.max-bounds.min)*i/frames;
   const point=model.tipPoint(id,angle);
-  near(Math.hypot(point.x-m.x,point.y-m.y),r,id+' fixed radial tip reach');
+  near(Math.hypot((point.x-m.x)/m.tipRadiusX,(point.y-m.y)/m.tipRadiusY),1,id+' tip remains on native elliptical reference track');
   assert.ok(point.angle>=bounds.min-1e-7&&point.angle<=bounds.max+1e-7,id+' bound');
   if(i&&i<frames){
    const next=model.tipPoint(id,angle+(bounds.max-bounds.min)/frames);
@@ -107,10 +107,11 @@ assert.equal(evidence.qa.nativeSourceRegistrationVerified,false,'screenshot fit 
 for(const meter of model.meters){
  const arc=evidence.arcMeasurements[meter.id],b=model.bounds(meter.id);
  assert.ok(arc,'missing screenshot measured red arc: '+meter.id);
- const [cx,cy,r]=arc.nativeCircle;
+ const [cx,cy,rx,ry]=arc.nativeEllipse;
  near(meter.x,cx,meter.id+' screenshot-fitted center X');
  near(meter.y,cy,meter.id+' screenshot-fitted center Y');
- near(meter.tipRadius,r,meter.id+' radius along RED reference arc');
+ near(meter.tipRadiusX,rx,meter.id+' native horizontal radius along RED reference arc');
+ near(meter.tipRadiusY,ry,meter.id+' native vertical radius along RED reference arc');
  near(b.min,arc.angleMin,meter.id+' leftmost red reference angle');
  near(b.max,arc.angleMax,meter.id+' rightmost red reference angle');
  assert.equal(model.photoScale[meter.id].readoutApprovedForPreview,false,'screen registration remains provisional');
@@ -125,7 +126,10 @@ for(const meter of model.meters){
   assert.ok(pt.y<blueAtTip-20,'needle tip always in black aperture and above blue occlusion: '+meter.id+' @'+a);
   const xp=model.arcPhoto.originX+model.arcPhoto.scaleX*pt.x;
   const yp=model.arcPhoto.originY+model.arcPhoto.scaleY*pt.y;
+  const [scx,scy,srad]=arc.screenCircle;
   assert.ok(Number.isFinite(xp)&&Number.isFinite(yp),'screenshot projection finite');
+  assert.ok(Math.abs(Math.hypot(xp-scx,yp-scy)-srad)<0.001,
+   'sprite tip must follow screenshot RED circle to <0.001px: '+meter.id);
  }
 }
 assert.match(ui,/preserveAspectRatio:'none'/,'original non-uniform panel photo must be followed without letterboxing');
