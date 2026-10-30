@@ -1,4 +1,4 @@
-/* OH10 STATIC-NEEDLE RESTORATION (MET-0010)
+/* OH10 STATIC-NEEDLE RESTORATION (MET-0012)
  * Owner's protected PNG is NEVER rewritten. A same-origin, client-side canvas
  * makes a temporary, derived displayed bitmap for the four photo-baked white
  * pointer silhouettes. Only polygon pixels are reconstructed from neighbouring
@@ -135,26 +135,58 @@
   });
   return imagePromise;
  }
+ // Always generate from the LOCKED full-resolution PNG, never from a temporary
+ // performance thumbnail or a pre-existing partially cleaned image.
+ const pristineSource=new URL('../assets/locked/2026-10-23/OH10-ELEC-LOSSLESS-9a1ca4d6cfb2.png',document.baseURI).href;
+ const inFlight=new WeakMap();
+ let restoredAfterImageSwap=0;
  function cleanPiece(piece){
-  if(!piece)return Promise.resolve(false);
+  if(!piece||!piece.isConnected)return Promise.resolve(false);
   const photos=[...piece.querySelectorAll('.atlas-photo')];
   if(!photos.length)return Promise.resolve(false);
-  if(piece.dataset.staticNeedlePhoto==='CLEANED')return Promise.resolve(true);
-  if(piece.dataset.staticNeedlePhoto==='PENDING')return Promise.resolve(false);
-  const source=photos[0].currentSrc||photos[0].src;
-  if(!source||source.startsWith('blob:'))return Promise.resolve(false);
+  // Once the page is cleaned, ONLY this OH10 tile must not be replaced by
+  // pre-generated unclean texture LODs from the progressive image loader.
+  photos.forEach(photo=>photo.removeAttribute('data-perf-source'));
+  if(objectURL&&photos.every(photo=>photo.src===objectURL)){
+   piece.dataset.staticNeedlePhoto='CLEANED';
+   return Promise.resolve(true);
+  }
+  const active=inFlight.get(piece);
+  if(active)return active;
   piece.dataset.staticNeedlePhoto='PENDING';
-  return ensureDerivedUrl(source).then(url=>{
+  const job=ensureDerivedUrl(pristineSource).then(url=>{
    if(!piece.isConnected)return false;
-   photos.forEach(photo=>{if(photo.src!==url)photo.src=url;});
+   for(const photo of [...piece.querySelectorAll('.atlas-photo')]){
+    if(photo.src!==url){
+     if(photo.src!==pristineSource)restoredAfterImageSwap++;
+     photo.removeAttribute('data-perf-source');
+     photo.src=url;
+    }
+   }
    piece.dataset.staticNeedlePhoto='CLEANED';
    return true;
   }).catch(error=>{
    piece.dataset.staticNeedlePhoto='FAILED';
+   stats.lastError=String(error);
    console.error('OH10 derived static-needle cleanup failed; original source preserved',error);
    return false;
-  });
+  }).finally(()=>inFlight.delete(piece));
+  inFlight.set(piece,job);
+  return job;
  }
- const getStatus=()=>Object.freeze({...stats,derivedPhotoLoaded:Boolean(objectURL)});
- root.B737AcDcStaticCleaner=Object.freeze({regions,cleanPiece,ensureDerivedUrl,getStatus});
+ const watches=new WeakSet();
+ function watchPiece(piece){
+  if(!piece||watches.has(piece))return;
+  watches.add(piece);
+  const observer=new MutationObserver(records=>{
+   if(!piece.isConnected){observer.disconnect();return;}
+   if(!objectURL)return;
+   const changed=records.some(record=>record.type==='attributes'&&record.attributeName==='src'
+     &&record.target.matches('.atlas-photo')&&record.target.src!==objectURL);
+   if(changed)cleanPiece(piece);
+  });
+  observer.observe(piece,{subtree:true,attributes:true,attributeFilter:['src']});
+ }
+ const getStatus=()=>Object.freeze({...stats,derivedPhotoLoaded:Boolean(objectURL),restoredAfterImageSwap});
+ root.B737AcDcStaticCleaner=Object.freeze({regions,cleanPiece,watchPiece,ensureDerivedUrl,getStatus});
 })(window);
