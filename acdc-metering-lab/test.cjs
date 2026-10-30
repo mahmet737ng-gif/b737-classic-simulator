@@ -41,7 +41,8 @@ test("photo overlay remains independent of immutable source and never uses a new
  assert.match(html,/photo-stage\.js/);
  assert.match(html,/ac-dc-metering-model\.js/);
  assert.match(code,/ac-dc-metering-needle\.svg/);
- assert.match(code,/bearingForReading/);
+ assert.match(code,/angleForIndication/);
+ assert.match(code,/angleForAcVolts/);
  assert.match(code,/setPointerCapture\(ev\.pointerId\)/);
  assert.match(code,/\$\("board"\)\.addEventListener\("pointermove"/);
  assert.match(code,/unifiedMountAllowed:false/);
@@ -60,7 +61,7 @@ test("photo-real mode NEVER synthesizes fake gauge faces, numbers, bezels or met
  assert.match(code,/if\(!state.calibration\|\|!state.showMarkers\)return;/);
  assert.ok(code.includes('fill:"transparent",stroke:"none"'));
  assert.match(code,/ac-dc-metering-needle\.svg/);
- assert.match(html,/OH10-PHOTO-STAGE-REAL-0003/);
+ assert.match(html,/OH10-PHOTO-STAGE-REAL-0004/);
 });
 test("only electrical V7 state adapter is invoked, and no cockpit or locked geometry is altered",()=>{
  assert.match(html,/engine\/systems\/electrical-v7\.js/);
