@@ -72,8 +72,13 @@
    if(!TANK.includes(tank))throw Error('Unknown source tank');
    if(!finite(amountKg)||amountKg<0)throw Error('Invalid fuel burn');
    const delivered=Math.min(this.tanks[tank],amountKg);
-   this.tanks[tank]=round(Math.max(0,this.tanks[tank]-delivered));
-   this.burnedKg[engine]=round(this.burnedKg[engine]+delivered);
+   // The APU is integrated at 100ms in live Unified. Rounding every tick
+   // to 0.001 kg would bias its low start-flow by ~30%. Keep precise APU
+   // accumulation; retain legacy engine ledger rounding for compatibility.
+   this.tanks[tank]=engine==='apu'?Math.max(0,this.tanks[tank]-delivered):
+    round(Math.max(0,this.tanks[tank]-delivered));
+   this.burnedKg[engine]=engine==='apu'?this.burnedKg[engine]+delivered:
+    round(this.burnedKg[engine]+delivered);
    if(delivered>0)this.events.push({type:'FUEL_BURN',engine,tank,kg:round(delivered)});
    if(this.events.length>100)this.events.splice(0,this.events.length-100);
    return {deliveredKg:round(delivered),shortfallKg:round(Math.max(0,amountKg-delivered))};
