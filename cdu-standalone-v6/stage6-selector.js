@@ -11,6 +11,35 @@
  if(privateHost&&root.NPE_STAGE5_MODEL&&typeof state!=='undefined'&&typeof core!=='undefined')
   root.CDU_STAGE6_API=factory(root.NPE_STAGE5_MODEL,state,core,root.CDU_PAGES,
     (url,options)=>fetch(url,{cache:'no-store',credentials:'same-origin',...options}),()=>root.updateStage5View?.());
+ // Public Pages remains native UNTIL the user explicitly connects an
+ // authenticated read-only localhost bridge in the enclosing Unified panel.
+ const publicPages=!!root&&root.location?.hostname==='mahmet737ng-gif.github.io';
+ if(publicPages&&root.parent&&root.parent!==root){
+  let attached=false;
+  root.B737CDUAttachPublicNavDataV1=function(){
+   try{
+    if(root.parent.location.origin!==root.location.origin)return false;
+    const bridge=root.parent.B737NavBridgeV1;
+    if(!bridge?.isConnected?.()||typeof state==='undefined'||
+       typeof core==='undefined'||!root.NPE_STAGE5_MODEL)return false;
+    if(attached)return true;
+    root.CDU_STAGE6_API=factory(root.NPE_STAGE5_MODEL,state,core,root.CDU_PAGES,
+      (url,options)=>bridge.request(url,options),()=>root.updateStage5View?.());
+    attached=true;root.updateStage5View?.();return true;
+   }catch(_){return false;}
+  };
+  root.B737CDUDetachPublicNavDataV1=function(){
+   if(!attached)return false;
+   attached=false;delete root.CDU_STAGE6_API;
+   // Cancel read-only selector without affecting the shared FMC route/banks.
+   if(state?.stage6View?.referenceOnly){
+    delete state.stage6View;
+    if(['DEPARTURES','ARRIVALS'].includes(state.page))
+      core.choose(state,root.CDU_PAGES,'DEP_ARR');
+   }
+   root.updateStage5View?.();return true;
+  };
+ }
 })(typeof window==='undefined'?null:window,function(model,state,core,pages,fetcher,refresh){
 'use strict';
 const TYPES=['SID','STAR','APP'];
