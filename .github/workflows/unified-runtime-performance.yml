@@ -1,0 +1,38 @@
+name: Unified runtime performance non-regression
+on:
+  push:
+    branches: [perf/unified-startup-runtime-20261031]
+  pull_request:
+    paths:
+      - 'panel-mosaic-lab/cockpit/performance-loader.js'
+      - 'panel-mosaic-lab/cockpit/performance-metrics.js'
+      - 'panel-mosaic-lab/cockpit/isn-cockpit.js'
+      - 'panel-mosaic-lab/cockpit/app.js'
+      - 'panel-mosaic-lab/cockpit/index.html'
+      - 'tests/unified-runtime-performance-v2.test.cjs'
+      - '.github/workflows/unified-runtime-performance.yml'
+permissions:
+  contents: read
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Verify syntax, priority, order and bounded texture decoding
+        run: |
+          node --check panel-mosaic-lab/cockpit/performance-loader.js
+          node --check panel-mosaic-lab/cockpit/performance-metrics.js
+          node --check panel-mosaic-lab/cockpit/app.js
+          node --check panel-mosaic-lab/cockpit/isn-cockpit.js
+          node --test tests/unified-runtime-performance-v2.test.cjs
+          node panel-mosaic-lab/cockpit/performance.test.cjs
+          node tests/isn-cold-dark-two-engine.e2e.test.cjs
+          node tests/isn-overhead-transport-v1.test.cjs
+          node panel-mosaic-lab/cockpit/test.cjs
+      - name: Ensure locked cockpit hardware and artwork are byte unchanged
+        run: |
+          python3 panel-mosaic-lab/cockpit/verify-guard-redzone.py --negative-self-test
+          python3 panel-mosaic-lab/cockpit/verify-irs-complete-redzone-v1.py --negative-self-test
+          python3 panel-mosaic-lab/verify-final-overhead.py
