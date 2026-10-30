@@ -5,73 +5,55 @@ const fs=require('node:fs');
 const path=require('node:path');
 const root=path.resolve(__dirname,'../../..');
 const read=p=>fs.readFileSync(path.join(root,p),'utf8');
-test('Unified dual-CDU embed uses large v5 typography and refreshed cache key',()=>{
+
+test('Both mounted CDU iframes use the measured 24-column Boeing font grid',()=>{
  const html=read('panel-mosaic-lab/cockpit/cdu-stage.html');
  assert.match(html,/cdu-screen\.css/);
- assert.match(html,/cdu-embed\.css\?v=CDU-SCREEN-FIT-0005/);
- assert.ok(html.indexOf('cdu-screen.css')<html.indexOf('cdu-embed.css'),'approved locked face policy loads before scoped typography');
- const source=read('panel-mosaic-lab/cockpit/cdu-embed.css');
- assert.match(source,/\.fmc-screen\s+\.fmc-lines\s*\{\s*font-size:92px!important;/);
- assert.match(source,/color:#29ff31!important;/);
- assert.match(source,/\.fmc-screen\s+\.fmc-lines\s+\.fmc-line\.fmc-small\s*\{[^}]*font-size:72px!important;/s);
- assert.match(source,/\.fmc-screen\s+\.fmc-lines\s+\.fmc-line\.scratch\s*\{[^}]*font-size:72px!important;/s);
- assert.match(source,/\.fmc-screen\s+\.fmc-lines\s+\.fmc-line\s*\{[^}]*height:12\.0%!important;/s);
-});
-test('Source asset, keypad locations, and fonts remain outside scope of typography patch',()=>{
- const source=read('panel-mosaic-lab/cockpit/cdu-embed.css');
- assert.doesNotMatch(source,/@font-face|\.hotspot|#clickmap|\.bbox_px/i);
- assert.doesNotMatch(source,/font-family\s*:/i);
- const locked=read('assets/fonts/boeing-cdu/cdu-screen.css');
- assert.match(locked,/BoeingCDULarge/);
- assert.match(locked,/BoeingCDUSmall/);
- const html=read('panel-mosaic-lab/cockpit/cdu-stage.html');
- assert.match(html,/assets\/cdu-approved-unlit\.png/);
+ assert.match(html,/cdu-embed\.css\?v=CDU-24COL-0006/);
+ assert.match(html,/engine\/ch11\/cdu-24-column-metrics-v1\.js\?v=CDU-24COL-0006/);
+ assert.match(html,/cdu-screen-fit-v6\.js\?v=CDU-24COL-0006/);
+ assert.match(html,/cdu-font-diagnostics-v6\.js\?v=CDU-24COL-0006/);
+ assert.ok(html.indexOf('cdu-screen.css')<html.indexOf('cdu-embed.css'));
+ assert.ok(html.indexOf('cdu-24-column-metrics-v1.js')<html.indexOf('cdu-screen-fit-v6.js'));
+ assert.match(html,/id="unified-cdu-24col-profile-v6"/);
  const manifest=JSON.parse(read('panel-mosaic-lab/cockpit/assembly.json'));
- const cdus=manifest.embeddedInstruments;
- assert.equal(cdus.length,2);
+ const instruments=manifest.embeddedInstruments;
+ assert.equal(instruments.length,2);
  for(const seat of ['CAPT','FO']){
-  const item=cdus.find(x=>x.seat===seat);
-  assert.ok(item,'missing '+seat+' CDU');
-  assert.match(item.embeddedUrl,/SCREEN-FIT-0005$/);
+  const item=instruments.find(i=>i.seat===seat);
+  assert.ok(item);
+  assert.match(item.embeddedUrl,new RegExp('seat='+seat+'.*24COL-0006$'));
   assert.equal(item.nativeWidth,1199);
   assert.equal(item.nativeHeight,1312);
  }
-
 });
-
-test('Inline typography fallback and computed-style reports are mounted for both CDUs',()=>{
- const html=read('panel-mosaic-lab/cockpit/cdu-stage.html');
- assert.match(html,/id="unified-cdu-font-profile-v5"/);
- assert.match(html,/#cdu-stage \.fmc-screen #fmc-lines\s*\{[^}]*font-size:92px!important;/s);
- assert.match(html,/cdu-font-diagnostics-v5\.js\?v=CDU-SCREEN-FIT-0005/);
- const js=read('panel-mosaic-lab/cockpit/cdu-font-diagnostics-v5.js');
- assert.match(js,/getComputedStyle/);
- assert.match(js,/kind:'typography'/);
- const parent=read('panel-mosaic-lab/cockpit/app.js');
- assert.match(parent,/d\.kind==='typography'/);
- assert.match(parent,/s\.typography\.nativePx/);
-});
-test('Live per-frame typography reflows only the screen, not overlaid reference geometry',()=>{
- const html=read('panel-mosaic-lab/cockpit/cdu-stage.html');
- assert.match(html,/cdu-screen-fit-v5\.js\?v=CDU-SCREEN-FIT-0005/);
- assert.match(html,/cdu-font-diagnostics-v5\.js\?v=CDU-SCREEN-FIT-0005/);
- const script=read('panel-mosaic-lab/cockpit/cdu-screen-fit-v5.js');
- assert.match(script,/MutationObserver/);
- assert.match(script,/FONT=Object\.freeze\(\{header:86,label:72,value:92,scratch:72,custom:64\}\)/);
- assert.match(script,/if\(standard\)line\.style\.setProperty\('top'/);
- assert.match(script,/span\.style\.removeProperty\('font-size'\)/);
- assert.doesNotMatch(script,/(?:setAttribute|removeChild|replaceChildren)\s*\(/);
- const report=read('panel-mosaic-lab/cockpit/cdu-font-diagnostics-v5.js');
- assert.match(report,/getComputedStyle/);
- assert.match(report,/nativePx>=91\.5/);
- const parent=read('panel-mosaic-lab/cockpit/index.html');
- assert.match(parent,/app\.js\?v=[^"]*CDU-SCREEN-FIT-0005/);
-});
-
-test('Larger glyphs are not clipped by legacy per-line overflow masks',()=>{
+test('Font family and color stay approved, but pixel size comes from a real 24-A width test',()=>{
  const css=read('panel-mosaic-lab/cockpit/cdu-embed.css');
- const html=read('panel-mosaic-lab/cockpit/cdu-stage.html');
- assert.match(css,/\.fmc-screen\s+\.fmc-lines\s+\.fmc-line\s*\{[^}]*overflow:visible!important;/s);
- assert.match(html,/#cdu-stage \.fmc-screen #fmc-lines \.fmc-line\s*\{[^}]*overflow:visible!important;/s);
- assert.match(html,/\.fmc-screen #fmc-lines\{font-size:92px!important/);
+ assert.match(css,/color:#29ff31!important/);
+ assert.doesNotMatch(css,/@font-face|\.hotspot|#clickmap|\.bbox_px/i);
+ const policy=read('assets/fonts/boeing-cdu/cdu-screen.css');
+ assert.match(policy,/BoeingCDULarge/);
+ assert.match(policy,/BoeingCDUSmall/);
+ const metrics=read('engine/ch11/cdu-24-column-metrics-v1.js');
+ assert.match(metrics,/COLUMNS=24/);
+ assert.match(metrics,/TOO_LONG=TEST\+'A'/);
+ assert.match(metrics,/width25>available/);
+ const runtime=read('panel-mosaic-lab/cockpit/cdu-screen-fit-v6.js');
+ assert.match(runtime,/Metrics\.calibrate\(ctx,available,family\)/);
+ assert.match(runtime,/\.fmc-left\.full/);
+ assert.match(runtime,/root\.document\.fonts\.ready/);
+ const proof=read('panel-mosaic-lab/cockpit/cdu-font-diagnostics-v6.js');
+ assert.match(proof,/width24Px<=expected\.availablePx/);
+ assert.match(proof,/width25Px>expected\.availablePx/);
+});
+test('Unified host reports 24/25 widths without changing aircraft instruments',()=>{
+ const app=read('panel-mosaic-lab/cockpit/app.js');
+ const page=read('panel-mosaic-lab/cockpit/index.html');
+ assert.match(app,/d\.version==='CDU-24COL-0006'/);
+ assert.match(app,/width24Px:d\.width24Px/);
+ assert.match(app,/width25Px:d\.width25Px/);
+ assert.match(page,/app\.js\?v=[^"]*CDU-24COL-0006/);
+ const stage=read('panel-mosaic-lab/cockpit/cdu-stage.html');
+ assert.match(stage,/assets\/cdu-approved-unlit\.png/);
+ assert.match(stage,/id="clickmap"/);
 });
