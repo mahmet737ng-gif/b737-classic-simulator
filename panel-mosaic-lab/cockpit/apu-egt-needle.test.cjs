@@ -24,13 +24,14 @@ const cleaner=fs.readFileSync(path.join(__dirname,'apu-egt-static-needle-cleaner
 assert.match(cleaner,/OH12-BUS-TRANS-09319c17e7d0.png/);
 assert.match(cleaner,/1024,HEIGHT=1536/);
 assert.match(cleaner,/B737APUEGTStaticCleaner/);
+assert.match(cleaner,/apuAmpsFootprint/);
 const ui=fs.readFileSync(path.join(__dirname,'apu-egt-needle-unified.js'),'utf8');
 assert.match(ui,/cleaner.cleanPiece\(piece\)/);
 assert.ok(ui.includes(".atlas-piece[data-key=\"OH12\"]"));
 assert.ok(ui.includes("new URL('./apu-egt-needle.svg?v=EGT-0002'"));
 assert.ok(ui.includes('window.B737UnifiedApuEgtNeedle'));
 const html=fs.readFileSync(path.join(__dirname,'index.html'),'utf8');
-assert.ok(html.includes('apu-egt-static-needle-cleaner-v1.js?v=EGT-CLEAN-0001'));
+assert.ok(html.includes('apu-egt-static-needle-cleaner-v1.js?v=EGT-APUAMPS-CLEAN-0002'));
 assert.ok(html.includes('apu-egt-needle-model.js?v=EGT-0005-USER-ZERO'));
 assert.ok(html.includes('apu-live-meter-unified-v1.js?v=APU-EGT-COLDZERO3'));
 assert.equal(model.needle.initialAngle,-241.5,'Cold-resting EGT pointer must align with photo-derived 0°C mark');
