@@ -7,10 +7,12 @@
  'use strict';
  const Network=root.B737AvionicsDataNetworkV1,Computer=root.B737AvionicsFmcComputerV1;
  if(!Network||!Computer){root.console?.error('AVIONICS NETWORK DEPENDENCIES MISSING');return;}
+ const SensorIngress=root.B737AvionicsSensorIngressV2;
  const network=Network.createNetwork({onError:e=>root.console?.warn('AVIONICS SUBSCRIBER ERROR',e)});
  const owners=new Map(),faults=[];
  const clone=x=>JSON.parse(JSON.stringify(x));
  const getOwner=id=>{if(!owners.has(id))owners.set(id,network.producer(id));return owners.get(id)};
+ const sensorIngress=SensorIngress?.create({getPublisher:getOwner})||null;
  const send=(owner,topic,value,origin='TRAINING_SCENARIO')=>{
   try{return getOwner(owner).publish(topic,value,{origin});}
   catch(e){faults.push({owner,topic,error:String(e.message||e)});if(faults.length>32)faults.shift();return null;}
@@ -140,6 +142,7 @@
   for(const f of [electrical,irs,mcp,fmcFeedsAndRoute,engine,auxiliarySystems,fuelQuantity,airGround,pneumatics,antiice,profile,clock])try{f()}catch(e){
    faults.push({source:f.name,error:String(e.message||e)});if(faults.length>32)faults.shift();
   }
+  computer.refresh(); // Let TTL expiry invalidate computed FMC even without new sensor frames.
   return network.audit();
  }
  const computer=Computer.connect(network);
@@ -167,8 +170,26 @@
   getDiagnostics:()=>({...network.audit(),adapterErrors:clone(faults)}),
   getFmcInputs:()=>computer.getState(),subscribe:network.subscribe,
   connectExternal,refresh,topics:network.topics,
+  configureSensorIngress(options){
+   if(!sensorIngress)throw Error('SENSOR_INGRESS_MODULE_NOT_LOADED');
+   if(options?.equipment)for(const [kind,nums] of Object.entries(options.equipment)){
+    if(!['adc','gps','vor','dme'].includes(kind))throw Error('INVALID_SENSOR_KIND');
+    if(Array.isArray(nums)&&nums.length){
+     const owner={adc:'ADC',gps:'GPS',vor:'VHF_NAV',dme:'DME'}[kind];
+     if(owners.has(owner))throw Error('SENSOR_OWNER_ALREADY_REGISTERED_'+owner);
+    }
+   }
+   const info=sensorIngress.configure(options);
+   for(const kind of Object.keys(options.equipment))
+    if(options.equipment[kind].length)getOwner({adc:'ADC',gps:'GPS',vor:'VHF_NAV',dme:'DME'}[kind]);
+   return info;
+  },
+  ingestSensorFrame(packet){if(!sensorIngress)throw Error('SENSOR_INGRESS_MODULE_NOT_LOADED');
+   return sensorIngress.ingest(packet);},
+  getSensorIngressDiagnostics:()=>sensorIngress?.diagnostics()||{configured:false,error:'MODULE_MISSING'},
   supportedSources:Object.freeze({LIVE:['ELECTRICAL','IRS','MCP','AFDS','AUTOTHROTTLE','FMC_FEEDS','CDU','ENGINE','FUEL','FLIGHT_CONTEXT','APU','HYDRAULICS','PNEUMATICS','ANTIICE','AIRGROUND','PROFILE','CLOCK'],
-   AWAITING_SIGNAL:['ADC','GPS','VHF_NAV','DME','TAT','NAVDB','PERFDB','ACARS','CB']})
+   AWAITING_SIGNAL:['ADC','GPS','VHF_NAV','DME','TAT','NAVDB','PERFDB','ACARS','CB'],
+   SENSOR_INGRESS_READY:['ADC','GPS','VHF_NAV','DME']})
  });
  // Old FMC/IRS frontend and driver remain the authoritative writers.
  // Consume existing change events, with a 250ms health poll for non-event sources.
