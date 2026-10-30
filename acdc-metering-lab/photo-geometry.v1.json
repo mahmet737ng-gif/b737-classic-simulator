@@ -1,6 +1,6 @@
 {
   "schema": "b737.p5-13.photo-stage.geometry.v1",
-  "version": "UPD-2026-10-30-ACDC-02",
+  "version": "UPD-2026-10-30-ACDC-03-USER-RED-ARC",
   "source": {
     "path": "../panel-mosaic-lab/assets/locked/2026-10-23/OH10-ELEC-LOSSLESS-9a1ca4d6cfb2.png",
     "nativeWidth": 1095,
@@ -8,36 +8,36 @@
     "sha256": "9a1ca4d6cfb277ec1404f3a464e957d81be9d9689a0810883364342d57b0f1ea",
     "immutable": true
   },
-  "origin": "Meter pivot candidates imported from actual Unified model. Rotary/BAT/GALLEY/RESID centers remain provisional.",
+  "origin": "Four centers and reach radii from robust red inner-tick arc fit and source native conversion; do not confuse these with external bezel circle centers.",
   "installation": "OH-10, preliminary atlas geometry rejected. Do not auto-mount into unified.",
   "markers": {
     "dcAmps": {
-      "x": 308.453,
-      "y": 281.608,
-      "r": 141,
+      "x": 307.397,
+      "y": 280.76,
+      "r": 167.86,
       "type": "meter",
-      "confidence": "MEASURED_BEZEL_CENTER__NEEDLE_PIVOT_QA_PENDING"
+      "confidence": "OWNER_SCREENSHOT_ARC_FIT_PROVISIONAL_NATIVE_REGISTRATION"
     },
     "cpsFreq": {
-      "x": 774.2,
-      "y": 191.4,
-      "r": 141,
+      "x": 781.896,
+      "y": 261.228,
+      "r": 148.53,
       "type": "meter",
-      "confidence": "MEASURED_BEZEL_CENTER__NEEDLE_PIVOT_QA_PENDING"
+      "confidence": "OWNER_SCREENSHOT_ARC_FIT_PROVISIONAL_NATIVE_REGISTRATION"
     },
     "dcVolts": {
-      "x": 310.307,
-      "y": 682.818,
-      "r": 131,
+      "x": 310.778,
+      "y": 719.453,
+      "r": 178.742,
       "type": "meter",
-      "confidence": "MEASURED_BEZEL_CENTER__NEEDLE_PIVOT_QA_PENDING"
+      "confidence": "OWNER_SCREENSHOT_ARC_FIT_PROVISIONAL_NATIVE_REGISTRATION"
     },
     "acVolts": {
-      "x": 785.143,
-      "y": 702.386,
-      "r": 143,
+      "x": 785.318,
+      "y": 706.045,
+      "r": 156.828,
       "type": "meter",
-      "confidence": "MEASURED_BEZEL_CENTER__NEEDLE_PIVOT_QA_PENDING"
+      "confidence": "OWNER_SCREENSHOT_ARC_FIT_PROVISIONAL_NATIVE_REGISTRATION"
     },
     "dcSelector": {
       "x": 306,
@@ -82,6 +82,6 @@
     "acceptanceCenterMaxErrorPx": 0.5,
     "sizeMaxErrorPx": 0.5
   },
-  "sourceOfMeterCenters": "panel-mosaic-lab/cockpit/ac-dc-metering-model.js (MET-0004-TICK-CAL)",
-  "notes": "No new gauges or needles: all four use immutable OH10 photo + existing Unified single white pointer. CPS shaft location and angle map remain provisional; r is visual tip reach, not a validated mechanical dimension."
+  "sourceOfMeterCenters": "engine/instruments/oh10-user-arc-fit-v1.json (owner screenshot red arcs; affine screenshot→native registration provisional)",
+  "notes": "Per-meter r is now the native radius to the user's RED inner-tick arc (not bezel rim). Original blue lower foreground must hide needle completely. Locked bitmap untouched."
 }
