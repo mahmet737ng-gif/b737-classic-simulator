@@ -29,7 +29,7 @@
    requests.push(new Promise((resolve,reject)=>{
     const script=document.createElement('script');
     script.async=false;
-    script.src=new URL(path,moduleBase).href+'?v=ELEC-LIVE-0001';
+    script.src=new URL(path,moduleBase).href+'?v='+(global==='B737ISN1318ECUTestbenchV1'?'APU-EGT-COOL2':'ELEC-LIVE-0001');
     script.onload=resolve;
     script.onerror=()=>reject(Error('Missing integration script '+path));
     document.head.append(script);
