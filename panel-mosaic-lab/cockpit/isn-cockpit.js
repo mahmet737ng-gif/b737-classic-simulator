@@ -53,6 +53,13 @@
   Chain:window.B737ISNAPUStartChainV1,
   ThrustPlanner:window.B737ISNThrustPerformanceV1,
   FuelRuntime:window.B737ISN0912RuntimeV1,timingProfile:'REALTIME_TRAINING'});
+ // ATA24 owns the physical source-current estimate; the ECU consumes it
+ // to update its EXISTING generator governor/EGT/fuel model. This listener
+ // never changes source selection, electrical state, or needle geometry.
+ window.addEventListener('b737:electrical-demand-estimate',e=>{
+  const amps=e.detail?.sourceAmps?.APU;
+  if(Number.isFinite(amps))ecu.observeAPUSourceAmps(amps);
+ });
  const startSession=ecu.start,chain=ecu.chain,session=startSession.core.pack;
  const bridge=new Adapter.Bridge(session,{sourceOwner:'ISN03_START_SESSION'});
  const pendingEvents=[];
