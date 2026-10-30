@@ -4,3 +4,6 @@ body>header,body>footer,.sidebar,.ehsi-panel{display:none!important}
 main,.cockpit-stack,.cockpit{display:block!important;width:1199px!important;max-width:none!important;height:1312px!important;margin:0!important;padding:0!important;border:0!important;gap:0!important}
 .cdu-stage{width:1199px!important;max-width:none!important;height:1312px!important;margin:0!important}
 .cdu-stage>.base{width:1199px!important;height:1312px!important}
+
+/* EP-FSI requested green monochrome CDU display; approved BoeingCDU fonts unchanged. */
+.fmc-screen .fmc-lines .fmc-line,.fmc-screen .fmc-lines .fmc-line *{color:#40eb79!important;text-shadow:0 0 .075em rgba(48,224,100,.22)}
