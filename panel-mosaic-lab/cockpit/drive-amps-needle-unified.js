@@ -1,15 +1,26 @@
 (function(){
  'use strict';
  const model=window.B737DriveAmpsNeedleModel;
+ const motion=window.B737UnifiedNeedleMotionV1;
+ if(!motion?.create)throw Error('Shared analogue needle motion must load before OH12 needles');
  const ns='http://www.w3.org/2000/svg';
  const sprite=new URL('./drive-amps-needle.svg?v=DAN-0001',document.baseURI).href;
  const state=Object.fromEntries(model.needles.map(needle=>[needle.id,needle.initialAngle]));
  const mounted=new Map(),outputs=new Map(),inputs=new Map();
+ const animations=new Map(model.needles.map(needle=>{
+  const apu=needle.id==='apuAcAmps';
+  // 6.8 rad/s critically damped response: continuous movement across
+  // successive 350ms load updates; at rest no animation frame is scheduled.
+  return [needle.id,motion.create(needle.initialAngle,{
+   omega:apu?6.8:7.2,
+   min:apu?model.apuAmpPhotoAngles[0]:-90,
+   max:apu?model.apuAmpPhotoAngles.at(-1):90
+  })];
+ }));
  let frame=null;
  function element(doc,parent,tag,attrs={}){const node=doc.createElementNS(ns,tag);for(const [key,value]of Object.entries(attrs))node.setAttribute(key,String(value));parent.append(node);return node;}
  const ampsMeter=id=>Object.prototype.hasOwnProperty.call(model.ampPhotoAngles,id);
  function paint(id){
-  const blade=mounted.get(id);if(blade)blade.style.transform=`rotate(${state[id]}deg)`;
   const output=outputs.get(id),input=inputs.get(id);
   const reading=ampsMeter(id)?model.ampsForBearing(id,state[id]):null;
   if(output)output.textContent=ampsMeter(id)?
@@ -17,7 +28,12 @@
     (state[id]+'° · ANGLE QA ONLY');
   if(input)input.value=String(ampsMeter(id)?(reading===null?'':reading):state[id]);
  }
- function setAngle(id,value){if(!model.needles.some(needle=>needle.id===id))throw Error('Unknown needle '+id);state[id]=model.angle(value);paint(id);return state[id];}
+ function setAngle(id,value){
+  if(!model.needles.some(needle=>needle.id===id))throw Error('Unknown needle '+id);
+  state[id]=model.angle(value);
+  animations.get(id).setTarget(state[id]);
+  paint(id);return state[id];
+ }
  function setAmps(id,value){
   const amps=Number(value),a=model.bearingForAmps(id,amps);
   if(a===null)throw Error('AC AMPS exceeds printed 0-200A range');
@@ -40,9 +56,15 @@
    const windowGroup=element(doc,layer,'g',{'clip-path':`url(#drive-amps-window-${needle.id})`});
    const assembly=element(doc,windowGroup,'g',{transform:`translate(${needle.x} ${needle.y}) scale(${needle.tipRadius/220}) translate(-256 -256)`});
    const blade=element(doc,assembly,'g');
-   Object.assign(blade.style,{transformOrigin:'256px 256px',transition:'transform 320ms ease-out'});
+   // A CSS transition repeatedly restarts on 350ms telemetry updates and
+   // produces visible jumps. One continuously sampled RAF spring owns the
+   // angle instead, and stops immediately once the pointer is stationary.
+   Object.assign(blade.style,{transformOrigin:'256px 256px',
+    transition:'none',willChange:'transform'});
    element(doc,blade,'image',{href:sprite,x:0,y:0,width:512,height:512});
-   mounted.set(needle.id,blade);paint(needle.id);
+   mounted.set(needle.id,blade);
+   animations.get(needle.id).bind(angle=>{blade.style.transform=`rotate(${angle}deg)`;});
+   paint(needle.id);
   }
   return complete;
  }
@@ -53,7 +75,10 @@
  }
  function connect(){
   const next=document.getElementById('overheadFrame');if(!next||next===frame)return;
-  frame=next;frame.addEventListener('load',()=>{mounted.clear();bind();});bind();
+  frame=next;frame.addEventListener('load',()=>{
+   for(const animator of animations.values())animator.unbind();
+   mounted.clear();bind();
+  });bind();
  }
  function controls(){
   const section=document.createElement('section');section.id='unifiedDriveAmpsNeedles';
@@ -71,7 +96,11 @@
   reset.addEventListener('click',()=>{for(const needle of model.needles)setAngle(needle.id,needle.initialAngle);});section.append(reset);
   const previous=document.querySelector('#unifiedAcDcMeteringNeedles');if(previous)previous.after(section);else document.querySelector('.overhead-tools').before(section);
  }
- window.B737UnifiedDriveAmpsNeedles=Object.freeze({getAngles:()=>({...state}),getReadings,setAngle,setAmps,setAngles});
+ window.B737UnifiedDriveAmpsNeedles=Object.freeze({
+  getAngles:()=>({...state}),
+  getRenderedAngles:()=>Object.fromEntries([...animations].map(([id,animator])=>[id,animator.snapshot().angle])),
+  getReadings,setAngle,setAmps,setAngles
+ });
  window.addEventListener('b737:drive-amps-needle-angles',event=>{try{setAngles(event.detail);}catch(error){console.error(error);}});
  window.addEventListener('b737:cockpit-mounted',connect);connect();if(document.querySelector('.inspector'))controls();
 })();
