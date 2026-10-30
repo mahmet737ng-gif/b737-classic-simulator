@@ -313,11 +313,11 @@
         },
         {
           "lsk": "R3",
-          "label": "",
+          "label": "INACTIVE",
           "field": null,
           "format": null,
           "hasNavigateAction": false,
-          "sourceVerified": "FCOM_11.40.8_9_TEXT_AUDITED"
+          "sourceVerified": "FCOM_11.40.9_INACTIVE_BANK_LOCATION"
         },
         {
           "lsk": "L4",
@@ -4280,5 +4280,13 @@
       ]
     },
     "note": "Text and LSK source review is NOT full screen/effectivity certification."
+  },
+  "navdbCalendarStatus": {
+    "current": "2611",
+    "currentEffectiveFrom": "2026-10-29",
+    "currentUntilInclusive": "2026-11-25",
+    "verifiedBankInstalled": false,
+    "private2610Preserved": true,
+    "notImported2611": true
   }
 }
