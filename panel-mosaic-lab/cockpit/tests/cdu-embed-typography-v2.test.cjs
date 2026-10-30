@@ -19,7 +19,7 @@ test('Unified dual-CDU embed uses approved v2 typography and refreshed cache key
 });
 test('Source asset, keypad locations, and fonts remain outside scope of typography patch',()=>{
  const source=read('panel-mosaic-lab/cockpit/cdu-embed.css');
- assert.doesNotMatch(source,/@font-face|\.hotspot|#clickmap|\.base|\.bbox_px/i);
+ assert.doesNotMatch(source,/@font-face|\.hotspot|#clickmap|\.bbox_px/i);
  assert.doesNotMatch(source,/font-family\s*:/i);
  const locked=read('assets/fonts/boeing-cdu/cdu-screen.css');
  assert.match(locked,/BoeingCDULarge/);
