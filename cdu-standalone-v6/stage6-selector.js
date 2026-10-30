@@ -30,6 +30,7 @@
   };
   root.B737CDUDetachPublicNavDataV1=function(){
    if(!attached)return false;
+   root.CDU_STAGE6_API?.cancelPendingPrivate?.();
    attached=false;delete root.CDU_STAGE6_API;
    // Cancel read-only selector without affecting the shared FMC route/banks.
    if(state?.stage6View?.referenceOnly){
@@ -320,7 +321,11 @@ function afterPage(k){
  const total=Math.max(1,Math.ceil(model.rows(state.stage6PendingPlan,'LEGS').length/5));
  state.stage6Page=Math.min(total,Math.max(1,(state.stage6Page||1)+(key==='NEXT_PAGE'?1:-1)));
 }
+function cancelPendingPrivate(){
+ ++serial;++lookupSerial;lookupBusy=false;
+ if(state.message==='VERIFY NAV DATA')state.message='';
+}
 function snapshot(){return {mode:state.stage6AwaitingExec?'WAIT_EXEC':state.stage6PendingPlan?'MOD_REFERENCE_ONLY':'SOURCE_ONLY',
  ready:!!state.stage6BasePlanId,discontinuities:summaryPlan()?.qa?.discontinuity_count||0,activeGuidance:false};}
-return Object.freeze({setBasePlanId,beforeKey,afterKey,afterPage,paint,openCatalog,snapshot});
+return Object.freeze({setBasePlanId,beforeKey,afterKey,afterPage,paint,openCatalog,snapshot,cancelPendingPrivate});
 });
