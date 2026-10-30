@@ -7,7 +7,7 @@
  const samples=Object.fromEntries(model.meters.map(meter=>[meter.id,null]));
  let acMode='NORMAL';
  const mounted=new Map();
- const current=Object.fromEntries(model.meters.map(meter=>[meter.id,{angle:model.limitAngle(meter.id,meter.initialAngle),velocity:0}]));
+ const current=Object.fromEntries(model.meters.map(meter=>[meter.id,{angle:model.limitAngle(meter.id,meter.initialAngle),velocity:0,lastDirection:0}]));
  let animationFrame=0,lastFrameTime=null;
  const outputs=new Map();
  const inputs=new Map();
@@ -26,8 +26,13 @@
   for(const meter of model.meters){
    const id=meter.id,blade=mounted.get(id);
    if(!blade)continue;
-   const v=current[id];
-   const next=model.advanceNeedle(v.angle,v.velocity,model.limitAngle(id,state[id]),dt);
+   const v=current[id],target=model.limitAngle(id,state[id]);
+   const desiredDirection=Math.sign(target-v.angle);
+   // A target reversal is a new movement, not a spring ricochet. Restart the
+   // speed ramp rather than instantly reversing at the previous high speed.
+   if(desiredDirection!==0&&v.lastDirection&&v.lastDirection!==desiredDirection)v.velocity=0;
+   if(desiredDirection!==0)v.lastDirection=desiredDirection;
+   const next=model.advanceNeedle(v.angle,v.velocity,target,dt);
    // At EVERY frame, the existing sprite rotates about its fixed 256,256
    // pivot. The 216px master tip maps exactly to the native per-gauge radius.
    const a=model.limitAngle(id,next.angle);
@@ -105,7 +110,7 @@
    Object.assign(blade.style,{transformOrigin:'256px 256px',transition:'none'});
    svg(doc,blade,'image',{href:imageUrl,x:0,y:0,width:512,height:512});
    mounted.set(meter.id,blade);
-   current[meter.id]={angle:model.limitAngle(meter.id,state[meter.id]),velocity:0};
+   current[meter.id]={angle:model.limitAngle(meter.id,state[meter.id]),velocity:0,lastDirection:0};
    blade.style.transform='rotate('+current[meter.id].angle+'deg)';
    paint(meter.id);
   }
