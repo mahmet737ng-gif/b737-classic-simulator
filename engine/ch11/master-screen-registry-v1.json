@@ -1,0 +1,4269 @@
+{
+  "schema": "B737_FCOM_SCREEN_MASTER_REGISTRY_V1",
+  "generatedFrom": "cdu-standalone-v6/data/page-definitions.json",
+  "sourceFCOM": "Sepehran B737 Classic FCOM Vol.2, Chapter 11 (private original)",
+  "aircraft": "737-300/400/500",
+  "effectivity": "S/N 29340 FMC software option not proved",
+  "grid": {
+    "columns": 24,
+    "rows": 14
+  },
+  "fullSourceReviewDone": false,
+  "totals": {
+    "interactive": 37,
+    "sourceTOCCandidates": 45,
+    "ch11PhysicalPdfPages": 409,
+    "layoutAudited": 1,
+    "fullyVerified": 0,
+    "unresolvedStaticCellIssues": 10
+  },
+  "policy": {
+    "noUnverifiedFieldPromotion": true,
+    "verifiedLayoutAloneDoesNotProveBehavior": true,
+    "neverInventAircraftData": true,
+    "approvedHardware": "1199x1312 70-hotspot original CDU unmodified",
+    "approvedFonts": [
+      "BoeingCDULarge",
+      "BoeingCDUSmall"
+    ]
+  },
+  "pages": [
+    {
+      "id": "INDEX",
+      "title": "INIT/REF INDEX",
+      "folio": "11.40.4",
+      "pdfPageNear": 1556,
+      "sourceStatus": "PARTIALLY_FCOM_GROUNDED",
+      "layoutGrade": "SOURCE_NOT_VERIFIED",
+      "behaviorGrade": "UNVERIFIED",
+      "fullGrade": "NOT_VERIFIED",
+      "installedSoftware": "UNVERIFIED",
+      "screenSlots": [
+        {
+          "lsk": "L1",
+          "label": "<IDENT",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R1",
+          "label": "POS INIT>",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L2",
+          "label": "<RTE",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R2",
+          "label": "PERF INIT>",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L3",
+          "label": "<TAKEOFF",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R3",
+          "label": "N1 LIMIT>",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L4",
+          "label": "<APPROACH",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R4",
+          "label": "REF NAV DATA>",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L5",
+          "label": "<OFFSET",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R5",
+          "label": "PROGRESS>",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L6",
+          "label": "<MENU",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R6",
+          "label": "MSG RECALL>",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        }
+      ],
+      "issues": [
+        {
+          "type": "LABEL_OVER_12_COLUMNS",
+          "key": "R4",
+          "chars": 13
+        }
+      ],
+      "visualGoldenReference": null,
+      "visualDiffPassed": false,
+      "interactionScenarioPassed": false
+    },
+    {
+      "id": "MENU",
+      "title": "MENU",
+      "folio": "11.40.70",
+      "pdfPageNear": 1622,
+      "sourceStatus": "TRAINER_MENU_ONLY",
+      "layoutGrade": "SOURCE_NOT_VERIFIED",
+      "behaviorGrade": "UNVERIFIED",
+      "fullGrade": "NOT_VERIFIED",
+      "installedSoftware": "UNVERIFIED",
+      "screenSlots": [
+        {
+          "lsk": "L1",
+          "label": "<FMC",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R1",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L2",
+          "label": "<CDU MESSAGES",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R2",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L3",
+          "label": "<MSG RECALL",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R3",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L4",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R4",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L5",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R5",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L6",
+          "label": "<INDEX",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R6",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        }
+      ],
+      "issues": [
+        {
+          "type": "LABEL_OVER_12_COLUMNS",
+          "key": "L2",
+          "chars": 13
+        }
+      ],
+      "visualGoldenReference": null,
+      "visualDiffPassed": false,
+      "interactionScenarioPassed": false
+    },
+    {
+      "id": "IDENT",
+      "title": "IDENT",
+      "folio": "11.40.8",
+      "pdfPageNear": 1560,
+      "sourceStatus": "FCOM_11.40.8_LABELS_REVIEWED; AIRCRAFT_SOFTWARE_OPTION_NOT_PROVEN",
+      "layoutGrade": "SOURCE_NOT_VERIFIED",
+      "behaviorGrade": "UNVERIFIED",
+      "fullGrade": "NOT_VERIFIED",
+      "installedSoftware": "UNVERIFIED",
+      "screenSlots": [
+        {
+          "lsk": "L1",
+          "label": "MODEL",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R1",
+          "label": "ENG RATING",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L2",
+          "label": "NAV DATA",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R2",
+          "label": "ACTIVE",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L3",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "VARIANT_GATE_REQUIRED"
+        },
+        {
+          "lsk": "R3",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L4",
+          "label": "OP PROGRAM",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_11.40.8"
+        },
+        {
+          "lsk": "R4",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L5",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R5",
+          "label": "SUPP DATA",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_11.40.8"
+        },
+        {
+          "lsk": "L6",
+          "label": "<INDEX",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R6",
+          "label": "POS INIT>",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        }
+      ],
+      "issues": [],
+      "visualGoldenReference": null,
+      "visualDiffPassed": false,
+      "interactionScenarioPassed": false
+    },
+    {
+      "id": "POS_INIT",
+      "title": "POS INIT",
+      "folio": "11.40.11",
+      "pdfPageNear": 1563,
+      "sourceStatus": "LOCATION_REVIEWED_AGAINST_FCOM_ILLUSTRATION; DYNAMIC_FUNCTIONS_PARTIAL",
+      "layoutGrade": "SOURCE_NOT_VERIFIED",
+      "behaviorGrade": "UNVERIFIED",
+      "fullGrade": "NOT_VERIFIED",
+      "installedSoftware": "UNVERIFIED",
+      "screenSlots": [
+        {
+          "lsk": "L1",
+          "label": "LAST POS",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+        },
+        {
+          "lsk": "R1",
+          "label": "LAST POS",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+        },
+        {
+          "lsk": "L2",
+          "label": "REF AIRPORT",
+          "field": "REF_AIRPORT",
+          "format": "ICAO",
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+        },
+        {
+          "lsk": "R2",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+        },
+        {
+          "lsk": "L3",
+          "label": "GATE",
+          "field": "GATE",
+          "format": "TEXT",
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+        },
+        {
+          "lsk": "R3",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+        },
+        {
+          "lsk": "L4",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+        },
+        {
+          "lsk": "R4",
+          "label": "SET IRS POS",
+          "field": "IRS_POS",
+          "format": "LATLON",
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+        },
+        {
+          "lsk": "L5",
+          "label": "GMT-MON/DY",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+        },
+        {
+          "lsk": "R5",
+          "label": "SET IRS HDG",
+          "field": "IRS_HDG",
+          "format": "HDG",
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+        },
+        {
+          "lsk": "L6",
+          "label": "<INDEX",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+        },
+        {
+          "lsk": "R6",
+          "label": "ROUTE>",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+        }
+      ],
+      "issues": [],
+      "visualGoldenReference": null,
+      "visualDiffPassed": false,
+      "interactionScenarioPassed": false
+    },
+    {
+      "id": "POS_REF",
+      "title": "POS REF",
+      "folio": "11.40.13",
+      "pdfPageNear": 1565,
+      "sourceStatus": "FCOM_FIELD_LABELS_AUDITED; SENSOR_VALUES_LIVE_OR_BLANK",
+      "layoutGrade": "SOURCE_NOT_VERIFIED",
+      "behaviorGrade": "UNVERIFIED",
+      "fullGrade": "NOT_VERIFIED",
+      "installedSoftware": "UNVERIFIED",
+      "screenSlots": [
+        {
+          "lsk": "L1",
+          "label": "FMC POS",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_11.40.13_TO_11.40.17_OPTION_VARIANT_GATED"
+        },
+        {
+          "lsk": "R1",
+          "label": "GS",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "VARIANT_GATE_REQUIRED"
+        },
+        {
+          "lsk": "L2",
+          "label": "IRS L",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_11.40.13_TO_11.40.17_OPTION_VARIANT_GATED"
+        },
+        {
+          "lsk": "R2",
+          "label": "GS",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "VARIANT_GATE_REQUIRED"
+        },
+        {
+          "lsk": "L3",
+          "label": "IRS R",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_11.40.13_TO_11.40.17_OPTION_VARIANT_GATED"
+        },
+        {
+          "lsk": "R3",
+          "label": "GS",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "VARIANT_GATE_REQUIRED"
+        },
+        {
+          "lsk": "L4",
+          "label": "GPS L",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_11.40.13_TO_11.40.17_OPTION_VARIANT_GATED"
+        },
+        {
+          "lsk": "R4",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "VARIANT_GATE_REQUIRED"
+        },
+        {
+          "lsk": "L5",
+          "label": "GPS R",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_11.40.13_TO_11.40.17_OPTION_VARIANT_GATED"
+        },
+        {
+          "lsk": "R5",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "VARIANT_GATE_REQUIRED"
+        },
+        {
+          "lsk": "L6",
+          "label": "RADIO",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "FCOM_11.40.13_TO_11.40.17_OPTION_VARIANT_GATED"
+        },
+        {
+          "lsk": "R6",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "VARIANT_GATE_REQUIRED"
+        }
+      ],
+      "issues": [],
+      "visualGoldenReference": null,
+      "visualDiffPassed": false,
+      "interactionScenarioPassed": false
+    },
+    {
+      "id": "RTE",
+      "title": "RTE",
+      "folio": "11.40.21",
+      "pdfPageNear": 1573,
+      "sourceStatus": "MAIN_ROUTE_FIELDS_FCOM_VERIFIED; ACTIVATE_PENDING_ROUTE_LOGIC",
+      "layoutGrade": "SOURCE_NOT_VERIFIED",
+      "behaviorGrade": "UNVERIFIED",
+      "fullGrade": "NOT_VERIFIED",
+      "installedSoftware": "UNVERIFIED",
+      "screenSlots": [
+        {
+          "lsk": "L1",
+          "label": "ORIGIN",
+          "field": "ORIGIN",
+          "format": "ICAO",
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R1",
+          "label": "DEST",
+          "field": "DEST",
+          "format": "ICAO",
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L2",
+          "label": "CO ROUTE",
+          "field": "CO_ROUTE",
+          "format": "ROUTE",
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R2",
+          "label": "FLT NO",
+          "field": "FLIGHT",
+          "format": "FLIGHT",
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L3",
+          "label": "RUNWAY",
+          "field": "RUNWAY",
+          "format": "RUNWAY",
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R3",
+          "label": "ROUTE>",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L4",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R4",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L5",
+          "label": "<ACTIVATE",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R5",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L6",
+          "label": "<INDEX",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R6",
+          "label": "LEGS>",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        }
+      ],
+      "issues": [],
+      "visualGoldenReference": null,
+      "visualDiffPassed": false,
+      "interactionScenarioPassed": false
+    },
+    {
+      "id": "FLIGHT_PLAN",
+      "title": "RTE",
+      "folio": "11.40.21",
+      "pdfPageNear": 1573,
+      "sourceStatus": "PARTIALLY_FCOM_GROUNDED",
+      "layoutGrade": "SOURCE_NOT_VERIFIED",
+      "behaviorGrade": "UNVERIFIED",
+      "fullGrade": "NOT_VERIFIED",
+      "installedSoftware": "UNVERIFIED",
+      "screenSlots": [
+        {
+          "lsk": "L1",
+          "label": "VIA",
+          "field": "VIA1",
+          "format": "AIRWAY",
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R1",
+          "label": "TO",
+          "field": "TO1",
+          "format": "WAYPOINT",
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L2",
+          "label": "VIA",
+          "field": "VIA2",
+          "format": "AIRWAY",
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R2",
+          "label": "TO",
+          "field": "TO2",
+          "format": "WAYPOINT",
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L3",
+          "label": "VIA",
+          "field": "VIA3",
+          "format": "AIRWAY",
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R3",
+          "label": "TO",
+          "field": "TO3",
+          "format": "WAYPOINT",
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L4",
+          "label": "VIA",
+          "field": "VIA4",
+          "format": "AIRWAY",
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R4",
+          "label": "TO",
+          "field": "TO4",
+          "format": "WAYPOINT",
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L5",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R5",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L6",
+          "label": "<RTE 1/2",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R6",
+          "label": "LEGS>",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        }
+      ],
+      "issues": [],
+      "visualGoldenReference": null,
+      "visualDiffPassed": false,
+      "interactionScenarioPassed": false
+    },
+    {
+      "id": "ACTIVATE",
+      "title": "RTE",
+      "folio": "11.40.21",
+      "pdfPageNear": 1573,
+      "sourceStatus": "TRAINER_STAGE_ONLY",
+      "layoutGrade": "SOURCE_NOT_VERIFIED",
+      "behaviorGrade": "UNVERIFIED",
+      "fullGrade": "NOT_VERIFIED",
+      "installedSoftware": "UNVERIFIED",
+      "screenSlots": [
+        {
+          "lsk": "L1",
+          "label": "STATUS",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R1",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L2",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R2",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L3",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R3",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L4",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R4",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L5",
+          "label": "<ERASE",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R5",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L6",
+          "label": "<RTE",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R6",
+          "label": "LEGS>",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        }
+      ],
+      "issues": [],
+      "visualGoldenReference": null,
+      "visualDiffPassed": false,
+      "interactionScenarioPassed": false
+    },
+    {
+      "id": "DEP_ARR",
+      "title": "DEP/ARR INDEX",
+      "folio": "11.40.32",
+      "pdfPageNear": 1584,
+      "sourceStatus": "FCOM_INDEX_LAYOUT_VERIFIED_PROCEDURE_DATABASE_NOT_VERIFIED",
+      "layoutGrade": "FCOM_LAYOUT_AUDITED",
+      "behaviorGrade": "PARTIAL",
+      "fullGrade": "NOT_VERIFIED",
+      "installedSoftware": "UNVERIFIED",
+      "screenSlots": [
+        {
+          "lsk": "L1",
+          "label": "<DEP",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "FCOM_11.40.32_PROMPT_POSITION_VERIFIED"
+        },
+        {
+          "lsk": "R1",
+          "label": "ARR>",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "FCOM_11.40.32_PROMPT_POSITION_VERIFIED"
+        },
+        {
+          "lsk": "L2",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_11.40.32_PROMPT_POSITION_VERIFIED"
+        },
+        {
+          "lsk": "R2",
+          "label": "ARR>",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "FCOM_11.40.32_PROMPT_POSITION_VERIFIED"
+        },
+        {
+          "lsk": "L3",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_11.40.32_PROMPT_POSITION_VERIFIED"
+        },
+        {
+          "lsk": "R3",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_11.40.32_PROMPT_POSITION_VERIFIED"
+        },
+        {
+          "lsk": "L4",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_11.40.32_PROMPT_POSITION_VERIFIED"
+        },
+        {
+          "lsk": "R4",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_11.40.32_PROMPT_POSITION_VERIFIED"
+        },
+        {
+          "lsk": "L5",
+          "label": "DEP",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_11.40.32_PROMPT_POSITION_VERIFIED"
+        },
+        {
+          "lsk": "R5",
+          "label": "ARR",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_11.40.32_PROMPT_POSITION_VERIFIED"
+        },
+        {
+          "lsk": "L6",
+          "label": "<----",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "FCOM_11.40.32_PROMPT_POSITION_VERIFIED"
+        },
+        {
+          "lsk": "R6",
+          "label": "---->",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "FCOM_11.40.32_PROMPT_POSITION_VERIFIED"
+        }
+      ],
+      "issues": [],
+      "visualGoldenReference": null,
+      "visualDiffPassed": false,
+      "interactionScenarioPassed": false
+    },
+    {
+      "id": "DEPARTURES",
+      "title": "DEPARTURES",
+      "folio": "11.40.34",
+      "pdfPageNear": 1586,
+      "sourceStatus": "NO_AIRAC_PROCEDURE_VALIDATION",
+      "layoutGrade": "SOURCE_NOT_VERIFIED",
+      "behaviorGrade": "UNVERIFIED",
+      "fullGrade": "NOT_VERIFIED",
+      "installedSoftware": "UNVERIFIED",
+      "screenSlots": [
+        {
+          "lsk": "L1",
+          "label": "AIRPORT",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R1",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L2",
+          "label": "RUNWAY",
+          "field": "RUNWAY",
+          "format": "RUNWAY",
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R2",
+          "label": "SID",
+          "field": "SID",
+          "format": "PROCEDURE",
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L3",
+          "label": "TRANS",
+          "field": "DEP_TRANS",
+          "format": "WAYPOINT",
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R3",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L4",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R4",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L5",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R5",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L6",
+          "label": "<INDEX",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R6",
+          "label": "RTE>",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        }
+      ],
+      "issues": [],
+      "visualGoldenReference": null,
+      "visualDiffPassed": false,
+      "interactionScenarioPassed": false
+    },
+    {
+      "id": "ARRIVALS",
+      "title": "ARRIVALS",
+      "folio": "11.43.19",
+      "pdfPageNear": 1773,
+      "sourceStatus": "NO_AIRAC_PROCEDURE_VALIDATION",
+      "layoutGrade": "SOURCE_NOT_VERIFIED",
+      "behaviorGrade": "UNVERIFIED",
+      "fullGrade": "NOT_VERIFIED",
+      "installedSoftware": "UNVERIFIED",
+      "screenSlots": [
+        {
+          "lsk": "L1",
+          "label": "AIRPORT",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R1",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L2",
+          "label": "STAR",
+          "field": "STAR",
+          "format": "PROCEDURE",
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R2",
+          "label": "APPROACH",
+          "field": "APP",
+          "format": "PROCEDURE",
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L3",
+          "label": "TRANS",
+          "field": "ARR_TRANS",
+          "format": "WAYPOINT",
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R3",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L4",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R4",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L5",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R5",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L6",
+          "label": "<INDEX",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R6",
+          "label": "LEGS>",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        }
+      ],
+      "issues": [],
+      "visualGoldenReference": null,
+      "visualDiffPassed": false,
+      "interactionScenarioPassed": false
+    },
+    {
+      "id": "PERF_INIT",
+      "title": "PERF INIT",
+      "folio": "11.40.37",
+      "pdfPageNear": 1589,
+      "sourceStatus": "FIELD_POSITIONS_FCOM_PAGE_11.40.37_VERIFIED; FORMATS_AND_CALC_PARTIAL",
+      "layoutGrade": "SOURCE_NOT_VERIFIED",
+      "behaviorGrade": "UNVERIFIED",
+      "fullGrade": "NOT_VERIFIED",
+      "installedSoftware": "UNVERIFIED",
+      "screenSlots": [
+        {
+          "lsk": "L1",
+          "label": "GW/CRZ CG",
+          "field": "GW_CG",
+          "format": "WEIGHT_CG",
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_ILLUSTRATION_VERIFIED"
+        },
+        {
+          "lsk": "R1",
+          "label": "TRIP/CRZ ALT",
+          "field": "CRZ_ALT",
+          "format": "FL",
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_ILLUSTRATION_VERIFIED"
+        },
+        {
+          "lsk": "L2",
+          "label": "FUEL",
+          "field": "FUEL",
+          "format": "WEIGHT",
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_ILLUSTRATION_VERIFIED"
+        },
+        {
+          "lsk": "R2",
+          "label": "CRZ WIND",
+          "field": "CRZ_WIND",
+          "format": "WIND",
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_ILLUSTRATION_VERIFIED"
+        },
+        {
+          "lsk": "L3",
+          "label": "ZFW",
+          "field": "ZFW",
+          "format": "WEIGHT",
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_ILLUSTRATION_VERIFIED"
+        },
+        {
+          "lsk": "R3",
+          "label": "ISA DEV",
+          "field": "ISA_DEV",
+          "format": "TEMP",
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_ILLUSTRATION_VERIFIED"
+        },
+        {
+          "lsk": "L4",
+          "label": "RESERVES",
+          "field": "RESERVES",
+          "format": "WEIGHT",
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_ILLUSTRATION_VERIFIED"
+        },
+        {
+          "lsk": "R4",
+          "label": "T/C OAT",
+          "field": "TC_OAT",
+          "format": "TEMP",
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_ILLUSTRATION_VERIFIED"
+        },
+        {
+          "lsk": "L5",
+          "label": "COST INDEX",
+          "field": "CI",
+          "format": "CI_CL",
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_ILLUSTRATION_VERIFIED"
+        },
+        {
+          "lsk": "R5",
+          "label": "TRANS ALT",
+          "field": "TRANS_ALT",
+          "format": "ALT",
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_ILLUSTRATION_VERIFIED"
+        },
+        {
+          "lsk": "L6",
+          "label": "<INDEX",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "FCOM_ILLUSTRATION_VERIFIED"
+        },
+        {
+          "lsk": "R6",
+          "label": "N1 LIMIT>",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "FCOM_ILLUSTRATION_VERIFIED"
+        }
+      ],
+      "issues": [],
+      "visualGoldenReference": null,
+      "visualDiffPassed": false,
+      "interactionScenarioPassed": false
+    },
+    {
+      "id": "N1_LIMIT",
+      "title": "N1 LIMIT",
+      "folio": "11.40.46",
+      "pdfPageNear": 1598,
+      "sourceStatus": "LOCATION_REVIEWED_AGAINST_FCOM_ILLUSTRATION; DYNAMIC_FUNCTIONS_PARTIAL",
+      "layoutGrade": "SOURCE_NOT_VERIFIED",
+      "behaviorGrade": "UNVERIFIED",
+      "fullGrade": "NOT_VERIFIED",
+      "installedSoftware": "UNVERIFIED",
+      "screenSlots": [
+        {
+          "lsk": "L1",
+          "label": "SEL/OAT",
+          "field": "SEL_TEMP",
+          "format": "TEMP",
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+        },
+        {
+          "lsk": "R1",
+          "label": "XXK N1",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+        },
+        {
+          "lsk": "L2",
+          "label": "TO RATING",
+          "field": "TO_DERATE",
+          "format": "DERATE",
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+        },
+        {
+          "lsk": "R2",
+          "label": "CLB RATING",
+          "field": "CLB_DERATE",
+          "format": "DERATE",
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+        },
+        {
+          "lsk": "L3",
+          "label": "TO-1",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+        },
+        {
+          "lsk": "R3",
+          "label": "CLB-1",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+        },
+        {
+          "lsk": "L4",
+          "label": "TO-2",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+        },
+        {
+          "lsk": "R4",
+          "label": "CLB-2",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+        },
+        {
+          "lsk": "L5",
+          "label": "<PERF INIT",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+        },
+        {
+          "lsk": "R5",
+          "label": "TAKEOFF>",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+        },
+        {
+          "lsk": "L6",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+        },
+        {
+          "lsk": "R6",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+        }
+      ],
+      "issues": [
+        {
+          "type": "LITERAL_OVER_12_COLUMNS",
+          "key": "R1",
+          "chars": 14
+        }
+      ],
+      "visualGoldenReference": null,
+      "visualDiffPassed": false,
+      "interactionScenarioPassed": false
+    },
+    {
+      "id": "TAKEOFF",
+      "title": "TAKEOFF REF",
+      "folio": "11.40.52",
+      "pdfPageNear": 1604,
+      "sourceStatus": "LOCATION_REVIEWED_AGAINST_FCOM_ILLUSTRATION; DYNAMIC_FUNCTIONS_PARTIAL",
+      "layoutGrade": "SOURCE_NOT_VERIFIED",
+      "behaviorGrade": "UNVERIFIED",
+      "fullGrade": "NOT_VERIFIED",
+      "installedSoftware": "UNVERIFIED",
+      "screenSlots": [
+        {
+          "lsk": "L1",
+          "label": "OAT",
+          "field": "OAT",
+          "format": "TEMP",
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+        },
+        {
+          "lsk": "R1",
+          "label": "V1",
+          "field": "V1",
+          "format": "SPEED",
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+        },
+        {
+          "lsk": "L2",
+          "label": "SEL TEMP",
+          "field": "SEL_TEMP",
+          "format": "TEMP",
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+        },
+        {
+          "lsk": "R2",
+          "label": "VR",
+          "field": "VR",
+          "format": "SPEED",
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+        },
+        {
+          "lsk": "L3",
+          "label": "TO N1",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+        },
+        {
+          "lsk": "R3",
+          "label": "V2",
+          "field": "V2",
+          "format": "SPEED",
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+        },
+        {
+          "lsk": "L4",
+          "label": "<POS INIT",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+        },
+        {
+          "lsk": "R4",
+          "label": "ROUTE>",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+        },
+        {
+          "lsk": "L5",
+          "label": "<PERF INIT",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+        },
+        {
+          "lsk": "R5",
+          "label": "DEPARTURE>",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+        },
+        {
+          "lsk": "L6",
+          "label": "<INDEX",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+        },
+        {
+          "lsk": "R6",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+        }
+      ],
+      "issues": [],
+      "visualGoldenReference": null,
+      "visualDiffPassed": false,
+      "interactionScenarioPassed": false
+    },
+    {
+      "id": "LEGS",
+      "title": "RTE LEGS",
+      "folio": "11.41.9",
+      "pdfPageNear": 1633,
+      "sourceStatus": "PARTIALLY_FCOM_GROUNDED",
+      "layoutGrade": "SOURCE_NOT_VERIFIED",
+      "behaviorGrade": "UNVERIFIED",
+      "fullGrade": "NOT_VERIFIED",
+      "installedSoftware": "UNVERIFIED",
+      "screenSlots": [
+        {
+          "lsk": "L1",
+          "label": "1ST WAYPOINT",
+          "field": "WPT1",
+          "format": "WAYPOINT",
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R1",
+          "label": "SPD/ALT",
+          "field": "WPT1_CONSTRAINT",
+          "format": "CONSTRAINT",
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L2",
+          "label": "2ND WAYPOINT",
+          "field": "WPT2",
+          "format": "WAYPOINT",
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R2",
+          "label": "SPD/ALT",
+          "field": "WPT2_CONSTRAINT",
+          "format": "CONSTRAINT",
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L3",
+          "label": "3RD WAYPOINT",
+          "field": "WPT3",
+          "format": "WAYPOINT",
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R3",
+          "label": "SPD/ALT",
+          "field": "WPT3_CONSTRAINT",
+          "format": "CONSTRAINT",
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L4",
+          "label": "4TH WAYPOINT",
+          "field": "WPT4",
+          "format": "WAYPOINT",
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R4",
+          "label": "SPD/ALT",
+          "field": "WPT4_CONSTRAINT",
+          "format": "CONSTRAINT",
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L5",
+          "label": "<OFFSET",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R5",
+          "label": "RTE DATA>",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L6",
+          "label": "<RTE",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R6",
+          "label": "PROGRESS>",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        }
+      ],
+      "issues": [],
+      "visualGoldenReference": null,
+      "visualDiffPassed": false,
+      "interactionScenarioPassed": false
+    },
+    {
+      "id": "PROG",
+      "title": "PROGRESS",
+      "folio": "11.41.15",
+      "pdfPageNear": 1639,
+      "sourceStatus": "NO_FLIGHT_STATE_CALC",
+      "layoutGrade": "SOURCE_NOT_VERIFIED",
+      "behaviorGrade": "UNVERIFIED",
+      "fullGrade": "NOT_VERIFIED",
+      "installedSoftware": "UNVERIFIED",
+      "screenSlots": [
+        {
+          "lsk": "L1",
+          "label": "TO",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R1",
+          "label": "ETA/FUEL",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L2",
+          "label": "NEXT",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R2",
+          "label": "DIST",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L3",
+          "label": "FUEL QTY",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R3",
+          "label": "WIND",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L4",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R4",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L5",
+          "label": "<NEXT",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R5",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L6",
+          "label": "<LEGS",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R6",
+          "label": "RTE>",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        }
+      ],
+      "issues": [],
+      "visualGoldenReference": null,
+      "visualDiffPassed": false,
+      "interactionScenarioPassed": false
+    },
+    {
+      "id": "PROG2",
+      "title": "PROGRESS",
+      "folio": "11.41.21",
+      "pdfPageNear": 1645,
+      "sourceStatus": "NO_FLIGHT_STATE_CALC",
+      "layoutGrade": "SOURCE_NOT_VERIFIED",
+      "behaviorGrade": "UNVERIFIED",
+      "fullGrade": "NOT_VERIFIED",
+      "installedSoftware": "UNVERIFIED",
+      "screenSlots": [
+        {
+          "lsk": "L1",
+          "label": "RNP",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R1",
+          "label": "ANP",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L2",
+          "label": "WIND",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R2",
+          "label": "SAT",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L3",
+          "label": "GPS",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R3",
+          "label": "IRS",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L4",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R4",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L5",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R5",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L6",
+          "label": "<PREV",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R6",
+          "label": "LEGS>",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        }
+      ],
+      "issues": [],
+      "visualGoldenReference": null,
+      "visualDiffPassed": false,
+      "interactionScenarioPassed": false
+    },
+    {
+      "id": "CLB",
+      "title": "ECON CLB",
+      "folio": "11.41.3",
+      "pdfPageNear": 1627,
+      "sourceStatus": "NO_VNAV_CALC",
+      "layoutGrade": "SOURCE_NOT_VERIFIED",
+      "behaviorGrade": "UNVERIFIED",
+      "fullGrade": "NOT_VERIFIED",
+      "installedSoftware": "UNVERIFIED",
+      "screenSlots": [
+        {
+          "lsk": "L1",
+          "label": "CRZ ALT",
+          "field": "CRZ_ALT",
+          "format": "FL",
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R1",
+          "label": "TGT SPD",
+          "field": "CLB_SPEED",
+          "format": "IASMACH",
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L2",
+          "label": "SPD REST",
+          "field": "CLB_REST",
+          "format": "CONSTRAINT",
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R2",
+          "label": "TO T/C",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L3",
+          "label": "CLB THRUST",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R3",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L4",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R4",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L5",
+          "label": "<MAX RATE",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R5",
+          "label": "MAX ANGLE>",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L6",
+          "label": "<INDEX",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R6",
+          "label": "CRZ>",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        }
+      ],
+      "issues": [],
+      "visualGoldenReference": null,
+      "visualDiffPassed": false,
+      "interactionScenarioPassed": false
+    },
+    {
+      "id": "CLB_MAX_RATE",
+      "title": "MAX RATE CLB",
+      "folio": "11.41.3",
+      "pdfPageNear": 1627,
+      "sourceStatus": "ADVISORY_ONLY_NO_PERFORMANCE_CALC",
+      "layoutGrade": "SOURCE_NOT_VERIFIED",
+      "behaviorGrade": "UNVERIFIED",
+      "fullGrade": "NOT_VERIFIED",
+      "installedSoftware": "UNVERIFIED",
+      "screenSlots": [
+        {
+          "lsk": "L1",
+          "label": "TGT SPD",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R1",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L2",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R2",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L3",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R3",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L4",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R4",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L5",
+          "label": "<ERASE",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R5",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L6",
+          "label": "<ECON CLB",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R6",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        }
+      ],
+      "issues": [],
+      "visualGoldenReference": null,
+      "visualDiffPassed": false,
+      "interactionScenarioPassed": false
+    },
+    {
+      "id": "CLB_MAX_ANGLE",
+      "title": "MAX ANGLE CLB",
+      "folio": "11.41.3",
+      "pdfPageNear": 1627,
+      "sourceStatus": "ADVISORY_ONLY_NO_PERFORMANCE_CALC",
+      "layoutGrade": "SOURCE_NOT_VERIFIED",
+      "behaviorGrade": "UNVERIFIED",
+      "fullGrade": "NOT_VERIFIED",
+      "installedSoftware": "UNVERIFIED",
+      "screenSlots": [
+        {
+          "lsk": "L1",
+          "label": "TGT SPD",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R1",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L2",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R2",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L3",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R3",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L4",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R4",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L5",
+          "label": "<ERASE",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R5",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L6",
+          "label": "<ECON CLB",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R6",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        }
+      ],
+      "issues": [],
+      "visualGoldenReference": null,
+      "visualDiffPassed": false,
+      "interactionScenarioPassed": false
+    },
+    {
+      "id": "CRZ",
+      "title": "ECON CRZ",
+      "folio": "11.42.29",
+      "pdfPageNear": 1703,
+      "sourceStatus": "NO_OPT_ALT_OR_FUEL_CALC",
+      "layoutGrade": "SOURCE_NOT_VERIFIED",
+      "behaviorGrade": "UNVERIFIED",
+      "fullGrade": "NOT_VERIFIED",
+      "installedSoftware": "UNVERIFIED",
+      "screenSlots": [
+        {
+          "lsk": "L1",
+          "label": "CRZ ALT",
+          "field": "CRZ_ALT",
+          "format": "FL",
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R1",
+          "label": "OPT/MAX",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L2",
+          "label": "TGT SPD",
+          "field": "CRZ_SPEED",
+          "format": "IASMACH",
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R2",
+          "label": "TO T/D",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L3",
+          "label": "TURB N1",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R3",
+          "label": "ACTUAL WIND",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L4",
+          "label": "FUEL AT DEST",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R4",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L5",
+          "label": "<LRC",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R5",
+          "label": "ENG OUT>",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L6",
+          "label": "<RTE DATA",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R6",
+          "label": "DES>",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        }
+      ],
+      "issues": [],
+      "visualGoldenReference": null,
+      "visualDiffPassed": false,
+      "interactionScenarioPassed": false
+    },
+    {
+      "id": "CRZ_LRC",
+      "title": "LRC CRZ",
+      "folio": "11.42.29",
+      "pdfPageNear": 1703,
+      "sourceStatus": "ADVISORY_ONLY",
+      "layoutGrade": "SOURCE_NOT_VERIFIED",
+      "behaviorGrade": "UNVERIFIED",
+      "fullGrade": "NOT_VERIFIED",
+      "installedSoftware": "UNVERIFIED",
+      "screenSlots": [
+        {
+          "lsk": "L1",
+          "label": "CRZ ALT",
+          "field": "CRZ_ALT",
+          "format": "FL",
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R1",
+          "label": "OPT/MAX",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L2",
+          "label": "TGT SPD",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R2",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L3",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R3",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L4",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R4",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L5",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R5",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L6",
+          "label": "<ECON",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R6",
+          "label": "ENG OUT>",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        }
+      ],
+      "issues": [],
+      "visualGoldenReference": null,
+      "visualDiffPassed": false,
+      "interactionScenarioPassed": false
+    },
+    {
+      "id": "ENG_OUT",
+      "title": "ENG OUT",
+      "folio": "11.42.36",
+      "pdfPageNear": 1710,
+      "sourceStatus": "NOT_FLIGHT_CALCULATED",
+      "layoutGrade": "SOURCE_NOT_VERIFIED",
+      "behaviorGrade": "UNVERIFIED",
+      "fullGrade": "NOT_VERIFIED",
+      "installedSoftware": "UNVERIFIED",
+      "screenSlots": [
+        {
+          "lsk": "L1",
+          "label": "ENG FAIL",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R1",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L2",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R2",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L3",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R3",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L4",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R4",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L5",
+          "label": "<ERASE",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R5",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L6",
+          "label": "<ECON CRZ",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R6",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        }
+      ],
+      "issues": [],
+      "visualGoldenReference": null,
+      "visualDiffPassed": false,
+      "interactionScenarioPassed": false
+    },
+    {
+      "id": "DES",
+      "title": "ECON DES",
+      "folio": "11.43.2",
+      "pdfPageNear": 1756,
+      "sourceStatus": "NO_VNAV_PATH_CALC",
+      "layoutGrade": "SOURCE_NOT_VERIFIED",
+      "behaviorGrade": "UNVERIFIED",
+      "fullGrade": "NOT_VERIFIED",
+      "installedSoftware": "UNVERIFIED",
+      "screenSlots": [
+        {
+          "lsk": "L1",
+          "label": "TGT SPD",
+          "field": "DES_SPEED",
+          "format": "IASMACH",
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R1",
+          "label": "TO T/D",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L2",
+          "label": "SPD REST",
+          "field": "DES_REST",
+          "format": "CONSTRAINT",
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R2",
+          "label": "AT",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L3",
+          "label": "FORECAST",
+          "field": "DES_WIND",
+          "format": "WIND",
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R3",
+          "label": "WPT/ALT",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L4",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R4",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L5",
+          "label": "<FORECAST",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R5",
+          "label": "DES RESTR>",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L6",
+          "label": "<INDEX",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R6",
+          "label": "APP REF>",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        }
+      ],
+      "issues": [],
+      "visualGoldenReference": null,
+      "visualDiffPassed": false,
+      "interactionScenarioPassed": false
+    },
+    {
+      "id": "DES_FORECAST",
+      "title": "DES FORECAST",
+      "folio": "11.43.15",
+      "pdfPageNear": 1769,
+      "sourceStatus": "PARTIALLY_FCOM_GROUNDED",
+      "layoutGrade": "SOURCE_NOT_VERIFIED",
+      "behaviorGrade": "UNVERIFIED",
+      "fullGrade": "NOT_VERIFIED",
+      "installedSoftware": "UNVERIFIED",
+      "screenSlots": [
+        {
+          "lsk": "L1",
+          "label": "TRANS LVL",
+          "field": "TRANS_LVL",
+          "format": "FL",
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R1",
+          "label": "QNH",
+          "field": "QNH",
+          "format": "QNH",
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L2",
+          "label": "WIND 1",
+          "field": "DESC_WIND1",
+          "format": "WIND",
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R2",
+          "label": "ALT 1",
+          "field": "DESC_ALT1",
+          "format": "FL",
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L3",
+          "label": "WIND 2",
+          "field": "DESC_WIND2",
+          "format": "WIND",
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R3",
+          "label": "ALT 2",
+          "field": "DESC_ALT2",
+          "format": "FL",
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L4",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R4",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L5",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R5",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L6",
+          "label": "<DES",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R6",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        }
+      ],
+      "issues": [],
+      "visualGoldenReference": null,
+      "visualDiffPassed": false,
+      "interactionScenarioPassed": false
+    },
+    {
+      "id": "DES_RESTR",
+      "title": "DES REST",
+      "folio": "11.43.2",
+      "pdfPageNear": 1756,
+      "sourceStatus": "PARTIALLY_FCOM_GROUNDED",
+      "layoutGrade": "SOURCE_NOT_VERIFIED",
+      "behaviorGrade": "UNVERIFIED",
+      "fullGrade": "NOT_VERIFIED",
+      "installedSoftware": "UNVERIFIED",
+      "screenSlots": [
+        {
+          "lsk": "L1",
+          "label": "SPD",
+          "field": "DES_REST_SPEED",
+          "format": "SPEED",
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R1",
+          "label": "ALT",
+          "field": "DES_REST_ALT",
+          "format": "ALT",
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L2",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R2",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L3",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R3",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L4",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R4",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L5",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R5",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L6",
+          "label": "<ECON DES",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R6",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        }
+      ],
+      "issues": [],
+      "visualGoldenReference": null,
+      "visualDiffPassed": false,
+      "interactionScenarioPassed": false
+    },
+    {
+      "id": "APP_REF",
+      "title": "APPROACH REF",
+      "folio": "11.43.27",
+      "pdfPageNear": 1781,
+      "sourceStatus": "LOCATION_REVIEWED_AGAINST_FCOM_ILLUSTRATION; DYNAMIC_FUNCTIONS_PARTIAL",
+      "layoutGrade": "SOURCE_NOT_VERIFIED",
+      "behaviorGrade": "UNVERIFIED",
+      "fullGrade": "NOT_VERIFIED",
+      "installedSoftware": "UNVERIFIED",
+      "screenSlots": [
+        {
+          "lsk": "L1",
+          "label": "GROSS WT",
+          "field": "LANDING_WEIGHT",
+          "format": "WEIGHT",
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+        },
+        {
+          "lsk": "R1",
+          "label": "FLAPS 15 VREF",
+          "field": "VREF15",
+          "format": "SPEED",
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+        },
+        {
+          "lsk": "L2",
+          "label": "GA N1",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+        },
+        {
+          "lsk": "R2",
+          "label": "FLAPS 30 VREF",
+          "field": "VREF30",
+          "format": "SPEED",
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+        },
+        {
+          "lsk": "L3",
+          "label": "RUNWAY",
+          "field": "APP_RUNWAY",
+          "format": "RUNWAY",
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+        },
+        {
+          "lsk": "R3",
+          "label": "FLAPS 40 VREF",
+          "field": "VREF40",
+          "format": "SPEED",
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+        },
+        {
+          "lsk": "L4",
+          "label": "ILS FREQ",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+        },
+        {
+          "lsk": "R4",
+          "label": "FRONT CRS",
+          "field": "APP_CRS",
+          "format": "HDG",
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+        },
+        {
+          "lsk": "L5",
+          "label": "<INDEX",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+        },
+        {
+          "lsk": "R5",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+        },
+        {
+          "lsk": "L6",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+        },
+        {
+          "lsk": "R6",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+        }
+      ],
+      "issues": [
+        {
+          "type": "LABEL_OVER_12_COLUMNS",
+          "key": "R1",
+          "chars": 13
+        },
+        {
+          "type": "LITERAL_OVER_12_COLUMNS",
+          "key": "L2",
+          "chars": 14
+        },
+        {
+          "type": "LABEL_OVER_12_COLUMNS",
+          "key": "R2",
+          "chars": 13
+        },
+        {
+          "type": "LABEL_OVER_12_COLUMNS",
+          "key": "R3",
+          "chars": 13
+        },
+        {
+          "type": "LITERAL_OVER_12_COLUMNS",
+          "key": "L4",
+          "chars": 13
+        }
+      ],
+      "visualGoldenReference": null,
+      "visualDiffPassed": false,
+      "interactionScenarioPassed": false
+    },
+    {
+      "id": "HOLD",
+      "title": "RTE HOLD",
+      "folio": "11.43.31",
+      "pdfPageNear": 1785,
+      "sourceStatus": "NO_HOLD_GEOMETRY",
+      "layoutGrade": "SOURCE_NOT_VERIFIED",
+      "behaviorGrade": "UNVERIFIED",
+      "fullGrade": "NOT_VERIFIED",
+      "installedSoftware": "UNVERIFIED",
+      "screenSlots": [
+        {
+          "lsk": "L1",
+          "label": "HOLD AT",
+          "field": "HOLD_AT",
+          "format": "WAYPOINT",
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R1",
+          "label": "STATUS",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L2",
+          "label": "INBD CRS",
+          "field": "HOLD_INBD",
+          "format": "HDG",
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R2",
+          "label": "TURN DIR",
+          "field": "TURN_DIR",
+          "format": "LR",
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L3",
+          "label": "LEG TIME",
+          "field": "HOLD_TIME",
+          "format": "TIME",
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R3",
+          "label": "LEG DIST",
+          "field": "HOLD_DIST",
+          "format": "DIST",
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L4",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R4",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L5",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R5",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L6",
+          "label": "<LEGS",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R6",
+          "label": "INDEX>",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        }
+      ],
+      "issues": [],
+      "visualGoldenReference": null,
+      "visualDiffPassed": false,
+      "interactionScenarioPassed": false
+    },
+    {
+      "id": "FIX",
+      "title": "FIX INFO",
+      "folio": "11.42.77",
+      "pdfPageNear": 1751,
+      "sourceStatus": "LOCATION_REVIEWED_AGAINST_FCOM_ILLUSTRATION; DYNAMIC_FUNCTIONS_PARTIAL",
+      "layoutGrade": "SOURCE_NOT_VERIFIED",
+      "behaviorGrade": "UNVERIFIED",
+      "fullGrade": "NOT_VERIFIED",
+      "installedSoftware": "UNVERIFIED",
+      "screenSlots": [
+        {
+          "lsk": "L1",
+          "label": "FIX",
+          "field": "FIX",
+          "format": "WAYPOINT",
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+        },
+        {
+          "lsk": "R1",
+          "label": "RAD/DIS FR",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+        },
+        {
+          "lsk": "L2",
+          "label": "RAD/DIS 1",
+          "field": "RAD_DIS1",
+          "format": "BEARDIST",
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+        },
+        {
+          "lsk": "R2",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+        },
+        {
+          "lsk": "L3",
+          "label": "RAD/DIS 2",
+          "field": "RAD_DIS2",
+          "format": "BEARDIST",
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+        },
+        {
+          "lsk": "R3",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+        },
+        {
+          "lsk": "L4",
+          "label": "RAD/DIS 3",
+          "field": "RAD_DIS3",
+          "format": "BEARDIST",
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+        },
+        {
+          "lsk": "R4",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+        },
+        {
+          "lsk": "L5",
+          "label": "ABEAM",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+        },
+        {
+          "lsk": "R5",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+        },
+        {
+          "lsk": "L6",
+          "label": "<INDEX",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+        },
+        {
+          "lsk": "R6",
+          "label": "LEGS>",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+        }
+      ],
+      "issues": [],
+      "visualGoldenReference": null,
+      "visualDiffPassed": false,
+      "interactionScenarioPassed": false
+    },
+    {
+      "id": "RTE_DATA",
+      "title": "RTE DATA",
+      "folio": "11.42.43",
+      "pdfPageNear": 1717,
+      "sourceStatus": "NO_FLIGHT_PREDICTION",
+      "layoutGrade": "SOURCE_NOT_VERIFIED",
+      "behaviorGrade": "UNVERIFIED",
+      "fullGrade": "NOT_VERIFIED",
+      "installedSoftware": "UNVERIFIED",
+      "screenSlots": [
+        {
+          "lsk": "L1",
+          "label": "TO",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R1",
+          "label": "ETA/FUEL",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L2",
+          "label": "WPT",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R2",
+          "label": "DIST",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L3",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R3",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L4",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R4",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L5",
+          "label": "<REF NAV DATA",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R5",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L6",
+          "label": "<LEGS",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R6",
+          "label": "RTE>",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        }
+      ],
+      "issues": [
+        {
+          "type": "LABEL_OVER_12_COLUMNS",
+          "key": "L5",
+          "chars": 13
+        }
+      ],
+      "visualGoldenReference": null,
+      "visualDiffPassed": false,
+      "interactionScenarioPassed": false
+    },
+    {
+      "id": "NAV_DATA",
+      "title": "REF NAV DATA",
+      "folio": "11.42.59",
+      "pdfPageNear": 1733,
+      "sourceStatus": "NO_NAVIGATION_DB",
+      "layoutGrade": "SOURCE_NOT_VERIFIED",
+      "behaviorGrade": "UNVERIFIED",
+      "fullGrade": "NOT_VERIFIED",
+      "installedSoftware": "UNVERIFIED",
+      "screenSlots": [
+        {
+          "lsk": "L1",
+          "label": "IDENT",
+          "field": "NAVAID",
+          "format": "WAYPOINT",
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R1",
+          "label": "LAT/LON",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L2",
+          "label": "VOR FREQ",
+          "field": "VOR_FREQ",
+          "format": "FREQ",
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R2",
+          "label": "CLASS",
+          "field": "NAV_CLASS",
+          "format": "CLASS",
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L3",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R3",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L4",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R4",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L5",
+          "label": "<SUPP NAV",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R5",
+          "label": "NAV OPTIONS>",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L6",
+          "label": "<INDEX",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R6",
+          "label": "FIX INFO>",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        }
+      ],
+      "issues": [],
+      "visualGoldenReference": null,
+      "visualDiffPassed": false,
+      "interactionScenarioPassed": false
+    },
+    {
+      "id": "SUPP_NAV",
+      "title": "SUPP NAV DATA",
+      "folio": "11.42.66",
+      "pdfPageNear": 1740,
+      "sourceStatus": "TRAINER_LOCAL_DATA",
+      "layoutGrade": "SOURCE_NOT_VERIFIED",
+      "behaviorGrade": "UNVERIFIED",
+      "fullGrade": "NOT_VERIFIED",
+      "installedSoftware": "UNVERIFIED",
+      "screenSlots": [
+        {
+          "lsk": "L1",
+          "label": "IDENT",
+          "field": "SUPP_IDENT",
+          "format": "WAYPOINT",
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R1",
+          "label": "STATUS",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L2",
+          "label": "LAT/LON",
+          "field": "SUPP_POS",
+          "format": "LATLON",
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R2",
+          "label": "CLASS",
+          "field": "SUPP_CLASS",
+          "format": "CLASS",
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L3",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R3",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L4",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R4",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L5",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R5",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L6",
+          "label": "<REF NAV",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R6",
+          "label": "INDEX>",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        }
+      ],
+      "issues": [],
+      "visualGoldenReference": null,
+      "visualDiffPassed": false,
+      "interactionScenarioPassed": false
+    },
+    {
+      "id": "NAV_OPTIONS",
+      "title": "NAV OPTIONS",
+      "folio": "11.42.73",
+      "pdfPageNear": 1747,
+      "sourceStatus": "NO_ACTUAL_SENSORS",
+      "layoutGrade": "SOURCE_NOT_VERIFIED",
+      "behaviorGrade": "UNVERIFIED",
+      "fullGrade": "NOT_VERIFIED",
+      "installedSoftware": "UNVERIFIED",
+      "screenSlots": [
+        {
+          "lsk": "L1",
+          "label": "GPS",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R1",
+          "label": "IRS",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L2",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R2",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L3",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R3",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L4",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R4",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L5",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R5",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L6",
+          "label": "<REF NAV",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R6",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        }
+      ],
+      "issues": [],
+      "visualGoldenReference": null,
+      "visualDiffPassed": false,
+      "interactionScenarioPassed": false
+    },
+    {
+      "id": "OFFSET",
+      "title": "OFFSET",
+      "folio": "11.42.26",
+      "pdfPageNear": 1700,
+      "sourceStatus": "NO_LNAV_GUIDANCE",
+      "layoutGrade": "SOURCE_NOT_VERIFIED",
+      "behaviorGrade": "UNVERIFIED",
+      "fullGrade": "NOT_VERIFIED",
+      "installedSoftware": "UNVERIFIED",
+      "screenSlots": [
+        {
+          "lsk": "L1",
+          "label": "OFFSET",
+          "field": "OFFSET",
+          "format": "OFFSET",
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R1",
+          "label": "LNAV",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L2",
+          "label": "START",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R2",
+          "label": "END",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L3",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R3",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L4",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R4",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L5",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R5",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L6",
+          "label": "<LEGS",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R6",
+          "label": "INDEX>",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        }
+      ],
+      "issues": [
+        {
+          "type": "LITERAL_OVER_12_COLUMNS",
+          "key": "R1",
+          "chars": 13
+        }
+      ],
+      "visualGoldenReference": null,
+      "visualDiffPassed": false,
+      "interactionScenarioPassed": false
+    },
+    {
+      "id": "MESSAGES",
+      "title": "FMC/CDU MESSAGES",
+      "folio": "11.60.1",
+      "pdfPageNear": 1801,
+      "sourceStatus": "TRAINER_MESSAGE_VIEW",
+      "layoutGrade": "SOURCE_NOT_VERIFIED",
+      "behaviorGrade": "UNVERIFIED",
+      "fullGrade": "NOT_VERIFIED",
+      "installedSoftware": "UNVERIFIED",
+      "screenSlots": [
+        {
+          "lsk": "L1",
+          "label": "STATUS",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R1",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L2",
+          "label": "<MSG RECALL",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R2",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L3",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R3",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L4",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R4",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L5",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R5",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L6",
+          "label": "<MENU",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R6",
+          "label": "INDEX>",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        }
+      ],
+      "issues": [],
+      "visualGoldenReference": null,
+      "visualDiffPassed": false,
+      "interactionScenarioPassed": false
+    },
+    {
+      "id": "MSG_RECALL",
+      "title": "MSG RECALL",
+      "folio": "11.60.1",
+      "pdfPageNear": 1801,
+      "sourceStatus": "TRAINER_MESSAGE_VIEW",
+      "layoutGrade": "SOURCE_NOT_VERIFIED",
+      "behaviorGrade": "UNVERIFIED",
+      "fullGrade": "NOT_VERIFIED",
+      "installedSoftware": "UNVERIFIED",
+      "screenSlots": [
+        {
+          "lsk": "L1",
+          "label": "LATEST",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R1",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L2",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R2",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L3",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R3",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L4",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R4",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L5",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R5",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "L6",
+          "label": "<MESSAGES",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        },
+        {
+          "lsk": "R6",
+          "label": "INDEX>",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+        }
+      ],
+      "issues": [],
+      "visualGoldenReference": null,
+      "visualDiffPassed": false,
+      "interactionScenarioPassed": false
+    },
+    {
+      "id": "POS_SHIFT",
+      "title": "POS SHIFT",
+      "folio": "11.42.47",
+      "pdfPageNear": 1721,
+      "sourceStatus": "FCOM_11.42.47_LABELS_REVIEWED; BEARING_DISTANCES_UNKNOWN",
+      "layoutGrade": "SOURCE_NOT_VERIFIED",
+      "behaviorGrade": "UNVERIFIED",
+      "fullGrade": "NOT_VERIFIED",
+      "installedSoftware": "UNVERIFIED",
+      "screenSlots": [
+        {
+          "lsk": "L1",
+          "label": "IRS-L",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_11.42.47"
+        },
+        {
+          "lsk": "R1",
+          "label": "IRS-R",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_11.42.47"
+        },
+        {
+          "lsk": "L2",
+          "label": "-----",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_11.42.47"
+        },
+        {
+          "lsk": "R2",
+          "label": "-----",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_11.42.47"
+        },
+        {
+          "lsk": "L3",
+          "label": "RNP/ACTUAL",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_11.42.47"
+        },
+        {
+          "lsk": "R3",
+          "label": "RADIO",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_11.42.47"
+        },
+        {
+          "lsk": "L4",
+          "label": "-----",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_11.42.47"
+        },
+        {
+          "lsk": "R4",
+          "label": "-----",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_11.42.47"
+        },
+        {
+          "lsk": "L5",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "VARIANT_GATE_REQUIRED"
+        },
+        {
+          "lsk": "R5",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "VARIANT_GATE_REQUIRED"
+        },
+        {
+          "lsk": "L6",
+          "label": "<INDEX",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "FCOM_11.42.47"
+        },
+        {
+          "lsk": "R6",
+          "label": "NAV STATUS>",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_11.42.47"
+        }
+      ],
+      "issues": [],
+      "visualGoldenReference": null,
+      "visualDiffPassed": false,
+      "interactionScenarioPassed": false
+    }
+  ]
+}
