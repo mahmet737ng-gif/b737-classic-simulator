@@ -20,7 +20,8 @@ main,.cockpit-stack,.cockpit{display:block!important;width:1199px!important;max-
 .fmc-screen .fmc-lines .fmc-line{
   height:12.0%!important;
   font-size:inherit!important;
-  line-height:1.02!important;
+  line-height:0.75!important;
+  overflow:visible!important; /* Framebuffer clips at its bezel, never at each text row. */
 }
 .fmc-screen .fmc-lines .fmc-line.fmc-small{
   height:8.0%!important;
