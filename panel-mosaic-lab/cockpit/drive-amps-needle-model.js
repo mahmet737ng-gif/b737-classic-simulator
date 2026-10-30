@@ -27,7 +27,7 @@
   Object.freeze({id:'driveOil2',label:'GEN DRIVE OIL TEMP 2',piece:'OH11',x:861.8,y:1023.8,tipRadius:98,initialAngle:-46}),
   Object.freeze({id:'acAmps1',label:'A.C. AMPS 1',piece:'OH12',x:266.515,y:296.991,tipRadius:125,initialAngle:-49.51}),
   Object.freeze({id:'acAmps2',label:'A.C. AMPS 2',piece:'OH12',x:753.481,y:297.342,tipRadius:125,initialAngle:-49.5}),
-  Object.freeze({id:'apuAcAmps',label:'APU A.C. AMPS',piece:'OH12',window:'OH12_APU',x:724,y:1334,tipRadius:124,initialAngle:-47})
+  Object.freeze({id:'apuAcAmps',label:'APU A.C. AMPS',piece:'OH12',window:'OH12_APU',x:724,y:1334,tipRadius:124,initialAngle:-74})
  ]);
 
  // Source-native OH12 original white radial stroke axis intersections (21
@@ -40,6 +40,15 @@
   acAmps1:Object.freeze([-49.51,-43.85,-38.7,-33.54,-28.56,-23.53,-18.14,-13.02,-8.12,-3.28,1.73,7.07,12.56,17.7,22.65,27.72,33.02,38.12,43.21,48.23,53.23]),
   acAmps2:Object.freeze([-49.5,-43.88,-38.75,-33.69,-28.68,-23.67,-18.49,-13.67,-8.76,-3.96,1.0,6.23,11.57,16.58,21.54,26.58,31.71,36.84,41.92,46.87,51.83])
  });
+ // APU AC AMPS native photographed zero lies at the lower-left tick.
+ // Interpolated 0/50/100/150/200 reference: owner's 2026-10-31 screenshot.
+ // The dial, bearing/pivot, sprite and size stay untouched.
+ const apuAmpPhotoAngles=Object.freeze([-74,-37,0,37,74]);
+ function bearingForApuAmps(amps){
+  if(typeof amps!=='number'||!Number.isFinite(amps))throw Error('APU A.C. AMPS must be finite');
+  const v=Math.max(0,Math.min(200,amps)),i=Math.min(3,Math.floor(v/50));
+  return apuAmpPhotoAngles[i]+(apuAmpPhotoAngles[i+1]-apuAmpPhotoAngles[i])*(v-i*50)/50;
+ }
  const ampPhotoStatuses=Object.freeze({numericalMinorMarksObserved:21,majorMarksObserved:5,
   perMinorAmperes:10,sourcePhotoReviewed:true,physicalHiddenShaftCertified:false,
   sourcePhotoCalibrationNotCertifiedForFlight:true});
@@ -73,5 +82,5 @@
   if(!source||!needles.includes(needle)||!piece||![piece.x,piece.y,piece.w,piece.h].every(Number.isFinite)||piece.w<=0||piece.h<=0)throw Error('Invalid drive/amps needle placement');
   return {x:piece.x+needle.x*piece.w/source.width,y:piece.y+needle.y*piece.h/source.height,size:512*needle.tipRadius/220*piece.w/source.width};
  }
- return Object.freeze({panels,needles,angle,placement,windowPath,ampPhotoAngles,ampPhotoStatuses,bearingForAmps,ampsForBearing});
+ return Object.freeze({panels,needles,angle,placement,windowPath,ampPhotoAngles,apuAmpPhotoAngles,ampPhotoStatuses,bearingForAmps,ampsForBearing,bearingForApuAmps});
 });
