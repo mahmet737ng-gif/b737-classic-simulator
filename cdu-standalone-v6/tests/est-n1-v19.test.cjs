@@ -5,7 +5,11 @@ const canonical=fs.readFileSync(path.join(root,'engine/fmc/performance/epfsi-sim
 const bundle=fs.readFileSync(path.join(root,'cdu-standalone-v6/data/epfsi-simulated-n1-v19.js'),'utf8');
 assert.equal(canonical,bundle,'v6 estimate bundle must match canonical surrogate');
 class E{
- constructor(){this.children=[];this.style={};this.dataset={};this.value='';this.textContent='';this.events={};this.className='';this.hidden=false;this.checked=false;this.classList={toggle:()=>{},contains:()=>false,add:()=>{}}}
+ constructor(){this.children=[];this.style={};this.dataset={};this.value='';this.textContent='';this.events={};this.className='';this.hidden=false;this.checked=false;this.classList={toggle:()=>{},contains:n=>this.className.split(/\s+/).includes(n),add:(...n)=>{this.className+=' '+n.join(' ')}}}
+ get childNodes(){return this.children}get firstChild(){return this.children[0]||null}
+ querySelector(selector){return this.children.find(c=>selector.startsWith('.')&&c.classList.contains(selector.slice(1)))||null}
+ removeChild(child){this.children=this.children.filter(c=>c!==child);return child}
+ insertBefore(child,before){const index=this.children.indexOf(before);this.children.splice(index<0?this.children.length:index,0,child);return child}
  appendChild(v){this.children.push(v);return v}replaceChildren(...v){this.children=[...v]}
  addEventListener(k,f){(this.events[k]??=[]).push(f)}setAttribute(){}remove(){}
  fire(k){for(const fn of this.events[k]||[])fn({target:this})}
@@ -15,7 +19,11 @@ const nodes={},document={
  createElement:()=>new E(),
  addEventListener:()=>{}
 };
-const window={};
+// Load the same authoritative display dependencies as the actual v6 page.
+const window={
+ B737FCOMScreenContractV1:require('../../engine/ch11/fcom-screen-contract-v1.js'),
+ CDU_SCREEN_COMPOSITOR_V1:require('../engine/screen-compositor-v1.js')
+};
 const context=vm.createContext({console,document,window,setTimeout,clearTimeout,MutationObserver:class{observe(){}},Date});
 const files=['cdu-standalone-v6/data/cdu-map.js','cdu-standalone-v6/data/page-definitions.js',
  'cdu-standalone-v6/engine/cdu-engine.js','cdu-standalone-v6/data/epfsi-scenario-defaults-v17.js',

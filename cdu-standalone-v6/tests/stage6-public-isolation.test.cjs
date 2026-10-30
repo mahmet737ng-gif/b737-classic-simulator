@@ -19,20 +19,19 @@ for(const hostname of ['localhost','127.0.0.1']){
   assert.equal(typeof load(hostname).window.CDU_STAGE6_API?.beforeKey,'function');
 }
 const s=core.makeState('DEP_ARR');
-const empty=()=>[{label:'',value:''},{label:'',value:''}];
-const pages={
- DEP_ARR:{title:'DEP/ARR INDEX',page_count:1,rows:[
-  [{label:'<DEPARTURES',action:{type:'navigate',page:'DEPARTURES'}},
-   {label:'ARRIVALS>',action:{type:'navigate',page:'ARRIVALS'}}],
-  empty(),empty(),empty(),empty(),empty()]},
- DEPARTURES:{title:'DEPARTURES',page_count:1,rows:[empty(),empty(),empty(),empty(),empty(),empty()]},
- ARRIVALS:{title:'ARRIVALS',page_count:1,rows:[empty(),empty(),empty(),empty(),empty(),empty()]}
-};
+const pages=JSON.parse(fs.readFileSync(path.join(__dirname,'../data/page-definitions.json'),'utf8')).pages;
+// Current FCOM INDEX selects a route airport, rather than an empty menu link.
+s.active.ORIGIN='OIII';s.active.DEST='OIMM';
 core.press(s,pages,'CDU_CAPT_LSK_L1');
 assert.equal(s.page,'DEPARTURES');
+assert.equal(s.depArrSelection.airport,'OIII');
 assert.equal(s.message,'');
 core.press(s,pages,'CDU_CAPT_DEP_ARR');
 core.press(s,pages,'CDU_CAPT_LSK_R1');
 assert.equal(s.page,'ARRIVALS');
+assert.equal(s.depArrSelection.airport,'OIII');
 assert.equal(s.message,'');
+core.press(s,pages,'CDU_CAPT_DEP_ARR');
+core.press(s,pages,'CDU_CAPT_LSK_R2');
+assert.equal(s.depArrSelection.airport,'OIMM');
 console.log('Standalone CDU and private Stage6 isolation: PASS');

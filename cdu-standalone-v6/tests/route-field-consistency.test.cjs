@@ -4,6 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
 const core = require('../engine/cdu-engine.js');
+const screenContract = require('../../engine/ch11/fcom-screen-contract-v1.js');
 const scope = {window:{}};
 vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../data/page-definitions.js'),'utf8'),scope);
 const pages = scope.window.CDU_PAGES;
@@ -18,7 +19,11 @@ function input(s,code,side){
 }
 function shown(s,page,field){
   core.choose(s,pages,page);
-  const result=core.render(s,pages);
+  // The three-column FCOM INDEX is owned by the screen contract; generic
+  // two-column core.render does not contain the special airport center cells.
+  const result=page==='DEP_ARR'
+    ?screenContract.grid(pages,page,{readValue:(key,sourcePage)=>core.readValue(s,key,sourcePage)}).lines
+    :core.render(s,pages);
   assert.equal(core.readValue(s,field,page),field==='ORIGIN'?'OIII':field==='DEST'?'OIMM':'29R');
   return result.join('\n');
 }
