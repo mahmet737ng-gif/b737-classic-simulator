@@ -54,6 +54,7 @@
   const issues=[...spec.issues];
   function put(row,col,text,tag){
    const value=norm(text),out={row,col,text:value,tag};
+   if(value.length===0)return out;
    if(row<0||row>=ROWS||col<0||col>=COLUMNS)throw Error('OUTSIDE_24x14_GRID');
    const size=Math.min(value.length,COLUMNS-col);
    if(value.length>size)issues.push({type:'OUTSIDE_24_COLUMNS',tag,row,col,length:value.length});
