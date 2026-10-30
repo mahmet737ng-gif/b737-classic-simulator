@@ -263,9 +263,9 @@
     {
       "id": "IDENT",
       "title": "IDENT",
-      "folio": "11.40.8",
+      "folio": "11.40.8-9",
       "pdfPageNear": 1560,
-      "sourceStatus": "FCOM_11.40.8_LABELS_REVIEWED; AIRCRAFT_SOFTWARE_OPTION_NOT_PROVEN",
+      "sourceStatus": "FCOM_11.40.8_9_TEXT_AUDITED_EFFECTIVITY_AND_VALUES_PENDING",
       "layoutGrade": "SOURCE_NOT_VERIFIED",
       "behaviorGrade": "UNVERIFIED",
       "fullGrade": "NOT_VERIFIED",
@@ -277,7 +277,7 @@
           "field": null,
           "format": null,
           "hasNavigateAction": false,
-          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+          "sourceVerified": "FCOM_11.40.8_9_TEXT_AUDITED"
         },
         {
           "lsk": "R1",
@@ -285,7 +285,7 @@
           "field": null,
           "format": null,
           "hasNavigateAction": false,
-          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+          "sourceVerified": "FCOM_11.40.8_9_TEXT_AUDITED"
         },
         {
           "lsk": "L2",
@@ -293,7 +293,7 @@
           "field": null,
           "format": null,
           "hasNavigateAction": false,
-          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+          "sourceVerified": "FCOM_11.40.8_9_TEXT_AUDITED"
         },
         {
           "lsk": "R2",
@@ -301,7 +301,7 @@
           "field": null,
           "format": null,
           "hasNavigateAction": false,
-          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+          "sourceVerified": "FCOM_11.40.8_9_TEXT_AUDITED"
         },
         {
           "lsk": "L3",
@@ -309,7 +309,7 @@
           "field": null,
           "format": null,
           "hasNavigateAction": false,
-          "sourceVerified": "VARIANT_GATE_REQUIRED"
+          "sourceVerified": "FCOM_11.40.8_9_TEXT_AUDITED"
         },
         {
           "lsk": "R3",
@@ -317,7 +317,7 @@
           "field": null,
           "format": null,
           "hasNavigateAction": false,
-          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+          "sourceVerified": "FCOM_11.40.8_9_TEXT_AUDITED"
         },
         {
           "lsk": "L4",
@@ -325,7 +325,7 @@
           "field": null,
           "format": null,
           "hasNavigateAction": false,
-          "sourceVerified": "FCOM_11.40.8"
+          "sourceVerified": "FCOM_11.40.8_9_TEXT_AUDITED"
         },
         {
           "lsk": "R4",
@@ -333,7 +333,7 @@
           "field": null,
           "format": null,
           "hasNavigateAction": false,
-          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+          "sourceVerified": "FCOM_11.40.8_9_TEXT_AUDITED"
         },
         {
           "lsk": "L5",
@@ -341,7 +341,7 @@
           "field": null,
           "format": null,
           "hasNavigateAction": false,
-          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+          "sourceVerified": "FCOM_11.40.8_9_TEXT_AUDITED"
         },
         {
           "lsk": "R5",
@@ -349,7 +349,7 @@
           "field": null,
           "format": null,
           "hasNavigateAction": false,
-          "sourceVerified": "FCOM_11.40.8"
+          "sourceVerified": "FCOM_11.40.8_9_TEXT_AUDITED"
         },
         {
           "lsk": "L6",
@@ -357,7 +357,7 @@
           "field": null,
           "format": null,
           "hasNavigateAction": true,
-          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+          "sourceVerified": "FCOM_11.40.8_9_TEXT_AUDITED"
         },
         {
           "lsk": "R6",
@@ -365,7 +365,7 @@
           "field": null,
           "format": null,
           "hasNavigateAction": true,
-          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+          "sourceVerified": "FCOM_11.40.8_9_TEXT_AUDITED"
         }
       ],
       "issues": [],
@@ -376,9 +376,9 @@
     {
       "id": "POS_INIT",
       "title": "POS INIT",
-      "folio": "11.40.11",
+      "folio": "11.40.11-13",
       "pdfPageNear": 1563,
-      "sourceStatus": "LOCATION_REVIEWED_AGAINST_FCOM_ILLUSTRATION; DYNAMIC_FUNCTIONS_PARTIAL",
+      "sourceStatus": "FCOM_11.40.11_13_TEXT_AUDITED_DYNAMIC_IRS_AIRPORT_CLOCK_PARTIAL",
       "layoutGrade": "SOURCE_NOT_VERIFIED",
       "behaviorGrade": "UNVERIFIED",
       "fullGrade": "NOT_VERIFIED",
@@ -386,11 +386,11 @@
       "screenSlots": [
         {
           "lsk": "L1",
-          "label": "LAST POS",
+          "label": "",
           "field": null,
           "format": null,
           "hasNavigateAction": false,
-          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+          "sourceVerified": "FCOM_11.40.11_13_TEXT_AUDITED"
         },
         {
           "lsk": "R1",
@@ -398,7 +398,7 @@
           "field": null,
           "format": null,
           "hasNavigateAction": false,
-          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+          "sourceVerified": "FCOM_11.40.11_13_TEXT_AUDITED"
         },
         {
           "lsk": "L2",
@@ -406,7 +406,7 @@
           "field": "REF_AIRPORT",
           "format": "ICAO",
           "hasNavigateAction": false,
-          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+          "sourceVerified": "FCOM_11.40.11_13_TEXT_AUDITED"
         },
         {
           "lsk": "R2",
@@ -414,7 +414,7 @@
           "field": null,
           "format": null,
           "hasNavigateAction": false,
-          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+          "sourceVerified": "FCOM_11.40.11_13_TEXT_AUDITED"
         },
         {
           "lsk": "L3",
@@ -422,7 +422,7 @@
           "field": "GATE",
           "format": "TEXT",
           "hasNavigateAction": false,
-          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+          "sourceVerified": "FCOM_11.40.11_13_TEXT_AUDITED"
         },
         {
           "lsk": "R3",
@@ -430,7 +430,7 @@
           "field": null,
           "format": null,
           "hasNavigateAction": false,
-          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+          "sourceVerified": "FCOM_11.40.11_13_TEXT_AUDITED"
         },
         {
           "lsk": "L4",
@@ -438,7 +438,7 @@
           "field": null,
           "format": null,
           "hasNavigateAction": false,
-          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+          "sourceVerified": "FCOM_11.40.11_13_TEXT_AUDITED"
         },
         {
           "lsk": "R4",
@@ -446,7 +446,7 @@
           "field": "IRS_POS",
           "format": "LATLON",
           "hasNavigateAction": false,
-          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+          "sourceVerified": "FCOM_11.40.11_13_TEXT_AUDITED"
         },
         {
           "lsk": "L5",
@@ -454,7 +454,7 @@
           "field": null,
           "format": null,
           "hasNavigateAction": false,
-          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+          "sourceVerified": "FCOM_11.40.11_13_TEXT_AUDITED"
         },
         {
           "lsk": "R5",
@@ -462,7 +462,7 @@
           "field": "IRS_HDG",
           "format": "HDG",
           "hasNavigateAction": false,
-          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+          "sourceVerified": "FCOM_11.40.11_13_TEXT_AUDITED"
         },
         {
           "lsk": "L6",
@@ -470,7 +470,7 @@
           "field": null,
           "format": null,
           "hasNavigateAction": true,
-          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+          "sourceVerified": "FCOM_11.40.11_13_TEXT_AUDITED"
         },
         {
           "lsk": "R6",
@@ -478,7 +478,7 @@
           "field": null,
           "format": null,
           "hasNavigateAction": true,
-          "sourceVerified": "FCOM_ILLUSTRATION_REVIEWED"
+          "sourceVerified": "FCOM_11.40.11_13_TEXT_AUDITED"
         }
       ],
       "issues": [],
@@ -4259,5 +4259,26 @@
       "visualDiffPassed": false,
       "interactionScenarioPassed": false
     }
-  ]
+  ],
+  "phase2A": {
+    "started": true,
+    "sourceReviewed": [
+      "IDENT",
+      "POS_INIT"
+    ],
+    "visualGoldenValidated": [],
+    "liveBrowserVerified": false,
+    "exactFCOMFolios": {
+      "IDENT": [
+        "11.40.8",
+        "11.40.9"
+      ],
+      "POS_INIT": [
+        "11.40.11",
+        "11.40.12",
+        "11.40.13"
+      ]
+    },
+    "note": "Text and LSK source review is NOT full screen/effectivity certification."
+  }
 }
