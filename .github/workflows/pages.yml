@@ -102,6 +102,7 @@ jobs:
           node --check panel-mosaic-lab/cockpit/flap-lever-test.js
           node --check panel-mosaic-lab/cockpit/flap-lever-model.js
           node panel-mosaic-lab/cockpit/ac-dc-metering.test.cjs
+          node panel-mosaic-lab/cockpit/ac-dc-selector.test.cjs
           node panel-mosaic-lab/cockpit/drive-amps-needle.test.cjs
           node panel-mosaic-lab/cockpit/apu-egt-needle.test.cjs
           node panel-mosaic-lab/cockpit/cabin-dual-needles.test.cjs
