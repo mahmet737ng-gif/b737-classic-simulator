@@ -35,13 +35,9 @@ const event=(id,next,kind='toggle')=>({id,next,kind});
 test('physical control detents are source-registry matched',()=>{
  const real=new Map([...registry.controls,...rotary.guards,...rotary.rotaries].map(x=>[x.id,x]));
  for(const [id,kind] of Object.entries(Gateway.KEYS)){
-  if(id==='bus-transfer'){
-   // Unmounted approved guard review. Never invent a source pixel socket.
-   const blueprints=JSON.parse(fs.readFileSync(path.join(__dirname,'../unity/Assets/B737Classic/GuardedSwitches/Resources/GuardedSwitchBlueprints.json')));
-   const bt=blueprints.controls.find(x=>x.controlId===id);
-   assert.ok(bt&&bt.sourceMount.requiresCalibratedSocket);
-   assert.equal(bt.sourceMount.sourceCenterNativePx,null);
-   assert.deepEqual(Gateway.DETENTS[id],['auto','off']);
+  const owner18=JSON.parse(fs.readFileSync(path.join(__dirname,'../panel-mosaic-lab/cockpit/guard-owner18-v1.json'))).controls.find(x=>x.id===id);
+  if(kind==='guarded'&&owner18){
+   assert.deepEqual([...Gateway.DETENTS[id]].sort(),owner18.states.map(x=>x.toLowerCase()).sort(),id);
   }else{
    assert.ok(real.has(id),'missing real mounted ID '+id);
    assert.deepEqual(Gateway.DETENTS[id]||['OFF','ON'],real.get(id).states,id);
@@ -196,7 +192,7 @@ test('frontend receives detached snapshot and cannot mutate ECU from it',()=>{
 });
 test('all mapped commands remain same physical ID, without modifying locked art files',()=>{
  const code=fs.readFileSync(path.join(__dirname,'../panel-mosaic-lab/cockpit/isn-cockpit.js'),'utf8');
- assert.match(code,/liveGateway\.synchronize\(e\.data\)/);
+ assert.match(code,/liveGateway\.synchronize\(mergeOwnerGuards\(e\.data\)\)/);
  assert.match(code,/liveGateway\.dispatch\(e\.data\.event\)/);
  assert.match(code,/getAircraftSnapshot:\(\)=>liveGateway\.snapshot\(\)/);
  assert.match(code,/physical\.dispatch\(ecu,event\)/);

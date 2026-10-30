@@ -102,7 +102,11 @@
   const dc2=tie?(tr.TR1||tr.TR2):tr.TR2;
   const batteryHealthy=!f.BATTERY_DEPLETED;
   const hotBattery=batteryHealthy,switchedHotBattery=batteryHealthy&&c.batterySwitch;
-  const batteryBus=tr.TR3||(batteryHealthy&&c.batterySwitch);
+  // FCOM 6.10.7: BAT forces the battery bus to the hot battery bus,
+  // regardless of BATTERY switch. Do not show a dead intermediate bus
+  // while claiming its inverter/standby consumers are powered.
+  const batteryBus=c.standbySelector==='BAT'?batteryHealthy:
+    tr.TR3||(batteryHealthy&&c.batterySwitch);
   const serviceBus=Boolean((c.onGround&&c.groundServiceSelected&&c.groundPowerAttached&&c.groundPowerQualityGood)||gen[1]);
   // TR3 is a described backup source; exact automatic backfeed routing is not validated here.
   const dcTr3BackupUnknown=tr.TR3&&!(tr.TR1||tr.TR2);
@@ -136,6 +140,7 @@
  function execute(commands){let s=initialState();for(const c of commands)s=apply(s,c);return evaluate(s);}
  return Object.freeze({REF,FAULTS,CONTROL_KEYS,initialState,apply,evaluate,execute});
 });
+
 </script>
   <script>
 /* Embedded: ../engine/systems/electrical-loads-v8.js */

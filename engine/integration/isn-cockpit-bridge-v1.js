@@ -20,7 +20,8 @@
  const ELECTRICAL_LAMPS=Object.freeze({
   'busOff1':'busOff1','busOff2':'busOff2',
   'transferBusOff1':'transferBusOff1','transferBusOff2':'transferBusOff2',
-  'genOffBus1':'gen-off-bus-1','genOffBus2':'gen-off-bus-2'
+  'genOffBus1':'gen-off-bus-1','genOffBus2':'gen-off-bus-2',
+  'groundPowerAvailable':'ground-power-available','standbyPowerOff':'standby-power-off'
  });
  const GUARDED=Object.freeze({'battery-master':'batterySwitch','standby-power':'standbySelector','bus-transfer':'busTransferAuto',
   'generator-disconnect-1':'GEN1_FAILED','generator-disconnect-2':'GEN2_FAILED'});

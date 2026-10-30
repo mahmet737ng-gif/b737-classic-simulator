@@ -1,0 +1,27 @@
+name: Classic live electrical network phase 1
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  electrical-live:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Network, actual Owner18 inputs, existing Gateway and meters
+        run: |
+          node --check panel-mosaic-lab/cockpit/electrical-live-unified-v1.js
+          node --check panel-mosaic-lab/cockpit/isn-cockpit.js
+          node --test tests/electrical-network-v1.test.cjs tests/owner18-electrical-input-v1.test.cjs tests/electrical-v7.test.cjs tests/electrical-loads-v8.test.cjs tests/isn-electrical-pack-v1.test.cjs tests/isn-cockpit-bridge-v1.test.cjs tests/unified-live-gateway-v1.test.cjs panel-mosaic-lab/cockpit/residual-volts.test.cjs
+      - name: Preserve approved cockpit hardware
+        run: |
+          python3 panel-mosaic-lab/verify-final-overhead.py
+          python3 panel-mosaic-lab/cockpit/verify-guard-redzone.py --negative-self-test
+          python3 panel-mosaic-lab/cockpit/verify-irs-complete-redzone-v1.py --negative-self-test

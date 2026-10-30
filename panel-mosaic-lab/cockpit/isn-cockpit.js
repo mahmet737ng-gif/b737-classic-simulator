@@ -14,11 +14,12 @@
   ['B737ISNAPULoadDynamicsV1','../../engine/integration/isn-apu-load-dynamics-v1.js'],
   ['B737ISN1318ECUTestbenchV1','../../engine/integration/isn-13-18-ecu-testbench-v1.js'],
   ['B737UnifiedLiveGatewayV1','../../engine/runtime/unified-live-gateway-v1.js'],
+  ['B737Owner18ElectricalInputV1','../../engine/runtime/owner18-electrical-input-v1.js'],
   ['B737UnifiedAuthorityDiagnosticsV1','../../engine/runtime/unified-authority-diagnostics-v1.js']
  ];
  async function loadDependencies(){for(const [global,path] of deps){if(window[global])continue;
   await new Promise((resolve,reject)=>{const script=document.createElement('script');
-   script.src=new URL(path,moduleBase).href+'?v=ISN-0019-LIVE-START';script.onload=resolve;
+   script.src=new URL(path,moduleBase).href+'?v=ELEC-LIVE-0001';script.onload=resolve;
    script.onerror=()=>reject(Error('Missing integration script '+path));document.head.append(script);});
  }}
  function init(){
@@ -46,7 +47,7 @@
  document.querySelector('.workbench .toolbar').after(strip);
  const cards=Object.fromEntries([1,2].map(n=>['engine'+n,strip.querySelector('[data-engine="engine'+n+'"]')]));
  const panel=document.createElement('section');panel.className='isn-bridge-panel';panel.id='isnBridgePanel';
- panel.innerHTML='<h2>ISN-02 · شبکهٔ زندهٔ کابین</h2><p id="isnStatus" role="status">منتظر وضعیت سوییچ‌های اورهد…</p><p class="isn-note">خروجی Source-Gated مستند است؛ منبع دقیق تغذیهٔ ۸ پمپ هنوز تأیید نشده و UNKNOWN باقی می‌ماند. وضعیت‌های آموزشی به‌صورت مجزا مشخص‌اند.</p><button id="isnMode" type="button" aria-pressed="false">Training Surrogate · خاموش</button><div class="isn-buses" id="isnBuses"></div><details><summary>کنترل‌های مربی · بدون سوییچ فیزیکی</summary><label class="isn-setting"><input type="checkbox" id="isnBusTransfer" checked> BUS TRANSFER AUTO (فقط تست؛ سوییچ در رجیستری نیست)</label><label class="isn-setting"><input type="checkbox" id="isnGen1Fault"> GEN 1 FAILED · تزریق مربی</label><label class="isn-setting"><input type="checkbox" id="isnGen2Fault"> GEN 2 FAILED · تزریق مربی</label><button id="isnReset" type="button">بازنشانی موتور ISN بر اساس وضعیت فعلی کابین</button></details><div class="isn-scroll"><table class="isn-table"><thead><tr><th>سوییچ / چراغ واقعی</th><th>RUN</th><th>LOW PRESS</th><th>Power Evidence</th><th>تست مربی</th></tr></thead><tbody id="isnPumpRows"></tbody></table></div><div class="isn-warnings" id="isnWarnings"></div><details><summary>ردگیری فرمان → سیستم → چراغ / هشدار</summary><div id="isnTrace" class="isn-trace" dir="ltr"></div></details><p id="isnError" class="isn-error" role="status"></p>';
+ panel.innerHTML='<h2>ISN-02 · شبکهٔ زندهٔ کابین</h2><p id="isnStatus" role="status">منتظر وضعیت سوییچ‌های اورهد…</p><p class="isn-note">خروجی Source-Gated مستند است؛ منبع دقیق تغذیهٔ ۸ پمپ هنوز تأیید نشده و UNKNOWN باقی می‌ماند. وضعیت‌های آموزشی به‌صورت مجزا مشخص‌اند.</p><button id="isnMode" type="button" aria-pressed="false">Training Surrogate · خاموش</button><div class="isn-buses" id="isnBuses"></div><details><summary>کنترل‌های مربی · بدون سوییچ فیزیکی</summary><label class="isn-setting"><input type="checkbox" id="isnBusTransfer" checked> BUS TRANSFER AUTO · وضعیت سوییچ واقعی OH12</label><label class="isn-setting"><input type="checkbox" id="isnGen1Fault"> GEN 1 FAILED · تزریق مربی</label><label class="isn-setting"><input type="checkbox" id="isnGen2Fault"> GEN 2 FAILED · تزریق مربی</label><button id="isnReset" type="button">بازنشانی موتور ISN بر اساس وضعیت فعلی کابین</button></details><div class="isn-scroll"><table class="isn-table"><thead><tr><th>سوییچ / چراغ واقعی</th><th>RUN</th><th>LOW PRESS</th><th>Power Evidence</th><th>تست مربی</th></tr></thead><tbody id="isnPumpRows"></tbody></table></div><div class="isn-warnings" id="isnWarnings"></div><details><summary>ردگیری فرمان → سیستم → چراغ / هشدار</summary><div id="isnTrace" class="isn-trace" dir="ltr"></div></details><p id="isnError" class="isn-error" role="status"></p>';
  const trainer=document.createElement('details');trainer.innerHTML='<summary>هشدارهای مستند · ورودی سناریوی مربی</summary><label class="isn-setting"><input id="isnFire1" type="checkbox"> ENGINE 1 FIRE · ورودی آزمایشی</label><label class="isn-setting"><input id="isnCabinHigh" type="checkbox"> CABIN ALTITUDE 12000 ft · ورودی آزمایشی</label><button id="isnAckFire" type="button">Fire Bell Acknowledge</button><button id="isnCutoutCabin" type="button">Cabin Horn Cutout</button>';
  panel.querySelector('.isn-warnings').after(trainer);
  const replayButton=document.createElement('button');replayButton.id='isnReplay';replayButton.type='button';replayButton.textContent='بازپخش قطعی رویدادهای ISN';
@@ -82,6 +83,24 @@
  const liveGateway=new window.B737UnifiedLiveGatewayV1.Gateway({bridge,ecu,physical:{
   dispatch:(_ecu,event)=>ecuCommandFromOverhead(event),synchronize:(current,packet)=>physical.synchronize(current,packet)
  }});
+ let lastPhysicalPacket=null,lastOwnerGuardSignature='';
+ function ownerElectricalGuards(){
+  return byId('overheadFrame')?.contentWindow?.B737GuardOwner18?.inspect?.()||{};
+ }
+ function mergeOwnerGuards(packet){return window.B737Owner18ElectricalInputV1.merge(packet,ownerElectricalGuards());}
+ function synchronizeOwnerGuards(){
+  if(!lastPhysicalPacket||!liveGateway.initialized)return false;
+  const mounted=ownerElectricalGuards(),signature=JSON.stringify(Object.keys(window.B737Owner18ElectricalInputV1.DETENTS).map(id=>mounted[id]||null));
+  if(signature===lastOwnerGuardSignature)return false;
+  lastOwnerGuardSignature=signature;
+  liveGateway.synchronize(mergeOwnerGuards(lastPhysicalPacket));return true;
+ }
+ // Consume the existing, approved output only. A cover-close AUTO transition
+ // is reconciled as a hardware snapshot, never rejected as a fake open guard.
+ window.addEventListener('b737:guard-changed',event=>{
+  if(event.detail?.source!=='owner18-photo-v1'||!Object.hasOwn(window.B737Owner18ElectricalInputV1.DETENTS,event.detail?.id))return;
+  if(synchronizeOwnerGuards())render();
+ });
  for(const id of [1,2]){
   byId('unifiedStarterDuct'+id).addEventListener('change',event=>{
    try{ecu.setStartDuctPressure('engine'+id,Number(event.target.value));render();}
@@ -185,7 +204,7 @@
   }
   const liveFailure=liveGateway.get().latestFailure;
   byId('isnError').textContent=liveFailure?'فرمان فیزیکی رد شد: '+liveFailure.id+' · '+liveFailure.reason:
-   rejected.length?'آخرین فرمان ردشده: '+rejected.at(-1).reason:'BUS TRANSFER: ورودی آزمایشی؛ ارتباط واقعیِ سوییچ هنوز موجود نیست.';
+   rejected.length?'آخرین فرمان ردشده: '+rejected.at(-1).reason:(ownerElectricalGuards()['bus-transfer']?'BUS TRANSFER: متصل به گارد نصب‌شدهٔ Owner18.':'BUS TRANSFER: منتظر نصب گارد.');
   renderStart();
   postProjection();
  }
@@ -201,7 +220,8 @@
   catch(error){byId('isnStartError').textContent=error.message;renderStart();}
  });
  byId('isnMode').onclick=()=>{bridge.instructor({type:'MODE',value:session.mode==='SOURCE_GATED'?'TRAINING_SURROGATE':'SOURCE_GATED',instructor:true});render();};
- byId('isnBusTransfer').onchange=e=>{bridge.instructor({type:'ELECTRICAL',action:{type:'CONTROL',key:'busTransferAuto',value:e.target.checked}});render();};
+ byId('isnBusTransfer').disabled=true;
+ byId('isnBusTransfer').title='BUS TRANSFER را از سوییچ واقعی روی OH12 تغییر بده.';
  for(const [input,fault] of [['isnGen1Fault','GEN1_FAILED'],['isnGen2Fault','GEN2_FAILED']])byId(input).onchange=e=>{bridge.instructor({type:'ELECTRICAL',action:{type:'FAULT',id:fault,active:e.target.checked,instructor:true}});render();};
  byId('isnFire1').onchange=e=>{bridge.instructor({type:'WARNING_SENSOR',key:'engine1Fire',value:e.target.checked});render();};
  byId('isnCabinHigh').onchange=e=>{bridge.instructor({type:'WARNING_SENSOR',key:'cabinAltitudeFt',value:e.target.checked?12000:0});render();};
@@ -241,7 +261,8 @@
   if(e.origin!==location.origin||e.source!==byId('overheadFrame')?.contentWindow||e.data?.type!=='b737:cockpit-overhead')return;
   try{
    if(e.data.kind==='controls-state'){
-    liveGateway.synchronize(e.data);
+    lastPhysicalPacket=e.data;
+    liveGateway.synchronize(mergeOwnerGuards(e.data));
     for(const event of pendingEvents.splice(0))liveGateway.dispatch(event);
     render();
    }else if(e.data.kind==='control-event'){
@@ -253,6 +274,8 @@
  });
  let lastTime=performance.now();
  setInterval(()=>{const now=performance.now(),elapsed=Math.max(0,Math.min(500,now-lastTime));lastTime=now;
+  // Owner18 may mount asynchronously after the first iframe report.
+  if(synchronizeOwnerGuards())render();
   const sources=chain.get().sources;
   if(!chain.jobs.length&&!sources.engine1.running&&!sources.engine2.running&&!sources.apu.running)return;
   ecu.advance(elapsed);
@@ -265,15 +288,18 @@
  window.B737ISNCockpitV1=Object.freeze({getState:()=>bridge.get(),getStartState:()=>chain.get(),getECUState:()=>ecu.get(),
    getArchitectureAudit:()=>window.B737UnifiedAuthorityDiagnosticsV1.audit({bridge:bridge.get(),ecu:ecu.get()}),
    getLiveGatewayState:()=>liveGateway.get(),getAircraftSnapshot:()=>liveGateway.snapshot(),
+   getElectricalState:()=>JSON.parse(JSON.stringify({schema:session.electricalState.schema,rev:session.electricalState.rev,
+    config:session.electricalState.config,source:session.electricalState.source,faults:session.electricalState.faults})),
    // Pass only source-observed pneumatic supply to pressurization. UNKNOWN
    // must never become a fabricated zero PACK or an invented DC bus mapping.
    getPressurizationAir:()=>startSession.core.complete()
      ?startSession.core.Pneumatics.derive(startSession.core.pneumaticState).toPressurization
      :null,
-  instructor:command=>{const r=bridge.instructor(command);render();return r;},reset:()=>{const r=bridge.reset();render();return r;}});
+  instructor:command=>{const r=bridge.instructor(command);chain.syncPower();ecu.core.refreshFuelDelivery();render();return r;},reset:()=>{const r=bridge.reset();render();return r;}});
  // Dependencies are dynamically loaded, so request a fresh iframe snapshot
  // even if its initial ready event arrived before this message listener.
  byId('overheadFrame')?.contentWindow?.postMessage({type:'b737:cockpit-command',action:'report'},location.origin);
+ window.dispatchEvent(new CustomEvent('b737:electrical-owner-ready'));
  render();
  }
  loadDependencies().then(init).catch(error=>{

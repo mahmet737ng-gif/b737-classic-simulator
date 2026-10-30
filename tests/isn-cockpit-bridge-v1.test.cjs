@@ -45,7 +45,9 @@ const bridge=make();let r=bridge.synchronize(initial),s=r.state;
 assert.equal(r.initialized,true);
 assert.equal(r.coverage.pumpControls,8);
 assert.equal(r.coverage.pumpLamps,8);
-assert.equal(r.coverage.electricalLamps,6);
+assert.equal(r.coverage.electricalLamps,8);
+assert.equal(r.lamps['ground-power-available'],s.electrical.lamps.groundPowerAvailable);
+assert.equal(r.lamps['standby-power-off'],s.electrical.lamps.standbyPowerOff);
 assert.equal(r.coverage.busTransferPhysicalControl,false);
 assert.equal(s.mode,'SOURCE_GATED');
 for(const [control,pump] of Object.entries(Adapter.PUMPS)){
