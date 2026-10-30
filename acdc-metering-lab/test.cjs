@@ -24,7 +24,7 @@ test("locked user-source image resolves to exact native PNG with immutable SHA25
 test("all nine controls have finite native-image coordinates, safe radii and no approvals",()=>{
  assert.deepEqual(Object.keys(manifest.markers).sort(),names.slice().sort());
  for(const [name,p] of Object.entries(manifest.markers)){
-  assert.equal(p.confidence,"PROVISIONAL",name);
+  assert.equal(p.confidence,["dcAmps","cpsFreq","dcVolts","acVolts"].includes(name)?"MEASURED_BEZEL_CENTER__NEEDLE_PIVOT_QA_PENDING":"PROVISIONAL",name);
   assert.ok(p.x>=0&&p.x<=1095&&p.y>=0&&p.y<=1436,name);
   assert.ok(p.r>=5&&p.r<300,name);
   assert.equal(p.type,["dcAmps","cpsFreq","dcVolts","acVolts"].includes(name)?"meter":name.endsWith("Selector")?"rotary":name==="residual"?"momentary":"toggle");
@@ -39,6 +39,9 @@ test("photo overlay remains independent of immutable source and never uses a new
  assert.match(html,/viewBox="0 0 1095 1436"/);
  assert.match(html,/<g id="artwork"><\/g><g id="calibration"><\/g>/);
  assert.match(html,/photo-stage\.js/);
+ assert.match(html,/ac-dc-metering-model\.js/);
+ assert.match(code,/ac-dc-metering-needle\.svg/);
+ assert.match(code,/bearingForReading/);
  assert.match(code,/setPointerCapture\(ev\.pointerId\)/);
  assert.match(code,/\$\("board"\)\.addEventListener\("pointermove"/);
  assert.match(code,/unifiedMountAllowed:false/);
