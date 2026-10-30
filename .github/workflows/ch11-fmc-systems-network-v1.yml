@@ -17,6 +17,8 @@ on:
       - 'engine/ch11/cdu-24-column-metrics-v1.js'
       - 'engine/ch11/fcom-screen-contract-v1.js'
       - 'engine/ch11/master-screen-registry-v1.json'
+      - 'engine/ch11/golden-screen-diff-v1.js'
+      - 'engine/ch11/tests/golden-screen-diff-v1.test.cjs'
       - 'engine/ch11/tests/fcom-screen-compositor-v1.test.cjs'
       - 'cdu-standalone-v6/engine/screen-compositor-v1.js'
       - 'cdu-standalone-v6/index.html'
@@ -80,6 +82,8 @@ jobs:
       - run: node --check engine/ch11/fcom-screen-contract-v1.js
       - run: node --check cdu-standalone-v6/engine/screen-compositor-v1.js
       - run: node --test engine/ch11/tests/fcom-screen-compositor-v1.test.cjs
+      - run: node --check engine/ch11/golden-screen-diff-v1.js
+      - run: node --test engine/ch11/tests/golden-screen-diff-v1.test.cjs
       - run: node --check panel-mosaic-lab/cockpit/app.js
       - run: node --test panel-mosaic-lab/cockpit/tests/cdu-embed-typography-v2.test.cjs
       - run: node tests/cdu-font-lock.test.cjs
