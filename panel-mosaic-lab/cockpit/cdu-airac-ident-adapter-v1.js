@@ -15,6 +15,7 @@
   catch(err){return {error:String(err?.message||err)};}
  }
  function sync(){
+  try{bank.validate(state.fmcNavDataBanks);}catch{state.fmcNavDataBanks=bank.initial();}
   const next=bank.ident(state.fmcNavDataBanks);
   const src=state.preflightEvidence||{};
   state.preflightEvidence={...src,
