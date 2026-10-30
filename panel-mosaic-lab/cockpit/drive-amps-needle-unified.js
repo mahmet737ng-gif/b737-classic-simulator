@@ -30,7 +30,9 @@
  }
  function setAngle(id,value){
   if(!model.needles.some(needle=>needle.id===id))throw Error('Unknown needle '+id);
-  state[id]=model.angle(value);
+  const raw=model.angle(value);
+  state[id]=id==='apuAcAmps'?
+   Math.max(model.apuAmpPhotoAngles[0],Math.min(model.apuAmpPhotoAngles.at(-1),raw)):raw;
   animations.get(id).setTarget(state[id]);
   paint(id);return state[id];
  }
@@ -87,7 +89,7 @@
   for(const needle of model.needles){
    const calibrated=ampsMeter(needle.id);
    const label=document.createElement('label');label.textContent=needle.label+(calibrated?' · PRINTED SCALE (A)':' · QA ANGLE ONLY (°)');label.style.display='block';label.style.direction='ltr';
-   const input=document.createElement('input');Object.assign(input,{type:'range',min:calibrated?'0':'-90',max:calibrated?'200':'90',step:'1'});input.style.width='100%';input.style.accentColor='#edf0e8';
+   const input=document.createElement('input');Object.assign(input,{type:'range',min:calibrated?'0':needle.id==='apuAcAmps'?'-74':'-90',max:calibrated?'200':needle.id==='apuAcAmps'?'74':'90',step:'1'});input.style.width='100%';input.style.accentColor='#edf0e8';
    const output=document.createElement('output');output.style.display='block';output.style.textAlign='left';output.style.direction='ltr';
    input.addEventListener('input',()=>calibrated?setAmps(needle.id,Number(input.value)):setAngle(needle.id,Number(input.value)));
    label.append(input,output);section.append(label);inputs.set(needle.id,input);outputs.set(needle.id,output);paint(needle.id);
