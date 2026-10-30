@@ -67,6 +67,11 @@
   const available=left.getBoundingClientRect().width;
   if(!(available>100))return {ready:false,reason:'SCREEN_WIDTH_NOT_MEASURABLE'};
   const family=fontFace(left),smallFamily=fontFace(small);
+  const fonts=root.document.fonts;
+  if(fonts&&typeof fonts.check==='function'&&
+     (!fonts.check('100px "BoeingCDULarge"',Metrics.TEST)||
+      !fonts.check('100px "BoeingCDUSmall"',Metrics.TEST)))
+   return {ready:false,reason:'WAITING_FOR_APPROVED_BOEING_FONTS'};
   const large=Metrics.calibrate(ctx,available,family);
   const little=Metrics.calibrate(ctx,available,smallFamily);
   if(!large.valid||!little.valid)return {ready:false,reason:'FONT_NOT_READY_OR_METRIC_MISMATCH',large,little};
