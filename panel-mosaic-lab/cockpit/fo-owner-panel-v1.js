@@ -24,17 +24,32 @@ function matchPaint(img,doc){
  ctx.putImageData(frame,0,0);img.dataset.paintMatched='ENGINE-GRAY-20261030';img.src=canvas.toDataURL('image/png');
 }
 function install(win){const doc=win.document;let pending=false;
+const originalLayers=new Map();let originalInnerClip=null,originalOuterVisibility=null;
+function remember(layer){if(originalLayers.has(layer))return;originalLayers.set(layer,{parent:layer.parentElement,next:layer.nextSibling,viewBox:layer.getAttribute('viewBox'),groups:[...layer.children].map(node=>({node,transform:node.getAttribute('transform')})),caps:[...layer.querySelectorAll(':scope > circle')]});}
+function restore(){for(const[layer,old]of originalLayers){for(const item of old.groups){if(item.transform===null)item.node.removeAttribute('transform');else item.node.setAttribute('transform',item.transform);}for(const cap of old.caps)if(cap.parentNode!==layer)layer.append(cap);layer.setAttribute('viewBox',old.viewBox);if(layer.parentElement!==old.parent)old.parent.insertBefore(layer,old.next?.parentNode===old.parent?old.next:null);}}
+
 function mount(){const native=doc.querySelector('#region-main .region-native');if(!native)return;
 let photo=doc.getElementById('fo-owner-panel-v1');
+if(doc.documentElement.dataset.engineIndication!=='CONVENTIONAL'){
+ if(photo)photo.style.display='none';restore();
+ const inner=native.querySelector('[data-piece="fo-inner"]'),outer=native.querySelector('[data-piece="fo-outer"]');
+ if(inner&&originalInnerClip!==null)inner.style.clipPath=originalInnerClip;
+ if(outer&&originalOuterVisibility!==null)outer.style.visibility=originalOuterVisibility;
+ const css=doc.getElementById('fo-owner-registration-css');if(css?.textContent)css.textContent='';
+ for(const n of native.querySelectorAll('[data-owner-photo-registration]'))delete n.dataset.ownerPhotoRegistration;
+ return;
+}
+
 if(!photo){photo=doc.createElement('div');photo.id='fo-owner-panel-v1';photo.dataset.piece='fo-owner';photo.className='fo-owner-panel';Object.assign(photo.style,{position:'absolute',left:rect.x+'px',top:rect.y+'px',width:rect.w+'px',height:rect.h+'px',zIndex:'20',pointerEvents:'none'});const img=doc.createElement('img');img.src=new URL('./assets/fo-efis-rd-owner-20261030-v1.png',doc.baseURI).href;img.alt='Owner approved F/O EFIS/RD panel';img.draggable=false;Object.assign(img.style,{width:'100%',height:'100%',display:'block'});img.onload=()=>{photo.dataset.loaded='true';matchPaint(img,doc);};img.onerror=()=>photo.dataset.loaded='false';photo.append(img);native.append(photo);}
-const outer=native.querySelector('[data-piece="fo-outer"]');if(outer)outer.style.visibility='hidden';
-const inner=native.querySelector('[data-piece="fo-inner"]');if(inner)inner.style.clipPath='inset(0 59.1398% 0 0)';
+photo.style.display='block';
+const outer=native.querySelector('[data-piece="fo-outer"]');if(outer){if(originalOuterVisibility===null)originalOuterVisibility=outer.style.visibility;outer.style.visibility='hidden';}
+const inner=native.querySelector('[data-piece="fo-inner"]');if(inner){if(originalInnerClip===null)originalInnerClip=inner.style.clipPath;inner.style.clipPath='inset(0 59.1398% 0 0)';}
 // Move the EXISTING live needle nodes, preserving state and event/API references.
-for(const layer of native.querySelectorAll('svg[data-flight-needles]')){if(layer.dataset.flightNeedles==='captain')continue;
+for(const layer of native.querySelectorAll('svg[data-flight-needles]')){if(layer.dataset.flightNeedles==='captain')continue;remember(layer);
 for(const blade of layer.querySelectorAll('[data-flight-needle][data-station="firstOfficer"]')){const key=blade.dataset.flightNeedle,p=pivots[key];if(!p)continue;const group=blade.parentElement;const rmi=key.startsWith('rmi');const transform=rmi?`translate(${p[0]} ${p[1]}) scale(${p[2]/215*.835})`:`translate(${p[0]} ${p[1]}) scale(${p[2]/229}) translate(-256 -256)`;group.setAttribute('transform',transform);}
 if(layer.parentElement!==photo){for(const cap of layer.querySelectorAll(':scope > circle'))cap.remove();layer.setAttribute('viewBox','0 0 1286 1223');photo.append(layer);}
 }
-for(const layer of native.querySelectorAll('svg[data-airspeed-pointers="firstOfficer"]')){const p=[310,422],model=win.B737AirspeedPointersModel;
+for(const layer of native.querySelectorAll('svg[data-airspeed-pointers="firstOfficer"]')){remember(layer);const p=[310,422],model=win.B737AirspeedPointersModel;
 for(const group of layer.children){const blade=group.querySelector('[data-airspeed-blade]');if(!blade)continue;const limit=blade.dataset.airspeedBlade==='vmo-mmo';const def=limit?model.pointers.vmoMmo:model.pointers.airspeed;group.setAttribute('transform',`translate(${p[0]} ${p[1]}) scale(${(limit?95:100)/def.assetTipRadius}) translate(-512 -512)`);}
 if(layer.parentElement!==photo){for(const cap of layer.querySelectorAll(':scope > circle'))cap.remove();layer.setAttribute('viewBox','0 0 1286 1223');photo.append(layer);}}
 // A bounded stylesheet overrides placement only for the three owner-authorized guards.
@@ -48,7 +63,7 @@ const text=rules.join('\n');if(css.textContent!==text)css.textContent=text;
 win.B737FoOwnerPanelV1={version:'FO-OWNER-20261030',source,rect,guards,inspect:()=>({loaded:photo.dataset.loaded==='true',guards:Object.keys(guards).map(id=>{const n=native.querySelector(`[data-guard-id="${id}"]`);return{id,mounted:!!n,box:n?.getBoundingClientRect().toJSON()};})})};
 }
 function queue(){if(pending)return;pending=true;win.requestAnimationFrame(()=>{pending=false;mount();});}
-win.addEventListener('b737:cockpit-mounted',queue);win.addEventListener('resize',queue);new win.MutationObserver(queue).observe(doc.getElementById('scene')||doc.body,{childList:true,subtree:true});queue();
+win.addEventListener('b737:engine-indication-view',queue);win.addEventListener('b737:aircraft-profile-change',queue);win.addEventListener('b737:cockpit-mounted',queue);win.addEventListener('resize',queue);new win.MutationObserver(queue).observe(doc.getElementById('scene')||doc.body,{childList:true,subtree:true});queue();
 }
 return {source,rect,guards,placement,install};
 });
