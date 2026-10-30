@@ -25,7 +25,7 @@ const CONFIG=Object.freeze({oilPressureLampOnPsi:11.75,oilPressureLampOffPsi:13,
  // Educational thermodynamic inertia (not an airframe/APU empirical curve).
  // 12s fast phase reaches 50°C from 800°C in ~33.3s; from 620°C in ~30.2s.
  // Below 50°C the long slow tail approaches the indicated zero mark.
- apuEGTChangeoverC:50,apuCoolFastTauMs:12000,apuCoolTailTauMs:1200000,
+ apuEGTChangeoverC:50,apuCoolFastTauMs:12000,apuCoolTailTauMs:1800000,
  engineN1WindDownMs:5200,engineN2WindDownMs:7200,engineEGTWindDownMs:12000,
  maxStepMs:250});
 const finite=x=>typeof x==='number'&&Number.isFinite(x);
