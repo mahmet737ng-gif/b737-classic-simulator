@@ -18,8 +18,8 @@
    const found=arr.map(t=>inputs[t]).find(x=>valid(x));
    return found||null;
   };
-  const gps=pick(['navigation.gps1','navigation.gps2']);
-  const irs=pick(['irs.left','irs.right']);
+  const gps=['navigation.gps1','navigation.gps2'].map(t=>inputs[t]).find(x=>valid(x)&&coord(x.value)&&x.value.fixValid===true)||null;
+  const irs=['irs.left','irs.right'].map(t=>inputs[t]).find(x=>valid(x)&&coord(x.value)&&x.value.positionValid===true)||null;
   const adc=pick(['airdata.adc1','airdata.adc2']);
   const fuel=inputs['fuel.quantity'],plan=inputs['crew.flightplan'],feeds=inputs['electrical.fmcFeeds'];
   const radioCandidates=['navigation.dme1','navigation.dme2','navigation.vor1','navigation.vor2'].filter(t=>valid(inputs[t]));
