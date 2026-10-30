@@ -16,6 +16,11 @@ on:
       - 'panel-mosaic-lab/cockpit/cdu-screen-fit-v5.js'
       - 'engine/ch11/cdu-24-column-metrics-v1.js'
       - 'engine/ch11/fcom-screen-contract-v1.js'
+      - 'engine/ch11/cdu-preflight-evidence-v1.js'
+      - 'engine/ch11/tests/cdu-preflight-evidence-v1.test.cjs'
+      - 'cdu-standalone-v6/tests/ch11-ident-posinit-source-v1.test.cjs'
+      - 'panel-mosaic-lab/cockpit/cdu-irs-adapter-v1.js'
+      - 'docs/CH11_PHASE2A_IDENT_POSINIT_2026-10-30_FA.md'
       - 'engine/ch11/master-screen-registry-v1.json'
       - 'engine/ch11/golden-screen-diff-v1.js'
       - 'engine/ch11/tests/golden-screen-diff-v1.test.cjs'
@@ -85,6 +90,10 @@ jobs:
       - run: node --check engine/ch11/fcom-screen-contract-v1.js
       - run: node --check cdu-standalone-v6/engine/screen-compositor-v1.js
       - run: node --test engine/ch11/tests/fcom-screen-compositor-v1.test.cjs
+      - run: node --check engine/ch11/cdu-preflight-evidence-v1.js
+      - run: node --check panel-mosaic-lab/cockpit/cdu-irs-adapter-v1.js
+      - run: node --test engine/ch11/tests/cdu-preflight-evidence-v1.test.cjs
+      - run: node --test cdu-standalone-v6/tests/ch11-ident-posinit-source-v1.test.cjs
       - run: node --check engine/ch11/golden-screen-diff-v1.js
       - run: node --test engine/ch11/tests/golden-screen-diff-v1.test.cjs
       - run: node --check engine/ch11/cdu-transition-ledger-v1.js
