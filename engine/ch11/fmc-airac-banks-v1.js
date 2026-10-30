@@ -72,6 +72,24 @@
    requiresRouteClear:true,approvedOnGround:true};
   return {state:next,changed:true,clearRoute:true};
  }
+ const ROUTE_FIELDS=Object.freeze(['ORIGIN','DEST','CO_ROUTE','FLIGHT','RUNWAY','WPT1','WPT2','OFFSET']);
+ const ROUTE_STATE=Object.freeze(['navdbActive','navdbPending','navdbStage',
+  'stage5Pending','stage5Committed','stage5AwaitingExec','stage6PendingPlan',
+  'stage6Selections','stage6AwaitingExec','stage6BasePlanId','depArrSelection']);
+ function switchFmc(fmc,cycle,environment){
+  if(!fmc||!fmc.fmcNavDataBanks)throw Error('FMC_NAVDATA_BANKS_REQUIRED');
+  const decision=activate(fmc.fmcNavDataBanks,cycle,environment);
+  const next=copy(fmc);
+  next.fmcNavDataBanks=decision.state;
+  if(decision.changed){
+   for(const key of ROUTE_FIELDS)if(Object.hasOwn(next.active||{},key))next.active[key]='';
+   for(const key of ROUTE_FIELDS)if(Object.hasOwn(next.pending||{},key))delete next.pending[key];
+   next.stagedRoute={};
+   for(const key of ROUTE_STATE)delete next[key];
+   next.message='';next.scratch='';
+  }
+  return {state:next,changed:decision.changed,clearedRoute:decision.clearRoute};
+ }
  function validate(s){
   if(!s||s.schema!==SCHEMA||!s.installed||typeof s.installed!=='object')
    throw Error('INVALID_AIRAC_BANK_STATE');
@@ -98,5 +116,5 @@
    pendingCycle2611:!s.installed['2611'],cycle2611DateRange:dateRange('2611'),
    statusFromMetadataOnly:s.installed['2611']===undefined};
  }
- return Object.freeze({SCHEMA,VERSION,CALENDAR,initial,currentCycle,dateRange,install,activate,validate,ident,status});
+ return Object.freeze({SCHEMA,VERSION,CALENDAR,initial,currentCycle,dateRange,install,activate,switchFmc,validate,ident,status});
 });
