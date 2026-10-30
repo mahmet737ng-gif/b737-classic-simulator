@@ -20,12 +20,13 @@
   const blade=mounted.get(id);
   if(blade)blade.style.transform=`rotate(${state[id]}deg)`;
   const output=outputs.get(id),input=inputs.get(id),sc=model.photoScale[id],sample=samples[id];
-  const parked=sample!==null&&sample<sc.values[0];
+  const residual=id==='acVolts'&&acMode==='RESIDUAL';
+  const parked=sample!==null&&!residual&&sample<sc.values[0];
   const quality=photoVerified(id)?'PHOTO TICKS':'PROVISIONAL SCALE';
   if(output)output.textContent=sample===null?
     (state[id].toFixed(2)+'° · ANGLE / PARK QA'):
     (parked?'NO INDICATION · PARKED':
-     sample.toFixed(1)+' '+sc.unit+' · '+state[id].toFixed(2)+'° · '+quality);
+     sample.toFixed(1)+' '+sc.unit+(residual?' · RESIDUAL 0–30V':'')+' · '+state[id].toFixed(2)+'° · '+quality);
   if(input)input.value=String(sample===null?sc.values[0]:sample);
  }
  function setAngle(id,value){
@@ -36,6 +37,7 @@
   if(!model.meters.some(meter=>meter.id===id))throw Error('Unknown AC/DC meter '+id);
   if(value!==null&&(typeof value!=='number'||!Number.isFinite(value)))throw Error('Non-finite AC/DC meter reading');
   if(mode!==undefined&&(id!=='acVolts'||!['NORMAL','RESIDUAL'].includes(mode)))throw Error('Invalid meter scale mode');
+  if(id==='acVolts'&&value!==null&&mode==='RESIDUAL'&&(value<0||value>30))throw Error('Residual voltage must be 0–30V');
   if(id==='acVolts'&&mode!==undefined)acMode=mode;
   const angle=id==='acVolts'?model.angleForAcVolts(value,{mode:acMode}):model.angleForIndication(id,value);
   state[id]=angle;samples[id]=value;paint(id);return angle;
@@ -50,6 +52,7 @@
    if(!model.meters.some(m=>m.id===id))throw Error('Unknown meter sample '+id);
    if(value!==null&&(typeof value!=='number'||!Number.isFinite(value)))throw Error('Meter sample must be finite or null');
   }
+  if(acVoltsMode==='RESIDUAL'&&entries.some(([id,value])=>id==='acVolts'&&value!==null&&(value<0||value>30)))throw Error('Residual sample out of 0–30V scale');
   if(acVoltsMode!==undefined)acMode=acVoltsMode;
   for(const [id,value] of entries)setReading(id,value);
   return getReadings();
