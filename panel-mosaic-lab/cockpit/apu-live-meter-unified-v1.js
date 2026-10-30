@@ -4,7 +4,8 @@
 (function(root){
  'use strict';
  // The actual OH12 photographed EGT instrument is numbered 0..8 (°C×100),
- // clockwise from approximately 4 o'clock to 12 o'clock, NOT 0..1000°C.
+ // clockwise from the lower-right zero tick circled in the owner's image,
+ // past 1..8 to the upper arc; NOT 0..1000°C.
  // Graduations were measured against the owner screenshot: (dial centre
  // 396,796 px; numbered label centres 1:(510,975), 2:(410,1008),
  // 3:(306,981), 4:(230,896), 5:(208,795), 6:(231,697),
@@ -25,7 +26,10 @@
  }
  function project(apu){
   if(!apu||!Number.isFinite(apu.egtC))return null;
-  return {phase:apu.phase,egtC:apu.egtC,angleDeg:bearingForEGT(apu.egtC),
+  // Fresh cold/dark must sit precisely at the printed zero, while actual
+  // post-shutdown residual heat is preserved and cools gradually through 50°C.
+  const indicatedC=apu.phase==='OFF'&&apu.egtC<=0.05?0:apu.egtC;
+  return {phase:apu.phase,egtC:indicatedC,angleDeg:bearingForEGT(indicatedC),
    rpmPct:apu.rpmPct,generatorReady:apu.generator?.ready===true,
    voltsV:apu.generator?.voltageV??0,frequencyHz:apu.generator?.frequencyHz??0,
    sourceAmpsA:apu.generator?.currentEstimatedA??0,

@@ -16,13 +16,15 @@ const CONFIG=Object.freeze({oilPressureLampOnPsi:11.75,oilPressureLampOffPsi:13,
  hydraulicPumpStartN2:4.5,hydraulicPumpRatedN2:6,hydraulicRatedPressurePsi:3000,
  apuRatedRpmPct:95.5,apuGeneratorReadyRpmPct:95,
  apuGenVoltageV:115,apuGenFrequencyHz:400,apuStartPeakEGTC:620,
- oilAmbientTempC:20,oilIdleTempC:82,oilHighPowerTempC:103,oilTempWarmupMs:95000,
+ oilAmbientTempC:20,apuColdEGTC:0,oilIdleTempC:82,oilHighPowerTempC:103,oilTempWarmupMs:95000,
  oilTempCooldownMs:240000,oilInitialQuantityPct:85,
  oilLeakLossPctPerSec:0.20,oilNaturalLossPctPerHour:0.02,
  starterAirTrainingPsi:30,apuReadyEGTC:390,apuFuelKgHr:110,
+ // Educational EGT indication: 0°C is the OH12 photographed cold/rest mark;
+ // engine OIL ambient remains 20°C and is deliberately independent.
  // Educational thermodynamic inertia (not an airframe/APU empirical curve).
- // 12s fast time constant reaches 50°C from the full 800°C dial scale in 39.1s;
- // from the 620°C start peak it reaches 50°C in 35.95s.
+ // 12s fast phase reaches 50°C from 800°C in ~33.3s; from 620°C in ~30.2s.
+ // Below 50°C the long slow tail approaches the indicated zero mark.
  apuEGTChangeoverC:50,apuCoolFastTauMs:12000,apuCoolTailTauMs:1200000,
  engineN1WindDownMs:5200,engineN2WindDownMs:7200,engineEGTWindDownMs:12000,
  maxStepMs:250});
@@ -75,7 +77,7 @@ function oilStep(previous,{n2Percent=0,throttle=0,engineRunning=false}={},dtMs){
  function apuStartEGT(progress){
   const peakAt=0.64,p=clip(progress,0,1),ease=x=>x*x*(3-2*x);
   return round(p<=peakAt?
-   CONFIG.oilAmbientTempC+(CONFIG.apuStartPeakEGTC-CONFIG.oilAmbientTempC)*ease(p/peakAt):
+   CONFIG.apuColdEGTC+(CONFIG.apuStartPeakEGTC-CONFIG.apuColdEGTC)*ease(p/peakAt):
    CONFIG.apuStartPeakEGTC+(CONFIG.apuReadyEGTC-CONFIG.apuStartPeakEGTC)*ease((p-peakAt)/(1-peakAt)));
  }
  // Shutdown cool-down is independent of fuel/battery/electrical buses.
@@ -84,7 +86,7 @@ function oilStep(previous,{n2Percent=0,throttle=0,engineRunning=false}={},dtMs){
  function apuCoolingStep(egtC,dtMs){
   if(!finite(egtC)||!finite(dtMs)||dtMs<0||dtMs>120000)
    throw Error('Valid APU EGT and 0..120000ms cooling duration required');
-  const ambient=CONFIG.oilAmbientTempC,transition=CONFIG.apuEGTChangeoverC;
+  const ambient=CONFIG.apuColdEGTC,transition=CONFIG.apuEGTChangeoverC;
   if(egtC<=ambient)return ambient;
   if(egtC<=transition)return smooth(egtC,ambient,dtMs,CONFIG.apuCoolTailTauMs);
   const afterFast=smooth(egtC,ambient,dtMs,CONFIG.apuCoolFastTauMs);
@@ -127,7 +129,7 @@ class Testbench{
    this.apuConsumers=Object.fromEntries(Object.keys(LoadDynamics.CATALOG).map(id=>[id,false]));
    this.apuLoadState=LoadDynamics.initial();
    this.apuPhysicalAmpsA=0;
-   this.apuThermalEgtC=CONFIG.oilAmbientTempC;
+   this.apuThermalEgtC=CONFIG.apuColdEGTC;
   this.aircraft={pressureAltitudeFt:0,oatC:15,iasKt:0,massKg:55000,onGround:true};
   this.chain.synchronize({toggles:{'apu-start':'OFF','bleed-apu':'OFF','bleed-eng-1':'OFF','bleed-eng-2':'OFF',
    'pack-l':'OFF','pack-r':'OFF','isolation-valve':'OPEN'},

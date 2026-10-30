@@ -114,6 +114,8 @@ test('Unified EGT pointer tracks ECU start/steady/loads with exact frozen sprite
  assert.equal(bridge.bearingForEGT(800),0.8);
  const model=require('../panel-mosaic-lab/cockpit/apu-egt-needle-model.js');
  assert.equal(bridge.bearingForEGT(0),model.needle.initialAngle,'Cold pointer must not jump at startup');
+ assert.equal(B.CONFIG.apuColdEGTC,0,'Photographic APU EGT cold rest is at the printed lower-right zero');
+ assert.equal(B.apuStartEGT(0),0,'Startup temperature must begin at the same zero tick');
  assert.equal(bridge.bearingForEGT(-40),model.needle.initialAngle,'Negative ambient is clipped to cold end');
  assert.equal(bridge.bearingForEGT(1400),0.8,'Out-of-range temperatures clamp to photographed 8 mark');
  for(const [lo,hi] of [[0,20],[20,390],[390,620],[620,750],[750,800]])
@@ -178,7 +180,7 @@ test('Shutdown EGT reaches 50°C within 40 seconds, then cools very slowly',()=>
 });
 test('Analytic cooling is independent of clock step and crosses at 50°C without a jump',()=>{
  const B=ECU,initial=390;
- assert.equal(B.apuCoolingStep(20,10000),20);
+ assert.equal(B.apuCoolingStep(0,10000),0);
  assert.equal(B.apuCoolingStep(50,0),50);
  assert.throws(()=>B.apuCoolingStep(390,-1));
  let a=initial;
@@ -189,12 +191,12 @@ test('Analytic cooling is independent of clock step and crosses at 50°C without
  const afterSlow=B.apuCoolingStep(50,10000);
  assert.ok(afterFast>=afterSlow&&afterFast<51,'Crossing 50°C during a tick must transition continuously to the slow tail');
  for(const hot of [390,620,800]){
-  const crossingMs=B.CONFIG.apuCoolFastTauMs*Math.log((hot-20)/(50-20));
+  const crossingMs=B.CONFIG.apuCoolFastTauMs*Math.log((hot-B.CONFIG.apuColdEGTC)/(50-B.CONFIG.apuColdEGTC));
   assert.ok(crossingMs<=40000,'EGT '+hot+'°C must reach 50°C within 40 seconds');
   assert.ok(B.apuCoolingStep(hot,40000)<=50,'40 seconds from '+hot+'°C must be at or below 50°C');
  }
  const threeMin=B.apuCoolingStep(B.apuCoolingStep(390,120000),60000);
- assert.ok(threeMin>45&&threeMin<48,'Three-minute trace remains in the slow cooling tail');
+ assert.ok(threeMin>43&&threeMin<45,'Three-minute trace remains in the slow cooling tail');
 });
 test('APU EGT passive cooling bridge continues after all engines stop without heavy 10Hz ECU loop',()=>{
  const source=fs.readFileSync(path.join(__dirname,'../panel-mosaic-lab/cockpit/isn-cockpit.js'),'utf8');
