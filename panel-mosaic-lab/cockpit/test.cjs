@@ -50,7 +50,15 @@ const airconParent=fs.readFileSync(path.join(__dirname,'app.js'),'utf8');
 assert.ok(airconSettings.includes("action:'aircon-background', family:selected.family.id"),'Settings swaps the visible OH20');
 assert.ok(airconParent.includes("command('aircon-background'"),'New overhead frames restore aircraft family');
 const html=fs.readFileSync(path.join(__dirname,'overhead-stage.html'),'utf8');for(const src of ['performance/overhead-renderer.js?v=PERF-0001','app.js?v=TGL-NEWREF-0002','rotary-motion-rm0002.js?v=RM-0004','rotary-guards.js?v=ISN-0003','rotary-guards-model.js?v=RM-0003','overhead-bridge.js?v=PRESS-OH22-0005-AIRCON400','lights.js?v=LGT-0006'])assert.ok(html.includes(src),src);assert.ok(!html.includes('data-cockpit-entry'));
-assert.equal(a.regions.find(r=>r.id==='overhead').embeddedUrl,'./overhead-stage.html?v=ISN-0003-PERF-0001-LGT-0006-PRESS-OH22-0007-SOCKET-FIT-AIRCON400-0005-SOCKET-CENTER-LANDING3-WHEEL-PAN-0001-LE-STAGGER-0008-LE-PHOTOLENS-0003','Unified must reload current overhead bridge and start cutout handling');
+const overheadRelease=a.regions.find(r=>r.id==='overhead').embeddedUrl;
+assert.ok(overheadRelease.startsWith('./overhead-stage.html?v='),
+ 'Unified overhead source must remain the installed stage');
+for(const key of ['ISN-0003','PERF-0001','LGT-0006','PRESS-OH22-0007','SOCKET-FIT','AIRCON400-0005',
+ 'SOCKET-CENTER','LANDING3','WHEEL-PAN-0001','LE-STAGGER-0008','LE-PHOTOLENS-0003',
+ 'LE-EMISSION-0001','LE-SMOOTHGLASS-0001','LE-OFFGLASS-0004']){
+ assert.ok(overheadRelease.includes(key),'Required overhead feature was dropped: '+key);
+}
+assert.ok(!overheadRelease.includes('..\\\\'),'Overhead release path must not escape the approved stage');
 // WHEEL-PAN-0001 changes navigation only; physical switch/atlas geometry stays locked.
 const wheelPan=require('./wheel-pan-model-v1');
 assert.deepEqual(wheelPan.normalize({deltaX:0,deltaY:3,deltaMode:1},{height:500}),{x:0,y:48});
