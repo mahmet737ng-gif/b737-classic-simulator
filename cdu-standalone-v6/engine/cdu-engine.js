@@ -5,7 +5,7 @@ const EMPTY={};
 const SAMPLE={ORIGIN:'',DEST:'',CO_ROUTE:'',FLIGHT:'',CRZ_ALT:'',CRZ_SPEED:'',CI:'',FLAPS:'',RUNWAY:'',WPT1:'',WPT2:'',OFFSET:'',HDG_SEL:'000',CRS_SEL:'000'};
 const ROUTE_FIELDS=new Set(['ORIGIN','DEST','CO_ROUTE','FLIGHT','RUNWAY']);
 const ROUTE_PAGES=new Set(['RTE','ACTIVATE','FLIGHT_PLAN','LEGS','DEP_ARR','DEPARTURES','ARRIVALS']);
-function makeState(start='IDENT') {return {page:start,active:{...SAMPLE},pending:{},stagedRoute:{},scratch:'',message:'',history:[],call:false,fail:false,offsetGuidance:false,brightness:1,lastKey:'',lastLSK:'',subpage:1,events:[],ehsi:{mode:'MAP',range:10,heading:0,course:0}};}
+function makeState(start='IDENT') {return {page:start,active:{...SAMPLE},pending:{},stagedRoute:{},scratch:'',message:'',history:[],call:false,fail:false,offsetGuidance:false,brightness:1,lastKey:'',lastLSK:'',subpage:1,events:[],preflightEvidence:{},ehsi:{mode:'MAP',range:10,heading:0,course:0}};}
 function clean(value){return String(value??'').trim().toUpperCase();}
 function validate(type,value){const s=clean(value);switch(type){
 case 'ICAO':return /^[A-Z]{4}$/.test(s);
@@ -51,7 +51,37 @@ function clearRoutePending(st){for(const key of Object.keys(st.pending)){if(isRo
 function choose(st,pages,page){if(!pages[page]){addMessage(st,'KEY INACTIVE');return;}st.page=page;st.message='';st.subpage=1;}
 function stageRouteField(st,cell){const f=cell.field; if(!f) return; if(st.scratch==='DELETE'){st.stagedRoute[f]=''; st.scratch=''; st.message=''; return;} if(!st.scratch){const existing=readValue(st,f,'RTE'); if(existing){st.scratch=String(existing)} else addMessage(st,'INVALID ENTRY'); return;} const value=clean(st.scratch); if(!validate(cell.format,value)){addMessage(st,'INVALID ENTRY');return;} const activeNow=st.active[f]??''; if(value===activeNow) delete st.stagedRoute[f]; else st.stagedRoute[f]=value; st.scratch=''; st.message=''; if(f==='RUNWAY'){const num=parseInt(value,10); if(!Number.isNaN(num)){st.ehsi.course=(num*10)%360;}}
 }
+function enterPosInitField(st,cell){
+ const key=cell.field;
+ if(key==='IRS_POS'){addMessage(st,'IRS NOT CONNECTED');return true;}
+ if(key==='IRS_HDG'){
+  const att=Object.values(st.preflightEvidence?.irs||{}).some(x=>x?.mode==='ATT'&&x?.powered===true);
+  if(!att){addMessage(st,'KEY INACTIVE');return true;}
+ }
+ if(!['REF_AIRPORT','GATE','IRS_HDG'].includes(key))return false;
+ if(key==='GATE'&&!validate('ICAO',st.active.REF_AIRPORT||'')){
+  addMessage(st,'ENTER REF AIRPORT');return true;
+ }
+ if(st.scratch==='DELETE'){
+  if(key==='REF_AIRPORT'){delete st.active.REF_AIRPORT;delete st.active.GATE;}
+  else delete st.active[key];
+  delete st.pending[key];st.scratch='';st.message='';return true;
+ }
+ if(!st.scratch){
+  const last=st.active[key]||'';
+  if(last)st.scratch=last;else addMessage(st,'INVALID ENTRY');
+  return true;
+ }
+ const entered=clean(st.scratch);
+ if(!validate(cell.format,entered)){addMessage(st,'INVALID ENTRY');return true;}
+ if(key==='REF_AIRPORT'&&entered!==st.active.REF_AIRPORT){
+  delete st.active.GATE;delete st.pending.GATE;
+ }
+ st.active[key]=entered;delete st.pending[key];st.scratch='';st.message='';
+ return true;
+}
 function field(st,cell){const f=cell.field; if(!f)return;
+ if(st.page==='POS_INIT'&&enterPosInitField(st,cell))return;
  if(st.depArrSelection?.referenceOnly&&['DEPARTURES','ARRIVALS'].includes(st.page)){addMessage(st,'NOT ON ROUTE');return;} if(st.page==='RTE'&&isRouteField(f)){stageRouteField(st,cell);return;}
  if(st.scratch==='DELETE'){ if(Object.prototype.hasOwnProperty.call(st.pending,f)||st.active[f]){st.pending[f]='';} st.scratch='';st.message='';return; }
  if(!st.scratch){const existing=readValue(st,f);if(existing){st.scratch=String(existing)}else addMessage(st,'INVALID ENTRY');return;}
