@@ -48,7 +48,7 @@
   const connected=id=>[1,2].filter(side=>e.source[side]===id);
   const readiness={GEN1:c.engine1Running&&!f.GEN1_FAILED,GEN2:c.engine2Running&&!f.GEN2_FAILED,
    APU:c.apuRunning&&!f.APU_FAILED&&!e.apuAutomaticShutdownRequested,
-   EXT:c.onGround&&c.groundPowerAttached&&c.groundPowerQualityGood,BATTERY:!f.BATTERY_DEPLETED};
+   EXT:c.onGround&&c.groundPowerAttached&&c.groundPowerQualityGood,BATTERY:e.bus.hotBattery};
   for(const id of ['GEN1','GEN2','APU','EXT']){
    const sides=connected(id),available=Boolean(readiness[id]);
    // A spinning, disconnected generator is NOT proof of rated field voltage.
@@ -59,6 +59,12 @@
   node('BATTERY','DC',readiness.BATTERY,[],{volts:24});
   Object.assign(nodes.BATTERY,{available:readiness.BATTERY,capacityAh:null,stateOfCharge:null,
    reason:'NOMINAL_24V_NO_DISCHARGE_OR_CHARGE_CHEMISTRY_YET'});
+  if(state.battery){
+   const b=state.battery;
+   Object.assign(nodes.BATTERY,{volts:b.voltageV,amps:b.ammeterA,
+    capacityAh:b.capacityAh,stateOfCharge:b.chargeAh/b.capacityAh,
+    numericQuality:'BATTERY_DYNAMICS_TRAINING',reason:b.quality});
+  }
   function acBus(id,powered,feeds,reason=null){
    const parent=feeds.length?nodes[feeds[0]]:null;
    return node(id,'AC',powered,feeds,parent?{volts:parent.volts,hz:parent.hz}:null,reason);

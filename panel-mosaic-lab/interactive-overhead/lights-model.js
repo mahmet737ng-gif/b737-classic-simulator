@@ -19,6 +19,7 @@
   }return true;
  }
  function controller(reg,electrical,notify=()=>{},pneumatics){
+  let aircraftElectricalPower=null;
   let context=initialContext(),toggles={},rotaries={},guards={},test=false,electricalState=electrical.initialState();
   let pneumaticState=pneumatics.initial();
   let aircraftFamily='B737-300-500',recirc400Left='AUTO';
@@ -71,7 +72,7 @@
    const standbyCommand=['flight-control-a','flight-control-b'].some(id=>control(id)==='stby')||control('alternate-flaps-master')==='arm';
    const hyd=id=>isOn(id)&&!fault(id)&&(id.includes('eng-')?context['engine'+id.at(-1)+'Running']:true);
    const pressureA=hyd('hyd-eng-1')||hyd('hyd-elec-2'),pressureB=hyd('hyd-eng-2')||hyd('hyd-elec-1');
-   const available=context.panelPower&&(isOn('battery-master')||Object.values(e.source).some(Boolean)||control('standby-power')==='bat');
+   const available=context.panelPower&&(aircraftElectricalPower===null?(isOn('battery-master')||Object.values(e.source).some(Boolean)||control('standby-power')==='bat'):aircraftElectricalPower);
    for(const c of reg.lights){let active=false;const id=c.controls[0],v=control(id);
     switch(c.rule){
      case 'sensor':active=fault(c.sensor);break;
@@ -118,7 +119,7 @@
    }
    result={version:reg.version,lights:on,frames,unknown,electrical:e,pneumatic:p,context:copy(context),lampTest:test,passengerOxygenDeployed:oxygen,power:available};notify(copy(result));return copy(result);
   }
-  return {setAircraftFamily:(value,now=0)=>{if(!['B737-300-500','B737-400'].includes(value))throw Error('Invalid airframe family');aircraftFamily=value;syncPneumatic();return evaluate(now);},
+  return {setAircraftElectricalPower:(value,now=0)=>{if(typeof value!=='boolean')throw Error('Boolean electrical power required');aircraftElectricalPower=value;return evaluate(now);},setAircraftFamily:(value,now=0)=>{if(!['B737-300-500','B737-400'].includes(value))throw Error('Invalid airframe family');aircraftFamily=value;syncPneumatic();return evaluate(now);},
   setAircon400LeftRecirc:(value,now=0)=>{if(!['OFF','AUTO'].includes(value))throw Error('Invalid left recirc fan position');recirc400Left=value;syncPneumatic();return evaluate(now);},
   tripReset:(now=0)=>{syncPneumatic();pneumaticState=pneumatics.apply(pneumaticState,{type:'TRIP_RESET'});return evaluate(now);},ingest,update,evaluate,snapshot:()=>copy(result),setLampTest:(v,now=0)=>{test=!!v;return evaluate(now);},reset:(now=0)=>{context=initialContext();for(const id of Object.keys(valveTime))delete valveTime[id];oxygen=false;test=false;electricalState=electrical.initialState();pneumaticState=pneumatics.initial();syncElectrical();syncPneumatic();return evaluate(now);}};
  }

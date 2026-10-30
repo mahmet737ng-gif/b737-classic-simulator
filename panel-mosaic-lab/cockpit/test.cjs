@@ -49,7 +49,7 @@ const airconSettings=fs.readFileSync(path.join(__dirname,'aircraft-settings.js')
 const airconParent=fs.readFileSync(path.join(__dirname,'app.js'),'utf8');
 assert.ok(airconSettings.includes("action:'aircon-background', family:selected.family.id"),'Settings swaps the visible OH20');
 assert.ok(airconParent.includes("command('aircon-background'"),'New overhead frames restore aircraft family');
-const html=fs.readFileSync(path.join(__dirname,'overhead-stage.html'),'utf8');for(const src of ['performance/overhead-renderer.js?v=PERF-0001','app.js?v=TGL-NEWREF-0002','rotary-motion-rm0002.js?v=RM-0004','rotary-guards.js?v=ISN-0003','rotary-guards-model.js?v=RM-0003','overhead-bridge.js?v=PRESS-OH22-0005-AIRCON400','lights.js?v=LGT-0006'])assert.ok(html.includes(src),src);assert.ok(!html.includes('data-cockpit-entry'));
+const html=fs.readFileSync(path.join(__dirname,'overhead-stage.html'),'utf8');for(const src of ['performance/overhead-renderer.js?v=PERF-0001','app.js?v=TGL-NEWREF-0002','rotary-motion-rm0002.js?v=RM-0004','rotary-guards.js?v=ISN-0003','rotary-guards-model.js?v=RM-0003','overhead-bridge.js?v=BATTERY-LIVE-0001','lights.js?v=BATTERY-LIVE-0001'])assert.ok(html.includes(src),src);assert.ok(!html.includes('data-cockpit-entry'));
 const overheadRelease=a.regions.find(r=>r.id==='overhead').embeddedUrl;
 assert.ok(overheadRelease.startsWith('./overhead-stage.html?v='),
  'Unified overhead source must remain the installed stage');

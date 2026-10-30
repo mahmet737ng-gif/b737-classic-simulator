@@ -53,3 +53,11 @@ assert.equal(on.active,true);
 event('b737:switch-change');
 assert.ok(messages.find(d=>d.kind==='control-event'&&d.event.id==='fuel-1-fwd'));
 console.log('ISN-02 iframe transport, actual lamp faces, UNKNOWN, power, visual/LAMP TEST priority: PASS');
+
+// The installed battery, rather than the independent legacy preview source,
+// now owns the normal panel power gate. Empty battery/bus = all projected OFF.
+overhead.setAircraftElectricalPower=value=>{base.power=value;};
+send({action:'live-electrical-supply',power:false});
+assert.equal(off.active,true,'actual aircraft supply loss overrides an ON projection');
+send({action:'live-electrical-supply',power:true});
+assert.equal(on.active,true,'restored aircraft supply returns the existing lamp face');

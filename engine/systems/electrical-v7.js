@@ -56,7 +56,8 @@
   const tie=!c.glideslopeCaptured&&c.busTransferAuto;
   const dc1=tie?(tr.TR1||tr.TR2):tr.TR1;
   const dc2=tie?(tr.TR1||tr.TR2):tr.TR2;
-  const batteryHealthy=!f.BATTERY_DEPLETED;
+  const batteryHealthy=!f.BATTERY_DEPLETED&&(!s.battery||
+   s.battery.chargeAh>0&&s.battery.available!==false);
   const hotBattery=batteryHealthy,switchedHotBattery=batteryHealthy&&c.batterySwitch;
   // FCOM 6.10.7: BAT forces the battery bus to the hot battery bus,
   // regardless of BATTERY switch. Do not show a dead intermediate bus

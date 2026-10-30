@@ -55,8 +55,11 @@
       this.reset();
     }
     reset() {
+      const previousBattery=this.electricalState?.battery;
       this.mode = 'SOURCE_GATED';
       this.electricalState = this.Electrical.initialState();
+      // Resetting switches/scenarios must not refill the installed battery.
+      if(this.batteryEngine)this.electricalState.battery=previousBattery||this.batteryEngine.initial();
       this.pumps = Object.fromEntries(PUMP_REGISTRY.map(p => [p.id, {switchOn: false, failed: false, overheat: false, observedPower: null}]));
       this.sensors = warningInputs();
       // 737-400 suppresses an unverified takeoff-flap threshold; fire and cabin
@@ -67,6 +70,20 @@
       this.snapshot = this.compute(null);
       return this.get();
     }
+    attachBattery(Battery,restored=null) {
+      if(!Battery?.initial||!Battery?.step||!Battery?.snapshot)throw Error('Battery dynamics engine required');
+      if(this.batteryEngine)return this.getBattery();
+      const state=Battery.step(restored||Battery.initial(),0);
+      this.batteryEngine=Battery;this.electricalState.battery=state;this.electricalState.rev++;
+      this.snapshot=this.compute(null);return this.getBattery();
+    }
+    advanceBattery(dtSec,inputs) {
+      if(!this.batteryEngine)throw Error('Live battery not attached');
+      const next=this.batteryEngine.step(this.electricalState.battery,dtSec,inputs);
+      this.electricalState={...this.electricalState,battery:next,rev:this.electricalState.rev+1};
+      this.snapshot=this.compute(null);return this.getBattery();
+    }
+    getBattery(){return this.batteryEngine?this.batteryEngine.snapshot(this.electricalState.battery):null;}
     send(command) {
       if (!command || typeof command.type !== 'string') throw Error('ISN command required');
       if (command.type === 'RESET') return this.reset();

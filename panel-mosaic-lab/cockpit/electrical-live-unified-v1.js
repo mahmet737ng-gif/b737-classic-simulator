@@ -47,7 +47,7 @@
   const key=state.rev+':'+numericMode;
   // Reset can reuse a revision. Include effective inputs/result so a reset
   // cannot leave stale energized instruments on the display.
-  const signature=key+':'+JSON.stringify([state.config,state.source,state.faults,electrical.bus]);
+  const signature=key+':'+JSON.stringify([state.config,state.source,state.faults,electrical.bus,state.battery]);
   if(signature===lastKey)return snapshot();
   const next=Core.project(state,electrical,{numericMode});
   current=next;lastKey=signature;buildPanel();updateMeters(next);paint();
@@ -69,7 +69,7 @@
   panel=element('section');panel.id='electricalLivePanel';
   panel.style.cssText='border:1px solid #45606b;border-radius:10px;padding:12px;margin:14px 0;line-height:1.7';
   element('h2','برق زنده · فاز ۱',panel);
-  element('p','منابع، باس‌ها، TRها و اینورتر از موتور مشترک کابین خوانده می‌شوند. ۲۴/۲۸/۱۱۵ ولت و ۴۰۰ هرتز مقادیر نامی آموزشی‌اند؛ جریان، شارژ باتری و حفاظت گذرا هنوز محاسبه نمی‌شوند.',panel);
+  element('p','باتری نصب‌شده با زمان واقعی مصرف و شارژ می‌شود؛ جریان و شارژ باقی‌مانده روی خود پنل و گیج BAT دیده می‌شوند. مقادیر AC نامی‌اند و پروفایل مصرف باتری آموزشی است.',panel);
   const help=element('p','تست زمین: BATTERY را ON کن، کابل GPU را در زیر وصل کن و سپس سوییچ واقعی GRD PWR را ON کن. سلکتورهای AC/DC همان گیج‌های نصب‌شده را می‌خوانند.',panel);
   help.style.color='#bde6cf';
   checkbox(panel,'electricalGpuAttached','کابل برق زمینی وصل است',value=>scenario('groundPowerAttached',value));

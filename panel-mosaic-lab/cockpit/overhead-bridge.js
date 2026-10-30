@@ -1,5 +1,6 @@
 (function(){
  'use strict';
+ let liveElectricalPower=null;
  const send=detail=>{if(parent!==window)parent.postMessage({type:'b737:cockpit-overhead',...detail},location.origin);};
  let ready=false,pending=false,projection=null,windowHeatProjection=null,tatProbeProjection=null;
  // DCPCS-OWNER-OH22: runtime-only replacement of the OH22 plate background.
@@ -101,7 +102,7 @@
    node.dataset.isnProjection=v===null?'UNKNOWN':v?'ON':'OFF';
    // WH projection already includes authoritative electrical/CB gating;
    // the legacy overhead preview's separate battery flag must not mask it.
-   const frame=isWH||isTAT?(v?'ON':'OFF'):base.power===false?'OFF':v===null?(base.frames[node.dataset.light]||'OFF'):v?'ON':'OFF';
+   const frame=liveElectricalPower===false?'OFF':isWH||isTAT?(v?'ON':'OFF'):base.power===false?'OFF':v===null?(base.frames[node.dataset.light]||'OFF'):v?'ON':'OFF';
    for(const face of node.querySelectorAll('.light-face'))face.classList.toggle('active',face.dataset.frame===frame);
    node.dataset.frame=frame;node.dataset.state=frame;
    node.setAttribute('aria-label',node.dataset.light+(v===null?' — UNKNOWN '+frame:isWH?' — WINDOW HEAT '+frame:isTAT?' — TAT PROBE '+frame:' — ISN '+frame));
@@ -120,6 +121,10 @@
  for(const type of ['b737:switch-change','b737:rotary-change','b737:guarded-change'])window.addEventListener(type,e=>{send({kind:'control-event',event:{...e.detail,kind:type==='b737:switch-change'?'toggle':type==='b737:rotary-change'?'rotary':'guarded'}});report();});
  window.addEventListener('b737:overhead-light-state',()=>{applyProjection();report();});
  window.addEventListener('message',e=>{if(e.origin!==location.origin||e.source!==parent||e.data?.type!=='b737:cockpit-command')return;const d=e.data;if(!ready)return;
+  if(d.action==='live-electrical-supply'&&typeof d.power==='boolean'){
+   if(liveElectricalPower!==d.power){liveElectricalPower=d.power;window.B737OverheadLights.setAircraftElectricalPower?.(d.power);}
+   applyProjection();report();return;
+  }
   if(d.action==='pressurization-background'&&['DCPCS','CPCS'].includes(d.system))setPressurizationArtwork(d.system);
   if(d.action==='aircon-background'&&['B737-300-500','B737-400'].includes(d.family))setAirframeArtwork(d.family);
   if(d.action==='visual-test'&&typeof d.active==='boolean')visualTest(d.active);
