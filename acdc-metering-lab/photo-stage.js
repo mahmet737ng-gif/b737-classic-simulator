@@ -23,7 +23,7 @@ var state={geometry:JSON.parse(JSON.stringify(initial)),selected:"dcAmps",calibr
 var dcOptions=["STBY PWR","BAT BUS","BAT","TR1","TR2","TR3","TEST"];
 var acOptions=["STBY PWR","GRD PWR","GEN1","APU GEN","GEN2","INV","TEST"];
 var sim={model:null,mode:"engines",dc:"BAT",ac:"GEN1",galley:true,resid:false};
-var needlePos={},needleVelocity={},needleTargets={},needleFrame=0,needleFrameTime=null;
+var needlePos={},needleVelocity={},needleDirection={},needleTargets={},needleFrame=0,needleFrameTime=null;
 function photoAngle(id,data){
  var M=window.B737AcDcMeteringModel,entry=id==="cpsFreq"?"cps":id,value=data[id];
  return id==="acVolts"?M.limitAngle("acVolts",M.angleForAcVolts(value,{mode:data.residualScale?"RESIDUAL":"NORMAL"})):M.limitAngle(entry,M.angleForIndication(entry,value));
@@ -38,6 +38,9 @@ function animateNeedles(ts){
   var target=needleTargets[id],key=id==="cpsFreq"?"cps":id;
   if(!Number.isFinite(target))return;
   var pos=needlePos[id];if(!Number.isFinite(pos))pos=M.limitAngle(key,M.meters.find(function(m){return m.id===key;}).initialAngle);
+  var nextDirection=Math.sign(target-pos);
+  if(nextDirection&&needleDirection[id]&&nextDirection!==needleDirection[id])needleVelocity[id]=0;
+  if(nextDirection)needleDirection[id]=nextDirection;
   var adv=M.advanceNeedle(pos,needleVelocity[id]||0,target,dt);
   needlePos[id]=M.limitAngle(key,adv.angle);needleVelocity[id]=adv.velocity;
   var node=document.querySelector('[data-needle="'+id+'"]');
