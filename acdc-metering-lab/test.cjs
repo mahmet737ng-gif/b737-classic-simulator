@@ -35,13 +35,15 @@ test("all nine controls have finite native-image coordinates, safe radii and no 
  assert.equal(manifest.verification.unifiedMountAllowed,false);
  assert.ok(manifest.verification.acceptanceCenterMaxErrorPx<=0.5);
 });
-test("photo overlay remains independent of immutable source and never uses a new background bitmap",()=>{
+test("photo overlay preserves protected source and uses a temporary derived bitmap to remove baked pointer wedges",()=>{
  assert.match(html,/<image id="reference"[\s\S]*?href="\.\.\/panel-mosaic-lab\/assets\/locked\/2026-10-23\/OH10-ELEC-LOSSLESS-9a1ca4d6cfb2\.png"/);
  assert.match(html,/viewBox="0 0 1095 1436"/);
  assert.match(html,/<g id="artwork"><\/g><g id="calibration"><\/g>/);
  assert.match(html,/photo-stage\.js/);
  assert.match(html,/ac-dc-metering-model\.js/);
  assert.match(code,/ac-dc-metering-needle\.svg/);
+ assert.match(html,/ac-dc-static-needle-cleaner\.js/);
+ assert.match(code,/cleaner\.ensureDerivedUrl/);
  assert.match(code,/angleForIndication/);
  assert.match(code,/angleForAcVolts/);
  assert.match(code,/setPointerCapture\(ev\.pointerId\)/);
@@ -52,9 +54,9 @@ test("photo overlay remains independent of immutable source and never uses a new
 test("photo-real mode NEVER synthesizes fake gauge faces, numbers, bezels or metallic switch hardware",()=>{
  assert.doesNotMatch(html,/id="face"/);
  assert.doesNotMatch(html,/<(?:linearGradient|radialGradient|text)\b/);
- assert.match(html,/<input id="overlay" type="checkbox">/);
+ assert.match(html,/<input id="overlay" type="checkbox" checked>/);
  assert.match(html,/<input id="markers" type="checkbox">/);
- assert.match(code,/overlay:false,showMarkers:false/);
+ assert.match(code,/overlay:true,showMarkers:false/);
  for(const forbidden of ["function dialScale(","function rotary(","function toggle(","function residual(","function polar(","state.faces","state.showMarkers=true","fill:\"url(#silver)\""]){
   assert.ok(!code.includes(forbidden),"Artificial drawing/automatic guides disallowed: "+forbidden);
  }
@@ -62,7 +64,7 @@ test("photo-real mode NEVER synthesizes fake gauge faces, numbers, bezels or met
  assert.match(code,/if\(!state.calibration\|\|!state.showMarkers\)return;/);
  assert.ok(code.includes('fill:"transparent",stroke:"none"'));
  assert.match(code,/ac-dc-metering-needle\.svg/);
- assert.match(html,/OH10-PHOTO-STAGE-ELLIPSE-0008/);
+ assert.match(html,/OH10-PHOTO-STAGE-CLEAN-0009/);
 });
 test("only electrical V7 state adapter is invoked, and no cockpit or locked geometry is altered",()=>{
  assert.match(html,/engine\/systems\/electrical-v7\.js/);
