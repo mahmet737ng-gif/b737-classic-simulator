@@ -22,7 +22,7 @@
  const smooth=(a,b,dt,tau)=>b+(a-b)*Math.exp(-dt/tau);
  function initial(){return {electricalKva:0,bleedFraction:0,egtC:CONFIG.baseEGTC,
   fuelFlowKgHr:CONFIG.baseFuelKgHr,rpmDeviationPct:0,lastTargetKva:0};}
- function demand({selectedSources={},switches={},bleedValveOpen=false,pumpSnapshot=null}={}){
+ function demand({selectedSources={},switches={},bleedValveOpen=false,pumpSnapshot=null,physicalSourceAmpsA=null}={}){
   const sides=[1,2].filter(side=>selectedSources[side]==='APU');
   const contributing=[];
   for(const [id,item] of Object.entries(CATALOG)){
@@ -42,7 +42,16 @@
     contributing.push({id,kva,side:selectedSide,origin:'INSTRUCTOR_SURROGATE_BUS_NOT_WDM_VERIFIED'});
    }
   }
-  return {kva:round(contributing.reduce((sum,x)=>sum+x.kva,0)),
+  // Source amps are the existing ATA24 estimator's live switch/CB demand,
+  // not a new electric engine. Convert its 200V 3-phase equivalent to kVA.
+  // Legacy instructor consumer presets remain separately usable, but cannot
+  // double-count the same physical lights/pumps if both sources are present.
+  const physicalKva=sides.length&&Number.isFinite(physicalSourceAmpsA)?
+   clip(physicalSourceAmpsA,0,300)*Math.sqrt(3)*200/1000:0;
+  const presetKva=contributing.reduce((sum,x)=>sum+x.kva,0);
+  if(physicalKva>0)contributing.push({id:'ATA24_LIVE_APU_SOURCE',kva:round(physicalKva),
+   side:'CONNECTED',origin:'ESTIMATED_PHYSICAL_SWITCH_AND_CB_LOAD'});
+  return {kva:round(Math.max(presetKva,physicalKva)),
    bleedOn:bleedValveOpen===true,connectedBuses:sides,contributing,
    provenance:ORIGIN};
  }
