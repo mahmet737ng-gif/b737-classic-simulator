@@ -102,7 +102,16 @@ assert.deepEqual(reads.at(-1),{id:'acVolts',v:12,mode:{mode:'RESIDUAL'}});
 messages[0]({origin:'https://unit.test',source:frame.contentWindow,
  data:{type:'b737:cockpit-overhead',kind:'recessed-button',id:'residual-volts',pressed:false}});
 assert.equal(api.snapshot().pressed,false);
-assert.deepEqual(reads.at(-1),{id:'acVolts',v:115,mode:{mode:'NORMAL'}});
+assert.deepEqual(reads.at(-1),{id:'acVolts',v:null,mode:{mode:'NORMAL'}},
+ 'release restores normal SCALE, not an obsolete 115V sample after GCR opens');
+api.configure('GEN1',{gcr:'CLOSED',drive:'RUNNING',fieldExcited:true,normalVolts:115});
+assert.deepEqual(reads.at(-1),{id:'acVolts',v:115,mode:{mode:'NORMAL'}},
+ 'source-reported 115V is only valid again after confirmed normal generator conditions');
+api.press(true);
+assert.equal(api.snapshot().result.status,'UNSAFE_OVER_RANGE');
+assert.equal(reads.at(-1).v,null);
+api.press(false);
+assert.equal(reads.at(-1).v,115,'safe test exit restores the explicit normal source sample');
 api.select('GND PWR');api.press(true);
 assert.equal(api.snapshot().result.status,'INHIBITED');
 assert.equal(reads.at(-1).v,null);
