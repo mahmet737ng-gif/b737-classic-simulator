@@ -24,7 +24,7 @@ test("locked user-source image resolves to exact native PNG with immutable SHA25
 test("all nine controls have finite native-image coordinates, safe radii and no approvals",()=>{
  assert.deepEqual(Object.keys(manifest.markers).sort(),names.slice().sort());
  for(const [name,p] of Object.entries(manifest.markers)){
-  assert.equal(p.confidence,["dcAmps","cpsFreq","dcVolts","acVolts"].includes(name)?"MEASURED_BEZEL_CENTER__NEEDLE_PIVOT_QA_PENDING":"PROVISIONAL",name);
+  assert.equal(p.confidence,["dcAmps","cpsFreq","dcVolts","acVolts"].includes(name)?"OWNER_SCREENSHOT_ARC_FIT_PROVISIONAL_NATIVE_REGISTRATION":"PROVISIONAL",name);
   assert.ok(p.x>=0&&p.x<=1095&&p.y>=0&&p.y<=1436,name);
   assert.ok(p.r>=5&&p.r<300,name);
   assert.equal(p.type,["dcAmps","cpsFreq","dcVolts","acVolts"].includes(name)?"meter":name.endsWith("Selector")?"rotary":name==="residual"?"momentary":"toggle");
@@ -61,7 +61,7 @@ test("photo-real mode NEVER synthesizes fake gauge faces, numbers, bezels or met
  assert.match(code,/if\(!state.calibration\|\|!state.showMarkers\)return;/);
  assert.ok(code.includes('fill:"transparent",stroke:"none"'));
  assert.match(code,/ac-dc-metering-needle\.svg/);
- assert.match(html,/OH10-PHOTO-STAGE-SWEEP-0005/);
+ assert.match(html,/OH10-PHOTO-STAGE-ARC-0006/);
 });
 test("only electrical V7 state adapter is invoked, and no cockpit or locked geometry is altered",()=>{
  assert.match(html,/engine\/systems\/electrical-v7\.js/);
