@@ -1,6 +1,6 @@
 {
   "schema": "b737.p5-13.photo-stage.geometry.v1",
-  "version": "UPD-2026-10-30-ACDC-01",
+  "version": "UPD-2026-10-30-ACDC-02",
   "source": {
     "path": "../panel-mosaic-lab/assets/locked/2026-10-23/OH10-ELEC-LOSSLESS-9a1ca4d6cfb2.png",
     "nativeWidth": 1095,
@@ -21,7 +21,7 @@
     "cpsFreq": {
       "x": 774.2,
       "y": 191.4,
-      "r": 85,
+      "r": 141,
       "type": "meter",
       "confidence": "MEASURED_BEZEL_CENTER__NEEDLE_PIVOT_QA_PENDING"
     },
@@ -83,5 +83,5 @@
     "sizeMaxErrorPx": 0.5
   },
   "sourceOfMeterCenters": "panel-mosaic-lab/cockpit/ac-dc-metering-model.js (MET-0004-TICK-CAL)",
-  "notes": "For meters only, r means proposed WHITE NEEDLE TIP reach in native photo pixels. For other controls, r is approximate visual radius."
+  "notes": "No new gauges or needles: all four use immutable OH10 photo + existing Unified single white pointer. CPS shaft location and angle map remain provisional; r is visual tip reach, not a validated mechanical dimension."
 }
