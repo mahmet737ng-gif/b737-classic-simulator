@@ -137,7 +137,7 @@
  }
  // Always generate from the LOCKED full-resolution PNG, never from a temporary
  // performance thumbnail or a pre-existing partially cleaned image.
- const pristineSource=new URL('../assets/locked/2026-10-23/OH10-ELEC-LOSSLESS-9a1ca4d6cfb2.png',document.baseURI).href;
+ const pristineSource=()=>new URL('../assets/locked/2026-10-23/OH10-ELEC-LOSSLESS-9a1ca4d6cfb2.png',document.baseURI).href;
  const inFlight=new WeakMap();
  let restoredAfterImageSwap=0;
  function cleanPiece(piece){
@@ -154,11 +154,11 @@
   const active=inFlight.get(piece);
   if(active)return active;
   piece.dataset.staticNeedlePhoto='PENDING';
-  const job=ensureDerivedUrl(pristineSource).then(url=>{
+  const job=ensureDerivedUrl(pristineSource()).then(url=>{
    if(!piece.isConnected)return false;
    for(const photo of [...piece.querySelectorAll('.atlas-photo')]){
     if(photo.src!==url){
-     if(photo.src!==pristineSource)restoredAfterImageSwap++;
+     if(photo.src!==pristineSource())restoredAfterImageSwap++;
      photo.removeAttribute('data-perf-source');
      photo.src=url;
     }
