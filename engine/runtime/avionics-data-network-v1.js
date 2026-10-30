@@ -54,7 +54,7 @@
    if(!Object.hasOwn(CATALOG,topic))throw Error('UNKNOWN_TOPIC_'+topic);
    const stored=state.get(topic);
    if(!stored)return {topic,owner:CATALOG[topic].owner,quality:'UNKNOWN',origin:'UNVERIFIED',value:null,revision:0,receivedAtMs:null,reason:'NO_SOURCE_CONNECTED'};
-   const next=copy(stored),ttl=CATALOG[topic].ttl;
+   const next=copy(stored),ttl=CATALOG[topic].ttl;delete next.fingerprint;
    if(next.quality==='VALID'&&now()-next.receivedAtMs>ttl){next.quality='STALE';next.reason='TIME_TO_LIVE_EXCEEDED';}
    return next;
   }
