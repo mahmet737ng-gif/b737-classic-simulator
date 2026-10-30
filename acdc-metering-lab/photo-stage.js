@@ -19,7 +19,7 @@ var initial={
  galley:{x:727,y:1299,r:38,type:"toggle"},
  residual:{x:894,y:1299,r:39,type:"momentary"}
 };
-var state={geometry:JSON.parse(JSON.stringify(initial)),selected:"dcAmps",calibration:false,scale:.70,faces:false,overlay:true,showMarkers:false,sourceOK:false};
+var state={geometry:JSON.parse(JSON.stringify(initial)),selected:"dcAmps",calibration:false,scale:.70,overlay:false,showMarkers:false,sourceOK:false};
 var dcOptions=["STBY PWR","BAT BUS","BAT","TR1","TR2","TR3","TEST"];
 var acOptions=["STBY PWR","GRD PWR","GEN1","APU GEN","GEN2","INV","TEST"];
 var sim={model:null,mode:"engines",dc:"BAT",ac:"GEN1",galley:true,resid:false};
@@ -70,108 +70,56 @@ function meterData(){
  return {dcAmps:numeric(amps),dcVolts:numeric(dcv),cpsFreq:numeric(freq),acVolts:numeric(acv),residualScale:sim.resid&&warning.indexOf("Residual volts —")==0,warning:warning,electrical:r};
 }
 function e(tag,attrs,children){var el=document.createElementNS(SVG,tag);Object.keys(attrs||{}).forEach(function(k){el.setAttribute(k,String(attrs[k]));});if(children!=null)el.innerHTML=children;return el;}
-function polar(a,rad){return {x:Math.sin(a*Math.PI/180)*rad,y:-Math.cos(a*Math.PI/180)*rad};}
-function angle(v,min,max){
- if(v==null)return -75;
- return -75+150*Math.max(0,Math.min(1,(v-min)/(max-min)));
-}
-function dialScale(min,max,labels){
- var g=e("g",{});
- for(var i=0;i<=20;i++){
-  var a=-75+150*i/20, p1=polar(a,i%5===0?87:96),p2=polar(a,108);
-  g.appendChild(e("line",{x1:p1.x,y1:p1.y,x2:p2.x,y2:p2.y,stroke:"#e8e7d9","stroke-width":i%5===0?3.2:1.4}));
- }
- labels.forEach(function(v){
-  var p=polar(angle(v,min,max),74);
-  g.appendChild(e("text",{x:p.x,y:p.y+6,"text-anchor":"middle","font-size":17,"font-weight":"bold",fill:"#e9e7e0","font-family":"Arial"},String(v)));
- });
- return g;
-}
-var meterDefs={
- dcAmps:{title:"DC AMPS",min:-50,max:50,labels:[-50,0,50]},
- cpsFreq:{title:"CPS FREQ",min:360,max:420,labels:[360,400,420]},
- dcVolts:{title:"DC VOLTS",min:0,max:40,labels:[0,20,40]},
- acVolts:{title:"AC VOLTS",min:100,max:130,labels:[100,110,120,130]}
-};
+// The source photograph owns all dial scales and printed markings.
 function meter(id,data){
- var p=state.geometry[id],def=meterDefs[id],base=e("g",{transform:"translate("+p.x+" "+p.y+")","data-part":id,"class":"control"});
- if(state.faces){
-  // Diagnostic face only; the real source already contains intact dials and legends.
-  var face=e("g",{transform:"scale("+(p.r/130)+")"});
-  face.appendChild(e("circle",{r:126,fill:"url(#bezel)",stroke:"#262e31","stroke-width":5}));
-  face.appendChild(e("circle",{r:118,fill:"#676c70",stroke:"#afb0a9","stroke-width":3}));
-  face.appendChild(e("path",{d:"M -117 0 A 117 117 0 0 1 117 0 L -117 0 Z",fill:"#181b1d"}));
-  face.appendChild(dialScale(def.min,def.max,def.labels));
-  face.appendChild(e("text",{x:0,y:45,fill:"#e7e4d8","text-anchor":"middle","font-size":"20","font-family":"Arial","font-weight":"bold"},def.title));
-  base.appendChild(face);
- }
- if(state.overlay){
-  // Shared original Unified WHITE pointer; no independently recreated needle.
-  var M=window.B737AcDcMeteringModel;
-  var key=id==="cpsFreq"?"cps":id,original=M.meters.find(function(m){return m.id===key;});
-  var ang=original?original.initialAngle:0;
-  if(id==="dcAmps"||id==="dcVolts"){
-   var value=data[id],scale=M.photoScale[id];
-   if(value!==null){var v=Math.max(scale.values[0],Math.min(scale.values[scale.values.length-1],value));ang=M.bearingForReading(id,v);}
+ // Authentic owner photo is the ONLY dial/bezel/legend layer. No HTML-drawn dials.
+ var p=state.geometry[id],base=e("g",{transform:"translate("+p.x+" "+p.y+")","data-part":id,"pointer-events":"none"});
+ if(!state.overlay)return base;
+ var M=window.B737AcDcMeteringModel;
+ var key=id==="cpsFreq"?"cps":id,original=M.meters.find(function(m){return m.id===key;});
+ var ang=original?original.initialAngle:0;
+ if(id==="dcAmps"||id==="dcVolts"){
+  var value=data[id],scale=M.photoScale[id];
+  if(value!==null){
+   var v=Math.max(scale.values[0],Math.min(scale.values[scale.values.length-1],value));
+   ang=M.bearingForReading(id,v);
   }
-  // CPS and AC VOLTS are still photo-calibration-only and remain at their measured
-  // reference rest angle. Never imply these indicators have validated live sensor mapping.
-  var ratio=p.r/216;
-  var clip=e("clipPath",{id:"oh10-needle-window-"+id,clipPathUnits:"userSpaceOnUse"});
-  clip.appendChild(e("rect",{x:-p.r-16,y:-p.r-16,width:2*(p.r+16),height:p.r+2}));
-  base.appendChild(clip);
-  var upper=e("g",{"clip-path":"url(#oh10-needle-window-"+id+")"});
-  var blade=e("g",{transform:"rotate("+ang+")"});
-  blade.appendChild(e("image",{href:"../panel-mosaic-lab/cockpit/ac-dc-metering-needle.svg?v=MET-0001",x:-256*ratio,y:-256*ratio,width:512*ratio,height:512*ratio}));
-  upper.appendChild(blade);base.appendChild(upper);
  }
- base.appendChild(e("circle",{r:p.r,class:"hit"}));
+ // Existing Unified approved needle artwork only. It is opt-in because the
+ // original photograph may already show its needle: avoid double pointers.
+ var ratio=p.r/216;
+ var clip=e("clipPath",{id:"oh10-needle-window-"+id,clipPathUnits:"userSpaceOnUse"});
+ clip.appendChild(e("rect",{x:-p.r-16,y:-p.r-16,width:2*(p.r+16),height:p.r+2}));
+ base.appendChild(clip);
+ var upper=e("g",{"clip-path":"url(#oh10-needle-window-"+id+")"});
+ var blade=e("g",{transform:"rotate("+ang+")"});
+ blade.appendChild(e("image",{href:"../panel-mosaic-lab/cockpit/ac-dc-metering-needle.svg?v=MET-0001",x:-256*ratio,y:-256*ratio,width:512*ratio,height:512*ratio}));
+ upper.appendChild(blade);base.appendChild(upper);
  return base;
 }
-function rotary(id,value,options){
- var p=state.geometry[id],g=e("g",{transform:"translate("+p.x+" "+p.y+") scale("+(p.r/77)+")","data-part":id,class:"control"});
- if(state.overlay){
-  var a=-127+254*options.indexOf(value)/(options.length-1);
-  g.appendChild(e("circle",{r:70,fill:"#292e30",stroke:"#979f9f","stroke-width":6}));
-  var k=e("g",{transform:"rotate("+a+")"});
-  k.appendChild(e("circle",{r:57,fill:"url(#silver)",stroke:"#3d4140","stroke-width":3}));
-  k.appendChild(e("path",{d:"M -17 38 L -16 -32 Q -14 -50 0 -53 Q 14 -50 16 -32 L 17 38 Q 0 44 -17 38Z",fill:"url(#lever)",stroke:"#333938","stroke-width":2}));
-  k.appendChild(e("path",{d:"M 0 -48 L 0 -20",stroke:"#202528","stroke-width":6,"stroke-linecap":"round"}));
-  g.appendChild(k);
- }
- g.appendChild(e("circle",{r:77,class:"hit"}));
+function photoHotspot(id){
+ // The photo contains the hardware. Do NOT paint fake silver knobs, switches,
+ // rings, labels or other objects over its original pixels.
+ var p=state.geometry[id];
+ var g=e("g",{transform:"translate("+p.x+" "+p.y+")","data-part":id,class:"control",role:"button","aria-label":id});
+ g.appendChild(e("circle",{r:p.r,class:"hit",fill:"transparent",stroke:"none"}));
  return g;
-}
-function toggle(id,on){
- var p=state.geometry[id],g=e("g",{transform:"translate("+p.x+" "+p.y+") scale("+(p.r/45)+")","data-part":id,class:"control"});
- if(state.overlay){
-  if(id==="battery"){
-   g.appendChild(e("rect",{x:-31,y:-50,width:62,height:100,rx:5,fill:"#16191a",stroke:"#8f9693","stroke-width":3}));
-   g.appendChild(e("rect",{x:-18,y:on?5:-36,width:36,height:33,rx:3,fill:"url(#lever)",stroke:"#282c2b","stroke-width":2}));
-  }else{
-   g.appendChild(e("circle",{r:31,fill:"#282d2f",stroke:"#9b9f9b","stroke-width":4}));
-   g.appendChild(e("path",{d:on?"M 0 4 L 0 31":"M 0 -4 L 0 -31",stroke:"#dedbd2","stroke-width":13,"stroke-linecap":"round"}));
-  }
- }
- g.appendChild(e("circle",{r:47,class:"hit"}));
- return g;
-}
-function residual(){
- var p=state.geometry.residual,g=e("g",{transform:"translate("+p.x+" "+p.y+") scale("+(p.r/35)+")","data-part":"residual",class:"control"});
- if(state.overlay){
-  g.appendChild(e("circle",{r:31,fill:"#a7aaa5",stroke:"#2d3335","stroke-width":5}));
-  g.appendChild(e("circle",{r:sim.resid?19:24,fill:"#14181b",stroke:"#444a49","stroke-width":4}));
- }
- g.appendChild(e("circle",{r:39,class:"hit"}));return g;
 }
 function showMarkers(){
- var g=$("calibration");g.replaceChildren();if(!state.calibration&&!state.showMarkers)return;
+ var g=$("calibration");g.replaceChildren();
+ // Calibration never implicitly turns on visual guides. They appear only
+ // when the user explicitly checks the guide option.
+ if(!state.showMarkers)return;
  Object.keys(state.geometry).forEach(function(id){
-  var p=state.geometry[id],m=e("g",{transform:"translate("+p.x+" "+p.y+")","data-marker":id,class:"calibration-marker",tabindex:"0",role:"button","aria-label":"Move "+id+" calibration marker"});
-  m.appendChild(e("circle",{r:20,fill:"#121c2888"}));
-  m.appendChild(e("path",{d:"M -37 0 H 37 M 0 -37 V 37",class:"marker-cross"}));
-  m.appendChild(e("text",{x:27,y:-25},id));
-  if(id===state.selected)m.appendChild(e("circle",{r:p.r,fill:"none",stroke:"#f9e99b","stroke-dasharray":"7 7","stroke-width":2,"vector-effect":"non-scaling-stroke","pointer-events":"none"}));
+  var p=state.geometry[id],selected=id===state.selected;
+  var m=e("g",{transform:"translate("+p.x+" "+p.y+")","data-marker":id,class:"calibration-marker",tabindex:"0",role:"button","aria-label":"Move "+id+" calibration marker"});
+  var guide=e("g",{"pointer-events":"none"});
+  guide.appendChild(e("circle",{r:selected?7:4,fill:selected?"#dcd6b8":"#82909a",stroke:"#18262f","stroke-width":1.5,opacity:selected?.8:.55}));
+  if(selected&&state.calibration){
+   guide.appendChild(e("path",{d:"M -10 0 H -5 M 5 0 H 10 M 0 -10 V -5 M 0 5 V 10",stroke:"#ccc8ac","stroke-width":1,opacity:.7}));
+  }
+  m.appendChild(guide);
+  m.appendChild(e("circle",{r:15,fill:"transparent",stroke:"none"}));
   g.appendChild(m);
  });
 }
@@ -201,11 +149,11 @@ function render(){
  var data=meterData(),g=$("artwork");
  g.replaceChildren();
  ["dcAmps","cpsFreq","dcVolts","acVolts"].forEach(function(id){g.appendChild(meter(id,data));});
- g.appendChild(rotary("dcSelector",sim.dc,dcOptions));
- g.appendChild(rotary("acSelector",sim.ac,acOptions));
- g.appendChild(toggle("battery",sim.model.config.batterySwitch));
- g.appendChild(toggle("galley",sim.galley));
- g.appendChild(residual());
+ g.appendChild(photoHotspot("dcSelector"));
+ g.appendChild(photoHotspot("acSelector"));
+ g.appendChild(photoHotspot("battery"));
+ g.appendChild(photoHotspot("galley"));
+ g.appendChild(photoHotspot("residual"));
  showMarkers();drawCoords();
  ["dcAmps","cpsFreq","dcVolts","acVolts"].forEach(function(id){
   var out={"dcAmps":"dcamps","cpsFreq":"freq","dcVolts":"dcvolts","acVolts":"acvolts"}[id];
@@ -263,8 +211,7 @@ $("artwork").addEventListener("pointerdown",function(ev){
 });
 ["pointerup","pointercancel","pointerleave"].forEach(function(name){$("board").addEventListener(name,function(){if(sim.resid){sim.resid=false;render();}});});
 $("operate").onclick=function(){state.calibration=false;state.showMarkers=$("markers").checked;this.classList.add("active");$("calibrate").classList.remove("active");render();};
-$("calibrate").onclick=function(){state.calibration=true;state.showMarkers=true;this.classList.add("active");$("operate").classList.remove("active");render();};
-$("face").onchange=function(){state.faces=this.checked;render();};
+$("calibrate").onclick=function(){state.calibration=true;state.showMarkers=$("markers").checked;this.classList.add("active");$("operate").classList.remove("active");render();};
 $("overlay").onchange=function(){state.overlay=this.checked;render();};
 $("markers").onchange=function(){state.showMarkers=this.checked;render();};
 $("zoom").oninput=function(){zoomSet(Number(this.value)/100);};
