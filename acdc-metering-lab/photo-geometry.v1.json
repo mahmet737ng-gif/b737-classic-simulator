@@ -1,0 +1,85 @@
+{
+  "schema": "b737.p5-13.photo-stage.geometry.v1",
+  "version": "UPD-2026-10-30-ACDC-01",
+  "source": {
+    "path": "../panel-mosaic-lab/assets/locked/2026-10-23/OH10-ELEC-LOSSLESS-9a1ca4d6cfb2.png",
+    "nativeWidth": 1095,
+    "nativeHeight": 1436,
+    "sha256": "9a1ca4d6cfb277ec1404f3a464e957d81be9d9689a0810883364342d57b0f1ea",
+    "immutable": true
+  },
+  "origin": "Provisional initial hotspots scaled from separate design lab; NOT photo-verified.",
+  "installation": "OH-10, preliminary atlas geometry rejected. Do not auto-mount into unified.",
+  "markers": {
+    "dcAmps": {
+      "x": 305,
+      "y": 213,
+      "r": 147,
+      "type": "meter",
+      "confidence": "PROVISIONAL"
+    },
+    "cpsFreq": {
+      "x": 786,
+      "y": 213,
+      "r": 147,
+      "type": "meter",
+      "confidence": "PROVISIONAL"
+    },
+    "dcVolts": {
+      "x": 305,
+      "y": 552,
+      "r": 147,
+      "type": "meter",
+      "confidence": "PROVISIONAL"
+    },
+    "acVolts": {
+      "x": 786,
+      "y": 552,
+      "r": 147,
+      "type": "meter",
+      "confidence": "PROVISIONAL"
+    },
+    "dcSelector": {
+      "x": 306,
+      "y": 1029,
+      "r": 84,
+      "type": "rotary",
+      "confidence": "PROVISIONAL"
+    },
+    "acSelector": {
+      "x": 783,
+      "y": 1029,
+      "r": 84,
+      "type": "rotary",
+      "confidence": "PROVISIONAL"
+    },
+    "battery": {
+      "x": 480,
+      "y": 1295,
+      "r": 51,
+      "type": "toggle",
+      "confidence": "PROVISIONAL"
+    },
+    "galley": {
+      "x": 727,
+      "y": 1299,
+      "r": 38,
+      "type": "toggle",
+      "confidence": "PROVISIONAL"
+    },
+    "residual": {
+      "x": 894,
+      "y": 1299,
+      "r": 39,
+      "type": "momentary",
+      "confidence": "PROVISIONAL"
+    }
+  },
+  "verification": {
+    "ownerApproved": false,
+    "photoPixelAuditPassed": false,
+    "unifiedMountAllowed": false,
+    "acceptanceCenterMaxErrorPx": 0.5,
+    "sizeMaxErrorPx": 0.5
+  }
+}
