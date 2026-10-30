@@ -19,7 +19,7 @@ var initial={
  galley:{x:727,y:1299,r:38,type:"toggle"},
  residual:{x:894,y:1299,r:39,type:"momentary"}
 };
-var state={geometry:JSON.parse(JSON.stringify(initial)),selected:"dcAmps",calibration:false,scale:.70,overlay:false,showMarkers:false,sourceOK:false};
+var state={geometry:JSON.parse(JSON.stringify(initial)),selected:"dcAmps",calibration:false,scale:.70,overlay:true,showMarkers:false,sourceOK:false};
 var dcOptions=["STBY PWR","BAT BUS","BAT","TR1","TR2","TR3","TEST"];
 var acOptions=["STBY PWR","GRD PWR","GEN1","APU GEN","GEN2","INV","TEST"];
 var sim={model:null,mode:"engines",dc:"BAT",ac:"GEN1",galley:true,resid:false};
@@ -282,8 +282,27 @@ $("copy").onclick=async function(){
 };
 var ref=$("reference");
 ref.addEventListener("load",function(){
- state.sourceOK=true;$("sourceStatus").textContent="Source image loaded: original 1095×1436 · SHA256 in manifest · unchanged";
- log("Immutable original owner OH-10 displayed. Drag markers to calibrate.");
+ state.sourceOK=true;
+ if(ref.dataset.pointerCleanup==="READY"){
+  $("sourceStatus").textContent="Locked OH10 source preserved · four baked static needles restored in derived display bitmap";
+  log("Original locked photo unchanged; cleaned display shows only shared moving needle sprite.");
+  return;
+ }
+ if(ref.dataset.pointerCleanup==="PENDING")return;
+ var cleaner=window.B737AcDcStaticCleaner;
+ if(!cleaner){$("sourceStatus").textContent="WARNING: static needle cleanup module not loaded";return;}
+ ref.dataset.pointerCleanup="PENDING";
+ var source=new URL(ref.getAttribute("href"),window.location.href).href;
+ cleaner.ensureDerivedUrl(source).then(function(url){
+  ref.dataset.pointerCleanup="READY";
+  ref.setAttribute("href",url);
+  $("sourceStatus").textContent="Derived photo display active · original locked OH10 unchanged";
+  render();
+ }).catch(function(error){
+  ref.dataset.pointerCleanup="FAILED";
+  $("sourceStatus").textContent="Static needle cleanup failed; original photo remains unchanged";
+  log("ERROR cleaning photo: "+error.message);
+ });
 });
 ref.addEventListener("error",function(){
  state.sourceOK=false;$("sourceStatus").textContent="Source photo failed to load: verify GitHub Pages asset path. Do not approve visual QA.";
