@@ -29,8 +29,8 @@ assert.ok(ui.includes("new URL('./ac-dc-metering-needle.svg?v=MET-0001'"));
 assert.ok(ui.includes('for(const meter of model.meters)'));
 assert.ok(ui.includes('window.B737UnifiedAcDcMetering'));
 const html=fs.readFileSync(path.join(__dirname,'index.html'),'utf8');
-assert.ok(html.includes('ac-dc-metering-model.js?v=MET-0010-BAKED-POINTER-RESTORE'));
-assert.ok(html.includes('ac-dc-metering-unified.js?v=MET-0010-BAKED-POINTER-RESTORE'));
+assert.ok(html.includes('ac-dc-metering-model.js?v=MET-0011-DEPLOY-AND-CLEAN-QA'));
+assert.ok(html.includes('ac-dc-metering-unified.js?v=MET-0011-DEPLOY-AND-CLEAN-QA'));
 
 /* MET-0005 regression: original, shared needle sprite and original OH10 panel ONLY. */
 const crypto=require('node:crypto');
@@ -56,8 +56,8 @@ assert.match(ui,/b737:ac-dc-metering-readings/);
 assert.match(ui,/setReadings/);
 assert.ok(ui.includes("new URL('./ac-dc-metering-needle.svg?v=MET-0001'"));
 assert.ok(!ui.includes("createElement('canvas'"));
-assert.ok(html.includes('ac-dc-metering-model.js?v=MET-0010-BAKED-POINTER-RESTORE'));
-assert.ok(html.includes('ac-dc-metering-unified.js?v=MET-0010-BAKED-POINTER-RESTORE'));
+assert.ok(html.includes('ac-dc-metering-model.js?v=MET-0011-DEPLOY-AND-CLEAN-QA'));
+assert.ok(html.includes('ac-dc-metering-unified.js?v=MET-0011-DEPLOY-AND-CLEAN-QA'));
 
 /* MET-0006 mechanical invariant: the unchanged source-image pointer tip
  * follows the INNER TICK radial track; no animation frame may pass a stop. */
@@ -161,7 +161,7 @@ for(const [id,poly] of Object.entries(cleaner.regions)){
  assert.ok(poly.length>=4,id+' must have a source-photo traced silhouette');
  for(const [x,y] of poly)assert.ok(x>=0&&x<=1095&&y>=0&&y<=1436,id+' source polygon in bounds');
 }
-assert.ok(html.includes('ac-dc-static-needle-cleaner.js?v=MET-0010-BAKED-POINTER-RESTORE'));
+assert.ok(html.includes('ac-dc-static-needle-cleaner.js?v=MET-0011-DEPLOY-AND-CLEAN-QA'));
 assert.ok(html.indexOf('ac-dc-static-needle-cleaner.js')<html.indexOf('ac-dc-metering-unified.js'),
  'static baked photo cleaned before the dynamic pointer module loads');
 assert.ok(ui.includes('cleaner.cleanPiece(piece)'),'Unified needs real photo-restoration invocation');
