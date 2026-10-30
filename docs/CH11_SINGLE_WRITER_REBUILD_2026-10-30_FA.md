@@ -21,7 +21,7 @@
 | صفحات/حالت‌های تعریف‌شده در CDU v6 | 37 |
 | صفحه‌هایی با ممیزی اولیهٔ Layout | 1 (DEP/ARR INDEX، folio 11.40.32) |
 | صفحه‌هایی با تأیید کامل Layout + Effectivity + Behavior + Pixel Diff | **0** |
-| خطای Static Cell Overflow پیدا شده | 9 (در ۶ صفحهٔ باقی‌مانده، قابل تعیین از registry) |
+| خطای Static Cell Overflow پیدا شده | 9 (در ۵ صفحهٔ MENU، N1_LIMIT، APP_REF، RTE_DATA و OFFSET) |
 | تصویر Golden Reference خصوصی قابل استفادهٔ خودکار | **فعلاً موجود نیست** |
 | آزمایش مرورگر زنده روی GitHub Pages | **تأیید نشده** |
 
