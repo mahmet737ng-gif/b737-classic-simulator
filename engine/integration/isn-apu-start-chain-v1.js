@@ -168,6 +168,26 @@
     this.feedback('apu','starterEngaged',false);this.obs('apu',true);
     this.feedback('apu','genOffBusLight',true);this.phase.apu='READY';});
   }
+  apuFuelStarve(reason='APU_NO_FUEL_PATH'){
+   // Only the training-owned start/ready plant may be stopped by the fuel
+   // simulation. External SOURCE_OBSERVATION must not be overwritten.
+   if(!['INLET_DOOR','STARTING','READY'].includes(this.phase.apu))return this.get();
+   const observed=this.start.get().observation.apu;
+   if(observed.running===true&&observed.evidence.running!==ORIGIN)
+    return this.get();
+   this.cancel('apu');
+   // Existing Start.Session handles APU generator contactors and bleed
+   // disconnect; no second electrical source state is created here.
+   this.start.shutdownAPU();
+   this.obs('apu',false);
+   this.feedback('apu','starterEngaged',false);
+   this.feedback('apu','inletDoorOpen',false);
+   this.feedback('apu','genOffBusLight',false);
+   this.phase.apu='FUEL_STARVATION';
+   this.lastError='APU FUEL SUPPLY LOST — '+String(reason);
+   this.syncPower();
+   return this.get();
+  }
   stopAPU(){this.cancel('apu');this.command({type:'APU_SWITCH',position:'OFF'});
    this.phase.apu='STOPPING';this.schedule('apu',400,()=>{
     this.obs('apu',false);this.feedback('apu','genOffBusLight',false);

@@ -1,0 +1,42 @@
+name: Unified APU fuel + EGT + AC live linkage
+on:
+  push:
+    branches: [feature/apu-fuel-egtpower-live-20261031]
+  pull_request:
+    paths:
+      - 'engine/integration/isn-apu-start-chain-v1.js'
+      - 'engine/integration/isn-09-12-runtime-v1.js'
+      - 'engine/integration/isn-13-18-ecu-testbench-v1.js'
+      - 'engine/integration/isn-apu-load-dynamics-v1.js'
+      - 'panel-mosaic-lab/cockpit/apu-live-meter-unified-v1.js'
+      - 'panel-mosaic-lab/cockpit/isn-cockpit.js'
+      - 'panel-mosaic-lab/cockpit/index.html'
+      - 'tests/apu-fuel-generator-egtlive-v1.test.cjs'
+      - '.github/workflows/apu-fuel-generator-egt-live.yml'
+permissions:
+  contents: read
+jobs:
+  apu:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Test engine and live gauge integration
+        run: |
+          node --check engine/integration/isn-09-12-runtime-v1.js
+          node --check engine/integration/isn-13-18-ecu-testbench-v1.js
+          node --check engine/integration/isn-apu-start-chain-v1.js
+          node --check engine/integration/isn-apu-load-dynamics-v1.js
+          node --check panel-mosaic-lab/cockpit/apu-live-meter-unified-v1.js
+          node --check panel-mosaic-lab/cockpit/isn-cockpit.js
+          node --test tests/apu-fuel-generator-egtlive-v1.test.cjs
+          node tests/isn-13-18-ecu.test.cjs
+          node tests/isn-apu-electrical-load-v1.test.cjs
+          node tests/isn-apu-start-chain-v1.test.cjs
+          node --test tests/isn-cold-dark-two-engine.e2e.test.cjs tests/battery-live-v1.test.cjs tests/electrical-demand-estimate-v1.test.cjs
+      - name: Validate locked cockpit and guarded switches
+        run: |
+          python3 panel-mosaic-lab/cockpit/verify-guard-redzone.py --negative-self-test
+          python3 panel-mosaic-lab/cockpit/verify-irs-complete-redzone-v1.py --negative-self-test
+          python3 panel-mosaic-lab/verify-final-overhead.py

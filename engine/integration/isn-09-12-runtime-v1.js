@@ -15,7 +15,7 @@
  const pumpNames=Object.freeze({main1:['fuel.main1FwdPump','fuel.main1AftPump'],
   main2:['fuel.main2FwdPump','fuel.main2AftPump'],center:['fuel.centerLeftPump','fuel.centerRightPump']});
  const approx=Object.freeze({apuFuelKgHr:110,initialFuelKg:{main1:3500,center:0,main2:3500},
-  mainFuelPriority:'CENTER_BEFORE_MAIN',maxStepMs:1000,
+  mainFuelPriority:'CENTER_BEFORE_MAIN',apuStartFuelKgHr:55,maxStepMs:1000,
    suctionPumpMotoringN2Pct:5,suctionTrainingHighAltitudeFt:10000});
  function checkedKg(x){if(!finite(x)||x<0||x>25000)throw Error('Fuel quantity must be finite kg between 0 and 25000');return x;}
  function anyPump(pumps,ids){
@@ -72,11 +72,33 @@
    if(!TANK.includes(tank))throw Error('Unknown source tank');
    if(!finite(amountKg)||amountKg<0)throw Error('Invalid fuel burn');
    const delivered=Math.min(this.tanks[tank],amountKg);
-   this.tanks[tank]=round(Math.max(0,this.tanks[tank]-delivered));
-   this.burnedKg[engine]=round(this.burnedKg[engine]+delivered);
+   // The APU is integrated at 100ms in live Unified. Rounding every tick
+   // to 0.001 kg would bias its low start-flow by ~30%. Keep precise APU
+   // accumulation; retain legacy engine ledger rounding for compatibility.
+   this.tanks[tank]=engine==='apu'?Math.max(0,this.tanks[tank]-delivered):
+    round(Math.max(0,this.tanks[tank]-delivered));
+   this.burnedKg[engine]=engine==='apu'?this.burnedKg[engine]+delivered:
+    round(this.burnedKg[engine]+delivered);
    if(delivered>0)this.events.push({type:'FUEL_BURN',engine,tank,kg:round(delivered)});
    if(this.events.length>100)this.events.splice(0,this.events.length-100);
    return {deliveredKg:round(delivered),shortfallKg:round(Math.max(0,amountKg-delivered))};
+  }
+  apuSupply(pumps={}){
+   const center=anyPump(pumps,pumpNames.center),left=anyPump(pumps,pumpNames.main1);
+   const right=anyPump(pumps,pumpNames.main2);
+   const supply=(tank,reason)=>({available:true,tank,reason,quality:SOURCE,pressurized:reason!=='MAIN1_SUCTION'});
+   // AC boost pumps feed the left manifold. Main 2 requires CROSSFEED OPEN;
+   // absent AC pressure, Classic APU suction feeds from main 1 independently.
+   // Optional APU DC boost-pump effectivity is not inferred or simulated.
+   if(this.tanks.center>0&&center===true)return supply('center','CENTER_AC_PUMP_LEFT_MANIFOLD');
+   if(this.tanks.main1>0&&left===true)return supply('main1','MAIN1_AC_PUMP');
+   if(this.crossfeed==='OPEN'&&this.tanks.main2>0&&right===true)
+    return supply('main2','MAIN2_AC_PUMP_CROSSFEED');
+   if(this.tanks.main1>0)return supply('main1','MAIN1_SUCTION');
+   const unknown=(this.tanks.center>0&&center===null)||
+     (this.crossfeed==='OPEN'&&this.tanks.main2>0&&right===null);
+   return {available:unknown?null:false,tank:null,reason:unknown?'APU_PUMP_POWER_UNKNOWN':'APU_NO_FUEL_PATH',
+    quality:SOURCE,pressurized:false};
   }
   get(){return {schema:'b737-isn-fuel-12/1',quality:'TRAINING_QUANTITIES_AND_FUEL_FLOW',
    tanksKg:cp(this.tanks),crossfeed:this.crossfeed,burnedKg:cp(this.burnedKg),
@@ -113,6 +135,7 @@
    this.commandLog=[];this.lastPlan=null;this.elapsedMs=0;
   }
   pumps(){return this.chain.start?.core?.pack?.get()?.pumps??{};}
+  apuFuelPath(){return this.fuel.apuSupply(this.pumps());}
   fuelPath(device,{fuelStartLever}={}){
    if(!IDS.includes(device))throw Error('Unknown engine');
    const snap=this.chain.get(),obs=snap.observations?.[device];
@@ -178,7 +201,9 @@
   advance(ms){if(!finite(ms)||ms<0||ms>120000)throw Error('Invalid elapsed time');
    let remaining=ms;
    while(remaining>0){const dt=Math.min(remaining,approx.maxStepMs);remaining-=dt;
-    const pre=this.chain.get();
+    const pre=this.chain.get(),beforeApuFuel=this.apuFuelPath();
+    if(['INLET_DOOR','STARTING','READY'].includes(pre.phase.apu)&&beforeApuFuel.available!==true)
+     this.chain.apuFuelStarve(beforeApuFuel.reason);
     // A live engine losing its pumped fuel route must fail, never keep generating.
     for(const id of IDS)if(pre.phase[id]==='RUNNING'&&this.fuelPath(id).available===false){
      if(typeof this.chain.fuelFlameout==='function')this.chain.fuelFlameout(id);
@@ -198,9 +223,15 @@
      const burn=this.fuel.consume(id,ff*dt/3600000,fuel.tank);
      if(burn.shortfallKg>0||this.fuel.tanks[fuel.tank]===0){this.chain.fuelFlameout(id);}
     }
-    // APU fuel draw: explicit training amount from main 1, never an asserted pump/wiring sensor.
-    if(now.sources?.apu?.running===true&&this.fuel.tanks.main1>0)
-     this.fuel.consume('apu',approx.apuFuelKgHr*dt/3600000,'main1');
+    // Single physical tank ledger: APU and engines consume the same fuel.
+    const path=this.apuFuelPath(),running=now.sources?.apu?.running===true,
+     starting=now.phase.apu==='STARTING';
+    if((running||starting)&&path.available===true){
+     const rate=running?approx.apuFuelKgHr:approx.apuStartFuelKgHr;
+     const burn=this.fuel.consume('apu',rate*dt/3600000,path.tank);
+     if(burn.shortfallKg>0||this.fuel.tanks[path.tank]===0)
+      this.chain.apuFuelStarve('APU_FUEL_EXHAUSTED');
+    }
    }
    return this.get();
   }
@@ -211,7 +242,7 @@
     egtC:snap.observations?.[d]?.feedback?.egtC?.value??null,
     fuelFlowKgHr:snap.observations?.[d]?.feedback?.fuelFlowKgHr?.value??null,
     fuelPath:paths[d],source:snap.sources[d]?.origin??null}]));
-   return {schema:SCHEMA,quality:SOURCE,elapsedMs:this.elapsedMs,engines,
+   return {schema:SCHEMA,quality:SOURCE,elapsedMs:this.elapsedMs,engines,apuFuelPath:this.apuFuelPath(),
     modeLimitsN1Pct:this.lastPlan?.mode?.limitTable??null,
     lastPlan:this.lastPlan?cp(this.lastPlan):null,
     fuel:{...this.fuel.get(),suctionPathFailed:cp(this.suctionPathFailed)},diagnostics:diagnostics(snap,paths),commands:cp(this.commandLog),
