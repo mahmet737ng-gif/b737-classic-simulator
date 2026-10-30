@@ -277,125 +277,119 @@
       "title": "IDENT",
       "fcom_section": "11.40",
       "variant": "MENU_CDU",
-      "source_status": "FCOM_11.40.8_LABELS_REVIEWED; AIRCRAFT_SOFTWARE_OPTION_NOT_PROVEN",
+      "source_status": "FCOM_11.40.8_9_TEXT_AUDITED_EFFECTIVITY_AND_VALUES_PENDING",
       "page_count": 1,
       "rows": [
         [
           {
+            "lsk": "L1",
             "label": "MODEL",
             "required": false,
-            "status": "TRAINER_IMPLEMENTATION",
-            "value": "737-300",
-            "lsk": "L1",
-            "source_verification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            "source_verification": "FCOM_11.40.8_9_TEXT_AUDITED",
+            "status": "FCOM_VALUE_REQUIRES_VERIFIED_SOURCE"
           },
           {
+            "lsk": "R1",
             "label": "ENG RATING",
             "required": false,
-            "status": "TRAINER_IMPLEMENTATION",
-            "value": "CFM56-3",
-            "lsk": "R1",
-            "source_verification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            "source_verification": "FCOM_11.40.8_9_TEXT_AUDITED",
+            "status": "FCOM_VALUE_REQUIRES_VERIFIED_SOURCE"
           }
         ],
         [
           {
+            "lsk": "L2",
             "label": "NAV DATA",
             "required": false,
-            "status": "TRAINER_IMPLEMENTATION",
-            "value": "DEMO ONLY",
-            "lsk": "L2",
-            "source_verification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            "source_verification": "FCOM_11.40.8_9_TEXT_AUDITED",
+            "status": "FCOM_VALUE_REQUIRES_VERIFIED_SOURCE"
           },
           {
+            "lsk": "R2",
             "label": "ACTIVE",
             "required": false,
-            "status": "TRAINER_IMPLEMENTATION",
-            "value": "SIM",
-            "lsk": "R2",
-            "source_verification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            "source_verification": "FCOM_11.40.8_9_TEXT_AUDITED",
+            "status": "FCOM_VALUE_REQUIRES_VERIFIED_SOURCE"
           }
         ],
         [
           {
+            "lsk": "L3",
             "label": "",
             "required": false,
-            "status": "SOURCE_NO_DATA_UNVERIFIED",
-            "lsk": "L3",
-            "source_verification": "VARIANT_GATE_REQUIRED"
+            "source_verification": "FCOM_11.40.8_9_TEXT_AUDITED",
+            "status": "FCOM_VALUE_REQUIRES_VERIFIED_SOURCE"
           },
           {
+            "lsk": "R3",
             "label": "",
             "required": false,
-            "status": "TRAINER_IMPLEMENTATION",
-            "lsk": "R3",
-            "source_verification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            "source_verification": "FCOM_11.40.8_9_TEXT_AUDITED",
+            "status": "FCOM_VALUE_REQUIRES_VERIFIED_SOURCE"
           }
         ],
         [
           {
+            "lsk": "L4",
             "label": "OP PROGRAM",
             "required": false,
-            "status": "SOURCE_LABEL_REVIEWED_SOFTWARE_NOT_VERIFIED",
-            "value": "TRAINER",
-            "lsk": "L4",
-            "source_verification": "FCOM_11.40.8"
+            "source_verification": "FCOM_11.40.8_9_TEXT_AUDITED",
+            "status": "FCOM_VALUE_REQUIRES_VERIFIED_SOURCE"
           },
           {
-            "label": "",
-            "required": false,
-            "status": "TRAINER_IMPLEMENTATION",
             "lsk": "R4",
-            "source_verification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
-          }
-        ],
-        [
-          {
             "label": "",
             "required": false,
-            "status": "TRAINER_IMPLEMENTATION",
-            "lsk": "L5",
-            "source_verification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
-          },
-          {
-            "label": "SUPP DATA",
-            "value": "-----",
-            "required": false,
-            "status": "SOURCE_LABEL_REVIEWED_DATA_NOT_VERIFIED",
-            "lsk": "R5",
-            "source_verification": "FCOM_11.40.8"
+            "source_verification": "FCOM_11.40.8_9_TEXT_AUDITED",
+            "status": "FCOM_VALUE_REQUIRES_VERIFIED_SOURCE"
           }
         ],
         [
           {
+            "lsk": "L5",
+            "label": "",
+            "required": false,
+            "source_verification": "FCOM_11.40.8_9_TEXT_AUDITED",
+            "status": "FCOM_VALUE_REQUIRES_VERIFIED_SOURCE"
+          },
+          {
+            "lsk": "R5",
+            "label": "SUPP DATA",
+            "required": false,
+            "source_verification": "FCOM_11.40.8_9_TEXT_AUDITED",
+            "status": "FCOM_VALUE_REQUIRES_VERIFIED_SOURCE"
+          }
+        ],
+        [
+          {
+            "lsk": "L6",
             "label": "<INDEX",
             "required": false,
-            "status": "TRAINER_IMPLEMENTATION",
+            "source_verification": "FCOM_11.40.8_9_TEXT_AUDITED",
+            "status": "FCOM_VALUE_REQUIRES_VERIFIED_SOURCE",
             "action": {
               "type": "navigate",
               "page": "INDEX"
-            },
-            "lsk": "L6",
-            "source_verification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
           },
           {
+            "lsk": "R6",
             "label": "POS INIT>",
             "required": false,
-            "status": "TRAINER_IMPLEMENTATION",
+            "source_verification": "FCOM_11.40.8_9_TEXT_AUDITED",
+            "status": "FCOM_VALUE_REQUIRES_VERIFIED_SOURCE",
             "action": {
               "type": "navigate",
               "page": "POS_INIT"
-            },
-            "lsk": "R6",
-            "source_verification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
           }
         ]
       ],
       "source_ref": {
-        "folio_family": "11.40.8",
+        "folio_family": "11.40.8-9",
         "pdf_page_near": 1560,
         "source": "SEPEHRAN_737CL_FCOM_VOLUME_2_CH11",
-        "verification": "APPROXIMATE_TOPIC_REFERENCE_REQUIRES_FIELD_AUDIT"
+        "verification": "TEXT_FIELD_LABELS_VERIFIED; FMC_SOFTWARE_VARIANT_UNVERIFIED"
       },
       "id": "IDENT"
     },
@@ -403,130 +397,127 @@
       "title": "POS INIT",
       "fcom_section": "11.40",
       "variant": "MENU_CDU",
-      "source_status": "LOCATION_REVIEWED_AGAINST_FCOM_ILLUSTRATION; DYNAMIC_FUNCTIONS_PARTIAL",
+      "source_status": "FCOM_11.40.11_13_TEXT_AUDITED_DYNAMIC_IRS_AIRPORT_CLOCK_PARTIAL",
       "page_count": 3,
       "rows": [
         [
           {
-            "label": "LAST POS",
-            "value": "N 00 00.0",
-            "required": false,
-            "status": "FCOM_FIELD_LOCATION_VERIFIED",
             "lsk": "L1",
-            "source_verification": "FCOM_ILLUSTRATION_REVIEWED"
+            "label": "",
+            "required": false,
+            "status": "FCOM_11.40.11_TO_13_PARTIAL",
+            "source_verification": "FCOM_11.40.11_13_TEXT_AUDITED"
           },
           {
-            "label": "LAST POS",
-            "value": "W 000 00.0",
-            "required": false,
-            "status": "FCOM_FIELD_LOCATION_VERIFIED",
             "lsk": "R1",
-            "source_verification": "FCOM_ILLUSTRATION_REVIEWED"
+            "label": "LAST POS",
+            "required": false,
+            "status": "FCOM_11.40.11_TO_13_PARTIAL",
+            "source_verification": "FCOM_11.40.11_13_TEXT_AUDITED"
           }
         ],
         [
           {
-            "label": "REF AIRPORT",
-            "field": "REF_AIRPORT",
-            "format": "ICAO",
-            "required": false,
-            "status": "FCOM_FIELD_LOCATION_VERIFIED",
             "lsk": "L2",
-            "source_verification": "FCOM_ILLUSTRATION_REVIEWED"
+            "label": "REF AIRPORT",
+            "required": false,
+            "status": "FCOM_11.40.11_TO_13_PARTIAL",
+            "source_verification": "FCOM_11.40.11_13_TEXT_AUDITED",
+            "field": "REF_AIRPORT",
+            "format": "ICAO"
           },
           {
-            "label": "",
-            "status": "EMPTY",
-            "required": false,
             "lsk": "R2",
-            "source_verification": "FCOM_ILLUSTRATION_REVIEWED"
+            "label": "",
+            "required": false,
+            "status": "FCOM_11.40.11_TO_13_PARTIAL",
+            "source_verification": "FCOM_11.40.11_13_TEXT_AUDITED"
           }
         ],
         [
           {
-            "label": "GATE",
-            "field": "GATE",
-            "format": "TEXT",
-            "required": false,
-            "status": "FCOM_FIELD_LOCATION_VERIFIED",
             "lsk": "L3",
-            "source_verification": "FCOM_ILLUSTRATION_REVIEWED"
+            "label": "GATE",
+            "required": false,
+            "status": "FCOM_11.40.11_TO_13_PARTIAL",
+            "source_verification": "FCOM_11.40.11_13_TEXT_AUDITED",
+            "field": "GATE",
+            "format": "TEXT"
           },
           {
-            "label": "",
-            "status": "EMPTY",
-            "required": false,
             "lsk": "R3",
-            "source_verification": "FCOM_ILLUSTRATION_REVIEWED"
-          }
-        ],
-        [
-          {
             "label": "",
-            "status": "EMPTY",
             "required": false,
+            "status": "FCOM_11.40.11_TO_13_PARTIAL",
+            "source_verification": "FCOM_11.40.11_13_TEXT_AUDITED"
+          }
+        ],
+        [
+          {
             "lsk": "L4",
-            "source_verification": "FCOM_ILLUSTRATION_REVIEWED"
+            "label": "",
+            "required": false,
+            "status": "FCOM_11.40.11_TO_13_PARTIAL",
+            "source_verification": "FCOM_11.40.11_13_TEXT_AUDITED"
           },
           {
-            "label": "SET IRS POS",
-            "field": "IRS_POS",
-            "format": "LATLON",
-            "required": false,
-            "status": "FCOM_FIELD_LOCATION_VERIFIED",
             "lsk": "R4",
-            "source_verification": "FCOM_ILLUSTRATION_REVIEWED"
+            "label": "SET IRS POS",
+            "required": false,
+            "status": "FCOM_11.40.11_TO_13_PARTIAL",
+            "source_verification": "FCOM_11.40.11_13_TEXT_AUDITED",
+            "field": "IRS_POS",
+            "format": "LATLON"
           }
         ],
         [
           {
-            "label": "GMT-MON/DY",
-            "value": "TRAINER",
-            "required": false,
-            "status": "FCOM_FIELD_LOCATION_VERIFIED",
             "lsk": "L5",
-            "source_verification": "FCOM_ILLUSTRATION_REVIEWED"
+            "label": "GMT-MON/DY",
+            "required": false,
+            "status": "FCOM_11.40.11_TO_13_PARTIAL",
+            "source_verification": "FCOM_11.40.11_13_TEXT_AUDITED"
           },
           {
-            "label": "SET IRS HDG",
-            "field": "IRS_HDG",
-            "format": "HDG",
-            "required": false,
-            "status": "FCOM_FIELD_LOCATION_VERIFIED",
             "lsk": "R5",
-            "source_verification": "FCOM_ILLUSTRATION_REVIEWED"
+            "label": "SET IRS HDG",
+            "required": false,
+            "status": "FCOM_11.40.11_TO_13_PARTIAL",
+            "source_verification": "FCOM_11.40.11_13_TEXT_AUDITED",
+            "field": "IRS_HDG",
+            "format": "HDG"
           }
         ],
         [
           {
+            "lsk": "L6",
             "label": "<INDEX",
+            "required": false,
+            "status": "FCOM_11.40.11_TO_13_PARTIAL",
+            "source_verification": "FCOM_11.40.11_13_TEXT_AUDITED",
             "action": {
               "type": "navigate",
               "page": "INDEX"
-            },
-            "status": "FCOM_FIELD_LOCATION_VERIFIED",
-            "required": false,
-            "lsk": "L6",
-            "source_verification": "FCOM_ILLUSTRATION_REVIEWED"
+            }
           },
           {
+            "lsk": "R6",
             "label": "ROUTE>",
+            "required": false,
+            "status": "FCOM_11.40.11_TO_13_PARTIAL",
+            "source_verification": "FCOM_11.40.11_13_TEXT_AUDITED",
             "action": {
               "type": "navigate",
               "page": "RTE"
-            },
-            "status": "FCOM_FIELD_LOCATION_VERIFIED",
-            "required": false,
-            "lsk": "R6",
-            "source_verification": "FCOM_ILLUSTRATION_REVIEWED"
+            }
           }
         ]
       ],
       "source_ref": {
-        "folio_family": "11.40.11",
+        "folio_family": "11.40.11-13",
         "pdf_page_near": 1563,
         "source": "SEPEHRAN_737CL_FCOM_VOLUME_2_CH11",
-        "verification": "FIELD_LOCATION_REVIEWED_ON_FCOM_PAGE"
+        "verification": "FCOM_TEXT_AND_LSKS_VERIFIED; SOURCE_POSITION_AND_VARIANT_PENDING"
       },
       "id": "POS_INIT",
       "page_number": 1
