@@ -43,10 +43,14 @@
   const gen2=assigned[2]==='GEN2'?source.GEN2:0;
   needles.setAmps('acAmps1',Math.max(0,Math.min(200,gen1)));
   needles.setAmps('acAmps2',Math.max(0,Math.min(200,gen2)));
-  // The original APU meter has NO approved numeric photo graduation yet.
-  // Drive its existing blade by monotone visual demand only (QA/provisional).
-  const apuNeedle=root.B737DriveAmpsNeedleModel?.needles?.find(x=>x.id==='apuAcAmps');
-  if(apuNeedle)needles.setAngle('apuAcAmps',apuNeedle.initialAngle+Math.min(200,Math.max(0,source.APU))*0.49);
+  // Meter zeros whenever the APU generator is not READY and really
+  // connected to an energized V7 bus. Selected/last APU switch != load.
+  const apuGenerator=owner()?.getECUState?.()?.apu?.generator;
+  const liveAPU=apuGenerator?.ready===true&&Object.values(assigned).includes('APU')&&
+    (apuGenerator.connectedBusSides?.length??0)>0;
+  const amps=liveAPU&&Number.isFinite(source.APU)?Math.max(0,Math.min(200,source.APU)):0;
+  const model=root.B737DriveAmpsNeedleModel;
+  if(model?.bearingForApuAmps)needles.setAngle('apuAcAmps',model.bearingForApuAmps(amps));
  }
  function mount(){
   const host=document.getElementById('electricalLivePanel')||document.getElementById('isnBridgePanel');
@@ -94,7 +98,8 @@
   const input=safe(inputs);if(!input)return;
   const sig=JSON.stringify([input.electrical.revision,input.electrical.source,input.electrical.bus,
    input.toggles,input.windowHeat?.channels&&Object.fromEntries(Object.entries(input.windowHeat.channels).map(([k,v])=>[k,v.heaterPower])),
-   input.battery?.ammeterA,input.battery?.chargerA]);
+   input.battery?.ammeterA,input.battery?.chargerA,
+   owner()?.getECUState?.()?.apu?.generator?.ready===true]);
   if(!force&&sig===signature)return;
   const estimate=safe(()=>Engine.project(input));if(!estimate)return;
   signature=sig;latest=estimate;
@@ -106,7 +111,7 @@
  }
  const events=['b737:electrical-network','b737:electrical-owner-ready','b737:unified-ecu-observation',
   'b737:battery-live','b737:ac-dc-selector-change','b737:cockpit-mounted'];
- for(const name of events)root.addEventListener(name,()=>tick(name==='b737:electrical-network'||name==='b737:ac-dc-selector-change'));
+ for(const name of events)root.addEventListener(name,()=>tick(name==='b737:electrical-network'||name==='b737:ac-dc-selector-change'||name==='b737:cockpit-mounted'));
  root.addEventListener('message',event=>{
   if(event.origin!==location.origin||event.source!==document.getElementById('overheadFrame')?.contentWindow)return;
   if(event.data?.type==='b737:cockpit-overhead'&&['controls-state','control-event'].includes(event.data.kind))tick(true);
