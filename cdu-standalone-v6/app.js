@@ -58,14 +58,14 @@ function renderDepArrIndex(box,screenTop,screenHeight){
  box.appendChild(makeDepArrTriplet(y(6,10),'<----','','---->'));
 }
 function v19SafeN1(){const r=n1EstimateV19();return r?.status==='SIM_ESTIMATE'?r:null;}
-function update(){const box=$('fmc-lines'); box.replaceChildren();
+function update(){const box=$('fmc-lines'); const frame=document.createElement('div');
  const screenTop=1312*0.0765, screenHeight=1312*0.375;
  const page=pages[state.page]; const tag=(core.pendingCount(state)>0)?'MOD ':'ACT ';
  const header=document.createElement('div'); header.className='fmc-line fmc-header'; header.style.top=((117-screenTop)/screenHeight*100)+'%';
  const ht=document.createElement('span'); ht.className='fmc-header-title'; ht.textContent=(TITLE_PLAIN.has(state.page)?'':tag)+page.title;
- const hc=document.createElement('span'); hc.className='fmc-header-count'; hc.textContent=(page.page_number||1)+'/'+page.page_count; header.appendChild(ht); header.appendChild(hc); box.appendChild(header);
+ const hc=document.createElement('span'); hc.className='fmc-header-count'; hc.textContent=(page.page_number||1)+'/'+page.page_count; header.appendChild(ht); header.appendChild(hc); frame.appendChild(header);
  const n1=v19SafeN1();
- if(state.page==='DEP_ARR')renderDepArrIndex(box,screenTop,screenHeight);
+ if(state.page==='DEP_ARR')renderDepArrIndex(frame,screenTop,screenHeight);
  else for(let row=1;row<=6;row++){ const pair=page.rows[row-1]; const lsk=map.controls.find(c=>c.id==='CDU_CAPT_LSK_L'+row); const cy=(lsk.bbox_px[1]+lsk.bbox_px[3])/2;
    const labelTop=((cy-13-screenTop)/screenHeight*100); const valueTop=((cy+10-screenTop)/screenHeight*100);
    let labelL=pair?.[0]?.label||'',labelR=pair?.[1]?.label||'';
@@ -74,15 +74,28 @@ function update(){const box=$('fmc-lines'); box.replaceChildren();
      valueL=state.depArrSelection.airport||valueL;
    if(n1&&state.page==='N1_LIMIT'&&row===1){labelR='20K N1 EST';valueR=n1.maxN1Pct.toFixed(1)+'% EST';}
    if(n1&&state.page==='TAKEOFF'&&row===3){labelL='TO N1 EST';valueL=n1.maxN1Pct.toFixed(1)+'% EST';}
-   box.appendChild(makePairRow(labelTop,labelL,labelR,false,true));
-   box.appendChild(makePairRow(valueTop,valueL,valueR));
+   frame.appendChild(makePairRow(labelTop,labelL,labelR,false,true));
+   frame.appendChild(makePairRow(valueTop,valueL,valueR));
  }
- box.appendChild(makePairRow(((565-screenTop)/screenHeight*100), state.message||state.scratch||'', '', true));
- if(window.CDU_NAV_API?.paint)window.CDU_NAV_API.paint(box);
- if(window.CDU_STAGE5_API?.paint)window.CDU_STAGE5_API.paint(box);
- if(window.CDU_STAGE6_API?.paint)window.CDU_STAGE6_API.paint(box);
- if(window.CDU_REFERENCE_PROGRESS_API?.paint)window.CDU_REFERENCE_PROGRESS_API.paint(box);
- if(window.CDU_STAGE10_ADVISORY?.paint)window.CDU_STAGE10_ADVISORY.paint(box,state);
+ frame.appendChild(makePairRow(((565-screenTop)/screenHeight*100), state.message||state.scratch||'', '', true));
+ const renderers={
+  NAVDB_LEGS:window.CDU_NAV_API?.paint,
+  STAGE5:window.CDU_STAGE5_API?.paint,
+  STAGE6:window.CDU_STAGE6_API?.paint,
+  PROGRESS:window.CDU_REFERENCE_PROGRESS_API?.paint,
+  STAGE10_ADVISORY:window.CDU_STAGE10_ADVISORY?.paint?
+    node=>window.CDU_STAGE10_ADVISORY.paint(node,state):null
+ };
+ const output=window.CDU_SCREEN_COMPOSITOR_V1?.compose({
+   frame,state,renderers,onError:items=>console.warn('CDU SCREEN OWNER ERROR',items)
+ });
+ if(!output)throw Error('AUTHORITATIVE_CDU_SCREEN_COMPOSITOR_NOT_LOADED');
+ // Single atomic update to the VISIBLE CDU. Optional reference adapters never
+ // receive or mutate the live DOM and cannot erase a FCOM-owned screen.
+ box.replaceChildren(...frame.childNodes);
+ box.dataset.screenOwner=output.owner;
+ box.dataset.sourceVerified=String(output.sourceVerified);
+ box.dataset.compositorVersion=output.version;
  box.style.opacity=state.brightness;
  const all=core.lights(state);if(state.stage6AwaitingExec)all.EXEC=true;
  for(const [l,on] of Object.entries(all)){const el=byId['CDU_CAPT_'+l+'_LIGHT'];if(el)el.classList.toggle('on',on)}
