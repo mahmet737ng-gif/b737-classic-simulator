@@ -11,12 +11,12 @@
  // See engine/instruments/native-bezel-centre-evidence-v1.json.
  // Initial angles now represent provisional cold-dark mechanical resting positions. 
  // DC AMPS is center-zero; unpowered AC/DC voltmeters rest at their leftmost stop pending exact source-tick survey.
- const source=Object.freeze({piece:'OH10',width:1095,height:1436,tipRadius:85,spriteTipRadius:216});
+ const source=Object.freeze({piece:'OH10',width:1095,height:1436,tipRadius:85,spriteTipRadius:216,registration:'OWNER_SCREENSHOT_RED_ARC_FIT_NOT_SHAFT_CERTIFIED'});
  const meters=Object.freeze([
-  Object.freeze({id:'dcAmps',label:'DC AMPS',x:308.453,y:281.608,tipRadius:141,initialAngle:0.36}),
-  Object.freeze({id:'cps',label:'CPS',x:774.2,y:191.4,tipRadius:141,initialAngle:-54}),
-  Object.freeze({id:'dcVolts',label:'DC VOLTS',x:310.307,y:682.818,tipRadius:131,initialAngle:-26.62}),
-  Object.freeze({id:'acVolts',label:'A.C.',x:785.143,y:702.386,tipRadius:143,initialAngle:-48.08})
+  Object.freeze({id:'dcAmps',label:'DC AMPS',x:307.397,y:280.760,tipRadius:167.860,initialAngle:0}),
+  Object.freeze({id:'cps',label:'CPS',x:781.896,y:261.228,tipRadius:148.530,initialAngle:-54.21}),
+  Object.freeze({id:'dcVolts',label:'DC VOLTS',x:310.778,y:719.453,tipRadius:178.742,initialAngle:-45.50}),
+  Object.freeze({id:'acVolts',label:'A.C.',x:785.318,y:706.045,tipRadius:156.828,initialAngle:-51.40})
  ]);
 
  // Source-original native OH10 white graduation intersections, not metal
@@ -25,10 +25,10 @@
  // its unpowered parked position and actual AC bus sensor feed are resolved.
  const photoScale=Object.freeze({
   // CPS end/center visual anchors are TRAINING PROVISIONAL until all native tick rays and its true shaft are audited.
-  cps:Object.freeze({unit:'Hz',values:Object.freeze([360,380,400,410,420]),angles:Object.freeze([-54,-27,0,27,54]),readoutApprovedForPreview:false,accuracy:'PROVISIONAL_MANUAL_ANCHORS'}),
-  dcAmps:Object.freeze({unit:'A',values:Object.freeze([-50,-40,-30,-20,-10,0,10,20,30,40,50]),angles:Object.freeze([-27.85,-22.24,-16.76,-11.27,-5.58,0.36,6.22,11.88,17.5,22.97,28.76]),readoutApprovedForPreview:true}),
-  dcVolts:Object.freeze({unit:'V',values:Object.freeze([0,4,8,12,16,20,24,28,32,36,40]),angles:Object.freeze([-26.62,-21.22,-16.16,-11,-5.9,-0.29,5.7,10.98,16.08,21.05,26.47]),readoutApprovedForPreview:true}),
-  acVolts:Object.freeze({unit:'V',values:Object.freeze([100,102,104,106,108,110,112,114,116,118,120,122,124,126,128,130]),angles:Object.freeze([-48.08,-41.89,-35.84,-29.77,-23.63,-17.02,-9.78,-3.47,3.05,9.16,16.42,22.97,28.86,34.68,40.62,46.8]),readoutApprovedForPreview:false,accuracy:'PHOTO_TICKS_UNVERIFIED_SHAFT_PARK'})
+  cps:Object.freeze({unit:'Hz',values:Object.freeze([360,380,400,410,420]),angles:Object.freeze([-54.21,-27.105,0,23.39,46.78]),readoutApprovedForPreview:false,accuracy:'PROVISIONAL_MANUAL_ANCHORS'}),
+  dcAmps:Object.freeze({unit:'A',values:Object.freeze([-50,-40,-30,-20,-10,0,10,20,30,40,50]),angles:Object.freeze([-46.66,-37.3809,-28.3169,-19.2363,-9.8249,0,9.1325,17.9534,26.7118,35.2366,44.26]),readoutApprovedForPreview:true}),
+  dcVolts:Object.freeze({unit:'V',values:Object.freeze([0,4,8,12,16,20,24,28,32,36,40]),angles:Object.freeze([-45.5,-36.1684,-27.4244,-18.5076,-9.6945,0,10.0057,18.8254,27.3445,35.6464,44.7]),readoutApprovedForPreview:true}),
+  acVolts:Object.freeze({unit:'V',values:Object.freeze([100,102,104,106,108,110,112,114,116,118,120,122,124,126,128,130]),angles:Object.freeze([-51.4,-44.7535,-38.2574,-31.7398,-25.147,-18.0496,-10.2757,-3.5004,3.5478,10.1972,18.0981,25.2263,31.6363,37.9701,44.4344,51.16]),readoutApprovedForPreview:false,accuracy:'PHOTO_TICKS_UNVERIFIED_SHAFT_PARK'})
  });
  function bearingForReading(id,value){
   const sc=photoScale[id];if(!sc)throw Error('Unknown photographic OH10 scale '+id);
@@ -97,6 +97,36 @@
   const a=limitAngle(id,bearing)*Math.PI/180, r=meter.tipRadius||source.tipRadius;
   return Object.freeze({x:meter.x+r*Math.sin(a),y:meter.y-r*Math.cos(a),radius:r,angle:limitAngle(id,bearing)});
  }
+ // User's screenshot measured four red inner-tick arcs. The cover is a
+ // curved BLUE physical foreground. The existing white needle is clipped to
+ // the black window and remains hidden below the photo's blue edge.
+ // Screenshot/native registration is provisional; source bitmap is unchanged.
+ const arcPhoto=Object.freeze({
+  scaleX:0.902,scaleY:0.930,originX:216.8,originY:234,
+  occlusion:Object.freeze({
+   dcAmps:Object.freeze({mx:494.5,y:404.03,q:21.10,k:1.38}),
+   cps:Object.freeze({mx:922,y:402.04,q:23.42,k:0.06}),
+   dcVolts:Object.freeze({mx:494.5,y:807.03,q:22.32,k:2.88}),
+   acVolts:Object.freeze({mx:921.5,y:805.67,q:26.53,k:-1.36})
+  })
+ });
+ function blackWindowPath(id){
+  const meter=meters.find(m=>m.id===id),edge=arcPhoto.occlusion[id];
+  if(!meter||!edge)throw Error('Unknown gauge face occlusion: '+id);
+  const scale=source.spriteTipRadius/meter.tipRadius,coords=[];
+  // Native x to 512x512 centered sprite coordinates, sampling the traced
+  // black/blue interface at 33 x positions (less than 0.1px curve error).
+  for(let i=0;i<=64;i++){
+   const spriteX=i*8,nativeX=meter.x+(spriteX-256)/scale;
+   const screenX=arcPhoto.originX+arcPhoto.scaleX*nativeX;
+   const t=(screenX-edge.mx)/110;
+   const screenY=edge.y+edge.q*t*t+edge.k*t;
+   const nativeY=(screenY-arcPhoto.originY)/arcPhoto.scaleY;
+   coords.push([spriteX,256+(nativeY-meter.y)*scale]);
+  }
+  const bottom=coords.slice().reverse().map(p=>'L '+p[0].toFixed(3)+' '+p[1].toFixed(3)).join(' ');
+  return 'M 0 0 L 512 0 '+bottom+' Z';
+ }
  const motion=Object.freeze({maxSpeedDegPerSec:70,accelerationDegPerSec2:260,settleDeg:0.025,maxStepSeconds:0.05});
  function advanceNeedle(current,velocity,target,dtSeconds){
   if(![current,velocity,target,dtSeconds].every(v=>typeof v==='number'&&Number.isFinite(v)))throw Error('Non-finite OH10 animation argument');
@@ -117,8 +147,9 @@
  };
  function placement(piece,meter){
   if(!piece||!meters.includes(meter)||![piece.x,piece.y,piece.w,piece.h].every(Number.isFinite)||piece.w<=0||piece.h<=0)throw Error('Invalid OH10 needle placement');
-  const size=512*(meter.tipRadius||source.tipRadius)/source.spriteTipRadius*piece.w/source.width;
-  return {x:piece.x+meter.x*piece.w/source.width,y:piece.y+meter.y*piece.h/source.height,size};
+  const nativeSize=512*(meter.tipRadius||source.tipRadius)/source.spriteTipRadius;
+  const sizeX=nativeSize*piece.w/source.width,sizeY=nativeSize*piece.h/source.height;
+  return {x:piece.x+meter.x*piece.w/source.width,y:piece.y+meter.y*piece.h/source.height,size:sizeX,sizeX,sizeY};
  }
- return Object.freeze({source,meters,angle,placement,photoScale,bearingForReading,readingForBearing,angleForIndication,angleForAcVolts,indicationModes,bounds,limitAngle,tipPoint,motion,advanceNeedle});
+ return Object.freeze({source,meters,angle,placement,photoScale,bearingForReading,readingForBearing,angleForIndication,angleForAcVolts,indicationModes,bounds,limitAngle,tipPoint,motion,advanceNeedle,arcPhoto,blackWindowPath});
 });
