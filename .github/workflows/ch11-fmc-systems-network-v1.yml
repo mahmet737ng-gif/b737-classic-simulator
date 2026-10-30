@@ -18,6 +18,12 @@ on:
       - 'engine/ch11/fcom-screen-contract-v1.js'
       - 'engine/ch11/cdu-preflight-evidence-v1.js'
       - 'engine/ch11/cdu-airac-banks-v1.js'
+      - 'engine/ch11/fmc-airac-banks-v1.js'
+      - 'engine/ch11/tests/fmc-airac-banks-v1.test.cjs'
+      - 'engine/ch11/tests/fmc-airac-unified-ident-v1.test.cjs'
+      - 'panel-mosaic-lab/cockpit/cdu-airac-ident-adapter-v1.js'
+      - 'panel-mosaic-lab/cockpit/cdu-airac-status-v1.js'
+      - 'panel-mosaic-lab/cockpit/cdu-session.js'
       - 'navigation/stage_airac2611_private_v1.py'
       - 'navigation/tests/test_stage_airac2611_private_v1.py'
       - 'engine/ch11/airac-cycle-installation-status-v1.json'
@@ -110,6 +116,11 @@ jobs:
       - run: node --check panel-mosaic-lab/cockpit/cdu-airac-status-bridge-v1.js
       - run: node --check panel-mosaic-lab/cockpit/cdu-airac-bank-receiver-v1.js
       - run: node --test engine/ch11/tests/cdu-airac-banks-v1.test.cjs
+      - run: node --check engine/ch11/fmc-airac-banks-v1.js
+      - run: node --check panel-mosaic-lab/cockpit/cdu-airac-ident-adapter-v1.js
+      - run: node --check panel-mosaic-lab/cockpit/cdu-airac-status-v1.js
+      - run: node --test engine/ch11/tests/fmc-airac-banks-v1.test.cjs
+      - run: node --test engine/ch11/tests/fmc-airac-unified-ident-v1.test.cjs
       - run: python3 -m unittest navigation/tests/test_stage_airac2611_private_v1.py
       - run: node --check engine/config/aircraft-profile-v1.js
       - run: node --check engine/config/cdu-ident-installation-v1.js
