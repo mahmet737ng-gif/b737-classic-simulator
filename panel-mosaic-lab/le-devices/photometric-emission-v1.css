@@ -20,10 +20,10 @@
  * to stay inside the real socket rather than lighting adjacent panel graphics.
  * The locked driver still owns opacity=0 OFF and reduced opacity in DIM.
  */
-.b737-le-devices .b737-le-photolens-v2 g[data-lens-id$="|TRANSIT"] > path:first-child {
+.b737-le-devices .b737-le-photolens-v2 g[data-lens-id$="|TRANSIT"] > path[data-optic-layer="illuminated-glass"] {
   filter:drop-shadow(0 0 1.45px rgba(255,190,57,.52));
 }
-.b737-le-devices .b737-le-photolens-v2 g[data-lens-id$="|EXT"] > path:first-child,
-.b737-le-devices .b737-le-photolens-v2 g[data-lens-id$="|FULL_EXT"] > path:first-child {
+.b737-le-devices .b737-le-photolens-v2 g[data-lens-id$="|EXT"] > path[data-optic-layer="illuminated-glass"],
+.b737-le-devices .b737-le-photolens-v2 g[data-lens-id$="|FULL_EXT"] > path[data-optic-layer="illuminated-glass"] {
   filter:drop-shadow(0 0 1.45px rgba(73,239,105,.48));
 }
