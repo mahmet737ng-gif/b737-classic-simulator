@@ -65,7 +65,7 @@ test('Both Unified CDU seats reload corrected source rules before app and real I
  assert.equal(seats.length,2);
  for(const seat of ['CAPT','FO']){
   const item=seats.find(x=>x.seat===seat);
-  assert.ok(item);assert.match(item.embeddedUrl,/FCOM-PREFLIGHT-0001-ENGINE-IDENT-0001-AIRAC-2611-0001$/);
+  assert.ok(item);assert.ok(item.embeddedUrl.includes('FCOM-PREFLIGHT-0001-ENGINE-IDENT-0001-AIRAC-2611-0001'));
  }
 });
 test('RTE/LEGS position selection page count and 24-character entry limits remain intact',()=>{
