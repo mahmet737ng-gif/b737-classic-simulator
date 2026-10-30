@@ -96,8 +96,8 @@
     put(valueY,Math.max(12,COLUMNS-rv.length),rv,r.lsk+'_VALUE');
    }
   }
-  const scratch=norm(typeof readMessage==='function'?readMessage():''||
-    typeof readScratch==='function'?readScratch():'');
+  const msg=typeof readMessage==='function'?norm(readMessage()):'';
+  const scratch=msg||norm(typeof readScratch==='function'?readScratch():'');
   put(13,0,scratch.slice(0,COLUMNS),'SCRATCHPAD');
   if(scratch.length>COLUMNS)issues.push({type:'SCRATCHPAD_OVER_24_COLUMNS',length:scratch.length});
   return {spec,lines:surface.map(x=>x.join('')),issues,sourceVerified:spec.verification.full==='FULLY_VERIFIED'};
