@@ -1,0 +1,18 @@
+/* LE-SMOOTHGLASS-0001 — smooth, untextured light-transmitting glass.
+ * A faint source halo stays local to the existing inset aperture.  The
+ * locked artwork, lamp-state opacity and 26 geometry masks are unchanged.
+ */
+.b737-le-devices .b737-le-photolens-v2.b737-le-smooth-glass-v1 g[data-lens-id] > path{
+  shape-rendering:geometricPrecision;
+  paint-order:normal;
+}
+.b737-le-devices .b737-le-photolens-v2.b737-le-smooth-glass-v1 g[data-lens-id$="|TRANSIT"] > path:first-child{
+  filter:drop-shadow(0 0 1.1px rgba(245,164,51,.31));
+}
+.b737-le-devices .b737-le-photolens-v2.b737-le-smooth-glass-v1 g[data-lens-id$="|EXT"] > path:first-child,
+.b737-le-devices .b737-le-photolens-v2.b737-le-smooth-glass-v1 g[data-lens-id$="|FULL_EXT"] > path:first-child{
+  filter:drop-shadow(0 0 1.1px rgba(67,190,99,.29));
+}
+.b737-le-devices .b737-le-photolens-v2.b737-le-smooth-glass-v1 g[data-lens-id] > path:nth-child(2){
+  filter:none;
+}
