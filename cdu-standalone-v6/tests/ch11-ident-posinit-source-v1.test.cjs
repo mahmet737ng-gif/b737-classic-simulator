@@ -9,7 +9,7 @@ function type(s,text){for(const c of text)core.press(s,pages,'CDU_CAPT_KEY_'+c);
 test('IDENT labels and navigation follow FCOM 11.40.8-9 without fake display values',()=>{
  const p=pages.IDENT;
  assert.deepEqual(p.rows.map(row=>row.map(c=>c.label)),[
-  ['MODEL','ENG RATING'],['NAV DATA','ACTIVE'],['',''],['OP PROGRAM',''],['','SUPP DATA'],['<INDEX','POS INIT>']]);
+  ['MODEL','ENG RATING'],['NAV DATA','ACTIVE'],['','INACTIVE'],['OP PROGRAM',''],['','SUPP DATA'],['<INDEX','POS INIT>']]);
  for(const row of p.rows)for(const c of row)assert.ok(!['TRAINER','DEMO ONLY','SIM','737-300','CFM56-3'].includes(c.value||''));
  assert.equal(p.source_ref.pdf_page_near,1560);
 });
