@@ -10,28 +10,28 @@ main,.cockpit-stack,.cockpit{display:block!important;width:1199px!important;max-
  * Only the two embedded CDUs inherit this sheet; standalone CDU typography and
  * approved BoeingCDULarge/Small binaries, keymap and artwork stay unchanged.
  *
- * The earlier 1.90cqw text and 4.9% row boxes rendered too small and cropped
- * enlarged letters. Values/header/scratch use Large; label rows retain Small.
+ * The old container-relative text and short row boxes rendered too small and cropped
+ * enlarged letters. A fixed 1199px native iframe uses pixel sizes for a predictable result.
  */
 .fmc-screen .fmc-lines{
-  font-size:2.60cqw!important;
+  font-size:34px!important;
   color:#29ff31!important;
 }
 .fmc-screen .fmc-lines .fmc-line{
-  height:6.8%!important;
+  height:7.4%!important;
   font-size:inherit!important;
   line-height:1.02!important;
 }
 .fmc-screen .fmc-lines .fmc-line.fmc-small{
-  height:5.0%!important;
-  font-size:2.00cqw!important;
+  height:5.8%!important;
+  font-size:26px!important;
   line-height:1!important;
 }
 /* Scratchpad is near the bottom edge of the original screen mask: keep its
  * baseline visible instead of clipping it against the unchanged photo bezel. */
 .fmc-screen .fmc-lines .fmc-line.scratch{
-  height:5.3%!important;
-  font-size:2.30cqw!important;
+  height:6.6%!important;
+  font-size:29px!important;
   line-height:1!important;
 }
 .fmc-screen .fmc-lines .fmc-line,
