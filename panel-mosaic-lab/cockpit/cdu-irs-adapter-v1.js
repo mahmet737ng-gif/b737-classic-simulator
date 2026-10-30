@@ -24,6 +24,21 @@ function fmt(p){
  };
  return [f(p.lat,2),f(p.lon,3)];
 }
+function syncPosInitEvidence(){
+ const trainer=parentIRS();
+ const snap=trainer?.getState?.(),raw=trainer?.getCoreState?.();
+ if(!snap?.units)return false;
+ const stateUnits={};
+ for(const side of ['L','R']){
+  const u=snap.units[side],r=raw?.units?.[side];
+  if(!u)continue;
+  stateUnits[side]={mode:u.mode||'OFF',powered:u.powered===true,
+   positionEntered:!!r?.enteredPosition};
+ }
+ const previous=JSON.stringify(state.preflightEvidence?.irs||{});
+ state.preflightEvidence={...(state.preflightEvidence||{}),irs:stateUnits};
+ return previous!==JSON.stringify(stateUnits);
+}
 function patchPositionPages(){
  const trainer=parentIRS();if(!trainer)return;
  const b=document.getElementById('fmc-lines'),snapshot=trainer.getState();
@@ -65,7 +80,7 @@ function syncIrsAlerts(snapshot){
  }
  irsOwnedMessage='';return false;
 }
-update=function(){originalUpdate();patchPositionPages();};
+update=function(){syncPosInitEvidence();originalUpdate();patchPositionPages();};
 window.updateStage5View=update;
 send=function(key){
  const normalized=String(key).replace(/^CDU_CAPT_/,'');
@@ -90,9 +105,9 @@ setInterval(()=>{
  const alertChanged=syncIrsAlerts(data);
  if(['POS_REF','POS_INIT'].includes(state.page)){
   const signature=JSON.stringify({L:data.units.L,R:data.units.R,last:data.lastCDUSource});
-  if(signature!==lastSig){lastSig=signature;patchPositionPages();}
+  if(signature!==lastSig){lastSig=signature;if(state.page==='POS_INIT'&&syncPosInitEvidence())update();else patchPositionPages();}
  }
  if(alertChanged)update();
 },1100);
-window.B737CDUIRSAdapterV1=Object.freeze({inputFormat,patchPositionPages,syncIrsAlerts});
+window.B737CDUIRSAdapterV1=Object.freeze({inputFormat,patchPositionPages,syncIrsAlerts,syncPosInitEvidence});
 })();
