@@ -30,10 +30,11 @@
 - `cdu-standalone-v6/data/page-definitions.json` و `page-definitions.js`: اصلاح ۶ ردیف INDEX، عنوان، مرکز سه‌ستونی و provenance.
 - `cdu-standalone-v6/app.js`: رندر مستقل INDEX با سه ستون و مقادیر ORIGIN/DEST جاری، بدون تغییر تصویر اصلی/مختصات LSKها.
 - `cdu-standalone-v6/engine/cdu-engine.js`: منطق L1/R1/R2/L6/R6 و محافظت read-only برای OTHER.
-- `cdu-standalone-v6/tests/dep-arr-fcom-114032.test.cjs`: شش تست regression بر اساس FCOM.
+- `cdu-standalone-v6/tests/dep-arr-fcom-114032.test.cjs`: هشت تست regression بر اساس FCOM.
+- `cdu-standalone-v6/stage5-adapter.js` و `stage6-selector.js`: جلوگیری از جایگزینی صفحهٔ اصلی INDEX توسط Overlayهای آزمایشی AIRAC.
 - `.github/workflows/ch11-fmc-systems-network-v1.yml`: افزودن تست‌ها به CI.
 
 ## محدوده و موارد باقی‌مانده
 - شکل INDEX و انتخاب منبع فرودگاه اکنون با دو صفحهٔ FCOM فوق تطبیق داده شده است؛ **تمام جزئیات صفحه‌های DEPARTURES و ARRIVALS هنوز با AIRAC و FCOM به‌صورت صفحه‌به‌صفحه ممیزی نشده‌اند**.
 - روی CDI/CDU تنها لایهٔ متن زنده و منطق صفحهٔ INDEX تغییر کرده است. Bitmap، کلیدها، نقشهٔ ۷۰ نقطه‌ای و فونت‌های تأییدشده هیچ تغییری نکرده‌اند.
-- ۶ تست منطق INDEX در محیط ایزولهٔ JavaScript پاس شده‌اند؛ نتایج CI و نمایش نسخهٔ منتشرشده در مرورگر باید جداگانه تأیید شود.
+- ۸ تست منطق INDEX در محیط ایزولهٔ JavaScript پاس شده‌اند؛ نتایج CI و نمایش نسخهٔ منتشرشده در مرورگر باید جداگانه تأیید شود.
