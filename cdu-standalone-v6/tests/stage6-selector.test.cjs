@@ -42,10 +42,15 @@ const tick=()=>new Promise(resolve=>setImmediate(resolve));
  {const {api,state}=setup();api.setBasePlanId(1);state.stage6PendingPlan=sample();state.page='RTE';api.beforeKey('LSK_L5');assert.equal(state.page,'ACTIVATE');api.beforeKey('LSK_L5');assert.equal(state.stage6PendingPlan,undefined);}
  // Standalone CDU mode: private Stage5/Stage4 is optional, not an external simulator requirement.
  {const {api,state,calls}=setup();delete state.stage5Committed;
-  assert.equal(api.beforeKey('CDU_CAPT_LSK_L1'),false);
-  assert.equal(api.beforeKey('CDU_CAPT_LSK_R1'),false);
-  assert.equal(api.beforeKey('CDU_CAPT_LSK_R2'),false);
-  assert.equal(state.message,'');assert.equal(calls.length,0);}
+  // Native no-plan source browsing is now an explicitly reference-only feature.
+  assert.equal(api.beforeKey('CDU_CAPT_LSK_L1'),true);
+  await tick();await tick();
+  assert.equal(state.stage6View.referenceOnly,true);
+  assert.equal(state.page,'DEPARTURES');
+  assert.equal(state.stage6PendingPlan,undefined);
+  assert.equal(state.stage5Committed,undefined);
+  assert.equal(calls.length,1);
+ }
  {const {api,state,calls}=setup();
   // Even a source preview without an explicit saved Stage4 plan must not hijack DEP/ARR.
   assert.equal(api.beforeKey('CDU_CAPT_LSK_L1'),false);
