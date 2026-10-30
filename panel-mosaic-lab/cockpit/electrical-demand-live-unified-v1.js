@@ -105,7 +105,7 @@
   root.dispatchEvent(new CustomEvent('b737:electrical-demand-estimate',{detail:clone(estimate)}));
  }
  const events=['b737:electrical-network','b737:electrical-owner-ready','b737:unified-ecu-observation',
-  'b737:battery-live','b737:ac-dc-selector-change'];
+  'b737:battery-live','b737:ac-dc-selector-change','b737:cockpit-mounted'];
  for(const name of events)root.addEventListener(name,()=>tick(name==='b737:electrical-network'||name==='b737:ac-dc-selector-change'));
  root.addEventListener('message',event=>{
   if(event.origin!==location.origin||event.source!==document.getElementById('overheadFrame')?.contentWindow)return;
