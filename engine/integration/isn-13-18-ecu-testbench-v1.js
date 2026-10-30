@@ -106,6 +106,7 @@ class Testbench{
   this.apuFaults={overheat:false,bleedFailure:false,generatorFailure:false};
    this.apuConsumers=Object.fromEntries(Object.keys(LoadDynamics.CATALOG).map(id=>[id,false]));
    this.apuLoadState=LoadDynamics.initial();
+   this.apuPhysicalAmpsA=0;
   this.aircraft={pressureAltitudeFt:0,oatC:15,iasKt:0,massKg:55000,onGround:true};
   this.chain.synchronize({toggles:{'apu-start':'OFF','bleed-apu':'OFF','bleed-eng-1':'OFF','bleed-eng-2':'OFF',
    'pack-l':'OFF','pack-r':'OFF','isolation-valve':'OPEN'},
@@ -117,6 +118,12 @@ class Testbench{
  battery(on){if(typeof on!=='boolean')throw Error('battery switch requires boolean');
   this.chain.event({id:'battery-master',kind:'guarded',next:{value:on?'on':'off',guard:'open'}});
   this.log('BATTERY',{on});return this.get();}
+ observeAPUSourceAmps(amps){
+  // Real physical toggles/CBs feed this from the existing ATA24 estimate.
+  // APU state or generator contactor remains owned by the original Pack.
+  if(amps!==null&&(!finite(amps)||amps<0))throw Error('Invalid estimated APU source amps');
+  this.apuPhysicalAmpsA=amps===null?0:Math.min(300,amps);
+ }
  startAPU(){if(this.apuFaults.overheat)throw Error('Clear injected APU overheat before new start');
   this.chain.event({id:'apu-start',kind:'toggle',next:'START'});
   this.apuStartMs=this.chain.get().phase.apu==='INLET_DOOR'?this.elapsedMs:null;
@@ -219,13 +226,19 @@ class Testbench{
    if(snap.phase.apu==='READY'){
     const load=LoadDynamics.demand({selectedSources:snap.selectedSources,
      switches:this.apuConsumers,bleedValveOpen:snap.bleed.apuBleedValveOpen,
-     pumpSnapshot:this.start.core.pack.get()});
+     pumpSnapshot:this.start.core.pack.get(),physicalSourceAmpsA:this.apuPhysicalAmpsA});
     this.apuLoadState=LoadDynamics.step(this.apuLoadState,load,dt);
     // ISN-12 burns the estimated baseline 110 kg/h. Charge only the
     // simulated excess from electrical/pneumatic load, with no double count.
     const excessKgHr=Math.max(0,this.apuLoadState.fuelFlowKgHr-this.modules.FuelRuntime.approx.apuFuelKgHr);
-    if(snap.sources?.apu?.running===true&&this.core.fuel.tanks.main1>0&&excessKgHr>0)
-     this.core.fuel.consume('apu',excessKgHr*dt/3600000,'main1');
+    if(snap.sources?.apu?.running===true&&excessKgHr>0){
+     const path=this.core.apuFuelPath();
+     if(path.available===true){
+      const burn=this.core.fuel.consume('apu',excessKgHr*dt/3600000,path.tank);
+      if(burn.shortfallKg>0||this.core.fuel.tanks[path.tank]===0)
+       this.chain.apuFuelStarve('APU_LOAD_FUEL_EXHAUSTED');
+     }
+    }
    }else this.apuLoadState=LoadDynamics.initial();
   }
   return this.get();}
@@ -271,7 +284,7 @@ class Testbench{
   const ramp=apuProgress*apuProgress*(3-2*apuProgress);
    const apuDemand=LoadDynamics.demand({selectedSources:snap.selectedSources,
     switches:this.apuConsumers,bleedValveOpen:snap.bleed.apuBleedValveOpen,
-    pumpSnapshot:this.start.core.pack.get()});
+    pumpSnapshot:this.start.core.pack.get(),physicalSourceAmpsA:this.apuPhysicalAmpsA});
    const apuLoad=LoadDynamics.project(this.apuLoadState,apuDemand);
    const apuRPM=apuPhase==='READY'?apuLoad.rpmPct:
     apuPhase==='STARTING'?5+(CONFIG.apuRatedRpmPct-5)*ramp:0;
@@ -281,13 +294,14 @@ class Testbench{
    const genReady=apuPhase==='READY'&&apuRPM>=CONFIG.apuGeneratorReadyRpmPct&&!this.apuFaults.generatorFailure;
    const generator={ready:genReady,voltageV:genReady?CONFIG.apuGenVoltageV:0,
     frequencyHz:genReady?CONFIG.apuGenFrequencyHz:0,
+    currentEstimatedA:genReady?round(this.apuPhysicalAmpsA):0,
     connectedBusSides:Object.keys(snap.selectedSources).filter(side=>snap.selectedSources[side]==='APU').map(Number),origin:ORIGIN};
    const apu={phase:apuPhase,rpmPct:round(apuRPM),egtC:round(apuEGT),
     startElapsedSec:this.apuStartMs===null?null:round(tSince/1000,1),
     readyTargetSec:timing.apuReadyMs/1000,
     bleedValveOpen:snap.bleed.apuBleedValveOpen,genSelected:generator.connectedBusSides.length>0,
     generator,load:apuLoad,fuelFlowEstimatedKgHr:apuPhase==='READY'?apuLoad.fuelFlowKgHr:0,
-   faults:{...this.apuFaults},origin:ORIGIN};
+   fuelPath:base.apuFuelPath,faults:{...this.apuFaults},origin:ORIGIN};
   const states={aircraft:copy(this.aircraft),engine1:engines.engine1,engine2:engines.engine2,apu};
   return {schema:SCHEMA,origin:ORIGIN,quality:'TRAINING_SIMULATION_ONLY',
    timeMs:this.elapsedMs,timingProfile:this.chain.timingProfile,timing:copy(this.chain.timing),stage:{ISN13:'OIL',ISN14:'APU_TELEMETRY',ISN15:'FAILURE_BUS',
@@ -305,7 +319,7 @@ class Testbench{
    limitations:['NOT_AIRCRAFT_AFMS','NO_PHYSICAL_ECU_OR_FADEC_EMULATION',
     'USER_TIMED_START_PROFILE_NOT_AFM_CERTIFIED','START_DUCT_PSI_ESTIMATED_NOT_A_MEASURED_SENSOR','ALTITUDE_IAS_FUEL_MODEL_NOT_FCOM_VALIDATED','FUEL_PUMP_BUS_ASSIGNMENT_UNVERIFIED',
     'APU_EGT_AND_RPM_SURROGATES','APU_LOAD_KVA_AND_GOVERNOR_SURROGATE_NOT_WDM_CALIBRATED','NO_RELIABLE_MACH_OR_FULL_AERODYNAMIC_MODEL',
-    'NOT_CONNECTED_TO_APPROVED_UNIFIED_COCPIT_NEEDLES']};
+    'UNIFIED_APU_NEEDLES_USE_TRAINING_CALIBRATION_NOT_AIRCRAFT_CERTIFIED']};
  }
 }
 return Object.freeze({SCHEMA,ORIGIN,CONFIG,oilInitial,oilStep,hydraulicPressure,apuStartEGT,coastStep,Testbench});
