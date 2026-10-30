@@ -48,7 +48,8 @@ const integration=fs.readFileSync(path.join(__dirname,'residual-volts-unified-v1
 const html=fs.readFileSync(path.join(__dirname,'index.html'),'utf8');
 const actualButton=fs.readFileSync(path.join(__dirname,'recessed-overhead-v2.js'),'utf8');
 assert.match(actualButton,/id":"residual-volts"/,'existing exact user-aligned OH10 recess retained');
-assert.match(actualButton,/'+'"cx":917,"cy":1273,"d":112'+'/, 'original native residual button center and diameter remain locked');
+assert.ok(actualButton.includes('"cx":917,"cy":1273,"d":112'),
+ 'original native residual button center and diameter remain locked');
 assert.match(actualButton,/b737:cockpit-overhead/,'existing overhead message transport must remain unchanged');
 assert.match(integration,/data.kind!=='recessed-button'/);
 assert.match(integration,/event.origin!==root.location.origin/,'same origin only');
