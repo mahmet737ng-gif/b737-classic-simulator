@@ -82,9 +82,8 @@
    if(meterDamaged||source.instrumentFault){
     result.status='INSTRUMENT_FAULT';result.reason='VOLTMETER_UNAVAILABLE';return Object.freeze(result);
    }
-   if(source.gcr==='UNKNOWN'||source.drive==='UNKNOWN'){
-    result.status='UNVERIFIED';result.reason='GCR_AND_DRIVE_STATE_REQUIRED';return Object.freeze(result);
-   }
+   // A known closed GCR / excited field is unsafe even if drive telemetry is
+   // missing. Fail closed, never route 115 V into the 0–30 V scale.
    if(source.gcr==='CLOSED'||source.fieldExcited===true){
     result.status='UNSAFE_OVER_RANGE';result.reason='GENERATOR_FIELD_EXCITED';
     result.warning='Do not use 0–30V meter range while generator field is excited';
@@ -92,8 +91,15 @@
     if(damageSimulation&&!meterDamaged){meterDamaged=true;note('SIMULATED_VOLTMETER_DAMAGE');result.meterDamaged=true;}
     return Object.freeze(result);
    }
+   if(source.gcr==='UNKNOWN'||source.drive==='UNKNOWN'){
+    result.status='UNVERIFIED';result.reason='GCR_AND_DRIVE_STATE_REQUIRED';return Object.freeze(result);
+   }
    if(source.failed){
     result.status='SOURCE_FAULT';result.reason='GENERATOR_FAILED_NO_VALID_READING';
+    return Object.freeze(result);
+   }
+   if(source.drive==='STOPPED'&&source.measuredResidual!==0){
+    result.status='STOPPED_NO_VALID_READING';result.reason='NO_GENERATOR_ROTATION';
     return Object.freeze(result);
    }
    if(source.measuredResidual!==null){
