@@ -27,7 +27,7 @@ test('single owner: source-verified DEP/ARR wins against private Stage5/Stage6',
  const f=frame(baseline());let overlays=0;
  const s={page:'DEP_ARR',stage6PendingPlan:{},stage5Committed:{},navdbActive:{}};
  const out=compositor.compose({state:s,frame:f,renderers:{STAGE6:()=>overlays++,STAGE5:()=>overlays++}});
- assert.equal(out.owner,'FCOM_NATIVE');assert.equal(out.sourceVerified,true);
+ assert.equal(out.owner,'FCOM_NATIVE');assert.equal(out.sourceVerified,false);assert.equal(out.layoutAudited,true);
  assert.equal(overlays,0);assert.equal(f.childNodes.length,3);
 });
 test('Stage6 wins over Stage5, paints only the detached frame and scratchpad always survives',()=>{
@@ -97,4 +97,14 @@ test('Both real CDU hosts load authoritative compositor before their application
  assert.match(app,/CDU_SCREEN_COMPOSITOR_V1\?\.compose/);
  assert.match(app,/box.replaceChildren\(\.\.\.frame.childNodes\)/);
  assert.doesNotMatch(app,/window.CDU_STAGE5_API\.paint\(box\)/);
+});
+
+test('INIT/REF INDEX now follows source FCOM folio 11.40.5 navigation labels',()=>{
+ const x=contract.compile(pages,'INDEX');
+ assert.equal(x.source.folio,'11.40.5');
+ assert.equal(x.source.pdfPageNear,1557);
+ assert.deepEqual(x.grid.pairs.map(pair=>pair.map(y=>y.label)),[
+  ['<IDENT','NAV DATA>'],['<POS',''],['<PERF',''],
+  ['<TAKEOFF',''],['<APPROACH',''],['<OFFSET','MAINT>']]);
+ assert.equal(x.verification.full,'NOT_VERIFIED');
 });
