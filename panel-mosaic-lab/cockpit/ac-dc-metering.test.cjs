@@ -29,8 +29,8 @@ assert.ok(ui.includes("new URL('./ac-dc-metering-needle.svg?v=MET-0001'"));
 assert.ok(ui.includes('for(const meter of model.meters)'));
 assert.ok(ui.includes('window.B737UnifiedAcDcMetering'));
 const html=fs.readFileSync(path.join(__dirname,'index.html'),'utf8');
-assert.ok(html.includes('ac-dc-metering-model.js?v=MET-0009-PIECE-BOUND'));
-assert.ok(html.includes('ac-dc-metering-unified.js?v=MET-0009-PIECE-BOUND'));
+assert.ok(html.includes('ac-dc-metering-model.js?v=MET-0010-BAKED-POINTER-RESTORE'));
+assert.ok(html.includes('ac-dc-metering-unified.js?v=MET-0010-BAKED-POINTER-RESTORE'));
 
 /* MET-0005 regression: original, shared needle sprite and original OH10 panel ONLY. */
 const crypto=require('node:crypto');
@@ -56,8 +56,8 @@ assert.match(ui,/b737:ac-dc-metering-readings/);
 assert.match(ui,/setReadings/);
 assert.ok(ui.includes("new URL('./ac-dc-metering-needle.svg?v=MET-0001'"));
 assert.ok(!ui.includes("createElement('canvas'"));
-assert.ok(html.includes('ac-dc-metering-model.js?v=MET-0009-PIECE-BOUND'));
-assert.ok(html.includes('ac-dc-metering-unified.js?v=MET-0009-PIECE-BOUND'));
+assert.ok(html.includes('ac-dc-metering-model.js?v=MET-0010-BAKED-POINTER-RESTORE'));
+assert.ok(html.includes('ac-dc-metering-unified.js?v=MET-0010-BAKED-POINTER-RESTORE'));
 
 /* MET-0006 mechanical invariant: the unchanged source-image pointer tip
  * follows the INNER TICK radial track; no animation frame may pass a stop. */
@@ -118,8 +118,8 @@ for(const meter of model.meters){
  assert.ok(model.blackWindowPath(meter.id).startsWith('M 0 0 L 512 0'),'curved blue foreground mask');
  assert.ok(model.blackWindowPath(meter.id).includes('L 504.000 '),'mask uses densely sampled curved edge');
  const p=model.placement(oh10,meter);
- const expectedRatio=(oh10.h/model.source.height)/(oh10.w/model.source.width);
- near(p.sizeY/p.sizeX,expectedRatio,'preserve non-uniform OH10 source stretch');
+ const expectedRatio=(oh10.h/model.source.height)/(oh10.w/model.source.width)*(meter.tipRadiusY/meter.tipRadiusX);
+ near(p.sizeY/p.sizeX,expectedRatio,'preserve native source XY stretch and fitted red arc ellipse');
  for(let n=0;n<=720;n++){
   const a=b.min+(b.max-b.min)*n/720,pt=model.tipPoint(meter.id,a);
   const blueAtTip=model.blueBoundaryAt(meter.id,pt.x);
