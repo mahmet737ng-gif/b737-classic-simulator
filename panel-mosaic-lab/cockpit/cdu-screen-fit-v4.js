@@ -20,6 +20,7 @@
   for(const span of spans){
    const text=span.textContent||'';
    if(!text.trim())continue;
+   span.style.removeProperty('font-size'); // Re-evaluate at full size after font load or DOM refresh.
    let px=requested;
    const computed=root.getComputedStyle(span);
    const width=span.getBoundingClientRect().width||line.getBoundingClientRect().width*(span.classList.contains('full')?1:0.475);
@@ -40,6 +41,7 @@
   const pairs=lines.filter(x=>x.classList.contains('fmc-pairline')&&!x.classList.contains('scratch'));
   const lastPairNonempty=pairs.slice(-2).some(x=>x.textContent.trim());
   const dense=scratchActive&&lastPairNonempty;
+  const standard=(pairs.length===12&&pairs.filter(x=>x.classList.contains('fmc-small')).length===6);
   const header=lines.find(x=>x.classList.contains('fmc-header'));
   if(header){
    header.style.setProperty('top',TOP.header+'%','important');
@@ -50,9 +52,11 @@
    const line=pairs[i],label=line.classList.contains('fmc-small');
    const row=Math.floor(i/2),target=label?TOP.label[row]:TOP.value[row];
    if(target===undefined)continue;
-   line.style.setProperty('top',target+'%','important');
-   line.style.setProperty('height',(label?'8.0%':'11.0%'),'important');
-   const requested=dense&&row===5?(label?29:39):FONT[label?'label':'value'];
+   // Source-backed NAV/DEP overlays replace the ordinary 12 rows. Their own
+   // carefully placed row coordinates must not be overwritten by this adapter.
+   if(standard)line.style.setProperty('top',target+'%','important');
+   line.style.setProperty('height',(label?'8.0%':standard?'11.0%':'6.0%'),'important');
+   const requested=!standard?31:(dense&&row===5?(label?29:39):FONT[label?'label':'value']);
    size(line,requested);fitSpans(line,requested);
   }
   if(scratch){
@@ -61,7 +65,7 @@
    size(scratch,FONT.scratch);fitSpans(scratch,FONT.scratch);
   }
   root.document.documentElement.dataset.cduScreenFit=VERSION;
-  return {ready:true,version:VERSION,pairs:pairs.length,dense,displayRows:lines.length};
+  return {ready:true,version:VERSION,pairs:pairs.length,standard,dense,displayRows:lines.length};
  }
  let scheduled=false;
  function schedule(){
