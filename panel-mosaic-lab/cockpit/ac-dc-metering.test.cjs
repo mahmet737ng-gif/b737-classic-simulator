@@ -148,4 +148,26 @@ assert.ok(ui.includes("p.x-box.x-p.sizeX/2")&&ui.includes("p.y-box.y-p.sizeY/2")
  'needles placed in the local photo coordinate system');
 assert.ok(ui.includes("getRenderAudit"),'runtime browser geometry diagnostics exposed');
 
+
+/* MET-0010: the user proved the broad white pointers are baked into the
+ * protected SOURCE PHOTO. Physical rotation cannot remove printed wedges. */
+const cleanerSource=fs.readFileSync(path.join(__dirname,'ac-dc-static-needle-cleaner.js'),'utf8');
+const vm=require('node:vm'),sandbox={window:{}};
+vm.runInNewContext(cleanerSource,sandbox,{filename:'ac-dc-static-needle-cleaner.js'});
+const cleaner=sandbox.window.B737AcDcStaticCleaner;
+assert.ok(cleaner&&cleaner.regions&&cleaner.cleanPiece,'runtime photo restoration module exists');
+assert.deepEqual(Object.keys(cleaner.regions).sort(),['dcAmps','cps','dcVolts','acVolts'].sort());
+for(const [id,poly] of Object.entries(cleaner.regions)){
+ assert.ok(poly.length>=4,id+' must have a source-photo traced silhouette');
+ for(const [x,y] of poly)assert.ok(x>=0&&x<=1095&&y>=0&&y<=1436,id+' source polygon in bounds');
+}
+assert.ok(html.includes('ac-dc-static-needle-cleaner.js?v=MET-0010-BAKED-POINTER-RESTORE'));
+assert.ok(html.indexOf('ac-dc-static-needle-cleaner.js')<html.indexOf('ac-dc-metering-unified.js'),
+ 'static baked photo cleaned before the dynamic pointer module loads');
+assert.ok(ui.includes('cleaner.cleanPiece(piece)'),'Unified needs real photo-restoration invocation');
+assert.ok(ui.includes("staticPhotoStatus:"),'source cleanup status must be visible in read-only audit');
+assert.ok(cleanerSource.includes('ctx.getImageData')&&cleanerSource.includes('ctx.putImageData'));
+assert.ok(cleanerSource.includes('canvas.toBlob'),'temporary client-side bitmap only');
+assert.ok(!/fs\.writeFile|fetch\([^)]*method.*POST|github.*push/.test(cleanerSource),'locked source immutable');
+
 console.log('PASS: one transparent AC/DC metering needle reused on four OH10 gauges with separate pivots/angles.');
