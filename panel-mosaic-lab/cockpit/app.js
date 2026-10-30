@@ -66,12 +66,12 @@
   if(d.kind==='pan-end')drag=null;
   if(d.kind==='zoom'){const r=frame.getBoundingClientRect(),v=vp.getBoundingClientRect();applyZoom(zoom*(d.delta<0?1.12:1/1.12),vp.scrollLeft,vp.scrollTop,r.left-v.left+d.clientX*zoom,r.top-v.top+d.clientY*zoom);}
  });
- function updateCduStatus(){byId('cduStatus').textContent=['CAPT','FO'].map(seat=>{const s=cduStates.get(seat);const font=s?.typography?(' · '+s.typography.version+' · '+(s.typography.correct?'✓':'⚠')+' '+(s.typography.nativePx||'?')+'px (labels '+(s.typography.labelPx||'?')+'px) '+s.typography.color):'';return (seat==='CAPT'?'کپتن':'فرست')+': '+(s?.error?'خطای بارگذاری':s?.ready?(s.page||'آماده'):'در حال بارگذاری')+font;}).join(' · ');}
+ function updateCduStatus(){byId('cduStatus').textContent=['CAPT','FO'].map(seat=>{const s=cduStates.get(seat);const font=s?.typography?(' · '+s.typography.version+' · '+(s.typography.correct?'✓':'⚠')+' '+(s.typography.nativePx||'?')+'px · 24A '+Math.round(s.typography.width24Px||0)+'px / 25A '+Math.round(s.typography.width25Px||0)+'px · '+s.typography.color):'';return (seat==='CAPT'?'کپتن':'فرست')+': '+(s?.error?'خطای بارگذاری':s?.ready?(s.page||'آماده'):'در حال بارگذاری')+font;}).join(' · ');}
  window.addEventListener('message',e=>{const d=e.data,c=d&&cduFrames.get(d.seat);if(e.origin!==location.origin||!c||e.source!==c.child.contentWindow||d.type!=='b737:unified-cdu')return;const previous=cduStates.get(d.seat)||{};
   if(d.kind==='ready'&&d.controls===70){cduStates.set(d.seat,{...previous,ready:true});c.station.classList.add('ready');byId(d.seat==='CAPT'?'resetCduCaptain':'resetCduFirstOfficer').disabled=false;}
   if(d.kind==='state'&&typeof d.page==='string')cduStates.set(d.seat,{...previous,page:d.page.slice(0,50)});
   if(d.kind==='error')cduStates.set(d.seat,{...previous,error:true});
-  if(d.kind==='typography'&&d.version==='CDU-SCREEN-FIT-0005')cduStates.set(d.seat,{...previous,typography:{version:d.version,correct:d.correct===true,nativePx:d.nativePx,labelPx:d.labelPx,color:d.color}});
+  if(d.kind==='typography'&&d.version==='CDU-24COL-0006')cduStates.set(d.seat,{...previous,typography:{version:d.version,correct:d.correct===true,nativePx:d.actualFontPx,labelPx:d.labelPx,color:d.color,columns:d.columns,width24Px:d.width24Px,width25Px:d.width25Px,widthPx:d.widthPx}});
   if(d.kind==='wheel-pan'){panWheel(d);return;}
   if(d.kind==='zoom'&&Number.isFinite(d.delta)){const r=c.child.getBoundingClientRect(),v=vp.getBoundingClientRect(),scaleX=r.width/c.item.nativeWidth,scaleY=r.height/c.item.nativeHeight;applyZoom(zoom*(d.delta<0?1.12:1/1.12),vp.scrollLeft,vp.scrollTop,r.left-v.left+d.clientX*scaleX,r.top-v.top+d.clientY*scaleY);}
   updateCduStatus();
