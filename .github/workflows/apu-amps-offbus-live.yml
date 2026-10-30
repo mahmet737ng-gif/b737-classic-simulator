@@ -1,0 +1,39 @@
+name: Unified APU AC AMPS zero and GEN OFF BUS QA
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'engine/systems/electrical-v7.js'
+      - 'engine/integration/isn-apu-start-chain-v1.js'
+      - 'panel-mosaic-lab/cockpit/isn-cockpit.js'
+      - 'panel-mosaic-lab/cockpit/electrical-demand-live-unified-v1.js'
+      - 'panel-mosaic-lab/cockpit/drive-amps-needle-model.js'
+      - 'panel-mosaic-lab/cockpit/apu-egt-static-needle-cleaner-v1.js'
+      - 'tests/apu-amps-gen-off-bus-live-v1.test.cjs'
+      - '.github/workflows/apu-amps-offbus-live.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  gen-off-bus-and-ammeter:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Syntax checks
+        run: |
+          node --check engine/systems/electrical-v7.js
+          node --check panel-mosaic-lab/cockpit/isn-cockpit.js
+          node --check panel-mosaic-lab/cockpit/electrical-demand-live-unified-v1.js
+          node --check panel-mosaic-lab/cockpit/drive-amps-needle-model.js
+          node --check panel-mosaic-lab/cockpit/apu-egt-static-needle-cleaner-v1.js
+      - name: Live source and needle regressions
+        run: |
+          node --test tests/apu-amps-gen-off-bus-live-v1.test.cjs
+          node tests/electrical-v7.test.cjs
+          node panel-mosaic-lab/cockpit/drive-amps-needle.test.cjs
+          node panel-mosaic-lab/cockpit/apu-egt-needle.test.cjs
+      - name: Protected physical asset verification
+        run: python3 panel-mosaic-lab/verify-final-overhead.py
