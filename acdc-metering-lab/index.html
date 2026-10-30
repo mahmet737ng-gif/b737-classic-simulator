@@ -63,7 +63,7 @@ details{line-height:1.7}summary{cursor:pointer}footer{padding:20px;text-align:ce
 <aside>
 <section><h2>Training scenarios</h2><div class="buttons"><button data-scenario="dark">Cold &amp; Dark</button><button data-scenario="ground">Ground Power</button><button data-scenario="engines" class="selected">Engine Generators</button></div>
 <div class="buttons"><button id="gen1fault">GEN 1 failure</button><button id="tr1fault">TR 1 failure</button><button id="reset">Reset</button></div>
-<p class="note">Click either rotary selector in the panel to move one detent. Shift-click steps backward; keyboard: Enter / Space / arrows. Meter values here are illustrative outputs driven by the existing Electrical V7 bus-state model; they are not physical load calculations.</p></section>
+<p class="note">The AC voltage dial has a normal 100–130 V arc and a separate residual 0–30 V interpretation. Click either rotary selector in the panel to move one detent. Shift-click steps backward; keyboard: Enter / Space / arrows. Meter values here are illustrative outputs driven by the existing Electrical V7 bus-state model; they are not physical load calculations.</p></section>
 <section><h2>Live indications (illustrative)</h2>
 <div class="stat-grid"><div class="stat"><b id="dca">—</b><span>DC AMPS</span></div><div class="stat"><b id="freq">—</b><span>CPS / FREQ</span></div><div class="stat"><b id="dcv">—</b><span>DC VOLTS</span></div><div class="stat"><b id="acv">—</b><span>AC VOLTS</span></div></div>
 <p class="note" id="power-status"></p><div class="alert" id="caution" aria-live="polite">P5-13 design prototype — labels / geometry still require owner comparison with reference at full resolution.</div></section>
@@ -109,7 +109,7 @@ function selectorMarkup(){el('selectors').innerHTML=rotary(221,796,'DC',DC,selDC
  function turn(delta){var curr=id==='DC'?selDC:selAC,idx=(opts.indexOf(curr)+delta+opts.length)%opts.length;if(id==='DC')selDC=opts[idx];else selAC=opts[idx];warning='';draw();}
  node.addEventListener('click',function(e){var item=e.target.closest('[data-detent]');if(item){if(id==='DC')selDC=opts[Number(item.dataset.detent)];else selAC=opts[Number(item.dataset.detent)];warning='';draw();}else turn(e.shiftKey?-1:1);});
  node.addEventListener('keydown',function(e){if(['Enter',' ','ArrowRight','ArrowLeft','ArrowUp','ArrowDown'].includes(e.key)){e.preventDefault();turn(['ArrowLeft','ArrowDown'].includes(e.key)?-1:1);}});});}
-function renderMeters(v){[['dca',220,165,-50,50],['freq',567,165,360,420],['dcv',220,427,0,40],['acv',567,427,0,130]].forEach(function(a){var value=v[a[0]],angle=value===null?-112:-112+Math.max(0,Math.min(1,(value-a[3])/(a[4]-a[3])))*224;el('needle-'+a[0]).setAttribute('transform','rotate('+angle+' '+a[1]+' '+a[2]+')');el(a[0]).textContent=value===null?'—':n(value);});}
+function renderMeters(v){[['dca',220,165,-50,50],['freq',567,165,360,420],['dcv',220,427,0,40],['acv',567,427,100,130]].forEach(function(a){var value=v[a[0]],lo=a[3],hi=a[4];if(a[0]==='acv'&&held&&['GEN1','GEN2'].includes(selAC)&&!(selAC==='GEN1'?v.result.source[1]==='GEN1':v.result.source[2]==='GEN2')){lo=0;hi=30;}var angle=value===null?-112:-112+Math.max(0,Math.min(1,(value-lo)/(hi-lo)))*224;el('needle-'+a[0]).setAttribute('transform','rotate('+angle+' '+a[1]+' '+a[2]+')');el(a[0]).textContent=value===null?'—':n(value);});}
 function compute(){var r=E.evaluate(model),b=r.bus,tr=r.feed.tr,dcOn=false,dcVolts=0,dcAmps=0,acOn=false,acVolts=0,acFreq=0;
  switch(selDC){
  case 'BAT':dcOn=b.hotBattery;dcVolts=dcOn?24:0;dcAmps=dcOn?(tr.TR3?3:-8):0;break;
@@ -138,7 +138,7 @@ function draw(){var v=compute();renderMeters(v);selectorMarkup();
  el('power-status').textContent='Generator buses: '+(v.result.bus.generator1?'1 ON ':'1 OFF ')+(v.result.bus.generator2?'2 ON':'2 OFF')+' · Standby AC: '+(v.result.bus.acStandby===null?'UNVERIFIED':v.result.bus.acStandby?'ON':'OFF')+' · Galley: '+(galley&&!v.result.galleyShed?'selected ON':'OFF / SHED');
  el('caution').textContent=warning||'Demo scales show representative values only; no calibrated load, electrical transient, or CSD residual simulation.';
 }
-el('meters').innerHTML=gauge(220,165,'DC AMPS',-50,50,[-50,-25,0,25,50],'','dca')+gauge(567,165,'CPS / FREQ',360,420,[360,380,400,420],'','freq')+gauge(220,427,'DC VOLTS',0,40,[0,10,20,30,40],'','dcv')+gauge(567,427,'AC VOLTS',0,130,[0,100,110,120,130],'RESID: 0–30 V','acv');
+el('meters').innerHTML=gauge(220,165,'DC AMPS',-50,50,[-50,-25,0,25,50],'','dca')+gauge(567,165,'CPS / FREQ',360,420,[360,380,400,420],'','freq')+gauge(220,427,'DC VOLTS',0,40,[0,10,20,30,40],'','dcv')+gauge(567,427,'AC VOLTS',100,130,[100,110,120,130],'RESID: 0–30 V','acv');
 document.querySelectorAll('[data-scenario]').forEach(function(b){b.onclick=function(){setup(b.dataset.scenario);};});
 el('gen1fault').onclick=function(){model=E.apply(model,{type:'FAULT',id:'GEN1_FAILED',active:!model.faults.GEN1_FAILED,instructor:true});draw();};
 el('tr1fault').onclick=function(){model=E.apply(model,{type:'FAULT',id:'TR1_FAILED',active:!model.faults.TR1_FAILED,instructor:true});draw();};
