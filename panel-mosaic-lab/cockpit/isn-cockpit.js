@@ -206,7 +206,11 @@
  }
  function postProjection(){const f=byId('overheadFrame');if(!f?.contentWindow||!bridge.initialized)return;
   const lamps={...bridge.get().lamps};const projected=chain.get().projected;
-  lamps['apu-gen-off-bus']=projected['apu-gen-off-bus'];
+  // ECU owns availability; V7 evaluated source (not selected detent)
+  // proves the generator actually feeds an AC bus.
+  const apuGenerator=ecu.get().apu.generator;
+  const apuOnBus=Object.values(bridge.get().state.electrical.source).includes('APU');
+  lamps['apu-gen-off-bus']=apuGenerator.ready===true&&!apuOnBus;
   // The real Unified APU lamp follows ECU oil PSI, not a STARTING timer.
   lamps['apu-low-pressure']=ecu.get().apu.oil.lowPressureLamp;
   const key=JSON.stringify(lamps);if(key===lastLampProjection)return;lastLampProjection=key;
