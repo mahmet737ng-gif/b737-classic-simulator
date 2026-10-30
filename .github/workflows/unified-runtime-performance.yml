@@ -7,6 +7,7 @@ on:
       - 'panel-mosaic-lab/cockpit/performance-loader.js'
       - 'panel-mosaic-lab/cockpit/performance-metrics.js'
       - 'panel-mosaic-lab/cockpit/isn-cockpit.js'
+      - 'panel-mosaic-lab/cockpit/battery-panel-live-v1.js'
       - 'panel-mosaic-lab/cockpit/app.js'
       - 'panel-mosaic-lab/cockpit/index.html'
       - 'tests/unified-runtime-performance-v2.test.cjs'
@@ -26,10 +27,13 @@ jobs:
           node --check panel-mosaic-lab/cockpit/performance-metrics.js
           node --check panel-mosaic-lab/cockpit/app.js
           node --check panel-mosaic-lab/cockpit/isn-cockpit.js
+          node --check panel-mosaic-lab/cockpit/battery-panel-live-v1.js
           node --test tests/unified-runtime-performance-v2.test.cjs
           node panel-mosaic-lab/cockpit/performance.test.cjs
           node tests/isn-cold-dark-two-engine.e2e.test.cjs
           node tests/isn-overhead-transport-v1.test.cjs
+          node tests/battery-live-v1.test.cjs
+          node tests/isn-unified-ecu-physical-v1.test.cjs
           node panel-mosaic-lab/cockpit/test.cjs
       - name: Ensure locked cockpit hardware and artwork are byte unchanged
         run: |
