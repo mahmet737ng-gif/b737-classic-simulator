@@ -9,6 +9,7 @@ on:
       - 'panel-mosaic-lab/cockpit/cdu-embed.css'
       - 'panel-mosaic-lab/cockpit/tests/cdu-embed-typography-v2.test.cjs'
       - 'panel-mosaic-lab/cockpit/cdu-stage.html'
+      - 'panel-mosaic-lab/cockpit/assembly.json'
       - 'panel-mosaic-lab/cockpit/index.html'
       - 'cdu-standalone-v6/data/page-definitions.json'
       - 'cdu-standalone-v6/data/page-definitions.js'
