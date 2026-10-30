@@ -12,7 +12,7 @@ test('large per-system approximate catalogue is explicit and tagged unverified',
 });
 test('individual fuel pump changes connected GEN1 load only',()=>{
  const s=baseline(),base=sample(s),on=sample(s,{'fuel-1-fwd':'ON'});
- assert.equal(on.sourceAmps.GEN1-base.sourceAmps.GEN1,5.5);
+ assert.ok(Math.abs(on.sourceAmps.GEN1-base.sourceAmps.GEN1-5.5)<1e-9);
  assert.equal(on.sourceAmps.GEN2,base.sourceAmps.GEN2);
  assert.ok(on.loads.find(x=>x.id==='FUEL_1_FWD').active);
  assert.equal(sample(s,{'fuel-1-fwd':'OFF'}).sourceAmps.GEN1,base.sourceAmps.GEN1);
