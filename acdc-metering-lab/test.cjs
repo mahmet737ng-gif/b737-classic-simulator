@@ -24,7 +24,8 @@ test("locked user-source image resolves to exact native PNG with immutable SHA25
 test("all nine controls have finite native-image coordinates, safe radii and no approvals",()=>{
  assert.deepEqual(Object.keys(manifest.markers).sort(),names.slice().sort());
  for(const [name,p] of Object.entries(manifest.markers)){
-  assert.equal(p.confidence,["dcAmps","cpsFreq","dcVolts","acVolts"].includes(name)?"OWNER_SCREENSHOT_ARC_FIT_PROVISIONAL_NATIVE_REGISTRATION":"PROVISIONAL",name);
+  assert.equal(p.confidence,["dcAmps","cpsFreq","dcVolts","acVolts"].includes(name)?"SCREEN_RED_CIRCLE_PROJECTED_NATIVE_ELLIPSE_PROVISIONAL":"PROVISIONAL",name);
+  if(p.type==="meter")assert.ok(Number.isFinite(p.rY)&&p.rY>4,"native Y radius required: "+name);
   assert.ok(p.x>=0&&p.x<=1095&&p.y>=0&&p.y<=1436,name);
   assert.ok(p.r>=5&&p.r<300,name);
   assert.equal(p.type,["dcAmps","cpsFreq","dcVolts","acVolts"].includes(name)?"meter":name.endsWith("Selector")?"rotary":name==="residual"?"momentary":"toggle");
