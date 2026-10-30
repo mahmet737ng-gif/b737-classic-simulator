@@ -98,3 +98,18 @@ test('Bundled live JS and JSON use the same FCOM INDEX definition',()=>{
  const jsPage=JSON.parse(js.slice('window.CDU_PAGES='.length).replace(/;\s*$/,'')).DEP_ARR;
  assert.deepEqual(jsPage,pages.DEP_ARR);
 });
+
+test('Both Unified CDUs fetch versioned corrected page definitions, app and overlays',()=>{
+ const html=fs.readFileSync(path.join(root,'panel-mosaic-lab/cockpit/cdu-stage.html'),'utf8');
+ const manifest=JSON.parse(fs.readFileSync(path.join(root,'panel-mosaic-lab/cockpit/assembly.json'),'utf8'));
+ for(const p of ['data/page-definitions.js','engine/cdu-engine.js','app.js','stage5-adapter.js','stage6-selector.js']){
+  const at=html.indexOf('src="'+p);
+  assert.ok(at>=0);
+  assert.ok(html.slice(at,at+200).includes('DEPARR-FCOM-114032-0001'));
+ }
+ for(const seat of ['CAPT','FO']){
+  const item=manifest.embeddedInstruments.find(x=>x.seat===seat);
+  assert.ok(item);
+  assert.match(item.embeddedUrl,/DEPARR-FCOM-114032-0001$/);
+ }
+});
