@@ -99,7 +99,7 @@
   // Before animating, restore only those wedges in a temporary client-side
   // display bitmap. Never overwrite the original locked photo.
   const cleaner=window.B737AcDcStaticCleaner;
-  if(cleaner)cleaner.cleanPiece(piece);
+  if(cleaner){cleaner.watchPiece(piece);cleaner.cleanPiece(piece);}
   // Remove pre-MET-0009 siblings in atlasAbsolute. The new pointer layers are
   // children of the actual OH10 article, so image/camera movement is shared.
   host.querySelectorAll(':scope > [data-metering-needle]').forEach(node=>node.remove());
@@ -107,7 +107,7 @@
              w:parseFloat(piece.style.width),h:parseFloat(piece.style.height)};
   for(const meter of model.meters){
    const old=piece.querySelector('[data-metering-needle="'+meter.id+'"]');
-   if(old&&old.getAttribute('data-geometry-version')==='MET-0011-DEPLOY-AND-CLEAN-QA'){
+   if(old&&old.getAttribute('data-geometry-version')==='MET-0012-LOADER-GUARD'){
     const blade=old.querySelector('[data-needle-blade]');
     if(blade)mounted.set(meter.id,blade);
     continue;
@@ -115,7 +115,7 @@
    if(old)old.remove();
    const p=model.placement(box,meter);
    const layer=svg(doc,piece,'svg',{'data-metering-needle':meter.id,
-    'data-geometry-version':'MET-0011-DEPLOY-AND-CLEAN-QA',
+    'data-geometry-version':'MET-0012-LOADER-GUARD',
     viewBox:'0 0 512 512',preserveAspectRatio:'none',
     role:'img','aria-label':meter.label+' original pointer'});
    // Local photo coordinates: never position a pointer on the atlas root.
@@ -180,7 +180,7 @@
     const summary=cleaner?.getStatus();
     const doc=frame?.contentDocument,oh10=doc?.querySelector('.atlas-piece[data-key="OH10"]');
     const data={
-      build:'MET-0011-DEPLOY-AND-CLEAN-QA',
+      build:'MET-0012-LOADER-GUARD',
       currentModelAxes:model.meters.map(m=>m.id+':'+m.tipRadiusX.toFixed(1)+'x'+m.tipRadiusY.toFixed(1)).join(' / '),
       originalOH10Locked:true,
       originalNeedleLocked:true,
@@ -188,6 +188,7 @@
       photoStatus:oh10?.dataset.staticNeedlePhoto||'OH10_NOT_MOUNTED',
       cleanerState:summary?.status||'NOT_LOADED',
       cleanedPixels:summary?.cleanedPixelCount||0,
+      photoSwapsRepaired:summary?.restoredAfterImageSwap||0,
       unresolvedPixels:summary?.unresolvedPixels||0,
       interactiveNeedles:oh10?.querySelectorAll('[data-metering-needle]').length||0,
       photoSource:oh10?.querySelector('.atlas-photo')?.currentSrc?.startsWith('blob:')?'DERIVED_DISPLAY_BLOB':'ORIGINAL_SOURCE_OR_NOT_LOADED'
@@ -231,11 +232,11 @@
     nativeEllipse:{rx:meter.tipRadiusX,ry:meter.tipRadiusY},
     allowedAngles:b,angleTarget:state[meter.id],
     screenSprite:rect?{x:rect.x,y:rect.y,width:rect.width,height:rect.height}:null,
-    renderVersion:'MET-0011-DEPLOY-AND-CLEAN-QA',staticPhotoStatus:node?.closest('.atlas-piece')?.dataset?.staticNeedlePhoto||'NOT_MOUNTED',photoPixelQACertified:false};
+    renderVersion:'MET-0012-LOADER-GUARD',staticPhotoStatus:node?.closest('.atlas-piece')?.dataset?.staticNeedlePhoto||'NOT_MOUNTED',photoPixelQACertified:false};
   });
  }
  window.B737UnifiedAcDcMetering=Object.freeze({
-  version:'MET-0011-DEPLOY-AND-CLEAN-QA',getAngles:()=>({...state}),getReadings,
+  version:'MET-0012-LOADER-GUARD',getAngles:()=>({...state}),getReadings,
   getScaleMode:()=>acMode,getRenderAudit,setReading,setReadings,setAngle,setAngles
  });
  window.addEventListener('b737:ac-dc-metering-angles',event=>{try{setAngles(event.detail);}catch(error){console.error(error);}});
