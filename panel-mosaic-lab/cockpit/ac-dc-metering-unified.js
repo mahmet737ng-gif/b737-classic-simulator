@@ -99,12 +99,14 @@
   for(const meter of model.meters){
    if(host.querySelector(`[data-metering-needle="${meter.id}"]`))continue;
    const p=model.placement(box,meter);
-   const layer=svg(doc,host,'svg',{'data-metering-needle':meter.id,viewBox:'0 0 512 512',role:'img','aria-label':meter.label+' pointer'});
-   Object.assign(layer.style,{position:'absolute',left:`${p.x-p.size/2}px`,top:`${p.y-p.size/2}px`,width:`${p.size}px`,height:`${p.size}px`,zIndex:'1000',pointerEvents:'none',overflow:'visible'});
+   const layer=svg(doc,host,'svg',{'data-metering-needle':meter.id,viewBox:'0 0 512 512',preserveAspectRatio:'none',role:'img','aria-label':meter.label+' original pointer'});
+   Object.assign(layer.style,{position:'absolute',left:`${p.x-p.sizeX/2}px`,top:`${p.y-p.sizeY/2}px`,width:`${p.sizeX}px`,height:`${p.sizeY}px`,zIndex:'1000',pointerEvents:'none',overflow:'visible'});
    const defs=svg(doc,layer,'defs');
    const clip=svg(doc,defs,'clipPath',{id:`metering-window-${meter.id}`,clipPathUnits:'userSpaceOnUse'});
-   // The lower grey gauge cover stays in front; only the black upper window shows the blade.
-   svg(doc,clip,'rect',{x:0,y:0,width:512,height:237});
+   // The ORIGINAL photo's BLUE curved face covers the lower needle body.
+   // Not a rectangular upper-half mask: the user-measured black/blue seam
+   // is a quadratic and is matched per gauge without drawing a new face.
+   svg(doc,clip,'path',{d:model.blackWindowPath(meter.id)});
    const windowGroup=svg(doc,layer,'g',{'clip-path':`url(#metering-window-${meter.id})`});
    const blade=svg(doc,windowGroup,'g');
    Object.assign(blade.style,{transformOrigin:'256px 256px',transition:'none'});
