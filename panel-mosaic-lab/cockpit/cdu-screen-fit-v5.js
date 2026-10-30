@@ -1,4 +1,4 @@
-/* Unified embedded CDU typography / geometry v4.
+/* Unified embedded CDU typography / geometry v5.
  * Live text layer ONLY. Approved photo, hotspots, font binaries, backend remain immutable.
  * Works after every page redraw: the CDU v6 app replaces all .fmc-line nodes.
  */
@@ -79,11 +79,11 @@
  function schedule(){
   if(scheduled)return;
   scheduled=true;
-  root.requestAnimationFrame(()=>{scheduled=false;apply();root.B737CduTypographyV4?.report?.();});
+  root.requestAnimationFrame(()=>{scheduled=false;apply();root.B737CduTypographyV5?.report?.();});
  }
  const observer=new MutationObserver(schedule);
  observer.observe(box,{childList:true,subtree:true,characterData:true});
- root.B737CduScreenFitV4=Object.freeze({version:VERSION,apply,schedule});
+ root.B737CduScreenFitV5=Object.freeze({version:VERSION,apply,schedule});
  apply();
  if(root.document.fonts?.ready)root.document.fonts.ready.then(schedule).catch(()=>{});
 })(window);
