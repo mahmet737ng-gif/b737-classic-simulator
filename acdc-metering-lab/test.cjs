@@ -47,6 +47,21 @@ test("photo overlay remains independent of immutable source and never uses a new
  assert.match(code,/unifiedMountAllowed:false/);
  assert.doesNotMatch(code,/\bfetch\([^)]*,\s*\{\s*method\s*:\s*["'](?:POST|PUT|PATCH|DELETE)/i);
 });
+test("photo-real mode NEVER synthesizes fake gauge faces, numbers, bezels or metallic switch hardware",()=>{
+ assert.doesNotMatch(html,/id="face"/);
+ assert.doesNotMatch(html,/<(?:linearGradient|radialGradient|text)\b/);
+ assert.match(html,/<input id="overlay" type="checkbox">/);
+ assert.match(html,/<input id="markers" type="checkbox">/);
+ assert.match(code,/overlay:false,showMarkers:false/);
+ for(const forbidden of ["function dialScale(","function rotary(","function toggle(","function residual(","function polar(","state.faces","state.showMarkers=true","fill:\"url(#silver)\""]){
+  assert.ok(!code.includes(forbidden),"Artificial drawing/automatic guides disallowed: "+forbidden);
+ }
+ assert.match(code,/function photoHotspot\(id\)/);
+ assert.match(code,/if\(!state.showMarkers\)return;/);
+ assert.ok(code.includes('fill:"transparent",stroke:"none"'));
+ assert.match(code,/ac-dc-metering-needle\.svg/);
+ assert.match(html,/OH10-PHOTO-STAGE-REAL-0003/);
+});
 test("only electrical V7 state adapter is invoked, and no cockpit or locked geometry is altered",()=>{
  assert.match(html,/engine\/systems\/electrical-v7\.js/);
  assert.match(code,/window\.B737ElectricalV7/);
