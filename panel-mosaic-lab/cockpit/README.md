@@ -1,3 +1,15 @@
+## MET-0008 — corrected OH10 screenshot circle/native ellipse (2026-10-30)
+
+Owner reported MET-0007 did **not** fix the needle track. Root cause in the previous code: a single native `tipRadius` and incorrect vertical pivot conversion were used despite different horizontal and vertical scaling in the screenshot. A circle in displayed screenshot coordinates is an **ellipse** in the native 1095×1436 image. MET-0007's own previous center Y values were approximately 7–9 native pixels too low.
+
+- Re-fitted user screenshot's red arc pixels (circles recorded in `engine/instruments/oh10-user-arc-fit-v1.json`) and applied the same screen→native affine conversion independently for X/Y. Geometry is provisional pending real browser/original-source registration.
+- **New native pivot X/Y, radius X/Y**: DC AMPS `307.386918,272.100000; 164.101996,159.161290`; CPS `781.879157,253.738710; 145.368071,140.991398`; DC VOLTS `310.770510,710.143011; 174.654102,169.395699`; AC VOLTS `785.307095,698.181720; 153.533259,148.910753`.
+- Render uses `sizeX, sizeY` for the EXACT SAME existing white sprite, with the pivot at fixed `256,256` and unchanged upper black curved mask. The photo calibration stage rotates the sprite **before** X/Y scaling; scaling prior to rotation was another source of arc drift.
+- Screenshot-space reference: each needle tip must satisfy `(x_screen-cx)^2+(y_screen-cy)^2=r_screen^2` (up to float error), and be inside the black aperture above the photo-blue curve. Automated 721 samples per gauge (2884 total) have <0.001 screenshot pixel radial error in the measured transform; this is arithmetic consistency, not a browser pixel inspection.
+- Original image and existing sprite are untouched; no new gauges, faces, markings, labels or pointers. The `getRenderAudit()` read-only Unified API reports the loaded script version and actual browser sprite geometry for subsequent deployed verification.
+- The measured screenshot-to-native affine origin and scale were inferred from the screenshot, not independently matched to the original PNG in a deployed browser. **No claim of a completed pixel-perfect visual fix, exact physical pivot certification, or successful GitHub Pages release until visually verified.**
+
+
 ## MET-0007 — user's RED inner-tick arcs, exact radial track and curved blue photo masking (2026-10-30)
 
 The screenshot supplied by the owner at 1920×1080 contains a separate RED curved reference for each OH10 black meter aperture. The previous "needle tip near the bezel" assumption is wrong: the center of the RED reference arc must be the rotation pivot, the red-arc radius must define the white original needle tip reach, and the entire needle must be **behind the blue lower face** except the narrow portion in the black window.
