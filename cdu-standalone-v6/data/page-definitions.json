@@ -6,159 +6,139 @@
       "title": "INIT/REF INDEX",
       "fcom_section": "11.40",
       "variant": "MENU_CDU",
-      "source_status": "PARTIALLY_FCOM_GROUNDED",
+      "source_status": "FCOM_11.40.5_TEXT_EXTRACTED_IMAGE_AUDIT_PENDING",
       "page_count": 1,
       "rows": [
         [
           {
+            "lsk": "L1",
             "label": "<IDENT",
             "required": false,
-            "status": "TRAINER_IMPLEMENTATION",
+            "status": "FCOM_TEXT_PROMPT_REVIEWED",
+            "source_verification": "FCOM_11.40.5_TEXT_EXTRACTED_IMAGE_AUDIT_PENDING",
             "action": {
               "type": "navigate",
               "page": "IDENT"
-            },
-            "lsk": "L1",
-            "source_verification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
           },
           {
-            "label": "POS INIT>",
-            "required": false,
-            "status": "TRAINER_IMPLEMENTATION",
-            "action": {
-              "type": "navigate",
-              "page": "POS_INIT"
-            },
             "lsk": "R1",
-            "source_verification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
-          }
-        ],
-        [
-          {
-            "label": "<RTE",
+            "label": "NAV DATA>",
             "required": false,
-            "status": "TRAINER_IMPLEMENTATION",
-            "action": {
-              "type": "navigate",
-              "page": "RTE"
-            },
-            "lsk": "L2",
-            "source_verification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
-          },
-          {
-            "label": "PERF INIT>",
-            "required": false,
-            "status": "TRAINER_IMPLEMENTATION",
-            "action": {
-              "type": "navigate",
-              "page": "PERF_INIT"
-            },
-            "lsk": "R2",
-            "source_verification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
-          }
-        ],
-        [
-          {
-            "label": "<TAKEOFF",
-            "required": false,
-            "status": "TRAINER_IMPLEMENTATION",
-            "action": {
-              "type": "navigate",
-              "page": "TAKEOFF"
-            },
-            "lsk": "L3",
-            "source_verification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
-          },
-          {
-            "label": "N1 LIMIT>",
-            "required": false,
-            "status": "TRAINER_IMPLEMENTATION",
-            "action": {
-              "type": "navigate",
-              "page": "N1_LIMIT"
-            },
-            "lsk": "R3",
-            "source_verification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
-          }
-        ],
-        [
-          {
-            "label": "<APPROACH",
-            "required": false,
-            "status": "TRAINER_IMPLEMENTATION",
-            "action": {
-              "type": "navigate",
-              "page": "APP_REF"
-            },
-            "lsk": "L4",
-            "source_verification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
-          },
-          {
-            "label": "REF NAV DATA>",
-            "required": false,
-            "status": "TRAINER_IMPLEMENTATION",
+            "status": "FCOM_TEXT_PROMPT_REVIEWED",
+            "source_verification": "FCOM_11.40.5_TEXT_EXTRACTED_IMAGE_AUDIT_PENDING",
             "action": {
               "type": "navigate",
               "page": "NAV_DATA"
-            },
-            "lsk": "R4",
-            "source_verification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
           }
         ],
         [
           {
+            "lsk": "L2",
+            "label": "<POS",
+            "required": false,
+            "status": "FCOM_TEXT_PROMPT_REVIEWED",
+            "source_verification": "FCOM_11.40.5_TEXT_EXTRACTED_IMAGE_AUDIT_PENDING",
+            "action": {
+              "type": "navigate",
+              "page": "POS_INIT"
+            }
+          },
+          {
+            "lsk": "R2",
+            "label": "",
+            "required": false,
+            "status": "FCOM_TEXT_PROMPT_REVIEWED",
+            "source_verification": "FCOM_11.40.5_TEXT_EXTRACTED_IMAGE_AUDIT_PENDING"
+          }
+        ],
+        [
+          {
+            "lsk": "L3",
+            "label": "<PERF",
+            "required": false,
+            "status": "FCOM_TEXT_PROMPT_REVIEWED",
+            "source_verification": "FCOM_11.40.5_TEXT_EXTRACTED_IMAGE_AUDIT_PENDING",
+            "action": {
+              "type": "navigate",
+              "page": "PERF_INIT"
+            }
+          },
+          {
+            "lsk": "R3",
+            "label": "",
+            "required": false,
+            "status": "FCOM_TEXT_PROMPT_REVIEWED",
+            "source_verification": "FCOM_11.40.5_TEXT_EXTRACTED_IMAGE_AUDIT_PENDING"
+          }
+        ],
+        [
+          {
+            "lsk": "L4",
+            "label": "<TAKEOFF",
+            "required": false,
+            "status": "FCOM_TEXT_PROMPT_REVIEWED",
+            "source_verification": "FCOM_11.40.5_TEXT_EXTRACTED_IMAGE_AUDIT_PENDING",
+            "action": {
+              "type": "navigate",
+              "page": "TAKEOFF"
+            }
+          },
+          {
+            "lsk": "R4",
+            "label": "",
+            "required": false,
+            "status": "FCOM_TEXT_PROMPT_REVIEWED",
+            "source_verification": "FCOM_11.40.5_TEXT_EXTRACTED_IMAGE_AUDIT_PENDING"
+          }
+        ],
+        [
+          {
+            "lsk": "L5",
+            "label": "<APPROACH",
+            "required": false,
+            "status": "FCOM_TEXT_PROMPT_REVIEWED",
+            "source_verification": "FCOM_11.40.5_TEXT_EXTRACTED_IMAGE_AUDIT_PENDING",
+            "action": {
+              "type": "navigate",
+              "page": "APP_REF"
+            }
+          },
+          {
+            "lsk": "R5",
+            "label": "",
+            "required": false,
+            "status": "FCOM_TEXT_PROMPT_REVIEWED",
+            "source_verification": "FCOM_11.40.5_TEXT_EXTRACTED_IMAGE_AUDIT_PENDING"
+          }
+        ],
+        [
+          {
+            "lsk": "L6",
             "label": "<OFFSET",
             "required": false,
-            "status": "TRAINER_IMPLEMENTATION",
+            "status": "FCOM_TEXT_PROMPT_REVIEWED",
+            "source_verification": "FCOM_11.40.5_TEXT_EXTRACTED_IMAGE_AUDIT_PENDING",
             "action": {
               "type": "navigate",
               "page": "OFFSET"
-            },
-            "lsk": "L5",
-            "source_verification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            }
           },
           {
-            "label": "PROGRESS>",
-            "required": false,
-            "status": "TRAINER_IMPLEMENTATION",
-            "action": {
-              "type": "navigate",
-              "page": "PROG"
-            },
-            "lsk": "R5",
-            "source_verification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
-          }
-        ],
-        [
-          {
-            "label": "<MENU",
-            "required": false,
-            "status": "TRAINER_IMPLEMENTATION",
-            "action": {
-              "type": "navigate",
-              "page": "MENU"
-            },
-            "lsk": "L6",
-            "source_verification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
-          },
-          {
-            "label": "MSG RECALL>",
-            "required": false,
-            "status": "TRAINER_IMPLEMENTATION",
-            "action": {
-              "type": "navigate",
-              "page": "MSG_RECALL"
-            },
             "lsk": "R6",
-            "source_verification": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+            "label": "MAINT>",
+            "required": false,
+            "status": "FCOM_PROMPT_OPTION_NOT_IMPLEMENTED",
+            "source_verification": "FCOM_11.40.5_TEXT_EXTRACTED_IMAGE_AUDIT_PENDING"
           }
         ]
       ],
       "source_ref": {
-        "folio_family": "11.40.4",
-        "pdf_page_near": 1556,
+        "folio_family": "11.40.5",
+        "pdf_page_near": 1557,
         "source": "SEPEHRAN_737CL_FCOM_VOLUME_2_CH11",
-        "verification": "APPROXIMATE_TOPIC_REFERENCE_REQUIRES_FIELD_AUDIT"
+        "verification": "ORIGINAL_FCOM_TEXT_EXTRACTED_SCREEN_IMAGE_PENDING"
       },
       "id": "INDEX"
     },
