@@ -9,7 +9,7 @@ const embedded=read('panel-mosaic-lab/cockpit/cdu-stage.html'),original=read(sou
 const bodyScripts=scripts(embedded).filter(src=>!src.includes('performance/manifest.js')&&!src.includes('performance-loader.js'));
 assert.deepEqual(bodyScripts.slice(-3),integrationScripts,'Only the three audited CDU bridge, IRS adapter and read-only Chapter 11 FMC telemetry scripts may be appended');
 assert.ok(read('panel-mosaic-lab/cockpit/cdu-bridge.js').includes("kind:'wheel-pan'"),'Shared FMC bridge also forwards wheel pan without changing CDU page engine');
-const telemetry=read('panel-mosaic-lab/cockpit/cdu-fmc-telemetry-v1.js');assert.ok(telemetry.includes('read-only')&&telemetry.includes('CH11'),'FMC telemetry adapter must remain advisory-only and retain its scope');
+const telemetry=read('panel-mosaic-lab/cockpit/cdu-fmc-telemetry-v1.js');assert.ok(telemetry.includes('read-only')&&telemetry.includes('Chapter 11'),'FMC telemetry adapter must remain advisory-only and retain its scope');
 assert.deepEqual(bodyScripts.slice(0,-3),scripts(original).filter(src=>!omitted.has(src)),'Every original CDU application script must keep its exact order');for(const src of omitted)assert.ok(!scripts(embedded).includes(src),'Hidden EHSI/map code must not execute in Unified');assert.ok(embedded.includes('<base href="../../cdu-standalone-v6/">'));assert.ok(embedded.includes('href="../assets/fonts/boeing-cdu/cdu-screen.css"'));
 const css=read('panel-mosaic-lab/cockpit/cdu-embed.css');for(const selector of ['font-family','font-size','.hotspot','.fmc-screen','.fmc-line'])assert.ok(!css.includes(selector),'Embed must not rewrite approved CDU screen or keys: '+selector);
 require('./cdu-session.test.cjs');
