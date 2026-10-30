@@ -17,6 +17,11 @@ on:
       - 'engine/ch11/cdu-24-column-metrics-v1.js'
       - 'engine/ch11/fcom-screen-contract-v1.js'
       - 'engine/ch11/cdu-preflight-evidence-v1.js'
+      - 'engine/ch11/cdu-airac-banks-v1.js'
+      - 'engine/ch11/airac-cycle-installation-status-v1.json'
+      - 'engine/ch11/tests/cdu-airac-banks-v1.test.cjs'
+      - 'panel-mosaic-lab/cockpit/cdu-airac-status-bridge-v1.js'
+      - 'panel-mosaic-lab/cockpit/cdu-airac-bank-receiver-v1.js'
       - 'engine/config/aircraft-profile-v1.js'
       - 'engine/config/cdu-ident-installation-v1.js'
       - 'engine/config/tests/cdu-ident-installation-v1.test.cjs'
@@ -99,6 +104,10 @@ jobs:
       - run: node --check engine/ch11/cdu-preflight-evidence-v1.js
       - run: node --check panel-mosaic-lab/cockpit/cdu-irs-adapter-v1.js
       - run: node --test engine/ch11/tests/cdu-preflight-evidence-v1.test.cjs
+      - run: node --check engine/ch11/cdu-airac-banks-v1.js
+      - run: node --check panel-mosaic-lab/cockpit/cdu-airac-status-bridge-v1.js
+      - run: node --check panel-mosaic-lab/cockpit/cdu-airac-bank-receiver-v1.js
+      - run: node --test engine/ch11/tests/cdu-airac-banks-v1.test.cjs
       - run: node --check engine/config/aircraft-profile-v1.js
       - run: node --check engine/config/cdu-ident-installation-v1.js
       - run: node --check panel-mosaic-lab/cockpit/cdu-ident-profile-bridge-v1.js
