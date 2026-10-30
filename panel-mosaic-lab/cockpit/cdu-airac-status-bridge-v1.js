@@ -24,7 +24,7 @@
   const frame=root.document.getElementById('cduFrame'+seat);
   if(!frame?.contentWindow)return false;
   frame.contentWindow.postMessage({type:'b737:cdu-navdb-bank-snapshot-v1',seat,
-    snapshot:status()},root.location.origin);return true;
+    asOf:utcDay(),bankRecords},root.location.origin);return true;
  }
  function notify(){paint();return seats.map(seat=>({seat,delivered:send(seat)}));}
  root.addEventListener('message',e=>{
@@ -43,7 +43,6 @@
  // effectivity NEVER automatically swaps actual database slots.
  function attachVerifiedBanks(payload){
   const next={ACTIVE:payload?.ACTIVE??null,INACTIVE:payload?.INACTIVE??null};
-  for(const name of seats){void name;} // No seat-specific NAVDB source divergence.
   for(const name of ['ACTIVE','INACTIVE'])if(next[name])api.validateBank(next[name]);
   bankRecords=next;return notify();
  }
