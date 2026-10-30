@@ -1,5 +1,5 @@
 {
-  "schema": "b737.oh10.screenshot-photoarc-fit.v1",
+  "schema": "b737.oh10.screenshot-photoarc-fit.v2",
   "reference": "User-provided screenshot from 2026-10-30 1920x1080; red circular overlays represent requested INNER tick-tip trajectory. Measured with robust least-squares on red pixels, not by assuming decorative bezel centers.",
   "sourcePhoto": "panel-mosaic-lab/assets/locked/2026-10-23/OH10-ELEC-LOSSLESS-9a1ca4d6cfb2.png",
   "sourcePhotoSha256": "9a1ca4d6cfb277ec1404f3a464e957d81be9d9689a0810883364342d57b0f1ea",
@@ -27,9 +27,9 @@
         148.02
       ],
       "nativeCircle": [
-        307.397,
-        280.76,
-        167.86
+        307.386918,
+        272.1,
+        164.101996
       ],
       "angleMin": -46.66,
       "angleMax": 44.26,
@@ -39,7 +39,15 @@
         "screenYAtMid": 404.03,
         "quadPer110": 21.1,
         "linearPer110": 1.38
-      }
+      },
+      "nativeEllipse": [
+        307.386918,
+        272.1,
+        164.101996,
+        159.16129
+      ],
+      "nativeRadiusX": 164.101996,
+      "nativeRadiusY": 159.16129
     },
     "cps": {
       "screenCircle": [
@@ -48,9 +56,9 @@
         131.122
       ],
       "nativeCircle": [
-        781.896,
-        261.228,
-        148.53
+        781.879157,
+        253.73871,
+        145.368071
       ],
       "angleMin": -54.21,
       "angleMax": 46.78,
@@ -60,7 +68,15 @@
         "screenYAtMid": 402.04,
         "quadPer110": 23.42,
         "linearPer110": 0.06
-      }
+      },
+      "nativeEllipse": [
+        781.879157,
+        253.73871,
+        145.368071,
+        140.991398
+      ],
+      "nativeRadiusX": 145.368071,
+      "nativeRadiusY": 140.991398
     },
     "dcVolts": {
       "screenCircle": [
@@ -69,9 +85,9 @@
         157.538
       ],
       "nativeCircle": [
-        310.778,
-        719.453,
-        178.742
+        310.77051,
+        710.143011,
+        174.654102
       ],
       "angleMin": -45.5,
       "angleMax": 44.7,
@@ -81,7 +97,15 @@
         "screenYAtMid": 807.03,
         "quadPer110": 22.32,
         "linearPer110": 2.88
-      }
+      },
+      "nativeEllipse": [
+        310.77051,
+        710.143011,
+        174.654102,
+        169.395699
+      ],
+      "nativeRadiusX": 174.654102,
+      "nativeRadiusY": 169.395699
     },
     "acVolts": {
       "screenCircle": [
@@ -90,9 +114,9 @@
         138.487
       ],
       "nativeCircle": [
-        785.318,
-        706.045,
-        156.828
+        785.307095,
+        698.18172,
+        153.533259
       ],
       "angleMin": -51.4,
       "angleMax": 51.16,
@@ -102,7 +126,15 @@
         "screenYAtMid": 805.67,
         "quadPer110": 26.53,
         "linearPer110": -1.36
-      }
+      },
+      "nativeEllipse": [
+        785.307095,
+        698.18172,
+        153.533259,
+        148.910753
+      ],
+      "nativeRadiusX": 153.533259,
+      "nativeRadiusY": 148.910753
     }
   },
   "operations": {
@@ -117,7 +149,8 @@
     ],
     "spriteTipRadius": 216,
     "showNeedleOnlyAboveCurvedBlueFace": true,
-    "angleHardStops": true
+    "angleHardStops": true,
+    "tipGeometry": "two axes: native ellipse tip point x=cx+rx*sin(theta), y=cy-ry*cos(theta), projected onto user's screen circle"
   },
   "qa": {
     "screenshotRedTraceFit": true,
@@ -126,5 +159,6 @@
     "allTickMarksPhysicallyValidated": false,
     "sourceAssetUnchanged": true
   },
-  "note": "Native centers and arc bounds are screenshot-derived provisional measurements. Never call them mechanically certified or pixel-perfect until native source image and browser overlay are compared."
+  "note": "Native centers and arc bounds are screenshot-derived provisional measurements. Never call them mechanically certified or pixel-perfect until native source image and browser overlay are compared.",
+  "transformCorrection": "Screen red arcs are circles; mapping to native OH10 uses ellipse radii rx=screenR/scaleX, ry=screenR/scaleY. Prior conversion had incorrect Y pivot (about 8 native px too low) and used one isotropic radius."
 }
