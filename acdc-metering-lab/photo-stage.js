@@ -7,12 +7,12 @@
 var SVG="http://www.w3.org/2000/svg",W=1095,H=1436;
 var E=window.B737ElectricalV7;
 var $=function(id){return document.getElementById(id);};
-var STORAGE="b737-oh10-photo-geometry-v1";
+var STORAGE="b737-oh10-photo-geometry-v2-red-arc";
 var initial={
- dcAmps:{x:308.453,y:281.608,r:141,type:"meter"},
- cpsFreq:{x:774.2,y:191.4,r:141,type:"meter"},
- dcVolts:{x:310.307,y:682.818,r:131,type:"meter"},
- acVolts:{x:785.143,y:702.386,r:143,type:"meter"},
+ dcAmps:{x:307.397,y:280.760,r:167.860,type:"meter"},
+ cpsFreq:{x:781.896,y:261.228,r:148.530,type:"meter"},
+ dcVolts:{x:310.778,y:719.453,r:178.742,type:"meter"},
+ acVolts:{x:785.318,y:706.045,r:156.828,type:"meter"},
  dcSelector:{x:306,y:1029,r:84,type:"rotary"},
  acSelector:{x:783,y:1029,r:84,type:"rotary"},
  battery:{x:480,y:1295,r:51,type:"toggle"},
@@ -114,7 +114,9 @@ function meter(id,data){
  // untouched source photograph may already show a parked needle.
  var ratio=p.r/216;
  var clip=e("clipPath",{id:"oh10-needle-window-"+id,clipPathUnits:"userSpaceOnUse"});
- clip.appendChild(e("rect",{x:-p.r-16,y:-p.r-16,width:2*(p.r+16),height:p.r+2}));
+ // Same genuine curved black window mask as mounted Unified; suppresses
+ // ALL visible needle below the PHOTO's blue scalloped edge.
+ clip.appendChild(e("path",{d:M.blackWindowPath(key),transform:"translate("+(-256*ratio)+" "+(-256*ratio)+") scale("+ratio+")"}));
  base.appendChild(clip);
  var upper=e("g",{"clip-path":"url(#oh10-needle-window-"+id+")"});
  var blade=e("g",{"data-needle":id,transform:"rotate("+angle+")"});
