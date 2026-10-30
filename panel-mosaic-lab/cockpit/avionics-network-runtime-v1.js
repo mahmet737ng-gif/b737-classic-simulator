@@ -77,6 +77,37 @@
   // An ECU fuel-flow indication is NOT a fuel-quantity summation signal.
   // Fuel quantity stays UNKNOWN until an authoritative summation adapter is attached.
  }
+ function fuelQuantity(){
+  const fuel=snapshotFns.ecu()?.fuel;
+  const t=fuel?.tanksKg;
+  if(!t||!['main1','main2','center'].every(k=>typeof t[k]==='number'&&Number.isFinite(t[k])&&t[k]>=0))return;
+  const totalKg=t.main1+t.main2+t.center;
+  send('FUEL','fuel.quantity',{totalKg,tanksKg:{main1:t.main1,main2:t.main2,center:t.center},
+   source:'ISN09_12_SIMULATED_TANKS_NOT_A_VERIFIED_FUEL_SUMMATION_UNIT',
+   trainingModel:true},'TRAINING_SCENARIO');
+ }
+ function airGround(){
+  const a=snapshotFns.ecu()?.aircraft;
+  if(typeof a?.onGround==='boolean'){
+   send('AIRGROUND','aircraft.airground',{onGround:a.onGround,
+    source:'ISN13_18_TRAINING_FLIGHT_CONTEXT'},'TRAINING_SCENARIO');
+  }
+ }
+ function pneumatics(){
+  const start=root.B737ISNCockpitV1?.getStartState?.();
+  const bleed=start?.bleed;
+  if(bleed&&typeof bleed==='object')send('PNEUMATICS','pneumatics.state',{
+   bleedValveObservations:bleed,ductPressurePsi:null,
+   ductPressureVerified:false,source:'ISN_START_CHAIN_DISCRETES'},'TRAINING_SCENARIO');
+ }
+ function antiice(){
+  const heat=root.B737WindowHeatUnifiedV1?.getOutput?.();
+  const tat=root.B737TATProbeUnifiedV1?.getOutput?.();
+  if(!heat&&!tat)return;
+  send('ANTIICE','antiice.state',{windowHeat:heat||null,
+   tatProbeHeater:tat||null,engineAntiIce:null,wingAntiIce:null,
+   completeness:'PARTIAL_WINDOW_HEAT_AND_TAT_ONLY'},'TRAINING_SCENARIO');
+ }
  function profile(){
   const s=snapshotFns.profile();
   if(s&&typeof s==='object')send('PROFILE','aircraft.profile',{aircraftFamily:s.aircraftFamily??null,
@@ -87,7 +118,7 @@
   send('CLOCK','clock.utc',{isoUtc:time.toISOString(),epochMs:time.valueOf()},'LIVE_SYSTEM');
  }
  function refresh(){
-  for(const f of [electrical,irs,mcp,fmcFeedsAndRoute,engine,profile,clock])try{f()}catch(e){
+  for(const f of [electrical,irs,mcp,fmcFeedsAndRoute,engine,fuelQuantity,airGround,pneumatics,antiice,profile,clock])try{f()}catch(e){
    faults.push({source:f.name,error:String(e.message||e)});if(faults.length>32)faults.shift();
   }
   return network.audit();
@@ -117,8 +148,8 @@
   getDiagnostics:()=>({...network.audit(),adapterErrors:clone(faults)}),
   getFmcInputs:()=>computer.getState(),subscribe:network.subscribe,
   connectExternal,refresh,topics:network.topics,
-  supportedSources:Object.freeze({LIVE:['ELECTRICAL','IRS','MCP','AFDS','AUTOTHROTTLE','FMC_FEEDS','CDU','ENGINE','PROFILE','CLOCK'],
-   AWAITING_SIGNAL:['ADC','GPS','VHF_NAV','DME','FUEL','PNEUMATICS','ANTIICE','AIRGROUND','TAT','NAVDB','PERFDB','ACARS','CB']})
+  supportedSources:Object.freeze({LIVE:['ELECTRICAL','IRS','MCP','AFDS','AUTOTHROTTLE','FMC_FEEDS','CDU','ENGINE','FUEL','PNEUMATICS','ANTIICE','AIRGROUND','PROFILE','CLOCK'],
+   AWAITING_SIGNAL:['ADC','GPS','VHF_NAV','DME','TAT','NAVDB','PERFDB','ACARS','CB']})
  });
  // Old FMC/IRS frontend and driver remain the authoritative writers.
  // Consume existing change events, with a 250ms health poll for non-event sources.
