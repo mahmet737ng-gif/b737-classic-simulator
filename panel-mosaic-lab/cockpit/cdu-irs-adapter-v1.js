@@ -33,13 +33,16 @@ function patchPositionPages(){
   const l=pairs[idx].querySelector('.fmc-left'),r=pairs[idx].querySelector('.fmc-right');
   if(l)l.textContent=left;if(r)r.textContent=right;
  };
- if(state.page==='POS_REF'&&pairs.length>=8){
+ if(state.page==='POS_REF'&&pairs.length>=12){
   const L=snapshot.units.L,R=snapshot.units.R;
-  paint(2,'IRS L LAT','IRS L LON');paint(3,...fmt(L.positionValid?L.position:null));
-  paint(4,'IRS R LAT','IRS R LON');paint(5,...fmt(R.positionValid?R.position:null));
-  paint(6,'IRS L GS','IRS R GS');paint(7,
-   L.positionValid&&Number.isFinite(L.gsKt)?L.gsKt.toFixed(1)+' KT':'-----',
-   R.positionValid&&Number.isFinite(R.gsKt)?R.gsKt.toFixed(1)+' KT':'-----');
+  const position=u=>u?.positionValid&&u.position?fmt(u.position).join(' '):'-----';
+  const speed=u=>u?.positionValid&&Number.isFinite(u.gsKt)?u.gsKt.toFixed(1)+'KT':'-----';
+  paint(0,'FMC POS','GS');paint(1,'-----','-----');
+  paint(2,'IRS L','GS');paint(3,position(L),speed(L));
+  paint(4,'IRS R','GS');paint(5,position(R),speed(R));
+  paint(6,'GPS L','');paint(7,'-----','');
+  paint(8,'GPS R','');paint(9,'-----','');
+  paint(10,'RADIO','');paint(11,'-----','');
  }
 }
 // CDU scratchpad indications follow the actual L/R IRS core faults.
