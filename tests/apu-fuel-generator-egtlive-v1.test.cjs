@@ -114,8 +114,8 @@ test('Unified EGT pointer tracks ECU start/steady/loads with exact frozen sprite
  assert.equal(bridge.bearingForEGT(800),0.8);
  const model=require('../panel-mosaic-lab/cockpit/apu-egt-needle-model.js');
  assert.equal(bridge.bearingForEGT(0),model.needle.initialAngle,'Cold pointer must not jump at startup');
- assert.equal(B.CONFIG.apuColdEGTC,0,'Photographic APU EGT cold rest is at the printed lower-right zero');
- assert.equal(B.apuStartEGT(0),0,'Startup temperature must begin at the same zero tick');
+ assert.equal(ECU.CONFIG.apuColdEGTC,0,'Photographic APU EGT cold rest is at the printed lower-right zero');
+ assert.equal(ECU.apuStartEGT(0),0,'Startup temperature must begin at the same zero tick');
  assert.equal(bridge.bearingForEGT(-40),model.needle.initialAngle,'Negative ambient is clipped to cold end');
  assert.equal(bridge.bearingForEGT(1400),0.8,'Out-of-range temperatures clamp to photographed 8 mark');
  for(const [lo,hi] of [[0,20],[20,390],[390,620],[620,750],[750,800]])

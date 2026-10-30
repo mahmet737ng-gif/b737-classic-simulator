@@ -16,6 +16,9 @@ const CONFIG=Object.freeze({oilPressureLampOnPsi:11.75,oilPressureLampOffPsi:13,
  hydraulicPumpStartN2:4.5,hydraulicPumpRatedN2:6,hydraulicRatedPressurePsi:3000,
  apuRatedRpmPct:95.5,apuGeneratorReadyRpmPct:95,
  apuGenVoltageV:115,apuGenFrequencyHz:400,apuStartPeakEGTC:620,
+  // OWNER TRAINER setting; 4 PSI is not certified for every Classic APU type.
+  apuOilLampOutPsi:4,apuOilNominalPsi:55,
+  apuOilPumpRiseMs:900,apuOilPumpDecayMs:2600,
  oilAmbientTempC:20,apuColdEGTC:0,oilIdleTempC:82,oilHighPowerTempC:103,oilTempWarmupMs:95000,
  oilTempCooldownMs:240000,oilInitialQuantityPct:85,
  oilLeakLossPctPerSec:0.20,oilNaturalLossPctPerHour:0.02,
@@ -96,6 +99,25 @@ function oilStep(previous,{n2Percent=0,throttle=0,engineRunning=false}={},dtMs){
   const fastMs=CONFIG.apuCoolFastTauMs*Math.log((egtC-ambient)/(transition-ambient));
   return smooth(transition,ambient,dtMs-fastMs,CONFIG.apuCoolTailTauMs);
  }
+function apuOilTargetPsi(phase,progress=0){
+ if(phase==='READY')return CONFIG.apuOilNominalPsi;
+ if(phase!=='STARTING')return 0;
+ const p=clip((progress-0.07)/0.70,0,1);
+ return CONFIG.apuOilNominalPsi*Math.pow(p,1.3);
+}
+function apuOilPressureStep(previous,phase,progress,dtMs){
+ if(!finite(previous)||previous<0||!finite(dtMs)||dtMs<0||dtMs>120000)
+  throw Error('Invalid APU oil pressure and elapsed time required');
+ const target=apuOilTargetPsi(phase,progress);
+ const tau=target>=previous?CONFIG.apuOilPumpRiseMs:CONFIG.apuOilPumpDecayMs;
+ return Math.max(0,smooth(previous,target,dtMs,tau));
+}
+function apuLowOilPressureLamp(phase,pressurePsi){
+ if(!finite(pressurePsi)||pressurePsi<0)throw Error('Invalid APU oil pressure');
+ // Classic APU OFF disarms the light; 4 PSI clears this trainer override.
+ return ['INLET_DOOR','STARTING','READY'].includes(phase)&&
+  pressurePsi<CONFIG.apuOilLampOutPsi;
+}
 function initialCoast(){return {n1:0,n2:0,egt:CONFIG.oilAmbientTempC,lastRunning:false};}
 function coastStep(prev,{runningN1=null,n2=null,egtC=null,phase='OFF'}={},dtMs){
  const s={...prev};
@@ -130,6 +152,7 @@ class Testbench{
    this.apuLoadState=LoadDynamics.initial();
    this.apuPhysicalAmpsA=0;
    this.apuThermalEgtC=CONFIG.apuColdEGTC;
+   this.apuOilPressurePsi=0;
   this.aircraft={pressureAltitudeFt:0,oatC:15,iasKt:0,massKg:55000,onGround:true};
   this.chain.synchronize({toggles:{'apu-start':'OFF','bleed-apu':'OFF','bleed-eng-1':'OFF','bleed-eng-2':'OFF',
    'pack-l':'OFF','pack-r':'OFF','isolation-valve':'OPEN'},
@@ -238,6 +261,7 @@ class Testbench{
   if(!finite(ms)||ms<0||ms>120000)throw Error('Invalid passive APU cooling interval');
   if(['READY','STARTING'].includes(this.chain.get().phase.apu))return this.get();
   this.apuThermalEgtC=apuCoolingStep(this.apuThermalEgtC,ms);
+  this.apuOilPressurePsi=apuOilPressureStep(this.apuOilPressurePsi,'OFF',0,ms);
   this.elapsedMs+=ms;
   return this.get();
  }
@@ -246,6 +270,11 @@ class Testbench{
   while(remaining>0){const dt=Math.min(remaining,CONFIG.maxStepMs);remaining-=dt;
    this.core.advance(dt);this.elapsedMs+=dt;
    const snap=this.chain.get();
+   const oilSince=this.apuStartMs===null?0:Math.max(0,this.elapsedMs-this.apuStartMs);
+   const oilProgress=clip((oilSince-this.chain.timing.apuDoorMs)/
+    (this.chain.timing.apuReadyMs-this.chain.timing.apuDoorMs),0,1);
+   this.apuOilPressurePsi=apuOilPressureStep(
+    this.apuOilPressurePsi,snap.phase.apu,oilProgress,dt);
    for(const id of ENGINES){const n2=snap.observations[id].feedback.n2Percent.value;
     const phase=snap.phase[id],env=snap.runningEnvelope.engines[id];
     const running=phase==='RUNNING';
@@ -338,7 +367,11 @@ class Testbench{
     frequencyHz:genReady?CONFIG.apuGenFrequencyHz:0,
     currentEstimatedA:genReady?round(this.apuPhysicalAmpsA):0,
     connectedBusSides:Object.keys(snap.selectedSources).filter(side=>snap.selectedSources[side]==='APU').map(Number),origin:ORIGIN};
-   const apu={phase:apuPhase,rpmPct:round(apuRPM),egtC:round(apuEGT),
+   const apuOil={pressurePsi:round(this.apuOilPressurePsi),
+    lowPressureLamp:apuLowOilPressureLamp(apuPhase,this.apuOilPressurePsi),
+    lampOutAtPsi:CONFIG.apuOilLampOutPsi,
+    origin:'OWNER_REQUESTED_4_PSI_TRAINER_THRESHOLD_NOT_AFM_VERIFIED'};
+   const apu={phase:apuPhase,rpmPct:round(apuRPM),egtC:round(apuEGT),oil:apuOil,
     startElapsedSec:this.apuStartMs===null?null:round(tSince/1000,1),
     readyTargetSec:timing.apuReadyMs/1000,
     bleedValveOpen:snap.bleed.apuBleedValveOpen,genSelected:generator.connectedBusSides.length>0,
@@ -361,8 +394,9 @@ class Testbench{
    limitations:['NOT_AIRCRAFT_AFMS','NO_PHYSICAL_ECU_OR_FADEC_EMULATION',
     'USER_TIMED_START_PROFILE_NOT_AFM_CERTIFIED','START_DUCT_PSI_ESTIMATED_NOT_A_MEASURED_SENSOR','ALTITUDE_IAS_FUEL_MODEL_NOT_FCOM_VALIDATED','FUEL_PUMP_BUS_ASSIGNMENT_UNVERIFIED',
     'APU_EGT_AND_RPM_SURROGATES','APU_LOAD_KVA_AND_GOVERNOR_SURROGATE_NOT_WDM_CALIBRATED','NO_RELIABLE_MACH_OR_FULL_AERODYNAMIC_MODEL',
-    'UNIFIED_APU_NEEDLES_USE_TRAINING_CALIBRATION_NOT_AIRCRAFT_CERTIFIED']};
+    'UNIFIED_APU_NEEDLES_USE_TRAINING_CALIBRATION_NOT_AIRCRAFT_CERTIFIED',
+    'APU_LOW_OIL_PRESSURE_4_PSI_OWNER_TRAINER_OVERRIDE_NOT_AIRCRAFT_VERIFIED']};
  }
 }
-return Object.freeze({SCHEMA,ORIGIN,CONFIG,oilInitial,oilStep,hydraulicPressure,apuStartEGT,apuCoolingStep,coastStep,Testbench});
+return Object.freeze({SCHEMA,ORIGIN,CONFIG,oilInitial,oilStep,apuOilTargetPsi,apuOilPressureStep,apuLowOilPressureLamp,hydraulicPressure,apuStartEGT,apuCoolingStep,coastStep,Testbench});
 });

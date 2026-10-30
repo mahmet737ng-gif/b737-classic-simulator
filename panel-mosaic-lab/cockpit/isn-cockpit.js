@@ -29,7 +29,7 @@
    requests.push(new Promise((resolve,reject)=>{
     const script=document.createElement('script');
     script.async=false;
-    script.src=new URL(path,moduleBase).href+'?v='+(global==='B737ISN1318ECUTestbenchV1'?'APU-EGT-COOL2':'ELEC-LIVE-0001');
+    script.src=new URL(path,moduleBase).href+'?v='+(global==='B737ISN1318ECUTestbenchV1'?'APU-OIL4-0001':'ELEC-LIVE-0001');
     script.onload=resolve;
     script.onerror=()=>reject(Error('Missing integration script '+path));
     document.head.append(script);
@@ -151,7 +151,7 @@
   byId('isnStartStatus').textContent=summary.join(' · ');
   byId('isnApuTelemetry').textContent='APU '+s.phase.apu+' · RPM '+numeric(live.apu.rpmPct,'%')+
    ' · EGT '+numeric(live.apu.egtC,'°C')+' · GEN '+numeric(live.apu.generator.voltageV,'V')+
-   '/'+numeric(live.apu.generator.frequencyHz,'Hz')+' · BLEED '+stateName(live.apu.bleedValveOpen);
+   '/'+numeric(live.apu.generator.frequencyHz,'Hz')+' · OIL '+numeric(live.apu.oil.pressurePsi,'PSI')+' · BLEED '+stateName(live.apu.bleedValveOpen);
   const apuCard=strip.querySelector('.isn-apu-card');
   apuCard.dataset.apuPhase=live.apu.phase;
   apuCard.querySelector('[data-apu-field="phase"]').textContent=live.apu.phase;
@@ -207,7 +207,8 @@
  function postProjection(){const f=byId('overheadFrame');if(!f?.contentWindow||!bridge.initialized)return;
   const lamps={...bridge.get().lamps};const projected=chain.get().projected;
   lamps['apu-gen-off-bus']=projected['apu-gen-off-bus'];
-  lamps['apu-low-pressure']=projected['apu-low-pressure'];
+  // The real Unified APU lamp follows ECU oil PSI, not a STARTING timer.
+  lamps['apu-low-pressure']=ecu.get().apu.oil.lowPressureLamp;
   const key=JSON.stringify(lamps);if(key===lastLampProjection)return;lastLampProjection=key;
   f.contentWindow.postMessage({type:'b737:cockpit-command',action:'isn-projection',lamps},location.origin);
  }
