@@ -39,3 +39,23 @@
 - [ ] Owner review; approval; lock.
 
 **Important:** all numeric live readings are simplified training values, not calibrated aircraft measurements. This page must not be used to operate an aircraft.
+
+
+## OH10 Photo Stage — UPD-2026-10-30-ACDC-01
+
+- Stage: [photo-stage.html](photo-stage.html) · [native geometry](photo-geometry.v1.json) · [strict QA test](test.cjs).
+- Backdrop is the ORIGINAL owner-locked OH10 1095×1436 PNG at `../panel-mosaic-lab/assets/locked/2026-10-23/OH10-ELEC-LOSSLESS-9a1ca4d6cfb2.png` (SHA-256 `9a1ca4d6cfb277ec1404f3a464e957d81be9d9689a0810883364342d57b0f1ea`). The file is never modified.
+- Four meter pivot *candidates* and per-meter tip radii are imported from the existing Unified `panel-mosaic-lab/cockpit/ac-dc-metering-model.js`, not invented from layout proportions. DC AMPS (308.453, 281.608), CPS (774.2, 191.4), DC VOLTS (310.307, 682.818), AC VOLTS (785.143, 702.386). Existing model notes that bezel-circle centers alone do not prove needle-shaft center; photo confirmation remains outstanding.
+- The stage **reuses the existing** `ac-dc-metering-needle.svg` from Unified. It displays the source photograph's dial faces by default; a *diagnostic-only* generated dial layer is opt-in for comparisons. No duplicate physical gauges are mounted over the panel.
+- Native-pixel selection, drag calibration, 0.5 px keyboard nudging, size tuning, zoom, JSON export, source loading feedback, and local-only changes are available. Drag and residual momentary input capture remains stable while SVG nodes rerender.
+- Battery, galley, residual and both selector centers remain *provisional*, and their stage control skins do not replace any red-zone approved masters.
+- The DC AMPS and DC VOLTS visual needles use the photographic 11-tick bearing maps already present in Unified. CPS and AC VOLTS are **angle QA only**, despite demo numeric side readouts: neither is connected to an approved physical sensor mapping. The stage's V7 electrical scenario values are illustrative, not load modeling.
+- The actual Unified route is `panel-mosaic-lab/cockpit/`. It ALREADY has four separate AC/DC white needle instances and inspector controls. This stage does not replace or remount them. The new stage's five switch/knob placements are not yet authorized for installation.
+- The versioned geometry file explicitly has `ownerApproved: false`, `photoPixelAuditPassed: false` and `unifiedMountAllowed: false`. Actual browser photo QA, measured control sockets, locked guard skin reuse, integrated logic and CB fault tests must pass before any Unified change.
+- `node acdc-metering-lab/test.cjs` checks the PNG dimensions and SHA256, source link, marker constraints and safe source isolation; now wired to `npm test` for GitHub Pages gating. Test source code is committed, but its GitHub Actions result has not yet been independently observed.
+
+### Geometry acceptance gate (next)
+1. Inspect 1095×1436 owner photo at true 100% in the stage.
+2. Compare photograph needle pivots, dial rims, selector bores, battery/galley/residual mounting holes against the overlay crosshairs and radius circles.
+3. Export calibrated geometry. Before promoting, inspect change set and require explicit QA approval; preserve existing Unified meter calibration if its geometry is already correct.
+4. Integrate only verified rotaries/toggles/buttons with the shared backend and current red-zone assets, then test all detents, keyboard/touch interactions, APU/battery/ground source states, residual interlock and electrical CB faults.
