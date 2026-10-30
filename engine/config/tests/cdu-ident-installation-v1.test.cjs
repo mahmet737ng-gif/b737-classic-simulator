@@ -52,10 +52,11 @@ test('Existing saved family 400 migrates correctly and new engine choice persist
 test('Both CDU seats accept a live parent-profile message and retain it after reset',()=>{
  const js=read('panel-mosaic-lab/cockpit/cdu-ident-profile-receiver-v1.js');
  for(const seat of ['CAPT','FO']){
+  let updates=0;
   const listeners=new Map(),messages=[],parent={postMessage:(msg)=>messages.push(msg)};
   const ctx={parent,location:{search:'?seat='+seat,origin:'https://example.test'},
    B737CDUIdentInstallationV1:Install,state:{preflightEvidence:{}},
-   update(){this.updates=(this.updates||0)+1;},
+   update(){updates++;},
    addEventListener:(name,fn)=>listeners.set(name,fn)};
   ctx.window=ctx;
   vm.runInNewContext(js,ctx,{timeout:1000});
@@ -67,10 +68,10 @@ test('Both CDU seats accept a live parent-profile message and retain it after re
   assert.equal(ctx.state.preflightEvidence.MODEL.value,'737-500');
   ctx.state={preflightEvidence:{}};
   ctx.update();assert.equal(ctx.state.preflightEvidence.ENG_RATING.value,'23.5K');
-  const before=ctx.updates;
+  const before=updates;
   listeners.get('message')({origin:'https://untrusted.test',source:parent,
    data:{type:'b737:cdu-installation-v1',seat,installation:Install.select(profileDefaults)}});
-  assert.equal(ctx.updates,before);
+  assert.equal(updates,before);
  }
 });
 test('Parent broadcasts selected engine to both mounted CDUs on change and request',()=>{
