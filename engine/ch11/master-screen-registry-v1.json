@@ -15,7 +15,7 @@
     "ch11PhysicalPdfPages": 409,
     "layoutAudited": 1,
     "fullyVerified": 0,
-    "unresolvedStaticCellIssues": 10
+    "unresolvedStaticCellIssues": 9
   },
   "policy": {
     "noUnverifiedFieldPromotion": true,
@@ -31,9 +31,9 @@
     {
       "id": "INDEX",
       "title": "INIT/REF INDEX",
-      "folio": "11.40.4",
-      "pdfPageNear": 1556,
-      "sourceStatus": "PARTIALLY_FCOM_GROUNDED",
+      "folio": "11.40.5",
+      "pdfPageNear": 1557,
+      "sourceStatus": "FCOM_11.40.5_TEXT_EXTRACTED_IMAGE_AUDIT_PENDING",
       "layoutGrade": "SOURCE_NOT_VERIFIED",
       "behaviorGrade": "UNVERIFIED",
       "fullGrade": "NOT_VERIFIED",
@@ -45,104 +45,98 @@
           "field": null,
           "format": null,
           "hasNavigateAction": true,
-          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+          "sourceVerified": "FCOM_11.40.5_TEXT_EXTRACTED_IMAGE_AUDIT_PENDING"
         },
         {
           "lsk": "R1",
-          "label": "POS INIT>",
+          "label": "NAV DATA>",
           "field": null,
           "format": null,
           "hasNavigateAction": true,
-          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+          "sourceVerified": "FCOM_11.40.5_TEXT_EXTRACTED_IMAGE_AUDIT_PENDING"
         },
         {
           "lsk": "L2",
-          "label": "<RTE",
+          "label": "<POS",
           "field": null,
           "format": null,
           "hasNavigateAction": true,
-          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+          "sourceVerified": "FCOM_11.40.5_TEXT_EXTRACTED_IMAGE_AUDIT_PENDING"
         },
         {
           "lsk": "R2",
-          "label": "PERF INIT>",
+          "label": "",
           "field": null,
           "format": null,
-          "hasNavigateAction": true,
-          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_11.40.5_TEXT_EXTRACTED_IMAGE_AUDIT_PENDING"
         },
         {
           "lsk": "L3",
+          "label": "<PERF",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": true,
+          "sourceVerified": "FCOM_11.40.5_TEXT_EXTRACTED_IMAGE_AUDIT_PENDING"
+        },
+        {
+          "lsk": "R3",
+          "label": "",
+          "field": null,
+          "format": null,
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_11.40.5_TEXT_EXTRACTED_IMAGE_AUDIT_PENDING"
+        },
+        {
+          "lsk": "L4",
           "label": "<TAKEOFF",
           "field": null,
           "format": null,
           "hasNavigateAction": true,
-          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+          "sourceVerified": "FCOM_11.40.5_TEXT_EXTRACTED_IMAGE_AUDIT_PENDING"
         },
         {
-          "lsk": "R3",
-          "label": "N1 LIMIT>",
+          "lsk": "R4",
+          "label": "",
           "field": null,
           "format": null,
-          "hasNavigateAction": true,
-          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_11.40.5_TEXT_EXTRACTED_IMAGE_AUDIT_PENDING"
         },
         {
-          "lsk": "L4",
+          "lsk": "L5",
           "label": "<APPROACH",
           "field": null,
           "format": null,
           "hasNavigateAction": true,
-          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+          "sourceVerified": "FCOM_11.40.5_TEXT_EXTRACTED_IMAGE_AUDIT_PENDING"
         },
         {
-          "lsk": "R4",
-          "label": "REF NAV DATA>",
+          "lsk": "R5",
+          "label": "",
           "field": null,
           "format": null,
-          "hasNavigateAction": true,
-          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_11.40.5_TEXT_EXTRACTED_IMAGE_AUDIT_PENDING"
         },
         {
-          "lsk": "L5",
+          "lsk": "L6",
           "label": "<OFFSET",
           "field": null,
           "format": null,
           "hasNavigateAction": true,
-          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
-        },
-        {
-          "lsk": "R5",
-          "label": "PROGRESS>",
-          "field": null,
-          "format": null,
-          "hasNavigateAction": true,
-          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
-        },
-        {
-          "lsk": "L6",
-          "label": "<MENU",
-          "field": null,
-          "format": null,
-          "hasNavigateAction": true,
-          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+          "sourceVerified": "FCOM_11.40.5_TEXT_EXTRACTED_IMAGE_AUDIT_PENDING"
         },
         {
           "lsk": "R6",
-          "label": "MSG RECALL>",
+          "label": "MAINT>",
           "field": null,
           "format": null,
-          "hasNavigateAction": true,
-          "sourceVerified": "REQUIRES_LINE_BY_LINE_FCOM_COMPARISON"
+          "hasNavigateAction": false,
+          "sourceVerified": "FCOM_11.40.5_TEXT_EXTRACTED_IMAGE_AUDIT_PENDING"
         }
       ],
-      "issues": [
-        {
-          "type": "LABEL_OVER_12_COLUMNS",
-          "key": "R4",
-          "chars": 13
-        }
-      ],
+      "issues": [],
       "visualGoldenReference": null,
       "visualDiffPassed": false,
       "interactionScenarioPassed": false
