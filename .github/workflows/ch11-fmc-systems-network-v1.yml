@@ -1,0 +1,26 @@
+name: CH11 FMC systems bridge QA
+on:
+  push:
+    paths:
+      - 'engine/ch11/fmc-systems-network-v1.js'
+      - 'engine/ch11/tests/fmc-systems-network-v1.test.cjs'
+      - 'panel-mosaic-lab/cockpit/cdu-fmc-telemetry-v1.js'
+      - 'panel-mosaic-lab/cockpit/fmc-systems-bridge-v1.js'
+      - 'panel-mosaic-lab/cockpit/cdu-embed.css'
+      - 'panel-mosaic-lab/cockpit/cdu-stage.html'
+      - 'panel-mosaic-lab/cockpit/index.html'
+      - '.github/workflows/ch11-fmc-systems-network-v1.yml'
+  workflow_dispatch:
+jobs:
+  static-and-model:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --check engine/ch11/fmc-systems-network-v1.js
+      - run: node --check panel-mosaic-lab/cockpit/cdu-fmc-telemetry-v1.js
+      - run: node --check panel-mosaic-lab/cockpit/fmc-systems-bridge-v1.js
+      - run: node --test engine/ch11/tests/fmc-systems-network-v1.test.cjs
+      - run: node tests/cdu-font-lock.test.cjs
