@@ -18,6 +18,8 @@ on:
       - 'engine/ch11/fcom-screen-contract-v1.js'
       - 'engine/ch11/cdu-preflight-evidence-v1.js'
       - 'engine/ch11/cdu-airac-banks-v1.js'
+      - 'navigation/stage_airac2611_private_v1.py'
+      - 'navigation/tests/test_stage_airac2611_private_v1.py'
       - 'engine/ch11/airac-cycle-installation-status-v1.json'
       - 'engine/ch11/tests/cdu-airac-banks-v1.test.cjs'
       - 'panel-mosaic-lab/cockpit/cdu-airac-status-bridge-v1.js'
@@ -108,6 +110,7 @@ jobs:
       - run: node --check panel-mosaic-lab/cockpit/cdu-airac-status-bridge-v1.js
       - run: node --check panel-mosaic-lab/cockpit/cdu-airac-bank-receiver-v1.js
       - run: node --test engine/ch11/tests/cdu-airac-banks-v1.test.cjs
+      - run: python3 -m unittest navigation/tests/test_stage_airac2611_private_v1.py
       - run: node --check engine/config/aircraft-profile-v1.js
       - run: node --check engine/config/cdu-ident-installation-v1.js
       - run: node --check panel-mosaic-lab/cockpit/cdu-ident-profile-bridge-v1.js
