@@ -136,4 +136,16 @@ assert.match(ui,/preserveAspectRatio:'none'/,'original non-uniform panel photo m
 assert.match(ui,/model.blackWindowPath\(meter.id\)/,'blue scallop MUST hide pointer body');
 assert.doesNotMatch(ui,/svg\(doc,clip,'rect'/,'the former straight clipping line must be removed');
 
+
+/* MET-0009: visual overlay MUST be a child of the actual OH10 photo tile.
+ * Mode switches regenerate atlasAbsolute; one-shot observers lose needles. */
+assert.ok(ui.includes("svg(doc,piece,'svg'"),'needle layers must be children of OH10 panel');
+assert.ok(ui.includes("frameObserver.observe(host,{childList:true})"),'atlas changes must trigger durable remount');
+assert.ok(!ui.includes("observer.disconnect();}),"),'must not stop observing on first successful mount');
+assert.ok(ui.includes("host.querySelectorAll(':scope > [data-metering-needle]')"),'stale atlas-root needles removed');
+assert.ok(ui.includes("data-geometry-version"),'mounted geometry cache-version stamp');
+assert.ok(ui.includes("p.x-box.x-p.sizeX/2")&&ui.includes("p.y-box.y-p.sizeY/2"),
+ 'needles placed in the local photo coordinate system');
+assert.ok(ui.includes("getRenderAudit"),'runtime browser geometry diagnostics exposed');
+
 console.log('PASS: one transparent AC/DC metering needle reused on four OH10 gauges with separate pivots/angles.');
