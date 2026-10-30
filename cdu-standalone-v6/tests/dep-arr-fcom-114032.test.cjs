@@ -110,6 +110,6 @@ test('Both Unified CDUs fetch versioned corrected page definitions, app and over
  for(const seat of ['CAPT','FO']){
   const item=manifest.embeddedInstruments.find(x=>x.seat===seat);
   assert.ok(item);
-  assert.match(item.embeddedUrl,/DEPARR-FCOM-114032-0001$/);
+  assert.match(item.embeddedUrl,/DEPARR-FCOM-114032-0001-CH11-COMPOSITOR-0001$/);
  }
 });
