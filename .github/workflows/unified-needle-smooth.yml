@@ -1,0 +1,38 @@
+name: Unified APU needles continuous motion and redzone QA
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'panel-mosaic-lab/cockpit/needle-motion-v1.js'
+      - 'panel-mosaic-lab/cockpit/needle-motion-v1.test.cjs'
+      - 'panel-mosaic-lab/cockpit/drive-amps-needle-unified.js'
+      - 'panel-mosaic-lab/cockpit/drive-amps-needle.test.cjs'
+      - 'panel-mosaic-lab/cockpit/apu-egt-needle-unified.js'
+      - 'panel-mosaic-lab/cockpit/apu-egt-needle.test.cjs'
+      - 'panel-mosaic-lab/cockpit/index.html'
+      - '.github/workflows/unified-needle-smooth.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  continuous-needle-motion:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Module syntax
+        run: |
+          node --check panel-mosaic-lab/cockpit/needle-motion-v1.js
+          node --check panel-mosaic-lab/cockpit/drive-amps-needle-unified.js
+          node --check panel-mosaic-lab/cockpit/apu-egt-needle-unified.js
+      - name: Smooth dynamics and mounting regression
+        run: |
+          node --test panel-mosaic-lab/cockpit/needle-motion-v1.test.cjs
+          node panel-mosaic-lab/cockpit/drive-amps-needle.test.cjs
+          node panel-mosaic-lab/cockpit/apu-egt-needle.test.cjs
+      - name: Physical OH12 and guarded switch redzone validation
+        run: |
+          python3 panel-mosaic-lab/verify-final-overhead.py
+          python3 panel-mosaic-lab/cockpit/verify-guard-redzone.py --negative-self-test
