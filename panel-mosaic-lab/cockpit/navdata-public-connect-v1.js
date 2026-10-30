@@ -12,6 +12,7 @@ root.B737NavBridgeV1=Object.freeze({
    throw Error('READ ONLY LOOKUP REQUIRED');
   return fetch(BASE+path,{method:'GET',mode:'cors',cache:'no-store',
    credentials:'omit',referrerPolicy:'no-referrer',redirect:'error',
+   targetAddressSpace:'loopback',
    headers:{'X-B737-Nav-Token':token}});
  }
 });
@@ -34,7 +35,7 @@ async function connect(){
   const r=await fetch(BASE+'/api/navdata/status',{
    method:'GET',mode:'cors',cache:'no-store',credentials:'omit',
    referrerPolicy:'no-referrer',redirect:'error',
-   headers:{'X-B737-Nav-Token':submitted}});
+   targetAddressSpace:'loopback',headers:{'X-B737-Nav-Token':submitted}});
   if(!r.ok)throw Error('TOKEN_REJECTED');
   const x=await r.json();
   if(x.status!=='CONNECTED_READ_ONLY'||x.airac!=='2610'||
