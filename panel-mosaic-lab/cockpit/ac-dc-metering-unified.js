@@ -4,6 +4,8 @@
  const ns='http://www.w3.org/2000/svg';
  const imageUrl=new URL('./ac-dc-metering-needle.svg?v=MET-0001',document.baseURI).href;
  const state=Object.fromEntries(model.meters.map(meter=>[meter.id,meter.initialAngle]));
+ const samples=Object.fromEntries(model.meters.map(meter=>[meter.id,null]));
+ let acMode='NORMAL';
  const mounted=new Map();
  const outputs=new Map();
  const inputs=new Map();
@@ -13,28 +15,46 @@
   for(const [key,value]of Object.entries(attrs))element.setAttribute(key,String(value));
   parent.append(element);return element;
  };
- const calibrated=id=>Boolean(model.photoScale[id]?.readoutApprovedForPreview);
+ const photoVerified=id=>Boolean(model.photoScale[id]?.readoutApprovedForPreview);
  function paint(id){
   const blade=mounted.get(id);
   if(blade)blade.style.transform=`rotate(${state[id]}deg)`;
-  const output=outputs.get(id),input=inputs.get(id);
-  const v=calibrated(id)?model.readingForBearing(id,state[id]):null;
-  if(output)output.textContent=calibrated(id)?
-    (v===null?'OUTSIDE PRINTED SCALE':v.toFixed(1)+' '+model.photoScale[id].unit+' · '+state[id].toFixed(2)+'°'):
-    (state[id]+'° · ANGLE QA ONLY');
-  if(input)input.value=String(calibrated(id)?(v===null?'':v):state[id]);
+  const output=outputs.get(id),input=inputs.get(id),sc=model.photoScale[id],sample=samples[id];
+  const parked=sample!==null&&sample<sc.values[0];
+  const quality=photoVerified(id)?'PHOTO TICKS':'PROVISIONAL SCALE';
+  if(output)output.textContent=sample===null?
+    (state[id].toFixed(2)+'° · ANGLE / PARK QA'):
+    (parked?'NO INDICATION · PARKED':
+     sample.toFixed(1)+' '+sc.unit+' · '+state[id].toFixed(2)+'° · '+quality);
+  if(input)input.value=String(sample===null?sc.values[0]:sample);
  }
  function setAngle(id,value){
   if(!model.meters.some(meter=>meter.id===id))throw Error('Unknown AC/DC meter '+id);
-  state[id]=model.angle(value);paint(id);return state[id];
+  state[id]=model.angle(value);samples[id]=null;paint(id);return state[id];
  }
- function setReading(id,value){
-  if(!calibrated(id))throw Error('Uncalibrated/parked OH10 meter has no numerical test authority: '+id);
-  const numeric=Number(value),bearing=model.bearingForReading(id,numeric);
-  if(bearing===null)throw Error('Reading outside photographed '+id+' scale');
-  setAngle(id,bearing);return numeric;
+ function setReading(id,value,{mode}={}){
+  if(!model.meters.some(meter=>meter.id===id))throw Error('Unknown AC/DC meter '+id);
+  if(value!==null&&(typeof value!=='number'||!Number.isFinite(value)))throw Error('Non-finite AC/DC meter reading');
+  if(mode!==undefined&&(id!=='acVolts'||!['NORMAL','RESIDUAL'].includes(mode)))throw Error('Invalid meter scale mode');
+  if(id==='acVolts'&&mode!==undefined)acMode=mode;
+  const angle=id==='acVolts'?model.angleForAcVolts(value,{mode:acMode}):model.angleForIndication(id,value);
+  state[id]=angle;samples[id]=value;paint(id);return angle;
  }
- function getReadings(){return Object.fromEntries(Object.keys(model.photoScale).map(id=>[id,calibrated(id)?model.readingForBearing(id,state[id]):null]));}
+ function setReadings(readings,{acVoltsMode}={}){
+  if(!readings||typeof readings!=='object'||Array.isArray(readings))throw Error('Expected named meter samples');
+  if(acVoltsMode!==undefined&&!['NORMAL','RESIDUAL'].includes(acVoltsMode))throw Error('Invalid AC voltage mode');
+  // Validate everything before changing any pointer; a malformed sample cannot
+  // leave the four needles in a partially applied state.
+  const entries=Object.entries(readings);
+  for(const [id,value] of entries){
+   if(!model.meters.some(m=>m.id===id))throw Error('Unknown meter sample '+id);
+   if(value!==null&&(typeof value!=='number'||!Number.isFinite(value)))throw Error('Meter sample must be finite or null');
+  }
+  if(acVoltsMode!==undefined)acMode=acVoltsMode;
+  for(const [id,value] of entries)setReading(id,value);
+  return getReadings();
+ }
+ function getReadings(){return {...samples};}
  function setAngles(values){
   for(const [id,value]of Object.entries(values||{}))setAngle(id,value);
   return {...state};
@@ -76,26 +96,43 @@
  }
  function controls(){
   const section=document.createElement('section');section.id='unifiedAcDcMeteringNeedles';
-  const title=document.createElement('h2');title.textContent='AC / DC Metering · 4 Needles';section.append(title);
-  const note=document.createElement('p');note.className='muted';note.textContent='DC AMPS و DC VOLTS: محور از امتداد خطوط چاپ‌شده و اسکیل واقعی -50..+50 A / 0..40 V کالیبره شده و اسلایدر خودِ مقدار را نشان می‌دهد. CPS و AC VOLTS: فقط زاویهٔ تست، چون استراحتِ بی‌برق AC و تغذیهٔ سنسور هنوز تأیید نشده است. همهٔ منابع آموزش‌اند.';section.append(note);
+  const title=document.createElement('h2');title.textContent='AC / DC METERING · ORIGINAL 4 NEEDLES';section.append(title);
+  const note=document.createElement('p');note.className='muted';
+  note.textContent='فقط همان چهار گیج و یک فایل عقربه قبلی استفاده می‌شود. DC AMPS / DC VOLTS: درجات خوانده‌شده از عکس. CPS و AC VOLTS: اسکیل آزمایشی و در انتظار ممیزی کامل. صفر برق در AC و فرکانس به معنی برگشت عقربه به استاپ است، نه نمایش مقدار 100V یا 360Hz.';
+  section.append(note);
   for(const meter of model.meters){
-   const label=document.createElement('label');label.textContent=meter.label+(calibrated(meter.id)?' · PHOTO CALIBRATED ('+model.photoScale[meter.id].unit+')':' · QA ANGLE (°) ONLY');label.style.display='block';label.style.direction='ltr';
-   const input=document.createElement('input');const readingScale=calibrated(meter.id)?model.photoScale[meter.id]:null;
+   const sc=model.photoScale[meter.id];
+   const label=document.createElement('label');
+   label.textContent=meter.label+(photoVerified(meter.id)?' · PHOTO SCALE ('+sc.unit+')':' · PROVISIONAL ('+sc.unit+')');
+   label.style.display='block';label.style.direction='ltr';
+   const input=document.createElement('input');
    Object.assign(input,{type:'range',
-    min:readingScale?String(readingScale.values[0]):'-70',
-    max:readingScale?String(readingScale.values.at(-1)):'70',
-    step:'1'});input.style.width='100%';input.style.accentColor='#edf0e8';
-   const output=document.createElement('output');output.style.display='block';output.style.textAlign='left';output.style.direction='ltr';
-   input.addEventListener('input',()=>calibrated(meter.id)?setReading(meter.id,Number(input.value)):setAngle(meter.id,Number(input.value)));
-   label.append(input,output);section.append(label);inputs.set(meter.id,input);outputs.set(meter.id,output);paint(meter.id);
+    min:String(['cps','acVolts'].includes(meter.id)?0:sc.values[0]),
+    max:String(sc.values.at(-1)),step:'1'});
+   input.style.width='100%';input.style.accentColor='#edf0e8';
+   const output=document.createElement('output');
+   output.style.display='block';output.style.textAlign='left';output.style.direction='ltr';
+   input.addEventListener('input',()=>setReading(meter.id,Number(input.value)));
+   label.append(input,output);section.append(label);
+   inputs.set(meter.id,input);outputs.set(meter.id,output);paint(meter.id);
   }
-  const reset=document.createElement('button');reset.type='button';reset.textContent='بازگشت به تصویر مرجع';
-  reset.addEventListener('click',()=>{for(const meter of model.meters)setAngle(meter.id,meter.initialAngle);});section.append(reset);
+  const reset=document.createElement('button');reset.type='button';reset.textContent='پارک عقربه‌ها در وضعیت مرجع';
+  reset.addEventListener('click',()=>{
+   for(const meter of model.meters)setAngle(meter.id,meter.initialAngle);
+   acMode='NORMAL';
+  });section.append(reset);
   const previous=document.querySelector('#unifiedFuelTemperatureNeedle');
-  if(previous)previous.after(section);else document.querySelector('.overhead-tools').before(section);
+  if(previous)previous.after(section);
+  else document.querySelector('.overhead-tools')?.before(section);
  }
- window.B737UnifiedAcDcMetering=Object.freeze({getAngles:()=>({...state}),getReadings,setReading,setAngle,setAngles});
+ window.B737UnifiedAcDcMetering=Object.freeze({getAngles:()=>({...state}),getReadings,getScaleMode:()=>acMode,setReading,setReadings,setAngle,setAngles});
  window.addEventListener('b737:ac-dc-metering-angles',event=>{try{setAngles(event.detail);}catch(error){console.error(error);}});
+ // Independent system adapter may provide actual metered samples. The core
+ // electrical V7 is Boolean bus connectivity, NOT a calibrated voltage/amps sensor.
+ window.addEventListener('b737:ac-dc-metering-readings',event=>{
+  try{const d=event.detail||{};setReadings(d.readings||d,{acVoltsMode:d.acVoltsMode});}
+  catch(error){console.error('AC/DC reading rejected',error);}
+ });
  window.addEventListener('b737:cockpit-mounted',connectFrame);
  connectFrame();
  if(document.querySelector('.inspector'))controls();
