@@ -1,6 +1,6 @@
 {
   "schema": "b737.p5-13.photo-stage.geometry.v1",
-  "version": "UPD-2026-10-30-ACDC-04-NATIVE-ELLIPSE",
+  "version": "UPD-2026-10-30-ACDC-05-RESID-ALIGN",
   "source": {
     "path": "../panel-mosaic-lab/assets/locked/2026-10-23/OH10-ELEC-LOSSLESS-9a1ca4d6cfb2.png",
     "nativeWidth": 1095,
@@ -72,11 +72,12 @@
       "confidence": "PROVISIONAL"
     },
     "residual": {
-      "x": 894,
-      "y": 1299,
+      "x": 917,
+      "y": 1273,
       "r": 39,
       "type": "momentary",
-      "confidence": "PROVISIONAL"
+      "confidence": "SCREENSHOT_SOCKET_CENTER_ALIGNED__NATIVE_PHOTO_QA_PENDING",
+      "description": "RESID VOLTS socket center matches the actual recessed button mount in Unified: (917,1273) native OH10. Radius retained at original 39px for test-lab hotspot."
     }
   },
   "verification": {
