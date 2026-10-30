@@ -322,9 +322,9 @@
           },
           {
             "lsk": "R3",
-            "label": "",
+            "label": "INACTIVE",
             "required": false,
-            "source_verification": "FCOM_11.40.8_9_TEXT_AUDITED",
+            "source_verification": "FCOM_11.40.9_INACTIVE_BANK_LOCATION",
             "status": "FCOM_VALUE_REQUIRES_VERIFIED_SOURCE"
           }
         ],
