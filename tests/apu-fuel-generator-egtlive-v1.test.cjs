@@ -123,6 +123,17 @@ test('Unified EGT pointer tracks ECU start/steady/loads with exact frozen sprite
  assert.equal(bridge.snapshot().sourceAmpsA,40);
  assert.equal(bridge.snapshot().frequencyHz,400);
 });
+test('Actual OH09 crossfeed detent is connected to FuelNetwork with battery-bus gating',()=>{
+ const overhead=JSON.parse(fs.readFileSync(path.join(__dirname,'../panel-mosaic-lab/interactive-overhead/rotary-guards.json'),'utf8'));
+ const raw=JSON.stringify(overhead);
+ assert.ok(raw.includes('"id":"crossfeed"')||raw.includes('"id": "crossfeed"'));
+ const src=fs.readFileSync(path.join(__dirname,'../panel-mosaic-lab/cockpit/isn-cockpit.js'),'utf8');
+ assert.match(src,/function observeCrossfeed\(detent\)/);
+ assert.match(src,/ecu\.core\.fuel\.setCrossfeed\(detent\)/);
+ assert.match(src,/e\.data\.rotaries\?\.crossfeed/);
+ assert.match(src,/e\.data\.event\?\.id==='crossfeed'/);
+ assert.match(src,/chain\.get\(\)\.electrical\.battery!==true/);
+});
 test('Existing APU AC amp blade is driven by source-gated ATA24 current',()=>{
  const src=fs.readFileSync(path.join(__dirname,'../panel-mosaic-lab/cockpit/electrical-demand-live-unified-v1.js'),'utf8');
  assert.match(src,/source\.APU/);
