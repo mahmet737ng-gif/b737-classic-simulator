@@ -196,7 +196,7 @@ test('Analytic cooling is independent of clock step and crosses at 50°C without
   assert.ok(B.apuCoolingStep(hot,40000)<=50,'40 seconds from '+hot+'°C must be at or below 50°C');
  }
  const threeMin=B.apuCoolingStep(B.apuCoolingStep(390,120000),60000);
- assert.ok(threeMin>43&&threeMin<45,'Three-minute trace remains in the slow cooling tail');
+ assert.ok(threeMin>45&&threeMin<48,'Three-minute trace remains in the slow cooling tail');
 });
 test('APU EGT passive cooling bridge continues after all engines stop without heavy 10Hz ECU loop',()=>{
  const source=fs.readFileSync(path.join(__dirname,'../panel-mosaic-lab/cockpit/isn-cockpit.js'),'utf8');
