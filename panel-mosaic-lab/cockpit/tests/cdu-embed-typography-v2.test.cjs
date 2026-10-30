@@ -15,7 +15,7 @@ test('Unified dual-CDU embed uses large v5 typography and refreshed cache key',(
  assert.match(source,/color:#29ff31!important;/);
  assert.match(source,/\.fmc-screen\s+\.fmc-lines\s+\.fmc-line\.fmc-small\s*\{[^}]*font-size:72px!important;/s);
  assert.match(source,/\.fmc-screen\s+\.fmc-lines\s+\.fmc-line\.scratch\s*\{[^}]*font-size:72px!important;/s);
- assert.match(source,/\.fmc-screen\s+\.fmc-lines\s+\.fmc-line\s*\{[^}]*height:11\.0%!important;/s);
+ assert.match(source,/\.fmc-screen\s+\.fmc-lines\s+\.fmc-line\s*\{[^}]*height:12\.0%!important;/s);
 });
 test('Source asset, keypad locations, and fonts remain outside scope of typography patch',()=>{
  const source=read('panel-mosaic-lab/cockpit/cdu-embed.css');
@@ -32,7 +32,7 @@ test('Source asset, keypad locations, and fonts remain outside scope of typograp
  for(const seat of ['CAPT','FO']){
   const item=cdus.find(x=>x.seat===seat);
   assert.ok(item,'missing '+seat+' CDU');
-  assert.match(item.embeddedUrl,/SCREEN-FIT-0004$/);
+  assert.match(item.embeddedUrl,/SCREEN-FIT-0005$/);
   assert.equal(item.nativeWidth,1199);
   assert.equal(item.nativeHeight,1312);
  }
@@ -43,7 +43,7 @@ test('Inline typography fallback and computed-style reports are mounted for both
  const html=read('panel-mosaic-lab/cockpit/cdu-stage.html');
  assert.match(html,/id="unified-cdu-font-profile-v5"/);
  assert.match(html,/#cdu-stage \.fmc-screen #fmc-lines\s*\{[^}]*font-size:92px!important;/s);
- assert.match(html,/cdu-font-diagnostics-v4\.js\?v=CDU-SCREEN-FIT-0005/);
+ assert.match(html,/cdu-font-diagnostics-v5\.js\?v=CDU-SCREEN-FIT-0005/);
  const js=read('panel-mosaic-lab/cockpit/cdu-font-diagnostics-v5.js');
  assert.match(js,/getComputedStyle/);
  assert.match(js,/kind:'typography'/);
@@ -53,17 +53,17 @@ test('Inline typography fallback and computed-style reports are mounted for both
 });
 test('Live per-frame typography reflows only the screen, not overlaid reference geometry',()=>{
  const html=read('panel-mosaic-lab/cockpit/cdu-stage.html');
- assert.match(html,/cdu-screen-fit-v4\.js\?v=CDU-SCREEN-FIT-0005/);
- assert.match(html,/cdu-font-diagnostics-v4\.js\?v=CDU-SCREEN-FIT-0005/);
+ assert.match(html,/cdu-screen-fit-v5\.js\?v=CDU-SCREEN-FIT-0005/);
+ assert.match(html,/cdu-font-diagnostics-v5\.js\?v=CDU-SCREEN-FIT-0005/);
  const script=read('panel-mosaic-lab/cockpit/cdu-screen-fit-v5.js');
  assert.match(script,/MutationObserver/);
- assert.match(script,/FONT=Object\.freeze\(\{header:54,label:39,value:54,scratch:42\}\)/);
+ assert.match(script,/FONT=Object\.freeze\(\{header:86,label:72,value:92,scratch:72,custom:64\}\)/);
  assert.match(script,/if\(standard\)line\.style\.setProperty\('top'/);
  assert.match(script,/span\.style\.removeProperty\('font-size'\)/);
  assert.doesNotMatch(script,/(?:setAttribute|removeChild|replaceChildren)\s*\(/);
  const report=read('panel-mosaic-lab/cockpit/cdu-font-diagnostics-v5.js');
  assert.match(report,/getComputedStyle/);
- assert.match(report,/nativePx>=53\.5/);
+ assert.match(report,/nativePx>=91\.5/);
  const parent=read('panel-mosaic-lab/cockpit/index.html');
  assert.match(parent,/app\.js\?v=[^"]*CDU-SCREEN-FIT-0005/);
 });
