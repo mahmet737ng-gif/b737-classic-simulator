@@ -84,3 +84,15 @@ test('DME does not fabricate an intersection from station slant range',()=>{
  assert.equal(f.position.quality,'UNKNOWN');
  assert.equal(f.radioUpdate.fixComputed,false);
 });
+
+test('FMC computed topic downgrades source evidence on scheduled refresh after silent timeout',()=>{
+ const {n,ingress,frame,clock}=fixture(),f=FMC.connect(n);
+ ingress.ingest(frame(1,{gps1:{valid:true,fixValid:true,lat:35,lon:51}}));
+ assert.equal(n.read('fmc.computed').value.position.source,'navigation.gps1');
+ clock(205000);
+ f.refresh(); // Unified runtime calls this on its 250 ms periodic refresh.
+ const out=n.read('fmc.computed');
+ assert.equal(out.quality,'VALID');
+ assert.equal(out.value.position.quality,'UNKNOWN');
+ assert.equal(out.value.sourceQuality['navigation.gps1'],'STALE');
+});
