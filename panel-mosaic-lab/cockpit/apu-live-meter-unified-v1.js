@@ -3,13 +3,16 @@
  */
 (function(root){
  'use strict';
- const ZERO=127,FULL_SCALE=-110,MAX_C=1000;
+ // OH12 APU EGT is a clockwise-increasing arc: cold/0°C on the left,
+ // higher EGT toward the right. The prior +127 -> -110 mapping ran CCW.
+ // These are provisional training transfer angles, not a tick survey.
+ const ZERO=-127,FULL_SCALE=127,MAX_C=1000;
  let latest=null;
  const clamp=(x,lo,hi)=>Math.max(lo,Math.min(hi,x));
  function bearingForEGT(c){
   if(typeof c!=='number'||!Number.isFinite(c))throw Error('APU EGT must be finite °C');
-  // Provisional monotone 0..1000°C transfer over the existing pointer's
-  // visible sweep; not a per-tick photogrammetric certification.
+  // Clockwise (positive CSS/SVG rotation) from cold-left to hot-right,
+  // 0..1000°C. Maintain the approved pointer artwork and pivot untouched.
   return ZERO+(FULL_SCALE-ZERO)*clamp(c,0,MAX_C)/MAX_C;
  }
  function project(apu){
