@@ -56,3 +56,26 @@ test('Live page definitions are consistent with their canonical JSON specificati
  const v=JSON.parse(js.slice('window.CDU_PAGES='.length).replace(/;\s*$/,''));
  for(const page of ['IDENT','POS_INIT'])assert.deepEqual(v[page],pages[page]);
 });
+
+test('Both Unified CDU seats reload corrected source rules before app and real IRS adapter after it',()=>{
+ const html=read('panel-mosaic-lab/cockpit/cdu-stage.html');
+ const a=html.indexOf('cdu-preflight-evidence-v1.js'),b=html.indexOf('app.js?v='),d=html.indexOf('cdu-irs-adapter-v1.js');
+ assert.ok(a>=0&&a<b&&b<d);
+ const seats=JSON.parse(read('panel-mosaic-lab/cockpit/assembly.json')).embeddedInstruments;
+ assert.equal(seats.length,2);
+ for(const seat of ['CAPT','FO']){
+  const item=seats.find(x=>x.seat===seat);
+  assert.ok(item);assert.match(item.embeddedUrl,/FCOM-PREFLIGHT-0001$/);
+ }
+});
+test('RTE/LEGS position selection page count and 24-character entry limits remain intact',()=>{
+ const s=started('POS_INIT');
+ assert.match(core.render(s,pages)[0],/1\/3/);
+ core.press(s,pages,'CDU_CAPT_NEXT_PAGE');
+ assert.equal(s.page,'POS_REF');
+ core.press(s,pages,'CDU_CAPT_NEXT_PAGE');
+ assert.equal(s.page,'POS_SHIFT');
+ const a=started('POS_INIT');
+ type(a,'A'.repeat(24));core.press(a,pages,'CDU_CAPT_KEY_A');
+ assert.equal(a.scratch.length,24);
+});
