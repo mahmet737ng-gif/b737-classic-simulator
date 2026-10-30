@@ -21,7 +21,9 @@ const CONFIG=Object.freeze({oilPressureLampOnPsi:11.75,oilPressureLampOffPsi:13,
  oilLeakLossPctPerSec:0.20,oilNaturalLossPctPerHour:0.02,
  starterAirTrainingPsi:30,apuReadyEGTC:390,apuFuelKgHr:110,
  // Educational thermodynamic inertia (not an airframe/APU empirical curve).
- apuEGTChangeoverC:50,apuCoolFastTauMs:70000,apuCoolTailTauMs:1200000,
+ // 12s fast time constant reaches 50°C from the full 800°C dial scale in 39.1s;
+ // from the 620°C start peak it reaches 50°C in 35.95s.
+ apuEGTChangeoverC:50,apuCoolFastTauMs:12000,apuCoolTailTauMs:1200000,
  engineN1WindDownMs:5200,engineN2WindDownMs:7200,engineEGTWindDownMs:12000,
  maxStepMs:250});
 const finite=x=>typeof x==='number'&&Number.isFinite(x);
