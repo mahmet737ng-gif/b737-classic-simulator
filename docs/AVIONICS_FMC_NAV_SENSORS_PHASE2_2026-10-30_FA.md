@@ -5,7 +5,7 @@
 - `engine/integration/avionics-sensor-ingress-v2.js`: پردازش مستقل دادهٔ دو ADC، دو GPS، دو VOR و دو DME با فهرست تجهیزات نصب‌شده، شناسایی صریح منبع شبیه‌ساز، محدودیت مقادیر، شمارهٔ توالی، مهلت تازگی و جلوگیری از انتشار ناقص بسته.
 - `panel-mosaic-lab/cockpit/avionics-network-runtime-v1.js`: API فعال‌سازی و دریافت فریم، اتصال به Topicهای شبکهٔ قبلی. پردازشگر FMC در Tick دوره‌ای دوباره محاسبه می‌شود تا خرابی TTL حتماً روی `fmc.computed` ظاهر شود.
 - `panel-mosaic-lab/cockpit/index.html`: کتابخانهٔ جدید قبل از Runtime شبکه بارگذاری می‌شود.
-- `engine/runtime/tests/avionics-sensor-ingress-v2.test.cjs`: ۸ تست اضافه و `engine/runtime/tests/avionics-unified-adapters-v1.test.cjs` با یک تست End-to-End توسعه یافت؛ همه در workflow موجود قرار گرفته‌اند.
+- `engine/runtime/tests/avionics-sensor-ingress-v2.test.cjs`: ۹ تست اضافه و `engine/runtime/tests/avionics-unified-adapters-v1.test.cjs` با یک تست End-to-End توسعه یافت؛ همه در workflow موجود قرار گرفته‌اند.
 
 ## قرارداد ارتباطی
 هیچ‌کدام از هشت سنسور به‌صورت پیش‌فرض فعال **نیستند**. استفاده از GPS در EP-FSI تنها در صورت تأیید نصب تجهیزات و دریافت Telemetry معتبر مجاز است؛ مدل این نسخه نمی‌گوید روی آن هواپیما قطعاً GPS L/R نصب است.
@@ -75,7 +75,7 @@ const unsubscribe=av.subscribe('fmc.computed',({value,quality})=>{ /* data consu
 
 `node --test engine/runtime/tests/avionics-unified-adapters-v1.test.cjs`
 
-کد ۱۹ تست شبکه/حسگر/آداپتر از نظر سناریو در محیط JS ایزوله بررسی و پاس شده‌اند؛ اجرای Node Actions، مرورگر Pages و اتصال X-Plane/FSX هنوز تأیید عملی نشده‌اند. فعال‌سازی X-Plane/FSX نیازمند پل خواندن داده از شبیه‌ساز است.
+کد ۲۰ تست شبکه/حسگر/آداپتر از نظر سناریو در محیط JS ایزوله بررسی و پاس شده‌اند؛ اجرای Node Actions، مرورگر Pages و اتصال X-Plane/FSX هنوز تأیید عملی نشده‌اند. فعال‌سازی X-Plane/FSX نیازمند پل خواندن داده از شبیه‌ساز است.
 
 ## کارهای باقی‌مانده برای تکمیل این فاز
 1. یافتن/پیاده‌سازی آداپتر خواندن واقعی منابع X-Plane 11.5 و FSX و تطبیق واحدهای متریک/Imperial و زمان.
