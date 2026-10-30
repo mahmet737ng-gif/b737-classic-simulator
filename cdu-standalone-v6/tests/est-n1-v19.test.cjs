@@ -21,6 +21,7 @@ const nodes={},document={
 };
 // Load the same authoritative display dependencies as the actual v6 page.
 const window={
+ B737CDUPreflightEvidenceV1:require('../../engine/ch11/cdu-preflight-evidence-v1.js'),
  B737FCOMScreenContractV1:require('../../engine/ch11/fcom-screen-contract-v1.js'),
  CDU_SCREEN_COMPOSITOR_V1:require('../engine/screen-compositor-v1.js')
 };
