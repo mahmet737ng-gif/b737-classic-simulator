@@ -106,7 +106,7 @@
  }
  const events=['b737:electrical-network','b737:electrical-owner-ready','b737:unified-ecu-observation',
   'b737:battery-live','b737:ac-dc-selector-change'];
- for(const name of events)root.addEventListener(name,()=>tick(true));
+ for(const name of events)root.addEventListener(name,()=>tick(name==='b737:electrical-network'||name==='b737:ac-dc-selector-change'));
  root.addEventListener('message',event=>{
   if(event.origin!==location.origin||event.source!==document.getElementById('overheadFrame')?.contentWindow)return;
   if(event.data?.type==='b737:cockpit-overhead'&&['controls-state','control-event'].includes(event.data.kind))tick(true);
