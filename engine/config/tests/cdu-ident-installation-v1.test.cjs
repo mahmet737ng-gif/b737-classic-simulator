@@ -107,6 +107,6 @@ test('Settings form and both iframe scripts are actually wired',()=>{
  assert.ok(stage.indexOf('cdu-ident-installation-v1.js')<stage.indexOf('cdu-ident-profile-receiver-v1.js'));
  for(const seat of ['CAPT','FO']){
   const item=manifest.embeddedInstruments.find(i=>i.seat===seat);
-  assert.match(item.embeddedUrl,/ENGINE-IDENT-0001$/);
+  assert.match(item.embeddedUrl,/ENGINE-IDENT-0001-AIRAC-2611-0001$/);
  }
 });
