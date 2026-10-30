@@ -57,7 +57,7 @@ test("photo-real mode NEVER synthesizes fake gauge faces, numbers, bezels or met
   assert.ok(!code.includes(forbidden),"Artificial drawing/automatic guides disallowed: "+forbidden);
  }
  assert.match(code,/function photoHotspot\(id\)/);
- assert.match(code,/if\(!state.showMarkers\)return;/);
+ assert.match(code,/if\(!state.calibration\|\|!state.showMarkers\)return;/);
  assert.ok(code.includes('fill:"transparent",stroke:"none"'));
  assert.match(code,/ac-dc-metering-needle\.svg/);
  assert.match(html,/OH10-PHOTO-STAGE-REAL-0003/);
