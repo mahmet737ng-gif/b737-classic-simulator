@@ -4,6 +4,10 @@ const map=window.CDU_MAP, pages=window.CDU_PAGES, core=window.CDU_ENGINE;
 const state=core.makeState('IDENT');
 const contract=window.B737FCOMScreenContractV1;
 if(!contract)throw Error('FCOM_CDU_SCREEN_CONTRACT_NOT_LOADED');
+const procedureLedger=window.B737CDUTransitionLedgerV1?.create({
+ seat:new URLSearchParams(window.location.search).get('seat')==='FO'?'FO':'CAPT',
+ validPages:Object.keys(pages),now:()=>Date.now()
+});
 const byId={};
 function n1EstimateV19(){
  const engine=window.EPFSI_ESTIMATED_N1_V19;
@@ -116,12 +120,19 @@ function update(){const box=$('fmc-lines'); const frame=document.createElement('
   '% / PRESENT ENG1 '+n1.presentN1Pct[1].toFixed(1)+'% / ENG2 '+n1.presentN1Pct[2].toFixed(1)+'%';
  updateEHSI();
 }
-function send(k){const before=state.page;
+function send(k){
+ const prior=procedureLedger?.capture(state)||null;
+ try{const before=state.page;
  if(window.CDU_STAGE6_API?.beforeKey?.(k)){update();return;}
  if(window.CDU_STAGE5_API?.beforeKey?.(k)){update();return;}
  core.press(state,pages,k);window.CDU_NAV_API?.afterPage?.(k);window.CDU_NAV_API?.afterKey?.(k);
  window.CDU_STAGE5_API?.afterPage?.(k);window.CDU_STAGE5_API?.afterKey?.(k,before);
- window.CDU_STAGE6_API?.afterPage?.(k);window.CDU_STAGE6_API?.afterKey?.(k,before);update()}
+ window.CDU_STAGE6_API?.afterPage?.(k);window.CDU_STAGE6_API?.afterKey?.(k,before);update()
+ }finally{
+  if(prior)try{procedureLedger.record(k,prior,procedureLedger.capture(state))}
+  catch(err){console.warn('CDU PROCEDURE TRACE ERROR',err);}
+ }
+}
 function reset(){const fresh=core.makeState('IDENT');Object.keys(state).forEach(k=>delete state[k]);Object.assign(state,fresh);['call-test','fault-test','offset-test'].forEach(k=>$(k).checked=false);window.EHSI_ENGINE?.syncPanel(state,document);update()}
 function init(){if(!map||!pages||!core)throw Error('CDU data is missing');makeControls();update();$('reset').onclick=reset;$('overlay-toggle').onclick=()=>$('cdu-stage').classList.toggle('debug');$('info-toggle').onclick=()=>$('qa').hidden=!$('qa').hidden;
  for(const [el,k] of [['call-test','call'],['fault-test','fail'],['offset-test','offsetGuidance']])$(el).addEventListener('change',e=>{state[k]=e.target.checked;update()});
@@ -137,6 +148,7 @@ function init(){if(!map||!pages||!core)throw Error('CDU data is missing');makeCo
  window.EHSI_ENGINE?.initControls(state,core,document,updateEHSI);
 
 }
+window.CDU_PROCEDURE_AUDIT_V1=procedureLedger;
 window.CDU_SCREEN_QA_V1=Object.freeze({
  getCurrent:()=>contract.grid(pages,state.page,{
    readValue:(field,page)=>core.readValue(state,field,page),
