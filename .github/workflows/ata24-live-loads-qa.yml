@@ -1,0 +1,37 @@
+name: Verify ATA24 live loads and owner-frozen cockpit
+on:
+  push:
+    branches: [feature/ata24-live-loads-20261031]
+  pull_request:
+    paths:
+      - 'engine/systems/electrical-demand-estimate-v1.js'
+      - 'panel-mosaic-lab/cockpit/electrical-demand-live-unified-v1.js'
+      - 'panel-mosaic-lab/cockpit/index.html'
+      - 'tests/electrical-demand-estimate-v1.test.cjs'
+      - '.github/workflows/ata24-live-loads-qa.yml'
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Test approximate per-system load and browser syntax
+        run: |
+          node --check engine/systems/electrical-demand-estimate-v1.js
+          node --check panel-mosaic-lab/cockpit/electrical-demand-live-unified-v1.js
+          node --test tests/electrical-demand-estimate-v1.test.cjs
+      - name: Owner-approved guarded switches and IRS red zones
+        run: |
+          python3 panel-mosaic-lab/cockpit/verify-guard-redzone.py --negative-self-test
+          python3 panel-mosaic-lab/cockpit/verify-irs-sys-dspl-owner-lock-v1.py
+          python3 panel-mosaic-lab/cockpit/verify-irs-13seg-owner-lock-v1.py --negative-self-test
+          python3 panel-mosaic-lab/cockpit/verify-irs-complete-redzone-v1.py --negative-self-test
+      - name: Final immutable overhead and panel tests
+        run: |
+          python3 panel-mosaic-lab/verify-final-overhead.py
+          node panel-mosaic-lab/cockpit/ac-dc-metering.test.cjs
+          node panel-mosaic-lab/cockpit/ac-dc-selector.test.cjs
+          node panel-mosaic-lab/cockpit/drive-amps-needle.test.cjs
