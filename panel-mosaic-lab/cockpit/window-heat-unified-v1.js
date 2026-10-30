@@ -6,13 +6,13 @@
  const Core=window.B737WindowHeatV1;if(!Core){console.error('Window Heat core unavailable');return;}
  const CB_KEY='b737classic.cb.v1',FAULT_KEY='b737.windowheat.faults.v1',TRAIN_KEY='b737.windowheat.training-power.v1';
  const TRAIN_BUSES=Object.freeze({generator1:true,generator2:true,main1:true,main2:true,dc1:true,dc2:true});
- // The cockpit starts COLD & DARK, so keep an isolated Window Heat
- // training supply enabled by default to preserve panel/switch practice.
- // The user can explicitly turn it OFF to require aircraft AC/DC power.
- let trainingPower=true;
- try{trainingPower=localStorage.getItem(TRAIN_KEY)!=='0';}catch{}
- // This supply energizes Window Heat only; it never changes aircraft buses,
- // closes CBs, or masks controller/heater/sensor/overheat failures.
+ // Cold & dark always starts with real Electrical V7/CB gating.
+ // An earlier training-only toggle persisted '1' and silently powered OH15
+ // without any live AC/DC source. Never resurrect that persisted bypass:
+ // the instructor must opt in again during this page session.
+ let trainingPower=false;
+ // Explicit isolated training supply is an instructor-only exception, not an
+ // aircraft source or permission to bypass the standard cold/dark default.
  let s=Core.initialState(),last=null,lastAt=performance.now(),child=null,previousCaution=null;
  let faults={};try{faults=JSON.parse(localStorage.getItem(FAULT_KEY)||'{}')||{};}catch{}
  for(const [ch,f] of Object.entries(faults)){if(!Core.CHANNELS[ch]||!f||typeof f!=='object')continue;
@@ -41,20 +41,13 @@
    lamps[Core.CHANNELS[x.id].onId]=x.greenOn;
    lamps[Core.CHANNELS[x.id].ovhtId]=x.overheatOn;
   }
-  // This is the stable projection owned by overhead-bridge, layered AFTER
-  // both LGT's internal display and ISN projections. It is resent while
-  // the live engine is running to recover frame reload/ready races.
+  // The iframe overhead-bridge is the SINGLE DOM painter for the eight OH15
+  // lamps: it applies the liveElectricalPower gate and visual/LAMP TEST priority.
+  // The former direct DOM fallback could repaint green ON every 250ms while the
+  // bridge immediately forced OFF, producing visible flashing on a dead bus.
+  // Re-send the projection for iframe reload/race recovery, never paint twice.
   try{iframe.contentWindow?.postMessage({type:'b737:cockpit-command',
    action:'window-heat-projection',lamps,annunciations:out.annunciations},location.origin);}catch{}
-  // Immediate DOM fallback, including frames before the projection bridge
-  // becomes ready. Never alter approved source art or lamp dimensions.
-  for(const [id,on] of Object.entries(lamps)){
-   const el=doc.querySelector('.mounted-light[data-light="'+id+'"]');if(!el)continue;
-   const frame=on?'ON':'OFF';
-   for(const face of el.querySelectorAll('.light-face'))face.classList.toggle('active',face.dataset.frame===frame);
-   el.dataset.frame=frame;el.dataset.state=frame;el.dataset.windowHeatEngine='v1';
-   el.setAttribute('aria-label',id+' — '+frame+' (Window Heat engine)');
-  }
  }
 
  function diagnosticPower(b){
@@ -148,7 +141,9 @@
   // If the CB tab is active or this tab is briefly background-throttled,
   // catch up using elapsed real time rather than delaying the expiry.
   const now=performance.now(),dt=typeof forcedSeconds==='number'?forcedSeconds:Math.min(300,Math.max(0,(now-lastAt)/1000));lastAt=now;
-  const live=buses(),b=trainingPower?TRAIN_BUSES:live,sw=switches();if(!b||!Object.keys(sw).length){
+  // Missing electrical authority is fail-dark, not an invitation to retain a
+  // stale illuminated projection from a previous source or iframe session.
+  const live=buses(),b=trainingPower?TRAIN_BUSES:(live||{}),sw=switches();if(!Object.keys(sw).length){
    if(ui)ui.querySelector('#wh-status').textContent='WAITING FOR LIVE ELECTRICAL / OVERHEAD AUTHORITY';
    return;
   }
