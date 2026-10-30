@@ -1,3 +1,14 @@
+## MET-0006 — Original AC/DC pointers: inner-tick radial path, hard stops and acceleration-limited motion
+
+Owner-directed mechanical adjustment on the **existing** OH10 photo and exact original `ac-dc-metering-needle.svg`. No new face, scale labels, pointer graphic, hardware or source bitmap was created. The old SVG blob remains SHA-1 `3706dc3134d1c7bb989d3de519bf64aa854e705a`.
+
+- The same 216px master sprite pivot-to-tip vector (256,256)→(256,40) is uniformly scaled to the existing native-image per-gauge `tipRadius`: DC AMPS 141px, CPS 141px, DC VOLTS 131px, AC VOLTS 143px. At every animation frame `tipPoint(id,angle)` is the exact same distance from its fixed pivot, so the tip traces a circular inner-tick reference track without radial drift. **These radii are current photo-model calibrations, not newly verified physical measurements.**
+- Direction increases clockwise, decreases counter-clockwise. Every *individual* needle is constrained to the published photo-map interval: DC AMPS −27.85°…+28.76°; DC VOLTS −26.62°…+26.47°; CPS −54°…+54° (provisional scale); AC VOLTS −48.08°…+46.8° (provisional shaft/parking QA). Unpowered AC rests at the first visible tick rather than the prior −70° overtravel.
+- The prior 320ms fixed CSS transition was removed. A shared deterministic 70°/s max angular-speed, 260°/s² acceleration and deceleration simulation now updates frame by frame, respects hard stops, and snaps precisely to its target without overshooting. A new reverse-direction target restarts its speed ramp rather than reversing at full speed.
+- The **photo-stage** opt-in existing needle layer shares the same physical motion model and native radii; photographic dials remain untouched.
+- QA added in `ac-dc-metering.test.cjs`: 360 tip points across each arc; constant exact native radius, monotonically increasing clockwise travel, forward and reverse sweeps at 60Hz, max speed cap, mechanical stop check, and source-asset fingerprint guard.
+- **Remaining evidence gate:** the original full-resolution photo's *inner ends* of the radial marks and the CPS spindle are not independently pixel-certified in this change. A browser screenshot/source-photo inspection must validate the `tipRadius` values against their physical artwork before claiming subpixel perfect overlap. Automatic measured bus/sensor values are also separate from these motion improvements.
+
 
 ## MET-0005 — Original OH10 gauges and original shared needle; scale-only update (2026-10-30)
 
