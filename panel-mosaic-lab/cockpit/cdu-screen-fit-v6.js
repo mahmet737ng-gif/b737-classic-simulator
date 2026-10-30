@@ -17,7 +17,7 @@
  const ctx=canvas.getContext('2d');
  if(!ctx)return;
  const TOP={header:.5,label:[10,24.5,39,53.5,68,82.5],
-  value:[16.5,31,45.5,60,74.5,89],scratch:91.5};
+  value:[16.5,31,45.5,60,74.5,86],scratch:93.2};
  let scheduled=false,lastResult=null;
  function size(el,px){
   if(!el)return;
