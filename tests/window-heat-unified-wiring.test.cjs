@@ -35,9 +35,10 @@ test('Window Heat can fall back to ISN pack bridge state shape',()=>{
  assert.ok(result,'No fallback live Window Heat evaluation');
  assert.equal(result.channels.L_FWD.heaterPower,true);
 });
-test('Window Heat correctly refuses to synthesize power from absent authority',()=>{
+test('Window Heat produces a fail-dark OFF projection while electrical authority is absent',()=>{
  const {result}=mount({getStartState:()=>({electrical:null}),getState:()=>({state:{electrical:{bus:null}}})});
- assert.equal(result,null);
+ assert.ok(result);
+ assert.ok(Object.values(result.channels).every(x=>!x.greenOn&&!x.overheatOn&&!x.heaterPower));
 });
 test('Window Heat has master caution request event on hot-window fault',()=>{
  const authority={getStartState:()=>({electrical:busOn})};
@@ -144,16 +145,15 @@ test('Instructor Window Heat training supply does not mask a failed controller o
  assert.equal(trainer.getOutput().channels.R_SIDE.greenOn,false);
 });
 
-test('Cold-and-dark cockpit defaults to isolated Window Heat training power for panel practice',()=>{
+test('Cold-and-dark defaults to real electrical authority and ignores legacy persisted training-power opt-in',()=>{
  const dark=Object.fromEntries(Object.keys(busOn).map(k=>[k,false]));
- const {trainer,result}=mount({getStartState:()=>({electrical:dark})},null);
- assert.ok(result,'No Window Heat evaluation');
- assert.equal(trainer.getPowerDiagnostic().mode,'WINDOW_HEAT_TRAINING_SUPPLY');
- assert.ok(Object.values(result.channels).every(x=>x.selected&&x.greenOn),
-   'All selected healthy Window Heat channels should illuminate green ON');
- assert.ok(Object.values(result.channels).every(x=>x.controllerPower&&x.heaterPower));
- assert.ok(Object.values(result.powerDiagnostic.effectiveBuses).every(Boolean),
-   'Training supply must be isolated to Window Heat outputs');
+ for(const preference of [null,'1']){
+  const {trainer,result}=mount({getStartState:()=>({electrical:dark})},preference);
+  assert.ok(result,'Cold-and-dark needs an OFF projection to clear old frames');
+  assert.equal(trainer.getPowerDiagnostic().mode,'AIRCRAFT_ELECTRICAL');
+  assert.ok(Object.values(result.channels).every(x=>x.selected&&!x.greenOn&&!x.overheatOn&&!x.heaterPower));
+  assert.ok(Object.values(result.powerDiagnostic.effectiveBuses).every(x=>x===false));
+ }
 });
 test('Explicitly disabling default training power restores cold-and-dark electrical gating',()=>{
  const dark=Object.fromEntries(Object.keys(busOn).map(k=>[k,false]));
@@ -161,4 +161,10 @@ test('Explicitly disabling default training power restores cold-and-dark electri
  assert.ok(result);
  assert.equal(trainer.getPowerDiagnostic().mode,'AIRCRAFT_ELECTRICAL');
  assert.ok(Object.values(result.channels).every(x=>!x.greenOn));
+});
+
+test('Window Heat has exactly one real lamp DOM painter (overhead bridge), preventing power-off flashing',()=>{
+ assert.ok(!code.includes('el.dataset.windowHeatEngine'),'No competing direct lamp renderer');
+ assert.ok(!code.includes("face.classList.toggle('active'"),'Only the iframe bridge paints lamp faces');
+ assert.ok(code.includes("action:'window-heat-projection'"),'Eight OH15 lamps still projected to bridge');
 });
