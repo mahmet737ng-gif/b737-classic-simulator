@@ -12,6 +12,10 @@ const procedureLedger=window.B737CDUTransitionLedgerV1?.create({
 });
 const byId={};
 function n1EstimateV19(){
+ // V19 estimate is calibrated only to a legacy B1/20K demonstration.
+ // User-selected B1/18.5K, B3/20K and C1/23.5K must NOT reuse that curve.
+ const selected=state.engineInstallation;
+ if(selected&&!(selected.variant==='CFM56-3B1'&&selected.ratingLbf===20000))return null;
  const engine=window.EPFSI_ESTIMATED_N1_V19;
  if(!engine)return null;
  const altitude=$('n1-v6-altitude');
@@ -140,6 +144,9 @@ function update(){const box=$('fmc-lines'); const frame=document.createElement('
  $('current-status').textContent='SOURCE: '+(pages[state.page].source_status||'UNVERIFIED')+
    ' / unresolved static cell issues: '+review.issues.length;
  const status=$('n1-v6-est-status');
+ if(status&&state.engineInstallation&&!n1)status.textContent=
+  'ENGINE '+state.engineInstallation.label+' · '+state.engineInstallation.rating+
+  ' · N1 EST NOT CALIBRATED FOR SELECTED VARIANT';
  if(status&&n1)status.textContent='SIM EST / '+n1.phase+': MAX '+n1.maxN1Pct.toFixed(1)+
   '% / PRESENT ENG1 '+n1.presentN1Pct[1].toFixed(1)+'% / ENG2 '+n1.presentN1Pct[2].toFixed(1)+'%';
  updateEHSI();
