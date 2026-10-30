@@ -11,7 +11,14 @@ assert.deepEqual(bodyScripts.slice(-3),integrationScripts,'Only the three audite
 assert.ok(read('panel-mosaic-lab/cockpit/cdu-bridge.js').includes("kind:'wheel-pan'"),'Shared FMC bridge also forwards wheel pan without changing CDU page engine');
 const telemetry=read('panel-mosaic-lab/cockpit/cdu-fmc-telemetry-v1.js');assert.ok(telemetry.includes('read-only')&&telemetry.includes('Chapter 11'),'FMC telemetry adapter must remain advisory-only and retain its scope');
 assert.deepEqual(bodyScripts.slice(0,-3),scripts(original).filter(src=>!omitted.has(src)),'Every original CDU application script must keep its exact order');for(const src of omitted)assert.ok(!scripts(embedded).includes(src),'Hidden EHSI/map code must not execute in Unified');assert.ok(embedded.includes('<base href="../../cdu-standalone-v6/">'));assert.ok(embedded.includes('href="../assets/fonts/boeing-cdu/cdu-screen.css"'));
-const css=read('panel-mosaic-lab/cockpit/cdu-embed.css');for(const selector of ['font-family','font-size','.hotspot','.fmc-screen','.fmc-line'])assert.ok(!css.includes(selector),'Embed must not rewrite approved CDU screen or keys: '+selector);
+const css=read('panel-mosaic-lab/cockpit/cdu-embed.css');
+for(const selector of ['font-family','font-size','.hotspot'])
+ assert.ok(!css.includes(selector),'Embed must not rewrite approved CDU typography or key geometry: '+selector);
+const monochrome=css.split('/* EP-FSI requested green monochrome CDU display; approved BoeingCDU fonts unchanged. */')[1];
+assert.ok(monochrome&&monochrome.includes('.fmc-screen .fmc-lines .fmc-line')&&monochrome.includes('color:#40eb79'),
+ 'Owner-requested green CDU text remains enabled');
+assert.ok(!/(?:font-family|font-size|transform|position|width|height|letter-spacing|line-height)\\s*:/.test(monochrome),
+ 'Monochrome display adjustment must never change fonts, character grid, screen dimensions or key positions');
 require('./cdu-session.test.cjs');
 // New CDU boxes must not cover any existing main-panel annunciator.
 const lights=JSON.parse(read('panel-mosaic-lab/cockpit/lights.json')),region=assembly.regions.find(r=>r.id==='main');for(const i of items)for(const light of lights.lights){const p=region.placements.find(p=>p.id===light.pieceId);if(!p)continue;const k=p.w/assembly.assets[p.asset].dimensions[0],[x,y,w,h]=light.sourceRect,b={x:p.x+x*k,y:p.y+y*k,w:w*k,h:h*k};assert.ok(!(i.x<b.x+b.w&&i.x+i.w>b.x&&i.y<b.y+b.h&&i.y+i.h>b.y),'CDU obscures light '+light.id);}
