@@ -54,6 +54,9 @@ function paintedLine(box,y,left,right){
  const r=document.createElement('span');r.className='fmc-right';r.textContent=right.slice(0,13);row.append(l,r);box.appendChild(row);
 }
 function paint(box){
+ // FCOM 11.40.32 has its own canonical THREE-COLUMN DEP/ARR INDEX.
+ // Never let a staged AIRAC reference list replace the native INDEX page.
+ if(state.page==='DEP_ARR')return;
  const plan=data();if(!plan)return;
  const page=['LEGS','FLIGHT_PLAN','RTE','DEP_ARR','DEPARTURES','ARRIVALS'].includes(state.page)?state.page:null;
  if(!page)return;
