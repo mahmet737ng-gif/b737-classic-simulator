@@ -17,11 +17,28 @@
   ['B737Owner18ElectricalInputV1','../../engine/runtime/owner18-electrical-input-v1.js'],
   ['B737UnifiedAuthorityDiagnosticsV1','../../engine/runtime/unified-authority-diagnostics-v1.js']
  ];
- async function loadDependencies(){for(const [global,path] of deps){if(window[global])continue;
-  await new Promise((resolve,reject)=>{const script=document.createElement('script');
-   script.src=new URL(path,moduleBase).href+'?v=ELEC-LIVE-0001';script.onload=resolve;
-   script.onerror=()=>reject(Error('Missing integration script '+path));document.head.append(script);});
- }}
+ async function loadDependencies(){
+  // Dynamic script async=false preserves evaluation order even though all
+  // scripts download concurrently. Previously each file had to finish before
+  // the next request started (14 serial round trips on a cold mobile load).
+  // Do not use async=true or Promise.all over independently executing scripts:
+  // ECU modules have ordered global dependencies and a single shared owner.
+  const requests=[];
+  for(const [global,path] of deps){
+   if(window[global])continue;
+   requests.push(new Promise((resolve,reject)=>{
+    const script=document.createElement('script');
+    script.async=false;
+    script.src=new URL(path,moduleBase).href+'?v=ELEC-LIVE-0001';
+    script.onload=resolve;
+    script.onerror=()=>reject(Error('Missing integration script '+path));
+    document.head.append(script);
+   }));
+  }
+  await Promise.all(requests);
+  for(const [global,path] of deps)if(!window[global])
+   throw Error('Integration module did not register '+global+' from '+path);
+ }
  function init(){
  const byId=id=>document.getElementById(id);
  const Pack=window.B737ISNElectricalPackV1,Adapter=window.B737ISNCockpitBridgeV1;
