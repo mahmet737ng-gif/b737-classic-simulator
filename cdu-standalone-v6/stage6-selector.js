@@ -162,7 +162,12 @@ function handlesStage6Key(k){
  if((state.page==='RTE'||state.page==='FLIGHT_PLAN')&&state.scratch&&state.scratch!=='DELETE'){
   const routeKey=state.page==='RTE'?['LSK_L1','LSK_R1','LSK_L3'].includes(k):
    /^LSK_[LR][1-4]$/.test(k);
-  if(routeKey){void validateRteEntry(k);return true;}
+  if(routeKey){
+   const field=state.page==='RTE'?({LSK_L1:'ICAO',LSK_R1:'ICAO',LSK_L3:'RUNWAY'})[k]:
+    k.startsWith('LSK_L')?'AIRWAY':'WAYPOINT';
+   if(!core.validate(field,state.scratch))return false;
+   void validateRteEntry(k);return true;
+  }
  }
  if(state.page==='DEP_ARR'&&['LSK_L1','LSK_R1','LSK_R2'].includes(k)&&
     !prior()&&!state.stage5Pending){
