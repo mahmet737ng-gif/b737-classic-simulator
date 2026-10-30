@@ -163,7 +163,23 @@
   if(previous)previous.after(section);
   else document.querySelector('.overhead-tools')?.before(section);
  }
- window.B737UnifiedAcDcMetering=Object.freeze({getAngles:()=>({...state}),getReadings,getScaleMode:()=>acMode,setReading,setReadings,setAngle,setAngles});
+ function getRenderAudit(){
+  return model.meters.map(meter=>{
+   const blade=mounted.get(meter.id),node=blade?.ownerSVGElement;
+   const rect=node?.getBoundingClientRect();
+   const b=model.bounds(meter.id);
+   return {id:meter.id,mounted:Boolean(node),pointerAsset:imageUrl,
+    nativeCenter:{x:meter.x,y:meter.y},
+    nativeEllipse:{rx:meter.tipRadiusX,ry:meter.tipRadiusY},
+    allowedAngles:b,angleTarget:state[meter.id],
+    screenSprite:rect?{x:rect.x,y:rect.y,width:rect.width,height:rect.height}:null,
+    renderVersion:'MET-0008-SCREEN-ELLIPSE',photoPixelQACertified:false};
+  });
+ }
+ window.B737UnifiedAcDcMetering=Object.freeze({
+  version:'MET-0008-SCREEN-ELLIPSE',getAngles:()=>({...state}),getReadings,
+  getScaleMode:()=>acMode,getRenderAudit,setReading,setReadings,setAngle,setAngles
+ });
  window.addEventListener('b737:ac-dc-metering-angles',event=>{try{setAngles(event.detail);}catch(error){console.error(error);}});
  // Independent system adapter may provide actual metered samples. The core
  // electrical V7 is Boolean bus connectivity, NOT a calibrated voltage/amps sensor.
