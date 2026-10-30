@@ -7,6 +7,16 @@
  const api=root.B737CDUAiracBanksV1;
  if(!['CAPT','FO'].includes(seat)||!api||root.parent===root||
     typeof state==='undefined'||typeof update!=='function')return;
+ // The canonical FMC bank adapter is the sole writer of IDENT NAV DATA.
+ // Keep legacy parent snapshots readable, but prevent a second writer from
+ // clearing or replacing validated ACTIVE/INACTIVE evidence after update().
+ if(root.B737CDUAiracIdentAdapterV1){
+  root.B737CDUAiracReceiverV1=Object.freeze({
+   version:api.VERSION,getStatus:()=>null,
+   disabledReason:'SUPERSEDED_BY_FMC_BANKS_V1'
+  });
+  return;
+ }
  let last=null;
  function apply(){
   if(!last)return false;
