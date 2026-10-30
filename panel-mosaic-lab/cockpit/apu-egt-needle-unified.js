@@ -10,6 +10,8 @@
  function mount(){
   const doc=frame?.contentDocument,host=doc?.getElementById('atlasAbsolute');if(!host)return false;
   const piece=host.querySelector('.atlas-piece[data-key="OH12"]');if(!piece)return false;
+  const cleaner=window.B737APUEGTStaticCleaner;
+  if(cleaner){cleaner.watchPiece(piece);cleaner.cleanPiece(piece);}
   const existing=host.querySelector('[data-apu-egt-needle]');
   if(existing){
    blade=existing.querySelector('[data-needle-blade]');
