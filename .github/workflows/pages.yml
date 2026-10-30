@@ -54,6 +54,7 @@ jobs:
           node --test tests/le-devices-stagger-v1.test.cjs
           node --test tests/le-devices-photometric-emission-v1.test.cjs
           node --test tests/le-devices-smooth-glass-v1.test.cjs
+          node --test tests/le-devices-real-off-glass-v4.test.cjs
       - name: Enforce NEW owner-final LE PHOTOLENS V2 lock and exact aperture QA
         run: |
           test "$(git hash-object engine/locks/le-devices-photolens-final-v2.json)" = "606b6788b4cff11b43cdb806d4eb2e4df8557bae" || { echo "LE PHOTOLENS owner lock registry changed"; exit 1; }
