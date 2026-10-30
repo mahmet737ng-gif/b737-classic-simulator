@@ -57,6 +57,9 @@ function enterPosInitField(st,cell){
  if(key==='IRS_HDG'){
   const att=Object.values(st.preflightEvidence?.irs||{}).some(x=>x?.mode==='ATT'&&x?.powered===true);
   if(!att){addMessage(st,'KEY INACTIVE');return true;}
+  // FCOM requires a real IRS ATT-mode heading update. CDU-local changes
+  // are not a substitute; do not fake an IRS heading write.
+  addMessage(st,'IRS HDG NOT LINKED');return true;
  }
  if(!['REF_AIRPORT','GATE','IRS_HDG'].includes(key))return false;
  if(key==='GATE'&&!validate('ICAO',st.active.REF_AIRPORT||'')){
