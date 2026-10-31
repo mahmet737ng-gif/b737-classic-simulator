@@ -32,19 +32,35 @@
   },
   "requested2611": {
     "cycle": "2611",
-    "status": "SOURCE_NOT_PROVIDED",
+    "status": "MIDDLE_EAST_SOURCE_METADATA_VERIFIED_NOT_FMC_INSTALLED",
     "privateArchiveImported": false,
-    "sourceIntegrityVerified": false,
+    "sourceIntegrityVerified": true,
     "procedureInterpretationValidated": false,
     "fmcInstalled": false,
     "fmcExecutable": false,
-    "publicDataFiles": []
+    "publicDataFiles": [],
+    "sourceArchiveReceived": true,
+    "sourceCycleHeaderVerified": true,
+    "region": "IRAN_IRAQ_MIDDLE_EAST",
+    "procedureFilesInScope": 256,
+    "legacyCycleConflictsInScope": 0,
+    "excludedOutOfRegionConflicts": 6,
+    "procedureFileIndependentCycleMarkers": false,
+    "cycleStart": "2026-10-29",
+    "cycleLastValid": "2026-11-25",
+    "expiryFrom": "2026-11-26"
   },
   "fmcIdentCurrent": {
     "active": null,
     "inactive": null,
-    "reason": "NO_INSTALLED_VALIDATED_FMC_NAVDB_BANKS"
+    "reason": "REGIONAL_2611_SOURCE_PREVIEW_ONLY_NO_INSTALLED_VALIDATED_FMC_BANKS"
   },
   "policy": "AIRAC calendar entries are NOT actual FMC navigation datasets. Do not fabricate SID/STAR/FIX entries or display 2611 as installed.",
-  "nextPrivateSourceRequirement": "Obtain the licensed AIRAC 2611 PMDG-compatible archive; run private staged decoder and source/geometry/procedure regression; preserve 2610 separately and never ship licensed database in public GitHub Pages."
+  "nextPrivateSourceRequirement": "Run licensed source processing privately for the 2611 regional allowlist; verify procedures and leg encoding before any FMC bank installation or activation. Never publish licensed source records; preserve original 2610.",
+  "regionalSourcePreview": {
+    "module": "engine/ch11/airac2611-middle-east-preview-v1.js",
+    "enabledOnlyByExplicitSelection": true,
+    "sourceNotActive": true,
+    "archiveNotInPublicRepo": true
+  }
 }
