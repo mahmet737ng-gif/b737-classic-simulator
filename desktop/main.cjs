@@ -69,10 +69,10 @@ handle('desktop:ready',async input=>{
 async function createWindow(){
  Menu.setApplicationMenu(null);
  const iconFile=path.join(CONTENT_ROOT,'branding','cockpit-pro','CockpitPro_Windows_Icon.ico');
- const options={width:1580,height:920,minWidth:1000,minHeight:650,show:false,
+ const options={width:1580,height:920,minWidth:1000,minHeight:650,show:true,
   backgroundColor:'#0a111d',title:'Cockpit Pro · B737 Classic',
   webPreferences:{preload:path.join(__dirname,'preload.cjs'),partition:'persist:cockpit-pro',
-   nodeIntegration:false,contextIsolation:true,sandbox:true,webSecurity:true,
+   backgroundThrottling:false,nodeIntegration:false,contextIsolation:true,sandbox:true,webSecurity:true,
    allowRunningInsecureContent:false,spellcheck:false}};
  if(fs.existsSync(iconFile))options.icon=iconFile;
  window=new BrowserWindow(options);window.setMenuBarVisibility(false);
