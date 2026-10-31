@@ -136,7 +136,7 @@ const server=http.createServer((req,res)=>{
    assert.equal(inspect.lamps,112);
    assert.equal(inspect.needles,10);
    assert.equal(inspect.controls,91);
-   assert.equal(inspect.scripts,scripts+(stage==='E'?1:0));
+   assert.equal(inspect.scripts,scripts,'E iframe script is executed in child context, not counted by document.scripts');
    if(stage==='B'){assert.equal(inspect.core,false);assert.equal(inspect.frame,0);}
    else{
     await progressive.waitForFunction(()=>window.B737Perf8?.snapshot()?.tickCount>1,null,{timeout:30000});
