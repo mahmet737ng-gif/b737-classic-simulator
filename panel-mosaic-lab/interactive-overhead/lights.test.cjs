@@ -15,8 +15,17 @@ g.setRotary('irs-mode-l','NAV');sync();e.update({irsBatterySupply:true,faults:{'
 g.setRotary('irs-mode-l','ALIGN');sync();assert.equal(on('irs-l-align'),true);assert.equal(on('irs-r-align'),false);e.update({faults:{'irs-l-align':true}},time);assert.equal(e.snapshot().frames['irs-l-align'],'FLASH');e.update({faults:{'irs-l-align':false}},time);g.setRotary('irs-mode-l','NAV');sync();e.update({irsLAlignmentInProgress:true},time);assert.equal(on('irs-l-align'),true);e.update({irsLAlignmentInProgress:false},time);assert.equal(on('irs-l-align'),false);g.setRotary('irs-mode-l','ATT');sync();assert.equal(on('irs-l-align'),true);e.update({irsLAttitudeAvailable:true},time);assert.equal(on('irs-l-align'),false);g.setRotary('irs-mode-l','OFF');sync();e.update({irsLShutdownInProgress:true},time);assert.equal(on('irs-l-align'),true);e.update({irsLShutdownInProgress:false,irsLAttitudeAvailable:false},time);assert.equal(on('irs-l-align'),false);
 e.setLampTest(true,time);assert.equal(Object.values(e.snapshot().lights).filter(Boolean).length,112);e.setLampTest(false,time);assert.equal(on('filter-1'),false);e.update({panelPower:false},time);e.setLampTest(true,time);assert.equal(Object.values(e.snapshot().lights).filter(Boolean).length,0,'lamp test respects power');e.setLampTest(false,time);e.update({panelPower:true},time);
 e.update({equipmentSupplyFailed:true},time);assert.equal(on('equip-supply-off'),true);t.set('equip-cooling-supply','ALTERNATE');sync();assert.equal(on('equip-supply-off'),false,'alternate fan clears normal-fan failure');
-// Drive disconnect removes the electrical source and reports drive pressure.
-e.update({engine1Running:false,engine2Running:false},time);assert.equal(on('standby-power-off'),null,'retain unresolved ground-AUTO source conflict');assert.ok(e.snapshot().unknown.includes('standby-power-off'));
+// With Classic ground AUTO, loss of normal AC does not automatically transfer
+// standby buses to battery. The V7 source decision is known; a completely
+// unpowered panel must not illuminate a physical STANDBY PWR OFF lamp.
+// Preserve UNKNOWN only for genuinely unresolved electrical source paths.
+e.update({engine1Running:false,engine2Running:false},time);
+const groundAuto=e.snapshot();
+assert.equal(groundAuto.electrical.bus.acStandby,false,'Classic ground AUTO standby AC is unpowered');
+assert.equal(groundAuto.electrical.bus.dcStandby,false,'Classic ground AUTO standby DC is unpowered');
+assert.equal(groundAuto.electrical.lamps.standbyPowerOff,true,'Electrical logic requests standby OFF indication');
+assert.equal(on('standby-power-off'),false,'Unpowered panel cannot light standby OFF');
+assert.equal(groundAuto.unknown.includes('standby-power-off'),false,'Resolved Classic ground AUTO is no longer an UNKNOWN source');
 assert.throws(()=>e.update({faults:{invalid:true}}));assert.throws(()=>e.update({engine1Running:'yes'}));
 e.reset(time);sync();assert.equal(on('pass-oxygen'),false);assert.equal(e.snapshot().lampTest,false);
 
