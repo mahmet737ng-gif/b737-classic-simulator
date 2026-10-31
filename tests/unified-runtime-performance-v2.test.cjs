@@ -118,3 +118,11 @@ test('PERF-0003 reports both first interactive paint and sharp first-panel paint
  assert.match(metrics,/maxNative|const native=/);
  assert.match(metrics,/dataset\.unifiedSharpMs/);
 });
+
+test('PERF-0003 layout measurements are shared within a refresh and decode upgrades stay serialized',()=>{
+ const loader=read(base+'performance-loader.js');
+ assert.match(loader,/geometryCache=new Map\(\)/);
+ assert.match(loader,/geometryCache\?\.get\(host\)/);
+ assert.match(loader,/measure\(img,view,geometryCache\)/);
+ assert.match(loader,/MAX_CONCURRENT_TEXTURES=4,MAX_CONCURRENT_UPGRADES=1/);
+});

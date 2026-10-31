@@ -8,7 +8,7 @@
  function install(win){
   const doc=win.document,rootURL=new URL('../../',doc.currentScript.src),manifest=win.B737PerformanceAssets;
   const entries=new Map(),pending=new Set(),inflight=new Map(),readyURLs=new Set(),seen=new Set();
-  const MAX_CONCURRENT_TEXTURES=5,MAX_CONCURRENT_UPGRADES=2;
+  const MAX_CONCURRENT_TEXTURES=4,MAX_CONCURRENT_UPGRADES=1;
   let timer=0,idleTimer=0,lastMotionAt=0,activeDecodes=0,activeUpgrades=0,lastVisible=0,lastSharp=0;
   function sourceKey(src){
    const u=new URL(src,doc.baseURI);
@@ -28,11 +28,17 @@
    const top=win.top,v=top.document.getElementById('viewport')?.getBoundingClientRect();
    return {left:Math.max(0,v?.left||0),top:Math.max(0,v?.top||0),right:Math.min(top.innerWidth,v?.right||top.innerWidth),bottom:Math.min(top.innerHeight,v?.bottom||top.innerHeight)};
   }
-  function measure(node,view){
+  function measure(node,view,geometryCache){
    if(!node?.isConnected)return null;
    const host=node.closest('.atlas-piece,.texture-piece,.flap-bmp-overlay')||node;
-   const hr=box(host);if(!hr||!intersects(hr,view))return null;
-   const r=host===node?hr:box(node);if(!r)return null;
+   // One layout read per physical host/clone group per refresh, rather
+   // than reflowing the same Overhead strip for every duplicated image.
+   let hr=geometryCache?.get(host);
+   if(hr===undefined){hr=box(host);geometryCache?.set(host,hr);}
+   if(!hr||!intersects(hr,view))return null;
+   let r=host===node?hr:geometryCache?.get(node);
+   if(r===undefined){r=box(node);geometryCache?.set(node,r);}
+   if(!r)return null;
    return {r,hr,view};
   }
   function visible(node,view){return !!measure(node,view||viewport());}
@@ -88,13 +94,13 @@
   }
   function refresh(){
    timer=0;
-   const view=viewport(),moving=Date.now()-lastMotionAt<310;
+   const view=viewport(),moving=Date.now()-lastMotionAt<310,geometryCache=new Map();
    const first=[],upgrades=[];
    lastVisible=0;lastSharp=0;
    const cx=(view.left+view.right)/2,cy=(view.top+view.bottom)/2;
    for(const [img,item] of entries){
     if(!img.isConnected){entries.delete(img);continue;}
-    const m=measure(img,view);if(!m)continue;
+    const m=measure(img,view,geometryCache);if(!m)continue;
     lastVisible++;
     if(!item.asset){
      if(!item.extent){img.src=new URL(item.source,doc.baseURI).href;item.extent=Infinity;img.dataset.perfExtent='Infinity';}
@@ -124,7 +130,7 @@
      begin(w.url,siblings,upgrade);
     }
    }
-   for(const task of pending)if(visible(task.node,view)){pending.delete(task);task.run();}
+   for(const task of pending)if(measure(task.node,view,geometryCache)){pending.delete(task);task.run();}
    if(win===win.top)for(const frame of doc.querySelectorAll('iframe')){
     try{frame.contentWindow?.B737ImageLoader?.refresh();}catch{}
    }
