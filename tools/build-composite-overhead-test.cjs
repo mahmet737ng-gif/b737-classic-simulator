@@ -77,6 +77,7 @@ const server=http.createServer((req,res)=>{
   const output=path.join(root,'panel-mosaic-lab/cockpit/assets/overhead-composite-test.webp');
   fs.mkdirSync(path.dirname(output),{recursive:true});fs.writeFileSync(output,bytes);
   require('./build-overhead-ui-only.cjs').build();
+  require('./build-overhead-step-lanes.cjs').build();
   const measures={width:2220,height:3312,bytes:bytes.length,quality:0.85,source:'original locked atlas via browser screenshot',experimental:true};
   fs.writeFileSync(path.join(root,'panel-mosaic-lab/cockpit/composite-test-meta.json'),JSON.stringify(measures,null,2)+'\n');
   console.log('COMPOSITE A/B WebP created '+Math.round(bytes.length/1024)+' KiB from approved 2220x3312 atlas');
@@ -112,6 +113,42 @@ const server=http.createServer((req,res)=>{
   assert.equal(await firstGuard.evaluate(n=>n.open),false,'Native guard can close');
   console.log('PERF-0007 no-script interactive Overhead verified '+JSON.stringify(stat));
   await pure.close();
+  // PERF-0008 probes: ensure each progressive route stays isolated and
+  // adds exactly the expected browser modules and lamp/needle overlays.
+  const progressive=await browser.newPage({viewport:{width:1500,height:950}});
+  const fileSets=[
+   ['overhead-visual-only-v8.html','B',0],
+   ['overhead-electrical-v8.html','C',2],
+   ['overhead-engine-v8.html','D',4],
+   ['overhead-messaging-v8.html','E',4]
+  ];
+  for(const [path,stage,scripts] of fileSets){
+   await progressive.goto(base+path,{waitUntil:'domcontentloaded',timeout:60000});
+   const inspect=await progressive.evaluate(()=>({
+    scripts:document.scripts.length,
+    lamps:document.querySelectorAll('.ab-lamp').length,
+    needles:document.querySelectorAll('.ab-needle').length,
+    controls:document.querySelectorAll('.toggle,.rotary,.guard').length,
+    core:!!window.B737ElectricalV7,engine:!!window.B737ISNEngineStartDynamicsV1,
+    stage:window.B737Perf8?.snapshot?.(),
+    frame:document.querySelectorAll('iframe').length
+   }));
+   assert.equal(inspect.lamps,112);
+   assert.equal(inspect.needles,10);
+   assert.equal(inspect.controls,91);
+   assert.equal(inspect.scripts,scripts+(stage==='E'?1:0));
+   if(stage==='B'){assert.equal(inspect.core,false);assert.equal(inspect.frame,0);}
+   else{
+    await progressive.waitForFunction(()=>window.B737Perf8?.snapshot()?.tickCount>1,null,{timeout:30000});
+    assert.ok(inspect.core);
+    if(stage==='D'||stage==='E')assert.ok(inspect.engine);
+    if(stage==='E'){
+      await progressive.waitForFunction(()=>window.B737Perf8?.snapshot()?.messagesReceived>1,null,{timeout:10000});
+    }
+   }
+   console.log('PERF-0008 '+stage+' browser lane passed '+JSON.stringify(inspect));
+  }
+  await progressive.close();
   // The comparison must run the real whole cockpit, not just a static photo.
   const test=await browser.newPage({viewport:{width:1580,height:920}});
   await test.goto(base+'unified-composite-test.html',{waitUntil:'domcontentloaded',timeout:60000});

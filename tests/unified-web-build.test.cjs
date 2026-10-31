@@ -121,3 +121,20 @@ test('PERF-0007 source-only Overhead builds native HTML inputs with zero browser
  assert.ok(!read('panel-mosaic-lab/cockpit/overhead-stage.html').includes('overhead-ui-only'));
  assert.ok(!read('panel-mosaic-lab/cockpit/index.html').includes('overhead-ui-only'));
 });
+
+test('PERF-0008 creates real incremental visual/electrical/dynamics/messaging tests without modifying the approved cockpit',()=>{
+ const source=read('tools/build-overhead-step-lanes.cjs');
+ const runtime=read('panel-mosaic-lab/cockpit/overhead-progressive-v8.js');
+ assert.match(source,/overhead-visual-only-v8.html/);
+ assert.match(source,/overhead-electrical-v8.html/);
+ assert.match(source,/overhead-engine-v8.html/);
+ assert.match(source,/overhead-messaging-v8.html/);
+ assert.match(source,/assert.equal\(results\[0\].scripts,0/);
+ assert.match(runtime,/B737ElectricalV7/);
+ assert.match(runtime,/B737ISNEngineStartDynamicsV1/);
+ assert.match(runtime,/B737ISNAPULoadDynamicsV1/);
+ assert.match(runtime,/PerformanceObserver/);
+ assert.match(runtime,/perf8-ping/);
+ assert.doesNotMatch(read('panel-mosaic-lab/cockpit/index.html'),/PERF-0008/);
+ assert.doesNotMatch(read('panel-mosaic-lab/cockpit/overhead-stage.html'),/PERF-0008/);
+});
