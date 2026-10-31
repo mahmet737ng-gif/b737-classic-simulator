@@ -16,6 +16,10 @@
    const d=w.document,p=w.B737AircraftProfileStore?.get();
    result.profile=!!p&&['aircraftFamily','pressurization','engineInstruments'].every(k=>p[k]===profile[k]);
    result.main=!!d.getElementById('region-main')&&visibleImagesReady(w);
+   if(p?.engineInstruments==='CONVENTIONAL'){
+    const photos=[d.querySelector('.conventional-engine-panel-v1'),d.querySelector('#fo-owner-panel-v1 > img')];
+    result.main=result.main&&d.documentElement.dataset.engineIndication==='CONVENTIONAL'&&photos.every(img=>img&&img.complete&&img.naturalWidth>0);
+   }
    result.controls=!!w.B737ISNCockpitV1&&!!d.querySelector('[data-mcp-hardware="AT_ARM"]');
    result.overhead=!!d.querySelector('#overheadStatus')?.textContent?.includes('متصل');
    result.cdu=!!d.querySelector('.cdu-station[data-seat="CAPT"].ready')&&!!d.querySelector('.cdu-station[data-seat="FO"].ready');

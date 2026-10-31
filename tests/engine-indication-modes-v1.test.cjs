@@ -46,28 +46,30 @@ assert.equal(crypto.createHash('sha256').update(png).digest('hex'),
  'd4ae225cddfe7697dec4c73b0f59aa3cd51ccc1234c63e6dc8323ce84c45f710',
  'The final owner image must be published byte for byte');
 let mountedImage=null;
-const host={dataset:{},appendChild(el){el.parentNode=this;mountedImage=el;}};
+const engine={dataset:{},style:{left:'500px',top:'20px',width:'600px',height:'1000px'}};
+const fo={style:{left:'1100px',top:'20px',width:'250px',height:'1000px'}};
+const host={querySelector:selector=>selector.includes('"engine"')?engine:fo,
+ appendChild(el){el.parentNode=this;}};
 const root={dataset:{}};
 const document={documentElement:root,baseURI:'https://example.test/panel-mosaic-lab/cockpit/',
- querySelector:()=>host,getElementById:()=>null,
- createElement:()=>({setAttribute(){}})};
+ querySelector:selector=>selector.includes('data-piece="engine"')?engine:host,getElementById:()=>null,
+ createElement:tag=>{const el={style:{},dataset:{},setAttribute(){},insertBefore(child){child.parentNode=this;}};if(tag==='img')mountedImage=el;return el;}};
 const window={B737AircraftProfileStore:s,addEventListener(){},dispatchEvent(){}};
 vm.runInNewContext(js,{document,window,URL,CustomEvent:class {constructor(type,init){this.type=type;this.detail=init.detail;}}});
 const api=window.B737EngineIndicationModeV1;
-assert.ok(mountedImage.src.endsWith('/assets/conventional-engine-panel-owner-20261029.png?v=CONV-0002'));
+assert.equal(mountedImage,null,'EIS startup must not load or repaint the inactive Conventional panorama');
 assert.equal(api.status().display,'EIS');
 api.setMode('CONVENTIONAL');
+assert.ok(mountedImage.src.endsWith('/assets/p2-conventional-full-owner-20261030.png?v=CONV-FULL-0001'));
 assert.equal(api.status().display,'EIS','Do not show a broken panel while image is loading');
 mountedImage.onload();
 assert.equal(api.status().display,'CONVENTIONAL');
-assert.equal(host.dataset.engineFace,'CONVENTIONAL');
-assert.equal(api.status().version,'CONV-0002');
-mountedImage.onerror();
-assert.equal(api.status().display,'EIS','Image load failure must fall back safely');
-mountedImage.onload();
-assert.equal(api.status().display,'CONVENTIONAL');
-api.setMode('EIS');
-assert.equal(api.status().display,'EIS');
-assert.ok(html.includes('engine-indication-mode-v1.js?v=CONV-0002'));
-assert.ok(html.includes('conventional-engine-needles-v1.js?v=CONV-NEEDLE-0002'));
-console.log('PASS: final original PNG, versioned Unified mount, EIS/Conventional switching and load-failure fallback.');
+assert.equal(engine.dataset.engineFace,'CONVENTIONAL');
+assert.equal(api.status().version,'CONV-FULL-0001');
+const layout=api.layout();assert.equal(layout.sourceWidth,1463);assert.equal(layout.sourceHeight,1075);
+assert.equal(layout.x,500);assert.equal(layout.w,874);
+mountedImage.onerror();assert.equal(api.status().display,'EIS','Load failure must fall back safely');
+mountedImage.onload();assert.equal(api.status().display,'CONVENTIONAL');
+api.setMode('EIS');assert.equal(api.status().display,'EIS');
+assert.ok(html.includes('engine-indication-mode-v1.js?v=CONV-FULL-0001'));
+console.log('PASS: inactive panorama deferred, current full-owner PNG, unchanged geometry, reversible mode switching and safe load failure.');

@@ -54,7 +54,9 @@ function mount(){
 }
 function apply(){
  desired=requested();
- const mounted=mount();
+ // In EIS, do not download/decode/repaint the inactive Conventional panorama.
+ // Selecting Conventional still uses the exact original mount and paint path.
+ const mounted=desired==='CONVENTIONAL'?mount():!!wrap;
  const display=desired==='CONVENTIONAL'&&loaded&&mounted?'CONVENTIONAL':'EIS';
  ROOT.dataset.engineIndication=display;
  ROOT.dataset.engineIndicationRequested=desired;

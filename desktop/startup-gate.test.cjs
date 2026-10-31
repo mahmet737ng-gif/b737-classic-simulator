@@ -19,3 +19,14 @@ test('no splash-only success: a missing visible texture or live engine blocks re
  for(const input of [{imageReady:false},{ecu:false}]){const {w,profile}=fixture(input);assert.equal(gate.inspect(w,profile).usable,false);}
  const {w,profile}=fixture();assert.equal(gate.inspect(w,{...profile,engineInstruments:'CONVENTIONAL'}).usable,false);
 });
+
+test('Conventional must be visible and both replacement photos decoded before readiness',()=>{
+ const {w,profile}=fixture();profile.engineInstruments='CONVENTIONAL';
+ w.document.documentElement={dataset:{engineIndication:'EIS'}};
+ assert.equal(gate.inspect(w,profile).usable,false);
+ w.document.documentElement.dataset.engineIndication='CONVENTIONAL';
+ assert.equal(gate.inspect(w,profile).usable,false,'Missing replacement photos cannot pass');
+ const query=w.document.querySelector;
+ w.document.querySelector=selector=>selector.includes('conventional-engine-panel-v1')||selector.includes('fo-owner-panel-v1')?{complete:true,naturalWidth:100}:query(selector);
+ assert.equal(gate.inspect(w,profile).usable,true);
+});

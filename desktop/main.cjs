@@ -77,7 +77,6 @@ async function createWindow(){
  if(fs.existsSync(iconFile))options.icon=iconFile;
  window=new BrowserWindow(options);window.setMenuBarVisibility(false);
  mark('windowCreated');
- if(profiling)stopProfile=await require('./startup-profile.cjs').startProfile(window.webContents);
  window.webContents.setWindowOpenHandler(({url})=>{
   if(isLocal(url))return {action:'allow',overrideBrowserWindowOptions:{
    webPreferences:{nodeIntegration:false,contextIsolation:true,sandbox:true,webSecurity:true}}};
@@ -93,7 +92,9 @@ async function createWindow(){
  window.webContents.on('did-fail-load',(_e,code,description,_url,isMainFrame)=>{
   if(isMainFrame){console.error('Local load failed',code,description);dialog.showMessageBox(window,{type:'error',title:'Cockpit Pro',message:'Local application files could not load',detail:String(description)});}
  });
- await window.loadURL(baseUrl+'/'+ENTRY);
+ const navigation=window.loadURL(baseUrl+'/'+ENTRY);
+ if(profiling)stopProfile=await require('./startup-profile.cjs').startProfile(window.webContents);
+ await navigation;
  if(!window.isVisible())window.show();
 }
 async function start(){

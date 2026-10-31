@@ -13,15 +13,16 @@ const profile=require('../engine/config/aircraft-profile-v1.js');
 assert.equal(profile.DEFAULTS.engineInstruments,'EIS');
 assert.ok(index.includes('conventional-engine-needles-v1.js'));
 assert.ok(index.includes('conventional-engine-needles-v1.css'));
-assert.match(css,/data-engine-indication="CONVENTIONAL"/);
-assert.match(css,/z-index:43/);
+assert.match(css,/#region-main \.conventional-engine-photo-wrap-v1>/);
+assert.match(fs.readFileSync(path.join(base,'engine-indication-mode-v1.css'),'utf8'),/data-engine-indication="CONVENTIONAL"/);
+assert.match(css,/z-index:1/);
 assert.equal((face.match(/data-conventional-red-lamp-socket/g)||[]).length,6);
 const encoded=needle.match(/data:image\/webp;base64,([A-Za-z0-9+/=]+)/)?.[1];
 assert.ok(encoded,'Photo-derived pointer must be embedded for offline GitHub Pages use');
 assert.equal(Buffer.from(encoded,'base64').subarray(0,4).toString('utf8'),'RIFF');
 // Browser-free DOM shim to verify exact sixteen nodes and state updates.
 class Elem {
- constructor(tag){this.tag=tag;this.children=[];this.attrs={};this.dataset={};this.parentNode=null;}
+ constructor(tag){this.tag=tag;this.children=[];this.attrs={};this.dataset={};this.style={};this.parentNode=null;}
  setAttribute(k,v){this.attrs[k]=String(v)}
  append(child){this.children.push(child);child.parentNode=this}
  appendChild(child){this.append(child);return child}
@@ -34,22 +35,24 @@ const doc={
  querySelector:selector=>selector.includes('data-piece="engine"')?host:null,
  addEventListener:()=>{}
 };
-const win={addEventListener:(key,fn)=>listeners.set(key,fn)};
+const matrix='matrix(0.7,0,0,0.8,0,0)';
+const win={B737EngineIndicationModeV1:{wrap:()=>host,layout:()=>({cssMatrix:matrix})},addEventListener:(key,fn)=>listeners.set(key,fn)};
 vm.runInNewContext(js,{document:doc,window:win,URL,console});
 const api=win.B737ConventionalNeedlesV1;
 const specs=api.getSpecs();
 assert.equal(specs.length,16);
 assert.equal(new Set(specs.map(s=>s.id)).size,16);
 assert.deepEqual(JSON.parse(JSON.stringify(specs.map(s=>[s.cx,s.cy]))),[
- [144.19,450.85],[367.09,450.91],[143.71,668.94],[363.83,668.98],
- [140.15,888.81],[362.38,888.81],[132.38,1104.98],[354.25,1104.96],
- [578.75,450.3],[799.29,450.59],[578.73,669.32],[798.69,669.34],
- [578.58,888.72],[798.32,888.73],[574.4,1104.46],[794.5,1105.07]
+ [427,427],[600,427],[427,596],[600,596],
+ [425,747],[600,747],[426,910],[600,910],
+ [805,431],[973,431],[805,591],[973,591],
+ [803,748],[970,748],[803,909],[970,909]
 ]);
 assert.equal(host.children.length,1);
 const layer=host.children[0],groups=layer.children.filter(c=>c.tag==='g');
 assert.equal(groups.length,16);
-assert.equal(layer.attrs.viewBox,'0 0 1182 1330');
+assert.equal(layer.attrs.viewBox,'0 0 1463 1075');
+assert.equal(layer.style.transform,matrix,'Pointers retain the exact photograph affine transform');
 assert.equal(layer.attrs.preserveAspectRatio,'none','Needles must share the stretched PNG coordinate system');
 for(const group of groups){
  const rotor=group.children[0];
