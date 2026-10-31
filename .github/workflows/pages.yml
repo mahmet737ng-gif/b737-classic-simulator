@@ -144,6 +144,7 @@ jobs:
           git diff --exit-code -- isn-electrical-pack-lab/standalone.html
           node panel-mosaic-lab/cockpit/cdu.test.cjs
           node panel-mosaic-lab/cockpit/cdu-fo-only-performance.test.cjs
+          node panel-mosaic-lab/cockpit/cdu-photo-type-hierarchy.test.cjs
       - name: Verify demo scripts and model
         run: npm test
       - name: Protect standalone CDU from private Stage5/Stage6 routing
