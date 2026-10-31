@@ -36,6 +36,7 @@ assert.ok(!/(?:font-family|transform|position|letter-spacing)\\s*:/.test(display
 require('./cdu-session.test.cjs');
 assert.match(read('cdu-standalone-v6/app.js'),/function makePairRow\(topPct,leftText,rightText,/,
  'CDU LSK renderer must retain topPct and both left/right text arguments');
+require('../../cdu-standalone-v6/tests/airac2611-region-preview-v1.test.cjs');
 require('./cdu-classic-typography.test.cjs');
 // New CDU boxes must not cover any existing main-panel annunciator.
 const lights=JSON.parse(read('panel-mosaic-lab/cockpit/lights.json')),region=assembly.regions.find(r=>r.id==='main');for(const i of items)for(const light of lights.lights){const p=region.placements.find(p=>p.id===light.pieceId);if(!p)continue;const k=p.w/assembly.assets[p.asset].dimensions[0],[x,y,w,h]=light.sourceRect,b={x:p.x+x*k,y:p.y+y*k,w:w*k,h:h*k};assert.ok(!(i.x<b.x+b.w&&i.x+i.w>b.x&&i.y<b.y+b.h&&i.y+i.h>b.y),'CDU obscures light '+light.id);}
