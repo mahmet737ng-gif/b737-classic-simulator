@@ -55,31 +55,45 @@ function makeDepArrTriplet(topPct,leftText,centerText,rightText,isSmall=false){
  row.appendChild(center);
  return row;
 }
-function renderDepArrIndex(box,screenTop,screenHeight){
+// Shared display geometry: LSK page fields must end ABOVE the independent scratchpad.
+const CDU_DISPLAY_GEOMETRY=Object.freeze({
+ screenTop:1312*0.0765, screenHeight:1312*0.375,
+ scratchpadTop:565, lineHeight:1312*0.375*0.049, clearGap:6
+});
+function lskTextTops(number){
+ const lsk=map.controls.find(c=>c.id==='CDU_CAPT_LSK_L'+number);
+ if(!lsk)throw Error('CDU_LSK_GEOMETRY_MISSING_'+number);
+ const cy=(lsk.bbox_px[1]+lsk.bbox_px[3])/2;
+ let labelY=cy-13, valueY=cy+10;
+ // Keep the bottom LSK's two lines together and strictly above scratchpad.
+ // Applies to INDEX, DEP/ARR, and every other core CDU page.
+ const maxValueY=CDU_DISPLAY_GEOMETRY.scratchpadTop-
+   CDU_DISPLAY_GEOMETRY.clearGap-CDU_DISPLAY_GEOMETRY.lineHeight;
+ const shift=Math.max(0,valueY-maxValueY);
+ labelY-=shift;valueY-=shift;
+ const percent=y=>(y-CDU_DISPLAY_GEOMETRY.screenTop)/CDU_DISPLAY_GEOMETRY.screenHeight*100;
+ return {label:percent(labelY),value:percent(valueY)};
+}
+function renderDepArrIndex(box){
  const airport=(name)=>String(core.readValue(state,name,'RTE')||'').toUpperCase();
- const y=(number,dy=10)=>{
-  const lsk=map.controls.find(c=>c.id==='CDU_CAPT_LSK_L'+number);
-  const cy=(lsk.bbox_px[1]+lsk.bbox_px[3])/2;
-  return (cy+dy-screenTop)/screenHeight*100;
- };
+
  // L1 / R1: departure and arrival for ORIGIN; R2: DEST arrival only.
- box.appendChild(makeDepArrTriplet(y(1),'<DEP',airport('ORIGIN'),'ARR>'));
- box.appendChild(makeDepArrTriplet(y(2),'',airport('DEST'),'ARR>'));
+ box.appendChild(makeDepArrTriplet(lskTextTops(1).value,'<DEP',airport('ORIGIN'),'ARR>'));
+ box.appendChild(makeDepArrTriplet(lskTextTops(2).value,'',airport('DEST'),'ARR>'));
  // L6 / R6: reference-only OTHER airport entry via scratchpad.
- box.appendChild(makeDepArrTriplet(y(6,-13),'DEP','OTHER','ARR',true));
- box.appendChild(makeDepArrTriplet(y(6,10),'<----','','---->'));
+ box.appendChild(makeDepArrTriplet(lskTextTops(6).label,'DEP','OTHER','ARR',true));
+ box.appendChild(makeDepArrTriplet(lskTextTops(6).value,'<----','','---->'));
 }
 function v19SafeN1(){const r=n1EstimateV19();return r?.status==='SIM_ESTIMATE'?r:null;}
 function update(){const box=$('fmc-lines'); const frame=document.createElement('div');
- const screenTop=1312*0.0765, screenHeight=1312*0.375;
+ const {screenTop,screenHeight}=CDU_DISPLAY_GEOMETRY;
  const page=pages[state.page]; const tag=(core.pendingCount(state)>0)?'MOD ':'ACT ';
  const header=document.createElement('div'); header.className='fmc-line fmc-header'; header.style.top=((117-screenTop)/screenHeight*100)+'%';
  const ht=document.createElement('span'); ht.className='fmc-header-title'; ht.textContent=(TITLE_PLAIN.has(state.page)?'':tag)+page.title;
  const hc=document.createElement('span'); hc.className='fmc-header-count'; hc.textContent=(page.page_number||1)+'/'+page.page_count; header.appendChild(ht); header.appendChild(hc); frame.appendChild(header);
  const n1=v19SafeN1();
- if(state.page==='DEP_ARR')renderDepArrIndex(frame,screenTop,screenHeight);
- else for(let row=1;row<=6;row++){ const pair=page.rows[row-1]; const lsk=map.controls.find(c=>c.id==='CDU_CAPT_LSK_L'+row); const cy=(lsk.bbox_px[1]+lsk.bbox_px[3])/2;
-   const labelTop=((cy-13-screenTop)/screenHeight*100); const valueTop=((cy+10-screenTop)/screenHeight*100);
+ if(state.page==='DEP_ARR')renderDepArrIndex(frame);
+ else for(let row=1;row<=6;row++){ const pair=page.rows[row-1]; const {label:labelTop,value:valueTop}=lskTextTops(row);
    let labelL=pair?.[0]?.label||'',labelR=pair?.[1]?.label||'';
    let valueL=displayCell(pair?.[0]),valueR=displayCell(pair?.[1]);
    if(state.page==='INDEX'){
@@ -118,7 +132,7 @@ function update(){const box=$('fmc-lines'); const frame=document.createElement('
    }
    frame.appendChild(valueLine);
  }
- frame.appendChild(makePairRow(((565-screenTop)/screenHeight*100), state.message||state.scratch||'', '', true));
+ frame.appendChild(makePairRow(((CDU_DISPLAY_GEOMETRY.scratchpadTop-screenTop)/screenHeight*100), state.message||state.scratch||'', '', true));
  const renderers={
   NAVDB_LEGS:window.CDU_NAV_API?.paint,
   STAGE5:window.CDU_STAGE5_API?.paint,
