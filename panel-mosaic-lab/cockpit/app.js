@@ -2,6 +2,8 @@
  'use strict';
  const model=window.B737CockpitView,byId=id=>document.getElementById(id),vp=byId('viewport'),scene=byId('scene'),sizer=byId('sizer');
  let assembly,zoom=.2,focused='main',frame,drag=null,dragged=false,lightDefinitions=[],snapshot=null,ready=false,pinch=null,visualTest=false,visualOverheadCount=0;const loaded=new Set(),failed=new Set(),cduFrames=new Map(),cduStates=new Map();
+ // Performance policy: only First Officer CDU is instantiated. CAPT stays inert.
+ const ENABLED_CDU_SEAT='FO';
  const fmcSession=window.B737CduSession.create();
  window.B737UnifiedFmc=Object.freeze({attach(seat,source,peer){const c=cduFrames.get(seat);if(!c||c.child.contentWindow!==source)throw Error('Unknown CDU frame');return fmcSession.attach(seat,peer);}});
  const faultable=new Set(['sensor','fuel-pressure','hyd-pressure','flight-pressure','standby-pressure','yaw','drive-pressure','drive-temperature','equipment','window','probe','dc-fail','fault','apu','recorder','anti-ice','pneumatic','press-fault','valve','fuel-valve','ram-door']);
@@ -18,7 +20,24 @@
    }scene.append(region);
   }
   model.validateInstruments(assembly);
-  for(const item of assembly.embeddedInstruments||[]){const station=document.createElement('div');station.id=item.id;station.className='cdu-station';station.dataset.seat=item.seat;Object.assign(station.style,{left:item.x+'px',top:item.y+'px',width:item.w+'px',height:item.h+'px'});const label=document.createElement('span');label.className='cdu-seat-label';label.textContent=item.label;station.append(label);const child=document.createElement('iframe');child.id='cduFrame'+item.seat;child.className='cdu-frame';child.title=item.label;child.src=item.embeddedUrl;const placement=model.instrumentPresentation(item);Object.assign(child.style,{width:item.nativeWidth+'px',height:item.nativeHeight+'px',left:placement.left+'px',top:placement.top+'px',transform:'scale('+placement.scaleX+','+placement.scaleY+')',transformOrigin:'0 0'});const frameWindow=document.createElement('div');frameWindow.className='cdu-frame-window';frameWindow.append(child);station.append(frameWindow);byId('region-'+item.regionId).querySelector('.region-native').append(station);cduFrames.set(item.seat,{child,item,station});}
+  for(const item of assembly.embeddedInstruments||[]){const station=document.createElement('div');station.id=item.id;station.className='cdu-station';station.dataset.seat=item.seat;Object.assign(station.style,{left:item.x+'px',top:item.y+'px',width:item.w+'px',height:item.h+'px'});const label=document.createElement('span');label.className='cdu-seat-label';label.textContent=item.label;station.append(label);
+   if(item.seat!==ENABLED_CDU_SEAT){
+    // Preserve approved physical panel registration, but never create/load the
+    // Captain iframe, CDU engine, typography, telemetry, listeners or timers.
+    station.classList.add('ready','cdu-disabled');
+    station.dataset.runtime='OFF';
+    station.setAttribute('aria-label','Captain CDU deactivated for performance');
+    station.style.pointerEvents='none';
+    const off=document.createElement('div');off.className='cdu-disabled-face';
+    off.setAttribute('aria-hidden','true');off.textContent='CDU OFF';
+    Object.assign(off.style,{position:'absolute',inset:'0',display:'grid',
+      placeItems:'center',background:'#06090c',color:'#53606b',font:'600 12px system-ui',
+      letterSpacing:'1px'});
+    station.append(off);
+    byId('region-'+item.regionId).querySelector('.region-native').append(station);
+    continue;
+   }
+   const child=document.createElement('iframe');child.id='cduFrame'+item.seat;child.className='cdu-frame';child.title=item.label;child.src=item.embeddedUrl;const placement=model.instrumentPresentation(item);Object.assign(child.style,{width:item.nativeWidth+'px',height:item.nativeHeight+'px',left:placement.left+'px',top:placement.top+'px',transform:'scale('+placement.scaleX+','+placement.scaleY+')',transformOrigin:'0 0'});const frameWindow=document.createElement('div');frameWindow.className='cdu-frame-window';frameWindow.append(child);station.append(frameWindow);byId('region-'+item.regionId).querySelector('.region-native').append(station);cduFrames.set(item.seat,{child,item,station});}
   const gallery=byId('gallery');for(const r of assembly.regions)for(const p of r.placements||[]){if(p.referenceOnly)continue;const a=assembly.assets[p.asset],b=document.createElement('button');b.append(image(a,p.label),document.createTextNode(p.label));b.onclick=()=>{byId('galleryDialog').close();focus(r.id);select(r,p);};gallery.append(b);}
  }
  function applyZoom(value,left=vp.scrollLeft,top=vp.scrollTop,x=vp.clientWidth/2,y=vp.clientHeight/2){const next=model.clamp(value,.04,2),before={x:parseFloat(scene.style.left)||0,y:parseFloat(scene.style.top)||0},after={x:Math.max(0,(vp.clientWidth-assembly.canvas.width*next)/2),y:Math.max(0,(vp.clientHeight-assembly.canvas.height*next)/2)};const z=model.zoomAnchor(zoom,next,left,top,x,y,before,after);zoom=z.zoom;scene.style.left=after.x+'px';scene.style.top=after.y+'px';scene.style.transform='scale('+zoom+')';scene.style.setProperty('--zoom',String(zoom));sizer.style.width=Math.ceil(assembly.canvas.width*zoom)+'px';sizer.style.height=Math.ceil(assembly.canvas.height*zoom)+'px';vp.scrollLeft=z.left;vp.scrollTop=z.top;byId('zoomValue').textContent=Math.round(zoom*100)+'%';window.B737ImageLoader.refresh();window.dispatchEvent(new CustomEvent('b737:performance-view'));}
@@ -66,7 +85,7 @@
   if(d.kind==='pan-end')drag=null;
   if(d.kind==='zoom'){const r=frame.getBoundingClientRect(),v=vp.getBoundingClientRect();applyZoom(zoom*(d.delta<0?1.12:1/1.12),vp.scrollLeft,vp.scrollTop,r.left-v.left+d.clientX*zoom,r.top-v.top+d.clientY*zoom);}
  });
- function updateCduStatus(){byId('cduStatus').textContent=['CAPT','FO'].map(seat=>{const s=cduStates.get(seat);const font=s?.typography?(' · '+s.typography.version+' · '+(s.typography.correct?'✓':'⚠')+' '+(s.typography.nativePx||'?')+'px · 24A '+Math.round(s.typography.width24Px||0)+'px / 25A '+Math.round(s.typography.width25Px||0)+'px · '+s.typography.color):'';return (seat==='CAPT'?'کپتن':'فرست')+': '+(s?.error?'خطای بارگذاری':s?.ready?(s.page||'آماده'):'در حال بارگذاری')+font;}).join(' · ');}
+ function updateCduStatus(){byId('cduStatus').textContent='کاپیتان: OFF (بارگذاری صفر) · '+['FO'].map(seat=>{const s=cduStates.get(seat);const font=s?.typography?(' · '+s.typography.version+' · '+(s.typography.correct?'✓':'⚠')+' '+(s.typography.nativePx||'?')+'px · 24A '+Math.round(s.typography.width24Px||0)+'px / 25A '+Math.round(s.typography.width25Px||0)+'px · '+s.typography.color):'';return (seat==='CAPT'?'کپتن':'فرست')+': '+(s?.error?'خطای بارگذاری':s?.ready?(s.page||'آماده'):'در حال بارگذاری')+font;}).join(' · ');}
  window.addEventListener('message',e=>{const d=e.data,c=d&&cduFrames.get(d.seat);if(e.origin!==location.origin||!c||e.source!==c.child.contentWindow||d.type!=='b737:unified-cdu')return;const previous=cduStates.get(d.seat)||{};
   if(d.kind==='ready'&&d.controls===70){cduStates.set(d.seat,{...previous,ready:true});c.station.classList.add('ready');byId(d.seat==='CAPT'?'resetCduCaptain':'resetCduFirstOfficer').disabled=false;}
   if(d.kind==='state'&&typeof d.page==='string')cduStates.set(d.seat,{...previous,page:d.page.slice(0,50)});
@@ -76,8 +95,8 @@
   if(d.kind==='zoom'&&Number.isFinite(d.delta)){const r=c.child.getBoundingClientRect(),v=vp.getBoundingClientRect(),scaleX=r.width/c.item.nativeWidth,scaleY=r.height/c.item.nativeHeight;applyZoom(zoom*(d.delta<0?1.12:1/1.12),vp.scrollLeft,vp.scrollTop,r.left-v.left+d.clientX*scaleX,r.top-v.top+d.clientY*scaleY);}
   updateCduStatus();
  });
- for(const [seat,id]of [['CAPT','resetCduCaptain'],['FO','resetCduFirstOfficer']]){byId(id).disabled=true;byId(id).onclick=()=>{const c=cduFrames.get(seat);if(c)c.child.contentWindow.postMessage({type:'b737:unified-cdu-command',seat,action:'reset'},location.origin);};}
- byId('resetSharedFmc').onclick=()=>{const c=[...cduFrames.values()].find(c=>c.station.classList.contains('ready'));if(c)c.child.contentWindow.postMessage({type:'b737:unified-cdu-command',seat:c.item.seat,action:'reset-fmc'},location.origin);};
+ for(const [seat,id]of [['FO','resetCduFirstOfficer']]){byId(id).disabled=true;byId(id).onclick=()=>{const c=cduFrames.get(seat);if(c)c.child.contentWindow.postMessage({type:'b737:unified-cdu-command',seat,action:'reset'},location.origin);};}
+ byId('resetSharedFmc').onclick=()=>{const c=cduFrames.get(ENABLED_CDU_SEAT);if(c)c.child.contentWindow.postMessage({type:'b737:unified-cdu-command',seat:c.item.seat,action:'reset-fmc'},location.origin);};
  for(const b of document.querySelectorAll('[data-focus]'))b.onclick=()=>focus(b.dataset.focus);
  byId('fit').onclick=()=>focus(focused);byId('zoomIn').onclick=()=>applyZoom(zoom*1.25);byId('zoomOut').onclick=()=>applyZoom(zoom/1.25);byId('native').onclick=()=>applyZoom(1);
  byId('panMode').onclick=e=>{const active=!scene.classList.contains('pan-mode');scene.classList.toggle('pan-mode',active);e.currentTarget.setAttribute('aria-pressed',String(active));};
