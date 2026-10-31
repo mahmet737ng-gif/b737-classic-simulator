@@ -72,9 +72,12 @@
    apu=window.B737ISNAPULoadDynamicsV1.step(apu,load,100);
    clocks.dynamicsSteps++;
   }
-  if(activeMessaging&&ready){
-   document.getElementById('abEchoFrame')?.contentWindow?.postMessage({kind:'perf8-ping',seq:++seq},location.origin);
-   pings++;clocks.messagesSent++;
+  if(activeMessaging){
+   // Keep pinging until first ACK even if iframe loaded before parent's
+   // message handler (otherwise a lost one-time READY deadlocks stage E).
+   const peer=document.getElementById('abEchoFrame')?.contentWindow;
+   if(peer){peer.postMessage({kind:'perf8-ping',seq:++seq},location.origin);
+    pings++;clocks.messagesSent++;}
   }
  }
  setInterval(tick,100);
@@ -83,7 +86,7 @@
    const frame=document.getElementById('abEchoFrame');
    if(event.origin!==location.origin||event.source!==frame?.contentWindow)return;
    if(event.data?.kind==='perf8-ready'){ready=true;return;}
-   if(event.data?.kind==='perf8-pong'){pongs++;clocks.messagesReceived++;}
+   if(event.data?.kind==='perf8-pong'){ready=true;pongs++;clocks.messagesReceived++;}
   });
  }
  async function measure(){
