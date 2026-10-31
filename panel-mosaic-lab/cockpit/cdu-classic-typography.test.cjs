@@ -12,7 +12,8 @@ function style(){const applied=new Map();return {
  applied,setProperty:(k,v)=>applied.set(k,String(v)),removeProperty:k=>applied.delete(k)
 };}
 function el(klass,text='',family='BoeingCDULarge',rectWidth=243){
- return {classList:{contains:x=>klass.split(' ').includes(x)},textContent:text,style:style(),family,
+ const classes=new Set(klass.split(' ').filter(Boolean));
+ return {classList:{contains:x=>classes.has(x),add:x=>classes.add(x)},textContent:text,style:style(),family,
   getBoundingClientRect:()=>({width:rectWidth,bottom:395}),
   querySelectorAll:()=>[],
   querySelector:()=>null};
