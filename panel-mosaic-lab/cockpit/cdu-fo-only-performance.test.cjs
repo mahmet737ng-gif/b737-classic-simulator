@@ -6,9 +6,10 @@ const source=fs.readFileSync(path.join(__dirname,'app.js'),'utf8');
 const assembly=JSON.parse(fs.readFileSync(path.join(__dirname,'assembly.json'),'utf8'));
 const html=fs.readFileSync(path.join(__dirname,'index.html'),'utf8');
 const start=source.indexOf('for(const item of assembly.embeddedInstruments||[])');
-const end=source.indexOf('  const gallery=byId(',start);
-assert.ok(start>=0&&end>start,'Original CDU mounting loop still exists');
+const end=source.indexOf('\n }\n function applyZoom(',start);
+assert.ok(start>=0&&end>start,'CDU mounting loop still exists independently of the lazy gallery');
 const loop=source.slice(start,end);
+assert.match(source,/function mountGallery\(\)/,'PERF-0002 gallery is mounted on demand');
 assert.match(source,/const ENABLED_CDU_SEAT='FO'/);
 assert.match(loop,/if\(item\.seat!==ENABLED_CDU_SEAT\)/);
 assert.ok(loop.indexOf('continue;')<loop.indexOf("document.createElement('iframe')"),
