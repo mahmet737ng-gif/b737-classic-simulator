@@ -81,7 +81,7 @@ function checkPage(id){
  assert.equal(result.large.width25Px>result.large.availablePx,true);
  assert.equal(result.photoProfile,'CLASSIC-CDU-PHOTO-HIERARCHY-0001');
  assert.equal(result.scratchLength,24);
- assert.ok(result.labelPx>=result.fontSizePx*.84&&result.labelPx<=result.fontSizePx*1.3,'labels are now approx 90% cap height');
+ assert.ok(result.labelPx>=result.fontSizePx*.60&&result.labelPx<=result.fontSizePx*.73,'labels are smaller than LSK values');
  assert.ok(Math.abs(result.headerPx/result.fontSizePx-.88)<.001);
  assert.ok(Math.abs(result.promptPx/result.fontSizePx-.95)<.001);
  for(const entry of originals){
@@ -105,6 +105,6 @@ assert.match(src,/if\(!standard\)return 0;/,'nonstandard/FCOM DEP ARR must be gu
 assert.match(src,/const TOP=\{header:\.5/,'approved LSK vertical coordinates retained');
 assert.match(src,/PHOTO_PROFILE\.lskPromptToLarge/);
 const embedded=fs.readFileSync(path.join(__dirname,'cdu-stage.html'),'utf8');
-assert.match(embedded,/cdu-screen-fit-v6\.js\?v=CDU-24COL-0006-R5-LSK-LABEL90/);
+assert.match(embedded,/cdu-screen-fit-v6\.js\?v=CDU-24COL-0006-R6-LSK-GAP70/);
 assert.doesNotMatch(src,/@font-face|BoeingCDU-Large\.ttf|\.bbox_px\s*=/);
 console.log('PASS: INDEX IDENT POS INIT RTE PERF INIT TAKEOFF LEGS: small titles, large LSK prompts, exact 24A scratchpad, untouched FCOM cells');
