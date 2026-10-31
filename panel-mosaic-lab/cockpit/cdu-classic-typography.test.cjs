@@ -72,7 +72,7 @@ const result=api.apply();
 assert.equal(result.ready,true);
 assert.equal(result.columns,24);
 assert.equal(result.standard,true);
-assert.equal(pairs[0].style.applied.get('font-size'),result.labelPx.toFixed(2)+'px');
+assert.equal(parseFloat(pairs[0].style.applied.get('font-size')),Number(result.labelPx.toFixed(2)),'calibrated title font must match');
 assert.equal(pairs[1].style.applied.get('font-size'),'44px');
 assert.equal(scratch.style.applied.get('font-size'),'44px');
 assert.ok(result.labelPx/44>=.88&&result.labelPx/44<=.92,
