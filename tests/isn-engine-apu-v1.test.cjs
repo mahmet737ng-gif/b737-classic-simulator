@@ -79,6 +79,9 @@ assert.equal(o.warnings.audio.active.some(x => x.id === 'fireBell'), false,
 o = s.send(observed('apu', true));
 assert.equal(o.electrical.bus.generator1, false,
   'APU running does not automatically select the APU generator');
+// Classic on-ground BAT OFF + selected APU GEN requests automatic APU
+// shutdown; BAT ON is a precondition for a sustainable APU generator feed.
+o = s.send(power({type:'CONTROL', key:'batterySwitch', value:true}));
 o = s.send(power({type:'SELECT_SOURCE', source:'APU', side:1}));
 assert.equal(o.electrical.source[1], 'APU');
 assert.equal(o.electrical.bus.generator1, true);
@@ -126,6 +129,7 @@ const scenario = [
   ...initialKnown,
   {type:'SOURCE_REQUEST', device:'apu', request:'START'},
   observed('apu', true),
+  power({type:'CONTROL', key:'batterySwitch', value:true}),
   power({type:'SELECT_SOURCE', source:'APU', side:2}),
   pneumatic({type:'CONTROL', key:'apuBleed', value:'ON'}),
   pack({type:'PUMP_SWITCH', id:'hyd.electricPumpA', value:true}),
