@@ -10,6 +10,18 @@ const Pack = require('../engine/integration/isn-electrical-pack-v1');
 const readSession = () => new Pack.Session({Electrical, Loads, TrainerCore, WarningEngine});
 const powerFault = (s, id, active) => s.send({type: 'ELECTRICAL', action: {type: 'FAULT', id, active, instructor: true}});
 const powerControl = (s, key, value) => s.send({type: 'ELECTRICAL', action: {type: 'CONTROL', key, value}});
+const powerSource = (s, side, source) => s.send({type: 'ELECTRICAL', action: {type: 'SELECT_SOURCE', side, source}});
+const connectBothEngineGenerators = s => {
+  // V7 sessions now start genuinely cold & dark. Engine-running alone does not
+  // close a generator breaker; connect both sources before crossfeed testing.
+  powerControl(s, 'batterySwitch', true);
+  powerControl(s, 'engine1Running', true);
+  powerControl(s, 'engine2Running', true);
+  powerSource(s, 1, 'GEN1');
+  powerSource(s, 2, 'GEN2');
+  assert.equal(s.get().electrical.bus.generator1, true);
+  assert.equal(s.get().electrical.bus.generator2, true);
+};
 const switchPump = (s, id, value) => s.send({type: 'PUMP_SWITCH', id, value});
 const trit = (v) => v === true || v === false || v === null;
 
@@ -28,6 +40,7 @@ assert.equal(o.warnings.masterCautionHyd, null, 'Unsupported hydraulic master ca
 assert.equal(o.warnings.masterCautionFuelCandidate, true);
 assert.equal(o.warnings.qa.fuelCaution, 'TRAINER_CORE_CANDIDATE_NOT_SOURCE_APPROVED_MASTER_CAUTION');
 
+connectBothEngineGenerators(s);
 switchPump(s, 'fuel.main1FwdPump', true);
 o = s.get();
 assert.equal(o.pumps['fuel.main1FwdPump'].operating, null);
@@ -54,6 +67,7 @@ assert.equal(o.pumps['fuel.main1FwdPump'].lowPressure, true);
 assert.throws(() => s.send({type: 'OBSERVED_POWER', id: 'fuel.main1FwdPump', value: true}), /instructor/);
 
 const sim = readSession();
+connectBothEngineGenerators(sim);
 sim.send({type: 'MODE', value: 'TRAINING_SURROGATE', instructor: true});
 switchPump(sim, 'fuel.main1FwdPump', true);
 let r = sim.get();
