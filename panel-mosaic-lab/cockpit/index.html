@@ -98,6 +98,30 @@ body.side-open > main > aside#inspector {display:block !important}
 <button id="cbPanelOpen" type="button" aria-haspopup="dialog" aria-controls="cbPanelDialog">CB PNL</button>
 <button id="liveBatteryRecharge" type="button" disabled aria-label="Recharge training battery to 100 percent" title="Waiting for live battery ECU" data-recharge-control="instructor">BAT RECHARGE</button>
 </div></header>
+<!-- BAT RECHARGE: synchronous header prepaint survives deferred bundle errors. -->
+<script id="battery-recharge-prepaint-v4">
+(function(){
+ 'use strict';
+ const bar=document.querySelector('body > header.unified-minimal-header .header-settings');
+ if(!bar)return;
+ const cb=bar.querySelector('#cbPanelOpen');
+ let button=bar.querySelector('#liveBatteryRecharge');
+ if(!button){
+  button=document.createElement('button');
+  button.type='button';
+  button.id='liveBatteryRecharge';
+  button.textContent='BAT RECHARGE';
+  button.disabled=true;
+  button.setAttribute('aria-label','Recharge training battery to 100 percent');
+ }
+ if(cb&&button.previousElementSibling!==cb)cb.insertAdjacentElement('afterend',button);
+ else if(!button.isConnected)bar.append(button);
+ button.hidden=false;
+ button.style.setProperty('display','inline-flex','important');
+ button.style.setProperty('visibility','visible','important');
+ button.dataset.build='BAT-HEADER-0004';
+})();
+</script>
 <main><section class="workbench"><div class="toolbar"><div class="tools"><button id="zoomOut" aria-label="کوچک‌نمایی">−</button><output id="zoomValue">—</output><button id="zoomIn" aria-label="بزرگ‌نمایی">+</button><button id="fit">FIT</button><button id="native">۱:۱</button></div><div class="tools"><button id="unifiedLightsOpen" class="unified-lights-open" aria-label="کتابخانه چراغ‌های یونیفاید">تست چراغ‌ها · در حال همگام‌سازی</button><span id="visualLampStatus" role="status"></span><button id="panMode" aria-pressed="false">جابجایی</button><button id="reference" aria-pressed="false">مرجع</button><button id="galleryOpen">تصاویر اصلی</button></div></div>
 <div id="viewport" class="viewport" tabindex="0" role="region" aria-label="موزاییک مشترک اورهد، مین پنل و پدستال"><div id="sizer"><div id="scene" class="scene"></div></div><p id="loading" class="loading" role="status">در حال اتصال پنل‌ها…</p></div><div class="view-caption"><span id="viewLabel">مین‌پنل</span><span>کشیدن برای جابه‌جایی · Ctrl + چرخ ماوس یا دو انگشت برای زوم</span></div></section>
 <aside id="inspector" class="inspector"><section><h1>کاکپیت یکپارچه</h1><p class="muted">اورهد تعاملی در کنار تصاویر جدید مین‌پنل و پدستال قرار دارد. دکمه‌های بالا فقط نما را عوض می‌کنند.</p><div class="metrics"><div><b>۳</b><small>ناحیهٔ مشترک</small></div><div><b>۷</b><small>تصویر جدید متصل</small></div></div><p id="assetStatus" role="status">تصاویر: در حال دریافت</p><p id="overheadStatus" role="status">اورهد: در حال اتصال</p></section>
