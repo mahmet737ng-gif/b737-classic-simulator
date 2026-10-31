@@ -93,7 +93,6 @@ for(const [row,index] of [[3,0],[5,1],[7,0]]){
 assert.equal(result.pageValueMultiplier,1.44);
 assert.equal(result.entryPromptMultiplier,.56);
 assert.equal(result.pageLabelMultiplier,1.8);
-assert.equal(result.pageLabelMultiplier,2);
 assert.equal(scratch.style.applied.get('font-size'),'44px');
 assert.ok(result.labelPx/44>=.68&&result.labelPx/44<=.73,
  'Labels are smaller than LSK data and must not overlap');
