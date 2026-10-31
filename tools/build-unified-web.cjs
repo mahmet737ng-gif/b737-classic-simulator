@@ -78,7 +78,7 @@ function build(root,out=path.join(root,'web-dist')){
  // PERF-0006: dedicated instrumentation pages; do not change live production,
  // existing A/B comparisons, approved panels, images or interaction engines.
  const diagnostic='<script>window.B737PerfDiagnosticV6=true;</script>'+
-  '<script src="./perf-diagnostic-v6.js?v=PERF-0006" defer></script>';
+  '<script src="./perf-diagnostic-v6.js?v=PERF-0011-RAF-FIX" defer></script>';
  fs.writeFileSync(path.join(out,'panel-mosaic-lab/cockpit/unified-diagnostic-v6.html'),
   testHTML.replace('</head>',hud+diagnostic+'</head>'));
  fs.writeFileSync(path.join(out,'panel-mosaic-lab/cockpit/unified-diagnostic-static-v6.html'),
@@ -89,7 +89,7 @@ function build(root,out=path.join(root,'web-dist')){
  const noCDU='panel-mosaic-lab/cockpit/unified-no-cdu-v10.html';
  const lightOH='panel-mosaic-lab/cockpit/unified-light-overhead-v10.html';
  const flags=(name)=>'<script>window.B737PerfDiagnosticV6=true;window.'+name+'=true;</script>';
- const instrument='<script src="./perf-diagnostic-v6.js?v=PERF-0010" defer></script>';
+ const instrument='<script src="./perf-diagnostic-v6.js?v=PERF-0011-RAF-FIX" defer></script>';
  fs.writeFileSync(path.join(out,noCDU),testHTML.replace('</head>',
   flags('B737UnifiedNoCduTest')+instrument+'</head>'));
  fs.writeFileSync(path.join(out,lightOH),testHTML.replace('</head>',

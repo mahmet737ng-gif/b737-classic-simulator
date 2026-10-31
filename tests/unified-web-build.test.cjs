@@ -170,3 +170,14 @@ test('PERF-0010 publishes isolated parent-FMC vs full-Overhead experiments witho
  assert.doesNotMatch(read('panel-mosaic-lab/cockpit/index.html'),/PERF-0010/);
  assert.doesNotMatch(read('panel-mosaic-lab/cockpit/overhead-stage.html'),/PERF-0010/);
 });
+
+test('PERF-0011 corrected diagnostic FPS uses wall-clock time and retains long frame stalls',()=>{
+ const code=read('panel-mosaic-lab/cockpit/perf-diagnostic-v6.js');
+ const web=read('tools/build-unified-web.cjs');
+ assert.match(code,/frameCallbacks\*10000\/wall/);
+ assert.match(code,/maxFrameGapMs/);
+ assert.match(code,/observedFrameGapCoveragePct/);
+ assert.match(code,/stallsOver1000Ms/);
+ assert.doesNotMatch(code,/d<2000/);
+ assert.match(web,/PERF-0011-RAF-FIX/);
+});

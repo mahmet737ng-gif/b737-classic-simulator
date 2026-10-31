@@ -21,9 +21,17 @@
  async function segment(ms,pan,entries){
   const vp=document.getElementById('viewport');
   const initial=vp?.scrollTop||0,initialLeft=vp?.scrollLeft||0;
-  const gaps=[];let prev=0,active=true,direction=1,scrollTimer=0;
-  const begin=performance.now(),old=entries.length;
-  function frame(t){if(!active)return;if(prev){const d=t-prev;if(d>0&&d<2000)gaps.push(d);}prev=t;requestAnimationFrame(frame);}
+  // Include all frame gaps. Older probe discarded delays >=2000ms and
+  // divided by only the sampled gaps, overstating FPS during long stalls.
+  const gaps=[];let prev=0,active=true,direction=1,scrollTimer=0,frameCallbacks=0;
+  const begin=performance.now(),old=entries.length,hiddenAtStart=document.hidden;
+  function frame(t){
+   if(!active)return;
+   frameCallbacks++;
+   if(prev){const d=t-prev;if(d>0)gaps.push(d);}
+   prev=t;
+   requestAnimationFrame(frame);
+  }
   requestAnimationFrame(frame);
   const startStage=stage();
   if(pan&&vp){
@@ -38,10 +46,17 @@
   if(pan&&vp){vp.scrollTop=initial;vp.scrollLeft=initialLeft;}
   const wall=performance.now()-begin,sum=gaps.reduce((s,v)=>s+v,0),ordered=gaps.slice().sort((a,b)=>a-b);
   const tasks=entries.slice(old);
-  return {durationMs:Math.round(wall),frames:gaps.length,
-   fps:sum?Math.round(gaps.length*10000/sum)/10:null,
+  return {durationMs:Math.round(wall),frames:frameCallbacks,
+   fps:wall>0?Math.round(frameCallbacks*10000/wall)/10:null,
+   fpsMethod:'ALL_RAF_CALLBACKS_DIVIDED_BY_WALL_CLOCK_DURATION',
+   observedFrameGapCoveragePct:wall>0?Math.round(sum/wall*1000)/10:0,
+   maxFrameGapMs:gaps.length?Math.round(Math.max(...gaps)):null,
+   unobservedRafMs:Math.max(0,Math.round(wall-sum)),
+   tabHiddenAtStart:hiddenAtStart,tabHiddenAtEnd:document.hidden,
    p95FrameMs:ordered.length?Math.round(ordered[Math.floor((ordered.length-1)*.95)]*10)/10:null,
    slowFrames:gaps.filter(x=>x>34).length,
+   stallsOver250Ms:gaps.filter(x=>x>250).length,
+   stallsOver1000Ms:gaps.filter(x=>x>1000).length,
    longTasks:tasks.length,longTaskMs:Math.round(tasks.reduce((s,t)=>s+t.duration,0)),
    maxLongTaskMs:Math.round(Math.max(0,...tasks.map(x=>x.duration))),
    overheadFpsAtStart:startStage?.fps??null,overheadFpsAtEnd:stage()?.fps??null};
@@ -66,7 +81,7 @@
     viewport:{width:innerWidth,height:innerHeight,dpr:devicePixelRatio,
      zoom:document.getElementById('zoomValue')?.textContent?.trim()||null},
     approxDomNodes:countNodes(),jsHeapMB:mem?Math.round(mem/1e6):null,
-    still,moving,notes:'RAF/long tasks are indirect browser measurements; CPU script/layout/paint breakdown requires CDP Chrome trace.'};
+    still,moving,notes:'PERF-0011 corrected RAF accounting: FPS counts all callbacks divided by entire wall-clock interval; no dropped frame gaps. Tab visibility, max stall and coverage reported. Long tasks are indirect; CPU/layout/paint breakdown requires CDP Chrome trace.'};
    output.textContent=JSON.stringify(report,null,2);copy.disabled=false;
   }catch(error){output.textContent='Diagnostic error: '+error.message;}
   finally{obs?.disconnect();busy=false;run.disabled=false;}
