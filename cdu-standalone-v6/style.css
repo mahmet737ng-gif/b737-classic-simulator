@@ -194,8 +194,14 @@ main{grid-template-columns:minmax(0,1fr) 360px;align-items:start}
   text-shadow:inherit;
 }
 
-/* Editable blanks and TRAINER: 70% of the preceding 0.8x size. */
+/* Editable boxes and dashes: legible, independent of navigation prompts. */
 #fmc-screen #fmc-lines .fmc-line .cdu-entry-placeholder{
-  font-size:1.386cqw!important;
+  font-size:2.717cqw!important;
   line-height:.96!important;
+}
+
+/* Navigation choices keep their own, smaller font. */
+#fmc-screen #fmc-lines .fmc-line .cdu-lsk-prompt{
+ font-size:2.594cqw!important;
+ line-height:.77!important;
 }
