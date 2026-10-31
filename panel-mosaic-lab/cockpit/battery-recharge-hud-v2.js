@@ -31,18 +31,32 @@
  }
  function recharge(event){
   event.preventDefault();event.stopPropagation();
+  // Override any old click listener that survived HTTP/browser caching.
+  event.stopImmediatePropagation();
+  const button=document.getElementById(buttonId);
   try{
-   if(!owner()?.rechargeLiveBattery)throw Error('Electrical ECU is not ready');
-   // The original HUD runtime owns the integrated clock/persistence. It will
-   // refresh on its next tick, so do not create a second state or localStorage.
-   const battery=owner().rechargeLiveBattery();
+   const installed=root.B737InstalledBattery;
+   let battery;
+   if(typeof installed?.recharge==='function'){
+    battery=installed.recharge();
+   }else{
+    // Compatibility for a cached v1 HUD with an updated electrical ECU.
+    const ecu=owner();
+    if(typeof ecu?.rechargeLiveBattery!=='function')throw Error('Electrical ECU not initialized or cached. Refresh the cockpit.');
+    battery=ecu.rechargeLiveBattery();
+    // Persist from the authoritative ECU state, never from a display value.
+    const state=ecu.getElectricalState?.().battery;
+    if(state)localStorage.setItem('b737classic.live-battery.v1',JSON.stringify({
+     schema:'b737-saved-battery/1',state
+    }));
+    installed?.refresh?.();
+   }
+   if(!battery||battery.percent<99.999)throw Error('Battery ECU did not report full charge');
    showSnapshot(battery);
-   const button=document.getElementById(buttonId);
-   if(button)button.title='Battery charge restored to 100%';
+   if(button){button.textContent='BAT RECHARGE';button.title='ECU battery at 100% and saved';button.dataset.recharge='success';}
   }catch(error){
    console.error('BAT RECHARGE failed:',error);
-   const button=document.getElementById(buttonId);
-   if(button)button.title=String(error.message||error);
+   if(button){button.textContent='RECHARGE FAILED';button.title=String(error.message||error);button.dataset.recharge='error';}
   }
  }
  function ensure(){
@@ -55,9 +69,14 @@
    btn.setAttribute('aria-label','Recharge the installed training battery to 100 percent');
    btn.style.cssText='display:block!important;visibility:visible!important;position:relative;box-sizing:border-box;margin-top:7px;padding:6px 10px;min-height:32px;width:100%;border:1px solid #6c9a8d;border-radius:5px;background:#163a3c;color:#e5fff3;font:700 12px/1.3 system-ui;cursor:pointer;pointer-events:auto;touch-action:manipulation';
    for(const type of ['pointerdown','mousedown','touchstart','dblclick'])btn.addEventListener(type,event=>event.stopPropagation());
-   btn.addEventListener('click',recharge);
    hud.append(btn);
   }
+  // Capture clicks from both fresh and cached legacy battery buttons.
+  if(btn.dataset.rechargeHandlerV3!=='true'){
+   btn.addEventListener('click',recharge,true);
+   btn.dataset.rechargeHandlerV3='true';
+  }
+  btn.style.pointerEvents='auto';
   hud.style.display=connectedGenerator()?'none':'';
  }
  function ready(){
