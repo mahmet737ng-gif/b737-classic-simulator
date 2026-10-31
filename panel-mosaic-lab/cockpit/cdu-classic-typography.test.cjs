@@ -84,13 +84,14 @@ assert.equal(result.ready,true);
 assert.equal(result.columns,24);
 assert.equal(result.standard,true);
 assert.equal(parseFloat(pairs[0].style.applied.get('font-size')),Number((result.labelPx*2).toFixed(2)),'LSK page labels doubled');
-assert.equal(pairs[1].style.applied.get('font-size'),Number((44*1.8).toFixed(2))+'px','LSK values enlarged 1.8x');
+assert.equal(pairs[1].style.applied.get('font-size'),Number((44*1.44).toFixed(2))+'px','LSK value font reduced exactly 20% from the previous version');
 for(const [row,index] of [[3,0],[5,1],[7,0]]){
  const span=pairs[row].querySelectorAll()[index];
- assert.equal(span.style.applied.get('font-size'),'44px','entry placeholder must use former 24-A font');
+ assert.equal(span.style.applied.get('font-size'),'35.2px','entry prompt must be 20% smaller than former baseline');
  assert.ok(span.classList.contains('cdu-entry-placeholder'),'entry placeholder classification');
 }
-assert.equal(result.pageValueMultiplier,1.8);
+assert.equal(result.pageValueMultiplier,1.44);
+assert.equal(result.entryPromptMultiplier,.80);
 assert.equal(result.pageLabelMultiplier,2);
 assert.equal(scratch.style.applied.get('font-size'),'44px');
 assert.ok(result.labelPx/44>=.68&&result.labelPx/44<=.73,
