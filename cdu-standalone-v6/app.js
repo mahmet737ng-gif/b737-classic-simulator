@@ -114,53 +114,61 @@ function applyCDUScreenTypography(box){
  }
  box.style.setProperty('color',green,'important');
  box.style.setProperty('font-size',px+'px','important');
+ // The 24-A metric belongs ONLY to the scratchpad. Page values are allowed
+ // to be 1.8 times larger, and labels twice their previous size.
  const nodes=box.querySelectorAll('.fmc-line');
+ const cap=(family)=>{
+  if(!ctx)return .72;
+  ctx.font='400 100px "'+family+'"';
+  const m=ctx.measureText('HMWA3');
+  return ((m.actualBoundingBoxAscent||0)+(m.actualBoundingBoxDescent||0))/100||.72;
+ };
+ const oldSmall=Math.min(px*.73,px*.70*cap('BoeingCDULarge')/cap('BoeingCDUSmall'));
+ const pageSize=px*1.8;
+ const labelSize=oldSmall*2;
  for(const el of nodes){
   const small=el.classList.contains('fmc-small');
   const f=small?'BoeingCDUSmall':'BoeingCDULarge';
-  // Compare VISIBLE glyph cap heights rather than numerical font sizes:
-  // BoeingCDUSmall has smaller glyph geometry at the same CSS font-size.
-  // Labels are smaller and have a visibly separate baseline from LSK values.
-  const cap=(family)=>{
-   if(!ctx)return 0.72;
-   ctx.font='400 100px '+family;
-   const m=ctx.measureText('HMWA3');
-   return ((m.actualBoundingBoxAscent||0)+(m.actualBoundingBoxDescent||0))/100||0.72;
-  };
-  const labelPx=Math.min(px*.73,px*.70*cap('BoeingCDULarge')/cap('BoeingCDUSmall'));
-  const size=small?labelPx:px;
+  const isScratch=el.classList.contains('scratch');
+  const isHeader=el.classList.contains('fmc-header');
+  const size=isScratch||isHeader?px:small?labelSize:pageSize;
   for(const node of [el,...el.querySelectorAll('*')]){
    node.style.setProperty('color',green,'important');
    node.style.setProperty('font-family',f,'important');
    node.style.setProperty('font-size',size+'px','important');
    node.style.setProperty('font-weight','400','important');
+   node.style.setProperty('line-height',
+    isScratch?'1':isHeader?'.92':small?'.72':'.77','important');
   }
-  if(small){
-   el.style.setProperty('height','5.3%','important');
-   el.style.setProperty('line-height','.78','important');
+  if(!isScratch&&!isHeader){
+   el.style.setProperty('height',small?'5.3%':'6.1%','important');
    el.style.setProperty('overflow','visible','important');
-   // Long field titles retain their cap height; compress only the
-   // horizontal advances so they do not cross the adjacent LSK column.
+   // Keep the full glyph height. Fit long text ONLY horizontally inside
+   // its original left/right LSK column; do not shrink the font.
    for(const span of el.querySelectorAll('.fmc-left,.fmc-right,.fmc-center')){
     if(!span.textContent?.trim()||!ctx||typeof span.getBoundingClientRect!=='function')continue;
     const available=span.getBoundingClientRect().width;
     if(!(available>0))continue;
-    ctx.font='400 '+size+'px BoeingCDUSmall';
-    const width=ctx.measureText(span.textContent).width;
-    const factor=width>available-2?(available-2)/width:1;
+    ctx.font='400 '+size+'px "'+f+'"';
+    const measured=ctx.measureText(span.textContent).width;
+    const factor=measured>available-2?(available-2)/measured:1;
     span.style.setProperty('overflow','visible','important');
     if(factor<1){
      span.style.setProperty('transform-origin',
       span.classList.contains('fmc-right')?'right top':span.classList.contains('fmc-center')?'center top':'left top','important');
-     span.style.setProperty('transform','scaleX('+Math.max(.2,factor).toFixed(4)+')','important');
+     span.style.setProperty('transform','scaleX('+Math.max(.15,factor).toFixed(4)+')','important');
     }
    }
   }
+  if(small)el.style.setProperty('line-height','.72','important');
  }
  box.dataset.fontColor=green;
  box.dataset.promptPolicy=window.CDU_PROMPT_POLICY_V1?.VERSION||'NOT_LOADED';
  box.dataset.fontFit24='true';
- box.dataset.labelCapRatio='0.70';
+ box.dataset.labelCapRatio='2x-previous';
+ box.dataset.pageValueScale='1.8';
+ box.dataset.pageLabelScale='2';
+ box.dataset.scratchpadScale='1';
  box.dataset.valueLine='LSK_CENTER';
 }
 function update(){const box=$('fmc-lines'); const frame=document.createElement('div');
