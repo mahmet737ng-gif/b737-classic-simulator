@@ -60,14 +60,14 @@ const CDU_DISPLAY_GEOMETRY=Object.freeze({
  screenTop:1312*0.0765, screenHeight:1312*0.375,
  // Field values and selectable prompts are centred on each physical LSK.
  // The smaller field title is on the line immediately above that LSK.
- valueOffset:-13, labelOffset:-42,
+ valueOffset:-13, labelOffset:-42, lowerLabelOffset:-50,
  scratchpadTop:565, lineHeight:1312*0.375*0.053, clearGap:4
 });
 function lskTextTops(number){
  const lsk=map.controls.find(c=>c.id==='CDU_CAPT_LSK_L'+number);
  if(!lsk)throw Error('CDU_LSK_GEOMETRY_MISSING_'+number);
  const cy=(lsk.bbox_px[1]+lsk.bbox_px[3])/2;
- let labelY=cy+CDU_DISPLAY_GEOMETRY.labelOffset;
+ let labelY=cy+(number===1?CDU_DISPLAY_GEOMETRY.labelOffset:CDU_DISPLAY_GEOMETRY.lowerLabelOffset);
  let valueY=cy+CDU_DISPLAY_GEOMETRY.valueOffset;
  // Keep the bottom LSK's two lines together and strictly above scratchpad.
  // Applies to INDEX, DEP/ARR, and every other core CDU page.
@@ -120,14 +120,14 @@ function applyCDUScreenTypography(box){
   const f=small?'BoeingCDUSmall':'BoeingCDULarge';
   // Compare VISIBLE glyph cap heights rather than numerical font sizes:
   // BoeingCDUSmall has smaller glyph geometry at the same CSS font-size.
-  // Labels should look only a little smaller than the LSK data (~90%).
+  // Labels are smaller and have a visibly separate baseline from LSK values.
   const cap=(family)=>{
    if(!ctx)return 0.72;
    ctx.font='400 100px '+family;
    const m=ctx.measureText('HMWA3');
    return ((m.actualBoundingBoxAscent||0)+(m.actualBoundingBoxDescent||0))/100||0.72;
   };
-  const labelPx=px*.90*cap('BoeingCDULarge')/cap('BoeingCDUSmall');
+  const labelPx=Math.min(px*.73,px*.70*cap('BoeingCDULarge')/cap('BoeingCDUSmall'));
   const size=small?labelPx:px;
   for(const node of [el,...el.querySelectorAll('*')]){
    node.style.setProperty('color',green,'important');
@@ -136,7 +136,8 @@ function applyCDUScreenTypography(box){
    node.style.setProperty('font-weight','400','important');
   }
   if(small){
-   el.style.setProperty('height','7%','important');
+   el.style.setProperty('height','5.3%','important');
+   el.style.setProperty('line-height','.78','important');
    el.style.setProperty('overflow','visible','important');
    // Long field titles retain their cap height; compress only the
    // horizontal advances so they do not cross the adjacent LSK column.
@@ -159,7 +160,7 @@ function applyCDUScreenTypography(box){
  box.dataset.fontColor=green;
  box.dataset.promptPolicy=window.CDU_PROMPT_POLICY_V1?.VERSION||'NOT_LOADED';
  box.dataset.fontFit24='true';
- box.dataset.labelCapRatio='0.90';
+ box.dataset.labelCapRatio='0.70';
  box.dataset.valueLine='LSK_CENTER';
 }
 function update(){const box=$('fmc-lines'); const frame=document.createElement('div');
