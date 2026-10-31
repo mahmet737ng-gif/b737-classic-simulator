@@ -33,6 +33,8 @@ for(let i=0;i<6;i++){
 pairs[3].querySelectorAll()[0].textContent='-----';
 pairs[5].querySelectorAll()[1].textContent='□□□□';
 pairs[7].querySelectorAll()[0].textContent='TRAINER';
+pairs[9].querySelectorAll()[0].textContent='<ACTIVATE';
+pairs[11].querySelectorAll()[1].textContent='LEGS>';
 const scratch=el('fmc-line scratch fmc-pairline');
 const scratchLeft=el('fmc-left full','A'.repeat(24),'BoeingCDULarge',520);
 scratch.querySelector=x=>x==='.fmc-left'||x==='.fmc-left.full'?scratchLeft:null;
@@ -62,7 +64,7 @@ assert.equal(registered.value.length,6);
 for(let i=0;i<6;i++){
  const cy=(lsk[i].bbox_px[1]+lsk[i].bbox_px[3])/2;
  const height=1312*.375,screenTop=1312*.0765;
- const shift=Math.max(0,cy-13-(565-4-height*.053));
+ const shift=Math.max(0,cy-13-(565-4-height*.09));
  const expectedLabel=(cy-(i===0?42:50)-shift-screenTop)/height*100;
  const expectedValue=(cy-13-shift-screenTop)/height*100;
  assert.ok(Math.abs(registered.label[i]-expectedLabel)<.02,
@@ -75,7 +77,7 @@ for(let i=0;i<6;i++){
  // above its LSK value, with at least 5px empty space on the native panel.
  assert.ok(rowGapPx-(44*.73*.78)>=3.5,
   'Field label must not touch LSK value, row '+(i+1));
- assert.ok(cy-13-shift+height*.053<=561.01,
+ assert.ok(cy-13-shift+height*.09<=561.01,
   'LSK text must finish before scratchpad '+(i+1));
 }
 assert.ok(registered.value[5]<registered.scratch);
@@ -87,11 +89,18 @@ assert.equal(parseFloat(pairs[0].style.applied.get('font-size')),Number((result.
 assert.equal(pairs[1].style.applied.get('font-size'),Number((44*1.44).toFixed(2))+'px','LSK value font reduced exactly 20% from the previous version');
 for(const [row,index] of [[3,0],[5,1],[7,0]]){
  const span=pairs[row].querySelectorAll()[index];
- assert.equal(span.style.applied.get('font-size'),Number((44*.56).toFixed(2))+'px','entry prompts 30 percent smaller than prior 0.8x');
+ assert.equal(span.style.applied.get('font-size'),Number((44*1.10).toFixed(2))+'px','entry boxes and dashes restored to 1.10x');
  assert.ok(span.classList.contains('cdu-entry-placeholder'),'entry placeholder classification');
 }
+for(const [row,index] of [[9,0],[11,1]]){
+ const action=pairs[row].querySelectorAll()[index];
+ assert.equal(action.style.applied.get('font-size'),Number((44*1.05).toFixed(2))+'px','navigation choices use smaller font');
+ assert.ok(action.classList.contains('cdu-lsk-prompt'));
+}
+assert.ok(registered.value[5]<85,'last LSK safely before scratchpad');
 assert.equal(result.pageValueMultiplier,1.44);
-assert.equal(result.entryPromptMultiplier,.56);
+assert.equal(result.entryPromptMultiplier,1.10);
+assert.equal(result.navigationPromptMultiplier,1.05);
 assert.equal(result.pageLabelMultiplier,1.8);
 assert.equal(scratch.style.applied.get('font-size'),'44px');
 assert.ok(result.labelPx/44>=.68&&result.labelPx/44<=.73,
