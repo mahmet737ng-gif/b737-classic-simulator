@@ -77,12 +77,15 @@ const result=api.apply();
 assert.equal(result.ready,true);
 assert.equal(result.columns,24);
 assert.equal(result.standard,true);
-assert.equal(parseFloat(pairs[0].style.applied.get('font-size')),Number(result.labelPx.toFixed(2)),'calibrated title font must match');
-assert.equal(pairs[1].style.applied.get('font-size'),'44px');
+assert.equal(parseFloat(pairs[0].style.applied.get('font-size')),Number((result.labelPx*2).toFixed(2)),'LSK page labels doubled');
+assert.equal(pairs[1].style.applied.get('font-size'),Number((44*1.8).toFixed(2))+'px','LSK values enlarged 1.8x');
+assert.equal(result.pageValueMultiplier,1.8);
+assert.equal(result.pageLabelMultiplier,2);
 assert.equal(scratch.style.applied.get('font-size'),'44px');
 assert.ok(result.labelPx/44>=.68&&result.labelPx/44<=.73,
  'Labels are smaller than LSK data and must not overlap');
 assert.equal(pairs[0].style.applied.get('top'),registered.label[0]+'%');
+assert.match(pairs[0].querySelectorAll()[0].style.applied.get('transform'),/scaleY\(/,'labels have overlap-safe vertical fit');
 assert.equal(pairs[1].style.applied.get('top'),registered.value[0]+'%');
 assert.equal(root.document.documentElement.dataset.cduScreenFit,'CDU-24COL-0006');
 assert.equal(root.CDU_MAP.controls.length,physical.controls.length,
