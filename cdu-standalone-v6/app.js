@@ -236,7 +236,11 @@ function init(){if(!map||!pages||!core)throw Error('CDU data is missing');makeCo
  Object.keys(pages).sort().forEach(key=>{const option=document.createElement('option');option.value=key;option.textContent=key;$('page-select').appendChild(option)});
  new MutationObserver(()=>{$('page-select').value=state.page}).observe($('page-now'),{childList:true});$('page-select').value=state.page;
  window.EHSI_ENGINE?.initControls(state,core,document,updateEHSI);
-
+ // Recalculate after font faces load and after responsive stage resizing.
+ const refreshType=()=>{const screen=$('fmc-lines');if(screen)applyCDUScreenTypography(screen);};
+ if(document.fonts?.ready)document.fonts.ready.then(refreshType).catch(err=>console.warn('CDU FONT LOAD',err));
+ window.addEventListener('resize',refreshType,{passive:true});
+ 
 }
 window.CDU_PROCEDURE_AUDIT_V1=procedureLedger;
 window.CDU_SCREEN_QA_V1=Object.freeze({
@@ -251,7 +255,22 @@ window.CDU_SCREEN_QA_V1=Object.freeze({
  getVisualOwner:()=>({
    owner:document.getElementById('fmc-lines')?.dataset.screenOwner||null,
    compositor:document.getElementById('fmc-lines')?.dataset.compositorVersion||null
- })
+ }),
+ getDisplayStyle:()=>{
+  const box=document.getElementById('fmc-lines');
+  const large=box?.querySelector('.fmc-line:not(.fmc-small)');
+  const small=box?.querySelector('.fmc-line.fmc-small');
+  return {color:large?getComputedStyle(large).color:null,
+   largeFamily:large?getComputedStyle(large).fontFamily:null,
+   largeSize:large?getComputedStyle(large).fontSize:null,
+   smallFamily:small?getComputedStyle(small).fontFamily:null,
+   smallSize:small?getComputedStyle(small).fontSize:null,
+   loadedLarge:document.fonts?.check('16px BoeingCDULarge')??null,
+   loadedSmall:document.fonts?.check('16px BoeingCDUSmall')??null,
+   fit24:box?.dataset.fontFit24||null,
+   promptPolicy:box?.dataset.promptPolicy||null};
+ },
+ getPromptAudit:()=>window.CDU_PROMPT_POLICY_V1?.audit(pages,(field,page)=>core.readValue(state,field,page))
 });
 window.updateStage5View=update;
 init();
