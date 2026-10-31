@@ -13,9 +13,11 @@
   const loads=[],c=state.config,b=e.bus;
   function add(id,bus,amps,active){
    const powered=b[bus]===true;
-   const fromBattery=bus==='hotBattery'||bus==='switchedHotBattery'||
-    bus==='battery'&&(c.standbySelector==='BAT'||!e.feed.tr.TR3)||
-    bus==='dcStandby'&&e.feed.standbyFeed!=='TRANSFER1_DC1';
+   const cellFeedsHot=e.feed.hotBatterySource==='BATTERY';
+   const fromBattery=(bus==='hotBattery'||bus==='switchedHotBattery')&&
+    (cellFeedsHot||id==='APU_STARTER')||
+    bus==='battery'&&(c.standbySelector==='BAT'||!e.feed.tr.TR3)&&cellFeedsHot||
+    bus==='dcStandby'&&e.feed.standbyFeed!=='TRANSFER1_DC1'&&cellFeedsHot;
    loads.push({id,bus,amps:active&&powered?amps:0,fromBattery:Boolean(fromBattery),
     active:Boolean(active&&powered),quality:'LIVE_SWITCH_WITH_TRAINING_CURRENT'});
   }
@@ -36,7 +38,7 @@
   const inverterOn=b.acStandby===true&&e.feed.standbyFeed!=='TRANSFER1_DC1';
   const inverterWatts=inverterOn?160:0;
   return {loadAmps:loads.filter(x=>x.fromBattery).reduce((sum,x)=>sum+x.amps,0),inverterWatts,
-   chargerAvailable:b.groundService===true||b.main2===true,
+   chargerAvailable:e.feed.chargerSource!==null,
    forcedFailed:state.faults.BATTERY_DEPLETED,loads,
    panelPower:b.battery===true||b.dc1===true||b.dc2===true||b.dcStandby===true,
    quality:'TRAINING_CURRENTS_AND_FEED_GROUPS_NOT_EP_FSI_LOAD_SCHEDULE'};
