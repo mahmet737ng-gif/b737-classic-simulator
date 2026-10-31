@@ -16,7 +16,8 @@ function sample(){
 function setup(){
  const state={page:'DEP_ARR',pending:{},stagedRoute:{},active:{ORIGIN:'ZZAA',DEST:'ZZBB'},
   stage5Committed:sample(),message:'',scratch:'',stage5Page:1,ehsi:{mode:'PLAN'}};
- const core={choose(s,_pages,p){s.page=p;s.message=''},hasStagedRoute:s=>Object.keys(s.stagedRoute).length>0,pendingCount:s=>Object.keys(s.pending).length};
+ const core={choose(s,_pages,p){s.page=p;s.message=''},readValue:(s,key)=>s.active[key]||'',
+  hasStagedRoute:s=>Object.keys(s.stagedRoute).length>0,pendingCount:s=>Object.keys(s.pending).length};
  const catalogue={airac:'2610',airport:'ZZAA',kind:'SID',fmc_executable:false,items:[{ident:'DAXI1A',runways:['29R'],transitions:[],status:'SOURCE_ONLY_NOT_FMC_EXECUTABLE'}]};
  const calls=[];
  async function fetcher(u,opts){calls.push([u,opts]);const body=u.includes('/catalog')?catalogue:sample();return {ok:true,json:async()=>body};}
