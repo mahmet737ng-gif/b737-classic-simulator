@@ -43,26 +43,7 @@
   readout.setAttribute('aria-label','Live aircraft battery voltage current charge and consumption');
   readout.style.cssText='position:absolute;top:8px;left:8px;z-index:1900;pointer-events:none;max-width:calc(100% - 16px);padding:7px 11px;border:1px solid #668270;border-radius:7px;background:#0b191eee;color:#d9f2de;font:12px/1.6 system-ui;box-shadow:0 2px 9px #0005';
   readout.innerHTML='<b>BATTERY <span data-battery-percent></span></b> <span data-battery-status></span><div style="display:flex;gap:12px;flex-wrap:wrap;font:600 15px/1.7 monospace"><span data-battery-volts></span><span data-battery-amps></span><span data-battery-watts></span></div><div style="font-size:10px;color:#adc0c1"><span data-battery-used></span> · 40 Ah مدل آموزشی</div>';
-  const recharge=document.createElement('button');
-  recharge.id='liveBatteryRecharge';recharge.type='button';
-  recharge.textContent='BAT RECHARGE';
-  recharge.setAttribute('aria-label','Recharge training battery to 100 percent');
-  recharge.style.cssText='display:block;margin-top:6px;padding:5px 10px;min-height:29px;width:100%;border:1px solid #679788;border-radius:5px;background:#1a3a3c;color:#e1fff0;font:600 12px system-ui;cursor:pointer;pointer-events:auto;touch-action:manipulation';
-  // Only the button accepts pointer input; the cockpit behind the readout
-  // remains usable. Prevent panel gesture/click handlers from firing.
-  for(const type of ['pointerdown','mousedown','touchstart','dblclick'])recharge.addEventListener(type,event=>event.stopPropagation());
-  // Unified recharge handler is also exposed to a separately loaded HUD
-  // controller. Keeping one owner avoids duplicate ticks on a single click.
-  recharge.addEventListener('click',event=>{
-   event.preventDefault();event.stopPropagation();
-   try{rechargeBattery();}
-   catch(error){
-    console.error('Battery recharge:',error);
-    recharge.title=String(error.message||error);
-    recharge.textContent='CHARGE ERROR';
-   }
-  });
-  readout.append(recharge);
+  // HUD is informational only. The BAT RECHARGE button belongs to the top header.
   viewport.append(readout);
  }
  function paint(){
@@ -96,11 +77,6 @@
   lastInputs=null;lastAt=Date.now();
   paint();power();
   save();
-  const button=readout?.querySelector('#liveBatteryRecharge');
-  if(button){
-   button.textContent='BAT RECHARGE';
-   button.title='Charge restored to 100% in electrical ECU and saved';
-  }
   root.dispatchEvent(new CustomEvent('b737:battery-recharged',{detail:copy(result)}));
   return copy(result);
  }
