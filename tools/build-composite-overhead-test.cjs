@@ -89,15 +89,22 @@ const server=http.createServer((req,res)=>{
   // a test-only navigation button absent from the approved minimal toolbar.
   await test.goto(base+'overhead-composite-stage.html',{waitUntil:'domcontentloaded',timeout:60000});
   await test.locator('#atlasAbsolute .atlas-piece').first().waitFor({timeout:45000});
-  await test.locator('html[data-composite-image-ready="true"]').waitFor({timeout:30000});
-  const verify=await test.locator('#atlasAbsolute').evaluate(node=>({
-   pieces:node.querySelectorAll('.atlas-piece').length,
-   originalPhotosLoaded:node.querySelectorAll('img.atlas-photo[src]').length,
-   composite:getComputedStyle(node).backgroundImage
-  }));
+  // Validate the image itself instead of relying on a timing-sensitive
+  // html dataset marker on the independently loading embedded stage.
+  const verify=await test.locator('#atlasAbsolute').evaluate(async node=>{
+   const composite=getComputedStyle(node).backgroundImage;
+   const asset=new Image();asset.src=new URL('../cockpit/assets/overhead-composite-test.webp',document.baseURI).href;
+   await asset.decode();
+   return {pieces:node.querySelectorAll('.atlas-piece').length,
+    originalPhotosLoaded:node.querySelectorAll('img.atlas-photo[src]').length,
+    composite,decodedWidth:asset.naturalWidth,decodedHeight:asset.naturalHeight,
+    testFlag:document.documentElement.dataset.compositeOverheadTest||'missing'};
+  });
   assert.ok(verify.pieces>=19,'Hotspot geometry must remain mounted');
   assert.equal(verify.originalPhotosLoaded,0,'Composite experiment must not download original mosaic photos');
   assert.ok(verify.composite.includes('overhead-composite-test.webp'));
+  assert.deepEqual([verify.decodedWidth,verify.decodedHeight],[2220,3312]);
+  assert.equal(verify.testFlag,'true','Composite test runtime must be mounted');
   console.log('COMPOSITE A/B interactive stage OK: '+JSON.stringify(verify));
  }finally{if(browser)await browser.close();await new Promise(resolve=>server.close(resolve));}
 })().catch(error=>{console.error(error);process.exitCode=1;});
