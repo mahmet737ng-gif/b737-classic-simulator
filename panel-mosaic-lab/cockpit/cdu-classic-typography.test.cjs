@@ -57,13 +57,18 @@ for(let i=0;i<6;i++){
  const cy=(lsk[i].bbox_px[1]+lsk[i].bbox_px[3])/2;
  const height=1312*.375,screenTop=1312*.0765;
  const shift=Math.max(0,cy-13-(565-4-height*.053));
- const expectedLabel=(cy-42-shift-screenTop)/height*100;
+ const expectedLabel=(cy-(i===0?42:50)-shift-screenTop)/height*100;
  const expectedValue=(cy-13-shift-screenTop)/height*100;
  assert.ok(Math.abs(registered.label[i]-expectedLabel)<.02,
   'Small label above physical LSK '+(i+1));
  assert.ok(Math.abs(registered.value[i]-expectedValue)<.02,
   'Large value centred on physical LSK '+(i+1));
  assert.ok(registered.label[i]<registered.value[i]);
+ const rowGapPx=(registered.value[i]-registered.label[i])/100*height;
+ // With line-height .78, the largest permitted title fits strictly
+ // above its LSK value, with at least 5px empty space on the native panel.
+ assert.ok(rowGapPx-(44*.73*.78)>=3.5,
+  'Field label must not touch LSK value, row '+(i+1));
  assert.ok(cy-13-shift+height*.053<=561.01,
   'LSK text must finish before scratchpad '+(i+1));
 }
@@ -75,8 +80,8 @@ assert.equal(result.standard,true);
 assert.equal(parseFloat(pairs[0].style.applied.get('font-size')),Number(result.labelPx.toFixed(2)),'calibrated title font must match');
 assert.equal(pairs[1].style.applied.get('font-size'),'44px');
 assert.equal(scratch.style.applied.get('font-size'),'44px');
-assert.ok(result.labelPx/44>=.88&&result.labelPx/44<=.92,
- 'Label cap height should be about 90% of the large data/LSK prompt');
+assert.ok(result.labelPx/44>=.68&&result.labelPx/44<=.73,
+ 'Labels are smaller than LSK data and must not overlap');
 assert.equal(pairs[0].style.applied.get('top'),registered.label[0]+'%');
 assert.equal(pairs[1].style.applied.get('top'),registered.value[0]+'%');
 assert.equal(root.document.documentElement.dataset.cduScreenFit,'CDU-24COL-0006');
