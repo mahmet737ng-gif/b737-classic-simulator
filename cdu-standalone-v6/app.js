@@ -5,7 +5,7 @@ const state=core.makeState('IDENT');
 // A factual SOURCE preview does not install or activate an FMC NAVDATA bank.
 // Default IDENT still shows the owner's 2610 display until opt-in.
 const regionalSource=window.B737Airac2611MiddleEastPreviewV1;
-let showRegionalSource2611=new URLSearchParams(window.location.search).get('nav_source')==='2611';
+let showRegionalSource2611=/(?:^|[?&])nav_source=2611(?:&|$)/.test(String(window.location?.search||''));
 const preflight=window.B737CDUPreflightEvidenceV1;
 if(!preflight)throw Error('FCOM_CDU_PREFLIGHT_EVIDENCE_NOT_LOADED');
 const contract=window.B737FCOMScreenContractV1;
