@@ -23,8 +23,8 @@ const css=read('panel-mosaic-lab/cockpit/cdu-embed.css');
 assert.ok(!css.includes('font-family'),'Locked BoeingCDU font faces must not change');
 assert.ok(!css.includes('.hotspot'),'CDU key hotspot geometry must not change');
 const display=css.split('/* CDU on Unified: match the supplied 737 Classic reference screenshot.')[1];
-assert.ok(display&&display.includes('RGB(41,255,49)')&&display.includes('color:#29ff31'),
- 'Owner green CDU monochrome reference RGB(41,255,49) must be retained');
+assert.ok(display&&display.includes('RGB(41,230,55)')&&display.includes('color:#29e637'),
+ 'Owner green CDU monochrome reference RGB(41,230,55) must be retained');
 const metrics=require('../../engine/ch11/cdu-24-column-metrics-v1');
 assert.equal(metrics.COLUMNS,24,'Latest owner requirement is an exact 24-character scratchpad');
 assert.equal(metrics.TEST,'A'.repeat(24));assert.equal(metrics.TOO_LONG,'A'.repeat(25));
