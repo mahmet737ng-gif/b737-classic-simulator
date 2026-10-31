@@ -132,5 +132,12 @@ const server=http.createServer((req,res)=>{
   const second=await test.evaluate(()=>{const f=document.getElementById('overheadFrame');return {mode:window.B737OverheadStaticTest,route:f?.dataset.deferredUrl||f?.getAttribute('src')||''};});
   assert.ok(second.mode&&second.route.includes('overhead-static-controls-stage.html'),'Static whole-cockpit entry must embed the correct stage');
   console.log('FULL UNIFIED A/B routes OK: '+JSON.stringify(second));
+  await test.goto(base+'unified-diagnostic-v6.html',{waitUntil:'domcontentloaded',timeout:60000});
+  await test.waitForFunction(()=>!!window.B737PerfDiagnosticV6&&!!window.B737PerfProbeV6,null,{timeout:25000});
+  assert.ok(await test.locator('#perfDiagV6 button').count()>=2,'Diagnostic controls must exist on dedicated route');
+  await test.goto(base+'unified-diagnostic-static-v6.html',{waitUntil:'domcontentloaded',timeout:60000});
+  const check=await test.evaluate(()=>({mode:window.B737OverheadStaticTest,probe:!!window.B737PerfProbeV6}));
+  assert.ok(check.mode&&check.probe,'Static route must retain the exact same probe and active backend');
+  console.log('PERF-0006 dedicated diagnostic routes OK');
  }finally{if(browser)await browser.close();await new Promise(resolve=>server.close(resolve));}
 })().catch(error=>{console.error(error);process.exitCode=1;});

@@ -91,3 +91,21 @@ test('PERF-0005 has isolated Full vs Static controls test routes on the same com
  assert.doesNotMatch(css,/\.atlas-photo\s*\{/);
  assert.doesNotMatch(read('panel-mosaic-lab/cockpit/overhead-stage.html'),/overhead-ab-static/);
 });
+
+test('PERF-0006 keeps production protected and publishes two opt-in diagnostic routes',()=>{
+ const builder=read('tools/build-unified-web.cjs');
+ const diag=read('panel-mosaic-lab/cockpit/perf-diagnostic-v6.js');
+ const profiler=read('tools/profile-unified-overhead-v6.cjs');
+ assert.match(builder,/unified-diagnostic-v6.html/);
+ assert.match(builder,/unified-diagnostic-static-v6.html/);
+ assert.match(builder,/B737PerfDiagnosticV6/);
+ assert.match(diag,/PerformanceObserver/);
+ assert.match(diag,/longtask/);
+ assert.match(diag,/B737ABStageMetrics/);
+ assert.match(diag,/Copy report/);
+ assert.match(profiler,/Performance.getMetrics/);
+ assert.match(profiler,/Profiler.start/);
+ assert.match(profiler,/ScriptDuration/);
+ assert.doesNotMatch(read('panel-mosaic-lab/cockpit/index.html'),/perf-diagnostic-v6/);
+ assert.doesNotMatch(read('panel-mosaic-lab/cockpit/overhead-stage.html'),/perf-diagnostic-v6/);
+});

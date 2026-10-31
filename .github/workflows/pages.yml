@@ -169,12 +169,15 @@ jobs:
           if [ -z "$CHROME_PATH" ]; then npx playwright install --with-deps chromium; fi
           node tools/build-composite-overhead-test.cjs
           node tools/test-unified-web-startup.cjs
+          node tools/profile-unified-overhead-v6.cjs
       - name: Save web startup evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: unified-web-startup
-          path: artifacts/unified-web-startup/
+          path: |
+            artifacts/unified-web-startup/
+            artifacts/perf-0006/
           if-no-files-found: ignore
       - uses: actions/configure-pages@v5
         with:

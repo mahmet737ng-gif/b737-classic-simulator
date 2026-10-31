@@ -75,6 +75,14 @@ function build(root,out=path.join(root,'web-dist')){
  fs.writeFileSync(path.join(out,testStage),fullStageHTML.replace('</head>',iframeMetrics+'</head>'));
  fs.writeFileSync(path.join(out,staticEntry),staticHTML.replace('</head>',hud+'</head>'));
  fs.writeFileSync(path.join(out,staticStage),staticStageHTML.replace('</head>',iframeMetrics+'</head>'));
+ // PERF-0006: dedicated instrumentation pages; do not change live production,
+ // existing A/B comparisons, approved panels, images or interaction engines.
+ const diagnostic='<script>window.B737PerfDiagnosticV6=true;</script>'+
+  '<script src="./perf-diagnostic-v6.js?v=PERF-0006" defer></script>';
+ fs.writeFileSync(path.join(out,'panel-mosaic-lab/cockpit/unified-diagnostic-v6.html'),
+  testHTML.replace('</head>',hud+diagnostic+'</head>'));
+ fs.writeFileSync(path.join(out,'panel-mosaic-lab/cockpit/unified-diagnostic-static-v6.html'),
+  staticHTML.replace('</head>',hud+diagnostic+'</head>'));
  const manifest={schema:'b737-unified-web/1',revision:result.revision,requests:{before:result.before,after:result.after},generated:[...result.bundles,...result.overhead.bundles].map(b=>b.path),overhead:{revision:result.overhead.revision,requests:{before:result.overhead.before,after:result.overhead.after}}};
  fs.writeFileSync(path.join(out,'panel-mosaic-lab/cockpit/runtime-build.json'),JSON.stringify(manifest,null,2)+'\n');
  fs.writeFileSync(path.join(out,'.nojekyll'),'');
