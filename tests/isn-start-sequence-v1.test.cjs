@@ -52,6 +52,9 @@ assert.equal(o.network.status,'WAITING_FOR_SOURCE_OBSERVATIONS');
 o = s.send(observe('engine2',false));
 o = s.send(observe('apu',false));
 assert.equal(o.network.status,'SOURCE_GATED_ACTIVE');
+assert.equal(o.network.electrical.bus.generator1,false,'Engine RUNNING is not automatic generator bus connection');
+o = s.send(electrical({type:'CONTROL',key:'batterySwitch',value:true}));
+o = s.send(electrical({type:'SELECT_SOURCE',source:'GEN1',side:1}));
 assert.equal(o.network.electrical.bus.generator1,true);
 assert.equal(o.network.pneumatics.bleed.engine1ValveOpen,true);
 
@@ -79,7 +82,8 @@ o = s.send(observe('apu',true));
 assert.equal(o.observation.apu.phase,'RUNNING_OBSERVED');
 assert.equal(o.network.electrical.source[1],null,'APU source must still be explicitly selected');
 o = s.send(electrical({type:'SELECT_SOURCE',source:'APU',side:1}));
-assert.equal(o.network.electrical.bus.generator1,true);
+assert.equal(o.network.electrical.bus.generator1,true,
+  'BAT remains ON on ground, preventing APU GEN automatic shutdown demand');
 o = s.send(pneumatic({type:'CONTROL',key:'apuBleed',value:'ON'}));
 assert.equal(o.network.pneumatics.bleed.apuBleedValveOpen,true);
 assert.equal(o.network.pneumatics.duct.L.anySupply,null);
