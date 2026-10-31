@@ -83,6 +83,18 @@
       this.electricalState={...this.electricalState,battery:next,rev:this.electricalState.rev+1};
       this.snapshot=this.compute(null);return this.getBattery();
     }
+    // Instructor convenience: refill the installed battery without changing
+    // its identity, historical consumption, switches or electrical faults.
+    rechargeBattery() {
+      if(!this.batteryEngine)throw Error('Live battery not attached');
+      const previous=this.electricalState.battery;
+      const next=this.batteryEngine.step({
+        ...previous,chargeAh:previous.capacityAh,depleted:false
+      },0);
+      this.electricalState={...this.electricalState,battery:next,rev:this.electricalState.rev+1};
+      this.snapshot=this.compute(null);
+      return this.getBattery();
+    }
     getBattery(){return this.batteryEngine?this.batteryEngine.snapshot(this.electricalState.battery):null;}
     send(command) {
       if (!command || typeof command.type !== 'string') throw Error('ISN command required');
