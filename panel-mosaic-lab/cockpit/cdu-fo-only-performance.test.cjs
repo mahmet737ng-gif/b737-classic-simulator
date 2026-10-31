@@ -10,7 +10,7 @@ const end=source.indexOf('\n }\n function applyZoom(',start);
 assert.ok(start>=0&&end>start,'CDU mounting loop still exists independently of the lazy gallery');
 const loop=source.slice(start,end);
 assert.match(source,/function mountGallery\(\)/,'PERF-0002 gallery is mounted on demand');
-assert.match(source,/const ENABLED_CDU_SEAT=window\\.B737UnifiedNoCduTest\\?'NONE':'FO'/);
+assert.match(source,/const ENABLED_CDU_SEAT=window\.B737UnifiedNoCduTest\?'NONE':'FO'/);
 assert.match(loop,/if\(item\.seat!==ENABLED_CDU_SEAT\)/);
 assert.ok(loop.indexOf('continue;')<loop.indexOf("document.createElement('iframe')"),
  'Captain must exit before creating its iframe');
