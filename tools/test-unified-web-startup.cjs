@@ -48,6 +48,25 @@ const server=http.createServer((req,res)=>{
     return {mainReadyMs:diagnostic.mainReadyMs,profile:window.B737AircraftProfileStore.get(),status:diagnostic.status,interaction:{responded,restored:window.B737McpHardwareV1.getState().FD_LEFT===before,roundTripMs:performance.now()-start},scriptTags:document.scripts.length};
    });
    sample.mode=mode;samples.push(sample);console.log(JSON.stringify(sample));
+   // Assert against the exact compiled /web-dist/ HTML, not source markup:
+   // A missing fifth command must fail the Pages deployment rather than ship
+   // another release where the author sees only CB PNL and four controls.
+   const rechargeButton=page.locator('body > header.unified-minimal-header #liveBatteryRecharge');
+   await rechargeButton.waitFor({state:'visible',timeout:15000});
+   assert.equal(await rechargeButton.count(),1,'Exactly one BAT RECHARGE command must be present');
+   assert.equal((await rechargeButton.textContent()).trim(),'BAT RECHARGE');
+   await page.waitForFunction(()=>{
+    const button=document.getElementById('liveBatteryRecharge');
+    return !!button&&!button.disabled&&typeof window.B737InstalledBattery?.recharge==='function';
+   },null,{timeout:20000});
+   await rechargeButton.click();
+   const charged=await page.evaluate(()=>({
+    percent:window.B737InstalledBattery.snapshot()?.percent,
+    status:document.getElementById('liveBatteryRecharge')?.dataset.recharge,
+    visible:getComputedStyle(document.getElementById('liveBatteryRecharge')).display!=='none'
+   }));
+   assert.ok(charged.visible&&charged.percent>=99.99&&charged.status==='success',
+    'Top-bar button must truly recharge the installed battery ECU to 100%');
    assert.ok(sample.status.usable&&sample.interaction.responded&&sample.interaction.restored,'Real visible cockpit controls must respond');
    assert.equal(sample.profile.engineInstruments,mode==='conventional-profile'?'CONVENTIONAL':'EIS');
    assert.ok(sample.interaction.roundTripMs<200,'Live control response exceeds 200ms');
