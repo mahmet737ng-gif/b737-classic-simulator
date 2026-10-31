@@ -11,7 +11,7 @@
  const VERSION='CDU-24COL-0006';
  const PHOTO_PROFILE=Object.freeze({
   id:'CLASSIC-CDU-PHOTO-HIERARCHY-0001',
-  smallCapHeightToLarge:0.68,headerToLarge:0.88,
+  smallCapHeightToLarge:0.90,headerToLarge:0.88,
   lskPromptToLarge:0.95,dataToLarge:1,scratchToLarge:1
  });
  const Metrics=root.B737CDU24ColumnMetricsV1;
@@ -23,8 +23,8 @@
  const canvas=root.document.createElement('canvas');
  const ctx=canvas.getContext('2d');
  if(!ctx)return;
- const TOP={header:.5,label:[10,24.5,39,53.5,68,82.5],
-  value:[16.5,31,45.5,60,74.5,86],scratch:93.2};
+ const TOP={header:.5,label:[6.9,22,37.4,52.4,67.9,82.5],
+  value:[12.7,27.8,43.2,58.3,73.7,88.3],scratch:93.2};
  // The physical LSK coordinates are immutable; only these displayed text
  // rows are repositioned. Last pair is capped above the scratchpad.
  const NATIVE_HEIGHT=1312,SCREEN_TOP=.0765*NATIVE_HEIGHT,
@@ -40,10 +40,14 @@
   const pct=cy=>(cy-SCREEN_TOP)/SCREEN_HEIGHT*100;
   return {
    header:TOP.header,scratch:TOP.scratch,
-   label:centers.map((cy,i)=>Math.max(8,Math.min(TOP.label[5],
-     i===5?TOP.label[5]:pct(cy)-5.8))),
-   value:centers.map((cy,i)=>Math.max(15,Math.min(TOP.value[5],
-     i===5?TOP.value[5]:pct(cy)+.8)))
+   label:centers.map(cy=>{
+    const value=cy-13,shift=Math.max(0,value-(565-4-SCREEN_HEIGHT*.053));
+    return pct(cy-42-shift);
+   }),
+   value:centers.map(cy=>{
+    const value=cy-13,shift=Math.max(0,value-(565-4-SCREEN_HEIGHT*.053));
+    return pct(value-shift);
+   })
   };
  }
  let scheduled=false,lastResult=null;
@@ -131,12 +135,11 @@
   return Number.isFinite(h)&&h>0?h:px*.72;
  }
  function labelSize(large,small,largeFamily,smallFamily){
-  // In Classic CRT photographs title/data and LSK prompts are visibly
-  // larger than field labels. Target small cap height = 68% of data.
+  // The field title must be just slightly smaller than the LSK value.
+  // Match cap height rather than the numerical CSS font size.
   const dataCap=capHeight(largeFamily,large);
   const smallCap=capHeight(smallFamily,100);
-  const computed=100*dataCap*.68/smallCap;
-  return Math.min(small,Math.max(large*.48,computed));
+  return 100*dataCap*PHOTO_PROFILE.smallCapHeightToLarge/smallCap;
  }
  function calibrate(){
   const scratch=box.querySelector('.fmc-line.scratch');
@@ -186,13 +189,25 @@
    // Special FCOM overlays retain their authored vertical registration.
    if(standard&&row<6)
     line.style.setProperty('top',grid[label?'label':'value'][row]+'%','important');
-   line.style.setProperty('height',(label?'7.5%':'9.8%'),'important');
+   line.style.setProperty('height',(label?'6%':'5.3%'),'important');
    typography(line,px);
    for(const span of line.querySelectorAll('span')){
     const prompt=isLSKPrompt(span,label),isCenter=span.classList.contains('fmc-center');
     const target=prompt?model.promptPx:isCenter&&!label?main:px;
     if(prompt)span.classList.add('cdu-lsk-prompt');
-    fitFragment(span,target,false);
+    if(label&&span.textContent?.trim()){
+     // Horizontal fit never reduces the visible height of a field label.
+     typography(span,target);
+     ctx.font='400 '+target+'px '+fontFace(span);
+     const available=span.getBoundingClientRect().width;
+     const measured=ctx.measureText(span.textContent).width;
+     if(available>0&&measured>available-2){
+      const factor=Math.max(.2,(available-2)/measured);
+      span.style.setProperty('transform-origin',
+       span.classList.contains('fmc-right')?'right top':span.classList.contains('fmc-center')?'center top':'left top','important');
+      span.style.setProperty('transform','scaleX('+factor.toFixed(4)+')','important');
+     }
+    }else fitFragment(span,target,false);
    }
   }
   if(scratch){
