@@ -1,0 +1,30 @@
+name: Classic CDU photo typography reference QA
+on:
+  push:
+    branches: [main, cdu/photo-text-hierarchy-fo-20261031]
+    paths:
+      - 'panel-mosaic-lab/cockpit/cdu-screen-fit-v6.js'
+      - 'panel-mosaic-lab/cockpit/cdu-stage.html'
+      - 'panel-mosaic-lab/cockpit/cdu.test.cjs'
+      - 'panel-mosaic-lab/cockpit/cdu-photo-type-hierarchy.test.cjs'
+      - '.github/workflows/cdu-photo-typography-v1.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify-classic-typography:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Photo-based type hierarchy on 7 real CDU screens
+        run: node panel-mosaic-lab/cockpit/cdu-photo-type-hierarchy.test.cjs
+      - name: Full approved CDU art/LSK/FCOM/24-character baseline
+        run: node panel-mosaic-lab/cockpit/cdu.test.cjs
+      - name: Captain CDU remains disabled; FO only
+        run: node panel-mosaic-lab/cockpit/cdu-fo-only-performance.test.cjs
+      - name: Screen-fit JavaScript syntax check
+        run: node --check panel-mosaic-lab/cockpit/cdu-screen-fit-v6.js
