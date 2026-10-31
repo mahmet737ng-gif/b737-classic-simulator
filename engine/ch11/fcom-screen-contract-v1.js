@@ -85,7 +85,8 @@
     const display=cell=>{
      if(cell.field){
       const x=typeof readValue==='function'?norm(readValue(cell.field,id)):'';
-      return x||(pages[id].rows[i][cell.lsk.startsWith('L')?0:1]?.required?'□□□□':'-----');
+      const promptPolicy=typeof globalThis!=='undefined'?globalThis.CDU_PROMPT_POLICY_V1:null;
+       return x||(promptPolicy?.placeholder(id,cell,(field,page)=>typeof readValue==='function'?readValue(field,page):'')||(pages[id].rows[i][cell.lsk.startsWith('L')?0:1]?.required?'□□□□':'-----'));
      }
      return norm(cell.value);
     };
