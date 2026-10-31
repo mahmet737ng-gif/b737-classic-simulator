@@ -181,3 +181,11 @@ test('PERF-0011 corrected diagnostic FPS uses wall-clock time and retains long f
  assert.doesNotMatch(code,/d<2000/);
  assert.match(web,/PERF-0011-RAF-FIX/);
 });
+
+test('PERF-0011 overhead iframe FPS retains stalls above two seconds',()=>{
+ const stage=read('panel-mosaic-lab/cockpit/overhead-ab-metrics.js');
+ assert.match(stage,/if\(delta>0\)\{/);
+ assert.doesNotMatch(stage,/delta<2000/);
+ assert.match(stage,/stallsOver1000Ms/);
+ assert.match(read('tools/build-unified-web.cjs'),/PERF-0011-GAPFIX/);
+});

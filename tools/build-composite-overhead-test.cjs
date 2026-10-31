@@ -85,7 +85,7 @@ const server=http.createServer((req,res)=>{
   const fEmbedded=path.resolve(__dirname,'../web-dist/panel-mosaic-lab/cockpit/overhead-real-f-in-unified-v10.html');
   const fHTML=fs.readFileSync(fSrc,'utf8');
   fs.writeFileSync(fEmbedded,fHTML.replace('</head>',
-   '<script src="../cockpit/overhead-ab-metrics.js?v=PERF-0010" defer></script></head>'));
+   '<script src="../cockpit/overhead-ab-metrics.js?v=PERF-0011-GAPFIX" defer></script></head>'));
   const measures={width:2220,height:3312,bytes:bytes.length,quality:0.85,source:'original locked atlas via browser screenshot',experimental:true};
   fs.writeFileSync(path.join(root,'panel-mosaic-lab/cockpit/composite-test-meta.json'),JSON.stringify(measures,null,2)+'\n');
   console.log('COMPOSITE A/B WebP created '+Math.round(bytes.length/1024)+' KiB from approved 2220x3312 atlas');

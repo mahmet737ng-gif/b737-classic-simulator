@@ -70,7 +70,7 @@ function build(root,out=path.join(root,'web-dist')){
   '<script>document.documentElement.dataset.overheadRenderAb="full";</script></head>');
  // Minimal identical on-device diagnostics (same cost in both lanes).
  const hud='<script src="./unified-ab-hud.js?v=AB-CONTROLS-0001" defer></script>';
- const iframeMetrics='<script src="../cockpit/overhead-ab-metrics.js?v=AB-CONTROLS-0001" defer></script>';
+ const iframeMetrics='<script src="../cockpit/overhead-ab-metrics.js?v=PERF-0011-GAPFIX" defer></script>';
  fs.writeFileSync(path.join(out,testEntry),testHTML.replace('</head>',hud+'</head>'));
  fs.writeFileSync(path.join(out,testStage),fullStageHTML.replace('</head>',iframeMetrics+'</head>'));
  fs.writeFileSync(path.join(out,staticEntry),staticHTML.replace('</head>',hud+'</head>'));
