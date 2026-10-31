@@ -61,6 +61,7 @@
    const mem=performance.memory?.usedJSHeapSize;
    report={schema:'PERF-0006',timestamp:new Date().toISOString(),
     mode:window.B737OverheadStaticTest?'STATIC':'FULL',
+    variation:window.B737UnifiedNoCduTest?'NO_FO_CDU':window.B737UnifiedLightOverheadTest?'REAL_F_OVERHEAD':'BASELINE',
     overheadReady:!!state?.enginesReady,stageAtEnd:stage(),
     viewport:{width:innerWidth,height:innerHeight,dpr:devicePixelRatio,
      zoom:document.getElementById('zoomValue')?.textContent?.trim()||null},

@@ -154,3 +154,19 @@ test('PERF-0009 isolates original real Overhead controls, lamps, and V7 kernels 
  assert.ok(!read('panel-mosaic-lab/cockpit/overhead-stage.html').includes('PERF-0009'));
  assert.ok(!read('panel-mosaic-lab/cockpit/index.html').includes('PERF-0009'));
 });
+
+test('PERF-0010 publishes isolated parent-FMC vs full-Overhead experiments without changing production',()=>{
+ const app=read('panel-mosaic-lab/cockpit/app.js');
+ const build=read('tools/build-unified-web.cjs');
+ const probe=read('panel-mosaic-lab/cockpit/perf-diagnostic-v6.js');
+ const source=read('tools/build-composite-overhead-test.cjs');
+ assert.match(app,/B737UnifiedNoCduTest/);
+ assert.match(app,/B737UnifiedLightOverheadTest/);
+ assert.match(build,/unified-no-cdu-v10.html/);
+ assert.match(build,/unified-light-overhead-v10.html/);
+ assert.match(probe,/NO_FO_CDU/);
+ assert.match(probe,/REAL_F_OVERHEAD/);
+ assert.match(source,/overhead-real-f-in-unified-v10.html/);
+ assert.doesNotMatch(read('panel-mosaic-lab/cockpit/index.html'),/PERF-0010/);
+ assert.doesNotMatch(read('panel-mosaic-lab/cockpit/overhead-stage.html'),/PERF-0010/);
+});

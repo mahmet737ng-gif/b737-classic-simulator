@@ -79,6 +79,13 @@ const server=http.createServer((req,res)=>{
   require('./build-overhead-ui-only.cjs').build();
   require('./build-overhead-step-lanes.cjs').build();
   require('./build-overhead-real-lanes-v9.cjs').build();
+  // Reuse the exact approved F physical Overhead page INSIDE the full
+  // parent cockpit for a causal whole-app isolation test (no fake bridge).
+  const fSrc=path.resolve(__dirname,'../web-dist/panel-mosaic-lab/cockpit/overhead-real-f-v9.html');
+  const fEmbedded=path.resolve(__dirname,'../web-dist/panel-mosaic-lab/cockpit/overhead-real-f-in-unified-v10.html');
+  const fHTML=fs.readFileSync(fSrc,'utf8');
+  fs.writeFileSync(fEmbedded,fHTML.replace('</head>',
+   '<script src="../cockpit/overhead-ab-metrics.js?v=PERF-0010" defer></script></head>'));
   const measures={width:2220,height:3312,bytes:bytes.length,quality:0.85,source:'original locked atlas via browser screenshot',experimental:true};
   fs.writeFileSync(path.join(root,'panel-mosaic-lab/cockpit/composite-test-meta.json'),JSON.stringify(measures,null,2)+'\n');
   console.log('COMPOSITE A/B WebP created '+Math.round(bytes.length/1024)+' KiB from approved 2220x3312 atlas');
@@ -190,6 +197,34 @@ const server=http.createServer((req,res)=>{
    console.log('PERF-0009 '+stage+' authentic stage OK '+JSON.stringify(status));
   }
   await actual.close();
+  // PERF-0010: differentiated FULL cockpit experiments: no FO-CDU vs
+  // original cockpit with F-light OH. Original production route unchanged.
+  const isolate=await browser.newPage({viewport:{width:1500,height:900}});
+  for(const [route,flag,fo,lightOh] of [
+   ['unified-no-cdu-v10.html','B737UnifiedNoCduTest',false,false],
+   ['unified-light-overhead-v10.html','B737UnifiedLightOverheadTest',true,true]
+  ]){
+   await isolate.goto(base+route,{waitUntil:'domcontentloaded',timeout:60000});
+   await isolate.waitForFunction(()=>document.documentElement.dataset.unifiedUsableMs,null,{timeout:45000});
+   await isolate.evaluate(()=>document.getElementById('region-overhead').scrollIntoView({block:'center',behavior:'instant'}));
+   const result=await isolate.evaluate((flag)=>({
+    active:window[flag],cdu:!!document.getElementById('cduFrameFO'),
+    probe:!!window.B737PerfProbeV6,
+    url:document.getElementById('overheadFrame')?.dataset.deferredUrl||
+         document.getElementById('overheadFrame')?.getAttribute('src')||''
+   }),flag);
+   assert.equal(result.active,true,route+' flag missing');
+   assert.equal(result.cdu,fo,route+' should isolate ONLY CDU/Overhead');
+   assert.ok(result.probe,'Matched PERF-0006 measurement must be available');
+   assert.equal(result.url.includes('overhead-real-f-in-unified-v10'),lightOh);
+   await isolate.waitForFunction(()=>!!document.getElementById('overheadFrame')?.contentWindow?.B737ABStageMetrics?.snapshot?.(),null,{timeout:45000});
+   if(lightOh){
+    const stage=await isolate.evaluate(()=>document.getElementById('overheadFrame').contentDocument);
+    assert.ok(stage,'Standalone real photo overhead inside parent must remain same origin');
+   }
+   console.log('PERF-0010 isolation route OK '+route+' '+JSON.stringify(result));
+  }
+  await isolate.close();
   // The comparison must run the real whole cockpit, not just a static photo.
   const test=await browser.newPage({viewport:{width:1580,height:920}});
   await test.goto(base+'unified-composite-test.html',{waitUntil:'domcontentloaded',timeout:60000});

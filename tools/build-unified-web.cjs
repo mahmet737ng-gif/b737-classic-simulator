@@ -83,6 +83,17 @@ function build(root,out=path.join(root,'web-dist')){
   testHTML.replace('</head>',hud+diagnostic+'</head>'));
  fs.writeFileSync(path.join(out,'panel-mosaic-lab/cockpit/unified-diagnostic-static-v6.html'),
   staticHTML.replace('</head>',hud+diagnostic+'</head>'));
+ // PERF-0010: same FULL compiled Unified, with exactly one substantial
+ // iframe isolated per experiment. Production and approved panel art unchanged.
+ // The matched PERF-0006 probe allows exact on-device fixed/pan comparisons.
+ const noCDU='panel-mosaic-lab/cockpit/unified-no-cdu-v10.html';
+ const lightOH='panel-mosaic-lab/cockpit/unified-light-overhead-v10.html';
+ const flags=(name)=>'<script>window.B737PerfDiagnosticV6=true;window.'+name+'=true;</script>';
+ const instrument='<script src="./perf-diagnostic-v6.js?v=PERF-0010" defer></script>';
+ fs.writeFileSync(path.join(out,noCDU),testHTML.replace('</head>',
+  flags('B737UnifiedNoCduTest')+instrument+'</head>'));
+ fs.writeFileSync(path.join(out,lightOH),testHTML.replace('</head>',
+  flags('B737UnifiedLightOverheadTest')+instrument+'</head>'));
  const manifest={schema:'b737-unified-web/1',revision:result.revision,requests:{before:result.before,after:result.after},generated:[...result.bundles,...result.overhead.bundles].map(b=>b.path),overhead:{revision:result.overhead.revision,requests:{before:result.overhead.before,after:result.overhead.after}}};
  fs.writeFileSync(path.join(out,'panel-mosaic-lab/cockpit/runtime-build.json'),JSON.stringify(manifest,null,2)+'\n');
  fs.writeFileSync(path.join(out,'.nojekyll'),'');
