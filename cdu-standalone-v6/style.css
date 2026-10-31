@@ -166,9 +166,19 @@ main{grid-template-columns:minmax(0,1fr) 360px;align-items:start}
   height:5.3%!important;
 }
 #fmc-screen #fmc-lines .fmc-line.fmc-small{
-  font-size:1.73cqw!important;
-  line-height:.78!important;
+  font-size:3.46cqw!important;
+  line-height:.72!important;
   height:5.3%!important;
+}
+/* Fallback only: real browser calibration uses separate page / scratchpad
+   font sizes so all 24 scratchpad columns remain unchanged. */
+#fmc-screen #fmc-lines .fmc-line.fmc-pairline:not(.fmc-small):not(.scratch){
+  font-size:4.45cqw!important;
+  line-height:.77!important;
+  overflow:visible!important;
+}
+#fmc-screen #fmc-lines .fmc-line.scratch{
+  font-size:2.47cqw!important;
 }
 #fmc-screen #fmc-lines .fmc-line.fmc-header,
 #fmc-screen #fmc-lines .fmc-line.scratch{
