@@ -153,10 +153,10 @@ main{grid-template-columns:minmax(0,1fr) 360px;align-items:start}
    absolute row anchors, LSK centers, screen edges, scratchpad position
    and control hitboxes remain exactly as before. */
 #fmc-screen #fmc-lines{
-  color:#4bf58a!important;
+  color:#29ff31!important;
   font-size:2.47cqw!important;
   font-weight:400!important;
-  text-shadow:0 0 .45px rgba(80,255,150,.42);
+  text-shadow:0 0 .45px rgba(41,255,49,.35);
 }
 #fmc-screen #fmc-lines .fmc-line{
   color:inherit!important;
