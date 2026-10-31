@@ -9,7 +9,7 @@ const TYPES={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=
  '.mp3':'audio/mpeg','.wav':'audio/wav','.ogg':'audio/ogg','.mp4':'video/mp4',
  '.webm':'video/webm','.pdf':'application/pdf','.wasm':'application/wasm',
  '.xml':'application/xml','.txt':'text/plain; charset=utf-8','.map':'application/json'};
-function createLocalServer({root,entry,version}) {
+function createLocalServer({root,entry,version,overrides={}}) {
  const absolute=path.resolve(root),catalog=new Map();
  const inside=file=>{const r=path.relative(absolute,file);return r!==''&&!r.startsWith('..'+path.sep)&&r!=='..'&&!path.isAbsolute(r);};
  async function locate(url) {
@@ -18,6 +18,8 @@ function createLocalServer({root,entry,version}) {
   const parts=pathname.split('/');if(parts.some(s=>s.startsWith('.')))return null;
   let file=path.resolve(absolute,'.'+(pathname==='/'?'/'+entry:pathname));
   if(!inside(file))return null;
+  const key=path.relative(absolute,file).split(path.sep).join('/');
+  if(Object.hasOwn(overrides,key)){file=path.resolve(absolute,overrides[key]);if(!inside(file))return null;}
   if(catalog.has(file))return catalog.get(file);
   const pending=(async()=>{let stat=await fs.promises.stat(file);if(stat.isDirectory()){file=path.join(file,'index.html');stat=await fs.promises.stat(file);}
    if(!stat.isFile())return null;

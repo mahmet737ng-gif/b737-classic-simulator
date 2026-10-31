@@ -12,7 +12,8 @@
     "build:win": "electron-builder --win nsis --x64 --publish never",
     "check": "node --check main.cjs",
     "test": "node --test *.test.cjs",
-    "smoke:win": "node smoke-native.cjs"
+    "smoke:win": "node smoke-native.cjs",
+    "prebuild:win": "node build-runtime.cjs"
   },
   "devDependencies": {
     "electron": "45.1.0",

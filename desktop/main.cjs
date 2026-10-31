@@ -104,7 +104,8 @@ async function start(){
  ses.setPermissionRequestHandler((_wc,_permission,callback)=>callback(false));
  // Performance smoke tests must succeed with every external request blocked.
  if(smoke)ses.webRequest.onBeforeRequest((details,callback)=>callback({cancel:!/^http:\/\/127\.0\.0\.1:\d+\//.test(details.url)&&!details.url.startsWith('devtools:')}));
- server=createLocalServer({root:CONTENT_ROOT,entry:ENTRY,version:app.getVersion()});
+ let overrides={};try{overrides=JSON.parse(fs.readFileSync(path.join(CONTENT_ROOT,'desktop-runtime/manifest.json'),'utf8')).overrides;}catch{}
+ server=createLocalServer({root:CONTENT_ROOT,entry:ENTRY,version:app.getVersion(),overrides});
  const preferred=Number.isInteger(settings.port)&&settings.port>1024&&settings.port<65536?settings.port:0;
  const port=await listenLocal(server,preferred);
  settings.port=port;await persist();baseUrl='http://127.0.0.1:'+port;

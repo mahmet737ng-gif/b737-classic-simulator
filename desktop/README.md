@@ -14,6 +14,7 @@ For a future release, increment `desktop/package.json` and its lockfile, commit 
 
 - Existing profile resumes directly into the main panel. First use retains the aircraft selection screen.
 - A retained loopback port and Chromium partition reuse the local origin and browser cache. Port conflicts fall back safely; the native configuration mirror preserves the profile.
+- Desktop compilation reduces the main page from 160 to 62 ordered script requests, retains per-module microtask checkpoints, and preserves protected import tags. Original sources stay untouched.
 - Local files use ETag revalidation tied to the application version. No whole-repository scan or update networking happens on startup.
 - Initial readiness requires the selected profile, loaded visible main textures, mounted MCP controls and the live ECU owner. The removed throttle toolbar, whole-cockpit image loading and both CDU ready messages cannot block entry. Other systems initialize normally in the background; artwork and control behavior are unchanged.
 - No timeout reports false success. The measured target is **5 seconds from process spawn to the painted main cockpit with responding controls**, on the Windows CI test machine. This is not a universal promise for all PCs.

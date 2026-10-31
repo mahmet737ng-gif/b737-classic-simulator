@@ -16,3 +16,13 @@ test('local files revalidate, support audio ranges, reject hidden/traversal requ
  const next=createLocalServer({root,entry:'index.html',version:'0.2.1'});const np=await listenLocal(next);t.after(()=>new Promise(r=>next.close(r)));
  const changed=await fetch('http://127.0.0.1:'+np,{headers:{'If-None-Match':first.headers.get('etag')}});assert.equal(changed.status,200);
 });
+
+test('desktop override changes only the served response, keeps the URL and rejects escaping mappings',async t=>{
+ const root=await fs.mkdtemp(path.join(os.tmpdir(),'cockpit-compiled-'));t.after(()=>fs.rm(root,{recursive:true,force:true}));
+ await fs.writeFile(path.join(root,'index.html'),'original');await fs.writeFile(path.join(root,'compiled.html'),'compiled');
+ const server=createLocalServer({root,entry:'index.html',version:'0.2.0',overrides:{'index.html':'compiled.html','escape.html':'../outside.html'}});
+ const port=await listenLocal(server);t.after(()=>new Promise(r=>server.close(r)));
+ assert.equal(await(await fetch('http://127.0.0.1:'+port+'/index.html?desktop-shell=001')).text(),'compiled');
+ assert.equal(await fs.readFile(path.join(root,'index.html'),'utf8'),'original');
+ assert.equal((await fetch('http://127.0.0.1:'+port+'/escape.html')).status,403);
+});

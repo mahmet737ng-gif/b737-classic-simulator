@@ -70,7 +70,7 @@
  function project(o){
   const f=frame();if(!f)return;
   let doc;try{doc=f.contentDocument;}catch{return;}
-  if(!doc||doc.documentElement.classList.contains('cockpit-visual-test')||
+  if(!doc?.documentElement||doc.documentElement.classList.contains('cockpit-visual-test')||
    f.contentWindow?.B737OverheadLights?.getState?.()?.lampTest)return;
   try{f.contentWindow?.postMessage({type:'b737:cockpit-command',
     action:'tat-probe-projection',lamps:{'probe-temp':o.amberOn}},location.origin);}catch{}
