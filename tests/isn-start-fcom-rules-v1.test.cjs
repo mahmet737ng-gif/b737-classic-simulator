@@ -122,6 +122,10 @@ assert.equal(s.get().observation.apu.running,null,'Even 100% APU RPM does not au
 
 // OFF removes only selected APU generators, APU BLEED, not engine GEN2.
 s.send(run('engine1',false));s.send(run('engine2',true));s.send(run('apu',true));
+// Source observations make generators eligible, but do not close a contactor.
+// BAT must be ON to avoid Classic ground APU shutdown on generator selection.
+s.send({type:'ELECTRICAL',action:{type:'CONTROL',key:'batterySwitch',value:true}});
+s.send({type:'ELECTRICAL',action:{type:'SELECT_SOURCE',source:'GEN2',side:2}});
 s.send({type:'ELECTRICAL',action:{type:'SELECT_SOURCE',source:'APU',side:1}});
 s.send({type:'PNEUMATIC',action:{type:'CONTROL',key:'apuBleed',value:'ON'}});
 assert.equal(s.get().network.electrical.source[1],'APU');
