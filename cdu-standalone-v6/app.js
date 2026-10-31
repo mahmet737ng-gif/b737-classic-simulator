@@ -92,7 +92,7 @@ function applyCDUScreenTypography(box){
  // Unified has its own APPROVED 24-column typography and locked #29ff31 color.
  // Only Standalone gets the independent high-contrast screen treatment.
  if(document.querySelector('base[href="../../cdu-standalone-v6/"]'))return;
- const green='#4bf58a';
+ const green='#29ff31';
  const stage=document.getElementById('cdu-stage');
  const stageWidth=stage?.getBoundingClientRect().width||790;
  const width=box.getBoundingClientRect().width||stageWidth*.4865;
