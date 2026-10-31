@@ -42,6 +42,14 @@ const initial={toggles:Object.fromEntries(registry.controls.map(c=>[c.id,c.defau
          'generator-disconnect-1':{value:'normal',guard:'closed'},'generator-disconnect-2':{value:'normal',guard:'closed'}},
  rotaries:{},context:{onGround:true,engine1Running:true,engine2Running:true,apuRunning:false,groundPowerAttached:false}};
 const bridge=make();let r=bridge.synchronize(initial),s=r.state;
+// The integrated ECU starts cold & dark; two running engines do not imply
+// their generators were selected onto the buses. Set up the crossfeed bench
+// explicitly without changing the model's source-selection safety rules.
+bridge.instructor({type:'ELECTRICAL',action:{type:'SELECT_SOURCE',side:1,source:'GEN1'}});
+bridge.instructor({type:'ELECTRICAL',action:{type:'SELECT_SOURCE',side:2,source:'GEN2'}});
+r=bridge.get();s=r.state;
+assert.equal(s.electrical.bus.generator1,true);
+assert.equal(s.electrical.bus.generator2,true);
 assert.equal(r.initialized,true);
 assert.equal(r.coverage.pumpControls,8);
 assert.equal(r.coverage.pumpLamps,8);
