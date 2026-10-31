@@ -7,7 +7,7 @@ function compile(root,entry=ENTRY){
  const html=fs.readFileSync(path.join(root,entry),'utf8'),docURL=new URL('https://desktop.invalid/'+entry);
  const baseMatch=html.match(/<base\s+href=(["'])([^"']+)\1/i);
  const base=baseMatch?new URL(baseMatch[2],docURL):docURL;
- const baseDir=path.posix.dirname(base.pathname.slice(1));
+ const baseDir=base.pathname.endsWith('/')?base.pathname.slice(1,-1):path.posix.dirname(base.pathname.slice(1));
  const re=/<script\b[^>]*\bsrc=(["'])([^"']+)\1[^>]*>\s*<\/script>/gi;
  const scoped=code=>/^(?:\(function\b|\(\(\)\s*=>)/.test(code.replace(/^(?:\s|\/\*[\s\S]*?\*\/|\/\/[^\n]*\n)*/,''));
  const tags=[...html.matchAll(re)].map(m=>{
