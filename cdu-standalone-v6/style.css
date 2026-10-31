@@ -226,3 +226,22 @@ main{grid-template-columns:minmax(0,1fr) 360px;align-items:start}
 #fmc-screen #fmc-lines .fmc-line .cdu-lsk-prompt{font-size:inherit!important}
 #fmc-screen #fmc-lines .fmc-line,
 #fmc-screen #fmc-lines .fmc-line *{color:#29e637!important;text-shadow:0 0 .5px rgba(41,230,55,.22)!important}
+
+/* OWNER 2026-10-31 LSK horizontal registration — all pages, both stages.
+   Hardware LSK centres, approved Boeing font files/sizes, vertical rows,
+   screen mask and FMC page definitions stay unchanged.
+   The left column begins 2.7% from the visible CRT edge; the right column
+   ends 2.7% before the opposite edge. Scratchpad retains its prior 77% width
+   so 24-character metric calibration never enlarges its font. */
+#fmc-screen #fmc-lines .fmc-line.fmc-pairline:not(.scratch) {
+  left:2.7%!important;
+  right:2.7%!important;
+  width:94.6%!important;
+  max-width:94.6%!important;
+}
+#fmc-screen #fmc-lines .fmc-line.scratch {
+  left:2.7%!important;
+  right:auto!important;
+  width:77%!important;
+  max-width:77%!important;
+}

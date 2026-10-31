@@ -121,3 +121,17 @@ const embedded=fs.readFileSync(path.join(__dirname,'cdu-stage.html'),'utf8');
 assert.match(embedded,/cdu-screen-fit-v6\.js\?v=CDU-24COL-0006-R11-ENTRY110-ACTION105-L6SAFE/);
 assert.doesNotMatch(src,/@font-face|BoeingCDU-Large\.ttf|\.bbox_px\s*=/);
 console.log('PASS: INDEX IDENT POS INIT RTE PERF INIT TAKEOFF LEGS: small titles, large LSK prompts, exact 24A scratchpad, untouched FCOM cells');
+
+/* Owner photo: selectable text must meet its own LSK, not sit in the centre.
+   This is a horizontal-only correction; preserve the 24-A calibration width. */
+{
+ const css=fs.readFileSync(path.join(__dirname,'../../cdu-standalone-v6/style.css'),'utf8');
+ const lsk=css.split('/* OWNER 2026-10-31 LSK horizontal registration')[1];
+ assert.ok(lsk,'Both Standalone and Unified must load common LSK-edge alignment');
+ assert.match(lsk,/#fmc-screen #fmc-lines \.fmc-line\.fmc-pairline:not\(\.scratch\)\s*\{[^}]*left:2\.7%!important;[^}]*right:2\.7%!important;[^}]*width:94\.6%!important;/s,'LSK text must anchor to both CRT edges');
+ assert.match(lsk,/#fmc-screen #fmc-lines \.fmc-line\.scratch\s*\{[^}]*left:2\.7%!important;[^}]*width:77%!important;/s,'24A scratchpad measured width must not change');
+ for(const html of ['../../cdu-standalone-v6/index.html','cdu-stage.html']){
+  const page=fs.readFileSync(path.join(__dirname,html),'utf8');
+  assert.match(page,/style\.css\?v=CDU-OWNER-PHOTO-20261031-LSK-EDGE-01/,'Both embedded and standalone must invalidate cached style');
+ }
+}
