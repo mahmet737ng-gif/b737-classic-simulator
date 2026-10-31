@@ -128,7 +128,7 @@
   }
   // Essential output status preserves UNKNOWN rather than falsely resolving undocumented routes.
   const bus={generator1:gen[1],generator2:gen[2],transfer1:transfer[1],transfer2:transfer[2],main1:main[1],main2:main[2],dc1:dcTr3BackupUnknown?null:dc1,dc2:dcTr3BackupUnknown?null:dc2,battery:batteryBus,hotBattery,switchedHotBattery,acStandby:trit(acStandby),dcStandby:trit(dcStandby),groundService:serviceBus};
-  const lamps={busOff1:!gen[1],busOff2:!gen[2],transferBusOff1:!transfer[1],transferBusOff2:!transfer[2],genOffBus1:powered[1]!=='GEN1',genOffBus2:powered[2]!=='GEN2',groundPowerAvailable:c.groundPowerAttached&&c.groundPowerQualityGood,standbyPowerOff:acStandby===null?null:!acStandby};
+  const lamps={busOff1:!gen[1],busOff2:!gen[2],transferBusOff1:!transfer[1],transferBusOff2:!transfer[2],genOffBus1:c.engine1Running===true&&powered[1]!=='GEN1',genOffBus2:c.engine2Running===true&&powered[2]!=='GEN2',groundPowerAvailable:c.groundPowerAttached&&c.groundPowerQualityGood,standbyPowerOff:acStandby===null?null:!acStandby};
   const distinctSources=new Set(Object.values(powered).filter(Boolean));
   const galleyShed=c.onGround?false:distinctSources.size===1;
   const qa=[];

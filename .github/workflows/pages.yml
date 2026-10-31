@@ -152,11 +152,32 @@ jobs:
           node cdu-standalone-v6/tests/route-field-consistency.test.cjs
       - name: Syntax-check animated panel
         run: node --check main-panel-lab/panel.js
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify web runtime compilation, revisions and cache freshness
+        run: |
+          node --test tests/unified-web-build.test.cjs tests/unified-runtime-performance-v2.test.cjs desktop/runtime-bundle.test.cjs desktop/avionics-scheduling.test.cjs desktop/render-efficiency.test.cjs desktop/startup-gate.test.cjs
+          node tools/build-unified-web.cjs
+      - name: Install browser test dependency
+        run: npm install --no-save --ignore-scripts playwright@1.58.2
+      - name: Measure compiled web startup and live controls
+        run: |
+          export CHROME_PATH="$(command -v google-chrome || command -v chromium || true)"
+          if [ -z "$CHROME_PATH" ]; then npx playwright install --with-deps chromium; fi
+          node tools/test-unified-web-startup.cjs
+      - name: Save web startup evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unified-web-startup
+          path: artifacts/unified-web-startup/
+          if-no-files-found: ignore
       - uses: actions/configure-pages@v5
         with:
           enablement: true
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: '.'
+          path: 'web-dist'
       - id: deployment
         uses: actions/deploy-pages@v4
