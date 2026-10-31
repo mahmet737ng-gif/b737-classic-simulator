@@ -7,6 +7,36 @@
  const ID='liveBatteryRecharge';
  const STORE='b737classic.live-battery.v1';
  const owner=()=>root.B737ISNCockpitV1;
+ // The cockpit header may be rebuilt by a launcher or an older cached page.
+ // Own exactly one command button and keep it immediately after CB PNL (RTL:
+ // visually to the left). Never make visibility dependent on AC availability.
+ function ensureButton(){
+  const bar=document.querySelector('body > header.unified-minimal-header .header-settings');
+  if(!bar)return null;
+  let button=document.getElementById(ID);
+  if(!button){
+   button=document.createElement('button');
+   button.id=ID;button.type='button';
+   button.textContent='BAT RECHARGE';
+   button.setAttribute('aria-label','Recharge training battery to 100 percent');
+  }
+  const cb=bar.querySelector('#cbPanelOpen');
+  if(cb){
+   if(button.parentElement!==bar||button.previousElementSibling!==cb)
+    cb.insertAdjacentElement('afterend',button);
+  }else if(button.parentElement!==bar)bar.append(button);
+  // Other electrical modules may mark the HUD hidden; this instructor
+  // command MUST remain visible with or without generator/GPU/APU power.
+  if(button.hidden)button.hidden=false;
+  if(button.style.getPropertyValue('display')!=='inline-flex'||
+     button.style.getPropertyPriority('display')!=='important')
+   button.style.setProperty('display','inline-flex','important');
+  if(button.dataset.batteryRechargeBound!=='true'){
+   button.addEventListener('click',recharge);
+   button.dataset.batteryRechargeBound='true';
+  }
+  return button;
+ }
  function acPowerConnected(electrical){
   const bus=electrical?.bus;
   return bus?.generator1===true||bus?.generator2===true||bus?.groundService===true;
@@ -16,7 +46,7 @@
   catch(error){console.warn('BAT RECHARGE source state unavailable:',error);return null;}
  }
  function update(){
-  const button=document.getElementById(ID);
+  const button=ensureButton();
   if(!button)return;
   const connected=acPowerConnected(electrical());
   const ready=typeof root.B737InstalledBattery?.recharge==='function'||
@@ -38,7 +68,7 @@
  }
  function recharge(event){
   event.preventDefault();event.stopPropagation();
-  const button=document.getElementById(ID);
+  const button=ensureButton();
   if(!button)return;
   button.disabled=true;
   try{
@@ -63,9 +93,15 @@
   }finally{update();}
  }
  function start(){
-  const button=document.getElementById(ID);
+  const button=ensureButton();
   if(!button)return;
-  button.addEventListener('click',recharge);
+  // Only watch the four-command header, not the large animated cockpit.
+  // A launcher-driven replacement of the bar can no longer lose the control.
+  const bar=button.parentElement;
+  if(typeof MutationObserver==='function'){
+   const observer=new MutationObserver(()=>{ensureButton();update();});
+   observer.observe(bar,{childList:true});
+  }
   for(const event of ['b737:electrical-owner-ready','b737:electrical-network',
    'b737:battery-live','b737:unified-ecu-observation','b737:battery-recharged'])
    root.addEventListener(event,update);
