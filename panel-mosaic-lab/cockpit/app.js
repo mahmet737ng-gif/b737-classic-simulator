@@ -6,6 +6,34 @@
  const ENABLED_CDU_SEAT='FO';
  const fmcSession=window.B737CduSession.create();
  window.B737UnifiedFmc=Object.freeze({attach(seat,source,peer){const c=cduFrames.get(seat);if(!c||c.child.contentWindow!==source)throw Error('Unknown CDU frame');return fmcSession.attach(seat,peer);}});
+ const wheelController=window.B737WheelPanModelV1?.createController(vp);
+ let galleryMounted=false,viewRefreshTimer=0,overheadStarted=false;
+ function scheduleViewRefresh(){
+  if(viewRefreshTimer)return;
+  viewRefreshTimer=setTimeout(()=>{
+   viewRefreshTimer=0;
+   window.B737ImageLoader?.refresh();
+   window.dispatchEvent(new CustomEvent('b737:performance-view'));
+  },80);
+ }
+ function startOverheadFrame(){
+  if(overheadStarted||!frame)return;
+  overheadStarted=true;
+  frame.src=frame.dataset.deferredUrl;
+  delete frame.dataset.deferredUrl;
+ }
+ function mountGallery(){
+  if(galleryMounted||!assembly)return;
+  galleryMounted=true;
+  const gallery=byId('gallery');
+  for(const r of assembly.regions)for(const p of r.placements||[]){
+   if(p.referenceOnly)continue;
+   const a=assembly.assets[p.asset],b=document.createElement('button');
+   b.append(image(a,p.label),document.createTextNode(p.label));
+   b.onclick=()=>{byId('galleryDialog').close();focus(r.id);select(r,p);};
+   gallery.append(b);
+  }
+ }
  const faultable=new Set(['sensor','fuel-pressure','hyd-pressure','flight-pressure','standby-pressure','yaw','drive-pressure','drive-temperature','equipment','window','probe','dc-fail','fault','apu','recorder','anti-ice','pneumatic','press-fault','valve','fuel-valve','ram-door']);
  function assetStatus(){byId('assetStatus').textContent='تصاویر نمایشی: '+loaded.size+' / '+Object.keys(assembly.assets).length+(failed.size?' · خطای بارگذاری: '+failed.size:'');}
  function image(asset,alt){const img=document.createElement('img');window.B737ImageLoader.assign(img,asset.url);img.alt=alt;img.draggable=false;img.decoding='async';img.onload=()=>{loaded.add(asset.path);failed.delete(asset.path);assetStatus();};img.onerror=()=>{failed.add(asset.path);assetStatus();};return img;}
@@ -13,7 +41,7 @@
  function mount(){
   Object.assign(scene.style,{width:assembly.canvas.width+'px',height:assembly.canvas.height+'px'});
   for(const r of assembly.regions){const region=document.createElement('section');region.id='region-'+r.id;region.className='region';region.dataset.region=r.id;region.setAttribute('aria-label',r.label);Object.assign(region.style,{left:r.x+'px',top:r.y+'px',width:r.w+'px',height:r.h+'px'});const label=document.createElement('span');label.className='region-label';label.textContent=r.label;region.append(label);
-   if(r.id==='overhead'){frame=document.createElement('iframe');frame.id='overheadFrame';frame.title='اورهد تعاملی LGT-0003';frame.src=r.embeddedUrl+'&photoInput=PHOTO-INPUT-0001&ledev=LEDEV-0006&lelogic=LEDEV-STAGED-V1&aspObs=ASP-OBS-CENTER-0005-FACE&pmc=PMC-GLASS-0004';region.append(frame);}
+   if(r.id==='overhead'){frame=document.createElement('iframe');frame.id='overheadFrame';frame.title='اورهد تعاملی LGT-0003';frame.dataset.deferredUrl=r.embeddedUrl+'&photoInput=PHOTO-INPUT-0001&ledev=LEDEV-0006&lelogic=LEDEV-STAGED-V1&aspObs=ASP-OBS-CENTER-0005-FACE&pmc=PMC-GLASS-0004';region.append(frame);}
    else {const native=document.createElement('div');native.className='region-native';native.style.width=r.nativeWidth+'px';native.style.height=r.nativeHeight+'px';native.style.transform='scale('+(r.w/r.nativeWidth)+')';
     for(const p of r.placements){const piece=document.createElement('div');piece.className='texture-piece';piece.dataset.piece=p.id;piece.dataset.reference=String(!!p.referenceOnly);piece.setAttribute('aria-label',p.label);Object.assign(piece.style,{left:p.x+'px',top:p.y+'px',width:p.w+'px',height:p.h+'px'});const img=image(assembly.assets[p.asset],p.label);if(p.presentation==='contain')img.style.objectFit='contain';if(p.sourceWindow){const ratio=p.w/p.sourceWindow.w;img.style.position='absolute';img.style.width=(assembly.assets[p.asset].dimensions[0]*ratio)+'px';img.style.height=(assembly.assets[p.asset].dimensions[1]*ratio)+'px';img.style.left=(-p.sourceWindow.x*ratio)+'px';img.style.top=(-p.sourceWindow.y*ratio)+'px';}if(p.maskPolygon){const [sw,sh]=assembly.assets[p.asset].dimensions;img.style.clipPath='polygon('+p.maskPolygon.map(([x,y])=>(x/sw*100).toFixed(4)+'% '+(y/sh*100).toFixed(4)+'%').join(',')+')';}piece.append(img);native.append(piece);}region.append(native);
     const ref=image(assembly.assets[r.id==='main'?'assets/main-panel.webp':'assets/pedestal.webp'],r.label+' REFERENCE');ref.className='reference-image';region.append(ref);
@@ -38,9 +66,8 @@
     continue;
    }
    const child=document.createElement('iframe');child.id='cduFrame'+item.seat;child.className='cdu-frame';child.title=item.label;child.src=item.embeddedUrl;const placement=model.instrumentPresentation(item);Object.assign(child.style,{width:item.nativeWidth+'px',height:item.nativeHeight+'px',left:placement.left+'px',top:placement.top+'px',transform:'scale('+placement.scaleX+','+placement.scaleY+')',transformOrigin:'0 0'});const frameWindow=document.createElement('div');frameWindow.className='cdu-frame-window';frameWindow.append(child);station.append(frameWindow);byId('region-'+item.regionId).querySelector('.region-native').append(station);cduFrames.set(item.seat,{child,item,station});}
-  const gallery=byId('gallery');for(const r of assembly.regions)for(const p of r.placements||[]){if(p.referenceOnly)continue;const a=assembly.assets[p.asset],b=document.createElement('button');b.append(image(a,p.label),document.createTextNode(p.label));b.onclick=()=>{byId('galleryDialog').close();focus(r.id);select(r,p);};gallery.append(b);}
  }
- function applyZoom(value,left=vp.scrollLeft,top=vp.scrollTop,x=vp.clientWidth/2,y=vp.clientHeight/2){const next=model.clamp(value,.04,2),before={x:parseFloat(scene.style.left)||0,y:parseFloat(scene.style.top)||0},after={x:Math.max(0,(vp.clientWidth-assembly.canvas.width*next)/2),y:Math.max(0,(vp.clientHeight-assembly.canvas.height*next)/2)};const z=model.zoomAnchor(zoom,next,left,top,x,y,before,after);zoom=z.zoom;scene.style.left=after.x+'px';scene.style.top=after.y+'px';scene.style.transform='scale('+zoom+')';scene.style.setProperty('--zoom',String(zoom));sizer.style.width=Math.ceil(assembly.canvas.width*zoom)+'px';sizer.style.height=Math.ceil(assembly.canvas.height*zoom)+'px';vp.scrollLeft=z.left;vp.scrollTop=z.top;byId('zoomValue').textContent=Math.round(zoom*100)+'%';window.B737ImageLoader.refresh();window.dispatchEvent(new CustomEvent('b737:performance-view'));}
+ function applyZoom(value,left=vp.scrollLeft,top=vp.scrollTop,x=vp.clientWidth/2,y=vp.clientHeight/2){wheelController?.cancel();const next=model.clamp(value,.04,2),before={x:parseFloat(scene.style.left)||0,y:parseFloat(scene.style.top)||0},after={x:Math.max(0,(vp.clientWidth-assembly.canvas.width*next)/2),y:Math.max(0,(vp.clientHeight-assembly.canvas.height*next)/2)};const z=model.zoomAnchor(zoom,next,left,top,x,y,before,after);zoom=z.zoom;scene.style.left=after.x+'px';scene.style.top=after.y+'px';scene.style.transform='scale('+zoom+')';scene.style.setProperty('--zoom',String(zoom));sizer.style.width=Math.ceil(assembly.canvas.width*zoom)+'px';sizer.style.height=Math.ceil(assembly.canvas.height*zoom)+'px';vp.scrollLeft=z.left;vp.scrollTop=z.top;byId('zoomValue').textContent=Math.round(zoom*100)+'%';scheduleViewRefresh();}
  // Responsive two-finger zoom adapter for the outer canvas. This touches only
  // viewport transforms, never protected cockpit artwork or switch geometry.
  window.B737UnifiedPinchAdapterV1=Object.freeze({
@@ -61,8 +88,8 @@
    vp.scrollTop=Math.max(0,sourceY*next+afterY-y);
   }
  });
- function focus(id){focused=id;const r=model.target(assembly,id);if(!r)return;const scale=model.fit(r,vp.clientWidth,vp.clientHeight);applyZoom(scale,0,0,0,0);vp.scrollLeft=Math.max(0,(r.x+r.w/2)*zoom-vp.clientWidth/2);vp.scrollTop=Math.max(0,r.y*zoom-38);for(const b of document.querySelectorAll('[data-focus]'))b.classList.toggle('active',b.dataset.focus===id);const labels={all:'تمام کاکپیت',overhead:'اورهد تعاملی',main:'مین‌پنل',pedestal:'پدستال','cdu-captain':'CDU کپتن','cdu-first-officer':'CDU فرست‌آفیسر','cdu-both':'CDU کپتن و فرست‌آفیسر'};byId('viewLabel').textContent=labels[id];byId('selectionTitle').textContent=r.label||'ALL COCKPIT';byId('selectionDescription').textContent=id.startsWith('cdu-')?'همان CDU تأییدشده با ۷۰ دکمه؛ صفحه مستقل و اطلاعات FMC مشترک است':id==='overhead'?'۱۱۰ چراغ و کنترل‌های تعاملی نسخهٔ تأییدشده':id==='pedestal'?'پنل جدید و خام Throttle Quadrant، فایر پنل و رادیوها در چیدمان مستقل و بدون هم‌پوشانی':'مونتاژ تصاویر اصلی با حفظ نسبت طول و عرض';byId('selectionSize').textContent='';byId('originalLink').hidden=true;}
- function panWheel(payload){return window.B737WheelPanModelV1?.pan(vp,payload)===true;}
+ function focus(id){if(id==='overhead'||id==='all')startOverheadFrame();wheelController?.cancel();focused=id;const r=model.target(assembly,id);if(!r)return;const scale=model.fit(r,vp.clientWidth,vp.clientHeight);applyZoom(scale,0,0,0,0);vp.scrollLeft=Math.max(0,(r.x+r.w/2)*zoom-vp.clientWidth/2);vp.scrollTop=Math.max(0,r.y*zoom-38);for(const b of document.querySelectorAll('[data-focus]'))b.classList.toggle('active',b.dataset.focus===id);const labels={all:'تمام کاکپیت',overhead:'اورهد تعاملی',main:'مین‌پنل',pedestal:'پدستال','cdu-captain':'CDU کپتن','cdu-first-officer':'CDU فرست‌آفیسر','cdu-both':'CDU کپتن و فرست‌آفیسر'};byId('viewLabel').textContent=labels[id];byId('selectionTitle').textContent=r.label||'ALL COCKPIT';byId('selectionDescription').textContent=id.startsWith('cdu-')?'همان CDU تأییدشده با ۷۰ دکمه؛ صفحه مستقل و اطلاعات FMC مشترک است':id==='overhead'?'۱۱۰ چراغ و کنترل‌های تعاملی نسخهٔ تأییدشده':id==='pedestal'?'پنل جدید و خام Throttle Quadrant، فایر پنل و رادیوها در چیدمان مستقل و بدون هم‌پوشانی':'مونتاژ تصاویر اصلی با حفظ نسبت طول و عرض';byId('selectionSize').textContent='';byId('originalLink').hidden=true;}
+ function panWheel(payload){return wheelController?wheelController.pan(payload):window.B737WheelPanModelV1?.pan(vp,payload)===true;}
  function command(action,extra={}){if(ready)frame.contentWindow.postMessage({type:'b737:cockpit-command',action,...extra},location.origin);}
  // Environment sensor values are supplied by ISN or an external simulator adapter.
  // Only the selected PRECHECK source updates the OH20 temperature pointer.
@@ -101,7 +128,7 @@
  byId('fit').onclick=()=>focus(focused);byId('zoomIn').onclick=()=>applyZoom(zoom*1.25);byId('zoomOut').onclick=()=>applyZoom(zoom/1.25);byId('native').onclick=()=>applyZoom(1);
  byId('panMode').onclick=e=>{const active=!scene.classList.contains('pan-mode');scene.classList.toggle('pan-mode',active);e.currentTarget.setAttribute('aria-pressed',String(active));};
  byId('reference').onclick=e=>{window.B737ImageLoader.refresh();const active=!scene.classList.contains('reference-mode');scene.classList.toggle('reference-mode',active);e.currentTarget.setAttribute('aria-pressed',String(active));};
- byId('galleryOpen').onclick=()=>{byId('galleryDialog').showModal();window.B737ImageLoader.refresh();};byId('galleryClose').onclick=()=>byId('galleryDialog').close();
+ byId('galleryOpen').onclick=()=>{mountGallery();byId('galleryDialog').showModal();window.B737ImageLoader.refresh();};byId('galleryClose').onclick=()=>byId('galleryDialog').close();
  byId('inspectorToggle').onclick=e=>{const active=!document.body.classList.contains('side-open');document.body.classList.toggle('side-open',active);e.currentTarget.setAttribute('aria-expanded',String(active));};
  byId('lampSelect').onchange=renderLights;byId('lampFault').onchange=e=>command('fault',{id:byId('lampSelect').value,active:e.target.checked});byId('resetScenario').onclick=()=>command('reset-scenario');byId('resetControls').onclick=()=>command('reset-controls');
  vp.addEventListener('wheel',e=>{
@@ -110,10 +137,21 @@
   if(e.target.closest('input,textarea,select,[contenteditable="true"]'))return;
   if(panWheel(e))e.preventDefault();
  },{passive:false});
- vp.addEventListener('pointerdown',e=>{if(e.pointerType!=='mouse'||e.button!==0)return;drag={x:e.clientX,y:e.clientY,left:vp.scrollLeft,top:vp.scrollTop,source:'parent',pointer:e.pointerId};dragged=false;});vp.addEventListener('pointermove',e=>{if(!drag||drag.source!=='parent'||drag.pointer!==e.pointerId)return;const dx=e.clientX-drag.x,dy=e.clientY-drag.y;if(Math.abs(dx)+Math.abs(dy)>5){dragged=true;vp.classList.add('dragging');vp.setPointerCapture(e.pointerId);vp.scrollLeft=drag.left-dx;vp.scrollTop=drag.top-dy;}});const stop=()=>{drag=null;vp.classList.remove('dragging');setTimeout(()=>dragged=false,0);};window.addEventListener('pointerup',stop);window.addEventListener('pointercancel',stop);
- vp.addEventListener('touchstart',e=>{if(e.touches.length===2){const a=e.touches;pinch={distance:Math.hypot(a[0].clientX-a[1].clientX,a[0].clientY-a[1].clientY),zoom,left:vp.scrollLeft,top:vp.scrollTop};}},{passive:true});vp.addEventListener('touchmove',e=>{if(e.touches.length===2&&pinch){e.preventDefault();const a=e.touches,r=vp.getBoundingClientRect();applyZoom(pinch.zoom*Math.hypot(a[0].clientX-a[1].clientX,a[0].clientY-a[1].clientY)/pinch.distance,pinch.left,pinch.top,(a[0].clientX+a[1].clientX)/2-r.left,(a[0].clientY+a[1].clientY)/2-r.top);}},{passive:false});vp.addEventListener('touchend',e=>{if(e.touches.length<2)pinch=null;},{passive:true});
+ vp.addEventListener('pointerdown',e=>{wheelController?.cancel();if(e.pointerType!=='mouse'||e.button!==0)return;drag={x:e.clientX,y:e.clientY,left:vp.scrollLeft,top:vp.scrollTop,source:'parent',pointer:e.pointerId};dragged=false;});vp.addEventListener('pointermove',e=>{if(!drag||drag.source!=='parent'||drag.pointer!==e.pointerId)return;const dx=e.clientX-drag.x,dy=e.clientY-drag.y;if(Math.abs(dx)+Math.abs(dy)>5){dragged=true;vp.classList.add('dragging');vp.setPointerCapture(e.pointerId);vp.scrollLeft=drag.left-dx;vp.scrollTop=drag.top-dy;}});const stop=()=>{drag=null;vp.classList.remove('dragging');setTimeout(()=>dragged=false,0);};window.addEventListener('pointerup',stop);window.addEventListener('pointercancel',stop);
+ vp.addEventListener('touchstart',e=>{wheelController?.cancel();if(e.touches.length===2){const a=e.touches;pinch={distance:Math.hypot(a[0].clientX-a[1].clientX,a[0].clientY-a[1].clientY),zoom,left:vp.scrollLeft,top:vp.scrollTop};}},{passive:true});vp.addEventListener('touchmove',e=>{if(e.touches.length===2&&pinch){e.preventDefault();const a=e.touches,r=vp.getBoundingClientRect();applyZoom(pinch.zoom*Math.hypot(a[0].clientX-a[1].clientX,a[0].clientY-a[1].clientY)/pinch.distance,pinch.left,pinch.top,(a[0].clientX+a[1].clientX)/2-r.left,(a[0].clientY+a[1].clientY)/2-r.top);}},{passive:false});vp.addEventListener('touchend',e=>{if(e.touches.length<2)pinch=null;},{passive:true});
  let resizeTimer;window.addEventListener('resize',()=>{clearTimeout(resizeTimer);resizeTimer=setTimeout(()=>{if(assembly)focus(focused);},120);});
- async function start(){try{const prefetched=window.B737UnifiedAssemblyPrefetch?await window.B737UnifiedAssemblyPrefetch:null;if(prefetched?.error)throw Error(prefetched.error);if(prefetched?.data)assembly=prefetched.data;else{const r=await fetch('./assembly.json',{cache:'no-store'});if(!r.ok)throw Error('Assembly unavailable');assembly=await r.json();}model.validate(assembly);mount();window.dispatchEvent(new CustomEvent('b737:cockpit-mounted'));focus('main');byId('loading').classList.add('hidden');}catch(e){byId('loading').textContent='خطای اتصال پنل‌ها: '+e.message;console.error(e);}}
+ async function start(){try{const prefetched=window.B737UnifiedAssemblyPrefetch?await window.B737UnifiedAssemblyPrefetch:null;if(prefetched?.error)throw Error(prefetched.error);if(prefetched?.data)assembly=prefetched.data;else{const r=await fetch('./assembly.json',{cache:'no-store'});if(!r.ok)throw Error('Assembly unavailable');assembly=await r.json();}model.validate(assembly);mount();window.dispatchEvent(new CustomEvent('b737:cockpit-mounted'));focus('main');byId('loading').classList.add('hidden');
+  // Overhead geometry is mounted immediately; its 49-script iframe starts only
+  // after the first usable main paint, or when actually brought into view.
+  // A bounded fallback still initializes systems if the ready event is missed.
+  window.addEventListener('b737:unified-usable',startOverheadFrame,{once:true});
+  setTimeout(startOverheadFrame,5200);
+  if('IntersectionObserver' in window){
+   const observer=new IntersectionObserver(entries=>{
+    if(entries.some(entry=>entry.isIntersecting)){observer.disconnect();startOverheadFrame();}
+   },{root:vp,rootMargin:'250px'});
+   observer.observe(byId('region-overhead'));
+  }}catch(e){byId('loading').textContent='خطای اتصال پنل‌ها: '+e.message;console.error(e);}}
  start();
 })();
 

@@ -24,5 +24,42 @@
   viewport.scrollTop+=p.y;
   return true;
  }
- return Object.freeze({normalize,pan});
+
+ // RAF-coalesced visual pan. Keep the original synchronous pan() API for
+ // compatibility with standalone embedded panels and existing test fixtures.
+ function createController(viewport,{requestFrame=null,cancelFrame=null,ease=0.48}={}){
+  const raf=requestFrame||(typeof requestAnimationFrame==='function'?requestAnimationFrame:null);
+  const caf=cancelFrame||(typeof cancelAnimationFrame==='function'?cancelAnimationFrame:null);
+  if(!viewport)throw Error('Wheel viewport required');
+  if(!Number.isFinite(ease)||ease<=0||ease>1)throw Error('Invalid smoothing factor');
+  let goalX=0,goalY=0,ticket=null,running=false;
+  function bound(value,extent,visible){
+   return Math.max(0,Math.min(value,Number.isFinite(extent)&&Number.isFinite(visible)?Math.max(0,extent-visible):Infinity));
+  }
+  function cancel(){
+   if(ticket!==null&&caf)caf(ticket);
+   ticket=null;running=false;
+  }
+  function frame(){
+   ticket=null;if(!running)return;
+   const dx=goalX-viewport.scrollLeft,dy=goalY-viewport.scrollTop;
+   if(Math.abs(dx)<0.5&&Math.abs(dy)<0.5){
+    viewport.scrollLeft=goalX;viewport.scrollTop=goalY;running=false;return;
+   }
+   viewport.scrollLeft+=dx*ease;viewport.scrollTop+=dy*ease;
+   ticket=raf(frame);
+  }
+  function enqueue(payload){
+   const delta=normalize(payload,{height:viewport.clientHeight});
+   if(!delta)return false;
+   if(!raf||!caf)return pan(viewport,payload);
+   if(!running){goalX=viewport.scrollLeft;goalY=viewport.scrollTop;running=true;}
+   goalX=bound(goalX+delta.x,viewport.scrollWidth,viewport.clientWidth);
+   goalY=bound(goalY+delta.y,viewport.scrollHeight,viewport.clientHeight);
+   if(ticket===null)ticket=raf(frame);
+   return true;
+  }
+  return Object.freeze({pan:enqueue,cancel,active:()=>running});
+ }
+ return Object.freeze({normalize,pan,createController});
 });

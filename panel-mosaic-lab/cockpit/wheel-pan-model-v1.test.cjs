@@ -27,3 +27,27 @@ test('malformed iframe message cannot change scroll',()=>{
  }
  assert.deepEqual([vp.scrollLeft,vp.scrollTop],[200,100]);
 });
+
+test('PERF-0002 wheel bursts share one animation frame and converge to exact target',()=>{
+ const callbacks=new Map();let index=0;
+ const raf=fn=>{const id=++index;callbacks.set(id,fn);return id;};
+ const cancel=id=>callbacks.delete(id);
+ const vp={scrollLeft:0,scrollTop:100,clientHeight:600,clientWidth:800,scrollHeight:2000,scrollWidth:2500};
+ const controller=M.createController(vp,{requestFrame:raf,cancelFrame:cancel});
+ assert.equal(controller.pan({deltaX:0,deltaY:80,deltaMode:0}),true);
+ assert.equal(controller.pan({deltaX:0,deltaY:40,deltaMode:0}),true);
+ assert.equal(callbacks.size,1,'Wheel bursts must be coalesced');
+ for(let i=0;i<25&&callbacks.size;i++){const [id,cb]=callbacks.entries().next().value;callbacks.delete(id);cb();}
+ assert.equal(vp.scrollTop,220);
+ assert.equal(controller.active(),false);
+ assert.equal(callbacks.size,0,'The scheduler must stop at rest');
+});
+test('PERF-0002 programmatic focus cancels wheel inertia',()=>{
+ const jobs=new Map();let id=0;
+ const vp={scrollLeft:10,scrollTop:10,clientHeight:600,clientWidth:800,scrollHeight:2000,scrollWidth:2500};
+ const controller=M.createController(vp,{requestFrame:fn=>{jobs.set(++id,fn);return id},cancelFrame:n=>jobs.delete(n)});
+ controller.pan({deltaX:0,deltaY:500,deltaMode:0});
+ controller.cancel();assert.equal(jobs.size,0);assert.equal(controller.active(),false);
+ vp.scrollTop=1500;assert.equal(vp.scrollTop,1500);
+ assert.equal(controller.pan({deltaY:'bad',deltaX:0}),false);
+});

@@ -84,3 +84,17 @@ test('Heavy resource-timing statistics are gated while Controls drawer is closed
  assert.match(metrics,/document\.body\.classList\.contains\('side-open'\)/);
  assert.ok(metrics.includes('B737LoadDiagnostics'), 'On-demand diagnostics remain available');
 });
+
+test('PERF-0002 defers overhead rendering, builds gallery on demand and coalesces visible navigation',()=>{
+ const app=read(base+'app.js'),wheel=read(base+'wheel-pan-model-v1.js'),loader=read(base+'performance-loader.js');
+ assert.match(app,/b737:unified-usable',startOverheadFrame/);
+ assert.match(app,/IntersectionObserver/);
+ assert.match(app,/frame\.dataset\.deferredUrl=r\.embeddedUrl/);
+ assert.match(app,/mountGallery\(\);byId\('galleryDialog'\)/);
+ assert.match(app,/wheelController\.pan\(payload\)/);
+ assert.match(app,/scheduleViewRefresh\(\)/);
+ assert.match(wheel,/createController\(viewport/);
+ assert.match(loader,/lastMotionAt/);
+ assert.match(loader,/const view=viewport\(\),moving=/);
+ assert.match(loader,/if\(item\.extent&&moving\)return/);
+});
