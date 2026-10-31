@@ -357,6 +357,7 @@
     config:session.electricalState.config,source:session.electricalState.source,faults:session.electricalState.faults,battery:session.electricalState.battery})),
    attachLiveBattery:saved=>session.attachBattery(window.B737BatteryDynamicsV1,saved),
    getLiveBattery:()=>session.getBattery(),
+   rechargeLiveBattery:()=>{const b=session.rechargeBattery();chain.syncPower();ecu.core.refreshFuelDelivery();render();return b;},
    advanceLiveBattery:(dt,inputs)=>{const b=session.advanceBattery(dt,inputs);chain.syncPower();ecu.core.refreshFuelDelivery();render();return b;},
    // Pass only source-observed pneumatic supply to pressurization. UNKNOWN
    // must never become a fabricated zero PACK or an invented DC bus mapping.
