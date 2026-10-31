@@ -44,7 +44,11 @@ function isEntryPromptText(text){
  const v=String(text??'').trim();
  return !/[<>]/.test(v)&&(/[□]/.test(v)||/-{2,}/.test(v)||v==='TRAINER');
 }
-function makePairRow(topPct,leftText,rightText,isScratch=false,isSmall=false){const d=document.createElement('div'); d.className='fmc-line'+(isScratch?' scratch':'')+(isSmall?' fmc-small':'')+' fmc-pairline'; d.style.top=topPct+'%'; const l=document.createElement('span'); l.className='fmc-left'; l.textContent=leftText||''; const r=document.createElement('span'); r.className='fmc-right'; r.textContent=rightText||''; if(!isScratch&&!isSmall){if(isEntryPromptText(l.textContent))l.classList.add('cdu-entry-placeholder');if(isEntryPromptText(r.textContent))r.classList.add('cdu-entry-placeholder');} if(isScratch){l.classList.add('full'); r.remove(); d.appendChild(l);} else {d.appendChild(l); d.appendChild(r);} return d;}
+function isNavigationLSKText(text){
+ const s=String(text??'').trim();
+ return /^[<]/.test(s)||/[>]$/.test(s);
+}
+function makePairRow(topPctleftText,rightText,isScratch=false,isSmall=false){const d=document.createElement('div'); d.className='fmc-line'+(isScratch?' scratch':'')+(isSmall?' fmc-small':'')+' fmc-pairline'; d.style.top=topPct+'%'; const l=document.createElement('span'); l.className='fmc-left'; l.textContent=leftText||''; const r=document.createElement('span'); r.className='fmc-right'; r.textContent=rightText||''; if(!isScratch&&!isSmall){for(const span of [l,r]){if(isEntryPromptText(span.textContent))span.classList.add('cdu-entry-placeholder');else if(isNavigationLSKText(span.textContent))span.classList.add('cdu-lsk-prompt');}} if(isScratch){l.classList.add('full'); r.remove(); d.appendChild(l);} else {d.appendChild(l); d.appendChild(r);} return d;}
 /* FCOM Vol.2 11.40.32: DEP/ARR INDEX is a THREE-COLUMN origin/dest
  * page, not a generic route-field menu. Keep the approved photo & LSK map.
  */
@@ -67,7 +71,7 @@ const CDU_DISPLAY_GEOMETRY=Object.freeze({
  // Field values and selectable prompts are centred on each physical LSK.
  // The smaller field title is on the line immediately above that LSK.
  valueOffset:-13, labelOffset:-42, lowerLabelOffset:-50,
- scratchpadTop:565, lineHeight:1312*0.375*0.053, clearGap:4
+ scratchpadTop:565, lineHeight:1312*0.375*0.09, clearGap:4
 });
 function lskTextTops(number){
  const lsk=map.controls.find(c=>c.id==='CDU_CAPT_LSK_L'+number);
@@ -142,7 +146,8 @@ function applyCDUScreenTypography(box){
    node.style.setProperty('color',green,'important');
    node.style.setProperty('font-family',f,'important');
    const entry=node.classList?.contains('cdu-entry-placeholder');
-   node.style.setProperty('font-size',(entry?px*.56:size)+'px','important');
+   const navigation=node.classList?.contains('cdu-lsk-prompt');
+   node.style.setProperty('font-size',(entry?px*1.10:navigation?px*1.05:size)+'px','important');
    node.style.setProperty('font-weight','400','important');
    node.style.setProperty('line-height',
     isScratch?'1':isHeader?'.92':small?'.72':entry?'.96':'.77','important');
@@ -156,7 +161,8 @@ function applyCDUScreenTypography(box){
     if(!span.textContent?.trim()||!ctx||typeof span.getBoundingClientRect!=='function')continue;
     const available=span.getBoundingClientRect().width;
     if(!(available>0))continue;
-    const textSize=span.classList.contains('cdu-entry-placeholder')?px*.56:size;
+    const textSize=span.classList.contains('cdu-entry-placeholder')?px*1.10:
+     span.classList.contains('cdu-lsk-prompt')?px*1.05:size;
     ctx.font='400 '+textSize+'px "'+f+'"';
     const measured=ctx.measureText(span.textContent).width;
     const factor=measured>available-2?(available-2)/measured:1;
@@ -176,7 +182,9 @@ function applyCDUScreenTypography(box){
  box.dataset.labelCapRatio='2x-previous';
  box.dataset.pageValueScale='1.44';
  box.dataset.pageLabelScale='1.8';
- box.dataset.entryPromptScale='0.56';
+ box.dataset.entryPromptScale='1.10';
+ box.dataset.navigationPromptScale='1.05';
+ box.dataset.lastRowSafe='true';
  box.dataset.scratchpadScale='1';
  box.dataset.valueLine='LSK_CENTER';
 }
