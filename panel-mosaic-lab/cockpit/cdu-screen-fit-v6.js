@@ -174,6 +174,9 @@
   const standard=pairs.length===12&&pairs.filter(l=>l.classList.contains('fmc-small')).length===6;
   const scratch=lines.find(l=>l.classList.contains('scratch'));
   const main=model.mainPx,small=model.labelPx,grid=rowRegistration();
+  // Keep the 24-column scratchpad font at its calibrated baseline.
+  // Apply the requested multipliers only to the LSK page rows.
+  const pageValuePx=main*1.8,pageLabelPx=small*2;
   const promptsMoved=putPromptsOnLSKLines(pairs,standard);
   box.style.setProperty('color','#29ff31','important');
   box.style.setProperty('font-size',main+'px','important');
@@ -185,30 +188,41 @@
   }
   for(let i=0;i<pairs.length;i++){
    const line=pairs[i],label=line.classList.contains('fmc-small'),row=Math.floor(i/2);
-   const px=label?small:main;
-   // Special FCOM overlays retain their authored vertical registration.
+   const px=standard?(label?pageLabelPx:pageValuePx):(label?small:main);
+   // Special FCOM overlays retain their authored registration and font scale.
    if(standard&&row<6)
     line.style.setProperty('top',grid[label?'label':'value'][row]+'%','important');
-   line.style.setProperty('height',(label?'6%':'5.3%'),'important');
+   line.style.setProperty('height',(label?'6%':'6.1%'),'important');
+   line.style.setProperty('overflow','visible','important');
    typography(line,px);
-   if(label)line.style.setProperty('line-height','.78','important');
    for(const span of line.querySelectorAll('span')){
-    const prompt=isLSKPrompt(span,label),isCenter=span.classList.contains('fmc-center');
-    const target=prompt?model.promptPx:isCenter&&!label?main:px;
+    const prompt=isLSKPrompt(span,label);
     if(prompt)span.classList.add('cdu-lsk-prompt');
-    if(label&&span.textContent?.trim()){
-     // Horizontal fit never reduces the visible height of a field label.
-     typography(span,target);
-     ctx.font='400 '+target+'px '+fontFace(span);
-     const available=span.getBoundingClientRect().width;
-     const measured=ctx.measureText(span.textContent).width;
-     if(available>0&&measured>available-2){
-      const factor=Math.max(.2,(available-2)/measured);
-      span.style.setProperty('transform-origin',
-       span.classList.contains('fmc-right')?'right top':span.classList.contains('fmc-center')?'center top':'left top','important');
-      span.style.setProperty('transform','scaleX('+factor.toFixed(4)+')','important');
-     }
-    }else fitFragment(span,target,false);
+    if(!standard){
+     fitFragment(span,prompt?model.promptPx:px,false);
+     continue;
+    }
+    // Page text can be larger than the scratchpad: fit wide strings by X
+    // scaling, and cap the visible Y height to the gap between LSK rows.
+    // This prevents the bigger text from crossing the preceding/following
+    // field title without resizing, moving or obscuring the physical keys.
+    typography(span,px);
+    const message=span.textContent||'';
+    if(!message.trim())continue;
+    const family=fontFace(span);
+    ctx.font='400 '+px+'px '+family;
+    const width=span.getBoundingClientRect().width;
+    const textWidth=ctx.measureText(message).width;
+    const scaleX=width>0&&textWidth>width-2?Math.max(.15,(width-2)/textWidth):1;
+    const nextLabel=row<5?grid.label[row+1]:grid.scratch;
+    const gapPct=label?grid.value[row]-grid.label[row]:nextLabel-grid.value[row];
+    const availableHeight=Math.max(3,(gapPct/100*SCREEN_HEIGHT)-5);
+    const visibleGlyphHeight=capHeight(family,px);
+    const scaleY=Math.min(1,availableHeight/Math.max(1,visibleGlyphHeight));
+    span.style.setProperty('overflow','visible','important');
+    span.style.setProperty('transform-origin',
+     span.classList.contains('fmc-right')?'right top':span.classList.contains('fmc-center')?'center top':'left top','important');
+    span.style.setProperty('transform','scaleX('+scaleX.toFixed(4)+') scaleY('+scaleY.toFixed(4)+')','important');
    }
   }
   if(scratch){
@@ -222,6 +236,7 @@
   root.document.documentElement.dataset.cduScreenFit=VERSION;
   lastResult={ready:true,version:VERSION,standard,columns:Metrics.COLUMNS,
    fontSizePx:model.scratchPx,labelPx:model.labelPx,
+   pageValuePx,pageLabelPx,pageValueMultiplier:1.8,pageLabelMultiplier:2,
    headerPx:model.headerPx,promptPx:model.promptPx,photoProfile:PHOTO_PROFILE.id,promptsMoved,
    large:model.large,little:model.little,widthPx:model.widthPx,
    scratchLength:(scratch?.querySelector('.fmc-left')?.textContent||'').length,
