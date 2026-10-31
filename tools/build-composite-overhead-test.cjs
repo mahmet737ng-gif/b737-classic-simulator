@@ -83,7 +83,7 @@ const server=http.createServer((req,res)=>{
   const test=await browser.newPage({viewport:{width:1580,height:920}});
   await test.goto(base+'unified-composite-test.html',{waitUntil:'domcontentloaded',timeout:60000});
   await test.waitForFunction(()=>document.documentElement.dataset.unifiedUsableMs,null,{timeout:60000});
-  const assigned=await test.evaluate(()=>document.getElementById('overheadFrame')?.dataset.deferredUrl||'');
+  const assigned=await test.evaluate(()=>{const frame=document.getElementById('overheadFrame');return frame?.dataset.deferredUrl||frame?.getAttribute('src')||'';});
   assert.ok(assigned.includes('overhead-composite-stage.html'),'Full Unified must select the separate Overhead stage');
   // Check the exact stage the full Unified will embed; this does not require
   // a test-only navigation button absent from the approved minimal toolbar.
