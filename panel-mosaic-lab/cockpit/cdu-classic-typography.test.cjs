@@ -27,6 +27,11 @@ for(let i=0;i<6;i++){
   item.querySelectorAll=()=>[left,right];pairs.push(item);
  }
 }
+// Input prompts are distinct from navigation LSK options; the large
+// label/data scales must not inflate placeholder text.
+pairs[3].querySelectorAll()[0].textContent='-----';
+pairs[5].querySelectorAll()[1].textContent='□□□□';
+pairs[7].querySelectorAll()[0].textContent='TRAINER';
 const scratch=el('fmc-line scratch fmc-pairline');
 const scratchLeft=el('fmc-left full','A'.repeat(24),'BoeingCDULarge',520);
 scratch.querySelector=x=>x==='.fmc-left'||x==='.fmc-left.full'?scratchLeft:null;
@@ -79,6 +84,11 @@ assert.equal(result.columns,24);
 assert.equal(result.standard,true);
 assert.equal(parseFloat(pairs[0].style.applied.get('font-size')),Number((result.labelPx*2).toFixed(2)),'LSK page labels doubled');
 assert.equal(pairs[1].style.applied.get('font-size'),Number((44*1.8).toFixed(2))+'px','LSK values enlarged 1.8x');
+for(const [row,index] of [[3,0],[5,1],[7,0]]){
+ const span=pairs[row].querySelectorAll()[index];
+ assert.equal(span.style.applied.get('font-size'),'44px','entry placeholder must use former 24-A font');
+ assert.ok(span.classList.contains('cdu-entry-placeholder'),'entry placeholder classification');
+}
 assert.equal(result.pageValueMultiplier,1.8);
 assert.equal(result.pageLabelMultiplier,2);
 assert.equal(scratch.style.applied.get('font-size'),'44px');
