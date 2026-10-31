@@ -1,12 +1,11 @@
-/* BAT RECHARGE in the Unified top command bar. Electrical V7 is the
- * single authority: GEN/APU/EXT must actually energize an AC circuit.
- * Battery-only inverter power is not a reason to hide the recharge control.
+/* Instructor BAT RECHARGE in the Unified top command bar.
+ * Always visible and usable regardless of AC generator, ground service,
+ * external power or standby inverter. Actual charge stays in the ECU.
  */
 (function(root){
  'use strict';
  const ID='liveBatteryRecharge';
  const STORE='b737classic.live-battery.v1';
- let previousHidden=null;
  const owner=()=>root.B737ISNCockpitV1;
  function acPowerConnected(electrical){
   const bus=electrical?.bus;
@@ -20,15 +19,14 @@
   const button=document.getElementById(ID);
   if(!button)return;
   const connected=acPowerConnected(electrical());
-  const ready=typeof owner()?.rechargeLiveBattery==='function';
-  if(connected!==previousHidden){
-   button.hidden=connected;
-   previousHidden=connected;
-  }
-  button.disabled=connected||!ready;
+  const ready=typeof root.B737InstalledBattery?.recharge==='function'||
+   typeof owner()?.rechargeLiveBattery==='function';
+  // Instructor recharge must remain present with AC online, off, or unknown.
+  button.hidden=false;
+  button.disabled=!ready;
   button.dataset.acConnected=String(connected);
-  button.title=connected?'AC bus energized — BAT RECHARGE hidden':
-   !ready?'Waiting for the live battery ECU':'Recharge the training battery to 100%';
+  button.title=!ready?'Waiting for the live battery ECU':
+   'Recharge training battery to 100% — AC state does not inhibit this control';
  }
  function persistFromECU(){
   const state=owner()?.getElectricalState?.()?.battery;
@@ -41,7 +39,7 @@
  function recharge(event){
   event.preventDefault();event.stopPropagation();
   const button=document.getElementById(ID);
-  if(!button||acPowerConnected(electrical())){update();return;}
+  if(!button)return;
   button.disabled=true;
   try{
    const installed=root.B737InstalledBattery;
