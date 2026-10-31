@@ -52,7 +52,19 @@
  const FAULTS=Object.freeze(['GEN1_FAILED','GEN2_FAILED','APU_FAILED','TR1_FAILED','TR2_FAILED','TR3_FAILED','BATTERY_DEPLETED','STATIC_INVERTER_FAILED','TRANSFER1_RELAY_FAILED','TRANSFER2_RELAY_FAILED']);
  const CONTROL_KEYS=Object.freeze({onGround:'boolean',batterySwitch:'boolean',busTransferAuto:'boolean',groundPowerAttached:'boolean',groundPowerQualityGood:'boolean',groundServiceSelected:'boolean',apuRunning:'boolean',engine1Running:'boolean',engine2Running:'boolean',glideslopeCaptured:'boolean',standbySelector:['AUTO','OFF','BAT']});
  const cpy=s=>JSON.parse(JSON.stringify(s));const trit=b=>b===null?null:Boolean(b);
- function initialState(){return {schema:'b737-electrical/7',rev:0,config:{onGround:true,batterySwitch:true,busTransferAuto:true,groundPowerAttached:false,groundPowerQualityGood:true,groundServiceSelected:false,apuRunning:false,engine1Running:true,engine2Running:true,glideslopeCaptured:false,standbySelector:'AUTO'},source:{1:'GEN1',2:'GEN2'},faults:Object.fromEntries(FAULTS.map(k=>[k,false])),events:[]};}
+ function initialState({coldDark=false}={}){
+  // The original fully-powered baseline is retained for legacy isolated
+  // training benches. Integrated ECU sessions explicitly request coldDark;
+  // physical engine observations then own every source-running transition.
+  if(typeof coldDark!=='boolean')throw Error('Invalid electrical startup preset');
+  return {schema:'b737-electrical/7',rev:0,config:{
+   onGround:true,batterySwitch:!coldDark,busTransferAuto:true,
+   groundPowerAttached:false,groundPowerQualityGood:true,groundServiceSelected:false,
+   apuRunning:false,engine1Running:!coldDark,engine2Running:!coldDark,
+   glideslopeCaptured:false,standbySelector:'AUTO'
+  },source:coldDark?{1:null,2:null}:{1:'GEN1',2:'GEN2'},
+   faults:Object.fromEntries(FAULTS.map(k=>[k,false])),events:[]};
+ }
  function apply(s,cmd){if(!s||s.schema!=='b737-electrical/7')throw Error('Invalid Electrical V7 state');if(!cmd||typeof cmd.type!=='string')throw Error('Command required');if(cmd.type==='RESET')return initialState();const n=cpy(s),k=cmd.key,v=cmd.value;
    if(cmd.type==='CONTROL'){if(!Object.hasOwn(CONTROL_KEYS,k))throw Error('Unknown electrical control');const type=CONTROL_KEYS[k];if((type==='boolean'&&typeof v!=='boolean')||(Array.isArray(type)&&!type.includes(v)))throw Error('Invalid electrical control value');n.config[k]=v;if(k==='batterySwitch'&&!v){n.source[1]=n.source[1]==='EXT'?null:n.source[1];n.source[2]=n.source[2]==='EXT'?null:n.source[2];}}
    else if(cmd.type==='SELECT_SOURCE'){
@@ -100,31 +112,42 @@
   const tie=!c.glideslopeCaptured&&c.busTransferAuto;
   const dc1=tie?(tr.TR1||tr.TR2):tr.TR1;
   const dc2=tie?(tr.TR1||tr.TR2):tr.TR2;
-  const batteryHealthy=!f.BATTERY_DEPLETED&&(!s.battery||
+  const batteryAvailable=!f.BATTERY_DEPLETED&&(!s.battery||
    s.battery.chargeAh>0&&s.battery.available!==false);
-  const hotBattery=batteryHealthy,switchedHotBattery=batteryHealthy&&c.batterySwitch;
-  // FCOM 6.10.7: BAT forces the battery bus to the hot battery bus,
-  // regardless of BATTERY switch. Do not show a dead intermediate bus
-  // while claiming its inverter/standby consumers are powered.
-  const batteryBus=c.standbySelector==='BAT'?batteryHealthy:
-    tr.TR3||(batteryHealthy&&c.batterySwitch);
   const serviceBus=Boolean((c.onGround&&c.groundServiceSelected&&c.groundPowerAttached&&c.groundPowerQualityGood)||gen[1]);
+  // FCOM Classic 6.20.9 / ATA24: the charger is fed by GND SERVICE,
+  // with the MAIN 2 alternate path. A depleted battery must NOT remove
+  // the hot battery bus while the charger remains AC-powered.
+  const chargerSource=serviceBus?'GROUND_SERVICE':main[2]?'MAIN_2':null;
+  const chargerAvailable=chargerSource!==null;
+  const hotBattery=batteryAvailable||chargerAvailable;
+  const hotBatterySource=chargerAvailable?'CHARGER':batteryAvailable?'BATTERY':null;
+  const switchedHotBattery=hotBattery&&c.batterySwitch;
+  // Battery Bus relay is controlled by the BAT switch. With BAT OFF the
+  // bus is dead even if TR3 runs; standby BAT overrides this relay.
+  const forcedStandbyBattery=c.standbySelector==='BAT';
+  const batteryBus=forcedStandbyBattery?hotBattery:
+   c.batterySwitch&&(tr.TR3||hotBattery);
   // TR3 is a described backup source; exact automatic backfeed routing is not validated here.
   const dcTr3BackupUnknown=tr.TR3&&!(tr.TR1||tr.TR2);
-  let acStandby=false,dcStandby=false,standbyFeed='OFF',standbyGap=null;
-  const batteryStandby=batteryHealthy&&batteryBus&&!f.STATIC_INVERTER_FAILED;
+  let acStandby=false,dcStandby=false,standbyFeed='OFF';
+  const inverterAvailable=hotBattery&&batteryBus&&!f.STATIC_INVERTER_FAILED;
   if(c.standbySelector==='BAT'){
-    // BAT bypasses battery-switch position for the standby battery path.
-    acStandby=batteryHealthy&&!f.STATIC_INVERTER_FAILED;dcStandby=batteryHealthy;standbyFeed='BATTERY_SELECTOR';
+    // BAT manually forces the hot-battery-bus path, regardless of BAT switch
+    // or normal AC. The inverter still needs a healthy source of DC power.
+    acStandby=inverterAvailable;dcStandby=batteryBus;standbyFeed='BATTERY_SELECTOR';
   }else if(c.standbySelector==='AUTO'){
-    if(transfer[1]&&dc1&&c.batterySwitch){acStandby=true;dcStandby=true;standbyFeed='TRANSFER1_DC1';}
-    else if(!c.onGround){acStandby=c.batterySwitch&&batteryStandby;dcStandby=c.batterySwitch&&batteryHealthy;standbyFeed='BATTERY_AUTO_AIR';}
-    else if(!gen[1]&&!gen[2]){
-      standbyGap='FCOM 6.10.7 versus 6.20.11: ground all-AC-loss AUTO contradiction';
-      if(groundAutoPolicy==='UNKNOWN'){acStandby=null;dcStandby=null;standbyFeed='UNKNOWN_SOURCE_CONFLICT';}
-      else if(groundAutoPolicy==='INHIBIT_6_20_11'){acStandby=false;dcStandby=false;standbyFeed='GROUND_INHIBITED';}
-      else {acStandby=c.batterySwitch&&batteryStandby;dcStandby=c.batterySwitch&&batteryHealthy;standbyFeed='GROUND_BATTERY_FCOM_6_10_7';}
-    }else {acStandby=null;dcStandby=null;standbyFeed='GROUND_PARTIAL_LOSS_UNVERIFIED';standbyGap='Ground AUTO partial loss not resolved';}
+    if(transfer[1]&&dc1){
+      // Normal supply operates independently of BAT switch position.
+      acStandby=true;dcStandby=true;standbyFeed='TRANSFER1_DC1';
+    }else if(c.onGround){
+      // Classic (NOT NG): no automatic standby transfer on ground.
+      acStandby=false;dcStandby=false;standbyFeed='GROUND_NO_AUTO_TRANSFER';
+    }else{
+      acStandby=c.batterySwitch&&inverterAvailable;
+      dcStandby=c.batterySwitch&&batteryBus;
+      standbyFeed='BATTERY_AUTO_AIR';
+    }
   }
   // Essential output status preserves UNKNOWN rather than falsely resolving undocumented routes.
   const bus={generator1:gen[1],generator2:gen[2],transfer1:transfer[1],transfer2:transfer[2],main1:main[1],main2:main[2],dc1:dcTr3BackupUnknown?null:dc1,dc2:dcTr3BackupUnknown?null:dc2,battery:batteryBus,hotBattery,switchedHotBattery,acStandby:trit(acStandby),dcStandby:trit(dcStandby),groundService:serviceBus};
@@ -132,11 +155,14 @@
   const distinctSources=new Set(Object.values(powered).filter(Boolean));
   const galleyShed=c.onGround?false:distinctSources.size===1;
   const qa=[];
-  if(standbyGap)qa.push({id:'STANDBY_GROUND_AUTO_CONFLICT',detail:standbyGap,level:'SOURCE_CONFLICT'});
   if(apuShutdownDemand)qa.push({id:'CLASSIC_MRG_P148_APU_GROUND_BATTERY_OFF',detail:'APU generator SYS BUS deenergized; APU engine auto-shutdown request must be applied to upstream plant',level:'SOURCE_MATCH_PLANT_INTEGRATION_PENDING'});
   if(dcTr3BackupUnknown)qa.push({id:'TR3_BACKUP_ROUTE',detail:'TR3 supply to DC 1/2 needs installation wiring QA',level:'UNKNOWN'});
   if(!c.onGround&&s.source[1]==='APU'&&s.source[2]==='APU')qa.push({id:'APU_FLIGHT_DUAL_FEED',detail:'APU dual flight buses not supported; reconnect by selection',level:'INVALID'});
-  return {schema:'B737_ELECTRICAL_V7_RESULT',revision:s.rev,source:{...powered},bus,feed:{transferSource,tie,tr,standbyFeed},lamps,galleyShed,apuAutomaticShutdownRequested:apuShutdownDemand,qa,trace:{...REF},accuracy:{equipmentBusMap:'NOT_VERIFIED_FOR_EP_FSI',standbyGroundAuto:'CONFLICT_REQUIRES_REVIEW',tr3AutomaticFeed:'INCOMPLETE',model:'EDUCATIONAL_DISCRETE_ONLY'}};
+  return {schema:'B737_ELECTRICAL_V7_RESULT',revision:s.rev,source:{...powered},bus,
+   feed:{transferSource,tie,tr,standbyFeed,chargerSource,batteryAvailable,hotBatterySource},
+   lamps,galleyShed,apuAutomaticShutdownRequested:apuShutdownDemand,qa,trace:{...REF},
+   accuracy:{equipmentBusMap:'NOT_VERIFIED_FOR_EP_FSI',standbyGroundAuto:'CLASSIC_GROUND_NO_TRANSFER',
+    tr3AutomaticFeed:'INCOMPLETE',model:'EDUCATIONAL_DISCRETE_ONLY'}};
  }
  function execute(commands){let s=initialState();for(const c of commands)s=apply(s,c);return evaluate(s);}
  return Object.freeze({REF,FAULTS,CONTROL_KEYS,initialState,apply,evaluate,execute});
@@ -630,7 +656,9 @@
     reset() {
       const previousBattery=this.electricalState?.battery;
       this.mode = 'SOURCE_GATED';
-      this.electricalState = this.Electrical.initialState();
+      // Unified/ISN must boot from a physically unpowered aircraft.
+      // Preserve the V7 legacy bench default only for isolated old tests.
+      this.electricalState = this.Electrical.initialState({coldDark:true});
       // Resetting switches/scenarios must not refill the installed battery.
       if(this.batteryEngine)this.electricalState.battery=previousBattery||this.batteryEngine.initial();
       this.pumps = Object.fromEntries(PUMP_REGISTRY.map(p => [p.id, {switchOn: false, failed: false, overheat: false, observedPower: null}]));
@@ -655,6 +683,18 @@
       const next=this.batteryEngine.step(this.electricalState.battery,dtSec,inputs);
       this.electricalState={...this.electricalState,battery:next,rev:this.electricalState.rev+1};
       this.snapshot=this.compute(null);return this.getBattery();
+    }
+    // Instructor convenience: refill the installed battery without changing
+    // its identity, historical consumption, switches or electrical faults.
+    rechargeBattery() {
+      if(!this.batteryEngine)throw Error('Live battery not attached');
+      const previous=this.electricalState.battery;
+      const next=this.batteryEngine.step({
+        ...previous,chargeAh:previous.capacityAh,depleted:false
+      },0);
+      this.electricalState={...this.electricalState,battery:next,rev:this.electricalState.rev+1};
+      this.snapshot=this.compute(null);
+      return this.getBattery();
     }
     getBattery(){return this.batteryEngine?this.batteryEngine.snapshot(this.electricalState.battery):null;}
     send(command) {
