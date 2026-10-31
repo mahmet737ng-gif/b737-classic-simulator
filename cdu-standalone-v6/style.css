@@ -147,3 +147,37 @@ main{grid-template-columns:minmax(0,1fr) 360px;align-items:start}
  background:#000;pointer-events:none;z-index:10
 }
 .fmc-lines > .fmc-line.scratch{z-index:11!important}
+
+/* CDU green phosphor display / large Boeing face — all pages.
+   Only presentation properties change: the approved 24-column layout,
+   absolute row anchors, LSK centers, screen edges, scratchpad position
+   and control hitboxes remain exactly as before. */
+#fmc-screen #fmc-lines{
+  color:#4bf58a!important;
+  font-size:2.47cqw!important;
+  font-weight:400!important;
+  text-shadow:0 0 .45px rgba(80,255,150,.42);
+}
+#fmc-screen #fmc-lines .fmc-line{
+  color:inherit!important;
+  font-size:inherit!important;
+  font-weight:400!important;
+  line-height:.96!important;
+  height:5.3%!important;
+}
+#fmc-screen #fmc-lines .fmc-line.fmc-small{
+  font-size:2.60cqw!important;
+}
+#fmc-screen #fmc-lines .fmc-line.fmc-header,
+#fmc-screen #fmc-lines .fmc-line.scratch{
+  font-size:2.47cqw!important;
+}
+#fmc-screen #fmc-lines .fmc-line .fmc-left,
+#fmc-screen #fmc-lines .fmc-line .fmc-right,
+#fmc-screen #fmc-lines .fmc-line .fmc-center,
+#fmc-screen #fmc-lines .fmc-header-title,
+#fmc-screen #fmc-lines .fmc-header-count{
+  color:inherit!important;
+  font-size:inherit!important;
+  text-shadow:inherit;
+}
