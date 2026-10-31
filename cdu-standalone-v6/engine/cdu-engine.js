@@ -2,6 +2,7 @@
 (function(global,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;global.CDU_ENGINE=api;})(typeof window==='undefined'?globalThis:window,function(){
 'use strict';
 const EMPTY={};
+ const getPromptPolicy=()=>typeof globalThis!=='undefined'?globalThis.CDU_PROMPT_POLICY_V1:null;
 const SAMPLE={ORIGIN:'',DEST:'',CO_ROUTE:'',FLIGHT:'',CRZ_ALT:'',CRZ_SPEED:'',CI:'',FLAPS:'',RUNWAY:'',WPT1:'',WPT2:'',OFFSET:'',HDG_SEL:'000',CRS_SEL:'000'};
 const ROUTE_FIELDS=new Set(['ORIGIN','DEST','CO_ROUTE','FLIGHT','RUNWAY']);
 const ROUTE_PAGES=new Set(['RTE','ACTIVATE','FLIGHT_PLAN','LEGS','DEP_ARR','DEPARTURES','ARRIVALS']);
@@ -155,7 +156,7 @@ function render(st,pages){const p=pages[st.page];if(!p)return Array(14).fill('')
    const pair=p.rows[i];const left=pair[0],right=pair[1];
   const index=st.page==='INDEX';
   lines[1+i*2]=index?'':pairLine(left.label,right.label);
-   const display=c=>c.field?(readValue(st,c.field,st.page)||(c.required?'□□□□':'-----')):shown(st,c.value,st.page);
+   const display=c=>c.field?(getPromptPolicy()?.placeholder(st.page,c,(field,page)=>readValue(st,field,page))||readValue(st,c.field,st.page)||(c.required?'□□□□':'-----')):shown(st,c.value,st.page);
   lines[2+i*2]=index?pairLine(i===5?(st.indexOffsetAvailable===true?'<OFFSET':''):left.label,
    i===5&&st.fmcOnGroundVerified===false?'NAV STATUS>':right.label):pairLine(display(left),display(right));
  }
