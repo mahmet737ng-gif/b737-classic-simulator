@@ -38,7 +38,13 @@ function updateEHSI(){ if(window.EHSI_ENGINE){ if((state.navdbActive||state.stag
 const TITLE_PLAIN=new Set(['MENU','INDEX','IDENT','POS_INIT','MESSAGES','MSG_RECALL','NAV_DATA','NAV_OPTIONS','SUPP_NAV','POS_REF','FIX','PROG','PROG2','HOLD','DEP_ARR','DEPARTURES','ARRIVALS']);
 function shown(val){return String(val??'').replace(/\{([A-Z_0-9]+)\}/g,(_,key)=>core.readValue(state,key,state.page)||'----');}
 function displayCell(cell){if(!cell)return ''; if(cell.field){const get=(field,page)=>core.readValue(state,field,page);return window.CDU_PROMPT_POLICY_V1?.placeholder(state.page,cell,get)||get(cell.field,state.page)||(cell.required?'□□□□':'-----');} return shown(cell.value||'');}
-function makePairRow(topPct,leftText,rightText,isScratch=false,isSmall=false){const d=document.createElement('div'); d.className='fmc-line'+(isScratch?' scratch':'')+(isSmall?' fmc-small':'')+' fmc-pairline'; d.style.top=topPct+'%'; const l=document.createElement('span'); l.className='fmc-left'; l.textContent=leftText||''; const r=document.createElement('span'); r.className='fmc-right'; r.textContent=rightText||''; if(isScratch){l.classList.add('full'); r.remove(); d.appendChild(l);} else {d.appendChild(l); d.appendChild(r);} return d;}
+// CDU entry placeholders have the original small baseline size, independently
+// of enlarged field labels and interactive LSK navigation options.
+function isEntryPromptText(text){
+ const v=String(text??'').trim();
+ return !/[<>]/.test(v)&&(/[□]/.test(v)||/-{2,}/.test(v)||v==='TRAINER');
+}
+function makePairRow(topPct,leftText,rightText,isScratch=false,isSmall=false){const d=document.createElement('div'); d.className='fmc-line'+(isScratch?' scratch':'')+(isSmall?' fmc-small':'')+' fmc-pairline'; d.style.top=topPct+'%'; const l=document.createElement('span'); l.className='fmc-left'; l.textContent=leftText||''; const r=document.createElement('span'); r.className='fmc-right'; r.textContent=rightText||''; if(!isScratch&&!isSmall){if(isEntryPromptText(l.textContent))l.classList.add('cdu-entry-placeholder');if(isEntryPromptText(r.textContent))r.classList.add('cdu-entry-placeholder');} if(isScratch){l.classList.add('full'); r.remove(); d.appendChild(l);} else {d.appendChild(l); d.appendChild(r);} return d;}
 /* FCOM Vol.2 11.40.32: DEP/ARR INDEX is a THREE-COLUMN origin/dest
  * page, not a generic route-field menu. Keep the approved photo & LSK map.
  */
@@ -135,10 +141,11 @@ function applyCDUScreenTypography(box){
   for(const node of [el,...el.querySelectorAll('*')]){
    node.style.setProperty('color',green,'important');
    node.style.setProperty('font-family',f,'important');
-   node.style.setProperty('font-size',size+'px','important');
+   const entry=node.classList?.contains('cdu-entry-placeholder');
+   node.style.setProperty('font-size',(entry?px:size)+'px','important');
    node.style.setProperty('font-weight','400','important');
    node.style.setProperty('line-height',
-    isScratch?'1':isHeader?'.92':small?'.72':'.77','important');
+    isScratch?'1':isHeader?'.92':small?'.72':entry?'.96':'.77','important');
   }
   if(!isScratch&&!isHeader){
    el.style.setProperty('height',small?'5.3%':'6.1%','important');
@@ -149,7 +156,8 @@ function applyCDUScreenTypography(box){
     if(!span.textContent?.trim()||!ctx||typeof span.getBoundingClientRect!=='function')continue;
     const available=span.getBoundingClientRect().width;
     if(!(available>0))continue;
-    ctx.font='400 '+size+'px "'+f+'"';
+    const textSize=span.classList.contains('cdu-entry-placeholder')?px:size;
+    ctx.font='400 '+textSize+'px "'+f+'"';
     const measured=ctx.measureText(span.textContent).width;
     const factor=measured>available-2?(available-2)/measured:1;
     span.style.setProperty('overflow','visible','important');
@@ -168,6 +176,7 @@ function applyCDUScreenTypography(box){
  box.dataset.labelCapRatio='2x-previous';
  box.dataset.pageValueScale='1.8';
  box.dataset.pageLabelScale='2';
+ box.dataset.entryPromptScale='1';
  box.dataset.scratchpadScale='1';
  box.dataset.valueLine='LSK_CENTER';
 }
