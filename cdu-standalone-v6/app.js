@@ -91,6 +91,7 @@ function v19SafeN1(){const r=n1EstimateV19();return r?.status==='SIM_ESTIMATE'?r
 function applyCDUScreenTypography(box){
  // Unified has its own APPROVED 24-column typography and locked #29ff31 color.
  // Only Standalone gets the independent high-contrast screen treatment.
+ if(typeof document.querySelector!=='function'||typeof box?.querySelectorAll!=='function'||typeof box?.style?.setProperty!=='function')return;
  if(document.querySelector('base[href="../../cdu-standalone-v6/"]'))return;
  const green='#29ff31';
  const stage=document.getElementById('cdu-stage');
@@ -242,7 +243,7 @@ function init(){if(!map||!pages||!core)throw Error('CDU data is missing');makeCo
  // Recalculate after font faces load and after responsive stage resizing.
  const refreshType=()=>{const screen=$('fmc-lines');if(screen)applyCDUScreenTypography(screen);};
  if(document.fonts?.ready)document.fonts.ready.then(refreshType).catch(err=>console.warn('CDU FONT LOAD',err));
- window.addEventListener('resize',refreshType,{passive:true});
+ if(typeof window.addEventListener==='function')window.addEventListener('resize',refreshType,{passive:true});
  
 }
 window.CDU_PROCEDURE_AUDIT_V1=procedureLedger;
