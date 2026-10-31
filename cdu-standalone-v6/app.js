@@ -2,6 +2,10 @@
 const $=id=>document.getElementById(id);
 const map=window.CDU_MAP, pages=window.CDU_PAGES, core=window.CDU_ENGINE;
 const state=core.makeState('IDENT');
+// A factual SOURCE preview does not install or activate an FMC NAVDATA bank.
+// Default IDENT still shows the owner's 2610 display until opt-in.
+const regionalSource=window.B737Airac2611MiddleEastPreviewV1;
+let showRegionalSource2611=new URLSearchParams(window.location.search).get('nav_source')==='2611';
 const preflight=window.B737CDUPreflightEvidenceV1;
 if(!preflight)throw Error('FCOM_CDU_PREFLIGHT_EVIDENCE_NOT_LOADED');
 const contract=window.B737FCOMScreenContractV1;
@@ -215,6 +219,13 @@ function update(){const box=$('fmc-lines'); const frame=document.createElement('
        valueL=preflight.identValue('MODEL',sources)||valueL;
        valueR=preflight.identValue('ENG_RATING',sources)||valueR;
      }
+     // SOURCE PREVIEW: dates verified against cycle.json, cycle_info.txt and
+     // fmc_ident.txt from the regional private archive. Never label ACTIVE.
+     // Keep the aircraft/engine/program fields and LSK6 navigation intact.
+     if(showRegionalSource2611&&regionalSource?.intake?.sourceOnly===true){
+       const preview=regionalSource.identPreviewRow(row);
+       if(preview)({labelL,valueL,labelR,valueR}=preview);
+     }
    }
    if(state.page==='POS_INIT'){
      const sources=state.preflightEvidence||{};
@@ -299,7 +310,23 @@ function send(k){
  }
 }
 function reset(){const fresh=core.makeState('IDENT');Object.keys(state).forEach(k=>delete state[k]);Object.assign(state,fresh);['call-test','fault-test','offset-test'].forEach(k=>$(k).checked=false);window.EHSI_ENGINE?.syncPanel(state,document);update()}
-function init(){if(!map||!pages||!core)throw Error('CDU data is missing');makeControls();update();$('reset').onclick=reset;$('overlay-toggle').onclick=()=>$('cdu-stage').classList.toggle('debug');$('info-toggle').onclick=()=>$('qa').hidden=!$('qa').hidden;
+function init(){if(!map||!pages||!core)throw Error('CDU data is missing');makeControls();
+ // Optional informational source preview button outside the approved CDU
+ // picture and hitboxes. No FMC bank state, routes or IRS data is mutated.
+ const selector=$('page-select');
+ if(regionalSource?.intake?.sourceOnly===true&&typeof selector?.insertAdjacentElement==='function'){
+   const b=document.createElement('button');
+   b.id='regional-source-preview-toggle';b.type='button';
+   b.textContent=showRegionalSource2611?'IDENT: 2611 SOURCE PREVIEW — OFF':'IDENT: 2611 SOURCE PREVIEW — ON';
+   b.setAttribute('aria-label','Toggle AIRAC 2611 regional source dates in IDENT');
+   b.addEventListener('click',()=>{
+     showRegionalSource2611=!showRegionalSource2611;
+     b.textContent=showRegionalSource2611?'IDENT: 2611 SOURCE PREVIEW — OFF':'IDENT: 2611 SOURCE PREVIEW — ON';
+     core.choose(state,pages,'IDENT');update();
+   });
+   selector.insertAdjacentElement('afterend',b);
+ }
+ update();$('reset').onclick=reset;$('overlay-toggle').onclick=()=>$('cdu-stage').classList.toggle('debug');$('info-toggle').onclick=()=>$('qa').hidden=!$('qa').hidden;
  for(const [el,k] of [['call-test','call'],['fault-test','fail'],['offset-test','offsetGuidance']])$(el).addEventListener('change',e=>{state[k]=e.target.checked;update()});
  $('test-message').onclick=()=>{state.message='CHECK FMC DATA';update()};
  document.addEventListener('keydown',e=>{if(e.ctrlKey||e.metaKey||e.altKey||['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName))return;let key=null;
@@ -345,6 +372,12 @@ window.CDU_SCREEN_QA_V1=Object.freeze({
    fit24:box?.dataset.fontFit24||null,
    promptPolicy:box?.dataset.promptPolicy||null};
  },
+ getRegionalSourcePreview:()=>Object.freeze({enabled:showRegionalSource2611,
+  cycle:regionalSource?.intake?.cycle||null,
+  validFrom:regionalSource?.intake?.validFrom||null,
+  lastValid:regionalSource?.intake?.lastValid||null,
+  expiresFrom:regionalSource?.intake?.expiresFrom||null,
+  fmcActive:false,sourceOnly:true}),
  getPromptAudit:()=>window.CDU_PROMPT_POLICY_V1?.audit(pages,(field,page)=>core.readValue(state,field,page))
 });
 window.updateStage5View=update;
