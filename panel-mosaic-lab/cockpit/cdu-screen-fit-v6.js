@@ -9,6 +9,11 @@
 (function(root){
  'use strict';
  const VERSION='CDU-24COL-0006';
+ const PHOTO_PROFILE=Object.freeze({
+  id:'CLASSIC-CDU-PHOTO-HIERARCHY-0001',
+  smallCapHeightToLarge:0.68,headerToLarge:0.88,
+  lskPromptToLarge:0.95,dataToLarge:1,scratchToLarge:1
+ });
  const Metrics=root.B737CDU24ColumnMetricsV1;
  const seat=new URLSearchParams(root.location.search).get('seat');
  if(!['CAPT','FO'].includes(seat)||!Metrics)return;
@@ -55,7 +60,8 @@
  function fontFace(el){return root.getComputedStyle(el).fontFamily;}
  function fitFragment(span,basePx,fullAllowed){
   if(!span)return;
-  span.style.removeProperty('font-size');
+  if(span.classList.contains('cdu-lsk-prompt'))typography(span,basePx);
+  else span.style.removeProperty('font-size');
   const content=span.textContent||'';
   if(!content||!content.trim())return;
   // The scratchpad MUST NOT shrink to fit arbitrary text: 24 columns
@@ -71,6 +77,40 @@
    // string to a tiny unrelated font size. Overlength data is clipped.
    typography(span,Math.max(basePx*.84,basePx*(w-2)/needed));
   }
+ }
+ // Source-authoritative action labels such as <INDEX or PERF INIT> are the
+ // LARGE data-line LSK prompts; the SMALL row is reserved for field titles.
+ // This is presentation-only; never mutate the FCOM source table or LSK map.
+ function putPromptsOnLSKLines(pairs,standard){
+  if(!standard)return 0;
+  const pageId=root.document.getElementById('page-now')?.textContent;
+  const rows=root.CDU_PAGES?.[pageId]?.rows;
+  if(!Array.isArray(rows))return 0;
+  let moved=0;
+  for(let row=0;row<6;row++){
+   const labelLine=pairs[row*2],valueLine=pairs[row*2+1];
+   if(!labelLine?.classList?.contains('fmc-small')||
+       !valueLine||valueLine.classList.contains('fmc-small'))continue;
+   for(let col=0;col<2;col++){
+    const cell=rows[row]?.[col];
+    if(!cell?.action||cell.field||cell.value||!cell.label)continue;
+    const cls=col===0?'.fmc-left':'.fmc-right';
+    const label=labelLine.querySelector(cls),data=valueLine.querySelector(cls);
+    // A dynamic source adapter may already own a value; never overwrite it.
+    if(!label||!data||label.textContent!==cell.label||data.textContent?.trim())continue;
+    data.textContent=label.textContent;
+    label.textContent='';
+    data.classList.add('cdu-lsk-prompt');
+    moved++;
+   }
+  }
+  return moved;
+ }
+ function isLSKPrompt(span,label){
+  if(!span||label)return false;
+  if(span.classList.contains('cdu-lsk-prompt'))return true;
+  const t=String(span.textContent||'').trim();
+  return t.length>0&&(/^[<]/.test(t)||/[>]$/.test(t));
  }
  function keepScratchInside(scratch){
   const left=scratch?.querySelector('.fmc-left');
@@ -119,7 +159,9 @@
   return {ready:true,large,little,fontFamily:family,smallFontFamily:smallFamily,
    widthPx:available,mainPx:large.fontSizePx,
    labelPx:labelSize(large.fontSizePx,little.fontSizePx,family,smallFamily),
-   headerPx:large.fontSizePx*.87,scratchPx:large.fontSizePx};
+   headerPx:large.fontSizePx*PHOTO_PROFILE.headerToLarge,
+   promptPx:large.fontSizePx*PHOTO_PROFILE.lskPromptToLarge,
+   scratchPx:large.fontSizePx};
  }
  function apply(){
   const model=calibrate();if(!model.ready){lastResult=model;return model;}
@@ -129,6 +171,7 @@
   const standard=pairs.length===12&&pairs.filter(l=>l.classList.contains('fmc-small')).length===6;
   const scratch=lines.find(l=>l.classList.contains('scratch'));
   const main=model.mainPx,small=model.labelPx,grid=rowRegistration();
+  const promptsMoved=putPromptsOnLSKLines(pairs,standard);
   box.style.setProperty('color','#29ff31','important');
   box.style.setProperty('font-size',main+'px','important');
   if(header){
@@ -145,7 +188,12 @@
     line.style.setProperty('top',grid[label?'label':'value'][row]+'%','important');
    line.style.setProperty('height',(label?'7.5%':'9.8%'),'important');
    typography(line,px);
-   for(const span of line.querySelectorAll('span'))fitFragment(span,px,false);
+   for(const span of line.querySelectorAll('span')){
+    const prompt=isLSKPrompt(span,label),isCenter=span.classList.contains('fmc-center');
+    const target=prompt?model.promptPx:isCenter&&!label?main:px;
+    if(prompt)span.classList.add('cdu-lsk-prompt');
+    fitFragment(span,target,false);
+   }
   }
   if(scratch){
    scratch.style.setProperty('top',grid.scratch+'%','important');
@@ -158,6 +206,7 @@
   root.document.documentElement.dataset.cduScreenFit=VERSION;
   lastResult={ready:true,version:VERSION,standard,columns:Metrics.COLUMNS,
    fontSizePx:model.scratchPx,labelPx:model.labelPx,
+   headerPx:model.headerPx,promptPx:model.promptPx,photoProfile:PHOTO_PROFILE.id,promptsMoved,
    large:model.large,little:model.little,widthPx:model.widthPx,
    scratchLength:(scratch?.querySelector('.fmc-left')?.textContent||'').length,
    source:'MEASURED_BOEING_CDU_GLYPHS_CLASSIC_CRT_REFERENCES'};
@@ -171,7 +220,7 @@
  const observer=new MutationObserver(schedule);
  observer.observe(box,{childList:true,subtree:true,characterData:true});
  root.B737CduScreenFitV6=Object.freeze({apply,schedule,getState:()=>lastResult,
-  version:VERSION,columns:Metrics.COLUMNS,rowRegistration});
+  version:VERSION,columns:Metrics.COLUMNS,rowRegistration,photoProfile:PHOTO_PROFILE});
  apply();
  if(root.document.fonts){
   root.document.fonts.ready?.then(schedule).catch(()=>{});
