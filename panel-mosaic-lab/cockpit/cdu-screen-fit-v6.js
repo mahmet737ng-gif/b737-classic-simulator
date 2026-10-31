@@ -110,6 +110,10 @@
   }
   return moved;
  }
+ function isEntryPromptText(text){
+  const v=String(text??'').trim();
+  return !/[<>]/.test(v)&&(/[□]/.test(v)||/-{2,}/.test(v)||v==='TRAINER');
+ }
  function isLSKPrompt(span,label){
   if(!span||label)return false;
   if(span.classList.contains('cdu-lsk-prompt'))return true;
@@ -197,7 +201,9 @@
    typography(line,px);
    for(const span of line.querySelectorAll('span')){
     const prompt=isLSKPrompt(span,label);
+    const entry=!label&&!prompt&&isEntryPromptText(span.textContent);
     if(prompt)span.classList.add('cdu-lsk-prompt');
+    if(entry)span.classList.add('cdu-entry-placeholder');
     if(!standard){
      fitFragment(span,prompt?model.promptPx:px,false);
      continue;
@@ -206,18 +212,19 @@
     // scaling, and cap the visible Y height to the gap between LSK rows.
     // This prevents the bigger text from crossing the preceding/following
     // field title without resizing, moving or obscuring the physical keys.
-    typography(span,px);
+    const effectivePx=entry?main:px;
+    typography(span,effectivePx);
     const message=span.textContent||'';
     if(!message.trim())continue;
     const family=fontFace(span);
-    ctx.font='400 '+px+'px '+family;
+    ctx.font='400 '+effectivePx+'px '+family;
     const width=span.getBoundingClientRect().width;
     const textWidth=ctx.measureText(message).width;
     const scaleX=width>0&&textWidth>width-2?Math.max(.15,(width-2)/textWidth):1;
     const nextLabel=row<5?grid.label[row+1]:grid.scratch;
     const gapPct=label?grid.value[row]-grid.label[row]:nextLabel-grid.value[row];
     const availableHeight=Math.max(3,(gapPct/100*SCREEN_HEIGHT)-5);
-    const visibleGlyphHeight=capHeight(family,px);
+    const visibleGlyphHeight=capHeight(family,effectivePx);
     const scaleY=Math.min(1,availableHeight/Math.max(1,visibleGlyphHeight));
     span.style.setProperty('overflow','visible','important');
     span.style.setProperty('transform-origin',
@@ -237,6 +244,7 @@
   lastResult={ready:true,version:VERSION,standard,columns:Metrics.COLUMNS,
    fontSizePx:model.scratchPx,labelPx:model.labelPx,
    pageValuePx,pageLabelPx,pageValueMultiplier:1.8,pageLabelMultiplier:2,
+   entryPromptPx:main,entryPromptMultiplier:1,
    headerPx:model.headerPx,promptPx:model.promptPx,photoProfile:PHOTO_PROFILE.id,promptsMoved,
    large:model.large,little:model.little,widthPx:model.widthPx,
    scratchLength:(scratch?.querySelector('.fmc-left')?.textContent||'').length,
