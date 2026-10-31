@@ -10,6 +10,13 @@
  const SensorIngress=root.B737AvionicsSensorIngressV2;
  const network=Network.createNetwork({onError:e=>root.console?.warn('AVIONICS SUBSCRIBER ERROR',e)});
  const owners=new Map(),faults=[];
+ let refreshPending=false;
+ const enqueue=root.queueMicrotask?fn=>root.queueMicrotask(fn):fn=>Promise.resolve().then(fn);
+ function scheduleRefresh(){
+  if(refreshPending)return;refreshPending=true;
+  enqueue(()=>{if(refreshPending){refreshPending=false;refresh();}});
+ }
+ function flushRefresh(){if(refreshPending){refreshPending=false;refresh();}}
  const clone=x=>JSON.parse(JSON.stringify(x));
  const getOwner=id=>{if(!owners.has(id))owners.set(id,network.producer(id));return owners.get(id)};
  const sensorIngress=SensorIngress?.create({getPublisher:getOwner})||null;
@@ -139,6 +146,7 @@
   send('CLOCK','clock.utc',{isoUtc:time.toISOString(),epochMs:time.valueOf()},'LIVE_SYSTEM');
  }
  function refresh(){
+  refreshPending=false;
   for(const f of [electrical,irs,mcp,fmcFeedsAndRoute,engine,auxiliarySystems,fuelQuantity,airGround,pneumatics,antiice,profile,clock])try{f()}catch(e){
    faults.push({source:f.name,error:String(e.message||e)});if(faults.length>32)faults.shift();
   }
@@ -166,9 +174,9 @@
  }
  // Non-mutating registration, readable by all authorized same-context consumers.
  root.B737UnifiedAvionicsNetworkV1=Object.freeze({
-  getSignal:topic=>network.read(topic),getSnapshot:()=>network.snapshot(),
-  getDiagnostics:()=>({...network.audit(),adapterErrors:clone(faults)}),
-  getFmcInputs:()=>computer.getState(),subscribe:network.subscribe,
+  getSignal:topic=>{flushRefresh();return network.read(topic)},getSnapshot:()=>{flushRefresh();return network.snapshot()},
+  getDiagnostics:()=>{flushRefresh();return {...network.audit(),adapterErrors:clone(faults)}},
+  getFmcInputs:()=>{flushRefresh();return computer.getState()},subscribe:(...args)=>{flushRefresh();return network.subscribe(...args)},
   connectExternal,refresh,topics:network.topics,
   configureSensorIngress(options){
    if(!sensorIngress)throw Error('SENSOR_INGRESS_MODULE_NOT_LOADED');
@@ -195,7 +203,7 @@
  // Consume existing change events, with a 250ms health poll for non-event sources.
  for(const event of ['b737:irs-trainer-state','b737:mcp-afds-state','b737:isn-start-indications',
   'b737:fmc-systems-state','b737:aircraft-profile-change']){
-  root.addEventListener(event,refresh);
+  root.addEventListener(event,scheduleRefresh);
  }
  root.addEventListener('b737:cockpit-mounted',refresh);
  if(root.document?.readyState==='loading')root.document.addEventListener('DOMContentLoaded',refresh,{once:true});

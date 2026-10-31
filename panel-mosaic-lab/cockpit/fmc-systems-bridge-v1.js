@@ -7,12 +7,16 @@
  const model=window.B737FmcSystemsV1;
  if(!model)throw Error('B737FmcSystemsV1 failed to load');
  let network=model.createState(),lastRouteSig='',lastMcpEvidence='INITIAL',lastPower='UNKNOWN';
- const seatState=new Map();let latestAfds=null;const now=()=>performance.now();
- const emit=()=>{
+ const seatState=new Map(),lastCduPower=new Map();let latestAfds=null;const now=()=>performance.now();
+ const emit=forceSeat=>{
   for(const seat of ['CAPT','FO']){
    const frame=document.getElementById('cduFrame'+seat);
    const unit='CDU_'+seat;
-   if(frame?.contentWindow)frame.contentWindow.postMessage({type:'b737:fmc-cdu-power',seat,feed:network.power[unit].feed,reason:network.power[unit].feed==='ABSENT'?'CONFIRMED_POWER_LOSS':'FEED_NOT_CONFIRMED'},location.origin);
+   const feed=network.power[unit].feed,previous=lastCduPower.get(seat);
+   if(frame?.contentWindow&&(forceSeat===seat||previous?.frame!==frame.contentWindow||previous?.feed!==feed)){
+    frame.contentWindow.postMessage({type:'b737:fmc-cdu-power',seat,feed,reason:feed==='ABSENT'?'CONFIRMED_POWER_LOSS':'FEED_NOT_CONFIRMED'},location.origin);
+    lastCduPower.set(seat,{frame:frame.contentWindow,feed});
+   }
   }
   const out={revision:network.revision,power:network.power,
    route:network.route,irs:network.irs,guidance:network.guidance,
@@ -58,7 +62,7 @@
   if(e.origin!==location.origin)return;
   if(e.data?.type==='b737:fmc-cdu-power-ready'){
    const seat=e.data.seat,frame=document.getElementById('cduFrame'+seat);
-   if(['CAPT','FO'].includes(seat)&&frame?.contentWindow===e.source)emit();
+   if(['CAPT','FO'].includes(seat)&&frame?.contentWindow===e.source)emit(seat);
    return;
   }
   if(e.data?.type!=='b737:fmc-cdu-snapshot')return;
