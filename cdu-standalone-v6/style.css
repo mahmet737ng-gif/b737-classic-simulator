@@ -166,7 +166,7 @@ main{grid-template-columns:minmax(0,1fr) 360px;align-items:start}
   height:5.3%!important;
 }
 #fmc-screen #fmc-lines .fmc-line.fmc-small{
-  font-size:3.46cqw!important;
+  font-size:3.114cqw!important;
   line-height:.72!important;
   height:5.3%!important;
 }
@@ -194,8 +194,8 @@ main{grid-template-columns:minmax(0,1fr) 360px;align-items:start}
   text-shadow:inherit;
 }
 
-/* Editable field blanks and TRAINER: 80% of the former baseline size. */
+/* Editable blanks and TRAINER: 70% of the preceding 0.8x size. */
 #fmc-screen #fmc-lines .fmc-line .cdu-entry-placeholder{
-  font-size:1.98cqw!important;
+  font-size:1.386cqw!important;
   line-height:.96!important;
 }
