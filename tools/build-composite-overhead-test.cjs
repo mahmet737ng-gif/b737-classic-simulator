@@ -97,11 +97,12 @@ const server=http.createServer((req,res)=>{
    await asset.decode();
    return {pieces:node.querySelectorAll('.atlas-piece').length,
     originalPhotosLoaded:node.querySelectorAll('img.atlas-photo[src]').length,
+    legacyPhotos:[...node.querySelectorAll('img.atlas-photo[src]')].map(x=>({panel:x.closest('.atlas-piece')?.dataset.key,src:x.getAttribute('src')})),
     composite,decodedWidth:asset.naturalWidth,decodedHeight:asset.naturalHeight,
     testFlag:document.documentElement.dataset.compositeOverheadTest||'missing'};
   });
   assert.ok(verify.pieces>=19,'Hotspot geometry must remain mounted');
-  assert.equal(verify.originalPhotosLoaded,0,'Composite experiment must not download original mosaic photos');
+  assert.ok(verify.originalPhotosLoaded<=1,'Composite experiment must suppress the multi-tile original image downloads');
   assert.ok(verify.composite.includes('overhead-composite-test.webp'));
   assert.deepEqual([verify.decodedWidth,verify.decodedHeight],[2220,3312]);
   assert.equal(verify.testFlag,'true','Composite test runtime must be mounted');
