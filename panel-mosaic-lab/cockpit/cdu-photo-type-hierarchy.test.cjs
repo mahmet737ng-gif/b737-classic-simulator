@@ -79,16 +79,16 @@ function checkPage(id){
  assert.equal(result.large.valid,true);
  assert.equal(result.large.width24Px<=result.large.availablePx+0.01,true);
  assert.equal(result.large.width25Px>result.large.availablePx,true);
- assert.equal(result.photoProfile,'CLASSIC-CDU-PHOTO-HIERARCHY-0001');
+ assert.equal(result.photoProfile,'OWNER-CLASSIC-CDU-LEGS-PHOTO-20261031');
  assert.equal(result.scratchLength,24);
  assert.ok(result.labelPx>=result.fontSizePx*.60&&result.labelPx<=result.fontSizePx*.73,'reference baseline for labels preserved');
- assert.equal(result.pageLabelMultiplier,1.8,'field label 10 percent smaller than prior');
- assert.equal(result.pageValueMultiplier,1.44,'LSK text is 20% smaller than previous 1.8x');
- assert.equal(result.entryPromptMultiplier,1.10,'field blanks enlarged for legibility');
- assert.equal(result.navigationPromptMultiplier,1.05,'navigation action reduced from 1.44');
- assert.ok(result.pageValuePx>result.fontSizePx,'scratchpad font stays independent');
- assert.ok(Math.abs(result.headerPx/result.fontSizePx-.88)<.001);
- assert.ok(Math.abs(result.promptPx/result.fontSizePx-.95)<.001);
+ assert.equal(result.pageLabelMultiplier,1,'small labels retain photo-derived 70% cap height');
+ assert.equal(result.pageValueMultiplier,1,'LSK data is the calibrated full-size font');
+ assert.equal(result.entryPromptMultiplier,1,'field blanks share data size');
+ assert.equal(result.navigationPromptMultiplier,1,'navigation actions share data size');
+ assert.equal(result.pageValuePx,result.fontSizePx,'data and scratchpad are the same size');
+ assert.ok(Math.abs(result.headerPx/result.fontSizePx-.94)<.001);
+ assert.ok(Math.abs(result.promptPx/result.fontSizePx-1)<.001);
  for(const entry of originals){
   for(const [side,cell] of [['fmc-left',entry.l],['fmc-right',entry.r]]){
    if(!cell.action||cell.field||cell.value||!cell.label)continue;

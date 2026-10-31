@@ -6,7 +6,7 @@ main,.cockpit-stack,.cockpit{display:block!important;width:1199px!important;max-
 .cdu-stage>.base{width:1199px!important;height:1312px!important}
 
 /* CDU on Unified: match the supplied 737 Classic reference screenshot.
- * Pixel sample of the original reference lettering: RGB(41,255,49) = #29ff31.
+ * Pixel sample of the original reference lettering: RGB(41,255,49) = #29e637.
  * Only the two embedded CDUs inherit this sheet; standalone CDU typography and
  * approved BoeingCDULarge/Small binaries, keymap and artwork stay unchanged.
  *
@@ -15,7 +15,7 @@ main,.cockpit-stack,.cockpit{display:block!important;width:1199px!important;max-
  */
 .fmc-screen .fmc-lines{
   font-size:92px!important;
-  color:#29ff31!important;
+  color:#29e637!important;
 }
 .fmc-screen .fmc-lines .fmc-line{
   height:12.0%!important;
@@ -37,7 +37,7 @@ main,.cockpit-stack,.cockpit{display:block!important;width:1199px!important;max-
 }
 .fmc-screen .fmc-lines .fmc-line,
 .fmc-screen .fmc-lines .fmc-line *{
-  color:#29ff31!important;
+  color:#29e637!important;
   text-shadow:0 0 .035em rgba(41,255,49,.13)!important;
 }
 /* Keep original Boeing CDU font family policy and 24-column/L-R alignment. */

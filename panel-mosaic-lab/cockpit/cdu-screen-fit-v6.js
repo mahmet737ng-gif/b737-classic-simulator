@@ -10,13 +10,13 @@
  'use strict';
  const VERSION='CDU-24COL-0006';
  const PHOTO_PROFILE=Object.freeze({
-  id:'CLASSIC-CDU-PHOTO-HIERARCHY-0001',
-  smallCapHeightToLarge:0.70,headerToLarge:0.88,
-  lskPromptToLarge:0.95,dataToLarge:1,scratchToLarge:1
+  id:'OWNER-CLASSIC-CDU-LEGS-PHOTO-20261031',
+  smallCapHeightToLarge:0.70,headerToLarge:0.94,
+  lskPromptToLarge:1.00,dataToLarge:1,scratchToLarge:1
  });
  const Metrics=root.B737CDU24ColumnMetricsV1;
  const seat=new URLSearchParams(root.location.search).get('seat');
- if(!['CAPT','FO'].includes(seat)||!Metrics)return;
+ if((seat&&!['CAPT','FO'].includes(seat))||!Metrics)return;
  const box=root.document.getElementById('fmc-lines');
  const screen=root.document.getElementById('fmc-screen');
  if(!box||!screen)return;
@@ -183,9 +183,9 @@
    root.CDU_PAGES?.IDENT?.variant==='OWNER_CLASSIC_IDENT_20261031';
   // Keep the 24-column scratchpad font at its calibrated baseline.
   // Apply the requested multipliers only to the LSK page rows.
-  const pageValuePx=main*1.44,pageLabelPx=small*1.8; // LSK unchanged, labels 10% smaller
+  const pageValuePx=main,pageLabelPx=small; // One font profile for every CDU page
   const promptsMoved=putPromptsOnLSKLines(pairs,standard);
-  box.style.setProperty('color','#29ff31','important');
+  box.style.setProperty('color','#29e637','important');
   box.style.setProperty('font-size',main+'px','important');
   if(header){
    header.style.setProperty('top',grid.header+'%','important');
@@ -197,8 +197,7 @@
    const line=pairs[i],label=line.classList.contains('fmc-small'),row=Math.floor(i/2);
    // IDENT uses the owner's two 12-column date lines. A calibrated, uniform
    // character size fits them without cumulative X/Y transforms or clipping.
-   const px=standard?(ownerIdent?(label?small*1.15:main*1.05):
-    (label?pageLabelPx:pageValuePx)):(label?small:main);
+   const px=label?pageLabelPx:pageValuePx;
    // Special FCOM overlays retain their authored registration and font scale.
    if(standard&&row<6)
     line.style.setProperty('top',grid[label?'label':'value'][row]+'%','important');
@@ -221,28 +220,13 @@
      fitFragment(span,prompt?model.promptPx:px,false);
      continue;
     }
-    // Page text can be larger than the scratchpad: fit wide strings by X
-    // scaling, and cap the visible Y height to the gap between LSK rows.
-    // This prevents the bigger text from crossing the preceding/following
-    // field title without resizing, moving or obscuring the physical keys.
-    const effectivePx=entry?main*1.10:prompt?main*1.05:px;
+    // Uniform-sized text across the entire 24-column CDU display.
+    const effectivePx=px;
     typography(span,effectivePx);
-    const message=span.textContent||'';
-    if(!message.trim())continue;
-    const family=fontFace(span);
-    ctx.font='400 '+effectivePx+'px '+family;
-    const width=span.getBoundingClientRect().width;
-    const textWidth=ctx.measureText(message).width;
-    const scaleX=width>0&&textWidth>width-2?Math.max(.15,(width-2)/textWidth):1;
-    const nextLabel=row<5?grid.label[row+1]:grid.scratch;
-    const gapPct=label?grid.value[row]-grid.label[row]:nextLabel-grid.value[row];
-    const availableHeight=Math.max(3,(gapPct/100*SCREEN_HEIGHT)-5);
-    const visibleGlyphHeight=capHeight(family,effectivePx);
-    const scaleY=Math.min(1,availableHeight/Math.max(1,visibleGlyphHeight));
-    span.style.setProperty('overflow','visible','important');
-    span.style.setProperty('transform-origin',
-     span.classList.contains('fmc-right')?'right top':span.classList.contains('fmc-center')?'center top':'left top','important');
-    span.style.setProperty('transform','scaleX('+scaleX.toFixed(4)+') scaleY('+scaleY.toFixed(4)+')','important');
+    // Physical reference: no per-field squeeze or stretch of letterforms.
+    // The 24-column width is set by the scratchpad metric, not by contents.
+    span.style.setProperty('overflow','hidden','important');
+    span.style.setProperty('transform','none','important');
    }
   }
   if(scratch){
@@ -255,15 +239,15 @@
   }
   root.document.documentElement.dataset.cduScreenFit=VERSION;
   lastResult={ready:true,version:VERSION,standard,columns:Metrics.COLUMNS,
-   identReference:ownerIdent?{largePx:main*1.05,smallPx:small*1.15}:null,
+   identReference:ownerIdent?{largePx:main,smallPx:small}:null,
    fontSizePx:model.scratchPx,labelPx:model.labelPx,
-   pageValuePx,pageLabelPx,pageValueMultiplier:1.44,pageLabelMultiplier:1.8,
-   entryPromptPx:main*1.10,entryPromptMultiplier:1.10,
-   navigationPromptPx:main*1.05,navigationPromptMultiplier:1.05,
+   pageValuePx,pageLabelPx,pageValueMultiplier:1,pageLabelMultiplier:1,
+   entryPromptPx:main,entryPromptMultiplier:1,
+   navigationPromptPx:main,navigationPromptMultiplier:1,
    headerPx:model.headerPx,promptPx:model.promptPx,photoProfile:PHOTO_PROFILE.id,promptsMoved,
    large:model.large,little:model.little,widthPx:model.widthPx,
    scratchLength:(scratch?.querySelector('.fmc-left')?.textContent||'').length,
-   source:'MEASURED_BOEING_CDU_GLYPHS_CLASSIC_CRT_REFERENCES'};
+   source:'OWNER_LEGS_PHOTO_20261031_ROLE_TYPOGRAPHY_24_COLUMNS'};
   return lastResult;
  }
  function schedule(){

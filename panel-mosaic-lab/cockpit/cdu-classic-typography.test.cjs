@@ -85,28 +85,28 @@ const result=api.apply();
 assert.equal(result.ready,true);
 assert.equal(result.columns,24);
 assert.equal(result.standard,true);
-assert.equal(parseFloat(pairs[0].style.applied.get('font-size')),Number((result.labelPx*1.8).toFixed(2)),'LSK labels 10 percent smaller than prior');
-assert.equal(pairs[1].style.applied.get('font-size'),Number((44*1.44).toFixed(2))+'px','LSK value font reduced exactly 20% from the previous version');
+assert.equal(parseFloat(pairs[0].style.applied.get('font-size')),Number(result.labelPx.toFixed(2)),'small label font must match all CDU pages');
+assert.equal(pairs[1].style.applied.get('font-size'),'44px','data values must equal the 24-column master font');
 for(const [row,index] of [[3,0],[5,1],[7,0]]){
  const span=pairs[row].querySelectorAll()[index];
- assert.equal(span.style.applied.get('font-size'),Number((44*1.10).toFixed(2))+'px','entry boxes and dashes restored to 1.10x');
+ assert.equal(span.style.applied.get('font-size'),'44px','entry boxes are native large-size glyphs');
  assert.ok(span.classList.contains('cdu-entry-placeholder'),'entry placeholder classification');
 }
 for(const [row,index] of [[9,0],[11,1]]){
  const action=pairs[row].querySelectorAll()[index];
- assert.equal(action.style.applied.get('font-size'),Number((44*1.05).toFixed(2))+'px','navigation choices use smaller font');
+ assert.equal(action.style.applied.get('font-size'),'44px','LSK prompts are native large-size glyphs');
  assert.ok(action.classList.contains('cdu-lsk-prompt'));
 }
 assert.ok(registered.value[5]<85,'last LSK safely before scratchpad');
-assert.equal(result.pageValueMultiplier,1.44);
-assert.equal(result.entryPromptMultiplier,1.10);
-assert.equal(result.navigationPromptMultiplier,1.05);
-assert.equal(result.pageLabelMultiplier,1.8);
+assert.equal(result.pageValueMultiplier,1);
+assert.equal(result.entryPromptMultiplier,1);
+assert.equal(result.navigationPromptMultiplier,1);
+assert.equal(result.pageLabelMultiplier,1);
 assert.equal(scratch.style.applied.get('font-size'),'44px');
 assert.ok(result.labelPx/44>=.68&&result.labelPx/44<=.73,
  'Labels are smaller than LSK data and must not overlap');
 assert.equal(pairs[0].style.applied.get('top'),registered.label[0]+'%');
-assert.match(pairs[0].querySelectorAll()[0].style.applied.get('transform'),/scaleY\(/,'labels have overlap-safe vertical fit');
+assert.equal(pairs[0].querySelectorAll()[0].style.applied.get('transform'),'none','labels must not be stretched');
 assert.equal(pairs[1].style.applied.get('top'),registered.value[0]+'%');
 assert.equal(root.document.documentElement.dataset.cduScreenFit,'CDU-24COL-0006');
 assert.equal(root.CDU_MAP.controls.length,physical.controls.length,

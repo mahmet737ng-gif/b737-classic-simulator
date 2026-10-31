@@ -153,7 +153,7 @@ main{grid-template-columns:minmax(0,1fr) 360px;align-items:start}
    absolute row anchors, LSK centers, screen edges, scratchpad position
    and control hitboxes remain exactly as before. */
 #fmc-screen #fmc-lines{
-  color:#29ff31!important;
+  color:#29e637!important;
   font-size:2.47cqw!important;
   font-weight:400!important;
   text-shadow:0 0 .45px rgba(41,255,49,.35);
@@ -205,3 +205,24 @@ main{grid-template-columns:minmax(0,1fr) 360px;align-items:start}
  font-size:2.594cqw!important;
  line-height:.77!important;
 }
+
+/* OWNER 2026-10-31: physical Classic LEGS CDU photograph, all FMC pages.
+   Keep bezel art, button/LSK positions, 24 columns and font binaries unchanged.
+   The photograph shows the active green character grid occupying ~77% of
+   the glass width, with almost symmetric text margins. */
+#fmc-screen #fmc-lines{color:#29e637!important;text-shadow:0 0 .5px rgba(41,230,55,.22)!important}
+#fmc-screen #fmc-lines .fmc-line{
+ left:11.5%!important;right:11.5%!important;width:77%!important;
+ max-width:77%!important;font-weight:400!important;letter-spacing:0!important;
+ font-kerning:none!important;
+}
+#fmc-screen #fmc-lines .fmc-line .fmc-left.full{width:100%!important}
+#fmc-screen #fmc-lines .fmc-line.fmc-header .fmc-header-title{left:8%!important}
+#fmc-screen #fmc-lines .fmc-line.fmc-pairline.fmc-small{font-size:2.10cqw!important}
+#fmc-screen #fmc-lines .fmc-line.fmc-pairline:not(.fmc-small):not(.scratch),
+#fmc-screen #fmc-lines .fmc-line.scratch{font-size:2.90cqw!important}
+#fmc-screen #fmc-lines .fmc-line.fmc-header{font-size:2.73cqw!important}
+#fmc-screen #fmc-lines .fmc-line .cdu-entry-placeholder,
+#fmc-screen #fmc-lines .fmc-line .cdu-lsk-prompt{font-size:inherit!important}
+#fmc-screen #fmc-lines .fmc-line,
+#fmc-screen #fmc-lines .fmc-line *{color:#29e637!important;text-shadow:0 0 .5px rgba(41,230,55,.22)!important}
