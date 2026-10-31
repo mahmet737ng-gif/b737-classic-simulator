@@ -50,14 +50,19 @@ jobs:
           python panel-mosaic-lab/cockpit/verify-irs-sys-dspl-owner-lock-v1.py
           python panel-mosaic-lab/cockpit/verify-irs-13seg-owner-lock-v1.py --negative-self-test
           if ($LASTEXITCODE -ne 0) { throw 'Source integrity failed' }
-      - name: Build Windows x64 offline installer with update metadata
+      - name: Package Windows desktop for native timing
+        working-directory: desktop
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+        run: npm exec -- electron-builder --win --dir --x64 --publish never
+      - name: Native EXE launch and control response, external requests blocked
+        working-directory: desktop
+        run: npm run smoke:win -- --profile
+      - name: Build NSIS installer and differential update metadata
         working-directory: desktop
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: 'false'
         run: npm run build:win
-      - name: Native EXE launch and control response, external requests blocked
-        working-directory: desktop
-        run: npm run smoke:win
       - name: Verify release feed and produce installer checksum
         shell: pwsh
         run: |
