@@ -75,3 +75,19 @@ test('PERF-0004 publishes a separate compiled Unified test page without modifyin
  assert.match(builder,/overhead-composite-stage.html/);
  assert.match(builder,/PERF-0004-COMPOSITE-TEST/);
 });
+
+test('PERF-0005 has isolated Full vs Static controls test routes on the same composite WebP',()=>{
+ const builder=read('tools/build-unified-web.cjs');
+ const app=read('panel-mosaic-lab/cockpit/app.js');
+ const css=read('panel-mosaic-lab/cockpit/overhead-ab-static.css');
+ assert.match(builder,/unified-static-controls-test.html/);
+ assert.match(builder,/overhead-static-controls-stage.html/);
+ assert.match(builder,/unified-ab-hud.js/);
+ assert.match(builder,/overhead-ab-metrics.js/);
+ assert.match(app,/B737OverheadStaticTest/);
+ assert.match(css,/\.rg-layer/);
+ assert.match(css,/\.lights-layer/);
+ assert.match(css,/\.toggle-layer/);
+ assert.doesNotMatch(css,/\.atlas-photo\s*\{/);
+ assert.doesNotMatch(read('panel-mosaic-lab/cockpit/overhead-stage.html'),/overhead-ab-static/);
+});

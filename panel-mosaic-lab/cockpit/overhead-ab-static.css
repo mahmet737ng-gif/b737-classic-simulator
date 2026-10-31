@@ -1,0 +1,20 @@
+/* PERF-0005: VISUAL RENDER AB experiment only, not an aircraft system mode.
+ * FULL and STATIC use the identical single WebP and engine/backend scripts.
+ * Remove interactive render/compositing surfaces while leaving source artwork,
+ * configured DCPCS/CPCS/aircon plate backgrounds and simulation logic intact.
+ * This never runs in the production Unified or locked source atlas.
+ */
+html[data-overhead-render-ab="static"] #atlasAbsolute :is(
+ .toggle-layer,.rg-layer,.lights-layer,
+ .mounted-toggle,.mounted-rotary,.mounted-light,.guard-node,.rg-detent-hit,
+ .asp-photo-control,.asp-physical-switch,.asp-control-rotor,
+ .aircon400-layer,.aircon400-knob,.aircon400-trim,.aircon400-zone-lamp,
+ .oh22-pressure-controls,.oh22-pressure-digits,.oh22-pressure-gauge,
+ .b737-recess-unit,.b737-le-devices,
+ .pmc-glass-guard,.mounted-guard
+){display:none!important;}
+html[data-overhead-render-ab="static"] #atlasAbsolute *,
+html[data-overhead-render-ab="static"] #atlasAbsolute *::before,
+html[data-overhead-render-ab="static"] #atlasAbsolute *::after{
+ animation:none!important;transition:none!important;
+}

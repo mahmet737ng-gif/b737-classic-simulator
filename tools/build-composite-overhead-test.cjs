@@ -107,5 +107,30 @@ const server=http.createServer((req,res)=>{
   assert.deepEqual([verify.decodedWidth,verify.decodedHeight],[2220,3312]);
   assert.equal(verify.testFlag,'true','Composite test runtime must be mounted');
   console.log('COMPOSITE A/B interactive stage OK: '+JSON.stringify(verify));
+  // With the identical stitched bitmap and simulation scripts, switch only
+  // paint/compositing visibility of interactive elements in the second lane.
+  await test.goto(base+'overhead-static-controls-stage.html',{waitUntil:'domcontentloaded',timeout:60000});
+  await test.locator('#atlasAbsolute .atlas-piece').first().waitFor({timeout:45000});
+  await test.waitForFunction(()=>!!window.B737ABStageMetrics?.snapshot().enginesReady,null,{timeout:45000});
+  const staticResult=await test.evaluate(async()=>{
+   const img=new Image();img.src=new URL('../cockpit/assets/overhead-composite-test.webp',document.baseURI).href;
+   await img.decode();
+   const node=document.querySelector('#atlasAbsolute');
+   const layer=document.querySelector('#atlasAbsolute .rg-layer, #atlasAbsolute .lights-layer, #atlasAbsolute .toggle-layer');
+   return {mode:document.documentElement.dataset.overheadRenderAb,engine:window.B737ABStageMetrics.snapshot().enginesReady,
+    picture:getComputedStyle(node).backgroundImage,width:img.naturalWidth,height:img.naturalHeight,
+    hidden:layer?getComputedStyle(layer).display:'missing',overlayCount:window.B737ABStageMetrics.snapshot().visualOverlays};
+  });
+  assert.equal(staticResult.mode,'static');
+  assert.ok(staticResult.engine,'Static comparison must preserve live systems');
+  assert.ok(staticResult.picture.includes('overhead-composite-test.webp'));
+  assert.equal(staticResult.hidden,'none','Static lane must actually suppress control drawing');
+  assert.deepEqual([staticResult.width,staticResult.height],[verify.decodedWidth,verify.decodedHeight]);
+  console.log('STATIC A/B stage OK: '+JSON.stringify(staticResult));
+  await test.goto(base+'unified-static-controls-test.html',{waitUntil:'domcontentloaded',timeout:60000});
+  await test.waitForFunction(()=>document.documentElement.dataset.unifiedUsableMs,null,{timeout:60000});
+  const second=await test.evaluate(()=>{const f=document.getElementById('overheadFrame');return {mode:window.B737OverheadStaticTest,route:f?.dataset.deferredUrl||f?.getAttribute('src')||''};});
+  assert.ok(second.mode&&second.route.includes('overhead-static-controls-stage.html'),'Static whole-cockpit entry must embed the correct stage');
+  console.log('FULL UNIFIED A/B routes OK: '+JSON.stringify(second));
  }finally{if(browser)await browser.close();await new Promise(resolve=>server.close(resolve));}
 })().catch(error=>{console.error(error);process.exitCode=1;});

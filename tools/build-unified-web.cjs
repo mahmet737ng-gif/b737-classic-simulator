@@ -57,6 +57,24 @@ function build(root,out=path.join(root,'web-dist')){
   '<script src="../cockpit/overhead-composite-test.js?v=PERF-0004-COMPOSITE-TEST" defer></script></head>');
  fs.writeFileSync(path.join(out,testEntry),testHTML);
  fs.writeFileSync(path.join(out,testStage),stageHTML);
+ // PERF-0005 A/B: same composite image, avionics and simulator engines;
+ // static lane hides only interactive *visual layers* in an isolated test stage.
+ const staticEntry='panel-mosaic-lab/cockpit/unified-static-controls-test.html';
+ const staticStage='panel-mosaic-lab/cockpit/overhead-static-controls-stage.html';
+ const staticHTML=result.html.replace('</head>',
+  '<script>window.B737OverheadStaticTest=true;window.B737OverheadCompositeTest=true;</script></head>');
+ const staticStageHTML=stageHTML.replace('</head>',
+  '<link rel="stylesheet" href="../cockpit/overhead-ab-static.css?v=AB-CONTROLS-0001">'+
+  '<script>document.documentElement.dataset.overheadRenderAb="static";</script></head>');
+ const fullStageHTML=stageHTML.replace('</head>',
+  '<script>document.documentElement.dataset.overheadRenderAb="full";</script></head>');
+ // Minimal identical on-device diagnostics (same cost in both lanes).
+ const hud='<script src="./unified-ab-hud.js?v=AB-CONTROLS-0001" defer></script>';
+ const iframeMetrics='<script src="../cockpit/overhead-ab-metrics.js?v=AB-CONTROLS-0001" defer></script>';
+ fs.writeFileSync(path.join(out,testEntry),testHTML.replace('</head>',hud+'</head>'));
+ fs.writeFileSync(path.join(out,testStage),fullStageHTML.replace('</head>',iframeMetrics+'</head>'));
+ fs.writeFileSync(path.join(out,staticEntry),staticHTML.replace('</head>',hud+'</head>'));
+ fs.writeFileSync(path.join(out,staticStage),staticStageHTML.replace('</head>',iframeMetrics+'</head>'));
  const manifest={schema:'b737-unified-web/1',revision:result.revision,requests:{before:result.before,after:result.after},generated:[...result.bundles,...result.overhead.bundles].map(b=>b.path),overhead:{revision:result.overhead.revision,requests:{before:result.overhead.before,after:result.overhead.after}}};
  fs.writeFileSync(path.join(out,'panel-mosaic-lab/cockpit/runtime-build.json'),JSON.stringify(manifest,null,2)+'\n');
  fs.writeFileSync(path.join(out,'.nojekyll'),'');
