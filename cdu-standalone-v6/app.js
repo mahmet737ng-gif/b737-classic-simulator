@@ -130,7 +130,7 @@ function applyCDUScreenTypography(box){
   return ((m.actualBoundingBoxAscent||0)+(m.actualBoundingBoxDescent||0))/100||.72;
  };
  const oldSmall=Math.min(px*.73,px*.70*cap('BoeingCDULarge')/cap('BoeingCDUSmall'));
- const pageSize=px*1.8;
+ const pageSize=px*1.44; // 80% of the previous 1.8x LSK text scale
  const labelSize=oldSmall*2;
  for(const el of nodes){
   const small=el.classList.contains('fmc-small');
@@ -142,7 +142,7 @@ function applyCDUScreenTypography(box){
    node.style.setProperty('color',green,'important');
    node.style.setProperty('font-family',f,'important');
    const entry=node.classList?.contains('cdu-entry-placeholder');
-   node.style.setProperty('font-size',(entry?px:size)+'px','important');
+   node.style.setProperty('font-size',(entry?px*.80:size)+'px','important');
    node.style.setProperty('font-weight','400','important');
    node.style.setProperty('line-height',
     isScratch?'1':isHeader?'.92':small?'.72':entry?'.96':'.77','important');
@@ -156,7 +156,7 @@ function applyCDUScreenTypography(box){
     if(!span.textContent?.trim()||!ctx||typeof span.getBoundingClientRect!=='function')continue;
     const available=span.getBoundingClientRect().width;
     if(!(available>0))continue;
-    const textSize=span.classList.contains('cdu-entry-placeholder')?px:size;
+    const textSize=span.classList.contains('cdu-entry-placeholder')?px*.80:size;
     ctx.font='400 '+textSize+'px "'+f+'"';
     const measured=ctx.measureText(span.textContent).width;
     const factor=measured>available-2?(available-2)/measured:1;
@@ -174,9 +174,9 @@ function applyCDUScreenTypography(box){
  box.dataset.promptPolicy=window.CDU_PROMPT_POLICY_V1?.VERSION||'NOT_LOADED';
  box.dataset.fontFit24='true';
  box.dataset.labelCapRatio='2x-previous';
- box.dataset.pageValueScale='1.8';
+ box.dataset.pageValueScale='1.44';
  box.dataset.pageLabelScale='2';
- box.dataset.entryPromptScale='1';
+ box.dataset.entryPromptScale='0.8';
  box.dataset.scratchpadScale='1';
  box.dataset.valueLine='LSK_CENTER';
 }
