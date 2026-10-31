@@ -22,9 +22,9 @@ test('public build reduces requests, keeps owner mounts exact and keys other scr
 
 test('published compiled cockpit retains the visible recharge command and its actual ECU handler',()=>{
  const artifact=prepare(root),html=artifact.html,entry=read(ENTRY);
- assert.match(entry,/<button id="liveBatteryRecharge"\b[^>]*>BAT RECHARGE<\/button>/);
+ assert.match(entry,/<button id="liveBatteryRecharge"[^>]*>BAT RECHARGE<\/button>/);
  assert.match(entry,/<script id="battery-recharge-prepaint-v4">/);
- assert.match(html,/<button id="liveBatteryRecharge"\b[^>]*>BAT RECHARGE<\/button>/);
+ assert.match(html,/<button id="liveBatteryRecharge"[^>]*>BAT RECHARGE<\/button>/);
  assert.match(html,/<script id="battery-recharge-prepaint-v4">/);
  assert.equal((html.match(/id="liveBatteryRecharge"/g)||[]).length,1,'No duplicated BAT RECHARGE button');
  assert.ok(html.indexOf('battery-recharge-prepaint-v4')<html.indexOf('<main>'),'Instructor button is repaired synchronously ahead of the cockpit startup');
