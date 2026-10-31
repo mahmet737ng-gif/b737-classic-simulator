@@ -138,3 +138,19 @@ test('PERF-0008 creates real incremental visual/electrical/dynamics/messaging te
  assert.doesNotMatch(read('panel-mosaic-lab/cockpit/index.html'),/PERF-0008/);
  assert.doesNotMatch(read('panel-mosaic-lab/cockpit/overhead-stage.html'),/PERF-0008/);
 });
+
+test('PERF-0009 isolates original real Overhead controls, lamps, and V7 kernels without altering source',()=>{
+ const builder=read('tools/build-overhead-real-lanes-v9.cjs');
+ const runtime=read('panel-mosaic-lab/cockpit/overhead-real-v9.js');
+ assert.match(builder,/overhead-real-f-v9.html/);
+ assert.match(builder,/overhead-real-g-v9.html/);
+ assert.match(builder,/overhead-real-h-v9.html/);
+ assert.match(builder,/guard-owner18-v1.js/);
+ assert.match(builder,/rotary-guards.js/);
+ assert.match(runtime,/instance-faces.json/);
+ assert.match(runtime,/readability-faces.json/);
+ assert.match(runtime,/B737ISNAPULoadDynamicsV1/);
+ assert.match(runtime,/B737ElectricalV7/);
+ assert.ok(!read('panel-mosaic-lab/cockpit/overhead-stage.html').includes('PERF-0009'));
+ assert.ok(!read('panel-mosaic-lab/cockpit/index.html').includes('PERF-0009'));
+});

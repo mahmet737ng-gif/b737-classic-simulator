@@ -78,6 +78,7 @@ const server=http.createServer((req,res)=>{
   fs.mkdirSync(path.dirname(output),{recursive:true});fs.writeFileSync(output,bytes);
   require('./build-overhead-ui-only.cjs').build();
   require('./build-overhead-step-lanes.cjs').build();
+  require('./build-overhead-real-lanes-v9.cjs').build();
   const measures={width:2220,height:3312,bytes:bytes.length,quality:0.85,source:'original locked atlas via browser screenshot',experimental:true};
   fs.writeFileSync(path.join(root,'panel-mosaic-lab/cockpit/composite-test-meta.json'),JSON.stringify(measures,null,2)+'\n');
   console.log('COMPOSITE A/B WebP created '+Math.round(bytes.length/1024)+' KiB from approved 2220x3312 atlas');
@@ -149,6 +150,46 @@ const server=http.createServer((req,res)=>{
    console.log('PERF-0008 '+stage+' browser lane passed '+JSON.stringify(inspect));
   }
   await progressive.close();
+  // PERF-0009: source-authentic real Overhead controls vs lamp update vs math.
+  const actual=await browser.newPage({viewport:{width:1450,height:960}});
+  const stages=[
+   ['overhead-real-f-v9.html','F',false],
+   ['overhead-real-g-v9.html','G',false],
+   ['overhead-real-h-v9.html','H',true]
+  ];
+  for(const [path,stage,hasEngine] of stages){
+   await actual.goto(base+path,{waitUntil:'domcontentloaded',timeout:60000});
+   await actual.waitForFunction(()=>document.documentElement.dataset.perf9Ready==='true',null,{timeout:35000});
+   const status=await actual.evaluate(()=>({
+    stage:document.documentElement.dataset.perf9Stage,
+    toggles:document.querySelectorAll('#overheadToggleLayer .mounted-toggle').length,
+    rotaries:document.querySelectorAll('.mounted-rotary').length,
+    guards:document.querySelectorAll('.owner18-guard-control').length,
+    photos:document.querySelectorAll('.perf9-lamp').length,
+    backend:!!window.B737ElectricalV7,model:!!window.B737ISNEngineStartDynamicsV1,
+    readout:window.B737Perf9?.snapshot?.()
+   }));
+   assert.equal(status.stage,stage);
+   assert.equal(status.toggles,58,'Real calibrated owner toggle frontend required');
+   assert.equal(status.rotaries,20,'Real physical rotary frontend required');
+   assert.equal(status.guards,13,'All 13 physical photo guards must mount');
+   assert.equal(status.photos,112,'Must mount real 112 optical lamp assets');
+   assert.equal(status.backend,hasEngine,'Only H must start the real electrical training engine');
+   if(stage==='F')assert.equal(status.readout.renderPasses,0,'F: no runtime lamp updates');
+   if(stage==='G'){
+    await actual.evaluate(()=>document.getElementById('toggle-yaw-damper').click());
+    const counter=await actual.evaluate(()=>window.B737Perf9.snapshot());
+    assert.ok(counter.controlEvents>0,'G: native switch change must reach physical lamp renderer');
+    assert.ok(counter.renderPasses>0,'G: actual lamp render must be triggered');
+   }
+   if(stage==='H'){
+    await actual.waitForFunction(()=>window.B737Perf9?.snapshot()?.trainingSteps>=2,null,{timeout:10000});
+    const current=await actual.evaluate(()=>window.B737Perf9.snapshot());
+    assert.ok(current.electricalEvaluations>=2&&current.trainingSteps>=2,'H: real training calculations must run');
+   }
+   console.log('PERF-0009 '+stage+' authentic stage OK '+JSON.stringify(status));
+  }
+  await actual.close();
   // The comparison must run the real whole cockpit, not just a static photo.
   const test=await browser.newPage({viewport:{width:1580,height:920}});
   await test.goto(base+'unified-composite-test.html',{waitUntil:'domcontentloaded',timeout:60000});
