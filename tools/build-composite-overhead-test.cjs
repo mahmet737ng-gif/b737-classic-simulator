@@ -74,11 +74,14 @@ const server=http.createServer((req,res)=>{
   const test=await browser.newPage({viewport:{width:1580,height:920}});
   await test.goto(base+'unified-composite-test.html',{waitUntil:'domcontentloaded',timeout:60000});
   await test.waitForFunction(()=>document.documentElement.dataset.unifiedUsableMs,null,{timeout:60000});
-  await test.locator('[data-focus="overhead"]').first().click();
-  const oh=test.frameLocator('#overheadFrame');
-  await oh.locator('#atlasAbsolute .atlas-piece').first().waitFor({timeout:45000});
-  await oh.locator('html[data-composite-image-ready="true"]').waitFor({timeout:30000});
-  const verify=await oh.locator('#atlasAbsolute').evaluate(node=>({
+  const assigned=await test.evaluate(()=>document.getElementById('overheadFrame')?.dataset.deferredUrl||'');
+  assert.ok(assigned.includes('overhead-composite-stage.html'),'Full Unified must select the separate Overhead stage');
+  // Check the exact stage the full Unified will embed; this does not require
+  // a test-only navigation button absent from the approved minimal toolbar.
+  await test.goto(base+'overhead-composite-stage.html',{waitUntil:'domcontentloaded',timeout:60000});
+  await test.locator('#atlasAbsolute .atlas-piece').first().waitFor({timeout:45000});
+  await test.locator('html[data-composite-image-ready="true"]').waitFor({timeout:30000});
+  const verify=await test.locator('#atlasAbsolute').evaluate(node=>({
    pieces:node.querySelectorAll('.atlas-piece').length,
    originalPhotosLoaded:node.querySelectorAll('img.atlas-photo[src]').length,
    composite:getComputedStyle(node).backgroundImage
