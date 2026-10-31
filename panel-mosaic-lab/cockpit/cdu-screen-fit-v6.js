@@ -7,6 +7,17 @@
 (function(root){
  'use strict';
  const VERSION='CDU-24COL-0006';
+ // Visually cross-checked with 737-300 IDENT / select-waypoint CRT screens,
+ // Boeing RTE/PERF INIT/TAKEOFF/LEGS photos. Ratios, NOT guessed native pixels.
+ // Physical font families, 24 A scratch width, LSK positions and artwork locked.
+ const PHOTO_PROFILE=Object.freeze({
+  id:'CLASSIC-CDU-PHOTO-HIERARCHY-0001',
+  smallLabelToLarge:0.73,
+  headerToLarge:0.88,
+  lskPromptToLarge:0.95,
+  largeValueToLarge:1.00,
+  scratchToLarge:1.00
+ });
  const Metrics=root.B737CDU24ColumnMetricsV1;
  const seat=new URLSearchParams(root.location.search).get('seat');
  if(!['CAPT','FO'].includes(seat)||!Metrics)return;
@@ -32,7 +43,9 @@
  function fontFace(el){return root.getComputedStyle(el).fontFamily;}
  function fitFragment(span,basePx,fullAllowed){
   if(!span)return;
-  span.style.removeProperty('font-size');
+  if(span.classList.contains('cdu-lsk-prompt'))
+   typography(span,basePx);
+  else span.style.removeProperty('font-size');
   const content=span.textContent||'';
   if(!content||!content.trim())return;
   // The scratchpad MUST NOT shrink to fit arbitrary text: 24 columns
@@ -46,6 +59,40 @@
   if(needed>w-2){
    typography(span,Math.max(1,basePx*(w-2)/needed));
   }
+ }
+ // Source-authoritative action labels such as <INDEX or PERF INIT> are the
+ // LARGE data-line LSK prompts; the SMALL row is reserved for field titles.
+ // This is presentation-only; never mutate the FCOM source table or LSK map.
+ function putPromptsOnLSKLines(pairs,standard){
+  if(!standard)return 0;
+  const pageId=root.document.getElementById('page-now')?.textContent;
+  const rows=root.CDU_PAGES?.[pageId]?.rows;
+  if(!Array.isArray(rows))return 0;
+  let moved=0;
+  for(let row=0;row<6;row++){
+   const labelLine=pairs[row*2],valueLine=pairs[row*2+1];
+   if(!labelLine?.classList?.contains('fmc-small')||
+       !valueLine||valueLine.classList.contains('fmc-small'))continue;
+   for(let col=0;col<2;col++){
+    const cell=rows[row]?.[col];
+    if(!cell?.action||cell.field||cell.value||!cell.label)continue;
+    const cls=col===0?'.fmc-left':'.fmc-right';
+    const label=labelLine.querySelector(cls),data=valueLine.querySelector(cls);
+    // A dynamic source adapter may already own a value; never overwrite it.
+    if(!label||!data||label.textContent!==cell.label||data.textContent?.trim())continue;
+    data.textContent=label.textContent;
+    label.textContent='';
+    data.classList.add('cdu-lsk-prompt');
+    moved++;
+   }
+  }
+  return moved;
+ }
+ function isLSKPrompt(span,label){
+  if(!span||label)return false;
+  if(span.classList.contains('cdu-lsk-prompt'))return true;
+  const t=String(span.textContent||'').trim();
+  return t.length>0&&(/^[<]/.test(t)||/[>]$/.test(t));
  }
  function keepScratchInside(scratch){
   const left=scratch?.querySelector('.fmc-left');
@@ -78,8 +125,12 @@
   const little=Metrics.calibrate(ctx,available,smallFamily);
   if(!large.valid||!little.valid)return {ready:false,reason:'FONT_NOT_READY_OR_METRIC_MISMATCH',large,little};
   return {ready:true,large,little,fontFamily:family,smallFontFamily:smallFamily,
-   widthPx:available,mainPx:large.fontSizePx,labelPx:little.fontSizePx*.78,
-   headerPx:large.fontSizePx*.84,scratchPx:large.fontSizePx};
+   widthPx:available,mainPx:large.fontSizePx,
+   labelPx:Math.min(little.fontSizePx*.78,
+                    large.fontSizePx*PHOTO_PROFILE.smallLabelToLarge),
+   headerPx:large.fontSizePx*PHOTO_PROFILE.headerToLarge,
+   promptPx:large.fontSizePx*PHOTO_PROFILE.lskPromptToLarge,
+   scratchPx:large.fontSizePx};
  }
  function apply(){
   const model=calibrate();if(!model.ready){lastResult=model;return model;}
@@ -89,6 +140,7 @@
   const standard=pairs.length===12&&pairs.filter(l=>l.classList.contains('fmc-small')).length===6;
   const scratch=lines.find(l=>l.classList.contains('scratch'));
   const main=model.mainPx,small=model.labelPx;
+  const promptsMoved=putPromptsOnLSKLines(pairs,standard);
   box.style.setProperty('color','#29ff31','important');
   box.style.setProperty('font-size',main+'px','important');
   if(header){
@@ -104,7 +156,15 @@
    if(standard&&row<6)line.style.setProperty('top',TOP[label?'label':'value'][row]+'%','important');
    line.style.setProperty('height',(label?'8%':'10.5%'),'important');
    typography(line,px);
-   for(const span of line.querySelectorAll('span'))fitFragment(span,px,false);
+   for(const span of line.querySelectorAll('span')){
+    const prompt=isLSKPrompt(span,label);
+    const isCenter=span.classList.contains('fmc-center');
+    // FCOM DEP/ARR triplets have small guidance plus large airport centres.
+    const target=prompt?model.promptPx:
+      isCenter&&!label?main:px;
+    if(prompt)span.classList.add('cdu-lsk-prompt');
+    fitFragment(span,target,false);
+   }
   }
   if(scratch){
    scratch.style.setProperty('top',TOP.scratch+'%','important');
@@ -117,6 +177,8 @@
   root.document.documentElement.dataset.cduScreenFit=VERSION;
   lastResult={ready:true,version:VERSION,standard,columns:Metrics.COLUMNS,
    fontSizePx:model.scratchPx,labelPx:model.labelPx,
+   headerPx:model.headerPx,promptPx:model.promptPx,photoProfile:PHOTO_PROFILE.id,
+   promptsMoved,
    large:model.large,little:model.little,widthPx:model.widthPx,
    scratchLength:(scratch?.querySelector('.fmc-left')?.textContent||'').length,
    source:'MEASURED_BOEING_CDU_GLYPHS'};
@@ -130,7 +192,7 @@
  const observer=new MutationObserver(schedule);
  observer.observe(box,{childList:true,subtree:true,characterData:true});
  root.B737CduScreenFitV6=Object.freeze({apply,schedule,getState:()=>lastResult,
-  version:VERSION,columns:Metrics.COLUMNS});
+  version:VERSION,columns:Metrics.COLUMNS,photoProfile:PHOTO_PROFILE});
  apply();
  if(root.document.fonts){
   root.document.fonts.ready?.then(schedule).catch(()=>{});
