@@ -138,3 +138,12 @@ main{grid-template-columns:minmax(0,1fr) 360px;align-items:start}
 .efis-trainer-row input{width:100%;min-width:45px;accent-color:#d2ecee}
 .efis-trainer-row strong{font-size:10px}
 @media(max-width:700px){.efis-machine{grid-template-columns:1fr 1.5fr 1fr;padding:8px;gap:4px}.mode-buttons{grid-template-columns:repeat(2,1fr)}.mode-buttons button:nth-child(7){grid-column:auto}.map-select-row{grid-template-columns:repeat(3,1fr)}.efis-machine button{font-size:9px}.ehsi-bezel{padding:15px 14px 9px}}
+/* CDU all-pages scratchpad isolation — independent of INDEX/DEP/ARR and NAVDB painters.
+   Artwork and key hitboxes stay unchanged. The content mask stops ALL page/LSK
+   text above the reserved scratchpad; only scratchpad input/messages may show below. */
+.fmc-lines{isolation:isolate}
+.fmc-lines::after{
+ content:"";position:absolute;left:0;right:0;top:93.25%;bottom:0;
+ background:#000;pointer-events:none;z-index:10
+}
+.fmc-lines > .fmc-line.scratch{z-index:11!important}
