@@ -63,3 +63,15 @@ test('PERF-0003 compiles embedded Overhead from its real HTML base without alter
   assert.ok(compiled.overhead.html.includes(match[0]),'Protected OH mount modified: '+match[2]);
  assert.equal(read('panel-mosaic-lab/cockpit/overhead-stage.html'),before);
 });
+
+test('PERF-0004 publishes a separate compiled Unified test page without modifying the owner-approved original mounts',()=>{
+ const source=read('panel-mosaic-lab/cockpit/app.js'),compiled=prepare(root);
+ const prod=compiled.html,stage=compiled.overhead.html;
+ assert.match(source,/B737OverheadCompositeTest/);
+ assert.ok(!prod.includes('window.B737OverheadCompositeTest=true'),'Production entry must never enable composite test');
+ assert.ok(!stage.includes('overhead-composite-test.css'),'Production overhead remains unchanged');
+ const builder=read('tools/build-unified-web.cjs');
+ assert.match(builder,/unified-composite-test.html/);
+ assert.match(builder,/overhead-composite-stage.html/);
+ assert.match(builder,/PERF-0004-COMPOSITE-TEST/);
+});

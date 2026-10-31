@@ -46,6 +46,17 @@ function build(root,out=path.join(root,'web-dist')){
  }
  fs.writeFileSync(path.join(out,ENTRY),result.html);
  fs.writeFileSync(path.join(out,OVERHEAD),result.overhead.html);
+ // A/B experiment: same compiled Unified modules, separate URL, original entry untouched.
+ const testEntry='panel-mosaic-lab/cockpit/unified-composite-test.html';
+ const testStage='panel-mosaic-lab/cockpit/overhead-composite-stage.html';
+ const testHTML=result.html.replace('</head>','<script>window.B737OverheadCompositeTest=true;</script></head>');
+ if(testHTML===result.html)throw Error('Composite Unified injection failed');
+ // Keep the approved embedded stage byte-identical; only publish a compiled test copy.
+ const stageHTML=result.overhead.html.replace('</head>',
+  '<link rel="stylesheet" href="../cockpit/overhead-composite-test.css?v=PERF-0004-COMPOSITE-TEST">'+
+  '<script src="../cockpit/overhead-composite-test.js?v=PERF-0004-COMPOSITE-TEST" defer></script></head>');
+ fs.writeFileSync(path.join(out,testEntry),testHTML);
+ fs.writeFileSync(path.join(out,testStage),stageHTML);
  const manifest={schema:'b737-unified-web/1',revision:result.revision,requests:{before:result.before,after:result.after},generated:[...result.bundles,...result.overhead.bundles].map(b=>b.path),overhead:{revision:result.overhead.revision,requests:{before:result.overhead.before,after:result.overhead.after}}};
  fs.writeFileSync(path.join(out,'panel-mosaic-lab/cockpit/runtime-build.json'),JSON.stringify(manifest,null,2)+'\n');
  fs.writeFileSync(path.join(out,'.nojekyll'),'');

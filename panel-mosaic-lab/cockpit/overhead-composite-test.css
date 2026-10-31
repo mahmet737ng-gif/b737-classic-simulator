@@ -1,0 +1,14 @@
+/* PERF-0004 A/B only. The frozen atlas and overlays remain fully mounted. */
+#atlasAbsolute{
+ background-image:url("./assets/overhead-composite-test.webp")!important;
+ background-repeat:no-repeat!important;
+ background-size:2220px 3312px!important;
+ background-position:0 0!important;
+}
+#atlasAbsolute .atlas-piece,
+#atlasAbsolute .atlas-piece .atlas-image-window,
+#atlasAbsolute .atlas-piece .atlas-source-strip{
+ background:transparent!important;
+ box-shadow:none!important;
+}
+#atlasAbsolute .atlas-photo{visibility:hidden!important}
