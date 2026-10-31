@@ -13,18 +13,18 @@
  const assetRoot=OBS_FRAME?'../cockpit/':'./';
  let measured=null,measureError='',geometrySource=null;
  const obsLiveMasks=new Map(),obsMeasuring=new Set();
+ // The four approved PNGs have identical source pixels in CAPT/FO/OBS.
+ // Share their source-mask promises across same-origin frames, retaining
+ // each panel's own viewport/socket registration and live control state.
+ const maskTasks=(()=>{try{const host=root.top||root;return host.B737AspMaskTasksV1||(host.B737AspMaskTasksV1=new Map());}catch{return new Map();}})();
  function calibrateObserverImage(image,name,host){
   if(!OBS_FRAME||host.dataset.seat!=='OBS'||obsLiveMasks.has(name)||obsMeasuring.has(name))return;
-  const scan=()=>{
+  const scan=async()=>{
    if(!image.naturalWidth||!image.naturalHeight)return;
    obsMeasuring.add(name);
    try{
-    const canvas=document.createElement('canvas');
-    canvas.width=image.naturalWidth;canvas.height=image.naturalHeight;
-    const ctx=canvas.getContext('2d',{willReadFrequently:true});
-    if(!ctx)throw Error('Canvas2D unavailable');
-    ctx.drawImage(image,0,0);
-    const shape=registrar.mask(ctx.getImageData(0,0,canvas.width,canvas.height));
+    const shape=await silhouette(image.currentSrc||image.src);
+    if(shape.width!==image.naturalWidth||shape.height!==image.naturalHeight)throw Error('ASP source dimensions changed during registration');
     obsLiveMasks.set(name,shape);
     host.dataset.aspObsMeasuredImages=String(obsLiveMasks.size);
     sizeControls(host);
@@ -51,7 +51,10 @@
  // The imported photographic PNGs are NOT known to have centered subjects.
  // Detect the actual alpha silhouette of EACH OFF and ON sprite exactly once.
  async function silhouette(url){
-  const photo=new Image();photo.src=url;
+  const key=new URL(url,document.baseURI).href;
+  if(maskTasks.has(key))return maskTasks.get(key);
+  const task=(async()=>{
+  const photo=new Image();photo.src=key;
   if(photo.decode)await photo.decode();
   else await new Promise((resolve,reject)=>{photo.onload=resolve;photo.onerror=reject;});
   const cv=document.createElement('canvas');cv.width=photo.naturalWidth;cv.height=photo.naturalHeight;
@@ -59,6 +62,9 @@
   if(!ctx)throw Error('ASP: missing Canvas2D for alpha registration');
   ctx.clearRect(0,0,cv.width,cv.height);ctx.drawImage(photo,0,0);
   return registrar.mask(ctx.getImageData(0,0,cv.width,cv.height));
+  })();
+  maskTasks.set(key,task);
+  try{return await task;}catch(error){maskTasks.delete(key);throw error;}
  }
  async function prepareRegistration(){
   if(!registrar)throw Error('ASP registration helper unavailable');

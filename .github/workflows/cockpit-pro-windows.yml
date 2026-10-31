@@ -57,7 +57,7 @@ jobs:
         run: npm exec -- electron-builder --win --dir --x64 --publish never
       - name: Native EXE launch and control response, external requests blocked
         working-directory: desktop
-        run: npm run smoke:win -- --profile
+        run: npm run smoke:win
       - name: Build NSIS installer and differential update metadata
         working-directory: desktop
         env:

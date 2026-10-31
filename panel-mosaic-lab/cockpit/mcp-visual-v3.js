@@ -110,6 +110,7 @@ function setValue(id,v,method){
  if(id==="speed")next=Math.max(100,Math.min(399,next));
  if(id==="altitude")next=Math.max(0,Math.min(49900,next));
  if(id==="verticalSpeed")next=Math.max(-9900,Math.min(9900,next));
+ if(next===before)return;
  values[id]=next;repaint();
  if(next!==before){
   event("value-change",{control:id,value:next,previous:before,method});
@@ -172,9 +173,9 @@ window.B737McpVisualV3=Object.freeze({
  geometry:Object.freeze({width:W,height:H,displays:displays.map(x=>({...x})),lamps:lamps.map(x=>({...x})),knobs:knobs.map(x=>({...x}))}),
  getState:()=>JSON.parse(JSON.stringify(values)),
  setValue:(id,v)=>setValue(id,v,"external"),
- setLamp:(id,state)=>{if(Object.hasOwn(values.lamps,id)){values.lamps[id]=!!state;repaint()}},
- setLamps:(states)=>{for(const id of Object.keys(values.lamps))values.lamps[id]=states?.[id]===true;repaint()},
- setPower:(powered)=>{if(![true,false,null].includes(powered))throw Error("MCP power must be true/false/null");powerState=powered;repaint()},
+ setLamp:(id,state)=>{if(Object.hasOwn(values.lamps,id)&&values.lamps[id]!==!!state){values.lamps[id]=!!state;repaint()}},
+ setLamps:(states)=>{let changed=false;for(const id of Object.keys(values.lamps)){const next=states?.[id]===true;if(values.lamps[id]!==next){values.lamps[id]=next;changed=true;}}if(changed)repaint()},
+ setPower:(powered)=>{if(![true,false,null].includes(powered))throw Error("MCP power must be true/false/null");if(powerState!==powered){powerState=powered;repaint()}},
  mount
 });
 window.addEventListener("b737:visual-test",e=>{for(const id of Object.keys(values.lamps))values.lamps[id]=!!e.detail?.active;repaint()});

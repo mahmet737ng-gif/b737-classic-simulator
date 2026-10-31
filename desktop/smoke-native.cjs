@@ -6,10 +6,11 @@ async function run(){
  const executable=path.resolve(__dirname,'dist/win-unpacked/CockpitPro.exe');
  const userData=await fs.mkdtemp(path.join(os.tmpdir(),'cockpit-native-'));
  const samples=[];const diagnostic=process.argv.includes('--profile');
- const cases=diagnostic?[['default-fresh',[]],['default-new-profile',[]],['software-fresh',['--software-rendering']],['software-retained',['--software-rendering']]]:[['fresh-cache',[]],['retained-cache',[]]];
+ const cases=diagnostic?[['default-fresh',[]],['default-new-profile',[]],['software-fresh',['--software-rendering']],['software-retained',['--software-rendering']]]:[['fresh-cache',[]],['retained-cache',[]],['conventional-profile',[]]];
  try{
   for(const [kind,options] of cases){
    if(kind==='software-fresh'||kind==='default-new-profile'){await fs.rm(userData,{recursive:true,force:true});await fs.mkdir(userData,{recursive:true});}
+   if(kind==='conventional-profile'){const file=path.join(userData,'desktop-settings.json');const saved=JSON.parse(await fs.readFile(file,'utf8'));saved.profile.engineInstruments='CONVENTIONAL';await fs.writeFile(file,JSON.stringify(saved));}
    const reportFile=path.join(userData,'startup-report.json');await fs.rm(reportFile,{force:true});
    const began=Date.now();const child=spawn(executable,['--startup-smoke','--smoke-user-data='+userData,...options,...(diagnostic?['--startup-profile']:[])],{stdio:['ignore','pipe','pipe']});
    child.stdout.on('data',chunk=>process.stdout.write(chunk));child.stderr.on('data',chunk=>process.stderr.write(chunk));

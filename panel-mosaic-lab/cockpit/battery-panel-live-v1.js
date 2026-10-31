@@ -74,10 +74,11 @@
    if(!attached){p.attachLiveBattery(stored());attached=true;lastAt=now;}
    const dt=Math.max(0,Math.min(86400,(now-lastAt)/1000));lastAt=now;
    const nextInputs=panelInputs();
-   current=p.advanceLiveBattery(dt,lastInputs||nextInputs);
+   const appliedInputs=lastInputs||nextInputs;
+   current=p.advanceLiveBattery(dt,appliedInputs);
    // Apply changed switches immediately after integrating the previous interval.
    const afterInputs=panelInputs();
-   if(JSON.stringify(afterInputs)!==JSON.stringify(lastInputs))current=p.advanceLiveBattery(0,afterInputs);
+   if(JSON.stringify(afterInputs)!==JSON.stringify(appliedInputs))current=p.advanceLiveBattery(0,afterInputs);
    lastInputs=afterInputs;
    power();paint();
    root.dispatchEvent(new CustomEvent('b737:battery-live',{detail:copy(current)}));

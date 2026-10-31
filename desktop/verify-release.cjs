@@ -11,6 +11,6 @@ for(const file of info.files){
  assert.ok(fs.statSync(path.join(dir,file.url+'.blockmap')).size>0,'Differential update blockmap missing');
 }
 const result=JSON.parse(fs.readFileSync(path.join(dir,'startup-benchmark.json'),'utf8'));
-assert.equal(result.samples.length,2);
+assert.equal(result.samples.length,3);
 assert.ok(result.samples.every(s=>s.spawnToUsableMs<=5000&&s.main&&s.controls&&s.interaction.responded));
 console.log('Release feed, checksums, differential metadata and native startup budget verified.');
