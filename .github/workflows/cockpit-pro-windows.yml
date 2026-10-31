@@ -16,6 +16,9 @@ jobs:
   setup-x64:
     runs-on: windows-latest
     timeout-minutes: 60
+    env:
+      PYTHONUTF8: '1'
+      PYTHONIOENCODING: utf-8
     steps:
       - name: Preserve approved source bytes on Windows checkout
         run: git config --global core.autocrlf false
