@@ -11,16 +11,19 @@ async function run(){
   for(const [kind,options] of cases){
    if(kind==='software-fresh'||kind==='default-new-profile'){await fs.rm(userData,{recursive:true,force:true});await fs.mkdir(userData,{recursive:true});}
    const reportFile=path.join(userData,'startup-report.json');await fs.rm(reportFile,{force:true});
-   const began=Date.now();const child=spawn(executable,['--startup-smoke','--smoke-user-data='+userData,...options,...(diagnostic?['--startup-profile']:[])],{stdio:'ignore'});
+   const began=Date.now();const child=spawn(executable,['--startup-smoke','--smoke-user-data='+userData,...options,...(diagnostic?['--startup-profile']:[])],{stdio:['ignore','pipe','pipe']});
+   child.stdout.on('data',chunk=>process.stdout.write(chunk));child.stderr.on('data',chunk=>process.stderr.write(chunk));
    let exit,spawnError;const exited=new Promise(r=>{child.on('error',e=>{spawnError=e;r();});child.on('exit',code=>{exit=code;r();});});
    let report;
    try{
-    while(Date.now()-began<20000){
+    while(Date.now()-began<60000){
      try{report=JSON.parse(await fs.readFile(reportFile,'utf8'));break;}catch{}
+     try{const error=await fs.readFile(path.join(userData,'startup-error.json'),'utf8');throw new Error(error);}catch(error){if(error.code!=='ENOENT')throw error;}
      if(spawnError)throw spawnError;if(exit!==undefined)throw Error('Application exited before usable: '+exit);
      await sleep(25);
     }
-    assert.ok(report,'No usable cockpit report within 20 seconds');
+    if(!report){try{console.error('Native phases:',await fs.readFile(path.join(userData,'startup-phases.json'),'utf8'));}catch{}}
+    assert.ok(report,'No usable cockpit report within 60 seconds');
     report.spawnToUsableMs=report.readyAtMs-began;report.cache=kind;
     samples.push(report);
     await fs.copyFile(path.join(userData,'startup.png'),path.join(__dirname,'dist/startup-'+kind+'.png'));

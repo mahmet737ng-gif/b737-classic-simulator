@@ -11,7 +11,7 @@ const profiling=process.argv.includes('--startup-profile');
 const software=process.argv.includes('--software-rendering');
 if(software)app.disableHardwareAcceleration();
 const timeline={moduleLoaded:performance.now()-processBegan};
-const mark=name=>{timeline[name]=performance.now()-processBegan;};
+const mark=name=>{timeline[name]=performance.now()-processBegan;if(smoke){try{fs.writeFileSync(path.join(app.getPath('userData'),'startup-phases.json'),JSON.stringify(timeline));}catch{}}};
 const smokeData=process.argv.find(x=>x.startsWith('--smoke-user-data='));
 if(smoke&&smokeData)app.setPath('userData',smokeData.slice('--smoke-user-data='.length));
 const settingsFile=path.join(app.getPath('userData'),'desktop-settings.json');
@@ -28,7 +28,7 @@ const updates=createUpdateController({version:app.getVersion(),packaged:app.isPa
  publish:state=>{if(window&&!window.isDestroyed())window.webContents.send('desktop:update-state',state);}});
 function isLocal(url){try{return new URL(url).origin===baseUrl;}catch{return false;}}
 function authorized(event){return window&&!window.isDestroyed()&&event.sender===window.webContents&&event.senderFrame===window.webContents.mainFrame&&isLocal(event.senderFrame.url);}
-function handle(channel,handler){ipcMain.handle(channel,(event,...args)=>{if(!authorized(event))throw Error('Untrusted desktop request');return handler(...args);});}
+function handle(channel,handler){ipcMain.handle(channel,async(event,...args)=>{if(!authorized(event))throw Error('Untrusted desktop request');try{return await handler(...args);}catch(error){if(smoke)await fs.promises.writeFile(path.join(app.getPath('userData'),'startup-error.json'),JSON.stringify({channel,error:String(error.stack),timeline}));throw error;}});}
 handle('desktop:state',()=>{mark('firstRendererIPC');return {version:app.getVersion(),packaged:app.isPackaged,smoke,
  profile:settings.profile||null,resume:settings.resume===true,update:updates.snapshot()};});
 handle('desktop:update-check',()=>updates.check());
