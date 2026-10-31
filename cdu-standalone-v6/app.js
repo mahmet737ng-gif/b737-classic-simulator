@@ -37,7 +37,7 @@ function makeControls(){const click=$('clickmap');for(const c of map.controls){l
 function updateEHSI(){ if(window.EHSI_ENGINE){ if((state.navdbActive||state.stage5Committed) && state.ehsi?.options) state.ehsi.options.demoRoute=false; window.EHSI_ENGINE.renderToDom(state,core,$('ehsi-svg'),document); window.CDU_NAV_MAP?.render(state,$('ehsi-svg')); window.CDU_STAGE5_MAP?.render(state,$('ehsi-svg')); window.CDU_STAGE9_ADVISORY?.render(state,$('ehsi-svg')); window.CDU_STAGE10_ADVISORY?.render(state,$('ehsi-svg')); } }
 const TITLE_PLAIN=new Set(['MENU','INDEX','IDENT','POS_INIT','MESSAGES','MSG_RECALL','NAV_DATA','NAV_OPTIONS','SUPP_NAV','POS_REF','FIX','PROG','PROG2','HOLD','DEP_ARR','DEPARTURES','ARRIVALS']);
 function shown(val){return String(val??'').replace(/\{([A-Z_0-9]+)\}/g,(_,key)=>core.readValue(state,key,state.page)||'----');}
-function displayCell(cell){if(!cell)return ''; if(cell.field){const v=core.readValue(state,cell.field,state.page);return v||(cell.required?'□□□□':'-----');} return shown(cell.value||'');}
+function displayCell(cell){if(!cell)return ''; if(cell.field){const get=(field,page)=>core.readValue(state,field,page);return window.CDU_PROMPT_POLICY_V1?.placeholder(state.page,cell,get)||get(cell.field,state.page)||(cell.required?'□□□□':'-----');} return shown(cell.value||'');}
 function makePairRow(topPct,leftText,rightText,isScratch=false,isSmall=false){const d=document.createElement('div'); d.className='fmc-line'+(isScratch?' scratch':'')+(isSmall?' fmc-small':'')+' fmc-pairline'; d.style.top=topPct+'%'; const l=document.createElement('span'); l.className='fmc-left'; l.textContent=leftText||''; const r=document.createElement('span'); r.className='fmc-right'; r.textContent=rightText||''; if(isScratch){l.classList.add('full'); r.remove(); d.appendChild(l);} else {d.appendChild(l); d.appendChild(r);} return d;}
 /* FCOM Vol.2 11.40.32: DEP/ARR INDEX is a THREE-COLUMN origin/dest
  * page, not a generic route-field menu. Keep the approved photo & LSK map.
@@ -85,6 +85,43 @@ function renderDepArrIndex(box){
  box.appendChild(makeDepArrTriplet(lskTextTops(6).value,'<----','','---->'));
 }
 function v19SafeN1(){const r=n1EstimateV19();return r?.status==='SIM_ESTIMATE'?r:null;}
+// Force the user-approved green Boeing CDU typography on the LIVE rows.
+// Inline-important values win over historical v5 CSS and global nth-child
+// font selectors which incorrectly shrink DEP/ARR selectable prompts.
+function applyCDUScreenTypography(box){
+ const green='#4bf58a';
+ const stage=document.getElementById('cdu-stage');
+ const stageWidth=stage?.getBoundingClientRect().width||790;
+ const width=box.getBoundingClientRect().width||stageWidth*.4865;
+ const target=stageWidth*.0247;
+ // At least 24 uppercase A characters must fit the scratchpad without
+ // horizontal clipping. Measure the actual loaded font; scale only if needed.
+ const canvas=applyCDUScreenTypography.canvas||(applyCDUScreenTypography.canvas=document.createElement('canvas'));
+ const ctx=canvas.getContext('2d');
+ let px=target;
+ if(ctx){
+  ctx.font=target+'px BoeingCDULarge';
+  const textWidth=ctx.measureText('AAAAAAAAAAAAAAAAAAAAAAAA').width;
+  if(textWidth>0)px=Math.min(target,target*(width*.946*.98/textWidth));
+ }
+ box.style.setProperty('color',green,'important');
+ box.style.setProperty('font-size',px+'px','important');
+ const nodes=box.querySelectorAll('.fmc-line');
+ for(const el of nodes){
+  const small=el.classList.contains('fmc-small');
+  const f=small?'BoeingCDUSmall':'BoeingCDULarge';
+  const size=small?Math.min(px,stageWidth*.0230):px;
+  for(const node of [el,...el.querySelectorAll('*')]){
+   node.style.setProperty('color',green,'important');
+   node.style.setProperty('font-family',f,'important');
+   node.style.setProperty('font-size',size+'px','important');
+   node.style.setProperty('font-weight','400','important');
+  }
+ }
+ box.dataset.fontColor=green;
+ box.dataset.promptPolicy=window.CDU_PROMPT_POLICY_V1?.VERSION||'NOT_LOADED';
+ box.dataset.fontFit24='true';
+}
 function update(){const box=$('fmc-lines'); const frame=document.createElement('div');
  const {screenTop,screenHeight}=CDU_DISPLAY_GEOMETRY;
  const page=pages[state.page]; const tag=(core.pendingCount(state)>0)?'MOD ':'ACT ';
@@ -148,6 +185,7 @@ function update(){const box=$('fmc-lines'); const frame=document.createElement('
  // Single atomic update to the VISIBLE CDU. Optional reference adapters never
  // receive or mutate the live DOM and cannot erase a FCOM-owned screen.
  box.replaceChildren(...frame.childNodes);
+ applyCDUScreenTypography(box);
  box.dataset.screenOwner=output.owner;
  box.dataset.sourceVerified=String(output.sourceVerified);
  box.dataset.compositorVersion=output.version;
