@@ -53,17 +53,20 @@ assert.ok(api,'FO runtime must have a typography calibration controller');
 const registered=api.rowRegistration();
 assert.equal(registered.label.length,6);
 assert.equal(registered.value.length,6);
-for(let i=0;i<5;i++){
+for(let i=0;i<6;i++){
  const cy=(lsk[i].bbox_px[1]+lsk[i].bbox_px[3])/2;
- const expected=(cy-1312*.0765)/(1312*.375)*100;
- assert.ok(Math.abs(registered.label[i]-(expected-5.8))<.02,
-  'Small label must remain referenced to LSK '+(i+1));
- assert.ok(Math.abs(registered.value[i]-(expected+.8))<.02,
-  'Large prompt/value must remain referenced to LSK '+(i+1));
+ const height=1312*.375,screenTop=1312*.0765;
+ const shift=Math.max(0,cy-13-(565-4-height*.053));
+ const expectedLabel=(cy-42-shift-screenTop)/height*100;
+ const expectedValue=(cy-13-shift-screenTop)/height*100;
+ assert.ok(Math.abs(registered.label[i]-expectedLabel)<.02,
+  'Small label above physical LSK '+(i+1));
+ assert.ok(Math.abs(registered.value[i]-expectedValue)<.02,
+  'Large value centred on physical LSK '+(i+1));
  assert.ok(registered.label[i]<registered.value[i]);
+ assert.ok(cy-13-shift+height*.053<=561.01,
+  'LSK text must finish before scratchpad '+(i+1));
 }
-assert.equal(registered.label[5],82.5,'Final label must not collide with scratchpad');
-assert.equal(registered.value[5],86,'Final LSK prompt must not collide with scratchpad');
 assert.ok(registered.value[5]<registered.scratch);
 const result=api.apply();
 assert.equal(result.ready,true);
@@ -72,8 +75,8 @@ assert.equal(result.standard,true);
 assert.equal(pairs[0].style.applied.get('font-size'),result.labelPx.toFixed(2)+'px');
 assert.equal(pairs[1].style.applied.get('font-size'),'44px');
 assert.equal(scratch.style.applied.get('font-size'),'44px');
-assert.ok(result.labelPx/44>=.60&&result.labelPx/44<=.73,
- 'Label cap height should be about 68% of the large data/LSK prompt');
+assert.ok(result.labelPx/44>=.88&&result.labelPx/44<=.92,
+ 'Label cap height should be about 90% of the large data/LSK prompt');
 assert.equal(pairs[0].style.applied.get('top'),registered.label[0]+'%');
 assert.equal(pairs[1].style.applied.get('top'),registered.value[0]+'%');
 assert.equal(root.document.documentElement.dataset.cduScreenFit,'CDU-24COL-0006');
