@@ -57,7 +57,9 @@
     reset() {
       const previousBattery=this.electricalState?.battery;
       this.mode = 'SOURCE_GATED';
-      this.electricalState = this.Electrical.initialState();
+      // Unified/ISN must boot from a physically unpowered aircraft.
+      // Preserve the V7 legacy bench default only for isolated old tests.
+      this.electricalState = this.Electrical.initialState({coldDark:true});
       // Resetting switches/scenarios must not refill the installed battery.
       if(this.batteryEngine)this.electricalState.battery=previousBattery||this.batteryEngine.initial();
       this.pumps = Object.fromEntries(PUMP_REGISTRY.map(p => [p.id, {switchOn: false, failed: false, overheat: false, observedPower: null}]));
