@@ -23,8 +23,8 @@
  const canvas=root.document.createElement('canvas');
  const ctx=canvas.getContext('2d');
  if(!ctx)return;
- const TOP={header:.5,label:[6.9,20.4,35.8,50.8,66.3,80.9],
-  value:[12.7,27.8,43.2,58.3,73.7,88.3],scratch:93.2};
+ const TOP={header:.5,label:[6.9,20.4,35.8,50.8,66.3,76.3],
+  value:[12.7,27.8,43.2,58.3,73.7,84.6],scratch:93.2};
  // The physical LSK coordinates are immutable; only these displayed text
  // rows are repositioned. Last pair is capped above the scratchpad.
  const NATIVE_HEIGHT=1312,SCREEN_TOP=.0765*NATIVE_HEIGHT,
@@ -41,11 +41,11 @@
   return {
    header:TOP.header,scratch:TOP.scratch,
    label:centers.map((cy,i)=>{
-    const value=cy-13,shift=Math.max(0,value-(565-4-SCREEN_HEIGHT*.053));
+    const value=cy-13,shift=Math.max(0,value-(565-4-SCREEN_HEIGHT*.09));
     return pct(cy-(i===0?42:50)-shift);
    }),
    value:centers.map(cy=>{
-    const value=cy-13,shift=Math.max(0,value-(565-4-SCREEN_HEIGHT*.053));
+    const value=cy-13,shift=Math.max(0,value-(565-4-SCREEN_HEIGHT*.09));
     return pct(value-shift);
    })
   };
@@ -212,7 +212,7 @@
     // scaling, and cap the visible Y height to the gap between LSK rows.
     // This prevents the bigger text from crossing the preceding/following
     // field title without resizing, moving or obscuring the physical keys.
-    const effectivePx=entry?main*.56:px;
+    const effectivePx=entry?main*1.10:prompt?main*1.05:px;
     typography(span,effectivePx);
     const message=span.textContent||'';
     if(!message.trim())continue;
@@ -244,7 +244,8 @@
   lastResult={ready:true,version:VERSION,standard,columns:Metrics.COLUMNS,
    fontSizePx:model.scratchPx,labelPx:model.labelPx,
    pageValuePx,pageLabelPx,pageValueMultiplier:1.44,pageLabelMultiplier:1.8,
-   entryPromptPx:main*.56,entryPromptMultiplier:.56,
+   entryPromptPx:main*1.10,entryPromptMultiplier:1.10,
+   navigationPromptPx:main*1.05,navigationPromptMultiplier:1.05,
    headerPx:model.headerPx,promptPx:model.promptPx,photoProfile:PHOTO_PROFILE.id,promptsMoved,
    large:model.large,little:model.little,widthPx:model.widthPx,
    scratchLength:(scratch?.querySelector('.fmc-left')?.textContent||'').length,
