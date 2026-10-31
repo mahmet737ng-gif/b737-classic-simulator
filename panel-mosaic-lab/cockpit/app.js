@@ -7,8 +7,10 @@
  const fmcSession=window.B737CduSession.create();
  window.B737UnifiedFmc=Object.freeze({attach(seat,source,peer){const c=cduFrames.get(seat);if(!c||c.child.contentWindow!==source)throw Error('Unknown CDU frame');return fmcSession.attach(seat,peer);}});
  const wheelController=window.B737WheelPanModelV1?.createController(vp);
- let galleryMounted=false,viewRefreshTimer=0,overheadStarted=false;
+ let galleryMounted=false,viewRefreshTimer=0,overheadStarted=false,overheadIdleTimer=0;
+ let lastNavigationAt=Date.now();
  function scheduleViewRefresh(){
+  lastNavigationAt=Date.now();
   if(viewRefreshTimer)return;
   viewRefreshTimer=setTimeout(()=>{
    viewRefreshTimer=0;
@@ -18,6 +20,7 @@
  }
  function startOverheadFrame(){
   if(overheadStarted||!frame)return;
+  if(overheadIdleTimer){clearTimeout(overheadIdleTimer);overheadIdleTimer=0;}
   overheadStarted=true;
   frame.src=frame.dataset.deferredUrl;
   delete frame.dataset.deferredUrl;
@@ -35,7 +38,15 @@
   }
  }
  const faultable=new Set(['sensor','fuel-pressure','hyd-pressure','flight-pressure','standby-pressure','yaw','drive-pressure','drive-temperature','equipment','window','probe','dc-fail','fault','apu','recorder','anti-ice','pneumatic','press-fault','valve','fuel-valve','ram-door']);
- function assetStatus(){byId('assetStatus').textContent='تصاویر نمایشی: '+loaded.size+' / '+Object.keys(assembly.assets).length+(failed.size?' · خطای بارگذاری: '+failed.size:'');}
+ let assetStatusPending=false;
+ function assetStatus(){
+  if(assetStatusPending||!assembly)return;
+  assetStatusPending=true;
+  requestAnimationFrame(()=>{
+   assetStatusPending=false;
+   byId('assetStatus').textContent='تصاویر نمایشی: '+loaded.size+' / '+Object.keys(assembly.assets).length+(failed.size?' · خطای بارگذاری: '+failed.size:'');
+  });
+ }
  function image(asset,alt){const img=document.createElement('img');window.B737ImageLoader.assign(img,asset.url);img.alt=alt;img.draggable=false;img.decoding='async';img.onload=()=>{loaded.add(asset.path);failed.delete(asset.path);assetStatus();};img.onerror=()=>{failed.add(asset.path);assetStatus();};return img;}
  function select(region,p){focused=region.id;const a=assembly.assets[p.asset];document.querySelectorAll('.texture-piece').forEach(n=>n.classList.toggle('selected',n.dataset.piece===p.id));byId('selectionTitle').textContent=p.label;byId('selectionDescription').textContent=p.referenceOnly?'مرجع موجود بخش بالایی پدستال':'تصویر اصلی آپلودشده · بدون تغییر فایل یا برش تصویر';byId('selectionSize').textContent=a.dimensions.join(' × ')+' px';byId('originalLink').href=a.url;byId('originalLink').hidden=false;}
  function mount(){
@@ -88,7 +99,7 @@
    vp.scrollTop=Math.max(0,sourceY*next+afterY-y);
   }
  });
- function focus(id){if(id==='overhead'||id==='all')startOverheadFrame();wheelController?.cancel();focused=id;const r=model.target(assembly,id);if(!r)return;const scale=model.fit(r,vp.clientWidth,vp.clientHeight);applyZoom(scale,0,0,0,0);vp.scrollLeft=Math.max(0,(r.x+r.w/2)*zoom-vp.clientWidth/2);vp.scrollTop=Math.max(0,r.y*zoom-38);for(const b of document.querySelectorAll('[data-focus]'))b.classList.toggle('active',b.dataset.focus===id);const labels={all:'تمام کاکپیت',overhead:'اورهد تعاملی',main:'مین‌پنل',pedestal:'پدستال','cdu-captain':'CDU کپتن','cdu-first-officer':'CDU فرست‌آفیسر','cdu-both':'CDU کپتن و فرست‌آفیسر'};byId('viewLabel').textContent=labels[id];byId('selectionTitle').textContent=r.label||'ALL COCKPIT';byId('selectionDescription').textContent=id.startsWith('cdu-')?'همان CDU تأییدشده با ۷۰ دکمه؛ صفحه مستقل و اطلاعات FMC مشترک است':id==='overhead'?'۱۱۰ چراغ و کنترل‌های تعاملی نسخهٔ تأییدشده':id==='pedestal'?'پنل جدید و خام Throttle Quadrant، فایر پنل و رادیوها در چیدمان مستقل و بدون هم‌پوشانی':'مونتاژ تصاویر اصلی با حفظ نسبت طول و عرض';byId('selectionSize').textContent='';byId('originalLink').hidden=true;}
+ function focus(id){lastNavigationAt=Date.now();if(id==='overhead'||id==='all')startOverheadFrame();wheelController?.cancel();focused=id;const r=model.target(assembly,id);if(!r)return;const scale=model.fit(r,vp.clientWidth,vp.clientHeight);applyZoom(scale,0,0,0,0);vp.scrollLeft=Math.max(0,(r.x+r.w/2)*zoom-vp.clientWidth/2);vp.scrollTop=Math.max(0,r.y*zoom-38);for(const b of document.querySelectorAll('[data-focus]'))b.classList.toggle('active',b.dataset.focus===id);const labels={all:'تمام کاکپیت',overhead:'اورهد تعاملی',main:'مین‌پنل',pedestal:'پدستال','cdu-captain':'CDU کپتن','cdu-first-officer':'CDU فرست‌آفیسر','cdu-both':'CDU کپتن و فرست‌آفیسر'};byId('viewLabel').textContent=labels[id];byId('selectionTitle').textContent=r.label||'ALL COCKPIT';byId('selectionDescription').textContent=id.startsWith('cdu-')?'همان CDU تأییدشده با ۷۰ دکمه؛ صفحه مستقل و اطلاعات FMC مشترک است':id==='overhead'?'۱۱۰ چراغ و کنترل‌های تعاملی نسخهٔ تأییدشده':id==='pedestal'?'پنل جدید و خام Throttle Quadrant، فایر پنل و رادیوها در چیدمان مستقل و بدون هم‌پوشانی':'مونتاژ تصاویر اصلی با حفظ نسبت طول و عرض';byId('selectionSize').textContent='';byId('originalLink').hidden=true;}
  function panWheel(payload){return wheelController?wheelController.pan(payload):window.B737WheelPanModelV1?.pan(vp,payload)===true;}
  function command(action,extra={}){if(ready)frame.contentWindow.postMessage({type:'b737:cockpit-command',action,...extra},location.origin);}
  // Environment sensor values are supplied by ISN or an external simulator adapter.
@@ -98,7 +109,7 @@
   zoneFault:(zone,active)=>command('aircon400-zone-fault',{zone,active})
  });
  function setVisualTest(active){visualTest=!!active;document.documentElement.dataset.lampVisualTest=String(visualTest);const button=byId('visualLampTest');button.setAttribute('aria-pressed',String(visualTest));byId('reference').disabled=visualTest;button.textContent=visualTest?'پایان تست چراغ‌ها':'روشن‌کردن همهٔ چراغ‌ها';byId('lampTest').textContent=button.textContent;byId('visualLampStatus').textContent=visualTest?(visualOverheadCount===112?'تست تصویری ۱۴۲ چراغ فعال':'تست تصویری فعال · اورهد در حال اتصال'):'';if(visualTest){scene.classList.remove('reference-mode');byId('reference').setAttribute('aria-pressed','false');}command('visual-test',{active:visualTest});window.dispatchEvent(new CustomEvent('b737:visual-test',{detail:{active:visualTest}}));renderLights();}
- byId('visualLampTest').onclick=()=>setVisualTest(!visualTest);byId('lampTest').onclick=()=>setVisualTest(!visualTest);window.addEventListener('b737:visual-test-request',e=>{if(typeof e.detail?.active==='boolean')setVisualTest(e.detail.active);});
+ byId('visualLampTest').onclick=()=>{startOverheadFrame();setVisualTest(!visualTest);};byId('lampTest').onclick=()=>{startOverheadFrame();setVisualTest(!visualTest);};window.addEventListener('b737:visual-test-request',e=>{if(typeof e.detail?.active==='boolean'){startOverheadFrame();setVisualTest(e.detail.active);}});
  function renderLights(){if(!snapshot)return;const id=byId('lampSelect').value;byId('lampValue').textContent=snapshot.frames[id]||'—';byId('lampFault').checked=snapshot.context.faults[id]===true;const c=lightDefinitions.find(c=>c.id===id);byId('lampFault').disabled=!c||!faultable.has(c.rule)||id==='dual-bleed';byId('lampStatus').textContent=(visualTest?'تست تصویری: ۱۱۲ چراغ روشن · خروجی عادی سیستم: ':'')+Object.values(snapshot.lights).filter(Boolean).length+' / '+lightDefinitions.length+(visualTest?'':' روشن')+(snapshot.lampTest?' · LAMP TEST':'');}
  window.addEventListener('message',e=>{if(e.origin!==location.origin||e.source!==frame?.contentWindow||e.data?.type!=='b737:cockpit-overhead')return;const d=e.data;
   if(d.kind==='ready'){ready=true;lightDefinitions=d.lampDefinitions;byId('overheadStatus').textContent='اورهد: متصل · LGT-0003';for(const id of ['lampTest','lampSelect','resetScenario','resetControls'])byId(id).disabled=false;const root=byId('lampSelect');root.replaceChildren();for(const c of lightDefinitions){const o=document.createElement('option');o.value=o.textContent=c.id;root.append(o);}root.value='crossfeed-valve';if(visualTest)command('visual-test',{active:true});command('pressurization-background',{system:window.B737AircraftProfileStore?.get()?.pressurization||'DCPCS'});command('aircon-background',{family:window.B737AircraftProfileStore?.get()?.aircraftFamily||'B737-300-500'});}
@@ -144,8 +155,23 @@
   // Overhead geometry is mounted immediately; its 49-script iframe starts only
   // after the first usable main paint, or when actually brought into view.
   // A bounded fallback still initializes systems if the ready event is missed.
-  window.addEventListener('b737:unified-usable',startOverheadFrame,{once:true});
-  setTimeout(startOverheadFrame,5200);
+  // PERF-0003: never compete with the main textures during the first seconds.
+  // Offscreen OH visual runtime is prewarmed after a quiet interval. Its
+  // electrical/APU/avionics source state continues in parent independently.
+  window.addEventListener('b737:unified-usable',()=>{
+   const prewarm=()=>{
+    if(overheadStarted)return;
+    const quietFor=Date.now()-lastNavigationAt;
+    if(quietFor<2500){overheadIdleTimer=setTimeout(prewarm,2800-quietFor);return;}
+    if(typeof window.requestIdleCallback==='function'){
+     window.requestIdleCallback(startOverheadFrame,{timeout:2500});
+    }else startOverheadFrame();
+   };
+   overheadIdleTimer=setTimeout(prewarm,8500);
+  },{once:true});
+  // Fail-safe for slow hardware / missed readiness; actual overhead focus
+  // and viewport exposure always start it immediately.
+  setTimeout(startOverheadFrame,24000);
   if('IntersectionObserver' in window){
    const observer=new IntersectionObserver(entries=>{
     if(entries.some(entry=>entry.isIntersecting)){observer.disconnect();startOverheadFrame();}

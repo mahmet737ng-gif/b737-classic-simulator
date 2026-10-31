@@ -3,8 +3,11 @@
 const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto'),vm=require('node:vm');
 const ENTRY='panel-mosaic-lab/cockpit/index.html';
 const protectedName=/(?:irs|guard|owner|le-devices|conventional)/i;
-function compile(root){
- const html=fs.readFileSync(path.join(root,ENTRY),'utf8'),base=new URL('https://desktop.invalid/'+ENTRY);
+function compile(root,entry=ENTRY){
+ const html=fs.readFileSync(path.join(root,entry),'utf8'),docURL=new URL('https://desktop.invalid/'+entry);
+ const baseMatch=html.match(/<base\s+href=(["'])([^"']+)\1/i);
+ const base=baseMatch?new URL(baseMatch[2],docURL):docURL;
+ const baseDir=path.posix.dirname(base.pathname.slice(1));
  const re=/<script\b[^>]*\bsrc=(["'])([^"']+)\1[^>]*>\s*<\/script>/gi;
  const scoped=code=>/^(?:\(function\b|\(\(\)\s*=>)/.test(code.replace(/^(?:\s|\/\*[\s\S]*?\*\/|\/\/[^\n]*\n)*/,''));
  const tags=[...html.matchAll(re)].map(m=>{
@@ -26,7 +29,7 @@ function compile(root){
   new vm.Script(content,{filename:'desktop-bundle'});
   const hash=crypto.createHash('sha256').update(content).digest('hex').slice(0,16);
   const file=g[0].dir+'/desktop-bundle-'+hash+'.js';
-  const relative=path.posix.relative(path.posix.dirname(ENTRY),file);
+  const relative=path.posix.relative(baseDir,file);
   const url=(relative.startsWith('.')?relative:'./'+relative)+'?v=DESKTOP-'+hash;
   result+=html.slice(cursor,g[0].start)+'<script src="'+url+'" defer></script>';cursor=g.at(-1).end;
   bundles.push({path:file,url,content,sources:g.map(t=>t.url)});

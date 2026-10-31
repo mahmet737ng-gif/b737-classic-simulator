@@ -17,7 +17,7 @@
    try{return JSON.parse(localStorage.getItem(PROFILE_KEY)||'null')?.aircraftFamily==='B737-400'?'B737-400':'B737-300-500';}
    catch(_){return 'B737-300-500';}
  }
- let pressurizationSystem='DCPCS',ownerPlate=null;
+ let pressurizationSystem='DCPCS',ownerPlate=null,ownerImage=null;
  function savedPressurization(){
    try{
      const value=JSON.parse(localStorage.getItem(PROFILE_KEY)||'null')?.pressurization;
@@ -41,12 +41,14 @@
      Object.assign(img.style,{display:'block',width:'100%',height:'100%',maxWidth:'none',maxHeight:'none',objectFit:'fill',objectPosition:'center',pointerEvents:'none'});
      img.addEventListener('load',()=>{layer.dataset.loaded='true';layer.style.display=pressurizationSystem==='DCPCS'?'block':'none';});
      img.addEventListener('error',()=>{layer.dataset.loaded='false';layer.style.display='none';send({kind:'pressurization-background-error',system:'DCPCS'});});
-     img.src=new URL(DCPCS_ARTWORK,document.baseURI).href;
+     // Don't fetch the 737-400/other background when CPCS is selected.
+      if(pressurizationSystem==='DCPCS')img.src=new URL(DCPCS_ARTWORK,document.baseURI).href;
      layer.append(img);
      plate.append(layer);
-     ownerPlate=layer;
+     ownerPlate=layer;ownerImage=img;
    }
-   ownerPlate.style.display=pressurizationSystem==='DCPCS'&&ownerPlate.dataset.loaded==='true'?'block':'none';
+   if(pressurizationSystem==='DCPCS'&&ownerImage&&!ownerImage.getAttribute('src'))ownerImage.src=new URL(DCPCS_ARTWORK,document.baseURI).href;
+    ownerPlate.style.display=pressurizationSystem==='DCPCS'&&ownerPlate.dataset.loaded==='true'?'block':'none';
    return true;
  }
  function syncAirconPlate(){

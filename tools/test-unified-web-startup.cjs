@@ -42,10 +42,11 @@ const server=http.createServer((req,res)=>{
    }
    await page.goto(url,{waitUntil:'commit',timeout:60000});
    await page.waitForFunction(()=>document.documentElement.dataset.unifiedUsableMs,null,{timeout:60000,polling:25});
+   await page.waitForFunction(()=>document.documentElement.dataset.unifiedSharpMs,null,{timeout:30000,polling:100});
    const sample=await page.evaluate(()=>{
     const diagnostic=window.B737LoadDiagnostics.snapshot(),control=document.querySelector('[data-mcp-hardware="FD_LEFT"]'),before=window.B737McpHardwareV1.getState().FD_LEFT;
     const start=performance.now();control.click();const responded=window.B737McpHardwareV1.getState().FD_LEFT!==before;control.click();
-    return {mainReadyMs:diagnostic.mainReadyMs,profile:window.B737AircraftProfileStore.get(),status:diagnostic.status,interaction:{responded,restored:window.B737McpHardwareV1.getState().FD_LEFT===before,roundTripMs:performance.now()-start},scriptTags:document.scripts.length};
+    return {mainReadyMs:diagnostic.mainReadyMs,mainSharpReadyMs:diagnostic.mainSharpReadyMs,sharp:diagnostic.sharp,textures:diagnostic.textures,profile:window.B737AircraftProfileStore.get(),status:diagnostic.status,interaction:{responded,restored:window.B737McpHardwareV1.getState().FD_LEFT===before,roundTripMs:performance.now()-start},scriptTags:document.scripts.length};
    });
    sample.mode=mode;samples.push(sample);console.log(JSON.stringify(sample));
    // Assert against the exact compiled /web-dist/ HTML, not source markup:
@@ -81,8 +82,9 @@ const server=http.createServer((req,res)=>{
   assert.ok(lockedIrsErrors.length<=3,'Frozen IRS observer error exceeded one per page load');
   console.log('Isolated frozen IRS observer errors: '+lockedIrsErrors.length);
   assert.ok(samples.every(x=>x.mainReadyMs<=5000),'Five-second local web startup budget exceeded');
+  assert.ok(samples.every(x=>x.sharp.ready&&x.mainSharpReadyMs<8000),'First visible cockpit textures did not become sharp in eight seconds');
  }finally{
-  fs.writeFileSync(path.join(out,'benchmark.json'),JSON.stringify({targetMs:5000,environment:'headless Chromium; local HTTP; Pages subpath; retained cache includes service worker',samples},null,2));
+  fs.writeFileSync(path.join(out,'benchmark.json'),JSON.stringify({targetMs:5000,sharpTargetMs:8000,environment:'headless Chromium; local HTTP; Pages subpath; retained cache includes service worker',samples},null,2));
   fs.copyFileSync(path.join(out,'benchmark.json'),path.join(root,'panel-mosaic-lab/cockpit/startup-benchmark.json'));
   await context.close();await browser.close();await new Promise(r=>server.close(r));
  }

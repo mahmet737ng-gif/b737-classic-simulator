@@ -39,7 +39,7 @@ test('Assembly starts downloading in HEAD before deferred modules and is consume
  assert.ok(app.includes('model.validate(assembly)'),'Same validation remains authoritative');
  assert.ok(app.includes("fetch('./assembly.json',{cache:'no-store'})"),'Standalone fallback must still exist');
 });
-test('Texture loading is bounded to avoid a burst of decoded full-resolution bitmaps',async()=>{
+test('PERF-0003 shared textures decode once for all duplicate strips and prioritize first paint',async()=>{
  const loader=require('../panel-mosaic-lab/cockpit/performance-loader');
  const manifest=require('../panel-mosaic-lab/cockpit/performance/manifest.json');
  const sent=[],tasks=[];
@@ -50,7 +50,7 @@ test('Texture loading is bounded to avoid a burst of decoded full-resolution bit
   getElementById:()=>({getBoundingClientRect:()=>({left:0,top:0,right:800,bottom:800})})};
  class Img{
   constructor(){this.dataset={};this.isConnected=true;}
-  set src(value){this._src=value;if(!this.dataset)sent.push(this);}
+  set src(value){this._src=value;}
   get src(){return this._src;}
   decode(){return Promise.resolve();}
   getClientRects(){return [rect()];}
@@ -60,23 +60,26 @@ test('Texture loading is bounded to avoid a burst of decoded full-resolution bit
  class Download extends Img{set src(value){this._src=value;sent.push(this);}}
  const win={document:doc,devicePixelRatio:1,innerWidth:800,innerHeight:800,Image:Download,
   CustomEvent:class{constructor(type){this.type=type;}},dispatchEvent(){},
-  MutationObserver:class{observe(){}},
+  MutationObserver:class{observe(){}},clearTimeout(){},
   setTimeout(fn){tasks.push(fn);return tasks.length;},addEventListener(){}};
- win.top=win;
- win.B737PerformanceAssets=manifest;
+ win.top=win;win.B737PerformanceAssets=manifest;
  const runtime=loader.install(win);
- const source='https://example.test/repo/assets/main-panel.webp';
- for(let i=0;i<17;i++)runtime.assign(new Img(),source);
- assert.equal(tasks.length,1,'Multiple assignment requests must coalesce');
+ const first=Array.from({length:17},()=>new Img()),other=new Img();
+ for(const img of first)runtime.assign(img,'https://example.test/repo/assets/main-panel.webp');
+ runtime.assign(other,'https://example.test/repo/assets/pedestal.webp');
+ assert.equal(tasks.length,1,'Multiple requests coalesce before the first scan');
  tasks.shift()();
- assert.equal(sent.length,5,'Only five texture requests can be in-flight');
- assert.equal(runtime.stats().decoding,5);
- for(const img of sent.slice(0,5))await img.onload();
+ assert.equal(sent.length,2,'17 identical source images must share one network/decode task');
+ assert.equal(runtime.stats().decoding,2);
+ for(const img of sent)await img.onload();
  assert.equal(runtime.stats().decoding,0);
- assert.ok(tasks.length>0,'Next batch must continue when the first finishes');
+ assert.ok(first.every(img=>img.dataset.perfReady==='true'));
+ assert.equal(other.dataset.perfReady,'true');
+ const repeat=new Img();runtime.assign(repeat,'https://example.test/repo/assets/main-panel.webp');
  tasks.shift()();
- assert.equal(sent.length,10);
- assert.equal(runtime.stats().decoding,5);
+ assert.equal(sent.length,2,'A warmed texture URL must not start another download');
+ assert.equal(repeat.dataset.perfReady,'true');
+ assert.equal(runtime.stats().maxUpgrades,2,'Full quality decode concurrency must be limited');
 });
 test('Heavy resource-timing statistics are gated while Controls drawer is closed',()=>{
  const metrics=read(base+'performance-metrics.js');
@@ -87,7 +90,7 @@ test('Heavy resource-timing statistics are gated while Controls drawer is closed
 
 test('PERF-0002 defers overhead rendering, builds gallery on demand and coalesces visible navigation',()=>{
  const app=read(base+'app.js'),wheel=read(base+'wheel-pan-model-v1.js'),loader=read(base+'performance-loader.js');
- assert.match(app,/b737:unified-usable',startOverheadFrame/);
+ assert.match(app,/b737:unified-usable',\(\)=>/);
  assert.match(app,/IntersectionObserver/);
  assert.match(app,/frame\.dataset\.deferredUrl=r\.embeddedUrl/);
  assert.match(app,/mountGallery\(\);byId\('galleryDialog'\)/);
@@ -96,5 +99,22 @@ test('PERF-0002 defers overhead rendering, builds gallery on demand and coalesce
  assert.match(wheel,/createController\(viewport/);
  assert.match(loader,/lastMotionAt/);
  assert.match(loader,/const view=viewport\(\),moving=/);
- assert.match(loader,/if\(item\.extent&&moving\)return/);
+ assert.match(loader,/if\(item\.loading\|\|moving&&item\.extent\)continue/);
+});
+
+test('PERF-0003 only starts overhead on focus/visibility or after quiet prewarm; avionics remain independent',()=>{
+ const app=read(base+'app.js');
+ assert.match(app,/lastNavigationAt/);
+ assert.match(app,/setTimeout\(prewarm,8500\)/);
+ assert.match(app,/setTimeout\(startOverheadFrame,24000\)/);
+ assert.match(app,/requestIdleCallback/);
+ assert.match(app,/if\(id==='overhead'\|\|id==='all'\)startOverheadFrame\(\)/);
+ assert.match(app,/ENABLED_CDU_SEAT='FO'/);
+});
+test('PERF-0003 reports both first interactive paint and sharp first-panel paint',()=>{
+ const metrics=read(base+'performance-metrics.js');
+ assert.match(metrics,/mainSharpReadyMs:mainSharpReady/);
+ assert.match(metrics,/measureFps:/);
+ assert.match(metrics,/maxNative|const native=/);
+ assert.match(metrics,/dataset\.unifiedSharpMs/);
 });

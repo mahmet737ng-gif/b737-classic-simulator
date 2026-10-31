@@ -46,3 +46,20 @@ test('revisioned JS/CSS reuse cache, a new revision downloads, and mutable confi
  offline=true;assert.equal((await request(json)).generation,3);assert.equal((await request(url)).generation,1);
  assert.equal(await request('https://test.invalid/repo/api/route.json'),null);assert.equal(await request(url.replace('test.invalid','elsewhere.invalid')),null);
 });
+
+test('PERF-0003 compiles embedded Overhead from its real HTML base without altering protected mounts',()=>{
+ const compiled=prepare(root),before=read('panel-mosaic-lab/cockpit/overhead-stage.html');
+ assert.ok(compiled.overhead.before>=45);
+ assert.ok(compiled.overhead.after<compiled.overhead.before,'Embedded Overhead requests should also be bundled');
+ const base=new URL('../all-overhead/','https://test.invalid/panel-mosaic-lab/cockpit/overhead-stage.html');
+ const files=new Set(compiled.overhead.bundles.map(x=>x.path));
+ for(const bundle of compiled.overhead.bundles){
+  const link=[...compiled.overhead.html.matchAll(/<script\b[^>]*src=(["'])([^"']+)\1/gi)].map(x=>x[2]).find(u=>new URL(u,base).pathname.slice(1)===bundle.path);
+  assert.ok(link,'Bundle URL must resolve against Overhead base element: '+bundle.path);
+ }
+ const protectedPath=/(?:irs|guard|owner|le-devices|conventional)/i;
+ const scripts=[...before.matchAll(/<script\b[^>]*src=(["'])([^"']+)\1[^>]*><\/script>/gi)];
+ for(const match of scripts)if(protectedPath.test(new URL(match[2],base).pathname))
+  assert.ok(compiled.overhead.html.includes(match[0]),'Protected OH mount modified: '+match[2]);
+ assert.equal(read('panel-mosaic-lab/cockpit/overhead-stage.html'),before);
+});
