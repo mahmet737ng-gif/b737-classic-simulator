@@ -89,6 +89,9 @@ function v19SafeN1(){const r=n1EstimateV19();return r?.status==='SIM_ESTIMATE'?r
 // Inline-important values win over historical v5 CSS and global nth-child
 // font selectors which incorrectly shrink DEP/ARR selectable prompts.
 function applyCDUScreenTypography(box){
+ // Unified has its own APPROVED 24-column typography and locked #29ff31 color.
+ // Only Standalone gets the independent high-contrast screen treatment.
+ if(document.querySelector('base[href="../../cdu-standalone-v6/"]'))return;
  const green='#4bf58a';
  const stage=document.getElementById('cdu-stage');
  const stageWidth=stage?.getBoundingClientRect().width||790;
