@@ -143,7 +143,7 @@ main{grid-template-columns:minmax(0,1fr) 360px;align-items:start}
    text above the reserved scratchpad; only scratchpad input/messages may show below. */
 .fmc-lines{isolation:isolate}
 .fmc-lines::after{
- content:"";position:absolute;left:0;right:0;top:93.25%;bottom:0;
+ content:"";position:absolute;left:0;right:0;top:93.85%;bottom:0;
  background:#000;pointer-events:none;z-index:10
 }
 .fmc-lines > .fmc-line.scratch{z-index:11!important}
