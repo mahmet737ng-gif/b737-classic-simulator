@@ -58,7 +58,7 @@
   function fallback(img,item){
    if(!img.isConnected||item.extent)return;
    img.src=new URL(item.source,doc.baseURI).href;
-   item.extent=Infinity;img.dataset.perfFallback='true';
+   item.extent=Infinity;img.dataset.perfExtent='Infinity';img.dataset.perfFallback='true';
   }
   function schedule(){
    if(!timer)timer=win.setTimeout(refresh,115);
@@ -97,7 +97,7 @@
     const m=measure(img,view);if(!m)continue;
     lastVisible++;
     if(!item.asset){
-     if(!item.extent){img.src=new URL(item.source,doc.baseURI).href;item.extent=Infinity;}
+     if(!item.extent){img.src=new URL(item.source,doc.baseURI).href;item.extent=Infinity;img.dataset.perfExtent='Infinity';}
      lastSharp++;continue;
     }
     const level=desiredLevel(img,item,m);if(!level)continue;
