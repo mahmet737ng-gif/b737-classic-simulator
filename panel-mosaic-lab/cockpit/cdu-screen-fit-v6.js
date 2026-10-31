@@ -11,7 +11,7 @@
  const VERSION='CDU-24COL-0006';
  const PHOTO_PROFILE=Object.freeze({
   id:'CLASSIC-CDU-PHOTO-HIERARCHY-0001',
-  smallCapHeightToLarge:0.90,headerToLarge:0.88,
+  smallCapHeightToLarge:0.70,headerToLarge:0.88,
   lskPromptToLarge:0.95,dataToLarge:1,scratchToLarge:1
  });
  const Metrics=root.B737CDU24ColumnMetricsV1;
@@ -23,7 +23,7 @@
  const canvas=root.document.createElement('canvas');
  const ctx=canvas.getContext('2d');
  if(!ctx)return;
- const TOP={header:.5,label:[6.9,22,37.4,52.4,67.9,82.5],
+ const TOP={header:.5,label:[6.9,20.4,35.8,50.8,66.3,80.9],
   value:[12.7,27.8,43.2,58.3,73.7,88.3],scratch:93.2};
  // The physical LSK coordinates are immutable; only these displayed text
  // rows are repositioned. Last pair is capped above the scratchpad.
@@ -40,9 +40,9 @@
   const pct=cy=>(cy-SCREEN_TOP)/SCREEN_HEIGHT*100;
   return {
    header:TOP.header,scratch:TOP.scratch,
-   label:centers.map(cy=>{
+   label:centers.map((cy,i)=>{
     const value=cy-13,shift=Math.max(0,value-(565-4-SCREEN_HEIGHT*.053));
-    return pct(cy-42-shift);
+    return pct(cy-(i===0?42:50)-shift);
    }),
    value:centers.map(cy=>{
     const value=cy-13,shift=Math.max(0,value-(565-4-SCREEN_HEIGHT*.053));
@@ -139,7 +139,7 @@
   // Match cap height rather than the numerical CSS font size.
   const dataCap=capHeight(largeFamily,large);
   const smallCap=capHeight(smallFamily,100);
-  return 100*dataCap*PHOTO_PROFILE.smallCapHeightToLarge/smallCap;
+  return Math.min(large*.73,100*dataCap*PHOTO_PROFILE.smallCapHeightToLarge/smallCap);
  }
  function calibrate(){
   const scratch=box.querySelector('.fmc-line.scratch');
@@ -191,6 +191,7 @@
     line.style.setProperty('top',grid[label?'label':'value'][row]+'%','important');
    line.style.setProperty('height',(label?'6%':'5.3%'),'important');
    typography(line,px);
+   if(label)line.style.setProperty('line-height','.78','important');
    for(const span of line.querySelectorAll('span')){
     const prompt=isLSKPrompt(span,label),isCenter=span.classList.contains('fmc-center');
     const target=prompt?model.promptPx:isCenter&&!label?main:px;
