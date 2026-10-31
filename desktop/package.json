@@ -1,7 +1,7 @@
 {
   "name": "cockpit-pro-desktop",
   "productName": "Cockpit Pro",
-  "version": "0.1.0-beta.1",
+  "version": "0.2.0",
   "private": true,
   "description": "Offline Boeing 737 Classic cockpit and systems trainer (educational; not for flight)",
   "main": "main.cjs",
@@ -10,7 +10,9 @@
   "scripts": {
     "start": "electron .",
     "build:win": "electron-builder --win nsis --x64 --publish never",
-    "check": "node --check main.cjs"
+    "check": "node --check main.cjs",
+    "test": "node --test *.test.cjs",
+    "smoke:win": "node smoke-native.cjs"
   },
   "devDependencies": {
     "electron": "45.1.0",
@@ -24,8 +26,10 @@
       "output": "dist"
     },
     "files": [
-      "main.cjs",
-      "package.json"
+      "*.cjs",
+      "package.json",
+      "!*.test.cjs",
+      "!smoke-native.cjs"
     ],
     "asar": true,
     "extraResources": [
@@ -39,7 +43,11 @@
           "!desktop/**",
           "!**/node_modules/**",
           "!**/.DS_Store",
-          "!**/Thumbs.db"
+          "!**/Thumbs.db",
+          "!.openai/**",
+          "!preview/**",
+          "!tests/**",
+          "!tools/**"
         ]
       }
     ],
@@ -65,7 +73,17 @@
       "artifactName": "CockpitPro-Setup-${version}.${ext}",
       "deleteAppDataOnUninstall": false
     },
-    "publish": null,
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "mahmet737ng-gif",
+        "repo": "b737-classic-simulator",
+        "releaseType": "release"
+      }
+    ],
     "compression": "normal"
+  },
+  "dependencies": {
+    "electron-updater": "6.8.11"
   }
 }

@@ -1,144 +1,109 @@
 'use strict';
-/**
- * Cockpit Pro Windows Offline Shell
- * Serves the unchanged GitHub project from 127.0.0.1 so ALL existing relative
- * URLs, cockpit iframe messaging, and static training labs use one local origin.
- */
-const {app, BrowserWindow, session, shell, dialog} = require('electron');
-const http=require('node:http');
-const fs=require('node:fs');
-const path=require('node:path');
-
-const CONTENT_ROOT=app.isPackaged
-  ? path.join(process.resourcesPath,'app-content')
-  : path.resolve(__dirname,'..');
+const processBegan=performance.now();
+const {app,BrowserWindow,session,shell,dialog,ipcMain,Menu}=require('electron');
+const fs=require('node:fs'),path=require('node:path');
+const {createLocalServer,listenLocal}=require('./local-server.cjs');
+const {createUpdateController}=require('./update-controller.cjs');
+const CONTENT_ROOT=app.isPackaged?path.join(process.resourcesPath,'app-content'):path.resolve(__dirname,'..');
 const ENTRY='panel-mosaic-lab/desktop-shell/index.html';
-const TYPES={
- '.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8',
- '.mjs':'text/javascript; charset=utf-8','.cjs':'text/javascript; charset=utf-8',
- '.css':'text/css; charset=utf-8','.json':'application/json; charset=utf-8',
- '.svg':'image/svg+xml','.png':'image/png','.jpg':'image/jpeg','.jpeg':'image/jpeg',
- '.gif':'image/gif','.webp':'image/webp','.bmp':'image/bmp','.ico':'image/x-icon',
- '.woff':'font/woff','.woff2':'font/woff2','.ttf':'font/ttf','.otf':'font/otf',
- '.mp3':'audio/mpeg','.wav':'audio/wav','.ogg':'audio/ogg','.mp4':'video/mp4',
- '.webm':'video/webm','.pdf':'application/pdf','.wasm':'application/wasm',
- '.xml':'application/xml','.txt':'text/plain; charset=utf-8','.map':'application/json'
-};
-
-let server,window,baseUrl;
-function insideRoot(candidate){
- const rel=path.relative(CONTENT_ROOT,candidate);
- return rel!==''&&!rel.startsWith('..'+path.sep)&&rel!=='..'&&!path.isAbsolute(rel);
+const smoke=process.argv.includes('--startup-smoke');
+const smokeData=process.argv.find(x=>x.startsWith('--smoke-user-data='));
+if(smoke&&smokeData)app.setPath('userData',smokeData.slice('--smoke-user-data='.length));
+const settingsFile=path.join(app.getPath('userData'),'desktop-settings.json');
+let settings={};try{settings=JSON.parse(fs.readFileSync(settingsFile,'utf8'));}catch{}
+let writeQueue=Promise.resolve();
+function persist(){
+ const data=JSON.stringify(settings);
+ writeQueue=writeQueue.catch(()=>{}).then(async()=>{await fs.promises.mkdir(path.dirname(settingsFile),{recursive:true});await fs.promises.writeFile(settingsFile+'.tmp',data);await fs.promises.rename(settingsFile+'.tmp',settingsFile);});
+ return writeQueue;
 }
-function fileForPath(urlPath){
- let target;
- try{target=decodeURIComponent(urlPath);}catch{return null;}
- if(target.includes('\0')||target.includes('\\'))return null;
- if(target==='/'||target==='')target='/'+ENTRY;
- const loc=path.resolve(CONTENT_ROOT,'.'+target);
- if(!insideRoot(loc))return null;
- return loc;
-}
-function reply(res,status,message){
- res.writeHead(status,{'Content-Type':'text/plain; charset=utf-8','Cache-Control':'no-store'});
- res.end(message);
-}
-function serve(req,res){
- if(!['GET','HEAD'].includes(req.method))return reply(res,405,'Method not allowed');
- let pathName;
- try{pathName=new URL(req.url,'http://localhost').pathname;}catch{return reply(res,400,'Invalid path');}
- let loc=fileForPath(pathName);
- if(!loc)return reply(res,403,'Not permitted');
- fs.stat(loc,(err,info)=>{
-  if(err)return reply(res,404,'Not found');
-  if(info.isDirectory()){loc=path.join(loc,'index.html');
-   if(!insideRoot(loc))return reply(res,403,'Not permitted');
-   try{info=fs.statSync(loc);}catch{return reply(res,404,'Not found');}
-  }
-  if(!info.isFile())return reply(res,404,'Not a file');
-  const size=info.size;
-  const headers={
-   'Content-Type':TYPES[path.extname(loc).toLowerCase()]||'application/octet-stream',
-   'Content-Length':size,
-   'Cache-Control':'no-store',
-   'X-Content-Type-Options':'nosniff',
-   'Accept-Ranges':'bytes'
-  };
-  let start=0,end=size-1,status=200;
-  if(req.headers.range){
-   const m=/^bytes=(\d*)-(\d*)$/.exec(req.headers.range);
-   if(!m||(!m[1]&&!m[2])){res.writeHead(416,{'Content-Range':'bytes */'+size});return res.end();}
-   if(!m[1]){const suffix=Number(m[2]);start=Math.max(0,size-suffix);}
-   else {start=Number(m[1]);if(m[2])end=Math.min(end,Number(m[2]));}
-   if(start>size-1||end<start){res.writeHead(416,{'Content-Range':'bytes */'+size});return res.end();}
-   status=206;
-   headers['Content-Range']='bytes '+start+'-'+end+'/'+size;
-   headers['Content-Length']=end-start+1;
-  }
-  res.writeHead(status,headers);
-  if(req.method==='HEAD')return res.end();
-  const stream=fs.createReadStream(loc,{start,end});
-  stream.on('error',error=>{console.error('[local-file]',error.message);res.destroy(error);});
-  stream.pipe(res);
- });
-}
-function isLocal(url){
- try{const parsed=new URL(url);return parsed.origin===baseUrl;}catch{return false;}
-}
+let server,window,baseUrl,updaterTimer,reported=false;
+const updates=createUpdateController({version:app.getVersion(),packaged:app.isPackaged&&!smoke,
+ getUpdater:()=>require('electron-updater').autoUpdater,
+ publish:state=>{if(window&&!window.isDestroyed())window.webContents.send('desktop:update-state',state);}});
+function isLocal(url){try{return new URL(url).origin===baseUrl;}catch{return false;}}
+function authorized(event){return window&&!window.isDestroyed()&&event.sender===window.webContents&&event.senderFrame===window.webContents.mainFrame&&isLocal(event.senderFrame.url);}
+function handle(channel,handler){ipcMain.handle(channel,(event,...args)=>{if(!authorized(event))throw Error('Untrusted desktop request');return handler(...args);});}
+handle('desktop:state',()=>({version:app.getVersion(),packaged:app.isPackaged,smoke,
+ profile:settings.profile||null,resume:settings.resume===true,update:updates.snapshot()}));
+handle('desktop:update-check',()=>updates.check());
+handle('desktop:update-download',()=>updates.download());
+handle('desktop:update-install',async()=>{await persist();return updates.install();});
+handle('desktop:profile',async input=>{
+ const model=require(path.join(CONTENT_ROOT,'engine/config/aircraft-profile-v1.js'));
+ const profile=model.normalize(input);model.validate(profile);
+ settings.profile=profile;settings.resume=true;await persist();return profile;
+});
+handle('desktop:ready',async input=>{
+ if(reported)return null;
+ if(!input||input.main!==true||input.controls!==true||!Number.isFinite(input.loadMs)||input.loadMs<0)throw Error('Invalid readiness report');
+ reported=true;
+ const report={version:app.getVersion(),readyAtMs:Date.now(),processToUsableMs:performance.now()-processBegan,
+  cockpitLoadMs:input.loadMs,targetMs:5000,main:true,controls:true,secondaryReady:input.secondaryReady===true};
+ if(smoke){
+  const began=performance.now();
+  report.interaction=await window.webContents.executeJavaScript(`(()=>{
+   const w=document.getElementById('cockpit').contentWindow;
+   const control=w.document.querySelector('[data-mcp-hardware="FD_LEFT"]');
+   const before=w.B737McpHardwareV1.getState().FD_LEFT;
+   control.click();const after=w.B737McpHardwareV1.getState().FD_LEFT;control.click();
+   return {responded:before!==after,restored:w.B737McpHardwareV1.getState().FD_LEFT===before};
+  })()`);
+  report.interaction.roundTripMs=performance.now()-began;
+  const image=await window.webContents.capturePage();
+  await fs.promises.writeFile(path.join(app.getPath('userData'),'startup.png'),image.toPNG());
+ }
+ await fs.promises.writeFile(path.join(app.getPath('userData'),'startup-report.json'),JSON.stringify(report,null,2));
+ // Update networking and the updater dependency stay out of the startup path.
+ if(!smoke)updaterTimer=setTimeout(()=>updates.check(),15000);
+ else setTimeout(()=>app.quit(),100);
+ return report;
+});
 async function createWindow(){
+ Menu.setApplicationMenu(null);
  const iconFile=path.join(CONTENT_ROOT,'branding','cockpit-pro','CockpitPro_Windows_Icon.ico');
- const options={
-  width:1580,height:920,minWidth:1000,minHeight:650,
-  show:false,backgroundColor:'#0a111d',title:'Cockpit Pro · B737 Classic',
-  webPreferences:{nodeIntegration:false,contextIsolation:true,sandbox:true,
-    webSecurity:true,allowRunningInsecureContent:false,spellcheck:false}
- };
+ const options={width:1580,height:920,minWidth:1000,minHeight:650,show:false,
+  backgroundColor:'#0a111d',title:'Cockpit Pro · B737 Classic',
+  webPreferences:{preload:path.join(__dirname,'preload.cjs'),partition:'persist:cockpit-pro',
+   nodeIntegration:false,contextIsolation:true,sandbox:true,webSecurity:true,
+   allowRunningInsecureContent:false,spellcheck:false}};
  if(fs.existsSync(iconFile))options.icon=iconFile;
- window=new BrowserWindow(options);
- window.setMenuBarVisibility(false);
+ window=new BrowserWindow(options);window.setMenuBarVisibility(false);
  window.webContents.setWindowOpenHandler(({url})=>{
   if(isLocal(url))return {action:'allow',overrideBrowserWindowOptions:{
    webPreferences:{nodeIntegration:false,contextIsolation:true,sandbox:true,webSecurity:true}}};
   if(/^https:\/\/(github\.com|www\.github\.com|electronjs\.org)\//.test(url))shell.openExternal(url);
   return {action:'deny'};
  });
- window.webContents.on('will-navigate',(event,url)=>{
-  if(!isLocal(url)){
-   event.preventDefault();
-   if(/^https:\/\/(github\.com|www\.github\.com)\//.test(url))shell.openExternal(url);
-  }
- });
- window.webContents.on('before-input-event',(event,input)=>{
-  if(input.type==='keyDown'&&input.key==='F11'){window.setFullScreen(!window.isFullScreen());event.preventDefault();}
- });
- window.on('ready-to-show',()=>window?.show());
- window.webContents.on('did-fail-load',(_e,errorCode,description,url,isMainFrame)=>{
-  if(isMainFrame){
-   console.error('Cockpit Pro: local load failed',errorCode,description,url);
-   dialog.showMessageBox(window,{type:'error',title:'Cockpit Pro',message:'Local application files could not load',detail:String(description)});
-  }
+ window.webContents.on('will-navigate',(event,url)=>{if(!isLocal(url)){
+  event.preventDefault();if(/^https:\/\/(github\.com|www\.github\.com)\//.test(url))shell.openExternal(url);
+ }});
+ window.webContents.on('before-input-event',(event,input)=>{if(input.type==='keyDown'&&input.key==='F11'){window.setFullScreen(!window.isFullScreen());event.preventDefault();}});
+ window.once('ready-to-show',()=>window?.show());
+ window.webContents.on('dom-ready',()=>{if(!window.isVisible())window.show();});
+ window.webContents.on('did-fail-load',(_e,code,description,_url,isMainFrame)=>{
+  if(isMainFrame){console.error('Local load failed',code,description);dialog.showMessageBox(window,{type:'error',title:'Cockpit Pro',message:'Local application files could not load',detail:String(description)});}
  });
  await window.loadURL(baseUrl+'/'+ENTRY);
  if(!window.isVisible())window.show();
 }
 async function start(){
- if(!fs.existsSync(path.join(CONTENT_ROOT,ENTRY))){
-  dialog.showErrorBox('Cockpit Pro · Missing Offline Files',
-    'The installed app-content folder is incomplete.\n'+path.join(CONTENT_ROOT,ENTRY));
-  app.quit();return;
- }
- session.defaultSession.setPermissionRequestHandler((_wc,_permission,callback)=>callback(false));
- server=http.createServer(serve);
- server.on('error',err=>{console.error('[CockpitPro offline server]',err);dialog.showErrorBox('Cockpit Pro',err.message);app.quit();});
- await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
- baseUrl='http://127.0.0.1:'+server.address().port;
+ if(!fs.existsSync(path.join(CONTENT_ROOT,ENTRY))){dialog.showErrorBox('Cockpit Pro','The installed app-content folder is incomplete.');app.quit();return;}
+ const ses=session.fromPartition('persist:cockpit-pro');
+ ses.setPermissionRequestHandler((_wc,_permission,callback)=>callback(false));
+ // Performance smoke tests must succeed with every external request blocked.
+ if(smoke)ses.webRequest.onBeforeRequest((details,callback)=>callback({cancel:!/^http:\/\/127\.0\.0\.1:\d+\//.test(details.url)&&!details.url.startsWith('devtools:')}));
+ server=createLocalServer({root:CONTENT_ROOT,entry:ENTRY,version:app.getVersion()});
+ const preferred=Number.isInteger(settings.port)&&settings.port>1024&&settings.port<65536?settings.port:0;
+ const port=await listenLocal(server,preferred);
+ settings.port=port;await persist();baseUrl='http://127.0.0.1:'+port;
+ server.on('error',err=>{console.error('Local server failed',err.message);app.quit();});
  await createWindow();
 }
-const single=app.requestSingleInstanceLock();
-if(!single)app.quit();
+if(!app.requestSingleInstanceLock())app.quit();
 else{
  app.on('second-instance',()=>{if(window){if(window.isMinimized())window.restore();window.focus();}});
  app.whenReady().then(start).catch(err=>{dialog.showErrorBox('Cockpit Pro',err.stack||String(err));app.quit();});
  app.on('window-all-closed',()=>app.quit());
- app.on('before-quit',()=>{try{server?.close();}catch{}});
+ app.on('before-quit',()=>{clearTimeout(updaterTimer);try{server?.close();}catch{}});
 }

@@ -4,6 +4,7 @@ on:
     branches: [main]
     paths:
       - 'desktop/**'
+      - 'panel-mosaic-lab/desktop-shell/**'
       - '.github/workflows/cockpit-pro-windows.yml'
   workflow_dispatch:
 permissions:
@@ -16,64 +17,78 @@ jobs:
     runs-on: windows-latest
     timeout-minutes: 60
     steps:
-      - name: Checkout ALL cockpit assets, programs and systems
+      - name: Checkout current cockpit and system engines
         uses: actions/checkout@v4
         with:
           lfs: true
-      - name: Install Node.js
-        uses: actions/setup-node@v4
+      - name: Fetch immutable owner approval anchors
+        run: git fetch --depth 1 origin 730815ed6ece9beb30950b96ba536e1ce3f2c4ca ec70014f2436caa912e65aba789287a17c2378c3 3cd894d061a5d33ac90f0cb0cdcd50a2eec0f1db
+      - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Validate offline app source and asset catalog
+          cache: npm
+          cache-dependency-path: desktop/package-lock.json
+      - name: Install pinned desktop dependencies
+        working-directory: desktop
+        run: npm ci --no-audit --no-fund
+      - name: Verify offline files, updater failure handling and owner locks
         shell: pwsh
         run: |
+          $PSNativeCommandUseErrorActionPreference = $true
           node --check desktop/main.cjs
-          node --test desktop/offline-smoke.test.cjs
+          node --check desktop/preload.cjs
+          node --test desktop/*.test.cjs
           node --test panel-mosaic-lab/desktop-shell/shell-static.test.cjs
-          $files = Get-ChildItem -Path . -Recurse -File | Where-Object { $_.FullName -notmatch '[\\/]\.git[\\/]' -and $_.FullName -notmatch '[\\/]node_modules[\\/]' }
-          Write-Output ("Offline file count = " + $files.Count)
-          if ($files.Count -lt 2500) { throw "Repository files incomplete; installer prohibited" }
-      - name: Install Electron packaging tools
+          python panel-mosaic-lab/verify-final-overhead.py
+          python panel-mosaic-lab/cockpit/verify-guard-redzone.py --negative-self-test
+          python panel-mosaic-lab/cockpit/verify-irs-complete-redzone-v1.py --negative-self-test
+          python panel-mosaic-lab/cockpit/verify-irs-sys-dspl-owner-lock-v1.py
+          python panel-mosaic-lab/cockpit/verify-irs-13seg-owner-lock-v1.py --negative-self-test
+          if ($LASTEXITCODE -ne 0) { throw 'Source integrity failed' }
+      - name: Build Windows x64 offline installer with update metadata
         working-directory: desktop
-        shell: pwsh
-        run: npm install --no-audit --no-fund
-      - name: Build 64-bit NSIS offline Setup
-        working-directory: desktop
-        shell: pwsh
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: 'false'
         run: npm run build:win
-      - name: Validate installer and produce checksum
-        id: checks
+      - name: Native EXE launch and control response, external requests blocked
+        working-directory: desktop
+        run: npm run smoke:win
+      - name: Verify release feed and produce installer checksum
         shell: pwsh
         run: |
+          node desktop/verify-release.cjs
+          if ($LASTEXITCODE -ne 0) { throw 'Release verification failed' }
           $setup = Get-ChildItem desktop/dist/CockpitPro-Setup-*.exe | Select-Object -First 1
-          if (-not $setup -or $setup.Length -lt 80MB) { throw "Windows Setup missing or too small" }
           $hash = Get-FileHash -Algorithm SHA256 $setup.FullName
           "$($hash.Hash.ToLower())  $($setup.Name)" | Set-Content desktop/dist/CockpitPro-Setup-SHA256.txt -Encoding ascii
-          Write-Output ("INSTALLER=" + $setup.FullName)
-          Write-Output ("INSTALLER_SIZE_MB=" + [math]::Round($setup.Length / 1MB,1))
-          Write-Output ("SHA256=" + $hash.Hash)
-          "installer=$($setup.FullName)" >> $env:GITHUB_OUTPUT
-      - name: Upload setup as build artifact
+      - name: Upload installer and native timing evidence
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: CockpitPro-Setup-Windows-x64
+          name: CockpitPro-Windows-x64
           path: |
             desktop/dist/CockpitPro-Setup-*.exe
+            desktop/dist/*.blockmap
+            desktop/dist/latest.yml
             desktop/dist/CockpitPro-Setup-SHA256.txt
+            desktop/dist/startup-*.json
+            desktop/dist/startup-*.png
           retention-days: 60
-          if-no-files-found: error
-      - name: Publish downloadable beta Windows Setup
+          if-no-files-found: warn
+      - name: Publish a new immutable in-app update
         shell: pwsh
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          $tag = 'cockpit-pro-desktop-v0.1.0-beta.1'
+          $version = (Get-Content desktop/package.json | ConvertFrom-Json).version
+          $tag = "v$version"
           gh release view $tag --repo ${{ github.repository }} 2>$null
-          if ($LASTEXITCODE -ne 0) {
-            gh release create $tag --repo ${{ github.repository }} --target "${{ github.sha }}" --title 'Cockpit Pro 0.1.0 beta 1 - Windows x64 Setup' --prerelease --notes 'Offline Windows installer bundling the complete public repository snapshot (all GitHub-hosted cockpit panels, simulator JavaScript engines, images, labs, datasets). No GitHub required to start/run. Known gaps: 10 privately supplied MP3 files and approved branding binary are NOT hosted in the public repo and therefore cannot be packed from that source; source contracts and engine-generated test audio are included. Some trainer integrations and full scenario modes remain under development. Unsigned build; Windows SmartScreen may warn.'
-            if ($LASTEXITCODE -ne 0) { throw 'Could not create release' }
-          }
-          gh release upload $tag "desktop/dist/CockpitPro-Setup-0.1.0-beta.1.exe" "desktop/dist/CockpitPro-Setup-SHA256.txt" --repo ${{ github.repository }} --clobber
-          if ($LASTEXITCODE -ne 0) { throw 'Could not upload installer to release' }
+          if ($LASTEXITCODE -eq 0) { throw "Release $tag already exists. Bump desktop/package.json; never overwrite an installed release." }
+          gh release create $tag --draft --repo ${{ github.repository }} --target "${{ github.sha }}" --title "Cockpit Pro $version - Windows x64" --notes-file desktop/release-notes.md
+          if ($LASTEXITCODE -ne 0) { throw 'Release creation failed' }
+          gh release upload $tag "desktop/dist/CockpitPro-Setup-$version.exe" "desktop/dist/CockpitPro-Setup-$version.exe.blockmap" "desktop/dist/CockpitPro-Setup-SHA256.txt" "desktop/dist/startup-benchmark.json" --repo ${{ github.repository }}
+          if ($LASTEXITCODE -ne 0) { throw 'Installer upload failed' }
+          gh release upload $tag desktop/dist/latest.yml --repo ${{ github.repository }}
+          if ($LASTEXITCODE -ne 0) { throw 'Update feed upload failed' }
+          gh release edit $tag --draft=false --prerelease=false --latest --repo ${{ github.repository }}
+          if ($LASTEXITCODE -ne 0) { throw 'Release publication failed' }

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#0a111d">
-<title>Cockpit Pro · Desktop Shell Preview V1</title>
+<title>Cockpit Pro · Windows 0.2</title>
 <style>
 :root{color-scheme:dark;--bg:#080e18;--panel:#111c2a;--panel2:#162335;--line:#2d4055;--ink:#eef3f8;--muted:#9eaebd;--gold:#d8ad70;--blue:#83b7d8;--ok:#6ed1b4}
 *{box-sizing:border-box}html,body{margin:0;min-height:100%;font:15px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink)}
@@ -61,7 +61,7 @@ h1{font-size:32px;margin:0 0 8px;font-weight:720} .subtitle{color:var(--muted);m
   <aside class="presentation">
     <div class="brandmark"><div class="monogram">CP</div><div><b>COCKPIT <span>PRO</span></b><small>B737 CLASSIC · DESKTOP</small></div></div>
     <div><div class="eyebrow">SIMULATION · PROCEDURES · SYSTEMS</div><div class="hero">Your aircraft.<br><em>Your configuration.</em></div><p>یک فضای یکپارچه برای تمرین پنل‌ها، سوئیچ‌ها، سیستم‌ها و رویه‌های Boeing 737 Classic؛ بدون تصویر تزئینی از هواپیما یا کابین.</p></div>
-    <div><div class="mini"><span>300 / 400 / 500</span><span>Offline-oriented</span><span>Systems Trainer</span></div><p class="copyright">Cockpit Pro · Desktop shell preview 001 · Approved cockpit assets remain unchanged.</p></div>
+    <div><div class="mini"><span>300 / 400 / 500</span><span>Offline-oriented</span><span>Systems Trainer</span></div><p class="copyright">Cockpit Pro · Offline Desktop</p></div>
   </aside>
   <section class="configure"><div class="formbox">
     <div class="step"><small>01 / INITIAL CONFIGURATION</small><span>PRE-FLIGHT SETUP</span></div>
@@ -99,25 +99,27 @@ h1{font-size:32px;margin:0 0 8px;font-weight:720} .subtitle{color:var(--muted);m
   <div id="view"><iframe id="cockpit" title="Live Unified Boeing 737 Classic Cockpit" src="about:blank"></iframe>
     <div id="loadcover"><div class="loadcard">
       <div class="brandmark"><div class="monogram">CP</div><div><b>COCKPIT <span>PRO</span></b><small>SYSTEM INITIALIZATION</small></div></div>
-      <h2>آماده‌سازی کابین</h2><p>نمای اصلی فقط پس از تأیید آماده‌بودن بخش‌های قابل‌بررسی باز می‌شود.</p>
+      <h2>آماده‌سازی کابین</h2><p>نمای اصلی و کنترل‌های زنده در اولویت‌اند؛ تصاویر بخش‌های دیگر هنگام نیاز بارگذاری می‌شوند.</p>
       <div class="bar"><i id="progress"></i></div>
       <div class="checkline"><span>Aircraft configuration</span><span id="readyConfig">WAITING</span></div>
       <div class="checkline"><span>Cabin and images</span><span id="readyMain">WAITING</span></div>
-      <div class="checkline"><span>Overhead / controls</span><span id="readyOverhead">WAITING</span></div>
-      <div class="checkline"><span>Captain & first officer CDU</span><span id="readyCdu">WAITING</span></div>
+      <div class="checkline"><span>Live system / main controls</span><span id="readyOverhead">WAITING</span></div>
+      <div class="checkline"><span>Captain & first officer CDU · background</span><span id="readyCdu">WAITING</span></div>
       <div id="fallback"><p>بعضی قسمت‌ها هنوز آماده نیستند. می‌توانی خطا را بررسی کنی یا با هشدار وارد شوی.</p><button id="openPartial">ورود با هشدار</button><button id="retry">تلاش مجدد</button></div>
     </div></div>
     <div class="overlay hide" id="drawerShade"><section class="drawer"><header><h2 id="drawerTitle">پنل‌ها</h2><button class="close" id="drawerClose">× بستن</button></header><div id="drawerBody"></div></section></div>
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
   </div>
 </section>
+<script src="./startup-gate.js"></script>
+<script src="./desktop-integration.js"></script>
 <script>
 (function(){
 'use strict';
 const root=document,qs=s=>root.querySelector(s),qsa=s=>Array.from(root.querySelectorAll(s)),storageKey='b737classic.aircraft-profile.v1',repo='mahmet737ng-gif/b737-classic-simulator';
-const defaults={schema:'b737-classic-aircraft-profile/1',aircraftFamily:'B737-300-500',pressurization:'DCPCS',engineInstruments:'CONVENTIONAL'};
-let profile=Object.assign({},defaults),started=false,frameReady=false,poll=0,lastHead=null,toastTimer=0,primedAll=false,allReadyTicks=0;
-try {const stored=JSON.parse(localStorage.getItem(storageKey));for(const k of ['aircraftFamily','pressurization','engineInstruments'])if(stored&&typeof stored[k]==='string')profile[k]=stored[k];}catch{}
+const defaults={schema:'b737-classic-aircraft-profile/1',aircraftFamily:'B737-300-500',pressurization:'DCPCS',engineInstruments:'EIS'};
+let profile=Object.assign({},defaults),started=false,frameReady=false,poll=0,lastHead=null,toastTimer=0,loadBegan=0,usable=false;
+try {const stored=JSON.parse(localStorage.getItem(storageKey));if(stored&&stored.schema===defaults.schema)profile=Object.assign(profile,stored);}catch{}
 const allowed={aircraftFamily:['B737-300-500','B737-400'],pressurization:['CPCS','DCPCS'],engineInstruments:['EIS','CONVENTIONAL']};
 for(const k in allowed)if(!allowed[k].includes(profile[k]))profile[k]=defaults[k];
 function paintPicks(){qsa('[data-group]').forEach(group=>{const key=group.dataset.group;group.querySelectorAll('[data-value]').forEach(b=>b.setAttribute('aria-pressed',String(profile[key]===b.dataset.value)));});}
@@ -128,25 +130,40 @@ function src(){return '../cockpit/index.html?desktop-shell=001';}
 function cwin(){try{return qs('#cockpit').contentWindow;}catch{return null;}}
 function goView(name){let w=cwin();try{const b=w?.document?.querySelector('[data-focus="'+name+'"]');if(b){b.click();return true;}}catch{}return false;}
 qsa('[data-view]').forEach(b=>b.addEventListener('click',()=>{goView(b.dataset.view);qsa('[data-view]').forEach(x=>x.classList.toggle('active',x===b));}));
-function begin(){
- localStorage.setItem(storageKey,JSON.stringify(profile));started=true;frameReady=false;primedAll=false;allReadyTicks=0;checkCount=0;qs('#fallback').classList.remove('show');
+async function begin(){
+ if(started)return;started=true;usable=false;loadBegan=performance.now();
+ qs('#start').disabled=true;
+ profile.aircraftModel=profile.aircraftFamily==='B737-400'?'737-400':(profile.aircraftModel==='737-500'?'737-500':'737-300');
+ try{if(window.CockpitDesktopUI)profile=await window.CockpitDesktopUI.saveProfile(profile);}catch{started=false;qs('#start').disabled=false;return;}
+ localStorage.setItem(storageKey,JSON.stringify(profile));frameReady=false;checkCount=0;qs('#fallback').classList.remove('show');
  qs('#setup').classList.add('hide');qs('#workspace').classList.remove('hide');qs('#loadcover').classList.remove('hide');
  qs('#headprofile').textContent=profile.aircraftFamily.replace('B','')+' · '+profile.pressurization+' · '+profile.engineInstruments;
- qs('#cockpit').src=src();clearInterval(poll);poll=setInterval(checkReady,250);
+ qs('#cockpit').src=src();clearInterval(poll);poll=setInterval(checkReady,100);
 }
 qs('#start').addEventListener('click',begin);
 qs('#cockpit').addEventListener('load',()=>{frameReady=true;attachKeys();checkReady();});
-const probes=[['readyConfig',w=>!!(w.B737AircraftProfileStore&&w.B737AircraftProfileStore.get()?.aircraftFamily===profile.aircraftFamily&&w.B737AircraftProfileStore.get()?.pressurization===profile.pressurization)],['readyMain',w=>{const images=[...w.document.querySelectorAll('#region-main .texture-piece img')];return images.length===5&&images.every(img=>img.complete&&img.naturalWidth>0)&&!!w.document.querySelector('#region-pedestal');}],['readyOverhead',w=>!!(w.document.querySelector('#overheadStatus')?.textContent?.includes('متصل')&&w.B737FlapVisualTest&&w.document.getElementById('throttle-position-controls'))],['readyCdu',w=>!!(w.document.querySelector('.cdu-station[data-seat="CAPT"].ready')&&w.document.querySelector('.cdu-station[data-seat="FO"].ready'))]];
-function sceneVisibleImagesReady(w){const d=w.document,v=d.getElementById('viewport')?.getBoundingClientRect();if(!v)return false;const items=[...d.querySelectorAll('#scene .texture-piece img')].filter(img=>{const r=img.parentElement.getBoundingClientRect();return r.width>0&&r.height>0&&r.left<v.right&&r.right>v.left&&r.top<v.bottom&&r.bottom>v.top;});if(!items.length||items.some(img=>!img.complete||img.naturalWidth<1))return false;const iframe=d.getElementById('overheadFrame');try{const id=iframe?.contentDocument,fr=iframe?.getBoundingClientRect();if(!id||!fr)return false;const imgs=[...id.querySelectorAll('img[data-perf-source]')].filter(img=>{const r=img.getBoundingClientRect();return r.width>0&&r.height>0&&fr.left+r.right>v.left&&fr.left+r.left<v.right&&fr.top+r.bottom>v.top&&fr.top+r.top<v.bottom;});return imgs.every(img=>img.complete&&img.naturalWidth>0);}catch{return false;}}
-let checkCount=0;function checkReady(){if(!started)return;checkCount++;let w=cwin(),good=0;
- for(const [id,test] of probes){let ok=false;try{ok=frameReady&&Boolean(test(w));}catch{}qs('#'+id).textContent=ok?'READY':'WAITING';if(ok)good++;}
- qs('#progress').style.width=(good*25)+'%';
- if(good===4){allReadyTicks++;if(!primedAll){primedAll=true;goView('all');return;}const texturesOk=sceneVisibleImagesReady(w);if(!texturesOk&&allReadyTicks<13){qs('#progress').style.width='96%';return;}clearInterval(poll);qs('#progress').style.width='100%';qs('#loadcover').classList.add('hide');qsa('[data-view]').forEach(x=>x.classList.toggle('active',x.dataset.view==='all'));attachKeys();notify(texturesOk?'نمای اصلی و تصاویر قابل‌مشاهده آماده‌اند.':'بخش‌های اصلی READY هستند؛ بررسی کامل تصاویر انجام نشد، ولی برای جلوگیری از گیرکردن لودینگ وارد نمای کابین شدیم.');}else{allReadyTicks=0;}
- if(checkCount>70&&good<4)qs('#fallback').classList.add('show');
+function sceneVisibleImagesReady(w){return window.CockpitStartupGate.visibleImagesReady(w);}
+let checkCount=0;function checkReady(){if(!started||usable)return;checkCount++;
+ const result=window.CockpitStartupGate.inspect(cwin(),profile);
+ for(const [id,ok] of [['readyConfig',result.profile],['readyMain',result.main],['readyOverhead',result.controls],['readyCdu',result.cdu]])qs('#'+id).textContent=ok?'READY':'در حال آماده‌سازی';
+ qs('#progress').style.width=([result.profile,result.main,result.controls].filter(Boolean).length/3*100)+'%';
+ if(result.usable){
+  usable=true;clearInterval(poll);qs('#loadcover').classList.add('hide');
+  qsa('[data-view]').forEach(x=>x.classList.toggle('active',x.dataset.view==='main'));attachKeys();
+  // Two animation frames ensure the usable scene is painted, not only a splash.
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+   const report={main:true,controls:true,loadMs:performance.now()-loadBegan,secondaryReady:result.overhead&&result.cdu};
+   qs('#workspace').dataset.startupReport=JSON.stringify(report);
+   qs('#headprofile').title='زمان آماده‌شدن کابین: '+(report.loadMs/1000).toFixed(2)+' ثانیه';
+   window.CockpitDesktopUI?.ready(report).catch(()=>{});
+  }));
+ }
+ if(performance.now()-loadBegan>5000)qs('#progress').setAttribute('aria-label','آماده‌سازی بیش از هدف ۵ ثانیه طول کشیده است');
+ if(checkCount>175&&!usable)qs('#fallback').classList.add('show');
 }
 qs('#openPartial').addEventListener('click',()=>{clearInterval(poll);qs('#loadcover').classList.add('hide');notify('ورود با هشدار: آماده‌بودن تمام زیرسیستم‌ها تأیید نشده است.');});
 qs('#retry').addEventListener('click',()=>{checkCount=0;qs('#fallback').classList.remove('show');checkReady();});
-qs('#settings').addEventListener('click',()=>{if(!confirm('بازگشت به صفحه انتخاب و بارگذاری دوباره کابین؟'))return;qs('#workspace').classList.add('hide');qs('#setup').classList.remove('hide');qs('#cockpit').src='about:blank';started=false;clearInterval(poll);});
+qs('#settings').addEventListener('click',()=>{if(!confirm('بازگشت به صفحه انتخاب و بارگذاری دوباره کابین؟'))return;qs('#workspace').classList.add('hide');qs('#setup').classList.remove('hide');qs('#cockpit').src='about:blank';started=false;usable=false;qs('#start').disabled=false;clearInterval(poll);});
 qs('#homeTool').addEventListener('click',()=>qs('#settings').click());
 function drawer(title,html){qs('#drawerTitle').textContent=title;qs('#drawerBody').innerHTML=html;qs('#drawerShade').classList.remove('hide');}
 function closeDrawer(){qs('#drawerShade').classList.add('hide');qs('#cbframe')?.setAttribute('src','about:blank');}
@@ -171,7 +188,16 @@ function attachKeys(){const w=cwin();if(!w)return;const frames=[w];try{for(const
 }
 setInterval(()=>{if(started){attachKeys();}},1800);
 qsa('[data-mode]').forEach(button=>button.addEventListener('click',()=>{const engine=cwin()?.B737ScenarioPresetV1;if(!engine?.apply){notify('برای '+button.textContent+' هنوز preset معتبر به موتور برق، موتور و کنترل‌ها متصل نشده؛ وضعیت هواپیما تغییر نکرد.');return;}try{engine.apply(button.dataset.mode);qsa('[data-mode]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));notify('Preset توسط موتور مرکزی اعمال شد.');}catch(err){notify('Preset اجرا نشد: '+err.message);}}));
-qs('#update').addEventListener('click',async()=>{const b=qs('#update');b.disabled=true;b.textContent='CHECKING…';try{const r=await fetch('https://api.github.com/repos/'+repo+'/commits/main',{cache:'no-store'});if(!r.ok)throw Error('HTTP '+r.status);const j=await r.json();const latest=j.sha;if(!lastHead){lastHead=latest;notify('آخرین نسخهٔ GitHub شناسایی شد. این نسخهٔ وب فقط بررسی می‌کند؛ دانلود انتخابی فایل‌ها مخصوص updater ویندوز است.');}else if(latest!==lastHead){if(confirm('نسخهٔ جدید در GitHub دیده شد. صفحهٔ وب برای دریافت فایل‌های جدید بارگذاری مجدد شود؟')){location.reload();return;}}else notify('تغییر جدیدی نسبت به آخرین بررسی این جلسه پیدا نشد.');}catch(error){notify('بررسی GitHub ممکن نشد: '+error.message);}finally{b.disabled=false;b.textContent='↻ UPDATE';}});
+qs('#update').addEventListener('click',async()=>{if(window.CockpitDesktopUI){window.CockpitDesktopUI.open();return;}const b=qs('#update');b.disabled=true;b.textContent='CHECKING…';try{const r=await fetch('https://api.github.com/repos/'+repo+'/commits/main',{cache:'no-store'});if(!r.ok)throw Error('HTTP '+r.status);const j=await r.json();const latest=j.sha;if(!lastHead){lastHead=latest;notify('آخرین نسخهٔ GitHub شناسایی شد. این نسخهٔ وب فقط بررسی می‌کند؛ دانلود انتخابی فایل‌ها مخصوص updater ویندوز است.');}else if(latest!==lastHead){if(confirm('نسخهٔ جدید در GitHub دیده شد. صفحهٔ وب برای دریافت فایل‌های جدید بارگذاری مجدد شود؟')){location.reload();return;}}else notify('تغییر جدیدی نسبت به آخرین بررسی این جلسه پیدا نشد.');}catch(error){notify('بررسی GitHub ممکن نشد: '+error.message);}finally{b.disabled=false;b.textContent='↻ UPDATE';}});
+if(window.CockpitDesktopUI){
+ qs('#start').disabled=true;
+ window.CockpitDesktopUI.state.then(info=>{
+  if(info.profile){profile=Object.assign({},defaults,info.profile);localStorage.setItem(storageKey,JSON.stringify(profile));paintPicks();}
+  qs('#start').disabled=false;
+  if(info.resume||info.smoke)begin();
+ }).catch(()=>{qs('#start').disabled=false;});
+ window.addEventListener('storage',event=>{if(event.key===storageKey&&event.newValue){try{profile=JSON.parse(event.newValue);window.CockpitDesktopUI.saveProfile(profile).catch(()=>{});}catch{}}});
+}
 })();
 </script>
 </body></html>

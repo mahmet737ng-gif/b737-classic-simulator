@@ -27,7 +27,7 @@ test('no existing cockpit assets or lock files rewritten',()=>{
 });
 test('preflight checks use actual asset and dependent system readiness, including visible textures',()=>{
  for(const id of ['readyConfig','readyMain','readyOverhead','readyCdu','sceneVisibleImagesReady','B737FlapVisualTest','throttle-position-controls'])has(id);
- has('images.every(img=>img.complete&&img.naturalWidth>0)');
+ assert.match(fs.readFileSync(path.join(__dirname,'startup-gate.js'),'utf8'),/images\.every\(img=>img\.complete&&img\.naturalWidth>0\)/);
 });
 test('CB buttons select real lab panels and selected pressure family',()=>{
  has("frame.src='../../cb-panel-lab/'");
@@ -54,7 +54,7 @@ test('do not fake presets, spoilers, full update mechanism or inaccessible audio
  has('این نسخهٔ وب فقط بررسی می‌کند');
 });
 test('HTML structure contains matching scripting tags and essential shells',()=>{
- assert.equal((shell.match(/<script>/g)||[]).length,1);
- assert.equal((shell.match(/<\/script>/g)||[]).length,1);
+ assert.equal((shell.match(/<script(?:\s[^>]*)?>/g)||[]).length,3);
+ assert.equal((shell.match(/<\/script>/g)||[]).length,3);
  for(const id of ['workspace','setup','cockpit','loadcover','cbTool','audioTool','keysTool','update'])has('id="'+id+'"');
 });

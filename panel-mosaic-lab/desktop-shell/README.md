@@ -1,10 +1,10 @@
-# Cockpit Pro · Desktop Shell 001 (prototype)
+# Cockpit Pro · Desktop Shell 002
 
 ## Entry point
 
 - `panel-mosaic-lab/desktop-shell/index.html`
 - Public GitHub Pages path (once Pages deployment catches up): `/b737-classic-simulator/panel-mosaic-lab/desktop-shell/`
-- This is a separate, reversible **web desktop-shell prototype**, not a Windows EXE, not a replacement for the frozen Unified layout.
+- The browser route remains a preview. The Windows installer in `desktop/` uses the same shell with a sandboxed native update bridge and local assets.
 - No cockpit/airplane photos are used on the initial selection screen; it is CSS typography and abstract chrome-like shapes only. Existing approved cockpit photos remain the live scene after START.
 - The **final approved Cockpit Pro logo is separately locked** under `branding/cockpit-pro/official-logo-lock.json`; a CSS `CP` placeholder marks this shell to avoid adding large artwork to first paint.
 
@@ -16,12 +16,12 @@
 | CPCS vs DCPCS | Selects/persists same profile | Same `CATALOG.pressurization` |
 | Conventional vs EIS | Selects/persists same profile | Same `CATALOG.engineInstruments`; **EIS photos are still awaiting approval** |
 | Main/Overhead/Pedestal/All | Clicks existing `data-focus` controls, no duplicate scene | `panel-mosaic-lab/cockpit/app.js` |
-| Loading cover | Waits for saved profile, five main image assets, overhead-ready status, mounted flap/throttle controls, both CDU stations; then focuses ALL and waits for visible textures | `app.js`, `performance-loader.js`, `flap-lever-test.js`, `throttle-levers.js` |
+| Loading cover | Requires selected profile, visible main textures, live ECU owner and mounted main controls. Secondary CDU/overhead status does not block entry; no forced ALL view | `startup-gate.js`, `app.js`, `performance-loader.js` |
 | Flaps F5-F8 | Calls existing `B737FlapVisualTest.request()` / mechanical gates | Existing nine-detent visual trainer. Position changes are flagged as visual-only events. |
 | Thrust F1-F4 | Drives two existing throttle select controls and their change events | Existing `throttle-levers.js` five-position trainer. **Not continuous FSX thrust or reverse-thrust simulation** |
 | CB | Opens real `cb-panel-lab/`, selects the requested panel by its live `panelSelect`, and propagates selected CPCS/DCPCS variant | **Electrical CB bus effects are not yet comprehensively certified** |
 | Audio | Opens existing test labs; identifies missing user-recorded assets | Public `audio/user-recordings/manifest.json` explicitly excludes raw user MP3 bytes |
-| Update | Checks latest GitHub SHA and offers webpage reload when commit changed within same session | **This is not a signed offline Windows differential patcher** |
+| Update | Windows: check, download with progress, checksum-validate, install and restart. Web: GitHub SHA check only | `desktop-integration.js`, `desktop/update-controller.cjs`; publisher certificate remains pending |
 
 ## Strictly pending integrations; do NOT mark as functioning
 
@@ -30,8 +30,8 @@
 3. **Landing gear G:** requires a validated central gear command and indication mapping.
 4. **Audio completeness:** package licensed/owner-owned source audio with immutable hashes and verify playback, warning priorities, cockpit buses, mute and gain. Avoid claiming the private user MP3s are shipped.
 5. **CB effects:** the existing direct panel dropdown is wired to the shell; next add verified CB/electrical bus coupling, authoritative panel effectivity, and cross-frame state snapshots. Do not infer bus wiring from photographs alone.
-6. **Updates:** build a signed, versioned hash manifest and native Electron updater; compare installed package hashes, download changed files only, validate checksums/signatures/locks, stage atomically, roll back on failure. Re-render image assets safely; program JS/binary changes require isolated controlled reload or restart (do not hot-swap a running engine object without a migration protocol).
-7. **Windows packaging:** create Electron application process/preload, offline asset bundle, updater service and native keyboard interception (`webContents.before-input-event`) so browser-reserved keys work.
+6. **Publisher signing:** native NSIS updater, differential blockmaps and SHA-512 checks are implemented. A Windows publisher certificate and a signed feed remain pending; do not label this an authenticated publisher-signed update system. Runtime JS changes require restart.
+7. **Windows packaging:** implemented in `desktop/`; inspect its README for the CI release and startup measurement contracts.
 8. **Full readiness contract:** expose one authoritative dependency health barrier from electrical, engine, CDU, IRS, overhead, CB and audio owners; the shell currently gates **only observable components**, and its UI does not claim that all aircraft-system state machines are validated.
 
 ## FSX keyboard source mapping
@@ -53,11 +53,11 @@ The shell currently implements F1-F8 using the trainer's existing available disc
 - [ ] Open desktop shell: no airplane/cockpit photos in pre-flight selection
 - [ ] Confirm each of eight permutations persists exactly to the existing profile store
 - [ ] START triggers one Unified iframe, and no rendered broken/partial scene appears before the boot gate
-- [ ] Both CDU stations loaded and overhead ready, with no hard-to-dismiss spinner
+- [ ] Main textures and live controls ready; secondary components can finish without blocking entry
 - [ ] F1/F2/F3/F4 move both throttle controls within existing five accepted detents
 - [ ] F5/F6/F7/F8 follow existing nine flap positions and gated detents
 - [ ] Keypress in FMC/CDU and text inputs is not stolen by FSX shortcuts
 - [ ] CB opens the real lab, requested P6/P18 panel is selected, and CPCS/DCPCS variant matches startup; disconnected electrical traces remain unresolved
 - [ ] Audio labs are openable; actual included audio bytes audited
 - [ ] Mode clicks refuse state mutations until backends are hooked
-- [ ] Offline EXE, signed updater, atomic rollback and scenario tests pass before official release
+- [ ] Windows native fresh/retained-cache startup and real control response tests pass before publication; publisher signing and full scenario validation remain pending

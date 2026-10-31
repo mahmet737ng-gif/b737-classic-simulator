@@ -1,34 +1,25 @@
-# Cockpit Pro · Windows offline installer
+# Cockpit Pro · Windows offline desktop 0.2
 
-Windows x64 NSIS Setup is built by [Cockpit Pro - Windows Offline Setup](../.github/workflows/cockpit-pro-windows.yml) on GitHub Actions.
+The NSIS x64 installer contains the current public Unified cockpit and system engines. Start and training run from local files without an Internet connection. Existing private-audio and incomplete-system limitations remain; this is a procedures trainer.
 
-## Bundling
+## In-app updates
 
-- Source checkout: the entire **public** `b737-classic-simulator` repository snapshot, including every available approved panel artwork, avionics/system engine JS, CB lab, CDU, IRS, ISA, electrical lab, pressurization lab, and available audio framework.
-- Runtime: Electron with an internal static HTTP server bound to `127.0.0.1` on a random port. Web frontend can use same-origin URLs without fetching the online GitHub Pages project.
-- Launch: the existing `panel-mosaic-lab/desktop-shell/index.html` profile picker (B737-300/500 or 400, CPCS/DCPCS and EIS/Conventional), followed by the current Unified cockpit.
-- Build: `cd desktop && npm install && npm run build:win` on Windows with Node.js 22. No separate Node.js installation needed on the user's Windows PC.
-- Verification: `node --test desktop/offline-smoke.test.cjs` and desktop-shell invariants, then Windows native NSIS compilation.
-- Updates: **not implemented as delta patches** in this beta. Installing a new version is required for changed system JavaScript or binary files. Frontend UPDATE currently checks GitHub SHA; it does not replace installed files.
-- EXE is **unsigned**, so Windows SmartScreen may display an Unknown Publisher warning. Do not bypass antivirus prompts when the source is unexpected.
+Install 0.2.0 manually once; 0.1.0 has no native updater. In the new version open **UPDATE**, check for a newer release, download with progress, and choose **Install and restart**. The updater checks in the background 15 seconds after the cockpit is usable; it never downloads or restarts automatically. Offline checks fail recoverably. NSIS SHA-512 validation prevents corrupt downloads from entering the install state. Differential blockmaps are published; the full installer is the fallback. Running JS engines are replaced only through a controlled application restart.
 
-## Not included / currently not verified
+The GitHub public release feed uses standard `v<desktop-version>` tags and `latest.yml`, installer and `.blockmap` assets. No GitHub credential is embedded. This build is unsigned: package integrity is checked, but no Windows publisher certificate is currently supplied. Installation retains app data and the same app ID. Aircraft and engine configuration are mirrored atomically into userData and restored on launch; this does not promise restoration of an active aircraft scenario.
 
-- The ten private user-supplied MP3 audio recordings identified in `audio/user-recordings/manifest.json` are **not** in the public source repository. Only public audio framework and any public synthetic samples ship.
-- The approved `CockpitPro_Official_Logo.png` and `.ico` are stored in ChatGPT Library and **not yet inside the public GitHub repo**. This beta uses the generic Windows app icon until their **exact approved bytes** can be added under a protected asset hash.
-- Several simulator integrations (e.g. full Cold & Dark / Ready Start / Ready Takeoff scenario application, live gear/spoiler backend) remain incomplete. This installer is a snapshot of the current trainer functionality, not a completed flight simulator.
-- Multiplayer `sync-server` source is bundled but not automatically launched as a separate server.
-- Desktop shell readiness is visual/partial-component based; it cannot certify every subsystem's physical simulation validity.
+For a future release, increment `desktop/package.json` and its lockfile, commit to main and let **Cockpit Pro - Windows Offline Setup** build/test/publish. Existing release versions are never overwritten. A draft is published only after all assets and feed metadata are uploaded. A failed Windows startup budget blocks publication.
 
-## Safety
+## Startup and responsiveness
 
-Never overwrite or modify the owner-approved IRS / OWNER18 guarded switch / locked cockpit artwork / LE device RED ZONE sources. Desktop packaging only copies existing bytes.
+- Existing profile resumes directly into the main panel. First use retains the aircraft selection screen.
+- A retained loopback port and Chromium partition reuse the local origin and browser cache. Port conflicts fall back safely; the native configuration mirror preserves the profile.
+- Local files use ETag revalidation tied to the application version. No whole-repository scan or update networking happens on startup.
+- Initial readiness requires the selected profile, loaded visible main textures, mounted MCP controls and the live ECU owner. The removed throttle toolbar, whole-cockpit image loading and both CDU ready messages cannot block entry. Other systems initialize normally in the background; artwork and control behavior are unchanged.
+- No timeout reports false success. The measured target is **5 seconds from process spawn to the painted main cockpit with responding controls**, on the Windows CI test machine. This is not a universal promise for all PCs.
 
-Release tag: `cockpit-pro-desktop-v0.1.0-beta.1`.
+`npm ci` then `npm run build:win` in `desktop/` builds the offline installer. Node.js is included through Electron; the user's PC needs no separate Node installation.
 
+`node --test desktop/*.test.cjs` covers local serving/cache/ranges, startup gates, update races, recovery from offline failure, and a real electron-updater download with correct/corrupt SHA-512 bytes. It stages a fixture package but does not run an installer. `npm run smoke:win` after packaging launches the real Windows EXE twice with all external requests blocked, fresh and retained Chromium cache, and tests a live MCP control plus the 5-second startup budget. The benchmark and screenshots are attached to the CI artifact; timing JSON is also a release asset.
 
-## RECESS-0002 overhead buttons
-- Included automatically by `extraResources: ../ → app-content`: `recessed-overhead-v2.js`, `recessed-overhead-v2.css`, `recessed-overhead-v2.json`, `assets/recessed-pushbutton-v2.svg`, and the existing LE DEVICES control logic.
-- The final static overhead iframe mounts all recessed controls locally. Fixed bezel / black moving cap, 79% concentric press, momentary release; no network dependency.
-- QA limitations: source-photo pixel placement for RESIDUAL VOLTS is still provisional; bench press/release event is implemented, while individual warning-system responses require separate backend wiring.
-- Existing NSIS installers are immutable snapshots. Rebuild Windows Setup from the updated repository before expecting these new controls in an installed executable.
+Mandatory owner-lock verifiers remain unchanged. The installer copies approved artwork, IRS and all 18 guards without modifying their bytes. The ten private user recordings and approved branding bytes absent from the public repository are not invented or silently substituted.
