@@ -166,7 +166,9 @@ main{grid-template-columns:minmax(0,1fr) 360px;align-items:start}
   height:5.3%!important;
 }
 #fmc-screen #fmc-lines .fmc-line.fmc-small{
-  font-size:2.60cqw!important;
+  font-size:1.73cqw!important;
+  line-height:.78!important;
+  height:5.3%!important;
 }
 #fmc-screen #fmc-lines .fmc-line.fmc-header,
 #fmc-screen #fmc-lines .fmc-line.scratch{
