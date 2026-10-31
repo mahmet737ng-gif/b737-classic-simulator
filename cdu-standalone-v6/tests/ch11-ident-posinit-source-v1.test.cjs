@@ -6,11 +6,18 @@ const pages=JSON.parse(read('cdu-standalone-v6/data/page-definitions.json')).pag
 const core=require('../engine/cdu-engine.js');
 function started(page='POS_INIT'){const s=core.makeState(page);return s;}
 function type(s,text){for(const c of text)core.press(s,pages,'CDU_CAPT_KEY_'+c);}
-test('IDENT labels and navigation follow FCOM 11.40.8-9 without fake display values',()=>{
+test('IDENT follows the owner reference with an explicit two-line ACTIVE date range',()=>{
  const p=pages.IDENT;
  assert.deepEqual(p.rows.map(row=>row.map(c=>c.label)),[
-  ['MODEL','ENG RATING'],['NAV DATA','ACTIVE'],['','INACTIVE'],['OP PROGRAM',''],['','SUPP DATA'],['<INDEX','POS INIT>']]);
- for(const row of p.rows)for(const c of row)assert.ok(!['TRAINER','DEMO ONLY','SIM','737-300','CFM56-3'].includes(c.value||''));
+  ['MODEL','ENG RATING'],['NAV DATA','ACTIVE'],['',''],['OP PROGRAM',''],['','SUP DATA'],['<INDEX','POS INIT>']]);
+ assert.deepEqual(p.rows.slice(0,5).map(row=>row.map(c=>c.value)),[
+  ['737-300','20K'],['AIRAC 2610','01/OCT/2026'],['','29/OCT/2026'],
+  ['VERSION 7.1',''],['','29/OCT/2026']]);
+ assert.match(p.display_provenance,/DISPLAY_ONLY_NOT_NAVDATA_INSTALLATION/);
+ const s=started('IDENT');
+ core.press(s,pages,'CDU_CAPT_LSK_R6');assert.equal(s.page,'POS_INIT');
+ core.choose(s,pages,'IDENT');
+ core.press(s,pages,'CDU_CAPT_LSK_L6');assert.equal(s.page,'INDEX');
  assert.equal(p.source_ref.pdf_page_near,1560);
 });
 test('POS INIT FCOM 11.40.11-13 shows LAST POS only at 1R',()=>{

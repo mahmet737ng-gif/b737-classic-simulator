@@ -178,6 +178,9 @@
   const standard=pairs.length===12&&pairs.filter(l=>l.classList.contains('fmc-small')).length===6;
   const scratch=lines.find(l=>l.classList.contains('scratch'));
   const main=model.mainPx,small=model.labelPx,grid=rowRegistration();
+  const pageId=root.document.getElementById('page-now')?.textContent;
+  const ownerIdent=pageId==='IDENT'&&
+   root.CDU_PAGES?.IDENT?.variant==='OWNER_CLASSIC_IDENT_20261031';
   // Keep the 24-column scratchpad font at its calibrated baseline.
   // Apply the requested multipliers only to the LSK page rows.
   const pageValuePx=main*1.44,pageLabelPx=small*1.8; // LSK unchanged, labels 10% smaller
@@ -192,7 +195,10 @@
   }
   for(let i=0;i<pairs.length;i++){
    const line=pairs[i],label=line.classList.contains('fmc-small'),row=Math.floor(i/2);
-   const px=standard?(label?pageLabelPx:pageValuePx):(label?small:main);
+   // IDENT uses the owner's two 12-column date lines. A calibrated, uniform
+   // character size fits them without cumulative X/Y transforms or clipping.
+   const px=standard?(ownerIdent?(label?small*1.15:main*1.05):
+    (label?pageLabelPx:pageValuePx)):(label?small:main);
    // Special FCOM overlays retain their authored registration and font scale.
    if(standard&&row<6)
     line.style.setProperty('top',grid[label?'label':'value'][row]+'%','important');
@@ -200,6 +206,13 @@
    line.style.setProperty('overflow','visible','important');
    typography(line,px);
    for(const span of line.querySelectorAll('span')){
+    if(ownerIdent){
+     typography(span,px);
+     span.style.setProperty('font-family',label?'"BoeingCDUSmall"':'"BoeingCDULarge"','important');
+     span.style.setProperty('transform','none','important');
+     span.style.setProperty('overflow','visible','important');
+     continue;
+    }
     const prompt=isLSKPrompt(span,label);
     const entry=!label&&!prompt&&isEntryPromptText(span.textContent);
     if(prompt)span.classList.add('cdu-lsk-prompt');
@@ -242,6 +255,7 @@
   }
   root.document.documentElement.dataset.cduScreenFit=VERSION;
   lastResult={ready:true,version:VERSION,standard,columns:Metrics.COLUMNS,
+   identReference:ownerIdent?{largePx:main*1.05,smallPx:small*1.15}:null,
    fontSizePx:model.scratchPx,labelPx:model.labelPx,
    pageValuePx,pageLabelPx,pageValueMultiplier:1.44,pageLabelMultiplier:1.8,
    entryPromptPx:main*1.10,entryPromptMultiplier:1.10,

@@ -208,10 +208,13 @@ function update(){const box=$('fmc-lines'); const frame=document.createElement('
    }
    if(state.page==='IDENT'){
      const sources=state.preflightEvidence||{};
-     const ids=[['MODEL','ENG_RATING'],['NAV_DATA','ACTIVE'],[null,'INACTIVE'],
-       ['OP_PROGRAM',null],[null,'SUPP_DATA'],[null,null]][row-1];
-     valueL=ids[0]?preflight.identValue(ids[0],sources):valueL;
-     valueR=ids[1]?preflight.identValue(ids[1],sources):valueR;
+     // Owner's IDENT reference supplies the display values. Settings still
+     // select MODEL / ENG RATING; the two ACTIVE lines are one date range,
+     // not active/inactive database banks. No NAVDB is installed by this view.
+     if(row===1){
+       valueL=preflight.identValue('MODEL',sources)||valueL;
+       valueR=preflight.identValue('ENG_RATING',sources)||valueR;
+     }
    }
    if(state.page==='POS_INIT'){
      const sources=state.preflightEvidence||{};

@@ -31,6 +31,14 @@ test('CDU without physical 2611 NAVDATA never shows calendar date as ACTIVE',()=
  assert.equal(f.ctx.state.message,'NAV DATA NOT LOADED');
  assert.equal(f.getSends(),0);
 });
+test('Owner IDENT display dates cannot switch a hidden NAVDATA bank',()=>{
+ const f=seatFixture('FO');
+ f.ctx.CDU_PAGES={IDENT:{variant:'OWNER_CLASSIC_IDENT_20261031'}};
+ f.ctx.send('CDU_CAPT_LSK_R2');f.ctx.send('CDU_CAPT_LSK_R3');
+ assert.equal(f.getSends(),2);
+ assert.equal(f.ctx.state.scratch,'');
+ assert.equal(f.ctx.state.fmcNavDataBanks.activeCycle,null);
+});
 test('Verified active/inactive metadata displays R2/R3 only when actual banks are installed',()=>{
  const f=seatFixture('FO');
  let s=banks.install(banks.initial(),packageOf('2610'),verified);

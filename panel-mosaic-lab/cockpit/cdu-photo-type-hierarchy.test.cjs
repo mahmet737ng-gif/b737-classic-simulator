@@ -99,6 +99,14 @@ function checkPage(id){
    assert.ok(data.classList.contains('cdu-lsk-prompt'));
   }
  }
+ if(id==='IDENT'){
+  assert.ok(result.identReference,'Owner IDENT has its own stable 12-column fit');
+  for(const entry of originals)for(const span of entry.values.children){
+   assert.equal(parseFloat(span.style.properties['font-size']),
+    Number(result.identReference.largePx.toFixed(2)));
+   assert.equal(span.style.properties.transform,'none','IDENT date glyphs must not be compressed');
+  }
+ }
  assert.equal(copy(),previous,'FCOM source cells unchanged');
  assert.equal(document.documentElement.dataset.cduScreenFit,'CDU-24COL-0006');
  return result;

@@ -7,6 +7,8 @@ const Install=require('../cdu-ident-installation-v1.js');
 const Preflight=require('../../ch11/cdu-preflight-evidence-v1.js');
 const profileDefaults=Profile.DEFAULTS;
 test('CFM56-3 B1/B3/C1 map to 18.5K/20K/23.5K exactly',()=>{
+ assert.equal(Install.select(Profile.DEFAULTS).engineRating,'20K');
+ assert.equal(Profile.DEFAULTS.aircraftModel,'737-300');
  for(const [engine,rating,lbf] of [
   ['CFM56-3B1','18.5K',18500],['CFM56-3B3','20K',20000],['CFM56-3C1','23.5K',23500]
  ]){

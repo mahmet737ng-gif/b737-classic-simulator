@@ -276,8 +276,8 @@
     "IDENT": {
       "title": "IDENT",
       "fcom_section": "11.40",
-      "variant": "MENU_CDU",
-      "source_status": "FCOM_11.40.8_9_TEXT_AUDITED_EFFECTIVITY_AND_VALUES_PENDING",
+      "variant": "OWNER_CLASSIC_IDENT_20261031",
+      "source_status": "OWNER_SPECIFIED_TRAINER_DISPLAY_20261031",
       "page_count": 1,
       "rows": [
         [
@@ -285,15 +285,17 @@
             "lsk": "L1",
             "label": "MODEL",
             "required": false,
-            "source_verification": "FCOM_11.40.8_9_TEXT_AUDITED",
-            "status": "FCOM_VALUE_REQUIRES_VERIFIED_SOURCE"
+            "source_verification": "OWNER_IDENT_REFERENCE_20261031",
+            "status": "OWNER_SPECIFIED_TRAINER_DISPLAY",
+            "value": "737-300"
           },
           {
             "lsk": "R1",
             "label": "ENG RATING",
             "required": false,
-            "source_verification": "FCOM_11.40.8_9_TEXT_AUDITED",
-            "status": "FCOM_VALUE_REQUIRES_VERIFIED_SOURCE"
+            "source_verification": "OWNER_IDENT_REFERENCE_20261031",
+            "status": "OWNER_SPECIFIED_TRAINER_DISPLAY",
+            "value": "20K"
           }
         ],
         [
@@ -301,15 +303,17 @@
             "lsk": "L2",
             "label": "NAV DATA",
             "required": false,
-            "source_verification": "FCOM_11.40.8_9_TEXT_AUDITED",
-            "status": "FCOM_VALUE_REQUIRES_VERIFIED_SOURCE"
+            "source_verification": "OWNER_IDENT_REFERENCE_20261031",
+            "status": "OWNER_SPECIFIED_TRAINER_DISPLAY",
+            "value": "AIRAC 2610"
           },
           {
             "lsk": "R2",
             "label": "ACTIVE",
             "required": false,
-            "source_verification": "FCOM_11.40.8_9_TEXT_AUDITED",
-            "status": "FCOM_VALUE_REQUIRES_VERIFIED_SOURCE"
+            "source_verification": "OWNER_IDENT_REFERENCE_20261031",
+            "status": "OWNER_SPECIFIED_TRAINER_DISPLAY",
+            "value": "01/OCT/2026"
           }
         ],
         [
@@ -317,15 +321,17 @@
             "lsk": "L3",
             "label": "",
             "required": false,
-            "source_verification": "FCOM_11.40.8_9_TEXT_AUDITED",
-            "status": "FCOM_VALUE_REQUIRES_VERIFIED_SOURCE"
+            "source_verification": "OWNER_IDENT_REFERENCE_20261031",
+            "status": "OWNER_SPECIFIED_TRAINER_DISPLAY",
+            "value": ""
           },
           {
             "lsk": "R3",
-            "label": "INACTIVE",
+            "label": "",
             "required": false,
-            "source_verification": "FCOM_11.40.9_INACTIVE_BANK_LOCATION",
-            "status": "FCOM_VALUE_REQUIRES_VERIFIED_SOURCE"
+            "source_verification": "OWNER_IDENT_REFERENCE_20261031",
+            "status": "OWNER_SPECIFIED_TRAINER_DISPLAY",
+            "value": "29/OCT/2026"
           }
         ],
         [
@@ -333,15 +339,17 @@
             "lsk": "L4",
             "label": "OP PROGRAM",
             "required": false,
-            "source_verification": "FCOM_11.40.8_9_TEXT_AUDITED",
-            "status": "FCOM_VALUE_REQUIRES_VERIFIED_SOURCE"
+            "source_verification": "OWNER_IDENT_REFERENCE_20261031",
+            "status": "OWNER_SPECIFIED_TRAINER_DISPLAY",
+            "value": "VERSION 7.1"
           },
           {
             "lsk": "R4",
             "label": "",
             "required": false,
-            "source_verification": "FCOM_11.40.8_9_TEXT_AUDITED",
-            "status": "FCOM_VALUE_REQUIRES_VERIFIED_SOURCE"
+            "source_verification": "OWNER_IDENT_REFERENCE_20261031",
+            "status": "OWNER_SPECIFIED_TRAINER_DISPLAY",
+            "value": ""
           }
         ],
         [
@@ -349,15 +357,17 @@
             "lsk": "L5",
             "label": "",
             "required": false,
-            "source_verification": "FCOM_11.40.8_9_TEXT_AUDITED",
-            "status": "FCOM_VALUE_REQUIRES_VERIFIED_SOURCE"
+            "source_verification": "OWNER_IDENT_REFERENCE_20261031",
+            "status": "OWNER_SPECIFIED_TRAINER_DISPLAY",
+            "value": ""
           },
           {
             "lsk": "R5",
-            "label": "SUPP DATA",
+            "label": "SUP DATA",
             "required": false,
-            "source_verification": "FCOM_11.40.8_9_TEXT_AUDITED",
-            "status": "FCOM_VALUE_REQUIRES_VERIFIED_SOURCE"
+            "source_verification": "OWNER_IDENT_REFERENCE_20261031",
+            "status": "OWNER_SPECIFIED_TRAINER_DISPLAY",
+            "value": "29/OCT/2026"
           }
         ],
         [
@@ -391,7 +401,8 @@
         "source": "SEPEHRAN_737CL_FCOM_VOLUME_2_CH11",
         "verification": "TEXT_FIELD_LABELS_VERIFIED; FMC_SOFTWARE_VARIANT_UNVERIFIED"
       },
-      "id": "IDENT"
+      "id": "IDENT",
+      "display_provenance": "USER_SUPPLIED_FSX_REFERENCE_AND_EXPLICIT_IDENT_VALUES_2026-10-31; DISPLAY_ONLY_NOT_NAVDATA_INSTALLATION"
     },
     "POS_INIT": {
       "title": "POS INIT",

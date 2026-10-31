@@ -36,6 +36,10 @@
  send=function(key){
   const row=String(key).replace(/^CDU_CAPT_/,'');
   if(state.page==='IDENT'&&(row==='LSK_R2'||row==='LSK_R3')){
+   // The owner's reference shows the start/end of a single display range.
+   // These read-only lines must not transfer a different, invisible NAV bank.
+   if(root.CDU_PAGES?.IDENT?.variant==='OWNER_CLASSIC_IDENT_20261031')
+    return originalSend(key);
    const b=state.fmcNavDataBanks;
    const target=row==='LSK_R2'?b.activeCycle:b.inactiveCycle;
    if(!target){state.message='NAV DATA NOT LOADED';update();return;}
