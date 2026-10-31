@@ -34,6 +34,7 @@ assert.ok(fit.includes('Metrics.calibrate(ctx,available,family)')&&fit.includes(
 assert.ok(!/(?:font-family|transform|position|letter-spacing)\\s*:/.test(display),
  'CDU display must not move hotspots, alter font family or character grid');
 require('./cdu-session.test.cjs');
+require('./cdu-classic-typography.test.cjs');
 // New CDU boxes must not cover any existing main-panel annunciator.
 const lights=JSON.parse(read('panel-mosaic-lab/cockpit/lights.json')),region=assembly.regions.find(r=>r.id==='main');for(const i of items)for(const light of lights.lights){const p=region.placements.find(p=>p.id===light.pieceId);if(!p)continue;const k=p.w/assembly.assets[p.asset].dimensions[0],[x,y,w,h]=light.sourceRect,b={x:p.x+x*k,y:p.y+y*k,w:w*k,h:h*k};assert.ok(!(i.x<b.x+b.w&&i.x+i.w>b.x&&i.y<b.y+b.h&&i.y+i.h>b.y),'CDU obscures light '+light.id);}
 const invalid=structuredClone(assembly);invalid.embeddedInstruments[1].x=2100;assert.throws(()=>view.validateInstruments(invalid));
