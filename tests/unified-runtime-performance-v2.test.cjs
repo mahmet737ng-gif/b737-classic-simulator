@@ -92,7 +92,7 @@ test('PERF-0002 defers overhead rendering, builds gallery on demand and coalesce
  const app=read(base+'app.js'),wheel=read(base+'wheel-pan-model-v1.js'),loader=read(base+'performance-loader.js');
  assert.match(app,/b737:unified-usable',\(\)=>/);
  assert.match(app,/IntersectionObserver/);
- assert.match(app,/frame\.dataset\.deferredUrl=\(window\.B737OverheadStaticTest\?/);
+ assert.match(app,/frame\.dataset\.deferredUrl=\(window\.B737UnifiedLightOverheadTest\?/);
  assert.match(app,/mountGallery\(\);byId\('galleryDialog'\)/);
  assert.match(app,/wheelController\.pan\(payload\)/);
  assert.match(app,/scheduleViewRefresh\(\)/);
