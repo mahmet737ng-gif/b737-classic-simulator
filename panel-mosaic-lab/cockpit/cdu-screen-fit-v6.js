@@ -180,7 +180,7 @@
   const main=model.mainPx,small=model.labelPx,grid=rowRegistration();
   // Keep the 24-column scratchpad font at its calibrated baseline.
   // Apply the requested multipliers only to the LSK page rows.
-  const pageValuePx=main*1.8,pageLabelPx=small*2;
+  const pageValuePx=main*1.44,pageLabelPx=small*2; // LSK 80%, labels unchanged
   const promptsMoved=putPromptsOnLSKLines(pairs,standard);
   box.style.setProperty('color','#29ff31','important');
   box.style.setProperty('font-size',main+'px','important');
@@ -212,7 +212,7 @@
     // scaling, and cap the visible Y height to the gap between LSK rows.
     // This prevents the bigger text from crossing the preceding/following
     // field title without resizing, moving or obscuring the physical keys.
-    const effectivePx=entry?main:px;
+    const effectivePx=entry?main*.80:px;
     typography(span,effectivePx);
     const message=span.textContent||'';
     if(!message.trim())continue;
@@ -243,8 +243,8 @@
   root.document.documentElement.dataset.cduScreenFit=VERSION;
   lastResult={ready:true,version:VERSION,standard,columns:Metrics.COLUMNS,
    fontSizePx:model.scratchPx,labelPx:model.labelPx,
-   pageValuePx,pageLabelPx,pageValueMultiplier:1.8,pageLabelMultiplier:2,
-   entryPromptPx:main,entryPromptMultiplier:1,
+   pageValuePx,pageLabelPx,pageValueMultiplier:1.44,pageLabelMultiplier:2,
+   entryPromptPx:main*.80,entryPromptMultiplier:.80,
    headerPx:model.headerPx,promptPx:model.promptPx,photoProfile:PHOTO_PROFILE.id,promptsMoved,
    large:model.large,little:model.little,widthPx:model.widthPx,
    scratchLength:(scratch?.querySelector('.fmc-left')?.textContent||'').length,
