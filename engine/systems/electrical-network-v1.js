@@ -48,7 +48,7 @@
   const connected=id=>[1,2].filter(side=>e.source[side]===id);
   const readiness={GEN1:c.engine1Running&&!f.GEN1_FAILED,GEN2:c.engine2Running&&!f.GEN2_FAILED,
    APU:c.apuRunning&&!f.APU_FAILED&&!e.apuAutomaticShutdownRequested,
-   EXT:c.onGround&&c.groundPowerAttached&&c.groundPowerQualityGood,BATTERY:e.bus.hotBattery};
+   EXT:c.onGround&&c.groundPowerAttached&&c.groundPowerQualityGood,BATTERY:e.feed.batteryAvailable};
   for(const id of ['GEN1','GEN2','APU','EXT']){
    const sides=connected(id),available=Boolean(readiness[id]);
    // A spinning, disconnected generator is NOT proof of rated field voltage.
@@ -99,16 +99,29 @@
    // Preserve the unresolved TR3 backup route; never invent a relay path.
    edge('TR3','DC_'+side,e.bus['dc'+side]===null?null:false,'UNVERIFIED_BACKUP');
   }
-  node('HOT_BATTERY_BUS','DC',e.bus.hotBattery,['BATTERY'],{volts:nodes.BATTERY.volts});
-  edge('BATTERY','HOT_BATTERY_BUS',e.bus.hotBattery,'UNSWITCHED');
+  // A live battery charger can supply HOT BATTERY BUS even when the cell
+  // charge is exhausted. Keep charger and battery as distinct source nodes.
+  const chargerFeed=e.feed.chargerSource;
+  node('CHARGER','DC',chargerFeed!==null,chargerFeed?[chargerFeed]:[],{volts:28},
+   'TRAINING_CHARGE_CAPABILITY_NOT_MEASURED_CURRENT');
+  edge('GROUND_SERVICE','CHARGER',chargerFeed==='GROUND_SERVICE','CHARGER_AC_FEED');
+  edge('MAIN_2','CHARGER',chargerFeed==='MAIN_2','CHARGER_ALTERNATE_FEED');
+  const hotBatterySource=e.feed.hotBatterySource;
+  const hotBatteryVolts=hotBatterySource==='CHARGER'?28:nodes.BATTERY.volts;
+  node('HOT_BATTERY_BUS','DC',e.bus.hotBattery,hotBatterySource?[hotBatterySource]:[],
+   {volts:hotBatteryVolts});
+  edge('BATTERY','HOT_BATTERY_BUS',hotBatterySource==='BATTERY','UNSWITCHED');
+  edge('CHARGER','HOT_BATTERY_BUS',hotBatterySource==='CHARGER','CHARGER_FEED');
   node('SWITCHED_HOT_BATTERY_BUS','DC',e.bus.switchedHotBattery,['HOT_BATTERY_BUS'],{volts:nodes.HOT_BATTERY_BUS.volts});
   edge('HOT_BATTERY_BUS','SWITCHED_HOT_BATTERY_BUS',c.batterySwitch,'BATTERY_SWITCH');
   const forcedBattery=c.standbySelector==='BAT';
   const batteryFeed=forcedBattery?'HOT_BATTERY_BUS':e.feed.tr.TR3?'TR3':'HOT_BATTERY_BUS';
   const batteryVolts=nodes[batteryFeed].volts;
   node('BATTERY_BUS','DC',e.bus.battery,e.bus.battery?[batteryFeed]:[],{volts:batteryVolts});
-  edge('TR3','BATTERY_BUS',!forcedBattery&&e.feed.tr.TR3,'NORMAL_BATTERY_BUS');
-  edge('HOT_BATTERY_BUS','BATTERY_BUS',forcedBattery||(!e.feed.tr.TR3&&c.batterySwitch),'BATTERY_BUS_CONTROL');
+  edge('TR3','BATTERY_BUS',e.bus.battery&&!forcedBattery&&c.batterySwitch&&e.feed.tr.TR3,
+   'BATTERY_SWITCH_CONTROLLED_TR3_RELAY');
+  edge('HOT_BATTERY_BUS','BATTERY_BUS',e.bus.battery&&
+   (forcedBattery||(!e.feed.tr.TR3&&c.batterySwitch)),'BATTERY_BUS_CONTROL');
   const normalStandby=e.feed.standbyFeed==='TRANSFER1_DC1';
   const unknownStandby=e.bus.acStandby===null||e.bus.dcStandby===null;
   const batteryStandby=!normalStandby&&c.standbySelector!=='OFF'&&!unknownStandby&&
@@ -125,10 +138,6 @@
   edge('INVERTER','AC_STANDBY',unknownStandby?null:batteryStandby,'ALTERNATE_STANDBY');
   edge('DC_1','DC_STANDBY',normalStandby,'NORMAL_STANDBY');
   edge('BATTERY_BUS','DC_STANDBY',unknownStandby?null:batteryStandby,'ALTERNATE_STANDBY');
-  const chargerFeed=e.bus.groundService?'GROUND_SERVICE':e.bus.main2?'MAIN_2':null;
-  node('CHARGER','DC',chargerFeed!==null,chargerFeed?[chargerFeed]:[],null,'CHARGE_CAPABILITY_ONLY_NO_CHARGING_CURRENT_MODEL');
-  edge('GROUND_SERVICE','CHARGER',chargerFeed==='GROUND_SERVICE','CHARGER_AC_FEED');
-  edge('MAIN_2','CHARGER',chargerFeed==='MAIN_2','CHARGER_ALTERNATE_FEED');
   // Sensor data never energizes a bus. It only replaces numbers on an already
   // energized authoritative node, and never resolves a source/effectivity gap.
   for(const id of Object.keys(measurements))if(!nodes[id])throw Error('Unknown sensor '+id);
