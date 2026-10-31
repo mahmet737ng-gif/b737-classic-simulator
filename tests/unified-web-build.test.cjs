@@ -142,9 +142,9 @@ test('PERF-0008 creates real incremental visual/electrical/dynamics/messaging te
 test('PERF-0009 isolates original real Overhead controls, lamps, and V7 kernels without altering source',()=>{
  const builder=read('tools/build-overhead-real-lanes-v9.cjs');
  const runtime=read('panel-mosaic-lab/cockpit/overhead-real-v9.js');
- assert.match(builder,/overhead-real-f-v9.html/);
- assert.match(builder,/overhead-real-g-v9.html/);
- assert.match(builder,/overhead-real-h-v9.html/);
+ assert.match(builder,/path\.join\(out,'overhead-real-v9-meta.json'\)/);
+ assert.match(builder,/path\.join\(out,'overhead-real-v9-meta.json'\)/);
+ assert.match(builder,/path\.join\(out,'overhead-real-v9-meta.json'\)/);
  assert.match(builder,/guard-owner18-v1.js/);
  assert.match(builder,/rotary-guards.js/);
  assert.match(runtime,/instance-faces.json/);
