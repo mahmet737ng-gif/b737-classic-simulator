@@ -22,15 +22,15 @@ test('public build reduces requests, keeps owner mounts exact and keys other scr
 
 test('published compiled cockpit retains the visible recharge command and its actual ECU handler',()=>{
  const artifact=prepare(root),html=artifact.html,entry=read(ENTRY);
- assert.match(entry,/<button id="liveBatteryRecharge"\\b[^>]*>BAT RECHARGE<\\/button>/);
+ assert.match(entry,/<button id="liveBatteryRecharge"\b[^>]*>BAT RECHARGE<\/button>/);
  assert.match(entry,/<script id="battery-recharge-prepaint-v4">/);
- assert.match(html,/<button id="liveBatteryRecharge"\\b[^>]*>BAT RECHARGE<\\/button>/);
+ assert.match(html,/<button id="liveBatteryRecharge"\b[^>]*>BAT RECHARGE<\/button>/);
  assert.match(html,/<script id="battery-recharge-prepaint-v4">/);
  assert.equal((html.match(/id="liveBatteryRecharge"/g)||[]).length,1,'No duplicated BAT RECHARGE button');
  assert.ok(html.indexOf('battery-recharge-prepaint-v4')<html.indexOf('<main>'),'Instructor button is repaired synchronously ahead of the cockpit startup');
- const scripts=artifact.bundles.map(b=>b.content).join('\\n')+
-  '\\n'+read('panel-mosaic-lab/cockpit/battery-recharge-header-v1.js');
- assert.match(scripts,/rechargeLiveBattery|installed\\.recharge\\(\\)/,'Button retains the live ECU recharge path');
+ const scripts=artifact.bundles.map(b=>b.content).join('\n')+
+  '\n'+read('panel-mosaic-lab/cockpit/battery-recharge-header-v1.js');
+ assert.match(scripts,/rechargeLiveBattery|installed\.recharge\(\)/,'Button retains the live ECU recharge path');
  assert.match(scripts,/BAT RECHARGE/);
 });
 test('revisioned JS/CSS reuse cache, a new revision downloads, and mutable configuration stays fresh with offline recovery',async()=>{
