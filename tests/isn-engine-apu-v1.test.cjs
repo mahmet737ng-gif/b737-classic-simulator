@@ -46,12 +46,15 @@ assert.equal(o.pneumatics.bleed.apuBleedValveOpen, false);
 assert.equal(o.warnings.audio.active.some(x => x.id === 'fireBell'), false);
 
 o = s.send(observed('engine1', true));
-assert.equal(o.electrical.bus.generator1, true, 'GEN1 readiness follows independently observed engine1 state');
+assert.equal(o.electrical.bus.generator1, false,
+  'Engine running is generator readiness, not a closed GEN1 breaker');
 assert.equal(o.electrical.bus.generator2, false);
 assert.equal(o.pneumatics.bleed.engine1ValveOpen, true);
 assert.equal(o.pneumatics.bleed.engine2ValveOpen, false);
-assert.ok(o.recentEvents.at(-1).changes.some(x => x.path === 'electrical.bus.generator1'));
 assert.ok(o.recentEvents.at(-1).changes.some(x => x.path === 'pneumatics.bleed.engine1ValveOpen'));
+o = s.send(power({type:'SELECT_SOURCE', source:'GEN1', side:1}));
+assert.equal(o.electrical.bus.generator1, true, 'GEN1 closes only after explicit GEN1 source selection');
+assert.ok(o.recentEvents.at(-1).changes.some(x => x.path === 'electrical.bus.generator1'));
 
 o = s.send(pack({type:'PUMP_SWITCH', id:'fuel.main1FwdPump', value:true}));
 assert.equal(o.fuelAndHydraulicPumps['fuel.main1FwdPump'].operating, null,
@@ -100,8 +103,10 @@ assert.equal(o.electrical, null, 'Withdrawing sensor truth must withhold stale d
 assert.equal(o.pneumatics, null);
 o = s.send(observed('engine2', true));
 assert.equal(o.status, 'SOURCE_GATED_ACTIVE');
-assert.equal(o.electrical.bus.generator2, true);
+assert.equal(o.electrical.bus.generator2, false, 'Running engine2 does not auto-close GEN2 breaker');
 assert.equal(o.pneumatics.bleed.engine2ValveOpen, true);
+o = s.send(power({type:'SELECT_SOURCE', source:'GEN2', side:2}));
+assert.equal(o.electrical.bus.generator2, true);
 
 const forbidden = [
   {type:'SOURCE_OBSERVATION', device:'apu', running:true},
