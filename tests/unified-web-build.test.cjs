@@ -109,3 +109,15 @@ test('PERF-0006 keeps production protected and publishes two opt-in diagnostic r
  assert.doesNotMatch(read('panel-mosaic-lab/cockpit/index.html'),/perf-diagnostic-v6/);
  assert.doesNotMatch(read('panel-mosaic-lab/cockpit/overhead-stage.html'),/perf-diagnostic-v6/);
 });
+
+test('PERF-0007 source-only Overhead builds native HTML inputs with zero browser scripts and no protected source edits',()=>{
+ const src=read('tools/build-overhead-ui-only.cjs');
+ assert.match(src,/overhead-ui-only.html/);
+ assert.match(src,/data-no-js/);
+ assert.match(src,/model\.js/);
+ assert.match(src,/assert\.equal\(toggle\.controls\.length,58/);
+ assert.match(src,/assert\.equal\(rotaryControls\.length,20/);
+ assert.match(src,/assert\.equal\(overheadGuards\.length,13/);
+ assert.ok(!read('panel-mosaic-lab/cockpit/overhead-stage.html').includes('overhead-ui-only'));
+ assert.ok(!read('panel-mosaic-lab/cockpit/index.html').includes('overhead-ui-only'));
+});

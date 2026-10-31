@@ -76,9 +76,42 @@ const server=http.createServer((req,res)=>{
   assert.equal(bytes.toString('ascii',0,4),'RIFF');assert.equal(bytes.toString('ascii',8,12),'WEBP');
   const output=path.join(root,'panel-mosaic-lab/cockpit/assets/overhead-composite-test.webp');
   fs.mkdirSync(path.dirname(output),{recursive:true});fs.writeFileSync(output,bytes);
+  require('./build-overhead-ui-only.cjs').build();
   const measures={width:2220,height:3312,bytes:bytes.length,quality:0.85,source:'original locked atlas via browser screenshot',experimental:true};
   fs.writeFileSync(path.join(root,'panel-mosaic-lab/cockpit/composite-test-meta.json'),JSON.stringify(measures,null,2)+'\n');
   console.log('COMPOSITE A/B WebP created '+Math.round(bytes.length/1024)+' KiB from approved 2220x3312 atlas');
+  // Pure UI: verify real native interactions, no scripts/iframe/backend.
+  const pure=await browser.newPage({viewport:{width:1300,height:940}});
+  await pure.goto(base+'overhead-ui-only.html',{waitUntil:'domcontentloaded',timeout:30000});
+  const stat=await pure.evaluate(()=>({
+   scripts:document.scripts.length,frames:document.querySelectorAll('iframe').length,
+   toggles:document.querySelectorAll('.toggle').length,
+   rotaries:document.querySelectorAll('.rotary').length,
+   guards:document.querySelectorAll('.guard').length,
+   artwork:getComputedStyle(document.getElementById('overheadPurePanel')).backgroundImage
+  }));
+  assert.deepEqual([stat.scripts,stat.frames,stat.toggles,stat.rotaries,stat.guards],[0,0,58,20,13]);
+  assert.ok(stat.artwork.includes('overhead-composite-test.webp'));
+  const firstToggle=pure.locator('.toggle').first();
+  const before=await firstToggle.locator('input:checked').inputValue();
+  await firstToggle.locator('label.cycle:visible').click();
+  const after=await firstToggle.locator('input:checked').inputValue();
+  assert.notEqual(before,after,'CSS-only toggle must actually change its native checked state');
+  const firstRotary=pure.locator('.rotary').first();
+  const rBefore=await firstRotary.locator('input:checked').inputValue();
+  await firstRotary.locator('label.cycle:visible').click();
+  const rAfter=await firstRotary.locator('input:checked').inputValue();
+  assert.notEqual(rBefore,rAfter,'CSS-only rotary must turn to next detent');
+  const firstGuard=pure.locator('.guard').first();
+  await firstGuard.locator('summary').click();
+  assert.ok(await firstGuard.evaluate(n=>n.open),'Native guard can open');
+  await firstGuard.locator('.choices label').last().click();
+  assert.equal(await firstGuard.locator('input:checked').inputValue(),
+   await firstGuard.locator('.choices label').last().textContent());
+  await firstGuard.locator('summary').click();
+  assert.equal(await firstGuard.evaluate(n=>n.open),false,'Native guard can close');
+  console.log('PERF-0007 no-script interactive Overhead verified '+JSON.stringify(stat));
+  await pure.close();
   // The comparison must run the real whole cockpit, not just a static photo.
   const test=await browser.newPage({viewport:{width:1580,height:920}});
   await test.goto(base+'unified-composite-test.html',{waitUntil:'domcontentloaded',timeout:60000});
