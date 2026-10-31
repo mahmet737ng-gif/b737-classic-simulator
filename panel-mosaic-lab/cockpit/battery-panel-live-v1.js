@@ -43,10 +43,37 @@
   readout.setAttribute('aria-label','Live aircraft battery voltage current charge and consumption');
   readout.style.cssText='position:absolute;top:8px;left:8px;z-index:1900;pointer-events:none;max-width:calc(100% - 16px);padding:7px 11px;border:1px solid #668270;border-radius:7px;background:#0b191eee;color:#d9f2de;font:12px/1.6 system-ui;box-shadow:0 2px 9px #0005';
   readout.innerHTML='<b>BATTERY <span data-battery-percent></span></b> <span data-battery-status></span><div style="display:flex;gap:12px;flex-wrap:wrap;font:600 15px/1.7 monospace"><span data-battery-volts></span><span data-battery-amps></span><span data-battery-watts></span></div><div style="font-size:10px;color:#adc0c1"><span data-battery-used></span> · 40 Ah مدل آموزشی</div>';
+  const recharge=document.createElement('button');
+  recharge.id='liveBatteryRecharge';recharge.type='button';
+  recharge.textContent='BAT RECHARGE';
+  recharge.setAttribute('aria-label','Recharge training battery to 100 percent');
+  recharge.style.cssText='display:block;margin-top:6px;padding:5px 10px;min-height:29px;width:100%;border:1px solid #679788;border-radius:5px;background:#1a3a3c;color:#e1fff0;font:600 12px system-ui;cursor:pointer;pointer-events:auto;touch-action:manipulation';
+  // Only the button accepts pointer input; the cockpit behind the readout
+  // remains usable. Prevent panel gesture/click handlers from firing.
+  for(const type of ['pointerdown','mousedown','touchstart','dblclick'])recharge.addEventListener(type,event=>event.stopPropagation());
+  recharge.addEventListener('click',event=>{
+   event.preventDefault();event.stopPropagation();
+   try{
+    const p=owner();
+    if(!p?.rechargeLiveBattery)throw Error('Battery owner unavailable');
+    p.rechargeLiveBattery();
+    lastInputs=null;lastAt=Date.now();
+    tick();save();
+    recharge.title='Training battery recharged to 100%';
+   }catch(error){console.error('Battery recharge:',error);recharge.title=error.message;}
+  });
+  readout.append(recharge);
   viewport.append(readout);
  }
  function paint(){
   mount();if(!readout||!current)return;
+  // Use the evaluated, connected source, not the engine-running bit:
+  // a disconnected/failed generator must not dismiss the battery HUD.
+  const electrical=owner()?.getState?.()?.state?.electrical;
+  const generatorConnected=[1,2].some(side=>
+   ['GEN1','GEN2','APU'].includes(electrical?.source?.[side])&&
+   electrical?.bus?.['generator'+side]===true);
+  readout.style.display=generatorConnected?'none':'';
   const set=(key,text)=>{readout.querySelector('[data-battery-'+key+']').textContent=text;};
   set('percent',current.percent.toFixed(2)+'%');
   set('volts',current.voltageV.toFixed(2)+' V');
