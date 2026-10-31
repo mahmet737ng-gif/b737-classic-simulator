@@ -40,6 +40,8 @@ jobs:
         shell: pwsh
         run: |
           $PSNativeCommandUseErrorActionPreference = $true
+          python -m pip install Pillow==12.3.0 --disable-pip-version-check
+          python tools/build-asp-source-masks.py --check
           node --check desktop/main.cjs
           node --check desktop/preload.cjs
           node --test desktop/*.test.cjs

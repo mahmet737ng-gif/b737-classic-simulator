@@ -7,6 +7,7 @@
  const state=model.create(),mounted=new Map(),ns='http://www.w3.org/2000/svg';
  const ASSETS=Object.freeze({mic:['mic-off.png','mic-on.png'],volume:['volume-glass-off.png','volume-glass-on.png']});
  // Common source-space pivots; transparent padding is excluded from sizing.
+ const SOURCE_MASKS=Object.freeze({"mic-off.png":{"sha256":"b68d4f30f7dcef356c1aa194cd7fed55241091f5d74f9efc0147f22f48dc2b2b","mask":{"x":358,"y":130,"w":540,"h":996,"cx":627,"cy":627,"width":1254,"height":1254,"coverage":0.3427907887741683}},"mic-on.png":{"sha256":"0bb7a727395212b5b578d56186d19565eee8afe7248920f9a5bd96a78a123874","mask":{"x":356,"y":128,"w":542,"h":998,"cx":626,"cy":626,"width":1254,"height":1254,"coverage":0.34433989860834485}},"volume-glass-off.png":{"sha256":"9f67035dc7fcdc2ca861d9d48ad4c9dd93309a718a9a4c5fb29445ac8f852276","mask":{"x":158,"y":154,"w":938,"h":936,"cx":626,"cy":621,"width":1254,"height":1254,"coverage":0.47327976313118597}},"volume-glass-on.png":{"sha256":"450d942811e7b3e6359f503b7095b15363910198ef1d4c1d115e412f5eae2a24","mask":{"x":156,"y":152,"w":944,"h":942,"cx":627,"cy":622,"width":1254,"height":1254,"coverage":0.4798653876971681}}});
  const SOURCE=Object.freeze({mic:{size:1254,pivot:[627,626.5],extent:1015},volume:{size:1254,pivot:[627,621],extent:990}});
  const registrar=root.B737ASPSocketRegistrationV2;
  const OBS_FRAME=root.B737ASPOnlyObserver===true;
@@ -53,6 +54,11 @@
  async function silhouette(url){
   const key=new URL(url,document.baseURI).href;
   if(maskTasks.has(key))return maskTasks.get(key);
+  const name=new URL(key).pathname.split('/').at(-1),certified=SOURCE_MASKS[name];
+  if(certified&&key===new URL(assetRoot+'assets/asp-controls-v1/'+name,document.baseURI).href){
+   // CI regenerates this exact mask with registrar.mask from the pinned PNG.
+   const task=Promise.resolve(Object.freeze({...certified.mask}));maskTasks.set(key,task);return task;
+  }
   const task=(async()=>{
   const photo=new Image();photo.src=key;
   if(photo.decode)await photo.decode();
