@@ -31,9 +31,9 @@
     {
       "id": "INDEX",
       "title": "INIT/REF INDEX",
-      "folio": "11.40.5",
-      "pdfPageNear": 1557,
-      "sourceStatus": "FCOM_11.40.5_TEXT_EXTRACTED_IMAGE_AUDIT_PENDING",
+      "folio": "11.40.6",
+      "pdfPageNear": 1558,
+      "sourceStatus": "FCOM_11.40.6_FIGURE_PROMPTS_REVIEWED_OPTION_EFFECTIVITY_PENDING",
       "layoutGrade": "SOURCE_NOT_VERIFIED",
       "behaviorGrade": "UNVERIFIED",
       "fullGrade": "NOT_VERIFIED",
@@ -121,7 +121,7 @@
         },
         {
           "lsk": "L6",
-          "label": "<OFFSET",
+          "label": "",
           "field": null,
           "format": null,
           "hasNavigateAction": true,

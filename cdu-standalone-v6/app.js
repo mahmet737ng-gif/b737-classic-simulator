@@ -82,6 +82,13 @@ function update(){const box=$('fmc-lines'); const frame=document.createElement('
    const labelTop=((cy-13-screenTop)/screenHeight*100); const valueTop=((cy+10-screenTop)/screenHeight*100);
    let labelL=pair?.[0]?.label||'',labelR=pair?.[1]?.label||'';
    let valueL=displayCell(pair?.[0]),valueR=displayCell(pair?.[1]);
+   if(state.page==='INDEX'){
+     // The FCOM INDEX figure has large selectable prompts on the LSK rows,
+     // with no small field titles. L6 is absent in the photographed variant.
+     valueL=row===6?(state.indexOffsetAvailable===true?'<OFFSET':''):labelL;
+     valueR=row===6&&state.fmcOnGroundVerified===false?'NAV STATUS>':labelR;
+     labelL='';labelR='';
+   }
    if(state.page==='IDENT'){
      const sources=state.preflightEvidence||{};
      const ids=[['MODEL','ENG_RATING'],['NAV_DATA','ACTIVE'],[null,'INACTIVE'],
@@ -183,7 +190,9 @@ window.CDU_PROCEDURE_AUDIT_V1=procedureLedger;
 window.CDU_SCREEN_QA_V1=Object.freeze({
  getCurrent:()=>contract.grid(pages,state.page,{
    readValue:(field,page)=>core.readValue(state,field,page),
-   readScratch:()=>state.scratch,readMessage:()=>state.message
+   readScratch:()=>state.scratch,readMessage:()=>state.message,
+   indexOffsetAvailable:state.indexOffsetAvailable,
+   fmcOnGroundVerified:state.fmcOnGroundVerified
  }),
  getPage:id=>contract.compile(pages,id),
  getMasterAudit:()=>contract.audit(pages),

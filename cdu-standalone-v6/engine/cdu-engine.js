@@ -110,6 +110,19 @@ function selectDepArrAirport(st,pages,key){
  choose(st,pages,select.page);
 }
 function pressLSK(st,pages,key){st.lastLSK=key;const def=pages[st.page];if(!def)return;
+ if(st.page==='INDEX'){
+  // FCOM 11.40.6-7: OFFSET is an installed option, while SUPP on R1 is
+  // ground-only. Unknown ground state must never be treated as verified ground.
+  if(key==='L6'&&st.indexOffsetAvailable!==true){addMessage(st,'KEY INACTIVE');return;}
+  if(key==='R1'&&st.scratch==='SUPP'&&st.fmcOnGroundVerified===true){
+   st.scratch='';choose(st,pages,'SUPP_NAV');return;
+  }
+  if(key==='R6'){
+   const target=st.fmcOnGroundVerified===false?'NAV_STATUS':'MAINT';
+   if(pages[target])choose(st,pages,target);else addMessage(st,'KEY INACTIVE');
+   return;
+  }
+ }
  if(st.page==='DEP_ARR'){selectDepArrAirport(st,pages,key);return;}
  const [side,number]=[key[0],Number(key[1])];const item=def.rows[number-1]?.[side==='L'?0:1];
  if(!item){addMessage(st,'KEY INACTIVE');return;}
@@ -140,9 +153,11 @@ function render(st,pages){const p=pages[st.page];if(!p)return Array(14).fill('')
  lines[0]=title.slice(0,18).padEnd(20,' ')+((p.page_number||1)+'/'+p.page_count).padStart(4,' ');
  for(let i=0;i<6;i++){
    const pair=p.rows[i];const left=pair[0],right=pair[1];
-   lines[1+i*2]=pairLine(left.label,right.label);
+  const index=st.page==='INDEX';
+  lines[1+i*2]=index?'':pairLine(left.label,right.label);
    const display=c=>c.field?(readValue(st,c.field,st.page)||(c.required?'□□□□':'-----')):shown(st,c.value,st.page);
-   lines[2+i*2]=pairLine(display(left),display(right));
+  lines[2+i*2]=index?pairLine(i===5?(st.indexOffsetAvailable===true?'<OFFSET':''):left.label,
+   i===5&&st.fmcOnGroundVerified===false?'NAV STATUS>':right.label):pairLine(display(left),display(right));
  }
  lines[13]=st.message||st.scratch||'';
  return lines.map(l=>String(l).slice(0,24)); }

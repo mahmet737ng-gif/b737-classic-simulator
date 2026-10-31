@@ -7,6 +7,7 @@ const read=x=>fs.readFileSync(path.join(ROOT,x),'utf8');
 const compositor=require('../../../cdu-standalone-v6/engine/screen-compositor-v1.js');
 const contract=require('../fcom-screen-contract-v1.js');
 const pages=JSON.parse(read('cdu-standalone-v6/data/page-definitions.json')).pages;
+const core=require('../../../cdu-standalone-v6/engine/cdu-engine.js');
 const manifest=JSON.parse(read('engine/ch11/master-screen-registry-v1.json'));
 
 function element(type,text){
@@ -99,12 +100,31 @@ test('Both real CDU hosts load authoritative compositor before their application
  assert.doesNotMatch(app,/window.CDU_STAGE5_API\.paint\(box\)/);
 });
 
-test('INIT/REF INDEX now follows source FCOM folio 11.40.5 navigation labels',()=>{
+test('INIT/REF INDEX matches the FCOM 11.40.6 figure and six physical LSK rows',()=>{
  const x=contract.compile(pages,'INDEX');
- assert.equal(x.source.folio,'11.40.5');
- assert.equal(x.source.pdfPageNear,1557);
+ assert.equal(x.source.folio,'11.40.6');
+ assert.equal(x.source.pdfPageNear,1558);
  assert.deepEqual(x.grid.pairs.map(pair=>pair.map(y=>y.label)),[
   ['<IDENT','NAV DATA>'],['<POS',''],['<PERF',''],
-  ['<TAKEOFF',''],['<APPROACH',''],['<OFFSET','MAINT>']]);
+  ['<TAKEOFF',''],['<APPROACH',''],['','MAINT>']]);
+ const figure=contract.grid(pages,'INDEX');
+ assert.equal(figure.lines[1].trim(),'');
+ assert.equal(figure.lines[2].slice(0,6),'<IDENT');
+ assert.equal(figure.lines[2].slice(-9),'NAV DATA>');
+ assert.equal(figure.lines[12].trim(),'MAINT>');
+ const optional=contract.grid(pages,'INDEX',{indexOffsetAvailable:true,fmcOnGroundVerified:false});
+ assert.equal(optional.lines[12].slice(0,7),'<OFFSET');
+ assert.equal(optional.lines[12].slice(-11),'NAV STATUS>');
  assert.equal(x.verification.full,'NOT_VERIFIED');
+});
+test('INDEX LSK routes respect the ground and installed-option gates',()=>{
+ const basic=core.makeState('INDEX');
+ core.pressLSK(basic,pages,'L3');assert.equal(basic.page,'PERF_INIT');
+ const offset=core.makeState('INDEX');
+ core.pressLSK(offset,pages,'L6');assert.equal(offset.page,'INDEX');
+ offset.indexOffsetAvailable=true;core.pressLSK(offset,pages,'L6');assert.equal(offset.page,'OFFSET');
+ const supp=core.makeState('INDEX');supp.scratch='SUPP';supp.fmcOnGroundVerified=true;
+ core.pressLSK(supp,pages,'R1');assert.equal(supp.page,'SUPP_NAV');assert.equal(supp.scratch,'');
+ const unknown=core.makeState('INDEX');unknown.scratch='SUPP';
+ core.pressLSK(unknown,pages,'R1');assert.equal(unknown.page,'NAV_DATA');
 });

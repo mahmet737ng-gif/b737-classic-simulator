@@ -48,7 +48,7 @@
     pairs:rows,keys,centralFields:id==='DEP_ARR'?{row1:'ORIGIN',row2:'DEST',row5:'OTHER'}:null},
    variant,issues};
  }
- function grid(pages,id,{readValue,readScratch,readMessage}={}){
+ function grid(pages,id,{readValue,readScratch,readMessage,indexOffsetAvailable,fmcOnGroundVerified}={}){
   const spec=compile(pages,id);
   const surface=Array.from({length:ROWS},()=>Array(COLUMNS).fill(' '));
   const issues=[...spec.issues];
@@ -90,11 +90,15 @@
      return norm(cell.value);
     };
     const labelY=1+2*i,valueY=2+2*i;
-    put(labelY,0,l.label,l.lsk+'_LABEL');
-    put(labelY,Math.max(12,COLUMNS-r.label.length),r.label,r.lsk+'_LABEL');
+    if(id!=='INDEX'){
+     put(labelY,0,l.label,l.lsk+'_LABEL');
+     put(labelY,Math.max(12,COLUMNS-r.label.length),r.label,r.lsk+'_LABEL');
+    }
     const lv=display(l),rv=display(r);
-    put(valueY,0,lv,l.lsk+'_VALUE');
-    put(valueY,Math.max(12,COLUMNS-rv.length),rv,r.lsk+'_VALUE');
+    const left=id==='INDEX'?(i===5?(indexOffsetAvailable===true?'<OFFSET':''):l.label):lv;
+    const right=id==='INDEX'?(i===5&&fmcOnGroundVerified===false?'NAV STATUS>':r.label):rv;
+    put(valueY,0,left,l.lsk+'_VALUE');
+    put(valueY,Math.max(12,COLUMNS-right.length),right,r.lsk+'_VALUE');
    }
   }
   const msg=typeof readMessage==='function'?norm(readMessage()):'';
