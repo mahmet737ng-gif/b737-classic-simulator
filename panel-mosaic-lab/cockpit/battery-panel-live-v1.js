@@ -51,16 +51,16 @@
   // Only the button accepts pointer input; the cockpit behind the readout
   // remains usable. Prevent panel gesture/click handlers from firing.
   for(const type of ['pointerdown','mousedown','touchstart','dblclick'])recharge.addEventListener(type,event=>event.stopPropagation());
+  // Unified recharge handler is also exposed to a separately loaded HUD
+  // controller. Keeping one owner avoids duplicate ticks on a single click.
   recharge.addEventListener('click',event=>{
    event.preventDefault();event.stopPropagation();
-   try{
-    const p=owner();
-    if(!p?.rechargeLiveBattery)throw Error('Battery owner unavailable');
-    p.rechargeLiveBattery();
-    lastInputs=null;lastAt=Date.now();
-    tick();save();
-    recharge.title='Training battery recharged to 100%';
-   }catch(error){console.error('Battery recharge:',error);recharge.title=error.message;}
+   try{rechargeBattery();}
+   catch(error){
+    console.error('Battery recharge:',error);
+    recharge.title=String(error.message||error);
+    recharge.textContent='CHARGE ERROR';
+   }
   });
   readout.append(recharge);
   viewport.append(readout);
@@ -83,6 +83,26 @@
   set('status',current.status==='EMPTY'?'باتری خالی':current.status==='CHARGING'?'در حال شارژ':current.status==='DISCHARGING'?'در حال مصرف':'آماده');
   readout.dataset.status=current.status;readout.dataset.restored=String(restored);
   readout.style.borderColor=current.percent<=10?'#da6c45':'#668270';
+ }
+ function rechargeBattery(){
+  // Instructor-only instant top-up: no accelerated time and no fake display.
+  // The ECU session owns chargeAh; persistence reads that same session.
+  if(!attached)tick();
+  const p=owner();
+  if(!p?.rechargeLiveBattery)throw Error('Live battery charge command unavailable');
+  const result=p.rechargeLiveBattery();
+  if(!result||result.percent<99.999)throw Error('Battery ECU did not accept full recharge');
+  current=result;
+  lastInputs=null;lastAt=Date.now();
+  paint();power();
+  save();
+  const button=readout?.querySelector('#liveBatteryRecharge');
+  if(button){
+   button.textContent='BAT RECHARGE';
+   button.title='Charge restored to 100% in electrical ECU and saved';
+  }
+  root.dispatchEvent(new CustomEvent('b737:battery-recharged',{detail:copy(result)}));
+  return copy(result);
  }
  function power(){
   const p=owner(),b=p.getState().state.electrical.bus,
@@ -139,6 +159,6 @@
  document.getElementById('overheadFrame')?.addEventListener('load',()=>{lastPower=null;start();});
  document.addEventListener('visibilitychange',()=>{tick();save();});
  root.addEventListener('pagehide',()=>{tick();save();});
- root.B737InstalledBattery=Object.freeze({snapshot:()=>current?copy(current):null});
+ root.B737InstalledBattery=Object.freeze({snapshot:()=>current?copy(current):null,recharge:rechargeBattery,refresh:tick});
  start();
 })(window);
