@@ -75,7 +75,7 @@
    put(2,0,'<DEP','L1');put(2,10,origin,'ORIGIN');put(2,20,'ARR>','R1');
    put(4,10,dest,'DEST');put(4,20,'ARR>','R2');
    put(10,0,'DEP','OTHER_DEP');put(10,10,'OTHER','OTHER');put(10,21,'ARR','OTHER_ARR');
-   put(11,0,'<----','L6');put(11,20,'---->','R6');
+   put(11,0,'<----','L6');put(11,19,'---->','R6');
   }else{
    put(0,0,head,'HEADER');
    const count=(pg.page_number||1)+'/'+(pg.page_count||1);
@@ -93,13 +93,13 @@
     const labelY=1+2*i,valueY=2+2*i;
     if(id!=='INDEX'){
      put(labelY,0,l.label,l.lsk+'_LABEL');
-     put(labelY,Math.max(12,COLUMNS-r.label.length),r.label,r.lsk+'_LABEL');
+     put(labelY,Math.max(0,COLUMNS-r.label.length),r.label,r.lsk+'_LABEL');
     }
     const lv=display(l),rv=display(r);
     const left=id==='INDEX'?(i===5?(indexOffsetAvailable===true?'<OFFSET':''):l.label):lv;
     const right=id==='INDEX'?(i===5&&fmcOnGroundVerified===false?'NAV STATUS>':r.label):rv;
     put(valueY,0,left,l.lsk+'_VALUE');
-    put(valueY,Math.max(12,COLUMNS-right.length),right,r.lsk+'_VALUE');
+    put(valueY,Math.max(0,COLUMNS-right.length),right,r.lsk+'_VALUE');
    }
   }
   const msg=typeof readMessage==='function'?norm(readMessage()):'';
