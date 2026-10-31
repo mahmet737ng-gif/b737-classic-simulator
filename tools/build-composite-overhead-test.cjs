@@ -29,10 +29,19 @@ const server=http.createServer((req,res)=>{
   await page.evaluate(async()=>{
    const images=[...document.querySelectorAll('#atlasAbsolute img.atlas-photo')];
    const files=[...new Set(images.map(img=>new URL(img.dataset.perfSource,document.baseURI).href))];
+   // Avoid a 20+ image full-resolution decode burst in headless Chrome:
+   // that could intermittently fail with EncodingError or exhaust GPU memory.
    const sources=new Map();
-   await Promise.all(files.map(async src=>{
-    const image=new Image();image.decoding='async';image.src=src;await image.decode();sources.set(src,image);
-   }));
+   for(const src of files){
+    let failure;
+    for(let attempt=0;attempt<3;attempt++){
+     try{
+      const image=new Image();image.decoding='async';image.src=src;
+      await image.decode();sources.set(src,image);failure=null;break;
+     }catch(error){failure=error;await new Promise(done=>setTimeout(done,250));}
+    }
+    if(failure)throw Error('Atlas source failed after retries: '+src+' '+failure);
+   }
    for(const img of images){
     const src=new URL(img.dataset.perfSource,document.baseURI).href;
     // Reuse decoded original textures; freeze subsequent image-loader refresh
