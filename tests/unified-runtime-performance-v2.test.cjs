@@ -79,7 +79,7 @@ test('PERF-0003 shared textures decode once for all duplicate strips and priorit
  tasks.shift()();
  assert.equal(sent.length,2,'A warmed texture URL must not start another download');
  assert.equal(repeat.dataset.perfReady,'true');
- assert.equal(runtime.stats().maxUpgrades,2,'Full quality decode concurrency must be limited');
+ assert.equal(runtime.stats().maxUpgrades,1,'Full quality decode upgrades are serialized to protect interaction latency');
 });
 test('Heavy resource-timing statistics are gated while Controls drawer is closed',()=>{
  const metrics=read(base+'performance-metrics.js');
