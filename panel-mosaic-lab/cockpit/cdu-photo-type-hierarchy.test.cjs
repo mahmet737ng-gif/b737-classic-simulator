@@ -84,6 +84,7 @@ function checkPage(id){
  assert.ok(result.labelPx>=result.fontSizePx*.60&&result.labelPx<=result.fontSizePx*.73,'reference baseline for labels preserved');
  assert.equal(result.pageLabelMultiplier,2,'field label is 2x original');
  assert.equal(result.pageValueMultiplier,1.8,'LSK text is 1.8x original');
+ assert.equal(result.entryPromptMultiplier,1,'field blanks return to baseline font');
  assert.ok(result.pageValuePx>result.fontSizePx,'scratchpad font stays independent');
  assert.ok(Math.abs(result.headerPx/result.fontSizePx-.88)<.001);
  assert.ok(Math.abs(result.promptPx/result.fontSizePx-.95)<.001);
@@ -108,6 +109,6 @@ assert.match(src,/if\(!standard\)return 0;/,'nonstandard/FCOM DEP ARR must be gu
 assert.match(src,/const TOP=\{header:\.5/,'approved LSK vertical coordinates retained');
 assert.match(src,/PHOTO_PROFILE\.lskPromptToLarge/);
 const embedded=fs.readFileSync(path.join(__dirname,'cdu-stage.html'),'utf8');
-assert.match(embedded,/cdu-screen-fit-v6\.js\?v=CDU-24COL-0006-R7-TYPE-18X-20X/);
+assert.match(embedded,/cdu-screen-fit-v6\.js\?v=CDU-24COL-0006-R8-ENTRY-BLANKS/);
 assert.doesNotMatch(src,/@font-face|BoeingCDU-Large\.ttf|\.bbox_px\s*=/);
 console.log('PASS: INDEX IDENT POS INIT RTE PERF INIT TAKEOFF LEGS: small titles, large LSK prompts, exact 24A scratchpad, untouched FCOM cells');
