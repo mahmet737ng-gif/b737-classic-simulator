@@ -165,7 +165,7 @@ function applyCDUScreenTypography(box){
 function update(){const box=$('fmc-lines'); const frame=document.createElement('div');
  const {screenTop,screenHeight}=CDU_DISPLAY_GEOMETRY;
  const page=pages[state.page]; const tag=(core.pendingCount(state)>0)?'MOD ':'ACT ';
- const header=document.createElement('div'); header.className='fmc-line fmc-header'; header.style.top=((117-screenTop)/screenHeight*100)+'%';
+ const header=document.createElement('div'); header.className='fmc-line fmc-header'; header.style.top=((110-screenTop)/screenHeight*100)+'%';
  const ht=document.createElement('span'); ht.className='fmc-header-title'; ht.textContent=(TITLE_PLAIN.has(state.page)?'':tag)+page.title;
  const hc=document.createElement('span'); hc.className='fmc-header-count'; hc.textContent=(page.page_number||1)+'/'+page.page_count; header.appendChild(ht); header.appendChild(hc); frame.appendChild(header);
  const n1=v19SafeN1();
@@ -200,7 +200,13 @@ function update(){const box=$('fmc-lines'); const frame=document.createElement('
    }
    if(row===1&&state.depArrSelection&&['DEPARTURES','ARRIVALS'].includes(state.page))
      valueL=state.depArrSelection.airport||valueL;
-   if(n1&&state.page==='N1_LIMIT'&&row===1){labelR='20K N1 EST';valueR=n1.maxN1Pct.toFixed(1)+'% EST';}
+   // Navigation prompts are selectable full-size LSK values, not field titles.
+    if(state.page!=='INDEX'){
+      const left=pair?.[0],right=pair?.[1];
+      if(left?.action&&!left.field&&!left.value&&labelL&&!valueL){valueL=labelL;labelL='';}
+      if(right?.action&&!right.field&&!right.value&&labelR&&!valueR){valueR=labelR;labelR='';}
+    }
+    if(n1&&state.page==='N1_LIMIT'&&row===1){labelR='20K N1 EST';valueR=n1.maxN1Pct.toFixed(1)+'% EST';}
    if(n1&&state.page==='TAKEOFF'&&row===3){labelL='TO N1 EST';valueL=n1.maxN1Pct.toFixed(1)+'% EST';}
    frame.appendChild(makePairRow(labelTop,labelL,labelR,false,true));
    const valueLine=makePairRow(valueTop,valueL,valueR);
