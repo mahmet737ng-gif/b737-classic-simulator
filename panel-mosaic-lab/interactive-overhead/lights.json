@@ -1721,7 +1721,9 @@
         317
       ],
       "rule": "emergency",
-      "controls": [],
+      "controls": [
+        "emergency-exit-lights"
+      ],
       "sensor": null,
       "provenance": {
         "source_id": "FCOM-SEPEHRAN-1937",
