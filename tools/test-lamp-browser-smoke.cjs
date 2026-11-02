@@ -45,7 +45,7 @@ const {chromium}=require('playwright');
     const litImage=lamp?.querySelector('img.light-face[data-frame="ON"]');
     const darkImage=lamp?.querySelector('img.light-face[data-frame="OFF"]');
     const snap=window.B737OverheadLights.getState();
-    const nut=document.querySelector('#oh14EmergencyExitPhysical .oh14-photo-lever-sprite');
+    const nut=document.querySelector('#oh14EmergencyExitPhysical .oh14-small-silver-toggle');
     const glass=darkImage||null;
     return {position:snap.context.emergencyExitLightsPosition,
      illuminated:snap.lights['emergency-not-armed'],lampFrame:lamp?.dataset.frame,
@@ -53,7 +53,8 @@ const {chromium}=require('playwright');
      offImageOpacity:glass?getComputedStyle(glass).opacity:null,
      leverOpacity:nut?getComputedStyle(nut).opacity:null,
      leverTransform:nut?getComputedStyle(nut).transform:null,
-     leverImage:nut?getComputedStyle(nut).backgroundImage:null,
+     leverWidth:nut?nut.getBoundingClientRect().width:null,
+     leverHeight:nut?nut.getBoundingClientRect().height:null,
      darkGlassDecoded:!!(glass?.complete&&glass.naturalWidth>0)};
    });
    const initial=await sample();
@@ -126,11 +127,12 @@ const {chromium}=require('playwright');
    assert.equal(oh14.on.lampFrame,'OFF','ON detent extinguishes NOT ARMED');
    assert.equal(oh14.on.offImageOpacity,'1','Full installed dark glass must remain visible in ON and ARMED');
    assert.ok(oh14.on.darkGlassDecoded,'OFF-state glass SVG must decode and never leave an empty aperture');
-   assert.equal(oh14.armed.leverOpacity,'0','ARMED should show the original unaltered photographed lever');
-   assert.equal(oh14.on.leverOpacity,'1','ON must show physically moved photographic lever');
-   assert.equal(oh14.off.leverOpacity,'1','OFF must show physically moved photographic lever');
-   assert.notEqual(oh14.on.leverTransform,oh14.off.leverTransform,'OFF and ON must look visibly different');
-   assert.ok(oh14.on.leverImage?.includes('OH14-EMER-EXIT-795cc819a3b3.png'),'Moving lever must use authentic photographed hardware');
+   assert.equal(oh14.armed.leverOpacity,'1','ARMED must show the small neutral-position silver toggle');
+   assert.equal(oh14.on.leverOpacity,'0','ON must reveal the existing photograph of the small silver toggle');
+   assert.equal(oh14.off.leverOpacity,'1','OFF must show the little silver toggle pointing up');
+   assert.notEqual(oh14.off.leverTransform,oh14.armed.leverTransform,'OFF and ARMED must have visibly distinct lever geometry');
+   assert.ok(oh14.off.leverWidth<18,'OH14 chrome toggle must remain miniature, not be an oversized nut');
+   assert.ok(oh14.off.leverHeight<45,'OH14 silver toggle must remain short relative to its panel');
    assert.ok(oh14.visual.litSrc?.includes('oh14-not-armed-emission-on.svg'),'Luminous face must contain no painted bezel');
    assert.ok(oh14.visual.darkSrc?.includes('oh14-not-armed-emission-off.svg'),'Unlit face must contain no painted bezel');
    assert.equal(oh14.visual.fittedLayerCount,0,'OH14 must not mount a second fitted glass at all');
