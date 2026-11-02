@@ -6,6 +6,22 @@ const t=tm.controller(treg),g=gm.controller(rg,{},()=>{},mechanics),e=m.controll
 assert.equal(m.validate(reg,read('../all-overhead/atlas-layout.json'),tm.mapPoint,new Set([...treg.controls,...rg.rotaries,...rg.guards].map(c=>c.id))),true);assert.equal(reg.lights.length,112);assert.equal(Object.keys(reg.assets).length,68);
 assert.deepEqual(reg.lights.find(c=>c.id==='irs-l-align').sourceRect,[428,535,64,32]);assert.deepEqual(reg.lights.find(c=>c.id==='irs-r-align').sourceRect,[604,535,64,32]);assert.equal(reg.lights.filter(c=>c.asset==='ALIGN_WHITE').length,2,'one reusable ALIGN pair for both IRS sides');
 for(const c of reg.lights)for(const a of Object.values(reg.assets[c.asset]))assert.equal(crypto.createHash('sha256').update(fs.readFileSync(path.resolve(__dirname,a.url))).digest('hex'),a.sha256);
+// OH14 annunciator is driven by the three-position emergency exit lights switch,
+ // not by an undefined registry control. ARMED and ON extinguish NOT ARMED.
+const emergencyProbe=m.controller(reg,electrical,()=>{},pneumatics);
+emergencyProbe.setAircraftElectricalPower(true);
+assert.equal(emergencyProbe.snapshot().lights['emergency-not-armed'],false,'default ARMED must not illuminate NOT ARMED');
+emergencyProbe.setEmergencyExitLightsPosition('OFF',time);
+assert.equal(emergencyProbe.snapshot().lights['emergency-not-armed'],true,'OFF illuminates NOT ARMED when powered');
+emergencyProbe.setEmergencyExitLightsPosition('ON',time);
+assert.equal(emergencyProbe.snapshot().lights['emergency-not-armed'],false,'ON extinguishes NOT ARMED');
+emergencyProbe.setEmergencyExitLightsPosition('ARMED',time);
+assert.equal(emergencyProbe.snapshot().lights['emergency-not-armed'],false,'ARMED extinguishes NOT ARMED');
+assert.throws(()=>emergencyProbe.setEmergencyExitLightsPosition('INVALID'),/Emergency exit lights selector/);
+emergencyProbe.setEmergencyExitLightsPosition('OFF',time);
+emergencyProbe.setAircraftElectricalPower(false,time);
+assert.equal(emergencyProbe.snapshot().lights['emergency-not-armed'],false,'unpowered annunciator cannot illuminate');
+
 sync();e.evaluate(time+800);assert.equal(on('fuel-center-l'),false);assert.equal(on('hyd-eng-1'),false);assert.equal(on('yaw-damper'),false);
 t.set('fuel-center-l','OFF');sync();assert.equal(on('fuel-center-l'),false,'center pump OFF inhibits low-pressure indication');t.set('fuel-center-l','ON');sync();assert.equal(on('fuel-center-l'),true,'pressure builds');e.evaluate(time+800);assert.equal(on('fuel-center-l'),false);e.update({fuelAvailable:false},time+800);assert.equal(on('fuel-center-l'),true);e.update({fuelAvailable:true,faults:{'fuel-center-l':true}},time+800);assert.equal(on('fuel-center-l'),true,'failed pump stays low with switch ON');e.update({faults:{'fuel-center-l':false}},time+800);assert.equal(on('fuel-center-l'),false);
 t.set('fuel-1-aft','OFF');sync();assert.equal(on('fuel-1-aft'),true);t.set('fuel-1-aft','ON');sync();e.evaluate(time+800);assert.equal(on('fuel-1-aft'),false);
