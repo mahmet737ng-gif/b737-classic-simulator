@@ -22,6 +22,9 @@ const maxPad=2.5;
 const pageScope=win.location.pathname.includes('/interactive-overhead/')||win.location.pathname.endsWith('/cockpit/overhead-stage.html')?'OH':'MP';
 const own=new Map(), records=new Map(), nodes=new Map(), pending=new Map();
 const sourceCache=new Map(), blobURLs=new Map(), errors=[];
+ // OH14 NOT ARMED glass is already in the immutable OH14 photograph.
+ // Do not add a second framed SVG: lights.js owns emission-only lettering.
+ const photoGlassOnly=new Set(['emergency-not-armed']);
 let manifest, ready=false, mounts=0, renders=0, retries=0;
 let scanPending=false, listener=null;
 const keyOf=r=>r.bank==='OH'?(r.placementId==='OH07'||r.placementId==='OH08'?'OH07-08':r.placementId):r.pieceId;
@@ -151,6 +154,7 @@ async function update(id){
  }
 }
 function attach(row,node){
+ if(photoGlassOnly.has(row.id))return;
  if(nodes.has(row.id))return;
  const img=document.createElement('img');
  img.className='lamp-socket-fit-face';
@@ -216,7 +220,7 @@ async function start(){
   win.B737SocketFit=Object.freeze({
    status:()=>({enabledByDefault:true,edgeExtensionSourcePx:maxPad,sourceCount:records.size,scope:pageScope,
      expectedLocal:pageScope==='OH'?112:30,mounted:mounts,renders,
-     errors:[...errors],unmounted:[...records.values()].filter(r=>r.bank===pageScope&&!nodes.has(r.id)).map(r=>r.id),
+     errors:[...errors],emissionOnly:[...photoGlassOnly],unmounted:[...records.values()].filter(r=>r.bank===pageScope&&!photoGlassOnly.has(r.id)&&!nodes.has(r.id)).map(r=>r.id),
      maxPad,mode:win.B737LampAppearance?.getMode?.()||'BRIGHT'}),
    bounds:id=>own.get(id)||null,
    refresh:()=>{for(const id of nodes.keys()){nodes.get(id).signature='';update(id);}scheduleScan();}
