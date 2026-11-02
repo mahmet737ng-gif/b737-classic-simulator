@@ -25,7 +25,7 @@
   const emergencyLabel=document.createElement('label');emergencyLabel.textContent='EMER EXIT LIGHTS · selector (OH14) ';
   const emergencySelect=document.createElement('select');emergencySelect.id='emergencyExitLightsSelector';emergencySelect.setAttribute('aria-label','Emergency exit lights physical selector training state');
   for(const value of ['OFF','ARMED','ON']){const option=document.createElement('option');option.value=option.textContent=value;emergencySelect.append(option);}
-  emergencySelect.value=engine.snapshot().context.emergencyExitLightsPosition;
+  emergencySelect.value=model.initialContext().emergencyExitLightsPosition;
   emergencySelect.addEventListener('change',()=>engine.setEmergencyExitLightsPosition(emergencySelect.value,now()));
   emergencyLabel.append(emergencySelect);
   ui.querySelector('strong').after(emergencyLabel);
