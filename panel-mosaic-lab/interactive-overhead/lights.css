@@ -52,10 +52,7 @@ html[data-light-geometry-debug=true] .mounted-light::after{content:'';position:a
  cursor:pointer;touch-action:manipulation;outline:0;
  pointer-events:auto!important;user-select:none;
 }
-.oh14-emergency-exit-physical:hover{
- outline:1px solid rgba(150,212,240,.45);
- outline-offset:-3px;
-}
+/* Do not show a large artificial hover rectangle around aircraft hardware. */
 .oh14-emergency-exit-physical:focus-visible{
  outline:2px solid #78d5ff;outline-offset:-3px;
 }
