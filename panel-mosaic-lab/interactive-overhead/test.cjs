@@ -38,7 +38,7 @@ engine.set('apu-start','START');engine.releaseAll();assert.equal(engine.get('apu
 for(const c of registry.controls){const p=model.mapPoint(c,layout.placements.find(x=>x.id===c.placementId));assert.ok(p.diameter>0&&Number.isFinite(p.x+p.y));}
 assert.ok(events.length>0);
 const page=fs.readFileSync(path.join(__dirname,'../cockpit/overhead-stage.html'),'utf8');
-assert.ok(page.includes('app.js?v=OH14-OWNER-SILVER-0007'));
+assert.ok(page.includes('app.js?v=OH14-PHOTO-HITBOX-0008'));
 assert.ok(!page.includes('socket-cleanup-v3.js'));
 console.log('PASS 59 overhead controls with one explicitly owner-requested OH14 Small Silver actuator; other frozen toggles preserved.');
 
