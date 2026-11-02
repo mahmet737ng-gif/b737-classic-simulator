@@ -38,6 +38,9 @@ e.update({equipmentSupplyFailed:true},time);assert.equal(on('equip-supply-off'),
 // standby buses to battery. The V7 source decision is known; a completely
 // unpowered panel must not illuminate a physical STANDBY PWR OFF lamp.
 // Preserve UNKNOWN only for genuinely unresolved electrical source paths.
+// This scenario is explicitly UNPOWERED. Earlier test cases set external
+// aircraft AC power to true; reset that test input before checking dark lamps.
+e.setAircraftElectricalPower(false,time);
 e.update({engine1Running:false,engine2Running:false},time);
 const groundAuto=e.snapshot();
 assert.equal(groundAuto.electrical.bus.acStandby,false,'Classic ground AUTO standby AC is unpowered');
