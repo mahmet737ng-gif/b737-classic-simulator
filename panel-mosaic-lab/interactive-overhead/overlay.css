@@ -36,3 +36,36 @@
   display:none!important;
   pointer-events:none!important;
 }
+
+
+/* OH14-EMPTY-MOUNT-0011 — owner-requested temporary removal.
+   Remove ONLY the guarded EMER EXIT LIGHTS switch assembly.
+   Source artwork, NOT ARMED annunciator, OFF/ARMED/ON labels, registry,
+   switch-state logic, and every other physical control are untouched.
+   Pixel-coordinate projection: original OH14 source is 1074 x 1464. */
+.atlas-piece[data-key="OH14"]::after{
+ content:"";
+ position:absolute;
+ z-index:6;
+ left:41%;
+ top:11%;
+ width:30%;
+ height:51%;
+ display:block;
+ pointer-events:none!important;
+ background-image:url("data:image/webp;base64,UklGRnoBAABXRUJQVlA4IG4BAADQEwCdASp8AGoBPp1Inkylo6MiotELmLATiWlu4OcIk1M9RBLcAD3HDOELa1o5CpMYwNXYNqXdjJe98J0hlyiYqc9/JwnMKKvFCOz/e970wVvznCAeSy8YC1IEcuJISuBAWx0XCm4WI43ezFSiV02PDX8KoGlDpdz0pFzmYA+/y4b3+bS1gk6+reBsqCkfBVOayshCWTy9SpaA+KUQl3uDgH9ynyp+AAD+QPnnj32wvc5G6ak2MIN487uiOS1a9z54cvQ50nYWKJbJ4Oxge4YnSj1+77Awz6Rq04LoIcxiQtdlhu4FqAYoW1Pk0ZNcSyyVQXull15gH3IjV1PBLECYBoU+sDTzRLQSgYHt8xHTRAW66Pll7bNpqKOnJFJ+ae20ppGDQr/yLKW+SJjoeevGTII7HipuWj4DgDSMMUAOvfolocXRi0AdQ+4PTAdFyKC1FUM0BhAsy6W4TGiA84TU4BHSbyYDQgoE7edVAAA=");
+ background-repeat:no-repeat;
+ background-position:center center;
+ background-size:100% 100%;
+}
+.mounted-toggle[data-control="emergency-exit-lights"]{
+ display:none!important;
+ pointer-events:none!important;
+ visibility:hidden!important;
+}
+/* Older cached OH14 selectors, if present, are also visual-only suppressed. */
+#oh14EmergencyExitPhysical,
+.oh14-emergency-exit-physical{
+ display:none!important;
+ pointer-events:none!important;
+}
