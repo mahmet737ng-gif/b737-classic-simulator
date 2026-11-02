@@ -99,6 +99,8 @@
   // of its eight real OH15 lamps and is layered AFTER ISN every time.
   const merged={...(projection||{}),...(windowHeatProjection||{}),...(tatProbeProjection||{})};
   for(const node of document.querySelectorAll('.mounted-light')){
+   // OH14 is owned solely by its three-position switch, never ISN AC/lamp projections.
+   if(node.dataset.light==='emergency-not-armed')continue;
    if(!Object.prototype.hasOwnProperty.call(merged,node.dataset.light))continue;
    const v=merged[node.dataset.light],isWH=windowHeatProjection&&Object.prototype.hasOwnProperty.call(windowHeatProjection,node.dataset.light),isTAT=tatProbeProjection&&Object.prototype.hasOwnProperty.call(tatProbeProjection,node.dataset.light);
    node.dataset.isnProjection=v===null?'UNKNOWN':v?'ON':'OFF';
@@ -156,7 +158,7 @@
   }
   if(d.action==='isn-projection'&&d.lamps&&typeof d.lamps==='object'){
    const ids=new Set(window.B737OverheadLights.getRegistry().lights.map(light=>light.id));
-   projection={};for(const [id,v]of Object.entries(d.lamps))if(ids.has(id)&&(v===null||typeof v==='boolean'))projection[id]=v;
+   projection={};for(const [id,v]of Object.entries(d.lamps))if(id!=='emergency-not-armed'&&ids.has(id)&&(v===null||typeof v==='boolean'))projection[id]=v;
    applyProjection();
   }
   if(d.action==='isn-starter-cutout'&&['engine-start-1','engine-start-2'].includes(d.id)){
@@ -165,7 +167,7 @@
   report();
  });
  document.addEventListener('click',e=>{const node=e.target.closest('[data-light]');if(node)send({kind:'selected-light',id:node.dataset.light});});
- const isControl=e=>e.target.closest('.mounted-toggle,.mounted-rotary,.rg-detent-hit,.guard-node,.mounted-light');let drag=null;
+ const isControl=e=>e.target.closest('.mounted-toggle,.mounted-rotary,.rg-detent-hit,.guard-node,.mounted-light,.oh14-emergency-exit-physical');let drag=null;
  document.addEventListener('pointerdown',e=>{if(e.button!==0||isControl(e))return;drag=e.pointerId;send({kind:'pan-start',screenX:e.screenX,screenY:e.screenY});});
  document.addEventListener('pointermove',e=>{if(drag===e.pointerId)send({kind:'pan-move',screenX:e.screenX,screenY:e.screenY});});
  for(const type of ['pointerup','pointercancel'])document.addEventListener(type,()=>{if(drag!==null)send({kind:'pan-end'});drag=null;});
@@ -173,7 +175,7 @@
   if(e.ctrlKey||e.metaKey){e.preventDefault();e.stopImmediatePropagation();send({kind:'zoom',delta:e.deltaY,clientX:e.clientX,clientY:e.clientY});return;}
   // OH iframe is overflow:clip. Route wheel to parent without modifying approved hardware.
   // Physical knobs/guarded levers retain their existing wheel-detent gestures.
-  if(e.target.closest('.mounted-rotary,.rg-detent-hit,.guard-node,.aircon400-knob,input,select,textarea,[contenteditable="true"]'))return;
+  if(e.target.closest('.mounted-rotary,.rg-detent-hit,.guard-node,.aircon400-knob,.oh14-emergency-exit-physical,input,select,textarea,[contenteditable="true"]'))return;
   if(!Number.isFinite(e.deltaX)||!Number.isFinite(e.deltaY))return;
   e.preventDefault();e.stopImmediatePropagation();
   send({kind:'wheel-pan',deltaX:e.deltaX,deltaY:e.deltaY,deltaMode:e.deltaMode,shiftKey:e.shiftKey});
