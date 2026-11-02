@@ -232,6 +232,21 @@ class Testbench{
   this.chain.setFlightConditions({pressureAltitudeFt:this.aircraft.pressureAltitudeFt,
    iasKt:this.aircraft.iasKt});
   return this.get();}
+ instructorRunEngine(engine,{instructor=false}={}){
+  checkEngine(engine);
+  if(instructor!==true)throw Error('Explicit instructor engine preset required');
+  if(this.chain.phase[engine]==='RUNNING')return this.get();
+  const tank=engine==='engine1'?'main1':'main2';
+  if(this.core.fuel.tanks[tank]<=0||this.core.fireSwitch[engine]||this.core.suctionPathFailed[engine])
+   throw Error('Engine preset requires fuel and an available fuel path');
+  this.chain.instructorRunEngine(engine,{instructor:true});
+  const values=this.chain.operating[engine].values;
+  this.coast[engine]={n1:values.n1Percent,n2:values.n2Percent,egt:values.egtC};
+  this.oil[engine]=oilStep(this.oil[engine],{n2Percent:values.n2Percent,engineRunning:true},10000);
+  this.core.refreshFuelDelivery();
+  this.log('INSTRUCTOR_RUNNING_PRESET',{engine});
+  return this.get();
+ }
  setThrottle(engine,throttle){checkEngine(engine);if(!finite(throttle)||throttle<0||throttle>1)throw Error('throttle 0..1');
   if(this.chain.get().phase[engine]!=='RUNNING')throw Error('Engine must be RUNNING');
   this.chain.setThrottle(engine,throttle);this.log('THROTTLE',{engine,throttle});return this.get();}

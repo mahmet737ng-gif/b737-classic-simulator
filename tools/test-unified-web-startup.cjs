@@ -78,6 +78,23 @@ const server=http.createServer((req,res)=>{
    await page.locator('#aircraftSettingsOpen').click();await page.locator('#aircraftSettingsDialog').waitFor({state:'visible'});await page.locator('#aircraftSettingsClose').click();
    await page.evaluate(async()=>{await navigator.serviceWorker.ready;if(!navigator.serviceWorker.controller)await new Promise(r=>navigator.serviceWorker.addEventListener('controllerchange',r,{once:true}));});
   }
+  // Instructor presets must operate the same live ECU, with independent power.
+  await page.locator('#inspectorToggle').click();
+  await page.locator('#isnQuickRun1').waitFor({state:'visible'});
+  await page.locator('#isnQuickRun1').click();
+  await page.waitForFunction(()=>window.B737ISNCockpitV1.getECUState().engines.engine1.phase==='RUNNING');
+  assert.equal(await page.evaluate(()=>window.B737ISNCockpitV1.getECUState().engines.engine2.phase),'OFF');
+  await page.locator('#isnQuickRun2').click();
+  await page.waitForFunction(()=>window.B737ISNCockpitV1.getECUState().engines.engine2.phase==='RUNNING');
+  await page.locator('#isnQuickPower1').focus();
+  await page.locator('#isnQuickPower1').press('End');
+  await page.waitForFunction(()=>window.B737ISNCockpitV1.getECUState().engines.engine1.n1Percent>40,null,{timeout:15000});
+  assert.ok(await page.evaluate(()=>window.B737ISNCockpitV1.getECUState().engines.engine2.n1Percent<30));
+  await page.locator('#isnQuickPower2').focus();
+  await page.locator('#isnQuickPower2').press('End');
+  await page.waitForFunction(()=>window.B737ISNCockpitV1.getECUState().engines.engine2.n1Percent>40,null,{timeout:15000});
+  await page.screenshot({path:path.join(out,'quick-engine-controls.png')});
+  console.log('PASS visible Controls engine buttons and independent live power sliders');
   assert.equal(errors.length,0,'Uncaught page errors: '+errors.join('\n'));
   assert.ok(lockedIrsErrors.length<=3,'Frozen IRS observer error exceeded one per page load');
   console.log('Isolated frozen IRS observer errors: '+lockedIrsErrors.length);

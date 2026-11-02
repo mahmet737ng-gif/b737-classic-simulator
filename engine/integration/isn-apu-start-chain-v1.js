@@ -397,6 +397,22 @@
    if(this.phase[device]!=='RUNNING')this.phase[device]=fuelIdle?'AWAIT_FUEL_CUTOFF':'OFF';
    if(fuelIdle)this.lastError=device.toUpperCase()+': START LEVER remains IDLE — move it to CUTOFF';
   }
+  instructorRunEngine(device,{instructor=false}={}){
+   if(instructor!==true||!['engine1','engine2'].includes(device))throw Error('Explicit instructor engine preset required');
+   if(this.phase[device]==='RUNNING')return this.get();
+   this.cancel(device);this.dynamic[device]=null;
+   this.command({type:'SOURCE_REQUEST',device,request:'START'});
+   this.feedback(device,'fuelStartLever','IDLE');
+   this.feedback(device,'startValveOpen',false);
+   this.feedback(device,'startAirAvailable',false);
+   this.feedback(device,'starterEngaged',false);
+   this.throttle[device]=0;
+   const values=Dynamics.runningTarget({throttle:0,...this.flight});
+   for(const key of ['n2Percent','egtC','fuelFlowKgHr'])this.feedback(device,key,values[key]);
+   this.obs(device,true);this.phase[device]='RUNNING';this.started[device]=true;
+   this.operating[device]={at:this.time,values};this.lastError='';
+   return this.get();
+  }
   consumeEffects(){const effects=copy(this.effects);this.effects=[];return effects;}
   get(){const engine=this.start.getLive(),pack=this.start.core.pack.getLive(),apu=engine.observation.apu;
    const projected={},faultStatus={};for(const device of ['engine1','engine2']){

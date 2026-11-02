@@ -82,6 +82,20 @@
  startPanel.append(faultControls);
  panel.querySelector('.isn-note').after(startPanel);
  const anchor=document.querySelector('.aircraft-profile-summary');if(anchor)anchor.after(panel);else byId('inspector').prepend(panel);
+ const quick=document.createElement('section');quick.className='isn-bridge-panel';quick.id='isnQuickEngineControls';
+ quick.innerHTML='<h2>روشن‌کردن آزمایشی موتور</h2><p>هر دکمه موتور همان سمت را مستقیم روی IDLE قرار می‌دهد؛ برای تست عملکرد، بدون اجرای مراحل استارت.</p>'+[1,2].map(n=>
+  '<div><button type="button" id="isnQuickRun'+n+'">ENG '+n+' · روشن کن</button><label style="display:block">ENG '+n+' POWER <input id="isnQuickPower'+n+'" type="range" min="0" max="100" value="0" disabled><output id="isnQuickPowerValue'+n+'">0%</output></label><span id="isnQuickState'+n+'" role="status">OFF</span></div>').join('')+'<p id="isnQuickError" role="alert"></p>';
+ byId('inspector').prepend(quick);
+ for(const n of [1,2]){
+  byId('isnQuickRun'+n).onclick=()=>{
+   try{ecu.instructorRunEngine('engine'+n,{instructor:true});byId('isnQuickError').textContent='';render();}
+   catch(error){byId('isnQuickError').textContent=error.message;}
+  };
+  byId('isnQuickPower'+n).oninput=event=>{
+   try{ecu.setThrottle('engine'+n,Number(event.target.value)/100);byId('isnQuickError').textContent='';render();}
+   catch(error){byId('isnQuickError').textContent=error.message;}
+  };
+ }
  const node=new Map();
  const stateName=v=>v===null?'UNKNOWN':v?'ON':'OFF';
  const span=(v)=>{const n=document.createElement('span');n.className='isn-state '+(v===null?'unknown':v?'on':'off');n.textContent=stateName(v);return n;};
@@ -139,6 +153,15 @@
  });
 
  function renderStart(){const s=chain.get(),live=ecu.get();
+  for(const n of [1,2]){
+   const id='engine'+n,running=s.phase[id]==='RUNNING';
+   byId('isnQuickRun'+n).disabled=running;
+   byId('isnQuickPower'+n).disabled=!running;
+   const pct=Math.round(s.runningEnvelope.throttle[id]*100);
+   byId('isnQuickPower'+n).value=pct;byId('isnQuickPowerValue'+n).textContent=pct+'%';
+   byId('isnQuickState'+n).textContent=s.phase[id]+' · N1 '+live.engines[id].n1Percent.toFixed(1)+'%';
+  }
+
   const indication=window.B737ISNStartIndicationsV1.project(s);
   // Closed instructor drawer: skip repaint, never skip ECU/needle events.
   if(document.body.classList.contains('side-open')){
