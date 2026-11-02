@@ -91,7 +91,7 @@
   opacity:1!important;pointer-events:none;
   filter:drop-shadow(0 1px 1px rgba(0,0,0,.50));
 }
-/* OH14-OPERABLE-FIXED-0017
+/* OH14-INPUT-RELEASE-0018
    Measured owner screenshot reference: red 132x405 display-pixel box.
    These four states share one native-source geometry at any zoom. */
 #overheadToggleLayer>.oh14-top-hinge-guard{
