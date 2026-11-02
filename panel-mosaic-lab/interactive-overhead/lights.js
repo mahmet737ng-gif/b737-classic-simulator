@@ -94,9 +94,9 @@
   const throwArm=document.createElement('span');
   throwArm.className='oh14-small-silver-toggle';throwArm.setAttribute('aria-hidden','true');
   Object.assign(throwArm.style,{
-    left:((530-model.EMERGENCY_EXIT_HIT_RECT[0]-16)*sx)+'px',
+    left:((530-model.EMERGENCY_EXIT_HIT_RECT[0]-34)*sx)+'px',
     top:((662-model.EMERGENCY_EXIT_HIT_RECT[1])*sy)+'px',
-    width:(32*sx)+'px',height:(97*sy)+'px'
+    width:(68*sx)+'px',height:(97*sy)+'px'
   });
   selector.append(cover,throwArm);
   const positions=['OFF','ARMED','ON'];
