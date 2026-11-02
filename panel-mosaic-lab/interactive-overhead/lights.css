@@ -59,29 +59,53 @@ html[data-light-geometry-debug=true] .mounted-light::after{content:'';position:a
 .oh14-emergency-exit-physical:focus-visible{
  outline:2px solid #78d5ff;outline-offset:-3px;
 }
-/* Move the actual metal/nut pixels cropped from the original locked OH14
-   image; no vector replacement for the aircraft hardware. In ARMED
-   the original photographed nut remains 100% unmodified and visible. */
-.oh14-photo-lever-cover,.oh14-photo-lever-sprite{
- position:absolute;display:block;pointer-events:none;
+/* OH14 SMALL SILVER THREE-POSITION TOGGLE
+ * The original photo already owns the nut and housing. Do not translate a
+ * hexagonal photo crop or manufacture a second mounting bracket.
+ * Only the genuine-size silver stem and pear-shaped chrome tip are animated.
+ */
+.oh14-silver-toggle-tail-cover{
+ position:absolute;z-index:1;pointer-events:none;
+ background:radial-gradient(ellipse at center,
+  #171512 0%,#1c1916 45%,#151410 65%,rgba(18,16,13,0) 93%);
+ opacity:0;transition:opacity .09s linear;
 }
-.oh14-photo-lever-cover{
- z-index:1;opacity:1;border-radius:35%;
- background:radial-gradient(ellipse at 48% 48%,#161513 0%,#181714 46%,#141412 66%,rgba(16,15,13,0) 95%);
- transition:opacity .13s ease;
-}
-.oh14-photo-lever-sprite{
- z-index:2;opacity:1;
- background-repeat:no-repeat;
- clip-path:polygon(29% 15%,72% 15%,95% 33%,95% 68%,74% 88%,27% 88%,5% 67%,5% 34%);
- filter:drop-shadow(0 1px 1px rgba(0,0,0,.65));
- transition:transform .18s cubic-bezier(.22,.65,.3,1),opacity .13s ease;
+.oh14-small-silver-toggle{
+ position:absolute;z-index:2;pointer-events:none;
+ transform-origin:50% 5%;
+ transition:transform .2s cubic-bezier(.2,.62,.25,1),opacity .12s linear;
+ filter:drop-shadow(1px 2px 1px rgba(0,0,0,.75));
  will-change:transform;
 }
-.oh14-emergency-exit-physical[data-position="ARMED"] .oh14-photo-lever-cover,
-.oh14-emergency-exit-physical[data-position="ARMED"] .oh14-photo-lever-sprite{
- opacity:0;
+.oh14-small-silver-toggle::before{
+ content:"";position:absolute;left:35%;top:2%;width:30%;height:71%;
+ border-radius:45% 45% 38% 38%;
+ background:linear-gradient(90deg,
+  #47433b 0%,#a29d91 12%,#f4f1e9 40%,#fffaf2 54%,#aaa79e 77%,#535048 100%);
+ box-shadow:inset 1px 0 1px rgba(255,255,255,.4),inset -1px 0 1px rgba(33,32,29,.4);
+}
+.oh14-small-silver-toggle::after{
+ content:"";position:absolute;left:16%;top:56%;width:68%;height:36%;
+ border-radius:49% 50% 47% 48%;
+ background:radial-gradient(ellipse at 37% 30%,
+  #fffdf3 0%,#e9e7da 18%,#c7c3b7 39%,#8b8880 67%,#524f49 90%,#2c2b29 100%);
+ box-shadow:inset -1px -2px 2px rgba(0,0,0,.35),
+            0 1px 1px rgba(0,0,0,.5);
+}
+.oh14-emergency-exit-physical[data-position="ON"] .oh14-small-silver-toggle,
+.oh14-emergency-exit-physical[data-position="ON"] .oh14-silver-toggle-tail-cover{
+ opacity:0; /* original photographed small silver toggle is already in ON */
+}
+.oh14-emergency-exit-physical[data-position="ARMED"] .oh14-small-silver-toggle{
+ transform:scaleY(.48);opacity:1;
+}
+.oh14-emergency-exit-physical[data-position="OFF"] .oh14-small-silver-toggle{
+ transform:rotate(180deg);opacity:1;
+}
+.oh14-emergency-exit-physical[data-position="ARMED"] .oh14-silver-toggle-tail-cover,
+.oh14-emergency-exit-physical[data-position="OFF"] .oh14-silver-toggle-tail-cover{
+ opacity:1;
 }
 @media(prefers-reduced-motion:reduce){
- .oh14-photo-lever-sprite,.oh14-photo-lever-cover{transition:none}
+ .oh14-small-silver-toggle,.oh14-silver-toggle-tail-cover{transition:none}
 }
