@@ -17,8 +17,8 @@
   button.setAttribute('aria-disabled',String(interlocks.get(c.id)===false));
   button.dataset.state=value;button.setAttribute('aria-valuenow',String(index));button.setAttribute('aria-valuetext',value);button.setAttribute('aria-label',c.label+' — '+value);
   if(c.id==='emergency-exit-lights'){
-   button.dataset.photoOwner='OH14-PHOTO-LIVE-0010';
-   button.title='EMER EXIT LIGHTS — '+value+' · original photographed switch';
+   button.dataset.photoOwner='OH14-TOP-HINGE-SILVER-0012';
+   button.title='EMER EXIT LIGHTS — '+value+' · Small Silver three-detent lever';
   }
   const sprite=button.querySelector('.toggle-sprite');
   if(sprite&&index>=0){
@@ -111,16 +111,54 @@
     const a=corner(hx,hy),b=corner(hx+hw,hy+hh);
     Object.assign(button.style,{left:a.x+'px',top:a.y+'px',width:(b.x-a.x)+'px',height:(b.y-a.y)+'px',transform:'none'});
    }
-   if(!photoOnly){
-    // All other 58 toggles retain their original artwork and fixed pivots.
-    const sprite=document.createElement('span');
-    sprite.className='toggle-sprite';sprite.setAttribute('aria-hidden','true');
-    const fullSize=p.diameter*SPRITE_CELL/SPRITE_BEZEL;
-    Object.assign(sprite.style,{width:fullSize+'px',height:fullSize+'px',
-      backgroundImage:'url("'+localURL(registry.visualFamilies[c.visualFamily]?.asset||registry.assets['vertical-on'].url)+'")'});
-    button.append(sprite);
+   // Render the existing registered Small Silver 5-position image on OH14,
+   // while reusing the immutable OFF/ARMED/ON state and lamp coupling.
+   const sprite=document.createElement('span');
+   sprite.className='toggle-sprite';sprite.setAttribute('aria-hidden','true');
+   const fullSize=p.diameter*SPRITE_CELL/SPRITE_BEZEL;
+   Object.assign(sprite.style,{width:fullSize+'px',height:fullSize+'px',
+     backgroundImage:'url("'+localURL(registry.visualFamilies[c.visualFamily]?.asset||registry.assets['vertical-on'].url)+'")'});
+   if(photoOnly&&c.interactionSourceRect){
+    const [sx,sy]=c.interactionSourceRect;
+    const a=model.mapPoint({...c,sourcePoint:[sx,sy],bezelSourceDiameter:1},placements.get(c.placementId));
+    Object.assign(sprite.style,{left:(p.x-a.x)+'px',top:(p.y-a.y)+'px'});
    }
+   button.append(sprite);
    layer.append(button);nodes.set(c.id,button);bind(c,button);refreshOne(c);
+   if(photoOnly){
+    // A separate hinged cover is a physical child of the OH14 assembly, not
+    // a second toggle and not an extra electrical/annunciator state.
+    // Only the COVER is manipulated here; engine controls remain unchanged.
+    const holder=document.createElement('div');
+    holder.className='oh14-top-hinge-guard';
+    holder.dataset.cover='open';
+    const hood=document.createElement('button');
+    hood.type='button';hood.className='oh14-top-hinge-lid';
+    hood.title='EMER EXIT LIGHTS — black guard, top hinge · click to open/close';
+    hood.setAttribute('aria-label','EMER EXIT LIGHTS top-hinged black guard');
+    hood.setAttribute('aria-expanded','true');
+    const photo=document.createElement('img');
+    photo.alt='';photo.draggable=false;photo.setAttribute('aria-hidden','true');
+    photo.src=localURL('../assets/locked/2026-10-23/Black_Guarded_CLOSED.png');
+    hood.append(photo);holder.append(hood);
+    Object.assign(holder.style,{left:button.style.left,top:button.style.top,
+      width:button.style.width,height:button.style.height});
+    function setCover(open){
+     holder.dataset.cover=open?'open':'closed';
+     hood.setAttribute('aria-expanded',String(open));
+     hood.title='EMER EXIT LIGHTS — top-hinged black guard ('+(open?'OPEN':'CLOSED')+')';
+     button.setAttribute('aria-disabled',String(!open));
+     button.style.pointerEvents=open?'auto':'none';
+    }
+    // No events from the guard are allowed to cycle the three-detent switch.
+    hood.addEventListener('pointerdown',e=>e.stopPropagation());
+    hood.addEventListener('pointerup',e=>e.stopPropagation());
+    hood.addEventListener('click',e=>{e.stopPropagation();e.preventDefault();setCover(holder.dataset.cover!=='open')});
+    hood.addEventListener('keydown',e=>{
+     if(e.key==='Escape'){e.stopPropagation();e.preventDefault();setCover(false)}
+    });
+    setCover(true);layer.append(holder);
+   }
   }
   byId('atlasAbsolute').append(layer);
   byId('toggleCount').textContent=registry.controls.length+' تاگل تعاملی · رفرنس جدید · '+registry.version;
