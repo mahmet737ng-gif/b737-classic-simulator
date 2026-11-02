@@ -27,9 +27,6 @@ html[data-light-geometry-debug=true] .mounted-light::after{content:'';position:a
 .mounted-light[data-light="emergency-not-armed"] > .lamp-socket-fit-face{
  display:none!important;visibility:hidden!important;
 }
-.mounted-light[data-light="emergency-not-armed"] > img.light-face[data-frame="OFF"]{
- opacity:0!important; /* original photograph already includes dark lettering */
-}
 .mounted-light[data-light="emergency-not-armed"] > img.light-face{
  object-fit:fill!important;
  mix-blend-mode:normal;
@@ -61,4 +58,30 @@ html[data-light-geometry-debug=true] .mounted-light::after{content:'';position:a
 }
 .oh14-emergency-exit-physical:focus-visible{
  outline:2px solid #78d5ff;outline-offset:-3px;
+}
+/* Move the actual metal/nut pixels cropped from the original locked OH14
+   image; no vector replacement for the aircraft hardware. In ARMED
+   the original photographed nut remains 100% unmodified and visible. */
+.oh14-photo-lever-cover,.oh14-photo-lever-sprite{
+ position:absolute;display:block;pointer-events:none;
+}
+.oh14-photo-lever-cover{
+ z-index:1;opacity:1;border-radius:35%;
+ background:radial-gradient(ellipse at 48% 48%,#161513 0%,#181714 46%,#141412 66%,rgba(16,15,13,0) 95%);
+ transition:opacity .13s ease;
+}
+.oh14-photo-lever-sprite{
+ z-index:2;opacity:1;
+ background-repeat:no-repeat;
+ clip-path:polygon(29% 15%,72% 15%,95% 33%,95% 68%,74% 88%,27% 88%,5% 67%,5% 34%);
+ filter:drop-shadow(0 1px 1px rgba(0,0,0,.65));
+ transition:transform .18s cubic-bezier(.22,.65,.3,1),opacity .13s ease;
+ will-change:transform;
+}
+.oh14-emergency-exit-physical[data-position="ARMED"] .oh14-photo-lever-cover,
+.oh14-emergency-exit-physical[data-position="ARMED"] .oh14-photo-lever-sprite{
+ opacity:0;
+}
+@media(prefers-reduced-motion:reduce){
+ .oh14-photo-lever-sprite,.oh14-photo-lever-cover{transition:none}
 }
