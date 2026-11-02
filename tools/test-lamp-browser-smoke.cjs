@@ -205,6 +205,28 @@ const {chromium}=require('playwright');
    const serious=errors.filter(x=>/LampAppearance|Cannot read properties of undefined|LGT-GLOBAL/i.test(x));
    assert.deepEqual(serious,[],'Unified overhead has a lamp runtime exception');
    await button.click();
+   // Full Unified iframe acceptance: unlike standalone DOM dispatch,
+   // use the actual pointer hit path while the parent cockpit bridge is active.
+   const embeddedOH14=oh.locator('#oh14EmergencyExitPhysical');
+   await embeddedOH14.scrollIntoViewIfNeeded();
+   const eb=await embeddedOH14.boundingBox();
+   assert.ok(eb?.width>10&&eb?.height>20,'Unified OH14 actual lever hitbox must be visible');
+   await embeddedOH14.click({position:{x:eb.width*.5,y:eb.height*.18}});
+   await unified.waitForTimeout(190);
+   const realOH14=await oh.locator('body').evaluate(()=>{
+     const snap=window.B737OverheadLights.getState();
+     const lamp=document.querySelector('.mounted-light[data-light="emergency-not-armed"]');
+     const face=lamp?.querySelector('img.light-face[data-frame="ON"]');
+     return {position:snap.context.emergencyExitLightsPosition,lit:snap.lights['emergency-not-armed'],
+       frame:lamp?.dataset.frame,opacity:face?Number(getComputedStyle(face).opacity):0,
+       extra:lamp?.querySelectorAll('.lamp-socket-fit-face').length};
+   });
+   assert.equal(realOH14.position,'OFF','Unified mouse click should command OFF');
+   assert.equal(realOH14.lit,true,'Unified bridge must not suppress OH14 from AC projection');
+   assert.equal(realOH14.frame,'ON','Unified must display luminous ON frame');
+   assert.ok(realOH14.opacity>.94,'Unified photographic lens must visibly illuminate');
+   assert.equal(realOH14.extra,0,'Unified OH14 must not have a fitted duplicate lens');
+   console.log('OH14_EMBEDDED_POINTER_PASS',JSON.stringify(realOH14));
    console.log('UNIFIED_EMBEDDED_OVERHEAD_PASS',JSON.stringify({total:lit.total,active:lit.active,defaultMode:installed.mode,masters:installed.masters}));
   }finally{await unified.close();}
   console.log('BROWSER_SMOKE_SUCCESS',JSON.stringify({total:142,sampled:diagnostics.length,srcDecodePass:true}));
