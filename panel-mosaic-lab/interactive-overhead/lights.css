@@ -14,15 +14,35 @@ html[data-light-geometry-debug=true] .mounted-light::after{content:'';position:a
  */
 #atlasAbsolute:has(.mounted-light[data-light="emergency-not-armed"]) .perf9-lamp[data-lamp="emergency-not-armed"]{display:none!important}
 
-/* OH14 fixed photographic aperture: never draw a second black rectangular
-   lens on top of the owner's original bezel. Only amber illumination is
-   screen-blended into the single baked-in glass and surround. */
+/* OH14 single visible annunciator glass: the physical bezel is already
+ * in the immutable OH14 photograph. Never paint a second fitted bezel,
+ * including the socket-fit's dynamically generated master SVG.
+ * Keep all other 141 positions and their original lens algorithm unchanged.
+ */
 .mounted-light[data-light="emergency-not-armed"]{
- background:transparent!important;box-shadow:none!important;
+ background:transparent!important;
+ border:0!important;box-shadow:none!important;
+ overflow:hidden!important;
 }
-.mounted-light[data-light="emergency-not-armed"] .light-face{
- mix-blend-mode:screen;transition:opacity 110ms linear;
+.mounted-light[data-light="emergency-not-armed"] > .lamp-socket-fit-face{
+ display:none!important;visibility:hidden!important;
 }
+.mounted-light[data-light="emergency-not-armed"] > img.light-face{
+ object-fit:fill!important;
+ mix-blend-mode:normal;
+}
+.mounted-light[data-light="emergency-not-armed"] > img.light-face[data-frame="ON"]{
+ mix-blend-mode:screen;
+}
+.mounted-light[data-light="emergency-not-armed"][data-brightness="DIM"] > img.light-face[data-frame="ON"]{
+ opacity:.52;
+}
+.mounted-light[data-light="emergency-not-armed"][data-brightness="DIM"] > img.light-face[data-frame="ON"]:not(.active){
+ opacity:0;
+}
+/* Prevent any legacy diagnostic copy from painting another OH14 face. */
+.perf9-lamp[data-lamp="emergency-not-armed"]{display:none!important}
+
 /* The actual switch is already photographed. Put an invisible interactive
    surface over its lever track, not another switch graphic. */
 .oh14-emergency-exit-physical{
