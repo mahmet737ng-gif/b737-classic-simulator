@@ -6,3 +6,37 @@
 /* Opt-in geometry QA overlay: ?debugLights=1. Never enabled for flight/test normal mode. */
 html[data-light-geometry-debug=true] .mounted-light{outline:2px solid #f7dc58!important;outline-offset:-2px}
 html[data-light-geometry-debug=true] .mounted-light::after{content:'';position:absolute;left:50%;top:50%;width:8px;height:8px;border-radius:50%;background:#f7dc58;border:1px solid #111;transform:translate(-50%,-50%);z-index:4;pointer-events:none}
+
+/* OH14 single photo glass, original frame remains */
+#atlasAbsolute:has(.mounted-light[data-light="emergency-not-armed"]) .perf9-lamp[data-lamp="emergency-not-armed"]{display:none!important}
+
+/* OH14 single visible annunciator glass: the physical bezel is already
+ * in the immutable OH14 photograph. Never paint a second fitted bezel,
+ * including the socket-fit's dynamically generated master SVG.
+ * Keep all other 141 positions and their original lens algorithm unchanged.
+ */
+.mounted-light[data-light="emergency-not-armed"]{
+ background:transparent!important;
+ border:0!important;box-shadow:none!important;
+ overflow:hidden!important;
+}
+.mounted-light[data-light="emergency-not-armed"] > .lamp-socket-fit-face{
+ display:none!important;visibility:hidden!important;
+}
+.mounted-light[data-light="emergency-not-armed"] > img.light-face{
+ object-fit:fill!important;
+ mix-blend-mode:normal;
+}
+.mounted-light[data-light="emergency-not-armed"] > img.light-face[data-frame="ON"]{
+ mix-blend-mode:screen;
+}
+.mounted-light[data-light="emergency-not-armed"][data-brightness="DIM"] > img.light-face[data-frame="ON"]{
+ opacity:.52;
+}
+.mounted-light[data-light="emergency-not-armed"][data-brightness="DIM"] > img.light-face[data-frame="ON"]:not(.active){
+ opacity:0;
+}
+/* Prevent any legacy diagnostic copy from painting another OH14 face. */
+.perf9-lamp[data-lamp="emergency-not-armed"]{display:none!important}
+
+
