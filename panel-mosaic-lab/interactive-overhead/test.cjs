@@ -67,7 +67,9 @@ assert.deepEqual(emergency[0].states,['OFF','ARMED','ON']);
 assert.equal(emergency[0].default,'ARMED');
 assert.equal(emergency[0].visualFamily,'Small Silver');
 assert.deepEqual(emergency[0].interactionSourceRect,[445,150,330,760]);
-assert.ok(app.includes("const ma=corner(525,416),mb=corner(665,680)"),'Only the fixed photographic shaft is concealed');
+assert.ok(app.includes("const photoOnly=c.id==='emergency-exit-lights';"),'OH14 must have one transparent hit target');
+assert.ok(app.includes('if(!photoOnly){'),'Render sprites only for other 58 controls');
+assert.ok(!app.includes('oh14-original-toggle-occlusion'),'Never paint over the photographed OH14 shaft');
 const silverAtlas=fs.readFileSync(path.resolve(__dirname,registry.visualFamilies['Small Silver'].asset));
 assert.equal(crypto.createHash('sha256').update(silverAtlas).digest('hex'),registry.visualFamilies['Small Silver'].sha256);
 assert.equal(silverAtlas.subarray(0,4).toString('ascii'),'RIFF');
@@ -75,4 +77,4 @@ engine.set('emergency-exit-lights','OFF');assert.equal(engine.get('emergency-exi
 engine.cycle('emergency-exit-lights');assert.equal(engine.get('emergency-exit-lights'),'ARMED');
 engine.cycle('emergency-exit-lights');assert.equal(engine.get('emergency-exit-lights'),'ON');
 engine.cycle('emergency-exit-lights');assert.equal(engine.get('emergency-exit-lights'),'OFF');
-console.log('PASS OH14 only one full-switch hit target + fixed-pivot Small Silver WebP, 3 working states.');
+console.log('PASS OH14 photographed native lever: no new sprite, one clickable 3-state hit target and registered database control.');
