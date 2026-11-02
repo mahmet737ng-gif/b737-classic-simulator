@@ -132,7 +132,7 @@ const {chromium}=require('playwright');
    assert.equal(installed?.masters,87,'Unified embedded Overhead must reuse 87 masters');
    const sample=await oh.locator('.mounted-light[data-light="stby-pressure"] img[data-frame="ON"]').evaluate(img=>img.getAttribute('src')||img.dataset.perfSource||null);
    assert.ok(sample?.includes('/lights-reference-v2/svg/LOW_PRESSURE__AMBER__BRIGHT.svg'),'Embedded Overhead does not register installed BRIGHT asset: '+sample);
-   await unified.locator('[data-focus="overhead"]').click();
+   // Unified now has a fixed header lamp-test button; no overhead-focus tab exists.
    const button=unified.locator('#visualLampTest');
    await button.click();
    await unified.waitForFunction(()=>document.querySelector('#visualLampTest')?.getAttribute('aria-pressed')==='true');
