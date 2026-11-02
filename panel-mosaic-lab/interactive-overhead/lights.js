@@ -20,6 +20,11 @@
    physicalExit.setAttribute('aria-label','EMER EXIT LIGHTS · '+position+' (click OFF / ARMED / ON)');
    physicalExit.setAttribute('aria-valuetext',position);
    physicalExit.title='EMER EXIT LIGHTS · '+position+' · select by clicking top/middle/bottom of photographic lever';
+   // Same OH14 photograph supplies the moving hexagonal lever; the
+   // centre-mounted original is left completely alone in ARMED.
+   const knob=physicalExit.querySelector('.oh14-photo-lever-sprite');
+   if(knob)knob.style.transform='translate3d(0,'+
+    ({OFF:-118,ARMED:0,ON:87}[position]*Number(physicalExit.dataset.sourceScaleY||0))+'px,0)';
   }
   window.dispatchEvent(new CustomEvent('b737:overhead-light-state'));
   if(!ui)return;
@@ -75,6 +80,31 @@
   const selector=document.createElement('button');selector.type='button';selector.id='oh14EmergencyExitPhysical';
   selector.className='oh14-emergency-exit-physical';selector.dataset.position='ON';
   Object.assign(selector.style,{left:track.x+'px',top:track.y+'px',width:track.w+'px',height:track.h+'px'});
+  const sx=track.w/model.EMERGENCY_EXIT_HIT_RECT[2],sy=track.h/model.EMERGENCY_EXIT_HIT_RECT[3];
+  selector.dataset.sourceScaleY=String(sy);
+  const facePhoto=plates.get('OH14');
+  const photoURL=new URL('../assets/locked/2026-10-23/OH14-EMER-EXIT-795cc819a3b3.png',script).href;
+  // Cover just the original central nut at non-ARMED detents; never redraw
+  // or modify the locked OH14 plate, rail, OFF/ARMED/ON text or bezel.
+  const cover=document.createElement('span');
+  cover.className='oh14-photo-lever-cover';cover.setAttribute('aria-hidden','true');
+  Object.assign(cover.style,{
+    left:((454-model.EMERGENCY_EXIT_HIT_RECT[0])*sx)+'px',
+    top:((537-model.EMERGENCY_EXIT_HIT_RECT[1])*sy)+'px',
+    width:(169*sx)+'px',height:(166*sy)+'px'
+  });
+  const knob=document.createElement('span');
+  knob.className='oh14-photo-lever-sprite';knob.setAttribute('aria-hidden','true');
+  const croppedSource=[456,528,175,189];
+  Object.assign(knob.style,{
+    left:((croppedSource[0]-model.EMERGENCY_EXIT_HIT_RECT[0])*sx)+'px',
+    top:((croppedSource[1]-model.EMERGENCY_EXIT_HIT_RECT[1])*sy)+'px',
+    width:(croppedSource[2]*sx)+'px',height:(croppedSource[3]*sy)+'px',
+    backgroundImage:'url("'+photoURL+'")',
+    backgroundSize:facePhoto.w+'px '+facePhoto.h+'px',
+    backgroundPosition:(-croppedSource[0]*facePhoto.w/1074)+'px '+(-croppedSource[1]*facePhoto.h/1464)+'px'
+  });
+  selector.append(cover,knob);
   const positions=['OFF','ARMED','ON'];
   selector.addEventListener('pointerdown',event=>event.stopPropagation());
   selector.addEventListener('click',event=>{
