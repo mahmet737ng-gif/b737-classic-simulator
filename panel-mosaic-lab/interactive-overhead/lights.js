@@ -102,8 +102,12 @@
   selector.addEventListener('pointerdown',event=>event.stopPropagation());
   selector.addEventListener('click',event=>{
    event.stopPropagation();
-   const box=selector.getBoundingClientRect(),ratio=Math.max(0,Math.min(1,(event.clientY-box.top)/Math.max(1,box.height)));
-   engine.setEmergencyExitLightsPosition(model.emergencyExitPositionFromRatio(ratio),now());
+   // Clicking the miniature toggle advances its detent. Previously the
+   // oversized OH14 hit-zone always mapped a click near the metal lever
+   // to ARMED, making the three-position control appear stuck.
+   const current=engine.snapshot().context.emergencyExitLightsPosition;
+   const next=positions[(positions.indexOf(current)+1)%positions.length];
+   engine.setEmergencyExitLightsPosition(next,now());
   });
   selector.addEventListener('wheel',event=>{
    if(!event.deltaY)return;
