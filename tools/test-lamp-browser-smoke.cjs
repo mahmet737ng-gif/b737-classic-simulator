@@ -31,6 +31,39 @@ const {chromium}=require('playwright');
   }
   const mounted=await page.locator(sel).count();
   assert.equal(mounted,expected,kind+' all mounted lights');
+
+  if(kind==='overhead'){
+   // Real DOM regression of the photographed OH14 three-detent selector.
+   // Do not depend on source artwork being cropped or moved.
+   const oh14=await page.evaluate(()=>{
+    const target=document.getElementById('oh14EmergencyExitPhysical');
+    const lamp=document.querySelector('.mounted-light[data-light="emergency-not-armed"]');
+    if(!target||!lamp)return {missingTarget:!target,missingLamp:!lamp};
+    const b=target.getBoundingClientRect(),img=lamp.querySelector('.light-face');
+    const get=()=>({position:window.B737OverheadLights.getState().context.emergencyExitLightsPosition,
+      illuminated:window.B737OverheadLights.getState().lights['emergency-not-armed'],
+      lampFrame:lamp.dataset.frame});
+    window.B737OverheadLights.setAircraftElectricalPower(true);
+    const initial=get();
+    const press=f=>target.dispatchEvent(new MouseEvent('click',{bubbles:true,
+      clientX:b.left+b.width/2,clientY:b.top+b.height*f}));
+    press(.16);const off=get();
+    press(.50);const armed=get();
+    press(.89);const on=get();
+    return {initial,off,armed,on,hit:{width:b.width,height:b.height},visual:{
+      blend:getComputedStyle(img).mixBlendMode,background:getComputedStyle(lamp).backgroundColor},
+      instances:document.querySelectorAll('.mounted-light[data-light="emergency-not-armed"]').length};
+   });
+   assert.equal(oh14.missingTarget,undefined,'OH14 photographed physical lever hotspot missing');
+   assert.equal(oh14.missingLamp,undefined,'OH14 NOT ARMED lamp missing');
+   assert.equal(oh14.instances,1,'OH14 must have exactly one active mounted lamp');
+   assert.deepEqual(oh14.initial.position,'ON','Initial photographed lever is in ON detent');
+   assert.deepEqual([oh14.off.position,oh14.armed.position,oh14.on.position],['OFF','ARMED','ON']);
+   assert.deepEqual([oh14.off.illuminated,oh14.armed.illuminated,oh14.on.illuminated],[true,false,false]);
+   assert.equal(oh14.visual.blend,'screen','OH14 must blend amber emission into one original bezel');
+   assert.ok(oh14.hit.width>10&&oh14.hit.height>40,'physical switch target is outside panel');
+   console.log('OH14_PHYSICAL_SELECTOR_BROWSER_PASS',JSON.stringify(oh14));
+  }
   for(const id of ids){
    const att=kind==='overhead'?'data-light':'data-cockpit-light';
    const target=page.locator(sel+'['+att+'="'+id+'"]');
