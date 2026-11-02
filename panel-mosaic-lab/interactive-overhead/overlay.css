@@ -75,3 +75,46 @@
  display:none!important;
  pointer-events:none!important;
 }
+
+
+/* OH14-TOP-HINGE-SILVER-0012 — owner-directed reinstallation.
+ * One Small Silver lever on the existing OFF/ARMED/ON registry, one movable
+ * black photo guard with its hinge on TOP. Only OH14 is affected.
+ * Source photographs and the 18 owner-final guarded controls are untouched. */
+#overheadToggleLayer .mounted-toggle[data-control="emergency-exit-lights"]{
+  display:block!important;visibility:visible!important;
+  pointer-events:auto;cursor:pointer;z-index:81;
+  background:transparent!important;overflow:visible!important;
+}
+#overheadToggleLayer .mounted-toggle[data-control="emergency-exit-lights"]>.toggle-sprite{
+  display:block!important;visibility:visible!important;z-index:82;
+  opacity:1!important;pointer-events:none;
+  filter:drop-shadow(0 1px 1px rgba(0,0,0,.50));
+}
+#overheadToggleLayer>.oh14-top-hinge-guard{
+  position:absolute;display:block;z-index:83;
+  pointer-events:none;overflow:visible;
+}
+.oh14-top-hinge-guard .oh14-top-hinge-lid{
+  position:absolute;left:0;top:0;width:100%;height:100%;
+  display:block;padding:0;margin:0;min-width:0;min-height:0;
+  border:0;outline:0;cursor:pointer;overflow:hidden;pointer-events:auto;
+  background:transparent;box-shadow:none;
+  transform-origin:50% 0%;transition:top .18s ease,height .18s ease,transform .18s ease;
+  -webkit-tap-highlight-color:transparent;
+}
+.oh14-top-hinge-guard .oh14-top-hinge-lid img{
+  display:block;width:100%;height:100%;object-fit:fill;
+  transform:rotate(180deg);pointer-events:none;user-select:none;
+  filter:drop-shadow(0 2px 2px rgba(0,0,0,.65));
+}
+.oh14-top-hinge-guard[data-cover="open"] .oh14-top-hinge-lid{
+  top:-19%;height:25%;
+  transform:perspective(300px) rotateX(-35deg);
+}
+.oh14-top-hinge-guard[data-cover="closed"] .oh14-top-hinge-lid{
+  top:0;height:100%;transform:none;
+}
+.oh14-top-hinge-guard .oh14-top-hinge-lid:focus-visible{
+  outline:2px solid #e7c58e;outline-offset:2px;
+}
