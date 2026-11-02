@@ -9,7 +9,12 @@ const cockpit=read('panel-mosaic-lab/cockpit/index.html'),overhead=read('panel-m
 assert.equal(lower.guards.length+upper.guards.length,0,'Guard registry must remain empty until replacement');
 assert.equal(lower.guardReset.activeCount,0);assert.equal(lower.interlocks.length,0);
 assert.deepEqual(Object.keys(lower.assets).filter(x=>/^(owner-|red-|black-)/.test(x)),[]);
-assert.ok(lights.lights.every(l=>l.controls.every(id=>!['flight-control-a','flight-control-b','spoiler-a','spoiler-b','alternate-flaps-master','battery-master','generator-disconnect-1','generator-disconnect-2','standby-power','emergency-exit-lights','passenger-oxygen','flight-recorder-test','bus-transfer'].includes(id))));
+assert.ok(lights.lights.every(l=>l.controls.every(id=>!['flight-control-a','flight-control-b','spoiler-a','spoiler-b','alternate-flaps-master','battery-master','generator-disconnect-1','generator-disconnect-2','standby-power','passenger-oxygen','flight-recorder-test','bus-transfer'].includes(id))));
+// OH14 EMER EXIT LIGHTS is a regular 3-detent toggle in registry.json,
+// not an installed guarded-switch registration. Its NOT ARMED lamp
+// must retain the state dependency even while physical hardware is hidden.
+const oh14=lights.lights.find(l=>l.id==='emergency-not-armed');
+assert.deepEqual(oh14.controls,['emergency-exit-lights']);
 for(const html of [cockpit,overhead])assert.ok(!/(guarded-owner-v3|guarded-17-unified|guarded17Open|busTransferGuardReview|bus-transfer-guard-review)/.test(html),'Previous guard UI still active');
 assert.equal(lower.rotaries.length+upper.rotaries.length,20,'Rotary controls must not be removed');
 console.log('PASS: Unified cleared of active guarded-switch registry, image references and previews; 20 non-guard rotaries preserved.');
