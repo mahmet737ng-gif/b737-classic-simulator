@@ -99,7 +99,7 @@ const server=http.createServer((req,res)=>{
    guards:document.querySelectorAll('.guard').length,
    artwork:getComputedStyle(document.getElementById('overheadPurePanel')).backgroundImage
   }));
-  assert.deepEqual([stat.scripts,stat.frames,stat.toggles,stat.rotaries,stat.guards],[0,0,58,20,13]);
+  assert.deepEqual([stat.scripts,stat.frames,stat.toggles,stat.rotaries,stat.guards],[0,0,59,20,13]);
   assert.ok(stat.artwork.includes('overhead-composite-test.webp'));
   const firstToggle=pure.locator('.toggle').first();
   const before=await firstToggle.locator('input:checked').inputValue();
@@ -143,7 +143,7 @@ const server=http.createServer((req,res)=>{
    }));
    assert.equal(inspect.lamps,112);
    assert.equal(inspect.needles,10);
-   assert.equal(inspect.controls,91);
+   assert.equal(inspect.controls,92);
    assert.equal(inspect.scripts,scripts,'E iframe script is executed in child context, not counted by document.scripts');
    if(stage==='B'){assert.equal(inspect.core,false);assert.equal(inspect.frame,0);}
    else{
@@ -177,7 +177,7 @@ const server=http.createServer((req,res)=>{
     readout:window.B737Perf9?.snapshot?.()
    }));
    assert.equal(status.stage,stage);
-   assert.equal(status.toggles,58,'Real calibrated owner toggle frontend required');
+   assert.equal(status.toggles,59,'Real calibrated owner toggle frontend required');
    assert.equal(status.rotaries,20,'Real physical rotary frontend required');
    assert.equal(status.guards,13,'All 13 physical photo guards must mount');
    assert.equal(status.photos,112,'Must mount real 112 optical lamp assets');

@@ -29,7 +29,11 @@ function build(){
  };
  const rotaryControls=[...rotary.rotaries,...extra.rotaries];
  const overheadGuards=owner.controls.filter(c=>places.has(c.panel));
- assert.equal(toggle.controls.length,58,'Unexpected approved overhead toggles');
+ assert.equal(toggle.controls.length,59,'Expected 58 existing toggles plus the owner-requested OH14 actuator');
+ const oh14=toggle.controls.filter(c=>c.id==='emergency-exit-lights');
+ assert.equal(oh14.length,1,'OH14 must have exactly one registered actuator');
+ assert.deepEqual(oh14[0].states,['OFF','ARMED','ON']);
+ assert.equal(new Set(toggle.controls.map(c=>c.id)).size,59,'Toggle identities must be unique');
  assert.equal(rotaryControls.length,20,'Unexpected approved overhead rotary registry');
  assert.equal(overheadGuards.length,13,'Unexpected owner-approved overhead guards count');
  const classes=[];

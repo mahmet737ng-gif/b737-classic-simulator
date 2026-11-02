@@ -58,7 +58,7 @@ function build(){
    G:'F + event-driven display updates, no electrical simulation',
    H:'G + source-backed Electrical V7 and training interpolation kernels',
    I:'existing complete Unified diagnostic route; not isolated from other panels'},
-  expectedControls:{toggles:58,rotaries:20,overheadOwnerGuards:13,lamps:112},
+  expectedControls:{toggles:59,rotaries:20,overheadOwnerGuards:13,lamps:112},
   immutableSources:true, approvedOriginalStageUnmodified:true
  },null,2)+'\n');
  console.log('PERF-0009 original frontend F/G/H isolated pages generated');

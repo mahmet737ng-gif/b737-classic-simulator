@@ -115,7 +115,7 @@ test('PERF-0007 source-only Overhead builds native HTML inputs with zero browser
  assert.match(src,/overhead-ui-only.html/);
  assert.match(src,/data-no-js/);
  assert.match(src,/model\.js/);
- assert.match(src,/assert\.equal\(toggle\.controls\.length,58/);
+ assert.match(src,/assert\.equal\(toggle\.controls\.length,59/);
  assert.match(src,/assert\.equal\(rotaryControls\.length,20/);
  assert.match(src,/assert\.equal\(overheadGuards\.length,13/);
  assert.ok(!read('panel-mosaic-lab/cockpit/overhead-stage.html').includes('overhead-ui-only'));
