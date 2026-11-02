@@ -20,9 +20,8 @@
    physicalExit.setAttribute('aria-label','EMER EXIT LIGHTS · '+position+' (click OFF / ARMED / ON)');
    physicalExit.setAttribute('aria-valuetext',position);
    physicalExit.title='EMER EXIT LIGHTS · '+position+' · select by clicking top/middle/bottom of photographic lever';
-   // The original OH14 photo contains the correct small silver toggle in ON.
-   // CSS draws only the slim alternate throw for OFF / ARMED; the original
-   // hardware photo is never translated or replaced with an oversized nut.
+   // Small chrome toggle and nut are always visible in all three positions;
+   // CSS changes only shaft throw, never the OH14 background.
   }
   window.dispatchEvent(new CustomEvent('b737:overhead-light-state'));
   if(!ui)return;
@@ -80,25 +79,25 @@
   Object.assign(selector.style,{left:track.x+'px',top:track.y+'px',width:track.w+'px',height:track.h+'px'});
   const sx=track.w/model.EMERGENCY_EXIT_HIT_RECT[2],sy=track.h/model.EMERGENCY_EXIT_HIT_RECT[3];
   selector.dataset.sourceScaleY=String(sy);
-  // Original photographed pivot approximately source (530,666).
-  // ONLY conceal the little original silver shaft BELOW its mounting nut
-  // when the lever leaves ON. The nut, recess, and panel stay photographic.
-  const cover=document.createElement('span');
-  cover.className='oh14-silver-toggle-tail-cover';
-  cover.setAttribute('aria-hidden','true');
-  Object.assign(cover.style,{
-    left:((509-model.EMERGENCY_EXIT_HIT_RECT[0])*sx)+'px',
-    top:((678-model.EMERGENCY_EXIT_HIT_RECT[1])*sy)+'px',
-    width:(43*sx)+'px',height:(79*sy)+'px'
+  // Compact silver three-position toggle. The locked OH14 panel is untouched;
+  // all visible states draw the same small metallic hardware and different
+  // shaft throws (not an oversized moving nut or copied rectangle of artwork).
+  const sourceX=585,sourceY=506;
+  const nut=document.createElement('span');
+  nut.className='oh14-small-silver-toggle-nut';nut.setAttribute('aria-hidden','true');
+  Object.assign(nut.style,{
+    left:((sourceX-32-model.EMERGENCY_EXIT_HIT_RECT[0])*sx)+'px',
+    top:((sourceY-12-model.EMERGENCY_EXIT_HIT_RECT[1])*sy)+'px',
+    width:(64*sx)+'px',height:(66*sy)+'px'
   });
   const throwArm=document.createElement('span');
   throwArm.className='oh14-small-silver-toggle';throwArm.setAttribute('aria-hidden','true');
   Object.assign(throwArm.style,{
-    left:((530-model.EMERGENCY_EXIT_HIT_RECT[0]-34)*sx)+'px',
-    top:((662-model.EMERGENCY_EXIT_HIT_RECT[1])*sy)+'px',
+    left:((sourceX-34-model.EMERGENCY_EXIT_HIT_RECT[0])*sx)+'px',
+    top:((sourceY-model.EMERGENCY_EXIT_HIT_RECT[1])*sy)+'px',
     width:(68*sx)+'px',height:(97*sy)+'px'
   });
-  selector.append(cover,throwArm);
+  selector.append(nut,throwArm);
   const positions=['OFF','ARMED','ON'];
   selector.addEventListener('pointerdown',event=>event.stopPropagation());
   selector.addEventListener('click',event=>{
