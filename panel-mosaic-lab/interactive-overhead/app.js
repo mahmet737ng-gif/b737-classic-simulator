@@ -20,9 +20,9 @@
   if(sprite&&index>=0){
    const frame=poseFrames(c)[index];
    const down=frame===4;
-   if(c.visualFamily==='Small'){
-    // Five top-down poses share the exact fixed metal bezel and pivot.
-    const small=registry.visualFamilies.Small;
+   if(c.visualFamily==='Small'||c.visualFamily==='Small Silver'){
+    // Both Small atlases share one calibrated pivot: never invent hardware.
+    const small=registry.visualFamilies[c.visualFamily];
     sprite.style.backgroundImage='url("'+localURL(small.asset)+'")';
     sprite.style.backgroundSize='500% 100%';
     sprite.style.backgroundPosition=(frame*25)+'% 50%';
@@ -71,7 +71,7 @@
   });
   function finish(e,cancelled){
    if(!gesture||gesture.pointer!==e.pointerId)return;e.stopPropagation();
-   if(!cancelled&&!gesture.moved&&!c.springReturn){if(c.states.length===2)engine.cycle(c.id);else engine.set(c.id,c.states[nearest(e)],'tap');}
+   if(!cancelled&&!gesture.moved&&!c.springReturn){if(c.id==='emergency-exit-lights'||c.states.length===2)engine.cycle(c.id);else engine.set(c.id,c.states[nearest(e)],'tap');}
    gesture=null;engine.release(c.id);
   }
   button.addEventListener('pointerup',e=>finish(e,false));button.addEventListener('pointercancel',e=>finish(e,true));
@@ -102,7 +102,16 @@
    sprite.className='toggle-sprite';sprite.setAttribute('aria-hidden','true');
    const fullSize=p.diameter*SPRITE_CELL/SPRITE_BEZEL;
    Object.assign(sprite.style,{width:fullSize+'px',height:fullSize+'px',
-     backgroundImage:'url("'+localURL(c.visualFamily==='Small'?registry.visualFamilies.Small.asset:registry.assets['vertical-on'].url)+'")'});
+     backgroundImage:'url("'+localURL(registry.visualFamilies[c.visualFamily]?.asset||registry.assets['vertical-on'].url)+'")'});
+   if(c.interactionSourceRect){
+    // OH14: the single photographed EMER EXIT LIGHTS main switch remains the
+    // complete interactive surface, not a second tiny button over the pivot.
+    const [hx,hy,hw,hh]=c.interactionSourceRect;
+    const corner=(x,y)=>model.mapPoint({...c,sourcePoint:[x,y],bezelSourceDiameter:1},placements.get(c.placementId));
+    const a=corner(hx,hy),b=corner(hx+hw,hy+hh);
+    Object.assign(button.style,{left:a.x+'px',top:a.y+'px',width:(b.x-a.x)+'px',height:(b.y-a.y)+'px',transform:'none'});
+    Object.assign(sprite.style,{left:(p.x-a.x)+'px',top:(p.y-a.y)+'px'});
+   }
    button.append(sprite);
    layer.append(button);nodes.set(c.id,button);bind(c,button);refreshOne(c);
   }
