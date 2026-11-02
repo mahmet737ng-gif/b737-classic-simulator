@@ -10,7 +10,7 @@ permissions:
   contents: read
 jobs:
   inspect-only:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04 # Playwright 1.58.2 requires supported runner
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
