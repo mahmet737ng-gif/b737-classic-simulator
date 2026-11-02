@@ -928,12 +928,12 @@
       "type": "toggle-3-vertical",
       "axis": "vertical",
       "states": [
+        "RETRACT",
         "EXTEND",
-        "OFF",
         "ON"
       ],
-      "default": "ON",
-      "basis": "Owner Landing Lights reference: two outboard switches have UP/CENTER/DOWN positions; source bitmap unchanged."
+      "default": "RETRACT",
+      "basis": "Owner Landing Lights reference: two outboard switches have UP/CENTER/DOWN positions; source bitmap unchanged. | EXTL-CLASSIC-0001: Lufthansa B737-300/400/500 ATA 33/40 P5 detents; source artwork unchanged."
     },
     {
       "id": "landing-out-r",
@@ -947,12 +947,12 @@
       "type": "toggle-3-vertical",
       "axis": "vertical",
       "states": [
+        "RETRACT",
         "EXTEND",
-        "OFF",
         "ON"
       ],
-      "default": "ON",
-      "basis": "Owner Landing Lights reference: two outboard switches have UP/CENTER/DOWN positions; source bitmap unchanged."
+      "default": "RETRACT",
+      "basis": "Owner Landing Lights reference: two outboard switches have UP/CENTER/DOWN positions; source bitmap unchanged. | EXTL-CLASSIC-0001: Lufthansa B737-300/400/500 ATA 33/40 P5 detents; source artwork unchanged."
     },
     {
       "id": "landing-in-l",
@@ -969,8 +969,8 @@
         "OFF",
         "ON"
       ],
-      "default": "ON",
-      "basis": "owner guide image; mounted at existing socket in locked source"
+      "default": "OFF",
+      "basis": "owner guide image; mounted at existing socket in locked source | EXTL-CLASSIC-0001: Lufthansa B737-300/400/500 ATA 33/40 P5 detents; source artwork unchanged."
     },
     {
       "id": "landing-in-r",
@@ -987,8 +987,8 @@
         "OFF",
         "ON"
       ],
-      "default": "ON",
-      "basis": "owner guide image; mounted at existing socket in locked source"
+      "default": "OFF",
+      "basis": "owner guide image; mounted at existing socket in locked source | EXTL-CLASSIC-0001: Lufthansa B737-300/400/500 ATA 33/40 P5 detents; source artwork unchanged."
     },
     {
       "id": "runway-turnoff-l",
@@ -1005,8 +1005,8 @@
         "OFF",
         "ON"
       ],
-      "default": "ON",
-      "basis": "owner guide image; mounted at existing socket in locked source",
+      "default": "OFF",
+      "basis": "owner guide image; mounted at existing socket in locked source | EXTL-CLASSIC-0001: Lufthansa B737-300/400/500 ATA 33/40 P5 detents; source artwork unchanged.",
       "visualFamily": "Small"
     },
     {
@@ -1024,8 +1024,8 @@
         "OFF",
         "ON"
       ],
-      "default": "ON",
-      "basis": "owner guide image; mounted at existing socket in locked source",
+      "default": "OFF",
+      "basis": "owner guide image; mounted at existing socket in locked source | EXTL-CLASSIC-0001: Lufthansa B737-300/400/500 ATA 33/40 P5 detents; source artwork unchanged.",
       "visualFamily": "Small"
     },
     {
@@ -1043,8 +1043,8 @@
         "OFF",
         "ON"
       ],
-      "default": "ON",
-      "basis": "owner guide image; mounted at existing socket in locked source",
+      "default": "OFF",
+      "basis": "owner guide image; mounted at existing socket in locked source | EXTL-CLASSIC-0001: Lufthansa B737-300/400/500 ATA 33/40 P5 detents; source artwork unchanged.",
       "visualFamily": "Small"
     },
     {
@@ -1078,14 +1078,15 @@
         318
       ],
       "bezelSourceDiameter": 54,
-      "type": "toggle-2",
+      "type": "toggle-3-vertical",
       "axis": "vertical",
       "states": [
         "OFF",
+        "AUTO",
         "ON"
       ],
-      "default": "ON",
-      "basis": "owner guide image; mounted at existing socket in locked source",
+      "default": "OFF",
+      "basis": "owner guide image; mounted at existing socket in locked source | EXTL-CLASSIC-0001: Lufthansa B737-300/400/500 ATA 33/40 P5 detents; source artwork unchanged.",
       "visualFamily": "Small"
     },
     {
@@ -1097,14 +1098,15 @@
         318
       ],
       "bezelSourceDiameter": 54,
-      "type": "toggle-2",
+      "type": "toggle-3-vertical",
       "axis": "vertical",
       "states": [
         "OFF",
+        "AUTO",
         "ON"
       ],
-      "default": "ON",
-      "basis": "owner guide image; mounted at existing socket in locked source",
+      "default": "OFF",
+      "basis": "owner guide image; mounted at existing socket in locked source | EXTL-CLASSIC-0001: Lufthansa B737-300/400/500 ATA 33/40 P5 detents; source artwork unchanged.",
       "visualFamily": "Small"
     },
     {
@@ -1123,8 +1125,8 @@
         "AUTO",
         "ON"
       ],
-      "default": "ON",
-      "basis": "owner guide image; mounted at existing socket in locked source"
+      "default": "AUTO",
+      "basis": "owner guide image; mounted at existing socket in locked source | EXTL-CLASSIC-0001: Lufthansa B737-300/400/500 ATA 33/40 P5 detents; source artwork unchanged."
     },
     {
       "id": "anti-collision",
@@ -1141,8 +1143,8 @@
         "OFF",
         "ON"
       ],
-      "default": "ON",
-      "basis": "owner guide image; mounted at existing socket in locked source",
+      "default": "OFF",
+      "basis": "owner guide image; mounted at existing socket in locked source | EXTL-CLASSIC-0001: Lufthansa B737-300/400/500 ATA 33/40 P5 detents; source artwork unchanged.",
       "visualFamily": "Small"
     },
     {
@@ -1160,8 +1162,8 @@
         "OFF",
         "ON"
       ],
-      "default": "ON",
-      "basis": "owner guide image; mounted at existing socket in locked source",
+      "default": "OFF",
+      "basis": "owner guide image; mounted at existing socket in locked source | EXTL-CLASSIC-0001: Lufthansa B737-300/400/500 ATA 33/40 P5 detents; source artwork unchanged.",
       "visualFamily": "Small"
     },
     {
@@ -1179,8 +1181,8 @@
         "OFF",
         "ON"
       ],
-      "default": "ON",
-      "basis": "owner guide image; mounted at existing socket in locked source",
+      "default": "OFF",
+      "basis": "owner guide image; mounted at existing socket in locked source | EXTL-CLASSIC-0001: Lufthansa B737-300/400/500 ATA 33/40 P5 detents; source artwork unchanged.",
       "visualFamily": "Small"
     }
   ],
