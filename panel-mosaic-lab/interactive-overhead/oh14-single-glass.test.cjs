@@ -43,31 +43,40 @@ assert.doesNotMatch(live,/oh14-photo-lever-sprite/,'No oversized photographic nu
 assert.doesNotMatch(css,/img\.light-face\[data-frame="OFF"\]\{\s*opacity:0!important/,'Do not hide the installed dark glass');
 const assembly=JSON.parse(read('../cockpit/assembly.json'));
 const overhead=assembly.regions.find(r=>r.id==='overhead');
-assert.match(overhead.embeddedUrl,/&oh14=OH14-OPERABLE-FIXED-0017&ts=OH14-OPERABLE-FIXED-0017/,'Overhead iframe URL must bypass stale cached HTML');
+assert.match(overhead.embeddedUrl,/&oh14=OH14-INPUT-RELEASE-0018&ts=OH14-INPUT-RELEASE-0018/,'Overhead iframe URL must bypass stale cached HTML');
 const embedded=read('../cockpit/overhead-stage.html');
-assert.match(embedded,/app\.js\?v=OH14-OPERABLE-FIXED-0017/,'Embedded new guarded OH14 UI must use the new JS revision');
+assert.match(embedded,/app\.js\?v=OH14-INPUT-RELEASE-0018/,'Embedded new guarded OH14 UI must use the new JS revision');
 assert.match(embedded,/lights\.js\?v=OH14-PHOTO-LIVE-0010/,'Embedded lights must use the revised frame without the legacy selector');
 assert.match(overlay,/\.oh14-top-hinge-guard/,'OH14 top-hinge guard CSS must be mounted');
 assert.match(overlay,/\.oh14-guard-state-photo/,'Photo guard must be visible as a hinged cover');
-assert.match(overlay,/OH14-OPERABLE-FIXED-0017/,'OH14 fixed-size photographic housing marker');
+assert.match(overlay,/OH14-INPUT-RELEASE-0018/,'OH14 fixed-size photographic housing marker');
 assert.doesNotMatch(overlay,/\.oh14-guard-state-photo\s*\{[^}]*clip-path:/,'Do not use a state-dependent image silhouette');
-assert.match(embedded,/overlay\.css\?v=OH14-OPERABLE-FIXED-0017/,'Embedded overhead must bust old CSS cache');
+assert.match(embedded,/overlay\.css\?v=OH14-INPUT-RELEASE-0018/,'Embedded overhead must bust old CSS cache');
 assert.match(overlay,/#oh14EmergencyExitPhysical/,'Obsolete duplicate selector stays suppressed');
 assert.match(app,/dataset\.photoOwner/,'Production switch should expose a versioned ownership marker');
 
 
 assert.match(app,/OH14_FIXED_SOURCE_RECT=Object\.freeze\(\[452,163,748,876\]\)/,
  'OH14 native bounding coordinates match the 132x405 red rectangle');
-assert.match(app,/holder\.dataset\.fixedGeometry='OH14-OPERABLE-FIXED-0017'/,
+assert.match(app,/holder\.dataset\.fixedGeometry='OH14-INPUT-RELEASE-0018'/,
  'Closed and all three open states share the same fixed mount');
 assert.match(app,/if\(photo\.src!==url\)photo\.src=url/,
  'Only the photo source may change on the four detents');
 assert.match(overlay,/overflow:hidden;/,'OH14 photo cannot exceed fixed box');
 assert.match(overlay,/width:100%;height:100%/,
  'All four guarded states have the same visible metal housing dimensions');
-assert.match(app,/bind\(c,leverHit\)/,'OH14 lever must accept click/drag/wheel/keyboard independently');
+assert.match(app,/bindOH14\(c,leverHit\)/,'OH14 lever has its own dedicated pointer/wheel/key input handler');
 assert.match(app,/button\._oh14SilverVisual=silver/,'Small Silver atlas is visibly mounted');
 assert.match(app,/leverHit\.disabled=!open/,'Closed guard prevents lever input');
+
+// Regression: Unified's capture-phase wheel pan must NOT swallow OH14 detents.
+const bridge=read('../cockpit/overhead-bridge.js');
+assert.match(bridge,/\.oh14-lever-hit/,'Unified wheel and pan must exempt OH14 physical input');
+assert.match(app,/OH14_REPAIR_KEY=STORAGE/,'First load must clear the stale stuck-down value exactly once');
+assert.match(app,/engine\.step\(c\.id,step,'oh14-wheel'\)/,'Mouse wheel moves OH14 detents');
+assert.match(app,/if\(wasTap\)engine\.cycle\(c\.id\)/,'Pointer tap cycles OFF/ARMED/ON');
+assert.match(app,/engine\.set\(c\.id,c\.states\[next\],'oh14-drag'\)/,'Vertical drag updates same engine');
+
 console.log('PASS OH14 one Small Silver actuator, one independent black top-hinged guard; NOT ARMED and other 111 lamps preserved');
 
 for(const name of ['Black_Guarded_Open_CENTER.png','Black_Guarded_CLOSED.png']){
