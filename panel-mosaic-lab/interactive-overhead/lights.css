@@ -6,3 +6,10 @@
 /* Opt-in geometry QA overlay: ?debugLights=1. Never enabled for flight/test normal mode. */
 html[data-light-geometry-debug=true] .mounted-light{outline:2px solid #f7dc58!important;outline-offset:-2px}
 html[data-light-geometry-debug=true] .mounted-light::after{content:'';position:absolute;left:50%;top:50%;width:8px;height:8px;border-radius:50%;background:#f7dc58;border:1px solid #111;transform:translate(-50%,-50%);z-index:4;pointer-events:none}
+
+/* OH14: if the PERF diagnostic and live overhead mount the same annunciator,
+ * retain the live single-authority lens; suppress only the redundant
+ * diagnostic copy. Do not crop, repaint, or relocate the locked photo.
+ * :has() is supported by the cockpit's Chromium-based runtime.
+ */
+#atlasAbsolute:has(.mounted-light[data-light="emergency-not-armed"]) .perf9-lamp[data-lamp="emergency-not-armed"]{display:none!important}
