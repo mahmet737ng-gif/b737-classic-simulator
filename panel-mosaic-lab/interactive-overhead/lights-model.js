@@ -8,7 +8,7 @@
  const copy=v=>JSON.parse(JSON.stringify(v));
  // OH14 photographic lever track, native source coordinates (1074 x 1464).
  // Separate hotspot: do NOT add a 59th legacy switch or repaint the approved panel.
- const EMERGENCY_EXIT_HIT_RECT=Object.freeze([446,145,315,760]);
+ const EMERGENCY_EXIT_HIT_RECT=Object.freeze([446,145,530,760]);
  function emergencyExitPositionFromRatio(value){
   if(!Number.isFinite(value)||value<0||value>1)throw Error('Invalid OH14 selector hit fraction');
   return value<0.38?'OFF':value<0.67?'ARMED':'ON';
@@ -123,7 +123,14 @@
     }
     const states=c.states||['OFF','ON'],bright=states.at(-1);
     if(active===null){unknown.push(c.id);on[c.id]=available&&test?true:null;frames[c.id]=available&&test?bright:'OFF';}
-    else {const frame=!available?'OFF':test?bright:typeof active==='string'?active:active?bright:'OFF';frames[c.id]=frame;on[c.id]=frame!=='OFF';}
+    else {
+     // OH14 NOT ARMED belongs to the emergency-light switch (OFF/ARMED/ON).
+     // The parent "AC available" feed is not authoritative for this DC
+     // annunciator. Keep training panel-power gating, never AC-gate OH14.
+     const powered=c.id==='emergency-not-armed'?context.panelPower:available;
+     const frame=!powered?'OFF':test?bright:typeof active==='string'?active:active?bright:'OFF';
+     frames[c.id]=frame;on[c.id]=frame!=='OFF';
+    }
    }
    result={version:reg.version,lights:on,frames,unknown,electrical:e,pneumatic:p,context:copy(context),lampTest:test,passengerOxygenDeployed:oxygen,power:available};notify(copy(result));return copy(result);
   }
