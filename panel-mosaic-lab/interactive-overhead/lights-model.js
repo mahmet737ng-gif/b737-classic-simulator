@@ -69,7 +69,9 @@
   }
   function evaluate(now=0){
    const p=pneumatics.derive(pneumaticState),e=electrical.evaluate(electricalState),on={},frames={},unknown=[],fault=id=>context.faults[id]===true;
-   const standbyCommand=['flight-control-a','flight-control-b'].some(id=>control(id)==='stby')||control('alternate-flaps-master')==='arm';
+   // Owner18 switches report the exact "STBY RUD" detent.
+   const standbyRudderCommand=['flight-control-a','flight-control-b'].some(id=>['STBY RUD','STBY'].includes(String(control(id)||'').trim().toUpperCase()));
+   const standbyCommand=standbyRudderCommand||control('alternate-flaps-master')==='arm';
    const hyd=id=>isOn(id)&&!fault(id)&&(id.includes('eng-')?context['engine'+id.at(-1)+'Running']:true);
    const pressureA=hyd('hyd-eng-1')||hyd('hyd-elec-2'),pressureB=hyd('hyd-eng-2')||hyd('hyd-elec-1');
    const available=context.panelPower&&(aircraftElectricalPower===null?(isOn('battery-master')||Object.values(e.source).some(Boolean)||control('standby-power')==='bat'):aircraftElectricalPower);
@@ -80,7 +82,7 @@
      case 'hyd-pressure':active=!hyd(id);break;
      case 'flight-pressure':active=(v!==undefined&&v!=='on')||!(c.id.endsWith('a')?pressureA:pressureB)||fault(c.id);break;
      case 'standby-pressure':active=standbyCommand&&(context.standbyPumpFailed||fault(c.id));break;
-     case 'standby-rudder':active=standbyCommand&&!context.standbyPumpFailed&&!fault('stby-pressure');break;
+     case 'standby-rudder':active=standbyRudderCommand&&!context.standbyPumpFailed&&!fault('stby-pressure');break;
      case 'yaw':active=!isOn(id)||fault(c.id);break;
      case 'emergency':active=v==='OFF';break;
      case 'drive-pressure':{const side=/^drive-(\d+)-/.exec(c.id)?.[1];active=side?(!context['engine'+side+'Running']||v==='disconnect'||fault(c.id)):fault(c.id);break;}

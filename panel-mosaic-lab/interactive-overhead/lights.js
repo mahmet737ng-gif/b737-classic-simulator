@@ -3,7 +3,16 @@
  const script=document.currentScript.src,url=p=>new URL(p,script).href,byId=id=>document.getElementById(id),model=window.B737OverheadLightModel;
  let registry,instanceFaces,readabilityFaces,engine,layer,selected,ready=false,timer,valveTimer,ui,widgets=new Map();const now=()=>performance.now();
  const faultable=new Set(['sensor','fuel-pressure','hyd-pressure','flight-pressure','standby-pressure','yaw','drive-pressure','drive-temperature','equipment','window','probe','dc-fail','fault','irs-align','apu','recorder','anti-ice','pneumatic','press-fault','valve','fuel-valve','ram-door']);
- function snapshots(){return [window.B737OverheadToggles.getState(),window.B737RotaryGuards.getState()];}
+ function snapshots(){
+   const toggles=window.B737OverheadToggles.getState(),rotary=window.B737RotaryGuards.getState();
+   // Read the protected Owner18 guarded switch values without changing their runtime.
+   const owner=window.B737GuardOwner18?.inspect?.();
+   if(owner)for(const id of ['flight-control-a','flight-control-b']){
+    const value=owner[id]?.value;
+    if(['STBY RUD','OFF','ON'].includes(value))rotary.guards[id]={value};
+   }
+   return [toggles,rotary];
+  }
  function faceSource(c,state,face){
   // OH14 retains its original photographed lens; use emissive glass only,
   // never duplicate the picture's bezel or change the other 111 lights.
@@ -53,6 +62,15 @@
   }
   byId('atlasAbsolute').append(layer);engine=model.controller(registry,window.B737ElectricalV7,render,window.B737PneumaticsV6);inspector();ready=true;synchronize();choose(registry.lights.find(c=>c.id==='fuel-center-l'));
   for(const type of ['b737:switch-change','b737:rotary-change','b737:guarded-change'])window.addEventListener(type,e=>synchronize(e.detail));
+   // Owner18 has a distinct guard-change event: re-evaluate the existing annunciator.
+   const flightIds=['flight-control-a','flight-control-b'];
+   window.addEventListener('b737:guard-changed',e=>{if(flightIds.includes(e.detail?.id))synchronize();});
+   // Rehydrate a saved STBY RUD detent if Owner18 mounts after the lamp layer.
+   const ownerReady=()=>{const states=window.B737GuardOwner18?.inspect?.();return flightIds.every(id=>states?.[id]);};
+   if(document.querySelector('script[src*="guard-owner18-v1.js"]')&&!ownerReady()){
+    const observer=new MutationObserver(()=>{if(ownerReady()){observer.disconnect();synchronize();}});
+    observer.observe(byId('atlasAbsolute'),{childList:true,subtree:true});
+   }
   byId('resetToggles').addEventListener('click',()=>{engine.reset(now());synchronize();});
   window.addEventListener('b737:overhead-scenario',e=>{try{engine.update(e.detail,now());settle();}catch(error){console.warn(error.message);}});
   window.B737OverheadLights=Object.freeze({getState:()=>engine.snapshot(),setAircraftElectricalPower:value=>{const result=engine.setAircraftElectricalPower(value,now());settle();return result;},getRegistry:()=>JSON.parse(JSON.stringify(registry)),setScenario:patch=>{const result=engine.update(patch,now());settle();return result;},setFault:(id,active)=>engine.update({faults:{[id]:active}},now()),tripReset:()=>engine.tripReset(now()),setLampTest:active=>engine.setLampTest(active,now()),setAircraftFamily:family=>engine.setAircraftFamily(family,now()),setAircon400LeftRecirc:value=>engine.setAircon400LeftRecirc(value,now()),reset:()=>{engine.reset(now());synchronize();}});

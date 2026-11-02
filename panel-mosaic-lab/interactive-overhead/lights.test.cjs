@@ -25,6 +25,19 @@ e.update({panelPower:true},time);assert.equal(on('emergency-not-armed'),true,'Re
 t.set('emergency-exit-lights','ARMED');sync();e.setAircraftElectricalPower(true,time);
 assert.equal(on('emergency-not-armed'),false);
 
+// Owner18 FLT CONTROL A/B detents must drive the one real STBY RUD ON lamp.
+const ownerFlight=(a,b)=>{
+ const snapshot=g.snapshot();
+ snapshot.guards={...snapshot.guards,'flight-control-a':{value:a},'flight-control-b':{value:b}};
+ return e.ingest(t.snapshot(),snapshot,time+=1000);
+};
+ownerFlight('ON','ON');assert.equal(on('stby-rudder'),false,'normal FLT CONTROL keeps STBY RUD OFF');
+ownerFlight('STBY RUD','ON');assert.equal(on('stby-rudder'),true,'A STBY RUD illuminates');
+ownerFlight('ON','STBY RUD');assert.equal(on('stby-rudder'),true,'B STBY RUD illuminates');
+ownerFlight('STBY RUD','STBY RUD');assert.equal(on('stby-rudder'),true,'both STBY RUD illuminate');
+e.update({standbyPumpFailed:true},time);assert.equal(on('stby-rudder'),false,'failed standby pump inhibits indication');
+e.update({standbyPumpFailed:false},time);assert.equal(on('stby-rudder'),true,'restored pump relights indication');
+ownerFlight('OFF','ON');assert.equal(on('stby-rudder'),false,'leaving STBY RUD extinguishes');
 sync();e.evaluate(time+800);assert.equal(on('fuel-center-l'),false);assert.equal(on('hyd-eng-1'),false);assert.equal(on('yaw-damper'),false);
 t.set('fuel-center-l','OFF');sync();assert.equal(on('fuel-center-l'),false,'center pump OFF inhibits low-pressure indication');t.set('fuel-center-l','ON');sync();assert.equal(on('fuel-center-l'),true,'pressure builds');e.evaluate(time+800);assert.equal(on('fuel-center-l'),false);e.update({fuelAvailable:false},time+800);assert.equal(on('fuel-center-l'),true);e.update({fuelAvailable:true,faults:{'fuel-center-l':true}},time+800);assert.equal(on('fuel-center-l'),true,'failed pump stays low with switch ON');e.update({faults:{'fuel-center-l':false}},time+800);assert.equal(on('fuel-center-l'),false);
 t.set('fuel-1-aft','OFF');sync();assert.equal(on('fuel-1-aft'),true);t.set('fuel-1-aft','ON');sync();e.evaluate(time+800);assert.equal(on('fuel-1-aft'),false);
