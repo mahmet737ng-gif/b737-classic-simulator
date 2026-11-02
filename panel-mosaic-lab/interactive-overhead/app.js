@@ -17,7 +17,7 @@
   button.setAttribute('aria-disabled',String(interlocks.get(c.id)===false));
   button.dataset.state=value;button.setAttribute('aria-valuenow',String(index));button.setAttribute('aria-valuetext',value);button.setAttribute('aria-label',c.label+' — '+value);
   if(c.id==='emergency-exit-lights'){
-   button.dataset.photoOwner='OH14-OPERABLE-FIXED-0017';
+   button.dataset.photoOwner='OH14-INPUT-RELEASE-0018';
    button.title='EMER EXIT LIGHTS — '+value+' · Black Guarded';
    // A live, independent Small Silver pose sits over the invariant black housing.
    const moving=button._oh14SilverVisual;
@@ -106,6 +106,61 @@
   button.addEventListener('keyup',e=>{if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Home','End',' ','Enter'].includes(e.key)){e.preventDefault();engine.release(c.id);}});
   button.addEventListener('blur',()=>{cancelTimer();gesture=null;engine.release(c.id);});
  }
+ // OH14-INPUT-RELEASE-0018: independent, deterministic three-detent lever.
+ // Pointer tap cycles ON->OFF->ARMED->ON. Vertical drag and wheel move
+ // one detent at a time. A closed guard disables this handle only.
+ function bindOH14(c,handle){
+  let gesture=null;
+  handle.addEventListener('pointerdown',e=>{
+   if(e.button!==0||handle.disabled)return;
+   e.preventDefault();e.stopPropagation();
+   select(c);
+   gesture={id:e.pointerId,y:e.clientY,index:c.states.indexOf(engine.get(c.id)),moved:false};
+   handle.focus({preventScroll:true});
+   handle.setPointerCapture(e.pointerId);
+  });
+  handle.addEventListener('pointermove',e=>{
+   if(!gesture||gesture.id!==e.pointerId)return;
+   e.preventDefault();e.stopPropagation();
+   const dy=e.clientY-gesture.y;
+   if(Math.abs(dy)<Math.max(7,handle.getBoundingClientRect().height*.08))return;
+   gesture.moved=true;
+   const next=Math.max(0,Math.min(2,gesture.index+Math.round(dy/Math.max(13,handle.getBoundingClientRect().height*.22))));
+   engine.set(c.id,c.states[next],'oh14-drag');
+  });
+  handle.addEventListener('pointerup',e=>{
+   if(!gesture||gesture.id!==e.pointerId)return;
+   e.preventDefault();e.stopPropagation();
+   const wasTap=!gesture.moved;gesture=null;
+   if(handle.hasPointerCapture(e.pointerId))handle.releasePointerCapture(e.pointerId);
+   if(wasTap)engine.cycle(c.id);
+  });
+  handle.addEventListener('pointercancel',e=>{if(gesture?.id===e.pointerId)gesture=null;e.stopPropagation();});
+  handle.addEventListener('lostpointercapture',()=>{gesture=null;});
+  handle.addEventListener('click',e=>{
+   e.preventDefault();e.stopPropagation();
+   // detail=0 is an accessibility-generated click, not a second pointer tap.
+   if(e.detail===0&&!handle.disabled)engine.cycle(c.id);
+  });
+  handle.addEventListener('wheel',e=>{
+   e.preventDefault();e.stopPropagation();
+   if(handle.disabled)return;
+   const step=Math.sign(Math.abs(e.deltaY)>=Math.abs(e.deltaX)?e.deltaY:e.deltaX);
+   if(step)engine.step(c.id,step,'oh14-wheel');
+  },{passive:false});
+  handle.addEventListener('keydown',e=>{
+   const movement={'ArrowUp':-1,'ArrowDown':1,'ArrowLeft':-1,'ArrowRight':1};
+   if(e.key in movement||['Home','End','Enter',' '].includes(e.key)){
+    e.preventDefault();e.stopPropagation();
+    if(handle.disabled)return;
+    select(c);
+    if(e.key==='Home')engine.set(c.id,'OFF','oh14-key');
+    else if(e.key==='End')engine.set(c.id,'ON','oh14-key');
+    else if(e.key==='Enter'||e.key===' '){if(!e.repeat)engine.cycle(c.id);}
+    else engine.step(c.id,movement[e.key],'oh14-key');
+   }
+  });
+ }
  function mount(layout){
   layer=document.createElement('div');layer.className='toggle-layer';layer.id='overheadToggleLayer';
   const placements=new Map(layout.placements.map(p=>[p.id,p]));
@@ -176,7 +231,7 @@
     button._oh14LeverHit=leverHit;
     // Reuse the existing registered engine. This is an additional input
     // surface for the same switch, NOT a duplicate state or control.
-    bind(c,leverHit);
+    bindOH14(c,leverHit);
     holder.append(photo,hood,silver,leverHit);
     // Match the precise hardware envelope from the existing retired OH14
     // guard socket, not the deliberately larger invisible interaction hitbox.
@@ -192,7 +247,7 @@
       left:ga.x+'px',top:ga.y+'px',
       width:(gb.x-ga.x)+'px',height:(gb.y-ga.y)+'px'
     });
-    holder.dataset.fixedGeometry='OH14-OPERABLE-FIXED-0017';
+    holder.dataset.fixedGeometry='OH14-INPUT-RELEASE-0018';
     const silverSize=p.diameter*SPRITE_CELL/SPRITE_BEZEL;
     Object.assign(silver.style,{
      left:(p.x-ga.x)+'px',top:(p.y-ga.y)+'px',
@@ -238,6 +293,15 @@
    const [rr,lr]=await Promise.all([fetch(localURL('registry.json'),{cache:'no-store'}),fetch(localURL('../all-overhead/atlas-layout.json'),{cache:'no-store'})]);
    if(!rr.ok||!lr.ok)throw Error('Toggle metadata unavailable');registry=await rr.json();const layout=await lr.json();model.validate(registry,layout);
    let saved={};try{saved=JSON.parse(localStorage.getItem(STORAGE)||'{}')||{};}catch{}
+   // Repair the previously stuck DOWN/ON value once for this release.
+   // Future user OFF/ARMED/ON selections remain persisted as usual.
+   const OH14_REPAIR_KEY=STORAGE+':OH14-INPUT-RELEASE-0018';
+   try{
+    if(localStorage.getItem(OH14_REPAIR_KEY)!=='done'){
+     saved['emergency-exit-lights']='ARMED';
+     localStorage.setItem(OH14_REPAIR_KEY,'done');
+    }
+   }catch{}
    engine=model.controller(registry,saved,event=>{const c=registry.controls.find(c=>c.id===event.id);refreshOne(c);persist();window.dispatchEvent(new CustomEvent('b737:switch-change',{detail:{...event,timestamp:new Date().toISOString()}}));},id=>interlocks.get(id)!==false);
    const root=byId('atlasAbsolute');
    if(root.querySelector('.atlas-piece'))mount(layout);
