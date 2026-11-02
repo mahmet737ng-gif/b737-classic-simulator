@@ -1,0 +1,44 @@
+/* EXTL-CLASSIC-0001 — strictly scoped to external-light row OH23-25. */
+/* Correct cockpit image remains locked; only existing toggle actuators are restyled. */
+#overheadToggleLayer .mounted-toggle[data-placement="OH23-25"]{isolation:isolate}
+#overheadToggleLayer .mounted-toggle[data-placement="OH23-25"] .toggle-sprite{
+ filter:drop-shadow(0px 2px 2px rgba(0,0,0,.42));transition:background-position .10s steps(1);
+}
+/* Lower row uses original photographic small-silver switch atlas rather than CSS-generated knobs. */
+#overheadToggleLayer .mounted-toggle[data-placement="OH23-25"]:not([data-control="apu-start"]):not([data-control^="landing-"]) .toggle-sprite{
+ background-image:url("../../shared-assets/toggle-switch-small/Small_Silver_5Positions.webp")!important;
+}
+/* Outboard and inboard landing controls share the same three-lobed T-bar metal handle.
+   Photo source: B737 Landing Light Photoreal v2; stored as a small transparent WebP. */
+#overheadToggleLayer .mounted-toggle[data-control^="landing-"] .toggle-sprite{display:none!important}
+#overheadToggleLayer .mounted-toggle[data-control^="landing-"]::before{
+ content:"";position:absolute;left:50%;top:58%;transform:translate(-50%,-50%);
+ width:49px;height:47px;border-radius:50%;pointer-events:none;
+ background:radial-gradient(ellipse at 36% 26%,#d1d2cf 0,#777b77 18%,#242827 35%,#91928d 45%,#353633 56%,#171918 73%,#7a7c78 85%,#151617 97%);
+ box-shadow:0 2px 3px #111,0 0 0 4px #272928, inset 0 1px 3px #e0e0d9;
+}
+#overheadToggleLayer .mounted-toggle[data-control^="landing-"]::after{
+ content:"";position:absolute;left:50%;top:37%;
+ width:95px;height:105px;transform:translate(-50%,-50%) perspective(250px) rotateX(-22deg);
+ background-image:var(--b737-ext-tbar-photo);
+ background-size:contain;background-position:center;background-repeat:no-repeat;
+ filter:drop-shadow(0 4px 3px rgba(0,0,0,.65));pointer-events:none;
+ transition:transform .15s ease-out;
+}
+#overheadToggleLayer .mounted-toggle[data-control^="landing-"][data-state="RETRACT"]::after,
+#overheadToggleLayer .mounted-toggle[data-control^="landing-"][data-state="OFF"]::after{transform:translate(-50%,-53%) perspective(250px) rotateX(-28deg)}
+#overheadToggleLayer .mounted-toggle[data-control^="landing-"][data-state="EXTEND"]::after{transform:translate(-50%,-45%) perspective(250px) rotateX(0deg)}
+#overheadToggleLayer .mounted-toggle[data-control^="landing-"][data-state="ON"]::after{transform:translate(-50%,-39%) perspective(250px) rotateX(34deg)}
+/* Unified header inspector: never affect overhead photo, its source images or guarded switches. */
+.extl-unified-dialog{max-width:min(1000px,95vw);max-height:85vh;overflow:auto;direction:ltr;color:#e5ebec;background:#17232d;border:1px solid #81909a;border-radius:9px;padding:19px;box-shadow:0 14px 60px #000b}
+.extl-unified-dialog::backdrop{background:#080c12a8}
+.extl-unified-dialog h2{font:600 18px/1.3 system-ui,sans-serif;margin:0 0 12px}
+.extl-unified-dialog .extl-close{float:right}
+.extl-status,.extl-note{font:13px/1.5 system-ui;color:#c3ced6}
+.extl-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(195px,1fr));gap:9px}
+.extl-card{padding:9px;background:#27343e;border:1px solid #4b5a64;border-radius:5px;display:grid;gap:6px}
+.extl-card strong{font:600 12px/1.35 system-ui}
+.ext-state{font:700 13px monospace;color:#d8e3b3}
+.extl-choices{display:flex;flex-wrap:wrap;gap:4px}
+.extl-choices button{font:11px/1.3 system-ui!important;padding:5px 7px!important;min-width:0!important}
+.extl-choices button[aria-pressed="true"]{border-color:#dfbd7e!important;background:#4d5341!important}
