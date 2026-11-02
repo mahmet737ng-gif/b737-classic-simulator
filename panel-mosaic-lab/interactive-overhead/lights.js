@@ -4,6 +4,13 @@
  let registry,instanceFaces,readabilityFaces,engine,layer,selected,ready=false,timer,valveTimer,ui,widgets=new Map();const now=()=>performance.now();
  const faultable=new Set(['sensor','fuel-pressure','hyd-pressure','flight-pressure','standby-pressure','yaw','drive-pressure','drive-temperature','equipment','window','probe','dc-fail','fault','irs-align','apu','recorder','anti-ice','pneumatic','press-fault','valve','fuel-valve','ram-door']);
  function snapshots(){return [window.B737OverheadToggles.getState(),window.B737RotaryGuards.getState()];}
+ function faceSource(c,state,face){
+  // OH14 retains its original photographed lens; use emissive glass only,
+  // never duplicate the picture's bezel or change the other 111 lights.
+  if(c.id==='emergency-not-armed')return url('oh14-not-armed-emission-'+(state==='ON'?'on':'off')+'.svg');
+  return window.B737LampAppearance.resolve('OH',c.asset,state)||url(face.url);
+ }
+
  function render(result){
   for(const c of registry.lights){const node=widgets.get(c.id);if(!node)continue;const v=result.lights[c.id],state=v===null?'UNKNOWN':v?'ON':'OFF',frame=result.frames[c.id];node.dataset.state=state;for(const img of node.querySelectorAll('.light-face'))img.classList.toggle('active',img.dataset.frame===(frame==='FLASH'?'ON':frame));node.dataset.frame=frame;node.classList.toggle('flashing',frame==='FLASH');node.setAttribute('aria-label',c.id+' — '+state);}
   window.dispatchEvent(new CustomEvent('b737:overhead-light-state'));
@@ -39,10 +46,10 @@
   const ids=new Set([...Object.keys(t),...Object.keys(r.rotaries),...Object.keys(r.guards)]);model.validate(registry,layout,window.B737OverheadToggleModel.mapPoint,ids);
   layer=document.createElement('div');layer.id='overheadLightLayer';layer.className='lights-layer';
   for(const c of registry.lights){
-   const p=model.rectangle(c,plates.get(c.placementId),window.B737OverheadToggleModel.mapPoint),node=document.createElement('button');node.type='button';node.className='mounted-light';node.dataset.light=c.id;node.title=c.id+' · '+c.placementId+' · source ['+c.sourceRect.join(', ')+']';
+   const p=model.rectangle(c,plates.get(c.placementId),window.B737OverheadToggleModel.mapPoint),node=document.createElement('button');node.type='button';node.className='mounted-light';node.dataset.light=c.id;if(c.id==='emergency-not-armed')node.dataset.lensOwner='PHOTO_GLASS_EMISSION_ONLY';node.title=c.id+' · '+c.placementId+' · source ['+c.sourceRect.join(', ')+']';
    Object.assign(node.style,{left:p.x+'px',top:p.y+'px',width:p.w+'px',height:p.h+'px'});
-   for(const state of c.states||['OFF','ON']){const img=document.createElement('img');const face=(readabilityFaces?.instances?.[c.id]?.states?.[state]||instanceFaces?.instances?.[c.id]?.states?.[state]||registry.assets[c.asset][state]);const source=window.B737LampAppearance.resolve('OH',c.asset,state)||url(face.url);if(window.B737ImageLoader)window.B737ImageLoader.assign(img,source);else img.src=source;img.alt='';img.draggable=false;img.dataset.frame=state;img.className='light-face';img.onerror=()=>{node.dataset.missing='true';byId('lightsStatus').textContent='خطای بارگذاری فایل چراغ: '+c.asset;};node.append(img);}
-   node.addEventListener('pointerdown',e=>e.stopPropagation());node.addEventListener('click',e=>{e.stopPropagation();choose(c);});widgets.set(c.id,node);layer.append(node);
+   for(const state of c.states||['OFF','ON']){const img=document.createElement('img');const face=(readabilityFaces?.instances?.[c.id]?.states?.[state]||instanceFaces?.instances?.[c.id]?.states?.[state]||registry.assets[c.asset][state]);const source=faceSource(c,state,face);if(window.B737ImageLoader)window.B737ImageLoader.assign(img,source);else img.src=source;img.alt='';img.draggable=false;img.dataset.frame=state;img.className='light-face';img.onerror=()=>{node.dataset.missing='true';byId('lightsStatus').textContent='خطای بارگذاری فایل چراغ: '+c.asset;};node.append(img);}
+   node.addEventListener('pointerdown',e=>e.stopPropagation());node.addEventListener('click',e=>{e.stopPropagation();choose(c);});if(c.id==='emergency-not-armed')node.dataset.brightness=window.B737LampAppearance.getMode?.()||'BRIGHT';widgets.set(c.id,node);layer.append(node);
   }
   byId('atlasAbsolute').append(layer);engine=model.controller(registry,window.B737ElectricalV7,render,window.B737PneumaticsV6);inspector();ready=true;synchronize();choose(registry.lights.find(c=>c.id==='fuel-center-l'));
   for(const type of ['b737:switch-change','b737:rotary-change','b737:guarded-change'])window.addEventListener(type,e=>synchronize(e.detail));
@@ -56,12 +63,14 @@
  if(new URLSearchParams(location.search).has('debugLights'))document.documentElement.dataset.lightGeometryDebug='true';
  function relight(){
    if(!ready)return;
+   const oh14=widgets.get('emergency-not-armed');
+   if(oh14)oh14.dataset.brightness=window.B737LampAppearance.getMode?.()||'BRIGHT';
    for(const c of registry.lights){
      const node=widgets.get(c.id);if(!node)continue;
      for(const img of node.querySelectorAll('.light-face')){
        const state=img.dataset.frame;
        const existing=(readabilityFaces?.instances?.[c.id]?.states?.[state]||instanceFaces?.instances?.[c.id]?.states?.[state]||registry.assets[c.asset][state]);
-       const source=window.B737LampAppearance.resolve('OH',c.asset,state)||url(existing.url);
+       const source=faceSource(c,state,existing);
        if(img.src!==source){if(window.B737ImageLoader)window.B737ImageLoader.assign(img,source);else img.src=source;}
      }
    }
