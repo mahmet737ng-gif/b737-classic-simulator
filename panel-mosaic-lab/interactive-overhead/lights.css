@@ -56,53 +56,60 @@ html[data-light-geometry-debug=true] .mounted-light::after{content:'';position:a
 .oh14-emergency-exit-physical:focus-visible{
  outline:2px solid #78d5ff;outline-offset:-3px;
 }
-/* OH14 SMALL SILVER THREE-POSITION TOGGLE
- * The original photo already owns the nut and housing. Do not translate a
- * hexagonal photo crop or manufacture a second mounting bracket.
- * Only the genuine-size silver stem and pear-shaped chrome tip are animated.
+/* OH14: miniature chrome / silver three-position toggle.
+ * Correct visual states: OFF points UP, ARMED is short/neutral, ON points DOWN.
+ * The nut remains fixed in its original photographic panel opening.
+ * Crucially: all three positions MUST be visible, including ON.
  */
-.oh14-silver-toggle-tail-cover{
- position:absolute;z-index:1;pointer-events:none;
- background:radial-gradient(ellipse at center,
-  #171512 0%,#1c1916 45%,#151410 65%,rgba(18,16,13,0) 93%);
- opacity:0;transition:opacity .09s linear;
+.oh14-small-silver-toggle-nut{
+ position:absolute;z-index:2;pointer-events:none;
+ border-radius:35%;
+ clip-path:polygon(28% 3%,72% 3%,100% 31%,100% 69%,72% 97%,28% 97%,0 69%,0 31%);
+ background:linear-gradient(120deg,
+  #302d27 0%,#787366 13%,#d7d0c1 27%,#807967 43%,
+  #f5eee0 57%,#6a655a 78%,#2b2925 100%);
+ box-shadow:inset 1px 1px 2px #d8d1c4,inset -1px -1px 2px #25221f,
+            0 1px 2px rgba(0,0,0,.6);
+}
+.oh14-small-silver-toggle-nut::after{
+ content:"";position:absolute;left:25%;top:24%;width:50%;height:52%;
+ border-radius:50%;
+ background:radial-gradient(circle at 35% 24%,#7a766e,#34312d 53%,#1a1917 100%);
+ box-shadow:inset 0 1px 2px #070707,0 0 1px rgba(255,255,255,.3);
 }
 .oh14-small-silver-toggle{
- position:absolute;z-index:2;pointer-events:none;
+ position:absolute;z-index:3;pointer-events:none;
  transform-origin:50% 5%;
- transition:transform .2s cubic-bezier(.2,.62,.25,1),opacity .12s linear;
- filter:drop-shadow(1px 2px 1px rgba(0,0,0,.75));
+ transition:transform .20s cubic-bezier(.2,.62,.25,1);
+ filter:drop-shadow(1px 1px 1px rgba(0,0,0,.78));
  will-change:transform;
+ opacity:1!important;
 }
 .oh14-small-silver-toggle::before{
- content:"";position:absolute;left:35%;top:2%;width:30%;height:71%;
+ content:"";position:absolute;left:35%;top:1%;width:30%;height:72%;
  border-radius:45% 45% 38% 38%;
  background:linear-gradient(90deg,
-  #47433b 0%,#a29d91 12%,#f4f1e9 40%,#fffaf2 54%,#aaa79e 77%,#535048 100%);
+  #49453d 0%,#aaa79c 14%,#f5f1e9 41%,#fffdf8 51%,#aaa59a 80%,#535048 100%);
  box-shadow:inset 1px 0 1px rgba(255,255,255,.4),inset -1px 0 1px rgba(33,32,29,.4);
 }
 .oh14-small-silver-toggle::after{
- content:"";position:absolute;left:16%;top:56%;width:68%;height:36%;
+ content:"";position:absolute;left:16%;top:57%;width:68%;height:36%;
  border-radius:49% 50% 47% 48%;
- background:radial-gradient(ellipse at 37% 30%,
-  #fffdf3 0%,#e9e7da 18%,#c7c3b7 39%,#8b8880 67%,#524f49 90%,#2c2b29 100%);
+ background:radial-gradient(ellipse at 37% 27%,
+  #fffdf4 0%,#e8e6d9 18%,#c4c0b4 40%,#8a867b 66%,#4c4a45 90%,#2b2a27 100%);
  box-shadow:inset -1px -2px 2px rgba(0,0,0,.35),
             0 1px 1px rgba(0,0,0,.5);
 }
-.oh14-emergency-exit-physical[data-position="ON"] .oh14-small-silver-toggle,
-.oh14-emergency-exit-physical[data-position="ON"] .oh14-silver-toggle-tail-cover{
- opacity:0; /* original photographed small silver toggle is already in ON */
+/* CSS transform of only the tiny shaft, not the large housing or nut. */
+.oh14-emergency-exit-physical[data-position="OFF"] .oh14-small-silver-toggle{
+ transform:rotate(180deg);
 }
 .oh14-emergency-exit-physical[data-position="ARMED"] .oh14-small-silver-toggle{
- transform:scaleY(.48);opacity:1;
+ transform:scaleY(.42);
 }
-.oh14-emergency-exit-physical[data-position="OFF"] .oh14-small-silver-toggle{
- transform:rotate(180deg);opacity:1;
-}
-.oh14-emergency-exit-physical[data-position="ARMED"] .oh14-silver-toggle-tail-cover,
-.oh14-emergency-exit-physical[data-position="OFF"] .oh14-silver-toggle-tail-cover{
- opacity:1;
+.oh14-emergency-exit-physical[data-position="ON"] .oh14-small-silver-toggle{
+ transform:none;
 }
 @media(prefers-reduced-motion:reduce){
- .oh14-small-silver-toggle,.oh14-silver-toggle-tail-cover{transition:none}
+ .oh14-small-silver-toggle{transition:none}
 }
