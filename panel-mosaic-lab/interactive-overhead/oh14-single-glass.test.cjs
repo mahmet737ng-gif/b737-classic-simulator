@@ -56,14 +56,14 @@ assert.match(overlay,/#oh14EmergencyExitPhysical/,'Obsolete duplicate selector s
 assert.match(app,/dataset\.photoOwner/,'Production switch should expose a versioned ownership marker');
 
 
-assert.match(app,/OH14_FIXED_SOURCE_RECT=Object\\.freeze\\(\\[452,163,748,876\\]\\)/,
+assert.match(app,/OH14_FIXED_SOURCE_RECT=Object\.freeze\(\[452,163,748,876\]\)/,
  'OH14 native bounding coordinates match the 132x405 red rectangle');
-assert.match(app,/holder\\.dataset\\.fixedGeometry='OH14-FIXED-RED-BOX-0016'/,
+assert.match(app,/holder\.dataset\.fixedGeometry='OH14-FIXED-RED-BOX-0016'/,
  'Closed and all three open states share the same fixed mount');
-assert.match(app,/if\\(photo\\.src!==url\\)photo\\.src=url/,
+assert.match(app,/if\(photo\.src!==url\)photo\.src=url/,
  'Only the photo source may change on the four detents');
 assert.match(overlay,/overflow:hidden;/,'OH14 photo cannot exceed fixed box');
-assert.match(overlay,/width:233\\.64486%;height:106\\.60981%/,
+assert.match(overlay,/width:233\.64486%;height:106\.60981%/,
  'All photo frames use the same object dimensions');
 console.log('PASS OH14 one Small Silver actuator, one independent black top-hinged guard; NOT ARMED and other 111 lamps preserved');
 
