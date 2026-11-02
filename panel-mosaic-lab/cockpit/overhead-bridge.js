@@ -98,15 +98,20 @@
   // ISN provides the general panel projections; WINDOW HEAT is the owner
   // of its eight real OH15 lamps and is layered AFTER ISN every time.
   const merged={...(projection||{}),...(windowHeatProjection||{}),...(tatProbeProjection||{})};
+  const batteryMasterOn=String(window.B737OverheadToggles?.getState()?.['battery-master']||'').toUpperCase()==='ON';
   for(const node of document.querySelectorAll('.mounted-light')){
    // OH14 is owned solely by its three-position switch, never ISN AC/lamp projections.
    if(node.dataset.light==='emergency-not-armed')continue;
    if(!Object.prototype.hasOwnProperty.call(merged,node.dataset.light))continue;
    const v=merged[node.dataset.light],isWH=windowHeatProjection&&Object.prototype.hasOwnProperty.call(windowHeatProjection,node.dataset.light),isTAT=tatProbeProjection&&Object.prototype.hasOwnProperty.call(tatProbeProjection,node.dataset.light);
-   node.dataset.isnProjection=v===null?'UNKNOWN':v?'ON':'OFF';
+   const fuelValve=(node.dataset.light==='fuel-valve-closed-1'||node.dataset.light==='fuel-valve-closed-2')&&typeof v==='string';
+   node.dataset.isnProjection=fuelValve?v:v===null?'UNKNOWN':v?'ON':'OFF';
    // WH projection already includes authoritative electrical/CB gating;
    // the legacy overhead preview's separate battery flag must not mask it.
-   const frame=liveElectricalPower===false?'OFF':isWH||isTAT?(v?'ON':'OFF'):base.power===false?'OFF':v===null?(base.frames[node.dataset.light]||'OFF'):v?'ON':'OFF';
+   // LAN ATA 28-40: FUEL VALVE CLOSED annunciator supply requires BATTERY switch ON (relay R41).
+   const frame=fuelValve?(liveElectricalPower===false||base.power===false||!batteryMasterOn?'OFF':
+    base.context?.faults?.[node.dataset.light]===true?'BRIGHT_BLUE':v):
+    liveElectricalPower===false?'OFF':isWH||isTAT?(v?'ON':'OFF'):base.power===false?'OFF':v===null?(base.frames[node.dataset.light]||'OFF'):v?'ON':'OFF';
    for(const face of node.querySelectorAll('.light-face'))face.classList.toggle('active',face.dataset.frame===frame);
    node.dataset.frame=frame;node.dataset.state=frame;
    node.setAttribute('aria-label',node.dataset.light+(v===null?' — UNKNOWN '+frame:isWH?' — WINDOW HEAT '+frame:isTAT?' — TAT PROBE '+frame:' — ISN '+frame));
@@ -158,7 +163,10 @@
   }
   if(d.action==='isn-projection'&&d.lamps&&typeof d.lamps==='object'){
    const ids=new Set(window.B737OverheadLights.getRegistry().lights.map(light=>light.id));
-   projection={};for(const [id,v]of Object.entries(d.lamps))if(id!=='emergency-not-armed'&&ids.has(id)&&(v===null||typeof v==='boolean'))projection[id]=v;
+   projection={};for(const [id,v]of Object.entries(d.lamps))if(id!=='emergency-not-armed'&&ids.has(id)){
+    const fuelValve=id==='fuel-valve-closed-1'||id==='fuel-valve-closed-2';
+    if(v===null||typeof v==='boolean'||fuelValve&&['OFF','DIM_BLUE','BRIGHT_BLUE'].includes(v))projection[id]=v;
+   }
    applyProjection();
   }
   if(d.action==='isn-starter-cutout'&&['engine-start-1','engine-start-2'].includes(d.id)){

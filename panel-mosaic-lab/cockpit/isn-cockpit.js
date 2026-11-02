@@ -8,6 +8,7 @@
   ['B737ISNEngineStartDynamicsV1','../../engine/integration/isn-engine-start-dynamics-v1.js'],
   ['B737ISNAPUStartChainV1','../../engine/integration/isn-apu-start-chain-v1.js'],
   ['B737ISNStartIndicationsV1','../../engine/integration/isn-start-indications-v1.js'],
+  ['B737ISNFuelShutoffIndicatorV1','../../engine/integration/isn-fuel-shutoff-indicator-v1.js'],
   ['B737ISNUnifiedControlRouterV1','../../engine/integration/isn-unified-control-router-v1.js'],
   ['B737ISNThrustPerformanceV1','../../engine/integration/isn-thrust-performance-v1.js'],
   ['B737ISN0912RuntimeV1','../../engine/integration/isn-09-12-runtime-v1.js'],
@@ -62,6 +63,7 @@
  });
  const startSession=ecu.start,chain=ecu.chain,session=startSession.core.pack;
  const bridge=new Adapter.Bridge(session,{sourceOwner:'ISN03_START_SESSION'});
+ const fuelValveIndication=window.B737ISNFuelShutoffIndicatorV1.create({travelMs:820});
  const pendingEvents=[];
  const strip=document.createElement('section');strip.id='isnStartIndications';strip.className='isn-start-indications';
  strip.setAttribute('aria-label','ISN-03 engine start training indications');
@@ -83,12 +85,17 @@
  panel.querySelector('.isn-note').after(startPanel);
  const anchor=document.querySelector('.aircraft-profile-summary');if(anchor)anchor.after(panel);else byId('inspector').prepend(panel);
  const quick=document.createElement('section');quick.className='isn-bridge-panel';quick.id='isnQuickEngineControls';
- quick.innerHTML='<h2>روشن‌کردن آزمایشی موتور</h2><p>هر دکمه موتور همان سمت را مستقیم روی IDLE قرار می‌دهد؛ برای تست عملکرد، بدون اجرای مراحل استارت.</p>'+[1,2].map(n=>
-  '<div><button type="button" id="isnQuickRun'+n+'">ENG '+n+' · روشن کن</button><label style="display:block">ENG '+n+' POWER <input id="isnQuickPower'+n+'" type="range" min="0" max="100" value="0" disabled><output id="isnQuickPowerValue'+n+'">0%</output></label><span id="isnQuickState'+n+'" role="status">OFF</span></div>').join('')+'<p id="isnQuickApuState" dir="ltr" role="status">APU ECU: checking…</p><p id="isnQuickError" role="alert"></p>';
+ quick.innerHTML='<h2>کنترل آزمایشی موتور</h2><p>روشن‌کردن موتور را مستقیم روی IDLE قرار می‌دهد. خاموش‌کردن Fuel Start Lever همان موتور را به CUTOFF می‌برد.</p>'+[1,2].map(n=>
+  '<div><div class="isn-quick-engine-actions"><button type="button" id="isnQuickRun'+n+'">ENG '+n+' · روشن کن</button><button type="button" id="isnQuickStop'+n+'">ENG '+n+' · خاموش کن</button></div><label style="display:block">ENG '+n+' POWER <input id="isnQuickPower'+n+'" type="range" min="0" max="100" value="0" disabled><output id="isnQuickPowerValue'+n+'">0%</output></label><span id="isnQuickState'+n+'" role="status">OFF</span></div>').join('')+'<p id="isnQuickApuState" dir="ltr" role="status">APU ECU: checking…</p><p id="isnQuickError" role="alert"></p>';
  byId('inspector').prepend(quick);
  for(const n of [1,2]){
   byId('isnQuickRun'+n).onclick=()=>{
    try{ecu.instructorRunEngine('engine'+n,{instructor:true});byId('isnQuickError').textContent='';render();}
+   catch(error){byId('isnQuickError').textContent=error.message;}
+  };
+  byId('isnQuickStop'+n).onclick=()=>{
+   try{const engine='engine'+n;if(chain.get().phase[engine]==='RUNNING')ecu.setThrottle(engine,0);
+    ecu.shutdown(engine);byId('isnQuickError').textContent='';render();}
    catch(error){byId('isnQuickError').textContent=error.message;}
   };
   byId('isnQuickPower'+n).oninput=event=>{
@@ -162,6 +169,7 @@
   for(const n of [1,2]){
    const id='engine'+n,running=s.phase[id]==='RUNNING';
    byId('isnQuickRun'+n).disabled=running;
+   byId('isnQuickStop'+n).disabled=s.phase[id]==='OFF'&&s.observations[id].feedback.fuelStartLever.value==='CUTOFF';
    byId('isnQuickPower'+n).disabled=!running;
    const pct=Math.round(s.runningEnvelope.throttle[id]*100);
    byId('isnQuickPower'+n).value=pct;byId('isnQuickPowerValue'+n).textContent=pct+'%';
@@ -235,6 +243,14 @@
  }
  function postProjection(){const f=byId('overheadFrame');if(!f?.contentWindow||!bridge.initialized)return;
   const lamps={...bridge.get().lamps};const projected=chain.get().projected;
+  // FCOM 12.10.1 / LAN ATA 28: valve-position indications, NOT engine-running lights.
+  const valveState=fuelValveIndication.observe({
+   levers:{engine1:chain.get().observations.engine1.feedback.fuelStartLever.value,
+    engine2:chain.get().observations.engine2.feedback.fuelStartLever.value},
+   fireHandles:ecu.core.fireSwitch,nowMs:performance.now()});
+  for(const n of [1,2])lamps['fuel-valve-closed-'+n]=valveState.frames['engine'+n];
+  // Settle even when the passive ECU is sleeping with both engines stopped.
+  if(valveState.transitionStarted)setTimeout(postProjection,valveState.travelMs+20);
   // ECU owns availability; V7 evaluated source (not selected detent)
   // proves the generator actually feeds an AC bus.
   const apuGenerator=ecu.get().apu.generator;

@@ -3,6 +3,10 @@
 .isn-bridge-panel p,.isn-bridge-panel details{font-size:11px;line-height:1.6}
 .isn-bridge-panel .isn-note{color:#e2bd83}
 .isn-bridge-panel #isnMode{border-color:#6c9f97}
+.isn-quick-engine-actions{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin:5px 0}
+.isn-quick-engine-actions button{flex:1 1 120px;min-width:0}
+.isn-quick-engine-actions [id^=isnQuickStop]{border-color:#b47773;color:#ffd9d4;background:#412526}
+.isn-quick-engine-actions button:disabled{opacity:.42;cursor:not-allowed}
 .isn-bridge-panel #isnMode[aria-pressed=true]{background:#67431f;border-color:#d3a66c;color:#ffe1ad}
 .isn-buses{direction:ltr;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;margin:8px 0}
 .isn-buses>div,.isn-warnings>div{display:flex;flex-direction:column;align-items:center;gap:4px;background:#0c1c2b;border:1px solid #30495a;border-radius:6px;padding:5px;min-width:0}
