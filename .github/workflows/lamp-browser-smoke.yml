@@ -16,7 +16,8 @@ permissions:
   contents: read
 jobs:
   browser-mounting:
-    runs-on: ubuntu-latest
+    # Playwright 1.58.2 does not support GitHub's ubuntu26.04 image. Pin the 24.04 LTS runner.
+    runs-on: ubuntu-24.04
     timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
