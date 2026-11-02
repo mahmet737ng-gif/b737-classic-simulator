@@ -39,4 +39,13 @@ assert.doesNotMatch(overlay,/background:linear-gradient\(90deg,#0d0c0b/,'No arti
 assert.doesNotMatch(live,/oh14EmergencyExitPhysical|oh14-small-silver-toggle/,'Never mount a second mini-switch over the photographed one');
 assert.doesNotMatch(live,/oh14-photo-lever-sprite/,'No oversized photographic nut overlays allowed');
 assert.doesNotMatch(css,/img\.light-face\[data-frame="OFF"\]\{\s*opacity:0!important/,'Do not hide the installed dark glass');
+const assembly=JSON.parse(read('../cockpit/assembly.json'));
+const overhead=assembly.regions.find(r=>r.id==='overhead');
+assert.match(overhead.embeddedUrl,/&oh14=OH14-PHOTO-LIVE-0010&ts=OH14-PHOTO-LIVE-0010/,'Overhead iframe URL must bypass stale cached HTML');
+const embedded=read('../cockpit/overhead-stage.html');
+assert.match(embedded,/app\.js\?v=OH14-PHOTO-LIVE-0010/,'Embedded original-photo UI must use the new JS revision');
+assert.match(embedded,/lights\.js\?v=OH14-PHOTO-LIVE-0010/,'Embedded lights must use the revised frame without the legacy selector');
+assert.match(overlay,/#oh14EmergencyExitPhysical/,'Legacy cached physical selector must be suppressed');
+assert.match(app,/dataset\.photoOwner/,'Production switch should expose a versioned ownership marker');
+
 console.log('PASS OH14 ONE invisible original-photo control, NO added lever or mask; original NOT ARMED glass and other 111 lamps preserved');
