@@ -43,18 +43,28 @@ assert.doesNotMatch(live,/oh14-photo-lever-sprite/,'No oversized photographic nu
 assert.doesNotMatch(css,/img\.light-face\[data-frame="OFF"\]\{\s*opacity:0!important/,'Do not hide the installed dark glass');
 const assembly=JSON.parse(read('../cockpit/assembly.json'));
 const overhead=assembly.regions.find(r=>r.id==='overhead');
-assert.match(overhead.embeddedUrl,/&oh14=OH14-MATTE-FREE-0015&ts=OH14-MATTE-FREE-0015/,'Overhead iframe URL must bypass stale cached HTML');
+assert.match(overhead.embeddedUrl,/&oh14=OH14-FIXED-RED-BOX-0016&ts=OH14-FIXED-RED-BOX-0016/,'Overhead iframe URL must bypass stale cached HTML');
 const embedded=read('../cockpit/overhead-stage.html');
-assert.match(embedded,/app\.js\?v=OH14-BLACK-GUARDED-0014/,'Embedded new guarded OH14 UI must use the new JS revision');
+assert.match(embedded,/app\.js\?v=OH14-FIXED-RED-BOX-0016/,'Embedded new guarded OH14 UI must use the new JS revision');
 assert.match(embedded,/lights\.js\?v=OH14-PHOTO-LIVE-0010/,'Embedded lights must use the revised frame without the legacy selector');
 assert.match(overlay,/\.oh14-top-hinge-guard/,'OH14 top-hinge guard CSS must be mounted');
 assert.match(overlay,/\.oh14-guard-state-photo/,'Photo guard must be visible as a hinged cover');
-assert.match(overlay,/OH14-MATTE-FREE-0015/,'OH14 must clip the opaque photo matte');
+assert.match(overlay,/OH14-FIXED-RED-BOX-0016/,'OH14 must clip the opaque photo matte');
 assert.match(overlay,/clip-path:polygon\(/,'Mask only photographic black canvas outside the original guard');
-assert.match(embedded,/overlay\.css\?v=OH14-MATTE-FREE-0015/,'Embedded overhead must bust old CSS cache');
+assert.match(embedded,/overlay\.css\?v=OH14-FIXED-RED-BOX-0016/,'Embedded overhead must bust old CSS cache');
 assert.match(overlay,/#oh14EmergencyExitPhysical/,'Obsolete duplicate selector stays suppressed');
 assert.match(app,/dataset\.photoOwner/,'Production switch should expose a versioned ownership marker');
 
+
+assert.match(app,/OH14_FIXED_SOURCE_RECT=Object\\.freeze\\(\\[452,163,748,876\\]\\)/,
+ 'OH14 native bounding coordinates match the 132x405 red rectangle');
+assert.match(app,/holder\\.dataset\\.fixedGeometry='OH14-FIXED-RED-BOX-0016'/,
+ 'Closed and all three open states share the same fixed mount');
+assert.match(app,/if\\(photo\\.src!==url\\)photo\\.src=url/,
+ 'Only the photo source may change on the four detents');
+assert.match(overlay,/overflow:hidden;/,'OH14 photo cannot exceed fixed box');
+assert.match(overlay,/width:233\\.64486%;height:106\\.60981%/,
+ 'All photo frames use the same object dimensions');
 console.log('PASS OH14 one Small Silver actuator, one independent black top-hinged guard; NOT ARMED and other 111 lamps preserved');
 
 for(const name of ['Black_Guarded_Open_UP.png','Black_Guarded_Open_CENTER.png','Black_Guarded_Open_DOWN.png','Black_Guarded_CLOSED.png']){
