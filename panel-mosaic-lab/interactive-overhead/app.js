@@ -141,8 +141,13 @@
     photo.alt='';photo.draggable=false;photo.setAttribute('aria-hidden','true');
     photo.src=localURL('../assets/locked/2026-10-23/Black_Guarded_CLOSED.png');
     hood.append(photo);holder.append(hood);
-    Object.assign(holder.style,{left:button.style.left,top:button.style.top,
-      width:button.style.width,height:button.style.height});
+    // Match the precise hardware envelope from the existing retired OH14
+    // guard socket, not the deliberately larger invisible interaction hitbox.
+    const plate=placements.get('OH14');
+    const guardCorner=(x,y)=>model.mapPoint({...c,sourcePoint:[x,y],bezelSourceDiameter:1},plate);
+    const ga=guardCorner(477,295),gb=guardCorner(712,805);
+    Object.assign(holder.style,{left:ga.x+'px',top:ga.y+'px',
+      width:(gb.x-ga.x)+'px',height:(gb.y-ga.y)+'px'});
     function setCover(open){
      holder.dataset.cover=open?'open':'closed';
      hood.setAttribute('aria-expanded',String(open));
