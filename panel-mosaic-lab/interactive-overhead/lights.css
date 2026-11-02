@@ -13,3 +13,28 @@ html[data-light-geometry-debug=true] .mounted-light::after{content:'';position:a
  * :has() is supported by the cockpit's Chromium-based runtime.
  */
 #atlasAbsolute:has(.mounted-light[data-light="emergency-not-armed"]) .perf9-lamp[data-lamp="emergency-not-armed"]{display:none!important}
+
+/* OH14 fixed photographic aperture: never draw a second black rectangular
+   lens on top of the owner's original bezel. Only amber illumination is
+   screen-blended into the single baked-in glass and surround. */
+.mounted-light[data-light="emergency-not-armed"]{
+ background:transparent!important;box-shadow:none!important;
+}
+.mounted-light[data-light="emergency-not-armed"] .light-face{
+ mix-blend-mode:screen;transition:opacity 110ms linear;
+}
+/* The actual switch is already photographed. Put an invisible interactive
+   surface over its lever track, not another switch graphic. */
+.oh14-emergency-exit-physical{
+ position:absolute;z-index:4;display:block;box-sizing:border-box;
+ border:0!important;padding:0!important;margin:0!important;
+ background:transparent!important;box-shadow:none!important;
+ cursor:pointer;touch-action:manipulation;outline:0;
+}
+.oh14-emergency-exit-physical:hover{
+ outline:1px solid rgba(150,212,240,.45);
+ outline-offset:-3px;
+}
+.oh14-emergency-exit-physical:focus-visible{
+ outline:2px solid #78d5ff;outline-offset:-3px;
+}
