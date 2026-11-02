@@ -17,8 +17,20 @@
   button.setAttribute('aria-disabled',String(interlocks.get(c.id)===false));
   button.dataset.state=value;button.setAttribute('aria-valuenow',String(index));button.setAttribute('aria-valuetext',value);button.setAttribute('aria-label',c.label+' — '+value);
   if(c.id==='emergency-exit-lights'){
-   button.dataset.photoOwner='OH14-FIXED-RED-BOX-0016';
+   button.dataset.photoOwner='OH14-OPERABLE-FIXED-0017';
    button.title='EMER EXIT LIGHTS — '+value+' · Black Guarded';
+   // A live, independent Small Silver pose sits over the invariant black housing.
+   const moving=button._oh14SilverVisual;
+   if(moving&&index>=0){
+    moving.style.backgroundPosition=(poseFrames(c)[index]*25)+'% 50%';
+    const hit=button._oh14LeverHit;
+    if(hit){
+     hit.dataset.state=value;
+     hit.setAttribute('aria-valuenow',String(index));
+     hit.setAttribute('aria-valuetext',value);
+     hit.setAttribute('aria-label','EMER EXIT LIGHTS — '+value);
+    }
+   }
    button._refreshGuard?.();
   }
   const sprite=button.querySelector('.toggle-sprite');
@@ -139,14 +151,33 @@
     const photo=document.createElement('img');
     photo.alt='';photo.draggable=false;photo.setAttribute('aria-hidden','true');
     photo.className='oh14-guard-state-photo';
-    const guardFiles={OFF:'Black_Guarded_Open_UP.png',ARMED:'Black_Guarded_Open_CENTER.png',ON:'Black_Guarded_Open_DOWN.png'};
+    // The owner's original top-hinged photo masters contain consistent
+    // open and closed housings. The silver lever is a separate physical part:
+    // never scale the guard when OFF, ARMED, or ON changes.
+    const guardRoot='../assets/locked/2026-10-23/Switches/guard/runtime/';
     function renderGuard(){
-     const file=holder.dataset.cover==='closed'?'Black_Guarded_CLOSED.png':guardFiles[engine.get(c.id)];
-     const url=localURL('../assets/locked/2026-10-23/Switches/Guarded/'+file);
+     const file=holder.dataset.cover==='closed'?'Black_Guarded_CLOSED.png':'Black_Guarded_Open_CENTER.png';
+     const url=localURL(guardRoot+file);
      if(photo.src!==url)photo.src=url;
     }
     button._refreshGuard=renderGuard;
-    holder.append(photo,hood);
+    const silver=document.createElement('span');
+    silver.className='oh14-small-silver-live';
+    silver.setAttribute('aria-hidden','true');
+    silver.style.backgroundImage='url("'+localURL(registry.visualFamilies['Small Silver'].asset)+'")';
+    const leverHit=document.createElement('button');
+    leverHit.type='button';leverHit.className='oh14-lever-hit';
+    leverHit.setAttribute('role','slider');
+    leverHit.setAttribute('aria-orientation','vertical');
+    leverHit.setAttribute('aria-valuemin','0');
+    leverHit.setAttribute('aria-valuemax','2');
+    leverHit.title='EMER EXIT LIGHTS — operate OFF / ARMED / ON';
+    button._oh14SilverVisual=silver;
+    button._oh14LeverHit=leverHit;
+    // Reuse the existing registered engine. This is an additional input
+    // surface for the same switch, NOT a duplicate state or control.
+    bind(c,leverHit);
+    holder.append(photo,hood,silver,leverHit);
     // Match the precise hardware envelope from the existing retired OH14
     // guard socket, not the deliberately larger invisible interaction hitbox.
     const plate=placements.get('OH14');
@@ -161,7 +192,12 @@
       left:ga.x+'px',top:ga.y+'px',
       width:(gb.x-ga.x)+'px',height:(gb.y-ga.y)+'px'
     });
-    holder.dataset.fixedGeometry='OH14-FIXED-RED-BOX-0016';
+    holder.dataset.fixedGeometry='OH14-OPERABLE-FIXED-0017';
+    const silverSize=p.diameter*SPRITE_CELL/SPRITE_BEZEL;
+    Object.assign(silver.style,{
+     left:(p.x-ga.x)+'px',top:(p.y-ga.y)+'px',
+     width:silverSize+'px',height:silverSize+'px'
+    });
     function setCover(open){
      holder.dataset.cover=open?'open':'closed';
      hood.setAttribute('aria-expanded',String(open));
@@ -169,7 +205,11 @@
      button.dataset.cover=open?'open':'closed';
      button.tabIndex=open?0:-1;
      button.setAttribute('aria-disabled',String(!open));
-     button.style.pointerEvents=open?'auto':'none';
+     // Never let the obsolete oversized transparent button intercept OH14.
+     button.style.pointerEvents='none';
+     leverHit.disabled=!open;
+     leverHit.style.pointerEvents=open?'auto':'none';
+     silver.style.visibility=open?'visible':'hidden';
      renderGuard();
     }
     // No events from the guard are allowed to cycle the three-detent switch.
@@ -179,7 +219,7 @@
     hood.addEventListener('keydown',e=>{
      if(e.key==='Escape'){e.stopPropagation();e.preventDefault();setCover(false)}
     });
-    setCover(true);layer.append(holder);
+    setCover(true);layer.append(holder);refreshOne(c);
    }
   }
   byId('atlasAbsolute').append(layer);
