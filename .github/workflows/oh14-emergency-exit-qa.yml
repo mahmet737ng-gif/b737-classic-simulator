@@ -34,9 +34,9 @@ jobs:
           node --check panel-mosaic-lab/interactive-overhead/lights.js
           node --check panel-mosaic-lab/interactive-overhead/lights-model.js
           node --check panel-mosaic-lab/cockpit/apu-egt-needle-unified.js
-      - name: Assert photo geometry and OH14 OFF ARMED ON annunciator
-        run: |
-          node panel-mosaic-lab/interactive-overhead/lights.test.cjs
-          node panel-mosaic-lab/interactive-overhead/oh14-single-glass.test.cjs
+      - name: Verify OH14 single photographed lever, cache revision and no legacy overlay
+        run: node panel-mosaic-lab/interactive-overhead/oh14-single-glass.test.cjs
+      - name: Assert all overhead light scenarios (including non-OH14 systems)
+        run: node panel-mosaic-lab/interactive-overhead/lights.test.cjs
       - name: Verify immutable original overhead source panels
         run: python3 panel-mosaic-lab/verify-final-overhead.py
