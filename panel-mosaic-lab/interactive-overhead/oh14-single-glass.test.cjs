@@ -32,7 +32,9 @@ assert.equal(actuator[0].visualFamily,'Small Silver','Use approved owner-selecte
 assert.deepEqual(actuator[0].states,['OFF','ARMED','ON']);
 assert.deepEqual(matches[0].controls,['emergency-exit-lights']);
 assert.match(app,/const photoOnly=c\.id==='emergency-exit-lights'/,'Existing photographed switch alone is interactive');
-assert.match(app,/if\(!photoOnly\)/,'No extra silver toggle rendered on OH14');
+assert.match(app,/holder.className='oh14-top-hinge-guard'/,'Owner requested a single top-hinged black guard');
+assert.match(app,/button.append\(sprite\)/,'The owner-requested Small Silver toggle must be drawn');
+assert.match(app,/Black_Guarded_CLOSED\.png/,'Guard uses an immutable black photographic asset');
 assert.doesNotMatch(app,/append\(occlusion\)|oh14-original-toggle-occlusion/,'Original photo stays visible and untouched');
 assert.match(overlay,/\.mounted-toggle\[data-control="emergency-exit-lights"\]/,'Transparent native photo hitbox is maintained');
 assert.doesNotMatch(overlay,/background:linear-gradient\(90deg,#0d0c0b/,'No artificial OH14 paint-over mask');
@@ -41,11 +43,13 @@ assert.doesNotMatch(live,/oh14-photo-lever-sprite/,'No oversized photographic nu
 assert.doesNotMatch(css,/img\.light-face\[data-frame="OFF"\]\{\s*opacity:0!important/,'Do not hide the installed dark glass');
 const assembly=JSON.parse(read('../cockpit/assembly.json'));
 const overhead=assembly.regions.find(r=>r.id==='overhead');
-assert.match(overhead.embeddedUrl,/&oh14=OH14-PHOTO-LIVE-0010&ts=OH14-PHOTO-LIVE-0010/,'Overhead iframe URL must bypass stale cached HTML');
+assert.match(overhead.embeddedUrl,/&oh14=OH14-TOP-HINGE-SILVER-0012&ts=OH14-TOP-HINGE-SILVER-0012/,'Overhead iframe URL must bypass stale cached HTML');
 const embedded=read('../cockpit/overhead-stage.html');
-assert.match(embedded,/app\.js\?v=OH14-PHOTO-LIVE-0010/,'Embedded original-photo UI must use the new JS revision');
+assert.match(embedded,/app\.js\?v=OH14-TOP-HINGE-SILVER-0012/,'Embedded new guarded OH14 UI must use the new JS revision');
 assert.match(embedded,/lights\.js\?v=OH14-PHOTO-LIVE-0010/,'Embedded lights must use the revised frame without the legacy selector');
-assert.match(overlay,/#oh14EmergencyExitPhysical/,'Legacy cached physical selector must be suppressed');
+assert.match(overlay,/\.oh14-top-hinge-guard/,'OH14 top-hinge guard CSS must be mounted');
+assert.match(overlay,/\.oh14-top-hinge-lid img/,'Photo guard must be visible as a hinged cover');
+assert.match(overlay,/#oh14EmergencyExitPhysical/,'Obsolete duplicate selector stays suppressed');
 assert.match(app,/dataset\.photoOwner/,'Production switch should expose a versioned ownership marker');
 
-console.log('PASS OH14 ONE invisible original-photo control, NO added lever or mask; original NOT ARMED glass and other 111 lamps preserved');
+console.log('PASS OH14 one Small Silver actuator, one independent black top-hinged guard; NOT ARMED and other 111 lamps preserved');
