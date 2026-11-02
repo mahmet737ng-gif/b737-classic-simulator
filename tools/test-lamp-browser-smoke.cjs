@@ -35,34 +35,47 @@ const {chromium}=require('playwright');
   if(kind==='overhead'){
    // Real DOM regression of the photographed OH14 three-detent selector.
    // Do not depend on source artwork being cropped or moved.
-   const oh14=await page.evaluate(()=>{
-    const target=document.getElementById('oh14EmergencyExitPhysical');
+   const lever=page.locator('#oh14EmergencyExitPhysical');
+   await lever.scrollIntoViewIfNeeded();
+   const actualBounds=await lever.boundingBox();
+   assert.ok(actualBounds?.width>10&&actualBounds?.height>40,'OH14 physical switch hitbox must be actually visible');
+   await page.evaluate(()=>window.B737OverheadLights.setAircraftElectricalPower(false));
+   const sample=()=>page.evaluate(()=>{
     const lamp=document.querySelector('.mounted-light[data-light="emergency-not-armed"]');
-    if(!target||!lamp)return {missingTarget:!target,missingLamp:!lamp};
-    const b=target.getBoundingClientRect();
+    const litImage=lamp?.querySelector('img.light-face[data-frame="ON"]');
+    const darkImage=lamp?.querySelector('img.light-face[data-frame="OFF"]');
+    const snap=window.B737OverheadLights.getState();
+    return {position:snap.context.emergencyExitLightsPosition,
+     illuminated:snap.lights['emergency-not-armed'],lampFrame:lamp?.dataset.frame,
+     photoPower:snap.power,vis:litImage?getComputedStyle(litImage).opacity:null,
+     offImageOpacity:darkImage?getComputedStyle(darkImage).opacity:null};
+   });
+   const initial=await sample();
+   const clickDetent=async fraction=>{
+     await lever.click({position:{x:actualBounds.width*.5,y:actualBounds.height*fraction}});
+     return sample();
+   };
+   const off=await clickDetent(.18);
+   const armed=await clickDetent(.50);
+   const on=await clickDetent(.88);
+   const oh14=await page.evaluate(()=>{
+    const lamp=document.querySelector('.mounted-light[data-light="emergency-not-armed"]');
     const litImage=lamp.querySelector('img.light-face[data-frame="ON"]');
     const darkImage=lamp.querySelector('img.light-face[data-frame="OFF"]');
     const extraFit=lamp.querySelector('.lamp-socket-fit-face');
-    const get=()=>({position:window.B737OverheadLights.getState().context.emergencyExitLightsPosition,
-      illuminated:window.B737OverheadLights.getState().lights['emergency-not-armed'],
-      lampFrame:lamp.dataset.frame});
-    window.B737OverheadLights.setAircraftElectricalPower(true);
-    const initial=get();
-    const press=f=>target.dispatchEvent(new MouseEvent('click',{bubbles:true,
-      clientX:b.left+b.width/2,clientY:b.top+b.height*f}));
-    press(.16);const off=get();
-    press(.50);const armed=get();
-    press(.89);const on=get();
-    return {initial,off,armed,on,hit:{width:b.width,height:b.height},visual:{
-      blend:getComputedStyle(litImage).mixBlendMode,
-      fill:getComputedStyle(litImage).objectFit,
+    const target=document.getElementById('oh14EmergencyExitPhysical');
+    return {visual:{
+      blend:getComputedStyle(litImage).mixBlendMode,fill:getComputedStyle(litImage).objectFit,
       background:getComputedStyle(lamp).backgroundColor,
+      pointerEvents:getComputedStyle(target).pointerEvents,
       litSrc:litImage.getAttribute('src'),darkSrc:darkImage.getAttribute('src'),
       fittedLayerCount:lamp.querySelectorAll('.lamp-socket-fit-face').length,
       fittedLayerVisibility:extraFit?getComputedStyle(extraFit).display:'ABSENT',
       photoGlassOwner:lamp.dataset.lensOwner},
       instances:document.querySelectorAll('.mounted-light[data-light="emergency-not-armed"]').length};
    });
+   oh14.initial=initial;oh14.off=off;oh14.armed=armed;oh14.on=on;
+   oh14.hit={width:actualBounds.width,height:actualBounds.height};
    assert.equal(oh14.missingTarget,undefined,'OH14 photographed physical lever hotspot missing');
    assert.equal(oh14.missingLamp,undefined,'OH14 NOT ARMED lamp missing');
    assert.equal(oh14.instances,1,'OH14 must have exactly one active mounted lamp');
@@ -70,6 +83,11 @@ const {chromium}=require('playwright');
    assert.deepEqual([oh14.off.position,oh14.armed.position,oh14.on.position],['OFF','ARMED','ON']);
    assert.deepEqual([oh14.off.illuminated,oh14.armed.illuminated,oh14.on.illuminated],[true,false,false]);
    assert.equal(oh14.visual.blend,'screen','OH14 must blend amber emission into one original bezel');
+   assert.equal(oh14.visual.pointerEvents,'auto','OH14 click target MUST be hit-testable');
+   assert.equal(oh14.off.photoPower,false,'Test must exercise AC-unavailable case');
+   assert.equal(oh14.off.lampFrame,'ON','OFF detent should activate electrical NOT ARMED frame even with AC off');
+   assert.equal(oh14.on.lampFrame,'OFF','ON detent extinguishes NOT ARMED');
+   assert.equal(oh14.on.offImageOpacity,'0','Original photo should not receive ghost unlit lettering');
    assert.ok(oh14.visual.litSrc?.includes('oh14-not-armed-emission-on.svg'),'Luminous face must contain no painted bezel');
    assert.ok(oh14.visual.darkSrc?.includes('oh14-not-armed-emission-off.svg'),'Unlit face must contain no painted bezel');
    assert.equal(oh14.visual.fittedLayerCount,0,'OH14 must not mount a second fitted glass at all');
