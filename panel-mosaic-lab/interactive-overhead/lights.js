@@ -6,6 +6,13 @@
  function snapshots(){return [window.B737OverheadToggles.getState(),window.B737RotaryGuards.getState()];}
  function render(result){
   for(const c of registry.lights){const node=widgets.get(c.id);if(!node)continue;const v=result.lights[c.id],state=v===null?'UNKNOWN':v?'ON':'OFF',frame=result.frames[c.id];node.dataset.state=state;for(const img of node.querySelectorAll('.light-face'))img.classList.toggle('active',img.dataset.frame===(frame==='FLASH'?'ON':frame));node.dataset.frame=frame;node.classList.toggle('flashing',frame==='FLASH');node.setAttribute('aria-label',c.id+' — '+state);}
+  const physicalExit=byId('oh14EmergencyExitPhysical');if(physicalExit){
+   const position=result.context.emergencyExitLightsPosition;
+   physicalExit.dataset.position=position;
+   physicalExit.setAttribute('aria-label','EMER EXIT LIGHTS · '+position+' (click OFF / ARMED / ON)');
+   physicalExit.setAttribute('aria-valuetext',position);
+   physicalExit.title='EMER EXIT LIGHTS · '+position+' · select by clicking top/middle/bottom of photographic lever';
+  }
   window.dispatchEvent(new CustomEvent('b737:overhead-light-state'));
   if(!ui)return;
   const emergencySelector=byId('emergencyExitLightsSelector');if(emergencySelector&&emergencySelector.value!==result.context.emergencyExitLightsPosition)emergencySelector.value=result.context.emergencyExitLightsPosition;
@@ -52,6 +59,38 @@
    for(const state of c.states||['OFF','ON']){const img=document.createElement('img');const face=(readabilityFaces?.instances?.[c.id]?.states?.[state]||instanceFaces?.instances?.[c.id]?.states?.[state]||registry.assets[c.asset][state]);const source=window.B737LampAppearance.resolve('OH',c.asset,state)||url(face.url);if(window.B737ImageLoader)window.B737ImageLoader.assign(img,source);else img.src=source;img.alt='';img.draggable=false;img.dataset.frame=state;img.className='light-face';img.onerror=()=>{node.dataset.missing='true';byId('lightsStatus').textContent='خطای بارگذاری فایل چراغ: '+c.asset;};node.append(img);}
    node.addEventListener('pointerdown',e=>e.stopPropagation());node.addEventListener('click',e=>{e.stopPropagation();choose(c);});widgets.set(c.id,node);layer.append(node);
   }
+  // One transparent physical hit area atop the EXISTING photographed OH14
+  // lever. Uses the same aperture mapper as the 112 lights; never adds a
+  // duplicate lever sprite, moves source art or changes the 58 locked toggles.
+  const track=model.rectangle({id:'emergency-exit-physical',sourceRect:model.EMERGENCY_EXIT_HIT_RECT},
+   plates.get('OH14'),window.B737OverheadToggleModel.mapPoint);
+  const selector=document.createElement('button');selector.type='button';selector.id='oh14EmergencyExitPhysical';
+  selector.className='oh14-emergency-exit-physical';selector.dataset.position='ON';
+  Object.assign(selector.style,{left:track.x+'px',top:track.y+'px',width:track.w+'px',height:track.h+'px'});
+  const positions=['OFF','ARMED','ON'];
+  selector.addEventListener('pointerdown',event=>event.stopPropagation());
+  selector.addEventListener('click',event=>{
+   event.stopPropagation();
+   const box=selector.getBoundingClientRect(),ratio=Math.max(0,Math.min(1,(event.clientY-box.top)/Math.max(1,box.height)));
+   engine.setEmergencyExitLightsPosition(model.emergencyExitPositionFromRatio(ratio),now());
+  });
+  selector.addEventListener('wheel',event=>{
+   if(!event.deltaY)return;
+   event.preventDefault();event.stopPropagation();
+   const current=engine.snapshot().context.emergencyExitLightsPosition;
+   const next=positions[Math.max(0,Math.min(2,positions.indexOf(current)+Math.sign(event.deltaY)))];
+   engine.setEmergencyExitLightsPosition(next,now());
+  },{passive:false});
+  selector.addEventListener('keydown',event=>{
+   let next;
+   const current=engine.snapshot().context.emergencyExitLightsPosition;
+   if(event.key==='Home')next='OFF';
+   else if(event.key==='End')next='ON';
+   else if(['ArrowDown','ArrowUp'].includes(event.key))
+    next=positions[Math.max(0,Math.min(2,positions.indexOf(current)+(event.key==='ArrowDown'?1:-1)))];
+   if(next){event.preventDefault();event.stopPropagation();engine.setEmergencyExitLightsPosition(next,now());}
+  });
+  layer.append(selector);
   byId('atlasAbsolute').append(layer);engine=model.controller(registry,window.B737ElectricalV7,render,window.B737PneumaticsV6);inspector();ready=true;synchronize();choose(registry.lights.find(c=>c.id==='fuel-center-l'));
   for(const type of ['b737:switch-change','b737:rotary-change','b737:guarded-change'])window.addEventListener(type,e=>synchronize(e.detail));
   byId('resetToggles').addEventListener('click',()=>{engine.reset(now());synchronize();});
