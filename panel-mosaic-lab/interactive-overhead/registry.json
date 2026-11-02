@@ -1122,11 +1122,11 @@
       "axis": "vertical",
       "states": [
         "ON BAT",
-        "AUTO",
+        "OFF",
         "ON"
       ],
-      "default": "AUTO",
-      "basis": "owner guide image; mounted at existing socket in locked source | EXTL-CLASSIC-0001: Lufthansa B737-300/400/500 ATA 33/40 P5 detents; source artwork unchanged."
+      "default": "OFF",
+      "basis": "Lufthansa B737-300/400/500 ATA33 33-40: POSITON [sic] switch ON BAT / OFF / ON. AC Transfer Bus #2 or DC Battery Bus."
     },
     {
       "id": "anti-collision",
