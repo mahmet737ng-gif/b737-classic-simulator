@@ -11,7 +11,7 @@ const defs=[
  ['taxi','TAXI',['OFF','ON']],
  ['logo','LOGO',['OFF','AUTO','ON']],
  ['strobe','STROBE',['OFF','AUTO','ON']],
- ['position-lights','POSITION',['ON BAT','AUTO','ON']],
+ ['position-lights','POSITION',['ON BAT','OFF','ON']],
  ['anti-collision','ANTI-COLLISION',['OFF','ON']],
  ['wing-lights','WING',['OFF','ON']],
  ['wheel-well','WHEEL WELL',['OFF','ON']]
