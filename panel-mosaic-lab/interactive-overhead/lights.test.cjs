@@ -49,6 +49,9 @@ assert.equal(groundAuto.electrical.lamps.standbyPowerOff,true,'Electrical logic 
 assert.equal(on('standby-power-off'),false,'Unpowered panel cannot light standby OFF');
 assert.equal(groundAuto.unknown.includes('standby-power-off'),false,'Resolved Classic ground AUTO is no longer an UNKNOWN source');
 assert.throws(()=>e.update({faults:{invalid:true}}));assert.throws(()=>e.update({engine1Running:'yes'}));
+// Return the test fixture to its powered baseline for subsequent probe,
+// engine anti-ice and lamp-test assertions. Production logic is unchanged.
+e.setAircraftElectricalPower(true,time);
 e.reset(time);sync();assert.equal(on('pass-oxygen'),false);assert.equal(e.snapshot().lampTest,false);
 
 // New inputs stay independent of the previously accepted left probe group.
