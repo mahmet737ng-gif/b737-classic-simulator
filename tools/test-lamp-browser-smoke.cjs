@@ -71,13 +71,25 @@ const {chromium}=require('playwright');
      return !!lens?.complete&&lens.naturalWidth>0&&lens.classList.contains('active')&&parseFloat(getComputedStyle(lens).opacity)>.85;
    },null,{timeout:5000});
    const actuallyLit=await sample();
+   const previewOH14=async(label)=>{
+     const glassBox=await page.locator('.mounted-light[data-light="emergency-not-armed"]').boundingBox();
+     const left=Math.max(0,Math.floor(Math.min(actualBounds.x,glassBox.x)-8));
+     const top=Math.max(0,Math.floor(Math.min(actualBounds.y,glassBox.y)-8));
+     const right=Math.min(1920,Math.ceil(Math.max(actualBounds.x+actualBounds.width,glassBox.x+glassBox.width)+8));
+     const bottom=Math.min(1080,Math.ceil(Math.max(actualBounds.y+actualBounds.height,glassBox.y+glassBox.height)+8));
+     const crop=await page.screenshot({type:'png',clip:{x:left,y:top,width:right-left,height:bottom-top},animations:'disabled'});
+     console.log('OH14_VISUAL_'+label+' '+crop.toString('base64'));
+   };
+   await previewOH14('OFF');
    const armed=await clickDetent(.50);
    await page.waitForFunction(()=>{
      const lens=document.querySelector('.mounted-light[data-light="emergency-not-armed"] img.light-face[data-frame="ON"]');
      return !!lens&&!lens.classList.contains('active')&&parseFloat(getComputedStyle(lens).opacity)<.08;
    },null,{timeout:5000});
    const actuallyDarkArmed=await sample();
+   await previewOH14('ARMED');
    const on=await clickDetent(.88);
+   await previewOH14('ON');
    const oh14=await page.evaluate(()=>{
     const lamp=document.querySelector('.mounted-light[data-light="emergency-not-armed"]');
     const litImage=lamp.querySelector('img.light-face[data-frame="ON"]');
