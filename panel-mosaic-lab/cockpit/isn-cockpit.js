@@ -84,7 +84,7 @@
  const anchor=document.querySelector('.aircraft-profile-summary');if(anchor)anchor.after(panel);else byId('inspector').prepend(panel);
  const quick=document.createElement('section');quick.className='isn-bridge-panel';quick.id='isnQuickEngineControls';
  quick.innerHTML='<h2>روشن‌کردن آزمایشی موتور</h2><p>هر دکمه موتور همان سمت را مستقیم روی IDLE قرار می‌دهد؛ برای تست عملکرد، بدون اجرای مراحل استارت.</p>'+[1,2].map(n=>
-  '<div><button type="button" id="isnQuickRun'+n+'">ENG '+n+' · روشن کن</button><label style="display:block">ENG '+n+' POWER <input id="isnQuickPower'+n+'" type="range" min="0" max="100" value="0" disabled><output id="isnQuickPowerValue'+n+'">0%</output></label><span id="isnQuickState'+n+'" role="status">OFF</span></div>').join('')+'<p id="isnQuickError" role="alert"></p>';
+  '<div><button type="button" id="isnQuickRun'+n+'">ENG '+n+' · روشن کن</button><label style="display:block">ENG '+n+' POWER <input id="isnQuickPower'+n+'" type="range" min="0" max="100" value="0" disabled><output id="isnQuickPowerValue'+n+'">0%</output></label><span id="isnQuickState'+n+'" role="status">OFF</span></div>').join('')+'<p id="isnQuickApuState" dir="ltr" role="status">APU ECU: checking…</p><p id="isnQuickError" role="alert"></p>';
  byId('inspector').prepend(quick);
  for(const n of [1,2]){
   byId('isnQuickRun'+n).onclick=()=>{
@@ -153,6 +153,12 @@
  });
 
  function renderStart(){const s=chain.get(),live=ecu.get();
+  const apuLive=live.apu,apuGen=apuLive.generator||{};
+  byId('isnQuickApuState').textContent='APU ECU '+apuLive.phase+' · RPM '+numeric(apuLive.rpmPct,'%')+
+   ' · EGT '+numeric(apuLive.egtC,'°C')+' · OIL '+numeric(apuLive.oil?.pressurePsi,'PSI')+
+   ' · GEN '+numeric(apuGen.voltageV,'V')+'/'+numeric(apuGen.frequencyHz,'Hz')+
+   (apuGen.connectedBusSides?.length?' · AC BUS '+apuGen.connectedBusSides.join('+'):' · NOT ON AC BUS');
+
   for(const n of [1,2]){
    const id='engine'+n,running=s.phase[id]==='RUNNING';
    byId('isnQuickRun'+n).disabled=running;
