@@ -82,7 +82,7 @@
      case 'standby-pressure':active=standbyCommand&&(context.standbyPumpFailed||fault(c.id));break;
      case 'standby-rudder':active=standbyCommand&&!context.standbyPumpFailed&&!fault('stby-pressure');break;
      case 'yaw':active=!isOn(id)||fault(c.id);break;
-     case 'emergency':active=v!=='armed';break;
+     case 'emergency':active=v==='OFF';break;
      case 'drive-pressure':{const side=/^drive-(\d+)-/.exec(c.id)?.[1];active=side?(!context['engine'+side+'Running']||v==='disconnect'||fault(c.id)):fault(c.id);break;}
      case 'drive-temperature':active=fault(c.id);break;
      case 'electrical':active=e.lamps[c.sensor];break;
@@ -115,7 +115,8 @@
     }
     const states=c.states||['OFF','ON'],bright=states.at(-1);
     if(active===null){unknown.push(c.id);on[c.id]=available&&test?true:null;frames[c.id]=available&&test?bright:'OFF';}
-    else {const frame=!available?'OFF':test?bright:typeof active==='string'?active:active?bright:'OFF';frames[c.id]=frame;on[c.id]=frame!=='OFF';}
+    else {const powered=c.id==='emergency-not-armed'?context.panelPower:available;
+     const frame=!powered?'OFF':test?bright:typeof active==='string'?active:active?bright:'OFF';frames[c.id]=frame;on[c.id]=frame!=='OFF';}
    }
    result={version:reg.version,lights:on,frames,unknown,electrical:e,pneumatic:p,context:copy(context),lampTest:test,passengerOxygenDeployed:oxygen,power:available};notify(copy(result));return copy(result);
   }
