@@ -70,7 +70,7 @@
      pressureAltitudeFt:this.flight.pressureAltitudeFt,iasKt:this.flight.iasKt});
     this.operating[device]={at,values};
     // Training feedback never replaces externally-owned sensor/instructor observations.
-    const feedback=this.start.get().observation[device].feedback;
+    const feedback=this.start.getLive().observation[device].feedback;
     for(const [key,value] of [['n2Percent',values.n2Percent],['egtC',values.egtC],
      ['fuelFlowKgHr',values.fuelFlowKgHr]]){
      if(feedback[key]?.origin===null||feedback[key]?.origin===ORIGIN)this.feedback(device,key,value);
@@ -84,7 +84,7 @@
    const value=Dynamics.sample(active.phase,sampleMs,{...this.trainingFaults[device],fuelEntryN2:active.fuelEntryN2});
    this.feedback(device,'n2Percent',value.n2Percent);
    if(value.egtC!==null)this.feedback(device,'egtC',value.egtC);
-   this.feedback(device,'fuelFlowKgHr',active.phase==='MOTORING'&&this.start.get().observation[device].feedback.fuelStartLever.value==='IDLE'&&this.fuelAvailable[device]===true?400:value.fuelFlowKgHr);
+   this.feedback(device,'fuelFlowKgHr',active.phase==='MOTORING'&&this.start.getLive().observation[device].feedback.fuelStartLever.value==='IDLE'&&this.fuelAvailable[device]===true?400:value.fuelFlowKgHr);
    if(active.phase==='LIGHT_OFF_SEQUENCE'&&value.egtC>=725){
     this.cancel(device);this.dynamic[device]=null;this.phase[device]='ABNORMAL_EGT';
     this.lastError=device.toUpperCase()+': ABNORMAL START EGT >=725°C';
@@ -100,13 +100,13 @@
    this.trainingFaults[device][key]=active;return this.get();
   }
   syncPower(){const p=this.start.core.pack;
-   const e=p.get().electrical.bus,c=p.electricalState.config;
+   const e=p.getLive().electrical.bus,c=p.electricalState.config;
    for(const [key,val] of Object.entries({batterySwitchOn:c.batterySwitch,batteryBusPowered:e.battery,
     acTransferBusPowered:e.transfer1||e.transfer2,acStandbyBusPowered:e.acStandby,onGround:c.onGround})){
     if(this.start.powerFeedback[key].value!==val)this.observed(key,val);
    }
    if(['INLET_DOOR','STARTING','READY'].includes(this.phase.apu)&&
-      this.start.get().observation.apu.rules.prerequisitesSatisfied===false){
+      this.start.getLive().observation.apu.rules.prerequisitesSatisfied===false){
     this.cancel('apu');this.phase.apu='STOPPING';this.lastError='APU start/operation inhibited: battery or fire handle prerequisite lost';
     this.schedule('apu',250,()=>{this.obs('apu',false);this.feedback('apu','genOffBusLight',false);this.phase.apu='OFF';});
    }
@@ -160,7 +160,7 @@
    // Physical valve still requires a running source; no air is synthesized.
    if(this.controls['bleed-apu']==='ON')
     this.command({type:'PNEUMATIC',action:{type:'CONTROL',key:'apuBleed',value:'ON'}});
-   const r=this.start.get().observation.apu.rules;
+   const r=this.start.getLive().observation.apu.rules;
    if(r.prerequisitesSatisfied!==true){this.phase.apu='BLOCKED';this.lastError='APU requires BATTERY ON, battery power and both APU fire handles IN';return;}
    this.phase.apu='INLET_DOOR';
    this.schedule('apu',this.timing.apuDoorMs,()=>{if(this.phase.apu!=='INLET_DOOR')return;this.feedback('apu','inletDoorOpen',true);this.feedback('apu','starterEngaged',true);this.phase.apu='STARTING';});
@@ -172,7 +172,7 @@
    // Only the training-owned start/ready plant may be stopped by the fuel
    // simulation. External SOURCE_OBSERVATION must not be overwritten.
    if(!['INLET_DOOR','STARTING','READY'].includes(this.phase.apu))return this.get();
-   const observed=this.start.get().observation.apu;
+   const observed=this.start.getLive().observation.apu;
    if(observed.running===true&&observed.evidence.running!==ORIGIN)
     return this.get();
    this.cancel('apu');
@@ -194,9 +194,9 @@
     this.feedback('apu','inletDoorOpen',false);this.phase.apu='OFF';});
   }
   canStartEngine(device){
-   const apu=this.start.get().observation.apu.running;
+   const apu=this.start.getLive().observation.apu.running;
    const n=this.start.core.pneumaticState,c=n.controls;
-   const b=this.start.core.pack.get().electrical.bus;
+   const b=this.start.core.pack.getLive().electrical.bus;
    if(apu!==true)return 'APU NOT READY';
    if(c.apuBleed!=='ON')return 'APU BLEED OFF';
    if(c.isolation==='CLOSE')return 'ISOLATION VALVE CLOSED';
@@ -228,7 +228,7 @@
    return this.get();
   }
   startEngine(device){
-   const fuelLever=this.start.get().observation[device].feedback.fuelStartLever.value;
+   const fuelLever=this.start.getLive().observation[device].feedback.fuelStartLever.value;
    if(!['OFF','BLOCKED'].includes(this.phase[device])){
     this.lastError=device.toUpperCase()+': a stopped start sequence required before GRD';
     this.effects.push({type:'ROTARY_RELEASE',id:device==='engine1'?'engine-start-1':'engine-start-2',position:'OFF'});
@@ -277,7 +277,7 @@
   fuelFlameout(device,reason='NO_AVAILABLE_FUEL_PATH'){
    if(!['engine1','engine2'].includes(device))throw Error('Invalid fuel-starvation engine');
    if(this.phase[device]!=='RUNNING')return this.get();
-   const status=this.start.get().observation[device];
+   const status=this.start.getLive().observation[device];
    if(status.running!==true||status.evidence.running!=='TRAINING_SEQUENCE_SIMULATED')
     throw Error('Fuel model cannot overwrite externally-owned running state');
    this.cancel(device);this.dynamic[device]=null;this.operating[device]=null;
@@ -286,14 +286,14 @@
    this.command({type:'SOURCE_REQUEST',device,request:'SHUTDOWN'});
    this.obs(device,false);this.started[device]=false;this.phase[device]='FUEL_STARVATION';
    this.lastError=device.toUpperCase()+': TRAINING FUEL SUPPLY LOSS — '+reason+
-     '; START LEVER remains '+this.start.get().observation[device].feedback.fuelStartLever.value;
+     '; START LEVER remains '+this.start.getLive().observation[device].feedback.fuelStartLever.value;
    return this.get();
   }
   // Lever mechanics and fuel valve commands are independent of N2 and start
   // phase. Spark requires an electrically eligible selected ignition channel.
   // Pneumatic starter may motor without ignition supply.
   ignitionReady(device){
-   const obs=this.start.get().observation[device];
+   const obs=this.start.getLive().observation[device];
    const ignition=obs.rules.ignition;
    return ignition.supplyEligible.left===true||ignition.supplyEligible.right===true;
   }
@@ -301,7 +301,7 @@
    if(!['engine1','engine2'].includes(device)||typeof available!=='boolean')
     throw Error('Fuel availability requires engine and resolved boolean');
    this.fuelAvailable[device]=available;
-   const lever=this.start.get().observation[device].feedback.fuelStartLever.value;
+   const lever=this.start.getLive().observation[device].feedback.fuelStartLever.value;
    if(lever==='IDLE'&&this.phase[device]!=='RUNNING'&&this.phase[device]!=='LIGHT_OFF_SEQUENCE'){
     this.feedback(device,'fuelFlowKgHr',available?400:0);
    }
@@ -310,9 +310,9 @@
   }
   maybeLightoff(device){
    if(!['MOTORING','AWAIT_FUEL_LEVER_IDLE'].includes(this.phase[device]))return false;
-   if(this.start.get().observation[device].feedback.fuelStartLever.value!=='IDLE')return false;
+   if(this.start.getLive().observation[device].feedback.fuelStartLever.value!=='IDLE')return false;
    if(this.fuelAvailable[device]!==true||!this.ignitionReady(device))return false;
-   const n2=this.start.get().observation[device].feedback.n2Percent.value;
+   const n2=this.start.getLive().observation[device].feedback.n2Percent.value;
    if(!Number.isFinite(n2)||n2<5)return false;
    const previous=this.dynamic[device];
    const remainingMotoring=previous?.phase==='MOTORING'?
@@ -384,7 +384,7 @@
    return this.get();
   }
   abortEngine(device){this.cancel(device);this.dynamic[device]=null;this.operating[device]=null;
-   const fuelIdle=this.start.get().observation[device].feedback.fuelStartLever.value==='IDLE';
+   const fuelIdle=this.start.getLive().observation[device].feedback.fuelStartLever.value==='IDLE';
    // Stopping the starter does not move the fuel lever. With IDLE selected,
    // fuel flow after an abort is unknown, not a fabricated zero.
    this.feedback(device,'fuelFlowKgHr',fuelIdle?null:0);
@@ -398,7 +398,7 @@
    if(fuelIdle)this.lastError=device.toUpperCase()+': START LEVER remains IDLE — move it to CUTOFF';
   }
   consumeEffects(){const effects=copy(this.effects);this.effects=[];return effects;}
-  get(){const engine=this.start.get(),pack=this.start.core.pack.get(),apu=engine.observation.apu;
+  get(){const engine=this.start.getLive(),pack=this.start.core.pack.getLive(),apu=engine.observation.apu;
    const projected={},faultStatus={};for(const device of ['engine1','engine2']){
     const n=Number(device.at(-1)),r=engine.observation[device].rules;
     projected['mainStartValve'+n]=r.starter.startValveOpenObserved===true &&

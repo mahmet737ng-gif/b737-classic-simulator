@@ -255,8 +255,8 @@
         const observedGroundOff=this.powerFeedback.onGround.value===true &&
           this.powerFeedback.batterySwitchOn.value===false;
         const fireHandlePulled=this.feedback.apu.cockpitFireHandleIn.value===false;
-        if((observedGroundOff||fireHandlePulled) && this.core.get().requests.apu!=='SHUTDOWN' &&
-          (this.controls.apu.startRequested||this.core.get().source.apu.running===true))
+        if((observedGroundOff||fireHandlePulled) && this.core.getLive().requests.apu!=='SHUTDOWN' &&
+          (this.controls.apu.startRequested||this.core.getLive().source.apu.running===true))
           networkChanges.push(...this.shutdownAPU());
         if(command.type==='FEEDBACK' && command.device!=='apu') {
           if(command.key==='egtC' && this.groundStartWindow[command.device] &&
@@ -309,6 +309,24 @@
       this.events.push({seq:this.seq, command:clone(command), changes:this.changes(before,this.snapshot,networkChanges)});
       if (this.events.length > 250) this.events.shift();
       return this.get();
+    }
+    // Live consumers share a detached, deeply immutable snapshot. Diagnostic
+    // get()/send() contracts retain their complete, independently mutable history.
+    getLive() {
+      if (this.liveSource !== this.snapshot) {
+        const freeze = value => {
+          if (value && typeof value === 'object' && !Object.isFrozen(value)) {
+            for (const child of Object.values(value)) freeze(child);
+            Object.freeze(value);
+          }
+          return value;
+        };
+        const {recentEvents, ...network} = this.snapshot.network;
+        const live = clone({...this.snapshot, network});
+        this.liveSnapshot = freeze(live);
+        this.liveSource = this.snapshot;
+      }
+      return this.liveSnapshot;
     }
     get() { return {...clone(this.snapshot), recentEvents:clone(this.events)}; }
     replay(commands) { this.reset(); for (const c of commands) this.send(c); return this.get(); }

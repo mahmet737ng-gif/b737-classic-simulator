@@ -287,7 +287,7 @@ class Testbench{
    if(snap.phase.apu==='READY'){
     const load=LoadDynamics.demand({selectedSources:snap.selectedSources,
      switches:this.apuConsumers,bleedValveOpen:snap.bleed.apuBleedValveOpen,
-     pumpSnapshot:this.start.core.pack.get(),physicalSourceAmpsA:this.apuPhysicalAmpsA});
+     pumpSnapshot:this.start.core.pack.getLive(),physicalSourceAmpsA:this.apuPhysicalAmpsA});
     this.apuLoadState=LoadDynamics.step(this.apuLoadState,load,dt);
     this.apuThermalEgtC=this.apuLoadState.egtC;
     // ISN-12 burns the estimated baseline 110 kg/h. Charge only the
@@ -354,7 +354,7 @@ class Testbench{
   const ramp=apuProgress*apuProgress*(3-2*apuProgress);
    const apuDemand=LoadDynamics.demand({selectedSources:snap.selectedSources,
     switches:this.apuConsumers,bleedValveOpen:snap.bleed.apuBleedValveOpen,
-    pumpSnapshot:this.start.core.pack.get(),physicalSourceAmpsA:this.apuPhysicalAmpsA});
+    pumpSnapshot:this.start.core.pack.getLive(),physicalSourceAmpsA:this.apuPhysicalAmpsA});
    const apuLoad=LoadDynamics.project(this.apuLoadState,apuDemand);
    const apuRPM=apuPhase==='READY'?apuLoad.rpmPct:
     apuPhase==='STARTING'?5+(CONFIG.apuRatedRpmPct-5)*ramp:0;

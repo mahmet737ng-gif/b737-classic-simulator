@@ -134,7 +134,7 @@
    this.suctionPathFailed={engine1:false,engine2:false};
    this.commandLog=[];this.lastPlan=null;this.elapsedMs=0;
   }
-  pumps(){return this.chain.start?.core?.pack?.get()?.pumps??{};}
+  pumps(){const pack=this.chain.start?.core?.pack;return (pack?.getLive?pack.getLive():pack?.get?.())?.pumps??{};}
   apuFuelPath(){return this.fuel.apuSupply(this.pumps());}
   fuelPath(device,{fuelStartLever}={}){
    if(!IDS.includes(device))throw Error('Unknown engine');

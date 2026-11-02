@@ -160,6 +160,24 @@
       if (this.events.length > 250) this.events.shift();
       return this.get();
     }
+    // Live consumers share a detached, deeply immutable snapshot. Diagnostic
+    // get()/send() contracts retain their complete, independently mutable history.
+    getLive() {
+      if (this.liveSource !== this.snapshot) {
+        const freeze = value => {
+          if (value && typeof value === 'object' && !Object.isFrozen(value)) {
+            for (const child of Object.values(value)) freeze(child);
+            Object.freeze(value);
+          }
+          return value;
+        };
+        const live = clone(this.snapshot);
+        if (live.network) delete live.network.recentEvents;
+        this.liveSnapshot = freeze(live);
+        this.liveSource = this.snapshot;
+      }
+      return this.liveSnapshot;
+    }
     get() { return {...clone(this.snapshot), recentEvents: clone(this.events)}; }
     replay(commands) { this.reset(); for (const command of commands) this.send(command); return this.get(); }
   }
