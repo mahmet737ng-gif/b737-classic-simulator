@@ -175,7 +175,7 @@
   if(e.ctrlKey||e.metaKey){e.preventDefault();e.stopImmediatePropagation();send({kind:'zoom',delta:e.deltaY,clientX:e.clientX,clientY:e.clientY});return;}
   // OH iframe is overflow:clip. Route wheel to parent without modifying approved hardware.
   // Physical knobs/guarded levers retain their existing wheel-detent gestures.
-  if(e.target.closest('.mounted-rotary,.rg-detent-hit,.guard-node,.aircon400-knob,.oh14-emergency-exit-physical,input,select,textarea,[contenteditable="true"]'))return;
+  if(e.target.closest('.mounted-toggle[data-control="emergency-exit-lights"],.mounted-rotary,.rg-detent-hit,.guard-node,.aircon400-knob,input,select,textarea,[contenteditable="true"]'))return;
   if(!Number.isFinite(e.deltaX)||!Number.isFinite(e.deltaY))return;
   e.preventDefault();e.stopImmediatePropagation();
   send({kind:'wheel-pan',deltaX:e.deltaX,deltaY:e.deltaY,deltaMode:e.deltaMode,shiftKey:e.shiftKey});
