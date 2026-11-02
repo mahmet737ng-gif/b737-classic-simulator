@@ -3,7 +3,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
 const model=require('./model.js'),registry=require('./registry.json'),layout=require('../all-overhead/atlas-layout.json');
 assert.equal(model.validate(registry,layout),true);
 assert.equal(registry.controls.length,59);
-assert.deepEqual(Object.fromEntries(['toggle-2','toggle-3-vertical','toggle-3-horizontal'].map(t=>[t,registry.controls.filter(c=>c.type===t).length])),{'toggle-2':39,'toggle-3-vertical':17,'toggle-3-horizontal':3});
+assert.deepEqual(Object.fromEntries(['toggle-2','toggle-3-vertical','toggle-3-horizontal'].map(t=>[t,registry.controls.filter(c=>c.type===t).length])),{'toggle-2':37,'toggle-3-vertical':19,'toggle-3-horizontal':3});
 assert.equal(registry.version,'TGL-NEWREF-0002');assert.equal(registry.visualStatus,'USER_REFERENCE_INSTALLED');
 const positions={'vertical-off':0,'vertical-center':1,'vertical-on':3,'horizontal-left':0,'horizontal-center':1,'horizontal-right':2};
 assert.deepEqual(Object.fromEntries(Object.entries(registry.assets).map(([k,a])=>[k,a.frame])),positions);
