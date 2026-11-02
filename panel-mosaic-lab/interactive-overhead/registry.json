@@ -435,6 +435,32 @@
       "basis": "owner guide image; mounted at existing socket in locked source"
     },
     {
+      "id": "emergency-exit-lights",
+      "label": "EMER EXIT LIGHTS",
+      "placementId": "OH14",
+      "sourcePoint": [
+        595,
+        602
+      ],
+      "bezelSourceDiameter": 142,
+      "type": "toggle-3-vertical",
+      "axis": "vertical",
+      "states": [
+        "OFF",
+        "ARMED",
+        "ON"
+      ],
+      "default": "ARMED",
+      "interactionSourceRect": [
+        445,
+        150,
+        330,
+        760
+      ],
+      "visualFamily": "Small Silver",
+      "basis": "Owner-directed OH14 main photographed switch; existing small-silver 5-pose atlas, full main lever hit target. No extra independent physical selector."
+    },
+    {
       "id": "no-smoking",
       "label": "NO SMOKING",
       "placementId": "OH14",
@@ -1194,6 +1220,21 @@
       "cellPx": 1024,
       "bezelPx": 390,
       "mountPolicy": "Same calibrated metal bezel and pivot as Standard; only switch sprite differs."
+    },
+    "Small Silver": {
+      "name": "Small Silver",
+      "asset": "../../shared-assets/toggle-switch-small/Small_Silver_5Positions.webp",
+      "sha256": "5c37de64cf20e97d01085b1400b9b131965160618f851cccd019a4c1c4d89766",
+      "frameOrder": [
+        "LEFT",
+        "CENTER",
+        "RIGHT",
+        "UP",
+        "DOWN"
+      ],
+      "cellPx": 1024,
+      "bezelPx": 390,
+      "mountPolicy": "OH14 only: one silver front at the existing photographed pivot, large original lever track is the touch target."
     }
   },
   "visualProfileVersion": "OVERHEAD-SMALL-001"
