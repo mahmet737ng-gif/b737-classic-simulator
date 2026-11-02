@@ -27,6 +27,9 @@ html[data-light-geometry-debug=true] .mounted-light::after{content:'';position:a
 .mounted-light[data-light="emergency-not-armed"] > .lamp-socket-fit-face{
  display:none!important;visibility:hidden!important;
 }
+.mounted-light[data-light="emergency-not-armed"] > img.light-face[data-frame="OFF"]{
+ opacity:0!important; /* original photograph already includes dark lettering */
+}
 .mounted-light[data-light="emergency-not-armed"] > img.light-face{
  object-fit:fill!important;
  mix-blend-mode:normal;
@@ -50,6 +53,7 @@ html[data-light-geometry-debug=true] .mounted-light::after{content:'';position:a
  border:0!important;padding:0!important;margin:0!important;
  background:transparent!important;box-shadow:none!important;
  cursor:pointer;touch-action:manipulation;outline:0;
+ pointer-events:auto!important;user-select:none;
 }
 .oh14-emergency-exit-physical:hover{
  outline:1px solid rgba(150,212,240,.45);
