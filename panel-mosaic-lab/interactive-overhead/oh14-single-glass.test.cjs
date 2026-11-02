@@ -43,9 +43,9 @@ assert.doesNotMatch(live,/oh14-photo-lever-sprite/,'No oversized photographic nu
 assert.doesNotMatch(css,/img\.light-face\[data-frame="OFF"\]\{\s*opacity:0!important/,'Do not hide the installed dark glass');
 const assembly=JSON.parse(read('../cockpit/assembly.json'));
 const overhead=assembly.regions.find(r=>r.id==='overhead');
-assert.match(overhead.embeddedUrl,/&oh14=OH14-TOP-HINGE-SILVER-0012&ts=OH14-TOP-HINGE-SILVER-0012/,'Overhead iframe URL must bypass stale cached HTML');
+assert.match(overhead.embeddedUrl,/&oh14=OH14-SINGLE-ASSEMBLY-0013&ts=OH14-SINGLE-ASSEMBLY-0013/,'Overhead iframe URL must bypass stale cached HTML');
 const embedded=read('../cockpit/overhead-stage.html');
-assert.match(embedded,/app\.js\?v=OH14-TOP-HINGE-SILVER-0012/,'Embedded new guarded OH14 UI must use the new JS revision');
+assert.match(embedded,/app\.js\?v=OH14-SINGLE-ASSEMBLY-0013/,'Embedded new guarded OH14 UI must use the new JS revision');
 assert.match(embedded,/lights\.js\?v=OH14-PHOTO-LIVE-0010/,'Embedded lights must use the revised frame without the legacy selector');
 assert.match(overlay,/\.oh14-top-hinge-guard/,'OH14 top-hinge guard CSS must be mounted');
 assert.match(overlay,/\.oh14-top-hinge-lid img/,'Photo guard must be visible as a hinged cover');

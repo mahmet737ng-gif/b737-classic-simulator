@@ -17,7 +17,7 @@
   button.setAttribute('aria-disabled',String(interlocks.get(c.id)===false));
   button.dataset.state=value;button.setAttribute('aria-valuenow',String(index));button.setAttribute('aria-valuetext',value);button.setAttribute('aria-label',c.label+' — '+value);
   if(c.id==='emergency-exit-lights'){
-   button.dataset.photoOwner='OH14-TOP-HINGE-SILVER-0012';
+   button.dataset.photoOwner='OH14-SINGLE-ASSEMBLY-0013';
    button.title='EMER EXIT LIGHTS — '+value+' · Small Silver three-detent lever';
   }
   const sprite=button.querySelector('.toggle-sprite');
@@ -101,9 +101,7 @@
    button.type='button';button.className='mounted-toggle';button.id='toggle-'+c.id;button.dataset.control=c.id;button.dataset.axis=c.axis;button.dataset.placement=c.placementId;button.dataset.visualFamily=c.visualFamily||'Standard';
    button.setAttribute('role','slider');button.setAttribute('aria-orientation',c.axis);button.setAttribute('aria-valuemin','0');button.setAttribute('aria-valuemax',String(c.states.length-1));button.title=c.label;
    Object.assign(button.style,{left:p.x+'px',top:p.y+'px',width:(p.diameter*1.65)+'px',height:(p.diameter*1.65)+'px'});
-   // OH14 is photographed in the immutable panel image. Its *existing*
-   // lever is the only visible switch: mount an invisible three-position
-   // hit target, never an extra Small Silver sprite or a paint-over mask.
+   // OH14 reuses its registered Small Silver three-position actuator.
    const photoOnly=c.id==='emergency-exit-lights';
    if(c.interactionSourceRect){
     const [hx,hy,hw,hh]=c.interactionSourceRect;
@@ -152,6 +150,8 @@
      holder.dataset.cover=open?'open':'closed';
      hood.setAttribute('aria-expanded',String(open));
      hood.title='EMER EXIT LIGHTS — top-hinged black guard ('+(open?'OPEN':'CLOSED')+')';
+     button.dataset.cover=open?'open':'closed';
+     button.tabIndex=open?0:-1;
      button.setAttribute('aria-disabled',String(!open));
      button.style.pointerEvents=open?'auto':'none';
     }

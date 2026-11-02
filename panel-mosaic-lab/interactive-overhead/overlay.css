@@ -83,7 +83,7 @@
  * Source photographs and the 18 owner-final guarded controls are untouched. */
 #overheadToggleLayer .mounted-toggle[data-control="emergency-exit-lights"]{
   display:block!important;visibility:visible!important;
-  pointer-events:auto;cursor:pointer;z-index:81;
+  pointer-events:auto!important;cursor:pointer;z-index:81;
   background:transparent!important;overflow:visible!important;
 }
 #overheadToggleLayer .mounted-toggle[data-control="emergency-exit-lights"]>.toggle-sprite{
@@ -117,4 +117,16 @@
 }
 .oh14-top-hinge-guard .oh14-top-hinge-lid:focus-visible{
   outline:2px solid #e7c58e;outline-offset:2px;
+}
+
+/* OH14-SINGLE-ASSEMBLY-0013: explicit owner replacement of this location only.
+   Retire the previous combined guard/lever photo and its hit target. */
+#atlasAbsolute .owner18-guard-control[data-guard-id="emergency-exit-lights"]{
+ display:none!important;pointer-events:none!important;
+}
+#atlasAbsolute [data-retired-guard-location="emergency-exit-lights"]{
+ display:none!important;
+}
+#overheadToggleLayer .mounted-toggle[data-control="emergency-exit-lights"][data-cover="closed"]{
+ pointer-events:none!important;
 }
