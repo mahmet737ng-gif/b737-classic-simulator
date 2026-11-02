@@ -8,7 +8,7 @@ assert.deepEqual(reg.lights.find(c=>c.id==='irs-l-align').sourceRect,[428,535,64
 for(const c of reg.lights)for(const a of Object.values(reg.assets[c.asset]))assert.equal(crypto.createHash('sha256').update(fs.readFileSync(path.resolve(__dirname,a.url))).digest('hex'),a.sha256);
 // OH14 photographed lever has a dedicated native-source hit area, separate
 // from the immutable 58-switch baseline. Click-height maps three detents.
-assert.deepEqual(m.EMERGENCY_EXIT_HIT_RECT,[446,145,315,760]);
+assert.deepEqual(m.EMERGENCY_EXIT_HIT_RECT,[446,145,530,760]);
 assert.equal(m.emergencyExitPositionFromRatio(0.1),'OFF');
 assert.equal(m.emergencyExitPositionFromRatio(0.5),'ARMED');
 assert.equal(m.emergencyExitPositionFromRatio(0.9),'ON');
@@ -28,7 +28,13 @@ assert.equal(emergencyProbe.snapshot().lights['emergency-not-armed'],false,'ARME
 assert.throws(()=>emergencyProbe.setEmergencyExitLightsPosition('INVALID'),/Emergency exit lights selector/);
 emergencyProbe.setEmergencyExitLightsPosition('OFF',time);
 emergencyProbe.setAircraftElectricalPower(false,time);
-assert.equal(emergencyProbe.snapshot().lights['emergency-not-armed'],false,'unpowered annunciator cannot illuminate');
+assert.equal(emergencyProbe.snapshot().lights['emergency-not-armed'],true,'AC bus OFF must not extinguish the DC emergency EXIT NOT ARMED indication in training');
+emergencyProbe.update({panelPower:false},time);
+assert.equal(emergencyProbe.snapshot().lights['emergency-not-armed'],false,'training panel-power OFF makes the lamp dark');
+emergencyProbe.update({panelPower:true},time);
+assert.equal(emergencyProbe.snapshot().lights['emergency-not-armed'],true,'restoring panel power relights OFF NOT ARMED');
+emergencyProbe.setEmergencyExitLightsPosition('ARMED',time);
+assert.equal(emergencyProbe.snapshot().lights['emergency-not-armed'],false,'ARMED stays dark when AC is unavailable');
 
 sync();e.evaluate(time+800);assert.equal(on('fuel-center-l'),false);assert.equal(on('hyd-eng-1'),false);assert.equal(on('yaw-damper'),false);
 t.set('fuel-center-l','OFF');sync();assert.equal(on('fuel-center-l'),false,'center pump OFF inhibits low-pressure indication');t.set('fuel-center-l','ON');sync();assert.equal(on('fuel-center-l'),true,'pressure builds');e.evaluate(time+800);assert.equal(on('fuel-center-l'),false);e.update({fuelAvailable:false},time+800);assert.equal(on('fuel-center-l'),true);e.update({fuelAvailable:true,faults:{'fuel-center-l':true}},time+800);assert.equal(on('fuel-center-l'),true,'failed pump stays low with switch ON');e.update({faults:{'fuel-center-l':false}},time+800);assert.equal(on('fuel-center-l'),false);
