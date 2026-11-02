@@ -20,11 +20,9 @@
    physicalExit.setAttribute('aria-label','EMER EXIT LIGHTS · '+position+' (click OFF / ARMED / ON)');
    physicalExit.setAttribute('aria-valuetext',position);
    physicalExit.title='EMER EXIT LIGHTS · '+position+' · select by clicking top/middle/bottom of photographic lever';
-   // Same OH14 photograph supplies the moving hexagonal lever; the
-   // centre-mounted original is left completely alone in ARMED.
-   const knob=physicalExit.querySelector('.oh14-photo-lever-sprite');
-   if(knob)knob.style.transform='translate3d(0,'+
-    ({OFF:-118,ARMED:0,ON:87}[position]*Number(physicalExit.dataset.sourceScaleY||0))+'px,0)';
+   // The original OH14 photo contains the correct small silver toggle in ON.
+   // CSS draws only the slim alternate throw for OFF / ARMED; the original
+   // hardware photo is never translated or replaced with an oversized nut.
   }
   window.dispatchEvent(new CustomEvent('b737:overhead-light-state'));
   if(!ui)return;
@@ -82,29 +80,25 @@
   Object.assign(selector.style,{left:track.x+'px',top:track.y+'px',width:track.w+'px',height:track.h+'px'});
   const sx=track.w/model.EMERGENCY_EXIT_HIT_RECT[2],sy=track.h/model.EMERGENCY_EXIT_HIT_RECT[3];
   selector.dataset.sourceScaleY=String(sy);
-  const facePhoto=plates.get('OH14');
-  const photoURL=new URL('../assets/locked/2026-10-23/OH14-EMER-EXIT-795cc819a3b3.png',script).href;
-  // Cover just the original central nut at non-ARMED detents; never redraw
-  // or modify the locked OH14 plate, rail, OFF/ARMED/ON text or bezel.
+  // Original photographed pivot approximately source (530,666).
+  // ONLY conceal the little original silver shaft BELOW its mounting nut
+  // when the lever leaves ON. The nut, recess, and panel stay photographic.
   const cover=document.createElement('span');
-  cover.className='oh14-photo-lever-cover';cover.setAttribute('aria-hidden','true');
+  cover.className='oh14-silver-toggle-tail-cover';
+  cover.setAttribute('aria-hidden','true');
   Object.assign(cover.style,{
-    left:((454-model.EMERGENCY_EXIT_HIT_RECT[0])*sx)+'px',
-    top:((537-model.EMERGENCY_EXIT_HIT_RECT[1])*sy)+'px',
-    width:(169*sx)+'px',height:(166*sy)+'px'
+    left:((509-model.EMERGENCY_EXIT_HIT_RECT[0])*sx)+'px',
+    top:((678-model.EMERGENCY_EXIT_HIT_RECT[1])*sy)+'px',
+    width:(43*sx)+'px',height:(79*sy)+'px'
   });
-  const knob=document.createElement('span');
-  knob.className='oh14-photo-lever-sprite';knob.setAttribute('aria-hidden','true');
-  const croppedSource=[456,528,175,189];
-  Object.assign(knob.style,{
-    left:((croppedSource[0]-model.EMERGENCY_EXIT_HIT_RECT[0])*sx)+'px',
-    top:((croppedSource[1]-model.EMERGENCY_EXIT_HIT_RECT[1])*sy)+'px',
-    width:(croppedSource[2]*sx)+'px',height:(croppedSource[3]*sy)+'px',
-    backgroundImage:'url("'+photoURL+'")',
-    backgroundSize:facePhoto.w+'px '+facePhoto.h+'px',
-    backgroundPosition:(-croppedSource[0]*facePhoto.w/1074)+'px '+(-croppedSource[1]*facePhoto.h/1464)+'px'
+  const throwArm=document.createElement('span');
+  throwArm.className='oh14-small-silver-toggle';throwArm.setAttribute('aria-hidden','true');
+  Object.assign(throwArm.style,{
+    left:((530-model.EMERGENCY_EXIT_HIT_RECT[0]-16)*sx)+'px',
+    top:((662-model.EMERGENCY_EXIT_HIT_RECT[1])*sy)+'px',
+    width:(32*sx)+'px',height:(97*sy)+'px'
   });
-  selector.append(cover,knob);
+  selector.append(cover,throwArm);
   const positions=['OFF','ARMED','ON'];
   selector.addEventListener('pointerdown',event=>event.stopPropagation());
   selector.addEventListener('click',event=>{
