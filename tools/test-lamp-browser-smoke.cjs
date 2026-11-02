@@ -39,7 +39,10 @@ const {chromium}=require('playwright');
     const target=document.getElementById('oh14EmergencyExitPhysical');
     const lamp=document.querySelector('.mounted-light[data-light="emergency-not-armed"]');
     if(!target||!lamp)return {missingTarget:!target,missingLamp:!lamp};
-    const b=target.getBoundingClientRect(),img=lamp.querySelector('.light-face');
+    const b=target.getBoundingClientRect();
+    const litImage=lamp.querySelector('img.light-face[data-frame="ON"]');
+    const darkImage=lamp.querySelector('img.light-face[data-frame="OFF"]');
+    const extraFit=lamp.querySelector('.lamp-socket-fit-face');
     const get=()=>({position:window.B737OverheadLights.getState().context.emergencyExitLightsPosition,
       illuminated:window.B737OverheadLights.getState().lights['emergency-not-armed'],
       lampFrame:lamp.dataset.frame});
@@ -51,7 +54,13 @@ const {chromium}=require('playwright');
     press(.50);const armed=get();
     press(.89);const on=get();
     return {initial,off,armed,on,hit:{width:b.width,height:b.height},visual:{
-      blend:getComputedStyle(img).mixBlendMode,background:getComputedStyle(lamp).backgroundColor},
+      blend:getComputedStyle(litImage).mixBlendMode,
+      fill:getComputedStyle(litImage).objectFit,
+      background:getComputedStyle(lamp).backgroundColor,
+      litSrc:litImage.getAttribute('src'),darkSrc:darkImage.getAttribute('src'),
+      fittedLayerCount:lamp.querySelectorAll('.lamp-socket-fit-face').length,
+      fittedLayerVisibility:extraFit?getComputedStyle(extraFit).display:'ABSENT',
+      photoGlassOwner:lamp.dataset.lensOwner},
       instances:document.querySelectorAll('.mounted-light[data-light="emergency-not-armed"]').length};
    });
    assert.equal(oh14.missingTarget,undefined,'OH14 photographed physical lever hotspot missing');
@@ -61,6 +70,12 @@ const {chromium}=require('playwright');
    assert.deepEqual([oh14.off.position,oh14.armed.position,oh14.on.position],['OFF','ARMED','ON']);
    assert.deepEqual([oh14.off.illuminated,oh14.armed.illuminated,oh14.on.illuminated],[true,false,false]);
    assert.equal(oh14.visual.blend,'screen','OH14 must blend amber emission into one original bezel');
+   assert.ok(oh14.visual.litSrc?.includes('oh14-not-armed-emission-on.svg'),'Luminous face must contain no painted bezel');
+   assert.ok(oh14.visual.darkSrc?.includes('oh14-not-armed-emission-off.svg'),'Unlit face must contain no painted bezel');
+   assert.equal(oh14.visual.fittedLayerCount,0,'OH14 must not mount a second fitted glass at all');
+   assert.equal(oh14.visual.photoGlassOwner,'PHOTO_GLASS_EMISSION_ONLY');
+   assert.equal(oh14.visual.fill,'fill','Emission source must fit original photo socket');
+   assert.equal(oh14.visual.background,'rgba(0, 0, 0, 0)','Photo bezel must remain visible');
    assert.ok(oh14.hit.width>10&&oh14.hit.height>40,'physical switch target is outside panel');
    console.log('OH14_PHYSICAL_SELECTOR_BROWSER_PASS',JSON.stringify(oh14));
   }
