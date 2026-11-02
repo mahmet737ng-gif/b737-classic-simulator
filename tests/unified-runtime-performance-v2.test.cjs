@@ -4,23 +4,23 @@ const root=path.resolve(__dirname,'..');
 const read=p=>fs.readFileSync(path.join(root,p),'utf8');
 const base='panel-mosaic-lab/cockpit/';
 const isn=read(base+'isn-cockpit.js');
-test('All 14 ECU dependency downloads are queued in one turn, while execution stays ordered',async()=>{
+test('All registered ECU dependency downloads are queued in one turn, while execution stays ordered',async()=>{
  const start=isn.indexOf(' async function loadDependencies(){'),end=isn.indexOf('\n function init(){',start);
  assert.ok(start>0&&end>start);
  const loader=isn.slice(start,end);
  assert.match(loader,/script\.async=false/);
  const deps=[...isn.slice(0,start).matchAll(/\['(B737[^']+)','([^']+)'\]/g)].map(m=>[m[1],m[2]]);
- assert.equal(deps.length,14);
+ assert.equal(deps.length,15,'The registered ECU dependency count changed; audit the loader and this test together');
  const queued=[],win={};
  const document={head:{append(node){queued.push(node);}},createElement:()=>({})};
  const sandbox={window:win,document,URL,deps,moduleBase:'https://example.test/repo/panel-mosaic-lab/cockpit/isn-cockpit.js'};
  vm.runInNewContext(loader+';this.loadTest=loadDependencies;',sandbox);
  const pending=sandbox.loadTest();
- assert.equal(queued.length,14,'Previous implementation queued only one script per completed request');
+ assert.equal(queued.length,deps.length,'All ECU dependency requests must queue in a single turn');
  assert.ok(queued.every(s=>s.async===false),'Module execution order must remain browser-serial');
  for(let i=0;i<queued.length;i++){win[deps[i][0]]={ready:true};queued[i].onload();}
  await pending;
- assert.equal(Object.keys(win).length,14);
+ assert.equal(Object.keys(win).length,deps.length);
 });
 test('Missing ECU global must fail closed, not initialize half-connected cockpit',async()=>{
  const start=isn.indexOf(' async function loadDependencies(){'),end=isn.indexOf('\n function init(){',start);
