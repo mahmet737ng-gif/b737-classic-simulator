@@ -12,7 +12,7 @@
  function renderBlade(angle){if(blade)blade.style.transform=`rotate(${angle}deg)`;}
  function svg(doc,parent,tag,attrs={}){const node=doc.createElementNS(ns,tag);for(const [key,value]of Object.entries(attrs))node.setAttribute(key,String(value));parent.append(node);return node;}
  function paint(){if(input)input.value=String(currentAngle);if(output)output.textContent=`${currentAngle}°`;}
- function setAngle(value){currentAngle=model.angle(value);animation.setTarget(currentAngle);if(!blade)mount();paint();return currentAngle;}
+ function setAngle(value){currentAngle=model.angle(value);animation.setTarget(currentAngle);if(!blade?.isConnected){blade=null;mount();}paint();return currentAngle;}
  function mount(){
   const doc=frame?.contentDocument,host=doc?.getElementById('atlasAbsolute');if(!host)return false;
   const piece=host.querySelector('.atlas-piece[data-key="OH12"]');if(!piece)return false;
