@@ -27,3 +27,12 @@
 .mounted-toggle[data-control="emergency-exit-lights"] .oh14-original-toggle-occlusion{
   display:none!important;
 }
+
+/* Legacy OH14 injected by an older cached lights.js must never sit above
+   the single approved photographic switch and intercept its pointer events.
+   The registry-owned .mounted-toggle is the only interactive authority. */
+#oh14EmergencyExitPhysical,
+.oh14-emergency-exit-physical{
+  display:none!important;
+  pointer-events:none!important;
+}
