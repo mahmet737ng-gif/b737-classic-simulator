@@ -17,7 +17,7 @@
   button.setAttribute('aria-disabled',String(interlocks.get(c.id)===false));
   button.dataset.state=value;button.setAttribute('aria-valuenow',String(index));button.setAttribute('aria-valuetext',value);button.setAttribute('aria-label',c.label+' — '+value);
   if(c.id==='emergency-exit-lights'){
-   button.dataset.photoOwner='OH14-BLACK-GUARDED-0014';
+   button.dataset.photoOwner='OH14-FIXED-RED-BOX-0016';
    button.title='EMER EXIT LIGHTS — '+value+' · Black Guarded';
    button._refreshGuard?.();
   }
@@ -151,9 +151,17 @@
     // guard socket, not the deliberately larger invisible interaction hitbox.
     const plate=placements.get('OH14');
     const guardCorner=(x,y)=>model.mapPoint({...c,sourcePoint:[x,y],bezelSourceDiameter:1},plate);
-    const ga=guardCorner(477,295),gb=guardCorner(712,805);
-    Object.assign(holder.style,{left:ga.x+'px',top:ga.y+'px',
-      width:(gb.x-ga.x)+'px',height:(gb.y-ga.y)+'px'});
+    // Screenshot red box 132x405, projected to the OH14 1074x1464 source.
+    // Exactly the same holder is used for all four source PNGs, at every zoom.
+    // This stays inside the existing unmodified [445,150,330,760] hit zone.
+    const OH14_FIXED_SOURCE_RECT=Object.freeze([452,163,748,876]);
+    const ga=guardCorner(OH14_FIXED_SOURCE_RECT[0],OH14_FIXED_SOURCE_RECT[1]);
+    const gb=guardCorner(OH14_FIXED_SOURCE_RECT[2],OH14_FIXED_SOURCE_RECT[3]);
+    Object.assign(holder.style,{
+      left:ga.x+'px',top:ga.y+'px',
+      width:(gb.x-ga.x)+'px',height:(gb.y-ga.y)+'px'
+    });
+    holder.dataset.fixedGeometry='OH14-FIXED-RED-BOX-0016';
     function setCover(open){
      holder.dataset.cover=open?'open':'closed';
      hood.setAttribute('aria-expanded',String(open));
