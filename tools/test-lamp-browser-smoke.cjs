@@ -56,7 +56,19 @@ const {chromium}=require('playwright');
      return sample();
    };
    const off=await clickDetent(.18);
+   // Do not mistake a logical ON frame for real visible light: allow the
+   // 110 ms photo emission cross-fade to complete and inspect actual opacity.
+   await page.waitForFunction(()=>{
+     const lens=document.querySelector('.mounted-light[data-light="emergency-not-armed"] img.light-face[data-frame="ON"]');
+     return !!lens?.complete&&lens.naturalWidth>0&&lens.classList.contains('active')&&parseFloat(getComputedStyle(lens).opacity)>.85;
+   },null,{timeout:5000});
+   const actuallyLit=await sample();
    const armed=await clickDetent(.50);
+   await page.waitForFunction(()=>{
+     const lens=document.querySelector('.mounted-light[data-light="emergency-not-armed"] img.light-face[data-frame="ON"]');
+     return !!lens&&!lens.classList.contains('active')&&parseFloat(getComputedStyle(lens).opacity)<.08;
+   },null,{timeout:5000});
+   const actuallyDarkArmed=await sample();
    const on=await clickDetent(.88);
    const oh14=await page.evaluate(()=>{
     const lamp=document.querySelector('.mounted-light[data-light="emergency-not-armed"]');
@@ -74,7 +86,7 @@ const {chromium}=require('playwright');
       photoGlassOwner:lamp.dataset.lensOwner},
       instances:document.querySelectorAll('.mounted-light[data-light="emergency-not-armed"]').length};
    });
-   oh14.initial=initial;oh14.off=off;oh14.armed=armed;oh14.on=on;
+   oh14.initial=initial;oh14.off=off;oh14.actuallyLit=actuallyLit;oh14.armed=armed;oh14.actuallyDarkArmed=actuallyDarkArmed;oh14.on=on;
    oh14.hit={width:actualBounds.width,height:actualBounds.height};
    assert.equal(oh14.missingTarget,undefined,'OH14 photographed physical lever hotspot missing');
    assert.equal(oh14.missingLamp,undefined,'OH14 NOT ARMED lamp missing');
@@ -86,6 +98,8 @@ const {chromium}=require('playwright');
    assert.equal(oh14.visual.pointerEvents,'auto','OH14 click target MUST be hit-testable');
    assert.equal(oh14.off.photoPower,false,'Test must exercise AC-unavailable case');
    assert.equal(oh14.off.lampFrame,'ON','OFF detent should activate electrical NOT ARMED frame even with AC off');
+   assert.ok(Number(oh14.actuallyLit.vis)>.85,'OFF must show truly illuminated visible amber letters, not merely a logical ON flag');
+   assert.ok(Number(oh14.actuallyDarkArmed.vis)<.08,'ARMED must visibly extinguish amber letters after fade');
    assert.equal(oh14.on.lampFrame,'OFF','ON detent extinguishes NOT ARMED');
    assert.equal(oh14.on.offImageOpacity,'0','Original photo should not receive ghost unlit lettering');
    assert.ok(oh14.visual.litSrc?.includes('oh14-not-armed-emission-on.svg'),'Luminous face must contain no painted bezel');
