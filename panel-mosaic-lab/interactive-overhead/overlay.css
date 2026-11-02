@@ -91,32 +91,35 @@
   opacity:1!important;pointer-events:none;
   filter:drop-shadow(0 1px 1px rgba(0,0,0,.50));
 }
+/* OH14-FIXED-RED-BOX-0016
+   Measured owner screenshot reference: red 132x405 display-pixel box.
+   These four states share one native-source geometry at any zoom. */
 #overheadToggleLayer>.oh14-top-hinge-guard{
   position:absolute;display:block;z-index:83;
-  pointer-events:none;overflow:visible;
+  pointer-events:none;overflow:hidden;
+  box-sizing:border-box;border:0;margin:0;padding:0;
 }
 /* Original four-state photographs include both the cover and lever.
    Fit their common transparent canvas without rotating the top hinge. */
 .oh14-top-hinge-guard .oh14-guard-state-photo{
- position:absolute;left:-66.42%;top:-2.53%;width:237.48%;height:108.11%;
- max-width:none;max-height:none;pointer-events:none;user-select:none;
- /* OH14-MATTE-FREE-0015: preserve the owner's original Guarded artwork,
-    including its actual hinge, silver lever, paint, and wear. The supplied
-    1254px square photos have an opaque black matte around the narrow metal
-    body. This normalized hardware silhouette clips only that matte, never
-    the OH14 panel, OFF/ARMED/ON legends, or NOT ARMED glass.
-    Source originals and system/CB/lamp logic are unchanged. */
+ /* Each of CLOSED / OPEN-UP / OPEN-CENTER / OPEN-DOWN is laid out in
+    an identical frame, regardless of the selected PNG. The owner's
+    untouched 1254-square artwork is cropped to its physical silhouette. */
+ position:absolute;left:-66.82243%;top:-2.13220%;
+ width:233.64486%;height:106.60981%;
+ display:block;max-width:none;max-height:none;
+ border:0;padding:0;margin:0;object-fit:fill;
+ transform:none;background:transparent;
+ pointer-events:none;user-select:none;
  -webkit-clip-path:polygon(
    34% 2%,66% 2%,67.8% 3%,68% 10.8%,70.2% 12.2%,71.4% 15.5%,
    71.4% 92.9%,70.2% 94.5%,68.5% 95.8%,31.5% 95.8%,
-   29.8% 94.5%,28.6% 92.9%,28.6% 15.5%,29.8% 12.2%,
-   32% 10.8%,32.2% 3%
+   29.8% 94.5%,28.6% 92.9%,28.6% 15.5%,29.8% 12.2%,32% 10.8%,32.2% 3%
  );
  clip-path:polygon(
    34% 2%,66% 2%,67.8% 3%,68% 10.8%,70.2% 12.2%,71.4% 15.5%,
    71.4% 92.9%,70.2% 94.5%,68.5% 95.8%,31.5% 95.8%,
-   29.8% 94.5%,28.6% 92.9%,28.6% 15.5%,29.8% 12.2%,
-   32% 10.8%,32.2% 3%
+   29.8% 94.5%,28.6% 92.9%,28.6% 15.5%,29.8% 12.2%,32% 10.8%,32.2% 3%
  );
 }
 .oh14-top-hinge-guard .oh14-top-hinge-lid{
