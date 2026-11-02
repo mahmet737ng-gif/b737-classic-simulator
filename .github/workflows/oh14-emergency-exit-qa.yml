@@ -4,6 +4,9 @@ on:
     branches: [main]
     paths:
       - 'panel-mosaic-lab/interactive-overhead/lights.js'
+      - 'panel-mosaic-lab/interactive-overhead/oh14-not-armed-emission-*.svg'
+      - 'panel-mosaic-lab/interactive-overhead/oh14-single-glass.test.cjs'
+      - 'panel-mosaic-lab/lamp-socket-fit-v3/live-fit.js'
       - 'panel-mosaic-lab/interactive-overhead/lights-model.js'
       - 'panel-mosaic-lab/interactive-overhead/lights.css'
       - 'panel-mosaic-lab/interactive-overhead/lights.test.cjs'
@@ -11,6 +14,9 @@ on:
   pull_request:
     paths:
       - 'panel-mosaic-lab/interactive-overhead/lights.js'
+      - 'panel-mosaic-lab/interactive-overhead/oh14-not-armed-emission-*.svg'
+      - 'panel-mosaic-lab/interactive-overhead/oh14-single-glass.test.cjs'
+      - 'panel-mosaic-lab/lamp-socket-fit-v3/live-fit.js'
       - 'panel-mosaic-lab/interactive-overhead/lights-model.js'
       - 'panel-mosaic-lab/interactive-overhead/lights.css'
       - 'panel-mosaic-lab/interactive-overhead/lights.test.cjs'
@@ -29,6 +35,8 @@ jobs:
           node --check panel-mosaic-lab/interactive-overhead/lights-model.js
           node --check panel-mosaic-lab/cockpit/apu-egt-needle-unified.js
       - name: Assert photo geometry and OH14 OFF ARMED ON annunciator
-        run: node panel-mosaic-lab/interactive-overhead/lights.test.cjs
+        run: |
+          node panel-mosaic-lab/interactive-overhead/lights.test.cjs
+          node panel-mosaic-lab/interactive-overhead/oh14-single-glass.test.cjs
       - name: Verify immutable original overhead source panels
         run: python3 panel-mosaic-lab/verify-final-overhead.py
