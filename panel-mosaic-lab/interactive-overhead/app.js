@@ -97,34 +97,25 @@
    button.type='button';button.className='mounted-toggle';button.id='toggle-'+c.id;button.dataset.control=c.id;button.dataset.axis=c.axis;button.dataset.placement=c.placementId;button.dataset.visualFamily=c.visualFamily||'Standard';
    button.setAttribute('role','slider');button.setAttribute('aria-orientation',c.axis);button.setAttribute('aria-valuemin','0');button.setAttribute('aria-valuemax',String(c.states.length-1));button.title=c.label;
    Object.assign(button.style,{left:p.x+'px',top:p.y+'px',width:(p.diameter*1.65)+'px',height:(p.diameter*1.65)+'px'});
-   // The nut center sits exactly at the existing, unmodified socket pivot.
-   const sprite=document.createElement('span');
-   sprite.className='toggle-sprite';sprite.setAttribute('aria-hidden','true');
-   const fullSize=p.diameter*SPRITE_CELL/SPRITE_BEZEL;
-   Object.assign(sprite.style,{width:fullSize+'px',height:fullSize+'px',
-     backgroundImage:'url("'+localURL(registry.visualFamilies[c.visualFamily]?.asset||registry.assets['vertical-on'].url)+'")'});
+   // OH14 is photographed in the immutable panel image. Its *existing*
+   // lever is the only visible switch: mount an invisible three-position
+   // hit target, never an extra Small Silver sprite or a paint-over mask.
+   const photoOnly=c.id==='emergency-exit-lights';
    if(c.interactionSourceRect){
-    // OH14: the single photographed EMER EXIT LIGHTS main switch remains the
-    // complete interactive surface, not a second tiny button over the pivot.
     const [hx,hy,hw,hh]=c.interactionSourceRect;
     const corner=(x,y)=>model.mapPoint({...c,sourcePoint:[x,y],bezelSourceDiameter:1},placements.get(c.placementId));
     const a=corner(hx,hy),b=corner(hx+hw,hy+hh);
     Object.assign(button.style,{left:a.x+'px',top:a.y+'px',width:(b.x-a.x)+'px',height:(b.y-a.y)+'px',transform:'none'});
-    Object.assign(sprite.style,{left:(p.x-a.x)+'px',top:(p.y-a.y)+'px'});
-    if(c.id==='emergency-exit-lights'){
-     // Occlude ONLY the fixed photographed chrome lever inside the black
-     // recess, leaving the original switch housing/labels/plate untouched.
-     // The approved Small Silver sprite is the sole moving lever.
-     const ma=corner(525,416),mb=corner(665,680);
-     const occlusion=document.createElement('span');
-     occlusion.className='oh14-original-toggle-occlusion';
-     occlusion.setAttribute('aria-hidden','true');
-     Object.assign(occlusion.style,{left:(ma.x-a.x)+'px',top:(ma.y-a.y)+'px',
-       width:(mb.x-ma.x)+'px',height:(mb.y-ma.y)+'px'});
-     button.append(occlusion);
-    }
    }
-   button.append(sprite);
+   if(!photoOnly){
+    // All other 58 toggles retain their original artwork and fixed pivots.
+    const sprite=document.createElement('span');
+    sprite.className='toggle-sprite';sprite.setAttribute('aria-hidden','true');
+    const fullSize=p.diameter*SPRITE_CELL/SPRITE_BEZEL;
+    Object.assign(sprite.style,{width:fullSize+'px',height:fullSize+'px',
+      backgroundImage:'url("'+localURL(registry.visualFamilies[c.visualFamily]?.asset||registry.assets['vertical-on'].url)+'")'});
+    button.append(sprite);
+   }
    layer.append(button);nodes.set(c.id,button);bind(c,button);refreshOne(c);
   }
   byId('atlasAbsolute').append(layer);
