@@ -6,15 +6,7 @@
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;if(root)root.B737OverheadLightModel=api;})(typeof globalThis!=='undefined'?globalThis:null,function(){
  'use strict';
  const copy=v=>JSON.parse(JSON.stringify(v));
- // OH14 photographic lever track, native source coordinates (1074 x 1464).
- // Separate hotspot: do NOT add a 59th legacy switch or repaint the approved panel.
- const EMERGENCY_EXIT_HIT_RECT=Object.freeze([446,145,530,760]);
- function emergencyExitPositionFromRatio(value){
-  if(!Number.isFinite(value)||value<0||value>1)throw Error('Invalid OH14 selector hit fraction');
-  return value<0.38?'OFF':value<0.67?'ARMED':'ON';
- }
-
- function initialContext(){return {panelPower:true,engine1Running:true,engine2Running:true,apuRunning:false,groundPowerAttached:false,fuelAvailable:true,standbyPumpFailed:false,passengerOxygenDeployed:false,irsBatterySupply:false,irsLAlignmentInProgress:false,irsRAlignmentInProgress:false,irsLAttitudeAvailable:false,irsRAttitudeAvailable:false,irsLShutdownInProgress:false,irsRShutdownInProgress:false,equipmentSupplyFailed:false,equipmentExhaustFailed:false,onGround:true,emergencyExitLightsPosition:'ON',engine1FuelValveClosed:false,engine2FuelValveClosed:false,faults:{}};}
+ function initialContext(){return {panelPower:true,engine1Running:true,engine2Running:true,apuRunning:false,groundPowerAttached:false,fuelAvailable:true,standbyPumpFailed:false,passengerOxygenDeployed:false,irsBatterySupply:false,irsLAlignmentInProgress:false,irsRAlignmentInProgress:false,irsLAttitudeAvailable:false,irsRAttitudeAvailable:false,irsLShutdownInProgress:false,irsRShutdownInProgress:false,equipmentSupplyFailed:false,equipmentExhaustFailed:false,onGround:true,engine1FuelValveClosed:false,engine2FuelValveClosed:false,faults:{}};}
  function rectangle(c,p,mapPoint){const [x,y,w,h]=c.sourceRect;const point=(a,b)=>mapPoint({id:c.id,sourcePoint:[a,b],bezelSourceDiameter:1},p);const a=point(x,y),b=point(x+w,y+h);return {x:a.x,y:a.y,w:b.x-a.x,h:b.y-a.y};}
  function validate(reg,layout,mapper,controlIds){
   const ids=new Set(),plates=new Map(layout.placements.map(p=>[p.id,p]));
@@ -90,7 +82,7 @@
      case 'standby-pressure':active=standbyCommand&&(context.standbyPumpFailed||fault(c.id));break;
      case 'standby-rudder':active=standbyCommand&&!context.standbyPumpFailed&&!fault('stby-pressure');break;
      case 'yaw':active=!isOn(id)||fault(c.id);break;
-     case 'emergency':active=context.emergencyExitLightsPosition==='OFF';break;
+     case 'emergency':active=v!=='armed';break;
      case 'drive-pressure':{const side=/^drive-(\d+)-/.exec(c.id)?.[1];active=side?(!context['engine'+side+'Running']||v==='disconnect'||fault(c.id)):fault(c.id);break;}
      case 'drive-temperature':active=fault(c.id);break;
      case 'electrical':active=e.lamps[c.sensor];break;
@@ -123,20 +115,13 @@
     }
     const states=c.states||['OFF','ON'],bright=states.at(-1);
     if(active===null){unknown.push(c.id);on[c.id]=available&&test?true:null;frames[c.id]=available&&test?bright:'OFF';}
-    else {
-     // OH14 NOT ARMED belongs to the emergency-light switch (OFF/ARMED/ON).
-     // The parent "AC available" feed is not authoritative for this DC
-     // annunciator. Keep training panel-power gating, never AC-gate OH14.
-     const powered=c.id==='emergency-not-armed'?context.panelPower:available;
-     const frame=!powered?'OFF':test?bright:typeof active==='string'?active:active?bright:'OFF';
-     frames[c.id]=frame;on[c.id]=frame!=='OFF';
-    }
+    else {const frame=!available?'OFF':test?bright:typeof active==='string'?active:active?bright:'OFF';frames[c.id]=frame;on[c.id]=frame!=='OFF';}
    }
    result={version:reg.version,lights:on,frames,unknown,electrical:e,pneumatic:p,context:copy(context),lampTest:test,passengerOxygenDeployed:oxygen,power:available};notify(copy(result));return copy(result);
   }
-  return {setEmergencyExitLightsPosition:(position,now=0)=>{if(!['OFF','ARMED','ON'].includes(position))throw Error('Emergency exit lights selector must be OFF, ARMED or ON');context.emergencyExitLightsPosition=position;return evaluate(now);},setAircraftElectricalPower:(value,now=0)=>{if(typeof value!=='boolean')throw Error('Boolean electrical power required');aircraftElectricalPower=value;return evaluate(now);},setAircraftFamily:(value,now=0)=>{if(!['B737-300-500','B737-400'].includes(value))throw Error('Invalid airframe family');aircraftFamily=value;syncPneumatic();return evaluate(now);},
+  return {setAircraftElectricalPower:(value,now=0)=>{if(typeof value!=='boolean')throw Error('Boolean electrical power required');aircraftElectricalPower=value;return evaluate(now);},setAircraftFamily:(value,now=0)=>{if(!['B737-300-500','B737-400'].includes(value))throw Error('Invalid airframe family');aircraftFamily=value;syncPneumatic();return evaluate(now);},
   setAircon400LeftRecirc:(value,now=0)=>{if(!['OFF','AUTO'].includes(value))throw Error('Invalid left recirc fan position');recirc400Left=value;syncPneumatic();return evaluate(now);},
   tripReset:(now=0)=>{syncPneumatic();pneumaticState=pneumatics.apply(pneumaticState,{type:'TRIP_RESET'});return evaluate(now);},ingest,update,evaluate,snapshot:()=>copy(result),setLampTest:(v,now=0)=>{test=!!v;return evaluate(now);},reset:(now=0)=>{context=initialContext();for(const id of Object.keys(valveTime))delete valveTime[id];oxygen=false;test=false;electricalState=electrical.initialState();pneumaticState=pneumatics.initial();syncElectrical();syncPneumatic();return evaluate(now);}};
  }
- return Object.freeze({initialContext,rectangle,validate,controller,EMERGENCY_EXIT_HIT_RECT,emergencyExitPositionFromRatio});
+ return Object.freeze({initialContext,rectangle,validate,controller});
 });
