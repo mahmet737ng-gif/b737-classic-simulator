@@ -38,7 +38,7 @@ engine.set('apu-start','START');engine.releaseAll();assert.equal(engine.get('apu
 for(const c of registry.controls){const p=model.mapPoint(c,layout.placements.find(x=>x.id===c.placementId));assert.ok(p.diameter>0&&Number.isFinite(p.x+p.y));}
 assert.ok(events.length>0);
 const page=fs.readFileSync(path.join(__dirname,'../cockpit/overhead-stage.html'),'utf8');
-assert.ok(page.includes('app.js?v=OH14-SINGLE-ASSEMBLY-0013'));
+assert.ok(page.includes('app.js?v=OH14-BLACK-GUARDED-0014'));
 assert.ok(!page.includes('socket-cleanup-v3.js'));
 console.log('PASS 59 overhead controls with one explicitly owner-requested OH14 Small Silver actuator; other frozen toggles preserved.');
 
@@ -69,7 +69,7 @@ assert.equal(emergency[0].visualFamily,'Small Silver');
 assert.deepEqual(emergency[0].interactionSourceRect,[445,150,330,760]);
 assert.ok(app.includes("const photoOnly=c.id==='emergency-exit-lights';"),'OH14 must have one transparent hit target');
 assert.ok(app.includes('button.append(sprite);'),'All 59 toggle controls, including OH14, render their selected family sprite');
-assert.ok(app.includes("photo.src=localURL('../assets/locked/2026-10-23/Black_Guarded_CLOSED.png')"),'OH14 black hinged cover uses the existing approved photo asset');
+assert.ok(app.includes("../assets/locked/2026-10-23/Switches/Guarded/"),'OH14 uses owner-selected Guarded directory');
 assert.ok(app.includes("holder.className='oh14-top-hinge-guard'"),'OH14 has one independent top-hinge cover');
 assert.ok(app.includes("setCover(holder.dataset.cover!=='open')"),'OH14 black cover toggles without changing OFF/ARMED/ON detents');
 assert.ok(!app.includes('oh14-original-toggle-occlusion'),'Never paint over the photographed OH14 shaft');

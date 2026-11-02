@@ -17,8 +17,9 @@
   button.setAttribute('aria-disabled',String(interlocks.get(c.id)===false));
   button.dataset.state=value;button.setAttribute('aria-valuenow',String(index));button.setAttribute('aria-valuetext',value);button.setAttribute('aria-label',c.label+' — '+value);
   if(c.id==='emergency-exit-lights'){
-   button.dataset.photoOwner='OH14-SINGLE-ASSEMBLY-0013';
-   button.title='EMER EXIT LIGHTS — '+value+' · Small Silver three-detent lever';
+   button.dataset.photoOwner='OH14-BLACK-GUARDED-0014';
+   button.title='EMER EXIT LIGHTS — '+value+' · Black Guarded';
+   button._refreshGuard?.();
   }
   const sprite=button.querySelector('.toggle-sprite');
   if(sprite&&index>=0){
@@ -137,8 +138,15 @@
     hood.setAttribute('aria-expanded','true');
     const photo=document.createElement('img');
     photo.alt='';photo.draggable=false;photo.setAttribute('aria-hidden','true');
-    photo.src=localURL('../assets/locked/2026-10-23/Black_Guarded_CLOSED.png');
-    hood.append(photo);holder.append(hood);
+    photo.className='oh14-guard-state-photo';
+    const guardFiles={OFF:'Black_Guarded_Open_UP.png',ARMED:'Black_Guarded_Open_CENTER.png',ON:'Black_Guarded_Open_DOWN.png'};
+    function renderGuard(){
+     const file=holder.dataset.cover==='closed'?'Black_Guarded_CLOSED.png':guardFiles[engine.get(c.id)];
+     const url=localURL('../assets/locked/2026-10-23/Switches/Guarded/'+file);
+     if(photo.src!==url)photo.src=url;
+    }
+    button._refreshGuard=renderGuard;
+    holder.append(photo,hood);
     // Match the precise hardware envelope from the existing retired OH14
     // guard socket, not the deliberately larger invisible interaction hitbox.
     const plate=placements.get('OH14');
@@ -154,6 +162,7 @@
      button.tabIndex=open?0:-1;
      button.setAttribute('aria-disabled',String(!open));
      button.style.pointerEvents=open?'auto':'none';
+     renderGuard();
     }
     // No events from the guard are allowed to cycle the three-detent switch.
     hood.addEventListener('pointerdown',e=>e.stopPropagation());
