@@ -45,16 +45,22 @@ const {chromium}=require('playwright');
     const litImage=lamp?.querySelector('img.light-face[data-frame="ON"]');
     const darkImage=lamp?.querySelector('img.light-face[data-frame="OFF"]');
     const snap=window.B737OverheadLights.getState();
+    const nut=document.querySelector('#oh14EmergencyExitPhysical .oh14-photo-lever-sprite');
+    const glass=darkImage||null;
     return {position:snap.context.emergencyExitLightsPosition,
      illuminated:snap.lights['emergency-not-armed'],lampFrame:lamp?.dataset.frame,
      photoPower:snap.power,vis:litImage?getComputedStyle(litImage).opacity:null,
-     offImageOpacity:darkImage?getComputedStyle(darkImage).opacity:null};
+     offImageOpacity:glass?getComputedStyle(glass).opacity:null,
+     leverOpacity:nut?getComputedStyle(nut).opacity:null,
+     leverTransform:nut?getComputedStyle(nut).transform:null,
+     leverImage:nut?getComputedStyle(nut).backgroundImage:null,
+     darkGlassDecoded:!!(glass?.complete&&glass.naturalWidth>0)};
    });
    const initial=await sample();
    const clickDetent=async fraction=>{
      await lever.click({position:{x:actualBounds.width*.5,y:actualBounds.height*fraction}});
      // Image-face transition is 110ms; verify emitted light, not only model state.
-     await page.waitForTimeout(175);
+     await page.waitForTimeout(265);
      return sample();
    };
    const off=await clickDetent(.18);
@@ -106,7 +112,13 @@ const {chromium}=require('playwright');
    assert.ok(Number(oh14.actuallyLit.vis)>.85,'OFF must show truly illuminated visible amber letters, not merely a logical ON flag');
    assert.ok(Number(oh14.actuallyDarkArmed.vis)<.08,'ARMED must visibly extinguish amber letters after fade');
    assert.equal(oh14.on.lampFrame,'OFF','ON detent extinguishes NOT ARMED');
-   assert.equal(oh14.on.offImageOpacity,'0','Original photo should not receive ghost unlit lettering');
+   assert.equal(oh14.on.offImageOpacity,'1','Full installed dark glass must remain visible in ON and ARMED');
+   assert.ok(oh14.on.darkGlassDecoded,'OFF-state glass SVG must decode and never leave an empty aperture');
+   assert.equal(oh14.armed.leverOpacity,'0','ARMED should show the original unaltered photographed lever');
+   assert.equal(oh14.on.leverOpacity,'1','ON must show physically moved photographic lever');
+   assert.equal(oh14.off.leverOpacity,'1','OFF must show physically moved photographic lever');
+   assert.notEqual(oh14.on.leverTransform,oh14.off.leverTransform,'OFF and ON must look visibly different');
+   assert.ok(oh14.on.leverImage?.includes('OH14-EMER-EXIT-795cc819a3b3.png'),'Moving lever must use authentic photographed hardware');
    assert.ok(oh14.visual.litSrc?.includes('oh14-not-armed-emission-on.svg'),'Luminous face must contain no painted bezel');
    assert.ok(oh14.visual.darkSrc?.includes('oh14-not-armed-emission-off.svg'),'Unlit face must contain no painted bezel');
    assert.equal(oh14.visual.fittedLayerCount,0,'OH14 must not mount a second fitted glass at all');
