@@ -47,16 +47,22 @@
  content:"";
  position:absolute;
  z-index:6;
- left:41%;
- top:11%;
- width:30%;
- height:51%;
+ left:39.5%;
+ top:9%;
+ width:34%;
+ height:53.5%;
  display:block;
  pointer-events:none!important;
  background-image:url("data:image/webp;base64,UklGRnoBAABXRUJQVlA4IG4BAADQEwCdASp8AGoBPp1Inkylo6MiotELmLATiWlu4OcIk1M9RBLcAD3HDOELa1o5CpMYwNXYNqXdjJe98J0hlyiYqc9/JwnMKKvFCOz/e970wVvznCAeSy8YC1IEcuJISuBAWx0XCm4WI43ezFSiV02PDX8KoGlDpdz0pFzmYA+/y4b3+bS1gk6+reBsqCkfBVOayshCWTy9SpaA+KUQl3uDgH9ynyp+AAD+QPnnj32wvc5G6ak2MIN487uiOS1a9z54cvQ50nYWKJbJ4Oxge4YnSj1+77Awz6Rq04LoIcxiQtdlhu4FqAYoW1Pk0ZNcSyyVQXull15gH3IjV1PBLECYBoU+sDTzRLQSgYHt8xHTRAW66Pll7bNpqKOnJFJ+ae20ppGDQr/yLKW+SJjoeevGTII7HipuWj4DgDSMMUAOvfolocXRi0AdQ+4PTAdFyKC1FUM0BhAsy6W4TGiA84TU4BHSbyYDQgoE7edVAAA=");
  background-repeat:no-repeat;
  background-position:center center;
  background-size:100% 100%;
+ /* Feather inside the intact photo plate; never bleed onto OFF/ARMED/ON
+    labels, NOT ARMED glass, or the white divider. */
+ -webkit-mask-image:linear-gradient(to right,transparent,#000 10px,#000 calc(100% - 10px),transparent),linear-gradient(to bottom,transparent,#000 12px,#000 calc(100% - 12px),transparent);
+ mask-image:linear-gradient(to right,transparent,#000 10px,#000 calc(100% - 10px),transparent),linear-gradient(to bottom,transparent,#000 12px,#000 calc(100% - 12px),transparent);
+ -webkit-mask-composite:source-in;
+ mask-composite:intersect;
 }
 .mounted-toggle[data-control="emergency-exit-lights"]{
  display:none!important;
