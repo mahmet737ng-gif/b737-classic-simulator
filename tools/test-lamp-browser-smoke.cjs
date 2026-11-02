@@ -53,6 +53,8 @@ const {chromium}=require('playwright');
    const initial=await sample();
    const clickDetent=async fraction=>{
      await lever.click({position:{x:actualBounds.width*.5,y:actualBounds.height*fraction}});
+     // Image-face transition is 110ms; verify emitted light, not only model state.
+     await page.waitForTimeout(175);
      return sample();
    };
    const off=await clickDetent(.18);
@@ -98,6 +100,9 @@ const {chromium}=require('playwright');
    assert.equal(oh14.visual.pointerEvents,'auto','OH14 click target MUST be hit-testable');
    assert.equal(oh14.off.photoPower,false,'Test must exercise AC-unavailable case');
    assert.equal(oh14.off.lampFrame,'ON','OFF detent should activate electrical NOT ARMED frame even with AC off');
+   assert.ok(Number(oh14.off.vis)>0.94,'OFF must visibly illuminate the original OH14 lamp after light transition');
+   assert.ok(Number(oh14.armed.vis)<.08,'ARMED must visually extinguish the lamp');
+   assert.ok(Number(oh14.on.vis)<.08,'ON must visually extinguish the lamp');
    assert.ok(Number(oh14.actuallyLit.vis)>.85,'OFF must show truly illuminated visible amber letters, not merely a logical ON flag');
    assert.ok(Number(oh14.actuallyDarkArmed.vis)<.08,'ARMED must visibly extinguish amber letters after fade');
    assert.equal(oh14.on.lampFrame,'OFF','ON detent extinguishes NOT ARMED');
