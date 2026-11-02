@@ -111,6 +111,18 @@
     const a=corner(hx,hy),b=corner(hx+hw,hy+hh);
     Object.assign(button.style,{left:a.x+'px',top:a.y+'px',width:(b.x-a.x)+'px',height:(b.y-a.y)+'px',transform:'none'});
     Object.assign(sprite.style,{left:(p.x-a.x)+'px',top:(p.y-a.y)+'px'});
+    if(c.id==='emergency-exit-lights'){
+     // Occlude ONLY the fixed photographed chrome lever inside the black
+     // recess, leaving the original switch housing/labels/plate untouched.
+     // The approved Small Silver sprite is the sole moving lever.
+     const ma=corner(525,416),mb=corner(665,680);
+     const occlusion=document.createElement('span');
+     occlusion.className='oh14-original-toggle-occlusion';
+     occlusion.setAttribute('aria-hidden','true');
+     Object.assign(occlusion.style,{left:(ma.x-a.x)+'px',top:(ma.y-a.y)+'px',
+       width:(mb.x-ma.x)+'px',height:(mb.y-ma.y)+'px'});
+     button.append(occlusion);
+    }
    }
    button.append(sprite);
    layer.append(button);nodes.set(c.id,button);bind(c,button);refreshOne(c);
