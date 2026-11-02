@@ -16,6 +16,10 @@
   const value=engine.get(c.id),index=c.states.indexOf(value);
   button.setAttribute('aria-disabled',String(interlocks.get(c.id)===false));
   button.dataset.state=value;button.setAttribute('aria-valuenow',String(index));button.setAttribute('aria-valuetext',value);button.setAttribute('aria-label',c.label+' — '+value);
+  if(c.id==='emergency-exit-lights'){
+   button.dataset.photoOwner='OH14-PHOTO-LIVE-0010';
+   button.title='EMER EXIT LIGHTS — '+value+' · original photographed switch';
+  }
   const sprite=button.querySelector('.toggle-sprite');
   if(sprite&&index>=0){
    const frame=poseFrames(c)[index];
