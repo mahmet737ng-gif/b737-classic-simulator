@@ -6,11 +6,19 @@ const t=tm.controller(treg),g=gm.controller(rg,{},()=>{},mechanics),e=m.controll
 assert.equal(m.validate(reg,read('../all-overhead/atlas-layout.json'),tm.mapPoint,new Set([...treg.controls,...rg.rotaries,...rg.guards].map(c=>c.id))),true);assert.equal(reg.lights.length,112);assert.equal(Object.keys(reg.assets).length,68);
 assert.deepEqual(reg.lights.find(c=>c.id==='irs-l-align').sourceRect,[428,535,64,32]);assert.deepEqual(reg.lights.find(c=>c.id==='irs-r-align').sourceRect,[604,535,64,32]);assert.equal(reg.lights.filter(c=>c.asset==='ALIGN_WHITE').length,2,'one reusable ALIGN pair for both IRS sides');
 for(const c of reg.lights)for(const a of Object.values(reg.assets[c.asset]))assert.equal(crypto.createHash('sha256').update(fs.readFileSync(path.resolve(__dirname,a.url))).digest('hex'),a.sha256);
+// OH14 photographed lever has a dedicated native-source hit area, separate
+// from the immutable 58-switch baseline. Click-height maps three detents.
+assert.deepEqual(m.EMERGENCY_EXIT_HIT_RECT,[446,145,315,760]);
+assert.equal(m.emergencyExitPositionFromRatio(0.1),'OFF');
+assert.equal(m.emergencyExitPositionFromRatio(0.5),'ARMED');
+assert.equal(m.emergencyExitPositionFromRatio(0.9),'ON');
+assert.throws(()=>m.emergencyExitPositionFromRatio(NaN));
+assert.throws(()=>m.emergencyExitPositionFromRatio(1.01));
 // OH14 annunciator is driven by the three-position emergency exit lights switch,
  // not by an undefined registry control. ARMED and ON extinguish NOT ARMED.
 const emergencyProbe=m.controller(reg,electrical,()=>{},pneumatics);
 emergencyProbe.setAircraftElectricalPower(true);
-assert.equal(emergencyProbe.snapshot().lights['emergency-not-armed'],false,'default ARMED must not illuminate NOT ARMED');
+assert.equal(emergencyProbe.snapshot().lights['emergency-not-armed'],false,'photographed ON default must not illuminate NOT ARMED');
 emergencyProbe.setEmergencyExitLightsPosition('OFF',time);
 assert.equal(emergencyProbe.snapshot().lights['emergency-not-armed'],true,'OFF illuminates NOT ARMED when powered');
 emergencyProbe.setEmergencyExitLightsPosition('ON',time);
