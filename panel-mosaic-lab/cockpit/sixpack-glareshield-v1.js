@@ -1,4 +1,4 @@
-/* SIXPACK-0001 — independently addressed 737 Classic glareshield annunciators.
+/* SIXPACK-0004 — independently addressed 737 Classic glareshield annunciators.
    An additive visual/training layer: protected cockpit photos and guard geometry are untouched.
    No automatic FCOM-level failures or electrical authority are inferred by this module. */
 (function(){
@@ -9,7 +9,8 @@ const sides={CAPT,FO};
 const ids=['MASTER CAUTION','FIRE WARN'];
 const manual=new Map(), nodes=new Map(), acknowledged=new Set(), liveReasons=new Map();
 let fireWarningActive=false,fireWarningAcknowledged=false;
-let visualTest=false, recallHeld=false, mounted=false;
+let visualTest=false, recallHeld=false, mounted=false, recallMaster=false;
+const recallShown=new Set();
 const norm=v=>String(v||'').trim().toUpperCase().replace(/[_\s-]+/g,' ').replace(/\s*\/\s*/g,'/');
 const key=(side,name)=>String(side).toUpperCase()+'.'+norm(name);
 for(const side of Object.keys(sides))for(const name of [...sides[side],...ids]){
@@ -20,13 +21,20 @@ function emit(side,name,on,source){
  window.dispatchEvent(new CustomEvent('b737:sixpack-light-change',{detail:{side,legend:name,id:key(side,name),on:!!on,source,visualOnly:true}}));
 }
 
+// The caution state is per fault, never only per six-pack category.
+// Two faults in the same category must produce two independent alert edges.
 const isSystem=k=>liveReasons.has(k);
-const active=k=>manual.get(k)===true||(liveReasons.get(k)?.length||0)>0;
-function anyCaution(){return [...liveReasons.keys()].some(k=>active(k)&&!acknowledged.has(k));}
+const reasons=k=>[...(liveReasons.get(k)||[]),...(manual.get(k)===true?[{id:'MANUAL',mode:'IMMEDIATE'}]:[])];
+const token=(k,id)=>k+'|'+id;
+const immediate=r=>r.mode!=='RECALL_ONLY';
+const pending=k=>reasons(k).some(r=>immediate(r)&&!acknowledged.has(token(k,r.id)));
+const anyCaution=()=>[...liveReasons.keys()].some(pending);
+const anyImmediate=()=>[...liveReasons.keys()].some(k=>reasons(k).some(immediate));
+const isActive=k=>reasons(k).length>0;
 function effective(k){
  if(visualTest)return true;
- if(isSystem(k))return recallHeld||(active(k)&&!acknowledged.has(k));
- if(k.endsWith('.MASTER CAUTION'))return manual.get(k)===true||anyCaution();
+ if(isSystem(k))return recallHeld||recallShown.has(k)||pending(k);
+ if(k.endsWith('.MASTER CAUTION'))return manual.get(k)===true||recallMaster||anyCaution();
  return (fireWarningActive&&!fireWarningAcknowledged)||manual.get(k)===true;
 }
 function paint(){
@@ -35,25 +43,42 @@ function paint(){
   if(n.tagName==='BUTTON')n.setAttribute('aria-pressed',String(on));
   else n.setAttribute('aria-label',k+(on?' illuminated':' unlit'));
  }
- const count=document.getElementById('b737SixpackCount');
- if(count)count.textContent=[...manual.keys()].filter(k=>isSystem(k)&&effective(k)).length+' / 12';
+ const counter=document.getElementById('b737SixpackCount');
+ if(counter)counter.textContent=[...liveReasons.keys()].filter(effective).length+' / 12';
  document.querySelectorAll('[data-sixpack-checkbox]').forEach(n=>{
   n.checked=manual.get(n.dataset.sixpackCheckbox)===true;n.disabled=visualTest;
  });
 }
+function clearRecall(){
+ recallShown.clear();recallMaster=false;
+}
 function acknowledge(source='master-caution-reset'){
- for(const k of liveReasons.keys())if(active(k))acknowledged.add(k);
+ for(const k of liveReasons.keys())for(const r of reasons(k))
+  acknowledged.add(token(k,r.id));
+ clearRecall();
  for(const side of Object.keys(sides)){
   const k=key(side,'MASTER CAUTION');
   if(manual.get(k)){manual.set(k,false);emit(side,'MASTER CAUTION',false,source);}
  }
  paint();
- window.dispatchEvent(new CustomEvent('b737:sixpack-acknowledge',{detail:{source,retainedActiveFaults:[...acknowledged],visualOnly:true}}));
+ window.dispatchEvent(new CustomEvent('b737:sixpack-acknowledge',{
+  detail:{source,retainedActiveFaults:getLiveReasons(),visualOnly:false}
+ }));
 }
 function recall(side='CAPT'){
- const existing=[...liveReasons.keys()].filter(k=>active(k));
- acknowledged.clear();paint();
- window.dispatchEvent(new CustomEvent('b737:sixpack-recall',{detail:{side,active:existing,masterCaution:existing.length>0,source:'UNIFIED_AND_INSTRUCTOR',visualOnly:false}}));
+ if(!sides[side])return [];
+ clearRecall();
+ const existing=[];
+ for(const k of liveReasons.keys())if(isActive(k)){
+  recallShown.add(k);existing.push(k);
+ }
+ // A recalled single redundant-channel fault shows its system locator only,
+ // while an existing immediate master-caution condition may re-illuminate MC.
+ recallMaster=anyImmediate();
+ paint();
+ window.dispatchEvent(new CustomEvent('b737:sixpack-recall',{
+  detail:{side,active:existing,masterCaution:recallMaster,source:'UNIFIED_AND_INSTRUCTOR',visualOnly:false}
+ }));
  return existing;
 }
 function press(side='CAPT'){
@@ -69,42 +94,78 @@ function release(side='CAPT'){
  recall(side);return true;
 }
 function setLight(side,name,on,source='external'){
- const s=String(side).toUpperCase(), n=norm(name), k=key(s,n);
+ const s=String(side).toUpperCase(),n=norm(name),k=key(s,n);
  if(!manual.has(k))return false;
- const next=!!on,prev=manual.get(k);manual.set(k,next);if(next!==prev)acknowledged.delete(k);paint();
- if(next!==prev)emit(s,n,next,source);
- return true;
+ const next=!!on,prev=manual.get(k);
+ manual.set(k,next);
+ if(next!==prev){
+  acknowledged.delete(token(k,'MANUAL'));
+  if(!isActive(k))recallShown.delete(k);
+  emit(s,n,next,source);
+ }
+ paint();return true;
 }
 function setAll(on,side=null,source='instructor'){
  const filter=side?String(side).toUpperCase():null;
  if(filter&&!sides[filter])return false;
- acknowledged.clear();
- for(const [k,v] of manual){
+ for(const [k,v]of manual){
   if(filter&&!k.startsWith(filter+'.'))continue;
   if(v!==!!on){
-   manual.set(k,!!on);
+   manual.set(k,!!on);acknowledged.delete(token(k,'MANUAL'));
+   if(isSystem(k)&&!isActive(k))recallShown.delete(k);
    const i=k.indexOf('.');emit(k.slice(0,i),k.slice(i+1),!!on,source);
   }
  }
  paint();return true;
 }
-// An atomic set of actual annunciator reasons; false-to-true/new-fault edges re-arm caution.
-function setLiveConditions(reasons,source='UNIFIED'){
- if(!reasons||typeof reasons!=='object')return false;
- let changed=false;
+function getLiveReasons(){
+ return Object.fromEntries([...liveReasons].map(([k,arr])=>[k,arr.map(r=>r.id)]));
+}
+function getLiveConditionDetails(){
+ return Object.fromEntries([...liveReasons].map(([k,arr])=>[k,arr.map(r=>({...r}))]));
+}
+function getCautionDiagnostics(){
+ return {activeImmediate:anyImmediate(),pendingMasterCaution:anyCaution(),
+  recallMaster,recallOnly:[...liveReasons.keys()].flatMap(k=>reasons(k)
+   .filter(r=>!immediate(r)).map(r=>({system:k,id:r.id}))),
+  recalled:[...recallShown],acknowledged:[...acknowledged]};
+}
+function setLiveConditions(incoming,source='UNIFIED'){
+ if(!incoming||typeof incoming!=='object'||Array.isArray(incoming))return false;
+ const staged=new Map();
+ // Validate everything before applying one change: no half-applied snapshots.
  for(const k of liveReasons.keys()){
-  const input=reasons[k];
-  if(input===undefined)continue;
-  if(!Array.isArray(input)||input.some(id=>typeof id!=='string'||!id||id.length>120))return false;
-  const next=[...new Set(input)].sort(),before=liveReasons.get(k);
-  if(JSON.stringify(before)!==JSON.stringify(next)){
-   if(next.some(id=>!before.includes(id))||next.length===0)acknowledged.delete(k);
-   liveReasons.set(k,next);changed=true;
+  if(!Object.hasOwn(incoming,k))continue;
+  const values=incoming[k];
+  if(!Array.isArray(values))return false;
+  const byId=new Map();
+  for(const input of values){
+   const id=typeof input==='string'?input:input?.id;
+   const mode=typeof input==='string'?'IMMEDIATE':input?.mode;
+   if(typeof id!=='string'||!id||id.length>120||
+      !['IMMEDIATE','RECALL_ONLY'].includes(mode))return false;
+   const candidate={id,mode};
+   if(!byId.has(id)||mode==='IMMEDIATE')byId.set(id,candidate);
   }
+  staged.set(k,[...byId.values()].sort((a,b)=>a.id.localeCompare(b.id)));
+ }
+ let changed=false;
+ for(const [k,next]of staged){
+  const before=liveReasons.get(k);
+  if(JSON.stringify(next)===JSON.stringify(before))continue;
+  const old=new Map(before.map(r=>[r.id,r.mode]));
+  const now=new Map(next.map(r=>[r.id,r.mode]));
+  for(const r of before)if(!now.has(r.id))acknowledged.delete(token(k,r.id));
+  for(const r of next)if(old.get(r.id)!==r.mode)acknowledged.delete(token(k,r.id));
+  liveReasons.set(k,next);changed=true;
+  if(!isActive(k))recallShown.delete(k);
  }
  if(changed){
+  if(!anyImmediate())recallMaster=false;
   paint();
-  window.dispatchEvent(new CustomEvent('b737:sixpack-system-update',{detail:{source,activeReasons:Object.fromEntries(liveReasons),masterCaution:anyCaution()}}));
+  window.dispatchEvent(new CustomEvent('b737:sixpack-system-update',{
+   detail:{source,activeReasons:getLiveReasons(),classified:getLiveConditionDetails(),masterCaution:anyCaution()}
+  }));
  }
  return true;
 }
@@ -221,16 +282,16 @@ function mount(){
  if(document.getElementById(ROOT))return;
  const root=document.createElement('div');root.id=ROOT;root.className='b737-sixpack-glareshield';root.setAttribute('aria-label','Boeing 737 Classic glareshield system annunciators');
  root.append(makeSeat('CAPT'),makeSeat('FO'));native.append(root);mounted=true;addInspector();paint();
- window.dispatchEvent(new CustomEvent('b737:sixpack-ready',{detail:{version:'SIXPACK-0003',independentLamps:12,masters:4}}));
+ window.dispatchEvent(new CustomEvent('b737:sixpack-ready',{detail:{version:'SIXPACK-0004',independentLamps:12,masters:4}}));
 }
 window.B737SixPack=Object.freeze({
  version:'SIXPACK-0003',
  mount,
  getState:()=>Object.fromEntries(manual),
  getEffectiveState:()=>Object.fromEntries([...manual.keys()].map(k=>[k,effective(k)])),
- getLiveReasons:()=>Object.fromEntries([...liveReasons].map(([k,v])=>[k,[...v]])),
+ getLiveReasons,getLiveConditionDetails,getCautionDiagnostics,
  setLight,setAll,setCombination,setLiveConditions,setFireWarning,acknowledgeFire,acknowledge,recall,press,release,
- reset:()=>{acknowledged.clear();recallHeld=false;fireWarningAcknowledged=false;return setAll(false,null,'reset');},
+ reset:()=>{acknowledged.clear();clearRecall();recallHeld=false;fireWarningAcknowledged=false;return setAll(false,null,'reset');},
  setVisualTest:on=>{visualTest=!!on;paint();},
  getGeometry:()=>({region:'main',width:2100,height:920,left:{x:640,y:3,w:144,h:121},right:{x:1387,y:3,w:144,h:121}})
 });
