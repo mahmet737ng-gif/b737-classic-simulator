@@ -1,4 +1,4 @@
-/* MCP-FD-MA-0003 | centered circular MA over original F/D annun hole; FCOM 4.10.13, 4.20.3.
+/* MCP-FD-MA-0004 | centered circular MA over original F/D annun hole; FCOM 4.10.13, 4.20.3.
  * Two non-clickable master FCC lamps over unmodified approved MCP artwork.
  * TRAINING ONLY - independent modes require explicit sensor/instructor evidence.
  */
@@ -15,6 +15,23 @@ const W=2172,H=433,position=Object.freeze({
 });
 const defaults=()=>({kind:"NORMAL",radioAltitudeFt:null,
  locCaptured:false,gsCaptured:false,fccAvailable:{left:null,right:null}});
+/* A verified live AC bus is an educational power proxy, not a certified
+ * FCC circuit breaker or MCP feeder assignment. No lights without AC evidence,
+ * unless an instructor explicitly confirms MCP power.
+ */
+function acEvidence(electrical){
+ if(electrical?.schema!=="B737_ELECTRICAL_V7_RESULT"||!electrical.bus)return null;
+ const keys=["transfer1","transfer2","main1","main2","acStandby"];
+ if(keys.some(k=>electrical.bus[k]===true))return true;
+ if(keys.every(k=>electrical.bus[k]===false))return false;
+ return null;
+}
+function maSupply(output,electrical){
+ if(output?.power===false)return {powered:false,source:"AFDS_MCP_POWER_OFF"};
+ if(output?.power===true)return {powered:true,source:"INSTRUCTOR_CONFIRMED_MCP"};
+ const live=acEvidence(electrical);
+ return {powered:live,source:live===true?"LIVE_AC_BUS_PROXY":live===false?"LIVE_AC_OFF":"POWER_UNVERIFIED"};
+}
 const initialState=()=>({firstFd:null,previousFd:{left:false,right:false},
  lamps:{left:false,right:false},master:null,independent:false,reason:"OFF"});
 function evaluate(previous,output,evidence){
@@ -35,7 +52,7 @@ function evaluate(previous,output,evidence){
  const s={firstFd:first,previousFd:{left,right},
   lamps:{left:false,right:false},master:null,independent:false,reason:"OFF"};
  if(!left&&!right)return s;
- if(output?.power!==true){s.reason="MCP_POWER_UNVERIFIED";return s;}
+ if((output?.maPower??output?.power)!==true){s.reason="MCP_AC_POWER_NOT_EVIDENCED";return s;}
  const ev=evidence||defaults(),available=ev.fccAvailable||{};
  const ap=output?.modes?.autopilot;
  const cmd=ap==="CMD_A"?"left":ap==="CMD_B"?"right":null;
@@ -53,7 +70,7 @@ function evaluate(previous,output,evidence){
  s.lamps=independent?{left:true,right:true}:{left:master==="left",right:master==="right"};
  return s;
 }
-let state=initialState(),evidence=defaults(),latest=null,visualTest=false,hostWindow=null;
+let state=initialState(),evidence=defaults(),latest=null,visualTest=false,hostWindow=null,lastRefreshSignature=null;
 const roots=new WeakSet(),mounted=[];
 function installStyle(){
  if(!hostWindow?.document||hostWindow.document.getElementById("mcp-fd-ma-0001-style"))return;
@@ -70,7 +87,7 @@ function installStyle(){
  'border-radius:50%;border:1px solid #545b5680;box-shadow:inset 0 0 4px #000b;pointer-events:none}',
  '[data-piece="mcp"]>.mcp-fd-ma svg{display:block;width:100%;height:100%;overflow:visible}',
  '[data-piece="mcp"]>.mcp-fd-ma .mcp-fd-ma-label{fill:#f6f7f4;stroke:none;',
- 'font:700 26px Arial,Helvetica,sans-serif;letter-spacing:-.6px;paint-order:stroke fill}',
+ 'font:700 26px Arial,Helvetica,sans-serif;letter-spacing:-.6px;paint-order:stroke fill;opacity:.62}',
  /* The lens remains black when powered. Only reflected light and white MA glow change. */
  '[data-piece="mcp"]>.mcp-fd-ma[data-on="true"]{',
  'border-color:#727d76;',
@@ -78,7 +95,7 @@ function installStyle(){
  'box-shadow:0 0 3px 1px #e7fff299,0 0 9px 2px #d7ffe252,',
  'inset 0 0 5px 1px #e7ffe536,inset 0 1px 3px #030807}',
  '[data-piece="mcp"]>.mcp-fd-ma[data-on="true"] .mcp-fd-ma-label{',
- 'fill:#fff;filter:drop-shadow(0 0 1.3px #fff) drop-shadow(0 0 2.7px #d0ffe4)}'
+ 'fill:#fff;opacity:1;filter:drop-shadow(0 0 1.3px #fff) drop-shadow(0 0 2.7px #d0ffe4)}'
  ].join("");
  (hostWindow.document.head||hostWindow.document.documentElement).append(el);
 }
@@ -87,6 +104,9 @@ function render(){
   const el=root.querySelector('[data-mcp-ma="'+side+'"]');if(!el)continue;
   const on=visualTest||state.lamps[side]===true;
   el.dataset.on=String(on);
+  el.dataset.source=visualTest?"LAMP_TEST":state.reason;
+  el.title=visualTest?"MA illuminated by ALL LIGHTS ON test":
+   "MA "+(on?"ON":"OFF")+" | "+state.reason+" | "+(state.supply?.source||"POWER_UNVERIFIED");
   el.setAttribute("aria-label","Flight Director MA "+side+" "+(on?"illuminated":"extinguished"));
  }
 }
@@ -110,11 +130,29 @@ function mount(){
  render();
 }
 function getState(){return JSON.parse(JSON.stringify({state,evidence,visualTest,position}));}
+function liveElectrical(){
+ try{return hostWindow?.B737ISNCockpitV1?.getState?.()?.state?.electrical??null}
+ catch(e){return null}
+}
 function applyOutput(out){
  if(!out||out.schema!=="B737_MCP_AFDS_OUTPUT_V1")return getState();
- latest=out;state=evaluate(state,out,evidence);render();
+ latest=out;
+ const supply=maSupply(out,liveElectrical());
+ state=evaluate(state,{...out,maPower:supply.powered},evidence);
+ state.supply=supply;
+ render();
  if(hostWindow)hostWindow.dispatchEvent(new CustomEvent("b737:mcp-ma-state",{detail:getState()}));
  return getState();
+}
+function refresh(){
+ const next=hostWindow?.B737McpAFDSBridgeV1?.getOutput?.()||latest;
+ if(!next)return getState();
+ // Do not render unnecessarily on repeated ECU/AFDS sensor broadcasts.
+ const sig=JSON.stringify([next.power,next.controls?.fd,next.modes?.autopilot,
+  maSupply(next,liveElectrical()),evidence]);
+ if(lastRefreshSignature===sig)return getState();
+ lastRefreshSignature=sig;
+ return applyOutput(next);
 }
 function setEvidence(data){
  if(!data||typeof data!=="object")throw Error("Explicit evidence required");
@@ -143,17 +181,21 @@ function setEvidence(data){
 }
 function bind(win){
  hostWindow=win;
- win.addEventListener("b737:mcp-afds-state",e=>applyOutput(e.detail));
- win.addEventListener("b737:cockpit-mounted",mount);
- win.addEventListener("b737:visual-test",e=>{visualTest=e.detail?.active===true;render()});
- win.document.addEventListener("DOMContentLoaded",()=>{
-  mount();applyOutput(win.B737McpAFDSBridgeV1?.getOutput?.());
+ win.addEventListener("b737:mcp-afds-state",e=>{lastRefreshSignature=null;applyOutput(e.detail)});
+ win.addEventListener("b737:cockpit-mounted",()=>{mount();refresh()});
+ // The F/D physical switch is authoritative; AFDS bridge runs first, then
+ // this listener re-reads its output to prevent a disconnected annunciator.
+ win.addEventListener("b737:mcp-hardware-change",e=>{
+  if(e.detail?.id==="FD_LEFT"||e.detail?.id==="FD_RIGHT")refresh();
  });
- if(win.document.readyState!=="loading"){
-  mount();applyOutput(win.B737McpAFDSBridgeV1?.getOutput?.());
- }
+ for(const event of ["b737:isn-start-indications","b737:electrical-network",
+  "b737:electrical-v7-state","b737:electrical-owner-ready",
+  "b737:unified-ecu-observation"])win.addEventListener(event,refresh);
+ win.addEventListener("b737:visual-test",e=>{visualTest=e.detail?.active===true;render()});
+ win.document.addEventListener("DOMContentLoaded",()=>{mount();refresh()});
+ if(win.document.readyState!=="loading"){mount();refresh()}
 }
-return Object.freeze({initialState,evaluate,position,getState,applyOutput,setEvidence,mount,bind,
+return Object.freeze({initialState,evaluate,acEvidence,maSupply,position,getState,applyOutput,refresh,setEvidence,mount,bind,
  audit:()=>({mountedRoots:mounted.length,indicators:mounted.map(root=>[...root.querySelectorAll("[data-mcp-ma]")].map(el=>({side:el.dataset.mcpMa,on:el.dataset.on,text:el.textContent,rect:{width:el.getBoundingClientRect().width,height:el.getBoundingClientRect().height}})))}),
  resetEvidence:()=>{evidence=defaults();if(latest)applyOutput(latest);return getState()}});
 });
