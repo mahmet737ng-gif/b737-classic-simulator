@@ -7,7 +7,7 @@
 (function(){'use strict';
  const Core=window.B737ClassicHydraulicLabCoreV1;
  if(!Core)return;
- const OH={x:1231,y:1818,w:493,h:283};
+ const OH={x:1231,y:1818,w:425,h:283};
  const PHOTO_ENGINE='../../panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png';
  const PHOTO_BRAKE='./assets/B737_Right_Main_Instruments_GPWS_TERRAIN_LEFT_V3.png';
  const NEEDLES=Object.freeze([
