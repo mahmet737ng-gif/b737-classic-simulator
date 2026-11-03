@@ -29,7 +29,7 @@ assert.ok(startLeft.L<empty.L-10&&startLeft.R===empty.R);
 assert.ok(startRight.R<empty.R-10&&startRight.L===empty.L);
 assert.equal(base({starterValves:{L:false,R:false}}).L,empty.L,'START selector alone never drains air');
 const iso=base({bleed:{...bothBleeds,isolationOpen:true},controls:{'pack-l':'AUTO','pack-r':'AUTO'}});
-assert.ok(iso.L>auto.L,'Dual live engine sources share pack demand over an open isolation valve');
+assert.ok(iso.L>0&&Math.abs(iso.L-auto.L)<5,'Two live sources share loads with modest manifold loss');
 assert.equal(iso.L,iso.R,'Manifold crossover equalizes the two indicators');
 const leftOnlyIso=d.project({ecu:ecu(engine('RUNNING',32)),bleed:bleed({engine1ValveOpen:true,isolationOpen:true}),
  controls:{'pack-l':'AUTO','pack-r':'AUTO'}});
