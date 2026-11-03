@@ -65,3 +65,11 @@
  border:2px solid #07080b!important;box-shadow:inset 1px 2px 2px #68676854!important;border-radius:3px!important}
 .hydlab-sixpack-physical .b737-sp-master.caution{width:74px;height:53px;font-size:10px;padding:4px}
 .hydlab-sixpack small[data-hyd-six-status]{display:block;color:#a9c8d5;font:10px/1.6 Consolas,monospace}
+
+/* Original OH07 Flight Control / Standby Hyd photo, separate from live OH17. */
+.hydlab-oh07-group{display:grid;grid-template-columns:260px minmax(0,1fr);gap:10px;align-items:start}
+.hydlab-oh07-source{width:260px;height:347px;max-width:100%;background-size:260px auto;
+ background-position:left top;background-repeat:no-repeat;background-color:#243b4a;
+ border:1px solid #607e90;border-radius:5px}
+.hydlab-oh07-group .hydlab-standby{display:flex;flex-direction:column;gap:6px}
+@media(max-width:650px){.hydlab-oh07-group{grid-template-columns:1fr}.hydlab-oh07-group .hydlab-standby{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}}
