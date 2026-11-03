@@ -1,0 +1,29 @@
+name: MCP Native Photo Aperture Audit
+on:
+  push:
+    paths:
+      - ".github/workflows/mcp-original-photo-capture.yml"
+permissions:
+  contents: read
+jobs:
+  source-photo:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Print size-reduced ORIGINAL photo for registration audit
+        run: |
+          python3 -m pip install --quiet Pillow
+          python3 - <<'PY'
+          from PIL import Image
+          import io,base64,hashlib
+          path="panel-mosaic-lab/assets/locked/2026-10-23/B737_MCP_Blank_Panel.png"
+          data=open(path,"rb").read()
+          img=Image.open(io.BytesIO(data)).convert("RGB")
+          print("MCP-SOURCE-SIZE",img.size,"SHA256",hashlib.sha256(data).hexdigest())
+          img.thumbnail((1448,289))
+          buf=io.BytesIO()
+          img.save(buf,format="JPEG",quality=83,optimize=True)
+          print("MCP_ORIGINAL_JPEG_START")
+          print(base64.b64encode(buf.getvalue()).decode("ascii"))
+          print("MCP_ORIGINAL_JPEG_END")
+          PY
