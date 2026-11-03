@@ -1,0 +1,82 @@
+/* MCP-OPTICS-0001 | Visual-only optical refinement on installed controls.
+ * Based on existing owner's approved photographed black pushbutton and the
+ * original 2172x433 MCP socket registration. No controls or base image added.
+ * Preserve original photo texture, use vector resolution-independent lens
+ * emission rather than enlarged 48px amber/green atlas dots.
+ */
+
+/* Keep the original black, unilluminated owner's button photograph as
+   the physical plastic housing in ALL states. Only its LED lenses change. */
+[data-piece="mcp"].mcp-owner13-active > .mcp-owner13-push {
+  --owner-bsize:472% 884%!important;  /* original cell #6 at 4x4, native dark button */
+  --owner-bpos:65.8602% 35.9056%!important;
+  image-rendering:auto!important;
+  filter:none!important;
+  border:0!important;
+  border-radius:9% / 13%!important;
+  box-shadow:0 0.5px 1px rgba(0,0,0,.32)!important;
+  isolation:isolate;
+  background-color:transparent!important;
+}
+[data-piece="mcp"].mcp-owner13-active > .mcp-owner13-push::before {
+  content:"";
+  position:absolute;
+  inset:9% 12% 10%;
+  border-radius:8% / 11%;
+  pointer-events:none;
+  box-shadow:
+    inset 0 1px 1px rgba(235,242,244,.10),
+    inset 0 -2px 3px rgba(0,0,0,.18);
+  background:linear-gradient(155deg,rgba(204,220,228,.05),rgba(0,0,0,0) 55%,rgba(0,0,0,.09));
+}
+/* Powered off: dark lens mounting rings (no fake green phosphor). */
+[data-piece="mcp"].mcp-owner13-active > .mcp-owner13-push::after {
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:
+    radial-gradient(circle at 50% 38%,#161d13 0 2.8%,#020703 3.1% 5.1%,rgba(0,0,0,.05) 6%,transparent 7.3%),
+    radial-gradient(circle at 50% 62%,#161d13 0 2.8%,#020703 3.1% 5.1%,rgba(0,0,0,.05) 6%,transparent 7.3%);
+}
+/* ON: exactly two soft, green electroluminescent lens apertures, tied to
+   the existing AFDS lamp state and the owner's existing ON-photo selector.
+   Smooth at arbitrary zoom and retina pixel density. */
+[data-piece="mcp"].mcp-owner13-active > .mcp-owner13-push[data-owner-asset-index="5"]::after {
+  background:
+    radial-gradient(circle at 50% 38%,#efffc1 0 1.3%,#b4e975 2.8%,#679f31 4.2%,#1d3715 5.4%,transparent 6.2%),
+    radial-gradient(circle at 50% 62%,#efffc1 0 1.3%,#b4e975 2.8%,#679f31 4.2%,#1d3715 5.4%,transparent 6.2%),
+    radial-gradient(ellipse at 50% 38%,rgba(156,244,78,.18),transparent 17%),
+    radial-gradient(ellipse at 50% 62%,rgba(156,244,78,.18),transparent 17%);
+  filter:drop-shadow(0 0 1px rgba(133,223,79,.4));
+}
+/* The old 10px SVG green strips are only state carriers; visible light is
+   in the PHOTO button itself. Hide lines and glow to prevent neon dots. */
+[data-piece="mcp"] .mcp-v3-overlay .mcp-v3-lamp > .mcp-v3-light,
+[data-piece="mcp"] .mcp-v3-overlay .mcp-v3-lamp > .mcp-v3-lamp-dark,
+[data-piece="mcp"] .mcp-v3-overlay .mcp-v3-lamp > .mcp-v3-lamp-reflector {
+  opacity:0!important;
+}
+/* Original photo mode's 48-pixel COURSE and IAS thumbnails were being
+   enlarged by >2x. Prefer their existing 80px individual photo sources.
+   Do not alter knob geometry, animation, or any AFDS input handlers. */
+[data-piece="mcp"].mcp-owner13-active > .mcp-v3-knob[data-control="courseL"] > .mcp-owner13-art,
+[data-piece="mcp"].mcp-owner13-active > .mcp-v3-knob[data-control="courseR"] > .mcp-owner13-art,
+[data-piece="mcp"].mcp-owner13-active > .mcp-v3-knob[data-control="speed"] > .mcp-owner13-art {
+  display:none!important;
+}
+[data-piece="mcp"].mcp-owner13-active > .mcp-v3-knob[data-control="courseL"] > .mcp-v3-course-face,
+[data-piece="mcp"].mcp-owner13-active > .mcp-v3-knob[data-control="courseR"] > .mcp-v3-course-face {
+  visibility:visible!important;
+  background:transparent url("./assets/mcp-switches/COURSE_PHOTO_80.webp") center / contain no-repeat!important;
+  image-rendering:auto!important;
+}
+[data-piece="mcp"].mcp-owner13-active > .mcp-v3-knob[data-control="speed"] {
+  background-image:url("./assets/mcp-ias-mach-knob.webp")!important;
+  background-size:contain!important;
+  background-repeat:no-repeat!important;
+  image-rendering:auto!important;
+}
+@media(prefers-reduced-motion:reduce){
+ [data-piece="mcp"].mcp-owner13-active > .mcp-owner13-push::after {transition:none}
+}
