@@ -192,7 +192,15 @@
  // UNIFIED-PINCH owns two-finger zoom and one-finger pan. Do not register
  // a second legacy touchmove/zoom listener: competing writers cause jumps.
  vp.addEventListener('touchstart',()=>wheelController?.cancel(),{passive:true});
- let resizeTimer;window.addEventListener('resize',()=>{clearTimeout(resizeTimer);resizeTimer=setTimeout(()=>{if(assembly)focus(focused);},120);});
+ // A browser chrome / window resize must not snap back to the last focused panel.
+ // Keep the existing scroll anchor while refreshing only the canvas centering.
+ let resizeTimer;window.addEventListener('resize',()=>{
+  clearTimeout(resizeTimer);
+  resizeTimer=setTimeout(()=>{
+   if(!assembly)return;
+   applyZoom(zoom,vp.scrollLeft,vp.scrollTop,vp.clientWidth/2,vp.clientHeight/2);
+  },120);
+ });
  async function start(){try{const prefetched=window.B737UnifiedAssemblyPrefetch?await window.B737UnifiedAssemblyPrefetch:null;if(prefetched?.error)throw Error(prefetched.error);if(prefetched?.data)assembly=prefetched.data;else{const r=await fetch('./assembly.json',{cache:'no-store'});if(!r.ok)throw Error('Assembly unavailable');assembly=await r.json();}model.validate(assembly);mount();window.dispatchEvent(new CustomEvent('b737:cockpit-mounted'));focus('main');byId('loading').classList.add('hidden');
   // Overhead geometry is mounted immediately; its 49-script iframe starts only
   // after the first usable main paint, or when actually brought into view.
