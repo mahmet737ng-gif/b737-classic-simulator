@@ -19,14 +19,16 @@ const M=require('../interactive-overhead/lights-model.js');
 assert.ok(!stage.includes('aircon-fcom-p5-buttons-v1.js'),'Do not overlay an invisible duplicate of the actual P5 button');
 assert.ok(stage.includes('pneumatics-v6.js?v=AIRCON-FCOM-0001'));
 assert.ok(stage.includes('overhead-bridge.js?v=AIRCON-NATIVE-P5-0002'));
-assert.ok(unified.includes('aircon-fcom-unified-v1.js?v=AIRCON-NATIVE-P5-0002'));
+assert.ok(unified.includes('aircon-fcom-unified-v1.js?v=AIRCON-OVHT-DELAY-0003'));
 assert.ok(unified.includes('sixpack-live-integration-v1.js?v=AIRCON-FCOM-0001'));
 assert.ok(read('assembly.json').includes('aircon=NATIVE-P5-0002'));
 assert.ok(e.includes('"id":"aircon-ovht-test"'),'Actual OH21 recessed OVHT pushbutton retained');
 assert.ok(e.includes('"id":"trip-reset"'),'Actual OH21 recessed TRIP RESET retained');
 assert.ok(e.includes("setPointerCapture(e.pointerId)"),'P5 OVHT TEST is push and hold');
 assert.ok(e.includes("cap.addEventListener('blur'"),'Original cap ends the test on blur');
-assert.ok(p.includes("durationMs>=5000"),'Five seconds is verification, not activation delay');
+assert.ok(p.includes("onQualified:()=>"),'Only full five-second hold may drive WING BODY lights');
+assert.ok(p.includes("onReleased:()=>"),'Release clears qualified test');
+assert.ok(unified.includes('aircon-ovht-hold-v1.js?v=AIRCON-OVHT-DELAY-0003'));
 assert.ok(e.includes("ring.className='b737-recess-unit'"),'Photo-recessed native cap preserved');
 assert.ok(e.includes("send(item.id,next,item.quality)"),'Original hardware publishes both edges');
 assert.ok(e.includes("kind:'recessed-button'"),'Real recessed button event is authoritative');
@@ -82,4 +84,4 @@ assert.equal(con.snapshot().frames.bleedTrip1,'OFF');
 for(const [id,src] of [['OH21 actual recessed hardware',e],['ECU parent adapter',p],
  ['Overhead bridge',bridge],['Six Pack',sixpack],['OH lamp controller',lightModel]])
  new (require('node:vm').Script)(src,{filename:id});
-console.log('PASS: FCOM P5 physical TEST and RESET, live source overwrite, 400/300 selection, sixpack recall and power gates.');
+console.log('PASS: approved physical P5 qualification core, real ECU WING BODY lamps, RESET, 400/300 variants and sixpack integration.');
