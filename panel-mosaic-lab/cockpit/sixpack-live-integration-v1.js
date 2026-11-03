@@ -1,4 +1,4 @@
-/* SIXPACK-LIVE-0001: read-only adapter from existing Unified system outputs.
+/* SIXPACK-LIVE-0002: read-only adapter from existing Unified system outputs.
  * Never creates a second electrical/overhead/fire engine or infers unobserved alarms.
  * Training approximation: uses verified illuminated category-related OH annunciators.
  */
@@ -12,7 +12,7 @@
  const groups=Object.freeze({
   'CAPT.FLT CONT':['flight-pressure-a','flight-pressure-b','stby-pressure','stby-quantity','feel-diff','speed-trim','mach-trim','auto-slat','yaw-damper'],
   'CAPT.ELEC':['standby-power-off','transferBusOff1','transferBusOff2','busOff1','busOff2','gen-off-bus-1','gen-off-bus-2','apu-gen-off-bus'],
-  'CAPT.IRS':['irs-l-on-dc','irs-r-on-dc','irs-l-fault','irs-r-fault','irs-l-dc-fail','irs-r-dc-fail'],
+  'CAPT.IRS':['irs-l-fault','irs-r-fault','irs-l-dc-fail','irs-r-dc-fail'],
   'CAPT.APU':['apu-high-oil-temp','apu-overspeed','apu-low-oil-quantity'],
   'CAPT.FUEL':['filter-1','filter-2','fuel-center-l','fuel-center-r','fuel-1-aft','fuel-1-fwd','fuel-2-fwd','fuel-2-aft'],
   'CAPT.OVHT/DET':[],
@@ -36,7 +36,7 @@
   const result=empty(),state=packet?.state||packet;
   if(!state||typeof state!=='object'||!state.faults)return result;
   // Only explicit fault outputs; an unpowered bus or stopped generator is not a failure.
-  for(const id of ['GEN1_FAILED','GEN2_FAILED','TRANSFER_BUS_1_FAILED','TRANSFER_BUS_2_FAILED','TR1_FAILED','TR2_FAILED','TR3_FAILED'])
+  for(const id of ['GEN1_FAILED','GEN2_FAILED','TRANSFER1_RELAY_FAILED','TRANSFER2_RELAY_FAILED','TR1_FAILED','TR2_FAILED','TR3_FAILED','STATIC_INVERTER_FAILED'])
    if(state.faults[id]===true)result['CAPT.ELEC'].push('ELEC:'+id);
   if(state.faults.APU_FAILED===true)result['CAPT.APU'].push('ELEC:APU_FAILED');
   return result;
@@ -46,6 +46,33 @@
   if(!lamps||typeof lamps!=='object')return out;
   for(const id of ['ENG1_OVERHEAT','ENG2_OVERHEAT','APU_DET_INOP'])
    if(lamps[id]===true)out['CAPT.OVHT/DET'].push('FIRE:'+id);
+  return out;
+ }
+
+ function irs(packet){
+  if(!packet?.units||!['L','R'].every(side=>packet.units[side]))return null;
+  const out=empty();
+  for(const side of ['L','R']){
+   const u=packet.units[side];if(u.powered!==true)continue;
+   if(u.faultLamp===true)out['CAPT.IRS'].push('IRS:'+side+':FAULT');
+   if(u.alignLampFlashing===true&&u.alignStatusCode!==null&&u.alignStatusCode!==undefined)
+    out['CAPT.IRS'].push('IRS:'+side+':ALIGN_BLOCK_'+u.alignStatusCode);
+  }
+  return out;
+ }
+ function windowHeat(packet){
+  if(packet?.schema!=='B737_WINDOW_HEAT_V1_RESULT'||!packet.channels)return null;
+  const out=empty();
+  for(const [id,c]of Object.entries(packet.channels))
+   if(c?.overheatOn===true&&c.indicationPowered===true)out['FO.ANTI ICE'].push('WH:'+id+':OVERHEAT');
+  return out;
+ }
+ function tatProbe(packet){
+  if(!packet||typeof packet!=='object'||!packet.faults||typeof packet.amberOn!=='boolean')return null;
+  const out=empty();
+  // TEMP PROBE amber with no requested heater is a normal ground indication.
+  if(packet.lampPower===true&&packet.heaterRequested===true&&packet.amberOn===true)
+   out['FO.ANTI ICE'].push('TAT:HEAT_DEMAND_UNSATISFIED');
   return out;
  }
  function merge(sourceStates){
@@ -60,8 +87,15 @@
   return out;
  }
  function install(win){
-  const sources={overhead:empty(),electrical:empty(),fire:empty()};
-  let last='',updates=0,activeSource={overhead:false,electrical:false,fire:false};
+  const sources={overhead:empty(),electrical:empty(),fire:empty(),irs:empty(),windowHeat:empty(),tatProbe:empty()};
+  let last='',updates=0,activeSource={overhead:false,electrical:false,fire:false,irs:false,windowHeat:false,tatProbe:false};
+  function resolved(){
+   const filtered=empty();
+   for(const [k,v]of Object.entries(sources.overhead))filtered[k]=[...v];
+   if(activeSource.irs)filtered['CAPT.IRS']=[];
+   if(activeSource.windowHeat)filtered['FO.ANTI ICE']=filtered['FO.ANTI ICE'].filter(id=>!id.startsWith('OH:window-'));
+   return merge({...sources,overhead:filtered});
+  }
   const fireWarningInputs={wheelWell:false,external:false};
   function fireWarningFrom(source,active){
    if(typeof active!=='boolean')return;
@@ -69,12 +103,12 @@
    win.B737SixPack?.setFireWarning?.(Object.values(fireWarningInputs).some(Boolean),'UNIFIED_FIRE_WARNING');
   }
   function publish(){
-   const combined=merge(sources),signature=JSON.stringify(combined);
+   const combined=resolved(),signature=JSON.stringify(combined);
    if(signature===last)return;
    last=signature;updates++;
    win.B737SixPack?.setLiveConditions?.(combined,'UNIFIED_SYSTEMS');
    win.dispatchEvent(new win.CustomEvent('b737:sixpack-live-status',{
-    detail:{version:'SIXPACK-LIVE-0001',updates,sources:{...activeSource},active:Object.fromEntries(Object.entries(combined).map(([k,v])=>[k,v.length]))}
+    detail:{version:'SIXPACK-LIVE-0002',updates,sources:{...activeSource},active:Object.fromEntries(Object.entries(combined).map(([k,v])=>[k,v.length]))}
    }));
   }
   function update(kind,data){
@@ -88,6 +122,9 @@
    if(d?.type==='b737:cockpit-overhead'&&d.kind==='state')update('overhead',overhead(d));
   });
   win.addEventListener('b737:electrical-v7-state',e=>update('electrical',electrical(e.detail)));
+  win.addEventListener('b737:irs-trainer-state',e=>update('irs',irs(e.detail)));
+  win.addEventListener('b737:window-heat-annunciations',()=>update('windowHeat',windowHeat(win.B737WindowHeatUnifiedV1?.getOutput?.())));
+  win.addEventListener('b737:tat-probe-output',e=>update('tatProbe',tatProbe(e.detail)));
   win.addEventListener('b737:fire-protection-state',e=>{
    update('fire',fire(e.detail));
    fireWarningFrom('wheelWell',e.detail?.indications?.WHEEL_WELL);
@@ -106,11 +143,15 @@
    fireWarningFrom('external',e.detail?.active);
   });
   win.B737SixPackLiveV1=Object.freeze({
-   version:'SIXPACK-LIVE-0001',deriveOverhead:overhead,deriveElectrical:electrical,deriveFire:fire,
-   snapshot:()=>({sources:{...activeSource},reasons:merge(sources),updates}),
+   version:'SIXPACK-LIVE-0002',deriveOverhead:overhead,deriveElectrical:electrical,deriveFire:fire,
+    deriveIRS:irs,deriveWindowHeat:windowHeat,deriveTAT:tatProbe,
+   snapshot:()=>({sources:{...activeSource},reasons:resolved(),updates}),
    refresh:()=>{
     const power=win.B737UnifiedElectricalLive?.snapshot?.();
     if(power?.faults)update('electrical',electrical(power));
+    const i=win.B737IRSTrainerUnified?.getState?.();if(i?.units)update('irs',irs(i));
+    const w=win.B737WindowHeatUnifiedV1?.getOutput?.();if(w?.channels)update('windowHeat',windowHeat(w));
+    const t=win.B737TATProbeUnifiedV1?.getOutput?.();if(t?.faults)update('tatProbe',tatProbe(t));
     const f=win.B737UnifiedFireLights?.systemIndications?.()||win.B737UnifiedFireLights?.indications?.();
     if(f){update('fire',fire(f));fireWarningFrom('wheelWell',f.WHEEL_WELL);}
     publish();
@@ -120,5 +161,5 @@
   win.B737SixPackLiveV1.refresh();
   return win.B737SixPackLiveV1;
  }
- return Object.freeze({groups,empty,overhead,electrical,fire,merge,install});
+ return Object.freeze({groups,empty,overhead,electrical,fire,irs,windowHeat,tatProbe,merge,install});
 });
