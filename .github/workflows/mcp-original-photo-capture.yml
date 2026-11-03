@@ -27,3 +27,42 @@ jobs:
           print(base64.b64encode(buf.getvalue()).decode("ascii"))
           print("MCP_ORIGINAL_JPEG_END")
           PY
+
+      - name: Inspect exact dark apertures in ORIGINAL MCP photo
+        run: |
+          python3 - <<'PY'
+          from PIL import Image
+          from collections import deque
+          import json
+          p="panel-mosaic-lab/assets/locked/2026-10-23/B737_MCP_Blank_Panel.png"
+          im=Image.open(p).convert("RGB")
+          w,h=im.size
+          src=im.load()
+          dark=bytearray(w*h)
+          for y in range(55,h-20):
+            for x in range(15,w-15):
+              r,g,b=src[x,y]
+              if max(r,g,b)<64 and (max(r,g,b)-min(r,g,b))<44:
+                dark[y*w+x]=1
+          components=[]
+          for y in range(55,h-20):
+            for x in range(15,w-15):
+              pos=y*w+x
+              if not dark[pos]:continue
+              q=[pos];dark[pos]=0
+              area=0;minx=maxx=x;miny=maxy=y
+              while q:
+                pidx=q.pop()
+                yy,xx=divmod(pidx,w)
+                area+=1;minx=min(minx,xx);maxx=max(maxx,xx);miny=min(miny,yy);maxy=max(maxy,yy)
+                for nxt in (pidx-1,pidx+1,pidx-w,pidx+w):
+                  if 0<=nxt<w*h and dark[nxt]:
+                    dark[nxt]=0;q.append(nxt)
+              bw=maxx-minx+1;bh=maxy-miny+1
+              if area>100 and bw>12 and bh>9:
+                components.append({"x":minx,"y":miny,"w":bw,"h":bh,"area":area})
+          components.sort(key=lambda c:(c["y"]//45,c["x"]))
+          print("MCP_APERTURE_COMPONENTS_START")
+          print(json.dumps(components,separators=(",",":")))
+          print("MCP_APERTURE_COMPONENTS_END")
+          PY
