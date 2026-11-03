@@ -49,13 +49,14 @@ test('Embedded ANTI ICE test lab references the EXACT same overhead-stage.html r
  assert.equal(h.api.getTile().w,493);
  assert.equal(h.api.getTile().h,508);
 });
-test('Triple tap fires only on physical OH15 tile, no exterior triple tap',()=>{
+test('Old tile-wide triple-tap listener is disabled; OH-LABS handles physical entry',()=>{
  const h=setup();
- h.tap(30,30);h.tap(30,30);h.tap(30,30);
- assert.equal(h.body.child,undefined);
- h.tap();h.tap();
- assert.equal(h.body.child,undefined);
- h.tap();assert.equal(h.body.child.open,true);
+ assert.equal(h.main.contentDocument.listeners.pointerdown,undefined);
+ assert.equal(h.main.contentDocument.listeners.pointerup,undefined);
+ assert.equal(h.body.child,undefined,'legacy OH15 dialog remains closed without shared dispatcher');
+ assert.equal(typeof h.api.open,'function','direct API remains intact');
+ h.api.open();
+ assert.equal(h.body.child.open,true);
 });
 test('Scenarios include all real Window Heat channels / all documented failure types / TAT CB',()=>{
  const h=setup(),ids=h.api.scenarioIds;
