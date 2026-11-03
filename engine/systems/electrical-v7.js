@@ -22,7 +22,16 @@
    faults:Object.fromEntries(FAULTS.map(k=>[k,false])),events:[]};
  }
  function apply(s,cmd){if(!s||s.schema!=='b737-electrical/7')throw Error('Invalid Electrical V7 state');if(!cmd||typeof cmd.type!=='string')throw Error('Command required');if(cmd.type==='RESET')return initialState();const n=cpy(s),k=cmd.key,v=cmd.value;
-   if(cmd.type==='CONTROL'){if(!Object.hasOwn(CONTROL_KEYS,k))throw Error('Unknown electrical control');const type=CONTROL_KEYS[k];if((type==='boolean'&&typeof v!=='boolean')||(Array.isArray(type)&&!type.includes(v)))throw Error('Invalid electrical control value');n.config[k]=v;if(k==='batterySwitch'&&!v){n.source[1]=n.source[1]==='EXT'?null:n.source[1];n.source[2]=n.source[2]==='EXT'?null:n.source[2];}}
+   if(cmd.type==='CONTROL'){if(!Object.hasOwn(CONTROL_KEYS,k))throw Error('Unknown electrical control');const type=CONTROL_KEYS[k];if((type==='boolean'&&typeof v!=='boolean')||(Array.isArray(type)&&!type.includes(v)))throw Error('Invalid electrical control value');n.config[k]=v;
+     // FCOM Classic 6.20.2: external contactors drop on BAT OFF,
+     // disconnected GPU cable, bad-quality supply or loss of ground status.
+     // Restoring any of these conditions must NOT auto-select EXT; a new
+     // momentary GRD PWR ON command is needed.
+     if((k==='batterySwitch'&&!v)||(k==='groundPowerAttached'&&!v)||
+        (k==='groundPowerQualityGood'&&!v)||(k==='onGround'&&!v)){
+      for(const side of [1,2])if(n.source[side]==='EXT')n.source[side]=null;
+      if(k==='groundPowerAttached'&&!v)n.config.groundServiceSelected=false;
+     }}
    else if(cmd.type==='SELECT_SOURCE'){
      if(!['GEN1','GEN2','APU','EXT','OFF'].includes(cmd.source))throw Error('Unknown source');
      if(![1,2].includes(cmd.side))throw Error('Invalid source side');
