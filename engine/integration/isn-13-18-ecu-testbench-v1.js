@@ -174,6 +174,36 @@ class Testbench{
   this.chain.event({id:'apu-start',kind:'toggle',next:'START'});
   this.apuStartMs=this.chain.get().phase.apu==='INLET_DOOR'?this.elapsedMs:null;
   this.log('APU_START_REQUEST');return this.get();}
+ // Explicit instructor initial condition, only after the real battery/fire
+ // prerequisites and APU fuel path are verified by the single live ISN ECU.
+ // Does not select an AC bus or bypass subsequent physical OFF / fuel failures.
+ instructorPresetAPUReady({instructor=false}={}){
+  if(instructor!==true)throw Error('Explicit instructor APU ready preset required');
+  if(this.chain.phase.apu==='READY')return this.get();
+  if(this.chain.phase.apu!=='OFF')throw Error('APU preset requires initial OFF phase');
+  const fuel=this.core.apuFuelPath();
+  if(fuel.available!==true)throw Error('APU preset requires available fuel path');
+  this.chain.startAPU();
+  if(this.chain.phase.apu!=='INLET_DOOR')
+   throw Error(this.chain.lastError||'APU start prerequisites not satisfied');
+  this.chain.cancel('apu'); // no 85-second UI startup delay or stale start jobs
+  this.chain.feedback('apu','inletDoorOpen',true);
+  this.chain.feedback('apu','starterEngaged',false);
+  this.chain.obs('apu',true);
+  this.chain.feedback('apu','genOffBusLight',true);
+  this.chain.phase.apu='READY';
+  this.apuStartMs=this.elapsedMs-this.chain.timing.apuReadyMs;
+  this.apuOilPressurePsi=CONFIG.apuOilNominalPsi;
+  const snap=this.chain.get();
+  const load=LoadDynamics.demand({selectedSources:snap.selectedSources,
+   switches:this.apuConsumers,bleedValveOpen:snap.bleed.apuBleedValveOpen,
+   pumpSnapshot:this.start.core.pack.getLive(),physicalSourceAmpsA:this.apuPhysicalAmpsA});
+  this.apuLoadState=LoadDynamics.step(LoadDynamics.initial(),load,60000);
+  this.apuThermalEgtC=this.apuLoadState.egtC;
+  this.core.refreshFuelDelivery();
+  this.log('INSTRUCTOR_APU_READY_PRESET',{fuelTank:fuel.tank});
+  return this.get();
+ }
  selectGenerator(source,side){if(![1,2].includes(side)||!['APU','GEN1','GEN2','OFF'].includes(source))throw Error('Invalid generator selection');
   if(this.apuFaults.generatorFailure&&source==='APU')throw Error('Injected APU generator failure');
    if(source==='APU'&&!this.get().apu.generator.ready)throw Error('APU generator not yet at rated speed');
