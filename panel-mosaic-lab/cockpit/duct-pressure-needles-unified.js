@@ -8,7 +8,25 @@
  const sprites=Object.fromEntries(model.needles.map(needle=>[needle.id,new URL('./'+needle.asset+'?v=DPN-0005-LR',document.baseURI).href]));
  const state=Object.fromEntries(model.needles.map(needle=>[needle.id,needle.initialPsi]));
  const blades=new Map(),inputs=new Map(),outputs=new Map();
+ const target=Object.fromEntries(model.needles.map(needle=>[needle.id,needle.initialPsi]));
+ let motion=live.initialDynamics(state);
+ let animationFrame=0,lastFrameAt=null;
  let frame=null,layer=null,manualOverride=false,source='INITIAL_ZERO',lastLive=null,powered=true,status=null;
+ function animate(time){
+  animationFrame=0;
+  const dt=lastFrameAt===null?16:Math.min(80,Math.max(0,time-lastFrameAt));
+  lastFrameAt=time;
+  motion=live.advanceDynamics(motion,target,dt);
+  for(const id of ['L','R']){
+   state[id]=motion[id].value;
+   paint(id);
+  }
+  if(!live.settled(motion,target))animationFrame=requestAnimationFrame(animate);
+  else lastFrameAt=null;
+ }
+ function scheduleMotion(){
+  if(!animationFrame)animationFrame=requestAnimationFrame(animate);
+ }
  function svg(doc,parent,tag,attrs={}){
   const node=doc.createElementNS(ns,tag);
   for(const [key,value]of Object.entries(attrs))node.setAttribute(key,String(value));
@@ -34,8 +52,9 @@
   for(const id of ['L','R']){
    if(!Object.prototype.hasOwnProperty.call(values||{},id)||values[id]===null)continue;
    const next=model.psi(id,values[id]);
-   if(Math.abs(state[id]-next)>0.049){state[id]=next;paint(id);changed=true;}
+   if(Math.abs(target[id]-next)>0.005){target[id]=next;changed=true;}
   }
+  if(changed)scheduleMotion();
   source=origin;paintStatus();
   return changed;
  }
@@ -74,7 +93,7 @@
      needle.tipRadius/220+') translate(-256 -256)'
    });
    const blade=svg(doc,assembly,'g',{'data-duct-pressure-blade':needle.id});
-   Object.assign(blade.style,{transformOrigin:'256px 256px',transition:'transform 460ms ease-out',
+   Object.assign(blade.style,{transformOrigin:'256px 256px',transition:'none',
     willChange:'transform'});
    svg(doc,blade,'image',{href:sprites[needle.id],x:0,y:0,width:512,height:512});
    blades.set(needle.id,blade);paint(needle.id);
@@ -95,7 +114,7 @@
   const section=document.createElement('section');section.id='unifiedDuctPressureNeedles';
   const title=document.createElement('h2');title.textContent='DUCT PRESSURE · L / R';section.append(title);
   const note=document.createElement('p');note.className='muted';
-  note.textContent='OH21 · 0–100 PSI · هر ۵ PSI یک گرید، هر ۲۰ PSI گرید اصلی. در حالت AUTO، فشار بر اساس وضعیت موتور و BLEED به صورت تخمینی محاسبه می‌شود؛ سنسور واقعی اولویت دارد.';
+  note.textContent='OH21 · 0–100 PSI · حرکت نرم و محدودشدهٔ عقربه · مصرف منطقی PACK / STARTER / TAI با محاسبهٔ فشار تخمینی؛ سنسور واقعی اولویت دارد.';
   section.append(note);
   status=document.createElement('p');status.className='muted';status.setAttribute('role','status');section.append(status);
   for(const needle of model.needles){
@@ -126,7 +145,8 @@
   }catch(error){console.error('DUCT PRESSURE estimate unavailable',error);}
  }
  window.B737UnifiedDuctPressureNeedles=Object.freeze({
-  getValues:()=>({...state}),getState:()=>({values:{...state},source,powered,manualOverride,
+  getValues:()=>({...state}),getState:()=>({values:{...state},target:{...target},
+   velocities:{L:motion.L.velocity,R:motion.R.velocity},source,powered,manualOverride,
    scale:model.scale,lastLive}),
   setPsi,setValues,resumeLive:auto
  });
