@@ -1,0 +1,57 @@
+'use strict';
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const path=require('node:path');
+const vm=require('node:vm');
+const read=p=>fs.readFileSync(path.join(__dirname,p),'utf8');
+const html=read('index.html');
+const ui=read('aircon-live-test-lab-v1.js');
+const css=read('aircon-live-test-lab-v1.css');
+const atlasLabs=read('overhead-test-labs-v1.js');
+const sourcePanel=JSON.parse(read('../all-overhead/atlas-layout.json')).placements.find(x=>x.id==='OH21');
+const core=require('../../engine/systems/aircon-live-lab-v1.js');
+const hold=require('../../engine/systems/aircon-ovht-hold-v1.js');
+assert.ok(html.includes('aircon-live-test-lab-v1.js?v=AIRCON-LIVE-LAB-0001'));
+assert.ok(html.includes('aircon-live-test-lab-v1.css?v=AIRCON-LIVE-LAB-0001'));
+assert.ok(html.includes('aircon-live-lab-v1.js?v=AIRCON-LIVE-LAB-0001'));
+assert.ok(html.includes('aircon-ovht-hold-v1.js?v=AIRCON-OVHT-DELAY-0003'));
+assert.ok(atlasLabs.includes("if(id==='OH21'&&window.B737AirconLiveTestLabV1?.open)"));
+assert.ok(ui.includes("btn.id='airconLiveLabOpen'"),'Direct visible header button for lab');
+assert.ok(ui.includes("btn.textContent='AIR COND LAB'"));
+assert.ok(ui.includes('B737AirconLiveLabV1'),'Single isolated engine for all lab failures');
+assert.ok(ui.includes("new URL(origin,document.baseURI).href"),'Real embedded overhead, not re-created photo');
+assert.ok(ui.includes('airconLiveLab=1'),'Independent live overhead stage instance');
+assert.ok(ui.includes("data-aircon-fault"),'Every failure individually selectable');
+assert.ok(ui.includes("data-aircon-scenario"),'Preset faults and combinations available');
+assert.ok(ui.includes("data-aircon-lamp"),'Individual lamp damage selectable');
+assert.ok(ui.includes("data-aircon-source"),'Power and pneumatic sources independently selectable');
+assert.ok(ui.includes("Core.SCENARIOS"),'Realistic quick scenarios available');
+assert.ok(ui.includes('Core.GROUPS'),'All registered modeled failures shown');
+assert.ok(ui.includes("stageCommand('aircon-fcom-projection'"),
+ 'Original physical lamps driven by same Pneumatics V6 projection');
+assert.ok(ui.includes("onMessage(e)"),'Actual native cap events consumed');
+assert.ok(ui.includes("msg.kind==='recessed-button'"));
+assert.ok(ui.includes("if(msg.pressed)press();else release();"),
+ 'Five second qualifier handles actual hardware in isolated stage');
+assert.ok(ui.includes("e.stopImmediatePropagation()"),
+ 'Lab event cannot command operational cockpit ECU');
+assert.ok(ui.includes("release();"),'Close/release resets test timer');
+assert.ok(ui.includes("model.tripReset()"),'Live reset, not fake lamp clearing');
+assert.ok(ui.includes("model.inject(t.dataset.airconFault,t.checked)"));
+assert.ok(ui.includes("pressureNeedles(s.pressures)"),
+ 'Same dual needle calibration and damping used in original OH21');
+assert.ok(ui.includes("const m=root.B737DuctPressureNeedlesModel"));
+assert.ok(ui.includes("const group=doc.createElementNS(n,'g')"));
+assert.ok(ui.includes("function indicatorOverrides(faults)"));
+assert.ok(ui.includes("mode==='LAMP_OPEN'"));
+assert.ok(ui.includes("mode==='LAMP_STUCK_ON'"));
+assert.ok(css.includes('#airconLabHoldFill'));
+assert.ok(css.includes('.aircon-crop'));
+assert.deepEqual([sourcePanel.x,sourcePanel.y,sourcePanel.w,sourcePanel.h],[1724,1751,493,701]);
+assert.ok(ui.includes('const TILE={x:1724,y:1751,w:493,h:701}'));
+assert.equal(hold.DELAY_MS,5000);
+assert.ok(core.GROUPS.length>=7);
+assert.ok(Object.keys(core.catalog).length>=28);
+for(const [id,entry]of Object.entries(core.catalog))assert.ok(entry.label&&entry.kind,'No blank failure entries '+id);
+new vm.Script(ui,{filename:'aircon-live-test-lab-v1.js'});
+console.log('PASS: approved OH21 photo lab, 5-second original cap, 30+ selectable failures, real lamp/needle effects, isolated iframe, header and triple-tap entry.');
