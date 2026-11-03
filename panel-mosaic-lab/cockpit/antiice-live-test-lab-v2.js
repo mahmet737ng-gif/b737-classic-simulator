@@ -334,7 +334,9 @@ function installTripleTap(){
  bind();frame?.addEventListener('load',bind);
  setInterval(bind,500);
 }
-function boot(){installTripleTap();}
+function boot(){/* Shared OH-LABS-0001 owns all three-tap entry gestures.
+ * The old tile-wide recognizer was not target- or same-spot-safe and is
+ * intentionally disabled; direct API open() remains available. */}
 // Events from the isolated overhead iframe must not pan/zoom or select
 // controls on the main Unified Cockpit view.
 window.addEventListener('message',e=>{
