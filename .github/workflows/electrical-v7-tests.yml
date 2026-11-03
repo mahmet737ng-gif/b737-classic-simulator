@@ -3,6 +3,8 @@ on:
   push:
     paths:
       - 'engine/systems/electrical-v7.js'
+      - 'engine/systems/ground-power-header-policy-v1.js'
+      - 'engine/systems/ground-power-header-policy-v1.test.cjs'
       - 'engine/systems/electrical-consumers-v7.js'
       - 'tests/electrical-v7.test.cjs'
       - 'electrical-lab/**'
@@ -25,4 +27,5 @@ jobs:
       - run: node --check engine/systems/electrical-v7.js
       - run: node --check engine/systems/electrical-consumers-v7.js
       - run: node --check electrical-lab/app.js
+      - run: node engine/systems/ground-power-header-policy-v1.test.cjs
       - run: node tests/electrical-v7.test.cjs
