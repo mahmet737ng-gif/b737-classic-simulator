@@ -29,7 +29,7 @@ for(const needle of model.needles){
  assert.equal(needle.tipRadius,148);
  assert.match(asset,/viewBox="0 0 512 512"/);
  assert.match(asset,new RegExp('<title>DUCT PRESSURE '+needle.id+'<\\/title>'));
- const letters=asset.match(/<text[^>]*x="256"[^>]*y="217"[^>]*>([LR])<\\/text>/g)||[];
+ const letters=asset.match(new RegExp('<text[^>]*x="256"[^>]*y="217"[^>]*>([LR])</text>','g'))||[];
  assert.equal(letters.length,1,'Exactly one painted L/R identifier near the pivot');
  assert.ok(letters[0].endsWith('>'+needle.id+'</text>'),'Correct letter for each pointer');
  assert.match(asset,/fill="#17191a"/,'Dark labeled proximal section');
