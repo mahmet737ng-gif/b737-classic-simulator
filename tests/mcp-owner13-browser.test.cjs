@@ -32,8 +32,8 @@ const out='/tmp/b737-owner13';fs.mkdirSync(out,{recursive:true});
   });
   assert.equal(v.report.atlasLoaded,true);
   for(const row of v.report.report){assert.equal(row.status,'DOM_CENTER_PASS',JSON.stringify(row));assert.ok(row.centerErrorPx<=0.1);}
-  assert.equal(v.report.report.length,24);
-  assert.ok(v.count>=24,'native visual components missing');
+  assert.equal(v.report.report.length,25);
+  assert.ok(v.count>=25,'native visual components missing');
   assert.equal(errors.length,0,errors.join('\n'));
   await page.locator('[data-piece="mcp"]').screenshot({path:path.join(out,'mcp-owner13-before.png'),animations:'disabled'});
   for(const pair of [['AT_ARM','ARM'],['FD_LEFT','ON'],['FD_RIGHT','ON']]){
@@ -59,7 +59,7 @@ const out='/tmp/b737-owner13';fs.mkdirSync(out,{recursive:true});
   await page.locator('[data-piece="mcp"]').screenshot({path:path.join(out,'mcp-owner13-armed.png'),animations:'disabled'});
   fs.writeFileSync(path.join(out,'audit.json'),JSON.stringify({report:v.report,states,errors},null,2));
   console.log('MCP_OWNER13_BROWSER_PASS',JSON.stringify({controls:v.report.report.length,pixelDomTolerance:0.1,
-   visualHoleCenterValidation:'UNVERIFIED',sourcePhotoPreviewResolution:[192,192],photographicModeButtons:13}));
+   visualHoleCenterValidation:'UNVERIFIED',sourcePhotoPreviewResolution:[192,192],photographicModeButtons:14}));
   await page.close();
  }finally{await browser.close();}
 })().catch(e=>{console.error(e.stack||String(e));process.exitCode=1;});
