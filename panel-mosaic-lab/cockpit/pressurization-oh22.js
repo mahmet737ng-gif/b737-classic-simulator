@@ -16,7 +16,7 @@
  const approvedLamps=Object.freeze({'auto-fail':'AUTO_FAIL','off-sched':'OFF_SCHED_DESCENT','standby':'STANDBY_GREEN','manual':'MANUAL_GREEN'});
 
  let system='DCPCS',layer=null,plate=null,received=null,fallback=null,controls=new Map(),lamps=new Map(),digits=new Map(),caption=null,gauge=null;
- let activeSpring=null,holdTimer=null,observer=null,hornOverlay=null,detentHits=[];
+ let activeSpring=null,holdTimer=null,observer=null,hornOverlay=null,detentHits=[],lastSixpackPressure='';
  function notify(kind,additional={}){if(parent!==window)parent.postMessage({type:'b737:cockpit-overhead',kind,system,...additional},location.origin);}
  function savedSystem(){try{return JSON.parse(localStorage.getItem(PROFILE_KEY)||'null')?.pressurization==='CPCS'?'CPCS':'DCPCS';}catch(_){return 'DCPCS';}}
  function mount(){
@@ -228,6 +228,12 @@
  function accept(message){
    if(message.system!==system||!message.output||!message.state)return;
    received={state:message.state,output:message.output};
+   // Read-only feed; never treat the visual lamp test as a pressure malfunction.
+   const coreLamps=message.output.lamps||{};
+   const packet={system,lamps:{autoFail:coreLamps.autoFail===true,
+    offSchedDescent:coreLamps.offSchedDescent===true}};
+   const signature=JSON.stringify(packet);
+   if(signature!==lastSixpackPressure){lastSixpackPressure=signature;notify('pressurization-live-output',packet);}
    paint();
  }
  function paint(){
