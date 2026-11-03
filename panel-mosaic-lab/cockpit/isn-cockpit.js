@@ -225,6 +225,14 @@
   }
   window.dispatchEvent(new CustomEvent('b737:isn-start-indications',{detail:indication}));
   window.dispatchEvent(new CustomEvent('b737:unified-ecu-observation',{detail:live}));
+  // Both B737-300/500 and B737-400 use the same dual duct pressure indicator.
+  // Observe the one existing ECU/pneumatic state owner; do not create a second plant.
+  const ductSensors=startSession.core.pneumaticState?.inputs||{};
+  window.dispatchEvent(new CustomEvent('b737:duct-pressure-live-inputs',{detail:{
+   ecu:live,bleed:s.bleed,controls:s.controls,
+   sensors:{L:ductSensors.ductLeftPsi,R:ductSensors.ductRightPsi},
+   gaugePowered:ductSensors.ductGaugeAcPower!==false
+  }}));
   const levers={engine1:s.observations.engine1.feedback.fuelStartLever.value,
    engine2:s.observations.engine2.feedback.fuelStartLever.value};
   if(document.body.classList.contains('side-open'))byId('isnStartLeverStatus').textContent='ENG 1 '+levers.engine1+' · ENG 2 '+levers.engine2;
