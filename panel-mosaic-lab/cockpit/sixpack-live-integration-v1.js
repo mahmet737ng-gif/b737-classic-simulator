@@ -62,6 +62,12 @@
  function install(win){
   const sources={overhead:empty(),electrical:empty(),fire:empty()};
   let last='',updates=0,activeSource={overhead:false,electrical:false,fire:false};
+  const fireWarningInputs={wheelWell:false,external:false};
+  function fireWarningFrom(source,active){
+   if(typeof active!=='boolean')return;
+   fireWarningInputs[source]=active;
+   win.B737SixPack?.setFireWarning?.(Object.values(fireWarningInputs).some(Boolean),'UNIFIED_FIRE_WARNING');
+  }
   function publish(){
    const combined=merge(sources),signature=JSON.stringify(combined);
    if(signature===last)return;
@@ -82,12 +88,22 @@
    if(d?.type==='b737:cockpit-overhead'&&d.kind==='state')update('overhead',overhead(d));
   });
   win.addEventListener('b737:electrical-v7-state',e=>update('electrical',electrical(e.detail)));
-  win.addEventListener('b737:fire-protection-state',e=>update('fire',fire(e.detail)));
-  win.addEventListener('b737:unified-fire-lamps-mounted',()=>update('fire',fire(win.B737UnifiedFireLights?.indications?.())));
+  win.addEventListener('b737:fire-protection-state',e=>{
+   update('fire',fire(e.detail));
+   fireWarningFrom('wheelWell',e.detail?.indications?.WHEEL_WELL);
+  });
+  win.addEventListener('b737:unified-fire-indicators-state',e=>{
+   update('fire',fire(e.detail));
+   fireWarningFrom('wheelWell',e.detail?.indications?.WHEEL_WELL);
+  });
+  win.addEventListener('b737:unified-fire-lamps-mounted',()=>{
+   const lights=win.B737UnifiedFireLights?.systemIndications?.();
+   if(lights){update('fire',fire(lights));fireWarningFrom('wheelWell',lights.WHEEL_WELL);}
+  });
   // Live FIRE WARN is accepted only from an explicit warning signal, not
   // from the engine OVERHEAT lens, APU bottle indicators, or generic faults.
   win.addEventListener('b737:fire-warning-state',e=>{
-   if(typeof e.detail?.active==='boolean')win.B737SixPack?.setFireWarning?.(e.detail.active,'UNIFIED_FIRE_WARNING');
+   fireWarningFrom('external',e.detail?.active);
   });
   win.B737SixPackLiveV1=Object.freeze({
    version:'SIXPACK-LIVE-0001',deriveOverhead:overhead,deriveElectrical:electrical,deriveFire:fire,
@@ -95,8 +111,8 @@
    refresh:()=>{
     const power=win.B737UnifiedElectricalLive?.snapshot?.();
     if(power?.faults)update('electrical',electrical(power));
-    const f=win.B737UnifiedFireLights?.indications?.();
-    if(f)update('fire',fire(f));
+    const f=win.B737UnifiedFireLights?.systemIndications?.()||win.B737UnifiedFireLights?.indications?.();
+    if(f){update('fire',fire(f));fireWarningFrom('wheelWell',f.WHEEL_WELL);}
     publish();
    }
   });
