@@ -26,7 +26,7 @@ function geometry(name){
 }
 const displays=geometry("displays"),lamps=geometry("lamps"),knobs=geometry("knobs");
 assert.equal(displays.length,6);
-assert.equal(lamps.length,14);
+assert.equal(lamps.length,15);
 assert.equal(knobs.length,5);
 for(const item of [...displays,...lamps])assert.ok(item.x>=0&&item.y>=0&&item.x+item.w<=2172&&item.y+item.h<=433,item.id+" out of source");
 for(const item of knobs)assert.ok(item.x-item.d/2>=0&&item.y-item.d/2>=0&&item.x+item.d/2<=2172&&item.y+item.d/2<=433,item.id+" rotation outside source");
@@ -47,7 +47,7 @@ const buttonBounds={
  N1:[236,350,330,398], SPEED:[375,350,453,398], LVL_CHG:[683,350,775,398],
  HDG_SEL:[837,350,920,398], APP:[986,350,1074,398], ALT_HLD:[1167,350,1252,398],
  VS:[1298,350,1384,398], VNAV:[690,135,812,185], LNAV:[976,135,1070,185],
- CMD_A:[1615,160,1720,201], CMD_B:[1786,160,1885,201],
+ VOR_LOC:[950,205,1080,296], CMD_A:[1615,160,1720,201], CMD_B:[1786,160,1885,201],
  CWS_A:[1615,257,1720,309], CWS_B:[1786,257,1885,309],
  AT_ARM:[306,114,380,155]
 };
