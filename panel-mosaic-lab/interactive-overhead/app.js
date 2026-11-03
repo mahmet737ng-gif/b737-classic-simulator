@@ -293,6 +293,9 @@
    const [rr,lr]=await Promise.all([fetch(localURL('registry.json'),{cache:'no-store'}),fetch(localURL('../all-overhead/atlas-layout.json'),{cache:'no-store'})]);
    if(!rr.ok||!lr.ok)throw Error('Toggle metadata unavailable');registry=await rr.json();const layout=await lr.json();model.validate(registry,layout);
    let saved={};try{saved=JSON.parse(localStorage.getItem(STORAGE)||'{}')||{};}catch{}
+   // Unified embeds this same approved, spring-return APU switch.
+   // On each Unified launch show ON; standalone overhead keeps saved detents.
+   if(window.frameElement?.id==='overheadFrame')saved['apu-start']='ON';
    // Repair the previously stuck DOWN/ON value once for this release.
    // Future user OFF/ARMED/ON selections remain persisted as usual.
    const OH14_REPAIR_KEY=STORAGE+':OH14-INPUT-RELEASE-0018';
