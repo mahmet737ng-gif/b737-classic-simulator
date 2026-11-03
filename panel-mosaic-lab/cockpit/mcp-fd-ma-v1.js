@@ -1,4 +1,4 @@
-/* MCP-FD-MA-0002 | round MA lens visual revision; FCOM 4.10.13, 4.20.3.
+/* MCP-FD-MA-0003 | centered circular MA over original F/D annun hole; FCOM 4.10.13, 4.20.3.
  * Two non-clickable master FCC lamps over unmodified approved MCP artwork.
  * TRAINING ONLY - independent modes require explicit sensor/instructor evidence.
  */
@@ -10,8 +10,8 @@ if(host&&host.document){host.B737McpFDMAV1=api;api.bind(host);}
 })(typeof window!=="undefined"?window:null,function(){
 "use strict";
 const W=2172,H=433,position=Object.freeze({
- left:Object.freeze({x:203,y:250,w:46,h:46}),
- right:Object.freeze({x:1903,y:250,w:46,h:46})
+ left:Object.freeze({x:203,y:220,w:68,h:68}),
+ right:Object.freeze({x:1903,y:220,w:68,h:68})
 });
 const defaults=()=>({kind:"NORMAL",radioAltitudeFt:null,
  locCaptured:false,gsCaptured:false,fccAvailable:{left:null,right:null}});
@@ -70,7 +70,7 @@ function installStyle(){
  'border-radius:50%;border:1px solid #545b5680;box-shadow:inset 0 0 4px #000b;pointer-events:none}',
  '[data-piece="mcp"]>.mcp-fd-ma svg{display:block;width:100%;height:100%;overflow:visible}',
  '[data-piece="mcp"]>.mcp-fd-ma .mcp-fd-ma-label{fill:#f6f7f4;stroke:none;',
- 'font:700 16px Arial,Helvetica,sans-serif;letter-spacing:-.35px;paint-order:stroke fill}',
+ 'font:700 26px Arial,Helvetica,sans-serif;letter-spacing:-.6px;paint-order:stroke fill}',
  /* The lens remains black when powered. Only reflected light and white MA glow change. */
  '[data-piece="mcp"]>.mcp-fd-ma[data-on="true"]{',
  'border-color:#727d76;',
@@ -99,8 +99,8 @@ function mount(){
    const p=position[side],el=hostWindow.document.createElement("span");
    el.className="mcp-fd-ma";el.dataset.mcpMa=side;el.dataset.on="false";
    el.setAttribute("role","img");
-   // The fixed SVG viewBox scales the white glyph with the 46px circular lens.
-   el.innerHTML='<svg viewBox="0 0 46 46" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false"><text class="mcp-fd-ma-label" x="23" y="23.6" text-anchor="middle" dominant-baseline="central">MA</text></svg>';
+   // 68x68 source-space circular bezel centered on the pre-existing black MA hole.
+   el.innerHTML='<svg viewBox="0 0 68 68" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false"><text class="mcp-fd-ma-label" x="34" y="34.5" text-anchor="middle" dominant-baseline="central">MA</text></svg>';
    el.style.left=p.x/W*100+"%";el.style.top=p.y/H*100+"%";
    el.style.width=p.w/W*100+"%";el.style.height=p.h/H*100+"%";
    // Font geometry is set by the SVG viewBox, not viewport-dependent CSS.
@@ -154,5 +154,6 @@ function bind(win){
  }
 }
 return Object.freeze({initialState,evaluate,position,getState,applyOutput,setEvidence,mount,bind,
+ audit:()=>({mountedRoots:mounted.length,indicators:mounted.map(root=>[...root.querySelectorAll("[data-mcp-ma]")].map(el=>({side:el.dataset.mcpMa,on:el.dataset.on,text:el.textContent,rect:{width:el.getBoundingClientRect().width,height:el.getBoundingClientRect().height}})))}),
  resetEvidence:()=>{evidence=defaults();if(latest)applyOutput(latest);return getState()}});
 });
