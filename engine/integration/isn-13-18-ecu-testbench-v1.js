@@ -183,6 +183,8 @@ class Testbench{
   if(this.chain.phase.apu!=='OFF')throw Error('APU preset requires initial OFF phase');
   const fuel=this.core.apuFuelPath();
   if(fuel.available!==true)throw Error('APU preset requires available fuel path');
+  if(this.chain.start.getLive().observation.apu.rules.prerequisitesSatisfied!==true)
+   throw Error('APU preset requires BATTERY ON and fire handles IN');
   this.chain.startAPU();
   if(this.chain.phase.apu!=='INLET_DOOR')
    throw Error(this.chain.lastError||'APU start prerequisites not satisfied');
