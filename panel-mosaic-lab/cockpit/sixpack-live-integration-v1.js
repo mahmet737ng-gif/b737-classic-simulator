@@ -1,4 +1,4 @@
-/* SIXPACK-LIVE-0002: read-only adapter from existing Unified system outputs.
+/* SIXPACK-LIVE-0003: read-only adapter from existing Unified system outputs.
  * Never creates a second electrical/overhead/fire engine or infers unobserved alarms.
  * Training approximation: uses verified illuminated category-related OH annunciators.
  */
@@ -75,6 +75,22 @@
    out['FO.ANTI ICE'].push('TAT:HEAT_DEMAND_UNSATISFIED');
   return out;
  }
+
+ function pressurization(packet){
+  if(!['CPCS','DCPCS'].includes(packet?.system)||!packet.lamps)return null;
+  const out=empty();
+  if(packet.lamps.autoFail===true)out['FO.AIR COND'].push('PRESS:'+packet.system+':AUTO_FAIL');
+  if(packet.lamps.offSchedDescent===true)out['FO.AIR COND'].push('PRESS:'+packet.system+':OFF_SCHED_DESCENT');
+  return out;
+ }
+ function airconZones(packet){
+  if(!packet||!['B737-300-500','B737-400'].includes(packet.family)||!packet.zoneFaults)return null;
+  const out=empty();
+  if(packet.family==='B737-400')for(const id of ['cont-cab','fwd-cab','aft-cab']){
+   if(packet.zoneFaults[id]===true)out['FO.AIR COND'].push('AIRCON400:'+id+':ZONE_FAULT');
+  }
+  return out;
+ }
  function merge(sourceStates){
   const out=empty();
   for(const [source,snapshot] of Object.entries(sourceStates||{})){
@@ -87,13 +103,15 @@
   return out;
  }
  function install(win){
-  const sources={overhead:empty(),electrical:empty(),fire:empty(),irs:empty(),windowHeat:empty(),tatProbe:empty()};
-  let last='',updates=0,activeSource={overhead:false,electrical:false,fire:false,irs:false,windowHeat:false,tatProbe:false};
+  const sources={overhead:empty(),electrical:empty(),fire:empty(),irs:empty(),windowHeat:empty(),tatProbe:empty(),pressurization:empty(),airconZones:empty()};
+  let last='',updates=0,activeSource={overhead:false,electrical:false,fire:false,irs:false,windowHeat:false,tatProbe:false,pressurization:false,airconZones:false};
   function resolved(){
    const filtered=empty();
    for(const [k,v]of Object.entries(sources.overhead))filtered[k]=[...v];
    if(activeSource.irs)filtered['CAPT.IRS']=[];
    if(activeSource.windowHeat)filtered['FO.ANTI ICE']=filtered['FO.ANTI ICE'].filter(id=>!id.startsWith('OH:window-'));
+   if(activeSource.pressurization)filtered['FO.AIR COND']=filtered['FO.AIR COND']
+    .filter(id=>!['OH:press-auto-fail','OH:press-off-sched-descent'].includes(id));
    return merge({...sources,overhead:filtered});
   }
   const fireWarningInputs={wheelWell:false,external:false};
@@ -108,7 +126,7 @@
    last=signature;updates++;
    win.B737SixPack?.setLiveConditions?.(combined,'UNIFIED_SYSTEMS');
    win.dispatchEvent(new win.CustomEvent('b737:sixpack-live-status',{
-    detail:{version:'SIXPACK-LIVE-0002',updates,sources:{...activeSource},active:Object.fromEntries(Object.entries(combined).map(([k,v])=>[k,v.length]))}
+    detail:{version:'SIXPACK-LIVE-0003',updates,sources:{...activeSource},active:Object.fromEntries(Object.entries(combined).map(([k,v])=>[k,v.length]))}
    }));
   }
   function update(kind,data){
@@ -119,7 +137,10 @@
   win.addEventListener('message',e=>{
    if(e.origin!==win.location.origin||e.source!==win.document.getElementById('overheadFrame')?.contentWindow)return;
    const d=e.data;
-   if(d?.type==='b737:cockpit-overhead'&&d.kind==='state')update('overhead',overhead(d));
+   if(d?.type!=='b737:cockpit-overhead')return;
+   if(d.kind==='state')update('overhead',overhead(d));
+   if(d.kind==='pressurization-live-output')update('pressurization',pressurization(d));
+   if(d.kind==='aircon400-zone-status')update('airconZones',airconZones(d));
   });
   win.addEventListener('b737:electrical-v7-state',e=>update('electrical',electrical(e.detail)));
   win.addEventListener('b737:irs-trainer-state',e=>update('irs',irs(e.detail)));
@@ -143,8 +164,9 @@
    fireWarningFrom('external',e.detail?.active);
   });
   win.B737SixPackLiveV1=Object.freeze({
-   version:'SIXPACK-LIVE-0002',deriveOverhead:overhead,deriveElectrical:electrical,deriveFire:fire,
+   version:'SIXPACK-LIVE-0003',deriveOverhead:overhead,deriveElectrical:electrical,deriveFire:fire,
     deriveIRS:irs,deriveWindowHeat:windowHeat,deriveTAT:tatProbe,
+    derivePressurization:pressurization,deriveAircon400:airconZones,
    snapshot:()=>({sources:{...activeSource},reasons:resolved(),updates}),
    refresh:()=>{
     const power=win.B737UnifiedElectricalLive?.snapshot?.();
@@ -161,5 +183,5 @@
   win.B737SixPackLiveV1.refresh();
   return win.B737SixPackLiveV1;
  }
- return Object.freeze({groups,empty,overhead,electrical,fire,irs,windowHeat,tatProbe,merge,install});
+ return Object.freeze({groups,empty,overhead,electrical,fire,irs,windowHeat,tatProbe,pressurization,airconZones,merge,install});
 });
