@@ -1,4 +1,4 @@
-/* SIXPACK-LIVE-0004: read-only adapter from existing Unified system outputs.
+/* SIXPACK-LIVE-0005: read-only adapter from existing Unified system outputs.
  * Never creates a second electrical/overhead/fire engine or infers unobserved alarms.
  * Training approximation: uses verified illuminated category-related OH annunciators.
  */
@@ -30,6 +30,16 @@
   const result=empty();
   if(packet.power!==true)return result;
   for(const [name,ids]of Object.entries(groups))result[name]=ids.filter(id=>validOn(packet.frames[id])).map(id=>'OH:'+id);
+  // FCOM 12.10.3: one main tank LOW PRESSURE is recall-only,
+  // both FWD and AFT LOW PRESSURE on the same tank prompt master caution.
+  // Center-tank caution depends on aircraft modifications: keep separate.
+  for(const pair of [['fuel-1-fwd','fuel-1-aft'],['fuel-2-fwd','fuel-2-aft']]){
+   const affected=pair.filter(id=>validOn(packet.frames[id]));
+   if(affected.length===1){
+    const id='OH:'+affected[0],idx=result['CAPT.FUEL'].indexOf(id);
+    if(idx>=0)result['CAPT.FUEL'][idx]={id,mode:'RECALL_ONLY'};
+   }
+  }
   return result;
  }
  function electrical(packet){
@@ -202,7 +212,7 @@
    last=signature;updates++;
    win.B737SixPack?.setLiveConditions?.(combined,'UNIFIED_SYSTEMS');
    win.dispatchEvent(new win.CustomEvent('b737:sixpack-live-status',{
-    detail:{version:'SIXPACK-LIVE-0004',updates,sources:{...activeSource},active:Object.fromEntries(Object.entries(combined).map(([k,v])=>[k,v.length]))}
+    detail:{version:'SIXPACK-LIVE-0005',updates,sources:{...activeSource},active:Object.fromEntries(Object.entries(combined).map(([k,v])=>[k,v.length]))}
    }));
   }
   function update(kind,data){
@@ -248,7 +258,7 @@
    fireWarningFrom('external',e.detail?.active);
   });
   win.B737SixPackLiveV1=Object.freeze({
-   version:'SIXPACK-LIVE-0004',deriveOverhead:overhead,deriveElectrical:electrical,deriveFire:fire,
+   version:'SIXPACK-LIVE-0005',deriveOverhead:overhead,deriveElectrical:electrical,deriveFire:fire,
     deriveIRS:irs,deriveWindowHeat:windowHeat,deriveTAT:tatProbe,
     derivePressurization:pressurization,deriveAircon400:airconZones,
     setChannelFailure,setSystemFailures,
