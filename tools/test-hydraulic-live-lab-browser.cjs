@@ -57,6 +57,25 @@ const server=http.createServer((req,res)=>{
   await page.locator('[data-hyd-preset="cold"]').click();
   assert.equal(await page.evaluate(()=>window.B737HydraulicLabV1.getOutput().pressurePsi.A),0);
   assert.equal(await page.evaluate(()=>window.B737HydraulicLabV1.getOutput().pressurePsi.B),0);
+  const zeros=await page.evaluate(()=>{
+   const ids=['A','B','BRAKE'];
+   const cal=window.B737HydraulicGaugeCalibrationV2;
+   return ids.map(id=>{
+    const photo=document.querySelector('#hydGauge'+id+' .hyd-native-wrap');
+    const rotor=document.querySelector('#hydGauge'+id+' [data-hyd-rotor]');
+    const q=document.querySelector('#hydGauge'+id+' [data-hyd-qty-window]');
+    return {id,angle:Number(rotor?.dataset.angleDeg),local:cal.local(id),
+     crop:{w:photo?.clientWidth,h:photo?.clientHeight},
+     qtyVisible:id==='BRAKE'?!q:!!q&&q.textContent==='100'};
+   });
+  });
+  assert.ok(zeros.every(x=>x.qtyVisible),'A/B QTY digits stay in their own real photo windows');
+  assert.deepEqual(zeros.map(x=>x.angle),[132,133,110],
+   'zero must point to each photographed 0 mark; brake near 3:30');
+  assert.deepEqual(zeros.map(x=>x.local),[{x:75,y:70},{x:75,y:70},{x:88,y:88}],
+   'all three pointers must rotate about exact photographic shafts');
+  assert.equal(zeros[0].crop.w,150);assert.equal(zeros[1].crop.w,150);
+  await page.locator('#hydGauges').screenshot({path:path.join(out,'hydraulic-gauges-0psi-calibrated.png'),animations:'disabled'});
   await page.locator('[data-hyd-preset="electric"]').click();
   assert.ok(await page.evaluate(()=>window.B737HydraulicLabV1.getOutput().pressurePsi.A>=2900));
   assert.ok(await page.evaluate(()=>window.B737HydraulicLabV1.getOutput().pressurePsi.B>=2900));
