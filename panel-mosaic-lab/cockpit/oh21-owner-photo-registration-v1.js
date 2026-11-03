@@ -123,7 +123,7 @@ async function sync(){
 }
 async function boot(){try{const r=await fetch(MANIFEST,{cache:'no-store'});if(!r.ok)throw Error('Registration manifest missing');register=await r.json();if(register.schema!=='b737.owner.photo.panel-registration/1')throw Error('Registration schema mismatch');
   await sync();
-  const observer=new MutationObserver(()=>{if(active)requestAnimationFrame(place);else if(!loading)sync()});observer.observe(host,{childList:true,subtree:false});
+  const observer=new MutationObserver(()=>{if(active)requestAnimationFrame(place);else if(!loading&&!failed)sync()});observer.observe(host,{childList:true,subtree:false});
   window.addEventListener('storage',e=>{if(e.key===PROFILE){requestedFamily=null;sync()}});
   window.addEventListener('message',e=>{
    if(e.origin!==location.origin||e.source!==parent||e.data?.type!=='b737:cockpit-command'
