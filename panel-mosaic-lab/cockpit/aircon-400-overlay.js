@@ -181,10 +181,20 @@
   document.documentElement.classList.toggle('b737-aircon300500',family==='B737-300-500');
   if(layer)layer.hidden=family!=='B737-400';
   if(family==='B737-400')publishIndicatedTemperature();
+   publishZones();
+ }
+ let lastSixpackZones='';
+ function publishZones(){
+  const state={family,zoneFaults:{...zoneFaults}};
+  const sign=JSON.stringify(state);if(sign===lastSixpackZones)return;
+  lastSixpackZones=sign;
+  if(parent!==window)parent.postMessage({
+   type:'b737:cockpit-overhead',kind:'aircon400-zone-status',...state
+  },location.origin);
  }
  function setZoneFault(zone,active){
   if(!Object.hasOwn(zoneFaults,zone)||typeof active!=='boolean')return false;
-  zoneFaults[zone]=active;paintLamps();return true;
+  zoneFaults[zone]=active;paintLamps();publishZones();return true;
  }
  function setLampTest(active){test=!!active;paintLamps();}
  function boot(){
