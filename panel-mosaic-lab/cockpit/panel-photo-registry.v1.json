@@ -1,6 +1,6 @@
 {
   "schema": "b737.owner.photo.panel-registration/1",
-  "version": "PHOTO-REG-20261030-CANDIDATE-WEBP100",
+  "version": "OH21-TWO-ACTIVE-PANELS-20261103",
   "locked_originals": "NEVER_WRITE",
   "geometry_basis": "Owner-uploaded PNG source pixel coordinates; candidates must be validated against deployed atlas before activation",
   "panels": {
@@ -124,7 +124,7 @@
       "asset_status": "WEBP_QUALITY_100_DERIVATIVE_SOURCE_PNG_ARCHIVED"
     },
     "OH21_300500": {
-      "file": "oh21-737-300500-owner-20261030.q100.webp",
+      "file": "oh21-737-400-owner-20261030.q100.webp",
       "aircraft": [
         "B737-300",
         "B737-500"
@@ -232,12 +232,18 @@
         ]
       },
       "width": 1045,
-      "height": 1506,
-      "sha256": "754cfa32b415d06b90c30336e50a677852806a43e9ccdfe0bb17c111b20ab07a",
-      "status": "REFERENCE_MEASURED_NOT_FLIGHT_CERTIFIED",
-      "source_png_name": "oh21-737-300500-owner-20261030.png",
-      "source_png_sha256": "8610d625fc02bbc516fe76856849b5931800bd193fb935dc5a4d6777ded5f9a2",
-      "asset_status": "WEBP_QUALITY_100_DERIVATIVE_SOURCE_PNG_ARCHIVED"
+      "height": 1505,
+      "sha256": "68888486524df70c13f6024c5044b7381055d368b69d6a12010bb8eeafa05eff",
+      "status": "REVIEW_SINGLE_RECIRC_ADAPTATION_FROM_OWNER_APPROVED_PHOTO",
+      "source_png_name": "oh21-737-400-owner-20261030.png",
+      "source_png_sha256": "02cb578a189054a6b104f005be0725e3bcd69c6a621776cbc7ac43b18f01f239",
+      "asset_status": "SAME_APPROVED_PHOTO_AS_400_WITH_SINGLE_RECIRC_MASK",
+      "reused_photo_from": "OH21_400",
+      "retired_photo": {
+        "file": "oh21-737-300500-owner-20261030.q100.webp",
+        "sha256": "754cfa32b415d06b90c30336e50a677852806a43e9ccdfe0bb17c111b20ab07a",
+        "scope": "RETIRED_ARCHIVE_ONLY_NEVER_RENDER"
+      }
     },
     "P2_CONVENTIONAL": {
       "file": "p2-conventional-panorama-owner-20261030.q100.webp",
@@ -342,8 +348,8 @@
       1,
       2
     ],
-    "fallback": "LOCKED_SOURCE",
+    "fallback": "NEUTRAL_BLANK_NO_RETIRED_IMAGE",
     "rollback": "REVERT_ONLY_PHOTO_OVERLAY",
-    "productionActivation": "ONLY_AFTER_DEPLOYED_BROWSER_QA"
+    "productionActivation": "OWNER_APPROVED_737_400_PHOTO; SINGLE_RECIRC_DERIVED_VARIANT_REQUIRES_FINAL_VISUAL_AUDIT"
   }
 }
