@@ -527,6 +527,21 @@ restored. No new pressure system instance was created.
 Regressions: `node panel-mosaic-lab/cockpit/duct-pressure-needles.test.cjs` and
 `node engine/systems/duct-pressure-live-v1.test.cjs`.
 
+## DPN-0005 — two separate thick L/R-labeled pointers
+
+The owner clarified that the duct pressure gauge uses **two physically distinct,
+slightly broader pointers with L and R printed at the proximal end**. Restore
+the existing dedicated `duct-pressure-needle-l.svg` and
+`duct-pressure-needle-r.svg` assets in the Unified OH21 model instead of
+reusing the unlabeled Cabin Rate needle. Both pointers still use the same
+approved OH21 pivot, 148-source-pixel radius, independent L/R PSI values,
+and DPN-0004 zero/scale mapping. R is the lower visual layer, L the upper.
+Artwork, panel photo backgrounds, locked source images, guarded switches,
+the shared ECU and pneumatic estimator were not modified. The asset/script
+cache version is now `DPN-0005-LR`.
+
+Regression: `node panel-mosaic-lab/cockpit/duct-pressure-needles.test.cjs`.
+
 ## OXG-0001 — crew oxygen pressure indicator
 
 The upper OH01–OH06 panel's empty CREW OXYGEN aperture receives a separate
