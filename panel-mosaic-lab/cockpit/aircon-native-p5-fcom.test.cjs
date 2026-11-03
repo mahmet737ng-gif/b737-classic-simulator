@@ -26,7 +26,7 @@ assert.ok(unified.includes("d.source!=='recessed-hardware-v2'"));
 assert.ok(unified.includes('const projection=command')===false||unified.includes('onQualified:'));
 assert.ok(unified.includes("onQualified:()=>"),'No immediate light on PRESS');
 assert.ok(unified.includes("onReleased:()=>"),'Release deasserts qualified test');
-assert.ok(manifest.regions.some(x=>x.id==='overhead'&&x.embeddedUrl.includes('aircon=NATIVE-P5-0002')));
+assert.ok(manifest.regions.some(x=>x.id==='overhead'&&x.embeddedUrl.includes('aircon=OVHT-DELAY-0003')));
 
 let now=0,timerSerial=0,state=P.initial();
 const jobs=new Map(),sent=[],emitted=[],listeners={};
