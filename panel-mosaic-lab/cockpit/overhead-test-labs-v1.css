@@ -1,0 +1,26 @@
+/* OH-LABS-0001: isolated training interface; frozen atlas and Owner18 untouched. */
+.oh-lab-dialog{box-sizing:border-box;width:min(1460px,98vw);max-width:1460px;max-height:95vh;margin:auto;padding:0;overflow:auto;color:#e4eef5;background:#0d1926;border:1px solid #44677a;border-radius:12px;box-shadow:0 20px 65px #000b;font:13px/1.5 'Segoe UI',Arial,sans-serif}
+.oh-lab-dialog::backdrop{background:#020b16de}
+.oh-lab-dialog *{box-sizing:border-box}
+.oh-lab-header{position:sticky;top:0;z-index:3;display:flex;justify-content:space-between;align-items:center;gap:15px;padding:13px 18px;background:#1b3142;border-bottom:1px solid #49677a}
+.oh-lab-header strong{font-size:17px;letter-spacing:.45px;display:block}
+.oh-lab-header small{color:#b3c7d4;display:block;font-size:11px}
+.oh-lab-header button{flex:none;background:#2a4051;color:#fff;border:1px solid #6a8494;border-radius:6px;min-width:38px;height:36px;font-size:23px;cursor:pointer}
+.oh-lab-layout{display:grid;grid-template-columns:minmax(330px,1.1fr) minmax(350px,.9fr)}
+.oh-lab-left{padding:16px;text-align:center;min-width:0;border-right:1px solid #345066}
+.oh-lab-crop{position:relative;width:100%;overflow:hidden;margin:auto;background:#243b4c;border:1px solid #618093;border-radius:5px;touch-action:pan-y;box-shadow:0 8px 30px #0009}
+.oh-lab-window{position:relative;transform-origin:top left;will-change:transform}
+.oh-lab-window iframe{background:#233b4e;overflow:hidden}
+.oh-lab-right{padding:17px;overflow:auto;max-height:75vh}
+.oh-lab-right h3{font-size:12px;letter-spacing:.5px;color:#d5e4ed;margin:12px 0 7px}
+.oh-lab-right select{width:100%;padding:10px;background:#152c3d;color:#e8f2f8;border:1px solid #618097;border-radius:6px;font:12px 'Segoe UI',sans-serif}
+.oh-lab-actions{display:flex;flex-wrap:wrap;gap:7px;margin:15px 0}
+.oh-lab-actions button{cursor:pointer;flex:1;min-width:95px;padding:9px 11px;border:1px solid #54768a;background:#244055;border-radius:5px;color:#ecf5fa;font-weight:650}
+.oh-lab-actions button:hover{background:#345d73}
+.oh-lab-actions #ohLabInject{border-color:#c6a05b;background:#5b4728}
+.oh-lab-note{font-size:12px;color:#a7becf;text-align:left;line-height:1.65;margin:12px auto;max-width:720px}
+#ohLabStatus{font:12px/1.5 Consolas,monospace;color:#cbd5df;margin:8px}
+#ohLabActive{padding-left:20px;max-height:29vh;overflow:auto;color:#e9d29c;font-size:12px}
+#ohLabActive li{padding:5px 0;border-bottom:1px solid #294458}
+@media(max-width:1000px){.oh-lab-layout{grid-template-columns:1fr}.oh-lab-left{border-right:0;border-bottom:1px solid #345066}.oh-lab-right{max-height:none}.oh-lab-dialog{width:99vw}}
+@media(max-width:580px){.oh-lab-header strong{font-size:14px}.oh-lab-left,.oh-lab-right{padding:9px}.oh-lab-actions button{font-size:11px}}
