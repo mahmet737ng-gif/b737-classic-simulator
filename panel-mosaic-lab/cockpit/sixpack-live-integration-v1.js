@@ -135,7 +135,7 @@
    ]));
    const frame=win.document.getElementById('overheadFrame');
    if(frame?.contentWindow&&win.location?.origin)
-    frame.contentWindow.postMessage({type:'b737:cockpit-command',action:'redundancy-physical-lamps',indicators},win.location.origin);
+    frame.contentWindow.postMessage?.({type:'b737:cockpit-command',action:'redundancy-physical-lamps',indicators},win.location.origin);
    win.dispatchEvent(new win.CustomEvent('b737:redundancy-indicator-state',{
     detail:{schema:'REDUNDANCY-CAUTION-0001',indicators,recalled,channels:state.channels}
    }));
