@@ -175,9 +175,17 @@
   s.faults=[...(p.faults||[])];
   if(p.charge===false){s.pressure={A:0,B:0,STBY:0};s.brakeAccumulator=p.id==='preflight'?2800:0;}
   if(p.id==='brake-accum'){
-   // Depleted accumulator cannot remain depleted with a healthy, charging B supply.
-   s.env.eng2=false;s.env.ac1=false;
-   s.pressure.B=0;s.brakeAccumulator=1000;
+   // A depleted accumulator cannot stay depleted with B still recharging it.
+   s.env.eng2=false;s.env.ac1=false;s.brakeAccumulator=1000;
+  }
+  // Presets represent already established operating conditions; pressure
+  // should never falsely start at 3000 psi with both supplying pumps OFF.
+  if(p.charge!==false){
+   for(const sys of ['A','B']){
+    s.pressure[sys]=Math.max(...Object.keys(PUMP).filter(k=>PUMP[k].system===sys)
+     .map(k=>onePump(s,k).pressurePsi));
+   }
+   if(s.env.standbySelected&&s.env.ac1&&!faulted(s,'STBY_PUMP_FAIL'))s.pressure.STBY=3000;
   }
   return s;
  }
@@ -219,30 +227,31 @@
   const standbyDemand=s.env.standbySelected||s.env.alternateFlapsArmed||
    (!s.env.onGround&&s.env.flapsDeg>0&&(pressure.A<1800||pressure.B<1800)&&!faulted(s,'AUTO_STBY_FAIL'));
   const alertLowPump=Object.values(pumps).some(p=>p.lowPressure&&!p.fireLampInhibited);
+  const panelPowered=s.env.ac1||s.env.ac2;
   const alertHyd=alertLowPump||pressure.A<2200||pressure.B<2200||q.A<20||q.B<20;
   const failedLamp=id=>faulted(s,id);
   const lamps={};
   for(const [id,p] of Object.entries(pumps)){
    const k=id==='hyd-eng-1'?'ENG1':id==='hyd-eng-2'?'ENG2':id==='hyd-elec-1'?'ELEC1':'ELEC2';
-   lamps[id]=p.lowPressure&&!p.fireLampInhibited&&!failedLamp(k+'_LOW_LAMP_FAIL');
+   lamps[id]=panelPowered&&p.lowPressure&&!p.fireLampInhibited&&!failedLamp(k+'_LOW_LAMP_FAIL');
   }
   for(const id of ['hyd-elec-1','hyd-elec-2']){
    const k=id==='hyd-elec-1'?'ELEC1':'ELEC2';
-   lamps[id+'-overheat']=pumps[id].overheat&&!failedLamp(k+'_OVHT_LAMP_FAIL');
+   lamps[id+'-overheat']=panelPowered&&pumps[id].overheat&&!failedLamp(k+'_OVHT_LAMP_FAIL');
   }
   lamps['flight-pressure-a']=pressure.A<1800&&!faulted(s,'FLIGHT_CTRL_A_ISOLATED');
   lamps['flight-pressure-b']=pressure.B<1800&&!faulted(s,'FLIGHT_CTRL_B_ISOLATED');
   lamps['stby-pressure']=standbyDemand&&(pressure.STBY<1800||faulted(s,'STBY_PRESS_SENSOR_FAIL'));
   lamps['stby-quantity']=q.STBY<25||faulted(s,'STBY_QTY_LOW');
   lamps['stby-rudder']=standbyDemand&&pressure.STBY>1800;
-  const sixPackHyd=failedLamp('SIXPACK_HYD_STUCK_ON')||
-   (alertHyd&&!failedLamp('SIXPACK_HYD_LAMP_FAIL'));
+  const sixPackHyd=panelPowered&&(failedLamp('SIXPACK_HYD_STUCK_ON')||
+   (alertHyd&&!failedLamp('SIXPACK_HYD_LAMP_FAIL')));
   return Object.freeze({schema:'HYD-LAB-CORE-0001/OUT',time:s.time,
    pressurePsi:{A:Math.round(pressure.A),B:Math.round(pressure.B),STBY:Math.round(pressure.STBY),BRAKE:Math.round(s.brakeAccumulator)},
    quantityPct:{A:Math.round(q.A),B:Math.round(q.B),STBY:Math.round(q.STBY)},
    indications:{'eng.hyd_pressure.a':pa,'eng.hyd_pressure.b':pb,
     'eng.hyd_qty.a':qa,'eng.hyd_qty.b':qb,'fo.hyd_brake_pressure':brake},
-   lamps,alerts:{sixPackHyd,masterCaution:alertHyd&&!failedLamp('MASTER_CAUTION_HYD_FAIL')&&!s.masterAcknowledged,
+   lamps,alerts:{sixPackHyd,masterCaution:panelPowered&&alertHyd&&!failedLamp('MASTER_CAUTION_HYD_FAIL')&&!s.masterAcknowledged,
     recallHyd:alertHyd,acknowledged:s.masterAcknowledged,masterCautionAuthority:'LAB_TRAINING_APPROX'},
    pumps,brakes:{mode:brakeMode,normalBrakes,alternateBrakes,accumulatorPsi:Math.round(s.brakeAccumulator)},
    standby:{selected:standbyDemand,active:pressure.STBY>1800},
