@@ -141,11 +141,11 @@
     if(held&&ovhtHeldSince!==null)return;
     if(!held&&ovhtHeldSince===null)return;
     const durationMs=held?0:Math.max(0,performance.now()-ovhtHeldSince);
-    if(held)ovhtHeldSince=performance.now();
     // Apply immediately, not after five seconds. Five seconds is merely
     // the FCOM duration for a complete successful detector check.
+    // Update our held state ONLY once the live ECU accepts the command.
     const projection=command({type:'SENSOR',key:'wingBodyTestHeld',value:held});
-    if(!held)ovhtHeldSince=null;
+    ovhtHeldSince=held?performance.now():null;
     lastNativeInput={id:d.id,held,durationMs,
       l:projection.lamps.wingBodyOverheatL,r:projection.lamps.wingBodyOverheatR};
     if(actionNotice)actionNotice.textContent=held
@@ -161,8 +161,9 @@
    }else return;
    refresh(true);
   }catch(err){
-   // A rejected command must be visible for troubleshooting rather than
-   // leaving a pressed cap that looks operational but changes no lamps.
+   // Do not leave the parent stuck in the "held" state on a rejected
+   // source command (e.g. iframe ready before the deferred ECU dependency).
+   if(d.id==='aircon-ovht-test'&&d.pressed===false)ovhtHeldSince=null;
    if(actionNotice)actionNotice.textContent='AIRCON FCOM ERROR · '+err.message;
    console.error('AIRCON FCOM native recessed input',err);
   }
