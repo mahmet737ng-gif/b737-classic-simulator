@@ -113,6 +113,15 @@
   }
   return out;
  }
+ function airconFcomRecall(packet){
+  const out=empty();
+  if(packet?.family!=='B737-400')return out;
+  for(const side of ['L','R'])if(packet.pack400?.[side]?.recallOnly)
+   out['FO.AIR COND'].push({id:'AIRCON400:PACK:'+side+':SINGLE_CONTROLLER',mode:'RECALL_ONLY'});
+  for(const zone of ['CONT','FWD','AFT'])if(packet.zones?.[zone]?.recallOnly)
+   out['FO.AIR COND'].push({id:'AIRCON400:ZONE:'+zone+':CONTROLLER',mode:'RECALL_ONLY'});
+  return out;
+ }
  function merge(sourceStates){
   const out=empty();
   for(const [source,snapshot] of Object.entries(sourceStates||{})){
@@ -133,9 +142,9 @@
   return out;
  }
  function install(win){
-  const sources={overhead:empty(),electrical:empty(),fire:empty(),irs:empty(),windowHeat:empty(),tatProbe:empty(),pressurization:empty(),airconZones:empty(),apuECU:empty(),redundancy:empty()};
+  const sources={overhead:empty(),electrical:empty(),fire:empty(),irs:empty(),windowHeat:empty(),tatProbe:empty(),pressurization:empty(),airconZones:empty(),airconRecall:empty(),apuECU:empty(),redundancy:empty()};
   let overheadPowered=null;
-  let last='',updates=0,activeSource={overhead:false,electrical:false,fire:false,irs:false,windowHeat:false,tatProbe:false,pressurization:false,airconZones:false,apuECU:false,redundancy:false};
+  let last='',updates=0,activeSource={overhead:false,electrical:false,fire:false,irs:false,windowHeat:false,tatProbe:false,pressurization:false,airconZones:false,airconRecall:false,apuECU:false,redundancy:false};
   function resolved(){
    const filtered=empty();
    for(const [k,v]of Object.entries(sources.overhead))filtered[k]=[...v];
@@ -252,9 +261,11 @@
   // Fresh OH live outputs will repopulate them without preserving stale cautions.
   win.addEventListener('b737:aircraft-profile-change',()=>{
    sources.airconZones=empty();activeSource.airconZones=false;
+   sources.airconRecall=empty();activeSource.airconRecall=false;
    sources.pressurization=empty();activeSource.pressurization=false;
    publish();
   });
+  win.addEventListener('b737:aircon-fcom-status',e=>update('airconRecall',airconFcomRecall(e.detail)));
   win.addEventListener('b737:electrical-v7-state',e=>update('electrical',electrical(e.detail)));
   win.addEventListener('b737:redundancy-channel-state',e=>{
    const d=e.detail;if(d)setChannelFailure(d.system,d.channel,d.failed);
