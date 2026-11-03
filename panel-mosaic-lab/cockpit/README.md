@@ -527,6 +527,43 @@ restored. No new pressure system instance was created.
 Regressions: `node panel-mosaic-lab/cockpit/duct-pressure-needles.test.cjs` and
 `node engine/systems/duct-pressure-live-v1.test.cjs`.
 
+## GPU-FCOM-0001 — FCOM Classic ground power header
+
+The **GROUND POWER** button appears immediately beside the always-visible
+**BAT RECHARGE** instructor command. It opens one compact panel with two
+independent FCOM steps and OFF/disconnect reversals.
+
+1. **CONNECT GPU** changes `groundPowerAttached` in the existing physical
+   overhead's scenario owner. Only valid supply and the resulting
+   **GRD POWER AVAILABLE** blue lamp are indicated. A cable is **not**
+   a source selection and must never energize an AC transfer bus by itself.
+2. Verify BATTERY physical switch **ON**, quality acceptable, aircraft on
+   ground, then **GRD PWR ON** issues the equivalent momentary GRD PWR selector
+   command to the one existing ISN03 Electrical V7 Pack. Both generator
+   buses are transferred to `EXT` without paralleling GEN/APU power.
+   Confirm BUS OFF, TRANSFER BUS OFF and STANDBY PWR OFF indications.
+3. **GRD PWR OFF** removes only buses currently sourced from `EXT`. The
+   cable stays attached and AVAILABLE until **DISCONNECT GPU**. BAT OFF,
+   quality loss, cable loss and leaving the ground trip the EXT contactors;
+   later recovery never automatically reselects EXT.
+4. Ground Service remains distinct from full airplane electrical power:
+   its service bus/charger can run with the BAT switch OFF; selecting
+   external AC on both buses overrides Ground Service. A disconnected or
+   faulty GPU also releases its Ground Service relay.
+
+This is a **simulator** control, not a replacement for the aircraft's
+physical P5 GRD PWR switch. The real switch remains operable. The same
+source state feeds the existing meter, lights and bus indications. No new
+electrical plant, engine/APU selection, artwork, CB, or locked panel is
+created/changed.
+
+References: B737 Classic FCOM Ch 6.10.6 and 6.20.2; SP.6.1 (Electrical
+Power Up). Operator effectivity and hardware wiring remain to be audited.
+
+Regressions:
+`node engine/systems/ground-power-header-policy-v1.test.cjs`;
+`node panel-mosaic-lab/cockpit/ground-power-header-v1.test.cjs`.
+
 ## DPN-LIVE-0002 / DPN-0006-INERTIAL — air-consumer pressure and smooth indication
 
 The existing ECU remains the sole engine/APU owner; Pneumatics V6 still owns
