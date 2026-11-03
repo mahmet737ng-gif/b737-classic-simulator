@@ -51,3 +51,9 @@
 .hydlab-env input{width:16px;height:16px;accent-color:#dbb269;flex:none}
 @media(max-width:1100px){.hydlab-layout{grid-template-columns:1fr}.hydlab-left{border-right:0;border-bottom:1px solid #385368}.hydlab-right{max-height:none}.hydlab-dialog{width:99vw;max-height:98vh}}
 @media(max-width:700px){.hydlab-gauges{grid-template-columns:repeat(2,minmax(0,1fr))}.hydlab-quick{grid-template-columns:repeat(2,minmax(0,1fr))}.hydlab-standby{grid-template-columns:1fr}.hydlab-tools{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* Register QTY digits within the TWO BLACK ORIGINAL PHOTOGRAPHED WINDOWS. */
+.hyd-quantity-native{position:absolute;width:56px;height:21px;display:grid;place-items:center;z-index:4;pointer-events:none;
+ background:#030707;color:#91edb1;font:700 16px/1 Consolas,monospace;letter-spacing:1px;
+ text-shadow:0 0 4px #4ea674;border-radius:2px}
+.hyd-instrument[data-degraded=true] .hyd-native-needle{opacity:.4}
