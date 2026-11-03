@@ -527,6 +527,36 @@ restored. No new pressure system instance was created.
 Regressions: `node panel-mosaic-lab/cockpit/duct-pressure-needles.test.cjs` and
 `node engine/systems/duct-pressure-live-v1.test.cjs`.
 
+## AIRCON-NATIVE-P5-0002 — original physical OVHT TEST now reaches the ECU
+
+**2026-11-03 diagnosis:** the actual photo-mounted recessed P5-10 OVHT
+button was already implemented as `aircon-ovht-test` with native
+`b737:cockpit-overhead` /`recessed-button` / `pressed` true/false
+events. A later AIRCON-FCOM-0001 update mistakenly installed a *second*,
+invisible `OVHT_TEST` button at different photo coordinates and listened
+only for its `aircon-fcom-input` event. The real button animated but
+never delivered a Wing–Body detector-test command to the parent ECU.
+
+**Fix:** retire the duplicate hidden overlay; wire the native recessed
+`aircon-ovht-test` press/release and `trip-reset` press events directly
+to the one existing ISN/Pneumatics V6 owner. For OVHT, both intact
+detector circuits respond immediately for the held duration; 5 seconds
+is the check duration, not the turn-on delay. Native TRIP RESET only
+acts on initial PRESS, after the initiating fault clears. Both cap
+geometry and visuals remain owner-approved. Original recessed hardware
+now refuses to overwrite photo-registration positions when the old
+atlas re-mounts, and emits a fail-safe RELEASE on window blur, pagehide
+or tab hide. Native input diagnostics are available through
+`B737AirconFCOMUnifiedV1.getState().nativeInput`.
+
+Regression:
+`node panel-mosaic-lab/cockpit/aircon-native-p5-fcom.test.cjs`.
+This test reproduces actual `recessed-button` events and checks ECU
+source state, both Wing–Body lamps, 5s hold/release, failed detector,
+TRIP RESET and event provenance; it must remain in Panel Mosaic CI.
+Browser visual/pointer audit remains required; unit tests alone cannot
+certify the deployed web build's lamp visibility or electrical power.
+
 ## AIRCON-FCOM-0001 — 737-300/500 and 737-400 P5-10 Overheat / annunciations
 
 **FCOM basis:** Boeing 737 Classic FCOM V2 2.10.2–2.10.10, 2.20.5,
