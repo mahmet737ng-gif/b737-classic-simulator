@@ -122,6 +122,9 @@ jobs:
           node --test tests/overhead-test-labs-v1.test.cjs tests/antiice-live-lab-v2.test.cjs
           node --check panel-mosaic-lab/cockpit/overhead-cross-cockpit-v1.js
           node --test tests/overhead-cross-cockpit-v1.test.cjs
+          node --check engine/systems/hydraulic-test-lab-core-v1.js
+          node --check panel-mosaic-lab/cockpit/hydraulic-live-lab-v1.js
+          node --test tests/hydraulic-live-lab-v1.test.cjs
 
           node panel-mosaic-lab/cockpit/unified-annunciators.test.cjs
           node panel-mosaic-lab/cockpit/lights.test.cjs
