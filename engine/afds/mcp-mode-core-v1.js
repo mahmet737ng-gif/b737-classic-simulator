@@ -119,7 +119,7 @@ function transition(state,action){
 }
 function output(s){
  const powered=s.electrical.mcpPower===true;
- const lampIds=["AT_ARM","VNAV","LNAV","N1","SPEED","LVL_CHG","HDG_SEL","APP","ALT_HLD","VS","CMD_A","CWS_A","CMD_B","CWS_B"];
+ const lampIds=["AT_ARM","VNAV","LNAV","VOR_LOC","N1","SPEED","LVL_CHG","HDG_SEL","APP","ALT_HLD","VS","CMD_A","CWS_A","CMD_B","CWS_B"];
  const lamps=Object.fromEntries(lampIds.map(x=>[x,false]));
  if(powered){
   lamps.AT_ARM=s.autoThrottleArm;
