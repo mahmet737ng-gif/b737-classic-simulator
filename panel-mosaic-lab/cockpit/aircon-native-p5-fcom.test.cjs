@@ -16,6 +16,10 @@ assert.ok(native.includes("kind:'recessed-button'"),'Real hardware emits recesse
 assert.ok(native.includes('"id":"aircon-ovht-test"'),'Original OVHT TEST remains installed');
 assert.ok(native.includes('"id":"trip-reset"'),'Original TRIP RESET remains installed');
 assert.ok(approved.includes("data-recessed-id"),'Photo fitter positions original recessed controls');
+assert.ok(native.includes('if(newlyMounted||!photoOwned)'),
+ 'Legacy recessed remount may not displace owner-approved button positions');
+assert.ok(stage.includes('airconP5=NATIVE-0002'),
+ 'The original recessed button receives its corrected cache revision');
 assert.ok(!stage.includes('aircon-fcom-p5-buttons-v1.js'),
  'No duplicate invisible button may overlay an already approved original');
 assert.ok(!stage.includes('AIRCON-FCOM-0001" defer></script><script src="../cockpit/aircon-fcom-p5-buttons'));
