@@ -36,7 +36,7 @@
   const blade=blades.get(id);
   if(blade)blade.style.transform='rotate('+model.bearing(id,state[id])+'deg)';
   const input=inputs.get(id),output=outputs.get(id);
-  if(input)input.value=String(state[id]);
+  if(input)input.value=String(manualOverride?target[id]:state[id]);
   if(output)output.textContent=state[id].toFixed(1)+' PSI';
  }
  function paintStatus(){
