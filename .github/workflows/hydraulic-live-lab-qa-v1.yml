@@ -3,6 +3,8 @@ on:
   push:
     paths:
       - 'engine/systems/hydraulic-test-lab-core-v1.js'
+      - 'engine/instruments/hydraulic-gauge-calibration-v2.js'
+      - 'tests/hydraulic-gauge-calibration-v2.test.cjs'
       - 'panel-mosaic-lab/cockpit/hydraulic-live-lab-v1.js'
       - 'panel-mosaic-lab/cockpit/hydraulic-live-lab-v1.css'
       - 'panel-mosaic-lab/cockpit/overhead-test-labs-v1.js'
@@ -25,7 +27,9 @@ jobs:
       - name: Hydraulic engine and UI syntax
         run: |
           node --check engine/systems/hydraulic-test-lab-core-v1.js
+          node --check engine/instruments/hydraulic-gauge-calibration-v2.js
           node --check panel-mosaic-lab/cockpit/hydraulic-live-lab-v1.js
+          node --test tests/hydraulic-gauge-calibration-v2.test.cjs
           node --test tests/hydraulic-live-lab-v1.test.cjs
           node --test tests/overhead-test-labs-v1.test.cjs
       - name: Build exact production Unified
