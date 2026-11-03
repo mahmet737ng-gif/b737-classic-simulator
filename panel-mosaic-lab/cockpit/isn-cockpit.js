@@ -445,6 +445,22 @@
    getLiveBattery:()=>session.getBattery(),
    rechargeLiveBattery:()=>{const b=session.rechargeBattery();chain.syncPower();ecu.core.refreshFuelDelivery();render();return b;},
    advanceLiveBattery:(dt,inputs)=>{const b=session.advanceBattery(dt,inputs);chain.syncPower();ecu.core.refreshFuelDelivery();render();return b;},
+   // Instructor/FCOM P5-10 commands use the EXISTING Pneumatics V6 owner.
+   // No shadow session or duplicate annunciator plant is created.
+   getPneumaticState:()=>JSON.parse(JSON.stringify(startSession.core.pneumaticState)),
+   sendPneumatic:action=>{
+    if(!['SENSOR','TRIP_RESET','CONTROL'].includes(action?.type))
+     throw Error('Unsupported pneumatic trainer command');
+    if(action.type==='SENSOR'&&
+       (!Object.prototype.hasOwnProperty.call(window.B737PneumaticsV6.INPUT_TYPES,action.key)||
+        typeof action.value!=='boolean'))
+     throw Error('Pneumatic sensor injection requires a known Boolean');
+    if(action.type==='CONTROL'&&action.key!=='aircraftFamily')
+     throw Error('Only family switching is allowed through this adapter');
+    startSession.core.send({type:'PNEUMATIC',action});
+    render();
+    return window.B737PneumaticsV6.derive(startSession.core.pneumaticState);
+   },
    // Pass only source-observed pneumatic supply to pressurization. UNKNOWN
    // must never become a fabricated zero PACK or an invented DC bus mapping.
    getPressurizationAir:()=>startSession.core.complete()
