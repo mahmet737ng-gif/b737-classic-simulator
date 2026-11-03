@@ -5,7 +5,7 @@
  'use strict';
  const model=window.B737DuctPressureNeedlesModel,live=window.B737DuctPressureLiveV1;
  const ns='http://www.w3.org/2000/svg';
- const sprites=Object.fromEntries(model.needles.map(needle=>[needle.id,new URL('./'+needle.asset+'?v=DPN-0004',document.baseURI).href]));
+ const sprites=Object.fromEntries(model.needles.map(needle=>[needle.id,new URL('./'+needle.asset+'?v=DPN-0005-LR',document.baseURI).href]));
  const state=Object.fromEntries(model.needles.map(needle=>[needle.id,needle.initialPsi]));
  const blades=new Map(),inputs=new Map(),outputs=new Map();
  let frame=null,layer=null,manualOverride=false,source='INITIAL_ZERO',lastLive=null,powered=true,status=null;
