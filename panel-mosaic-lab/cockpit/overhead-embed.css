@@ -7,3 +7,33 @@ main{margin:0!important;padding:0!important;width:2220px!important;max-width:non
 #board{transform:scale(1)!important;transform-origin:0 0!important;width:2220px!important;margin:0!important}#sizer{width:2220px!important;height:3312px!important}
 .atlas-piece.selected,.atlas-piece:hover{outline:0!important}.atlas-geometry-stamp,.atlas-piece .tag{display:none!important}
 .cockpit-visual-test #overheadLightLayer{display:block!important}.cockpit-visual-test .mounted-light .light-face{opacity:0!important;transition:none!important}.cockpit-visual-test .mounted-light .light-face[data-visual-on=true]{opacity:1!important}
+
+/* OH21 APPROVED-ONLY: the retired blue atlas OH21 bitmap is archival.
+   Never flash it while the sole approved photo is loading or on an error.
+   Restricted to Unified's embedded overhead, not the immutable atlas viewer. */
+#atlasAbsolute .atlas-piece[data-key="OH21"]{
+ background:#bfc2b7!important;
+}
+#atlasAbsolute .atlas-piece[data-key="OH21"] > .atlas-image-window{
+ visibility:hidden!important;
+}
+/* A failed photo load remains a neutral blank, not the rejected panel. */
+#atlasAbsolute .owner-oh21-photo-layer-v1{
+ isolation:isolate;
+ background:#bfc2b7;
+}
+/* Appearance-only adaptation for the 300/500 single-RECIRC variant.
+   The shared owner-approved beige photograph is the source; no legacy blue art. */
+.owner-oh21-photo-layer-v1 .oh21-single-recirc-removal{
+ position:absolute;left:10.5%;top:9.2%;width:28%;height:17.5%;
+ pointer-events:none;
+ background:linear-gradient(105deg,#c2c5b9 0%,#c5c8bb 30%,#c5c8bd 68%,#bfc3b6 100%);
+ box-shadow:0 0 15px 11px rgba(196,199,187,.60);
+}
+.owner-oh21-photo-layer-v1 .oh21-single-recirc-title{
+ position:absolute;left:64.2%;top:10.1%;width:29%;height:3.4%;
+ display:flex;align-items:center;justify-content:center;
+ background:#555a56;color:#f5f5ef;
+ font:700 33px/1 Arial,Helvetica,sans-serif;letter-spacing:-.045em;
+ text-align:center;white-space:nowrap;pointer-events:none;
+}
