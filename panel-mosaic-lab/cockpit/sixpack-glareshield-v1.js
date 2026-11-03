@@ -135,7 +135,10 @@ function makeSeat(side){
  rack.addEventListener('pointerup',e=>{e.stopPropagation();release(side);});
  rack.addEventListener('pointercancel',e=>{e.stopPropagation();if(recallHeld){recallHeld=false;paint();}});
  rack.addEventListener('lostpointercapture',()=>{if(recallHeld){recallHeld=false;paint();}});
- rack.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();});
+ rack.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();
+  // Keyboard/synthetic click fallback; real pointer clicks already recalled on pointerup.
+  if(e.detail===0)recall(side);
+ });
  rack.addEventListener('keydown',e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();e.stopPropagation();if(!e.repeat)press(side);}});
  rack.addEventListener('keyup',e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();e.stopPropagation();release(side);}});
  rack.addEventListener('blur',()=>{if(recallHeld){recallHeld=false;paint();}});
