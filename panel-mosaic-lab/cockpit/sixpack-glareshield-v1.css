@@ -1,6 +1,5 @@
 /* SIXPACK-0001: new movable glass/lighting overlays on unprotected main-panel margins.
    No modification to MCP itself, locked source images, or Owner18 guarded switches. */
-#region-main .region-native{position:relative}
 .b737-sixpack-glareshield{position:absolute;inset:0;width:2100px;height:920px;z-index:8;pointer-events:none;direction:ltr}
 .b737-sp-console{position:absolute;top:3px;width:180px;height:121px;box-sizing:border-box;padding:3px 4px 4px;
  background:linear-gradient(145deg,#363b3d 0%,#1d2328 22%,#161a1e 69%,#222629 100%);
