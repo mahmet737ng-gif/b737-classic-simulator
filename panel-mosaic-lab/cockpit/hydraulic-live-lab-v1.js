@@ -283,9 +283,29 @@
   }
   const sp=$('hydLiveSixPack');
   if(sp){
-   sp.dataset.on=String(out.alerts.sixPackHyd||lampTest);
-   sp.textContent='FO SIX-PACK · HYD '+(out.alerts.sixPackHyd||lampTest?'AMBER ON':'OFF')+
-    ' · MASTER CAUTION '+(out.alerts.masterCaution?'ON': 'OFF')+' · RECALL '+(out.alerts.recallHyd?'HYD':'CLEAR')+
+   if(!sp.querySelector('[data-hyd-six-legend]')){
+    sp.replaceChildren();
+    const header=document.createElement('span');header.textContent='FIRST OFFICER SIX-PACK · ORIGINAL ANNUNCIATOR STYLE';sp.append(header);
+    const pieces=document.createElement('div');pieces.className='hydlab-sixpack-physical';
+    const glass=document.querySelector('.b737-sp-legend[data-sixpack="FO.HYD"]')?.cloneNode(true)||
+      document.createElement('span');
+    glass.classList.add('b737-sp-legend');glass.dataset.hydSixLegend='true';
+    glass.dataset.on='false';glass.textContent='HYD';
+    const caution=document.querySelector('.b737-sp-master.caution[data-sixpack="FO.MASTER CAUTION"]')?.cloneNode(true)||
+      document.createElement('span');
+    caution.classList.add('b737-sp-master','caution');caution.dataset.hydSixCaution='true';
+    caution.dataset.on='false';caution.setAttribute('aria-hidden','true');
+    if(!caution.textContent)caution.textContent='MASTER CAUTION';
+    pieces.append(glass,caution);sp.append(pieces);
+    const detail=document.createElement('small');detail.dataset.hydSixStatus='true';sp.append(detail);
+   }
+   const six=sp.querySelector('[data-hyd-six-legend]'),master=sp.querySelector('[data-hyd-six-caution]');
+   if(six)six.dataset.on=String(out.alerts.sixPackHyd||lampTest);
+   if(master)master.dataset.on=String(out.alerts.masterCaution||lampTest);
+   const detail=sp.querySelector('[data-hyd-six-status]');
+   if(detail)detail.textContent='HYD '+(out.alerts.sixPackHyd?'AMBER ON':'OFF')+
+    ' · MASTER CAUTION '+(out.alerts.masterCaution?'ON':'OFF')+
+    ' · RECALL '+(out.alerts.recallHyd?'HYD':'CLEAR')+
     ' · '+out.alerts.masterCautionAuthority;
   }
   for(const def of NEEDLES)renderGauge(def,out);
