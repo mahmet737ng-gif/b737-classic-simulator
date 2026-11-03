@@ -4,6 +4,7 @@ const fs=require('node:fs');
 const path=require('node:path');
 const vm=require('node:vm');
 const P=require('../../engine/systems/pneumatics-v6.js');
+const H=require('../../engine/systems/aircon-ovht-hold-v1.js');
 const read=file=>fs.readFileSync(path.join(__dirname,file),'utf8');
 const unified=read('aircon-fcom-unified-v1.js');
 const stage=read('overhead-stage.html');
@@ -11,36 +12,46 @@ const native=read('recessed-overhead-v2.js');
 const approved=read('oh21-owner-photo-registration-v1.js');
 const manifest=JSON.parse(read('assembly.json'));
 const html=read('index.html');
+assert.ok(native.includes("kind:'recessed-button'"),'Native P5 input only');
+assert.ok(native.includes('"id":"aircon-ovht-test"'));
+assert.ok(native.includes('"id":"trip-reset"'));
+assert.ok(approved.includes('data-recessed-id'));
+assert.ok(native.includes('if(newlyMounted||!photoOwned)'),'Approved photo coordinates cannot jump');
+assert.ok(stage.includes('airconP5=NATIVE-0002'),'Native button loaded');
+assert.ok(!stage.includes('aircon-fcom-p5-buttons-v1.js'),'Duplicate synthetic button retired');
+assert.ok(html.includes('aircon-fcom-unified-v1.js?v=AIRCON-OVHT-DELAY-0003'));
+assert.ok(html.includes('aircon-ovht-hold-v1.js?v=AIRCON-OVHT-DELAY-0003'));
+assert.ok(unified.includes("kind!=='recessed-button'"));
+assert.ok(unified.includes("d.source!=='recessed-hardware-v2'"));
+assert.ok(unified.includes('const projection=command')===false||unified.includes('onQualified:'));
+assert.ok(unified.includes("onQualified:()=>"),'No immediate light on PRESS');
+assert.ok(unified.includes("onReleased:()=>"),'Release deasserts qualified test');
+assert.ok(manifest.regions.some(x=>x.id==='overhead'&&x.embeddedUrl.includes('aircon=NATIVE-P5-0002')));
 
-assert.ok(native.includes("kind:'recessed-button'"),'Real hardware emits recessed-button');
-assert.ok(native.includes('"id":"aircon-ovht-test"'),'Original OVHT TEST remains installed');
-assert.ok(native.includes('"id":"trip-reset"'),'Original TRIP RESET remains installed');
-assert.ok(approved.includes("data-recessed-id"),'Photo fitter positions original recessed controls');
-assert.ok(native.includes('if(newlyMounted||!photoOwned)'),
- 'Legacy recessed remount may not displace owner-approved button positions');
-assert.ok(stage.includes('airconP5=NATIVE-0002'),
- 'The original recessed button receives its corrected cache revision');
-assert.ok(!stage.includes('aircon-fcom-p5-buttons-v1.js'),
- 'No duplicate invisible button may overlay an already approved original');
-assert.ok(!stage.includes('AIRCON-FCOM-0001" defer></script><script src="../cockpit/aircon-fcom-p5-buttons'));
-assert.ok(html.includes('aircon-fcom-unified-v1.js?v=AIRCON-NATIVE-P5-0002'));
-assert.ok(unified.includes("kind!=='recessed-button'"),'Parent consumes real physical events');
-assert.ok(unified.includes("d.source!=='recessed-hardware-v2'"),'Only the original installed cap can command the live system');
-assert.ok(!unified.includes("kind!=='aircon-fcom-input'"),'Retired hit path is not live');
-assert.ok(manifest.regions.some(r=>r.id==='overhead'&&r.embeddedUrl.includes('aircon=NATIVE-P5-0002')));
-
-let now=0,state=P.initial();
-const sent=[],emitted=[],listeners={};
+let now=0,timerSerial=0,state=P.initial();
+const jobs=new Map(),sent=[],emitted=[],listeners={};
+function tick(to){
+ assert.ok(to>=now);now=to;
+ for(let i=0;i<20;i++){
+  const pending=[...jobs.entries()].filter(([,job])=>job.at<=now);
+  if(!pending.length)break;
+  for(const [id,job]of pending){jobs.delete(id);job.run()}
+ }
+}
+const timeout=(fn,ms)=>{const id=++timerSerial;jobs.set(id,{at:now+ms,run:fn});return id};
+const clear=id=>jobs.delete(id);
 const frameWindow={postMessage(packet){sent.push(packet)}};
 const frame={contentWindow:frameWindow,addEventListener(){}};
 const doc={
- readyState:'loading',
- querySelector(){return null}, // no instructor drawer needed for physical buttons
+ readyState:'loading',hidden:false,
+ querySelector(){return null},
  getElementById(id){return id==='overheadFrame'?frame:null},
  addEventListener(){}
 };
 const win={
  B737PneumaticsV6:P,
+ B737AirconOVHTQualificationV1:{DELAY_MS:H.DELAY_MS,
+  create:options=>H.create({...options,schedule:timeout,cancel:clear})},
  B737ISNCockpitV1:{
   getPneumaticState:()=>state,
   sendPneumatic:cmd=>{state=P.apply(state,cmd);return P.derive(state)}
@@ -54,53 +65,68 @@ vm.runInNewContext(unified,{
  localStorage:{getItem:()=>JSON.stringify({aircraftFamily:'B737-300-500'})},
  performance:{now:()=>now},CustomEvent,console,
 },{filename:'aircon-fcom-unified-v1.js'});
-assert.ok(win.B737AirconFCOMUnifiedV1,'FCOM parent integration installed');
+const parent=win.B737AirconFCOMUnifiedV1;
+assert.ok(parent,'Native FCOM bridge ready');
 function nativeMessage(id,pressed,source='recessed-hardware-v2'){
  const packet={type:'b737:cockpit-overhead',kind:'recessed-button',id,pressed,source};
  for(const handle of listeners.message??[])handle({
   origin:'https://example.org',source:frameWindow,data:packet
  });
 }
-function messageSource(packet,source={}){for(const fn of listeners.message??[])fn({
- origin:'https://example.org',source,data:packet
-})}
-
+function foreignMessage(packet,source={}){
+ for(const handler of listeners.message??[])handler({
+  origin:'https://example.org',source,data:packet
+ });
+}
 nativeMessage('aircon-ovht-test',true);
-assert.equal(state.inputs.wingBodyTestHeld,true);
-assert.equal(P.derive(state).lamps.wingBodyOverheatL,true,'L wing/body lights as soon as native cap pressed');
-assert.equal(P.derive(state).lamps.wingBodyOverheatR,true,'R wing/body lights as soon as native cap pressed');
+assert.equal(state.inputs.wingBodyTestHeld,false,'Real PRESS never energizes indication immediately');
+assert.equal(P.derive(state).lamps.wingBodyOverheatL,false);
+assert.equal(P.derive(state).lamps.wingBodyOverheatR,false);
+tick(4999);
+assert.equal(state.inputs.wingBodyTestHeld,false,'No lamp at 4999ms');
+assert.equal(parent.getState().ovhtTest.qualified,false);
+tick(5000);
+assert.equal(state.inputs.wingBodyTestHeld,true,'Only full 5-second continuous test reaches ECU');
+assert.equal(P.derive(state).lamps.wingBodyOverheatL,true);
+assert.equal(P.derive(state).lamps.wingBodyOverheatR,true);
 assert.equal(sent.at(-1).action,'aircon-fcom-projection');
 assert.equal(sent.at(-1).payload.lamps.wingBodyOverheatL,true);
 assert.equal(sent.at(-1).payload.lamps.wingBodyOverheatR,true);
-now=5000;nativeMessage('aircon-ovht-test',true); // duplicate pointer action is ignored
-assert.equal(state.inputs.wingBodyTestHeld,true);
-now=5300;nativeMessage('aircon-ovht-test',false);
+tick(5100);nativeMessage('aircon-ovht-test',true);
+assert.equal(state.inputs.wingBodyTestHeld,true,'Duplicate DOWN ignored');
+tick(5300);nativeMessage('aircon-ovht-test',false);
+assert.equal(state.inputs.wingBodyTestHeld,false);
 assert.equal(P.derive(state).lamps.wingBodyOverheatL,false);
-assert.equal(P.derive(state).lamps.wingBodyOverheatR,false);
-assert.ok(win.B737AirconFCOMUnifiedV1.getState().nativeInput.durationMs>=5000);
-assert.equal(win.B737AirconFCOMUnifiedV1.getState().ovhtHeld,false);
+assert.equal(parent.getState().ovhtTest.held,false);
+assert.equal(jobs.size,0);
+
+tick(6000);nativeMessage('aircon-ovht-test',true);
+tick(9999);nativeMessage('aircon-ovht-test',false);
+assert.equal(state.inputs.wingBodyTestHeld,false);
+tick(12000);assert.equal(state.inputs.wingBodyTestHeld,false,
+ 'Cancelled early-release timer cannot re-arm after 5s');
 
 state=P.apply(state,{type:'SENSOR',key:'wingBodyLDetectorFailed',value:true});
-now=5500;nativeMessage('aircon-ovht-test',true);
-assert.equal(P.derive(state).lamps.wingBodyOverheatL,false,'Failed left test circuit stays dark');
-assert.equal(P.derive(state).lamps.wingBodyOverheatR,true,'Right test circuit remains independent');
-now=11500;nativeMessage('aircon-ovht-test',false);
+tick(13000);nativeMessage('aircon-ovht-test',true);
+tick(18000);
+assert.equal(P.derive(state).lamps.wingBodyOverheatL,false,'Faulted left detector fails test');
+assert.equal(P.derive(state).lamps.wingBodyOverheatR,true,'Healthy right detector passes test');
+nativeMessage('aircon-ovht-test',false);
 assert.equal(state.inputs.wingBodyTestHeld,false);
+state=P.apply(state,{type:'SENSOR',key:'wingBodyLLeakDetected',value:true});
+assert.equal(P.derive(state).lamps.wingBodyOverheatL,true,'A real leak remains immediate despite the TEST delay');
+state=P.apply(state,{type:'SENSOR',key:'wingBodyLLeakDetected',value:false});
 
 state=P.apply(state,{type:'SENSOR',key:'bleed1Overlimit',value:true});
 state=P.apply(state,{type:'SENSOR',key:'bleed1Overlimit',value:false});
 assert.equal(P.derive(state).lamps.bleedTrip1,true);
-nativeMessage('trip-reset',false);
-assert.equal(P.derive(state).lamps.bleedTrip1,true,'Release is not another reset');
-nativeMessage('trip-reset',true);
-assert.equal(P.derive(state).lamps.bleedTrip1,false,'Native reset cap clears cooled latched trip');
+nativeMessage('trip-reset',false);assert.equal(P.derive(state).lamps.bleedTrip1,true);
+nativeMessage('trip-reset',true);assert.equal(P.derive(state).lamps.bleedTrip1,false);
 
 nativeMessage('aircon-ovht-test',true,'untrusted-duplicate');
-assert.equal(state.inputs.wingBodyTestHeld,false,'Synthetic nonhardware commands ignored');
-messageSource({type:'b737:cockpit-overhead',kind:'recessed-button',id:'aircon-ovht-test',
- pressed:true,source:'recessed-hardware-v2'});
-assert.equal(state.inputs.wingBodyTestHeld,false,'Untrusted iframe ignored');
-assert.ok(sent.some(p=>p.payload?.lamps?.wingBodyOverheatR===true));
-assert.ok(emitted.some(e=>e.type==='b737:aircon-fcom-status'));
-
-console.log('PASS: actual OH21 recessed pushbutton reaches ECU and both WING BODY lamps immediately; 5s hold/release, failure and TRIP RESET verified; no duplicate button.');
+assert.equal(state.inputs.wingBodyTestHeld,false);
+foreignMessage({type:'b737:cockpit-overhead',kind:'recessed-button',
+ id:'aircon-ovht-test',pressed:true,source:'recessed-hardware-v2'});
+assert.equal(state.inputs.wingBodyTestHeld,false,'Non-operational iframe ignored');
+assert.ok(emitted.some(event=>event.type==='b737:aircon-fcom-status'));
+console.log('PASS: native OH21 P5 must stay dark before 5s, then activate both WING BODY, cancel short hold, release, detector failure and reset.');
