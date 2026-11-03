@@ -30,6 +30,8 @@ assert.ok(e.includes("duration>=5000"),'Five seconds is a hold verification, not
 assert.ok(e.includes("style.cssText='position:absolute;pointer-events:auto;cursor:pointer;'"),'Approved photo buttons do not overwrite artwork');
 assert.ok(e.includes("root.B737OverheadLights?.tripReset?.()"));
 assert.ok(e.includes("send('OVHT_TEST',held,duration)"));
+assert.ok(e.includes("atlas.append(layer);host=piece;"),'P5 test hit areas must be over owner-approved photo, not behind its z-index');
+assert.ok(e.includes("zIndex:'1600',pointerEvents:'none'"),'Hit layer does not obscure other physical controls');
 assert.ok(bridge.includes("d.action==='aircon-fcom-projection'"));
 assert.ok(bridge.includes("window.B737OverheadLights.setAuthoritativePneumatics"));
 assert.ok(bridge.includes("window.B737Aircon400?.setZoneFault"));
