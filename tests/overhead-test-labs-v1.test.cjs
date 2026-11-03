@@ -85,7 +85,7 @@ function setupLiveGesture(){
   const target=sw?button:tile,base={pointerType:'mouse',pointerId:1,isPrimary:true,button:0,target,clientX:x,clientY:y};
   listeners.pointerdown({...base});now+=40;listeners.pointerup({...base});now+=140;
  };
- return {tap,initialized:async()=>{for(let i=0;i<5;i++)await Promise.resolve();return !!window.B737OverheadTestLabsV1;},
+ return {tap,initialized:async()=>{for(let i=0;i<6;i++){await new Promise(resolve=>setImmediate(resolve));if(window.B737OverheadTestLabsV1)return true;}return false;},
   opens:()=>opened,available:()=>window.B737OverheadTestLabsV1?.panels()};
 }
 test('Unified integration: three real switch operations NEVER launch OH15 lab',async()=>{
