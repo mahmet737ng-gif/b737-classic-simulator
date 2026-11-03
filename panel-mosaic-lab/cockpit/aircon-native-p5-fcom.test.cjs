@@ -13,7 +13,7 @@ const manifest=JSON.parse(read('assembly.json'));
 const html=read('index.html');
 
 assert.ok(native.includes("kind:'recessed-button'"),'Real hardware emits recessed-button');
-assert.ok(native.includes("id":"aircon-ovht-test")||native.includes('"id":"aircon-ovht-test"'));
+assert.ok(native.includes('"id":"aircon-ovht-test"'),'Original OVHT TEST remains installed');
 assert.ok(native.includes('"id":"trip-reset"'),'Original TRIP RESET remains installed');
 assert.ok(approved.includes("data-recessed-id"),'Photo fitter positions original recessed controls');
 assert.ok(!stage.includes('aircon-fcom-p5-buttons-v1.js'),
