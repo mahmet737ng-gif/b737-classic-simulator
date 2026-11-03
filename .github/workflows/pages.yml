@@ -178,6 +178,7 @@ jobs:
           node tools/build-composite-overhead-test.cjs
           node tools/test-unified-web-startup.cjs
           node tools/profile-unified-overhead-v6.cjs
+          node tools/test-hydraulic-live-lab-browser.cjs
       - name: Save web startup evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -186,6 +187,7 @@ jobs:
           path: |
             artifacts/unified-web-startup/
             artifacts/perf-0006/
+            artifacts/hydraulic-lab-qa/
           if-no-files-found: ignore
       - uses: actions/configure-pages@v5
         with:
