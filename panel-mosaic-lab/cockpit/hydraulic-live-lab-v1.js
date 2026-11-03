@@ -182,7 +182,7 @@
     '<p class="hydlab-note">Original OH17 metal controls are LIVE. The four physical switches control the hydraulic engine below. All six original annunciator faces reflect that engine. No original bitmap, locked guarded switch or main cockpit state is overwritten.</p>'+
     '<div class="hydlab-indicators"><div class="hydlab-statusbar" id="hydLiveStatus"></div><div class="hydlab-quick" id="hydStatusNumbers"></div><div class="hydlab-sixpack" id="hydLiveSixPack"></div>'+
     '<h3>ENGINE INSTRUMENTS & BRAKE PRESSURE · ORIGINAL PHOTO</h3><div class="hydlab-gauges" id="hydGauges"></div>'+
-    '<h3>FLIGHT CONTROL / STANDBY HYD · OH07</h3><div id="hydStandbyLamps" class="hydlab-standby"></div>'+
+    '<h3>FLIGHT CONTROL / STANDBY HYD · OH07</h3><div class="hydlab-oh07-group"><div class="hydlab-oh07-source" id="hydOH07Photo" aria-label="Original OH07 flight control hydraulic annunciator photo"></div><div id="hydStandbyLamps" class="hydlab-standby"></div></div>'+
     '<div class="hydlab-tools"><button type="button" id="hydBrake">BRAKE APPLICATION ×1</button>'+
     '<button type="button" id="hydStep">ADVANCE +15 s</button><button type="button" id="hydLampTest">LAMP TEST</button>'+
     '<button type="button" id="hydAck">MASTER CAUTION ACK</button><button type="button" id="hydRecall">RECALL</button>'+
@@ -206,6 +206,7 @@
    disconnect();model=Core.loadPreset('healthy');preset='healthy';frame.removeAttribute('src');
   });
   photoIndicators();buildControls();buildFailureList();
+  $('hydOH07Photo').style.backgroundImage='url("'+new URL('../../panel-mosaic-lab/assets/locked/2026-10-23/OH07-08-FLIGHT-NAV-c82458314584.png',document.baseURI).href+'")';
   $('hydBrake').onclick=()=>after([{type:'BRAKE',count:1}]);
   $('hydStep').onclick=()=>{model=Core.step(model,15);output=Core.evaluate(model);render();};
   $('hydLampTest').onclick=()=>{lampTest=!lampTest;render();};
