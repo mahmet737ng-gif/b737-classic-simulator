@@ -236,6 +236,7 @@
   const oh16=lastPhysicalPacket?.toggles||s.controls;
   window.dispatchEvent(new CustomEvent('b737:duct-pressure-live-inputs',{detail:{
    ecu:live,bleed:pneumaticOutput.bleed,controls:pneumaticState.controls,
+   apuRunning:ductSensors.apuRunning===true,
    pack:pneumaticOutput.pack,
    antiIce:{
     engine1:oh16?.['engine-anti-ice-1']||'OFF',
