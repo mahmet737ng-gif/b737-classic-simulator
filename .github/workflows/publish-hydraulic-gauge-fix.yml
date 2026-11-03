@@ -41,8 +41,20 @@ jobs:
           test -f web-dist/panel-mosaic-lab/cockpit/index.html
           test -f web-dist/engine/instruments/hydraulic-gauge-calibration-v2.js
           test -f web-dist/panel-mosaic-lab/cockpit/hydraulic-live-lab-v1.js
-          grep -q 'hydraulic-gauge-calibration-v2' web-dist/panel-mosaic-lab/cockpit/index.html
-          grep -q 'HYD-LAB-UI-0003' web-dist/panel-mosaic-lab/cockpit/index.html || grep -q 'hydraulic-live-lab-v1' web-dist/panel-mosaic-lab/cockpit/index.html
+          node - <<'NODE'
+          const fs=require('node:fs');
+          const root='web-dist/',p='panel-mosaic-lab/cockpit/';
+          const html=fs.readFileSync(root+p+'index.html','utf8');
+          const m=JSON.parse(fs.readFileSync(root+p+'runtime-build.json','utf8'));
+          const bundles=(m.generated||[]).map(file=>fs.readFileSync(root+file,'utf8')).join('\n');
+          if(!html.includes('desktop-bundle')&&!html.includes('hydraulic-live-lab-v1.js'))
+            throw Error('Compiled Unified does not mount the live lab');
+          if(!bundles.includes('B737HydraulicGaugeCalibrationV2')&&!html.includes('hydraulic-gauge-calibration-v2.js'))
+            throw Error('Compiled Unified lost hydraulic photo calibration');
+          if(!bundles.includes('B737HydraulicLabV1')&&!html.includes('hydraulic-live-lab-v1.js'))
+            throw Error('Compiled Unified lost Hydraulic Lab');
+          console.log('PASS: compiled Unified includes the source-photo calibration and OH17 live UI');
+          NODE
           printf '{"schema":"hydraulic-gauge-release/1","sha":"%s","dialCalibration":"HYD-GAUGE-CAL-V2","labUI":"HYD-LAB-UI-0003"}\n' "$(git rev-parse HEAD)" > web-dist/panel-mosaic-lab/cockpit/hydraulic-release-status.json
       - uses: actions/configure-pages@v5
         with:
