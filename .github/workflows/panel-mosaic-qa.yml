@@ -32,6 +32,11 @@ jobs:
         run: |
           node engine/systems/ground-power-header-policy-v1.test.cjs
           node panel-mosaic-lab/cockpit/ground-power-header-v1.test.cjs
+      - name: Verify Classic FCOM OVHT TEST, PACK/BLEED/TRIP and 400 zone Recall
+        run: |
+          node tests/pneumatics-v6.test.cjs
+          node engine/systems/aircon-fcom-ovht-system.test.cjs
+          node panel-mosaic-lab/cockpit/aircon-fcom-wiring.test.cjs
       - name: Verify main ENGINE / F-O visual seam without panel relocation
         run: |
           node --check panel-mosaic-lab/cockpit/main-panel-seam-repair.js
