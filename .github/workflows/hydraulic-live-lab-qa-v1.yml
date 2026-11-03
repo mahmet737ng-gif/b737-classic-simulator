@@ -1,0 +1,48 @@
+name: B737 Classic Hydraulic Lab — core and live browser QA
+on:
+  push:
+    paths:
+      - 'engine/systems/hydraulic-test-lab-core-v1.js'
+      - 'panel-mosaic-lab/cockpit/hydraulic-live-lab-v1.js'
+      - 'panel-mosaic-lab/cockpit/hydraulic-live-lab-v1.css'
+      - 'panel-mosaic-lab/cockpit/overhead-test-labs-v1.js'
+      - 'panel-mosaic-lab/interactive-overhead/app.js'
+      - 'tests/hydraulic-live-lab-v1.test.cjs'
+      - 'tools/test-hydraulic-live-lab-browser.cjs'
+      - '.github/workflows/hydraulic-live-lab-qa-v1.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Hydraulic engine and UI syntax
+        run: |
+          node --check engine/systems/hydraulic-test-lab-core-v1.js
+          node --check panel-mosaic-lab/cockpit/hydraulic-live-lab-v1.js
+          node --test tests/hydraulic-live-lab-v1.test.cjs
+          node --test tests/overhead-test-labs-v1.test.cjs
+      - name: Build exact production Unified
+        run: node tools/build-unified-web.cjs
+      - name: Install browser QA
+        run: |
+          npm install --no-save --ignore-scripts playwright@1.58.2
+          export CHROME_PATH="$(command -v google-chrome || command -v chromium || true)"
+          if [ -z "$CHROME_PATH" ]; then npx playwright install --with-deps chromium; fi
+      - name: Live photographed OH17 browser validation
+        run: |
+          export CHROME_PATH="$(command -v google-chrome || command -v chromium || true)"
+          node tools/test-hydraulic-live-lab-browser.cjs
+      - name: Save photographed Hydraulic lab QA
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hydraulic-live-lab-qa
+          path: artifacts/hydraulic-lab-qa/
+          if-no-files-found: ignore
