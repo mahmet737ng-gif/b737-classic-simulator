@@ -19,7 +19,7 @@ const M=require('../interactive-overhead/lights-model.js');
 assert.ok(!stage.includes('aircon-fcom-p5-buttons-v1.js'),'Do not overlay an invisible duplicate of the actual P5 button');
 assert.ok(stage.includes('pneumatics-v6.js?v=AIRCON-FCOM-0001'));
 assert.ok(stage.includes('overhead-bridge.js?v=AIRCON-NATIVE-P5-0002'));
-assert.ok(unified.includes('aircon-fcom-unified-v1.js?v=AIRCON-OVHT-DELAY-0003'));
+assert.ok(unified.includes('aircon-fcom-unified-v1.js?v=AIRCON-OVHT-DELAY-0004-LAB'));
 assert.ok(unified.includes('sixpack-live-integration-v1.js?v=AIRCON-FCOM-0001'));
 assert.ok(read('assembly.json').includes('aircon=NATIVE-P5-0002'));
 assert.ok(e.includes('"id":"aircon-ovht-test"'),'Actual OH21 recessed OVHT pushbutton retained');
