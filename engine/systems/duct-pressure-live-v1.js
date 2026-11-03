@@ -97,7 +97,7 @@
    isolationOpen:bleed.isolationOpen,
    engineSources:{L:e1,R:e2},apuSource:apu,groundSource:ground,
    packModes:{L:packs.L.effective,R:packs.R.effective},
-   loads,consumers:{starter:{...starts},engineTAI:{...engineTai},wingTAI},
+   loads,consumers:{starter:{...starts},engineTAI:{...engineTai},wingTAI:wingTai},
    assumptions:'EQUIVALENT_PSI_LOAD_PROXY_NOT_ACTUAL_BLEED_PRESSURE_DROP'
   };
   for(const side of ['L','R']){
