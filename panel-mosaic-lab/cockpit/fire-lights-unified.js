@@ -10,19 +10,29 @@ const unit=win.B737FireProtection?.createEngine?.()||null;
 const faceNodes=new Map();
 let lastRegistration=null;
 const overrides={};
-let external=null, visualTest=false, attached=false;
+let external=null, visualTest=false, attached=false, lastSystemLamps='';
 const ids=new Set(model.SLOTS.map(s=>s.id));
-function current(){
+function systemIndications(){
  const computed=unit?.evaluate()?.indications||{};
  const out={};
- for(const s of model.SLOTS)out[s.id]=visualTest||Boolean(
+ for(const s of model.SLOTS)out[s.id]=Boolean(
   Object.prototype.hasOwnProperty.call(overrides,s.id)?overrides[s.id]:
   external&&Object.prototype.hasOwnProperty.call(external,s.id)?external[s.id]:
   computed[s.id]
  );
  return out;
 }
+function current(){
+ const out=systemIndications();
+ if(visualTest)for(const k of Object.keys(out))out[k]=true;
+ return out;
+}
 function draw(){
+ const live=systemIndications(),signature=JSON.stringify(live);
+ if(signature!==lastSystemLamps){
+  lastSystemLamps=signature;
+  win.dispatchEvent(new win.CustomEvent('b737:unified-fire-indicators-state',{detail:{indications:{...live},source:'FIRELAMP-0006_SYSTEM'}}));
+ }
  const vals=current();
  for(const s of model.SLOTS){
   const img=faceNodes.get(s.id);
@@ -103,6 +113,7 @@ win.B737UnifiedFireLights=Object.freeze({
  clearOverrides,
  visualTest(active){visualTest=Boolean(active);return draw();},
  dispatch,indications:()=>Object.freeze({...current()}),
+ systemIndications:()=>Object.freeze({...systemIndications()}),
  getState:()=>unit?.getState()||null,
  positions:()=>model.SLOTS.map(s=>({id:s.id,center:[s.cx,s.cy],frameBounds:model.region(s),glassBounds:model.faceRegion(s),legendPercent:model.legendPercent(s)})),
  version:()=>model.version,
