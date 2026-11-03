@@ -5,7 +5,7 @@
  const nodes=[{"id":"mach-airspeed-1","piece":"UPPER","label":"MACH AIRSPEED WARNING TEST NO 1","cx":1610,"cy":458,"d":40,"quality":"photo"},{"id":"mach-airspeed-2","piece":"UPPER","label":"MACH AIRSPEED WARNING TEST NO 2","cx":1674,"cy":458,"d":40,"quality":"photo"},{"id":"stall-warning-1","piece":"UPPER","label":"STALL WARNING TEST NO 1","cx":1478,"cy":592,"d":42,"quality":"photo"},{"id":"stall-warning-2","piece":"UPPER","label":"STALL WARNING TEST NO 2","cx":1609,"cy":592,"d":42,"quality":"photo"},{"id":"pitot-static-tat-test","piece":"OH15","label":"PITOT STATIC HEAT / TAT TEST","cx":638,"cy":1027,"d":122,"quality":"photo"},{"id":"residual-volts","piece":"OH10","label":"AC DC METERING RESIDUAL VOLTS","cx":917,"cy":1273,"d":112,"quality":"screenshot-aligned","note":"Owner screenshot OH10 bore center: 8 native px left, 45 native px down; bezel and cap unchanged"},{"id":"aircon-ovht-test","piece":"OH21","label":"AIR CONDITIONING OVERHEAT TEST","cx":925,"cy":472,"d":108,"quality":"photo"},{"id":"trip-reset","piece":"OH21","label":"PACK / BLEED TRIP RESET","cx":559,"cy":1051,"d":109,"quality":"photo"},{"id":"attend","piece":"OH18","label":"ATTEND","cx":160,"cy":400,"d":192,"quality":"photo"},{"id":"ground-call","piece":"OH18","label":"GRD CALL","cx":615,"cy":400,"d":192,"quality":"photo"},{"id":"rain-repellent-left","piece":"OH18","label":"RAIN REPELLENT LEFT","cx":236,"cy":1035,"d":176,"quality":"photo"},{"id":"rain-repellent-right","piece":"OH18","label":"RAIN REPELLENT RIGHT","cx":550,"cy":1035,"d":176,"quality":"photo"}];
  const host=root.document.getElementById('atlasAbsolute');
  if(!host)return;
- const mounted=new Map();
+ const mounted=new Map(),nativeAirconReleases=new Map();
  const send=(id,pressed,quality)=>{
   const detail={id,pressed,action:pressed?'PRESS':'RELEASE',momentary:true,quality,source:'recessed-hardware-v2'};
   root.dispatchEvent(new CustomEvent('b737:recessed-button',{detail}));
@@ -21,6 +21,9 @@
   ring.append(cap);
   let pressed=false;
   const set=next=>{next=!!next;if(pressed===next)return;pressed=next;cap.dataset.pressed=String(next);cap.setAttribute('aria-pressed',String(next));send(item.id,next,item.quality);};
+  // Keep the original installed air-con cap. Fail-safe release on lost
+  // window focus so a 5-second TEST cannot remain stuck after alt-tab.
+  if(item.id==='aircon-ovht-test')nativeAirconReleases.set(item.id,()=>set(false));
   cap.addEventListener('pointerdown',e=>{if(e.pointerType==='mouse'&&e.button!==0)return;e.stopPropagation();e.preventDefault();try{cap.setPointerCapture(e.pointerId);}catch(_){}set(true);});
   for(const name of ['pointerup','pointercancel','lostpointercapture'])cap.addEventListener(name,e=>{e.stopPropagation();set(false);});
   cap.addEventListener('pointerleave',e=>{if(!cap.hasPointerCapture?.(e.pointerId))set(false);});
@@ -52,6 +55,10 @@
  let queue=false;const schedule=()=>{if(queue)return;queue=true;root.requestAnimationFrame(()=>{queue=false;mount();});};
  const observer=new MutationObserver(schedule);observer.observe(host,{childList:true,subtree:false});
  root.addEventListener('resize',schedule);
+ const releaseAircon=()=>nativeAirconReleases.get('aircon-ovht-test')?.();
+ root.addEventListener('blur',releaseAircon);
+ root.addEventListener('pagehide',releaseAircon);
+ root.document.addEventListener('visibilitychange',()=>{if(root.document.hidden)releaseAircon();});
  root.B737RecessedOverheadV2={version:'RECESS-0002',registry:()=>nodes.map(x=>({...x})),mounted:()=>[...mounted.keys()],refresh:mount};
  schedule();
 })(window);
