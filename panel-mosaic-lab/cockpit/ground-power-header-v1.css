@@ -1,0 +1,47 @@
+/* Unified instructor GPU controls only; no changes to protected cockpit artwork. */
+body > header.unified-minimal-header #groundPowerHeader{
+ display:inline-flex!important;visibility:visible!important;flex:0 0 auto!important;
+ border-color:#6b8692!important;background:#203d4a!important;color:#e4f5fb!important;
+ white-space:nowrap!important;
+}
+body > header.unified-minimal-header #groundPowerHeader[data-gpu="AVAILABLE"]{
+ border-color:#6da5d5!important;color:#d8efff!important;
+}
+body > header.unified-minimal-header #groundPowerHeader[data-gpu="ON_BUS"]{
+ border-color:#6baf8f!important;background:#1d4940!important;color:#d5ffe4!important;
+}
+body > header.unified-minimal-header #groundPowerHeader[data-gpu="BAD_QUALITY"]{
+ border-color:#d39c5d!important;color:#ffddad!important;
+}
+#groundPowerPopover[hidden]{display:none!important}
+#groundPowerPopover{
+ position:fixed;top:calc(var(--minimal-header-height,48px) + 7px);right:clamp(8px,15vw,280px);
+ width:min(370px,calc(100vw - 16px));max-height:calc(100dvh - 66px);
+ overflow-y:auto;box-sizing:border-box;z-index:80;border:1px solid #56788b;
+ border-radius:11px;background:#0d2330;color:#e7f2f9;
+ box-shadow:0 12px 40px #000a;padding:13px 14px;
+ font:12px/1.55 system-ui,Tahoma,Arial,sans-serif;direction:ltr;
+}
+#groundPowerPopover > header{display:flex;justify-content:space-between;
+ align-items:center;border-bottom:1px solid #395464;padding-bottom:8px}
+#groundPowerPopover > header strong{font-size:13px;letter-spacing:.02em}
+#groundPowerPopover button{font:600 12px/1.2 system-ui,Tahoma,Arial,sans-serif;
+ background:#1b4155;color:#ecf7ff;border:1px solid #65889b;
+ padding:9px 8px;border-radius:7px;cursor:pointer;touch-action:manipulation}
+#groundPowerPopover button:disabled{opacity:.45;cursor:not-allowed}
+#groundPowerPopover #gpuClose{padding:3px 9px;font-size:18px;line-height:1.1}
+#groundPowerPopover .gpu-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:12px 0}
+#groundPowerPopover [data-gpu-action="ON"]{background:#1b5147;border-color:#5d9e86}
+#groundPowerPopover [data-gpu-action="OFF"]{background:#56402f;border-color:#997b61}
+#groundPowerPopover #gpuStatus{font-weight:650;color:#d0ecff}
+#groundPowerPopover #gpuAvailability{color:#a6d8ff}
+#groundPowerPopover #gpuBus{font-variant-numeric:tabular-nums;font-size:11px}
+#groundPowerPopover .gpu-explain{font-size:11px;color:#b3c8d3}
+#groundPowerPopover #gpuMessage{min-height:1.2em;color:#b9e6ce}
+#groundPowerPopover #gpuMessage[data-error="true"]{color:#ffbdad}
+@media(max-width:480px){
+ #groundPowerPopover{right:8px}
+ body > header.unified-minimal-header #groundPowerHeader{
+  font-size:10px!important;padding:4px 5px!important;
+ }
+}
