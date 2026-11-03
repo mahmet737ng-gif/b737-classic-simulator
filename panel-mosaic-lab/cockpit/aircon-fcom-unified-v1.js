@@ -81,7 +81,7 @@
   section.setAttribute('dir','ltr');
   const title=document.createElement('h2');title.textContent='AIR CONDITIONING · FCOM TEST & FAILURES';section.append(title);
   const help=document.createElement('p');help.className='muted';
-  help.textContent='OVHT TEST is a momentary P5-10 detector test; hold 5 seconds for the FCOM check. Real faults require cause removal, then TRIP RESET. 400 has ZONE TEMP and controller recall differences.';
+  help.textContent='OVHT TEST · keep the original P5-10 button continuously pressed for 5 seconds. Test lamps remain DARK until qualification; real overheats are immediate. Clear initiating faults before TRIP RESET. Model 400 includes independent ZONE TEMP and Recall channels.';
   section.append(help);
   summary=document.createElement('p');summary.id='airconFCOMStatus';summary.setAttribute('role','status');section.append(summary);
   for(const [id,label,variant]of SENSORS){
@@ -141,8 +141,11 @@
     checkbox.checked=real.state.inputs[id]===true;
    }
    const count=Object.values(real.state.latched).filter(Boolean).length;
+   const h=testHold?.snapshot();
+   const testLabel=h?.held?(h.qualified?'QUALIFIED ≥5s':
+    'HOLDING '+(h.elapsedMs/1000).toFixed(1)+' / 5.0s'):'RELEASED';
    summary.textContent='MODEL '+variant+' · TRIP LATCHES '+count+
-    ' · OVHT TEST '+(real.state.inputs.wingBodyTestHeld?'HELD':'RELEASED')+
+    ' · OVHT TEST '+testLabel+
     ' · L/R WING-BODY '+Number(real.derived.lamps.wingBodyOverheatL)+'/'+
     Number(real.derived.lamps.wingBodyOverheatR);
   }
