@@ -1,4 +1,4 @@
-/* SIXPACK-LIVE-0003: read-only adapter from existing Unified system outputs.
+/* SIXPACK-LIVE-0004: read-only adapter from existing Unified system outputs.
  * Never creates a second electrical/overhead/fire engine or infers unobserved alarms.
  * Training approximation: uses verified illuminated category-related OH annunciators.
  */
@@ -97,14 +97,22 @@
    if(!snapshot)continue;
    for(const k of Object.keys(out)){
     const arr=snapshot[k];
-    if(Array.isArray(arr))for(const id of arr)if(typeof id==='string'&&id.length<120&&!out[k].includes(id))out[k].push(id);
+    if(Array.isArray(arr))for(const item of arr){
+     const id=typeof item==='string'?item:item?.id;
+     if(typeof id!=='string'||!id||id.length>120)continue;
+     const mode=typeof item==='string'?'IMMEDIATE':item.mode;
+     if(!['IMMEDIATE','RECALL_ONLY'].includes(mode))continue;
+     const old=out[k].findIndex(x=>(typeof x==='string'?x:x.id)===id);
+     if(old<0)out[k].push(typeof item==='string'?item:{id,mode});
+     else if(mode==='IMMEDIATE'&&typeof out[k][old]!=='string')out[k][old]={id,mode};
+    }
    }
   }
   return out;
  }
  function install(win){
-  const sources={overhead:empty(),electrical:empty(),fire:empty(),irs:empty(),windowHeat:empty(),tatProbe:empty(),pressurization:empty(),airconZones:empty()};
-  let last='',updates=0,activeSource={overhead:false,electrical:false,fire:false,irs:false,windowHeat:false,tatProbe:false,pressurization:false,airconZones:false};
+  const sources={overhead:empty(),electrical:empty(),fire:empty(),irs:empty(),windowHeat:empty(),tatProbe:empty(),pressurization:empty(),airconZones:empty(),redundancy:empty()};
+  let last='',updates=0,activeSource={overhead:false,electrical:false,fire:false,irs:false,windowHeat:false,tatProbe:false,pressurization:false,airconZones:false,redundancy:false};
   function resolved(){
    const filtered=empty();
    for(const [k,v]of Object.entries(sources.overhead))filtered[k]=[...v];
@@ -114,7 +122,75 @@
     .filter(id=>!['OH:press-auto-fail','OH:press-off-sched-descent'].includes(id));
    return merge({...sources,overhead:filtered});
   }
+  // The new classifier models only the FCOM-supported FCC and auto-slat pairs.
+  // It never mutates aircraft systems and listens to explicit channel evidence.
+  const redundancy=win.B737ClassicRedundancyCautionV1?.create?.()||null;
   const fireWarningInputs={wheelWell:false,external:false};
+  function publishPhysical(){
+   if(!redundancy)return;
+   const state=redundancy.snapshot();
+   const recalled=win.B737SixPack?.getCautionDiagnostics?.().recalled?.includes('CAPT.FLT CONT')===true;
+   const indicators=Object.fromEntries(Object.entries(state.indicators).map(([id,v])=>[
+    id,{on:v.mode==='IMMEDIATE'||v.mode==='RECALL_ONLY'&&recalled,mode:v.mode}
+   ]));
+   const frame=win.document.getElementById('overheadFrame');
+   if(frame?.contentWindow&&win.location?.origin)
+    frame.contentWindow.postMessage({type:'b737:cockpit-command',action:'redundancy-physical-lamps',indicators},win.location.origin);
+   win.dispatchEvent(new win.CustomEvent('b737:redundancy-indicator-state',{
+    detail:{schema:'REDUNDANCY-CAUTION-0001',indicators,recalled,channels:state.channels}
+   }));
+  }
+  function setChannelFailure(system,channel,failed){
+   if(!redundancy)return false;
+   const snapshot=redundancy.setChannel(system,channel,failed);
+   if(!snapshot)return false;
+   update('redundancy',snapshot.reasons);
+   publishPhysical();updateRedundancyControls();
+   return snapshot;
+  }
+  function setSystemFailures(system,channels){
+   if(!redundancy)return false;
+   const snapshot=redundancy.setSystem(system,channels);
+   if(!snapshot)return false;
+   update('redundancy',snapshot.reasons);
+   publishPhysical();updateRedundancyControls();
+   return snapshot;
+  }
+  function updateRedundancyControls(){
+   if(!redundancy)return;
+   const state=redundancy.snapshot();
+   const box=win.document.getElementById('b737RedundancyPanel');
+   if(!box)return;
+   for(const n of box.querySelectorAll('input[data-redundancy-system]')){
+    n.checked=state.channels[n.dataset.redundancySystem]?.[n.dataset.redundancyChannel]===true;
+   }
+  }
+  function mountRedundancyControls(){
+   if(!redundancy)return;
+   const inspector=win.document.getElementById('b737SixpackInspector');
+   if(!inspector||win.document.getElementById('b737RedundancyPanel'))return;
+   const section=win.document.createElement('section');
+   section.id='b737RedundancyPanel';section.dir='ltr';
+   section.style.cssText='padding:10px;margin-top:9px;border:1px solid #55616a;border-radius:7px;background:#151f27';
+   const h=win.document.createElement('h3');h.textContent='Dual-channel failure · FCOM 9.10';
+   h.style.cssText='margin:0 0 7px;font-size:13px';section.append(h);
+   const info=win.document.createElement('small');
+   info.textContent='Single failure: Recall-only. Both failed: Master Caution + FLT CONT. Training injection; no physical FCC/SMYD fault is assumed.';
+   info.style.cssText='display:block;color:#b4c6d1;margin-bottom:8px';section.append(info);
+   for(const sys of win.B737ClassicRedundancyCautionV1.KEYS){
+    const row=win.document.createElement('div');row.style.cssText='display:flex;align-items:center;gap:9px;margin:6px 0;flex-wrap:wrap';
+    const title=win.document.createElement('strong');title.style.cssText='min-width:96px;font-size:11px';title.textContent=sys.replaceAll('_',' ');row.append(title);
+    for(const ch of ['A','B']){
+     const label=win.document.createElement('label');label.style.cssText='font-size:11px';
+     const input=win.document.createElement('input');input.type='checkbox';
+     input.dataset.redundancySystem=sys;input.dataset.redundancyChannel=ch;
+     input.addEventListener('change',()=>setChannelFailure(sys,ch,!!input.checked));
+     label.append(input,win.document.createTextNode(' '+ch));row.append(label);
+    }
+    section.append(row);
+   }
+   inspector.append(section);updateRedundancyControls();
+  }
   function fireWarningFrom(source,active){
    if(typeof active!=='boolean')return;
    fireWarningInputs[source]=active;
@@ -126,7 +202,7 @@
    last=signature;updates++;
    win.B737SixPack?.setLiveConditions?.(combined,'UNIFIED_SYSTEMS');
    win.dispatchEvent(new win.CustomEvent('b737:sixpack-live-status',{
-    detail:{version:'SIXPACK-LIVE-0003',updates,sources:{...activeSource},active:Object.fromEntries(Object.entries(combined).map(([k,v])=>[k,v.length]))}
+    detail:{version:'SIXPACK-LIVE-0004',updates,sources:{...activeSource},active:Object.fromEntries(Object.entries(combined).map(([k,v])=>[k,v.length]))}
    }));
   }
   function update(kind,data){
@@ -143,6 +219,14 @@
    if(d.kind==='aircon400-zone-status')update('airconZones',airconZones(d));
   });
   win.addEventListener('b737:electrical-v7-state',e=>update('electrical',electrical(e.detail)));
+  win.addEventListener('b737:redundancy-channel-state',e=>{
+   const d=e.detail;if(d)setChannelFailure(d.system,d.channel,d.failed);
+  });
+  for(const event of ['b737:sixpack-recall','b737:sixpack-acknowledge','b737:sixpack-system-update']){
+   win.addEventListener(event,publishPhysical);
+  }
+  const frame=win.document.getElementById('overheadFrame');
+  frame?.addEventListener?.('load',publishPhysical);
   win.addEventListener('b737:irs-trainer-state',e=>update('irs',irs(e.detail)));
   win.addEventListener('b737:window-heat-annunciations',()=>update('windowHeat',windowHeat(win.B737WindowHeatUnifiedV1?.getOutput?.())));
   win.addEventListener('b737:tat-probe-output',e=>update('tatProbe',tatProbe(e.detail)));
@@ -164,9 +248,11 @@
    fireWarningFrom('external',e.detail?.active);
   });
   win.B737SixPackLiveV1=Object.freeze({
-   version:'SIXPACK-LIVE-0003',deriveOverhead:overhead,deriveElectrical:electrical,deriveFire:fire,
+   version:'SIXPACK-LIVE-0004',deriveOverhead:overhead,deriveElectrical:electrical,deriveFire:fire,
     deriveIRS:irs,deriveWindowHeat:windowHeat,deriveTAT:tatProbe,
     derivePressurization:pressurization,deriveAircon400:airconZones,
+    setChannelFailure,setSystemFailures,
+    getRedundancyState:()=>redundancy?.snapshot?.()||null,
    snapshot:()=>({sources:{...activeSource},reasons:resolved(),updates}),
    refresh:()=>{
     const power=win.B737UnifiedElectricalLive?.snapshot?.();
@@ -179,8 +265,12 @@
     publish();
    }
   });
-  win.addEventListener('b737:sixpack-ready',()=>{last='';publish();});
+  win.addEventListener('b737:sixpack-ready',()=>{last='';publish();publishPhysical();mountRedundancyControls();});
+  if(redundancy)update('redundancy',redundancy.snapshot().reasons);
+  if(win.document.readyState!=='loading')mountRedundancyControls();
+  else win.document.addEventListener?.('DOMContentLoaded',mountRedundancyControls);
   win.B737SixPackLiveV1.refresh();
+  publishPhysical();
   return win.B737SixPackLiveV1;
  }
  return Object.freeze({groups,empty,overhead,electrical,fire,irs,windowHeat,tatProbe,pressurization,airconZones,merge,install});
