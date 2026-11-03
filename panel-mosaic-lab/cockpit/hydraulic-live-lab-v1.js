@@ -67,7 +67,7 @@
   if(!s)return false;
   model=Core.loadPreset(id);preset=id;lastReason=s.label;
   if(id==='a-lost'||id==='b-lost'||id==='dual-lost'){
-   model=Core.step(model,18); // scenario establishes a realistic, decayed supply
+   model=Core.step(model,30); // leak scenario settles close to zero system pressure
   }else if(id==='dual-ac-loss')model=Core.step(model,8);
   else if(id==='engine-out1'||id==='engine-out2')model=Core.step(model,8);
   else if(id==='brake-accum'){
