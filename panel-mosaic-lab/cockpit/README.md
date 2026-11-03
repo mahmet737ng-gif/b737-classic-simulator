@@ -527,6 +527,45 @@ restored. No new pressure system instance was created.
 Regressions: `node panel-mosaic-lab/cockpit/duct-pressure-needles.test.cjs` and
 `node engine/systems/duct-pressure-live-v1.test.cjs`.
 
+## DPN-LIVE-0002 / DPN-0006-INERTIAL — air-consumer pressure and smooth indication
+
+The existing ECU remains the sole engine/APU owner; Pneumatics V6 still owns
+bleed valves, pack modes/trips and isolation. For the approved OH21 indicators
+in both B737 Classic layouts, the Unified projection now observes actual
+pack conditions from Pneumatics V6, actual OH16 engine/wing anti-ice switch
+positions, and ECU **START VALVE OPEN** feedback rather than the start selector.
+No new hardware switches, CB routing, annunciators or artwork were created.
+
+**Training-only approximate equivalent pressure demands**, not real measured
+mass flows or AFM pressure-drop coefficients:
+- PACK OFF 0, AUTO 2.2, HIGH 4.0 PSI-equivalent per side; a tripped pack
+  has no flow; the existing automatic HIGH pack state is honored.
+- Engine thermal anti-ice cowl 1.8 PSI-equivalent when that engine's own
+  bleed source is available; wing anti-ice 4.0 per side when selected.
+- Pneumatic starter 12.0 PSI-equivalent ONLY during actual open start valve.
+- Shared isolation allows supply and consumer load to cross the manifold;
+  two active sources distribute air demand more effectively than one.
+- Source behavior is a simplified idle/high-stage engine estimate, APU left
+  source ~35 PSI, ground right source nominal ~30 PSI (synthetic).
+- A valid sensor pressure overrides the calculated training estimate.
+  No verified WDM power bus or authoritative physical bleed flow model exists.
+
+Needle motion uses a single requestAnimationFrame loop while the pressure
+target is moving. Both independent L and R pointers have a critically damped,
+acceleration-limited, rate-limited response (rise <=13 PSI/s, fall <=17 PSI/s,
+acceleration <=70 PSI/s²) with 20ms numerical substeps. Resume after tab
+suspension caps a single animation-frame interval. The 100ms ECU sampling
+never directly snaps indicator angles. Instructor sliders select targets
+without overriding the smoothing, and AUTO reconnects to live data.
+
+These parameters are plausible classroom heuristics, **not certified timing
+or pressure limits**. Validate by recording actual simulated scenarios
+and comparing with user-supplied aircraft-specific FCOM/maintenance traces.
+Regressions:
+`node engine/systems/duct-pressure-live-v1.test.cjs`,
+`node engine/systems/duct-pressure-demand-motion-v2.test.cjs`,
+`node panel-mosaic-lab/cockpit/duct-pressure-needles.test.cjs`.
+
 ## OH21-APPROVED-ONLY-20261103 — retire the old blue air-system photo in Unified
 
 Owner decision: the blue single-RECIRC OH21 shown in the 2026-11-03 first
