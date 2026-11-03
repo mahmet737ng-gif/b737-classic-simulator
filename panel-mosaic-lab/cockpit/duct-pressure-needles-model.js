@@ -19,8 +19,8 @@
    major:psi%scale.majorStepPsi===0});
  }));
  const needles=Object.freeze([
-  Object.freeze({id:'R',asset:'duct-pressure-needle-r.svg',label:'R DUCT PRESSURE · lower',tipRadius:118,initialPsi:0,layer:0}),
-  Object.freeze({id:'L',asset:'duct-pressure-needle-l.svg',label:'L DUCT PRESSURE · upper',tipRadius:118,initialPsi:0,layer:1})
+  Object.freeze({id:'R',asset:'cabin-rate-needle.svg',label:'R DUCT PRESSURE · lower',tipRadius:148,initialPsi:0,layer:0}),
+  Object.freeze({id:'L',asset:'cabin-rate-needle.svg',label:'L DUCT PRESSURE · upper',tipRadius:148,initialPsi:0,layer:1})
  ]);
  function psi(id,value){
   if(!needles.some(needle=>needle.id===id))throw Error('Unknown duct pressure needle '+id);
