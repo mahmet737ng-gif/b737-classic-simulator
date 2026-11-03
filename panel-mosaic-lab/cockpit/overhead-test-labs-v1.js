@@ -193,9 +193,9 @@
  function build(){
   dialog=document.createElement('dialog');dialog.id='overheadTestLabDialogV1';dialog.className='oh-lab-dialog';dialog.dir='ltr';
   dialog.innerHTML='<header class="oh-lab-header"><div><strong id="ohLabTitle">OVERHEAD TEST LAB</strong><small>Original Unified artwork · independent fault injection · non-flight use</small></div><button id="ohLabClose" type="button" aria-label="Close">×</button></header>'+
-  '<div class="oh-lab-layout"><section class="oh-lab-left"><div class="oh-lab-crop" id="ohLabCrop"><div class="oh-lab-window" id="ohLabWindow"><iframe id="ohLabStage" title="Original overhead photo, read-only" tabindex="-1" aria-hidden="true"></iframe></div></div>'+
+  '<div class="oh-lab-layout"><section class="oh-lab-left"><div class="oh-lab-crop" id="ohLabCrop"><div class="oh-lab-window" id="ohLabWindow"><iframe id="ohLabStage" title="Original overhead live interactive panel" aria-label="Interactive original overhead panel"></iframe></div></div>'+
   '<p class="oh-lab-note">Original overhead stage, read-only inside this lab. Physical cockpit switches are not modified by injected faults. Lamp failures use a lab-only visual layer when the original light socket exists.</p>'+
-  '<p id="ohLabStatus" role="status"></p></section><aside class="oh-lab-right">'+
+  '<div id="ohLabCrossHost"></div><p id="ohLabStatus" role="status"></p></section><aside class="oh-lab-right">'+
   '<h3>COMPONENT / SYSTEM</h3><select id="ohLabComponent" aria-label="Component"></select>'+
   '<h3>FAILURE MODE</h3><select id="ohLabMode" aria-label="Failure mode"></select>'+
   '<div class="oh-lab-actions"><button id="ohLabInject" type="button">INJECT FAILURE</button><button id="ohLabClear" type="button">CLEAR SELECTED</button><button id="ohLabReset" type="button">RESET PANEL</button></div>'+
@@ -203,7 +203,7 @@
   '<p class="oh-lab-note"><strong>Model boundary:</strong> this catalog covers modeled and candidate fault modes for each physical control, annunciator and subsystem. Only indicator faults have an immediate visual override in the isolated photo; other entries are instructor scenarios, not connected ECU failures. Aircraft-specific exhaustive FCOM validation remains required.</p>'+
   '</aside></div>';
   document.body.append(dialog);labFrame=$('ohLabStage');
-  labFrame.style.cssText='position:absolute;width:2220px;height:3312px;border:0;max-width:none;max-height:none;display:block;pointer-events:none';
+  labFrame.style.cssText='position:absolute;width:2220px;height:3312px;border:0;max-width:none;max-height:none;display:block;pointer-events:auto';
   $('ohLabClose').addEventListener('click',()=>dialog.close());
   dialog.addEventListener('click',e=>{if(e.target===dialog)dialog.close();});
   $('ohLabComponent').addEventListener('change',populateMode);
@@ -212,6 +212,7 @@
   $('ohLabReset').addEventListener('click',()=>{resetPanelState();paintIndicators();});
   labFrame.addEventListener('load',()=>{sourceReady=true;paintIndicators();});
   dialog.addEventListener('close',()=>{
+   window.B737CrossCockpitIndicatorsV1?.hide();
    activePanel=null;activeFaults=new Map();sourceReady=false;
    labFrame.removeAttribute('src'); // release the extra heavy overhead render
   });
@@ -222,13 +223,22 @@
   // OH15 already has a verified Window Heat/TAT kernel, physical panel, and
   // multiple independent heater, sensor and CB failure scenarios.
   if(id==='OH15'&&window.B737AntiIceTestLabV2?.open){
-   window.B737AntiIceTestLabV2.open();return true;
+   window.B737AntiIceTestLabV2.open();
+   const antiDialog=document.getElementById('antiIceLiveLab');
+   const antiHost=antiDialog?.querySelector('.antiice-visual');
+   if(antiHost)window.B737CrossCockpitIndicatorsV1?.show('OH15',antiHost);
+   if(antiDialog&&!antiDialog.dataset.crossCockpitListener){
+    antiDialog.dataset.crossCockpitListener='true';
+    antiDialog.addEventListener('close',()=>window.B737CrossCockpitIndicatorsV1?.hide());
+   }
+   return true;
   }
   if(!dialog)build();
   activePanel=id;resetPanelState();
   $('ohLabTitle').textContent=id+' · '+panels.get(id).title+' · TEST LAB';
   populateComponents();
   if(!dialog.open)dialog.showModal();
+  window.B737CrossCockpitIndicatorsV1?.show(id,$('ohLabCrossHost'));
   crop();
   const frame=q('overheadFrame'),src=frame?.getAttribute('src')||'./overhead-stage.html';
   labFrame.src=new URL(src,document.baseURI).href+(src.includes('?')?'&':'?')+'isolatedOverheadTestLab=1';
