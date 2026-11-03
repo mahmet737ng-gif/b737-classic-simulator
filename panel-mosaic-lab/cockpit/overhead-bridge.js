@@ -136,6 +136,18 @@
   }
   if(d.action==='pressurization-background'&&['DCPCS','CPCS'].includes(d.system))setPressurizationArtwork(d.system);
   if(d.action==='aircon-background'&&['B737-300-500','B737-400'].includes(d.family))setAirframeArtwork(d.family);
+  if(d.action==='aircon-fcom-projection'&&d.payload?.lamps){
+   // Existing ECU/Pneumatics V6 is authoritative for 300/500 and 400.
+   const payload=d.payload;
+   window.B737OverheadLights.setAuthoritativePneumatics?.({lamps:payload.lamps});
+   if(payload.family==='B737-400'&&payload.zones){
+    for(const [zone,entry] of Object.entries({
+     'cont-cab':payload.zones.CONT,'fwd-cab':payload.zones.FWD,'aft-cab':payload.zones.AFT
+    }))if(entry&&typeof entry.immediate==='boolean')
+     window.B737Aircon400?.setZoneFault?.(zone,entry.immediate);
+   }
+   report();return;
+  }
   if(d.action==='visual-test'&&typeof d.active==='boolean')visualTest(d.active);
   if(d.action==='lamp-test'&&typeof d.active==='boolean')window.B737OverheadLights.setLampTest(d.active);
   if(d.action==='fault'&&typeof d.id==='string'&&typeof d.active==='boolean'){try{window.B737OverheadLights.setFault(d.id,d.active);}catch{}}
