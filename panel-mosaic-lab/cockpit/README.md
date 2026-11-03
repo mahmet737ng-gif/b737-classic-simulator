@@ -527,6 +527,56 @@ restored. No new pressure system instance was created.
 Regressions: `node panel-mosaic-lab/cockpit/duct-pressure-needles.test.cjs` and
 `node engine/systems/duct-pressure-live-v1.test.cjs`.
 
+## AIRCON-FCOM-0001 — 737-300/500 and 737-400 P5-10 Overheat / annunciations
+
+**FCOM basis:** Boeing 737 Classic FCOM V2 2.10.2–2.10.10, 2.20.5,
+SP.2.1 (Wing–Body Overheat Test, 5-second check). Uses the EXISTING
+Pneumatics V6 session of the single ISN13/18 ECU. The approved OH21/OH20
+photo assets remain immutable. MRG aircraft-installation-specific trip
+thresholds and full wire continuity have **not** been verified.
+
+- An invisible accessible P5-10 hit target follows the owner-approved
+  photo's **OVHT TEST** button (OH21 source x=912,y=392) as a momentary
+  pointer/keyboard hold. Both WING–BODY detectors illuminate immediately
+  for as long as a healthy detection circuit is tested, with no pack or
+  bleed shutdown. Five seconds is the FCOM **minimum hold/check duration**,
+  not a delayed response. A broken detector test channel prevents its
+  own test indication. Releasing, losing focus or navigating away always
+  ends the test; a true leak stays on independently.
+- A second invisible target follows **TRIP RESET** (OH21 x=559,y=986).
+  BLEED TRIP closes the corresponding engine bleed valve; PACK TRIP
+  closes the corresponding pack valve. A trip lamp remains latched until
+  **both** the abnormal sensor clears **and** TRIP RESET is pressed.
+- On **737-300/500**, overtemperature of L/R DUCT latches its respective
+  DUCT OVERHEAT indication and commands related air-mix FULL COLD;
+  WING–BODY and BLEED TRIP are independent L/R.
+- On **737-400**, the owner-approved PACK annunciators show actual pack
+  overheat or complete primary+standby pack-control failure. A single
+  failed pack-control channel appears on **AIR COND Recall only**, not as
+  an immediate PACK TRIP. The three CONT/FWD/AFT ZONE TEMP alarms and
+  their separate trim-air shutoff states follow individual zone overheat
+  sensors. The associated controller failure is Recall-only where the
+  FCOM calls for it; both failed flight-deck controls give an immediate
+  CONT CAB warning. A cleared zone overheat remains latched until reset.
+- OH21 L/R WING–BODY lamps and 300/500 DUCT/PACK/BLEED lamps receive
+  the **one live ECU Pneumatics V6 projection** through the existing
+  Overhead Bridge; 400 zone lamps use the existing photo overlay. The
+  same Overhead state flows to the existing Six-Pack MASTER CAUTION /
+  **AIR COND** annunciator. No duplicate master caution engine is made.
+- The Controls drawer contains per-sensor instructor faults and a real
+  TRIP RESET button. CLEAR SENSOR is intentionally separate from
+  TRIP RESET. Normal PACK/RECIRC/ISOLATION/engine bleed controls,
+  monitored needle outputs and locked photo images are unchanged.
+
+Dynamic dependencies are loaded asynchronously; the FCOM UI does not
+assume the ECU is ready at HTML script parse time. The lightweight
+pneumatic snapshot excludes the growing ECU event history.
+
+Checks:
+`node tests/pneumatics-v6.test.cjs`;
+`node engine/systems/aircon-fcom-ovht-system.test.cjs`;
+`node panel-mosaic-lab/cockpit/aircon-fcom-wiring.test.cjs`.
+
 ## GPU-FCOM-0001 — FCOM Classic ground power header
 
 The **GROUND POWER** button appears immediately beside the always-visible
