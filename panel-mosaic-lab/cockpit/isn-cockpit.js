@@ -447,7 +447,13 @@
    advanceLiveBattery:(dt,inputs)=>{const b=session.advanceBattery(dt,inputs);chain.syncPower();ecu.core.refreshFuelDelivery();render();return b;},
    // Instructor/FCOM P5-10 commands use the EXISTING Pneumatics V6 owner.
    // No shadow session or duplicate annunciator plant is created.
-   getPneumaticState:()=>JSON.parse(JSON.stringify(startSession.core.pneumaticState)),
+   getPneumaticState:()=>{
+    // Hot-path snapshot excludes the expanding 500-event diagnostics log;
+    // keeps only the fields required by the existing Pneumatics V6 derive.
+    const p=startSession.core.pneumaticState;
+    return {schema:p.schema,seq:p.seq,controls:{...p.controls},inputs:{...p.inputs},
+     faults:{...p.faults},latched:{...p.latched},events:[]};
+   },
    sendPneumatic:action=>{
     if(!['SENSOR','TRIP_RESET','CONTROL'].includes(action?.type))
      throw Error('Unsupported pneumatic trainer command');
