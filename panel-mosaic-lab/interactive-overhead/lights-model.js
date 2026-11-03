@@ -139,7 +139,10 @@
      if(allowed.has(key)&&typeof val==='boolean')lamps[key]=val;
     authoritativePneumatics={lamps};
     return evaluate(now);
-   },ingest,update,evaluate,snapshot:()=>copy(result),setLampTest:(v,now=0)=>{test=!!v;return evaluate(now);},reset:(now=0)=>{context=initialContext();for(const id of Object.keys(valveTime))delete valveTime[id];oxygen=false;test=false;electricalState=electrical.initialState();pneumaticState=pneumatics.initial();authoritativePneumatics=null;syncElectrical();syncPneumatic();return evaluate(now);}};
+   },ingest,update,evaluate,snapshot:()=>copy(result),setLampTest:(v,now=0)=>{test=!!v;return evaluate(now);},reset:(now=0)=>{context=initialContext();for(const id of Object.keys(valveTime))delete valveTime[id];oxygen=false;test=false;electricalState=electrical.initialState();pneumaticState=pneumatics.initial();
+    // Local scenario reset must not drop the live ECU's observed pneumatic
+    // source. The next genuine source snapshot will refresh this cache.
+    syncElectrical();syncPneumatic();return evaluate(now);}};
  }
  return Object.freeze({initialContext,rectangle,validate,controller});
 });
