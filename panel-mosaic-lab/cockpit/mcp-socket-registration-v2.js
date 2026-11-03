@@ -13,6 +13,7 @@ const photoSha="9ee5a14d8b3bbf903e62ba65c1f0b3c52f23238abc1b1cd16fe31fea25548062
 const mounted=new WeakSet();
 const buttonRects=Object.freeze([
  ["VNAV",669,106,102,68],["LNAV",965,109,100,67],
+ ["VOR_LOC",964,218,98,66],
  ["N1",240,321,98,68],["SPEED",356,322,98,68],
  ["LVL_CHG",669,325,105,67],["HDG_SEL",813,325,104,67],
  ["APP",956,326,109,67],["ALT_HLD",1144,327,106,68],
