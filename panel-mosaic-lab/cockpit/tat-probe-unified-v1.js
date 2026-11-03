@@ -9,7 +9,7 @@
  // The cockpit boots cold and dark. As with Window Heat, TAT training supply
  // defaults ON for standalone classroom switch checks; OFF restores actual
  // Main Bus 2 heater / DC1 annunciator gating with no invented aircraft feed.
- let state=Core.initialState(),pressed=false,trainingPower=true,output=null,child=null,ui=null;
+ let state=Core.initialState(),pressed=false,trainingPower=true,output=null,child=null,ui=null,lastSixPackSignature='';
  try{trainingPower=localStorage.getItem(TRAIN_KEY)!=='0';}catch{}
  try{
   const f=JSON.parse(localStorage.getItem(FAULT_KEY)||'{}');
@@ -105,6 +105,13 @@
   output=Core.evaluate(state,{...live,switches:switches(),breakers:breakers(),
     testPressed:pressed,trainingPower});
   project(output);show(output);
+  // Independent annunciator observer; never affects TAT operation or CB state.
+  const signature=JSON.stringify([output.amberOn,output.lampPower,output.heaterRequested,
+   output.testPressed,output.faults,output.onGround,output.trainingPower]);
+  if(signature!==lastSixPackSignature){
+   lastSixPackSignature=signature;
+   window.dispatchEvent(new CustomEvent('b737:tat-probe-output',{detail:{...output}}));
+  }
   return output;
  }
  function fault(id,active){
