@@ -183,6 +183,7 @@
     '<div class="hydlab-indicators"><div class="hydlab-statusbar" id="hydLiveStatus"></div><div class="hydlab-quick" id="hydStatusNumbers"></div><div class="hydlab-sixpack" id="hydLiveSixPack"></div>'+
     '<h3>ENGINE INSTRUMENTS & BRAKE PRESSURE · ORIGINAL PHOTO</h3><div class="hydlab-gauges" id="hydGauges"></div>'+
     '<h3>FLIGHT CONTROL / STANDBY HYD · OH07</h3><div class="hydlab-oh07-group"><div class="hydlab-oh07-source" id="hydOH07Photo" aria-label="Original OH07 flight control hydraulic annunciator photo"></div><div id="hydStandbyLamps" class="hydlab-standby"></div></div>'+
+    '<h3>SYSTEM USERS / INTERDEPENDENCIES · LIVE TRAINING MODEL</h3><div id="hydDownstream" class="hydlab-dependents"></div>'+
     '<div class="hydlab-tools"><button type="button" id="hydBrake">BRAKE APPLICATION ×1</button>'+
     '<button type="button" id="hydStep">ADVANCE +15 s</button><button type="button" id="hydLampTest">LAMP TEST</button>'+
     '<button type="button" id="hydAck">MASTER CAUTION ACK</button><button type="button" id="hydRecall">RECALL</button>'+
@@ -243,6 +244,7 @@
   const specs=[['eng1','ENGINE 1 RUNNING'],['eng2','ENGINE 2 RUNNING'],['ac1','AC BUS 1 AVAILABLE'],
    ['ac2','AC BUS 2 AVAILABLE'],['onGround','ON GROUND'],
    ['standbySelected','STANDBY RUD SELECTED'],['alternateFlapsArmed','ALT FLAPS ARM'],
+   ['gearUpSelected','GEAR UP SELECTED'],['gearNotUpLocked','GEAR NOT UP/LOCKED'],
    ['fireHandle1','ENG 1 FIRE HANDLE PULLED'],['fireHandle2','ENG 2 FIRE HANDLE PULLED']];
   for(const [key,label] of specs){
    const row=document.createElement('label');
@@ -250,6 +252,15 @@
    input.onchange=()=>after([{type:'SET_ENV',id:key,value:input.checked}]);
    row.append(input,document.createTextNode(label));div.append(row);
   }
+  const flaps=document.createElement('div');flaps.className='hydlab-flaps';
+  for(const value of [0,5,15]){
+   const b=document.createElement('button');b.type='button';b.dataset.hydFlaps=String(value);
+   b.textContent='FLAPS '+value;b.onclick=()=>{
+    model=Core.command(model,{type:'SET_ENV',id:'flapsDeg',value});
+    lastReason='Manual flap configuration: '+value;output=Core.evaluate(model);render();
+   };flaps.append(b);
+  }
+  div.append(flaps);
  }
  function renderPhotoLamps(){
   const doc=frameDoc;if(!ready||!doc?.head)return;
@@ -317,7 +328,33 @@
     n.textContent=id.toUpperCase().replaceAll('-',' ')+' · '+(out.lamps[id]?'ON':'OFF');standby.append(n);
    }
   }
+  const consumers=$('hydDownstream');
+  if(consumers&&out.capabilities){
+   const cap=out.capabilities;
+   const descriptions=[
+    ['FLIGHT CONTROLS · A',cap.flightControls.A],
+    ['FLIGHT CONTROLS · B',cap.flightControls.B],
+    ['MANUAL REVERSION',cap.flightControls.manualReversion],
+    ['AUTOPILOT A',cap.autopilot.A],['AUTOPILOT B',cap.autopilot.B],
+    ['NORMAL LANDING GEAR',cap.gearNormal],
+    ['NOSEWHEEL STEERING',cap.nosewheelSteering],
+    ['YAW DAMPER HYD',cap.yawDamper],
+    ['BRAKE ANTISKID',cap.antiskid],
+    ['ALTERNATE FLAPS',cap.alternateFlaps],
+    ['THRUST REVERSER 1',cap.reverser1],['THRUST REVERSER 2',cap.reverser2],
+    ['PTU AVAILABLE',cap.ptu.available],['PTU ACTIVE',cap.ptu.active],
+    ['LGTU AVAILABLE',cap.lgtu.available],['LGTU ACTIVE',cap.lgtu.active],
+    ['SYS A FLUID OVERHEAT',cap.fluidOverheat.A],
+    ['SYS B FLUID OVERHEAT',cap.fluidOverheat.B]
+   ];
+   consumers.replaceChildren(...descriptions.map(([name,value])=>{
+    const el=document.createElement('span');el.textContent=name+' · '+(value?'YES':'NO');
+    el.dataset.ok=String(value);return el;
+   }));
+  }
   for(const input of dialog.querySelectorAll('[data-hyd-env]'))input.checked=!!model.env[input.dataset.hydEnv];
+  for(const b of dialog.querySelectorAll('[data-hyd-flaps]'))
+   b.setAttribute('aria-pressed',String(Number(b.dataset.hydFlaps)===model.env.flapsDeg));
   $('hydLampTest').setAttribute('aria-pressed',String(lampTest));
  }
  function crop(){
