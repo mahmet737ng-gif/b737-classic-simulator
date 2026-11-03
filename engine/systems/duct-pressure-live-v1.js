@@ -45,7 +45,13 @@
   if(!ecu?.engines||!bleed)throw Error('ECU engines and actual pneumatic valve state required');
   const e1=enginePressure(ecu.engines.engine1,bleed.engine1ValveOpen);
   const e2=enginePressure(ecu.engines.engine2,bleed.engine2ValveOpen);
-  const apu=bleed.apuBleedValveOpen===true&&ecu.apu?.phase==='READY'?35:0;
+  // Pneumatics V6 reports an OPEN APU BLEED valve only when its observed
+  // running source and control power are present. Do not additionally gate
+  // that confirmed source on one particular ECU phase spelling. In some
+  // restored/synchronized Unified sessions the pneumatic state can already
+  // be READY while display phase is briefly stale.
+  const apuValveOpen=bleed.apuBleedValveOpen===true;
+  const apu=apuValveOpen?35:0;
   // External cart input is an existing discrete; 30 PSI is training-only.
   const ground=bleed.externalAirAttached===true?SETTINGS.groundAirNominalPsi:0;
   const packs={L:determinePack('L',controls,pack),R:determinePack('R',controls,pack)};
@@ -95,7 +101,7 @@
    R:Math.round(clamp(R,0,100)*10)/10,
    source:'TRAINING_ESTIMATE',quality:'NOT_MEASURED',
    isolationOpen:bleed.isolationOpen,
-   engineSources:{L:e1,R:e2},apuSource:apu,groundSource:ground,
+   engineSources:{L:e1,R:e2},apuSource:apu,apuValveOpen,groundSource:ground,
    packModes:{L:packs.L.effective,R:packs.R.effective},
    loads,consumers:{starter:{...starts},engineTAI:{...engineTai},wingTAI:wingTai},
    assumptions:'EQUIVALENT_PSI_LOAD_PROXY_NOT_ACTUAL_BLEED_PRESSURE_DROP'
