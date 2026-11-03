@@ -227,9 +227,25 @@
   window.dispatchEvent(new CustomEvent('b737:unified-ecu-observation',{detail:live}));
   // Both B737-300/500 and B737-400 use the same dual duct pressure indicator.
   // Observe the one existing ECU/pneumatic state owner; do not create a second plant.
-  const ductSensors=startSession.core.pneumaticState?.inputs||{};
+  const pneumaticState=startSession.core.pneumaticState;
+  const ductSensors=pneumaticState?.inputs||{};
+  const pneumaticOutput=startSession.core.Pneumatics.derive(pneumaticState);
+  // OH16 anti-ice is not owned by the ECU physical-command router.
+  // Read ONLY its actual OH16 switch detents, never lamp-test states.
+  // Starter demand uses valve feedback, not simply an ENG START GRD request.
+  const oh16=lastPhysicalPacket?.toggles||s.controls;
   window.dispatchEvent(new CustomEvent('b737:duct-pressure-live-inputs',{detail:{
-   ecu:live,bleed:s.bleed,controls:s.controls,
+   ecu:live,bleed:pneumaticOutput.bleed,controls:pneumaticState.controls,
+   pack:pneumaticOutput.pack,
+   antiIce:{
+    engine1:oh16?.['engine-anti-ice-1']||'OFF',
+    engine2:oh16?.['engine-anti-ice-2']||'OFF',
+    wing:oh16?.['wing-anti-ice']||'OFF'
+   },
+   starterValves:{
+    L:live.engines.engine1.startValveOpen===true,
+    R:live.engines.engine2.startValveOpen===true
+   },
    sensors:{L:ductSensors.ductLeftPsi,R:ductSensors.ductRightPsi},
    gaugePowered:ductSensors.ductGaugeAcPower!==false
   }}));
