@@ -11,7 +11,7 @@ const atlasLabs=read('overhead-test-labs-v1.js');
 const sourcePanel=JSON.parse(read('../all-overhead/atlas-layout.json')).placements.find(x=>x.id==='OH21');
 const core=require('../../engine/systems/aircon-live-lab-v1.js');
 const hold=require('../../engine/systems/aircon-ovht-hold-v1.js');
-assert.ok(html.includes('aircon-live-test-lab-v1.js?v=AIRCON-LIVE-LAB-0001'));
+assert.ok(html.includes('aircon-live-test-lab-v1.js?v=AIRCON-LIVE-LAB-0002'));
 assert.ok(html.includes('aircon-live-test-lab-v1.css?v=AIRCON-LIVE-LAB-0001'));
 assert.ok(html.includes('aircon-live-lab-v1.js?v=AIRCON-LIVE-LAB-0001'));
 assert.ok(html.includes('aircon-ovht-hold-v1.js?v=AIRCON-OVHT-DELAY-0003'));
