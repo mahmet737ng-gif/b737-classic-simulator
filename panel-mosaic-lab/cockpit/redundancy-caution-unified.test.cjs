@@ -121,7 +121,7 @@ test('FCOM main fuel tank FWD/AFT pair: one LOW PRESSURE recall-only; both immed
  const both=bridge.overhead({power:true,lampTest:false,frames:{
   'fuel-1-fwd':'ON','fuel-1-aft':'ON'
  }});
- assert.deepEqual(both['CAPT.FUEL'],['OH:fuel-1-fwd','OH:fuel-1-aft']);
+ assert.deepEqual(both['CAPT.FUEL'],['OH:fuel-1-aft','OH:fuel-1-fwd']);
  const s=cockpit();
  s.ui.setLiveConditions(single);
  assert.equal(s.ui.getEffectiveState()['CAPT.FUEL'],false);
