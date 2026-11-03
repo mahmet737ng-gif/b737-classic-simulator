@@ -4,8 +4,7 @@
  */
 (function(root){
  'use strict';
- const P=root.B737PneumaticsV6;
- if(!P)return;
+ const pneumatic=()=>root.B737PneumaticsV6;
  const PROFILE_KEY='b737classic.aircraft-profile.v1';
  const SENSORS=Object.freeze([
   ['bleed1Overlimit','L BLEED · overpressure / overtemperature','BOTH'],
@@ -81,8 +80,8 @@
   holder.append(section);
  }
  function live(){
-  const s=owner()?.getPneumaticState?.();if(!s)return null;
-  return {state:s,derived:P.derive(s)};
+  const s=owner()?.getPneumaticState?.();if(!s||!pneumatic()?.derive)return null;
+  return {state:s,derived:pneumatic().derive(s)};
  }
  function refresh(force=false){
   makeControls();
