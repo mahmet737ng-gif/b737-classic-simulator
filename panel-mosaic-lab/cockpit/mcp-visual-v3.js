@@ -11,7 +11,7 @@ const W=2172,H=433, mounted=new WeakSet(), instances=[];
 const ASSET_URL=new URL("./assets/mcp-ias-mach-knob.webp",document.currentScript.src).href;
 const initial=()=>({
   courseL:261,courseR:261,speed:312,heading:134,altitude:31000,verticalSpeed:0,
-  lamps:Object.fromEntries(["AT_ARM","VNAV","LNAV","N1","SPEED","LVL_CHG","HDG_SEL","APP","ALT_HLD","VS","CMD_A","CWS_A","CMD_B","CWS_B"].map(k=>[k,false]))
+  lamps:Object.fromEntries(["AT_ARM","VNAV","LNAV","VOR_LOC","N1","SPEED","LVL_CHG","HDG_SEL","APP","ALT_HLD","VS","CMD_A","CWS_A","CMD_B","CWS_B"].map(k=>[k,false]))
 });
 const values=initial();
 let powerState=null; // equipment supply unresolved until explicit observed evidence
@@ -27,6 +27,7 @@ const lamps=[
  {id:"AT_ARM",x:322,y:129,w:45,h:8},
  {id:"VNAV",x:743,y:161,w:48,h:10},
  {id:"LNAV",x:1008,y:161,w:48,h:10},
+ {id:"VOR_LOC",x:988,y:264,w:48,h:10},
  {id:"N1",x:264,y:374,w:54,h:10},
  {id:"SPEED",x:384,y:374,w:54,h:10},
  {id:"LVL_CHG",x:702,y:374,w:59,h:10},
