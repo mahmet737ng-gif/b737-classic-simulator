@@ -8,11 +8,15 @@
 const host=document.getElementById('atlasAbsolute');if(!host)return;
 const MANIFEST=new URL('../cockpit/panel-photo-registry.v1.json',document.baseURI).href;
 const PROFILE='b737classic.aircraft-profile.v1';
-const originals=new WeakMap();let register=null,active=null,layer=null,detail=null,desired=null,loading=false;
+const originals=new WeakMap();let register=null,active=null,layer=null,detail=null,desired=null,loading=false,requestedFamily=null,failed=false;
 const target=(p)=>new URL('../cockpit/assets/'+p.file,document.baseURI).href;
 const num=s=>Number.parseFloat(s);
 const photoGroup=family=>family==='B737-400'?'OH21_400':'OH21_300500';
-function family(){try{return JSON.parse(localStorage.getItem(PROFILE)||'null')?.aircraftFamily==='B737-400'?'B737-400':'B737-300-500'}catch{return 'B737-300-500'}}
+function family(){
+ if(requestedFamily)return requestedFamily;
+ try{return JSON.parse(localStorage.getItem(PROFILE)||'null')?.aircraftFamily==='B737-400'?'B737-400':'B737-300-500'}
+ catch{return 'B737-300-500'}
+}
 function save(node){if(!originals.has(node))originals.set(node,{style:node.getAttribute('style'),viewBox:node.getAttribute('viewBox'),transform:node.getAttribute('transform')});}
 function restore(node){const was=originals.get(node);if(!was)return;if(was.style===null)node.removeAttribute('style');else node.setAttribute('style',was.style);if(was.viewBox!==null)node.setAttribute('viewBox',was.viewBox);if(was.transform!==null)node.setAttribute('transform',was.transform);originals.delete(node);}
 const affected=new Set();function setstyle(node,properties){if(!node)return;save(node);affected.add(node);Object.assign(node.style,properties);}
@@ -28,7 +32,23 @@ function circle(node,[x,y],fit,diameter=100){if(!node)return;
  const sprite=node.querySelector('.toggle-sprite');if(sprite)setstyle(sprite,{width:(d*1024/390)+'px',height:(d*1024/390)+'px'});
 }
 function relocateRect(node,[x,y,w,h],fit){if(!node)return;setstyle(node,{left:(fit.x+x*fit.scale)+'px',top:(fit.y+y*fit.scale)+'px',width:(w*fit.scale)+'px',height:(h*fit.scale)+'px'});}
+function singleRecircAppearance(){
+ if(!layer)return;
+ layer.dataset.variant=active;
+ layer.querySelectorAll('.oh21-single-recirc-removal,.oh21-single-recirc-title').forEach(el=>el.remove());
+ if(active!=='OH21_300500')return;
+ // The legacy blue 300/500 panel has been retired. Use the approved beige
+ // source and remove ONLY its additional left fan/lettering cosmetically.
+ // The existing 300/500 single-fan physical control remains authoritative.
+ const cover=document.createElement('span');cover.className='oh21-single-recirc-removal';
+ const title=document.createElement('span');title.className='oh21-single-recirc-title';
+ title.textContent='RECIRC FAN';
+ cover.setAttribute('aria-hidden','true');title.setAttribute('aria-hidden','true');
+ layer.append(cover,title);
+}
 function place(){if(!active||!detail||!layer)return false;const f=fit();if(!f)return false;
+ const recircTitle=layer.querySelector('.oh21-single-recirc-title');
+ if(recircTitle)recircTitle.style.fontSize=(35*f.scale)+'px';
  // Atlas reassembly may detach a candidate after loading. Re-attach only this
  // optional photo layer, never modify any locked source image or atlas tile.
  if(layer.parentNode!==host)host.append(layer);
@@ -63,26 +83,59 @@ function place(){if(!active||!detail||!layer)return false;const f=fit();if(!f)re
  window.dispatchEvent(new CustomEvent('b737:owner-oh21-photo-registration',{detail:{version:'PHOTO-REG-20261030',asset:detail.file,family:active,fit:f}}));
  return true;
 }
-function show(asset,img){revert();active=desired;detail=asset;layer=document.createElement('div');layer.className='owner-oh21-photo-layer-v1';layer.dataset.asset=asset.file;
+function show(asset,img){
+ revert();active=desired;detail=asset;failed=false;
+ layer=document.createElement('div');layer.className='owner-oh21-photo-layer-v1';
+ layer.dataset.asset=asset.file;layer.dataset.photoState='approved';
  Object.assign(layer.style,{position:'absolute',zIndex:'62',pointerEvents:'none',overflow:'hidden',background:'#bec0b6'});
  Object.assign(img.style,{display:'block',width:'100%',height:'100%',maxWidth:'none',maxHeight:'none',objectFit:'fill',pointerEvents:'none'});img.draggable=false;
- layer.append(img);host.append(layer);place();}
-async function sync(){if(loading||!register)return;const next=photoGroup(family());if(next===active){place();return;}
- desired=next;loading=true;const asset=register.panels[next];const img=new Image();img.decoding='async';
- try{await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=reject;img.src=target(asset);});
-  if(img.naturalWidth!==asset.width||img.naturalHeight!==asset.height)throw Error('Image dimensions differ from manifest');
-  if(photoGroup(family())!==next)return;show(asset,img);
- }catch(error){revert();console.warn('OH21 photo candidate not active; original locked panel retained',error);}
- finally{loading=false;}}
+ layer.append(img);singleRecircAppearance();host.append(layer);place();}
+async function sync(){
+ if(!register)return;
+ const next=photoGroup(family()),asset=register.panels[next];
+ if(!asset||!['OH21_400','OH21_300500'].includes(next))
+  throw Error('Only two current OH21 air-system variants are supported');
+ if(next===active){place();return;}
+ // Both supported layouts use the very same approved photographic source:
+ // apply the 300/500 single-fan adaptation atomically with no image reload.
+ if(layer&&detail?.file===asset.file){
+  active=next;detail=asset;failed=false;singleRecircAppearance();place();return;
+ }
+ if(loading)return;
+ desired=next;loading=true;const img=new Image();img.decoding='async';
+ try{
+  await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=reject;
+   img.src=target(asset)+'?v=OH21-APPROVED-20261103';});
+  if(img.naturalWidth!==asset.width||img.naturalHeight!==asset.height)
+   throw Error('Approved OH21 photo dimensions differ from manifest');
+  if(photoGroup(family())!==next)return;
+  show(asset,img);
+ }catch(error){
+  failed=true;revert();
+  // Fail closed: no previously rejected blue photo may appear as a fallback.
+  console.warn('Approved OH21 air-system photo unavailable; showing neutral blank',error);
+  if(parent!==window)parent.postMessage({type:'b737:cockpit-overhead',
+   kind:'oh21-photo-error',family:next,reason:'APPROVED_PHOTO_UNAVAILABLE'},location.origin);
+ }finally{
+  loading=false;
+  if(register&&photoGroup(family())!==active&&!failed)queueMicrotask(sync);
+ }
+}
 async function boot(){try{const r=await fetch(MANIFEST,{cache:'no-store'});if(!r.ok)throw Error('Registration manifest missing');register=await r.json();if(register.schema!=='b737.owner.photo.panel-registration/1')throw Error('Registration schema mismatch');
   await sync();
   const observer=new MutationObserver(()=>{if(active)requestAnimationFrame(place);else if(!loading)sync()});observer.observe(host,{childList:true,subtree:false});
-  window.addEventListener('storage',e=>{if(e.key===PROFILE)sync()});
-  window.addEventListener('message',e=>{if(e.origin===location.origin&&e.data?.type==='b737:cockpit-command'&&e.data.action==='aircon-background')sync()});
+  window.addEventListener('storage',e=>{if(e.key===PROFILE){requestedFamily=null;sync()}});
+  window.addEventListener('message',e=>{
+   if(e.origin!==location.origin||e.source!==parent||e.data?.type!=='b737:cockpit-command'
+    ||e.data.action!=='aircon-background')return;
+   if(['B737-400','B737-300-500'].includes(e.data.family)){
+    requestedFamily=e.data.family;sync();
+   }
+  });
   // Hardware is mounted by multiple independent async modules; retry placement,
   // not loading, so every existing owner control is eventually registered.
-  setInterval(()=>{if(photoGroup(family())!==active)sync();else place()},950);
- }catch(error){console.warn('OH21 candidate registry unavailable; frozen background preserved',error)}}
-window.B737OH21OwnerPhotoV1=Object.freeze({status:()=>({active,asset:detail?.file||null,loaded:!!layer?.isConnected,version:'PHOTO-REG-20261030',panel:detail?.layout||null}),refresh:()=>place(),restore:revert});
+  setInterval(()=>{if(photoGroup(family())!==active){if(!failed)sync()}else place()},950);
+ }catch(error){failed=true;console.warn('OH21 registry unavailable; neutral blank retained rather than rejected photo',error)}}
+window.B737OH21OwnerPhotoV1=Object.freeze({status:()=>({active,asset:detail?.file||null,loaded:!!layer?.isConnected,failed,version:'OH21-APPROVED-ONLY-20261103',panel:detail?.layout||null}),refresh:()=>{failed=false;return sync()},restore:revert});
 boot();
 })();
