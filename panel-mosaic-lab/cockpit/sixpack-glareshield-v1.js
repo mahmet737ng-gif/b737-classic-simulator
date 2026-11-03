@@ -7,21 +7,27 @@ const ROOT='b737-classic-sixpack', CAPT=['FLT CONT','ELEC','IRS','APU','FUEL','O
 const FO=['ANTI-ICE','ENG','HYD','OVERHEAD','DOORS','AIR COND'];
 const sides={CAPT,FO};
 const ids=['MASTER CAUTION','FIRE WARN'];
-const manual=new Map(), nodes=new Map(), acknowledged=new Set();
+const manual=new Map(), nodes=new Map(), acknowledged=new Set(), liveReasons=new Map();
+let fireWarningActive=false,fireWarningAcknowledged=false;
 let visualTest=false, recallHeld=false, mounted=false;
 const norm=v=>String(v||'').trim().toUpperCase().replace(/[_\s-]+/g,' ').replace(/\s*\/\s*/g,'/');
 const key=(side,name)=>String(side).toUpperCase()+'.'+norm(name);
-for(const side of Object.keys(sides))for(const name of [...sides[side],...ids])manual.set(key(side,name),false);
+for(const side of Object.keys(sides))for(const name of [...sides[side],...ids]){
+ const k=key(side,name);manual.set(k,false);
+ if(!ids.includes(name))liveReasons.set(k,[]);
+}
 function emit(side,name,on,source){
  window.dispatchEvent(new CustomEvent('b737:sixpack-light-change',{detail:{side,legend:name,id:key(side,name),on:!!on,source,visualOnly:true}}));
 }
 
-const isSystem=k=>!k.endsWith('.MASTER CAUTION')&&!k.endsWith('.FIRE WARN');
-function anyCaution(){return [...manual.keys()].some(k=>isSystem(k)&&manual.get(k)===true&&!acknowledged.has(k));}
+const isSystem=k=>liveReasons.has(k);
+const active=k=>manual.get(k)===true||(liveReasons.get(k)?.length||0)>0;
+function anyCaution(){return [...liveReasons.keys()].some(k=>active(k)&&!acknowledged.has(k));}
 function effective(k){
  if(visualTest)return true;
- if(isSystem(k))return recallHeld||(manual.get(k)===true&&!acknowledged.has(k));
- return k.endsWith('.MASTER CAUTION')?(manual.get(k)===true||anyCaution()):manual.get(k)===true;
+ if(isSystem(k))return recallHeld||(active(k)&&!acknowledged.has(k));
+ if(k.endsWith('.MASTER CAUTION'))return manual.get(k)===true||anyCaution();
+ return (fireWarningActive&&!fireWarningAcknowledged)||manual.get(k)===true;
 }
 function paint(){
  for(const [k,n]of nodes){
@@ -36,7 +42,7 @@ function paint(){
  });
 }
 function acknowledge(source='master-caution-reset'){
- for(const k of manual.keys())if(isSystem(k)&&manual.get(k)===true)acknowledged.add(k);
+ for(const k of liveReasons.keys())if(active(k))acknowledged.add(k);
  for(const side of Object.keys(sides)){
   const k=key(side,'MASTER CAUTION');
   if(manual.get(k)){manual.set(k,false);emit(side,'MASTER CAUTION',false,source);}
@@ -45,10 +51,10 @@ function acknowledge(source='master-caution-reset'){
  window.dispatchEvent(new CustomEvent('b737:sixpack-acknowledge',{detail:{source,retainedActiveFaults:[...acknowledged],visualOnly:true}}));
 }
 function recall(side='CAPT'){
- const active=[...manual.keys()].filter(k=>isSystem(k)&&manual.get(k)===true);
+ const existing=[...liveReasons.keys()].filter(k=>active(k));
  acknowledged.clear();paint();
- window.dispatchEvent(new CustomEvent('b737:sixpack-recall',{detail:{side,active,masterCaution:active.length>0,visualOnly:true}}));
- return active;
+ window.dispatchEvent(new CustomEvent('b737:sixpack-recall',{detail:{side,active:existing,masterCaution:existing.length>0,source:'UNIFIED_AND_INSTRUCTOR',visualOnly:false}}));
+ return existing;
 }
 function press(side='CAPT'){
  if(!sides[side]||recallHeld)return false;
@@ -82,6 +88,43 @@ function setAll(on,side=null,source='instructor'){
  }
  paint();return true;
 }
+// An atomic set of actual annunciator reasons; false-to-true/new-fault edges re-arm caution.
+function setLiveConditions(reasons,source='UNIFIED'){
+ if(!reasons||typeof reasons!=='object')return false;
+ let changed=false;
+ for(const k of liveReasons.keys()){
+  const input=reasons[k];
+  if(input===undefined)continue;
+  if(!Array.isArray(input)||input.some(id=>typeof id!=='string'||!id||id.length>120))return false;
+  const next=[...new Set(input)].sort(),before=liveReasons.get(k);
+  if(JSON.stringify(before)!==JSON.stringify(next)){
+   if(next.some(id=>!before.includes(id))||next.length===0)acknowledged.delete(k);
+   liveReasons.set(k,next);changed=true;
+  }
+ }
+ if(changed){
+  paint();
+  window.dispatchEvent(new CustomEvent('b737:sixpack-system-update',{detail:{source,activeReasons:Object.fromEntries(liveReasons),masterCaution:anyCaution()}}));
+ }
+ return true;
+}
+function setFireWarning(on,source='UNIFIED_FIRE_WARNING'){
+ if(typeof on!=='boolean')return false;
+ if(fireWarningActive!==on){
+  fireWarningActive=on;fireWarningAcknowledged=false;paint();
+  window.dispatchEvent(new CustomEvent('b737:sixpack-fire-update',{detail:{active:on,source}}));
+ }
+ return true;
+}
+function acknowledgeFire(source='bell-cutout'){
+ fireWarningAcknowledged=true;
+ for(const side of Object.keys(sides)){
+  const k=key(side,'FIRE WARN');
+  if(manual.get(k)){manual.set(k,false);emit(side,'FIRE WARN',false,source);}
+ }
+ paint();
+ window.dispatchEvent(new CustomEvent('b737:sixpack-fire-acknowledge',{detail:{source,warningStillActive:fireWarningActive}}));
+}
 function setCombination(combination,source='external'){
  if(!combination||typeof combination!=='object')return false;
  let applied=0;
@@ -107,7 +150,7 @@ function makeButton(side,name,kind){
   el.addEventListener('pointerdown',e=>e.stopPropagation());
   el.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();
    if(name==='MASTER CAUTION')acknowledge();
-   else setLight(side,name,!manual.get(key(side,name)),'cockpit-click');
+   else acknowledgeFire('fire-warn-bell-cutout');
   });
  }else{
   el.textContent=name;el.setAttribute('role','img');
@@ -168,7 +211,7 @@ function addInspector(){
   }
   field.append(grid);section.append(field);
  }
- const note=document.createElement('small');note.textContent='Checkboxes simulate active conditions. Hold either Six-Pack to test every lamp; release to recall unresolved conditions. MASTER CAUTION acknowledges without clearing faults.';
+ const note=document.createElement('small');note.textContent='Live: categories follow Unified overhead, electrical and fire-protection indications. Instructor checkboxes inject additional simulated conditions. Holding a plate tests 12 lamps; release recalls active conditions. MASTER CAUTION acknowledges; FIRE WARN cuts out its warning indication.';
  section.append(note);inspector.append(section);
 }
 function mount(){
@@ -178,15 +221,16 @@ function mount(){
  if(document.getElementById(ROOT))return;
  const root=document.createElement('div');root.id=ROOT;root.className='b737-sixpack-glareshield';root.setAttribute('aria-label','Boeing 737 Classic glareshield system annunciators');
  root.append(makeSeat('CAPT'),makeSeat('FO'));native.append(root);mounted=true;addInspector();paint();
- window.dispatchEvent(new CustomEvent('b737:sixpack-ready',{detail:{version:'SIXPACK-0002',independentLamps:12,masters:4}}));
+ window.dispatchEvent(new CustomEvent('b737:sixpack-ready',{detail:{version:'SIXPACK-0003',independentLamps:12,masters:4}}));
 }
 window.B737SixPack=Object.freeze({
- version:'SIXPACK-0002',
+ version:'SIXPACK-0003',
  mount,
  getState:()=>Object.fromEntries(manual),
  getEffectiveState:()=>Object.fromEntries([...manual.keys()].map(k=>[k,effective(k)])),
- setLight,setAll,setCombination,acknowledge,recall,press,release,
- reset:()=>{acknowledged.clear();recallHeld=false;return setAll(false,null,'reset');},
+ getLiveReasons:()=>Object.fromEntries([...liveReasons].map(([k,v])=>[k,[...v]])),
+ setLight,setAll,setCombination,setLiveConditions,setFireWarning,acknowledgeFire,acknowledge,recall,press,release,
+ reset:()=>{acknowledged.clear();recallHeld=false;fireWarningAcknowledged=false;return setAll(false,null,'reset');},
  setVisualTest:on=>{visualTest=!!on;paint();},
  getGeometry:()=>({region:'main',width:2100,height:920,left:{x:640,y:3,w:144,h:121},right:{x:1387,y:3,w:144,h:121}})
 });
