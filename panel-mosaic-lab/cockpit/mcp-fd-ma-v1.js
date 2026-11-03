@@ -1,4 +1,4 @@
-/* MCP-FD-MA-0001 | 737 Classic FCOM 4.10.13, 4.20.3.
+/* MCP-FD-MA-0002 | round MA lens visual revision; FCOM 4.10.13, 4.20.3.
  * Two non-clickable master FCC lamps over unmodified approved MCP artwork.
  * TRAINING ONLY - independent modes require explicit sensor/instructor evidence.
  */
@@ -10,8 +10,8 @@ if(host&&host.document){host.B737McpFDMAV1=api;api.bind(host);}
 })(typeof window!=="undefined"?window:null,function(){
 "use strict";
 const W=2172,H=433,position=Object.freeze({
- left:Object.freeze({x:203,y:250,w:46,h:27}),
- right:Object.freeze({x:1903,y:250,w:46,h:27})
+ left:Object.freeze({x:203,y:250,w:46,h:46}),
+ right:Object.freeze({x:1903,y:250,w:46,h:46})
 });
 const defaults=()=>({kind:"NORMAL",radioAltitudeFt:null,
  locCaptured:false,gsCaptured:false,fccAvailable:{left:null,right:null}});
@@ -60,16 +60,25 @@ function installStyle(){
  const el=hostWindow.document.createElement("style");
  el.id="mcp-fd-ma-0001-style";
  el.textContent=[
- '[data-piece="mcp"]>.mcp-fd-ma{position:absolute;z-index:7;display:flex;align-items:center;justify-content:center;box-sizing:border-box;',
- 'transform:translate(-50%,-50%);pointer-events:none;border:1px solid #343c3b;border-radius:4px;',
- 'background:linear-gradient(175deg,#020707,#112019 56%,#060a08);color:#859588;',
- 'box-shadow:inset 1px 2px 3px #000,inset 0 0 2px #385346;user-select:none;',
- 'font:bold 9px/1 Arial,Helvetica,sans-serif;letter-spacing:1px;text-shadow:none}',
- '[data-piece="mcp"]>.mcp-fd-ma[data-on="true"]{color:#f4fff5;',
- 'background:linear-gradient(180deg,#8dffc1 0%,#2af274 38%,#078a35 100%);',
- 'box-shadow:0 0 8px 2px #36f77d80,inset 0 1px 2px #efffebad,inset 0 -2px 3px #033c18;',
- 'text-shadow:0 0 2px #eaffed}',
- '[data-piece="mcp"]>.mcp-fd-ma:after{content:"";position:absolute;inset:2px;border:1px solid #bfeeca22;border-radius:2px;pointer-events:none}'
+ /* Owner specified: ROUND black lamp, WHITE MA in both OFF and ON. */
+ '[data-piece="mcp"]>.mcp-fd-ma{position:absolute;z-index:7;display:block;box-sizing:border-box;',
+ 'transform:translate(-50%,-50%);pointer-events:none;user-select:none;overflow:hidden;',
+ 'border:2px solid #3d4140;border-radius:50%!important;',
+ 'background:radial-gradient(circle at 36% 24%,#222727 0%,#0a0d0d 40%,#010202 80%);',
+ 'box-shadow:0 1px 2px #000d,inset 0 1px 3px #000,inset 0 0 1px 1px #101919}',
+ '[data-piece="mcp"]>.mcp-fd-ma:before{content:"";position:absolute;inset:4%;',
+ 'border-radius:50%;border:1px solid #545b5680;box-shadow:inset 0 0 4px #000b;pointer-events:none}',
+ '[data-piece="mcp"]>.mcp-fd-ma svg{display:block;width:100%;height:100%;overflow:visible}',
+ '[data-piece="mcp"]>.mcp-fd-ma .mcp-fd-ma-label{fill:#f6f7f4;stroke:none;',
+ 'font:700 16px Arial,Helvetica,sans-serif;letter-spacing:-.35px;paint-order:stroke fill}',
+ /* The lens remains black when powered. Only reflected light and white MA glow change. */
+ '[data-piece="mcp"]>.mcp-fd-ma[data-on="true"]{',
+ 'border-color:#727d76;',
+ 'background:radial-gradient(circle at 45% 33%,#282f2d 0%,#0c1411 49%,#020403 86%);',
+ 'box-shadow:0 0 3px 1px #e7fff299,0 0 9px 2px #d7ffe252,',
+ 'inset 0 0 5px 1px #e7ffe536,inset 0 1px 3px #030807}',
+ '[data-piece="mcp"]>.mcp-fd-ma[data-on="true"] .mcp-fd-ma-label{',
+ 'fill:#fff;filter:drop-shadow(0 0 1.3px #fff) drop-shadow(0 0 2.7px #d0ffe4)}'
  ].join("");
  (hostWindow.document.head||hostWindow.document.documentElement).append(el);
 }
@@ -89,10 +98,12 @@ function mount(){
   for(const side of ["left","right"]){
    const p=position[side],el=hostWindow.document.createElement("span");
    el.className="mcp-fd-ma";el.dataset.mcpMa=side;el.dataset.on="false";
-   el.setAttribute("role","img");el.textContent="MA";
+   el.setAttribute("role","img");
+   // The fixed SVG viewBox scales the white glyph with the 46px circular lens.
+   el.innerHTML='<svg viewBox="0 0 46 46" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false"><text class="mcp-fd-ma-label" x="23" y="23.6" text-anchor="middle" dominant-baseline="central">MA</text></svg>';
    el.style.left=p.x/W*100+"%";el.style.top=p.y/H*100+"%";
    el.style.width=p.w/W*100+"%";el.style.height=p.h/H*100+"%";
-   el.style.fontSize="clamp(4px,0.55vw,11px)";
+   // Font geometry is set by the SVG viewBox, not viewport-dependent CSS.
    root.append(el);
   }
  }
