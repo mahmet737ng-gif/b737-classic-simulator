@@ -8,13 +8,13 @@
 const SIDES=['L','R'];
 const FAULTS=Object.freeze(['engineBleed1ValveFailed','engineBleed2ValveFailed','apuBleedValveFailed','isolationJammedOpen','isolationJammedClosed','packLValveFailed','packRValveFailed','recircFanFailed','recircFanLFailed','recircFanRFailed']);
 const CONTROL_TYPES=Object.freeze({engineBleed1:['ON','OFF'],engineBleed2:['ON','OFF'],apuBleed:['ON','OFF'],isolation:['CLOSE','AUTO','OPEN'],packL:['OFF','AUTO','HIGH'],packR:['OFF','AUTO','HIGH'],recirc:['OFF','AUTO'],recircL:['OFF','AUTO'],recircR:['OFF','AUTO'],aircraftFamily:['B737-300-500','B737-400'],temperatureL:['AUTO','MANUAL'],temperatureR:['AUTO','MANUAL']});
-const INPUT_TYPES=Object.freeze({engine1Running:'boolean',engine2Running:'boolean',apuRunning:'boolean',onGround:'boolean',flapsUp:'boolean',bleedValveControlPower:'boolean',isolationAcPower:'boolean',recircAcPower:'boolean',ductGaugeAcPower:'boolean',externalAirAvailable:'boolean',bleed1Overlimit:'boolean',bleed2Overlimit:'boolean',packLOverheat:'boolean',packROverheat:'boolean',ductLOverheat:'boolean',ductROverheat:'boolean',wingBodyLLeakDetected:'boolean',wingBodyRLeakDetected:'boolean',wingBodyTestHeld:'boolean',cabinAltitudeFt:'number',ductLeftPsi:'numberOrNull',ductRightPsi:'numberOrNull'});
+const INPUT_TYPES=Object.freeze({engine1Running:'boolean',engine2Running:'boolean',apuRunning:'boolean',onGround:'boolean',flapsUp:'boolean',bleedValveControlPower:'boolean',isolationAcPower:'boolean',recircAcPower:'boolean',ductGaugeAcPower:'boolean',externalAirAvailable:'boolean',bleed1Overlimit:'boolean',bleed2Overlimit:'boolean',packLOverheat:'boolean',packROverheat:'boolean',ductLOverheat:'boolean',ductROverheat:'boolean',wingBodyLLeakDetected:'boolean',wingBodyRLeakDetected:'boolean',wingBodyTestHeld:'boolean',wingBodyLDetectorFailed:'boolean',wingBodyRDetectorFailed:'boolean',zoneContOverheat:'boolean',zoneFwdOverheat:'boolean',zoneAftOverheat:'boolean',packLPrimaryControlFailed:'boolean',packLStandbyControlFailed:'boolean',packRPrimaryControlFailed:'boolean',packRStandbyControlFailed:'boolean',contPrimaryTempControlFailed:'boolean',contStandbyTempControlFailed:'boolean',fwdTempControlFailed:'boolean',aftTempControlFailed:'boolean',cabinAltitudeFt:'number',ductLeftPsi:'numberOrNull',ductRightPsi:'numberOrNull'});
 const SOURCES=Object.freeze({bleed:'FCOM 2.20.1-2; indexed pages 1000-1001',panel:'FCOM 2.10.2-3; indexed pages 983-984',packs:'FCOM 2.10.7-8,2.30.1-2; indexed pages 988-989,1006-1007',cooling:'FCOM 2.30.5; indexed page 1010',wingBody:'FCOM 2.20.5; indexed page 1004',cabinHorn:'FCOM 15.20 via existing WarningEngine'});
 const copy=v=>JSON.parse(JSON.stringify(v));
-function initial(){return {schema:'b737-pneumatics/6',seq:0,controls:{engineBleed1:'ON',engineBleed2:'ON',apuBleed:'OFF',isolation:'AUTO',packL:'AUTO',packR:'AUTO',recirc:'AUTO',recircL:'AUTO',recircR:'AUTO',aircraftFamily:'B737-300-500',temperatureL:'AUTO',temperatureR:'AUTO'},inputs:{engine1Running:true,engine2Running:true,apuRunning:false,onGround:true,flapsUp:false,bleedValveControlPower:true,isolationAcPower:true,recircAcPower:true,ductGaugeAcPower:true,externalAirAvailable:false,bleed1Overlimit:false,bleed2Overlimit:false,packLOverheat:false,packROverheat:false,ductLOverheat:false,ductROverheat:false,wingBodyLLeakDetected:false,wingBodyRLeakDetected:false,wingBodyTestHeld:false,cabinAltitudeFt:0,ductLeftPsi:null,ductRightPsi:null},faults:Object.fromEntries(FAULTS.map(f=>[f,false])),latched:{bleed1:false,bleed2:false,packL:false,packR:false,ductL:false,ductR:false},events:[]};}
+function initial(){return {schema:'b737-pneumatics/6',seq:0,controls:{engineBleed1:'ON',engineBleed2:'ON',apuBleed:'OFF',isolation:'AUTO',packL:'AUTO',packR:'AUTO',recirc:'AUTO',recircL:'AUTO',recircR:'AUTO',aircraftFamily:'B737-300-500',temperatureL:'AUTO',temperatureR:'AUTO'},inputs:{engine1Running:true,engine2Running:true,apuRunning:false,onGround:true,flapsUp:false,bleedValveControlPower:true,isolationAcPower:true,recircAcPower:true,ductGaugeAcPower:true,externalAirAvailable:false,bleed1Overlimit:false,bleed2Overlimit:false,packLOverheat:false,packROverheat:false,ductLOverheat:false,ductROverheat:false,wingBodyLLeakDetected:false,wingBodyRLeakDetected:false,wingBodyTestHeld:false,wingBodyLDetectorFailed:false,wingBodyRDetectorFailed:false,zoneContOverheat:false,zoneFwdOverheat:false,zoneAftOverheat:false,packLPrimaryControlFailed:false,packLStandbyControlFailed:false,packRPrimaryControlFailed:false,packRStandbyControlFailed:false,contPrimaryTempControlFailed:false,contStandbyTempControlFailed:false,fwdTempControlFailed:false,aftTempControlFailed:false,cabinAltitudeFt:0,ductLeftPsi:null,ductRightPsi:null},faults:Object.fromEntries(FAULTS.map(f=>[f,false])),latched:{bleed1:false,bleed2:false,packL:false,packR:false,ductL:false,ductR:false,zoneCont:false,zoneFwd:false,zoneAft:false},events:[]};}
 function ensure(s){if(!s||s.schema!=='b737-pneumatics/6'||!s.controls||!s.inputs||!s.latched)throw Error('Invalid pneumatic state');}
 function validateInput(k,v){if(!Object.prototype.hasOwnProperty.call(INPUT_TYPES,k))throw Error('Unknown sensor '+k);const type=INPUT_TYPES[k];if(type==='boolean'&&typeof v!=='boolean')throw Error('Expected Boolean');if(type==='number'&&(typeof v!=='number'||!Number.isFinite(v)))throw Error('Expected finite number');if(type==='numberOrNull'&&v!==null&&(typeof v!=='number'||!Number.isFinite(v)||v<0))throw Error('Expected nonnegative pressure or null');}
-function syncTrips(n){const i=n.inputs;for(const [target,trigger] of [['bleed1','bleed1Overlimit'],['bleed2','bleed2Overlimit'],['packL','packLOverheat'],['packR','packROverheat'],['ductL','ductLOverheat'],['ductR','ductROverheat']])if(i[trigger])n.latched[target]=true;}
+function syncTrips(n){const i=n.inputs;for(const [target,trigger] of [['bleed1','bleed1Overlimit'],['bleed2','bleed2Overlimit'],['packL','packLOverheat'],['packR','packROverheat'],['ductL','ductLOverheat'],['ductR','ductROverheat'],['zoneCont','zoneContOverheat'],['zoneFwd','zoneFwdOverheat'],['zoneAft','zoneAftOverheat']])if(i[trigger])n.latched[target]=true;}
 function apply(s,command){ensure(s);if(!command||typeof command.type!=='string')throw Error('Invalid pneumatic command');if(command.type==='RESET')return initial();const n=copy(s),c=n.controls,i=n.inputs;
  switch(command.type){
  case 'CONTROL':if(!Object.prototype.hasOwnProperty.call(CONTROL_TYPES,command.key)||!CONTROL_TYPES[command.key].includes(command.value))throw Error('Invalid switch/detent');c[command.key]=command.value;break;
@@ -22,7 +22,7 @@ function apply(s,command){ensure(s);if(!command||typeof command.type!=='string')
  case 'FAULT':if(!FAULTS.includes(command.id)||typeof command.active!=='boolean'||command.instructor!==true)throw Error('Instructor-only fault command');n.faults[command.id]=command.active;break;
  case 'TRIP_RESET':{
    // FCOM: reset only if the initiating condition has been corrected.
-   const map={bleed1:'bleed1Overlimit',bleed2:'bleed2Overlimit',packL:'packLOverheat',packR:'packROverheat',ductL:'ductLOverheat',ductR:'ductROverheat'};
+   const map={bleed1:'bleed1Overlimit',bleed2:'bleed2Overlimit',packL:'packLOverheat',packR:'packROverheat',ductL:'ductLOverheat',ductR:'ductROverheat',zoneCont:'zoneContOverheat',zoneFwd:'zoneFwdOverheat',zoneAft:'zoneAftOverheat'};
    for(const [lamp,sensor] of Object.entries(map))if(!i[sensor])n.latched[lamp]=false;
    break;}
  default:throw Error('Unknown pneumatic action');
@@ -47,7 +47,7 @@ function derive(s){ensure(s);const c=s.controls,i=s.inputs,f=s.faults,t=s.latche
   return false;
  }
  const duct={L:{engineSource:e1,anySupply:supply('L')},R:{engineSource:e2,anySupply:supply('R')}};
- const pack={};for(const side of SIDES){const key='pack'+side,mode=c[key],overheat=t[key],available=duct[side].anySupply;const valid=mode!=='OFF'&&!overheat&&!f[key+'ValveFailed'];const operational=valid?(available===true?true:available===null?null:false):false;pack[side]={selectedMode:mode,operational,tripOff:overheat,ductOverheat:t['duct'+side],mixValveCommand:overheat||t['duct'+side]||mode==='OFF'?'FULL_COLD':'TEMP_SELECTOR',flow:'OFF'};}
+ const pack={};for(const side of SIDES){const key='pack'+side,mode=c[key],overheat=t[key],available=duct[side].anySupply;const extra400Trip=c.aircraftFamily==='B737-400'&&i[key+'PrimaryControlFailed']&&i[key+'StandbyControlFailed'];const valid=mode!=='OFF'&&!overheat&&!extra400Trip&&!f[key+'ValveFailed'];const operational=valid?(available===true?true:available===null?null:false):false;pack[side]={selectedMode:mode,operational,tripOff:overheat||extra400Trip,ductOverheat:t['duct'+side],mixValveCommand:overheat||t['duct'+side]||mode==='OFF'?'FULL_COLD':'TEMP_SELECTOR',flow:'OFF'};}
  const operatingCount=SIDES.filter(x=>pack[x].operational===true).length;
  const apuOnly=apu&&c.engineBleed1==='OFF'&&c.engineBleed2==='OFF';
  for(const side of SIDES){const p=pack[side];if(p.operational===false){p.flow='OFF';continue;}if(p.operational===null){p.flow='UNKNOWN_SOURCE_ROUTE';continue;}
@@ -65,10 +65,24 @@ function derive(s){ensure(s);const c=s.controls,i=s.inputs,f=s.faults,t=s.latche
  };
  const recircActive=c.aircraftFamily==='B737-400'?(recircFans.L.running||recircFans.R.running):singleRecircActive;
  const dualBleed=apu&&(c.engineBleed1==='ON'||(c.engineBleed2==='ON'&&isolation===true));
- const wingBody={L:i.wingBodyLLeakDetected||i.wingBodyTestHeld,R:i.wingBodyRLeakDetected||i.wingBodyTestHeld};
+ // FCOM SP.2: Momentary detector test cannot latch unrelated pack or bleed trips.
+ const wingBody={L:i.wingBodyLLeakDetected||(i.wingBodyTestHeld&&!i.wingBodyLDetectorFailed),
+  R:i.wingBodyRLeakDetected||(i.wingBodyTestHeld&&!i.wingBodyRDetectorFailed)};
+ const pack400={};
+ for(const side of SIDES){
+  const p=i['pack'+side+'PrimaryControlFailed'],s=i['pack'+side+'StandbyControlFailed'];
+  pack400[side]={immediate:t['pack'+side]||(p&&s),
+   recallOnly:!t['pack'+side]&&(p!==s),valveClosed:t['pack'+side]||(p&&s)};
+ }
+ const zoneTemp400={
+  CONT:{immediate:t.zoneCont||(i.contPrimaryTempControlFailed&&i.contStandbyTempControlFailed),
+   recallOnly:!t.zoneCont&&(i.contPrimaryTempControlFailed!==i.contStandbyTempControlFailed),trimValveClosed:t.zoneCont},
+  FWD:{immediate:t.zoneFwd,recallOnly:!t.zoneFwd&&i.fwdTempControlFailed,trimValveClosed:t.zoneFwd},
+  AFT:{immediate:t.zoneAft,recallOnly:!t.zoneAft&&i.aftTempControlFailed,trimValveClosed:t.zoneAft}
+ };
  const gauges={L:i.ductGaugeAcPower?i.ductLeftPsi:null,R:i.ductGaugeAcPower?i.ductRightPsi:null,source:'EXPLICIT_SENSOR_ONLY_PRESSURE_NOT_CALCULATED'};
- return {schema:'b737-pneumatics-derived/6',seq:s.seq,bleed:{engine1ValveOpen:e1,engine2ValveOpen:e2,apuBleedValveOpen:apu,externalAirAttached:i.externalAirAvailable,isolationOpen:isolation,dualBleed,wingBody},duct,pack,recircFanRunning:recircActive,recircFans,recircInstallation:c.aircraftFamily,gauges,
- lamps:{dualBleed,bleedTrip1:t.bleed1,bleedTrip2:t.bleed2,packTripL:t.packL,packTripR:t.packR,ductOverheatL:t.ductL,ductOverheatR:t.ductR,wingBodyOverheatL:wingBody.L,wingBodyOverheatR:wingBody.R},
+ return {schema:'b737-pneumatics-derived/6',seq:s.seq,pack400,zoneTemp400,bleed:{engine1ValveOpen:e1,engine2ValveOpen:e2,apuBleedValveOpen:apu,externalAirAttached:i.externalAirAvailable,isolationOpen:isolation,dualBleed,wingBody},duct,pack,recircFanRunning:recircActive,recircFans,recircInstallation:c.aircraftFamily,gauges,
+ lamps:{dualBleed,bleedTrip1:t.bleed1,bleedTrip2:t.bleed2,packTripL:c.aircraftFamily==='B737-400'?pack400.L.immediate:t.packL,packTripR:c.aircraftFamily==='B737-400'?pack400.R.immediate:t.packR,ductOverheatL:c.aircraftFamily==='B737-400'?false:t.ductL,ductOverheatR:c.aircraftFamily==='B737-400'?false:t.ductR,wingBodyOverheatL:wingBody.L,wingBodyOverheatR:wingBody.R},
  toPressurization:{packConditionedAirAvailable:operatingCount>0?true:pack.L.operational===null||pack.R.operational===null?null:false,cabinPressureCalculated:false,source:'FCOM 2.30.1 functional supply only'},
  statuses:{physicalBleedPressure:'UNKNOWN',actualTemperature:'UNKNOWN',exactAPUAndGroundSourceRouting:'UNKNOWN',powerBusRouting:'NOT_VERIFIED',overlimitSensorThresholds:'NOT_IN_THIS_SOURCE_VIEW',faultFailureResponse:'SYNTHETIC_TRAINER',flightOperations:'NOT_FOR_FLIGHT'},sources:SOURCES};
 }
