@@ -22,6 +22,11 @@ jobs:
         run: node panel-mosaic-lab/all-overhead/runtime.test.cjs
       - name: Verify OH21 two approved photos only and no retired background fallback
         run: node panel-mosaic-lab/cockpit/oh21-approved-variants.test.cjs
+      - name: Verify duct pressure live PACK / STARTER / TAI and inertial dual needles
+        run: |
+          node engine/systems/duct-pressure-live-v1.test.cjs
+          node engine/systems/duct-pressure-demand-motion-v2.test.cjs
+          node panel-mosaic-lab/cockpit/duct-pressure-needles.test.cjs
       - name: Verify main ENGINE / F-O visual seam without panel relocation
         run: |
           node --check panel-mosaic-lab/cockpit/main-panel-seam-repair.js
