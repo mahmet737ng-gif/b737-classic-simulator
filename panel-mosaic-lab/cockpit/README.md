@@ -527,6 +527,54 @@ restored. No new pressure system instance was created.
 Regressions: `node panel-mosaic-lab/cockpit/duct-pressure-needles.test.cjs` and
 `node engine/systems/duct-pressure-live-v1.test.cjs`.
 
+## AIRCON-OVHT-DELAY-0003 / AIRCON-LIVE-LAB-0001 — 5-second test and fully modeled failure laboratory
+
+**Owner requirement (2026-11-03):** In this TRAINING simulator, pressing
+OVHT TEST must *not* immediately light WING–BODY. A shared
+`B737AirconOVHTQualificationV1` timer qualifies the physical P5-10
+control only after a continuous **5000 ms** hold. At 0–4999 ms test lamps
+and associated MASTER CAUTION / AIR COND system indication remain dark;
+at 5000 ms the single existing ECU Pneumatics V6 receives the qualified
+`wingBodyTestHeld=true` test request; at release it receives false.
+Any interrupted hold cancels qualification with no pending timer.
+A real wing/body duct overheat is deliberately **immediate**, independently
+of the training test delay. The FCOM SP.2.1 prescribes a minimum five-second
+hold but does not independently specify a definitive illumination latency;
+the full delay is the owner's requested trainer behavior.
+
+A new `AIR COND LAB` button appears in the Unified top bar, and OH21's
+normal three-tap instructor gesture opens the same dedicated lab. The
+lab crops an **independent copy of the real embedded OH21 atlas/approved
+photo**, original switches, original lights and native recessed OVHT/RESET
+buttons. It never writes to the operational aircraft's ECU: its isolated
+Pneumatics V6 instance is the only lab state owner. The lab provides:
+
+- Per-failure selectable checkboxes and independent combinations for
+  left/right wing/body leaks, open test detectors, bleed overlimits,
+  PACK overheats, stuck/isolation/bleed/pack valves, recirculation/power
+  problems, 300/500 DUCT OVERHEAT and 400 CONT/FWD/AFT ZONE TEMP,
+  PACK primary/standby and other temperature-control channel failures.
+- Presets, lab-only air-source selection, modeled latches, physical
+  PACK/BLEED/TRIP states, TRIP RESET, per-lamp open/stuck-on/dim failures
+  and 400 Recall-only vs immediate warning distinctions.
+- Real original OH21 indicator artwork plus both L/R duct-pressure pointer
+  sprites/calibration and bounded smoothing, driven by the existing training
+  duct pressure estimator. Values are approximate and not certified.
+- Live progress of the five-second hold, a second holdable lab button
+  and the original photo-mounted momentary hardware.
+- Separate lab result labels for MASTER CAUTION / AIR COND and physical
+  lamp indications, explicitly isolated from the operational Six-Pack.
+
+No approved/frozen image assets, Owner18 switches, CB routing, CDU or
+external systems were changed. A photo/pointer audit in a real browser
+is still required.
+
+Regression commands:
+`node engine/systems/aircon-ovht-hold-v1.test.cjs`;
+`node engine/systems/aircon-live-lab-v1.test.cjs`;
+`node panel-mosaic-lab/cockpit/aircon-native-p5-fcom.test.cjs`;
+`node panel-mosaic-lab/cockpit/aircon-live-test-lab-v1.test.cjs`.
+
 ## AIRCON-NATIVE-P5-0002 — original physical OVHT TEST now reaches the ECU
 
 **2026-11-03 diagnosis:** the actual photo-mounted recessed P5-10 OVHT
@@ -539,9 +587,10 @@ never delivered a Wing–Body detector-test command to the parent ECU.
 
 **Fix:** retire the duplicate hidden overlay; wire the native recessed
 `aircon-ovht-test` press/release and `trip-reset` press events directly
-to the one existing ISN/Pneumatics V6 owner. For OVHT, both intact
-detector circuits respond immediately for the held duration; 5 seconds
-is the check duration, not the turn-on delay. Native TRIP RESET only
+to the one existing ISN/Pneumatics V6 owner. For OVHT, both intact detector circuits qualify only after 5 uninterrupted seconds;
+the user-requested simulator indication stays dark for 0–4999 ms, then
+illuminates while the switch remains held. The source FCOM says hold for a
+minimum of 5 seconds; it does not independently prove an exact turn-on delay. Native TRIP RESET only
 acts on initial PRESS, after the initiating fault clears. Both cap
 geometry and visuals remain owner-approved. Original recessed hardware
 now refuses to overwrite photo-registration positions when the old
@@ -565,15 +614,14 @@ Pneumatics V6 session of the single ISN13/18 ECU. The approved OH21/OH20
 photo assets remain immutable. MRG aircraft-installation-specific trip
 thresholds and full wire continuity have **not** been verified.
 
-- An invisible accessible P5-10 hit target follows the owner-approved
-  photo's **OVHT TEST** button (OH21 source x=912,y=392) as a momentary
-  pointer/keyboard hold. Both WING–BODY detectors illuminate immediately
-  for as long as a healthy detection circuit is tested, with no pack or
-  bleed shutdown. Five seconds is the FCOM **minimum hold/check duration**,
-  not a delayed response. A broken detector test channel prevents its
-  own test indication. Releasing, losing focus or navigating away always
-  ends the test; a true leak stays on independently.
-- A second invisible target follows **TRIP RESET** (OH21 x=559,y=986).
+- The **original P5-10 recessed OVHT TEST hardware** is the sole input;
+  the extra invisible hit target has been retired. A shared qualification
+  timer holds the simulated detector-test indication OFF until 5 seconds
+  have elapsed continuously. Healthy L/R WING–BODY detectors then illuminate
+  for the remainder of the hold; release or focus loss cancels the test.
+  A broken detector channel prevents its test indication, while a real
+  duct leak lights independently and immediately.
+- The **original recessed TRIP RESET** button is also authoritative.
   BLEED TRIP closes the corresponding engine bleed valve; PACK TRIP
   closes the corresponding pack valve. A trip lamp remains latched until
   **both** the abnormal sensor clears **and** TRIP RESET is pressed.
