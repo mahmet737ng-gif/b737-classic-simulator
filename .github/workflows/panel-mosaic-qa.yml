@@ -26,6 +26,7 @@ jobs:
         run: |
           node engine/systems/duct-pressure-live-v1.test.cjs
           node engine/systems/duct-pressure-demand-motion-v2.test.cjs
+          node engine/systems/duct-pressure-apu-observation.test.cjs
           node panel-mosaic-lab/cockpit/duct-pressure-needles.test.cjs
       - name: Verify main ENGINE / F-O visual seam without panel relocation
         run: |
