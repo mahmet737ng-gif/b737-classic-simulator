@@ -21,7 +21,7 @@
  function controller(reg,electrical,notify=()=>{},pneumatics){
   let aircraftElectricalPower=null;
   let context=initialContext(),toggles={},rotaries={},guards={},test=false,electricalState=electrical.initialState();
-  let pneumaticState=pneumatics.initial();
+  let pneumaticState=pneumatics.initial(),authoritativePneumatics=null;
   let aircraftFamily='B737-300-500',recirc400Left='AUTO';
   let oxygen=false;const faults=new Set(reg.lights.map(c=>c.id)),switchTime={},valveTime={};let result=null;
   const control=id=>toggles[id]??guards[id]?.value??rotaries[id];
@@ -103,7 +103,7 @@
      case 'fault':active=v!=='OFF'&&fault(c.id);break;
      case 'apu':active=c.id==='apu-low-pressure'?control('apu-start')!=='OFF'&&(!context.apuRunning||fault(c.id)):fault(c.id);break;
      case 'anti-ice':active=isOn(id)&&fault(c.id);break;
-     case 'pneumatic':active=p.lamps[c.sensor];break;
+     case 'pneumatic':active=authoritativePneumatics&&Object.prototype.hasOwnProperty.call(authoritativePneumatics.lamps,c.sensor)?authoritativePneumatics.lamps[c.sensor]:p.lamps[c.sensor];break;
      case 'press-fault':active=v==='AUTO'&&fault(c.id);break;
      case 'window-on':active=control('window-power-test')==='PWR TEST'||isOn(id)&&!fault('window-'+id.slice(7)+'-overheat');break;
      case 'valve':active=fault(c.id)||now-(valveTime[id]??-10000)<820?'BRIGHT_BLUE':(v==='ON'||v==='OPEN')?'DIM_BLUE':'OFF';break;
@@ -124,7 +124,22 @@
   }
   return {setAircraftElectricalPower:(value,now=0)=>{if(typeof value!=='boolean')throw Error('Boolean electrical power required');aircraftElectricalPower=value;return evaluate(now);},setAircraftFamily:(value,now=0)=>{if(!['B737-300-500','B737-400'].includes(value))throw Error('Invalid airframe family');aircraftFamily=value;syncPneumatic();return evaluate(now);},
   setAircon400LeftRecirc:(value,now=0)=>{if(!['OFF','AUTO'].includes(value))throw Error('Invalid left recirc fan position');recirc400Left=value;syncPneumatic();return evaluate(now);},
-  tripReset:(now=0)=>{syncPneumatic();pneumaticState=pneumatics.apply(pneumaticState,{type:'TRIP_RESET'});return evaluate(now);},ingest,update,evaluate,snapshot:()=>copy(result),setLampTest:(v,now=0)=>{test=!!v;return evaluate(now);},reset:(now=0)=>{context=initialContext();for(const id of Object.keys(valveTime))delete valveTime[id];oxygen=false;test=false;electricalState=electrical.initialState();pneumaticState=pneumatics.initial();syncElectrical();syncPneumatic();return evaluate(now);}};
+  tripReset:(now=0)=>{syncPneumatic();pneumaticState=pneumatics.apply(pneumaticState,{type:'TRIP_RESET'});return evaluate(now);},
+   setWingBodyTestHeld:(held,now=0)=>{
+    if(typeof held!=='boolean')throw Error('OVHT TEST requires held Boolean');
+    pneumaticState=pneumatics.apply(pneumaticState,{type:'SENSOR',key:'wingBodyTestHeld',value:held});
+    return evaluate(now);
+   },
+   setAuthoritativePneumatics:(snapshot,now=0)=>{
+    if(!snapshot||!snapshot.lamps||typeof snapshot.lamps!=='object')throw Error('Pneumatic observation required');
+    const allowed=new Set(['dualBleed','bleedTrip1','bleedTrip2','packTripL','packTripR',
+     'ductOverheatL','ductOverheatR','wingBodyOverheatL','wingBodyOverheatR']);
+    const lamps={};
+    for(const [key,val] of Object.entries(snapshot.lamps))
+     if(allowed.has(key)&&typeof val==='boolean')lamps[key]=val;
+    authoritativePneumatics={lamps};
+    return evaluate(now);
+   },ingest,update,evaluate,snapshot:()=>copy(result),setLampTest:(v,now=0)=>{test=!!v;return evaluate(now);},reset:(now=0)=>{context=initialContext();for(const id of Object.keys(valveTime))delete valveTime[id];oxygen=false;test=false;electricalState=electrical.initialState();pneumaticState=pneumatics.initial();authoritativePneumatics=null;syncElectrical();syncPneumatic();return evaluate(now);}};
  }
  return Object.freeze({initialContext,rectangle,validate,controller});
 });
