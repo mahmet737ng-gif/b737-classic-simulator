@@ -1,0 +1,55 @@
+name: Publish Unified Hydraulic Gauge Fix (isolated)
+on:
+  push:
+    paths:
+      - '.github/workflows/publish-hydraulic-gauge-fix.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+# This trigger is scoped to this one file, so unrelated rapid commits do NOT
+# evict a pending calibration release. Keep it independent of "pages" concurrency.
+concurrency:
+  group: publish-hydraulic-gauge-fix
+  cancel-in-progress: false
+jobs:
+  publish:
+    name: Verify calibration, compile Unified, deploy Pages
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify hydraulic pressure and native dial calibration
+        run: |
+          node --check engine/systems/hydraulic-test-lab-core-v1.js
+          node --check engine/instruments/hydraulic-gauge-calibration-v2.js
+          node --check panel-mosaic-lab/cockpit/hydraulic-live-lab-v1.js
+          node --test tests/hydraulic-live-lab-v1.test.cjs tests/hydraulic-gauge-calibration-v2.test.cjs
+      - name: Build exactly the standard production Unified
+        run: |
+          node tools/build-unified-web.cjs
+          test -f web-dist/panel-mosaic-lab/cockpit/index.html
+          test -f web-dist/engine/instruments/hydraulic-gauge-calibration-v2.js
+          test -f web-dist/panel-mosaic-lab/cockpit/hydraulic-live-lab-v1.js
+          grep -q 'hydraulic-gauge-calibration-v2' web-dist/panel-mosaic-lab/cockpit/index.html
+          grep -q 'HYD-LAB-UI-0003' web-dist/panel-mosaic-lab/cockpit/index.html || grep -q 'hydraulic-live-lab-v1' web-dist/panel-mosaic-lab/cockpit/index.html
+          printf '{"schema":"hydraulic-gauge-release/1","sha":"%s","dialCalibration":"HYD-GAUGE-CAL-V2","labUI":"HYD-LAB-UI-0003"}\n' "$(git rev-parse HEAD)" > web-dist/panel-mosaic-lab/cockpit/hydraulic-release-status.json
+      - uses: actions/configure-pages@v5
+        with:
+          enablement: true
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: web-dist
+      - name: Deploy the verified Unified artifact
+        id: deployment
+        uses: actions/deploy-pages@v4
