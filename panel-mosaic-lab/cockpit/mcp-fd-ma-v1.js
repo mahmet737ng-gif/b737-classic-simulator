@@ -1,4 +1,4 @@
-/* MCP-FD-MA-0004 | centered circular MA over original F/D annun hole; FCOM 4.10.13, 4.20.3.
+/* MCP-FD-MA-0005 | centered circular MA over original F/D annun hole; FCOM 4.10.13, 4.20.3.
  * Two non-clickable master FCC lamps over unmodified approved MCP artwork.
  * TRAINING ONLY - independent modes require explicit sensor/instructor evidence.
  */
@@ -87,7 +87,9 @@ function installStyle(){
  'border-radius:50%;border:1px solid #545b5680;box-shadow:inset 0 0 4px #000b;pointer-events:none}',
  '[data-piece="mcp"]>.mcp-fd-ma svg{display:block;width:100%;height:100%;overflow:visible}',
  '[data-piece="mcp"]>.mcp-fd-ma .mcp-fd-ma-label{fill:#f6f7f4;stroke:none;',
- 'font:700 26px Arial,Helvetica,sans-serif;letter-spacing:-.6px;paint-order:stroke fill;opacity:.62}',
+ 'font:700 26px Arial,Helvetica,sans-serif;letter-spacing:-.6px;paint-order:stroke fill;opacity:.12;filter:none}',
+ '[data-piece="mcp"]>.mcp-fd-ma[data-on="false"] .mcp-fd-ma-label{fill:#fff;opacity:.12!important;filter:none!important}',
+ '[data-piece="mcp"]>.mcp-fd-ma[data-on="false"]{border-color:#222928!important;background:radial-gradient(circle at 40% 30%,#101413,#040606 70%,#010202 100%)!important;box-shadow:inset 0 1px 3px #000,inset 0 0 2px #090d0b!important}',
  /* The lens remains black when powered. Only reflected light and white MA glow change. */
  '[data-piece="mcp"]>.mcp-fd-ma[data-on="true"]{',
  'border-color:#727d76;',
@@ -95,7 +97,7 @@ function installStyle(){
  'box-shadow:0 0 3px 1px #e7fff299,0 0 9px 2px #d7ffe252,',
  'inset 0 0 5px 1px #e7ffe536,inset 0 1px 3px #030807}',
  '[data-piece="mcp"]>.mcp-fd-ma[data-on="true"] .mcp-fd-ma-label{',
- 'fill:#fff;opacity:1;filter:drop-shadow(0 0 1.3px #fff) drop-shadow(0 0 2.7px #d0ffe4)}'
+ 'fill:#fff;opacity:1!important;filter:drop-shadow(0 0 1.3px #fff) drop-shadow(0 0 2.7px #d0ffe4)}'
  ].join("");
  (hostWindow.document.head||hostWindow.document.documentElement).append(el);
 }
@@ -105,6 +107,7 @@ function render(){
   const on=visualTest||state.lamps[side]===true;
   el.dataset.on=String(on);
   el.dataset.source=visualTest?"LAMP_TEST":state.reason;
+  el.dataset.fdSource=state.fdSource||"AFDS_OUTPUT";
   el.title=visualTest?"MA illuminated by ALL LIGHTS ON test":
    "MA "+(on?"ON":"OFF")+" | "+state.reason+" | "+(state.supply?.source||"POWER_UNVERIFIED");
   el.setAttribute("aria-label","Flight Director MA "+side+" "+(on?"illuminated":"extinguished"));
@@ -134,12 +137,31 @@ function liveElectrical(){
  try{return hostWindow?.B737ISNCockpitV1?.getState?.()?.state?.electrical??null}
  catch(e){return null}
 }
+/* Master annunciator source: use physical F/D switches when AFDS output lags.
+ * This reconciles lamp indication; it does not implement flight-control servos.
+ */
+function reconcileFd(out,physical){
+ const l=physical?.FD_LEFT,r=physical?.FD_RIGHT;
+ if(!["ON","OFF"].includes(l)||!["ON","OFF"].includes(r))return out;
+ const fd={left:l==="ON",right:r==="ON"},afds=out?.controls?.fd||{};
+ const mismatch=fd.left!==afds.left||fd.right!==afds.right;
+ return {...out,controls:{...out.controls,fd},maFdSource:mismatch?
+  "HARDWARE_DIRECT_AFDS_MISMATCH":"HARDWARE_VERIFIED"};
+}
+function hardware(){
+ try{return hostWindow?.B737McpHardwareV1?.getState?.()??null}
+ catch(e){return null}
+}
 function applyOutput(out){
  if(!out||out.schema!=="B737_MCP_AFDS_OUTPUT_V1")return getState();
  latest=out;
+ const physical=reconcileFd(out,hardware());
  const supply=maSupply(out,liveElectrical());
- state=evaluate(state,{...out,maPower:supply.powered},evidence);
+ state=evaluate(state,{...physical,maPower:supply.powered},evidence);
  state.supply=supply;
+ state.fdSource=physical.maFdSource||"AFDS_OUTPUT";
+ state.afdsFd={...out.controls.fd};
+ state.physicalFd={...physical.controls.fd};
  render();
  if(hostWindow)hostWindow.dispatchEvent(new CustomEvent("b737:mcp-ma-state",{detail:getState()}));
  return getState();
@@ -148,8 +170,8 @@ function refresh(){
  const next=hostWindow?.B737McpAFDSBridgeV1?.getOutput?.()||latest;
  if(!next)return getState();
  // Do not render unnecessarily on repeated ECU/AFDS sensor broadcasts.
- const sig=JSON.stringify([next.power,next.controls?.fd,next.modes?.autopilot,
-  maSupply(next,liveElectrical()),evidence]);
+ const sig=JSON.stringify([next.power,next.controls?.fd,hardware()?.FD_LEFT,hardware()?.FD_RIGHT,
+  next.modes?.autopilot,maSupply(next,liveElectrical()),evidence]);
  if(lastRefreshSignature===sig)return getState();
  lastRefreshSignature=sig;
  return applyOutput(next);
@@ -195,7 +217,7 @@ function bind(win){
  win.document.addEventListener("DOMContentLoaded",()=>{mount();refresh()});
  if(win.document.readyState!=="loading"){mount();refresh()}
 }
-return Object.freeze({initialState,evaluate,acEvidence,maSupply,position,getState,applyOutput,refresh,setEvidence,mount,bind,
+return Object.freeze({initialState,evaluate,acEvidence,maSupply,reconcileFd,position,getState,applyOutput,refresh,setEvidence,mount,bind,
  audit:()=>({mountedRoots:mounted.length,indicators:mounted.map(root=>[...root.querySelectorAll("[data-mcp-ma]")].map(el=>({side:el.dataset.mcpMa,on:el.dataset.on,text:el.textContent,rect:{width:el.getBoundingClientRect().width,height:el.getBoundingClientRect().height}})))}),
  resetEvidence:()=>{evidence=defaults();if(latest)applyOutput(latest);return getState()}});
 });

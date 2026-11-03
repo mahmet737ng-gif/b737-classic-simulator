@@ -78,3 +78,19 @@ test("Unknown power cannot turn on MA from a switch alone",()=>{
  const result=M.evaluate(M.initialState(),{...out,maPower:supply.powered},ev);
  assertLamps(result,false,false);
 });
+
+test("Physical F/D command wins when AFDS indication is stale",()=>{
+ const stale=o(false,false,null,true);
+ const physical=M.reconcileFd(stale,{FD_LEFT:"ON",FD_RIGHT:"OFF"});
+ assert.deepEqual(physical.controls.fd,{left:true,right:false});
+ assert.equal(physical.maFdSource,"HARDWARE_DIRECT_AFDS_MISMATCH");
+ let state=M.evaluate(M.initialState(),physical,ev);
+ assertLamps(state,true,false);
+ state=M.evaluate(state,M.reconcileFd(stale,{FD_LEFT:"OFF",FD_RIGHT:"OFF"}),ev);
+ assertLamps(state,false,false);
+});
+test("No physical data preserves AFDS indication",()=>{
+ const original=o(false,true,null,true);
+ assert.equal(M.reconcileFd(original,null),original);
+ assert.equal(M.reconcileFd(original,{FD_LEFT:"bad"}),original);
+});
