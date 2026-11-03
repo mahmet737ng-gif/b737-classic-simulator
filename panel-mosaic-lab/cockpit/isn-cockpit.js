@@ -128,7 +128,22 @@
  const liveGateway=new window.B737UnifiedLiveGatewayV1.Gateway({bridge,ecu,physical:{
   dispatch:(_ecu,event)=>ecuCommandFromOverhead(event),synchronize:(current,packet)=>physical.synchronize(current,packet)
  }});
- let lastPhysicalPacket=null,lastOwnerGuardSignature='';
+ let lastPhysicalPacket=null,lastOwnerGuardSignature='',apuDefaultBootChecked=false;
+ // One initial ECU preset after physical Owner18 battery authority is present.
+ // APU OFF/BAT OFF always win. No guarded switch state or art is mutated.
+ function bootDefaultAPU(){
+  if(apuDefaultBootChecked||!liveGateway.initialized||!lastPhysicalPacket)return false;
+  const battery=ownerElectricalGuards()['battery-master'];
+  if(!battery)return false;
+  apuDefaultBootChecked=true;
+  if(battery.value!=='ON'||lastPhysicalPacket.toggles?.['apu-start']!=='ON')return false;
+  if(chain.get().phase.apu!=='OFF')return false;
+  try{ecu.instructorPresetAPUReady({instructor:true});return true;}
+  catch(error){
+   byId('isnStartError').textContent='APU default READY preset: '+error.message;
+   return false;
+  }
+ }
  function ownerElectricalGuards(){
   return byId('overheadFrame')?.contentWindow?.B737GuardOwner18?.inspect?.()||{};
  }
@@ -138,7 +153,7 @@
   const mounted=ownerElectricalGuards(),signature=JSON.stringify(Object.keys(window.B737Owner18ElectricalInputV1.DETENTS).map(id=>mounted[id]||null));
   if(signature===lastOwnerGuardSignature)return false;
   lastOwnerGuardSignature=signature;
-  liveGateway.synchronize(mergeOwnerGuards(lastPhysicalPacket));return true;
+  liveGateway.synchronize(mergeOwnerGuards(lastPhysicalPacket));bootDefaultAPU();return true;
  }
  // Consume the existing, approved output only. A cover-close AUTO transition
  // is reconciled as a hardware snapshot, never rejected as a fake open guard.
@@ -380,6 +395,7 @@
    if(e.data.kind==='controls-state'){
     lastPhysicalPacket=e.data;
     liveGateway.synchronize(mergeOwnerGuards(e.data));
+    bootDefaultAPU();
     observeCrossfeed(e.data.rotaries?.crossfeed);
     for(const event of pendingEvents.splice(0))liveGateway.dispatch(event);
     render();
