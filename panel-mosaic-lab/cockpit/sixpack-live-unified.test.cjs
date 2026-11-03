@@ -174,3 +174,42 @@ test('live IRS and Window Heat take priority over OH approximations; no duplicat
   lampPower:true,heaterRequested:true});
  assert.deepEqual(latest.at(-1)['FO.ANTI ICE'],['OH:cowl-anti-ice-1','TAT:HEAT_DEMAND_UNSATISFIED']);
 });
+
+test('CPCS/DCPCS actual failure indications drive AIR COND, not normal standby mode',()=>{
+ assert.deepEqual(mapper.pressurization({system:'CPCS',lamps:{autoFail:true,offSchedDescent:false}})['FO.AIR COND'],
+  ['PRESS:CPCS:AUTO_FAIL']);
+ assert.deepEqual(mapper.pressurization({system:'DCPCS',lamps:{autoFail:false,offSchedDescent:true}})['FO.AIR COND'],
+  ['PRESS:DCPCS:OFF_SCHED_DESCENT']);
+ assert.equal(mapper.pressurization({system:'CPCS',lamps:{autoFail:false,standby:true}})['FO.AIR COND'].length,0);
+ assert.equal(mapper.pressurization({system:'INVALID',lamps:{autoFail:true}}),null);
+});
+test('737-400 zone faults trigger AIR COND, 300/500 do not inherit 400 faults',()=>{
+ const alarms={'cont-cab':true,'fwd-cab':false,'aft-cab':true};
+ assert.deepEqual(mapper.airconZones({family:'B737-400',zoneFaults:alarms})['FO.AIR COND'],
+  ['AIRCON400:cont-cab:ZONE_FAULT','AIRCON400:aft-cab:ZONE_FAULT']);
+ assert.equal(mapper.airconZones({family:'B737-300-500',zoneFaults:alarms})['FO.AIR COND'].length,0);
+});
+test('pressurization and Aircon400 messages are accepted from only the authentic overhead iframe',()=>{
+ const l=new Map(),events=[],frame={};
+ const w={location:{origin:'https://unified.test'},document:{
+  getElementById(id){return id==='overheadFrame'?{contentWindow:frame}:null;}},
+  addEventListener(k,fn){if(!l.has(k))l.set(k,[]);l.get(k).push(fn);},
+  dispatchEvent(e){events.push(e);for(const fn of l.get(e.type)||[])fn(e);},
+  CustomEvent:class{constructor(t,{detail}={}){this.type=t;this.detail=detail;}},
+  B737SixPack:{setLiveConditions(s){events.push({type:'ANNUNCIATOR_UPDATE',detail:s});},setFireWarning(){}}
+ };
+ mapper.install(w);
+ const send=(source,origin,kind,data)=>{for(const fn of l.get('message')||[])fn({source,origin,
+   data:{type:'b737:cockpit-overhead',kind,...data}});};
+ const n=events.filter(x=>x.type==='ANNUNCIATOR_UPDATE').length;
+ send({},w.location.origin,'pressurization-live-output',{system:'CPCS',lamps:{autoFail:true}});
+ send(frame,'https://invalid.test','aircon400-zone-status',{family:'B737-400',zoneFaults:{'fwd-cab':true}});
+ assert.equal(events.filter(x=>x.type==='ANNUNCIATOR_UPDATE').length,n);
+ send(frame,w.location.origin,'pressurization-live-output',{system:'CPCS',lamps:{autoFail:true}});
+ send(frame,w.location.origin,'aircon400-zone-status',{family:'B737-400',zoneFaults:{'fwd-cab':true}});
+ let last=events.filter(x=>x.type==='ANNUNCIATOR_UPDATE').at(-1).detail;
+ assert.deepEqual(last['FO.AIR COND'],['PRESS:CPCS:AUTO_FAIL','AIRCON400:fwd-cab:ZONE_FAULT']);
+ send(frame,w.location.origin,'pressurization-live-output',{system:'CPCS',lamps:{autoFail:false}});
+ last=events.filter(x=>x.type==='ANNUNCIATOR_UPDATE').at(-1).detail;
+ assert.deepEqual(last['FO.AIR COND'],['AIRCON400:fwd-cab:ZONE_FAULT']);
+});
