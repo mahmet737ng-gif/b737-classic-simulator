@@ -57,3 +57,11 @@
  background:#030707;color:#91edb1;font:700 16px/1 Consolas,monospace;letter-spacing:1px;
  text-shadow:0 0 4px #4ea674;border-radius:2px}
 .hyd-instrument[data-degraded=true] .hyd-native-needle{opacity:.4}
+
+/* Existing Six-Pack lamp/master-caution face classes, duplicated only into the isolated lab. */
+.hydlab-sixpack-physical{display:flex;align-items:center;gap:14px;margin:7px 0;padding:6px 10px;background:linear-gradient(#2c3134,#151b20);border-radius:5px;border:2px solid #080a0d;max-width:260px}
+.hydlab-sixpack-physical .b737-sp-legend[data-hyd-six-legend]{display:grid;place-items:center;width:104px;height:43px;min-width:104px;min-height:43px;
+ font-size:19px!important;font-weight:750!important;background:linear-gradient(#242626,#101213)!important;
+ border:2px solid #07080b!important;box-shadow:inset 1px 2px 2px #68676854!important;border-radius:3px!important}
+.hydlab-sixpack-physical .b737-sp-master.caution{width:74px;height:53px;font-size:10px;padding:4px}
+.hydlab-sixpack small[data-hyd-six-status]{display:block;color:#a9c8d5;font:10px/1.6 Consolas,monospace}
