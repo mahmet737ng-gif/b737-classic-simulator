@@ -7,6 +7,8 @@ on:
       - 'panel-mosaic-lab/cockpit/sixpack-live-unified.test.cjs'
       - 'panel-mosaic-lab/cockpit/fire-lights-unified.js'
       - 'panel-mosaic-lab/cockpit/tat-probe-unified-v1.js'
+      - 'panel-mosaic-lab/cockpit/pressurization-oh22.js'
+      - 'panel-mosaic-lab/cockpit/aircon-400-overlay.js'
       - '.github/workflows/sixpack-unified-live-qa.yml'
   pull_request:
     paths:
@@ -15,6 +17,8 @@ on:
       - 'panel-mosaic-lab/cockpit/sixpack-live-unified.test.cjs'
       - 'panel-mosaic-lab/cockpit/fire-lights-unified.js'
       - 'panel-mosaic-lab/cockpit/tat-probe-unified-v1.js'
+      - 'panel-mosaic-lab/cockpit/pressurization-oh22.js'
+      - 'panel-mosaic-lab/cockpit/aircon-400-overlay.js'
       - '.github/workflows/sixpack-unified-live-qa.yml'
   workflow_dispatch:
 jobs:
@@ -33,5 +37,7 @@ jobs:
           node --check panel-mosaic-lab/cockpit/sixpack-live-integration-v1.js
           node --check panel-mosaic-lab/cockpit/fire-lights-unified.js
           node --check panel-mosaic-lab/cockpit/tat-probe-unified-v1.js
+          node --check panel-mosaic-lab/cockpit/pressurization-oh22.js
+          node --check panel-mosaic-lab/cockpit/aircon-400-overlay.js
       - name: Integration tests - 4096 combinations, acknowledge, recall, electrical, fire
         run: node --test panel-mosaic-lab/cockpit/sixpack-live-unified.test.cjs
