@@ -501,6 +501,32 @@ OH21 source pixels, matching the printed dial. R remains below L at the same
 pivot, and each moves independently. The shared asset has no L/R lettering;
 none is drawn onto it. The locked background and the source SVG are unchanged.
 
+## DPN-0004 — owner 2026-11-03 duct-pressure calibration + live ECU
+
+The owner's red-ring/blue-dot OH21 screenshot fixes the **zero** direction at
+144° clockwise from twelve o'clock. Readings follow a continuous clockwise
+0–100 PSI arc covering 300°; each 5 PSI is a scale division, and the 20 PSI
+labels are at 204°, 264°, 324°, 384° and 444° for 20/40/60/80/100.
+The zero position is 144°. No needle position is quantized: intermediate
+pressure values interpolate continuously. The old mapping put zero over
+the visible 20-PSI numeral. The source image, 148-source-pixel blade radius,
+both previously approved Cabin Rate needle sprites and OWNER18 guarded
+controls remain untouched.
+
+Both 737-300/500 and 737-400 share the OH21 dual gauge. The existing ECU
+broadcast now carries engine N1/phase, actual selected bleed-valve state,
+isolation-valve state, APU phase and any explicitly injected transducer PSI.
+When an explicit sensor is absent, the model estimates each duct independently:
+engine low-stage ~32 PSIG at idle and high-N1 ~42 PSIG; APU left-source nominal
+35 PSI; open isolation shares the functional source. This is an **educational
+estimator**, not a measured/AFM-certified pressure. AC gauge availability still
+comes from the existing Pneumatics V6 explicit input, not a verified WDM
+circuit-breaker/transfer-bus route. Instructor sliders override until AUTO is
+restored. No new pressure system instance was created.
+
+Regressions: `node panel-mosaic-lab/cockpit/duct-pressure-needles.test.cjs` and
+`node engine/systems/duct-pressure-live-v1.test.cjs`.
+
 ## OXG-0001 — crew oxygen pressure indicator
 
 The upper OH01–OH06 panel's empty CREW OXYGEN aperture receives a separate
