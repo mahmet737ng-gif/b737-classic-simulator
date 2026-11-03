@@ -1,7 +1,7 @@
 (function(){
  'use strict';
  const model=window.B737CockpitView,byId=id=>document.getElementById(id),vp=byId('viewport'),scene=byId('scene'),sizer=byId('sizer');
- let assembly,zoom=.2,focused='main',frame,drag=null,dragged=false,lightDefinitions=[],snapshot=null,ready=false,pinch=null,visualTest=false,visualOverheadCount=0;const loaded=new Set(),failed=new Set(),cduFrames=new Map(),cduStates=new Map();
+ let assembly,zoom=.2,focused='main',frame,drag=null,dragged=false,lightDefinitions=[],snapshot=null,ready=false,visualTest=false,visualOverheadCount=0;const loaded=new Set(),failed=new Set(),cduFrames=new Map(),cduStates=new Map();
  // Performance policy: only First Officer CDU is instantiated. CAPT stays inert.
  const ENABLED_CDU_SEAT=window.B737UnifiedNoCduTest?'NONE':'FO';
  const fmcSession=window.B737CduSession.create();
@@ -84,6 +84,9 @@
  window.B737UnifiedPinchAdapterV1=Object.freeze({
   begin(distance,x,y){
    if(!assembly||!Number.isFinite(distance)||distance<2)return null;
+   wheelController?.cancel();
+   endParentDrag();
+   if(drag?.source==='iframe')drag=null;
    return {distance,zoom,left:vp.scrollLeft,top:vp.scrollTop,x,y,
      offsetX:parseFloat(scene.style.left)||0,offsetY:parseFloat(scene.style.top)||0};
   },
@@ -100,7 +103,7 @@
   }
  });
  function focus(id){lastNavigationAt=Date.now();if(id==='overhead'||id==='all')startOverheadFrame();wheelController?.cancel();focused=id;const r=model.target(assembly,id);if(!r)return;const scale=model.fit(r,vp.clientWidth,vp.clientHeight);applyZoom(scale,0,0,0,0);vp.scrollLeft=Math.max(0,(r.x+r.w/2)*zoom-vp.clientWidth/2);vp.scrollTop=Math.max(0,r.y*zoom-38);for(const b of document.querySelectorAll('[data-focus]'))b.classList.toggle('active',b.dataset.focus===id);const labels={all:'تمام کاکپیت',overhead:'اورهد تعاملی',main:'مین‌پنل',pedestal:'پدستال','cdu-captain':'CDU کپتن','cdu-first-officer':'CDU فرست‌آفیسر','cdu-both':'CDU کپتن و فرست‌آفیسر'};byId('viewLabel').textContent=labels[id];byId('selectionTitle').textContent=r.label||'ALL COCKPIT';byId('selectionDescription').textContent=id.startsWith('cdu-')?'همان CDU تأییدشده با ۷۰ دکمه؛ صفحه مستقل و اطلاعات FMC مشترک است':id==='overhead'?'۱۱۰ چراغ و کنترل‌های تعاملی نسخهٔ تأییدشده':id==='pedestal'?'پنل جدید و خام Throttle Quadrant، فایر پنل و رادیوها در چیدمان مستقل و بدون هم‌پوشانی':'مونتاژ تصاویر اصلی با حفظ نسبت طول و عرض';byId('selectionSize').textContent='';byId('originalLink').hidden=true;}
- function panWheel(payload){return wheelController?wheelController.pan(payload):window.B737WheelPanModelV1?.pan(vp,payload)===true;}
+ function panWheel(payload){if(drag)return false;return wheelController?wheelController.pan(payload):window.B737WheelPanModelV1?.pan(vp,payload)===true;}
  function command(action,extra={}){if(ready)frame.contentWindow.postMessage({type:'b737:cockpit-command',action,...extra},location.origin);}
  // Environment sensor values are supplied by ISN or an external simulator adapter.
  // Only the selected PRECHECK source updates the OH20 temperature pointer.
@@ -118,9 +121,14 @@
   if(d.kind==='state'){snapshot=d;renderLights();}
   if(d.kind==='selected-light'){byId('lampSelect').value=d.id;renderLights();}
   if(d.kind==='wheel-pan'){panWheel(d);return;}
-  if(d.kind==='pan-start'){drag={x:d.screenX,y:d.screenY,left:vp.scrollLeft,top:vp.scrollTop,source:'iframe'};dragged=false;}
-  if(d.kind==='pan-move'&&drag?.source==='iframe'){vp.scrollLeft=drag.left-(d.screenX-drag.x);vp.scrollTop=drag.top-(d.screenY-drag.y);}
-  if(d.kind==='pan-end')drag=null;
+  if(d.kind==='pan-start'&&Number.isFinite(d.screenX)&&Number.isFinite(d.screenY)){
+   wheelController?.cancel();endParentDrag();
+   drag={x:d.screenX,y:d.screenY,left:vp.scrollLeft,top:vp.scrollTop,source:'iframe'};dragged=false;
+  }
+  if(d.kind==='pan-move'&&drag?.source==='iframe'&&Number.isFinite(d.screenX)&&Number.isFinite(d.screenY)){
+   vp.scrollLeft=drag.left-(d.screenX-drag.x);vp.scrollTop=drag.top-(d.screenY-drag.y);
+  }
+  if(d.kind==='pan-end'&&drag?.source==='iframe')drag=null;
   if(d.kind==='zoom'){const r=frame.getBoundingClientRect(),v=vp.getBoundingClientRect();applyZoom(zoom*(d.delta<0?1.12:1/1.12),vp.scrollLeft,vp.scrollTop,r.left-v.left+d.clientX*zoom,r.top-v.top+d.clientY*zoom);}
  });
  function updateCduStatus(){byId('cduStatus').textContent='کاپیتان: OFF (بارگذاری صفر) · '+['FO'].map(seat=>{const s=cduStates.get(seat);const font=s?.typography?(' · '+s.typography.version+' · '+(s.typography.correct?'✓':'⚠')+' '+(s.typography.nativePx||'?')+'px · 24A '+Math.round(s.typography.width24Px||0)+'px / 25A '+Math.round(s.typography.width25Px||0)+'px · '+s.typography.color):'';return (seat==='CAPT'?'کپتن':'فرست')+': '+(s?.error?'خطای بارگذاری':s?.ready?(s.page||'آماده'):'در حال بارگذاری')+font;}).join(' · ');}
@@ -148,8 +156,42 @@
   if(e.target.closest('input,textarea,select,[contenteditable="true"]'))return;
   if(panWheel(e))e.preventDefault();
  },{passive:false});
- vp.addEventListener('pointerdown',e=>{wheelController?.cancel();if(e.pointerType!=='mouse'||e.button!==0)return;drag={x:e.clientX,y:e.clientY,left:vp.scrollLeft,top:vp.scrollTop,source:'parent',pointer:e.pointerId};dragged=false;});vp.addEventListener('pointermove',e=>{if(!drag||drag.source!=='parent'||drag.pointer!==e.pointerId)return;const dx=e.clientX-drag.x,dy=e.clientY-drag.y;if(Math.abs(dx)+Math.abs(dy)>5){dragged=true;vp.classList.add('dragging');vp.setPointerCapture(e.pointerId);vp.scrollLeft=drag.left-dx;vp.scrollTop=drag.top-dy;}});const stop=()=>{drag=null;vp.classList.remove('dragging');setTimeout(()=>dragged=false,0);};window.addEventListener('pointerup',stop);window.addEventListener('pointercancel',stop);
- vp.addEventListener('touchstart',e=>{wheelController?.cancel();if(e.touches.length===2){const a=e.touches;pinch={distance:Math.hypot(a[0].clientX-a[1].clientX,a[0].clientY-a[1].clientY),zoom,left:vp.scrollLeft,top:vp.scrollTop};}},{passive:true});vp.addEventListener('touchmove',e=>{if(e.touches.length===2&&pinch){e.preventDefault();const a=e.touches,r=vp.getBoundingClientRect();applyZoom(pinch.zoom*Math.hypot(a[0].clientX-a[1].clientX,a[0].clientY-a[1].clientY)/pinch.distance,pinch.left,pinch.top,(a[0].clientX+a[1].clientX)/2-r.left,(a[0].clientY+a[1].clientY)/2-r.top);}},{passive:false});vp.addEventListener('touchend',e=>{if(e.touches.length<2)pinch=null;},{passive:true});
+ // Pan only on inert panel surfaces. Interactive instruments retain their click/drag inputs.
+ const panControlSelector='button,input,select,textarea,a,iframe,[contenteditable="true"],[role="button"],[role="switch"],[role="slider"],[data-control],.cockpit-light,.mounted-light,.mounted-toggle,.mounted-rotary,.guard-node,.rg-detent-hit,.cdu-station';
+ function endParentDrag(pointerId){
+  if(drag?.source!=='parent')return;
+  if(pointerId!==undefined&&pointerId!==drag.pointer)return;
+  const id=drag.pointer;drag=null;
+  vp.classList.remove('dragging');
+  if(vp.hasPointerCapture?.(id))vp.releasePointerCapture(id);
+  dragged=false;
+ }
+ vp.addEventListener('pointerdown',e=>{
+  if(e.pointerType!=='mouse'||e.button!==0||e.target.closest?.(panControlSelector))return;
+  wheelController?.cancel();
+  endParentDrag();
+  drag={x:e.clientX,y:e.clientY,left:vp.scrollLeft,top:vp.scrollTop,source:'parent',pointer:e.pointerId,started:false};
+  dragged=false;
+ });
+ vp.addEventListener('pointermove',e=>{
+  if(drag?.source!=='parent'||drag.pointer!==e.pointerId)return;
+  if(!(e.buttons&1)){endParentDrag(e.pointerId);return;}
+  const dx=e.clientX-drag.x,dy=e.clientY-drag.y;
+  if(!drag.started&&Math.hypot(dx,dy)>5){
+   drag.started=true;dragged=true;vp.classList.add('dragging');
+   if(!vp.hasPointerCapture(e.pointerId))vp.setPointerCapture(e.pointerId);
+  }
+  if(!drag.started)return;
+  vp.scrollLeft=drag.left-dx;vp.scrollTop=drag.top-dy;
+  if(e.cancelable)e.preventDefault();
+ });
+ window.addEventListener('pointerup',e=>endParentDrag(e.pointerId));
+ window.addEventListener('pointercancel',e=>endParentDrag(e.pointerId));
+ vp.addEventListener('lostpointercapture',e=>endParentDrag(e.pointerId));
+ window.addEventListener('blur',()=>endParentDrag());
+ // UNIFIED-PINCH owns two-finger zoom and one-finger pan. Do not register
+ // a second legacy touchmove/zoom listener: competing writers cause jumps.
+ vp.addEventListener('touchstart',()=>wheelController?.cancel(),{passive:true});
  let resizeTimer;window.addEventListener('resize',()=>{clearTimeout(resizeTimer);resizeTimer=setTimeout(()=>{if(assembly)focus(focused);},120);});
  async function start(){try{const prefetched=window.B737UnifiedAssemblyPrefetch?await window.B737UnifiedAssemblyPrefetch:null;if(prefetched?.error)throw Error(prefetched.error);if(prefetched?.data)assembly=prefetched.data;else{const r=await fetch('./assembly.json',{cache:'no-store'});if(!r.ok)throw Error('Assembly unavailable');assembly=await r.json();}model.validate(assembly);mount();window.dispatchEvent(new CustomEvent('b737:cockpit-mounted'));focus('main');byId('loading').classList.add('hidden');
   // Overhead geometry is mounted immediately; its 49-script iframe starts only
