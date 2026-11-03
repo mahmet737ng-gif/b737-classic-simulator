@@ -30,7 +30,7 @@
      if((k==='batterySwitch'&&!v)||(k==='groundPowerAttached'&&!v)||
         (k==='groundPowerQualityGood'&&!v)||(k==='onGround'&&!v)){
       for(const side of [1,2])if(n.source[side]==='EXT')n.source[side]=null;
-      if(k==='groundPowerAttached'&&!v)n.config.groundServiceSelected=false;
+      if(['groundPowerAttached','groundPowerQualityGood','onGround'].includes(k)&&!v)n.config.groundServiceSelected=false;
      }}
    else if(cmd.type==='SELECT_SOURCE'){
      if(!['GEN1','GEN2','APU','EXT','OFF'].includes(cmd.source))throw Error('Unknown source');
