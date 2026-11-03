@@ -239,11 +239,11 @@
    const k=id==='hyd-elec-1'?'ELEC1':'ELEC2';
    lamps[id+'-overheat']=panelPowered&&pumps[id].overheat&&!failedLamp(k+'_OVHT_LAMP_FAIL');
   }
-  lamps['flight-pressure-a']=pressure.A<1800&&!faulted(s,'FLIGHT_CTRL_A_ISOLATED');
-  lamps['flight-pressure-b']=pressure.B<1800&&!faulted(s,'FLIGHT_CTRL_B_ISOLATED');
-  lamps['stby-pressure']=standbyDemand&&(pressure.STBY<1800||faulted(s,'STBY_PRESS_SENSOR_FAIL'));
-  lamps['stby-quantity']=q.STBY<25||faulted(s,'STBY_QTY_LOW');
-  lamps['stby-rudder']=standbyDemand&&pressure.STBY>1800;
+  lamps['flight-pressure-a']=panelPowered&&pressure.A<1800&&!faulted(s,'FLIGHT_CTRL_A_ISOLATED');
+  lamps['flight-pressure-b']=panelPowered&&pressure.B<1800&&!faulted(s,'FLIGHT_CTRL_B_ISOLATED');
+  lamps['stby-pressure']=panelPowered&&standbyDemand&&(pressure.STBY<1800||faulted(s,'STBY_PRESS_SENSOR_FAIL'));
+  lamps['stby-quantity']=panelPowered&&(q.STBY<25||faulted(s,'STBY_QTY_LOW'));
+  lamps['stby-rudder']=panelPowered&&standbyDemand&&pressure.STBY>1800;
   const sixPackHyd=panelPowered&&(failedLamp('SIXPACK_HYD_STUCK_ON')||
    (alertHyd&&!failedLamp('SIXPACK_HYD_LAMP_FAIL')));
   return Object.freeze({schema:'HYD-LAB-CORE-0001/OUT',time:s.time,
