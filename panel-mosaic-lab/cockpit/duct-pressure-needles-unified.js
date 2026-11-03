@@ -12,6 +12,8 @@
  let motion=live.initialDynamics(state);
  let animationFrame=0,lastFrameAt=null;
  let frame=null,layer=null,manualOverride=false,source='INITIAL_ZERO',lastLive=null,powered=true,status=null;
+ let mountingObserver=null,mountingHost=null;
+ let lastInputs=null;
  function animate(time){
   animationFrame=0;
   const dt=lastFrameAt===null?16:Math.min(80,Math.max(0,time-lastFrameAt));
@@ -80,7 +82,13 @@
   if(!host)return false;
   const piece=host.querySelector('.atlas-piece[data-key="'+model.source.piece+'"]');
   if(!piece)return false;
-  if(host.querySelector('[data-duct-pressure-needles]'))return true;
+  const old=host.querySelector('[data-duct-pressure-needles]');
+  if(old&&old===layer&&blades.size===model.needles.length&&
+   [...blades.values()].every(blade=>blade.isConnected))return true;
+  // Recover from a replaced inner atlas or an interrupted iframe mount.
+  // Never leave a stale, inert overlaid needle group behind.
+  if(old)old.remove();
+  blades.clear();
   layer=svg(doc,host,'svg',{'data-duct-pressure-needles':'OH21',
    viewBox:'0 0 '+model.source.width+' '+model.source.height,preserveAspectRatio:'none',
    role:'img','aria-label':'Dual duct pressure indicator L and R, 0 to 100 PSI'});
@@ -101,14 +109,31 @@
   paintStatus();return true;
  }
  function bind(){
-  if(mount())return;
-  const host=frame?.contentDocument?.getElementById('atlasAbsolute');if(!host)return;
-  const observer=new MutationObserver(()=>{if(mount())observer.disconnect();});
-  observer.observe(host,{childList:true});
+  if(mount()){
+   mountingObserver?.disconnect();mountingObserver=null;mountingHost=null;
+   return true;
+  }
+  const host=frame?.contentDocument?.getElementById('atlasAbsolute');
+  if(!host)return false;
+  if(mountingObserver&&mountingHost===host)return false;
+  mountingObserver?.disconnect();
+  mountingHost=host;
+  mountingObserver=new MutationObserver(()=>bind());
+  mountingObserver.observe(host,{childList:true});
+  return false;
  }
  function connect(){
-  const next=document.getElementById('overheadFrame');if(!next||next===frame)return;
-  frame=next;frame.addEventListener('load',()=>{blades.clear();layer=null;bind();});bind();
+  const next=document.getElementById('overheadFrame');
+  if(!next)return false;
+  if(next!==frame){
+   mountingObserver?.disconnect();mountingObserver=null;mountingHost=null;
+   frame=next;
+   frame.addEventListener('load',()=>{
+    mountingObserver?.disconnect();mountingObserver=null;mountingHost=null;
+    blades.clear();layer=null;bind();
+   });
+  }
+  return bind();
  }
  function controls(){
   const section=document.createElement('section');section.id='unifiedDuctPressureNeedles';
@@ -137,6 +162,11 @@
  }
  function receiveLive(data){
   if(!live?.project||!data?.ecu||!data?.bleed)return;
+  // ECU can become ready before or after the deferred Overhead iframe.
+  // Each real snapshot retries the same idempotent mount, without spawning
+  // a second gauge or a per-frame observer.
+  if(!layer?.isConnected||blades.size!==model.needles.length)connect();
+  lastInputs=data;
   try{
    const next=live.project(data);lastLive=next;
    if(manualOverride)return;
@@ -147,7 +177,15 @@
  window.B737UnifiedDuctPressureNeedles=Object.freeze({
   getValues:()=>({...state}),getState:()=>({values:{...state},target:{...target},
    velocities:{L:motion.L.velocity,R:motion.R.velocity},source,powered,manualOverride,
-   scale:model.scale,lastLive}),
+   scale:model.scale,lastLive,mounted:!!layer?.isConnected&&blades.size===2,
+   liveInputSummary:lastInputs?{
+    apuPhase:lastInputs.ecu?.apu?.phase,
+    apuRunning:lastInputs.apuRunning,
+    apuValveOpen:lastInputs.bleed?.apuBleedValveOpen,
+    isolationOpen:lastInputs.bleed?.isolationOpen,
+    apuPressureEstimate:lastLive?.apuSource,
+    indicatorPowered:lastInputs.gaugePowered
+   }:null}),
   setPsi,setValues,resumeLive:auto
  });
  window.addEventListener('b737:duct-pressure-live-inputs',event=>receiveLive(event.detail));
