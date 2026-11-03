@@ -361,9 +361,10 @@
     if(!bootModel())return;model.inject(t.dataset.airconFault,t.checked);schedulePaint();
    }else if(t.dataset.airconSource){
     if(!bootModel())return;model.source(t.dataset.airconSource,t.checked);schedulePaint();
-    if(ready)visualWindow()?.B737OverheadLights?.setScenario?.({
-     [t.dataset.airconSource]:t.checked
-    });
+    if(ready&&['engine1Running','engine2Running','apuRunning'].includes(t.dataset.airconSource))
+     visualWindow()?.B737OverheadLights?.setScenario?.({
+      [t.dataset.airconSource]:t.checked
+     });
    }else if(t.dataset.airconLamp){
     if(!bootModel())return;model.lamp(t.dataset.airconLamp,t.value);schedulePaint();
    }
@@ -425,7 +426,9 @@
   if(!dialog)build();
   if(!dialog.open)dialog.showModal();
   crop();
-  if(!bootModel()){status('WAITING FOR PNEUMATICS V6 ECU CORE');return}
+  if(!bootModel())status('WAITING FOR PNEUMATICS V6 ECU CORE · loading original OH21');
+  // Loading the actual photo is independent of the asynchronously installed
+  // Unified ECU. A lab opened early must never remain blank indefinitely.
   if(!iframe.hasAttribute('src')){
    const main=document.getElementById('overheadFrame');
    const origin=main?.getAttribute('src')||'./overhead-stage.html';
