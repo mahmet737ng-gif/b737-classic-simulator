@@ -6,14 +6,15 @@
  */
 (function(){'use strict';
  const Core=window.B737ClassicHydraulicLabCoreV1;
- if(!Core)return;
+ const Cal=window.B737HydraulicGaugeCalibrationV2;
+ if(!Core||!Cal)return;
  const OH={x:1231,y:1818,w:425,h:283};
  const PHOTO_ENGINE='../../panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png';
  const PHOTO_BRAKE='./assets/B737_Right_Main_Instruments_GPWS_TERRAIN_LEFT_V3.png';
  const NEEDLES=Object.freeze([
-  {id:'A',title:'HYD SYSTEM A · PRESS',p:{x:982,y:988},photo:PHOTO_ENGINE,native:{w:1235,h:1274},face:'eng.hyd_pressure.a'},
-  {id:'B',title:'HYD SYSTEM B · PRESS',p:{x:1117,y:988},photo:PHOTO_ENGINE,native:{w:1235,h:1274},face:'eng.hyd_pressure.b'},
-  {id:'BRAKE',title:'BRAKE ACCUMULATOR · PRESS',p:{x:473,y:568},photo:PHOTO_BRAKE,native:{w:918,h:1713},face:'fo.hyd_brake_pressure'}
+  {id:'A',title:'HYD SYSTEM A · PRESS',photo:PHOTO_ENGINE,face:'eng.hyd_pressure.a'},
+  {id:'B',title:'HYD SYSTEM B · PRESS',photo:PHOTO_ENGINE,face:'eng.hyd_pressure.b'},
+  {id:'BRAKE',title:'BRAKE ACCUMULATOR · PRESS',photo:PHOTO_BRAKE,face:'fo.hyd_brake_pressure'}
  ]);
  const CATEGORY=[
   {name:'NORMAL',title:'NORMAL OPERATIONS'},
@@ -96,67 +97,88 @@
   }));
  }
  function makeNeedleLayer(def){
+  // Crop exactly one approved source-image gauge per card. Both engine
+  // gauges are physically in a dual face, but each has a separate pivot.
+  const g=Cal.gauge(def.id),v=g.viewport,p=Cal.local(def.id);
   const wrap=document.createElement('div');wrap.className='hyd-native-wrap';
-  const anchor=def.p,withQty=def.id!=='BRAKE',width=withQty?184:176,height=withQty?224:176;
-  const ax=width/2,ay=withQty?84:height/2;
-  const left=clamp(anchor.x-ax,0,def.native.w-width),top=clamp(anchor.y-ay,0,def.native.h-height);
-  wrap.style.width=width+'px';wrap.style.height=height+'px';
+  Object.assign(wrap.style,{width:v.w+'px',height:v.h+'px'});
   const img=document.createElement('div');img.className='hyd-native-image';
-  Object.assign(img.style,{width:width+'px',height:height+'px',backgroundImage:'url("'+
-   new URL(def.photo,document.baseURI).href+'")',backgroundSize:def.native.w+'px '+def.native.h+'px',
-   backgroundPosition:-left+'px '+(-top)+'px'});
+  Object.assign(img.style,{
+   width:v.w+'px',height:v.h+'px',
+   backgroundImage:'url("'+new URL(def.photo,document.baseURI).href+'")',
+   backgroundSize:g.native.w+'px '+g.native.h+'px',
+   backgroundPosition:(-v.x)+'px '+(-v.y)+'px'
+  });
   wrap.append(img);
-  const x=anchor.x-left,y=anchor.y-top;
-  const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
-  svg.setAttribute('viewBox','0 0 '+width+' '+height);svg.classList.add('hyd-native-needle');
-  const g=document.createElementNS('http://www.w3.org/2000/svg','g');g.setAttribute('data-hyd-rotor',def.id);
-  const line=document.createElementNS('http://www.w3.org/2000/svg','line');
-  for(const [k,v] of Object.entries({x1:x,y1:y,x2:x,y2:y-45,stroke:'#e6e5d8','stroke-width':2.8,'stroke-linecap':'round'}))line.setAttribute(k,String(v));
-  const hub=document.createElementNS('http://www.w3.org/2000/svg','circle');
-  for(const [k,v] of Object.entries({cx:x,cy:y,r:3.1,fill:'#e1dfd1',stroke:'#1b232b','stroke-width':1}))hub.setAttribute(k,String(v));
-  g.append(line,hub);svg.append(g);wrap.append(svg);
-  if(withQty){
-   const qty=document.createElement('span');qty.className='hyd-quantity-native';qty.dataset.hydQtyWindow='';
-   qty.setAttribute('aria-label','Original hydraulic QTY digit window');
-   Object.assign(qty.style,{left:(anchor.x-left-28)+'px',top:(1083-top-10)+'px'});
+  const ns='http://www.w3.org/2000/svg';
+  const svg=document.createElementNS(ns,'svg');svg.classList.add('hyd-native-needle');
+  svg.setAttribute('viewBox','0 0 '+v.w+' '+v.h);
+  svg.setAttribute('aria-hidden','true');
+  const rotor=document.createElementNS(ns,'g');rotor.dataset.hydRotor=def.id;
+  rotor.style.transformBox='view-box';
+  rotor.style.transformOrigin=p.x+'px '+p.y+'px';
+  rotor.style.transition='transform 170ms linear';
+  // Photo-matched ivory tapered metal pointer; entire original face,
+  // numbers, tick marks and bezel stay exactly as the source bitmap.
+  const needle=document.createElementNS(ns,'path');
+  needle.setAttribute('d',
+   'M '+(p.x-2.5)+' '+(p.y+7)+
+   ' L '+(p.x-2.0)+' '+(p.y-12)+
+   ' L '+(p.x-.8)+' '+(p.y-g.needleLength)+
+   ' L '+(p.x+.8)+' '+(p.y-g.needleLength)+
+   ' L '+(p.x+2.0)+' '+(p.y-12)+
+   ' L '+(p.x+2.5)+' '+(p.y+7)+' Z');
+  needle.setAttribute('fill','#eae7d9');
+  needle.setAttribute('stroke','#343a41');
+  needle.setAttribute('stroke-width','.45');
+  const hub=document.createElementNS(ns,'circle');
+  hub.setAttribute('cx',p.x);hub.setAttribute('cy',p.y);hub.setAttribute('r',def.id==='BRAKE'?'4.1':'3.2');
+  hub.setAttribute('fill','#10171a');hub.setAttribute('stroke','#b4b2a2');
+  hub.setAttribute('stroke-width','1');
+  rotor.append(needle,hub);svg.append(rotor);wrap.append(svg);
+  const q=Cal.qtyLocal(def.id);
+  if(q){
+   const qty=document.createElement('span');qty.className='hyd-quantity-native';
+   qty.dataset.hydQtyWindow='';
+   qty.setAttribute('aria-label',def.id+' hydraulic quantity in original digital window');
+   Object.assign(qty.style,{left:(q.x-21)+'px',top:(q.y-10)+'px',width:'42px',height:'20px'});
    wrap.append(qty);
   }
   return wrap;
  }
- const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
- // Source-photo 0-4 x1000 PSI graduations are not evenly spaced.
- // Approximate angle registration measured from the user photo, awaiting QA.
- const PRESSURE_ANGLE=[[0,64],[1000,93],[2000,151],[3000,232],[4000,315]];
- function pressureAngle(psi){
-  const v=clamp(psi,0,4000);
-  for(let i=1;i<PRESSURE_ANGLE.length;i++)if(v<=PRESSURE_ANGLE[i][0]){
-   const [p0,a0]=PRESSURE_ANGLE[i-1],[p1,a1]=PRESSURE_ANGLE[i];
-   return a0+(a1-a0)*(v-p0)/(p1-p0);
-  }
-  return 315;
- }
+ function pressureAngle(psi){return Cal.angle('A',psi);}
+ function brakeAngle(psi){return Cal.angle('BRAKE',psi);}
  function renderGauge(def,out){
-  const c=$('hydGauge'+def.id),v=out.indications[def.face];
-  if(!c)return;
-  const reading=c.querySelector('[data-hyd-reading]');
-  if(reading)reading.textContent=v===null?'SENSOR FAIL / NO DATA':v+' PSI';
-  const qty=c.querySelector('[data-hyd-qty]');
+  const card=$('hydGauge'+def.id);
+  if(!card)return;
+  const value=out.indications[def.face];
+  const reading=card.querySelector('[data-hyd-reading]');
+  if(reading)reading.textContent=value===null?'SENSOR FAIL / NO DATA':value+' PSI';
+  const qty=card.querySelector('[data-hyd-qty]');
   if(qty){
    const q=out.indications['eng.hyd_qty.'+def.id.toLowerCase()];
    qty.textContent=q===null?'QTY SENSOR FAIL':q+' % FULL';
-   const win=c.querySelector('[data-hyd-qty-window]');
-   if(win)win.textContent=q===null?'---':String(q);
+   const windowFace=card.querySelector('[data-hyd-qty-window]');
+   if(windowFace)windowFace.textContent=q===null?'---':String(q);
   }
-  const rotor=c.querySelector('[data-hyd-rotor]'),value=typeof v==='number'?v:0;
-  const angle=pressureAngle(value)+90;
+  const rotor=card.querySelector('[data-hyd-rotor]');
   if(rotor){
-   const point=def.p,isHyd=def.id!=='BRAKE';
-   const width=isHyd?184:176,height=isHyd?224:176,ax=width/2,ay=isHyd?84:height/2;
-   const cropX=clamp(point.x-ax,0,def.native.w-width),cropY=clamp(point.y-ay,0,def.native.h-height);
-   rotor.setAttribute('transform','rotate('+angle.toFixed(2)+' '+(point.x-cropX)+' '+(point.y-cropY)+')');
-   rotor.style.opacity=v===null?'.20':'1';
+   const angle=Cal.angle(def.id,value);
+   const center=Cal.local(def.id);
+   // Path starts pointing to 12 o'clock. A, B and brake are each
+   // calibrated in their own five-point clockwise source-photo frame.
+   if(angle===null){
+    rotor.style.opacity='0'; // cannot invent indication for failed sensor
+   }else{
+    const rotation='rotate('+angle.toFixed(3)+' '+center.x+' '+center.y+')';
+    rotor.setAttribute('transform',rotation);
+    rotor.style.transform='rotate('+angle.toFixed(3)+'deg)';
+    rotor.style.opacity='1';
+    rotor.dataset.angleDeg=angle.toFixed(3);
+    rotor.dataset.psi=String(value);
+   }
   }
-  c.dataset.degraded=String(v===null);
+  card.dataset.degraded=String(value===null);
  }
  function photoIndicators(){
   const host=$('hydGauges');host.replaceChildren();
@@ -170,7 +192,7 @@
     const qty=document.createElement('small');qty.dataset.hydQty='';
     card.append(qty);
    }
-   const note=document.createElement('small');note.className='hyd-gauge-note';note.textContent='Original photo · live trainer value · needle mounting provisional';
+   const note=document.createElement('small');note.className='hyd-gauge-note';note.textContent='Original dial photo · 0–4 calibrated detents · training-only geometry';
    card.append(note);host.append(card);
   }
  }
@@ -412,6 +434,6 @@
   presets:Core.PRESETS,faults:Core.FAULTS,choosePreset,inject,
   command:c=>{model=Core.command(model,c);output=Core.evaluate(model);render();return output;},
   simulate:seconds=>{model=Core.step(model,seconds);output=Core.evaluate(model);render();return output;},
-  pressureAngle,version:'HYD-LAB-UI-0002'
+  pressureAngle,brakeAngle,getGaugeCalibration:id=>Cal.gauge(id),version:'HYD-LAB-UI-0003'
  });
 })();
