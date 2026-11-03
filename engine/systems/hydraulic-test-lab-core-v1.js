@@ -174,7 +174,11 @@
   }
   s.faults=[...(p.faults||[])];
   if(p.charge===false){s.pressure={A:0,B:0,STBY:0};s.brakeAccumulator=p.id==='preflight'?2800:0;}
-  if(p.id==='brake-accum')s.brakeAccumulator=400;
+  if(p.id==='brake-accum'){
+   // Depleted accumulator cannot remain depleted with a healthy, charging B supply.
+   s.env.eng2=false;s.env.ac1=false;
+   s.pressure.B=0;s.brakeAccumulator=1000;
+  }
   return s;
  }
  function onePump(s,id){
