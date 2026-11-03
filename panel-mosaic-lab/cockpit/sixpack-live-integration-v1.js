@@ -1,4 +1,4 @@
-/* SIXPACK-LIVE-0005: read-only adapter from existing Unified system outputs.
+/* SIXPACK-LIVE-0006: read-only adapter from existing Unified system outputs.
  * Never creates a second electrical/overhead/fire engine or infers unobserved alarms.
  * Training approximation: uses verified illuminated category-related OH annunciators.
  */
@@ -10,13 +10,13 @@
 })(typeof window!=='undefined'?window:null,function(){
  'use strict';
  const groups=Object.freeze({
-  'CAPT.FLT CONT':['flight-pressure-a','flight-pressure-b','stby-pressure','stby-quantity','feel-diff','speed-trim','mach-trim','auto-slat','yaw-damper'],
+  'CAPT.FLT CONT':['flight-pressure-a','flight-pressure-b','stby-pressure','stby-quantity','stby-rudder','feel-diff','speed-trim','mach-trim','auto-slat','yaw-damper'],
   'CAPT.ELEC':['standby-power-off','transferBusOff1','transferBusOff2','busOff1','busOff2','gen-off-bus-1','gen-off-bus-2','apu-gen-off-bus'],
   'CAPT.IRS':['irs-l-fault','irs-r-fault','irs-l-dc-fail','irs-r-dc-fail'],
-  'CAPT.APU':['apu-high-oil-temp','apu-overspeed','apu-low-oil-quantity'],
+  'CAPT.APU':['apu-low-pressure','apu-high-oil-temp','apu-overspeed','apu-low-oil-quantity'],
   'CAPT.FUEL':['filter-1','filter-2','fuel-center-l','fuel-center-r','fuel-1-aft','fuel-1-fwd','fuel-2-fwd','fuel-2-aft'],
   'CAPT.OVHT/DET':[],
-  'FO.ANTI ICE':['window-l-side-overheat','window-l-fwd-overheat','window-r-fwd-overheat','window-r-side-overheat','cowl-anti-ice-1','cowl-anti-ice-2'],
+  'FO.ANTI ICE':['window-l-side-overheat','window-l-fwd-overheat','window-r-fwd-overheat','window-r-side-overheat','cowl-anti-ice-1','cowl-anti-ice-2','probe-capt-ps','probe-fo-static','probe-l-elev','probe-l-alpha','probe-fo-ps','probe-capt-static','probe-r-elev','probe-r-alpha'],
   'FO.ENG':['reverser-1','reverser-2','low-idle','drive-1-drive-pressure','drive-2-drive-pressure','drive-1-drive-temperature','drive-2-drive-temperature'],
   'FO.HYD':['hyd-eng-1','hyd-eng-2','hyd-elec-1','hyd-elec-2','hyd-elec-1-overheat','hyd-elec-2-overheat'],
   'FO.OVERHEAD':['equip-supply-off','equip-exhaust-off','flight-recorder-off','emergency-not-armed'],
@@ -86,6 +86,18 @@
   return out;
  }
 
+ // ECU oil-light evidence is used only with a powered live Overhead. The
+ // physical OH lamp remains the fallback until ECU telemetry becomes ready.
+ // TAT TEMP PROBE is intentionally excluded from generic probe mapping:
+ // its separate live adapter prevents normal ground indications becoming faults.
+ function apuECU(packet){
+  const a=packet?.apu;
+  if(!a||typeof a.phase!=='string'||typeof a.oil?.lowPressureLamp!=='boolean')return null;
+  const out=empty();
+  if(a.phase!=='OFF'&&a.oil.lowPressureLamp===true)
+   out['CAPT.APU'].push('ECU:APU:LOW_OIL_PRESSURE');
+  return out;
+ }
  function pressurization(packet){
   if(!['CPCS','DCPCS'].includes(packet?.system)||!packet.lamps)return null;
   const out=empty();
@@ -121,16 +133,20 @@
   return out;
  }
  function install(win){
-  const sources={overhead:empty(),electrical:empty(),fire:empty(),irs:empty(),windowHeat:empty(),tatProbe:empty(),pressurization:empty(),airconZones:empty(),redundancy:empty()};
-  let last='',updates=0,activeSource={overhead:false,electrical:false,fire:false,irs:false,windowHeat:false,tatProbe:false,pressurization:false,airconZones:false,redundancy:false};
+  const sources={overhead:empty(),electrical:empty(),fire:empty(),irs:empty(),windowHeat:empty(),tatProbe:empty(),pressurization:empty(),airconZones:empty(),apuECU:empty(),redundancy:empty()};
+  let overheadPowered=null;
+  let last='',updates=0,activeSource={overhead:false,electrical:false,fire:false,irs:false,windowHeat:false,tatProbe:false,pressurization:false,airconZones:false,apuECU:false,redundancy:false};
   function resolved(){
    const filtered=empty();
    for(const [k,v]of Object.entries(sources.overhead))filtered[k]=[...v];
    if(activeSource.irs)filtered['CAPT.IRS']=[];
+   if(activeSource.apuECU)filtered['CAPT.APU']=filtered['CAPT.APU'].filter(id=>id!=='OH:apu-low-pressure');
    if(activeSource.windowHeat)filtered['FO.ANTI ICE']=filtered['FO.ANTI ICE'].filter(id=>!id.startsWith('OH:window-'));
    if(activeSource.pressurization)filtered['FO.AIR COND']=filtered['FO.AIR COND']
     .filter(id=>!['OH:press-auto-fail','OH:press-off-sched-descent'].includes(id));
-   return merge({...sources,overhead:filtered});
+   const inputs={...sources,overhead:filtered};
+   if(overheadPowered!==true)inputs.apuECU=empty(); // never energize MC from an unpowered/unknown APU lamp
+   return merge(inputs);
   }
   // The new classifier models only the FCOM-supported FCC and auto-slat pairs.
   // It never mutates aircraft systems and listens to explicit channel evidence.
@@ -212,7 +228,7 @@
    last=signature;updates++;
    win.B737SixPack?.setLiveConditions?.(combined,'UNIFIED_SYSTEMS');
    win.dispatchEvent(new win.CustomEvent('b737:sixpack-live-status',{
-    detail:{version:'SIXPACK-LIVE-0005',updates,sources:{...activeSource},active:Object.fromEntries(Object.entries(combined).map(([k,v])=>[k,v.length]))}
+    detail:{version:'SIXPACK-LIVE-0006',updates,sources:{...activeSource},active:Object.fromEntries(Object.entries(combined).map(([k,v])=>[k,v.length]))}
    }));
   }
   function update(kind,data){
@@ -224,9 +240,20 @@
    if(e.origin!==win.location.origin||e.source!==win.document.getElementById('overheadFrame')?.contentWindow)return;
    const d=e.data;
    if(d?.type!=='b737:cockpit-overhead')return;
-   if(d.kind==='state')update('overhead',overhead(d));
+   if(d.kind==='state'){
+   if(d.lampTest!==true&&d.frames&&typeof d.power==='boolean')overheadPowered=d.power;
+   update('overhead',overhead(d));
+  }
    if(d.kind==='pressurization-live-output')update('pressurization',pressurization(d));
    if(d.kind==='aircon400-zone-status')update('airconZones',airconZones(d));
+  });
+  win.addEventListener('b737:unified-ecu-observation',e=>update('apuECU',apuECU(e.detail)));
+  // Clear retired controller/zone snapshots when switching 300/500 <-> 400 or CPCS <-> DCPCS.
+  // Fresh OH live outputs will repopulate them without preserving stale cautions.
+  win.addEventListener('b737:aircraft-profile-change',()=>{
+   sources.airconZones=empty();activeSource.airconZones=false;
+   sources.pressurization=empty();activeSource.pressurization=false;
+   publish();
   });
   win.addEventListener('b737:electrical-v7-state',e=>update('electrical',electrical(e.detail)));
   win.addEventListener('b737:redundancy-channel-state',e=>{
@@ -260,10 +287,10 @@
   win.B737SixPackLiveV1=Object.freeze({
    version:'SIXPACK-LIVE-0005',deriveOverhead:overhead,deriveElectrical:electrical,deriveFire:fire,
     deriveIRS:irs,deriveWindowHeat:windowHeat,deriveTAT:tatProbe,
-    derivePressurization:pressurization,deriveAircon400:airconZones,
+    derivePressurization:pressurization,deriveAircon400:airconZones,deriveAPUECU:apuECU,
     setChannelFailure,setSystemFailures,
     getRedundancyState:()=>redundancy?.snapshot?.()||null,
-   snapshot:()=>({sources:{...activeSource},reasons:resolved(),updates}),
+   snapshot:()=>({sources:{...activeSource},reasons:resolved(),overheadPowered,updates}),
    refresh:()=>{
     const power=win.B737UnifiedElectricalLive?.snapshot?.();
     if(power?.faults)update('electrical',electrical(power));
@@ -272,6 +299,8 @@
     const t=win.B737TATProbeUnifiedV1?.getOutput?.();if(t?.faults)update('tatProbe',tatProbe(t));
     const f=win.B737UnifiedFireLights?.systemIndications?.()||win.B737UnifiedFireLights?.indications?.();
     if(f){update('fire',fire(f));fireWarningFrom('wheelWell',f.WHEEL_WELL);}
+    const apu=win.B737ISNCockpitV1?.getECUState?.();
+    if(apu?.apu)update('apuECU',apuECU(apu));
     publish();
    }
   });
@@ -283,5 +312,5 @@
   publishPhysical();
   return win.B737SixPackLiveV1;
  }
- return Object.freeze({groups,empty,overhead,electrical,fire,irs,windowHeat,tatProbe,pressurization,airconZones,merge,install});
+ return Object.freeze({groups,empty,overhead,electrical,fire,irs,windowHeat,tatProbe,apuECU,pressurization,airconZones,merge,install});
 });
