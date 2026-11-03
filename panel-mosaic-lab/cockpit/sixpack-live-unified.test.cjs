@@ -113,3 +113,64 @@ test('live integration authenticates overhead iframe and merges electrical/fire 
  assert.equal(writes.length,count,'unchanged overhead snapshot does not cause repaint');
  assert.equal(api.snapshot().sources.overhead,true);
 });
+
+test('IRS live source excludes normal alignment and SELFTEST ON DC; captures both side faults',()=>{
+ const normal={schema:'b737.irs-unified-v1',units:{
+  L:{powered:true,mode:'ALIGN',phase:'SELFTEST',onDcLamp:true,alignLamp:true,faultLamp:false,alignLampFlashing:false},
+  R:{powered:true,mode:'NAV',faultLamp:false,alignLampFlashing:false}}};
+ assert.equal(mapper.irs(normal)['CAPT.IRS'].length,0);
+ normal.units.L.faultLamp=true;
+ normal.units.R.alignLampFlashing=true;normal.units.R.alignStatusCode=7;
+ assert.deepEqual(mapper.irs(normal)['CAPT.IRS'],['IRS:L:FAULT','IRS:R:ALIGN_BLOCK_7']);
+ normal.units.L.powered=false;
+ assert.equal(mapper.irs(normal)['CAPT.IRS'].length,1);
+});
+test('Window Heat live output drives ANTI-ICE only for illuminated supplied amber OVERHEAT',()=>{
+ const packet={schema:'B737_WINDOW_HEAT_V1_RESULT',channels:{
+  L_FWD:{overheatOn:true,indicationPowered:true},
+  L_SIDE:{overheatOn:true,indicationPowered:false},
+  R_FWD:{greenOn:true,overheatOn:false,indicationPowered:true}
+ }};
+ assert.deepEqual(mapper.windowHeat(packet)['FO.ANTI ICE'],['WH:L_FWD:OVERHEAT']);
+ assert.equal(mapper.windowHeat({...packet,channels:{L_FWD:{overheatOn:false}}})['FO.ANTI ICE'].length,0);
+});
+test('TAT normal ground amber excluded; demanded heat failure routed as ANTI-ICE caution',()=>{
+ const normal={faults:{HEATER_FAIL:false},amberOn:true,lampPower:true,heaterRequested:false,onGround:true};
+ assert.equal(mapper.tatProbe(normal)['FO.ANTI ICE'].length,0);
+ assert.deepEqual(mapper.tatProbe({...normal,heaterRequested:true,faults:{HEATER_FAIL:true}})['FO.ANTI ICE'],
+  ['TAT:HEAT_DEMAND_UNSATISFIED']);
+ assert.equal(mapper.tatProbe({...normal,heaterRequested:true,lampPower:false})['FO.ANTI ICE'].length,0);
+});
+test('real Electrical V7 relay IDs work and nonexistent old names cannot cause alert',()=>{
+ const elec=mapper.electrical({state:{faults:{TRANSFER1_RELAY_FAILED:true,
+  TRANSFER2_RELAY_FAILED:true,STATIC_INVERTER_FAILED:true,TRANSFER_BUS_1_FAILED:true}}});
+ assert.deepEqual(elec['CAPT.ELEC'],[
+  'ELEC:TRANSFER1_RELAY_FAILED','ELEC:TRANSFER2_RELAY_FAILED','ELEC:STATIC_INVERTER_FAILED']);
+});
+test('live IRS and Window Heat take priority over OH approximations; no duplicate caution',()=>{
+ const listeners=new Map(),latest=[],iframe={};
+ const win={location:{origin:'https://unified.test'},document:{
+  getElementById(id){return id==='overheadFrame'?{contentWindow:iframe}:null;}},
+  addEventListener(n,fn){if(!listeners.has(n))listeners.set(n,[]);listeners.get(n).push(fn);},
+  dispatchEvent(e){for(const f of listeners.get(e.type)||[])f(e);},
+  CustomEvent:class{constructor(t,{detail}={}){this.type=t;this.detail=detail;}},
+  B737SixPack:{setLiveConditions(s){latest.push(s);},setFireWarning(){}},
+  B737UnifiedElectricalLive:{snapshot(){return {faults:{}}}},
+  B737UnifiedFireLights:{systemIndications(){return {WHEEL_WELL:false}}}
+ };
+ mapper.install(win);
+ function dispatch(type,detail){win.dispatchEvent(new win.CustomEvent(type,{detail}));}
+ function incoming(frames){for(const fn of listeners.get('message')||[])fn({origin:win.location.origin,source:iframe,
+  data:{type:'b737:cockpit-overhead',kind:'state',power:true,lampTest:false,frames}});}
+ incoming({'irs-l-dc-fail':'ON','window-l-fwd-overheat':'ON','cowl-anti-ice-1':'ON'});
+ assert.deepEqual(latest.at(-1)['CAPT.IRS'],['OH:irs-l-dc-fail']);
+ dispatch('b737:irs-trainer-state',{units:{L:{powered:true,faultLamp:false},R:{powered:true,faultLamp:true}}});
+ assert.deepEqual(latest.at(-1)['CAPT.IRS'],['IRS:R:FAULT']);
+ win.B737WindowHeatUnifiedV1={getOutput:()=>({schema:'B737_WINDOW_HEAT_V1_RESULT',channels:{
+  L_FWD:{overheatOn:false,indicationPowered:true}}})};
+ dispatch('b737:window-heat-annunciations',{antiIceCaution:false});
+ assert.deepEqual(latest.at(-1)['FO.ANTI ICE'],['OH:cowl-anti-ice-1']);
+ dispatch('b737:tat-probe-output',{faults:{HEATER_FAIL:true},amberOn:true,
+  lampPower:true,heaterRequested:true});
+ assert.deepEqual(latest.at(-1)['FO.ANTI ICE'],['OH:cowl-anti-ice-1','TAT:HEAT_DEMAND_UNSATISFIED']);
+});
