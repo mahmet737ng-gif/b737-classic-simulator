@@ -19,7 +19,7 @@ assert.ok(approved.includes('data-recessed-id'));
 assert.ok(native.includes('if(newlyMounted||!photoOwned)'),'Approved photo coordinates cannot jump');
 assert.ok(stage.includes('airconP5=NATIVE-0002'),'Native button loaded');
 assert.ok(!stage.includes('aircon-fcom-p5-buttons-v1.js'),'Duplicate synthetic button retired');
-assert.ok(html.includes('aircon-fcom-unified-v1.js?v=AIRCON-OVHT-DELAY-0003'));
+assert.ok(html.includes('aircon-fcom-unified-v1.js?v=AIRCON-OVHT-DELAY-0004-LAB'));
 assert.ok(html.includes('aircon-ovht-hold-v1.js?v=AIRCON-OVHT-DELAY-0003'));
 assert.ok(unified.includes("kind!=='recessed-button'"));
 assert.ok(unified.includes("d.source!=='recessed-hardware-v2'"));
