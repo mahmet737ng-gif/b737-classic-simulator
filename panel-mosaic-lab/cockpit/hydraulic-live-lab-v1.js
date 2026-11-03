@@ -326,8 +326,9 @@
   if(dialog.open)return true;
   choosePreset('healthy');
   dialog.showModal();
-  frame.src=new URL(document.getElementById('overheadFrame')?.getAttribute('src')||
-    './overhead-stage.html',document.baseURI).href+'&hydTestLab=1';
+  const url=new URL(document.getElementById('overheadFrame')?.getAttribute('src')||
+    './overhead-stage.html',document.baseURI);
+  url.searchParams.set('hydTestLab','1');frame.src=url.href;
   crop();lastAt=performance.now();
   timer=setInterval(tick,125);
   output=Core.evaluate(model);render();
