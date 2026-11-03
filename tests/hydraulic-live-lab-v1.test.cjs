@@ -106,6 +106,13 @@ test('Brake accumulator is a separate indication; pressure retained without B an
  let out=Core.evaluate(s);
  assert.ok(out.pressurePsi.B<100);
  assert.ok(out.pressurePsi.BRAKE>2700);
+ // System A still supplies alternate brakes. Stored accumulator pressure
+ // is used only after BOTH normal B and alternate A are unavailable.
+ s=Core.command(s,{type:'SET_SWITCH',id:'hyd-eng-1',value:'OFF'});
+ s=Core.command(s,{type:'SET_SWITCH',id:'hyd-elec-2',value:'OFF'});
+ s=Core.step(s,20);
+ out=Core.evaluate(s);
+ assert.ok(out.pressurePsi.A<100&&out.pressurePsi.B<100);
  const before=out.pressurePsi.BRAKE;
  s=Core.command(s,{type:'BRAKE',count:2});
  out=Core.evaluate(s);
