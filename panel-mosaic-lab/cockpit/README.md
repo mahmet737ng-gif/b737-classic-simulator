@@ -527,6 +527,30 @@ restored. No new pressure system instance was created.
 Regressions: `node panel-mosaic-lab/cockpit/duct-pressure-needles.test.cjs` and
 `node engine/systems/duct-pressure-live-v1.test.cjs`.
 
+## OH21-APPROVED-ONLY-20261103 — retire the old blue air-system photo in Unified
+
+Owner decision: the blue single-RECIRC OH21 shown in the 2026-11-03 first
+screenshot is rejected. The second screenshot, showing the beige dual-RECIRC
+OH21, is the accepted photographic source. Do **not** re-enable the older blue
+`OH21-BLEED-AIR` mosaic image or `oh21-737-300500-owner-20261030.q100.webp`
+as an active Unified OH21 background or as a fallback.
+
+The production-facing Unified overhead supports exactly two **configurations**:
+`OH21_400` (dual L/R RECIRC FAN) and `OH21_300500` (single RECIRC FAN).
+Both currently use the accepted beige 400 source photograph; 300/500 has an
+appearance-only cover over the spare left fan and its extra designation.
+This 300/500 cosmetic adaptation is a provisional derivative, **not** an
+independently photo-approved 300/500 source. A dedicated approved 300/500
+photograph is still needed for pixel-exact physical fidelity.
+
+The legacy source files remain immutable archives for history/rollback; the
+embedded atlas's former OH21 photo is hidden, and a missing current image
+shows a neutral blank instead of reviving rejected art. Family changes reuse
+one photo element rather than stacking images. Hardware/ECU/annunciator
+logic, OH20 temperature panel, and Owner18 guarded red zone are untouched.
+Regression:
+`node panel-mosaic-lab/cockpit/oh21-approved-variants.test.cjs`.
+
 ## DPN-0005 — two separate thick L/R-labeled pointers
 
 The owner clarified that the duct pressure gauge uses **two physically distinct,
