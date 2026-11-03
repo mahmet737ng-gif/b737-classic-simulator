@@ -45,8 +45,15 @@
    if(!piece)continue;
    const g=geometry(piece,item);if(!g)continue;
    let node=mounted.get(item.id);
-   if(!node||!node.isConnected){node=make(item);host.append(node);mounted.set(item.id,node);}
-   Object.assign(node.style,{left:g.left+'px',top:g.top+'px',width:g.width+'px',height:g.width+'px'});
+   const newlyMounted=!node||!node.isConnected;
+   if(newlyMounted){node=make(item);host.append(node);mounted.set(item.id,node);}
+   // Approved OH21 owner photo aligns these very same P5-10 caps to the
+   // photograph's registration points. Do not overwrite that geometry
+   // with the retired atlas x/y whenever unrelated DOM children change.
+   const photoOwned=item.piece==='OH21'&&
+    root.document.documentElement?.hasAttribute?.('data-owner-oh21-photo');
+   if(newlyMounted||!photoOwned)
+    Object.assign(node.style,{left:g.left+'px',top:g.top+'px',width:g.width+'px',height:g.width+'px'});
   }
   // LE TEST remains owned by its existing momentary 26-window logic. Only its visual cap is themed via CSS.
   const le=root.document.querySelector('.b737-le-devices__test');
