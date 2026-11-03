@@ -112,3 +112,28 @@ test('only physical lamp faces are overlaid; original flight-control source stat
  state.power=false;callbacks.get('b737:overhead-light-state')();
  assert.equal(nodes.get('speed-trim').dataset.frame,'OFF');
 });
+
+test('FCOM main fuel tank FWD/AFT pair: one LOW PRESSURE recall-only; both immediate',()=>{
+ const single=bridge.overhead({power:true,lampTest:false,frames:{
+  'fuel-1-fwd':'ON','fuel-1-aft':'OFF','fuel-2-fwd':'OFF','fuel-2-aft':'OFF'
+ }});
+ assert.deepEqual(single['CAPT.FUEL'],[{id:'OH:fuel-1-fwd',mode:'RECALL_ONLY'}]);
+ const both=bridge.overhead({power:true,lampTest:false,frames:{
+  'fuel-1-fwd':'ON','fuel-1-aft':'ON'
+ }});
+ assert.deepEqual(both['CAPT.FUEL'],['OH:fuel-1-fwd','OH:fuel-1-aft']);
+ const s=cockpit();
+ s.ui.setLiveConditions(single);
+ assert.equal(s.ui.getEffectiveState()['CAPT.FUEL'],false);
+ assert.equal(s.ui.getEffectiveState()['CAPT.MASTER CAUTION'],false);
+ s.ui.recall('FO');
+ assert.equal(s.ui.getEffectiveState()['CAPT.FUEL'],true);
+ assert.equal(s.ui.getEffectiveState()['CAPT.MASTER CAUTION'],false);
+ s.ui.acknowledge();s.ui.setLiveConditions(both);
+ assert.equal(s.ui.getEffectiveState()['CAPT.MASTER CAUTION'],true);
+ const independent=bridge.overhead({power:true,lampTest:false,frames:{
+  'fuel-1-fwd':'ON','fuel-1-aft':'OFF','fuel-2-fwd':'OFF','fuel-2-aft':'ON'
+ }});
+ assert.equal(independent['CAPT.FUEL'].length,2);
+ assert.ok(independent['CAPT.FUEL'].every(x=>x.mode==='RECALL_ONLY'));
+});
