@@ -1,0 +1,29 @@
+name: Unified APU READY startup and physical OFF QA
+on:
+  push:
+    paths:
+      - engine/integration/isn-13-18-ecu-testbench-v1.js
+      - panel-mosaic-lab/cockpit/isn-cockpit.js
+      - panel-mosaic-lab/interactive-overhead/app.js
+      - panel-mosaic-lab/cockpit/assembly.json
+      - panel-mosaic-lab/cockpit/index.html
+      - panel-mosaic-lab/cockpit/overhead-stage.html
+      - tests/unified-default-apu-ready-v1.test.cjs
+      - .github/workflows/unified-apu-default-ready-v1.yml
+  workflow_dispatch:
+jobs:
+  verify-default-apu:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Source syntax
+        run: |
+          node --check engine/integration/isn-13-18-ecu-testbench-v1.js
+          node --check panel-mosaic-lab/cockpit/isn-cockpit.js
+          node --check panel-mosaic-lab/interactive-overhead/app.js
+      - name: APU READY and normal shutdown regression
+        run: node --test tests/unified-default-apu-ready-v1.test.cjs
+      - name: Preserve immutable overhead and guards
+        run: |
+          python3 panel-mosaic-lab/verify-final-overhead.py
+          python3 panel-mosaic-lab/cockpit/verify-guard-redzone.py --negative-self-test
