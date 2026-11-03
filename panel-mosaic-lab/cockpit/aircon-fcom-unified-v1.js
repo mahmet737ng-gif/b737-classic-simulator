@@ -122,7 +122,12 @@
  }
  root.addEventListener('message',e=>{
   if(e.origin!==location.origin||e.source!==frame()?.contentWindow||
-     e.data?.type!=='b737:cockpit-overhead'||e.data.kind!=='aircon-fcom-input')return;
+     e.data?.type!=='b737:cockpit-overhead')return;
+  // The iframe may have discarded an early projection before its physical
+  // lamps and OH20 400 zone overlay became ready. Re-send exactly at READY;
+  // do NOT echo on every controls-state/status report (would loop).
+  if(e.data.kind==='ready'){last='';refresh(true);return;}
+  if(e.data.kind!=='aircon-fcom-input')return;
   const d=e.data;
   try{
    if(d.id==='OVHT_TEST'&&typeof d.held==='boolean')
