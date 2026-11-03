@@ -25,10 +25,10 @@ assert.ok(pos.x>oh21.x&&pos.x<oh21.x+oh21.w);
 assert.ok(pos.y>oh21.y&&pos.y<oh21.y+oh21.h);
 for(const needle of model.needles){
  const asset=fs.readFileSync(path.join(__dirname,needle.asset),'utf8');
- assert.equal(needle.asset,'duct-pressure-needle-'+needle.id.toLowerCase()+'.svg');
- assert.equal(needle.tipRadius,118);
+ assert.equal(needle.asset,'cabin-rate-needle.svg');
+ assert.equal(needle.tipRadius,148);
  assert.match(asset,/viewBox="0 0 512 512"/);
- assert.match(asset,/<title>DUCT PRESSURE /);
+ assert.match(asset,/<title>CABIN CLIMB/);
 }
 const ui=fs.readFileSync(path.join(__dirname,'duct-pressure-needles-unified.js'),'utf8');
 assert.ok(ui.includes('for(const needle of model.needles)'));
