@@ -30,9 +30,36 @@
   ['aftTempControlFailed','AFT CAB temperature control failure · recall only','B737-400']
  ]);
  let section=null,inputs=new Map(),summary=null,latest=null,last='',lastFrame=null,actionNotice=null;
- let ovhtHeldSince=null,lastNativeInput=null;
+ let testHold=null,lastNativeInput=null;
  const owner=()=>root.B737ISNCockpitV1;
  const frame=()=>document.getElementById('overheadFrame');
+ function ovhtQualifier(){
+  if(testHold)return testHold;
+  const core=root.B737AirconOVHTQualificationV1;
+  if(!core?.create)throw Error('AIRCON OVHT 5-second qualification core not loaded');
+  testHold=core.create({
+   clock:()=>performance.now(),
+   onQualified:()=>{
+    // Only AFTER five uninterrupted seconds should the pneumatic owner
+    // receive a qualified detector-test signal; real leak sensors are
+    // independent and continue to respond immediately.
+    const out=command({type:'SENSOR',key:'wingBodyTestHeld',value:true});
+    lastNativeInput={id:'aircon-ovht-test',held:true,qualified:true,
+     durationMs:core.DELAY_MS,l:out.lamps.wingBodyOverheatL,
+     r:out.lamps.wingBodyOverheatR};
+    if(actionNotice)actionNotice.textContent='OVHT TEST QUALIFIED · 5.0 s · WING BODY L/R '+
+     Number(out.lamps.wingBodyOverheatL)+'/'+Number(out.lamps.wingBodyOverheatR);
+    refresh(true);
+   },
+   onReleased:()=>{
+    const out=command({type:'SENSOR',key:'wingBodyTestHeld',value:false});
+    lastNativeInput={id:'aircon-ovht-test',held:false,qualified:false,
+     durationMs:0,l:out.lamps.wingBodyOverheatL,r:out.lamps.wingBodyOverheatR};
+    refresh(true);
+   }
+  });
+  return testHold;
+ }
  function family(){
   try{return JSON.parse(localStorage.getItem(PROFILE_KEY)||'null')?.aircraftFamily==='B737-400'?'B737-400':'B737-300-500';}
   catch{return 'B737-300-500';}
@@ -136,23 +163,25 @@
   if(d.source!=='recessed-hardware-v2'||typeof d.pressed!=='boolean')return;
   try{
    if(d.id==='aircon-ovht-test'){
-    // Ignore duplicate down/up notifications from lostpointercapture.
-    const held=d.pressed;
-    if(held&&ovhtHeldSince!==null)return;
-    if(!held&&ovhtHeldSince===null)return;
-    const durationMs=held?0:Math.max(0,performance.now()-ovhtHeldSince);
-    // Apply immediately, not after five seconds. Five seconds is merely
-    // the FCOM duration for a complete successful detector check.
-    // Update our held state ONLY once the live ECU accepts the command.
-    const projection=command({type:'SENSOR',key:'wingBodyTestHeld',value:held});
-    ovhtHeldSince=held?performance.now():null;
-    lastNativeInput={id:d.id,held,durationMs,
-      l:projection.lamps.wingBodyOverheatL,r:projection.lamps.wingBodyOverheatR};
-    if(actionNotice)actionNotice.textContent=held
-     ?'OVHT TEST HELD · WING BODY L/R '+Number(projection.lamps.wingBodyOverheatL)+'/'+
-       Number(projection.lamps.wingBodyOverheatR)
-     :'OVHT TEST '+(durationMs>=5000?'5 SECOND CHECK COMPLETED':'RELEASED BEFORE 5 SECONDS')+
+    const hold=ovhtQualifier();
+    const before=hold.snapshot();
+    if(d.pressed){
+     if(before.held)return;
+     // Deliberately no wingBodyTestHeld=true command on PRESS.
+     // The timer qualifies only after 5 seconds without release.
+     hold.press();
+     lastNativeInput={id:d.id,held:true,qualified:false,durationMs:0};
+     if(actionNotice)actionNotice.textContent='OVHT TEST HELD · WAITING 5.0 s · WING BODY TEST OFF';
+    }else{
+     if(!before.held)return;
+     const durationMs=before.elapsedMs,passed=before.qualified;
+     hold.release();
+     lastNativeInput={id:d.id,held:false,qualified:false,
+      durationMs,l:latest?.derived?.lamps?.wingBodyOverheatL??false,
+      r:latest?.derived?.lamps?.wingBodyOverheatR??false};
+     if(actionNotice)actionNotice.textContent='OVHT TEST '+(passed?'5 SECOND CHECK COMPLETE':'RELEASED BEFORE 5 SECONDS')+
       ' · '+Math.round(durationMs)+' ms';
+    }
    }else if(d.id==='trip-reset'){
     if(!d.pressed)return; // reset only on PRESS, never on release
     command({type:'TRIP_RESET'});
@@ -163,7 +192,7 @@
   }catch(err){
    // Do not leave the parent stuck in the "held" state on a rejected
    // source command (e.g. iframe ready before the deferred ECU dependency).
-   if(d.id==='aircon-ovht-test'&&d.pressed===false)ovhtHeldSince=null;
+   if(d.id==='aircon-ovht-test'&&d.pressed===false)testHold?.release();
    if(actionNotice)actionNotice.textContent='AIRCON FCOM ERROR · '+err.message;
    console.error('AIRCON FCOM native recessed input',err);
   }
@@ -171,11 +200,17 @@
  for(const name of ['b737:unified-ecu-observation','b737:electrical-owner-ready',
   'b737:aircraft-profile-change','b737:cockpit-mounted'])
   root.addEventListener(name,()=>refresh());
- frame()?.addEventListener('load',()=>{last='';refresh(true);});
+ const releaseTest=()=>{
+  try{testHold?.release();}catch(error){console.warn('OVHT fail-safe release',error)}
+ };
+ root.addEventListener('blur',releaseTest);
+ root.addEventListener('pagehide',releaseTest);
+ document.addEventListener('visibilitychange',()=>{if(document.hidden)releaseTest()});
+ frame()?.addEventListener('load',()=>{releaseTest();last='';refresh(true);});
  root.B737AirconFCOMUnifiedV1=Object.freeze({
   getState:()=>latest?{family:family(),state:latest.state,derived:latest.derived,
-   nativeInput:lastNativeInput,ovhtHeld:ovhtHeldSince!==null,
-   ovhtHeldMs:ovhtHeldSince===null?0:performance.now()-ovhtHeldSince}:null,
+   nativeInput:lastNativeInput,ovhtTest:testHold?.snapshot()||
+     {held:false,qualified:false,remainingMs:0,delayMs:5000}}:null,
   setFailure:setInput,resetTrip:()=>command({type:'TRIP_RESET'}),refresh
  });
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>refresh(true),{once:true});
