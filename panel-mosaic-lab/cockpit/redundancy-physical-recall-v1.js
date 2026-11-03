@@ -38,5 +38,5 @@
  });
  win.addEventListener('b737:overhead-light-state',paint);
  win.B737RedundancyPhysicalV1=Object.freeze({paint,
-  snapshot:()=>({revision:lastVersion,indicators:Object.fromEntries(allowed.values().map(id=>[id,{...(incoming[id]||{on:false,mode:'NORMAL'})}]))})});
+  snapshot:()=>({revision:lastVersion,indicators:Object.fromEntries([...allowed].map(id=>[id,{...(incoming[id]||{on:false,mode:'NORMAL'})}]))})});
 })(window);
