@@ -221,6 +221,7 @@
  function open(id){
   if(!panels.has(id))return false;
   if(id==='OH17'&&window.B737HydraulicLabV1?.open)return window.B737HydraulicLabV1.open();
+  if(id==='OH21'&&window.B737AirconLiveTestLabV1?.open)return window.B737AirconLiveTestLabV1.open();
   // OH15 already has a verified Window Heat/TAT kernel, physical panel, and
   // multiple independent heater, sensor and CB failure scenarios.
   if(id==='OH15'&&window.B737AntiIceTestLabV2?.open){
