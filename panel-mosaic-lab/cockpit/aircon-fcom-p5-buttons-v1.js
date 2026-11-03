@@ -75,12 +75,20 @@
   if(host===piece&&buttons.every(b=>b.isConnected))return true;
   setHold(false,'REMOUNT');
   buttons.forEach(b=>b.remove());buttons=[];
-  let layer=piece.querySelector('.aircon-fcom-hit-layer');
+  // The approved beige OH21 photograph is a sibling overlay at z=62,
+  // while the atlas piece has its own hover stack at z=50. Mount the hit
+  // registration into #atlasAbsolute, ABOVE the photo, not inside the
+  // underlying atlas piece (otherwise hovering makes the button unclickable).
+  const atlas=document.getElementById('atlasAbsolute');
+  let layer=atlas.querySelector('.aircon-fcom-hit-layer');
   if(layer)layer.remove();
   layer=document.createElement('div');layer.className='aircon-fcom-hit-layer';
-  layer.style.cssText='position:absolute;inset:0;z-index:1600;pointer-events:none;';
+  Object.assign(layer.style,{position:'absolute',
+   left:piece.style.left,top:piece.style.top,
+   width:piece.style.width,height:piece.style.height,
+   zIndex:'1600',pointerEvents:'none'});
   buttons=items.map(item=>make(item,layer));
-  piece.append(layer);host=piece;
+  atlas.append(layer);host=piece;
   return true;
  }
  function boot(){
