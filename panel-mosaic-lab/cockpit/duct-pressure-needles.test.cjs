@@ -43,13 +43,18 @@ assert.ok(ui.includes('model.bearing(id,state[id])'));
 assert.ok(ui.includes('b737:duct-pressure-live-inputs'));
 assert.ok(ui.includes('resumeLive:auto'));
 assert.ok(ui.includes('live.advanceDynamics(motion,target,dt)'),'Frame-rate based bounded needle interpolation');
+assert.ok(ui.includes('if(!layer?.isConnected||blades.size!==model.needles.length)connect();'),
+ 'ECU data retries missing iframe/needle mounting');
+assert.ok(ui.includes('liveInputSummary:lastInputs?'), 'Exposes APU source and needle diagnostics');
+assert.ok(ui.includes('const old=host.querySelector'), 'Old inert needle layer is rehydrated');
+
 assert.ok(ui.includes('scheduleMotion()'),'Needle motion independent of 100ms ECU updates');
 assert.ok(ui.includes("transition:'none'"),'Do not double-ease a dynamically animated needle');
 assert.ok(ui.includes('manualOverride?target[id]:state[id]'),'Manual slider remains at selected target');
 const html=fs.readFileSync(path.join(__dirname,'index.html'),'utf8');
-assert.ok(html.includes('duct-pressure-live-v1.js?v=DPN-LIVE-0002-AIRDEMAND'));
+assert.ok(html.includes('duct-pressure-live-v1.js?v=DPN-LIVE-0003-APU'));
 assert.ok(html.includes('duct-pressure-needles-model.js?v=DPN-0005-LR'));
-assert.ok(html.includes('duct-pressure-needles-unified.js?v=DPN-0006-INERTIAL'));
+assert.ok(html.includes('duct-pressure-needles-unified.js?v=DPN-0007-APU-MOUNT'));
 const ecu=fs.readFileSync(path.join(__dirname,'isn-cockpit.js'),'utf8');
 assert.ok(ecu.includes("'b737:duct-pressure-live-inputs'"));
 console.log('PASS: OH21 0-100 PSI major/minor grid, owner blue-zero at 144 deg, two independently driven L/R pointers and live ECU feed, with broad separate L/R-labeled sprites.');
