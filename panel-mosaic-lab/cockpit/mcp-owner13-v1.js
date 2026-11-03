@@ -102,6 +102,7 @@ function addBank(root){
 const pushButtons=Object.freeze([
  // Socket envelopes are on the original 2172x433 panel, not viewport pixels.
  ["VNAV",767,159,104,63],["LNAV",1032,159,104,63],
+ ["VOR_LOC",1013,251,98,66],
  ["N1",291,375,98,57],["SPEED",411,375,98,57],
  ["LVL_CHG",729,375,103,57],["HDG_SEL",878,375,98,57],
  ["APP",1029,375,100,57],["ALT_HLD",1207,375,100,57],
