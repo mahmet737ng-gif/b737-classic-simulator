@@ -1,0 +1,57 @@
+/* SIXPACK-0001: new movable glass/lighting overlays on unprotected main-panel margins.
+   No modification to MCP itself, locked source images, or Owner18 guarded switches. */
+#region-main .region-native{position:relative}
+.b737-sixpack-glareshield{position:absolute;inset:0;width:2100px;height:920px;z-index:8;pointer-events:none;direction:ltr}
+.b737-sp-console{position:absolute;top:3px;width:180px;height:121px;box-sizing:border-box;padding:3px 4px 4px;
+ background:linear-gradient(145deg,#363b3d 0%,#1d2328 22%,#161a1e 69%,#222629 100%);
+ border:2px solid #111619;border-radius:10px 10px 5px 5px;
+ box-shadow:inset 1px 1px 1px #70777a5c,inset 0 -3px 4px #070a0d,1px 3px 6px #06090fd0;
+ pointer-events:auto;user-select:none}
+.b737-sp-console:before{content:"";position:absolute;inset:1px;pointer-events:none;border-radius:inherit;opacity:.35;
+ background:repeating-linear-gradient(12deg,transparent 0 8px,#8b90901b 9px 9.35px,transparent 10px 19px);
+ mix-blend-mode:overlay}
+.b737-sp-console.seat-capt{left:604px}
+.b737-sp-console.seat-fo{left:1387px}
+.b737-sp-top{display:flex;align-items:flex-start;justify-content:space-between;gap:3px;height:55px;position:relative;z-index:1}
+.b737-sp-master{width:55px;height:51px;min-width:0;padding:2px 1px 1px;box-sizing:border-box;display:flex;flex-direction:column;
+ align-items:center;justify-content:center;gap:1px;border-radius:3px;border:3px solid #080a0b;
+ font-family:"Arial Narrow","Liberation Sans Narrow",Arial,sans-serif;font-stretch:condensed;
+ font-weight:800;font-size:10px;line-height:1.03;letter-spacing:.22px;white-space:nowrap;cursor:pointer;
+ box-shadow:inset 0 1px 1px #b6ac9a54,1px 1px 2px #000d;transition:filter 90ms linear}
+.b737-sp-master small{font-size:5.6px;font-weight:700;letter-spacing:-.05px;margin-top:2px}
+.b737-sp-master.caution{background:radial-gradient(ellipse at 48% 38%,#87602c 0,#6b451e 53%,#3a2418 95%);color:#3e2c1d;border-color:#080907}
+.b737-sp-master.fire{background:radial-gradient(ellipse at 48% 30%,#822c33 0,#571a23 58%,#270e16 99%);color:#a99494}
+.b737-sp-master.caution[data-on="true"]{background:radial-gradient(ellipse at 48% 43%,#ffd65a 0,#ffab15 62%,#b95a0b 100%);color:#382511;box-shadow:inset 0 0 11px #fff3a9c6,0 0 9px #efac0a5b,1px 2px 2px #000b}
+.b737-sp-master.fire[data-on="true"]{background:radial-gradient(ellipse at 48% 41%,#fa4c4c 0,#ed2128 68%,#940d1b 99%);color:#ffebd6;text-shadow:0 0 4px #ffeed4;box-shadow:inset 0 0 9px #ffb5ad9c,0 0 8px #ff18184d,1px 2px 2px #000b}
+.b737-sp-master:active{transform:translateY(1px)}
+.b737-sp-map{width:57px;height:54px;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;pointer-events:none}
+.b737-sp-clock{position:absolute;top:1px;left:4px;font:600 7px Arial,sans-serif;color:#b6aea3;letter-spacing:.6px}
+.b737-sp-bright{position:absolute;top:5px;right:0;font:600 6.5px Arial,sans-serif;color:#bcb5a9;transform:rotate(-18deg)}
+.b737-sp-metal{width:30px;height:30px;margin-bottom:8px;border-radius:50%;border:3px solid #858989;
+ background:radial-gradient(circle at 28% 28%,#c6c8c2,#919591 52%,#555e61 77%,#242b30 95%);
+ box-shadow:inset 2px 2px 3px #ffffff6b,inset -3px -4px 4px #151919,1px 3px 3px #000c;position:relative}
+.b737-sp-metal i{position:absolute;left:8px;top:12px;width:17px;height:3px;background:#4b5355;transform:rotate(-41deg);border:1px solid #a9abab}
+.b737-sp-map-label{position:absolute;bottom:0;font:600 8px Arial,sans-serif;color:#c3bdaf;letter-spacing:1px}
+.b737-sp-rack{position:relative;z-index:1;height:58px;padding:2px 3px;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:repeat(3,1fr);
+ border:2px solid #090a0b;border-radius:3px;background:linear-gradient(180deg,#343331 0%,#252527 25%,#212022 75%,#37302a 100%);
+ box-shadow:inset 0 0 0 1px #575145,0 0 2px #000e;overflow:hidden}
+.b737-sp-legend{appearance:none;border:0!important;border-radius:0!important;outline-offset:-2px;min-width:0;margin:0!important;padding:0 1px!important;
+ color:#91705a!important;background:transparent!important;box-shadow:none!important;cursor:pointer;
+ font-family:"Arial Narrow","Liberation Sans Narrow",Arial,sans-serif;font-stretch:condensed;
+ font-size:10.25px!important;font-weight:650!important;line-height:1!important;text-align:center;
+ white-space:nowrap;overflow:hidden;letter-spacing:-.22px;
+ transition:color 60ms linear,text-shadow 60ms linear}
+.b737-sp-legend[data-on="true"]{color:#ffb24b!important;text-shadow:0 0 2px #ffb01e,0 0 4px #e36a16,0 0 8px #ee6c0977}
+.b737-sp-legend:focus-visible,.b737-sp-master:focus-visible{outline:2px solid #8bdeef!important;outline-offset:-2px}
+.b737-sp-legend:hover{background:#f7b64e14!important}
+.b737-sp-inspector{direction:ltr;text-align:left;padding:12px;border-top:1px solid #52616a;font:12px/1.5 system-ui,Arial,sans-serif}
+.b737-sp-inspector h2{font-size:15px;margin:0 0 7px}
+.b737-sp-inspector fieldset{border:1px solid #42525d;border-radius:7px;margin:8px 0;padding:6px}
+.b737-sp-inspector legend{padding:0 4px;font:700 11px Arial,sans-serif}
+.b737-sp-actions{display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
+.b737-sp-actions button{padding:5px 2px!important;font:700 10px Arial,sans-serif!important}
+.b737-sp-test-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.b737-sp-test-grid label{font:11px/1.6 Arial,sans-serif;display:flex;align-items:center;gap:3px}
+.b737-sp-test-grid input{width:15px;height:15px;accent-color:#ffa62a}
+.b737-sp-inspector small{color:#a2b4c0;font-size:10px}
+html.reference-mode .b737-sixpack-glareshield{pointer-events:none}
