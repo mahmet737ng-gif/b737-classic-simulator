@@ -115,7 +115,7 @@
  const ALLOWED=new Set(FAULTS.map(f=>f.id));
  const DEFAULT_ENV=()=>({eng1:true,eng2:true,ac1:true,ac2:true,onGround:true,
   reservoirAir:true,standbySelected:false,alternateFlapsArmed:false,
-  fireHandle1:false,fireHandle2:false,flapsDeg:0,airspeedKt:0});
+  fireHandle1:false,fireHandle2:false,gearUpSelected:false,gearNotUpLocked:false,flapsDeg:0,airspeedKt:0});
  const SWITCHES=()=>Object.fromEntries(Object.keys(PUMP).map(id=>[id,'ON']));
  const initial=()=>({schema:'HYD-LAB-CORE-0001',time:0,env:DEFAULT_ENV(),switches:SWITCHES(),
   faults:[],pressure:{A:3000,B:3000,STBY:0},quantity:{A:100,B:100,STBY:100},
@@ -239,13 +239,36 @@
    const k=id==='hyd-elec-1'?'ELEC1':'ELEC2';
    lamps[id+'-overheat']=panelPowered&&pumps[id].overheat&&!failedLamp(k+'_OVHT_LAMP_FAIL');
   }
-  lamps['flight-pressure-a']=panelPowered&&pressure.A<1800&&!faulted(s,'FLIGHT_CTRL_A_ISOLATED');
-  lamps['flight-pressure-b']=panelPowered&&pressure.B<1800&&!faulted(s,'FLIGHT_CTRL_B_ISOLATED');
+  lamps['flight-pressure-a']=panelPowered&&(pressure.A<1800||faulted(s,'FLIGHT_CTRL_A_ISOLATED'));
+  lamps['flight-pressure-b']=panelPowered&&(pressure.B<1800||faulted(s,'FLIGHT_CTRL_B_ISOLATED'));
   lamps['stby-pressure']=panelPowered&&standbyDemand&&(pressure.STBY<1800||faulted(s,'STBY_PRESS_SENSOR_FAIL'));
   lamps['stby-quantity']=panelPowered&&(q.STBY<25||faulted(s,'STBY_QTY_LOW'));
   lamps['stby-rudder']=panelPowered&&standbyDemand&&pressure.STBY>1800;
   const sixPackHyd=panelPowered&&(failedLamp('SIXPACK_HYD_STUCK_ON')||
    (alertHyd&&!failedLamp('SIXPACK_HYD_LAMP_FAIL')));
+  // Cross-system dependencies are separate *capability outputs*: they do
+  // not fake actual aircraft positions or flow-rate measurements.
+  const mainA=pressure.A>=2200,mainB=pressure.B>=2200;
+  const flightA=mainA&&!faulted(s,'FLIGHT_CTRL_A_ISOLATED');
+  const flightB=mainB&&!faulted(s,'FLIGHT_CTRL_B_ISOLATED');
+  const ptuDemand=!s.env.onGround&&s.env.flapsDeg>0&&s.env.flapsDeg<15&&
+   pumps['hyd-eng-2'].pressurePsi<2000&&mainA;
+  const lgtuDemand=!s.env.onGround&&s.env.gearUpSelected&&s.env.gearNotUpLocked&&
+   !s.env.eng1&&mainB;
+  const capabilities={
+   flightControls:{A:flightA,B:flightB,manualReversion:!flightA&&!flightB},
+   autopilot:{A:flightA,B:flightB},
+   gearNormal:mainA,
+   nosewheelSteering:mainA,
+   yawDamper:mainB&&!faulted(s,'YAW_DAMPER_HYD_FAIL'),
+   antiskid:!faulted(s,'ANTISKID_FAIL'),
+   alternateFlaps:standbyDemand&&pressure.STBY>1800&&!faulted(s,'ALT_FLAP_BYPASS_FAIL'),
+   reverser1:mainA||pressure.STBY>1800,
+   reverser2:mainB||pressure.STBY>1800,
+   ptu:{available:!faulted(s,'PTU_FAIL'),demand:ptuDemand,active:ptuDemand&&!faulted(s,'PTU_FAIL')},
+   lgtu:{available:!faulted(s,'LGTU_FAIL'),demand:lgtuDemand,active:lgtuDemand&&!faulted(s,'LGTU_FAIL')},
+   fluidOverheat:{A:faulted(s,'A_FLUID_OVERHEAT'),B:faulted(s,'B_FLUID_OVERHEAT')}
+  };
   return Object.freeze({schema:'HYD-LAB-CORE-0001/OUT',time:s.time,
    pressurePsi:{A:Math.round(pressure.A),B:Math.round(pressure.B),STBY:Math.round(pressure.STBY),BRAKE:Math.round(s.brakeAccumulator)},
    quantityPct:{A:Math.round(q.A),B:Math.round(q.B),STBY:Math.round(q.STBY)},
@@ -253,7 +276,7 @@
     'eng.hyd_qty.a':qa,'eng.hyd_qty.b':qb,'fo.hyd_brake_pressure':brake},
    lamps,alerts:{sixPackHyd,masterCaution:panelPowered&&alertHyd&&!failedLamp('MASTER_CAUTION_HYD_FAIL')&&!s.masterAcknowledged,
     recallHyd:alertHyd,acknowledged:s.masterAcknowledged,masterCautionAuthority:'LAB_TRAINING_APPROX'},
-   pumps,brakes:{mode:brakeMode,normalBrakes,alternateBrakes,accumulatorPsi:Math.round(s.brakeAccumulator)},
+   pumps,capabilities,brakes:{mode:brakeMode,normalBrakes,alternateBrakes,accumulatorPsi:Math.round(s.brakeAccumulator)},
    standby:{selected:standbyDemand,active:pressure.STBY>1800},
    warnings:{systemA:pressure.A<2200,systemB:pressure.B<2200,
     reservoirA:q.A<40,reservoirB:q.B<40},
