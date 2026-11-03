@@ -73,3 +73,14 @@
  border:1px solid #607e90;border-radius:5px}
 .hydlab-oh07-group .hydlab-standby{display:flex;flex-direction:column;gap:6px}
 @media(max-width:650px){.hydlab-oh07-group{grid-template-columns:1fr}.hydlab-oh07-group .hydlab-standby{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+.hydlab-dependents{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}
+.hydlab-dependents span{padding:6px 5px;border:1px solid #36556a;border-radius:3px;background:#192b38;
+ color:#b8cbcf;font:10px/1.35 Consolas,monospace}
+.hydlab-dependents span[data-ok="true"]{color:#92ddae;border-color:#486d60}
+.hydlab-dependents span[data-ok="false"]{color:#dfac85}
+.hydlab-flaps{display:flex;gap:5px;flex-wrap:wrap;grid-column:1/-1;padding:4px 0}
+.hydlab-flaps button{flex:1;min-width:60px;padding:7px;border:1px solid #577284;border-radius:4px;
+ background:#1b3445;color:#e4eef3;font:600 11px Consolas,monospace;cursor:pointer}
+.hydlab-flaps button[aria-pressed="true"]{background:#5e4724;border-color:#dcb165;color:#ffdb93}
+@media(max-width:650px){.hydlab-dependents{grid-template-columns:repeat(2,minmax(0,1fr))}}
