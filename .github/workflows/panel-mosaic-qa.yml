@@ -37,6 +37,9 @@ jobs:
           node tests/pneumatics-v6.test.cjs
           node engine/systems/aircon-fcom-ovht-system.test.cjs
           node panel-mosaic-lab/cockpit/aircon-fcom-wiring.test.cjs
+          node engine/systems/aircon-ovht-hold-v1.test.cjs
+          node engine/systems/aircon-live-lab-v1.test.cjs
+          node panel-mosaic-lab/cockpit/aircon-live-test-lab-v1.test.cjs
           node panel-mosaic-lab/cockpit/aircon-native-p5-fcom.test.cjs
       - name: Verify main ENGINE / F-O visual seam without panel relocation
         run: |
