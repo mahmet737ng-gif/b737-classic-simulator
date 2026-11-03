@@ -30,6 +30,7 @@
   ['aftTempControlFailed','AFT CAB temperature control failure · recall only','B737-400']
  ]);
  let section=null,inputs=new Map(),summary=null,latest=null,last='',lastFrame=null,actionNotice=null;
+ let ovhtHeldSince=null,lastNativeInput=null;
  const owner=()=>root.B737ISNCockpitV1;
  const frame=()=>document.getElementById('overheadFrame');
  function family(){
@@ -127,26 +128,53 @@
   // lamps and OH20 400 zone overlay became ready. Re-send exactly at READY;
   // do NOT echo on every controls-state/status report (would loop).
   if(e.data.kind==='ready'){last='';refresh(true);return;}
-  if(e.data.kind!=='aircon-fcom-input')return;
+  // Native P5-10 recessed pushbuttons are already installed on the
+  // owner-approved OH21 photo. They emit recessed-button, not the retired
+  // aircon-fcom-input event from an incorrect, overlapping transparent hit.
+  if(e.data.kind!=='recessed-button')return;
   const d=e.data;
+  if(d.source!=='recessed-hardware-v2'||typeof d.pressed!=='boolean')return;
   try{
-   if(d.id==='OVHT_TEST'&&typeof d.held==='boolean')
-    command({type:'SENSOR',key:'wingBodyTestHeld',value:d.held});
-   else if(d.id==='TRIP_RESET')command({type:'TRIP_RESET'});
-   else return;
-   if(d.id==='OVHT_TEST'&&d.held===false&&actionNotice){
-    actionNotice.textContent='OVHT TEST '+(d.durationMs>=5000?'5 SECOND CHECK COMPLETED':'RELEASED BEFORE 5 SECONDS')+
-     ' · '+Math.round(d.durationMs||0)+' ms';
-   }
+   if(d.id==='aircon-ovht-test'){
+    // Ignore duplicate down/up notifications from lostpointercapture.
+    const held=d.pressed;
+    if(held&&ovhtHeldSince!==null)return;
+    if(!held&&ovhtHeldSince===null)return;
+    const durationMs=held?0:Math.max(0,performance.now()-ovhtHeldSince);
+    if(held)ovhtHeldSince=performance.now();
+    // Apply immediately, not after five seconds. Five seconds is merely
+    // the FCOM duration for a complete successful detector check.
+    const projection=command({type:'SENSOR',key:'wingBodyTestHeld',value:held});
+    if(!held)ovhtHeldSince=null;
+    lastNativeInput={id:d.id,held,durationMs,
+      l:projection.lamps.wingBodyOverheatL,r:projection.lamps.wingBodyOverheatR};
+    if(actionNotice)actionNotice.textContent=held
+     ?'OVHT TEST HELD · WING BODY L/R '+Number(projection.lamps.wingBodyOverheatL)+'/'+
+       Number(projection.lamps.wingBodyOverheatR)
+     :'OVHT TEST '+(durationMs>=5000?'5 SECOND CHECK COMPLETED':'RELEASED BEFORE 5 SECONDS')+
+      ' · '+Math.round(durationMs)+' ms';
+   }else if(d.id==='trip-reset'){
+    if(!d.pressed)return; // reset only on PRESS, never on release
+    command({type:'TRIP_RESET'});
+    lastNativeInput={id:d.id,pressed:true};
+    if(actionNotice)actionNotice.textContent='TRIP RESET · initiating fault must be cleared';
+   }else return;
    refresh(true);
-  }catch(err){if(actionNotice)actionNotice.textContent=err.message;console.warn('AIRCON FCOM input',err);}
+  }catch(err){
+   // A rejected command must be visible for troubleshooting rather than
+   // leaving a pressed cap that looks operational but changes no lamps.
+   if(actionNotice)actionNotice.textContent='AIRCON FCOM ERROR · '+err.message;
+   console.error('AIRCON FCOM native recessed input',err);
+  }
  });
  for(const name of ['b737:unified-ecu-observation','b737:electrical-owner-ready',
   'b737:aircraft-profile-change','b737:cockpit-mounted'])
   root.addEventListener(name,()=>refresh());
  frame()?.addEventListener('load',()=>{last='';refresh(true);});
  root.B737AirconFCOMUnifiedV1=Object.freeze({
-  getState:()=>latest?{family:family(),state:latest.state,derived:latest.derived}:null,
+  getState:()=>latest?{family:family(),state:latest.state,derived:latest.derived,
+   nativeInput:lastNativeInput,ovhtHeld:ovhtHeldSince!==null,
+   ovhtHeldMs:ovhtHeldSince===null?0:performance.now()-ovhtHeldSince}:null,
   setFailure:setInput,resetTrip:()=>command({type:'TRIP_RESET'}),refresh
  });
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>refresh(true),{once:true});
