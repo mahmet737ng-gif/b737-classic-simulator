@@ -7,6 +7,8 @@ on:
       - 'panel-mosaic-lab/cockpit/conventional-physical-controls-v1.js'
       - 'panel-mosaic-lab/cockpit/conventional-physical-controls-v1.css'
       - 'panel-mosaic-lab/cockpit/conventional-physical-controls-v1.test.cjs'
+      - 'panel-mosaic-lab/cockpit/lights-model.js'
+      - 'panel-mosaic-lab/cockpit/autobrake-rto-selftest-v1.test.cjs'
       - 'tools/test-conventional-physical-controls-browser.cjs'
       - 'panel-mosaic-lab/cockpit/index.html'
 permissions:
@@ -46,6 +48,7 @@ jobs:
           node --check panel-mosaic-lab/cockpit/conventional-physical-controls-v1.js
           node --check tools/test-conventional-physical-controls-browser.cjs
           node panel-mosaic-lab/cockpit/conventional-physical-controls-v1.test.cjs
+          node panel-mosaic-lab/cockpit/autobrake-rto-selftest-v1.test.cjs
       - name: Install Chromium for native-photo visual verification
         run: |
           npm install --no-save --ignore-scripts playwright@1.58.2
