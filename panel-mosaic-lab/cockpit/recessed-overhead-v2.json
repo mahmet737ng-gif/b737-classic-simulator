@@ -1,6 +1,6 @@
 {
   "schema": "b737.recessed-overhead.v2",
-  "version": "RECESS-0003-RESID-SOCKET-CENTER",
+  "version": "RECESS-OH18-FIT-0001",
   "implementation": "independent additive overlay; locked atlas files and guards unmodified",
   "photoBasis": {
     "UPPER": [
@@ -110,19 +110,21 @@
       "id": "attend",
       "piece": "OH18",
       "label": "ATTEND",
-      "cx": 160,
-      "cy": 400,
+      "cx": 188,
+      "cy": 435,
       "d": 192,
-      "quality": "photo"
+      "quality": "screenshot-aligned",
+      "note": "2026-11-04 owner screenshot, OH18 installed recessed bezel centered over exposed lower-right physical socket; shifted +28,+35 native source pixels"
     },
     {
       "id": "ground-call",
       "piece": "OH18",
       "label": "GRD CALL",
-      "cx": 615,
-      "cy": 400,
+      "cx": 643,
+      "cy": 435,
       "d": 192,
-      "quality": "photo"
+      "quality": "screenshot-aligned",
+      "note": "2026-11-04 owner screenshot, OH18 button centered over physical socket; shifted +28,+35 native source pixels"
     },
     {
       "id": "rain-repellent-left",
@@ -137,10 +139,11 @@
       "id": "rain-repellent-right",
       "piece": "OH18",
       "label": "RAIN REPELLENT RIGHT",
-      "cx": 550,
-      "cy": 1035,
+      "cx": 570,
+      "cy": 1045,
       "d": 176,
-      "quality": "photo"
+      "quality": "screenshot-aligned",
+      "note": "2026-11-04 owner screenshot, OH18 R RAIN REPELLENT centered on dark recess with right-hand crescent removed; shifted +20,+10 native source pixels"
     }
   ],
   "legacyIntegrated": {
@@ -153,5 +156,6 @@
       689
     ],
     "stateEngine": "b737:le-devices-lamp-test"
-  }
+  },
+  "photoBasisScreenshot": "Owner 2026-11-04 1920x1080 screenshot showing OH18 ATTEND, GRD CALL, R RAIN REPELLENT against photographed socket rims; approximate registration, needs real browser visual QA"
 }
