@@ -437,6 +437,9 @@
   render();
  },100);
  window.B737ISNCockpitV1=Object.freeze({getState:()=>bridge.get(),getStartState:()=>chain.get(),getECUState:()=>ecu.get(),
+    // Isolated APU fault lab uses the single shared ECU, never a second owner.
+    apuLabProtectionTrip:reason=>{const result=chain.tripAPU(reason);if(result){ecu.log('APU_PROTECTIVE_SHUTDOWN',{reason,origin:'APU_LAB_TRAINING'});render();}return result;},
+    apuLabSetHardwareFault:(key,on)=>{if(!['generatorFailure','bleedFailure'].includes(key))throw Error('APU lab fault unavailable');const result=ecu.setAPUFault(key,on);render();return result;},
    getArchitectureAudit:()=>window.B737UnifiedAuthorityDiagnosticsV1.audit({bridge:bridge.get(),ecu:ecu.get()}),
    getLiveGatewayState:()=>liveGateway.get(),getAircraftSnapshot:()=>liveGateway.snapshot(),
    getElectricalState:()=>JSON.parse(JSON.stringify({schema:session.electricalState.schema,rev:session.electricalState.rev,
