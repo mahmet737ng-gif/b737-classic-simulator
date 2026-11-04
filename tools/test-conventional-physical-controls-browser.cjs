@@ -159,10 +159,10 @@ const {chromium}=require('playwright');
   assert.equal((await status()).frame,'ON','DISARM lamp lit during test');
   await page.screenshot({path:'/tmp/b737-conv-rto-disarm-on.png',timeout:25000});
   await page.waitForTimeout(950);
-  assert.equal((await status()).frame,'ON','Lamp remains illuminated before 3 seconds');
-  await page.waitForTimeout(2450);
-  assert.equal((await status()).test,false,'Test ends automatically after 3 seconds');
-  assert.equal((await status()).frame,'OFF','Lamp dark after 3 seconds without fault');
+  assert.equal((await status()).frame,'ON','Lamp remains illuminated before 1500 ms');
+  await page.waitForTimeout(700);
+  assert.equal((await status()).test,false,'Test ends automatically after 1.5 seconds');
+  assert.equal((await status()).frame,'OFF','Lamp dark after 1.5 seconds without fault');
   await page.evaluate(()=>{
     const api=window.B737ConventionalPhysicalControlsV1;
     api.setDetent('OFF');api.setDetent('RTO');api.setDetent('1');
@@ -170,20 +170,30 @@ const {chromium}=require('playwright');
   assert.equal((await status()).test,false,'Leaving RTO cancels any running test');
   await page.evaluate(()=>{
     const api=window.B737ConventionalPhysicalControlsV1;
-    window.B737CockpitLights.setInputs({autobrakeDisarmed:true});
     api.setDetent('OFF');api.setDetent('RTO');
+    window.B737AutobrakeUnified.updateSensors({autobrakeFault:true});
   });
-  await page.waitForTimeout(3180);
+  await page.waitForTimeout(1700);
   assert.equal((await status()).test,false,'Self-test timer cleared');
   assert.equal((await status()).frame,'ON','A real DISARM fault remains ON after timer');
   await page.evaluate(()=>{
     window.B737ConventionalPhysicalControlsV1.setDetent('OFF');
-    window.B737CockpitLights.setInputs({autobrakeDisarmed:false});
+    window.B737AutobrakeUnified.updateSensors({autobrakeFault:false});
   });
   assert.equal((await status()).frame,'OFF');
-  console.log('GROUND_RTO_3000MS_SELF_TEST_PASS',JSON.stringify(await status()));
+  console.log('GROUND_RTO_1500MS_SELF_TEST_PASS',JSON.stringify(await status()));
   await page.screenshot({path:'/tmp/b737-conv-skid-autobrake-browser.png',timeout:25000});
   console.log('CONVENTIONAL_PHYSICAL_CONTROLS_PHOTO_PASS',JSON.stringify(geometry));
+  // Shared autobrake logic must outlive switching between the two photo
+  // configurations; no second 1500ms timer or duplicate state in EIS.
+  await page.evaluate(()=>{
+    const shared=window.B737AutobrakeUnified;
+    shared.setOnGround(true);
+    shared.setSelector('2');
+    shared.updateSensors({autobrakeFault:false,antiskidOn:true});
+  });
+  const priorCommon=await page.evaluate(()=>window.B737AutobrakeUnified.getState());
+  assert.equal(priorCommon.selector,'2');
   await page.evaluate(()=>window.B737EngineIndicationModeV1.setMode('EIS'));
   await page.waitForFunction(()=>document.documentElement.dataset.engineIndication==='EIS',null,{timeout:20000});
   const eis=await page.evaluate(()=>{
@@ -196,6 +206,22 @@ const {chromium}=require('playwright');
   assert.ok(Math.abs(eis.left-before.originalX)<.03,'EIS original guard X retained');
   assert.ok(Math.abs(eis.top-before.originalY)<.03,'EIS original guard Y retained');
   assert.equal(eis.knobDisplay,'none','Conventional knob must not show in EIS');
+  const eisCommon=await page.evaluate(()=>window.B737AutobrakeUnified.getState());
+  assert.equal(eisCommon.selector,'2','EIS and Conventional share one selector');
+  assert.equal(eisCommon.phase,priorCommon.phase,'Mode switch preserves actual autobrake state');
+  await page.evaluate(()=>window.B737AutobrakeUnified.updateSensors({antiskidOn:false}));
+  const eisDisarm=await page.evaluate(()=>({
+    state:window.B737AutobrakeUnified.getState(),
+    panel:window.B737CockpitLights.getState()
+  }));
+  assert.equal(eisDisarm.state.disarmLight,true,'ANTISKID OFF must disarm in EIS');
+  assert.equal(eisDisarm.panel.inputs.autobrakeDisarmed,true,
+    'EIS DISARM lens must receive the same engine output');
+  await page.evaluate(()=>{
+    window.B737AutobrakeUnified.setSelector('OFF');
+    window.B737AutobrakeUnified.updateSensors({antiskidOn:true});
+  });
+  console.log('SAME_AUTOBRAKE_ENGINE_EIS_CONVENTIONAL_PASS');
   // The approved EIS guard must retain its original click policy: the first
   // click only opens its cover, unlike the Conventional single-click toggle.
   await page.evaluate(()=>window.B737GuardOwner18.set('antiskid','ON',true));
