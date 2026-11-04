@@ -11,6 +11,12 @@ vm.runInNewContext(src,{window:win,document:doc,CustomEvent,console});
 const api=win.B737SpeedbrakeLever;
 assert.equal(JSON.stringify(api.stops.map(s=>s.key)),JSON.stringify(['DOWN','ARMED','FLIGHT_DETENT','UP']));
 assert.equal(api.geometry().sourceWindowWidth,800);
+assert.equal(api.geometry().sourceWidth,116,'speedbrake is scaled to the narrow slot without touching background');
+assert.equal(api.geometry().trackTop,255,'DOWN underline matches photo');
+assert.equal(api.geometry().trackBottom,616,'UP end matches photo, not the engine start area');
+assert.equal(Math.round(api.stops[1].t*361),29,'ARMED occurs directly below DOWN');
+assert.equal(Math.round(api.stops[2].t*361),220,'flight detent follows the actual stencil');
+
 assert.ok(api.stops[0].t<api.stops[1].t&&api.stops[1].t<api.stops[2].t&&api.stops[2].t<api.stops[3].t);
 assert.equal(api.set('DOWN'),0);
 assert.equal(ev.at(-1).detail.armed,false);

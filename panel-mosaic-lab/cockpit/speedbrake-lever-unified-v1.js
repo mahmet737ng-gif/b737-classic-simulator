@@ -1,20 +1,21 @@
-/* SBK-0002 — four physical speed-brake positions on the active owner bare quadrant.
+/* SBK-0003 — photographed stencil-index registration on the owner bare quadrant.
  * Independent lever overlay only. No panel/background/guarded-switch assets changed.
  */
 (function(){
 'use strict';
-const STOPS=Object.freeze([
- {key:'DOWN',t:0},
- {key:'ARMED',t:67/428},
- {key:'FLIGHT_DETENT',t:245/428},
- {key:'UP',t:1}
-].map(s=>Object.freeze(s)));
+/* Measured directly from the 800×1000 owner background, not equal intervals.
+ * DOWN underline y=255, ARMED underline y=284, FLIGHT detent bar y=475,
+ * UP/end of visible slot y=616. */
+const STOP_Y=Object.freeze({DOWN:255,ARMED:284,FLIGHT_DETENT:475,UP:616});
+const STOPS=Object.freeze(Object.entries(STOP_Y).map(([key,y])=>Object.freeze({
+ key,y,t:(y-STOP_Y.DOWN)/(STOP_Y.UP-STOP_Y.DOWN)
+})));
 const ASSET='./assets/speedbrake-lever-v1.txt?v=SBK-0001';
 /* Source-pixel registration on throttle-quadrant-bare-owner-20261104.webp:
  * the grip reference passes the printed DOWN, ARMED, FLIGHT DETENT and UP marks.
  * The shaft, not the grip, is registered to the black speedbrake slot (x=163).
  */
-const G={sourceX:163,sourceWidth:146,trackTop:250,trackBottom:678,
+const G={sourceX:163,sourceWidth:116,trackTop:STOP_Y.DOWN,trackBottom:STOP_Y.UP,
  sourceWindowX:0,sourceWindowY:0,sourceWindowWidth:800,sourceWindowHeight:978.1990521327015,
  gripAnchorX:.43,gripAnchorY:.215,shaftAnchorX:.84};
 let root=null,texture=null,lever=null,position=0,ready=false,drag=null;
@@ -38,7 +39,7 @@ function syncArmed(){
   if(system.getState?.()?.inputs?.speedBrakeArmedIndication!==indication){
    system.setInputs({speedBrakeArmedIndication:indication});
   }
- }catch(err){console.warn('SBK-0002 SPEED BRAKE ARMED indication sync',err);}
+ }catch(err){console.warn('SBK-0003 SPEED BRAKE ARMED indication sync',err);}
 }
 function emit(source){
  const stop=nearest(position);
@@ -65,6 +66,13 @@ function render(){
  lever.style.width=m.width.toFixed(2)+'px';
  lever.style.height=m.height.toFixed(2)+'px';
  lever.style.top=top.toFixed(2)+'px';
+ // The lower mechanism disappears behind the panel at the end of the slot.
+ // Retain the full ivory grip even at UP; never paint its long metal foot
+ // on top of Parking Brake, Engine Start, or STAB TRIM below the slot.
+ const panelSlotEnd=texture.offsetTop+(642-G.sourceWindowY)*m.sy;
+ const lastVisible=Math.max(panelSlotEnd,top+m.height*.43);
+ const lowerMask=Math.max(0,top+m.height-lastVisible);
+ lever.style.clipPath='inset(0px 0px '+lowerMask.toFixed(2)+'px 0px)';
  lever.style.transform='rotate('+(-1+position*2).toFixed(2)+'deg)';
  lever.dataset.position=nearest(position).key;
  lever.setAttribute('aria-valuenow',String(Math.round(position*100)));
@@ -139,7 +147,7 @@ async function mount(){
   const probe=new Image();probe.src='data:image/webp;base64,'+code;
   await probe.decode();
   if(probe.naturalWidth!==120||probe.naturalHeight!==207)throw Error('sprite dimension mismatch');
- }catch(err){console.warn('SBK-0002 isolated lever unavailable; bare panel preserved',err);return;}
+ }catch(err){console.warn('SBK-0003 isolated lever unavailable; bare panel preserved',err);return;}
  lever=document.createElement('img');
  lever.id='b737-speedbrake-lever';
  lever.className='speedbrake-photo-lever';

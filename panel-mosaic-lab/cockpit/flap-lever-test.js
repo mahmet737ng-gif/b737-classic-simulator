@@ -20,7 +20,7 @@
    if(selector)selector.value=String(model.indexOf(position));
    output();
    overlay.dataset.detent=String(position);overlay.setAttribute('aria-valuenow',String(position));
-   overlay.setAttribute('aria-label','Flap lever currently '+position+(position===0?' UP':'')+'. Swipe vertically to move one detent.');
+   overlay.setAttribute('aria-label','Flap lever currently '+position+(position===0?' UP':'')+'. Swipe to a marked flap detent; gates at 1 and 15 require another action.');
    root.dispatchEvent(new CustomEvent('b737:flap-detent-visual-test',{detail:{index:model.indexOf(position),detent:position,visualOnly:true}}));
  }
  function stepAnimation(sequence,done){
@@ -63,7 +63,7 @@
      hit.type='button';hit.className='flap-detent-hit';hit.dataset.detent=String(value);
      hit.title='FLAP '+(value===0?'UP / 0':value)+' — mechanical gates enforced';
      hit.setAttribute('aria-label','Move FLAP toward '+value+' degrees, stopping at mechanical gates');
-     Object.assign(hit.style,{left:(point.x-17)+'px',top:(point.y-13)+'px',width:'35px',height:'27px'});
+     Object.assign(hit.style,{left:(point.x-14)+'px',top:(point.y-11)+'px',width:'28px',height:'22px'});
      hit.addEventListener('pointerdown',e=>e.stopPropagation());
      hit.addEventListener('pointermove',e=>e.stopPropagation());
      hit.addEventListener('pointerup',e=>e.stopPropagation());

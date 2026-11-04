@@ -1,6 +1,6 @@
 {
   "schema": "b737.flap-nine-detent-sprite.v1",
-  "version": "FLAP-BMP-0004",
+  "version": "FLAP-BMP-0005-PHOTO-REGISTERED",
   "source": "../assets/locked/2026-10-23/B737_FLAP_9_ORIGINAL_BMP_EXTRACTED.png",
   "source_sha256": "709ea64910a134c4199f9bed393fc65fbd8e6b44bc70f7adc03a8470d29460a4",
   "source_sha1_gitblob": "da10a6b734d1bda52239e49972d924aefa2ddae2",
@@ -215,44 +215,44 @@
         800,
         1000
       ],
-      "method": "New owner-approved bare quadrant: visible white FLAP scale ticks calibrated in the 800x1000 native WebP; independent from archived original coordinate map",
+      "method": "Photo-registered 800×1000 active owner WebP: each target follows the rightmost bright tick edge (x≈597); y measured individually from the printed 0/1/2/5/10/15/25/30/40 scale. Earlier top four rows were high by 25–38 native pixels.",
       "cosmeticCorrections": [],
       "targets": {
         "0": {
-          "x": 606,
-          "y": 327
+          "x": 597,
+          "y": 352
         },
         "1": {
-          "x": 606,
-          "y": 387
+          "x": 597,
+          "y": 425
         },
         "2": {
-          "x": 606,
-          "y": 448
+          "x": 597,
+          "y": 475
         },
         "5": {
-          "x": 606,
-          "y": 502
+          "x": 597,
+          "y": 526
         },
         "10": {
-          "x": 606,
-          "y": 574
+          "x": 597,
+          "y": 573
         },
         "15": {
-          "x": 606,
-          "y": 624
+          "x": 597,
+          "y": 623
         },
         "25": {
-          "x": 606,
-          "y": 671
+          "x": 597,
+          "y": 670
         },
         "30": {
-          "x": 606,
-          "y": 717
+          "x": 597,
+          "y": 715
         },
         "40": {
-          "x": 606,
-          "y": 772
+          "x": 597,
+          "y": 769
         }
       }
     }
@@ -286,5 +286,5 @@
     ],
     "doesNotDriveSimulatedFlapMechanism": true
   },
-  "note": "Background ticks are pixel-measured and stored by asset ID so a future background has an independent calibration. The unlabeled extra tick is hidden with a 14x14 source-pixel correction using nearby texture from the same unmodified background. Visual test only; no simulated flap actuation."
+  "note": "Nine calibrated scale ticks for active bare quadrant, measured on the actual 800×1000 image. The original BMP lever sprite and all locked panel photos remain immutable. Visual gating at detents 1 and 15 is preserved; no simulated flap actuation."
 }
