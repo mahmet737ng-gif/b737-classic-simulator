@@ -21,3 +21,22 @@ html[data-light-geometry-debug=true] .cockpit-light::after{content:'';position:a
 .cockpit-light[data-native-housing="true"] > img:not(.lamp-socket-fit-face){
   visibility:hidden !important;
 }
+
+/* MP-SINGLE-HOUSING-0002: The legacy native image is now an emissive
+   text-only SVG (see lights.js); it is never a second black lens/bezel.
+   The photo supplies the sole housing even during initial load. */
+.cockpit-light,.cockpit-light:hover{
+ background:transparent !important;
+ overflow:visible !important;
+}
+.cockpit-light > img:not(.lamp-socket-fit-face){
+ position:absolute;
+ left:10%;top:10%;
+ width:110%;height:110%;
+ object-fit:fill !important;
+ pointer-events:none;
+ margin:0;
+}
+.cockpit-light[data-native-housing="true"] > img:not(.lamp-socket-fit-face){
+ visibility:hidden !important;
+}
