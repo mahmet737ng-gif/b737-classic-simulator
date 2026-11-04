@@ -158,6 +158,25 @@ html.oh22-pressure-config-active .lights-layer .mounted-light[data-light="press-
 .oh22-physical-horn-cutout:focus-visible{
   outline:2px solid #e1d6a7;outline-offset:2px;
 }
+/* RECESS-ALT-HORN-0001: use the existing approved recessed-pushbutton
+   library face on the separate OH19 fixed cabin-altitude horn cutout.
+   No new photographed panel image, mode selector or annunciator is touched. */
+.oh22-physical-horn-cutout.b737-recess-unit{
+  background:url('../cockpit/assets/recessed-pushbutton-v2.svg?v=RECESS-ALT-HORN-0001') center/100% 100% no-repeat;
+  pointer-events:none;
+  isolation:isolate;
+  box-sizing:border-box;
+  z-index:1100;
+}
+.oh22-physical-horn-cutout .b737-recess-unit__cap{
+  pointer-events:auto;
+  cursor:pointer;
+  touch-action:none;
+}
+.oh22-physical-horn-cutout .b737-recess-unit__cap:focus-visible{
+  outline:2px solid #e1d6a7;
+  outline-offset:2px;
+}
 .oh22-pressure-controls .oh22-pressure-gauge[data-system="CPCS"]{
   display:block;position:absolute;border:none;border-radius:50%;
   background:transparent;pointer-events:none;overflow:hidden;
