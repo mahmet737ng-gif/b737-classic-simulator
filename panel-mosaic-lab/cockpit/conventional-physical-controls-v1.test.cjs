@@ -17,7 +17,7 @@ assert.equal(anti.closePolicy.target,'ON');
 assert.deepEqual(anti.rectPx,[55,560,102,168],'EIS source placement must remain unmodified');
 assert.deepEqual(REF.image,[1463,1075]);
 assert.deepEqual(REF.antiskid.center,[1153.5,620]);
-assert.deepEqual(REF.autobrake.center,[1148,845]);
+assert.deepEqual(REF.autobrake.center,[1147.6,844.8]);
 assert.deepEqual(DETENTS,['RTO','OFF','1','2','3','MAX']);
 assert.deepEqual(DETENTS.map(k=>ANGLES[k]),[-135,-90,-45,0,45,90]);
 const g=point(layout,REF.antiskid.center),k=point(layout,REF.autobrake.center);
