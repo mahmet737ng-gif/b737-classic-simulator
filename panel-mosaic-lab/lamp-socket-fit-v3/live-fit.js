@@ -45,7 +45,7 @@ function boundedRect(row){
  }
  return {x:x-p.l,y:y-p.t,w:w+p.l+p.r,h:h+p.t+p.b,p};
 }
-function shapeFit(svgText,shape){
+function shapeFit(svgText,shape,bank){
  const doc=new DOMParser().parseFromString(svgText,'image/svg+xml');
  if(doc.querySelector('parsererror'))throw Error('Malformed source SVG');
  const s=doc.documentElement,v=(s.getAttribute('viewBox')||'').split(/\s+/).map(Number);
@@ -84,6 +84,16 @@ function shapeFit(svgText,shape){
    g.setAttribute('transform',(before+' '+transform).trim());
   }
  }
+ // Main Panel already has the authentic annunciator housings painted into its
+ // source photograph. The old full-frame SVG created a second, displaced lamp.
+ // Preserve the source bezel and render ONLY the original luminous legend.
+ // This is deliberately MP-only: overhead lamp housings are unaffected.
+ if(bank==='MP'){
+  for(const child of Array.from(s.children)){
+   if(child.localName==='defs'||child.localName==='text'||(child.localName==='g'&&child.querySelector('text')))continue;
+   child.remove();
+  }
+ }
  s.setAttribute('viewBox','0 0 '+newW.toFixed(4)+' '+oldH);
  s.setAttribute('width',String(newW));
  s.setAttribute('height',String(oldH));
@@ -103,7 +113,7 @@ async function face(row,frame){
  const asset=master.assets[selector];
  if(!asset)throw Error('Missing master state '+mid+' '+selector);
  const shape=boundedRect(row),slotRatio=(shape.w/shape.h).toFixed(6);
- const faceKey=mid+'|'+selector+'|'+slotRatio;
+ const faceKey=row.bank+'|'+mid+'|'+selector+'|'+slotRatio;
  if(blobURLs.has(faceKey))return {url:blobURLs.get(faceKey),shape,selector};
  const url=new URL(asset,masterRoot).href;
  if(!sourceCache.has(url)){
@@ -111,7 +121,7 @@ async function face(row,frame){
   if(!r.ok)throw Error('Missing master SVG '+url);
   sourceCache.set(url,await r.text());
  }
- const svg=shapeFit(sourceCache.get(url),shape);
+ const svg=shapeFit(sourceCache.get(url),shape,row.bank);
  const blob=URL.createObjectURL(new Blob([svg],{type:'image/svg+xml'}));
  blobURLs.set(faceKey,blob);
  return {url:blob,shape,selector};
@@ -136,14 +146,21 @@ async function update(id){
   const fx=(parseFloat(obj.node.style.width)||obj.node.offsetWidth)/ow;
   const fy=(parseFloat(obj.node.style.height)||obj.node.offsetHeight)/oh;
   const p=r.shape.p;
+  // The original MP photo housings extend beyond the legacy registered
+  // sourceRect towards the lower-right. Shift the emission-only legend onto
+  // that ONE physical glass, without shifting any socket or its hit target.
+  const mp=row.bank==='MP';
+  const size=mp?1.10:1;
+  const dx=mp?ow*fx*0.10:0,dy=mp?oh*fy*0.10:0;
   Object.assign(obj.img.style,{
-   left:(-p.l*fx)+'px',top:(-p.t*fy)+'px',
-   width:(r.shape.w*fx)+'px',height:(r.shape.h*fy)+'px'
+   left:(-p.l*fx+dx)+'px',top:(-p.t*fy+dy)+'px',
+   width:(r.shape.w*fx*size)+'px',height:(r.shape.h*fy*size)+'px'
   });
   if(obj.img.src!==r.url)obj.img.src=r.url;
   obj.img.hidden=false;
   obj.node.dataset.socketFitState=r.selector;
   obj.node.dataset.socketFitApplied='true';
+  if(row.bank==='MP')obj.node.dataset.nativeHousing='true';
   renders++;
  }catch(error){
   if(token!==obj.serial)return;
