@@ -37,5 +37,22 @@ bad.press();assert.throws(()=>advance(30000),/ECU OFFLINE/);
 assert.equal(rejected,1);
 assert.equal(bad.snapshot().qualified,false,'A rejected ECU command must never mark test qualified');
 bad.release();
+// Physical press occurs at t=31000 but the message arrives at t=32750.
+ // Once received, the core must count 1750ms already elapsed, and never
+ // restart a new five-second period from the message delivery time.
+advance(31000);
+const physicalAt=ms;
+advance(32750);
+h.press(physicalAt);
+assert.equal(h.snapshot().remainingMs,3250);
+assert.equal(h.snapshot().elapsedMs,1750);
+advance(35999);
+assert.equal(h.snapshot().qualified,false);
+advance(36000);
+assert.equal(h.snapshot().qualified,true);
+assert.deepEqual(events.slice(-1),['ON']);
+h.release();
+assert.deepEqual(events.slice(-1),['OFF']);
+assert.equal(timers.size,0);
 assert.throws(()=>H.create({delayMs:-1}),/Invalid/);
 console.log('PASS: full 5000ms quiet delay, then one ON, release OFF, short/repeated presses do nothing, timer cancellation and rejected ECU safety.');
