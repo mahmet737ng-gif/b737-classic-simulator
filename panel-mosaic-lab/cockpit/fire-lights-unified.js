@@ -10,6 +10,36 @@ const unit=win.B737FireProtection?.createEngine?.()||null;
 const faceNodes=new Map();
 let lastRegistration=null;
 const overrides={};
+const pressed=new Set(),pointerLamps=new Map();
+function releaseLamp(id){
+ if(pressed.delete(id))draw();
+}
+function releasePointer(e){
+ const id=pointerLamps.get(e.pointerId);if(!id)return;
+ pointerLamps.delete(e.pointerId);
+ if(![...pointerLamps.values()].includes(id))releaseLamp(id);
+}
+function releaseAll(){
+ pointerLamps.clear();if(pressed.size){pressed.clear();draw();}
+}
+function bindPushTest(node,id){
+ node.setAttribute('role','button');node.tabIndex=0;
+ node.setAttribute('aria-label',id+' — hold to test');
+ node.addEventListener('pointerdown',e=>{
+  e.stopPropagation();if(e.pointerType==='mouse'&&e.button!==0)return;
+  pointerLamps.set(e.pointerId,id);pressed.add(id);draw();
+ });
+ node.addEventListener('click',e=>e.stopPropagation());
+ node.addEventListener('keydown',e=>{
+  if((e.key===' '||e.key==='Enter')&&!e.repeat){
+   e.preventDefault();e.stopPropagation();pressed.add(id);draw();
+  }
+ });
+ node.addEventListener('keyup',e=>{
+  if(e.key===' '||e.key==='Enter'){e.preventDefault();e.stopPropagation();releaseLamp(id);}
+ });
+ node.addEventListener('blur',()=>releaseLamp(id));
+}
 let external=null, visualTest=false, attached=false, lastSystemLamps='';
 const ids=new Set(model.SLOTS.map(s=>s.id));
 function systemIndications(){
@@ -25,6 +55,7 @@ function systemIndications(){
 function current(){
  const out=systemIndications();
  if(visualTest)for(const k of Object.keys(out))out[k]=true;
+ for(const id of pressed)out[id]=true;
  return out;
 }
 function draw(){
@@ -42,6 +73,7 @@ function draw(){
    img.dataset.source=wanted;img.src=wanted;
   }
   img.dataset.illuminated=vals[s.id]?'true':'false';
+  img.parentElement.dataset.pushTest=String(pressed.has(s.id));
  }
  return vals;
 }
@@ -71,7 +103,7 @@ function attach(){
  // The new owner-approved bare panel already has both bottle cutouts horizontal.
  // Do not overlay the obsolete V3 bottle patch.
 
- layer.setAttribute('aria-hidden','true');
+ layer.setAttribute('aria-label','Fire protection indicator lamps');
  for(const slot of model.SLOTS){
   const node=win.document.createElement('span');node.className='fire-lamp';
   node.dataset.fireLamp=slot.id;node.dataset.kind=slot.type;
@@ -84,9 +116,13 @@ function attach(){
   Object.assign(img.style,{position:'absolute',left:'0%',top:'0%',width:'100%',height:'100%'});
   node.dataset.geometry=slot.type==='rect'?'approved-cropped-annunciator':'approved-green-lens';
   node.dataset.version=model.version;
-  node.append(img);layer.append(node);faceNodes.set(slot.id,img);
+  node.append(img);bindPushTest(node,slot.id);layer.append(node);faceNodes.set(slot.id,img);
  }
  host.append(layer);attached=true;
+  win.document.addEventListener('pointerup',releasePointer,true);
+  win.document.addEventListener('pointercancel',releasePointer,true);
+  win.addEventListener('blur',releaseAll);
+  win.document.addEventListener('visibilitychange',()=>{if(win.document.hidden)releaseAll();});
  lastRegistration={hostWidth:hostW,hostHeight:hostH,imageWidth:imageW,imageHeight:imageH,offsetX:(hostW-imageW)/2,offsetY:(hostH-imageH)/2};draw();
  win.dispatchEvent(new win.CustomEvent('b737:unified-fire-lamps-mounted',{detail:{count:model.SLOTS.length,base:model.BASE,source:model.source}}));
  return true;
