@@ -7,10 +7,10 @@ const model=require('./engine-start-lever-model.js');
 const assembly=require('./assembly.json');
 const pedestal=assembly.regions.find(r=>r.id==='pedestal');
 const throttle=pedestal.placements.find(p=>p.id==='throttle-quadrant');
-const png=fs.readFileSync(path.join(root,'../..',throttle.asset));
-assert.equal(png.subarray(1,4).toString(),'PNG');
-assert.equal(png.readUInt32BE(16),model.SOURCE.width);
-assert.equal(png.readUInt32BE(20),model.SOURCE.height);
+const webp=fs.readFileSync(path.join(root,'../..',throttle.asset));
+assert.equal(webp.subarray(0,4).toString(),'RIFF');
+assert.equal(webp.subarray(8,12).toString(),'WEBP');
+assert.deepEqual(assembly.assets[throttle.asset].dimensions,[model.SOURCE.width,model.SOURCE.height]);
 assert.deepEqual(throttle.sourceWindow,model.SOURCE.window);
 const plate={x:throttle.x,y:throttle.y,w:throttle.w,h:throttle.h};
 for(const device of ['engine1','engine2']){
