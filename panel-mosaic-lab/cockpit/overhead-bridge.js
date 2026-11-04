@@ -187,7 +187,7 @@
   report();
  });
  document.addEventListener('click',e=>{const node=e.target.closest('[data-light]');if(node)send({kind:'selected-light',id:node.dataset.light});});
- const isControl=e=>e.target.closest('.mounted-toggle,.mounted-rotary,.rg-detent-hit,.guard-node,.mounted-light,.oh14-lever-hit,.oh14-top-hinge-lid,.oh14-emergency-exit-physical');let drag=null;
+ const isControl=e=>e.target.closest('.mounted-toggle,.mounted-rotary,.rg-detent-hit,.guard-node,.mounted-light,.oh14-lever-hit,.oh14-top-hinge-lid,.oh14-emergency-exit-physical,.oh22-dcpcs-altitude-knob');let drag=null;
  document.addEventListener('pointerdown',e=>{if(e.button!==0||isControl(e))return;drag=e.pointerId;send({kind:'pan-start',screenX:e.screenX,screenY:e.screenY});});
  document.addEventListener('pointermove',e=>{if(drag===e.pointerId)send({kind:'pan-move',screenX:e.screenX,screenY:e.screenY});});
  for(const type of ['pointerup','pointercancel'])document.addEventListener(type,()=>{if(drag!==null)send({kind:'pan-end'});drag=null;});
@@ -195,7 +195,7 @@
   if(e.ctrlKey||e.metaKey){e.preventDefault();e.stopImmediatePropagation();send({kind:'zoom',delta:e.deltaY,clientX:e.clientX,clientY:e.clientY});return;}
   // OH iframe is overflow:clip. Route wheel to parent without modifying approved hardware.
   // Physical knobs/guarded levers retain their existing wheel-detent gestures.
-  if(e.target.closest('.oh14-lever-hit,.oh14-top-hinge-lid,.mounted-toggle[data-control="emergency-exit-lights"],.mounted-rotary,.rg-detent-hit,.guard-node,.aircon400-knob,input,select,textarea,[contenteditable="true"]'))return;
+  if(e.target.closest('.oh14-lever-hit,.oh14-top-hinge-lid,.mounted-toggle[data-control="emergency-exit-lights"],.mounted-rotary,.rg-detent-hit,.guard-node,.aircon400-knob,.oh22-dcpcs-altitude-knob,input,select,textarea,[contenteditable="true"]'))return;
   if(!Number.isFinite(e.deltaX)||!Number.isFinite(e.deltaY))return;
   e.preventDefault();e.stopImmediatePropagation();
   send({kind:'wheel-pan',deltaX:e.deltaX,deltaY:e.deltaY,deltaMode:e.deltaMode,shiftKey:e.shiftKey});

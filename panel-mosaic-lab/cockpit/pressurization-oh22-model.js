@@ -14,7 +14,7 @@
      engine:'B737DCPCSV4',backgroundAsset:owner,
      modes:['AUTO','ALTN','MAN'],artworkFit:'fill',calibrationAsset:owner,modePosition:[.72,.678],
      // Individual socket-relative VISUAL sizing; no pressure-system logic changes.
-     controlFit:Object.freeze({'flight-alt':.157,'landing-alt':.157,'press-mode':.156,'manual-valve':.122}),
+     controlFit:Object.freeze({'flight-alt':.127,'landing-alt':.127,'press-mode':.156,'manual-valve':.122}),
      lampFit:Object.freeze({x:1.09,y:1.13}),
      controls:[
        {id:'flight-alt',kind:'altitude',label:'FLT ALT',xy:[.325,.372],unit:'ft',key:'flightAltitudeFt',step:500,min:-1000,max:37000},

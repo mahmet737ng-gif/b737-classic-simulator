@@ -33,7 +33,7 @@
  function pos(node,xy){node.style.left=(xy[0]*100)+'%';node.style.top=(xy[1]*100)+'%';}
  function createActuator(c){
    const el=root.createElement('button');el.type='button';el.dataset.role='actuator';el.dataset.control=c.id;
-   el.title=c.label+(c.kind==='altitude'?' — left click increase, shift/right click decrease':' — click to next detent');
+   el.title=c.label+(c.kind==='altitude'?' — mouse wheel / left click: increase, shift/right click: decrease':' — click to next detent');
    el.setAttribute('aria-label',el.title);el.setAttribute('aria-keyshortcuts','ArrowUp ArrowDown');
    pos(el,c.xy);
    const hotspot=c.appearance==='hotspot';
@@ -96,7 +96,7 @@
    }else{
      el.addEventListener('click',e=>{e.stopPropagation();step(e.shiftKey?-1:1)});
      el.addEventListener('contextmenu',e=>{e.preventDefault();e.stopPropagation();step(-1)});
-     el.addEventListener('wheel',e=>{e.preventDefault();e.stopPropagation();step(e.deltaY>0?1:-1)},{passive:false});
+     el.addEventListener('wheel',e=>{const delta=Math.abs(e.deltaY)>=Math.abs(e.deltaX)?e.deltaY:e.deltaX;if(!delta)return;e.preventDefault();e.stopPropagation();step(delta>0?1:-1)},{passive:false});
      el.addEventListener('keydown',e=>{if(['ArrowDown','ArrowRight','ArrowUp','ArrowLeft'].includes(e.key)){e.preventDefault();e.stopPropagation();step(['ArrowDown','ArrowRight'].includes(e.key)?1:-1)}});
    }
    el.addEventListener('pointerdown',e=>e.stopPropagation());

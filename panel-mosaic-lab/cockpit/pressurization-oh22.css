@@ -37,6 +37,13 @@ html.oh22-pressure-config-active .lights-layer .mounted-light[data-light="press-
  user-select:none;pointer-events:none;transform-origin:center 45%;
  transition:transform 110ms cubic-bezier(.2,.85,.3,1);
 }
+/* OH22 DCPCS: photographic white fluted cylinders, 19% smaller at the calibrated sockets.
+   Change appearance only; CPCS and the AUTO/ALTN/MAN mode selector are untouched. */
+.oh22-pressure-controls[data-system="DCPCS"] [data-role="actuator"].oh22-dcpcs-altitude-knob > img{
+ filter:grayscale(1) brightness(2.0) contrast(.90);
+ opacity:1;
+ image-rendering:auto;
+}
 .oh22-pressure-controls [data-role="actuator"]:focus-visible{
  outline:2px solid #f5e1ac;outline-offset:1px;border-radius:50%;
 }

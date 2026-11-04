@@ -20,3 +20,20 @@ assert.ok(src.includes("document.currentScript?.src||new URL('../cockpit/pressur
 const stage=fs.readFileSync(path.join(__dirname,'overhead-stage.html'),'utf8');
 assert.ok(stage.includes('PRESS-OH22-DCPCS-FLUTED-URL-FIX-0002'),'Updated script must bypass cached wrong asset path');
 console.log('PASS: one shared unmarked DCPCS altitude knob asset; both setters targeted, mode selector unchanged');
+
+// DCPCS knob white/fit/wheel regression: preserve mode selector and CPCS.
+const css=fs.readFileSync(path.join(__dirname,'pressurization-oh22.css'),'utf8');
+const bridge=fs.readFileSync(path.join(__dirname,'overhead-bridge.js'),'utf8');
+const stage=fs.readFileSync(path.join(__dirname,'overhead-stage.html'),'utf8');
+const cfg=model.config('DCPCS');
+assert.equal(cfg.controlFit['flight-alt'],.127);
+assert.equal(cfg.controlFit['landing-alt'],.127);
+assert.equal(cfg.controlFit['press-mode'],.156);
+assert.ok(css.includes('oh22-dcpcs-altitude-knob > img')&&css.includes('brightness(2.0)'));
+assert.ok(bridge.includes('.aircon400-knob,.oh22-dcpcs-altitude-knob,input'),
+  'Overhead capture-phase wheel-pan must not swallow the altitude knob wheel');
+assert.ok(bridge.includes('.oh14-emergency-exit-physical,.oh22-dcpcs-altitude-knob'),
+  'Overhead drag must not steal knob pointer events');
+assert.ok(src.includes("el.addEventListener('wheel',e=>{const delta="));
+assert.ok(stage.includes('PRESS-OH22-DCPCS-WHITE-WHEEL-0001'),
+  'Overhead frame cache version must be updated for this fix');
