@@ -102,6 +102,41 @@
   readGuard();render();
  });
  win.addEventListener('b737:cockpit-sensors',e=>ingest(e.detail));
+ // The pedestal levers already publish real mechanical events; share these
+ // with the autobrake engine in BOTH EIS and Conventional display modes.
+ const throttleStages={1:0,2:0};
+ function onThrottle(event){
+  const d=event.detail||{};
+  if(![1,2].includes(Number(d.engine))||!Number.isFinite(d.percent))return;
+  throttleStages[Number(d.engine)]=d.percent;
+  const bothIdle=throttleStages[1]===0&&throttleStages[2]===0;
+  if(engine.getState().inputs.thrustIdle!==bothIdle)
+   updateSensors({thrustIdle:bothIdle});
+ }
+ win.document.addEventListener('b737:throttle-position',onThrottle);
+ win.document.addEventListener('b737:throttle-state',onThrottle);
+ win.addEventListener('b737:throttle-sprites-ready',()=>{
+  const api=win.B737ThrottlePositions;
+  if(!api?.get)return;
+  const values=[api.get(1),api.get(2)];
+  if(values.every(Number.isFinite)){
+   throttleStages[1]=values[0];throttleStages[2]=values[1];
+   updateSensors({thrustIdle:values[0]===0&&values[1]===0});
+  }
+ });
+ function onSpeedBrake(event){
+  const d=event.detail||{};
+  if(typeof d.detent!=='string')return;
+  const down=d.detent==='DOWN';
+  if(engine.getState().inputs.speedBrakeDown!==down)
+   updateSensors({speedBrakeDown:down});
+ }
+ win.document.addEventListener('b737:speedbrake-position',onSpeedBrake);
+ win.document.addEventListener('b737:speedbrake-state',onSpeedBrake);
+ win.addEventListener('b737:speedbrake-ready',()=>{
+  const p=win.B737SpeedbrakeLever?.get?.();
+  if(Number.isFinite(p))updateSensors({speedBrakeDown:p<0.01});
+ });
  // Disconnects are represented by sensors, not changes to the visual mode.
  // EIS -> Conventional -> EIS never reinitializes this module.
  win.B737AutobrakeUnified=Object.freeze({
