@@ -99,7 +99,7 @@
    if(!guard||guard.dataset.conventionalAntiSkidBound==='true')return;
    guard.dataset.conventionalAntiSkidBound='true';
    guard.addEventListener('click',event=>{
-    if(mode()!=='CONVENTIONAL'||event.detail>=2)return;
+    if(mode()!=='CONVENTIONAL')return;
     event.preventDefault();event.stopImmediatePropagation();
     setAntiSkid(guard.dataset.value==='ON'?'OFF':'ON','click');
    },true);
