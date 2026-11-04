@@ -192,10 +192,12 @@
      const physicalStart=Number.isFinite(epoch)&&Number.isFinite(performance.timeOrigin)
       ?epoch-performance.timeOrigin:now;
      const validStart=physicalStart<=now&&now-physicalStart<=60000?physicalStart:now;
-     hold.press(validStart);
-     lastNativeInput={id:d.id,held:true,qualified:false,durationMs:0,
-      messageLatencyMs:Math.max(0,now-validStart)};
-     if(actionNotice)actionNotice.textContent='OVHT TEST HELD · WAITING 5.0 s · WING BODY TEST OFF';
+     const physicalHold=hold.press(validStart);
+     lastNativeInput={id:d.id,held:true,qualified:physicalHold.qualified,
+      durationMs:physicalHold.elapsedMs,messageLatencyMs:Math.max(0,now-validStart)};
+     if(actionNotice&&!physicalHold.qualified)
+      actionNotice.textContent='OVHT TEST HELD · WAITING '+
+       (physicalHold.remainingMs/1000).toFixed(1)+' s · WING BODY TEST OFF';
     }else{
      if(!before.held)return;
      const durationMs=before.elapsedMs,passed=before.qualified;
