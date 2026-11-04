@@ -40,7 +40,11 @@ function tick(to){
 }
 const timeout=(fn,ms)=>{const id=++timerSerial;jobs.set(id,{at:now+ms,run:fn});return id};
 const clear=id=>jobs.delete(id);
-const frameWindow={postMessage(packet){sent.push(packet)}};
+const directFrames=[];
+const frameWindow={
+ postMessage(packet){sent.push(packet)},
+ B737OverheadLights:{setAuthoritativePneumatics(packet){directFrames.push(packet.lamps)}}
+};
 const frame={contentWindow:frameWindow,addEventListener(){}};
 const doc={
  readyState:'loading',hidden:false,
@@ -63,12 +67,13 @@ class CustomEvent{constructor(type,options){this.type=type;this.detail=options?.
 vm.runInNewContext(unified,{
  window:win,document:doc,location:{origin:'https://example.org'},
  localStorage:{getItem:()=>JSON.stringify({aircraftFamily:'B737-300-500'})},
- performance:{now:()=>now},CustomEvent,console,
+ performance:{now:()=>now,timeOrigin:1000000},CustomEvent,console,
 },{filename:'aircon-fcom-unified-v1.js'});
 const parent=win.B737AirconFCOMUnifiedV1;
 assert.ok(parent,'Native FCOM bridge ready');
-function nativeMessage(id,pressed,source='recessed-hardware-v2'){
- const packet={type:'b737:cockpit-overhead',kind:'recessed-button',id,pressed,source};
+function nativeMessage(id,pressed,source='recessed-hardware-v2',epoch=1000000+now){
+ const packet={type:'b737:cockpit-overhead',kind:'recessed-button',
+  id,pressed,source,physicalEpochMs:epoch};
  for(const handle of listeners.message??[])handle({
   origin:'https://example.org',source:frameWindow,data:packet
  });
@@ -92,6 +97,9 @@ assert.equal(P.derive(state).lamps.wingBodyOverheatR,true);
 assert.equal(sent.at(-1).action,'aircon-fcom-projection');
 assert.equal(sent.at(-1).payload.lamps.wingBodyOverheatL,true);
 assert.equal(sent.at(-1).payload.lamps.wingBodyOverheatR,true);
+assert.equal(directFrames.at(-1).wingBodyOverheatL,true,
+ 'Visual panel must be updated synchronously on qualified ECU frame');
+assert.equal(directFrames.at(-1).wingBodyOverheatR,true);
 tick(5100);nativeMessage('aircon-ovht-test',true);
 assert.equal(state.inputs.wingBodyTestHeld,true,'Duplicate DOWN ignored');
 tick(5300);nativeMessage('aircon-ovht-test',false);
@@ -129,4 +137,22 @@ foreignMessage({type:'b737:cockpit-overhead',kind:'recessed-button',
  id:'aircon-ovht-test',pressed:true,source:'recessed-hardware-v2'});
 assert.equal(state.inputs.wingBodyTestHeld,false,'Non-operational iframe ignored');
 assert.ok(emitted.some(event=>event.type==='b737:aircon-fcom-status'));
+// The original physical PRESS may be buffered in a busy iframe. The parent
+// must subtract that latency: qualification is t+5000 from pointerdown,
+// not five seconds after the queued message handler finally runs.
+state=P.apply(state,{type:'SENSOR',key:'wingBodyLDetectorFailed',value:false});
+tick(19000);
+const originalPressEpoch=1000000+19000;
+tick(20750); // Intentional 1750ms message delivery latency
+nativeMessage('aircon-ovht-test',true,'recessed-hardware-v2',originalPressEpoch);
+assert.equal(state.inputs.wingBodyTestHeld,false,'No early lamp despite late message');
+tick(23999);
+assert.equal(state.inputs.wingBodyTestHeld,false,'Physical hold has not reached 5000ms');
+tick(24000);
+assert.equal(state.inputs.wingBodyTestHeld,true,
+ 'Original physical hold reaches 5s, not 6.75s delayed by iframe transport');
+assert.equal(directFrames.at(-1).wingBodyOverheatL,true);
+nativeMessage('aircon-ovht-test',false);
+assert.equal(state.inputs.wingBodyTestHeld,false);
+assert.equal(directFrames.at(-1).wingBodyOverheatL,false);
 console.log('PASS: native OH21 P5 must stay dark before 5s, then activate both WING BODY, cancel short hold, release, detector failure and reset.');
