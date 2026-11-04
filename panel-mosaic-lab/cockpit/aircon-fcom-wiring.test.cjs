@@ -21,7 +21,7 @@ assert.ok(stage.includes('pneumatics-v6.js?v=AIRCON-FCOM-0001'));
 assert.ok(stage.includes('overhead-bridge.js?v=AIRCON-NATIVE-P5-0002'));
 assert.ok(unified.includes('aircon-fcom-unified-v1.js?v=AIRCON-OVHT-DELAY-0004-LAB'));
 assert.ok(unified.includes('sixpack-live-integration-v1.js?v=AIRCON-FCOM-0001'));
-assert.ok(read('assembly.json').includes('aircon=NATIVE-P5-0002'));
+assert.ok(read('assembly.json').includes('aircon=OVHT-DELAY-0003'));
 assert.ok(e.includes('"id":"aircon-ovht-test"'),'Actual OH21 recessed OVHT pushbutton retained');
 assert.ok(e.includes('"id":"trip-reset"'),'Actual OH21 recessed TRIP RESET retained');
 assert.ok(e.includes("setPointerCapture(e.pointerId)"),'P5 OVHT TEST is push and hold');
