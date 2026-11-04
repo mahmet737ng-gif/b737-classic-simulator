@@ -32,28 +32,28 @@
    This keeps the installed photos visible even during deployment/cache misses. */
 html.mcp-retina-ready [data-piece="mcp"].mcp-owner13-active > .mcp-v3-knob[data-control="courseL"] > .mcp-v3-course-face,
 html.mcp-retina-ready [data-piece="mcp"].mcp-owner13-active > .mcp-v3-knob[data-control="courseR"] > .mcp-v3-course-face {
-  background-image:url("./assets/mcp-switches/retina/course-480.webp")!important;
+  background-image:var(--mcp-course-detail,url("./assets/mcp-switches/retina/course-480.webp"))!important;
   background-size:contain!important;
   image-rendering:auto!important;
 }
 html.mcp-retina-ready [data-piece="mcp"].mcp-owner13-active > .mcp-v3-knob[data-control="speed"] {
-  background-image:url("./assets/mcp-switches/retina/ias-480.webp")!important;
+  background-image:var(--mcp-ias-detail,url("./assets/mcp-switches/retina/ias-480.webp"))!important;
   background-size:contain!important;
   image-rendering:auto!important;
 }
 html.mcp-retina-ready [data-piece="mcp"].mcp-owner13-active > .mcp-v3-knob[data-control="altitude"] > .mcp-v3-plain-face{
-  background-image:url("./assets/mcp-switches/retina/altitude-480.webp")!important;
+  background-image:var(--mcp-altitude-detail,url("./assets/mcp-switches/retina/altitude-480.webp"))!important;
   background-size:contain!important;
   image-rendering:auto!important;
 }
 /* Heading assembly retains the original concentric bank-limit and SEL pivot. */
 html.mcp-retina-ready [data-piece="mcp"].mcp-owner13-active > .mcp-v3-knob[data-control="heading"] > .mcp-owner13-bank{
-  background-image:url("./assets/mcp-switches/retina/bank-ring-480.webp")!important;
+  background-image:var(--mcp-bank-ring-detail,url("./assets/mcp-switches/retina/bank-ring-480.webp"))!important;
   background-size:100% 100%!important;background-position:center!important;
   image-rendering:auto!important;
 }
 html.mcp-retina-ready [data-piece="mcp"].mcp-owner13-active > .mcp-v3-knob[data-control="heading"] > .mcp-owner13-inner{
-  background-image:url("./assets/mcp-switches/retina/heading-sel-480.webp")!important;
+  background-image:var(--mcp-heading-sel-detail,url("./assets/mcp-switches/retina/heading-sel-480.webp"))!important;
   background-size:100% 100%!important;background-position:center!important;
   image-rendering:auto!important;
 }
