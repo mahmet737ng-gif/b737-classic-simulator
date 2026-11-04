@@ -188,6 +188,27 @@
    this.syncPower();
    return this.get();
   }
+  // Instructor fault-lab automatic protection. This calls the SAME shutdown
+  // source path as real APU fuel loss: no shadow APU or fabricated AC source.
+  // It deliberately leaves the cockpit switch under the physical owner.
+  tripAPU(reason){
+   const allowed=['OVERSPEED','HIGH_OIL_TEMP','LOW_OIL_PRESSURE','OIL_TEMP_SENSOR',
+    'SPEED_SENSOR','EGT_SENSOR','ECU_DC_LOSS','INLET_DOOR','NO_ACCELERATION','NO_FLAME'];
+   if(!allowed.includes(reason))throw Error('Unknown APU protection trip reason');
+   if(!['INLET_DOOR','STARTING','READY'].includes(this.phase.apu))return false;
+   const observed=this.start.getLive().observation.apu;
+   if(observed.running===true&&observed.evidence.running!==ORIGIN)
+    throw Error('Instructor lab cannot override externally owned APU running sensor');
+   this.cancel('apu');this.start.shutdownAPU();
+   this.obs('apu',false);
+   this.feedback('apu','starterEngaged',false);
+   this.feedback('apu','genOffBusLight',false);
+   this.feedback('apu','inletDoorOpen',false);
+   this.phase.apu='PROTECTIVE_SHUTDOWN';
+   this.lastError='APU PROTECTIVE SHUTDOWN · '+reason;
+   this.syncPower();
+   return true;
+  }
   stopAPU(){this.cancel('apu');this.command({type:'APU_SWITCH',position:'OFF'});
    this.phase.apu='STOPPING';this.schedule('apu',400,()=>{
     this.obs('apu',false);this.feedback('apu','genOffBusLight',false);
