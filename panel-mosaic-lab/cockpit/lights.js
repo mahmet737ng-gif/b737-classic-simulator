@@ -3,11 +3,56 @@
  const byId=id=>document.getElementById(id),model=window.B737CockpitLightsModel,script=document.currentScript.src,url=p=>new URL(p,script).href;
  let registry,instanceFaces,readabilityFaces,typographyFaces,engine,selected,ui,frame,assembly,ready=false,localVisualTest=false,widgets=new Map();
  const priorGalleryOverrides=new Map();
+ const pressed=new Set(),pointerLamps=new Map(),byLightId=new Map(),realFrames=new Map();
+ // Momentary per-lamp test affects the face only; no sensor or failure override.
+ function paintLamp(c){
+  const node=widgets.get(c.id);if(!node)return;
+  const state=pressed.has(c.id)?'ON':realFrames.get(c.id)||'OFF';
+  node.dataset.frame=state;node.dataset.pushTest=String(pressed.has(c.id));
+  node.classList.toggle('flash',state==='FLASH');
+  node.setAttribute('aria-label',c.id+' — '+(pressed.has(c.id)?'PUSH TO TEST':state));
+  const img=node.querySelector('img');
+  const face=state==='OFF'?'OFF':'ON';
+  const oldFace=(typographyFaces?.instances?.[c.id]?.states?.[face]||
+   readabilityFaces?.instances?.[c.id]?.states?.[face]||
+   instanceFaces?.instances?.[c.id]?.states?.[face]||
+   registry.assets[c.asset][face]);
+  const src=window.B737LampAppearance.resolve('MP',c.asset,state)||
+   url(oldFace.url)+'?v='+encodeURIComponent(registry.version);
+  if(img.getAttribute('src')!==src)img.src=src;
+ }
+ function clearLampPress(id){
+  if(!pressed.delete(id))return;
+  const c=byLightId.get(id);if(c)paintLamp(c);
+ }
+ function releasePointer(e){
+  const id=pointerLamps.get(e.pointerId);if(!id)return;
+  pointerLamps.delete(e.pointerId);
+  if(![...pointerLamps.values()].includes(id))clearLampPress(id);
+ }
+ function clearPresses(){
+  pointerLamps.clear();for(const id of [...pressed])clearLampPress(id);
+ }
+ function bindLampPress(node,c){
+  node.addEventListener('pointerdown',e=>{
+   e.stopPropagation();if(e.pointerType==='mouse'&&e.button!==0)return;
+   pointerLamps.set(e.pointerId,c.id);pressed.add(c.id);paintLamp(c);
+  });
+  node.addEventListener('keydown',e=>{
+   if((e.key===' '||e.key==='Enter')&&!e.repeat){
+    e.preventDefault();e.stopPropagation();pressed.add(c.id);paintLamp(c);
+   }
+  });
+  node.addEventListener('keyup',e=>{
+   if(e.key===' '||e.key==='Enter'){e.preventDefault();e.stopPropagation();clearLampPress(c.id);}
+  });
+  node.addEventListener('blur',()=>clearLampPress(c.id));
+ }
  const labels={power:'تغذیهٔ محلی تست',aircraftAltitude:'ارتفاع هواپیما · ft',selectedAltitude:'ارتفاع انتخابی MCP · ft',trailingFlaps:'موقعیت TE Flaps',gsCaptured:'G/S گرفته شده',gearLever:'فرمان Landing Gear',gearLeft:'حسگر چرخ چپ',gearRight:'حسگر چرخ راست',gearNose:'حسگر چرخ دماغه',thrustIdle:'حداقل یک تراتل در IDLE',leadingEdge:'وضعیت همهٔ Leading Edgeها',autoslatInFlight:'سیگنال Autoslat در پرواز',antiskidOn:'فرمان ANTISKID روشن',antiskidFault:'خرابی سیستم ANTISKID',autobrakeArmed:'Autobrake مسلح',autobrakeDisarmed:'خروجی Disarm رایانهٔ Autobrake',speedBrakeArmedIndication:'ورودی مستقل چراغ SPEED BRAKE ARMED',speedBrakeDoNotArmIndication:'ورودی مستقل چراغ SPEED BRAKE DO NOT ARM',autopilotEngaged:'اتوپایلوت درگیر',stabTrimError:'اتوپایلوت استاب را درست تریم نمی‌کند',gpwsPullUp:'خروجی PULL UP رایانهٔ GPWS',belowGsDots:'انحراف به زیر G/S · dots',gsSignalValid:'سیگنال G/S معتبر',gsInhibited:'G/S Push Inhibit فعال',radioAltitude:'Radio Altitude · ft',gpwsComputerFailed:'خرابی رایانهٔ GPWS',gpwsPowerLost:'قطع تغذیهٔ GPWS',gpwsInvalidInput:'ورودی نامعتبر GPWS',brakeTempTest:'سیگنال مستقیم تست Brake Temp',atLimitDegradedN1:'سیگنال محدودیت N1 از رایانهٔ اتوتراتل'};
  for(const n of [1,2])Object.assign(labels,{['reverser'+n+'Unlocked']:'حسگر Reverser '+n+' باز از قفل',['startValve'+n+'Open']:'حسگر Start Valve '+n+' باز',['starter'+n+'Air']:'هوای ورودی به Starter '+n,['oil'+n+'AtRedRadial']:'فشار روغن موتور '+n+' روی/زیر خط قرمز',['oilFilter'+n+'Bypass']:'سیگنال نزدیک‌شدن Oil Filter '+n+' به Bypass'});
  const options={gearLever:['UP','OFF','DN'],gearLeft:['UP','DOWN','TRANSIT','UNSAFE'],gearRight:['UP','DOWN','TRANSIT','UNSAFE'],gearNose:['UP','DOWN','TRANSIT','UNSAFE'],leadingEdge:['RETRACTED','INTERMEDIATE','FULL','TRANSIT','DISAGREE'],trailingFlaps:[0,1,2,5,10,15,25,30,40]};
  function render(){if(!ready)return;engine.setVisualTest(localVisualTest||document.documentElement.dataset.lampVisualTest==='true');const s=engine.evaluate();const actualTe=window.B737LEDevicesUnifiedLink?.getState()?.actualTe;
-  window.dispatchEvent(new CustomEvent('b737:trailing-flaps',{detail:{position:Number.isFinite(actualTe)?actualTe:s.inputs.trailingFlaps}}));for(const [id,node]of widgets){const state=s.frames[id];node.dataset.frame=state;node.classList.toggle('flash',state==='FLASH');node.setAttribute('aria-label',id+' — '+state);const img=node.querySelector('img'),oldFace=(typographyFaces?.instances?.[id]?.states?.[state==='OFF'?'OFF':'ON']||readabilityFaces?.instances?.[id]?.states?.[state==='OFF'?'OFF':'ON']||instanceFaces?.instances?.[id]?.states?.[state==='OFF'?'OFF':'ON']||registry.assets[node.dataset.asset][state==='OFF'?'OFF':'ON']);const src=window.B737LampAppearance.resolve('MP',node.dataset.asset,state)||url(oldFace.url)+'?v='+encodeURIComponent(registry.version);if(img.getAttribute('src')!==src)img.src=src;}
+  window.dispatchEvent(new CustomEvent('b737:trailing-flaps',{detail:{position:Number.isFinite(actualTe)?actualTe:s.inputs.trailingFlaps}}));for(const [id]of widgets){realFrames.set(id,s.frames[id]);paintLamp(byLightId.get(id));}
   byId('cockpitLightStatus').textContent=Object.values(s.frames).filter(x=>x!=='OFF').length+' / '+registry.lights.length+' روشن · '+registry.version+(s.visualTest?' · تست تصویری مستقل از برق':Object.keys(s.overrides).length?' · تست مستقیم':s.overheadPower===null?' · منتظر اتصال تغذیهٔ اورهد':s.power?'':' · تغذیه خاموش');
   byId('cockpitLightPower').checked=s.inputs.power;byId('cockpitLightTest').disabled=false;byId('cockpitLightTest').setAttribute('aria-pressed',String(s.visualTest));byId('cockpitLightTest').textContent=s.visualTest?'پایان تست تصویری مین‌پنل':'روشن‌کردن '+registry.lights.length+' چراغ مین‌پنل';
   if(selected){byId('cockpitLightFrame').textContent=s.frames[selected.id];byId('cockpitLightOverride').value=s.overrides[selected.id]||'AUTO';for(const n of ui.querySelectorAll('[data-light-input]')){const v=s.inputs[n.dataset.lightInput];if(n.type==='checkbox')n.checked=v;else n.value=String(v);}}
@@ -25,8 +70,12 @@
   window.addEventListener('b737:visual-test',()=>{localVisualTest=false;render();});
  }
  function mount(){frame=byId('overheadFrame');model.validate(registry,assembly);engine=model.controller(registry);const pieces=new Map();for(const r of assembly.regions)for(const p of r.placements||[])pieces.set(p.id,{p,r});const layers=new Map();
-  for(const c of registry.lights){const {p,r}=pieces.get(c.pieceId),a=assembly.assets[p.asset],scale=p.w/a.dimensions[0],[x,y,w,h]=c.sourceRect;let layer=layers.get(r.id);if(!layer){layer=document.createElement('div');layer.className='cockpit-light-layer';layer.style.width=r.nativeWidth+'px';layer.style.height=r.nativeHeight+'px';byId('region-'+r.id).querySelector('.region-native').append(layer);layers.set(r.id,layer);}const node=document.createElement('button');node.className='cockpit-light';node.dataset.cockpitLight=c.id;node.dataset.asset=c.asset;node.title=c.id+' · '+c.pieceId+' · source ['+c.sourceRect.join(', ')+']';Object.assign(node.style,{left:p.x+x*scale+'px',top:p.y+y*scale+'px',width:w*scale+'px',height:h*scale+'px'});const img=document.createElement('img');img.alt='';img.draggable=false;img.onerror=()=>{node.dataset.missing='true';byId('cockpitLightError').textContent='فایل چراغ بارگذاری نشد: '+c.asset;};node.append(img);node.addEventListener('pointerdown',e=>e.stopPropagation());node.onclick=e=>{e.stopPropagation();choose(c);};layer.append(node);widgets.set(c.id,node);}
-  inspector();ready=true;choose(registry.lights.find(c=>c.id==='main-gear-nose-green'));render();frame.contentWindow.postMessage({type:'b737:cockpit-command',action:'report'},location.origin);
+  for(const c of registry.lights){const {p,r}=pieces.get(c.pieceId),a=assembly.assets[p.asset],scale=p.w/a.dimensions[0],[x,y,w,h]=c.sourceRect;let layer=layers.get(r.id);if(!layer){layer=document.createElement('div');layer.className='cockpit-light-layer';layer.style.width=r.nativeWidth+'px';layer.style.height=r.nativeHeight+'px';byId('region-'+r.id).querySelector('.region-native').append(layer);layers.set(r.id,layer);}const node=document.createElement('button');node.className='cockpit-light';node.dataset.cockpitLight=c.id;node.dataset.asset=c.asset;node.title=c.id+' · '+c.pieceId+' · source ['+c.sourceRect.join(', ')+']';Object.assign(node.style,{left:p.x+x*scale+'px',top:p.y+y*scale+'px',width:w*scale+'px',height:h*scale+'px'});const img=document.createElement('img');img.alt='';img.draggable=false;img.onerror=()=>{node.dataset.missing='true';byId('cockpitLightError').textContent='فایل چراغ بارگذاری نشد: '+c.asset;};node.append(img);byLightId.set(c.id,c);bindLampPress(node,c);node.onclick=e=>{e.stopPropagation();choose(c);};layer.append(node);widgets.set(c.id,node);}
+  document.addEventListener('pointerup',releasePointer,true);
+   document.addEventListener('pointercancel',releasePointer,true);
+   window.addEventListener('blur',clearPresses);
+   document.addEventListener('visibilitychange',()=>{if(document.hidden)clearPresses();});
+   inspector();ready=true;choose(registry.lights.find(c=>c.id==='main-gear-nose-green'));render();frame.contentWindow.postMessage({type:'b737:cockpit-command',action:'report'},location.origin);
   window.B737CockpitLights=Object.freeze({getState:()=>engine.evaluate(),getRegistry:()=>JSON.parse(JSON.stringify(registry)),setInputs:patch=>{const state=engine.update(patch);render();return state;},reset:()=>{const state=engine.reset();render();return state;}});
    window.dispatchEvent(new CustomEvent('b737:cockpit-lights-ready',{detail:{source:'MAIN_PANEL_LAMPS'}}));
   window.addEventListener('b737:cockpit-sensors',e=>{try{engine.update(e.detail);render();}catch(error){byId('cockpitLightError').textContent=error.message;}});
