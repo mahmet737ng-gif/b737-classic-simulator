@@ -45,7 +45,8 @@ ok(js.includes("const wanted=model.file(s,vals[s.id])"),'Independent per-lamp ru
 ok(css.includes('mix-blend-mode:normal;'),'Original photo-style crop not screen-blended into panel');
 ok(!css.includes('mix-blend-mode:screen;'),'Legacy unnatural screen blending disabled');
 for(const filename of ['fire-lights-model.js','fire-lights-unified.js','fire-lights-unified.css']){
- ok(html.includes(filename+'?v=FIRELAMP-0006'),'Cache-busted Unified V6 asset '+filename);
+ const version=filename==='fire-lights-model.js'?'FIRELAMP-0006':'FIRELAMP-PTT-0001';
+  ok(html.includes(filename+'?v='+version),'Cache-busted Unified asset '+filename);
 }
 new vm.Script(js,{filename:'fire-lights-unified.js'});
 console.log('PASS FIRELAMP-0006 '+checked+' checks: 1 new photographic bare panel and 22 individual ON/OFF image crops registered, zero intersections, no prior fire bottle patch.');
