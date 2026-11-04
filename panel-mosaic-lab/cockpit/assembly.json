@@ -83,17 +83,6 @@
       "sha256": "08f7478a6a2d3e58faf5f0cbd12896e32ef97131616c5d4228e9e64594909bfe",
       "gitBlobSha": "73a819b1c42617ae4da52f359546a200ef189ae4"
     },
-    "panel-mosaic-lab/assets/locked/2026-10-23/Aircraft Throttle Quadrant Control Panel.png": {
-      "path": "panel-mosaic-lab/assets/locked/2026-10-23/Aircraft Throttle Quadrant Control Panel.png",
-      "url": "../../panel-mosaic-lab/assets/locked/2026-10-23/Aircraft Throttle Quadrant Control Panel.png",
-      "dimensions": [
-        1145,
-        1373
-      ],
-      "bytes": 2399844,
-      "sha256": "e533f907b3826dbf8fc986812b9045c2ef8980f93133ce85b859e9b9d7ab0030",
-      "gitBlobSha": "d97e33d42f4d7f14671235a25ea171ce056e58f1"
-    },
     "panel-mosaic-lab/assets/locked/2026-10-23/PD-RADIO-AVIONICS-7a41044771fa.png": {
       "path": "panel-mosaic-lab/assets/locked/2026-10-23/PD-RADIO-AVIONICS-7a41044771fa.png",
       "url": "../../panel-mosaic-lab/assets/locked/2026-10-23/PD-RADIO-AVIONICS-7a41044771fa.png",
@@ -178,6 +167,18 @@
         909,
         1595
       ]
+    },
+    "panel-mosaic-lab/cockpit/assets/throttle-quadrant-bare-owner-20261104.webp": {
+      "path": "panel-mosaic-lab/cockpit/assets/throttle-quadrant-bare-owner-20261104.webp",
+      "url": "./assets/throttle-quadrant-bare-owner-20261104.webp",
+      "dimensions": [
+        800,
+        1000
+      ],
+      "bytes": 26884,
+      "sha256": "f2bb85e2374a7e010d2acaae3c43d9838d8e7561fe788001116b48e8a903d74a",
+      "gitBlobSha": "a9b69c7e45db0c18fc08225367ea8371b3fd988f",
+      "sourceStatus": "Owner-approved new bare throttle quadrant; previous locked original retained in immutable archive, no longer active in assembly"
     }
   },
   "regions": [
@@ -268,173 +269,69 @@
         {
           "id": "throttle-quadrant",
           "label": "THROTTLE QUADRANT — BLANK CONTROL PLATE",
-          "asset": "panel-mosaic-lab/assets/locked/2026-10-23/Aircraft Throttle Quadrant Control Panel.png",
+          "asset": "panel-mosaic-lab/cockpit/assets/throttle-quadrant-bare-owner-20261104.webp",
           "x": 272,
           "y": 0,
           "w": 606,
           "h": 740.9857819905213,
           "sourceWindow": {
-            "x": 20,
-            "y": 30,
-            "w": 1055,
-            "h": 1290
+            "x": 0,
+            "y": 0,
+            "w": 800,
+            "h": 978.1990521327015
           },
           "maskPolygon": [
             [
-              72,
-              34
+              86,
+              25
             ],
             [
-              65,
-              40
+              713,
+              25
             ],
             [
-              62,
-              60
+              713,
+              195
             ],
             [
-              61,
-              120
+              739,
+              263
             ],
             [
-              54,
-              150
+              744,
+              284
+            ],
+            [
+              744,
+              937
+            ],
+            [
+              741,
+              950
             ],
             [
               58,
-              180
+              950
             ],
             [
-              50,
-              350
+              55,
+              937
             ],
             [
-              43,
-              450
+              55,
+              284
             ],
             [
-              39,
-              550
+              60,
+              263
             ],
             [
-              34,
-              700
-            ],
-            [
-              31,
-              850
-            ],
-            [
-              25,
-              990
-            ],
-            [
-              33,
-              1020
-            ],
-            [
-              34,
-              1110
-            ],
-            [
-              38,
-              1140
-            ],
-            [
-              91,
-              1150
-            ],
-            [
-              92,
-              1290
-            ],
-            [
-              97,
-              1310
-            ],
-            [
-              104,
-              1314
-            ],
-            [
-              993,
-              1314
-            ],
-            [
-              999,
-              1310
-            ],
-            [
-              1003,
-              1290
-            ],
-            [
-              1002,
-              1150
-            ],
-            [
-              1057,
-              1140
-            ],
-            [
-              1060,
-              1110
-            ],
-            [
-              1062,
-              1020
-            ],
-            [
-              1069,
-              990
-            ],
-            [
-              1063,
-              850
-            ],
-            [
-              1060,
-              700
-            ],
-            [
-              1053,
-              550
-            ],
-            [
-              1050,
-              450
-            ],
-            [
-              1044,
-              350
-            ],
-            [
-              1035,
-              180
-            ],
-            [
-              1038,
-              150
-            ],
-            [
-              1031,
-              120
-            ],
-            [
-              1028,
-              60
-            ],
-            [
-              1025,
-              40
-            ],
-            [
-              1018,
-              34
+              86,
+              195
             ]
           ],
-          "presentation": "Owner original PNG remains unmodified. Display-only source crop and silhouette mask remove white exterior; 606-unit width aligns the throttle core centrally against the full pedestal reference.",
-          "layoutStatus": "calibrated against owner cockpit reference screenshot; mechanical lever overlays remain a separate stage"
+          "presentation": "Owner-approved bare throttle quadrant replacement; only this placement and its silhouette were updated. Original locked asset archived unchanged.",
+          "layoutStatus": "2026-11-04 active owner-approved bare panel; prior locked quadrant deactivated"
         },
         {
           "id": "fire-protection",
