@@ -23,4 +23,13 @@ const p=model.nativePoint(texture,{x:816,y:770});
 assert.ok(p.x>720&&p.x<750&&p.y>410&&p.y<440);
 for(const requested of values) assert.ok(values.includes(model.gatedTarget(0,requested)));
 assert.throws(()=>model.gatedTarget(0,3),/Unknown B737 FLAP detent/);
+const newTexture={x:272,y:0,w:606,h:740.9857819905213,sourceWindow:{x:0,y:0,w:800,h:978.1990521327015}};
+const targetRows={"0":{x:606,y:327},"1":{x:606,y:387},"2":{x:606,y:448},"5":{x:606,y:502},"10":{x:606,y:574},"15":{x:606,y:624},"25":{x:606,y:671},"30":{x:606,y:717},"40":{x:606,y:772}};
+for(const value of values){
+  const from=model.nativePoint(newTexture,targetRows["0"]).y;
+  const to=model.nativePoint(newTexture,targetRows[String(value)]).y;
+  assert.equal(model.draggedTarget(0,to-from,newTexture,targetRows),value);
+}
+assert.equal(model.gatedTarget(0,model.draggedTarget(0,400,newTexture,targetRows)),1,'drag cannot bypass flap gate 1');
+assert.equal(model.gatedTarget(2,40),15,'drag cannot bypass flap gate 15');
 console.log('PASS: nine FLAP detents, mechanical gates 1 and 15, forward/reverse click and stepwise swipes, photo alignment.');

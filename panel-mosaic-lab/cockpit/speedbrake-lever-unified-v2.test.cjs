@@ -1,0 +1,26 @@
+'use strict';
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const vm=require('node:vm');
+const ev=[];
+const win={addEventListener:()=>{}};
+const doc={readyState:'loading',addEventListener:()=>{},dispatchEvent:e=>ev.push(e),querySelector:()=>null};
+class CustomEvent{constructor(type,data){this.type=type;this.detail=data.detail;}}
+const src=fs.readFileSync(__dirname+'/speedbrake-lever-unified-v1.js','utf8');
+vm.runInNewContext(src,{window:win,document:doc,CustomEvent,console});
+const api=win.B737SpeedbrakeLever;
+assert.equal(JSON.stringify(api.stops.map(s=>s.key)),JSON.stringify(['DOWN','ARMED','FLIGHT_DETENT','UP']));
+assert.equal(api.geometry().sourceWindowWidth,800);
+assert.ok(api.stops[0].t<api.stops[1].t&&api.stops[1].t<api.stops[2].t&&api.stops[2].t<api.stops[3].t);
+assert.equal(api.set('DOWN'),0);
+assert.equal(ev.at(-1).detail.armed,false);
+assert.equal(api.set('ARMED'),api.stops[1].t);
+assert.equal(ev.at(-1).detail.armed,true);
+assert.equal(ev.at(-1).detail.detent,'ARMED');
+assert.equal(api.set('FLIGHT DETENT'),api.stops[2].t);
+assert.equal(ev.at(-1).detail.armed,false);
+assert.equal(api.set('UP'),1);
+assert.equal(ev.at(-1).detail.armed,false);
+assert.equal(api.set(.20),api.stops[1].t,'fractional input snaps to ARMED');
+assert.equal(api.set(.50),api.stops[2].t,'halfway snaps to FLIGHT DETENT');
+console.log('PASS: speedbrake four physical detents, calibrated quadrant geometry, and ARMED indication.');

@@ -24,11 +24,24 @@
   const index=indexOf(current),dir=Math.sign(Number(direction));
   return DETENTS[Math.max(0,Math.min(DETENTS.length-1,index+dir))];
  }
+ function draggedTarget(current,nativeDeltaY,texture,targets){
+  indexOf(current);
+  if(!Number.isFinite(nativeDeltaY))throw Error('Invalid FLAP drag');
+  const reference=targets[String(current)];
+  if(!reference)throw Error('Missing FLAP current detent calibration '+current);
+  const projected=nativePoint(texture,reference).y+nativeDeltaY;
+  return DETENTS.reduce((best,value)=>{
+   const point=targets[String(value)];
+   if(!point)throw Error('Missing FLAP detent calibration '+value);
+   const delta=Math.abs(nativePoint(texture,point).y-projected);
+   return delta<best.error?{value,error:delta}:best;
+  },{value:DETENTS[0],error:Infinity}).value;
+ }
  function nativePoint(texture,source){
   const win=texture.sourceWindow;
   const nx=texture.x+(source.x-win.x)*texture.w/win.w;
   const ny=texture.y+(source.y-win.y)*texture.h/win.h;
   return Object.freeze({x:nx,y:ny});
  }
- return Object.freeze({DETENTS,GATES,indexOf,gatedTarget,sequence,swipe,nativePoint});
+ return Object.freeze({DETENTS,GATES,indexOf,gatedTarget,sequence,swipe,nativePoint,draggedTarget});
 });
