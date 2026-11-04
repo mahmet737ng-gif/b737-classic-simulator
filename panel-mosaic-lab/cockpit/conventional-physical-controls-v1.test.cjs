@@ -1,0 +1,50 @@
+'use strict';
+// CONV-CONTROLS-0001: photo-native geometry and six fixed detents.
+// EIS owner18 source geometry must remain immutable, not adapted for CONV.
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const path=require('node:path');
+const {REF,DETENTS,ANGLES,point,bounding}=require('./conventional-physical-controls-v1.js');
+const base=__dirname;
+const layout={x:761,y:127,sourceWidth:1463,sourceHeight:1075,
+ matrix:[613/1463,0,0,475.5578947368421/1075,0,0]};
+const guards=JSON.parse(fs.readFileSync(path.join(base,'guard-owner18-v1.json'),'utf8'));
+const anti=guards.controls.find(x=>x.id==='antiskid');
+assert.ok(anti);
+assert.deepEqual(anti.states,['OFF','ON']);
+assert.equal(anti.panel,'FO_INNER_BACKGROUND');
+assert.equal(anti.closePolicy.target,'ON');
+assert.deepEqual(anti.rectPx,[55,560,102,168],'EIS source placement must remain unmodified');
+assert.deepEqual(REF.image,[1463,1075]);
+assert.deepEqual(REF.antiskid.center,[1153.5,620]);
+assert.deepEqual(REF.autobrake.center,[1148,845]);
+assert.deepEqual(DETENTS,['RTO','OFF','1','2','3','MAX']);
+assert.deepEqual(DETENTS.map(k=>ANGLES[k]),[-135,-90,-45,0,45,90]);
+const g=point(layout,REF.antiskid.center),k=point(layout,REF.autobrake.center);
+assert.ok(g.x>1200&&g.x<1270&&g.y>360&&g.y<430);
+assert.ok(k.x>1200&&k.x<1270&&k.y>465&&k.y<530);
+const original={x:1222+55*(372/918),y:127+560*(372/918),
+ w:102*(372/918),h:168*(372/918)};
+const fitted=bounding(layout,REF.antiskid.center,original.w,original.h);
+assert.ok(Math.abs(fitted.cx-(fitted.x+fitted.w/2))<1e-9);
+assert.ok(Math.abs(fitted.cy-(fitted.y+fitted.h/2))<1e-9);
+assert.ok(fitted.x<original.x-15,'Move guarded switch LEFT to native black well');
+assert.ok(fitted.y>original.y+8,'Move guarded switch DOWN to native black well');
+const js=fs.readFileSync(path.join(base,'conventional-physical-controls-v1.js'),'utf8');
+const css=fs.readFileSync(path.join(base,'conventional-physical-controls-v1.css'),'utf8');
+const html=fs.readFileSync(path.join(base,'index.html'),'utf8');
+assert.ok(js.includes('win.B737ConventionalPhysicalControlsV1'));
+assert.ok(js.includes("const rule='html[data-engine-indication=\"CONVENTIONAL\"] #region-main"));
+assert.ok(js.includes('guard.offsetWidth'));
+assert.ok(js.includes("data-guard-id=\"antiskid\""));
+assert.ok(js.includes('b737:autobrake-selector-changed'));
+assert.ok(js.includes("new URL('../assets/locked/2026-10-23/Switches/Rotary/rotary-standard-v1.webp'"));
+assert.ok(js.includes("knob.addEventListener('wheel'"));
+assert.ok(js.includes("knob.addEventListener('keydown'"));
+assert.ok(css.includes('html[data-engine-indication="CONVENTIONAL"] #region-main'));
+assert.ok(css.includes('display:none'),'Auto brake knob hidden when EIS');
+assert.ok(html.includes('conventional-physical-controls-v1.js?v=CONV-CONTROLS-0001'));
+assert.ok(html.includes('conventional-physical-controls-v1.css?v=CONV-CONTROLS-0001'));
+assert.ok(!js.includes('replaceWith'),'Do not replace Owner18 physical guard');
+assert.throws(()=>point({sourceWidth:100,sourceHeight:100,matrix:layout.matrix},REF.antiskid.center),/Conventional native/);
+console.log('PASS: anti-skid guard moved only in Conventional; original EIS source unchanged; AUTO BRAKE 6 detents and photo-centred rotary.');
