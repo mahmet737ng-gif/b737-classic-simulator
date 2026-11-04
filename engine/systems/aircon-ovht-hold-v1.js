@@ -57,7 +57,18 @@
    remainingMs:held&&!qualified?Math.max(0,delayMs-(clock()-at)):0,
    delayMs
   })}
-  return Object.freeze({press,release,snapshot});
+  // Optional visual-frame deadline check. A busy cockpit may delay the
+  // setTimeout task, even though its deadline was exactly 5000ms. The
+  // original foreground rAF loop can qualify on the first painted frame
+  // at/after that same deadline without creating a second state owner.
+  function check(){
+   if(held&&!qualified&&clock()-at>=delayMs){
+    if(timer!==null){cancel(timer);timer=null}
+    qualify(sequence);
+   }
+   return snapshot();
+  }
+  return Object.freeze({press,release,snapshot,check});
  }
  return Object.freeze({DELAY_MS,create});
 });
