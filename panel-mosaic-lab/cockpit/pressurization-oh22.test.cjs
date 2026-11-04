@@ -169,3 +169,6 @@ assert.ok(active.includes("getPressureSession(system)"),'Separate CPCS and DCPCS
 assert.ok(active.includes("'pressurization-command'"),'OH22 physical controls must invoke engine');
 assert.ok(active.includes("type:'b737:cockpit-command',action:'pressurization-state'"),'Lamp and detent state must be projected from engine');
 console.log('PASS: two isolated pressurization configurations, distinct actuators and lamps, source-linked commands, original artwork, legacy OH22 cleanup.');
+
+// Fixed OH19 ALT HORN CUTOUT physical button regression (CPCS and DCPCS).
+require('./alt-horn-cutout-recessed-v1.test.cjs');
