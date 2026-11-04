@@ -48,6 +48,7 @@
   return {selector:SELECTORS.includes(v.selector)?v.selector:'AUTO NORM',
    cabinC:finite(v.cabinC)?v.cabinC:null,ductC:finite(v.ductC)?v.ductC:null,
    packMode:['OFF','AUTO','HIGH'].includes(v.packMode)?v.packMode:null,
+   packAirAvailable:typeof v.packAirAvailable==='boolean'?v.packAirAvailable:null,
    actuatorPower:typeof v.actuatorPower==='boolean'?v.actuatorPower:null,
    indicatorPower:typeof v.indicatorPower==='boolean'?v.indicatorPower:null,
    indicatorCB:v.indicatorCB!==false,
@@ -108,7 +109,7 @@
    // Otherwise integrate cabin temperature only with a running PACK/bench air.
    if(v.cabinC!==null)next.temperatures[side]=v.cabinC;
    else {
-    const airflow=v.packMode!=='OFF'||v.benchBypassPack;
+    const airflow=(v.packMode!=='OFF'&&v.packAirAvailable!==false)||v.benchBypassPack;
     const equilibrium=airflow?supply:CONFIG.neutralC;
     const tau=airflow?CONFIG.temperatureTauSeconds:CONFIG.idleTauSeconds;
     next.temperatures[side]=clamp(temperature+(equilibrium-temperature)*
