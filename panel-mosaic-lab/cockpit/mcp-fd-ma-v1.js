@@ -1,4 +1,4 @@
-/* MCP-FD-MA-0006 | centered circular MA over original F/D annun hole; FCOM 4.10.13, 4.20.3.
+/* MCP-FD-MA-0007 | centered circular MA over original F/D annun hole; FCOM 4.10.13, 4.20.3.
  * Two non-clickable master FCC lamps over unmodified approved MCP artwork.
  * TRAINING ONLY - independent modes require explicit sensor/instructor evidence.
  */
@@ -27,10 +27,19 @@ function acEvidence(electrical){
  return null;
 }
 function maSupply(output,electrical){
+ const live=acEvidence(electrical);
+ // Live evidence is newer than a potentially stale global AFDS snapshot.
+ // This is an educational AC proxy, not a certified FCC feed assignment.
+ if(live===true)return {powered:true,source:"LIVE_AC_BUS_PROXY"};
+ if(live===false)return {powered:false,source:"LIVE_AC_OFF"};
  if(output?.power===false)return {powered:false,source:"AFDS_MCP_POWER_OFF"};
  if(output?.power===true)return {powered:true,source:"INSTRUCTOR_CONFIRMED_MCP"};
- const live=acEvidence(electrical);
- return {powered:live,source:live===true?"LIVE_AC_BUS_PROXY":live===false?"LIVE_AC_OFF":"POWER_UNVERIFIED"};
+ // When MCP feed mapping has not yet loaded, an ON physical flight director
+ // provides TRAINING ONLY MA feedback; never override known power loss.
+ const fd=output?.controls?.fd;
+ if(fd?.left===true||fd?.right===true)
+  return {powered:true,source:"TRAINING_FD_FEEDBACK_POWER_UNVERIFIED"};
+ return {powered:null,source:"POWER_UNVERIFIED"};
 }
 const initialState=()=>({firstFd:null,previousFd:{left:false,right:false},
  lamps:{left:false,right:false},master:null,independent:false,reason:"OFF"});
@@ -94,10 +103,10 @@ function installStyle(){
  '[data-piece="mcp"]>.mcp-fd-ma[data-on="true"]{',
  'border-color:#69716b;',
  'background:radial-gradient(circle at 45% 33%,#282f2d 0%,#0c1411 49%,#020403 86%);',
- 'box-shadow:0 0 2px .3px #d9f6df55,inset 0 0 2px #b9eac044,',
+ 'box-shadow:0 0 0 .5px #d5f4db90,inset 0 0 4px 1px #4c9a5e8c,',
  'inset 0 1px 2px #030807}',
  '[data-piece="mcp"]>.mcp-fd-ma[data-on="true"] .mcp-fd-ma-label{',
- 'fill:#fff;opacity:1!important;filter:none!important}'
+ 'fill:#fff;opacity:1!important;filter:drop-shadow(0 0 .45px #fff)!important}'
  ].join("");
  (hostWindow.document.head||hostWindow.document.documentElement).append(el);
 }
@@ -108,6 +117,7 @@ function render(){
   el.dataset.on=String(on);
   el.dataset.source=visualTest?"LAMP_TEST":state.reason;
   el.dataset.fdSource=state.fdSource||"AFDS_OUTPUT";
+  el.dataset.powerSource=state.supply?.source||"POWER_UNVERIFIED";
   el.title=visualTest?"MA illuminated by ALL LIGHTS ON test":
    "MA "+(on?"ON":"OFF")+" | "+state.reason+" | "+(state.supply?.source||"POWER_UNVERIFIED");
   el.setAttribute("aria-label","Flight Director MA "+side+" "+(on?"illuminated":"extinguished"));
@@ -156,7 +166,7 @@ function applyOutput(out){
  if(!out||out.schema!=="B737_MCP_AFDS_OUTPUT_V1")return getState();
  latest=out;
  const physical=reconcileFd(out,hardware());
- const supply=maSupply(out,liveElectrical());
+ const supply=maSupply(physical,liveElectrical());
  state=evaluate(state,{...physical,maPower:supply.powered},evidence);
  state.supply=supply;
  state.fdSource=physical.maFdSource||"AFDS_OUTPUT";
@@ -171,7 +181,7 @@ function refresh(){
  if(!next)return getState();
  // Do not render unnecessarily on repeated ECU/AFDS sensor broadcasts.
  const sig=JSON.stringify([next.power,next.controls?.fd,hardware()?.FD_LEFT,hardware()?.FD_RIGHT,
-  next.modes?.autopilot,maSupply(next,liveElectrical()),evidence]);
+  next.modes?.autopilot,maSupply(reconcileFd(next,hardware()),liveElectrical()),evidence]);
  if(lastRefreshSignature===sig)return getState();
  lastRefreshSignature=sig;
  return applyOutput(next);
