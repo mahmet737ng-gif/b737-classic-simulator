@@ -33,6 +33,16 @@
  let testHold=null,lastNativeInput=null;
  const owner=()=>root.B737ISNCockpitV1;
  const frame=()=>document.getElementById('overheadFrame');
+ function paintPneumaticImmediately(derived){
+  // Same-origin original OH21 lamp engine already supports the single ECU's
+  // authoritative pneumatic snapshot. Apply the qualified ON/OFF directly
+  // in the iframe to avoid an extra asynchronous postMessage render cycle.
+  // The existing refresh() still broadcasts Six-Pack/400 status normally.
+  try{
+   frame()?.contentWindow?.B737OverheadLights
+    ?.setAuthoritativePneumatics?.({lamps:derived.lamps});
+  }catch(error){console.warn('OVHT direct visual projection fallback',error)}
+ }
  function ovhtQualifier(){
   if(testHold)return testHold;
   const core=root.B737AirconOVHTQualificationV1;
@@ -44,6 +54,7 @@
     // receive a qualified detector-test signal; real leak sensors are
     // independent and continue to respond immediately.
     const out=command({type:'SENSOR',key:'wingBodyTestHeld',value:true});
+    paintPneumaticImmediately(out);
     lastNativeInput={id:'aircon-ovht-test',held:true,qualified:true,
      durationMs:core.DELAY_MS,l:out.lamps.wingBodyOverheatL,
      r:out.lamps.wingBodyOverheatR};
@@ -53,6 +64,7 @@
    },
    onReleased:()=>{
     const out=command({type:'SENSOR',key:'wingBodyTestHeld',value:false});
+    paintPneumaticImmediately(out);
     lastNativeInput={id:'aircon-ovht-test',held:false,qualified:false,
      durationMs:0,l:out.lamps.wingBodyOverheatL,r:out.lamps.wingBodyOverheatR};
     refresh(true);
@@ -172,8 +184,17 @@
      if(before.held)return;
      // Deliberately no wingBodyTestHeld=true command on PRESS.
      // The timer qualifies only after 5 seconds without release.
-     hold.press();
-     lastNativeInput={id:d.id,held:true,qualified:false,durationMs:0};
+     // Convert the originating frame's monotonic press time to our own
+     // monotonic clock. This subtracts any accumulated cross-frame queue
+     // delay before scheduling the 5000-ms qualification deadline.
+     const epoch=Number(d.physicalEpochMs);
+     const now=performance.now();
+     const physicalStart=Number.isFinite(epoch)&&Number.isFinite(performance.timeOrigin)
+      ?epoch-performance.timeOrigin:now;
+     const validStart=physicalStart<=now&&now-physicalStart<=60000?physicalStart:now;
+     hold.press(validStart);
+     lastNativeInput={id:d.id,held:true,qualified:false,durationMs:0,
+      messageLatencyMs:Math.max(0,now-validStart)};
      if(actionNotice)actionNotice.textContent='OVHT TEST HELD · WAITING 5.0 s · WING BODY TEST OFF';
     }else{
      if(!before.held)return;
