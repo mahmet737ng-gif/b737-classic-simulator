@@ -297,7 +297,10 @@
   const apuOnBus=Object.values(bridge.get().state.electrical.source).includes('APU');
   lamps['apu-gen-off-bus']=apuGenerator.ready===true&&!apuOnBus;
   // The real Unified APU lamp follows ECU oil PSI, not a STARTING timer.
-  lamps['apu-low-pressure']=ecu.get().apu.oil.lowPressureLamp;
+  const apuTrip=chain.apuProtectionReason; // latched by the shared APU source owner
+   lamps['apu-low-pressure']=ecu.get().apu.oil.lowPressureLamp||apuTrip==='LOW_OIL_PRESSURE';
+   lamps['apu-high-oil-temp']=apuTrip==='HIGH_OIL_TEMP';
+   lamps['apu-overspeed']=apuTrip==='OVERSPEED';
   const key=JSON.stringify(lamps);if(key===lastLampProjection)return;lastLampProjection=key;
   f.contentWindow.postMessage({type:'b737:cockpit-command',action:'isn-projection',lamps},location.origin);
  }
