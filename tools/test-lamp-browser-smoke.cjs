@@ -31,6 +31,62 @@ const {chromium}=require('playwright');
   }
   const mounted=await page.locator(sel).count();
   assert.equal(mounted,expected,kind+' all mounted lights');
+  // PRESS-to-test is momentary and strictly visual, independent of system faults.
+  await page.waitForFunction(mode=>mode==='overhead'
+    ?Boolean(window.B737OverheadLights?.getState?.()?.frames)
+    :Boolean(window.B737CockpitLights?.getState?.()?.frames),kind,{timeout:25000});
+  const push=await page.evaluate(({selector,mode})=>{
+   const api=mode==='overhead'?window.B737OverheadLights:window.B737CockpitLights;
+   const snapshot=api.getState(),attr=mode==='overhead'?'data-light':'data-cockpit-light';
+   const id=Object.keys(snapshot.frames).find(k=>snapshot.frames[k]==='OFF'&&
+      document.querySelector(selector+'['+attr+'="'+k+'"]'));
+   if(!id)return {error:'No normally OFF lamp available'};
+   const node=document.querySelector(selector+'['+attr+'="'+id+'"]');
+   const before=JSON.stringify(api.getState().frames);
+   node.dispatchEvent(new PointerEvent('pointerdown',{bubbles:true,pointerId:991,button:0,pointerType:'mouse'}));
+   const held={frame:node.dataset.frame,pushTest:node.dataset.pushTest};
+   const unchanged=JSON.stringify(api.getState().frames)===before;
+   document.dispatchEvent(new PointerEvent('pointerup',{bubbles:true,pointerId:991,button:0,pointerType:'mouse'}));
+   const restored={frame:node.dataset.frame,pushTest:node.dataset.pushTest};
+   node.dispatchEvent(new KeyboardEvent('keydown',{bubbles:true,key:' ',repeat:false}));
+   const keyboardHeld=node.dataset.frame;
+   node.dispatchEvent(new KeyboardEvent('keyup',{bubbles:true,key:' '}));
+   return {id,held,restored,unchanged,keyboardHeld,keyboardReleased:node.dataset.frame};
+  },{selector:sel,mode:kind});
+  assert.ok(!push.error,kind+' '+push.error);
+  assert.equal(push.held.frame,'ON',kind+' pointer hold illuminates only selected lamp');
+  assert.equal(push.held.pushTest,'true',kind+' held push-test marker');
+  assert.equal(push.unchanged,true,kind+' physical test must not alter source frames');
+  assert.equal(push.restored.frame,'OFF',kind+' release restores real indication');
+  assert.equal(push.restored.pushTest,'false',kind+' release clears test marker');
+  assert.equal(push.keyboardHeld,'ON',kind+' Space key hold illuminates lamp');
+  assert.equal(push.keyboardReleased,'OFF',kind+' Space release restores source');
+  console.log('LAMP_PUSH_TO_TEST_BROWSER_PASS',kind,JSON.stringify(push));
+  if(kind==='main'){
+   await page.waitForFunction(()=>document.querySelectorAll('.fire-lamp[data-fire-lamp]').length===11,null,{timeout:25000});
+   const fire=await page.evaluate(()=>{
+    const api=window.B737UnifiedFireLights,live=api.systemIndications();
+    const id=Object.keys(live).find(id=>!live[id]);
+    if(!id)return {error:'No normally OFF fire indicator available'};
+    const node=document.querySelector('.fire-lamp[data-fire-lamp="'+id+'"]'),img=node?.querySelector('img');
+    if(!img)return {error:'Fire lamp missing '+id};
+    const before=JSON.stringify(live);
+    node.dispatchEvent(new PointerEvent('pointerdown',{bubbles:true,pointerId:992,button:0,pointerType:'mouse'}));
+    const on={test:node.dataset.pushTest,src:img.dataset.source};
+    const unchanged=JSON.stringify(api.systemIndications())===before;
+    document.dispatchEvent(new PointerEvent('pointerup',{bubbles:true,pointerId:992,button:0,pointerType:'mouse'}));
+    return {id,on,off:{test:node.dataset.pushTest,src:img.dataset.source},unchanged,hit:getComputedStyle(node).pointerEvents};
+   });
+   assert.ok(!fire.error,fire.error);
+   assert.equal(fire.on.test,'true');
+   assert.ok(fire.on.src.endsWith(fire.id+'_ON.webp'),'Fire glass must light during hold');
+   assert.equal(fire.off.test,'false');
+   assert.ok(fire.off.src.endsWith(fire.id+'_OFF.webp'),'Fire glass must restore upon release');
+   assert.equal(fire.unchanged,true,'No fire sensor/failure may change during lamp test');
+   assert.equal(fire.hit,'auto','Individual fire lenses must accept pointer presses');
+   console.log('FIRE_PUSH_TO_TEST_BROWSER_PASS',JSON.stringify(fire));
+  }
+
 
   if(kind==='overhead'){
    // Real DOM regression of the photographed OH14 three-detent selector.
