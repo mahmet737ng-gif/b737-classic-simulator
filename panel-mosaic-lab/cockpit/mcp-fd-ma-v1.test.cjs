@@ -94,3 +94,14 @@ test("No physical data preserves AFDS indication",()=>{
  assert.equal(M.reconcileFd(original,null),original);
  assert.equal(M.reconcileFd(original,{FD_LEFT:"bad"}),original);
 });
+
+test("MA compact geometry leaves room around both F/D stencils",()=>{
+ const dims=M.position;
+ for(const side of ["left","right"]){
+  const p=dims[side];
+  assert.deepEqual([p.w,p.h],[42,42]);
+  assert.equal(p.y,220);
+  assert.equal(p.y+p.h/2,241);
+ }
+ assert.equal(dims.left.x,203);assert.equal(dims.right.x,1903);
+});

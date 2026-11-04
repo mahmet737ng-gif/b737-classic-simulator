@@ -1,4 +1,4 @@
-/* MCP-FD-MA-0005 | centered circular MA over original F/D annun hole; FCOM 4.10.13, 4.20.3.
+/* MCP-FD-MA-0006 | centered circular MA over original F/D annun hole; FCOM 4.10.13, 4.20.3.
  * Two non-clickable master FCC lamps over unmodified approved MCP artwork.
  * TRAINING ONLY - independent modes require explicit sensor/instructor evidence.
  */
@@ -10,8 +10,8 @@ if(host&&host.document){host.B737McpFDMAV1=api;api.bind(host);}
 })(typeof window!=="undefined"?window:null,function(){
 "use strict";
 const W=2172,H=433,position=Object.freeze({
- left:Object.freeze({x:203,y:220,w:68,h:68}),
- right:Object.freeze({x:1903,y:220,w:68,h:68})
+ left:Object.freeze({x:203,y:220,w:42,h:42}),
+ right:Object.freeze({x:1903,y:220,w:42,h:42})
 });
 const defaults=()=>({kind:"NORMAL",radioAltitudeFt:null,
  locCaptured:false,gsCaptured:false,fccAvailable:{left:null,right:null}});
@@ -80,24 +80,24 @@ function installStyle(){
  /* Owner specified: ROUND black lamp, WHITE MA in both OFF and ON. */
  '[data-piece="mcp"]>.mcp-fd-ma{position:absolute;z-index:7;display:block;box-sizing:border-box;',
  'transform:translate(-50%,-50%);pointer-events:none;user-select:none;overflow:hidden;',
- 'border:2px solid #3d4140;border-radius:50%!important;',
+ 'border:1px solid #3d4140;border-radius:50%!important;',
  'background:radial-gradient(circle at 36% 24%,#222727 0%,#0a0d0d 40%,#010202 80%);',
  'box-shadow:0 1px 2px #000d,inset 0 1px 3px #000,inset 0 0 1px 1px #101919}',
  '[data-piece="mcp"]>.mcp-fd-ma:before{content:"";position:absolute;inset:4%;',
  'border-radius:50%;border:1px solid #545b5680;box-shadow:inset 0 0 4px #000b;pointer-events:none}',
  '[data-piece="mcp"]>.mcp-fd-ma svg{display:block;width:100%;height:100%;overflow:visible}',
  '[data-piece="mcp"]>.mcp-fd-ma .mcp-fd-ma-label{fill:#f6f7f4;stroke:none;',
- 'font:700 26px Arial,Helvetica,sans-serif;letter-spacing:-.6px;paint-order:stroke fill;opacity:.12;filter:none}',
+ 'font:700 17px Arial,Helvetica,sans-serif;letter-spacing:-.35px;paint-order:stroke fill;opacity:.12;filter:none}',
  '[data-piece="mcp"]>.mcp-fd-ma[data-on="false"] .mcp-fd-ma-label{fill:#fff;opacity:.12!important;filter:none!important}',
  '[data-piece="mcp"]>.mcp-fd-ma[data-on="false"]{border-color:#222928!important;background:radial-gradient(circle at 40% 30%,#101413,#040606 70%,#010202 100%)!important;box-shadow:inset 0 1px 3px #000,inset 0 0 2px #090d0b!important}',
  /* The lens remains black when powered. Only reflected light and white MA glow change. */
  '[data-piece="mcp"]>.mcp-fd-ma[data-on="true"]{',
- 'border-color:#727d76;',
+ 'border-color:#69716b;',
  'background:radial-gradient(circle at 45% 33%,#282f2d 0%,#0c1411 49%,#020403 86%);',
- 'box-shadow:0 0 3px 1px #e7fff299,0 0 9px 2px #d7ffe252,',
- 'inset 0 0 5px 1px #e7ffe536,inset 0 1px 3px #030807}',
+ 'box-shadow:0 0 2px .3px #d9f6df55,inset 0 0 2px #b9eac044,',
+ 'inset 0 1px 2px #030807}',
  '[data-piece="mcp"]>.mcp-fd-ma[data-on="true"] .mcp-fd-ma-label{',
- 'fill:#fff;opacity:1!important;filter:drop-shadow(0 0 1.3px #fff) drop-shadow(0 0 2.7px #d0ffe4)}'
+ 'fill:#fff;opacity:1!important;filter:none!important}'
  ].join("");
  (hostWindow.document.head||hostWindow.document.documentElement).append(el);
 }
@@ -122,8 +122,8 @@ function mount(){
    const p=position[side],el=hostWindow.document.createElement("span");
    el.className="mcp-fd-ma";el.dataset.mcpMa=side;el.dataset.on="false";
    el.setAttribute("role","img");
-   // 68x68 source-space circular bezel centered on the pre-existing black MA hole.
-   el.innerHTML='<svg viewBox="0 0 68 68" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false"><text class="mcp-fd-ma-label" x="34" y="34.5" text-anchor="middle" dominant-baseline="central">MA</text></svg>';
+   // Compact 42x42 circular bezel centered on the black MA hole, clear of F/D lettering.
+   el.innerHTML='<svg viewBox="0 0 42 42" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false"><text class="mcp-fd-ma-label" x="21" y="21.5" text-anchor="middle" dominant-baseline="central">MA</text></svg>';
    el.style.left=p.x/W*100+"%";el.style.top=p.y/H*100+"%";
    el.style.width=p.w/W*100+"%";el.style.height=p.h/H*100+"%";
    // Font geometry is set by the SVG viewBox, not viewport-dependent CSS.
