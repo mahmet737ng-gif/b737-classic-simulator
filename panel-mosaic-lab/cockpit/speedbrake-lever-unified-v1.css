@@ -1,8 +1,9 @@
-/* SBK-0004: speedbrake L-channel, photo sprite and four clickable native detents only. */
+/* SBK-0005: photo-based straight slot, base-anchored high resolution speedbrake. */
+.speedbrake-old-slot-cover{position:absolute;z-index:5;pointer-events:none;image-rendering:auto}
 .speedbrake-slot-extension{position:absolute;z-index:6;display:block;pointer-events:none;overflow:visible}
 .speedbrake-photo-lever{position:absolute;z-index:7;display:block;max-width:none;
  object-fit:fill;image-rendering:auto;user-select:none;-webkit-user-drag:none;
- touch-action:none;cursor:ns-resize;outline:none;transform-origin:84% 86%;
+ touch-action:none;cursor:ns-resize;outline:none;transform-origin:85% 87.4396%;
  transition:left 160ms ease-out,top 175ms cubic-bezier(.25,.75,.25,1),transform 175ms ease-out}
 .speedbrake-photo-lever.is-dragging{transition:none}
 .speedbrake-photo-lever:focus-visible{filter:drop-shadow(0 0 3px #87e7ff)}
@@ -14,6 +15,6 @@
 .speedbrake-detent-hit:hover,.speedbrake-detent-hit:focus-visible{
  border-color:rgba(255,220,135,.85)!important;background:rgba(255,220,135,.13)!important;
  outline:none!important}
-.reference-mode .speedbrake-photo-lever,.reference-mode .speedbrake-slot-extension,
+.reference-mode .speedbrake-photo-lever,.reference-mode .speedbrake-old-slot-cover,.reference-mode .speedbrake-slot-extension,
 .reference-mode .speedbrake-detent-hit{display:none!important}
 .pan-mode .speedbrake-photo-lever,.pan-mode .speedbrake-detent-hit{pointer-events:none!important}

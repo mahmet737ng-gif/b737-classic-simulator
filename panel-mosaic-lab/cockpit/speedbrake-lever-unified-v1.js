@@ -1,28 +1,28 @@
-/* SBK-0004 — measured L-groove and direct-click detents; bare quadrant artwork immutable. */
+/* SBK-0005 — owner redline: straight narrow slot; pivot-to-stencil detents; scalable photo-style sprite. */
 (function(){
 'use strict';
 /* Coordinate system: native 800 × 1000 owner-approved throttle photograph.
  * The bent section is an independent overlay, NOT a modification of the photo.
  * Stop markers refer to the existing painted DOWN/ARMED/FLIGHT DETENT/UP legends.
  */
-const STOP_Y=Object.freeze({DOWN:255,ARMED:284,FLIGHT_DETENT:475,UP:616});
+const STOP_Y=Object.freeze({DOWN:262,ARMED:288,FLIGHT_DETENT:478,UP:619});
 const STOPS=Object.freeze(Object.entries(STOP_Y).map(([key,y])=>Object.freeze({
  key,y,t:(y-STOP_Y.DOWN)/(STOP_Y.UP-STOP_Y.DOWN)
 })));
 const HIT_TARGETS=Object.freeze([
- Object.freeze({key:'DOWN',x:212,y:252,w:54,h:26}),
- Object.freeze({key:'ARMED',x:209,y:298,w:62,h:29}),
- Object.freeze({key:'FLIGHT_DETENT',x:221,y:461,w:50,h:54}),
- Object.freeze({key:'UP',x:222,y:617,w:46,h:30})
+ Object.freeze({key:'DOWN',x:211,y:247,w:58,h:27}),
+ Object.freeze({key:'ARMED',x:211,y:297,w:58,h:27}),
+ Object.freeze({key:'FLIGHT_DETENT',x:220,y:453,w:39,h:40}),
+ Object.freeze({key:'UP',x:218,y:619,w:40,h:28})
 ]);
-/* Centerline joins the existing black groove (x≈194, y≈321).
- * At DOWN it turns left toward the neighboring STAB TRIM scale. */
-const GROOVE_PATH='M 154 253 L 154 265 Q 156 279 168 293 L 190 317 Q 194 322 194 333 L 194 618';
-const GUIDE=Object.freeze([{x:154,y:253},{x:154,y:265},{x:168,y:293},{x:194,y:326},{x:194,y:618}].map(p=>Object.freeze(p)));
-const ASSET='./assets/speedbrake-lever-v1.txt?v=SBK-0001';
-const G={sourceX:194,sourceWidth:116,trackTop:STOP_Y.DOWN,trackBottom:STOP_Y.UP,
+/* Fixed 13-pixel-width straight groove centered on user's red rectangle x=171.
+ * Original photographic groove x=188..201 is masked at runtime, never edited on disk. */
+const GROOVE_PATH='M 171 257 L 171 632';
+const GUIDE=Object.freeze([{x:171,y:257},{x:171,y:632}].map(p=>Object.freeze(p)));
+const ASSET='./assets/speedbrake-lever-hires-v2.svg?v=SBK-0005';
+const G={sourceX:171,sourceWidth:124,trackTop:STOP_Y.DOWN,trackBottom:STOP_Y.UP,
  sourceWindowX:0,sourceWindowY:0,sourceWindowWidth:800,sourceWindowHeight:978.1990521327015,
- gripAnchorX:.43,gripAnchorY:.215,shaftAnchorX:.84};
+ baseAnchorX:102/120,baseAnchorY:181/207};
 let root=null,texture=null,lever=null,groove=null,position=0,ready=false,drag=null;
 const buttons=new Map();
 const clamp=x=>Math.min(1,Math.max(0,Number.isFinite(x)?x:0));
@@ -44,7 +44,7 @@ function syncArmed(){
  try{
   if(system.getState?.()?.inputs?.speedBrakeArmedIndication!==indication)
    system.setInputs({speedBrakeArmedIndication:indication});
- }catch(err){console.warn('SBK-0004 SPEED BRAKE ARMED indication sync',err);}
+ }catch(err){console.warn('SBK-0005 SPEED BRAKE ARMED indication sync',err);}
 }
 function emit(source){
  const stop=nearest(position);
@@ -66,8 +66,9 @@ function render(){
  if(!lever||!texture)return;
  const m=measure();
  const y=G.trackTop+(G.trackBottom-G.trackTop)*position;
- const top=texture.offsetTop+(y-G.sourceWindowY)*m.sy-G.gripAnchorY*m.height;
- const left=texture.offsetLeft+(G.sourceX-G.sourceWindowX)*m.sx-G.shaftAnchorX*m.width;
+ // Register the steel pivot/base to the actual printed detent, never the grip.
+ const top=texture.offsetTop+(y-G.sourceWindowY)*m.sy-G.baseAnchorY*m.height;
+ const left=texture.offsetLeft+(G.sourceX-G.sourceWindowX)*m.sx-G.baseAnchorX*m.width;
  lever.style.left=left.toFixed(2)+'px';
  lever.style.top=top.toFixed(2)+'px';
  lever.style.width=m.width.toFixed(2)+'px';
@@ -76,7 +77,7 @@ function render(){
  const lastVisible=Math.max(panelSlotEnd,top+m.height*.43);
  const lowerMask=Math.max(0,top+m.height-lastVisible);
  lever.style.clipPath='inset(0px 0px '+lowerMask.toFixed(2)+'px 0px)';
- lever.style.transform='rotate('+(-2+position*3).toFixed(2)+'deg)';
+ lever.style.transform='rotate('+(-1+position*2).toFixed(2)+'deg)';
  lever.dataset.position=nearest(position).key;
  lever.setAttribute('aria-valuenow',String(Math.round(position*100)));
  lever.setAttribute('aria-valuetext',nearest(position).key.replace(/_/g,' '));
@@ -98,11 +99,7 @@ function step(delta){
  return set(STOPS[Math.max(0,Math.min(STOPS.length-1,i+delta))].t,'PEDESTAL',true);
 }
 function pathPoint(t){
- const y=G.trackTop+(G.trackBottom-G.trackTop)*clamp(t);
- if(y<=265)return{x:154,y};
- if(y<=293)return{x:154+(y-265)*14/28,y};
- if(y<=326)return{x:168+(y-293)*26/33,y};
- return{x:194,y};
+ return {x:171,y:G.trackTop+(G.trackBottom-G.trackTop)*clamp(t)};
 }
 function closestPoint(x,y){
  let best={distance:Infinity,position:0};
@@ -162,8 +159,30 @@ function bind(){
  });
 }
 function mountGroove(){
- /* Native SVG follows the existing photograph's piece transform at any zoom.
-  * No locked pixels or other pedestal regions are modified. */
+ /* Repaint ONLY the old slot by reusing a neighboring strip from the exact
+  * immutable background photo. No source file changes, no invented text. */
+ const photo=texture.querySelector('img');
+ if(photo){
+  const cover=document.createElement('canvas');
+  cover.className='speedbrake-old-slot-cover';
+  cover.width=19;cover.height=313;
+  const sx=texture.offsetWidth/G.sourceWindowWidth;
+  const sy=texture.offsetHeight/G.sourceWindowHeight;
+  Object.assign(cover.style,{
+   left:(texture.offsetLeft+186*sx)+'px',
+   top:(texture.offsetTop+318*sy)+'px',
+   width:(19*sx)+'px',height:(313*sy)+'px'
+  });
+  const paint=()=>{
+   if(!photo.naturalWidth)return;
+   const ctx=cover.getContext('2d');
+   if(ctx){ctx.imageSmoothingEnabled=true;
+    ctx.drawImage(photo,175,318,8,313,0,0,19,313);}
+  };
+  if(photo.complete&&photo.naturalWidth)paint();
+  else photo.addEventListener('load',paint,{once:true});
+  root.append(cover);
+ }
  const ns='http://www.w3.org/2000/svg';
  groove=document.createElementNS(ns,'svg');
  groove.id='b737-speedbrake-groove';
@@ -172,7 +191,7 @@ function mountGroove(){
  groove.setAttribute('preserveAspectRatio','none');
  Object.assign(groove.style,{left:texture.offsetLeft+'px',top:texture.offsetTop+'px',
   width:texture.offsetWidth+'px',height:texture.offsetHeight+'px'});
- for(const [width,color] of [[19,'#8895a1'],[15,'#263440'],[10,'#080d12']]){
+ for(const [width,color] of [[16,'#8d99a5'],[13,'#35424b'],[10,'#05080b']]){
   const line=document.createElementNS(ns,'path');
   line.setAttribute('d',GROOVE_PATH);
   line.setAttribute('fill','none');
@@ -208,21 +227,12 @@ async function mount(){
  root=document.querySelector('#region-pedestal .region-native');
  texture=root&&root.querySelector('[data-piece="throttle-quadrant"]');
  if(!root||!texture)return;
- let code;
- try{
-  const response=await fetch(ASSET,{cache:'force-cache'});
-  if(!response.ok)throw Error('sprite HTTP '+response.status);
-  code=(await response.text()).trim();
-  if(!/^[A-Za-z0-9+/=]+$/.test(code))throw Error('invalid sprite payload');
-  const probe=new Image();probe.src='data:image/webp;base64,'+code;
-  await probe.decode();
-  if(probe.naturalWidth!==120||probe.naturalHeight!==207)throw Error('sprite dimension mismatch');
- }catch(err){console.warn('SBK-0004 isolated sprite unavailable; preserved owner quadrant',err);return;}
  mountGroove();
  lever=document.createElement('img');
  lever.id='b737-speedbrake-lever';
  lever.className='speedbrake-photo-lever';
- lever.src='data:image/webp;base64,'+code;
+ lever.src=ASSET;
+ lever.addEventListener('error',()=>console.warn('SBK-0005 high-resolution speedbrake image failed to load'));
  lever.alt='B737 Speed Brake lever';lever.draggable=false;lever.tabIndex=0;
  lever.setAttribute('role','slider');lever.setAttribute('aria-label','Speed brake lever');
  lever.setAttribute('aria-valuemin','0');lever.setAttribute('aria-valuemax','100');

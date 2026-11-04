@@ -2,36 +2,42 @@
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const vm=require('node:vm');
-const ev=[];
-const win={addEventListener:()=>{}};
-const doc={readyState:'loading',addEventListener:()=>{},dispatchEvent:e=>ev.push(e),querySelector:()=>null};
+const events=[],states=[];
+let lamp=false;
+const win={addEventListener:()=>{},B737CockpitLights:{
+ getState:()=>({inputs:{speedBrakeArmedIndication:lamp}}),
+ setInputs:input=>{lamp=input.speedBrakeArmedIndication;states.push(lamp);}
+}};
+const doc={readyState:'loading',addEventListener:()=>{},dispatchEvent:e=>events.push(e),querySelector:()=>null};
 class CustomEvent{constructor(type,data){this.type=type;this.detail=data.detail;}}
 const src=fs.readFileSync(__dirname+'/speedbrake-lever-unified-v1.js','utf8');
 vm.runInNewContext(src,{window:win,document:doc,CustomEvent,console});
 const api=win.B737SpeedbrakeLever;
-assert.equal(JSON.stringify(api.stops.map(s=>s.key)),JSON.stringify(['DOWN','ARMED','FLIGHT_DETENT','UP']));
-assert.equal(api.geometry().sourceWindowWidth,800);
-assert.equal(api.geometry().sourceX,194,'metal lever shaft must align with actual black speedbrake slot x=194');
-assert.match(api.path().d,/M 154 253.*L 194 618/,'groove must turn left up to DOWN and join existing vertical track');
-assert.equal(api.hitTargets().length,4,'all four marked speedbrake detents must be direct-click targets');
-assert.equal(JSON.stringify(api.hitTargets().map(s=>s.key)),JSON.stringify(['DOWN','ARMED','FLIGHT_DETENT','UP']));
-for(const p of api.hitTargets())assert.ok(p.x>180&&p.x<242&&p.y>=240&&p.y<=635,'hitbox remains over speedbrake stencil');
-assert.equal(api.geometry().sourceWidth,116,'speedbrake is scaled to the narrow slot without touching background');
-assert.equal(api.geometry().trackTop,255,'DOWN underline matches photo');
-assert.equal(api.geometry().trackBottom,616,'UP end matches photo, not the engine start area');
-assert.equal(Math.round(api.stops[1].t*361),29,'ARMED occurs directly below DOWN');
-assert.equal(Math.round(api.stops[2].t*361),220,'flight detent follows the actual stencil');
-
-assert.ok(api.stops[0].t<api.stops[1].t&&api.stops[1].t<api.stops[2].t&&api.stops[2].t<api.stops[3].t);
-assert.equal(api.set('DOWN'),0);
-assert.equal(ev.at(-1).detail.armed,false);
-assert.equal(api.set('ARMED'),api.stops[1].t);
-assert.equal(ev.at(-1).detail.armed,true);
-assert.equal(ev.at(-1).detail.detent,'ARMED');
-assert.equal(api.set('FLIGHT DETENT'),api.stops[2].t);
-assert.equal(ev.at(-1).detail.armed,false);
-assert.equal(api.set('UP'),1);
-assert.equal(ev.at(-1).detail.armed,false);
-assert.equal(api.set(.20),api.stops[1].t,'fractional input snaps to ARMED');
-assert.equal(api.set(.50),api.stops[2].t,'halfway snaps to FLIGHT DETENT');
-console.log('PASS: speedbrake four physical detents, calibrated quadrant geometry, and ARMED indication.');
+assert.deepEqual(JSON.parse(JSON.stringify(api.stops.map(s=>s.key))),['DOWN','ARMED','FLIGHT_DETENT','UP']);
+const geom=api.geometry();
+assert.equal(geom.sourceX,171,'user-drawn slot centered x=171');
+assert.equal(geom.sourceWidth,124,'new HD sprite scaled without stretching');
+assert.equal(geom.baseAnchorX,102/120,'metal base pin is the x anchor');
+assert.equal(geom.baseAnchorY,181/207,'metal base pin is the y anchor');
+assert.equal(api.path().d,'M 171 257 L 171 632','slot has no bend or diagonal');
+assert.equal(api.path().guide.length,2,'strictly vertical groove');
+assert.equal(api.path().guide[0].x,api.path().guide[1].x);
+assert.equal(JSON.stringify(api.stops.map(s=>s.y)),JSON.stringify([262,288,478,619]));
+assert.deepEqual(JSON.parse(JSON.stringify(api.hitTargets().map(s=>s.key))),['DOWN','ARMED','FLIGHT_DETENT','UP']);
+assert.ok(fs.existsSync(__dirname+'/assets/speedbrake-lever-hires-v2.svg'),'hi-res source must ship with web deployment');
+const svg=fs.readFileSync(__dirname+'/assets/speedbrake-lever-hires-v2.svg','utf8');
+assert.match(svg,/viewBox="0 0 120 207"/);
+assert.match(svg,/width="480" height="828"/);
+assert.match(svg,/cx="102" cy="181"/);
+const changes=[];
+for(const key of ['DOWN','ARMED','FLIGHT_DETENT','UP']){
+ assert.equal(api.set(key),api.stops.find(s=>s.key===key).t);
+ const ev=events.filter(e=>e.type==='b737:speedbrake-position').at(-1);
+ changes.push([ev.detail.detent,ev.detail.armed]);
+ assert.equal(ev.detail.armed,key==='ARMED');
+ assert.equal(lamp,key==='ARMED');
+}
+assert.deepEqual(changes,[['DOWN',false],['ARMED',true],['FLIGHT_DETENT',false],['UP',false]]);
+assert.equal(api.set(.20),api.stops.find(s=>s.key==='ARMED').t);
+assert.equal(api.set(.50),api.stops.find(s=>s.key==='FLIGHT_DETENT').t);
+console.log('PASS: straight owner-defined speedbrake slot, base-aligned 4 detents, four direct hit targets, high-resolution SVG and ARMED lamp.');
