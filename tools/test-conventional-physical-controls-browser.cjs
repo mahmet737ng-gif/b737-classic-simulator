@@ -67,6 +67,77 @@ const {chromium}=require('playwright');
   });
   assert.equal(await page.locator('[data-guard-id="antiskid"]').getAttribute('data-value'),'OFF');
   await page.evaluate(()=>window.B737GuardOwner18.set('antiskid','ON',true));
+  // Verify every detent's TRUE pointer direction. The knob sprite's tip
+  // points straight up before rotation; rotations must match panel legends.
+  const direction=await page.evaluate(()=>{
+    const api=window.B737ConventionalPhysicalControlsV1;
+    const img=document.querySelector('.b737-conv-autobrake-rotary img');
+    img.style.transition='none';
+    const result={};
+    for(const d of api.detents){
+      api.setDetent(d,'pointer-qa');
+      const m=new DOMMatrixReadOnly(getComputedStyle(img).transform);
+      result[d]=Math.round(Math.atan2(m.b,m.a)*180/Math.PI);
+    }
+    api.setDetent('OFF','pointer-qa');
+    return result;
+  });
+  assert.deepEqual(direction,{RTO:-135,OFF:-90,'1':-45,'2':0,'3':45,MAX:90});
+  console.log('AUTOBRAKE_POINTER_AXLE_PASS',JSON.stringify(direction));
+  await page.waitForFunction(()=>Boolean(window.B737CockpitLights?.setInputs),null,{timeout:25000});
+  await page.evaluate(()=>{
+    const frame=document.getElementById('overheadFrame');
+    window.dispatchEvent(new MessageEvent('message',{
+      origin:location.origin,source:frame.contentWindow,
+      data:{type:'b737:cockpit-overhead',kind:'state',power:true}
+    }));
+    window.B737CockpitLights.setInputs({power:true,autobrakeDisarmed:false,autobrakeArmed:false,antiskidOn:true});
+  });
+  const status=()=>page.evaluate(()=>{
+    const state=window.B737CockpitLights.getState();
+    return {wow:state.inputs.aircraftOnGround,test:state.inputs.autobrakeRtoSelfTest,
+      fault:state.inputs.autobrakeDisarmed,frame:state.frames['main-autobrake'],
+      power:state.overheadPower,
+      detent:window.B737ConventionalPhysicalControlsV1.getDetent()};
+  });
+  assert.equal((await status()).power,true,'Powered lamp source for real browser test');
+  await page.evaluate(()=>{
+    const api=window.B737ConventionalPhysicalControlsV1;
+    api.setOnGround(false);api.setDetent('OFF');api.setDetent('RTO');
+  });
+  assert.equal((await status()).test,false,'RTO selected in flight cannot start test');
+  assert.equal((await status()).frame,'OFF','No flight self-test light');
+  await page.evaluate(()=>{
+    const api=window.B737ConventionalPhysicalControlsV1;
+    api.setOnGround(true);api.setDetent('OFF');api.setDetent('RTO');
+  });
+  assert.equal((await status()).test,true,'Ground RTO starts self-test');
+  assert.equal((await status()).frame,'ON','DISARM lamp lit during test');
+  await page.screenshot({path:'/tmp/b737-conv-rto-disarm-on.png',timeout:25000});
+  await page.waitForTimeout(950);
+  assert.equal((await status()).frame,'ON','Lamp remains illuminated before 3 seconds');
+  await page.waitForTimeout(2450);
+  assert.equal((await status()).test,false,'Test ends automatically after 3 seconds');
+  assert.equal((await status()).frame,'OFF','Lamp dark after 3 seconds without fault');
+  await page.evaluate(()=>{
+    const api=window.B737ConventionalPhysicalControlsV1;
+    api.setDetent('OFF');api.setDetent('RTO');api.setDetent('1');
+  });
+  assert.equal((await status()).test,false,'Leaving RTO cancels any running test');
+  await page.evaluate(()=>{
+    const api=window.B737ConventionalPhysicalControlsV1;
+    window.B737CockpitLights.setInputs({autobrakeDisarmed:true});
+    api.setDetent('OFF');api.setDetent('RTO');
+  });
+  await page.waitForTimeout(3180);
+  assert.equal((await status()).test,false,'Self-test timer cleared');
+  assert.equal((await status()).frame,'ON','A real DISARM fault remains ON after timer');
+  await page.evaluate(()=>{
+    window.B737ConventionalPhysicalControlsV1.setDetent('OFF');
+    window.B737CockpitLights.setInputs({autobrakeDisarmed:false});
+  });
+  assert.equal((await status()).frame,'OFF');
+  console.log('GROUND_RTO_3000MS_SELF_TEST_PASS',JSON.stringify(await status()));
   await page.screenshot({path:'/tmp/b737-conv-skid-autobrake-browser.png',timeout:25000});
   console.log('CONVENTIONAL_PHYSICAL_CONTROLS_PHOTO_PASS',JSON.stringify(geometry));
   await page.evaluate(()=>window.B737EngineIndicationModeV1.setMode('EIS'));
