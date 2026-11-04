@@ -959,7 +959,7 @@
       "label": "LANDING INBOARD L",
       "placementId": "OH23-25",
       "sourcePoint": [
-        459,
+        398,
         318
       ],
       "bezelSourceDiameter": 54,
@@ -970,7 +970,7 @@
         "ON"
       ],
       "default": "OFF",
-      "basis": "owner guide image; mounted at existing socket in locked source | EXTL-CLASSIC-0001: Lufthansa B737-300/400/500 ATA 33/40 P5 detents; source artwork unchanged."
+      "basis": "EXTL-INBOARD-LEFT-PIXEL-0002: centre of the original EMPTY photographic INBOARD L bezel at source X398, Y318; preceding X459 placed L over the printed ON legend. Other lamps and sockets unchanged. Original photo and FCOM 2-state OFF/ON control retained."
     },
     {
       "id": "landing-in-r",
