@@ -96,15 +96,15 @@ test("No physical data preserves AFDS indication",()=>{
  assert.equal(M.reconcileFd(original,{FD_LEFT:"bad"}),original);
 });
 
-test("MA compact geometry leaves room around both F/D stencils",()=>{
+test("MA 42px optical center registers with photographed F/D round socket",()=>{
  const dims=M.position;
  for(const side of ["left","right"]){
   const p=dims[side];
   assert.deepEqual([p.w,p.h],[42,42]);
-  assert.equal(p.y,220);
-  assert.equal(p.y+p.h/2,241);
+  assert.equal(p.y,239);
+  assert.equal(p.y+p.h/2,260);
  }
- assert.equal(dims.left.x,203);assert.equal(dims.right.x,1903);
+ assert.equal(dims.left.x,212);assert.equal(dims.right.x,1912);
 });
 
 test("Both flight directors OFF do not illuminate with unknown power",()=>{

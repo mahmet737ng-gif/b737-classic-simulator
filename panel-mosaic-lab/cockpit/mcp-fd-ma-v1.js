@@ -1,4 +1,4 @@
-/* MCP-FD-MA-0007 | centered circular MA over original F/D annun hole; FCOM 4.10.13, 4.20.3.
+/* MCP-FD-MA-0008 | centered circular MA over original F/D annun hole; FCOM 4.10.13, 4.20.3.
  * Two non-clickable master FCC lamps over unmodified approved MCP artwork.
  * TRAINING ONLY - independent modes require explicit sensor/instructor evidence.
  */
@@ -10,8 +10,8 @@ if(host&&host.document){host.B737McpFDMAV1=api;api.bind(host);}
 })(typeof window!=="undefined"?window:null,function(){
 "use strict";
 const W=2172,H=433,position=Object.freeze({
- left:Object.freeze({x:203,y:220,w:42,h:42}),
- right:Object.freeze({x:1903,y:220,w:42,h:42})
+ left:Object.freeze({x:212,y:239,w:42,h:42}),
+ right:Object.freeze({x:1912,y:239,w:42,h:42})
 });
 const defaults=()=>({kind:"NORMAL",radioAltitudeFt:null,
  locCaptured:false,gsCaptured:false,fccAvailable:{left:null,right:null}});
@@ -132,7 +132,7 @@ function mount(){
    const p=position[side],el=hostWindow.document.createElement("span");
    el.className="mcp-fd-ma";el.dataset.mcpMa=side;el.dataset.on="false";
    el.setAttribute("role","img");
-   // Compact 42x42 circular bezel centered on the black MA hole, clear of F/D lettering.
+   // MA-0008: center +9 X / +19 Y in native 2172x433 photo pixels to cover original round socket; preserve 42px bezel and F/D stencil.
    el.innerHTML='<svg viewBox="0 0 42 42" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false"><text class="mcp-fd-ma-label" x="21" y="21.5" text-anchor="middle" dominant-baseline="central">MA</text></svg>';
    el.style.left=p.x/W*100+"%";el.style.top=p.y/H*100+"%";
    el.style.width=p.w/W*100+"%";el.style.height=p.h/H*100+"%";
