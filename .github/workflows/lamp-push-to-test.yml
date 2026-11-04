@@ -1,0 +1,43 @@
+name: B737 individual lamp push-to-test Chromium acceptance
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - tools/test-lamp-push-to-test.cjs
+      - .github/workflows/lamp-push-to-test.yml
+      - panel-mosaic-lab/interactive-overhead/lights.js
+      - panel-mosaic-lab/cockpit/lights.js
+      - panel-mosaic-lab/cockpit/fire-lights-unified.js
+      - panel-mosaic-lab/cockpit/fire-lights-unified.css
+      - panel-mosaic-lab/cockpit/index.html
+      - panel-mosaic-lab/interactive-overhead/index.html
+permissions:
+  contents: read
+jobs:
+  press-release-browser:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Preserve frozen photographic atlas
+        run: python3 panel-mosaic-lab/verify-final-overhead.py
+      - name: Parse modified scripts and regression
+        run: |
+          node --check tools/test-lamp-push-to-test.cjs
+          node --check panel-mosaic-lab/interactive-overhead/lights.js
+          node --check panel-mosaic-lab/cockpit/lights.js
+          node --check panel-mosaic-lab/cockpit/fire-lights-unified.js
+      - name: Install Chromium
+        run: |
+          npm install --no-save --ignore-scripts playwright@1.58.2
+          npx playwright install --with-deps chromium
+      - name: Test hold and release on all lamp regions
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m http.server 8788 --bind 127.0.0.1 >/tmp/b737-lamp-ptt-http.log 2>&1 &
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:8788/panel-mosaic-lab/cockpit/index.html >/dev/null; then break; fi
+            sleep 1
+          done
+          node tools/test-lamp-push-to-test.cjs
