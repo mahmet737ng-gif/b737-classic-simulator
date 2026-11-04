@@ -7,7 +7,12 @@
  if(!host)return;
  const mounted=new Map(),nativeAirconReleases=new Map();
  const send=(id,pressed,quality)=>{
-  const detail={id,pressed,action:pressed?'PRESS':'RELEASE',momentary:true,quality,source:'recessed-hardware-v2'};
+  // Capture the physical moment at the actual cap. Cross-iframe messages
+  // can be delayed by unrelated cockpit rendering, but must not add to the
+  // owner's five-second qualification.
+  const physicalEpochMs=root.performance.timeOrigin+root.performance.now();
+  const detail={id,pressed,action:pressed?'PRESS':'RELEASE',momentary:true,quality,
+   physicalEpochMs,source:'recessed-hardware-v2'};
   root.dispatchEvent(new CustomEvent('b737:recessed-button',{detail}));
   if(root.parent!==root)root.parent.postMessage({type:'b737:cockpit-overhead',kind:'recessed-button',...detail},root.location.origin);
  };
