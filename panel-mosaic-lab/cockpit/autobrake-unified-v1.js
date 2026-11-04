@@ -115,7 +115,7 @@
  }
  win.document.addEventListener('b737:throttle-position',onThrottle);
  win.document.addEventListener('b737:throttle-state',onThrottle);
- win.addEventListener('b737:throttle-sprites-ready',()=>{
+ const syncPhysicalThrottles=()=>{
   const api=win.B737ThrottlePositions;
   if(!api?.get)return;
   const values=[api.get(1),api.get(2)];
@@ -123,7 +123,9 @@
    throttleStages[1]=values[0];throttleStages[2]=values[1];
    updateSensors({thrustIdle:values[0]===0&&values[1]===0});
   }
- });
+ };
+ win.addEventListener('b737:throttle-sprites-ready',syncPhysicalThrottles);
+ win.document.addEventListener('b737:throttle-sprites-ready',syncPhysicalThrottles,true);
  function onSpeedBrake(event){
   const d=event.detail||{};
   if(typeof d.detent!=='string')return;
@@ -133,10 +135,12 @@
  }
  win.document.addEventListener('b737:speedbrake-position',onSpeedBrake);
  win.document.addEventListener('b737:speedbrake-state',onSpeedBrake);
- win.addEventListener('b737:speedbrake-ready',()=>{
+ const syncPhysicalSpeedBrake=()=>{
   const p=win.B737SpeedbrakeLever?.get?.();
   if(Number.isFinite(p))updateSensors({speedBrakeDown:p<0.01});
- });
+ };
+ win.addEventListener('b737:speedbrake-ready',syncPhysicalSpeedBrake);
+ win.document.addEventListener('b737:speedbrake-ready',syncPhysicalSpeedBrake,true);
  // Disconnects are represented by sensors, not changes to the visual mode.
  // EIS -> Conventional -> EIS never reinitializes this module.
  win.B737AutobrakeUnified=Object.freeze({
