@@ -23,3 +23,4 @@ const diagnostic=model.controller(reg);const before=diagnostic.evaluate();diagno
 
 // Photo aperture alignment stays independent of annunciator system logic.
 require('./main-panel-socket-calibration-v1.test.cjs');
+require('./conventional-lamp-registration-v2.test.cjs');
