@@ -1,0 +1,30 @@
+name: Independent APU Protection Test Lab QA
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'panel-mosaic-lab/apu-test-lab/**'
+      - 'engine/integration/isn-apu-start-chain-v1.js'
+      - 'panel-mosaic-lab/cockpit/isn-cockpit.js'
+      - 'panel-mosaic-lab/cockpit/index.html'
+      - 'panel-mosaic-lab/cockpit/overhead-test-labs-v1.js'
+      - 'tests/apu-protection-lab-v1.test.cjs'
+      - '.github/workflows/apu-protection-lab-v1.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  apu-lab-qa:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compile-check independent fault core and shared APU chain
+        run: |
+          node --check panel-mosaic-lab/apu-test-lab/model.js
+          node --check engine/integration/isn-apu-start-chain-v1.js
+          node --check panel-mosaic-lab/cockpit/isn-cockpit.js
+          node --check panel-mosaic-lab/cockpit/overhead-test-labs-v1.js
+      - name: Run independent protective scenario regressions
+        run: node --test tests/apu-protection-lab-v1.test.cjs
+      - name: Ensure approved overhead atlas remains untouched
+        run: python3 panel-mosaic-lab/verify-final-overhead.py
