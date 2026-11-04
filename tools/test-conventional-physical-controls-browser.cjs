@@ -67,6 +67,50 @@ const {chromium}=require('playwright');
   });
   assert.equal(await page.locator('[data-guard-id="antiskid"]').getAttribute('data-value'),'OFF');
   await page.evaluate(()=>window.B737GuardOwner18.set('antiskid','ON',true));
+  // User-facing single-click behavior: a CLOSED guard must not swallow the
+  // first click. It must open and toggle actual hardware ON -> OFF.
+  const antiSwitch=page.locator('#region-main .owner18-guard-control[data-guard-id="antiskid"]');
+  await page.waitForFunction(()=>Boolean(window.B737CockpitLights?.setInputs),null,{timeout:25000});
+  await antiSwitch.scrollIntoViewIfNeeded();
+  await antiSwitch.click({force:true});
+  let antiState=await page.evaluate(()=>{
+    const g=document.querySelector('#region-main .owner18-guard-control[data-guard-id="antiskid"]');
+    return {state:g.dataset.value,cover:g.dataset.cover,
+      photo:g.querySelector('.owner18-switch-photo')?.src,
+      sensor:window.B737CockpitLights.getState().inputs.antiskidOn};
+  });
+  assert.equal(antiState.state,'OFF','First Conventional click turns ANTISKID OFF');
+  assert.equal(antiState.cover,'open','Guard opens and exposes OFF position');
+  assert.ok(antiState.photo.endsWith('Black_Guarded_Open_UP.png'),'OFF uses its approved hardware photo');
+  assert.equal(antiState.sensor,false,'OFF drives actual INOP sensor');
+  await page.waitForTimeout(450);
+  await antiSwitch.click({force:true});
+  antiState=await page.evaluate(()=>{
+    const g=document.querySelector('#region-main .owner18-guard-control[data-guard-id="antiskid"]');
+    return {state:g.dataset.value,cover:g.dataset.cover,
+      photo:g.querySelector('.owner18-switch-photo')?.src,
+      sensor:window.B737CockpitLights.getState().inputs.antiskidOn};
+  });
+  assert.equal(antiState.state,'ON','Second Conventional click turns ANTISKID ON');
+  assert.ok(antiState.photo.endsWith('Black_Guarded_Open_DOWN.png'),'ON uses its approved hardware photo');
+  assert.equal(antiState.sensor,true,'ON reconnects actual INOP sensor');
+  await antiSwitch.focus();
+  await page.keyboard.press('ArrowDown');
+  assert.equal(await antiSwitch.getAttribute('data-value'),'OFF','ArrowDown selects OFF');
+  await page.keyboard.press('ArrowUp');
+  assert.equal(await antiSwitch.getAttribute('data-value'),'ON','ArrowUp selects ON');
+  await antiSwitch.hover({force:true});
+  await page.mouse.wheel(0,120);
+  assert.equal(await antiSwitch.getAttribute('data-value'),'OFF','Scroll down selects OFF');
+  await page.mouse.wheel(0,-120);
+  assert.equal(await antiSwitch.getAttribute('data-value'),'ON','Scroll up selects ON');
+  await antiSwitch.click({button:'right',force:true});
+  assert.equal(await antiSwitch.getAttribute('data-cover'),'closed',
+    'Right-click closes the existing guarded hardware');
+  assert.equal(await antiSwitch.getAttribute('data-value'),'ON',
+    'Close returns the original protected ON detent');
+  console.log('CONVENTIONAL_ANTISKID_ON_OFF_INTERACTION_PASS',JSON.stringify(antiState));
+
   // Verify every detent's TRUE pointer direction. The knob sprite's tip
   // points straight up before rotation; rotations must match panel legends.
   const direction=await page.evaluate(()=>{
@@ -152,6 +196,16 @@ const {chromium}=require('playwright');
   assert.ok(Math.abs(eis.left-before.originalX)<.03,'EIS original guard X retained');
   assert.ok(Math.abs(eis.top-before.originalY)<.03,'EIS original guard Y retained');
   assert.equal(eis.knobDisplay,'none','Conventional knob must not show in EIS');
+  // The approved EIS guard must retain its original click policy: the first
+  // click only opens its cover, unlike the Conventional single-click toggle.
+  await page.evaluate(()=>window.B737GuardOwner18.set('antiskid','ON',true));
+  await page.locator('#region-main .owner18-guard-control[data-guard-id="antiskid"]').click({force:true});
+  assert.equal(await page.locator('[data-guard-id="antiskid"]').getAttribute('data-value'),
+    'ON','EIS first click opens cover without cycling the switch');
+  assert.equal(await page.locator('[data-guard-id="antiskid"]').getAttribute('data-cover'),
+    'open','EIS guard opens normally');
+  await page.evaluate(()=>window.B737GuardOwner18.set('antiskid','ON',true));
+
   console.log('EIS_ORIGINAL_ANTISKID_PRESERVED_PASS',JSON.stringify(eis));
   if(issues.length)console.log('OTHER_BROWSER_ERRORS',issues.slice(0,8));
  }finally{await page.close();await browser.close();}
