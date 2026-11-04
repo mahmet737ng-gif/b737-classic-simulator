@@ -30,7 +30,7 @@
   ['aftTempControlFailed','AFT CAB temperature control failure · recall only','B737-400']
  ]);
  let section=null,inputs=new Map(),summary=null,latest=null,last='',lastFrame=null,actionNotice=null;
- let testHold=null,lastNativeInput=null;
+ let testHold=null,lastNativeInput=null,deadlineFrame=null;
  const owner=()=>root.B737ISNCockpitV1;
  const frame=()=>document.getElementById('overheadFrame');
  function paintPneumaticImmediately(derived){
@@ -43,6 +43,30 @@
     ?.setAuthoritativePneumatics?.({lamps:derived.lamps});
   }catch(error){console.warn('OVHT direct visual projection fallback',error)}
  }
+ // Every foreground animation frame is another opportunity to qualify the
+ // SAME deadline. This avoids late setTimeout wakeups in the dense Unified
+ // cockpit while preserving the original single ECU ownership and time gate.
+ function stopDeadlineFrame(){
+  if(deadlineFrame!==null&&typeof root.cancelAnimationFrame==='function')
+   root.cancelAnimationFrame(deadlineFrame);
+  deadlineFrame=null;
+ }
+ function pollDeadlineFrame(){
+  deadlineFrame=null;
+  const s=testHold?.snapshot();
+  if(!s?.held||s.qualified)return;
+  if(s.remainingMs<=0){
+   try{testHold.check()}
+   catch(error){console.warn('OVHT visual deadline check rejected by ECU',error);return}
+  }
+  const after=testHold?.snapshot();
+  if(after?.held&&!after.qualified&&typeof root.requestAnimationFrame==='function')
+   deadlineFrame=root.requestAnimationFrame(pollDeadlineFrame);
+ }
+ function startDeadlineFrame(){
+  if(deadlineFrame===null&&typeof root.requestAnimationFrame==='function')
+   deadlineFrame=root.requestAnimationFrame(pollDeadlineFrame);
+ }
  function ovhtQualifier(){
   if(testHold)return testHold;
   const core=root.B737AirconOVHTQualificationV1;
@@ -50,6 +74,7 @@
   testHold=core.create({
    clock:()=>performance.now(),
    onQualified:()=>{
+    stopDeadlineFrame();
     // Only AFTER five uninterrupted seconds should the pneumatic owner
     // receive a qualified detector-test signal; real leak sensors are
     // independent and continue to respond immediately.
@@ -63,6 +88,7 @@
     refresh(true);
    },
    onReleased:()=>{
+    stopDeadlineFrame();
     const out=command({type:'SENSOR',key:'wingBodyTestHeld',value:false});
     paintPneumaticImmediately(out);
     lastNativeInput={id:'aircon-ovht-test',held:false,qualified:false,
@@ -193,6 +219,7 @@
       ?epoch-performance.timeOrigin:now;
      const validStart=physicalStart<=now&&now-physicalStart<=60000?physicalStart:now;
      const physicalHold=hold.press(validStart);
+     if(!physicalHold.qualified)startDeadlineFrame();
      lastNativeInput={id:d.id,held:true,qualified:physicalHold.qualified,
       durationMs:physicalHold.elapsedMs,messageLatencyMs:Math.max(0,now-validStart)};
      if(actionNotice&&!physicalHold.qualified)
@@ -201,6 +228,7 @@
     }else{
      if(!before.held)return;
      const durationMs=before.elapsedMs,passed=before.qualified;
+     stopDeadlineFrame();
      hold.release();
      lastNativeInput={id:d.id,held:false,qualified:false,
       durationMs,l:latest?.derived?.lamps?.wingBodyOverheatL??false,
@@ -218,7 +246,9 @@
   }catch(err){
    // Do not leave the parent stuck in the "held" state on a rejected
    // source command (e.g. iframe ready before the deferred ECU dependency).
-   if(d.id==='aircon-ovht-test'&&d.pressed===false)testHold?.release();
+   if(d.id==='aircon-ovht-test'&&d.pressed===false){
+    stopDeadlineFrame();testHold?.release();
+   }
    if(actionNotice)actionNotice.textContent='AIRCON FCOM ERROR · '+err.message;
    console.error('AIRCON FCOM native recessed input',err);
   }
@@ -227,6 +257,7 @@
   'b737:aircraft-profile-change','b737:cockpit-mounted'])
   root.addEventListener(name,()=>refresh());
  const releaseTest=()=>{
+  stopDeadlineFrame();
   try{testHold?.release();}catch(error){console.warn('OVHT fail-safe release',error)}
  };
  root.addEventListener('blur',releaseTest);
