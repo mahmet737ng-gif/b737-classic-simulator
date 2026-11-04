@@ -1,0 +1,55 @@
+name: MCP photo texture retina enhancement
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - tools/build-mcp-knob-retina.py
+      - .github/workflows/mcp-knob-retina.yml
+permissions:
+  contents: write
+concurrency:
+  group: mcp-knob-retina-main
+  cancel-in-progress: false
+jobs:
+  enhance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - run: python3 -m pip install Pillow
+      - name: Generate optical-only high-density MCP image derivatives
+        run: python3 tools/build-mcp-knob-retina.py
+      - name: Check output dimensions and protected source integrity
+        run: |
+          python3 - <<'PY'
+          from PIL import Image
+          from pathlib import Path
+          import json
+          root=Path('panel-mosaic-lab/cockpit/assets/mcp-switches/retina')
+          meta=json.loads((root/'manifest.json').read_text())
+          assert meta['lockedPanelUntouched']
+          for filename in meta['images']:
+              im=Image.open(root/filename)
+              assert im.size == (480,480), (filename,im.size)
+          print('MCP_RETINA_ASSET_PASS')
+          PY
+          python3 panel-mosaic-lab/verify-final-overhead.py
+      - name: Commit generated textures only
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add panel-mosaic-lab/cockpit/assets/mcp-switches/retina/
+          if git diff --cached --quiet; then echo "Retina artifacts unchanged"; exit 0; fi
+          git commit -m "assets(mcp): improve mounted knob raster density"
+          for i in 1 2 3 4 5; do
+            git fetch origin main
+            git rebase origin/main
+            if git push origin HEAD:main; then exit 0; fi
+            sleep 2
+          done
+          exit 1
