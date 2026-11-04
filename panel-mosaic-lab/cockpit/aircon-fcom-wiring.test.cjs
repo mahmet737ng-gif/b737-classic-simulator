@@ -30,7 +30,8 @@ assert.ok(p.includes("onQualified:()=>"),'Only full five-second hold may drive W
 assert.ok(p.includes("onReleased:()=>"),'Release clears qualified test');
 assert.ok(unified.includes('aircon-ovht-hold-v1.js?v=AIRCON-OVHT-WALLCLOCK-0005'));
 assert.ok(e.includes("ring.className='b737-recess-unit'"),'Photo-recessed native cap preserved');
-assert.ok(e.includes("send(item.id,next,item.quality)"),'Original hardware publishes both edges');
+assert.ok(e.includes("send(item.id,next,item.quality,event?.timeStamp)"),
+ 'Original hardware publishes both edges with physical-event timing');
 assert.ok(e.includes("kind:'recessed-button'"),'Real recessed button event is authoritative');
 assert.ok(read('oh21-owner-photo-registration-v1.js').includes("data-recessed-id"),'Approved photo repositions original button');
 assert.ok(p.includes("d.source!=='recessed-hardware-v2'"),'Reject duplicate synthetic input');
