@@ -96,14 +96,16 @@ test("No physical data preserves AFDS indication",()=>{
  assert.equal(M.reconcileFd(original,{FD_LEFT:"bad"}),original);
 });
 
-test("Seat-specific MA registration uses independently measured black photo sockets",()=>{
+test("MA centers register to user-marked red rings in screenshot",()=>{
  const d=M.position;
- assert.deepEqual(d.left,{x:200,y:245,w:42,h:42});
- assert.deepEqual(d.right,{x:1920,y:257,w:42,h:42});
- // F/D native hardware socket centers from MCP-SOCKET-0002.
- assert.ok(Math.abs(d.left.x-(177+47/2))<=2);
- assert.ok(Math.abs(d.right.x-(1886+45/2))<=13);
- assert.ok(d.left.y!==d.right.y);
+ assert.deepEqual(d.left,{x:202,y:208,w:42,h:42});
+ assert.deepEqual(d.right,{x:1915,y:224,w:42,h:42});
+ // Screen transform measured from original 2172x433 MCP photograph.
+ const screen=p=>({x:234+0.748*p.x,y:400+0.748*p.y});
+ const capt=screen(d.left),fo=screen(d.right);
+ assert.ok(Math.abs(capt.x-385)<1.5&&Math.abs(capt.y-557)<1.5);
+ assert.ok(Math.abs(fo.x-1667)<1.5&&Math.abs(fo.y-568)<1.5);
+ assert.equal(d.left.w,42);assert.equal(d.right.w,42);
 });
 
 test("Both flight directors OFF do not illuminate with unknown power",()=>{
