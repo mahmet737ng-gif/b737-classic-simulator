@@ -102,25 +102,63 @@
    el.addEventListener('pointerdown',e=>e.stopPropagation());
    return el;
  }
+ // ALT HORN CUTOUT is fixed hardware on OH19, not part of the
+ // interchangeable CPCS / DCPCS OH22 background. Both modes share the same
+ // photographic bezel position and the existing cabin-horn-cutout command.
  function syncHornButton(){
-   if(hornOverlay){hornOverlay.remove();hornOverlay=null;}
-   if(system!=='CPCS')return;
-   const geom=model.config(system).hornCutout;
+   const geom=model.config('CPCS').hornCutout;
    const host=atlas.querySelector('.atlas-piece[data-key="'+geom.piece+'"]');
    if(!host)return;
-   const button=root.createElement('button');button.type='button';
-   button.className='oh22-physical-horn-cutout';button.dataset.control='horn-cutout';
-   button.setAttribute('aria-label','ALT HORN CUTOUT — silence cabin-altitude warning horn');
-   button.title='ALT HORN CUTOUT · physical OH19 button / CPCS';
-   button.style.left=geom.xy[0]*100+'%';button.style.top=geom.xy[1]*100+'%';
-   button.style.width=geom.diameter*100+'%';button.style.aspectRatio='1 / 1';
-   // This is a transparent click surface over the photographed OH19 button;
-   // the original brass rim and black button are never repainted.
-   button.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();
-     notify('pressurization-horn-cutout',{sourcePiece:geom.piece});
-   });
-   button.addEventListener('pointerdown',event=>event.stopPropagation());
-   host.append(button);hornOverlay=button;
+   if(!hornOverlay){
+     const ring=root.createElement('div');
+     ring.className='oh22-physical-horn-cutout b737-recess-unit';
+     ring.dataset.control='horn-cutout';
+     ring.dataset.recessedId='alt-horn-cutout';
+     ring.dataset.qa='photo';
+     ring.dataset.component='RECESS-ALT-HORN-0001';
+     ring.title='ALT HORN CUTOUT · cabin altitude warning · OH19';
+     const cap=root.createElement('button');
+     cap.type='button';cap.className='b737-recess-unit__cap';
+     cap.dataset.pressed='false';
+     cap.setAttribute('aria-pressed','false');
+     cap.setAttribute('aria-label','ALT HORN CUTOUT — silence cabin-altitude warning horn');
+     ring.append(cap);
+     const setPressed=state=>{
+       cap.dataset.pressed=String(!!state);
+       cap.setAttribute('aria-pressed',String(!!state));
+     };
+     cap.addEventListener('pointerdown',event=>{
+       if(event.pointerType==='mouse'&&event.button!==0)return;
+       event.stopPropagation();setPressed(true);
+       try{cap.setPointerCapture(event.pointerId);}catch(_){}
+     });
+     for(const eventName of ['pointerup','pointercancel','lostpointercapture'])
+       cap.addEventListener(eventName,event=>{event.stopPropagation();setPressed(false);});
+     cap.addEventListener('pointerleave',event=>{
+       if(!cap.hasPointerCapture?.(event.pointerId))setPressed(false);
+     });
+     cap.addEventListener('keydown',event=>{
+       if((event.key===' '||event.key==='Enter')&&!event.repeat)setPressed(true);
+     });
+     cap.addEventListener('keyup',event=>{
+       if(event.key===' '||event.key==='Enter')setPressed(false);
+     });
+     cap.addEventListener('blur',()=>setPressed(false));
+     window.addEventListener('blur',()=>setPressed(false));
+     root.addEventListener('visibilitychange',()=>{
+       if(root.hidden)setPressed(false);
+     });
+     cap.addEventListener('click',event=>{
+       event.preventDefault();event.stopPropagation();setPressed(false);
+       notify('pressurization-horn-cutout',{sourcePiece:geom.piece});
+     });
+     hornOverlay=ring;
+   }
+   hornOverlay.style.left=geom.xy[0]*100+'%';
+   hornOverlay.style.top=geom.xy[1]*100+'%';
+   hornOverlay.style.width=geom.diameter*100+'%';
+   hornOverlay.style.aspectRatio='1 / 1';
+   if(hornOverlay.parentElement!==host)host.append(hornOverlay);
  }
  function installDetents(cfg){
    detentHits=[];
