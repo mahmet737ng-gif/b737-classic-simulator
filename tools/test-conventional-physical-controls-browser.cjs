@@ -128,6 +128,31 @@ const {chromium}=require('playwright');
   });
   assert.deepEqual(direction,{RTO:-135,OFF:-90,'1':-45,'2':0,'3':45,MAX:90});
   console.log('AUTOBRAKE_POINTER_AXLE_PASS',JSON.stringify(direction));
+  // Actual pedestal events, not artificial changes to the lamp model, must
+  // feed the shared engine regardless of active EIS/Conventional background.
+  const mechanical=await page.evaluate(()=>{
+    const get=()=>window.B737AutobrakeUnified.getState().inputs;
+    document.dispatchEvent(new CustomEvent('b737:throttle-position',{
+      detail:{engine:1,percent:25,stage:'quarter',source:'PEDESTAL'}
+    }));
+    const oneAdvanced=get().thrustIdle;
+    document.dispatchEvent(new CustomEvent('b737:throttle-position',{
+      detail:{engine:1,percent:0,stage:'idle',source:'PEDESTAL'}
+    }));
+    const bothIdle=get().thrustIdle;
+    document.dispatchEvent(new CustomEvent('b737:speedbrake-position',{
+      detail:{detent:'UP',source:'PEDESTAL'}
+    }));
+    const speedbrakeUp=get().speedBrakeDown;
+    document.dispatchEvent(new CustomEvent('b737:speedbrake-position',{
+      detail:{detent:'DOWN',source:'PEDESTAL'}
+    }));
+    const speedbrakeStowed=get().speedBrakeDown;
+    return {oneAdvanced,bothIdle,speedbrakeUp,speedbrakeStowed};
+  });
+  assert.deepEqual(mechanical,{oneAdvanced:false,bothIdle:true,
+    speedbrakeUp:false,speedbrakeStowed:true});
+  console.log('PEDESTAL_AUTOBRAKE_SENSOR_LINK_PASS',JSON.stringify(mechanical));
   await page.waitForFunction(()=>Boolean(window.B737CockpitLights?.setInputs),null,{timeout:25000});
   await page.evaluate(()=>{
     const frame=document.getElementById('overheadFrame');
