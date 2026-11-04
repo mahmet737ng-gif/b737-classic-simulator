@@ -10,7 +10,7 @@
  const PROFILE_KEY='b737classic.aircraft-profile.v1';
  const knobAsset=new URL('../assets/locked/2026-10-23/Switches/Rotary/rotary-standard-v1.webp',document.baseURI).href;
  // One unmarked, fluted cylindrical knob shared by the two DCPCS altitude setters only.
- const dcpcsAltitudeKnobAsset=new URL('./dcpcs-altitude-knob-front-v1.webp',document.baseURI).href;
+ const dcpcsAltitudeKnobAsset=new URL('./dcpcs-altitude-knob-front-v1.webp',document.currentScript?.src||new URL('../cockpit/pressurization-oh22.js',document.baseURI).href).href;
  const toggleAsset=new URL('../assets/locked/2026-10-23/Switches/Toggle/b737-toggle-center.webp',document.baseURI).href;
  const smallSilverAsset=new URL('../../shared-assets/toggle-switch-small/Small_Silver_5Positions.webp',document.baseURI).href;
  const smallSilverFrame=(c,value)=>c.id==='flight-ground'?(value==='FLT'?0:2):(value==='CLOSE'?0:value==='OPEN'?2:1);

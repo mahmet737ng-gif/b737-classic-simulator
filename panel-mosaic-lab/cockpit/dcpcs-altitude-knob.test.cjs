@@ -13,4 +13,10 @@ assert.ok(src.includes('dcpcsAltitudeKnob?dcpcsAltitudeKnobAsset:(c.kind')); // 
 assert.deepEqual(model.config('DCPCS').controls.filter(x=>x.kind==='altitude').map(x=>x.id),['flight-alt','landing-alt']);
 assert.deepEqual(model.config('DCPCS').controls.find(x=>x.id==='press-mode').states,['AUTO','ALTN','MAN']);
 assert.equal(model.config('CPCS').controls.find(x=>x.id==='press-mode').states.length,4);
+const base='https://example.org/b737-classic-simulator/panel-mosaic-lab/all-overhead/';
+const scriptUrl=new URL('../cockpit/pressurization-oh22.js',base).href;
+assert.equal(new URL('./dcpcs-altitude-knob-front-v1.webp',scriptUrl).pathname,'/b737-classic-simulator/panel-mosaic-lab/cockpit/dcpcs-altitude-knob-front-v1.webp');
+assert.ok(src.includes("document.currentScript?.src||new URL('../cockpit/pressurization-oh22.js',document.baseURI).href"),'Asset must be script-relative, never overhead-base relative');
+const stage=fs.readFileSync(path.join(__dirname,'overhead-stage.html'),'utf8');
+assert.ok(stage.includes('PRESS-OH22-DCPCS-FLUTED-URL-FIX-0002'),'Updated script must bypass cached wrong asset path');
 console.log('PASS: one shared unmarked DCPCS altitude knob asset; both setters targeted, mode selector unchanged');
