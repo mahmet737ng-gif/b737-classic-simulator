@@ -27,12 +27,19 @@
    onQualified();
    qualified=true;
   }
-  function press(){
+  function press(physicalStartedAtMs){
    if(held)return snapshot();
-   held=true;qualified=false;at=clock();
-   const seq=++sequence;
-   if(delayMs===0)qualify(seq);
-   else timer=schedule(()=>qualify(seq),delayMs);
+   const now=clock();
+   // The original physical switch is in the Overhead iframe. Its PRESS
+   // message may reach the Unified ECU only after a busy main-thread task.
+   // Honor the physical timestamp (transformed to the caller's monotonic
+   // clock) instead of starting a fresh five seconds after IPC latency.
+   const valid=Number.isFinite(physicalStartedAtMs)&&physicalStartedAtMs<=now&&
+    now-physicalStartedAtMs<=60000;
+   held=true;qualified=false;at=valid?physicalStartedAtMs:now;
+   const seq=++sequence,remaining=Math.max(0,delayMs-(now-at));
+   if(remaining===0)qualify(seq);
+   else timer=schedule(()=>qualify(seq),remaining);
    return snapshot();
   }
   function release(){
