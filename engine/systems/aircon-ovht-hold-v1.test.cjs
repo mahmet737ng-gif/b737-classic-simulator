@@ -54,5 +54,21 @@ assert.deepEqual(events.slice(-1),['ON']);
 h.release();
 assert.deepEqual(events.slice(-1),['OFF']);
 assert.equal(timers.size,0);
+// Simulate an overloaded foreground event loop: the scheduled setTimeout
+// is due at t=43000 but has not executed. An animation-frame deadline check
+// at t=43000 must activate immediately and CANCEL that overdue timeout.
+advance(38000);
+h.press();
+ms=42999;
+h.check();
+assert.equal(h.snapshot().qualified,false);
+ms=43000;
+h.check();
+assert.equal(h.snapshot().qualified,true,'First visible frame at physical+5s qualifies');
+assert.equal(timers.size,0,'The delayed timer was cancelled after frame qualification');
+h.release();
+assert.deepEqual(events.slice(-2),['ON','OFF']);
+advance(44000);
+assert.equal(timers.size,0);
 assert.throws(()=>H.create({delayMs:-1}),/Invalid/);
 console.log('PASS: full 5000ms quiet delay, then one ON, release OFF, short/repeated presses do nothing, timer cancellation and rejected ECU safety.');
