@@ -4,6 +4,29 @@
  let registry,instanceFaces,readabilityFaces,typographyFaces,engine,selected,ui,frame,assembly,ready=false,localVisualTest=false,widgets=new Map();
  const priorGalleryOverrides=new Map();
  const pressed=new Set(),pointerLamps=new Map(),byLightId=new Map(),realFrames=new Map();
+ // One photographic housing per Main Panel socket. The underlying locked
+ // picture already contains its physical bezel. Reuse ONLY luminous glyphs
+ // from the approved master SVG; never paint another complete framed lamp.
+ const emissionCache=new Map();
+ function emissionOnly(source){
+  if(!emissionCache.has(source))emissionCache.set(source,
+   fetch(source,{cache:'force-cache'}).then(response=>{
+    if(!response.ok)throw Error('Lamp face HTTP '+response.status);
+    return response.text();
+   }).then(sourceText=>{
+    const documentSVG=new DOMParser().parseFromString(sourceText,'image/svg+xml');
+    if(documentSVG.querySelector('parsererror'))throw Error('Malformed lamp SVG');
+    const svg=documentSVG.documentElement;
+    for(const child of [...svg.children]){
+     if(child.localName==='defs'||child.localName==='text'||
+        (child.localName==='g'&&child.querySelector('text')))continue;
+     child.remove();
+    }
+    if(!svg.querySelector('text'))throw Error('Lamp master has no legend');
+    return URL.createObjectURL(new Blob([new XMLSerializer().serializeToString(svg)],{type:'image/svg+xml'}));
+   }));
+  return emissionCache.get(source);
+ }
  // Momentary per-lamp test affects the face only; no sensor or failure override.
  function paintLamp(c){
   const node=widgets.get(c.id);if(!node)return;
@@ -19,7 +42,17 @@
    registry.assets[c.asset][face]);
   const src=window.B737LampAppearance.resolve('MP',c.asset,state)||
    url(oldFace.url)+'?v='+encodeURIComponent(registry.version);
-  if(img.getAttribute('src')!==src)img.src=src;
+  // Never allow the legacy complete-lamp SVG to cover the genuine bezel.
+  // This is also a transparent fallback if the socket fitter is delayed.
+  if(img.dataset.emissionSource!==src){
+   img.dataset.emissionSource=src;
+   emissionOnly(src).then(face=>{
+    if(img.dataset.emissionSource===src)img.src=face;
+   }).catch(error=>{
+    if(img.dataset.emissionSource===src)node.dataset.missing='true';
+    console.error('MP emission-only face:',c.id,error);
+   });
+  }
  }
  function clearLampPress(id){
   if(!pressed.delete(id))return;
