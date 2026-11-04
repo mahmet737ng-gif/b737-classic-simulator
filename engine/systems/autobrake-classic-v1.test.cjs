@@ -66,6 +66,14 @@ assert.equal(x.getState().disarmLight,true,'OFF position does not mask stuck sol
 x.update({solenoidPressurePsi:0});assert.equal(x.getState().disarmLight,false);
 x.select('RTO');x.advance(1500);assert.equal(x.getState().phase,'WAITING');
 x.update({hydraulicBAvailable:false});assert.equal(x.getState().phase,'FAILED');
+const invalidHighSpeed=fresh();
+invalidHighSpeed.update({wheelSpeedKnots:65});invalidHighSpeed.select('RTO');
+invalidHighSpeed.advance(1500);
+assert.equal(invalidHighSpeed.getState().phase,'FAILED','Cannot arm RTO above 60kt at selection');
+const invalidThrust=fresh();
+invalidThrust.update({thrustIdle:false});invalidThrust.select('RTO');
+invalidThrust.advance(1500);
+assert.equal(invalidThrust.getState().phase,'FAILED','Cannot arm RTO without idle thrust');
 assert.throws(()=>x.select('INVALID'),/detent/);
 assert.throws(()=>x.update({wheelSpeedKnots:-1}),/sensor/);
 console.log('PASS: B737CL shared autobrake: 1500 ms RTO, 60/90 kt, landing, ANTISKID, hydraulic faults, manual brake, speedbrake, 3s touchdown grace, 2min RTO landing exception.');
