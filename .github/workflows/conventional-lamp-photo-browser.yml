@@ -1,0 +1,50 @@
+name: Conventional Main Panel — real photo-to-glass browser QA
+on:
+  push:
+    paths:
+      - 'panel-mosaic-lab/cockpit/conventional-lamp-registration-v1.js'
+      - 'panel-mosaic-lab/cockpit/conventional-lamp-registration-v2.test.cjs'
+      - 'panel-mosaic-lab/cockpit/index.html'
+      - 'panel-mosaic-lab/lamp-socket-fit-v3/live-fit.js'
+      - 'tools/test-conventional-photo-registration.cjs'
+      - '.github/workflows/conventional-lamp-photo-browser.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  photo-to-glass:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate both static registration and source image pixel evidence
+        run: |
+          node --check panel-mosaic-lab/cockpit/conventional-lamp-registration-v1.js
+          node --check tools/test-conventional-photo-registration.cjs
+          node panel-mosaic-lab/cockpit/conventional-lamp-registration-v2.test.cjs
+          node panel-mosaic-lab/cockpit/main-panel-socket-calibration-v1.test.cjs
+      - name: Install Chromium for real photo-boundary registration
+        run: |
+          npm install --no-save --ignore-scripts playwright@1.58.2
+          npx playwright install --with-deps chromium
+      - name: Render Unified and compare six landing-gear glass targets to original photo
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m http.server 8788 --bind 127.0.0.1 >/tmp/conv-lamp-http.log 2>&1 &
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:8788/panel-mosaic-lab/cockpit/index.html >/dev/null; then break; fi
+            sleep 1
+          done
+          node tools/test-conventional-photo-registration.cjs
+      - name: Archive actual Chromium photograph after correction
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: conventional-photo-lamp-browser-evidence
+          path: /tmp/b737-conventional-gear-pixel-qa.png
+          if-no-files-found: ignore
+          retention-days: 14
