@@ -25,7 +25,11 @@ html[data-engine-indication="CONVENTIONAL"] #region-main .region-native > .b737-
 }
 #region-main .b737-conv-autobrake-rotary > img{
  position:absolute;
- top:0;left:0;width:100%;height:100%;
+ /* The approved sprite's rotational axle is at 44% of its height.
+    Its full canvas had been centered at 50%, moving the selector's tip
+    off the real 50px photographed hole with every detent rotation.
+    Translate the sprite by 6% to place the axle on the hole center. */
+ top:6%;left:0;width:100%;height:100%;
  display:block;object-fit:fill;
  max-width:none;max-height:none;
  user-select:none;pointer-events:none;
