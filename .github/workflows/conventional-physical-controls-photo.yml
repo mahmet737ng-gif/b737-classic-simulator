@@ -6,11 +6,14 @@ on:
       - '.github/workflows/conventional-physical-controls-photo.yml'
       - 'panel-mosaic-lab/cockpit/conventional-physical-controls-v1.js'
       - 'panel-mosaic-lab/cockpit/conventional-physical-controls-v1.css'
+      - 'panel-mosaic-lab/cockpit/conventional-physical-controls-v1.test.cjs'
+      - 'tools/test-conventional-physical-controls-browser.cjs'
+      - 'panel-mosaic-lab/cockpit/index.html'
 permissions:
   contents: read
 jobs:
   inspect-source:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - name: Read original Conventional photograph and export physical control apertures
@@ -34,4 +37,34 @@ jobs:
           name: conventional-control-photos
           path: /tmp/conventional-controls-photo/*.png
           if-no-files-found: error
+          retention-days: 14
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check source-photo geometry, EIS isolation and six detents
+        run: |
+          node --check panel-mosaic-lab/cockpit/conventional-physical-controls-v1.js
+          node --check tools/test-conventional-physical-controls-browser.cjs
+          node panel-mosaic-lab/cockpit/conventional-physical-controls-v1.test.cjs
+      - name: Install Chromium for native-photo visual verification
+        run: |
+          npm install --no-save --ignore-scripts playwright@1.58.2
+          npx playwright install --with-deps chromium
+      - name: Render actual Conventional/EIS and exercise ON/OFF plus AUTO BRAKE detents
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m http.server 8788 --bind 127.0.0.1 >/tmp/conventional-physical-http.log 2>&1 &
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:8788/panel-mosaic-lab/cockpit/index.html >/dev/null; then break; fi
+            sleep 1
+          done
+          node tools/test-conventional-physical-controls-browser.cjs
+      - name: Archive Chromium screenshot with actual switch and rotary
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: conventional-physical-controls-live-browser
+          path: /tmp/b737-conv-skid-autobrake-browser.png
+          if-no-files-found: ignore
           retention-days: 14
