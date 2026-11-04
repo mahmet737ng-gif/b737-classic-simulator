@@ -9,6 +9,8 @@
  model.validate();
  const PROFILE_KEY='b737classic.aircraft-profile.v1';
  const knobAsset=new URL('../assets/locked/2026-10-23/Switches/Rotary/rotary-standard-v1.webp',document.baseURI).href;
+ // One unmarked, fluted cylindrical knob shared by the two DCPCS altitude setters only.
+ const dcpcsAltitudeKnobAsset=new URL('./dcpcs-altitude-knob-front-v1.webp',document.baseURI).href;
  const toggleAsset=new URL('../assets/locked/2026-10-23/Switches/Toggle/b737-toggle-center.webp',document.baseURI).href;
  const smallSilverAsset=new URL('../../shared-assets/toggle-switch-small/Small_Silver_5Positions.webp',document.baseURI).href;
  const smallSilverFrame=(c,value)=>c.id==='flight-ground'?(value==='FLT'?0:2):(value==='CLOSE'?0:value==='OPEN'?2:1);
@@ -53,7 +55,9 @@
        face.setAttribute('aria-hidden','true');face.style.backgroundImage='url("'+smallSilverAsset+'")';
        el.append(face);
      }else{
-       const img=root.createElement('img');img.src=c.kind==='spring'?toggleAsset:knobAsset;img.alt='';img.draggable=false;
+       const dcpcsAltitudeKnob=system==='DCPCS'&&c.kind==='altitude'&&(c.id==='flight-alt'||c.id==='landing-alt');
+       if(dcpcsAltitudeKnob)el.classList.add('oh22-dcpcs-altitude-knob');
+       const img=root.createElement('img');img.src=dcpcsAltitudeKnob?dcpcsAltitudeKnobAsset:(c.kind==='spring'?toggleAsset:knobAsset);img.alt='';img.draggable=false;
        el.append(img);
      }
    }
