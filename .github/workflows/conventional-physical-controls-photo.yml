@@ -1,0 +1,37 @@
+name: Conventional physical controls source-photo inspection
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/conventional-physical-controls-photo.yml'
+      - 'panel-mosaic-lab/cockpit/conventional-physical-controls-v1.js'
+      - 'panel-mosaic-lab/cockpit/conventional-physical-controls-v1.css'
+permissions:
+  contents: read
+jobs:
+  inspect-source:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Read original Conventional photograph and export physical control apertures
+        run: |
+          python3 -m pip install --quiet pillow
+          python3 - <<'PY'
+          from PIL import Image
+          import os
+          im=Image.open('panel-mosaic-lab/cockpit/assets/p2-conventional-full-owner-20261030.png').convert('RGB')
+          print('CONV_SOURCE', im.size)
+          os.makedirs('/tmp/conventional-controls-photo',exist_ok=True)
+          im.save('/tmp/conventional-controls-photo/whole-panel.png')
+          im.crop((950,350,1463,1075)).resize((1026,1450)).save('/tmp/conventional-controls-photo/skid-brake-source-2x.png')
+          im.crop((1000,650,1463,1075)).resize((926,850)).save('/tmp/conventional-controls-photo/autobrake-bottom-2x.png')
+          knob=Image.open('panel-mosaic-lab/assets/locked/2026-10-23/Switches/Rotary/rotary-standard-v1.webp')
+          print('KNOB_SOURCE',knob.size)
+          knob.save('/tmp/conventional-controls-photo/rotary-database-preview.png')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: conventional-control-photos
+          path: /tmp/conventional-controls-photo/*.png
+          if-no-files-found: error
+          retention-days: 14
