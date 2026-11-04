@@ -94,7 +94,7 @@
    }
    if(phase==='ACTIVE'){
     const grace=landing()&&landingTouchdownAt!==null&&clock-landingTouchdownAt<LANDING_THRUST_GRACE_MS;
-    if(s.speedBrakeDown)disarm('SPEEDBRAKE_STOWED');
+    if(s.speedBrakeDown&&!former.speedBrakeDown)disarm('SPEEDBRAKE_STOWED');
     else if(!s.thrustIdle&&!grace)disarm('THRUST_ADVANCED');
     else if(s.manualBrakesApplied)disarm('MANUAL_BRAKES');
     // Lufthansa ATA 32-40: above 60 kt >750 psi for 2s; below 60 kt 300ms.
