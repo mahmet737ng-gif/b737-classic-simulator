@@ -20,3 +20,6 @@ console.log('PASS: 30 main lamps / 23 existing LIGHTS faces; 26 source-located c
 
 // Explicit visual diagnostics must work before handshake and with all simulator power off.
 const diagnostic=model.controller(reg);const before=diagnostic.evaluate();diagnostic.setVisualTest(true);assert.ok(Object.values(diagnostic.evaluate().frames).every(f=>f==='ON'));assert.deepEqual(diagnostic.evaluate().inputs,before.inputs);diagnostic.setVisualTest(false);assert.deepEqual(diagnostic.evaluate().frames,before.frames);diagnostic.setOverheadPower(false);diagnostic.update({power:false});diagnostic.setVisualTest(true);assert.ok(Object.values(diagnostic.evaluate().frames).every(f=>f==='ON'));diagnostic.setVisualTest(false);assert.ok(Object.values(diagnostic.evaluate().frames).every(f=>f==='OFF'));diagnostic.setVisualTest(true);diagnostic.reset();assert.equal(diagnostic.evaluate().visualTest,false);assert.ok(Object.values(diagnostic.evaluate().frames).every(f=>f==='OFF'));console.log('PASS: persistent visual diagnostic works without power/handshake; exit restores source-driven state; reset clears diagnostics.');
+
+// Photo aperture alignment stays independent of annunciator system logic.
+require('./main-panel-socket-calibration-v1.test.cjs');
