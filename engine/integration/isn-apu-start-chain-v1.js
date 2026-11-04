@@ -33,7 +33,7 @@
    if(!Object.hasOwn(TIMING_PROFILES,timingProfile))throw Error('Unknown ISN timing profile');
    this.timingProfile=timingProfile;this.timing=TIMING_PROFILES[timingProfile];
    this.start=start;this.time=0;this.jobs=[];this.phase={apu:'OFF',engine1:'OFF',engine2:'OFF'};
-   this.effects=[];this.lastError='';this.controls={};this.guards={};this.started={engine1:false,engine2:false};
+   this.effects=[];this.lastError='';this.apuProtectionReason=null;this.controls={};this.guards={};this.started={engine1:false,engine2:false};
    this.dynamic={engine1:null,engine2:null};this.fuelAvailable={engine1:true,engine2:true}; // Legacy direct Chain tests use explicitly simulated fuel; ISN-12 replaces this with source resolution.
    this.operating={engine1:null,engine2:null};this.throttle={engine1:0,engine2:0};
    this.flight={onGround:true,pressureAltitudeFt:0,iasKt:0};
@@ -155,6 +155,7 @@
    this.syncPower();return this.get();
   }
   startAPU(){
+   if(this.apuProtectionReason){this.lastError='APU protection latched · select OFF to reset before restarting';return;}
    this.lastError='';this.cancel('apu');this.command({type:'APU_SWITCH',position:'START'});
    // Restore the actual cockpit-selected bleed switch after a prior APU OFF.
    // Physical valve still requires a running source; no air is synthesized.
@@ -205,11 +206,12 @@
    this.feedback('apu','genOffBusLight',false);
    this.feedback('apu','inletDoorOpen',false);
    this.phase.apu='PROTECTIVE_SHUTDOWN';
+   this.apuProtectionReason=reason;
    this.lastError='APU PROTECTIVE SHUTDOWN · '+reason;
    this.syncPower();
    return true;
   }
-  stopAPU(){this.cancel('apu');this.command({type:'APU_SWITCH',position:'OFF'});
+  stopAPU(){this.apuProtectionReason=null;this.cancel('apu');this.command({type:'APU_SWITCH',position:'OFF'});
    this.phase.apu='STOPPING';this.schedule('apu',400,()=>{
     this.obs('apu',false);this.feedback('apu','genOffBusLight',false);
     this.feedback('apu','inletDoorOpen',false);this.phase.apu='OFF';});
@@ -457,7 +459,7 @@
      this.start.core.pack.electricalState.faults.APU_FAILED!==true;
    projected['apu-gen-off-bus']=apuGeneratorAvailable&&!apuConnected;
    projected['apu-low-pressure']=['INLET_DOOR','STARTING'].includes(this.phase.apu);
-   return {clockMs:this.time,phase:copy(this.phase),lastError:this.lastError,timingProfile:this.timingProfile,timing:copy(this.timing),
+   return {clockMs:this.time,phase:copy(this.phase),apuProtectionReason:this.apuProtectionReason,lastError:this.lastError,timingProfile:this.timingProfile,timing:copy(this.timing),
      trainingStartDuctPsi:copy(this.startDuctPsi),
      effectiveEngineStartTiming:copy(Object.fromEntries(['engine1','engine2'].map(id=>[id,this.startDuration(id)]))),trainingFaults:copy(this.trainingFaults),
     runningEnvelope:{
