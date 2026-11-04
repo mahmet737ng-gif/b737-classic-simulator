@@ -1,9 +1,19 @@
-/* SBK-0001: independent overlay; no changes to locked quadrant art or controls. */
+/* SBK-0004: speedbrake L-channel, photo sprite and four clickable native detents only. */
+.speedbrake-slot-extension{position:absolute;z-index:6;display:block;pointer-events:none;overflow:visible}
 .speedbrake-photo-lever{position:absolute;z-index:7;display:block;max-width:none;
-object-fit:fill;image-rendering:auto;user-select:none;-webkit-user-drag:none;
-touch-action:none;cursor:ns-resize;outline:none;transform-origin:82% 86%;
-transition:top 175ms cubic-bezier(.25,.75,.25,1),transform 175ms ease-out;}
+ object-fit:fill;image-rendering:auto;user-select:none;-webkit-user-drag:none;
+ touch-action:none;cursor:ns-resize;outline:none;transform-origin:84% 86%;
+ transition:left 160ms ease-out,top 175ms cubic-bezier(.25,.75,.25,1),transform 175ms ease-out}
 .speedbrake-photo-lever.is-dragging{transition:none}
 .speedbrake-photo-lever:focus-visible{filter:drop-shadow(0 0 3px #87e7ff)}
-.reference-mode .speedbrake-photo-lever{display:none!important}
-.pan-mode .speedbrake-photo-lever{pointer-events:none!important}
+.speedbrake-detent-hit{position:absolute!important;z-index:9!important;
+ display:block!important;min-width:0!important;min-height:0!important;
+ padding:0!important;margin:0!important;border:1px solid transparent!important;
+ border-radius:3px!important;background:transparent!important;box-shadow:none!important;
+ cursor:pointer;touch-action:manipulation}
+.speedbrake-detent-hit:hover,.speedbrake-detent-hit:focus-visible{
+ border-color:rgba(255,220,135,.85)!important;background:rgba(255,220,135,.13)!important;
+ outline:none!important}
+.reference-mode .speedbrake-photo-lever,.reference-mode .speedbrake-slot-extension,
+.reference-mode .speedbrake-detent-hit{display:none!important}
+.pan-mode .speedbrake-photo-lever,.pan-mode .speedbrake-detent-hit{pointer-events:none!important}
