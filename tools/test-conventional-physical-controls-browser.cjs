@@ -30,7 +30,7 @@ const {chromium}=require('playwright');
     const knob=document.querySelector('.b737-conv-autobrake-rotary');
     const r=photo.getBoundingClientRect(),s=g.getBoundingClientRect(),k=knob.getBoundingClientRect();
     const calc=([x,y])=>({x:r.left+r.width*x/1463,y:r.top+r.height*y/1075});
-    const anti=calc([1153.5,620]),auto=calc([1148,845]);
+    const anti=calc([1153.5,620]),auto=calc([1147.6,844.8]);
     const css=getComputedStyle(knob);
     return {
       anti:{actual:{x:s.left+s.width/2,y:s.top+s.height/2},want:anti,
