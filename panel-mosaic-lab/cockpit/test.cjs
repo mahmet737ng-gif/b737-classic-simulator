@@ -126,8 +126,10 @@ for(const detent of flapManifest.detents){
  const point=require('./flap-lever-model').nativePoint(background,target);
  assert.ok(point.x>background.x+background.w/2,'FLAP tooth must sit to the right of the throttle core');
 }
-assert.ok(unified.includes('flap-lever-test.js?v=FLAP-BMP-0004'));
+assert.ok(unified.includes('flap-lever-test.js?v=FLAP-BMP-0006-PHOTO-FIT'),'Require photo-registered nine-position FLAP actuator release');
 assert.ok(unified.includes('flap-lever-test.css?v=FLAP-BMP-0004'));
 console.log('PASS: exact owner nine-BMP flap sprite archived and visual-only nine-detent Unified overlay registered.');
+require('./flap-owner-photo-registration.test.cjs');
+require('./speedbrake-lever-unified-v2.test.cjs');
 
 require('./pressurization-oh22.test.cjs');
