@@ -18,11 +18,42 @@ test('P6-4 D3 and DC bus2 affect indication only, not physical valve',()=>{
  assert.equal(r.positions.CONT,1);assert.equal(r.positions.PASS,0);
  assert.equal(M.indication(r,x,'CONT').valid,false);assert.equal(M.indication(r,x,'PASS').valid,false);
 });
-test('AUTO needs real sensor sample; deadband holds',()=>{
- let x=live('AUTO NORM','AUTO NORM'),s=M.create();s=M.step(s,x,60);
- assert.equal(s.positions.CONT,0.5);assert.equal(s.reason.CONT,'SENSOR_UNKNOWN');
- x.CONT.cabinC=22.2;s=M.step(s,x,60);assert.equal(s.positions.CONT,0.5);
- x.CONT.cabinC=15;s=M.step(s,x,60);assert.ok(s.positions.CONT>0.5);
+test('AUTO simulates cabin sensor in normal mode; external samples override',()=>{
+ let x=live('AUTO NORM','AUTO NORM'),s=M.create();
+ s=M.step(s,x,60);
+ assert.ok(s.positions.CONT>0.5,'20°C cabin demands HOT for 22°C');
+ assert.ok(s.temperatures.CONT>20,'cabin temperature increases gradually');
+ x.CONT.cabinC=22.2;s=M.step(s,x,1);
+ assert.equal(s.temperatures.CONT,22.2,'measured sensor value is authoritative');
+ assert.ok(s.positions.CONT<1);
+});
+test('16 to 26°C auto detents converge independently, without immediate needle jumps',()=>{
+ for(const target of [16,18,20,22,24,26]){
+  const x=live('AUTO '+target,'AUTO NORM');
+  let s=M.create();s=M.step(s,x,0.1);
+  assert.ok(Math.abs(s.temperatures.CONT-20)<.1,'thermal inertia persists');
+  for(let i=0;i<3600;i++)s=M.step(s,x,.2);
+  assert.ok(Math.abs(s.temperatures.CONT-target)<.7,target+'°C converges');
+  assert.ok(Math.abs(s.temperatures.PASS-22)<.7,'PASS is independent');
+  assert.ok(Math.abs(s.positions.CONT-(.5+(target-22)/20))<.06,'steady valve mix position');
+ }
+});
+test('22°C demand from 20°C drives hot and returns towards equilibrium',()=>{
+ let s=M.create(),x=live('AUTO 22','MANUAL COOL');
+ s=M.step(s,x,15);
+ assert.ok(s.positions.CONT>.5);
+ assert.ok(s.temperatures.CONT>20&&s.temperatures.CONT<22);
+ for(let i=0;i<3500;i++)s=M.step(s,x,.2);
+ assert.ok(Math.abs(s.temperatures.CONT-22)<.5);
+ assert.ok(Math.abs(s.positions.CONT-.5)<.05);
+});
+test('without operative pneumatic PACK, no fake rapid heating or cooling',()=>{
+ const x=live('AUTO 26','AUTO 16');
+ x.CONT.packAirAvailable=false;x.PASS.packAirAvailable=false;
+ let s=M.create();
+ for(let i=0;i<150;i++)s=M.step(s,x,.2);
+ assert.ok(Math.abs(s.temperatures.CONT-20)<.1);
+ assert.ok(Math.abs(s.temperatures.PASS-20)<.1);
 });
 test('duct limit overrides manual warm; pack OFF drives full cold',()=>{
  let x=live('MANUAL WARM','AUTO NORM');x.CONT.ductC=61;x.PASS.packMode='OFF';
