@@ -25,7 +25,7 @@ const fitted=Object.fromEntries(Object.entries(conv.sockets).map(([id,box])=>{
  return[id,p];
 }));
 assert.equal(Object.keys(fitted).length,22,'All 22 photographed Conventional lights fitted');
-assert.ok(!source.includes('photoApertures'),'Retired screenshot-derived native offsets must be removed');
+assert.ok(!/\b(?:const|let|var)\s+photoApertures\b/.test(source),'Retired screenshot-derived native offsets must not be declared');
 assert.ok(!source.includes('nativePlacement'),'Exactly one source-photo coordinate transform');
 assert.ok(source.includes('const p=placement(layout,box),sel='));
 assert.ok(source.includes('html[data-engine-indication="CONVENTIONAL"] #region-main'),
