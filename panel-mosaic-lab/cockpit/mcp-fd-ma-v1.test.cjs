@@ -73,10 +73,11 @@ test("MA follows physical FD when live AC on without instructor-power button",()
  state=M.evaluate(state,{...o(false,false,null,null),maPower:supply.powered},ev);
  assertLamps(state,false,false);
 });
-test("Unknown power cannot turn on MA from a switch alone",()=>{
+test("Unknown power with selected F/D lights training MA indicator",()=>{
  const out=o(true,false,null,null),supply=M.maSupply(out,null);
+ assert.equal(supply.source,"TRAINING_FD_FEEDBACK_POWER_UNVERIFIED");
  const result=M.evaluate(M.initialState(),{...out,maPower:supply.powered},ev);
- assertLamps(result,false,false);
+ assertLamps(result,true,false);
 });
 
 test("Physical F/D command wins when AFDS indication is stale",()=>{
@@ -104,4 +105,34 @@ test("MA compact geometry leaves room around both F/D stencils",()=>{
   assert.equal(p.y+p.h/2,241);
  }
  assert.equal(dims.left.x,203);assert.equal(dims.right.x,1903);
+});
+
+test("Both flight directors OFF do not illuminate with unknown power",()=>{
+ const out=o(false,false,null,null),supply=M.maSupply(out,null);
+ assert.equal(supply.powered,null);
+ assertLamps(M.evaluate(M.initialState(),{...out,maPower:supply.powered},ev),false,false);
+});
+test("Live AC outage inhibits F/D-selected MA despite training fallback",()=>{
+ const out=o(true,false,null,null);
+ const electrical={schema:"B737_ELECTRICAL_V7_RESULT",bus:{
+ transfer1:false,transfer2:false,main1:false,main2:false,acStandby:false}};
+ const supply=M.maSupply(out,electrical);
+ assert.equal(supply.powered,false);
+ assertLamps(M.evaluate(M.initialState(),{...out,maPower:supply.powered},ev),false,false);
+});
+test("Fresh live AC true overrides stale AFDS absence",()=>{
+ const out=o(true,false,null,false);
+ assert.deepEqual(M.maSupply(out,{schema:"B737_ELECTRICAL_V7_RESULT",bus:{transfer1:true}}),
+  {powered:true,source:"LIVE_AC_BUS_PROXY"});
+});
+test("Proven global power absence with no live AC snapshot inhibits MA",()=>{
+ const out=o(true,false,null,false);
+ assert.deepEqual(M.maSupply(out,null),{powered:false,source:"AFDS_MCP_POWER_OFF"});
+});
+test("Physical FD drives training MA even if AFDS output is stale",()=>{
+ const out=o(false,false,null,null);
+ const merged=M.reconcileFd(out,{FD_LEFT:"ON",FD_RIGHT:"OFF"});
+ const supply=M.maSupply(merged,null);
+ assert.equal(supply.powered,true);
+ assertLamps(M.evaluate(M.initialState(),{...merged,maPower:supply.powered},ev),true,false);
 });
