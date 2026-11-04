@@ -36,8 +36,16 @@
   function select(value){
    if(!DETENTS.includes(value))throw Error('Invalid Classic autobrake detent '+value);
    if(value===selector)return status();
+   const wasAutobraking=phase==='ACTIVE';
+   const priorSelector=selector;
    selector=value;testUntil=null;rtoLandingUntil=null;landingTouchdownAt=null;
    manualBrakeAt=null;airborneSinceRto=false;
+   // Disengaging an ACTIVE RTO/landing autobrake by switching to any
+   // different non-OFF position is an illuminated pilot disarm.
+   if(wasAutobraking&&priorSelector!=='OFF'&&value!=='OFF'){
+    phase='DISARMED';reason='SELECTOR_CHANGED_DURING_BRAKING';
+    return status();
+   }
    if(value==='OFF'){phase='OFF';reason='MANUAL_OFF';}
    else if(value==='RTO'){
     if(!s.onGround){phase='INHIBITED';reason='RTO_AIRBORNE';}
