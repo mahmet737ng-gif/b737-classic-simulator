@@ -96,16 +96,24 @@ test("No physical data preserves AFDS indication",()=>{
  assert.equal(M.reconcileFd(original,{FD_LEFT:"bad"}),original);
 });
 
-test("MA centers register to user-marked red rings in screenshot",()=>{
+test("MA overlays align to owner red markers after photographic frame registration",()=>{
  const d=M.position;
- assert.deepEqual(d.left,{x:202,y:208,w:42,h:42});
- assert.deepEqual(d.right,{x:1915,y:224,w:42,h:42});
- // Screen transform measured from original 2172x433 MCP photograph.
- const screen=p=>({x:234+0.748*p.x,y:400+0.748*p.y});
- const capt=screen(d.left),fo=screen(d.right);
- assert.ok(Math.abs(capt.x-385)<1.5&&Math.abs(capt.y-557)<1.5);
- assert.ok(Math.abs(fo.x-1667)<1.5&&Math.abs(fo.y-568)<1.5);
- assert.equal(d.left.w,42);assert.equal(d.right.w,42);
+ assert.deepEqual(d.left,{x:201,y:220,w:42,h:42});
+ assert.deepEqual(d.right,{x:1916,y:236,w:42,h:42});
+ // Reference: screenshots of MA-0010 and user's marked apertures;
+ // the two views have different pan/zoom. SIFT/RANSAC maps each red
+ // ring into its corresponding high-resolution screenshot.
+ const renderedBefore={left:{x:685.09,y:516.89},right:{x:1083.05,y:583.15}};
+ const target={left:{x:684.38,y:527.95},right:{x:1083.80,y:593.77}};
+ const old={left:{x:202,y:208},right:{x:1915,y:224}};
+ const renderScale=0.884;
+ for(const side of ["left","right"]){
+  const newScreen={x:renderedBefore[side].x+(d[side].x-old[side].x)*renderScale,
+   y:renderedBefore[side].y+(d[side].y-old[side].y)*renderScale};
+  assert.ok(Math.abs(newScreen.x-target[side].x)<1.5);
+  assert.ok(Math.abs(newScreen.y-target[side].y)<1.5);
+  assert.equal(d[side].w,42);assert.equal(d[side].h,42);
+ }
 });
 
 test("Both flight directors OFF do not illuminate with unknown power",()=>{
