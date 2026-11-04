@@ -36,6 +36,6 @@ assert.ok(source.includes("root.addEventListener('visibilitychange'"),
  'Held button must reset if cockpit becomes hidden');
 assert.ok(css.includes("recessed-pushbutton-v2.svg?v=RECESS-ALT-HORN-0001"));
 assert.ok(recessed.includes(".b737-recess-unit__cap[data-pressed=\"true\"]"));
-assert.ok(overhead.includes("pressurization-oh22.css?v=PRESS-OH22-ALT-HORN-RECESS-0001"));
-assert.ok(overhead.includes("pressurization-oh22.js?v=PRESS-OH22-ALT-HORN-RECESS-0001"));
+assert.ok(overhead.includes("pressurization-oh22.css?v=PRESS-OH22-DCPCS-WHITE-WHEEL-0001"));
+assert.ok(overhead.includes("pressurization-oh22.js?v=PRESS-OH22-DCPCS-WHITE-WHEEL-0001"));
 console.log('PASS: ALT HORN CUTOUT physical OH19 button mounted for both CPCS/DCPCS; fixed bezel, momentary recessed cap, original cabin-altitude cutout action, visual reset and cache refresh.');
