@@ -147,6 +147,9 @@ async function update(id){
    (parseFloat(obj.node.style.width)||obj.node.offsetWidth);
  const lensHeight=conventional?(parseFloat(computed?.height)||obj.node.offsetHeight):
    (parseFloat(obj.node.style.height)||obj.node.offsetHeight);
+ // Clamp the emitted legend to its photographed glass in Conventional.
+ // EIS retains its approved original overscan / hit-target behavior.
+ if(row.bank==='MP')obj.node.style.setProperty('overflow',conventional?'hidden':'visible','important');
  const sig=frame+'|'+mode+'|'+(conventional?'CONV':'BASE')+'|'+
    lensWidth.toFixed(3)+'x'+lensHeight.toFixed(3);
  if(obj.signature===sig)return;
