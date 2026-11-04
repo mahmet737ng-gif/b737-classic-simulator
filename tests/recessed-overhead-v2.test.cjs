@@ -41,6 +41,38 @@ assert.ok(Math.hypot(projectedX-849.5,projectedY-822.5)<1,
 assert.ok(html.includes('recessed-overhead-v2.js?v=RECESS-0003-RESID-SOCKET-CENTER'),
  'new JS must load without stale cached RESID position');
 
+// 2026-11-04 owner photograph: the original OH18 camera frame reveals
+// old ATTEND, GRD CALL and right RAIN REPELLENT bezels offset up/left of
+// their painted bores. Register ONLY those three corrected source points.
+const oh18Aligned={
+ 'attend':[188,435,192],
+ 'ground-call':[643,435,192],
+ 'rain-repellent-right':[570,1045,176]
+};
+for(const [id,expected]of Object.entries(oh18Aligned)){
+ const item=manifest.buttons.find(x=>x.id===id);
+ assert.ok(item,id+' must exist');
+ assert.equal(item.piece,'OH18',id+' must stay on the original OH18 artwork');
+ assert.deepEqual([item.cx,item.cy,item.d],expected,id+' must remain centered on approved screenshot bore');
+ assert.equal(item.quality,'screenshot-aligned');
+ const pos=js.indexOf('"id":"'+id+'"');
+ assert.ok(pos>=0,'actual runtime entry required for '+id);
+ const installed=JSON.parse(js.slice(js.lastIndexOf('{',pos),js.indexOf('}',pos)+1));
+ assert.deepEqual([installed.cx,installed.cy,installed.d,installed.quality],
+  [...expected,'screenshot-aligned'],'actual interactive button matches the photo manifest');
+}
+const leftRain=manifest.buttons.find(x=>x.id==='rain-repellent-left');
+assert.deepEqual([leftRain.cx,leftRain.cy,leftRain.d,leftRain.quality],[236,1035,176,'photo'],
+ 'left RAIN REPELLENT was already aligned; must not be moved or resized');
+const otherOh18=manifest.buttons.filter(x=>x.piece==='OH18');
+assert.equal(otherOh18.length,4,'No duplicate OH18 control overlays');
+assert.equal(new Set(otherOh18.map(x=>x.id)).size,4);
+const srcRatio=235/816;
+assert.ok(Math.abs((oh18Aligned.attend[0]-160)*srcRatio-8.064)<.1,
+ 'On the reference atlas, ATTEND is shifted only its measured 8.1px horizontally');
+assert.ok(html.includes('oh18=PHOTO-SOCKET-FIT-0001'),
+ 'OH18 JS must be cache-busted so screenshot corrections reach deployed cockpit');
+
 assert.match(css,/__cap\[data-pressed="true"\][^{]*\{[^}]*scale\(\.79\)/);
 assert.match(css,/\.b737-recess-unit\{[^}]*pointer-events:none/);
 assert.match(css,/\.b737-recess-unit__cap\{[^}]*pointer-events:auto/);
