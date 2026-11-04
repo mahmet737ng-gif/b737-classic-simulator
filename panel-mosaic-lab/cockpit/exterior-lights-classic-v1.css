@@ -1,4 +1,3 @@
-:root{--b737-ext-tbar-photo:url("data:image/webp;base64,UklGRrIFAABXRUJQVlA4WAoAAAAQAAAAXwAAYgAAQUxQSAkEAAABCcVt20aQ46ez/8BJjxEi+j8B3BcQCHaP1ZJOyKYCsasMGdCDDYb+6QYe1juG2rZtGOn/v9OzR0QS+gMck0jbZv6N9/wkYgImgNK27Wlj55Ps2OEM88xhKDMzM3O77ra/oDte91cwMzMzMw+H40yM0leI5e9c17fsIiImoDlbu1Ct2eB3+4HOZhUqNQfCrudrErtYrdoYdArigJR2nn3Q9pk89lZ+/vanzdgsP7d7x0TJhv7qr9/8uB5mKi8cdND2aRe7y9ccN2OT5eZOu/6W2VJOggq7v3/08od1TLMWjjmo2PMVgg69Pz99+b01beTsPGbPobNFR4AKb7zl8iNGBI09d9zxe8Yh3fv2iUd+UcOcI26o+mC49fMzD34bG5SOOd6KHBhemjvspENqgsSZmnTBWP/12IueGDJ15YVgjhtPP90UKWJy0QNjUZkZEUgghAVZsbkcwtDyYjUDQOevAaR3fMgqLCFEFjcBZjFGM7G7jcxEl9TMque2gFl1xSHSROw/O+YGjjhr1KR4yn5gd/zUncJg+tQqP9a+Q9w0sf9oYHjiyNE059C9HBV3T6QVDp7nSE6MiZT8dIEjGJ2QKdKRLNk5kcK/jjVLSYwpwYbPUrupU8L1Pke60cSU+PdVZMj/pQGp+Ns3IUP1L9ppULzkgjw7izceLgzEwRfPcmMdeeEYmFZPOdxmZvS0g6WRWDxqlMZb1gD2SJFq0InFnxshib3jyBqYOzOjksJ77o4YsHzSCQUa/cOLdbj9vq8UhTMzKjKAZQuS9x/MASSzx1docPnLnrj/yR8TkQlB2gKyo9YZUKGOYwCIVMGm0VsSdBwngCoDKgRSjOv1yGRro6MF/FcAAm3ULsHQcKMZG2B/o6tpwNlx5lmHzZRyAnTY++O75RkJQy0nJtKRPczdddZZh0wXHQAVtX589401QQRQXjzo4O0zeeyt/NyvOZBaGPGIjCtLBx28fdrVveVPP/0TDqhdqtZy4Lf7EgxtJyLS2koDyJWqNRv9TgcYHQwKJiz7vs2EACRClEwUnZiIz4qLRL6WTFiSqqWBd0yQOUYFIA0GFhOiqoE2buWZsGpUOrCZAAuJ+NeJxQSGEZHfLTOhGi2iKHSZgEGANICCC0SgjZXDxaCjaDqR5MKrJzShAi5VgjSMxlsJCfqCjWBtQKKaDhsqUCQYCTZAaxJAPlSrT5IMXDaSlkcSdCtsgEYSnVh8hAFSIAg+OnVF4QcuHwNPU/QDiw9/M6RQSvLR/6VL0RPAZ/RXg0A3JSN6dVVb3MozAvXfQ4u6JU68vwY22Cpy4v/WXOQ4gZPvPS1TL5Gs7LnjWitLE4HVsdturaGRiLwyL7njzyiDebJQ4QXcvMwARcnM/xgDAFZQOCCCAQAAcA4AnQEqYABjAD85kL5Wrym/o6k1XEPwJwlpANZsSbCpcXElvuSZjBrk4ZfeZ+XXFVUscuJVci8gh9d8bO3g2P87AFh9QOgTaGC5MKIxVgzo0YzTDA0hvcSioM8578lwlkuaU0nqU4S5l0arW8IFqyMvoC+bBzt/j+c5oAD+7rUP/orqRJwskQ7RgTwve8BT7//xZk8Ojj5ro6pcXxJqkkSeMSKWg4s1+Zsqe2Dl+Qw6PfYrS9qTZDqNPblfyM9ASqvnAozaSiIFEHh4bKy/tPJWZLPSt64YylshrC3UXz6mE0E6ukjRQlgAJSBnLTtwgde5gfIAmisaApzNxTwv4Gdwg4gQlXuPPdKcVO/F6LBl88Z+GWlvSsRz5uNZYLGhJYK3hL4GX4/14xC2svsJDkVTfjwprZMGrr5kPey3b20LjDwZLajXIOt76MPQX6Hv+cmOv02Nf8Wnw/Ee8x93XtpjddAznDeTdiI4yDOjQ887jZWfG2XQlE4ElQGmF5IAAAA=")}
 /* EXTL-CLASSIC-0001 — strictly scoped to external-light row OH23-25. */
 /* Correct cockpit image remains locked; only existing toggle actuators are restyled. */
 #overheadToggleLayer .mounted-toggle[data-placement="OH23-25"]{isolation:isolate}
@@ -9,27 +8,19 @@
 #overheadToggleLayer .mounted-toggle[data-placement="OH23-25"]:not([data-control="apu-start"]):not([data-control^="landing-"]) .toggle-sprite{
  background-image:url("../../shared-assets/toggle-switch-small/Small_White_5Positions.webp")!important;
 }
-/* Outboard and inboard landing controls share the same three-lobed T-bar metal handle.
-   Photo source: B737 Landing Light Photoreal v2; stored as a small transparent WebP. */
+/* Owner-approved top-down photograph, unchanged pixels. The three poses share
+   one mounting pivot. Outer: RETRACT / EXTEND / ON; inner: OFF / ON only. */
 #overheadToggleLayer .mounted-toggle[data-control^="landing-"] .toggle-sprite{display:none!important}
-#overheadToggleLayer .mounted-toggle[data-control^="landing-"]::before{
- content:"";position:absolute;left:50%;top:58%;transform:translate(-50%,-50%);
- width:49px;height:47px;border-radius:50%;pointer-events:none;
- background:radial-gradient(ellipse at 36% 26%,#d1d2cf 0,#777b77 18%,#242827 35%,#91928d 45%,#353633 56%,#171918 73%,#7a7c78 85%,#151617 97%);
- box-shadow:0 2px 3px #111,0 0 0 4px #272928, inset 0 1px 3px #e0e0d9;
-}
+#overheadToggleLayer .mounted-toggle[data-control^="landing-"]::before{content:none}
 #overheadToggleLayer .mounted-toggle[data-control^="landing-"]::after{
- content:"";position:absolute;left:50%;top:37%;
- width:95px;height:105px;transform:translate(-50%,-50%) perspective(250px) rotateX(-22deg);
- background-image:var(--b737-ext-tbar-photo);
- background-size:contain;background-position:center;background-repeat:no-repeat;
- filter:drop-shadow(0 4px 3px rgba(0,0,0,.65));pointer-events:none;
- transition:transform .15s ease-out;
+ content:"";position:absolute;left:calc(50% - 50px);top:calc(50% - 52.78px);
+ width:100px;height:102px;pointer-events:none;
+ background-image:url("../../shared-assets/landing-tbar-owner-v1/topdown-up-center-down.png");
+ background-size:304.08px 101.36px;background-position:-2.64px 0;background-repeat:no-repeat;
+ transform:none;filter:none;transition:none;
 }
-#overheadToggleLayer .mounted-toggle[data-control^="landing-"][data-state="RETRACT"]::after,
-#overheadToggleLayer .mounted-toggle[data-control^="landing-"][data-state="OFF"]::after{transform:translate(-50%,-53%) perspective(250px) rotateX(-28deg)}
-#overheadToggleLayer .mounted-toggle[data-control^="landing-"][data-state="EXTEND"]::after{transform:translate(-50%,-45%) perspective(250px) rotateX(0deg)}
-#overheadToggleLayer .mounted-toggle[data-control^="landing-"][data-state="ON"]::after{transform:translate(-50%,-39%) perspective(250px) rotateX(34deg)}
+#overheadToggleLayer .mounted-toggle[data-control^="landing-"][data-state="EXTEND"]::after{background-position:-100.5px 0}
+#overheadToggleLayer .mounted-toggle[data-control^="landing-"][data-state="ON"]::after{background-position:-198.92px 0}
 /* Unified header inspector: never affect overhead photo, its source images or guarded switches. */
 .extl-unified-dialog{max-width:min(1000px,95vw);max-height:85vh;overflow:auto;direction:ltr;color:#e5ebec;background:#17232d;border:1px solid #81909a;border-radius:9px;padding:19px;box-shadow:0 14px 60px #000b}
 .extl-unified-dialog::backdrop{background:#080c12a8}
