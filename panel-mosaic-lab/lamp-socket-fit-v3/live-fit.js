@@ -138,7 +138,17 @@ async function update(id){
  const visualOn=row.bank==='OH'&&document.documentElement.classList.contains('cockpit-visual-test');
  const frame=visualOn&&obj.node.dataset.visualFrame||obj.node.dataset.frame||'OFF';
  const mode=win.B737LampAppearance?.getMode?.()||'BRIGHT';
- const sig=frame+'|'+mode;
+ // The important Conventional CSS measurements override the old EIS inline
+ // width/height: recompute legend dimensions from the effective box.
+ const conventional=row.bank==='MP'&&
+   document.documentElement.dataset.engineIndication==='CONVENTIONAL';
+ const computed=conventional?win.getComputedStyle(obj.node):null;
+ const lensWidth=conventional?(parseFloat(computed?.width)||obj.node.offsetWidth):
+   (parseFloat(obj.node.style.width)||obj.node.offsetWidth);
+ const lensHeight=conventional?(parseFloat(computed?.height)||obj.node.offsetHeight):
+   (parseFloat(obj.node.style.height)||obj.node.offsetHeight);
+ const sig=frame+'|'+mode+'|'+(conventional?'CONV':'BASE')+'|'+
+   lensWidth.toFixed(3)+'x'+lensHeight.toFixed(3);
  if(obj.signature===sig)return;
  obj.signature=sig;
  const token=++obj.serial;
@@ -146,8 +156,8 @@ async function update(id){
   const r=await face(row,frame);
   if(token!==obj.serial)return;
   const [ox,oy,ow,oh]=row.sourceRect;
-  const fx=(parseFloat(obj.node.style.width)||obj.node.offsetWidth)/ow;
-  const fy=(parseFloat(obj.node.style.height)||obj.node.offsetHeight)/oh;
+  const fx=lensWidth/ow;
+  const fy=lensHeight/oh;
   const p=r.shape.p;
   // The MP hit target, photo glass and fitted lettering have identical
   // per-socket dimensions. No shared 10% translation/110% magnification.
@@ -237,6 +247,12 @@ async function start(){
   win.addEventListener('b737:lamp-brightness-change',()=>{
    for(const id of nodes.keys())update(id);
   });
+  // Geometry can change without any lamp status transition.
+  const refreshMainGeometry=()=>win.requestAnimationFrame(()=>{
+   for(const id of nodes.keys())if(records.get(id)?.bank==='MP')update(id);
+  });
+  win.addEventListener('b737:engine-indication-view',refreshMainGeometry);
+  win.addEventListener('b737:conventional-lamp-geometry',refreshMainGeometry);
   const watch=new MutationObserver(scheduleScan);
   watch.observe(document.body,{childList:true,subtree:true});
   scheduleScan();
