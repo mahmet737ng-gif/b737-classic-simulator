@@ -14,7 +14,7 @@ const hold=require('../../engine/systems/aircon-ovht-hold-v1.js');
 assert.ok(html.includes('aircon-live-test-lab-v1.js?v=AIRCON-LIVE-LAB-0002'));
 assert.ok(html.includes('aircon-live-test-lab-v1.css?v=AIRCON-LIVE-LAB-0001'));
 assert.ok(html.includes('aircon-live-lab-v1.js?v=AIRCON-LIVE-LAB-0001'));
-assert.ok(html.includes('aircon-ovht-hold-v1.js?v=AIRCON-OVHT-DELAY-0003'));
+assert.ok(html.includes('aircon-ovht-hold-v1.js?v=AIRCON-OVHT-WALLCLOCK-0005'));
 assert.ok(atlasLabs.includes("if(id==='OH21'&&window.B737AirconLiveTestLabV1?.open)"));
 assert.ok(ui.includes("btn.id='airconLiveLabOpen'"),'Direct visible header button for lab');
 assert.ok(ui.includes("btn.textContent='AIR COND LAB'"));
