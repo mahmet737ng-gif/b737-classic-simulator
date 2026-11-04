@@ -68,6 +68,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: conventional-physical-controls-live-browser
-          path: /tmp/b737-conv-skid-autobrake-browser.png
+          path: |
+            /tmp/b737-conv-skid-autobrake-browser.png
+            /tmp/b737-conv-rto-disarm-on.png
           if-no-files-found: ignore
           retention-days: 14
