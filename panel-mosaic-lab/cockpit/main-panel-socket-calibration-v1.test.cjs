@@ -43,5 +43,5 @@ assert.ok(renderer.includes("function emissionOnly(source)"));
 assert.ok(!css.includes('left:10%;top:10%;'));
 assert.ok(!css.includes('width:110%;height:110%;'));
 assert.ok(html.includes('lights.js?v=LAMP-PTT-MP-SOCKET-0003'));
-assert.ok(html.includes('live-fit.js?v=LGT-SOCKET-FIT-010-CONV-GEAR'));
+assert.ok(html.includes('live-fit.js?v=LGT-SOCKET-FIT-011-CONV-GLASS'));
 console.log('PASS: 30 unique native-photo apertures and centers, 0 overlaps, no global shifts, both render layers and versioned loads registered.');
