@@ -233,6 +233,51 @@
   }
   byId('atlasAbsolute').append(svg);
  }
+ // Variant-specific temperature detents. The existing 737-400 five-position
+ // hardware and model stay unchanged; 300/500 receive calibrated training
+ // setpoint detents without touching physical artwork or guard red zones.
+ const AIRCON_TEMP_300=Object.freeze({
+  states:['MANUAL COOL','AUTO 16','AUTO 18','AUTO 20','AUTO 22','AUTO 24','AUTO 26','MANUAL WARM'],
+  angles:[-130,-85,-61,-38,0,40,80,130],default:'AUTO 22'
+ });
+ const AIRCON_TEMP_400=Object.freeze({
+  states:['MANUAL COOL','AUTO COOL','AUTO NORM','AUTO WARM','MANUAL WARM'],
+  angles:[-130,-50,0,50,130],default:'AUTO NORM'
+ });
+ let activeAirconFamily=null;
+ function profileAirconFamily(){
+  try{return JSON.parse(localStorage.getItem('b737classic.aircraft-profile.v1')||'null')?.aircraftFamily==='B737-400'?'B737-400':'B737-300-500';}
+  catch{return 'B737-300-500';}
+ }
+ function changeAirconDetents(family){
+  const normalized=family==='B737-400'?'B737-400':'B737-300-500';
+  if(!registry||activeAirconFamily===normalized)return;
+  const from300=activeAirconFamily==='B737-300-500',to300=normalized!=='B737-400';
+  const mapping=to300?{'AUTO COOL':'AUTO 20','AUTO NORM':'AUTO 22','AUTO WARM':'AUTO 24'}:
+   {'AUTO 16':'AUTO COOL','AUTO 18':'AUTO COOL','AUTO 20':'AUTO COOL',
+    'AUTO 22':'AUTO NORM','AUTO 24':'AUTO WARM','AUTO 26':'AUTO WARM'};
+  const next=to300?AIRCON_TEMP_300:AIRCON_TEMP_400;
+  activeAirconFamily=normalized;
+  for(const id of ['control-cabin-temp','pass-cabin-temp']){
+   const c=registry.rotaries.find(x=>x.id===id);
+   if(!c)continue;
+   const old=engine?.rotary(id);
+   c.states=[...next.states];c.angles=[...next.angles];c.default=next.default;
+   if(engine){
+    const resolved=c.states.includes(old)?old:(mapping[old]||next.default);
+    engine.setRotary(id,resolved,'aircon-variant-change');
+    render(c);
+    if(selected?.id===id)choose(c);
+   }
+  }
+ }
+ window.addEventListener('message',e=>{
+  if(e.origin!==location.origin||e.data?.type!=='b737:cockpit-command'||e.data.action!=='aircon-background')return;
+  changeAirconDetents(e.data.family);
+ });
+ window.addEventListener('storage',e=>{
+  if(e.key==='b737classic.aircraft-profile.v1')changeAirconDetents(profileAirconFamily());
+ });
  function mount(layout){
   const section=document.createElement('section');section.className='rg-inspector';section.innerHTML='<strong>۲۰ روتری‌ناب · ۰ گارد · منتظر نسخه جدید</strong><h3 id="rgSelected">یک ناب یا گارد را انتخاب کن</h3><button id="rgGuardAction" class="hidden"></button><div id="rgStates" class="rg-actions"></div><p id="rgValue" role="status" aria-live="polite"></p>';
   byId('toggleInspector').after(section);
@@ -251,7 +296,9 @@
    setAirconTemperature:(id,value)=>{
     if(!['control-cabin-temp','pass-cabin-temp'].includes(id)||
        !['MANUAL COOL','AUTO COOL','AUTO NORM','AUTO WARM','MANUAL WARM'].includes(value))return false;
-    return engine.setRotary(id,value,'AIRCON400_ZONE_SELECTOR');
+    const alias={'AUTO COOL':'AUTO 20','AUTO NORM':'AUTO 22','AUTO WARM':'AUTO 24'};
+    const desired=activeAirconFamily==='B737-400'?value:(alias[value]||value);
+    return engine.setRotary(id,desired,'AIRCON400_ZONE_SELECTOR');
    },
    setDetent:(id,value)=>{if(!['engine-start-1','engine-start-2'].includes(id)||value!=='OFF')return false;
     return engine.setRotary(id,value,'ISN03_STARTER_CUTOUT');}});persist();
@@ -260,7 +307,9 @@
   try{
    if(!motion||typeof motion.createDetentGesture!=='function')throw Error('RM-0002 detent engine unavailable');
    const responses=await Promise.all([fetch(url('rotary-guards.json'),{cache:'no-store'}),fetch(url('../all-overhead/atlas-layout.json'),{cache:'no-store'})]);if(responses.some(r=>!r.ok))throw Error('Rotary/guard registry unavailable');
-   registry=await responses[0].json();const extraResponse=await fetch(url('lights-controls.json'),{cache:'no-store'});if(!extraResponse.ok)throw Error('Upper light controls unavailable');const extra=await extraResponse.json();registry.rotaries.push(...extra.rotaries);registry.guards.push(...extra.guards);const layout=await responses[1].json();model.validate(registry,layout,points.mapPoint);
+   registry=await responses[0].json();const extraResponse=await fetch(url('lights-controls.json'),{cache:'no-store'});if(!extraResponse.ok)throw Error('Upper light controls unavailable');const extra=await extraResponse.json();registry.rotaries.push(...extra.rotaries);registry.guards.push(...extra.guards);
+   changeAirconDetents(profileAirconFamily());
+   const layout=await responses[1].json();model.validate(registry,layout,points.mapPoint);
    let saved={};try{saved=JSON.parse(localStorage.getItem(STORAGE)||'{}')||{};}catch{}
    engine=model.controller(registry,saved,event=>{const c=[...registry.rotaries,...registry.guards].find(c=>c.id===event.id);render(c);persist();if(window.B737OverheadToggles)interlocks();window.dispatchEvent(new CustomEvent('b737:'+event.kind+'-change',{detail:{...event,timestamp:new Date().toISOString()}}));},window.B737ControlMechanics);
    const root=byId('atlasAbsolute'),ready=()=>root.querySelector('.atlas-piece')&&window.B737OverheadToggles;
