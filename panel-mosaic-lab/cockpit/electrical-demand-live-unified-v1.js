@@ -4,10 +4,13 @@
  */
 (function(root){
  'use strict';
- const Engine=root.B737ElectricalDemandEstimateV1;
+ const Engine=root.B737ElectricalDemandEstimateV2||root.B737ElectricalDemandEstimateV1;
  if(!Engine)return;
  const owner=()=>root.B737ISNCockpitV1;
- let latest=null,signature='',lastMeterSignature='',panel=null,body=null,head=null,summary=null;
+ let latest=null,signature='',panel=null,body=null,head=null,summary=null;
+ let galleyDuty=0,hydraulicDuty=.35,galleyShedLatched=false,galleyShedEnabled=true;
+ const motorBegan=new Map();
+
  const pretty=n=>Number.isFinite(n)?n.toFixed(1):'—';
  const safe=fn=>{try{return fn();}catch(error){console.warn('ATA24 load meter:',error);return null;}};
  const clone=v=>JSON.parse(JSON.stringify(v));
@@ -19,7 +22,8 @@
   try{toggles=frame?.contentWindow?.B737OverheadToggles?.getState?.()||{};}catch{}
   const windowHeat=root.B737WindowHeatUnifiedV1?.getOutput?.()||null;
   return {electrical:cockpit.getState().state.electrical,
-   toggles,windowHeat,battery:cockpit.getLiveBattery?.()||root.B737InstalledBattery?.snapshot?.()||null};
+   toggles,windowHeat,battery:cockpit.getLiveBattery?.()||root.B737InstalledBattery?.snapshot?.()||null,
+   onGround:cockpit.getElectricalState?.()?.config?.onGround!==false};
  }
  function selectedMeterReadings(result){
   const electrical=root.B737UnifiedElectricalLive?.snapshot?.();
@@ -63,6 +67,23 @@
   summary=document.createElement('p');summary.style.cssText='font-size:11px;color:#edc87b';
   summary.textContent='اعداد آموزشی و تقریبی هستند؛ اتصال فیزیکی هر مصرف‌کننده به باسِ EP-FSI تأیید WDM ندارد. AC آمپر معادل گیج ژنراتور و DC آمپر 28V است. مجموع مستقیم این دو مجاز نیست.';
   panel.append(summary);
+  const demand=document.createElement('div');demand.style.cssText='display:grid;gap:7px;margin:7px 0';
+  const addDemandSlider=(name,initial,onValue)=>{
+   const label=document.createElement('label');label.style.cssText='display:grid;gap:4px';
+   const title=document.createElement('span');title.textContent=name+' · '+Math.round(initial*100)+'%';
+   const slider=document.createElement('input');slider.type='range';slider.min='0';slider.max='100';slider.step='5';
+   slider.value=String(Math.round(initial*100));slider.addEventListener('input',()=>{
+    const duty=Number(slider.value)/100;title.textContent=name+' · '+slider.value+'%';
+    onValue(duty);tick(true);
+   });label.append(title,slider);demand.append(label);
+  };
+  addDemandSlider('GALLEY APPLIANCES (not galley-power switch)',galleyDuty,v=>{galleyDuty=v;});
+  addDemandSlider('HYDRAULIC ELECTRIC-PUMP DEMAND',hydraulicDuty,v=>{hydraulicDuty=v;});
+  const shed=document.createElement('label');shed.style.cssText='display:flex;gap:7px;align-items:center';
+  const enabled=document.createElement('input');enabled.type='checkbox';enabled.checked=galleyShedEnabled;
+  enabled.addEventListener('change',()=>{galleyShedEnabled=enabled.checked;tick(true);});
+  shed.append(enabled,document.createTextNode('Classic APU galley auto-shed training option (162 A; airframe effectivity unverified)'));
+  demand.append(shed);panel.append(demand);
   const scroll=document.createElement('div');scroll.style.cssText='overflow:auto;max-height:350px';
   const table=document.createElement('table');table.style.cssText='border-collapse:collapse;width:100%;font:11px monospace';
   const th=document.createElement('thead');const row=document.createElement('tr');
@@ -78,12 +99,16 @@
   head.textContent='GEN 1 '+pretty(result.sourceAmps.GEN1)+' A  ·  GEN 2 '+pretty(result.sourceAmps.GEN2)+
    ' A  ·  APU '+pretty(result.sourceAmps.APU)+' A  ·  GPU '+pretty(result.sourceAmps.EXT)+
    ' A  |  TR1 '+pretty(result.trAmps.TR1)+' A  TR2 '+pretty(result.trAmps.TR2)+
-   ' A  TR3 '+pretty(result.trAmps.TR3)+' A  |  BAT '+(result.batteryAmps===null?'—':(result.batteryAmps>0?'+':'')+pretty(result.batteryAmps))+' A';
+   ' A  TR3 '+pretty(result.trAmps.TR3)+' A  |  BAT '+(result.batteryAmps===null?'—':(result.batteryAmps>0?'+':'')+pretty(result.batteryAmps))+' A'+
+   (result.apu?'  |  APU TRAINING LIMIT '+result.apu.limitA+' A'+
+    (result.apu.overLimit?' · OVER LIMIT':'')+
+    (result.apu.galleyShedLatched?' · GALLEY LOAD SHED':''):'');
+  summary.textContent='Estimator: training-only amperes, not verified EP-FSI WDM. GALLEY POWER ON does not mean appliances heating. Pumps respond to start/steady-state and demand; heater thermostat controls window consumption. APU current beyond the physical 200 A scale is still reported above (not silently discarded).';
   if(!panel.open)return;
   body.replaceChildren();
   for(const item of result.loads){
    const tr=document.createElement('tr');
-   const status=item.active?'DRAWING':item.commanded?item.energized===null?'UNKNOWN':'NO POWER':'OFF';
+   const status=item.active?'DRAWING':item.commanded?item.energized===null?'UNKNOWN':item.energized===true?'IDLE / SHED':'NO POWER':'OFF';
    const values=[item.label,item.bus,item.source||'—',status,item.active?pretty(item.currentA):'0.0'];
    for(const value of values){
     const td=document.createElement('td');td.textContent=value;
@@ -96,19 +121,46 @@
  }
  function tick(force=false){
   const input=safe(inputs);if(!input)return;
+  if(input.toggles.galley==='OFF')galleyShedLatched=false;
+  const now=Date.now();
   const sig=JSON.stringify([input.electrical.revision,input.electrical.source,input.electrical.bus,
    input.toggles,input.windowHeat?.channels&&Object.fromEntries(Object.entries(input.windowHeat.channels).map(([k,v])=>[k,v.heaterPower])),
-   input.battery?.ammeterA,input.battery?.chargerA,
+   input.battery?.ammeterA,input.battery?.chargerA,input.onGround,
+   galleyDuty,hydraulicDuty,galleyShedLatched,galleyShedEnabled,
    owner()?.getECUState?.()?.apu?.generator?.ready===true]);
-  if(!force&&sig===signature)return;
-  const estimate=safe(()=>Engine.project(input));if(!estimate)return;
+  const ramping=[...motorBegan.values()].some(start=>now-start<2600);
+  if(!force&&sig===signature&&!ramping){
+   // QA controls must never leave a stale manual full-scale needle.
+   if(latest)safe(()=>driveAmmeters(latest));
+   return;
+  }
+  const baseArgs={...input,galleyDuty,hydraulicDuty,galleyShedLatched};
+  const preview=safe(()=>Engine.project(baseArgs));if(!preview)return;
+  const motorRunSeconds={};
+  if(Engine.MOTOR_IDS){
+   for(const row of preview.loads){
+    if(!Engine.MOTOR_IDS.has(row.id))continue;
+    if(row.active){
+     if(!motorBegan.has(row.id))motorBegan.set(row.id,now);
+     motorRunSeconds[row.id]=Math.max(0,(now-motorBegan.get(row.id))/1000);
+    }else motorBegan.delete(row.id);
+   }
+  }
+  let estimate=safe(()=>Engine.project({...baseArgs,motorRunSeconds}));if(!estimate)return;
+  if(galleyShedEnabled&&estimate.apu?.needsGalleyShed){
+   // Installed options differ by airframe; simulate the electrical relay,
+   // not an unauthorized movement of the photographed GALLEY switch.
+   galleyShedLatched=true;
+   estimate=safe(()=>Engine.project({...baseArgs,galleyShedLatched:true,motorRunSeconds}));
+   if(!estimate)return;
+  }
   signature=sig;latest=estimate;
-  // Live needle outputs are updated independently of source-selector events.
   safe(()=>driveAmmeters(estimate));
   safe(()=>selectedMeterReadings(estimate));
   paint(estimate);
   root.dispatchEvent(new CustomEvent('b737:electrical-demand-estimate',{detail:clone(estimate)}));
  }
+
  const events=['b737:electrical-network','b737:electrical-owner-ready','b737:unified-ecu-observation',
   'b737:battery-live','b737:ac-dc-selector-change','b737:cockpit-mounted'];
  for(const name of events)root.addEventListener(name,()=>tick(name==='b737:electrical-network'||name==='b737:ac-dc-selector-change'||name==='b737:cockpit-mounted'));
@@ -116,7 +168,8 @@
   if(event.origin!==location.origin||event.source!==document.getElementById('overheadFrame')?.contentWindow)return;
   if(event.data?.type==='b737:cockpit-overhead'&&['controls-state','control-event'].includes(event.data.kind))tick(true);
  });
- const api=Object.freeze({version:Engine.VERSION,snapshot:()=>latest?clone(latest):null,refresh:()=>tick(true)});
+ const api=Object.freeze({version:Engine.VERSION,snapshot:()=>latest?clone(latest):null,refresh:()=>tick(true),
+  trainingControls:()=>({galleyDuty,hydraulicDuty,galleyShedEnabled,galleyShedLatched})});
  root.B737UnifiedLoadMeterV1=api;
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>tick(true),{once:true});else tick(true);
  setInterval(()=>tick(),350);

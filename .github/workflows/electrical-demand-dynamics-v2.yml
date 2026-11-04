@@ -1,0 +1,27 @@
+name: ATA24 dynamic source-current and galley shed QA
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'engine/systems/electrical-demand-estimate-v2.js'
+      - 'panel-mosaic-lab/cockpit/electrical-demand-live-unified-v1.js'
+      - 'panel-mosaic-lab/cockpit/index.html'
+      - 'tests/electrical-demand-estimate-v2.test.cjs'
+      - '.github/workflows/electrical-demand-dynamics-v2.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: |
+          node --check engine/systems/electrical-demand-estimate-v2.js
+          node --check panel-mosaic-lab/cockpit/electrical-demand-live-unified-v1.js
+          node --test tests/electrical-demand-estimate-v1.test.cjs tests/electrical-demand-estimate-v2.test.cjs
+          python3 panel-mosaic-lab/verify-final-overhead.py
+          python3 panel-mosaic-lab/cockpit/verify-guard-redzone.py --negative-self-test
