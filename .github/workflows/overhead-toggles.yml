@@ -32,6 +32,7 @@ jobs:
       - name: Verify toggle state logic and approved frame hashes
         run: |
           node panel-mosaic-lab/interactive-overhead/test.cjs
+          node panel-mosaic-lab/interactive-overhead/exterior-inboard-left-photo-registration.test.cjs
           node panel-mosaic-lab/interactive-overhead/rotary-guards.test.cjs
       - name: Check browser scripts
         run: |
