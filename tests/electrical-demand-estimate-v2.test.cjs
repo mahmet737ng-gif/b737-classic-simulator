@@ -34,7 +34,7 @@ test('individual pump, heater, hydraulic or galley load follows real source sele
  const loaded=ground({'hyd-elec-1':'ON'},{hydraulicDuty:1});
  assert.ok(loaded.sourceAmps.APU>idle.sourceAmps.APU);
  const galley=ground({galley:'ON'},{galleyDuty:1});
- assert.equal(galley.sourceAmps.APU-original.sourceAmps.APU,58);
+ assert.ok(Math.abs(galley.sourceAmps.APU-original.sourceAmps.APU-58)<1e-9);
 });
 test('transient motor start decays to steady load without arbitrary random changes',()=>{
  const toggles={'hyd-elec-1':'ON'};
