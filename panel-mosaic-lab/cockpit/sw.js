@@ -1,10 +1,13 @@
 /* Unified cache: immutable images/fonts and content-revisioned JS/CSS only. */
 'use strict';
 importScripts('./performance/manifest.js');
-const PREFIX='b737-unified-perf-',CACHE=PREFIX+B737PerformanceAssets.version+'-2';
+try{importScripts('./performance/lossless/manifest.js');}catch{}
+const LOSSLESS=typeof B737LosslessAssets==='object'?B737LosslessAssets:null;
+const PREFIX='b737-unified-perf-',CACHE=PREFIX+B737PerformanceAssets.version+'-'+(LOSSLESS?.version||'base')+'-3';
 const root=new URL('../../',self.location.href);
 const immutable=new Set(Object.values(B737PerformanceAssets.images).flatMap(a=>a.levels.map(l=>new URL(l.url,root).pathname)));
 for(const path of Object.values(B737PerformanceAssets.patches))immutable.add(new URL(path,root).pathname);
+for(const item of Object.values(LOSSLESS?.images||{}))if(item.pixelIdentical&&item.url)immutable.add(new URL(item.url,root).pathname);
 for(const name of ['BoeingCDU-Large.ttf','BoeingCDU-Small.ttf'])immutable.add(new URL('assets/fonts/boeing-cdu/'+name,root).pathname);
 function revisioned(u){return /\.(?:js|css)$/.test(u.pathname)&&/^WEB-[a-f0-9]{16}$/.test(u.searchParams.get('v')||'');}
 self.addEventListener('install',event=>event.waitUntil(self.skipWaiting()));

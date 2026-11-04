@@ -1,0 +1,62 @@
+name: Unified pixel-exact lossless panel textures
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/unified-lossless-assets.yml'
+      - 'tools/optimize-unified-lossless.py'
+      - 'panel-mosaic-lab/cockpit/performance/manifest.json'
+      - 'panel-mosaic-lab/cockpit/performance/lossless-integrator.js'
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: write
+concurrency:
+  group: unified-lossless-png-optimizer
+  cancel-in-progress: false
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install deterministic WebP encoder
+        run: python -m pip install 'Pillow==11.3.0'
+      - name: Verify protected original assets and components before changes
+        run: |
+          python3 panel-mosaic-lab/verify-final-overhead.py
+          python3 panel-mosaic-lab/cockpit/verify-guard-redzone.py --negative-self-test
+          python3 panel-mosaic-lab/cockpit/verify-irs-13seg-owner-lock-v1.py --negative-self-test
+          python3 panel-mosaic-lab/cockpit/verify-irs-sys-dspl-owner-lock-v1.py
+      - name: Create and pixel-verify lossless full-resolution WebP alternatives
+        run: |
+          python tools/optimize-unified-lossless.py --self-test --write --check
+          node tests/unified-lossless-integrator.test.cjs
+      - name: Commit only verified derived images and reports
+        id: publish
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          git add -- panel-mosaic-lab/cockpit/performance/lossless/
+          if git diff --cached --quiet; then
+            echo 'changed=false' >> "$GITHUB_OUTPUT"
+            echo 'No changes to derived textures'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'perf: publish pixel-verified lossless panel derivatives'
+          git pull --rebase origin main
+          git push origin HEAD:main
+          echo 'changed=true' >> "$GITHUB_OUTPUT"
+      - name: Request Pages validation and deployment for the new verified textures
+        if: steps.publish.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh workflow run pages.yml --ref main
