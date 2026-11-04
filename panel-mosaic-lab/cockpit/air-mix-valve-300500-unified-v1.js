@@ -127,7 +127,7 @@
    ' / '+engine.temperatures[side].toFixed(1)+'°C ACTUAL / '+(engine.targetTemperatures[side]===null?'MANUAL':engine.targetTemperatures[side]+'°C TARGET')+
    ' / PACK '+(x[side].packMode||'UNKNOWN')+' / '+Math.round(engine.positions[side]*100)+'% HOT'+
    ' / '+engine.command[side]+' / '+engine.reason[side]+
-   ' / '+model.indication(engine,x,side).reason).join('\\n');
+   ' / '+model.indication(engine,x,side).reason).join('\n');
  }
  function tick(){
   const now=performance.now(),dt=Math.max(0,Math.min(1,(now-last)/1000));last=now;
