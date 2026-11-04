@@ -1,0 +1,428 @@
+{
+  "schema": "b737.main-panel-socket-calibration.v1",
+  "revision": "MP-SOCKETS-20261104-V1",
+  "units": "unscaled source image pixels",
+  "method": "Independent black-glass aperture connected-component measurement on original registered panel photos, with per-socket visual review; no shared scale or shift.",
+  "images": {
+    "engine": {
+      "dimensions": [
+        1235,
+        1274
+      ],
+      "sha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856"
+    },
+    "captain": {
+      "dimensions": [
+        3942,
+        3591
+      ],
+      "sha256": "dea7c23ddd5d648cf51735d0fcbcc9d1e69ce37efd736ec45fb173fe766fc56b"
+    },
+    "fo-inner": {
+      "dimensions": [
+        918,
+        1713
+      ],
+      "sha256": "171bf9e8d21347e7a522"
+    },
+    "fo-outer": {
+      "dimensions": [
+        1123,
+        1400
+      ],
+      "sha256": "b2439666f75ddbcab15835b532d26a7ad2d1ab669be5f48774d656c1b8915a3c"
+    }
+  },
+  "sockets": {
+    "main-at-lim": {
+      "pieceId": "engine",
+      "sourceRect": [
+        589,
+        255,
+        84,
+        41
+      ],
+      "center": [
+        631,
+        275.5
+      ]
+    },
+    "main-reverser-1": {
+      "pieceId": "engine",
+      "sourceRect": [
+        492,
+        256,
+        84,
+        41
+      ],
+      "center": [
+        534,
+        276.5
+      ]
+    },
+    "main-reverser-2": {
+      "pieceId": "engine",
+      "sourceRect": [
+        686,
+        256,
+        84,
+        41
+      ],
+      "center": [
+        728,
+        276.5
+      ]
+    },
+    "main-start-valve-1": {
+      "pieceId": "engine",
+      "sourceRect": [
+        900,
+        207,
+        83,
+        40
+      ],
+      "center": [
+        941.5,
+        227
+      ]
+    },
+    "main-start-valve-2": {
+      "pieceId": "engine",
+      "sourceRect": [
+        1088,
+        206,
+        85,
+        41
+      ],
+      "center": [
+        1130.5,
+        226.5
+      ]
+    },
+    "main-low-oil-1": {
+      "pieceId": "engine",
+      "sourceRect": [
+        852,
+        256,
+        83,
+        41
+      ],
+      "center": [
+        893.5,
+        276.5
+      ]
+    },
+    "main-oil-filter-1": {
+      "pieceId": "engine",
+      "sourceRect": [
+        946,
+        256,
+        82,
+        41
+      ],
+      "center": [
+        987,
+        276.5
+      ]
+    },
+    "main-low-oil-2": {
+      "pieceId": "engine",
+      "sourceRect": [
+        1040,
+        256,
+        84,
+        41
+      ],
+      "center": [
+        1082,
+        276.5
+      ]
+    },
+    "main-oil-filter-2": {
+      "pieceId": "engine",
+      "sourceRect": [
+        1136,
+        257,
+        82,
+        41
+      ],
+      "center": [
+        1177,
+        277.5
+      ]
+    },
+    "main-altitude-captain": {
+      "pieceId": "captain",
+      "sourceRect": [
+        2777,
+        481,
+        170,
+        82
+      ],
+      "center": [
+        2862,
+        522
+      ]
+    },
+    "main-altitude-fo": {
+      "pieceId": "fo-outer",
+      "sourceRect": [
+        504,
+        174,
+        70,
+        32
+      ],
+      "center": [
+        539,
+        190
+      ]
+    },
+    "main-pull-up-captain": {
+      "pieceId": "captain",
+      "sourceRect": [
+        1285,
+        383,
+        165,
+        73
+      ],
+      "center": [
+        1367.5,
+        419.5
+      ]
+    },
+    "main-below-gs-captain": {
+      "pieceId": "captain",
+      "sourceRect": [
+        1283,
+        482,
+        164,
+        75
+      ],
+      "center": [
+        1365,
+        519.5
+      ]
+    },
+    "main-pull-up-fo": {
+      "pieceId": "fo-inner",
+      "sourceRect": [
+        819,
+        312,
+        73,
+        32
+      ],
+      "center": [
+        855.5,
+        328
+      ]
+    },
+    "main-below-gs-fo": {
+      "pieceId": "fo-inner",
+      "sourceRect": [
+        819,
+        353,
+        73,
+        34
+      ],
+      "center": [
+        855.5,
+        370
+      ]
+    },
+    "main-gear-nose-red": {
+      "pieceId": "fo-inner",
+      "sourceRect": [
+        249,
+        149,
+        73,
+        38
+      ],
+      "center": [
+        285.5,
+        168
+      ]
+    },
+    "main-gear-nose-green": {
+      "pieceId": "fo-inner",
+      "sourceRect": [
+        249,
+        193,
+        73,
+        35
+      ],
+      "center": [
+        285.5,
+        210.5
+      ]
+    },
+    "main-gear-left-red": {
+      "pieceId": "fo-inner",
+      "sourceRect": [
+        209,
+        237,
+        72,
+        35
+      ],
+      "center": [
+        245,
+        254.5
+      ]
+    },
+    "main-gear-left-green": {
+      "pieceId": "fo-inner",
+      "sourceRect": [
+        209,
+        281,
+        72,
+        35
+      ],
+      "center": [
+        245,
+        298.5
+      ]
+    },
+    "main-gear-right-red": {
+      "pieceId": "fo-inner",
+      "sourceRect": [
+        293,
+        238,
+        72,
+        34
+      ],
+      "center": [
+        329,
+        255
+      ]
+    },
+    "main-gear-right-green": {
+      "pieceId": "fo-inner",
+      "sourceRect": [
+        294,
+        281,
+        71,
+        34
+      ],
+      "center": [
+        329.5,
+        298
+      ]
+    },
+    "main-le-transit": {
+      "pieceId": "fo-inner",
+      "sourceRect": [
+        23,
+        403,
+        72,
+        35
+      ],
+      "center": [
+        59,
+        420.5
+      ]
+    },
+    "main-le-extended": {
+      "pieceId": "fo-inner",
+      "sourceRect": [
+        107,
+        403,
+        71,
+        35
+      ],
+      "center": [
+        142.5,
+        420.5
+      ]
+    },
+    "main-antiskid": {
+      "pieceId": "fo-inner",
+      "sourceRect": [
+        60,
+        501,
+        84,
+        40
+      ],
+      "center": [
+        102,
+        521
+      ]
+    },
+    "main-autobrake": {
+      "pieceId": "fo-inner",
+      "sourceRect": [
+        60,
+        765,
+        85,
+        44
+      ],
+      "center": [
+        102.5,
+        787
+      ]
+    },
+    "main-brake-temp": {
+      "pieceId": "fo-inner",
+      "sourceRect": [
+        595,
+        1232,
+        74,
+        35
+      ],
+      "center": [
+        632,
+        1249.5
+      ]
+    },
+    "main-stab-trim": {
+      "pieceId": "engine",
+      "sourceRect": [
+        256,
+        736,
+        87,
+        63
+      ],
+      "center": [
+        299.5,
+        767.5
+      ]
+    },
+    "main-speed-brake-do-not-arm": {
+      "pieceId": "engine",
+      "sourceRect": [
+        21,
+        739,
+        95,
+        41
+      ],
+      "center": [
+        68.5,
+        759.5
+      ]
+    },
+    "main-speed-brake-armed": {
+      "pieceId": "engine",
+      "sourceRect": [
+        21,
+        789,
+        94,
+        40
+      ],
+      "center": [
+        68,
+        809
+      ]
+    },
+    "main-gpws-inop": {
+      "pieceId": "fo-inner",
+      "sourceRect": [
+        478,
+        1402,
+        83,
+        40
+      ],
+      "center": [
+        519.5,
+        1422
+      ]
+    }
+  }
+}
