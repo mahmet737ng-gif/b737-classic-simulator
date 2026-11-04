@@ -2,6 +2,48 @@
  'use strict';
  const script=document.currentScript.src,url=p=>new URL(p,script).href,byId=id=>document.getElementById(id),model=window.B737OverheadLightModel;
  let registry,instanceFaces,readabilityFaces,engine,layer,selected,ready=false,timer,valveTimer,ui,widgets=new Map();const now=()=>performance.now();
+ const pressed=new Set(),pointerLamps=new Map(),byLightId=new Map();let lastSnapshot=null;
+ // Momentary individual lens test is visual only. Never write a fault, sensor,
+ // bus state or annunciator source when a lamp is physically pressed.
+ function paintLamp(c){
+  const node=widgets.get(c.id);if(!node||!lastSnapshot)return;
+  const testing=pressed.has(c.id),v=lastSnapshot.lights[c.id];
+  const state=v===null?'UNKNOWN':v?'ON':'OFF';
+  const frame=testing?(c.states||['OFF','ON']).at(-1):lastSnapshot.frames[c.id];
+  node.dataset.state=state;node.dataset.pushTest=String(testing);node.dataset.frame=frame;
+  for(const img of node.querySelectorAll('.light-face'))
+   img.classList.toggle('active',img.dataset.frame===(frame==='FLASH'?'ON':frame));
+  node.classList.toggle('flashing',!testing&&frame==='FLASH');
+  node.setAttribute('aria-label',c.id+' — '+(testing?'PUSH TO TEST':state));
+ }
+ function clearLampPress(id){
+  if(!pressed.delete(id))return;
+  const c=byLightId.get(id);if(c)paintLamp(c);
+ }
+ function releasePointer(e){
+  const id=pointerLamps.get(e.pointerId);if(!id)return;
+  pointerLamps.delete(e.pointerId);
+  if(![...pointerLamps.values()].includes(id))clearLampPress(id);
+ }
+ function clearPresses(){
+  pointerLamps.clear();for(const id of [...pressed])clearLampPress(id);
+ }
+ function bindLampPress(node,c){
+  node.addEventListener('pointerdown',e=>{
+   e.stopPropagation();if(e.pointerType==='mouse'&&e.button!==0)return;
+   pointerLamps.set(e.pointerId,c.id);pressed.add(c.id);paintLamp(c);
+  });
+  node.addEventListener('keydown',e=>{
+   if((e.key===' '||e.key==='Enter')&&!e.repeat){
+    e.preventDefault();e.stopPropagation();pressed.add(c.id);paintLamp(c);
+   }
+  });
+  node.addEventListener('keyup',e=>{
+   if(e.key===' '||e.key==='Enter'){e.preventDefault();e.stopPropagation();clearLampPress(c.id);}
+  });
+  node.addEventListener('blur',()=>clearLampPress(c.id));
+ }
+
  const faultable=new Set(['sensor','fuel-pressure','hyd-pressure','flight-pressure','standby-pressure','yaw','drive-pressure','drive-temperature','equipment','window','probe','dc-fail','fault','irs-align','apu','recorder','anti-ice','pneumatic','press-fault','valve','fuel-valve','ram-door']);
  function snapshots(){
    const toggles=window.B737OverheadToggles.getState(),rotary=window.B737RotaryGuards.getState();
@@ -21,7 +63,7 @@
  }
 
  function render(result){
-  for(const c of registry.lights){const node=widgets.get(c.id);if(!node)continue;const v=result.lights[c.id],state=v===null?'UNKNOWN':v?'ON':'OFF',frame=result.frames[c.id];node.dataset.state=state;for(const img of node.querySelectorAll('.light-face'))img.classList.toggle('active',img.dataset.frame===(frame==='FLASH'?'ON':frame));node.dataset.frame=frame;node.classList.toggle('flashing',frame==='FLASH');node.setAttribute('aria-label',c.id+' — '+state);}
+  lastSnapshot=result;for(const c of registry.lights)paintLamp(c);
   window.dispatchEvent(new CustomEvent('b737:overhead-light-state'));
   if(!ui)return;
   byId('lightsStatus').textContent=Object.values(result.lights).filter(v=>v===true).length+' / '+registry.lights.length+' روشن'+(result.power?'':' · تغذیهٔ تست خاموش')+(result.lampTest?' · LAMP TEST':'');
@@ -58,9 +100,13 @@
    const p=model.rectangle(c,plates.get(c.placementId),window.B737OverheadToggleModel.mapPoint),node=document.createElement('button');node.type='button';node.className='mounted-light';node.dataset.light=c.id;if(c.id==='emergency-not-armed')node.dataset.lensOwner='PHOTO_GLASS_EMISSION_ONLY';node.title=c.id+' · '+c.placementId+' · source ['+c.sourceRect.join(', ')+']';
    Object.assign(node.style,{left:p.x+'px',top:p.y+'px',width:p.w+'px',height:p.h+'px'});
    for(const state of c.states||['OFF','ON']){const img=document.createElement('img');const face=(readabilityFaces?.instances?.[c.id]?.states?.[state]||instanceFaces?.instances?.[c.id]?.states?.[state]||registry.assets[c.asset][state]);const source=faceSource(c,state,face);if(window.B737ImageLoader)window.B737ImageLoader.assign(img,source);else img.src=source;img.alt='';img.draggable=false;img.dataset.frame=state;img.className='light-face';img.onerror=()=>{node.dataset.missing='true';byId('lightsStatus').textContent='خطای بارگذاری فایل چراغ: '+c.asset;};node.append(img);}
-   node.addEventListener('pointerdown',e=>e.stopPropagation());node.addEventListener('click',e=>{e.stopPropagation();choose(c);});if(c.id==='emergency-not-armed')node.dataset.brightness=window.B737LampAppearance.getMode?.()||'BRIGHT';widgets.set(c.id,node);layer.append(node);
+   byLightId.set(c.id,c);bindLampPress(node,c);node.addEventListener('click',e=>{e.stopPropagation();choose(c);});if(c.id==='emergency-not-armed')node.dataset.brightness=window.B737LampAppearance.getMode?.()||'BRIGHT';widgets.set(c.id,node);layer.append(node);
   }
-  byId('atlasAbsolute').append(layer);engine=model.controller(registry,window.B737ElectricalV7,render,window.B737PneumaticsV6);inspector();ready=true;synchronize();choose(registry.lights.find(c=>c.id==='fuel-center-l'));
+  document.addEventListener('pointerup',releasePointer,true);
+   document.addEventListener('pointercancel',releasePointer,true);
+   window.addEventListener('blur',clearPresses);
+   document.addEventListener('visibilitychange',()=>{if(document.hidden)clearPresses();});
+   byId('atlasAbsolute').append(layer);engine=model.controller(registry,window.B737ElectricalV7,render,window.B737PneumaticsV6);inspector();ready=true;synchronize();choose(registry.lights.find(c=>c.id==='fuel-center-l'));
   for(const type of ['b737:switch-change','b737:rotary-change','b737:guarded-change'])window.addEventListener(type,e=>synchronize(e.detail));
    // Owner18 has a distinct guard-change event: re-evaluate the existing annunciator.
    const flightIds=['flight-control-a','flight-control-b'];
