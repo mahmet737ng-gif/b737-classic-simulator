@@ -86,6 +86,7 @@
  function bool(v){return typeof v==='boolean'?v:null;}
  function inputs(){
   const w=child(),rot=w?.B737RotaryGuards?.getState?.()?.rotaries||{},tog=w?.B737OverheadToggles?.getState?.()||{},b=bus();
+  const livePack=window.B737AirconFCOMUnifiedV1?.getState?.()?.derived?.pack||null;
   const ac=b?Boolean(b.transfer1===true||b.transfer2===true):null;
   const power=trainingPower===null?ac:trainingPower;
   // Bench override simulates BOTH 115V actuator and 28V indicator supply;
@@ -98,6 +99,8 @@
     benchSensor:trainingPower===true&&state[side].cabinC===null,
     selector:model.SELECTORS.includes(selector)?selector:'AUTO NORM',
     packMode:['OFF','AUTO','HIGH'].includes(tog[meta.pack])?tog[meta.pack]:null,
+    packAirAvailable:trainingPower===true?true:typeof livePack?.[side==='CONT'?'L':'R']?.operational==='boolean'?
+     livePack[side==='CONT'?'L':'R'].operational:null,
     actuatorPower:power,indicatorPower:trainingPower===true?true:bool(b?.dc2),
     indicatorCB:cbClosed(),benchBypassPack:trainingPower===true};
   }
