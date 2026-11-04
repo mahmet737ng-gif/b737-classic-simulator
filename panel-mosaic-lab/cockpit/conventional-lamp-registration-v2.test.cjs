@@ -54,5 +54,5 @@ assert.ok(fitter.includes("win.getComputedStyle(obj.node)"),
 assert.ok(fitter.includes("win.addEventListener('b737:conventional-lamp-geometry'"),
  'Refit after the override geometry changes');
 assert.ok(entry.includes('conventional-lamp-registration-v1.js?v=CONV-MP-GEAR-0002'));
-assert.ok(entry.includes('live-fit.js?v=LGT-SOCKET-FIT-010-CONV-GEAR'));
+assert.ok(entry.includes('live-fit.js?v=LGT-SOCKET-FIT-011-CONV-GLASS'));
 console.log('PASS: Conventional 19 fitted lamp slots, six aligned gear lenses, zero overlaps, EIS original registration preserved.');
