@@ -15,12 +15,13 @@
   image:[1463,1075],
   antiskid:Object.freeze({center:[1153.5,620],well:[1120,545,68,149],
     description:'Existing two-position guarded ON/OFF switch; no replacement image'}),
-  autobrake:Object.freeze({center:[1148,845],diameter:80,
+  autobrake:Object.freeze({center:[1147.6,844.8],diameter:80,
     description:'Approved rotary-standard-v1.webp, centered on actual source-photo selector hole'})
  });
  const DETENTS=Object.freeze(['RTO','OFF','1','2','3','MAX']);
  const ANGLES=Object.freeze({RTO:-135,OFF:-90,'1':-45,'2':0,'3':45,MAX:90});
  const STORE='b737.conventional.autobrake.selector.v1';
+ const RTO_SELF_TEST_MS=3000;
  const cssId='b737-conventional-physical-controls-register-v1';
  function point(layout,xy){
   if(!layout||layout.sourceWidth!==REF.image[0]||layout.sourceHeight!==REF.image[1])
@@ -36,12 +37,44 @@
   const doc=win.document;
   let knob=null,guard=null,style=null,watcher=null,lastSignature='',ready=false;
   let selected='OFF';
+  let rtoTimer=null,rtoSelfTestActive=false,rtoGeneration=0;
+  const lightSystem=()=>win.B737CockpitLights;
+  // The simulator/trainer uses a separate WOW input. Do not infer ground
+  // solely from landing gear position or the aircraft's barometric altitude.
+  const isOnGround=()=>lightSystem()?.getState?.()?.inputs?.aircraftOnGround===true;
+  function writeRtoSelfTest(active){
+   const light=lightSystem();
+   if(!light?.setInputs)return false;
+   if(light.getState()?.inputs?.autobrakeRtoSelfTest!==active)
+    light.setInputs({autobrakeRtoSelfTest:active});
+   return true;
+  }
+  function stopRtoSelfTest(){
+   ++rtoGeneration;
+   if(rtoTimer!==null){win.clearTimeout(rtoTimer);rtoTimer=null;}
+   rtoSelfTestActive=false;
+   writeRtoSelfTest(false);
+  }
+  function startRtoSelfTest(){
+   stopRtoSelfTest();
+   if(!isOnGround())return false;
+   rtoSelfTestActive=true;
+   writeRtoSelfTest(true);
+   const token=rtoGeneration;
+   // A separate input means real DISARM faults remain lit after self-test.
+   rtoTimer=win.setTimeout(()=>{
+    if(token!==rtoGeneration)return;
+    rtoTimer=null;rtoSelfTestActive=false;writeRtoSelfTest(false);
+   },RTO_SELF_TEST_MS);
+   return true;
+  }
   try{const v=win.sessionStorage.getItem(STORE);if(DETENTS.includes(v))selected=v;}catch(_){}
   const native=()=>doc.querySelector('#region-main .region-native');
   const mode=()=>doc.documentElement.dataset.engineIndication;
   const layout=()=>win.B737EngineIndicationModeV1?.layout?.();
   const clearPress=()=>knob?.classList.remove('pressed');
   const report=()=>({ready,mode:mode(),detent:selected,angle:ANGLES[selected],
+    onGround:isOnGround(),rtoSelfTestActive,rtoSelfTestMs:RTO_SELF_TEST_MS,
     antiskid:guard?{state:guard.dataset.value,cover:guard.dataset.cover,
       left:getComputedStyle(guard).left,top:getComputedStyle(guard).top}:null,
     knob:knob?{center:[parseFloat(knob.style.left),parseFloat(knob.style.top)],
@@ -61,6 +94,8 @@
    try{win.sessionStorage.setItem(STORE,next);}catch(_){}
    render();
    if(old!==next){
+    if(next==='RTO')startRtoSelfTest();
+    else if(old==='RTO')stopRtoSelfTest();
     const detail={selector:'AUTOBRAKE',detent:next,previous:old,
      detents:DETENTS.slice(),source:'CONV-CONTROLS-0001',origin,
      visualControl:true};
@@ -153,13 +188,27 @@
    win.addEventListener(name,queue);
   doc.addEventListener('visibilitychange',()=>{if(doc.hidden)clearPress();});
   win.addEventListener('blur',clearPress);
+  // External WOW changes can arrive from the simulator through this existing
+  // cockpit sensor event. Abort the test immediately upon becoming airborne.
+  win.addEventListener('b737:cockpit-sensors',event=>{
+   if(event.detail?.aircraftOnGround===false)stopRtoSelfTest();
+  });
   if(doc.readyState==='loading')doc.addEventListener('DOMContentLoaded',queue,{once:true});
   else queue();
   win.B737ConventionalPhysicalControlsV1=Object.freeze({
    getState:report,getDetent:()=>selected,setDetent:set,step,update,
+   // Instructor/simulator entry point: weight-on-wheels must be explicit.
+   setOnGround(value){
+    if(typeof value!=='boolean')throw Error('On-ground sensor must be boolean');
+    const lamp=lightSystem();
+    if(!lamp?.setInputs)throw Error('Cockpit light sensors not ready');
+    lamp.setInputs({aircraftOnGround:value});
+    if(!value)stopRtoSelfTest();
+    return value;
+   },
    getGeometry:()=>({antiskid:{...REF.antiskid},autobrake:{...REF.autobrake}}),
-   detents:DETENTS.slice()
+   detents:DETENTS.slice(),RTO_SELF_TEST_MS
   });
  }
- return Object.freeze({REF,DETENTS,ANGLES,point,bounding,install});
+ return Object.freeze({REF,DETENTS,ANGLES,RTO_SELF_TEST_MS,point,bounding,install});
 });
