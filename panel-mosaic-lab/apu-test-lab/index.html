@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en" dir="ltr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>B737 Classic · APU Protective Test Lab</title>
+<style>
+:root{font-family:Inter,Arial,sans-serif;color:#e5eef6;background:#09121c;font-size:14px}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 20% 0%,#22354a 0%,#09121c 60%)}
+header{position:sticky;top:0;z-index:5;background:#101d2ceb;padding:17px 24px;border-bottom:1px solid #314256;display:flex;align-items:center;justify-content:space-between;gap:16px}
+h1{font-size:21px;margin:0 0 5px;letter-spacing:.03em}h2{font-size:14px;letter-spacing:.09em;color:#a8c7e3;margin:0 0 14px}
+small{color:#91a9bc}button,input,select{font:inherit}button{border:1px solid #51667b;border-radius:7px;background:#23374b;color:#eff6fd;cursor:pointer;padding:9px 12px}
+button:hover{background:#35516e}button:focus-visible,input:focus-visible{outline:2px solid #79c4ff;outline-offset:2px}
+button.primary{background:#156088;border-color:#1989bd}button.danger{background:#76352f;border-color:#b65147}
+main{max-width:1510px;margin:auto;padding:18px;display:grid;grid-template-columns:minmax(290px,1fr) minmax(400px,1.65fr);gap:16px}
+section.panel{background:#111f2e;border:1px solid #314459;border-radius:10px;padding:17px;min-width:0}
+.left{display:grid;gap:15px;align-content:start}.right{display:grid;gap:15px;align-content:start}
+.status{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.dot{width:11px;height:11px;border-radius:100%;background:#91c8a5;box-shadow:0 0 8px #65d99d80}
+.dot.warn{background:#ffc35c;box-shadow:0 0 9px #ffac3e}.dot.fail{background:#ff6c6c;box-shadow:0 0 10px #ff6c6c}
+#connection,#tripReason{font-weight:700}#tripReason{color:#ffbf82}
+.faults{display:grid;gap:5px;max-height:410px;overflow:auto;padding-right:4px}
+.fault{display:flex;gap:10px;align-items:center;padding:9px 10px;border:1px solid #33485b;border-radius:6px;background:#182b3b;cursor:pointer}
+.fault:hover{background:#203b50}.fault input{accent-color:#d89d41;width:17px;height:17px;flex-shrink:0}.fault b{font-size:12px;display:block}.fault em{display:block;font-size:10px;color:#8fb5cf;font-style:normal;letter-spacing:.06em}
+.button-row{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}
+.meters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.meter{padding:13px 12px 12px;border:1px solid #38516b;border-radius:8px;background:linear-gradient(145deg,#1c2f43,#142436);min-height:110px}
+.meter .metric-title{font-size:11px;letter-spacing:.085em;color:#9bc1d7}.value{font-variant-numeric:tabular-nums;font-family:Consolas,monospace;font-weight:800;font-size:29px;margin-top:7px;white-space:nowrap}
+.value span{font-size:12px;color:#9fb6ca}.meter .bar{height:5px;background:#071522;border-radius:6px;margin-top:10px;overflow:hidden}
+.meter .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#4ca1be,#8de7d0);transition:width .15s linear}
+.meter.critical{border-color:#cd7e43}.meter.critical .value{color:#ffbc83}.meter.critical .bar i{background:#ef8453}
+.lamps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}.lamp{border-radius:6px;background:#202a33;border:1px solid #3e4a4e;min-height:68px;padding:10px;text-align:center;font-weight:bold;color:#899196;font-size:11px;display:grid;place-content:center;letter-spacing:.025em}
+.lamp.on{background:#e7a338;border-color:#ffdb76;color:#281800;box-shadow:0 0 17px #ea991f8a}.lamp.blue.on{background:#77abf9;border-color:#c1d8ff;color:#0c2041}
+.settings{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.field{display:flex;flex-direction:column;gap:6px;color:#afc8db;font-size:12px}
+.field input{background:#091726;border:1px solid #456078;color:#e3f6ff;padding:8px;border-radius:6px;width:100%;min-width:0}
+.note{color:#afc1d0;font-size:12px;line-height:1.6;margin:10px 0 0}.warning{color:#ffd3a4}
+#eventLog{padding:0;list-style:none;max-height:172px;overflow:auto;font:12px Consolas,monospace;color:#aabed0;margin:0}
+#eventLog li{padding:6px 0;border-bottom:1px solid #293a4c}
+footer{color:#8da6ba;text-align:center;padding:6px 15px 23px;font-size:12px}
+@media(max-width:850px){main{grid-template-columns:1fr}.meters{grid-template-columns:repeat(2,minmax(0,1fr))}.lamps{grid-template-columns:repeat(2,1fr)}header{position:static}}
+</style></head><body>
+<header><div><h1>APU · PROTECTIVE SYSTEM TEST LAB</h1><small>737 Classic · Independent fault selection · Shared ECU shutdown response · TRAINING ONLY</small></div>
+<div class="status"><i id="statusDot" class="dot"></i><span id="connection">CONNECTING TO UNIFIED</span><button type="button" id="close">CLOSE</button></div></header>
+<main><div class="left">
+<section class="panel"><h2>SELECT INDIVIDUAL / COMBINED FAILURES</h2><div class="faults" id="faults"></div>
+<div class="button-row"><button id="normal" class="primary" type="button">CLEAR ALL FAULTS</button><button id="reset" type="button">RESET LAB</button><button id="selfTest" type="button" aria-pressed="false">LAMP TEST</button></div>
+<p class="note">Each failure has an independent switch. Several failures may be active simultaneously. RESET LAB does not override a real aircraft APU switch or restart the shared engine after shutdown.</p></section>
+<section class="panel"><h2>PROTECTIVE THRESHOLDS · INSTRUCTOR PROFILE</h2><div class="settings">
+<label class="field">Overspeed threshold (% RPM)<input type="number" id="overspeedPct" min="100" max="140" step=".5"></label>
+<label class="field">High oil temp threshold (°C)<input type="number" id="highOilTempC" min="100" max="200" step="1"></label>
+<label class="field">High oil temp hold (s)<input type="number" id="highOilHoldSec" min="0" max="120" step=".5"></label>
+<label class="field">Low oil trip threshold (PSI)<input type="number" id="lowOilTripPsi" min="1" max="80" step="1"></label>
+<label class="field">Low oil pressure hold (s)<input type="number" id="lowOilHoldSec" min="0" max="120" step=".5"></label>
+<label class="field">Normal oil temp reference (°C)<input type="number" id="normalOilTempC" min="20" max="140" step="1"></label>
+</div><p id="thresholdError" class="note warning"></p>
+<p class="note warning">These are selectable engineering/training examples, NOT confirmed setpoints for the installed GTCP 85-129 / APS 2000. The shared ECU currently uses a separately owner-configured 4 PSI start-lamp extinguish threshold, which is NOT the low-oil protective shutdown setpoint. Confirm installed APU/effectivity before setting authoritative thresholds.</p></section>
+</div><div class="right">
+<section class="panel"><h2>LIVE SENSOR TELEMETRY</h2><div class="meters">
+<div class="meter" id="m-rpm"><div class="metric-title">APU SPEED</div><div class="value"><b id="rpm">—</b> <span>% RPM</span></div><div class="bar"><i id="b-rpm"></i></div></div>
+<div class="meter" id="m-oilPressure"><div class="metric-title">OIL PRESSURE</div><div class="value"><b id="oilPressure">—</b> <span>PSI</span></div><div class="bar"><i id="b-oilPressure"></i></div></div>
+<div class="meter" id="m-oilTemp"><div class="metric-title">OIL TEMPERATURE</div><div class="value"><b id="oilTemp">—</b> <span>°C</span></div><div class="bar"><i id="b-oilTemp"></i></div></div>
+<div class="meter" id="m-egt"><div class="metric-title">EXHAUST GAS TEMP</div><div class="value"><b id="egt">—</b> <span>°C</span></div><div class="bar"><i id="b-egt"></i></div></div>
+<div class="meter" id="m-ac"><div class="metric-title">APU GENERATOR CURRENT</div><div class="value"><b id="ac">—</b> <span>A</span></div><div class="bar"><i id="b-ac"></i></div></div>
+<div class="meter" id="m-fuel"><div class="metric-title">FUEL FLOW ESTIMATE</div><div class="value"><b id="fuel">—</b> <span>kg/h</span></div><div class="bar"><i id="b-fuel"></i></div></div>
+</div><p class="note" id="sourceInfo">Waiting for the shared real-time APU ECU. Lab faults use explicitly synthetic sensor overlays; normal RPM/EGT/OIL PSI come from the existing ECU.</p>
+<p class="note" id="electricalInfo">Generator: — · Bleed: — · ECU phase: —</p></section>
+<section class="panel"><h2>APU ANNUNCIATORS · LAB PROJECTION</h2>
+<div class="lamps"><div class="lamp" id="l-overspeed">OVER SPEED</div><div class="lamp" id="l-lowOil">LOW OIL PRESSURE</div><div class="lamp" id="l-fault">FAULT / HIGH OIL TEMP</div><div class="lamp blue" id="l-gen">APU GEN OFF BUS</div></div>
+<p class="note">The FAULT / HIGH OIL TEMP legend varies with Classic panel installation. The lab does not repaint or relocate the frozen cockpit light sockets.</p></section>
+<section class="panel"><h2>SHUTDOWN MONITOR</h2><div class="status"><i id="tripDot" class="dot"></i><strong id="tripReason">NORMAL · NO PROTECTION TRIPPED</strong></div>
+<p id="countdowns" class="note">Oil temp hold: 0s · Low oil hold: 0s</p>
+<p class="note" id="tripEffect">When a protection trip occurs, the shared Unified APU source is stopped and generator/bleed readiness updates through the existing ECU path. The simulator is for cockpit practice, not dispatch or flight.</p></section>
+<section class="panel"><h2>EVENT LOG</h2><ul id="eventLog"></ul></section>
+</div></main><footer>APU-LAB-0001 · Independent instructor protective monitor · numeric training projections · no changes to locked cockpit assets</footer>
+<script src="./model.js?v=APU-LAB-0001"></script>
+<script>
+(function(){'use strict';
+const M=window.B737APUProtectiveLabV1,by=id=>document.getElementById(id);
+let model=M.initial(),last=performance.now(),lampTest=false,host=null,sentTrip=false,connected=false,previousFaults=new Set(),logsLen=0;
+try{host=window.parent!==window?window.parent:window.opener||null;if(host&&host.location.origin!==location.origin)host=null;}catch(_){host=null;}
+function getLive(){try{const api=host?.B737ISNCockpitV1;return api?.getECUState?.()?.apu||null;}catch(_){return null;}}
+function faultControl(id,on){
+ try{if(id==='GENERATOR_FAILURE')host?.B737ISNCockpitV1?.apuLabSetHardwareFault?.('generatorFailure',on);
+ else if(id==='BLEED_FAILURE')host?.B737ISNCockpitV1?.apuLabSetHardwareFault?.('bleedFailure',on);}
+ catch(e){by('thresholdError').textContent='Shared ECU fault: '+e.message;}
+}
+function setup(){
+ const list=by('faults');
+ for(const f of M.faults){const label=document.createElement('label');label.className='fault';
+  const cb=document.createElement('input');cb.type='checkbox';cb.dataset.fault=f.id;
+  const text=document.createElement('span');const title=document.createElement('b');title.textContent=f.label;
+  const sub=document.createElement('em');sub.textContent=f.group;text.append(title,sub);
+  label.append(cb,text);list.append(label);
+  cb.addEventListener('change',()=>{model=M.setFault(model,f.id,cb.checked);faultControl(f.id,cb.checked);render(getLive());});
+ }
+ for(const [k,v] of Object.entries(M.defaults)){by(k).value=v;by(k).addEventListener('change',()=>{
+  try{model=M.setLimits(model,{[k]:Number(by(k).value)});by('thresholdError').textContent='';}
+  catch(e){by('thresholdError').textContent=e.message;by(k).value=model.limits[k];}
+ });}
+ by('normal').onclick=()=>{for(const id of model.active)faultControl(id,false);
+  model={...model,active:[]};for(const input of list.querySelectorAll('input'))input.checked=false;render(getLive());};
+ by('reset').onclick=()=>{for(const id of model.active)faultControl(id,false);
+  model=M.initial();sentTrip=false;logsLen=0;for(const input of list.querySelectorAll('input'))input.checked=false;
+  for(const [k,v] of Object.entries(M.defaults))by(k).value=v;render(getLive());};
+ by('selfTest').onclick=()=>{lampTest=!lampTest;by('selfTest').setAttribute('aria-pressed',String(lampTest));render(getLive());};
+ by('close').onclick=()=>{if(window.frameElement){try{host?.document?.getElementById('apuLabDialogV1')?.close();}catch(_){window.location.href='about:blank';}}else window.close();};
+}
+function val(id,n,maximum,critical){const good=Number.isFinite(n),text=good?n.toFixed(id==='oilPressure'||id==='rpm'?1:0):'—';by(id).textContent=text;
+ by('b-'+id).style.width=good?Math.max(0,Math.min(100,n/maximum*100))+'%':'0%';
+ by('m-'+id).classList.toggle('critical',Boolean(critical));}
+function render(live){
+ connected=!!live;by('connection').textContent=connected?'UNIFIED ECU · '+live.phase:'UNIFIED ECU NOT CONNECTED · READ ONLY';
+ by('statusDot').className='dot'+(connected?'':' warn');
+ const v=model.values,limits=model.limits;
+ val('rpm',v.rpmPct,130,v.rpmPct>=limits.overspeedPct);
+ val('oilPressure',v.oilPressurePsi,100,live?.phase==='READY'&&v.oilPressurePsi<=limits.lowOilTripPsi);
+ val('oilTemp',v.oilTempC,200,v.oilTempC>=limits.highOilTempC);
+ val('egt',v.egtC,800,false);
+ val('ac',live?.generator?.currentEstimatedA??0,300,false);
+ val('fuel',live?.fuelFlowEstimatedKgHr??0,300,false);
+ const lamps=M.lamps(model,live);
+ for(const [name,id] of Object.entries({overspeed:'overspeed',lowOil:'lowOil',fault:'fault'}))
+  by('l-'+id).classList.toggle('on',lampTest||lamps[name]);
+ by('l-gen').classList.toggle('on',lampTest||Boolean(live?.phase==='READY'&&live?.generator?.ready&&!live?.generator?.connectedBusSides?.length));
+ by('electricalInfo').textContent='GEN '+(live?.generator?.voltageV??0)+' V / '+(live?.generator?.frequencyHz??0)+' Hz · BLEED '+(live?.bleedValveOpen?'OPEN':'CLOSED')+' · ECU '+(live?.phase||'—');
+ by('sourceInfo').textContent=connected?'LIVE SOURCE: Unified APU ECU. RPM, oil PSI and EGT show instructor fault-projected values when faults are active; oil temperature is an independent TRAINING ESTIMATE because the current ECU publishes no APU oil-temperature sensor.':
+ 'READ-ONLY: Open this lab from Unified to attach its real ECU. No shutdown commands can be issued while disconnected.';
+ by('tripReason').textContent=model.trip?'PROTECTIVE SHUTDOWN · '+model.trip.reason:'NORMAL · NO PROTECTION TRIPPED';
+ by('tripDot').className='dot'+(model.trip?' fail':model.active.length?' warn':'');
+ by('countdowns').textContent='Oil temp >= threshold: '+model.hold.oilTemp.toFixed(1)+' / '+limits.highOilHoldSec+'s · Oil pressure <= threshold: '+model.hold.oilPressure.toFixed(1)+' / '+limits.lowOilHoldSec+'s';
+ by('tripEffect').textContent=model.trip?'TRIP '+model.trip.reason+' at lab t='+model.trip.atSec.toFixed(1)+' s. '+(sentTrip?'Shared ECU protective shutdown command sent; source, AC and bleed now reflect actual ECU response.':'Shared ECU not connected: shutdown indicated in isolated lab only.'):
+ 'Protective conditions update continuously. Trip thresholds are adjustable training settings (not certified).';
+ if(logsLen!==model.logs.length){logsLen=model.logs.length;by('eventLog').replaceChildren(...model.logs.slice(-20).reverse().map(x=>{
+  const li=document.createElement('li');li.textContent='t+'+x.time.toFixed(1)+'s  '+x.text;return li;}));}
+}
+function tick(){
+ const now=performance.now(),dt=Math.min(0.4,Math.max(0,(now-last)/1000));last=now;
+ const live=getLive();
+ if(live)model=M.step(model,live,dt);
+ if(live&&model.trip&&!sentTrip){
+  try{const api=host?.B737ISNCockpitV1;if(api?.apuLabProtectionTrip){
+   const r=api.apuLabProtectionTrip(model.trip.reason);sentTrip=!!r;}
+  }catch(e){by('thresholdError').textContent='Unable to trip shared APU: '+e.message;}
+ }
+ render(live);
+}
+setup();tick();setInterval(tick,150);
+})();
+</script></body></html>
