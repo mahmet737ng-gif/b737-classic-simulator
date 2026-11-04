@@ -1,0 +1,43 @@
+'use strict';
+/* AUTOBRAKE-RTO-SELFTEST-0001: fault and 3-second lamp-test signals are
+ * independent. Flight/WOW gating is handled by the physical selector. */
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const path=require('node:path');
+const model=require('./lights-model.js');
+const controls=require('./conventional-physical-controls-v1.js');
+const reg=JSON.parse(fs.readFileSync(path.join(__dirname,'lights.json'),'utf8'));
+const controller=model.controller(reg);
+controller.setOverheadPower(true);
+const lamp=()=>controller.evaluate().frames['main-autobrake'];
+assert.equal(controls.RTO_SELF_TEST_MS,3000);
+assert.equal(model.initial().aircraftOnGround,true);
+assert.equal(model.initial().autobrakeRtoSelfTest,false);
+assert.equal(lamp(),'OFF','Disarm light normally dark');
+controller.update({autobrakeRtoSelfTest:true});
+assert.equal(lamp(),'ON','Ground RTO three-second signal illuminates DISARM');
+controller.update({autobrakeRtoSelfTest:false});
+assert.equal(lamp(),'OFF','At end of test, restore normal DISARM state');
+controller.update({autobrakeDisarmed:true,autobrakeRtoSelfTest:true});
+assert.equal(lamp(),'ON');
+controller.update({autobrakeRtoSelfTest:false});
+assert.equal(lamp(),'ON','A genuine disarm fault must NOT be cleared by the test timer');
+controller.update({autobrakeDisarmed:false,autobrakeArmed:true,antiskidOn:false});
+assert.equal(lamp(),'ON','Existing anti-skid interlock retained');
+controller.update({antiskidOn:true,autobrakeArmed:false});
+assert.equal(lamp(),'OFF');
+controller.update({aircraftOnGround:false});
+assert.equal(controller.evaluate().inputs.aircraftOnGround,false,
+ 'WOW/ground status is a real independent input, never inferred from altitude');
+assert.equal(controls.REF.autobrake.center[0],1147.6,'Measured dark-glass aperture X');
+assert.equal(controls.REF.autobrake.center[1],844.8,'Measured dark-glass aperture Y');
+const css=fs.readFileSync(path.join(__dirname,'conventional-physical-controls-v1.css'),'utf8');
+assert.ok(css.includes('top:6%;left:0'),'Sprite optical axle must coincide with source-photo hole');
+assert.ok(css.includes('transform-origin:50% 44%'));
+const source=fs.readFileSync(path.join(__dirname,'conventional-physical-controls-v1.js'),'utf8');
+assert.ok(source.includes('if(next===\'RTO\')startRtoSelfTest()'));
+assert.ok(source.includes('else if(old===\'RTO\')stopRtoSelfTest()'));
+assert.ok(source.includes('writeRtoSelfTest(true)'));
+assert.ok(source.includes('writeRtoSelfTest(false)'));
+assert.ok(source.includes('if(!isOnGround())return false'));
+console.log('PASS: photo-native rotary axis, RTO 3000ms contract, ground sensor gate, 3s test isolated from faults and EIS lamp logic.');
