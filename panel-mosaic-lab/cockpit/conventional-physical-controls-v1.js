@@ -128,22 +128,33 @@
    doc.documentElement.dataset.conventionalControlsReady='true';
    return true;
   }
-  function queue(){win.requestAnimationFrame(update);}
+  // Never watch the entire scene during EIS. GuardOwner18 already mounts
+  // asynchronously; only wait for it while Conventional is actually selected.
+  function stopWatcher(){
+   if(!watcher)return;
+   watcher.disconnect();watcher=null;
+  }
+  function watchIfNeeded(){
+   if(watcher||mode()!=='CONVENTIONAL')return;
+   const container=doc.getElementById('scene')||doc.body;
+   if(!container)return;
+   watcher=new win.MutationObserver(()=>{
+    if(update()||mode()!=='CONVENTIONAL')stopWatcher();
+   });
+   watcher.observe(container,{subtree:true,childList:true});
+  }
+  function queue(){
+   win.requestAnimationFrame(()=>{
+    if(update())stopWatcher();
+    else watchIfNeeded();
+   });
+  }
   for(const name of ['b737:cockpit-mounted','b737:engine-indication-view','resize'])
    win.addEventListener(name,queue);
   doc.addEventListener('visibilitychange',()=>{if(doc.hidden)clearPress();});
   win.addEventListener('blur',clearPress);
-  // GuardOwner18 loads its immutable manifest asynchronously. Observe only
-  // until that approved control mounts, then disconnect (no recurring DOM scan).
-  const start=()=>{
-   if(update())return;
-   const container=doc.getElementById('scene')||doc.body;
-   if(!container)return;
-   watcher=new win.MutationObserver(()=>{if(update()){watcher.disconnect();watcher=null;}});
-   watcher.observe(container,{subtree:true,childList:true});
-  };
-  if(doc.readyState==='loading')doc.addEventListener('DOMContentLoaded',start,{once:true});
-  else start();
+  if(doc.readyState==='loading')doc.addEventListener('DOMContentLoaded',queue,{once:true});
+  else queue();
   win.B737ConventionalPhysicalControlsV1=Object.freeze({
    getState:report,getDetent:()=>selected,setDetent:set,step,update,
    getGeometry:()=>({antiskid:{...REF.antiskid},autobrake:{...REF.autobrake}}),
