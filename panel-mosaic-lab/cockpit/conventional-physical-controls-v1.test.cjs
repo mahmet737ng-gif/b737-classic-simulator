@@ -43,7 +43,7 @@ assert.ok(js.includes("knob.addEventListener('wheel'"));
 assert.ok(js.includes("knob.addEventListener('keydown'"));
 assert.ok(css.includes('html[data-engine-indication="CONVENTIONAL"] #region-main'));
 assert.ok(css.includes('display:none'),'Auto brake knob hidden when EIS');
-assert.ok(html.includes('conventional-physical-controls-v1.js?v=CONV-CONTROLS-0003-RTO-SELFTEST'));
+assert.ok(html.includes('conventional-physical-controls-v1.js?v=CONV-CONTROLS-0004-ANTISKID-ONOFF'));
 assert.ok(html.includes('conventional-physical-controls-v1.css?v=CONV-CONTROLS-0003-AXLE'));
 assert.ok(!js.includes('replaceWith'),'Do not replace Owner18 physical guard');
 assert.throws(()=>point({sourceWidth:100,sourceHeight:100,matrix:layout.matrix},REF.antiskid.center),/Conventional native/);
