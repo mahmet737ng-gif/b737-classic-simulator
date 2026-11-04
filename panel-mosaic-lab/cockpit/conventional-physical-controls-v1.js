@@ -73,6 +73,56 @@
   const mode=()=>doc.documentElement.dataset.engineIndication;
   const layout=()=>win.B737EngineIndicationModeV1?.layout?.();
   const clearPress=()=>knob?.classList.remove('pressed');
+  // Owner18's default first click opens the guard, and only the NEXT click
+  // advances its switch. Conventional needs a single deliberate ON/OFF
+  // selection on the real existing hardware. Capture the click before the
+  // shared guard click-cycle handler, leaving EIS completely unchanged.
+  function syncAntiSkidSensor(){
+   const value=win.B737GuardOwner18?.inspect?.()?.antiskid?.value;
+   if(value!=='ON'&&value!=='OFF')return;
+   const lights=lightSystem();
+   if(lights?.setInputs && lights.getState()?.inputs?.antiskidOn!==(value==='ON'))
+    lights.setInputs({antiskidOn:value==='ON'});
+  }
+  function setAntiSkid(value,origin='api'){
+   if(!['ON','OFF'].includes(value))throw Error('Unknown anti-skid position');
+   const api=win.B737GuardOwner18;
+   if(!api?.set)throw Error('ANTI-SKID guarded hardware not ready');
+   api.set('antiskid',value,false);
+   syncAntiSkidSensor();
+   win.dispatchEvent(new win.CustomEvent('b737:antiskid-selector-changed',{
+    detail:{selector:'ANTI-SKID',value,origin,source:'CONV-CONTROLS-0004'}
+   }));
+   return value;
+  }
+  function bindAntiSkid(){
+   if(!guard||guard.dataset.conventionalAntiSkidBound==='true')return;
+   guard.dataset.conventionalAntiSkidBound='true';
+   guard.addEventListener('click',event=>{
+    if(mode()!=='CONVENTIONAL'||event.detail>=2)return;
+    event.preventDefault();event.stopImmediatePropagation();
+    setAntiSkid(guard.dataset.value==='ON'?'OFF':'ON','click');
+   },true);
+   guard.addEventListener('wheel',event=>{
+    if(mode()!=='CONVENTIONAL'||event.deltaY===0)return;
+    event.preventDefault();event.stopPropagation();
+    setAntiSkid(event.deltaY<0?'ON':'OFF','wheel');
+   },{passive:false});
+   guard.addEventListener('keydown',event=>{
+    if(mode()!=='CONVENTIONAL')return;
+    const value=event.key==='ArrowUp'?'ON':event.key==='ArrowDown'?'OFF':null;
+    if(!value)return;
+    event.preventDefault();event.stopImmediatePropagation();
+    setAntiSkid(value,'keyboard');
+   },true);
+  }
+  // All changes from the guarded hardware (including right-click CLOSE)
+  // propagate to the actual annunciator logic, not merely the switch image.
+  win.addEventListener('b737:guard-changed',event=>{
+   if(event.detail?.id==='antiskid'&&event.detail?.source==='owner18-photo-v1')
+    syncAntiSkidSensor();
+  });
+  win.addEventListener('b737:cockpit-lights-ready',syncAntiSkidSensor);
   const report=()=>({ready,mode:mode(),detent:selected,angle:ANGLES[selected],
     onGround:isOnGround(),rtoSelfTestActive,rtoSelfTestMs:RTO_SELF_TEST_MS,
     antiskid:guard?{state:guard.dataset.value,cover:guard.dataset.cover,
@@ -141,6 +191,8 @@
    if(!main||!l)return false;
    guard=main.querySelector('.owner18-guard-control[data-guard-id="antiskid"]');
    if(!guard)return false;
+   bindAntiSkid();
+   syncAntiSkidSensor();
    const gw=guard.offsetWidth||parseFloat(guard.style.width),gh=guard.offsetHeight||parseFloat(guard.style.height);
    if(!(gw>0&&gh>0))return false;
    const physical=bounding(l,REF.antiskid.center,gw,gh);
@@ -197,6 +249,8 @@
   else queue();
   win.B737ConventionalPhysicalControlsV1=Object.freeze({
    getState:report,getDetent:()=>selected,setDetent:set,step,update,
+   getAntiSkid:()=>win.B737GuardOwner18?.inspect?.()?.antiskid?.value||null,
+   setAntiSkid,
    // Instructor/simulator entry point: weight-on-wheels must be explicit.
    setOnGround(value){
     if(typeof value!=='boolean')throw Error('On-ground sensor must be boolean');
