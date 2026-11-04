@@ -16,7 +16,10 @@
     {
       "value": 0,
       "index": 0,
-      "toothTip": {"x": 23, "y": 272},
+      "toothTip": {
+        "x": 23,
+        "y": 272
+      },
       "sourceRect": {
         "x": 0,
         "y": 0,
@@ -27,7 +30,10 @@
     {
       "value": 1,
       "index": 1,
-      "toothTip": {"x": 24, "y": 326},
+      "toothTip": {
+        "x": 24,
+        "y": 326
+      },
       "sourceRect": {
         "x": 240,
         "y": 0,
@@ -38,7 +44,10 @@
     {
       "value": 2,
       "index": 2,
-      "toothTip": {"x": 26, "y": 401},
+      "toothTip": {
+        "x": 26,
+        "y": 401
+      },
       "sourceRect": {
         "x": 480,
         "y": 0,
@@ -49,7 +58,10 @@
     {
       "value": 5,
       "index": 3,
-      "toothTip": {"x": 26, "y": 441},
+      "toothTip": {
+        "x": 26,
+        "y": 441
+      },
       "sourceRect": {
         "x": 720,
         "y": 0,
@@ -60,7 +72,10 @@
     {
       "value": 10,
       "index": 4,
-      "toothTip": {"x": 26, "y": 519},
+      "toothTip": {
+        "x": 26,
+        "y": 519
+      },
       "sourceRect": {
         "x": 960,
         "y": 0,
@@ -71,7 +86,10 @@
     {
       "value": 15,
       "index": 5,
-      "toothTip": {"x": 39, "y": 530},
+      "toothTip": {
+        "x": 39,
+        "y": 530
+      },
       "sourceRect": {
         "x": 1200,
         "y": 0,
@@ -82,7 +100,10 @@
     {
       "value": 25,
       "index": 6,
-      "toothTip": {"x": 25, "y": 586},
+      "toothTip": {
+        "x": 25,
+        "y": 586
+      },
       "sourceRect": {
         "x": 1440,
         "y": 0,
@@ -93,7 +114,10 @@
     {
       "value": 30,
       "index": 7,
-      "toothTip": {"x": 25, "y": 637},
+      "toothTip": {
+        "x": 25,
+        "y": 637
+      },
       "sourceRect": {
         "x": 1680,
         "y": 0,
@@ -104,7 +128,10 @@
     {
       "value": 40,
       "index": 8,
-      "toothTip": {"x": 23, "y": 691},
+      "toothTip": {
+        "x": 23,
+        "y": 691
+      },
       "sourceRect": {
         "x": 1920,
         "y": 0,
@@ -122,25 +149,111 @@
   },
   "backgroundCalibrations": {
     "panel-mosaic-lab/assets/locked/2026-10-23/Aircraft Throttle Quadrant Control Panel.png": {
-      "sourceSize": [1145, 1373],
+      "sourceSize": [
+        1145,
+        1373
+      ],
       "method": "Bright horizontal tick segments measured in original PNG at x=855..872; extra unlabeled mark y=456..466 excluded",
       "cosmeticCorrections": [
         {
           "reason": "Remove the extra unlabeled white mark between FLAP 1 and 2 without changing the locked background PNG",
-          "sourceRect": {"x": 838, "y": 455, "w": 14, "h": 14},
-          "destinationRect": {"x": 853, "y": 455, "w": 14, "h": 14}
+          "sourceRect": {
+            "x": 838,
+            "y": 455,
+            "w": 14,
+            "h": 14
+          },
+          "destinationRect": {
+            "x": 853,
+            "y": 455,
+            "w": 14,
+            "h": 14
+          }
         }
       ],
       "targets": {
-        "0": {"x": 861, "y": 349},
-        "1": {"x": 861, "y": 402},
-        "2": {"x": 861, "y": 556},
-        "5": {"x": 861, "y": 622},
-        "10": {"x": 861, "y": 712},
-        "15": {"x": 861, "y": 787},
-        "25": {"x": 861, "y": 863},
-        "30": {"x": 861, "y": 937},
-        "40": {"x": 861, "y": 1021}
+        "0": {
+          "x": 861,
+          "y": 349
+        },
+        "1": {
+          "x": 861,
+          "y": 402
+        },
+        "2": {
+          "x": 861,
+          "y": 556
+        },
+        "5": {
+          "x": 861,
+          "y": 622
+        },
+        "10": {
+          "x": 861,
+          "y": 712
+        },
+        "15": {
+          "x": 861,
+          "y": 787
+        },
+        "25": {
+          "x": 861,
+          "y": 863
+        },
+        "30": {
+          "x": 861,
+          "y": 937
+        },
+        "40": {
+          "x": 861,
+          "y": 1021
+        }
+      }
+    },
+    "panel-mosaic-lab/cockpit/assets/throttle-quadrant-bare-owner-20261104.webp": {
+      "sourceSize": [
+        800,
+        1000
+      ],
+      "method": "New owner-approved bare quadrant: visible white FLAP scale ticks calibrated in the 800x1000 native WebP; independent from archived original coordinate map",
+      "cosmeticCorrections": [],
+      "targets": {
+        "0": {
+          "x": 606,
+          "y": 327
+        },
+        "1": {
+          "x": 606,
+          "y": 387
+        },
+        "2": {
+          "x": 606,
+          "y": 448
+        },
+        "5": {
+          "x": 606,
+          "y": 502
+        },
+        "10": {
+          "x": 606,
+          "y": 574
+        },
+        "15": {
+          "x": 606,
+          "y": 624
+        },
+        "25": {
+          "x": 606,
+          "y": 671
+        },
+        "30": {
+          "x": 606,
+          "y": 717
+        },
+        "40": {
+          "x": 606,
+          "y": 772
+        }
       }
     }
   },
