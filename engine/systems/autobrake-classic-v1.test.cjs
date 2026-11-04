@@ -85,6 +85,17 @@ assert.equal(selectorDisarm.getState().reason,'SELECTOR_CHANGED_DURING_BRAKING')
 assert.equal(selectorDisarm.getState().disarmLight,true);
 selectorDisarm.select('OFF');
 assert.equal(selectorDisarm.getState().disarmLight,false);
+const speedbrakeEdge=fresh();
+speedbrakeEdge.update({speedBrakeDown:true});
+speedbrakeEdge.select('RTO');speedbrakeEdge.advance(1500);
+speedbrakeEdge.update({wheelSpeedKnots:100,thrustIdle:false});
+speedbrakeEdge.update({thrustIdle:true});
+assert.equal(speedbrakeEdge.getState().phase,'ACTIVE',
+ 'Speedbrake ALREADY down must not disarm a newly activated RTO');
+speedbrakeEdge.update({speedBrakeDown:false});
+speedbrakeEdge.update({speedBrakeDown:true});
+assert.equal(speedbrakeEdge.getState().reason,'SPEEDBRAKE_STOWED',
+ 'Moving speedbrake into DOWN during active braking disarms the system');
 assert.throws(()=>x.select('INVALID'),/detent/);
 assert.throws(()=>x.update({wheelSpeedKnots:-1}),/sensor/);
 console.log('PASS: B737CL shared autobrake: 1500 ms RTO, 60/90 kt, landing, ANTISKID, hydraulic faults, manual brake, speedbrake, 3s touchdown grace, 2min RTO landing exception.');
