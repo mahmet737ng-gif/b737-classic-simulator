@@ -6,11 +6,12 @@
  const host=root.document.getElementById('atlasAbsolute');
  if(!host)return;
  const mounted=new Map(),nativeAirconReleases=new Map();
- const send=(id,pressed,quality)=>{
-  // Capture the physical moment at the actual cap. Cross-iframe messages
-  // can be delayed by unrelated cockpit rendering, but must not add to the
-  // owner's five-second qualification.
-  const physicalEpochMs=root.performance.timeOrigin+root.performance.now();
+ const send=(id,pressed,quality,inputTimeStamp)=>{
+  // The browser's PointerEvent.timeStamp dates the physical input, even if
+  // a busy frame delays the handler. Use that time before our own now().
+  const now=root.performance.now(),time=Number(inputTimeStamp);
+  const valid=Number.isFinite(time)&&time>=0&&time<=now&&now-time<=60000;
+  const physicalEpochMs=root.performance.timeOrigin+(valid?time:now);
   const detail={id,pressed,action:pressed?'PRESS':'RELEASE',momentary:true,quality,
    physicalEpochMs,source:'recessed-hardware-v2'};
   root.dispatchEvent(new CustomEvent('b737:recessed-button',{detail}));
@@ -25,13 +26,13 @@
   cap.setAttribute('aria-label',item.label+' recessed momentary button');cap.setAttribute('aria-pressed','false');
   ring.append(cap);
   let pressed=false;
-  const set=next=>{next=!!next;if(pressed===next)return;pressed=next;cap.dataset.pressed=String(next);cap.setAttribute('aria-pressed',String(next));send(item.id,next,item.quality);};
+  const set=(next,event)=>{next=!!next;if(pressed===next)return;pressed=next;cap.dataset.pressed=String(next);cap.setAttribute('aria-pressed',String(next));send(item.id,next,item.quality,event?.timeStamp);};
   // Keep the original installed air-con cap. Fail-safe release on lost
   // window focus so a 5-second TEST cannot remain stuck after alt-tab.
   if(item.id==='aircon-ovht-test')nativeAirconReleases.set(item.id,()=>set(false));
-  cap.addEventListener('pointerdown',e=>{if(e.pointerType==='mouse'&&e.button!==0)return;e.stopPropagation();e.preventDefault();try{cap.setPointerCapture(e.pointerId);}catch(_){}set(true);});
-  for(const name of ['pointerup','pointercancel','lostpointercapture'])cap.addEventListener(name,e=>{e.stopPropagation();set(false);});
-  cap.addEventListener('pointerleave',e=>{if(!cap.hasPointerCapture?.(e.pointerId))set(false);});
+  cap.addEventListener('pointerdown',e=>{if(e.pointerType==='mouse'&&e.button!==0)return;e.stopPropagation();e.preventDefault();try{cap.setPointerCapture(e.pointerId);}catch(_){}set(true,e);});
+  for(const name of ['pointerup','pointercancel','lostpointercapture'])cap.addEventListener(name,e=>{e.stopPropagation();set(false,e);});
+  cap.addEventListener('pointerleave',e=>{if(!cap.hasPointerCapture?.(e.pointerId))set(false,e);});
   cap.addEventListener('blur',()=>set(false));
   cap.addEventListener('keydown',e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();if(!e.repeat)set(true);}});
   cap.addEventListener('keyup',e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();set(false);}});
