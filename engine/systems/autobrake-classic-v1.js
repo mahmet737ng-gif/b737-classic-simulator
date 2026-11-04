@@ -101,7 +101,7 @@
    clock+=ms;
    if(phase==='SELF_TEST'&&testUntil!==null&&clock>=testUntil){
     testUntil=null;
-    if(!s.onGround||!systemOK()){phase='FAILED';reason='RTO_TOSC_FAILED';}
+    if(!s.onGround||!systemOK()||s.wheelSpeedKnots>=60||!s.thrustIdle){phase='FAILED';reason='RTO_TOSC_FAILED';}
     else {phase='WAITING';reason='RTO_TOSC_PASSED';}
    }
    if(rtoLandingUntil!==null&&clock>=rtoLandingUntil&&selector==='RTO'){
