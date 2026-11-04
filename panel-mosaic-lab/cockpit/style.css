@@ -8,3 +8,16 @@
 /* Opt-in geometry QA overlay: ?debugLights=1; source artwork unchanged. */
 html[data-light-geometry-debug=true] .cockpit-light{outline:2px solid #f7dc58;outline-offset:-2px}
 html[data-light-geometry-debug=true] .cockpit-light::after{content:'';position:absolute;left:50%;top:50%;width:8px;height:8px;border-radius:50%;background:#f7dc58;border:1px solid #111;transform:translate(-50%,-50%);z-index:4;pointer-events:none}
+
+/* MP-SINGLE-HOUSING-0001: A Main Panel lamp uses its photographed original
+   housing; the dynamic fitted SVG contains illuminated lettering only.
+   Hide the older duplicate full-frame <img> after the fitted SVG is ready.
+   Nothing changes on the overhead or in annunciator electrical logic. */
+.cockpit-light[data-native-housing="true"],
+.cockpit-light[data-native-housing="true"]:hover{
+  background:transparent !important;
+  overflow:visible !important;
+}
+.cockpit-light[data-native-housing="true"] > img:not(.lamp-socket-fit-face){
+  visibility:hidden !important;
+}
