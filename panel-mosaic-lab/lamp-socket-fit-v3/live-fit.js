@@ -30,6 +30,9 @@ let scanPending=false, listener=null;
 const keyOf=r=>r.bank==='OH'?(r.placementId==='OH07'||r.placementId==='OH08'?'OH07-08':r.placementId):r.pieceId;
 function boundedRect(row){
  const [x,y,w,h]=row.sourceRect;
+ // MP lenses have been measured directly against their original photograph.
+ // Extend OH sockets as before, but never overscan or move a Main Panel lens.
+ if(row.bank==='MP')return {x,y,w,h,p:{l:0,r:0,t:0,b:0}};
  const p={l:Math.min(maxPad,x),r:maxPad,t:Math.min(maxPad,y),b:maxPad};
  for(const other of records.values()){
   if(other===row||other.bank!==row.bank||other.photo!==row.photo)continue;
@@ -146,15 +149,11 @@ async function update(id){
   const fx=(parseFloat(obj.node.style.width)||obj.node.offsetWidth)/ow;
   const fy=(parseFloat(obj.node.style.height)||obj.node.offsetHeight)/oh;
   const p=r.shape.p;
-  // The original MP photo housings extend beyond the legacy registered
-  // sourceRect towards the lower-right. Shift the emission-only legend onto
-  // that ONE physical glass, without shifting any socket or its hit target.
-  const mp=row.bank==='MP';
-  const size=mp?1.10:1;
-  const dx=mp?ow*fx*0.10:0,dy=mp?oh*fy*0.10:0;
+  // The MP hit target, photo glass and fitted lettering have identical
+  // per-socket dimensions. No shared 10% translation/110% magnification.
   Object.assign(obj.img.style,{
-   left:(-p.l*fx+dx)+'px',top:(-p.t*fy+dy)+'px',
-   width:(r.shape.w*fx*size)+'px',height:(r.shape.h*fy*size)+'px'
+   left:(-p.l*fx)+'px',top:(-p.t*fy)+'px',
+   width:(r.shape.w*fx)+'px',height:(r.shape.h*fy)+'px'
   });
   if(obj.img.src!==r.url)obj.img.src=r.url;
   obj.img.hidden=false;
@@ -206,13 +205,21 @@ async function start(){
   const arr=await Promise.all([
    json('interactive-overhead/lights.json'),
    json('cockpit/lights.json'),
-   json('lights-reference-v2/manifest.json')
+   json('lights-reference-v2/manifest.json'),
+   json('cockpit/main-panel-socket-calibration-v1.json')
   ]);
-  const [oh,mp,m]=arr;manifest=m;
+  const [oh,mp,m,calibration]=arr;manifest=m;
+  if(calibration.schema!=='b737.main-panel-socket-calibration.v1'||
+    Object.keys(calibration.sockets||{}).length!==mp.lights.length)
+   throw Error('Measured Main Panel socket registry unavailable');
   if(m.schema!=='b737.classic.annunciator.global-dimmer.v2')throw Error('Unexpected master manifest');
   for(const [bank,data] of [['OH',oh],['MP',mp]]){
    for(const original of data.lights){
-    const row={...original,bank,photo:keyOf({...original,bank})};
+    const slot=bank==='MP'?calibration.sockets[original.id]:null;
+    if(bank==='MP'&&(!slot||slot.pieceId!==original.pieceId||slot.sourceRect?.length!==4))
+     throw Error('Missing measured photo socket '+original.id);
+    const row={...original,bank,photo:keyOf({...original,bank}),
+      sourceRect:slot?slot.sourceRect:original.sourceRect};
     if(records.has(row.id))throw Error('Duplicate lamp socket '+row.id);
     records.set(row.id,row);
    }
@@ -235,7 +242,7 @@ async function start(){
   scheduleScan();
   setTimeout(()=>{watch.disconnect();scheduleScan();},12000);
   win.B737SocketFit=Object.freeze({
-   status:()=>({enabledByDefault:true,edgeExtensionSourcePx:maxPad,sourceCount:records.size,scope:pageScope,
+   status:()=>({enabledByDefault:true,edgeExtensionSourcePx:pageScope==='MP'?0:maxPad,sourceCount:records.size,scope:pageScope,
      expectedLocal:pageScope==='OH'?112:30,mounted:mounts,renders,
      errors:[...errors],emissionOnly:[...photoGlassOnly],unmounted:[...records.values()].filter(r=>r.bank===pageScope&&!photoGlassOnly.has(r.id)&&!nodes.has(r.id)).map(r=>r.id),
      maxPad,mode:win.B737LampAppearance?.getMode?.()||'BRIGHT'}),
