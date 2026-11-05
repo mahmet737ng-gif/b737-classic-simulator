@@ -228,16 +228,31 @@
     this.feedback('apu','inletDoorOpen',false);this.phase.apu='OFF';});
   }
   canStartEngine(device){
+   if(!['engine1','engine2'].includes(device))throw Error('Unknown starter engine');
    const apu=this.start.getLive().observation.apu.running;
    const n=this.start.core.pneumaticState,c=n.controls;
    const b=this.start.core.pack.getLive().electrical.bus;
-   if(apu!==true)return 'APU NOT READY';
-   if(c.apuBleed!=='ON')return 'APU BLEED OFF';
+   const pneumatics=this.start.core.Pneumatics.derive(n);
+   const side=device==='engine1'?'L':'R';
+   // FCOM Classic: a serviceable opposite-engine bleed, isolation OPEN and
+   // target-side duct supply may motor the starter without APU bleed. This
+   // functional, training-only route requires an actual source observation;
+   // NOT an inferred 35 PSI from a displayed knob or ground-air cart.
+   const oppositeBleed=device==='engine1'?pneumatics.bleed.engine2ValveOpen:
+     pneumatics.bleed.engine1ValveOpen;
+   const crossBleed=oppositeBleed===true&&pneumatics.bleed.isolationOpen===true&&
+     pneumatics.duct?.[side]?.anySupply===true;
+   const apuAir=apu===true&&c.apuBleed==='ON';
+   if(!apuAir&&!crossBleed){
+    if(apu===true&&c.apuBleed!=='ON')return 'APU BLEED OFF / NO VALID CROSSBLEED';
+    return 'NO VERIFIED APU OR CROSSBLEED START SOURCE';
+   }
    if(c.isolation==='CLOSE')return 'ISOLATION VALVE CLOSED';
    if(c.packL!=='OFF'||c.packR!=='OFF')return 'PACK L/R MUST BE OFF FOR ENGINE START';
    if(b.battery!==true)return 'BATTERY BUS NOT AVAILABLE';
-   // Starter motoring is pneumatic; ignition power is checked at light-off.
-   // Right igniter uses AC STANDBY, which can be battery/inverter powered.
+   // Duct PSI remains owner-selected training input. Actual side distribution
+   // for external air is UNKNOWN in Pneumatics V6; it cannot silently pass.
+   // Ignition eligibility is checked separately at fuel entry/light-off.
    return null;
   }
   setStartDuctPressure(device,psi){
