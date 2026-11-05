@@ -35,7 +35,7 @@ const raw={quality:'TRAINING_SIMULATION_ONLY',timeMs:0,engines:{
   oil:{pressurePsi:57,temperatureC:80,quantityPct:85},startValveOpen:false}
 }};
 global.document={
- readyState:'loading',documentElement:{dataset:{engineIndication:'EIS'}},
+ readyState:'loading',baseURI:'https://localhost/panel-mosaic-lab/cockpit/index.html',documentElement:{dataset:{engineIndication:'EIS'}},
  addEventListener(){},querySelector:nodeFor
 };
 const listeners=new Map();
