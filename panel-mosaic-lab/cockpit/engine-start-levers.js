@@ -13,11 +13,7 @@
   const g=model.geometry(entry.device,fraction);entry.travel=g.travel;
   const p=model.placementAt(entry.piece,entry.device,g.travel),s=entry.scale;
   Object.assign(entry.button.style,{left:(entry.piece.x+(g.x-model.SOURCE.window.x-model.HANDLE.w/2)*s)+'px',top:(entry.piece.y+(g.y-model.SOURCE.window.y-model.HANDLE.h/2)*s)+'px',width:(model.HANDLE.w*s)+'px',height:(model.HANDLE.h*s)+'px',minWidth:(model.HANDLE.w*s)+'px',minHeight:(model.HANDLE.h*s)+'px',maxWidth:'none',padding:'0',margin:'0',boxSizing:'border-box',lineHeight:'0',fontSize:'0'});
-  const {pivotX:px,pivotY:py,jointX:jx,jointY:jy}=g,w=3.4;
-  entry.arm.setAttribute('d',`M ${px-w} ${py} L ${px+w} ${py} L ${jx+w} ${jy} Q ${jx} ${jy+4} ${jx-w} ${jy} Z`);
-  entry.edge.setAttribute('d',`M ${px-w+1} ${py+4} L ${jx-w+1} ${jy-1}`);
-  entry.joint.setAttribute('cx',jx);entry.joint.setAttribute('cy',jy);
-  entry.cap.setAttribute('x',g.x-model.HANDLE.w/2);entry.cap.setAttribute('y',g.y-model.HANDLE.h/2);
+    entry.cap.setAttribute('x',g.x-model.HANDLE.w/2);entry.cap.setAttribute('y',g.y-model.HANDLE.h/2);
   entry.button.dataset.travel=g.travel.toFixed(4);
   entry.button.dataset.position=positions[entry.device];
   entry.button.setAttribute('aria-valuenow',String(Math.round(g.travel*100)));
@@ -93,22 +89,16 @@
   art=svg(native,'svg',{class:'engine-start-lever-art',viewBox:'0 0 '+model.SOURCE.window.w+' '+model.SOURCE.window.h,
    'data-start-lever-art':'START-LEVER-0007','aria-hidden':'true'});
   Object.assign(art.style,{position:'absolute',left:piece.x+'px',top:piece.y+'px',width:piece.w+'px',height:piece.h+'px',transformOrigin:'0 0'});
-  const defs=svg(art,'defs'),metal=svg(defs,'linearGradient',{id:'start-lever-arm-metal',x1:'0%',y1:'0%',x2:'100%',y2:'0%'});
-  for(const [offset,color]of [['0%','#454b4d'],['12%','#e1e2dc'],['35%','#939a9a'],['70%','#aeb4b2'],['92%','#e8e9e1'],['100%','#5c6261']])svg(metal,'stop',{offset,'stop-color':color});
+  
   for(const device of ['engine1','engine2']){
-   const g=model.geometry(device,0),group=svg(art,'g',{'data-start-lever-assembly':device});
-   const arm=svg(group,'path',{fill:'url(#start-lever-arm-metal)',stroke:'#484f4f','stroke-width':'.7'});
-   const edge=svg(group,'path',{fill:'none',stroke:'#e4e6de','stroke-width':'.55',opacity:'.7'});
-   const joint=svg(group,'circle',{r:4,fill:'url(#start-lever-arm-metal)',stroke:'#555b5a','stroke-width':'.6'});
-   const cap=svg(group,'svg',{width:model.HANDLE.w,height:model.HANDLE.h,
-    viewBox:device==='engine1'?'330 0 760 724':'1082 0 758 724',overflow:'hidden'});
-   // CUTOFF and IDLE are distinct detents on the same movable physical assembly.
+   const group=svg(art,'g',{'data-start-lever-assembly':device});
+   const cap=svg(group,'svg',{width:model.HANDLE.w,height:model.HANDLE.h,viewBox:device==='engine1'?'420 340 655 365':'1095 340 655 365',preserveAspectRatio:'none',overflow:'hidden'});
    svg(cap,'image',{href:master,width:2172,height:724});
    const button=document.createElement('button');button.type='button';button.className='engine-start-lever';
    button.dataset.device=device;button.setAttribute('role','slider');button.setAttribute('aria-orientation','vertical');
    button.setAttribute('aria-valuemin','0');button.setAttribute('aria-valuemax','100');
    button.setAttribute('aria-label','ENGINE '+model.SLOTS[device].label+' START LEVER');
-   const entry={device,button,piece,scale:piece.w/model.SOURCE.window.w,arm,edge,joint,cap,travel:model.travel(positions[device]),drag:null,ticket:null,keyboard:false,lastRequested:null};
+   const entry={device,button,piece,scale:piece.w/model.SOURCE.window.w,cap,travel:model.travel(positions[device]),drag:null,ticket:null,keyboard:false,lastRequested:null};
    controls.set(device,entry);native.append(button);bind(entry);paint(entry,entry.travel);
   }
  }
