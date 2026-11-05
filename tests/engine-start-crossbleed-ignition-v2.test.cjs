@@ -32,6 +32,9 @@ assert.equal(s.get().engines.engine1.phase,'AWAIT_FUEL_LEVER_IDLE');
 assert.equal(s.fuelLever('engine1','IDLE').accepted,true);
 s.advance(37000);
 assert.equal(s.get().engines.engine1.phase,'RUNNING');
+// GEN 1 must be selected before disconnecting the APU generator; otherwise
+// valve-control and transfer-bus power may be unavailable.
+s.selectGenerator('GEN1',1);
 // APU shutdown leaves first engine providing a real, independently
 // source-observed engine bleed (training pressure is separately configured).
 s.chain.stopAPU();
