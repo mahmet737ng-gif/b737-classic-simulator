@@ -16,7 +16,7 @@ assert.match(css,/data-engine-indication="EIS"/);
 assert.match(css,/\.b737-eis-autobrake-rotary/);
 assert.match(css,/display:none/);
 assert.ok(!css.includes('data-engine-indication="CONVENTIONAL"] #region-main .region-native>.b737-eis'),'EIS knob must not cover Conventional');
-assert.ok(html.includes('eis-autobrake-physical-v1.js?v=EIS-AUTOBRAKE-0001'));
+assert.ok(html.includes('eis-autobrake-physical-v1.js?v=EIS-AUTOBRAKE-0002-POS'),'Updated EIS position must invalidate cached cockpit script');
 assert.ok(html.includes('eis-autobrake-physical-v1.css?v=EIS-AUTOBRAKE-0001'));
 assert.ok(html.includes('autobrake-unified-v1.js?v=ATA32-AUTOBRAKE-SHARED-0001'));
 assert.ok(originalConv.includes("common.setSelector(next)"),'Conventional remains tied to existing shared system');
