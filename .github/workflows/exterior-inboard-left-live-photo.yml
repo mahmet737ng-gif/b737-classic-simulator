@@ -1,0 +1,50 @@
+name: Exterior INBOARD L — actual source photo browser alignment
+on:
+  push:
+    paths:
+      - 'panel-mosaic-lab/interactive-overhead/app.js'
+      - 'panel-mosaic-lab/interactive-overhead/registry.json'
+      - 'panel-mosaic-lab/interactive-overhead/exterior-inboard-left-photo-registration.test.cjs'
+      - 'panel-mosaic-lab/cockpit/overhead-stage.html'
+      - 'panel-mosaic-lab/cockpit/assembly.json'
+      - 'tools/test-exterior-inboard-left-live-browser.cjs'
+      - '.github/workflows/exterior-inboard-left-live-photo.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  photo-registration:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify four real photo-socket coordinates and two-state function
+        run: |
+          node --check panel-mosaic-lab/interactive-overhead/app.js
+          node --check tools/test-exterior-inboard-left-live-browser.cjs
+          node panel-mosaic-lab/interactive-overhead/exterior-inboard-left-photo-registration.test.cjs
+      - name: Install Chromium
+        run: |
+          npm install --no-save --ignore-scripts playwright@1.58.2
+          npx playwright install --with-deps chromium
+      - name: Compare ACTUAL rendered switch centres against original photo pixels
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m http.server 8788 --bind 127.0.0.1 >/tmp/b737-extl-web.log 2>&1 &
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:8788/panel-mosaic-lab/cockpit/overhead-stage.html >/dev/null; then break; fi
+            sleep 1
+          done
+          node tools/test-exterior-inboard-left-live-browser.cjs
+      - name: Preserve real Chromium rendered OH23-25 photo
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: inboard-left-centered-photo-browser-evidence
+          path: /tmp/inboard-left-centered-on-real-photo.png
+          if-no-files-found: ignore
+          retention-days: 14
