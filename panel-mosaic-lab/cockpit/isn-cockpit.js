@@ -1,6 +1,16 @@
 (function(){
  'use strict';
  const moduleBase=document.currentScript.src;
+ // Cockpit-visible feedback stays outside the hidden instructor strip.
+ // Locked overhead imagery, guarded switches and gauge geometry are untouched.
+ function startFeedback(message,severity='progress'){
+  let node=document.getElementById('unifiedEngineStartFeedback');
+  if(!node){node=document.createElement('div');node.id='unifiedEngineStartFeedback';
+   node.setAttribute('role','status');node.setAttribute('aria-live','polite');document.body.append(node);}
+  node.hidden=!message;
+  node.dataset.severity=severity;
+  if(node.textContent!==message)node.textContent=message;
+ }
  const deps=[
   ['B737PneumaticsV6','../../engine/systems/pneumatics-v6.js'],
   ['B737ISNEngineAPUV1','../../engine/integration/isn-engine-apu-v1.js'],
@@ -30,7 +40,7 @@
    requests.push(new Promise((resolve,reject)=>{
     const script=document.createElement('script');
     script.async=false;
-    script.src=new URL(path,moduleBase).href+'?v='+(global==='B737ISN1318ECUTestbenchV1'?'APU-OIL4-0001-ENG-OIL-DYNAMIC-0002':global==='B737PneumaticsV6'?'AIRCON-FCOM-0001':'ELEC-LIVE-0001');
+    script.src=new URL(path,moduleBase).href+'?v='+(global==='B737ISN1318ECUTestbenchV1'?'APU-OIL4-0001-ENG-OIL-DYNAMIC-0002':global==='B737PneumaticsV6'?'AIRCON-FCOM-0001':global==='B737ISNUnifiedControlRouterV1'?'ENGINE-START-ACK-0001':'ELEC-LIVE-0001');
     script.onload=resolve;
     script.onerror=()=>reject(Error('Missing integration script '+path));
     document.head.append(script);
@@ -175,6 +185,23 @@
  });
 
  function renderStart(){const s=chain.get(),live=ecu.get();
+  const startLines=[];let blocked=false;
+  for(const n of [1,2]){
+   const id='engine'+n,phase=s.phase[id],measured=live.engines[id];
+   if(phase==='BLOCKED'){
+    blocked=true;
+    const error=String(s.lastError||'');
+    const reason=error.startsWith(id.toUpperCase()+': ')?
+     error.slice(id.length+2):chain.canStartEngine(id)||'START NOT ENGAGED';
+    startLines.push('ENG '+n+' START BLOCKED: '+reason+' · Select OFF, correct the condition, then GRD');
+   }else if(['MOTORING','AWAIT_FUEL_LEVER_IDLE','LIGHT_OFF_SEQUENCE'].includes(phase)){
+    startLines.push('ENG '+n+' '+phase+' · N2 '+numeric(measured.n2Percent,'%')+
+     ' · START VALVE '+(measured.startValveOpen===true?'OPEN':'CLOSED'));
+   }else if(['N2_STALLED','NO_LIGHT_OFF','HUNG_START','ABNORMAL_EGT','STARTER_TIME_LIMIT','EARLY_STARTER_CUTOUT'].includes(phase)){
+    blocked=true;startLines.push('ENG '+n+' '+phase+' · '+(s.lastError||'CHECK START / FUEL LEVER'));
+   }
+  }
+  startFeedback(startLines.join(' | '),blocked?'warning':'progress');
   const apuLive=live.apu,apuGen=apuLive.generator||{};
   byId('isnQuickApuState').textContent='APU ECU '+apuLive.phase+' · RPM '+numeric(apuLive.rpmPct,'%')+
    ' · EGT '+numeric(apuLive.egtC,'°C')+' · OIL '+numeric(apuLive.oil?.pressurePsi,'PSI')+
@@ -411,7 +438,8 @@
     }else liveGateway.dispatch(e.data.event);
     render();
    }
-  }catch(error){byId('isnError').textContent='خطای ارتباط ISN: '+error.message;}
+  }catch(error){byId('isnError').textContent='خطای ارتباط ISN: '+error.message;
+   startFeedback('UNIFIED ENGINE LINK ERROR: '+error.message,'warning');}
  });
  let lastTime=performance.now(),lastPassiveCoolingAt=lastTime;
  setInterval(()=>{const now=performance.now(),elapsed=Math.max(0,Math.min(500,now-lastTime));lastTime=now;
@@ -538,5 +566,6 @@
    status.textContent='UNIFIED ECU NOT CONNECTED — '+error.message;
    anchor.after(status);
   }
+  startFeedback('UNIFIED ECU NOT CONNECTED — '+error.message,'warning');
  });
 })();
